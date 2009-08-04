@@ -1,34 +1,36 @@
 /*
-	Avatar.h by Miguel Guzman (Aglanor)
-	Copyright (C) 2002 Miguel Guzman & The Viewforge Project
-	Copyright (C) 2004 Erik Hjortsberg
+ Avatar.h by Miguel Guzman (Aglanor)
+ Copyright (C) 2002 Miguel Guzman & The Viewforge Project
+ Copyright (C) 2004 Erik Hjortsberg
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifndef AVATAR_H
 #define AVATAR_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "services/config/ConfigListenerContainer.h"
+#include "framework/ConsoleObject.h"
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
+#include <wfmath/vector.h>
 
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
@@ -36,22 +38,21 @@
 #include <memory>
 #include <set>
 
-namespace Eris {
-	class Entity;
+namespace Eris
+{
+class Entity;
 }
 
-namespace WFMath {
-    class Quaternion;
+namespace EmberOgre
+{
+
+namespace Model
+{
+class Model;
 }
-
-
-namespace EmberOgre {
-
-namespace Model {
-	class Model;
-}
-namespace Camera {
-	class ThirdPersonCameraMount;
+namespace Camera
+{
+class ThirdPersonCameraMount;
 }
 
 class EmberEntity;
@@ -67,8 +68,6 @@ public:
 	WFMath::Point<3> position;
 };
 
-
-
 /**
  * This class holds the Avatar. In general it recieves instructions from mainly
  * MovementController to attempt to move or rotate the avatar. After checking
@@ -76,13 +75,11 @@ public:
  * If it's a movement it has to be animated.
  *
  */
-class Avatar :
-public sigc::trackable,
-public Ember::ConfigListenerContainer
+class Avatar: public sigc::trackable, public Ember::ConfigListenerContainer, public Ember::ConsoleObject
 {
 	friend class MovementController;
 
-    public:
+public:
 
 	/**
 	 * @brief Ctor.
@@ -94,7 +91,6 @@ public Ember::ConfigListenerContainer
 	 * @brief Dtor.
 	 */
 	virtual ~Avatar();
-
 
 	/**
 	 * @brief Gets the scene node which the avatar is attached to, if any.
@@ -113,7 +109,6 @@ public Ember::ConfigListenerContainer
 	 */
 	EmberEntity& getEmberEntity();
 
-
 	/**
 	 * @brief Sets the minimum interval to wait before sending new rotation changes to the server.
 	 *    this is not done instantly to prevent swamping of data to the server
@@ -125,12 +120,12 @@ public Ember::ConfigListenerContainer
 	/**
 	 * @brief Emitted when an entity is added to the inventory.
 	 */
-	sigc::signal<void, EmberEntity* > EventAddedEntityToInventory;
+	sigc::signal<void, EmberEntity*> EventAddedEntityToInventory;
 
 	/**
 	 * @brief Emitted when an entity is removed from the inventory.
 	 */
-	sigc::signal<void, EmberEntity* > EventRemovedEntityFromInventory;
+	sigc::signal<void, EmberEntity*> EventRemovedEntityFromInventory;
 
 	/**
 	 * @brief True if the current user have admin rights, i.e. is a "creator".
@@ -138,7 +133,6 @@ public Ember::ConfigListenerContainer
 	bool isAdmin() const;
 
 	void moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice);
-
 
 	/**
 	 * @brief Gets the client side position of the avatar.
@@ -160,10 +154,19 @@ public Ember::ConfigListenerContainer
 	 */
 	Camera::ThirdPersonCameraMount& getCameraMount() const;
 
+	/**
+	 * @copydoc ConsoleObject::runCommand
+	 */
+	virtual void runCommand(const std::string &command, const std::string &args);
+
+	/**
+	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
+	 */
+	const Ember::ConsoleCommandWrapper SetAttachedOrientation;
+
 protected:
 
 	typedef std::list<std::pair<long, AvatarMovementState> > TimedMovementStateList;
-
 
 	/**
 	 * This method will determine if it's ok to send a small movement change, such as
@@ -172,26 +175,20 @@ protected:
 	bool isOkayToSendRotationMovementChangeToServer();
 
 	/**
-	In milliseconds, the minimum time we must wait between sending updates to the server. Set this higher to avoid spamming the server.
-	*/
+	 * @brief In milliseconds, the minimum time we must wait between sending updates to the server. Set this higher to avoid spamming the server.
+	 */
 	Ogre::Real mMinIntervalOfRotationChanges;
 
-
 	/**
-	 * Attempts to move the avatar in a certain direction
-	 * Note that depending on what the rules allows (i.e. collision detection,
-	 * character rules etc.) the outcome of the attempt is uncertain.
+	 * @brief Attempts to move the avatar in a certain direction.
+	 * Note that depending on what the rules allows (i.e. collision detection, character rules etc.) the outcome of the attempt is uncertain.
 	 *
-	 * The parameter timeSlice denotes the slice of time under which the movement
-	 * shall take place.
 	 */
 	void attemptMove();
 
-
-
 	/**
-	The Eris::Entity which represents the Avatar.
-	*/
+	 * @brief The Eris::Entity which represents the Avatar.
+	 */
 	EmberEntity& mErisAvatarEntity;
 
 	/**
@@ -204,37 +201,37 @@ protected:
 	AvatarAttachmentController* mAvatarAttachmentController;
 
 	/**
-	* this is used to make sure starts and stops of movement is only sent to the server once
-	*/
+	 * this is used to make sure starts and stops of movement is only sent to the server once
+	 */
 	AvatarMovementState mCurrentMovementState;
 
 	TimedMovementStateList mLastTransmittedMovements;
 
 	/**
-	Keep a temporary list of entities that needs to be added to the inventory.
-	*/
+	 Keep a temporary list of entities that needs to be added to the inventory.
+	 */
 	std::set<Eris::Entity*> mEntitiesToBeAddedToInventory;
 
 	/**
-	Keep a temporary list of entities that needs to be removed from the inventory.
-	*/
+	 Keep a temporary list of entities that needs to be removed from the inventory.
+	 */
 	std::set<Eris::Entity*> mEntitiesToBeRemovedFromInventory;
 
 	std::auto_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
 
 	/**
-	True if the current user have admin rights, i.e. is a "creator".
-	*/
+	 True if the current user have admin rights, i.e. is a "creator".
+	 */
 	bool mIsAdmin;
 
 	/**
-	If set to true, the avatar has just changed location, so the next onMoved operation will contain the new orientation and position information for the new location.
-	*/
+	 If set to true, the avatar has just changed location, so the next onMoved operation will contain the new orientation and position information for the new location.
+	 */
 	bool mHasChangedLocation;
 
 	/**
-	Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
-	*/
+	 Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
+	 */
 	std::auto_ptr<AvatarLoggerParent> mChatLoggerParent;
 
 	/**
@@ -248,7 +245,6 @@ protected:
 	WFMath::Quaternion mClientSideAvatarOrientation;
 
 	WFMath::Vector<3> mCurrentMovement;
-
 
 	/**
 	 * @brief Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
@@ -270,9 +266,6 @@ protected:
 	 * @brief Listen to child entities being removed from the avatar entity and emit the inventory removal event.
 	 */
 	void entity_ChildRemoved(Eris::Entity* childEntity);
-
-
-
 
 	void application_AfterInputProcessing(float timeSinceLastEvent);
 
@@ -299,11 +292,6 @@ protected:
 	 * @param variable
 	 */
 	void Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-
-
-
-
 
 }; //End of class declaration
 
