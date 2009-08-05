@@ -126,7 +126,15 @@
 	-->
 	
 	<autoentitymapping name="fire" />
-	<autoentitymapping name="ocean" />
+	<entitymapping name="ocean">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">ocean</caseparam>
+				<action type="display-ocean" />
+			</case>
+		</entitymatch>
+	</entitymapping>
+				
 	<autoentitymapping name="lumber" />
 	
 	<entitymapping name="mushroom">

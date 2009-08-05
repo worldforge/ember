@@ -26,9 +26,10 @@
 #include "EmberEntityModelAction.h"
 
 #include "components/ogre/model/Model.h"
-#include "components/ogre/EmberOgre.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/EmberEntity.h"
 #include "framework/LoggingInstance.h"
 
 namespace EmberOgre {

@@ -23,14 +23,13 @@
 #ifndef EMBEROGREEMBERENTITYMODELACTION_H
 #define EMBEROGREEMBERENTITYMODELACTION_H
 
-#include "EmberOgrePrerequisites.h"
-#include "EmberEntity.h"
 
-// #include "model/mapping/EntityMapping.h"
 #include "components/entitymapping/Actions/Action.h"
+#include <string>
 
 namespace EmberOgre {
 
+class EmberEntity;
 /**
 	Show a certain Model.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
