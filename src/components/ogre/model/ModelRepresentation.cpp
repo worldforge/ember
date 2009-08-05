@@ -212,7 +212,7 @@ void ModelRepresentation::connectEntities()
 	///we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
 	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
-	EmberEntityUserObject* userObject = new EmberEntityUserObject(getEntity(), getModel(), collisionDetector);
+	EmberEntityUserObject* userObject = new EmberEntityUserObject(getEntity(), collisionDetector);
 	getModel().setUserObject(userObject);
 
 }

@@ -44,66 +44,66 @@ class EmberEntity;
 class ICollisionDetector;
 
 /**
- @author Erik Hjortsberg
-
- Instances of this class can be attached to scene nodes in the ogre system. They will allow for the Ember system to be accessed directly from Ogre, without having to do lookups.
- This is generally mostly used for mouse picking and collision handling.
-
+ * @author Erik Hjortsberg
+ *
+ * @brief An Ogre user object which connects to an EmberEntity.
+ * Instances of this class can be attached to movable objects in the ogre system. They will allow for the Ember system to be accessed directly from Ogre, without having to do lookups.
+ * This is generally mostly used for mouse picking and collision handling.
  */
 class EmberEntityUserObject: public Ogre::UserDefinedObject
 {
 public:
 
 	/**
-	 The type of UserDefinedObject
+	 * @brief The type of UserDefinedObject
 	 */
 	static const std::string s_TypeName;
-	// 	typedef std::vector<OgreOpcode::CollisionObject*> CollisionObjectStore;
 
 	/**
-	 * Constructor.
+	 * Ctor.
 	 * @param emberEntity A valid EmberEntity instance.
-	 * @param model A valid Model instance.
 	 * @param collisionObject A valid vector of collision objects.
-	 * @return
 	 */
-	EmberEntityUserObject(EmberEntity& emberEntity, Model::Model& model, ICollisionDetector* collisionDetector);
+	EmberEntityUserObject(EmberEntity& emberEntity, ICollisionDetector* collisionDetector);
 
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~EmberEntityUserObject();
 
 	/**
-	 *    Gets the EmberEntity contained.
-	 * @return
+	 * @brief Gets the EmberEntity contained.
+	 * @return The entity to which this user object belongs.
 	 */
 	EmberEntity& getEmberEntity() const;
 
 	/**
-	 *    Gets the Model instance.
-	 * @return
-	 */
-	Model::Model& getModel() const;
-
-	/**
-	 *    Gets a pointer to a vector of CollisionObjects. This can be used for checking collisions.
-	 * @return
-	 */
-	//	CollisionObjectStore* getCollisionObjects() { return &mCollisionObjects; }
-
-	/**
-	 *    Overloaded method for getting the type name of this instance.
-	 * @param
-	 * @return
+	 * @copydoc Ogre::UserDefinedObject::getTypeName()
 	 */
 	virtual const Ogre::String& getTypeName(void) const;
 
+	/**
+	 * @brief Tells the collision detector, is one such is available, to refit any collision shape in need of refitting.
+	 * Call this before you test for collisions, since collision shapes often aren't refitted until needed (to increase performance).
+	 */
 	void refit();
 
+	/**
+	 * @brief Gets the collision detector in use.
+	 * @return The collision detector, if any.
+	 */
 	ICollisionDetector* getCollisionDetector() const;
 
-private:
+protected:
+
+	/**
+	 * @brief The entity to which this user object belongs.
+	 */
 	EmberEntity& mEmberEntity;
-	Model::Model& mModel;
-	//CollisionObjectStore   mCollisionObjects;
+
+	/**
+	 * @brief The collision detector, responsible for checking collisions.
+	 */
 	ICollisionDetector* mCollisionDetector;
 
 };
