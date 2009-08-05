@@ -133,20 +133,20 @@ public:
 	void pushPageReady(TerrainPage* page);
 
 private:
-	/// Set of pages ready
+	/** Set of pages ready */
 	std::list<TerrainPage*> mPagesReady;
-	/// Queue of pages to be loaded
+	/** Queue of pages to be loaded */
 	std::list<std::pair<TerrainPosition, ITerrainPageBridge*> > mPagesQueue;
-	/// Flag to know when a thread is already processing a request (only one request at a time, pages access other pages' data so they cannot be created in parallel)
+	/** Flag to know when a thread is already processing a request (only one request at a time, pages access other pages' data so they cannot be created in parallel) */
 	bool mIsProcessing;
-	/// Thread, a pointer to free the thread after finishes
+	/** Thread, a pointer to free the thread after finishes */
 	boost::thread* mThread;
 
-	/// Mutex for shared variable
+	/** Mutex for shared variable */
 	boost::mutex mMutexPagesReady;
-	/// Mutex for shared variable
+	/** Mutex for shared variable */
 	boost::mutex mMutexPagesQueue;
-	/// Mutex for shared variable
+	/** Mutex for shared variable */
 	boost::mutex mMutexIsProcessing;
 
 	/** Helper function to peek at the queue and create a page if requested */
@@ -156,12 +156,12 @@ private:
 
 /**
  * @brief Handles generation and updates of the terrain.
+ *
  * This class takes care of generating terrain for Ogre's scenemanager.
- * This involves getting terrain from Mercator, converting this to ogre
- * format and creating materials to make it look good.
+ *
+ * This involves getting terrain from Mercator, converting this to ogre format and creating materials to make it look good.
  *
  * It works closely with EmberTerrainPageSource.
- *
  */
 class TerrainGenerator : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
 {

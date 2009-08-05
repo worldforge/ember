@@ -25,7 +25,7 @@
 
 namespace Ogre
 {
-	/** Class representing a terrain page for the Paging LandScape
+	/** @brief Class representing a terrain page for the Paging LandScape
 	 */
 	class _OgrePagingLandScapeExport PagingLandScapePage
 	{
@@ -183,42 +183,42 @@ namespace Ogre
 		};
 
 
-		/// Reference to the manager
+		/** Reference to the manager */
 		PagingLandScapePageManager& mPageMgr;
 
-		/// State of this page
+		/** State of this page */
 		PageState mPageState;
 
-		/// Queue in which this page lives at a given moment
+		/** Queue in which this page lives at a given moment */
 		PageInQueue mPageInQueue;
 
-		/// Position of this Terrain Page in the Terrain Page Array
+		/** Position of this Terrain Page in the Terrain Page Array */
 	        unsigned int mTableX;
-		/// Position of this Terrain Page in the Terrain Page Array
+		/** Position of this Terrain Page in the Terrain Page Array */
 	        unsigned int mTableZ;
-	        /// Bounds of the terrain page
+	        /** Bounds of the terrain page */
 	        AxisAlignedBox mBounds;
-	        /// Position in the world of the terrain page
+	        /** Position in the world of the terrain page */
 		Vector3 mWorldPosition;
 
-		/// Whether the page is visible or not
+		/** Whether the page is visible or not */
 		bool mVisible;
 
-		/// Variable to control if it's been used recently
+		/** Variable to control if it's been used recently */
 		unsigned int mTimeUntouched;
 
-		/// SceneNode corresponding to this Terrain Page
+		/** SceneNode corresponding to this Terrain Page */
 		Ogre::SceneNode* mPageNode;
 
-		/// Renderable for this page
+		/** Renderable for this page */
 		PagingLandScapePageRenderable* mRenderable;
 
-		/// Number of tiles of the page
+		/** Number of tiles of the page */
 		unsigned int mNumTiles;
-		/// Tiles of the page
+		/** Tiles of the page */
 	        PagingLandScapeTiles mTiles;
 
-		/// Neighbor pages
+		/** Neighbor pages */
 		PagingLandScapePage* mNeighbors[4];
 
 
