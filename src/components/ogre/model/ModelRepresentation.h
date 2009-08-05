@@ -25,7 +25,6 @@
 #include <OgreMath.h>
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
-#include <Eris/Types.h>
 #include <sigc++/trackable.h>
 
 #ifndef MODELREPRESENTATION_H_

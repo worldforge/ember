@@ -59,7 +59,6 @@ class TerrainArea;
 class TerrainMod;
 }
 
-class EmberEntityFactory;
 class IGraphicalRepresentation;
 class IEntityAttachment;
 class IAttachmentControlDelegate;
@@ -73,7 +72,6 @@ class IAttachmentControlDelegate;
  */
 class EmberEntity: public Eris::Entity, public IVisualizable
 {
-	friend class EmberEntityFactory;
 public:
 
 	/**

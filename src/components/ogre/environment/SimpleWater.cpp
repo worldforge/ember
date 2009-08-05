@@ -31,15 +31,16 @@
 #include <OgreMeshManager.h>
 #include <OgreEntity.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Environment {
+namespace Environment
+{
 
-SimpleWater::SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr)
-: mCamera(camera), mSceneMgr(sceneMgr), mWaterNode(0), mWaterEntity(0)
+SimpleWater::SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr) :
+	mCamera(camera), mSceneMgr(sceneMgr), mWaterNode(0), mWaterEntity(0)
 {
 }
-
 
 SimpleWater::~SimpleWater()
 {
@@ -63,18 +64,8 @@ bool SimpleWater::initialize()
 	try {
 		Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y, 0);
 
-
 		// create a water plane/scene node
-		Ogre::MeshManager::getSingleton().createPlane(
-			"SimpleWaterPlane",
-			"environment",
-			waterPlane,
-			10000, 10000,
-			5, 5,
-			true, 1,
-			1000, 1000,
-			Ogre::Vector3::UNIT_Z
-		);
+		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", "environment", waterPlane, 10000, 10000, 5, 5, true, 1, 1000, 1000, Ogre::Vector3::UNIT_Z);
 
 		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode("water");
 
@@ -85,14 +76,21 @@ bool SimpleWater::initialize()
 
 		mWaterNode->attachObject(mWaterEntity);
 		return true;
-	} catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating simple water." << ex);
 		return false;
 	}
 
 }
 
+void SimpleWater::setLevel(float height)
+{
+	if (mWaterNode) {
+		Ogre::Vector3 position = mWaterNode->getPosition();
+		position.y = height;
+		mWaterNode->setPosition(position);
+	}
+}
 
 }
 

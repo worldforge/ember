@@ -1,7 +1,7 @@
 //
 // C++ Interface: Environment
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -64,7 +64,7 @@ class IWater
 {
 public:
 	virtual ~IWater() {}
-	
+
 	/**
 	 * @brief Performs checks to see whether this technique is supported on the current hardware.
 	 * @return True if the water technique is supported.
@@ -75,6 +75,12 @@ public:
 	 * @return True if the water technique could be setup, else false.
 	 */
 	virtual bool initialize() = 0;
+
+	/**
+	 * @brief Sets the level of the water.
+	 * @param height The height of the water level, in world units.
+	 */
+	virtual void setLevel(float height) = 0;
 };
 
 class IEnvironmentProvider
@@ -92,7 +98,7 @@ public:
 
     virtual void setTime(int hour, int minute, int second = 0) = 0;
 	virtual void setTime(int seconds) = 0;
-	
+
 	/**
 	 * @brief Sets the position of the world.
 	 * @param longitudeDegrees The longitude, as degrees.
@@ -111,44 +117,44 @@ public:
     Environment(IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
 
     ~Environment();
- 	
+
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command 
-	 * @param args 
+	 * @param command
+	 * @param args
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
- 	
+
  	const Ember::ConsoleCommandWrapper SetTime;
 	const Ember::ConsoleCommandWrapper SetFogDensity;
 	const Ember::ConsoleCommandWrapper SetAmbientLight;
-   
+
 	ISun* getSun();
 	ISky* getSky();
 	IFog* getFog();
 	IWater* getWater();
 	Forest* getForest();
-    
-    
+
+
     void setTime(int hour, int minute, int second = 0);
 	void setTime(int seconds);
-    
+
     void initialize();
-    
+
 	/**
 	 *    changes the ambient light
-	 * @param colour 
+	 * @param colour
 	 */
 	void setAmbientLight(const Ogre::ColourValue& colour);
-	
+
 	/**
 	 * @brief Sets the position of the world.
 	 * @param longitudeDegrees The longitude, as degrees.
 	 * @param latitudeDegrees The latitude, as degrees.
 	 */
 	void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
-    
-    
+
+
    	/**
 	* emitted when the world ambient light is changed
 	*/
@@ -161,7 +167,7 @@ private:
 // 	ISun* mSun;
 // 	ISky* mSky;
 // 	IFog* mFog;
-// 	IWater* mWater;	
+// 	IWater* mWater;
 
 };
 

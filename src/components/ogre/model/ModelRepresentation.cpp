@@ -18,45 +18,40 @@
 
 #include "ModelRepresentation.h"
 
-#include "components/ogre/MotionManager.h"
 #include "Model.h"
 #include "ModelDefinition.h"
 #include "SubModel.h"
 #include "ParticleSystemBinding.h"
 #include "Action.h"
+#include "ModelMount.h"
 
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
-#include "components/entitymapping/EntityMapping.h"
-#include "components/entitymapping/EntityMappingManager.h"
 
 #include "components/ogre/environment/Environment.h"
 #include "components/ogre/environment/Forest.h"
-#include "components/ogre/EmberEntityFactory.h"
-#include "components/ogre/WorldEmberEntity.h"
-
-#include "components/ogre/Convert.h"
-
-#include "components/ogre/MousePicker.h"
-#include "ModelMount.h"
-
-#include "components/ogre/EmberEntityUserObject.h"
-//#include "components/ogre/OpcodeCollisionDetector.h"
-#include "components/ogre/MeshCollisionDetector.h"
-
 #include "components/ogre/sound/SoundEntity.h"
 
+#include "components/ogre/Convert.h"
+#include "components/ogre/MousePicker.h"
+#include "components/ogre/EmberEntityUserObject.h"
+#include "components/ogre/MeshCollisionDetector.h"
 #include "components/ogre/EmberEntity.h"
+#include "components/ogre/EmberEntityFactory.h"
+#include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberOgre.h"
+#include "components/ogre/MotionManager.h"
+
+#include "components/entitymapping/EntityMapping.h"
+#include "components/entitymapping/EntityMappingManager.h"
+
 
 #include <OgreException.h>
-
-#include <Eris/Entity.h>
-#include <Eris/View.h>
-#include <Eris/TypeInfo.h>
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreParticleSystem.h>
+
+#include <Eris/Types.h>
 
 namespace EmberOgre
 {
