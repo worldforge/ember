@@ -26,16 +26,18 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "Environment.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Environment {
+namespace Environment
+{
 
 /**
-@brief A very simple water implementation which just shows a flat textured water plane.
+ @brief A very simple water implementation which just shows a flat textured water plane.
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class SimpleWater : public IWater
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class SimpleWater: public IWater
 {
 public:
 	SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr);
@@ -59,6 +61,12 @@ public:
 	 */
 	virtual void setLevel(float height);
 
+	virtual ICollisionDetector* createCollisionDetector();
+
+	virtual bool setUserObject(Ogre::UserDefinedObject *obj);
+
+
+	float getLevel() const;
 
 protected:
 

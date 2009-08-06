@@ -28,6 +28,7 @@
 #include <sigc++/signal.h>
 
 namespace EmberOgre {
+class ICollisionDetector;
 
 namespace Environment {
 
@@ -81,6 +82,20 @@ public:
 	 * @param height The height of the water level, in world units.
 	 */
 	virtual void setLevel(float height) = 0;
+
+	/**
+	 * @brief Creates a collision detector for the water.
+	 * @return A collision detector for the water.
+	 */
+	virtual ICollisionDetector* createCollisionDetector() = 0;
+
+	/**
+	 * @brief Attaches a user object, if possible, to the water.
+	 * @param The user object to attach.
+	 * @note If the object could be attached, ownership is transferred to the water entity. If however it couldn't be attached, it's responsibility of the calling method to make sure that the object is destroyed.
+	 * @return True if the user object was successfully attached. This means that ownership transfers to the water instance.
+	 */
+	virtual bool setUserObject(Ogre::UserDefinedObject *obj) = 0;
 };
 
 class IEnvironmentProvider

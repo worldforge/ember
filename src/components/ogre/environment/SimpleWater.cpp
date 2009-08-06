@@ -25,8 +25,11 @@
 #endif
 
 #include "SimpleWater.h"
+#include "SimpleWaterCollisionDetector.h"
 
 #include "components/ogre/EmberOgre.h"
+#include "components/ogre/MousePicker.h"
+
 #include <OgreSceneManager.h>
 #include <OgreMeshManager.h>
 #include <OgreEntity.h>
@@ -49,6 +52,9 @@ SimpleWater::~SimpleWater()
 		mSceneMgr.destroySceneNode(mWaterNode);
 	}
 	if (mWaterEntity) {
+		if (mWaterEntity->getUserObject()) {
+			delete mWaterEntity->getUserObject();
+		}
 		mSceneMgr.destroyEntity(mWaterEntity);
 	}
 }
@@ -73,6 +79,7 @@ bool SimpleWater::initialize()
 		mWaterEntity->setMaterialName("/global/environment/ground/water/simple");
 		mWaterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_6);
 		mWaterEntity->setCastShadows(false);
+		mWaterEntity->setQueryFlags(MousePicker::CM_NATURE);
 
 		mWaterNode->attachObject(mWaterEntity);
 		return true;
@@ -83,6 +90,21 @@ bool SimpleWater::initialize()
 
 }
 
+ICollisionDetector* SimpleWater::createCollisionDetector()
+{
+	return new SimpleWaterCollisionDetector(*this);
+}
+
+bool SimpleWater::setUserObject(Ogre::UserDefinedObject *obj)
+{
+	if (mWaterEntity) {
+		mWaterEntity->setUserObject(obj);
+		return true;
+	}
+	return false;
+}
+
+
 void SimpleWater::setLevel(float height)
 {
 	if (mWaterNode) {
@@ -90,6 +112,14 @@ void SimpleWater::setLevel(float height)
 		position.y = height;
 		mWaterNode->setPosition(position);
 	}
+}
+
+float SimpleWater::getLevel() const
+{
+	if (mWaterNode) {
+		return mWaterNode->getPosition().y;
+	}
+	return 0;
 }
 
 }

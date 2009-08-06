@@ -19,6 +19,7 @@
 #include "OceanRepresentation.h"
 #include "Environment.h"
 #include "components/ogre/EmberEntity.h"
+#include "components/ogre/EmberEntityUserObject.h"
 
 namespace EmberOgre
 {
@@ -34,6 +35,13 @@ OceanRepresentation::OceanRepresentation(EmberEntity& entity, IWater& water) :
 	mEntity.Moved.connect(sigc::mem_fun(*this, &OceanRepresentation::entity_Moved));
 	updateWaterPosition();
 
+	ICollisionDetector* collisionDetector = mWater.createCollisionDetector();
+	EmberEntityUserObject* userObject = new EmberEntityUserObject(entity, collisionDetector);
+
+	if (!water.setUserObject(userObject)) {
+		//If ownership couldn't be transferred we need to clean up ourselves
+		delete userObject;
+	}
 }
 
 OceanRepresentation::~OceanRepresentation()

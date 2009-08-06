@@ -16,84 +16,56 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "EmberOgrePrerequisites.h"
-#include <OgreVector3.h>
+#ifndef SIMPLEWATERCOLLISIONDETECTOR_H_
+#define SIMPLEWATERCOLLISIONDETECTOR_H_
 
-#ifndef ICOLLISIONDETECTOR_H_
-#define ICOLLISIONDETECTOR_H_
-
+#include "components/ogre/ICollisionDetector.h"
 namespace EmberOgre
 {
 
-/**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- *
- * @brief Represents the result of a collision query.
- */
-struct CollisionResult
+namespace Environment
 {
-	/**
-	 * @brief If the query resulted in a collision, this is set to true.
-	 * Note that the other values in the struct will be meaningless if this is set to false, since no collision occurred then.
-	 */
-	bool collided;
 
-	/**
-	 * @brief The position of the collision, in world space.
-	 */
-	Ogre::Vector3 position;
-
-	/**
-	 * @brief The distance to the collision, in world units.
-	 */
-	float distance;
-};
-
-/**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- *
- * @brief Interface for collision detectors, responsible for determining collision information for the entity that they are attached to.
- */
-class ICollisionDetector
+class SimpleWater;
+class SimpleWaterCollisionDetector: public ICollisionDetector
 {
 public:
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~ICollisionDetector()
-	{
-	}
+	SimpleWaterCollisionDetector(SimpleWater& simpleWater);
+	virtual ~SimpleWaterCollisionDetector();
 
 	/**
 	 * @brief Test whether the provided ray hits the entity.
 	 * @param ray The ray to test.
 	 * @param result The result of the collision. If the ray hits, the collision detector must update this object.
 	 */
-	virtual void testCollision(Ogre::Ray& ray, CollisionResult& result) = 0;
+	virtual void testCollision(Ogre::Ray& ray, CollisionResult& result);
 
 	/**
 	 * @brief Refits the collision mesh against the entity. This is called to ensure that the collision mesh fits animated entities.
 	 */
-	virtual void refit() = 0;
+	virtual void refit();
 
 	/**
 	 * @brief Called when the entity changes, such as a subentity being hidden or shown. Implementations must reload the collision data.
 	 */
-	virtual void reload() = 0;
+	virtual void reload();
 
 	/**
 	 * @brief Sets whether the collision data should be visualized for debugging purposes.
 	 * @param visualize
 	 */
-	virtual void setVisualize(bool visualize) = 0;
+	virtual void setVisualize(bool visualize);
 
 	/**
 	 * @brief Gets whether the collision data should be visualized for debugging purposes.
 	 * @return
 	 */
-	virtual bool getVisualize() const = 0;
+	virtual bool getVisualize() const;
 
+private:
+	SimpleWater& mSimpleWater;
 };
 }
+}
 
-#endif /* ICOLLISIONDETECTOR_H_ */
+#endif /* SIMPLEWATERCOLLISIONDETECTOR_H_ */
