@@ -17,14 +17,17 @@
  */
 
 #include "AtlasHelper.h"
-#include <sstream>
+#include "framework/LoggingInstance.h"
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/Bach.h>
+#include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
+#include <sstream>
+#include <memory>
 
 namespace EmberOgre
 {
@@ -34,13 +37,23 @@ namespace Gui
 
 std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::string& codecType)
 {
-    std::stringstream ss;
-    Atlas::Message::QueuedDecoder decoder;
-    Atlas::Codecs::Bach codec(ss, decoder);
-    Atlas::Objects::ObjectsEncoder encoder(codec);
-    encoder.streamObjectsMessage(obj);
-    ss << std::flush;
-    return ss.str();
+	std::stringstream ss;
+	Atlas::Message::QueuedDecoder decoder;
+	std::auto_ptr<Atlas::Codec> codec;
+
+	if (codecType == "bach") {
+		codec.reset(new Atlas::Codecs::Bach(ss, decoder));
+	} else if (codecType == "xml") {
+		codec.reset(new Atlas::Codecs::XML(ss, decoder));
+	} else {
+		S_LOG_WARNING("Could not recognize codec type '" << codecType << "'. Supported types are: xml, bach");
+		return "";
+	}
+
+	Atlas::Objects::ObjectsEncoder encoder(*codec);
+	encoder.streamObjectsMessage(obj);
+	ss << std::flush;
+	return ss.str();
 }
 }
 }

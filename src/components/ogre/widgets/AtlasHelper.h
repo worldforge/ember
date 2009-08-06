@@ -39,7 +39,7 @@ public:
 	/**
 	 * @brief Serializes the supplied object into a string using the supplied codec type.
 	 * @param obj The object to serialize.
-	 * @param codecType The codec type to use.
+	 * @param codecType The codec type to use. Supported formats are: bach, xml
 	 * @return The object in serialized form.
 	 */
 	static std::string serialize(const Atlas::Objects::Root& obj, const std::string& codecType = "bach");
