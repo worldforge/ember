@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.8,0.0},{0.8,0.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.1,50.0},{0.1,0.0}}'/>
+		<Property Name='Text' Value='Server logger'/>
+		<Window Type='EmberLook/Checkbox' Name='LoggingEnabled'>
+			<Property Name='UnifiedPosition' Value='{{0,4},{0,20}}'/>
+			<Property Name='UnifiedSize' Value='{{0,120},{0,20}}'/>
+			<Property Name='Tooltip' Value='Toggle logging enabled.'/>
+			<Property Name='Text' Value='Enabled'/>
+			<Event Name="CheckStateChanged" Function="ServerLogger.LoggingEnabled_CheckStateChanged" />
+		</Window>
+		<Window Type='EmberLook/Button' Name='ClearButton'>
+			<Property Name='Text' Value='Clear'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,140},{0,20}}'/>
+			<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
+			<Event Name="Clicked" Function="ServerLogger.ClearButton_Clicked" />
+		</Window>		
+		<Window Type='EmberLook/MultiLineEditbox' Name='LogText'>
+			<Property Name='UnifiedPosition' Value='{{0,4},{0,45.0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,-50}}'/>
+		</Window>
+	</Window>
+</GUILayout>
