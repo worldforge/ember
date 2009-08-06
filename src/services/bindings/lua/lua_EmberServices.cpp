@@ -53,38 +53,39 @@ static int tolua_collect_Ember__IInputAdapter (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"varconf::Variable");
- tolua_usertype(tolua_S,"Ember::EmberServices");
+ tolua_usertype(tolua_S,"WFMath::Point<3>");
+ tolua_usertype(tolua_S,"WFMath::Vector<3>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Entity::RootEntity&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::Avatar*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::View*>");
+ tolua_usertype(tolua_S,"SDLKey");
+ tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::InputMode>");
+ tolua_usertype(tolua_S,"Ember::ConfigService");
  tolua_usertype(tolua_S,"sigc::signal<void,const Ember::MouseMotion&,Ember::Input::InputMode>");
- tolua_usertype(tolua_S,"WFMath::Quaternion");
- tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,Ember::Input::InputMode>");
- tolua_usertype(tolua_S,"Ember::IInputAdapter");
- tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::MouseButton,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"Ember::ScriptingService");
- tolua_usertype(tolua_S,"std::vector<std::string>");
- tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
- tolua_usertype(tolua_S,"Ember::IScriptingProvider");
- tolua_usertype(tolua_S,"Eris::Meta");
+ tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,Ember::Input::InputMode>");
+ tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::MouseButton,Ember::Input::InputMode>");
+ tolua_usertype(tolua_S,"Atlas::Message::MapType");
  tolua_usertype(tolua_S,"Ember::MouseMotion");
  tolua_usertype(tolua_S,"Ember::ServerService");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
  tolua_usertype(tolua_S,"Ember::InputService");
- tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Entity::RootEntity&>");
- tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*,const std::string&>");
+ tolua_usertype(tolua_S,"Ember::EmberServices");
+ tolua_usertype(tolua_S,"varconf::Variable");
  tolua_usertype(tolua_S,"Ember::Input");
  tolua_usertype(tolua_S,"Eris::Entity");
- tolua_usertype(tolua_S,"WFMath::Vector<3>");
- tolua_usertype(tolua_S,"sigc::signal<void,Eris::Connection*>");
- tolua_usertype(tolua_S,"sigc::signal<void,Eris::Avatar*>");
+ tolua_usertype(tolua_S,"Ember::IInputAdapter");
+ tolua_usertype(tolua_S,"WFMath::Quaternion");
+ tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
  tolua_usertype(tolua_S,"Ember::MetaserverService");
- tolua_usertype(tolua_S,"SDLKey");
- tolua_usertype(tolua_S,"sigc::signal<void,Eris::View*>");
- tolua_usertype(tolua_S,"Atlas::Message::MapType");
- tolua_usertype(tolua_S,"Ember::ConfigService");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Root&>");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"Ember::IScriptingProvider");
+ tolua_usertype(tolua_S,"Eris::Meta");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*>");
  tolua_usertype(tolua_S,"Ember::LoggingService");
- tolua_usertype(tolua_S,"WFMath::Point<3>");
- tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::InputMode>");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*,const std::string&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::Connection*>");
 }
 
 /* get function: xPosition of class  Ember::MouseMotion */
@@ -2354,6 +2355,66 @@ static int tolua_set_Ember__ServerService_GotAllCharacters(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: EventSendingObject of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_get_Ember__ServerService_EventSendingObject
+static int tolua_get_Ember__ServerService_EventSendingObject(lua_State* tolua_S)
+{
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventSendingObject'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->EventSendingObject,"sigc::signal<void,const Atlas::Objects::Root&>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: EventSendingObject of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_set_Ember__ServerService_EventSendingObject
+static int tolua_set_Ember__ServerService_EventSendingObject(lua_State* tolua_S)
+{
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventSendingObject'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Objects::Root&>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->EventSendingObject = *((sigc::signal<void,const Atlas::Objects::Root&>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: EventReceivedObject of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_get_Ember__ServerService_EventReceivedObject
+static int tolua_get_Ember__ServerService_EventReceivedObject(lua_State* tolua_S)
+{
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventReceivedObject'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->EventReceivedObject,"sigc::signal<void,const Atlas::Objects::Root&>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: EventReceivedObject of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_set_Ember__ServerService_EventReceivedObject
+static int tolua_set_Ember__ServerService_EventReceivedObject(lua_State* tolua_S)
+{
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventReceivedObject'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Objects::Root&>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->EventReceivedObject = *((sigc::signal<void,const Atlas::Objects::Root&>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: registerScriptingProvider of class  Ember::ScriptingService */
 #ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ScriptingService_registerScriptingProvider00
 static int tolua_EmberServices_Ember_ScriptingService_registerScriptingProvider00(lua_State* tolua_S)
@@ -3202,6 +3263,8 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"LoginFailure",tolua_get_Ember__ServerService_LoginFailure,tolua_set_Ember__ServerService_LoginFailure);
     tolua_variable(tolua_S,"GotCharacterInfo",tolua_get_Ember__ServerService_GotCharacterInfo,tolua_set_Ember__ServerService_GotCharacterInfo);
     tolua_variable(tolua_S,"GotAllCharacters",tolua_get_Ember__ServerService_GotAllCharacters,tolua_set_Ember__ServerService_GotAllCharacters);
+    tolua_variable(tolua_S,"EventSendingObject",tolua_get_Ember__ServerService_EventSendingObject,tolua_set_Ember__ServerService_EventSendingObject);
+    tolua_variable(tolua_S,"EventReceivedObject",tolua_get_Ember__ServerService_EventReceivedObject,tolua_set_Ember__ServerService_EventReceivedObject);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Ember",0);

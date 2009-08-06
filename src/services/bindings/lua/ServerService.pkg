@@ -64,6 +64,15 @@ class ServerService
 	sigc::signal<void, const Atlas::Objects::Entity::RootEntity &> GotCharacterInfo;
 	sigc::signal<void, Eris::Account *> GotAllCharacters;
 
+	/**
+	 * @brief Emitted when an object is about to be sent to the server.
+	 */
+	sigc::signal<void, const Atlas::Objects::Root&> EventSendingObject;
+
+	/**
+	 * @brief Emitted when an object has been received.
+	 */
+	sigc::signal<void, const Atlas::Objects::Root&> EventReceivedObject;
 
     //----------------------------------------------------------------------
     // Callbacks from Eris
