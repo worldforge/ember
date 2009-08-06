@@ -27,7 +27,7 @@ libWidgets_a_SOURCES = AssetsManager.cpp ColouredListItem.cpp Compass.cpp \
 	IconBase.cpp IngameChatWidget.cpp InspectWidget.cpp  ListHolder.cpp \
 	LoadingBar.cpp MakeEntityWidget.cpp MeshPreview.cpp ModelRenderer.cpp \
 	MovableObjectRenderer.cpp OgreEntityRenderer.cpp QuaternionAdapter.cpp Quit.cpp ServerWidget.cpp \
-	StackableContainer.cpp Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp WidgetPool.cpp
+	StackableContainer.cpp Vector3Adapter.cpp Widget.cpp WidgetDefinitions.cpp WidgetPool.cpp AtlasHelper.cpp
 #TerrainEdit.cpp Map.cpp JesusEdit.cpp
 noinst_HEADERS = AssetsManager.h ColouredListItem.h Compass.h ConsoleAdapter.h \
 	EntityCEGUITexture.h EntityCreator.h EntityCreatorActionCreator.h \
@@ -37,7 +37,7 @@ noinst_HEADERS = AssetsManager.h ColouredListItem.h Compass.h ConsoleAdapter.h \
 	IngameChatWidget.h InspectWidget.h ListHolder.h LoadingBar.h \
 	MakeEntityWidget.h MeshPreview.h ModelRenderer.h MovableObjectRenderer.h \
 	OgreEntityRenderer.h QuaternionAdapter.h Quit.h ServerWidget.h StackableContainer.h \
-	Vector3Adapter.h Widget.h WidgetDefinitions.h WidgetPool.h
+	Vector3Adapter.h Widget.h WidgetDefinitions.h WidgetPool.h AtlasHelper.h
 #TerrainEdit.h Map.h JesusEdit.h 
 SUBDIRS = adapters icons
 

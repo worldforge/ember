@@ -106,3 +106,4 @@ loadScript("PickingInfo.lua")
 loadScript("Compass.lua")
 
 loadScript("EntityCreator.lua")
+loadScript("ServerLogger.lua")
