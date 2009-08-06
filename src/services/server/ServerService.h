@@ -59,7 +59,7 @@ class ServerService : public Service, public ConsoleObject
     //======================================================================
     private:
 
-    /** 
+    /**
      * Holds our connection to the server
      */
     Eris::Connection *mConn;
@@ -104,7 +104,7 @@ class ServerService : public Service, public ConsoleObject
     // Constructors & Destructor
 
   public:
-  
+
   //HACK!!!
   //this is only for testing purposes
   Eris::Connection* getConnection() { return mConn; }
@@ -132,7 +132,7 @@ class ServerService : public Service, public ConsoleObject
     void reconnect();
 
     void disconnect();
-	
+
     void takeCharacter(const std::string &id);
 
 	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description);
@@ -142,12 +142,12 @@ class ServerService : public Service, public ConsoleObject
 	Eris::View* getView();
 	Eris::Avatar* getAvatar();
 
-      
+
 	/**
 	 *    Tells the server to try to move the user to the specified point.
-	 * @param dest 
+	 * @param dest
 	 */
-	void moveToPoint(const WFMath::Point<3>& dest); 
+	void moveToPoint(const WFMath::Point<3>& dest);
 	/**
 	 *    Moves the user.
 	 * @param velocity The velocity with which to move the user.
@@ -168,18 +168,18 @@ class ServerService : public Service, public ConsoleObject
 // 	void teleportTo(const WFMath::Point<3>& dest, Eris::Entity* entity);
 	/**
 	 *    Say something out loud.
-	 * @param message 
+	 * @param message
 	 */
 	void say(const std::string &message);
 	/**
 	 *    Touch another entity.
-	 * @param entity 
+	 * @param entity
 	 */
 	void touch(Eris::Entity* entity);
-	
+
 	/**
 	 *    Emotes something.
-	 * @param entity 
+	 * @param entity
 	 */
 	void emote(const std::string& emote);
 	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>(0,0,0));
@@ -198,7 +198,7 @@ class ServerService : public Service, public ConsoleObject
 	 *    Stops the current use operation.
 	 */
 	void useStop();
-	
+
 	void actuate(Eris::Entity* entity,  const std::string& action);
 	void attack(Eris::Entity* entity);
 	void eat(Eris::Entity* entity);
@@ -217,6 +217,16 @@ class ServerService : public Service, public ConsoleObject
 	sigc::signal<void, Eris::Account *, const std::string &> LoginFailure;
 	sigc::signal<void, const Atlas::Objects::Entity::RootEntity &> GotCharacterInfo;
 	sigc::signal<void, Eris::Account *> GotAllCharacters;
+
+	/**
+	 * @brief Emitted when an object is about to be sent to the server.
+	 */
+	sigc::signal<void, const Atlas::Objects::Root&> EventSendingObject;
+
+	/**
+	 * @brief Emitted when an object has been received.
+	 */
+	sigc::signal<void, const Atlas::Objects::Root&> EventReceivedObject;
 
 
     //----------------------------------------------------------------------
@@ -242,7 +252,7 @@ class ServerService : public Service, public ConsoleObject
 	void gotAvatarSuccess(Eris::Avatar* avatar);
 
 	void gotAvatarDeactivated(Eris::Avatar* avatar);
-	
+
     void gotCharacterInfo(const Atlas::Objects::Entity::RootEntity &);
 
     void gotAllCharacters();
@@ -255,7 +265,7 @@ class ServerService : public Service, public ConsoleObject
     void logoutComplete(bool);
 
 	// List of ServerService's console commands
-	
+
 	const Ember::ConsoleCommandWrapper Connect;
 	//const Ember::ConsoleCommandWrapper ReConnect;
 	const Ember::ConsoleCommandWrapper DisConnect;
@@ -269,7 +279,7 @@ class ServerService : public Service, public ConsoleObject
 	const Ember::ConsoleCommandWrapper Emote;
 	const Ember::ConsoleCommandWrapper Delete;
 	const Ember::ConsoleCommandWrapper AdminTell;
-	
+
 	IServerAdapter* mServerAdapter;
 };
 

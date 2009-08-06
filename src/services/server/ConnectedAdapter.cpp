@@ -25,7 +25,10 @@
 #endif
 
 #include "ConnectedAdapter.h"
-#include <Eris/Connection.h>
+#include "Connection.h"
+#include "framework/LoggingInstance.h"
+#include "framework/ConsoleBackend.h"
+
 #include <Eris/Account.h>
 #include <Eris/Lobby.h>
 #include <Eris/View.h>
@@ -37,14 +40,12 @@
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/stream.h>
 
-#include "framework/LoggingInstance.h"
-#include "framework/ConsoleBackend.h"
 #include <sstream>
 
 
 namespace Ember {
 
-ConnectedAdapter::ConnectedAdapter(Eris::Avatar* avatar, Eris::Connection* connection) : mAvatar(avatar), mConnection(connection)
+ConnectedAdapter::ConnectedAdapter(Eris::Avatar& avatar, Eris::Connection& connection) : mAvatar(avatar), mConnection(connection)
 {
 }
 
@@ -55,7 +56,7 @@ ConnectedAdapter::~ConnectedAdapter()
 
 void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest) {
 	try {
-		mAvatar->moveToPoint(dest);
+		mAvatar.moveToPoint(dest);
 	}
 	catch (const std::exception& ex)
 	{
@@ -65,7 +66,7 @@ void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest) {
 
 void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
 	try {
-		mAvatar->moveInDirection(velocity, orientation);
+		mAvatar.moveInDirection(velocity, orientation);
 	}
 	catch (const std::exception& ex)
 	{
@@ -76,7 +77,7 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const 
 
 void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
 	try {
-		mAvatar->moveInDirection(velocity);
+		mAvatar.moveInDirection(velocity);
 	}
 	catch (const std::exception& ex)
 	{
@@ -93,7 +94,7 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
 void ConnectedAdapter::touch(Eris::Entity* entity)
 {
 	try {
-		mAvatar->touch(entity);
+		mAvatar.touch(entity);
 	}
 	catch (const std::exception& ex)
 	{
@@ -104,7 +105,7 @@ void ConnectedAdapter::touch(Eris::Entity* entity)
 void ConnectedAdapter::emote(const std::string& emote)
 {
 	try {
-		mAvatar->emote(emote);
+		mAvatar.emote(emote);
 	}
 	catch (const std::exception& ex)
 	{
@@ -115,7 +116,7 @@ void ConnectedAdapter::emote(const std::string& emote)
 void ConnectedAdapter::take(Eris::Entity* entity)
 {
 	try {
-		mAvatar->take(entity);
+		mAvatar.take(entity);
 	}
 	catch (const std::exception& ex)
 	{
@@ -126,7 +127,7 @@ void ConnectedAdapter::take(Eris::Entity* entity)
 void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset)
 {
 	try {
-		mAvatar->drop(entity, offset);
+		mAvatar.drop(entity, offset);
 	}
 	catch (const std::exception& ex)
 	{
@@ -154,19 +155,19 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 		what->setId(entity->getId());
 
 		Atlas::Objects::Operation::Move moveOp;
-		moveOp->setFrom(mAvatar->getEntity()->getId());
+		moveOp->setFrom(mAvatar.getEntity()->getId());
 		moveOp->setArgs1(what);
 
 		///if the avatar is a "creator", i.e. and admin, we will set the TO property
 		///this will bypass all of the server's filtering, allowing us to place any entity, unrelated to if it's too heavy or belong to someone else
-		if (mAvatar->getEntity()->getType()->isA(mConnection->getTypeService()->getTypeByName("creator"))) {
+		if (mAvatar.getEntity()->getType()->isA(mConnection.getTypeService()->getTypeByName("creator"))) {
 			moveOp->setTo(entity->getId());
 		}
 
-		mConnection->send(moveOp);
+		mConnection.send(moveOp);
 
 
-// 			mAvatar->place(entity, target, pos, orient);
+// 			mAvatar.place(entity, target, pos, orient);
 	}
 	catch (const std::exception& ex)
 	{
@@ -177,7 +178,7 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 void ConnectedAdapter::wield(Eris::Entity* entity)
 {
 	try {
-		mAvatar->wield(entity);
+		mAvatar.wield(entity);
 
 	}
 	catch (const std::exception& ex)
@@ -192,7 +193,7 @@ void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std
 		std::stringstream ss;
 		ss << pos;
 		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "' at position "<< ss.str() << ".");
-		mAvatar->useOn(entity, pos, operation);
+		mAvatar.useOn(entity, pos, operation);
 	}
 	catch (const std::exception& ex)
 	{
@@ -203,7 +204,7 @@ void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std
 void ConnectedAdapter::useStop()
 {
 	try {
-		mAvatar->useStop();
+		mAvatar.useStop();
 	}
 	catch (const std::exception& ex)
 	{
@@ -232,11 +233,11 @@ void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 		std::list<std::string> actuateParents;
 		actuateParents.push_back("actuate");
 		actuateOp->setParents(actuateParents);
-		actuateOp->setFrom(mAvatar->getEntity()->getId());
+		actuateOp->setFrom(mAvatar.getEntity()->getId());
 
 
 		S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");
-		mConnection->send(actuateOp);
+		mConnection.send(actuateOp);
 	}
 	catch (const std::exception& ex)
 	{
@@ -251,12 +252,12 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 		what->setId(entity->getId());
 
 		Atlas::Objects::Operation::Delete deleteOp;
-		deleteOp->setFrom(mAvatar->getEntity()->getId());
+		deleteOp->setFrom(mAvatar.getEntity()->getId());
 		deleteOp->setTo(entity->getId());
 		deleteOp->setArgs1(what);
 
 		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
-		mConnection->send(deleteOp);
+		mConnection.send(deleteOp);
 	}
 	catch (const std::exception& ex)
 	{
@@ -274,12 +275,12 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 		}
 
 		Atlas::Objects::Operation::Set setOp;
-		setOp->setFrom(mAvatar->getEntity()->getId());
+		setOp->setFrom(mAvatar.getEntity()->getId());
 		//setOp->setTo(entity->getId());
 		setOp->setArgs1(what);
 
 		S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
-		mConnection->send(setOp);
+		mConnection.send(setOp);
 	}
 	catch (const std::exception& ex)
 	{
@@ -291,7 +292,7 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 void ConnectedAdapter::attack(Eris::Entity* entity)
 {
 	try {
-		mAvatar->attack(entity);
+		mAvatar.attack(entity);
 	}
 	catch (const std::exception& ex)
 	{
@@ -307,11 +308,11 @@ void ConnectedAdapter::eat(Eris::Entity* entity)
 
 		Atlas::Objects::Operation::Generic op;
 		op->setType("eat", -1);
-		op->setFrom(mAvatar->getEntity()->getId());
+		op->setFrom(mAvatar.getEntity()->getId());
 		op->setArgs1(what);
 
 		S_LOG_INFO("Eating entity with id " << entity->getId() << ", named " << entity->getName());
-		mConnection->send(op);
+		mConnection.send(op);
 	}
 	catch (const std::exception& ex)
 	{
@@ -323,7 +324,7 @@ void ConnectedAdapter::eat(Eris::Entity* entity)
 void ConnectedAdapter::say(const std::string &message)
 {
 	try {
-		mAvatar->say(message);
+		mAvatar.say(message);
 
 		std::string msg;
 		msg = "Saying: [" + message + "]. ";
@@ -348,11 +349,11 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 		talk->setArgs1(what);
 
 		Atlas::Objects::Operation::Sound sound;
-		sound->setFrom(mAvatar->getEntity()->getId());
+		sound->setFrom(mAvatar.getEntity()->getId());
 		sound->setTo(entityId);
 		sound->setArgs1(talk);
 
-		mConnection->send(sound);
+		mConnection.send(sound);
 
 	}
 	catch (const std::exception& ex)
