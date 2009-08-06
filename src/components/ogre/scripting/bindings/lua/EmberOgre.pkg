@@ -32,6 +32,7 @@ $pfile "StackableContainer.pkg"
 $pfile "ConsoleAdapter.pkg"
 $pfile "ColouredListItem.pkg"
 $pfile "AssetsManager.pkg"
+$pfile "AtlasHelper.pkg"
 $pfile "Compass.pkg"
 
 
