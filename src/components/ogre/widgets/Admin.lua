@@ -40,6 +40,7 @@ function Admin.buildWidget()
 		Admin.addMenuItem("Assets manager", "Admin.AssetsManager_Click", "Shows the assets manager.")
 		Admin.addMenuItem("Picking info", "Admin.PickingInfo_Click", "Shows mouse picking info.")
 		Admin.addMenuItem("Environment", "Admin.Environment_Click", "Shows environment widget.")
+		Admin.addMenuItem("Network log", "Admin.NetworkLog_Click", "Shows network log widget.")
 		
 	
 		root:addChildWindow(Admin.popup)
@@ -80,6 +81,7 @@ end
 
 function Admin.ModelEditor_Click(args)
 	console:runCommand("/show_modelEdit")
+	return true
 end
 
 function Admin.TerrainEditor_Click(args)
@@ -87,37 +89,48 @@ function Admin.TerrainEditor_Click(args)
 		loadScript("TerrainEditor.lua")
 	end
 	console:runCommand("/show_terrainEditor")
-	
+	return true
 end
 
 function Admin.SwitchCamera_Click(args)
 	console:runCommand("/toggle_cameraattached")
+	return true
 end
 
 function Admin.EntityCreator_Click(args)
 	console:runCommand("/show_advEntityCreator")
+	return true
 end
 
 function Admin.ScriptEditor_Click(args)
 	console:runCommand("/show_scriptEdit")
+	return true
 end
 
 function Admin.EntityBrowser_Click(args)
 	console:runCommand("/show_entityBrowser")
+	return true
 end
 
 function Admin.AssetsManager_Click(args)
 	console:runCommand("/show_assetsManager")
+	return true
 end
 
 function Admin.PickingInfo_Click(args)
 	console:runCommand("/show_pickingInfo")
+	return true
 end
 
 function Admin.Environment_Click(args)
 	console:runCommand("/show_environment")
+	return true
 end
 
+function Admin.NetworkLog_Click(args)
+	console:runCommand("/show_serverLogger")
+	return true
+end
 
 --only show the admin menu if we're logged in as an admin
 function Admin.createdAvatarEmberEntity(avatarEntity)
