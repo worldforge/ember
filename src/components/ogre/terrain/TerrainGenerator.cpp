@@ -169,42 +169,33 @@ void TerrainGenerator::createPage(TerrainGeneratorBackgroundWorker* backgroundWo
 
 	TerrainGenerator& terrainGenerator = *(EmberOgre::getSingleton().getTerrainGenerator());
 
-	TerrainPage* page = 0;
-
-	{
-		page = new TerrainPage(pos, terrainGenerator);
-		page->registerBridge(bridge);
-	}
+	TerrainPage* page = new TerrainPage(pos, terrainGenerator);
+	page->registerBridge(bridge);
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
-	{
-		const std::list<TerrainShader*>& baseShaders = terrainGenerator.getBaseShaders();
-		for (std::list<TerrainShader*>::const_iterator I = baseShaders.begin(); I != baseShaders.end(); ++I) {
-			page->addShader(*I);
-		}
+	const std::list<TerrainShader*>& baseShaders = terrainGenerator.getBaseShaders();
+	for (std::list<TerrainShader*>::const_iterator I = baseShaders.begin(); I != baseShaders.end(); ++I) {
+		page->addShader(*I);
 	}
 
-	{
-		page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
+	/* mafm: these functions were previously here, have to be out of the background thread due to non-thread-safety of Ogre
+
+	page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
+	page->generateTerrainMaterials(false);
+
+	*/
+
+	// setup foliage
+	if (terrainGenerator.isFoliageShown()) {
+		page->showFoliage();
 	}
 
-	{
-		page->generateTerrainMaterials(false);
-	}
+	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
+	std::set<TerrainPage*> pagesToUpdate;
+	pagesToUpdate.insert(page);
+	updateEntityPositions(pagesToUpdate);
 
-	{
-		if (terrainGenerator.isFoliageShown()) {
-			page->showFoliage();
-		}
-	}
-
-	{
-		//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
-		std::set<TerrainPage*> pagesToUpdate;
-		pagesToUpdate.insert(page);
-		updateEntityPositions(pagesToUpdate);
-	}
-
+	// notify the background worker that we're finished (thread-protected)
 	backgroundWorker->pushPageReady(page);
 }
 
@@ -504,6 +495,13 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 		std::stringstream ss;
 		ss << pos.x() << "x" << pos.y();
 		mPages[ss.str()] = page;
+		mTerrainPages[pos.x()][pos.y()] = page;
+
+		// mafm: moved out of the background thread due to safety issues
+		{
+			page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
+			page->generateTerrainMaterials(false);
+		}
 
 		page->notifyBridgePageReady();
 	}
@@ -604,6 +602,7 @@ void TerrainGenerator::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPos
 	int x = static_cast<int>(pos.x());
 	int y = static_cast<int>(pos.y());
 
+	S_LOG_INFO("Seting up TerrainPage at index [" << x << "," << y << "]");
 	if (mTerrainPages[x][y] == 0) {
 		mTerrainGeneratorBackgroundWorker.pushPageIntoQueue(pos, &bridge);
 	} else {
