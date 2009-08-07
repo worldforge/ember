@@ -88,7 +88,6 @@ void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page,
 			position[0] = position[0] + 1;
 		}
 	}
-
 }
 
 
@@ -97,13 +96,8 @@ TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mImage(0)
 , mShadowChunk(0)
+, mTexture(0)
 {
-	///we need an unique name for our alpha texture
-	std::stringstream shadowTextureNameSS;
-	shadowTextureNameSS << mTerrainPage.getMaterial()->getName() << "_shadow";
-	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
-
-	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
 }
 
 
@@ -143,6 +137,13 @@ void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 
 void TerrainPageShadow::createImage(const TerrainPageGeometry& geometry)
 {
+	///we need an unique name for our alpha texture
+	std::stringstream shadowTextureNameSS;
+	shadowTextureNameSS << mTerrainPage.getMaterial()->getName() << "_shadow";
+	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
+
+	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
+
 	assert(!mShadowChunk);
 	mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
 
