@@ -499,10 +499,8 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 		mTerrainPages[pos.x()][pos.y()] = page;
 
 		// mafm: moved out of the background thread due to safety issues
-		{
-			page->loadShadow();
-			page->generateTerrainMaterials(false);
-		}
+		page->loadShadow();
+		page->generateTerrainMaterials(false);
 
 		page->notifyBridgePageReady();
 	}
