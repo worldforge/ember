@@ -89,7 +89,14 @@ function ServerBrowser.doConnect()
 	
 	if ServerBrowser.manualServerNameTextbox:getText() ~= "" then
 		serverName = ServerBrowser.manualServerNameTextbox:getText()
-		Ember.EmberServices:getSingleton():getServerService():connect(serverName)
+		--Try to separate the port number, if available.
+		if serverName:find(":") ~= nil then
+			local port = serverName:sub(serverName:find(":") + 1, serverName:len())
+			serverName = serverName:sub(0, serverName:find(":") - 1)
+			Ember.EmberServices:getSingleton():getServerService():connect(serverName, port * 1)
+		else
+			Ember.EmberServices:getSingleton():getServerService():connect(serverName)
+		end
 	elseif ServerBrowser.serverList:getFirstSelectedItem() ~= nil then
 		--if ManualServerName is empty we try to connect to the server selected from the list 
 		ServerBrowser.connectWithColumnList()
