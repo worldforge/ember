@@ -35,6 +35,7 @@ NodeController::NodeController(NodeAttachment& attachment)
 
 NodeController::~NodeController()
 {
+	MotionManager::getSingleton().removeMovable(this);
 }
 
 
