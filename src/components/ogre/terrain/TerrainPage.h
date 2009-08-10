@@ -173,8 +173,6 @@ public:
 	 */
 	void updateAllShaderTextures(bool repopulate = true);
 
-//	void populateSurfaces();
-
 	int getPageSize() const;
 
 	void update();

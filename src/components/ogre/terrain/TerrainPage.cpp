@@ -280,22 +280,6 @@ TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 	return layer;
 }
 
-
-
-//void TerrainPage::populateSurfaces()
-//{
-// //   _fpreset();
-//	//_controlfp(_PC_64, _MCW_PC);
-//	//_controlfp(_RC_NEAR, _MCW_RC);
-//
-//
-//	for (SegmentVector::iterator I = mGeometry->getValidSegments().begin(); I != mGeometry->getValidSegments().end(); ++I) {
-//		I->segment->populateSurfaces();
-//	}
-////	fesetround(FE_DOWNWARD);
-//}
-
-
 void TerrainPage::updateAllShaderTextures(bool repopulate)
 {
 	mGeometry->repopulate();
