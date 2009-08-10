@@ -41,7 +41,7 @@ class TerrainPageSurfaceCompilerTechnique
 public:
 	virtual ~TerrainPageSurfaceCompilerTechnique() {}
     virtual bool compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow) = 0;
-    virtual void setPage(TerrainPage* page) = 0;
+    virtual void setPage(const TerrainPage* page) = 0;
 
 protected:
 };

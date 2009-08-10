@@ -78,7 +78,7 @@ void TerrainPageSurfaceCompilerTechniqueSimple::addShadow(Ogre::Technique* techn
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 }
 
-void TerrainPageSurfaceCompilerTechniqueSimple::setPage(TerrainPage* page)
+void TerrainPageSurfaceCompilerTechniqueSimple::setPage(const TerrainPage* page)
 {
 	mPage = page;
 }

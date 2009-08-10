@@ -512,7 +512,7 @@ unsigned int TerrainPageSurfaceCompilerShaderPass::getCoveragePixelWidth() const
 	return 512;
 }
 
-void TerrainPageSurfaceCompilerTechniqueShader::setPage(TerrainPage* page)
+void TerrainPageSurfaceCompilerTechniqueShader::setPage(const TerrainPage* page)
 {
 	mPage = page;
 }

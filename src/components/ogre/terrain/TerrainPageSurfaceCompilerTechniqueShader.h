@@ -131,7 +131,7 @@ public:
 
 	virtual bool compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
 
-    virtual void setPage(TerrainPage* page);
+    virtual void setPage(const TerrainPage* page);
 
 protected:
 	typedef std::vector<TerrainPageSurfaceCompilerShaderPass*> PassStore;
