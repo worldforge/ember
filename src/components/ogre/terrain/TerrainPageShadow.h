@@ -75,8 +75,6 @@ public:
 	void updateShadow(const TerrainPageGeometry& geometry);
 	void createImage();
 
-	Ogre::Image* getImage() const;
-
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
 
@@ -89,7 +87,6 @@ protected:
 	Ogre::MemoryDataStream* mShadowChunk;
 
 	ITerrainPageShadowTechnique* mShadowTechnique;
-
 };
 
 }
