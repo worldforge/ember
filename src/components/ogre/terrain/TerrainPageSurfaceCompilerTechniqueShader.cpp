@@ -284,7 +284,7 @@ bool TerrainPageSurfaceCompilerTechniqueShader::compileMaterial(const TerrainPag
 }
 
 
-TerrainPageSurfaceCompilerShaderPass::TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, TerrainPage& page)
+TerrainPageSurfaceCompilerShaderPass::TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, const TerrainPage& page)
 :
 mPass(pass)
 // , mCurrentLayerIndex(0)
@@ -567,7 +567,7 @@ void TerrainPageSurfaceCompilerShaderNormalMappedPassCoverageBatch::finalize()
 }
 
 
-TerrainPageSurfaceCompilerShaderNormalMappedPass::TerrainPageSurfaceCompilerShaderNormalMappedPass(Ogre::Pass* pass, TerrainPage& page) : TerrainPageSurfaceCompilerShaderPass(pass, page)
+TerrainPageSurfaceCompilerShaderNormalMappedPass::TerrainPageSurfaceCompilerShaderNormalMappedPass(Ogre::Pass* pass, const TerrainPage& page) : TerrainPageSurfaceCompilerShaderPass(pass, page)
 {
 }
 

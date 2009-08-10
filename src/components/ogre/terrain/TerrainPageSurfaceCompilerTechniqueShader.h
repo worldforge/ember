@@ -76,7 +76,7 @@ class TerrainPageSurfaceCompilerShaderPass
 {
 public:
 friend class TerrainPageSurfaceCompilerShaderPassCoverageBatch;
-	TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, TerrainPage& page);
+	TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, const TerrainPage& page);
 	virtual ~TerrainPageSurfaceCompilerShaderPass();
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, TerrainPageSurfaceLayer* layer);
@@ -113,7 +113,7 @@ protected:
 	CoverageBatchStore mCoverageBatches;
 	LayerStore mLayers;
 	TerrainPageSurfaceLayer* mBaseLayer;
-	TerrainPage& mPage;
+	const TerrainPage& mPage;
 };
 
 /**
@@ -136,7 +136,7 @@ public:
 protected:
 	typedef std::vector<TerrainPageSurfaceCompilerShaderPass*> PassStore;
 
-	TerrainPage* mPage;
+	const TerrainPage* mPage;
 	virtual TerrainPageSurfaceCompilerShaderPass* addPass(Ogre::Technique* technique);
 	PassStore mPasses;
 
@@ -168,7 +168,7 @@ protected:
 class TerrainPageSurfaceCompilerShaderNormalMappedPass : public TerrainPageSurfaceCompilerShaderPass
 {
 public:
- 	TerrainPageSurfaceCompilerShaderNormalMappedPass(Ogre::Pass* pass, TerrainPage& page);
+ 	TerrainPageSurfaceCompilerShaderNormalMappedPass(Ogre::Pass* pass, const TerrainPage& page);
 	virtual ~TerrainPageSurfaceCompilerShaderNormalMappedPass() {}
 
 // 	virtual void addLayer(TerrainPageSurfaceLayer* layer);
