@@ -118,11 +118,6 @@ void TerrainGenerator::createPage(TerrainGeneratorBackgroundWorker* backgroundWo
 		page->showFoliage();
 	}
 
-	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
-	std::set<TerrainPage*> pagesToUpdate;
-	pagesToUpdate.insert(page);
-	updateEntityPositions(pagesToUpdate);
-
 	// notify the background worker that we're finished (thread-protected)
 	backgroundWorker->pushPageReady(page);
 }
@@ -426,8 +421,15 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 		mTerrainPages[pos.x()][pos.y()] = page;
 
 		// mafm: moved out of the background thread due to safety issues
-		page->loadShadow();
-		page->generateTerrainMaterials(false);
+		{
+			page->loadShadow();
+			page->generateTerrainMaterials(false);
+
+			//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
+			std::set<TerrainPage*> pagesToUpdate;
+			pagesToUpdate.insert(page);
+			updateEntityPositions(pagesToUpdate);
+		}
 
 		page->notifyBridgePageReady();
 	}
