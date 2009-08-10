@@ -18,7 +18,7 @@
 
 #include "PlantAreaQuery.h"
 #include "TerrainLayerDefinition.h"
-#include <OgreVector2.h>
+
 
 namespace EmberOgre {
 
@@ -49,7 +49,7 @@ const Ogre::TRect<float>& PlantAreaQuery::getArea() const
 	return mArea;
 }
 
-PlantAreaQuery::PlantStore& PlantAreaQuery::getStore()
+const PlantAreaQuery::PlantStore& PlantAreaQuery::getStore() const
 {
 	return mStore;
 }
