@@ -63,7 +63,7 @@ BasePointUserObject::BasePointUserObject(const TerrainPosition terrainPosition,c
 {
 }
 
-const Ogre::String & BasePointUserObject::getTypeName (void) const
+const Ogre::String & BasePointUserObject::getTypeName() const
 {
 	return s_TypeName;
 }

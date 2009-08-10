@@ -80,7 +80,7 @@ public:
 	 * @param
 	 * @return
 	 */
-	virtual const Ogre::String & getTypeName (void) const;
+	virtual const Ogre::String & getTypeName() const;
 
 
 	/**
