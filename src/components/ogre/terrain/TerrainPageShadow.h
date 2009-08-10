@@ -71,7 +71,7 @@ public:
 
 	void createShadowData(const TerrainPageGeometry& geometry);
 
-	Ogre::TexturePtr getTexture() const;
+	const Ogre::TexturePtr getTexture() const;
 	void updateShadow(const TerrainPageGeometry& geometry);
 	void createImage();
 

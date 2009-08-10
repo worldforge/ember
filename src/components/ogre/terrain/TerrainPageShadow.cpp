@@ -156,7 +156,7 @@ void TerrainPageShadow::createImage()
 	mTexture->loadImage(*mImage);
 }
 
-Ogre::TexturePtr TerrainPageShadow::getTexture() const
+const Ogre::TexturePtr TerrainPageShadow::getTexture() const
 {
 	return mTexture;
 }
