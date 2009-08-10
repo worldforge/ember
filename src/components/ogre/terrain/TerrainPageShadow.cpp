@@ -42,7 +42,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour)
+void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) const
 {
 
 	int pageSizeInVertices = page.getPageSize();
@@ -96,10 +96,10 @@ TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mImage(0)
 , mShadowChunk(0)
+, mShadowTechnique(0)
 , mTexture(0)
 {
 }
-
 
 TerrainPageShadow::~TerrainPageShadow()
 {
@@ -160,7 +160,7 @@ Ogre::TexturePtr TerrainPageShadow::getTexture() const
 	return mTexture;
 }
 
-void TerrainPageShadow::setShadowTechnique(ITerrainPageShadowTechnique* shadowTechnique)
+void TerrainPageShadow::setShadowTechnique(const ITerrainPageShadowTechnique* shadowTechnique)
 {
 	mShadowTechnique = shadowTechnique;
 }

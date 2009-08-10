@@ -42,7 +42,7 @@ class TerrainPageGeometry;
 class ITerrainPageShadowTechnique
 {
 public:
-    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) = 0;
+    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) const = 0;
 
 protected:
 };
@@ -50,7 +50,7 @@ protected:
 class SimpleTerrainPageShadowTechnique : public ITerrainPageShadowTechnique
 {
 public:
-    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour);
+    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) const;
 
 protected:
 };
@@ -65,7 +65,7 @@ public:
 
 	virtual ~TerrainPageShadow();
 
-	void setShadowTechnique(ITerrainPageShadowTechnique* shadowTechnique);
+	void setShadowTechnique(const ITerrainPageShadowTechnique* shadowTechnique);
 
 	void setLightDirection(const Ogre::Vector3& lightDirection);
 
@@ -86,7 +86,7 @@ protected:
 	Ogre::TexturePtr mTexture;
 	Ogre::MemoryDataStream* mShadowChunk;
 
-	ITerrainPageShadowTechnique* mShadowTechnique;
+	const ITerrainPageShadowTechnique* mShadowTechnique;
 };
 
 }
