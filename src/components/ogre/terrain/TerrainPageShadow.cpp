@@ -94,10 +94,11 @@ void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page,
 
 TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
-, mImage(0)
-, mShadowChunk(0)
 , mShadowTechnique(0)
+, mLightDirection(Ogre::Vector3::ZERO)
+, mImage(0)
 , mTexture(0)
+, mShadowChunk(0)
 {
 }
 

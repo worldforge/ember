@@ -81,12 +81,11 @@ public:
 
 protected:
 	const TerrainPage& mTerrainPage;
+	const ITerrainPageShadowTechnique* mShadowTechnique;
 	Ogre::Vector3 mLightDirection;
 	Ogre::Image* mImage;
 	Ogre::TexturePtr mTexture;
 	Ogre::MemoryDataStream* mShadowChunk;
-
-	const ITerrainPageShadowTechnique* mShadowTechnique;
 };
 
 }
