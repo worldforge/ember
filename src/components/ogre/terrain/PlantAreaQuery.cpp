@@ -49,7 +49,7 @@ const Ogre::TRect<float>& PlantAreaQuery::getArea() const
 	return mArea;
 }
 
-const PlantAreaQuery::PlantStore& PlantAreaQuery::getStore() const
+PlantAreaQuery::PlantStore& PlantAreaQuery::getStore() const
 {
 	return mStore;
 }

@@ -51,7 +51,7 @@ public:
 	unsigned char getThreshold() const;
 	const std::string& getPlantType() const;
 	const Ogre::TRect<float>& getArea() const;
-	const PlantStore& getStore() const;
+	PlantStore& getStore() const;
 private:
 	const TerrainLayerDefinition& mLayerDef;
 	unsigned char mThreshold;
