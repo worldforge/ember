@@ -15,43 +15,34 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 *                                                                         *
 ***************************************************************************/
 
+#include "OgrePagingLandScapeTile.h"
+
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
-#include "OgreVector3.h"
-#include "OgreColourValue.h"
-
-#include "OgreMovableObject.h"
-#include "OgreAxisAlignedBox.h"
-
-#include "OgreCamera.h"
-
-#include "OgreStringConverter.h"
-
-#include "OgreSceneNode.h"
-
-#include "OgreSimpleRenderable.h"
-
-#include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapeCamera.h"
-
-#include "OgrePagingLandScapeTileManager.h"
-#include "OgrePagingLandScapeTile.h"
-#include "OgrePagingLandScapeTileInfo.h"
-
-#include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeData2D.h"
-
-#include "OgrePagingLandScapePageManager.h"
-
-#include "OgrePagingLandScapeSceneManager.h"
-#include "OgrePagingLandScapeRenderableManager.h"
-#include "OgrePagingLandScapeRenderable.h"
-
-#include "OgrePagingLandScapeTextureManager.h"
-#include "OgrePagingLandScapeTexture.h"
-
+#include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeListener.h"  
 #include "OgrePagingLandScapeListenerManager.h" 
+#include "OgrePagingLandScapeOptions.h"
+#include "OgrePagingLandScapePageManager.h"
+#include "OgrePagingLandScapeRenderable.h"
+#include "OgrePagingLandScapeRenderableManager.h"
+#include "OgrePagingLandScapeSceneManager.h"
+#include "OgrePagingLandScapeTexture.h"
+#include "OgrePagingLandScapeTextureManager.h"
+#include "OgrePagingLandScapeTileManager.h"
+#include "OgrePagingLandScapeTileInfo.h"
+
+#include <OgreAxisAlignedBox.h>
+#include <OgreCamera.h>
+#include <OgreColourValue.h>
+#include <OgreMovableObject.h>
+#include <OgreSceneNode.h>
+#include <OgreSimpleRenderable.h>
+#include <OgreStringConverter.h>
+#include <OgreVector3.h>
+
 
 namespace Ogre
 {
