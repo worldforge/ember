@@ -53,6 +53,7 @@
 #include <Eris/TerrainMod.h>
 
 #include <Mercator/Area.h>
+#include <Mercator/AreaShader.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
 #include <Mercator/TerrainMod.h>
@@ -298,11 +299,10 @@ void TerrainGenerator::addArea(TerrainArea* terrainArea)
 	mTerrain->addArea(area);
 	if (!mAreaShaders.count(area->getLayer())) {
 		S_LOG_VERBOSE("Shader does not exists, creating new.");
-		TerrainShader* shader;
 		///try to get the materialdefinition for this kind of area
 		const TerrainLayerDefinition* layerDef = TerrainLayerDefinitionManager::getSingleton().getDefinitionForArea(area->getLayer());
 		if (layerDef) {
-			shader = createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
+			TerrainShader* shader = createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
 			mAreaShaders[area->getLayer()] = shader;
 		}
 	}

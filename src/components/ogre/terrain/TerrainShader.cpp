@@ -21,11 +21,15 @@
 #endif
 
 #include "TerrainShader.h"
+
+#include "TerrainLayerDefinition.h"
+
 #include <OgreIteratorWrappers.h>
 #include <OgreRoot.h>
 #include <OgreRenderSystem.h>
 #include <OgreRenderSystemCapabilities.h>
-#include "TerrainLayerDefinition.h"
+
+
 namespace EmberOgre {
 namespace Terrain {
 

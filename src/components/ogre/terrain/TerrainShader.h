@@ -23,13 +23,13 @@
 #include <Mercator/Shader.h>
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
-#include <Mercator/AreaShader.h>
-
 
 
 namespace EmberOgre {
 namespace Terrain {
+
 class TerrainLayerDefinition;
+
 class TerrainShader{
 public:
 
@@ -54,8 +54,8 @@ public:
 
 	int getTerrainIndex() const;
 
-	void addMaterialToTechnique(Ogre::Technique*  technique, const std::string& splatTextureName);
-	void addSplatToTechnique(Ogre::Technique*  technique, const std::string& splatTextureName);
+	void addMaterialToTechnique(Ogre::Technique* technique, const std::string& splatTextureName);
+	void addSplatToTechnique(Ogre::Technique* technique, const std::string& splatTextureName);
 
 
 	/**
