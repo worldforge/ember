@@ -31,7 +31,7 @@ namespace Ogre
 class _OgrePagingLandScapeExport PagingLandScapeTile 
 {
 public:
-    inline PagingLandScapeTileInfo* getInfo(void) 
+    inline PagingLandScapeTileInfo* getInfo() 
     {
         return mInfo;
     }
@@ -66,32 +66,32 @@ public:
         Make the Tile reload its vertices and normals 
         (upon a modification of the height data)
     */
-    void updateTerrain(void);
+    void updateTerrain();
   
-    inline PagingLandScapeRenderable* getRenderable(void)
+    inline PagingLandScapeRenderable* getRenderable()
     {
         return mRenderable;    
     }
 
-    void _linkRenderableNeighbor(void);
-    void _updateLod(void);
+    void _linkRenderableNeighbor();
+    void _updateLod();
 
 	PagingLandScapeTile(PagingLandScapeTileManager *pageMgr);
 
-	~PagingLandScapeTile(void);
+	~PagingLandScapeTile();
 
 	void init(SceneNode* PageNode, int tableX, int tableZ, int tileX, int tileZ);
-    void load(void);
-    void unload(void);
-	void uninit(void);
+    void load();
+    void unload();
+	void uninit();
 
 	void _Notify(const Vector3 &pos, const PagingLandScapeCamera * const Cam);
 
-    inline bool isLoaded(void)
+    inline bool isLoaded()
 	{
 		return mLoaded;
 	}
-	inline bool isLoading(void)
+	inline bool isLoading()
 	{
 		return mLoading;
 	}
@@ -107,7 +107,7 @@ public:
 			mRenderable->setInUse (InUse);
 	}
 
-    inline bool isVisible(void)
+    inline bool isVisible()
 	{
 		return mVisible;
 	}
@@ -132,7 +132,7 @@ public:
     {
         return mWorldBoundsExt;
     }
-	inline const Vector3 &getCenter(void) const 
+	inline const Vector3 &getCenter() const 
 	{
 		return mWorldPosition;
 	}
