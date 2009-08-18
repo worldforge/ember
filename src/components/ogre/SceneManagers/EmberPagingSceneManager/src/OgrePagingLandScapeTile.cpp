@@ -104,9 +104,7 @@ void PagingLandScapeTile::uninit(void)
 	}   
 }
 //-----------------------------------------------------------------------
-void PagingLandScapeTile::init (SceneNode *ParentSceneNode,
-								const int pageX, const int pageZ, 
-								const int tileX, const int tileZ)
+void PagingLandScapeTile::init(SceneNode *ParentSceneNode, int pageX, int pageZ, int tileX, int tileZ)
 {
 	mInit = true;
 

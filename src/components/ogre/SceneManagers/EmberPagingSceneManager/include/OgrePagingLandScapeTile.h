@@ -80,7 +80,7 @@ public:
 
 	~PagingLandScapeTile(void);
 
-	void init(SceneNode* PageNode, const int tableX, const int tableZ, const int tileX, const int tileZ);
+	void init(SceneNode* PageNode, int tableX, int tableZ, int tileX, int tileZ);
     void load(void);
     void unload(void);
 	void uninit(void);
