@@ -293,46 +293,36 @@ void PagingLandScapeTile::unload()
 void PagingLandScapeTile::_Notify(const Vector3 &pos, const PagingLandScapeCamera * const Cam)
 {
 	//const bool wasvisible = mVisible && mLoaded && (mRenderable != 0) && mRenderable->isVisible ();
-	if (
-		1
+	if (1) {
 		//(pos - mWorldPosition).squaredLength() < mParent->getOptions()->renderable_factor
-        //&& Cam->isVisible (mWorldBoundsExt)
-		)
-    {
-        touch();
-        mVisible = true;
-        
-	}
-	else 
-	{
+		//&& Cam->isVisible (mWorldBoundsExt)
+		touch();
+		mVisible = true;
+	} else {
 		mVisible = false;
 	}
-    // if it changes
+
+	// if it changes
 	//if (wasvisible != mVisible)
 	{
-		if (mVisible)
-        {
-            if (!mLoaded)
-			{
+		if (mVisible) {
+			if (!mLoaded) {
 				load(); 
 
 				// now visible 
 				mParent->getSceneManager()->getListenerManager ()->fireTileShow
 					(mInfo->mPageX, mInfo->mPageZ, mInfo->mTileX,  mInfo->mTileZ, mWorldBounds);
 			}
-            assert (mRenderable);
-            mRenderable->setVisible (true);   
+			assert (mRenderable);
+			mRenderable->setVisible (true);   
 
-		}
-		else // if (wasvisible)
-		{
+		} else {
 			// now hidden
 			if (mRenderable)
 				mRenderable->setVisible (false);
 
 		}
 	}
-
 }
 //-----------------------------------------------------------------------
 const bool PagingLandScapeTile::unloadUntouched ()        
