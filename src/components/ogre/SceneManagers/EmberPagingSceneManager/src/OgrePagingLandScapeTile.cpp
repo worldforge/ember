@@ -46,9 +46,8 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 
 namespace Ogre
 {
-
-	//-----------------------------------------------------------------------
-	PagingLandScapeTile::PagingLandScapeTile(PagingLandScapeTileManager *tileMgr) :
+//-----------------------------------------------------------------------
+PagingLandScapeTile::PagingLandScapeTile(PagingLandScapeTileManager *tileMgr) :
 		mParent(tileMgr),
 		mInfo(0),
 		mTileSceneNode (0),
@@ -63,13 +62,12 @@ namespace Ogre
 		mNeighbors[ i ] = 0;
 	}
 }
-
 //-----------------------------------------------------------------------
 PagingLandScapeTile::~PagingLandScapeTile()
 {
 }
 //-----------------------------------------------------------------------
-void PagingLandScapeTile::uninit(void)
+void PagingLandScapeTile::uninit()
 {
 	if (mInit || mLoaded || mRenderable)
 	{
@@ -195,7 +193,7 @@ void PagingLandScapeTile::_setNeighbor(Neighbor n, PagingLandScapeTile *t)
 			}
 		}
 	}
-};
+}
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::_linkRenderableNeighbor()
 {
@@ -605,5 +603,6 @@ void PagingLandScapeTile::setRenderQueueGroup(uint8 qid)
 {
 	if (mRenderable && mRenderable->isLoaded())
 		mRenderable->setRenderQueueGroup(qid);
-};
+}
+
 } //namespace
