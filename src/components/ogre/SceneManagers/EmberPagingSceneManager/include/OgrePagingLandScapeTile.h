@@ -34,7 +34,7 @@ public:
     inline PagingLandScapeTileInfo* getInfo(void) 
     {
         return mInfo;
-    };
+    }
 
     /** Sets the appropriate neighbor for this TerrainRenderable.  Neighbors are necessary
     to know when to bridge between LODs.
@@ -46,7 +46,7 @@ public:
     inline PagingLandScapeTile* _getNeighbor(Neighbor n)
     {
         return mNeighbors[ n ];
-    };
+    }
 
     /** intersectSegment 
     @remarks
@@ -90,15 +90,15 @@ public:
     inline bool isLoaded(void)
 	{
 		return mLoaded;
-	};
+	}
 	inline bool isLoading(void)
 	{
 		return mLoading;
-	};
+	}
 	inline void setLoading(bool value)
 	{
 		mLoading = value;
-	};
+	}
 
 	void setInUse (bool InUse)
 	{
@@ -123,19 +123,19 @@ public:
 	SceneNode *getSceneNode()
 	{
 		return mTileSceneNode;
-	};
+	}
 	const AxisAlignedBox &getWorldBbox() const 
 	{
 		return mWorldBounds;
-    };
+    }
     inline const AxisAlignedBox &getCullWorldBbox() const 
     {
         return mWorldBoundsExt;
-    };
+    }
 	inline const Vector3 &getCenter(void) const 
 	{
 		return mWorldPosition;
-	};
+	}
 
 	const bool unloadUntouched ();
 
