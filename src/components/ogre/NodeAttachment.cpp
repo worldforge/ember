@@ -117,11 +117,14 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 {
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
-		if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_FLOATING) {
-			//If the entity is floating, the z position should be 0.
-			adjustedOffset.z() = -position.z();
-		} else if (mParentEntity.getAttachment()) {
-			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
+		//If it's fixed it shouldn't be adjusted
+		if (getAttachedEntity().getPositioningMode() != EmberEntity::PM_FIXED) {
+			if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_FLOATING) {
+				//If the entity is floating, the z position should be 0.
+				adjustedOffset.z() = -position.z();
+			} else if (mParentEntity.getAttachment()) {
+				mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
+			}
 		}
 		mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
 	}
