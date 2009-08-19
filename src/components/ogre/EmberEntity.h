@@ -438,6 +438,10 @@ protected:
 	 */
 	virtual void addTerrainMod(Terrain::TerrainMod* mod);
 
+	/**
+	 * @brief Updates the terrain with the specified terrain definition points.
+	 * @param terrainDefinitionPoints The terrain definition points.
+	 */
 	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
 
 	/**

@@ -36,10 +36,23 @@ namespace Terrain
 
 class TerrainManager;
 
+/**
+
+ @brief Parses terrain surface information from Atlas data and updates the terrain generator accordingly.
+
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+
+ */
 class TerrainShaderParser
 {
 public:
+
+	/**
+	 * @brief Ctor.
+	 * @param terrainManager The terrain manager.
+	 */
 	TerrainShaderParser(Terrain::TerrainManager& terrainManager);
+
 	virtual ~TerrainShaderParser();
 
 	/**
