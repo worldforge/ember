@@ -89,8 +89,7 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//	else {
 	if (modelRepresentation) {
 		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
-	}
-	else {
+	} else {
 		return new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
 	}
 	//	}
@@ -101,8 +100,7 @@ void NodeAttachment::setControlDelegate(IAttachmentControlDelegate* controllerDe
 	delete mAttachmentController;
 	if (controllerDelegate) {
 		mAttachmentController = new DelegatingNodeController(*this, *controllerDelegate);
-	}
-	else {
+	} else {
 		mAttachmentController = new NodeController(*this);
 	}
 }
@@ -119,13 +117,15 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 {
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
-		if (mParentEntity.getAttachment()) {
+		if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_FLOATING) {
+			//If the entity is floating, the z position should be 0.
+			adjustedOffset.z() = -position.z();
+		} else if (mParentEntity.getAttachment()) {
 			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 		}
 		mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
 	}
 }
-
 Ogre::Node* NodeAttachment::getNode() const
 {
 	return mNode;
