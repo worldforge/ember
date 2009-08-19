@@ -20,6 +20,7 @@
 
 #include "TerrainEditor.h"
 #include "TerrainManager.h"
+#include "TerrainDefPoint.h"
 #include "ISceneManagerAdapter.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/Convert.h"

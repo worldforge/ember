@@ -16,55 +16,24 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef TERRAINPARSER_H_
-#define TERRAINPARSER_H_
+#include "TerrainDefPoint.h"
 
-#include "Types.h"
-
-namespace Atlas
-{
-namespace Message
-{
-class Element;
-}
-}
-
-namespace WFMath
-{
-template<int> class Point;
-}
 
 namespace EmberOgre
 {
-
 namespace Terrain
 {
 
-class TerrainManager;
-class TerrainDefPoint;
 
-/**
-
- @brief Responsible for parsing terrain information from the Atlas data.
-
- @author Erik Hjortsberg <erik@worldforge.org>
-
- */
-class TerrainParser
+const TerrainPosition& TerrainDefPoint::getPosition() const
 {
-public:
-	TerrainParser();
+	return mPosition;
+}
 
-	/**
-	 * @brief Extracts terrain updates from the element and updates the terrain.
-	 * @param terrain The element containing the terrain data.
-	 */
-	TerrainDefPointStore parseTerrain(const Atlas::Message::Element& terrain, const WFMath::Point<3>& offset) const;
-
-};
-
+float TerrainDefPoint::getHeight() const
+{
+	return mHeight;
 }
 
 }
-
-#endif /* TERRAINPARSER_H_ */
+}

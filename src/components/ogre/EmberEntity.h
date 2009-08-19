@@ -57,6 +57,7 @@ namespace Terrain
 {
 class TerrainArea;
 class TerrainMod;
+class TerrainDefPoint;
 }
 
 class IGraphicalRepresentation;
@@ -436,6 +437,8 @@ protected:
 	 * @param mod The mod which has been added.
 	 */
 	virtual void addTerrainMod(Terrain::TerrainMod* mod);
+
+	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
 
 	/**
 	 * @brief Checks if we should create any dependent objects, such as TerrainArea or TerrainMod.

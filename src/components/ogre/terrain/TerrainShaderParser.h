@@ -16,10 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef TERRAINPARSER_H_
-#define TERRAINPARSER_H_
-
-#include "Types.h"
+#ifndef TERRAINSHADERPARSER_H_
+#define TERRAINSHADERPARSER_H_
 
 namespace Atlas
 {
@@ -29,10 +27,6 @@ class Element;
 }
 }
 
-namespace WFMath
-{
-template<int> class Point;
-}
 
 namespace EmberOgre
 {
@@ -41,30 +35,34 @@ namespace Terrain
 {
 
 class TerrainManager;
-class TerrainDefPoint;
 
-/**
-
- @brief Responsible for parsing terrain information from the Atlas data.
-
- @author Erik Hjortsberg <erik@worldforge.org>
-
- */
-class TerrainParser
+class TerrainShaderParser
 {
 public:
-	TerrainParser();
+	TerrainShaderParser(Terrain::TerrainManager& terrainManager);
+	virtual ~TerrainShaderParser();
 
 	/**
-	 * @brief Extracts terrain updates from the element and updates the terrain.
-	 * @param terrain The element containing the terrain data.
+	 * @brief Parses surface data and creates appropriate Mercator::Shader instances.
+	 * @param surfaces The element containing the surface data.
 	 */
-	TerrainDefPointStore parseTerrain(const Atlas::Message::Element& terrain, const WFMath::Point<3>& offset) const;
+	void createShaders(const Atlas::Message::Element& surfaces);
 
+	/**
+	 * @brief A fall back method which will create default shaders. This is used only if no valid surface information could be found (for example if a very old version of the server is used).
+	 */
+	void createDefaultShaders();
+
+private:
+
+	/**
+	 * @brief The terrain generator instance used in the system.
+	 */
+	TerrainManager& mTerrainManager;
 };
 
 }
 
 }
 
-#endif /* TERRAINPARSER_H_ */
+#endif /* TERRAINSHADERPARSER_H_ */

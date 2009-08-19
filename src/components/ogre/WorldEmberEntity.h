@@ -160,6 +160,8 @@ protected:
 	 */
 	void addTerrainMod(Terrain::TerrainMod* mod);
 
+	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
+
 	/**
 	 * @brief The terrain manager, owned by this instance.
 	 */
@@ -174,11 +176,6 @@ protected:
 	 * @brief The main environment object. There should only be one in the system, and it's kept here.
 	 */
 	Environment::Environment* mEnvironment;
-
-	/**
-	 * @brief Parses terrain information from the Atlas data sent from the server.
-	 */
-	std::auto_ptr<Terrain::TerrainParser> mTerrainParser;
 
 	/**
 	 * @brief Takes care of delaying the initialization of the foliage.

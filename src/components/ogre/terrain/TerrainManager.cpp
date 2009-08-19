@@ -24,6 +24,7 @@
 
 #include "ISceneManagerAdapter.h"
 #include "ITerrainPageBridge.h"
+#include "TerrainDefPoint.h"
 #include "TerrainShader.h"
 #include "TerrainPage.h"
 #include "TerrainPageShadow.h"

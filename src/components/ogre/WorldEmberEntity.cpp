@@ -29,6 +29,8 @@
 #include "model/Model.h"
 #include "terrain/TerrainParser.h"
 #include "terrain/TerrainManager.h"
+#include "terrain/TerrainShaderParser.h"
+#include "terrain/TerrainDefPoint.h"
 #include "environment/Foliage.h"
 #include "environment/Environment.h"
 #include "environment/CaelumEnvironment.h"
@@ -58,7 +60,7 @@ namespace EmberOgre
 {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	EmberEntity(id, ty, vw, sceneManager), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*>(sceneManager)))), mFoliage(0), mEnvironment(0), mTerrainParser(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager*> (sceneManager))
+	EmberEntity(id, ty, vw, sceneManager), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*>(sceneManager)))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager*> (sceneManager))
 {
 	mSceneManager->registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
@@ -93,20 +95,18 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()));
 	EventEnvironmentCreated.emit();
 
-	///we will wait with creating the terrain and initialing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
+	///we will wait with creating the terrain and initializing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
 
 
 }
 
 void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
-	///check for terrain updates
-	if (str == "terrain") {
-		if (mTerrainParser.get()) {
-			mTerrainParser->updateTerrain(v);
-		}
+	if (str == "terrain" && !mHasBeenInitialized) {
+		Eris::Entity::onAttrChanged(str, v);
+	} else {
+		EmberEntity::onAttrChanged(str, v);
 	}
-	Entity::onAttrChanged(str, v);
 }
 
 void WorldEmberEntity::onMoved()
@@ -120,26 +120,28 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 	if (!mHasBeenInitialized) {
 		mEnvironment->initialize();
 		if (mTerrainManager) {
-			mTerrainParser = std::auto_ptr<Terrain::TerrainParser>(new Terrain::TerrainParser(*mTerrainManager));
 			bool hasValidShaders = false;
+			Terrain::TerrainShaderParser terrainShaderParser(*mTerrainManager);
 			if (hasAttr("terrain")) {
+				Terrain::TerrainParser terrainParser;
 				const Atlas::Message::Element& terrainElement = valueOfAttr("terrain");
 				if (terrainElement.isMap()) {
 					const Atlas::Message::MapType& terrainMap(terrainElement.asMap());
 					if (terrainMap.count("surfaces")) {
 						const Atlas::Message::Element& surfaceElement(terrainMap.find("surfaces")->second);
-						mTerrainParser->createShaders(surfaceElement);
+						terrainShaderParser.createShaders(surfaceElement);
 						hasValidShaders = true;
 					}
 				}
+				mTerrainManager->updateTerrain(terrainParser.parseTerrain(terrainElement, getPredictedPos()));
 				if (!hasValidShaders) {
-					mTerrainParser->createDefaultShaders();
+					terrainShaderParser.createDefaultShaders();
 					hasValidShaders = true;
 				}
-				mTerrainParser->updateTerrain(terrainElement);
 			}
+
 			if (!hasValidShaders) {
-				mTerrainParser->createDefaultShaders();
+				terrainShaderParser.createDefaultShaders();
 				hasValidShaders = true;
 			}
 
@@ -184,6 +186,11 @@ float WorldEmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 		return height;
 	}
 	return EmberEntity::getHeight(localPosition);
+}
+
+void WorldEmberEntity::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints)
+{
+	mTerrainManager->updateTerrain(terrainDefinitionPoints);
 }
 
 Environment::Environment* WorldEmberEntity::getEnvironment() const

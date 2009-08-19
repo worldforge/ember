@@ -69,6 +69,10 @@ class ISceneManagerAdapter;
 class ITerrainPageBridge;
 class HeightMap;
 class HeightMapBufferProvider;
+class TerrainDefPoint;
+
+
+
 
 /**
  * @brief Handles generation and updates of the terrain.
@@ -467,16 +471,6 @@ inline const std::list<TerrainShader*>& TerrainManager::getBaseShaders() const
 inline unsigned int TerrainManager::getFoliageBatchSize() const
 {
 	return mFoliageBatchSize;
-}
-
-inline const TerrainPosition& TerrainDefPoint::getPosition() const
-{
-	return mPosition;
-}
-
-inline float TerrainDefPoint::getHeight() const
-{
-	return mHeight;
 }
 
 }

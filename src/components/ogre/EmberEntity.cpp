@@ -25,6 +25,8 @@
 #include "GUIManager.h"
 #include "terrain/TerrainArea.h"
 #include "terrain/TerrainMod.h"
+#include "terrain/TerrainParser.h"
+#include "terrain/TerrainDefPoint.h"
 #include "Convert.h"
 #include "EmberEntityActionCreator.h"
 #include "IGraphicalRepresentation.h"
@@ -384,6 +386,14 @@ void EmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
 	}
 }
 
+void EmberEntity::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints)
+{
+	if (getEmberLocation()) {
+		getEmberLocation()->updateTerrain(terrainDefinitionPoints);
+	}
+}
+
+
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
 	if (str == "mode") {
@@ -392,6 +402,11 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
+	} else	///check for terrain updates
+	if (str == "terrain")
+	{
+		Terrain::TerrainParser terrainParser;
+		updateTerrain(terrainParser.parseTerrain(v, getPredictedPos()));
 	}
 
 	///call this before checking for areas and terrainmods, since those instances created to handle that (TerrainMod and TerrainArea) will listen to the AttrChanged event, which would then be emitted after those have been created, causing duplicate regeneration from the same data
