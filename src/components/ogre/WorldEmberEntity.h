@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2004  Erik Hjortsberg
+ Copyright (C) 2004  Erik Hjortsberg
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifndef WORLDEMBER_ENTITY_H
 #define WORLDEMBER_ENTITY_H
@@ -25,74 +25,42 @@ class Timeout;
 class View;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Environment {
+namespace Environment
+{
 class Environment;
 class Foliage;
 }
 
-namespace Terrain {
+namespace Terrain
+{
 class TerrainGenerator;
 class TerrainArea;
+class TerrainParser;
 }
 class DelayedFoliageInitializer;
 
-/**
-
-@brief Responsible for parsing terrain information from the Atlas data.
-
-@author Erik Hjortsberg <erik@worldforge.org>
-
-*/
-class TerrainParser
-{
-public:
-	TerrainParser(Terrain::TerrainGenerator& terrainGenerator);
-
-	/**
-	 * @brief Extracts terrain updates from the element and updates the terrain.
-	 * @param terrain The element containing the terrain data.
-	 */
-	void updateTerrain(const Atlas::Message::Element& terrain);
-
-	/**
-	 * @brief Parses surface data and creates appropriate Mercator::Shader instances.
-	 * @param surfaces The element containing the surface data.
-	 */
-	void createShaders(const Atlas::Message::Element& surfaces);
-
-
-	/**
-	 * @brief A fall back method which will create default shaders. This is used only if no valid surface information could be found (for example if a very old version of the server is used).
-	 */
-	void createDefaultShaders();
-
-private:
-
-	/**
-	 * @brief The terrain generator instance used in the system.
-	 */
-	Terrain::TerrainGenerator& mTerrainGenerator;
-};
 
 class EmberEntity;
 
 /**
-@brief Represents the root entity, the "world" object to which all other entities belong to.
+ @brief Represents the root entity, the "world" object to which all other entities belong to.
 
-In any world there should only be a single instance of this. Usually the world entity has id 0, but that's not for certain.
+ In any world there should only be a single instance of this. Usually the world entity has id 0, but that's not for certain.
 
-This should also be the very first entity created.
-An instance of this also owns a couple of objects responsible for the environment. These are:
-* The Environment, responsible for providing sun and moon lightning, water and weather effects and other environment related features such as fog.
-* The Foliage, responsible for providing foliage to the world.
+ This should also be the very first entity created.
+ An instance of this also owns a couple of objects responsible for the environment. These are:
+ * The Environment, responsible for providing sun and moon lightning, water and weather effects and other environment related features such as fog.
+ * The Foliage, responsible for providing foliage to the world.
 
-Since the world entity has access to the terrain data this instance is also responsible for adjusting contained entities so that they are positioned on the terrain.
+ Since the world entity has access to the terrain data this instance is also responsible for adjusting contained entities so that they are positioned on the terrain.
 
-@author Erik Hjortsberg <erik@worldforge.org>
-*/
-class WorldEmberEntity : public EmberEntity {
+ @author Erik Hjortsberg <erik@worldforge.org>
+ */
+class WorldEmberEntity: public EmberEntity
+{
 public:
 
 	/**
@@ -112,7 +80,6 @@ public:
 		float LatitudeDegrees;
 	};
 
-
 	/**
 	 * @brief Ctor.
 	 * @param id The id of the entity.
@@ -127,13 +94,6 @@ public:
 	 * @brief Dtor
 	 */
 	virtual ~WorldEmberEntity();
-
-	/**
-	 * @brief This implementation will adjust the contained entity so that it in normal operation snaps to the terrain.
-	 * @param entity
-	 * @param position
-	 */
-	virtual void adjustPositionForContainedNode(const EmberEntity& entity, const Ogre::Vector3& position);
 
 	/**
 	 * @brief Gets the main Environment object of the world.
@@ -163,23 +123,17 @@ public:
 	 */
 	sigc::signal<void> EventEnvironmentCreated;
 
-
-
 protected:
-	virtual const Ogre::Vector3& getOffsetForContainedNode(const Ogre::Vector3& position, const EmberEntity& entity);
 	Terrain::TerrainGenerator* mTerrainGenerator;
 
-    virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
+	virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
 	virtual void onMoved();
 
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 
-// 	virtual void onTalk(const Atlas::Objects::Operation::RootOperation& talk);
-//	virtual void setContainer(Entity *pr);
 	virtual void onVisibilityChanged(bool vis);
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
-
 
 	/**
 	 * @brief Adds an area to the world. This method will in turn interface with the TerrainGenerator.
@@ -206,7 +160,7 @@ protected:
 	/**
 	 * @brief Parses terrain information from the Atlas data sent from the server.
 	 */
-	std::auto_ptr<TerrainParser> mTerrainParser;
+	std::auto_ptr<Terrain::TerrainParser> mTerrainParser;
 
 	/**
 	 * @brief Takes care of delaying the initialization of the foliage.
@@ -231,17 +185,16 @@ inline const WorldEmberEntity::WorldPosition& WorldEmberEntity::getWorldPosition
 	return mWorldPosition;
 }
 
-
 /**
-@brief Allows for a delayed initialization of the foliage.
-The initialization will occrur when either the sight queue is empty, or a certain time has elapsed.
-The main reason for doing this is that whenever a new area is added to the world, the foliage is invalidated and reloaded.
-As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.
-By delaying the loading of the foliage we can avoid this.
+ @brief Allows for a delayed initialization of the foliage.
+ The initialization will occrur when either the sight queue is empty, or a certain time has elapsed.
+ The main reason for doing this is that whenever a new area is added to the world, the foliage is invalidated and reloaded.
+ As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.
+ By delaying the loading of the foliage we can avoid this.
 
-@author Erik Hjortsberg <erik@worldforge.org>
+ @author Erik Hjortsberg <erik@worldforge.org>
 
-*/
+ */
 class DelayedFoliageInitializer
 {
 public:

@@ -8,9 +8,9 @@ libTerrain_a_SOURCES = Map.cpp TerrainArea.cpp TerrainArea.h \
 	TerrainPage.cpp	TerrainPage.h TerrainPage.h TerrainPageFoliage.cpp TerrainPageGeometry.cpp \
 	TerrainPageShadow.cpp TerrainPageSurface.cpp TerrainPageSurfaceCompiler.cpp \
 	TerrainPageSurfaceCompilerTechniqueShader.cpp TerrainPageSurfaceCompilerTechniqueSimple.cpp \
-	TerrainPageSurfaceLayer.cpp TerrainShader.cpp TerrainShader.h XMLLayerDefinitionSerializer.cpp PlantAreaQuery.cpp
+	TerrainPageSurfaceLayer.cpp TerrainShader.cpp TerrainShader.h XMLLayerDefinitionSerializer.cpp PlantAreaQuery.cpp TerrainParser.cpp
 noinst_HEADERS = ISceneManagerAdapter.h ITerrainPageBridge.h Map.h \
 	TerrainAreaParser.h TerrainInfo.h TerrainLayerDefinition.h TerrainLayerDefinitionManager.h \
 	TerrainPageFoliage.h TerrainPageGeometry.h TerrainPageShadow.h TerrainPageSurface.h \
 	TerrainPageSurfaceCompiler.h TerrainPageSurfaceCompilerTechniqueShader.h \
-	TerrainPageSurfaceCompilerTechniqueSimple.h TerrainPageSurfaceLayer.h XMLLayerDefinitionSerializer.h PlantAreaQuery.h
+	TerrainPageSurfaceCompilerTechniqueSimple.h TerrainPageSurfaceLayer.h XMLLayerDefinitionSerializer.h PlantAreaQuery.h TerrainParser.h
