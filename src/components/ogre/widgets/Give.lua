@@ -58,7 +58,7 @@ function Give.Give_Click(args)
 		if (entity ~= nil) then
 			emberOgre:doWithEntity(Give.targetEntityId, function (targetEntity) 
 				emberServices:getServerService():place(entity, targetEntity)
-			end);
+			end)
 		end
 		item = Give.listbox:getNextSelected(item)
 	end

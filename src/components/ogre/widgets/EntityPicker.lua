@@ -7,9 +7,10 @@
 -----------------------------------------
 
 
-EntityPicker = {connectors={}, menuWindow = nil, entityName = nil, useButtons = {}, entityId = nil, position = nil, buttons = {}}
+EntityPicker = {connectors={}, menuWindow = nil, entityName = nil, useButtons = {}, entityId = nil, position = nil, buttons = {}, currentPickedEntityIndex = 0}
 
 EntityPicker.widget = guiManager:createWidget()
+EntityPicker.selectorWidget = guiManager:createWidget()
 
 function EntityPicker.buildWidget()
 
@@ -18,6 +19,10 @@ function EntityPicker.buildWidget()
  	--EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect("EntityPicker.pickedNothing")
     
 	EntityPicker.widget:loadMainSheet("EntityPicker.layout", "EntityPicker/")
+	
+	EntityPicker.selectorWidget:loadMainSheet("EntityPickerSelector.layout", "EntityPickerSelector/")
+	EntityPicker.selectorWidget:getWindow("PreviousButton"):subscribeEvent("MouseEnter", "EntityPicker.previousButton_MouseEnters")
+	EntityPicker.selectorWidget:getWindow("NextButton"):subscribeEvent("MouseEnter", "EntityPicker.nextButton_MouseEnters")
 
 	
 	EntityPicker.menuWindow = EntityPicker.widget:getWindow("Menu")
@@ -84,54 +89,121 @@ function EntityPicker.showMenu(position)
 	else
 		EntityPicker.buttons.edit:setVisible(false)
 		EntityPicker.buttons.teleportto:setVisible(false)
-	end	
+	end
 	
-	position.x = position.x - EntityPicker.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
-	position.y = position.y - 10.0
-	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,position.x), CEGUI.UDim(0,position.y))
+	local localPosition = CEGUI.Vector2:new_local(position.x, position.y)
+	
+	localPosition.x = localPosition.x - EntityPicker.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
+	localPosition.y = localPosition.y - 10.0
+	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,localPosition.x), CEGUI.UDim(0,localPosition.y))
 	EntityPicker.widget:getMainWindow():setPosition(uPosition )
 	EntityPicker.stackableContainer:repositionWindows()
 end
 
+function EntityPicker.previousButton_MouseEnters(args)
+	EntityPicker.currentPickedEntityIndex = EntityPicker.currentPickedEntityIndex - 1
+	EntityPicker.updateSelector()
+	EntityPicker.pickedOneEntity(EntityPicker.pickedEntities[EntityPicker.currentPickedEntityIndex])
+	return true
+end
+
+function EntityPicker.nextButton_MouseEnters(args)
+	EntityPicker.currentPickedEntityIndex = EntityPicker.currentPickedEntityIndex + 1
+	EntityPicker.updateSelector()
+	EntityPicker.pickedOneEntity(EntityPicker.pickedEntities[EntityPicker.currentPickedEntityIndex])
+	return true
+end
+
+function EntityPicker.updateSelector()
+	local numberingWidget = EntityPicker.selectorWidget:getWindow("Numbering")
+	numberingWidget:setText((EntityPicker.currentPickedEntityIndex + 1) .. "/" .. (#EntityPicker.pickedEntities + 1))
+	local previousWidget = EntityPicker.selectorWidget:getWindow("PreviousButton")
+	local nextWidget = EntityPicker.selectorWidget:getWindow("NextButton")
+	
+	if EntityPicker.currentPickedEntityIndex == #EntityPicker.pickedEntities then
+		nextWidget:setVisible(false)
+	else
+		nextWidget:setVisible(true)
+	end
+	
+	if EntityPicker.currentPickedEntityIndex == 0 then
+		previousWidget:setVisible(false)
+	else
+		previousWidget:setVisible(true)
+	end
+end
+
 --called when an entity has been picked
 function EntityPicker.pickedEntity(results, args)
-	
+
 	if args.pickType == EmberOgre.MPT_CLICK then
-		local result = results[0]
-		local entity = result.entity
-		EntityPicker.entityId = entity:getId()
-		--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
-		EntityPicker.position = Ogre.Vector3:new_local(result.position)
-		local point = CEGUI.Vector2:new_local(args.windowX, args.windowY)
-		
-		if (entity:getId() == '0') then
-			EntityPicker.buttons.move:setVisible(false)
-			EntityPicker.buttons.take:setVisible(false)
-			EntityPicker.buttons.attack:setVisible(false)
-		else 
-			EntityPicker.buttons.move:setVisible(true)
-			EntityPicker.buttons.take:setVisible(true)
-			EntityPicker.buttons.attack:setVisible(true)
-		end
-		
-		--only show the eat button if the entity has biomass (and thus is edible)
--- 		if result.entity:hasAttr("biomass") then
--- 			EntityPicker.buttons.eat:setVisible(true)
--- 		else
--- 			EntityPicker.buttons.eat:setVisible(false)
--- 		end
-			
-		EntityPicker.checkUse(entity)
-		EntityPicker.showMenu(point, entity)
-		local name
-		--if the entity has a name, use it, else use the type name
-		--perhaps we should prefix the type name with an "a" or "an"?
-		if entity:getName() ~= "" then
-			name = entity:getName()
-		else
-			name = entity:getType():getName()
+		EntityPicker.pickedPoint = CEGUI.Vector2:new_local(args.windowX, args.windowY)
+	
+		EntityPicker.pickedEntities = {}
+		EntityPicker.currentPickedEntityIndex = 0
+		for i = 0, results:size() - 1 do
+			local resultCopy = {}
+			local entity = results[i].entity
+			resultCopy.entityId = entity:getId()
+			--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
+			resultCopy.position = Ogre.Vector3:new_local(results[i].position)
+			EntityPicker.pickedEntities[i] = resultCopy
 		end	
-		EntityPicker.entityName:setText(name)
+		
+		if results:size() > 1 then
+			local point = CEGUI.Vector2:new_local(args.windowX, args.windowY)
+			EntityPicker.selectorWidget:show()
+			point.x = point.x - EntityPicker.selectorWidget:getMainWindow():getWidth():asAbsolute(0) * 0.5
+			point.y = point.y - 40.0
+			local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,point.x), CEGUI.UDim(0,point.y))
+			EntityPicker.selectorWidget:getMainWindow():setPosition(uPosition)
+			EntityPicker.updateSelector()
+		else
+			EntityPicker.selectorWidget:hide()
+		end
+	
+		EntityPicker.pickedOneEntity(EntityPicker.pickedEntities[0])
+	end
+end
+
+--called when an entity has been picked
+function EntityPicker.pickedOneEntity(pickedResult)
+	
+	if pickedResult ~= nil then
+		emberOgre:doWithEntity(pickedResult.entityId, function (entity) 
+			EntityPicker.entityId = entity:getId()
+			--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
+			EntityPicker.position = Ogre.Vector3:new_local(pickedResult.position)
+			
+			if (entity:getId() == '0') then
+				EntityPicker.buttons.move:setVisible(false)
+				EntityPicker.buttons.take:setVisible(false)
+				EntityPicker.buttons.attack:setVisible(false)
+			else 
+				EntityPicker.buttons.move:setVisible(true)
+				EntityPicker.buttons.take:setVisible(true)
+				EntityPicker.buttons.attack:setVisible(true)
+			end
+				
+				--only show the eat button if the entity has biomass (and thus is edible)
+		-- 		if result.entity:hasAttr("biomass") then
+		-- 			EntityPicker.buttons.eat:setVisible(true)
+		-- 		else
+		-- 			EntityPicker.buttons.eat:setVisible(false)
+		-- 		end
+					
+			EntityPicker.checkUse(entity)
+			EntityPicker.showMenu(EntityPicker.pickedPoint, entity)
+			local name
+			--if the entity has a name, use it, else use the type name
+			--perhaps we should prefix the type name with an "a" or "an"?
+			if entity:getName() ~= "" then
+				name = entity:getName()
+			else
+				name = entity:getType():getName()
+			end	
+			EntityPicker.entityName:setText(name)
+		end)
 	end
 end
 
@@ -290,6 +362,7 @@ end
 
 function EntityPickerWidget_removeMenu()
 	EntityPicker.widget:hide()
+	EntityPicker.selectorWidget:hide()
 end
 
 function EntityPicker.input_MouseButtonReleased(button,  mode)
