@@ -28,6 +28,7 @@
 #include <sigc++/signal.h>
 #include "framework/ConsoleObject.h"
 #include <memory>
+#include <vector>
 #include <OgreVector3.h>
 
 
@@ -58,7 +59,7 @@ public:
 private:
 	Ogre::Entity* mEntity;
 	Ogre::SceneNode* mDebugNode;
-	void picker_EventPickedEntity(const EntityPickResult& result, const MousePickerArgs& mouseArgs);
+	void picker_EventPickedEntity(const std::vector<EntityPickResult>& result, const MousePickerArgs& mouseArgs);
 };
 
 /**
@@ -78,7 +79,7 @@ public:
 
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
 
-	sigc::signal<void, const EntityPickResult&, const MousePickerArgs&> EventPickedEntity;
+	sigc::signal<void, const std::vector<EntityPickResult>&, const MousePickerArgs&> EventPickedEntity;
 
 	const Ember::ConsoleCommandWrapper VisualizePicking;
 
@@ -91,7 +92,7 @@ public:
 
 protected:
 	float mClosestPickingDistance, mFurthestPickingDistance;
-	EntityPickResult mResult;
+	std::vector<EntityPickResult> mResult;
 
 	std::auto_ptr<EntityWorldPickListenerVisualizer> mVisualizer;
 

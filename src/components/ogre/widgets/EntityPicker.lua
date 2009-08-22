@@ -94,9 +94,10 @@ function EntityPicker.showMenu(position)
 end
 
 --called when an entity has been picked
-function EntityPicker.pickedEntity(result, args)
+function EntityPicker.pickedEntity(results, args)
 	
 	if args.pickType == EmberOgre.MPT_CLICK then
+		local result = results[0]
 		local entity = result.entity
 		EntityPicker.entityId = entity:getId()
 		--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage

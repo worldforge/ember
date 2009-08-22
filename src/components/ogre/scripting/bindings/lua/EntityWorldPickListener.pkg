@@ -43,7 +43,7 @@ struct EntityPickResult
 class EntityWorldPickListener
 {
 
-	sigc::signal<void, const EmberOgre::EntityPickResult&, const EmberOgre::MousePickerArgs&> EventPickedEntity;
+	sigc::signal<void, const std::vector<EmberOgre::EntityPickResult>&, const EmberOgre::MousePickerArgs&> EventPickedEntity;
 	
 };
 

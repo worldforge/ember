@@ -340,6 +340,12 @@ void LuaConnector::pushValue(const Atlas::Objects::Root& theValue, const std::st
 	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
 }
 
+void LuaConnector::pushValue(const std::vector<EmberOgre::EntityPickResult>& theValue, const std::string& luaTypename)
+{
+	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+}
+
+
 LuaConnector::~LuaConnector()
 {
 	delete mConnector;
@@ -454,6 +460,16 @@ LuaConnector::LuaConnector(sigc::signal<void, const EntityPickResult&, const Mou
 		luaTypes.push_back("EmberOgre::EntityPickResult");
 		luaTypes.push_back("EmberOgre::MousePickerArgs");
 		mConnector = new LuaConnectors::ConnectorTwo<void, const EntityPickResult&, const MousePickerArgs&>(signal, luaTypes);
+	}
+}
+
+LuaConnector::LuaConnector(sigc::signal<void, const std::vector<EmberOgre::EntityPickResult>&, const MousePickerArgs&>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("std::vector<EmberOgre::EntityPickResult>");
+		luaTypes.push_back("EmberOgre::MousePickerArgs");
+		mConnector = new LuaConnectors::ConnectorTwo<void, const std::vector<EmberOgre::EntityPickResult>&, const MousePickerArgs&>(signal, luaTypes);
 	}
 }
 
@@ -626,6 +642,7 @@ LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Objects::Root&>& sign
 		mConnector = new LuaConnectors::ConnectorOne<void, const Atlas::Objects::Root&>(signal, luaTypes);
 	}
 }
+
 
 }
 ;

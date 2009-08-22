@@ -1,7 +1,7 @@
 namespace std {
 class vector {
 
-        TEMPLATE_BIND(T, std::string, EmberOgre::Model::SubModelDefinition*, EmberOgre::Model::PartDefinition*, EmberOgre::Model::SubEntityDefinition*, Eris::Task*)
+        TEMPLATE_BIND(T, std::string, EmberOgre::Model::SubModelDefinition*, EmberOgre::Model::PartDefinition*, EmberOgre::Model::SubEntityDefinition*, Eris::Task*, EmberOgre::EntityPickResult)
 
         void clear();
         int size() const;

@@ -253,6 +253,7 @@ public:
 	static void pushValue(const EmberOgre::Terrain::TerrainPage& theValue, const std::string& luaTypename);
 	static void pushValue(const EmberOgre::EmberEntity& theValue, const std::string& luaTypename);
 	static void pushValue(const Atlas::Objects::Root& theValue, const std::string& luaTypename);
+	static void pushValue(const std::vector<EmberOgre::EntityPickResult>& theValue, const std::string& luaTypename);
 
 	LuaConnector(sigc::signal<void>& signal);
 	LuaConnector(sigc::signal<void, const std::string&, EmberEntity*>& signal);
@@ -260,6 +261,7 @@ public:
 	LuaConnector(sigc::signal<void, const Eris::ServerInfo&>& signal);
 	LuaConnector(sigc::signal<void, float>& signal);
 	LuaConnector(sigc::signal<void, const EntityPickResult&, const MousePickerArgs&>& signal);
+	LuaConnector(sigc::signal<void, const std::vector<EmberOgre::EntityPickResult>&, const MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, const MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, Ember::Input::MouseButton, Ember::Input::InputMode>& signal);
 	LuaConnector(sigc::signal<void, Ember::Input::InputMode>& signal);
