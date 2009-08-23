@@ -31,9 +31,8 @@
 #include <vector>
 #include <OgreVector3.h>
 
-
-namespace EmberOgre {
-
+namespace EmberOgre
+{
 
 class EmberEntity;
 class EntityWorldPickListener;
@@ -45,12 +44,13 @@ struct EntityPickResult
 	EmberEntity* entity;
 	Ogre::Vector3 position;
 	Ogre::Real distance;
+	bool isTransparent;
 };
 
 /**
-Visualizes the picking operation by placing a large ball at the picked position.
-*/
-class EntityWorldPickListenerVisualizer : public virtual sigc::trackable
+ Visualizes the picking operation by placing a large ball at the picked position.
+ */
+class EntityWorldPickListenerVisualizer: public virtual sigc::trackable
 {
 public:
 	EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener);
@@ -63,19 +63,18 @@ private:
 };
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class EntityWorldPickListener : public IWorldPickListener, public Ember::ConsoleObject
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class EntityWorldPickListener: public IWorldPickListener, public Ember::ConsoleObject
 {
 public:
-    EntityWorldPickListener();
+	EntityWorldPickListener();
 
-    ~EntityWorldPickListener();
+	~EntityWorldPickListener();
 
 	virtual void initializePickingContext();
 
 	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
-
 
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
 
@@ -88,7 +87,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 protected:
 	float mClosestPickingDistance, mFurthestPickingDistance;

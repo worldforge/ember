@@ -90,10 +90,6 @@ void EntityWorldPickListener::initializePickingContext()
 	mClosestPickingDistance = 0;
 	mFurthestPickingDistance = 0;
 	mResult.clear();
-	//	mResult = EntityPickResult();
-	//	mResult.entity = 0;
-	//	mResult.position = Ogre::Vector3::ZERO;
-	//	mResult.distance = 0;
 }
 
 void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
@@ -115,22 +111,29 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 		Ogre::SceneQuery::WorldFragment* wf = entry.worldFragment;
 		static Ogre::Vector3 invalidPos(-1, -1, -1);
 		if (wf->singleIntersection != invalidPos) {
-			if (mFurthestPickingDistance == 0) {
+
+			if (mFurthestPickingDistance == 0 || !mResult.size()) {
 				EntityPickResult result;
 				result.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
 				result.position = wf->singleIntersection;
 				result.distance = entry.distance;
+				result.isTransparent = false;
 				mResult.push_back(result);
 				continuePicking = false;
 			} else {
-//				if (entry.distance < mResult.distance) {
+				if (entry.distance < mResult[mResult.size() - 1].distance) {
+					//If the last result is transparent, add another result, but if it's not replace it.
+					if (mResult.size() && !mResult[mResult.size() - 1].isTransparent) {
+						mResult.pop_back();
+					}
 					EntityPickResult result;
 					result.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
 					result.position = wf->singleIntersection;
 					result.distance = entry.distance;
+					result.isTransparent = false;
 					mResult.push_back(result);
 					continuePicking = false;
-//				}
+				}
 			}
 		}
 		/*		std::stringstream ss;
@@ -148,52 +151,38 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 			if (collisionDetector) {
 				CollisionResult collisionResult;
 				collisionResult.collided = false;
+				collisionResult.isTransparent = false;
 				collisionDetector->testCollision(cameraRay, collisionResult);
 				if (collisionResult.collided) {
 					EntityPickResult result;
 					result.entity = &anUserObject->getEmberEntity();
 					result.position = collisionResult.position;
 					result.distance = collisionResult.distance;
+					result.isTransparent = collisionResult.isTransparent;
 					if (mFurthestPickingDistance == 0) {
-						///test all objects that fall into this distance
-						mFurthestPickingDistance = (pickedMovable->getParentNode()->_getDerivedPosition() - cameraRay.getOrigin()).length() + pickedMovable->getBoundingRadius();
+						//If the current collision is transparent, also check for entities which are further away.
+						if (!collisionResult.isTransparent) {
+							///test all objects that fall into this distance
+							mFurthestPickingDistance = (pickedMovable->getParentNode()->_getDerivedPosition() - cameraRay.getOrigin()).length() + pickedMovable->getBoundingRadius();
+						}
 						mResult.push_back(result);
 					} else {
-						if ((pickedMovable->getParentNode()->_getDerivedPosition() - cameraRay.getOrigin()).length() - pickedMovable->getBoundingRadius() > mFurthestPickingDistance) {
+						if (result.distance > mFurthestPickingDistance) {
 							continuePicking = false;
 						} else {
-//							if (result.distance < mResult.distance) {
+							if (mResult.size() && mResult[mResult.size() - 1].distance > result.distance) {
+								//If the last result is transparent, add another result, but if it's not replace it.
+								if (mResult.size() && !mResult[mResult.size() - 1].isTransparent) {
+									mResult.pop_back();
+								}
 								mResult.push_back(result);
-//								mResult = result;
-//							}
+							}
 						}
 					}
-
 				}
 			}
-
-			///only do opcode detection if there's a CollisionObject
-			// 			for (EmberEntityUserObject::CollisionObjectStore::iterator I = collisionObjects->begin(); I != collisionObjects->end(); ++I) {
-			// 				OgreOpcode::ICollisionShape* collisionShape = (*I)->getShape();
-			// 				OgreOpcode::CollisionPair pick_result;
-			//
-			// 				if (collisionShape->rayCheck(OgreOpcode::COLLTYPE_QUICK,anUserObject->getModel()->_getParentNodeFullTransform(),cameraRay, 1000, pick_result)) {
-			// 					EntityPickResult result;
-			// 					result.entity = anUserObject->getEmberEntity();
-			// 					result.position = pick_result.contact;
-			// 					result.distance = pick_result.distance;
-			//
-			// 					std::stringstream ss;
-			// 					ss << result.position;
-			// 					S_LOG_VERBOSE("Picked entity: " << ss.str() << " distance: " << result.distance);
-			// 					EventPickedEntity(result, mousePickerArgs);
-			// 					continuePicking = false;
-			//
-			// 				}
-			// 			}
 		}
 	}
-
 }
 
 void EntityWorldPickListener::runCommand(const std::string &command, const std::string &args)

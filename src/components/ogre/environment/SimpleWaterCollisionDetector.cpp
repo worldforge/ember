@@ -65,6 +65,7 @@ void SimpleWaterCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult
 		result.collided = true;
 		result.position = ray.getPoint(intersectionResult.second);
 		result.distance = intersectionResult.second;
+		result.isTransparent = true; //The water should always be transparent, so that we can select entities inside it.
 	} else {
 		// raycast failed
 		result.collided = false;

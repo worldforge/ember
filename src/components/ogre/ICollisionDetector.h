@@ -47,6 +47,12 @@ struct CollisionResult
 	 * @brief The distance to the collision, in world units.
 	 */
 	float distance;
+
+	/**
+	 * @brief If true, the point where the collision occurred is transparent.
+	 * A common case is then to also check for collisions with entities beyond the object.
+	 */
+	bool isTransparent;
 };
 
 /**
