@@ -35,6 +35,8 @@
 #include "ModelDefinition.h"
 #include "ModelBackgroundLoader.h"
 
+#include "framework/TimedLog.h"
+
 #include <OgreTagPoint.h>
 #include <OgreMeshManager.h>
 #include <OgreResourceBackgroundQueue.h>
@@ -142,6 +144,7 @@ void Model::_notifyManager(Ogre::SceneManager* man)
 
 bool Model::createFromDefn()
 {
+	Ember::TimedLog timedLog("Model::createFromDefn");
 	// create instance of model from definition
 	Ogre::SceneManager* sceneManager = _getManager();
 	assert(sceneManager);
@@ -153,6 +156,7 @@ bool Model::createFromDefn()
 	}
 
 	if (mBackgroundLoader->poll()) {
+		timedLog.report("Initial poll.");
 		return createActualModel();
 	}
 	else {
@@ -164,6 +168,7 @@ bool Model::createFromDefn()
 
 bool Model::createActualModel()
 {
+	Ember::TimedLog timedLog("Model::createActualModel");
 	Ogre::SceneManager* sceneManager = _getManager();
 	std::vector<std::string> showPartVector;
 
@@ -172,7 +177,7 @@ bool Model::createActualModel()
 		try {
 
 			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels)->getMeshName());
-
+			timedLog.report("Created entity.");
 			if (entity->getMesh().isNull()) {
 				S_LOG_FAILURE("Could not load mesh " << (*I_subModels)->getMeshName() << " which belongs to model " << mMasterModel->getName() << ".");
 			}
@@ -241,7 +246,7 @@ bool Model::createActualModel()
 				modelPart.setGroupName((*I_parts)->getGroup());
 			}
 			addSubmodel(submodel);
-
+			timedLog.report("Created submodel.");
 		} catch (const Ogre::Exception& e) {
 			S_LOG_FAILURE( "Submodel load error for " + entityName + ". \nOgre error: " + e.getFullDescription());
 			return false;
@@ -251,10 +256,13 @@ bool Model::createActualModel()
 	setRenderingDistance(mMasterModel->getRenderingDistance());
 
 	createActions();
+	timedLog.report("Created actions.");
 
 	createParticles();
+	timedLog.report("Created particles.");
 
 	createLights();
+	timedLog.report("Created lights.");
 
 	std::vector<std::string>::const_iterator I_end = showPartVector.end();
 	for (std::vector<std::string>::const_iterator I = showPartVector.begin(); I != I_end; I++) {
