@@ -53,6 +53,7 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), nodeProvider->createChildProvider(&mModelRepresentation.getModel()));
 	mModelMount->reset();
 	setupFittings();
+	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
 }
 
 ModelAttachment::ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment) :
@@ -60,6 +61,7 @@ ModelAttachment::ModelAttachment(ModelAttachment& source, NodeAttachment& newPar
 {
 	source.mModelMount = 0;
 	updateScale();
+	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
 }
 
 ModelAttachment::~ModelAttachment()
@@ -232,6 +234,12 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 		}
 	}
 }
+
+void ModelAttachment::model_Reloaded()
+{
+	updateScale();
+}
+
 
 void ModelAttachment::setVisualize(const std::string& visualization, bool visualize)
 {

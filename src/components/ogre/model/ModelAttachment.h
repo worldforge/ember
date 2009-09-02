@@ -103,6 +103,8 @@ protected:
 	void createFitting(const std::string& fittingName, const std::string& entityId);
 
 	virtual void setVisible(bool visible);
+
+	void model_Reloaded();
 };
 
 }
