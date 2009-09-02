@@ -15,6 +15,9 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "TimedLog.h"
 
@@ -24,7 +27,7 @@
 
 namespace Ember
 {
-
+#ifdef DEBUG
 TimedLog::TimedLog(const std::string& logName) :
 	mLogName(logName), mStartMilliseconds(0), mLastReportMilliseconds(0)
 {
@@ -57,5 +60,21 @@ void TimedLog::report(const std::string& reportName)
 	}
 	mLastReportMilliseconds = currentTime;
 }
+#else
+TimedLog::TimedLog(const std::string& logName)
+{
+}
 
+TimedLog::~TimedLog()
+{
+}
+
+void TimedLog::report()
+{
+}
+
+void TimedLog::report(const std::string& reportName)
+{
+}
+#endif
 }
