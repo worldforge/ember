@@ -121,8 +121,7 @@ bool Model::create(const std::string& modelType)
 	if (false && !mMasterModel->isValid()) {
 		S_LOG_FAILURE("Model of type " << modelType << " from group " << groupName << " is not valid.");
 		return false;
-	}
-	else {
+	} else {
 		mMasterModel->addModelInstance(this);
 		return true;
 		/*		bool success =  createFromDefn();
@@ -151,6 +150,7 @@ bool Model::createFromDefn()
 	mScale = mMasterModel->mScale;
 	mRotation = mMasterModel->mRotation;
 
+#if OGRE_THREAD_SUPPORT
 	if (!mBackgroundLoader) {
 		mBackgroundLoader = new ModelBackgroundLoader(*this);
 	}
@@ -162,8 +162,11 @@ bool Model::createFromDefn()
 	else {
 		ModelDefinitionManager::getSingleton().addBackgroundLoader(mBackgroundLoader);
 		setRenderingDistance(mMasterModel->getRenderingDistance());
+		return true;
 	}
-	return true;
+#else
+	return createActualModel();
+#endif
 }
 
 bool Model::createActualModel()
@@ -200,13 +203,11 @@ bool Model::createActualModel()
 							///try with a submodelname first
 							if ((*I_subEntities)->getSubEntityName() != "") {
 								subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityName());
-							}
-							else {
+							} else {
 								///no name specified, use the index instead
 								if (entity->getNumSubEntities() > (*I_subEntities)->getSubEntityIndex()) {
 									subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
-								}
-								else {
+								} else {
 									S_LOG_WARNING("Model definition " << mMasterModel->getName() << " has a reference to entity with index " << (*I_subEntities)->getSubEntityIndex() << " which is out of bounds.");
 								}
 							}
@@ -216,16 +217,14 @@ bool Model::createActualModel()
 								if ((*I_subEntities)->getMaterialName() != "") {
 									subEntity->setMaterialName((*I_subEntities)->getMaterialName());
 								}
-							}
-							else {
+							} else {
 								S_LOG_WARNING("Could not add subentity.");
 							}
 						} catch (const std::exception& ex) {
 							S_LOG_WARNING("Error when getting sub entities for model '" << mMasterModel->getName() << "'." << ex);
 						}
 					}
-				}
-				else {
+				} else {
 					//if no subentities are defined, add all subentities
 					unsigned int numSubEntities = entity->getNumSubEntities();
 					for (unsigned int i = 0; i < numSubEntities; ++i) {
@@ -400,8 +399,7 @@ bool Model::addSubmodel(SubModel* submodel)
 	if (submodel->getEntity()->getSkeleton()) {
 		if (mSkeletonOwnerEntity != 0) {
 			submodel->getEntity()->shareSkeletonInstanceWith(mSkeletonOwnerEntity);
-		}
-		else {
+		} else {
 			mSkeletonOwnerEntity = submodel->getEntity();
 			// 			mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 		}
@@ -581,11 +579,9 @@ void Model::resetLights()
 			///Try first with the manager to which the light belongs to. If none is found, try to see if we belong to a maneger. And if that's not true either, just delete it.
 			if (light->_getManager()) {
 				light->_getManager()->destroyLight(light);
-			}
-			else if (_getManager()) {
+			} else if (_getManager()) {
 				_getManager()->destroyLight(light);
-			}
-			else {
+			} else {
 				delete light;
 			}
 
@@ -630,8 +626,7 @@ Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 {
 	if (mSubmodels.size() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getAnimationState(name);
-	}
-	else {
+	} else {
 		return 0;
 	}
 }
@@ -640,8 +635,7 @@ Ogre::AnimationStateSet* Model::getAllAnimationStates()
 {
 	if (mSubmodels.size() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getAllAnimationStates();
-	}
-	else {
+	} else {
 		return 0;
 	}
 }
@@ -650,8 +644,7 @@ Ogre::SkeletonInstance * Model::getSkeleton()
 {
 	if (mSubmodels.size() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getSkeleton();
-	}
-	else {
+	} else {
 		return 0;
 	}
 }
@@ -672,15 +665,13 @@ Ogre::TagPoint* Model::attachObjectToBone(const Ogre::String &boneName, Ogre::Mo
 			//since we're using inherit scale on the tagpoint, divide by the parent's scale now, so it evens out later on when the TagPoint is scaled in TagPoint::_updateFromParent(
 			Ogre::Vector3 parentScale = mParentNode->_getDerivedScale();
 			tagPoint->setScale(scale / parentScale);
-		}
-		else {
+		} else {
 			//no parent node, this is not good...
 			tagPoint->setScale(scale);
 		}
 		return tagPoint;
 
-	}
-	else {
+	} else {
 		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::attachObjectToBone");
 	}
 }
@@ -702,8 +693,7 @@ Ogre::MovableObject* Model::detachObjectFromBone(const Ogre::String &movableName
 			}
 		}
 		return 0;
-	}
-	else {
+	} else {
 		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::detachObjectFromBone");
 	}
 }
@@ -715,8 +705,7 @@ void Model::detachAllObjectsFromBone(void)
 		mSkeletonOwnerEntity->detachAllObjectsFromBone();
 		mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(0);
 
-	}
-	else {
+	} else {
 		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::detachAllObjectsFromBone");
 	}
 }
