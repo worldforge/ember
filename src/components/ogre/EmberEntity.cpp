@@ -75,7 +75,7 @@ const std::string EmberEntity::MODE_FLOATING("floating");
 const std::string EmberEntity::MODE_FIXED("fixed");
 const std::string EmberEntity::MODE_PROJECTILE("projectile");
 
-const std::string EmberEntity::BboxMaterialName("BaseYellowNoLightning");
+const std::string EmberEntity::BboxMaterialName("/global/authoring/bbox");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
 	Eris::Entity(id, ty, vw), mIsInitialized(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
@@ -181,6 +181,11 @@ void EmberEntity::createEntityMapping()
 
 void EmberEntity::onMoved()
 {
+	if (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible()) {
+		mErisEntityBoundingBox->getParentNode()->setPosition(Convert::toOgre(getPredictedPos()));
+		mErisEntityBoundingBox->getParentNode()->setOrientation(Convert::toOgre(getOrientation()));
+
+	}
 	parseMovementMode();
 	Eris::Entity::onMoved();
 }
@@ -460,9 +465,6 @@ bool EmberEntity::getVisualize(const std::string& visualization) const
 
 void EmberEntity::showErisBoundingBox(bool show)
 {
-
-	createErisBboxMaterial();
-
 	///if there's no bounding box, create one now
 	///allowing for some lazy loading
 	if (!mErisEntityBoundingBox) {
@@ -484,16 +486,6 @@ void EmberEntity::showErisBoundingBox(bool show)
 	}
 	mErisEntityBoundingBox->setVisible(show);
 
-}
-
-void EmberEntity::createErisBboxMaterial()
-{
-	if (!Ogre::MaterialManager::getSingleton().resourceExists(BboxMaterialName)) {
-		Ogre::MaterialPtr baseYellowNoLighting = Ogre::MaterialManager::getSingleton().create(BboxMaterialName, Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME);
-		baseYellowNoLighting->setLightingEnabled(false);
-		baseYellowNoLighting->setAmbient(Ogre::ColourValue(1, 1, 0.7));
-		baseYellowNoLighting->setDiffuse(Ogre::ColourValue(1, 1, 0.7));
-	}
 }
 
 void EmberEntity::onBboxChanged()

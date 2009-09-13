@@ -476,11 +476,6 @@ protected:
 	virtual bool createDependentObject(const std::string& attributeName);
 
 	/**
-	 * @brief Creates the material used for the eris bboxes, if not already created.
-	 */
-	void createErisBboxMaterial();
-
-	/**
 	 * @brief Called by eris just after the entity has been put into the world.
 	 * @param ge The root entity which contains all atlas data that define this entity.
 	 * @param fromCreateOp
