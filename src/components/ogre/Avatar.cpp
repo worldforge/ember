@@ -50,8 +50,6 @@
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 
-
-
 #include <OgreRoot.h>
 
 #include <OgreTagPoint.h>
@@ -62,14 +60,7 @@ namespace EmberOgre
 {
 
 Avatar::Avatar(EmberEntity& erisAvatarEntity) :
-SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>")
-, mErisAvatarEntity(erisAvatarEntity)
-, mMaxSpeed(5)
-, mAvatarAttachmentController(new AvatarAttachmentController(*this))
-, mCameraMount(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()))
-, mIsAdmin(false)
-, mHasChangedLocation(false)
-, mChatLoggerParent(0)
+	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(0)
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
@@ -185,18 +176,22 @@ void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath:
 	mCurrentMovement = movement * mMaxSpeed;
 	if (movement != WFMath::Vector<3>::ZERO()) {
 
-		//We need to constraint the orientation to only around the z axis.
-		WFMath::Vector<3> rotator(1.0, 0.0, 0.0);
-		rotator.rotate(orientation);
-		WFMath::Quaternion adjustedOrientation;
-		adjustedOrientation.fromRotMatrix(WFMath::RotMatrix<3>().rotationZ(atan2(rotator.y(), rotator.x())));
+		if (isOkayToSendRotationMovementChangeToServer()) {
+			//We need to constraint the orientation to only around the z axis.
+			WFMath::Vector<3> rotator(1.0, 0.0, 0.0);
+			rotator.rotate(orientation);
+			WFMath::Quaternion adjustedOrientation;
+			adjustedOrientation.fromRotMatrix(WFMath::RotMatrix<3>().rotationZ(atan2(rotator.y(), rotator.x())));
 
-		mClientSideAvatarOrientation = adjustedOrientation;
-		//For some not quite explained reason we need to rotate the orientation 90 degrees around the z axis for the orientation to be correct.
-		mClientSideAvatarOrientation.rotate(WFMath::Quaternion(WFMath::Vector<3>(0, 0, 1), WFMath::Pi / 2));
+			mClientSideAvatarOrientation = adjustedOrientation;
+			//For some not quite explained reason we need to rotate the orientation 90 degrees around the z axis for the orientation to be correct.
+			mClientSideAvatarOrientation.rotate(WFMath::Quaternion(WFMath::Vector<3>(0, 0, 1), WFMath::Pi / 2));
+		}
+		//...and then adjust the rotation 90 degrees in the other direction when calculating how to rotate the movement direction
+		WFMath::Quaternion adjustedOrientation = mClientSideAvatarOrientation;
+		adjustedOrientation.rotate(WFMath::Quaternion(WFMath::Vector<3>(0, 0, -1), WFMath::Pi / 2));
 		mCurrentMovement.rotate(adjustedOrientation);
-		WFMath::Vector<3> adjustedMovement(movement * timeslice * mMaxSpeed);
-		mClientSideAvatarPosition += adjustedMovement.rotate(adjustedOrientation);
+		mClientSideAvatarPosition += mCurrentMovement * timeslice;
 
 		if (mErisAvatarEntity.getAttachment()) {
 			mErisAvatarEntity.getAttachment()->updatePosition();
@@ -231,10 +226,10 @@ void Avatar::attemptMove()
 		//we are already moving
 		//let's see if we've changed speed or direction or even stopped
 		if (!isMoving) {
-			S_LOG_VERBOSE( "Avatar stopped moving.");
+			S_LOG_VERBOSE("Avatar stopped moving.");
 			//we have stopped; we must alert the server
 			sendToServer = true;
-		} else if (newMovementState.movement != mCurrentMovementState.movement || !(newMovementState.orientation == mCurrentMovementState.orientation)) {
+		} else if (newMovementState.movement != mCurrentMovementState.movement || newMovementState.orientation != mCurrentMovementState.orientation) {
 			//either the speed or the direction has changed
 			sendToServer = true;
 		}
@@ -243,7 +238,7 @@ void Avatar::attemptMove()
 	if (sendToServer) {
 		S_LOG_VERBOSE("Sending move op to server.");
 
-		///Save the five latest orientations sent to the server, so we can later when we recieve an update from the server we can recognize that it's our own updates and ignore them.
+		///Save the five latest orientations sent to the server, so we can later when we receive an update from the server we can recognize that it's our own updates and ignore them.
 		long currentTime = Ember::EmberServices::getSingleton().getTimeService()->currentTimeMillis();
 		mLastTransmittedMovements.push_back(TimedMovementStateList::value_type(currentTime, newMovementState));
 		if (mLastTransmittedMovements.size() > 5) {
@@ -259,35 +254,6 @@ void Avatar::attemptMove()
 	mCurrentMovement = WFMath::Vector<3>::ZERO();
 
 }
-
-//void Avatar::attemptRotate(MovementControllerMovement& movement)
-//{
-//	//TODO: remove the direct references to AvatarCamera
-///*	float degHoriz = movement.rotationDegHoriz;
-//	float degVert = movement.rotationDegVert;
-//	Ogre::Real timeSlice = movement.timeSlice;*/
-//
-////	mAccumulatedHorizontalRotation += (degHoriz * timeSlice);
-//
-//	//if we're moving we must sync the rotation with messages sent to the server
-//	if (!movement.isMoving && fabs(getAvatarCamera()->getYaw().valueDegrees()) > mThresholdDegreesOfYawForAvatarRotation) {
-////		mAvatarNode->setOrientation(movement.cameraOrientation);
-////		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
-//		Ogre::Degree yaw = getAvatarCamera()->getYaw();
-//		getAvatarCamera()->yaw(-yaw);
-////		mAccumulatedHorizontalRotation = 0;
-//	} else if (isOkayToSendRotationMovementChangeToServer() && (getAvatarCamera()->getYaw().valueDegrees())) {
-//		// rotate the Avatar Node only in X position (no vertical rotation)
-////		mAvatarNode->setOrientation(movement.cameraOrientation);
-////		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,getAvatarCamera()->getYaw());
-//		Ogre::Degree yaw = getAvatarCamera()->getYaw();
-//		getAvatarCamera()->yaw(-yaw);
-//
-////		mAvatarNode->rotate(Ogre::Vector3::UNIT_Y,mAccumulatedHorizontalRotation);
-////		mAccumulatedHorizontalRotation = 0;
-//	}
-
-//}
 
 EmberEntity& Avatar::getEmberEntity()
 {
@@ -352,11 +318,12 @@ void Avatar::avatar_LocationChanged(Eris::Entity* entity)
 
 void Avatar::avatar_Moved()
 {
-	for (TimedMovementStateList::const_reverse_iterator I = mLastTransmittedMovements.rbegin(); I != mLastTransmittedMovements.rend(); ++I) {
-		if (WFMath::Distance(I->second.position, mErisAvatarEntity.getPosition()) < 2) {
-			return;
-		}
-	}
+	//For now this is disabled, since there are a couple of issues with it
+	//	for (TimedMovementStateList::const_reverse_iterator I = mLastTransmittedMovements.rbegin(); I != mLastTransmittedMovements.rend(); ++I) {
+	//		if (I->second.movement != WFMath::Vector<3>::ZERO() && WFMath::Distance(I->second.position, mErisAvatarEntity.getPosition()) < 2) {
+	//			return;
+	//		}
+	//	}
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
 }
