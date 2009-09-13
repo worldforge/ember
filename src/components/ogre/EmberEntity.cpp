@@ -38,7 +38,6 @@
 #include <OgreWireBoundingBox.h>
 #include <OgreMaterialManager.h>
 
-//#include <Atlas/Objects/ObjectsFwd.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
 #include <Atlas/Formatter.h>
@@ -100,7 +99,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	/// we need a model mapping
 	createEntityMapping();
 
-	assert(mEntityMapping);
+	assert( mEntityMapping);
 
 	///calling this will result in a call to setModel(...)
 	mEntityMapping->initialize();
@@ -118,7 +117,7 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	if (getPredictedPos().isValid()) {
 		ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
 	}
-	S_LOG_VERBOSE( ss.str());
+	S_LOG_VERBOSE(ss.str());
 
 	mIsInitialized = true;
 
@@ -148,8 +147,7 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 		if (mTerrainArea->init()) {
 			addArea(mTerrainArea.get());
 			return true;
-		}
-		else {
+		} else {
 			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create an area
 			mTerrainArea.reset();
 		}
@@ -162,8 +160,7 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 		if (mTerrainMod->init()) {
 			addTerrainMod(mTerrainMod.get());
 			return true;
-		}
-		else {
+		} else {
 			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create a mod
 			mTerrainMod.reset();
 		}
@@ -234,7 +231,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	message.append(type);
 	message.append("> ");
 	message.append(msg);
-	S_LOG_VERBOSE( "Entity says: [" << message << "]\n" );
+	S_LOG_VERBOSE("Entity says: [" << message << "]\n");
 
 	/// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
@@ -260,7 +257,7 @@ void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation &
 
 		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
 
-		S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << name);
+		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << name);
 	}
 
 	Eris::Entity::onSoundAction(op);
@@ -292,14 +289,15 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			if (newAttachment) {
 				newAttachment->updateScale();
 			}
-		} catch (const std::exception& ex) {
+		}
+		catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}
-	}
-	else {
+	} else {
 		try {
 			setAttachment(0);
-		} catch (const std::exception& ex) {
+		}
+		catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when setting attachment for entity." << ex);
 		}
 	}
@@ -317,7 +315,7 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 
 		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
 
-		S_LOG_VERBOSE( "Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
+		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
 	}
 	Entity::onAction(act);
 }
@@ -350,7 +348,7 @@ bool EmberEntity::hasSuggestedResponses() const
 void EmberEntity::addArea(Terrain::TerrainArea* area)
 {
 	///A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
-	///Intead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
+	///Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
 	if (getEmberLocation()) {
 		getEmberLocation()->addArea(area);
 	}
@@ -368,8 +366,7 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 {
 	if (str == "mode") {
 		parsePositioningModeChange(v);
-	}
-	else if (str == "bbox") {
+	} else if (str == "bbox") {
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
@@ -393,8 +390,7 @@ void EmberEntity::parseMovementMode()
 		if (velocity.isValid()) {
 			if (velocity.mag() > 2.6) {
 				newMode = MM_RUNNING;
-			}
-			else {
+			} else {
 				newMode = MM_WALKING;
 			}
 		}
@@ -410,17 +406,13 @@ void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 	PositioningMode newMode;
 	if (mode.empty()) {
 		newMode = PM_DEFAULT;
-	}
-	else if (mode == MODE_FLOATING) {
+	} else if (mode == MODE_FLOATING) {
 		newMode = PM_FLOATING;
-	}
-	else if (mode == MODE_FIXED) {
+	} else if (mode == MODE_FIXED) {
 		newMode = PM_FIXED;
-	}
-	else if (mode == MODE_PROJECTILE) {
+	} else if (mode == MODE_PROJECTILE) {
 		newMode = PM_PROJECTILE;
-	}
-	else {
+	} else {
 		newMode = PM_DEFAULT;
 	}
 
@@ -456,8 +448,7 @@ bool EmberEntity::getVisualize(const std::string& visualization) const
 {
 	if (visualization == "ErisBBox") {
 		return getShowErisBoundingBox();
-	}
-	else if (mAttachment) {
+	} else if (mAttachment) {
 		return mAttachment->getVisualize(visualization);
 	}
 	return false;
@@ -469,20 +460,43 @@ void EmberEntity::showErisBoundingBox(bool show)
 	///allowing for some lazy loading
 	if (!mErisEntityBoundingBox) {
 		mErisEntityBoundingBox = OGRE_NEW Ogre::OOBBWireBoundingBox();
-		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
-		Ogre::SceneNode* boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
-		boundingBoxNode->attachObject(mErisEntityBoundingBox);
-
-		///if there's no bounding box defined for this entity, show one that is 0.2 meters across in all direction
-		if (hasBBox()) {
-			mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
+		try {
+			mErisEntityBoundingBox->setMaterial(BboxMaterialName);
 		}
-		else {
-			mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1, -0.1, -0.1, 0.1, 0.1, 0.1));
+		catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when setting Ogre material for bounding box.");
+			OGRE_DELETE mErisEntityBoundingBox;
+			mErisEntityBoundingBox = 0;
+			return;
 		}
+		Ogre::SceneNode* boundingBoxNode(0);
+		try {
+			boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
+		}
+		catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when creating Ogre node for eris bounding box.");
+			OGRE_DELETE mErisEntityBoundingBox;
+			mErisEntityBoundingBox = 0;
+			return;
+		}
+		try {
+			boundingBoxNode->attachObject(mErisEntityBoundingBox);
+			///if there's no bounding box defined for this entity, show one that is 0.2 meters across in all direction
+			if (hasBBox()) {
+				mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
+			} else {
+				mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1, -0.1, -0.1, 0.1, 0.1, 0.1));
+			}
 
-		boundingBoxNode->setPosition(Convert::toOgre(getPredictedPos()));
-		boundingBoxNode->setOrientation(Convert::toOgre(getOrientation()));
+			boundingBoxNode->setPosition(Convert::toOgre(getPredictedPos()));
+			boundingBoxNode->setOrientation(Convert::toOgre(getOrientation()));
+		}
+		catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when setting up eris bounding box.");
+			OGRE_DELETE mErisEntityBoundingBox;
+			mErisEntityBoundingBox = 0;
+			return;
+		}
 	}
 	mErisEntityBoundingBox->setVisible(show);
 
@@ -554,7 +568,6 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 	logOutstream << "Dumping attributes for entity " << getId() << "(" << getName() << ")" << std::endl;
 
 	Atlas::Message::QueuedDecoder decoder;
-	//std::fstream file;
 
 	Atlas::Codecs::XML codec(outstream, decoder);
 	Atlas::Formatter formatter(outstream, codec);
