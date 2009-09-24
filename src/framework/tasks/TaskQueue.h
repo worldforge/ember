@@ -67,6 +67,12 @@ public:
 	 */
 	void enqueueTask(ITask* task, ITaskExecutionListener* listener);
 
+	/**
+	 * @brief Goes through all processed tasks, handled them and then deletes them
+	 * Call this often in the main thread (every frame or so).
+	 */
+	void pollProcessedTasks();
+
 protected:
 	/**
 	 * @brief A queue of task units.
@@ -79,9 +85,15 @@ protected:
 	typedef std::vector<TaskExecutor*> TaskExecutorStore;
 
 	/**
-	 * @brief A collection of task units, which is a tuple of a task and a listener.
+	 * @brief A collection of unprocessed task units, which is a tuple of a task and a listener.
 	 */
-	TaskUnitQueue mTaskUnits;
+	TaskUnitQueue mUnprocessedTaskUnits;
+
+	/**
+	 * @brief A collection of processed task units. These will need to be executed in the main thread before they can be deleted.
+	 * @see pollProcessedTasks()
+	 */
+	TaskUnitQueue mProcessedTaskUnits;
 
 	/**
 	 * @brief The executors used by the queue.
@@ -89,14 +101,19 @@ protected:
 	TaskExecutorStore mExecutors;
 
 	/**
-	 * @brief A mutex used whenever the queue is accessed.
+	 * @brief A mutex used whenever the unprocessed queue is accessed.
 	 */
-	boost::mutex mQueueMutex;
+	boost::mutex mUnprocessedQueueMutex;
+
+	/**
+	 * @brief A mutex used whenever the processed queue is accessed.
+	 */
+	boost::mutex mProcessedQueueMutex;
 
 	/**
 	 * @brief A condition variable used for letting threads sleep while waiting for new tasks.
 	 */
-	boost::condition_variable mQueueCond;
+	boost::condition_variable mUnprocessedQueueCond;
 
 	/**
 	 * @brief Gets the next task to process.
@@ -104,6 +121,12 @@ protected:
 	 * Calling this while there's no current tasks will result in the current thread being put on hold until a new task is enqueued.
 	 */
 	TaskUnit fetchNextTask();
+
+	/**
+	 * @brief Adds a processed task back to the queue, to be handled in the main thread and then deleted.
+	 * @param taskUnit The processed task unit.
+	 */
+	void addProcessedTask(TaskUnit taskUnit);
 
 };
 

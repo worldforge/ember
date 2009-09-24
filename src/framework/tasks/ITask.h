@@ -27,12 +27,37 @@ namespace Tasks
 
 class TaskExecutionContext;
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Base interface for a "task".
+ * A "task" is a piece of work which needs to be carried out in a separate thread. Instances of this are processed by an instance of TaskQueue, which uses a collection of concurrant TaskExecutors to execute the tasks.
+ * When each task has been executed in the background threads (through the executors) it can optionally also be executed in the main thread through a call to executeTaskInMainThread().
+ */
 class ITask
 {
 public:
-	virtual ~ITask() {};
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~ITask()
+	{
+	}
+	;
 
-	virtual void executeTask(TaskExecutionContext context) = 0;
+	/**
+	 * @brief Executes the task in a background thread. This is where the bulk of the work should happen.
+	 * @param context The context in which the task executes.
+	 */
+	virtual void executeTaskInBackgroundThread(TaskExecutionContext context) = 0;
+
+	/**
+	 * @brief Executes the task in the main thread, after executeTaskInBackgroundThread() has been called.
+	 * Since this will happen in the main thread you shouldn't do any time consuming things here, since it will lock up the rendering.
+	 */
+	virtual void executeTaskInMainThread()
+	{
+	}
+	;
 };
 
 }

@@ -42,36 +42,81 @@ TaskQueue::~TaskQueue()
 	for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
 		delete *I;
 	}
-	boost::mutex::scoped_lock l(mQueueMutex);
-	while (mTaskUnits.size()) {
-		TaskUnit taskUnit = mTaskUnits.front();
-		mTaskUnits.pop();
-		delete taskUnit.first;
+	{
+		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
+		while (mUnprocessedTaskUnits.size()) {
+			TaskUnit taskUnit = mUnprocessedTaskUnits.front();
+			mUnprocessedTaskUnits.pop();
+			delete taskUnit.first;
+		}
+	}
+	{
+		boost::mutex::scoped_lock l(mProcessedQueueMutex);
+		while (mProcessedTaskUnits.size()) {
+			TaskUnit taskUnit = mProcessedTaskUnits.front();
+			mProcessedTaskUnits.pop();
+			delete taskUnit.first;
+		}
 	}
 }
 
 void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
 {
 	{
-		boost::mutex::scoped_lock l(mQueueMutex);
+		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
 
-		mTaskUnits.push(TaskUnit(task, listener));
+		mUnprocessedTaskUnits.push(TaskUnit(task, listener));
 	}
-	mQueueCond.notify_one();
+	mUnprocessedQueueCond.notify_one();
 
 }
 
 TaskQueue::TaskUnit TaskQueue::fetchNextTask()
 {
 
-	boost::unique_lock<boost::mutex> lock(mQueueMutex);
+	boost::unique_lock<boost::mutex> lock(mUnprocessedQueueMutex);
 
-	while (!mTaskUnits.size()) {
-		mQueueCond.wait(lock);
+	while (!mUnprocessedTaskUnits.size()) {
+		mUnprocessedQueueCond.wait(lock);
 	}
-	TaskUnit taskUnit = mTaskUnits.front();
-	mTaskUnits.pop();
+	TaskUnit taskUnit = mUnprocessedTaskUnits.front();
+	mUnprocessedTaskUnits.pop();
 	return taskUnit;
+}
+
+void TaskQueue::addProcessedTask(TaskQueue::TaskUnit taskUnit)
+{
+	boost::mutex::scoped_lock l(mProcessedQueueMutex);
+	mProcessedTaskUnits.push(taskUnit);
+}
+
+void TaskQueue::pollProcessedTasks()
+{
+	TaskUnitQueue processedCopy;
+	{
+		boost::mutex::scoped_lock l(mProcessedQueueMutex);
+		processedCopy = mProcessedTaskUnits;
+	}
+	while (processedCopy.size()) {
+
+		TaskUnit taskUnit = processedCopy.front();
+		processedCopy.pop();
+		try {
+			taskUnit.first->executeTaskInMainThread();
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when executing task in main thread." << ex);
+		} catch (...) {
+			S_LOG_FAILURE("Unknown error when executing task in main thread.");
+		}
+		try {
+			delete taskUnit.first;
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when deleting task in main thread." << ex);
+		} catch (...) {
+			S_LOG_FAILURE("Unknown error when deleting task in main thread.");
+		}
+
+	}
 }
 
 }

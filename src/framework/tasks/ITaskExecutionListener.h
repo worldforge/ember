@@ -27,13 +27,32 @@ namespace Ember
 namespace Tasks
 {
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A listener for tasks being executed.
+ */
 class ITaskExecutionListener
 {
 public:
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~ITaskExecutionListener() {};
 
+	/**
+	 * @brief Called when execution has started.
+	 */
 	virtual void executionStarted() = 0;
+
+	/**
+	 * @brief Called when execution has ended.
+	 */
 	virtual void executionEnded() = 0;
+
+	/**
+	 * @brief Called when an error occurred during execution.
+	 * @param exception Describes the error.
+	 */
 	virtual void executionError(const Ember::Exception& exception) = 0;
 };
 
