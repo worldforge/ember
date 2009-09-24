@@ -34,21 +34,49 @@ namespace Tasks
 
 class TaskQueue;
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A task executor, responsible for processing tasks.
+ * Each instance of this holds a thread. It's only purpose is to ask the queue for new tasks to process. If no tasks are available it will sleep (inside of TaskQueue::fetchNextTask).
+ */
 class TaskExecutor
 {
+	friend class TaskQueue;
 public:
-	TaskExecutor(TaskQueue& taskQueue);
-	virtual ~TaskExecutor();
-
-	void shutdown();
-
 protected:
 
+	/**
+	 * @brief The queue to which this executor belong.
+	 */
 	TaskQueue& mTaskQueue;
+
+	/**
+	 * @brief Whether the executor is active or not.
+	 */
 	bool mActive;
+
+	/**
+	 * @brief The thread which performs the execution.
+	 */
 	std::auto_ptr<boost::thread> mThread;
 
+	/**
+	 * @brief Ctor.
+	 * During construction a new thread will be created and executed.
+	 * @param taskQueue The queue to which this executor belongs.
+	 */
+	TaskExecutor(TaskQueue& taskQueue);
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~TaskExecutor();
+
+	/**
+	 * @brief Main loop method.
+	 */
 	void run();
+	//	void shutdown();
 };
 
 }

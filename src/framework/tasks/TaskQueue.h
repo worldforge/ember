@@ -33,30 +33,77 @@ class ITask;
 class ITaskExecutionListener;
 class TaskExecutor;
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A task queue, which allows for queuing of tasks, which will be handled by a number of task executors.
+ *
+ * This is the main entry into the task framework. Each instance of this represents a queue onto which tasks can be added.
+ */
 class TaskQueue
 {
-friend class TaskExecutor;
+	friend class TaskExecutor;
 public:
+	/**
+	 * @brief A construct representing both a task and a listener.
+	 */
 	typedef std::pair<ITask*, ITaskExecutionListener*> TaskUnit;
+
+	/**
+	 * @brief Ctor.
+	 * @param numberOfExecutors The number of concurrent task executors to use.
+	 */
 	TaskQueue(unsigned int numberOfExecutors);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~TaskQueue();
 
+	/**
+	 * @brief Adds a task to the queue.
+	 * Ownership of the task will be transferred to this queue. Ownership of the optional listener will not be transferred however.
+	 * @param task The task to add. Note that ownership will be transferred.
+	 * @param listener An optional listener. Note that ownership won't be transferred.
+	 */
 	void enqueueTask(ITask* task, ITaskExecutionListener* listener);
 
 protected:
+	/**
+	 * @brief A queue of task units.
+	 */
 	typedef std::queue<TaskUnit> TaskUnitQueue;
+
+	/**
+	 * @brief A store of executors.
+	 */
 	typedef std::vector<TaskExecutor*> TaskExecutorStore;
 
+	/**
+	 * @brief A collection of task units, which is a tuple of a task and a listener.
+	 */
 	TaskUnitQueue mTaskUnits;
 
+	/**
+	 * @brief The executors used by the queue.
+	 */
 	TaskExecutorStore mExecutors;
 
+	/**
+	 * @brief A mutex used whenever the queue is accessed.
+	 */
 	boost::mutex mQueueMutex;
+
+	/**
+	 * @brief A condition variable used for letting threads sleep while waiting for new tasks.
+	 */
 	boost::condition_variable mQueueCond;
 
-
+	/**
+	 * @brief Gets the next task to process.
+	 * @note This is normally only called by a TaskExecutor.
+	 * Calling this while there's no current tasks will result in the current thread being put on hold until a new task is enqueued.
+	 */
 	TaskUnit fetchNextTask();
-
 
 };
 

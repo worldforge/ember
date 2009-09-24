@@ -42,6 +42,12 @@ TaskQueue::~TaskQueue()
 	for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
 		delete *I;
 	}
+	boost::mutex::scoped_lock l(mQueueMutex);
+	while (mTaskUnits.size()) {
+		TaskUnit taskUnit = mTaskUnits.front();
+		mTaskUnits.pop();
+		delete taskUnit.first;
+	}
 }
 
 void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)

@@ -56,6 +56,7 @@ void TaskExecutor::run()
 			if (listener) {
 				listener->executionEnded();
 			}
+			delete task;
 		} catch (const std::exception& ex) {
 			if (listener) {
 				//TODO: wrap the original error somehow
