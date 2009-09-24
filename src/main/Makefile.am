@@ -32,6 +32,7 @@ ember_bin_LDADD = \
 	$(top_builddir)/src/framework/bindings/lua/eris/liblua_Eris.a \
 	$(top_builddir)/src/framework/bindings/lua/varconf/liblua_Varconf.a \
 	$(top_builddir)/src/framework/bindings/lua/liblua_Framework.a \
+	$(top_builddir)/src/framework/tasks/libTasks.a \
 	$(top_builddir)/src/framework/libFramework.a \
 	$(top_builddir)/src/main/bindings/lua/liblua_Main.a \
 	$(top_builddir)/src/services/bindings/lua/liblua_EmberServices.a \

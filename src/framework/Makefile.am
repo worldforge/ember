@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 
-SUBDIRS = bindings
+SUBDIRS = bindings tasks
 
 noinst_LIBRARIES = libFramework.a
 

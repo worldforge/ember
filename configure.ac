@@ -473,6 +473,7 @@ AC_CONFIG_FILES([Makefile
 		 src/main/bindings/lua/Makefile
 		 src/components/Makefile
 		 src/framework/Makefile
+		 src/framework/tasks/Makefile
 		 src/framework/bindings/Makefile
 		 src/framework/bindings/lua/Makefile
 		 src/framework/bindings/lua/eris/Makefile
