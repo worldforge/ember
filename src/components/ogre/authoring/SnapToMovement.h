@@ -43,7 +43,7 @@ namespace EmberOgre
 
 class EmberEntity;
 
-namespace Manipulation
+namespace Authoring
 {
 
 /**

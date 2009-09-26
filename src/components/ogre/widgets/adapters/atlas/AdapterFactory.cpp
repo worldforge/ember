@@ -44,39 +44,42 @@
 
 using namespace CEGUI;
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Gui {
+namespace Gui
+{
 
-namespace Adapters {
+namespace Adapters
+{
 
-namespace Atlas {
+namespace Atlas
+{
 
 unsigned long AdapterFactory::msAutoGenId = 0;
 
-AdapterFactory::AdapterFactory(const std::string prefix)
-: mPrefix(prefix)
+AdapterFactory::AdapterFactory(const std::string prefix) :
+	mPrefix(prefix)
 {
 }
-
 
 AdapterFactory::~AdapterFactory()
 {
 }
 
-template <typename TAdapter>
+template<typename TAdapter>
 TAdapter* AdapterFactory::createAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	if (!container) {
 		S_LOG_FAILURE("No container sent to adapter factory.");
 		return 0;
 	}
-	if (!verifyCorrectType<TAdapter>(element)) {
+	if (!verifyCorrectType<TAdapter> (element)) {
 		return 0;
 	}
 
 	try {
-		return loadWindowIntoAdapter<TAdapter>(container, adapterPrefix, element, entity);
+		return loadWindowIntoAdapter<TAdapter> (container, adapterPrefix, element, entity);
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when creating adapter. " << ex.getMessage().c_str());
 		return 0;
@@ -86,88 +89,88 @@ TAdapter* AdapterFactory::createAdapter(CEGUI::Window* container, const std::str
 	}
 }
 
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<StringAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isString();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<NumberAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isNum();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<SizeAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isList();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<OrientationAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isList();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<PositionAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isList();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<Position2DAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isList();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<ListAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isList();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<MapAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isMap();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<StaticAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isString() || element.isNum();
 }
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<AreaAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isMap();
 }
 
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<PolygonAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isMap();
 }
 
-template <>
+template<>
 bool AdapterFactory::verifyCorrectType<TerrainModAdapter>(const ::Atlas::Message::Element& element)
 {
 	return element.isMap();
 }
 
-template <>
+template<>
 StringAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StringAdapter.layout");
 	WindowManager& windowMgr = WindowManager::getSingleton();
-	Combobox* stringWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "String"));
+	Combobox* stringWindow = static_cast<Combobox*> (windowMgr.getWindow(mCurrentPrefix + "String"));
 	return new StringAdapter(element, stringWindow);
 }
 
-template <>
+template<>
 NumberAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/NumberAdapter.layout");
 	WindowManager& windowMgr = WindowManager::getSingleton();
-	Combobox* numberWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "Number"));
+	Combobox* numberWindow = static_cast<Combobox*> (windowMgr.getWindow(mCurrentPrefix + "Number"));
 	return new NumberAdapter(element, numberWindow);
 }
 
-template <>
+template<>
 SizeAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/SizeAdapter.layout");
@@ -178,12 +181,12 @@ SizeAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, con
 	Window* upperX = windowMgr.getWindow(mCurrentPrefix + "upperX");
 	Window* upperY = windowMgr.getWindow(mCurrentPrefix + "upperY");
 	Window* upperZ = windowMgr.getWindow(mCurrentPrefix + "upperZ");
-	Slider* scaler = static_cast<Slider*>(windowMgr.getWindow(mCurrentPrefix + "scaler"));
+	Slider* scaler = static_cast<Slider*> (windowMgr.getWindow(mCurrentPrefix + "scaler"));
 	Window* info = windowMgr.getWindow(mCurrentPrefix + "info");
 	return new SizeAdapter(element, lowerX, lowerY, lowerZ, upperX, upperY, upperZ, scaler, info);
 }
 
-template <>
+template<>
 OrientationAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/OrientationAdapter.layout");
@@ -195,7 +198,7 @@ OrientationAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* contain
 	return new OrientationAdapter(element, x, y, z, scalar);
 }
 
-template <>
+template<>
 PositionAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/PositionAdapter.layout");
@@ -203,11 +206,11 @@ PositionAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container,
 	Window* x = windowMgr.getWindow(mCurrentPrefix + "x");
 	Window* y = windowMgr.getWindow(mCurrentPrefix + "y");
 	Window* z = windowMgr.getWindow(mCurrentPrefix + "z");
-	PushButton* moveButton = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "moveButton"));
+	PushButton* moveButton = static_cast<PushButton*> (windowMgr.getWindow(mCurrentPrefix + "moveButton"));
 	return new PositionAdapter(element, x, y, z, moveButton);
 }
 
-template <>
+template<>
 Position2DAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/Position2DAdapter.layout");
@@ -217,86 +220,86 @@ Position2DAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* containe
 	return new Position2DAdapter(element, x, y);
 }
 
-template <>
+template<>
 MapAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/MapAdapter.layout");
 	return new MapAdapter(element, window);
 }
 
-template <>
+template<>
 ListAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/ListAdapter.layout");
 	return new ListAdapter(element, window);
 }
 
-template <>
+template<>
 StaticAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/StaticAdapter.layout");
 	return new StaticAdapter(element, window);
 }
 
-template <>
+template<>
 AreaAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/AreaAdapter.layout");
 	WindowManager& windowMgr = WindowManager::getSingleton();
-	PushButton* button = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "showButton"));
-	Combobox* layerWindow = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "Layer"));
+	PushButton* button = static_cast<PushButton*> (windowMgr.getWindow(mCurrentPrefix + "showButton"));
+	Combobox* layerWindow = static_cast<Combobox*> (windowMgr.getWindow(mCurrentPrefix + "Layer"));
 	return new AreaAdapter(element, button, layerWindow, entity);
 }
 
-template <>
+template<>
 PolygonAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/PolygonAdapter.layout");
 	WindowManager& windowMgr = WindowManager::getSingleton();
-	PushButton* button = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "showButton"));
+	PushButton* button = static_cast<PushButton*> (windowMgr.getWindow(mCurrentPrefix + "showButton"));
 	return new PolygonAdapter(element, button, entity);
 }
 
-template <>
+template<>
 TerrainModAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/TerrainModAdapter.layout");
 	WindowManager& windowMgr = WindowManager::getSingleton();
-	PushButton* button = static_cast<PushButton*>(windowMgr.getWindow(mCurrentPrefix + "showButton"));
-	Combobox* posType = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "posType"));
-	Combobox* modType = static_cast<Combobox*>(windowMgr.getWindow(mCurrentPrefix + "modType"));
-	Editbox* heightEditbox = static_cast<Editbox*>(windowMgr.getWindow(mCurrentPrefix + "height"));
+	PushButton* button = static_cast<PushButton*> (windowMgr.getWindow(mCurrentPrefix + "showButton"));
+	Combobox* posType = static_cast<Combobox*> (windowMgr.getWindow(mCurrentPrefix + "posType"));
+	Combobox* modType = static_cast<Combobox*> (windowMgr.getWindow(mCurrentPrefix + "modType"));
+	Editbox* heightEditbox = static_cast<Editbox*> (windowMgr.getWindow(mCurrentPrefix + "height"));
 	return new TerrainModAdapter(element, button, entity, posType, modType, heightEditbox);
 }
 
 StringAdapter* AdapterFactory::createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<StringAdapter>(container, adapterPrefix, element);
+	return createAdapter<StringAdapter> (container, adapterPrefix, element);
 }
 
 NumberAdapter* AdapterFactory::createNumberAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<NumberAdapter>(container, adapterPrefix, element);
+	return createAdapter<NumberAdapter> (container, adapterPrefix, element);
 }
 
 SizeAdapter* AdapterFactory::createSizeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<SizeAdapter>(container, adapterPrefix, element);
+	return createAdapter<SizeAdapter> (container, adapterPrefix, element);
 }
 
 OrientationAdapter* AdapterFactory::createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<OrientationAdapter>(container, adapterPrefix, element);
+	return createAdapter<OrientationAdapter> (container, adapterPrefix, element);
 }
 
 PositionAdapter* AdapterFactory::createPositionAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<PositionAdapter>(container, adapterPrefix, element);
+	return createAdapter<PositionAdapter> (container, adapterPrefix, element);
 }
 
 Position2DAdapter* AdapterFactory::createPosition2DAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<Position2DAdapter>(container, adapterPrefix, element);
+	return createAdapter<Position2DAdapter> (container, adapterPrefix, element);
 }
 
 MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity)
@@ -311,57 +314,54 @@ MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std
 
 MapAdapter* AdapterFactory::createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<MapAdapter>(container, adapterPrefix, element);
+	return createAdapter<MapAdapter> (container, adapterPrefix, element);
 }
 
 ListAdapter* AdapterFactory::createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<ListAdapter>(container, adapterPrefix, element);
+	return createAdapter<ListAdapter> (container, adapterPrefix, element);
 }
 
 StaticAdapter* AdapterFactory::createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element)
 {
-	return createAdapter<StaticAdapter>(container, adapterPrefix, element);
+	return createAdapter<StaticAdapter> (container, adapterPrefix, element);
 }
 
 AreaAdapter* AdapterFactory::createAreaAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
-	return createAdapter<AreaAdapter>(container, adapterPrefix, element, entity);
+	return createAdapter<AreaAdapter> (container, adapterPrefix, element, entity);
 }
 
 PolygonAdapter* AdapterFactory::createPolygonAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
-	return createAdapter<PolygonAdapter>(container, adapterPrefix, element, entity);
+	return createAdapter<PolygonAdapter> (container, adapterPrefix, element, entity);
 }
 
 TerrainModAdapter* AdapterFactory::createTerrainModAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
-	return createAdapter<TerrainModAdapter>(container, adapterPrefix, element, entity);
+	return createAdapter<TerrainModAdapter> (container, adapterPrefix, element, entity);
 }
-
 
 AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
 	::Atlas::Message::Element newElement(element);
-	if (type == "string")
-	{
-		if (newElement.isNone()) { newElement = ""; }
+	if (type == "string") {
+		if (newElement.isNone()) {
+			newElement = "";
+		}
 		return createStringAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "number")
-	{
-		if (newElement.isNone()) { newElement = 0.0; }
+	} else if (type == "number") {
+		if (newElement.isNone()) {
+			newElement = 0.0;
+		}
 		return createNumberAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "size")
-	{
-		if (newElement.isNone()) { newElement = ::Atlas::Message::ListType(); }
+	} else if (type == "size") {
+		if (newElement.isNone()) {
+			newElement = ::Atlas::Message::ListType();
+		}
 		return createSizeAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "position")
-	{
-		if (newElement.isNone())
-		{
+	} else if (type == "position") {
+		if (newElement.isNone()) {
 			::Atlas::Message::ListType list;
 			list.push_back(::Atlas::Message::Element(0.0f));
 			list.push_back(::Atlas::Message::Element(0.0f));
@@ -369,50 +369,45 @@ AdapterBase* AdapterFactory::createAdapterByType(std::string type, CEGUI::Window
 			newElement = list;
 		}
 		return createPositionAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "position2d")
-	{
-		if (newElement.isNone())
-		{
+	} else if (type == "position2d") {
+		if (newElement.isNone()) {
 			::Atlas::Message::ListType list;
 			list.push_back(::Atlas::Message::Element(0.0f));
 			list.push_back(::Atlas::Message::Element(0.0f));
 			newElement = list;
 		}
 		return createPosition2DAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "map")
-	{
-		if (newElement.isNone()) { newElement = ::Atlas::Message::MapType();}
+	} else if (type == "map") {
+		if (newElement.isNone()) {
+			newElement = ::Atlas::Message::MapType();
+		}
 		return createNumberAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "list")
-	{
-		if (newElement.isNone()) { newElement = ::Atlas::Message::ListType(); }
+	} else if (type == "list") {
+		if (newElement.isNone()) {
+			newElement = ::Atlas::Message::ListType();
+		}
 		return createListAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "orientation")
-	{
-		if (newElement.isNone()) { newElement = ::Atlas::Message::ListType(); }
+	} else if (type == "orientation") {
+		if (newElement.isNone()) {
+			newElement = ::Atlas::Message::ListType();
+		}
 		return createNumberAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "static")
-	{
-		if (newElement.isNone()) { newElement = ""; }
+	} else if (type == "static") {
+		if (newElement.isNone()) {
+			newElement = "";
+		}
 		return createStaticAdapter(container, adapterPrefix, newElement);
-	}
-	else if (type == "area")
-	{
-		if (newElement.isNone()) { newElement = ::Atlas::Message::MapType();}
+	} else if (type == "area") {
+		if (newElement.isNone()) {
+			newElement = ::Atlas::Message::MapType();
+		}
 		return createAreaAdapter(container, adapterPrefix, newElement, entity);
-	}
-	else if (type == "polygon")
-	{
-		if (newElement.isNone()) { newElement = ::Atlas::Message::MapType();}
+	} else if (type == "polygon") {
+		if (newElement.isNone()) {
+			newElement = ::Atlas::Message::MapType();
+		}
 		return createPolygonAdapter(container, adapterPrefix, newElement, entity);
-	}
-	else
-	{
+	} else {
 		return 0;
 	}
 }
@@ -446,7 +441,6 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 		return 0;
 	}
 }
-
 
 }
 

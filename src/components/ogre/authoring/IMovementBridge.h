@@ -1,7 +1,7 @@
 //
 // C++ Interface: IEntityMoveBridge
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -26,41 +26,47 @@
 #include "../EmberOgrePrerequisites.h"
 #include <wfmath/quaternion.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
+
+namespace Authoring
+{
 
 /**
-@brief A bridge to the entity. Any instance of this is responsible for making sure that the entity is properly moved.
+ @brief A bridge to the entity. Any instance of this is responsible for making sure that the entity is properly moved.
 
-This acts as an abstraction for the actual entity, relieving the other components in the movement framework from altering the entity directly.
-Note that this deals with world space only, which means that all orientations and positions are relative to the world, not the parent entity.
+ This acts as an abstraction for the actual entity, relieving the other components in the movement framework from altering the entity directly.
+ Note that this deals with world space only, which means that all orientations and positions are relative to the world, not the parent entity.
 
-All movement that happens through this class will be on the client only, until either finalizeMovement() or cancelMovement() are called.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ All movement that happens through this class will be on the client only, until either finalizeMovement() or cancelMovement() are called.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class IMovementBridge
 {
 public:
-	
-	virtual ~IMovementBridge() {}
+
+	virtual ~IMovementBridge()
+	{
+	}
 
 	/**
 	 * @brief Gets the orientation of the entity, in world space.
 	 * @return The orientation of the entity, in world space.
 	 */
 	virtual const WFMath::Quaternion& getOrientation() const = 0;
-	
+
 	/**
 	 * @brief Gets the position of the entity, in world space.
 	 * @return The position of the entity, in world space.
 	 */
 	virtual const WFMath::Point<3>& getPosition() const = 0;
-	
+
 	/**
 	 * @brief Sets the new position of the entity, in world space.
 	 * @param position The new position of the entity, in world space.
 	 */
 	virtual void setPosition(const WFMath::Point<3>& position) = 0;
-	
+
 	/**
 	 * @brief Moves the entity.
 	 * @param directionVector How much to translate the entity.
@@ -71,7 +77,7 @@ public:
 	 * @param axis The axis around which to rotate. This is in WF space.
 	 * @param angle The angle to rotate.
 	 */
-	virtual void setRotation (int axis, WFMath::CoordType angle) = 0;
+	virtual void setRotation(int axis, WFMath::CoordType angle) = 0;
 	/**
 	 * @brief Sets the orientation of the entity, in world space.
 	 * @param rotation The new orientation, in world space.
@@ -84,20 +90,20 @@ public:
 	 * @param angle The angle to yaw.
 	 */
 	virtual void yaw(WFMath::CoordType angle) = 0;
-	
+
 	/**
 	 * @brief Finalizes movement, and send to the server.
 	 * Call this when movement is complete.
 	 */
 	virtual void finalizeMovement() = 0;
-	
+
 	/**
 	 * @brief Cancels the movement, returning the entity to it's original place.
 	 */
 	virtual void cancelMovement() = 0;
-	
+
 };
 
 }
-
+}
 #endif

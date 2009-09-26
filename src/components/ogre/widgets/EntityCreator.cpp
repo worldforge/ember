@@ -63,20 +63,14 @@
 #include <wfmath/axisbox.h>
 
 using namespace Ember;
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Gui {
+namespace Gui
+{
 
-
-
-
-
-
-
-
-
-EntityCreator::EntityCreator()
-		: mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0)
+EntityCreator::EntityCreator() :
+	mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0)
 {
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EntityCreator::connectedToServer));
@@ -90,7 +84,7 @@ EntityCreator::~EntityCreator()
 	delete mModelMount;
 }
 
-void EntityCreator::setRecipe(EntityRecipe& recipe)
+void EntityCreator::setRecipe(Authoring::EntityRecipe& recipe)
 {
 	mRecipe = &recipe;
 	checkTypeInfoBound();
@@ -98,12 +92,9 @@ void EntityCreator::setRecipe(EntityRecipe& recipe)
 
 void EntityCreator::toggleCreateMode()
 {
-	if (!mCreateMode)
-	{
+	if (!mCreateMode) {
 		startCreation();
-	}
-	else
-	{
+	} else {
 		stopCreation();
 	}
 }
@@ -113,13 +104,11 @@ void EntityCreator::setRandomizeOrientation(bool randomize)
 	mRandomizeOrientation = randomize;
 }
 
-
 void EntityCreator::startCreation()
 {
 	loadAllTypes();
 	// No recipe selected, nothing to do
-	if (!mRecipe)
-	{
+	if (!mRecipe) {
 		return;
 	}
 
@@ -130,7 +119,7 @@ void EntityCreator::startCreation()
 
 	mPos = avatar.getPosition() + offset.rotate(avatar.getOrientation());
 
-	mRecipeConnection = mRecipe->EventValueChanged.connect( sigc::mem_fun(*this, &EntityCreator::adapterValueChanged) );
+	mRecipeConnection = mRecipe->EventValueChanged.connect(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged));
 
 	mWidget->getMainWindow()->setAlpha(0.6);
 
@@ -151,7 +140,6 @@ void EntityCreator::loadAllTypes()
 		}
 	}
 }
-
 
 void EntityCreator::stopCreation()
 {
@@ -175,12 +163,12 @@ void EntityCreator::createEntity()
 	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
 
 	/*
-	if (mName->getText().length() > 0) {
-		msg["name"] = mName->getText().c_str();
-	} else {
-		msg["name"] = typeinfo->getName();
-	}
-	*/
+	 if (mName->getText().length() > 0) {
+	 msg["name"] = mName->getText().c_str();
+	 } else {
+	 msg["name"] = typeinfo->getName();
+	 }
+	 */
 	mEntityMessage["loc"] = avatar.getLocation()->getId();
 	mEntityMessage["name"] = erisType->getName();
 	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
@@ -188,7 +176,7 @@ void EntityCreator::createEntity()
 	Eris::View* view = Ember::Application::getSingleton().getMainView();
 	if (view) {
 		// Temporary entity
-		mEntity = new DetachedEntity("-1", erisType, view);
+		mEntity = new Authoring::DetachedEntity("-1", erisType, view);
 		mEntity->setFromMessage(mEntityMessage);
 
 		// Creating scene node
@@ -202,7 +190,7 @@ void EntityCreator::createEntity()
 		}
 
 		// Registering move adapter to track mouse movements
-// 		mInputAdapter->addAdapter();
+		// 		mInputAdapter->addAdapter();
 		mMovement = new EntityCreatorMovement(*this, *mEntity, mEntityNode);
 		mMoveAdapter->addAdapter();
 	}
@@ -234,7 +222,6 @@ void EntityCreator::setModel(const std::string& modelName)
 		modelDef->reloadAllInstances();
 	}
 
-
 	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, mModel));
 
 	initFromModel();
@@ -261,7 +248,6 @@ void EntityCreator::hideModelPart(const std::string& partName)
 		mModel->hidePart(partName);
 	}
 }
-
 
 Model::Model* EntityCreator::getModel()
 {
@@ -327,7 +313,7 @@ void EntityCreator::cleanupCreation()
 {
 	delete mMovement;
 	mMovement = 0;
-// 	mInputAdapter->removeAdapter();
+	// 	mInputAdapter->removeAdapter();
 	mMoveAdapter->removeAdapter();
 
 	delete mModelMount;
@@ -335,7 +321,7 @@ void EntityCreator::cleanupCreation()
 
 	mEntityNode->detachAllObjects();
 	EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
-//	delete mEntityNode;
+	//	delete mEntityNode;
 	mEntityNode = 0;
 
 	EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
@@ -348,7 +334,6 @@ void EntityCreator::cleanupCreation()
 	delete mEntity;
 }
 
-
 void EntityCreator::connectedToServer(Eris::Connection* conn)
 {
 	mConn = conn;
@@ -357,7 +342,7 @@ void EntityCreator::connectedToServer(Eris::Connection* conn)
 
 void EntityCreator::checkTypeInfoBound()
 {
-	if (mRecipe)  {
+	if (mRecipe) {
 		const std::string& typeName = mRecipe->getEntityType();
 		///Calling getTypeByName will also send a request for type info to the server if no type info exists yet
 		Eris::TypeInfo* typeInfo = mConn->getTypeService()->getTypeByName(typeName);
@@ -378,9 +363,6 @@ void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo)
 	}
 }
 
-
-
-
 void EntityCreator::showBlurb_frameStarted(const Ogre::FrameEvent& event)
 {
 	if (mBlurbShown) {
@@ -389,7 +371,7 @@ void EntityCreator::showBlurb_frameStarted(const Ogre::FrameEvent& event)
 
 	if (!mBlurb) {
 		try {
-			mBlurb = static_cast<CEGUI::GUISheet*>(CEGUI::WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/StaticText", "EntityCreator/Blurb"));
+			mBlurb = static_cast<CEGUI::GUISheet*> (CEGUI::WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/StaticText", "EntityCreator/Blurb"));
 			mBlurb->setSize(CEGUI::UVector2(CEGUI::UDim(0.3f, 0), CEGUI::UDim(0.1f, 0)));
 			mBlurb->setPosition(CEGUI::UVector2(CEGUI::UDim(0.35f, 0), CEGUI::UDim(0.3f, 0)));
 			mBlurb->setProperty("HorzFormatting", "WordWrapLeftAligned");
@@ -427,8 +409,8 @@ void EntityCreator::showBlurb_frameStarted(const Ogre::FrameEvent& event)
 	return;
 }
 
-EntityCreatorMoveAdapter::EntityCreatorMoveAdapter(EntityCreator& entityCreator)
-	: mEntityCreator(entityCreator)
+EntityCreatorMoveAdapter::EntityCreatorMoveAdapter(EntityCreator& entityCreator) :
+	mEntityCreator(entityCreator)
 {
 }
 

@@ -26,37 +26,38 @@
 #include "EntityCreatorMovementBridge.h"
 #include "components/ogre/authoring/MovementAdapter.h"
 
+namespace EmberOgre
+{
 
-namespace EmberOgre {
-
-namespace Gui {
+namespace Gui
+{
 
 /**
-@brief A movement of a DetachedEntity, beloging to the EntityCreator.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class EntityCreatorMovement{
+ @brief A movement of a DetachedEntity, beloging to the EntityCreator.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class EntityCreatorMovement
+{
 public:
-    /**
-     * @brief Ctor.
-     * @param entityCreator The owning entity creator instance.
-     * @param entity The entity which should be moved.
-     * @param node The node to which the entity belongs.
-     */
-    EntityCreatorMovement(EntityCreator& entityCreator, DetachedEntity& entity, Ogre::SceneNode* node);
+	/**
+	 * @brief Ctor.
+	 * @param entityCreator The owning entity creator instance.
+	 * @param entity The entity which should be moved.
+	 * @param node The node to which the entity belongs.
+	 */
+	EntityCreatorMovement(EntityCreator& entityCreator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
 
-    /**
-     * @brief Dtor.
-     */
-    ~EntityCreatorMovement();
+	/**
+	 * @brief Dtor.
+	 */
+	~EntityCreatorMovement();
 
 protected:
-
 
 	/**
 	 * @brief Main adapter which will intercept mouse and keyboard input to allow for movement of this point.
 	 */
-	MovementAdapter mMoveAdapter;
+	Authoring::MovementAdapter mMoveAdapter;
 };
 
 }

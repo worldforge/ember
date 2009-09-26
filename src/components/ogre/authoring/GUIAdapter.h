@@ -1,7 +1,7 @@
 //
 // C++ Interface: GuiAdapter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Alexey Torkhov <atorkhov@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -28,8 +28,10 @@
 #include <Atlas/Message/Element.h>
 #include <CEGUIWindow.h>
 
-namespace EmberOgre {
-
+namespace EmberOgre
+{
+namespace Authoring
+{
 /**
  * @brief GUI adapters wrapper.
  *
@@ -41,8 +43,8 @@ namespace EmberOgre {
 class GUIAdapter
 {
 
-// This maps suggestion text to values
-typedef std::map<std::string, std::string> SuggestionsStore;
+	// This maps suggestion text to values
+	typedef std::map<std::string, std::string> SuggestionsStore;
 
 public:
 	/**
@@ -96,7 +98,7 @@ public:
 	 * @param tooltip The tooltip text.
 	 */
 	void setTooltip(const std::string& tooltip);
-	
+
 	/**
 	 * @brief Gets the optional tool tip text for the adapter.
 	 * @return The tool tip text.
@@ -108,15 +110,14 @@ public:
 	 * @param value The default value. This must be translatable to something that the adapter used can handle (i.e. if the adapter used is a numerical adapter, the default value must be parsable into to a number).
 	 */
 	void setDefaultValue(const std::string& value);
-	
+
 	/**
 	 * @brief Gets the default value.
 	 * when using this to set the initial value of an adapter, it should be parsed into a corresponding atlas element value.
 	 * @return The default value, as a string.
 	 */
 	const std::string& getDefaultValue() const;
-	
-	
+
 	/**
 	 * Adds suggestion.
 	 */
@@ -169,15 +170,16 @@ protected:
 	 * If true, adds "Random" suggestion to the list.
 	 */
 	bool mAllowRandom;
-	
+
 	/**
-	* @brief An optional tooltip text for this adapter.
-	*/
+	 * @brief An optional tooltip text for this adapter.
+	 */
 	std::string mTooltip;
-	
+
 	std::string mDefaultValue;
 };
 
+}
 }
 
 #endif

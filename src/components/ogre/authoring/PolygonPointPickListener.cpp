@@ -30,12 +30,14 @@
 #include <OgreMovableObject.h>
 #include <OgreSceneQuery.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Manipulation {
+namespace Authoring
+{
 
-PolygonPointPickListener::PolygonPointPickListener(Polygon& polygon)
-: mPolygon(polygon), mPickedUserObject(0)
+PolygonPointPickListener::PolygonPointPickListener(Polygon& polygon) :
+	mPolygon(polygon), mPickedUserObject(0)
 {
 }
 
@@ -43,14 +45,13 @@ PolygonPointPickListener::~PolygonPointPickListener()
 {
 }
 
-
 void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
 {
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
 		if (pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && pickedMovable->getUserObject()->getTypeName() == PolygonPointUserObject::s_TypeName) {
 			///TODO: make sure that it's a point which belongs to our polygon
-			mPickedUserObject = static_cast<PolygonPointUserObject*>(pickedMovable->getUserObject());
+			mPickedUserObject = static_cast<PolygonPointUserObject*> (pickedMovable->getUserObject());
 			continuePicking = false;
 		}
 	}
@@ -68,7 +69,6 @@ void PolygonPointPickListener::endPickingContext(const MousePickerArgs& mousePic
 		mPickedUserObject = 0;
 	}
 }
-
 
 }
 

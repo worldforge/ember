@@ -40,14 +40,16 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Manipulation {
+namespace Authoring
+{
 
 unsigned int PolygonPoint::sPointCounter = 0;
 
-PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition)
-: mPolygon(polygon), mUserObject(*this), mNode(0), mEntity(0)
+PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPosition) :
+	mPolygon(polygon), mUserObject(*this), mNode(0), mEntity(0)
 {
 	Ogre::Vector3 nodePosition = Convert::toOgre<Ogre::Vector3>(localPosition);
 	if (polygon.getPositionProvider()) {
@@ -121,7 +123,6 @@ void PolygonPoint::setLocalPosition(const WFMath::Point<2>& position)
 	}
 }
 
-
 // void PolygonPoint::startMovement()
 // {
 // 	delete mMover;
@@ -166,8 +167,6 @@ bool PolygonPoint::getVisible() const
 	}
 	return false;
 }
-
-
 
 }
 

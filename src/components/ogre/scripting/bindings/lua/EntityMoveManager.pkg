@@ -24,7 +24,7 @@
 
 namespace EmberOgre {
 
-
+namespace Authoring {
 class EntityMoveManager
 {
 public:
@@ -55,6 +55,8 @@ public:
 
 
 };
+
+}
 
 }
 

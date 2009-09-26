@@ -26,29 +26,32 @@
 #include "PolygonPointMover.h"
 #include "MovementAdapter.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Manipulation {
+namespace Authoring
+{
 
 class PolygonPoint;
 
 /**
-@brief Represents one movement action of a specific point. When the movement of the point is complete, either by it being cancelled or completed, the instance should be deleted.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class PolygonPointMovement{
+ @brief Represents one movement action of a specific point. When the movement of the point is complete, either by it being cancelled or completed, the instance should be deleted.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class PolygonPointMovement
+{
 public:
-    /**
-     * @brief Ctor.
-     * @param point The point that should be moved.
-     * @param movementListener An optional listener which will recieve movement updates.
-     */
-    PolygonPointMovement(PolygonPoint& point, IMovementListener* movementListener);
+	/**
+	 * @brief Ctor.
+	 * @param point The point that should be moved.
+	 * @param movementListener An optional listener which will recieve movement updates.
+	 */
+	PolygonPointMovement(PolygonPoint& point, IMovementListener* movementListener);
 
-    /**
-     * @brief Dtor.
-     */
-    ~PolygonPointMovement();
+	/**
+	 * @brief Dtor.
+	 */
+	~PolygonPointMovement();
 
 protected:
 

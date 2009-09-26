@@ -31,33 +31,38 @@ namespace Ogre
 {
 class SceneNode;
 }
-namespace EmberOgre {
+namespace EmberOgre
+{
 
+namespace Authoring
+{
 class DetachedEntity;
+}
 
-namespace Gui {
+namespace Gui
+{
 
 class EntityCreator;
 
 /**
-@brief A movement bridge which knows how to move a DetachedEntity instance, which is a temporary preview entity used by the EntityCreator.
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class EntityCreatorMovementBridge : public ::EmberOgre::Manipulation::EntityMoverBase
+ @brief A movement bridge which knows how to move a DetachedEntity instance, which is a temporary preview entity used by the EntityCreator.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class EntityCreatorMovementBridge: public ::EmberOgre::Authoring::EntityMoverBase
 {
 public:
-    /**
-     * @brief Ctor.
-     * @param entityCreator The owning entity creator instance.
-     * @param entity The entity which should be moved.
-     * @param node The node to which the entity belongs.
-     */
-    EntityCreatorMovementBridge(EntityCreator& creator, DetachedEntity& entity, Ogre::SceneNode* node);
+	/**
+	 * @brief Ctor.
+	 * @param entityCreator The owning entity creator instance.
+	 * @param entity The entity which should be moved.
+	 * @param node The node to which the entity belongs.
+	 */
+	EntityCreatorMovementBridge(EntityCreator& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
 
-    /**
-     * @brief Dtor.
-     */
-    virtual ~EntityCreatorMovementBridge();
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~EntityCreatorMovementBridge();
 
 	virtual void finalizeMovement();
 	virtual void cancelMovement();

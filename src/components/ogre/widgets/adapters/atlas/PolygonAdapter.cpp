@@ -133,13 +133,13 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 
 			Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 			if (entitySceneNode) {
-				mPolygon = new ::EmberOgre::Manipulation::Polygon(entitySceneNode, mPositionProvider);
+				mPolygon = new ::EmberOgre::Authoring::Polygon(entitySceneNode, mPositionProvider);
 
 				if (areaElem.isMap()) {
 					try {
 						WFMath::Polygon<2> poly(areaElem);
 						mPolygon->loadFromShape(poly);
-						mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
+						mPickListener = new ::EmberOgre::Authoring::PolygonPointPickListener(*mPolygon);
 						mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
 						EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
 					} catch (const WFMath::_AtlasBadParse& ex) {
@@ -176,7 +176,7 @@ void PolygonAdapter::createNewPolygon()
 	mPolygon = 0;
 	Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 	if (entitySceneNode) {
-		mPolygon = new ::EmberOgre::Manipulation::Polygon(entitySceneNode, mPositionProvider);
+		mPolygon = new ::EmberOgre::Authoring::Polygon(entitySceneNode, mPositionProvider);
 		WFMath::Polygon<2> poly;
 		poly.addCorner(0, WFMath::Point<2>(-1, -1));
 		poly.addCorner(1, WFMath::Point<2>(-1, 1));
@@ -184,7 +184,7 @@ void PolygonAdapter::createNewPolygon()
 		poly.addCorner(3, WFMath::Point<2>(1, -1));
 
 		mPolygon->loadFromShape(poly);
-		mPickListener = new ::EmberOgre::Manipulation::PolygonPointPickListener(*mPolygon);
+		mPickListener = new ::EmberOgre::Authoring::PolygonPointPickListener(*mPolygon);
 		mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
 		EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
 	}
@@ -203,10 +203,10 @@ bool PolygonAdapter::_hasChanges()
 	return mOriginalElement != getChangedElement();
 }
 
-void PolygonAdapter::pickListener_PickedPoint(Manipulation::PolygonPoint& point)
+void PolygonAdapter::pickListener_PickedPoint(Authoring::PolygonPoint& point)
 {
 	delete mPointMovement;
-	mPointMovement = new Manipulation::PolygonPointMovement(point, this);
+	mPointMovement = new Authoring::PolygonPointMovement(point, this);
 }
 
 void PolygonAdapter::endMovement()

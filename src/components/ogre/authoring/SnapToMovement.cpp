@@ -39,7 +39,7 @@
 namespace EmberOgre
 {
 
-namespace Manipulation
+namespace Authoring
 {
 
 SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::Node& node, float snapThreshold, Ogre::SceneManager& sceneManager, bool showDebugOverlay) :
@@ -151,8 +151,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 								closestSnapping->entity = &entity;
 								closestSnapping->distance = distance;
 								closestSnapping->adjustment = point - currentPoint;
-							}
-							else if (distance < closestSnapping->distance) {
+							} else if (distance < closestSnapping->distance) {
 								closestSnapping->entity = &entity;
 								closestSnapping->distance = distance;
 								closestSnapping->adjustment = point - currentPoint;

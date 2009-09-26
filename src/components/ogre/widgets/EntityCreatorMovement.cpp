@@ -26,11 +26,13 @@
 
 #include "EntityCreatorMovement.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Gui {
+namespace Gui
+{
 
-EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, DetachedEntity& entity, Ogre::SceneNode* node)
+EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
@@ -39,11 +41,9 @@ EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, Detac
 	mMoveAdapter.update();
 }
 
-
 EntityCreatorMovement::~EntityCreatorMovement()
 {
 }
-
 
 }
 

@@ -38,11 +38,13 @@
 using namespace WFMath;
 using namespace Ember;
 
-namespace EmberOgre {
+namespace EmberOgre
+{
+namespace Authoring
+{
 
-
-MovementAdapterWorkerBase::MovementAdapterWorkerBase(MovementAdapter& adapter)
-: mAdapter(adapter)
+MovementAdapterWorkerBase::MovementAdapterWorkerBase(MovementAdapter& adapter) :
+	mAdapter(adapter)
 {
 }
 
@@ -55,9 +57,8 @@ IMovementBridge* MovementAdapterWorkerBase::getBridge()
 	return mAdapter.mBridge;
 }
 
-
-MovementAdapterWorkerDiscrete::MovementAdapterWorkerDiscrete(MovementAdapter& adapter)
-: MovementAdapterWorkerBase(adapter), mMovementSpeed(10)
+MovementAdapterWorkerDiscrete::MovementAdapterWorkerDiscrete(MovementAdapter& adapter) :
+	MovementAdapterWorkerBase(adapter), mMovementSpeed(10)
 {
 }
 
@@ -71,14 +72,14 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& mo
 	direction.y() = motion.yRelativeMovement;
 	direction = direction * mMovementSpeed;
 	///hard coded to allow the shift button to increase the speed
-// 	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
-// 		direction = direction * 5;
-// 	}
+	// 	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+	// 		direction = direction * 5;
+	// 	}
 
 	///move it relative to the camera
 	direction = direction.rotate(Convert::toWF(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
 
-	getBridge()->move( direction);//move the entity a fixed distance for each mouse movement.
+	getBridge()->move(direction);//move the entity a fixed distance for each mouse movement.
 
 	///we don't want to move the cursor
 	freezeMouse = true;
@@ -87,8 +88,8 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& mo
 
 }
 
-MovementAdapterWorkerTerrainCursor::MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter)
-: MovementAdapterWorkerBase(adapter)
+MovementAdapterWorkerTerrainCursor::MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter) :
+	MovementAdapterWorkerBase(adapter)
 {
 	/// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -118,10 +119,10 @@ void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate)
 	}
 }
 
-
-MovementAdapter::MovementAdapter()
-: mBridge(0), mWorker(0)
-{}
+MovementAdapter::MovementAdapter() :
+	mBridge(0), mWorker(0)
+{
+}
 
 MovementAdapter::~MovementAdapter()
 {
@@ -158,15 +159,10 @@ bool MovementAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& fr
 
 bool MovementAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& button)
 {
-	if (button == Input::MouseButtonLeft)
-	{
+	if (button == Input::MouseButtonLeft) {
 		finalizeMovement();
-	}
-	else if(button == Input::MouseButtonRight)
-	{
-	}
-	else
-	{
+	} else if (button == Input::MouseButtonRight) {
+	} else {
 		return false;
 	}
 
@@ -175,29 +171,20 @@ bool MovementAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& butto
 
 bool MovementAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& button)
 {
-	if (button == Input::MouseButtonLeft)
-	{
-	}
-	else if(button == Input::MouseButtonRight)
-	{
+	if (button == Input::MouseButtonLeft) {
+	} else if (button == Input::MouseButtonRight) {
 
-	}
-	else if(button == Input::MouseButtonMiddle)
-	{
+	} else if (button == Input::MouseButtonMiddle) {
 
-	}
-	else if(button == Input::MouseWheelUp)
-	{
+	} else if (button == Input::MouseWheelUp) {
 		int movementDegrees = 10;
-		if (Input::getSingleton().isKeyDown(SDLK_LSHIFT) ||Input::getSingleton().isKeyDown(SDLK_RSHIFT)) {
+		if (Input::getSingleton().isKeyDown(SDLK_LSHIFT) || Input::getSingleton().isKeyDown(SDLK_RSHIFT)) {
 			movementDegrees = 1;
 		}
 		mBridge->yaw(movementDegrees);
-	}
-	else if(button == Input::MouseWheelDown)
-	{
+	} else if (button == Input::MouseWheelDown) {
 		int movementDegrees = 10;
-		if (Input::getSingleton().isKeyDown(SDLK_LSHIFT) ||Input::getSingleton().isKeyDown(SDLK_RSHIFT)) {
+		if (Input::getSingleton().isKeyDown(SDLK_LSHIFT) || Input::getSingleton().isKeyDown(SDLK_RSHIFT)) {
 			movementDegrees = 1;
 		}
 		mBridge->yaw(-movementDegrees);
@@ -273,6 +260,8 @@ void MovementAdapter::update()
 	if (mWorker) {
 		mWorker->update();
 	}
+}
+
 }
 
 }

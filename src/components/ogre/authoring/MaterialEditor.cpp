@@ -35,13 +35,14 @@
 #include <OgreException.h>
 #include <OgreMaterialManager.h>
 
-namespace EmberOgre {
-
-MaterialEditor::MaterialEditor()
-: AlterMaterial("alter_material", this, "Alters a material. Usage: <material name> <technique index> <pass index> [<tecture unit index>] <property> <value>")
+namespace EmberOgre
+{
+namespace Authoring
+{
+MaterialEditor::MaterialEditor() :
+	AlterMaterial("alter_material", this, "Alters a material. Usage: <material name> <technique index> <pass index> [<tecture unit index>] <property> <value>")
 {
 }
-
 
 MaterialEditor::~MaterialEditor()
 {
@@ -63,7 +64,7 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 
 			std::string materialName = tokens[0];
 
-			Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
+			Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(materialName));
 			if (!materialPtr.isNull()) {
 				std::string techniqueIndexString = tokens[1];
 				if (techniqueIndexString != "") {
@@ -90,7 +91,7 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 								std::string property = tokens[3];
 								std::string value = tokens[4];
 								if (property == "alpha_rejection") {
-									pass->setAlphaRejectValue(Ogre::StringConverter::parseInt(value) );
+									pass->setAlphaRejectValue(Ogre::StringConverter::parseInt(value));
 								}
 							}
 						}
@@ -105,4 +106,5 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 	}
 }
 
+}
 }

@@ -123,7 +123,7 @@ class EmberOgre
 	Ogre::Camera* getMainOgreCamera() const;
 	
 	MovementController* getMovementController() const;
-	EntityMoveManager* getMoveManager() const;
+	EmberOgre::Authoring::EntityMoveManager* getMoveManager() const;
 	
 	EmberEntity* getEmberEntity(const std::string & eid);
 	

@@ -5,11 +5,11 @@ function EntityCreator.fillRecipesList()
 	local list = EntityCreator.recipesList
 	list:resetList()
 
-	local recipeMgr = EmberOgre.EntityRecipeManager:getSingleton()
+	local recipeMgr = EmberOgre.Authoring.EntityRecipeManager:getSingleton()
 	local I = recipeMgr:getResourceIterator()
 	while I:hasMoreElements() do
 		local recipePtr = I:getNext()
-		recipePtr = tolua.cast(recipePtr, "EmberOgre::EntityRecipePtr")
+		recipePtr = tolua.cast(recipePtr, "EmberOgre::Authoring::EntityRecipePtr")
 		local recipe = recipePtr:get()
 		local name = recipe:getName()
 		local item = EmberOgre.Gui.ColouredListItem:new(name)
@@ -26,9 +26,9 @@ function EntityCreator.RecipesList_SelectionChanged(args)
 	local item = EntityCreator.recipesList:getFirstSelectedItem()
 	if item ~= nil then
 		local name = item:getText()
-		local recipeMgr = EmberOgre.EntityRecipeManager:getSingleton()
+		local recipeMgr = EmberOgre.Authoring.EntityRecipeManager:getSingleton()
 		local recipePtr = recipeMgr:getByName(name)
-		recipePtr = tolua.cast(recipePtr, "EmberOgre::EntityRecipePtr")
+		recipePtr = tolua.cast(recipePtr, "EmberOgre::Authoring::EntityRecipePtr")
 		EntityCreator.recipe = recipePtr:get()
 		--We just set the recipe here and wait for the EventTypeInfoLoaded event, which will call the showRecipe function when the recipe is ready
 		EntityCreator.helper:setRecipe(EntityCreator.recipe)

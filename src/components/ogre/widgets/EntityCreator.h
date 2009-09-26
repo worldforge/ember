@@ -39,13 +39,19 @@ namespace Eris
 class TypeInfo;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
+namespace Authoring
+{
 class DetachedEntity;
-namespace Model {
+}
+namespace Model
+{
 class ModelMount;
 }
-namespace Gui {
+namespace Gui
+{
 
 class EntityCreatorInputAdapter;
 class EntityCreatorMoveAdapter;
@@ -58,7 +64,8 @@ class EntityCreatorMovement;
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class EntityCreator {
+class EntityCreator
+{
 public:
 	/**
 	 * Constructor.
@@ -73,7 +80,7 @@ public:
 	/**
 	 * Sets recipe that would be used for entity creation in future.
 	 */
-	void setRecipe(EntityRecipe& recipe);
+	void setRecipe(Authoring::EntityRecipe& recipe);
 
 	/**
 	 * Toggles create mode and performs correspondent action.
@@ -138,16 +145,14 @@ public:
 	::EmberOgre::Gui::Widget* mWidget;
 
 	/**
-	* @brief Emitted when all needed type info for the current recipe is loaded.
-	*/
+	 * @brief Emitted when all needed type info for the current recipe is loaded.
+	 */
 	sigc::signal<void> EventTypeInfoLoaded;
-
 
 	/**
 	 * @brief Makes sure that all types are loaded. This is needed for the type lookup we need to do in the recipes in order to get the default values.
 	 */
 	void loadAllTypes();
-
 
 protected:
 	/**
@@ -167,7 +172,6 @@ protected:
 	bool hasBBox();
 	const WFMath::AxisBox<3> & getBBox();
 
-
 	/**
 	 * Sets Eris connection on connect to server event.
 	 */
@@ -186,7 +190,7 @@ protected:
 	/**
 	 * Pointer to recipe that is currently selected in widget.
 	 */
-	EntityRecipe* mRecipe;
+	Authoring::EntityRecipe* mRecipe;
 
 	/**
 	 * Connection to EntityRecipe::adapterValueChanged signal, when in create mode.
@@ -208,7 +212,6 @@ protected:
 	 * Call this method right after a new entity recipe has been set, to make sure that the interface doesn't proceed until the type info is bound.
 	 */
 	void checkTypeInfoBound();
-
 
 	/**
 	 * @brief Listen for the bound signal for the type service, and if the type of our recipe has been bound emit the EventTypeInfoLoaded signal.
@@ -234,7 +237,7 @@ protected:
 	/**
 	 * Detached entity that is used in process of creating preview.
 	 */
-	DetachedEntity* mEntity;
+	Authoring::DetachedEntity* mEntity;
 
 	/**
 	 * Preview scene node.
@@ -269,24 +272,23 @@ protected:
 	Ogre::Real mTimeUntilShowBlurb, mTimeBlurbShown, mTimeToShowBlurb;
 
 	/**
-	@brief If set to true, all new entities will have their orientation randomized around the vertical axis.
-	*/
+	 @brief If set to true, all new entities will have their orientation randomized around the vertical axis.
+	 */
 	bool mRandomizeOrientation;
 
 	/**
 	 * @brief The connection for the TypeInfo bound signal, used for making sure that the UI doesn't proceed until the type info has been correctly bound.
 	 */
-// 	sigc::connection mTypeInfoBoundConnection;
+	// 	sigc::connection mTypeInfoBoundConnection;
 
 	EntityCreatorMovement* mMovement;
 
 };
 
-
 /**
  * Adapter for position entity preview.
  */
-class EntityCreatorMoveAdapter : public Ogre::FrameListener
+class EntityCreatorMoveAdapter: public Ogre::FrameListener
 {
 public:
 	EntityCreatorMoveAdapter(EntityCreator& adapter);
@@ -300,7 +302,7 @@ public:
 	 */
 	void removeAdapter();
 	/**
- 	 * Called each frame to update position of preview.
+	 * Called each frame to update position of preview.
 	 */
 	bool frameStarted(const Ogre::FrameEvent& event);
 protected:

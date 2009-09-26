@@ -35,21 +35,19 @@
 #include "../EmberEntity.h"
 #include "components/ogre/NodeAttachment.h"
 
+namespace EmberOgre
+{
 
-
-
-namespace EmberOgre {
-
-
+namespace Authoring
+{
 EntityMoveManager::EntityMoveManager() :
-Move("move", this, "Moves an entity."), mMoveAdapter(), mAdjuster(this)
+	Move("move", this, "Moves an entity."), mMoveAdapter(), mAdjuster(this)
 {
 	GUIManager::getSingleton().EventEntityAction.connect(sigc::mem_fun(*this, &EntityMoveManager::GuiManager_EntityAction));
 }
 
-
-
-void EntityMoveManager::GuiManager_EntityAction(const std::string& action, EmberEntity* entity) {
+void EntityMoveManager::GuiManager_EntityAction(const std::string& action, EmberEntity* entity)
+{
 
 	if (action == "move") {
 		startMove(entity);
@@ -60,7 +58,7 @@ void EntityMoveManager::startMove(EmberEntity* entity)
 {
 	///disallow moving of the root entity
 	if (entity->getLocation()) {
-		NodeAttachment* attachment = dynamic_cast<NodeAttachment*>(entity->getAttachment()); //HACK
+		NodeAttachment* attachment = dynamic_cast<NodeAttachment*> (entity->getAttachment()); //HACK
 		if (attachment) {
 			EntityMover* mover = new EntityMover(*attachment, *this);
 			mMoveAdapter.attachToBridge(mover);
@@ -71,8 +69,7 @@ void EntityMoveManager::startMove(EmberEntity* entity)
 
 void EntityMoveManager::runCommand(const std::string &command, const std::string &args)
 {
-	if(Move == command)
-	{
+	if (Move == command) {
 		//the first argument must be a valid entity id
 		Ember::Tokeniser tokeniser;
 		tokeniser.initTokens(args);
@@ -87,6 +84,8 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 		}
 
 	}
+}
+
 }
 
 }

@@ -29,20 +29,23 @@
 
 #include <wfmath/point.h>
 
-namespace EmberOgre {
-namespace Manipulation {
-class SnapToMovement;
-}
-
+namespace EmberOgre
+{
 class NodeAttachment;
+
+namespace Authoring
+{
+
+class SnapToMovement;
+
 class EntityMoveManager;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-	@brief An implementation of IEntityMoveBridge which allows for EmberEntity instances to be moved.
-*/
-class EntityMover : public Manipulation::EntityMoverBase
+ @brief An implementation of IEntityMoveBridge which allows for EmberEntity instances to be moved.
+ */
+class EntityMover: public Authoring::EntityMoverBase
 {
 public:
 
@@ -58,7 +61,6 @@ protected:
 
 	void cleanup();
 
-
 private:
 
 	NodeAttachment& mNodeAttachment;
@@ -69,7 +71,7 @@ private:
 
 };
 
-class EntityMoverControlDelegate : public IAttachmentControlDelegate
+class EntityMoverControlDelegate: public IAttachmentControlDelegate
 {
 public:
 
@@ -81,9 +83,9 @@ public:
 protected:
 	EntityMover& mEntityMover;
 
-
 };
 
+}
 }
 
 #endif

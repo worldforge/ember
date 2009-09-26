@@ -27,12 +27,14 @@
 #include "PolygonPointMovement.h"
 #include "PolygonPoint.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Manipulation {
+namespace Authoring
+{
 
-PolygonPointMovement::PolygonPointMovement(PolygonPoint& point, IMovementListener* movementListener)
-: mPoint(point)
+PolygonPointMovement::PolygonPointMovement(PolygonPoint& point, IMovementListener* movementListener) :
+	mPoint(point)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
@@ -40,11 +42,9 @@ PolygonPointMovement::PolygonPointMovement(PolygonPoint& point, IMovementListene
 	mMoveAdapter.attachToBridge(bridge);
 }
 
-
 PolygonPointMovement::~PolygonPointMovement()
 {
 }
-
 
 }
 

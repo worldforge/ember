@@ -27,32 +27,39 @@
 #include "services//input/IInputAdapter.h"
 #include <OgreFrameListener.h>
 
-
-namespace EmberOgre {
-
+namespace EmberOgre
+{
+namespace Authoring
+{
 class IMovementBridge;
 class EntityMoveManager;
 class MovementAdapter;
 
 /**
-@brief Base class for all movement adapter worker classes.
+ @brief Base class for all movement adapter worker classes.
 
-Implementations of this are responsible for the actual checking of input data to determine whether the bridge should be told to update or not.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ Implementations of this are responsible for the actual checking of input data to determine whether the bridge should be told to update or not.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class MovementAdapterWorkerBase
 {
 public:
 	MovementAdapterWorkerBase(MovementAdapter& adapter);
 	virtual ~MovementAdapterWorkerBase();
 
-	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse) { return true;}
+	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
+	{
+		return true;
+	}
 
 	/**
 	 * @brief Forces an update.
 	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
 	 */
-	virtual void update() {};
+	virtual void update()
+	{
+	}
+	;
 protected:
 
 	/**
@@ -65,10 +72,10 @@ protected:
 };
 
 /**
-@brief An adapter worker implementation which will move the entity a fixed distance for each mouse movement.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class MovementAdapterWorkerDiscrete : public MovementAdapterWorkerBase
+ @brief An adapter worker implementation which will move the entity a fixed distance for each mouse movement.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class MovementAdapterWorkerDiscrete: public MovementAdapterWorkerBase
 {
 public:
 	MovementAdapterWorkerDiscrete(MovementAdapter& adapter);
@@ -82,18 +89,18 @@ protected:
 };
 
 /**
-@brief An adapter worker implementation which will always position the entity where the mouse cursor intersects with the terrain.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class MovementAdapterWorkerTerrainCursor : public MovementAdapterWorkerBase, public Ogre::FrameListener
+ @brief An adapter worker implementation which will always position the entity where the mouse cursor intersects with the terrain.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class MovementAdapterWorkerTerrainCursor: public MovementAdapterWorkerBase, public Ogre::FrameListener
 {
 public:
 	MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter);
 	virtual ~MovementAdapterWorkerTerrainCursor();
 
 	/**
-	* Methods from Ogre::FrameListener
-	*/
+	 * Methods from Ogre::FrameListener
+	 */
 	bool frameStarted(const Ogre::FrameEvent& event);
 
 	/**
@@ -113,15 +120,16 @@ protected:
 };
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-	@author Lennart Sauerbeck
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Lennart Sauerbeck
 
-	@brief Provides an adapter for moving objects in the world.
+ @brief Provides an adapter for moving objects in the world.
 
-	When activates, an instance of this will recieve input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into movement of any object movements, as defined in the bridge to which this is attached.
-*/
-class MovementAdapter : public Ember::IInputAdapter {
-friend class MovementAdapterWorkerBase;
+ When activates, an instance of this will recieve input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into movement of any object movements, as defined in the bridge to which this is attached.
+ */
+class MovementAdapter: public Ember::IInputAdapter
+{
+	friend class MovementAdapterWorkerBase;
 public:
 
 	/**
@@ -178,7 +186,6 @@ protected:
 	 */
 	virtual void finalizeMovement();
 
-
 	/**
 	 * @brief The bridge through which all movement happens.
 	 * This is initially null, but is set through attachToBridge. Once a bridge has been attached the ownership is transferred to this class, and subsequently the reponsibility to delete it.
@@ -192,7 +199,7 @@ protected:
 
 };
 
-
+}
 
 }
 

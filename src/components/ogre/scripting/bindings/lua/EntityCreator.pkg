@@ -31,7 +31,7 @@ class EntityCreator{
 public:
 	EntityCreator();
 	~EntityCreator();
-	void setRecipe(EntityRecipe& recipe);
+	void setRecipe(EmberOgre::Authoring::EntityRecipe& recipe);
 	void toggleCreateMode();
 	/**
 	 * @brief Sets whether to randomize the orientation of all new entities.

@@ -1,22 +1,22 @@
 /*
------------------------------------------------------------------------------
+ -----------------------------------------------------------------------------
 
-Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
+ Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2009
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; either version 2 of the License, or (at your option) any later
-version.
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place - Suite 330, Boston, MA 02111-1307, USA, or go to
-http://www.gnu.org/copyleft/lesser.txt.
-*/
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+ http://www.gnu.org/copyleft/lesser.txt.
+ */
 
 #ifndef __EmberOgre_H__
 #define __EmberOgre_H__
@@ -30,11 +30,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
-
 #include "framework/Singleton.h"
 #include <memory>
 
-namespace Eris {
+namespace Eris
+{
 class View;
 class Connection;
 }
@@ -51,11 +51,13 @@ class StreamLogObserver;
 class InputCommandMapper;
 }
 
-namespace OgreOpcode {
+namespace OgreOpcode
+{
 class CollisionManager;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 namespace Terrain
 {
@@ -65,18 +67,32 @@ class TerrainLayerDefinitionManager;
 
 class SoundDefinitionManager;
 
-namespace Mapping {
-	class EmberEntityMappingManager;
+namespace Mapping
+{
+class EmberEntityMappingManager;
 }
 
-namespace Model {
-	class ModelDefinitionManager;
-	class ModelRepresentationManager;
+namespace Model
+{
+class ModelDefinitionManager;
+class ModelRepresentationManager;
 }
 
-namespace Camera {
-	class MainCamera;
-};
+namespace Camera
+{
+class MainCamera;
+}
+;
+
+namespace Authoring
+{
+class EntityMoveManager;
+
+class MaterialEditor;
+
+class EntityRecipeManager;
+
+}
 
 class Avatar;
 
@@ -98,49 +114,40 @@ class OgreResourceLoader;
 
 class OgreLogObserver;
 
-class EntityMoveManager;
-
-class MaterialEditor;
-
 class OgreSetup;
 
 class OgreResourceProvider;
 class OpcodeCollisionDetectorVisualizer;
 
-class EntityRecipeManager;
-
 class ShaderManager;
 
 /**
-	@brief The main class of ember. This functions as a hub for almost all subsystems.
+ @brief The main class of ember. This functions as a hub for almost all subsystems.
 
-	This is the central class for the whole Ogre related part of Ember. It's quite large and could perhaps be refactored into smaller parts though.
-	It holds references to most subcomponents, and is instanciated at the start of Ember. A lot of different signals from different subsystems are routed through here. If you're not sure how to get access to a certain subsystem from another unrelated class, this is probably the first place you should look.
+ This is the central class for the whole Ogre related part of Ember. It's quite large and could perhaps be refactored into smaller parts though.
+ It holds references to most subcomponents, and is instanciated at the start of Ember. A lot of different signals from different subsystems are routed through here. If you're not sure how to get access to a certain subsystem from another unrelated class, this is probably the first place you should look.
 
-	It's a singleton so you can access it through
-	@code
-	EmberOgre::EmberOgre::getSingleton()
-	@endcode
+ It's a singleton so you can access it through
+ @code
+ EmberOgre::EmberOgre::getSingleton()
+ @endcode
 
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-*/
-class EmberOgre : public Ember::Singleton<EmberOgre>,
-public sigc::trackable,
-public Ogre::FrameListener
+ */
+class EmberOgre: public Ember::Singleton<EmberOgre>, public sigc::trackable, public Ogre::FrameListener
 {
 public:
 
+	/**
+	 * @brief Ctor.
+	 */
+	EmberOgre();
 
-    /**
-     * @brief Ctor.
-     */
-    EmberOgre();
-
-    /**
-     * @brief Dtor.
-     */
-    ~EmberOgre();
+	/**
+	 * @brief Dtor.
+	 */
+	~EmberOgre();
 
 	virtual bool frameStarted(const Ogre::FrameEvent & evt);
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
@@ -212,7 +219,7 @@ public:
 	 * @brief Gets the entity move manager, which handles movement of entities in the world by the user.
 	 * @return The entity move manager.
 	 */
-	EntityMoveManager* getMoveManager() const;
+	Authoring::EntityMoveManager* getMoveManager() const;
 
 	/**
 	 * @brief Gets the shader manager, which handles setup of the graphic level and the shaders.
@@ -231,7 +238,7 @@ public:
 	 * @brief Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
 	 * @return The main Jesus instance.
 	 */
-//	Jesus* getJesus() const;
+	//	Jesus* getJesus() const;
 
 	/**
 	 * @brief Gets the main render window.
@@ -253,7 +260,7 @@ public:
 	/**
 	 * @brief Emitted when the Jesus subsystem has been created.
 	 */
-//	sigc::signal<void, Jesus*> EventCreatedJesus;
+	//	sigc::signal<void, Jesus*> EventCreatedJesus;
 
 	/**
 	 * @brief Returns the scenenode of the world entity.
@@ -283,7 +290,6 @@ public:
 	 */
 	sigc::signal<void, MotionManager&> EventMotionManagerCreated;
 
-
 	/**
 	 * @brief Emitted after the TerrainGenerator has been created
 	 */
@@ -310,22 +316,21 @@ public:
 	 */
 	bool renderOneFrame();
 
-    /**
-     * @brief Sets up the application - returns false if the user chooses to abandon configuration.
-     * @return
-     */
-    bool setup();
+	/**
+	 * @brief Sets up the application - returns false if the user chooses to abandon configuration.
+	 * @return
+	 */
+	bool setup();
 
-    /**
-     * @brief Shuts down the gui.
-     * Call this at closing time, right before you destroy the view and shut down the scripting service.
-     */
-    void shutdownGui();
+	/**
+	 * @brief Shuts down the gui.
+	 * Call this at closing time, right before you destroy the view and shut down the scripting service.
+	 */
+	void shutdownGui();
 
-    void raiseCreatedAvatarEntity(EmberEntity& entity);
+	void raiseCreatedAvatarEntity(EmberEntity& entity);
 
 protected:
-
 
 	/**
 	 * @brief Utility object for setting up and tearing down ogre
@@ -410,18 +415,18 @@ protected:
 	/**
 	 * @brief Responsible for handling all entity recipes.
 	 */
-	EntityRecipeManager* mEntityRecipeManager;
+	Authoring::EntityRecipeManager* mEntityRecipeManager;
 
 	/**
 	 * @brief Responsible for allowing movement of entities in the world by the user.
 	 */
-	EntityMoveManager* mMoveManager;
+	Authoring::EntityMoveManager* mMoveManager;
 
 	/**
 	 * @brief Main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
 	 * @note The Jesus and Carpenter system hasn't been touched in quite a while, and it's not certain that it will remain in Ember.
 	 */
-//	Jesus* mJesus;
+	//	Jesus* mJesus;
 
 	/**
 	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
@@ -431,7 +436,7 @@ protected:
 	/**
 	 * @brief Helper object that allows for easy Ogre material editing.
 	 */
-	MaterialEditor* mMaterialEditor;
+	Authoring::MaterialEditor* mMaterialEditor;
 
 	/**
 	 * @brief Manages the model representation instances and allows for access of a specific model representation attached to any entity.
@@ -451,12 +456,12 @@ protected:
 	/**
 	 * @brief The collision manager, responsible for handling collisions of the geometry in the world.
 	 */
-//	OgreOpcode::CollisionManager* mCollisionManager;
+	//	OgreOpcode::CollisionManager* mCollisionManager;
 
 	/**
 	 * @brief Responsible for visualizing collisions.
 	 */
-//	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
+	//	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
 
 	/**
 	 *@brief Handles loading of resources. This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
@@ -506,7 +511,7 @@ protected:
 	/**
 	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
 	 */
-//	void setupJesus();
+	//	void setupJesus();
 
 
 	/**
@@ -527,10 +532,9 @@ protected:
 	 */
 	void Application_ServicesInitialized();
 
-
 };
 
-inline EntityMoveManager* EmberOgre::getMoveManager() const
+inline Authoring::EntityMoveManager* EmberOgre::getMoveManager() const
 {
 	return mMoveManager;
 }
@@ -540,8 +544,6 @@ inline Ogre::RenderWindow* EmberOgre::getRenderWindow() const
 	return mWindow;
 }
 
-
 }
-
 
 #endif

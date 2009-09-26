@@ -36,7 +36,8 @@
 
 namespace EmberOgre
 {
-
+namespace Authoring
+{
 EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& manager) :
 	EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode()), mNodeAttachment(nodeAttachment), mManager(manager), mPreviousControlDelegate(nodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
 {
@@ -50,8 +51,7 @@ EntityMover::~EntityMover()
 
 void EntityMover::finalizeMovement()
 {
-	if (mEntity.getLocation())
-	{
+	if (mEntity.getLocation()) {
 		///send to server
 		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
 	}
@@ -76,9 +76,8 @@ void EntityMover::newEntityPosition(const Ogre::Vector3& position)
 	mNodeAttachment.updatePosition();
 }
 
-
-EntityMoverControlDelegate::EntityMoverControlDelegate(EntityMover& entityMover)
-: mEntityMover(entityMover)
+EntityMoverControlDelegate::EntityMoverControlDelegate(EntityMover& entityMover) :
+	mEntityMover(entityMover)
 {
 
 }
@@ -92,6 +91,6 @@ const WFMath::Quaternion& EntityMoverControlDelegate::getOrientation() const
 {
 	return mEntityMover.getOrientation();
 }
-
+}
 
 }

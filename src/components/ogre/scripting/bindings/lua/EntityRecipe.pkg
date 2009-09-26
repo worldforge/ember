@@ -1,7 +1,7 @@
-$#include "components/ogre/manipulation/EntityRecipe.h"
+$#include "components/ogre/authoring/EntityRecipe.h"
 
 namespace EmberOgre {
-
+namespace Authoring {
 /**
  * Resource that stores recipes for entity creator.
  */
@@ -45,19 +45,19 @@ $#define __operator_pp operator++
 class const_iterator {
 public:
     value_type& __operator_ptr @ get();
-	EmberOgre::GUIAdaptersStore::const_iterator& __operator_pp @ next();
-	bool operator==(const EmberOgre::GUIAdaptersStore::const_iterator& value);
+	EmberOgre::Authoring::GUIAdaptersStore::const_iterator& __operator_pp @ next();
+	bool operator==(const EmberOgre::Authoring::GUIAdaptersStore::const_iterator& value);
 };
 public:
-	EmberOgre::GUIAdaptersStore::const_iterator begin() const;
-	EmberOgre::GUIAdaptersStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
+	EmberOgre::Authoring::GUIAdaptersStore::const_iterator begin() const;
+	EmberOgre::Authoring::GUIAdaptersStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
 };
-
+}
 }
 
 // Iterator over GUIAdaptersStore
 $[
-function EmberOgre.GUIAdaptersStore:pairs()
+function EmberOgre.Authoring.GUIAdaptersStore:pairs()
   local I = self:begin()
   local Iend = self:theEnd()
   return function()

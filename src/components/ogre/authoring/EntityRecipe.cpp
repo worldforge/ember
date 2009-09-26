@@ -1,7 +1,7 @@
 //
 // C++ Implementation: EntityRecipe
 //
-// Description: 
+// Description:
 //
 //
 // Author: Alexey Torkhov <atorkhov@gmail.com>, (C) 2008
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -38,7 +38,8 @@
 
 #include <Eris/TypeInfo.h>
 
-extern "C" {
+extern "C"
+{
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
@@ -46,15 +47,14 @@ extern "C" {
 //#include <lua.hpp>
 #include <tolua++.h>
 
-namespace EmberOgre {
-
-EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
-	const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader)
-	: Resource(creator, name, handle, group, isManual, loader),
-	  mAuthor(), mDescription(), mEntitySpec(0), mEntityType()
+namespace EmberOgre
 {
-	if (createParamDictionary("EntityRecipe"))
-	{
+namespace Authoring
+{
+EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) :
+	Resource(creator, name, handle, group, isManual, loader), mAuthor(), mDescription(), mEntitySpec(0), mEntityType()
+{
+	if (createParamDictionary("EntityRecipe")) {
 		// no custom params
 	}
 }
@@ -97,7 +97,7 @@ GUIAdapter* EntityRecipe::createGUIAdapter(const std::string& name, const std::s
 	adapter = new GUIAdapter(type);
 	adapter->setTooltip(tooltip);
 	mGUIAdapters[name] = adapter;
-	adapter->EventValueChanged.connect( sigc::mem_fun(*this, &EntityRecipe::valueChanged) );
+	adapter->EventValueChanged.connect(sigc::mem_fun(*this, &EntityRecipe::valueChanged));
 	return adapter;
 }
 
@@ -129,39 +129,33 @@ void EntityRecipe::associateBindings()
 	S_LOG_VERBOSE("Associating bindings.");
 	// Iterate over all entity spec XML nodes
 	EntityRecipe::SpecIterator iter(this);
-
 	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
-	if (elem)
-	{
+	if (elem) {
 		elem->Accept(&iter);
 	}
 }
 
-EntityRecipe::SpecIterator::SpecIterator(EntityRecipe* recipe) : TiXmlVisitor(), mRecipe(recipe)
+EntityRecipe::SpecIterator::SpecIterator(EntityRecipe* recipe) :
+	TiXmlVisitor(), mRecipe(recipe)
 {
 }
 
 bool EntityRecipe::SpecIterator::Visit(const TiXmlText& textNode)
 {
 	// We should be the only child of our parent
-	if (textNode.Parent()->FirstChild() != textNode.Parent()->LastChild())
-	{
+	if (textNode.Parent()->FirstChild() != textNode.Parent()->LastChild()) {
 		return false;
 	}
 
 	std::string text = textNode.ValueStr();
 
 	// If text looks like placeholder, try to look up it in bindings and associate if found
-	if (!text.empty() && text.at(0) == '$')
-	{
+	if (!text.empty() && text.at(0) == '$') {
 		BindingsStore::iterator bindings = mRecipe->mBindings.find(text.substr(1));
-		if (bindings != mRecipe->mBindings.end())
-		{
-			bindings->second->associateXmlElement(const_cast<TiXmlNode&>(*textNode.Parent()));
+		if (bindings != mRecipe->mBindings.end()) {
+			bindings->second->associateXmlElement(const_cast<TiXmlNode&> (*textNode.Parent()));
 			S_LOG_VERBOSE("Associated " << bindings->first << " with " << text);
-		}
-		else
-		{
+		} else {
 			S_LOG_WARNING("Binding for " << text << " not found.");
 		}
 	}
@@ -182,31 +176,24 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 
 		S_LOG_VERBOSE(" binding: " << I->first << " to func " << func);
 
-		if (func.empty())
-		{
+		if (func.empty()) {
 			std::vector<std::string>& adapters = I->second->getAdapters();
 
-			if (adapters.size() == 1)
-			{
+			if (adapters.size() == 1) {
 				std::string adapterName = adapters[0];
 				Atlas::Message::Element val = mGUIAdapters[adapterName]->getValue();
 				I->second->setValue(val);
-			}
-			else
-			{
+			} else {
 				S_LOG_WARNING("Should be only one adapter without calling function.");
 			}
-		}
-		else
-		{
+		} else {
 			LuaScriptingCallContext callContext;
 
-			lua_State* L = static_cast<LuaScriptingProvider*>(Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider"))->getLuaState();
+			lua_State* L = static_cast<LuaScriptingProvider*> (Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider"))->getLuaState();
 
 			// Pushing function params
 			std::vector<std::string>& adapters = I->second->getAdapters();
-			for (std::vector<std::string>::iterator J = adapters.begin(); J != adapters.end(); J++)
-			{
+			for (std::vector<std::string>::iterator J = adapters.begin(); J != adapters.end(); J++) {
 				std::string adapterName = *J;
 				Atlas::Message::Element* val = new Atlas::Message::Element(mGUIAdapters[adapterName]->getValue());
 				tolua_pushusertype_and_takeownership(L, val, "Atlas::Message::Element");
@@ -215,60 +202,57 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 			// Calling test function
 			Ember::EmberServices::getSingleton().getScriptingService()->callFunction(func, adapters.size(), "LuaScriptingProvider", &callContext);
 
-			LuaRef returnValue( callContext.getReturnValue() );
+			LuaRef returnValue(callContext.getReturnValue());
 
 			Atlas::Message::Element returnObj;
-			returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
+			returnObj = returnValue.asObject<Atlas::Message::Element> ("Atlas::Message::Element");
 			I->second->setValue(returnObj);
 		}
 	}
-	
 	///Inject all default attributes that aren't yet added.
-// 	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
-// 	if (elem)
-// 	{
-// 		Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(getEntityType());
-// 		if (erisType) {
-// 			const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
-// 			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
-// 				bool hasAttribute = false;
-// 				TiXmlNode* child(0);
-// 				while(child = elem->IterateChildren(child)) {
-// 					if (child->ToElement()) {
-// 						if (std::string(child->ToElement()->Attribute("name")) == I->first) {
-// 							hasAttribute = true;
-// 							break;
-// 						}
-// 					}
-// 				}
-// 				
-// 				if (!hasAttribute) {
-// 					///The attribute isn't present, we'll inject it
-// 					///This a bit contrived, since we'll now first convert the atlas into xml and inject it into the TiXmlElement (which will convert the xml strings into TiXml structures). And then later on we'll parse the xml again and create the final atlas data from it. However, the main reason for doing it this way is that in the future we would want to have nested child elements, which could be repeated. And in those cases we'll want to work directly with xml.
-// 				}
-// 			}
-// 		}
-// 	}	
+	// 	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
+	// 	if (elem)
+	// 	{
+	// 		Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(getEntityType());
+	// 		if (erisType) {
+	// 			const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
+	// 			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
+	// 				bool hasAttribute = false;
+	// 				TiXmlNode* child(0);
+	// 				while(child = elem->IterateChildren(child)) {
+	// 					if (child->ToElement()) {
+	// 						if (std::string(child->ToElement()->Attribute("name")) == I->first) {
+	// 							hasAttribute = true;
+	// 							break;
+	// 						}
+	// 					}
+	// 				}
+	//
+	// 				if (!hasAttribute) {
+	// 					///The attribute isn't present, we'll inject it
+	// 					///This a bit contrived, since we'll now first convert the atlas into xml and inject it into the TiXmlElement (which will convert the xml strings into TiXml structures). And then later on we'll parse the xml again and create the final atlas data from it. However, the main reason for doing it this way is that in the future we would want to have nested child elements, which could be repeated. And in those cases we'll want to work directly with xml.
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	/*
+	 std::stringstream str;
 
-/*
-	std::stringstream str;
+	 Atlas::Message::Element element(message);
 
-	Atlas::Message::Element element(message);
+	 Atlas::Message::QueuedDecoder decoder;
 
-	Atlas::Message::QueuedDecoder decoder;
-
-	Atlas::Codecs::XML codec(str, decoder);
-	Atlas::Formatter formatter(str, codec);
-	Atlas::Message::Encoder encoder(formatter);
-	formatter.streamBegin();
-	encoder.streamMessageElement(message);
-	formatter.streamEnd();
-*/
-
+	 Atlas::Codecs::XML codec(str, decoder);
+	 Atlas::Formatter formatter(str, codec);
+	 Atlas::Message::Encoder encoder(formatter);
+	 formatter.streamBegin();
+	 encoder.streamMessageElement(message);
+	 formatter.streamEnd();
+	 */
 	// Print entity into string
 	TiXmlPrinter printer;
 	printer.SetStreamPrinting();
-	mEntitySpec->Accept( &printer );
+	mEntitySpec->Accept(&printer);
 
 	S_LOG_VERBOSE("Composed entity: " << printer.Str());
 
@@ -279,19 +263,17 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	Atlas::Codecs::XML codec(strStream, decoder);
 
 	// Read whole stream into decoder queue
-	while (!strStream.eof())
-	{
+	while (!strStream.eof()) {
 		codec.poll();
 	}
 
 	// Read decoder queue
-	while (decoder.queueSize() > 0)
-	{
+	while (decoder.queueSize() > 0) {
 		Atlas::Message::MapType m = decoder.popMessage();
 		Eris::TypeInfo* erisType = typeService.getTypeByName(getEntityType());
 		if (erisType) {
 			const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
-			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {		
+			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
 				if (m.find(I->first) == m.end()) {
 					m.insert(Atlas::Message::MapType::value_type(I->first, I->second));
 				}
@@ -330,27 +312,27 @@ void EntityRecipe::valueChanged()
 }
 
 /*
-void EntityRecipe::doTest()
-{
-	S_LOG_VERBOSE("Doing test.");
+ void EntityRecipe::doTest()
+ {
+ S_LOG_VERBOSE("Doing test.");
 
-	LuaScriptingCallContext callContext;
+ LuaScriptingCallContext callContext;
 
-	// Loading code
-	Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
+ // Loading code
+ Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
 
-	// Calling test function
-	Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", 0, "LuaScriptingProvider", &callContext);
+ // Calling test function
+ Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", 0, "LuaScriptingProvider", &callContext);
 
-	LuaRef returnValue( callContext.getReturnValue() );
+ LuaRef returnValue( callContext.getReturnValue() );
 
-	S_LOG_VERBOSE(lua_typename(0, returnValue.type()));
+ S_LOG_VERBOSE(lua_typename(0, returnValue.type()));
 
-	Atlas::Message::Element returnObj;
-	returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
+ Atlas::Message::Element returnObj;
+ returnObj = returnValue.asObject<Atlas::Message::Element>("Atlas::Message::Element");
 
-	S_LOG_VERBOSE("Returned element type is " << returnObj.getType());
+ S_LOG_VERBOSE("Returned element type is " << returnObj.getType());
+ }
+ */
 }
-*/
-
 }

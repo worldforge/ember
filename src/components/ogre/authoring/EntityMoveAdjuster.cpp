@@ -28,22 +28,24 @@
 #include "../EmberEntity.h"
 #include "EntityMoveManager.h"
 
-namespace EmberOgre {
-
-EntityMoveAdjustmentInstance::EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity)
-:  mEntity(entity), mTimeout(1500), mMoveAdjuster(moveAdjuster)
+namespace EmberOgre
+{
+namespace Authoring
+{
+EntityMoveAdjustmentInstance::EntityMoveAdjustmentInstance(EntityMoveAdjuster* moveAdjuster, EmberEntity* entity) :
+	mEntity(entity), mTimeout(1500), mMoveAdjuster(moveAdjuster)
 {
 	mTimeout.Expired.connect(sigc::mem_fun(this, &EntityMoveAdjustmentInstance::timout_Expired));
 }
 
 void EntityMoveAdjustmentInstance::timout_Expired()
 {
-//	mEntity->synchronizeWithServer();
+	//	mEntity->synchronizeWithServer();
 	mMoveAdjuster->removeInstance(this);
 }
 
-
-EntityMoveAdjuster::EntityMoveAdjuster(EntityMoveManager* manager) : mManager(manager)
+EntityMoveAdjuster::EntityMoveAdjuster(EntityMoveManager* manager) :
+	mManager(manager)
 {
 	mManager->EventStartMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_StartMoving));
 	mManager->EventFinishedMoving.connect(sigc::mem_fun(*this, &EntityMoveAdjuster::EntityMoveManager_FinishedMoving));
@@ -77,4 +79,5 @@ void EntityMoveAdjuster::EntityMoveManager_StartMoving(EmberEntity* entity)
 	mActiveEntity = entity;
 }
 
+}
 }

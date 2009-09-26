@@ -38,8 +38,10 @@ namespace Eris
 class TypeService;
 }
 
-namespace EmberOgre {
-
+namespace EmberOgre
+{
+namespace Authoring
+{
 typedef std::map<std::string, GUIAdapter*> GUIAdaptersStore;
 typedef std::map<std::string, GUIAdapterBindings*> BindingsStore;
 
@@ -50,16 +52,16 @@ typedef std::map<std::string, GUIAdapterBindings*> BindingsStore;
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class EntityRecipe : public Ogre::Resource {
+class EntityRecipe: public Ogre::Resource
+{
 
-friend class XMLEntityRecipeSerializer;
+	friend class XMLEntityRecipeSerializer;
 
 public:
 	/**
 	 * Constructor.
 	 */
-	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
-		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
 
 	/**
 	 * Destructor.
@@ -69,12 +71,12 @@ public:
 	/**
 	 * Implemented from Ogre::Resource.
 	 */
- 	void loadImpl(void);
+	void loadImpl(void);
 
 	/**
 	 * Implemented from Ogre::Resource.
 	 */
- 	void unloadImpl(void);
+	void unloadImpl(void);
 
 	/**
 	 * Implemented from Ogre::Resource.
@@ -190,7 +192,7 @@ protected:
 	/**
 	 * Helper iterator over TinyXml nodes for associateBindings()
 	 */
-	class SpecIterator : public TiXmlVisitor
+	class SpecIterator: public TiXmlVisitor
 	{
 	public:
 		SpecIterator(EntityRecipe* recipe);
@@ -201,61 +203,65 @@ protected:
 };
 
 /** Specialisation of SharedPtr to allow SharedPtr to be assigned to EntityRecipePtr
-@note Has to be a subclass since we need operator=.
-We could templatise this instead of repeating per Resource subclass,
-except to do so requires a form VC6 does not support i.e.
-ResourceSubclassPtr<T> : public SharedPtr<T>
-*/
-class EntityRecipePtr : public Ogre::SharedPtr<EntityRecipe>
+ @note Has to be a subclass since we need operator=.
+ We could templatise this instead of repeating per Resource subclass,
+ except to do so requires a form VC6 does not support i.e.
+ ResourceSubclassPtr<T> : public SharedPtr<T>
+ */
+class EntityRecipePtr: public Ogre::SharedPtr<EntityRecipe>
 {
 public:
-    EntityRecipePtr() : Ogre::SharedPtr<EntityRecipe>() {}
-    explicit EntityRecipePtr(EntityRecipe* rep) : Ogre::SharedPtr<EntityRecipe>(rep) {}
-    EntityRecipePtr(const EntityRecipePtr& r) : Ogre::SharedPtr<EntityRecipe>(r) {}
-    EntityRecipePtr(const Ogre::ResourcePtr& r) : Ogre::SharedPtr<EntityRecipe>()
-    {
+	EntityRecipePtr() :
+		Ogre::SharedPtr<EntityRecipe>()
+	{
+	}
+	explicit EntityRecipePtr(EntityRecipe* rep) :
+		Ogre::SharedPtr<EntityRecipe>(rep)
+	{
+	}
+	EntityRecipePtr(const EntityRecipePtr& r) :
+		Ogre::SharedPtr<EntityRecipe>(r)
+	{
+	}
+	EntityRecipePtr(const Ogre::ResourcePtr& r) :
+		Ogre::SharedPtr<EntityRecipe>()
+	{
 		// lock & copy other mutex pointer
-		OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
-		{
+		OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME) {
 			OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
 			OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-			pRep = static_cast<EntityRecipe*>(r.getPointer());
+			pRep = static_cast<EntityRecipe*> (r.getPointer());
 			pUseCount = r.useCountPointer();
-			if (pUseCount)
-			{
+			if (pUseCount) {
 				++(*pUseCount);
 			}
 		}
-    }
+	}
 
-    /// Operator used to convert a ResourcePtr to a EntityRecipePtr
-    EntityRecipePtr& operator=(const Ogre::ResourcePtr& r)
-    {
-		if (pRep == static_cast<EntityRecipe*>(r.getPointer()))
+	/// Operator used to convert a ResourcePtr to a EntityRecipePtr
+	EntityRecipePtr& operator=(const Ogre::ResourcePtr& r)
+	{
+		if (pRep == static_cast<EntityRecipe*> (r.getPointer()))
 			return *this;
 		release();
 		// lock & copy other mutex pointer
-		OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
-		{
+		OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME) {
 			OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
 			OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-			pRep = static_cast<EntityRecipe*>(r.getPointer());
+			pRep = static_cast<EntityRecipe*> (r.getPointer());
 			pUseCount = r.useCountPointer();
-			if (pUseCount)
-			{
+			if (pUseCount) {
 				++(*pUseCount);
 			}
-		}
-		else
-		{
+		} else {
 			// RHS must be a null pointer
 			assert(r.isNull() && "RHS must be null if it has no mutex!");
 			setNull();
 		}
 		return *this;
-    }
+	}
 };
 
 }
-
+}
 #endif

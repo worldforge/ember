@@ -29,12 +29,15 @@
 #include "framework/tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
 
-namespace EmberOgre {
-
+namespace EmberOgre
+{
+namespace Authoring
+{
 /**
  * Serialize entity recipe from xml files.
  */
-class XMLEntityRecipeSerializer{
+class XMLEntityRecipeSerializer
+{
 public:
 	/**
 	 * Constructor.
@@ -83,6 +86,7 @@ protected:
 	void readScript(EntityRecipePtr entRecipe, TiXmlElement* scriptNode);
 };
 
+}
 }
 
 #endif

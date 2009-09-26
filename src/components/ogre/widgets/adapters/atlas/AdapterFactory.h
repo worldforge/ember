@@ -1,7 +1,7 @@
 //
 // C++ Interface: AdapterFactory
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -76,97 +76,97 @@ public:
 	 * @brief Dtor.
 	 */
 	virtual ~AdapterFactory();
-    
+
 	/**
 	* Creates an adapter for a simple string.
-	* @param container 
-	* @param adapterPrefix 
-	* @param element 
-	* @return 
+	* @param container
+	* @param adapterPrefix
+	* @param element
+	* @return
 	*/
 	StringAdapter* createStringAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
-    
+
 	/**
 	* Creates an adapter for a simple number.
-	* @param container 
-	* @param adapterPrefix 
-	* @param element 
-	* @return 
+	* @param container
+	* @param adapterPrefix
+	* @param element
+	* @return
 	*/
 	NumberAdapter* createNumberAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
-    
+
 	/**
 	* Creates an adapter for a sizer widget, which basically is a box where you can alter the size of the box in all three dimensions.
-	* @param container 
-	* @param adapterPrefix 
-	* @param element 
-	* @return 
+	* @param container
+	* @param adapterPrefix
+	* @param element
+	* @return
 	*/
 	SizeAdapter* createSizeAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
-	
+
 	/**
 	 *    Creates an adapter for a 3d position.
-	 * @param container 
-	 * @param adapterPrefix 
-	 * @param element 
-	 * @return 
+	 * @param container
+	 * @param adapterPrefix
+	 * @param element
+	 * @return
 	 */
 	PositionAdapter* createPositionAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 	/**
 	 *    Creates an adapter for a 2d position.
-	 * @param container 
-	 * @param adapterPrefix 
-	 * @param element 
-	 * @return 
+	 * @param container
+	 * @param adapterPrefix
+	 * @param element
+	 * @return
 	 */
 	Position2DAdapter* createPosition2DAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 	/**
 	 *    Creates an adapter for a map.
-	 * @param container 
-	 * @param adapterPrefix 
-	 * @param element 
-	 * @return 
+	 * @param container
+	 * @param adapterPrefix
+	 * @param element
+	 * @return
 	 */
 	MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 	/**
 	*    Creates an adapter for a map.
-	* @param container 
-	* @param adapterPrefix 
-	* @param attributes 
-	* @return 
+	* @param container
+	* @param adapterPrefix
+	* @param attributes
+	* @return
 	*/
 	MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::MapType attributes);
 	/**
 	*    Creates an adapter for a map.
-	* @param container 
-	* @param adapterPrefix 
-	* @param entity 
-	* @return 
+	* @param container
+	* @param adapterPrefix
+	* @param entity
+	* @return
 	*/
 	MapAdapter* createMapAdapter(CEGUI::Window* container, const std::string& adapterPrefix, Eris::Entity* entity);
 	/**
 	* Creates an adapter for a quaternion orientation.
-	* @param container 
-	* @param adapterPrefix 
-	* @param element 
-	* @return 
+	* @param container
+	* @param adapterPrefix
+	* @param element
+	* @return
 	*/
 	OrientationAdapter* createOrientationAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 	/**
 	 *    Creates an adapter for a list.
-	 * @param container 
-	 * @param adapterPrefix 
-	 * @param element 
-	 * @return 
+	 * @param container
+	 * @param adapterPrefix
+	 * @param element
+	 * @return
 	 */
 	ListAdapter* createListAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
-	
+
 	/**
 	* Creates an adapter for a standard static value, shown in it's simples text form.
-	* @param container 
-	* @param adapterPrefix 
-	* @param element 
-	* @return 
+	* @param container
+	* @param adapterPrefix
+	* @param element
+	* @return
 	*/
 	StaticAdapter* createStaticAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element);
 
@@ -189,7 +189,7 @@ public:
 	* @return A new polygon adapter.
 	*/
 	PolygonAdapter* createPolygonAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity);
-	
+
 	/**
 	* @brief Creates an adapter for a terrain mod.
 	* @param container The container window into which the adapter's windows will be loaded.
@@ -199,7 +199,7 @@ public:
 	* @return A new polygon adapter.
 	*/
 	TerrainModAdapter* createTerrainModAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity);
-	
+
 	/**
 	 * @brief Creates a new adapter based on a specified type.
 	 * @param type The type for which an adapter should be created. Possible values are "string|number|size|position|position2d|map|list|orientation|static".
@@ -221,10 +221,10 @@ public:
 	 * @return The root window of the newly loaded layout. This window has already been added to the supplied container.
 	 */
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
-	
+
 	/**
 	 * @brief Gets the current prefix used in the latest loaded layout.
-	 * @return 
+	 * @return
 	 */
 	const std::string& getCurrentPrefix() const;
 
@@ -234,17 +234,17 @@ protected:
 	 * @brief Used for auto generating unique CEGUI window names.
 	 */
 	static unsigned long msAutoGenId;
-	
+
 	/**
 	 * @brief The externally specified prefix used as a base for unique CEGUI window names.
 	 */
 	std::string mPrefix;
-	
+
 	/**
 	 * @brief The prefix used for the current loaded layout.
 	 */
 	std::string mCurrentPrefix;
-	
+
 	/**
 	 * @brief Creates a new adapter for the templated type.
 	 * This will in turn call on loadWindowIntoAdapter() for the specific type, but wrap everything in some commonly useful error handling methods.
@@ -262,7 +262,7 @@ protected:
 	 * @return True if the element was of the correct type for the adapter type.
 	 */
 	template <typename TAdapter> bool verifyCorrectType(const ::Atlas::Message::Element& element);
-	
+
 	/**
 	 * @brief Performs the actual creation of the adapter.
 	 * This is called by createAdapter() after some basic checks has been done. This also means that you don't have to do much exception handling in the implementations of this method since that will be taken care of by createAdapter().
@@ -273,7 +273,7 @@ protected:
 	 * @return A new adapter instance, or null if there was an error in the setup.
 	 */
 	template <typename TAdapter> TAdapter* loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity = 0);
-	
+
 
 };
 

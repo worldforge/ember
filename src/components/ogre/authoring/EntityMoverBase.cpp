@@ -29,13 +29,12 @@
 #include "components/ogre/Convert.h"
 #include "components/ogre/EmberOgre.h"
 
-
 #include <Eris/Entity.h>
 #include <OgreSceneNode.h>
 
 namespace EmberOgre
 {
-namespace Manipulation
+namespace Authoring
 {
 EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node) :
 	SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true), mEntity(entity), mNode(node), mSnapping(0)
@@ -61,19 +60,16 @@ const WFMath::Point<3>& EntityMoverBase::getPosition() const
 void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 {
 	WFMath::Point<3> finalPosition(position);
-	if (position.isValid())
-	{
+	if (position.isValid()) {
 		WFMath::Vector<3> adjustment;
 		EmberEntity* entity(0);
-		if (mSnapping.get() && mSnapping->testSnapTo(position, getOrientation(), adjustment, entity))
-		{
+		if (mSnapping.get() && mSnapping->testSnapTo(position, getOrientation(), adjustment, entity)) {
 			finalPosition = finalPosition.shift(adjustment);
 		}
 
 		///We need to offset into local space.
 		Ogre::Vector3 posOffset = Ogre::Vector3::ZERO;
-		if (mNode->getParent())
-		{
+		if (mNode->getParent()) {
 			posOffset = mNode->getParent()->_getDerivedPosition();
 		}
 		mNode->setPosition(Convert::toOgre(finalPosition) - posOffset);
@@ -82,8 +78,7 @@ void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 }
 void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
 {
-	if (directionVector.isValid())
-	{
+	if (directionVector.isValid()) {
 		mNode->translate(Convert::toOgre(directionVector));
 		newEntityPosition(mNode->getPosition());
 	}
@@ -100,12 +95,10 @@ void EntityMoverBase::yaw(WFMath::CoordType angle)
 
 void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 {
-	if (rotation.isValid())
-	{
+	if (rotation.isValid()) {
 		///We need to offset into local space.
 		Ogre::Quaternion rotOffset = Ogre::Quaternion::IDENTITY;
-		if (mNode->getParent())
-		{
+		if (mNode->getParent()) {
 			rotOffset = mNode->getParent()->_getDerivedOrientation();
 		}
 		mNode->setOrientation(Convert::toOgre(rotation) - rotOffset);
@@ -129,14 +122,13 @@ void EntityMoverBase::setSnapToEnabled(bool snapTo)
 {
 	if (snapTo && EmberOgre::getSingleton().getSceneManager()) {
 		if (!mSnapping.get()) {
-			mSnapping.reset(new Manipulation::SnapToMovement(mEntity, *mNode, 2.0f, *EmberOgre::getSingleton().getSceneManager(), true));
+			mSnapping.reset(new Authoring::SnapToMovement(mEntity, *mNode, 2.0f, *EmberOgre::getSingleton().getSceneManager(), true));
 			setPosition(Convert::toWF<WFMath::Point<3> >(mNode->getPosition()));
 		}
 	} else {
 		mSnapping.reset();
 	}
 }
-
 
 }
 }

@@ -39,7 +39,7 @@ namespace EmberOgre
 {
 
 class EmberEntity;
-namespace Manipulation
+namespace Authoring
 {
 class Polygon;
 class PolygonPoint;
@@ -60,7 +60,7 @@ namespace Atlas
  The height will be adjusted for the terrain.
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class EntityPolygonPositionProvider: public ::EmberOgre::Manipulation::IPolygonPositionProvider
+class EntityPolygonPositionProvider: public ::EmberOgre::Authoring::IPolygonPositionProvider
 {
 public:
 
@@ -90,7 +90,7 @@ protected:
  This allows the editing of polygons through graphical drag and drop operations.
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class PolygonAdapter: public AdapterBase, public ::EmberOgre::Manipulation::IMovementListener
+class PolygonAdapter: public AdapterBase, public ::EmberOgre::Authoring::IMovementListener
 {
 public:
 	/**
@@ -155,17 +155,17 @@ protected:
 	 * @brief The polygon used for graphical representation of this area.
 	 * Owned by this instance.
 	 */
-	Manipulation::Polygon* mPolygon;
+	Authoring::Polygon* mPolygon;
 
 	/**
 	 * @brief Responsible for listening for pick events and initiating movements of the points.
 	 */
-	Manipulation::PolygonPointPickListener* mPickListener;
+	Authoring::PolygonPointPickListener* mPickListener;
 
 	/**
 	 * @brief Responsible for handling the movement of a specific point.
 	 */
-	Manipulation::PolygonPointMovement* mPointMovement;
+	Authoring::PolygonPointMovement* mPointMovement;
 
 	/**
 	 * @brief An optional entity to which the area belongs.
@@ -185,7 +185,7 @@ protected:
 	 * @brief Listen for points being picked and initiate movement of the point.
 	 * @param point The point that was picked.
 	 */
-	void pickListener_PickedPoint(Manipulation::PolygonPoint& point);
+	void pickListener_PickedPoint(Authoring::PolygonPoint& point);
 
 	virtual void fillElementFromGui();
 	virtual bool _hasChanges();

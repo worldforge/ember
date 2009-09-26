@@ -28,7 +28,8 @@
 #include <wfmath/point.h>
 #include <memory>
 
-namespace Ogre {
+namespace Ogre
+{
 class Node;
 }
 
@@ -40,7 +41,7 @@ class Entity;
 namespace EmberOgre
 {
 class EmberEntity;
-namespace Manipulation
+namespace Authoring
 {
 class SnapToMovement;
 
@@ -84,7 +85,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 	/**
 	 * @brief Sets whether snap to functionality should be enabled.
@@ -124,7 +125,7 @@ protected:
 	/**
 	 * @brief Handles snap-to movement, which will make the entity snap to other entities in the world.
 	 */
-	std::auto_ptr<Manipulation::SnapToMovement> mSnapping;
+	std::auto_ptr<Authoring::SnapToMovement> mSnapping;
 
 };
 }

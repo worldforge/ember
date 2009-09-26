@@ -1,7 +1,7 @@
-$#include "components/ogre/manipulation/GUIAdapter.h"
+$#include "components/ogre/authoring/GUIAdapter.h"
 
 namespace EmberOgre {
-
+namespace Authoring {
 class GUIAdapter
 {
 public:
@@ -27,5 +27,5 @@ public:
 	
 	void addSuggestion(const std::string& value, const std::string& text);
 };
-
+}
 }

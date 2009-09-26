@@ -377,7 +377,7 @@ bool EmberOgre::setup()
 	// Sounds
 	mSoundManager = new SoundDefinitionManager();
 
-	mEntityRecipeManager = new EntityRecipeManager();
+	mEntityRecipeManager = new Authoring::EntityRecipeManager();
 
 	///Create a resource loader which loads all the resources we need.
 	mResourceLoader = new OgreResourceLoader();
@@ -484,7 +484,7 @@ bool EmberOgre::setup()
 	EventMotionManagerCreated.emit(*mMotionManager);
 
 
-	mMoveManager = new EntityMoveManager();
+	mMoveManager = new Authoring::EntityMoveManager();
 
 	mRoot->addFrameListener(mMotionManager);
 	new ConsoleObjectImpl();
@@ -506,7 +506,7 @@ bool EmberOgre::setup()
 	mSceneMgr->clearSpecialCaseRenderQueues();
 	mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
 
-	mMaterialEditor = new MaterialEditor();
+	mMaterialEditor = new Authoring::MaterialEditor();
 
 	mModelRepresentationManager = new Model::ModelRepresentationManager();
 

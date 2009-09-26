@@ -1,6 +1,7 @@
-$#include "components/ogre/manipulation/EntityRecipeManager.h"
+$#include "components/ogre/authoring/EntityRecipeManager.h"
 
 namespace EmberOgre {
+namespace Authoring {
 
 /**
  * Resource manager for entity recipes.
@@ -33,4 +34,5 @@ public:
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 };
 
+}
 }

@@ -27,7 +27,6 @@
 #include "Polygon.h"
 #include "PolygonPoint.h"
 
-
 #include <wfmath/vector.h>
 #include <wfmath/polygon.h>
 
@@ -35,17 +34,16 @@
 #include "../EmberOgre.h"
 #include "framework/LoggingInstance.h"
 
+namespace EmberOgre
+{
 
+namespace Authoring
+{
 
-namespace EmberOgre {
-
-namespace Manipulation {
-
-Polygon::Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider)
-: mBaseNode(baseNode), mPositionProvider(positionProvider), mRenderer(*this)
+Polygon::Polygon(Ogre::SceneNode* baseNode, IPolygonPositionProvider* positionProvider) :
+	mBaseNode(baseNode), mPositionProvider(positionProvider), mRenderer(*this)
 {
 }
-
 
 Polygon::~Polygon()
 {
@@ -67,11 +65,10 @@ WFMath::Polygon<2> Polygon::getShape() const
 	return poly;
 }
 
-
 void Polygon::loadFromShape(const WFMath::Polygon<2>& shape)
 {
 	clear();
-	for(int i = 0; i < shape.numCorners(); ++i) {
+	for (int i = 0; i < shape.numCorners(); ++i) {
 		const WFMath::Point<2>& position = shape[i];
 		PolygonPoint* point = new PolygonPoint(*this, position);
 		mPoints.push_back(point);
@@ -92,7 +89,6 @@ const Polygon::PointStore& Polygon::getPoints() const
 {
 	return mPoints;
 }
-
 
 IPolygonPositionProvider* Polygon::getPositionProvider() const
 {
@@ -147,7 +143,6 @@ bool Polygon::reInsertPoint(size_t index, PolygonPoint& point)
 	return true;
 }
 
-
 PolygonPoint* Polygon::getPointBefore(PolygonPoint& point)
 {
 	if (mPoints.size()) {
@@ -189,8 +184,6 @@ bool Polygon::removePoint(PolygonPoint& point)
 	}
 	return false;
 }
-
-
 
 }
 

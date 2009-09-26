@@ -32,17 +32,18 @@
 #include "../Convert.h"
 #include <OgreSceneNode.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Manipulation {
+namespace Authoring
+{
 
-PolygonPointMover::PolygonPointMover(PolygonPoint& point, IMovementListener* listener)
-: mPoint(point), mNewPoint(0), mDeleted(false), mPointAfterDeleted(0), mInitialPosition(point.getLocalPosition()), mListener(listener)
+PolygonPointMover::PolygonPointMover(PolygonPoint& point, IMovementListener* listener) :
+	mPoint(point), mNewPoint(0), mDeleted(false), mPointAfterDeleted(0), mInitialPosition(point.getLocalPosition()), mListener(listener)
 {
 	Ember::Input::getSingleton().EventKeyPressed.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyPressed));
 	Ember::Input::getSingleton().EventKeyReleased.connect(sigc::mem_fun(*this, &PolygonPointMover::input_KeyReleased));
 }
-
 
 PolygonPointMover::~PolygonPointMover()
 {
@@ -84,7 +85,7 @@ void PolygonPointMover::move(const WFMath::Vector<3>& directionVector)
 		getActivePoint()->translate(WFMath::Vector<2>(directionVector.x(), directionVector.y()));
 	}
 }
-void PolygonPointMover::setRotation (int axis, WFMath::CoordType angle)
+void PolygonPointMover::setRotation(int axis, WFMath::CoordType angle)
 {
 	///not implemented yet
 }
@@ -110,7 +111,7 @@ void PolygonPointMover::cancelMovement()
 		switchToExistingPointMode();
 	}
 	mListener->cancelMovement();
-// 	mPoint.getPolygon().endMovement();
+	// 	mPoint.getPolygon().endMovement();
 }
 
 PolygonPoint* PolygonPointMover::getActivePoint() const
@@ -203,7 +204,6 @@ void PolygonPointMover::switchToDeleteMode()
 	mDeleted = true;
 	mPoint.getPolygon().updateRender();
 }
-
 
 }
 
