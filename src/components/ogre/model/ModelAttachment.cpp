@@ -29,7 +29,6 @@
 #include "components/ogre/model/ModelMount.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
-#include "components/ogre/model/ModelAttachedAttachment.h"
 #include "components/ogre/model/ModelBoneProvider.h"
 #include "components/ogre/model/ModelFitting.h"
 
