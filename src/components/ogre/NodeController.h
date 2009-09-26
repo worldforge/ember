@@ -39,7 +39,15 @@ class IAttachmentControlDelegate;
 class NodeController: public virtual sigc::trackable, public IMovable
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param The attachment which will be controlled.
+	 */
 	NodeController(NodeAttachment& attachment);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~NodeController();
 
 	virtual void updateMotion(float timeSlice);
