@@ -11,7 +11,7 @@ ember_bin_LDADD = \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
 	$(top_builddir)/src/components/ogre/environment/libEnvironment.a \
 	$(top_builddir)/src/components/ogre/gui/libGui.a \
-	$(top_builddir)/src/components/ogre/manipulation/libmanipulation.a \
+	$(top_builddir)/src/components/ogre/authoring/libAuthoring.a \
 	$(top_builddir)/src/components/ogre/model/libModel.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.a \

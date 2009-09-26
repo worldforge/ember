@@ -30,7 +30,7 @@
 #include "components/ogre/Convert.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/terrain/TerrainGenerator.h"
-#include "components/ogre/manipulation/PolygonPointPickListener.h"
+#include "components/ogre/authoring/PolygonPointPickListener.h"
 #include "components/ogre/camera/MainCamera.h"
 
 #include <wfmath/polygon.h>

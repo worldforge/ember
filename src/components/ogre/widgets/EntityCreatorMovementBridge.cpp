@@ -26,7 +26,7 @@
 
 #include "EntityCreatorMovementBridge.h"
 #include "EntityCreator.h"
-#include "components/ogre/manipulation/DetachedEntity.h"
+#include "components/ogre/authoring/DetachedEntity.h"
 #include <OgreSceneNode.h>
 #include "../Convert.h"
 

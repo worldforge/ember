@@ -88,7 +88,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "EmberEntityFactory.h"
 #include "MotionManager.h"
 #include "GUIManager.h"
-#include "manipulation/EntityMoveManager.h"
+#include "authoring/EntityMoveManager.h"
 
 
 #include "EmberEntity.h"
@@ -111,7 +111,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 //#include "ogreopcode/include/OgreCollisionManager.h"
 //#include "OpcodeCollisionDetectorVisualizer.h"
 
-#include "manipulation/EntityRecipeManager.h"
+#include "authoring/EntityRecipeManager.h"
 
 #include "ShaderManager.h"
 
@@ -134,7 +134,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 #include "OgreSetup.h"
 
-#include "manipulation/MaterialEditor.h"
+#include "authoring/MaterialEditor.h"
 #include "MediaUpdater.h"
 
 #include "main/Application.h"

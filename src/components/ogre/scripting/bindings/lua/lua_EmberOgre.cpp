@@ -20,11 +20,11 @@ TOLUA_API int  tolua_EmberOgre_open (lua_State* tolua_S);
 #include "components/ogre/widgets/Compass.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
-#include "components/ogre/manipulation/GUIAdapter.h"
-#include "components/ogre/manipulation/EntityRecipe.h"
+#include "components/ogre/authoring/GUIAdapter.h"
+#include "components/ogre/authoring/EntityRecipe.h"
 #define __operator_ptr operator*
 #define __operator_pp operator++
-#include "components/ogre/manipulation/EntityRecipeManager.h"
+#include "components/ogre/authoring/EntityRecipeManager.h"
 #include "components/ogre/widgets/EntityCreator.h"
 #include "components/ogre/terrain/Map.h"
 #include "components/ogre/terrain/TerrainLayerDefinition.h"

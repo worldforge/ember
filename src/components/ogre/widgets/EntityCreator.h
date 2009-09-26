@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
-#include "components/ogre/manipulation/EntityRecipe.h"
+#include "components/ogre/authoring/EntityRecipe.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/widgets/Widget.h"
 #include <Eris/Connection.h>

@@ -517,8 +517,8 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/mapping/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
 		 src/components/ogre/sounddefinitions/Makefile
-		 src/components/ogre/manipulation/Makefile
-		 src/components/ogre/manipulation/entityrecipes/Makefile
+		 src/components/ogre/authoring/Makefile
+		 src/components/ogre/authoring/entityrecipes/Makefile
 		 src/components/ogre/terrain/Makefile
 		 src/components/ogre/camera/Makefile
 		 src/components/ogre/SceneManagers/Makefile

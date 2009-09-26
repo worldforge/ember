@@ -24,9 +24,9 @@
 #define EMBEROGRE_GUI_ADAPTERS_ATLASPOLYGONADAPTER_H
 
 #include "AdapterBase.h"
-#include "components/ogre/manipulation/Polygon.h"
-#include "components/ogre/manipulation/PolygonPointMovement.h"
-#include "components/ogre/manipulation/IPolygonPositionProvider.h"
+#include "components/ogre/authoring/Polygon.h"
+#include "components/ogre/authoring/PolygonPointMovement.h"
+#include "components/ogre/authoring/IPolygonPositionProvider.h"
 #include "components/ogre/EmberEntity.h"
 
 namespace CEGUI

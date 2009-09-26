@@ -24,7 +24,7 @@
 #define EMBEROGRE_GUIENTITYCREATORMOVEMENT_H
 
 #include "EntityCreatorMovementBridge.h"
-#include "components/ogre/manipulation/MovementAdapter.h"
+#include "components/ogre/authoring/MovementAdapter.h"
 
 
 namespace EmberOgre {

@@ -23,8 +23,8 @@
 #ifndef EMBEROGRE_GUIENTITYCREATORMOVEMENTBRIDGE_H
 #define EMBEROGRE_GUIENTITYCREATORMOVEMENTBRIDGE_H
 
-#include "components/ogre/manipulation/IMovementBridge.h"
-#include "components/ogre/manipulation/EntityMoverBase.h"
+#include "components/ogre/authoring/IMovementBridge.h"
+#include "components/ogre/authoring/EntityMoverBase.h"
 #include <wfmath/point.h>
 
 namespace Ogre

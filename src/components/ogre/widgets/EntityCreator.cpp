@@ -28,7 +28,7 @@
 
 #include "EntityCreatorMovement.h"
 #include "EntityCreatorActionCreator.h"
-#include "components/ogre/manipulation/DetachedEntity.h"
+#include "components/ogre/authoring/DetachedEntity.h"
 
 #include "../GUIManager.h"
 #include "../AvatarTerrainCursor.h"
@@ -36,7 +36,7 @@
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 
-#include "../manipulation/DetachedEntity.h"
+#include "../authoring/DetachedEntity.h"
 #include <Atlas/Message/Element.h>
 #include <wfmath/atlasconv.h>
 #include <wfmath/MersenneTwister.h>

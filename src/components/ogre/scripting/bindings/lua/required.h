@@ -56,7 +56,7 @@
 #include "components/ogre/IWorldPickListener.h"
 #include "components/ogre/EntityWorldPickListener.h"
 
-#include "components/ogre/manipulation/EntityMoveManager.h"
+#include "components/ogre/authoring/EntityMoveManager.h"
 
 #include "components/ogre/OgreInfo.h"
 

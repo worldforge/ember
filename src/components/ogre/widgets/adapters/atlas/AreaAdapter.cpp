@@ -28,7 +28,7 @@
 #include "components/ogre/terrain/TerrainAreaParser.h"
 #include "components/ogre/EmberOgre.h"
 #include "../../ColouredListItem.h"
-#include "components/ogre/manipulation/PolygonPointPickListener.h"
+#include "components/ogre/authoring/PolygonPointPickListener.h"
 
 #include "PolygonAdapter.h"
 

@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 SUBDIRS = SceneManagers environment gui  \
-	manipulation model modeldefinitions sounddefinitions scripting sound terrain widgets mapping camera
+	authoring model modeldefinitions sounddefinitions scripting sound terrain widgets mapping camera
 #carpenter jesus ogreopcode
 
 noinst_LIBRARIES = libEmberOgre.a
