@@ -17,20 +17,26 @@
  */
 
 #include "TaskExecutionContext.h"
+#include "TaskExecutor.h"
 
 namespace Ember
 {
 namespace Tasks
 {
-TaskExecutionContext::TaskExecutionContext()
+TaskExecutionContext::TaskExecutionContext(TaskExecutor& executor)
+: mExecutor(executor)
 {
-	// TODO Auto-generated constructor stub
 
 }
 
 TaskExecutionContext::~TaskExecutionContext()
 {
-	// TODO Auto-generated destructor stub
 }
+
+const TaskExecutor& TaskExecutionContext::getExecutor() const
+{
+
+}
+
 }
 }

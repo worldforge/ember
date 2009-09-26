@@ -45,7 +45,7 @@ void TaskExecutor::run()
 {
 	while (mActive) {
 		TaskQueue::TaskUnit taskUnit = mTaskQueue.fetchNextTask();
-		TaskExecutionContext context;
+		TaskExecutionContext context(*this);
 		ITask* task = taskUnit.first;
 		ITaskExecutionListener* listener = taskUnit.second;
 		try {

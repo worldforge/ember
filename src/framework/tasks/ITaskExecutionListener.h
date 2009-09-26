@@ -37,7 +37,10 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ITaskExecutionListener() {};
+	virtual ~ITaskExecutionListener()
+	{
+	}
+	;
 
 	/**
 	 * @brief Called when execution has started.

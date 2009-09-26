@@ -24,11 +24,29 @@ namespace Ember
 namespace Tasks
 {
 
+class TaskExecutor;
+
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief The context where a task is executed in.
+ *
+ * This envelopes the context in where a task is executed, and provides information about it.
+ */
 class TaskExecutionContext
 {
 public:
-	TaskExecutionContext();
+	TaskExecutionContext(TaskExecutor& executor);
 	virtual ~TaskExecutionContext();
+
+	/**
+	 * @brief Gets the executor which performs the execution of the task.
+	 * @returns The task executor.
+	 */
+	const TaskExecutor& getExecutor() const;
+
+private:
+
+	TaskExecutor& mExecutor;
 };
 }
 }
