@@ -19,6 +19,8 @@
 #ifndef AUTHORINGVISUALIZATION_H_
 #define AUTHORINGVISUALIZATION_H_
 #include "components/ogre/OgreIncludes.h"
+#include <sigc++/trackable.h>
+
 namespace EmberOgre
 {
 
@@ -26,7 +28,7 @@ class EmberEntity;
 
 namespace Authoring
 {
-class AuthoringVisualization
+class AuthoringVisualization : public virtual sigc::trackable
 {
 public:
 	AuthoringVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode);
@@ -43,6 +45,7 @@ protected:
 
 	void entity_Moved();
 	void createGraphicalRepresentation();
+	void removeGraphicalRepresentation();
 };
 
 }

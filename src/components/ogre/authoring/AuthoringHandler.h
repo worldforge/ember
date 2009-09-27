@@ -19,6 +19,7 @@
 #ifndef AUTHORINGHANDLER_H_
 #define AUTHORINGHANDLER_H_
 
+#include "components/ogre/IEntityVisitor.h"
 #include <map>
 #include <sigc++/trackable.h>
 
@@ -35,11 +36,14 @@ class EmberEntity;
 namespace Authoring
 {
 class AuthoringVisualization;
-class AuthoringHandler : public virtual sigc::trackable
+
+class AuthoringHandler : public virtual sigc::trackable, public IEntityVisitor
 {
 public:
 	AuthoringHandler(Eris::View& view);
 	virtual ~AuthoringHandler();
+
+	void visit(EmberEntity& entity);
 
 protected:
 
@@ -51,6 +55,7 @@ protected:
 	void view_EntityDeleted(Eris::Entity* entity);
 
 	void createVisualizationForEntity(EmberEntity* entity);
+	void createVisualizationsForExistingEntities(Eris::View& view);
 };
 
 }

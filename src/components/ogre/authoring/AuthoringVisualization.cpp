@@ -41,6 +41,7 @@ AuthoringVisualization::AuthoringVisualization(EmberEntity& entity, Ogre::SceneN
 
 AuthoringVisualization::~AuthoringVisualization()
 {
+	removeGraphicalRepresentation();
 }
 
 Ogre::SceneNode* AuthoringVisualization::getSceneNode() const
@@ -55,8 +56,8 @@ void AuthoringVisualization::entity_Moved()
 
 void AuthoringVisualization::updatePositionAndOrientation()
 {
-	mSceneNode->setPosition(Convert::toOgre(mEntity.getViewPosition()));
-	mSceneNode->setOrientation(Convert::toOgre(mEntity.getViewOrientation()));
+	mSceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
+	mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
 }
 
 void AuthoringVisualization::createGraphicalRepresentation()
@@ -74,6 +75,15 @@ void AuthoringVisualization::createGraphicalRepresentation()
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when loading axes mesh."<< ex);
 	}
+}
+
+void AuthoringVisualization::removeGraphicalRepresentation()
+{
+	mSceneNode->detachAllObjects();
+	if (mGraphicalRepresentation) {
+		mSceneNode->getCreator()->destroyEntity(mGraphicalRepresentation);
+	}
+	mSceneNode->getCreator()->destroySceneNode(mSceneNode);
 }
 
 }

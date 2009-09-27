@@ -32,9 +32,10 @@ namespace EmberOgre
 namespace Authoring
 {
 
-AuthoringHandler::AuthoringHandler(Eris::View & view)
+AuthoringHandler::AuthoringHandler(Eris::View& view)
 {
 	view.EntitySeen.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntitySeen));
+	createVisualizationsForExistingEntities(view);
 }
 
 AuthoringHandler::~AuthoringHandler()
@@ -87,6 +88,16 @@ void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 		S_LOG_WARNING("Got delete signal for entity which doesn't has an authoring visualization. This should not happen.");
 	}
 
+}
+
+void AuthoringHandler::createVisualizationsForExistingEntities(Eris::View& view)
+{
+	static_cast<EmberEntity*> (view.getTopLevel())->accept(*this);
+}
+
+void AuthoringHandler::visit(EmberEntity& entity)
+{
+	createVisualizationForEntity(&entity);
 }
 
 }
