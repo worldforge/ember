@@ -1,32 +1,30 @@
 /*
------------------------------------------------------------------------------
+ -----------------------------------------------------------------------------
 
-Author: Miguel Guzman Miranda (Aglanor), (C) 2005
-Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
+ Author: Miguel Guzman Miranda (Aglanor), (C) 2005
+ Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
 
-This program is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation; either version 2 of the License, or (at your option) any later
-version.
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place - Suite 330, Boston, MA 02111-1307, USA, or go to
-http://www.gnu.org/copyleft/lesser.txt.
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
+ http://www.gnu.org/copyleft/lesser.txt.
 
 
------------------------------------------------------------------------------
-*/
-
+ -----------------------------------------------------------------------------
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-
 
 #include "EmberOgre.h"
 
@@ -37,17 +35,17 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include <sys/types.h>
 
 #ifdef WIN32
-	#include <tchar.h>
-	#define snprintf _snprintf
-    #include <io.h> // for _access, Win32 version of stat()
-    #include <direct.h> // for _mkdir
+#include <tchar.h>
+#define snprintf _snprintf
+#include <io.h> // for _access, Win32 version of stat()
+#include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
 
-	#include <iostream>
-	#include <fstream>
-	#include <ostream>
+#include <iostream>
+#include <fstream>
+#include <ostream>
 #else
-	#include <dirent.h>
+#include <dirent.h>
 #endif
 
 #include "EmberOgrePrerequisites.h"
@@ -58,8 +56,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 /*#include <Eris/PollDefault.h>*/
 #include <Eris/Connection.h>
 #include <Eris/View.h>
-
-
 
 //Ember headers
 #include "services/EmberServices.h"
@@ -89,7 +85,6 @@ http://www.gnu.org/copyleft/lesser.txt.
 #include "MotionManager.h"
 #include "GUIManager.h"
 #include "authoring/EntityMoveManager.h"
-
 
 #include "EmberEntity.h"
 #include "WorldEmberEntity.h"
@@ -147,56 +142,31 @@ http://www.gnu.org/copyleft/lesser.txt.
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
 using namespace Ember;
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-	void assureConfigFile(const std::string& filename, const std::string& originalConfigFileDir)
-	{
-		struct stat tagStat;
-		int ret = stat( filename.c_str(), &tagStat );
-		if (ret == -1) {
-			ret = stat( (originalConfigFileDir +filename).c_str(), &tagStat );
-			if (ret == 0) {
-				///copy conf file from shared
-				std::ifstream  instream ((originalConfigFileDir + filename).c_str());
-				std::ofstream  outstream (filename.c_str());
-				outstream <<  instream.rdbuf();
-			}
+void assureConfigFile(const std::string& filename, const std::string& originalConfigFileDir)
+{
+	struct stat tagStat;
+	int ret = stat(filename.c_str(), &tagStat);
+	if (ret == -1) {
+		ret = stat((originalConfigFileDir + filename).c_str(), &tagStat);
+		if (ret == 0) {
+			///copy conf file from shared
+			std::ifstream instream((originalConfigFileDir + filename).c_str());
+			std::ofstream outstream(filename.c_str());
+			outstream << instream.rdbuf();
 		}
 	}
-
-
+}
 
 EmberOgre::EmberOgre() :
-mAvatar(0),
-mMovementController(0),
-mRoot(0),
-mSceneMgr(0),
-mWindow(0),
-mShaderManager(0),
-mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))),
-mEmberEntityFactory(0),
-mTerrainGenerator(0),
-mSoundManager(0),
-mMotionManager(0),
-mGUIManager(0),
-mModelDefinitionManager(0),
-mEntityMappingManager(0),
-mTerrainLayerManager(0),
-mEntityRecipeManager(0),
-mMoveManager(0),
-//mJesus(0),
-mLogObserver(0),
-mMaterialEditor(0),
-mModelRepresentationManager(0),
-mScriptingResourceProvider(0),
-mSoundResourceProvider(0),
-//mCollisionManager(0),
-//mCollisionDetectorVisualizer(0),
-mResourceLoader(0),
-mOgreLogManager(0),
-mIsInPausedMode(false),
-mMainCamera(0),
-mOgreMainCamera(0)
+	mAvatar(0), mMovementController(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mEmberEntityFactory(0), mTerrainGenerator(0), mSoundManager(0), mMotionManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0), mMoveManager(0),
+	//mJesus(0),
+			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
+			//mCollisionManager(0),
+			//mCollisionDetectorVisualizer(0),
+			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mMainCamera(0), mOgreMainCamera(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -204,19 +174,19 @@ mOgreMainCamera(0)
 EmberOgre::~EmberOgre()
 {
 	delete mModelRepresentationManager;
-//	delete mCollisionDetectorVisualizer;
-//	delete mCollisionManager;
+	//	delete mCollisionDetectorVisualizer;
+	//	delete mCollisionManager;
 	delete mMaterialEditor;
-//	delete mJesus;
+	//	delete mJesus;
 	delete mMoveManager;
 
 	///The factory will be deleted by the mWorldView when that is deleted later on, so we shall not delete it here
-// 	delete mEmberEntityFactory;
+	// 	delete mEmberEntityFactory;
 	delete mMovementController;
 	delete mAvatar;
 
 	///start with deleting the eris world, then shut down ogre
-// 	delete mWorldView;
+	// 	delete mWorldView;
 
 	if (mRoot) {
 		mRoot->removeFrameListener(mMotionManager);
@@ -240,9 +210,9 @@ EmberOgre::~EmberOgre()
 	///by deleting the model manager we'll assure that
 	delete mModelDefinitionManager;
 
-// 	if (mWindow) {
-// 		mRoot->getRenderSystem()->destroyRenderTarget(mWindow->getName());
-// 	}
+	// 	if (mWindow) {
+	// 		mRoot->getRenderSystem()->destroyRenderTarget(mWindow->getName());
+	// 	}
 
 	delete mShaderManager;
 
@@ -258,25 +228,21 @@ EmberOgre::~EmberOgre()
 	///delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
 
-
-/*	delete mOgreResourceLoader;
-//	mSceneMgr->shutdown();
-//		delete mWorldView;
-		//mSceneMgr->removeAllCameras();
-//		mSceneMgr->clearScene();
-		delete mGUIManager;
-		delete mTerrainGenerator;
-		delete mMotionManager;
-//	if (mAvatar)
-//		delete mAvatar;
-		delete mMovementController;*/
-//		delete mModelDefinitionManager;
-/*	if (mEmberEntityFactory)
-		delete mEmberEntityFactory;*/
-//		delete mRoot;
-
-
-
+	/*	delete mOgreResourceLoader;
+	 //	mSceneMgr->shutdown();
+	 //		delete mWorldView;
+	 //mSceneMgr->removeAllCameras();
+	 //		mSceneMgr->clearScene();
+	 delete mGUIManager;
+	 delete mTerrainGenerator;
+	 delete mMotionManager;
+	 //	if (mAvatar)
+	 //		delete mAvatar;
+	 delete mMovementController;*/
+	//		delete mModelDefinitionManager;
+	/*	if (mEmberEntityFactory)
+	 delete mEmberEntityFactory;*/
+	//		delete mRoot;
 
 
 }
@@ -319,7 +285,6 @@ void EmberOgre::shutdownGui()
 	mGUIManager = 0;
 }
 
-
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
 bool EmberOgre::setup()
@@ -334,7 +299,6 @@ bool EmberOgre::setup()
 #else
 	S_LOG_INFO("Compiled against Ogre in release mode.");
 #endif
-
 
 #if OGRE_THREAD_SUPPORT == 0
 	S_LOG_INFO("Compiled against Ogre without threading support.");
@@ -387,15 +351,13 @@ bool EmberOgre::setup()
 	bool preloadMedia = configSrv->itemExists("media", "preloadmedia") && (bool)configSrv->getValue("media", "preloadmedia");
 	bool useWfut = configSrv->itemExists("wfut", "enabled") && (bool)configSrv->getValue("wfut", "enabled");
 
-
 	bool carryOn = mOgreSetup->configure();
-	if (!carryOn) return false;
+	if (!carryOn)
+		return false;
 	mWindow = mOgreSetup->getRenderWindow();
-
 
 	///start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	mResourceLoader->loadBootstrap();
-
 
 	mSceneMgr = mOgreSetup->chooseSceneManager();
 
@@ -403,9 +365,8 @@ bool EmberOgre::setup()
 	mOgreMainCamera = mSceneMgr->createCamera("MainCamera");
 	Ogre::Viewport* viewPort = mWindow->addViewport(mOgreMainCamera);
 	///set the background colour to black
-	viewPort->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 	mOgreMainCamera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
-
 
 	///The input object must know the resoluton of the screen
 	unsigned int height, width, depth;
@@ -427,10 +388,10 @@ bool EmberOgre::setup()
 	Gui::LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
 	loadingBar.addSection(&resourceGroupSection);
 	unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; ///remove bootstrap since that's already loaded
-	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0 ), 0.7);
+	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), 0.7);
 
 	loadingBar.start(mWindow);
-	loadingBar.setVersionText(std::string("Version ") + VERSION );
+	loadingBar.setVersionText(std::string("Version ") + VERSION);
 
 	/// Turn off rendering of everything except overlays
 	mSceneMgr->clearSpecialCaseRenderQueues();
@@ -444,8 +405,8 @@ bool EmberOgre::setup()
 	}
 
 	///create the collision manager
-//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
-//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
+	//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
+	//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
 
 	mResourceLoader->loadGui();
 	mResourceLoader->loadGeneral();
@@ -457,8 +418,7 @@ bool EmberOgre::setup()
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	///should media be preloaded?
-	if (preloadMedia)
-	{
+	if (preloadMedia) {
 		S_LOG_INFO( "Begin preload.");
 		mResourceLoader->preloadMedia();
 
@@ -472,8 +432,6 @@ bool EmberOgre::setup()
 		throw Ember::Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
 	}
 
-
-
 	if (chdir(configSrv->getHomeDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
 	}
@@ -483,12 +441,10 @@ bool EmberOgre::setup()
 	mMotionManager = new MotionManager();
 	EventMotionManagerCreated.emit(*mMotionManager);
 
-
 	mMoveManager = new Authoring::EntityMoveManager();
 
 	mRoot->addFrameListener(mMotionManager);
 	new ConsoleObjectImpl();
-
 
 	try {
 		mGUIManager->initialize();
@@ -513,7 +469,6 @@ bool EmberOgre::setup()
 	mMainCamera = new Camera::MainCamera(*mSceneMgr, *mWindow, Ember::Input::getSingleton(), *mOgreMainCamera);
 	loadingBar.finish();
 
-
 	return true;
 }
 
@@ -530,13 +485,11 @@ void EmberOgre::raiseCreatedAvatarEntity(EmberEntity& entity)
 	EventCreatedAvatarEntity.emit(entity);
 }
 
-
 EmberEntity* EmberOgre::getEmberEntity(const std::string & eid)
 {
 	assert(getMainView());
-	return static_cast<EmberEntity*>(getMainView()->getEntity(eid));
+	return static_cast<EmberEntity*> (getMainView()->getEntity(eid));
 }
-
 
 void EmberOgre::checkForConfigFiles()
 {
@@ -551,13 +504,11 @@ void EmberOgre::checkForConfigFiles()
 	assureConfigFile("ogre.cfg", sharePath);
 }
 
-
 void EmberOgre::preloadMedia(void)
 {
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
-
 
 	std::vector<std::string> shaderTextures;
 
@@ -574,20 +525,17 @@ void EmberOgre::preloadMedia(void)
 	}
 
 	//only autogenerate trees if we're not using the pregenerated ones
- 	if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) {
+	if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) {
 		Environment::Tree tree;
 		tree.makeMesh("GeneratedTrees/European_Larch", Ogre::TParameters::European_Larch);
 		tree.makeMesh("GeneratedTrees/Fir", Ogre::TParameters::Fir);
- 	}
-
-
-
+	}
 
 }
 
 //void EmberOgre::setupJesus()
 //{
-	//@note Disabled for now since it's not really used. Perhaps we should put this into a more dynamically loadable structure?
+//@note Disabled for now since it's not really used. Perhaps we should put this into a more dynamically loadable structure?
 
 //	const std::string datadir = Ember::EmberServices::getSingleton().getConfigService()->getSharedDataDirectory();
 //
@@ -673,24 +621,19 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::Server_GotView(Eris::View* view)
 {
-// 	mWorldView = view;
-	mEmberEntityFactory = new EmberEntityFactory(view, Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService());
+	// 	mWorldView = view;
+	mEmberEntityFactory = new EmberEntityFactory(*view, *Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService());
 }
-
-
 
 void EmberOgre::Server_GotConnection(Eris::Connection* connection)
 {
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
 }
 
-
-
 Avatar* EmberOgre::getAvatar() const
 {
 	return mAvatar;
 }
-
 
 Ogre::SceneManager* EmberOgre::getSceneManager() const
 {
@@ -713,25 +656,24 @@ Ogre::Root* EmberOgre::getOgreRoot() const
 	return mRoot;
 }
 
-Ogre::SceneNode * EmberOgre::getWorldSceneNode( ) const
+Ogre::SceneNode * EmberOgre::getWorldSceneNode() const
 {
-//	if (mEmberEntityFactory && mEmberEntityFactory->getWorld()) {
-//		return mEmberEntityFactory->getWorld()->getSceneNode();
-//	} else {
-		return mSceneMgr->getRootSceneNode();
-//	}
-/*	Ogre::SceneNode* node = mSceneMgr->getSceneNode("0");
-	//TODO: implement better exception handling
-	if (node == 0)
-		throw Exception();
-	return node;*/
+	//	if (mEmberEntityFactory && mEmberEntityFactory->getWorld()) {
+	//		return mEmberEntityFactory->getWorld()->getSceneNode();
+	//	} else {
+	return mSceneMgr->getRootSceneNode();
+	//	}
+	/*	Ogre::SceneNode* node = mSceneMgr->getSceneNode("0");
+	 //TODO: implement better exception handling
+	 if (node == 0)
+	 throw Exception();
+	 return node;*/
 }
 
 Ogre::SceneNode* EmberOgre::getRootSceneNode() const
 {
 	return mSceneMgr->getRootSceneNode();
 }
-
 
 Camera::MainCamera* EmberOgre::getMainCamera() const
 {
@@ -742,7 +684,6 @@ Ogre::Camera* EmberOgre::getMainOgreCamera() const
 {
 	return mOgreMainCamera;
 }
-
 
 EmberEntityFactory* EmberOgre::getEntityFactory() const
 {
@@ -794,6 +735,5 @@ Eris::View* EmberOgre::getMainView()
 {
 	return Ember::Application::getSingleton().getMainView();
 }
-
 
 }
