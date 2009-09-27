@@ -62,6 +62,7 @@ class TerrainMod;
 class IGraphicalRepresentation;
 class IEntityAttachment;
 class IAttachmentControlDelegate;
+class IEntityVisitor;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -333,6 +334,13 @@ public:
 	 * @return A child entity, or null if none found.
 	 */
 	EmberEntity* getAttachedEntity(const std::string& namedPoint);
+
+	/**
+	 * @brief Accepts a visitor.
+	 * This is used to allow for instances of IEntityVisitor to traverse the entity hierarchy.
+	 * @param visitor The visitor.
+	 */
+	void accept(IEntityVisitor& visitor);
 
 protected:
 

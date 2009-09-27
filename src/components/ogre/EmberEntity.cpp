@@ -21,9 +21,6 @@
 #endif
 #include "EmberEntity.h"
 
-#include "framework/Service.h"
-#include "framework/ConsoleBackend.h"
-#include "services/EmberServices.h"
 #include "EmberEntityFactory.h"
 #include "GUIManager.h"
 #include "terrain/TerrainArea.h"
@@ -31,10 +28,14 @@
 #include "Convert.h"
 #include "EmberEntityActionCreator.h"
 #include "IGraphicalRepresentation.h"
-#include "mapping/EmberEntityMappingManager.h"
 #include "IEntityAttachment.h"
-
+#include "IEntityVisitor.h"
 #include "EmberOgre.h"
+#include "mapping/EmberEntityMappingManager.h"
+#include "framework/Service.h"
+#include "framework/ConsoleBackend.h"
+#include "services/EmberServices.h"
+
 #include <OgreWireBoundingBox.h>
 #include <OgreMaterialManager.h>
 
@@ -289,15 +290,13 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			if (newAttachment) {
 				newAttachment->updateScale();
 			}
-		}
-		catch (const std::exception& ex) {
+		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when creating new attachment for entity." << ex);
 		}
 	} else {
 		try {
 			setAttachment(0);
-		}
-		catch (const std::exception& ex) {
+		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Problem when setting attachment for entity." << ex);
 		}
 	}
@@ -462,8 +461,7 @@ void EmberEntity::showErisBoundingBox(bool show)
 		mErisEntityBoundingBox = OGRE_NEW Ogre::OOBBWireBoundingBox();
 		try {
 			mErisEntityBoundingBox->setMaterial(BboxMaterialName);
-		}
-		catch (const std::exception& ex) {
+		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when setting Ogre material for bounding box.");
 			OGRE_DELETE mErisEntityBoundingBox;
 			mErisEntityBoundingBox = 0;
@@ -472,8 +470,7 @@ void EmberEntity::showErisBoundingBox(bool show)
 		Ogre::SceneNode* boundingBoxNode(0);
 		try {
 			boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
-		}
-		catch (const std::exception& ex) {
+		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when creating Ogre node for eris bounding box.");
 			OGRE_DELETE mErisEntityBoundingBox;
 			mErisEntityBoundingBox = 0;
@@ -490,8 +487,7 @@ void EmberEntity::showErisBoundingBox(bool show)
 
 			boundingBoxNode->setPosition(Convert::toOgre(getPredictedPos()));
 			boundingBoxNode->setOrientation(Convert::toOgre(getOrientation()));
-		}
-		catch (const std::exception& ex) {
+		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when setting up eris bounding box.");
 			OGRE_DELETE mErisEntityBoundingBox;
 			mErisEntityBoundingBox = 0;
@@ -638,6 +634,17 @@ EmberEntity* EmberEntity::getAttachedEntity(const std::string& namedPoint)
 	}
 
 	return 0;
+}
+
+void EmberEntity::accept(IEntityVisitor& visitor)
+{
+	visitor.visit(*this);
+	for (unsigned int i = 0; i < numContained(); ++i) {
+		EmberEntity* entity = getEmberContained(i);
+		if (entity) {
+			entity->accept(visitor);
+		}
+	}
 }
 
 }
