@@ -17,9 +17,13 @@
  */
 
 #include "AuthoringVisualization.h"
+#include "AuthoringVisualizationCollisionDetector.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/OgreInfo.h"
+#include "components/ogre/EmberEntityUserObject.h"
+#include "components/ogre/MousePicker.h"
+
 
 #include "framework/LoggingInstance.h"
 #include <OgreSceneNode.h>
@@ -67,6 +71,9 @@ void AuthoringVisualization::createGraphicalRepresentation()
 		if (mGraphicalRepresentation) {
 			try {
 				mSceneNode->attachObject(mGraphicalRepresentation);
+				mGraphicalRepresentation->setRenderingDistance(300);
+				mGraphicalRepresentation->setQueryFlags(MousePicker::CM_UNDEFINED);
+				mGraphicalRepresentation->setUserObject(new EmberEntityUserObject(mEntity, new AuthoringVisualizationCollisionDetector(*mGraphicalRepresentation)));
 			} catch (const std::exception& ex) {
 				S_LOG_WARNING("Error when attaching axes mesh."<< ex);
 				mSceneNode->getCreator()->destroyMovableObject(mGraphicalRepresentation);
@@ -81,9 +88,12 @@ void AuthoringVisualization::removeGraphicalRepresentation()
 {
 	mSceneNode->detachAllObjects();
 	if (mGraphicalRepresentation) {
+		delete mGraphicalRepresentation->getUserObject();
 		mSceneNode->getCreator()->destroyEntity(mGraphicalRepresentation);
+		mGraphicalRepresentation = 0;
 	}
 	mSceneNode->getCreator()->destroySceneNode(mSceneNode);
+	mSceneNode = 0;
 }
 
 }

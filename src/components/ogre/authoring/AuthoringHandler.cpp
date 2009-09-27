@@ -92,7 +92,9 @@ void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 
 void AuthoringHandler::createVisualizationsForExistingEntities(Eris::View& view)
 {
-	static_cast<EmberEntity*> (view.getTopLevel())->accept(*this);
+	if (view.getTopLevel()) {
+		static_cast<EmberEntity*> (view.getTopLevel())->accept(*this);
+	}
 }
 
 void AuthoringHandler::visit(EmberEntity& entity)
