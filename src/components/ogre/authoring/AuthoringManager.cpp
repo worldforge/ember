@@ -18,6 +18,8 @@
 
 #include "AuthoringManager.h"
 #include "AuthoringHandler.h"
+#include "services/config/ConfigService.h"
+
 namespace EmberOgre
 {
 
@@ -26,7 +28,7 @@ namespace Authoring
 AuthoringManager::AuthoringManager(Eris::View& view) :
 	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mView(view), mHandler(0)
 {
-
+	registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
 }
 
 AuthoringManager::~AuthoringManager()
@@ -50,9 +52,20 @@ void AuthoringManager::hideAuthoringVisualization()
 void AuthoringManager::runCommand(const std::string &command, const std::string &args)
 {
 	if (DisplayAuthoringVisualizations == command) {
-		displayAuthoringVisualization();
+		Ember::EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", false);
 	} else if (HideAuthoringVisualizations == command) {
-		hideAuthoringVisualization();
+		Ember::EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", true);
+	}
+}
+
+void AuthoringManager::config_AuthoringVisualizations(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_bool()) {
+		if (static_cast<bool> (variable)) {
+			displayAuthoringVisualization();
+		} else {
+			hideAuthoringVisualization();
+		}
 	}
 }
 
