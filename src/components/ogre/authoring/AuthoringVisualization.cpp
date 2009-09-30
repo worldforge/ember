@@ -71,7 +71,7 @@ void AuthoringVisualization::createGraphicalRepresentation()
 		if (mGraphicalRepresentation) {
 			try {
 				mSceneNode->attachObject(mGraphicalRepresentation);
-				mGraphicalRepresentation->setRenderingDistance(300);
+				mGraphicalRepresentation->setRenderingDistance(100);
 				mGraphicalRepresentation->setQueryFlags(MousePicker::CM_UNDEFINED);
 				mGraphicalRepresentation->setUserObject(new EmberEntityUserObject(mEntity, new AuthoringVisualizationCollisionDetector(*mGraphicalRepresentation)));
 			} catch (const std::exception& ex) {
