@@ -35,6 +35,7 @@ namespace Authoring
 AuthoringHandler::AuthoringHandler(Eris::View& view)
 {
 	view.EntitySeen.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntitySeen));
+	view.EntityCreated.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityCreated));
 	createVisualizationsForExistingEntities(view);
 }
 
@@ -50,11 +51,19 @@ void AuthoringHandler::view_EntitySeen(Eris::Entity* entity)
 	createVisualizationForEntity(static_cast<EmberEntity*> (entity));
 }
 
+void AuthoringHandler::view_EntityCreated(Eris::Entity* entity)
+{
+	createVisualizationForEntity(static_cast<EmberEntity*> (entity));
+}
+
 void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 {
-	entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &AuthoringHandler::view_EntityDeleted), entity));
+
 	VisualizationStore::iterator I = mVisualizations.find(entity);
 	if (I == mVisualizations.end()) {
+		entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &AuthoringHandler::view_EntityDeleted), entity));
+		entity->LocationChanged.connect(sigc::bind(sigc::mem_fun(*this, &AuthoringHandler::view_EntityLocationChanged), entity));
+
 		AuthoringVisualization* parentVis(0);
 		Ogre::SceneNode* parentNode(0);
 		if (entity->getLocation()) {
@@ -76,6 +85,7 @@ void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 	} else {
 		S_LOG_WARNING("Got create signal for entity which already has an authoring visualization. This should not happen.");
 	}
+
 }
 
 void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
@@ -87,7 +97,31 @@ void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 	} else {
 		S_LOG_WARNING("Got delete signal for entity which doesn't has an authoring visualization. This should not happen.");
 	}
+}
 
+void AuthoringHandler::view_EntityLocationChanged(Eris::Entity* newLocation, EmberEntity* entity)
+{
+	VisualizationStore::iterator I = mVisualizations.find(entity);
+	if (I != mVisualizations.end()) {
+		if (I->second->getSceneNode()->getParent()) {
+			I->second->getSceneNode()->getParent()->removeChild(I->second->getSceneNode());
+		}
+		if (newLocation) {
+			VisualizationStore::iterator parentI = mVisualizations.find(static_cast<EmberEntity*> (newLocation));
+
+			Ogre::SceneNode* parentNode(0);
+			if (parentI != mVisualizations.end()) {
+				parentNode = parentI->second->getSceneNode();
+			} else {
+				parentNode = EmberOgre::getSingleton().getRootSceneNode();
+				S_LOG_WARNING("Could not find new parent for entity, it will be attached to the root node.");
+			}
+			parentNode->addChild(I->second->getSceneNode());
+			I->second->updatePositionAndOrientation();
+		}
+	} else {
+		S_LOG_WARNING("Got location changed signal for entity which doesn't has an authoring visualization. This should not happen.");
+	}
 }
 
 void AuthoringHandler::createVisualizationsForExistingEntities(Eris::View& view)

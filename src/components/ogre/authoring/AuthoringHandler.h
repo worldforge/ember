@@ -80,10 +80,22 @@ protected:
 	void view_EntitySeen(Eris::Entity* entity);
 
 	/**
+	 * @brief When an entity is created we'll create a visualization for it.
+	 * @param entity The newly created entity.
+	 */
+	void view_EntityCreated(Eris::Entity* entity);
+
+	/**
 	 * @brief When an entity is deleted we'll remove the visualization for it.
 	 * @param entity The deleted entity.
 	 */
 	void view_EntityDeleted(Eris::Entity* entity);
+
+	/**
+	 * @brief When an entity changes location we need to alter the attachment of the graphical visualization.
+	 * @param newLocation The new location.
+	 */
+	void view_EntityLocationChanged(Eris::Entity* newLocation, EmberEntity* entity);
 
 	/**
 	 * @brief Creates a visualization for an entity.
