@@ -52,9 +52,9 @@ void AuthoringManager::hideAuthoringVisualization()
 void AuthoringManager::runCommand(const std::string &command, const std::string &args)
 {
 	if (DisplayAuthoringVisualizations == command) {
-		Ember::EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", false);
-	} else if (HideAuthoringVisualizations == command) {
 		Ember::EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", true);
+	} else if (HideAuthoringVisualizations == command) {
+		Ember::EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", false);
 	}
 }
 
