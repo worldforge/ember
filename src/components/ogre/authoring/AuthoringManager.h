@@ -21,10 +21,22 @@
 
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
+#include "services/config/ConfigListenerContainer.h"
+
+namespace varconf {
+class Variable;
+}
+
+
 namespace Eris
 {
 class View;
 class Entity;
+}
+
+namespace Ember
+{
+class ConfigListenerContainer;
 }
 
 namespace EmberOgre
@@ -35,14 +47,33 @@ namespace Authoring
 
 class AuthoringHandler;
 
-class AuthoringManager: public Ember::ConsoleObject
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Manages authoring, mainly visualizations of entities for authoring purposes.
+ * The actual visualizations is handled by an instance of AuthoringHandler, which is held by this class.
+ */
+class AuthoringManager: public Ember::ConsoleObject, Ember::ConfigListenerContainer
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param view The view of the world which should be authored.
+	 */
 	AuthoringManager(Eris::View& view);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~AuthoringManager();
 
+	/**
+	 * @brief Displays authoring visualizations for entities.
+	 */
 	void displayAuthoringVisualization();
 
+	/**
+	 * @brief Hides authoring visualizations for entities.
+	 */
 	void hideAuthoringVisualization();
 
 	/**
@@ -50,14 +81,35 @@ public:
 	 */
 	virtual void runCommand(const std::string &command, const std::string &args);
 
+	/**
+	 * @brief Command for displaying authoring visualizations.
+	 */
 	const Ember::ConsoleCommandWrapper DisplayAuthoringVisualizations;
 
+	/**
+	 * @brief Command for hiding authoring visualizations.
+	 */
 	const Ember::ConsoleCommandWrapper HideAuthoringVisualizations;
 
 protected:
 
+	/**
+	 * @brief The view to which this manager belongs.
+	 */
 	Eris::View& mView;
+
+	/**
+	 * @brief The handler, which will take care of the actual handling of visualizations.
+	 */
 	AuthoringHandler* mHandler;
+
+	/**
+	 * Determines whether visualizations should be shown or not.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void config_AuthoringVisualizations(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 };
 }

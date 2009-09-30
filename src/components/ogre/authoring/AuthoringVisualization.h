@@ -28,23 +28,70 @@ class EmberEntity;
 
 namespace Authoring
 {
-class AuthoringVisualization : public virtual sigc::trackable
+
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief An authoring visualization for an entity.
+ * The main use of this is for entities which doesn't have a graphical visualization (like an area) or entities for which the graphical representation is hard to graphically select.
+ * The entity is represented by three axes, which are clickable.
+ */
+class AuthoringVisualization: public virtual sigc::trackable
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param entity The entity this visualization is attached to.
+	 * @param sceneNode A precreated scene node to which we'll attach our visualization. Ownership is transferred to this instance.
+	 */
 	AuthoringVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode);
+
+	/**
+	 * @brief Dtor.
+	 * At destruction the entity and scene node will be destroyed.
+	 */
 	virtual ~AuthoringVisualization();
 
+	/**
+	 * @brief Gets the Ogre scene node to which this visualization is attached.
+	 * @returns An Ogre scene node.
+	 */
 	Ogre::SceneNode* getSceneNode() const;
 
+	/**
+	 * @brief Updates the position of the visualization to fit with the entity.
+	 */
 	void updatePositionAndOrientation();
 
 protected:
+
+	/**
+	 * @brief The entity which this visualization represents.
+	 */
 	EmberEntity& mEntity;
+
+	/**
+	 * @brief The scene node used by this visualization.
+	 */
 	Ogre::SceneNode* mSceneNode;
+
+	/**
+	 * @brief The entity which represents the entity in the world.
+	 */
 	Ogre::Entity* mGraphicalRepresentation;
 
+	/**
+	 * @brief When the entity moves, update the position and orientation of the scene node.
+	 */
 	void entity_Moved();
+
+	/**
+	 * @brief Creates the entity.
+	 */
 	void createGraphicalRepresentation();
+
+	/**
+	 * @brief Destroys the entity and the scene node to which it's attached.
+	 */
 	void removeGraphicalRepresentation();
 };
 

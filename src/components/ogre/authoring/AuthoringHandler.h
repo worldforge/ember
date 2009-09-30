@@ -37,24 +37,64 @@ namespace Authoring
 {
 class AuthoringVisualization;
 
-class AuthoringHandler : public virtual sigc::trackable, public IEntityVisitor
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Handles authoring visualizations.
+ * These are visualizations of all entities, for authoring sake. The main use of this is for entities which doesn't have a graphical visualization (like an area) or entities for which the graphical representation is hard to graphically select.
+ *
+ */
+class AuthoringHandler: public virtual sigc::trackable, public IEntityVisitor
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param view The view for which this handler should create visualizations.
+	 */
 	AuthoringHandler(Eris::View& view);
+
+	/**
+	 * @brief Dtor.
+	 * During destruction all visualizations are cleaned up.
+	 */
 	virtual ~AuthoringHandler();
 
+	/**
+	 * @brief IEntityVisitor implementation.
+	 * Allows creating of visualizations for all existing entities.
+	 */
 	void visit(EmberEntity& entity);
 
 protected:
 
 	typedef std::map<EmberEntity*, AuthoringVisualization*> VisualizationStore;
 
+	/**
+	 * @brief A store of all visualizations in the world.
+	 */
 	VisualizationStore mVisualizations;
 
+	/**
+	 * @brief When an entity first is seen we'll create a visualization for it.
+	 * @param entity The newly seen entity.
+	 */
 	void view_EntitySeen(Eris::Entity* entity);
+
+	/**
+	 * @brief When an entity is deleted we'll remove the visualization for it.
+	 * @param entity The deleted entity.
+	 */
 	void view_EntityDeleted(Eris::Entity* entity);
 
+	/**
+	 * @brief Creates a visualization for an entity.
+	 * @param entity The entity which we'll create a visualization for.
+	 */
 	void createVisualizationForEntity(EmberEntity* entity);
+
+	/**
+	 * @brief Create visualizations for all existing entities.
+	 * @param view The view for which we'll create visualizations for.
+	 */
 	void createVisualizationsForExistingEntities(Eris::View& view);
 };
 
