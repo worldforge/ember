@@ -41,6 +41,7 @@ function Admin.buildWidget()
 		Admin.addMenuItem("Picking info", "Admin.PickingInfo_Click", "Shows mouse picking info.")
 		Admin.addMenuItem("Environment", "Admin.Environment_Click", "Shows environment widget.")
 		Admin.addMenuItem("Network log", "Admin.NetworkLog_Click", "Shows network log widget.")
+		Admin.addMenuItem("Visualize entities", "Admin.VisualizeEntities_Click", "Visualizes entities.")
 		
 	
 		root:addChildWindow(Admin.popup)
@@ -130,6 +131,20 @@ end
 function Admin.NetworkLog_Click(args)
 	console:runCommand("/show_serverLogger")
 	return true
+end
+
+function Admin.VisualizeEntities_Click(args)
+	if emberServices:getConfigService():itemExists("authoring", "visualizations") then
+		local visualizeVariable = emberServices:getConfigService():getValue("authoring", "visualizations")
+		if visualizeVariable ~= nil then
+			if visualizeVariable:is_bool() then
+				local visualize = visualizeVariable[".bool"](visualizeVariable)
+				local new_value = varconf.Variable:new_local(not visualize)
+				emberServices:getConfigService():setValue("authoring", "visualizations", new_value)
+			end
+		end
+    end
+
 end
 
 --only show the admin menu if we're logged in as an admin
