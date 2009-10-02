@@ -33,6 +33,218 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"varconf::Variable");
 }
 
+/* method: new of class  varconf::Variable */
+#ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_new00
+static int tolua_Varconf_varconf_Variable_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"varconf::Variable",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const bool b = ((const bool)  tolua_toboolean(tolua_S,2,0));
+  {
+   varconf::Variable* tolua_ret = (varconf::Variable*)  new varconf::Variable(b);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"varconf::Variable");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  varconf::Variable */
+#ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_new00_local
+static int tolua_Varconf_varconf_Variable_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"varconf::Variable",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const bool b = ((const bool)  tolua_toboolean(tolua_S,2,0));
+  {
+   varconf::Variable* tolua_ret = (varconf::Variable*)  new varconf::Variable(b);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"varconf::Variable");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  varconf::Variable */
+#ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_new01
+static int tolua_Varconf_varconf_Variable_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"varconf::Variable",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const int i = ((const int)  tolua_tonumber(tolua_S,2,0));
+  {
+   varconf::Variable* tolua_ret = (varconf::Variable*)  new varconf::Variable(i);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"varconf::Variable");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Varconf_varconf_Variable_new00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  varconf::Variable */
+#ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_new01_local
+static int tolua_Varconf_varconf_Variable_new01_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"varconf::Variable",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const int i = ((const int)  tolua_tonumber(tolua_S,2,0));
+  {
+   varconf::Variable* tolua_ret = (varconf::Variable*)  new varconf::Variable(i);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"varconf::Variable");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Varconf_varconf_Variable_new00_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  varconf::Variable */
+#ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_new02
+static int tolua_Varconf_varconf_Variable_new02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"varconf::Variable",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const double d = ((const double)  tolua_tonumber(tolua_S,2,0));
+  {
+   varconf::Variable* tolua_ret = (varconf::Variable*)  new varconf::Variable(d);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"varconf::Variable");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Varconf_varconf_Variable_new01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  varconf::Variable */
+#ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_new02_local
+static int tolua_Varconf_varconf_Variable_new02_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"varconf::Variable",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const double d = ((const double)  tolua_tonumber(tolua_S,2,0));
+  {
+   varconf::Variable* tolua_ret = (varconf::Variable*)  new varconf::Variable(d);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"varconf::Variable");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Varconf_varconf_Variable_new01_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  varconf::Variable */
+#ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_new03
+static int tolua_Varconf_varconf_Variable_new03(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"varconf::Variable",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const std::string s = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  {
+   varconf::Variable* tolua_ret = (varconf::Variable*)  new varconf::Variable(s);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"varconf::Variable");
+   tolua_pushcppstring(tolua_S,(const char*)s);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_Varconf_varconf_Variable_new02(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  varconf::Variable */
+#ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_new03_local
+static int tolua_Varconf_varconf_Variable_new03_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"varconf::Variable",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const std::string s = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  {
+   varconf::Variable* tolua_ret = (varconf::Variable*)  new varconf::Variable(s);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"varconf::Variable");
+   tolua_pushcppstring(tolua_S,(const char*)s);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_Varconf_varconf_Variable_new02_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: delete of class  varconf::Variable */
 #ifndef TOLUA_DISABLE_tolua_Varconf_varconf_Variable_delete00
 static int tolua_Varconf_varconf_Variable_delete00(lua_State* tolua_S)
@@ -365,6 +577,18 @@ TOLUA_API int tolua_Varconf_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"Variable","varconf::Variable","",NULL);
    #endif
    tolua_beginmodule(tolua_S,"Variable");
+    tolua_function(tolua_S,"new",tolua_Varconf_varconf_Variable_new00);
+    tolua_function(tolua_S,"new_local",tolua_Varconf_varconf_Variable_new00_local);
+    tolua_function(tolua_S,".call",tolua_Varconf_varconf_Variable_new00_local);
+    tolua_function(tolua_S,"new",tolua_Varconf_varconf_Variable_new01);
+    tolua_function(tolua_S,"new_local",tolua_Varconf_varconf_Variable_new01_local);
+    tolua_function(tolua_S,".call",tolua_Varconf_varconf_Variable_new01_local);
+    tolua_function(tolua_S,"new",tolua_Varconf_varconf_Variable_new02);
+    tolua_function(tolua_S,"new_local",tolua_Varconf_varconf_Variable_new02_local);
+    tolua_function(tolua_S,".call",tolua_Varconf_varconf_Variable_new02_local);
+    tolua_function(tolua_S,"new",tolua_Varconf_varconf_Variable_new03);
+    tolua_function(tolua_S,"new_local",tolua_Varconf_varconf_Variable_new03_local);
+    tolua_function(tolua_S,".call",tolua_Varconf_varconf_Variable_new03_local);
     tolua_function(tolua_S,"delete",tolua_Varconf_varconf_Variable_delete00);
     tolua_function(tolua_S,".bool",tolua_Varconf_varconf_Variable__bool00);
     tolua_function(tolua_S,".int",tolua_Varconf_varconf_Variable__int00);

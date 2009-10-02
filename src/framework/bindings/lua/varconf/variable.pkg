@@ -31,6 +31,12 @@ namespace varconf {
 class Variable  {
 public:
 
+  Variable(const bool b);
+  Variable(const int i);
+  Variable(const double d);
+  Variable(const std::string& s);
+
+
   virtual ~Variable();
 
   operator bool();
