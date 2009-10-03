@@ -27,6 +27,7 @@
 #include "framework/ConsoleObject.h"
 #include <wfmath/point.h>
 #include <memory>
+#include <sigc++/signal.h>
 
 namespace Ogre
 {
@@ -93,6 +94,8 @@ public:
 	 * @param snapTo If true, snap to functionality is enabled.
 	 */
 	void setSnapToEnabled(bool snapTo);
+
+	sigc::signal<void> Moved;
 
 protected:
 

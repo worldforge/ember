@@ -74,6 +74,7 @@ void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 		}
 		mNode->setPosition(Convert::toOgre(finalPosition) - posOffset);
 		newEntityPosition(mNode->getPosition());
+		Moved.emit();
 	}
 }
 void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
@@ -81,6 +82,7 @@ void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
 	if (directionVector.isValid()) {
 		mNode->translate(Convert::toOgre(directionVector));
 		newEntityPosition(mNode->getPosition());
+		Moved.emit();
 	}
 }
 void EntityMoverBase::setRotation(int axis, WFMath::CoordType angle)
@@ -91,6 +93,7 @@ void EntityMoverBase::setRotation(int axis, WFMath::CoordType angle)
 void EntityMoverBase::yaw(WFMath::CoordType angle)
 {
 	mNode->yaw(Ogre::Degree(angle));
+	Moved.emit();
 }
 
 void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
@@ -102,6 +105,7 @@ void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 			rotOffset = mNode->getParent()->_getDerivedOrientation();
 		}
 		mNode->setOrientation(Convert::toOgre(rotation) - rotOffset);
+		Moved.emit();
 	}
 }
 

@@ -33,6 +33,7 @@ namespace Authoring
 {
 class EntityMoveAdjuster;
 class EntityMoveManager;
+class EntityMover;
 
 /**
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -116,7 +117,7 @@ private:
 	 *    When movement starts, register the entity that is being moved.
 	 * @param entity
 	 */
-	void EntityMoveManager_StartMoving(EmberEntity* entity);
+	void EntityMoveManager_StartMoving(EmberEntity& entity, EntityMover& mover);
 
 	/**
 	 The entity that is being moved.

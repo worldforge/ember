@@ -50,7 +50,7 @@ public:
 	 *    Starts moving of an entity.
 	 * @param entity
 	 */
-	void startMove(EmberEntity* entity);
+	void startMove(EmberEntity& entity);
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
@@ -62,7 +62,7 @@ public:
 	/**
 	 * Emitted when the movement of an entity starts
 	 */
-	sigc::signal<void, EmberEntity*> EventStartMoving;
+	sigc::signal<void, EmberEntity&, EntityMover&> EventStartMoving;
 
 	/**
 	 * Emitted when the movement of an entity has finished.

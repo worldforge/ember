@@ -50,19 +50,20 @@ void EntityMoveManager::GuiManager_EntityAction(const std::string& action, Ember
 {
 
 	if (action == "move") {
-		startMove(entity);
+		startMove(*entity);
 	}
 }
 
-void EntityMoveManager::startMove(EmberEntity* entity)
+void EntityMoveManager::startMove(EmberEntity& entity)
 {
 	///disallow moving of the root entity
-	if (entity->getLocation()) {
-		NodeAttachment* attachment = dynamic_cast<NodeAttachment*> (entity->getAttachment()); //HACK
+	if (entity.getLocation()) {
+		//Only provide movement for entities which have a node attachment.
+		NodeAttachment* attachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
 		if (attachment) {
 			EntityMover* mover = new EntityMover(*attachment, *this);
 			mMoveAdapter.attachToBridge(mover);
-			EventStartMoving.emit(entity);
+			EventStartMoving.emit(entity, *mover);
 		}
 	}
 }
@@ -77,10 +78,10 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 		if (entityId != "") {
 			EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
 			if (entity != 0) {
-				startMove(entity);
+				startMove(*entity);
 			}
 		} else {
-			Ember::ConsoleBackend::getSingletonPtr()->pushMessage("You must specifify a valid entity id to move.");
+			Ember::ConsoleBackend::getSingletonPtr()->pushMessage("You must specify a valid entity id to move.");
 		}
 
 	}
