@@ -95,6 +95,9 @@ public:
 	 */
 	void setSnapToEnabled(bool snapTo);
 
+	/**
+	 * Emitted when the entity is moved.
+	 */
 	sigc::signal<void> Moved;
 
 protected:
