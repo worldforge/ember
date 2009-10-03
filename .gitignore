@@ -22,6 +22,8 @@ optimized
 debug
 home
 var
+# the build directory
+build
 # Ignore objects and archives.
 *.[oa]
 # Ignore temporary files
