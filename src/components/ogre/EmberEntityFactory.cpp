@@ -27,6 +27,7 @@
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/Avatar.h"
 #include "components/ogre/authoring/AuthoringManager.h"
+#include "components/ogre/authoring/AuthoringMoverConnector.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
@@ -63,8 +64,8 @@ using namespace Ember::EntityMapping;
 namespace EmberOgre
 {
 
-EmberEntityFactory::EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService) :
-	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0), mView(view), mAuthoringManager(new Authoring::AuthoringManager(mView))
+EmberEntityFactory::EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager) :
+	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0), mView(view), mAuthoringManager(new Authoring::AuthoringManager(mView)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager))
 {
 	mView.registerFactory(this);
 
@@ -75,6 +76,7 @@ EmberEntityFactory::EmberEntityFactory(Eris::View& view, Eris::TypeService& type
 
 EmberEntityFactory::~EmberEntityFactory()
 {
+	delete mAuthoringMoverConnector;
 	delete mAuthoringManager;
 	/// there is no way to deregister the factory from the View, instead the View will delete the factory when deleted
 	// 	mView.deregisterFactory(this);
@@ -86,10 +88,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 
 	Eris::Entity* emberEntity(0);
 
-	if (ge->getId() == getErisAvatar()->getId()) {
-
-		emberEntity = createAvatarEntity(ge, type, w);
-	} else if (type->isA(mTerrainType)) {
+	if (type->isA(mTerrainType)) {
 		emberEntity = createWorld(ge, type, w);
 	} else {
 		emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
@@ -124,11 +123,6 @@ void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
 	} else {
 		S_LOG_CRITICAL("Somehow got a null avatar entity.");
 	}
-}
-
-EmberEntity* EmberEntityFactory::createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world)
-{
-	return new EmberEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager());
 }
 
 int EmberEntityFactory::priority()

@@ -48,6 +48,8 @@ class WorldEmberEntity;
 namespace Authoring
 {
 class AuthoringManager;
+class AuthoringMoverConnector;
+class EntityMoveManager;
 }
 
 /**
@@ -65,7 +67,7 @@ public:
 	/**
 	 Default constructor. This should be instantiated by EmberOgre or similiar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	 */
-	EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService);
+	EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager);
 	virtual ~EmberEntityFactory();
 
 	/**
@@ -118,10 +120,6 @@ protected:
 	 Creates a WorldEmberEntity instance.
 	 */
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world);
-	/**
-	 Creates a avatar instance.
-	 */
-	EmberEntity* createAvatarEntity(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View *world);
 
 	void gotAvatarCharacter(Eris::Entity* entity);
 
@@ -130,11 +128,25 @@ protected:
 
 	Eris::Avatar* getErisAvatar();
 
+	/**
+	 * @brief The world entity, which is also the base entity of the view.
+	 */
 	WorldEmberEntity *mWorldEntity;
 
+	/**
+	 * @brief The main view of the world.
+	 */
 	Eris::View& mView;
 
+	/**
+	 * @brief The authoring manager, used for displaying authoring markers.
+	 */
 	Authoring::AuthoringManager* mAuthoringManager;
+
+	/**
+	 * @brief Connects the authoring manager to the entity mover manager, so that the authoring info is updated as entities are moved.
+	 */
+	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
 };
 
 }

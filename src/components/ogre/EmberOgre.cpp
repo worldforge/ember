@@ -56,6 +56,7 @@
 /*#include <Eris/PollDefault.h>*/
 #include <Eris/Connection.h>
 #include <Eris/View.h>
+#include <Eris/Avatar.h>
 
 //Ember headers
 #include "services/EmberServices.h"
@@ -621,8 +622,7 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::Server_GotView(Eris::View* view)
 {
-	// 	mWorldView = view;
-	mEmberEntityFactory = new EmberEntityFactory(*view, *Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService());
+	mEmberEntityFactory = new EmberEntityFactory(*view, *view->getAvatar()->getConnection()->getTypeService(), *mMoveManager);
 }
 
 void EmberOgre::Server_GotConnection(Eris::Connection* connection)
