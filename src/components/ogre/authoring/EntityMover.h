@@ -55,6 +55,8 @@ public:
 	virtual void finalizeMovement();
 	virtual void cancelMovement();
 
+	const IAttachmentControlDelegate& getControlDelegate() const;
+
 protected:
 
 	virtual void newEntityPosition(const Ogre::Vector3& position);
