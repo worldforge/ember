@@ -20,9 +20,9 @@
 #define AUTHORINGHANDLER_H_
 
 #include "components/ogre/IEntityVisitor.h"
+#include "components/ogre/EntityObserverBase.h"
 #include <map>
 #include <sigc++/trackable.h>
-
 namespace Eris
 {
 class View;
@@ -38,6 +38,28 @@ namespace Authoring
 class AuthoringVisualization;
 class AuthoringVisualizationMover;
 class EntityMover;
+class AuthoringHandler;
+
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief An instance of a move operation. An instance of this is created when a AuthoringVisualizationMover is used for displaying the movement of an entity.
+ * Note that this inherits from EntityObserverBase which makes it react to the entity being deleted. However, this functionality is already taken care of in AuthoringHandler::view_EntityDeleted making it a bit superfluous.
+ */
+class AuthoringMoveInstance: public EntityObserverBase
+{
+public:
+	AuthoringMoveInstance(EmberEntity& entity, AuthoringVisualization& visualization, EntityMover& mover, AuthoringHandler& moveHandler);
+	virtual ~AuthoringMoveInstance();
+
+	AuthoringVisualization& getVisualization();
+private:
+	virtual void cleanup();
+
+	AuthoringVisualizationMover* mMover;
+	AuthoringHandler& mMoveHandler;
+	AuthoringVisualization& mVisualization;
+};
+
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Handles authoring visualizations.
@@ -65,8 +87,18 @@ public:
 	 */
 	void visit(EmberEntity& entity);
 
+	/**
+	 * @brief Starts movement of the entity, through the supplied mover.
+	 * Calling this when an entity movement operation is started allows the authoring visualization to be synced with the movement, though an instance of AuthoringMoveInstance.
+	 * @param entity The entity being moved.
+	 * @param mover The mover, taking care of the movement.
+	 */
 	void startMovement(EmberEntity& entity, EntityMover& mover);
 
+	/**
+	 * @brief Stops a previously started movement operation.
+	 * Call this when the movement has stopped, to make sure that the previously created AuthoringMoveInstance instance is destroyed.
+	 */
 	void stopMovement();
 
 protected:
@@ -78,7 +110,10 @@ protected:
 	 */
 	VisualizationStore mVisualizations;
 
-	AuthoringVisualizationMover* mMover;
+	/**
+	 * @brief If an entity is moved client side, this instance will make sure that the visualization is synced with the movement.
+	 */
+	AuthoringMoveInstance* mMoveInstance;
 
 	/**
 	 * @brief When an entity first is seen we'll create a visualization for it.

@@ -40,6 +40,23 @@ namespace EmberOgre
 
 namespace Authoring
 {
+
+EntityMoveInstance::EntityMoveInstance(EmberEntity& entity, MovementAdapter& moveAdapter, sigc::signal<void>& eventFinishedMoving, sigc::signal<void>& eventCancelledMoving) :
+	EntityObserverBase(entity, true), mMoveAdapter(moveAdapter)
+{
+	eventCancelledMoving.connect(sigc::mem_fun(*this, &EntityObserverBase::deleteOurselves));
+	eventFinishedMoving.connect(sigc::mem_fun(*this, &EntityObserverBase::deleteOurselves));
+}
+
+EntityMoveInstance::~EntityMoveInstance()
+{
+}
+
+void EntityMoveInstance::cleanup()
+{
+	mMoveAdapter.detach();
+}
+
 EntityMoveManager::EntityMoveManager() :
 	Move("move", this, "Moves an entity."), mMoveAdapter(), mAdjuster(this)
 {
@@ -63,6 +80,8 @@ void EntityMoveManager::startMove(EmberEntity& entity)
 		if (attachment) {
 			EntityMover* mover = new EntityMover(*attachment, *this);
 			mMoveAdapter.attachToBridge(mover);
+			//The EntityMoveInstance will delete itself when either movement is finished or the entity is deleted, so we don't need to hold a reference to it.
+			new EntityMoveInstance(entity, mMoveAdapter, EventFinishedMoving, EventCancelledMoving);
 			EventStartMoving.emit(entity, *mover);
 		}
 	}

@@ -46,8 +46,6 @@ EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& mana
 
 EntityMover::~EntityMover()
 {
-	//Return the previous control delegate.
-	mNodeAttachment.setControlDelegate(mPreviousControlDelegate);
 	delete mControlDelegate;
 }
 

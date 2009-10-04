@@ -33,8 +33,28 @@ namespace EmberOgre
 namespace Authoring
 {
 
+AuthoringMoveInstance::AuthoringMoveInstance(EmberEntity& entity, AuthoringVisualization& visualization, EntityMover& mover, AuthoringHandler& moveHandler) :
+	EntityObserverBase(entity, false), mMover(new AuthoringVisualizationMover(visualization, mover)), mMoveHandler(moveHandler), mVisualization(visualization)
+{
+}
+
+AuthoringMoveInstance::~AuthoringMoveInstance()
+{
+	delete mMover;
+}
+
+void AuthoringMoveInstance::cleanup()
+{
+	mMoveHandler.stopMovement();
+}
+
+AuthoringVisualization& AuthoringMoveInstance::getVisualization()
+{
+	return mVisualization;
+}
+
 AuthoringHandler::AuthoringHandler(Eris::View& view) :
-	mMover(0)
+	mMoveInstance(0)
 {
 	view.EntitySeen.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntitySeen));
 	view.EntityCreated.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityCreated));
@@ -43,7 +63,7 @@ AuthoringHandler::AuthoringHandler(Eris::View& view) :
 
 AuthoringHandler::~AuthoringHandler()
 {
-	delete mMover;
+	delete mMoveInstance;
 	for (VisualizationStore::iterator I = mVisualizations.begin(); I != mVisualizations.end(); ++I) {
 		delete I->second;
 	}
@@ -95,6 +115,12 @@ void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 {
 	VisualizationStore::iterator I = mVisualizations.find(static_cast<EmberEntity*> (entity));
 	if (I != mVisualizations.end()) {
+		//see if there's an ongoing movement for the deleted entity, and if we therefore should stop that
+		if (mMoveInstance) {
+			if (I->second == &mMoveInstance->getVisualization()) {
+				stopMovement();
+			}
+		}
 		mVisualizations.erase(I);
 		delete I->second;
 	} else {
@@ -141,17 +167,18 @@ void AuthoringHandler::visit(EmberEntity& entity)
 
 void AuthoringHandler::startMovement(EmberEntity& entity, EntityMover& mover)
 {
-	delete mMover;
+	delete mMoveInstance;
+	mMoveInstance = 0;
 	VisualizationStore::iterator I = mVisualizations.find(&entity);
 	if (I != mVisualizations.end()) {
-		mMover = new AuthoringVisualizationMover(*(I->second), mover);
+		mMoveInstance = new AuthoringMoveInstance(entity, *(I->second), mover, *this);
 	}
 }
 
 void AuthoringHandler::stopMovement()
 {
-	delete mMover;
-	mMover = 0;
+	delete mMoveInstance;
+	mMoveInstance = 0;
 }
 
 }
