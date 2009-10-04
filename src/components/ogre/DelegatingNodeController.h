@@ -23,7 +23,7 @@
 
 namespace EmberOgre {
 
-class IAttachmentControlDelegate;
+class IEntityControlDelegate;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -37,7 +37,7 @@ public:
 	 * @param attachment The attachment which will be controlled.
 	 * @param attachmentControlDelegate The delegate which will perform the actuall controlling.
 	 */
-	DelegatingNodeController(NodeAttachment& attachment, IAttachmentControlDelegate& attachmentControlDelegate);
+	DelegatingNodeController(NodeAttachment& attachment, IEntityControlDelegate& attachmentControlDelegate);
 
 	/**
 	 * @brief Dtor.
@@ -48,13 +48,13 @@ public:
 	 * @brief Gets the delegate.
 	 * @return The delegate which performs the actual controlling.
 	 */
-	virtual IAttachmentControlDelegate* getControlDelegate() const;
+	virtual IEntityControlDelegate* getControlDelegate() const;
 
 private:
 	/**
 	 * @brief The delegate which performs the controlling.
 	 */
-	IAttachmentControlDelegate& mAttachmentControlDelegate;
+	IEntityControlDelegate& mAttachmentControlDelegate;
 
 	virtual void updatePosition();
 

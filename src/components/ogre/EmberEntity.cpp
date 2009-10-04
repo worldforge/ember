@@ -264,7 +264,7 @@ void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation &
 	Eris::Entity::onSoundAction(op);
 }
 
-void EmberEntity::setAttachmentControlDelegate(IAttachmentControlDelegate* delegate)
+void EmberEntity::setAttachmentControlDelegate(IEntityControlDelegate* delegate)
 {
 	mAttachmentControlDelegate = delegate;
 	if (mAttachment) {
@@ -272,7 +272,7 @@ void EmberEntity::setAttachmentControlDelegate(IAttachmentControlDelegate* deleg
 	}
 }
 
-IAttachmentControlDelegate* EmberEntity::getAttachmentControlDelegate() const
+IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const
 {
 	return mAttachmentControlDelegate;
 }

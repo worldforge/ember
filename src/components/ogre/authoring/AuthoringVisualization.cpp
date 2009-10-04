@@ -23,7 +23,7 @@
 #include "components/ogre/OgreInfo.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/MousePicker.h"
-#include "components/ogre/IAttachmentControlDelegate.h"
+#include "components/ogre/IEntityControlDelegate.h"
 
 #include "framework/LoggingInstance.h"
 #include <OgreSceneNode.h>
@@ -58,7 +58,7 @@ EmberEntity& AuthoringVisualization::getEntity()
 	return mEntity;
 }
 
-void AuthoringVisualization::setControlDelegate(const IAttachmentControlDelegate* controlDelegate)
+void AuthoringVisualization::setControlDelegate(const IEntityControlDelegate* controlDelegate)
 {
 	mControlDelegate = controlDelegate;
 }

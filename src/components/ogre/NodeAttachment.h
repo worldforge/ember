@@ -40,7 +40,7 @@ class NodeController;
  *
  * The actual concrete type of node (basically either a normal Ogre::SceneNode or an Ogre::TagPoint) is determined by the INodeProvider instance used.
  * Most entities in the game are expected to be represented by this class, or any subclass of it.
- * The node will be moved and rotated either by using the values from the entity to which it's attached, or through an instance of IAttachmentControlDelegate set through the setControlDelegate() method.
+ * The node will be moved and rotated either by using the values from the entity to which it's attached, or through an instance of IEntityControlDelegate set through the setControlDelegate() method.
  */
 class NodeAttachment: public AttachmentBase, public virtual sigc::trackable
 {
@@ -62,9 +62,9 @@ public:
 	 */
 	virtual ~NodeAttachment();
 
-	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
+	virtual void setControlDelegate(IEntityControlDelegate* controllerDelegate);
 
-	virtual IAttachmentControlDelegate* getControlDelegate() const;
+	virtual IEntityControlDelegate* getControlDelegate() const;
 
 	virtual IEntityAttachment* attachEntity(EmberEntity& entity);
 
@@ -112,7 +112,7 @@ protected:
 
 	/**
 	 * @brief The controller used for the attachment.
-	 * This is normally either a NodeController instance, which will use the position and orientation of the entity directly, or a DelegatingNodeController which will use an instance IAttachmentControlDelegate.
+	 * This is normally either a NodeController instance, which will use the position and orientation of the entity directly, or a DelegatingNodeController which will use an instance IEntityControlDelegate.
 	 */
 	NodeController* mAttachmentController;
 

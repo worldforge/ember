@@ -19,7 +19,7 @@
 #ifndef AVATARATTACHMENTCONTROLLER_H_
 #define AVATARATTACHMENTCONTROLLER_H_
 
-#include "components/ogre/IAttachmentControlDelegate.h"
+#include "components/ogre/IEntityControlDelegate.h"
 #include <string>
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
@@ -29,7 +29,7 @@ namespace EmberOgre
 
 class Avatar;
 
-class AvatarAttachmentController : public IAttachmentControlDelegate
+class AvatarAttachmentController : public IEntityControlDelegate
 {
 public:
 	AvatarAttachmentController(Avatar& avatar);

@@ -73,7 +73,7 @@ void NodeController::updatePosition()
 	mAttachment.setPosition(mAttachment.getAttachedEntity().getPredictedPos(), mAttachment.getAttachedEntity().getOrientation());
 }
 
-IAttachmentControlDelegate* NodeController::getControlDelegate() const
+IEntityControlDelegate* NodeController::getControlDelegate() const
 {
 	return 0;
 }

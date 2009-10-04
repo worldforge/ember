@@ -18,7 +18,7 @@
 
 #include "DelegatingNodeController.h"
 
-#include "components/ogre/IAttachmentControlDelegate.h"
+#include "components/ogre/IEntityControlDelegate.h"
 #include "components/ogre/NodeAttachment.h"
 
 #include <wfmath/point.h>
@@ -26,7 +26,7 @@
 
 namespace EmberOgre {
 
-DelegatingNodeController::DelegatingNodeController(NodeAttachment& attachment, IAttachmentControlDelegate& attachmentControlDelegate)
+DelegatingNodeController::DelegatingNodeController(NodeAttachment& attachment, IEntityControlDelegate& attachmentControlDelegate)
 : NodeController::NodeController(attachment), mAttachmentControlDelegate(attachmentControlDelegate)
 {
 
@@ -41,7 +41,7 @@ void DelegatingNodeController::updatePosition()
 	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation());
 }
 
-IAttachmentControlDelegate* DelegatingNodeController::getControlDelegate() const
+IEntityControlDelegate* DelegatingNodeController::getControlDelegate() const
 {
 	return &mAttachmentControlDelegate;
 }

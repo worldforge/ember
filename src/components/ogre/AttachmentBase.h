@@ -36,7 +36,7 @@ namespace EmberOgre
 
 class IGraphicalRepresentation;
 class EmberEntity;
-class IAttachmentControlDelegate;
+class IEntityControlDelegate;
 
 /**
  * @brief Abstract base class for all attachments which require both a valid parent and child entity.
@@ -61,9 +61,9 @@ public:
 
 	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
 
-	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
+	virtual void setControlDelegate(IEntityControlDelegate* controllerDelegate);
 
-	virtual IAttachmentControlDelegate* getControlDelegate() const;
+	virtual IEntityControlDelegate* getControlDelegate() const;
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.

@@ -27,7 +27,7 @@ namespace EmberOgre
 {
 
 class NodeAttachment;
-class IAttachmentControlDelegate;
+class IEntityControlDelegate;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -54,7 +54,7 @@ public:
 
 	void forceMovementUpdate();
 
-	virtual IAttachmentControlDelegate* getControlDelegate() const;
+	virtual IEntityControlDelegate* getControlDelegate() const;
 
 protected:
 

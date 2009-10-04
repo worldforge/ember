@@ -61,7 +61,7 @@ class TerrainMod;
 
 class IGraphicalRepresentation;
 class IEntityAttachment;
-class IAttachmentControlDelegate;
+class IEntityControlDelegate;
 class IEntityVisitor;
 
 /**
@@ -316,16 +316,16 @@ public:
 	 * @brief Sets a control delegate for the attachment.
 	 * The attachment instance, used to bind the graphical representation to the parent entity, normally directly accesses the position and orientation data from the entity.
 	 * However, in some cases you would want to provide the position and orientation data differently, for example when you want to alter the position of the entity on the client, independent of the server.
-	 * By using an instance of IAttachmentControlDelegate and setting it on the entity through this method you can achieve this.
+	 * By using an instance of IEntityControlDelegate and setting it on the entity through this method you can achieve this.
 	 * @param delegate The delegate through which all queries about the position and orientation of the entity will go.
 	 */
-	void setAttachmentControlDelegate(IAttachmentControlDelegate* delegate);
+	void setAttachmentControlDelegate(IEntityControlDelegate* delegate);
 
 	/**
 	 * @brief Gets the control delegate for the attachment.
 	 * @return A pointer to the currently used attachment controller delegate, or null if none is used.
 	 */
-	IAttachmentControlDelegate* getAttachmentControlDelegate() const;
+	IEntityControlDelegate* getAttachmentControlDelegate() const;
 
 	/**
 	 * @brief Gets the entity attached to the named point.
@@ -406,7 +406,7 @@ protected:
 	 * Normally the entity attachment will use the position and orientation of the entity when determining where to position the graphical representation.
 	 * However, sometimes you want to override that with other data. This instance can be used by the attachment for this purpose.
 	 */
-	IAttachmentControlDelegate* mAttachmentControlDelegate;
+	IEntityControlDelegate* mAttachmentControlDelegate;
 
 	/**
 	 *    @copydoc Eris::Entity::onMoved()

@@ -25,7 +25,7 @@
 
 #include "EntityMoverBase.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "components/ogre/IAttachmentControlDelegate.h"
+#include "components/ogre/IEntityControlDelegate.h"
 
 #include <wfmath/point.h>
 
@@ -55,7 +55,7 @@ public:
 	virtual void finalizeMovement();
 	virtual void cancelMovement();
 
-	const IAttachmentControlDelegate& getControlDelegate() const;
+	const IEntityControlDelegate& getControlDelegate() const;
 
 protected:
 
@@ -68,12 +68,12 @@ private:
 	NodeAttachment& mNodeAttachment;
 	EntityMoveManager& mManager;
 
-	IAttachmentControlDelegate* mPreviousControlDelegate;
-	IAttachmentControlDelegate* mControlDelegate;
+	IEntityControlDelegate* mPreviousControlDelegate;
+	IEntityControlDelegate* mControlDelegate;
 
 };
 
-class EntityMoverControlDelegate: public IAttachmentControlDelegate
+class EntityMoverControlDelegate: public IEntityControlDelegate
 {
 public:
 

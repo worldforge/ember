@@ -19,7 +19,7 @@
 #include "NodeAttachment.h"
 
 #include "components/ogre/IGraphicalRepresentation.h"
-#include "components/ogre/IAttachmentControlDelegate.h"
+#include "components/ogre/IEntityControlDelegate.h"
 #include "components/ogre/INodeProvider.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
@@ -95,7 +95,7 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//	}
 }
 
-void NodeAttachment::setControlDelegate(IAttachmentControlDelegate* controllerDelegate)
+void NodeAttachment::setControlDelegate(IEntityControlDelegate* controllerDelegate)
 {
 	delete mAttachmentController;
 	if (controllerDelegate) {
@@ -105,7 +105,7 @@ void NodeAttachment::setControlDelegate(IAttachmentControlDelegate* controllerDe
 	}
 }
 
-IAttachmentControlDelegate* NodeAttachment::getControlDelegate() const
+IEntityControlDelegate* NodeAttachment::getControlDelegate() const
 {
 	if (mAttachmentController) {
 		return mAttachmentController->getControlDelegate();

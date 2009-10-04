@@ -48,11 +48,11 @@ EmberEntity* AttachmentBase::getParentEntity() const
 	return &mParentEntity;
 }
 
-void AttachmentBase::setControlDelegate(IAttachmentControlDelegate* controllerDelegate)
+void AttachmentBase::setControlDelegate(IEntityControlDelegate* controllerDelegate)
 {
 }
 
-IAttachmentControlDelegate* AttachmentBase::getControlDelegate() const
+IEntityControlDelegate* AttachmentBase::getControlDelegate() const
 {
 	return 0;
 }

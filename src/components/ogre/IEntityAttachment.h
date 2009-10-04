@@ -33,7 +33,7 @@ namespace EmberOgre
 {
 
 class IGraphicalRepresentation;
-class IAttachmentControlDelegate;
+class IEntityControlDelegate;
 class EmberEntity;
 
 /**
@@ -95,7 +95,7 @@ public:
 
 	/**
 	 * @brief Asks the attachment to update its position.
-	 * It's up to the attachment to determine how to best do this. In some cases an instance of IAttachmentControlDelegate can be used to get a position different from the one supplied by the entity.
+	 * It's up to the attachment to determine how to best do this. In some cases an instance of IEntityControlDelegate can be used to get a position different from the one supplied by the entity.
 	 */
 	virtual void updatePosition() = 0;
 
@@ -112,13 +112,13 @@ public:
 	 * @brief Sets the control delegate to use for this attachment.
 	 * The control delegate is used whenever the attachment needs to update its position. Instead of directly using the position of the attached entity it can then use the position supplied by the delegate, thus allowing for some indirection.
 	 */
-	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate) = 0;
+	virtual void setControlDelegate(IEntityControlDelegate* controllerDelegate) = 0;
 
 	/**
 	 * @brief Gets the control delegate.
 	 * @return The current control delegate, or null if none is set.
 	 */
-	virtual IAttachmentControlDelegate* getControlDelegate() const = 0;
+	virtual IEntityControlDelegate* getControlDelegate() const = 0;
 
 };
 

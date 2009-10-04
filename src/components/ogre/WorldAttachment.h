@@ -58,9 +58,9 @@ public:
 
 	void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
 
-	virtual void setControlDelegate(IAttachmentControlDelegate* controllerDelegate);
+	virtual void setControlDelegate(IEntityControlDelegate* controllerDelegate);
 
-	virtual IAttachmentControlDelegate* getControlDelegate() const;
+	virtual IEntityControlDelegate* getControlDelegate() const;
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.

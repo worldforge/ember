@@ -49,7 +49,7 @@ EntityMover::~EntityMover()
 	delete mControlDelegate;
 }
 
-const IAttachmentControlDelegate& EntityMover::getControlDelegate() const
+const IEntityControlDelegate& EntityMover::getControlDelegate() const
 {
 	return *mControlDelegate;
 }

@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef IATTACHMENTCONTROLDELEGATE_H_
-#define IATTACHMENTCONTROLDELEGATE_H_
+#ifndef IENTITYCONTROLDELEGATE_H_
+#define IENTITYCONTROLDELEGATE_H_
 
 namespace WFMath
 {
@@ -30,19 +30,19 @@ namespace EmberOgre
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Allows control of an IEntityAttachment to be delegated.
+ * @brief Allows control of an entity to be delegated.
  *
- * Under normal operations an instance of IEntityAttachment would get position and orientation data directly from the entity to which it's attached. However, by using an instance of this class it's possible to redirect this.
+ * Under normal operations the position and orientation for an entity used for displaying ingame graphical representations would be obtained directly from the entity. However, by using an instance of this class it's possible to redirect this.
  *
  */
-class IAttachmentControlDelegate
+class IEntityControlDelegate
 {
 public:
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~IAttachmentControlDelegate()
+	virtual ~IEntityControlDelegate()
 	{
 	}
 
@@ -61,4 +61,4 @@ public:
 
 }
 
-#endif /* IATTACHMENTCONTROLDELEGATE_H_ */
+#endif /* IENTITYCONTROLDELEGATE_H_ */
