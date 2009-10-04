@@ -23,10 +23,10 @@
 #include "framework/ConsoleObject.h"
 #include "services/config/ConfigListenerContainer.h"
 
-namespace varconf {
+namespace varconf
+{
 class Variable;
 }
-
 
 namespace Eris
 {
@@ -41,11 +41,12 @@ class ConfigListenerContainer;
 
 namespace EmberOgre
 {
-
+class EmberEntity;
 namespace Authoring
 {
 
 class AuthoringHandler;
+class EntityMover;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -80,6 +81,10 @@ public:
 	 * @copydoc ConsoleObject::runCommand
 	 */
 	virtual void runCommand(const std::string &command, const std::string &args);
+
+	void startMovement(EmberEntity& entity, EntityMover& mover);
+
+	void stopMovement();
 
 	/**
 	 * @brief Command for displaying authoring visualizations.

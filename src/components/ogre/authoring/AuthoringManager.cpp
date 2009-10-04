@@ -69,5 +69,19 @@ void AuthoringManager::config_AuthoringVisualizations(const std::string& section
 	}
 }
 
+void AuthoringManager::startMovement(EmberEntity& entity, EntityMover& mover)
+{
+	if (mHandler) {
+		mHandler->startMovement(entity, mover);
+	}
+}
+
+void AuthoringManager::stopMovement()
+{
+	if (mHandler) {
+		mHandler ->stopMovement();
+	}
+}
+
 }
 }

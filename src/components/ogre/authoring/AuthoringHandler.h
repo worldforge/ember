@@ -36,7 +36,8 @@ class EmberEntity;
 namespace Authoring
 {
 class AuthoringVisualization;
-
+class AuthoringVisualizationMover;
+class EntityMover;
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Handles authoring visualizations.
@@ -64,6 +65,10 @@ public:
 	 */
 	void visit(EmberEntity& entity);
 
+	void startMovement(EmberEntity& entity, EntityMover& mover);
+
+	void stopMovement();
+
 protected:
 
 	typedef std::map<EmberEntity*, AuthoringVisualization*> VisualizationStore;
@@ -72,6 +77,8 @@ protected:
 	 * @brief A store of all visualizations in the world.
 	 */
 	VisualizationStore mVisualizations;
+
+	AuthoringVisualizationMover* mMover;
 
 	/**
 	 * @brief When an entity first is seen we'll create a visualization for it.

@@ -18,6 +18,7 @@
 
 #include "AuthoringHandler.h"
 #include "AuthoringVisualization.h"
+#include "AuthoringVisualizationMover.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/EmberEntity.h"
 #include "framework/LoggingInstance.h"
@@ -32,7 +33,8 @@ namespace EmberOgre
 namespace Authoring
 {
 
-AuthoringHandler::AuthoringHandler(Eris::View& view)
+AuthoringHandler::AuthoringHandler(Eris::View& view) :
+	mMover(0)
 {
 	view.EntitySeen.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntitySeen));
 	view.EntityCreated.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityCreated));
@@ -41,6 +43,7 @@ AuthoringHandler::AuthoringHandler(Eris::View& view)
 
 AuthoringHandler::~AuthoringHandler()
 {
+	delete mMover;
 	for (VisualizationStore::iterator I = mVisualizations.begin(); I != mVisualizations.end(); ++I) {
 		delete I->second;
 	}
@@ -134,6 +137,21 @@ void AuthoringHandler::createVisualizationsForExistingEntities(Eris::View& view)
 void AuthoringHandler::visit(EmberEntity& entity)
 {
 	createVisualizationForEntity(&entity);
+}
+
+void AuthoringHandler::startMovement(EmberEntity& entity, EntityMover& mover)
+{
+	delete mMover;
+	VisualizationStore::iterator I = mVisualizations.find(&entity);
+	if (I != mVisualizations.end()) {
+		mMover = new AuthoringVisualizationMover(*(I->second), mover);
+	}
+}
+
+void AuthoringHandler::stopMovement()
+{
+	delete mMover;
+	mMover = 0;
 }
 
 }
