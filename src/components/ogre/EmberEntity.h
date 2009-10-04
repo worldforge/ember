@@ -76,32 +76,6 @@ class EmberEntity: public Eris::Entity, public IVisualizable
 public:
 
 	/**
-	 * @brief The movement modes the entity can be in.
-	 */
-	enum MovementMode
-	{
-		/**
-		 * @brief The default movement mode, when the entity is idle and not moving.
-		 */
-		MM_DEFAULT = 0,
-
-		/**
-		 * @brief Swimming through water.
-		 */
-		MM_SWIMMING = 1,
-
-		/**
-		 * @brief Walking at a normal pace.
-		 */
-		MM_WALKING = 2,
-
-		/**
-		 * @brief Running.
-		 */
-		MM_RUNNING = 3
-	};
-
-	/**
 	 * @brief The different positioning modes the entity can be in.
 	 * The positioning mode determines how the entity can be adjusted in the world.
 	 */
@@ -219,12 +193,6 @@ public:
 	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
 	 * @return The current movement mode of the entity.
 	 */
-	MovementMode getMovementMode() const;
-
-	/**
-	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
-	 * @return The current movement mode of the entity.
-	 */
 	PositioningMode getPositioningMode() const;
 
 	/**
@@ -276,14 +244,6 @@ public:
 	 * @param graphicalRepresentation The new graphical representation. Ownership will be transferred to this class.
 	 */
 	void setGraphicalRepresentation(IGraphicalRepresentation* graphicalRepresentation);
-
-	/**
-	 * @brief Emitted when the movement mode has changed.
-	 * As the entity moves the "movement mode" changes. An entity which isn't moving should in most cases be in the "default" movement mode, whereas a moving one could be in the "walking", "running" or any other mode.
-	 * The parameter sent is the new movement mode.
-	 * This event will be emitted before the actual mode is changed, so you can call getMovementMode() to get the current movement mode, before the new one is in effect.
-	 */
-	sigc::signal<void, MovementMode> EventMovementModeChanged;
 
 	/**
 	 * @brief Emitted when the positioning mode has changed.
@@ -374,11 +334,6 @@ protected:
 	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
 
 	/**
-	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
-	 */
-	MovementMode mMovementMode;
-
-	/**
 	 * @brief The positioning mode the entity is in, like gravity affected, fixed or floating.
 	 */
 	PositioningMode mPositioningMode;
@@ -390,7 +345,7 @@ protected:
 	IGraphicalRepresentation* mGraphicalRepresentation;
 
 	/**
-	 * @brief The model mapping used for this entity.
+	 * @brief The entity mapping used for this entity.
 	 */
 	Ember::EntityMapping::EntityMapping* mEntityMapping;
 
@@ -438,12 +393,7 @@ protected:
 	 */
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 
-	/**
-	 * @brief Called when the movement mode of the entity changes.
-	 * For example when the entity changes from standing to walking.
-	 * @param newMode The new movement mode.
-	 */
-	virtual void onMovementModeChanged(MovementMode newMode);
+
 
 	/**
 	 * @brief Called when the positioning mode of the entity changes.
@@ -498,12 +448,6 @@ protected:
 	void parsePositioningModeChange(const Atlas::Message::Element& v);
 
 	/**
-	 * @brief Parses and sets the movement mode.
-	 * The movement mode is determined mainly from whether the entity is moving or not. The speed of the movement also affects the mode.
-	 */
-	virtual void parseMovementMode();
-
-	/**
 	 * @brief Reattaches all child entities.
 	 * This will iterate through all child entities recursively, and ask them to reattach themselves (i.e. create a new attachment).
 	 * You usually call this when the attachment has changed, and the child attachments needs to be updated.
@@ -529,11 +473,6 @@ protected:
 inline bool EmberEntity::isInitialized() const
 {
 	return mIsInitialized;
-}
-
-inline EmberEntity::MovementMode EmberEntity::getMovementMode() const
-{
-	return mMovementMode;
 }
 
 inline EmberEntity::PositioningMode EmberEntity::getPositioningMode() const

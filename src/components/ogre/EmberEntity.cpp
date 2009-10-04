@@ -78,7 +78,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::BboxMaterialName("/global/authoring/bbox");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	Eris::Entity(id, ty, vw), mIsInitialized(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mMovementMode(MM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
+	Eris::Entity(id, ty, vw), mIsInitialized(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
 }
 
@@ -108,8 +108,6 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	// Setup Sounds
 	//	setSounds();
 
-	///start out with the default movement mode
-	onMovementModeChanged(EmberEntity::MM_DEFAULT);
 
 	Eris::Entity::init(ge, fromCreateOp);
 
@@ -180,11 +178,10 @@ void EmberEntity::createEntityMapping()
 void EmberEntity::onMoved()
 {
 	if (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible()) {
-		mErisEntityBoundingBox->getParentNode()->setPosition(Convert::toOgre(getPredictedPos()));
+		mErisEntityBoundingBox->getParentNode()->setPosition(Convert::toOgre(getPosition()));
 		mErisEntityBoundingBox->getParentNode()->setOrientation(Convert::toOgre(getOrientation()));
 
 	}
-	parseMovementMode();
 	Eris::Entity::onMoved();
 }
 
@@ -381,23 +378,6 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 
 }
 
-void EmberEntity::parseMovementMode()
-{
-	MovementMode newMode = MM_DEFAULT;
-	if (isMoving()) {
-		const WFMath::Vector<3> velocity = getPredictedVelocity();
-		if (velocity.isValid()) {
-			if (velocity.mag() > 2.6) {
-				newMode = MM_RUNNING;
-			} else {
-				newMode = MM_WALKING;
-			}
-		}
-	}
-	if (newMode != mMovementMode) {
-		onMovementModeChanged(newMode);
-	}
-}
 
 void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 {
@@ -427,11 +407,6 @@ void EmberEntity::onPositioningModeChanged(PositioningMode newMode)
 	mPositioningMode = newMode;
 }
 
-void EmberEntity::onMovementModeChanged(MovementMode newMode)
-{
-	EventMovementModeChanged.emit(newMode);
-	mMovementMode = newMode;
-}
 
 void EmberEntity::setVisualize(const std::string& visualization, bool visualize)
 {

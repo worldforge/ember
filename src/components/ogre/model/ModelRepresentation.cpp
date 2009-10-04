@@ -67,11 +67,11 @@ const char * const ModelRepresentation::ACTION_SWIM("__movement_swim");
 const char * const ModelRepresentation::ACTION_FLOAT("__movement_float");
 
 ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model& model) :
-	mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0)
+	mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
 {
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
-	mEntity.EventMovementModeChanged.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_MovementModeChanged));
+	mEntity.Moved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Moved));
 
 	///listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	mModel.Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
@@ -86,6 +86,10 @@ ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model
 	if (idleaction) {
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
 	}
+
+	///start out with the default movement mode
+	onMovementModeChanged(ModelRepresentation::MM_DEFAULT);
+
 }
 
 ModelRepresentation::~ModelRepresentation()
@@ -221,7 +225,7 @@ void ModelRepresentation::model_Reloaded()
 {
 	initFromModel();
 	///Retrigger a movement change so that animations can be stopped and started now that the model has changed.
-	entity_MovementModeChanged(mEntity.getMovementMode());
+	onMovementModeChanged(getMovementMode());
 }
 
 void ModelRepresentation::model_Resetting()
@@ -259,16 +263,17 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 
 }
 
-void ModelRepresentation::entity_MovementModeChanged(EmberEntity::MovementMode newMode)
+
+void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
 {
 	/*	if (newMode != mMovementMode)
 	 {*/
 	const char * actionName;
-	if (newMode == EmberEntity::MM_WALKING) {
+	if (newMode == ModelRepresentation::MM_WALKING) {
 		actionName = ACTION_WALK;
-	} else if (newMode == EmberEntity::MM_RUNNING) {
+	} else if (newMode == ModelRepresentation::MM_RUNNING) {
 		actionName = ACTION_RUN;
-	} else if (newMode == EmberEntity::MM_SWIMMING) {
+	} else if (newMode == ModelRepresentation::MM_SWIMMING) {
 		actionName = ACTION_SWIM;
 	} else {
 		actionName = ACTION_STAND;
@@ -303,9 +308,38 @@ void ModelRepresentation::entity_MovementModeChanged(EmberEntity::MovementMode n
 			MotionManager::getSingleton().removeAnimated(mEntity.getId());
 		}
 	}
-	//might set mCurrentMovementAction to 0
-	// 	}
 
+	EventMovementModeChanged.emit(newMode);
+	mMovementMode = newMode;
+}
+
+ModelRepresentation::MovementMode ModelRepresentation::getMovementMode() const
+{
+	return mMovementMode;
+}
+
+
+void ModelRepresentation::parseMovementMode()
+{
+	MovementMode newMode = MM_DEFAULT;
+	if (mEntity.isMoving()) {
+		const WFMath::Vector<3> velocity = mEntity.getPredictedVelocity();
+		if (velocity.isValid()) {
+			if (velocity.mag() > 2.6) {
+				newMode = MM_RUNNING;
+			} else {
+				newMode = MM_WALKING;
+			}
+		}
+	}
+	if (newMode != mMovementMode) {
+		onMovementModeChanged(newMode);
+	}
+}
+
+void ModelRepresentation::entity_Moved()
+{
+	parseMovementMode();
 }
 
 void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)

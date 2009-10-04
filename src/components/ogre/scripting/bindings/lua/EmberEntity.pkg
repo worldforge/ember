@@ -1,14 +1,6 @@
 namespace EmberOgre {
 class EmberEntity : public Eris::Entity {
 
-	enum MovementMode
-	{
-		MM_DEFAULT = 0,
-		MM_SWIMMING = 1,
-		MM_WALKING = 2,
-		MM_RUNNING = 3
-	};
-
 	enum PositioningMode
 	{
 		PM_DEFAULT = 0,
@@ -24,12 +16,6 @@ class EmberEntity : public Eris::Entity {
 	EmberEntity* getEmberLocation() const;
 	
 	inline bool isInitialized() const;
-
-	/**
-	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
-	 * @return The current movement mode of the entity.
-	 */
-	MovementMode getMovementMode() const;
 
 	/**
 	 * @brief The movement mode the entity is in, like walking, running, swimming etc.

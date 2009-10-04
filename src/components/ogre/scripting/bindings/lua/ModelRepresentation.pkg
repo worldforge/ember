@@ -35,6 +35,38 @@ class ModelRepresentation : public IGraphicalRepresentation
 public:
 
 	/**
+	 * @brief The movement modes the entity can be in.
+	 */
+	enum MovementMode
+	{
+		/**
+		 * @brief The default movement mode, when the entity is idle and not moving.
+		 */
+		MM_DEFAULT = 0,
+
+		/**
+		 * @brief Swimming through water.
+		 */
+		MM_SWIMMING = 1,
+
+		/**
+		 * @brief Walking at a normal pace.
+		 */
+		MM_WALKING = 2,
+
+		/**
+		 * @brief Running.
+		 */
+		MM_RUNNING = 3
+	};
+	
+	/**
+	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
+	 * @return The current movement mode of the entity.
+	 */
+	MovementMode getMovementMode() const;
+	
+	/**
 	 * @brief Gets the shared class type name, which is the same one returned through getType().
 	 * This can be used to do lookups to see whether any instance of IGraphicalRepresentation if an instance of this class.
 	 * @returns The string "ModelRepresentation".

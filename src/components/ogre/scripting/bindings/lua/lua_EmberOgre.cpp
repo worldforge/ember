@@ -1520,38 +1520,6 @@ static int tolua_EmberOgre_EmberOgre_EmberEntity_isInitialized00(lua_State* tolu
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getMovementMode of class  EmberOgre::EmberEntity */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getMovementMode00
-static int tolua_EmberOgre_EmberOgre_EmberEntity_getMovementMode00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberEntity",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::EmberEntity* self = (const EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMovementMode'",NULL);
-#endif
-  {
-   EmberOgre::EmberEntity::MovementMode tolua_ret = (EmberOgre::EmberEntity::MovementMode)  self->getMovementMode();
-   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getMovementMode'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getPositioningMode of class  EmberOgre::EmberEntity */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00
 static int tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00(lua_State* tolua_S)
@@ -10784,6 +10752,38 @@ static int tolua_EmberOgre_EmberOgre_Model_Model_getDisplaySkeleton00(lua_State*
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getDisplaySkeleton'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getMovementMode of class  EmberOgre::Model::ModelRepresentation */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getMovementMode00
+static int tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getMovementMode00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Model::ModelRepresentation",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Model::ModelRepresentation* self = (const EmberOgre::Model::ModelRepresentation*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMovementMode'",NULL);
+#endif
+  {
+   EmberOgre::Model::ModelRepresentation::MovementMode tolua_ret = (EmberOgre::Model::ModelRepresentation::MovementMode)  self->getMovementMode();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getMovementMode'.",&tolua_err);
  return 0;
 #endif
 }
@@ -22235,10 +22235,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"EmberOgre");
    tolua_cclass(tolua_S,"EmberEntity","EmberOgre::EmberEntity","Eris::Entity",NULL);
    tolua_beginmodule(tolua_S,"EmberEntity");
-    tolua_constant(tolua_S,"MM_DEFAULT",EmberOgre::EmberEntity::MM_DEFAULT);
-    tolua_constant(tolua_S,"MM_SWIMMING",EmberOgre::EmberEntity::MM_SWIMMING);
-    tolua_constant(tolua_S,"MM_WALKING",EmberOgre::EmberEntity::MM_WALKING);
-    tolua_constant(tolua_S,"MM_RUNNING",EmberOgre::EmberEntity::MM_RUNNING);
     tolua_constant(tolua_S,"PM_DEFAULT",EmberOgre::EmberEntity::PM_DEFAULT);
     tolua_constant(tolua_S,"PM_FLOATING",EmberOgre::EmberEntity::PM_FLOATING);
     tolua_constant(tolua_S,"PM_PROJECTILE",EmberOgre::EmberEntity::PM_PROJECTILE);
@@ -22247,7 +22243,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getSuggestedResponses",tolua_EmberOgre_EmberOgre_EmberEntity_getSuggestedResponses00);
     tolua_function(tolua_S,"getEmberLocation",tolua_EmberOgre_EmberOgre_EmberEntity_getEmberLocation00);
     tolua_function(tolua_S,"isInitialized",tolua_EmberOgre_EmberOgre_EmberEntity_isInitialized00);
-    tolua_function(tolua_S,"getMovementMode",tolua_EmberOgre_EmberOgre_EmberEntity_getMovementMode00);
     tolua_function(tolua_S,"getPositioningMode",tolua_EmberOgre_EmberOgre_EmberEntity_getPositioningMode00);
     tolua_function(tolua_S,"getDefaultUseOperators",tolua_EmberOgre_EmberOgre_EmberEntity_getDefaultUseOperators00);
     tolua_function(tolua_S,"getActions",tolua_EmberOgre_EmberOgre_EmberEntity_getActions00);
@@ -22944,6 +22939,11 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
    tolua_beginmodule(tolua_S,"Model");
     tolua_cclass(tolua_S,"ModelRepresentation","EmberOgre::Model::ModelRepresentation","EmberOgre::IGraphicalRepresentation",NULL);
     tolua_beginmodule(tolua_S,"ModelRepresentation");
+     tolua_constant(tolua_S,"MM_DEFAULT",EmberOgre::Model::ModelRepresentation::MM_DEFAULT);
+     tolua_constant(tolua_S,"MM_SWIMMING",EmberOgre::Model::ModelRepresentation::MM_SWIMMING);
+     tolua_constant(tolua_S,"MM_WALKING",EmberOgre::Model::ModelRepresentation::MM_WALKING);
+     tolua_constant(tolua_S,"MM_RUNNING",EmberOgre::Model::ModelRepresentation::MM_RUNNING);
+     tolua_function(tolua_S,"getMovementMode",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getMovementMode00);
      tolua_function(tolua_S,"getTypeNameForClass",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getTypeNameForClass00);
      tolua_function(tolua_S,"getEntity",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getEntity00);
      tolua_function(tolua_S,"getModel",tolua_EmberOgre_EmberOgre_Model_ModelRepresentation_getModel00);

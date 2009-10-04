@@ -66,6 +66,33 @@ class ModelRepresentation: public IGraphicalRepresentation, public virtual sigc:
 {
 public:
 
+
+	/**
+	 * @brief The movement modes the entity can be in.
+	 */
+	enum MovementMode
+	{
+		/**
+		 * @brief The default movement mode, when the entity is idle and not moving.
+		 */
+		MM_DEFAULT = 0,
+
+		/**
+		 * @brief Swimming through water.
+		 */
+		MM_SWIMMING = 1,
+
+		/**
+		 * @brief Walking at a normal pace.
+		 */
+		MM_WALKING = 2,
+
+		/**
+		 * @brief Running.
+		 */
+		MM_RUNNING = 3
+	};
+
 	/**
 	 * @brief The name of the normal standing action.
 	 */
@@ -169,12 +196,26 @@ public:
 
 	Ogre::Vector3 getScale() const;
 
+	/**
+	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
+	 * @return The current movement mode of the entity.
+	 */
+	MovementMode getMovementMode() const;
+
+	/**
+	 * @brief Emitted when the movement mode has changed.
+	 * As the entity moves the "movement mode" changes. An entity which isn't moving should in most cases be in the "default" movement mode, whereas a moving one could be in the "walking", "running" or any other mode.
+	 * The parameter sent is the new movement mode.
+	 * This event will be emitted before the actual mode is changed, so you can call getMovementMode() to get the current movement mode, before the new one is in effect.
+	 */
+	sigc::signal<void, MovementMode> EventMovementModeChanged;
+
 protected:
 
 	/**
 	 * @brief The entity which this representation is bound to.
 	 */
-	EmberEntity & mEntity;
+	EmberEntity& mEntity;
 
 	/**
 	 * @brief The model of the entity.
@@ -212,6 +253,11 @@ protected:
 	static std::string sTypeName;
 
 	/**
+	 * @brief The movement mode the entity is in, like walking, running, swimming etc.
+	 */
+	MovementMode mMovementMode;
+
+	/**
 	 * Tells the entity to retrieve it sound actions from
 	 * the model definition manager
 	 */
@@ -226,12 +272,6 @@ protected:
 	 * @return
 	 */
 	void connectEntities();
-
-	/**
-	 * @brief Called when the movement mode has changed. We might want to update the animation of the entity, for example if it's a human.
-	 * @param newMode
-	 */
-	void entity_MovementModeChanged(EmberEntity::MovementMode newMode);
 
 	/**
 	 * @brief Processes the outfit map and updates the appearance.
@@ -258,6 +298,8 @@ protected:
 	 */
 	void model_Reloaded();
 
+	void entity_Moved();
+
 	/**
 	 * @brief When the Model is reset we need to clean up and remove all attachments from it.
 	 */
@@ -267,6 +309,19 @@ protected:
 	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
 	 */
 	void initFromModel();
+
+	/**
+	 * @brief Called when the movement mode of the entity changes.
+	 * For example when the entity changes from standing to walking.
+	 * @param newMode The new movement mode.
+	 */
+	virtual void onMovementModeChanged(MovementMode newMode);
+
+	/**
+	 * @brief Parses and sets the movement mode.
+	 * The movement mode is determined mainly from whether the entity is moving or not. The speed of the movement also affects the mode.
+	 */
+	virtual void parseMovementMode();
 
 };
 
