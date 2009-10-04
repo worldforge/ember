@@ -36,8 +36,6 @@ class EmberEntity;
 namespace Authoring
 {
 
-class EntityMoverBase;
-
 /**
  Responsible for allowing movement of entities in the world by the user.
  */
@@ -64,7 +62,7 @@ public:
 	/**
 	 * Emitted when the movement of an entity starts
 	 */
-	sigc::signal<void, EmberEntity&, EntityMoverBase&> EventStartMoving;
+	sigc::signal<void, EmberEntity&, EntityMover&> EventStartMoving;
 
 	/**
 	 * Emitted when the movement of an entity has finished.
@@ -72,7 +70,7 @@ public:
 	sigc::signal<void> EventFinishedMoving;
 
 	/**
-	 * Emitted when the movement of an entity has been cancelled.
+	 * Emitted when the movement of an entity has been canceled.
 	 */
 	sigc::signal<void> EventCancelledMoving;
 
