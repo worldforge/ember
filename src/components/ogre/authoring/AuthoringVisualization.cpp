@@ -23,7 +23,7 @@
 #include "components/ogre/OgreInfo.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/MousePicker.h"
-
+#include "components/ogre/IAttachmentControlDelegate.h"
 
 #include "framework/LoggingInstance.h"
 #include <OgreSceneNode.h>
@@ -36,7 +36,7 @@ namespace EmberOgre
 namespace Authoring
 {
 AuthoringVisualization::AuthoringVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode) :
-	mEntity(entity), mSceneNode(sceneNode), mGraphicalRepresentation(0)
+	mEntity(entity), mSceneNode(sceneNode), mGraphicalRepresentation(0), mControlDelegate(0)
 {
 	createGraphicalRepresentation();
 	mEntity.Moved.connect(sigc::mem_fun(*this, &AuthoringVisualization::entity_Moved));
@@ -53,6 +53,16 @@ Ogre::SceneNode* AuthoringVisualization::getSceneNode() const
 	return mSceneNode;
 }
 
+EmberEntity& AuthoringVisualization::getEntity()
+{
+	return mEntity;
+}
+
+void AuthoringVisualization::setControlDelegate(const IAttachmentControlDelegate* controlDelegate)
+{
+	mControlDelegate = controlDelegate;
+}
+
 void AuthoringVisualization::entity_Moved()
 {
 	updatePositionAndOrientation();
@@ -60,8 +70,13 @@ void AuthoringVisualization::entity_Moved()
 
 void AuthoringVisualization::updatePositionAndOrientation()
 {
-	mSceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
-	mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
+	if (mControlDelegate) {
+		mSceneNode->setPosition(Convert::toOgre(mControlDelegate->getPosition()));
+		mSceneNode->setOrientation(Convert::toOgre(mControlDelegate->getOrientation()));
+	} else {
+		mSceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
+		mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
+	}
 }
 
 void AuthoringVisualization::createGraphicalRepresentation()

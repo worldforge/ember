@@ -24,6 +24,7 @@
 namespace EmberOgre
 {
 
+class IAttachmentControlDelegate;
 class EmberEntity;
 
 namespace Authoring
@@ -62,6 +63,10 @@ public:
 	 */
 	void updatePositionAndOrientation();
 
+	void setControlDelegate(const IAttachmentControlDelegate* controlDelegate);
+
+	EmberEntity& getEntity();
+
 protected:
 
 	/**
@@ -78,6 +83,8 @@ protected:
 	 * @brief The entity which represents the entity in the world.
 	 */
 	Ogre::Entity* mGraphicalRepresentation;
+
+	const IAttachmentControlDelegate* mControlDelegate;
 
 	/**
 	 * @brief When the entity moves, update the position and orientation of the scene node.
