@@ -67,6 +67,10 @@ class TerrainEditAction;
 class TerrainPage;
 }
 
+namespace Authoring
+{
+class EntityMover;
+}
 typedef std::vector<std::string> LuaTypeStore;
 
 namespace Gui
@@ -254,6 +258,9 @@ public:
 	static void pushValue(const EmberOgre::EmberEntity& theValue, const std::string& luaTypename);
 	static void pushValue(const Atlas::Objects::Root& theValue, const std::string& luaTypename);
 	static void pushValue(const std::vector<EmberOgre::EntityPickResult>& theValue, const std::string& luaTypename);
+	static void pushValue(const EmberOgre::Authoring::EntityMover& theValue, const std::string& luaTypename);
+
+	template<typename T> static void pushUserTypeValue(T& theValue, const std::string& luaTypename);
 
 	LuaConnector(sigc::signal<void>& signal);
 	LuaConnector(sigc::signal<void, const std::string&, EmberEntity*>& signal);
@@ -269,6 +276,7 @@ public:
 	LuaConnector(sigc::signal<void, Jesus*>& signal);
 	LuaConnector(sigc::signal<void, EmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, EmberEntity&>& signal);
+	LuaConnector(sigc::signal<void, EmberEntity&, EmberOgre::Authoring::EntityMover&>& signal);
 	LuaConnector(sigc::signal<void, const std::string&>& signal);
 	LuaConnector(sigc::signal<bool, const std::string&>& signal);
 	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);

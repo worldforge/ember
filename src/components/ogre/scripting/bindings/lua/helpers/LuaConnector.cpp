@@ -256,7 +256,7 @@ void LuaConnector::pushValue(T theValue, const std::string& luaTypename)
 
 void LuaConnector::pushValue(const Eris::ServerInfo& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 
 void LuaConnector::pushValue(const std::string& theValue, const std::string& luaTypename)
@@ -295,12 +295,12 @@ void LuaConnector::pushValue(const int& theValue, const std::string& luaTypename
 
 void LuaConnector::pushValue(const EntityPickResult& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 
 void LuaConnector::pushValue(const MousePickerArgs& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 
 void LuaConnector::pushValue(const Input::MouseButton& theValue, const std::string& luaTypename)
@@ -314,12 +314,12 @@ void LuaConnector::pushValue(const Input::InputMode& theValue, const std::string
 
 void LuaConnector::pushValue(const std::set<std::string>& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 
 void LuaConnector::pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 
 void LuaConnector::pushValue(const EmberOgre::MovementControllerMode::Mode& theValue, const std::string& luaTypename)
@@ -329,22 +329,32 @@ void LuaConnector::pushValue(const EmberOgre::MovementControllerMode::Mode& theV
 
 void LuaConnector::pushValue(const EmberOgre::Terrain::TerrainPage& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 void LuaConnector::pushValue(const EmberOgre::EmberEntity& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 void LuaConnector::pushValue(const Atlas::Objects::Root& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 
 void LuaConnector::pushValue(const std::vector<EmberOgre::EntityPickResult>& theValue, const std::string& luaTypename)
 {
-	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+	pushUserTypeValue(theValue, luaTypename);
 }
 
+void LuaConnector::pushValue(const EmberOgre::Authoring::EntityMover& theValue, const std::string& luaTypename)
+{
+	pushUserTypeValue(theValue, luaTypename);
+}
+
+template<typename T>
+void LuaConnector::pushUserTypeValue(T& theValue, const std::string& luaTypename)
+{
+	tolua_pushusertype(EmberOgre::LuaConnector::getState(), (void*)&theValue, luaTypename.c_str());
+}
 
 LuaConnector::~LuaConnector()
 {
@@ -534,6 +544,16 @@ LuaConnector::LuaConnector(sigc::signal<void, EmberEntity&>& signal)
 	}
 }
 
+LuaConnector::LuaConnector(sigc::signal<void, EmberEntity&, EmberOgre::Authoring::EntityMover&>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::EmberEntity");
+		luaTypes.push_back("EmberOgre::Authoring::EntityMover");
+		mConnector = new LuaConnectors::ConnectorTwo<void, EmberEntity&, EmberOgre::Authoring::EntityMover&>(signal, luaTypes);
+	}
+}
+
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&>& signal)
 {
 	if (checkSignalExistence(&signal)) {
@@ -642,7 +662,6 @@ LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Objects::Root&>& sign
 		mConnector = new LuaConnectors::ConnectorOne<void, const Atlas::Objects::Root&>(signal, luaTypes);
 	}
 }
-
 
 }
 ;

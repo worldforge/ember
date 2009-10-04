@@ -36,6 +36,7 @@ class LuaConnector{
 	LuaConnector(sigc::signal<void, EmberOgre::Jesus*>& signal);
 	LuaConnector(sigc::signal<void, EmberOgre::EmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, EmberOgre::EmberEntity&>& signal);
+ 	LuaConnector(sigc::signal<void, EmberOgre::EmberEntity&, EmberOgre::Authoring::EntityMover&>& signal);
  	LuaConnector(sigc::signal<void, const std::string&>& signal);
  	LuaConnector(sigc::signal<bool, const std::string&>& signal);
  	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);
