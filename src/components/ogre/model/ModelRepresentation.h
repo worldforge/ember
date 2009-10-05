@@ -66,7 +66,6 @@ class ModelRepresentation: public IGraphicalRepresentation, public virtual sigc:
 {
 public:
 
-
 	/**
 	 * @brief The movement modes the entity can be in.
 	 */
@@ -90,7 +89,12 @@ public:
 		/**
 		 * @brief Running.
 		 */
-		MM_RUNNING = 3
+		MM_RUNNING = 3,
+
+		/**
+		 * @brief Walking backwards. Note that there is no "running backwards" mode.
+		 */
+		MM_WALKING_BACKWARDS = 4
 	};
 
 	/**
@@ -210,6 +214,8 @@ public:
 	 */
 	sigc::signal<void, MovementMode> EventMovementModeChanged;
 
+	void setLocalVelocity(const WFMath::Vector<3>& velocity);
+
 protected:
 
 	/**
@@ -298,8 +304,6 @@ protected:
 	 */
 	void model_Reloaded();
 
-	void entity_Moved();
-
 	/**
 	 * @brief When the Model is reset we need to clean up and remove all attachments from it.
 	 */
@@ -320,8 +324,9 @@ protected:
 	/**
 	 * @brief Parses and sets the movement mode.
 	 * The movement mode is determined mainly from whether the entity is moving or not. The speed of the movement also affects the mode.
+	 * @param velocity The velocity of the entity.
 	 */
-	virtual void parseMovementMode();
+	virtual void parseMovementMode(const WFMath::Vector<3>& velocity);
 
 };
 

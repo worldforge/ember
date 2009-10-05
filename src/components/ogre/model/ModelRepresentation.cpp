@@ -44,7 +44,6 @@
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/EntityMappingManager.h"
 
-
 #include <OgreException.h>
 
 #include <OgreSceneNode.h>
@@ -71,7 +70,6 @@ ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model
 {
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
-	mEntity.Moved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Moved));
 
 	///listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	mModel.Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
@@ -263,13 +261,12 @@ void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Messa
 
 }
 
-
 void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
 {
 	/*	if (newMode != mMovementMode)
 	 {*/
 	const char * actionName;
-	if (newMode == ModelRepresentation::MM_WALKING) {
+	if (newMode == ModelRepresentation::MM_WALKING || newMode == ModelRepresentation::MM_WALKING_BACKWARDS) {
 		actionName = ACTION_WALK;
 	} else if (newMode == ModelRepresentation::MM_RUNNING) {
 		actionName = ACTION_RUN;
@@ -318,17 +315,21 @@ ModelRepresentation::MovementMode ModelRepresentation::getMovementMode() const
 	return mMovementMode;
 }
 
-
-void ModelRepresentation::parseMovementMode()
+void ModelRepresentation::parseMovementMode(const WFMath::Vector<3>& velocity)
 {
 	MovementMode newMode = MM_DEFAULT;
-	if (mEntity.isMoving()) {
-		const WFMath::Vector<3> velocity = mEntity.getPredictedVelocity();
+
+	if (velocity != WFMath::Vector<3>::ZERO()) {
 		if (velocity.isValid()) {
-			if (velocity.mag() > 2.6) {
-				newMode = MM_RUNNING;
+			//Use WFMATH_EPSILON to remove any rounding errors
+			if (velocity.x() + WFMATH_EPSILON < 0.0f) {
+				newMode = MM_WALKING_BACKWARDS;
 			} else {
-				newMode = MM_WALKING;
+				if (velocity.mag() > 2.6) {
+					newMode = MM_RUNNING;
+				} else {
+					newMode = MM_WALKING;
+				}
 			}
 		}
 	}
@@ -337,9 +338,9 @@ void ModelRepresentation::parseMovementMode()
 	}
 }
 
-void ModelRepresentation::entity_Moved()
+void ModelRepresentation::setLocalVelocity(const WFMath::Vector<3>& velocity)
 {
-	parseMovementMode();
+	parseMovementMode(velocity);
 }
 
 void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
@@ -355,7 +356,7 @@ void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
 		if (mCurrentMovementAction) {
 			bool continuePlay = false;
 			///Check if we're walking backward. This is a bit of a hack (we should preferrably have a separate animation for backwards walking.
-			if (mEntity.getVelocity().isValid() && static_cast<int> ((WFMath::Vector<3>(mEntity.getVelocity()).rotate((mEntity.getOrientation().inverse()))).x()) < 0) {
+			if (getMovementMode() == MM_WALKING_BACKWARDS) {
 				mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
 			} else {
 				mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
