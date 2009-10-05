@@ -149,6 +149,13 @@ public:
 	WFMath::Quaternion getClientSideAvatarOrientation() const;
 
 	/**
+	 * @brief Gets the client side velocity of the avatar.
+	 * This can differ from the velocity of the entity which represents the avatar, since the player can move the avatar before the server receives updates.
+	 * @return The velocity of the avatar, as the client sees it.
+	 */
+	WFMath::Vector<3> getClientSideAvatarVelocity() const;
+
+	/**
 	 * @brief Gets the camera mount attached to the avatar.
 	 * @return The third person camera mount attached to the avatar.
 	 */
@@ -192,7 +199,7 @@ protected:
 	EmberEntity& mErisAvatarEntity;
 
 	/**
-	 * How many meters per second the avatar can move, at maximum speed.
+	 * @brief How many meters per second the avatar can move, at maximum speed.
 	 * This should be set through some kind of rule checking with the server
 	 * depending on the character. To be done later.
 	 */
@@ -201,36 +208,43 @@ protected:
 	AvatarAttachmentController* mAvatarAttachmentController;
 
 	/**
-	 * this is used to make sure starts and stops of movement is only sent to the server once
+	 * @brief Used to make sure starts and stops of movement is only sent to the server once.
 	 */
 	AvatarMovementState mCurrentMovementState;
 
+	/**
+	 * @brief Keep a list of the last transmitted movements, so that when we receive a movement update from the server, we can ignore it if it's something we know we sent ourselves.
+	 */
 	TimedMovementStateList mLastTransmittedMovements;
 
 	/**
-	 Keep a temporary list of entities that needs to be added to the inventory.
+	 * @brief Keep a temporary list of entities that needs to be added to the inventory.
 	 */
 	std::set<Eris::Entity*> mEntitiesToBeAddedToInventory;
 
 	/**
-	 Keep a temporary list of entities that needs to be removed from the inventory.
+	 * @brief Keep a temporary list of entities that needs to be removed from the inventory.
 	 */
 	std::set<Eris::Entity*> mEntitiesToBeRemovedFromInventory;
 
+	/**
+	 * @brief A third person camera mount, tracking the avatar entity.
+	 * This mount is the default one used when controlling an avatar.
+	 */
 	std::auto_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
 
 	/**
-	 True if the current user have admin rights, i.e. is a "creator".
+	 * @brief True if the current user have admin rights, i.e. is a "creator".
 	 */
 	bool mIsAdmin;
 
 	/**
-	 If set to true, the avatar has just changed location, so the next onMoved operation will contain the new orientation and position information for the new location.
+	 * @brief If set to true, the avatar has just changed location, so the next onMoved operation will contain the new orientation and position information for the new location.
 	 */
 	bool mHasChangedLocation;
 
 	/**
-	 Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
+	 * @brief Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
 	 */
 	std::auto_ptr<AvatarLoggerParent> mChatLoggerParent;
 
@@ -240,10 +254,22 @@ protected:
 	 */
 	std::list<WFMath::Quaternion> mLastOrientations;
 
+	/**
+	 * @brief The avatar entity position, as the client sees it.
+	 * This might differ from the position reported by the entity, as we allow the client side avatar entity to move in advance of getting updates from the server.
+	 */
 	WFMath::Point<3> mClientSideAvatarPosition;
 
+	/**
+	 * @brief The avatar entity orientation, as the client sees it.
+	 * This might differ from the orientation reported by the entity, as we allow the client side avatar entity to move in advance of getting updates from the server.
+	 */
 	WFMath::Quaternion mClientSideAvatarOrientation;
 
+	/**
+	 * @brief The avatar entity velocity, as the client sees it.
+	 * This might differ from the velocity reported by the entity, as we allow the client side avatar entity to move in advance of getting updates from the server.
+	 */
 	WFMath::Vector<3> mCurrentMovement;
 
 	/**
@@ -267,10 +293,13 @@ protected:
 	 */
 	void entity_ChildRemoved(Eris::Entity* childEntity);
 
+	/**
+	 * @brief After input has been processed we'll do a check to see if we've changed velocity or orientation, and therefore needs to send an update to the server.
+	 */
 	void application_AfterInputProcessing(float timeSinceLastEvent);
 
 	/**
-	 *    Listen for changes of the general:logchatmessages config key and create and destroy an instance of AvatarLogger (actually AvatarLoggerParent) accordingly.
+	 * @brief Listen for changes of the general:logchatmessages config key and create and destroy an instance of AvatarLogger (actually AvatarLoggerParent) accordingly.
 	 * @param section
 	 * @param key
 	 * @param variable
@@ -278,7 +307,7 @@ protected:
 	void Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
-	 *    Bind the frequency of rotation updates being sent to the server when the camera moves to the general:avatarrotationupdatefrequency key
+	 * @brief Bind the frequency of rotation updates being sent to the server when the camera moves to the general:avatarrotationupdatefrequency key
 	 * @param section
 	 * @param key
 	 * @param variable
@@ -286,14 +315,14 @@ protected:
 	void Config_AvatarRotationUpdateFrequency(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
-	 *    Bind the max speed to the input:runspeed key. Note that this is capped in the end by the server.
+	 * @brief Bind the max speed to the input:runspeed key. Note that this is capped in the end by the server.
 	 * @param section
 	 * @param key
 	 * @param variable
 	 */
 	void Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
 
-}; //End of class declaration
+};
 
 inline bool Avatar::isAdmin() const
 {

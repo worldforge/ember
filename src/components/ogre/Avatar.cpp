@@ -88,7 +88,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity) :
 	mErisAvatarEntity.ChildRemoved.connect(sigc::mem_fun(*this, &Avatar::entity_ChildRemoved));
 
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
-	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
+	mClientSideAvatarPosition = mErisAvatarEntity.getPosition();
 
 	mErisAvatarEntity.setAttachmentControlDelegate(mAvatarAttachmentController);
 
@@ -226,7 +226,6 @@ void Avatar::attemptMove()
 		//we are already moving
 		//let's see if we've changed speed or direction or even stopped
 		if (!isMoving) {
-			S_LOG_VERBOSE("Avatar stopped moving.");
 			//we have stopped; we must alert the server
 			sendToServer = true;
 		} else if (newMovementState.movement != mCurrentMovementState.movement || newMovementState.orientation != mCurrentMovementState.orientation) {
@@ -238,10 +237,10 @@ void Avatar::attemptMove()
 	if (sendToServer) {
 		S_LOG_VERBOSE("Sending move op to server.");
 
-		///Save the five latest orientations sent to the server, so we can later when we receive an update from the server we can recognize that it's our own updates and ignore them.
+		///Save the ten latest orientations sent to the server, so we can later when we receive an update from the server we can recognize that it's our own updates and ignore them.
 		long currentTime = Ember::EmberServices::getSingleton().getTimeService()->currentTimeMillis();
 		mLastTransmittedMovements.push_back(TimedMovementStateList::value_type(currentTime, newMovementState));
-		if (mLastTransmittedMovements.size() > 5) {
+		if (mLastTransmittedMovements.size() > 10) {
 			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
 		}
 		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(newMovementState.movement, newMovementState.orientation);
@@ -319,13 +318,16 @@ void Avatar::avatar_LocationChanged(Eris::Entity* entity)
 void Avatar::avatar_Moved()
 {
 	//For now this is disabled, since there are a couple of issues with it
-	//	for (TimedMovementStateList::const_reverse_iterator I = mLastTransmittedMovements.rbegin(); I != mLastTransmittedMovements.rend(); ++I) {
-	//		if (I->second.movement != WFMath::Vector<3>::ZERO() && WFMath::Distance(I->second.position, mErisAvatarEntity.getPosition()) < 2) {
-	//			return;
-	//		}
-	//	}
+	for (TimedMovementStateList::iterator I = mLastTransmittedMovements.begin(); I != mLastTransmittedMovements.end(); ++I) {
+		float distance = WFMath::Distance(I->second.position, mErisAvatarEntity.getPosition());
+		if (I->second.movement != WFMath::Vector<3>::ZERO() && distance < 0.3) {
+			mLastTransmittedMovements.erase(I);
+			S_LOG_VERBOSE("Ignoring server movement update since it's sent by us.");
+			return;
+		}
+	}
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
-	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();
+	mClientSideAvatarPosition = mErisAvatarEntity.getPosition();
 }
 
 void Avatar::entity_ChildAdded(Eris::Entity* childEntity)
@@ -359,20 +361,34 @@ void Avatar::Config_LogChatMessages(const std::string& section, const std::strin
 
 WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 {
-	//If the avatar entity is moving, we should prefer that position instead
-	//TODO: alter this so that we can override client movement ourselves, but only when we're moving on the client.
+	//If the avatar entity is moving, we're note moving on the client side, and we haven't sent something to the server lately, we should assume that we're moving as a result of server side actions, and therefore use the server side position
 	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
-		return mErisAvatarEntity.getPredictedPos();
+		bool clientSideMovement = false;
+		if (mLastTransmittedMovements.size()) {
+			long currentTime = Ember::EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+			if ((currentTime - mLastTransmittedMovements.rbegin()->first) < 1000) {
+				clientSideMovement = true;
+			}
+		}
+		if (!clientSideMovement) {
+			return mErisAvatarEntity.getPredictedPos();
+		}
+
 	}
 	return mClientSideAvatarPosition;
 }
 
 WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 {
-	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
-		return mErisAvatarEntity.getOrientation();
-	}
+	//	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
+	//		return mErisAvatarEntity.getOrientation();
+	//	}
 	return mClientSideAvatarOrientation;
+}
+
+WFMath::Vector<3> Avatar::getClientSideAvatarVelocity() const
+{
+	return mCurrentMovementState.movement;
 }
 
 }
