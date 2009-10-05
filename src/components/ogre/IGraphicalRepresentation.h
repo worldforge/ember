@@ -19,6 +19,7 @@
 #ifndef IGRAPHICALREPRESENTATION_H_
 #define IGRAPHICALREPRESENTATION_H_
 
+#include "IVisualizable.h"
 #include <string>
 
 namespace EmberOgre
@@ -35,7 +36,7 @@ class EmberEntity;
  *
  * Most of the subclasses of this are expected to provide methods for safely casting into the concrete subclass. The getType() method is expected to be used for helping with this.
  */
-class IGraphicalRepresentation
+class IGraphicalRepresentation : public IVisualizable
 {
 public:
 
@@ -51,20 +52,6 @@ public:
 	 * The main purpose of this is to allow late binding casts, so that it's possible to more safely cast an instance into a concrete subclass.
 	 */
 	virtual const std::string& getType() const = 0;
-
-	/**
-	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
-	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
-	 * @param visualize Whether to visualize or not.
-	 */
-	virtual void setVisualize(const std::string& visualization, bool visualize) = 0;
-
-	/**
-	 * @brief Gets whether a certain visualization is turned on or off.
-	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
-	 * @return true if visualization is turned on, else false
-	 */
-	virtual bool getVisualize(const std::string& visualization) const = 0;
 
 };
 }
