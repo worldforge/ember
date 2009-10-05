@@ -81,6 +81,7 @@ public:
 
 	virtual const WFMath::Point<3>& getPosition() const;
 	virtual const WFMath::Quaternion& getOrientation() const;
+	virtual const WFMath::Vector<3>& getVelocity() const;
 
 protected:
 	EntityMover& mEntityMover;

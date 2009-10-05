@@ -113,7 +113,7 @@ IEntityControlDelegate* NodeAttachment::getControlDelegate() const
 	return 0;
 }
 
-void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation)
+void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity)
 {
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();

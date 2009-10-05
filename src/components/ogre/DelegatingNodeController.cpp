@@ -38,7 +38,7 @@ DelegatingNodeController::~DelegatingNodeController()
 
 void DelegatingNodeController::updatePosition()
 {
-	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation());
+	mAttachment.setPosition(mAttachmentControlDelegate.getPosition(), mAttachmentControlDelegate.getOrientation(), mAttachmentControlDelegate.getVelocity());
 }
 
 IEntityControlDelegate* DelegatingNodeController::getControlDelegate() const

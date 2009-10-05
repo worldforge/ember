@@ -81,6 +81,13 @@ public:
 	virtual bool getVisualize(const std::string& visualization) const;
 
 	virtual void getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset);
+	/**
+	 * @brief Sets the position and orientation of the node.
+	 * @param position The position.
+	 * @param orientation The orientation.
+	 * @param velocity The velocity.
+	 */
+	virtual void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity);
 
 protected:
 

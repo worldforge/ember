@@ -22,6 +22,7 @@
 namespace WFMath
 {
 template<int> class Point;
+template<int> class Vector;
 class Quaternion;
 }
 
@@ -57,6 +58,12 @@ public:
 	 * @return The orientation, in local space.
 	 */
 	virtual const WFMath::Quaternion& getOrientation() const = 0;
+
+	/**
+	 * @brief Gets the velocity.
+	 * @return The velocity, in world units.
+	 */
+	virtual const WFMath::Vector<3>& getVelocity() const = 0;
 };
 
 }

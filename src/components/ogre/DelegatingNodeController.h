@@ -21,7 +21,8 @@
 
 #include "components/ogre/NodeController.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class IEntityControlDelegate;
 
@@ -29,7 +30,7 @@ class IEntityControlDelegate;
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A node controller which uses a delegate to perform the actual controlling.
  */
-class DelegatingNodeController : public NodeController
+class DelegatingNodeController: public NodeController
 {
 public:
 	/**

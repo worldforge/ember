@@ -88,8 +88,9 @@ public:
 	 * @brief Sets the position and orientation of the node.
 	 * @param position The position.
 	 * @param orientation The orientation.
+	 * @param velocity The velocity.
 	 */
-	void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation);
+	virtual void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity);
 
 	/**
 	 * @brief Gets the node to which the graphical representation of the child entity is attached.

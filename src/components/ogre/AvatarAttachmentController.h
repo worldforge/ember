@@ -23,6 +23,7 @@
 #include <string>
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
+#include <wfmath/vector.h>
 
 namespace EmberOgre
 {
@@ -37,12 +38,14 @@ public:
 
 	virtual const WFMath::Point<3>& getPosition() const;
 	virtual const WFMath::Quaternion& getOrientation() const;
+	virtual const WFMath::Vector<3>& getVelocity() const;
 
 private:
 
 	Avatar& mAvatar;
 	mutable WFMath::Point<3> mPosition;
 	mutable WFMath::Quaternion mOrientation;
+	mutable WFMath::Vector<3> mVelocity;
 };
 
 }

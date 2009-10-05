@@ -93,8 +93,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 	//Don't show a graphical representation if the model is set not to show any contained entities AND we're not set to attach ourselves to an attach point.
 	if (attachPoint == "" && !mModelRepresentation.getModel().getDefinition()->getShowContained()) {
 		return new HiddenAttachment(getAttachedEntity(), entity);
-	}
-	else {
+	} else {
 		ModelRepresentation* modelRepresentation = ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
 		//		NodeAttachment* currentNodeAttachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());
 		//		ModelAttachment* currentModelAttachment = dynamic_cast<ModelAttachment*> (entity.getAttachment());
@@ -113,14 +112,12 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		INodeProvider* nodeProvider(0);
 		if (attachPoint != "") {
 			nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, &modelRepresentation->getModel());
-		}
-		else {
+		} else {
 			nodeProvider = mNodeProvider->createChildProvider();
 		}
 		if (modelRepresentation) {
 			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
-		}
-		else {
+		} else {
 			return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
 		}
 		//		}
@@ -134,8 +131,7 @@ void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 	const Ogre::Vector3& modelOffset(mModelRepresentation.getModel().getDefinition()->getContentOffset());
 	if (modelOffset != Ogre::Vector3::ZERO) {
 		offset = Convert::toWF<WFMath::Vector<3> >(modelOffset);
-	}
-	else {
+	} else {
 		//If the attachment is on a fitting, don't do any adjustment
 		for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
 			if (I->second->getChildEntityId() == attachment.getAttachedEntity().getId()) {
@@ -161,8 +157,7 @@ void ModelAttachment::updateScale()
 	if (mModelMount) {
 		if (getAttachedEntity().hasBBox()) {
 			mModelMount->rescale(&getAttachedEntity().getBBox());
-		}
-		else {
+		} else {
 			mModelMount->rescale(0);
 		}
 	}
@@ -239,15 +234,13 @@ void ModelAttachment::model_Reloaded()
 	updateScale();
 }
 
-
 void ModelAttachment::setVisualize(const std::string& visualization, bool visualize)
 {
 	if (visualization == "OgreBBox") {
 		if (mModelMount && mModelMount->getNodeProvider()) {
 			mModelMount->getNodeProvider()->setVisualize(visualization, visualize);
 		}
-	}
-	else {
+	} else {
 		NodeAttachment::setVisualize(visualization, visualize);
 	}
 }
@@ -257,14 +250,19 @@ bool ModelAttachment::getVisualize(const std::string& visualization) const
 	if (visualization == "OgreBBox") {
 		if (mModelMount && mModelMount->getNodeProvider()) {
 			return mModelMount->getNodeProvider()->getVisualize(visualization);
-		}
-		else {
+		} else {
 			return false;
 		}
-	}
-	else {
+	} else {
 		return NodeAttachment::getVisualize(visualization);
 	}
+}
+
+void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity)
+{
+	NodeAttachment::setPosition(position, orientation, velocity);
+
+	mModelRepresentation.setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
 }
 
 }

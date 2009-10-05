@@ -70,7 +70,7 @@ void NodeController::updateMotion(float timeSlice)
 
 void NodeController::updatePosition()
 {
-	mAttachment.setPosition(mAttachment.getAttachedEntity().getPredictedPos(), mAttachment.getAttachedEntity().getOrientation());
+	mAttachment.setPosition(mAttachment.getAttachedEntity().getPredictedPos(), mAttachment.getAttachedEntity().getOrientation(), mAttachment.getAttachedEntity().getPredictedVelocity());
 }
 
 IEntityControlDelegate* NodeController::getControlDelegate() const

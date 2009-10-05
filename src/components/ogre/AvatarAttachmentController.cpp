@@ -45,5 +45,12 @@ const WFMath::Quaternion& AvatarAttachmentController::getOrientation() const
 	return mOrientation;
 }
 
+const WFMath::Vector<3>& AvatarAttachmentController::getVelocity() const
+{
+	mVelocity = mAvatar.getClientSideAvatarVelocity();
+	return mVelocity;
+}
+
+
 
 }

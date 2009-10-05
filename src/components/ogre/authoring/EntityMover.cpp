@@ -54,7 +54,6 @@ const IEntityControlDelegate& EntityMover::getControlDelegate() const
 	return *mControlDelegate;
 }
 
-
 void EntityMover::finalizeMovement()
 {
 	if (mEntity.getLocation()) {
@@ -97,6 +96,12 @@ const WFMath::Quaternion& EntityMoverControlDelegate::getOrientation() const
 {
 	return mEntityMover.getOrientation();
 }
+
+const WFMath::Vector<3>& EntityMoverControlDelegate::getVelocity() const
+{
+	return WFMath::Vector<3>::ZERO();
+}
+
 }
 
 }
