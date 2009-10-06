@@ -74,7 +74,7 @@ void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
 TaskQueue::TaskUnit TaskQueue::fetchNextTask()
 {
 
-	boost::unique_lock<boost::mutex> lock(mUnprocessedQueueMutex);
+	boost::mutex::scoped_lock lock(mUnprocessedQueueMutex);
 
 	while (!mUnprocessedTaskUnits.size()) {
 		mUnprocessedQueueCond.wait(lock);

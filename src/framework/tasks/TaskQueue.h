@@ -20,7 +20,9 @@
 #define TASKQUEUE_H_
 
 #include <queue>
-#include <boost/thread/condition_variable.hpp>
+#include <boost/version.hpp>
+
+#include <boost/thread/condition.hpp> //include the deprecated "condition.hpp" for backwards compatability's sake
 #include <boost/thread/mutex.hpp>
 
 namespace Ember
@@ -113,7 +115,11 @@ protected:
 	/**
 	 * @brief A condition variable used for letting threads sleep while waiting for new tasks.
 	 */
+#if BOOST_VERSION / 100000 >= 1 && BOOST_VERSION / 100 % 1000 >= 35 //version 1.35+ of boost changed the threading a bit...
 	boost::condition_variable mUnprocessedQueueCond;
+#else
+	boost::condition mUnprocessedQueueCond;
+#endif
 
 	/**
 	 * @brief Gets the next task to process.
