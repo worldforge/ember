@@ -214,6 +214,9 @@ public:
 	 */
 	sigc::signal<void, MovementMode> EventMovementModeChanged;
 
+	/**
+	 * @brief Sets the velocity, in local units. This means relative to the way the representation is facing, so that x>1 means a forward looking direction.
+	 */
 	void setLocalVelocity(const WFMath::Vector<3>& velocity);
 
 protected:
