@@ -25,6 +25,7 @@
 #include "framework/Exception.h"
 
 #include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
 
 namespace Ember
 {
