@@ -35,22 +35,26 @@
 #include "framework/Exception.h"
 #include <OgreSceneManager.h>
 
+#include <sigc++/bind.h>
+
 // #include "Widget.h"
 // #include "../GUIManager.h"
 
 
-namespace EmberOgre {
-namespace Gui {
+namespace EmberOgre
+{
+namespace Gui
+{
 
-ModelRenderer::ModelRenderer(CEGUI::Window* image)
-: MovableObjectRenderer(image), mModel(0)
+ModelRenderer::ModelRenderer(CEGUI::Window* image) :
+	MovableObjectRenderer(image), mModel(0)
 {
 }
-
 
 ModelRenderer::~ModelRenderer()
 {
 	mModelReloadedConnection.disconnect();
+	mModelDelayedUpdateConnection.disconnect();
 }
 
 void ModelRenderer::setModel(Model::Model* model)
@@ -78,7 +82,7 @@ void ModelRenderer::repositionSceneNode()
 			node->setOrientation(Ogre::Quaternion::IDENTITY);
 			///rotate node to fit with WF space
 			///perhaps this is something to put in the model spec instead?
-// 			node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+			// 			node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 			node->rotate(mModel->getRotation());
 
 			///translate the scale node according to the translate defined in the model
@@ -87,7 +91,29 @@ void ModelRenderer::repositionSceneNode()
 
 		}
 	}
+}
 
+void ModelRenderer::updateRender()
+{
+	if (mModel) {
+		if (!mModel->isLoaded()) {
+			//If it's being loaded in a background thread, listen for reloading and render it then. The "Reload" signal will be emitted in the main thread.
+			mModelDelayedUpdateConnection.disconnect();
+			mModelDelayedUpdateConnection = mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRenderer::delayedUpdateRender));
+		} else {
+			MovableObjectRenderer::updateRender();
+		}
+	}
+}
+
+void ModelRenderer::delayedUpdateRender()
+{
+	if (mAutoShowFull) {
+		showFull();
+	}
+	repositionSceneNode();
+	mTexture->getRenderContext()->repositionCamera();
+	updateRender();
 }
 
 Model::Model* ModelRenderer::getModel()
@@ -101,15 +127,16 @@ void ModelRenderer::showModel(const std::string& modelName)
 		mModel->_getManager()->destroyMovableObject(mModel);
 		mModel = 0;
 		mModelReloadedConnection.disconnect();
+		mModelDelayedUpdateConnection.disconnect();
 		//delete mModel;
 	}
 	if (modelName != "") {
 		mModel = Model::Model::createModel(mTexture->getRenderContext()->getSceneManager(), modelName);
 		if (mModel) {
-	// 		mModel->create(modelName);
 			///override the rendering distance from the model; we want to always show it in the preview
 			mModel->setRenderingDistance(0);
 			setModel(mModel);
+
 			mTexture->getRenderContext()->setActive(true);
 		}
 	} else {
@@ -122,7 +149,6 @@ void ModelRenderer::model_Reloaded()
 {
 	showFull();
 }
-
 
 Ogre::MovableObject* ModelRenderer::getMovableObject()
 {

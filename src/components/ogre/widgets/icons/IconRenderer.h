@@ -238,6 +238,13 @@ protected:
 	int mPixelWidth;
 	std::auto_ptr<SimpleRenderContext> mRenderContext;
 	IconRenderWorker* mWorker;
+
+	/**
+	 * @brief Call this when the model is being rendered in a backround thread, and we want to render it to the icon once it's done.
+	 * @param model The model.
+	 * @param icon The icon.
+	 */
+	void renderDelayed(Model::Model* model, Icon* icon);
 };
 
 }
