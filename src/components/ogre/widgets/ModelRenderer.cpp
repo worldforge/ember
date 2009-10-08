@@ -114,6 +114,7 @@ void ModelRenderer::delayedUpdateRender()
 	repositionSceneNode();
 	mTexture->getRenderContext()->repositionCamera();
 	updateRender();
+	mModelDelayedUpdateConnection.disconnect();
 }
 
 Model::Model* ModelRenderer::getModel()
