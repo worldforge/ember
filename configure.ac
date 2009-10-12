@@ -361,9 +361,9 @@ PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
   ])
 
 # Check for Boost::Thread
-AC_CHECK_LIB([boost_thread-mt], [main],
+AC_CHECK_LIB([boost_thread], [main],
     [
-        LIBS="$LIBS -lboost_thread-mt"
+        LIBS="$LIBS -lboost_thread"
     ],
     [
         AC_MSG_ERROR([Couldn't find Boost::Thread library.])
