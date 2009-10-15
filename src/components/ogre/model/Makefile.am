@@ -1,17 +1,17 @@
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
+INCLUDES model/= model/-I$(top_srcdir)/src model/ model/-I$(top_builddir)/src
 
-noinst_LIBRARIES = libModel.a
+noinst_LIBRARIES model/= model/libModel.a
 
-libModel_a_SOURCES = Action.cpp AnimationSet.cpp Model.cpp \
-	ModelBackgroundLoader.cpp ModelDefinition.cpp ModelDefinitionAtlasComposer.cpp \
-	ModelDefinitionManager.cpp ModelPart.cpp ParticleSystem.cpp ParticleSystemBinding.cpp SubModel.cpp \
-	SubModelPart.cpp XMLModelDefinitionSerializer.cpp ModelRepresentation.cpp \
-	ModelRepresentationManager.cpp ModelMount.cpp ModelAttachment.cpp ModelBoneProvider.cpp ModelFitting.cpp
+libModel_a_SOURCES model/= model/Action.cpp model/AnimationSet.cpp model/Model.cpp \
+	model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp \
+	model/ModelDefinitionManager.cpp model/ModelPart.cpp model/ParticleSystem.cpp model/ParticleSystemBinding.cpp model/SubModel.cpp \
+	model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp \
+	model/ModelRepresentationManager.cpp model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelFitting.cpp
 	
-#	SimpleModel.cpp IModel.cpp ModelBase.cpp
-#noinst_HEADERS = SimpleModel.h IModel.h ModelBase.h
-noinst_HEADERS = Action.h AnimationSet.h Model.h ModelBackgroundLoader.h \
-	ModelDefinition.h ModelDefinitionAtlasComposer.h ModelDefinitionManager.h ModelPart.h \
-	ParticleSystem.h ParticleSystemBinding.h SubModel.h SubModelPart.h \
-	XMLModelDefinitionSerializer.h  ModelRepresentation.h ModelRepresentationManager.h \
-	ModelMount.h ModelAttachment.h ModelBoneProvider.h ModelFitting.h
+#	SimpleModel.cpp model/IModel.cpp model/ModelBase.cpp
+#noinst_HEADERS model/= model/SimpleModel.h model/IModel.h model/ModelBase.h
+noinst_HEADERS model/= model/Action.h model/AnimationSet.h model/Model.h model/ModelBackgroundLoader.h model/\
+	model/ModelDefinition.h model/ModelDefinitionAtlasComposer.h model/ModelDefinitionManager.h model/ModelPart.h model/\
+	model/ParticleSystem.h model/ParticleSystemBinding.h model/SubModel.h model/SubModelPart.h model/\
+	model/XMLModelDefinitionSerializer.h model/ model/ModelRepresentation.h model/ModelRepresentationManager.h model/\
+	model/ModelMount.h model/ModelAttachment.h model/ModelBoneProvider.h model/ModelFitting.h

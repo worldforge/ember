@@ -1,8 +1,8 @@
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-#SUBDIRS = 
-noinst_LIBRARIES = libSound.a
-libSound_a_SOURCES = SoundAction.cpp SoundDefinition.cpp SoundDefinitionManager.cpp \
-	SoundEntity.cpp SoundGroup.cpp SoundGroupDefinition.cpp XMLSoundDefParser.cpp
-noinst_HEADERS = SoundAction.h SoundDefinition.h SoundDefinitionManager.h SoundEntity.h \
-	SoundGroup.h SoundGroupDefinition.h XMLSoundDefParser.h
+INCLUDES sound/= sound/-I$(top_srcdir)/src sound/ sound/-I$(top_builddir)/src sound/-DPREFIX=\"@prefix@\"
+#SUBDIRS sound/= sound/
+noinst_LIBRARIES sound/= sound/libSound.a
+libSound_a_SOURCES sound/= sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp \
+	sound/SoundEntity.cpp sound/SoundGroup.cpp sound/SoundGroupDefinition.cpp sound/XMLSoundDefParser.cpp
+noinst_HEADERS sound/= sound/SoundAction.h sound/SoundDefinition.h sound/SoundDefinitionManager.h sound/SoundEntity.h \
+	sound/SoundGroup.h sound/SoundGroupDefinition.h sound/XMLSoundDefParser.h
 

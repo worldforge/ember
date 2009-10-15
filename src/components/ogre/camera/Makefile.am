@@ -1,7 +1,7 @@
-INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES camera/= camera/-I$(top_srcdir)/src camera/-I$(top_builddir)/src
 
-noinst_LIBRARIES = libCamera.a
+noinst_LIBRARIES camera/= camera/libCamera.a
 
-libCamera_a_SOURCES = MainCamera.cpp CameraMountBase.cpp FirstPersonCameraMount.cpp Recorder.cpp ThirdPersonCameraMount.cpp
+libCamera_a_SOURCES camera/= camera/MainCamera.cpp camera/CameraMountBase.cpp camera/FirstPersonCameraMount.cpp camera/Recorder.cpp camera/ThirdPersonCameraMount.cpp
 
-noinst_HEADERS = MainCamera.h CameraMountBase.h FirstPersonCameraMount.h Recorder.h ThirdPersonCameraMount.h ICameraMount.h
+noinst_HEADERS camera/= camera/MainCamera.h camera/CameraMountBase.h camera/FirstPersonCameraMount.h camera/Recorder.h camera/ThirdPersonCameraMount.h camera/ICameraMount.h

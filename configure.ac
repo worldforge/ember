@@ -502,25 +502,18 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/scripting/bindings/lua/Makefile
 		 src/components/ogre/scripting/bindings/lua/ogre/Makefile
 		 src/components/ogre/scripting/bindings/lua/helpers/Makefile
-		 src/components/ogre/sound/Makefile
 		 src/components/ogre/Makefile
-		 src/components/ogre/gui/Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/widgets/adapters/Makefile
 		 src/components/ogre/widgets/adapters/atlas/Makefile
-		 src/components/ogre/widgets/icons/Makefile
 		 src/components/ogre/environment/caelum/Makefile
 		 src/components/ogre/environment/pagedgeometry/Makefile
 		 src/components/ogre/environment/meshtree/Makefile
 		 src/components/ogre/environment/Makefile
-		 src/components/ogre/model/Makefile
-		 src/components/ogre/mapping/Makefile
 		 src/components/ogre/modeldefinitions/Makefile
 		 src/components/ogre/sounddefinitions/Makefile
 		 src/components/ogre/authoring/Makefile
 		 src/components/ogre/authoring/entityrecipes/Makefile
-		 src/components/ogre/terrain/Makefile
-		 src/components/ogre/camera/Makefile
 		 src/components/ogre/SceneManagers/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/src/Makefile

@@ -1,16 +1,16 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 METASOURCES = AUTO
 noinst_LIBRARIES = libTerrain.a
-libTerrain_a_SOURCES = Map.cpp TerrainArea.cpp TerrainArea.h \
-	TerrainAreaParser.cpp TerrainEditor.cpp TerrainEditor.cpp	TerrainEditor.h TerrainEditor.h \
-	TerrainGenerator.cpp TerrainGenerator.h TerrainInfo.cpp TerrainLayerDefinition.cpp \
-	TerrainLayerDefinitionManager.cpp TerrainMod.cpp TerrainMod.h TerrainPage.cpp \
-	TerrainPage.cpp	TerrainPage.h TerrainPage.h TerrainPageFoliage.cpp TerrainPageGeometry.cpp \
-	TerrainPageShadow.cpp TerrainPageSurface.cpp TerrainPageSurfaceCompiler.cpp \
-	TerrainPageSurfaceCompilerTechniqueShader.cpp TerrainPageSurfaceCompilerTechniqueSimple.cpp \
-	TerrainPageSurfaceLayer.cpp TerrainShader.cpp TerrainShader.h XMLLayerDefinitionSerializer.cpp PlantAreaQuery.cpp TerrainParser.cpp
-noinst_HEADERS = ISceneManagerAdapter.h ITerrainPageBridge.h Map.h \
-	TerrainAreaParser.h TerrainInfo.h TerrainLayerDefinition.h TerrainLayerDefinitionManager.h \
-	TerrainPageFoliage.h TerrainPageGeometry.h TerrainPageShadow.h TerrainPageSurface.h \
-	TerrainPageSurfaceCompiler.h TerrainPageSurfaceCompilerTechniqueShader.h \
-	TerrainPageSurfaceCompilerTechniqueSimple.h TerrainPageSurfaceLayer.h XMLLayerDefinitionSerializer.h PlantAreaQuery.h TerrainParser.h
+libTerrain_a_SOURCES terrain/= terrain/Map.cpp terrain/TerrainArea.cpp \
+	terrain/TerrainAreaParser.cpp terrain/TerrainEditor.cpp terrain/ \
+	terrain/TerrainGenerator.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp \
+	terrain/TerrainLayerDefinitionManager.cpp terrain/TerrainMod.cpp \
+	terrain/TerrainPage.cpp terrain/TerrainPageFoliage.cpp terrain/TerrainPageGeometry.cpp \
+	terrain/TerrainPageShadow.cpp terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp \
+	terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp terrain/TerrainPageSurfaceCompilerTechniqueSimple.cpp \
+	terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp terrain/PlantAreaQuery.cpp terrain/TerrainParser.cpp
+noinst_HEADERS terrain/= terrain/ISceneManagerAdapter.h terrain/ITerrainPageBridge.h terrain/Map.h terrain/TerrainArea.h \
+	terrain/TerrainAreaParser.h terrain/TerrainEditor.h terrain/TerrainGenerator.h terrain/TerrainInfo.h terrain/TerrainLayerDefinition.h terrain/TerrainLayerDefinitionManager.h \
+	terrain/TerrainMod.h terrain/TerrainPage.h terrain/TerrainPageFoliage.h terrain/TerrainPageGeometry.h terrain/TerrainPageShadow.h terrain/TerrainPageSurface.h \
+	terrain/TerrainPageSurfaceCompiler.h terrain/TerrainPageSurfaceCompilerTechniqueShader.h \
+	terrain/TerrainPageSurfaceCompilerTechniqueSimple.h terrain/TerrainPageSurfaceLayer.h terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h terrain/TerrainParser.h
