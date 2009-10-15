@@ -24,19 +24,14 @@
 #include "config.h"
 #endif
 
-#include "../EmberOgrePrerequisites.h"
 #include "LuaScriptingProvider.h"
 #include "luaobject.h"
 
-#include "bindings/lua/helpers/LuaConnector.h"
-
-#include <CEGUIExceptions.h>
-
 #include "framework/Exception.h"
+#include "framework/LoggingInstance.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
-#include <OgreString.h>
 
 // include Lua libs and tolua++
 extern "C" {
@@ -47,19 +42,9 @@ extern "C" {
 //#include <lua.hpp>
 #include <tolua++.h>
 #include "LuaHelper.h"
-#include "bindings/lua/helpers/LuaConnectorHelper.h"
 #include "LuaScriptingCallContext.h"
 
-TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);
-TOLUA_API int tolua_Eris_open (lua_State* tolua_S);
-TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S);
-TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S);
-TOLUA_API int tolua_Helpers_open (lua_State* tolua_S);
-TOLUA_API int tolua_Framework_open (lua_State* tolua_S);
-TOLUA_API int tolua_Application_open (lua_State* tolua_S);
-TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S);
-TOLUA_API int tolua_Atlas_open (lua_State* tolua_S);
-TOLUA_API int tolua_Varconf_open (lua_State* tolua_S);
+
 
 namespace EmberOgre {
 
@@ -75,11 +60,6 @@ LuaScriptingProvider::~LuaScriptingProvider()
 	S_LOG_INFO("Shutting down lua environment.");
 	lua_close(mLuaState);
 }
-
-// void LuaScriptingProvider::start()
-// {
-// 	initialize();
-// }
 
 void LuaScriptingProvider::stop()
 {
@@ -98,17 +78,7 @@ void LuaScriptingProvider::stop()
 void LuaScriptingProvider::initialize()
 {
 	createState();
-	tolua_Framework_open(mLuaState);
-	tolua_EmberOgre_open(mLuaState);
-	tolua_Eris_open(mLuaState);
-	tolua_EmberServices_open(mLuaState);
-	tolua_Helpers_open (mLuaState);
-	tolua_Ogre_open(mLuaState);
-	tolua_Application_open(mLuaState);
-	tolua_atlas_adapters_open(mLuaState);
-	tolua_Atlas_open(mLuaState);
-	tolua_Varconf_open(mLuaState);
-	LuaConnector::setState(mLuaState);
+
 }
 
 void LuaScriptingProvider::createState()
@@ -216,7 +186,7 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 
 		///push our error handling method before calling the code
 		int error_index = lua_gettop(mLuaState);
-		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
+		lua_pushcfunction(mLuaState, LuaHelper::luaErrorHandler);
 		lua_insert(mLuaState, error_index);
 
 // 		lua_rawgeti(mLuaState, LUA_REGISTRYINDEX, mErrorHandlingFunctionIndex);
@@ -262,10 +232,6 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 		lua_settop(mLuaState,top); // just in case :P - do we need it?
 
 // 		getScriptModule().executeString(scriptCode);
-	} catch (const CEGUI::Exception& ex) {
-		throw Ember::Exception(ex.getMessage().c_str());
-	} catch( const CEGUI::String& str ) {
-		throw Ember::Exception(str.c_str());
 	} catch (const std::exception& ex) {
 		throw;
 	} catch (...) {
@@ -278,12 +244,12 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 	try {
 																				// st: args
 		int top = lua_gettop(mLuaState);
-		EmberOgre::LuaConnectors::LuaConnectorHelper::pushNamedFunction(mLuaState, functionName.c_str());		// st: args func
+		LuaHelper::pushNamedFunction(mLuaState, functionName.c_str());		// st: args func
 
 		///push our error handling method before calling the code
 		int error_index = top + 1; //lua_gettop(mLuaState);
 		#if LUA_VERSION_NUM >= 501
-		lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);   // st: args func err_h
+		lua_pushcfunction(mLuaState, LuaHelper::luaErrorHandler);   // st: args func err_h
 		#else
 		lua_pushliteral(mLuaState, "_TRACEBACK");
 		lua_rawget(mLuaState, LUA_GLOBALSINDEX);  /* get traceback function */
@@ -330,10 +296,6 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 		lua_settop(mLuaState,top); // just in case :P - do we need it?
 
 // 		getScriptModule().executeString(scriptCode);
-	} catch (const CEGUI::Exception& ex) {
-		throw Ember::Exception(ex.getMessage().c_str());
-	} catch( const CEGUI::String& str ) {
-		throw Ember::Exception(str.c_str());
 	} catch (const std::exception& ex) {
 		throw;
 	} catch (...) {
@@ -343,10 +305,8 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 
 bool LuaScriptingProvider::willLoadScript(const std::string& scriptName)
 {
-	if (Ogre::StringUtil::endsWith(scriptName, ".lua")) {
-		return true;
-	}
-	return false;
+	size_t pos = scriptName.rfind(".lua");
+	return (pos == scriptName.size() - 4);
 }
 
 const std::string& LuaScriptingProvider::getName() const

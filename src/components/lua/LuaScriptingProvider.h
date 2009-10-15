@@ -1,7 +1,7 @@
 //
 // C++ Interface: LuaScriptingProvider
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2005
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -24,10 +24,6 @@
 #define EMBEROGRELUASCRIPTINGPROVIDER_H
 
 #include "framework/IScriptingProvider.h"
-
-#include <CEGUIScriptModule.h>
-#include <CEGUILua.h>
-
 
 struct lua_State;
 
@@ -60,7 +56,7 @@ public:
 	 * @param resourceWrapper A resource wrapper pointing to a valid resource which can be loaded. This should contain a text file with the script contents.
 	 */
 	virtual void loadScript(Ember::ResourceWrapper& resWrapper);
-	
+
 	/**
 	 *    @brief Executes the supplied string directly into the scripting environment.
 	 * Optionally a pointer to a scripting call context can be submitted too, which will then be populated with return values and other scripting environment specific info.
@@ -77,24 +73,24 @@ public:
 	 * @return True if the script can be loaded, else false.
 	 */
 	virtual bool willLoadScript(const std::string& scriptName);
-	
+
 	/**
 	 *   @brief Gets the unique name of the scripting provider.
 	 * @return The name of the scripting provider.
 	 */
 	virtual const std::string& getName() const;
-	
+
 	/**
 	 *   @brief Register with  a service to allow for callbacks etc.
 	 * @param service The service to register with.
 	 */
 	virtual void _registerWithService(Ember::ScriptingService* service);
-	
+
 	/**
 	 *   @brief Forces a full garbage collection.
 	 */
 	virtual void forceGC();
-    
+
 // 	virtual void start();
 
 
@@ -103,24 +99,24 @@ public:
 	 * Call this before this object is destroyed to make sure that all held objects and references are properly released. If not, there's a risk of dangling pointers.
 	 */
 	virtual void stop();
-    
-    
+
+
 	/**
-	 *    @brief Gets the current lua state. 
+	 *    @brief Gets the current lua state.
 	 * This will always return a valid lua virtual machine, but note that if @see stop() already has been called it will porbably be in an invalid state.
 	 * @return The current lua environment.
 	 */
 	lua_State* getLuaState();
-	
-	
+
+
 // 	int getErrorHandlingFunctionIndex() const;
 
 	/**
 	 * @brief Gets the name of the error handling function, if available.
 	 * @return The error handling function name (i.e. a lua function).
 	 */
-	const std::string& getErrorHandlingFunctionName() const; 
-	
+	const std::string& getErrorHandlingFunctionName() const;
+
 
 private:
 
@@ -139,31 +135,31 @@ private:
 	 If you add a new tolua bindings class, don't forget to alter this method to include a call to the method which registers all classes and structs.
 	 */
 	void initialize();
-	
-	
+
+
 	/**
 	 *    Creates a new Lua virtual machine/state.
 	 */
 	void createState();
 // 	std::auto_ptr<CEGUI::LuaScriptModule> mLuaScriptModule;
-	
+
 	/**
 	The main scripting service instance.
 	*/
 	Ember::ScriptingService* mService;
-	
+
 	/**
 	The main lua state. This is the sole entry into the lua virtual machine.
 	*/
 	lua_State* mLuaState;
-	
+
 // 	int mErrorHandlingFunctionIndex;
 
 	/**
 	 * @brief The name of the error handling function, if available.
 	 */
 	std::string mErrorHandlingFunctionName;
-	
+
 };
 
 }

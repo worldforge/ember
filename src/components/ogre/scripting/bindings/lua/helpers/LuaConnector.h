@@ -253,12 +253,12 @@ public:
 	static void pushValue(const Ember::Input::InputMode& theValue, const std::string& luaTypename);
 	static void pushValue(const std::set<std::string>& theValue, const std::string& luaTypename);
 	static void pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename);
-	static void pushValue(const EmberOgre::MovementControllerMode::Mode& theValue, const std::string& luaTypename);
-	static void pushValue(const EmberOgre::Terrain::TerrainPage& theValue, const std::string& luaTypename);
-	static void pushValue(const EmberOgre::EmberEntity& theValue, const std::string& luaTypename);
+	static void pushValue(const MovementControllerMode::Mode& theValue, const std::string& luaTypename);
+	static void pushValue(const Terrain::TerrainPage& theValue, const std::string& luaTypename);
+	static void pushValue(const EmberEntity& theValue, const std::string& luaTypename);
 	static void pushValue(const Atlas::Objects::Root& theValue, const std::string& luaTypename);
-	static void pushValue(const std::vector<EmberOgre::EntityPickResult>& theValue, const std::string& luaTypename);
-	static void pushValue(const EmberOgre::Authoring::EntityMover& theValue, const std::string& luaTypename);
+	static void pushValue(const std::vector<EntityPickResult>& theValue, const std::string& luaTypename);
+	static void pushValue(const Authoring::EntityMover& theValue, const std::string& luaTypename);
 
 	template<typename T> static void pushUserTypeValue(T& theValue, const std::string& luaTypename);
 
@@ -268,7 +268,7 @@ public:
 	LuaConnector(sigc::signal<void, const Eris::ServerInfo&>& signal);
 	LuaConnector(sigc::signal<void, float>& signal);
 	LuaConnector(sigc::signal<void, const EntityPickResult&, const MousePickerArgs&>& signal);
-	LuaConnector(sigc::signal<void, const std::vector<EmberOgre::EntityPickResult>&, const MousePickerArgs&>& signal);
+	LuaConnector(sigc::signal<void, const std::vector<EntityPickResult>&, const MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, const MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, Ember::Input::MouseButton, Ember::Input::InputMode>& signal);
 	LuaConnector(sigc::signal<void, Ember::Input::InputMode>& signal);
@@ -276,7 +276,7 @@ public:
 	LuaConnector(sigc::signal<void, Jesus*>& signal);
 	LuaConnector(sigc::signal<void, EmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, EmberEntity&>& signal);
-	LuaConnector(sigc::signal<void, EmberEntity&, EmberOgre::Authoring::EntityMover&>& signal);
+	LuaConnector(sigc::signal<void, EmberEntity&, Authoring::EntityMover&>& signal);
 	LuaConnector(sigc::signal<void, const std::string&>& signal);
 	LuaConnector(sigc::signal<bool, const std::string&>& signal);
 	LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal);
@@ -284,10 +284,10 @@ public:
 	LuaConnector(sigc::signal<void, Terrain::TerrainEditAction*>& signal);
 	LuaConnector(sigc::signal<void, Eris::Task*>& signal);
 	LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal);
-	LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal);
+	LuaConnector(sigc::signal<void, Gui::EntityIcon*>& signal);
 	LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& signal);
-	LuaConnector(sigc::signal<void, EmberOgre::MovementControllerMode::Mode>& signal);
-	LuaConnector(sigc::signal<void, EmberOgre::Terrain::TerrainPage&>& signal);
+	LuaConnector(sigc::signal<void, MovementControllerMode::Mode>& signal);
+	LuaConnector(sigc::signal<void, Terrain::TerrainPage&>& signal);
 	LuaConnector(sigc::signal<void, const Atlas::Objects::Root&>& signal);
 
 	~LuaConnector();

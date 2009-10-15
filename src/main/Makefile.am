@@ -5,7 +5,6 @@ bin_PROGRAMS = ember.bin
 ember_bin_SOURCES = Application.cpp ConfigBoundLogObserver.cpp Ember.cpp
 
 ember_bin_LDADD = \
-	$(top_builddir)/src/components/ogre/scripting/libScripting.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/liblua_EmberOgre.a \
@@ -21,6 +20,7 @@ ember_bin_LDADD = \
 	$(top_builddir)/src/components/ogre/environment/pagedgeometry/libpagedgeometry.a \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
 	$(top_builddir)/src/components/entitymapping/libEntityMapping.a \
+	$(top_builddir)/src/components/lua/libLua.a \
 	$(top_builddir)/src/services/libServices.a \
 	$(top_builddir)/src/services/config/libConfigService.a \
 	$(top_builddir)/src/services/input/libInputService.a \
@@ -34,7 +34,7 @@ ember_bin_LDADD = \
 	$(top_builddir)/src/extensions/libExtensions.a \
 	$(top_builddir)/src/framework/tasks/libTasks.a \
 	$(top_builddir)/src/framework/libFramework.a
-ember_bin_LDFLAGS = -Wl,--start-group
+ember_bin_LDFLAGS = -Wl
 
 noinst_HEADERS = Application.h ConfigBoundLogObserver.h
 SUBDIRS = bindings

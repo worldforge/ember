@@ -28,6 +28,7 @@
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIFactoryModule.h>
+#include <CEGUILua.h>
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUIMultiLineEditbox.h>
@@ -49,7 +50,7 @@
 
 #include "framework/IScriptingProvider.h"
 
-#include "components/ogre/scripting/LuaScriptingProvider.h"
+#include "components/lua/LuaScriptingProvider.h"
 
 #include "GUICEGUIAdapter.h"
 

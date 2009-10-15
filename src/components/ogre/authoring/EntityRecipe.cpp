@@ -26,8 +26,8 @@
 #endif
 
 #include "EntityRecipe.h"
-#include "components/ogre/scripting/LuaScriptingCallContext.h"
-#include "components/ogre/scripting/LuaScriptingProvider.h"
+#include "components/lua/LuaScriptingCallContext.h"
+#include "components/lua/LuaScriptingProvider.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/EmberServices.h"
 

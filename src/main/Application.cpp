@@ -48,9 +48,24 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/StreamLogObserver.h"
 
+#include "components/lua/LuaScriptingProvider.h"
+
 #include "components/ogre/EmberOgre.h"
 
 #include "ConfigBoundLogObserver.h"
+
+#include <tolua++.h>
+
+TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);
+TOLUA_API int tolua_Eris_open (lua_State* tolua_S);
+TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S);
+TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S);
+TOLUA_API int tolua_Helpers_open (lua_State* tolua_S);
+TOLUA_API int tolua_Framework_open (lua_State* tolua_S);
+TOLUA_API int tolua_Application_open (lua_State* tolua_S);
+TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S);
+TOLUA_API int tolua_Atlas_open (lua_State* tolua_S);
+TOLUA_API int tolua_Varconf_open (lua_State* tolua_S);
 
 #include <iostream>
 #include <sstream>
@@ -261,6 +276,22 @@ void Application::initializeServices()
 
 
 	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
+
+	///register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
+	EmberOgre::LuaScriptingProvider* luaProvider = new EmberOgre::LuaScriptingProvider();
+
+	tolua_Framework_open(luaProvider->getLuaState());
+	tolua_EmberOgre_open(luaProvider->getLuaState());
+	tolua_Eris_open(luaProvider->getLuaState());
+	tolua_EmberServices_open(luaProvider->getLuaState());
+	tolua_Helpers_open (luaProvider->getLuaState());
+	tolua_Ogre_open(luaProvider->getLuaState());
+	tolua_Application_open(luaProvider->getLuaState());
+	tolua_atlas_adapters_open(luaProvider->getLuaState());
+	tolua_Atlas_open(luaProvider->getLuaState());
+	tolua_Varconf_open(luaProvider->getLuaState());
+	Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(luaProvider);
+
 
  	EventServicesInitialized.emit();
 }

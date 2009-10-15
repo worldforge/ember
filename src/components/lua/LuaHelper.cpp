@@ -1,55 +1,63 @@
 //
-// C++ Implementation: LuaConnectorHelper
-/***************************************************************************
- *   Copyright (C) 2004 - 2006 Paul D Turner & The CEGUI Development Team
- *   Copyright (C) 2207 Erik Hjortsberg <erik.hjortsberg@gmail.com>
- *
- *   Permission is hereby granted, free of charge, to any person obtaining
- *   a copy of this software and associated documentation files (the
- *   "Software"), to deal in the Software without restriction, including
- *   without limitation the rights to use, copy, modify, merge, publish,
- *   distribute, sublicense, and/or sell copies of the Software, and to
- *   permit persons to whom the Software is furnished to do so, subject to
- *   the following conditions:
- *
- *   The above copyright notice and this permission notice shall be
- *   included in all copies or substantial portions of the Software.
- *
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- *   IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
- *   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- *   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- *   OTHER DEALINGS IN THE SOFTWARE.
- ***************************************************************************/
-
+// C++ Implementation: LuaHelper
+//
+// Description:
+//
+//
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include "LuaConnectorHelper.h"
+#include "LuaHelper.h"
 #include "framework/Exception.h"
+#include <vector>
 #include <sstream>
 
 namespace EmberOgre {
 
-namespace LuaConnectors {
 
-// LuaConnectorHelper::LuaConnectorHelper()
-// {
-// }
-// 
-// 
-// LuaConnectorHelper::~LuaConnectorHelper()
-// {
-// }
+int LuaHelper::luaErrorHandler(lua_State *L) {
+#if LUA_VERSION_NUM >= 501
+	///see if we have the debug library loaded
+	lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+	if (!lua_istable(L, -1)) {
+		lua_pop(L, 1);
+		return 1;
+	}
+	///if so, call the traceback method
+	lua_getfield(L, -1, "traceback");
+	if (!lua_isfunction(L, -1)) {
+		lua_pop(L, 2);
+		return 1;
+	}
+	lua_pushvalue(L, 1);
+	lua_pushinteger(L, 2);
+	lua_call(L, 2, 1);
+#endif
+	return 1;
+}
 
 /*************************************************************************
     Pushes a named function on the stack
     This whole method is pilfered from the CEGUI project. (CEGUILuaFunctor.cpp)
 *************************************************************************/
-void LuaConnectorHelper::pushNamedFunction(lua_State* state, const std::string luaMethod)
+void LuaHelper::pushNamedFunction(lua_State* state, const std::string luaMethod)
 {
 //     int top = lua_gettop(state);
 
@@ -119,8 +127,6 @@ void LuaConnectorHelper::pushNamedFunction(lua_State* state, const std::string l
 	{
 		throw Ember::Exception( "\"" + luaMethod + "\" does not represent a Lua function" );
 	}
-}
-
 }
 
 }

@@ -497,6 +497,7 @@ AC_CONFIG_FILES([Makefile
 		 ember-media.spec
 		 autopackage/default.apspec
 		 src/extensions/Makefile
+		 src/components/lua/Makefile
 		 src/components/ogre/scripting/Makefile
 		 src/components/ogre/scripting/bindings/Makefile
 		 src/components/ogre/scripting/bindings/lua/Makefile

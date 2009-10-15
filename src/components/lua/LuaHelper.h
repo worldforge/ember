@@ -1,7 +1,7 @@
 //
-// C++ Implementation: LuaHelper
+// C++ Interface: LuaHelper
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2008
@@ -10,48 +10,45 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#ifndef EMBEROGRE_SCRIPTINGLUAHELPER_H
+#define EMBEROGRE_SCRIPTINGLUAHELPER_H
 
-#include "LuaHelper.h"
+
+#include <string>
+
+// include Lua libs
+extern "C" {
+#include "lua.h"
+}
 
 namespace EmberOgre {
 
-namespace Scripting {
 
-int LuaHelper::luaErrorHandler(lua_State *L) {
-#if LUA_VERSION_NUM >= 501
-	///see if we have the debug library loaded
-	lua_getfield(L, LUA_GLOBALSINDEX, "debug");
-	if (!lua_istable(L, -1)) {
-		lua_pop(L, 1);
-		return 1;
-	}
-	///if so, call the traceback method
-	lua_getfield(L, -1, "traceback");
-	if (!lua_isfunction(L, -1)) {
-		lua_pop(L, 2);
-		return 1;
-	}
-	lua_pushvalue(L, 1);
-	lua_pushinteger(L, 2);
-	lua_call(L, 2, 1);
+
+/**
+	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+*/
+class LuaHelper{
+public:
+	static int luaErrorHandler(lua_State *L);
+
+	/**
+	pushes the lua method onto the stack
+	*/
+	static void pushNamedFunction(lua_State* state, const std::string luaMethod);
+
+};
+
+}
+
 #endif
-	return 1;
-}
-
-
-}
-
-}
