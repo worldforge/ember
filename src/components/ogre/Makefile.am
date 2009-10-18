@@ -1,5 +1,5 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-SUBDIRS = SceneManagers authoring environment modeldefinitions sounddefinitions scripting  
+SUBDIRS = SceneManagers authoring environment modeldefinitions sounddefinitions scripting widgets
 #carpenter jesus ogreopcode
 
 noinst_LIBRARIES = libEmberOgre.a
