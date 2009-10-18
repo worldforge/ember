@@ -1,5 +1,3 @@
-METASOURCES = AUTO
-
 current = $(PWD)
 
 dist-hook:
@@ -12,3 +10,4 @@ install-data-local:
 
 uninstall-local:
 	find $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts/adapters/atlas -name  \*.layout | xargs rm
+	

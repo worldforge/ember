@@ -15,7 +15,4 @@ uninstall-local:
 	find $(DESTDIR)$(datadir)/ember/media/shared/gui/cegui/datafiles/layouts/ -name  \*.layout | xargs rm -f
 	find $(DESTDIR)$(datadir)/ember/media/shared/scripting/lua/ -name  \*.lua | xargs rm -f
 
-METASOURCES = AUTO
-
 SUBDIRS = adapters
-

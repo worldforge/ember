@@ -1,2 +1,1 @@
-METASOURCES = AUTO
 SUBDIRS = atlas
