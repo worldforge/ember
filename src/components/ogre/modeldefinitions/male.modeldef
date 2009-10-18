@@ -88,7 +88,7 @@
                 <animations>
                     <animation iterations="6">
                         <animationpart name="idle" weight="1.000000" />
-                    </animation>gstr_fidgeting
+                    </animation>
                     <animation iterations="1">
                         <animationpart name="gstr_fidgeting" weight="1.000000" />
                     </animation>

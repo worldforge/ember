@@ -31,7 +31,7 @@
 								</xsd:annotation>
 							</xsd:element>
 							<xsd:element name="rotation" minOccurs="0" maxOccurs="1" type="rotation" />
-							<xsd:element name="submodels">
+							<xsd:element name="submodels" minOccurs="0" maxOccurs="1">
 								<xsd:complexType>
 									<xsd:sequence>
 										<xsd:element name="submodel" minOccurs="1" maxOccurs="unbounded">
@@ -110,6 +110,18 @@
 															</xsd:sequence>
 														</xsd:complexType>
 													</xsd:element>
+													<xsd:element name="sounds" minOccurs="0" maxOccurs="1">
+														<xsd:complexType>
+															<xsd:sequence>					
+																<xsd:element name="sound" minOccurs="0" maxOccurs="unbounded">
+																	<xsd:complexType>
+																		<xsd:attribute name="group" type="xsd:string" use="required"/> 
+																		<xsd:attribute name="playOrder" type="xsd:string" use="optional"/> 
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>													
 												</xsd:sequence>
 												<xsd:attribute name="name" type="xsd:string" use="required"/> 
 												<xsd:attribute name="speed" type="xsd:float" use="optional"/> 
@@ -133,6 +145,34 @@
 									</xsd:sequence>					
 								</xsd:complexType>
 							</xsd:element>	
+							
+							<xsd:element name="particlesystems" minOccurs="0" maxOccurs="1">
+								<xsd:complexType>
+									<xsd:sequence>					
+										<xsd:element name="particlesystem" minOccurs="0" maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:sequence>					
+													<xsd:element name="bindings" minOccurs="0" maxOccurs="1">
+														<xsd:complexType>
+															<xsd:sequence>					
+																<xsd:element name="binding" minOccurs="0" maxOccurs="unbounded">
+																	<xsd:complexType>
+																		<xsd:attribute name="emittervar" type="xsd:string" use="required"/> 
+																		<xsd:attribute name="atlasattribute" type="xsd:string" use="required"/> 
+																	</xsd:complexType>
+																</xsd:element>
+															</xsd:sequence>					
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+												<xsd:attribute name="script" type="xsd:string" use="required"/> 
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>					
+								</xsd:complexType>
+							</xsd:element>	
+							
+							
 							<xsd:element name="views" minOccurs="0" maxOccurs="1">
 								<xsd:complexType>
 									<xsd:sequence>					
@@ -147,7 +187,40 @@
 										</xsd:element>
 									</xsd:sequence>					
 								</xsd:complexType>
-							</xsd:element>	
+							</xsd:element>
+							<xsd:element name="lights" minOccurs="0" maxOccurs="1">
+								<xsd:complexType>
+									<xsd:sequence>					
+										<xsd:element name="light" minOccurs="0" maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:sequence>					
+													<xsd:element name="diffusecolour" minOccurs="0" maxOccurs="1" type="colour" />
+													<xsd:element name="specularcolour" minOccurs="0" maxOccurs="1" type="colour"/>
+													<xsd:element name="attenuation" minOccurs="0" maxOccurs="1">
+														<xsd:complexType>
+															<xsd:attribute name="range" type="xsd:float" use="optional">
+																<xsd:annotation>
+																	<xsd:documentation xml:lang="en">
+																		The range of the light.
+																	</xsd:documentation>
+																</xsd:annotation>
+															</xsd:attribute>
+															<xsd:attribute name="constant" type="xsd:float" use="optional">
+															</xsd:attribute>
+															<xsd:attribute name="linear" type="xsd:float" use="optional">
+															</xsd:attribute>
+															<xsd:attribute name="quadratic" type="xsd:float" use="optional">
+															</xsd:attribute>
+														</xsd:complexType>
+													</xsd:element>
+													<xsd:element name="position" minOccurs="0" maxOccurs="1" type="vector3" />
+												</xsd:sequence>
+												<xsd:attribute name="type" type="xsd:string" use="required" /> 
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>					
+								</xsd:complexType>
+							</xsd:element>
 						</xsd:sequence>
 						<xsd:attribute name="name" type="xsd:string" use="required">
 							<xsd:annotation>
@@ -211,5 +284,9 @@
 		<xsd:attribute name="y" type="xsd:string" use="required"/> 
 		<xsd:attribute name="z" type="xsd:string" use="required"/> 
 	</xsd:complexType>
-	
+	<xsd:complexType name="colour">
+		<xsd:attribute name="r" type="xsd:float" use="required"/> 
+		<xsd:attribute name="g" type="xsd:float" use="required"/> 
+		<xsd:attribute name="b" type="xsd:float" use="required"/> 
+	</xsd:complexType>
 </xsd:schema>

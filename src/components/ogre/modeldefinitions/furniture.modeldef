@@ -87,9 +87,13 @@
 	<model name="simple_table" usescaleof="height"  >
 		<submodels>
 			<submodel mesh="3d_objects/items/furniture/models/simple_table/simple_table.mesh" >
-			<parts>
-				<part name="main" show="true" material="/global/items/furniture/avalon"/>
-			</parts>
+				<parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/furniture/avalon" />
+                        </subentities>
+                    </part>
+				</parts>
 			</submodel>
 		</submodels>
 	</model>		
