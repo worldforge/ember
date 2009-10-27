@@ -28,6 +28,7 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include "components/ogre/Convert.h"
+#include "framework/LoggingInstance.h"
 
 #include <wfmath/rotbox.h>
 #include <Eris/Entity.h>
@@ -73,19 +74,24 @@ SnapToMovement::~SnapToMovement()
 
 bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, WFMath::Vector<3>& adjustment, EmberEntity* snappedToEntity)
 {
-
-	for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
-		Ogre::SceneNode* node = *I;
-		node->setVisible(false);
-		Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (node->getAttachedObject(0));
-		sphereEntity->setMaterialName("/global/authoring/point");
+	try {
+		for (std::vector<Ogre::SceneNode*>::iterator I = mDebugNodes.begin(); I != mDebugNodes.end(); ++I) {
+			Ogre::SceneNode* node = *I;
+			node->setVisible(false);
+			Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (node->getAttachedObject(0));
+			sphereEntity->setMaterialName("/global/authoring/point");
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when setting up debug nodes for snapping." << ex);
 	}
 
 	std::vector<Ogre::SceneNode*>::iterator nodeIterator = mDebugNodes.begin();
 
+	//Use an auto pointer to allow both for undefined values and automatic cleanup when exiting the method.
 	std::auto_ptr<SnapPointCandidate> closestSnapping(0);
 
 	WFMath::AxisBox<3> currentBbox = mEntity.getBBox();
+	//Translate the bbox into a rotbox
 	WFMath::RotBox<3> currentRotbox;
 	currentRotbox.size() = currentBbox.highCorner() - currentBbox.lowCorner();
 	currentRotbox.corner0() = currentBbox.lowCorner();
@@ -93,6 +99,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	currentRotbox.rotatePoint(orientation, WFMath::Point<3>(0, 0, 0));
 	currentRotbox.shift(WFMath::Vector<3>(position));
 
+	//See if we should visualize debug nodes for the moved entity
 	for (int j = 0; j < currentRotbox.numCorners(); ++j) {
 		WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
 		if (currentPoint.isValid() && nodeIterator != mDebugNodes.end()) {
@@ -128,6 +135,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 				for (int i = 0; i < rotbox.numCorners(); ++i) {
 					WFMath::Point<3> point = rotbox.getCorner(i);
 					Ogre::SceneNode* currentNode(0);
+					//If there is any unclaimed debug node left we'll use it to visualize the corner
 					if (nodeIterator != mDebugNodes.end()) {
 						currentNode = *nodeIterator;
 						currentNode->setPosition(Convert::toOgre(point));
@@ -143,7 +151,11 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 							if (currentNode) {
 								Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (currentNode->getAttachedObject(0));
 								if (sphereEntity) {
-									sphereEntity->setMaterialName("/global/authoring/point/moved");
+									try {
+										sphereEntity->setMaterialName("/global/authoring/point/moved");
+									} catch (const std::exception& ex) {
+										S_LOG_WARNING("Error when setting material for point." << ex);
+									}
 								}
 							}
 							if (!closestSnapping.get()) {
