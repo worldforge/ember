@@ -920,11 +920,11 @@
 	</entitymapping>
 	
 	<!--
-		Show a placeholder for all instances of game_entity, except for those that we want to exclude by adding a nomodel element for.
+		Show a placeholder for all instances of thing, except for those that we want to exclude by adding a nomodel element for.
 		-->
-	<autoentitymapping name="game_entity" modelname="placeholder" />
+	<autoentitymapping name="thing" modelname="placeholder" />
 	<nomodel name="boundary" />
-	<nomodel name="path" />
+	<nomodel name="feature" /> <!-- This also encompasses areas, fields and paths --> 
 	<nomodel name="ploughed_field" />
 	<nomodel name="weather" />
 	<nomodel name="world" />

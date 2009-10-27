@@ -1,0 +1,18 @@
+<entityrecipes>
+  <entityrecipe name="thing">
+    <author>Erik Hjortsberg</author>
+    <description>
+      An empty thing, the most basic entity available.
+    </description>
+    <entity type="thing">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

@@ -1,0 +1,27 @@
+<entityrecipes>
+  <entityrecipe name="area">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A terrain area.
+    </description>
+    <entity type="area">
+      <atlas>
+        <map>
+        	<map name="area">
+        		<int name="layer">6</int>
+    			<list name="points">
+    				<list><float>-1</float><float>-1</float></list>
+    				<list><float>-1</float><float>1</float></list>
+    				<list><float>1</float><float>1</float></list>
+    				<list><float>1</float><float>-1</float></list>
+    			</list>
+        	</map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

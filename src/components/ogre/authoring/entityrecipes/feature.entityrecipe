@@ -1,0 +1,18 @@
+<entityrecipes>
+  <entityrecipe name="feature">
+    <author>Erik Hjortsberg</author>
+    <description>
+      An empty feature, which is suitable for terrain mods and other entities which haven't got any mesh representing them.
+    </description>
+    <entity type="feature">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>
