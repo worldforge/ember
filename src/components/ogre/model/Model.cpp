@@ -518,7 +518,8 @@ bool Model::getDisplaySkeleton(void) const
 
 bool Model::isLoaded() const
 {
-	return mBackgroundLoader != 0 && mBackgroundLoader->getState() == ModelBackgroundLoader::LS_DONE;
+	//If there's no background loader available the model is loaded in the main thread, and therefore is considered to be loaded already.
+	return mBackgroundLoader == 0 || mBackgroundLoader->getState() == ModelBackgroundLoader::LS_DONE;
 }
 
 const Ogre::Real Model::getScale() const
