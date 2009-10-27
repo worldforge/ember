@@ -158,17 +158,15 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 							}
 						}
 					}
-
 				}
 			}
 		}
-
-		mSceneManager.destroyQuery(query);
-		if (closestSnapping.get()) {
-			adjustment = closestSnapping->adjustment;
-			snappedToEntity = closestSnapping->entity;
-			return true;
-		}
+	}
+	mSceneManager.destroyQuery(query);
+	if (closestSnapping.get()) {
+		adjustment = closestSnapping->adjustment;
+		snappedToEntity = closestSnapping->entity;
+		return true;
 	}
 	return false;
 }
