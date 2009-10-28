@@ -20,6 +20,11 @@
         <item value="weathered">Weathered</item>
         <item value="gnarly">Gnarly</item>
         <item value="straight">Straight</item>
+        <item value="bent">Bent</item>
+      </adapter>
+      <adapter name="leavesize" type="string" title="Leave size" allowrandom="yes" default="Random">
+        <item value="small">Small</item>
+        <item value="large">Large</item>
       </adapter>
     </adapters>
     <bindings>
