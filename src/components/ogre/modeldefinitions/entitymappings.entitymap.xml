@@ -495,7 +495,7 @@
 	<autoentitymapping name="scythe" />
 	<autoentitymapping name="bucksaw" />
 	<autoentitymapping name="fishingrod" modelname="fishing_rod" />
-	<autoentitymapping name="sieve " />
+	<autoentitymapping name="sieve" />
 	<entitymapping name="tinderbox">
 		<entitymatch>
 			<case>
