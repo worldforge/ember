@@ -10,7 +10,16 @@
                         <subentities>
                             <subentity index="0" material="/global/plants/trees/bark_birch" />
                             <subentity index="1" material="/global/plants/trees/branches_birch_bare" />
-                            <subentity index="2" material="/global/plants/trees/branches_birch" />
+                        </subentities>
+                    </part>
+                    <part name="small_leaves" show="true" group="leaves">
+                        <subentities>
+							<subentity index="2" material="/global/plants/trees/branches_birch" />
+                        </subentities>
+                    </part>
+                    <part name="large_leaves" show="true" group="leaves">
+                        <subentities>
+							<subentity index="2" material="/global/plants/trees/branches_birch_B" />
                         </subentities>
                     </part>
                 </parts>

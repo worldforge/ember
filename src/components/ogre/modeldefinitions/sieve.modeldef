@@ -1,0 +1,21 @@
+<models>
+    <model name="sieve" usescaleof="all" showcontained="true" icon="3d_objects/items/tools/textures/sieve/I.png">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/items/tools/models/sieve/sieve.mesh">
+                <parts>
+                    <part name="main" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/items/tools/sieve" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions />
+        <attachpoints />
+        <views />
+        <lights />
+    </model>
+</models>

@@ -427,8 +427,8 @@
 		</entitymatch>
 	</entitymapping>	
 	<autoentitymapping name="curtain_wall" />
-	<autoentitymapping name="don_jon" />
-	<autoentitymapping name="gateway" />
+	<autoentitymapping name="don_jon" modelname="cg_don_jon" />
+	<autoentitymapping name="gateway" modelname="cg_gateway" />
 	<autoentitymapping name="keep" />
 	<entitymapping name="castle_house">
 		<entitymatch>
@@ -456,11 +456,15 @@
 	<autoentitymapping name="castle_wall_gate" modelname="cg_wall_gate" />
 	<autoentitymapping name="castle_wall_stairs" modelname="cg_wall_stairs" />
 	<autoentitymapping name="castle_wall_corner" modelname="cg_wall_corner" />
+	<autoentitymapping name="curtain_wall_corner" modelname="cg_curtainwall_corner" />
+	<autoentitymapping name="curtain_wall_run" modelname="cg_curtainwall_run" />
+	
 	<autoentitymapping name="cg_house_A" />
 	
 	
 	
 	<autoentitymapping name="inn" modelname="cg_inn" />
+	<autoentitymapping name="well" modelname="cg_well" />
 	<autoentitymapping name="outerwall" />
 	<entitymapping name="mausoleum">
 		<entitymatch>
@@ -490,6 +494,8 @@
 	<autoentitymapping name="hammer" />
 	<autoentitymapping name="scythe" />
 	<autoentitymapping name="bucksaw" />
+	<autoentitymapping name="fishingrod" modelname="fishing_rod" />
+	<autoentitymapping name="sieve " />
 	<entitymapping name="tinderbox">
 		<entitymatch>
 			<case>
@@ -497,7 +503,7 @@
 				<action type="display-model">tinderboxA</action>
 			</case>
 		</entitymatch>
-	</entitymapping> 
+	</entitymapping>
 	<autoentitymapping name="pickaxe" />
 	<entitymapping name="pole">
 		<entitymatch>
@@ -620,6 +626,20 @@
 					<case>
 						<caseparam type="equals">straight</caseparam>
 						<action type="display-model">birchC</action>
+					</case>
+					<case>
+						<caseparam type="equals">bent</caseparam>
+						<action type="display-model">birchD</action>
+					</case>
+				</attributematch>
+				<attributematch attribute="leavesize" >
+					<case>
+						<caseparam type="equals">large</caseparam>
+						<action type="display-part">large_leaves</action>
+					</case>
+					<case>
+						<caseparam type="equals">small</caseparam>
+						<action type="display-part">small_leaves</action>
 					</case>
 				</attributematch>
 			</case>
@@ -777,6 +797,10 @@
 	<autoentitymapping name="creator" />
 
 	<autoentitymapping name="fish" />
+	<autoentitymapping name="tuna" />
+	<autoentitymapping name="pickerel" />
+	<autoentitymapping name="bluegill" />
+	<autoentitymapping name="bass" modelname="bass_lm" />
 	<autoentitymapping name="dog" />
 	<!-- use the spider mesh for the crab for now -->
 	<entitymapping name="spider">
