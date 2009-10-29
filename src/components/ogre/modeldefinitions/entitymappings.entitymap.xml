@@ -458,6 +458,7 @@
 	<autoentitymapping name="castle_wall_corner" modelname="cg_wall_corner" />
 	<autoentitymapping name="curtain_wall_corner" modelname="cg_curtainwall_corner" />
 	<autoentitymapping name="curtain_wall_run" modelname="cg_curtainwall_run" />
+	<autoentitymapping name="waterwell" modelname="cg_well" />
 	
 	<autoentitymapping name="cg_house_A" />
 	
