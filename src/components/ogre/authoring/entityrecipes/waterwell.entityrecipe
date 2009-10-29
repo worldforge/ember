@@ -1,0 +1,26 @@
+<entityrecipes>
+  <entityrecipe name="water well">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A water well.
+    </description>
+    <entity type="waterwell">
+      <atlas>
+        <map>
+          <string name="variant">$variant</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="variant" type="string" title="Variant" allowrandom="yes" default="Random">
+        <item value="a">A</item>
+        <item value="b">B</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="variant">
+        <adapter name="variant" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>
