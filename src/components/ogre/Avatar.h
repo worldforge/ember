@@ -176,22 +176,9 @@ protected:
 	typedef std::list<std::pair<long, AvatarMovementState> > TimedMovementStateList;
 
 	/**
-	 * This method will determine if it's ok to send a small movement change, such as
-	 * a small deviation direction during an already begun movement to the server.
-	 */
-	bool isOkayToSendRotationMovementChangeToServer();
-
-	/**
 	 * @brief In milliseconds, the minimum time we must wait between sending updates to the server. Set this higher to avoid spamming the server.
 	 */
 	Ogre::Real mMinIntervalOfRotationChanges;
-
-	/**
-	 * @brief Attempts to move the avatar in a certain direction.
-	 * Note that depending on what the rules allows (i.e. collision detection, character rules etc.) the outcome of the attempt is uncertain.
-	 *
-	 */
-	void attemptMove();
 
 	/**
 	 * @brief The Eris::Entity which represents the Avatar.
@@ -271,6 +258,25 @@ protected:
 	 * This might differ from the velocity reported by the entity, as we allow the client side avatar entity to move in advance of getting updates from the server.
 	 */
 	WFMath::Vector<3> mCurrentMovement;
+
+	/**
+	 * @brief Set to true if the movement of the avatar only occurred on the server (i.e. the user did not initiate the movement).
+	 * Normally we'll ignore most of the movement updates sent from the server, since we want to provide client side prediction. But if the server is controlling the movement we instead want to use the server side position updates directly.
+	 */
+	bool mIsMovingServerOnly;
+
+	/**
+	 * This method will determine if it's ok to send a small movement change, such as
+	 * a small deviation direction during an already begun movement to the server.
+	 */
+	bool isOkayToSendRotationMovementChangeToServer();
+
+	/**
+	 * @brief Attempts to move the avatar in a certain direction.
+	 * Note that depending on what the rules allows (i.e. collision detection, character rules etc.) the outcome of the attempt is uncertain.
+	 *
+	 */
+	void attemptMove();
 
 	/**
 	 * @brief Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
