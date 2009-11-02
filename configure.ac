@@ -335,16 +335,7 @@ PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
       AC_MSG_ERROR([Couldn't find SIGC++2.0])
   ])
 
-# Check for Boost::Thread
-AC_CHECK_LIB([boost_thread], [main],
-    [
-        LIBS="$LIBS -lboost_thread"
-    ],
-    [
-        AC_MSG_ERROR([Couldn't find Boost::Thread library.])
-    ]
-)
-
+WF_CHECK_THREADING
 
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.14 \
