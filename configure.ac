@@ -92,19 +92,6 @@ AC_ARG_ENABLE(static_build,
 )
 AM_CONDITIONAL(BUILD_STATIC, test x"$link_static" = xtrue)
 
-AC_ARG_ENABLE(freeimage_check,
-  [  AS_HELP_STRING([--disable-freeimage-check], [disable the check for if Ogre is built with FreeImage. Disable this only if you're absolutly sure that libraries in FreeImage won't clash with other system libraries (default is enabled)])],
-  [
-    if test "$enableval" = "yes"; then
-      freeimage_check="true"
-    else
-      freeimage_check="false"
-    fi
-  ],[
-    freeimage_check="true"
-  ]
-)
-
 AC_MSG_RESULT([
 
 		**************************************
@@ -226,18 +213,6 @@ $OGRE_PKG_ERRORS
 Please goto http://www.ogre3d.org to get the latest, or check config.log to
 see why the tests failed, and fix it.])
 	])
-
-if test "$freeimage_check" = "true"; then 
-	AC_CHECK_DECLS(OGRE_NO_FREEIMAGE
-	, , [AC_MSG_NOTICE([You've compiled Ogre with FreeImage support. Due to the way old versions of FreeImage includes its own versions of common image libraries such as libpng this could clash with other system libs such as DevIL, leading to random crashes. If you have old version of FreeImage, please compile Ogre with FreeImage disabled (by using the --disable-freeimage configure switch). Ogre will then use DevIL instead.])]
-	)
-else
-	AC_MSG_RESULT(
-	[********
-You've chosen to disable the FreeImage tests. Proceed on your own risk.
-********])
-fi
-
 
 
 #check for lua
