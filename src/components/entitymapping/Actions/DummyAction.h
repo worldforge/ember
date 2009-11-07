@@ -26,8 +26,6 @@
 #include "Action.h"
 namespace Ember {
 
-
-
 namespace EntityMapping {
 
 namespace Actions {
@@ -39,9 +37,9 @@ namespace Actions {
 class DummyAction : public Action
 {
 public:
-	virtual void activate();
+	virtual void activate(ChangeContext& context);
 
-	virtual void deactivate();
+	virtual void deactivate(ChangeContext& context);
 
 protected:
 };

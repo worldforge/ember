@@ -40,7 +40,7 @@ OceanAction::~OceanAction()
 {
 }
 
-void OceanAction::activate()
+void OceanAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
 	if (EmberEntityFactory* factory = EmberOgre::getSingleton().getEntityFactory()) {
 		if (WorldEmberEntity* world = factory->getWorld()) {
@@ -56,7 +56,7 @@ void OceanAction::activate()
 	S_LOG_WARNING("Tried to activate ocean representation, but there was no water instance available.");
 }
 
-void OceanAction::deactivate()
+void OceanAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	mEntity.setGraphicalRepresentation(0);
 }

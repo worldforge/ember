@@ -34,6 +34,8 @@ class CaseBase;
 
 namespace EntityMapping {
 
+class ChangeContext;
+
 namespace Actions {
 
 /**
@@ -52,12 +54,12 @@ public:
 	/**
 	* Activate the action.
 	*/
-	virtual void activate() = 0;
+	virtual void activate(ChangeContext& context) = 0;
 
 	/**
 	* Deactivate the action.
 	*/
-	virtual void deactivate() = 0;
+	virtual void deactivate(ChangeContext& context) = 0;
 
 
 	/**

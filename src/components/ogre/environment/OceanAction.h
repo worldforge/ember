@@ -50,12 +50,12 @@ public:
 	/**
 	 * @copydoc Ember::EntityMapping::Actions::Action::activate()
 	 */
-	virtual void activate();
+	virtual void activate(Ember::EntityMapping::ChangeContext& context);
 
 	/**
 	 * @copydoc Ember::EntityMapping::Actions::Action::deactivate()
 	 */
-	virtual void deactivate();
+	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 
 private:
 

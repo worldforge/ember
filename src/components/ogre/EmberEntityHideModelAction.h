@@ -27,6 +27,7 @@
 #include "EmberEntity.h"
 
 #include "components/entitymapping/Actions/Action.h"
+
 namespace EmberOgre {
 
 /**
@@ -40,8 +41,8 @@ public:
 
     virtual ~EmberEntityHideModelAction();
 
-	virtual void activate();
-	virtual void deactivate();
+	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 
 protected:
 	EmberEntity& mEntity;

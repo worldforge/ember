@@ -30,6 +30,7 @@
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/EmberEntity.h"
+#include "components/entitymapping/EntityMapping.h"
 #include "framework/LoggingInstance.h"
 
 namespace EmberOgre {
@@ -44,7 +45,7 @@ EmberEntityModelAction::~EmberEntityModelAction()
 {
 }
 
-void EmberEntityModelAction::activate()
+void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
 	Model::Model* model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
 	if (!model || model->getDefinition()->getName() != mModelName) {
@@ -64,11 +65,15 @@ void EmberEntityModelAction::activate()
 
 		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model);
 		mEntity.setGraphicalRepresentation(representation);
+//		if (model->getDefinition()->isValid())
+//		{
+//			mEntity.getMapping()->getRootEntityMatch().evaluateChanges();
+//		}
 	}
 //	S_LOG_VERBOSE("Showing model " << mModelName);
 }
 
-void EmberEntityModelAction::deactivate()
+void EmberEntityModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	mEntity.setGraphicalRepresentation(0);
 //	mEntity.setModel("");

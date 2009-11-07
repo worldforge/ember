@@ -71,17 +71,17 @@ void CaseBase::evaluateChanges(ChangeContext& changeContext)
 	}
 
 }
-void CaseBase::activateActions()
+void CaseBase::activateActions(ChangeContext& context)
 {
 	for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-		(*I)->activate();
+		(*I)->activate(context);
 	}
 	mIsActive = true;
 }
-void CaseBase::deactivateActions()
+void CaseBase::deactivateActions(ChangeContext& context)
 {
 	for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
-		(*I)->deactivate();
+		(*I)->deactivate(context);
 	}
 	mIsActive = false;
 }

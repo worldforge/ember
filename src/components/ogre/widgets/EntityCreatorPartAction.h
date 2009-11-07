@@ -44,11 +44,11 @@ public:
 	/**
 	 * Shows specific model part. Called by model mapping framework.
 	 */
-	virtual void activate();
+	virtual void activate(Ember::EntityMapping::ChangeContext& context);
 	/**
 	 * Hides specific model part. Called by model mapping framework.
 	 */
-	virtual void deactivate();
+	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 protected:
 	EntityCreator& mEntityCreator;
 	std::string mPartName;

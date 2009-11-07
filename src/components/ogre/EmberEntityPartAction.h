@@ -41,8 +41,8 @@ public:
 	EmberEntityPartAction(EmberEntity& entity, const std::string& partName);
 	~EmberEntityPartAction();
 
-	virtual void activate();
-	virtual void deactivate();
+	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 
 protected:
 	EmberEntity& mEntity;

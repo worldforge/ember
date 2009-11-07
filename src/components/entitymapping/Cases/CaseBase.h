@@ -37,6 +37,8 @@ namespace Ember {
 
 namespace EntityMapping {
 
+class ChangeContext;
+
 namespace Actions {
 class Action;
 }
@@ -94,11 +96,11 @@ public:
 	/**
 	Activates all actions in the Case. Also switches the mActive flag.
 	*/
-	void activateActions();
+	void activateActions(ChangeContext& context);
 	/**
 	Deactivates all actions in the Case. Also switches the mActive flag.
 	*/
-	void deactivateActions();
+	void deactivateActions(ChangeContext& context);
 
 	/**
 	Adds an child Match to this case.
