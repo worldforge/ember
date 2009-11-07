@@ -23,58 +23,66 @@
 #ifndef EMBEROGRE_MODEL_MAPPINGCHANGECONTEXT_H
 #define EMBEROGRE_MODEL_MAPPINGCHANGECONTEXT_H
 #include <vector>
+#include <sigc++/signal.h>
 
-namespace Ember {
+namespace Ember
+{
 
+namespace EntityMapping
+{
 
-
-namespace EntityMapping {
-
-namespace Cases {
+namespace Cases
+{
 class CaseBase;
 }
 
 /**
-	Whenever something has changed in the values that affects the Model, cases will need to be reevaluated and actions may be activated or deactivated. A ChangeContext wraps these events into one class. This is an internal class which will be created and acted upon by the mapping framework.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ Whenever something has changed in the values that affects the Model, cases will need to be reevaluated and actions may be activated or deactivated. A ChangeContext wraps these events into one class. This is an internal class which will be created and acted upon by the mapping framework.
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class ChangeContext
 {
 public:
 
 	typedef std::vector<Cases::CaseBase*> CaseStore;
 
-    ChangeContext();
+	ChangeContext();
 
-    ~ChangeContext();
+	~ChangeContext();
 
 	/**
-	* Adds a Case that needs to be activated to the context. Activation will happen upon calls to performActions().
-	* @param aCase
-	*/
+	 * Adds a Case that needs to be activated to the context. Activation will happen upon calls to performActions().
+	 * @param aCase
+	 */
 	void addCaseToActivate(Cases::CaseBase* aCase);
+
 	/**
-	* Adds a Case that needs to be deactivated to the context. Deactivation will happen upon calls to performActions().
-	* @param aCase
-	*/
+	 * Adds a Case that needs to be deactivated to the context. Deactivation will happen upon calls to performActions().
+	 * @param aCase
+	 */
 	void addCaseToDeactivate(Cases::CaseBase* aCase);
 
 	/**
-	* Performs the actions that should be activated and deactivated.
-	*/
+	 * Performs the actions that should be activated and deactivated.
+	 */
 	void performActions();
+
+	/**
+	 * @brief Emitted when the change context completes.
+	 */
+	sigc::signal<void> EventContextComplete;
 
 protected:
 
-/**
-A store of those cases that should be activated.
-*/
-CaseStore mActivateQueue;
+	/**
+	 A store of those cases that should be activated.
+	 */
+	CaseStore mActivateQueue;
 
-/**
-A store of those cases that should be deactivated.
-*/
-CaseStore mDeactivateQueue;
+	/**
+	 A store of those cases that should be deactivated.
+	 */
+	CaseStore mDeactivateQueue;
 
 };
 
