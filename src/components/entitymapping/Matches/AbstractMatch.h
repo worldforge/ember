@@ -24,8 +24,9 @@
 #define EMBEROGRE_MODEL_MAPPING_MATCHESABSTRACTMATCH_H
 
 #include "MatchBase.h"
-#include <vector>
 #include "../ChangeContext.h"
+#include "../IVisitor.h"
+#include <vector>
 
 namespace Eris
 {
@@ -93,6 +94,12 @@ public:
 	*/
 	virtual void evaluateChanges(ChangeContext& changeContext);
 
+	/**
+	 * @brief Accepts a visitor.
+	 * @param visitor The visitor instance.
+	 */
+	virtual void accept(IVisitor& visitor);
+
 protected:
 	 std::vector<TCase*> mCases;
 };
@@ -152,6 +159,16 @@ void AbstractMatch<TCase>::evaluateChanges() {
 
 	changeContext.performActions();
 }
+
+template <class TCase>
+void AbstractMatch<TCase>::accept(IVisitor& visitor)
+{
+	visitor.visit(*this);
+	for (typename std::vector<TCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
+		(*I)->accept(visitor);
+	}
+}
+
 
 
 }

@@ -38,6 +38,7 @@ namespace Ember {
 namespace EntityMapping {
 
 class ChangeContext;
+class IVisitor;
 
 namespace Actions {
 class Action;
@@ -120,6 +121,13 @@ public:
 	Sets the entity that this Case will attach itself to.
 	*/
 	virtual void setEntity(Eris::Entity* entity);
+
+	/**
+	 * @brief Accepts a visitor.
+	 * After calling visit() on the visitor, the child actions and matches will be traversed.
+	 * @param visitor The visitor instance.
+	 */
+	void accept(IVisitor& visitor);
 
 protected:
 	ActionStore mActions;

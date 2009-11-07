@@ -15,7 +15,7 @@ noinst_HEADERS = Actions/Action.h Actions/DummyAction.h Cases/AttributeCase.h \
 	Definitions/EntityMappingDefinition.h IActionCreator.h Matches/AbstractMatch.h \
 	Matches/AttributeDependentMatch.h Matches/AttributeMatch.h Matches/EntityTypeMatch.h Matches/MatchBase.h \
 	Matches/Observers/AttributeObserver.h Matches/Observers/EntityCreationObserver.h Matches/OutfitMatch.h \
-	EntityMapping.h EntityMappingCreator.h EntityMappingManager.h 
+	EntityMapping.h EntityMappingCreator.h EntityMappingManager.h IVisitor.h
 libEntityMapping_a_SOURCES = Actions/Action.cpp Actions/DummyAction.cpp \
 	Cases/AttributeCase.cpp Cases/AttributeComparers/AttributeComparerWrapper.cpp \
 	Cases/AttributeComparers/HeightComparerWrapper.cpp Cases/AttributeComparers/NumericComparer.cpp \

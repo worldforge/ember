@@ -35,6 +35,8 @@ namespace Ember {
 
 namespace EntityMapping {
 
+class IVisitor;
+
 namespace Matches {
 
 /**
@@ -51,6 +53,12 @@ public:
 	virtual void setEntity(Eris::Entity* entity) = 0;
 	virtual void evaluateChanges(ChangeContext& changeContext) = 0;
 
+	/**
+	 * @brief Accepts a visitor.
+	 * After calling visit() on the visitor the child cases will be traversed.
+	 * @param visitor The visitor instance.
+	 */
+	virtual void accept(IVisitor& visitor) = 0;
 
 protected:
 	 Cases::CaseBase* mParentCase;

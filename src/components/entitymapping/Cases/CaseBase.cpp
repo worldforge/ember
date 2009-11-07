@@ -28,6 +28,7 @@
 
 #include "../EntityMapping.h"
 #include "../Actions/Action.h"
+#include "../IVisitor.h"
 
 namespace Ember {
 
@@ -71,6 +72,18 @@ void CaseBase::evaluateChanges(ChangeContext& changeContext)
 	}
 
 }
+
+void CaseBase::accept(IVisitor& visitor)
+{
+	visitor.visit(*this);
+	for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
+		(*I)->accept(visitor);
+	}
+	for (MatchBaseStore::iterator I = mMatches.begin(); I != mMatches.end(); ++I) {
+		(*I)->accept(visitor);
+	}
+}
+
 void CaseBase::activateActions(ChangeContext& context)
 {
 	for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
