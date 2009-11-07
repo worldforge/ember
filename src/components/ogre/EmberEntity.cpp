@@ -175,6 +175,12 @@ void EmberEntity::createEntityMapping()
 	mEntityMapping = ::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(this, &creator);
 }
 
+Ember::EntityMapping::EntityMapping* EmberEntity::getMapping() const
+{
+	return mEntityMapping;
+}
+
+
 void EmberEntity::onMoved()
 {
 	if (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible()) {

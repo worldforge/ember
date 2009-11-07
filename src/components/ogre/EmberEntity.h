@@ -302,6 +302,12 @@ public:
 	 */
 	void accept(IEntityVisitor& visitor);
 
+	/**
+	 * @brief Accessor for the mapping attached to this entity.
+	 * @returns A mapping instance, or null if one hasn't been set up yet.
+	 */
+	Ember::EntityMapping::EntityMapping* getMapping() const;
+
 protected:
 
 	/**
