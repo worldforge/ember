@@ -26,16 +26,16 @@
 #include "EmberOgrePrerequisites.h"
 #include "components/entitymapping/Actions/Action.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class EmberEntity;
 
-
 /**
-	Show a certain part of a Model.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class EmberEntityPartAction : public Ember::EntityMapping::Actions::Action
+ * @brief Show a certain part of a Model.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class EmberEntityPartAction: public Ember::EntityMapping::Actions::Action
 {
 public:
 	EmberEntityPartAction(EmberEntity& entity, const std::string& partName);
@@ -44,10 +44,27 @@ public:
 	virtual void activate(Ember::EntityMapping::ChangeContext& context);
 	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 
+	/**
+	 * @brief Returns whether this part is currently active or not.
+	 * @returns True if the part is active.
+	 */
+	bool isActive() const;
+
 protected:
+	/**
+	 * @brief The entity to which this action is attached.
+	 */
 	EmberEntity& mEntity;
 
+	/**
+	 * @brief The name of the part to show.
+	 */
 	std::string mPartName;
+
+	/**
+	 * @brief Whether the part is active or not.
+	 */
+	bool mIsActive;
 };
 
 }

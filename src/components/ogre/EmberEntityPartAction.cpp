@@ -34,7 +34,7 @@ namespace EmberOgre {
 
 
 EmberEntityPartAction::EmberEntityPartAction(EmberEntity& entity, const std::string& partName)
-: mEntity(entity), mPartName(partName)
+: mEntity(entity), mPartName(partName), mIsActive(false)
 {
 }
 
@@ -50,6 +50,7 @@ void EmberEntityPartAction::activate(Ember::EntityMapping::ChangeContext& contex
 	if (representation) {
 		representation->setModelPartShown(mPartName, true);
 	}
+	mIsActive = true;
 }
 
 void EmberEntityPartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
@@ -59,6 +60,12 @@ void EmberEntityPartAction::deactivate(Ember::EntityMapping::ChangeContext& cont
 	if (representation) {
 		representation->setModelPartShown(mPartName, false);
 	}
+	mIsActive = false;
+}
+
+bool EmberEntityPartAction::isActive() const
+{
+	return mIsActive;
 }
 
 }
