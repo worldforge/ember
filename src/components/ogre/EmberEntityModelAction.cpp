@@ -25,21 +25,60 @@
 #endif
 #include "EmberEntityModelAction.h"
 
+#include "EmberEntityPartAction.h"
+
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/entitymapping/EntityMapping.h"
+#include "components/entitymapping/ChangeContext.h"
+#include "components/entitymapping/IVisitor.h"
 #include "framework/LoggingInstance.h"
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, std::string modelName)
-: mEntity(entity), mModelName(modelName)
+/**
+ *
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief Used to reactivate parts on a model which have already been shown.
+ * This is done by visiting all the actions of the mapping and reactivating those part actions which already are active.
+ *
+ */
+class ModelPartReactivatorVisitor: public Ember::EntityMapping::IVisitor
+{
+private:
+	Ember::EntityMapping::ChangeContext mChangeContext;
+public:
+	virtual void visit(Ember::EntityMapping::Actions::Action& action)
+	{
+		EmberEntityPartAction* partAction = dynamic_cast<EmberEntityPartAction*>(&action);
+		if (partAction) {
+			if (partAction->isActive()) {
+				partAction->activate(mChangeContext);
+			}
+		}
+	}
+
+	virtual void visit(Ember::EntityMapping::Matches::MatchBase& match)
+	{
+
+	}
+
+	virtual void visit(Ember::EntityMapping::Cases::CaseBase& caseBase)
+	{
+
+	}
+
+};
+
+EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, std::string modelName) :
+	mEntity(entity), mModelName(modelName)
 {
 }
-
 
 EmberEntityModelAction::~EmberEntityModelAction()
 {
@@ -53,8 +92,7 @@ void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& conte
 		model = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), mModelName, mEntity.getId());
 
 		///if the model definition isn't valid, use a placeholder
-		if (!model->getDefinition()->isValid())
-		{
+		if (!model->getDefinition()->isValid()) {
 			S_LOG_FAILURE( "Could not find " << mModelName << ", using placeholder.");
 			///add a placeholder model
 			Model::ModelDefnPtr modelDef = model->getDefinition();
@@ -65,20 +103,26 @@ void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& conte
 
 		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model);
 		mEntity.setGraphicalRepresentation(representation);
-//		if (model->getDefinition()->isValid())
-//		{
-//			mEntity.getMapping()->getRootEntityMatch().evaluateChanges();
-//		}
+		reactivatePartActions();
+		//		if (model->getDefinition()->isValid())
+		//		{
+		//			mEntity.getMapping()->getRootEntityMatch().evaluateChanges();
+		//		}
 	}
-//	S_LOG_VERBOSE("Showing model " << mModelName);
+	//	S_LOG_VERBOSE("Showing model " << mModelName);
 }
 
 void EmberEntityModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	mEntity.setGraphicalRepresentation(0);
-//	mEntity.setModel("");
-//	S_LOG_VERBOSE("Hiding model " << mModelName);
+	//	mEntity.setModel("");
+	//	S_LOG_VERBOSE("Hiding model " << mModelName);
 }
 
+void EmberEntityModelAction::reactivatePartActions()
+{
+	ModelPartReactivatorVisitor visitor;
+	mEntity.getMapping()->getRootEntityMatch().accept(visitor);
+}
 
 }

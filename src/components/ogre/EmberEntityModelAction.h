@@ -23,18 +23,19 @@
 #ifndef EMBEROGREEMBERENTITYMODELACTION_H
 #define EMBEROGREEMBERENTITYMODELACTION_H
 
-
 #include "components/entitymapping/Actions/Action.h"
 #include <string>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 class EmberEntity;
+
 /**
-	Show a certain Model.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class EmberEntityModelAction : public Ember::EntityMapping::Actions::Action
+ * @briefShow a certain Model.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class EmberEntityModelAction: public Ember::EntityMapping::Actions::Action
 {
 public:
 	EmberEntityModelAction(EmberEntity& entity, std::string modelName);
@@ -47,6 +48,13 @@ protected:
 	EmberEntity& mEntity;
 
 	std::string mModelName;
+
+	/**
+	 * @brief Reactivate all previously activated parts for the model.
+	 * This is needed whenever the model is changed, because the new model used will then start out with only the default parts activated.
+	 */
+	void reactivatePartActions();
+
 };
 
 }
