@@ -27,7 +27,7 @@ libEmberOgre_a_SOURCES = \
 	model/ModelBackgroundLoader.cpp model/ModelDefinition.cpp model/ModelDefinitionAtlasComposer.cpp \
 	model/ModelDefinitionManager.cpp model/ModelPart.cpp model/ParticleSystem.cpp model/ParticleSystemBinding.cpp model/SubModel.cpp \
 	model/SubModelPart.cpp model/XMLModelDefinitionSerializer.cpp model/ModelRepresentation.cpp \
-	model/ModelRepresentationManager.cpp model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelFitting.cpp \
+	model/ModelRepresentationManager.cpp model/ModelMount.cpp model/ModelAttachment.cpp model/ModelBoneProvider.cpp model/ModelFitting.cpp model/ModelPartReactivatorVisitor.cpp\
 \
 	sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp \
 	sound/SoundEntity.cpp sound/SoundGroup.cpp sound/SoundGroupDefinition.cpp sound/XMLSoundDefParser.cpp \
@@ -101,7 +101,7 @@ noinst_HEADERS = \
 	model/ModelDefinition.h model/ModelDefinitionAtlasComposer.h model/ModelDefinitionManager.h model/ModelPart.h \
 	model/ParticleSystem.h model/ParticleSystemBinding.h model/SubModel.h model/SubModelPart.h \
 	model/XMLModelDefinitionSerializer.h model/ModelRepresentation.h model/ModelRepresentationManager.h \
-	model/ModelMount.h model/ModelAttachment.h model/ModelBoneProvider.h model/ModelFitting.h \
+	model/ModelMount.h model/ModelAttachment.h model/ModelBoneProvider.h model/ModelFitting.h model/ModelPartReactivatorVisitor.h \
 \
 	sound/SoundAction.h sound/SoundDefinition.h sound/SoundDefinitionManager.h sound/SoundEntity.h \
 	sound/SoundGroup.h sound/SoundGroupDefinition.h sound/XMLSoundDefParser.h \

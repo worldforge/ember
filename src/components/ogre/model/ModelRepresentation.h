@@ -331,6 +331,11 @@ protected:
 	 */
 	virtual void parseMovementMode(const WFMath::Vector<3>& velocity);
 
+	/**
+	 * @brief Reactivate all previously activated parts for the model.
+	 * This is needed whenever the model is changed, because the new model used will then start out with only the default parts activated.
+	 */
+	void reactivatePartActions();
 };
 
 }

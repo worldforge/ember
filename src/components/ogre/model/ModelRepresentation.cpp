@@ -24,6 +24,7 @@
 #include "ParticleSystemBinding.h"
 #include "Action.h"
 #include "ModelMount.h"
+#include "ModelPartReactivatorVisitor.h"
 
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 
@@ -40,6 +41,7 @@
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/MotionManager.h"
+
 
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/EntityMappingManager.h"
@@ -64,6 +66,9 @@ const char * const ModelRepresentation::ACTION_RUN("__movement_run");
 const char * const ModelRepresentation::ACTION_WALK("__movement_walk");
 const char * const ModelRepresentation::ACTION_SWIM("__movement_swim");
 const char * const ModelRepresentation::ACTION_FLOAT("__movement_float");
+
+
+
 
 ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model& model) :
 	mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
@@ -222,6 +227,7 @@ void ModelRepresentation::connectEntities()
 void ModelRepresentation::model_Reloaded()
 {
 	initFromModel();
+	reactivatePartActions();
 	///Retrigger a movement change so that animations can be stopped and started now that the model has changed.
 	onMovementModeChanged(getMovementMode());
 }
@@ -423,6 +429,12 @@ bool ModelRepresentation::getVisualize(const std::string& visualization) const
 		}
 	}
 	return false;
+}
+
+void ModelRepresentation::reactivatePartActions()
+{
+	ModelPartReactivatorVisitor visitor;
+	mEntity.getMapping()->getRootEntityMatch().accept(visitor);
 }
 
 }

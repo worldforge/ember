@@ -51,6 +51,7 @@ public:
 	bool isActive() const;
 
 protected:
+
 	/**
 	 * @brief The entity to which this action is attached.
 	 */
