@@ -42,7 +42,6 @@
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/MotionManager.h"
 
-
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/EntityMappingManager.h"
 
@@ -66,9 +65,6 @@ const char * const ModelRepresentation::ACTION_RUN("__movement_run");
 const char * const ModelRepresentation::ACTION_WALK("__movement_walk");
 const char * const ModelRepresentation::ACTION_SWIM("__movement_swim");
 const char * const ModelRepresentation::ACTION_FLOAT("__movement_float");
-
-
-
 
 ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model& model) :
 	mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
@@ -130,17 +126,19 @@ Model & ModelRepresentation::getModel() const
 
 void ModelRepresentation::setModelPartShown(const std::string& partName, bool visible)
 {
+	if (mModel.isLoaded()) {
 
-	if (visible) {
-		mModel.showPart(partName);
-	} else {
-		mModel.hidePart(partName);
-	}
+		if (visible) {
+			mModel.showPart(partName);
+		} else {
+			mModel.hidePart(partName);
+		}
 
-	///if we already have set up a collision object we must reload it
-	EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*> (mModel.getUserObject());
-	if (userObject && userObject->getCollisionDetector()) {
-		userObject->getCollisionDetector()->reload();
+		///if we already have set up a collision object we must reload it
+		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*> (mModel.getUserObject());
+		if (userObject && userObject->getCollisionDetector()) {
+			userObject->getCollisionDetector()->reload();
+		}
 	}
 }
 
