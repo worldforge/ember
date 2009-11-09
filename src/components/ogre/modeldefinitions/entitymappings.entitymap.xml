@@ -397,11 +397,11 @@
 					</case>
 					<case>
 						<caseparam type="equals">cross</caseparam>
-						<action type="display-part">tombstone_cross_a</action>
+						<action type="display-part">cross_a</action>
 					</case>
 					<case>
 						<caseparam type="equals">cross broken</caseparam>
-						<action type="display-part">tombstone_cross_b</action>
+						<action type="display-part">cross_b</action>
 					</case>
 				</attributematch>
 			</case>
