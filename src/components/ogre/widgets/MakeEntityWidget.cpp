@@ -27,6 +27,7 @@
 #include "MakeEntityWidget.h"
 #include "ColouredListItem.h"
 #include "ModelRenderer.h"
+#include "adapters/eris/TypeTreeAdapter.h"
 
 #include "../EmberOgre.h"
 #include "../Convert.h"
@@ -58,27 +59,23 @@
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUITree.h>
 
-
-namespace EmberOgre {
-namespace Gui {
-
-MakeEntityWidget::MakeEntityWidget()
- : Widget()
- , CreateEntity("createentity", this, "Create an entity.")
- , Make("make", this, "Create an entity.")
- , mIsReady(false)
- , mModelPreviewRenderer(0)
- , mIsInitialized(false)
+namespace EmberOgre
+{
+namespace Gui
 {
 
-	Ember::ConsoleBackend::getSingletonPtr()->registerCommand("testarea",this);
+MakeEntityWidget::MakeEntityWidget() :
+	Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mIsReady(false), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
+{
+
+	Ember::ConsoleBackend::getSingletonPtr()->registerCommand("testarea", this);
 
 }
-
 
 MakeEntityWidget::~MakeEntityWidget()
 {
 	delete mModelPreviewRenderer;
+	delete mTypeTreeAdapter;
 }
 
 void MakeEntityWidget::buildWidget()
@@ -86,22 +83,19 @@ void MakeEntityWidget::buildWidget()
 
 	loadMainSheet("MakeEntityWidget.layout", "MakeEntity/");
 
-	mTypeTree = static_cast<CEGUI::Tree*>(getWindow("TypeList"));
+	mTypeTree = static_cast<CEGUI::Tree*> (getWindow("TypeList"));
 	mTypeTree->setItemTooltipsEnabled(true);
 	mTypeTree->setSortingEnabled(true);
 
-	mName = static_cast<CEGUI::Editbox*>(getWindow("Name"));
+	mName = static_cast<CEGUI::Editbox*> (getWindow("Name"));
 
-	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(getWindow("CreateButton"));
+	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*> (getWindow("CreateButton"));
 
+	BIND_CEGUI_EVENT(mTypeTree, CEGUI::Tree::EventSelectionChanged,MakeEntityWidget::typeTree_ItemSelectionChanged );
 	BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked,MakeEntityWidget::createButton_Click );
-	BIND_CEGUI_EVENT(mTypeTree, CEGUI::Tree::EventSelectionChanged ,MakeEntityWidget::typeTree_ItemSelectionChanged );
-
-
 
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &MakeEntityWidget::connectedToServer));
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &MakeEntityWidget::gotAvatar));
-
 
 	createPreviewTexture();
 
@@ -110,19 +104,13 @@ void MakeEntityWidget::buildWidget()
 
 }
 
-
-
-
 void MakeEntityWidget::show()
 {
-	if (mIsReady)
-	{
+	if (mIsReady) {
 		if (mMainWindow) {
-			if (!mIsInitialized) {
-				loadAllTypes();
-				mIsInitialized = true;
-				Eris::TypeService* typeservice = mConn->getTypeService();
-				typeservice->BoundType.connect(sigc::mem_fun(*this, &MakeEntityWidget::boundAType));
+			if (!mTypeTreeAdapter) {
+				mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*mConn->getTypeService(), *mTypeTree);
+				mTypeTreeAdapter->initialize();
 			}
 			Widget::show();
 		}
@@ -132,35 +120,9 @@ void MakeEntityWidget::show()
 	}
 }
 
-
-
 void MakeEntityWidget::gotAvatar(Eris::Avatar* avatar)
 {
 	mIsReady = true;
-}
-
-
-
-
-
-void MakeEntityWidget::loadAllTypes()
-{
-	Eris::TypeService* typeservice = mConn->getTypeService();
-	if (typeservice) {
-		Eris::TypeInfo* typeInfo = typeservice->getTypeByName("game_entity");
-		if (typeInfo) {
-			if (typeInfo->hasUnresolvedChildren())
-				typeInfo->resolveChildren();
-			const Eris::TypeInfoSet children = typeInfo->getChildren();
-			Eris::TypeInfoSet::const_iterator I = children.begin();
-			Eris::TypeInfoSet::const_iterator I_end = children.end();
-
-			for (;I != I_end; ++I)
-			{
-				addToTree(*I, 0, true);
-			}
-		}
-	}
 }
 
 void MakeEntityWidget::connectedToServer(Eris::Connection* conn)
@@ -168,75 +130,14 @@ void MakeEntityWidget::connectedToServer(Eris::Connection* conn)
 	mConn = conn;
 }
 
-void MakeEntityWidget::addToTree(Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive)
-{
-
-	CEGUI::TreeItem* item = ColouredTreeItem::create(typeInfo->getName());
-	item->setUserData(typeInfo);
-	item->toggleIsOpen();
-	if (!parent) {
-		mTypeTree->addItem(item);
-	} else {
-		parent->addItem(item);
-	}
-	mTypes[typeInfo] = item;
-
-
-	if (addRecursive) {
-		const Eris::TypeInfoSet children = typeInfo->getChildren();
-		Eris::TypeInfoSet::const_iterator I = children.begin();
-		Eris::TypeInfoSet::const_iterator I_end = children.end();
-
-		for (;I != I_end; ++I)
-		{
-			addToTree(*I, item, addRecursive);
-		}
-	}
-
-}
-
-void MakeEntityWidget::boundAType(Eris::TypeInfo* typeInfo)
-{
-
-	Eris::TypeInfo* gameEntityType = mConn->getTypeService()->getTypeByName("game_entity");
-
-	if (gameEntityType != 0 && typeInfo->isA(gameEntityType)) {
-		if (typeInfo->getParents().size()) {
-			Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
-			CEGUI::TreeItem* parent = mTypeTree->findFirstItemWithText(parentType->getName());
-			addToTree(typeInfo, parent);
-		}
-
-	}
-
-}
-
 void MakeEntityWidget::runCommand(const std::string &command, const std::string &args)
 {
-	if(CreateEntity == command || Make == command)
-	{
+	if (CreateEntity == command || Make == command) {
 		Eris::TypeService* typeService = mConn->getTypeService();
 		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);
 		if (typeinfo) {
 			createEntityOfType(typeinfo);
 		}
-// 	} else if (command == "testarea") {
-// 		Mercator::Area* area = new Mercator::Area(7, false);
-// 		WFMath::Polygon<2> poly;
-//
-// 		float  points[] = { -26,-62, -36,-31, -26,-14, 2,-1, 22, 40, 132,122, 140,127, 144.5, 146.5, 169, 153, 169,155, 142.5,148.5, 138,129, 130,124, 18,40, -2, 0, -28,-12, -38,-29, -29,-62 };
-// 	//	float  points[] = { -26,-62, -36,-31, -26,-14, 2,-1, 22, 40 };
-// 		for (int i = 0; i < 36; i += 2) {
-// 			WFMath::Point<2> wpt(points[i], points[i + 1]);
-// 			poly.addCorner(poly.numCorners(), wpt);
-// 		}
-// 		if (poly.numCorners()) {
-//     		area->setShape(poly);
-//
-// 		}
-//
-// 		EmberOgre::getSingleton().getTer rain Gene rator()->addArea(area); // name splitted up to not appear while grepping
-
 	} else {
 		Widget::runCommand(command, args);
 	}
@@ -245,8 +146,8 @@ void MakeEntityWidget::runCommand(const std::string &command, const std::string 
 
 void MakeEntityWidget::updatePreview()
 {
-	if (mModelPreviewRenderer) {
-		Eris::TypeInfo* typeInfo = getSelectedTypeInfo();
+	if (mModelPreviewRenderer && mTypeTreeAdapter) {
+		Eris::TypeInfo* typeInfo = mTypeTreeAdapter->getSelectedTypeInfo();
 		if (typeInfo) {
 			///update the model preview window
 			mModelPreviewRenderer->showModel(typeInfo->getName());
@@ -267,27 +168,19 @@ bool MakeEntityWidget::typeTree_ItemSelectionChanged(const CEGUI::EventArgs& arg
 
 bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 {
+	if (mTypeTreeAdapter) {
 
-	Eris::TypeInfo* typeInfo = getSelectedTypeInfo();
-	if (typeInfo) {
-		createEntityOfType(typeInfo);
+		Eris::TypeInfo* typeInfo = mTypeTreeAdapter->getSelectedTypeInfo();
+		if (typeInfo) {
+			createEntityOfType(typeInfo);
+		}
 	}
 	return true;
 }
 
-Eris::TypeInfo* MakeEntityWidget::getSelectedTypeInfo()
-{
-	CEGUI::TreeItem* item = mTypeTree->getFirstSelectedItem();
-	if (item) {
-		Eris::TypeInfo* typeinfo = static_cast<Eris::TypeInfo*>(item->getUserData());
-		return typeinfo;
-	}
-	return 0;
-}
-
 void MakeEntityWidget::createPreviewTexture()
 {
-	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*>(getWindow("ModelPreviewImage"));
+	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*> (getWindow("ModelPreviewImage"));
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find ModelPreviewImage, aborting creation of preview texture.");
 	} else {
@@ -295,7 +188,6 @@ void MakeEntityWidget::createPreviewTexture()
 	}
 
 }
-
 
 void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 {
@@ -311,11 +203,11 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	Atlas::Message::MapType msg;
 	msg["loc"] = avatar.getLocation()->getId();
 
-	Ogre::Vector3 o_vector(2,0,0);
+	Ogre::Vector3 o_vector(2, 0, 0);
 	Ogre::Vector3 o_pos = Convert::toOgre(avatar.getPredictedPos()) + (Convert::toOgre(avatar.getOrientation()) * o_vector); //TODO: remove conversions
 
-// 	WFMath::Vector<3> vector(0,2,0);
-// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
+	// 	WFMath::Vector<3> vector(0,2,0);
+	// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
 	WFMath::Point<3> pos = Convert::toWF<WFMath::Point<3> >(o_pos);
 	WFMath::Quaternion orientation = avatar.getOrientation();
 
@@ -337,4 +229,5 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 }
 }
 
-};
+}
+;

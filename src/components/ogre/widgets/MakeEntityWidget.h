@@ -27,37 +27,46 @@
 
 namespace CEGUI
 {
-	class Tree;
-	class TreeItem;
+class Tree;
+class TreeItem;
 }
 
 namespace Eris
 {
-	class TypeInfo;
-	class Connection;
-	class Avatar;
+class TypeInfo;
+class Connection;
+class Avatar;
 }
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Gui {
+namespace Gui
+{
+
+namespace Adapters
+{
+namespace Eris
+{
+class TypeTreeAdapter;
+}
+}
 
 class ModelRenderer;
 /**
-@author Erik Hjortsberg
-A simple entity creator widget. All entity types are shown in a tree, allowing us to select one and instantiate it in the world.
-The tree is populated when the widget is shown, and after that it's updated every time a new type is discovered.
+ @author Erik Hjortsberg
+ A simple entity creator widget. All entity types are shown in a tree, allowing us to select one and instantiate it in the world.
+ The tree is populated when the widget is shown, and after that it's updated every time a new type is discovered.
 
-This simplified entity creator will be supplemented by the more advanced one as part of GSoC 2008.
-*/
-class MakeEntityWidget : public Widget
+ This simplified entity creator will be supplemented by the more advanced one as part of GSoC 2008.
+ */
+class MakeEntityWidget: public Widget
 {
 public:
 
 	MakeEntityWidget();
-    virtual ~MakeEntityWidget();
+	virtual ~MakeEntityWidget();
 	virtual void buildWidget();
-
 
 	virtual void show();
 
@@ -69,68 +78,41 @@ public:
 protected:
 
 	/**
-	flag for showing when the widget is ready to be shown
-	*/
+	 flag for showing when the widget is ready to be shown
+	 */
 	bool mIsReady;
-
-	/**
-	Use a lookup map for the types and the corresponding tree item.
-	*/
-	std::map<Eris::TypeInfo*, CEGUI::TreeItem*> mTypes;
 
 	CEGUI::Tree* mTypeTree;
 	CEGUI::Editbox* mName;
 
 	/**
-	The main connection to the server.
-	*/
+	 The main connection to the server.
+	 */
 	Eris::Connection* mConn;
+
+	/**
+	 A preview renderer for creating new models.
+	 */
+	ModelRenderer* mModelPreviewRenderer;
+
+	Adapters::Eris::TypeTreeAdapter* mTypeTreeAdapter;
 
 	void gotAvatar(Eris::Avatar* avatar);
 	void connectedToServer(Eris::Connection* conn);
 	void boundAType(Eris::TypeInfo* typeInfo);
 
 	bool createButton_Click(const CEGUI::EventArgs& args);
-
 	bool typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args);
 
-	/**
-	 *    Gets the currently selected type info.
-	 * @return
-	 */
-	Eris::TypeInfo* getSelectedTypeInfo();
-
-
-	/**
-	Loads all types into the list
-	*/
-	void loadAllTypes();
-
-	/**
-	 *    Adds a type info to the tree.
-	 * @param typeInfo The type info to add.
-	 * @param parent The parent of the type info, or 0 if we should add to the top.
-	 * @param addRecursive If true, all the current children of the type will be added as well.
-	 */
-	void addToTree(Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive = false);
-
 	void createEntityOfType(Eris::TypeInfo* typeinfo);
-
-	/**
-	A preview renderer for creating new models.
-	*/
-	ModelRenderer* mModelPreviewRenderer;
 
 	void createPreviewTexture();
 	void updatePreview();
 
-	/**
-	If true, the type tree has been initialized.
-	*/
-	bool mIsInitialized;
-
 };
-};
-};
+}
+;
+}
+;
 
 #endif
