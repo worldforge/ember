@@ -72,6 +72,7 @@ public:
 private:
 
 	typedef std::map<CEGUI::TreeItem*, ::Eris::TypeInfo*> TypeTreeStore;
+	typedef std::map< ::Eris::TypeInfo*, CEGUI::TreeItem*> ReverseTypeTreeStore;
 
 	::Eris::TypeService& mTypeService;
 	CEGUI::Tree& mTreeWidget;
@@ -81,16 +82,28 @@ private:
 	 */
 	TypeTreeStore mTypeLookup;
 
+	/**
+	 * @brief A reverse lookup map, using type info objects as keys. Mainly used to check whether a certain type already exists in the tree.
+	 */
+	ReverseTypeTreeStore mTreeItemLookup;
+
+	/**
+	 * @brief Recursively loads all the types in the tree.
+	 */
 	void loadAllTypes();
 
 	/**
-	 *    Adds a type info to the tree.
+	 * @brief Adds a type info to the tree.
 	 * @param typeInfo The type info to add.
 	 * @param parent The parent of the type info, or 0 if we should add to the top.
 	 * @param addRecursive If true, all the current children of the type will be added as well.
 	 */
 	void addToTree(::Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive = false);
 
+	/**
+	 * @brief Listens for types getting bound, and then updating the tree.
+	 * @param typeInfo The type which has been bound.
+	 */
 	void boundAType(::Eris::TypeInfo* typeInfo);
 
 };

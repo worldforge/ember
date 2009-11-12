@@ -81,6 +81,7 @@ void TypeTreeAdapter::addToTree(::Eris::TypeInfo* typeInfo, CEGUI::TreeItem* par
 		parent->addItem(item);
 	}
 	mTypeLookup[item] = typeInfo;
+	mTreeItemLookup[typeInfo] = item;
 
 	if (addRecursive) {
 		if (typeInfo->hasUnresolvedChildren())
@@ -99,13 +100,15 @@ void TypeTreeAdapter::addToTree(::Eris::TypeInfo* typeInfo, CEGUI::TreeItem* par
 void TypeTreeAdapter::boundAType(::Eris::TypeInfo* typeInfo)
 {
 
-	::Eris::TypeInfo* gameEntityType = mTypeService.getTypeByName("game_entity");
+	if (mTreeItemLookup.find(typeInfo) == mTreeItemLookup.end()) {
+		::Eris::TypeInfo* gameEntityType = mTypeService.getTypeByName("game_entity");
 
-	if (gameEntityType != 0 && typeInfo->isA(gameEntityType)) {
-		if (typeInfo->getParents().size()) {
-			::Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
-			CEGUI::TreeItem* parent = mTreeWidget.findFirstItemWithText(parentType->getName());
-			addToTree(typeInfo, parent);
+		if (gameEntityType != 0 && typeInfo->isA(gameEntityType)) {
+			if (typeInfo->getParents().size()) {
+				::Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
+				CEGUI::TreeItem* parent = mTreeWidget.findFirstItemWithText(parentType->getName());
+				addToTree(typeInfo, parent);
+			}
 		}
 	}
 }
