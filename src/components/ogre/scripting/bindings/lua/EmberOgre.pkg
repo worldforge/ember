@@ -35,6 +35,7 @@ $pfile "AssetsManager.pkg"
 $pfile "AtlasHelper.pkg"
 $pfile "Compass.pkg"
 
+$pfile "TypeTreeAdapter.pkg"
 
 $pfile "Icon.pkg"
 $pfile "IconManager.pkg"
