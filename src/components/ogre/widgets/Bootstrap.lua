@@ -107,3 +107,5 @@ loadScript("Compass.lua")
 
 loadScript("EntityCreator.lua")
 loadScript("ServerLogger.lua")
+
+loadScript("TypeManager.lua")
