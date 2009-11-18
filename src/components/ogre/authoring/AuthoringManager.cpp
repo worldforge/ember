@@ -18,7 +18,16 @@
 
 #include "AuthoringManager.h"
 #include "AuthoringHandler.h"
+#include "RawTypeInfoRepository.h"
 #include "services/config/ConfigService.h"
+#include "services/server/ServerService.h"
+#include "services/EmberServices.h"
+#include <Eris/Avatar.h>
+#include <Eris/TypeInfo.h>
+#include <Eris/TypeService.h>
+#include <Eris/View.h>
+#include <Eris/Entity.h>
+#include <Eris/Connection.h>
 
 namespace EmberOgre
 {
@@ -26,13 +35,16 @@ namespace EmberOgre
 namespace Authoring
 {
 AuthoringManager::AuthoringManager(Eris::View& view) :
-	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mView(view), mHandler(0)
+	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mView(view), mHandler(0), mRawTypeInfoRepository(0)
 {
 	registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
+	mRawTypeInfoRepository = new RawTypeInfoRepository(*Ember::EmberServices::getSingleton().getServerService());
+//	view.getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &AuthoringManager::gotAvatarCharacter));
 }
 
 AuthoringManager::~AuthoringManager()
 {
+	delete mRawTypeInfoRepository;
 	delete mHandler;
 }
 
@@ -69,6 +81,15 @@ void AuthoringManager::config_AuthoringVisualizations(const std::string& section
 	}
 }
 
+void AuthoringManager::gotAvatarCharacter(Eris::Entity* entity)
+{
+	if (entity) {
+		if (entity->getType()->isA(mView.getAvatar()->getConnection()->getTypeService()->getTypeByName("creator"))) {
+			mRawTypeInfoRepository = new RawTypeInfoRepository(*Ember::EmberServices::getSingleton().getServerService());
+		}
+	}
+}
+
 void AuthoringManager::startMovement(EmberEntity& entity, EntityMover& mover)
 {
 	if (mHandler) {
@@ -82,6 +103,12 @@ void AuthoringManager::stopMovement()
 		mHandler ->stopMovement();
 	}
 }
+
+RawTypeInfoRepository* AuthoringManager::getRawTypeInfoRepository() const
+{
+	return mRawTypeInfoRepository;
+}
+
 
 }
 }

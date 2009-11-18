@@ -47,6 +47,7 @@ namespace Authoring
 
 class AuthoringHandler;
 class EntityMover;
+class RawTypeInfoRepository;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -87,6 +88,13 @@ public:
 	void stopMovement();
 
 	/**
+	 * @brief Gets an optional instance of a raw type info repository.
+	 * This is only available if the user is logged in as an admin entity.
+	 * @return A pointer to a raw type info repository, or null if the user isn't an admin entity.
+	 */
+	RawTypeInfoRepository* getRawTypeInfoRepository() const;
+
+	/**
 	 * @brief Command for displaying authoring visualizations.
 	 */
 	const Ember::ConsoleCommandWrapper DisplayAuthoringVisualizations;
@@ -109,6 +117,12 @@ protected:
 	AuthoringHandler* mHandler;
 
 	/**
+	 * @brief An optional instance of a raw type info repository.
+	 * This is only available if the user is logged in as an admin entity.
+	 */
+	RawTypeInfoRepository* mRawTypeInfoRepository;
+
+	/**
 	 * Determines whether visualizations should be shown or not.
 	 * @param section
 	 * @param key
@@ -116,6 +130,7 @@ protected:
 	 */
 	void config_AuthoringVisualizations(const std::string& section, const std::string& key, varconf::Variable& variable);
 
+	void gotAvatarCharacter(Eris::Entity* entity);
 };
 }
 }
