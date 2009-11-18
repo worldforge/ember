@@ -21,6 +21,7 @@
 
 #include <map>
 #include <sigc++/trackable.h>
+#include <string>
 
 namespace Eris
 {
@@ -60,8 +61,10 @@ public:
 
 	/**
 	 * @brief Initializes the adapter, creating initial type tree and hooking up listening for new types as they arrive.
+	 * @param rootTypeName The name of the root type.
+	 * @returns True if the root type was found.
 	 */
-	void initialize();
+	bool initialize(const std::string& rootTypeName);
 
 	/**
 	 * @brief Gets the currently selected type, if any.
@@ -86,6 +89,8 @@ private:
 	 * @brief A reverse lookup map, using type info objects as keys. Mainly used to check whether a certain type already exists in the tree.
 	 */
 	ReverseTypeTreeStore mTreeItemLookup;
+
+	::Eris::TypeInfo* mRootTypeInfo;
 
 	/**
 	 * @brief Recursively loads all the types in the tree.

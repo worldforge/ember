@@ -110,7 +110,7 @@ void MakeEntityWidget::show()
 		if (mMainWindow) {
 			if (!mTypeTreeAdapter) {
 				mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*mConn->getTypeService(), *mTypeTree);
-				mTypeTreeAdapter->initialize();
+				mTypeTreeAdapter->initialize("game_entity");
 			}
 			Widget::show();
 		}

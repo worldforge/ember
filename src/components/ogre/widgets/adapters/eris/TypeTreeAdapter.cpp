@@ -39,7 +39,7 @@ namespace Eris
 {
 
 TypeTreeAdapter::TypeTreeAdapter(::Eris::TypeService& typeService, CEGUI::Tree& treeWidget) :
-	mTypeService(typeService), mTreeWidget(treeWidget)
+	mTypeService(typeService), mTreeWidget(treeWidget), mRootTypeInfo(0)
 {
 
 }
@@ -48,19 +48,23 @@ TypeTreeAdapter::~TypeTreeAdapter()
 {
 }
 
-void TypeTreeAdapter::initialize()
+bool TypeTreeAdapter::initialize(const std::string& rootTypeName)
 {
-	loadAllTypes();
-	mTypeService.BoundType.connect(sigc::mem_fun(*this, &TypeTreeAdapter::boundAType));
+	mRootTypeInfo = mTypeService.getTypeByName(rootTypeName);
+	if (mRootTypeInfo) {
+		loadAllTypes();
+		mTypeService.BoundType.connect(sigc::mem_fun(*this, &TypeTreeAdapter::boundAType));
+		return true;
+	}
+	return false;
 }
 
 void TypeTreeAdapter::loadAllTypes()
 {
-	::Eris::TypeInfo* typeInfo = mTypeService.getTypeByName("game_entity");
-	if (typeInfo) {
-		if (typeInfo->hasUnresolvedChildren())
-			typeInfo->resolveChildren();
-		const ::Eris::TypeInfoSet children = typeInfo->getChildren();
+	if (mRootTypeInfo) {
+		if (mRootTypeInfo->hasUnresolvedChildren())
+			mRootTypeInfo->resolveChildren();
+		const ::Eris::TypeInfoSet children = mRootTypeInfo->getChildren();
 		::Eris::TypeInfoSet::const_iterator I = children.begin();
 		::Eris::TypeInfoSet::const_iterator I_end = children.end();
 
@@ -100,10 +104,8 @@ void TypeTreeAdapter::addToTree(::Eris::TypeInfo* typeInfo, CEGUI::TreeItem* par
 void TypeTreeAdapter::boundAType(::Eris::TypeInfo* typeInfo)
 {
 
-	if (mTreeItemLookup.find(typeInfo) == mTreeItemLookup.end()) {
-		::Eris::TypeInfo* gameEntityType = mTypeService.getTypeByName("game_entity");
-
-		if (gameEntityType != 0 && typeInfo->isA(gameEntityType)) {
+	if (mTreeItemLookup.find(typeInfo) == mTreeItemLookup.end() && mRootTypeInfo) {
+		if (typeInfo->isA(mRootTypeInfo)) {
 			if (typeInfo->getParents().size()) {
 				::Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
 				CEGUI::TreeItem* parent = mTreeWidget.findFirstItemWithText(parentType->getName());
