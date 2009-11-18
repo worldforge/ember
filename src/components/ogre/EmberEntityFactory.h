@@ -114,6 +114,12 @@ public:
 	 */
 	void dumpAttributesOfEntity(const std::string& entityId) const;
 
+	/**
+	 * @brief Accessor for the authoring manager.
+	 * @return The authoring manager.
+	 */
+	Authoring::AuthoringManager& getAuthoringManager() const;
+
 protected:
 
 	/**

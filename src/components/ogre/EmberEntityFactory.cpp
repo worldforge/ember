@@ -187,5 +187,12 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 	}
 }
 
+Authoring::AuthoringManager& EmberEntityFactory::getAuthoringManager() const
+{
+	//This can never be null.
+	return *mAuthoringManager;
+}
+
+
 }
 
