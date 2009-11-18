@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-$#include "components/ogre/widgets/adapters/eris/TypeTreeAdaper.h"
+$#include "components/ogre/widgets/adapters/eris/TypeTreeAdapter.h"
 
 namespace EmberOgre
 {
@@ -38,20 +38,22 @@ namespace Eris
 class TypeTreeAdapter: public virtual sigc::trackable
 {
 public:
-	TypeTreeAdapter(::Eris::TypeService& typeService, CEGUI::Tree& treeWidget);
+	TypeTreeAdapter(Eris::TypeService& typeService, CEGUI::Tree& treeWidget);
 
 	virtual ~TypeTreeAdapter();
 
 	/**
 	 * @brief Initializes the adapter, creating initial type tree and hooking up listening for new types as they arrive.
+	 * @param rootTypeName The name of the root type.
+	 * @returns True if the root type was found.
 	 */
-	void initialize();
+	bool initialize(const std::string& rootTypeName);
 
 	/**
 	 * @brief Gets the currently selected type, if any.
 	 * @returns The currently selected type, if any.
 	 */
-	::Eris::TypeInfo* getSelectedTypeInfo();
+	Eris::TypeInfo* getSelectedTypeInfo();
 
 
 };

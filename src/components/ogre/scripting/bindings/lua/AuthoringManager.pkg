@@ -1,0 +1,70 @@
+$#include "components/ogre/authoring/AuthoringManager.h"
+/*
+ Copyright (C) 2009 Erik Hjortsberg
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+
+namespace EmberOgre
+{
+
+namespace Authoring
+{
+
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Manages authoring, mainly visualizations of entities for authoring purposes.
+ * The actual visualizations is handled by an instance of AuthoringHandler, which is held by this class.
+ */
+class AuthoringManager
+{
+public:
+
+	/**
+	 * @brief Displays authoring visualizations for entities.
+	 */
+	void displayAuthoringVisualization();
+
+	/**
+	 * @brief Hides authoring visualizations for entities.
+	 */
+	void hideAuthoringVisualization();
+
+	void startMovement(EmberOgre::EmberEntity& entity, EmberOgre::Authoring::EntityMover& mover);
+
+	void stopMovement();
+
+	/**
+	 * @brief Gets an optional instance of a raw type info repository.
+	 * This is only available if the user is logged in as an admin entity.
+	 * @return A pointer to a raw type info repository, or null if the user isn't an admin entity.
+	 */
+	EmberOgre::Authoring::RawTypeInfoRepository* getRawTypeInfoRepository() const;
+
+	/**
+	 * @brief Command for displaying authoring visualizations.
+	 */
+	const Ember::ConsoleCommandWrapper DisplayAuthoringVisualizations;
+
+	/**
+	 * @brief Command for hiding authoring visualizations.
+	 */
+	const Ember::ConsoleCommandWrapper HideAuthoringVisualizations;
+
+};
+}
+}
