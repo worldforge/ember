@@ -1,0 +1,40 @@
+$#include <Atlas/Codecs/Packed.h>
+
+// This file may be redistributed and modified only under the terms of
+// the GNU Lesser General Public License (See COPYING for details).
+// Copyright (C) 2000-2001 Stefanus Du Toit, Michael Day
+
+
+namespace Atlas { namespace Codecs {
+
+/*
+
+The form for each element of this codec is as follows:
+
+[type][name=][data][|endtype]
+  
+( ) for lists
+[ ] for maps
+$ for string
+@ for int
+# for float
+
+Sample output for this codec: (whitespace added for clarity)
+
+[@id=17$name=Fred +28the +2b great+29#weight=1.5(args=@1@2@3)]
+
+The complete specification is located in cvs at:
+    forge/protocols/atlas/spec/packed_syntax.html
+    
+*/
+  
+class Packed : public Atlas::Codec
+{
+public:
+    
+    Packed(std::iostream& s, Atlas::Bridge& b);
+    
+};
+
+} } // namespace Atlas::Codecs
+

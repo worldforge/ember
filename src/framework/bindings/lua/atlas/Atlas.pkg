@@ -1,4 +1,17 @@
 $#include "required.h"
 
 $pfile "Message/Element.pkg"
+$pfile "Message/MEncoder.pkg"
+$pfile "Message/QueuedDecoder.pkg"
+$pfile "Message/DecoderBase.pkg"
+
+$pfile "Codecs/Bach.pkg"
+$pfile "Codecs/Packed.pkg"
+$pfile "Codecs/XML.pkg"
+
+$pfile "Objects/Root.pkg"
+
+
+$pfile "Formatter.pkg"
+$pfile "Codec.pkg"
  

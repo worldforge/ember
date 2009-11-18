@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Eris
-** Generated automatically by tolua++-1.0.92 on Fri Oct 12 00:10:33 2007.
+** Generated automatically by tolua++-1.0.92.
 */
 
 #ifndef __cplusplus
@@ -21,6 +21,8 @@ TOLUA_API int  tolua_Eris_open (lua_State* tolua_S);
 #include <Eris/Connection.h>
 #include <Eris/Account.h>
 #include <Eris/TypeInfo.h>
+#include <Eris/TypeService.h>
+#include <Eris/Avatar.h>
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
@@ -58,34 +60,39 @@ static int tolua_collect_WFMath__Quaternion (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Root&>");
- tolua_usertype(tolua_S,"Eris::ServerInfo");
- tolua_usertype(tolua_S,"sigc::slot<void,const Atlas::Message::Element&>");
- tolua_usertype(tolua_S,"WFMath::Quaternion");
+ tolua_usertype(tolua_S,"WFMath::Point<3>");
+ tolua_usertype(tolua_S,"WFMath::AxisBox<3>");
  tolua_usertype(tolua_S,"WFMath::Vector<3>");
  tolua_usertype(tolua_S,"sigc::signal<void,const Eris::ServerInfo&>");
- tolua_usertype(tolua_S,"Eris::View");
- tolua_usertype(tolua_S,"Atlas::Message::MapType");
- tolua_usertype(tolua_S,"sigc::connection");
- tolua_usertype(tolua_S,"sigc::signal<void,Eris::Entity*>");
- tolua_usertype(tolua_S,"std::set<Eris::TypeInfo*>");
- tolua_usertype(tolua_S,"Eris::TypeInfo");
- tolua_usertype(tolua_S,"Eris::Task");
- tolua_usertype(tolua_S,"sigc::signal<void,bool>");
- tolua_usertype(tolua_S,"Eris::Connection");
- tolua_usertype(tolua_S,"Eris::Entity");
+ tolua_usertype(tolua_S,"Eris::TypeService");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Operation::RootOperation&>");
+ tolua_usertype(tolua_S,"Atlas::Objects::Root");
+ tolua_usertype(tolua_S,"Eris::Account");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::Task*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Root&>");
  tolua_usertype(tolua_S,"sigc::signal<void,int>");
+ tolua_usertype(tolua_S,"sigc::slot<void,const Atlas::Message::Element&>");
+ tolua_usertype(tolua_S,"WFMath::Quaternion");
+ tolua_usertype(tolua_S,"std::set<Eris::TypeInfo*>");
+ tolua_usertype(tolua_S,"Eris::Meta");
+ tolua_usertype(tolua_S,"Eris::Connection");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::Entity*>");
+ tolua_usertype(tolua_S,"Eris::Task");
+ tolua_usertype(tolua_S,"Eris::Avatar");
+ tolua_usertype(tolua_S,"Eris::ServerInfo");
+ tolua_usertype(tolua_S,"Eris::Entity");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::TypeInfo*>");
  tolua_usertype(tolua_S,"std::vector<Eris::Task*>");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
- tolua_usertype(tolua_S,"Eris::Meta");
- tolua_usertype(tolua_S,"sigc::signal<void,Eris::Task*>");
- tolua_usertype(tolua_S,"WFMath::Point<3>");
- tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Operation::RootOperation&>");
- tolua_usertype(tolua_S,"Eris::Account");
+ tolua_usertype(tolua_S,"Eris::TypeInfo");
+ tolua_usertype(tolua_S,"Eris::View");
+ tolua_usertype(tolua_S,"virtualsigc::trackable");
+ tolua_usertype(tolua_S,"Atlas::Message::MapType");
+ tolua_usertype(tolua_S,"sigc::connection");
  tolua_usertype(tolua_S,"sigc::signal<void>");
- tolua_usertype(tolua_S,"sigc::signal<void,const std::set<std::string>&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,bool>");
  tolua_usertype(tolua_S,"Atlas::Message::Element");
- tolua_usertype(tolua_S,"WFMath::AxisBox<3>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const std::set<std::string>&>");
 }
 
 /* method: numContained of class  Eris::Entity */
@@ -1941,6 +1948,38 @@ static int tolua_set_Eris__Meta_Failure(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getTypeService of class  Eris::Connection */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_Connection_getTypeService00
+static int tolua_Eris_Eris_Connection_getTypeService00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Eris::Connection",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Eris::Connection* self = (const Eris::Connection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTypeService'",NULL);
+#endif
+  {
+   Eris::TypeService* tolua_ret = (Eris::TypeService*)  self->getTypeService();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::TypeService");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTypeService'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: lookQueueSize of class  Eris::View */
 #ifndef TOLUA_DISABLE_tolua_Eris_Eris_View_lookQueueSize00
 static int tolua_Eris_Eris_View_lookQueueSize00(lua_State* tolua_S)
@@ -2384,6 +2423,298 @@ static int tolua_set_Eris__Task_Progressed(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getTypeByName of class  Eris::TypeService */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_TypeService_getTypeByName00
+static int tolua_Eris_Eris_TypeService_getTypeByName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Eris::TypeService",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Eris::TypeService* self = (Eris::TypeService*)  tolua_tousertype(tolua_S,1,0);
+  const std::string tynm = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTypeByName'",NULL);
+#endif
+  {
+   Eris::TypeInfo* tolua_ret = (Eris::TypeInfo*)  self->getTypeByName(tynm);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::TypeInfo");
+   tolua_pushcppstring(tolua_S,(const char*)tynm);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTypeByName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getTypeForAtlas of class  Eris::TypeService */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_TypeService_getTypeForAtlas00
+static int tolua_Eris_Eris_TypeService_getTypeForAtlas00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Eris::TypeService",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Objects::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Eris::TypeService* self = (Eris::TypeService*)  tolua_tousertype(tolua_S,1,0);
+  const Atlas::Objects::Root* obj = ((const Atlas::Objects::Root*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTypeForAtlas'",NULL);
+#endif
+  {
+   Eris::TypeInfo* tolua_ret = (Eris::TypeInfo*)  self->getTypeForAtlas(*obj);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::TypeInfo");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTypeForAtlas'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: findTypeByName of class  Eris::TypeService */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_TypeService_findTypeByName00
+static int tolua_Eris_Eris_TypeService_findTypeByName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Eris::TypeService",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Eris::TypeService* self = (Eris::TypeService*)  tolua_tousertype(tolua_S,1,0);
+  const std::string tynm = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'findTypeByName'",NULL);
+#endif
+  {
+   Eris::TypeInfo* tolua_ret = (Eris::TypeInfo*)  self->findTypeByName(tynm);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::TypeInfo");
+   tolua_pushcppstring(tolua_S,(const char*)tynm);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'findTypeByName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: BoundType of class  Eris::TypeService */
+#ifndef TOLUA_DISABLE_tolua_get_Eris__TypeService_BoundType
+static int tolua_get_Eris__TypeService_BoundType(lua_State* tolua_S)
+{
+  Eris::TypeService* self = (Eris::TypeService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'BoundType'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->BoundType,"sigc::signal<void,Eris::TypeInfo*>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: BoundType of class  Eris::TypeService */
+#ifndef TOLUA_DISABLE_tolua_set_Eris__TypeService_BoundType
+static int tolua_set_Eris__TypeService_BoundType(lua_State* tolua_S)
+{
+  Eris::TypeService* self = (Eris::TypeService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'BoundType'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,Eris::TypeInfo*>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->BoundType = *((sigc::signal<void,Eris::TypeInfo*>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: BadType of class  Eris::TypeService */
+#ifndef TOLUA_DISABLE_tolua_get_Eris__TypeService_BadType
+static int tolua_get_Eris__TypeService_BadType(lua_State* tolua_S)
+{
+  Eris::TypeService* self = (Eris::TypeService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'BadType'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->BadType,"sigc::signal<void,Eris::TypeInfo*>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: BadType of class  Eris::TypeService */
+#ifndef TOLUA_DISABLE_tolua_set_Eris__TypeService_BadType
+static int tolua_set_Eris__TypeService_BadType(lua_State* tolua_S)
+{
+  Eris::TypeService* self = (Eris::TypeService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'BadType'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void,Eris::TypeInfo*>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->BadType = *((sigc::signal<void,Eris::TypeInfo*>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getId of class  Eris::Avatar */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_Avatar_getId00
+static int tolua_Eris_Eris_Avatar_getId00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Eris::Avatar",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Eris::Avatar* self = (const Eris::Avatar*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getId'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getId();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getId'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getEntity of class  Eris::Avatar */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_Avatar_getEntity00
+static int tolua_Eris_Eris_Avatar_getEntity00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Eris::Avatar",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Eris::Avatar* self = (const Eris::Avatar*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getEntity'",NULL);
+#endif
+  {
+   Eris::Entity* tolua_ret = (Eris::Entity*)  self->getEntity();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::Entity");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getEntity'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getView of class  Eris::Avatar */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_Avatar_getView00
+static int tolua_Eris_Eris_Avatar_getView00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Eris::Avatar",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Eris::Avatar* self = (const Eris::Avatar*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getView'",NULL);
+#endif
+  {
+   Eris::View* tolua_ret = (Eris::View*)  self->getView();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::View");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getView'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getConnection of class  Eris::Avatar */
+#ifndef TOLUA_DISABLE_tolua_Eris_Eris_Avatar_getConnection00
+static int tolua_Eris_Eris_Avatar_getConnection00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Eris::Avatar",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Eris::Avatar* self = (const Eris::Avatar*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getConnection'",NULL);
+#endif
+  {
+   Eris::Connection* tolua_ret = (Eris::Connection*)  self->getConnection();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::Connection");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getConnection'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Eris_open (lua_State* tolua_S)
 {
@@ -2492,6 +2823,7 @@ TOLUA_API int tolua_Eris_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"Eris");
    tolua_cclass(tolua_S,"Connection","Eris::Connection","",NULL);
    tolua_beginmodule(tolua_S,"Connection");
+    tolua_function(tolua_S,"getTypeService",tolua_Eris_Eris_Connection_getTypeService00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Eris",0);
@@ -2530,6 +2862,27 @@ TOLUA_API int tolua_Eris_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"Completed",tolua_get_Eris__Task_Completed,tolua_set_Eris__Task_Completed);
     tolua_variable(tolua_S,"Cancelled",tolua_get_Eris__Task_Cancelled,tolua_set_Eris__Task_Cancelled);
     tolua_variable(tolua_S,"Progressed",tolua_get_Eris__Task_Progressed,tolua_set_Eris__Task_Progressed);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Eris",0);
+  tolua_beginmodule(tolua_S,"Eris");
+   tolua_cclass(tolua_S,"TypeService","Eris::TypeService","virtualsigc::trackable",NULL);
+   tolua_beginmodule(tolua_S,"TypeService");
+    tolua_function(tolua_S,"getTypeByName",tolua_Eris_Eris_TypeService_getTypeByName00);
+    tolua_function(tolua_S,"getTypeForAtlas",tolua_Eris_Eris_TypeService_getTypeForAtlas00);
+    tolua_function(tolua_S,"findTypeByName",tolua_Eris_Eris_TypeService_findTypeByName00);
+    tolua_variable(tolua_S,"BoundType",tolua_get_Eris__TypeService_BoundType,tolua_set_Eris__TypeService_BoundType);
+    tolua_variable(tolua_S,"BadType",tolua_get_Eris__TypeService_BadType,tolua_set_Eris__TypeService_BadType);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Eris",0);
+  tolua_beginmodule(tolua_S,"Eris");
+   tolua_cclass(tolua_S,"Avatar","Eris::Avatar","",NULL);
+   tolua_beginmodule(tolua_S,"Avatar");
+    tolua_function(tolua_S,"getId",tolua_Eris_Eris_Avatar_getId00);
+    tolua_function(tolua_S,"getEntity",tolua_Eris_Eris_Avatar_getEntity00);
+    tolua_function(tolua_S,"getView",tolua_Eris_Eris_Avatar_getView00);
+    tolua_function(tolua_S,"getConnection",tolua_Eris_Eris_Avatar_getConnection00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

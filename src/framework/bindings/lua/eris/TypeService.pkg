@@ -1,0 +1,40 @@
+$#include <Eris/TypeService.h>
+
+namespace Eris {
+
+typedef std::set<TypeInfoPtr> TypeInfoSet;
+
+/**
+ * A service class querying and caching types.
+ **/
+class TypeService : virtual public sigc::trackable
+{
+public:
+
+    /** find the TypeInfo for the named type; this may involve a search, or a map lookup.
+     The returned TypeInfo node may not be bound, and the caller should verify this
+     before using the type. */
+    TypeInfo* getTypeByName(const std::string &tynm);
+
+    /** retrive the TypeInfo for an object; this should be faster (hopefully constant time) since it
+    can take advantage of integer typeids */
+    TypeInfo* getTypeForAtlas(const Atlas::Objects::Root &obj);
+
+    /** Lookup the requested type, by name, and return NULL if it's unknown. */
+    TypeInfo* findTypeByName(const std::string &tynm);
+
+    /** emitted when a new type is available and bound to it's parents */
+    sigc::signal<void, TypeInfo*> BoundType;
+
+    /** emitted when a type is confirmed as being undefined */
+    sigc::signal<void, TypeInfo*> BadType;
+
+    //void listUnbound();
+
+
+ 
+};
+
+}
+
+

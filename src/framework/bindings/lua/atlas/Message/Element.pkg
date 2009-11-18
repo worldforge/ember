@@ -95,10 +95,6 @@ class Element
     /// Check for equality with another Element.
     bool operator==(const Element& o) const;
 
-    /// Check for inequality with anything we can check equality with
-    template<class C>
-    bool operator!=(C c) const;
-
     /// Check for equality with a int.
     bool operator==(long v) const;
 

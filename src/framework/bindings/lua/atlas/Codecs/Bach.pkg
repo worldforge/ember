@@ -1,0 +1,21 @@
+$#include <Atlas/Codecs/Bach.h>
+
+// This file may be redistributed and modified under the terms of the
+// GNU Lesser General Public License (See COPYING for details).
+// Copyright (C) 2000-2001 Michael Day, Stefanus Du Toit
+
+namespace Atlas { namespace Codecs {
+
+/** @file Codecs/Bach.h
+ * This class implements Bach Codec
+ */
+
+class Bach : public Atlas::Codec
+{
+  public:
+
+    Bach(std::iostream& s, Atlas::Bridge& b);
+
+};
+
+} } // namespace Atlas::Codecs

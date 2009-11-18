@@ -2,5 +2,8 @@ $#include <Eris/Connection.h>
 
 namespace Eris {
 class Connection {
+
+    TypeService* getTypeService() const;
+
 };
 }

@@ -6,6 +6,9 @@ namespace Ember {
 
 class ServerService 
 {
+	Eris::Connection* getConnection();
+
+
     bool isConnected() const;
 
     bool connect(const std::string& host, short port = 6767);
@@ -18,7 +21,8 @@ class ServerService
 
 	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description);
 
-
+	Eris::View* getView();
+	Eris::Avatar* getAvatar();
       
 	void moveToPoint(const WFMath::Point<3>& dest); 
 	void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);

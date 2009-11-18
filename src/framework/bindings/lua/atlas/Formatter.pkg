@@ -1,0 +1,33 @@
+$#include <Atlas/Formatter.h>
+
+
+// This file may be redistributed and modified only under the terms of
+// the GNU Lesser General Public License (See COPYING for details).
+// Copyright (C) 2004 Alistair Riddoch
+
+namespace Atlas {
+
+/** Atlas stream formatter
+
+This class implements the Bridge interface that accepts an Atlas stream.
+It copies the input stream to an output bridge, inserting formatting
+characters according to settings defined at construction time.
+
+@see Codec
+*/
+
+class Formatter : public Atlas::Bridge
+{
+  public:
+    
+    Formatter(std::iostream& s, Atlas::Bridge& b);
+    
+    virtual void streamBegin();
+    virtual void streamEnd();
+
+
+    void setSpacing(int s);
+    
+};
+
+} // Atlas namespace

@@ -1,0 +1,24 @@
+$#include <Eris/Avatar.h>
+
+namespace Eris
+{
+/** The players avatar representation. **/
+class Avatar
+{
+public:
+
+    /// Get the Entity id of this Avatar
+    const std::string & getId() const;
+
+    /// Get the Entity this Avatar refers to
+    Entity* getEntity() const;
+
+    View* getView() const;
+
+    Connection* getConnection() const;
+ 
+};
+
+} // of namespace Eris
+
+

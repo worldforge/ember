@@ -1,0 +1,35 @@
+$#include <Atlas/Message/DecoderBase.h>
+
+// This file may be redistributed and modified only under the terms of
+// the GNU Lesser General Public License (See COPYING for details).
+// Copyright (C) 2000 Stefanus Du Toit
+
+
+
+namespace Atlas { namespace Message {
+
+
+/** Base class for decoders that take Atlas::Message::Object.
+ *
+ * This class is passed to a codec as receiver bridge. It decodes a stream
+ * into Message::Object objects, and after completion calls the abstract
+ * messageArrived() method. This is to be overridden by base classes, which
+ * might, for instance, provide an object queue or a callback method for
+ * arrived messages.
+ *
+ * @see Atlas::Bridge
+ * @see Atlas::Codec
+ * @see Object
+ * @author Stefanus Du Toit <sdt@gmx.net>
+ * 
+ */
+
+class DecoderBase : public Atlas::Bridge
+{
+public:
+ 
+};
+
+} } // namespace Atlas::Message
+
+#endif

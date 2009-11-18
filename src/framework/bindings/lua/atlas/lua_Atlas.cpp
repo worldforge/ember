@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Atlas
-** Generated automatically by tolua++-1.0.92 on Sat Jul  5 23:48:55 2008.
+** Generated automatically by tolua++-1.0.92.
 */
 
 #ifndef __cplusplus
@@ -14,13 +14,58 @@
 TOLUA_API int  tolua_Atlas_open (lua_State* tolua_S);
 
 #include "required.h"
+#include <Atlas/Message/MEncoder.h>
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Message/DecoderBase.h>
+#include <Atlas/Codecs/Bach.h>
+#include <Atlas/Codecs/Packed.h>
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Formatter.h>
+#include <Atlas/Codec.h>
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
+static int tolua_collect_Atlas__Codecs__Bach (lua_State* tolua_S)
+{
+ Atlas::Codecs::Bach* self = (Atlas::Codecs::Bach*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_Atlas__Codecs__Packed (lua_State* tolua_S)
+{
+ Atlas::Codecs::Packed* self = (Atlas::Codecs::Packed*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_Atlas__Message__MapType__iterator (lua_State* tolua_S)
+{
+ Atlas::Message::MapType::iterator* self = (Atlas::Message::MapType::iterator*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_Atlas__Message__ListType (lua_State* tolua_S)
 {
  Atlas::Message::ListType* self = (Atlas::Message::ListType*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_Atlas__Message__QueuedDecoder (lua_State* tolua_S)
+{
+ Atlas::Message::QueuedDecoder* self = (Atlas::Message::QueuedDecoder*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
+static int tolua_collect_Atlas__Formatter (lua_State* tolua_S)
+{
+ Atlas::Formatter* self = (Atlas::Formatter*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -32,6 +77,13 @@ static int tolua_collect_Atlas__Message__MapType (lua_State* tolua_S)
 	return 0;
 }
 
+static int tolua_collect_Atlas__Message__Encoder (lua_State* tolua_S)
+{
+ Atlas::Message::Encoder* self = (Atlas::Message::Encoder*) tolua_tousertype(tolua_S,1,0);
+	delete self;
+	return 0;
+}
+
 static int tolua_collect_Atlas__Message__Element (lua_State* tolua_S)
 {
  Atlas::Message::Element* self = (Atlas::Message::Element*) tolua_tousertype(tolua_S,1,0);
@@ -39,9 +91,9 @@ static int tolua_collect_Atlas__Message__Element (lua_State* tolua_S)
 	return 0;
 }
 
-static int tolua_collect_Atlas__Message__MapType__iterator (lua_State* tolua_S)
+static int tolua_collect_Atlas__Codecs__XML (lua_State* tolua_S)
 {
- Atlas::Message::MapType::iterator* self = (Atlas::Message::MapType::iterator*) tolua_tousertype(tolua_S,1,0);
+ Atlas::Codecs::XML* self = (Atlas::Codecs::XML*) tolua_tousertype(tolua_S,1,0);
 	delete self;
 	return 0;
 }
@@ -51,11 +103,24 @@ static int tolua_collect_Atlas__Message__MapType__iterator (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
- tolua_usertype(tolua_S,"Atlas::Message::MapType::value_type");
- tolua_usertype(tolua_S,"Atlas::Message::MapType");
- tolua_usertype(tolua_S,"Atlas::Message::ListType");
- tolua_usertype(tolua_S,"Atlas::Message::Element");
+ tolua_usertype(tolua_S,"Atlas::Objects::RootData");
+ tolua_usertype(tolua_S,"Atlas::Codecs::Packed");
  tolua_usertype(tolua_S,"Atlas::Message::MapType::iterator");
+ tolua_usertype(tolua_S,"std::iostream");
+ tolua_usertype(tolua_S,"Atlas::Message::ListType");
+ tolua_usertype(tolua_S,"Atlas::Formatter");
+ tolua_usertype(tolua_S,"Atlas::Message::MapType::value_type");
+ tolua_usertype(tolua_S,"Atlas::Codecs::XML");
+ tolua_usertype(tolua_S,"Atlas::Message::Encoder");
+ tolua_usertype(tolua_S,"Atlas::Objects::Root");
+ tolua_usertype(tolua_S,"std::list<std::string>");
+ tolua_usertype(tolua_S,"Atlas::Message::DecoderBase");
+ tolua_usertype(tolua_S,"Atlas::Message::QueuedDecoder");
+ tolua_usertype(tolua_S,"Atlas::Bridge");
+ tolua_usertype(tolua_S,"Atlas::Codec");
+ tolua_usertype(tolua_S,"Atlas::Codecs::Bach");
+ tolua_usertype(tolua_S,"Atlas::Message::Element");
+ tolua_usertype(tolua_S,"Atlas::Message::MapType");
 }
 
 /* method: new of class  Atlas::Message::Element */
@@ -2574,6 +2639,1135 @@ static int tolua_Atlas_Atlas_Message_ListType_delete00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: new of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_new00
+static int tolua_Atlas_Atlas_Message_Encoder_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,2,0));
+  {
+   Atlas::Message::Encoder* tolua_ret = (Atlas::Message::Encoder*)  new Atlas::Message::Encoder(*b);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Message::Encoder");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_new00_local
+static int tolua_Atlas_Atlas_Message_Encoder_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,2,0));
+  {
+   Atlas::Message::Encoder* tolua_ret = (Atlas::Message::Encoder*)  new Atlas::Message::Encoder(*b);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Atlas::Message::Encoder");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_delete00
+static int tolua_Atlas_Atlas_Message_Encoder_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::Encoder* self = (Atlas::Message::Encoder*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: streamMessageElement of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_streamMessageElement00
+static int tolua_Atlas_Atlas_Message_Encoder_streamMessageElement00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::Encoder* self = (Atlas::Message::Encoder*)  tolua_tousertype(tolua_S,1,0);
+  const Atlas::Message::MapType* obj = ((const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'streamMessageElement'",NULL);
+#endif
+  {
+   self->streamMessageElement(*obj);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'streamMessageElement'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: mapElementItem of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_mapElementItem00
+static int tolua_Atlas_Atlas_Message_Encoder_mapElementItem00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_iscppstring_type(tolua_S,2,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::Encoder* self = (Atlas::Message::Encoder*)  tolua_tousertype(tolua_S,1,0);
+  const std::string tolua_var_1 = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const Atlas::Message::Element* tolua_var_2 = ((const Atlas::Message::Element*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'mapElementItem'",NULL);
+#endif
+  {
+   self->mapElementItem(tolua_var_1,*tolua_var_2);
+   tolua_pushcppstring(tolua_S,(const char*)tolua_var_1);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'mapElementItem'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: mapElementMapItem of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_mapElementMapItem00
+static int tolua_Atlas_Atlas_Message_Encoder_mapElementMapItem00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_iscppstring_type(tolua_S,2,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::Encoder* self = (Atlas::Message::Encoder*)  tolua_tousertype(tolua_S,1,0);
+  const std::string tolua_var_3 = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const Atlas::Message::MapType* tolua_var_4 = ((const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'mapElementMapItem'",NULL);
+#endif
+  {
+   self->mapElementMapItem(tolua_var_3,*tolua_var_4);
+   tolua_pushcppstring(tolua_S,(const char*)tolua_var_3);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'mapElementMapItem'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: mapElementListItem of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_mapElementListItem00
+static int tolua_Atlas_Atlas_Message_Encoder_mapElementListItem00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_iscppstring_type(tolua_S,2,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Atlas::Message::ListType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::Encoder* self = (Atlas::Message::Encoder*)  tolua_tousertype(tolua_S,1,0);
+  const std::string tolua_var_5 = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const Atlas::Message::ListType* tolua_var_6 = ((const Atlas::Message::ListType*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'mapElementListItem'",NULL);
+#endif
+  {
+   self->mapElementListItem(tolua_var_5,*tolua_var_6);
+   tolua_pushcppstring(tolua_S,(const char*)tolua_var_5);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'mapElementListItem'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: listElementItem of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_listElementItem00
+static int tolua_Atlas_Atlas_Message_Encoder_listElementItem00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::Element",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::Encoder* self = (Atlas::Message::Encoder*)  tolua_tousertype(tolua_S,1,0);
+  const Atlas::Message::Element* tolua_var_7 = ((const Atlas::Message::Element*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'listElementItem'",NULL);
+#endif
+  {
+   self->listElementItem(*tolua_var_7);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'listElementItem'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: listElementMapItem of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_listElementMapItem00
+static int tolua_Atlas_Atlas_Message_Encoder_listElementMapItem00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::Encoder* self = (Atlas::Message::Encoder*)  tolua_tousertype(tolua_S,1,0);
+  const Atlas::Message::MapType* tolua_var_8 = ((const Atlas::Message::MapType*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'listElementMapItem'",NULL);
+#endif
+  {
+   self->listElementMapItem(*tolua_var_8);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'listElementMapItem'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: listElementListItem of class  Atlas::Message::Encoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_Encoder_listElementListItem00
+static int tolua_Atlas_Atlas_Message_Encoder_listElementListItem00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::Encoder",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Message::ListType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::Encoder* self = (Atlas::Message::Encoder*)  tolua_tousertype(tolua_S,1,0);
+  const Atlas::Message::ListType* tolua_var_9 = ((const Atlas::Message::ListType*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'listElementListItem'",NULL);
+#endif
+  {
+   self->listElementListItem(*tolua_var_9);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'listElementListItem'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Atlas::Message::QueuedDecoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_QueuedDecoder_new00
+static int tolua_Atlas_Atlas_Message_QueuedDecoder_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Message::QueuedDecoder",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Atlas::Message::QueuedDecoder* tolua_ret = (Atlas::Message::QueuedDecoder*)  new Atlas::Message::QueuedDecoder();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Message::QueuedDecoder");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Atlas::Message::QueuedDecoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_QueuedDecoder_new00_local
+static int tolua_Atlas_Atlas_Message_QueuedDecoder_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Message::QueuedDecoder",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  {
+   Atlas::Message::QueuedDecoder* tolua_ret = (Atlas::Message::QueuedDecoder*)  new Atlas::Message::QueuedDecoder();
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Atlas::Message::QueuedDecoder");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: delete of class  Atlas::Message::QueuedDecoder */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Message_QueuedDecoder_delete00
+static int tolua_Atlas_Atlas_Message_QueuedDecoder_delete00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Message::QueuedDecoder",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Message::QueuedDecoder* self = (Atlas::Message::QueuedDecoder*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'delete'",NULL);
+#endif
+  delete self;
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'delete'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Atlas::Codecs::Bach */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Codecs_Bach_new00
+static int tolua_Atlas_Atlas_Codecs_Bach_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Codecs::Bach",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"std::iostream",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::iostream* s = ((std::iostream*)  tolua_tousertype(tolua_S,2,0));
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Atlas::Codecs::Bach* tolua_ret = (Atlas::Codecs::Bach*)  new Atlas::Codecs::Bach(*s,*b);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Codecs::Bach");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Atlas::Codecs::Bach */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Codecs_Bach_new00_local
+static int tolua_Atlas_Atlas_Codecs_Bach_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Codecs::Bach",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"std::iostream",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::iostream* s = ((std::iostream*)  tolua_tousertype(tolua_S,2,0));
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Atlas::Codecs::Bach* tolua_ret = (Atlas::Codecs::Bach*)  new Atlas::Codecs::Bach(*s,*b);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Atlas::Codecs::Bach");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Atlas::Codecs::Packed */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Codecs_Packed_new00
+static int tolua_Atlas_Atlas_Codecs_Packed_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Codecs::Packed",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"std::iostream",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::iostream* s = ((std::iostream*)  tolua_tousertype(tolua_S,2,0));
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Atlas::Codecs::Packed* tolua_ret = (Atlas::Codecs::Packed*)  new Atlas::Codecs::Packed(*s,*b);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Codecs::Packed");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Atlas::Codecs::Packed */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Codecs_Packed_new00_local
+static int tolua_Atlas_Atlas_Codecs_Packed_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Codecs::Packed",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"std::iostream",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::iostream* s = ((std::iostream*)  tolua_tousertype(tolua_S,2,0));
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Atlas::Codecs::Packed* tolua_ret = (Atlas::Codecs::Packed*)  new Atlas::Codecs::Packed(*s,*b);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Atlas::Codecs::Packed");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Atlas::Codecs::XML */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Codecs_XML_new00
+static int tolua_Atlas_Atlas_Codecs_XML_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Codecs::XML",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"std::iostream",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::iostream* s = ((std::iostream*)  tolua_tousertype(tolua_S,2,0));
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Atlas::Codecs::XML* tolua_ret = (Atlas::Codecs::XML*)  new Atlas::Codecs::XML(*s,*b);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Codecs::XML");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Atlas::Codecs::XML */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Codecs_XML_new00_local
+static int tolua_Atlas_Atlas_Codecs_XML_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Codecs::XML",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"std::iostream",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::iostream* s = ((std::iostream*)  tolua_tousertype(tolua_S,2,0));
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Atlas::Codecs::XML* tolua_ret = (Atlas::Codecs::XML*)  new Atlas::Codecs::XML(*s,*b);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Atlas::Codecs::XML");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: get of class  Atlas::Objects::Root */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_Root_get00
+static int tolua_Atlas_Atlas_Objects_Root_get00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::Root* self = (const Atlas::Objects::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'get'",NULL);
+#endif
+  {
+   Atlas::Objects::RootData* tolua_ret = (Atlas::Objects::RootData*)  self->get();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Objects::RootData");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'get'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: isValid of class  Atlas::Objects::Root */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_Root_isValid00
+static int tolua_Atlas_Atlas_Objects_Root_isValid00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::Root* self = (const Atlas::Objects::Root*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'isValid'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->isValid();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'isValid'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: instanceOf of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_instanceOf00
+static int tolua_Atlas_Atlas_Objects_RootData_instanceOf00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isnumber_type(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+  int classNo = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'instanceOf'",NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->instanceOf(classNo);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'instanceOf'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: sendContents of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_sendContents00
+static int tolua_Atlas_Atlas_Objects_RootData_sendContents00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'sendContents'",NULL);
+#endif
+  {
+   self->sendContents(*b);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'sendContents'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addToMessage of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_addToMessage00
+static int tolua_Atlas_Atlas_Objects_RootData_addToMessage00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Atlas::Message::MapType",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+  Atlas::Message::MapType* message = ((Atlas::Message::MapType*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addToMessage'",NULL);
+#endif
+  {
+   self->addToMessage(*message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addToMessage'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getId of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_getId00
+static int tolua_Atlas_Atlas_Objects_RootData_getId00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getId'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getId();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getId'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getParents of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_getParents00
+static int tolua_Atlas_Atlas_Objects_RootData_getParents00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getParents'",NULL);
+#endif
+  {
+   const std::list<std::string>& tolua_ret = (const std::list<std::string>&)  self->getParents();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const std::list<std::string>");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getParents'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getParentsAsList of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_getParentsAsList00
+static int tolua_Atlas_Atlas_Objects_RootData_getParentsAsList00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getParentsAsList'",NULL);
+#endif
+  {
+   const Atlas::Message::ListType tolua_ret = (const Atlas::Message::ListType)  self->getParentsAsList();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = new Atlas::Message::ListType(tolua_ret);
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"const Atlas::Message::ListType");
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(const Atlas::Message::ListType));
+    tolua_pushusertype_and_takeownership(tolua_S,tolua_obj,"const Atlas::Message::ListType");
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getParentsAsList'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getStamp of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_getStamp00
+static int tolua_Atlas_Atlas_Objects_RootData_getStamp00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getStamp'",NULL);
+#endif
+  {
+   double tolua_ret = (double)  self->getStamp();
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getStamp'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getObjtype of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_getObjtype00
+static int tolua_Atlas_Atlas_Objects_RootData_getObjtype00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getObjtype'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getObjtype();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getObjtype'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getName of class  Atlas::Objects::RootData */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Objects_RootData_getName00
+static int tolua_Atlas_Atlas_Objects_RootData_getName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Atlas::Objects::RootData",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Atlas::Objects::RootData* self = (const Atlas::Objects::RootData*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getName'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getName();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  Atlas::Formatter */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Formatter_new00
+static int tolua_Atlas_Atlas_Formatter_new00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Formatter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"std::iostream",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::iostream* s = ((std::iostream*)  tolua_tousertype(tolua_S,2,0));
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Atlas::Formatter* tolua_ret = (Atlas::Formatter*)  new Atlas::Formatter(*s,*b);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Atlas::Formatter");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  Atlas::Formatter */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Formatter_new00_local
+static int tolua_Atlas_Atlas_Formatter_new00_local(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"Atlas::Formatter",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"std::iostream",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Atlas::Bridge",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  std::iostream* s = ((std::iostream*)  tolua_tousertype(tolua_S,2,0));
+  Atlas::Bridge* b = ((Atlas::Bridge*)  tolua_tousertype(tolua_S,3,0));
+  {
+   Atlas::Formatter* tolua_ret = (Atlas::Formatter*)  new Atlas::Formatter(*s,*b);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"Atlas::Formatter");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'new'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: streamBegin of class  Atlas::Formatter */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Formatter_streamBegin00
+static int tolua_Atlas_Atlas_Formatter_streamBegin00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Formatter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Formatter* self = (Atlas::Formatter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'streamBegin'",NULL);
+#endif
+  {
+   self->streamBegin();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'streamBegin'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: streamEnd of class  Atlas::Formatter */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Formatter_streamEnd00
+static int tolua_Atlas_Atlas_Formatter_streamEnd00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Formatter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Formatter* self = (Atlas::Formatter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'streamEnd'",NULL);
+#endif
+  {
+   self->streamEnd();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'streamEnd'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSpacing of class  Atlas::Formatter */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Formatter_setSpacing00
+static int tolua_Atlas_Atlas_Formatter_setSpacing00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Formatter",0,&tolua_err) ||
+     !tolua_isnumber_type(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Formatter* self = (Atlas::Formatter*)  tolua_tousertype(tolua_S,1,0);
+  int s = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSpacing'",NULL);
+#endif
+  {
+   self->setSpacing(s);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSpacing'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Atlas_open (lua_State* tolua_S)
 {
@@ -2743,6 +3937,149 @@ TOLUA_API int tolua_Atlas_open (lua_State* tolua_S)
    lua_settop(tolua_S, top);
   } /* end of embedded lua code */
 
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   tolua_module(tolua_S,"Message",0);
+   tolua_beginmodule(tolua_S,"Message");
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"Encoder","Atlas::Message::Encoder","",tolua_collect_Atlas__Message__Encoder);
+    #else
+    tolua_cclass(tolua_S,"Encoder","Atlas::Message::Encoder","",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"Encoder");
+     tolua_function(tolua_S,"new",tolua_Atlas_Atlas_Message_Encoder_new00);
+     tolua_function(tolua_S,"new_local",tolua_Atlas_Atlas_Message_Encoder_new00_local);
+     tolua_function(tolua_S,".call",tolua_Atlas_Atlas_Message_Encoder_new00_local);
+     tolua_function(tolua_S,"delete",tolua_Atlas_Atlas_Message_Encoder_delete00);
+     tolua_function(tolua_S,"streamMessageElement",tolua_Atlas_Atlas_Message_Encoder_streamMessageElement00);
+     tolua_function(tolua_S,"mapElementItem",tolua_Atlas_Atlas_Message_Encoder_mapElementItem00);
+     tolua_function(tolua_S,"mapElementMapItem",tolua_Atlas_Atlas_Message_Encoder_mapElementMapItem00);
+     tolua_function(tolua_S,"mapElementListItem",tolua_Atlas_Atlas_Message_Encoder_mapElementListItem00);
+     tolua_function(tolua_S,"listElementItem",tolua_Atlas_Atlas_Message_Encoder_listElementItem00);
+     tolua_function(tolua_S,"listElementMapItem",tolua_Atlas_Atlas_Message_Encoder_listElementMapItem00);
+     tolua_function(tolua_S,"listElementListItem",tolua_Atlas_Atlas_Message_Encoder_listElementListItem00);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   tolua_module(tolua_S,"Message",0);
+   tolua_beginmodule(tolua_S,"Message");
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"QueuedDecoder","Atlas::Message::QueuedDecoder","Atlas::Message::DecoderBase",tolua_collect_Atlas__Message__QueuedDecoder);
+    #else
+    tolua_cclass(tolua_S,"QueuedDecoder","Atlas::Message::QueuedDecoder","Atlas::Message::DecoderBase",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"QueuedDecoder");
+     tolua_function(tolua_S,"new",tolua_Atlas_Atlas_Message_QueuedDecoder_new00);
+     tolua_function(tolua_S,"new_local",tolua_Atlas_Atlas_Message_QueuedDecoder_new00_local);
+     tolua_function(tolua_S,".call",tolua_Atlas_Atlas_Message_QueuedDecoder_new00_local);
+     tolua_function(tolua_S,"delete",tolua_Atlas_Atlas_Message_QueuedDecoder_delete00);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   tolua_module(tolua_S,"Message",0);
+   tolua_beginmodule(tolua_S,"Message");
+    tolua_cclass(tolua_S,"DecoderBase","Atlas::Message::DecoderBase","Atlas::Bridge",NULL);
+    tolua_beginmodule(tolua_S,"DecoderBase");
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   tolua_module(tolua_S,"Codecs",0);
+   tolua_beginmodule(tolua_S,"Codecs");
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"Bach","Atlas::Codecs::Bach","Atlas::Codec",tolua_collect_Atlas__Codecs__Bach);
+    #else
+    tolua_cclass(tolua_S,"Bach","Atlas::Codecs::Bach","Atlas::Codec",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"Bach");
+     tolua_function(tolua_S,"new",tolua_Atlas_Atlas_Codecs_Bach_new00);
+     tolua_function(tolua_S,"new_local",tolua_Atlas_Atlas_Codecs_Bach_new00_local);
+     tolua_function(tolua_S,".call",tolua_Atlas_Atlas_Codecs_Bach_new00_local);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   tolua_module(tolua_S,"Codecs",0);
+   tolua_beginmodule(tolua_S,"Codecs");
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"Packed","Atlas::Codecs::Packed","Atlas::Codec",tolua_collect_Atlas__Codecs__Packed);
+    #else
+    tolua_cclass(tolua_S,"Packed","Atlas::Codecs::Packed","Atlas::Codec",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"Packed");
+     tolua_function(tolua_S,"new",tolua_Atlas_Atlas_Codecs_Packed_new00);
+     tolua_function(tolua_S,"new_local",tolua_Atlas_Atlas_Codecs_Packed_new00_local);
+     tolua_function(tolua_S,".call",tolua_Atlas_Atlas_Codecs_Packed_new00_local);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   tolua_module(tolua_S,"Codecs",0);
+   tolua_beginmodule(tolua_S,"Codecs");
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"XML","Atlas::Codecs::XML","Atlas::Codec",tolua_collect_Atlas__Codecs__XML);
+    #else
+    tolua_cclass(tolua_S,"XML","Atlas::Codecs::XML","Atlas::Codec",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"XML");
+     tolua_function(tolua_S,"new",tolua_Atlas_Atlas_Codecs_XML_new00);
+     tolua_function(tolua_S,"new_local",tolua_Atlas_Atlas_Codecs_XML_new00_local);
+     tolua_function(tolua_S,".call",tolua_Atlas_Atlas_Codecs_XML_new00_local);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   tolua_module(tolua_S,"Objects",0);
+   tolua_beginmodule(tolua_S,"Objects");
+    tolua_cclass(tolua_S,"Root","Atlas::Objects::Root","",NULL);
+    tolua_beginmodule(tolua_S,"Root");
+     tolua_function(tolua_S,"get",tolua_Atlas_Atlas_Objects_Root_get00);
+     tolua_function(tolua_S,"isValid",tolua_Atlas_Atlas_Objects_Root_isValid00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"RootData","Atlas::Objects::RootData","",NULL);
+    tolua_beginmodule(tolua_S,"RootData");
+     tolua_function(tolua_S,"instanceOf",tolua_Atlas_Atlas_Objects_RootData_instanceOf00);
+     tolua_function(tolua_S,"sendContents",tolua_Atlas_Atlas_Objects_RootData_sendContents00);
+     tolua_function(tolua_S,"addToMessage",tolua_Atlas_Atlas_Objects_RootData_addToMessage00);
+     tolua_function(tolua_S,"getId",tolua_Atlas_Atlas_Objects_RootData_getId00);
+     tolua_function(tolua_S,"getParents",tolua_Atlas_Atlas_Objects_RootData_getParents00);
+     tolua_function(tolua_S,"getParentsAsList",tolua_Atlas_Atlas_Objects_RootData_getParentsAsList00);
+     tolua_function(tolua_S,"getStamp",tolua_Atlas_Atlas_Objects_RootData_getStamp00);
+     tolua_function(tolua_S,"getObjtype",tolua_Atlas_Atlas_Objects_RootData_getObjtype00);
+     tolua_function(tolua_S,"getName",tolua_Atlas_Atlas_Objects_RootData_getName00);
+    tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   #ifdef __cplusplus
+   tolua_cclass(tolua_S,"Formatter","Atlas::Formatter","Atlas::Bridge",tolua_collect_Atlas__Formatter);
+   #else
+   tolua_cclass(tolua_S,"Formatter","Atlas::Formatter","Atlas::Bridge",NULL);
+   #endif
+   tolua_beginmodule(tolua_S,"Formatter");
+    tolua_function(tolua_S,"new",tolua_Atlas_Atlas_Formatter_new00);
+    tolua_function(tolua_S,"new_local",tolua_Atlas_Atlas_Formatter_new00_local);
+    tolua_function(tolua_S,".call",tolua_Atlas_Atlas_Formatter_new00_local);
+    tolua_function(tolua_S,"streamBegin",tolua_Atlas_Atlas_Formatter_streamBegin00);
+    tolua_function(tolua_S,"streamEnd",tolua_Atlas_Atlas_Formatter_streamEnd00);
+    tolua_function(tolua_S,"setSpacing",tolua_Atlas_Atlas_Formatter_setSpacing00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"Atlas",0);
+  tolua_beginmodule(tolua_S,"Atlas");
+   tolua_cclass(tolua_S,"Codec","Atlas::Codec","Atlas::Bridge",NULL);
+   tolua_beginmodule(tolua_S,"Codec");
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;
 }

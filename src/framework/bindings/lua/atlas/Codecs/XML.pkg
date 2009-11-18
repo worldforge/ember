@@ -1,0 +1,42 @@
+$#include <Atlas/Codecs/XML.h>
+
+// This file may be redistributed and modified under the terms of the
+// GNU Lesser General Public License (See COPYING for details).
+// Copyright (C) 2000-2001 Michael Day, Stefanus Du Toit
+
+
+
+namespace Atlas { namespace Codecs {
+
+/*
+
+Sample output for this codec: (whitespace added for clarity)
+
+<atlas>
+    <map>
+	<int name="foo">13</int>
+	<float name="meep">1.5</float>
+	<string name="bar">hello</string>
+	<list name="args">
+	    <int>1</int>
+	    <int>2</int>
+	    <float>3.0</float>
+	</list>
+    </map>
+</atlas>
+
+The complete specification is located in cvs at:
+    forge/protocols/atlas/spec/xml_syntax.html
+
+*/
+
+class XML : public Atlas::Codec
+{
+    public:
+
+    XML(std::iostream& s, Atlas::Bridge& b);
+
+};
+
+} } // namespace Atlas::Codecs
+

@@ -1,0 +1,64 @@
+$#include <Atlas/Objects/Root.h>
+$#include <Atlas/Objects/SmartPtr.h>
+
+// This file may be redistributed and modified only under the terms of
+// the GNU Lesser General Public License (See COPYING for details).
+// Copyright 2000-2001 Stefanus Du Toit and Aloril.
+// Copyright 2001-2005 Alistair Riddoch.
+// Automatically generated using gen_cpp.py.
+
+
+namespace Atlas { namespace Objects { 
+
+/** All objects inherit from this.
+
+You can browse all definitions starting from here and 
+descending into childrens.
+
+*/
+
+
+class Root
+{
+	Atlas::Objects::RootData* get() const;
+	bool isValid() const;
+	
+};
+
+/// \brief All objects inherit from this..
+///
+/** You can browse all definitions starting from here and 
+descending into childrens.
+ */
+class RootData
+{
+    /// Is this instance of some class?
+    virtual bool instanceOf(int classNo) const;
+
+    /// Send the contents of this object to a Bridge.
+    virtual void sendContents(Atlas::Bridge & b) const;
+
+    /// Write this object to an existing Element.
+    virtual void addToMessage(Atlas::Message::MapType& message) const;
+
+    /// Retrieve the "id" attribute.
+    inline const std::string& getId() const;
+    /// Retrieve the "parents" attribute.
+    inline const std::list<std::string>& getParents() const;
+    /// Retrieve the "parents" attribute AsList.
+    inline const Atlas::Message::ListType getParentsAsList() const;
+    /// Retrieve the "stamp" attribute.
+    inline double getStamp() const;
+    /// Retrieve the "objtype" attribute.
+    inline const std::string& getObjtype() const;
+    /// Retrieve the "name" attribute.
+    inline const std::string& getName() const;
+
+
+};
+
+
+
+} } // namespace Atlas::Objects
+
+

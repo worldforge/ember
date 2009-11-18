@@ -59,32 +59,35 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Avatar*>");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::View*>");
  tolua_usertype(tolua_S,"SDLKey");
+ tolua_usertype(tolua_S,"Eris::Avatar");
  tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"Ember::ConfigService");
  tolua_usertype(tolua_S,"sigc::signal<void,const Ember::MouseMotion&,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"Ember::ScriptingService");
  tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,Ember::Input::InputMode>");
- tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::MouseButton,Ember::Input::InputMode>");
+ tolua_usertype(tolua_S,"Eris::View");
+ tolua_usertype(tolua_S,"Ember::EmberServices");
+ tolua_usertype(tolua_S,"Ember::IInputAdapter");
  tolua_usertype(tolua_S,"Atlas::Message::MapType");
- tolua_usertype(tolua_S,"Ember::MouseMotion");
+ tolua_usertype(tolua_S,"Eris::Connection");
  tolua_usertype(tolua_S,"Ember::ServerService");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
  tolua_usertype(tolua_S,"Ember::InputService");
- tolua_usertype(tolua_S,"Ember::EmberServices");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"varconf::Variable");
  tolua_usertype(tolua_S,"Ember::Input");
  tolua_usertype(tolua_S,"Eris::Entity");
- tolua_usertype(tolua_S,"Ember::IInputAdapter");
+ tolua_usertype(tolua_S,"Ember::IScriptingProvider");
  tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
  tolua_usertype(tolua_S,"Ember::MetaserverService");
+ tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::MouseButton,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Root&>");
- tolua_usertype(tolua_S,"std::vector<std::string>");
- tolua_usertype(tolua_S,"Ember::IScriptingProvider");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*,const std::string&>");
  tolua_usertype(tolua_S,"Eris::Meta");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*>");
  tolua_usertype(tolua_S,"Ember::LoggingService");
- tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*,const std::string&>");
+ tolua_usertype(tolua_S,"Ember::MouseMotion");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Connection*>");
 }
 
@@ -1279,6 +1282,38 @@ static int tolua_EmberServices_Ember_MetaserverService_getMetaServer00(lua_State
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getConnection of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_getConnection00
+static int tolua_EmberServices_Ember_ServerService_getConnection00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getConnection'",NULL);
+#endif
+  {
+   Eris::Connection* tolua_ret = (Eris::Connection*)  self->getConnection();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::Connection");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getConnection'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: isConnected of class  Ember::ServerService */
 #ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_isConnected00
 static int tolua_EmberServices_Ember_ServerService_isConnected00(lua_State* tolua_S)
@@ -1452,6 +1487,70 @@ static int tolua_EmberServices_Ember_ServerService_createCharacter00(lua_State* 
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'createCharacter'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getView of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_getView00
+static int tolua_EmberServices_Ember_ServerService_getView00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getView'",NULL);
+#endif
+  {
+   Eris::View* tolua_ret = (Eris::View*)  self->getView();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::View");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getView'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getAvatar of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_getAvatar00
+static int tolua_EmberServices_Ember_ServerService_getAvatar00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAvatar'",NULL);
+#endif
+  {
+   Eris::Avatar* tolua_ret = (Eris::Avatar*)  self->getAvatar();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"Eris::Avatar");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAvatar'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3230,11 +3329,14 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"Ember");
    tolua_cclass(tolua_S,"ServerService","Ember::ServerService","",NULL);
    tolua_beginmodule(tolua_S,"ServerService");
+    tolua_function(tolua_S,"getConnection",tolua_EmberServices_Ember_ServerService_getConnection00);
     tolua_function(tolua_S,"isConnected",tolua_EmberServices_Ember_ServerService_isConnected00);
     tolua_function(tolua_S,"connect",tolua_EmberServices_Ember_ServerService_connect00);
     tolua_function(tolua_S,"disconnect",tolua_EmberServices_Ember_ServerService_disconnect00);
     tolua_function(tolua_S,"takeCharacter",tolua_EmberServices_Ember_ServerService_takeCharacter00);
     tolua_function(tolua_S,"createCharacter",tolua_EmberServices_Ember_ServerService_createCharacter00);
+    tolua_function(tolua_S,"getView",tolua_EmberServices_Ember_ServerService_getView00);
+    tolua_function(tolua_S,"getAvatar",tolua_EmberServices_Ember_ServerService_getAvatar00);
     tolua_function(tolua_S,"moveToPoint",tolua_EmberServices_Ember_ServerService_moveToPoint00);
     tolua_function(tolua_S,"moveInDirection",tolua_EmberServices_Ember_ServerService_moveInDirection00);
     tolua_function(tolua_S,"moveInDirection",tolua_EmberServices_Ember_ServerService_moveInDirection01);

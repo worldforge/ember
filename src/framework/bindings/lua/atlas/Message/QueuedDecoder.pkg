@@ -1,0 +1,34 @@
+$#include <Atlas/Message/QueuedDecoder.h>
+
+// This file may be redistributed and modified only under the terms of
+// the GNU Lesser General Public License (See COPYING for details).
+// Copyright (C) 2000 Stefanus Du Toit
+
+
+namespace Atlas { namespace Message {
+
+/** Decoder that presents a queue of Atlas::Message::Element.
+ *
+ * This message decoder puts arrived objects into a queue and allows the
+ * application to pop them off the front of the queue, peek at the front of 
+ * the queue, as well as checking to see how many objects are currently in the
+ * queue.
+ *
+ * @see DecoderBase
+ * @see Element
+ * @author Stefanus Du Toit <sdt@gmx.net>
+ *
+ */
+    
+class QueuedDecoder : public Atlas::Message::DecoderBase
+{
+public:
+
+    QueuedDecoder();
+    ~QueuedDecoder();
+
+};
+
+} } // namespace Atlas::Message
+
+
