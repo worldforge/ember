@@ -62,6 +62,8 @@ public:
 	virtual void deleteEntity(Eris::Entity* entity);
 	virtual void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& elements);
 	virtual void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value);
+	virtual void createTypeInfo(const Atlas::Objects::Root& typeInfo);
+	virtual void setTypeInfo(const Atlas::Objects::Root& typeInfo);
 
 private:
 	Eris::Avatar& mAvatar;

@@ -362,4 +362,39 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 	}
 }
 
+void ConnectedAdapter::createTypeInfo(const Atlas::Objects::Root& typeInfo)
+{
+	try {
+		Atlas::Objects::Operation::Create createOp;
+		createOp->setFrom(mAvatar.getEntity()->getId());
+		//setOp->setTo(entity->getId());
+		createOp->setArgs1(typeInfo);
+
+		S_LOG_INFO("Sending new type info data.");
+		mConnection.send(createOp);
+	}
+	catch (const std::exception& ex)
+	{
+		S_LOG_WARNING("Got error on sending new type info data." << ex);
+	}
+}
+
+
+void ConnectedAdapter::setTypeInfo(const Atlas::Objects::Root& typeInfo)
+{
+	try {
+		Atlas::Objects::Operation::Set setOp;
+		setOp->setFrom(mAvatar.getEntity()->getId());
+		//setOp->setTo(entity->getId());
+		setOp->setArgs1(typeInfo);
+
+		S_LOG_INFO("Sending updated type info data.");
+		mConnection.send(setOp);
+	}
+	catch (const std::exception& ex)
+	{
+		S_LOG_WARNING("Got error on sending updated type info data." << ex);
+	}
+}
+
 }

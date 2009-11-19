@@ -1,7 +1,7 @@
 //
 // C++ Interface: NonConnectedAdapter
 //
-// Description: 
+// Description:
 //
 //
 // Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
@@ -10,12 +10,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
@@ -36,8 +36,8 @@ public:
     NonConnectedAdapter();
 
     ~NonConnectedAdapter();
-    
-	virtual void moveToPoint(const WFMath::Point<3>& dest); 
+
+	virtual void moveToPoint(const WFMath::Point<3>& dest);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity);
 // 	virtual void teleportTo(const WFMath::Point<3>& dest) {}
@@ -52,11 +52,13 @@ public:
 	virtual void use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation);
 	virtual void useStop();
 	virtual void actuate(Eris::Entity* entity, const std::string& action);
-	virtual void attack(Eris::Entity* entity);    
+	virtual void attack(Eris::Entity* entity);
 	virtual void eat(Eris::Entity* entity);
 	virtual void deleteEntity(Eris::Entity* entity);
 	virtual void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
 	virtual void adminTell(const std::string& entityId, const std::string& attribute, const std::string &value);
+	virtual void createTypeInfo(const Atlas::Objects::Root& typeInfo);
+	virtual void setTypeInfo(const Atlas::Objects::Root& typeInfo);
 
 };
 

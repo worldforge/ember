@@ -184,7 +184,7 @@ void ServerService::gotFailure(const std::string & msg)
 	temp << "Got Server error: " << msg;
 	S_LOG_WARNING(temp.str());
 
-	ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
+	ConsoleBackend::getSingleton().pushMessage(temp.str());
 }
 
 void ServerService::connected()
@@ -208,7 +208,7 @@ void ServerService::connected()
 	//     mOOGChat = new OOGChat(mAccount);
 
 
-	ConsoleBackend::getSingletonPtr()->pushMessage("Connected to Server");
+	ConsoleBackend::getSingleton().pushMessage("Connected to Server");
 }
 
 bool ServerService::disconnecting()
@@ -231,7 +231,7 @@ void ServerService::disconnected()
 	delete mOOGChat;
 	mOOGChat = NULL;
 
-	ConsoleBackend::getSingletonPtr()->pushMessage("Disconnected from server.");
+	ConsoleBackend::getSingleton().pushMessage("Disconnected from server.");
 }
 
 void ServerService::statusChanged(Eris::BaseConnection::Status status)
@@ -242,13 +242,13 @@ void ServerService::statusChanged(Eris::BaseConnection::Status status)
 void ServerService::timeout(Eris::BaseConnection::Status status)
 {
 	S_LOG_INFO( "Connection Timed Out");
-	ConsoleBackend::getSingletonPtr()->pushMessage("Connection to server timed out");
+	ConsoleBackend::getSingleton().pushMessage("Connection to server timed out");
 }
 
 void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
 {
 	S_LOG_INFO("Got Character Info");
-	ConsoleBackend::getSingletonPtr()->pushMessage("Got character info");
+	ConsoleBackend::getSingleton().pushMessage("Got character info");
 
 	GotCharacterInfo.emit(info);
 }
@@ -256,27 +256,26 @@ void ServerService::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 void ServerService::gotAllCharacters()
 {
 	S_LOG_INFO("Got All Characters");
-	ConsoleBackend::getSingletonPtr()->pushMessage("Got all characters");
+	ConsoleBackend::getSingleton().pushMessage("Got all characters");
 	Eris::CharacterMap cm = mAccount->getCharacters();
 	Eris::CharacterMap::iterator i;
 	for (i = cm.begin(); i != cm.end(); i++) {
 		std::string msg;
 		msg = "Character ID: [" + (*i).first + "].";
-		ConsoleBackend::getSingletonPtr()->pushMessage(msg);
+		ConsoleBackend::getSingleton().pushMessage(msg);
 	}
 	GotAllCharacters.emit(mAccount);
 
 }
 
-//  void ServerService::loginFailure(Eris::LoginFailureType, const std::string &msg)
-void ServerService::loginFailure(const std::string &msg)
+void ServerService::loginFailure(const std::string& msg)
 {
 	std::ostringstream temp;
 
 	temp << "Login Failure:" << msg;
 	S_LOG_WARNING(temp.str());
 
-	ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
+	ConsoleBackend::getSingleton().pushMessage(temp.str());
 	LoginFailure.emit(mAccount, msg);
 }
 
@@ -285,7 +284,7 @@ void ServerService::loginSuccess()
 	//mView = new Eris::View(mAccount, mConn);
 
 	S_LOG_INFO("Login Success.");
-	ConsoleBackend::getSingletonPtr()->pushMessage("Login Successful");
+	ConsoleBackend::getSingleton().pushMessage("Login Successful");
 	LoginSuccess.emit(mAccount);
 }
 
@@ -323,7 +322,7 @@ void ServerService::logoutComplete(bool clean)
 	mView = 0;
 
 	S_LOG_INFO("Logout Complete cleanness=" << clean);
-	ConsoleBackend::getSingletonPtr()->pushMessage("Logged out from server");
+	ConsoleBackend::getSingleton().pushMessage("Logged out from server");
 }
 
 void ServerService::runCommand(const std::string &command, const std::string &args)
@@ -337,7 +336,7 @@ void ServerService::runCommand(const std::string &command, const std::string &ar
 		std::string port = tokeniser.remainingTokens();
 		std::string msg;
 		msg = "Connecting to: [" + server + "]";
-		ConsoleBackend::getSingletonPtr()->pushMessage(msg);
+		ConsoleBackend::getSingleton().pushMessage(msg);
 		if (port == "")
 			connect(server);
 		else
@@ -385,14 +384,14 @@ void ServerService::runCommand(const std::string &command, const std::string &ar
 
 			std::string msg;
 			msg = "Login: [" + userid + "," + password + "]";
-			ConsoleBackend::getSingletonPtr()->pushMessage(msg);
+			ConsoleBackend::getSingleton().pushMessage(msg);
 		} else {
-			ConsoleBackend::getSingletonPtr()->pushMessage("not connected");
+			ConsoleBackend::getSingleton().pushMessage("not connected");
 		}
 
 		// Logout command
 	} else if (Logout == command) {
-		ConsoleBackend::getSingletonPtr()->pushMessage("Logging out...");
+		ConsoleBackend::getSingleton().pushMessage("Logging out...");
 		if (mAccount) {
 			mAccount->logout();
 		}
@@ -475,11 +474,11 @@ void ServerService::runCommand(const std::string &command, const std::string &ar
 
 bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description)
 {
-	ConsoleBackend::getSingletonPtr()->pushMessage("Creating char...");
+	ConsoleBackend::getSingleton().pushMessage("Creating char...");
 	if (mAccount) {
 		std::string msg;
 		msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
-		ConsoleBackend::getSingletonPtr()->pushMessage(msg);
+		ConsoleBackend::getSingleton().pushMessage(msg);
 
 		S_LOG_INFO("Creating character.");
 		Atlas::Objects::Entity::RootEntity character;
@@ -505,7 +504,7 @@ bool ServerService::createCharacter(const std::string& name, const std::string& 
 			}
 		}
 	} else {
-		ConsoleBackend::getSingletonPtr()->pushMessage("Not logged in. Can't create char...");
+		ConsoleBackend::getSingleton().pushMessage("Not logged in. Can't create char...");
 	}
 
 	return true;
@@ -611,5 +610,16 @@ void ServerService::adminTell(const std::string& entityId, const std::string& at
 {
 	mServerAdapter->adminTell(entityId, attribute, value);
 }
+
+void ServerService::createTypeInfo(const Atlas::Objects::Root& typeInfo)
+{
+	mServerAdapter->createTypeInfo(typeInfo);
+}
+
+void ServerService::setTypeInfo(const Atlas::Objects::Root& typeInfo)
+{
+	mServerAdapter->setTypeInfo(typeInfo);
+}
+
 
 } // namespace Ember
