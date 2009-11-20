@@ -255,14 +255,6 @@ public:
 	 */
 	sigc::signal<void> EventWorldSizeChanged;
 
-
-	/**
-	 *    @brief Registers to the scene manager adapter to be used by the generator.
-	 * The adapter acts as a bridge between the generator and the actual scene manager, allowing a certain degree of decoupling.
-	 * @param adapter The adapter to use.
-	 */
-	void registerSceneManagerAdapter(ISceneManagerAdapter* adapter);
-
 	/**
 	 * @brief Gets the adapter used to bind this generator to a scene manager.
 	 * @return The adapter in use, or null if there is no one registered yet.
@@ -512,6 +504,9 @@ protected:
 	Note that even though this is passed as a parameter in the constructor, this class is then responsible for its destruction.
 	*/
 	void TerrainMod_Deleted(TerrainMod* terrainMod);
+	/**
+	 * The adapter acts as a bridge between the generator and the actual scene manager, allowing a certain degree of decoupling.
+	 */
 	ISceneManagerAdapter* mSceneManagerAdapter;
 
 	unsigned int mFoliageBatchSize;

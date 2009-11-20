@@ -100,8 +100,7 @@ mSceneManagerAdapter(0),
 mIsFoliageShown(false),
 mFoliageBatchSize(32)
 {
-
-	registerSceneManagerAdapter( adapter);
+	mSceneManagerAdapter = adapter;
 
 	loadTerrainOptions();
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
@@ -389,10 +388,6 @@ int TerrainGenerator::getPageMetersSize() const
 	return getPageIndexSize() - 1;
 }
 
-void TerrainGenerator::registerSceneManagerAdapter(ISceneManagerAdapter* adapter)
-{
-	mSceneManagerAdapter = adapter;
-}
 
 
 void TerrainGenerator::prepareAllSegments()
