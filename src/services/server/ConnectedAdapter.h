@@ -28,6 +28,7 @@
 namespace Eris {
 	class Avatar;
 	class Connection;
+	class Account;
 }
 
 namespace Ember {
@@ -38,7 +39,7 @@ namespace Ember {
 class ConnectedAdapter : public IServerAdapter
 {
 public:
-    ConnectedAdapter(Eris::Avatar& avatar, Eris::Connection& connection);
+    ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar, Eris::Connection& connection);
 
     ~ConnectedAdapter();
 
@@ -66,6 +67,7 @@ public:
 	virtual void setTypeInfo(const Atlas::Objects::Root& typeInfo);
 
 private:
+	Eris::Account& mAccount;
 	Eris::Avatar& mAvatar;
 	Eris::Connection& mConnection;
 };

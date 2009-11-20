@@ -42,45 +42,41 @@
 
 #include <sstream>
 
+namespace Ember
+{
 
-namespace Ember {
-
-ConnectedAdapter::ConnectedAdapter(Eris::Avatar& avatar, Eris::Connection& connection) : mAvatar(avatar), mConnection(connection)
+ConnectedAdapter::ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar, Eris::Connection& connection) :
+	mAccount(account), mAvatar(avatar), mConnection(connection)
 {
 }
-
 
 ConnectedAdapter::~ConnectedAdapter()
 {
 }
 
-void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest) {
+void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest)
+{
 	try {
 		mAvatar.moveToPoint(dest);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING( "Got error on moving." << ex);
 	}
 }
 
-void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
+void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation)
+{
 	try {
 		mAvatar.moveInDirection(velocity, orientation);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on moving." << ex);
 	}
 }
 
-
-void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
+void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity)
+{
 	try {
 		mAvatar.moveInDirection(velocity);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on moving." << ex);
 	}
 }
@@ -95,9 +91,7 @@ void ConnectedAdapter::touch(Eris::Entity* entity)
 {
 	try {
 		mAvatar.touch(entity);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on touching." << ex);
 	}
 }
@@ -106,9 +100,7 @@ void ConnectedAdapter::emote(const std::string& emote)
 {
 	try {
 		mAvatar.emote(emote);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on emoting." << ex);
 	}
 }
@@ -117,9 +109,7 @@ void ConnectedAdapter::take(Eris::Entity* entity)
 {
 	try {
 		mAvatar.take(entity);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on taking." << ex);
 	}
 }
@@ -128,23 +118,21 @@ void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offse
 {
 	try {
 		mAvatar.drop(entity, offset);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on dropping." << ex);
 	}
 }
 void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
 {
 	///use the existing orientation
-	place(entity, target, pos, entity->getOrientation( ));
+	place(entity, target, pos, entity->getOrientation());
 }
 
 void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
 {
 	try {
 		std::stringstream ss;
-		ss << "Placing " << entity->getName() << " inside " << target->getName() << " at position "<< pos << " and orientation " << orient << ".";
+		ss << "Placing " << entity->getName() << " inside " << target->getName() << " at position " << pos << " and orientation " << orient << ".";
 		S_LOG_VERBOSE(ss.str());
 		/// we want to do orientation too so we can't use the Avatar::place method until that's updated
 		Atlas::Objects::Entity::Anonymous what;
@@ -166,11 +154,8 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 
 		mConnection.send(moveOp);
 
-
-// 			mAvatar.place(entity, target, pos, orient);
-	}
-	catch (const std::exception& ex)
-	{
+		// 			mAvatar.place(entity, target, pos, orient);
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on dropping." << ex);
 	}
 }
@@ -180,9 +165,7 @@ void ConnectedAdapter::wield(Eris::Entity* entity)
 	try {
 		mAvatar.wield(entity);
 
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on wielding." << ex);
 	}
 }
@@ -194,9 +177,7 @@ void ConnectedAdapter::use(Eris::Entity* entity, WFMath::Point<3> pos, const std
 		ss << pos;
 		S_LOG_VERBOSE("Using " << entity->getName() << " with operation '" << operation << "' at position "<< ss.str() << ".");
 		mAvatar.useOn(entity, pos, operation);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on using." << ex);
 	}
 }
@@ -205,9 +186,7 @@ void ConnectedAdapter::useStop()
 {
 	try {
 		mAvatar.useStop();
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on stopping using." << ex);
 	}
 }
@@ -218,7 +197,7 @@ void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
-	// 	what->setObjtype("obj");
+		// 	what->setObjtype("obj");
 
 		Atlas::Objects::Operation::RootOperation actionOp;
 		actionOp->setObjtype("op");
@@ -235,12 +214,9 @@ void ConnectedAdapter::actuate(Eris::Entity* entity, const std::string& action)
 		actuateOp->setParents(actuateParents);
 		actuateOp->setFrom(mAvatar.getEntity()->getId());
 
-
 		S_LOG_INFO("Actuating entity with id " << entity->getId() << ", named " << entity->getName() << " with action '" << action << "'.");
 		mConnection.send(actuateOp);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on actuating." << ex);
 	}
 }
@@ -258,9 +234,7 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 
 		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
 		mConnection.send(deleteOp);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on deleting entity." << ex);
 	}
 }
@@ -270,7 +244,7 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
-		for(Atlas::Message::MapType::iterator I = elements.begin(); I != elements.end(); ++I) {
+		for (Atlas::Message::MapType::iterator I = elements.begin(); I != elements.end(); ++I) {
 			what->setAttr(I->first, I->second);
 		}
 
@@ -281,21 +255,16 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 
 		S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
 		mConnection.send(setOp);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on setting attributes on entity." << ex);
 	}
 }
-
 
 void ConnectedAdapter::attack(Eris::Entity* entity)
 {
 	try {
 		mAvatar.attack(entity);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on attack." << ex);
 	}
 }
@@ -313,13 +282,10 @@ void ConnectedAdapter::eat(Eris::Entity* entity)
 
 		S_LOG_INFO("Eating entity with id " << entity->getId() << ", named " << entity->getName());
 		mConnection.send(op);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on eating entity." << ex);
 	}
 }
-
 
 void ConnectedAdapter::say(const std::string &message)
 {
@@ -330,9 +296,7 @@ void ConnectedAdapter::say(const std::string &message)
 		msg = "Saying: [" + message + "]. ";
 		ConsoleBackend::getSingletonPtr()->pushMessage(msg);
 		S_LOG_VERBOSE( msg);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on say." << ex);
 	}
 }
@@ -355,9 +319,7 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 
 		mConnection.send(sound);
 
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on admin_tell." << ex);
 	}
 }
@@ -366,33 +328,26 @@ void ConnectedAdapter::createTypeInfo(const Atlas::Objects::Root& typeInfo)
 {
 	try {
 		Atlas::Objects::Operation::Create createOp;
-		createOp->setFrom(mAvatar.getEntity()->getId());
-		//setOp->setTo(entity->getId());
+		createOp->setFrom(mAccount.getId());
 		createOp->setArgs1(typeInfo);
 
 		S_LOG_INFO("Sending new type info data.");
 		mConnection.send(createOp);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on sending new type info data." << ex);
 	}
 }
-
 
 void ConnectedAdapter::setTypeInfo(const Atlas::Objects::Root& typeInfo)
 {
 	try {
 		Atlas::Objects::Operation::Set setOp;
-		setOp->setFrom(mAvatar.getEntity()->getId());
-		//setOp->setTo(entity->getId());
+		setOp->setFrom(mAccount.getId());
 		setOp->setArgs1(typeInfo);
 
 		S_LOG_INFO("Sending updated type info data.");
 		mConnection.send(setOp);
-	}
-	catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on sending updated type info data." << ex);
 	}
 }

@@ -304,7 +304,7 @@ void ServerService::gotAvatarSuccess(Eris::Avatar* avatar)
 		GotView.emit(mView);
 	}
 	delete mServerAdapter;
-	mServerAdapter = new ConnectedAdapter(*mAvatar, *mConn);
+	mServerAdapter = new ConnectedAdapter(*mAccount, *mAvatar, *mConn);
 
 }
 
