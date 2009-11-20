@@ -137,12 +137,10 @@ public:
 	 */
 	TerrainGenerator(ISceneManagerAdapter* adapter);
 
-
 	/**
 	 * @brief Dtor.
 	 */
 	virtual ~TerrainGenerator();
-
 
 	/**
 	 * @brief At each frame, we check for updates shaders and updates the terrain. This is because we want to batch together changes.
@@ -151,6 +149,11 @@ public:
 	 */
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
+	/**
+	 * @copydoc Ember::ConsoleObject::runCommand 
+	 */
+	virtual	void runCommand(const std::string& command, const std::string& args);
+	
 	/**
 	 * @brief Prepares all segments acquired from Mercator. Note that this can be very, very expensive if there's a lot of terrain defined.
 	 */
@@ -164,7 +167,7 @@ public:
 	 * @param height The height, in world space, at the specified position.
 	 * @returns True if there was a valid, populated segment at the position (and therefore also a valid height).
 	 */
-	virtual bool getHeight(const TerrainPosition& atPosition, float& height) const;
+	bool getHeight(const TerrainPosition& atPosition, float& height) const;
 
 	/**
 	 * @brief Updates the terrain with new terrain points.
@@ -172,7 +175,6 @@ public:
 	 * @return True if the terrain was successfully updated.
 	 */
 	bool updateTerrain(const TerrainDefPointStore& terrainIndexPoints);
-
 
 	/**
 	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
@@ -210,19 +212,19 @@ public:
 
 	/**
 	 * @brief Gets the size of one page as indices.
-	 * @return
+	 * @return The size of one page as indices.
 	 */
 	int getPageIndexSize() const;
 
 	/**
 	 * @brief Adds a new Mercator::Area to the terrain.
-	 * @param area
+	 * @param area Area to be added
 	 */
 	void addArea(TerrainArea* terrainArea);
 
 	/**
-	 *    @brief Adds a new Mercator::TerrainMod to the terrain.
-	 * @param mod
+	 * @brief Adds a new Mercator::TerrainMod to the terrain.
+	 * @param mod Mod to be added
 	 */
 	void addTerrainMod(TerrainMod* terrainMod);
 
@@ -241,11 +243,6 @@ public:
 	 * @return An terrain page, or null of no page can be found at the specified position.
 	 */
 	TerrainPage* getTerrainPageAtPosition(const TerrainPosition& worldPosition) const;
-
-	/**
-	 * @copydoc Ember::ConsoleObject::runCommand
-	 */
-	virtual	void runCommand(const std::string& command, const std::string& args);
 
 	/**
 	 * @brief Accessor for the main terrain info instance.
