@@ -85,8 +85,9 @@ public:
 	 * @brief Ctor.
 	 * @param position The page index in WF space.
 	 * @param generator The terrain generator.
+	 * @param bridge A valid bridge instance. The bridge will be responsible for updating the terrain engine after the Mercator terrain has changed.
 	 */
-	TerrainPage(TerrainPosition position, TerrainGenerator& generator);
+	TerrainPage(TerrainPosition position, TerrainGenerator& generator, ITerrainPageBridge* bridge);
 
 	/**
 	 * @brief Dtor.

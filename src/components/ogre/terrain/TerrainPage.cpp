@@ -77,9 +77,10 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator)
+TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator, ITerrainPageBridge* bridge)
 : mGenerator(generator)
 , mPosition(position)
+, mBridge(0)
 , mGeometry(new TerrainPageGeometry(*this, -15))
 , mTerrainSurface(new TerrainPageSurface(*this))
 , mShadow(*this)
@@ -87,7 +88,6 @@ TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator)
 , mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
 )
 , mPageFoliage(new TerrainPageFoliage(mGenerator, *this))
-, mBridge(0)
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
@@ -95,6 +95,7 @@ TerrainPage::TerrainPage(TerrainPosition position, TerrainGenerator& generator)
 	setupShadowTechnique();
 	mTerrainSurface->setShadow(&mShadow);
 
+	registerBridge(bridge);
 }
 
 TerrainPage::~TerrainPage()
