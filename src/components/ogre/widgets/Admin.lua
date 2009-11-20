@@ -42,6 +42,12 @@ function Admin.buildWidget()
 		Admin.addMenuItem("Environment", "Admin.Environment_Click", "Shows environment widget.")
 		Admin.addMenuItem("Network log", "Admin.NetworkLog_Click", "Shows network log widget.")
 		Admin.addMenuItem("Visualize entities", "Admin.VisualizeEntities_Click", "Visualizes entities.")
+		Admin.addMenuItem("Type manager", 
+			function(args)
+				console:runCommand("/show_typeManager")
+				return true
+			end,
+			"Manage server types.")
 		
 	
 		root:addChildWindow(Admin.popup)
@@ -132,6 +138,8 @@ function Admin.NetworkLog_Click(args)
 	console:runCommand("/show_serverLogger")
 	return true
 end
+
+
 
 function Admin.VisualizeEntities_Click(args)
 	if emberServices:getConfigService():itemExists("authoring", "visualizations") then
