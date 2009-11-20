@@ -18,6 +18,12 @@
 				<Property Name='UnifiedPosition' Value='{{0,210},{0,0}}'/>
 				<Property Name='UnifiedSize' Value='{{1,-210},{1,-40}}'/>
 			</Window>
+			<Window Type='EmberLook/Combobox' Name='CodecType'>
+				<Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{1,-210},{1.0,-30.0}}'/>
+				<Property Name='ReadOnly' Value='true'/>
+				<Property Name='ClippedByParent' Value='false' />
+			</Window>			
 			<Window Type='EmberLook/Button' Name='SendToServerButton'>
 				<Property Name='Text' Value='Send to server'/>
 				<Property Name='UnifiedPosition' Value='{{1,-105},{1,-25}}'/>
