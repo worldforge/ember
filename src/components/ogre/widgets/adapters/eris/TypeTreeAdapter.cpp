@@ -19,6 +19,7 @@
 #include "TypeTreeAdapter.h"
 
 #include "../../ColouredListItem.h"
+#include "framework/LoggingInstance.h"
 
 #include <Eris/TypeService.h>
 #include <Eris/TypeInfo.h>
@@ -62,8 +63,9 @@ bool TypeTreeAdapter::initialize(const std::string& rootTypeName)
 void TypeTreeAdapter::loadAllTypes()
 {
 	if (mRootTypeInfo) {
-		if (mRootTypeInfo->hasUnresolvedChildren())
+		if (mRootTypeInfo->hasUnresolvedChildren()) {
 			mRootTypeInfo->resolveChildren();
+		}
 		const ::Eris::TypeInfoSet children = mRootTypeInfo->getChildren();
 		::Eris::TypeInfoSet::const_iterator I = children.begin();
 		::Eris::TypeInfoSet::const_iterator I_end = children.end();
@@ -76,20 +78,28 @@ void TypeTreeAdapter::loadAllTypes()
 
 void TypeTreeAdapter::addToTree(::Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive)
 {
+	ReverseTypeTreeStore::iterator I = mTreeItemLookup.find(typeInfo);
 
-	CEGUI::TreeItem* item = ColouredTreeItem::create(typeInfo->getName());
-	item->toggleIsOpen();
-	if (!parent) {
-		mTreeWidget.addItem(item);
+	CEGUI::TreeItem* item = 0;
+	if (I == mTreeItemLookup.end()) {
+		item = ColouredTreeItem::create(typeInfo->getName());
+		item->toggleIsOpen();
+		if (!parent) {
+			mTreeWidget.addItem(item);
+		} else {
+			parent->addItem(item);
+		}
+		mTypeLookup[item] = typeInfo;
+		mTreeItemLookup[typeInfo] = item;
 	} else {
-		parent->addItem(item);
+		item = I->second;
 	}
-	mTypeLookup[item] = typeInfo;
-	mTreeItemLookup[typeInfo] = item;
 
 	if (addRecursive) {
-		if (typeInfo->hasUnresolvedChildren())
+		if (typeInfo->hasUnresolvedChildren()) {
+			S_LOG_VERBOSE("Resolving children for " << typeInfo->getName());
 			typeInfo->resolveChildren();
+		}
 		const ::Eris::TypeInfoSet children = typeInfo->getChildren();
 		::Eris::TypeInfoSet::const_iterator I = children.begin();
 		::Eris::TypeInfoSet::const_iterator I_end = children.end();
@@ -104,14 +114,16 @@ void TypeTreeAdapter::addToTree(::Eris::TypeInfo* typeInfo, CEGUI::TreeItem* par
 void TypeTreeAdapter::boundAType(::Eris::TypeInfo* typeInfo)
 {
 
-	if (mTreeItemLookup.find(typeInfo) == mTreeItemLookup.end() && mRootTypeInfo) {
-		if (typeInfo->isA(mRootTypeInfo)) {
-			if (typeInfo->getParents().size()) {
-				::Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
-				CEGUI::TreeItem* parent = mTreeWidget.findFirstItemWithText(parentType->getName());
-				addToTree(typeInfo, parent);
+	if (mRootTypeInfo && typeInfo->isA(mRootTypeInfo)) {
+		CEGUI::TreeItem* parent = 0;
+		if (typeInfo->getParents().size()) {
+			::Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
+			ReverseTypeTreeStore::iterator I = mTreeItemLookup.find(parentType);
+			if (I == mTreeItemLookup.end()) {
+				parent = I->second;
 			}
 		}
+		addToTree(typeInfo, parent, true);
 	}
 }
 
