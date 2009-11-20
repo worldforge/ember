@@ -672,6 +672,58 @@ static int tolua_Framework_std_stringstream_new00_local(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: new of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_Framework_std_stringstream_new01
+static int tolua_Framework_std_stringstream_new01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"std::stringstream",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const std::string str = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  {
+   std::stringstream* tolua_ret = (std::stringstream*)  new std::stringstream(str);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"std::stringstream");
+   tolua_pushcppstring(tolua_S,(const char*)str);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_Framework_std_stringstream_new00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  std::stringstream */
+#ifndef TOLUA_DISABLE_tolua_Framework_std_stringstream_new01_local
+static int tolua_Framework_std_stringstream_new01_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"std::stringstream",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  const std::string str = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  {
+   std::stringstream* tolua_ret = (std::stringstream*)  new std::stringstream(str);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"std::stringstream");
+   tolua_pushcppstring(tolua_S,(const char*)str);
+  }
+ }
+ return 2;
+tolua_lerror:
+ return tolua_Framework_std_stringstream_new00_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: delete of class  std::stringstream */
 #ifndef TOLUA_DISABLE_tolua_Framework_std_stringstream_delete00
 static int tolua_Framework_std_stringstream_delete00(lua_State* tolua_S)
@@ -851,6 +903,9 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
     tolua_function(tolua_S,"new",tolua_Framework_std_stringstream_new00);
     tolua_function(tolua_S,"new_local",tolua_Framework_std_stringstream_new00_local);
     tolua_function(tolua_S,".call",tolua_Framework_std_stringstream_new00_local);
+    tolua_function(tolua_S,"new",tolua_Framework_std_stringstream_new01);
+    tolua_function(tolua_S,"new_local",tolua_Framework_std_stringstream_new01_local);
+    tolua_function(tolua_S,".call",tolua_Framework_std_stringstream_new01_local);
     tolua_function(tolua_S,"delete",tolua_Framework_std_stringstream_delete00);
     tolua_function(tolua_S,"str",tolua_Framework_std_stringstream_str00);
     tolua_variable(tolua_S,"__std__istream__",tolua_get_std__stringstream___std__istream__,NULL);

@@ -8,6 +8,7 @@ class stringstream : public std::iostream, public std::istream, public std::ostr
 {
 public:
 	stringstream();
+	stringstream(const std::string& str);
 	~stringstream();
 	std::string str() const;
 };

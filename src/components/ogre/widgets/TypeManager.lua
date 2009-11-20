@@ -28,7 +28,7 @@ end
 
 function TypeManager.SendToServerButton_Clicked(args)
 
-	local outstream = std.stringstream:new_local()
+	local outstream = std.stringstream:new_local(TypeManager.typeInfoText:getText())
 	local decoder = EmberOgre.Authoring.AtlasObjectDecoder:new_local()
 
 	local codec = Atlas.Codecs.XML:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
