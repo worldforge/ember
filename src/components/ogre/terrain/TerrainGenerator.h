@@ -150,7 +150,7 @@ public:
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
 	/**
-	 * @copydoc Ember::ConsoleObject::runCommand 
+	 * @copydoc Ember::ConsoleObject::runCommand
 	 */
 	virtual	void runCommand(const std::string& command, const std::string& args);
 
@@ -177,20 +177,6 @@ public:
 	bool updateTerrain(const TerrainDefPointStore& terrainIndexPoints);
 
 	/**
-	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
-	 * By valid means a populated terrain-
-	 * @param pos A position in the world.
-	 * @return true if the terrain at the position is valid.
-	 */
-	bool isValidTerrainAt(const TerrainPosition& pos) const;
-
-	/**
-	 * @brief Provides access to the underlying Mercator::Terrain object.
-	 * @return The main terrain object.
-	 */
-	const Mercator::Terrain& getTerrain() const;
-
-	/**
 	 * @brief Gets the max boundaries of the terrain.
 	 * @return
 	 */
@@ -211,12 +197,6 @@ public:
 
 
 	/**
-	 * @brief Gets the size of one page as indices.
-	 * @return The size of one page as indices.
-	 */
-	int getPageIndexSize() const;
-	
-	/**
 	 * @brief Adds a new Mercator::Area to the terrain.
 	 * @param area Area to be added
 	 */
@@ -227,6 +207,22 @@ public:
 	 * @param mod Mod to be added
 	 */
 	void addTerrainMod(TerrainMod* terrainMod);
+
+	/**
+	 * @brief Create and registers a new texture shader.
+	 * @param layerDef The terrain layer defintiion to use. This will be used to determine what textures and materials to use for rendering the layer defined by the shader.
+	 * @param mercatorShader The Mercator::Shader to use.
+	 * @return
+	 */
+	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
+
+	/**
+	 * @brief Returns the height at the specified position in the world.
+	 * This will be done using the underlying Mercator data, which depending on LOD techniques used can differ some from the actual graphical representation.
+	 * @param atPosition The position, in world space, to get the height for.
+	 * @return The height, in world space, at the specified position ('heightNotFound' if the terrain at given position doesn't exist).
+	 */
+	float getHeight(const TerrainPosition& atPosition) const;
 
 	/**
 	 * @brief Returns a TerrainPage, creating one if there's no existing and so requested.
@@ -251,23 +247,16 @@ public:
 	const TerrainInfo& getTerrainInfo() const;
 
 	/**
-	 * @brief Emitted when the size of the world has changed.
-	 */
-	sigc::signal<void> EventWorldSizeChanged;
-
-	/**
 	 * @brief Gets the adapter used to bind this generator to a scene manager.
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
 	ISceneManagerAdapter* getAdapter() const;
 
 	/**
-	 * @brief Create and registers a new texture shader.
-	 * @param layerDef The terrain layer defintiion to use. This will be used to determine what textures and materials to use for rendering the layer defined by the shader.
-	 * @param mercatorShader The Mercator::Shader to use.
-	 * @return
+	 * @brief Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
+	 * @return The size of on foliage batch, in world units.
 	 */
-	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
+	unsigned int getFoliageBatchSize() const;
 
 
 	/**
@@ -303,6 +292,31 @@ public:
 	 * @return True if a valid segment and normal could be found at the specified world position.
 	 */
 	bool getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const;
+
+	/**
+	 * @brief Provides access to the underlying Mercator::Terrain object.
+	 * @return The main terrain object.
+	 */
+	const Mercator::Terrain& getTerrain() const;
+
+	/**
+	 * @brief Gets the size of one page as indices.
+	 * @return The size of one page as indices.
+	 */
+	int getPageIndexSize() const;
+
+	/**
+	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
+	 * By valid means a populated terrain-
+	 * @param pos A position in the world.
+	 * @return true if the terrain at the position is valid.
+	 */
+	bool isValidTerrainAt(const TerrainPosition& pos) const;
+
+	/**
+	 * @brief Emitted when the size of the world has changed.
+	 */
+	sigc::signal<void> EventWorldSizeChanged;
 
 	/**
 	@brief Emitted when a layer is updated.
@@ -343,12 +357,6 @@ public:
 	sigc::signal<void, TerrainPage&> EventTerrainPageGeometryUpdated;
 
 	/**
-	 * @brief Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
-	 * @return The size of on foliage batch, in world units.
-	 */
-	unsigned int getFoliageBatchSize() const;
-
-	/**
 	 *    @brief Whether the foliage should be shown or not.
 	 *    @note If the GPU doesn't support the required shaders, this will return false even though it's set in the config.
 	 * @return
@@ -366,7 +374,7 @@ protected:
 		 * Unless UpdateAll is true, this should be used for determining what geometry needs updating.
 		 */
 		AreaStore Areas;
-	
+
 		/**
 		 * @brief If this is set to true, all geometry should be updated, no matter what areas are specified in Areas.
 		 */
@@ -517,12 +525,12 @@ protected:
 	 */
 	void shaderManager_LevelChanged(ShaderManager* shaderManager);
 
+	/**
 	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
 	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
 	 */
 	void buildHeightmap();
 
-	/**
 
 };
 
