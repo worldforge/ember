@@ -3878,42 +3878,6 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_addTerrainMod00(lu
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getTerrainPageAtIndex of class  EmberOgre::Terrain::TerrainGenerator */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_getTerrainPageAtIndex00
-static int tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_getTerrainPageAtIndex00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::TerrainGenerator",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"const Ogre::Vector2",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,3,1,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  EmberOgre::Terrain::TerrainGenerator* self = (EmberOgre::Terrain::TerrainGenerator*)  tolua_tousertype(tolua_S,1,0);
-  const Ogre::Vector2* ogreIndexPosition = ((const Ogre::Vector2*)  tolua_tousertype(tolua_S,2,0));
-  bool createIfMissing = ((bool)  tolua_toboolean(tolua_S,3,true));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTerrainPageAtIndex'",NULL);
-#endif
-  {
-   EmberOgre::Terrain::TerrainPage* tolua_ret = (EmberOgre::Terrain::TerrainPage*)  self->getTerrainPageAtIndex(*ogreIndexPosition,createIfMissing);
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainPage");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getTerrainPageAtIndex'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getTerrainPageAtPosition of class  EmberOgre::Terrain::TerrainGenerator */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_getTerrainPageAtPosition00
 static int tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_getTerrainPageAtPosition00(lua_State* tolua_S)
@@ -23004,7 +22968,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"getPageIndexSize",tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_getPageIndexSize00);
      tolua_function(tolua_S,"addArea",tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_addArea00);
      tolua_function(tolua_S,"addTerrainMod",tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_addTerrainMod00);
-     tolua_function(tolua_S,"getTerrainPageAtIndex",tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_getTerrainPageAtIndex00);
      tolua_function(tolua_S,"getTerrainPageAtPosition",tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_getTerrainPageAtPosition00);
      tolua_function(tolua_S,"getTerrainInfo",tolua_EmberOgre_EmberOgre_Terrain_TerrainGenerator_getTerrainInfo00);
      tolua_variable(tolua_S,"EventWorldSizeChanged",tolua_get_EmberOgre__Terrain__TerrainGenerator_EventWorldSizeChanged,tolua_set_EmberOgre__Terrain__TerrainGenerator_EventWorldSizeChanged);
