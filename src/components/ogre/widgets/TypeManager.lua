@@ -4,34 +4,38 @@ TypeManager = {connectors={}, codecClass=Atlas.Codecs.XML}
 function TypeManager.buildWidget()
 
 	TypeManager.widget = guiManager:createWidget()
-	TypeManager.widget:loadMainSheet("TypeManager.layout", "TypeManager/")
-	
-	TypeManager.typeTree = tolua.cast(TypeManager.widget:getWindow("TypeList"), "CEGUI::Tree")
-	TypeManager.typeTree:subscribeEvent("ItemSelectionChanged", "TypeManager.TypeList_SelectionChanged")
 
-	TypeManager.codecTypeCombobox = CEGUI.toCombobox(TypeManager.widget:getWindow("CodecType"))
-	
-	local item = EmberOgre.Gui.ColouredListItem:new("XML", 0)
-	TypeManager.codecTypeCombobox:addItem(item)
-	item = EmberOgre.Gui.ColouredListItem:new("Bach", 1)
-	TypeManager.codecTypeCombobox:addItem(item)
-	item = EmberOgre.Gui.ColouredListItem:new("Packed", 2)
-	TypeManager.codecTypeCombobox:addItem(item)
-	TypeManager.codecTypeCombobox:setItemSelectState(0, true)
-	TypeManager.codecTypeCombobox:setSingleClickEnabled(true)
-	TypeManager.codecTypeCombobox:subscribeEvent("ListSelectionChanged", "TypeManager.CodecType_ListSelectionChanged")
-
-	
-	TypeManager.typeInfoText = CEGUI.toMultiLineEditbox(TypeManager.widget:getWindow("TypeInfoText"))
-
-	TypeManager.typeAdapter = EmberOgre.Gui.Adapters.Eris.TypeTreeAdapter:new_local(emberServices:getServerService():getConnection():getTypeService(), TypeManager.typeTree)
-	TypeManager.typeAdapter:initialize("root")
-	
-	TypeManager.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", "TypeManager.SendToServerButton_Clicked")
+	local setup = function()
 		
+		TypeManager.typeTree = tolua.cast(TypeManager.widget:getWindow("TypeList"), "CEGUI::Tree")
+		TypeManager.typeTree:subscribeEvent("ItemSelectionChanged", "TypeManager.TypeList_SelectionChanged")
+	
+		TypeManager.codecTypeCombobox = CEGUI.toCombobox(TypeManager.widget:getWindow("CodecType"))
+		
+		local item = EmberOgre.Gui.ColouredListItem:new("XML", 0)
+		TypeManager.codecTypeCombobox:addItem(item)
+		item = EmberOgre.Gui.ColouredListItem:new("Bach", 1)
+		TypeManager.codecTypeCombobox:addItem(item)
+		item = EmberOgre.Gui.ColouredListItem:new("Packed", 2)
+		TypeManager.codecTypeCombobox:addItem(item)
+		TypeManager.codecTypeCombobox:setItemSelectState(0, true)
+		TypeManager.codecTypeCombobox:setSingleClickEnabled(true)
+		TypeManager.codecTypeCombobox:subscribeEvent("ListSelectionChanged", "TypeManager.CodecType_ListSelectionChanged")
+	
+		
+		TypeManager.typeInfoText = CEGUI.toMultiLineEditbox(TypeManager.widget:getWindow("TypeInfoText"))
+	
+		TypeManager.typeAdapter = EmberOgre.Gui.Adapters.Eris.TypeTreeAdapter:new_local(emberServices:getServerService():getConnection():getTypeService(), TypeManager.typeTree)
+		TypeManager.typeAdapter:initialize("root")
+		
+		TypeManager.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", "TypeManager.SendToServerButton_Clicked")
+			
+		TypeManager.widget:enableCloseButton()
+	end
+
+	connect(TypeManager.connectors, TypeManager.widget.EventFirstTimeShown, setup)
+	TypeManager.widget:loadMainSheet("TypeManager.layout", "TypeManager/")
 	TypeManager.widget:registerConsoleVisibilityToggleCommand("typeManager")
-	TypeManager.widget:enableCloseButton()
-	TypeManager.widget:hide()
 
 end
 
