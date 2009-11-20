@@ -89,6 +89,117 @@ namespace EmberOgre {
 namespace Terrain {
 
 
+void TerrainGeneratorBackgroundWorker::pushPageIntoQueue(const TerrainPosition& pos, ITerrainPageBridge* bridge)
+{
+	// add to queue
+	{
+		boost::mutex::scoped_lock lock(mMutexPagesQueue);
+		mPagesQueue.push_back(std::pair<TerrainPosition, ITerrainPageBridge*>(pos, bridge));
+		S_LOG_INFO("Puting TerrainPage at index [" << pos.x() << "," << pos.y() << "] in the queue of background thread");
+	}
+
+	// call to create new page from queue, if available
+	createPageFromQueue();
+}
+
+TerrainPage* TerrainGeneratorBackgroundWorker::popPageReady()
+{
+	boost::mutex::scoped_lock lock(mMutexPagesReady);
+	if (mPagesReady.empty()) {
+		return 0;
+	} else {
+		TerrainPage* page = mPagesReady.front();
+		mPagesReady.pop_front();
+		return page;
+	}
+}
+
+void TerrainGeneratorBackgroundWorker::pushPageReady(TerrainPage* page)
+{
+	// push page ready
+	{
+		boost::mutex::scoped_lock lock(mMutexPagesReady);
+		mPagesReady.push_back(page);
+		S_LOG_INFO("TerrainPage at index [" << page->getWFPosition().x() << "," << page->getWFPosition().y() << "] ready, from background thread");
+	}
+
+	// set off processing flag
+	{
+		boost::mutex::scoped_lock lock(mMutexIsProcessing);
+		mIsProcessing = false;
+	}
+
+	// call to create new page from queue, if available
+	createPageFromQueue();
+}
+
+void TerrainGeneratorBackgroundWorker::createPageFromQueue()
+{
+	boost::mutex::scoped_lock lock(mMutexIsProcessing);
+	if (!mIsProcessing) {
+		boost::mutex::scoped_lock lock(mMutexPagesQueue);
+		if (!mPagesQueue.empty()) {
+			TerrainPosition pos = mPagesQueue.front().first;
+			ITerrainPageBridge* bridge = mPagesQueue.front().second;
+			S_LOG_INFO("TerrainPage at index [" << pos.x() << "," << pos.y() << "] being created from background thread");
+			boost::thread* t = new boost::thread(boost::bind(&TerrainGenerator::createPage,
+									 this, pos, bridge));
+			mPagesQueue.pop_front();
+			mIsProcessing = true;
+		}
+	}
+}
+
+
+
+//-----------------------------------------------------------------------------
+void TerrainGenerator::createPage(TerrainGeneratorBackgroundWorker* backgroundWorker, const TerrainPosition& pos, ITerrainPageBridge* bridge)
+{
+	///since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
+
+	TerrainGenerator& terrainGenerator = *(EmberOgre::getSingleton().getTerrainGenerator());
+
+	TerrainPage* page = 0;
+
+	{
+		page = new TerrainPage(pos, terrainGenerator);
+		page->registerBridge(bridge);
+	}
+
+	//add the base shaders, this should probably be refactored into a server side thing in the future
+	{
+		const std::list<TerrainShader*>& baseShaders = terrainGenerator.getBaseShaders();
+		for (std::list<TerrainShader*>::const_iterator I = baseShaders.begin(); I != baseShaders.end(); ++I) {
+			page->addShader(*I);
+		}
+	}
+
+	{
+		page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
+	}
+
+	{
+		page->generateTerrainMaterials(false);
+	}
+
+	{
+		if (terrainGenerator.isFoliageShown()) {
+			page->showFoliage();
+		}
+	}
+
+	{
+		//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
+		std::set<TerrainPage*> pagesToUpdate;
+		pagesToUpdate.insert(page);
+		updateEntityPositions(pagesToUpdate);
+	}
+
+	backgroundWorker->pushPageReady(page);
+}
+
+
+
 TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
 :
 UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
@@ -375,8 +486,19 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 
 	mShadersToUpdate.clear();
 	mChangedTerrainAreas.clear();
-	return true;
 
+	// pages created in background (one each time, we don't need overhead)
+	TerrainPage* page = mTerrainGeneratorBackgroundWorker.popPageReady();
+	if (page) {
+		const TerrainPosition& pos = page->getWFPosition();
+		std::stringstream ss;
+		ss << pos.x() << "x" << pos.y();
+		mPages[ss.str()] = page;
+
+		page->notifyBridgePageReady();
+	}
+
+	return true;
 }
 
 int TerrainGenerator::getPageIndexSize() const
@@ -470,10 +592,9 @@ void TerrainGenerator::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPos
 	int y = static_cast<int>(pos.y());
 
 	if (mTerrainPages[x][y] == 0) {
-		mTerrainPages[x][y] = createPage(pos, bridge);
-		bridge.terrainPageReady();
+		mTerrainGeneratorBackgroundWorker.pushPageIntoQueue(pos, &bridge);
 	} else {
-		S_LOG_VERBOSE("Trying to set up TerrainPage at index at [" << x << "," << y << "], but it was already created");
+		S_LOG_WARNING("Trying to set up TerrainPage at index [" << x << "," << y << "], but it was already created");
 	}
 }
 
@@ -492,38 +613,10 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 	return mTerrainPages[x][y];
 }
 
-TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos, ITerrainPageBridge& bridge)
-{
 
 	bool showFoliage = isFoliageShown();
 
 
-	///since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
-
-	TerrainPage* page = new TerrainPage(TerrainPosition(pos), *this, &bridge);
-
-	std::stringstream ss;
-	ss << pos.x() << "x" << pos.y();
-	mPages[ss.str()] = page;
-
-	//add the base shaders, this should probably be refactored into a server side thing in the future
-	for (std::list<TerrainShader*>::iterator I = mBaseShaders.begin(); I != mBaseShaders.end(); ++I) {
-		page->addShader(*I);
-	}
-
-	page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
-	page->generateTerrainMaterials(false);
-	if (showFoliage) {
-		page->showFoliage();
-	}
-
-	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
-	std::set<TerrainPage*> pagesToUpdate;
-	pagesToUpdate.insert(page);
-	updateEntityPositions(pagesToUpdate);
-
-	return page;
-}
 
 void TerrainGenerator::updateFoliageVisibility()
 {
@@ -659,7 +752,6 @@ void TerrainGenerator::updateEntityPosition(EmberEntity* entity, const std::set<
 		updateEntityPosition(containedEntity, pagesToUpdate);
 	}
 }
-
 
 const TerrainPosition TerrainGenerator::getMax() const
 {

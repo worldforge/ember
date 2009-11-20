@@ -31,6 +31,11 @@
 
 #include <OgreFrameListener.h>
 
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
+
+#include <list>
+
 namespace Ogre {
 	class TerrainOptions;
 }
@@ -97,6 +102,50 @@ class TerrainDefPoint
 	float mHeight;
 };
 
+class TerrainGenerator;
+
+/**
+ * @brief Creates pages in a background thread.
+ *
+ * @author Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>
+ *
+ */
+class TerrainGeneratorBackgroundWorker
+{
+public:
+	/** Ctor. */
+	TerrainGeneratorBackgroundWorker() : mIsProcessing(false) {}
+
+	/** Push a page into the queue, to be loaded in the background */
+	void pushPageIntoQueue(const TerrainPosition& pos, ITerrainPageBridge* bridge);
+
+	/** Get one of the ready pages.
+	 *
+	 * @return 0 if not available, the first in the set of created pages otherwise
+	 */
+	TerrainPage* popPageReady();
+
+	/** Push one of ready page, called when the page creator completes the operation.
+	 */
+	void pushPageReady(TerrainPage* page);
+
+private:
+	/// Set of pages ready
+	std::list<TerrainPage*> mPagesReady;
+	/// Queue of pages to be loaded
+	std::list<std::pair<TerrainPosition, ITerrainPageBridge*> > mPagesQueue;
+	/// Flag to know when a thread is already processing a request (only one request at a time, pages access other pages' data so they cannot be created in parallel)
+	bool mIsProcessing;
+	/// Mutex for shared variable
+	boost::mutex mMutexPagesReady;
+	/// Mutex for shared variable
+	boost::mutex mMutexPagesQueue;
+	/// Mutex for shared variable
+	boost::mutex mMutexIsProcessing;
+
+	/** Helper function to peek at the queue and create a page if requested */
+	void createPageFromQueue();
+};
 
 
 /**
@@ -110,7 +159,17 @@ class TerrainDefPoint
  */
 class TerrainGenerator : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
 {
+	friend class TerrainGeneratorBackgroundWorker;
+
 public:
+
+	/**
+	 *   Creates a new TerrainPage and puts it in mTerrainPages.  Static to be accessed by the thread.
+	 * @param backgroundWorker
+	 * @param pos
+	 * @param bridge
+	 */
+	static void createPage(TerrainGeneratorBackgroundWorker* backgroundWorker, const TerrainPosition& pos, ITerrainPageBridge* bridge);
 
 	/**
 	 * @brief A type used for storing changes to aeas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
@@ -255,6 +314,12 @@ public:
 	 * @return The size of on foliage batch, in world units.
 	 */
 	unsigned int getFoliageBatchSize() const;
+
+	/**
+	 * @brief Accessor for base shaders.
+	 * @return A store of shaders.
+	 */
+	const std::list<TerrainShader*>& getBaseShaders() const;
 
 
 	/**
@@ -439,14 +504,6 @@ protected:
 	bool mHasTerrainInfo;
 
 	/**
-	 *   Creates a new TerrainPage and puts it in mTerrainPages
-	 * @param pos
-	 * @param bridge
-	 */
-	TerrainPage* createPage(const TerrainPosition& pos, ITerrainPageBridge& bridge);
-
-
-	/**
 	 * This holds a map of the TerrainShaders
 	 */
 	ShaderStore mShaderMap;
@@ -471,9 +528,8 @@ protected:
 	 */
 	void reloadTerrain(std::vector<TerrainPosition>& positions);
 	void updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate);
-	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
-	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
-
+	static void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
+	static void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
 
 	/**
@@ -530,8 +586,15 @@ protected:
 	 */
 	void buildHeightmap();
 
+	/** Background worker, to perform operations in the background */
+	TerrainGeneratorBackgroundWorker mTerrainGeneratorBackgroundWorker;
 
 };
+}
+
+inline const std::list<TerrainShader*>& TerrainGenerator::getBaseShaders() const
+{
+	return mBaseShaders;
 
 inline unsigned int TerrainGenerator::getFoliageBatchSize() const
 {
