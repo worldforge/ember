@@ -65,7 +65,6 @@ void RawTypeInfoRepository::server_ReceivedObject(const Atlas::Objects::Root& op
 
 void RawTypeInfoRepository::parseAndSaveTypeData(const Atlas::Objects::Root& rawType)
 {
-	S_LOG_VERBOSE("Saving type with id " << rawType->getId());
 	mRawTypeData[rawType->getId()] = rawType;
 }
 
