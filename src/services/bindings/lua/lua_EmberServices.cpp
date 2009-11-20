@@ -56,6 +56,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"WFMath::Point<3>");
  tolua_usertype(tolua_S,"WFMath::Vector<3>");
  tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Entity::RootEntity&>");
+ tolua_usertype(tolua_S,"Atlas::Objects::Root");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Avatar*>");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::View*>");
  tolua_usertype(tolua_S,"SDLKey");
@@ -74,11 +75,11 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
  tolua_usertype(tolua_S,"Ember::InputService");
  tolua_usertype(tolua_S,"std::vector<std::string>");
- tolua_usertype(tolua_S,"varconf::Variable");
+ tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"Ember::Input");
  tolua_usertype(tolua_S,"Eris::Entity");
+ tolua_usertype(tolua_S,"varconf::Variable");
  tolua_usertype(tolua_S,"Ember::IScriptingProvider");
- tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
  tolua_usertype(tolua_S,"Ember::MetaserverService");
  tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::MouseButton,Ember::Input::InputMode>");
@@ -2214,6 +2215,72 @@ static int tolua_EmberServices_Ember_ServerService_setAttributes00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: createTypeInfo of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_createTypeInfo00
+static int tolua_EmberServices_Ember_ServerService_createTypeInfo00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Objects::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  const Atlas::Objects::Root* typeInfo = ((const Atlas::Objects::Root*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createTypeInfo'",NULL);
+#endif
+  {
+   self->createTypeInfo(*typeInfo);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'createTypeInfo'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setTypeInfo of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_setTypeInfo00
+static int tolua_EmberServices_Ember_ServerService_setTypeInfo00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"const Atlas::Objects::Root",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  const Atlas::Objects::Root* typeInfo = ((const Atlas::Objects::Root*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setTypeInfo'",NULL);
+#endif
+  {
+   self->setTypeInfo(*typeInfo);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setTypeInfo'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: GotAvatar of class  Ember::ServerService */
 #ifndef TOLUA_DISABLE_tolua_get_Ember__ServerService_GotAvatar
 static int tolua_get_Ember__ServerService_GotAvatar(lua_State* tolua_S)
@@ -3357,6 +3424,8 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"eat",tolua_EmberServices_Ember_ServerService_eat00);
     tolua_function(tolua_S,"deleteEntity",tolua_EmberServices_Ember_ServerService_deleteEntity00);
     tolua_function(tolua_S,"setAttributes",tolua_EmberServices_Ember_ServerService_setAttributes00);
+    tolua_function(tolua_S,"createTypeInfo",tolua_EmberServices_Ember_ServerService_createTypeInfo00);
+    tolua_function(tolua_S,"setTypeInfo",tolua_EmberServices_Ember_ServerService_setTypeInfo00);
     tolua_variable(tolua_S,"GotAvatar",tolua_get_Ember__ServerService_GotAvatar,tolua_set_Ember__ServerService_GotAvatar);
     tolua_variable(tolua_S,"GotView",tolua_get_Ember__ServerService_GotView,tolua_set_Ember__ServerService_GotView);
     tolua_variable(tolua_S,"GotConnection",tolua_get_Ember__ServerService_GotConnection,tolua_set_Ember__ServerService_GotConnection);

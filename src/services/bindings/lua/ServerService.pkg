@@ -57,6 +57,20 @@ class ServerService
 	void deleteEntity(Eris::Entity* entity);
 	void setAttributes(Eris::Entity* entity, Atlas::Message::MapType& attributes);
 
+	/**
+	 * @brief Creates new type data on the server.
+	 * This will only be allowed if you have admin rights on the server.
+	 * @param typeInfo The new type info.
+	 */
+	void createTypeInfo(const Atlas::Objects::Root& typeInfo);
+
+	/**
+	 * @brief Update existing type data on the server.
+	 * This will only be allowed if you have admin rights on the server.
+	 * @param typeInfo The new type info.
+	 */
+	void setTypeInfo(const Atlas::Objects::Root& typeInfo);
+
     //----------------------------------------------------------------------
 	// Signals
 	sigc::signal<void, Eris::Avatar*> GotAvatar;
