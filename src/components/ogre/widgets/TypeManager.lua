@@ -37,7 +37,12 @@ function TypeManager.SendToServerButton_Clicked(args)
 	local parsedObject = decoder:getLastObject()
 	
 	if parsedObject:isValid() then
-		emberServices:getServerService():setTypeInfo(parsedObject)
+		--If the type already exists, we need to send a "set" operation, else we need to send a "create" operation
+		if emberServices:getServerService():getConnection():getTypeService():findTypeByName(parsedObject:get():getId()) == nil then
+			emberServices:getServerService():createTypeInfo(parsedObject)
+		else
+			emberServices:getServerService():setTypeInfo(parsedObject)
+		end
 	end
 
 	return true
