@@ -3768,6 +3768,39 @@ static int tolua_Atlas_Atlas_Formatter_setSpacing00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: poll of class  Atlas::Codec */
+#ifndef TOLUA_DISABLE_tolua_Atlas_Atlas_Codec_poll00
+static int tolua_Atlas_Atlas_Codec_poll00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Atlas::Codec",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Atlas::Codec* self = (Atlas::Codec*)  tolua_tousertype(tolua_S,1,0);
+  bool can_get = ((bool)  tolua_toboolean(tolua_S,2,true));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'poll'",NULL);
+#endif
+  {
+   self->poll(can_get);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'poll'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_Atlas_open (lua_State* tolua_S)
 {
@@ -4078,6 +4111,7 @@ TOLUA_API int tolua_Atlas_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"Atlas");
    tolua_cclass(tolua_S,"Codec","Atlas::Codec","Atlas::Bridge",NULL);
    tolua_beginmodule(tolua_S,"Codec");
+    tolua_function(tolua_S,"poll",tolua_Atlas_Atlas_Codec_poll00);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

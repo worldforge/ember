@@ -76,6 +76,8 @@ $pfile "EntityRecipeManager.pkg"
 $pfile "EntityCreator.pkg"
 $pfile "AuthoringManager.pkg"
 $pfile "RawTypeInfoRepository.pkg"
+$pfile "AtlasObjectDecoder.pkg"
+
 
 $pfile "stdlib.pkg"
 
