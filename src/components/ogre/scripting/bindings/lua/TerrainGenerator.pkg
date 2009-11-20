@@ -194,12 +194,6 @@ public:
 	EmberOgre::Terrain::ISceneManagerAdapter* getAdapter() const;
 	
 	/**
-	 * @brief Accessor for all instances of TerrainPage that are registered with the generator.
-	 * @return A store of TerrainPage instances.
-	 */
-	inline const TerrainPagestore& getTerrainPages() const;
-	
-	/**
 	 * @brief Create and registers a new texture shader.
 	 * @param layerDef The terrain layer defintiion to use. This will be used to determine what textures and materials to use for rendering the layer defined by the shader.
 	 * @param mercatorShader The Mercator::Shader to use.

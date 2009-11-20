@@ -153,7 +153,7 @@ public:
 	 * @copydoc Ember::ConsoleObject::runCommand 
 	 */
 	virtual	void runCommand(const std::string& command, const std::string& args);
-	
+
 	/**
 	 * @brief Prepares all segments acquired from Mercator. Note that this can be very, very expensive if there's a lot of terrain defined.
 	 */
@@ -215,7 +215,7 @@ public:
 	 * @return The size of one page as indices.
 	 */
 	int getPageIndexSize() const;
-
+	
 	/**
 	 * @brief Adds a new Mercator::Area to the terrain.
 	 * @param area Area to be added
@@ -268,12 +268,6 @@ public:
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
 	ISceneManagerAdapter* getAdapter() const;
-
-	/**
-	 * @brief Accessor for all instances of TerrainPage that are registered with the generator.
-	 * @return A store of TerrainPage instances.
-	 */
-	const TerrainPagestore& getTerrainPages() const;
 
 	/**
 	 * @brief Create and registers a new texture shader.
@@ -380,7 +374,7 @@ protected:
 		 * Unless UpdateAll is true, this should be used for determining what geometry needs updating.
 		 */
 		AreaStore Areas;
-
+	
 		/**
 		 * @brief If this is set to true, all geometry should be updated, no matter what areas are specified in Areas.
 		 */
@@ -481,6 +475,8 @@ protected:
 	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
 	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
+
+
 	/**
 	 *    @brief Iterates through all TerrainPages and shows or hides the foliage.
 	 */
@@ -526,13 +522,14 @@ protected:
 	 */
 	void shaderManager_LevelChanged(ShaderManager* shaderManager);
 
+	 * @brief Rebuilds the Mercator height map, effectively regenerating the terrain.
+	 * Note that this only regenerates the Mercator height map, and won't update the Ogre representation.
+	 */
+	void buildHeightmap();
+
+	/**
 
 };
-
-inline const TerrainGenerator::TerrainPagestore& TerrainGenerator::getTerrainPages() const
-{
-	return mTerrainPages;
-}
 
 inline unsigned int TerrainGenerator::getFoliageBatchSize() const
 {
