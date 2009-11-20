@@ -56,6 +56,7 @@ class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
+class ITerrainPageBridge;
 
 /**
 @brief Defines the height of a special "base point" in the terrain.
@@ -217,21 +218,18 @@ public:
 	TerrainShader* createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader);
 
 	/**
-	 * @brief Returns the height at the specified position in the world.
-	 * This will be done using the underlying Mercator data, which depending on LOD techniques used can differ some from the actual graphical representation.
-	 * @param atPosition The position, in world space, to get the height for.
-	 * @return The height, in world space, at the specified position ('heightNotFound' if the terrain at given position doesn't exist).
+	 * @brief Sets up a TerrainPage.
+	 * @param ogreIndexPosition The index, in Ogre space, to create the new page on.
+	 * @param bridge The bridge to bind it to Ogre representation
 	 */
-	float getHeight(const TerrainPosition& atPosition) const;
+	void setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ITerrainPageBridge& bridge);
 
 	/**
-	 * @brief Returns a TerrainPage, creating one if there's no existing and so requested.
-	 * If createIfMissing is true and there is no yet existing, a new one is created.
+	 * @brief Returns a TerrainPage.
 	 * @param ogreIndexPosition The index, in Ogre space, to create the new page on.
-	 * @param createIfMissing If set to true, a new page will be created if there's no pre-existing. Defaults to true.
-	 * @return An instance of terrain page, or null if there was no existing one and createIfMissing was set to false.
+	 * @return An instance of terrain page, or null if there was no existing one.
 	 */
-	TerrainPage* getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing = true);
+	TerrainPage* getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition);
 
 	/**
 	 * @brief Gets the page at the specified position in the world. If no page can be found, a null pointer is returned.
@@ -443,8 +441,9 @@ protected:
 	/**
 	 *   Creates a new TerrainPage and puts it in mTerrainPages
 	 * @param pos
+	 * @param bridge
 	 */
-	TerrainPage* createPage(const TerrainPosition& pos);
+	TerrainPage* createPage(const TerrainPosition& pos, ITerrainPageBridge& bridge);
 
 
 	/**

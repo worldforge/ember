@@ -23,6 +23,7 @@
 #include "TerrainGenerator.h"
 
 #include "ISceneManagerAdapter.h"
+#include "ITerrainPageBridge.h"
 #include "TerrainShader.h"
 #include "TerrainPage.h"
 #include "TerrainPageShadow.h"
@@ -456,8 +457,7 @@ TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& w
 	return 0;
 }
 
-
-TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, bool createIfMissing)
+void TerrainGenerator::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ITerrainPageBridge& bridge)
 {
 	//_fpreset();
 
@@ -470,18 +470,29 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 	int y = static_cast<int>(pos.y());
 
 	if (mTerrainPages[x][y] == 0) {
-		if (createIfMissing) {
-
-			mTerrainPages[x][y] = createPage(pos);
-			assert(mTerrainPages[x][y]);
-		} else {
-			return 0;
-		}
+		mTerrainPages[x][y] = createPage(pos, bridge);
+		bridge.terrainPageReady();
+	} else {
+		S_LOG_VERBOSE("Trying to set up TerrainPage at index at [" << x << "," << y << "], but it was already created");
 	}
+}
+
+TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition)
+{
+	//_fpreset();
+
+	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
+	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo.getPageOffsetX());
+
+	TerrainPosition pos(Convert::toWF(adjustedOgrePos));
+
+	int x = static_cast<int>(pos.x());
+	int y = static_cast<int>(pos.y());
+
 	return mTerrainPages[x][y];
 }
 
-TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
+TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos, ITerrainPageBridge& bridge)
 {
 
 	bool showFoliage = isFoliageShown();
@@ -489,8 +500,7 @@ TerrainPage* TerrainGenerator::createPage(const TerrainPosition& pos)
 
 	///since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
 
-
-	TerrainPage* page = new TerrainPage(TerrainPosition(pos), *this);
+	TerrainPage* page = new TerrainPage(TerrainPosition(pos), *this, &bridge);
 
 	std::stringstream ss;
 	ss << pos.x() << "x" << pos.y();
