@@ -21,6 +21,7 @@
 #define TERRAINGENERATOR_H
 
 #include "components/ogre/Types.h"
+#include "components/ogre/terrain/TerrainGeneratorBackgroundWorker.h"
 #include "framework/ConsoleObject.h"
 #include "services/config/ConfigListenerContainer.h"
 
@@ -30,11 +31,6 @@
 #include <sigc++/signal.h>
 
 #include <OgreFrameListener.h>
-
-#include <boost/thread/thread.hpp>
-#include <boost/thread/mutex.hpp>
-
-#include <list>
 
 namespace Ogre {
 	class TerrainOptions;
@@ -101,58 +97,6 @@ class TerrainDefPoint
 	*/
 	float mHeight;
 };
-
-class TerrainGenerator;
-
-/**
- * @brief Creates pages in a background thread.
- *
- * @author Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>
- *
- */
-class TerrainGeneratorBackgroundWorker
-{
-public:
-	/** Ctor. */
-	TerrainGeneratorBackgroundWorker() : mIsProcessing(false), mThread(0) {}
-
-	/** Tick be called periodically (e.g. after frame ended) to continue processing page creation requests */
-	void tick();
-
-	/** Push a page into the queue, to be loaded in the background */
-	void pushPageIntoQueue(const TerrainPosition& pos, ITerrainPageBridge* bridge);
-
-	/** Get one of the ready pages.
-	 *
-	 * @return 0 if not available, the first in the set of created pages otherwise
-	 */
-	TerrainPage* popPageReady();
-
-	/** Push one of ready page, called when the page creator completes the operation.
-	 */
-	void pushPageReady(TerrainPage* page);
-
-private:
-	/** Set of pages ready */
-	std::list<TerrainPage*> mPagesReady;
-	/** Queue of pages to be loaded */
-	std::list<std::pair<TerrainPosition, ITerrainPageBridge*> > mPagesQueue;
-	/** Flag to know when a thread is already processing a request (only one request at a time, pages access other pages' data so they cannot be created in parallel) */
-	bool mIsProcessing;
-	/** Thread, a pointer to free the thread after finishes */
-	boost::thread* mThread;
-
-	/** Mutex for shared variable */
-	boost::mutex mMutexPagesReady;
-	/** Mutex for shared variable */
-	boost::mutex mMutexPagesQueue;
-	/** Mutex for shared variable */
-	boost::mutex mMutexIsProcessing;
-
-	/** Helper function to peek at the queue and create a page if requested */
-	void createPageFromQueue();
-};
-
 
 /**
  * @brief Handles generation and updates of the terrain.
