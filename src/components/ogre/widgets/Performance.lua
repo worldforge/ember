@@ -32,7 +32,6 @@ function Performance.framestarted(timeSinceLastFrame)
 		local motionInfo = EmberOgre.MotionManager:getSingleton():getInfo()
 		statString = statString .. "\nAnimated: " .. motionInfo.AnimatedEntities
 		statString = statString .. "\nMoving: " .. motionInfo.MovingEntities
-		--statString = statString .. "\nAnimations: " .. motionInfo.Animations
 		--ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n"
 	
 		Performance.mainText:setText(statString)
