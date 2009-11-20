@@ -112,12 +112,16 @@ void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
 	mLightDirection = lightDirection;
 }
 
-void TerrainPageShadow::createShadowData(unsigned char* data, const TerrainPageGeometry& geometry)
+void TerrainPageShadow::createShadowData(const TerrainPageGeometry& geometry)
 {
 	if (!mShadowTechnique) {
 		S_LOG_WARNING("Trying to create shadow data without have a technique set.");
 	} else {
-		mShadowTechnique->createShadowData(mTerrainPage, geometry, data, mLightDirection, Ogre::ColourValue(1,1,1));
+		assert(!mShadowChunk);
+		mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
+
+		memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
+		mShadowTechnique->createShadowData(mTerrainPage, geometry, mShadowChunk->getPtr(), mLightDirection, Ogre::ColourValue(1,1,1));
 	}
 }
 
@@ -125,7 +129,7 @@ void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 {
 	assert(mShadowChunk);
 	assert(mImage);
-	createShadowData(mShadowChunk->getPtr(), geometry);
+	createShadowData(geometry);
 
 	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
 
@@ -134,8 +138,7 @@ void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 	hardwareBuffer->blitFromMemory(sourceBox);
 }
 
-
-void TerrainPageShadow::createImage(const TerrainPageGeometry& geometry)
+void TerrainPageShadow::createImage()
 {
 	///we need an unique name for our alpha texture
 	std::stringstream shadowTextureNameSS;
@@ -144,13 +147,6 @@ void TerrainPageShadow::createImage(const TerrainPageGeometry& geometry)
 
 	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
 
-	assert(!mShadowChunk);
-	mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
-
-	memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
-
-
-	createShadowData(mShadowChunk->getPtr(), geometry);
 
 
 	mImage = OGRE_NEW Ogre::Image();

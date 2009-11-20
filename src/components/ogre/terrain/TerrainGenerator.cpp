@@ -184,6 +184,7 @@ void TerrainGenerator::createPage(TerrainGeneratorBackgroundWorker* backgroundWo
 	page->generateTerrainMaterials(false);
 
 	*/
+	page->createShadowData(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
 
 	// setup foliage
 	if (terrainGenerator.isFoliageShown()) {
@@ -499,7 +500,7 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 
 		// mafm: moved out of the background thread due to safety issues
 		{
-			page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
+			page->loadShadow();
 			page->generateTerrainMaterials(false);
 		}
 

@@ -69,11 +69,11 @@ public:
 
 	void setLightDirection(const Ogre::Vector3& lightDirection);
 
-	void createShadowData(unsigned char* data, const TerrainPageGeometry& geometry);
+	void createShadowData(const TerrainPageGeometry& geometry);
 
 	Ogre::TexturePtr getTexture() const;
 	void updateShadow(const TerrainPageGeometry& geometry);
-	void createImage(const TerrainPageGeometry& geometry);
+	void createImage();
 
 	Ogre::Image* getImage() const;
 

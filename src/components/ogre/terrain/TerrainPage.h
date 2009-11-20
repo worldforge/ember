@@ -183,7 +183,12 @@ public:
 	 * @brief Creates a shadow texture for the page.
 	 * @param lightDirection The direction of the light, in world space.
 	 */
-	void createShadow(const Ogre::Vector3& lightDirection);
+	void createShadowData(const Ogre::Vector3& lightDirection);
+
+	/**
+	 * @brief Loads a shadow texture for the page.  It has to be done out of the main thread.
+	 */
+	void loadShadow();
 
 	/**
 	 * @brief Updates the shadow texture for the page.

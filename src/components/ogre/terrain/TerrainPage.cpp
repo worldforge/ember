@@ -152,11 +152,16 @@ void TerrainPage::setupShadowTechnique()
 	mShadow.setShadowTechnique(mShadowTechnique);
 }
 
-void TerrainPage::createShadow(const Ogre::Vector3& lightDirection)
+void TerrainPage::createShadowData(const Ogre::Vector3& lightDirection)
 {
 	mGeometry->repopulate();
 	mShadow.setLightDirection(lightDirection);
-	mShadow.createImage(*mGeometry);
+	mShadow.createShadowData(*mGeometry);
+}
+
+void TerrainPage::loadShadow()
+{
+	mShadow.createImage();
 }
 
 void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
