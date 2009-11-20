@@ -14,6 +14,8 @@ function TypeManager.buildWidget()
 	TypeManager.typeAdapter = EmberOgre.Gui.Adapters.Eris.TypeTreeAdapter:new_local(emberServices:getServerService():getConnection():getTypeService(), TypeManager.typeTree)
 	TypeManager.typeAdapter:initialize("root")
 	
+	TypeManager.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", "TypeManager.SendToServerButton_Clicked")
+		
 	TypeManager.widget:registerConsoleVisibilityToggleCommand("typeManager")
 	TypeManager.widget:enableCloseButton()
 	TypeManager.widget:hide()
@@ -22,6 +24,23 @@ end
 
 function TypeManager.CreatedAvatarEntity()
 	TypeManager.buildWidget()
+end
+
+function TypeManager.SendToServerButton_Clicked(args)
+
+	local outstream = std.stringstream:new_local()
+	local decoder = EmberOgre.Authoring.AtlasObjectDecoder:new_local()
+
+	local codec = Atlas.Codecs.XML:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
+	codec:poll(true)
+	
+	local parsedObject = decoder:getLastObject()
+	
+	if parsedObject:isValid() then
+		emberServices:getServerService():setTypeInfo(parsedObject)
+	end
+
+	return true
 end
 
 function TypeManager.TypeList_SelectionChanged(args)

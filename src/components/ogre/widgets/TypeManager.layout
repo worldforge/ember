@@ -16,7 +16,12 @@
 			</Window>
 			<Window Type='EmberLook/MultiLineEditbox' Name='TypeInfoText'>
 				<Property Name='UnifiedPosition' Value='{{0,210},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-210},{1,-10}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-210},{1,-40}}'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='SendToServerButton'>
+				<Property Name='Text' Value='Send to server'/>
+				<Property Name='UnifiedPosition' Value='{{1,-105},{1,-25}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{0,20}}'/>
 			</Window>
 		</Window>
 	</Window>
