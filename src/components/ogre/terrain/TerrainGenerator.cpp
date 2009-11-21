@@ -543,7 +543,7 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 	//_fpreset();
 
 	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
-	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo.getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo.getPageOffsetX());
+	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo->getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo->getPageOffsetX());
 
 	TerrainPosition pos(Convert::toWF(adjustedOgrePos));
 
@@ -552,11 +552,6 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 
 	return mTerrainPages[x][y];
 }
-
-
-	bool showFoliage = isFoliageShown();
-
-
 
 void TerrainGenerator::updateFoliageVisibility()
 {

@@ -540,12 +540,11 @@ protected:
 	TerrainGeneratorBackgroundWorker mTerrainGeneratorBackgroundWorker;
 
 };
-}
 
 inline const std::list<TerrainShader*>& TerrainGenerator::getBaseShaders() const
 {
 	return mBaseShaders;
-
+}
 inline unsigned int TerrainGenerator::getFoliageBatchSize() const
 {
 	return mFoliageBatchSize;
@@ -560,7 +559,6 @@ inline float TerrainDefPoint::getHeight() const
 {
 	return mHeight;
 }
-
 
 }
 }

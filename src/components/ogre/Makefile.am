@@ -39,7 +39,8 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainPage.cpp terrain/TerrainPageFoliage.cpp terrain/TerrainPageGeometry.cpp \
 	terrain/TerrainPageShadow.cpp terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp \
 	terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp terrain/TerrainPageSurfaceCompilerTechniqueSimple.cpp \
-	terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp terrain/PlantAreaQuery.cpp terrain/TerrainParser.cpp \
+	terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp \
+	terrain/PlantAreaQuery.cpp terrain/TerrainParser.cpp terrain/TerrainGeneratorBackgroundWorker.cpp \
 \
 	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -111,7 +112,9 @@ noinst_HEADERS = \
 	terrain/TerrainAreaParser.h terrain/TerrainEditor.h terrain/TerrainGenerator.h terrain/TerrainInfo.h terrain/TerrainLayerDefinition.h terrain/TerrainLayerDefinitionManager.h \
 	terrain/TerrainMod.h terrain/TerrainPage.h terrain/TerrainPageFoliage.h terrain/TerrainPageGeometry.h terrain/TerrainPageShadow.h terrain/TerrainPageSurface.h \
 	terrain/TerrainPageSurfaceCompiler.h terrain/TerrainPageSurfaceCompilerTechniqueShader.h \
-	terrain/TerrainPageSurfaceCompilerTechniqueSimple.h terrain/TerrainPageSurfaceLayer.h terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h terrain/TerrainParser.h \
+	terrain/TerrainPageSurfaceCompilerTechniqueSimple.h terrain/TerrainPageSurfaceLayer.h \
+	terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h terrain/TerrainParser.h \
+	terrain/TerrainGeneratorBackgroundWorker.cpp \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \
