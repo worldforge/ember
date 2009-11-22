@@ -652,7 +652,7 @@ namespace Ogre
         		
 
 		const PagingLandScapePage * const page = mScnMgr->getPageManager()->getPage (pageNumberX, pageNumberZ, false);		
-        if (! (page && page->isPreLoaded()))
+        if (! (page && (page->isPreLoaded() || page->isLoaded())))
             return 0.0f;
             
         // adjust x and z to be local to page
