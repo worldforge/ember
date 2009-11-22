@@ -179,11 +179,11 @@ namespace Ogre
 				}
 			}
 
-			// set page neighbors
-			setNeighbors();
-
 			// set new state
 			mPageState = STATE_LOADED;
+
+			// set page neighbors
+			setNeighbors();
 
 			// fire event
 			fireEvent(EVENT_LOADED);
