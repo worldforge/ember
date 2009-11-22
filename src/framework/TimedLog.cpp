@@ -27,7 +27,7 @@
 
 namespace Ember
 {
-#ifdef DEBUG
+#ifdef ENABLE_TIMED_LOG
 TimedLog::TimedLog(const std::string& logName) :
 	mLogName(logName), mStartMilliseconds(0), mLastReportMilliseconds(0)
 {
