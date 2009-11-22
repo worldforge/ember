@@ -21,7 +21,6 @@
 #define TERRAINGENERATOR_H
 
 #include "components/ogre/Types.h"
-#include "components/ogre/terrain/TerrainGeneratorBackgroundWorker.h"
 #include "framework/ConsoleObject.h"
 #include "services/config/ConfigListenerContainer.h"
 
@@ -117,17 +116,7 @@ class TerrainDefPoint
  */
 class TerrainGenerator : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
 {
-	friend class TerrainGeneratorBackgroundWorker;
-
 public:
-
-	/**
-	 *   Creates a new TerrainPage and puts it in mTerrainPages.  Static to be accessed by the thread.
-	 * @param backgroundWorker
-	 * @param pos
-	 * @param bridge
-	 */
-	static void createPage(TerrainGeneratorBackgroundWorker* backgroundWorker, const TerrainPosition& pos, ITerrainPageBridge* bridge);
 
 	/**
 	 * @brief A type used for storing changes to aeas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
@@ -548,9 +537,6 @@ protected:
 
 
 	void application_EndErisPoll(float);
-
-	/** Background worker, to perform operations in the background */
-	TerrainGeneratorBackgroundWorker mTerrainGeneratorBackgroundWorker;
 
 	/**
 	 * @brief The task queue we'll use for all background terrain updates.

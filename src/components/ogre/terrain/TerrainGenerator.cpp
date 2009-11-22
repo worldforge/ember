@@ -95,39 +95,6 @@ namespace EmberOgre
 namespace Terrain
 {
 
-//-----------------------------------------------------------------------------
-void TerrainGenerator::createPage(TerrainGeneratorBackgroundWorker* backgroundWorker, const TerrainPosition& pos, ITerrainPageBridge* bridge)
-{
-	///since we initialized all terrain in initTerrain we can count on all terrain segments being created and populated already
-
-	TerrainGenerator& terrainGenerator = *(EmberOgre::getSingleton().getTerrainGenerator());
-
-	TerrainPage* page = new TerrainPage(pos, terrainGenerator);
-	page->registerBridge(bridge);
-
-	//add the base shaders, this should probably be refactored into a server side thing in the future
-	const std::list<TerrainShader*>& baseShaders = terrainGenerator.getBaseShaders();
-	for (std::list<TerrainShader*>::const_iterator I = baseShaders.begin(); I != baseShaders.end(); ++I) {
-		page->addShader(*I);
-	}
-
-	/* mafm: these functions were previously here, have to be out of the background thread due to non-thread-safety of Ogre
-
-	 page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
-	 page->generateTerrainMaterials(false);
-
-	 */
-	page->createShadowData(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
-
-	// setup foliage
-	if (terrainGenerator.isFoliageShown()) {
-		page->showFoliage();
-	}
-
-	// notify the background worker that we're finished (thread-protected)
-	backgroundWorker->pushPageReady(page);
-}
-
 TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1))
 {
@@ -403,32 +370,6 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 
 	mShadersToUpdate.clear();
 	mChangedTerrainAreas.clear();
-
-//	// pages created in background (one each time, we don't need overhead)
-//	TerrainPage* page = mTerrainGeneratorBackgroundWorker.popPageReady();
-//	if (page) {
-//		const TerrainPosition& pos = page->getWFPosition();
-//		std::stringstream ss;
-//		ss << pos.x() << "x" << pos.y();
-//		mPages[ss.str()] = page;
-//		mTerrainPages[pos.x()][pos.y()] = page;
-//
-//		// mafm: moved out of the background thread due to safety issues
-//		{
-//			page->loadShadow();
-//			page->generateTerrainMaterials(false);
-//
-//			//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
-//			std::set<TerrainPage*> pagesToUpdate;
-//			pagesToUpdate.insert(page);
-//			updateEntityPositions(pagesToUpdate);
-//		}
-//
-//		page->notifyBridgePageReady();
-//	}
-
-	// tick the terrain generator
-	mTerrainGeneratorBackgroundWorker.tick();
 
 	return true;
 }
