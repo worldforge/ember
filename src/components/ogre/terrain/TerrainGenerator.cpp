@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2004  Erik Hjortsberg
+ Copyright (C) 2004  Erik Hjortsberg
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -33,8 +33,10 @@
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
 #include "TerrainPageSurfaceLayer.h"
+#include "TerrainPageCreationTask.h"
 
 #include "framework/LoggingInstance.h"
+#include "framework/tasks/TaskQueue.h"
 #include "services/config/ConfigService.h"
 
 #include "../Convert.h"
@@ -47,6 +49,8 @@
 #include "../environment/Foliage.h"
 #include "../environment/Forest.h"
 #include "../environment/Environment.h"
+
+#include "main/Application.h"
 
 #include <Eris/Entity.h>
 #include <Eris/View.h>
@@ -67,28 +71,29 @@
 #include <OgreGpuProgramManager.h>
 
 #ifdef WIN32
-	#include <tchar.h>
-	#define snprintf _snprintf
-    #include <io.h> // for _access, Win32 version of stat()
-    #include <direct.h> // for _mkdir
+#include <tchar.h>
+#define snprintf _snprintf
+#include <io.h> // for _access, Win32 version of stat()
+#include <direct.h> // for _mkdir
 #endif
 
 #include <limits>
 
 #ifdef HAVE_LRINTF
-    #define I_ROUND(_x) (::lrintf(_x))
+#define I_ROUND(_x) (::lrintf(_x))
 #elif defined(HAVE_RINTF)
-    #define I_ROUND(_x) ((int)::rintf(_x))
+#define I_ROUND(_x) ((int)::rintf(_x))
 #elif defined(HAVE_RINT)
-    #define I_ROUND(_x) ((int)::rint(_x))
+#define I_ROUND(_x) ((int)::rint(_x))
 #else
-    #define I_ROUND(_x) ((int)(_x))
+#define I_ROUND(_x) ((int)(_x))
 #endif
 
 using namespace Ogre;
-namespace EmberOgre {
-namespace Terrain {
-
+namespace EmberOgre
+{
+namespace Terrain
+{
 
 //-----------------------------------------------------------------------------
 void TerrainGenerator::createPage(TerrainGeneratorBackgroundWorker* backgroundWorker, const TerrainPosition& pos, ITerrainPageBridge* bridge)
@@ -108,10 +113,10 @@ void TerrainGenerator::createPage(TerrainGeneratorBackgroundWorker* backgroundWo
 
 	/* mafm: these functions were previously here, have to be out of the background thread due to non-thread-safety of Ogre
 
-	page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
-	page->generateTerrainMaterials(false);
+	 page->createShadow(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
+	 page->generateTerrainMaterials(false);
 
-	*/
+	 */
 	page->createShadowData(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
 
 	// setup foliage
@@ -123,19 +128,8 @@ void TerrainGenerator::createPage(TerrainGeneratorBackgroundWorker* backgroundWo
 	backgroundWorker->pushPageReady(page);
 }
 
-
-
-TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter)
-:
-UpdateShadows("update_shadows", this, "Updates shadows in the terrain."),
-mTerrainInfo(new TerrainInfo(adapter->getPageSize())),
-mTerrain(0),
-mHeightMax(std::numeric_limits<Ogre::Real>::min()),
-mHeightMin(std::numeric_limits<Ogre::Real>::max()),
-mHasTerrainInfo(false),
-mSceneManagerAdapter(0),
-mIsFoliageShown(false),
-mFoliageBatchSize(32)
+TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter) :
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1))
 {
 	mSceneManagerAdapter = adapter;
 
@@ -147,6 +141,8 @@ mFoliageBatchSize(32)
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainGenerator::config_Foliage));
 
 	EmberOgre::getSingleton().getShaderManager()->EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::shaderManager_LevelChanged), EmberOgre::getSingleton().getShaderManager()));
+
+	Ember::Application::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &TerrainGenerator::application_EndErisPoll));
 }
 
 TerrainGenerator::~TerrainGenerator()
@@ -169,12 +165,11 @@ const Mercator::Terrain& TerrainGenerator::getTerrain() const
 	return *mTerrain;
 }
 
-
 void TerrainGenerator::loadTerrainOptions()
 {
 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 
-	getAdapter()->setResourceGroupName("General" );
+	getAdapter()->setResourceGroupName("General");
 
 	getAdapter()->loadOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "terrain.cfg");
 
@@ -224,7 +219,6 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 
 	mTerrainMods.insert(TerrainModMap::value_type(erisTerrainMod->getEntity()->getId(), mod));
 
-
 	std::vector<TerrainPosition> updatedPositions;
 	updatedPositions.push_back(TerrainPosition(mod->bbox().getCenter().x(), mod->bbox().getCenter().y()));
 	reloadTerrain(updatedPositions);
@@ -242,15 +236,15 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 	S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
 	TerrainModMap::iterator I = mTerrainMods.find(entityID);
 	if (I != mTerrainMods.end()) {
-    	updatedPositions.push_back(TerrainPosition(I->second->bbox().getCenter().x(), I->second->bbox().getCenter().y()));
+		updatedPositions.push_back(TerrainPosition(I->second->bbox().getCenter().x(), I->second->bbox().getCenter().y()));
 		// Use the pointer returned from addMod() to remove it
 		mTerrain->removeMod(I->second);
 		// Remove this mod from our list so we can replace the pointer with a new one
 		mTerrainMods.erase(I);
 	}
 
-//	mTerrainMods.find(entityID)->second = terrainMod->getMod();
-//	mTerrain->updateMod(mTerrainMods.find(entityID)->second);
+	//	mTerrainMods.find(entityID)->second = terrainMod->getMod();
+	//	mTerrain->updateMod(mTerrainMods.find(entityID)->second);
 
 	// Reapply the mod to the terrain with the updated parameters
 	Mercator::TerrainMod *mercatorMod = erisTerrainMod->getMod();
@@ -290,7 +284,7 @@ void TerrainGenerator::addArea(TerrainArea* terrainArea)
 	terrainArea->EventAreaRemoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Removed), terrainArea));
 	terrainArea->EventAreaSwapped.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Swapped), terrainArea));
 	Mercator::Area* area = terrainArea->getArea();
- //   _fpreset();
+	//   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR, _MCW_RC);
 	std::stringstream ss;
@@ -334,7 +328,6 @@ void TerrainGenerator::TerrainArea_Removed(TerrainArea* terrainArea)
 		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
 	}
 }
-
 
 void TerrainGenerator::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea)
 {
@@ -411,33 +404,47 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 	mShadersToUpdate.clear();
 	mChangedTerrainAreas.clear();
 
-	// pages created in background (one each time, we don't need overhead)
-	TerrainPage* page = mTerrainGeneratorBackgroundWorker.popPageReady();
-	if (page) {
-		const TerrainPosition& pos = page->getWFPosition();
-		std::stringstream ss;
-		ss << pos.x() << "x" << pos.y();
-		mPages[ss.str()] = page;
-		mTerrainPages[pos.x()][pos.y()] = page;
-
-		// mafm: moved out of the background thread due to safety issues
-		{
-			page->loadShadow();
-			page->generateTerrainMaterials(false);
-
-			//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
-			std::set<TerrainPage*> pagesToUpdate;
-			pagesToUpdate.insert(page);
-			updateEntityPositions(pagesToUpdate);
-		}
-
-		page->notifyBridgePageReady();
-	}
+//	// pages created in background (one each time, we don't need overhead)
+//	TerrainPage* page = mTerrainGeneratorBackgroundWorker.popPageReady();
+//	if (page) {
+//		const TerrainPosition& pos = page->getWFPosition();
+//		std::stringstream ss;
+//		ss << pos.x() << "x" << pos.y();
+//		mPages[ss.str()] = page;
+//		mTerrainPages[pos.x()][pos.y()] = page;
+//
+//		// mafm: moved out of the background thread due to safety issues
+//		{
+//			page->loadShadow();
+//			page->generateTerrainMaterials(false);
+//
+//			//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
+//			std::set<TerrainPage*> pagesToUpdate;
+//			pagesToUpdate.insert(page);
+//			updateEntityPositions(pagesToUpdate);
+//		}
+//
+//		page->notifyBridgePageReady();
+//	}
 
 	// tick the terrain generator
 	mTerrainGeneratorBackgroundWorker.tick();
 
 	return true;
+}
+
+void TerrainGenerator::addPage(TerrainPage* page)
+{
+	const TerrainPosition& pos = page->getWFPosition();
+	std::stringstream ss;
+	ss << pos.x() << "x" << pos.y();
+	mPages[ss.str()] = page;
+	mTerrainPages[pos.x()][pos.y()] = page;
+
+	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
+	std::set<TerrainPage*> pagesToUpdate;
+	pagesToUpdate.insert(page);
+	updateEntityPositions(pagesToUpdate);
 }
 
 int TerrainGenerator::getPageIndexSize() const
@@ -450,19 +457,15 @@ int TerrainGenerator::getPageMetersSize() const
 	return getPageIndexSize() - 1;
 }
 
-
-
 void TerrainGenerator::prepareAllSegments()
 {
 
- //   _fpreset();
+	//   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR, _MCW_RC);
 
 
 	getAdapter()->setWorldPagesDimensions(mTerrainInfo->getTotalNumberOfPagesY(), mTerrainInfo->getTotalNumberOfPagesX(), mTerrainInfo->getPageOffsetY(), mTerrainInfo->getPageOffsetX());
-
-
 
 	getAdapter()->loadScene();
 	const WFMath::AxisBox<2>& worldSize = mTerrainInfo->getWorldSizeInIndices();
@@ -478,9 +481,9 @@ void TerrainGenerator::prepareAllSegments()
 	ss << worldBox;
 	S_LOG_INFO("New size of the world: " << ss.str());
 
-	getAdapter()->resize(worldBox ,16);
+	getAdapter()->resize(worldBox, 16);
 
-	S_LOG_INFO("Pages: X: " << mTerrainInfo->getTotalNumberOfPagesX() << " Y: " << mTerrainInfo->getTotalNumberOfPagesY() << " Total: " <<  mTerrainInfo->getTotalNumberOfPagesX() *  mTerrainInfo->getTotalNumberOfPagesY());
+	S_LOG_INFO("Pages: X: " << mTerrainInfo->getTotalNumberOfPagesX() << " Y: " << mTerrainInfo->getTotalNumberOfPagesY() << " Total: " << mTerrainInfo->getTotalNumberOfPagesX() * mTerrainInfo->getTotalNumberOfPagesY());
 	S_LOG_INFO("Page offset: X" << mTerrainInfo->getPageOffsetX() << " Y: " << mTerrainInfo->getPageOffsetY());
 
 	///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
@@ -490,23 +493,21 @@ void TerrainGenerator::prepareAllSegments()
 
 }
 
-
 bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position) const
 {
 	const Mercator::Segment* segment = mTerrain->getSegment(position.x(), position.y());
 	return (segment && segment->isValid());
-//	return (segment &&	segment->isValid() && getMaterialForSegment(position));
+	//	return (segment &&	segment->isValid() && getMaterialForSegment(position));
 }
-
 
 TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
 {
 
-	int xRemainder = static_cast<int>(getMin().x()) % (getPageMetersSize());
-	int yRemainder = static_cast<int>(getMin().y()) % (getPageMetersSize());
+	int xRemainder = static_cast<int> (getMin().x()) % (getPageMetersSize());
+	int yRemainder = static_cast<int> (getMin().y()) % (getPageMetersSize());
 
-	int xIndex = static_cast<int>(floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
-	int yIndex = static_cast<int>(ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
+	int xIndex = static_cast<int> (floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
+	int yIndex = static_cast<int> (ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 
 	TerrainPagestore::const_iterator I = mTerrainPages.find(xIndex);
 	if (I != mTerrainPages.end()) {
@@ -527,12 +528,12 @@ void TerrainGenerator::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPos
 
 	TerrainPosition pos(Convert::toWF(adjustedOgrePos));
 
-	int x = static_cast<int>(pos.x());
-	int y = static_cast<int>(pos.y());
+	int x = static_cast<int> (pos.x());
+	int y = static_cast<int> (pos.y());
 
-	S_LOG_INFO("Seting up TerrainPage at index [" << x << "," << y << "]");
+	S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 	if (mTerrainPages[x][y] == 0) {
-		mTerrainGeneratorBackgroundWorker.pushPageIntoQueue(pos, &bridge);
+		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, pos, &bridge), 0);
 	} else {
 		S_LOG_WARNING("Trying to set up TerrainPage at index [" << x << "," << y << "], but it was already created");
 	}
@@ -547,8 +548,8 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 
 	TerrainPosition pos(Convert::toWF(adjustedOgrePos));
 
-	int x = static_cast<int>(pos.x());
-	int y = static_cast<int>(pos.y());
+	int x = static_cast<int> (pos.x());
+	int y = static_cast<int> (pos.y());
 
 	return mTerrainPages[x][y];
 }
@@ -558,7 +559,7 @@ void TerrainGenerator::updateFoliageVisibility()
 	bool showFoliage = isFoliageShown();
 
 	PageStore::iterator I = mPages.begin();
-	for(;I != mPages.end(); ++I) {
+	for (; I != mPages.end(); ++I) {
 		if (showFoliage) {
 			I->second->showFoliage();
 		} else {
@@ -570,7 +571,7 @@ void TerrainGenerator::updateFoliageVisibility()
 void TerrainGenerator::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	if (GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") && variable.is_bool()) {
-		mIsFoliageShown = static_cast<bool>(variable);
+		mIsFoliageShown = static_cast<bool> (variable);
 	} else {
 		mIsFoliageShown = false;
 	}
@@ -581,8 +582,6 @@ bool TerrainGenerator::isFoliageShown() const
 {
 	return mIsFoliageShown;
 }
-
-
 
 bool TerrainGenerator::getHeight(const TerrainPosition& point, float& height) const
 {
@@ -600,13 +599,12 @@ void TerrainGenerator::updateShadows()
 	}
 }
 
-
 bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 {
 	std::vector<TerrainPosition> updatedPositions;
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
 		Mercator::BasePoint bp;
-		if (mTerrain->getBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
+		if (mTerrain->getBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
 			S_LOG_VERBOSE( "Point [" << I->getPosition().x() << "," << I->getPosition().y() << "] unchanged");
 			continue;
 		} else {
@@ -615,7 +613,7 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 		bp.height() = I->getHeight();
 
 		/// FIXME Sort out roughness and falloff, and generally verify this code is the same as that in Terrain layer
-		mTerrain->setBasePoint(static_cast<int>(I->getPosition().x()), static_cast<int>(I->getPosition().y()), bp);
+		mTerrain->setBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp);
 		mTerrainInfo->setBasePoint(I->getPosition(), bp);
 		updatedPositions.push_back(TerrainPosition(I->getPosition().x() * mTerrain->getResolution(), I->getPosition().y() * mTerrain->getResolution()));
 	}
@@ -633,7 +631,6 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 
 	return true;
 }
-
 
 void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 {
@@ -683,7 +680,7 @@ void TerrainGenerator::updateEntityPosition(EmberEntity* entity, const std::set<
 {
 	entity->adjustPosition();
 	for (unsigned int i = 0; i < entity->numContained(); ++i) {
-		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
+		EmberEntity* containedEntity = static_cast<EmberEntity*> (entity->getContained(i));
 		updateEntityPosition(containedEntity, pagesToUpdate);
 	}
 }
@@ -704,7 +701,7 @@ void TerrainGenerator::runCommand(const std::string& command, const std::string&
 		updateShadows();
 	}
 }
-const TerrainInfo & TerrainGenerator::getTerrainInfo( ) const
+const TerrainInfo & TerrainGenerator::getTerrainInfo() const
 {
 	return *mTerrainInfo;
 }
@@ -729,7 +726,7 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::Co
 
 bool TerrainGenerator::getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const
 {
-// 	static WFMath::Vector<3> defaultNormal(1,1,1);
+	// 	static WFMath::Vector<3> defaultNormal(1,1,1);
 	int ix = I_ROUND(floor(worldPosition.x() / 64));
 	int iy = I_ROUND(floor(worldPosition.y() / 64));
 
@@ -754,6 +751,12 @@ void TerrainGenerator::shaderManager_LevelChanged(ShaderManager* shaderManager)
 		J->second->generateTerrainMaterials(true);
 	}
 }
+
+void TerrainGenerator::application_EndErisPoll(float)
+{
+	mTaskQueue->pollProcessedTasks();
+}
+
 
 }
 }

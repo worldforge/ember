@@ -32,6 +32,8 @@
 
 #include <OgreFrameListener.h>
 
+#include <memory>
+
 namespace Ogre {
 	class TerrainOptions;
 }
@@ -41,6 +43,12 @@ namespace Mercator {
 	class Terrain;
 	class Shader;
 	class TerrainMod;
+}
+
+namespace Ember {
+namespace Tasks {
+	class TaskQueue;
+}
 }
 
 namespace EmberOgre {
@@ -376,6 +384,8 @@ public:
 	 */
 	bool isFoliageShown() const;
 
+	void addPage(TerrainPage* page);
+
 protected:
 	/**
 	 * @brief Encapsules a shader update request.
@@ -536,8 +546,16 @@ protected:
 	 */
 	void buildHeightmap();
 
+
+	void application_EndErisPoll(float);
+
 	/** Background worker, to perform operations in the background */
 	TerrainGeneratorBackgroundWorker mTerrainGeneratorBackgroundWorker;
+
+	/**
+	 * @brief The task queue we'll use for all background terrain updates.
+	 */
+	std::auto_ptr<Ember::Tasks::TaskQueue> mTaskQueue;
 
 };
 
