@@ -43,6 +43,18 @@ class TaskExecutor
 {
 	friend class TaskQueue;
 public:
+
+	/**
+	 * @brief Sets whether the executor is active or not.
+	 * @param active Whether the executor should be active or not.
+	 */
+	void setActive(bool active);
+
+	/**
+	 * @brief Joins the thread the executor is using.
+	 */
+	void join();
+
 protected:
 
 	/**

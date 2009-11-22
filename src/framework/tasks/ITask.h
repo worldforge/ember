@@ -39,25 +39,19 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ITask()
-	{
-	}
-	;
+	virtual ~ITask(){};
 
 	/**
 	 * @brief Executes the task in a background thread. This is where the bulk of the work should happen.
 	 * @param context The context in which the task executes.
 	 */
-	virtual void executeTaskInBackgroundThread(TaskExecutionContext context) = 0;
+	virtual void executeTaskInBackgroundThread(TaskExecutionContext& context) = 0;
 
 	/**
 	 * @brief Executes the task in the main thread, after executeTaskInBackgroundThread() has been called.
 	 * Since this will happen in the main thread you shouldn't do any time consuming things here, since it will lock up the rendering.
 	 */
-	virtual void executeTaskInMainThread()
-	{
-	}
-	;
+	virtual void executeTaskInMainThread(){};
 };
 
 }

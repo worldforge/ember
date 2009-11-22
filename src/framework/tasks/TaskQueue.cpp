@@ -39,8 +39,12 @@ TaskQueue::TaskQueue(unsigned int numberOfExecutors)
 
 TaskQueue::~TaskQueue()
 {
+
+	//When shutting down we first have to make sure that all executors are inactive, and then that all task queues are empty.
+	//Once that's done we can join all of the executors, since they will now complete the threaded run.
 	for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
-		delete *I;
+		TaskExecutor* executor = *I;
+		executor->setActive(false);
 	}
 	{
 		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
@@ -57,6 +61,12 @@ TaskQueue::~TaskQueue()
 			mProcessedTaskUnits.pop();
 			delete taskUnit.first;
 		}
+	}
+	mUnprocessedQueueCond.notify_all();
+	for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
+		TaskExecutor* executor = *I;
+		executor->join();
+		delete executor;
 	}
 }
 
@@ -76,12 +86,16 @@ TaskQueue::TaskUnit TaskQueue::fetchNextTask()
 
 	boost::mutex::scoped_lock lock(mUnprocessedQueueMutex);
 
-	while (!mUnprocessedTaskUnits.size()) {
+	if (!mUnprocessedTaskUnits.size()) {
 		mUnprocessedQueueCond.wait(lock);
 	}
-	TaskUnit taskUnit = mUnprocessedTaskUnits.front();
-	mUnprocessedTaskUnits.pop();
-	return taskUnit;
+	if (mUnprocessedTaskUnits.size()) {
+		TaskUnit taskUnit = mUnprocessedTaskUnits.front();
+		mUnprocessedTaskUnits.pop();
+		return taskUnit;
+	} else {
+		return TaskUnit();
+	}
 }
 
 void TaskQueue::addProcessedTask(TaskQueue::TaskUnit taskUnit)
@@ -96,6 +110,9 @@ void TaskQueue::pollProcessedTasks()
 	{
 		boost::mutex::scoped_lock l(mProcessedQueueMutex);
 		processedCopy = mProcessedTaskUnits;
+		if (mProcessedTaskUnits.size()) {
+			mProcessedTaskUnits = TaskUnitQueue();
+		}
 	}
 	while (processedCopy.size()) {
 

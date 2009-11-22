@@ -46,28 +46,42 @@ void TaskExecutor::run()
 {
 	while (mActive) {
 		TaskQueue::TaskUnit taskUnit = mTaskQueue.fetchNextTask();
-		TaskExecutionContext context(*this);
 		ITask* task = taskUnit.first;
-		ITaskExecutionListener* listener = taskUnit.second;
-		try {
-			if (listener) {
-				listener->executionStarted();
+		if (task) {
+			TaskExecutionContext context(*this);
+			ITaskExecutionListener* listener = taskUnit.second;
+			try {
+				if (listener) {
+					listener->executionStarted();
+				}
+				task->executeTaskInBackgroundThread(context);
+				if (listener) {
+					listener->executionEnded();
+				}
+			} catch (const std::exception& ex) {
+				if (listener) {
+					//TODO: wrap the original error somehow
+					listener->executionError(Exception("Error when executing task."));
+				}
+			} catch (...) {
+				if (listener) {
+					listener->executionError(Exception("Error when executing task."));
+				}
 			}
-			task->executeTaskInBackgroundThread(context);
-			if (listener) {
-				listener->executionEnded();
-			}
-		} catch (const std::exception& ex) {
-			if (listener) {
-				//TODO: wrap the original error somehow
-				listener->executionError(Exception("Error when executing task."));
-			}
-		} catch (...) {
-			if (listener) {
-				listener->executionError(Exception("Error when executing task."));
-			}
+			mTaskQueue.addProcessedTask(taskUnit);
 		}
 	}
+}
+
+
+void TaskExecutor::setActive(bool active)
+{
+	mActive = active;
+}
+
+void TaskExecutor::join()
+{
+	mThread->join();
 }
 
 }
