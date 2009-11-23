@@ -29,17 +29,15 @@
 
 #include <OgreMaterial.h>
 
-
 namespace EmberOgre
 {
 
 namespace Terrain
 {
 
-TerrainPageCreationTask::TerrainPageCreationTask(TerrainGenerator& terrainGenerator, const TerrainPosition& pos, ITerrainPageBridge* bridge)
-: mTerrainGenerator(terrainGenerator), mPage(0), mPos(pos), mBridge(bridge)
+TerrainPageCreationTask::TerrainPageCreationTask(TerrainGenerator& terrainGenerator, const TerrainPosition& pos, ITerrainPageBridge* bridge) :
+	mTerrainGenerator(terrainGenerator), mPage(0), mPos(pos), mBridge(bridge)
 {
-
 
 }
 
@@ -58,6 +56,8 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 	for (std::list<TerrainShader*>::const_iterator I = baseShaders.begin(); I != baseShaders.end(); ++I) {
 		mPage->addShader(*I);
 	}
+
+	mPage->updateAllShaderTextures(true);
 
 	mPage->createShadowData(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
 

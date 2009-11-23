@@ -178,6 +178,11 @@ Ogre::MaterialPtr TerrainPage::generateTerrainMaterials(bool reselectTechnique)
 	return mTerrainSurface->getMaterial();
 }
 
+void TerrainPage::regenerateMaterial()
+{
+	generateTerrainMaterials(false);
+	mPageFoliage->generateCoverageMap();
+}
 
 
 const TerrainPosition& TerrainPage::getWFPosition() const
@@ -280,34 +285,29 @@ TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 	return layer;
 }
 
-void TerrainPage::regenerateMaterial()
-{
-	mTerrainSurface->recompileMaterial(*mGeometry, false);
-	mPageFoliage->generateCoverageMap();
-}
-
 void TerrainPage::updateAllShaderTextures(bool repopulate)
 {
-	mGeometry->repopulate();
+//	mGeometry->repopulate();
 	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin();
-
 	///skip the first texture, since it's the ground, and doesn't have an alpha texture
 	++I;
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
-		mTerrainSurface->updateLayer(*mGeometry, I->first, repopulate);
+		I->second->createCoverageImage(); //safe to call multiple times
+		mTerrainSurface->updateLayer(*mGeometry, I->second->getSurfaceIndex(), repopulate);
 	}
 }
 
 TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* shader, bool repopulate)
 {
 	TerrainPageSurfaceLayer* layer;
-	if (mTerrainSurface->getLayers().find(shader->getTerrainIndex()) == mTerrainSurface->getLayers().end()) {
+	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
+	if (I == mTerrainSurface->getLayers().end()) {
 		layer = addShader(shader);
 	} else {
-		layer = mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
+		layer = I->second;
 	}
-	layer->createCoverageImage();
-	layer->updateCoverageImage(*mGeometry);
+	layer->createCoverageImage(); //safe to call multiple times
+	layer = mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
 
 	return layer;
 }
