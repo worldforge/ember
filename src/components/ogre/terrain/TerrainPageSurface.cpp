@@ -38,7 +38,7 @@
 namespace EmberOgre {
 namespace Terrain {
 
-TerrainPageSurface::TerrainPageSurface(TerrainPage& terrainPage)
+TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mSurfaceCompiler(new TerrainPageSurfaceCompiler())
 , mShadow(0)

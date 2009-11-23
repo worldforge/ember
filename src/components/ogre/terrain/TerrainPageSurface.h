@@ -53,7 +53,7 @@ class TerrainLayerDefinition;
 class TerrainPageSurface{
 public:
 	typedef std::map<int, TerrainPageSurfaceLayer*> TerrainPageSurfaceLayerStore;
-    TerrainPageSurface(TerrainPage& terrainPage);
+    TerrainPageSurface(const TerrainPage& terrainPage);
 
     virtual ~TerrainPageSurface();
 
@@ -94,7 +94,7 @@ protected:
 	void updateSceneManagersAfterMaterialsChange();
 
 	Ogre::MaterialPtr mMaterial;
-	TerrainPage& mTerrainPage;
+	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::auto_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
 	TerrainPageShadow* mShadow;
