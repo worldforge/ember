@@ -698,6 +698,5 @@ void TerrainGenerator::application_EndErisPoll(float)
 	mTaskQueue->pollProcessedTasks();
 }
 
-
 }
 }

@@ -61,7 +61,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 		S_LOG_FAILURE("No terrain points");
 	}
 
-	Terrain::TerrainGenerator::TerrainDefPointStore pointStore;
+	Terrain::TerrainDefPointStore pointStore;
 	if (I->second.isList()) {
 		// Legacy support for old list format.
 		const Atlas::Message::ListType& plist = I->second.asList();

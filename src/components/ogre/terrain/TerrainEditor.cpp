@@ -516,7 +516,7 @@ void TerrainEditor::seFalloff(float falloff)
 
 void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 {
-	TerrainGenerator::TerrainDefPointStore pointStore;
+	TerrainDefPointStore pointStore;
 
 // 	std::set<Ogre::PagingLandScapeTile*> tilesToUpdate;
 	std::set<TerrainPage*> pagesToUpdate;

@@ -78,7 +78,7 @@ void FoliageBase::initializeDependentLayers()
 	}
 }
 
-void FoliageBase::TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* shader, TerrainGenerator::AreaStore* areas)
+void FoliageBase::TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* shader, const AreaStore* areas)
 {
 	if (mPagedGeometry) {
 		///check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
@@ -93,7 +93,7 @@ void FoliageBase::TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* sh
 		if (isRelevant) {
 			///if there are areas sent, the update only affect those and we only need to update the affected areas
 			if (areas) {
-				for (TerrainGenerator::AreaStore::iterator I = areas->begin(); I != areas->end(); ++I) {
+				for (AreaStore::const_iterator I = areas->begin(); I != areas->end(); ++I) {
 					const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(*I));
 					Ogre::Real pageSize(mPagedGeometry->getPageSize());
 					Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);

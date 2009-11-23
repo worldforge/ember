@@ -92,7 +92,7 @@ protected:
 	TerrainLayerDefinitionStore mDependentDefinitions;
 	
 	void initializeDependentLayers();
-	void TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* shader, ::EmberOgre::Terrain::TerrainGenerator::AreaStore* areas);
+	void TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* shader, const ::EmberOgre::Terrain::AreaStore* areas);
 	void TerrainGenerator_EventShaderCreated(const Terrain::TerrainShader* shader);
 	void TerrainGenerator_AfterTerrainUpdate(std::vector< ::EmberOgre::TerrainPosition >& terrainPositions, std::set< ::EmberOgre::Terrain::TerrainPage* >& pages);
 
