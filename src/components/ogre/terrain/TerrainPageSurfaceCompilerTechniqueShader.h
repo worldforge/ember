@@ -37,7 +37,7 @@ class TerrainPageShadow;
 class TerrainPageSurfaceCompilerShaderPass;
 class TerrainPageGeometry;
 
-typedef std::vector<TerrainPageSurfaceLayer*> LayerStore;
+typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
 
 /**
 	@brief A shader enabled technique.
@@ -51,9 +51,9 @@ public:
 	TerrainPageSurfaceCompilerShaderPassCoverageBatch(TerrainPageSurfaceCompilerShaderPass& shaderPass, Ogre::TexturePtr combinedCoverageTexture);
 	virtual ~TerrainPageSurfaceCompilerShaderPassCoverageBatch();
 
-	void addLayer(const TerrainPageGeometry& geometry, TerrainPageSurfaceLayer* layer);
+	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
 
-	std::vector<TerrainPageSurfaceLayer*>& getLayers();
+	std::vector<const TerrainPageSurfaceLayer*>& getLayers();
 	Ogre::TexturePtr getCombinedCoverageTexture();
 
 	virtual void finalize();
@@ -79,11 +79,11 @@ friend class TerrainPageSurfaceCompilerShaderPassCoverageBatch;
 	TerrainPageSurfaceCompilerShaderPass(Ogre::Pass* pass, const TerrainPage& page);
 	virtual ~TerrainPageSurfaceCompilerShaderPass();
 
-	virtual void addLayer(const TerrainPageGeometry& geometry, TerrainPageSurfaceLayer* layer);
-	virtual void setBaseLayer(TerrainPageSurfaceLayer* layer);
+	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
+	virtual void setBaseLayer(const TerrainPageSurfaceLayer* layer);
 	void addShadowLayer(TerrainPageShadow* terrainPageShadow);
 
-	virtual bool hasRoomForLayer(TerrainPageSurfaceLayer* layer);
+	virtual bool hasRoomForLayer(const TerrainPageSurfaceLayer* layer);
 
 	/**
 	 * @brief Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
@@ -112,7 +112,7 @@ protected:
 	Ogre::TexturePtr getCombinedCoverageTexture(size_t passIndex, size_t batchIndex);
 	CoverageBatchStore mCoverageBatches;
 	LayerStore mLayers;
-	TerrainPageSurfaceLayer* mBaseLayer;
+	const TerrainPageSurfaceLayer* mBaseLayer;
 	const TerrainPage& mPage;
 };
 
@@ -129,7 +129,7 @@ public:
     TerrainPageSurfaceCompilerTechniqueShader(bool includeShadows);
     virtual ~TerrainPageSurfaceCompilerTechniqueShader();
 
-	virtual bool compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
+	virtual bool compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
 
     virtual void setPage(const TerrainPage* page);
 
@@ -174,7 +174,7 @@ public:
 // 	virtual void addLayer(TerrainPageSurfaceLayer* layer);
 // 	virtual void setBaseLayer(TerrainPageSurfaceLayer* layer);
 
-	virtual bool hasRoomForLayer(TerrainPageSurfaceLayer* layer);
+	virtual bool hasRoomForLayer(const TerrainPageSurfaceLayer* layer);
 
 
 	/**

@@ -276,8 +276,14 @@ TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 	///get the scale by dividing the total size of the page with the size of each tile
 	float scale = getAlphaTextureSize() / shader->getLayerDefinition()->getTileSize();
 	layer->setScale(scale);
-	layer->updateCoverageImage(*mGeometry);
+//	layer->updateCoverageImage(*mGeometry);
 	return layer;
+}
+
+void TerrainPage::regenerateMaterial()
+{
+	mTerrainSurface->recompileMaterial(*mGeometry, false);
+	mPageFoliage->generateCoverageMap();
 }
 
 void TerrainPage::updateAllShaderTextures(bool repopulate)
@@ -290,8 +296,6 @@ void TerrainPage::updateAllShaderTextures(bool repopulate)
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
 		mTerrainSurface->updateLayer(*mGeometry, I->first, repopulate);
 	}
-	mTerrainSurface->recompileMaterial(*mGeometry, false);
-	mPageFoliage->generateCoverageMap();
 }
 
 TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* shader, bool repopulate)
@@ -299,15 +303,13 @@ TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* s
 	TerrainPageSurfaceLayer* layer;
 	if (mTerrainSurface->getLayers().find(shader->getTerrainIndex()) == mTerrainSurface->getLayers().end()) {
 		layer = addShader(shader);
-		mTerrainSurface->recompileMaterial(*mGeometry, false);
 	} else {
 		layer = mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
-		mTerrainSurface->recompileMaterial(*mGeometry, false);
 	}
+	layer->createCoverageImage();
+	layer->updateCoverageImage(*mGeometry);
 
-	mPageFoliage->generateCoverageMap();
 	return layer;
-
 }
 
 void TerrainPage::registerBridge(ITerrainPageBridge* bridge)

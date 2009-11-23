@@ -43,14 +43,14 @@ class TerrainPageSurfaceCompilerTechniqueSimple : public TerrainPageSurfaceCompi
 {
 public:
 
-    virtual bool compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
+    virtual bool compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
     virtual void setPage(const TerrainPage* page);
 
 
 protected:
 	const TerrainPage* mPage;
 
-	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, TerrainPageSurfaceLayer* layer);
+	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer);
 	void addShadow(Ogre::Technique* technique, TerrainPageShadow* terrainPageShadow);
 
 

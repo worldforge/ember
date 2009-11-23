@@ -45,6 +45,7 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 		for (PageStore::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
 			///repopulate the layer
 			J->second->updateShaderTexture(mShader, true);
+			mUpdatedPages.push_back(J->second);
 		}
 	} else {
 		for (PageStore::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
@@ -58,6 +59,7 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 			if (shouldUpdate) {
 				///repopulate the layer
 				J->second->updateShaderTexture(mShader, true);
+				mUpdatedPages.push_back(J->second);
 			}
 		}
 	}
@@ -65,6 +67,11 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 
 void TerrainShaderUpdateTask::executeTaskInMainThread()
 {
+	for (PageVector::const_iterator J = mUpdatedPages.begin(); J != mUpdatedPages.end(); ++J) {
+		(*J)->regenerateMaterial();
+	}
+
+
 	if (mAreas.size()) {
 		mSignal(mShader, &mAreas);
 	} else {

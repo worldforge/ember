@@ -58,6 +58,7 @@ private:
 	const AreaStore mAreas;
 	const bool mUpdateAll;
 	sigc::signal<void, const TerrainShader*, const AreaStore* >& mSignal;
+	PageVector mUpdatedPages;
 
 };
 

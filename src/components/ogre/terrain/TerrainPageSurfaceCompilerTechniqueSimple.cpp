@@ -35,12 +35,12 @@ namespace EmberOgre {
 
 namespace Terrain {
 
-bool TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
+bool TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
 {
 	material->removeAllTechniques();
 	Ogre::Technique* technique = material->createTechnique();
-	for (std::map<int, TerrainPageSurfaceLayer*>::iterator I = terrainPageSurfaces.begin(); I != terrainPageSurfaces.end(); ++I) {
-		TerrainPageSurfaceLayer* surfaceLayer = I->second;
+	for (std::map<int, const TerrainPageSurfaceLayer*>::const_iterator I = terrainPageSurfaces.begin(); I != terrainPageSurfaces.end(); ++I) {
+		const TerrainPageSurfaceLayer* surfaceLayer = I->second;
 		if (I == terrainPageSurfaces.begin()) {
 			Ogre::Pass* pass = technique->createPass();
 			pass->setLightingEnabled(false);
@@ -139,7 +139,7 @@ void TerrainPageSurfaceCompilerTechniqueSimple::setPage(const TerrainPage* page)
 //
 // }
 //
-Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, TerrainPageSurfaceLayer* layer) {
+Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer) {
 	///check if we instead can reuse the existing pass
 // 	if (technique->getNumPasses() != 0) {
 // 		Ogre::Pass* pass = technique->getPass(technique->getNumPasses() - 1);
@@ -153,18 +153,15 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(const 
 // 	}
 
 	///we need to create the image, update it and then destroy it again (to keep the memory usage down)
-	if (layer->getCoverageTextureName() == "") {
-		///no texture yet; let's create one
-		layer->createCoverageImage();
-		layer->updateCoverageImage(geometry);
-		layer->createTexture();
-// 		layer->destroyCoverageImage();
-	} else {
-		///a texture exists, so we just need to update the image
-// 		layer->createCoverageImage();
-		layer->updateCoverageImage(geometry); ///calling this will also update the texture since the method will blit the image onto it
-// 		layer->destroyCoverageImage();
-	}
+//	if (layer->getCoverageTextureName() == "") {
+//		///no texture yet; let's create one
+//		layer->createCoverageImage();
+//		layer->updateCoverageImage(geometry);
+//		layer->createTexture();
+//	} else {
+//		///a texture exists, so we just need to update the image
+//		layer->updateCoverageImage(geometry); ///calling this will also update the texture since the method will blit the image onto it
+//	}
 
 	Ogre::Pass* pass = technique->createPass();
 

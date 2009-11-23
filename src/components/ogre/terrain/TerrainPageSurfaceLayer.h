@@ -85,6 +85,9 @@ public:
      */
     bool createCoverageImage();
 
+
+    void updateCoverageTexture();
+
     /**
      * @brief Gets the name of the coverage texture name. If no texture has been created this will be an empty string.
      * @return
@@ -138,6 +141,8 @@ protected:
 	float mScale;
 
 	const TerrainLayerDefinition& mDefinition;
+
+	bool mDirty;
 
 	void fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels);
 

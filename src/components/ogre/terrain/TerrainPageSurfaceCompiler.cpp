@@ -51,7 +51,7 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 {
 }
 
-void TerrainPageSurfaceCompiler::compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
+void TerrainPageSurfaceCompiler::compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
 {
 	bool result = true;
 	try {
@@ -67,7 +67,7 @@ void TerrainPageSurfaceCompiler::compileMaterial(const TerrainPageGeometry& geom
 	}
 }
 
-void TerrainPageSurfaceCompiler::fallback(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
+void TerrainPageSurfaceCompiler::fallback(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, TerrainPage& page)
 {
 	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
 	mTechnique->setPage(&page);

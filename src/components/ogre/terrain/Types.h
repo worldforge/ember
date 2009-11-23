@@ -126,6 +126,9 @@ namespace EmberOgre {
 		typedef std::map<const TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
 
 		typedef std::map<std::string, TerrainPage*> PageStore;
+
+		typedef std::vector<TerrainPage*> PageVector;
+
 		/**
 		 A type for use when keeping track of changes done to areas. We use instances of Mercator::Area instead of pointers or references since we want to batch the updates, and the original area instances might not be around at that time.
 		 */

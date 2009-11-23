@@ -113,7 +113,11 @@ void TerrainPageSurface::recompileMaterial(const TerrainPageGeometry& geometry, 
 		 mSurfaceCompiler.reset(new TerrainPageSurfaceCompiler());
 	}
 
-	mSurfaceCompiler->compileMaterial(geometry, mMaterial, mLayers, mShadow, mTerrainPage);
+	std::map<int, const TerrainPageSurfaceLayer*> constLayers;
+	for (TerrainPageSurfaceLayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
+		constLayers[I->first] = I->second;
+	}
+	mSurfaceCompiler->compileMaterial(geometry, mMaterial, constLayers, mShadow, mTerrainPage);
 	//mMaterial->reload();
 
 	updateSceneManagersAfterMaterialsChange();

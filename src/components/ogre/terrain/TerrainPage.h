@@ -173,6 +173,9 @@ public:
 	 */
 	void updateAllShaderTextures(bool repopulate = true);
 
+	void regenerateMaterial();
+
+
 	int getPageSize() const;
 
 	void update();

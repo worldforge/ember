@@ -46,6 +46,7 @@ TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPage
 , mCoverageDataStream(0)
 , mSurfaceIndex(surfaceIndex)
 , mDefinition(definition)
+, mDirty(false)
 {
 
 }
@@ -185,7 +186,14 @@ void TerrainPageSurfaceLayer::updateCoverageImage(const TerrainPageGeometry& geo
 				}
 			}
 		}
+		mDirty = true;
+	}
+}
 
+void TerrainPageSurfaceLayer::updateCoverageTexture()
+{
+	///only update if we have a coverage image, else we'll wait until later when we're need to call updateCoverageImage anyway
+	if (mCoverageImage && mDirty) {
 		if (!mTexture.isNull()) {
 			///if it's alreay loaded we need to blit directly to the hardware buffer to make sure it's updated
 		 	if (mTexture->isLoaded()) {
@@ -198,9 +206,11 @@ void TerrainPageSurfaceLayer::updateCoverageImage(const TerrainPageGeometry& geo
 		 	} else {
 				mTexture->loadImage(*mCoverageImage);
 		 	}
+		 	mDirty = false;
 		}
 	}
 }
+
 
 
 Mercator::Surface* TerrainPageSurfaceLayer::getSurfaceForSegment(const Mercator::Segment* segment) const
