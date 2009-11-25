@@ -35,6 +35,7 @@
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageCreationTask.h"
 #include "TerrainShaderUpdateTask.h"
+#include "TerrainAreaUpdateTask.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/tasks/TaskQueue.h"
@@ -277,13 +278,20 @@ void TerrainGenerator::addArea(TerrainArea* terrainArea)
 
 void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
 {
+	const TerrainShader* shader = 0;
 	Mercator::Area* area = terrainArea->getArea();
 	if (mAreaShaders.count(area->getLayer())) {
-		///mark the shader for update
-		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
+		shader = mAreaShaders[area->getLayer()];
 	}
-	mTerrain->updateArea(area);
+	mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, *terrainArea, shader, sigc::mem_fun(*this, &TerrainGenerator::markShaderForUpdate)));
+//
+//	Mercator::Area* area = terrainArea->getArea();
+//	if (mAreaShaders.count(area->getLayer())) {
+//		///mark the shader for update
+//		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+//		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
+//	}
+//	mTerrain->updateArea(area);
 }
 
 void TerrainGenerator::TerrainArea_Removed(TerrainArea* terrainArea)

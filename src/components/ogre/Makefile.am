@@ -41,7 +41,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainPageSurfaceCompilerTechniqueShader.cpp terrain/TerrainPageSurfaceCompilerTechniqueSimple.cpp \
 	terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp \
 	terrain/PlantAreaQuery.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp \
-	terrain/TerrainShaderUpdateTask.cpp \
+	terrain/TerrainShaderUpdateTask.cpp terrain/TerrainAreaUpdateTask.cpp \
 \
 	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -115,7 +115,7 @@ noinst_HEADERS = \
 	terrain/TerrainPageSurfaceCompiler.h terrain/TerrainPageSurfaceCompilerTechniqueShader.h \
 	terrain/TerrainPageSurfaceCompilerTechniqueSimple.h terrain/TerrainPageSurfaceLayer.h \
 	terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h terrain/TerrainParser.h \
-	terrain/TerrainPageCreationTask.h terrain/Types.h \
+	terrain/TerrainPageCreationTask.h terrain/Types.h terrain/TerrainAreaUpdateTask.h \
 	terrain/TerrainShaderUpdateTask.h \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
