@@ -67,7 +67,7 @@ public:
 	 * @param task The task to add. Note that ownership will be transferred.
 	 * @param listener An optional listener. Note that ownership won't be transferred.
 	 */
-	void enqueueTask(ITask* task, ITaskExecutionListener* listener);
+	void enqueueTask(ITask* task, ITaskExecutionListener* listener = 0);
 
 	/**
 	 * @brief Goes through all processed tasks, handled them and then deletes them
