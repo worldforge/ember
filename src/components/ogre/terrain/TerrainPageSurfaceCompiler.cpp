@@ -33,22 +33,27 @@
 #include "../ShaderManager.h"
 #include "../EmberOgre.h"
 
-
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include <Ogre.h>
 
-namespace EmberOgre {
-namespace Terrain {
+namespace EmberOgre
+{
+namespace Terrain
+{
 
 TerrainPageSurfaceCompiler::TerrainPageSurfaceCompiler()
 {
-	selectTechnique();
 }
-
 
 TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 {
+}
+
+TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometry& geometry, const std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
+{
+	return new TerrainPageSurfaceCompilationInstance(selectTechnique(), geometry, terrainPageSurfaces, terrainPageShadow, page);
+
 }
 
 void TerrainPageSurfaceCompiler::compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
@@ -67,30 +72,24 @@ void TerrainPageSurfaceCompiler::compileMaterial(const TerrainPageGeometry& geom
 	}
 }
 
-void TerrainPageSurfaceCompiler::fallback(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
-{
-	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
-	mTechnique->setPage(&page);
-	mTechnique->compileMaterial(geometry, material, terrainPageSurfaces, terrainPageShadow);
-}
+//void TerrainPageSurfaceCompiler::fallback(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
+//{
+//	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
+//	mTechnique->setPage(&page);
+//	mTechnique->compileMaterial(geometry, material, terrainPageSurfaces, terrainPageShadow);
+//}
 
-void TerrainPageSurfaceCompiler::selectTechnique()
+TerrainPageSurfaceCompilerTechnique* TerrainPageSurfaceCompiler::selectTechnique()
 {
 	std::string preferredTech("");
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("terrain", "preferredtechnique")) {
-		preferredTech = static_cast<std::string>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("terrain", "preferredtechnique"));
+		preferredTech = static_cast<std::string> (Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("terrain", "preferredtechnique"));
 	}
 
 	bool shaderSupport = false;
 	const Ogre::RenderSystemCapabilities* caps = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities();
-	if (caps->hasCapability(Ogre::RSC_VERTEX_PROGRAM) && (caps->hasCapability(Ogre::RSC_FRAGMENT_PROGRAM)))
-	{
-		if ((Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0") &&
-			Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0")) ||
-			(Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") &&
-			Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1"))
-			)
-		{
+	if (caps->hasCapability(Ogre::RSC_VERTEX_PROGRAM) && (caps->hasCapability(Ogre::RSC_FRAGMENT_PROGRAM))) {
+		if ((Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("ps_2_0") && Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("vs_2_0")) || (Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbfp1") && Ogre::GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1"))) {
 			shaderSupport = true;
 		}
 	}
@@ -99,25 +98,44 @@ void TerrainPageSurfaceCompiler::selectTechnique()
 
 	if (preferredTech == "ShaderNormalMapped" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		///Use normal mapped shader tech with shadows
-		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped(true));
+		return new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped(true);
 	} else if (preferredTech == "ShaderNormalMapped" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 		///Use normal mapped shader tech without shadows
-		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped(false));
+		return new TerrainPageSurfaceCompilerTechniqueShaderNormalMapped(false);
 	} else if (preferredTech == "Shader" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		///Use shader tech with shadows
-		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader(true));
+		return new TerrainPageSurfaceCompilerTechniqueShader(true);
 	} else if (preferredTech == "Shader" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 		///Use shader tech without shadows
-		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueShader(false));
+		return new TerrainPageSurfaceCompilerTechniqueShader(false);
 	} else {
-		mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
+		return new TerrainPageSurfaceCompilerTechniqueSimple();
 	}
-//
+	//
 
-//	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
+	//	mTechnique = std::auto_ptr<TerrainPageSurfaceCompilerTechnique>(new TerrainPageSurfaceCompilerTechniqueSimple());
 }
 
+TerrainPageSurfaceCompilationInstance::TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique, const TerrainPageGeometry& geometry, const std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
+: mTechnique(technique), mGeometry(geometry), mTerrainPageSurfaces(terrainPageSurfaces), mTerrainPageShadow(terrainPageShadow), mPage(page)
+{
 
+}
+
+TerrainPageSurfaceCompilationInstance::~TerrainPageSurfaceCompilationInstance()
+{
+	delete mTechnique;
+}
+
+void TerrainPageSurfaceCompilationInstance::prepare()
+{
+	mTechnique->prepareMaterial();
+}
+
+void TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material)
+{
+	mTechnique->compileMaterial(material);
+}
 
 }
 }
