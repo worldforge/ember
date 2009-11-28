@@ -20,18 +20,18 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_TERRAINTERRAINPAGESURFACECOMPILERTECHNIQUESIMPLE_H
-#define EMBEROGRE_TERRAINTERRAINPAGESURFACECOMPILERTECHNIQUESIMPLE_H
+#ifndef EMBEROGRETERRAINTECHNIQUESSIMPLE_H
+#define EMBEROGRETERRAINTECHNIQUESSIMPLE_H
 
-#include "../EmberOgrePrerequisites.h"
-#include "TerrainPageSurfaceCompiler.h"
-#include "TerrainPage.h"
+#include "Base.h"
+#include "components/ogre/EmberOgrePrerequisites.h"
+#include "components/ogre/terrain/TerrainPage.h"
 
 namespace EmberOgre {
 
 namespace Terrain {
 
-class TerrainPageGeometry;
+namespace Techniques {
 
 /**
 	@brief A simple technique, using only the fixed function pipeline.
@@ -39,22 +39,24 @@ class TerrainPageGeometry;
 
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class TerrainPageSurfaceCompilerTechniqueSimple : public TerrainPageSurfaceCompilerTechnique
+class Simple : public Base
 {
 public:
 
-    virtual bool compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow);
-    virtual void setPage(const TerrainPage* page);
+	Simple(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
 
+    virtual bool prepareMaterial();
+    virtual bool compileMaterial(Ogre::MaterialPtr material);
 
 protected:
-	const TerrainPage* mPage;
 
 	Ogre::Pass* addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer);
-	void addShadow(Ogre::Technique* technique, TerrainPageShadow* terrainPageShadow);
+	void addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow);
 
 
 };
+
+}
 
 }
 

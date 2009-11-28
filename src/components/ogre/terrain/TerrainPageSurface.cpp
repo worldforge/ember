@@ -117,7 +117,11 @@ void TerrainPageSurface::recompileMaterial(const TerrainPageGeometry& geometry, 
 	for (TerrainPageSurfaceLayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		constLayers[I->first] = I->second;
 	}
-	mSurfaceCompiler->compileMaterial(geometry, mMaterial, constLayers, mShadow, mTerrainPage);
+	TerrainPageSurfaceCompilationInstance* compilationInstance = mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow, mTerrainPage);
+	compilationInstance->prepare();
+	compilationInstance->compile(mMaterial);
+	delete compilationInstance;
+//	mSurfaceCompiler->compileMaterial();
 	//mMaterial->reload();
 
 	updateSceneManagersAfterMaterialsChange();

@@ -44,6 +44,7 @@ namespace EmberOgre {
 
 		class TerrainPage;
 		class TerrainShader;
+		class TerrainPageSurfaceLayer;
 
 		/**
 		 @brief Defines the height of a special "base point" in the terrain.
@@ -128,6 +129,8 @@ namespace EmberOgre {
 		typedef std::map<std::string, TerrainPage*> PageStore;
 
 		typedef std::vector<TerrainPage*> PageVector;
+
+		typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 
 		/**
 		 A type for use when keeping track of changes done to areas. We use instances of Mercator::Area instead of pointers or references since we want to batch the updates, and the original area instances might not be around at that time.

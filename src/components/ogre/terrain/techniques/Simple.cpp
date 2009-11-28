@@ -1,5 +1,5 @@
 //
-// C++ Implementation: TerrainPageSurfaceCompilerTechniqueSimple
+// C++ Implementation: Simple
 //
 // Description:
 //
@@ -24,9 +24,9 @@
 #include "config.h"
 #endif
 
-#include "TerrainPageSurfaceCompilerTechniqueSimple.h"
-#include "TerrainPageSurfaceLayer.h"
-#include "TerrainPageGeometry.h"
+#include "Simple.h"
+#include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
+#include "components/ogre/terrain/TerrainPageGeometry.h"
 #include <OgreTechnique.h>
 #include <OgrePass.h>
 #include <OgreTextureUnitState.h>
@@ -35,13 +35,28 @@ namespace EmberOgre {
 
 namespace Terrain {
 
-bool TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow)
+namespace Techniques {
+
+Simple::Simple(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
+: Base::Base(geometry, terrainPageSurfaces, terrainPageShadow, page)
+{
+
+}
+
+
+bool Simple::prepareMaterial()
+{
+
+}
+
+
+bool Simple::compileMaterial(Ogre::MaterialPtr material)
 {
 	material->removeAllTechniques();
 	Ogre::Technique* technique = material->createTechnique();
-	for (std::map<int, const TerrainPageSurfaceLayer*>::const_iterator I = terrainPageSurfaces.begin(); I != terrainPageSurfaces.end(); ++I) {
+	for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
 		const TerrainPageSurfaceLayer* surfaceLayer = I->second;
-		if (I == terrainPageSurfaces.begin()) {
+		if (I == mTerrainPageSurfaces.begin()) {
 			Ogre::Pass* pass = technique->createPass();
 			pass->setLightingEnabled(false);
 			///add the first layer of the terrain, no alpha or anything
@@ -50,18 +65,18 @@ bool TerrainPageSurfaceCompilerTechniqueSimple::compileMaterial(const TerrainPag
 			textureUnitState->setTextureName(surfaceLayer->getDiffuseTextureName());
 			textureUnitState->setTextureCoordSet(0);
 		} else {
-			if (surfaceLayer->intersects(geometry)) {
-				addPassToTechnique(geometry, technique, surfaceLayer);
+			if (surfaceLayer->intersects(mGeometry)) {
+				addPassToTechnique(mGeometry, technique, surfaceLayer);
 			}
 		}
 	}
-	if (terrainPageShadow) {
-		addShadow(technique, terrainPageShadow);
+	if (mTerrainPageShadow) {
+		addShadow(technique, mTerrainPageShadow);
 	}
 	return true;
 }
 
-void TerrainPageSurfaceCompilerTechniqueSimple::addShadow(Ogre::Technique* technique, TerrainPageShadow* terrainPageShadow)
+void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terrainPageShadow)
 {
 	Ogre::Pass* shadowPass = technique->createPass();
 
@@ -77,12 +92,6 @@ void TerrainPageSurfaceCompilerTechniqueSimple::addShadow(Ogre::Technique* techn
 	textureUnitStateSplat->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	textureUnitStateSplat->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
 }
-
-void TerrainPageSurfaceCompilerTechniqueSimple::setPage(const TerrainPage* page)
-{
-	mPage = page;
-}
-
 
 // void TerrainPageSurfaceCompiler::addTextureUnitsToPass(Ogre::Pass* pass, const Ogre::String& splatTextureName) {
 //
@@ -139,7 +148,7 @@ void TerrainPageSurfaceCompilerTechniqueSimple::setPage(const TerrainPage* page)
 //
 // }
 //
-Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer) {
+Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer) {
 	///check if we instead can reuse the existing pass
 // 	if (technique->getNumPasses() != 0) {
 // 		Ogre::Pass* pass = technique->getPass(technique->getNumPasses() - 1);
@@ -189,6 +198,7 @@ Ogre::Pass* TerrainPageSurfaceCompilerTechniqueSimple::addPassToTechnique(const 
 
 }
 
+}
 
 }
 
