@@ -6,7 +6,7 @@
  */
 
 #ifndef EMBEROGRETERRAINTECHNIQUESSHADERPASS_H_
-#define EMBEROGRETERRAINTECHNIQUES
+#define EMBEROGRETERRAINTECHNIQUESSHADERPASS_H_
 
 #include "components/ogre/OgreIncludes.h"
 #include <vector>
