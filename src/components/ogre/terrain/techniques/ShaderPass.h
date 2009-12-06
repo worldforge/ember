@@ -45,7 +45,7 @@ class ShaderPass
 {
 public:
 friend class ShaderPassCoverageBatch;
-	ShaderPass(Ogre::Pass* pass, const TerrainPage& page);
+	ShaderPass(const TerrainPage& page);
 	virtual ~ShaderPass();
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -60,17 +60,12 @@ friend class ShaderPassCoverageBatch;
 	 * @param shaderSuffix A suffix to add to the shader name. This allows you to make it use a somewhat different shader depending on graphics level etc.
 	 * @return True if the creation of the pass was successful.
 	 */
-	virtual bool finalize(bool useShadows = true, const std::string shaderSuffix = "");
+	virtual bool finalize(Ogre::Pass& pass, bool useShadows = true, const std::string shaderSuffix = "") const;
 
 	LayerStore& getLayers();
 
-	Ogre::Pass* getPass();
-
 protected:
 	typedef std::vector<ShaderPassCoverageBatch*> CoverageBatchStore;
-
-	Ogre::Pass* mPass;
-// 	unsigned int mCurrentLayerIndex;
 
 	void assignCombinedCoverageTexture();
 	ShaderPassCoverageBatch* getCurrentBatch();
@@ -78,7 +73,7 @@ protected:
 
 	unsigned int getCoveragePixelWidth() const;
 	float mScales[16];
-	Ogre::TexturePtr getCombinedCoverageTexture(size_t passIndex, size_t batchIndex);
+	Ogre::TexturePtr getCombinedCoverageTexture(size_t passIndex, size_t batchIndex) const;
 	CoverageBatchStore mCoverageBatches;
 	LayerStore mLayers;
 	const TerrainPageSurfaceLayer* mBaseLayer;

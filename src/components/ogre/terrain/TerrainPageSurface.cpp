@@ -38,10 +38,11 @@
 namespace EmberOgre {
 namespace Terrain {
 
-TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage)
+TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, TerrainPageGeometry& geometry)
 : mTerrainPage(terrainPage)
 , mSurfaceCompiler(new TerrainPageSurfaceCompiler())
 , mShadow(0)
+, mGeometry(geometry)
 {
 	///create a name for out material
 // 	S_LOG_INFO("Creating a material for the terrain.");
@@ -71,14 +72,14 @@ const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getL
 
 TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate)
 {
-	TerrainPageSurfaceLayerStore::iterator I = mLayers.find(layerIndex);
-	if (I != mLayers.end()) {
-		if (repopulate) {
-			I->second->populate(geometry);
-		}
-		I->second->updateCoverageImage(geometry);
-		return I->second;
-	}
+//	TerrainPageSurfaceLayerStore::iterator I = mLayers.find(layerIndex);
+//	if (I != mLayers.end()) {
+//		if (repopulate) {
+//			I->second->populate(geometry);
+//		}
+//		I->second->updateCoverageImage(geometry);
+//		return I->second;
+//	}
 	return 0;
 }
 
@@ -134,7 +135,7 @@ void TerrainPageSurface::setShadow(TerrainPageShadow* shadow)
 
 TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader)
 {
-	TerrainPageSurfaceLayer* terrainSurface = new TerrainPageSurfaceLayer(*this, definition, surfaceIndex, shader);
+	TerrainPageSurfaceLayer* terrainSurface = new TerrainPageSurfaceLayer(*this, mGeometry, definition, surfaceIndex, shader);
 	mLayers.insert(TerrainPageSurfaceLayerStore::value_type(surfaceIndex, terrainSurface));
 	return terrainSurface;
 }

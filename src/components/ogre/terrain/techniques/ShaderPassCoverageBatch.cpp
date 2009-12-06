@@ -16,10 +16,10 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #include "ShaderPassCoverageBatch.h"
 #include "ShaderPass.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
+#include "components/ogre/terrain/Image.h"
 
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreTextureUnitState.h>
@@ -34,39 +34,26 @@ namespace Terrain
 namespace Techniques
 {
 
-ShaderPassCoverageBatch::ShaderPassCoverageBatch(ShaderPass& shaderPass, Ogre::TexturePtr combinedCoverageTexture) :
-	mShaderPass(shaderPass), mCombinedCoverageTexture(combinedCoverageTexture), mCombinedCoverageImage(OGRE_NEW Ogre::Image()), mCombinedCoverageDataStream(OGRE_NEW Ogre::MemoryDataStream(combinedCoverageTexture->getWidth() * combinedCoverageTexture->getWidth() * 4, true))
+ShaderPassCoverageBatch::ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize) :
+	mShaderPass(shaderPass), mCombinedCoverageImage(imageSize, 4)
 {
 	///reset the coverage image
-	memset(mCombinedCoverageDataStream->getPtr(), '\0', mCombinedCoverageDataStream->size());
+	mCombinedCoverageImage.reset();
 }
 
 ShaderPassCoverageBatch::~ShaderPassCoverageBatch()
 {
-	OGRE_DELETE mCombinedCoverageImage;
-	OGRE_DELETE mCombinedCoverageDataStream;
 }
 
 void ShaderPassCoverageBatch::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer)
 {
-	//	layer->createCoverageImage();
-	//	layer->updateCoverageImage(geometry);
-	addCoverage(layer->getCoverageImage(), mLayers.size(), 4);
+	addCoverage(layer, mLayers.size());
 	mLayers.push_back(layer);
-	//	layer->destroyCoverageImage();
 }
 
-void ShaderPassCoverageBatch::addCoverage(Ogre::Image* coverage, unsigned int channel, unsigned short numberOfChannels)
+void ShaderPassCoverageBatch::addCoverage(const TerrainPageSurfaceLayer* layer, unsigned int channel)
 {
-	mCombinedCoverageDataStream->seek(0);
-	unsigned char * coverageData = coverage->getData();
-	unsigned char * combinedCoverageData = mCombinedCoverageDataStream->getPtr();
-	combinedCoverageData += channel;
-	for (unsigned int i = 0; i < coverage->getSize(); ++i) {
-		*combinedCoverageData = *coverageData;
-		combinedCoverageData += numberOfChannels;
-		coverageData++;
-	}
+	layer->fillImage(mCombinedCoverageImage, channel);
 }
 
 std::vector<const TerrainPageSurfaceLayer*>& ShaderPassCoverageBatch::getLayers()
@@ -74,30 +61,28 @@ std::vector<const TerrainPageSurfaceLayer*>& ShaderPassCoverageBatch::getLayers(
 	return mLayers;
 }
 
-void ShaderPassCoverageBatch::assignCombinedCoverageTexture()
+void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr texture)
 {
-	mCombinedCoverageDataStream->seek(0);
-	mCombinedCoverageImage->loadDynamicImage(mCombinedCoverageDataStream->getPtr(), mShaderPass.getCoveragePixelWidth(), mShaderPass.getCoveragePixelWidth(), 1, Ogre::PF_B8G8R8A8);
-	mCombinedCoverageTexture->loadImage(*mCombinedCoverageImage);
 
-	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(mCombinedCoverageTexture->getBuffer());
-	///blit the whole image to the hardware buffer
-	Ogre::PixelBox sourceBox(mCombinedCoverageImage->getPixelBox());
-	hardwareBuffer->blitFromMemory(sourceBox);
+	Ogre::Image image;
+
+	image.loadDynamicImage(mCombinedCoverageImage.getData(), mShaderPass.getCoveragePixelWidth(), mShaderPass.getCoveragePixelWidth(), 1, Ogre::PF_B8G8R8A8);
+	texture->loadImage(image);
+
+//	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer());
+//	///blit the whole image to the hardware buffer
+//	Ogre::PixelBox sourceBox(image.getPixelBox());
+//	hardwareBuffer->blitFromMemory(sourceBox);
 
 }
 
-Ogre::TexturePtr ShaderPassCoverageBatch::getCombinedCoverageTexture()
-{
-	return mCombinedCoverageTexture;
-}
-void ShaderPassCoverageBatch::finalize()
+void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture)
 {
 	///add our coverage textures first
-	assignCombinedCoverageTexture();
-	Ogre::TextureUnitState * coverageTUS = mShaderPass.mPass->createTextureUnitState();
+	assignCombinedCoverageTexture(texture);
+	Ogre::TextureUnitState * coverageTUS = pass.createTextureUnitState();
 	coverageTUS->setTextureScale(1, 1);
-	coverageTUS->setTextureName(getCombinedCoverageTexture()->getName());
+	coverageTUS->setTextureName(texture->getName());
 	coverageTUS->setTextureCoordSet(0);
 	coverageTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
@@ -106,7 +91,7 @@ void ShaderPassCoverageBatch::finalize()
 		///add the layer textures
 		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
 		///add the first layer of the terrain, no alpha or anything
-		Ogre::TextureUnitState * diffuseTUS = mShaderPass.mPass->createTextureUnitState();
+		Ogre::TextureUnitState * diffuseTUS = pass.createTextureUnitState();
 		//textureUnitState->setTextureScale(0.025, 0.025);
 		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
 		diffuseTUS->setTextureCoordSet(0);

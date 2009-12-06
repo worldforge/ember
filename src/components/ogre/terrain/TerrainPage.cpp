@@ -82,7 +82,7 @@ TerrainPage::TerrainPage(const TerrainPosition& position, TerrainGenerator& gene
 , mPosition(position)
 , mBridge(0)
 , mGeometry(new TerrainPageGeometry(*this, -15))
-, mTerrainSurface(new TerrainPageSurface(*this))
+, mTerrainSurface(new TerrainPageSurface(*this, *mGeometry))
 , mShadow(*this)
 , mShadowTechnique(0)
 , mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
@@ -156,12 +156,12 @@ void TerrainPage::createShadowData(const Ogre::Vector3& lightDirection)
 {
 	mGeometry->repopulate();
 	mShadow.setLightDirection(lightDirection);
-	mShadow.createShadowData(*mGeometry);
+	mShadow.updateShadow(*mGeometry);
 }
 
 void TerrainPage::loadShadow()
 {
-	mShadow.createImage();
+//	mShadow.createImage();
 }
 
 void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
@@ -287,27 +287,27 @@ TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 
 void TerrainPage::updateAllShaderTextures(bool repopulate)
 {
-//	mGeometry->repopulate();
-	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin();
-	///skip the first texture, since it's the ground, and doesn't have an alpha texture
-	++I;
-	for (; I != mTerrainSurface->getLayers().end(); ++I) {
-		I->second->createCoverageImage(); //safe to call multiple times
-		mTerrainSurface->updateLayer(*mGeometry, I->second->getSurfaceIndex(), repopulate);
-	}
+////	mGeometry->repopulate();
+//	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin();
+//	///skip the first texture, since it's the ground, and doesn't have an alpha texture
+//	++I;
+//	for (; I != mTerrainSurface->getLayers().end(); ++I) {
+//		I->second->createCoverageImage(); //safe to call multiple times
+//		mTerrainSurface->updateLayer(*mGeometry, I->second->getSurfaceIndex(), repopulate);
+//	}
 }
 
 TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* shader, bool repopulate)
 {
 	TerrainPageSurfaceLayer* layer;
-	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
-	if (I == mTerrainSurface->getLayers().end()) {
-		layer = addShader(shader);
-	} else {
-		layer = I->second;
-	}
-	layer->createCoverageImage(); //safe to call multiple times
-	layer = mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
+//	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
+//	if (I == mTerrainSurface->getLayers().end()) {
+//		layer = addShader(shader);
+//	} else {
+//		layer = I->second;
+//	}
+//	layer->createCoverageImage(); //safe to call multiple times
+//	layer = mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
 
 	return layer;
 }

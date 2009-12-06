@@ -28,6 +28,7 @@
 
 #include "TerrainPage.h"
 #include "TerrainPageGeometry.h"
+#include "Image.h"
 #include "../Convert.h"
 
 #include <OgreColourValue.h>
@@ -96,16 +97,12 @@ TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mShadowTechnique(0)
 , mLightDirection(Ogre::Vector3::ZERO)
-, mImage(0)
-, mTexture(0)
-, mShadowChunk(0)
+, mImage(new Image(mTerrainPage.getAlphaTextureSize(), 1))
 {
 }
 
 TerrainPageShadow::~TerrainPageShadow()
 {
-	OGRE_DELETE mImage;
-	OGRE_DELETE mShadowChunk;
 }
 
 void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
@@ -113,53 +110,65 @@ void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
 	mLightDirection = lightDirection;
 }
 
-void TerrainPageShadow::createShadowData(const TerrainPageGeometry& geometry)
-{
-	if (!mShadowTechnique) {
-		S_LOG_WARNING("Trying to create shadow data without have a technique set.");
-	} else {
-		assert(!mShadowChunk);
-		mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
-
-		memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
-		mShadowTechnique->createShadowData(mTerrainPage, geometry, mShadowChunk->getPtr(), mLightDirection, Ogre::ColourValue(1,1,1));
-	}
-}
+//void TerrainPageShadow::createShadowData(const TerrainPageGeometry& geometry)
+//{
+//	if (!mShadowTechnique) {
+//		S_LOG_WARNING("Trying to create shadow data without have a technique set.");
+//	} else {
+//		assert(!mShadowChunk);
+//		mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
+//
+//		memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
+//		mShadowTechnique->createShadowData(mTerrainPage, geometry, mShadowChunk->getPtr(), mLightDirection, Ogre::ColourValue(1,1,1));
+//	}
+//}
 
 void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 {
-	assert(mShadowChunk);
-	assert(mImage);
-	createShadowData(geometry);
-
-	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
-
-	///blit the whole image to the hardware buffer
-	Ogre::PixelBox sourceBox = mImage->getPixelBox();
-	hardwareBuffer->blitFromMemory(sourceBox);
+	boost::shared_ptr<Image> image(new Image(mTerrainPage.getAlphaTextureSize(), 1));
+	image->reset();
+	mShadowTechnique->createShadowData(mTerrainPage, geometry, image->getData(), mLightDirection, Ogre::ColourValue(1,1,1));
+	mImage = image;
+//
+//	createShadowData(geometry);
+//
+//	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
+//
+//	///blit the whole image to the hardware buffer
+//	Ogre::PixelBox sourceBox = mImage->getPixelBox();
+//	hardwareBuffer->blitFromMemory(sourceBox);
 }
 
-void TerrainPageShadow::createImage()
+void TerrainPageShadow::loadIntoImage(Ogre::Image& ogreImage) const
 {
-	///we need an unique name for our alpha texture
-	std::stringstream shadowTextureNameSS;
-	shadowTextureNameSS << mTerrainPage.getMaterial()->getName() << "_shadow";
-	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
+	boost::shared_ptr<Image> image = mImage;
 
-	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
+	ogreImage.loadDynamicImage(image->getData(), image->getWidth(), image->getWidth(), 1, Ogre::PF_L8);
 
-
-
-	mImage = OGRE_NEW Ogre::Image();
-	mImage->loadDynamicImage(mShadowChunk->getPtr(), mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
-
-	mTexture->loadImage(*mImage);
 }
 
-const Ogre::TexturePtr TerrainPageShadow::getTexture() const
-{
-	return mTexture;
-}
+
+//void TerrainPageShadow::createImage()
+//{
+//	///we need an unique name for our alpha texture
+//	std::stringstream shadowTextureNameSS;
+//	shadowTextureNameSS << mTerrainPage.getMaterial()->getName() << "_shadow";
+//	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
+//
+//	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
+//
+//
+//
+//	mImage = OGRE_NEW Ogre::Image();
+//	mImage->loadDynamicImage(mShadowChunk->getPtr(), mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
+//
+//	mTexture->loadImage(*mImage);
+//}
+
+//const Ogre::TexturePtr TerrainPageShadow::getTexture() const
+//{
+//	return mTexture;
+//}
 
 void TerrainPageShadow::setShadowTechnique(const ITerrainPageShadowTechnique* shadowTechnique)
 {
@@ -168,27 +177,25 @@ void TerrainPageShadow::setShadowTechnique(const ITerrainPageShadowTechnique* sh
 
 void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
 {
-	if (mImage) {
-		unsigned char val(mImage->getData()[static_cast<size_t>((mImage->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))]);
+	boost::shared_ptr<Image> image = mImage;
+	unsigned char val(image->getData()[static_cast<size_t>((image->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))]);
 
-		Ogre::uint8* aVal((Ogre::uint8*)&colour);
-		aVal[0] = val;
-		aVal[1] = val;
-		aVal[2] = val;
-		aVal[3] = 0xFF;
-	}
+	Ogre::uint8* aVal((Ogre::uint8*)&colour);
+	aVal[0] = val;
+	aVal[1] = val;
+	aVal[2] = val;
+	aVal[3] = 0xFF;
 }
 
 void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
 {
-	if (mImage) {
-		float val(mImage->getData()[static_cast<size_t>((mImage->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))] / 255.0f);
+	boost::shared_ptr<Image> image = mImage;
+	float val(image->getData()[static_cast<size_t>((image->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))] / 255.0f);
 
-		colour.r = val;
-		colour.g = val;
-		colour.b = val;
-		colour.a = 1.0f;
-	}
+	colour.r = val;
+	colour.g = val;
+	colour.b = val;
+	colour.a = 1.0f;
 }
 
 

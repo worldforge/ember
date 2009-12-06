@@ -24,7 +24,6 @@
 #define EMBEROGRETERRAINPAGESURFACELAYER_H
 
 #include "../EmberOgrePrerequisites.h"
-#include <OgreTexture.h>
 
 namespace Mercator
 {
@@ -46,13 +45,14 @@ namespace Terrain {
 class TerrainPageSurface;
 class TerrainLayerDefinition;
 class TerrainPageGeometry;
+class Image;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class TerrainPageSurfaceLayer{
 public:
-    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader);
+    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, TerrainPageGeometry& geometry, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader);
 
     virtual ~TerrainPageSurfaceLayer();
 
@@ -62,31 +62,6 @@ public:
      * @see createCoverageImage
      */
     void updateCoverageImage(const TerrainPageGeometry& geometry);
-
-    /**
-     * @brief Gets the Ogre Image instance which is the coverage image.
-     * If no image has been created, this will return a null reference.
-     * @see destroyCoverageImage()
-     * @see createCoverageImage()
-     * @return A pointer to an Ogre::Image or null if none created.
-     */
-    Ogre::Image* getCoverageImage() const;
-
-    /**
-     * @brief Destroys the coverage Ogre::Image held by this instance.
-     * You can call this without problem even if no image has been created.
-     * @return true if an image existed, else false
-     */
-    bool destroyCoverageImage();
-
-    /**
-     * @brief Creates a new Ogre::Image instance for the coverage image.
-     * @return True if no image existed beforehand and the creation succeeded.
-     */
-    bool createCoverageImage();
-
-
-    void updateCoverageTexture();
 
     /**
      * @brief Gets the name of the coverage texture name. If no texture has been created this will be an empty string.
@@ -104,7 +79,7 @@ public:
     unsigned int getPixelWidth() const;
 
 	/**
-	 *    @brief Checks whether this layer intersects the page to which it belongs.
+	 * @brief Checks whether this layer intersects the page to which it belongs.
 	 *
 	 * We only want to add surface layers which we know intersects the page, so always call this before adding a layer.
 	 * @return True if it intersects, else false.
@@ -121,28 +96,24 @@ public:
 
 	void populate(const TerrainPageGeometry& geometry);
 
-	Ogre::TexturePtr createTexture();
-	bool unloadTexture();
+	void fillImage(Image& image, unsigned int channel) const;
 
 
 protected:
 	TerrainPageSurface& mTerrainPageSurface;
 	const Mercator::Shader* mShader;
-	Ogre::Image* mCoverageImage;
-	Ogre::TexturePtr mTexture;
 
 	std::string mDiffuseTextureName;
 	std::string mSpecularTextureName;
 	std::string mNormalTextureName;
 
-	Ogre::MemoryDataStream* mCoverageDataStream;
 	int mSurfaceIndex;
 
 	float mScale;
 
 	const TerrainLayerDefinition& mDefinition;
 
-	bool mDirty;
+	TerrainPageGeometry& mGeometry;
 
 	void fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels);
 

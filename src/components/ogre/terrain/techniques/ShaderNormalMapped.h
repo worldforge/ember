@@ -40,7 +40,7 @@ public:
 	 */
 	ShaderNormalMapped(bool includeShadows, const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
 protected:
-	virtual ShaderPass* addPass(Ogre::Technique* technique);
+	virtual ShaderPass* addPass();
 
 };
 

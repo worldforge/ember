@@ -34,10 +34,10 @@ namespace Techniques
 class ShaderNormalMappedPassCoverageBatch : public ShaderPassCoverageBatch
 {
 public:
-	ShaderNormalMappedPassCoverageBatch(ShaderPass& shaderPass, Ogre::TexturePtr combinedCoverageTexture);
+	ShaderNormalMappedPassCoverageBatch(ShaderPass& shaderPass, unsigned int coverageImageWidth);
 	virtual ~ShaderNormalMappedPassCoverageBatch() {}
 
-	virtual void finalize();
+	virtual void finalize(Ogre::Pass& pass, Ogre::TexturePtr texture);
 
 protected:
 

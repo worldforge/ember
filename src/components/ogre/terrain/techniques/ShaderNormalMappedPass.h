@@ -38,7 +38,7 @@ class ShaderPassCoverageBatch;
 class ShaderNormalMappedPass : public ShaderPass
 {
 public:
-	ShaderNormalMappedPass(Ogre::Pass* pass, const TerrainPage& page);
+	ShaderNormalMappedPass(const TerrainPage& page);
 	virtual ~ShaderNormalMappedPass() {}
 
 // 	virtual void addLayer(TerrainPageSurfaceLayer* layer);
@@ -50,7 +50,7 @@ public:
 	/**
 	 *    Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
 	 */
-	virtual bool finalize();
+	virtual bool finalize(Ogre::Pass& pass, bool useShadows = true, const std::string shaderSuffix = "") const;
 
 
 protected:

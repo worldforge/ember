@@ -53,7 +53,7 @@ public:
 protected:
 	typedef std::vector<ShaderPass*> PassStore;
 
-	virtual ShaderPass* addPass(Ogre::Technique* technique);
+	virtual ShaderPass* addPass();
 	PassStore mPasses;
 
 	/**

@@ -24,6 +24,8 @@
 #define EMBEROGRETERRAINPAGESHADOW_H
 #include "../EmberOgrePrerequisites.h"
 
+#include <boost/smart_ptr.hpp>
+
 #include <OgreTexture.h>
 #include <OgreVector3.h>
 
@@ -38,6 +40,7 @@ namespace Terrain {
 
 class TerrainPage;
 class TerrainPageGeometry;
+class Image;
 
 class ITerrainPageShadowTechnique
 {
@@ -69,23 +72,27 @@ public:
 
 	void setLightDirection(const Ogre::Vector3& lightDirection);
 
-	void createShadowData(const TerrainPageGeometry& geometry);
+//	void createShadowData(const TerrainPageGeometry& geometry);
 
-	const Ogre::TexturePtr getTexture() const;
+//	const Ogre::TexturePtr getTexture() const;
 	void updateShadow(const TerrainPageGeometry& geometry);
-	void createImage();
+//	void createImage();
 
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
 
+	void loadIntoImage(Ogre::Image& ogreImage) const;
 
 protected:
 	const TerrainPage& mTerrainPage;
 	const ITerrainPageShadowTechnique* mShadowTechnique;
 	Ogre::Vector3 mLightDirection;
-	Ogre::Image* mImage;
-	Ogre::TexturePtr mTexture;
-	Ogre::MemoryDataStream* mShadowChunk;
+
+	boost::shared_ptr<Image> mImage;
+
+//	Ogre::Image* mImage;
+//	Ogre::TexturePtr mTexture;
+//	Ogre::MemoryDataStream* mShadowChunk;
 };
 
 }

@@ -20,6 +20,7 @@
 #define EMBEROGRETERRAINTECHNIQUESSHADERPASSCOVERAGEBATCH_H_
 
 #include "components/ogre/OgreIncludes.h"
+#include "components/ogre/terrain/Image.h"
 #include <vector>
 #include <OgreTexture.h>
 
@@ -48,27 +49,25 @@ typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
 class ShaderPassCoverageBatch
 {
 public:
-	ShaderPassCoverageBatch(ShaderPass& shaderPass, Ogre::TexturePtr combinedCoverageTexture);
+	ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize);
 	virtual ~ShaderPassCoverageBatch();
 
 	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
 
 	std::vector<const TerrainPageSurfaceLayer*>& getLayers();
-	Ogre::TexturePtr getCombinedCoverageTexture();
+	Image& getCombinedCoverageImage();
 
-	virtual void finalize();
+	virtual void finalize(Ogre::Pass& pass, Ogre::TexturePtr texture);
 
 protected:
 
 	ShaderPass& mShaderPass;
 
-	Ogre::TexturePtr mCombinedCoverageTexture;
-	Ogre::Image* mCombinedCoverageImage;
-	Ogre::MemoryDataStream* mCombinedCoverageDataStream;
+	Image mCombinedCoverageImage;
 	LayerStore mLayers;
 
-	void assignCombinedCoverageTexture();
-	void addCoverage(Ogre::Image* coverage, unsigned int channel, unsigned short numberOfChannels);
+	void assignCombinedCoverageTexture(Ogre::TexturePtr texture);
+	void addCoverage(const TerrainPageSurfaceLayer* layer, unsigned int channel);
 
 };
 

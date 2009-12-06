@@ -53,7 +53,7 @@ class TerrainLayerDefinition;
 class TerrainPageSurface{
 public:
 	typedef std::map<int, TerrainPageSurfaceLayer*> TerrainPageSurfaceLayerStore;
-    TerrainPageSurface(const TerrainPage& terrainPage);
+    TerrainPageSurface(const TerrainPage& terrainPage, TerrainPageGeometry& geometry);
 
     virtual ~TerrainPageSurface();
 
@@ -98,6 +98,7 @@ protected:
 	TerrainPageSurfaceLayerStore mLayers;
 	std::auto_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
 	TerrainPageShadow* mShadow;
+	TerrainPageGeometry& mGeometry;
 };
 
 }

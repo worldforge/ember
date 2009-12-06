@@ -16,7 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #include "Shader.h"
 #include "ShaderPass.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
@@ -54,16 +53,8 @@ void Shader::reset()
 
 bool Shader::prepareMaterial()
 {
-
-}
-
-bool Shader::compileMaterial(Ogre::MaterialPtr material)
-{
 	reset();
-	material->removeAllTechniques();
-	Ogre::Technique* technique = material->createTechnique();
-
-	ShaderPass* shaderPass = addPass(technique);
+	ShaderPass* shaderPass = addPass();
 	if (shaderPass) {
 		if (mIncludeShadows) {
 			shaderPass->addShadowLayer(mTerrainPageShadow);
@@ -71,45 +62,39 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 			shaderPass->addShadowLayer(mTerrainPageShadow);
 			shaderPass->addShadowLayer(mTerrainPageShadow);
 			shaderPass->addShadowLayer(mTerrainPageShadow);
-			for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
-				const TerrainPageSurfaceLayer* surfaceLayer = I->second;
-				if (shaderPass->hasRoomForLayer(surfaceLayer)) {
-					if (I == mTerrainPageSurfaces.begin()) {
-						shaderPass->setBaseLayer(surfaceLayer);
-					} else {
-						if (surfaceLayer->intersects(mGeometry)) {
-							shaderPass->addLayer(mGeometry, surfaceLayer);
-						}
-					}
+		}
+		for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
+			const TerrainPageSurfaceLayer* surfaceLayer = I->second;
+			if (shaderPass->hasRoomForLayer(surfaceLayer)) {
+				if (I == mTerrainPageSurfaces.begin()) {
+					shaderPass->setBaseLayer(surfaceLayer);
 				} else {
-					///TODO: handle new pass
-				}
-			}
-			if (!shaderPass->finalize(true, "")) {
-				return false;
-			}
-		} else {
-			///We're not using shadows
-			for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
-				const TerrainPageSurfaceLayer* surfaceLayer = I->second;
-				if (shaderPass->hasRoomForLayer(surfaceLayer)) {
-					if (I == mTerrainPageSurfaces.begin()) {
-						shaderPass->setBaseLayer(surfaceLayer);
-					} else {
-						if (surfaceLayer->getCoverageImage()) {
-							if (surfaceLayer->intersects(mGeometry)) {
-								shaderPass->addLayer(mGeometry, surfaceLayer);
-							}
-						}
+					if (surfaceLayer->intersects(mGeometry)) {
+						shaderPass->addLayer(mGeometry, surfaceLayer);
 					}
-				} else {
-					///TODO: handle new pass
 				}
+			} else {
+				///TODO: handle new pass
 			}
-			///The normal, shadowed, shaders have clones with the suffix "/NoShadows" which will skip the shadows.
-			if (!shaderPass->finalize(false, "/NoShadows")) {
-				return false;
-			}
+		}
+	}
+}
+
+bool Shader::compileMaterial(Ogre::MaterialPtr material)
+{
+	material->removeAllTechniques();
+	Ogre::Technique* technique = material->createTechnique();
+
+	///The normal, shadowed, shaders have clones with the suffix "/NoShadows" which will skip the shadows.
+	std::string materialSuffix = "";
+	if (!mIncludeShadows) {
+		materialSuffix = "/NoShadows";
+	}
+	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
+		ShaderPass* shaderPass(*I);
+		Ogre::Pass* pass = technique->createPass();
+		if (!shaderPass->finalize(*pass, mIncludeShadows, materialSuffix)) {
+			return false;
 		}
 	}
 
@@ -117,26 +102,10 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	technique = material->createTechnique();
 	technique->setSchemeName("Low");
 
-	shaderPass = addPass(technique);
-	if (shaderPass) {
-		for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
-			const TerrainPageSurfaceLayer* surfaceLayer = I->second;
-			if (shaderPass->hasRoomForLayer(surfaceLayer)) {
-				if (I == mTerrainPageSurfaces.begin()) {
-					shaderPass->setBaseLayer(surfaceLayer);
-				} else {
-					if (surfaceLayer->getCoverageImage()) {
-						if (surfaceLayer->intersects(mGeometry)) {
-							shaderPass->addLayer(mGeometry, surfaceLayer);
-						}
-					}
-				}
-			} else {
-				///TODO: handle new pass
-			}
-		}
-		///The normal, shadowed, shaders have clones with the suffix "/Simple" which will skip the shadows and the fog and restrict it to only one light source.
-		if (!shaderPass->finalize(false, "/Simple")) {
+	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
+		ShaderPass* shaderPass(*I);
+		Ogre::Pass* pass = technique->createPass();
+		if (!shaderPass->finalize(*pass, false, "/Simple")) {
 			return false;
 		}
 	}
@@ -153,7 +122,6 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 	///we need to load it before we can see how many techniques are supported
 	material->load();
-	reset();
 	if (material->getNumSupportedTechniques() == 0) {
 		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
 		return false;
@@ -164,10 +132,9 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	// 	}
 }
 
-ShaderPass* Shader::addPass(Ogre::Technique* technique)
+ShaderPass* Shader::addPass()
 {
-	Ogre::Pass* pass = technique->createPass();
-	ShaderPass* shaderPass(new ShaderPass(pass, mPage));
+	ShaderPass* shaderPass(new ShaderPass(mPage));
 	mPasses.push_back(shaderPass);
 	return shaderPass;
 }
