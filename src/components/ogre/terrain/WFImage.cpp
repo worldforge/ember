@@ -16,12 +16,9 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Image.h"
 
-#include "framework/Exception.h"
-
-#include <string.h>
-
+#include "WFImage.h"
+#include "OgreImage.h"
 
 namespace EmberOgre
 {
@@ -29,55 +26,29 @@ namespace EmberOgre
 namespace Terrain
 {
 
-Image::Image(unsigned int width, unsigned int channels) :
-	mWidth(width), mChannels(channels), mData(new unsigned char[width * width * channels]), mDataOwned(true)
+WFImage::WFImage(unsigned int width, unsigned int channels) :
+	Image::Image(width, channels)
 {
+
 }
 
-Image::Image(unsigned int width, unsigned int channels, unsigned char* data) :
-	mWidth(width), mChannels(channels), mData(data), mDataOwned(false)
+WFImage::WFImage(unsigned int width, unsigned int channels, unsigned char* data) :
+	Image::Image(width, channels, data)
 {
-}
 
-Image::~Image()
-{
-	if (mDataOwned) {
-		delete[] mData;
-	}
-}
-
-unsigned char* Image::getData()
-{
-	return mData;
-}
-
-const unsigned char* Image::getData() const
-{
-	return mData;
-}
-
-unsigned int Image::getChannels() const
-{
-	return mChannels;
-}
-
-size_t Image::getSize() const
-{
-	return mWidth * mWidth * mChannels;
-}
-
-unsigned int Image::getWidth() const
-{
-	return mWidth;
-}
-
-void Image::reset()
-{
-	memset(mData, '\0', getSize());
 }
 
 
+void WFImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
+{
 
+}
+
+
+void WFImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
+{
+
+}
 }
 
 }

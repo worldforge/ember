@@ -1,0 +1,97 @@
+/*
+ Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+#include "OgreImage.h"
+#include "WFImage.h"
+#include <cassert>
+namespace EmberOgre
+{
+
+namespace Terrain
+{
+
+OgreImage::OgreImage(unsigned int width, unsigned int channels) :
+	Image::Image(width, channels)
+{
+
+}
+
+OgreImage::OgreImage(unsigned int width, unsigned int channels, unsigned char* data) :
+	Image::Image(width, channels, data)
+{
+
+}
+void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
+{
+	if (imageToBlit.getChannels() > 1) {
+		return;
+	}
+
+	//	if (imageToBlit.getWidth() == getWidth() && widthOffset == 0 && heightOffset == 0) {
+	//		const unsigned char* sourcePtr = imageToBlit.getData();
+	//		unsigned char* destPtr = getData() + destinationChannel;
+	//
+	//		for (unsigned int i = 0; i < imageToBlit.getSize(); ++i) {
+	//			*destPtr = *sourcePtr;
+	//			destPtr += mChannels;
+	//			sourcePtr++;
+	//		}
+	//	} else {
+	//	unsigned int width = imageToBlit.getSize();
+	unsigned int width = 64;
+	long i, j;
+
+	const unsigned char* sourcePtr = imageToBlit.getData();
+	unsigned char* destPtr = getData() + destinationChannel;
+
+	unsigned char* dataEnd = getData() + getSize();
+
+	unsigned char* end = destPtr + (mChannels * mWidth * ((width - 1) + heightOffset)) + (((width - 1) + widthOffset) * mChannels);
+	assert(end >= mData && end <= dataEnd);
+	///we need to do this to get the alignment correct
+//	sourcePtr += imageToBlit.getWidth();
+
+	//		unsigned char* tempPtr = end + destinationChannel + mChannels;
+	unsigned char* tempPtr = end;
+	for (i = 0; i < width; ++i) {
+		tempPtr -= (width * mChannels);
+		for (j = 0; j < width; ++j) {
+			if (tempPtr >= mData && tempPtr < dataEnd) {
+				assert(tempPtr >= mData && tempPtr < dataEnd);
+				*(tempPtr) = *(sourcePtr + j);
+			}
+			///advance the number of channels
+			tempPtr += mChannels;
+
+		}
+		tempPtr -= (mWidth * mChannels);
+		sourcePtr += imageToBlit.getWidth();
+	}
+	//	}
+}
+
+void OgreImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
+{
+
+}
+
+
+}
+
+}

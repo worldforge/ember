@@ -17,8 +17,8 @@
  */
 
 
-#ifndef IMAGE_H_
-#define IMAGE_H_
+#ifndef EMBEROGRETERRAINIMAGE_H_
+#define EMBEROGRETERRAINIMAGE_H_
 
 #include <stdlib.h>
 
@@ -28,11 +28,14 @@ namespace EmberOgre
 namespace Terrain
 {
 
+class WFImage;
+class OgreImage;
+
 class Image
 {
 public:
-	Image(unsigned int width, unsigned int channels);
-	Image(unsigned int width, unsigned int channels, unsigned char* data);
+
+
 	virtual ~Image();
 
 	unsigned char* getData();
@@ -45,21 +48,25 @@ public:
 
 	void reset();
 
-	void blit(const Image& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0);
+	virtual void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0) = 0;
+	virtual void blit(const WFImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0) = 0;
 
 	unsigned int getWidth() const;
 
-private:
+protected:
+	Image(unsigned int width, unsigned int channels);
+	Image(unsigned int width, unsigned int channels, unsigned char* data);
 
 	const unsigned int mWidth;
 	const unsigned int mChannels;
 
 	unsigned char* mData;
 	bool mDataOwned;
+
 };
 
 }
 
 }
 
-#endif /* IMAGE_H_ */
+#endif /* EMBEROGRETERRAINIMAGE_H_ */

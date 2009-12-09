@@ -44,7 +44,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/techniques/Shader.cpp terrain/techniques/ShaderNormalMapped.cpp terrain/techniques/ShaderNormalMappedPass.cpp \
 	terrain/techniques/ShaderNormalMappedPassCoverageBatch.cpp terrain/techniques/ShaderPass.cpp \
 	terrain/techniques/ShaderPassCoverageBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp \
-	terrain/Image.cpp \
+	terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp \
 \
 	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -122,7 +122,7 @@ noinst_HEADERS = \
 	terrain/techniques/Shader.h terrain/techniques/ShaderNormalMapped.h terrain/techniques/ShaderNormalMappedPass.h \
 	terrain/techniques/ShaderNormalMappedPassCoverageBatch.h terrain/techniques/ShaderPass.h \
 	terrain/techniques/ShaderPassCoverageBatch.h terrain/techniques/Simple.h terrain/techniques/Base.h \
-	terrain/Image.h \
+	terrain/Image.h terrain/OgreImage.h terrain/WFImage.h \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \
