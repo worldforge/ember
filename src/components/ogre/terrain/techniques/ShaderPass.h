@@ -78,6 +78,8 @@ protected:
 	LayerStore mLayers;
 	const TerrainPageSurfaceLayer* mBaseLayer;
 	const TerrainPage& mPage;
+
+	bool mIncludeShadowLayer;
 };
 }
 

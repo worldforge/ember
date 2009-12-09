@@ -38,7 +38,7 @@ public:
 	virtual ~Base();
 protected:
 	const TerrainPageGeometry& mGeometry;
-	const SurfaceLayerStore& mTerrainPageSurfaces;
+	const SurfaceLayerStore mTerrainPageSurfaces;
 	const TerrainPageShadow* mTerrainPageShadow;
 	const TerrainPage& mPage;
 

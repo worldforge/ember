@@ -35,32 +35,28 @@
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 
-namespace EmberOgre {
-namespace Terrain {
+namespace EmberOgre
+{
+namespace Terrain
+{
 
-TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, TerrainPageGeometry& geometry)
-: mTerrainPage(terrainPage)
-, mSurfaceCompiler(new TerrainPageSurfaceCompiler())
-, mShadow(0)
-, mGeometry(geometry)
+TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, TerrainPageGeometry& geometry) :
+	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler()), mShadow(0), mGeometry(geometry)
 {
 	///create a name for out material
-// 	S_LOG_INFO("Creating a material for the terrain.");
+	// 	S_LOG_INFO("Creating a material for the terrain.");
 	std::stringstream materialNameSS;
 	materialNameSS << "EmberTerrain_Segment";
 	materialNameSS << "_" << terrainPage.getWFPosition().x() << "_" << terrainPage.getWFPosition().y();
 
 	///create the actual material
-	mMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(materialNameSS.str(), "General"));
-
+	mMaterial = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().create(materialNameSS.str(), "General"));
 
 }
 
-
 TerrainPageSurface::~TerrainPageSurface()
 {
-	for (TerrainPageSurfaceLayerStore::iterator I(mLayers.begin()); I != mLayers.end(); ++I)
-	{
+	for (TerrainPageSurfaceLayerStore::iterator I(mLayers.begin()); I != mLayers.end(); ++I) {
 		delete I->second;
 	}
 }
@@ -72,17 +68,16 @@ const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getL
 
 TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate)
 {
-//	TerrainPageSurfaceLayerStore::iterator I = mLayers.find(layerIndex);
-//	if (I != mLayers.end()) {
-//		if (repopulate) {
-//			I->second->populate(geometry);
-//		}
-//		I->second->updateCoverageImage(geometry);
-//		return I->second;
-//	}
-	return 0;
-}
+	TerrainPageSurfaceLayerStore::iterator I = mLayers.find(layerIndex);
+	if (I != mLayers.end()) {
+		if (repopulate) {
+			I->second->populate(geometry);
+		}
+		//		I->second->updateCoverageImage(geometry);
+		return I->second;
+	}
 
+}
 
 const TerrainPosition& TerrainPageSurface::getWFPosition() const
 {
@@ -106,23 +101,24 @@ const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 
 void TerrainPageSurface::recompileMaterial(const TerrainPageGeometry& geometry, bool reselectTechnique)
 {
-// 	if (!mMaterial.isNull()) {
-// 		mMaterial->unload();
-// 	}
+	// 	if (!mMaterial.isNull()) {
+	// 		mMaterial->unload();
+	// 	}
 
 	if (reselectTechnique) {
-		 mSurfaceCompiler.reset(new TerrainPageSurfaceCompiler());
+		mSurfaceCompiler.reset(new TerrainPageSurfaceCompiler());
 	}
 
-	std::map<int, const TerrainPageSurfaceLayer*> constLayers;
+	//The compiler only works with const surfaces, so we need to create such a copy of our surface map.
+	SurfaceLayerStore constLayers;
 	for (TerrainPageSurfaceLayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
-		constLayers[I->first] = I->second;
+		constLayers.insert(SurfaceLayerStore::value_type(I->first, I->second));
 	}
 	TerrainPageSurfaceCompilationInstance* compilationInstance = mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow, mTerrainPage);
 	compilationInstance->prepare();
 	compilationInstance->compile(mMaterial);
 	delete compilationInstance;
-//	mSurfaceCompiler->compileMaterial();
+	//	mSurfaceCompiler->compileMaterial();
 	//mMaterial->reload();
 
 	updateSceneManagersAfterMaterialsChange();
@@ -142,33 +138,28 @@ TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLay
 
 void TerrainPageSurface::updateSceneManagersAfterMaterialsChange()
 {
-   if(Ogre::Pass::getDirtyHashList().size()!=0 || Ogre::Pass::getPassGraveyard().size()!=0)
-   {
-      Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
+	if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
+		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
 
-      while(scenesIter.hasMoreElements())
-      {
-          Ogre::SceneManager* pScene = scenesIter.getNext();
-          if(pScene)
-          {
-            Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
-            if(pQueue)
-            {
-               Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
-               while(groupIter.hasMoreElements())
-               {
-                  Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
-                  if(pGroup)
-                     pGroup->clear(false);
-               }//end_while(groupIter.hasMoreElements())
-            }//end_if(pScene)
-          }//end_if(pScene)
-      }//end_while(scenesIter.hasMoreElements())
+		while (scenesIter.hasMoreElements()) {
+			Ogre::SceneManager* pScene = scenesIter.getNext();
+			if (pScene) {
+				Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
+				if (pQueue) {
+					Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
+					while (groupIter.hasMoreElements()) {
+						Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
+						if (pGroup)
+							pGroup->clear(false);
+					}//end_while(groupIter.hasMoreElements())
+				}//end_if(pScene)
+			}//end_if(pScene)
+		}//end_while(scenesIter.hasMoreElements())
 
-      // Now trigger the pending pass updates
-        Ogre::Pass::processPendingPassUpdates();
+		// Now trigger the pending pass updates
+		Ogre::Pass::processPendingPassUpdates();
 
-   }//end_if(m_Root..
+	}//end_if(m_Root..
 }
 }
 

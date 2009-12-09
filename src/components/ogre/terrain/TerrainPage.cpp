@@ -300,14 +300,14 @@ void TerrainPage::updateAllShaderTextures(bool repopulate)
 TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* shader, bool repopulate)
 {
 	TerrainPageSurfaceLayer* layer;
-//	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
-//	if (I == mTerrainSurface->getLayers().end()) {
-//		layer = addShader(shader);
-//	} else {
-//		layer = I->second;
-//	}
+	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
+	if (I == mTerrainSurface->getLayers().end()) {
+		layer = addShader(shader);
+	} else {
+		layer = I->second;
+	}
 //	layer->createCoverageImage(); //safe to call multiple times
-//	layer = mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
+	mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
 
 	return layer;
 }

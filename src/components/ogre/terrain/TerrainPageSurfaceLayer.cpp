@@ -29,7 +29,7 @@
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
 #include "TerrainPageGeometry.h"
-#include "Image.h"
+#include "WFImage.h"
 #include <Mercator/Surface.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
@@ -99,7 +99,7 @@ void TerrainPageSurfaceLayer::fillImage(Image& image, unsigned int channel) cons
 			if (surface && surface->isValid()) {
 
 				int alphaChannel = 0;
-				Image sourceImage(65, 1, surface->getData());
+				WFImage sourceImage(65, 1, surface->getData());
 				image.blit(sourceImage, channel, (int)I->index.x() * 64, (mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * 64);
 			}
 		}

@@ -28,7 +28,7 @@
 
 #include "TerrainPage.h"
 #include "TerrainPageGeometry.h"
-#include "Image.h"
+#include "OgreImage.h"
 #include "../Convert.h"
 
 #include <OgreColourValue.h>
@@ -97,7 +97,7 @@ TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mShadowTechnique(0)
 , mLightDirection(Ogre::Vector3::ZERO)
-, mImage(new Image(mTerrainPage.getAlphaTextureSize(), 1))
+, mImage(new OgreImage(mTerrainPage.getAlphaTextureSize(), 1))
 {
 }
 
@@ -125,7 +125,7 @@ void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
 
 void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 {
-	boost::shared_ptr<Image> image(new Image(mTerrainPage.getAlphaTextureSize(), 1));
+	boost::shared_ptr<OgreImage> image(new OgreImage(mTerrainPage.getAlphaTextureSize(), 1));
 	image->reset();
 	mShadowTechnique->createShadowData(mTerrainPage, geometry, image->getData(), mLightDirection, Ogre::ColourValue(1,1,1));
 	mImage = image;

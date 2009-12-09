@@ -69,10 +69,10 @@ void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr tex
 	image.loadDynamicImage(mCombinedCoverageImage.getData(), mShaderPass.getCoveragePixelWidth(), mShaderPass.getCoveragePixelWidth(), 1, Ogre::PF_B8G8R8A8);
 	texture->loadImage(image);
 
-//	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer());
-//	///blit the whole image to the hardware buffer
-//	Ogre::PixelBox sourceBox(image.getPixelBox());
-//	hardwareBuffer->blitFromMemory(sourceBox);
+	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer());
+	///blit the whole image to the hardware buffer
+	Ogre::PixelBox sourceBox(image.getPixelBox());
+	hardwareBuffer->blitFromMemory(sourceBox);
 
 }
 

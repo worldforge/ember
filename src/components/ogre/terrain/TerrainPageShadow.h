@@ -25,8 +25,6 @@
 #include "../EmberOgrePrerequisites.h"
 
 #include <boost/smart_ptr.hpp>
-
-#include <OgreTexture.h>
 #include <OgreVector3.h>
 
 namespace Ogre {
@@ -40,7 +38,7 @@ namespace Terrain {
 
 class TerrainPage;
 class TerrainPageGeometry;
-class Image;
+class OgreImage;
 
 class ITerrainPageShadowTechnique
 {
@@ -88,7 +86,7 @@ protected:
 	const ITerrainPageShadowTechnique* mShadowTechnique;
 	Ogre::Vector3 mLightDirection;
 
-	boost::shared_ptr<Image> mImage;
+	boost::shared_ptr<OgreImage> mImage;
 
 //	Ogre::Image* mImage;
 //	Ogre::TexturePtr mTexture;

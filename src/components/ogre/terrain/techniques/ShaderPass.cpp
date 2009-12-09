@@ -59,7 +59,7 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 }
 
 ShaderPass::ShaderPass(const TerrainPage& page) :
-	mBaseLayer(0), mPage(page)
+	mBaseLayer(0), mPage(page), mIncludeShadowLayer(false)
 {
 	for (int i = 0; i < 16; i++) {
 		mScales[i] = 0.0;
@@ -83,7 +83,7 @@ void ShaderPass::setBaseLayer(const TerrainPageSurfaceLayer* layer)
 ShaderPassCoverageBatch* ShaderPass::getCurrentBatch()
 {
 	CoverageBatchStore::reverse_iterator I = mCoverageBatches.rbegin();
-	if (!mCoverageBatches.size() || (*I)->getLayers().size() == 4) {
+	if (!mCoverageBatches.size() || (*I)->getLayers().size() >= 4) {
 		ShaderPassCoverageBatch* batch = createNewBatch();
 		mCoverageBatches.push_back(batch);
 		return batch;
@@ -150,6 +150,14 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 
 	std::string fragmentProgramName(ss.str());
 
+	if (mIncludeShadowLayer) {
+		S_LOG_VERBOSE("Adding shadow layer.");
+		Ogre::TextureUnitState * textureUnitState = pass.createTextureUnitState();
+
+		textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
+		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
+		textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
+	}
 	if (useShadows) {
 		pass.setLightingEnabled(true);
 	}
@@ -251,21 +259,22 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 
 void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow)
 {
-	//	S_LOG_VERBOSE("Adding shadow layer.");
-	//	Ogre::TextureUnitState * textureUnitState = mPass->createTextureUnitState();
-	//
-	//	//textureUnitState->setTextureScale(0.025, 0.025);
-	//	/*
-	//	 textureUnitState->setTextureName(terrainPageShadow->getTexture()->getName());
-	//	 textureUnitState->setTextureCoordSet(0);
-	//	 textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-	//	 textureUnitState->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
-	//	 textureUnitState->setTextureAnisotropy(2);
-	//	 */
-	//
-	//	textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
-	//	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
-	//	textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
+	mIncludeShadowLayer = true;
+//	S_LOG_VERBOSE("Adding shadow layer.");
+//	Ogre::TextureUnitState * textureUnitState = mPass->createTextureUnitState();
+//
+//	//textureUnitState->setTextureScale(0.025, 0.025);
+//	/*
+//	 textureUnitState->setTextureName(terrainPageShadow->getTexture()->getName());
+//	 textureUnitState->setTextureCoordSet(0);
+//	 textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+//	 textureUnitState->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
+//	 textureUnitState->setTextureAnisotropy(2);
+//	 */
+//
+//	textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
+//	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
+//	textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
 }
 
 unsigned int ShaderPass::getCoveragePixelWidth() const

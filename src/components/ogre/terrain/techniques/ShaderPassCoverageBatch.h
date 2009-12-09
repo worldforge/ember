@@ -20,7 +20,7 @@
 #define EMBEROGRETERRAINTECHNIQUESSHADERPASSCOVERAGEBATCH_H_
 
 #include "components/ogre/OgreIncludes.h"
-#include "components/ogre/terrain/Image.h"
+#include "components/ogre/terrain/OgreImage.h"
 #include <vector>
 #include <OgreTexture.h>
 
@@ -63,7 +63,7 @@ protected:
 
 	ShaderPass& mShaderPass;
 
-	Image mCombinedCoverageImage;
+	OgreImage mCombinedCoverageImage;
 	LayerStore mLayers;
 
 	void assignCombinedCoverageTexture(Ogre::TexturePtr texture);
