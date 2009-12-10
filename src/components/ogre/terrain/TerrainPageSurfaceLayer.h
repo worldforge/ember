@@ -56,19 +56,6 @@ public:
 
     virtual ~TerrainPageSurfaceLayer();
 
-
-    /**
-     * Updates the coverage image with data from Mercator. The image will only be updated if it has been created. If not, nothing will happen.
-     * @see createCoverageImage
-     */
-    void updateCoverageImage(const TerrainPageGeometry& geometry);
-
-    /**
-     * @brief Gets the name of the coverage texture name. If no texture has been created this will be an empty string.
-     * @return
-     */
-    const std::string& getCoverageTextureName() const;
-
     const std::string& getDiffuseTextureName() const;
     void setDiffuseTextureName(const std::string& textureName);
     const std::string& getSpecularTextureName() const;
@@ -114,8 +101,6 @@ protected:
 	const TerrainLayerDefinition& mDefinition;
 
 	TerrainPageGeometry& mGeometry;
-
-	void fillAlphaLayer(unsigned char* finalImagePtr, unsigned char* wfImagePtr, unsigned int channel, int startX, int startY, unsigned short numberOfChannels);
 
 };
 

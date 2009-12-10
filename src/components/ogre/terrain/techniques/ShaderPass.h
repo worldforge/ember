@@ -79,7 +79,7 @@ protected:
 	const TerrainPageSurfaceLayer* mBaseLayer;
 	const TerrainPage& mPage;
 
-	bool mIncludeShadowLayer;
+	unsigned int mShadowLayers;
 };
 }
 

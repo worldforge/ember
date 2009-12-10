@@ -39,8 +39,8 @@ ShaderNormalMapped::ShaderNormalMapped(bool includeShadows, const TerrainPageGeo
 
 ShaderPass* ShaderNormalMapped::addPass()
 {
-//	Ogre::Pass* pass = technique->createPass();
 	ShaderPass* shaderPass = new ShaderNormalMappedPass(mPage);
+	mPasses.push_back(shaderPass);
 	return shaderPass;
 }
 
