@@ -278,7 +278,7 @@ void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow)
 
 unsigned int ShaderPass::getCoveragePixelWidth() const
 {
-	return mPage.getPageSize();
+	return mPage.getAlphaTextureSize();
 }
 
 }

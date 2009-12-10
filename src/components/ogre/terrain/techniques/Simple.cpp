@@ -187,7 +187,7 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 	//
 	// 	}
 
-	OgreImage ogreImage(mPage.getPageSize(), 1);
+	OgreImage ogreImage(mPage.getAlphaTextureSize(), 1);
 	layer->fillImage(ogreImage, 0);
 	Ogre::Image image;
 
