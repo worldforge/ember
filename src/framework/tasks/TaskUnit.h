@@ -29,6 +29,7 @@ namespace Tasks
 
 class ITask;
 class ITaskExecutionListener;
+class TaskExecutionContext;
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Represents both a task, its subtasks, and a listener.

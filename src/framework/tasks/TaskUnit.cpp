@@ -42,16 +42,6 @@ TaskUnit::~TaskUnit()
 	delete mTask;
 }
 
-ITask* TaskUnit::getTask() const
-{
-	return mTask;
-}
-
-ITaskExecutionListener* TaskUnit::getListener() const
-{
-	return mListener;
-}
-
 TaskUnit* TaskUnit::addSubtask(ITask* task)
 {
 	TaskUnit* taskUnit = new TaskUnit(task, 0);
