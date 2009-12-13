@@ -19,12 +19,16 @@
 #ifndef TASKEXECUTIONCONTEXT_H_
 #define TASKEXECUTIONCONTEXT_H_
 
+#include <vector>
+
 namespace Ember
 {
 namespace Tasks
 {
 
 class TaskExecutor;
+class ITask;
+class TaskUnit;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -35,7 +39,8 @@ class TaskExecutor;
 class TaskExecutionContext
 {
 public:
-	TaskExecutionContext(TaskExecutor& executor);
+
+	TaskExecutionContext(TaskExecutor& executor, TaskUnit& taskUnit);
 	virtual ~TaskExecutionContext();
 
 	/**
@@ -44,9 +49,28 @@ public:
 	 */
 	const TaskExecutor& getExecutor() const;
 
+	/**
+	 * @brief Executes a subtask.
+	 * After the subtask has been executed in the background thread, the task framework will make sure that it is executed in the main thread before the main task is executed.
+	 * @note This should only be called from a background thread, i.e. while the task is being executed. Under normal circumstances this shouldn't be a problem however as an instance of this class is only available when a task is being executed in a background thread.
+	 * @param task A task which will be executed.
+	 */
+	void executeTask(ITask* task);
+
+	/**
+	 * @brief Executes a series of subtasks.
+	 * After the subtasks have been executed in the background thread, the task framework will make sure that they are executed in the main thread before the main task is executed.
+	 * @note This should only be called from a background thread, i.e. while the task is being executed. Under normal circumstances this shouldn't be a problem however as an instance of this class is only available when a task is being executed in a background thread.
+	 * @param tasks A list of tasks which will be executed.
+	 */
+	void executeTasks(std::vector<ITask*> tasks);
+
+
 private:
 
 	TaskExecutor& mExecutor;
+
+	TaskUnit& mTaskUnit;
 };
 }
 }

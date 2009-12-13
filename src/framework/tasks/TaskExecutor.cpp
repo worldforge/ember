@@ -19,10 +19,9 @@
 #include "TaskExecutor.h"
 #include "TaskQueue.h"
 #include "TaskExecutionContext.h"
-#include "ITaskExecutionListener.h"
-#include "ITask.h"
+#include "TaskUnit.h"
 
-#include "framework/Exception.h"
+
 
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
@@ -45,29 +44,10 @@ TaskExecutor::~TaskExecutor()
 void TaskExecutor::run()
 {
 	while (mActive) {
-		TaskQueue::TaskUnit taskUnit = mTaskQueue.fetchNextTask();
-		ITask* task = taskUnit.first;
-		if (task) {
-			TaskExecutionContext context(*this);
-			ITaskExecutionListener* listener = taskUnit.second;
-			try {
-				if (listener) {
-					listener->executionStarted();
-				}
-				task->executeTaskInBackgroundThread(context);
-				if (listener) {
-					listener->executionEnded();
-				}
-			} catch (const std::exception& ex) {
-				if (listener) {
-					//TODO: wrap the original error somehow
-					listener->executionError(Exception("Error when executing task."));
-				}
-			} catch (...) {
-				if (listener) {
-					listener->executionError(Exception("Error when executing task."));
-				}
-			}
+		TaskUnit* taskUnit = mTaskQueue.fetchNextTask();
+		if (taskUnit) {
+			TaskExecutionContext context(*this, *taskUnit);
+			taskUnit->executeInBackgroundThread(context);
 			mTaskQueue.addProcessedTask(taskUnit);
 		}
 	}

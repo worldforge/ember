@@ -18,13 +18,15 @@
 
 #include "TaskExecutionContext.h"
 #include "TaskExecutor.h"
+#include "TaskUnit.h"
+#include "ITask.h"
 
 namespace Ember
 {
 namespace Tasks
 {
-TaskExecutionContext::TaskExecutionContext(TaskExecutor& executor)
-: mExecutor(executor)
+TaskExecutionContext::TaskExecutionContext(TaskExecutor& executor, TaskUnit& taskUnit) :
+	mExecutor(executor), mTaskUnit(taskUnit)
 {
 
 }
@@ -35,7 +37,21 @@ TaskExecutionContext::~TaskExecutionContext()
 
 const TaskExecutor& TaskExecutionContext::getExecutor() const
 {
+	return mExecutor;
+}
 
+void TaskExecutionContext::executeTask(ITask* task)
+{
+	TaskUnit* taskUnit = mTaskUnit.addSubtask(task);
+	TaskExecutionContext subtaskContext(mExecutor, *taskUnit);
+	task->executeTaskInBackgroundThread(subtaskContext);
+}
+
+void TaskExecutionContext::executeTasks(std::vector<ITask*> tasks)
+{
+	for (std::vector<ITask*>::const_iterator I = tasks.begin(); I != tasks.end(); ++I) {
+		executeTask(*I);
+	}
 }
 
 }

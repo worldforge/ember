@@ -34,6 +34,7 @@ namespace Tasks
 class ITask;
 class ITaskExecutionListener;
 class TaskExecutor;
+class TaskUnit;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -45,10 +46,6 @@ class TaskQueue
 {
 	friend class TaskExecutor;
 public:
-	/**
-	 * @brief A construct representing both a task and a listener.
-	 */
-	typedef std::pair<ITask*, ITaskExecutionListener*> TaskUnit;
 
 	/**
 	 * @brief Ctor.
@@ -79,7 +76,7 @@ protected:
 	/**
 	 * @brief A queue of task units.
 	 */
-	typedef std::queue<TaskUnit> TaskUnitQueue;
+	typedef std::queue<TaskUnit*> TaskUnitQueue;
 
 	/**
 	 * @brief A store of executors.
@@ -126,13 +123,13 @@ protected:
 	 * @note This is normally only called by a TaskExecutor.
 	 * Calling this while there's no current tasks will result in the current thread being put on hold until a new task is enqueued.
 	 */
-	TaskUnit fetchNextTask();
+	TaskUnit* fetchNextTask();
 
 	/**
 	 * @brief Adds a processed task back to the queue, to be handled in the main thread and then deleted.
 	 * @param taskUnit The processed task unit.
 	 */
-	void addProcessedTask(TaskUnit taskUnit);
+	void addProcessedTask(TaskUnit* taskUnit);
 
 };
 

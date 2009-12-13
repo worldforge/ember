@@ -20,6 +20,8 @@
 #include "ITask.h"
 #include "ITaskExecutionListener.h"
 #include "TaskExecutor.h"
+#include "TaskUnit.h"
+
 #include "framework/LoggingInstance.h"
 
 namespace Ember
@@ -49,17 +51,17 @@ TaskQueue::~TaskQueue()
 	{
 		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
 		while (mUnprocessedTaskUnits.size()) {
-			TaskUnit taskUnit = mUnprocessedTaskUnits.front();
+			TaskUnit* taskUnit = mUnprocessedTaskUnits.front();
 			mUnprocessedTaskUnits.pop();
-			delete taskUnit.first;
+			delete taskUnit;
 		}
 	}
 	{
 		boost::mutex::scoped_lock l(mProcessedQueueMutex);
 		while (mProcessedTaskUnits.size()) {
-			TaskUnit taskUnit = mProcessedTaskUnits.front();
+			TaskUnit* taskUnit = mProcessedTaskUnits.front();
 			mProcessedTaskUnits.pop();
-			delete taskUnit.first;
+			delete taskUnit;
 		}
 	}
 	mUnprocessedQueueCond.notify_all();
@@ -75,13 +77,13 @@ void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
 	{
 		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
 
-		mUnprocessedTaskUnits.push(TaskUnit(task, listener));
+		mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
 	}
 	mUnprocessedQueueCond.notify_one();
 
 }
 
-TaskQueue::TaskUnit TaskQueue::fetchNextTask()
+TaskUnit* TaskQueue::fetchNextTask()
 {
 
 	boost::mutex::scoped_lock lock(mUnprocessedQueueMutex);
@@ -90,15 +92,15 @@ TaskQueue::TaskUnit TaskQueue::fetchNextTask()
 		mUnprocessedQueueCond.wait(lock);
 	}
 	if (mUnprocessedTaskUnits.size()) {
-		TaskUnit taskUnit = mUnprocessedTaskUnits.front();
+		TaskUnit* taskUnit = mUnprocessedTaskUnits.front();
 		mUnprocessedTaskUnits.pop();
 		return taskUnit;
 	} else {
-		return TaskUnit();
+		return 0;
 	}
 }
 
-void TaskQueue::addProcessedTask(TaskQueue::TaskUnit taskUnit)
+void TaskQueue::addProcessedTask(TaskUnit* taskUnit)
 {
 	boost::mutex::scoped_lock l(mProcessedQueueMutex);
 	mProcessedTaskUnits.push(taskUnit);
@@ -116,17 +118,17 @@ void TaskQueue::pollProcessedTasks()
 	}
 	while (processedCopy.size()) {
 
-		TaskUnit taskUnit = processedCopy.front();
+		TaskUnit* taskUnit = processedCopy.front();
 		processedCopy.pop();
 		try {
-			taskUnit.first->executeTaskInMainThread();
+			taskUnit->executeInMainThread();
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when executing task in main thread." << ex);
 		} catch (...) {
 			S_LOG_FAILURE("Unknown error when executing task in main thread.");
 		}
 		try {
-			delete taskUnit.first;
+			delete taskUnit;
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when deleting task in main thread." << ex);
 		} catch (...) {
