@@ -107,7 +107,7 @@ public:
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
 	 * @return The new material created.
 	 */
-	Ogre::MaterialPtr generateTerrainMaterials(bool reselectTechnique);
+//	Ogre::MaterialPtr generateTerrainMaterials(bool reselectTechnique);
 
 	/**
 	 * @brief Fills the bound height data with height data. If no buffer has been bound nothing will be done.
@@ -173,7 +173,7 @@ public:
 	 */
 	void updateAllShaderTextures(bool repopulate = true);
 
-	void regenerateMaterial();
+	void regenerateCoverageMap();
 
 
 	int getPageSize() const;
@@ -263,6 +263,10 @@ public:
 	 * @return True if a valid normal could be found at the specified position.
 	 */
 	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
+
+	TerrainPageGeometry& getGeometry();
+
+	const TerrainPageGeometry& getGeometry() const;
 
 
 private:

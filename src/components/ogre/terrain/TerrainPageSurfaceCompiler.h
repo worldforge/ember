@@ -65,13 +65,12 @@ public:
 
     virtual ~TerrainPageSurfaceCompiler();
 
-    TerrainPageSurfaceCompilationInstance* createCompilationInstance(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
+    TerrainPageSurfaceCompilationInstance* createCompilationInstance(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) const;
 
 private:
 
-    TerrainPageSurfaceCompilerTechnique* selectTechnique(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
+    TerrainPageSurfaceCompilerTechnique* selectTechnique(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) const;
 //	void fallback(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
-//	std::auto_ptr<TerrainPageSurfaceCompilerTechnique> mTechnique;
 
 };
 

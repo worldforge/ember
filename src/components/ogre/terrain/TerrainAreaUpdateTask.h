@@ -35,9 +35,22 @@ namespace EmberOgre
 	{
 		class TerrainArea;
 		class TerrainShader;
+
+		/**
+		 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+		 * @brief Updates terrain areas.
+		 */
 		class TerrainAreaUpdateTask: public Ember::Tasks::ITask
 		{
 		public:
+
+			/**
+			 * @brief Ctor.
+			 * @param terrain The terrain.
+			 * @param terrainArea The terrain area which is updated.
+			 * @param shader The affected shader.
+			 * @param markForUpdateSlot A slot which will be called in the main thread when the update is complete.
+			 */
 			TerrainAreaUpdateTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, const TerrainShader* shader, sigc::slot<void, const TerrainShader*, Mercator::Area*> markForUpdateSlot);
 			virtual ~TerrainAreaUpdateTask();
 
@@ -46,9 +59,24 @@ namespace EmberOgre
 			virtual void executeTaskInMainThread();
 
 		private:
+			/**
+			 * @brief The terrain.
+			 */
 			Mercator::Terrain& mTerrain;
+
+			/**
+			 * @brief The terrain area.
+			 */
 			TerrainArea& mTerrainArea;
+
+			/**
+			 * @brief The terrain shader affected.
+			 */
 			const TerrainShader* mShader;
+
+			/**
+			 * @brief A slot which will be called in the main thread when the area update is complete.
+			 */
 			sigc::slot<void, const TerrainShader*, Mercator::Area*> mMarkForUpdateSlot;
 		};
 

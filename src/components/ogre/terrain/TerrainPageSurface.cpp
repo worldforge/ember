@@ -99,29 +99,14 @@ const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 	return mMaterial;
 }
 
-void TerrainPageSurface::recompileMaterial(const TerrainPageGeometry& geometry, bool reselectTechnique)
+TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometry& geometry) const
 {
-	// 	if (!mMaterial.isNull()) {
-	// 		mMaterial->unload();
-	// 	}
-
-	if (reselectTechnique) {
-		mSurfaceCompiler.reset(new TerrainPageSurfaceCompiler());
-	}
-
 	//The compiler only works with const surfaces, so we need to create such a copy of our surface map.
 	SurfaceLayerStore constLayers;
-	for (TerrainPageSurfaceLayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
+	for (TerrainPageSurfaceLayerStore::const_iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		constLayers.insert(SurfaceLayerStore::value_type(I->first, I->second));
 	}
-	TerrainPageSurfaceCompilationInstance* compilationInstance = mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow, mTerrainPage);
-	compilationInstance->prepare();
-	compilationInstance->compile(mMaterial);
-	delete compilationInstance;
-	//	mSurfaceCompiler->compileMaterial();
-	//mMaterial->reload();
-
-	updateSceneManagersAfterMaterialsChange();
+	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow, mTerrainPage);
 }
 
 void TerrainPageSurface::setShadow(TerrainPageShadow* shadow)
@@ -136,31 +121,6 @@ TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLay
 	return terrainSurface;
 }
 
-void TerrainPageSurface::updateSceneManagersAfterMaterialsChange()
-{
-	if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
-		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
-
-		while (scenesIter.hasMoreElements()) {
-			Ogre::SceneManager* pScene = scenesIter.getNext();
-			if (pScene) {
-				Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
-				if (pQueue) {
-					Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
-					while (groupIter.hasMoreElements()) {
-						Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
-						if (pGroup)
-							pGroup->clear(false);
-					}//end_while(groupIter.hasMoreElements())
-				}//end_if(pScene)
-			}//end_if(pScene)
-		}//end_while(scenesIter.hasMoreElements())
-
-		// Now trigger the pending pass updates
-		Ogre::Pass::processPendingPassUpdates();
-
-	}//end_if(m_Root..
-}
 }
 
 }

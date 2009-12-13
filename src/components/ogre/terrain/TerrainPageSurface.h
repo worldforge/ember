@@ -46,6 +46,7 @@ class TerrainPageSurfaceCompiler;
 class TerrainPageShadow;
 class TerrainPageGeometry;
 class TerrainLayerDefinition;
+class TerrainPageSurfaceCompilationInstance;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -81,7 +82,7 @@ public:
 	 * @brief Recompiles the material.
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
 	 */
-	void recompileMaterial(const TerrainPageGeometry& geometry, bool reselectTechnique);
+	TerrainPageSurfaceCompilationInstance* createSurfaceCompilationInstance(const TerrainPageGeometry& geometry) const;
 
 	void setShadow(TerrainPageShadow* shadow);
 
@@ -90,8 +91,6 @@ public:
 	TerrainPageSurfaceLayer* updateLayer(TerrainPageGeometry& geometry, int layerIndex, bool repopulate);
 
 protected:
-
-	void updateSceneManagersAfterMaterialsChange();
 
 	Ogre::MaterialPtr mMaterial;
 	const TerrainPage& mTerrainPage;

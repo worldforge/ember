@@ -672,9 +672,16 @@ bool TerrainGenerator::getNormal(const TerrainPosition& worldPosition, WFMath::V
 
 void TerrainGenerator::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {
-	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-		J->second->generateTerrainMaterials(true);
+	if (mShadersToUpdate.size()) {
+		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
+		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
+			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(mPages, I->first, I->second.Areas, I->second.UpdateAll, EventLayerUpdated), 0);
+		}
 	}
+
+//	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+//		J->second->generateTerrainMaterials(true);
+//	}
 }
 
 void TerrainGenerator::application_EndErisPoll(float)

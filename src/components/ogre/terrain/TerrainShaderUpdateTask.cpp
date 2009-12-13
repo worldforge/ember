@@ -18,8 +18,12 @@
 
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainPage.h"
+#include "TerrainPageSurface.h"
+#include "TerrainMaterialCompilationTask.h"
 #include <wfmath/axisbox.h>
 #include <wfmath/intersect.h>
+
+#include "framework/tasks/TaskExecutionContext.h"
 
 
 namespace EmberOgre
@@ -40,12 +44,13 @@ TerrainShaderUpdateTask::~TerrainShaderUpdateTask()
 
 void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
+	PageVector updatedPages;
 	///We should either update all pages at once, or only those pages that intersect or contains the areas that have been changed
 	if (mUpdateAll) {
 		for (PageStore::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
 			///repopulate the layer
 			J->second->updateShaderTexture(mShader, true);
-			mUpdatedPages.push_back(J->second);
+			updatedPages.push_back(J->second);
 		}
 	} else {
 		for (PageStore::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
@@ -59,18 +64,16 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 			if (shouldUpdate) {
 				///repopulate the layer
 				J->second->updateShaderTexture(mShader, true);
-				mUpdatedPages.push_back(J->second);
+				updatedPages.push_back(J->second);
 			}
 		}
 	}
+
+	context.executeTask(new TerrainMaterialCompilationTask(updatedPages));
 }
 
 void TerrainShaderUpdateTask::executeTaskInMainThread()
 {
-	for (PageVector::const_iterator J = mUpdatedPages.begin(); J != mUpdatedPages.end(); ++J) {
-		(*J)->regenerateMaterial();
-	}
-
 
 	if (mAreas.size()) {
 		mSignal(mShader, &mAreas);

@@ -40,10 +40,24 @@ namespace Terrain
 
 class TerrainShader;
 class TerrainPage;
+class TerrainPageSurfaceCompilationInstance;
 
+/**
+ * @brief Updates a terrain shader, i.e. the mercator surfaces.
+ * This will also recompile the terrain page material once the surface has been updated.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class TerrainShaderUpdateTask : public Ember::Tasks::ITask
 {
 public:
+	/**
+	 * @brief Ctor.
+	 * @param pages The pages which needs their surfaces updated.
+	 * @param shader The shader which for each page will be be applied.
+	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
+	 * @param updateAll Whether all pages should be updated. Setting this to true will make the system skip checking the areas sent.
+	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
+	 */
 	TerrainShaderUpdateTask(PageStore& pages, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
 	virtual ~TerrainShaderUpdateTask();
 
@@ -53,12 +67,30 @@ public:
 
 private:
 
+	/**
+	 * @brief The pages which will be updated.
+	 */
 	const PageStore mPages;
+
+	/**
+	 * @brief The shader which will be applied.
+	 */
 	const TerrainShader* mShader;
+
+	/**
+	 * @brief An optional collection of areas. If mUpdateAll is set to false, only the pages affected by the areas will be updated.
+	 */
 	const AreaStore mAreas;
+
+	/**
+	 * @brief If set to true, all pages will be updated, never checking whether any pages are affected by areas.
+	 */
 	const bool mUpdateAll;
+
+	/**
+	 * @brief A signal to emit once the update is done.
+	 */
 	sigc::signal<void, const TerrainShader*, const AreaStore* >& mSignal;
-	PageVector mUpdatedPages;
 
 };
 

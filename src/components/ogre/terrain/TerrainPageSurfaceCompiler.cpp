@@ -51,7 +51,7 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 {
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
+TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) const
 {
 	return new TerrainPageSurfaceCompilationInstance(selectTechnique(geometry, terrainPageSurfaces, terrainPageShadow, page));
 
@@ -80,7 +80,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompila
 //	mTechnique->compileMaterial(geometry, material, terrainPageSurfaces, terrainPageShadow);
 //}
 
-TerrainPageSurfaceCompilerTechnique* TerrainPageSurfaceCompiler::selectTechnique(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
+TerrainPageSurfaceCompilerTechnique* TerrainPageSurfaceCompiler::selectTechnique(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) const
 {
 	std::string preferredTech("");
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("terrain", "preferredtechnique")) {

@@ -21,11 +21,14 @@
 #include "TerrainGenerator.h"
 #include "TerrainPage.h"
 #include "TerrainShader.h"
+#include "TerrainMaterialCompilationTask.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityFactory.h"
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/environment/Environment.h"
+
+#include "framework/tasks/TaskExecutionContext.h"
 
 #include <OgreMaterial.h>
 
@@ -65,14 +68,17 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 	if (mTerrainGenerator.isFoliageShown()) {
 		mPage->showFoliage();
 	}
+
+	context.executeTask(new TerrainMaterialCompilationTask(mPage));
+
 }
 
 void TerrainPageCreationTask::executeTaskInMainThread()
 {
 	if (mPage) {
 
-		mPage->loadShadow();
-		mPage->generateTerrainMaterials(false);
+//		mPage->loadShadow();
+//		mPage->generateTerrainMaterials(false);
 
 		mTerrainGenerator.addPage(mPage);
 
