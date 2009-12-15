@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Image.h"
+#include "Buffer.h"
 
 #include "framework/Exception.h"
 
@@ -29,49 +29,49 @@ namespace EmberOgre
 namespace Terrain
 {
 
-Image::Image(unsigned int width, unsigned int channels) :
+Buffer::Buffer(unsigned int width, unsigned int channels) :
 	mWidth(width), mChannels(channels), mData(new unsigned char[width * width * channels]), mDataOwned(true)
 {
 }
 
-Image::Image(unsigned int width, unsigned int channels, unsigned char* data) :
+Buffer::Buffer(unsigned int width, unsigned int channels, unsigned char* data) :
 	mWidth(width), mChannels(channels), mData(data), mDataOwned(false)
 {
 }
 
-Image::~Image()
+Buffer::~Buffer()
 {
 	if (mDataOwned) {
 		delete[] mData;
 	}
 }
 
-unsigned char* Image::getData()
+unsigned char* Buffer::getData()
 {
 	return mData;
 }
 
-const unsigned char* Image::getData() const
+const unsigned char* Buffer::getData() const
 {
 	return mData;
 }
 
-unsigned int Image::getChannels() const
+unsigned int Buffer::getChannels() const
 {
 	return mChannels;
 }
 
-size_t Image::getSize() const
+size_t Buffer::getSize() const
 {
 	return mWidth * mWidth * mChannels;
 }
 
-unsigned int Image::getWidth() const
+unsigned int Buffer::getWidth() const
 {
 	return mWidth;
 }
 
-void Image::reset()
+void Buffer::reset()
 {
 	memset(mData, '\0', getSize());
 }
