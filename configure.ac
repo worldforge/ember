@@ -240,7 +240,7 @@ AC_CHECK_LIB([CEGUItoluapp], [main],
         LIBS="-lCEGUItoluapp $LIBS"
     ],
     [
-        AC_CHECK_LIB([tolua++], main,
+        AC_CHECK_LIB([tolua++], [main],
             [
                 LIBS="-ltolua++ $LIBS"
             ],
