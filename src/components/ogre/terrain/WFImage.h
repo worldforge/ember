@@ -30,8 +30,7 @@ namespace Terrain
 class WFImage : public Image
 {
 public:
-	WFImage(unsigned int width, unsigned int channels);
-	WFImage(unsigned int width, unsigned int channels, unsigned char* data);
+	WFImage(Image::ImageBuffer* buffer);
 
 	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0);
 	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0);

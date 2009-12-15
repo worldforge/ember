@@ -33,8 +33,7 @@ class WFImage;
 class OgreImage : public Image
 {
 public:
-	OgreImage(unsigned int width, unsigned int channels);
-	OgreImage(unsigned int width, unsigned int channels, unsigned char* data);
+	OgreImage(Image::ImageBuffer* buffer);
 
 	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0);
 	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0);

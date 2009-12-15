@@ -99,7 +99,7 @@ void TerrainPageSurfaceLayer::fillImage(Image& image, unsigned int channel) cons
 			if (surface && surface->isValid()) {
 
 				int alphaChannel = 0;
-				WFImage sourceImage(65, 1, surface->getData());
+				WFImage sourceImage(new Image::ImageBuffer(65, 1, surface->getData()));
 				image.blit(sourceImage, channel, (int)I->index.x() * 64, (mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * 64);
 			}
 		}

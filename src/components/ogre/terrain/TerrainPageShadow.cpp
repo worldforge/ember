@@ -97,7 +97,7 @@ TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mShadowTechnique(0)
 , mLightDirection(Ogre::Vector3::ZERO)
-, mImage(new OgreImage(mTerrainPage.getAlphaTextureSize(), 1))
+, mImage(new OgreImage(new Image::ImageBuffer(mTerrainPage.getAlphaTextureSize(), 1)))
 {
 }
 
@@ -125,7 +125,7 @@ void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
 
 void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 {
-	boost::shared_ptr<OgreImage> image(new OgreImage(mTerrainPage.getAlphaTextureSize(), 1));
+	boost::shared_ptr<OgreImage> image(new OgreImage(new Image::ImageBuffer(mTerrainPage.getAlphaTextureSize(), 1)));
 	image->reset();
 	mShadowTechnique->createShadowData(mTerrainPage, geometry, image->getData(), mLightDirection, Ogre::ColourValue(1,1,1));
 	mImage = image;
@@ -143,7 +143,7 @@ void TerrainPageShadow::loadIntoImage(Ogre::Image& ogreImage) const
 {
 	boost::shared_ptr<Image> image = mImage;
 
-	ogreImage.loadDynamicImage(image->getData(), image->getWidth(), image->getWidth(), 1, Ogre::PF_L8);
+	ogreImage.loadDynamicImage(image->getData(), image->getResolution(), image->getResolution(), 1, Ogre::PF_L8);
 
 }
 
@@ -178,7 +178,7 @@ void TerrainPageShadow::setShadowTechnique(const ITerrainPageShadowTechnique* sh
 void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
 {
 	boost::shared_ptr<Image> image = mImage;
-	unsigned char val(image->getData()[static_cast<size_t>((image->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))]);
+	unsigned char val(image->getData()[static_cast<size_t>((image->getResolution() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))]);
 
 	Ogre::uint8* aVal((Ogre::uint8*)&colour);
 	aVal[0] = val;
@@ -190,7 +190,7 @@ void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::u
 void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
 {
 	boost::shared_ptr<Image> image = mImage;
-	float val(image->getData()[static_cast<size_t>((image->getWidth() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))] / 255.0f);
+	float val(image->getData()[static_cast<size_t>((image->getResolution() * static_cast<unsigned int>(position.y)) + static_cast<unsigned int>(position.x))] / 255.0f);
 
 	colour.r = val;
 	colour.g = val;

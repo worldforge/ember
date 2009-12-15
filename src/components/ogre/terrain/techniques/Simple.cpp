@@ -187,11 +187,11 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 	//
 	// 	}
 
-	OgreImage ogreImage(mPage.getAlphaTextureSize(), 1);
+	OgreImage ogreImage(new Image::ImageBuffer(mPage.getAlphaTextureSize(), 1));
 	layer->fillImage(ogreImage, 0);
 	Ogre::Image image;
 
-	image.loadDynamicImage(ogreImage.getData(), ogreImage.getWidth(), ogreImage.getWidth(), 1, Ogre::PF_A8);
+	image.loadDynamicImage(ogreImage.getData(), ogreImage.getResolution(), ogreImage.getResolution(), 1, Ogre::PF_A8);
 
 	std::stringstream splatTextureNameSS;
 	splatTextureNameSS << "terrain_" << mPage.getWFPosition().x() << "_" << mPage.getWFPosition().y() << "_" << technique->getNumPasses();

@@ -26,24 +26,19 @@ namespace EmberOgre
 namespace Terrain
 {
 
-OgreImage::OgreImage(unsigned int width, unsigned int channels) :
-	Image::Image(width, channels)
+OgreImage::OgreImage(Image::ImageBuffer* buffer) :
+	Image::Image(buffer)
 {
 
 }
 
-OgreImage::OgreImage(unsigned int width, unsigned int channels, unsigned char* data) :
-	Image::Image(width, channels, data)
-{
-
-}
 void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
 {
 	if (imageToBlit.getChannels() > 1) {
 		return;
 	}
 
-	//	if (imageToBlit.getWidth() == getWidth() && widthOffset == 0 && heightOffset == 0) {
+	//	if (imageToBlit.getResolution() == getResolution() && widthOffset == 0 && heightOffset == 0) {
 	//		const unsigned char* sourcePtr = imageToBlit.getData();
 	//		unsigned char* destPtr = getData() + destinationChannel;
 	//
@@ -62,25 +57,25 @@ void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel
 
 	unsigned char* dataEnd = getData() + getSize();
 
-	unsigned char* end = destPtr + (mChannels * mWidth * ((width - 1) + heightOffset)) + (((width - 1) + widthOffset) * mChannels);
-	assert(end >= mData && end < dataEnd);
+	unsigned char* end = destPtr + (getChannels() * getResolution() * ((width - 1) + heightOffset)) + (((width - 1) + widthOffset) * getChannels());
+	assert(end >= getData() && end < dataEnd);
 	///we need to do this to get the alignment correct
-//	sourcePtr += imageToBlit.getWidth();
+//	sourcePtr += imageToBlit.getResolution();
 
 	unsigned char* tempPtr = end;
 	for (i = 0; i < width; ++i) {
-		tempPtr -= (width * mChannels);
+		tempPtr -= (width * getChannels());
 		for (j = 0; j < width; ++j) {
 			///advance the number of channels
-			tempPtr += mChannels;
+			tempPtr += getChannels();
 
-			if (tempPtr >= mData && tempPtr < dataEnd) {
+			if (tempPtr >= getData() && tempPtr < dataEnd) {
 				*(tempPtr) = *(sourcePtr + j);
 			}
 
 		}
-		tempPtr -= (mWidth * mChannels);
-		sourcePtr += imageToBlit.getWidth();
+		tempPtr -= (getResolution() * getChannels());
+		sourcePtr += imageToBlit.getResolution();
 	}
 	//	}
 }

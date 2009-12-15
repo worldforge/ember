@@ -26,14 +26,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-WFImage::WFImage(unsigned int width, unsigned int channels) :
-	Image::Image(width, channels)
-{
-
-}
-
-WFImage::WFImage(unsigned int width, unsigned int channels, unsigned char* data) :
-	Image::Image(width, channels, data)
+WFImage::WFImage(Image::ImageBuffer* buffer) :
+	Image::Image(buffer)
 {
 
 }

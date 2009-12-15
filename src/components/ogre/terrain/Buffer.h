@@ -21,6 +21,7 @@
 #define EMBEROGRETERRAINIMAGE_H_
 
 #include <stdlib.h>
+#include <string.h>
 
 namespace EmberOgre
 {
@@ -28,21 +29,19 @@ namespace EmberOgre
 namespace Terrain
 {
 
-class WFBuffer;
-class OgreBuffer;
-
+template<typename DataType>
 class Buffer
 {
 public:
 
-	Buffer(unsigned int width, unsigned int channels);
-	Buffer(unsigned int width, unsigned int channels, unsigned char* data);
+	Buffer(unsigned int resolution, unsigned int channels);
+	Buffer(unsigned int resolution, unsigned int channels, DataType* data, bool transferOwnership = false);
 
 	virtual ~Buffer();
 
-	unsigned char* getData();
+	DataType* getData();
 
-	const unsigned char* getData() const;
+	const DataType* getData() const;
 
 	unsigned int getChannels() const;
 
@@ -50,20 +49,73 @@ public:
 
 	void reset();
 
-	virtual void blit(const OgreBuffer& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0) = 0;
-	virtual void blit(const WFBuffer& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset = 0, unsigned int heightOffset = 0) = 0;
-
-	unsigned int getWidth() const;
+	unsigned int getResolution() const;
 
 protected:
 
-	const unsigned int mWidth;
+	const unsigned int mResolution;
 	const unsigned int mChannels;
 
-	unsigned char* mData;
+	DataType* mData;
 	bool mDataOwned;
 
 };
+
+template<typename DataType>
+Buffer<DataType>::Buffer(unsigned int width, unsigned int channels) :
+	mResolution(width), mChannels(channels), mData(new DataType[width * width * channels]), mDataOwned(true)
+{
+}
+
+template<typename DataType>
+Buffer<DataType>::Buffer(unsigned int width, unsigned int channels, DataType* data, bool transferOwnership) :
+	mResolution(width), mChannels(channels), mData(data), mDataOwned(transferOwnership)
+{
+}
+
+template<typename DataType>
+Buffer<DataType>::~Buffer()
+{
+	if (mDataOwned) {
+		delete[] mData;
+	}
+}
+
+template<typename DataType>
+DataType* Buffer<DataType>::getData()
+{
+	return mData;
+}
+
+template<typename DataType>
+const DataType* Buffer<DataType>::getData() const
+{
+	return mData;
+}
+
+template<typename DataType>
+unsigned int Buffer<DataType>::getChannels() const
+{
+	return mChannels;
+}
+
+template<typename DataType>
+size_t Buffer<DataType>::getSize() const
+{
+	return mResolution * mResolution * mChannels;
+}
+
+template<typename DataType>
+unsigned int Buffer<DataType>::getResolution() const
+{
+	return mResolution;
+}
+
+template<typename DataType>
+void Buffer<DataType>::reset()
+{
+	memset(mData, '\0', getSize());
+}
 
 }
 
