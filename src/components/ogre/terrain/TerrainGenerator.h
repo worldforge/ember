@@ -65,6 +65,8 @@ class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
 class ISceneManagerAdapter;
 class ITerrainPageBridge;
+class HeightMap;
+class HeightMapBufferProvider;
 
 /**
  * @brief Handles generation and updates of the terrain.
@@ -378,6 +380,10 @@ protected:
 	 * @brief True if foliage should be shown.
 	 */
 	bool mIsFoliageShown;
+
+	HeightMap* mHeightMap;
+
+	HeightMapBufferProvider* mHeightMapBufferProvider;
 
 
 	/**

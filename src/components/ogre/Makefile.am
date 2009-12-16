@@ -45,7 +45,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/techniques/ShaderNormalMappedPassCoverageBatch.cpp terrain/techniques/ShaderPass.cpp \
 	terrain/techniques/ShaderPassCoverageBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp \
 	terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp terrain/TerrainMaterialCompilationTask.cpp \
-	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp \
+	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/HeightMapBuffer.cpp terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp \
 \
 	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -124,7 +124,7 @@ noinst_HEADERS = \
 	terrain/techniques/ShaderNormalMappedPassCoverageBatch.h terrain/techniques/ShaderPass.h \
 	terrain/techniques/ShaderPassCoverageBatch.h terrain/techniques/Simple.h terrain/techniques/Base.h \
 	terrain/Image.h terrain/OgreImage.h terrain/WFImage.h terrain/TerrainMaterialCompilationTask.h \
-	terrain/HeightMapSegment.h terrain/HeightMap.h terrain/Buffer.h \
+	terrain/HeightMapSegment.h terrain/HeightMap.h terrain/Buffer.h terrain/HeightMapBuffer.h terrain/HeightMapBufferProvider.h terrain/HeightMapUpdateTask.h \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \

@@ -16,49 +16,60 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef TERRAINPAGECREATIONTASK_H_
-#define TERRAINPAGECREATIONTASK_H_
+#ifndef HEIGHTMAPUPDATETASK_H_
+#define HEIGHTMAPUPDATETASK_H_
 
-#include "components/ogre/Types.h"
 #include "framework/tasks/ITask.h"
-#include <wfmath/point.h>
+
+#include <vector>
+
+namespace WFMath
+{
+	template<int> class Point;
+}
+
+namespace Mercator
+{
+	class Segment;
+}
 
 namespace EmberOgre
 {
 
 namespace Terrain
 {
-
-class TerrainGenerator;
-class TerrainPage;
-class ITerrainPageBridge;
-
-class HeightMapBufferProvider;
 class HeightMap;
+class HeightMapBufferProvider;
+class HeightMapSegment;
 
-class TerrainPageCreationTask : public Ember::Tasks::ITask
+class HeightMapUpdateTask : public Ember::Tasks::ITask
 {
 public:
-	TerrainPageCreationTask(TerrainGenerator& terrainGenerator, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
-	virtual ~TerrainPageCreationTask();
+	typedef std::vector<Mercator::Segment*> SegmentStore;
+	HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, const SegmentStore& segments);
+	virtual ~HeightMapUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 
 private:
-	TerrainGenerator& mTerrainGenerator;
 
-	TerrainPage* mPage;
-	TerrainPosition mPos;
-	ITerrainPageBridge* mBridge;
-
-	HeightMapBufferProvider& mHeightMapBufferProvider;
+	typedef std::vector<std::pair<WFMath::Point<2>, HeightMapSegment*> > HeightMapSegmentStore;
+	HeightMapBufferProvider& mProvider;
 	HeightMap& mHeightMap;
+	SegmentStore mSegments;
+	HeightMapSegmentStore mHeightMapSegments;
+
+
+	void createHeightMapSegments();
+	void injectHeightMapSegmentsIntoHeightMap();
+
+
 };
 
 }
 
 }
 
-#endif /* TERRAINPAGECREATIONTASK_H_ */
+#endif /* HEIGHTMAPUPDATETASK_H_ */

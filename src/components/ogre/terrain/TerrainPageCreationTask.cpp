@@ -21,7 +21,9 @@
 #include "TerrainGenerator.h"
 #include "TerrainPage.h"
 #include "TerrainShader.h"
+#include "TerrainPageGeometry.h"
 #include "TerrainMaterialCompilationTask.h"
+#include "HeightMapUpdateTask.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityFactory.h"
@@ -38,8 +40,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageCreationTask::TerrainPageCreationTask(TerrainGenerator& terrainGenerator, const TerrainPosition& pos, ITerrainPageBridge* bridge) :
-	mTerrainGenerator(terrainGenerator), mPage(0), mPos(pos), mBridge(bridge)
+TerrainPageCreationTask::TerrainPageCreationTask(TerrainGenerator& terrainGenerator, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
+	mTerrainGenerator(terrainGenerator), mPage(0), mPos(pos), mBridge(bridge), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -70,15 +72,20 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 	}
 
 	context.executeTask(new TerrainMaterialCompilationTask(mPage));
-
+	std::vector<Mercator::Segment*> segments;
+	const SegmentVector& segmentVector = mPage->getGeometry().getValidSegments();
+	for (SegmentVector::const_iterator I = segmentVector.begin(); I != segmentVector.end(); ++I) {
+		segments.push_back(I->segment);
+	}
+	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
 }
 
 void TerrainPageCreationTask::executeTaskInMainThread()
 {
 	if (mPage) {
 
-//		mPage->loadShadow();
-//		mPage->generateTerrainMaterials(false);
+		//		mPage->loadShadow();
+		//		mPage->generateTerrainMaterials(false);
 
 		mTerrainGenerator.addPage(mPage);
 

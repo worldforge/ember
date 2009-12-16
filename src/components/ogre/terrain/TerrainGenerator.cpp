@@ -36,6 +36,8 @@
 #include "TerrainPageCreationTask.h"
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainAreaUpdateTask.h"
+#include "HeightMap.h"
+#include "HeightMapBufferProvider.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/tasks/TaskQueue.h"
@@ -98,12 +100,16 @@ namespace Terrain
 {
 
 TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1))
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1))
 {
 	mSceneManagerAdapter = adapter;
 
 	loadTerrainOptions();
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
+
+	//The mercator buffers are one size larger than the resolution
+	mHeightMapBufferProvider = new HeightMapBufferProvider(mTerrain->getResolution() + 1);
+	mHeightMap = new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution());
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 
@@ -284,14 +290,14 @@ void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
 		shader = mAreaShaders[area->getLayer()];
 	}
 	mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, *terrainArea, shader, sigc::mem_fun(*this, &TerrainGenerator::markShaderForUpdate)));
-//
-//	Mercator::Area* area = terrainArea->getArea();
-//	if (mAreaShaders.count(area->getLayer())) {
-//		///mark the shader for update
-//		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-//		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
-//	}
-//	mTerrain->updateArea(area);
+	//
+	//	Mercator::Area* area = terrainArea->getArea();
+	//	if (mAreaShaders.count(area->getLayer())) {
+	//		///mark the shader for update
+	//		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+	//		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
+	//	}
+	//	mTerrain->updateArea(area);
 }
 
 void TerrainGenerator::TerrainArea_Removed(TerrainArea* terrainArea)
@@ -458,7 +464,7 @@ void TerrainGenerator::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPos
 
 	S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 	if (mTerrainPages[x][y] == 0) {
-		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, pos, &bridge), 0);
+		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, pos, &bridge, *mHeightMapBufferProvider, *mHeightMap), 0);
 	} else {
 		S_LOG_WARNING("Trying to set up TerrainPage at index [" << x << "," << y << "], but it was already created");
 	}
@@ -512,7 +518,8 @@ bool TerrainGenerator::getHeight(const TerrainPosition& point, float& height) co
 {
 	WFMath::Vector<3> vector;
 
-	return mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
+	return mHeightMap->getHeightAndNormal(point.x(), point.y(), height, vector);
+//	return mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
 }
 
 void TerrainGenerator::updateShadows()
@@ -583,14 +590,14 @@ void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 }
 void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
 {
-	const Ogre::Vector3& sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
-
-	///reload all shader textures of the affected pages
-	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
-		(*I)->updateAllShaderTextures();
-		(*I)->updateShadow(sunDirection);
-		(*I)->update();
-	}
+//	const Ogre::Vector3& sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
+//
+//	///reload all shader textures of the affected pages
+//	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+//		(*I)->updateAllShaderTextures();
+//		(*I)->updateShadow(sunDirection);
+//		(*I)->update();
+//	}
 }
 
 void TerrainGenerator::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
@@ -679,9 +686,9 @@ void TerrainGenerator::shaderManager_LevelChanged(ShaderManager* shaderManager)
 		}
 	}
 
-//	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-//		J->second->generateTerrainMaterials(true);
-//	}
+	//	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+	//		J->second->generateTerrainMaterials(true);
+	//	}
 }
 
 void TerrainGenerator::application_EndErisPoll(float)
