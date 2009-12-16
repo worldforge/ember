@@ -17,8 +17,8 @@
  */
 
 
-#ifndef EMBEROGRETERRAINIMAGE_H_
-#define EMBEROGRETERRAINIMAGE_H_
+#ifndef EMBEROGRETERRAINBUFFER_H_
+#define EMBEROGRETERRAINBUFFER_H_
 
 #include <stdlib.h>
 #include <string.h>
@@ -121,4 +121,4 @@ void Buffer<DataType>::reset()
 
 }
 
-#endif /* EMBEROGRETERRAINIMAGE_H_ */
+#endif /* EMBEROGRETERRAINBUFFER_H_ */
