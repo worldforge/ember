@@ -85,7 +85,7 @@ namespace Ember
 		metaserverHostname = "metaserver.worldforge.org";
 	}
 	
-    mMetaserver = new Eris::Meta(metaserverHostname, 10);
+    mMetaserver = new Eris::Meta(metaserverHostname, 20);
     mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
     mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
     mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));
