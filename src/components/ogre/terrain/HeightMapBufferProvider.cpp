@@ -26,8 +26,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-HeightMapBufferProvider::HeightMapBufferProvider(unsigned int bufferResolution) :
-	mDesiredBuffers(5), mBufferResolution(bufferResolution)
+HeightMapBufferProvider::HeightMapBufferProvider(unsigned int bufferResolution, unsigned int desiredBuffers, unsigned int desiredBuffersTolerance) :
+	mBufferResolution(bufferResolution), mDesiredBuffers(desiredBuffers), mDesiredBuffersTolerance(desiredBuffersTolerance)
 {
 	while (mPrimitiveBuffers.size() < mDesiredBuffers) {
 		mPrimitiveBuffers.push_back(new Buffer<float> (mBufferResolution, 1));
@@ -57,6 +57,22 @@ HeightMapBuffer* HeightMapBufferProvider::checkout()
 	Buffer<float>* buffer = mPrimitiveBuffers.back();
 	mPrimitiveBuffers.pop_back();
 	return new HeightMapBuffer(*this, buffer);
+}
+
+void HeightMapBufferProvider::maintainPool()
+{
+
+	if (mPrimitiveBuffers.size() <= mDesiredBuffers - mDesiredBuffersTolerance) {
+		while (mPrimitiveBuffers.size() < mDesiredBuffers) {
+			mPrimitiveBuffers.push_back(new Buffer<float> (mBufferResolution, 1));
+		}
+	}
+
+	if (mPrimitiveBuffers.size() >= mDesiredBuffers + mDesiredBuffersTolerance) {
+		while (mPrimitiveBuffers.size() > mDesiredBuffers) {
+			mPrimitiveBuffers.pop_back();
+		}
+	}
 }
 
 }

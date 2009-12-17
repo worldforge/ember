@@ -42,10 +42,22 @@ class HeightMap;
 class HeightMapBufferProvider;
 class HeightMapSegment;
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Builds new HeightMapSegments in the background and then inserts these into the HeightMap.
+ * This is the main task for making sure that the HeightMap is kept up to date with changes to the Mercator terrain.
+ */
 class HeightMapUpdateTask : public Ember::Tasks::ITask
 {
 public:
 	typedef std::vector<Mercator::Segment*> SegmentStore;
+
+	/**
+	 * @brief Ctor.
+	 * @param provider The provider which is tasked to create the HeightMapBuffer instances.
+	 * @param heightMap The main HeightMap instance, which holds the whole height map.
+	 * @param segments The Mercator::Segments for which we'll be creating HeightMapSegments.
+	 */
 	HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, const SegmentStore& segments);
 	virtual ~HeightMapUpdateTask();
 
@@ -56,13 +68,35 @@ public:
 private:
 
 	typedef std::vector<std::pair<WFMath::Point<2>, HeightMapSegment*> > HeightMapSegmentStore;
+
+	/**
+	 * @brief The provider which is tasked to create the HeightMapBuffer instances.
+	 */
 	HeightMapBufferProvider& mProvider;
+
+	/**
+	 * @brief The main HeightMap instance, which holds the whole height map.
+	 */
 	HeightMap& mHeightMap;
+
+	/**
+	 * @brief The Mercator::Segments for which we'll be creating HeightMapSegments.
+	 */
 	SegmentStore mSegments;
+
+	/**
+	 * @brief The HeightMapSegment instances created. These will be injected into the HeightMap.
+	 */
 	HeightMapSegmentStore mHeightMapSegments;
 
-
+	/**
+	 * @brief Creates the HeightMapSegment instances.
+	 */
 	void createHeightMapSegments();
+
+	/**
+	 * @brief Injects the previously created HeightMapSegment instances into the HeightMap.
+	 */
 	void injectHeightMapSegmentsIntoHeightMap();
 
 

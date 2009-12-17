@@ -28,17 +28,50 @@ namespace Terrain
 
 class HeightMapBuffer;
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Represents one segment (mapped to a Mercator::Segment) in the height map.
+ */
 class HeightMapSegment
 {
 public:
+
+	/**
+	 * @brief Ctor.
+	 * @param buffer The buffer to use for this segment. Ownership will be transferred.
+	 */
 	HeightMapSegment(HeightMapBuffer* buffer);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~HeightMapSegment();
 
-    float getHeight(int x, int y) const;
+	/**
+	 * @brief Gets the height at the specified location.
+	 * This is a crude and fast lookup method which won't take into account slopes.
+	 * @see getHeightAndNormal()
+	 * @param x The x location, in world units.
+	 * @param y The y location, in world units.
+	 * @returns The height at the location.
+	 */
+	float getHeight(int x, int y) const;
 
-    void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const;
+    /**
+     * @brief Gets the height and normal at the location.
+     * This calculates slopes and provides a precise height. It's therefore more time consuming than getHeight().
+	 * @param x The x location, in world units.
+	 * @param y The y location, in world units.
+	 * @param height The height will be stored here.
+	 * @param normal The normal will be stored here.
+     */
+	void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const;
 
 private:
+
+	/**
+	 * @brief The buffer which contains the height data.
+	 */
     HeightMapBuffer* mBuffer;
 };
 
