@@ -30,7 +30,7 @@
 #include "../Convert.h"
 #include "../EmberOgre.h"
 #include "../terrain/PlantAreaQuery.h"
-#include "../terrain/TerrainGenerator.h"
+#include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainPageFoliage.h"
 #include "../terrain/TerrainPage.h"
 #include "../terrain/TerrainLayerDefinition.h"
@@ -69,10 +69,10 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 	///make these static for fast lookup
 	static Ogre::Vector2 pos2D;
 	static Ogre::ColourValue colour(1,1,1,1);
-	static const Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
+	static const Terrain::TerrainManager* TerrainManager(EmberOgre::getSingleton().getTerrainManager());
 
 	TerrainPosition wfPos(Convert::toWF<TerrainPosition>(page.centerPoint));
-	const TerrainPage* terrainPage = terrainGenerator->getTerrainPageAtPosition(wfPos);
+	const TerrainPage* terrainPage = TerrainManager->getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
 		Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
@@ -87,13 +87,13 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 		terrainPage->getPlantsForArea(query);
 		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
 			float height = 0;
-			if (terrainGenerator->getHeight(TerrainPosition(I->x + ogrePageExtent.left, -(I->y + ogrePageExtent.top)), height)) {
+			if (TerrainManager->getHeight(TerrainPosition(I->x + ogrePageExtent.left, -(I->y + ogrePageExtent.top)), height)) {
 				Ogre::Vector3 pos(I->x + ogrePageExtent.left, height, I->y + ogrePageExtent.top);
 
 				float scale = Ogre::Math::RangeRandom(mMinScale, mMaxScale);
 				pos2D.x = pos.x;
 				pos2D.y = pos.z;
-	// 			terrainGenerator->getShadowColourAt(pos2D, colour);
+	// 			TerrainManager->getShadowColourAt(pos2D, colour);
 
 				//Get rotation
 				Ogre::Degree angle(Ogre::Math::RangeRandom(0, 360.0f));

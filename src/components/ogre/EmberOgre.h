@@ -61,7 +61,7 @@ namespace EmberOgre
 
 namespace Terrain
 {
-class TerrainGenerator;
+class TerrainManager;
 class TerrainLayerDefinitionManager;
 }
 
@@ -176,7 +176,7 @@ public:
 	 * @brief Gets the terrain generator.
 	 * @return The terrain generator, responsible for creating and handling the terrain.
 	 */
-	Terrain::TerrainGenerator* getTerrainGenerator() const;
+	Terrain::TerrainManager* getTerrainManager() const;
 
 	/**
 	 * @brief Gets the motion manager, which is responsible for handling all motion and animations of entities.
@@ -291,9 +291,9 @@ public:
 	sigc::signal<void, MotionManager&> EventMotionManagerCreated;
 
 	/**
-	 * @brief Emitted after the TerrainGenerator has been created
+	 * @brief Emitted after the TerrainManager has been created
 	 */
-	sigc::signal<void, Terrain::TerrainGenerator&> EventTerrainGeneratorCreated;
+	sigc::signal<void, Terrain::TerrainManager&> EventTerrainManagerCreated;
 
 	/**
 	 * @brief Emitted after the MovementController has been created
@@ -380,7 +380,7 @@ protected:
 	/**
 	 * @brief Responsible for handling of terrain.
 	 */
-	Terrain::TerrainGenerator* mTerrainGenerator;
+	Terrain::TerrainManager* mTerrainManager;
 
 	/**
 	 * @brief Responsible for handling sound loading

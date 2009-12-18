@@ -27,7 +27,7 @@
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelAttachment.h"
-#include "components/ogre/terrain/TerrainGenerator.h"
+#include "components/ogre/terrain/TerrainManager.h"
 
 #include <OgreSceneNode.h>
 #include <OgreVector3.h>
@@ -38,8 +38,8 @@
 namespace EmberOgre
 {
 
-WorldAttachment::WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainGenerator& terrainGenerator) :
-	mWorldEntity(worldEntity), mWorldNode(worldNode), mTerrainGenerator(terrainGenerator)
+WorldAttachment::WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainManager& TerrainManager) :
+	mWorldEntity(worldEntity), mWorldNode(worldNode), mTerrainManager(TerrainManager)
 {
 	///set the position to always 0, 0, 0
 	mWorldNode.setPosition(Ogre::Vector3(0, 0, 0));
@@ -85,7 +85,7 @@ void WorldAttachment::updatePosition()
 void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
 {
 	float height = 0;
-	if (mTerrainGenerator.getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
+	if (mTerrainManager.getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
 		offset.z() = height - localPosition.z();
 	}
 }

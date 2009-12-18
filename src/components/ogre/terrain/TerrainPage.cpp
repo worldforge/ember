@@ -38,7 +38,7 @@
 #include "../Convert.h"
 
 #include "../environment/Foliage.h"
-#include "TerrainGenerator.h"
+#include "TerrainManager.h"
 #include "TerrainInfo.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
@@ -77,7 +77,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainPage::TerrainPage(const TerrainPosition& position, TerrainGenerator& generator)
+TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& generator)
 : mGenerator(generator)
 , mPosition(position)
 , mBridge(0)

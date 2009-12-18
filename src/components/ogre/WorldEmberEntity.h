@@ -36,7 +36,7 @@ class Foliage;
 
 namespace Terrain
 {
-class TerrainGenerator;
+class TerrainManager;
 class TerrainArea;
 class TerrainParser;
 }
@@ -86,7 +86,7 @@ public:
 	 * @param ty The entity type.
 	 * @param vw The main Eris::View.
 	 * @param sceneManager The main Ogre scene manager.
-	 * @param terrainGenerator The terrain generator instance.
+	 * @param TerrainManager The terrain generator instance.
 	 */
 	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
 
@@ -124,7 +124,7 @@ public:
 	sigc::signal<void> EventEnvironmentCreated;
 
 protected:
-	Terrain::TerrainGenerator* mTerrainGenerator;
+	Terrain::TerrainManager* mTerrainManager;
 
 	virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
@@ -136,13 +136,13 @@ protected:
 	virtual void onLocationChanged(Eris::Entity *oldLocation);
 
 	/**
-	 * @brief Adds an area to the world. This method will in turn interface with the TerrainGenerator.
+	 * @brief Adds an area to the world. This method will in turn interface with the TerrainManager.
 	 * @param area
 	 */
 	void addArea(Terrain::TerrainArea* area);
 
 	/**
-	 * @brief Adds a terrain modifier to the world by making a call to mTerrainGenerator
+	 * @brief Adds a terrain modifier to the world by making a call to mTerrainManager
 	 * @param mod
 	 */
 	void addTerrainMod(Terrain::TerrainMod* mod);

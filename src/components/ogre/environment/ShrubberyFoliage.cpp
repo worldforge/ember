@@ -36,7 +36,7 @@
 #include "../EmberOgre.h"
 #include "../Convert.h"
 #include "../terrain/TerrainInfo.h"
-#include "../terrain/TerrainGenerator.h"
+#include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainLayerDefinition.h"
 
 #include "../terrain/ISceneManagerAdapter.h"
@@ -63,8 +63,8 @@ ShrubberyFoliage::~ShrubberyFoliage()
 void ShrubberyFoliage::initialize()
 {
 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();
-	mPagedGeometry = new ::Forests::PagedGeometry(camera, EmberOgre::getSingleton().getTerrainGenerator()->getFoliageBatchSize());
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
+	mPagedGeometry = new ::Forests::PagedGeometry(camera, EmberOgre::getSingleton().getTerrainManager()->getFoliageBatchSize());
+	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainManager()->getTerrainInfo().getWorldSizeInIndices();
 
 	::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
 	if (ogreBounds.width() != ogreBounds.height()) {

@@ -33,7 +33,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-class TerrainGenerator;
+class TerrainManager;
 
 /**
 
@@ -45,7 +45,7 @@ class TerrainGenerator;
 class TerrainParser
 {
 public:
-	TerrainParser(Terrain::TerrainGenerator& terrainGenerator);
+	TerrainParser(Terrain::TerrainManager& TerrainManager);
 
 	/**
 	 * @brief Extracts terrain updates from the element and updates the terrain.
@@ -69,7 +69,7 @@ private:
 	/**
 	 * @brief The terrain generator instance used in the system.
 	 */
-	Terrain::TerrainGenerator& mTerrainGenerator;
+	Terrain::TerrainManager& mTerrainManager;
 };
 
 }

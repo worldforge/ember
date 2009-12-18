@@ -33,7 +33,7 @@
 #include "components/ogre/FreeFlyingCameraMotionHandler.h"
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
-#include "components/ogre/terrain/TerrainGenerator.h"
+#include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/ISceneManagerAdapter.h"
 
 #include "services/input/Input.h"
@@ -225,7 +225,7 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 
 	if (mDecalNode) {
 		///make sure it's at the correct height, since the visibility of it is determined by the bounding box
-		Ogre::Real height = EmberOgre::getSingleton().getTerrainGenerator()->getAdapter()->getHeightAt(point.x, point.z);
+		Ogre::Real height = EmberOgre::getSingleton().getTerrainManager()->getAdapter()->getHeightAt(point.x, point.z);
 		mDecalNode->setPosition(Ogre::Vector3(point.x, height, point.z));
 		mDecalNode->setVisible(true);
 	}

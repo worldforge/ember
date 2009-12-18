@@ -53,7 +53,7 @@ namespace Ogre
 namespace EmberOgre {
 namespace Terrain {
 class TerrainShader;
-class TerrainGenerator;
+class TerrainManager;
 class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageFoliage;
@@ -71,7 +71,7 @@ class PlantAreaQuery;
 This is a bridge class between one Ogre terrain page instance and one or many Mercator::Segment. Since each Segment is 64x64 meters, but one Ogre page often is much larger, we need to combine many Segments for every single Ogre page.
 All segments used will be contained in an instance of TerrainPageGeometry. Thus each instance of this holds a corresponding instance of TerrainPageGeometry.
 
-Instances of this is created by TerrainGenerator.
+Instances of this is created by TerrainManager.
 One terrain page is composed of both height data, a material, textures for the material and plant positions for the foliage system. This class handles all of these, some of them directly and some by other classes.
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -86,7 +86,7 @@ public:
 	 * @param position The page index in WF space.
 	 * @param generator The terrain generator.
 	 */
-	TerrainPage(const TerrainPosition& position, TerrainGenerator& generator);
+	TerrainPage(const TerrainPosition& position, TerrainManager& generator);
 
 	/**
 	 * @brief Dtor.
@@ -266,7 +266,7 @@ private:
 	/**
 	 * @brief The main terrain generator, which acts as a hub for all terrain functionality.
 	 */
-	TerrainGenerator& mGenerator;
+	TerrainManager& mGenerator;
 
 	/**
 	 * @brief Internal position

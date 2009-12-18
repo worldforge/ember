@@ -24,7 +24,7 @@
 #include "EmberPagingLandScapeTexture.h"
 #include "EmberOgre.h"
 #include "terrain/TerrainPage.h"
-#include "terrain/TerrainGenerator.h"
+#include "terrain/TerrainManager.h"
 #include <OgreVector2.h>
 
 namespace EmberOgre
@@ -56,8 +56,8 @@ namespace EmberOgre
 
 	void EmberPagingLandScapeTexture::_loadMaterial()
 	{
-		Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
-		Terrain::TerrainPage* page = terrainGenerator->getTerrainPageAtIndex(Ogre::Vector2(mDataX, mDataZ));
+		Terrain::TerrainManager* TerrainManager = EmberOgre::getSingleton().getTerrainManager();
+		Terrain::TerrainPage* page = TerrainManager->getTerrainPageAtIndex(Ogre::Vector2(mDataX, mDataZ));
 		assert(page);
 		if (page) {
 			mMaterial = page->getMaterial();

@@ -20,7 +20,7 @@
 #include "config.h"
 #endif
 
-#include "TerrainGenerator.h"
+#include "TerrainManager.h"
 
 #include "ISceneManagerAdapter.h"
 #include "ITerrainPageBridge.h"
@@ -100,7 +100,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter) :
+TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1))
 {
 	mSceneManagerAdapter = adapter;
@@ -114,14 +114,14 @@ TerrainGenerator::TerrainGenerator(ISceneManagerAdapter* adapter) :
 
 	Ogre::Root::getSingleton().addFrameListener(this);
 
-	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainGenerator::config_Foliage));
+	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
 
-	EmberOgre::getSingleton().getShaderManager()->EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::shaderManager_LevelChanged), EmberOgre::getSingleton().getShaderManager()));
+	EmberOgre::getSingleton().getShaderManager()->EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), EmberOgre::getSingleton().getShaderManager()));
 
-	Ember::Application::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &TerrainGenerator::application_EndErisPoll));
+	Ember::Application::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &TerrainManager::application_EndErisPoll));
 }
 
-TerrainGenerator::~TerrainGenerator()
+TerrainManager::~TerrainManager()
 {
 
 	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
@@ -136,12 +136,12 @@ TerrainGenerator::~TerrainGenerator()
 	delete mTerrain;
 }
 
-const Mercator::Terrain& TerrainGenerator::getTerrain() const
+const Mercator::Terrain& TerrainManager::getTerrain() const
 {
 	return *mTerrain;
 }
 
-void TerrainGenerator::loadTerrainOptions()
+void TerrainManager::loadTerrainOptions()
 {
 	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 
@@ -153,12 +153,12 @@ void TerrainGenerator::loadTerrainOptions()
 
 }
 
-ISceneManagerAdapter* TerrainGenerator::getAdapter() const
+ISceneManagerAdapter* TerrainManager::getAdapter() const
 {
 	return mSceneManagerAdapter;
 }
 
-TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader)
+TerrainShader* TerrainManager::createShader(const TerrainLayerDefinition* layerDef, Mercator::Shader* mercatorShader)
 {
 	size_t index = mShaderMap.size();
 	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->getShaderName() <<" with index " << index);
@@ -170,7 +170,7 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 	return shader;
 }
 
-// TerrainShader* TerrainGenerator::createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader)
+// TerrainShader* TerrainManager::createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader)
 // {
 // 	size_t index = mShaderMap.size();
 // 	S_LOG_VERBOSE("Creating new shader for material " << material->getName() <<" with index " << index);
@@ -182,13 +182,13 @@ TerrainShader* TerrainGenerator::createShader(const TerrainLayerDefinition* laye
 // }
 
 
-void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
+void TerrainManager::addTerrainMod(TerrainMod* terrainMod)
 {
 	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
 	/// Listen for changes to the modifier
-	terrainMod->EventModChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Changed), terrainMod));
+	terrainMod->EventModChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainMod_Changed), terrainMod));
 	/// Listen for deletion of the modifier
-	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainMod_Deleted), terrainMod));
+	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainMod_Deleted), terrainMod));
 
 	/// We need to save this pointer to use when the modifier is changed or deleted
 	Mercator::TerrainMod* mod = mTerrain->addMod(*erisTerrainMod->getMod());
@@ -200,7 +200,7 @@ void TerrainGenerator::addTerrainMod(TerrainMod* terrainMod)
 	reloadTerrain(updatedPositions);
 }
 
-void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
+void TerrainManager::TerrainMod_Changed(TerrainMod* terrainMod)
 {
 
 	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
@@ -235,7 +235,7 @@ void TerrainGenerator::TerrainMod_Changed(TerrainMod* terrainMod)
 	reloadTerrain(updatedPositions);
 }
 
-void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
+void TerrainManager::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
 	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
 	// Clear this mod from the terrain
@@ -253,13 +253,13 @@ void TerrainGenerator::TerrainMod_Deleted(TerrainMod* terrainMod)
 
 }
 
-void TerrainGenerator::addArea(TerrainArea* terrainArea)
+void TerrainManager::addArea(TerrainArea* terrainArea)
 {
 
-	terrainArea->EventAreaChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Changed), terrainArea));
-	terrainArea->EventAreaRemoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Removed), terrainArea));
-	terrainArea->EventAreaSwapped.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Swapped), terrainArea));
-	mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, *terrainArea, *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders, sigc::mem_fun(*this, &TerrainGenerator::markShaderForUpdate)));
+	terrainArea->EventAreaChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Changed), terrainArea));
+	terrainArea->EventAreaRemoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Removed), terrainArea));
+	terrainArea->EventAreaSwapped.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Swapped), terrainArea));
+	mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, *terrainArea, *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders, sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate)));
 
 	//	Mercator::Area* area = terrainArea->getArea();
 	//	//   _fpreset();
@@ -285,14 +285,14 @@ void TerrainGenerator::addArea(TerrainArea* terrainArea)
 	//	}
 }
 
-void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
+void TerrainManager::TerrainArea_Changed(TerrainArea* terrainArea)
 {
 	const TerrainShader* shader = 0;
 	Mercator::Area* area = terrainArea->getArea();
 	if (mAreaShaders.count(area->getLayer())) {
 		shader = mAreaShaders[area->getLayer()];
 	}
-	mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, *terrainArea, shader, sigc::mem_fun(*this, &TerrainGenerator::markShaderForUpdate)));
+	mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, *terrainArea, shader, sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate)));
 	//
 	//	Mercator::Area* area = terrainArea->getArea();
 	//	if (mAreaShaders.count(area->getLayer())) {
@@ -303,7 +303,7 @@ void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
 	//	mTerrain->updateArea(area);
 }
 
-void TerrainGenerator::TerrainArea_Removed(TerrainArea* terrainArea)
+void TerrainManager::TerrainArea_Removed(TerrainArea* terrainArea)
 {
 	Mercator::Area* area = terrainArea->getArea();
 	mTerrain->removeArea(area);
@@ -314,7 +314,7 @@ void TerrainGenerator::TerrainArea_Removed(TerrainArea* terrainArea)
 	}
 }
 
-void TerrainGenerator::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea)
+void TerrainManager::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea)
 {
 	mTerrain->removeArea(&oldArea);
 	if (mAreaShaders.count(oldArea.getLayer())) {
@@ -341,7 +341,7 @@ void TerrainGenerator::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea*
 	}
 
 }
-void TerrainGenerator::markShaderForUpdate(const TerrainShader* shader, Mercator::Area* terrainArea)
+void TerrainManager::markShaderForUpdate(const TerrainShader* shader, Mercator::Area* terrainArea)
 {
 	ShaderUpdateRequest& updateRequest = mShadersToUpdate[shader];
 	if (terrainArea) {
@@ -351,7 +351,7 @@ void TerrainGenerator::markShaderForUpdate(const TerrainShader* shader, Mercator
 	}
 }
 
-bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
+bool TerrainManager::frameEnded(const Ogre::FrameEvent & evt)
 {
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {
@@ -367,7 +367,7 @@ bool TerrainGenerator::frameEnded(const Ogre::FrameEvent & evt)
 	return true;
 }
 
-void TerrainGenerator::addPage(TerrainPage* page)
+void TerrainManager::addPage(TerrainPage* page)
 {
 	const TerrainPosition& pos = page->getWFPosition();
 	std::stringstream ss;
@@ -381,17 +381,17 @@ void TerrainGenerator::addPage(TerrainPage* page)
 	updateEntityPositions(pagesToUpdate);
 }
 
-int TerrainGenerator::getPageIndexSize() const
+int TerrainManager::getPageIndexSize() const
 {
 	return mSceneManagerAdapter->getPageSize();
 }
 
-int TerrainGenerator::getPageMetersSize() const
+int TerrainManager::getPageMetersSize() const
 {
 	return getPageIndexSize() - 1;
 }
 
-void TerrainGenerator::prepareAllSegments()
+void TerrainManager::prepareAllSegments()
 {
 
 	//   _fpreset();
@@ -427,14 +427,14 @@ void TerrainGenerator::prepareAllSegments()
 
 }
 
-bool TerrainGenerator::isValidTerrainAt(const TerrainPosition& position) const
+bool TerrainManager::isValidTerrainAt(const TerrainPosition& position) const
 {
 	const Mercator::Segment* segment = mTerrain->getSegment(position.x(), position.y());
 	return (segment && segment->isValid());
 	//	return (segment &&	segment->isValid() && getMaterialForSegment(position));
 }
 
-TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
+TerrainPage* TerrainManager::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
 {
 
 	int xRemainder = static_cast<int> (getMin().x()) % (getPageMetersSize());
@@ -453,7 +453,7 @@ TerrainPage* TerrainGenerator::getTerrainPageAtPosition(const TerrainPosition& w
 	return 0;
 }
 
-void TerrainGenerator::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ITerrainPageBridge& bridge)
+void TerrainManager::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ITerrainPageBridge& bridge)
 {
 	//_fpreset();
 
@@ -473,7 +473,7 @@ void TerrainGenerator::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPos
 	}
 }
 
-TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition)
+TerrainPage* TerrainManager::getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition)
 {
 	//_fpreset();
 
@@ -488,7 +488,7 @@ TerrainPage* TerrainGenerator::getTerrainPageAtIndex(const Ogre::Vector2& ogreIn
 	return mTerrainPages[x][y];
 }
 
-void TerrainGenerator::updateFoliageVisibility()
+void TerrainManager::updateFoliageVisibility()
 {
 	bool showFoliage = isFoliageShown();
 
@@ -502,7 +502,7 @@ void TerrainGenerator::updateFoliageVisibility()
 	}
 }
 
-void TerrainGenerator::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
+void TerrainManager::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	if (GpuProgramManager::getSingleton().isSyntaxSupported("arbvp1") && variable.is_bool()) {
 		mIsFoliageShown = static_cast<bool> (variable);
@@ -512,12 +512,12 @@ void TerrainGenerator::config_Foliage(const std::string& section, const std::str
 	updateFoliageVisibility();
 }
 
-bool TerrainGenerator::isFoliageShown() const
+bool TerrainManager::isFoliageShown() const
 {
 	return mIsFoliageShown;
 }
 
-bool TerrainGenerator::getHeight(const TerrainPosition& point, float& height) const
+bool TerrainManager::getHeight(const TerrainPosition& point, float& height) const
 {
 	WFMath::Vector<3> vector;
 
@@ -525,7 +525,7 @@ bool TerrainGenerator::getHeight(const TerrainPosition& point, float& height) co
 	//	return mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
 }
 
-void TerrainGenerator::updateShadows()
+void TerrainManager::updateShadows()
 {
 	Ogre::Vector3 sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
 
@@ -534,7 +534,7 @@ void TerrainGenerator::updateShadows()
 	}
 }
 
-bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
+bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
 {
 	std::vector<TerrainPosition> updatedPositions;
 	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
@@ -567,7 +567,7 @@ bool TerrainGenerator::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	return true;
 }
 
-void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
+void TerrainManager::reloadTerrain(std::vector<TerrainPosition>& positions)
 {
 	std::set<TerrainPage*> pagesToUpdate;
 	for (std::vector<TerrainPosition>::iterator I(positions.begin()); I != positions.end(); ++I) {
@@ -591,7 +591,7 @@ void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 	EventAfterTerrainUpdate(positions, pagesToUpdate);
 
 }
-void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
+void TerrainManager::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
 {
 	//	const Ogre::Vector3& sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
 	//
@@ -603,7 +603,7 @@ void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& p
 	//	}
 }
 
-void TerrainGenerator::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
+void TerrainManager::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
 {
 	EmberEntity* entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
 	if (entity) {
@@ -611,7 +611,7 @@ void TerrainGenerator::updateEntityPositions(const std::set<TerrainPage*>& pages
 	}
 }
 
-void TerrainGenerator::updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate)
+void TerrainManager::updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate)
 {
 	entity->adjustPosition();
 	for (unsigned int i = 0; i < entity->numContained(); ++i) {
@@ -620,28 +620,28 @@ void TerrainGenerator::updateEntityPosition(EmberEntity* entity, const std::set<
 	}
 }
 
-const TerrainPosition TerrainGenerator::getMax() const
+const TerrainPosition TerrainManager::getMax() const
 {
 	return mTerrainInfo->getWorldSizeInIndices().highCorner();
 }
 
-const TerrainPosition TerrainGenerator::getMin() const
+const TerrainPosition TerrainManager::getMin() const
 {
 	return mTerrainInfo->getWorldSizeInIndices().lowCorner();
 }
 
-void TerrainGenerator::runCommand(const std::string& command, const std::string& args)
+void TerrainManager::runCommand(const std::string& command, const std::string& args)
 {
 	if (UpdateShadows == command) {
 		updateShadows();
 	}
 }
-const TerrainInfo & TerrainGenerator::getTerrainInfo() const
+const TerrainInfo & TerrainManager::getTerrainInfo() const
 {
 	return *mTerrainInfo;
 }
 
-void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
+void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
 {
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
 	TerrainPosition wfPos(Convert::toWF(position));
@@ -650,7 +650,7 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ui
 	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
 }
 
-void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
+void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
 {
 	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
 	TerrainPosition wfPos(Convert::toWF(position));
@@ -659,7 +659,7 @@ void TerrainGenerator::getShadowColourAt(const Ogre::Vector2& position, Ogre::Co
 	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
 }
 
-bool TerrainGenerator::getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const
+bool TerrainManager::getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const
 {
 	// 	static WFMath::Vector<3> defaultNormal(1,1,1);
 	int ix = I_ROUND(floor(worldPosition.x() / 64));
@@ -680,7 +680,7 @@ bool TerrainGenerator::getNormal(const TerrainPosition& worldPosition, WFMath::V
 
 }
 
-void TerrainGenerator::shaderManager_LevelChanged(ShaderManager* shaderManager)
+void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {
 	if (mShadersToUpdate.size()) {
 		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
@@ -694,7 +694,7 @@ void TerrainGenerator::shaderManager_LevelChanged(ShaderManager* shaderManager)
 	//	}
 }
 
-void TerrainGenerator::application_EndErisPoll(float)
+void TerrainManager::application_EndErisPoll(float)
 {
 	mTaskQueue->pollProcessedTasks();
 }

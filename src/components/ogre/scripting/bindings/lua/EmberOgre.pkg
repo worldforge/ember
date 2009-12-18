@@ -19,7 +19,7 @@ $pfile "Environment.pkg"
 
 $pfile "GUIManager.pkg"
 //$pfile "MousePicker.pkg"
-$pfile "TerrainGenerator.pkg"
+$pfile "TerrainManager.pkg"
 $pfile "TerrainArea.pkg"
 $pfile "TerrainEditor.pkg"
 $pfile "MotionManager.pkg"
@@ -108,7 +108,7 @@ class EmberOgre
 
 	Avatar* getAvatar() const;
 	//Ogre::SceneManager* getSceneManager() const;
-	EmberOgre::Terrain::TerrainGenerator* getTerrainGenerator() const;
+	EmberOgre::Terrain::TerrainManager* getTerrainManager() const;
 	MotionManager* getMotionManager() const;
 	//Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;
@@ -161,7 +161,7 @@ class EmberOgre
 	sigc::signal<void, EmberOgre::MotionManager&> EventMotionManagerCreated;
 	
 	
-	sigc::signal<void, EmberOgre::Terrain::TerrainGenerator&> EventTerrainGeneratorCreated;
+	sigc::signal<void, EmberOgre::Terrain::TerrainManager&> EventTerrainManagerCreated;
 	
 	sigc::signal<void> EventMovementControllerCreated;
 	

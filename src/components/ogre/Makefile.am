@@ -34,7 +34,7 @@ libEmberOgre_a_SOURCES = \
 \
 	terrain/Map.cpp terrain/TerrainArea.cpp \
 	terrain/TerrainAreaParser.cpp terrain/TerrainEditor.cpp \
-	terrain/TerrainGenerator.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp \
+	terrain/TerrainManager.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp \
 	terrain/TerrainLayerDefinitionManager.cpp terrain/TerrainMod.cpp \
 	terrain/TerrainPage.cpp terrain/TerrainPageFoliage.cpp terrain/TerrainPageGeometry.cpp \
 	terrain/TerrainPageShadow.cpp terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp \
@@ -115,7 +115,7 @@ noinst_HEADERS = \
 	sound/SoundGroup.h sound/SoundGroupDefinition.h sound/XMLSoundDefParser.h \
 \
 	terrain/ISceneManagerAdapter.h terrain/ITerrainPageBridge.h terrain/Map.h terrain/TerrainArea.h \
-	terrain/TerrainAreaParser.h terrain/TerrainEditor.h terrain/TerrainGenerator.h terrain/TerrainInfo.h terrain/TerrainLayerDefinition.h terrain/TerrainLayerDefinitionManager.h \
+	terrain/TerrainAreaParser.h terrain/TerrainEditor.h terrain/TerrainManager.h terrain/TerrainInfo.h terrain/TerrainLayerDefinition.h terrain/TerrainLayerDefinitionManager.h \
 	terrain/TerrainMod.h terrain/TerrainPage.h terrain/TerrainPageFoliage.h terrain/TerrainPageGeometry.h terrain/TerrainPageShadow.h terrain/TerrainPageSurface.h \
 	terrain/TerrainPageSurfaceCompiler.h terrain/TerrainPageSurfaceLayer.h \
 	terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h terrain/TerrainParser.h \

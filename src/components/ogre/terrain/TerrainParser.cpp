@@ -21,7 +21,7 @@
 
 #include "TerrainParser.h"
 
-#include "components/ogre/terrain/TerrainGenerator.h"
+#include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/TerrainShader.h"
 #include "components/ogre/terrain/TerrainLayerDefinition.h"
 #include "components/ogre/terrain/TerrainLayerDefinitionManager.h"
@@ -44,8 +44,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainParser::TerrainParser(Terrain::TerrainGenerator& terrainGenerator) :
-	mTerrainGenerator(terrainGenerator)
+TerrainParser::TerrainParser(Terrain::TerrainManager& TerrainManager) :
+	mTerrainManager(TerrainManager)
 {
 }
 
@@ -103,7 +103,7 @@ void TerrainParser::updateTerrain(const Atlas::Message::Element& terrain)
 		S_LOG_FAILURE("Terrain is the wrong type");
 		return;
 	}
-	mTerrainGenerator.updateTerrain(pointStore);
+	mTerrainManager.updateTerrain(pointStore);
 
 }
 
@@ -155,7 +155,7 @@ void TerrainParser::createShaders(const Atlas::Message::Element& surfaces)
 									Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
 									if (shader) {
 										isValid = true;
-										mTerrainGenerator.createShader(def, shader);
+										mTerrainManager.createShader(def, shader);
 									}
 								}
 							}
@@ -175,14 +175,14 @@ void TerrainParser::createDefaultShaders()
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
 	Terrain::TerrainLayerDefinition* def(0);
 	if ((def = terrainManager.getDefinitionForShader("rock"))) {
-		mTerrainGenerator.createShader(def, new Mercator::FillShader());
+		mTerrainManager.createShader(def, new Mercator::FillShader());
 	}
 	if ((def = terrainManager.getDefinitionForShader("sand"))) {
-		mTerrainGenerator.createShader(def, new Mercator::BandShader(-2.f, 1.5f));
+		mTerrainManager.createShader(def, new Mercator::BandShader(-2.f, 1.5f));
 	}
 
 	if ((def = terrainManager.getDefinitionForShader("grass"))) {
-		mTerrainGenerator.createShader(def, new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
+		mTerrainManager.createShader(def, new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
 	}
 }
 

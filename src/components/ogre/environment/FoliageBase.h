@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_ENVIRONMENTFOLIAGEBASE_H
 #define EMBEROGRE_ENVIRONMENTFOLIAGEBASE_H
 
-#include "../terrain/TerrainGenerator.h"
+#include "../terrain/TerrainManager.h"
 
 #include <sigc++/trackable.h>
 
@@ -92,9 +92,9 @@ protected:
 	TerrainLayerDefinitionStore mDependentDefinitions;
 	
 	void initializeDependentLayers();
-	void TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* shader, const ::EmberOgre::Terrain::AreaStore* areas);
-	void TerrainGenerator_EventShaderCreated(const Terrain::TerrainShader* shader);
-	void TerrainGenerator_AfterTerrainUpdate(std::vector< ::EmberOgre::TerrainPosition >& terrainPositions, std::set< ::EmberOgre::Terrain::TerrainPage* >& pages);
+	void TerrainManager_LayerUpdated(const Terrain::TerrainShader* shader, const ::EmberOgre::Terrain::AreaStore* areas);
+	void TerrainManager_EventShaderCreated(const Terrain::TerrainShader* shader);
+	void TerrainManager_AfterTerrainUpdate(std::vector< ::EmberOgre::TerrainPosition >& terrainPositions, std::set< ::EmberOgre::Terrain::TerrainPage* >& pages);
 
 };
 

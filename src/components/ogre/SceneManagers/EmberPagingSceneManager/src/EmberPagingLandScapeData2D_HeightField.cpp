@@ -35,7 +35,7 @@
 #include "Convert.h"
 #include "EmberOgre.h"
 #include "terrain/TerrainPage.h"
-#include "terrain/TerrainGenerator.h"
+#include "terrain/TerrainManager.h"
 
 //#include <OgreCodec.h>
 //#include <OgreImage.h>
@@ -59,14 +59,14 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 // 	assert(!mTerrainPage);
 	assert(!mHeightData);
 	assert(!mBridge);
-	Terrain::TerrainGenerator* terrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
-	mXDimension = mZDimension = terrainGenerator->getPageIndexSize();
+	Terrain::TerrainManager* TerrainManager = EmberOgre::getSingleton().getTerrainManager();
+	mXDimension = mZDimension = TerrainManager->getPageIndexSize();
 
 	mMaxArrayPos = mSize * mSize;
 	mHeightData = new Ogre::Real[mMaxArrayPos];
 
 	mBridge = new EmberTerrainPageBridge(*this);
-	terrainGenerator->setUpTerrainPageAtIndex(Ogre::Vector2(x,z), *mBridge);
+	TerrainManager->setUpTerrainPageAtIndex(Ogre::Vector2(x,z), *mBridge);
 
 	return true;
 }

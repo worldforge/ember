@@ -17,7 +17,7 @@
  */
 
 #include "TerrainAreaAddTask.h"
-#include "TerrainGenerator.h"
+#include "TerrainManager.h"
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainArea.h"
 
@@ -30,8 +30,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, TerrainGenerator& terrainGenerator, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, ShaderUpdateSlotType shaderUpdateSlot) :
-	mTerrainGenerator(terrainGenerator), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), mShaderUpdateSlot(shaderUpdateSlot), TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, terrainArea)
+TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, ShaderUpdateSlotType shaderUpdateSlot) :
+	mTerrainManager(TerrainManager), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), mShaderUpdateSlot(shaderUpdateSlot), TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, terrainArea)
 {
 }
 
@@ -56,7 +56,7 @@ void TerrainAreaAddTask::executeTaskInMainThread()
 		///try to get the materialdefinition for this kind of area
 		const TerrainLayerDefinition* layerDef = mTerrainLayerDefinitionManager.getDefinitionForArea(area->getLayer());
 		if (layerDef) {
-			TerrainShader* shader = mTerrainGenerator.createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
+			TerrainShader* shader = mTerrainManager.createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
 			mAreaShaders[area->getLayer()] = shader;
 		}
 	}

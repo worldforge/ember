@@ -30,7 +30,7 @@
 #include "../Convert.h"
 #include "../EmberOgre.h"
 #include "../terrain/PlantAreaQuery.h"
-#include "../terrain/TerrainGenerator.h"
+#include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainPageFoliage.h"
 #include "../terrain/TerrainPage.h"
 #include "../terrain/TerrainPageShadow.h"
@@ -87,7 +87,7 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 {
 	unsigned int finalGrassCount = 0;
 	TerrainPosition wfPos(Convert::toWF<TerrainPosition>(page.centerPoint));
-	const TerrainPage* terrainPage = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainPageAtPosition(wfPos);
+	const TerrainPage* terrainPage = EmberOgre::getSingleton().getTerrainManager()->getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
 		Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
@@ -123,10 +123,10 @@ Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 	///make these static for fast lookup
 	static Ogre::Vector2 pos;
 	static Ogre::uint32 colour;
-	static const Terrain::TerrainGenerator* terrainGenerator(EmberOgre::getSingleton().getTerrainGenerator());
+	static const Terrain::TerrainManager* TerrainManager(EmberOgre::getSingleton().getTerrainManager());
 	pos.x = x;
 	pos.y = z;
-	terrainGenerator->getShadowColourAt(pos, colour);
+	TerrainManager->getShadowColourAt(pos, colour);
 	return colour;
 }
 

@@ -28,7 +28,7 @@
 #include "WorldAttachment.h"
 #include "model/Model.h"
 #include "terrain/TerrainParser.h"
-#include "terrain/TerrainGenerator.h"
+#include "terrain/TerrainManager.h"
 #include "environment/Foliage.h"
 #include "environment/Environment.h"
 #include "environment/CaelumEnvironment.h"
@@ -54,19 +54,19 @@ namespace EmberOgre {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
 EmberEntity(id, ty, vw, sceneManager)
-, mTerrainGenerator(0)
+, mTerrainManager(0)
 , mFoliage(0)
 , mEnvironment(0)
 , mTerrainParser(0)
 , mFoliageInitializer(0)
 , mHasBeenInitialized(false)
 {
-	mTerrainGenerator = EmberOgre::getSingleton().getTerrainGenerator();
+	mTerrainManager = EmberOgre::getSingleton().getTerrainManager();
 	mWorldPosition.LatitudeDegrees = 0;
 	mWorldPosition.LongitudeDegrees = 0;
 	Ogre::SceneNode* worldNode = sceneManager->getRootSceneNode()->createChildSceneNode("entity_" + getId());
 	if (worldNode) {
-		setAttachment(new WorldAttachment(*this, *worldNode, *mTerrainGenerator));
+		setAttachment(new WorldAttachment(*this, *worldNode, *mTerrainManager));
 	} else {
 		throw Ember::Exception("Could not create world node.");
 	}
@@ -118,8 +118,8 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 	///we do our initialization of the terrain and environment here instead of at onInit since that way we can guarantee that Eris::Calendar will work as it should (which is used to get the correct server time)
 	if (!mHasBeenInitialized) {
 		mEnvironment->initialize();
-		if (mTerrainGenerator) {
-			mTerrainParser = std::auto_ptr<Terrain::TerrainParser>(new Terrain::TerrainParser(*mTerrainGenerator));
+		if (mTerrainManager) {
+			mTerrainParser = std::auto_ptr<Terrain::TerrainParser>(new Terrain::TerrainParser(*mTerrainManager));
 			bool hasValidShaders = false;
 			if (hasAttr("terrain")) {
 				const Atlas::Message::Element& terrainElement = valueOfAttr("terrain");
@@ -143,7 +143,7 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 			}
 
 			///prepare all the segments in advance
-			mTerrainGenerator->prepareAllSegments();
+			mTerrainManager->prepareAllSegments();
 		}
 
 
@@ -166,12 +166,12 @@ void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 
 void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
 {
-	mTerrainGenerator->addArea(area);
+	mTerrainManager->addArea(area);
 }
 
 void WorldEmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
 {
-    mTerrainGenerator->addTerrainMod(mod);
+    mTerrainManager->addTerrainMod(mod);
 }
 
 Environment::Environment* WorldEmberEntity::getEnvironment() const

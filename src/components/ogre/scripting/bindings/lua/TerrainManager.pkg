@@ -37,7 +37,7 @@ class ISceneManagerAdapter;
  * It works closely with EmberTerrainPageSource.
  * 
  */
-class TerrainGenerator 
+class TerrainManager 
 {
 public:
 	/**
@@ -90,4 +90,4 @@ public:
 }
 
 
-#endif // TERRAINGENERATOR_H
+#endif // TerrainManager_H

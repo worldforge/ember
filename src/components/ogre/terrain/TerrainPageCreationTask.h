@@ -29,7 +29,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-class TerrainGenerator;
+class TerrainManager;
 class TerrainPage;
 class ITerrainPageBridge;
 
@@ -39,7 +39,7 @@ class HeightMap;
 class TerrainPageCreationTask : public Ember::Tasks::ITask
 {
 public:
-	TerrainPageCreationTask(TerrainGenerator& terrainGenerator, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
+	TerrainPageCreationTask(TerrainManager& TerrainManager, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
 	virtual ~TerrainPageCreationTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -47,7 +47,7 @@ public:
 	virtual void executeTaskInMainThread();
 
 private:
-	TerrainGenerator& mTerrainGenerator;
+	TerrainManager& mTerrainManager;
 
 	TerrainPage* mPage;
 	TerrainPosition mPos;

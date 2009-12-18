@@ -54,9 +54,9 @@ FoliageBase::FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefi
 {
 	initializeDependentLayers();
 
-	EmberOgre::getSingleton().getTerrainGenerator()->EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_LayerUpdated));
-	EmberOgre::getSingleton().getTerrainGenerator()->EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_EventShaderCreated));
-	EmberOgre::getSingleton().getTerrainGenerator()->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainGenerator_AfterTerrainUpdate));
+	EmberOgre::getSingleton().getTerrainManager()->EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_LayerUpdated));
+	EmberOgre::getSingleton().getTerrainManager()->EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_EventShaderCreated));
+	EmberOgre::getSingleton().getTerrainManager()->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_AfterTerrainUpdate));
 
 }
 
@@ -78,7 +78,7 @@ void FoliageBase::initializeDependentLayers()
 	}
 }
 
-void FoliageBase::TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* shader, const AreaStore* areas)
+void FoliageBase::TerrainManager_LayerUpdated(const Terrain::TerrainShader* shader, const AreaStore* areas)
 {
 	if (mPagedGeometry) {
 		///check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
@@ -110,7 +110,7 @@ void FoliageBase::TerrainGenerator_LayerUpdated(const Terrain::TerrainShader* sh
 	}
 }
 
-void FoliageBase::TerrainGenerator_EventShaderCreated(const Terrain::TerrainShader* shader)
+void FoliageBase::TerrainManager_EventShaderCreated(const Terrain::TerrainShader* shader)
 {
 	///we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
 	mDependentDefinitions.push_back(shader->getLayerDefinition());
@@ -119,7 +119,7 @@ void FoliageBase::TerrainGenerator_EventShaderCreated(const Terrain::TerrainShad
 	}
 }
 
-void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPosition>& terrainPositions, std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
+void FoliageBase::TerrainManager_AfterTerrainUpdate(std::vector<TerrainPosition>& terrainPositions, std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
 {
 	if (mPagedGeometry) {
 		mPagedGeometry->reloadGeometry();
@@ -148,7 +148,7 @@ void FoliageBase::TerrainGenerator_AfterTerrainUpdate(std::vector<TerrainPositio
 float getTerrainHeight(float x, float z, void* userData)
 {
 	float height = 0;
-	EmberOgre::getSingleton().getTerrainGenerator()->getHeight(TerrainPosition(x, -z), height);
+	EmberOgre::getSingleton().getTerrainManager()->getHeight(TerrainPosition(x, -z), height);
 	return height;
 }
 

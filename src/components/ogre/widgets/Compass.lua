@@ -88,7 +88,7 @@ function Compass.buildWidget()
 	
 	--don't show the compass here, instead wait until we've gotten some terrain (by listening 
 	connect(Compass.connectors, emberOgre.EventCreatedAvatarEntity, "Compass.CreatedAvatarEntity")
-	connect(Compass.connectors, emberOgre:getTerrainGenerator().EventTerrainPageGeometryUpdated, "Compass.TerrainPageGeometryUpdated")
+	connect(Compass.connectors, emberOgre:getTerrainManager().EventTerrainPageGeometryUpdated, "Compass.TerrainPageGeometryUpdated")
 
 end
 

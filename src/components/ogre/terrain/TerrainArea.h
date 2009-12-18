@@ -43,7 +43,7 @@ namespace Terrain {
 A terrain area is a section of the terrain, as defined by a 2d polygon. It's connected to a specified layer in the terrain, and allows you to define stuff like roads, fields or any other feature you want added to the terrain.
 
 The areas are always attached to an entity, and when the entity moves the area moves with it. The position of the area is defined in space coordinates relative to the entity's position.
-This class acts like a wrapper and controller, binding an instance of EmberEntity and Mercator::Area together. The actual application of the area to the terrain is handled by TerrainGenerator, but the logic for parsing the terrain area data from Atlas is contained in this class.
+This class acts like a wrapper and controller, binding an instance of EmberEntity and Mercator::Area together. The actual application of the area to the terrain is handled by TerrainManager, but the logic for parsing the terrain area data from Atlas is contained in this class.
 @author Erik Hjortsberg
 */
 class TerrainArea : public virtual sigc::trackable

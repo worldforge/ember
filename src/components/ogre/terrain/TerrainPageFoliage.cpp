@@ -29,7 +29,7 @@
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
 #include "TerrainLayerDefinitionManager.h"
-#include "TerrainGenerator.h"
+#include "TerrainManager.h"
 #include "TerrainShader.h"
 #include "TerrainPageGeometry.h"
 #include "PlantAreaQuery.h"
@@ -53,7 +53,7 @@ namespace EmberOgre {
 
 namespace Terrain {
 
-TerrainPageFoliage::TerrainPageFoliage(TerrainGenerator& generator, TerrainPage& page)
+TerrainPageFoliage::TerrainPageFoliage(TerrainManager& generator, TerrainPage& page)
 : mGenerator(generator)
 , mTerrainPage(page)
 , mFoliageCoverageDataStream(0)

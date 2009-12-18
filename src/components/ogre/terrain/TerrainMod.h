@@ -3,7 +3,7 @@
 //
 // Description: The purpose of this class is to wrap an Eris::TerrainMod instance
 //
-//		TerrainGenerator listens for changes in the modifier and
+//		TerrainManager listens for changes in the modifier and
 //		updates or removes the modifiers from the terrain as needed.
 //
 //
@@ -87,7 +87,7 @@ public:
 
 	/**
 	 *Emitted just before the entity owning this mod is deleted.
-	 *Should be caught by TerrainGenerator to remove this mod from the terrain.
+	 *Should be caught by TerrainManager to remove this mod from the terrain.
 	 */
 	sigc::signal<void> EventModDeleted;
 	

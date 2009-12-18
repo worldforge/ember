@@ -40,7 +40,7 @@
 #include "../Convert.h"
 #include "../EmberOgre.h"
 #include "../terrain/TerrainInfo.h"
-#include "../terrain/TerrainGenerator.h"
+#include "../terrain/TerrainManager.h"
 #include "../terrain/ISceneManagerAdapter.h"
 
 namespace EmberOgre
@@ -66,7 +66,7 @@ Forest::~Forest()
 void Forest::initialize()
 {
 	S_LOG_INFO("Initializing forest.");
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainGenerator()->getTerrainInfo().getWorldSizeInIndices();
+	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainManager()->getTerrainInfo().getWorldSizeInIndices();
 	if (worldSize.upperBound(0) - worldSize.lowerBound(0) > 0 && worldSize.upperBound(1) - worldSize.lowerBound(1) > 0) {
 
 		Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();

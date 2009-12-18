@@ -18,7 +18,7 @@
 
 #include "TerrainPageCreationTask.h"
 
-#include "TerrainGenerator.h"
+#include "TerrainManager.h"
 #include "TerrainPage.h"
 #include "TerrainShader.h"
 #include "TerrainPageGeometry.h"
@@ -40,8 +40,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageCreationTask::TerrainPageCreationTask(TerrainGenerator& terrainGenerator, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
-	mTerrainGenerator(terrainGenerator), mPage(0), mPos(pos), mBridge(bridge), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+TerrainPageCreationTask::TerrainPageCreationTask(TerrainManager& TerrainManager, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
+	mTerrainManager(TerrainManager), mPage(0), mPos(pos), mBridge(bridge), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -53,11 +53,11 @@ TerrainPageCreationTask::~TerrainPageCreationTask()
 
 void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	mPage = new TerrainPage(mPos, mTerrainGenerator);
+	mPage = new TerrainPage(mPos, mTerrainManager);
 	mPage->registerBridge(mBridge);
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
-	const std::list<TerrainShader*>& baseShaders = mTerrainGenerator.getBaseShaders();
+	const std::list<TerrainShader*>& baseShaders = mTerrainManager.getBaseShaders();
 	for (std::list<TerrainShader*>::const_iterator I = baseShaders.begin(); I != baseShaders.end(); ++I) {
 		mPage->addShader(*I);
 	}
@@ -67,7 +67,7 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 	mPage->createShadowData(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
 
 	// setup foliage
-	if (mTerrainGenerator.isFoliageShown()) {
+	if (mTerrainManager.isFoliageShown()) {
 		mPage->showFoliage();
 	}
 
@@ -87,7 +87,7 @@ void TerrainPageCreationTask::executeTaskInMainThread()
 		//		mPage->loadShadow();
 		//		mPage->generateTerrainMaterials(false);
 
-		mTerrainGenerator.addPage(mPage);
+		mTerrainManager.addPage(mPage);
 
 		mPage->notifyBridgePageReady();
 	}

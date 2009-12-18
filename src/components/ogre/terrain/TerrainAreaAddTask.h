@@ -28,7 +28,7 @@ namespace EmberOgre
 namespace Terrain
 {
 class TerrainArea;
-class TerrainGenerator;
+class TerrainManager;
 class TerrainLayerDefinitionManager;
 
 /**
@@ -38,14 +38,14 @@ class TerrainLayerDefinitionManager;
 class TerrainAreaAddTask: public TerrainAreaTaskBase
 {
 public:
-	TerrainAreaAddTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, TerrainGenerator& terrainGenerator, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, ShaderUpdateSlotType shaderUpdateSlot);
+	TerrainAreaAddTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, ShaderUpdateSlotType shaderUpdateSlot);
 	virtual ~TerrainAreaAddTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 private:
-	TerrainGenerator& mTerrainGenerator;
+	TerrainManager& mTerrainManager;
 	TerrainLayerDefinitionManager& mTerrainLayerDefinitionManager;
 	AreaShaderstore& mAreaShaders;
 	ShaderUpdateSlotType mShaderUpdateSlot;

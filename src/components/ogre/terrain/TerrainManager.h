@@ -17,8 +17,8 @@
 */
 
 
-#ifndef TERRAINGENERATOR_H
-#define TERRAINGENERATOR_H
+#ifndef TerrainManager_H
+#define TerrainManager_H
 
 #include "Types.h"
 #include "framework/ConsoleObject.h"
@@ -77,7 +77,7 @@ class HeightMapBufferProvider;
  *
  * It works closely with EmberTerrainPageSource.
  */
-class TerrainGenerator : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
+class TerrainManager : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
 {
 public:
 
@@ -85,12 +85,12 @@ public:
 	 * @brief Default ctor.
 	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain generator will take ownership of the adapter and will destroy it upon it's destruction.
 	 */
-	TerrainGenerator(ISceneManagerAdapter* adapter);
+	TerrainManager(ISceneManagerAdapter* adapter);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~TerrainGenerator();
+	virtual ~TerrainManager();
 
 	/**
 	 * @brief At each frame, we check for updates shaders and updates the terrain. This is because we want to batch together changes.
@@ -462,11 +462,11 @@ protected:
 
 };
 
-inline const std::list<TerrainShader*>& TerrainGenerator::getBaseShaders() const
+inline const std::list<TerrainShader*>& TerrainManager::getBaseShaders() const
 {
 	return mBaseShaders;
 }
-inline unsigned int TerrainGenerator::getFoliageBatchSize() const
+inline unsigned int TerrainManager::getFoliageBatchSize() const
 {
 	return mFoliageBatchSize;
 }
@@ -485,4 +485,4 @@ inline float TerrainDefPoint::getHeight() const
 }
 
 
-#endif // TERRAINGENERATOR_H
+#endif // TerrainManager_H

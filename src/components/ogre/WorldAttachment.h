@@ -30,7 +30,7 @@ namespace EmberOgre {
 
 namespace Terrain
 {
-class TerrainGenerator;
+class TerrainManager;
 }
 
 class IGraphicalRepresentation;
@@ -41,7 +41,7 @@ class EmberEntity;
 class WorldAttachment : public IEntityAttachment
 {
 public:
-	WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainGenerator& terrainGenerator);
+	WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainManager& TerrainManager);
 	virtual ~WorldAttachment();
 
 	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
@@ -79,7 +79,7 @@ protected:
 
 	WorldEmberEntity& mWorldEntity;
 	Ogre::SceneNode& mWorldNode;
-	Terrain::TerrainGenerator& mTerrainGenerator;
+	Terrain::TerrainManager& mTerrainManager;
 
 };
 

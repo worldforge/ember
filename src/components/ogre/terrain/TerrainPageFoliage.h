@@ -44,7 +44,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 class TerrainShader;
-class TerrainGenerator;
+class TerrainManager;
 class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageFoliage;
@@ -72,7 +72,7 @@ public:
 	typedef std::map<int, PlantBatchColumn> PlantBatchStore;
 	typedef std::map<std::string, PlantBatchStore> PlantStoreMap;
 
-	TerrainPageFoliage(TerrainGenerator& generator, TerrainPage& page);
+	TerrainPageFoliage(TerrainManager& generator, TerrainPage& page);
 	virtual ~TerrainPageFoliage();
 
 
@@ -112,7 +112,7 @@ protected:
 	*/
 	PlantStoreMap mPlantStores;
 
-	TerrainGenerator& mGenerator;
+	TerrainManager& mGenerator;
 	TerrainPage& mTerrainPage;
 	/**
 	*we need to create a new lookup image for where grass should be placed. This should be based on the core grass coverage image, but with all layers that are above it substracted. Thus grass won't show up on roads and fields.

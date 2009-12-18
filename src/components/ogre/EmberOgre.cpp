@@ -73,7 +73,7 @@
 // ------------------------------
 // Include OGRE Ember client files
 // ------------------------------
-#include "terrain/TerrainGenerator.h"
+#include "terrain/TerrainManager.h"
 #include "terrain/TerrainLayerDefinitionManager.h"
 
 #include "sound/SoundDefinitionManager.h"
@@ -163,7 +163,7 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-	mAvatar(0), mMovementController(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mEmberEntityFactory(0), mTerrainGenerator(0), mSoundManager(0), mMotionManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0), mMoveManager(0),
+	mAvatar(0), mMovementController(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mEmberEntityFactory(0), mTerrainManager(0), mSoundManager(0), mMotionManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0), mMoveManager(0),
 	//mJesus(0),
 			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 			//mCollisionManager(0),
@@ -194,7 +194,7 @@ EmberOgre::~EmberOgre()
 		mRoot->removeFrameListener(mMotionManager);
 	}
 	delete mMotionManager;
-	delete mTerrainGenerator;
+	delete mTerrainManager;
 
 	Ember::EmberServices::getSingleton().getSoundService()->setResourceProvider(0);
 	delete mSoundManager;
@@ -236,7 +236,7 @@ EmberOgre::~EmberOgre()
 	 //mSceneMgr->removeAllCameras();
 	 //		mSceneMgr->clearScene();
 	 delete mGUIManager;
-	 delete mTerrainGenerator;
+	 delete mTerrainManager;
 	 delete mMotionManager;
 	 //	if (mAvatar)
 	 //		delete mAvatar;
@@ -438,8 +438,8 @@ bool EmberOgre::setup()
 		S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
 	}
 
-	mTerrainGenerator = new Terrain::TerrainGenerator(new EmberPagingSceneManagerAdapter(mSceneMgr));
-	EventTerrainGeneratorCreated.emit(*mTerrainGenerator);
+	mTerrainManager = new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(mSceneMgr));
+	EventTerrainManagerCreated.emit(*mTerrainManager);
 	mMotionManager = new MotionManager();
 	EventMotionManagerCreated.emit(*mMotionManager);
 
@@ -641,9 +641,9 @@ Ogre::SceneManager* EmberOgre::getSceneManager() const
 	return mSceneMgr;
 }
 
-Terrain::TerrainGenerator* EmberOgre::getTerrainGenerator() const
+Terrain::TerrainManager* EmberOgre::getTerrainManager() const
 {
-	return mTerrainGenerator;
+	return mTerrainManager;
 }
 
 MotionManager* EmberOgre::getMotionManager() const
