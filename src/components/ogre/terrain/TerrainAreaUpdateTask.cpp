@@ -25,8 +25,8 @@ namespace EmberOgre
 
 namespace Terrain
 {
-TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, const TerrainShader* shader, sigc::slot<void, const TerrainShader*, Mercator::Area*> markForUpdateSlot)
-: mTerrain(terrain), mTerrainArea(terrainArea), mShader(shader), mMarkForUpdateSlot(markForUpdateSlot)
+TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, const TerrainShader* shader, ShaderUpdateSlotType markForUpdateSlot)
+: mShader(shader), mMarkForUpdateSlot(markForUpdateSlot), TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, terrainArea)
 {
 
 }

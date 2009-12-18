@@ -18,68 +18,51 @@
 
 #ifndef EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_
 #define EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_
-#include "framework/tasks/ITask.h"
-#include <sigc++/slot.h>
-
-namespace Mercator {
-
-	class Terrain;
-	class Area;
-
-} // namespace Mercator
+#include "TerrainAreaTaskBase.h"
 
 namespace EmberOgre
 {
 
-	namespace Terrain
-	{
-		class TerrainArea;
-		class TerrainShader;
+namespace Terrain
+{
+class TerrainArea;
+class TerrainShader;
 
-		/**
-		 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-		 * @brief Updates terrain areas.
-		 */
-		class TerrainAreaUpdateTask: public Ember::Tasks::ITask
-		{
-		public:
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Updates terrain areas.
+ */
+class TerrainAreaUpdateTask: public TerrainAreaTaskBase
+{
+public:
 
-			/**
-			 * @brief Ctor.
-			 * @param terrain The terrain.
-			 * @param terrainArea The terrain area which is updated.
-			 * @param shader The affected shader.
-			 * @param markForUpdateSlot A slot which will be called in the main thread when the update is complete.
-			 */
-			TerrainAreaUpdateTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, const TerrainShader* shader, sigc::slot<void, const TerrainShader*, Mercator::Area*> markForUpdateSlot);
-			virtual ~TerrainAreaUpdateTask();
+	/**
+	 * @brief Ctor.
+	 * @param terrain The terrain.
+	 * @param terrainArea The terrain area which is updated.
+	 * @param shader The affected shader.
+	 * @param markForUpdateSlot A slot which will be called in the main thread when the update is complete.
+	 */
+	TerrainAreaUpdateTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, const TerrainShader* shader, ShaderUpdateSlotType markForUpdateSlot);
+	virtual ~TerrainAreaUpdateTask();
 
-			virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
 
-			virtual void executeTaskInMainThread();
+	virtual void executeTaskInMainThread();
 
-		private:
-			/**
-			 * @brief The terrain.
-			 */
-			Mercator::Terrain& mTerrain;
+private:
 
-			/**
-			 * @brief The terrain area.
-			 */
-			TerrainArea& mTerrainArea;
+	/**
+	 * @brief The terrain shader affected.
+	 */
+	const TerrainShader* mShader;
 
-			/**
-			 * @brief The terrain shader affected.
-			 */
-			const TerrainShader* mShader;
+	/**
+	 * @brief A slot which will be called in the main thread when the area update is complete.
+	 */
+	sigc::slot<void, const TerrainShader*, Mercator::Area*> mMarkForUpdateSlot;
+};
 
-			/**
-			 * @brief A slot which will be called in the main thread when the area update is complete.
-			 */
-			sigc::slot<void, const TerrainShader*, Mercator::Area*> mMarkForUpdateSlot;
-		};
-
-	}
+}
 }
 #endif /* EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_ */
