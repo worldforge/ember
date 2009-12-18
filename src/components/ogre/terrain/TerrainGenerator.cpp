@@ -36,6 +36,7 @@
 #include "TerrainPageCreationTask.h"
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainAreaUpdateTask.h"
+#include "TerrainAreaAddTask.h"
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
 
@@ -258,28 +259,30 @@ void TerrainGenerator::addArea(TerrainArea* terrainArea)
 	terrainArea->EventAreaChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Changed), terrainArea));
 	terrainArea->EventAreaRemoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Removed), terrainArea));
 	terrainArea->EventAreaSwapped.connect(sigc::bind(sigc::mem_fun(*this, &TerrainGenerator::TerrainArea_Swapped), terrainArea));
-	Mercator::Area* area = terrainArea->getArea();
-	//   _fpreset();
-	//_controlfp(_PC_64, _MCW_PC);
-	//_controlfp(_RC_NEAR, _MCW_RC);
-	std::stringstream ss;
-	ss << area->bbox();
-	S_LOG_VERBOSE("Adding area to terrain with dimensions: " << ss.str());
-	mTerrain->addArea(area);
-	if (!mAreaShaders.count(area->getLayer())) {
-		S_LOG_VERBOSE("Shader does not exists, creating new.");
-		///try to get the materialdefinition for this kind of area
-		const TerrainLayerDefinition* layerDef = TerrainLayerDefinitionManager::getSingleton().getDefinitionForArea(area->getLayer());
-		if (layerDef) {
-			TerrainShader* shader = createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
-			mAreaShaders[area->getLayer()] = shader;
-		}
-	}
-	if (mAreaShaders.count(area->getLayer())) {
-		///mark the shader for update
-		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
-	}
+	mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, *terrainArea, *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders, sigc::mem_fun(*this, &TerrainGenerator::markShaderForUpdate)));
+
+	//	Mercator::Area* area = terrainArea->getArea();
+	//	//   _fpreset();
+	//	//_controlfp(_PC_64, _MCW_PC);
+	//	//_controlfp(_RC_NEAR, _MCW_RC);
+	//	std::stringstream ss;
+	//	ss << area->bbox();
+	//	S_LOG_VERBOSE("Adding area to terrain with dimensions: " << ss.str());
+	//	mTerrain->addArea(area);
+	//	if (!mAreaShaders.count(area->getLayer())) {
+	//		S_LOG_VERBOSE("Shader does not exists, creating new.");
+	//		///try to get the materialdefinition for this kind of area
+	//		const TerrainLayerDefinition* layerDef = TerrainLayerDefinitionManager::getSingleton().getDefinitionForArea(area->getLayer());
+	//		if (layerDef) {
+	//			TerrainShader* shader = createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
+	//			mAreaShaders[area->getLayer()] = shader;
+	//		}
+	//	}
+	//	if (mAreaShaders.count(area->getLayer())) {
+	//		///mark the shader for update
+	//		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+	//		markShaderForUpdate(mAreaShaders[area->getLayer()], area);
+	//	}
 }
 
 void TerrainGenerator::TerrainArea_Changed(TerrainArea* terrainArea)
@@ -519,7 +522,7 @@ bool TerrainGenerator::getHeight(const TerrainPosition& point, float& height) co
 	WFMath::Vector<3> vector;
 
 	return mHeightMap->getHeightAndNormal(point.x(), point.y(), height, vector);
-//	return mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
+	//	return mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
 }
 
 void TerrainGenerator::updateShadows()
@@ -590,14 +593,14 @@ void TerrainGenerator::reloadTerrain(std::vector<TerrainPosition>& positions)
 }
 void TerrainGenerator::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
 {
-//	const Ogre::Vector3& sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
-//
-//	///reload all shader textures of the affected pages
-//	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
-//		(*I)->updateAllShaderTextures();
-//		(*I)->updateShadow(sunDirection);
-//		(*I)->update();
-//	}
+	//	const Ogre::Vector3& sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
+	//
+	//	///reload all shader textures of the affected pages
+	//	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+	//		(*I)->updateAllShaderTextures();
+	//		(*I)->updateShadow(sunDirection);
+	//		(*I)->update();
+	//	}
 }
 
 void TerrainGenerator::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
