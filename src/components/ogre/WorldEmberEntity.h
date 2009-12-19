@@ -86,7 +86,6 @@ public:
 	 * @param ty The entity type.
 	 * @param vw The main Eris::View.
 	 * @param sceneManager The main Ogre scene manager.
-	 * @param TerrainManager The terrain generator instance.
 	 */
 	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
 

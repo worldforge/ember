@@ -84,9 +84,9 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param position The page index in WF space.
-	 * @param generator The terrain generator.
+	 * @param manager The terrain manager.
 	 */
-	TerrainPage(const TerrainPosition& position, TerrainManager& generator);
+	TerrainPage(const TerrainPosition& position, TerrainManager& manager);
 
 	/**
 	 * @brief Dtor.
@@ -264,9 +264,9 @@ public:
 private:
 
 	/**
-	 * @brief The main terrain generator, which acts as a hub for all terrain functionality.
+	 * @brief The main terrain manager, which acts as a hub for all terrain functionality.
 	 */
-	TerrainManager& mGenerator;
+	TerrainManager& mManager;
 
 	/**
 	 * @brief Internal position

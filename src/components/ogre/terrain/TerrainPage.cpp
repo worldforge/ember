@@ -77,8 +77,8 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& generator)
-: mGenerator(generator)
+TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager)
+: mManager(manager)
 , mPosition(position)
 , mBridge(0)
 , mGeometry(new TerrainPageGeometry(*this, -15))
@@ -87,11 +87,11 @@ TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& genera
 , mShadowTechnique(0)
 , mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
 )
-, mPageFoliage(new TerrainPageFoliage(mGenerator, *this))
+, mPageFoliage(new TerrainPageFoliage(mManager, *this))
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
-	mGeometry->init(mGenerator.getTerrain());
+	mGeometry->init(mManager.getTerrain());
 	setupShadowTechnique();
 	mTerrainSurface->setShadow(&mShadow);
 }
@@ -112,7 +112,7 @@ float TerrainPage::getMaxHeight() const
 
 int TerrainPage::getPageSize() const
 {
-	return mGenerator.getPageIndexSize();
+	return mManager.getPageIndexSize();
 }
 
 int TerrainPage::getVerticeCount() const
@@ -147,10 +147,10 @@ void TerrainPage::update()
 	Ogre::Vector2 targetPage = Convert::toOgre<Ogre::Vector2>(mPosition);
 
 	///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
-	Ogre::Vector2 adjustedOgrePos(targetPage.x + mGenerator.getTerrainInfo().getPageOffsetY(), targetPage.y + mGenerator.getTerrainInfo().getPageOffsetX());
+	Ogre::Vector2 adjustedOgrePos(targetPage.x + mManager.getTerrainInfo().getPageOffsetY(), targetPage.y + mManager.getTerrainInfo().getPageOffsetX());
 
 	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-	mGenerator.getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y));
+	mManager.getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y));
 }
 
 void TerrainPage::setupShadowTechnique()
@@ -224,7 +224,7 @@ void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 {
 	if (heightData) {
 		mGeometry->updateOgreHeightData(heightData);
-		mGenerator.EventTerrainPageGeometryUpdated.emit(*this);
+		mManager.EventTerrainPageGeometryUpdated.emit(*this);
 	}
 }
 
@@ -269,7 +269,7 @@ const TerrainPageSurface* TerrainPage::getSurface() const
 
 void TerrainPage::getPlantsForArea(PlantAreaQuery& query) const
 {
-	if (mGenerator.isFoliageShown()) {
+	if (mManager.isFoliageShown()) {
 		mPageFoliage->getPlantsForArea(*mGeometry, query);
 	}
 }

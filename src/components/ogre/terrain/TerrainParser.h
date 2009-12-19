@@ -67,7 +67,7 @@ public:
 private:
 
 	/**
-	 * @brief The terrain generator instance used in the system.
+	 * @brief The terrain manager instance used in the system.
 	 */
 	Terrain::TerrainManager& mTerrainManager;
 };

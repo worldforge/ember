@@ -72,7 +72,7 @@ public:
 	typedef std::map<int, PlantBatchColumn> PlantBatchStore;
 	typedef std::map<std::string, PlantBatchStore> PlantStoreMap;
 
-	TerrainPageFoliage(TerrainManager& generator, TerrainPage& page);
+	TerrainPageFoliage(TerrainManager& manager, TerrainPage& page);
 	virtual ~TerrainPageFoliage();
 
 
@@ -112,7 +112,7 @@ protected:
 	*/
 	PlantStoreMap mPlantStores;
 
-	TerrainManager& mGenerator;
+	TerrainManager& mManager;
 	TerrainPage& mTerrainPage;
 	/**
 	*we need to create a new lookup image for where grass should be placed. This should be based on the core grass coverage image, but with all layers that are above it substracted. Thus grass won't show up on roads and fields.

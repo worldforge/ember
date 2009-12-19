@@ -53,8 +53,8 @@ namespace EmberOgre {
 
 namespace Terrain {
 
-TerrainPageFoliage::TerrainPageFoliage(TerrainManager& generator, TerrainPage& page)
-: mGenerator(generator)
+TerrainPageFoliage::TerrainPageFoliage(TerrainManager& manager, TerrainPage& page)
+: mManager(manager)
 , mTerrainPage(page)
 , mFoliageCoverageDataStream(0)
 , mCoverageMapPixelWidth(mTerrainPage.getAlphaTextureSize())
@@ -71,7 +71,7 @@ TerrainPageFoliage::~TerrainPageFoliage()
 void TerrainPageFoliage::generatePlantPositions()
 {
 	int index(0);
-	unsigned int foliageBatchSize = mGenerator.getFoliageBatchSize();
+	unsigned int foliageBatchSize = mManager.getFoliageBatchSize();
 	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
 		const TerrainLayerDefinition* layerDef = *I;
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef->getFoliages().begin(); I != layerDef->getFoliages().end(); ++I) {
@@ -119,7 +119,7 @@ void TerrainPageFoliage::generateCoverageMap()
 				}
 			}
 		}
-		if (!grassLayer && I->second->getSurfaceIndex() == mGenerator.getFoliageShader()->getTerrainIndex()) {
+		if (!grassLayer && I->second->getSurfaceIndex() == mManager.getFoliageShader()->getTerrainIndex()) {
 			if (I->second->getCoverageImage()->getSize() == foliageBufferSize) {
 				grassLayer = I->second;
 				memcpy(mFoliageCoverageDataStream->getPtr(), grassLayer->getCoverageImage()->getData(), foliageBufferSize);
@@ -156,8 +156,8 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 	}
 
 	TerrainPosition localPositionInSegment;
-	const int batchX = Ogre::Math::Floor(query.getArea().left / mGenerator.getFoliageBatchSize());
-	const int batchY = Ogre::Math::Floor(query.getArea().top / mGenerator.getFoliageBatchSize());
+	const int batchX = Ogre::Math::Floor(query.getArea().left / mManager.getFoliageBatchSize());
+	const int batchY = Ogre::Math::Floor(query.getArea().top / mManager.getFoliageBatchSize());
 
 	//const PlantStore& plants = plantBatchStore[batchX][batchY];
 	PlantBatchStore::const_iterator plantBatchStoreIt = (*plantStoreMapIt).second.find(batchX);

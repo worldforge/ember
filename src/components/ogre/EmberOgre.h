@@ -173,8 +173,8 @@ public:
 	Ogre::SceneManager* getSceneManager() const;
 
 	/**
-	 * @brief Gets the terrain generator.
-	 * @return The terrain generator, responsible for creating and handling the terrain.
+	 * @brief Gets the terrain manager.
+	 * @return The terrain manager, responsible for creating and handling the terrain.
 	 */
 	Terrain::TerrainManager* getTerrainManager() const;
 

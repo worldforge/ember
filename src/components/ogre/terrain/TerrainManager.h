@@ -83,7 +83,7 @@ public:
 
 	/**
 	 * @brief Default ctor.
-	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain generator will take ownership of the adapter and will destroy it upon it's destruction.
+	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain manager will take ownership of the adapter and will destroy it upon it's destruction.
 	 */
 	TerrainManager(ISceneManagerAdapter* adapter);
 
@@ -194,7 +194,7 @@ public:
 	const TerrainInfo& getTerrainInfo() const;
 
 	/**
-	 * @brief Gets the adapter used to bind this generator to a scene manager.
+	 * @brief Gets the adapter used to bind this manager to a scene manager.
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
 	ISceneManagerAdapter* getAdapter() const;
@@ -434,7 +434,7 @@ protected:
 	*/
 	void TerrainMod_Deleted(TerrainMod* terrainMod);
 	/**
-	 * The adapter acts as a bridge between the generator and the actual scene manager, allowing a certain degree of decoupling.
+	 * The adapter acts as a bridge between the manager and the actual scene manager, allowing a certain degree of decoupling.
 	 */
 	ISceneManagerAdapter* mSceneManagerAdapter;
 
