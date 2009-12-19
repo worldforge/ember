@@ -16,29 +16,28 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBEROGRETERRAINTERRAINAREAREMOVETASK_H_
-#define EMBEROGRETERRAINTERRAINAREAREMOVETASK_H_
+#ifndef GEOMETRYUPDATETASK_H_
+#define GEOMETRYUPDATETASK_H_
 
-#include "TerrainAreaTaskBase.h"
+#include "framework/tasks/ITask.h"
+#include "Types.h"
+#include <set>
 
 namespace EmberOgre
 {
 
 namespace Terrain
 {
+class TerrainPage;
+class TerrainManager;
 
-class TerrainShader;
 
-
-/**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Removes terrain areas.
- */
-class TerrainAreaRemoveTask : public TerrainAreaTaskBase
+class GeometryUpdateTask : public Ember::Tasks::ITask
 {
 public:
-	TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
-	virtual ~TerrainAreaRemoveTask();
+	typedef std::set<TerrainPage*> PageSet;
+	GeometryUpdateTask(const PageSet& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders);
+	virtual ~GeometryUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
 
@@ -46,20 +45,14 @@ public:
 
 private:
 
-	/**
-	 * @brief The terrain shader affected.
-	 */
-	const TerrainShader* mShader;
-
-	/**
-	 * @brief A slot which will be called in the main thread when the area update is complete.
-	 */
-	sigc::slot<void, const TerrainShader*, Mercator::Area*> mMarkForUpdateSlot;
-
+	const PageSet mPages;
+	const std::vector<TerrainPosition> mPositions;
+	TerrainManager& mManager;
+	ShaderStore mShaders;
 };
 
 }
 
 }
 
-#endif /* EMBEROGRETERRAINTERRAINAREAREMOVETASK_H_ */
+#endif /* GEOMETRYUPDATETASK_H_ */

@@ -40,6 +40,7 @@
 #include "TerrainModAddTask.h"
 #include "TerrainModChangeTask.h"
 #include "TerrainModRemoveTask.h"
+#include "GeometryUpdateTask.h"
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
 
@@ -124,8 +125,8 @@ TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
 TerrainManager::~TerrainManager()
 {
 
-	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-		delete J->second;
+	for (PageVector::iterator J = mPages.begin(); J != mPages.end(); ++J) {
+		delete (*J);
 	}
 
 	for (ShaderStore::iterator J = mShaderMap.begin(); J != mShaderMap.end(); ++J) {
@@ -283,10 +284,9 @@ bool TerrainManager::frameEnded(const Ogre::FrameEvent & evt)
 void TerrainManager::addPage(TerrainPage* page)
 {
 	const TerrainPosition& pos = page->getWFPosition();
-	std::stringstream ss;
-	ss << pos.x() << "x" << pos.y();
-	mPages[ss.str()] = page;
+	//TODO: check that the page doesn't already exist
 	mTerrainPages[pos.x()][pos.y()] = page;
+	mPages.push_back(page);
 
 	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
 	std::set<TerrainPage*> pagesToUpdate;
@@ -405,12 +405,12 @@ void TerrainManager::updateFoliageVisibility()
 {
 	bool showFoliage = isFoliageShown();
 
-	PageStore::iterator I = mPages.begin();
+	PageVector::iterator I = mPages.begin();
 	for (; I != mPages.end(); ++I) {
 		if (showFoliage) {
-			I->second->showFoliage();
+			(*I)->showFoliage();
 		} else {
-			I->second->hideFoliage();
+			(*I)->hideFoliage();
 		}
 	}
 }
@@ -442,8 +442,8 @@ void TerrainManager::updateShadows()
 {
 	Ogre::Vector3 sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
 
-	for (PageStore::iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		I->second->updateShadow(sunDirection);
+	for (PageVector::iterator I = mPages.begin(); I != mPages.end(); ++I) {
+		(*I)->updateShadow(sunDirection);
 	}
 }
 
@@ -499,21 +499,8 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 	}
 
 	EventBeforeTerrainUpdate(positions, pagesToUpdate);
-	updateHeightMapAndShaders(pagesToUpdate);
-	updateEntityPositions(pagesToUpdate);
-	EventAfterTerrainUpdate(positions, pagesToUpdate);
+	mTaskQueue->enqueueTask(new GeometryUpdateTask(pagesToUpdate, positions, *this, mShaderMap));
 
-}
-void TerrainManager::updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate)
-{
-	//	const Ogre::Vector3& sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
-	//
-	//	///reload all shader textures of the affected pages
-	//	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
-	//		(*I)->updateAllShaderTextures();
-	//		(*I)->updateShadow(sunDirection);
-	//		(*I)->update();
-	//	}
 }
 
 void TerrainManager::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
@@ -595,16 +582,10 @@ bool TerrainManager::getNormal(const TerrainPosition& worldPosition, WFMath::Vec
 
 void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {
-	if (mShadersToUpdate.size()) {
-		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
-		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
-			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(mPages, I->first, I->second.Areas, I->second.UpdateAll, EventLayerUpdated), 0);
-		}
+	//Update all shaders on all pages
+	for (ShaderStore::const_iterator I = mShaderMap.begin(); I != mShaderMap.end(); ++I) {
+		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(mPages, I->second, AreaStore(), true, EventLayerUpdated), 0);
 	}
-
-	//	for (PageStore::iterator J = mPages.begin(); J != mPages.end(); ++J) {
-	//		J->second->generateTerrainMaterials(true);
-	//	}
 }
 
 void TerrainManager::application_EndErisPoll(float)

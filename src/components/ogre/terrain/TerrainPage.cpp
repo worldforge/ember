@@ -135,11 +135,13 @@ const TerrainPageGeometry& TerrainPage::getGeometry() const
 	return *mGeometry;
 }
 
-
-
-void TerrainPage::update()
+void TerrainPage::repopulateGeometry()
 {
 	mGeometry->repopulate();
+}
+
+void TerrainPage::signalGeometryChanged()
+{
 	if (mBridge) {
 		mBridge->updateTerrain();
 	}

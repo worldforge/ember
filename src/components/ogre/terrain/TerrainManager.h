@@ -326,6 +326,8 @@ public:
 	 */
 	void reloadTerrain(const std::vector<TerrainPosition>& positions);
 
+	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
+
 protected:
 
 	/**
@@ -346,7 +348,7 @@ protected:
 	 */
 	ShaderUpdateSet mShadersToUpdate;
 
-	PageStore mPages;
+	PageVector mPages;
 
 	TerrainAreaMap mChangedTerrainAreas;
 
@@ -403,9 +405,7 @@ protected:
 
 	void loadTerrainOptions();
 
-	void updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate);
-	static void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
-	static void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
+	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
 	/**
 	 *    @brief Iterates through all TerrainPages and shows or hides the foliage.

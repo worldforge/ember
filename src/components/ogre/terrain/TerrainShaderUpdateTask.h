@@ -58,7 +58,7 @@ public:
 	 * @param updateAll Whether all pages should be updated. Setting this to true will make the system skip checking the areas sent.
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
 	 */
-	TerrainShaderUpdateTask(PageStore& pages, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
+	TerrainShaderUpdateTask(PageVector& pages, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
 	virtual ~TerrainShaderUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -70,7 +70,7 @@ private:
 	/**
 	 * @brief The pages which will be updated.
 	 */
-	const PageStore mPages;
+	const PageVector mPages;
 
 	/**
 	 * @brief The shader which will be applied.

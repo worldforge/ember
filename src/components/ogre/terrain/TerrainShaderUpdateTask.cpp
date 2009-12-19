@@ -32,7 +32,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(PageStore& pages, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(PageVector& pages, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
 	mPages(pages), mShader(shader), mAreas(areas), mUpdateAll(updateAll), mSignal(signal)
 {
 
@@ -47,24 +47,25 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 	PageVector updatedPages;
 	///We should either update all pages at once, or only those pages that intersect or contains the areas that have been changed
 	if (mUpdateAll) {
-		for (PageStore::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
+		for (PageVector::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
 			///repopulate the layer
-			J->second->updateShaderTexture(mShader, true);
-			updatedPages.push_back(J->second);
+			(*J)->updateShaderTexture(mShader, true);
+			updatedPages.push_back((*J));
 		}
 	} else {
-		for (PageStore::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
+		for (PageVector::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
+			TerrainPage* page = *J;
 			bool shouldUpdate = false;
 			for (AreaStore::const_iterator K = mAreas.begin(); K != mAreas.end(); ++K) {
-				if (WFMath::Intersect(J->second->getExtent(), *K, true) || WFMath::Contains(J->second->getExtent(), *K, true)) {
+				if (WFMath::Intersect(page->getExtent(), *K, true) || WFMath::Contains(page->getExtent(), *K, true)) {
 					shouldUpdate = true;
 					break;
 				}
 			}
 			if (shouldUpdate) {
 				///repopulate the layer
-				J->second->updateShaderTexture(mShader, true);
-				updatedPages.push_back(J->second);
+				page->updateShaderTexture(mShader, true);
+				updatedPages.push_back(page);
 			}
 		}
 	}

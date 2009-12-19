@@ -170,7 +170,9 @@ public:
 
 	int getPageSize() const;
 
-	void update();
+	void repopulateGeometry();
+
+	void signalGeometryChanged();
 
 	/**
 	 * @brief Creates a shadow texture for the page.
