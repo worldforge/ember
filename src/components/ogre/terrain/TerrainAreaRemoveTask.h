@@ -30,6 +30,10 @@ namespace Terrain
 class TerrainShader;
 
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Removes terrain areas.
+ */
 class TerrainAreaRemoveTask : public TerrainAreaTaskBase
 {
 public:

@@ -331,14 +331,6 @@ protected:
 	AreaShaderstore mAreaShaders;
 
 	/**
-	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
-	 * For performance reasons we want to batch together multiple request for shader updates, so we can do them all at once, normally on frameEnded(). By calling this method the supplied shader will be marked for updating.
-	 * @param shader The shader to update.
-	 * @param terrainArea If an area is specified here, only pages touched by the area will be updated.
-	 */
-	void markShaderForUpdate(const TerrainShader* shader,  Mercator::Area* terrainArea = 0);
-
-	/**
 	 * @brief Stores the shaders needing update, to be processed on the next frame.
 	 * For performance reasons we try to batch all shaders updates together, rather than doing them one by one. This is done by adding the shaders needing update to this store, and then on frameEnded processing them.
 	 * @see markShaderForUpdate
@@ -357,8 +349,6 @@ protected:
 	Mercator::Terrain* mTerrain;
 
 	Ogre::Real mHeightMax, mHeightMin;
-
-	void loadTerrainOptions();
 
 	/**
 	true if we have some kind of terrain info, i.e. if mX* and mY* are valid
@@ -385,6 +375,25 @@ protected:
 
 	HeightMapBufferProvider* mHeightMapBufferProvider;
 
+	/**
+	 * The adapter acts as a bridge between the manager and the actual scene manager, allowing a certain degree of decoupling.
+	 */
+	ISceneManagerAdapter* mSceneManagerAdapter;
+
+	/**
+	 * @brief The task queue we'll use for all background terrain updates.
+	 */
+	std::auto_ptr<Ember::Tasks::TaskQueue> mTaskQueue;
+
+	/**
+	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
+	 * For performance reasons we want to batch together multiple request for shader updates, so we can do them all at once, normally on frameEnded(). By calling this method the supplied shader will be marked for updating.
+	 * @param shader The shader to update.
+	 * @param terrainArea If an area is specified here, only pages touched by the area will be updated.
+	 */
+	void markShaderForUpdate(const TerrainShader* shader,  Mercator::Area* terrainArea = 0);
+
+	void loadTerrainOptions();
 
 	/**
 	 * @brief Reloads the terrain found at the specified positions.
@@ -396,7 +405,6 @@ protected:
 	void updateHeightMapAndShaders(const std::set<TerrainPage*>& pagesToUpdate);
 	static void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
 	static void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
-
 
 	/**
 	 *    @brief Iterates through all TerrainPages and shows or hides the foliage.
@@ -433,10 +441,6 @@ protected:
 	Note that even though this is passed as a parameter in the constructor, this class is then responsible for its destruction.
 	*/
 	void TerrainMod_Deleted(TerrainMod* terrainMod);
-	/**
-	 * The adapter acts as a bridge between the manager and the actual scene manager, allowing a certain degree of decoupling.
-	 */
-	ISceneManagerAdapter* mSceneManagerAdapter;
 
 	unsigned int mFoliageBatchSize;
 
@@ -454,11 +458,6 @@ protected:
 
 
 	void application_EndErisPoll(float);
-
-	/**
-	 * @brief The task queue we'll use for all background terrain updates.
-	 */
-	std::auto_ptr<Ember::Tasks::TaskQueue> mTaskQueue;
 
 };
 

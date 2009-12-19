@@ -32,7 +32,6 @@
 #include "TerrainInfo.h"
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
-#include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageCreationTask.h"
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainAreaUpdateTask.h"
@@ -63,12 +62,9 @@
 #include <Eris/TerrainMod.h>
 
 #include <Mercator/Area.h>
-#include <Mercator/AreaShader.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
 #include <Mercator/TerrainMod.h>
-#include <Mercator/Surface.h>
-#include <Mercator/Terrain.h>
 
 #include <sigc++/object_slot.h>
 #include <sigc++/bind.h>
