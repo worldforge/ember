@@ -38,6 +38,8 @@
 #include "TerrainAreaAddTask.h"
 #include "TerrainAreaRemoveTask.h"
 #include "TerrainModAddTask.h"
+#include "TerrainModChangeTask.h"
+#include "TerrainModRemoveTask.h"
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
 
@@ -192,100 +194,55 @@ void TerrainManager::addTerrainMod(TerrainMod* terrainMod)
 	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainMod_Deleted), terrainMod));
 
 	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));
-
-
-	/// We need to save this pointer to use when the modifier is changed or deleted
-	Mercator::TerrainMod* mod = mTerrain->addMod(*erisTerrainMod->getMod());
-
-	mTerrainMods.insert(TerrainModMap::value_type(erisTerrainMod->getEntity()->getId(), mod));
-
-	std::vector<TerrainPosition> updatedPositions;
-	updatedPositions.push_back(TerrainPosition(mod->bbox().getCenter().x(), mod->bbox().getCenter().y()));
-	reloadTerrain(updatedPositions);
 }
 
 void TerrainManager::TerrainMod_Changed(TerrainMod* terrainMod)
 {
-
-	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
-	std::vector<TerrainPosition> updatedPositions;
-
-	// Clear this modifier from the terrain, then reapply it so the new parameters take effect
-	// Get its owner's ID
-	const std::string& entityID = erisTerrainMod->getEntity()->getId();
-	S_LOG_INFO("modhandler: changed: Mod for entity " << entityID << " updated?");
-	TerrainModMap::iterator I = mTerrainMods.find(entityID);
+	Mercator::TerrainMod* existingMod(0);
+	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getErisMod()->getEntity()->getId());
 	if (I != mTerrainMods.end()) {
-		updatedPositions.push_back(TerrainPosition(I->second->bbox().getCenter().x(), I->second->bbox().getCenter().y()));
-		// Use the pointer returned from addMod() to remove it
-		mTerrain->removeMod(I->second);
-		// Remove this mod from our list so we can replace the pointer with a new one
-		mTerrainMods.erase(I);
+		existingMod = I->second;
 	}
-
-	//	mTerrainMods.find(entityID)->second = terrainMod->getMod();
-	//	mTerrain->updateMod(mTerrainMods.find(entityID)->second);
-
-	// Reapply the mod to the terrain with the updated parameters
-	Mercator::TerrainMod *mercatorMod = erisTerrainMod->getMod();
-	if (mercatorMod) {
-		mercatorMod = mTerrain->addMod(*mercatorMod);
-
-		// Insert it into our list
-		mTerrainMods.insert(TerrainModMap::value_type(entityID, mercatorMod));
-	}
-
-	updatedPositions.push_back(TerrainPosition(mercatorMod->bbox().getCenter().x(), mercatorMod->bbox().getCenter().y()));
-	reloadTerrain(updatedPositions);
+	mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod, *this, mTerrainMods, existingMod));
 }
 
 void TerrainManager::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
-	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
-	// Clear this mod from the terrain
-	// Get the ID of the modifier's owner
-	const std::string& entityID = erisTerrainMod->getEntity()->getId();
-	S_LOG_INFO("modhandler: deleted: Mod for entity " << entityID << " deleted?");
-	// Use the pointer returned from addMod() to remove it
-	mTerrain->removeMod(mTerrainMods.find(entityID)->second);
-	// Remove this mod from our list
-	mTerrainMods.erase(entityID);
-
-	std::vector<TerrainPosition> updatedPositions;
-	updatedPositions.push_back(TerrainPosition(erisTerrainMod->getMod()->bbox().getCenter().x(), erisTerrainMod->getMod()->bbox().getCenter().y()));
-	reloadTerrain(updatedPositions);
-
+	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getErisMod()->getEntity()->getId());
+	if (I != mTerrainMods.end()) {
+		mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, I->second, *this, mTerrainMods, I->first));
+	}
 }
 
 void TerrainManager::addArea(TerrainArea& terrainArea)
 {
-	terrainArea.EventAreaChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Changed), terrainArea));
-	terrainArea.EventAreaRemoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Removed), terrainArea));
-	terrainArea.EventAreaSwapped.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Swapped), terrainArea));
+	terrainArea.EventAreaChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Changed), &terrainArea));
+	terrainArea.EventAreaRemoved.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Removed), &terrainArea));
+	terrainArea.EventAreaSwapped.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainArea_Swapped), &terrainArea));
 	mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, *terrainArea.getArea(), sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
 }
 
-void TerrainManager::TerrainArea_Changed(TerrainArea& terrainArea)
+void TerrainManager::TerrainArea_Changed(TerrainArea* terrainArea)
 {
 	const TerrainShader* shader = 0;
-	Mercator::Area* area = terrainArea.getArea();
+	Mercator::Area* area = terrainArea->getArea();
 	if (mAreaShaders.count(area->getLayer())) {
 		shader = mAreaShaders[area->getLayer()];
 	}
-	mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, *terrainArea.getArea(), sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), shader));
+	mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, *terrainArea->getArea(), sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), shader));
 }
 
-void TerrainManager::TerrainArea_Removed(TerrainArea& terrainArea)
+void TerrainManager::TerrainArea_Removed(TerrainArea* terrainArea)
 {
 	const TerrainShader* shader = 0;
-	Mercator::Area* area = terrainArea.getArea();
+	Mercator::Area* area = terrainArea->getArea();
 	if (mAreaShaders.count(area->getLayer())) {
 		shader = mAreaShaders[area->getLayer()];
 	}
-	mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, *terrainArea.getArea(), sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), shader));
+	mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, *terrainArea->getArea(), sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), shader));
 }
 
-void TerrainManager::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea& terrainArea)
+void TerrainManager::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea)
 {
 
 	const TerrainShader* shader = 0;
@@ -294,7 +251,7 @@ void TerrainManager::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea& t
 	}
 	mTaskQueue->enqueueTask(new TerrainAreaRemoveTask(*mTerrain, oldArea, sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), shader));
 
-	Mercator::Area* area = terrainArea.getArea();
+	Mercator::Area* area = terrainArea->getArea();
 	mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, *area, sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders));
 }
 void TerrainManager::markShaderForUpdate(const TerrainShader* shader, Mercator::Area* terrainArea)
