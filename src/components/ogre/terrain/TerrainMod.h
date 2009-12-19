@@ -80,6 +80,13 @@ public:
 	 */
 	Eris::TerrainMod* getErisMod() const;
 
+
+	/**
+	 * @brief Gets the Mercator terrain mod, held by the Eris terrain mod.
+	 * @return The Mercator terrain mod instance.
+	 */
+	Mercator::TerrainMod* getMercatorMod() const;
+
 	/**
 	 * Emitted whenever the modifier is changed or moved.
 	 */

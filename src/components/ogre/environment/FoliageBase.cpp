@@ -119,7 +119,7 @@ void FoliageBase::TerrainManager_EventShaderCreated(const Terrain::TerrainShader
 	}
 }
 
-void FoliageBase::TerrainManager_AfterTerrainUpdate(std::vector<TerrainPosition>& terrainPositions, std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
+void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<TerrainPosition>& terrainPositions, const std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
 {
 	if (mPagedGeometry) {
 		mPagedGeometry->reloadGeometry();

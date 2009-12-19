@@ -29,17 +29,17 @@
 #include <Eris/TerrainMod.h>
 #include "../EmberEntity.h"
 
+namespace EmberOgre
+{
+namespace Terrain
+{
 
-namespace EmberOgre {
-namespace Terrain {
-
-TerrainMod::TerrainMod(EmberEntity* entity)
-: mInnerMod(new Eris::TerrainMod(entity))
+TerrainMod::TerrainMod(EmberEntity* entity) :
+	mInnerMod(new Eris::TerrainMod(entity))
 {
 	mInnerMod->ModChanged.connect(sigc::mem_fun(*this, &TerrainMod::terrainMod_ModChanged));
 	mInnerMod->ModDeleted.connect(sigc::mem_fun(*this, &TerrainMod::terrainMod_ModDeleted));
 }
-
 
 TerrainMod::~TerrainMod()
 {
@@ -64,6 +64,11 @@ void TerrainMod::terrainMod_ModChanged()
 void TerrainMod::terrainMod_ModDeleted()
 {
 	EventModDeleted.emit();
+}
+
+Mercator::TerrainMod* TerrainMod::getMercatorMod() const
+{
+	return mInnerMod->getMod();
 }
 
 } // close Namespace Terrain

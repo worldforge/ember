@@ -37,6 +37,7 @@
 #include "TerrainAreaUpdateTask.h"
 #include "TerrainAreaAddTask.h"
 #include "TerrainAreaRemoveTask.h"
+#include "TerrainModAddTask.h"
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
 
@@ -189,6 +190,9 @@ void TerrainManager::addTerrainMod(TerrainMod* terrainMod)
 	terrainMod->EventModChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainMod_Changed), terrainMod));
 	/// Listen for deletion of the modifier
 	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainMod_Deleted), terrainMod));
+
+	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));
+
 
 	/// We need to save this pointer to use when the modifier is changed or deleted
 	Mercator::TerrainMod* mod = mTerrain->addMod(*erisTerrainMod->getMod());
@@ -519,10 +523,10 @@ bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	return true;
 }
 
-void TerrainManager::reloadTerrain(std::vector<TerrainPosition>& positions)
+void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions)
 {
 	std::set<TerrainPage*> pagesToUpdate;
-	for (std::vector<TerrainPosition>::iterator I(positions.begin()); I != positions.end(); ++I) {
+	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
 		const TerrainPosition& worldPosition(*I);
 		TerrainPage* page;
 		///make sure we sample pages from all four points around the base point, in case the base point is on a page border
