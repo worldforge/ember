@@ -25,7 +25,6 @@ namespace EmberOgre
 
 namespace Terrain
 {
-class TerrainArea;
 class TerrainShader;
 
 /**
@@ -43,7 +42,7 @@ public:
 	 * @param shader The affected shader.
 	 * @param markForUpdateSlot A slot which will be called in the main thread when the update is complete.
 	 */
-	TerrainAreaUpdateTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, const TerrainShader* shader, ShaderUpdateSlotType markForUpdateSlot);
+	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
 	virtual ~TerrainAreaUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -57,10 +56,6 @@ private:
 	 */
 	const TerrainShader* mShader;
 
-	/**
-	 * @brief A slot which will be called in the main thread when the area update is complete.
-	 */
-	sigc::slot<void, const TerrainShader*, Mercator::Area*> mMarkForUpdateSlot;
 };
 
 }

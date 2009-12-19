@@ -19,7 +19,6 @@
 #include "TerrainAreaAddTask.h"
 #include "TerrainManager.h"
 #include "TerrainLayerDefinitionManager.h"
-#include "TerrainArea.h"
 
 #include "Mercator/Area.h"
 #include "Mercator/Terrain.h"
@@ -30,8 +29,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, ShaderUpdateSlotType shaderUpdateSlot) :
-	mTerrainManager(TerrainManager), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), mShaderUpdateSlot(shaderUpdateSlot), TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, terrainArea)
+TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders) :
+	mTerrainManager(TerrainManager), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, terrainArea, markForUpdateSlot)
 {
 }
 
@@ -41,29 +40,27 @@ TerrainAreaAddTask::~TerrainAreaAddTask()
 
 void TerrainAreaAddTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	Mercator::Area* area = mTerrainArea.getArea();
 	//   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR, _MCW_RC);
-	mTerrain.addArea(area);
+	mTerrain.addArea(&mTerrainArea);
 }
 
 void TerrainAreaAddTask::executeTaskInMainThread()
 {
-	Mercator::Area* area = mTerrainArea.getArea();
-	if (!mAreaShaders.count(area->getLayer())) {
+	if (!mAreaShaders.count(mTerrainArea.getLayer())) {
 		S_LOG_VERBOSE("Shader does not exists, creating new.");
 		///try to get the materialdefinition for this kind of area
-		const TerrainLayerDefinition* layerDef = mTerrainLayerDefinitionManager.getDefinitionForArea(area->getLayer());
+		const TerrainLayerDefinition* layerDef = mTerrainLayerDefinitionManager.getDefinitionForArea(mTerrainArea.getLayer());
 		if (layerDef) {
-			TerrainShader* shader = mTerrainManager.createShader(layerDef, new Mercator::AreaShader(area->getLayer()));
-			mAreaShaders[area->getLayer()] = shader;
+			TerrainShader* shader = mTerrainManager.createShader(layerDef, new Mercator::AreaShader(mTerrainArea.getLayer()));
+			mAreaShaders[mTerrainArea.getLayer()] = shader;
 		}
 	}
-	if (mAreaShaders.count(area->getLayer())) {
+	if (mAreaShaders.count(mTerrainArea.getLayer())) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		mShaderUpdateSlot(mAreaShaders[area->getLayer()], area);
+		mShaderUpdateSlot(mAreaShaders[mTerrainArea.getLayer()], &mTerrainArea);
 	}
 }
 

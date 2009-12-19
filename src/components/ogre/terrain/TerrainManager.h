@@ -150,7 +150,7 @@ public:
 	 * @brief Adds a new Mercator::Area to the terrain.
 	 * @param area Area to be added
 	 */
-	void addArea(TerrainArea* terrainArea);
+	void addArea(TerrainArea& terrainArea);
 
 	/**
 	 * @brief Adds a new Mercator::TerrainMod to the terrain.
@@ -408,20 +408,20 @@ protected:
 	/**
 	Listen to changes in areas.
 	*/
-	void TerrainArea_Changed(TerrainArea* terrainArea);
+	void TerrainArea_Changed(TerrainArea& terrainArea);
 
 	/**
 	 * @brief Listen to removal of terrain areas and trigger an update of the terrain.
 	 * @param terrainArea The area being removed.
 	 */
-	void TerrainArea_Removed(TerrainArea* terrainArea);
+	void TerrainArea_Removed(TerrainArea& terrainArea);
 
 	/**
 	 * @brief Listen to swapping of terrain areas and trigger an update of the terrain.
 	 * @param oldArea The area being removed.
 	 * @param terrainArea The terrain area.
 	 */
-	void TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* terrainArea);
+	void TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea& terrainArea);
 
 	/**
 	Listen to changes in terrain mods.

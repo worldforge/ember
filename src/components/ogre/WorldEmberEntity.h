@@ -138,7 +138,7 @@ protected:
 	 * @brief Adds an area to the world. This method will in turn interface with the TerrainManager.
 	 * @param area
 	 */
-	void addArea(Terrain::TerrainArea* area);
+	void addArea(Terrain::TerrainArea& area);
 
 	/**
 	 * @brief Adds a terrain modifier to the world by making a call to mTerrainManager

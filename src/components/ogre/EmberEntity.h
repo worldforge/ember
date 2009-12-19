@@ -419,7 +419,7 @@ protected:
 	 * @see EmberOgre::WorldEmberEntity::addArea()
 	 * @param area The area which has been added.
 	 */
-	virtual void addArea(Terrain::TerrainArea* area);
+	virtual void addArea(Terrain::TerrainArea& area);
 
 	/**
 	 * @brief Adds a terrain mod to the entity.

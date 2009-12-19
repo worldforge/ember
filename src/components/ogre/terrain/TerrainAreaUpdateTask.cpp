@@ -25,8 +25,8 @@ namespace EmberOgre
 
 namespace Terrain
 {
-TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain, TerrainArea& terrainArea, const TerrainShader* shader, ShaderUpdateSlotType markForUpdateSlot)
-: mShader(shader), mMarkForUpdateSlot(markForUpdateSlot), TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, terrainArea)
+TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader) :
+	mShader(shader), TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, terrainArea, markForUpdateSlot)
 {
 
 }
@@ -37,7 +37,7 @@ TerrainAreaUpdateTask::~TerrainAreaUpdateTask()
 
 void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	mTerrain.updateArea(mTerrainArea.getArea());
+	mTerrain.updateArea(&mTerrainArea);
 }
 
 void TerrainAreaUpdateTask::executeTaskInMainThread()
@@ -45,10 +45,9 @@ void TerrainAreaUpdateTask::executeTaskInMainThread()
 	if (mShader) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		mMarkForUpdateSlot(mShader, mTerrainArea.getArea());
+		mShaderUpdateSlot(mShader, &mTerrainArea);
 	}
 }
-
 
 }
 

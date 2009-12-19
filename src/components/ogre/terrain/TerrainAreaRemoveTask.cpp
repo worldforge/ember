@@ -16,20 +16,39 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "TerrainAreaTaskBase.h"
+#include "TerrainAreaRemoveTask.h"
+#include <Mercator/Terrain.h>
+
 namespace EmberOgre
 {
 
 namespace Terrain
 {
 
-TerrainAreaTaskBase::TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType shaderUpdateSlot)
-: mTerrain(terrain), mTerrainArea(terrainArea), mShaderUpdateSlot(shaderUpdateSlot)
+TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader)
+: TerrainAreaTaskBase(terrain, terrainArea, markForUpdateSlot)
+{
+
+}
+
+TerrainAreaRemoveTask::~TerrainAreaRemoveTask()
 {
 }
 
-TerrainAreaTaskBase::~TerrainAreaTaskBase()
+void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
+	mTerrain.removeArea(&mTerrainArea);
 }
+
+void TerrainAreaRemoveTask::executeTaskInMainThread()
+{
+	if (mShader) {
+		///mark the shader for update
+		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+		mMarkForUpdateSlot(mShader, &mTerrainArea);
+	}
 }
+
+}
+
 }

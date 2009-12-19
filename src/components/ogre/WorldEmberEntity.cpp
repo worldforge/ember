@@ -164,7 +164,7 @@ void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 	Eris::Entity::onLocationChanged(oldLocation);
 }
 
-void WorldEmberEntity::addArea(Terrain::TerrainArea* area)
+void WorldEmberEntity::addArea(Terrain::TerrainArea& area)
 {
 	mTerrainManager->addArea(area);
 }

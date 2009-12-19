@@ -16,37 +16,41 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBEROGRETERRAINTERRAINAREAADDTASK_H_
-#define EMBEROGRETERRAINTERRAINAREAADDTASK_H_
+#ifndef EMBEROGRETERRAINTERRAINAREAREMOVETASK_H_
+#define EMBEROGRETERRAINTERRAINAREAREMOVETASK_H_
 
 #include "TerrainAreaTaskBase.h"
-#include "Types.h"
 
 namespace EmberOgre
 {
 
 namespace Terrain
 {
-class TerrainManager;
-class TerrainLayerDefinitionManager;
 
-/**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief A task for adding a new terrain area to the terrain.
- */
-class TerrainAreaAddTask: public TerrainAreaTaskBase
+class TerrainShader;
+
+
+class TerrainAreaRemoveTask : public TerrainAreaTaskBase
 {
 public:
-	TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders);
-	virtual ~TerrainAreaAddTask();
+	TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
+	virtual ~TerrainAreaRemoveTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
+
 private:
-	TerrainManager& mTerrainManager;
-	TerrainLayerDefinitionManager& mTerrainLayerDefinitionManager;
-	AreaShaderstore& mAreaShaders;
+
+	/**
+	 * @brief The terrain shader affected.
+	 */
+	const TerrainShader* mShader;
+
+	/**
+	 * @brief A slot which will be called in the main thread when the area update is complete.
+	 */
+	sigc::slot<void, const TerrainShader*, Mercator::Area*> mMarkForUpdateSlot;
 
 };
 
@@ -54,4 +58,4 @@ private:
 
 }
 
-#endif /* EMBEROGRETERRAINTERRAINAREAADDTASK_H_ */
+#endif /* EMBEROGRETERRAINTERRAINAREAREMOVETASK_H_ */

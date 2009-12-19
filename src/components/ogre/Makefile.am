@@ -47,6 +47,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp terrain/TerrainMaterialCompilationTask.cpp \
 	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/HeightMapBuffer.cpp \
 	terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp \
+	terrain/TerrainAreaRemoveTask.cpp \
 \
 	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -127,6 +128,7 @@ noinst_HEADERS = \
 	terrain/Image.h terrain/OgreImage.h terrain/WFImage.h terrain/TerrainMaterialCompilationTask.h \
 	terrain/HeightMapSegment.h terrain/HeightMap.h terrain/Buffer.h terrain/HeightMapBuffer.h \
 	terrain/HeightMapBufferProvider.h terrain/HeightMapUpdateTask.h terrain/TerrainAreaTaskBase.h terrain/TerrainAreaAddTask.h \
+	terrain/TerrainAreaRemoveTask.h \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \

@@ -144,7 +144,7 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 	if (attributeName == "area" && !mTerrainArea.get()) {
 		mTerrainArea = std::auto_ptr<Terrain::TerrainArea>(new Terrain::TerrainArea(*this));
 		if (mTerrainArea->init()) {
-			addArea(mTerrainArea.get());
+			addArea(*mTerrainArea.get());
 			return true;
 		} else {
 			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create an area
@@ -347,7 +347,7 @@ bool EmberEntity::hasSuggestedResponses() const
 	return mSuggestedResponses.size() > 0;
 }
 
-void EmberEntity::addArea(Terrain::TerrainArea* area)
+void EmberEntity::addArea(Terrain::TerrainArea& area)
 {
 	///A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
 	///Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
