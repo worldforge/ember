@@ -37,7 +37,7 @@ class TerrainMod;
 class TerrainModAddTask: public Ember::Tasks::ITask
 {
 public:
-	TerrainModAddTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap terrainMods);
+	TerrainModAddTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap& terrainMods);
 	virtual ~TerrainModAddTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -48,7 +48,7 @@ private:
 	Mercator::Terrain& mTerrain;
 	TerrainMod& mTerrainMod;
 	TerrainManager& mManager;
-	TerrainModMap mTerrainMods;
+	TerrainModMap& mTerrainMods;
 
 	Mercator::TerrainMod* mAppliedMod;
 };

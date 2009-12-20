@@ -40,7 +40,7 @@ class TerrainMod;
 class TerrainModRemoveTask: public Ember::Tasks::ITask
 {
 public:
-	TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* existingMod, TerrainManager& manager, TerrainModMap terrainMods, const std::string& entityId);
+	TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* existingMod, TerrainManager& manager, TerrainModMap& terrainMods, const std::string& entityId);
 	virtual ~TerrainModRemoveTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -51,7 +51,7 @@ private:
 	Mercator::Terrain& mTerrain;
 	Mercator::TerrainMod* mExistingMod;
 	TerrainManager& mManager;
-	TerrainModMap mTerrainMods;
+	TerrainModMap& mTerrainMods;
 	const std::string mEntityId;
 
 };

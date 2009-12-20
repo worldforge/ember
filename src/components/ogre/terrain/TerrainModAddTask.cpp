@@ -29,7 +29,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap terrainMods) :
+TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap& terrainMods) :
 	mTerrain(terrain), mTerrainMod(terrainMod), mManager(manager), mTerrainMods(terrainMods), mAppliedMod(0)
 {
 

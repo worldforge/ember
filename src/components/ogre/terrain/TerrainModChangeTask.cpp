@@ -30,7 +30,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap terrainMods, Mercator::TerrainMod* existingMod) :
+TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod) :
 	mTerrain(terrain), mTerrainMod(terrainMod), mManager(manager), mTerrainMods(terrainMods), mExistingMod(existingMod), mAppliedMod(0)
 {
 
@@ -49,20 +49,18 @@ void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecu
 	}
 
 	mAppliedMod = mTerrain.addMod(*mTerrainMod.getMercatorMod());
+	if (mAppliedMod) {
+		mUpdatedPositions.push_back(TerrainPosition(mAppliedMod->bbox().getCenter().x(), mAppliedMod->bbox().getCenter().y()));
+	}
 
 }
 
 void TerrainModChangeTask::executeTaskInMainThread()
 {
-	TerrainModMap::iterator I = mTerrainMods.find(mTerrainMod.getErisMod()->getEntity()->getId());
-	if (I != mTerrainMods.end()) {
-		mTerrainMods.erase(I);
-	}
+	mTerrainMods.erase(mTerrainMod.getErisMod()->getEntity()->getId());
 
 	if (mAppliedMod) {
 		mTerrainMods.insert(TerrainModMap::value_type(mTerrainMod.getErisMod()->getEntity()->getId(), mAppliedMod));
-
-		mUpdatedPositions.push_back(TerrainPosition(mAppliedMod->bbox().getCenter().x(), mAppliedMod->bbox().getCenter().y()));
 	}
 	mManager.reloadTerrain(mUpdatedPositions);
 }

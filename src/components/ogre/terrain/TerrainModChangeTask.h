@@ -39,7 +39,7 @@ class TerrainMod;
 class TerrainModChangeTask: public Ember::Tasks::ITask
 {
 public:
-	TerrainModChangeTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap terrainMods, Mercator::TerrainMod* existingMod);
+	TerrainModChangeTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod);
 	virtual ~TerrainModChangeTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -50,7 +50,7 @@ private:
 	Mercator::Terrain& mTerrain;
 	TerrainMod& mTerrainMod;
 	TerrainManager& mManager;
-	TerrainModMap mTerrainMods;
+	TerrainModMap& mTerrainMods;
 	Mercator::TerrainMod* mExistingMod;
 
 	std::vector<TerrainPosition> mUpdatedPositions;

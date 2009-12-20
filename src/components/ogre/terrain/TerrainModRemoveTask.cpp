@@ -30,7 +30,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* existingMod, TerrainManager& manager, TerrainModMap terrainMods, const std::string& entityId) :
+TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* existingMod, TerrainManager& manager, TerrainModMap& terrainMods, const std::string& entityId) :
 	mTerrain(terrain), mExistingMod(existingMod), mManager(manager), mTerrainMods(terrainMods), mEntityId(entityId)
 {
 
