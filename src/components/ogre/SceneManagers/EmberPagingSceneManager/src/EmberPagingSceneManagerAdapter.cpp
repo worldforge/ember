@@ -184,5 +184,4 @@ namespace EmberOgre {
 		}
 	}
 
-
 }

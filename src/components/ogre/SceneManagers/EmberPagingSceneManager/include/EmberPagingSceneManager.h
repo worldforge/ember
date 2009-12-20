@@ -32,20 +32,28 @@
 namespace EmberOgre {
 class EmberPagingSceneManager;
 
+namespace Terrain {
+class ITerrainPageBridge;
+}
 namespace Model {
 class Model;
 }
 
 class IPageData
 {
-	void createHeightData(Ogre::Real* heightData);
-	Ogre::MaterialPtr getMaterial();
+public:
+	virtual ~IPageData() {}
+//	void createHeightData(Ogre::Real* heightData);
+	virtual Ogre::MaterialPtr getMaterial() = 0;
 };
 
 
 class IPageDataProvider
 {
-	IPageData* getPageData(Ogre::Vector2 position);
+public:
+	virtual IPageData* getPageData(const Ogre::Vector2& position) = 0;
+	virtual int getPageIndexSize() const = 0;
+	virtual void setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ::EmberOgre::Terrain::ITerrainPageBridge& bridge) = 0;
 };
 
 
@@ -121,6 +129,8 @@ public:
 									
 	void registerProvider(IPageDataProvider* provider);
 	
+	IPageDataProvider* getProvider();
+
 	const Ogre::String& getTypeName(void) const;
 
 protected:

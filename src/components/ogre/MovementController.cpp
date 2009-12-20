@@ -223,12 +223,13 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 		createDecal(point);
 	}
 
-	if (mDecalNode) {
-		///make sure it's at the correct height, since the visibility of it is determined by the bounding box
-		Ogre::Real height = EmberOgre::getSingleton().getTerrainManager()->getAdapter()->getHeightAt(point.x, point.z);
-		mDecalNode->setPosition(Ogre::Vector3(point.x, height, point.z));
-		mDecalNode->setVisible(true);
-	}
+	//TODO: reapply the terrain lookup without using the terrain manager directly
+//	if (mDecalNode) {
+//		///make sure it's at the correct height, since the visibility of it is determined by the bounding box
+//		Ogre::Real height = EmberOgre::getSingleton().getTerrainManager()->getAdapter()->getHeightAt(point.x, point.z);
+//		mDecalNode->setPosition(Ogre::Vector3(point.x, height, point.z));
+//		mDecalNode->setVisible(true);
+//	}
 
 	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3> >(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());

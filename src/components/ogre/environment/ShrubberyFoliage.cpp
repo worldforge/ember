@@ -28,7 +28,6 @@
 
 #include "framework/LoggingInstance.h"
 
-#include "FoliageLayer.h"
 #include "FoliageLoader.h"
 
 #include "components/ogre/EmberOgre.h"
@@ -49,8 +48,8 @@ namespace EmberOgre {
 
 namespace Environment {
 
-ShrubberyFoliage::ShrubberyFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: FoliageBase(terrainLayerDefinition, foliageDefinition)
+ShrubberyFoliage::ShrubberyFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
+: FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition)
 , mLoader(0)
 {
 }
@@ -63,8 +62,8 @@ ShrubberyFoliage::~ShrubberyFoliage()
 void ShrubberyFoliage::initialize()
 {
 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();
-	mPagedGeometry = new ::Forests::PagedGeometry(camera, EmberOgre::getSingleton().getTerrainManager()->getFoliageBatchSize());
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainManager()->getTerrainInfo().getWorldSizeInIndices();
+	mPagedGeometry = new ::Forests::PagedGeometry(camera, mTerrainManager.getFoliageBatchSize());
+	const WFMath::AxisBox<2>& worldSize = mTerrainManager.getTerrainInfo().getWorldSizeInIndices();
 
 	::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
 	if (ogreBounds.width() != ogreBounds.height()) {
@@ -81,7 +80,7 @@ void ShrubberyFoliage::initialize()
 
 	mPagedGeometry->addDetailLevel<Forests::BatchPage>(64, 32);
 
-	mLoader = new FoliageLoader(mTerrainLayerDefinition, mFoliageDefinition);
+	mLoader = new FoliageLoader(*mTerrainManager.getAdapter()->getSceneManager(), mTerrainManager, mTerrainLayerDefinition, mFoliageDefinition);
  	mPagedGeometry->setPageLoader(mLoader);
 }
 

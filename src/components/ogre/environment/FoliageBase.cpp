@@ -28,7 +28,6 @@
 
 #include "framework/LoggingInstance.h"
 
-#include "../EmberOgre.h"
 #include "../Convert.h"
 #include "../terrain/TerrainArea.h"
 #include "../terrain/TerrainShader.h"
@@ -47,16 +46,16 @@ namespace EmberOgre {
 
 namespace Environment {
 
-FoliageBase::FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: mTerrainLayerDefinition(terrainLayerDefinition)
+FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
+: mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition)
 , mFoliageDefinition(foliageDefinition)
 , mPagedGeometry(0)
 {
 	initializeDependentLayers();
 
-	EmberOgre::getSingleton().getTerrainManager()->EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_LayerUpdated));
-	EmberOgre::getSingleton().getTerrainManager()->EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_EventShaderCreated));
-	EmberOgre::getSingleton().getTerrainManager()->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_AfterTerrainUpdate));
+	mTerrainManager.EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_LayerUpdated));
+	mTerrainManager.EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_EventShaderCreated));
+	mTerrainManager.EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_AfterTerrainUpdate));
 
 }
 
@@ -147,8 +146,9 @@ void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<TerrainPos
 //there's no need for extra data other than the x/z coordinates.
 float getTerrainHeight(float x, float z, void* userData)
 {
+	TerrainManager* terrainManager = static_cast<TerrainManager*>(userData);
 	float height = 0;
-	EmberOgre::getSingleton().getTerrainManager()->getHeight(TerrainPosition(x, -z), height);
+	terrainManager->getHeight(TerrainPosition(x, -z), height);
 	return height;
 }
 

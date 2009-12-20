@@ -22,52 +22,51 @@
 //
 
 #include "EmberPagingLandScapeTexture.h"
-#include "EmberOgre.h"
-#include "terrain/TerrainPage.h"
-#include "terrain/TerrainManager.h"
+#include "EmberPagingSceneManager.h"
+#include "OgrePagingLandScapeTextureManager.h"
 #include <OgreVector2.h>
+#include <memory>
 
 namespace EmberOgre
 {
 
-	EmberPagingLandScapeTexture::EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager* pageMgr)
-		: Ogre::PagingLandScapeTexture(pageMgr, "EmberTexture", 1, false)
-	{
-	}
+EmberPagingLandScapeTexture::EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager* pageMgr) :
+	Ogre::PagingLandScapeTexture(pageMgr, "EmberTexture", 1, false)
+{
+}
 
-	EmberPagingLandScapeTexture::~EmberPagingLandScapeTexture()
-	{
-	}
+EmberPagingLandScapeTexture::~EmberPagingLandScapeTexture()
+{
+}
 
-	Ogre::PagingLandScapeTexture* EmberPagingLandScapeTexture::newTexture()
-	{
-		return new EmberPagingLandScapeTexture(mParent);
-	}
+Ogre::PagingLandScapeTexture* EmberPagingLandScapeTexture::newTexture()
+{
+	return new EmberPagingLandScapeTexture(mParent);
+}
 
-	bool EmberPagingLandScapeTexture::isMaterialSupported(bool recursive)
-	{
-		//TODO: check for stuff here
-		return true;
-	}
+bool EmberPagingLandScapeTexture::isMaterialSupported(bool recursive)
+{
+	//TODO: check for stuff here
+	return true;
+}
 
-	void EmberPagingLandScapeTexture::setOptions()
-	{
-	}
+void EmberPagingLandScapeTexture::setOptions()
+{
+}
 
-	void EmberPagingLandScapeTexture::_loadMaterial()
-	{
-		Terrain::TerrainManager* TerrainManager = EmberOgre::getSingleton().getTerrainManager();
-		Terrain::TerrainPage* page = TerrainManager->getTerrainPageAtIndex(Ogre::Vector2(mDataX, mDataZ));
-		assert(page);
-		if (page) {
-			mMaterial = page->getMaterial();
-		}
+void EmberPagingLandScapeTexture::_loadMaterial()
+{
+	EmberPagingSceneManager* emberPagingSceneManager = static_cast<EmberPagingSceneManager*> (mParent->getSceneManager());
+	IPageDataProvider* provider = emberPagingSceneManager->getProvider();
+	if (provider) {
+		std::auto_ptr<IPageData> pageData(provider->getPageData(Ogre::Vector2(mDataX, mDataZ)));
+		mMaterial = pageData->getMaterial();
 	}
+}
 
-	void EmberPagingLandScapeTexture::_unloadMaterial()
-	{
-		S_LOG_VERBOSE("Unloading terrain material.");
-	}
-
+void EmberPagingLandScapeTexture::_unloadMaterial()
+{
+	S_LOG_VERBOSE("Unloading terrain material.");
+}
 
 }

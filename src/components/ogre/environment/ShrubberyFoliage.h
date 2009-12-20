@@ -50,7 +50,7 @@ class FoliageLoader;
 class ShrubberyFoliage : public FoliageBase
 {
 public:
-	ShrubberyFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
+	ShrubberyFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
 	virtual ~ShrubberyFoliage();
 	
 	virtual void frameStarted(const Ogre::FrameEvent & evt);

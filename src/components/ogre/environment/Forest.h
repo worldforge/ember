@@ -38,6 +38,10 @@ namespace Ogre
 }
 namespace EmberOgre {
 
+namespace Terrain
+{
+class TerrainManager;
+}
 namespace Model {
 class ModelRepresentation;
 }
@@ -54,7 +58,7 @@ class EmberEntityLoader;
 class Forest : public Ogre::FrameListener
 {
 public:
-    Forest();
+    Forest(Terrain::TerrainManager& terrainManager);
 
     ~Forest();
 
@@ -70,7 +74,7 @@ public:
 
 protected:
 
-
+	Terrain::TerrainManager& mTerrainManager;
 	Forests::PagedGeometry *mTrees;
 	Forests::TreeLoader3D *mTreeLoader;
 	EmberEntityLoader* mEntityLoader;

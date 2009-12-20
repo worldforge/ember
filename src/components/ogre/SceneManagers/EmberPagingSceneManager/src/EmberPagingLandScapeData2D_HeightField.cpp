@@ -33,21 +33,18 @@
 #include "EmberTerrainPageBridge.h"
 
 #include "Convert.h"
-#include "EmberOgre.h"
 #include "terrain/TerrainPage.h"
-#include "terrain/TerrainManager.h"
 
 //#include <OgreCodec.h>
 //#include <OgreImage.h>
 //#include <OgreImageCodec.h>
 using namespace Ogre;
 
-
 namespace EmberOgre
 {
 
-EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager* pageMgr)
-: Ogre::PagingLandScapeData2D(pageMgr), mBridge(0)
+EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager* pageMgr) :
+	Ogre::PagingLandScapeData2D(pageMgr), mBridge(0)
 {
 	///set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
 	///in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
@@ -56,43 +53,46 @@ EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(O
 
 bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int z)
 {
-// 	assert(!mTerrainPage);
+	// 	assert(!mTerrainPage);
 	assert(!mHeightData);
 	assert(!mBridge);
-	Terrain::TerrainManager* TerrainManager = EmberOgre::getSingleton().getTerrainManager();
-	mXDimension = mZDimension = TerrainManager->getPageIndexSize();
 
-	mMaxArrayPos = mSize * mSize;
-	mHeightData = new Ogre::Real[mMaxArrayPos];
+	EmberPagingSceneManager* emberPagingSceneManager = static_cast<EmberPagingSceneManager*> (mParent->getSceneManager());
+	IPageDataProvider* provider = emberPagingSceneManager->getProvider();
+	if (provider) {
+		mXDimension = mZDimension = provider->getPageIndexSize();
 
-	mBridge = new EmberTerrainPageBridge(*this);
-	TerrainManager->setUpTerrainPageAtIndex(Ogre::Vector2(x,z), *mBridge);
+		mMaxArrayPos = mSize * mSize;
+		mHeightData = new Ogre::Real[mMaxArrayPos];
 
-	return true;
+		mBridge = new EmberTerrainPageBridge(*this);
+		provider->setUpTerrainPageAtIndex(Ogre::Vector2(x, z), *mBridge);
+
+		return true;
+	}
+	return false;
 }
 
 EmberPagingLandScapeData2D_HeightField::~EmberPagingLandScapeData2D_HeightField()
 {
 	if (mBridge) {
-// 		mTerrainPage->unregisterBridge();
+		// 		mTerrainPage->unregisterBridge();
 		delete mBridge;
 	}
-};
-
+}
+;
 
 void EmberPagingLandScapeData2D_HeightField::setMaxHeight(float maxHeight)
 {
 	///make sure it's not 0
 	mMaxheight = std::max<float>(maxHeight, 1.0f);
-	mMax = static_cast <unsigned int> (mSize * maxHeight);
+	mMax = static_cast<unsigned int> (mSize * maxHeight);
 }
-
 
 PagingLandScapeData2D* EmberPagingLandScapeData2D_HeightField::newPage()
 {
 	return new EmberPagingLandScapeData2D_HeightField(mParent);
 }
-
 
 Ogre::ColourValue EmberPagingLandScapeData2D_HeightField::getBase(const Ogre::Real& mX, const Ogre::Real& mZ) const
 {
@@ -137,9 +137,8 @@ void EmberPagingLandScapeData2D_HeightField::_load()
 void EmberPagingLandScapeData2D_HeightField::_unload()
 {
 	S_LOG_VERBOSE("Unloading terrain page at x: " << mPageX << " z:" << mPageZ << ".");
-	if (mBridge)
-	{
-// 		mTerrainPage->unregisterBridge();
+	if (mBridge) {
+		// 		mTerrainPage->unregisterBridge();
 		delete mBridge;
 	}
 	mBridge = 0;
@@ -161,6 +160,5 @@ void EmberPagingLandScapeData2D_HeightField::eventTerrainPageLoaded()
 	// notify that terrain data has been loaded
 	mParent->getSceneManager()->getPageManager()->getPage(mPageX, mPageZ, false)->eventData2DLoaded(true);
 }
-
 
 }

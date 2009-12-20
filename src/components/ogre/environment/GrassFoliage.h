@@ -51,7 +51,7 @@ class FoliageLayer;
 class GrassFoliage : public FoliageBase
 {
 public:
-	GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
+	GrassFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
 	virtual ~GrassFoliage();
 	
 	virtual void initialize();

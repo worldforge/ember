@@ -108,7 +108,7 @@ class EmberOgre
 
 	Avatar* getAvatar() const;
 	//Ogre::SceneManager* getSceneManager() const;
-	EmberOgre::Terrain::TerrainManager* getTerrainManager() const;
+	//EmberOgre::Terrain::TerrainManager* getTerrainManager() const;
 	MotionManager* getMotionManager() const;
 	//Ogre::Root* getOgreRoot() const;
 	EmberEntityFactory* getEntityFactory() const;

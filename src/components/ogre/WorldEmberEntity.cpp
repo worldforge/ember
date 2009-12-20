@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2004  Erik Hjortsberg
+ Copyright (C) 2004  Erik Hjortsberg
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -38,6 +38,10 @@
 #include "Convert.h"
 #include "framework/Exception.h"
 
+#include "TerrainPageDataProvider.h"
+#include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
+
 #include <Mercator/Shader.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
@@ -50,18 +54,13 @@
 
 #include <OgreSceneManager.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-EmberEntity(id, ty, vw, sceneManager)
-, mTerrainManager(0)
-, mFoliage(0)
-, mEnvironment(0)
-, mTerrainParser(0)
-, mFoliageInitializer(0)
-, mHasBeenInitialized(false)
+	EmberEntity(id, ty, vw, sceneManager), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*>(sceneManager)))), mFoliage(0), mEnvironment(0), mTerrainParser(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager*> (sceneManager))
 {
-	mTerrainManager = EmberOgre::getSingleton().getTerrainManager();
+	mSceneManager->registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
 	mWorldPosition.LongitudeDegrees = 0;
 	Ogre::SceneNode* worldNode = sceneManager->getRootSceneNode()->createChildSceneNode("entity_" + getId());
@@ -70,26 +69,28 @@ EmberEntity(id, ty, vw, sceneManager)
 	} else {
 		throw Ember::Exception("Could not create world node.");
 	}
-//	sceneManager->getRootSceneNode()->addChild(getSceneNode());
+	EmberOgre::getSingleton().EventTerrainManagerCreated.emit(*mTerrainManager);
+	//	sceneManager->getRootSceneNode()->addChild(getSceneNode());
 }
 
 WorldEmberEntity::~WorldEmberEntity()
 {
+	mSceneManager->registerProvider(0);
+	delete mPageDataProvider;
 	delete mFoliage;
 	delete mEnvironment;
+	delete mTerrainManager;
 }
-
-
 
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	///create the foliage
-	mFoliage = new Environment::Foliage();
+	mFoliage = new Environment::Foliage(*mTerrainManager);
 	EventFoliageCreated.emit();
 
 	EmberEntity::init(ge, fromCreateOp);
 
-	mEnvironment = new Environment::Environment(new Environment::CaelumEnvironment( EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()));
+	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()));
 	EventEnvironmentCreated.emit();
 
 	///we will wait with creating the terrain and initialing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
@@ -100,8 +101,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
 	///check for terrain updates
-	if (str == "terrain")
-	{
+	if (str == "terrain") {
 		if (mTerrainParser.get()) {
 			mTerrainParser->updateTerrain(v);
 		}
@@ -109,7 +109,8 @@ void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Messag
 	Entity::onAttrChanged(str, v);
 }
 
-void WorldEmberEntity::onMoved(){
+void WorldEmberEntity::onMoved()
+{
 	Eris::Entity::onMoved();
 }
 
@@ -146,7 +147,6 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 			mTerrainManager->prepareAllSegments();
 		}
 
-
 		///TODO: Parse world location data when it's available
 		mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
 
@@ -171,7 +171,19 @@ void WorldEmberEntity::addArea(Terrain::TerrainArea& area)
 
 void WorldEmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
 {
-    mTerrainManager->addTerrainMod(mod);
+	mTerrainManager->addTerrainMod(mod);
+}
+
+float WorldEmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
+{
+	//Note that there's no need to adjust the localPosition since the world always is at location 0,0,0 with not rotation
+	float height = 0;
+
+
+	if (mTerrainManager->getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
+		return height;
+	}
+	return EmberEntity::getHeight(localPosition);
 }
 
 Environment::Environment* WorldEmberEntity::getEnvironment() const
@@ -184,13 +196,8 @@ Environment::Foliage* WorldEmberEntity::getFoliage() const
 	return mFoliage;
 }
 
-DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs)
-: mFoliage(foliage)
-, mView(view)
-, mIntervalMs(intervalMs)
-, mMaxTimeMs(maxTimeMs)
-, mTimeout(new Eris::Timeout(intervalMs))
-, mTotalElapsedTime(0)
+DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
+	mFoliage(foliage), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
 {
 	///don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	///the main reason is that new terrain areas will invalidate the foliage causing a reload
@@ -214,7 +221,5 @@ void DelayedFoliageInitializer::timout_Expired()
 		mTimeout->reset(mIntervalMs);
 	}
 }
-
-
 
 }

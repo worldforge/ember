@@ -38,6 +38,7 @@ namespace Terrain
 {
 	class TerrainFoliageDefinition;
 	class TerrainLayerDefinition;
+	class TerrainManager;
 }
 
 namespace Environment {
@@ -61,7 +62,7 @@ public:
 	
 	Ogre::uint32 getColorAt(float x, float z);
 	
-	void configure(const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition);
+	void configure(const Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition);
 	
 protected: 
 	friend class Forests::GrassLoader<FoliageLayer>;
@@ -71,10 +72,12 @@ protected:
 	virtual unsigned int _populateGrassList(Forests::PageInfo page, float *posBuff, unsigned int grassCount);
 	Forests::GrassLoader<FoliageLayer> *parent;
 	
+	const Terrain::TerrainManager* mTerrainManager;
 	const Terrain::TerrainLayerDefinition* mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition* mFoliageDefinition;
 	float mDensity;
 	
+
 };
 }
 

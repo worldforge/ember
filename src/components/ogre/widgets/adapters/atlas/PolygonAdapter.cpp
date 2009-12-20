@@ -29,7 +29,6 @@
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/NodeAttachment.h"
-#include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/authoring/PolygonPointPickListener.h"
 #include "components/ogre/camera/MainCamera.h"
 
@@ -58,19 +57,20 @@ EntityPolygonPositionProvider::EntityPolygonPositionProvider(EmberEntity& entity
 
 float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>& localPosition)
 {
-	///TODO: refactor into a better structure, so that we don't have to know about the terrain
-	const ::EmberOgre::Terrain::TerrainManager* terrain = EmberOgre::getSingleton().getTerrainManager();
-	if (terrain) {
-		Ogre::Vector3 parentPos = Convert::toOgre(mEntity.getViewPosition());
-		Ogre::Vector3 localPos(localPosition.x(), 0, -localPosition.y());
-		localPos = Convert::toOgre(mEntity.getViewOrientation()) * localPos;
-		WFMath::Point<3> worldPos = Convert::toWF<WFMath::Point<3> >(parentPos + localPos);
-		float height = 0;
-		if (terrain->getHeight(WFMath::Point<2>(worldPos.x(), worldPos.y()), height)) {
-			return height - worldPos.z();
-		}
-	}
-	return 0;
+	return mEntity.getHeight(localPosition);
+//	///TODO: refactor into a better structure, so that we don't have to know about the terrain
+//	const ::EmberOgre::Terrain::TerrainManager* terrain = EmberOgre::getSingleton().getTerrainManager();
+//	if (terrain) {
+//		Ogre::Vector3 parentPos = Convert::toOgre(mEntity.getViewPosition());
+//		Ogre::Vector3 localPos(localPosition.x(), 0, -localPosition.y());
+//		localPos = Convert::toOgre(mEntity.getViewOrientation()) * localPos;
+//		WFMath::Point<3> worldPos = Convert::toWF<WFMath::Point<3> >(parentPos + localPos);
+//		float height = 0;
+//		if (terrain->getHeight(WFMath::Point<2>(worldPos.x(), worldPos.y()), height)) {
+//			return height - worldPos.z();
+//		}
+//	}
+//	return 0;
 }
 
 PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity) :

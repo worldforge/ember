@@ -80,7 +80,7 @@ libEmberOgre_a_SOURCES = \
 	WorldEmberEntity.cpp XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \
 	DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
 	AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp \
-	EntityObserverBase.cpp
+	EntityObserverBase.cpp TerrainPageDataProvider.cpp
 	
 # OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
@@ -165,5 +165,5 @@ noinst_HEADERS = \
 	AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h \
 	AttachmentBase.h AvatarCameraMotionHandler.h FreeFlyingCameraMotionHandler.h \
 	ICollisionDetector.h INodeProvider.h SceneNodeProvider.h IVisualizable.h IEntityVisitor.h \
-	EntityObserverBase.h
+	EntityObserverBase.h TerrainPageDataProvider.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h

@@ -73,7 +73,7 @@ public:
 	 * @param terrainLayerDefinition The terrain layer definition which is to used for generation this layer. This might contain some info needed, but the bulk of the data to be used in setting up this layer will probably be found in the foliageDefinition argument instead.
 	 * @param foliageDefinition The foliage definition which is to be used for generation of this layer. This should contain all info needed for properly setting up the layer.
 	 */
-	FoliageBase(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
+	FoliageBase(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
 	/**
 	 * @brief Dtor. This will also delete the main PagedGeomtry instance held by this class.
 	 */
@@ -84,6 +84,8 @@ public:
 	virtual void frameStarted(const Ogre::FrameEvent & evt) = 0;
 
 protected:
+
+	Terrain::TerrainManager& mTerrainManager;
 
 	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;

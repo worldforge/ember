@@ -121,6 +121,8 @@ class OpcodeCollisionDetectorVisualizer;
 
 class ShaderManager;
 
+class ConsoleObjectImpl;
+
 /**
  @brief The main class of ember. This functions as a hub for almost all subsystems.
 
@@ -171,12 +173,6 @@ public:
 	 * @return The main scene manager.
 	 */
 	Ogre::SceneManager* getSceneManager() const;
-
-	/**
-	 * @brief Gets the terrain manager.
-	 * @return The terrain manager, responsible for creating and handling the terrain.
-	 */
-	Terrain::TerrainManager* getTerrainManager() const;
 
 	/**
 	 * @brief Gets the motion manager, which is responsible for handling all motion and animations of entities.
@@ -378,11 +374,6 @@ protected:
 	EmberEntityFactory* mEmberEntityFactory;
 
 	/**
-	 * @brief Responsible for handling of terrain.
-	 */
-	Terrain::TerrainManager* mTerrainManager;
-
-	/**
 	 * @brief Responsible for handling sound loading
 	 */
 	SoundDefinitionManager* mSoundManager;
@@ -488,6 +479,11 @@ protected:
 	 * @brief The Ogre main camera. This is in most cases handled by mMainCamera.
 	 */
 	Ogre::Camera* mOgreMainCamera;
+
+	/**
+	 * @brief The main console object.
+	 */
+	ConsoleObjectImpl* mConsoleObjectImpl;
 
 	/**
 	 * @brief Gets the main Eris View instance, which is the main inteface to the world.

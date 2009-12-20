@@ -308,6 +308,14 @@ public:
 	 */
 	Ember::EntityMapping::EntityMapping* getMapping() const;
 
+
+	/**
+	 * @brief Gets the height at the local position.
+	 * @param localPosition A position local to the entity.
+	 * @return The height at the location.
+	 */
+	virtual float getHeight(const WFMath::Point<2>& localPosition) const;
+
 protected:
 
 	/**

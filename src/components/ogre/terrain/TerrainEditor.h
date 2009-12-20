@@ -42,6 +42,7 @@ namespace EmberOgre {
 class EmberEntity;
 
 namespace Terrain {
+class TerrainManager;
 class TerrainEditor;
 class TerrainEditBasePointMovement;
 class BasePointUserObject;
@@ -229,7 +230,7 @@ TerrainPosition mPosition;
 class TerrainEditor : public Ember::IInputAdapter
 {
 public:
-    TerrainEditor();
+    TerrainEditor(TerrainManager& manager);
 
     ~TerrainEditor();
 
@@ -341,6 +342,9 @@ private:
 
 	typedef std::map<std::string, BasePointUserObject*> BasePointUserObjectStore;
 	typedef std::set<BasePointUserObject*> BasePointUserObjectSet;
+
+	TerrainManager& mManager;
+
 	BasePointUserObjectStore mBasePointUserObjects;
 
 	BasePointPickListener mPickListener;

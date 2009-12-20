@@ -47,8 +47,8 @@ namespace EmberOgre {
 
 namespace Environment {
 
-GrassFoliage::GrassFoliage(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: FoliageBase(terrainLayerDefinition, foliageDefinition)
+GrassFoliage::GrassFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
+: FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition)
 , mGrass(0)
 , mGrassLoader(0)
 , mMinHeight(1.0f)
@@ -78,8 +78,8 @@ GrassFoliage::~GrassFoliage()
 void GrassFoliage::initialize()
 {
 	Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();
-	mPagedGeometry = new ::Forests::PagedGeometry(camera, EmberOgre::getSingleton().getTerrainManager()->getFoliageBatchSize());
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainManager()->getTerrainInfo().getWorldSizeInIndices();
+	mPagedGeometry = new ::Forests::PagedGeometry(camera, mTerrainManager.getFoliageBatchSize());
+	const WFMath::AxisBox<2>& worldSize = mTerrainManager.getTerrainInfo().getWorldSizeInIndices();
 
 	::Forests::TBounds ogreBounds(Convert::toOgre(worldSize));
 	if (ogreBounds.width() != ogreBounds.height()) {
@@ -98,12 +98,12 @@ void GrassFoliage::initialize()
 	//Create a GrassLoader object
 	mGrassLoader = new ::Forests::GrassLoader<FoliageLayer>(mPagedGeometry);
  	mPagedGeometry->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load
-	mGrassLoader->setHeightFunction(&getTerrainHeight);
+	mGrassLoader->setHeightFunction(&getTerrainHeight, &mTerrainManager);
 
 	//Add some grass to the scene with GrassLoader::addLayer()
 	FoliageLayer *l = mGrassLoader->addLayer(mFoliageDefinition.getParameter("material"));
 
-	l->configure(&mTerrainLayerDefinition, &mFoliageDefinition);
+	l->configure(&mTerrainManager, &mTerrainLayerDefinition, &mFoliageDefinition);
 	//Configure the grass layer properties (size, density, animation properties, fade settings, etc.)
 	l->setMinimumSize(mMinWidth, mMinHeight);
 	l->setMaximumSize(mMaxWidth, mMaxHeight);

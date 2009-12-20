@@ -28,6 +28,7 @@
 namespace Ogre
 {
 class Entity;
+class SceneManager;
 }
 
 namespace EmberOgre {
@@ -36,6 +37,7 @@ namespace Terrain
 {
 class TerrainFoliageDefinition;
 class TerrainLayerDefinition;
+class TerrainManager;
 }
 
 namespace Environment {
@@ -46,14 +48,14 @@ namespace Environment {
 class FoliageLoader : public ::Forests::PageLoader
 {
 public:
-    FoliageLoader(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
+    FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
 
     virtual ~FoliageLoader();
 
 	virtual void loadPage(::Forests::PageInfo &page);
 
 protected:
-
+	Terrain::TerrainManager& mTerrainManager;
 	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;
 	

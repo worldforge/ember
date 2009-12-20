@@ -24,20 +24,17 @@
 #include "config.h"
 #endif
 
-#include "framework/LoggingInstance.h"
-#include "services/config/ConfigService.h"
 
 #include "Foliage.h"
-#include "FoliageLayer.h"
 #include "FoliageBase.h"
 #include "GrassFoliage.h"
 #include "ShrubberyFoliage.h"
 
-#include "components/ogre/EmberOgre.h"
-
-#include "../EmberOgre.h"
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainLayerDefinitionManager.h"
+
+#include "framework/LoggingInstance.h"
+#include "services/config/ConfigService.h"
 
 #include <OgreRoot.h>
 
@@ -50,7 +47,8 @@ namespace EmberOgre {
 namespace Environment {
 
 
-Foliage::Foliage()
+Foliage::Foliage(Terrain::TerrainManager& terrainManager)
+: mTerrainManager(terrainManager)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -76,9 +74,9 @@ void Foliage::initialize()
 			FoliageBase* foliageBase(0);
 			try {
 				if (J->getRenderTechnique() == "grass") {
-					foliageBase = new GrassFoliage(*layerDef, *J);
+					foliageBase = new GrassFoliage(mTerrainManager, *layerDef, *J);
 				} else if (J->getRenderTechnique() == "shrubbery") {
-					foliageBase = new ShrubberyFoliage(*layerDef, *J);
+					foliageBase = new ShrubberyFoliage(mTerrainManager, *layerDef, *J);
 				}
 				if (foliageBase) {
 					foliageBase->initialize();

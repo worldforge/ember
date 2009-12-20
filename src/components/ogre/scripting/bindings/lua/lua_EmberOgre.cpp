@@ -3963,14 +3963,16 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00(lua_State* tolu
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
+     !tolua_isusertype(tolua_S,2,"EmberOgre::Terrain::TerrainManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
+  EmberOgre::Terrain::TerrainManager* manager = ((EmberOgre::Terrain::TerrainManager*)  tolua_tousertype(tolua_S,2,0));
   {
-   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor();
+   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor(*manager);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainEditor");
   }
  }
@@ -3991,14 +3993,16 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00_local(lua_State
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
+     !tolua_isusertype(tolua_S,2,"EmberOgre::Terrain::TerrainManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
+  EmberOgre::Terrain::TerrainManager* manager = ((EmberOgre::Terrain::TerrainManager*)  tolua_tousertype(tolua_S,2,0));
   {
-   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor();
+   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor(*manager);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Terrain::TerrainEditor");
   }
  }
@@ -21513,38 +21517,6 @@ static int tolua_EmberOgre_EmberOgre_EmberOgre_getAvatar00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getTerrainManager of class  EmberOgre::EmberOgre */
-#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberOgre_getTerrainManager00
-static int tolua_EmberOgre_EmberOgre_EmberOgre_getTerrainManager00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const EmberOgre::EmberOgre",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const EmberOgre::EmberOgre* self = (const EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTerrainManager'",NULL);
-#endif
-  {
-   EmberOgre::Terrain::TerrainManager* tolua_ret = (EmberOgre::Terrain::TerrainManager*)  self->getTerrainManager();
-   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainManager");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getTerrainManager'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getMotionManager of class  EmberOgre::EmberOgre */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_EmberOgre_getMotionManager00
 static int tolua_EmberOgre_EmberOgre_EmberOgre_getMotionManager00(lua_State* tolua_S)
@@ -23695,7 +23667,6 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
    tolua_beginmodule(tolua_S,"EmberOgre");
     tolua_function(tolua_S,"getSingleton",tolua_EmberOgre_EmberOgre_EmberOgre_getSingleton00);
     tolua_function(tolua_S,"getAvatar",tolua_EmberOgre_EmberOgre_EmberOgre_getAvatar00);
-    tolua_function(tolua_S,"getTerrainManager",tolua_EmberOgre_EmberOgre_EmberOgre_getTerrainManager00);
     tolua_function(tolua_S,"getMotionManager",tolua_EmberOgre_EmberOgre_EmberOgre_getMotionManager00);
     tolua_function(tolua_S,"getEntityFactory",tolua_EmberOgre_EmberOgre_EmberOgre_getEntityFactory00);
     tolua_function(tolua_S,"getMainCamera",tolua_EmberOgre_EmberOgre_EmberOgre_getMainCamera00);

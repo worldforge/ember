@@ -28,7 +28,6 @@
 #include "pagedgeometry/include/PagedGeometry.h"
 #include "pagedgeometry/include/PropertyMaps.h"
 #include "../Convert.h"
-#include "../EmberOgre.h"
 #include "../terrain/PlantAreaQuery.h"
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainPageFoliage.h"
@@ -46,7 +45,7 @@ namespace EmberOgre {
 namespace Environment {
 
 FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLayer> *ldr)
-: mTerrainLayerDefinition(0), mFoliageDefinition(0)
+: mTerrainManager(0), mTerrainLayerDefinition(0), mFoliageDefinition(0)
 {
 	FoliageLayer::geom = geom;
 	FoliageLayer::parent = ldr;
@@ -70,8 +69,9 @@ FoliageLayer::~FoliageLayer()
 {
 }
 
-void FoliageLayer::configure(const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition)
+void FoliageLayer::configure(const Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition)
 {
+	mTerrainManager = terrainManager;
 	mTerrainLayerDefinition = terrainLayerDefinition;
 	mFoliageDefinition = foliageDefinition;
 	mDensity = atof(foliageDefinition->getParameter("density").c_str());
@@ -87,7 +87,7 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 {
 	unsigned int finalGrassCount = 0;
 	TerrainPosition wfPos(Convert::toWF<TerrainPosition>(page.centerPoint));
-	const TerrainPage* terrainPage = EmberOgre::getSingleton().getTerrainManager()->getTerrainPageAtPosition(wfPos);
+	const TerrainPage* terrainPage = mTerrainManager->getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
 		Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
@@ -120,13 +120,11 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 
 Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 {
-	///make these static for fast lookup
-	static Ogre::Vector2 pos;
-	static Ogre::uint32 colour;
-	static const Terrain::TerrainManager* TerrainManager(EmberOgre::getSingleton().getTerrainManager());
+	Ogre::Vector2 pos;
+	Ogre::uint32 colour;
 	pos.x = x;
 	pos.y = z;
-	TerrainManager->getShadowColourAt(pos, colour);
+	mTerrainManager->getShadowColourAt(pos, colour);
 	return colour;
 }
 

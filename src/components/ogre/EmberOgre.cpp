@@ -73,7 +73,6 @@
 // ------------------------------
 // Include OGRE Ember client files
 // ------------------------------
-#include "terrain/TerrainManager.h"
 #include "terrain/TerrainLayerDefinitionManager.h"
 
 #include "sound/SoundDefinitionManager.h"
@@ -163,7 +162,7 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-	mAvatar(0), mMovementController(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mEmberEntityFactory(0), mTerrainManager(0), mSoundManager(0), mMotionManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0), mMoveManager(0),
+	mAvatar(0), mMovementController(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mEmberEntityFactory(0), mSoundManager(0), mMotionManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0), mMoveManager(0), mConsoleObjectImpl(0),
 	//mJesus(0),
 			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 			//mCollisionManager(0),
@@ -194,7 +193,6 @@ EmberOgre::~EmberOgre()
 		mRoot->removeFrameListener(mMotionManager);
 	}
 	delete mMotionManager;
-	delete mTerrainManager;
 
 	Ember::EmberServices::getSingleton().getSoundService()->setResourceProvider(0);
 	delete mSoundManager;
@@ -230,13 +228,14 @@ EmberOgre::~EmberOgre()
 	///delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
 
+	delete mConsoleObjectImpl;
+
 	/*	delete mOgreResourceLoader;
 	 //	mSceneMgr->shutdown();
 	 //		delete mWorldView;
 	 //mSceneMgr->removeAllCameras();
 	 //		mSceneMgr->clearScene();
 	 delete mGUIManager;
-	 delete mTerrainManager;
 	 delete mMotionManager;
 	 //	if (mAvatar)
 	 //		delete mAvatar;
@@ -438,15 +437,13 @@ bool EmberOgre::setup()
 		S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
 	}
 
-	mTerrainManager = new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(mSceneMgr));
-	EventTerrainManagerCreated.emit(*mTerrainManager);
 	mMotionManager = new MotionManager();
 	EventMotionManagerCreated.emit(*mMotionManager);
 
 	mMoveManager = new Authoring::EntityMoveManager();
 
 	mRoot->addFrameListener(mMotionManager);
-	new ConsoleObjectImpl();
+	mConsoleObjectImpl = new ConsoleObjectImpl();
 
 	try {
 		mGUIManager->initialize();
@@ -639,11 +636,6 @@ Avatar* EmberOgre::getAvatar() const
 Ogre::SceneManager* EmberOgre::getSceneManager() const
 {
 	return mSceneMgr;
-}
-
-Terrain::TerrainManager* EmberOgre::getTerrainManager() const
-{
-	return mTerrainManager;
 }
 
 MotionManager* EmberOgre::getMotionManager() const

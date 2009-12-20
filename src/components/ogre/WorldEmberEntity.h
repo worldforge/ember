@@ -28,6 +28,7 @@ class View;
 namespace EmberOgre
 {
 
+class EmberPagingSceneManager;
 namespace Environment
 {
 class Environment;
@@ -41,7 +42,7 @@ class TerrainArea;
 class TerrainParser;
 }
 class DelayedFoliageInitializer;
-
+class TerrainPageDataProvider;
 
 class EmberEntity;
 
@@ -113,6 +114,14 @@ public:
 	const WorldPosition& getWorldPosition() const;
 
 	/**
+	 * @brief Gets the height at the local position.
+	 * @param localPosition A position local to the entity.
+	 * @return The height at the location.
+	 */
+	virtual float getHeight(const WFMath::Point<2>& localPosition) const;
+
+
+	/**
 	 * @brief Emitted when the foliage has been created.
 	 */
 	sigc::signal<void> EventFoliageCreated;
@@ -123,7 +132,6 @@ public:
 	sigc::signal<void> EventEnvironmentCreated;
 
 protected:
-	Terrain::TerrainManager* mTerrainManager;
 
 	virtual void init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp);
 
@@ -145,6 +153,11 @@ protected:
 	 * @param mod
 	 */
 	void addTerrainMod(Terrain::TerrainMod* mod);
+
+	/**
+	 * @brief The terrain manager, owned by this instance.
+	 */
+	Terrain::TerrainManager* mTerrainManager;
 
 	/**
 	 * @brief The foliage system which provides different foliage functions.
@@ -176,6 +189,16 @@ protected:
 	 * @brief The position of the world on a spherical (planetoid) body.
 	 */
 	WorldPosition mWorldPosition;
+
+	/**
+	 * @brief The page data provider for the EmberPagingSceneManager.
+	 */
+	TerrainPageDataProvider* mPageDataProvider;
+
+	/**
+	 * @brief The main scene manager.
+	 */
+	EmberPagingSceneManager* mSceneManager;
 
 };
 

@@ -29,6 +29,10 @@
 
 namespace EmberOgre {
 class ICollisionDetector;
+namespace Terrain
+{
+class TerrainManager;
+}
 
 namespace Environment {
 
@@ -129,7 +133,7 @@ public:
 class Environment : public Ember::ConsoleObject
 {
 public:
-    Environment(IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
+    Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
 
     ~Environment();
 

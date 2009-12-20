@@ -30,6 +30,8 @@ class Camera;
 namespace EmberOgre {
 namespace Terrain {
 
+class TerrainManager;
+
 /**
 Acts as a bridge between the Mercator terrain system and the Ogre terrain rendering engine. We don't want to directly interface with the terrain rendering system since we want to have the ability to replace or alter that, thus we use an instance of this whenever we need to interact directly to it.
 
@@ -131,6 +133,7 @@ public:
 	 This is to prevent an empty world as the pages are loaded.
 	 */
 	virtual void loadFirstPage() = 0;
+
 };
 }
 }

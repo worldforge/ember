@@ -28,7 +28,6 @@
 #include "../terrain/TerrainLayerDefinition.h"
 
 #include "../Convert.h"
-#include "../EmberOgre.h"
 #include "../terrain/PlantAreaQuery.h"
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainPageFoliage.h"
@@ -45,14 +44,14 @@ namespace EmberOgre {
 
 namespace Environment {
 
-FoliageLoader::FoliageLoader(const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: mTerrainLayerDefinition(terrainLayerDefinition)
+FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
+: mTerrainManager(terrainManager)
+, mTerrainLayerDefinition(terrainLayerDefinition)
 , mFoliageDefinition(foliageDefinition)
 , mMinScale(1)
 , mMaxScale(1)
 {
-	Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
-	mEntity = sceneMgr->createEntity(std::string("shrubbery_") + mFoliageDefinition.getPlantType(), mFoliageDefinition.getParameter("mesh"));
+	mEntity = sceneMgr.createEntity(std::string("shrubbery_") + mFoliageDefinition.getPlantType(), mFoliageDefinition.getParameter("mesh"));
 
 	mMinScale = atof(mFoliageDefinition.getParameter("minScale").c_str());
 	mMaxScale = atof(mFoliageDefinition.getParameter("maxScale").c_str());
@@ -69,10 +68,9 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 	///make these static for fast lookup
 	static Ogre::Vector2 pos2D;
 	static Ogre::ColourValue colour(1,1,1,1);
-	static const Terrain::TerrainManager* TerrainManager(EmberOgre::getSingleton().getTerrainManager());
 
 	TerrainPosition wfPos(Convert::toWF<TerrainPosition>(page.centerPoint));
-	const TerrainPage* terrainPage = TerrainManager->getTerrainPageAtPosition(wfPos);
+	const TerrainPage* terrainPage = mTerrainManager.getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
 		Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
@@ -87,7 +85,7 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 		terrainPage->getPlantsForArea(query);
 		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
 			float height = 0;
-			if (TerrainManager->getHeight(TerrainPosition(I->x + ogrePageExtent.left, -(I->y + ogrePageExtent.top)), height)) {
+			if (mTerrainManager.getHeight(TerrainPosition(I->x + ogrePageExtent.left, -(I->y + ogrePageExtent.top)), height)) {
 				Ogre::Vector3 pos(I->x + ogrePageExtent.left, height, I->y + ogrePageExtent.top);
 
 				float scale = Ogre::Math::RangeRandom(mMinScale, mMaxScale);

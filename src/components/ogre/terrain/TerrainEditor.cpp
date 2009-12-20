@@ -162,7 +162,7 @@ const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 }
 
 
-TerrainEditor::TerrainEditor() : mPickListener(this), mCurrentUserObject(0),mOverlayNode(0), mVisible(false)
+TerrainEditor::TerrainEditor(TerrainManager& manager) : mManager(manager), mPickListener(this), mCurrentUserObject(0),mOverlayNode(0), mVisible(false)
 ,mMovementRadiusInMeters(0)
 ,mFalloff(0)
 {
@@ -215,7 +215,7 @@ void TerrainEditor::createOverlay()
 
 		mOverlayNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 
-		const Mercator::Terrain& terrain = EmberOgre::getSingleton().getTerrainManager()->getTerrain();
+		const Mercator::Terrain& terrain = mManager.getTerrain();
 		const Mercator::Terrain::Pointstore &points = terrain.getPoints();
 		int x, y;
 		for (Mercator::Terrain::Pointstore::const_iterator I = points.begin(); I != points.end(); ++I) {
@@ -430,7 +430,7 @@ void TerrainEditor::sendChangesToServer()
 			Mercator::BasePoint bp;
 			WFMath::CoordType basepointX = I->second.x();
 			WFMath::CoordType basepointY = I->second.y();
-			EmberOgre::getSingleton().getTerrainManager()->getTerrain().getBasePoint(static_cast<int>(basepointX),static_cast<int>(basepointY), bp);
+			mManager.getTerrain().getBasePoint(static_cast<int>(basepointX),static_cast<int>(basepointY), bp);
 
 			Atlas::Message::ListType & point =
 					(pointMap[I->first] = Atlas::Message::ListType(3)).asList();
@@ -521,13 +521,12 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 // 	std::set<Ogre::PagingLandScapeTile*> tilesToUpdate;
 	std::set<TerrainPage*> pagesToUpdate;
 // 	EmberPagingSceneManager* sceneMgr = EmberOgre::getSingleton().getTerrainManager()->getEmberSceneManager();
-	TerrainManager* TerrainManager = EmberOgre::getSingleton().getTerrainManager();
 	for(TerrainEditAction::MovementStore::const_iterator I = action.getMovements().begin(); I != action.getMovements().end(); ++I)
 	{
 		Mercator::BasePoint bp;
 		int basepointX = static_cast<int>(I->getPosition().x());
 		int basepointY = static_cast<int>(I->getPosition().y());
-		EmberOgre::getSingleton().getTerrainManager()->getTerrain().getBasePoint(basepointX,basepointY, bp);
+		mManager.getTerrain().getBasePoint(basepointX,basepointY, bp);
 		///check if we should do a reverse action (which is done when an action is undone)
         bp.height() = bp.height() + (reverse ? -I->getVerticalMovement() : I->getVerticalMovement());
 		//EmberOgre::getSingleton().getTerrainManager()->getTerrain().setBasePoint(basepointX, basepointY, bp);
@@ -555,7 +554,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 		for (int i = -65; i < 66; i += 64) {
 			for (int j = -65; j < 66; j += 64) {
 				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
-				page = TerrainManager->getTerrainPageAtPosition(position);
+				page = mManager.getTerrainPageAtPosition(position);
 				if (page) {
 					pagesToUpdate.insert(page);
 				}
@@ -570,7 +569,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 
 	}
 
-	EmberOgre::getSingleton().getTerrainManager()->updateTerrain(pointStore);
+	mManager.updateTerrain(pointStore);
 
 
 	///reload all shader textures of the affected pages

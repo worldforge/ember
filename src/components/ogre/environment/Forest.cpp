@@ -49,8 +49,8 @@ namespace EmberOgre
 namespace Environment
 {
 
-Forest::Forest() :
-	mTrees(0), mTreeLoader(0), mEntityLoader(0)
+Forest::Forest(Terrain::TerrainManager& terrainManager) :
+	mTerrainManager(terrainManager), mTrees(0), mTreeLoader(0), mEntityLoader(0)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -66,7 +66,7 @@ Forest::~Forest()
 void Forest::initialize()
 {
 	S_LOG_INFO("Initializing forest.");
-	const WFMath::AxisBox<2>& worldSize = EmberOgre::getSingleton().getTerrainManager()->getTerrainInfo().getWorldSizeInIndices();
+	const WFMath::AxisBox<2>& worldSize = mTerrainManager.getTerrainInfo().getWorldSizeInIndices();
 	if (worldSize.upperBound(0) - worldSize.lowerBound(0) > 0 && worldSize.upperBound(1) - worldSize.lowerBound(1) > 0) {
 
 		Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();

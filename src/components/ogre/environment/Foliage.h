@@ -37,11 +37,11 @@ namespace Terrain
 {
 class TerrainFoliageDefinition;
 class TerrainLayerDefinition;
+class TerrainManager;
 }
 
 namespace Environment {
 
-class FoliageLayer;
 class FoliageImpl;
 class FoliageBase;
 
@@ -56,7 +56,7 @@ public:
 	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
 	typedef std::vector<FoliageBase*> FoliageStore;
 
-	Foliage();
+	Foliage(Terrain::TerrainManager& terrainManager);
 
 	~Foliage();
 
@@ -65,6 +65,9 @@ public:
 	virtual bool frameStarted(const Ogre::FrameEvent& evt);
 
 protected:
+
+	Terrain::TerrainManager& mTerrainManager;
+
 	EntityStore mEntities;
 
 	FoliageImpl* mImpl;

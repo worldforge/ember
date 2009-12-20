@@ -36,13 +36,13 @@ namespace EmberOgre {
 
 namespace Environment {
 
-Environment::Environment(IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider):
+Environment::Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider):
  SetTime("set_time",this, "Sets the time. parameters: <hour> <minute>")
 , SetFogDensity("set_fogdensity",this, "Sets the fog density.")
 , SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>")
 , mProvider(provider)
 , mFallbackProvider(fallbackProvider)
-, mForest(new Forest())
+, mForest(new Forest(terrainManager))
 {
 }
 
