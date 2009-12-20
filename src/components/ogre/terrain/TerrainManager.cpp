@@ -125,6 +125,9 @@ TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
 TerrainManager::~TerrainManager()
 {
 
+	//Deleting the task queue will purge it, making sure that all jobs are processed first.
+	delete mTaskQueue;
+
 	for (PageVector::iterator J = mPages.begin(); J != mPages.end(); ++J) {
 		delete (*J);
 	}

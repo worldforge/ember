@@ -393,7 +393,7 @@ protected:
 	/**
 	 * @brief The task queue we'll use for all background terrain updates.
 	 */
-	std::auto_ptr<Ember::Tasks::TaskQueue> mTaskQueue;
+	Ember::Tasks::TaskQueue* mTaskQueue;
 
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
