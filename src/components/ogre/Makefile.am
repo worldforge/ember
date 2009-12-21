@@ -48,7 +48,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/HeightMapBuffer.cpp \
 	terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp \
 	terrain/TerrainAreaRemoveTask.cpp terrain/TerrainModAddTask.cpp terrain/TerrainModChangeTask.cpp terrain/TerrainModRemoveTask.cpp \
-	terrain/GeometryUpdateTask.cpp \
+	terrain/GeometryUpdateTask.cpp terrain/TerrainModTaskBase.cpp \
 \
 	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -130,7 +130,7 @@ noinst_HEADERS = \
 	terrain/HeightMapSegment.h terrain/HeightMap.h terrain/Buffer.h terrain/HeightMapBuffer.h \
 	terrain/HeightMapBufferProvider.h terrain/HeightMapUpdateTask.h terrain/TerrainAreaTaskBase.h terrain/TerrainAreaAddTask.h \
 	terrain/TerrainAreaRemoveTask.h terrain/TerrainModAddTask.h terrain/TerrainModChangeTask.h terrain/TerrainModRemoveTask.h \
-	terrain/GeometryUpdateTask.h \
+	terrain/GeometryUpdateTask.h terrain/TerrainModTaskBase.h \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \

@@ -19,27 +19,22 @@
 #ifndef TERRAINMODCHANGETASK_H_
 #define TERRAINMODCHANGETASK_H_
 
-#include "framework/tasks/ITask.h"
-#include "Types.h"
-
-namespace Mercator
-{
-class Terrain;
-class TerrainMod;
-}
+#include "TerrainModTaskBase.h"
 
 namespace EmberOgre
 {
 
 namespace Terrain
 {
-class TerrainManager;
-class TerrainMod;
 
-class TerrainModChangeTask: public Ember::Tasks::ITask
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Task for changing an existing terrain mod.
+ */
+class TerrainModChangeTask: public TerrainModTaskBase
 {
 public:
-	TerrainModChangeTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod);
+	TerrainModChangeTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod);
 	virtual ~TerrainModChangeTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -47,13 +42,19 @@ public:
 	virtual void executeTaskInMainThread();
 
 private:
-	Mercator::Terrain& mTerrain;
-	TerrainMod& mTerrainMod;
-	TerrainManager& mManager;
-	TerrainModMap& mTerrainMods;
+
+	/**
+	 * @brief A reference to the existing mod. This is used for telling Mercator what mod to remove.
+	 */
 	Mercator::TerrainMod* mExistingMod;
 
+	/**
+	 * @brief The updates positions after removing and adding the mods. These will be used for updating the terrain.
+	 */
 	std::vector<TerrainPosition> mUpdatedPositions;
+	/**
+	 * @brief Stores the applied mod, which will be a copy of the existing mod.
+	 */
 	Mercator::TerrainMod* mAppliedMod;
 };
 

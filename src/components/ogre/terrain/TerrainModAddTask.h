@@ -18,26 +18,23 @@
 
 #ifndef TERRAINMODADDTASK_H_
 #define TERRAINMODADDTASK_H_
-#include "framework/tasks/ITask.h"
-#include "Types.h"
+#include "TerrainModTaskBase.h"
 
-namespace Mercator
-{
-class TerrainMod;
-}
 
 namespace EmberOgre
 {
 
 namespace Terrain
 {
-class TerrainManager;
-class TerrainMod;
 
-class TerrainModAddTask: public Ember::Tasks::ITask
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Task for adding a new terrain mod.
+ */
+class TerrainModAddTask: public TerrainModTaskBase
 {
 public:
-	TerrainModAddTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap& terrainMods);
+	TerrainModAddTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
 	virtual ~TerrainModAddTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -45,11 +42,10 @@ public:
 	virtual void executeTaskInMainThread();
 
 private:
-	Mercator::Terrain& mTerrain;
-	TerrainMod& mTerrainMod;
-	TerrainManager& mManager;
-	TerrainModMap& mTerrainMods;
 
+	/**
+	 * @brief Stores the applied mod, which will be a copy of the existing mod.
+	 */
 	Mercator::TerrainMod* mAppliedMod;
 };
 

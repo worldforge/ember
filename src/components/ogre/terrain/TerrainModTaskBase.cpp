@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2009 erik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,9 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef TERRAINMODREMOVETASK_H_
-#define TERRAINMODREMOVETASK_H_
-
 #include "TerrainModTaskBase.h"
 
 namespace EmberOgre
@@ -26,29 +23,17 @@ namespace EmberOgre
 
 namespace Terrain
 {
-class TerrainManager;
-class TerrainMod;
 
-/**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Task for removing terrain mods.
- */
-class TerrainModRemoveTask: public TerrainModTaskBase
+TerrainModTaskBase::TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods) :
+	mTerrain(terrain), mTerrainMod(terrainMod), mEntityId(entityId), mManager(manager), mTerrainMods(terrainMods)
 {
-public:
-	TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
-	virtual ~TerrainModRemoveTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+}
 
-	virtual void executeTaskInMainThread();
-
-private:
-
-};
-
+TerrainModTaskBase::~TerrainModTaskBase()
+{
 }
 
 }
 
-#endif /* TERRAINMODREMOVETASK_H_ */
+}

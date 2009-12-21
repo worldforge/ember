@@ -29,8 +29,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap& terrainMods) :
-	mTerrain(terrain), mTerrainMod(terrainMod), mManager(manager), mTerrainMods(terrainMods), mAppliedMod(0)
+TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods) :
+TerrainModTaskBase::TerrainModTaskBase(terrain, terrainMod, entityId, manager, terrainMods), mAppliedMod(0)
 {
 
 }
@@ -42,14 +42,14 @@ TerrainModAddTask::~TerrainModAddTask()
 void TerrainModAddTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
 	/// We need to save this pointer to use when the modifier is changed or deleted
-	mAppliedMod = mTerrain.addMod(*mTerrainMod.getMercatorMod());
+	mAppliedMod = mTerrain.addMod(*mTerrainMod);
 
 }
 
 void TerrainModAddTask::executeTaskInMainThread()
 {
 	if (mAppliedMod) {
-		mTerrainMods.insert(TerrainModMap::value_type(mTerrainMod.getErisMod()->getEntity()->getId(), mAppliedMod));
+		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mAppliedMod));
 
 		std::vector<TerrainPosition> updatedPositions;
 		updatedPositions.push_back(TerrainPosition(mAppliedMod->bbox().getCenter().x(), mAppliedMod->bbox().getCenter().y()));

@@ -30,8 +30,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, TerrainMod& terrainMod, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod) :
-	mTerrain(terrain), mTerrainMod(terrainMod), mManager(manager), mTerrainMods(terrainMods), mExistingMod(existingMod), mAppliedMod(0)
+TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod) :
+	TerrainModTaskBase::TerrainModTaskBase(terrain, terrainMod, entityId, manager, terrainMods), mExistingMod(existingMod), mAppliedMod(0)
 {
 
 }
@@ -48,7 +48,7 @@ void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecu
 		mTerrain.removeMod(mExistingMod);
 	}
 
-	mAppliedMod = mTerrain.addMod(*mTerrainMod.getMercatorMod());
+	mAppliedMod = mTerrain.addMod(*mTerrainMod);
 	if (mAppliedMod) {
 		mUpdatedPositions.push_back(TerrainPosition(mAppliedMod->bbox().getCenter().x(), mAppliedMod->bbox().getCenter().y()));
 	}
@@ -57,10 +57,10 @@ void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecu
 
 void TerrainModChangeTask::executeTaskInMainThread()
 {
-	mTerrainMods.erase(mTerrainMod.getErisMod()->getEntity()->getId());
+	mTerrainMods.erase(mEntityId);
 
 	if (mAppliedMod) {
-		mTerrainMods.insert(TerrainModMap::value_type(mTerrainMod.getErisMod()->getEntity()->getId(), mAppliedMod));
+		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mAppliedMod));
 	}
 	mManager.reloadTerrain(mUpdatedPositions);
 }
