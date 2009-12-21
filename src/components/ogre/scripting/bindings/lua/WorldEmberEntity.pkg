@@ -17,6 +17,13 @@ class WorldEmberEntity : public EmberEntity {
 	EmberOgre::Environment::Foliage* getFoliage() const;
 	
 	/**
+	 * @brief Accessor for the terrain manager.
+	 * @returns The terrain manager.
+	 */
+	Terrain::TerrainManager& getTerrainManager();
+	
+	
+	/**
 	Emitted when the foliage has been created.
 	*/
 	sigc::signal<void> EventFoliageCreated;

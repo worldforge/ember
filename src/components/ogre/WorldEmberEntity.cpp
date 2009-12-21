@@ -196,6 +196,12 @@ Environment::Foliage* WorldEmberEntity::getFoliage() const
 	return mFoliage;
 }
 
+Terrain::TerrainManager& WorldEmberEntity::getTerrainManager()
+{
+	return *mTerrainManager;
+}
+
+
 DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
 	mFoliage(foliage), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
 {

@@ -120,6 +120,12 @@ public:
 	 */
 	virtual float getHeight(const WFMath::Point<2>& localPosition) const;
 
+	/**
+	 * @brief Accessor for the terrain manager.
+	 * @returns The terrain manager.
+	 */
+	Terrain::TerrainManager& getTerrainManager();
+
 
 	/**
 	 * @brief Emitted when the foliage has been created.

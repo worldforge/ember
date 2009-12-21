@@ -69,40 +69,51 @@ function TerrainEditor.Radius_ValueChanged(args)
 end
 
 function TerrainEditor.buildWidget()
-	TerrainEditor.widget = guiManager:createWidget()
-	TerrainEditor.widget:loadMainSheet("TerrainEditor.layout", "TerrainEditor/")
+	local entityFactory = emberOgre:getEntityFactory()
+	if entityFactory ~= nil then
+		local worldEntity = entityFactory:getWorld()
+		if worldEntity ~= nil then
+			local terrainManager = worldEntity:getTerrainManager()
+			local mainCamera = emberOgre:getMainCamera()
+			if mainCamera ~= nil then
+				TerrainEditor.widget = guiManager:createWidget()
+				TerrainEditor.widget:loadMainSheet("TerrainEditor.layout", "TerrainEditor/")
+				
+				TerrainEditor.heightSpinner = TerrainEditor.widget:getWindow("Height")
+				TerrainEditor.heightSpinner = CEGUI.toEditbox(TerrainEditor.heightSpinner)
+				
+				TerrainEditor.radiusSlider = TerrainEditor.widget:getWindow("Radius")
+				TerrainEditor.radiusSlider = CEGUI.toSlider(TerrainEditor.radiusSlider)
 	
-	TerrainEditor.heightSpinner = TerrainEditor.widget:getWindow("Height")
-	TerrainEditor.heightSpinner = CEGUI.toEditbox(TerrainEditor.heightSpinner)
+				TerrainEditor.editor = EmberOgre.Terrain.TerrainEditor:new_local(terrainManager, mainCamera)
+				TerrainEditor.editor:createOverlay()
+				TerrainEditor.editor:showOverlay()
+				
+				connect(TerrainEditor.connectors, TerrainEditor.editor.EventPickedBasePoint, "TerrainEditor.pickedBasePoint")
+				connect(TerrainEditor.connectors, TerrainEditor.editor.EventSelectedBasePointUpdatedPosition, "TerrainEditor.selectedBasePointUpdatedPosition")
+				
+				--TerrainEditor.heightSpinner:subscribeEvent("ValueChanged", "TerrainEditor.HeightSpinner_ValueChanged")
+				
+				TerrainEditor.showOverlayButton = TerrainEditor.widget:getWindow("ShowOverlayButton")
+				TerrainEditor.showOverlayButton = CEGUI.toPushButton(TerrainEditor.showOverlayButton)
+				TerrainEditor.showOverlayButton:subscribeEvent("Clicked", "TerrainEditor.ShowOverlayButton_Click")
+				
+				--hook up the undo and redo buttons
+				TerrainEditor.widget:getWindow("UndoButton"):subscribeEvent("Clicked", "TerrainEditor.UndoButton_Click")
+				TerrainEditor.widget:getWindow("RedoButton"):subscribeEvent("Clicked", "TerrainEditor.RedoButton_Click")
+				
+				TerrainEditor.widget:getMainWindow():subscribeEvent("Hidden", "TerrainEditor.MainWindow_Hidden")
+				
+				TerrainEditor.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", "TerrainEditor.SendToServerButton_Click")
+				
+				
+				TerrainEditor.widget:registerConsoleVisibilityToggleCommand("terrainEditor")
+				TerrainEditor.widget:enableCloseButton()
+				--TerrainEditor.widget:hide()
+			end
+		end
+	end
 	
-	TerrainEditor.radiusSlider = TerrainEditor.widget:getWindow("Radius")
-	TerrainEditor.radiusSlider = CEGUI.toSlider(TerrainEditor.radiusSlider)
-	
-	TerrainEditor.editor = EmberOgre.Terrain.TerrainEditor:new_local()
-	TerrainEditor.editor:createOverlay()
-	TerrainEditor.editor:showOverlay()
-	
-	connect(TerrainEditor.connectors, TerrainEditor.editor.EventPickedBasePoint, "TerrainEditor.pickedBasePoint")
-	connect(TerrainEditor.connectors, TerrainEditor.editor.EventSelectedBasePointUpdatedPosition, "TerrainEditor.selectedBasePointUpdatedPosition")
-	
-	--TerrainEditor.heightSpinner:subscribeEvent("ValueChanged", "TerrainEditor.HeightSpinner_ValueChanged")
-	
-	TerrainEditor.showOverlayButton = TerrainEditor.widget:getWindow("ShowOverlayButton")
-	TerrainEditor.showOverlayButton = CEGUI.toPushButton(TerrainEditor.showOverlayButton)
-	TerrainEditor.showOverlayButton:subscribeEvent("Clicked", "TerrainEditor.ShowOverlayButton_Click")
-	
-	--hook up the undo and redo buttons
-	TerrainEditor.widget:getWindow("UndoButton"):subscribeEvent("Clicked", "TerrainEditor.UndoButton_Click")
-	TerrainEditor.widget:getWindow("RedoButton"):subscribeEvent("Clicked", "TerrainEditor.RedoButton_Click")
-	
-	TerrainEditor.widget:getMainWindow():subscribeEvent("Hidden", "TerrainEditor.MainWindow_Hidden")
-	
-	TerrainEditor.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", "TerrainEditor.SendToServerButton_Click")
-	
-	
-	TerrainEditor.widget:registerConsoleVisibilityToggleCommand("terrainEditor")
-	TerrainEditor.widget:enableCloseButton()
-	--TerrainEditor.widget:hide()
 
 end
 TerrainEditor.buildWidget()

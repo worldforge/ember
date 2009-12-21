@@ -162,7 +162,7 @@ const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 }
 
 
-TerrainEditor::TerrainEditor(TerrainManager& manager) : mManager(manager), mPickListener(this), mCurrentUserObject(0),mOverlayNode(0), mVisible(false)
+TerrainEditor::TerrainEditor(TerrainManager& manager, Camera::MainCamera& camera) : mManager(manager), mCamera(camera), mPickListener(this), mCurrentUserObject(0),mOverlayNode(0), mVisible(false)
 ,mMovementRadiusInMeters(0)
 ,mFalloff(0)
 {
@@ -181,7 +181,7 @@ TerrainEditor::~TerrainEditor()
 		}
 	}
 	///It's safe to do this even if the pick listener hasn't been added yet.
-	EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(&mPickListener);
+	mCamera.removeWorldPickListener(&mPickListener);
 
 }
 
@@ -260,7 +260,7 @@ void TerrainEditor::createOverlay()
 		}
 
 		///register the pick listener
-		EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(&mPickListener);
+		mCamera.pushWorldPickListener(&mPickListener);
 	}
 }
 
@@ -518,9 +518,7 @@ void TerrainEditor::commitAction(const TerrainEditAction& action, bool reverse)
 {
 	TerrainDefPointStore pointStore;
 
-// 	std::set<Ogre::PagingLandScapeTile*> tilesToUpdate;
 	std::set<TerrainPage*> pagesToUpdate;
-// 	EmberPagingSceneManager* sceneMgr = EmberOgre::getSingleton().getTerrainManager()->getEmberSceneManager();
 	for(TerrainEditAction::MovementStore::const_iterator I = action.getMovements().begin(); I != action.getMovements().end(); ++I)
 	{
 		Mercator::BasePoint bp;

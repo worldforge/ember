@@ -1886,6 +1886,38 @@ static int tolua_EmberOgre_EmberOgre_WorldEmberEntity_getFoliage00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getTerrainManager of class  EmberOgre::WorldEmberEntity */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_WorldEmberEntity_getTerrainManager00
+static int tolua_EmberOgre_EmberOgre_WorldEmberEntity_getTerrainManager00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::WorldEmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::WorldEmberEntity* self = (EmberOgre::WorldEmberEntity*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getTerrainManager'",NULL);
+#endif
+  {
+   EmberOgre::Terrain::TerrainManager& tolua_ret = (EmberOgre::Terrain::TerrainManager&)  self->getTerrainManager();
+   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"EmberOgre::Terrain::TerrainManager");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getTerrainManager'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: EventFoliageCreated of class  EmberOgre::WorldEmberEntity */
 #ifndef TOLUA_DISABLE_tolua_get_EmberOgre__WorldEmberEntity_EventFoliageCreated
 static int tolua_get_EmberOgre__WorldEmberEntity_EventFoliageCreated(lua_State* tolua_S)
@@ -3964,15 +3996,17 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00(lua_State* tolu
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"EmberOgre::Terrain::TerrainManager",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isusertype(tolua_S,3,"EmberOgre::Camera::MainCamera",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   EmberOgre::Terrain::TerrainManager* manager = ((EmberOgre::Terrain::TerrainManager*)  tolua_tousertype(tolua_S,2,0));
+  EmberOgre::Camera::MainCamera* camera = ((EmberOgre::Camera::MainCamera*)  tolua_tousertype(tolua_S,3,0));
   {
-   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor(*manager);
+   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor(*manager,*camera);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::TerrainEditor");
   }
  }
@@ -3994,15 +4028,17 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainEditor_new00_local(lua_State
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::Terrain::TerrainEditor",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"EmberOgre::Terrain::TerrainManager",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isusertype(tolua_S,3,"EmberOgre::Camera::MainCamera",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   EmberOgre::Terrain::TerrainManager* manager = ((EmberOgre::Terrain::TerrainManager*)  tolua_tousertype(tolua_S,2,0));
+  EmberOgre::Camera::MainCamera* camera = ((EmberOgre::Camera::MainCamera*)  tolua_tousertype(tolua_S,3,0));
   {
-   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor(*manager);
+   EmberOgre::Terrain::TerrainEditor* tolua_ret = (EmberOgre::Terrain::TerrainEditor*)  new EmberOgre::Terrain::TerrainEditor(*manager,*camera);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::Terrain::TerrainEditor");
   }
  }
@@ -22140,6 +22176,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
    tolua_beginmodule(tolua_S,"WorldEmberEntity");
     tolua_function(tolua_S,"getEnvironment",tolua_EmberOgre_EmberOgre_WorldEmberEntity_getEnvironment00);
     tolua_function(tolua_S,"getFoliage",tolua_EmberOgre_EmberOgre_WorldEmberEntity_getFoliage00);
+    tolua_function(tolua_S,"getTerrainManager",tolua_EmberOgre_EmberOgre_WorldEmberEntity_getTerrainManager00);
     tolua_variable(tolua_S,"EventFoliageCreated",tolua_get_EmberOgre__WorldEmberEntity_EventFoliageCreated,tolua_set_EmberOgre__WorldEmberEntity_EventFoliageCreated);
     tolua_variable(tolua_S,"EventEnvironmentCreated",tolua_get_EmberOgre__WorldEmberEntity_EventEnvironmentCreated,tolua_set_EmberOgre__WorldEmberEntity_EventEnvironmentCreated);
    tolua_endmodule(tolua_S);

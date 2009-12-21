@@ -40,6 +40,10 @@ class BasePoint;
 namespace EmberOgre {
 
 class EmberEntity;
+namespace Camera
+{
+class MainCamera;
+}
 
 namespace Terrain {
 class TerrainManager;
@@ -230,7 +234,7 @@ TerrainPosition mPosition;
 class TerrainEditor : public Ember::IInputAdapter
 {
 public:
-    TerrainEditor(TerrainManager& manager);
+    TerrainEditor(TerrainManager& manager, Camera::MainCamera& camera);
 
     ~TerrainEditor();
 
@@ -344,6 +348,8 @@ private:
 	typedef std::set<BasePointUserObject*> BasePointUserObjectSet;
 
 	TerrainManager& mManager;
+
+	Camera::MainCamera& mCamera;
 
 	BasePointUserObjectStore mBasePointUserObjects;
 

@@ -84,7 +84,7 @@ const EmberOgre::TerrainPosition& getPosition() const;
 class TerrainEditor
 {
 public:
-    TerrainEditor(EmberOgre::Terrain::TerrainManager& manager);
+    TerrainEditor(EmberOgre::Terrain::TerrainManager& manager, Camera::MainCamera& camera);
 
     ~TerrainEditor();
     
