@@ -30,13 +30,14 @@ namespace Terrain
 {
 class TerrainPage;
 class TerrainManager;
-
+class HeightMapBufferProvider;
+class HeightMap;
 
 class GeometryUpdateTask : public Ember::Tasks::ITask
 {
 public:
 	typedef std::set<TerrainPage*> PageSet;
-	GeometryUpdateTask(const PageSet& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders);
+	GeometryUpdateTask(const PageSet& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
 	virtual ~GeometryUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -49,6 +50,9 @@ private:
 	const std::vector<TerrainPosition> mPositions;
 	TerrainManager& mManager;
 	ShaderStore mShaders;
+	HeightMapBufferProvider& mHeightMapBufferProvider;
+	HeightMap& mHeightMap;
+
 };
 
 }

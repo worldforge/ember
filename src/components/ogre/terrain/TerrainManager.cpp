@@ -502,7 +502,7 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 	}
 
 	EventBeforeTerrainUpdate(positions, pagesToUpdate);
-	mTaskQueue->enqueueTask(new GeometryUpdateTask(pagesToUpdate, positions, *this, mShaderMap));
+	mTaskQueue->enqueueTask(new GeometryUpdateTask(pagesToUpdate, positions, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
 
 }
 

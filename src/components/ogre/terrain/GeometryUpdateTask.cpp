@@ -20,6 +20,8 @@
 #include "TerrainPage.h"
 #include "TerrainManager.h"
 #include "TerrainShaderUpdateTask.h"
+#include "TerrainPageGeometry.h"
+#include "HeightMapUpdateTask.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
 
@@ -29,8 +31,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-GeometryUpdateTask::GeometryUpdateTask(const PageSet& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders) :
-	mPages(pages), mPositions(positions), mManager(manager), mShaders(shaders)
+GeometryUpdateTask::GeometryUpdateTask(const PageSet& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
+	mPages(pages), mPositions(positions), mManager(manager), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -41,10 +43,16 @@ GeometryUpdateTask::~GeometryUpdateTask()
 
 void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
+	std::vector<Mercator::Segment*> segments;
+
 	//first populate the geometry for all pages, and then regenerate the shaders
 	for (PageSet::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
 		TerrainPage* page = *I;
 		page->repopulateGeometry();
+		const SegmentVector& segmentVector = page->getGeometry().getValidSegments();
+		for (SegmentVector::const_iterator I = segmentVector.begin(); I != segmentVector.end(); ++I) {
+			segments.push_back(I->segment);
+		}
 	}
 	PageVector pageVector;
 	for (PageSet::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
@@ -53,8 +61,9 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 	}
 	for (ShaderStore::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
 		context.executeTask(new TerrainShaderUpdateTask(pageVector, I->second, AreaStore(), true, mManager.EventLayerUpdated));
-
 	}
+	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
+
 }
 
 void GeometryUpdateTask::executeTaskInMainThread()
