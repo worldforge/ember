@@ -348,6 +348,12 @@ void LuaConnector::pushValue(const EmberOgre::Authoring::EntityMover& theValue, 
 	pushUserTypeValue(theValue, luaTypename);
 }
 
+void LuaConnector::pushValue(const Terrain::TerrainEditorOverlay& theValue, const std::string& luaTypename)
+{
+	pushUserTypeValue(theValue, luaTypename);
+}
+
+
 template<typename T>
 void LuaConnector::pushUserTypeValue(T& theValue, const std::string& luaTypename)
 {
@@ -598,6 +604,15 @@ LuaConnector::LuaConnector(sigc::signal<void, Terrain::TerrainEditAction*>& sign
 	}
 }
 
+LuaConnector::LuaConnector(sigc::signal<void, Terrain::TerrainEditorOverlay&>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Terrain::TerrainEditorOverlay");
+		mConnector = new LuaConnectors::ConnectorOne<void, Terrain::TerrainEditorOverlay&>(signal, luaTypes);
+	}
+}
+
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Task*>& signal)
 {
 	if (checkSignalExistence(&signal)) {
@@ -660,6 +675,8 @@ LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Objects::Root&>& sign
 		mConnector = new LuaConnectors::ConnectorOne<void, const Atlas::Objects::Root&>(signal, luaTypes);
 	}
 }
+
+
 
 }
 ;

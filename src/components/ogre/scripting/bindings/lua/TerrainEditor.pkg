@@ -1,3 +1,6 @@
+$#include "components/ogre/terrain/TerrainEditorOverlay.h"
+$#include "components/ogre/terrain/TerrainEditor.h"
+
 //
 // C++ Interface: TerrainEditor
 //
@@ -84,10 +87,10 @@ const EmberOgre::TerrainPosition& getPosition() const;
 class TerrainEditor
 {
 public:
-    TerrainEditor(EmberOgre::Terrain::TerrainManager& manager, Camera::MainCamera& camera);
+    TerrainEditor(EmberOgre::Terrain::TerrainManager& manager, EmberOgre::Camera::MainCamera& camera);
 
     ~TerrainEditor();
-    
+
     /**
      * Shows the overlay.
      */
@@ -96,66 +99,86 @@ public:
      * Hides the overlay.
      */
     void hideOverlay();
-    
-	/**
-	 * Creates the overlay.
-	 */
-	void createOverlay();
-	
+
 	/**
 	 *    Returns true if the overlay is currently shown.
-	 * @return 
+	 * @return
 	 */
 	bool isOverlayShown() const;
-	
-    
-    
-    void commitAction(const EmberOgre::Terrain::TerrainEditAction& action);
-    
-    sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*> EventPickedBasePoint;
-    sigc::signal<void, const EmberOgre::Terrain::TerrainEditAction*> EventActionCreated;
-    
-	/**
-	Emitted when the position of the selected base point has been updated
-	*/
-	sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
-   
 
+
+	sigc::signal<void, EmberOgre::Terrain::TerrainEditorOverlay&> EventOverlayCreated;
+
+
+
+	float getRadius() const;
+	void setRadius(float radiusInMeters);
+
+
+	float getFalloff() const;
+	void setFalloff(float falloff);
 	
+	
+};
+
+
+class TerrainEditorOverlay
+{
+
+	/**
+	 *    Performs the supplied action on the client terrain. Note that no updates are sent to the server at this point.
+	 *    Undo operations are carried out by calls to this method, with the second parameter set to true.
+	 * @param the action to commit
+	 * @return
+	 */
+    void commitAction(const EmberOgre::Terrain::TerrainEditAction& action);
+
 	/**
 	 *    returns the currently selected base point user object, if any
-	 * @return 
+	 * @return
 	 */
 	EmberOgre::Terrain::BasePointUserObject* getCurrentBasePointUserObject() const;
-    
+
+    /**
+     * Sends all changes to the server.
+     */
     void sendChangesToServer();
 
 	/**
 	 *    Creates a new action from the current movement. Will only create an action if actual movement has occurred.
 	 * @param alsoCommit if true, the action will also be committed
 	 */
-	void createAction(bool alsoCommit);	
-	
+	void createAction(bool alsoCommit);
+
 	/**
 	 *    Undoes the last action, if there are any.
 	 * @return true if there was an action to undo, false if else
 	 */
 	bool undoLastAction();
-	
+
 	/**
 	 *    Redoes an action that was undone.
 	 * @return true if there was an already undone action that could be redone, else false
 	 */
 	bool redoAction();
-	
-	float getRadius() const;
-	void setRadius(float radiusInMeters);
 
+    /**
+    * Emitted when a base point has been picked by the mouse.
+    * @param The UserObject of the picked base point.
+    */
+    sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*> EventPickedBasePoint;
 
-	float getFalloff() const;
-	void seFalloff(float falloff);
-	
-	
+    /**
+    * Emitted when an TerrainEditAction has been created.
+    * @param The newly created TerrainEditAction
+    */
+    sigc::signal<void, const EmberOgre::Terrain::TerrainEditAction*> EventActionCreated;
+
+	/**
+	Emitted when the position of the selected base point has been updated
+	*/
+	sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
+
 };
 
 }

@@ -22,7 +22,6 @@
 #include "components/ogre/GUIManager.h"
 #include "components/ogre/terrain/TerrainInfo.h"
 #include "components/ogre/terrain/TerrainManager.h"
-#include "components/ogre/terrain/TerrainEditor.h"
 #include "components/ogre/terrain/TerrainArea.h"
 
 #include "components/ogre/model/Model.h"

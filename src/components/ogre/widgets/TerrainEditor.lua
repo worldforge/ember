@@ -21,16 +21,16 @@ function TerrainEditor.HeightSpinner_ValueChanged(args)
 	if TerrainEditor.currentObject ~= nil then
 		local translation = TerrainEditor.heightSpinner:getCurrentValue() - TerrainEditor.currentObject:getHeight()
 		TerrainEditor.currentObject:translate(translation)
-		TerrainEditor.editor:createAction(true)
+		TerrainEditor.overlay:createAction(true)
 	end
 end
 
 function TerrainEditor.UndoButton_Click(args)
-	TerrainEditor.editor:undoLastAction()
+	TerrainEditor.overlay:undoLastAction()
 end
 
 function TerrainEditor.RedoButton_Click(args)
-	TerrainEditor.editor:redoAction()
+	TerrainEditor.overlay:redoAction()
 end
 
 function TerrainEditor.ShowOverlayButton_Click(args)
@@ -57,7 +57,7 @@ function TerrainEditor.ShowOverlay()
 end
 
 function TerrainEditor.SendToServerButton_Click(args)
-	TerrainEditor.editor:sendChangesToServer()
+	TerrainEditor.overlay:sendChangesToServer()
 end
 
 function TerrainEditor.MainWindow_Hidden(args)
@@ -66,6 +66,13 @@ end
 
 function TerrainEditor.Radius_ValueChanged(args)
 	TerrainEditor.editor:setRadius(TerrainEditor.radiusSlider:getCurrentValue() * 1024)
+end
+
+function TerrainEditor.overlayCreated(overlay)
+	TerrainEditor.overlay = overlay
+	connect(TerrainEditor.connectors, overlay.EventPickedBasePoint, "TerrainEditor.pickedBasePoint")
+	connect(TerrainEditor.connectors, overlay.EventSelectedBasePointUpdatedPosition, "TerrainEditor.selectedBasePointUpdatedPosition")
+
 end
 
 function TerrainEditor.buildWidget()
@@ -86,11 +93,9 @@ function TerrainEditor.buildWidget()
 				TerrainEditor.radiusSlider = CEGUI.toSlider(TerrainEditor.radiusSlider)
 	
 				TerrainEditor.editor = EmberOgre.Terrain.TerrainEditor:new_local(terrainManager, mainCamera)
-				TerrainEditor.editor:createOverlay()
+				connect(TerrainEditor.connectors, TerrainEditor.editor.EventOverlayCreated, "TerrainEditor.overlayCreated")
 				TerrainEditor.editor:showOverlay()
 				
-				connect(TerrainEditor.connectors, TerrainEditor.editor.EventPickedBasePoint, "TerrainEditor.pickedBasePoint")
-				connect(TerrainEditor.connectors, TerrainEditor.editor.EventSelectedBasePointUpdatedPosition, "TerrainEditor.selectedBasePointUpdatedPosition")
 				
 				--TerrainEditor.heightSpinner:subscribeEvent("ValueChanged", "TerrainEditor.HeightSpinner_ValueChanged")
 				
