@@ -40,8 +40,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageCreationTask::TerrainPageCreationTask(TerrainManager& TerrainManager, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
-	mTerrainManager(TerrainManager), mPage(0), mPos(pos), mBridge(bridge), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+TerrainPageCreationTask::TerrainPageCreationTask(TerrainManager& TerrainManager, Mercator::Terrain& terrain, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
+	mTerrainManager(TerrainManager), mTerrain(terrain), mPage(0), mPos(pos), mBridge(bridge), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -53,7 +53,7 @@ TerrainPageCreationTask::~TerrainPageCreationTask()
 
 void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	mPage = new TerrainPage(mPos, mTerrainManager);
+	mPage = new TerrainPage(mPos, mTerrainManager, mTerrain);
 	mPage->registerBridge(mBridge);
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future

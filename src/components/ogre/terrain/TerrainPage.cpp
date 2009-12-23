@@ -77,7 +77,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager)
+TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain)
 : mManager(manager)
 , mPosition(position)
 , mBridge(0)
@@ -91,7 +91,7 @@ TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manage
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
-	mGeometry->init(mManager.getTerrain());
+	mGeometry->init(terrain);
 	setupShadowTechnique();
 	mTerrainSurface->setShadow(&mShadow);
 }

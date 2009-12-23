@@ -42,6 +42,7 @@ namespace WFMath {
 
 namespace Mercator {
 	class Segment;
+	class Terrain;
 }
 
 
@@ -86,7 +87,7 @@ public:
 	 * @param position The page index in WF space.
 	 * @param manager The terrain manager.
 	 */
-	TerrainPage(const TerrainPosition& position, TerrainManager& manager);
+	TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain);
 
 	/**
 	 * @brief Dtor.

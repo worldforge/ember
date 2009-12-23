@@ -23,6 +23,11 @@
 #include "framework/tasks/ITask.h"
 #include <wfmath/point.h>
 
+namespace Mercator
+{
+class Terrain;
+}
+
 namespace EmberOgre
 {
 
@@ -39,7 +44,7 @@ class HeightMap;
 class TerrainPageCreationTask : public Ember::Tasks::ITask
 {
 public:
-	TerrainPageCreationTask(TerrainManager& TerrainManager, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
+	TerrainPageCreationTask(TerrainManager& TerrainManager, Mercator::Terrain& terrain, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
 	virtual ~TerrainPageCreationTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -48,6 +53,7 @@ public:
 
 private:
 	TerrainManager& mTerrainManager;
+	Mercator::Terrain& mTerrain;
 
 	TerrainPage* mPage;
 	TerrainPosition mPos;
