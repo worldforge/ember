@@ -101,6 +101,31 @@ namespace EmberOgre
 namespace Terrain
 {
 
+class BasePointRetrieveTask: public Ember::Tasks::ITask
+{
+
+private:
+	Mercator::Terrain& mTerrain;
+	sigc::slot<void, Mercator::Terrain::Pointstore&> mAsyncCallback;
+	Mercator::Terrain::Pointstore mPoints;
+
+public:
+	BasePointRetrieveTask(Mercator::Terrain& terrain, sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback) :
+		mTerrain(terrain), mAsyncCallback(asyncCallback)
+	{
+	}
+	void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+	{
+		mPoints = mTerrain.getPoints();
+	}
+
+	void executeTaskInMainThread()
+	{
+		mAsyncCallback(mPoints);
+	}
+
+};
+
 TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1))
 {
@@ -143,9 +168,9 @@ TerrainManager::~TerrainManager()
 	delete mTerrain;
 }
 
-const Mercator::Terrain& TerrainManager::getTerrain() const
+void TerrainManager::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback)
 {
-	return *mTerrain;
+	mTaskQueue->enqueueTask(new BasePointRetrieveTask(*mTerrain, asyncCallback));
 }
 
 void TerrainManager::loadTerrainOptions()
@@ -383,7 +408,7 @@ void TerrainManager::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosit
 
 	S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 	if (mTerrainPages[x][y] == 0) {
-		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, pos, &bridge, *mHeightMapBufferProvider, *mHeightMap), 0);
+		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, *mTerrain, pos, &bridge, *mHeightMapBufferProvider, *mHeightMap), 0);
 	} else {
 		S_LOG_WARNING("Trying to set up TerrainPage at index [" << x << "," << y << "], but it was already created");
 	}

@@ -28,6 +28,7 @@
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
+#include <sigc++/slot.h>
 
 #include <OgreFrameListener.h>
 
@@ -42,6 +43,7 @@ namespace Mercator {
 	class Terrain;
 	class Shader;
 	class TerrainMod;
+	class BasePoint;
 }
 
 namespace Ember {
@@ -247,12 +249,6 @@ public:
 	bool getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const;
 
 	/**
-	 * @brief Provides access to the underlying Mercator::Terrain object.
-	 * @return The main terrain object.
-	 */
-	const Mercator::Terrain& getTerrain() const;
-
-	/**
 	 * @brief Gets the size of one page as indices.
 	 * @return The size of one page as indices.
 	 */
@@ -327,6 +323,8 @@ public:
 	void reloadTerrain(const std::vector<TerrainPosition>& positions);
 
 	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
+
+	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >& >& asyncCallback);
 
 protected:
 
