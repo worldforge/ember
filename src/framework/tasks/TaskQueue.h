@@ -41,6 +41,9 @@ class TaskUnit;
  * @brief A task queue, which allows for queuing of tasks, which will be handled by a number of task executors.
  *
  * This is the main entry into the task framework. Each instance of this represents a queue onto which tasks can be added.
+ *
+ * Create an instance of this in your main thread, and then call pollProcessedTasks() from the same thread at a regular interval.
+ * You must also make sure that you delete this instance in the main thread.
  */
 class TaskQueue
 {
@@ -61,6 +64,7 @@ public:
 	/**
 	 * @brief Adds a task to the queue.
 	 * Ownership of the task will be transferred to this queue. Ownership of the optional listener will not be transferred however.
+	 * @note If the queue is being shut down, the task will not be queued and a warning will be written to the log.
 	 * @param task The task to add. Note that ownership will be transferred.
 	 * @param listener An optional listener. Note that ownership won't be transferred.
 	 */
@@ -73,6 +77,7 @@ public:
 	void pollProcessedTasks();
 
 protected:
+
 	/**
 	 * @brief A queue of task units.
 	 */
@@ -119,9 +124,19 @@ protected:
 #endif
 
 	/**
+	 * @brief Whether this queue is active or not.
+	 * Setting this to true will make two things happen:
+	 * 1) No more tasks can be enqueued.
+	 * 2) If there are not more tasks to process, fetchNextTask() will return a null pointer, which tells the executor to exit it's processing loop.
+	 * This is therefore only set to false if the queue is being shut down.
+	 */
+	bool mActive;
+
+	/**
 	 * @brief Gets the next task to process.
 	 * @note This is normally only called by a TaskExecutor.
 	 * Calling this while there's no current tasks will result in the current thread being put on hold until a new task is enqueued.
+	 * @returns A pointer to a task unit, or a null pointer if the executor is expected to exit its processing loop (i.e. when the queue is being shut down).
 	 */
 	TaskUnit* fetchNextTask();
 

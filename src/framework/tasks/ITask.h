@@ -32,6 +32,8 @@ class TaskExecutionContext;
  * @brief Base interface for a "task".
  * A "task" is a piece of work which needs to be carried out in a separate thread. Instances of this are processed by an instance of TaskQueue, which uses a collection of concurrant TaskExecutors to execute the tasks.
  * When each task has been executed in the background threads (through the executors) it can optionally also be executed in the main thread through a call to executeTaskInMainThread().
+ *
+ * @note Avoid doing any setup in the constructor of an implementation of this interface. The reason is that in contrast to the two execute* methods there's no guarantee in which thread the constructor will be called. It might be called in the main thread, or in any background thread.
  */
 class ITask
 {

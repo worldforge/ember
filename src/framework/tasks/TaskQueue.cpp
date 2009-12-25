@@ -30,7 +30,8 @@ namespace Ember
 namespace Tasks
 {
 
-TaskQueue::TaskQueue(unsigned int numberOfExecutors)
+TaskQueue::TaskQueue(unsigned int numberOfExecutors) :
+	mActive(true)
 {
 	S_LOG_VERBOSE("Creating task queue with " << numberOfExecutors << " executors.");
 	for (unsigned int i = 0; i < numberOfExecutors; ++i) {
@@ -41,62 +42,53 @@ TaskQueue::TaskQueue(unsigned int numberOfExecutors)
 
 TaskQueue::~TaskQueue()
 {
-
-	//When shutting down we first have to make sure that all executors are inactive, and then that all task queues are empty.
-	//Once that's done we can join all of the executors, since they will now complete the threaded run.
-	for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
-		TaskExecutor* executor = *I;
-		executor->setActive(false);
-	}
-	{
-		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
-		while (mUnprocessedTaskUnits.size()) {
-			TaskUnit* taskUnit = mUnprocessedTaskUnits.front();
-			mUnprocessedTaskUnits.pop();
-			delete taskUnit;
-		}
-	}
-	{
-		boost::mutex::scoped_lock l(mProcessedQueueMutex);
-		while (mProcessedTaskUnits.size()) {
-			TaskUnit* taskUnit = mProcessedTaskUnits.front();
-			mProcessedTaskUnits.pop();
-			delete taskUnit;
-		}
-	}
+	mActive = false;
 	mUnprocessedQueueCond.notify_all();
+	//Join all executors. Since the queue is shutting down they will all exit their main loop if there are no more tasks to process.
 	for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
 		TaskExecutor* executor = *I;
 		executor->join();
 		delete executor;
 	}
+
+	//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
+	pollProcessedTasks();
+	assert(!mProcessedTaskUnits.size());
+	assert(!mUnprocessedTaskUnits.size());
 }
 
 void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
 {
-	{
-		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
+	if (mActive) {
+		{
+			boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
 
-		mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
+			mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
+		}
+		mUnprocessedQueueCond.notify_one();
+	} else {
+		S_LOG_WARNING("Tried to enqueue a task on a task queue which isn't active (i.e. is shutting down).");
 	}
-	mUnprocessedQueueCond.notify_one();
 
 }
 
 TaskUnit* TaskQueue::fetchNextTask()
 {
-
-	boost::mutex::scoped_lock lock(mUnprocessedQueueMutex);
-
-	if (!mUnprocessedTaskUnits.size()) {
-		mUnprocessedQueueCond.wait(lock);
-	}
-	if (mUnprocessedTaskUnits.size()) {
-		TaskUnit* taskUnit = mUnprocessedTaskUnits.front();
-		mUnprocessedTaskUnits.pop();
+	//The semantics of this method is that if a null pointer is returned the task executor is required to exit its main processing loop, since this indicates that the queue is shuttin down.
+	TaskUnit* taskUnit(0);
+	while (!taskUnit) {
+		boost::mutex::scoped_lock lock(mUnprocessedQueueMutex);
+		if (!mUnprocessedTaskUnits.size()) {
+			if (!mActive) {
+				return 0;
+			}
+			mUnprocessedQueueCond.wait(lock);
+		}
+		if (mUnprocessedTaskUnits.size()) {
+			taskUnit = mUnprocessedTaskUnits.front();
+			mUnprocessedTaskUnits.pop();
+		}
 		return taskUnit;
-	} else {
-		return 0;
 	}
 }
 

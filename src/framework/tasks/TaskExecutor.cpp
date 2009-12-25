@@ -21,8 +21,6 @@
 #include "TaskExecutionContext.h"
 #include "TaskUnit.h"
 
-
-
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
@@ -45,14 +43,16 @@ void TaskExecutor::run()
 {
 	while (mActive) {
 		TaskUnit* taskUnit = mTaskQueue.fetchNextTask();
+		//If the queue returns a null pointer, it means that the queue is being shut down, and this executor is expected to exit its main processing loop.
 		if (taskUnit) {
 			TaskExecutionContext context(*this, *taskUnit);
 			taskUnit->executeInBackgroundThread(context);
 			mTaskQueue.addProcessedTask(taskUnit);
+		} else {
+			break;
 		}
 	}
 }
-
 
 void TaskExecutor::setActive(bool active)
 {
