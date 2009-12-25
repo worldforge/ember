@@ -226,7 +226,7 @@ void TerrainManager::addTerrainMod(TerrainMod* terrainMod)
 	/// Listen for deletion of the modifier
 	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainMod_Deleted), terrainMod));
 
-	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, terrainMod->getMercatorMod(), terrainMod->getErisMod()->getEntity()->getId(), *this, mTerrainMods));
+	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getErisMod()->getEntity()->getId(), *this, mTerrainMods));
 }
 
 void TerrainManager::TerrainMod_Changed(TerrainMod* terrainMod)
@@ -235,15 +235,18 @@ void TerrainManager::TerrainMod_Changed(TerrainMod* terrainMod)
 	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getErisMod()->getEntity()->getId());
 	if (I != mTerrainMods.end()) {
 		existingMod = I->second;
+		mTerrainMods.erase(I);
 	}
-	mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, terrainMod->getMercatorMod(), terrainMod->getErisMod()->getEntity()->getId(), *this, mTerrainMods, existingMod));
+	mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getErisMod()->getEntity()->getId(), *this, mTerrainMods, existingMod));
 }
 
 void TerrainManager::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
 	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getErisMod()->getEntity()->getId());
 	if (I != mTerrainMods.end()) {
-		mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, I->second, I->first, *this, mTerrainMods));
+		Mercator::TerrainMod* existingMod = I->second;
+		mTerrainMods.erase(I);
+		mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, existingMod, terrainMod->getErisMod()->getEntity()->getId(), *this, mTerrainMods));
 	}
 }
 

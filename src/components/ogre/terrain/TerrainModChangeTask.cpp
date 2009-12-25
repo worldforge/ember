@@ -30,37 +30,38 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod) :
-	TerrainModTaskBase::TerrainModTaskBase(terrain, terrainMod, entityId, manager, terrainMods), mExistingMod(existingMod), mAppliedMod(0)
+TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod) :
+	TerrainModTaskBase::TerrainModTaskBase(terrain, existingMod, entityId, manager, terrainMods), mNewTerrainMod(terrainMod.clone())
 {
 
 }
 
 TerrainModChangeTask::~TerrainModChangeTask()
 {
+	delete mNewTerrainMod;
 }
 
 void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	if (mExistingMod) {
-		mUpdatedPositions.push_back(TerrainPosition(mExistingMod->bbox().getCenter().x(), mExistingMod->bbox().getCenter().y()));
+	if (mManagerLocalTerrainMod) {
+		mUpdatedPositions.push_back(TerrainPosition(mManagerLocalTerrainMod->bbox().getCenter().x(), mManagerLocalTerrainMod->bbox().getCenter().y()));
 		// Use the pointer returned from addMod() to remove it
-		mTerrain.removeMod(mExistingMod);
+		mTerrain.removeMod(mManagerLocalTerrainMod);
+		delete mManagerLocalTerrainMod;
 	}
 
-	mAppliedMod = mTerrain.addMod(*mTerrainMod);
-	if (mAppliedMod) {
-		mUpdatedPositions.push_back(TerrainPosition(mAppliedMod->bbox().getCenter().x(), mAppliedMod->bbox().getCenter().y()));
+	mManagerLocalTerrainMod = mTerrain.addMod(*mNewTerrainMod);
+	if (mManagerLocalTerrainMod) {
+		mUpdatedPositions.push_back(TerrainPosition(mManagerLocalTerrainMod->bbox().getCenter().x(), mManagerLocalTerrainMod->bbox().getCenter().y()));
 	}
 
 }
 
 void TerrainModChangeTask::executeTaskInMainThread()
 {
-	mTerrainMods.erase(mEntityId);
 
-	if (mAppliedMod) {
-		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mAppliedMod));
+	if (mManagerLocalTerrainMod) {
+		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
 	}
 	mManager.reloadTerrain(mUpdatedPositions);
 }

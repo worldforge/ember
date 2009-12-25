@@ -46,7 +46,7 @@ class TerrainMod;
 class TerrainModTaskBase: public Ember::Tasks::ITask
 {
 public:
-	TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
+	TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
 	virtual ~TerrainModTaskBase();
 
 protected:
@@ -58,7 +58,7 @@ protected:
 	/**
 	 * @brief A terrain mod.
 	 */
-	Mercator::TerrainMod* mTerrainMod;
+	Mercator::TerrainMod* mManagerLocalTerrainMod;
 
 	/**
 	 * @brief The entity to which the mod belongs to.
@@ -74,6 +74,9 @@ protected:
 	 * @brief A shared store of terrain mods.
 	 */
 	TerrainModMap& mTerrainMods;
+
+	std::vector<TerrainPosition> mUpdatedPositions;
+
 };
 
 }

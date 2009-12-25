@@ -29,6 +29,7 @@ namespace Terrain
 class TerrainManager;
 class TerrainMod;
 
+
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Task for removing terrain mods.
@@ -36,7 +37,7 @@ class TerrainMod;
 class TerrainModRemoveTask: public TerrainModTaskBase
 {
 public:
-	TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
+	TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* mManagerLocalTerrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
 	virtual ~TerrainModRemoveTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);

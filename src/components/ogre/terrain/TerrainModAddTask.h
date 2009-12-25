@@ -19,7 +19,7 @@
 #ifndef TERRAINMODADDTASK_H_
 #define TERRAINMODADDTASK_H_
 #include "TerrainModTaskBase.h"
-
+#include <Mercator/TerrainMod.h>
 
 namespace EmberOgre
 {
@@ -34,7 +34,7 @@ namespace Terrain
 class TerrainModAddTask: public TerrainModTaskBase
 {
 public:
-	TerrainModAddTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
+	TerrainModAddTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
 	virtual ~TerrainModAddTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -46,7 +46,7 @@ private:
 	/**
 	 * @brief Stores the applied mod, which will be a copy of the existing mod.
 	 */
-	Mercator::TerrainMod* mAppliedMod;
+	Mercator::TerrainMod* mOriginalTerrainMod;
 };
 
 }

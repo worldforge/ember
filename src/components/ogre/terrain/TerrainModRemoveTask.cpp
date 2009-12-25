@@ -30,8 +30,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods) :
-		TerrainModTaskBase::TerrainModTaskBase(terrain, terrainMod, entityId, manager, terrainMods)
+TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods) :
+		TerrainModTaskBase::TerrainModTaskBase(terrain, managerLocalTerrainMod, entityId, manager, terrainMods)
 {
 
 }
@@ -42,21 +42,18 @@ TerrainModRemoveTask::~TerrainModRemoveTask()
 
 void TerrainModRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	if (mTerrainMod) {
-		mTerrain.removeMod(mTerrainMod);
+	if (mManagerLocalTerrainMod) {
+		mTerrain.removeMod(mManagerLocalTerrainMod);
+		mUpdatedPositions.push_back(TerrainPosition(mManagerLocalTerrainMod->bbox().getCenter().x(), mManagerLocalTerrainMod->bbox().getCenter().y()));
+		delete mManagerLocalTerrainMod;
 	}
 }
 
 void TerrainModRemoveTask::executeTaskInMainThread()
 {
-	if (mTerrainMod) {
+	if (mUpdatedPositions.size()) {
 
-		// Remove this mod from our list
-		mTerrainMods.erase(mEntityId);
-
-		std::vector<TerrainPosition> updatedPositions;
-		updatedPositions.push_back(TerrainPosition(mTerrainMod->bbox().getCenter().x(), mTerrainMod->bbox().getCenter().y()));
-		mManager.reloadTerrain(updatedPositions);
+		mManager.reloadTerrain(mUpdatedPositions);
 	}
 }
 
