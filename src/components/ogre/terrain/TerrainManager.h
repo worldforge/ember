@@ -348,7 +348,7 @@ protected:
 
 	PageVector mPages;
 
-	TerrainAreaMap mChangedTerrainAreas;
+	AreaMap mAreas;
 
 	TerrainModMap mTerrainMods;
 

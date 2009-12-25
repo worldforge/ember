@@ -46,19 +46,20 @@ class TerrainAreaTaskBase: public Ember::Tasks::ITask
 public:
 	typedef sigc::slot<void, const TerrainShader*, Mercator::Area*> ShaderUpdateSlotType;
 
-	TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType shaderUpdateSlot);
+	TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType shaderUpdateSlot);
 	virtual ~TerrainAreaTaskBase();
 
 protected:
-	/**
-	 * @brief The terrain.
-	 */
-	Mercator::Terrain& mTerrain;
 
 	/**
 	 * @brief The terrain area.
 	 */
-	Mercator::Area& mTerrainArea;
+	Mercator::Area* mArea;
+
+	/**
+	 * @brief The terrain.
+	 */
+	Mercator::Terrain& mTerrain;
 
 	ShaderUpdateSlotType mShaderUpdateSlot;
 

@@ -37,17 +37,19 @@ class TerrainLayerDefinitionManager;
 class TerrainAreaAddTask: public TerrainAreaTaskBase
 {
 public:
-	TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders);
+	TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, AreaMap& areas, const std::string& entityId);
 	virtual ~TerrainAreaAddTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 private:
+
 	TerrainManager& mTerrainManager;
 	TerrainLayerDefinitionManager& mTerrainLayerDefinitionManager;
 	AreaShaderstore& mAreaShaders;
-
+	AreaMap& mAreas;
+	const std::string mEntityId;
 };
 
 }

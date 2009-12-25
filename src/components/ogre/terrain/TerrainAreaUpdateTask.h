@@ -38,11 +38,11 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param terrain The terrain.
-	 * @param terrainArea The terrain area which is updated.
+	 * @param area The terrain area which is updated.
 	 * @param shader The affected shader.
 	 * @param markForUpdateSlot A slot which will be called in the main thread when the update is complete.
 	 */
-	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
+	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
 	virtual ~TerrainAreaUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);

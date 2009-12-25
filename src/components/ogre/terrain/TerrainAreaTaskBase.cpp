@@ -23,8 +23,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainAreaTaskBase::TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType shaderUpdateSlot)
-: mTerrain(terrain), mTerrainArea(terrainArea), mShaderUpdateSlot(shaderUpdateSlot)
+TerrainAreaTaskBase::TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType shaderUpdateSlot)
+: mTerrain(terrain), mArea(area), mShaderUpdateSlot(shaderUpdateSlot)
 {
 }
 

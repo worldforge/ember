@@ -18,6 +18,7 @@
 
 #include "TerrainAreaRemoveTask.h"
 #include <Mercator/Terrain.h>
+#include <Mercator/Area.h>
 
 namespace EmberOgre
 {
@@ -25,8 +26,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader)
-: TerrainAreaTaskBase(terrain, terrainArea, markForUpdateSlot)
+TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, AreaMap& areas, const std::string& entityId) :
+	mShader(shader), mAreas(areas), mEntityId(entityId), TerrainAreaTaskBase(terrain, area, markForUpdateSlot)
 {
 
 }
@@ -37,7 +38,7 @@ TerrainAreaRemoveTask::~TerrainAreaRemoveTask()
 
 void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	mTerrain.removeArea(&mTerrainArea);
+	mTerrain.removeArea(mArea);
 }
 
 void TerrainAreaRemoveTask::executeTaskInMainThread()
@@ -45,8 +46,10 @@ void TerrainAreaRemoveTask::executeTaskInMainThread()
 	if (mShader) {
 		///mark the shader for update
 		///we'll not update immediately, we try to batch many area updates and then only update once per frame
-		mMarkForUpdateSlot(mShader, &mTerrainArea);
+		mShaderUpdateSlot(mShader, mArea);
 	}
+	mAreas.erase(mEntityId);
+	delete mArea;
 }
 
 }

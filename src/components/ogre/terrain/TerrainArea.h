@@ -82,6 +82,12 @@ public:
 	void setArea(Mercator::Area* area);
 
 	/**
+	 * @brief Gets the id of the entity to which this area is connected.
+	 * @returns The id of the owner entity.
+	 */
+	const std::string& getEntityId() const;
+
+	/**
 	@brief Emitted when something about the area changes, and we need to tell the terrain to regenerate the visualization of it.
 	*/
 	sigc::signal<void> EventAreaChanged;

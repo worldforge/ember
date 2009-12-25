@@ -20,6 +20,7 @@
 #define EMBEROGRETERRAINTERRAINAREAREMOVETASK_H_
 
 #include "TerrainAreaTaskBase.h"
+#include "Types.h"
 
 namespace EmberOgre
 {
@@ -29,7 +30,6 @@ namespace Terrain
 
 class TerrainShader;
 
-
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Removes terrain areas.
@@ -37,7 +37,7 @@ class TerrainShader;
 class TerrainAreaRemoveTask : public TerrainAreaTaskBase
 {
 public:
-	TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area& terrainArea, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
+	TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, AreaMap& areas, const std::string& entityId);
 	virtual ~TerrainAreaRemoveTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -50,11 +50,8 @@ private:
 	 * @brief The terrain shader affected.
 	 */
 	const TerrainShader* mShader;
-
-	/**
-	 * @brief A slot which will be called in the main thread when the area update is complete.
-	 */
-	sigc::slot<void, const TerrainShader*, Mercator::Area*> mMarkForUpdateSlot;
+	AreaMap& mAreas;
+	const std::string mEntityId;
 
 };
 

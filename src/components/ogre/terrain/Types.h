@@ -132,12 +132,9 @@ namespace EmberOgre {
 
 		typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 
-		/**
-		 A type for use when keeping track of changes done to areas. We use instances of Mercator::Area instead of pointers or references since we want to batch the updates, and the original area instances might not be around at that time.
-		 */
-		typedef std::map<const TerrainShader*, std::vector<Mercator::Area> > TerrainAreaMap;
-
 		typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
+
+		typedef std::map<const std::string, Mercator::Area*> AreaMap;
 
 		typedef std::map<const Mercator::Shader*, const TerrainShader*> ShaderStore;
 	}

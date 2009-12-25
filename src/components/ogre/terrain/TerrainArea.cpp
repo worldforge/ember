@@ -30,17 +30,15 @@
 #include "../EmberEntity.h"
 #include <Mercator/Area.h>
 
-namespace EmberOgre {
-namespace Terrain {
+namespace EmberOgre
+{
+namespace Terrain
+{
 
-
-
-
-
-TerrainArea::TerrainArea(EmberEntity& entity) : mArea(0), mOldArea(0), mEntity(entity)
+TerrainArea::TerrainArea(EmberEntity& entity) :
+	mArea(0), mOldArea(0), mEntity(entity)
 {
 }
-
 
 TerrainArea::~TerrainArea()
 {
@@ -49,9 +47,10 @@ TerrainArea::~TerrainArea()
 	delete mArea;
 }
 
-bool TerrainArea::init() {
+bool TerrainArea::init()
+{
 
- //   _fpreset();
+	//   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);
 	//_controlfp(_RC_NEAR , _MCW_RC);
 	bool successfulParsing = parseArea();
@@ -96,7 +95,7 @@ bool TerrainArea::parseArea()
 		double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
 
 		WFMath::RotMatrix<2> rm;
-		poly.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0,0));
+		poly.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
 		poly.shift(WFMath::Vector<2>(mEntity.getPosition().x(), mEntity.getPosition().y()));
 
 		mArea->setShape(poly);
@@ -133,6 +132,11 @@ void TerrainArea::observeEntity()
 	mAttrChangedSlot = sigc::mem_fun(*this, &TerrainArea::attributeChanged);
 	mEntity.observe("area", mAttrChangedSlot);
 	mEntity.Moved.connect(sigc::mem_fun(*this, &TerrainArea::entity_Moved));
+}
+
+const std::string& TerrainArea::getEntityId() const
+{
+	return mEntity.getId();
 }
 
 }
