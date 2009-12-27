@@ -60,7 +60,7 @@ namespace EmberOgre
 {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	EmberEntity(id, ty, vw, sceneManager), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*>(sceneManager)))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager*> (sceneManager))
+	EmberEntity(id, ty, vw, sceneManager), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*> (sceneManager)))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager*> (sceneManager))
 {
 	mSceneManager->registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
@@ -102,6 +102,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 
 void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
+	//If the terrain hasn't been initialized yet (which will happen when the visibility changes, as it does right after the entity has been initialized) we'll ignore changes to the terrain, since it will be parsed anyway.
 	if (str == "terrain" && !mHasBeenInitialized) {
 		Eris::Entity::onAttrChanged(str, v);
 	} else {
@@ -181,7 +182,6 @@ float WorldEmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 	//Note that there's no need to adjust the localPosition since the world always is at location 0,0,0 with not rotation
 	float height = 0;
 
-
 	if (mTerrainManager->getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
 		return height;
 	}
@@ -207,7 +207,6 @@ Terrain::TerrainManager& WorldEmberEntity::getTerrainManager()
 {
 	return *mTerrainManager;
 }
-
 
 DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
 	mFoliage(foliage), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
