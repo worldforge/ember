@@ -21,6 +21,8 @@
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
 #include "components/ogre/terrain/Image.h"
 
+#include "framework/TimedLog.h"
+
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreTextureUnitState.h>
 #include <OgrePass.h>
@@ -63,16 +65,19 @@ std::vector<const TerrainPageSurfaceLayer*>& ShaderPassCoverageBatch::getLayers(
 
 void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr texture)
 {
-
+	Ember::TimedLog log("ShaderPassCoverageBatch::assignCombinedCoverageTexture");
 	Ogre::Image image;
 
 	image.loadDynamicImage(mCombinedCoverageImage.getData(), mCombinedCoverageImage.getResolution(), mCombinedCoverageImage.getResolution(), 1, Ogre::PF_B8G8R8A8);
 	texture->loadImage(image);
-
-	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer());
+	log.report("image loaded");
 	///blit the whole image to the hardware buffer
 	Ogre::PixelBox sourceBox(image.getPixelBox());
-	hardwareBuffer->blitFromMemory(sourceBox);
+	//blit for each mipmap
+	for (int i = 0; i <= texture->getNumMipmaps(); ++i) {
+		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
+		hardwareBuffer->blitFromMemory(sourceBox);
+	}
 
 }
 
