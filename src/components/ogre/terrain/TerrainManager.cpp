@@ -41,6 +41,7 @@
 #include "TerrainModAddTask.h"
 #include "TerrainModChangeTask.h"
 #include "TerrainModRemoveTask.h"
+#include "TerrainUpdateTask.h"
 #include "GeometryUpdateTask.h"
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
@@ -362,36 +363,36 @@ int TerrainManager::getPageMetersSize() const
 void TerrainManager::prepareAllSegments()
 {
 
-	//   _fpreset();
-	//_controlfp(_PC_64, _MCW_PC);
-	//_controlfp(_RC_NEAR, _MCW_RC);
-
-
-	getAdapter()->setWorldPagesDimensions(mTerrainInfo->getTotalNumberOfPagesY(), mTerrainInfo->getTotalNumberOfPagesX(), mTerrainInfo->getPageOffsetY(), mTerrainInfo->getPageOffsetX());
-
-	getAdapter()->loadScene();
-	const WFMath::AxisBox<2>& worldSize = mTerrainInfo->getWorldSizeInIndices();
-	float heightMin = mHeightMin;
-	float heightMax = mHeightMax;
-	if (heightMax < heightMin) {
-		heightMin = -100;
-		heightMax = 100;
-	}
-	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
-
-	std::stringstream ss;
-	ss << worldBox;
-	S_LOG_INFO("New size of the world: " << ss.str());
-
-	getAdapter()->resize(worldBox, 16);
-
-	S_LOG_INFO("Pages: X: " << mTerrainInfo->getTotalNumberOfPagesX() << " Y: " << mTerrainInfo->getTotalNumberOfPagesY() << " Total: " << mTerrainInfo->getTotalNumberOfPagesX() * mTerrainInfo->getTotalNumberOfPagesY());
-	S_LOG_INFO("Page offset: X" << mTerrainInfo->getPageOffsetX() << " Y: " << mTerrainInfo->getPageOffsetY());
-
-	///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
-	getAdapter()->loadFirstPage();
-
-	EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest()->initialize();
+//	//   _fpreset();
+//	//_controlfp(_PC_64, _MCW_PC);
+//	//_controlfp(_RC_NEAR, _MCW_RC);
+//
+//
+//	getAdapter()->setWorldPagesDimensions(mTerrainInfo->getTotalNumberOfPagesY(), mTerrainInfo->getTotalNumberOfPagesX(), mTerrainInfo->getPageOffsetY(), mTerrainInfo->getPageOffsetX());
+//
+//	getAdapter()->loadScene();
+//	const WFMath::AxisBox<2>& worldSize = mTerrainInfo->getWorldSizeInIndices();
+//	float heightMin = mHeightMin;
+//	float heightMax = mHeightMax;
+//	if (heightMax < heightMin) {
+//		heightMin = -100;
+//		heightMax = 100;
+//	}
+//	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
+//
+//	std::stringstream ss;
+//	ss << worldBox;
+//	S_LOG_INFO("New size of the world: " << ss.str());
+//
+//	getAdapter()->resize(worldBox, 16);
+//
+//	S_LOG_INFO("Pages: X: " << mTerrainInfo->getTotalNumberOfPagesX() << " Y: " << mTerrainInfo->getTotalNumberOfPagesY() << " Total: " << mTerrainInfo->getTotalNumberOfPagesX() * mTerrainInfo->getTotalNumberOfPagesY());
+//	S_LOG_INFO("Page offset: X" << mTerrainInfo->getPageOffsetX() << " Y: " << mTerrainInfo->getPageOffsetY());
+//
+//	///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
+//	getAdapter()->loadFirstPage();
+//
+//	EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest()->initialize();
 
 }
 
@@ -504,34 +505,7 @@ void TerrainManager::updateShadows()
 
 bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
 {
-	std::vector<TerrainPosition> updatedPositions;
-	for (TerrainDefPointStore::const_iterator I = terrainPoints.begin(); I != terrainPoints.end(); ++I) {
-		Mercator::BasePoint bp;
-		if (mTerrain->getBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp) && (I->getHeight() == bp.height())) {
-			S_LOG_VERBOSE( "Point [" << I->getPosition().x() << "," << I->getPosition().y() << "] unchanged");
-			continue;
-		} else {
-			S_LOG_VERBOSE( "Setting base point [" << I->getPosition().x() << "," << I->getPosition().y() << "] to height " << I->getHeight());
-		}
-		bp.height() = I->getHeight();
-
-		/// FIXME Sort out roughness and falloff, and generally verify this code is the same as that in Terrain layer
-		mTerrain->setBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp);
-		mTerrainInfo->setBasePoint(I->getPosition(), bp);
-		updatedPositions.push_back(TerrainPosition(I->getPosition().x() * mTerrain->getResolution(), I->getPosition().y() * mTerrain->getResolution()));
-	}
-
-	EventWorldSizeChanged.emit();
-
-	if (!mHasTerrainInfo) {
-		mHasTerrainInfo = true;
-	} else {
-		if (!updatedPositions.empty()) {
-			///if it's an update, we need to reload all pages and adjust all entity positions
-			reloadTerrain(updatedPositions);
-		}
-	}
-
+	mTaskQueue->enqueueTask(new TerrainUpdateTask(*mTerrain, terrainPoints, *this, *mTerrainInfo, mHasTerrainInfo));
 	return true;
 }
 
