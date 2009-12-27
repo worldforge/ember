@@ -21,6 +21,7 @@
 #include "TerrainPage.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainPageSurface.h"
+#include "framework/TimedLog.h"
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
@@ -30,8 +31,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const PageVector& pages)
-: mPages(pages)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const PageVector& pages) :
+	mPages(pages)
 {
 }
 
@@ -39,7 +40,6 @@ TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPage* page
 {
 	mPages.push_back(page);
 }
-
 
 TerrainMaterialCompilationTask::~TerrainMaterialCompilationTask()
 {
@@ -56,11 +56,13 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Ember::Tasks:
 
 void TerrainMaterialCompilationTask::executeTaskInMainThread()
 {
+	Ember::TimedLog log("TerrainMaterialCompilationTask::executeTaskInMainThread()");
 	for (CompilationInstanceStore::const_iterator J = mMaterialRecompilations.begin(); J != mMaterialRecompilations.end(); ++J) {
 		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
 		TerrainPage* page = J->second;
 		compilationInstance->compile(page->getMaterial());
 	}
+	log.report("Materials recompiled.");
 	updateSceneManagersAfterMaterialsChange();
 }
 
