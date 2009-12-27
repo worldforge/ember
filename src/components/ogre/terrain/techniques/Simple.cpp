@@ -35,8 +35,6 @@
 #include <OgreTextureManager.h>
 #include <OgreHardwarePixelBuffer.h>
 
-
-
 namespace EmberOgre
 {
 
@@ -106,9 +104,9 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 	shadowTextureNameSS << material->getName() << "_shadow";
 	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
 
-	Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr>(Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName));
+	Ogre::TexturePtr texture = static_cast<Ogre::TexturePtr> (Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(shadowTextureName));
 	if (texture.isNull()) {
-		texture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getAlphaTextureSize(), mPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
+		texture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mPage.getAlphaTextureSize(), mPage.getAlphaTextureSize(), 1, Ogre::PF_L8, Ogre::TU_DYNAMIC_WRITE_ONLY);
 	}
 
 	Ogre::Image ogreImage;
@@ -208,7 +206,6 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 	} else {
 		coverageTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadImage(splatTextureName, "General", image, Ogre::TEX_TYPE_2D, 0);
 	}
-
 
 	///we need to create the image, update it and then destroy it again (to keep the memory usage down)
 	//	if (layer->getCoverageTextureName() == "") {

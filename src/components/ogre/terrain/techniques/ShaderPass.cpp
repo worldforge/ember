@@ -53,7 +53,7 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 		combinedCoverageTexture = static_cast<Ogre::TexturePtr> (Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(combinedCoverageName));
 	} else {
 		S_LOG_VERBOSE("Creating new texture " << combinedCoverageName);
-		combinedCoverageTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mPage.getAlphaTextureSize(), mPage.getAlphaTextureSize(), 4, Ogre::PF_B8G8R8A8);
+		combinedCoverageTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mPage.getAlphaTextureSize(), mPage.getAlphaTextureSize(), 1, Ogre::PF_B8G8R8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
 	}
 	return combinedCoverageTexture;
 }
