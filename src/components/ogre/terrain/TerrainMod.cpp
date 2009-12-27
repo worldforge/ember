@@ -56,6 +56,11 @@ Eris::TerrainMod* TerrainMod::getErisMod() const
 	return mInnerMod;
 }
 
+const std::string& TerrainMod::getEntityId() const
+{
+	return mInnerMod->getEntity()->getId();
+}
+
 void TerrainMod::terrainMod_ModChanged()
 {
 	EventModChanged.emit();

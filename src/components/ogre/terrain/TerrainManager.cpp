@@ -227,27 +227,29 @@ void TerrainManager::addTerrainMod(TerrainMod* terrainMod)
 	/// Listen for deletion of the modifier
 	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainMod_Deleted), terrainMod));
 
-	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getErisMod()->getEntity()->getId(), *this, mTerrainMods));
+	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getEntityId(), *this, mTerrainMods));
 }
 
 void TerrainManager::TerrainMod_Changed(TerrainMod* terrainMod)
 {
 	Mercator::TerrainMod* existingMod(0);
-	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getErisMod()->getEntity()->getId());
+	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getEntityId());
 	if (I != mTerrainMods.end()) {
 		existingMod = I->second;
 		mTerrainMods.erase(I);
+		mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getEntityId(), *this, mTerrainMods, existingMod));
+	} else {
+		S_LOG_WARNING("Got a change signal for a terrain mod which isn't registered with the terrain manager. This shouldn't happen.");
 	}
-	mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getErisMod()->getEntity()->getId(), *this, mTerrainMods, existingMod));
 }
 
 void TerrainManager::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
-	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getErisMod()->getEntity()->getId());
+	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getEntityId());
 	if (I != mTerrainMods.end()) {
 		Mercator::TerrainMod* existingMod = I->second;
 		mTerrainMods.erase(I);
-		mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, existingMod, terrainMod->getErisMod()->getEntity()->getId(), *this, mTerrainMods));
+		mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, existingMod, terrainMod->getEntityId(), *this, mTerrainMods));
 	}
 }
 

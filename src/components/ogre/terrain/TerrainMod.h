@@ -88,6 +88,12 @@ public:
 	Mercator::TerrainMod* getMercatorMod() const;
 
 	/**
+	 * @brief Gets the id of the entity to which this mod belongs.
+	 * @returns The id of the entity to which this mod belongs.
+	 */
+	const std::string& getEntityId() const;
+
+	/**
 	 * Emitted whenever the modifier is changed or moved.
 	 */
 	sigc::signal<void> EventModChanged;
