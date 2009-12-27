@@ -70,7 +70,7 @@ namespace Gui
 {
 
 EntityCreator::EntityCreator() :
-	mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0)
+	mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0), mAxisMarker(0)
 {
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EntityCreator::connectedToServer));
@@ -181,6 +181,15 @@ void EntityCreator::createEntity()
 
 		// Creating scene node
 		mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
+
+		if (!mAxisMarker) {
+			try {
+				mAxisMarker = mEntityNode->getCreator()->createEntity("EntityCreator_axisMarker", "axes.mesh");
+				mEntityNode->attachObject(mAxisMarker);
+			} catch (const std::exception& ex) {
+				S_LOG_WARNING("Error when loading axes mesh."<< ex);
+			}
+		}
 
 		// Making model from temporary entity
 		EntityCreatorActionCreator actionCreator(*this);

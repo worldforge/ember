@@ -283,6 +283,8 @@ protected:
 
 	EntityCreatorMovement* mMovement;
 
+
+	Ogre::Entity* mAxisMarker;
 };
 
 /**
