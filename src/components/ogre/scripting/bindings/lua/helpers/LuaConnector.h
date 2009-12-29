@@ -66,6 +66,7 @@ class BasePointUserObject;
 class TerrainEditAction;
 class TerrainPage;
 class TerrainEditorOverlay;
+class TerrainManager;
 }
 
 namespace Authoring
@@ -261,7 +262,7 @@ public:
 	static void pushValue(const std::vector<EntityPickResult>& theValue, const std::string& luaTypename);
 	static void pushValue(const Authoring::EntityMover& theValue, const std::string& luaTypename);
 	static void pushValue(const Terrain::TerrainEditorOverlay& theValue, const std::string& luaTypename);
-
+	static void pushValue(const Terrain::TerrainManager& theValue, const std::string& luaTypename);
 
 	template<typename T> static void pushUserTypeValue(T& theValue, const std::string& luaTypename);
 
@@ -286,6 +287,7 @@ public:
 	LuaConnector(sigc::signal<void, Terrain::BasePointUserObject*>& signal);
 	LuaConnector(sigc::signal<void, Terrain::TerrainEditAction*>& signal);
 	LuaConnector(sigc::signal<void, Terrain::TerrainEditorOverlay&>& signal);
+	LuaConnector(sigc::signal<void, Terrain::TerrainManager&>& signal);
 	LuaConnector(sigc::signal<void, Eris::Task*>& signal);
 	LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal);
 	LuaConnector(sigc::signal<void, Gui::EntityIcon*>& signal);

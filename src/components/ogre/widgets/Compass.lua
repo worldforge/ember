@@ -77,7 +77,7 @@ function Compass.CreatedAvatarEntity(avatarEntity)
 	connect(Compass.connectors, guiManager.EventFrameStarted, "Compass.framestarted")
 end
 
-function Compass.buildWidget()
+function Compass.buildWidget(terrainManager)
 	Compass.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new_local()
 
 	Compass.helper = EmberOgre.Gui.Compass:new_local(Compass.helperImpl)
@@ -88,7 +88,7 @@ function Compass.buildWidget()
 	
 	--don't show the compass here, instead wait until we've gotten some terrain (by listening 
 	connect(Compass.connectors, emberOgre.EventCreatedAvatarEntity, "Compass.CreatedAvatarEntity")
-	connect(Compass.connectors, emberOgre:getTerrainManager().EventTerrainPageGeometryUpdated, "Compass.TerrainPageGeometryUpdated")
+	connect(Compass.connectors, terrainManager.EventTerrainPageGeometryUpdated, "Compass.TerrainPageGeometryUpdated")
 
 end
 
@@ -121,6 +121,4 @@ function Compass.buildCEGUIWidget()
 	Compass.widget:hide()
 end
 
-
-
-Compass.buildWidget()
+connect(Compass.connectors, emberOgre.EventTerrainManagerCreated, Compass.buildWidget)

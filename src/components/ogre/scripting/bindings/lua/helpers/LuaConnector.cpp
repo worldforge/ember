@@ -353,6 +353,12 @@ void LuaConnector::pushValue(const Terrain::TerrainEditorOverlay& theValue, cons
 	pushUserTypeValue(theValue, luaTypename);
 }
 
+void LuaConnector::pushValue(const Terrain::TerrainManager& theValue, const std::string& luaTypename)
+{
+	pushUserTypeValue(theValue, luaTypename);
+}
+
+
 
 template<typename T>
 void LuaConnector::pushUserTypeValue(T& theValue, const std::string& luaTypename)
@@ -612,6 +618,16 @@ LuaConnector::LuaConnector(sigc::signal<void, Terrain::TerrainEditorOverlay&>& s
 		mConnector = new LuaConnectors::ConnectorOne<void, Terrain::TerrainEditorOverlay&>(signal, luaTypes);
 	}
 }
+
+LuaConnector::LuaConnector(sigc::signal<void, Terrain::TerrainManager&>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::Terrain::TerrainManager");
+		mConnector = new LuaConnectors::ConnectorOne<void, Terrain::TerrainManager&>(signal, luaTypes);
+	}
+}
+
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Task*>& signal)
 {

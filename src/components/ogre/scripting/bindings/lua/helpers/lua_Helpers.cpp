@@ -37,38 +37,39 @@ static int tolua_collect_EmberOgre__LuaConsoleObject (lua_State* tolua_S)
 /* function to register type */
 static void tolua_reg_types (lua_State* tolua_S)
 {
+ tolua_usertype(tolua_S,"sigc::signal<void,const std::set<std::string>&>");
+ tolua_usertype(tolua_S,"sigc::signal<bool,const std::string&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const std::vector<EmberOgre::EntityPickResult>&,const EmberOgre::MousePickerArgs&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>");
+ tolua_usertype(tolua_S,"EmberOgre::OgreUtils");
+ tolua_usertype(tolua_S,"sigc::signal<void,float>");
+ tolua_usertype(tolua_S,"sigc::signal<void,Eris::Task*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Root&>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntityFactory*>");
  tolua_usertype(tolua_S,"EmberOgre::LuaConnector");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::MousePickerArgs&>");
- tolua_usertype(tolua_S,"Ogre::Mesh");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainEditorOverlay&>");
  tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::MouseButton,Ember::Input::InputMode>");
- tolua_usertype(tolua_S,"EmberOgre::OgreUtils");
- tolua_usertype(tolua_S,"sigc::signal<void,const Eris::ServerInfo&>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Jesus*>");
  tolua_usertype(tolua_S,"EmberOgre::LuaConsoleObject");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>");
- tolua_usertype(tolua_S,"sigc::signal<void,const std::vector<EmberOgre::EntityPickResult>&,const EmberOgre::MousePickerArgs&>");
- tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,EmberOgre::EmberEntity*>");
- tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity&,EmberOgre::Authoring::EntityMover&>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity&>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
- tolua_usertype(tolua_S,"sigc::signal<void,const std::set<std::string>&>");
- tolua_usertype(tolua_S,"sigc::signal<void,Eris::Task*>");
- tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
  tolua_usertype(tolua_S,"sigc::signal<void,const EmberOgre::EntityPickResult&,const EmberOgre::MousePickerArgs&>");
- tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::BasePointUserObject*>");
- tolua_usertype(tolua_S,"sigc::signal<bool,const std::string&>");
- tolua_usertype(tolua_S,"sigc::signal<void,float>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity&,EmberOgre::Authoring::EntityMover&>");
+ tolua_usertype(tolua_S,"Ogre::Mesh");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Eris::ServerInfo&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainManager&>");
+ tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,EmberOgre::EmberEntity*>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::EmberEntity&>");
  tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Message::Element&>");
  tolua_usertype(tolua_S,"sigc::signal<void>");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Connection*>");
  tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Terrain::TerrainEditAction*>");
- tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::InputMode>");
+ tolua_usertype(tolua_S,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>");
 }
 
 /* method: connect of class  EmberOgre::LuaConnector */
@@ -1232,13 +1233,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new21(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,Eris::Task*>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::TerrainManager&>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,Eris::Task*>* signal = ((sigc::signal<void,Eris::Task*>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::Terrain::TerrainManager&>* signal = ((sigc::signal<void,EmberOgre::Terrain::TerrainManager&>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
@@ -1257,13 +1258,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new21_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,Eris::Task*>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::TerrainManager&>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,Eris::Task*>* signal = ((sigc::signal<void,Eris::Task*>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::Terrain::TerrainManager&>* signal = ((sigc::signal<void,EmberOgre::Terrain::TerrainManager&>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");
@@ -1282,13 +1283,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new22(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const std::set<std::string>&>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,Eris::Task*>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,const std::set<std::string>&>* signal = ((sigc::signal<void,const std::set<std::string>&>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,Eris::Task*>* signal = ((sigc::signal<void,Eris::Task*>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
@@ -1307,13 +1308,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new22_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const std::set<std::string>&>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,Eris::Task*>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,const std::set<std::string>&>* signal = ((sigc::signal<void,const std::set<std::string>&>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,Eris::Task*>* signal = ((sigc::signal<void,Eris::Task*>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");
@@ -1332,13 +1333,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new23(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const std::set<std::string>&>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,EmberOgre::Gui::EntityIcon*>* signal = ((sigc::signal<void,EmberOgre::Gui::EntityIcon*>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,const std::set<std::string>&>* signal = ((sigc::signal<void,const std::set<std::string>&>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
@@ -1357,13 +1358,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new23_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const std::set<std::string>&>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,EmberOgre::Gui::EntityIcon*>* signal = ((sigc::signal<void,EmberOgre::Gui::EntityIcon*>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,const std::set<std::string>&>* signal = ((sigc::signal<void,const std::set<std::string>&>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");
@@ -1382,13 +1383,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new24(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Message::Element&>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,const Atlas::Message::Element&>* signal = ((sigc::signal<void,const Atlas::Message::Element&>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::Gui::EntityIcon*>* signal = ((sigc::signal<void,EmberOgre::Gui::EntityIcon*>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
@@ -1407,13 +1408,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new24_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Message::Element&>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Gui::EntityIcon*>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,const Atlas::Message::Element&>* signal = ((sigc::signal<void,const Atlas::Message::Element&>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::Gui::EntityIcon*>* signal = ((sigc::signal<void,EmberOgre::Gui::EntityIcon*>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");
@@ -1432,13 +1433,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new25(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Message::Element&>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,EmberOgre::MovementControllerMode::Mode>* signal = ((sigc::signal<void,EmberOgre::MovementControllerMode::Mode>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,const Atlas::Message::Element&>* signal = ((sigc::signal<void,const Atlas::Message::Element&>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
@@ -1457,13 +1458,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new25_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Message::Element&>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,EmberOgre::MovementControllerMode::Mode>* signal = ((sigc::signal<void,EmberOgre::MovementControllerMode::Mode>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,const Atlas::Message::Element&>* signal = ((sigc::signal<void,const Atlas::Message::Element&>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");
@@ -1482,13 +1483,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new26(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,EmberOgre::Terrain::TerrainPage&>* signal = ((sigc::signal<void,EmberOgre::Terrain::TerrainPage&>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::MovementControllerMode::Mode>* signal = ((sigc::signal<void,EmberOgre::MovementControllerMode::Mode>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
@@ -1507,13 +1508,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new26_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::MovementControllerMode::Mode>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,EmberOgre::Terrain::TerrainPage&>* signal = ((sigc::signal<void,EmberOgre::Terrain::TerrainPage&>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::MovementControllerMode::Mode>* signal = ((sigc::signal<void,EmberOgre::MovementControllerMode::Mode>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");
@@ -1532,13 +1533,13 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new27(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Objects::Root&>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
-  sigc::signal<void,const Atlas::Objects::Root&>* signal = ((sigc::signal<void,const Atlas::Objects::Root&>*)  tolua_tousertype(tolua_S,2,0));
+  sigc::signal<void,EmberOgre::Terrain::TerrainPage&>* signal = ((sigc::signal<void,EmberOgre::Terrain::TerrainPage&>*)  tolua_tousertype(tolua_S,2,0));
   {
    EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
@@ -1557,6 +1558,56 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new27_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,EmberOgre::Terrain::TerrainPage&>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  sigc::signal<void,EmberOgre::Terrain::TerrainPage&>* signal = ((sigc::signal<void,EmberOgre::Terrain::TerrainPage&>*)  tolua_tousertype(tolua_S,2,0));
+  {
+   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
+   tolua_pushusertype_and_takeownership(tolua_S,(void *)tolua_ret,"EmberOgre::LuaConnector");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Helpers_EmberOgre_LuaConnector_new26_local(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new of class  EmberOgre::LuaConnector */
+#ifndef TOLUA_DISABLE_tolua_Helpers_EmberOgre_LuaConnector_new28
+static int tolua_Helpers_EmberOgre_LuaConnector_new28(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Objects::Root&>",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  sigc::signal<void,const Atlas::Objects::Root&>* signal = ((sigc::signal<void,const Atlas::Objects::Root&>*)  tolua_tousertype(tolua_S,2,0));
+  {
+   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  new EmberOgre::LuaConnector(*signal);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_Helpers_EmberOgre_LuaConnector_new27(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: new_local of class  EmberOgre::LuaConnector */
+#ifndef TOLUA_DISABLE_tolua_Helpers_EmberOgre_LuaConnector_new28_local
+static int tolua_Helpers_EmberOgre_LuaConnector_new28_local(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"sigc::signal<void,const Atlas::Objects::Root&>",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
@@ -1571,7 +1622,7 @@ static int tolua_Helpers_EmberOgre_LuaConnector_new27_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua_Helpers_EmberOgre_LuaConnector_new26_local(tolua_S);
+ return tolua_Helpers_EmberOgre_LuaConnector_new27_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -1870,6 +1921,9 @@ TOLUA_API int tolua_Helpers_open (lua_State* tolua_S)
     tolua_function(tolua_S,"new",tolua_Helpers_EmberOgre_LuaConnector_new27);
     tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConnector_new27_local);
     tolua_function(tolua_S,".call",tolua_Helpers_EmberOgre_LuaConnector_new27_local);
+    tolua_function(tolua_S,"new",tolua_Helpers_EmberOgre_LuaConnector_new28);
+    tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConnector_new28_local);
+    tolua_function(tolua_S,".call",tolua_Helpers_EmberOgre_LuaConnector_new28_local);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"EmberOgre",0);
