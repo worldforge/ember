@@ -159,7 +159,7 @@
             </action>
         </actions>
         <attachpoints>
-            <attachpoint name="right_hand_wield" bone="RMiddleRoot">
+            <attachpoint name="outfit.right_hand" bone="RMiddleRoot">
                 <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
             </attachpoint>
         </attachpoints>
