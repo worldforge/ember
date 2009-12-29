@@ -275,7 +275,7 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 -- 	Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
 	dollSlot.droppedHandler = function(entityIcon)
 		if dollSlot.isValidDrop(entityIcon) then
-			emberServices:getServerService():wield(entityIcon:getEntity())
+			emberServices:getServerService():wield(entityIcon:getEntity(), dollSlot.outfitPlacement)
 			local icon = dollSlot.slot:getEntityIcon()
 			if icon ~= null then
 				local slot = Inventory.getFreeSlot()
@@ -342,19 +342,19 @@ function Inventory.setupDoll(avatarEntity)
 		Inventory.doll.renderer:setCameraDistance(0.75)
 		Inventory.doll.renderer:updateRender()
 				
-		Inventory.doll.rightHand = Inventory.createDollSlot("right_hand", Inventory.widget:getWindow("Doll/RightHand"), "Drop an entity here to attach it to the right hand.")
+		Inventory.doll.rightHand = Inventory.createDollSlot("right_hand", Inventory.widget:getWindow("Doll/RightHand"), "Drop an entity here to attach it to the right hand.", true)
 		Inventory.doll.rightHandOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.rightHand, "right_hand")
 		
-		Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
+		Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.", false)
 		Inventory.doll.torsoOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.torso, "body")
 		
-		Inventory.doll.head = Inventory.createDollSlot("head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.")
+		Inventory.doll.head = Inventory.createDollSlot("head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.", false)
 		Inventory.doll.headOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.head, "head")
 	
-		Inventory.doll.legs = Inventory.createDollSlot("legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.")
+		Inventory.doll.legs = Inventory.createDollSlot("legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.", false)
 		Inventory.doll.legsOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.legs, "legs")
 		
-		Inventory.doll.feet = Inventory.createDollSlot("feet", Inventory.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.")
+		Inventory.doll.feet = Inventory.createDollSlot("feet", Inventory.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.", false)
 		Inventory.doll.feetOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.feet, "feet")
 	end
 end
@@ -366,7 +366,7 @@ function Inventory.updateDoll()
 end
 
 
-function Inventory.createDollSlot(outfitPlacement, containerWindow, tooltipText)
+function Inventory.createDollSlot(outfitPlacement, containerWindow, tooltipText, allowAny)
 	local dollSlot = {}
 	dollSlot.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
 	dollSlot.container = containerWindow
@@ -374,9 +374,10 @@ function Inventory.createDollSlot(outfitPlacement, containerWindow, tooltipText)
 	dollSlot.slot:getWindow():setInheritsTooltipText(true)
 	dollSlot.container:setTooltipText(tooltipText)
 	dollSlot.outfitPlacement = outfitPlacement
+	dollSlot.allowAny = allowAny
 	
 	dollSlot.isValidDrop = function(entityIcon)
-		if dollSlot.outfitPlacement == "" then
+		if dollSlot.outfitPlacement == "" or dollSlot.allowAny then
 			return true
 		end
 		if entityIcon:getEntity():hasAttr("worn") then
