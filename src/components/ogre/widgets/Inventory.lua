@@ -348,6 +348,9 @@ function Inventory.setupDoll(avatarEntity)
 		Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.", false)
 		Inventory.doll.torsoOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.torso, "body")
 		
+		Inventory.doll.back = Inventory.createDollSlot("back", Inventory.widget:getWindow("Doll/Back"), "Drop an entity here to attach it to the back.", false)
+		Inventory.doll.backOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.back, "back")
+
 		Inventory.doll.head = Inventory.createDollSlot("head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.", false)
 		Inventory.doll.headOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.head, "head")
 	
