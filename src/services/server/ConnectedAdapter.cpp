@@ -160,10 +160,27 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 	}
 }
 
-void ConnectedAdapter::wield(Eris::Entity* entity)
+void ConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot)
 {
+
 	try {
-		mAvatar.wield(entity);
+
+		if (entity->getLocation() != mAvatar.getEntity()) {
+			S_LOG_WARNING("Can't wield an Entity which is not located in the avatar.");
+
+			return;
+		}
+
+		Atlas::Objects::Entity::Anonymous arguments;
+		arguments->setId(entity->getId());
+		if (outfitSlot != "") {
+			arguments->setAttr("outfit", outfitSlot);
+		}
+		Atlas::Objects::Operation::Wield wield;
+		wield->setFrom(mAvatar.getEntity()->getId());
+		wield->setArgs1(arguments);
+
+		mConnection.send(wield);
 
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on wielding." << ex);

@@ -77,7 +77,7 @@ void NonConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, cons
 
 }
 
-void NonConnectedAdapter::wield(Eris::Entity* entity)
+void NonConnectedAdapter::wield(Eris::Entity* entity, const std::string& outfitSlot)
 {
 
 }

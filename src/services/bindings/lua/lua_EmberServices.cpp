@@ -1885,6 +1885,37 @@ static int tolua_EmberServices_Ember_ServerService_wield00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: wield of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_wield01
+static int tolua_EmberServices_Ember_ServerService_wield01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::ServerService",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Eris::Entity",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+  Eris::Entity* entity = ((Eris::Entity*)  tolua_tousertype(tolua_S,2,0));
+  const std::string outfitSlot = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'wield'",NULL);
+#endif
+  {
+   self->wield(entity,outfitSlot);
+   tolua_pushcppstring(tolua_S,(const char*)outfitSlot);
+  }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_EmberServices_Ember_ServerService_wield00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: take of class  Ember::ServerService */
 #ifndef TOLUA_DISABLE_tolua_EmberServices_Ember_ServerService_take00
 static int tolua_EmberServices_Ember_ServerService_take00(lua_State* tolua_S)
@@ -3414,6 +3445,7 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_function(tolua_S,"drop",tolua_EmberServices_Ember_ServerService_drop01);
     tolua_function(tolua_S,"place",tolua_EmberServices_Ember_ServerService_place00);
     tolua_function(tolua_S,"wield",tolua_EmberServices_Ember_ServerService_wield00);
+    tolua_function(tolua_S,"wield",tolua_EmberServices_Ember_ServerService_wield01);
     tolua_function(tolua_S,"take",tolua_EmberServices_Ember_ServerService_take00);
     tolua_function(tolua_S,"use",tolua_EmberServices_Ember_ServerService_use00);
     tolua_function(tolua_S,"use",tolua_EmberServices_Ember_ServerService_use01);

@@ -53,7 +53,7 @@ public:
 	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>(0, 0, 0));
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);
-	virtual void wield(Eris::Entity* entity);
+	virtual void wield(Eris::Entity* entity, const std::string& outfitSlot);
 	virtual void take(Eris::Entity* entity);
 	virtual void use(Eris::Entity* entity, WFMath::Point<3> pos, const std::string& operation);
 	virtual void useStop();
