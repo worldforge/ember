@@ -24,6 +24,7 @@
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/Convert.h"
+#include "components/ogre/DeepAttributeObserver.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/ModelMount.h"
@@ -31,6 +32,8 @@
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/model/ModelBoneProvider.h"
 #include "components/ogre/model/ModelFitting.h"
+
+#include "framework/Tokeniser.h"
 
 #include <sigc++/bind.h>
 #include <sigc++/slot.h>
@@ -72,6 +75,11 @@ ModelAttachment::~ModelAttachment()
 	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
 		delete I->second;
 	}
+
+	for (DeepAttributeObserverStore::iterator I = mFittingsObservers.begin(); I != mFittingsObservers.end(); ++I) {
+		delete *I;
+	}
+
 }
 
 IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
@@ -165,7 +173,7 @@ void ModelAttachment::updateScale()
 
 void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName)
 {
-	std::string newFittingEntityId = attributeValue.asString();
+	const std::string& newFittingEntityId = attributeValue.asString();
 
 	ModelFittingStore::iterator I = mFittings.find(fittingName);
 	if (I != mFittings.end()) {
@@ -195,8 +203,16 @@ void ModelAttachment::setupFittings()
 {
 	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
 	for (AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
-		Eris::Entity::AttrChangedSlot observeSlot = sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), I->Name);
-		mChildEntity.observe(I->Name, observeSlot);
+		std::vector<std::string> path;
+		Ember::Tokeniser tokeniser(I->Name, ".");
+		std::string nextToken = tokeniser.nextToken();
+		while (nextToken != "") {
+			path.push_back(nextToken);
+			nextToken = tokeniser.nextToken();
+		}
+		DeepAttributeObserver* observer = new DeepAttributeObserver(mChildEntity, path);
+		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), I->Name));
+		mFittingsObservers.push_back(observer);
 	}
 }
 

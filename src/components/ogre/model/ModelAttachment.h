@@ -21,6 +21,7 @@
 
 #include "components/ogre/NodeAttachment.h"
 #include <map>
+#include <vector>
 #include <string>
 #include <sigc++/trackable.h>
 
@@ -38,6 +39,7 @@ namespace EmberOgre
 class IGraphicalRepresentation;
 class INodeProvider;
 class EmberEntity;
+class DeepAttributeObserver;
 
 namespace Model
 {
@@ -91,6 +93,8 @@ public:
 
 protected:
 
+	typedef std::vector<DeepAttributeObserver*> DeepAttributeObserverStore;
+
 	ModelRepresentation& mModelRepresentation;
 
 	/**
@@ -100,6 +104,8 @@ protected:
 	ModelMount* mModelMount;
 
 	ModelFittingStore mFittings;
+
+	DeepAttributeObserverStore mFittingsObservers;
 
 	void setupFittings();
 
