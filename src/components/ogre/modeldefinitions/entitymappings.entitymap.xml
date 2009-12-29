@@ -732,6 +732,7 @@
 				<caseparam type="equals">merchant</caseparam>
 				<caseparam type="equals">mercenary</caseparam>
 				<caseparam type="equals">marshall</caseparam>
+				<caseparam type="equals">human</caseparam>
 				<action type="display-model">male</action>
 			</case>
 		</entitymatch>
