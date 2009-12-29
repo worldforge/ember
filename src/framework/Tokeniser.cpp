@@ -72,13 +72,19 @@ std::string Tokeniser::nextToken() {
 //  }
 }
 
-std::string Tokeniser::remainingTokens() {
-  if (mLastPos == std::string::npos) return "";
+std::string Tokeniser::remainingTokens() const {
+  if (!hasRemainingTokens()) return "";
 //try {  
     return mTokenString.substr(mLastPos, mTokenString.size() - mLastPos);
 //  } catch (...) {
 //    return "";
 //  }
-}                                
+}
+
+bool Tokeniser::hasRemainingTokens() const
+{
+	return mLastPos != std::string::npos;
+}
+
 
 }// end of namespace Ember

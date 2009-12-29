@@ -77,15 +77,22 @@ class Tokeniser
 	void initTokens(const std::string &tokens);
 	
 	/**
-	 *    @brief Advances to the next token and returns it.
+	 * @brief Advances to the next token and returns it.
 	 * @return The next token.
 	 */
 	std::string nextToken();
+
 	/**
-	 *    @brief Returns the string of remaining tokens.
+	 * @brief Returns the string of remaining tokens.
 	 * @return The remaining tokens.
 	 */
-	std::string remainingTokens();
+	std::string remainingTokens() const;
+
+	/**
+	 * @brief Returns whether there are any remaining tokens.
+	 * @return True if there are any remaining tokens.
+	 */
+	bool hasRemainingTokens() const;
 }; 
 
 }
