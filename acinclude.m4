@@ -76,6 +76,28 @@ AC_ARG_WITH(cppunit-exec-prefix,[  --with-cppunit-exec-prefix=PFX  Exec prefix w
   AC_SUBST(CPPUNIT_LIBS)
 ])
 
+dnl worldforge check for the GL library,
+dnl the -l flag is added directly to LIBS
+
+AC_DEFUN([WF_CHECK_GL_SINGLE_LIB],[dnl
+
+AC_LANG_PUSH(C)
+
+dnl AC_MSG_CHECKING(for glViewport in libGL)
+
+AC_CHECK_LIB([GL], [glViewport],[
+    LIBS="$LIBS -lGL"
+	CXXFLAGS="$CXXFLAGS -I/usr/X11R6/include -I/usr/include"
+    ],[
+	AC_MSG_ERROR(Could not find OpenGL library)
+    ]
+)
+
+AC_LANG_POP(C)
+
+])dnl end of WF_CHECK_GL_LIBS
+
+
 # Check for binary relocation support.
 # Written by Hongli Lai
 # http://autopackage.org/

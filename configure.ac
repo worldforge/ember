@@ -108,6 +108,7 @@ AM_PATH_SDL(1.2.0,
 
 #dnl don't add SDL flags yet, SDL_main confuses later checks
 
+#We check for OpenGL only because we want to check whether indirect rendering is used or not. If the code is altered to not having to check with OpenGL direct (for example going through Ogre) this check can be removed. 
 WF_CHECK_GL_SINGLE_LIB
 
 # OpenAL check
