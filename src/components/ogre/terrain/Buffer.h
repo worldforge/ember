@@ -29,34 +29,94 @@ namespace EmberOgre
 namespace Terrain
 {
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A simple image bitmap buffer, square in size.
+ */
 template<typename DataType>
 class Buffer
 {
 public:
 
+	/**
+	 * @brief Ctor.
+	 * @param resolution The size, in pixels, of one side of the square.
+	 * @param channels The number of channels.
+	 * @note By using this constructor a data structure owned by this instance will automatically be created.
+	 */
 	Buffer(unsigned int resolution, unsigned int channels);
+
+	/**
+	 * @brief Ctor.
+	 * @param resolution The size, in pixels, of one side of the square.
+	 * @param channels The number of channels.
+	 * @param data A precreated data segment. This must be at least the size of resolution * resolution * channels.
+	 * @param transferOwnership If true, the ownership of the data is transferred to this instance, so that it's deleted when the instance is destroyed.
+	 */
 	Buffer(unsigned int resolution, unsigned int channels, DataType* data, bool transferOwnership = false);
 
+	/**
+	 * @brief Dtor.
+	 * If ownership of any data has been transferred to this instance, the data will be deleted too.
+	 */
 	virtual ~Buffer();
 
+	/**
+	 * @brief Accessor for the underlying bitmap data.
+	 * @returns The underlying bitmap data.
+	 */
 	DataType* getData();
 
+	/**
+	 * @brief Accessor for the underlying bitmap data.
+	 * @returns The underlying bitmap data.
+	 */
 	const DataType* getData() const;
 
+	/**
+	 * @brief Accessor for the number of channels.
+	 * @returns The number of channels.
+	 */
 	unsigned int getChannels() const;
 
+	/**
+	 * @brief Gets the size of the underlying data.
+	 * @returns The size of the underlying data.
+	 */
 	size_t getSize() const;
 
+	/**
+	 * @brief Resets the buffer, setting all values to 0.
+	 */
 	void reset();
 
+	/**
+	 * @brief Gets the size in pixels of one side of the bitmap square.
+	 * @returns The size in pixels of one side of the bitmap square.
+	 */
 	unsigned int getResolution() const;
 
 protected:
 
+	/**
+	 * @brief The resolution of the bitmap, i.e. the size in pixels of one side of the bitmap square.
+	 */
 	const unsigned int mResolution;
+
+	/**
+	 * @brief The number of channels in the bitmap image.
+	 */
 	const unsigned int mChannels;
 
+	/**
+	 * @brief The underlying data which makes up the bitmap.
+	 * This can be owned by this instance and thus freed when the instance is destroyed.
+	 */
 	DataType* mData;
+
+	/**
+	 * @brief Whether the data is owned by this instance and thus destroyed when the instance is destroyed.
+	 */
 	bool mDataOwned;
 
 };
@@ -109,12 +169,6 @@ template<typename DataType>
 unsigned int Buffer<DataType>::getResolution() const
 {
 	return mResolution;
-}
-
-template<typename DataType>
-void Buffer<DataType>::reset()
-{
-	memset(mData, '\0', getSize());
 }
 
 }

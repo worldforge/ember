@@ -45,7 +45,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/techniques/ShaderNormalMappedPassCoverageBatch.cpp terrain/techniques/ShaderPass.cpp \
 	terrain/techniques/ShaderPassCoverageBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp \
 	terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp terrain/TerrainMaterialCompilationTask.cpp \
-	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/HeightMapBuffer.cpp \
+	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/Buffer.cpp terrain/HeightMapBuffer.cpp \
 	terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp \
 	terrain/TerrainAreaRemoveTask.cpp terrain/TerrainModAddTask.cpp terrain/TerrainModChangeTask.cpp terrain/TerrainModRemoveTask.cpp \
 	terrain/GeometryUpdateTask.cpp terrain/TerrainModTaskBase.cpp terrain/TerrainEditorOverlay.cpp terrain/TerrainDefPoint.cpp \
