@@ -46,6 +46,7 @@ public:
 	SimpleSun(Ogre::SceneManager *sceneMgr);
 	virtual void setAmbientLight(const Ogre::ColourValue& colour);
 	virtual Ogre::Vector3 getSunDirection() const;
+	virtual WFMath::Vector<3> getMainLightDirection() const;
 protected:
 	Ogre::Light* mMainLight;
 };

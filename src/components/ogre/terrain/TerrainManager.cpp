@@ -56,10 +56,7 @@
 #include "../EmberEntityFactory.h"
 #include "../ShaderManager.h"
 #include "../WorldEmberEntity.h"
-
-#include "../environment/Foliage.h"
-#include "../environment/Forest.h"
-#include "../environment/Environment.h"
+#include "../ILightning.h"
 
 #include "main/Application.h"
 
@@ -129,7 +126,7 @@ public:
 };
 
 TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1))
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0)
 {
 	mSceneManagerAdapter = adapter;
 
@@ -363,36 +360,36 @@ int TerrainManager::getPageMetersSize() const
 void TerrainManager::prepareAllSegments()
 {
 
-//	//   _fpreset();
-//	//_controlfp(_PC_64, _MCW_PC);
-//	//_controlfp(_RC_NEAR, _MCW_RC);
-//
-//
-//	getAdapter()->setWorldPagesDimensions(mTerrainInfo->getTotalNumberOfPagesY(), mTerrainInfo->getTotalNumberOfPagesX(), mTerrainInfo->getPageOffsetY(), mTerrainInfo->getPageOffsetX());
-//
-//	getAdapter()->loadScene();
-//	const WFMath::AxisBox<2>& worldSize = mTerrainInfo->getWorldSizeInIndices();
-//	float heightMin = mHeightMin;
-//	float heightMax = mHeightMax;
-//	if (heightMax < heightMin) {
-//		heightMin = -100;
-//		heightMax = 100;
-//	}
-//	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
-//
-//	std::stringstream ss;
-//	ss << worldBox;
-//	S_LOG_INFO("New size of the world: " << ss.str());
-//
-//	getAdapter()->resize(worldBox, 16);
-//
-//	S_LOG_INFO("Pages: X: " << mTerrainInfo->getTotalNumberOfPagesX() << " Y: " << mTerrainInfo->getTotalNumberOfPagesY() << " Total: " << mTerrainInfo->getTotalNumberOfPagesX() * mTerrainInfo->getTotalNumberOfPagesY());
-//	S_LOG_INFO("Page offset: X" << mTerrainInfo->getPageOffsetX() << " Y: " << mTerrainInfo->getPageOffsetY());
-//
-//	///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
-//	getAdapter()->loadFirstPage();
-//
-//	EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest()->initialize();
+	//	//   _fpreset();
+	//	//_controlfp(_PC_64, _MCW_PC);
+	//	//_controlfp(_RC_NEAR, _MCW_RC);
+	//
+	//
+	//	getAdapter()->setWorldPagesDimensions(mTerrainInfo->getTotalNumberOfPagesY(), mTerrainInfo->getTotalNumberOfPagesX(), mTerrainInfo->getPageOffsetY(), mTerrainInfo->getPageOffsetX());
+	//
+	//	getAdapter()->loadScene();
+	//	const WFMath::AxisBox<2>& worldSize = mTerrainInfo->getWorldSizeInIndices();
+	//	float heightMin = mHeightMin;
+	//	float heightMax = mHeightMax;
+	//	if (heightMax < heightMin) {
+	//		heightMin = -100;
+	//		heightMax = 100;
+	//	}
+	//	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
+	//
+	//	std::stringstream ss;
+	//	ss << worldBox;
+	//	S_LOG_INFO("New size of the world: " << ss.str());
+	//
+	//	getAdapter()->resize(worldBox, 16);
+	//
+	//	S_LOG_INFO("Pages: X: " << mTerrainInfo->getTotalNumberOfPagesX() << " Y: " << mTerrainInfo->getTotalNumberOfPagesY() << " Total: " << mTerrainInfo->getTotalNumberOfPagesX() * mTerrainInfo->getTotalNumberOfPagesY());
+	//	S_LOG_INFO("Page offset: X" << mTerrainInfo->getPageOffsetX() << " Y: " << mTerrainInfo->getPageOffsetY());
+	//
+	//	///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
+	//	getAdapter()->loadFirstPage();
+	//
+	//	EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest()->initialize();
 
 }
 
@@ -429,7 +426,11 @@ void TerrainManager::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosit
 
 	S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 	if (mTerrainPages[x][y] == 0) {
-		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, *mTerrain, pos, &bridge, *mHeightMapBufferProvider, *mHeightMap), 0);
+		WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0,0,-1);
+		if (mLightning) {
+			sunDirection = mLightning->getMainLightDirection();
+		}
+		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, *mTerrain, pos, &bridge, *mHeightMapBufferProvider, *mHeightMap, sunDirection));
 	} else {
 		S_LOG_WARNING("Trying to set up TerrainPage at index [" << x << "," << y << "], but it was already created");
 	}
@@ -486,12 +487,21 @@ bool TerrainManager::getHeight(const TerrainPosition& point, float& height) cons
 	return mHeightMap->getHeightAndNormal(point.x(), point.y(), height, vector);
 }
 
+void TerrainManager::setLightning(ILightning* lightning)
+{
+	mLightning = lightning;
+}
+
 void TerrainManager::updateShadows()
 {
-	Ogre::Vector3 sunDirection = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection();
+	if (mLightning) {
+		WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
 
-	for (PageVector::iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		(*I)->updateShadow(sunDirection);
+		for (PageVector::iterator I = mPages.begin(); I != mPages.end(); ++I) {
+			(*I)->updateShadow(sunDirection);
+		}
+	} else {
+		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
 	}
 }
 

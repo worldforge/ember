@@ -27,6 +27,7 @@
 #include "SimpleEnvironment.h"
 #include "Water.h"
 #include "SimpleWater.h"
+#include "components/ogre/Convert.h"
 #include <OgreSceneManager.h>
 #include <OgreLight.h>
 namespace EmberOgre {
@@ -54,6 +55,11 @@ void SimpleSun::setAmbientLight(const Ogre::ColourValue& colour)
 Ogre::Vector3 SimpleSun::getSunDirection() const
 {
 	return Ogre::Vector3(-0.5f, -1.0f, -0.5f);
+}
+
+WFMath::Vector<3> SimpleSun::getMainLightDirection() const
+{
+	return Convert::toWF<WFMath::Vector<3> >(getSunDirection());
 }
 
 

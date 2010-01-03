@@ -55,6 +55,7 @@ namespace Tasks {
 namespace EmberOgre {
 class EmberEntity;
 class ShaderManager;
+class ILightning;
 
 namespace Terrain {
 
@@ -313,6 +314,8 @@ public:
 
 	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >& >& asyncCallback);
 
+	void setLightning(ILightning* lightning);
+
 protected:
 
 	/**
@@ -379,6 +382,8 @@ protected:
 	 * @brief The task queue we'll use for all background terrain updates.
 	 */
 	Ember::Tasks::TaskQueue* mTaskQueue;
+
+	ILightning* mLightning;
 
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.

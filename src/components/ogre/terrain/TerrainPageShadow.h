@@ -25,7 +25,8 @@
 #include "../EmberOgrePrerequisites.h"
 
 #include <boost/smart_ptr.hpp>
-#include <OgreVector3.h>
+#include <wfmath/vector.h>
+#include <OgreMath.h>
 
 namespace Ogre {
 	class ColourValue;
@@ -43,7 +44,7 @@ class OgreImage;
 class ITerrainPageShadowTechnique
 {
 public:
-    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) const = 0;
+    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const WFMath::Vector<3>& lightDirection, const Ogre::ColourValue& lightColour) const = 0;
 
 protected:
 };
@@ -51,7 +52,7 @@ protected:
 class SimpleTerrainPageShadowTechnique : public ITerrainPageShadowTechnique
 {
 public:
-    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) const;
+    virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const WFMath::Vector<3>& lightDirection, const Ogre::ColourValue& lightColour) const;
 
 protected:
 };
@@ -68,13 +69,9 @@ public:
 
 	void setShadowTechnique(const ITerrainPageShadowTechnique* shadowTechnique);
 
-	void setLightDirection(const Ogre::Vector3& lightDirection);
+	void setLightDirection(const WFMath::Vector<3>& lightDirection);
 
-//	void createShadowData(const TerrainPageGeometry& geometry);
-
-//	const Ogre::TexturePtr getTexture() const;
 	void updateShadow(const TerrainPageGeometry& geometry);
-//	void createImage();
 
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
@@ -84,13 +81,9 @@ public:
 protected:
 	const TerrainPage& mTerrainPage;
 	const ITerrainPageShadowTechnique* mShadowTechnique;
-	Ogre::Vector3 mLightDirection;
+	WFMath::Vector<3> mLightDirection;
 
 	boost::shared_ptr<OgreImage> mImage;
-
-//	Ogre::Image* mImage;
-//	Ogre::TexturePtr mTexture;
-//	Ogre::MemoryDataStream* mShadowChunk;
 };
 
 }

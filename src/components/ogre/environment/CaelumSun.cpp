@@ -26,6 +26,7 @@
 
 #include "CaelumSun.h"
 #include "components/ogre/EmberOgre.h"
+#include "components/ogre/Convert.h"
 #include "caelum/include/Sun.h"
 
 #include "framework/Tokeniser.h"
@@ -33,43 +34,48 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
-
-namespace EmberOgre {
-
-namespace Environment {
-
-CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSkyLight* sun)
-: CaelumEnvironmentComponent( environment), mSun(sun) 
+namespace EmberOgre
 {
-	sun->setAmbientMultiplier (Ogre::ColourValue(0.7, 0.7, 0.7));
-// 		mCaelumSystem->getSun ()->setAmbientMultiplier (Ogre::ColourValue(0.5, 0.5, 0.5));
-	sun->setDiffuseMultiplier (Ogre::ColourValue(3, 3, 2.7));
+
+namespace Environment
+{
+
+CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSkyLight* sun) :
+	CaelumEnvironmentComponent(environment), mSun(sun)
+{
+	sun->setAmbientMultiplier(Ogre::ColourValue(0.7, 0.7, 0.7));
+	// 		mCaelumSystem->getSun ()->setAmbientMultiplier (Ogre::ColourValue(0.5, 0.5, 0.5));
+	sun->setDiffuseMultiplier(Ogre::ColourValue(3, 3, 2.7));
 	// For green terrain:
 	//mCaelumSystem->getSun ()->setDiffuseMultiplier (Ogre::ColourValue(0.1, 3, 0.1));
-	sun->setSpecularMultiplier (Ogre::ColourValue(5, 5, 5));
+	sun->setSpecularMultiplier(Ogre::ColourValue(5, 5, 5));
 
 	sun->setAutoDisable(true);
 
 	registerConfigListener("caelum", "sunambientmultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunAmbientMultiplier));
 	registerConfigListener("caelum", "sundiffusemultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunDiffuseMultiplier));
 	registerConfigListener("caelum", "sunspecularmultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunSpecularMultiplier));
-	
 
 }
-
 
 CaelumSun::~CaelumSun()
 {
 
 }
 
-void CaelumSun::setAmbientLight(const Ogre::ColourValue& colour) {
+void CaelumSun::setAmbientLight(const Ogre::ColourValue& colour)
+{
 	EmberOgre::getSingleton().getSceneManager()->setAmbientLight(colour);
 }
 
 Ogre::Vector3 CaelumSun::getSunDirection() const
 {
 	return mSun->getLightDirection();
+}
+
+WFMath::Vector<3> CaelumSun::getMainLightDirection() const
+{
+	return Convert::toWF<WFMath::Vector<3> >(getSunDirection());
 }
 
 void CaelumSun::Config_SunAmbientMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)
@@ -108,7 +114,6 @@ bool CaelumSun::parse(varconf::Variable& variable, Ogre::ColourValue& colour)
 	}
 	return false;
 }
-
 
 }
 

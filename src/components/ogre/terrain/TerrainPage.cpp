@@ -164,7 +164,7 @@ void TerrainPage::setupShadowTechnique()
 	mShadow.setShadowTechnique(mShadowTechnique);
 }
 
-void TerrainPage::createShadowData(const Ogre::Vector3& lightDirection)
+void TerrainPage::createShadowData(const WFMath::Vector<3>& lightDirection)
 {
 	mGeometry->repopulate();
 	mShadow.setLightDirection(lightDirection);
@@ -176,7 +176,7 @@ void TerrainPage::loadShadow()
 //	mShadow.createImage();
 }
 
-void TerrainPage::updateShadow(const Ogre::Vector3& lightDirection)
+void TerrainPage::updateShadow(const WFMath::Vector<3>& lightDirection)
 {
 	mGeometry->repopulate();
 	mShadow.setLightDirection(lightDirection);

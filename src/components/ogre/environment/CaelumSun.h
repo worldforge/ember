@@ -56,6 +56,8 @@ public:
 
 	virtual Ogre::Vector3 getSunDirection() const;
 
+	virtual WFMath::Vector<3> getMainLightDirection() const;
+
 private:
 
 	caelum::BaseSkyLight* mSun;

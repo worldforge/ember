@@ -22,6 +22,7 @@
 #include "components/ogre/Types.h"
 #include "framework/tasks/ITask.h"
 #include <wfmath/point.h>
+#include <wfmath/vector.h>
 
 namespace Mercator
 {
@@ -44,7 +45,7 @@ class HeightMap;
 class TerrainPageCreationTask : public Ember::Tasks::ITask
 {
 public:
-	TerrainPageCreationTask(TerrainManager& TerrainManager, Mercator::Terrain& terrain, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
+	TerrainPageCreationTask(TerrainManager& TerrainManager, Mercator::Terrain& terrain, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
 	virtual ~TerrainPageCreationTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -58,6 +59,7 @@ private:
 	TerrainPage* mPage;
 	TerrainPosition mPos;
 	ITerrainPageBridge* mBridge;
+	WFMath::Vector<3> mMainLightDirection;
 
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;

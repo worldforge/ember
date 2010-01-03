@@ -179,7 +179,7 @@ public:
 	 * @brief Creates a shadow texture for the page.
 	 * @param lightDirection The direction of the light, in world space.
 	 */
-	void createShadowData(const Ogre::Vector3& lightDirection);
+	void createShadowData(const WFMath::Vector<3>& lightDirection);
 
 	/**
 	 * @brief Loads a shadow texture for the page.  It has to be done out of the main thread.
@@ -190,7 +190,7 @@ public:
 	 * @brief Updates the shadow texture for the page.
 	 * @param lightDirection The direction of the light, in world space.
 	 */
-	void updateShadow(const Ogre::Vector3& lightDirection);
+	void updateShadow(const WFMath::Vector<3>& lightDirection);
 
 	/**
 	 * @brief The size in pixels of one side of the AlphaTexture. This is in sizes of 64.

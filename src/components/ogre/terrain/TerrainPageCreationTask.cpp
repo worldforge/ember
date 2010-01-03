@@ -24,11 +24,6 @@
 #include "TerrainPageGeometry.h"
 #include "TerrainMaterialCompilationTask.h"
 #include "HeightMapUpdateTask.h"
-#include "components/ogre/EmberOgre.h"
-#include "components/ogre/EmberEntity.h"
-#include "components/ogre/EmberEntityFactory.h"
-#include "components/ogre/WorldEmberEntity.h"
-#include "components/ogre/environment/Environment.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
 
@@ -40,8 +35,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageCreationTask::TerrainPageCreationTask(TerrainManager& TerrainManager, Mercator::Terrain& terrain, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
-	mTerrainManager(TerrainManager), mTerrain(terrain), mPage(0), mPos(pos), mBridge(bridge), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+TerrainPageCreationTask::TerrainPageCreationTask(TerrainManager& TerrainManager, Mercator::Terrain& terrain, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection) :
+	mTerrainManager(TerrainManager), mTerrain(terrain), mPage(0), mPos(pos), mBridge(bridge), mMainLightDirection(mainLightDirection), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -64,7 +59,7 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 
 	mPage->updateAllShaderTextures(true);
 
-	mPage->createShadowData(EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getSun()->getSunDirection());
+	mPage->createShadowData(mMainLightDirection);
 
 	// setup foliage
 	if (mTerrainManager.isFoliageShown()) {

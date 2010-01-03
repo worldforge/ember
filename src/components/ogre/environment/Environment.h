@@ -24,6 +24,7 @@
 #define EMBER_OGRE_ENVIRONMENTENVIRONMENT_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include "components/ogre/ILightning.h"
 #include "framework/ConsoleObject.h"
 #include <sigc++/signal.h>
 
@@ -38,7 +39,7 @@ namespace Environment {
 
 class Forest;
 
-class ISun
+class ISun : public ILightning
 {
 public:
 	virtual ~ISun() {}

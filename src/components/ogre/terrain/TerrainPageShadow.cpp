@@ -43,7 +43,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const Ogre::Vector3& lightDirection, const Ogre::ColourValue& lightColour) const
+void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const WFMath::Vector<3>& lightDirection, const Ogre::ColourValue& lightColour) const
 {
 
 	int pageSizeInVertices = page.getPageSize();
@@ -56,7 +56,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page,
 /*	origPosition[0] = (page.getWFPosition()[0] * (pageSizeInMeters));
 	origPosition[1] = (page.getWFPosition()[1] * (pageSizeInMeters));*/
 
-	WFMath::Vector<3> wfLightDirection = Convert::toWF<WFMath::Vector<3> >(lightDirection);
+	WFMath::Vector<3> wfLightDirection = lightDirection;
 	wfLightDirection = wfLightDirection.normalize(1);
 
 
@@ -96,7 +96,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page,
 TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mShadowTechnique(0)
-, mLightDirection(Ogre::Vector3::ZERO)
+, mLightDirection(WFMath::Vector<3>::ZERO())
 , mImage(new OgreImage(new Image::ImageBuffer(mTerrainPage.getAlphaTextureSize(), 1)))
 {
 }
@@ -105,7 +105,7 @@ TerrainPageShadow::~TerrainPageShadow()
 {
 }
 
-void TerrainPageShadow::setLightDirection(const Ogre::Vector3& lightDirection)
+void TerrainPageShadow::setLightDirection(const WFMath::Vector<3>& lightDirection)
 {
 	mLightDirection = lightDirection;
 }
