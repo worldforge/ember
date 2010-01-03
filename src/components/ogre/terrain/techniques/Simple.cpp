@@ -113,6 +113,15 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 	terrainPageShadow->loadIntoImage(ogreImage);
 
 	texture->loadImage(ogreImage);
+
+	///blit the whole image to the hardware buffer
+	Ogre::PixelBox sourceBox(ogreImage.getPixelBox());
+	//blit for each mipmap
+	for (int i = 0; i <= texture->getNumMipmaps(); ++i) {
+		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
+		hardwareBuffer->blitFromMemory(sourceBox);
+	}
+
 	return texture;
 }
 
