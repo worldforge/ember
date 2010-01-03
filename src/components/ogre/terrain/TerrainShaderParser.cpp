@@ -22,7 +22,6 @@
 #include "components/ogre/terrain/TerrainShader.h"
 #include "components/ogre/terrain/TerrainLayerDefinition.h"
 #include "components/ogre/terrain/TerrainLayerDefinitionManager.h"
-#include "components/ogre/environment/Environment.h"
 #include "components/ogre/Convert.h"
 
 #include <Mercator/Shader.h>

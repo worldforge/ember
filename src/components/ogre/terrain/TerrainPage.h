@@ -182,11 +182,6 @@ public:
 	void createShadowData(const WFMath::Vector<3>& lightDirection);
 
 	/**
-	 * @brief Loads a shadow texture for the page.  It has to be done out of the main thread.
-	 */
-	void loadShadow();
-
-	/**
 	 * @brief Updates the shadow texture for the page.
 	 * @param lightDirection The direction of the light, in world space.
 	 */

@@ -44,13 +44,6 @@
 #include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 #include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 
-#include <Mercator/Shader.h>
-#include <Mercator/FillShader.h>
-#include <Mercator/ThresholdShader.h>
-#include <Mercator/DepthShader.h>
-#include <Mercator/GrassShader.h>
-#include <Mercator/ShaderFactory.h>
-
 #include <Eris/Timeout.h>
 #include <Eris/View.h>
 
@@ -94,7 +87,6 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 
 	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()));
 	EventEnvironmentCreated.emit();
-	mTerrainManager->setLightning(mEnvironment->getSun());
 
 	///we will wait with creating the terrain and initializing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
 
@@ -113,6 +105,7 @@ void WorldEmberEntity::onAttrChanged(const std::string& str, const Atlas::Messag
 
 void WorldEmberEntity::onMoved()
 {
+	//It should never be possible to move the world, so we'll skip calling EmberEntity::onMoved() and go directly to Eris::Entity
 	Eris::Entity::onMoved();
 }
 
@@ -122,6 +115,7 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 	if (!mHasBeenInitialized) {
 		mEnvironment->initialize();
 		if (mTerrainManager) {
+			mTerrainManager->setLightning(mEnvironment->getSun());
 			bool hasValidShaders = false;
 			Terrain::TerrainShaderParser terrainShaderParser(*mTerrainManager);
 			if (hasAttr("terrain")) {

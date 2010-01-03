@@ -32,10 +32,6 @@
 #include "../Convert.h"
 
 #include <OgreColourValue.h>
-#include <OgreRoot.h>
-#include <OgreTextureManager.h>
-#include <OgreColourValue.h>
-#include <OgreHardwarePixelBuffer.h>
 #include <OgreImage.h>
 
 
@@ -110,33 +106,12 @@ void TerrainPageShadow::setLightDirection(const WFMath::Vector<3>& lightDirectio
 	mLightDirection = lightDirection;
 }
 
-//void TerrainPageShadow::createShadowData(const TerrainPageGeometry& geometry)
-//{
-//	if (!mShadowTechnique) {
-//		S_LOG_WARNING("Trying to create shadow data without have a technique set.");
-//	} else {
-//		assert(!mShadowChunk);
-//		mShadowChunk = OGRE_NEW Ogre::MemoryDataStream(mTerrainPage.getAlphaTextureSize() * mTerrainPage.getAlphaTextureSize() * 1, true);
-//
-//		memset( mShadowChunk->getPtr(), '\0', mShadowChunk->size());
-//		mShadowTechnique->createShadowData(mTerrainPage, geometry, mShadowChunk->getPtr(), mLightDirection, Ogre::ColourValue(1,1,1));
-//	}
-//}
-
 void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 {
 	boost::shared_ptr<OgreImage> image(new OgreImage(new Image::ImageBuffer(mTerrainPage.getAlphaTextureSize(), 1)));
 	image->reset();
 	mShadowTechnique->createShadowData(mTerrainPage, geometry, image->getData(), mLightDirection, Ogre::ColourValue(1,1,1));
 	mImage = image;
-//
-//	createShadowData(geometry);
-//
-//	Ogre::HardwarePixelBufferSharedPtr hardwareBuffer = mTexture->getBuffer();
-//
-//	///blit the whole image to the hardware buffer
-//	Ogre::PixelBox sourceBox = mImage->getPixelBox();
-//	hardwareBuffer->blitFromMemory(sourceBox);
 }
 
 void TerrainPageShadow::loadIntoImage(Ogre::Image& ogreImage) const
@@ -146,29 +121,6 @@ void TerrainPageShadow::loadIntoImage(Ogre::Image& ogreImage) const
 	ogreImage.loadDynamicImage(image->getData(), image->getResolution(), image->getResolution(), 1, Ogre::PF_L8);
 
 }
-
-
-//void TerrainPageShadow::createImage()
-//{
-//	///we need an unique name for our alpha texture
-//	std::stringstream shadowTextureNameSS;
-//	shadowTextureNameSS << mTerrainPage.getMaterial()->getName() << "_shadow";
-//	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
-//
-//	mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(shadowTextureName, "General", Ogre::TEX_TYPE_2D, mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
-//
-//
-//
-//	mImage = OGRE_NEW Ogre::Image();
-//	mImage->loadDynamicImage(mShadowChunk->getPtr(), mTerrainPage.getAlphaTextureSize(), mTerrainPage.getAlphaTextureSize(), 1, Ogre::PF_L8);
-//
-//	mTexture->loadImage(*mImage);
-//}
-
-//const Ogre::TexturePtr TerrainPageShadow::getTexture() const
-//{
-//	return mTexture;
-//}
 
 void TerrainPageShadow::setShadowTechnique(const ITerrainPageShadowTechnique* shadowTechnique)
 {

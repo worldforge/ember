@@ -59,18 +59,6 @@
 #include <Mercator/Shader.h>
 
 
-#ifdef HAVE_LRINTF
-    #define I_ROUND(_x) (::lrintf(_x))
-#elif defined(HAVE_RINTF)
-    #define I_ROUND(_x) ((int)::rintf(_x))
-#elif defined(HAVE_RINT)
-    #define I_ROUND(_x) ((int)::rint(_x))
-#else
-    #define I_ROUND(_x) ((int)(_x))
-#endif
-
-
-
 using namespace EmberOgre::Environment;
 
 namespace EmberOgre {
@@ -171,11 +159,6 @@ void TerrainPage::createShadowData(const WFMath::Vector<3>& lightDirection)
 	mShadow.updateShadow(*mGeometry);
 }
 
-void TerrainPage::loadShadow()
-{
-//	mShadow.createImage();
-}
-
 void TerrainPage::updateShadow(const WFMath::Vector<3>& lightDirection)
 {
 	mGeometry->repopulate();
@@ -183,16 +166,8 @@ void TerrainPage::updateShadow(const WFMath::Vector<3>& lightDirection)
 	mShadow.updateShadow(*mGeometry);
 }
 
-
-//Ogre::MaterialPtr TerrainPage::generateTerrainMaterials(bool reselectTechnique)
-//{
-//	mTerrainSurface->recompileMaterial(*mGeometry, reselectTechnique);
-//	return mTerrainSurface->getMaterial();
-//}
-
 void TerrainPage::regenerateCoverageMap()
 {
-//	generateTerrainMaterials(false);
 	mPageFoliage->generateCoverageMap();
 }
 
@@ -204,7 +179,6 @@ const TerrainPosition& TerrainPage::getWFPosition() const
 
 const Ogre::MaterialPtr TerrainPage::getMaterial() const
 {
-//	generateTerrainMaterials();
 	return mTerrainSurface->getMaterial();
 }
 
@@ -293,7 +267,6 @@ TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 	///get the scale by dividing the total size of the page with the size of each tile
 	float scale = getAlphaTextureSize() / shader->getLayerDefinition()->getTileSize();
 	layer->setScale(scale);
-//	layer->updateCoverageImage(*mGeometry);
 	return layer;
 }
 

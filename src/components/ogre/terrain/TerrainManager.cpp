@@ -42,12 +42,15 @@
 #include "TerrainModChangeTask.h"
 #include "TerrainModRemoveTask.h"
 #include "TerrainUpdateTask.h"
+#include "TerrainMaterialCompilationTask.h"
 #include "GeometryUpdateTask.h"
+#include "ShadowUpdateTask.h"
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/tasks/TaskQueue.h"
+#include "framework/tasks/SerialTask.h"
 #include "services/config/ConfigService.h"
 
 #include "../Convert.h"
@@ -83,16 +86,6 @@
 #endif
 
 #include <limits>
-
-#ifdef HAVE_LRINTF
-#define I_ROUND(_x) (::lrintf(_x))
-#elif defined(HAVE_RINTF)
-#define I_ROUND(_x) ((int)::rintf(_x))
-#elif defined(HAVE_RINT)
-#define I_ROUND(_x) ((int)::rint(_x))
-#else
-#define I_ROUND(_x) ((int)(_x))
-#endif
 
 using namespace Ogre;
 namespace EmberOgre
@@ -496,10 +489,7 @@ void TerrainManager::updateShadows()
 {
 	if (mLightning) {
 		WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
-
-		for (PageVector::iterator I = mPages.begin(); I != mPages.end(); ++I) {
-			(*I)->updateShadow(sunDirection);
-		}
+		mTaskQueue->enqueueTask(new Ember::Tasks::SerialTask(new ShadowUpdateTask(mPages, sunDirection), new TerrainMaterialCompilationTask(mPages)));
 	} else {
 		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
 	}

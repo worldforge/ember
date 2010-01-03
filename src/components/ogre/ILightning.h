@@ -25,10 +25,20 @@ namespace WFMath
 }
 
 namespace EmberOgre {
+
+/**
+ * @brief Provider of main light (like a sun or moon) lightning information.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class ILightning
 {
 public:
 	virtual ~ILightning(){}
+
+	/**
+	 * @brief Gets the direction of the main light, in world space.
+	 * @returns The direction of the main light, in world space.
+	 */
 	virtual WFMath::Vector<3> getMainLightDirection() const = 0;
 
 };
