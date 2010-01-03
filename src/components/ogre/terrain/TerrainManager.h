@@ -244,27 +244,10 @@ public:
 	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
 
 	/**
-	 * @brief Gets the normal at the specified world position.
-	 * If an invalid world position is specified the method will return false.
-	 * @param worldPosition The world position to get the normal for.
-	 * @param normal The normal values will be placed in this.
-	 * @return True if a valid segment and normal could be found at the specified world position.
-	 */
-	bool getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const;
-
-	/**
 	 * @brief Gets the size of one page as indices.
 	 * @return The size of one page as indices.
 	 */
 	int getPageIndexSize() const;
-
-	/**
-	 * @brief Return true if there is a valid piece of terrain at the supplied segment indices.
-	 * By valid means a populated terrain-
-	 * @param pos A position in the world.
-	 * @return true if the terrain at the position is valid.
-	 */
-	bool isValidTerrainAt(const TerrainPosition& pos) const;
 
 	/**
 	 * @brief Emitted when the size of the world has changed.

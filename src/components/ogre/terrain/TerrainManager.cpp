@@ -396,13 +396,6 @@ void TerrainManager::prepareAllSegments()
 
 }
 
-bool TerrainManager::isValidTerrainAt(const TerrainPosition& position) const
-{
-	const Mercator::Segment* segment = mTerrain->getSegment(position.x(), position.y());
-	return (segment && segment->isValid());
-	//	return (segment &&	segment->isValid() && getMaterialForSegment(position));
-}
-
 TerrainPage* TerrainManager::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
 {
 
@@ -491,7 +484,6 @@ bool TerrainManager::getHeight(const TerrainPosition& point, float& height) cons
 	WFMath::Vector<3> vector;
 
 	return mHeightMap->getHeightAndNormal(point.x(), point.y(), height, vector);
-	//	return mTerrain->getHeightAndNormal(point.x(), point.y(), height, vector);
 }
 
 void TerrainManager::updateShadows()
@@ -586,27 +578,6 @@ void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::Colo
 	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
 	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
 	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
-}
-
-bool TerrainManager::getNormal(const TerrainPosition& worldPosition, WFMath::Vector<3>& normal) const
-{
-	// 	static WFMath::Vector<3> defaultNormal(1,1,1);
-	int ix = I_ROUND(floor(worldPosition.x() / 64));
-	int iy = I_ROUND(floor(worldPosition.y() / 64));
-
-	Mercator::Segment * s = mTerrain->getSegment(ix, iy);
-	if ((s == 0) || (!s->isValid())) {
-		return false;
-	}
-	float xPos = I_ROUND(worldPosition.x()) - (ix * 64);
-	float yPos = I_ROUND(worldPosition.y()) - (iy * 64);
-	size_t normalPos = (yPos * 64 * 3) + (xPos * 3);
-	normal.x() = s->getNormals()[normalPos];
-	normal.y() = s->getNormals()[normalPos + 1];
-	normal.z() = s->getNormals()[normalPos + 2];
-
-	return true;
-
 }
 
 void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
