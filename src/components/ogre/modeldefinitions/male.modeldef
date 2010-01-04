@@ -162,6 +162,10 @@
             <attachpoint name="outfit.right_hand" bone="RMiddleRoot">
                 <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
             </attachpoint>
+            <!-- right_hand_wield is kept for backwards compatability -->
+            <attachpoint name="right_hand_wield" bone="RMiddleRoot">
+                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+            </attachpoint>
         </attachpoints>
         <views />
         <lights />
