@@ -20,6 +20,7 @@
 #include "TaskQueue.h"
 #include "TaskExecutionContext.h"
 #include "TaskUnit.h"
+#include "framework/LoggingInstance.h"
 
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
@@ -45,9 +46,17 @@ void TaskExecutor::run()
 		TaskUnit* taskUnit = mTaskQueue.fetchNextTask();
 		//If the queue returns a null pointer, it means that the queue is being shut down, and this executor is expected to exit its main processing loop.
 		if (taskUnit) {
-			TaskExecutionContext context(*this, *taskUnit);
-			taskUnit->executeInBackgroundThread(context);
-			mTaskQueue.addProcessedTask(taskUnit);
+			try {
+				TaskExecutionContext context(*this, *taskUnit);
+				taskUnit->executeInBackgroundThread(context);
+				mTaskQueue.addProcessedTask(taskUnit);
+			} catch (const std::exception& ex) {
+				S_LOG_CRITICAL("Error when executing task in background." << ex);
+				delete taskUnit;
+			} catch (...) {
+				S_LOG_CRITICAL("Unknown error when executing task in background.");
+				delete taskUnit;
+			}
 		} else {
 			break;
 		}
