@@ -25,8 +25,8 @@ namespace EmberOgre {
 namespace Terrain {
 
 
-PlantAreaQuery::PlantAreaQuery(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, PlantStore& store)
-: mLayerDef(layerDef), mThreshold(threshold), mPlantType(plantType), mArea(area), mStore(store)
+PlantAreaQuery::PlantAreaQuery(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, Ogre::Vector2 center)
+: mLayerDef(layerDef), mThreshold(threshold), mPlantType(plantType), mArea(area), mCenter(center)
 {
 }
 
@@ -49,9 +49,9 @@ const Ogre::TRect<float>& PlantAreaQuery::getArea() const
 	return mArea;
 }
 
-PlantAreaQuery::PlantStore& PlantAreaQuery::getStore() const
+const Ogre::Vector2& PlantAreaQuery::getCenter() const
 {
-	return mStore;
+	return mCenter;
 }
 
 }

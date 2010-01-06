@@ -24,11 +24,11 @@
 
 #include <OgreCommon.h>
 #include <OgreMemoryAllocatorConfig.h>
+#include <OgreVector2.h>
 
 namespace Ogre
 {
 class MemoryDataStream;
-class Vector2;
 }
 
 namespace EmberOgre {
@@ -40,24 +40,20 @@ class TerrainLayerDefinition;
 class PlantAreaQuery
 {
 public:
-	/**
-	A store of plant positions. We keep this in ogre space for performance reasons.
-	*/
-	typedef std::vector<Ogre::Vector2, Ogre::STLAllocator<Ogre::Vector2, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GEOMETRY> > > PlantStore;
 
-	PlantAreaQuery(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, PlantStore& store);
+	PlantAreaQuery(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, Ogre::Vector2 center);
 
 	const TerrainLayerDefinition& getLayerDef() const;
 	unsigned char getThreshold() const;
 	const std::string& getPlantType() const;
 	const Ogre::TRect<float>& getArea() const;
-	PlantStore& getStore() const;
+	const Ogre::Vector2& getCenter() const;
 private:
 	const TerrainLayerDefinition& mLayerDef;
 	unsigned char mThreshold;
 	const std::string& mPlantType;
+	Ogre::Vector2 mCenter;
 	Ogre::TRect<float> mArea;
-	PlantStore& mStore;
 };
 }
 }
