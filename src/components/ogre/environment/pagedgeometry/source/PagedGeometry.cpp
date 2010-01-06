@@ -257,7 +257,7 @@ void PagedGeometry::reloadGeometry()
 	}
 }
 
-void PagedGeometry::reloadGeometryPage(const Vector3 &point)
+void PagedGeometry::reloadGeometryPage(const Vector3 &point, bool forceLoadImmediately)
 {
 	if (!pageLoader)
 		return;
@@ -276,6 +276,7 @@ void PagedGeometry::reloadGeometryPage(const Vector3 &point)
 #else
 			point
 #endif
+			, forceLoadImmediately
 			);
 	}
 }
@@ -691,7 +692,7 @@ void GeometryPageManager::reloadGeometry()
 }
 
 //Clears a single page (which contains the given point)
-void GeometryPageManager::reloadGeometryPage(const Vector3 &point)
+void GeometryPageManager::reloadGeometryPage(const Vector3 &point, bool forceLoadImmediately)
 {
 	//Determine which grid block contains the given points
 	const int x = Math::Floor(geomGridX * (point.x - gridBounds.left) / gridBounds.width());
@@ -704,6 +705,21 @@ void GeometryPageManager::reloadGeometryPage(const Vector3 &point)
 			_unloadPage(page);
 			loadedList.erase(page->_iter);
 		}
+		if (forceLoadImmediately) {
+			//Load the geometry immediately
+			_loadPage(page);
+			loadedList.push_back(page);
+			page->_iter = (--loadedList.end());
+
+			//And remove it from the pending list if necessary
+			if (page->_pending){
+				pendingList.remove(page);
+				page->_pending = false;
+			}
+
+			//Flag the page so it won't expire and be deleted in a few seconds if
+			//it's currently not in the viewing range.
+			page->_keepLoaded = true;		}
 	}
 }
 

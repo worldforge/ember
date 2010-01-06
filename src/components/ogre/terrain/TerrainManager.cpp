@@ -45,8 +45,10 @@
 #include "TerrainMaterialCompilationTask.h"
 #include "GeometryUpdateTask.h"
 #include "ShadowUpdateTask.h"
+#include "PlantQueryTask.h"
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
+#include "PlantAreaQuery.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/tasks/TaskQueue.h"
@@ -386,6 +388,15 @@ void TerrainManager::prepareAllSegments()
 
 }
 
+void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
+{
+	TerrainPosition wfPos(Convert::toWF(query.getCenter()));
+	const TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
+	if (terrainPage) {
+		mTaskQueue->enqueueTask(new PlantQueryTask(*terrainPage, query, asyncCallback));
+	}
+}
+
 TerrainPage* TerrainManager::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
 {
 
@@ -419,7 +430,7 @@ void TerrainManager::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosit
 
 	S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 	if (mTerrainPages[x][y] == 0) {
-		WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0,0,-1);
+		WFMath::Vector<3> sunDirection = WFMath::Vector<3>(0, 0, -1);
 		if (mLightning) {
 			sunDirection = mLightning->getMainLightDirection();
 		}

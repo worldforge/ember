@@ -71,9 +71,8 @@ class ITerrainPageBridge;
 class HeightMap;
 class HeightMapBufferProvider;
 class TerrainDefPoint;
-
-
-
+class PlantAreaQuery;
+class PlantAreaQueryResult;
 
 /**
  * @brief Handles generation and updates of the terrain.
@@ -315,6 +314,14 @@ public:
 	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >& >& asyncCallback);
 
 	void setLightning(ILightning* lightning);
+
+	/**
+	 * @brief Place the plants for the supplied area in the supplied store.
+	 * This method will perform the lookup in a background thread and return the results through an async callback.
+	 * @param query The plant query.
+	 * @param asyncCallback A callback to be called when the query has been executed in a background thread.
+	 */
+	void getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const Terrain::PlantAreaQueryResult&> asyncCallback);
 
 protected:
 

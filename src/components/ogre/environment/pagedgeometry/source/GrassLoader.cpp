@@ -75,7 +75,7 @@ GrassLayer::~GrassLayer()
 		colorMap->unload();
 }
 
-unsigned int GrassLayer::calculateMaxGrassCount(float densityFactor, float volume)
+unsigned int GrassLayer::prepareGrass(const PageInfo& page, float densityFactor, float volume)
 {
 	return density * densityFactor * volume;
 }

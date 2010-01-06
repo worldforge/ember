@@ -29,6 +29,7 @@
 #include "pagedgeometry/include/PropertyMaps.h"
 #include "../Convert.h"
 #include "../terrain/PlantAreaQuery.h"
+#include "../terrain/PlantAreaQueryResult.h"
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainPageFoliage.h"
 #include "../terrain/TerrainPage.h"
@@ -40,19 +41,23 @@
 using namespace Forests;
 using namespace Ogre;
 using namespace EmberOgre::Terrain;
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Environment {
+namespace Environment
+{
 
-FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLayer> *ldr)
-: mTerrainManager(0), mTerrainLayerDefinition(0), mFoliageDefinition(0)
+FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLayer> *ldr) :
+	mTerrainManager(0), mTerrainLayerDefinition(0), mFoliageDefinition(0), mLatestPlantsResult(0)
 {
 	FoliageLayer::geom = geom;
 	FoliageLayer::parent = ldr;
 
-	minWidth = 1.0f; maxWidth = 1.0f;
-	minHeight = 1.0f; maxHeight = 1.0f;
-// 	minY = 0; maxY = 0;
+	minWidth = 1.0f;
+	maxWidth = 1.0f;
+	minHeight = 1.0f;
+	maxHeight = 1.0f;
+	// 	minY = 0; maxY = 0;
 	renderTechnique = GRASSTECH_QUAD;
 	fadeTechnique = FADETECH_ALPHA;
 	animMag = 1.0f;
@@ -64,12 +69,11 @@ FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLa
 	shaderNeedsUpdate = true;
 }
 
-
 FoliageLayer::~FoliageLayer()
 {
 }
 
-void FoliageLayer::configure(const Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition)
+void FoliageLayer::configure(Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition)
 {
 	mTerrainManager = terrainManager;
 	mTerrainLayerDefinition = terrainLayerDefinition;
@@ -77,45 +81,49 @@ void FoliageLayer::configure(const Terrain::TerrainManager* terrainManager, cons
 	mDensity = atof(foliageDefinition->getParameter("density").c_str());
 }
 
-
-unsigned int FoliageLayer::calculateMaxGrassCount(float densityFactor, float volume)
+unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume)
 {
-	return static_cast<unsigned int>(densityFactor * volume * mDensity);
+	if (mLatestPlantsResult) {
+		return static_cast<unsigned int> (densityFactor * volume * mDensity);
+	} else {
+		unsigned char threshold(100);
+		if (mFoliageDefinition->getParameter("threshold") != "") {
+			threshold = static_cast<unsigned char> (atoi(mFoliageDefinition->getParameter("threshold").c_str()));
+		}
+		PlantAreaQuery query(*mTerrainLayerDefinition, threshold, mFoliageDefinition->getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
+		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLayer::plantQueryExecuted);
+
+		mTerrainManager->getPlantsForArea(query, slot);
+		return 0;
+	}
+
 }
 
 unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, unsigned int grassCount)
 {
 	unsigned int finalGrassCount = 0;
-	TerrainPosition wfPos(Convert::toWF<TerrainPosition>(page.centerPoint));
-	const TerrainPage* terrainPage = mTerrainManager->getTerrainPageAtPosition(wfPos);
-	if (terrainPage) {
-		Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
-		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
-		TerrainPageFoliage::PlantStore plants;
-		unsigned char threshold(100);
-		if (mFoliageDefinition->getParameter("threshold") != "") {
-			threshold = static_cast<unsigned char>(atoi(mFoliageDefinition->getParameter("threshold").c_str()));
-		}
-
-		PlantAreaQuery query(*mTerrainLayerDefinition, threshold, mFoliageDefinition->getPlantType(), adjustedBounds, plants);
-		terrainPage->getPlantsForArea(query);
-// 		WFMath::AxisBox<2> wfBounds = Convert::toWF(page.bounds);
-		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
+	if (mLatestPlantsResult) {
+		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
+		for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
 			if (finalGrassCount == grassCount) {
 				break;
 			}
-// 			TerrainPosition posInWorld;
-/*			posInWorld.x() = (*I).x() + (terrainPage->getExtent().lowCorner().x());
-			posInWorld.y() = (*I).y() + (terrainPage->getExtent().lowCorner().y());
-			if (WFMath::Contains<2>(wfBounds, posInWorld, true)) {
-				Ogre::Vector2 ogrePos = Convert::toOgre_Vector2(posInWorld);*/
-				*posBuff++ = I->x + ogrePageExtent.left;
-				*posBuff++ = I->y + ogrePageExtent.top;
-				finalGrassCount++;
-// 			}
+			*posBuff++ = I->x;
+			*posBuff++ = I->z;
+			finalGrassCount++;
 		}
+	} else {
+		S_LOG_CRITICAL("_populateGrassList called without mLatestPlantsResult being set. This should never happen.");
 	}
 	return finalGrassCount;
+}
+
+void FoliageLayer::plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult)
+{
+	mLatestPlantsResult = &queryResult;
+	geom->reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().getCenter().x, 0, queryResult.getQuery().getCenter().y), true);
+	mLatestPlantsResult = 0;
+
 }
 
 Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
@@ -127,7 +135,6 @@ Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 	mTerrainManager->getShadowColourAt(pos, colour);
 	return colour;
 }
-
 
 }
 

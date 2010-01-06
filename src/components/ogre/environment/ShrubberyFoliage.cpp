@@ -80,7 +80,7 @@ void ShrubberyFoliage::initialize()
 
 	mPagedGeometry->addDetailLevel<Forests::BatchPage>(64, 32);
 
-	mLoader = new FoliageLoader(*mTerrainManager.getAdapter()->getSceneManager(), mTerrainManager, mTerrainLayerDefinition, mFoliageDefinition);
+	mLoader = new FoliageLoader(*mTerrainManager.getAdapter()->getSceneManager(), mTerrainManager, mTerrainLayerDefinition, mFoliageDefinition, *mPagedGeometry);
  	mPagedGeometry->setPageLoader(mLoader);
 }
 

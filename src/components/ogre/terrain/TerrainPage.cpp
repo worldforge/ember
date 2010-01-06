@@ -28,7 +28,6 @@
 
 #include "TerrainPage.h"
 
-
 #include "TerrainPageGeometry.h"
 #include "TerrainShader.h"
 #include "TerrainPageSurfaceLayer.h"
@@ -44,7 +43,7 @@
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
 #include "TerrainPageFoliage.h"
-#include "PlantAreaQuery.h"
+#include "PlantAreaQueryResult.h"
 #include "ISceneManagerAdapter.h"
 
 #include "framework/LoggingInstance.h"
@@ -58,24 +57,15 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
 
-
 using namespace EmberOgre::Environment;
 
-namespace EmberOgre {
-namespace Terrain {
+namespace EmberOgre
+{
+namespace Terrain
+{
 
-
-TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain)
-: mManager(manager)
-, mPosition(position)
-, mBridge(0)
-, mGeometry(new TerrainPageGeometry(*this, -15))
-, mTerrainSurface(new TerrainPageSurface(*this, *mGeometry))
-, mShadow(*this)
-, mShadowTechnique(0)
-, mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))
-)
-, mPageFoliage(new TerrainPageFoliage(mManager, *this))
+TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain) :
+	mManager(manager), mPosition(position), mBridge(0), mGeometry(new TerrainPageGeometry(*this, -15)), mTerrainSurface(new TerrainPageSurface(*this, *mGeometry)), mShadow(*this), mShadowTechnique(0), mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))), mPageFoliage(new TerrainPageFoliage(mManager, *this))
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
@@ -140,7 +130,7 @@ void TerrainPage::signalGeometryChanged()
 	Ogre::Vector2 adjustedOgrePos(targetPage.x + mManager.getTerrainInfo().getPageOffsetY(), targetPage.y + mManager.getTerrainInfo().getPageOffsetX());
 
 	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-	mManager.getAdapter()->reloadPage(static_cast<unsigned int>(adjustedOgrePos.x), static_cast<unsigned int>(adjustedOgrePos.y));
+	mManager.getAdapter()->reloadPage(static_cast<unsigned int> (adjustedOgrePos.x), static_cast<unsigned int> (adjustedOgrePos.y));
 }
 
 void TerrainPage::setupShadowTechnique()
@@ -171,7 +161,6 @@ void TerrainPage::regenerateCoverageMap()
 	mPageFoliage->generateCoverageMap();
 }
 
-
 const TerrainPosition& TerrainPage::getWFPosition() const
 {
 	return mPosition;
@@ -193,8 +182,6 @@ unsigned int TerrainPage::getAlphaMapScale() const
 		return 1;
 	}
 }
-
-
 
 void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 {
@@ -243,20 +230,17 @@ const TerrainPageSurface* TerrainPage::getSurface() const
 //	return mPageFoliage.get();
 //}
 
-void TerrainPage::getPlantsForArea(PlantAreaQuery& query) const
+void TerrainPage::getPlantsForArea(PlantAreaQueryResult& queryResult) const
 {
 	if (mManager.isFoliageShown()) {
-		mPageFoliage->getPlantsForArea(*mGeometry, query);
+		mPageFoliage->getPlantsForArea(*mGeometry, queryResult);
 	}
 }
-
 
 const TerrainPageShadow& TerrainPage::getPageShadow() const
 {
 	return mShadow;
 }
-
-
 
 TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 {
@@ -308,9 +292,6 @@ void TerrainPage::notifyBridgePageReady()
 {
 	mBridge->terrainPageReady();
 }
-
-
-
 
 }
 }

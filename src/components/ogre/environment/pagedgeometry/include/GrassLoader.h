@@ -45,6 +45,8 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include <OgreHighLevelGpuProgram.h>
 #include <OgreHighLevelGpuProgramManager.h>
 
+#include <memory>
+
 using namespace Ogre;
 namespace Forests {
 
@@ -360,11 +362,12 @@ public:
 
 	/**
 	 *    Calculates the max number of grass instances for this layer.
+	 * @param page The page to create grass for.
 	 * @param densityFactor The density factor set on the grass loader
 	 * @param volume The volume, in world units, to fill
 	 * @return The max number of grass instances to create.
 	 */
-	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume) = 0;
+	virtual unsigned int prepareGrass(const PageInfo& page, float densityFactor, float volume) = 0;
 
 	/** \brief Set the maximum slope a grass of blade can be placed on.
 	\param maxSlopeRatio The maximum slope (h/w ratio) a grass blade is allowed to be placed on.
@@ -570,11 +573,12 @@ public:
 
 	/**
 	 *    Calculates the max number of grass instances for this layer.
+	 * @param page The page to create grass for.
 	 * @param densityFactor The density factor set on the grass loader
 	 * @param volume The volume, in world units, to fill
 	 * @return The max number of grass instances to create.
 	*/
-	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume);
+	virtual unsigned int prepareGrass(const PageInfo& page, float densityFactor, float volume);
 
 
 	/**
@@ -760,45 +764,47 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 
 		//Calculate how much grass needs to be added
 		float volume = page.bounds.width() * page.bounds.height();
-		unsigned int grassCount = layer->calculateMaxGrassCount(densityFactor, volume);
+		unsigned int grassCount = layer->prepareGrass(page, densityFactor, volume);
 
-		//The vertex buffer can't be allocated until the exact number of polygons is known,
-		//so the locations of all grasses in this page must be precalculated.
+		if (grassCount) {
+			//The vertex buffer can't be allocated until the exact number of polygons is known,
+			//so the locations of all grasses in this page must be precalculated.
 
-		//Precompute grass locations into an array of floats. A plain array is used for speed;
-		//there's no need to use a dynamic sized array since a maximum size is known.
-		float *position = new float[grassCount*2];
-		grassCount = layer->_populateGrassList(page, position, grassCount);
+			//Precompute grass locations into an array of floats. A plain array is used for speed;
+			//there's no need to use a dynamic sized array since a maximum size is known.
+			float *position = new float[grassCount*2];
+			grassCount = layer->_populateGrassList(page, position, grassCount);
 
-		//Don't build a mesh unless it contains something
-		if (grassCount != 0){
-			Ogre::Mesh *mesh = NULL;
-			switch (layer->renderTechnique){
-				case GRASSTECH_QUAD:
-					mesh = generateGrass_QUAD(page, layer, position, grassCount);
-					break;
-				case GRASSTECH_CROSSQUADS:
-					mesh = generateGrass_CROSSQUADS(page, layer, position, grassCount);
-					break;
-				case GRASSTECH_SPRITE:
-					mesh = generateGrass_SPRITE(page, layer, position, grassCount);
-					break;
+			//Don't build a mesh unless it contains something
+			if (grassCount != 0){
+				Ogre::Mesh *mesh = NULL;
+				switch (layer->renderTechnique){
+					case GRASSTECH_QUAD:
+						mesh = generateGrass_QUAD(page, layer, position, grassCount);
+						break;
+					case GRASSTECH_CROSSQUADS:
+						mesh = generateGrass_CROSSQUADS(page, layer, position, grassCount);
+						break;
+					case GRASSTECH_SPRITE:
+						mesh = generateGrass_SPRITE(page, layer, position, grassCount);
+						break;
+				}
+				assert(mesh);
+
+				//Add the mesh to PagedGeometry
+				Ogre::Entity *entity = geom->getCamera()->getSceneManager()->createEntity(getUniqueID(), mesh->getName());
+				entity->setRenderQueueGroup(renderQueue);
+				entity->setCastShadows(false);
+				addEntity(entity, page.centerPoint, Ogre::Quaternion::IDENTITY, Ogre::Vector3::UNIT_SCALE);
+				geom->getSceneManager()->destroyEntity(entity);
+
+				//Store the mesh pointer
+				meshList->push_back(mesh);
 			}
-			assert(mesh);
 
-			//Add the mesh to PagedGeometry
-			Ogre::Entity *entity = geom->getCamera()->getSceneManager()->createEntity(getUniqueID(), mesh->getName());
-			entity->setRenderQueueGroup(renderQueue);
-			entity->setCastShadows(false);
-			addEntity(entity, page.centerPoint, Ogre::Quaternion::IDENTITY, Ogre::Vector3::UNIT_SCALE);
-			geom->getSceneManager()->destroyEntity(entity);
-
-			//Store the mesh pointer
-			meshList->push_back(mesh);
+			//Delete the position list
+			delete[] position;
 		}
-
-		//Delete the position list
-		delete[] position;
 	}
 }
 

@@ -39,6 +39,7 @@ namespace Terrain
 	class TerrainFoliageDefinition;
 	class TerrainLayerDefinition;
 	class TerrainManager;
+	class PlantAreaQueryResult;
 }
 
 namespace Environment {
@@ -52,17 +53,19 @@ public:
     FoliageLayer(Forests::PagedGeometry *geom, Forests::GrassLoader<FoliageLayer> *ldr);
 
     virtual ~FoliageLayer();
+
 	/**
 	 *    Calculates the max number of grass instances for this layer.
+	 * @param page The page to create grass for.
 	 * @param densityFactor The density factor set on the grass loader
 	 * @param volume The volume, in world units, to fill
 	 * @return The max number of grass instances to create.
 	 */
-	virtual unsigned int calculateMaxGrassCount(float densityFactor, float volume);
+	virtual unsigned int prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume);
 	
 	Ogre::uint32 getColorAt(float x, float z);
 	
-	void configure(const Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition);
+	void configure(Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition);
 	
 protected: 
 	friend class Forests::GrassLoader<FoliageLayer>;
@@ -72,11 +75,13 @@ protected:
 	virtual unsigned int _populateGrassList(Forests::PageInfo page, float *posBuff, unsigned int grassCount);
 	Forests::GrassLoader<FoliageLayer> *parent;
 	
-	const Terrain::TerrainManager* mTerrainManager;
+	Terrain::TerrainManager* mTerrainManager;
 	const Terrain::TerrainLayerDefinition* mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition* mFoliageDefinition;
 	float mDensity;
 	
+	const Terrain::PlantAreaQueryResult* mLatestPlantsResult;
+	void plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult);
 
 };
 }

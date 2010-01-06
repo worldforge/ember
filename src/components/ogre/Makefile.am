@@ -39,7 +39,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainPage.cpp terrain/TerrainPageFoliage.cpp terrain/TerrainPageGeometry.cpp \
 	terrain/TerrainPageShadow.cpp terrain/TerrainPageSurface.cpp terrain/TerrainPageSurfaceCompiler.cpp \
 	terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp \
-	terrain/PlantAreaQuery.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp \
+	terrain/PlantAreaQuery.cpp terrain/PlantAreaQueryResult.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp \
 	terrain/TerrainShaderUpdateTask.cpp terrain/TerrainAreaUpdateTask.cpp \
 	terrain/techniques/Shader.cpp terrain/techniques/ShaderNormalMapped.cpp terrain/techniques/ShaderNormalMappedPass.cpp \
 	terrain/techniques/ShaderNormalMappedPassCoverageBatch.cpp terrain/techniques/ShaderPass.cpp \
@@ -49,7 +49,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp \
 	terrain/TerrainAreaRemoveTask.cpp terrain/TerrainModAddTask.cpp terrain/TerrainModChangeTask.cpp terrain/TerrainModRemoveTask.cpp \
 	terrain/GeometryUpdateTask.cpp terrain/TerrainModTaskBase.cpp terrain/TerrainEditorOverlay.cpp terrain/TerrainDefPoint.cpp \
-	terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/ShadowUpdateTask.cpp \
+	terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/ShadowUpdateTask.cpp terrain/PlantQueryTask.cpp \
 \
 	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -121,7 +121,7 @@ noinst_HEADERS = \
 	terrain/TerrainAreaParser.h terrain/TerrainEditor.h terrain/TerrainManager.h terrain/TerrainInfo.h terrain/TerrainLayerDefinition.h terrain/TerrainLayerDefinitionManager.h \
 	terrain/TerrainMod.h terrain/TerrainPage.h terrain/TerrainPageFoliage.h terrain/TerrainPageGeometry.h terrain/TerrainPageShadow.h terrain/TerrainPageSurface.h \
 	terrain/TerrainPageSurfaceCompiler.h terrain/TerrainPageSurfaceLayer.h \
-	terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h terrain/TerrainParser.h \
+	terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h  terrain/PlantAreaQueryResult.h terrain/TerrainParser.h \
 	terrain/TerrainPageCreationTask.h terrain/Types.h terrain/TerrainAreaUpdateTask.h \
 	terrain/TerrainShaderUpdateTask.h \
 	terrain/techniques/Shader.h terrain/techniques/ShaderNormalMapped.h terrain/techniques/ShaderNormalMappedPass.h \
@@ -132,7 +132,7 @@ noinst_HEADERS = \
 	terrain/HeightMapBufferProvider.h terrain/HeightMapUpdateTask.h terrain/TerrainAreaTaskBase.h terrain/TerrainAreaAddTask.h \
 	terrain/TerrainAreaRemoveTask.h terrain/TerrainModAddTask.h terrain/TerrainModChangeTask.h terrain/TerrainModRemoveTask.h \
 	terrain/GeometryUpdateTask.h terrain/TerrainModTaskBase.h terrain/TerrainEditorOverlay.h terrain/TerrainDefPoint.h \
-	terrain/TerrainShaderParser.h terrain/TerrainUpdateTask.h terrain/ShadowUpdateTask.h \
+	terrain/TerrainShaderParser.h terrain/TerrainUpdateTask.h terrain/ShadowUpdateTask.h terrain/PlantQueryTask.h  \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \

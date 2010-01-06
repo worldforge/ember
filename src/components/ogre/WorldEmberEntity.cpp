@@ -65,7 +65,6 @@ WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Er
 		throw Ember::Exception("Could not create world node.");
 	}
 	EmberOgre::getSingleton().EventTerrainManagerCreated.emit(*mTerrainManager);
-	//	sceneManager->getRootSceneNode()->addChild(getSceneNode());
 }
 
 WorldEmberEntity::~WorldEmberEntity()

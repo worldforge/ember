@@ -38,6 +38,7 @@ namespace Terrain
 class TerrainFoliageDefinition;
 class TerrainLayerDefinition;
 class TerrainManager;
+class PlantAreaQueryResult;
 }
 
 namespace Environment {
@@ -48,7 +49,7 @@ namespace Environment {
 class FoliageLoader : public ::Forests::PageLoader
 {
 public:
-    FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
+    FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition, ::Forests::PagedGeometry& pagedGeometry);
 
     virtual ~FoliageLoader();
 
@@ -58,10 +59,15 @@ protected:
 	Terrain::TerrainManager& mTerrainManager;
 	const Terrain::TerrainLayerDefinition& mTerrainLayerDefinition;
 	const Terrain::TerrainFoliageDefinition& mFoliageDefinition;
+	::Forests::PagedGeometry& mPagedGeometry;
 	
 	Ogre::Entity* mEntity;
 	
 	float mMinScale, mMaxScale;
+
+	const Terrain::PlantAreaQueryResult* mLatestPlantsResult;
+
+	void plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult);
 
 };
 

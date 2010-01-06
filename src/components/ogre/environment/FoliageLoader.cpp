@@ -29,6 +29,7 @@
 
 #include "../Convert.h"
 #include "../terrain/PlantAreaQuery.h"
+#include "../terrain/PlantAreaQueryResult.h"
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainPageFoliage.h"
 #include "../terrain/TerrainPage.h"
@@ -36,20 +37,17 @@
 #include "framework/LoggingInstance.h"
 #include <wfmath/intersect.h>
 
-
 #include <Ogre.h>
 
 using namespace EmberOgre::Terrain;
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Environment {
+namespace Environment
+{
 
-FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
-: mTerrainManager(terrainManager)
-, mTerrainLayerDefinition(terrainLayerDefinition)
-, mFoliageDefinition(foliageDefinition)
-, mMinScale(1)
-, mMaxScale(1)
+FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition, ::Forests::PagedGeometry& pagedGeometry) :
+	mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition), mFoliageDefinition(foliageDefinition), mPagedGeometry(pagedGeometry), mMinScale(1), mMaxScale(1), mLatestPlantsResult(0)
 {
 	mEntity = sceneMgr.createEntity(std::string("shrubbery_") + mFoliageDefinition.getPlantType(), mFoliageDefinition.getParameter("mesh"));
 
@@ -58,52 +56,51 @@ FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManag
 
 }
 
-
 FoliageLoader::~FoliageLoader()
 {
 }
 
 void FoliageLoader::loadPage(::Forests::PageInfo &page)
 {
-	///make these static for fast lookup
-	static Ogre::Vector2 pos2D;
-	static Ogre::ColourValue colour(1,1,1,1);
+	Ogre::Vector2 pos2D;
+	Ogre::ColourValue colour(1, 1, 1, 1);
 
-	TerrainPosition wfPos(Convert::toWF<TerrainPosition>(page.centerPoint));
-	const TerrainPage* terrainPage = mTerrainManager.getTerrainPageAtPosition(wfPos);
-	if (terrainPage) {
-		Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
-		Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(page.bounds.left - ogrePageExtent.left, page.bounds.top - ogrePageExtent.top, page.bounds.right - ogrePageExtent.left, page.bounds.bottom - ogrePageExtent.top);
-		TerrainPageFoliage::PlantStore plants;
+	if (mLatestPlantsResult) {
+		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
+		for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
+			float height = 0;
+			Ogre::Vector3 pos(I->x, I->y, I->z);
 
+			float scale = Ogre::Math::RangeRandom(mMinScale, mMaxScale);
+			//			pos2D.x = pos.x;
+			//			pos2D.y = pos.z;
+			// 			TerrainManager->getShadowColourAt(pos2D, colour);
+
+			//Get rotation
+			Ogre::Degree angle(Ogre::Math::RangeRandom(0, 360.0f));
+			Ogre::Quaternion rot(angle, Ogre::Vector3::UNIT_Y);
+
+			addEntity(mEntity, pos, rot, Ogre::Vector3(scale, scale, scale), colour);
+		}
+	} else {
 		unsigned char threshold(100);
 		if (mFoliageDefinition.getParameter("threshold") != "") {
-			threshold = static_cast<unsigned char>(atoi(mFoliageDefinition.getParameter("threshold").c_str()));
+			threshold = static_cast<unsigned char> (atoi(mFoliageDefinition.getParameter("threshold").c_str()));
 		}
+		PlantAreaQuery query(mTerrainLayerDefinition, threshold, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
+		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLoader::plantQueryExecuted);
 
-		PlantAreaQuery query(mTerrainLayerDefinition, threshold, mFoliageDefinition.getPlantType(), adjustedBounds, plants);
-		terrainPage->getPlantsForArea(query);
-		for (TerrainPageFoliage::PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
-			float height = 0;
-			if (mTerrainManager.getHeight(TerrainPosition(I->x + ogrePageExtent.left, -(I->y + ogrePageExtent.top)), height)) {
-				Ogre::Vector3 pos(I->x + ogrePageExtent.left, height, I->y + ogrePageExtent.top);
-
-				float scale = Ogre::Math::RangeRandom(mMinScale, mMaxScale);
-				pos2D.x = pos.x;
-				pos2D.y = pos.z;
-	// 			TerrainManager->getShadowColourAt(pos2D, colour);
-
-				//Get rotation
-				Ogre::Degree angle(Ogre::Math::RangeRandom(0, 360.0f));
-				Ogre::Quaternion rot(angle, Ogre::Vector3::UNIT_Y);
-
-
-				addEntity(mEntity, pos, rot, Ogre::Vector3(scale,scale,scale), colour);
-			}
-		}
+		mTerrainManager.getPlantsForArea(query, slot);
 	}
 }
 
+void FoliageLoader::plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult)
+{
+	mLatestPlantsResult = &queryResult;
+	mPagedGeometry.reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().getCenter().x, 0, queryResult.getQuery().getCenter().y), true);
+	mLatestPlantsResult = 0;
+
+}
 
 }
 

@@ -50,7 +50,7 @@ class TerrainPage;
 class TerrainPageFoliage;
 class TerrainLayerDefinition;
 class TerrainPageGeometry;
-class PlantAreaQuery;
+class PlantAreaQueryResult;
 // struct PlantPosition
 // {
 // 	Ogre::Vector2 pos;
@@ -100,7 +100,7 @@ public:
 	 * @param area The enclosing area.
 	 * @param store The store in which to place the plants.
 	 */
-	void getPlantsForArea(const TerrainPageGeometry& geometry, PlantAreaQuery& query) const;
+	void getPlantsForArea(const TerrainPageGeometry& geometry, PlantAreaQueryResult& queryResult) const;
 
 	TerrainPage& getTerrainPage() const;
 

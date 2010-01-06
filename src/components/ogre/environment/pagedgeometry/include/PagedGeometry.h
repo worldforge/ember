@@ -560,7 +560,7 @@ public:
 	with the locations of each tree. When the scene is about to be rendered, the 
 	appropriate geometry pages will automatically be reloaded.
 	*/
-	void reloadGeometryPage(const Ogre::Vector3 &point);
+	void reloadGeometryPage(const Ogre::Vector3 &point, bool forceLoadImmediately = false);
 
 	/**
 	\brief Reloads geometry in the given radius area.
@@ -1462,7 +1462,7 @@ public:
 	void reloadGeometry();
 
 	/** \brief Internal function - DO NOT USE */
-	void reloadGeometryPage(const Ogre::Vector3 &point);
+	void reloadGeometryPage(const Ogre::Vector3 &point, bool forceLoadImmediately);
 
 	/** \brief Internal function - DO NOT USE */
 	void reloadGeometryPages(const Ogre::Vector3 &center, Ogre::Real radius);

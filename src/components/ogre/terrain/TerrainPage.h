@@ -62,7 +62,7 @@ class TerrainPageSurfaceLayer;
 class ITerrainPageBridge;
 //class terrainModListEntry;
 class TerrainPageGeometry;
-class PlantAreaQuery;
+class PlantAreaQueryResult;
 
 
 /**
@@ -216,7 +216,7 @@ public:
 	 * @param area The enclosing area.
 	 * @param store The store in which to place the plants.
 	 */
-	void getPlantsForArea(PlantAreaQuery& query) const;
+	void getPlantsForArea(PlantAreaQueryResult& queryResult) const;
 
 	/**
 	 * @brief Gets the shadow instance belonging to this page.
