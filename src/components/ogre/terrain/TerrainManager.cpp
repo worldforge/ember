@@ -120,6 +120,30 @@ public:
 
 };
 
+class FoliagePreparationTask: public Ember::Tasks::ITask
+{
+private:
+
+	PageVector mPages;
+
+public:
+	FoliagePreparationTask(const PageVector& pages) :
+		mPages(pages)
+	{
+	}
+	virtual ~FoliagePreparationTask()
+	{
+	}
+
+	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+	{
+		for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
+			(*I)->prepareFoliage();
+		}
+	}
+
+};
+
 TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0)
 {
@@ -199,17 +223,6 @@ TerrainShader* TerrainManager::createShader(const TerrainLayerDefinition* layerD
 	EventShaderCreated.emit(shader);
 	return shader;
 }
-
-// TerrainShader* TerrainManager::createShader(Ogre::MaterialPtr material, Mercator::Shader* mercatorShader)
-// {
-// 	size_t index = mShaderMap.size();
-// 	S_LOG_VERBOSE("Creating new shader for material " << material->getName() <<" with index " << index);
-//     TerrainShader* shader = new TerrainShader(mTerrain, index, material, mercatorShader);
-//
-// 	mBaseShaders.push_back(shader);
-// 	mShaderMap[shader->getShader()] = shader;
-// 	return shader;
-// }
 
 
 void TerrainManager::addTerrainMod(TerrainMod* terrainMod)
@@ -352,42 +365,6 @@ int TerrainManager::getPageMetersSize() const
 	return getPageIndexSize() - 1;
 }
 
-void TerrainManager::prepareAllSegments()
-{
-
-	//	//   _fpreset();
-	//	//_controlfp(_PC_64, _MCW_PC);
-	//	//_controlfp(_RC_NEAR, _MCW_RC);
-	//
-	//
-	//	getAdapter()->setWorldPagesDimensions(mTerrainInfo->getTotalNumberOfPagesY(), mTerrainInfo->getTotalNumberOfPagesX(), mTerrainInfo->getPageOffsetY(), mTerrainInfo->getPageOffsetX());
-	//
-	//	getAdapter()->loadScene();
-	//	const WFMath::AxisBox<2>& worldSize = mTerrainInfo->getWorldSizeInIndices();
-	//	float heightMin = mHeightMin;
-	//	float heightMax = mHeightMax;
-	//	if (heightMax < heightMin) {
-	//		heightMin = -100;
-	//		heightMax = 100;
-	//	}
-	//	Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
-	//
-	//	std::stringstream ss;
-	//	ss << worldBox;
-	//	S_LOG_INFO("New size of the world: " << ss.str());
-	//
-	//	getAdapter()->resize(worldBox, 16);
-	//
-	//	S_LOG_INFO("Pages: X: " << mTerrainInfo->getTotalNumberOfPagesX() << " Y: " << mTerrainInfo->getTotalNumberOfPagesY() << " Total: " << mTerrainInfo->getTotalNumberOfPagesX() * mTerrainInfo->getTotalNumberOfPagesY());
-	//	S_LOG_INFO("Page offset: X" << mTerrainInfo->getPageOffsetX() << " Y: " << mTerrainInfo->getPageOffsetY());
-	//
-	//	///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
-	//	getAdapter()->loadFirstPage();
-	//
-	//	EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest()->initialize();
-
-}
-
 void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
 {
 	TerrainPosition wfPos(Convert::toWF(query.getCenter()));
@@ -462,8 +439,11 @@ void TerrainManager::updateFoliageVisibility()
 	PageVector::iterator I = mPages.begin();
 	for (; I != mPages.end(); ++I) {
 		if (showFoliage) {
-			(*I)->showFoliage();
+			PageVector pages;
+			pages.push_back(*I);
+			mTaskQueue->enqueueTask(new FoliagePreparationTask(pages));
 		} else {
+			//TODO: implement destruction of the foliage data
 			(*I)->hideFoliage();
 		}
 	}

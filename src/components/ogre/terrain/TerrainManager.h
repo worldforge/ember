@@ -111,11 +111,6 @@ public:
 	virtual	void runCommand(const std::string& command, const std::string& args);
 
 	/**
-	 * @brief Prepares all segments acquired from Mercator. Note that this can be very, very expensive if there's a lot of terrain defined.
-	 */
-	void prepareAllSegments();
-
-	/**
 	 * @brief Returns the height at the specified position in the world.
 	 * This will be done using the underlying Mercator data, which depending on LOD techniques used can differ some from the actual graphical representation.
 	 * @note The method used for lookup does interpolation, so it's a little bit more expensive than doing a instant data lookup. Calling this is therefore not recommended if you're building height data, but suitable if you're placing entities on the terrain and need a perfect height.

@@ -140,8 +140,6 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 				hasValidShaders = true;
 			}
 
-			///prepare all the segments in advance
-			mTerrainManager->prepareAllSegments();
 		}
 
 		///TODO: Parse world location data when it's available
