@@ -22,19 +22,23 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #define CAELUM_H
 
 #include "CaelumPrerequisites.h"
-
+#include "CaelumScriptTranslator.h"
+#include "TypeDescriptor.h"
+#include "CaelumPlugin.h"
 #include "CaelumExceptions.h"
 #include "CaelumSystem.h"
 #include "CameraBoundElement.h"
-#include "GeometryFactory.h"
-#include "SkyColourModel.h"
 #include "SkyDome.h"
 #include "Sun.h"
-#include "LayeredClouds.h"
+#include "Moon.h"
 #include "UniversalClock.h"
-#include "SolarSystemModel.h"
 #include "Astronomy.h"
+#include "CloudSystem.h"
+#include "PrecipitationController.h"
+#include "FlatCloudLayer.h"
+#include "ImageStarfield.h"
 #include "PointStarfield.h"
-#include "PointStarfield.h"
+#include "GroundFog.h"
+#include "DepthComposer.h"
 
-#endif //CAELUM_H
+#endif // CAELUM_H

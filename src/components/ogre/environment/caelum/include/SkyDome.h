@@ -18,24 +18,21 @@ You should have received a copy of the GNU Lesser General Public License
 along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SKYDOME_H
-#define SKYDOME_H
+#ifndef CAELUM__SKYDOME_H
+#define CAELUM__SKYDOME_H
 
 #include "CaelumPrerequisites.h"
 #include "CameraBoundElement.h"
+#include "FastGpuParamRef.h"
+#include "PrivatePtr.h"
 
-namespace caelum {
-
-/** A sky dome element.
-	@author Jes˙s Alonso Abad
- */
-class CAELUM_EXPORT SkyDome : public CameraBoundElement {
-// Attributes -----------------------------------------------------------------
+namespace Caelum
+{
+    /** A sky dome element.
+     */
+    class CAELUM_EXPORT SkyDome : public CameraBoundElement
+    {
 	private:
-		/** Control scene node.
-		 */
-		Ogre::SceneNode *mNode;
-
 		/** Name of the spheric dome resource.
 		 */
 		static const Ogre::String SPHERIC_DOME_NAME;
@@ -44,16 +41,22 @@ class CAELUM_EXPORT SkyDome : public CameraBoundElement {
 		 */
 		static const Ogre::String SKY_DOME_MATERIAL_NAME;
 
-		/// Reference to the sky dome material.
-		Ogre::MaterialPtr mMaterial;
+		/// Control scene node.
+		PrivateSceneNodePtr mNode;
 
+		/// Sky dome material.
+		PrivateMaterialPtr mMaterial;
+
+        /// Sky dome entity.
+        PrivateEntityPtr mEntity;
+
+    private:
 		/// True if selected technique has shaders.
 		bool mShadersEnabled;
 
         /// If haze is enabled.
-        bool mHazeEnabled;
+		bool mHazeEnabled;
 
-// Methods --------------------------------------------------------------------
 	public:
 		/** Constructor
          *  This will setup some nice defaults.
@@ -68,25 +71,10 @@ class CAELUM_EXPORT SkyDome : public CameraBoundElement {
 		/** Sets the sun direction.
 			@param dir The sun light direction.
 		 */
-		void setSunDirection (Ogre::Vector3 dir);
+		void setSunDirection (const Ogre::Vector3& dir);
 
         /// Explicit haze colour.
-        void setHazeColour (Ogre::ColourValue hazeColour);
-
-		/** Sets the new light absorption factor.
-			@param absorption The light absorption factor; a number in the range [0, 1], the lower, the less light the atmosphere will absorb.
-		 */
-		void setLightAbsorption (float absorption) const;
-
-		/** Sets the light scattering factor. 
-			@param scattering The light scattering factor; a number major than zero.
-		 */
-		void setLightScattering (float scattering) const;
-
-		/** Sets the atmosphere height factor. 
-			@param height The atmosphere height factor; a number in the range (0, 1].
-		 */
-		void setAtmosphereHeight (float height) const;
+        void setHazeColour (const Ogre::ColourValue& hazeColour);
 
         /// Set the sky color gradients image.
         void setSkyGradientsImage (const Ogre::String& gradients);
@@ -94,13 +82,18 @@ class CAELUM_EXPORT SkyDome : public CameraBoundElement {
         /// Set the atmosphere depthh gradient image.
         void setAtmosphereDepthImage (const Ogre::String& gradients);
 
-        /// If skydome haze is enabled.
-        bool getHazeEnabled () const;
-
         /** Enable or disable skydome haze. This makes the sky darker.
          *  By default haze is disabled.
          */
         void setHazeEnabled (bool value);
+
+        /// If skydome haze is enabled.
+        bool getHazeEnabled () const;
+
+        void setQueryFlags (uint flags) { mEntity->setQueryFlags (flags); }
+        uint getQueryFlags () const { return mEntity->getQueryFlags (); }
+        void setVisibilityFlags (uint flags) { mEntity->setVisibilityFlags (flags); }
+        uint getVisibilityFlags () const { return mEntity->getVisibilityFlags (); }
 
     public:
 		/// Handle camera change.
@@ -109,8 +102,18 @@ class CAELUM_EXPORT SkyDome : public CameraBoundElement {
     protected:
         /// Handle far radius.
 	    virtual void setFarRadius (Ogre::Real radius);
-};
 
-} // namespace caelum
+    private:
+        struct Params {
+            void setup(Ogre::GpuProgramParametersSharedPtr vpParams, Ogre::GpuProgramParametersSharedPtr fpParams);
 
-#endif //SKYDOME_H
+            Ogre::GpuProgramParametersSharedPtr vpParams;
+            Ogre::GpuProgramParametersSharedPtr fpParams;
+            FastGpuParamRef sunDirection;
+            FastGpuParamRef offset;
+            FastGpuParamRef hazeColour;
+        } mParams;
+    };
+}
+
+#endif //CAELUM__SKYDOME_H

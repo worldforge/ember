@@ -25,6 +25,7 @@
 #endif
 
 #include "CaelumSun.h"
+#include "caelum/include/CaelumSystem.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/Convert.h"
 #include "caelum/include/Sun.h"
@@ -40,7 +41,7 @@ namespace EmberOgre
 namespace Environment
 {
 
-CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSkyLight* sun) :
+CaelumSun::CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun) :
 	CaelumEnvironmentComponent(environment), mSun(sun)
 {
 	sun->setAmbientMultiplier(Ogre::ColourValue(0.7, 0.7, 0.7));
@@ -51,6 +52,13 @@ CaelumSun::CaelumSun(CaelumEnvironment& environment, caelum::BaseSkyLight* sun) 
 	sun->setSpecularMultiplier(Ogre::ColourValue(5, 5, 5));
 
 	sun->setAutoDisable(true);
+    sun->setAutoDisableThreshold(0.05);
+
+    Caelum::BaseSkyLight* moon = mCaelumSystem->getMoon();
+    if (moon) {
+    	moon->setAutoDisable(true);
+    	moon->setAutoDisableThreshold(0.05);
+    }
 
 	registerConfigListener("caelum", "sunambientmultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunAmbientMultiplier));
 	registerConfigListener("caelum", "sundiffusemultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunDiffuseMultiplier));

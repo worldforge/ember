@@ -28,27 +28,38 @@
 #include "caelum/include/Caelum.h"
 #include "framework/Tokeniser.h"
 
+namespace EmberOgre
+{
 
-namespace EmberOgre {
+namespace Environment
+{
 
-namespace Environment {
-
-CaelumSky::CaelumSky(CaelumEnvironment& environment)
-: CaelumEnvironmentComponent(environment)
+CaelumSky::CaelumSky(CaelumEnvironment& environment) :
+	CaelumEnvironmentComponent(environment)
 {
 	/// Setup cloud options.
-	if (mCaelumSystem->getClouds ()) {
-		mCaelumSystem->getClouds ()->setCloudSpeed(Ogre::Vector2(0.0005, -0.0009));
-		mCaelumSystem->getClouds ()->setCloudBlendTime(3600 * 24);
-		mCaelumSystem->getClouds ()->setCloudCover(0.3);
+	if (mCaelumSystem->getCloudSystem()) {
+		Caelum::CloudSystem* cloudSystem = mCaelumSystem->getCloudSystem();
+		Caelum::FlatCloudLayer* cloudLayer = cloudSystem->createLayerAtHeight(1500);
+		cloudLayer->setCloudSpeed(Ogre::Vector2(0.0005, -0.0009));
+		cloudLayer->setCloudBlendTime(3600 * 24);
+		cloudLayer->setCloudCover(0.3);
+		cloudLayer->setFadeDistances(5000, 9000);
+		cloudLayer->setFadeDistMeasurementVector(Ogre::Vector3(1, 0, 1));
+
+		cloudLayer = cloudSystem->createLayerAtHeight(2000);
+		cloudLayer->setCloudSpeed(Ogre::Vector2(0.00045, -0.00075));
+		cloudLayer->setCloudBlendTime(3600 * 24);
+		cloudLayer->setCloudCover(0.4);
+		cloudLayer->setFadeDistances(5000, 9000);
+		cloudLayer->setFadeDistMeasurementVector(Ogre::Vector3(1, 0, 1));
 	}
-	
+
 	registerConfigListener("caelum", "cloudspeed", sigc::mem_fun(*this, &CaelumSky::Config_CloudSpeed));
 	registerConfigListener("caelum", "cloudblendtime", sigc::mem_fun(*this, &CaelumSky::Config_CloudBlendTime));
 	registerConfigListener("caelum", "cloudcover", sigc::mem_fun(*this, &CaelumSky::Config_CloudCover));
-	
-}
 
+}
 
 CaelumSky::~CaelumSky()
 {
@@ -56,33 +67,31 @@ CaelumSky::~CaelumSky()
 
 void CaelumSky::Config_CloudSpeed(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	if (variable.is_string() && mCaelumSystem->getClouds()) {
+	if (variable.is_string() && mCaelumSystem->getCloudSystem()) {
 		Ogre::Vector2 vector;
 		Ember::Tokeniser tokeniser(variable);
 		vector.x = atof(tokeniser.nextToken().c_str());
 		vector.y = atof(tokeniser.nextToken().c_str());
-		mCaelumSystem->getClouds ()->setCloudSpeed(vector);
+		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudSpeed(vector);
 	}
 }
 
 void CaelumSky::Config_CloudBlendTime(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	if (variable.is_double() && mCaelumSystem->getClouds()) {
-		mCaelumSystem->getClouds ()->setCloudBlendTime(static_cast<double>(variable));
+	if (variable.is_double() && mCaelumSystem->getCloudSystem()) {
+		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudBlendTime(static_cast<double> (variable));
 	}
 }
 void CaelumSky::Config_CloudCover(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	if (variable.is_double() && mCaelumSystem->getClouds()) {
-		mCaelumSystem->getClouds ()->setCloudCover(static_cast<double>(variable));
+	if (variable.is_double() && mCaelumSystem->getCloudSystem()) {
+		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudCover(static_cast<double> (variable));
 	}
 }
 
-
-
 void CaelumSky::setDensity(float density)
 {
-	mCaelumSystem->setGlobalFogDensityMultiplier  (density);
+	mCaelumSystem->setGlobalFogDensityMultiplier(density);
 }
 float CaelumSky::getDensity() const
 {
@@ -93,8 +102,6 @@ bool CaelumSky::frameEnded(const Ogre::FrameEvent & event)
 {
 	return true;
 }
-	
-
 
 }
 

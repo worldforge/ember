@@ -48,7 +48,7 @@ namespace Environment {
 class CaelumSun :  public CaelumEnvironmentComponent, public ISun, public Ember::ConfigListenerContainer
 {
 public:
-    CaelumSun(CaelumEnvironment& environment, caelum::BaseSkyLight* sun);
+    CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun);
 
     ~CaelumSun();
 
@@ -60,7 +60,7 @@ public:
 
 private:
 
-	caelum::BaseSkyLight* mSun;
+	Caelum::BaseSkyLight* mSun;
 
 
 	/**

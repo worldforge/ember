@@ -27,7 +27,7 @@
 #include "Environment.h"
 #include "framework/ConsoleObject.h"
 
-namespace caelum
+namespace Caelum
 {
 	class CaelumSystem;
 	class SkyDome;
@@ -58,7 +58,7 @@ public:
 	virtual IFog* getFog();
 	virtual IWater* getWater();
 	
-	caelum::CaelumSystem* getCaelumSystem() const;	
+	Caelum::CaelumSystem* getCaelumSystem() const;
 
 	const Ember::ConsoleCommandWrapper SetCaelumTime;
     
@@ -84,7 +84,7 @@ private:
 
 	
 	/**
-	 *    Creates and initializes the caelum system.
+	 *    Creates and initializes the Caelum system.
 	 * @param root 
 	 * @param sceneMgr 
 	 * @param window 
@@ -98,9 +98,7 @@ private:
 	void setupWater();
 	
 	// Caelum system
-	caelum::CaelumSystem *mCaelumSystem;
-	
-	caelum::SkyDome *mDome;
+	Caelum::CaelumSystem *mCaelumSystem;
 	
 	Ogre::SceneManager *mSceneMgr;
 	Ogre::RenderWindow* mWindow;
@@ -112,7 +110,7 @@ private:
 
 };
 	
-inline caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const
+inline Caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const
 {
 	return	mCaelumSystem;
 }	
@@ -124,7 +122,7 @@ protected:
 	CaelumEnvironment& mEnvironment;
 	
 	/// Caelum system
-	caelum::CaelumSystem *mCaelumSystem;
+	Caelum::CaelumSystem *mCaelumSystem;
 	
 };
 

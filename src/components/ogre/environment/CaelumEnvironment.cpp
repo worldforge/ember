@@ -32,40 +32,31 @@
 #include "SimpleWater.h"
 //#include "HydraxWater.h"
 #include "framework/Tokeniser.h"
-//#include "caelum/include/CaelumSystem.h"
+//#include "Caelum/include/CaelumSystem.h"
 
 #include "services/time/TimeService.h"
 
+namespace EmberOgre
+{
 
-namespace EmberOgre {
+namespace Environment
+{
 
-namespace Environment {
-
-
-
-CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera)
-:
- SetCaelumTime("set_caelumtime",this, "Sets the caelum time. parameters: <hour> <minute>")
-, mCaelumSystem(0)
-, mSceneMgr(sceneMgr)
-, mWindow(window)
-, mCamera(camera)
-, mSky(0)
-, mSun(0)
-, mWater(0)
+CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera) :
+	SetCaelumTime("set_caelumtime", this, "Sets the Caelum time. parameters: <hour> <minute>"), mCaelumSystem(0), mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mSky(0), mSun(0), mWater(0)
 
 //,mLensFlare(camera, sceneMgr)
 {
-//	sceneMgr->setAmbientLight(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
-		sceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
-//		setupCaelum(root, sceneMgr, window , camera);
-/*		mLensFlare.setNode(mCaelumSystem->getSun()-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Could not load caelum. Message: " << ex.getFullDescription());
-	}
->getNode());
-		mLensFlare.initialize();*/
-//		mLensFlare.setVisible(false);
-		//Ogre::::Root::getSingleton().addFrameListener(this);
+	//	sceneMgr->setAmbientLight(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
+	sceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
+	//		setupCaelum(root, sceneMgr, window , camera);
+	/*		mLensFlare.setNode(mCaelumSystem->getSun()-	} catch (const Ogre::Exception& ex) {
+	 S_LOG_FAILURE("Could not load Caelum. Message: " << ex.getFullDescription());
+	 }
+	 >getNode());
+	 mLensFlare.initialize();*/
+	//		mLensFlare.setVisible(false);
+	//Ogre::::Root::getSingleton().addFrameListener(this);
 }
 
 CaelumEnvironment::~CaelumEnvironment()
@@ -76,17 +67,17 @@ CaelumEnvironment::~CaelumEnvironment()
 	mWindow->removeListener(mCaelumSystem);
 	if (mCaelumSystem) {
 		mCaelumSystem->shutdown(true);
-// 		delete mCaelumSystem; //calling shutdown() will delete the instance, so no need to do it again
+		// 		delete mCaelumSystem; //calling shutdown() will delete the instance, so no need to do it again
 	}
 }
 
 void CaelumEnvironment::createEnvironment()
 {
 	try {
-		setupCaelum( Ogre::Root::getSingletonPtr(), mSceneMgr, mWindow, mCamera);
+		setupCaelum(Ogre::Root::getSingletonPtr(), mSceneMgr, mWindow, mCamera);
 	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Could not load caelum. Message: " << ex.getFullDescription());
-		throw;
+		S_LOG_FAILURE("Could not load Caelum. Message: " << ex.getFullDescription());
+		throw ;
 	}
 	setupWater();
 
@@ -96,9 +87,9 @@ void CaelumEnvironment::setupWater()
 {
 
 	//mWater = new Water(mCamera, mSceneMgr);
-//	mWater = new HydraxWater(mCamera, *mSceneMgr);
-///NOTE: we default to simple water for now since there are a couple of performance problems with hydrax
- 	mWater = new SimpleWater(mCamera, *mSceneMgr);
+	//	mWater = new HydraxWater(mCamera, *mSceneMgr);
+	///NOTE: we default to simple water for now since there are a couple of performance problems with hydrax
+	mWater = new SimpleWater(mCamera, *mSceneMgr);
 	if (mWater->isSupported()) {
 		mWater->initialize();
 	} else {
@@ -107,99 +98,80 @@ void CaelumEnvironment::setupWater()
 		mWater->initialize();
 	}
 
-
 }
-
 
 void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
 {
-	/// Pick components to use
-	///We'll skip the ground fog for now...
-	caelum::CaelumSystem::CaelumComponent componentMask =
-			static_cast<caelum::CaelumSystem::CaelumComponent> (
-			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
-			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
-			caelum::CaelumSystem::CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL |
-			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_DOME |
-			caelum::CaelumSystem::CAELUM_COMPONENT_POINT_STARFIELD |
-			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
-			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |
-// 			caelum::CaelumSystem::CAELUM_COMPONENT_GROUND_FOG |
-			0);
 
-	caelum::CaelumSystem::CaelumComponent componentMaskFallback =
-			static_cast<caelum::CaelumSystem::CaelumComponent> (
- 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_COLOUR_MODEL |
-			caelum::CaelumSystem::CAELUM_COMPONENT_SUN |
- 			caelum::CaelumSystem::CAELUM_COMPONENT_SOLAR_SYSTEM_MODEL |
- 			caelum::CaelumSystem::CAELUM_COMPONENT_SKY_DOME |
- 			caelum::CaelumSystem::CAELUM_COMPONENT_IMAGE_STARFIELD |	// Point starfield require shaders
- 			caelum::CaelumSystem::CAELUM_COMPONENT_CLOUDS |
-//			caelum::CaelumSystem::CAELUM_COMPONENT_MOON |				// Moon would be ugly without shaders
-			0);
+	mCaelumSystem = new Caelum::CaelumSystem(root, sceneMgr, Caelum::CaelumSystem::CAELUM_COMPONENTS_NONE);
 
-	mCaelumSystem = new caelum::CaelumSystem(root, sceneMgr);
-	if (!mCaelumSystem->init(componentMask, false)) {
-		S_LOG_FAILURE("Could not load main caelum technique, will try fallback.");
-		mCaelumSystem->shutdown(true);
-		mCaelumSystem = 0;
-		mCaelumSystem = new caelum::CaelumSystem (root, sceneMgr);
-		mCaelumSystem->init(componentMaskFallback, false);
+	try {
+		mCaelumSystem->setSkyDome(new Caelum::SkyDome(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
+	} catch (const Caelum::UnsupportedException& ex) {
+		S_LOG_WARNING("Error when creating Caelum sky dome." << ex);
 	}
-
+	try {
+		mCaelumSystem->setSun(new Caelum::SphereSun(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
+		mSun = new CaelumSun(*this, mCaelumSystem->getSun());
+	} catch (const Caelum::UnsupportedException& ex) {
+		//TODO: use a simple sun object
+		S_LOG_WARNING("Error when creating Caelum sun." << ex);
+	}
+	try {
+		mCaelumSystem->setMoon(new Caelum::Moon(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
+	} catch (const Caelum::UnsupportedException& ex) {
+		S_LOG_WARNING("Error when creating Caelum moon." << ex);
+	}
+	try {
+		mCaelumSystem->setCloudSystem(new Caelum::CloudSystem(mSceneMgr, mCaelumSystem->getCaelumGroundNode()));
+	} catch (const Caelum::UnsupportedException& ex) {
+		S_LOG_WARNING("Error when creating Caelum clouds." << ex);
+	}
+	try {
+		mCaelumSystem->setPointStarfield(new Caelum::PointStarfield(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
+	} catch (const Caelum::UnsupportedException& ex) {
+		S_LOG_WARNING("Error when creating Caelum point star field." << ex);
+		try {
+			mCaelumSystem->setImageStarfield(new Caelum::ImageStarfield(mSceneMgr, mCaelumSystem->getCaelumCameraNode()));
+		} catch (const Caelum::UnsupportedException& ex) {
+			S_LOG_WARNING("Error when creating Caelum image star field." << ex);
+		}
+	}
 
 	mCaelumSystem->setManageSceneFog (true);
 	mCaelumSystem->setManageAmbientLight(true);
 	mCaelumSystem->setGlobalFogDensityMultiplier (0.005);
 	mCaelumSystem->setMinimumAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
 
-	///Get the sky dome for  Create a sky dome CaelumSky
-	mDome = mCaelumSystem->getSkyDome();
-
-	/// Set up some star field options
-// 	mCaelumSystem->getPointStarfield ()->setInclination (::Ogre::Degree (13));
-
-	/// Setup sun options
-	if (mCaelumSystem->getSun ()) {
-		mSun = new CaelumSun(*this, mCaelumSystem->getSun());
-	} else {
-		///use a simple sun object
-	}
-
 	mCaelumSystem->setEnsureSingleShadowSource(true); ///we want to use only one shadow caster source, for now at least
 	mCaelumSystem->setEnsureSingleLightSource(true); ///We want to only use the brightest light source only, even if another is closer. This is to make sure the main light is taken from the sun instead of the moon (which will result in a dark landscape).
 
 	mSky = new CaelumSky(*this);
 
-
 	/// Register all to the render window
-	window->addListener (mCaelumSystem);
-
+	mCaelumSystem->attachViewport(window->getViewport(0));
+	window->addListener(mCaelumSystem);
 
 	/// Set time acceleration to fit with real world time
-	mCaelumSystem->getUniversalClock ()->setTimeScale (1);
+	mCaelumSystem->getUniversalClock()->setTimeScale (1);
 
 	int year, month, day, hour, minute, second;
 	bool usingServerTime = Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, hour, minute, second);
 
 	if (!usingServerTime) {
 		S_LOG_WARNING("Could not get server time, using local time for environment.");
+	} else {
+		mCaelumSystem->getUniversalClock ()->setGregorianDateTime (year, month, day, hour, minute, second);
 	}
 
 	///little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
 	/*
-	if (hour < 6) {
-		hour = 6;
-	} else if (hour > 16) {
-		hour = 15;
-	}
-	*/
-
-
-	mCaelumSystem->getUniversalClock ()->setGregorianDateTime (year, month, day, hour, minute, second);
-
-  	mCaelumSystem->getUniversalClock()->setUpdateRate( 1 / (24 * 60)); //update every minute
-
+	 if (hour < 6) {
+	 hour = 6;
+	 } else if (hour > 16) {
+	 hour = 15;
+	 }
+	 */
 
 	///advance it one second to force it to do initial updating, since other subsystems such as the terrain rendering depends on the sun postions etc.
 	Ogre::FrameEvent ev;
@@ -207,6 +179,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	ev.timeSinceLastFrame = 1;
 	mCaelumSystem->updateSubcomponents(1000);
 
+	//This will make caelum update itself automatically each frame
 	Ogre::Root::getSingleton().addFrameListener(mCaelumSystem);
 }
 
@@ -251,12 +224,11 @@ void CaelumEnvironment::setTime(int seconds)
 	}
 }
 
-
 void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
 {
-	if (mCaelumSystem && mCaelumSystem->getSolarSystemModel ()) {
-		mCaelumSystem->getSolarSystemModel ()->setObserverLatitude (Ogre::Degree(latitudeDegrees));
-		mCaelumSystem->getSolarSystemModel ()->setObserverLongitude(Ogre::Degree(longitudeDegrees));
+	if (mCaelumSystem) {
+		mCaelumSystem->setObserverLatitude(Ogre::Degree(latitudeDegrees));
+		mCaelumSystem->setObserverLongitude(Ogre::Degree(longitudeDegrees));
 	}
 }
 
@@ -273,7 +245,6 @@ void CaelumEnvironment::runCommand(const std::string &command, const std::string
 		setTime(hour, minute);
 	}
 }
-
 
 }
 

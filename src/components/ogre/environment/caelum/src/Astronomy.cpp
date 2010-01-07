@@ -21,7 +21,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumPrecompiled.h"
 #include "Astronomy.h"
 
-namespace caelum
+namespace Caelum
 {
     const LongReal Astronomy::PI = 3.1415926535897932384626433832795029L;
     
@@ -254,13 +254,12 @@ namespace caelum
             int year, int month, int day,
             int hour, int minute, LongReal second)
     {
-        int fpmode = Astronomy::enterHighPrecissionFloatingPointMode ();
+        ScopedHighPrecissionFloatSwitch precissionSwitch;
 
         int jdn = getJulianDayFromGregorianDate (year, month, day);
         // These are NOT integer divisions.
         LongReal jd = jdn + (hour - 12) / 24.0 + minute / 1440.0 + second / 86400.0;
 
-        Astronomy::restoreFloatingPointMode(fpmode);
         return jd;
     }
 

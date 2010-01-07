@@ -20,15 +20,16 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CaelumPrecompiled.h"
 #include "PointStarfield.h"
-#include "GeometryFactory.h"
 #include "CaelumExceptions.h"
 #include "Astronomy.h"
+#include "InternalUtilities.h"
 
 using namespace Ogre;
 
-namespace caelum
+namespace Caelum
 {
-	const Ogre::String PointStarfield::BILLBOARD_MATERIAL_NAME = "Caelum/StarPoint";
+	const Ogre::String PointStarfield::STARFIELD_MATERIAL_NAME = "Caelum/StarPoint";
+    const Ogre::Degree PointStarfield::DEFAULT_OBSERVER_POSITION_REBUILD_DELTA = Ogre::Degree(0.1);
 
 	PointStarfield::PointStarfield (
 			Ogre::SceneManager *sceneMgr,
@@ -41,45 +42,35 @@ namespace caelum
 		mMagnitudeScale = Math::Pow(100, 0.2);
 		mObserverLatitude = 45;
 		mObserverLongitude = 0;
+        mObserverPositionRebuildDelta = DEFAULT_OBSERVER_POSITION_REBUILD_DELTA;
 
-		mMaterial = Ogre::MaterialManager::getSingleton ().getByName (BILLBOARD_MATERIAL_NAME);
-		if (mMaterial.isNull ()) {
-			CAELUM_THROW_UNSUPPORED_EXCEPTION ("Can't load point starfield material", "PointStarfield");
-		}
-		mMaterial->load ();
-		if (mMaterial->getBestTechnique () == 0) {
-			CAELUM_THROW_UNSUPPORED_EXCEPTION ("Can't load point starfield material", "PointStarfield");
-		}
+        String uniqueSuffix = "/" + InternalUtilities::pointerToString(this);
 
-		sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_STARFIELD)->setShadowsEnabled (false);
+        // Load material.
+        mMaterial.reset(InternalUtilities::checkLoadMaterialClone(
+                    STARFIELD_MATERIAL_NAME,
+                    STARFIELD_MATERIAL_NAME + uniqueSuffix));
+
+        mParams.setup(mMaterial->getTechnique(0)->getPass(0)->getVertexProgramParameters());
 
 		// We use a separate data source.
-		Ogre::String objName = "Caelum/PointStarfield/" + Ogre::StringConverter::toString ((size_t)this);
-        mManualObj = sceneMgr->createManualObject (objName);
+		Ogre::String objName = "Caelum/PointStarfield" + uniqueSuffix;
+        mManualObj.reset (sceneMgr->createManualObject (objName));
         mManualObj->setDynamic(false);
 		mManualObj->setRenderQueueGroup (CAELUM_RENDER_QUEUE_STARFIELD);
+		sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_STARFIELD)->setShadowsEnabled (false);
         mManualObj->setCastShadows(false);
 
-		mNode = caelumRootNode->createChildSceneNode ();
-		mNode->attachObject (mManualObj);
+		mNode.reset (caelumRootNode->createChildSceneNode ());
+		mNode->attachObject (mManualObj.getPointer ());
 
 		if (initWithCatalogue) {
 			addBrightStarCatalogue ();
 		}
 	}
 
-	PointStarfield::~PointStarfield () {
-		if (mNode) {
-			mNode->getCreator()->destroySceneNode(mNode->getName());
-			mNode = 0;
-		}
-
-		if (mManualObj) {
-			mManualObj->_getManager()->destroyMovableObject(mManualObj);
-			mManualObj = 0;
-		}
-			
-		Ogre::MaterialManager::getSingletonPtr()->remove(mMaterial->getHandle());
+	PointStarfield::~PointStarfield ()
+    {
 	}
 
     void PointStarfield::notifyStarVectorChanged () {
@@ -176,19 +167,24 @@ namespace caelum
 			return;
 		}
 
-		Ogre::LogManager::getSingleton ().logMessage ("Caelum: Recomputing starfield geometry.");
+		//Ogre::LogManager::getSingleton ().logMessage ("Caelum: Recomputing starfield geometry.");
+
+        size_t starCount = mStars.size();
 
         mManualObj->clear();
-        mManualObj->estimateVertexCount(6 * mStars.size());
+        mManualObj->estimateVertexCount(6 * starCount);
         mManualObj->begin(mMaterial->getName (), Ogre::RenderOperation::OT_TRIANGLE_LIST);
-        for (uint i = 0; i < mStars.size(); ++i) {
+        for (uint i = 0; i < starCount; ++i)
+        {
+            const Star& star = mStars[i];
+
 			// Determine position at J2000
 			LongReal azm, alt;
 			Astronomy::convertEquatorialToHorizontal(
 					Astronomy::J2000,
 					mObserverLatitude.valueDegrees(),
 					mObserverLongitude.valueDegrees(),
-					mStars[i].RightAscension.valueDegrees(), mStars[i].Declination.valueDegrees(),
+					star.RightAscension.valueDegrees(), star.Declination.valueDegrees(),
 					azm, alt);
 
     		Ogre::Vector3 pos;
@@ -196,20 +192,20 @@ namespace caelum
 		    pos.x =  Math::Sin (Ogre::Degree(azm)) * Math::Cos (Ogre::Degree(alt));
 		    pos.y = -Math::Sin (Ogre::Degree(alt));
 
-            mManualObj->colour (Ogre::ColourValue::White);
+            //mManualObj->colour (Ogre::ColourValue::White);
             mManualObj->position (pos);
-            mManualObj->textureCoord (+1, -1, mStars[i].Magnitude);
+            mManualObj->textureCoord (+1, -1, star.Magnitude);
             mManualObj->position (pos);
-            mManualObj->textureCoord (+1, +1, mStars[i].Magnitude);
+            mManualObj->textureCoord (+1, +1, star.Magnitude);
             mManualObj->position (pos);
-            mManualObj->textureCoord (-1, -1, mStars[i].Magnitude);
+            mManualObj->textureCoord (-1, -1, star.Magnitude);
 
             mManualObj->position (pos);
-            mManualObj->textureCoord (-1, -1, mStars[i].Magnitude);
+            mManualObj->textureCoord (-1, -1, star.Magnitude);
             mManualObj->position (pos);
-            mManualObj->textureCoord (+1, +1, mStars[i].Magnitude);
+            mManualObj->textureCoord (+1, +1, star.Magnitude);
             mManualObj->position (pos);
-            mManualObj->textureCoord (-1, +1, mStars[i].Magnitude);
+            mManualObj->textureCoord (-1, +1, star.Magnitude);
         }
         mManualObj->end();
 
@@ -220,6 +216,16 @@ namespace caelum
 
 		mValidGeometry = true;
 	}
+    
+    void PointStarfield::Params::setup(Ogre::GpuProgramParametersSharedPtr vpParams)
+    {
+        this->vpParams = vpParams;
+        this->mag_scale.bind(vpParams, "mag_scale");
+        this->mag0_size.bind(vpParams, "mag0_size");
+        this->min_size.bind(vpParams, "min_size");
+        this->max_size.bind(vpParams, "max_size");
+        this->aspect_ratio.bind(vpParams, "aspect_ratio");
+    }
 
 	void PointStarfield::notifyCameraChanged (Ogre::Camera *cam) {
 		CameraBoundElement::notifyCameraChanged (cam);
@@ -239,12 +245,11 @@ namespace caelum
         Real aspectRatio = static_cast<Real>(width) / height;
 
         // These params are relative to the size of the screen.
-        vpParams->setIgnoreMissingParams (true);
-        vpParams->setNamedConstant ("mag_scale", magScale);
-        vpParams->setNamedConstant ("mag0_size", mag0Size);
-        vpParams->setNamedConstant ("min_size", minSize);
-        vpParams->setNamedConstant ("max_size", maxSize);
-        vpParams->setNamedConstant ("aspect_ratio", aspectRatio);
+        mParams.mag_scale.set(mParams.vpParams, magScale);
+        mParams.mag0_size.set(mParams.vpParams, mag0Size);
+        mParams.min_size.set(mParams.vpParams, minSize);
+        mParams.max_size.set(mParams.vpParams, maxSize);
+        mParams.aspect_ratio.set(mParams.vpParams, aspectRatio);
 	}
 
 	void PointStarfield::setFarRadius (Ogre::Real radius) {
@@ -261,15 +266,25 @@ namespace caelum
         ensureGeometry ();
 	}
 
-	void PointStarfield::setObserverLatitude (Ogre::Degree value) {
-		if (!Math::RealEqual (mObserverLatitude.valueDegrees (), value.valueDegrees (), 0.001)) {
+	void PointStarfield::setObserverLatitude (Ogre::Degree value)
+    {
+		if (!Math::RealEqual (
+                mObserverLatitude.valueDegrees (),
+                value.valueDegrees (),
+                this->getObserverPositionRebuildDelta ().valueDegrees ()))
+        {
 			mObserverLatitude = value;
 			invalidateGeometry ();
 		}
 	}
 
-	void PointStarfield::setObserverLongitude (Ogre::Degree value) {
-		if (!Math::RealEqual (mObserverLongitude.valueDegrees (), value.valueDegrees (), 0.001)) {
+	void PointStarfield::setObserverLongitude (Ogre::Degree value)
+    {
+		if (!Math::RealEqual (
+                mObserverLongitude.valueDegrees (), 
+                value.valueDegrees (),
+                this->getObserverPositionRebuildDelta ().valueDegrees ()))
+        {
 			mObserverLongitude = value;
 			invalidateGeometry ();
 		}

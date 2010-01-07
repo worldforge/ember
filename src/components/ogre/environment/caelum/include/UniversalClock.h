@@ -23,19 +23,19 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CaelumPrerequisites.h"
 
-namespace caelum {
+namespace Caelum {
 
-/** The system's time model.
- *  This class is responsible of keeping track of current astronomical time
- *  and syncronising with ogre time.
- *
- *  It maintains a snapshot point: At mCurrentTime == 0 julian day was mJulianDayBase.
- *  At any time the julian day can be calculated from mCurrentTime and mJulianDayBase.
- *  This increases precission; mCurrentTime is tracked in seconds while mJulianDayBase
- *  uses days. It would be silly to track the current time in days.
- */
-class CAELUM_EXPORT UniversalClock
-{
+    /** The system's time model.
+     *  This class is responsible of keeping track of current astronomical time
+     *  and syncronising with ogre time.
+     *
+     *  It maintains a snapshot point: At mCurrentTime == 0 julian day was mJulianDayBase.
+     *  At any time the julian day can be calculated from mCurrentTime and mJulianDayBase.
+     *  This increases precission; mCurrentTime is tracked in seconds while mJulianDayBase
+     *  uses days. It would be silly to track the current time in days.
+     */
+    class CAELUM_EXPORT UniversalClock
+    {
 	private:
         /// Astronomical julian day at mCurrentTime = 0;
 		LongReal mJulianDayBase;
@@ -46,22 +46,12 @@ class CAELUM_EXPORT UniversalClock
 		/// Seconds since mJulianDayBase at last update.
 		LongReal mLastUpdateTime;
 
-		/// The time elapsed since the last update.
-        /// This is regular ogre time, not scaled.
-        Ogre::Real mTimeSinceLastUpdate;
-
-		/// The update rate.
-        Ogre::Real mUpdateRate;
-
         /// Time scale.
         Ogre::Real mTimeScale;
 
-        /// Make sure an update is done next frame.
-        /// This work by hacking mTimeSinceLastUpdate.
-        void forceUpdate();
-
-// Methods --------------------------------------------------------------------
 	public:
+        /** Number of seconds per day; exactly 60*60*24.
+         */
         static const LongReal SECONDS_PER_DAY;
 
 		/** Constructor.
@@ -78,24 +68,10 @@ class CAELUM_EXPORT UniversalClock
 		 */
 		Ogre::Real getTimeScale () const;
 
-		/** Sets the update rate.
-		 *  @param rate A positive number representing the number of seconds
-         *  to be elapsed (in real time) since the last update.
-         *  Negative numbers will be clamped to 0 (update every frame).
-		 */
-		void setUpdateRate (const Ogre::Real rate);
-
-		/** Gets the update rate.
-		 *  @return The amount of time to be elapsed (at least) between updates.
-		 */
-		Ogre::Real getUpdateRate () const;
-
 		/** Updates the clock.
-		 * @param time The time to be added to the clock. Note this will be
-         * affected by the time scale.
-		 * @return True if an update has been fired (depending on the update rate).
+		 *  @param time The time to be added to the clock. It will beaffected by the time scale.
 		 */
-		bool update (const Ogre::Real time);
+		void update (const Ogre::Real time);
 
         /** Set the current time as a julian day.
          *  Set the current time as a julian day, which you build using one
@@ -104,8 +80,9 @@ class CAELUM_EXPORT UniversalClock
          */
         void setJulianDay(LongReal value);
 
-        // Set the current time as a gregorian date.
-        // This is here as an easy to use function.
+        /** Set the current time as a gregorian date.
+         *  This is here as an easy to use function.
+         */
         void setGregorianDateTime(
                 int year, int month, int day,
                 int hour, int minute, double second);
@@ -128,8 +105,7 @@ class CAELUM_EXPORT UniversalClock
          *  This is what you want for per-frame updates.
          */
         LongReal getJulianSecondDifference() const;
-};
-
-} // namespace caelum
+    };
+}
 
 #endif //UNIVERSALCLOCK_H

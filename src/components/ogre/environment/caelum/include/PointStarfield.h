@@ -23,9 +23,10 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CaelumPrerequisites.h"
 #include "CameraBoundElement.h"
-#include <vector>
+#include "PrivatePtr.h"
+#include "FastGpuParamRef.h"
 
-namespace caelum
+namespace Caelum
 {
     /** POD for bright star catalogue entries.
      *  Only J2000 position and magnitude included.
@@ -47,9 +48,7 @@ namespace caelum
     extern const BrightStarCatalogueEntry BrightStarCatalogue[BrightStarCatalogueSize];
 
     /** Point starfield class.
-     *  An Ogre::BillboardSet is used internally; but it doesn't do much.
-     *  The data is not kept inside the billboardset; but externally. Custom
-     *  hardware buffers would probably work better.
+     *  An Ogre::ManualObject is used for drawing because billboards are too slow.
      *
      *  Stars are sized in pixels; this seems to work a lot better than relative sizes.
      *  Stars could be made even smaller but it would require hinting (nudging pixel
@@ -58,117 +57,156 @@ namespace caelum
      *  Loading a bright-star catalogue is supported but star positions are
      *  likely only correct relative to each other. External rotation is probably wrong.
      */
-    class CAELUM_EXPORT PointStarfield : public CameraBoundElement
+    class CAELUM_EXPORT PointStarfield:
+            public CameraBoundElement
     {
-	    public:
-		    /** Constructor.
-             *  By default this loads some reasonable defaults and the
-             *  bright star catalogue.
-             */
-		    PointStarfield (
-                    Ogre::SceneManager *sceneMgr,
-				    Ogre::SceneNode *caelumRootNode,
-                    bool initWithCatalogue = true);
+    public:
+	    /** Constructor.
+         *  By default this loads some reasonable defaults and the
+         *  bright star catalogue.
+         */
+	    PointStarfield (
+                Ogre::SceneManager *sceneMgr,
+			    Ogre::SceneNode *caelumRootNode,
+                bool initWithCatalogue = true);
 
-		    /// Destructor.
-		    virtual ~PointStarfield ();
+	    /// Destructor.
+	    virtual ~PointStarfield ();
 
-            /// Struct representing one star.
-            struct Star {
-                Ogre::Degree RightAscension;
-                Ogre::Degree Declination;
-                Ogre::Real Magnitude;
-            };
+        /// Struct representing one star inside PointStarfield.
+        struct Star {
+            Ogre::Degree RightAscension;
+            Ogre::Degree Declination;
+            Ogre::Real Magnitude;
+        };
 
-            typedef std::vector<Star> StarVector;
+        /// A vector of Star
+        typedef std::vector<Star> StarVector;
 
-            /** Get a reference to the vector of stars.
-             *  You can freely modify this; but you need to updateStars when you're done.
-             */
-            inline StarVector& getStarVector () { return mStars; }
+        /** Get a reference to the vector of stars.
+         *  You can freely modify this; but you need to updateStars when you're done.
+         */
+        inline StarVector& getStarVector () { return mStars; }
 
-            /** You must call this if you change the star vector by hand.
-             */
-            void notifyStarVectorChanged ();
+        /** You must call this if you change the star vector by hand.
+         */
+        void notifyStarVectorChanged ();
 
-            /// Clear any and all stars.
-            void clearAllStars ();
+        /// Clear any and all stars.
+        void clearAllStars ();
 
-            /** Add a bunch of random stars.
-             */
-            void addRandomStars (int count);
+        /** Add a bunch of random stars.
+         */
+        void addRandomStars (int count);
 
-            /** Add one star from the bright star catalogue.
-             */
-            void addStar (const BrightStarCatalogueEntry &entry);
+        /** Add one star from the bright star catalogue.
+         */
+        void addStar (const BrightStarCatalogueEntry &entry);
 
-            /** Add stars from the bright star catalogue.
-             *  @param count Number of stars to add (in order of brightness).
-             */
-            void addBrightStarCatalogue (int count = BrightStarCatalogueSize);
+        /** Add stars from the bright star catalogue.
+         *  @param count Number of stars to add (in order of brightness).
+         */
+        void addBrightStarCatalogue (int count = BrightStarCatalogueSize);
 
+    private:
+        /// Cloned material
+        PrivateMaterialPtr mMaterial;
 
-	    private:
-		    /// Node for the starfield
-		    Ogre::SceneNode *mNode;
+	    /// Node for the starfield
+	    PrivateSceneNodePtr mNode;
+        
+        /// Manual object for drawing.
+        PrivateManualObjectPtr mManualObj;
 
-            Ogre::ManualObject *mManualObj;
+        /// Star data.
+        std::vector<Star> mStars;
 
-            /// Billboard material
-            Ogre::MaterialPtr mMaterial;
+        Ogre::Real mMinPixelSize, mMaxPixelSize, mMag0PixelSize;
+        Ogre::Real mMagnitudeScale;
 
-            /// Star data.
-            std::vector<Star> mStars;
+        Ogre::Degree mObserverLatitude, mObserverLongitude;
 
-            Ogre::Real mMinPixelSize, mMaxPixelSize, mMag0PixelSize;
-            Ogre::Real mMagnitudeScale;
+        bool mValidGeometry;
+		void invalidateGeometry();
+		void ensureGeometry();
 
-            Ogre::Degree mObserverLatitude, mObserverLongitude;
+    public:
+	    /** Update function; called from CaelumSystem::updateSubcomponents
+            @param time Time of the day.
+	     */
+	    void _update (float time);
 
-            bool mValidGeometry;
-			void invalidateGeometry();
-			void ensureGeometry();
+        /** Magnitude power scale.
+         *  Star magnitudes are logarithming; one magnitude difference
+         *  means a star is 2.512 times brighter.
+         *  This property allows tweaking that value.
+         */
+        inline void setMagnitudeScale (Ogre::Real value) { mMagnitudeScale = value; }
+        inline Ogre::Real getMagnitudeScale () const { return mMagnitudeScale; }
 
-	    public:
-		    /** Update function; called from CaelumSystem::updateSubcomponents
-                @param time Time of the day.
-		     */
-		    void _update (float time);
+        inline void setMag0PixelSize (Ogre::Real value) { mMag0PixelSize = value; }
+        inline Ogre::Real getMag0PixelSize () const { return mMag0PixelSize; }
 
-            /** Magnitude power scale.
-             *  Star magnitudes are logarithming; one magnitude difference
-             *  means a star is 2.512 times brighter.
-             *  This property allows tweaking that value.
-             */
-            inline void setMagnitudeScale (Ogre::Real value) { mMagnitudeScale = value; }
-            inline Ogre::Real getMagnitudeScale () { return mMagnitudeScale; }
+        inline void setMinPixelSize (Ogre::Real value) { mMinPixelSize = value; }
+        inline Ogre::Real getMinPixelSize () const { return mMinPixelSize; }
 
-            inline void setMag0PixelSize (Ogre::Real value) { mMag0PixelSize = value; }
-            inline Ogre::Real getMag0PixelSize () { return mMag0PixelSize; }
+        inline void setMaxPixelSize (Ogre::Real value) { mMaxPixelSize = value; }
+        inline Ogre::Real getMaxPixelSize () const { return mMaxPixelSize; }
 
-            inline void setMinPixelSize (Ogre::Real value) { mMinPixelSize = value; }
-            inline Ogre::Real getMinPixelSize () { return mMinPixelSize; }
+        void setObserverLatitude (Ogre::Degree value);
+        inline Ogre::Degree getObserverLatitude () const { return mObserverLatitude; }
 
-            inline void setMaxPixelSize (Ogre::Real value) { mMaxPixelSize = value; }
-            inline Ogre::Real getMaxPixelSize () { return mMaxPixelSize; }
+        void setObserverLongitude (Ogre::Degree value);
+        inline Ogre::Degree getObserverLongitude () const { return mObserverLongitude; }
 
-            void setObserverLatitude (Ogre::Degree value);
-            inline Ogre::Degree getObserverLatitude () { return mObserverLatitude; }
+    private:
+        Ogre::Degree mObserverPositionRebuildDelta;
 
-            void setObserverLongitude (Ogre::Degree value);
-            inline Ogre::Degree getObserverLongitude () { return mObserverLongitude; }
+    public:
+        /** Moving the observer position around causes a starfield rebuild.
+         *  Default value (DEFAULT_OBSERVER_POSITION_REBUILD_DELTA) is 0.1
+         *  degrees which is equivalent to around 170 meters on the earth.
+         *
+         *  This only matters if you compute the observer position every
+         *  frame. Caelum doesn't contain code for that.
+         */
+        inline Ogre::Degree getObserverPositionRebuildDelta () const {
+            return mObserverPositionRebuildDelta;
+        }
+        inline void setObserverPositionRebuildDelta (Ogre::Degree value) {
+            mObserverPositionRebuildDelta = value;
+        }
 
-	        /// Material used on billboards
-		    static const Ogre::String BILLBOARD_MATERIAL_NAME;
+	    static const Ogre::Degree DEFAULT_OBSERVER_POSITION_REBUILD_DELTA;
 
-		    /// Handle camera change.
-		    virtual void notifyCameraChanged (Ogre::Camera *cam);
+        /// Material used to draw all the points.
+	    static const Ogre::String STARFIELD_MATERIAL_NAME;
 
-        protected:
-            /// Handle far radius.
-	        virtual void setFarRadius (Ogre::Real radius);
+	    /// Handle camera change.
+	    virtual void notifyCameraChanged (Ogre::Camera *cam);
+
+    protected:
+        /// Handle far radius.
+        virtual void setFarRadius (Ogre::Real radius);
+
+    public:
+        void setQueryFlags (uint flags) { mManualObj->setQueryFlags (flags); }
+        uint getQueryFlags () const { return mManualObj->getQueryFlags (); }
+        void setVisibilityFlags (uint flags) { mManualObj->setVisibilityFlags (flags); }
+        uint getVisibilityFlags () const { return mManualObj->getVisibilityFlags (); }
+
+    private:
+        struct Params {
+            void setup(Ogre::GpuProgramParametersSharedPtr vpParams);
+        
+            Ogre::GpuProgramParametersSharedPtr vpParams;
+            FastGpuParamRef mag_scale;
+            FastGpuParamRef mag0_size;
+            FastGpuParamRef min_size;
+            FastGpuParamRef max_size;
+            FastGpuParamRef aspect_ratio;
+        } mParams;
     };
 }
 
 #endif // CAELUM__POINT_STARFIELD_H
-

@@ -18,43 +18,52 @@ You should have received a copy of the GNU Lesser General Public License
 along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MOON_H
-#define MOON_H
+#ifndef CAELUM__MOON_H
+#define CAELUM__MOON_H
 
 #include "CaelumPrerequisites.h"
-#include "Sun.h"
+#include "SkyLight.h"
+#include "FastGpuParamRef.h"
+#include "PrivatePtr.h"
 
-namespace caelum {
-
-/** Class representing the moon.
- *  Drawn as two billboards; one after the stars and one after the skydome.
- *  Drawing it before the skydome will make it invisible in daylight; and that's bad.
- */
-class CAELUM_EXPORT Moon : public BaseSkyLight {
+namespace Caelum
+{
+    /** Class representing the moon.
+     *  Drawn as two billboards; one after the stars and one after the skydome.
+     *  Drawing it before the skydome will make it invisible in daylight; and that's bad.
+     */
+    class CAELUM_EXPORT Moon:
+            public BaseSkyLight
+    {
 	public:
 		/// Name of the moon material.
 		static const Ogre::String MOON_MATERIAL_NAME;
 
         /// Name of the moon background material.
-		static const Ogre::String MOON_BACKROUND_MATERIAL_NAME;
+		static const Ogre::String MOON_BACKGROUND_MATERIAL_NAME;
 
 	private:
-		/// The moon sprite.
-		Ogre::BillboardSet* mMoonBB;
-
         /// Material for MoonBB
-		Ogre::MaterialPtr mMoonMaterial;
+		PrivateMaterialPtr mMoonMaterial;
 
-        /// The moon's background; used to block the stars.
-		Ogre::BillboardSet* mBackBB;
+		/// The moon sprite.
+		PrivateBillboardSetPtr mMoonBB;
 
         /// Material for mBackBB
-		Ogre::MaterialPtr mBackMaterial;
+		PrivateMaterialPtr mBackMaterial;
 		
+        /// The moon's background; used to block the stars.
+		PrivateBillboardSetPtr mBackBB;
+
 		/// The moon sprite visible angle
 		Ogre::Degree mAngularSize;
 
-		Ogre::GpuProgramParametersSharedPtr getFpParams();
+        struct Params {
+            void setup(Ogre::GpuProgramParametersSharedPtr fpParams);
+
+            Ogre::GpuProgramParametersSharedPtr fpParams;
+            FastGpuParamRef phase;
+        } mParams;
 
 	public:
 		/** Constructor.
@@ -88,8 +97,12 @@ class CAELUM_EXPORT Moon : public BaseSkyLight {
     public:
 		/// Handle camera change.
 		virtual void notifyCameraChanged (Ogre::Camera *cam);
-};
 
+        virtual void setQueryFlags (uint flags);
+        virtual uint getQueryFlags () const;
+        virtual void setVisibilityFlags (uint flags);
+        virtual uint getVisibilityFlags () const;
+    };
 }
 
-#endif //MOON_H
+#endif // CAELUM__MOON_H

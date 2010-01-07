@@ -18,49 +18,51 @@ You should have received a copy of the GNU Lesser General Public License
 along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef STARFIELD_H
-#define STARFIELD_H
+#ifndef CAELUM__IMAGE_STARFIELD_H
+#define CAELUM__IMAGE_STARFIELD_H
 
 #include "CaelumPrerequisites.h"
 #include "CameraBoundElement.h"
+#include "PrivatePtr.h"
 
-namespace caelum {
-
-/** ImageStarfield dome class.
-	@author Jesús Alonso Abad
- */
-class CAELUM_EXPORT ImageStarfield : public CameraBoundElement {
-// Attributes -----------------------------------------------------------------
+namespace Caelum
+{
+    /** Image-based starfield class.
+     *  This class implements a starfield based on mapping a single large
+     *  texture on a sphere. @see PointStarfield for a better solution.
+     */
+    class CAELUM_EXPORT ImageStarfield : public CameraBoundElement
+    {
 	protected:
-		/** Reference to the dome node.
-		 */
-		Ogre::SceneNode *mNode;
+		/// Reference to the dome node.
+		PrivateSceneNodePtr mNode;
 
-		/** Name of the spheric dome resource.
-		 */
+		/// Reference to the (cloned) starfield material.
+		PrivateMaterialPtr mStarfieldMaterial;
+
+		/// Reference to the dome entity.
+		PrivateEntityPtr mEntity;
+
+		/// Name of the spheric dome resource.
 		static const Ogre::String STARFIELD_DOME_NAME;
 
-		/** Name of the starfield material.
-		 */
+		/// Name of the starfield material.
 		static const Ogre::String STARFIELD_MATERIAL_NAME;
-
-		/** Reference to the starfield material.
-		 */
-		Ogre::MaterialPtr mStarfieldMaterial;
 
 		/** Inclination of the starfield.
 		 */
 		Ogre::Degree mInclination;
 
-// Methods --------------------------------------------------------------------
 	public:
+        static const String DEFAULT_TEXTURE_NAME;
+
 		/** Constructor.
 			@param sceneMgr The scene manager this dome will belong to.
 		 */
 		ImageStarfield (
                 Ogre::SceneManager *sceneMgr,
 				Ogre::SceneNode *caelumRootNode,
-                const Ogre::String &textureName = "Starfield.jpg");
+                const Ogre::String &textureName = DEFAULT_TEXTURE_NAME);
 
 		/** Destructor.
 		 */
@@ -88,8 +90,13 @@ class CAELUM_EXPORT ImageStarfield : public CameraBoundElement {
     protected:
         /// Handle far radius.
 	    virtual void setFarRadius (Ogre::Real radius);
-};
 
-} // namespace caelum;
+    public:
+        void setQueryFlags (uint flags) { mEntity->setQueryFlags (flags); }
+        uint getQueryFlags () const { return mEntity->getQueryFlags (); }
+        void setVisibilityFlags (uint flags) { mEntity->setVisibilityFlags (flags); }
+        uint getVisibilityFlags () const { return mEntity->getVisibilityFlags (); }
+    };
+}
 
-#endif //STARFIELD_H
+#endif // CAELUM__IMAGE_STARFIELD_H

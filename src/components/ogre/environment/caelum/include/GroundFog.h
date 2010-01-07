@@ -23,23 +23,29 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 #include "CaelumPrerequisites.h"
 #include "CameraBoundElement.h"
+#include "PrivatePtr.h"
+#include "FastGpuParamRef.h"
 
-namespace caelum {
-
-/** Exponential ground fog system implementation.
- *
- *  This class controls CaelumGroundFog passes in a potentially large number
- *  of materials, changing shader program parameters. This class keeps a list
- *  of passes to control; which can be build based on pass name.
- *
- *  This simulates a field of fog where "absorption" at a certain point is
- *	exp(-verticalDecay * (h - fogLevel)). This absorption is multiplicative,
- *	the total fog alpha is e^(-density * absorption_on_view_path).
- *
- *	You can set verticalDecay to 0 and get standard GL_EXP fog. Don't actually
- *	do that though because you'll get a division by 0.
- */
-class CAELUM_EXPORT GroundFog: public CameraBoundElement {
+namespace Caelum
+{
+    /** Exponential ground fog system implementation.
+     *
+     *  This class controls CaelumGroundFog passes in a potentially large number
+     *  of materials, changing shader program parameters. This class keeps a list
+     *  of passes to control; which can be build based on pass name.
+     *
+     *  This simulates a field of fog where "absorption" at a certain point is
+     *	exp(-verticalDecay * (h - fogLevel)). This absorption is multiplicative,
+     *	the total fog alpha is e^(-density * absorption_on_view_path).
+     *
+     *	You can set verticalDecay to 0 and get standard GL_EXP fog. Don't actually
+     *	do that though because you'll get a division by 0.
+     *
+     *  @note: This is deprecated starting from Caelum 0.4. The DepthComposer class
+     *  provides similar functionality with less intrusion on your materials.
+     */
+    class CAELUM_EXPORT GroundFog: public CameraBoundElement
+    {
 	public:
 		static const Ogre::String DEFAULT_PASS_NAME;
 
@@ -80,19 +86,19 @@ class CAELUM_EXPORT GroundFog: public CameraBoundElement {
 		void setDensity (Ogre::Real density);
 
 		/// Get the fog density multiplier
-		Ogre::Real getDensity ();
+		Ogre::Real getDensity () const;
 
 		/// Sets fog colour
 		void setColour (const Ogre::ColourValue &colour);
 
 		/// Gets fog colour
-		Ogre::ColourValue getColour ();
+		const Ogre::ColourValue getColour () const;
 
 		/// Sets the vertical fog decay constant.
 		void setVerticalDecay (Ogre::Real verticalDecay);
 
 		/// Get the vertical fog decay constant.
-		Ogre::Real getVerticalDecay ();
+		Ogre::Real getVerticalDecay () const;
 
 		/** Sets the ground level.
 		 *	At ground level 'fogginess' is equal to 1.
@@ -101,7 +107,7 @@ class CAELUM_EXPORT GroundFog: public CameraBoundElement {
 
 		/** Get the ground level.
 		 */
-		Ogre::Real getGroundLevel ();
+		Ogre::Real getGroundLevel () const;
 
 		/** Forces an update of all the passes. You have to use this if you modify
 		 *	the set of passes by hand, otherwise avoid it.
@@ -121,33 +127,76 @@ class CAELUM_EXPORT GroundFog: public CameraBoundElement {
         /// Fog colour
 		Ogre::ColourValue mFogColour;
 
-		/// The passes to control.
-		PassSet mPasses;
-
-		/// Sky dome material
-		Ogre::MaterialPtr mDomeMaterial;
-
-		/// Sky dome mesh
-		Ogre::SceneNode *mDomeNode;
-
-		/// Sky dome entity
-		Ogre::Entity *mDomeEntity;
-
+    private:
 		/// The scene to control fog in.
 		Ogre::SceneManager* mScene;
 
+		/// Sky dome material
+		PrivateMaterialPtr mDomeMaterial;
+        
+		/// Sky dome node
+		PrivateSceneNodePtr mDomeNode;
+
+		/// Sky dome entity
+		PrivateEntityPtr mDomeEntity;
+
 		// Called whenever something changes to update the sky dome.
 		void updateSkyFogging();
+
+    protected:
+        /// Handle far radius.
+	    virtual void setFarRadius (Ogre::Real radius);
 
     public:
 		/// Handle camera change.
 		virtual void notifyCameraChanged (Ogre::Camera *cam);
 
-    protected:
-        /// Handle far radius.
-	    virtual void setFarRadius (Ogre::Real radius);
-};
+        void setQueryFlags (uint flags) { mDomeEntity->setQueryFlags (flags); }
+        uint getQueryFlags () const { return mDomeEntity->getQueryFlags (); }
+        void setVisibilityFlags (uint flags) { mDomeEntity->setVisibilityFlags (flags); }
+        uint getVisibilityFlags () const { return mDomeEntity->getVisibilityFlags (); }
 
+    private:
+		/// The passes to control.
+		PassSet mPasses;
+
+        /// Params references.
+        struct FogParamsBase
+        {
+            void setup(Ogre::GpuProgramParametersSharedPtr fpParams);
+
+            Ogre::GpuProgramParametersSharedPtr fpParams;
+
+    		FastGpuParamRef fogDensity;
+		    FastGpuParamRef fogColour;
+		    FastGpuParamRef fogVerticalDecay;
+		    FastGpuParamRef fogGroundLevel;
+
+        };
+
+        struct DomeFogParams: public FogParamsBase {
+            void setup(Ogre::GpuProgramParametersSharedPtr fpParams);
+		    FastGpuParamRef cameraHeight;
+        } mDomeParams;
+
+        struct PassFogParams: public FogParamsBase {
+            PassFogParams(Ogre::GpuProgramParametersSharedPtr fpParams) { setup(fpParams); }
+
+            static inline bool lessThanByParams(const PassFogParams& a, const PassFogParams& b) {
+                return a.fpParams.get() <= b.fpParams.get();
+            }
+
+            static inline bool equalByParams(const PassFogParams& a, const PassFogParams& b) {
+                return a.fpParams.get() == b.fpParams.get();
+            }
+        };
+
+        typedef std::vector<PassFogParams> PassFogParamsVector;
+        PassFogParamsVector mPassFogParams;
+
+        /// Update mPassFogParams based on mPasses
+        void updatePassFogParams();
+    };
 }
 
 #endif //GROUNDFOG_H
