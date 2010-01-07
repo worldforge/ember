@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.5.8, erik.hjortsberg@gmail.com)
+AC_INIT(Ember, 0.6.0, erik.hjortsberg@gmail.com)
 
 AC_CONFIG_SRCDIR(src)
 
@@ -195,7 +195,8 @@ AC_MSG_RESULT([
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
-PKG_CHECK_MODULES(CEGUI, CEGUI >= 0.6.2,
+CEGUI_VERSION=0.7.1
+PKG_CHECK_MODULES(CEGUI, CEGUI >= $CEGUI_VERSION,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LIBS="$LIBS $CEGUI_LIBS"
@@ -208,9 +209,9 @@ config.log to see why the tests failed, and fix it.])
 	])
 
 # Check for OGRE
-OGRE_VERSION=1.6.0
+OGRE_VERSION=1.7.0
 OGRE_MAX_VERSION=1.8.0
-PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION OGRE < $OGRE_MAX_VERSION CEGUI-OGRE >= $OGRE_VERSION],
+PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION OGRE < $OGRE_MAX_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
 		LIBS="$LIBS $OGRE_LIBS"
@@ -221,6 +222,17 @@ PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION OGRE < $OGRE_MAX_VERSION CEGUI-OG
 $OGRE_PKG_ERRORS
 Please goto http://www.ogre3d.org to get the latest, or check config.log to
 see why the tests failed, and fix it.])
+	])
+
+# Check for CEGUI-OGRE adapter
+PKG_CHECK_MODULES(CEGUIOGRE, [CEGUI-OGRE >= $CEGUI_VERSION],
+	[
+		CXXFLAGS="$CXXFLAGS $CEGUIOGRE_CFLAGS"
+		LIBS="$LIBS $CEGUIOGRE_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find CEGUI-OGRE adapter. Make sure that you've compiled Ogre before compiling CEGUI, and that CEGUI found the Ogre libs so that the Ogre renderer is built.
+$OGRE_PKG_ERRORS])
 	])
 
 

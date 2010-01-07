@@ -72,7 +72,7 @@ namespace EmberOgre {
         void unload();
 
         /// @copydoc Archive::open
-        Ogre::DataStreamPtr open(const Ogre::String& filename) const;
+        Ogre::DataStreamPtr open(const Ogre::String& filename, bool readOnly = true) const;
 
         /// @copydoc Archive::list
         Ogre::StringVectorPtr list(bool recursive = true, bool dirs = false);

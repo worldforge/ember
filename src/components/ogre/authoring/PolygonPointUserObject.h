@@ -23,7 +23,6 @@
 #ifndef EMBEROGRE_MANIPULATIONPOLYGONPOINTUSEROBJECT_H
 #define EMBEROGRE_MANIPULATIONPOLYGONPOINTUSEROBJECT_H
 
-#include <OgreUserDefinedObject.h>
 #include <sigc++/signal.h>
 
 namespace EmberOgre
@@ -40,13 +39,9 @@ class PolygonPoint;
  Note that most logic resides in PolygonPointPickListener and PolygonPointMover.
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class PolygonPointUserObject: public Ogre::UserDefinedObject
+class PolygonPointUserObject
 {
 public:
-	/**
-	 * @brief The type of UserDefinedObject
-	 */
-	static const std::string s_TypeName;
 
 	/**
 	 * @brief Ctor.
@@ -58,12 +53,6 @@ public:
 	 * @brief Dtor.
 	 */
 	virtual ~PolygonPointUserObject();
-
-	/**
-	 * @brief Overloaded method for getting the type name of this instance.
-	 * @return
-	 */
-	virtual const Ogre::String & getTypeName() const;
 
 	/**
 	 * @brief Gets the polygon point to which this instance is attached.

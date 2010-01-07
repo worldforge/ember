@@ -60,6 +60,7 @@ namespace Ogre {
     class AnimationState;
     class AnimationStateSet;
     class AnimationTrack;
+    class Any;
     class Archive;
     class ArchiveFactory;
     class ArchiveManager;
@@ -223,7 +224,6 @@ namespace Ogre {
     class TextureManager;
     class TransformKeyFrame;
 	class Timer;
-    class UserDefinedObject;
     class Vector2;
     class Vector3;
     class Vector4;

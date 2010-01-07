@@ -32,8 +32,6 @@
 namespace EmberOgre
 {
 
-const Ogre::String EmberEntityUserObject::s_TypeName = "EmberEntityPickerObject";
-
 EmberEntityUserObject::EmberEntityUserObject(EmberEntity& emberEntity, ICollisionDetector* collisionDetector) :
 	mEmberEntity(emberEntity), mCollisionDetector(collisionDetector)
 {
@@ -55,12 +53,6 @@ void EmberEntityUserObject::refit()
 EmberEntity& EmberEntityUserObject::getEmberEntity() const
 {
 	return mEmberEntity;
-}
-
-
-const Ogre::String& EmberEntityUserObject::getTypeName(void) const
-{
-	return s_TypeName;
 }
 
 }

@@ -34,7 +34,7 @@
 
 namespace CEGUI {
 class System;
-class OgreCEGUIRenderer;
+class OgreRenderer;
 
 }
 
@@ -56,7 +56,7 @@ public:
      * @param renderer A valid CEGUI::OgreCEGUIRenderer
      * @return 
      */
-    GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer);
+    GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreRenderer *renderer);
 
     ~GUICEGUIAdapter();
 	
@@ -69,7 +69,7 @@ public:
     
 private:
 	CEGUI::System *mGuiSystem;
-	CEGUI::OgreCEGUIRenderer *mGuiRenderer;
+	CEGUI::OgreRenderer *mGuiRenderer;
 	
 	/**
 	mapping of SDL-keys to CEGUI keys

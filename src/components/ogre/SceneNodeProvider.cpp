@@ -30,7 +30,7 @@ SceneNodeProvider::SceneNodeProvider(Ogre::SceneNode& parentNode, Ogre::MovableO
 {
 	mNode = parentNode.createChildSceneNode();
 	if (mAttachedObject) {
-		mAttachedObject->detatchFromParent();
+		mAttachedObject->detachFromParent();
 		mNode->attachObject(mAttachedObject);
 	}
 }

@@ -169,16 +169,6 @@ namespace Ogre {
         */
         virtual bool hasDefaultParameters(void) const;
 
-		/** Sets whether a vertex program requires light and material states to be passed
-		to through fixed pipeline low level API rendering calls.
-		@remarks
-		If this is set to true, OGRE will pass all active light states to the fixed function
-		pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
-		light and material states.  This way the user does not have to use autoparameters to 
-		pass light position, color etc.
-		*/
-		virtual void setSurfaceAndPassLightStates(bool state);
-
 		/** Returns whether a vertex program wants light and material states to be passed
 		through fixed pipeline low level API rendering calls
 		*/

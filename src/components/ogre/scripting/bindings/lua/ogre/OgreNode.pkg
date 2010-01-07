@@ -462,30 +462,7 @@ namespace Ogre {
 		*/
 //		virtual Listener* getListener(void) const { return mListener; }
 		
-		/** Overridden from Renderable.
-        @remarks
-            This is only used if the SceneManager chooses to render the node. This option can be set
-            for SceneNodes at SceneManager::setDisplaySceneNodes, and for entities based on skeletal 
-            models using Entity::setDisplayBones()
-        */
-        const Ogre::MaterialPtr& getMaterial(void) const;
-        /** Overridden from Renderable.
-        @remarks
-            This is only used if the SceneManager chooses to render the node. This option can be set
-            for SceneNodes at SceneManager::setDisplaySceneNodes, and for entities based on skeletal 
-            models using Entity::setDisplaySkeleton()
-        */
-//        void getRenderOperation(RenderOperation& op);
-        /** Overridden from Renderable.
-        @remarks
-            This is only used if the SceneManager chooses to render the node. This option can be set
-            for SceneNodes at SceneManager::setDisplaySceneNodes, and for entities based on skeletal 
-            models using Entity::setDisplaySkeleton()
-        */
-        void getWorldTransforms(Ogre::Matrix4* xform) const;
-        /** @copydoc Renderable::getWorldOrientation */
         const Ogre::Quaternion& _getDerivedOrientation(void) const;
-        /** @copydoc Renderable::getWorldPosition */
         const Ogre::Vector3& _getDerivedPosition(void) const;
 
         /** Sets the current transform of this node to be the 'initial state' ie that

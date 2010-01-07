@@ -94,7 +94,7 @@ ModelRepresentation::~ModelRepresentation()
 {
 	delete mSoundEntity;
 
-	delete mModel.getUserObject();
+//	delete mModel.getUserObject();
 	mModel._getManager()->destroyMovableObject(&mModel);
 
 	///make sure it's not in the MotionManager
@@ -134,9 +134,11 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
 		}
 
 		///if we already have set up a collision object we must reload it
-		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*> (mModel.getUserObject());
-		if (userObject && userObject->getCollisionDetector()) {
-			userObject->getCollisionDetector()->reload();
+		if (!mModel.getUserAny().isEmpty()) {
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject*> (mModel.getUserAny());
+			if (userObject && userObject->getCollisionDetector()) {
+				userObject->getCollisionDetector()->reload();
+			}
 		}
 	}
 }
@@ -211,14 +213,14 @@ Ogre::Vector3 ModelRepresentation::getScale() const
 
 void ModelRepresentation::connectEntities()
 {
-	if (getModel().getUserObject()) {
-		delete getModel().getUserObject();
-	}
+//	if (getModel().getUserObject()) {
+//		delete getModel().getUserObject();
+//	}
 	///we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
 	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
 	EmberEntityUserObject* userObject = new EmberEntityUserObject(getEntity(), collisionDetector);
-	getModel().setUserObject(userObject);
+	getModel().setUserAny(Ogre::Any(userObject));
 
 }
 
@@ -232,10 +234,10 @@ void ModelRepresentation::model_Reloaded()
 
 void ModelRepresentation::model_Resetting()
 {
-	if (getModel().getUserObject()) {
-		delete getModel().getUserObject();
-	}
-	getModel().setUserObject(0);
+//	if (getModel().getUserObject()) {
+//		delete getModel().getUserObject();
+//	}
+	mModel.setUserAny(Ogre::Any());
 }
 
 void ModelRepresentation::processOutfit(const Atlas::Message::MapType & outfitMap)
@@ -411,9 +413,11 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize)
 {
 	if (visualization == "CollisionObject") {
-		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*> (getModel().getUserObject());
-		if (userObject && userObject->getCollisionDetector()) {
-			userObject->getCollisionDetector()->setVisualize(visualize);
+		if (!getModel().getUserAny().isEmpty()) {
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject*> (getModel().getUserAny());
+			if (userObject && userObject->getCollisionDetector()) {
+				userObject->getCollisionDetector()->setVisualize(visualize);
+			}
 		}
 	}
 }
@@ -421,9 +425,11 @@ void ModelRepresentation::setVisualize(const std::string& visualization, bool vi
 bool ModelRepresentation::getVisualize(const std::string& visualization) const
 {
 	if (visualization == "CollisionObject") {
-		EmberEntityUserObject* userObject = static_cast<EmberEntityUserObject*> (getModel().getUserObject());
-		if (userObject && userObject->getCollisionDetector()) {
-			return userObject->getCollisionDetector()->getVisualize();
+		if (!getModel().getUserAny().isEmpty()) {
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject*> (getModel().getUserAny());
+			if (userObject && userObject->getCollisionDetector()) {
+				return userObject->getCollisionDetector()->getVisualize();
+			}
 		}
 	}
 	return false;

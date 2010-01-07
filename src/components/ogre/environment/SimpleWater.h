@@ -63,7 +63,7 @@ public:
 
 	virtual ICollisionDetector* createCollisionDetector();
 
-	virtual bool setUserObject(Ogre::UserDefinedObject *obj);
+	virtual bool setUserAny(const Ogre::Any &anything);
 
 
 	float getLevel() const;

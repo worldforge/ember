@@ -49,9 +49,9 @@ void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::Ra
 {
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && pickedMovable->getUserObject()->getTypeName() == PolygonPointUserObject::s_TypeName) {
+		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(PolygonPointUserObject*)) {
 			///TODO: make sure that it's a point which belongs to our polygon
-			mPickedUserObject = static_cast<PolygonPointUserObject*> (pickedMovable->getUserObject());
+			mPickedUserObject = pickedMovable->getUserAny().operator()<PolygonPointUserObject*>();
 			continuePicking = false;
 		}
 	}

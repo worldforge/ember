@@ -104,7 +104,7 @@ public:
 	 * @note If the object could be attached, ownership is transferred to the water entity. If however it couldn't be attached, it's responsibility of the calling method to make sure that the object is destroyed.
 	 * @return True if the user object was successfully attached. This means that ownership transfers to the water instance.
 	 */
-	virtual bool setUserObject(Ogre::UserDefinedObject *obj) = 0;
+	virtual bool setUserAny(const Ogre::Any &anything) = 0;
 };
 
 /**

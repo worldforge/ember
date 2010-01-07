@@ -29,6 +29,7 @@
 namespace Ogre
 {
 class SceneNode;
+class Entity;
 }
 
 namespace EmberOgre

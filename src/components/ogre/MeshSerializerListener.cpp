@@ -51,8 +51,8 @@ void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String 
 		std::string baseName;
 		Ogre::StringUtil::splitFilename(meshPath, baseName, path);
 		
-		std::vector<std::string> skeletonPathSegments = Ogre::StringUtil::split(*name, "/");
-		std::vector<std::string> pathSegments = Ogre::StringUtil::split(path, "/");
+		Ogre::vector<std::string>::type skeletonPathSegments = Ogre::StringUtil::split(*name, "/");
+		Ogre::vector<std::string>::type pathSegments = Ogre::StringUtil::split(path, "/");
 		
 		///For every ".." part in the skeleton path, walk upwards in the directory hierarcy
 		while (*skeletonPathSegments.begin() == ".." || *skeletonPathSegments.begin() == ".") {
@@ -63,13 +63,13 @@ void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String 
 		}
 		
 		std::stringstream ss;
-		for (std::vector<std::string>::iterator I = pathSegments.begin(); I != pathSegments.end(); ++I) {
+		for (Ogre::vector<std::string>::type::const_iterator I = pathSegments.begin(); I != pathSegments.end(); ++I) {
 			if (I != pathSegments.begin()) {
 				ss << "/";
 			}
 			ss << *I;
 		}
-		for (std::vector<std::string>::iterator I = skeletonPathSegments.begin(); I != skeletonPathSegments.end(); ++I) {
+		for (Ogre::vector<std::string>::type::const_iterator I = skeletonPathSegments.begin(); I != skeletonPathSegments.end(); ++I) {
 			ss << "/" << *I;
 		}
 		name->assign(ss.str());

@@ -52,9 +52,10 @@ SimpleWater::~SimpleWater()
 		mSceneMgr.destroySceneNode(mWaterNode);
 	}
 	if (mWaterEntity) {
-		if (mWaterEntity->getUserObject()) {
-			delete mWaterEntity->getUserObject();
-		}
+		//TODO: fix so that no pointers are used for the userAny objects
+//		if (mWaterEntity->getUserObject()) {
+//			delete mWaterEntity->getUserObject();
+//		}
 		mSceneMgr.destroyEntity(mWaterEntity);
 	}
 }
@@ -71,7 +72,7 @@ bool SimpleWater::initialize()
 		Ogre::Plane waterPlane(Ogre::Vector3::UNIT_Y, 0);
 
 		// create a water plane/scene node
-		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", "environment", waterPlane, 10000, 10000, 5, 5, true, 1, 1000, 1000, Ogre::Vector3::UNIT_Z);
+		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, waterPlane, 10000, 10000, 5, 5, true, 1, 1000, 1000, Ogre::Vector3::UNIT_Z);
 
 		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode("water");
 
@@ -95,10 +96,10 @@ ICollisionDetector* SimpleWater::createCollisionDetector()
 	return new SimpleWaterCollisionDetector(*this);
 }
 
-bool SimpleWater::setUserObject(Ogre::UserDefinedObject *obj)
+bool SimpleWater::setUserAny(const Ogre::Any &anything)
 {
 	if (mWaterEntity) {
-		mWaterEntity->setUserObject(obj);
+		mWaterEntity->setUserAny(anything);
 		return true;
 	}
 	return false;

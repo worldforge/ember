@@ -1145,7 +1145,7 @@ namespace Ogre
 
 		mDestRenderSystem->setCurrentPassIterationCount(1);
         _setPass(r->getMaterial()->getBestTechnique()->getPass(0));
-        useRenderableViewProjMode (r);
+        useRenderableViewProjMode (r, false);
 
         RenderOperation ro;
         r->getRenderOperation (ro);

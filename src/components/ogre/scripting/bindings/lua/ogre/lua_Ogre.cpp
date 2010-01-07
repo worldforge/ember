@@ -185,7 +185,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::Node");
  tolua_usertype(tolua_S,"Ogre::Matrix3");
  tolua_usertype(tolua_S,"Ogre::RenderTarget::FrameStats");
- tolua_usertype(tolua_S,"Ogre::Mesh");
+ tolua_usertype(tolua_S,"Ogre::Math");
  tolua_usertype(tolua_S,"Ogre::AnimationState");
  tolua_usertype(tolua_S,"Ogre::SkeletonInstance");
  tolua_usertype(tolua_S,"Ogre::MapIterator<Ogre::Entity::ChildObjectList>");
@@ -213,21 +213,21 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::VisibleObjectsBoundsInfo");
  tolua_usertype(tolua_S,"Ogre::Plane");
  tolua_usertype(tolua_S,"Ogre::FrameListener");
- tolua_usertype(tolua_S,"std::list<Ogre::Plane>");
+ tolua_usertype(tolua_S,"Ogre::list<Ogre::Plane>::type");
  tolua_usertype(tolua_S,"Ogre::Root");
- tolua_usertype(tolua_S,"Ogre::SceneNode");
+ tolua_usertype(tolua_S,"Ogre::vector<Ogre::Plane>::type");
  tolua_usertype(tolua_S,"Ogre::Quaternion");
  tolua_usertype(tolua_S,"Ogre::ResourceManager");
  tolua_usertype(tolua_S,"Ogre::TexturePtr");
  tolua_usertype(tolua_S,"Ogre::MaterialPtr");
  tolua_usertype(tolua_S,"ushort");
- tolua_usertype(tolua_S,"Ogre::Matrix4");
- tolua_usertype(tolua_S,"Ogre::GpuProgramPtr");
+ tolua_usertype(tolua_S,"Ogre::SceneNode");
+ tolua_usertype(tolua_S,"Ogre::Mesh");
  tolua_usertype(tolua_S,"Ogre::ResourcePtr");
- tolua_usertype(tolua_S,"std::vector<Ogre::Plane>");
- tolua_usertype(tolua_S,"Ogre::Texture");
- tolua_usertype(tolua_S,"Ogre::SubMesh");
  tolua_usertype(tolua_S,"Ogre::ColourValue");
+ tolua_usertype(tolua_S,"Ogre::GpuProgramPtr");
+ tolua_usertype(tolua_S,"Ogre::SubMesh");
+ tolua_usertype(tolua_S,"Ogre::Texture");
  tolua_usertype(tolua_S,"Ogre::Entity");
  tolua_usertype(tolua_S,"Ogre::Vector3");
  tolua_usertype(tolua_S,"Ogre::TextureManager");
@@ -235,7 +235,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Ogre::HighLevelGpuProgram");
  tolua_usertype(tolua_S,"Ogre::SubEntity");
  tolua_usertype(tolua_S,"Ogre::Sphere");
- tolua_usertype(tolua_S,"Ogre::Math");
+ tolua_usertype(tolua_S,"Ogre::Matrix4");
 }
 
 /* get function: lastFPS of class  FrameStats */
@@ -9349,7 +9349,7 @@ static int tolua_Ogre_Ogre_Math_intersects08(lua_State* tolua_S)
  if (
      !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"const std::vector<Ogre::Plane>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Ogre::vector<Ogre::Plane>::type",0,&tolua_err) ||
      !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
@@ -9357,7 +9357,7 @@ static int tolua_Ogre_Ogre_Math_intersects08(lua_State* tolua_S)
  else
  {
   const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
-  const std::vector<Ogre::Plane>* planeList = ((const std::vector<Ogre::Plane>*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::vector<Ogre::Plane>::type* planeList = ((const Ogre::vector<Ogre::Plane>::type*)  tolua_tousertype(tolua_S,3,0));
   bool normalIsOutside = ((bool)  tolua_toboolean(tolua_S,4,0));
   {
    std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*planeList,normalIsOutside);
@@ -9386,7 +9386,7 @@ static int tolua_Ogre_Ogre_Math_intersects09(lua_State* tolua_S)
  if (
      !tolua_isusertable(tolua_S,1,"Ogre::Math",0,&tolua_err) ||
      !tolua_isusertype(tolua_S,2,"const Ogre::Ray",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,3,"const std::list<Ogre::Plane>",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"const Ogre::list<Ogre::Plane>::type",0,&tolua_err) ||
      !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
@@ -9394,7 +9394,7 @@ static int tolua_Ogre_Ogre_Math_intersects09(lua_State* tolua_S)
  else
  {
   const Ogre::Ray* ray = ((const Ogre::Ray*)  tolua_tousertype(tolua_S,2,0));
-  const std::list<Ogre::Plane>* planeList = ((const std::list<Ogre::Plane>*)  tolua_tousertype(tolua_S,3,0));
+  const Ogre::list<Ogre::Plane>::type* planeList = ((const Ogre::list<Ogre::Plane>::type*)  tolua_tousertype(tolua_S,3,0));
   bool normalIsOutside = ((bool)  tolua_toboolean(tolua_S,4,0));
   {
    std::pair<bool,float> tolua_ret = (std::pair<bool,float>)  Ogre::Math::intersects(*ray,*planeList,normalIsOutside);
@@ -12985,71 +12985,6 @@ static int tolua_Ogre_Ogre_Node__update00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function '_update'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getMaterial of class  Ogre::Node */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Node_getMaterial00
-static int tolua_Ogre_Ogre_Node_getMaterial00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ogre::Node",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Ogre::Node* self = (const Ogre::Node*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getMaterial'",NULL);
-#endif
-  {
-   const Ogre::MaterialPtr& tolua_ret = (const Ogre::MaterialPtr&)  self->getMaterial();
-   tolua_pushusertype(tolua_S,(void*)&tolua_ret,"const Ogre::MaterialPtr");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getMaterial'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getWorldTransforms of class  Ogre::Node */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Node_getWorldTransforms00
-static int tolua_Ogre_Ogre_Node_getWorldTransforms00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Ogre::Node",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"Ogre::Matrix4",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Ogre::Node* self = (const Ogre::Node*)  tolua_tousertype(tolua_S,1,0);
-  Ogre::Matrix4* xform = ((Ogre::Matrix4*)  tolua_tousertype(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getWorldTransforms'",NULL);
-#endif
-  {
-   self->getWorldTransforms(xform);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getWorldTransforms'.",&tolua_err);
  return 0;
 #endif
 }
@@ -19068,39 +19003,6 @@ static int tolua_Ogre_Ogre_GpuProgram_hasDefaultParameters00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setSurfaceAndPassLightStates of class  Ogre::GpuProgram */
-#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_setSurfaceAndPassLightStates00
-static int tolua_Ogre_Ogre_GpuProgram_setSurfaceAndPassLightStates00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"Ogre::GpuProgram",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  Ogre::GpuProgram* self = (Ogre::GpuProgram*)  tolua_tousertype(tolua_S,1,0);
-  bool state = ((bool)  tolua_toboolean(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSurfaceAndPassLightStates'",NULL);
-#endif
-  {
-   self->setSurfaceAndPassLightStates(state);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setSurfaceAndPassLightStates'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getPassSurfaceAndLightStates of class  Ogre::GpuProgram */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_GpuProgram_getPassSurfaceAndLightStates00
 static int tolua_Ogre_Ogre_GpuProgram_getPassSurfaceAndLightStates00(lua_State* tolua_S)
@@ -20481,8 +20383,6 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"_getDerivedScale",tolua_Ogre_Ogre_Node__getDerivedScale00);
     tolua_function(tolua_S,"_getFullTransform",tolua_Ogre_Ogre_Node__getFullTransform00);
     tolua_function(tolua_S,"_update",tolua_Ogre_Ogre_Node__update00);
-    tolua_function(tolua_S,"getMaterial",tolua_Ogre_Ogre_Node_getMaterial00);
-    tolua_function(tolua_S,"getWorldTransforms",tolua_Ogre_Ogre_Node_getWorldTransforms00);
     tolua_function(tolua_S,"_getDerivedOrientation",tolua_Ogre_Ogre_Node__getDerivedOrientation01);
     tolua_function(tolua_S,"_getDerivedPosition",tolua_Ogre_Ogre_Node__getDerivedPosition01);
     tolua_function(tolua_S,"setInitialState",tolua_Ogre_Ogre_Node_setInitialState00);
@@ -20754,7 +20654,6 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"setAdjacencyInfoRequired",tolua_Ogre_Ogre_GpuProgram_setAdjacencyInfoRequired00);
     tolua_function(tolua_S,"isAdjacencyInfoRequired",tolua_Ogre_Ogre_GpuProgram_isAdjacencyInfoRequired00);
     tolua_function(tolua_S,"hasDefaultParameters",tolua_Ogre_Ogre_GpuProgram_hasDefaultParameters00);
-    tolua_function(tolua_S,"setSurfaceAndPassLightStates",tolua_Ogre_Ogre_GpuProgram_setSurfaceAndPassLightStates00);
     tolua_function(tolua_S,"getPassSurfaceAndLightStates",tolua_Ogre_Ogre_GpuProgram_getPassSurfaceAndLightStates00);
     tolua_function(tolua_S,"getLanguage",tolua_Ogre_Ogre_GpuProgram_getLanguage00);
     tolua_function(tolua_S,"hasCompileError",tolua_Ogre_Ogre_GpuProgram_hasCompileError00);

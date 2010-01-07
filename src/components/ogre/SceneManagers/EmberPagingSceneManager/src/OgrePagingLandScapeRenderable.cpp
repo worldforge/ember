@@ -578,7 +578,7 @@ namespace Ogre
 						&& mMaterial->getNumLodLevels(MaterialManager::getSingleton()._getActiveSchemeIndex()) > 1
 						)
 					{
-						const unsigned short LODIndex = mMaterial->getLodIndexSquaredDepth (mDistanceToCam);
+						const unsigned short LODIndex = mMaterial->getLodIndex (mDistanceToCam);
 						if (LODIndex != mMaterialLODIndex)
 							mMaterialLODIndex = LODIndex;
 					}

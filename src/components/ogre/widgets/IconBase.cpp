@@ -90,19 +90,16 @@ void IconBase::setForeground(const Image* image)
 const Image* IconBase::loadImageFromImageset(const std::string & imagesetName, const std::string & image)
 {
 	Imageset* imageSet;
-	if (!ImagesetManager::getSingleton().isImagesetPresent(imagesetName)) {
+	if (!ImagesetManager::getSingleton().isDefined(imagesetName)) {
 		try {
 			std::string imagesetFileName("cegui/datafiles/imagesets/" + imagesetName + ".imageset");
-			imageSet = ImagesetManager::getSingleton().createImageset(imagesetFileName);
+			imageSet = &ImagesetManager::getSingleton().create(imagesetFileName);
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when loading imageset " << imagesetName << "." << ex);
 			return 0;
-		} catch (const CEGUI::Exception& ex) {
-			S_LOG_WARNING("Error when loading imageset " << imagesetName << ": " << ex.getMessage().c_str());
-			return 0;
 		}
 	} else {
-		imageSet = ImagesetManager::getSingleton().getImageset(imagesetName);
+		imageSet = &ImagesetManager::getSingleton().get(imagesetName);
 	}
 
 	return &imageSet->getImage(image);

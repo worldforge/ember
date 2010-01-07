@@ -389,7 +389,7 @@ bool OgreSetup::configure(void)
 		SDL_GetWMInfo(&info);
 
 		std::string dsp(&(DisplayString(info.info.x11.display)[1]));
-		std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
+		Ogre::vector<Ogre::String>::type tokens = Ogre::StringUtil::split(dsp, ".");
 
 		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
 		s += ":" + tokens[1] + ":";

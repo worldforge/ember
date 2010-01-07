@@ -51,8 +51,8 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 : mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0)
 {
 	std::string name(image->getName().c_str());
-	int width = static_cast<int>(image->getPixelRect().getWidth());
-	int height = static_cast<int>(image->getPixelRect().getHeight());
+	int width = static_cast<int>(image->getPixelSize().d_width);
+	int height = static_cast<int>(image->getPixelSize().d_height);
 	if (width != 0 && height != 0) {
 		mTexture = new EntityCEGUITexture(name, width, height);
 		///most models are rotated away from the camera, so as a convenience we'll rotate the node

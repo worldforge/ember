@@ -31,6 +31,7 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <CEGUIImage.h>
 #include <elements/CEGUIGUISheet.h>
 
 namespace EmberOgre {

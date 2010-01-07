@@ -25,8 +25,8 @@
 #endif
 
 #include "AssetsManager.h"
-#include <OgreCEGUIRenderer.h>
-#include <OgreCEGUITexture.h>
+#include <CEGUI/RendererModules/Ogre/CEGUIOgreRenderer.h>
+#include <CEGUI/RendererModules/Ogre/CEGUIOgreTexture.h>
 #include <OgreMaterialSerializer.h>
 #include "../EmberOgrePrerequisites.h"
 
@@ -97,16 +97,16 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 
 	CEGUI::Imageset* textureImageset;
 
-	if (CEGUI::ImagesetManager::getSingleton().isImagesetPresent(imageSetName)) {
-		textureImageset = CEGUI::ImagesetManager::getSingleton().getImageset(imageSetName);
+	if (CEGUI::ImagesetManager::getSingleton().isDefined(imageSetName)) {
+		textureImageset = &CEGUI::ImagesetManager::getSingleton().get(imageSetName);
 	} else {
 		///create a CEGUI texture from our Ogre texture
 		S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
-		CEGUI::Texture* ogreCEGUITexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
+		CEGUI::Texture* ogreCEGUITexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
 
 		///we need a imageset in order to create GUI elements from the ceguiTexture
 		S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName);
-		textureImageset = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName, ogreCEGUITexture);
+		textureImageset = &CEGUI::ImagesetManager::getSingleton().create(imageSetName, *ogreCEGUITexture);
 
 		///we only want one element: the whole texture
 		textureImageset->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0, 0));

@@ -430,7 +430,7 @@ namespace Ogre
         @param normalIsOutside Does the normal point outside the volume
         */
         static std::pair<bool, float> intersects(
-            const Ogre::Ray& ray, const std::vector<Ogre::Plane>& planeList, 
+            const Ogre::Ray& ray, const Ogre::vector<Ogre::Plane>::type& planeList, 
             bool normalIsOutside);
         /** Ogre::Ray / convex plane list intersection test. 
         @param ray The ray to test with
@@ -438,7 +438,7 @@ namespace Ogre
         @param normalIsOutside Does the normal point outside the volume
         */
         static std::pair<bool, float> intersects(
-            const Ogre::Ray& ray, const std::list<Ogre::Plane>& planeList, 
+            const Ogre::Ray& ray, const Ogre::list<Ogre::Plane>::type& planeList, 
             bool normalIsOutside);
 
         /** Ogre::Sphere / plane intersection test. 

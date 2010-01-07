@@ -26,7 +26,6 @@
 #include "services/input/Input.h"
 #include <wfmath/point.h>
 #include <Mercator/BasePoint.h>
-#include <OgreUserDefinedObject.h>
 #include <map>
 #include <sigc++/trackable.h>
 
@@ -72,22 +71,11 @@ private:
 	BasePointUserObject* mPickedUserObject;
 };
 
-class BasePointUserObject : public Ogre::UserDefinedObject
+class BasePointUserObject
 {
 public:
-	/**
-	The type of UserDefinedObject
-	*/
-	static const std::string s_TypeName;
-
 
 	BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode);
-	/**
-	 *    Overloaded method for getting the type name of this instance.
-	 * @param
-	 * @return
-	 */
-	virtual const Ogre::String & getTypeName() const;
 
 
 	/**

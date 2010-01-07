@@ -201,7 +201,7 @@ public:
 
 	/** Overridden - see MovableObject.
 	 */
-	virtual void setUserObject(Ogre::UserDefinedObject *obj);
+	virtual void setUserAny(const Ogre::Any &anything);
 
 	/// Overridden - see MovableObject.
 	virtual void setRenderQueueGroup(Ogre::RenderQueueGroupID queueID);

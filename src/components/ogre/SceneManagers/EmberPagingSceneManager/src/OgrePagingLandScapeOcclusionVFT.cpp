@@ -102,9 +102,9 @@ namespace Ogre
         PagingLandScapeOctreeCamera::Visibility oldVis = mCurrentVisibility;
         mCurrentVisibility = newVis;
 
-        node._addToRenderQueue (occlusion.mCurrentCam, 
-                                occlusion.mCurrentRenderQueue, 
-                                occlusion.mOnlyShadowCaster, visibleBounds);
+        node._findVisibleObjects(occlusion.mCurrentCam,
+                                occlusion.mCurrentRenderQueue, visibleBounds, true, false,
+                                occlusion.mOnlyShadowCaster );
 
 
         // Restore Parent Vis so that bothers can be pre-culled.
@@ -160,9 +160,9 @@ namespace Ogre
             #endif //_VISIBILITYDEBUG
 
             // if we get there, then it's at least partially visible.  
-            node._addToRenderQueue (occlusion.mCurrentCam, 
-                                occlusion.mCurrentRenderQueue, 
-                                occlusion.mOnlyShadowCaster, visibleBounds);
+            node._findVisibleObjects(occlusion.mCurrentCam,
+                                occlusion.mCurrentRenderQueue, visibleBounds, true, false,
+                                occlusion.mOnlyShadowCaster );
 
         } 
         #ifdef _VISIBILITYDEBUG

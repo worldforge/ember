@@ -36,8 +36,6 @@ namespace EmberOgre
 namespace Authoring
 {
 
-const std::string PolygonPointUserObject::s_TypeName("PolygonPointMarker");
-
 PolygonPointUserObject::PolygonPointUserObject(PolygonPoint& point) :
 	mPoint(point)
 {
@@ -50,11 +48,6 @@ PolygonPointUserObject::~PolygonPointUserObject()
 PolygonPoint& PolygonPointUserObject::getPoint()
 {
 	return mPoint;
-}
-
-const Ogre::String & PolygonPointUserObject::getTypeName(void) const
-{
-	return s_TypeName;
 }
 
 void PolygonPointUserObject::markAsMoved()

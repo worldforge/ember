@@ -24,7 +24,6 @@
 #define EMBEROGREEMBERENTITYUSEROBJECT_H
 
 #include "EmberOgrePrerequisites.h"
-#include <OgreUserDefinedObject.h>
 #include <OgreVector3.h>
 
 namespace Ogre
@@ -50,14 +49,9 @@ class ICollisionDetector;
  * Instances of this class can be attached to movable objects in the ogre system. They will allow for the Ember system to be accessed directly from Ogre, without having to do lookups.
  * This is generally mostly used for mouse picking and collision handling.
  */
-class EmberEntityUserObject: public Ogre::UserDefinedObject
+class EmberEntityUserObject
 {
 public:
-
-	/**
-	 * @brief The type of UserDefinedObject
-	 */
-	static const std::string s_TypeName;
 
 	/**
 	 * Ctor.
@@ -76,11 +70,6 @@ public:
 	 * @return The entity to which this user object belongs.
 	 */
 	EmberEntity& getEmberEntity() const;
-
-	/**
-	 * @copydoc Ogre::UserDefinedObject::getTypeName()
-	 */
-	virtual const Ogre::String& getTypeName(void) const;
 
 	/**
 	 * @brief Tells the collision detector, is one such is available, to refit any collision shape in need of refitting.

@@ -65,12 +65,12 @@ CEGUI::Size ColouredListItem::getPixelSize() const
 	return CEGUI::ListboxTextItem::getPixelSize();
 }
 
-void ColouredListItem::draw(const CEGUI::Vector3 &position, float alpha, const CEGUI::Rect &  clipper)
+void ColouredListItem::draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rect& targetRect, float alpha, const CEGUI::Rect* clipper) const
 {
 	if (isDisabled()) {
 		return;
 	}
-	CEGUI::ListboxTextItem::draw(position, alpha, clipper);
+	CEGUI::ListboxTextItem::draw(buffer, targetRect, alpha, clipper);
 
 }
 

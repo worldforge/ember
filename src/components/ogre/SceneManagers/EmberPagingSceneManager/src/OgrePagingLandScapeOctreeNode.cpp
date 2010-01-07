@@ -153,43 +153,45 @@ namespace Ogre
         return (nodeSize < octreeSize);
 
     }
-    //-----------------------------------------------------------------------
-     /** Adds the attached objects of this PagingLandScapeOctreeScene node into the queue. */
-    void PagingLandScapeOctreeNode::_addToRenderQueue(Camera*  cam, 
-                                        RenderQueue * const queue, 
-										const bool onlyShadowCasters,
-										VisibleObjectsBoundsInfo* visibleBounds)
-    {
-        ObjectMap::iterator mit = mObjectsByName.begin();
-
-        while (mit != mObjectsByName.end())
-        {
-            MovableObject * const mo = mit->second;
-
-            mo->_notifyCurrentCamera(cam);
-
-            if (mo->isVisible() &&
-                (!onlyShadowCasters || mo->getCastShadows()))
-            {
-				mo->_updateRenderQueue(queue);
-					
-				if (visibleBounds)
-				{
-					visibleBounds->merge(mo->getWorldBoundingBox(true), 
-										 mo->getWorldBoundingSphere(true), cam);
-				}
-			}
-            ++mit;
-        }
-        
-        // check if the scene manager or this node wants the bounding box shown.
-        if (getShowBoundingBox() || mCreator->getShowBoundingBoxes()) 
-            _addBoundingBoxToQueue(queue);
-            
-        if ( mCreator->getDisplaySceneNodes())
-            queue -> addRenderable( this );
-
-    }
+//    //-----------------------------------------------------------------------
+//     /** Adds the attached objects of this PagingLandScapeOctreeScene node into the queue. */
+//    void PagingLandScapeOctreeNode::_findVisibleObjects(Camera* cam, RenderQueue* queue,
+//			VisibleObjectsBoundsInfo* visibleBounds,
+//            bool includeChildren, bool displayNodes, bool onlyShadowCasters)
+//    {
+//        ObjectMap::iterator mit = mObjectsByName.begin();
+//
+//        while (mit != mObjectsByName.end())
+//        {
+//            MovableObject * const mo = mit->second;
+//
+//            mo->_notifyCurrentCamera(cam);
+//
+//            if (mo->isVisible() &&
+//                (!onlyShadowCasters || mo->getCastShadows()))
+//            {
+//				mo->_updateRenderQueue(queue);
+//
+//				if (visibleBounds)
+//				{
+//					visibleBounds->merge(mo->getWorldBoundingBox(true),
+//										 mo->getWorldBoundingSphere(true), cam);
+//				}
+//			}
+//            ++mit;
+//        }
+//
+//        // check if the scene manager or this node wants the bounding box shown.
+//        if (getShowBoundingBox() || mCreator->getShowBoundingBoxes())
+//            _addBoundingBoxToQueue(queue);
+//
+//        if (displayNodes)
+//        {
+//            // Include self in the render queue
+//            queue->addRenderable(getDebugRenderable());
+//        }
+//
+//    }
     //-----------------------------------------------------------------------
     void PagingLandScapeOctreeNode::attachObject(MovableObject* obj)
     {    

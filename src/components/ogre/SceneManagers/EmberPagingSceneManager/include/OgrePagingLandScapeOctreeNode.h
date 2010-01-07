@@ -78,7 +78,9 @@ namespace Ogre
 
             /** Adds all the attached scene nodes to the render queue
             */
-            virtual void _addToRenderQueue(Camera* cam, RenderQueue* const q, const bool onlyShadowCasters, VisibleObjectsBoundsInfo * const visibleBounds);
+//            virtual void _findVisibleObjects(Camera* cam, RenderQueue* queue,
+//            			VisibleObjectsBoundsInfo* visibleBounds,
+//                        bool includeChildren = true, bool displayNodes = false, bool onlyShadowCasters = false);
             
             MovableObjectList *getVisibleNotifiedNodeObjects(Camera*  cam, 
                                         const bool onlyShadowCasters);

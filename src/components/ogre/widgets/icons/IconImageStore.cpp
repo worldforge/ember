@@ -125,10 +125,10 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 , mCeguiTexture(0)
 , mImageset(0)
 {
-	mCeguiTexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
+	mCeguiTexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
 	
 	///we need a imageset in order to create GUI elements from the ceguiTexture
-	mImageset = CEGUI::ImagesetManager::getSingleton().createImageset(mImagesetName, mCeguiTexture);
+	mImageset = &CEGUI::ImagesetManager::getSingleton().create(mImagesetName, *mCeguiTexture);
 	
 	///we'll assume that height and width are the same
 	mImageSize = texPtr->getWidth();
@@ -163,11 +163,11 @@ void IconImageStore::createImageset()
 	
 
 	
-	mCeguiTexture = GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
+	mCeguiTexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
 	
 	///we need a imageset in order to create GUI elements from the ceguiTexture
 	//S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");
-	mImageset = CEGUI::ImagesetManager::getSingleton().createImageset(mImagesetName, mCeguiTexture);
+	mImageset = &CEGUI::ImagesetManager::getSingleton().create(mImagesetName, *mCeguiTexture);
 	
 }
 

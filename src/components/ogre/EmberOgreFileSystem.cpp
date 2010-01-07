@@ -362,7 +362,7 @@ namespace EmberOgre {
         // nothing to see here, move along
     }
     //-----------------------------------------------------------------------
-    DataStreamPtr FileSystemArchive::open(const String& filename) const
+    DataStreamPtr FileSystemArchive::open(const String& filename, bool readOnly) const
     {
         String full_path = concatenate_path(mName, filename);
 

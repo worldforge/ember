@@ -762,21 +762,21 @@ void Model::_notifyMoved()
 	}
 }
 
-void Model::setUserObject(Ogre::UserDefinedObject *obj)
+void Model::setUserAny(const Ogre::Any &anything)
 {
-	Ogre::MovableObject::setUserObject(obj);
+	Ogre::MovableObject::setUserAny(anything);
 	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
 	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->setUserObject(obj);
+		(*I)->getEntity()->setUserAny(anything);
 	}
 	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->getOgreParticleSystem()->setUserObject(obj);
+		(*I)->getOgreParticleSystem()->setUserAny(anything);
 	}
 
 	LightSet::const_iterator lightsI_end = mLights.end();
 	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->setUserObject(obj);
+		I->light->setUserAny(anything);
 	}
 }
 

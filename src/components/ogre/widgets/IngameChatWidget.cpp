@@ -57,6 +57,9 @@
 #include "services/server/ServerService.h"
 #include <sigc++/slot.h>
 
+#include <OgreCamera.h>
+#include <OgreNode.h>
+
 using namespace CEGUI;
 namespace EmberOgre
 {

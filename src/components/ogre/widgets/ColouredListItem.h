@@ -58,7 +58,7 @@ public:
 	 * @param alpha 
 	 * @param clipper 
 	 */
-	virtual void draw(const CEGUI::Vector3 &position, float alpha, const CEGUI::Rect& clipper);
+	virtual void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rect& targetRect, float alpha, const CEGUI::Rect* clipper) const;
 
 private:
 	void setColours();

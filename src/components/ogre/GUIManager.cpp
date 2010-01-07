@@ -28,7 +28,8 @@
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIFactoryModule.h>
-#include <CEGUILua.h>
+#include <ScriptingModules/LuaScriptModule/CEGUILua.h>
+#include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUIMultiLineEditbox.h>
@@ -117,23 +118,23 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		}
 
 		///The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
-		mGuiRenderer = new CEGUI::OgreCEGUIRenderer(window, Ogre::RENDER_QUEUE_OVERLAY, true, 0, sceneMgr);
-		CEGUI::ResourceProvider* resourceProvider = mGuiRenderer->createResourceProvider();
-		resourceProvider->setDefaultResourceGroup("Gui");
+		mGuiRenderer = &CEGUI::OgreRenderer::create(*window);
+		CEGUI::ResourceProvider& resourceProvider = mGuiRenderer->createOgreResourceProvider();
+		resourceProvider.setDefaultResourceGroup("Gui");
 
 		Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
-			mLuaScriptModule = new LuaScriptModule(luaScriptProvider->getLuaState());
+			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
 			if (luaScriptProvider->getErrorHandlingFunctionName().size() != 0) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
 				mLuaScriptModule->executeString(""); ///We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
 			}
-			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, 0, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
 			Ember::EmberServices::getSingleton().getScriptingService()->EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
-			mGuiSystem = new CEGUI::System(mGuiRenderer, resourceProvider, 0, 0, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, 0, 0, "cegui/datafiles/configs/cegui.config");
 		}
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
@@ -216,15 +217,20 @@ GUIManager::~GUIManager()
 	delete mEntityIconManager;
 	delete mIconManager;
 
-	delete mGuiSystem;
+	CEGUI::System::destroy();
+
 	///note that we normally would delete the mCEGUILogger here, but we don't have to since mGuiSystem will do that in it's desctructor, even though it doesn't own the logger
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCEGUIAdapter;
 
 	delete mEntityWorldPickListener;
 	delete mPicker;
-	delete mGuiRenderer;
-	delete mLuaScriptModule;
+	if (mGuiRenderer) {
+		CEGUI::OgreRenderer::destroy(*mGuiRenderer);
+	}
+	if (mLuaScriptModule) {
+		LuaScriptModule::destroy(*mLuaScriptModule);
+	}
 	//delete mMousePicker;
 	//mMousePicker = 0;
 
@@ -257,24 +263,17 @@ void GUIManager::initialize()
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets." << e);
 		throw e;
-	} catch (const CEGUI::Exception& e) {
-		S_LOG_FAILURE("GUIManager - error when initializing widgets: " << e.getMessage().c_str());
-		throw e;
 	}
 	try {
 		mIconManager = new Gui::Icons::IconManager();
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating icon manager." << e);
-	} catch (const CEGUI::Exception& e) {
-		S_LOG_FAILURE("GUIManager - error when creating icon manager: " << e.getMessage().c_str());
 	}
 
 	try {
 		mEntityIconManager = new Gui::EntityIconManager(*this);
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating entity icon manager." << e);
-	} catch (const CEGUI::Exception& e) {
-		S_LOG_FAILURE("GUIManager - error when creating entity icon manager: " << e.getMessage().c_str());
 	}
 
 
@@ -293,8 +292,6 @@ void GUIManager::initialize()
 		Ember::EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script." << e);
-	} catch (const CEGUI::Exception& e) {
-		S_LOG_FAILURE("Error when loading bootstrap script. Error message: " << e.getMessage().c_str());
 	}
 
 	for (std::vector<std::string>::iterator I = widgetsToLoad.begin(); I != widgetsToLoad.end(); ++I) {
@@ -303,8 +300,6 @@ void GUIManager::initialize()
 			createWidget(*I);
 		} catch (const std::exception& e) {
 			S_LOG_FAILURE("Error when initializing widget " << *I << "." << e);
-		} catch (const CEGUI::Exception& e) {
-			S_LOG_FAILURE("Error when initializing widget " << *I << ": " << e.getMessage().c_str());
 		}
 	}
 
@@ -313,7 +308,9 @@ void GUIManager::initialize()
 void GUIManager::scriptingServiceStopping()
 {
 	mGuiSystem->setScriptingModule(0);
-	delete mLuaScriptModule;
+	if (mLuaScriptModule) {
+		LuaScriptModule::destroy(*mLuaScriptModule);
+	}
 	mLuaScriptModule = 0;
 }
 
@@ -365,9 +362,6 @@ Widget* GUIManager::createWidget(const std::string& name)
 		S_LOG_INFO(  "Successfully loaded widget " << name );
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE(  "Error when loading widget " << name << "." << e);
-		return 0;
-	} catch (const CEGUI::Exception& e) {
-		S_LOG_FAILURE(  "Error when loading widget " << name << ": " << e.getMessage().c_str());
 		return 0;
 	}
 	return widget;

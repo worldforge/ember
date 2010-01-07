@@ -406,6 +406,7 @@
         <PropertyDefinition name="HoverImage" initialValue="" redrawOnWrite="true" />
         <PropertyDefinition name="PushedImage" initialValue="" redrawOnWrite="true" />
         <Property name="WantsMultiClickEvents" value="False" />
+        <Property name="NonClient" value="True" />
         <ImagerySection name="normal">
             <ImageryComponent>
                 <Area>
@@ -633,36 +634,12 @@
                 <Dim type="RightEdge" >
                     <UnifiedDim scale="1" type="RightEdge">
                         <DimOperator op="Subtract">
-                            <ImageDim imageset="EmberLook" image="EditFrameTop" dimension="Height">
-                                <DimOperator op="Add">
-                                    <ImageDim imageset="EmberLook" image="EditFrameBottom" dimension="Height">
-                                        <DimOperator op="Add">
-                                            <FontDim type="LineSpacing">
-                                                <DimOperator op="Multiply">
-                                                    <AbsoluteDim value="1.5" />
-                                                </DimOperator>
-                                            </FontDim>
-                                        </DimOperator>
-                                    </ImageDim>
-                                </DimOperator>
-                            </ImageDim>
+                            <FontDim type="LineSpacing" padding="10" />
                         </DimOperator>
                     </UnifiedDim>
                 </Dim>
                 <Dim type="Height" >
-                    <ImageDim imageset="EmberLook" image="EditFrameTop" dimension="Height">
-                        <DimOperator op="Add">
-                            <ImageDim imageset="EmberLook" image="EditFrameBottom" dimension="Height">
-                                <DimOperator op="Add">
-                                    <FontDim type="LineSpacing">
-                                        <DimOperator op="Multiply">
-                                            <AbsoluteDim value="1.5" />
-                                        </DimOperator>
-                                    </FontDim>
-                                </DimOperator>
-                            </ImageDim>
-                        </DimOperator>
-                    </ImageDim>
+                    <FontDim type="LineSpacing" padding="10" />
                 </Dim>
             </Area>
         </Child>
@@ -803,8 +780,9 @@
         <Property name="EWSizingCursorImage" value="set:EmberLook image:MouseEsWeCursor" />
         <Property name="NWSESizingCursorImage" value="set:EmberLook image:MouseNwSeCursor" />
         <Property name="NESWSizingCursorImage" value="set:EmberLook image:MouseNeSwCursor" />
-	<Property name="UnifiedMinSize" value="{{0,50},{0,20}}" />
-	<NamedArea name="ClientWithTitleWithFrame">
+        <Property name="UnifiedMinSize" value="{{0.1,0},{0.1,0}}" />
+        <Property name="AutoRenderingSurface" value="True" />
+        <NamedArea name="ClientWithTitleWithFrame">
             <Area>
                 <Dim type="LeftEdge">
                     <ImageDim imageset="EmberLook" image="WindowFrameLeft" dimension="Width" />
@@ -1433,6 +1411,7 @@
                 <Dim type="Height" ><AbsoluteDim value="16" /></Dim>
             </Area>
             <VertAlignment type="BottomAligned" />
+            <Property name="NonClient" value="True" />
         </Child>
         <Child  type="EmberLook/VerticalScrollbar" nameSuffix="__auto_vscrollbar__">
             <Area>
@@ -1442,6 +1421,7 @@
                 <Dim type="Height" ><UnifiedDim scale="1" type="Height" /></Dim>
             </Area>
             <HorzAlignment type="RightAligned" />
+            <Property name="NonClient" value="True" />
         </Child>
         <ImagerySection name="main">
             <FrameComponent>
@@ -2776,6 +2756,7 @@
                 <Dim type="Height" ><AbsoluteDim value="16" /></Dim>
             </Area>
             <VertAlignment type="BottomAligned" />
+            <Property name="NonClient" value="True" />
         </Child>
         <Child  type="EmberLook/VerticalScrollbar" nameSuffix="__auto_vscrollbar__">
             <Area>
@@ -2785,6 +2766,7 @@
                 <Dim type="Height" ><UnifiedDim scale="1" offset="-16" type="Height" /></Dim>
             </Area>
             <HorzAlignment type="RightAligned" />
+            <Property name="NonClient" value="True" />
         </Child>
         <StateImagery name="Enabled" />
         <StateImagery name="Disabled" />
@@ -3347,9 +3329,7 @@
         </ImagerySection>
         <StateImagery name="Enabled">
             <Layer>
-				<Section section="main">
-					<Colours topLeft="ffffa782" topRight="ffffa782" bottomLeft="ffffa782" bottomRight="ffffa782" />
-				</Section>
+                <Section section="main" />
             </Layer>
         </StateImagery>
         <StateImagery name="Disabled">
@@ -4600,6 +4580,7 @@
     -->
     <WidgetLook name="EmberLook/Titlebar">
         <PropertyDefinition name="CaptionColour" initialValue="FF000000" redrawOnWrite="true" />
+        <Property name="NonClient" value="True" />
         <ImagerySection name="normal">
             <FrameComponent>
                 <Area>

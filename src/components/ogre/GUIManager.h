@@ -24,7 +24,7 @@
 #include "EmberOgrePrerequisites.h"
 
 #include <CEGUIBase.h>
-#include <OgreCEGUIRenderer.h>
+#include <RendererModules/Ogre/CEGUIOgreRenderer.h>
 
 #include <sigc++/trackable.h>
 
@@ -192,7 +192,7 @@ public:
 	 */
 // 	MousePicker* popMousePicker();
 
-	CEGUI::OgreCEGUIRenderer* getGuiRenderer() const;
+	CEGUI::OgreRenderer* getGuiRenderer() const;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
@@ -293,7 +293,7 @@ protected:
 
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;
-	CEGUI::OgreCEGUIRenderer* mGuiRenderer;
+	CEGUI::OgreRenderer* mGuiRenderer;
 
 	std::string mDefaultScheme;
 
@@ -352,7 +352,7 @@ protected:
 };
 
 inline MousePicker* GUIManager::getMousePicker() { return  mMousePickers.top(); }
-inline CEGUI::OgreCEGUIRenderer* GUIManager::getGuiRenderer() const {return mGuiRenderer;}
+inline CEGUI::OgreRenderer* GUIManager::getGuiRenderer() const {return mGuiRenderer;}
 
 }
 

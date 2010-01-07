@@ -55,7 +55,7 @@ ModelBoneProvider::~ModelBoneProvider()
 void ModelBoneProvider::init()
 {
 	if (mAttachedObject) {
-		mAttachedObject->detatchFromParent();
+		mAttachedObject->detachFromParent();
 		Model::AttachPointWrapper wrapper = mParentModel.attachObjectToAttachPoint(mAttachPointName, mAttachedObject);
 		mNode = wrapper.TagPoint;
 		mAttachPointDefinition = wrapper.Definition;

@@ -32,7 +32,7 @@
 
 namespace EmberOgre {
 
-GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreCEGUIRenderer *renderer):
+GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreRenderer *renderer):
 mGuiSystem(system)
 , mGuiRenderer(renderer)
 , mSelectedText(0)

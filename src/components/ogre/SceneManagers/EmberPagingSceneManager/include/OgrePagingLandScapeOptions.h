@@ -158,7 +158,7 @@ namespace Ogre
 			Vector3 scale;
 			Vector3	invScale;
 
-	        Material::LodDistanceList lodMaterialDistanceList; //Distance for the material LOD change
+	        Material::LodValueList lodMaterialDistanceList; //Distance for the material LOD change
 	        Real distanceLOD;					//Distance for the LOD change
 	        Real LOD_factor;
             bool roughnessLod;

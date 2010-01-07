@@ -54,17 +54,13 @@ namespace EmberOgre
 
 namespace Terrain
 {
-const std::string BasePointUserObject::s_TypeName("BasePointMarker");
 
 BasePointUserObject::BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) :
 	mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition)
 {
 }
 
-const Ogre::String & BasePointUserObject::getTypeName() const
-{
-	return s_TypeName;
-}
+
 
 const Mercator::BasePoint& BasePointUserObject::getBasePoint() const
 {
@@ -129,8 +125,8 @@ void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySc
 {
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserObject() != 0 && pickedMovable->getUserObject()->getTypeName() == BasePointUserObject::s_TypeName) {
-			mPickedUserObject = static_cast<BasePointUserObject*> (pickedMovable->getUserObject());
+		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(BasePointUserObject)) {
+			mPickedUserObject = Ogre::any_cast<BasePointUserObject*> (pickedMovable->getUserAny());
 			continuePicking = false;
 		}
 	}
@@ -222,7 +218,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			basepointNode->attachObject(entity);
 
 			BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode);
-			entity->setUserObject(userObject);
+			entity->setUserAny(Ogre::Any(userObject));
 
 			///store the base point user object
 			std::stringstream ss_;

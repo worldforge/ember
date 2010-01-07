@@ -1702,7 +1702,7 @@ namespace Ogre
 				    {
 					    // name to pageX, uint pageZ, uint tileX, uint tileZ
 					    {
-						    std::vector<String> coordinates = StringUtil::split(name, "_");
+					    	vector< String >::type coordinates = StringUtil::split(name, "_");
 
 						    const uint pageX = StringConverter::parseUnsignedInt(coordinates[0]);
 						    const uint pageZ = StringConverter::parseUnsignedInt(coordinates[1]);
@@ -1714,7 +1714,7 @@ namespace Ogre
 
 					    // name to LOD roughness value.
 					    {
-						    std::vector<String> minLevelDistSqr = StringUtil::split(value, "_");
+							vector< String >::type minLevelDistSqr = StringUtil::split(value, "_");
 						    assert (minLevelDistSqr.size () == numLod);
 
 						    t->mMinLevelDistSqr =  new std::vector<Real>();
