@@ -29,6 +29,11 @@
 #include <map>
 #include <sigc++/trackable.h>
 
+namespace boost
+{
+template<typename> class shared_ptr;
+}
+
 namespace Mercator {
 	class Terrain;
 	class BasePoint;
@@ -74,6 +79,7 @@ private:
 class BasePointUserObject
 {
 public:
+	typedef boost::shared_ptr<BasePointUserObject> SharedPtr;
 
 	BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode);
 

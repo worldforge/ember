@@ -30,6 +30,8 @@
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
 
+#include <boost/smart_ptr.hpp>
+
 namespace EmberOgre
 {
 
@@ -92,7 +94,7 @@ void AuthoringVisualization::createGraphicalRepresentation()
 				mSceneNode->attachObject(mGraphicalRepresentation);
 				mGraphicalRepresentation->setRenderingDistance(100);
 				mGraphicalRepresentation->setQueryFlags(MousePicker::CM_UNDEFINED);
-				mGraphicalRepresentation->setUserAny(Ogre::Any(new EmberEntityUserObject(mEntity, new AuthoringVisualizationCollisionDetector(*mGraphicalRepresentation))));
+				mGraphicalRepresentation->setUserAny(Ogre::Any(EmberEntityUserObject::SharedPtr(new EmberEntityUserObject(mEntity, new AuthoringVisualizationCollisionDetector(*mGraphicalRepresentation)))));
 			} catch (const std::exception& ex) {
 				S_LOG_WARNING("Error when attaching axes mesh."<< ex);
 				mSceneNode->getCreator()->destroyMovableObject(mGraphicalRepresentation);
@@ -107,7 +109,6 @@ void AuthoringVisualization::removeGraphicalRepresentation()
 {
 	mSceneNode->detachAllObjects();
 	if (mGraphicalRepresentation) {
-		delete Ogre::any_cast<EmberEntityUserObject*>(mGraphicalRepresentation->getUserAny());
 		mSceneNode->getCreator()->destroyEntity(mGraphicalRepresentation);
 		mGraphicalRepresentation = 0;
 	}

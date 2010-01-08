@@ -52,6 +52,8 @@
 
 #include <Eris/Types.h>
 
+#include <boost/smart_ptr.hpp>
+
 namespace EmberOgre
 {
 namespace Model
@@ -135,7 +137,7 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
 
 		///if we already have set up a collision object we must reload it
 		if (!mModel.getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject*> (mModel.getUserAny());
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr> (mModel.getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				userObject->getCollisionDetector()->reload();
 			}
@@ -220,7 +222,7 @@ void ModelRepresentation::connectEntities()
 	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
 	EmberEntityUserObject* userObject = new EmberEntityUserObject(getEntity(), collisionDetector);
-	getModel().setUserAny(Ogre::Any(userObject));
+	getModel().setUserAny(Ogre::Any(EmberEntityUserObject::SharedPtr(userObject)));
 
 }
 
@@ -414,7 +416,7 @@ void ModelRepresentation::setVisualize(const std::string& visualization, bool vi
 {
 	if (visualization == "CollisionObject") {
 		if (!getModel().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject*> (getModel().getUserAny());
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr> (getModel().getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				userObject->getCollisionDetector()->setVisualize(visualize);
 			}
@@ -426,7 +428,7 @@ bool ModelRepresentation::getVisualize(const std::string& visualization) const
 {
 	if (visualization == "CollisionObject") {
 		if (!getModel().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject*> (getModel().getUserAny());
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr> (getModel().getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				return userObject->getCollisionDetector()->getVisualize();
 			}

@@ -48,6 +48,7 @@
 #include <OgreEntity.h>
 
 #include <sigc++/bind.h>
+#include <boost/smart_ptr.hpp>
 
 namespace EmberOgre
 {
@@ -125,8 +126,8 @@ void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySc
 {
 	if (entry.movable) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
-		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(BasePointUserObject)) {
-			mPickedUserObject = Ogre::any_cast<BasePointUserObject*> (pickedMovable->getUserAny());
+		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(BasePointUserObject::SharedPtr)) {
+			mPickedUserObject = Ogre::any_cast<BasePointUserObject::SharedPtr> (pickedMovable->getUserAny()).get();
 			continuePicking = false;
 		}
 	}
@@ -218,7 +219,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			basepointNode->attachObject(entity);
 
 			BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode);
-			entity->setUserAny(Ogre::Any(userObject));
+			entity->setUserAny(Ogre::Any(BasePointUserObject::SharedPtr(userObject)));
 
 			///store the base point user object
 			std::stringstream ss_;
