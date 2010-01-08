@@ -5,8 +5,8 @@
 		<Property Name='UnifiedPosition' Value='{{1,-300.0},{1,-400.0}}'/>
 		<Property Name='Text' Value='Mouse picking info'/>
 		<Window Type='DefaultGUISheet' Name='Menu'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-4},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Window Type='EmberLook/MultiLineEditbox' Name='InfoBox'>
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>

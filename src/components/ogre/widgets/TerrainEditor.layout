@@ -5,8 +5,8 @@
 		<Property Name='UnifiedPosition' Value='{{1,-200},{0,0}}'/>
 		<Property Name='UnifiedSize' Value='{{0,200},{0,200}}'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-4},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='SelectedBasePointInfo'>
 				<Property Name='Text' Value='Selected basepoint:'/>

@@ -7,8 +7,8 @@
 		<Property Name='Alpha' Value='1.0'/>
 		<Property Name='Text' Value='Quit?'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-4},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-4},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='Text'>
 				<Property Name='UnifiedSize' Value='{{0.950000,0.0},{0.600000,0.0}}'/>

@@ -6,8 +6,8 @@
 		<Property Name='Alpha' Value='0.4'/>
 		<Property Name='Text' Value='Chat output'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-8},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
 				<Property Name='UnifiedSize' Value='{{1.0,-10.0},{1.00,-35.0}}'/>

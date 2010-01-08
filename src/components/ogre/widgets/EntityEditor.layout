@@ -6,8 +6,8 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity editor'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-8},{1,-20}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='EntityInfo'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>

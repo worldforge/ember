@@ -1,39 +1,39 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.200000,0.0},{0.600000,0.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.400000,0.0}}'/>
+		<Property Name='UnifiedSize' Value='{{0.200000,0},{0.600000,0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0,0},{0.400000,0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity creator'/>
 		<Property Name='Visible' Value='false'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedSize' Value='{{1.0,-6.0},{1.0,-16.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,3.0},{0.00,16.0}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0,-6.0},{1.0,0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0,3.0},{0,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/Tree' Name='TypeList'>
-				<Property Name='UnifiedSize' Value='{{1.00,-10.0},{1.00,-160.0}}'/>
+				<Property Name='UnifiedSize' Value='{{1.00,-10},{1.00,-160}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 			</Window>
 			<Window Type='EmberLook/StaticImage' Name='ModelPreviewImage'>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.00,-140.0}}'/>
-				<Property Name='UnifiedSize' Value='{{1.00,-10.00},{0.00,80.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1.00,-140}}'/>
+				<Property Name='UnifiedSize' Value='{{1.00,-10.00},{0.00,80}}'/>
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='NameText'>
 				<Property Name='UnifiedSize' Value='{{0.50000,0.00},{0.00,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.00,-60.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1.00,-60}}'/>
 				<Property Name='Text' Value='Name:'/>
 				<Property Name='InheritsAlpha' Value='False'/>
 				<Property Name='FrameEnabled' Value='False'/>
 				<Property Name='BackgroundEnabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/Editbox' Name='Name'>
-				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.500000,0.0},{1.00,-60.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75.0},{0,25.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.500000,0},{1.00,-60}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='CreateButton'>
-				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.00,-25.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,75.0},{0,25.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,0},{1.00,-25.0}}'/>
 				<Property Name='Text' Value='Create'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>

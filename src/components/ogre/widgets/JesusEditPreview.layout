@@ -6,8 +6,8 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Builder Preview'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticImage' Name='Image'>
 				<Property Name='UnifiedSize' Value='{{0.900000,0.0},{0.900000,0.0}}'/>

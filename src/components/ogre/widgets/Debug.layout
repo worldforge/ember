@@ -7,8 +7,8 @@
 		<Property Name='Text' Value='Eris log'/>
 		<Property Name='Visible' Value='false'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/Combobox' Name='LogLevelDropList'>
 				<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.0,85.0}}'/>

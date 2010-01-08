@@ -6,8 +6,8 @@
 		<Property Name='Text' Value='Tasks'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,0}}'/>
 			<Window Type='EmberLook/StaticText' Name='NameText'>
 				<Property Name='Text' Value='Task name:'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,5},{0,5}}'/>

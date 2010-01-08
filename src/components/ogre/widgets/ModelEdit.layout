@@ -8,8 +8,8 @@
 		<Property Name='UnifiedAreaRect' Value='{{0.036523,0.0},{0.020738,10},{0.936523,0.0},{0.920738,10}}'/>
 		<Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,-15}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-2},{1,0}}'/>
 			<Window Type='EmberLook/Listbox' Name='Models'>
 				<Property Name='UnifiedAreaRect' Value='{{0.013230,0.0},{0.055224,0.0},{0.219481,0.0},{0.414926,0.0}}'/>
 				<Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
