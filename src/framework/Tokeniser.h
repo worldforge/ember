@@ -25,6 +25,7 @@
 #define EMBER_TOKENISER_H
 
 #include <string>
+#include <vector>
 
 namespace Ember {
 
@@ -93,6 +94,15 @@ class Tokeniser
 	 * @return True if there are any remaining tokens.
 	 */
 	bool hasRemainingTokens() const;
+
+	/**
+	 * @brief Splits the supplied string into tokens and return these as a vector.
+	 * This is a utility method for quickly turning a string into a vector of tokens.
+	 * @param tokens The original string to split.
+	 * @param delimiters The delimiters to use.
+	 * @returns A vector of the tokens.
+	 */
+	static std::vector<std::string> split(const std::string &tokens, const std::string &delimiters);
 }; 
 
 }
