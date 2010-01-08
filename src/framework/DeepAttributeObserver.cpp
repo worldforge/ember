@@ -22,8 +22,8 @@
 namespace Ember
 {
 
-DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity, const std::vector<std::string>& elementPath) :
-	mElementPath(elementPath)
+DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity, sigc::signal<void, const Atlas::Message::Element&>& eventChanged, const std::vector<std::string>& elementPath) :
+	mEntity(entity), mEventChanged(eventChanged), mElementPath(elementPath)
 {
 	const std::string& firstAttributeName = elementPath.front();
 	entity.observe(firstAttributeName, sigc::mem_fun(*this, &DeepAttributeObserver::entity_AttrChanged));
@@ -36,11 +36,20 @@ DeepAttributeObserver::~DeepAttributeObserver()
 {
 }
 
+void DeepAttributeObserver::forceEvaluation()
+{
+	const std::string& firstAttributeName = mElementPath.front();
+	if (mEntity.hasAttr(firstAttributeName)) {
+		mEventChanged(getCurrentAttribute(mEntity.valueOfAttr(firstAttributeName)));
+	}
+}
+
+
 void DeepAttributeObserver::entity_AttrChanged(const Atlas::Message::Element& attributeValue)
 {
 	const Atlas::Message::Element& newElement = getCurrentAttribute(attributeValue);
 	if (mLastElementValue != newElement) {
-		EventChanged(newElement);
+		mEventChanged(newElement);
 		mLastElementValue = newElement;
 	}
 

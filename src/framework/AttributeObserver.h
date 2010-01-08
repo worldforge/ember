@@ -23,9 +23,16 @@
 #ifndef EMBEROGREATTRIBUTEOBSERVER_H
 #define EMBEROGREATTRIBUTEOBSERVER_H
 
-#include <sigc++/trackable.h>
-#include <Eris/Entity.h>
+#include <memory>
+#include <vector>
+#include <string>
+#include <sigc++/signal.h>
 
+namespace Atlas {
+namespace Message {
+class Element;
+}
+}
 
 namespace Eris {
 class Entity;
@@ -33,24 +40,41 @@ class Entity;
 
 namespace Ember {
 
+class DeepAttributeObserver;
+class DirectAttributeObserver;
 /**
 	@brief Observes changes to a specific attribute and emits a signal.
 	
-	Note that it's only possible to observe changes to top level attributes.
-	
 	Eris::Entity already has functionality for easily listening to attribute changes through the Eris::Entity::observe method, but this method is hard to use from a scripting environment (such as lua), thus the need for this class.
+	In addition this class also allows you to listen to changed to nested attributes instead of only top level ones.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class AttributeObserver : public sigc::trackable
+class AttributeObserver
 {
 public:
 
 	/**
-	 *    @brief Ctor. The entity to watch and the name of the attribute are supplied as parameters.
+	 * @brief Ctor. The entity to watch and the name of the attribute are supplied as parameters.
 	 * @param entity The entity to watch.
 	 * @param attributeName The name of the attribute to watch.
 	 */
-	AttributeObserver(Eris::Entity* entity, const std::string& attributeName);
+	AttributeObserver(Eris::Entity& entity, const std::string& attributeName);
+
+	/**
+	 * @brief Ctor. The entity to watch and the name of the attribute are supplied as parameters.
+	 * @param entity The entity to watch.
+	 * @param attributePath The path to the attribute.
+	 */
+	AttributeObserver(Eris::Entity& entity, const std::vector<std::string>& attributePath);
+
+	/**
+	 * @brief Ctor. The entity to watch and the name of the attribute are supplied as parameters.
+	 * @param entity The entity to watch.
+	 * @param attributePath The path to the attribute expressed as a delimited string.
+	 * @param delimitor The delimitor to use for separation in the path.
+	 */
+	AttributeObserver(Eris::Entity& entity, const std::string& attributePath, const std::string& delimitor);
+
 	/**
 	 *    Dtor.
 	 */
@@ -62,18 +86,17 @@ public:
 	*/
 	sigc::signal<void, const Atlas::Message::Element&> EventChanged;
 	
+	/**
+	 * @brief Forces an evaluation of the current value and a possible emittance of the EventChanged signal.
+	 */
+	void forceEvaluation();
+
 protected:
 
-	/**
-	We keep an internal reference to the slot which be activated when the attribute in the entity change. We then pass this change on through the EventChanged signal.
-	*/
-	Eris::Entity::AttrChangedSlot mSlot;
-	
-	/**
-	 * This method is called by the watched entity whenever the attribute changes.
-	 * @param attributeValue 
-	 */
-	void attributeChanged(const Atlas::Message::Element& attributeValue);
+	std::auto_ptr<DeepAttributeObserver> mDeepAttributeObserver;
+
+	std::auto_ptr<DirectAttributeObserver> mDirectAttributeObserver;
+
 };
 
 }

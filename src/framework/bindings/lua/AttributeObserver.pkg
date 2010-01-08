@@ -27,17 +27,43 @@ $#include "framework/AttributeObserver.h"
 namespace Ember {
 
 /**
-	Observes changes to a specific attribute and emits a signal.
+	@brief Observes changes to a specific attribute and emits a signal.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class AttributeObserver
 {
 public:
 
-	AttributeObserver(Eris::Entity* entity, const std::string& attributeName);
+	/**
+	 * @brief Ctor. The entity to watch and the name of the attribute are supplied as parameters.
+	 * @param entity The entity to watch.
+	 * @param attributeName The name of the attribute to watch.
+	 */
+	AttributeObserver(Eris::Entity& entity, const std::string& attributeName);
+
+	/**
+	 * @brief Ctor. The entity to watch and the name of the attribute are supplied as parameters.
+	 * @param entity The entity to watch.
+	 * @param attributePath The path to the attribute.
+	 */
+	AttributeObserver(Eris::Entity& entity, const std::vector<std::string>& attributePath);
+
+	/**
+	 * @brief Ctor. The entity to watch and the name of the attribute are supplied as parameters.
+	 * @param entity The entity to watch.
+	 * @param attributePath The path to the attribute expressed as a delimited string.
+	 * @param delimitor The delimitor to use for separation in the path.
+	 */
+	AttributeObserver(Eris::Entity& entity, const std::string& attributePath, const std::string& delimitor);
+	
 	~AttributeObserver();
 	
 	sigc::signal<void, const Atlas::Message::Element&> EventChanged;
+	
+	/**
+	 * @brief Forces an evaluation of the current value and a possible emittance of the EventChanged signal.
+	 */
+	void forceEvaluation();
 	
 
 };

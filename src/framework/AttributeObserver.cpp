@@ -25,30 +25,47 @@
 #endif
 
 #include "AttributeObserver.h"
-#include <Eris/Entity.h>
-#include "framework/LoggingInstance.h"
+#include "DirectAttributeObserver.h"
+#include "DeepAttributeObserver.h"
+#include "Tokeniser.h"
 
-namespace Ember {
-
-AttributeObserver::AttributeObserver(Eris::Entity* entity, const std::string& attributeName)
-: mSlot(sigc::mem_fun(*this, &AttributeObserver::attributeChanged))
+namespace Ember
 {
-	if (entity) {
-		entity->observe(attributeName, mSlot);
-	} else {
-		S_LOG_WARNING("Tried to observer the attribute " << attributeName << " or a null entity.");
+
+AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& attributeName)
+{
+	mDirectAttributeObserver.reset(new DirectAttributeObserver(entity, EventChanged, attributeName));
+}
+
+AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::vector<std::string>& attributePath)
+{
+	if (attributePath.size() > 1) {
+		mDeepAttributeObserver.reset(new DeepAttributeObserver(entity, EventChanged, attributePath));
+	} else if (attributePath.size() > 0) {
+		mDirectAttributeObserver.reset(new DirectAttributeObserver(entity, EventChanged, attributePath.front()));
+	}
+}
+
+AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& attributePath, const std::string& delimitor)
+{
+	std::vector<std::string> path = Tokeniser::split(attributePath, delimitor);
+	if (path.size() > 1) {
+		mDeepAttributeObserver.reset(new DeepAttributeObserver(entity, EventChanged, path));
+	} else if (path.size() > 0) {
+		mDirectAttributeObserver.reset(new DirectAttributeObserver(entity, EventChanged, path.front()));
 	}
 }
 
 AttributeObserver::~AttributeObserver()
 {
-	mSlot.disconnect();
 }
 
-void AttributeObserver::attributeChanged(const Atlas::Message::Element& attributeValue)
+void AttributeObserver::forceEvaluation()
 {
-	EventChanged.emit(attributeValue);
+	if (mDeepAttributeObserver.get()) {
+		mDeepAttributeObserver->forceEvaluation();
+	} else if (mDirectAttributeObserver.get()) {
+		mDirectAttributeObserver->forceEvaluation();
+	}
 }
-
-
 }

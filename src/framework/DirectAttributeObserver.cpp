@@ -16,20 +16,37 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "DirectAttributeObserver.h"
+#include "framework/LoggingInstance.h"
 
 namespace Ember
 {
 
-DirectAttributeObserver::DirectAttributeObserver()
+DirectAttributeObserver::DirectAttributeObserver(Eris::Entity& entity, sigc::signal<void, const Atlas::Message::Element&>& eventChanged, const std::string& attributeName) :
+	mEntity(entity), mAttributeName(attributeName), mEventChanged(eventChanged), mSlot(sigc::mem_fun(*this, &DirectAttributeObserver::attributeChanged))
 {
-	// TODO Auto-generated constructor stub
-
+	entity.observe(attributeName, mSlot);
 }
 
 DirectAttributeObserver::~DirectAttributeObserver()
 {
-	// TODO Auto-generated destructor stub
+	mSlot.disconnect();
+}
+
+void DirectAttributeObserver::forceEvaluation()
+{
+	if (mEntity.hasAttr(mAttributeName)) {
+		attributeChanged(mEntity.valueOfAttr(mAttributeName));
+	}
+}
+
+void DirectAttributeObserver::attributeChanged(const Atlas::Message::Element& attributeValue)
+{
+	mEventChanged.emit(attributeValue);
 }
 
 }
