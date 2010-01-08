@@ -126,9 +126,8 @@ bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
 			foundDir = true;
 			mResourceLocations.insert(std::make_pair(section, finalPath));
-		} catch (const Ogre::Exception& ex) {
-			const std::string& message = ex.getFullDescription();
-			S_LOG_FAILURE("Couldn't load " + finalPath + ". Error: "<< message);
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Couldn't load " << sharedMediaPath << path << "." << ex);
 		}
 	}
 
@@ -149,8 +148,12 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
 			foundDir = true;
+<<<<<<< HEAD
 			mResourceLocations.insert(std::make_pair(section, finalPath));
 		} catch (const Ogre::Exception&) {
+=======
+		} catch (const std::exception&) {
+>>>>>>> Removed most references to Ogre::Exception in favour of std::exception.
 			///don't report anything
 		}
 	}
@@ -163,9 +166,14 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
 			foundDir = true;
+<<<<<<< HEAD
 			mResourceLocations.insert(std::make_pair(section, finalPath));
 		} catch (const Ogre::Exception&) {
 			S_LOG_FAILURE("Couldn't load " + finalPath + ". Continuing as if nothing happened.");
+=======
+		} catch (const std::exception&) {
+			S_LOG_FAILURE("Couldn't load " << emberMediaPath << path << ". Continuing as if nothing happened.");
+>>>>>>> Removed most references to Ogre::Exception in favour of std::exception.
 		}
 	}
 	return foundDir;
@@ -208,8 +216,8 @@ void OgreResourceLoader::preloadMedia()
 	for (size_t i = 0; i < (sizeof(resourceGroup) / sizeof(const char*)); ++i) {
 		try {
 			Ogre::ResourceGroupManager::getSingleton().loadResourceGroup(resourceGroup[i]);
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE("An error occurred when preloading media. Message:\n\t"<< ex.getFullDescription());
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("An error occurred when preloading media." << ex);
 		}
 	}
 }

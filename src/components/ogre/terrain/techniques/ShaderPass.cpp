@@ -170,7 +170,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		S_LOG_VERBOSE("Using fragment program " << fragmentProgramName << " for terrain page.");
 		pass.setFragmentProgram(fragmentProgramName);
 		// 		pass.setFragmentProgram("splatting_fragment_dynamic");
-	} catch (const Ogre::Exception& ex) {
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program '" << fragmentProgramName << "'." << ex);
 		return false;
 	}
@@ -210,7 +210,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		 fpParams->setNamedAutoConstant("iLightAttenuation", Ogre::GpuProgramParameters::ACT_LIGHT_ATTENUATION_ARRAY, 3);
 		 fpParams->setNamedAutoConstant("iLightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 3);
 		 */
-	} catch (const Ogre::Exception& ex) {
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
@@ -243,7 +243,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		fpParams->setIgnoreMissingParams(true);
 		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
 		fpParams->setNamedAutoConstant("iWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-	} catch (const Ogre::Exception& ex) {
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}

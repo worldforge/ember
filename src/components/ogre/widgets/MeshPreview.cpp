@@ -60,7 +60,7 @@ size_t MeshPreviewHandler::createInstance(const std::string& meshName)
 	Ogre::Entity* entity = 0;
 	try {
 		entity = EmberOgre::getSingleton().getSceneManager()->createEntity(std::string("meshPreview_" + mEntityCounter++ ), meshName);
-	} catch (const Ogre::Exception&) {
+	} catch (const std::exception&) {
 		return 0;
 	}
 	if (!entity) {

@@ -536,8 +536,8 @@ void EmberOgre::preloadMedia(void)
 	for (std::vector<std::string>::iterator I = shaderTextures.begin(); I != shaderTextures.end(); ++I) {
 		try {
 			Ogre::TextureManager::getSingleton().load(*I, "General");
-		} catch (const Ogre::Exception& e) {
-			S_LOG_FAILURE( "Error when loading texture " << *I << ".\n\rError message: " << e.getDescription());
+		} catch (const std::exception& e) {
+			S_LOG_FAILURE( "Error when loading texture " << *I << "." << e);
 		}
 	}
 

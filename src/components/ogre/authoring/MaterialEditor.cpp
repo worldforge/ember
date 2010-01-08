@@ -98,8 +98,8 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 					}
 				}
 			}
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_WARNING("Error when altering material. \n" << ex.getFullDescription());
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when altering material." << ex);
 		} catch (...) {
 			S_LOG_WARNING("Error when altering material.");
 		}

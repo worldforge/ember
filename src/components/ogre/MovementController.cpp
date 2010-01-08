@@ -268,8 +268,9 @@ void MovementController::createDecal(Ogre::Vector3 position)
 		// 	mDecalNode->showBoundingBox(true);
 
 
-		// 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
-	} catch (const Ogre::Exception& ex) {
+// 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
+	} catch (const std::exception& ex)
+	{
 		S_LOG_WARNING("Error when creating terrain decal." << ex);
 	}
 }

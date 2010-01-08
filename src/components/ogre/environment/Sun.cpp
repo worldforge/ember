@@ -64,7 +64,7 @@ SetSunPosition("setsunposition", this, "Set the position of the sun.")
 // 	try {
 // 		Ogre::ParticleSystem* sunParticle = sceneMgr->createParticleSystem("Sun", "Space/Sun");
 // 		mSunNode->attachObject(sunParticle);
-// 	} catch (const Ogre::Exception& ex) {
+// 	} catch (const std::exception& ex) {
 // 		S_LOG_FAILURE("Error when creating sun. Message: " << ex.getFullDescription());
 // 	}
 

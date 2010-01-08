@@ -114,8 +114,8 @@ bool Model::create(const std::string& modelType)
 	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
 	try {
 		mMasterModel = ModelDefinitionManager::instance().load(modelType, groupName);
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << ".\nMessage: " << ex.getFullDescription());
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << "." << ex);
 		return false;
 	}
 	if (false && !mMasterModel->isValid()) {
@@ -246,8 +246,8 @@ bool Model::createActualModel()
 			}
 			addSubmodel(submodel);
 			timedLog.report("Created submodel.");
-		} catch (const Ogre::Exception& e) {
-			S_LOG_FAILURE( "Submodel load error for " + entityName + ". \nOgre error: " + e.getFullDescription());
+		} catch (const std::exception& e) {
+			S_LOG_FAILURE( "Submodel load error for " << entityName << "." << e);
 			return false;
 		}
 	}
@@ -294,8 +294,8 @@ void Model::createActions()
 								animPart.state = state;
 								animPart.weight = (*I_animParts)->Weight;
 								animation.addAnimationPart(animPart);
-							} catch (const Ogre::Exception& ex) {
-								S_LOG_FAILURE("Error when loading animation: " << (*I_animParts)->Name << ".\n" + ex.getFullDescription() );
+							} catch (const std::exception& ex) {
+								S_LOG_FAILURE("Error when loading animation: " << (*I_animParts)->Name << "." << ex);
 							}
 						}
 					}
@@ -319,8 +319,8 @@ void Model::createParticles()
 		Ogre::ParticleSystem* ogreParticleSystem;
 		try {
 			ogreParticleSystem = _getManager()->createParticleSystem(name, I_particlesys->Script);
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE("Could not create particle system: " << name << "\nMessage: " << ex.getFullDescription());
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Could not create particle system: " << name << "." << ex);
 			continue;
 		}
 		if (ogreParticleSystem) {
@@ -349,8 +349,8 @@ void Model::createLights()
 		Ogre::Light* ogreLight;
 		try {
 			ogreLight = _getManager()->createLight(name.str());
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE("Could not create light: " << name.str() << "\nMessage: " << ex.getFullDescription());
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Could not create light: " << name.str() << "." << ex);
 			continue;
 		}
 		if (ogreLight) {

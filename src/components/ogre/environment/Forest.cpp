@@ -120,7 +120,7 @@ bool Forest::frameStarted(const Ogre::FrameEvent & evt)
 	if (mTrees) {
 		try {
 			mTrees->update();
-		} catch (const Ogre::Exception& ex) {
+		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when updating forest. Will disable forest."<< ex);
 			delete mTreeLoader;
 			delete mEntityLoader;

@@ -101,8 +101,8 @@ namespace Gui {
 
 			//mLoadingBarElement->setWidth(300);
 
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE("Error when creating loading bar. Message: \n" << ex.getFullDescription());
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when creating loading bar." << ex);
 		}
 
 

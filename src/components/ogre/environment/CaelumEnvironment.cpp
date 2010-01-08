@@ -43,7 +43,7 @@ namespace Environment
 {
 
 CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera) :
-	SetCaelumTime("set_caelumtime", this, "Sets the Caelum time. parameters: <hour> <minute>"), mCaelumSystem(0), mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mSky(0), mSun(0), mWater(0)
+	SetCaelumTime("set_caelumtime", this, "Sets the caelum time. parameters: <hour> <minute>"), mCaelumSystem(0), mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mSky(0), mSun(0), mWater(0)
 
 //,mLensFlare(camera, sceneMgr)
 {
@@ -51,7 +51,7 @@ CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderW
 	sceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 	//		setupCaelum(root, sceneMgr, window , camera);
 	/*		mLensFlare.setNode(mCaelumSystem->getSun()-	} catch (const Ogre::Exception& ex) {
-	 S_LOG_FAILURE("Could not load Caelum. Message: " << ex.getFullDescription());
+	 S_LOG_FAILURE("Could not load caelum. Message: " << ex.getFullDescription());
 	 }
 	 >getNode());
 	 mLensFlare.initialize();*/
@@ -75,11 +75,17 @@ void CaelumEnvironment::createEnvironment()
 {
 	try {
 		setupCaelum(Ogre::Root::getSingletonPtr(), mSceneMgr, mWindow, mCamera);
-	} catch (const Ogre::Exception& ex) {
-		S_LOG_FAILURE("Could not load Caelum. Message: " << ex.getFullDescription());
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Could not load caelum." << ex);
 		throw ;
 	}
-	setupWater();
+	try {
+		setupWater();
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Could not load water." << ex);
+		delete mWater;
+		mWater = 0;
+	}
 
 }
 

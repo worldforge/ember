@@ -237,7 +237,7 @@ bool OgreSetup::configure(void)
 		try {
 			mRoot->getRenderSystem()->setConfigOption("Floating-point mode", "Consistent");
 
-		} catch (const Ogre::Exception&)
+		} catch (const std::exception&)
 		{
 			///we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
 		}

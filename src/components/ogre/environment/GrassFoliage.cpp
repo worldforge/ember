@@ -160,7 +160,7 @@ void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
 	if (mPagedGeometry) {
 		try {
 			mPagedGeometry->update();
-		} catch (const Ogre::Exception& ex)
+		} catch (const std::exception& ex)
 		{
 			S_LOG_FAILURE("Error when updating grass. Will disable grass."<< ex);
 			delete mGrassLoader;

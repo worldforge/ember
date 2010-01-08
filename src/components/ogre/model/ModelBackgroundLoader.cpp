@@ -83,8 +83,8 @@ bool ModelBackgroundLoader::poll()
 					if (ticket) {
 						addTicket(ticket);
 					}
-				} catch (const Ogre::Exception& ex) {
-					S_LOG_FAILURE("Could not load the mesh " << (*I_subModels)->getMeshName() << " when loading model " << mModel.getName());
+				} catch (const std::exception& ex) {
+					S_LOG_FAILURE("Could not load the mesh " << (*I_subModels)->getMeshName() << " when loading model " << mModel.getName() << "." << ex);
 					continue;
 				}
 			}
@@ -110,8 +110,8 @@ bool ModelBackgroundLoader::poll()
 #else
 					try {
 						meshPtr->load();
-					} catch (const Ogre::Exception& ex) {
-						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModel.getName());
+					} catch (const std::exception& ex) {
+						S_LOG_FAILURE("Could not load the mesh " << meshPtr->getName() << " when loading model " << mModel.getName() << "." << ex);
 						continue;
 					}
 #endif

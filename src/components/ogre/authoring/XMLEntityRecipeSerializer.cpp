@@ -68,8 +68,8 @@ void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const O
 				///removed this in the trunk /ehj
 				// 				entRecipe->doTest();
 			}
-		} catch (const Ogre::Exception& ex) {
-			S_LOG_FAILURE(ex.getFullDescription());
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when parsing entity recipe '" << name << "'." << ex);
 		}
 	}
 }

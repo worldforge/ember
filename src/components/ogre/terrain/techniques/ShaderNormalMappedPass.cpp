@@ -108,7 +108,7 @@ bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const s
 		fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //4*4=16
 		///set how much the texture should tile
 		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
-	} catch (const Ogre::Exception& ex) {
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
@@ -128,7 +128,7 @@ bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const s
 		fpParams->setNamedAutoConstant("worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
 		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
-	} catch (const Ogre::Exception& ex) {
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
