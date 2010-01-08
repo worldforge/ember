@@ -251,9 +251,9 @@ WFMath::Vector<3> MovementController::getMovementForCurrentFrame() const
 {
 	//When not running, we assume that the speed is half of the max speed (which is 1.0)
 	if (mIsRunning) {
-		return mMovementDirection;
+		return WFMath::Vector<3>(mMovementDirection).normalize(1.0);
 	} else {
-		return mMovementDirection * 0.5;
+		return WFMath::Vector<3>(mMovementDirection).normalize(1.0) * 0.5;
 	}
 }
 
