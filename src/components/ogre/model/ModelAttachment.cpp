@@ -24,7 +24,7 @@
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/Convert.h"
-#include "components/ogre/DeepAttributeObserver.h"
+#include "framework/AttributeObserver.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
 #include "components/ogre/model/ModelMount.h"
@@ -76,7 +76,7 @@ ModelAttachment::~ModelAttachment()
 		delete I->second;
 	}
 
-	for (DeepAttributeObserverStore::iterator I = mFittingsObservers.begin(); I != mFittingsObservers.end(); ++I) {
+	for (AttributeObserverStore::iterator I = mFittingsObservers.begin(); I != mFittingsObservers.end(); ++I) {
 		delete *I;
 	}
 
@@ -210,7 +210,7 @@ void ModelAttachment::setupFittings()
 			path.push_back(nextToken);
 			nextToken = tokeniser.nextToken();
 		}
-		DeepAttributeObserver* observer = new DeepAttributeObserver(mChildEntity, path);
+		Ember::AttributeObserver* observer = new Ember::AttributeObserver(mChildEntity, path);
 		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), I->Name));
 		mFittingsObservers.push_back(observer);
 	}

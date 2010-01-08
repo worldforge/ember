@@ -33,13 +33,16 @@ class Element;
 }
 }
 
+namespace Ember {
+class AttributeObserver;
+}
+
 namespace EmberOgre
 {
 
 class IGraphicalRepresentation;
 class INodeProvider;
 class EmberEntity;
-class DeepAttributeObserver;
 
 namespace Model
 {
@@ -93,7 +96,7 @@ public:
 
 protected:
 
-	typedef std::vector<DeepAttributeObserver*> DeepAttributeObserverStore;
+	typedef std::vector<Ember::AttributeObserver*> AttributeObserverStore;
 
 	ModelRepresentation& mModelRepresentation;
 
@@ -105,7 +108,7 @@ protected:
 
 	ModelFittingStore mFittings;
 
-	DeepAttributeObserverStore mFittingsObservers;
+	AttributeObserverStore mFittingsObservers;
 
 	void setupFittings();
 

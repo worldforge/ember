@@ -81,7 +81,7 @@ libEmberOgre_a_SOURCES = \
 	WorldEmberEntity.cpp XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \
 	DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
 	AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp \
-	EntityObserverBase.cpp TerrainPageDataProvider.cpp DeepAttributeObserver.cpp
+	EntityObserverBase.cpp TerrainPageDataProvider.cpp
 	
 # OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
@@ -151,7 +151,7 @@ noinst_HEADERS = \
 	widgets/adapters/atlas/TerrainModAdapter.h \
 	widgets/adapters/eris/TypeTreeAdapter.h \
 \
-	AttributeObserver.h Avatar.h MovementController.h \
+	Avatar.h MovementController.h \
 	AvatarLogger.h AvatarTerrainCursor.h CameraMount.h ConsoleObjectImpl.h \
 	EmberEntity.h EmberEntityActionCreator.h EmberEntityFactory.h \
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
@@ -167,5 +167,5 @@ noinst_HEADERS = \
 	AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h \
 	AttachmentBase.h AvatarCameraMotionHandler.h FreeFlyingCameraMotionHandler.h \
 	ICollisionDetector.h INodeProvider.h SceneNodeProvider.h IVisualizable.h IEntityVisitor.h \
-	EntityObserverBase.h TerrainPageDataProvider.h ILightning.h DeepAttributeObserver.h
+	EntityObserverBase.h TerrainPageDataProvider.h ILightning.h 
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h
