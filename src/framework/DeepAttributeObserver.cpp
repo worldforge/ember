@@ -19,7 +19,7 @@
 #include "DeepAttributeObserver.h"
 #include <Eris/Entity.h>
 
-namespace EmberOgre
+namespace Ember
 {
 
 DeepAttributeObserver::DeepAttributeObserver(Eris::Entity& entity, const std::vector<std::string>& elementPath) :

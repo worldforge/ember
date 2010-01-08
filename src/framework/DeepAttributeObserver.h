@@ -29,7 +29,7 @@ namespace Eris {
 class Entity;
 }
 
-namespace EmberOgre
+namespace Ember
 {
 
 /**

@@ -1,5 +1,5 @@
 //
-// C++ Interface: AttributeObserver
+// C++ Implementation: AttributeObserver
 //
 // Description: 
 //
@@ -20,27 +20,35 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
+#include "AttributeObserver.h"
+#include <Eris/Entity.h>
+#include "framework/LoggingInstance.h"
 
+namespace Ember {
 
-namespace EmberOgre {
-
-/**
-	Observes changes to a specific attribute and emits a signal.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class AttributeObserver
+AttributeObserver::AttributeObserver(Eris::Entity* entity, const std::string& attributeName)
+: mSlot(sigc::mem_fun(*this, &AttributeObserver::attributeChanged))
 {
-public:
+	if (entity) {
+		entity->observe(attributeName, mSlot);
+	} else {
+		S_LOG_WARNING("Tried to observer the attribute " << attributeName << " or a null entity.");
+	}
+}
 
-	AttributeObserver(Eris::Entity* entity, const std::string& attributeName);
-	~AttributeObserver();
-	
-	sigc::signal<void, const Atlas::Message::Element&> EventChanged;
-	
+AttributeObserver::~AttributeObserver()
+{
+	mSlot.disconnect();
+}
 
-};
-
+void AttributeObserver::attributeChanged(const Atlas::Message::Element& attributeValue)
+{
+	EventChanged.emit(attributeValue);
 }
 
 
+}

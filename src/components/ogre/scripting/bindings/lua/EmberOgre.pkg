@@ -89,7 +89,6 @@ $pfile "Map.pkg"
 
 
 $pfile "OgreInfo.pkg"
-$pfile "AttributeObserver.pkg"
 
 $pfile "TerrainLayerDefinition.pkg"
 $pfile "TerrainLayerDefinitionManager.pkg"

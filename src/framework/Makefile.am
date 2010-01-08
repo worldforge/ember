@@ -4,12 +4,12 @@ SUBDIRS = bindings tasks
 
 noinst_LIBRARIES = libFramework.a
 
-libFramework_a_SOURCES = ConsoleBackend.cpp ConsoleCommandWrapper.cpp \
-	Exception.cpp Log.cpp LogObserver.cpp LoggingInstance.cpp StreamLogObserver.cpp \
+libFramework_a_SOURCES = AttributeObserver.cpp ConsoleBackend.cpp ConsoleCommandWrapper.cpp \
+	DeepAttributeObserver.cpp DirectAttributeObserver.h Exception.cpp Log.cpp LogObserver.cpp LoggingInstance.cpp StreamLogObserver.cpp \
 	Tokeniser.cpp XMLCodec.cpp binreloc.c scrap.c TimedLog.cpp
 
-noinst_HEADERS = ConsoleBackend.h ConsoleCommandWrapper.h ConsoleObject.h \
-	Exception.h IGameView.h IResourceProvider.h IScriptingProvider.h Log.h \
+noinst_HEADERS = AttributeObserver.h ConsoleBackend.h ConsoleCommandWrapper.h ConsoleObject.h \
+	DeepAttributeObserver.h DirectAttributeObserver.h Exception.h IGameView.h IResourceProvider.h IScriptingProvider.h Log.h \
 	LogObserver.h LoggingInstance.h Service.h Singleton.h StreamLogObserver.h Tokeniser.h \
 	XMLCodec.h binreloc.h float_cast.h osdir.h scrap.h TimedLog.h
 

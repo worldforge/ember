@@ -68,7 +68,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/adapters/atlas/StaticAdapter.cpp widgets/adapters/atlas/StringAdapter.cpp widgets/adapters/atlas/TerrainModAdapter.cpp widgets/adapters/atlas/bindings/lua/bindings.cpp \
 	widgets/adapters/eris/TypeTreeAdapter.cpp \
 \
-	AttributeObserver.cpp Avatar.cpp \
+	Avatar.cpp \
 	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
 	CameraMount.cpp ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \

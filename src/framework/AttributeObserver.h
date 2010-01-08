@@ -31,7 +31,7 @@ namespace Eris {
 class Entity;
 }
 
-namespace EmberOgre {
+namespace Ember {
 
 /**
 	@brief Observes changes to a specific attribute and emits a signal.
