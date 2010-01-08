@@ -275,7 +275,7 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 -- 	Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
 	dollSlot.droppedHandler = function(entityIcon)
 		if dollSlot.isValidDrop(entityIcon) then
-			emberServices:getServerService():wield(entityIcon:getEntity(), dollSlot.outfitPlacement)
+			emberServices:getServerService():wield(entityIcon:getEntity(), dollSlot.wearRestriction)
 			local icon = dollSlot.slot:getEntityIcon()
 			if icon ~= null then
 				local slot = Inventory.getFreeSlot()
@@ -285,29 +285,42 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 		end
 	end
 	dollSlot.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(dollSlot.slot.EventIconDropped):connect(dollSlot.droppedHandler)
-	dollSlot.observer = EmberOgre.AttributeObserver:new_local(avatarEntity, "outfit")
-	dollSlot.attributeChanged = function(outFitElement)
-		if outFitElement ~= nil and outFitElement:isMap() then
-			local element = outFitElement:asMap():get(outfitPartName)
-			if element ~= nil then
-				if element:isString() then
-					local entityBucket = Inventory.icons[element:asString()]
-					if entityBucket ~= nil then
-						local icon = entityBucket[1].entityIcon
-						if icon ~= nil then
-							--check that we've not already have added the icon to this slot
-							if dollSlot.slot:getEntityIcon() ~= icon then
-								local oldIcon = dollSlot.slot:removeEntityIcon()
-								dollSlot.slot:addEntityIcon(icon)
-								if oldIcon ~= nil then
-									local slotWrapper = Inventory.getFreeSlot()
-									local slot = slotWrapper.slot
-									slot:addEntityIcon(oldIcon)
-								end
+	dollSlot.observer = Ember.AttributeObserver:new_local(avatarEntity, dollSlot.attributePath, ".")
+	dollSlot.attributeChanged = function(element)
+		if element:isString() then
+			local entityId = element:asString()
+			local slotUpdateFunc = function()
+				local entityBucket = Inventory.icons[entityId]
+
+				if entityBucket ~= nil then
+					local icon = entityBucket[1].entityIcon
+					if icon ~= nil then
+						--check that we've not already have added the icon to this slot
+						if dollSlot.slot:getEntityIcon() ~= icon then
+							local oldIcon = dollSlot.slot:removeEntityIcon()
+							dollSlot.slot:addEntityIcon(icon)
+							if oldIcon ~= nil then
+								local slotWrapper = Inventory.getFreeSlot()
+								local slot = slotWrapper.slot
+								slot:addEntityIcon(oldIcon)
 							end
 						end
 					end
 				end
+			end
+
+			--Either we have created an icon for the entity yet, or we have to wait a little until it's available			
+			local entityBucket = Inventory.icons[entityId]
+			if entityBucket ~= nil then
+				slotUpdateFunc()
+			else
+				local delayedUpdater = function(newEntity)
+					if newEntity:getId() == entityId then
+						slotUpdateFunc()
+						Inventory.newEntityListeners[dollSlot.attributePath] = nil
+					end
+				end
+				Inventory.newEntityListeners[dollSlot.attributePath] = delayedUpdater
 			end
 		end
 	end
@@ -318,13 +331,15 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 	end
 	dollSlot.iconDraggedOff_connector = EmberOgre.LuaConnector:new_local(dollSlot.slot.EventIconDraggedOff):connect(dollSlot.iconDraggedOff)
 	
-	dollSlot.newEntityCreated = function(newEntity)
-		if avatarEntity:hasAttr("outfit") then
-			dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
-		end
-	end
+	dollSlot.observer:forceEvaluation()
 	
-	table.insert(Inventory.newEntityListeners, dollSlot.newEntityCreated)
+--	dollSlot.newEntityCreated = function(newEntity)
+--		if avatarEntity:hasAttr("outfit") then
+--			dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
+--		end
+--	end
+	
+--	table.insert(Inventory.newEntityListeners, dollSlot.newEntityCreated)
 	
 -- 	dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
 end
@@ -342,22 +357,22 @@ function Inventory.setupDoll(avatarEntity)
 		Inventory.doll.renderer:setCameraDistance(0.75)
 		Inventory.doll.renderer:updateRender()
 				
-		Inventory.doll.rightHand = Inventory.createDollSlot("right_hand", Inventory.widget:getWindow("Doll/RightHand"), "Drop an entity here to attach it to the right hand.", true)
-		Inventory.doll.rightHandOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.rightHand, "right_hand")
+		Inventory.doll.rightHand = Inventory.createDollSlot("right_hand_wield", Inventory.widget:getWindow("Doll/RightHand"), "Drop an entity here to attach it to the right hand.", "")
+		Inventory.doll.rightHandOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.rightHand, "")
 		
-		Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.", false)
+		Inventory.doll.torso = Inventory.createDollSlot("outfit.body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.", "body")
 		Inventory.doll.torsoOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.torso, "body")
 		
-		Inventory.doll.back = Inventory.createDollSlot("back", Inventory.widget:getWindow("Doll/Back"), "Drop an entity here to attach it to the back.", false)
+		Inventory.doll.back = Inventory.createDollSlot("outfit.back", Inventory.widget:getWindow("Doll/Back"), "Drop an entity here to attach it to the back.", "back")
 		Inventory.doll.backOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.back, "back")
 
-		Inventory.doll.head = Inventory.createDollSlot("head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.", false)
+		Inventory.doll.head = Inventory.createDollSlot("outfit.head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.", "head")
 		Inventory.doll.headOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.head, "head")
 	
-		Inventory.doll.legs = Inventory.createDollSlot("legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.", false)
+		Inventory.doll.legs = Inventory.createDollSlot("outfit.legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.", "legs")
 		Inventory.doll.legsOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.legs, "legs")
 		
-		Inventory.doll.feet = Inventory.createDollSlot("feet", Inventory.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.", false)
+		Inventory.doll.feet = Inventory.createDollSlot("outfit.feet", Inventory.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.", "feet")
 		Inventory.doll.feetOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.feet, "feet")
 	end
 end
@@ -369,25 +384,26 @@ function Inventory.updateDoll()
 end
 
 
-function Inventory.createDollSlot(outfitPlacement, containerWindow, tooltipText, allowAny)
+function Inventory.createDollSlot(attributePath, containerWindow, tooltipText, wearRestriction)
 	local dollSlot = {}
 	dollSlot.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
 	dollSlot.container = containerWindow
 	dollSlot.container:addChildWindow(dollSlot.slot:getWindow())
 	dollSlot.slot:getWindow():setInheritsTooltipText(true)
 	dollSlot.container:setTooltipText(tooltipText)
-	dollSlot.outfitPlacement = outfitPlacement
+	dollSlot.wearRestriction = wearRestriction
+	dollSlot.attributePath = attributePath
 	dollSlot.allowAny = allowAny
 	
 	dollSlot.isValidDrop = function(entityIcon)
-		if dollSlot.outfitPlacement == "" or dollSlot.allowAny then
+		if dollSlot.wearRestriction == "" or dollSlot.allowAny then
 			return true
 		end
 		if entityIcon:getEntity():hasAttr("worn") then
 			local wornElement = entityIcon:getEntity():valueOfAttr("worn")
 			if wornElement:isString() then
 				local worn = wornElement:asString()
-				if worn == dollSlot.outfitPlacement then
+				if worn == dollSlot.wearRestriction then
 					return true
 				end
 			end
