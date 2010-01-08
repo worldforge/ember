@@ -33,8 +33,6 @@
 #include "components/ogre/model/ModelBoneProvider.h"
 #include "components/ogre/model/ModelFitting.h"
 
-#include "framework/Tokeniser.h"
-
 #include <sigc++/bind.h>
 #include <sigc++/slot.h>
 #include <sigc++/signal.h>
@@ -173,20 +171,21 @@ void ModelAttachment::updateScale()
 
 void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName)
 {
-	const std::string& newFittingEntityId = attributeValue.asString();
+	if (attributeValue.isString()) {
+		const std::string& newFittingEntityId = attributeValue.asString();
 
-	ModelFittingStore::iterator I = mFittings.find(fittingName);
-	if (I != mFittings.end()) {
-		mFittings.erase(I);
-		//Check if we should detach the existing fitting
-		if (I->second->getChild() && I->second->getChild()->getId() != newFittingEntityId) {
-			detachFitting(*I->second->getChild());
+		ModelFittingStore::iterator I = mFittings.find(fittingName);
+		if (I != mFittings.end()) {
+			mFittings.erase(I);
+			//Check if we should detach the existing fitting
+			if (I->second->getChild() && I->second->getChild()->getId() != newFittingEntityId) {
+				detachFitting(*I->second->getChild());
+			}
+		}
+		if (newFittingEntityId != "") {
+			createFitting(fittingName, newFittingEntityId);
 		}
 	}
-	if (newFittingEntityId != "") {
-		createFitting(fittingName, newFittingEntityId);
-	}
-
 }
 
 void ModelAttachment::fittedEntity_BeingDeleted(EmberEntity* entity)
@@ -203,16 +202,10 @@ void ModelAttachment::setupFittings()
 {
 	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
 	for (AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
-		std::vector<std::string> path;
-		Ember::Tokeniser tokeniser(I->Name, ".");
-		std::string nextToken = tokeniser.nextToken();
-		while (nextToken != "") {
-			path.push_back(nextToken);
-			nextToken = tokeniser.nextToken();
-		}
-		Ember::AttributeObserver* observer = new Ember::AttributeObserver(mChildEntity, path);
+		Ember::AttributeObserver* observer = new Ember::AttributeObserver(mChildEntity, I->Name, ".");
 		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), I->Name));
 		mFittingsObservers.push_back(observer);
+		observer->forceEvaluation();
 	}
 }
 
