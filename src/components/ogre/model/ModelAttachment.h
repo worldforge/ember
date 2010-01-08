@@ -98,25 +98,57 @@ protected:
 
 	typedef std::vector<Ember::AttributeObserver*> AttributeObserverStore;
 
+	/**
+	 * @brief The Model representation which this attachment is connected to.
+	 */
 	ModelRepresentation& mModelRepresentation;
 
 	/**
 	 * @brief The model mount, which takes care of setting up and handling the rotation and orientation of the model.
 	 * This also owns the scale node, which will be destroyed when the mount is destroyed.
+	 * The model mount can be connected to either an Ogre::SceneNode or an Ogre::TagPoint. The former is the normal situation, while the latter is the situation if this attachment represents an attachment to a bone on an Ogre::Skeleton instance.
 	 */
 	ModelMount* mModelMount;
 
+	/**
+	 * @brief The fittings, i.e. the connections to child entities which are connected to bones on the Model which this attachment belongs to.
+	 */
 	ModelFittingStore mFittings;
 
+	/**
+	 * @brief A collection of observers to observe entity attribute changes and attach and detach ModelFittings accordingly.
+	 */
 	AttributeObserverStore mFittingsObservers;
 
+	/**
+	 * @brief Sets up the ModelFittings and the observers of the attributes to which they are connected.
+	 */
 	void setupFittings();
 
 	void entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName);
 	void fittedEntity_BeingDeleted(EmberEntity* entity);
 
+	/**
+	 * @brief Detaches a previously attached fitting.
+	 * @param entity The entity to attach.
+	 */
 	void detachFitting(EmberEntity& entity);
+
+
+	/**
+	 * @brief Creates a new ModelFitting instance.
+	 * @param fittingName The name of the fitting.
+	 * @param entityId The entity id of the attached entity.
+	 *
+	 * It's safe to call this before the attached entity has appeared in the world. In that case the attachment will be delayed until attachEntity() is later on called.
+	 */
 	void createFitting(const std::string& fittingName, const std::string& entityId);
+
+	/**
+	 * @brief Re-attach entities which previously have been attached.
+	 * Call this when the Model is reloaded.
+	 */
+	void reattachEntities();
 
 	virtual void setVisible(bool visible);
 

@@ -117,7 +117,12 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		//		else {
 		INodeProvider* nodeProvider(0);
 		if (attachPoint != "") {
-			nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, &modelRepresentation->getModel());
+			if (mModelRepresentation.getModel().isLoaded()) {
+				nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, &modelRepresentation->getModel());
+			} else {
+				//If the model isn't loaded yet we can't attach yet. Instead we'll return a null attachment and wait until the model is reloaded, at which point reattachEntities() is called.
+				return 0;
+			}
 		} else {
 			nodeProvider = mNodeProvider->createChildProvider();
 		}
@@ -241,6 +246,21 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 void ModelAttachment::model_Reloaded()
 {
 	updateScale();
+	reattachEntities();
+}
+
+void ModelAttachment::reattachEntities()
+{
+	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
+		if (I->second->getChild() && mChildEntity.hasChild(I->second->getChildEntityId())) {
+			EmberEntity* entity = I->second->getChild();
+			IEntityAttachment* attachment = attachEntity(*entity);
+			entity->setAttachment(attachment);
+			if (attachment) {
+				attachment->updateScale();
+			}
+		}
+	}
 }
 
 void ModelAttachment::setVisualize(const std::string& visualization, bool visualize)
