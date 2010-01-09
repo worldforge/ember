@@ -1,21 +1,21 @@
 /*
-    Copyright (C) 2004  Miguel Guzman (Aganor)
-    Copyright (C) 2005  Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2004  Miguel Guzman (Aganor)
+ Copyright (C) 2005  Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -29,6 +29,8 @@
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIFactoryModule.h>
+#include <CEGUIBasicRenderedStringParser.h>
+#include <CEGUIRenderedStringTextComponent.h>
 #include <ScriptingModules/LuaScriptModule/CEGUILua.h>
 #include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
@@ -36,7 +38,6 @@
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUIMultiLineEditbox.h>
 #include <elements/CEGUIEditbox.h>
-
 
 #include "widgets/Widget.h"
 #include "MousePicker.h"
@@ -66,7 +67,6 @@
 #include <OgreTextureManager.h>
 #include <OgreRoot.h>
 
-
 #ifdef __WIN32__
 #include <windows.h>
 #include <direct.h>
@@ -80,30 +80,88 @@ using namespace CEGUI;
 using namespace EmberOgre::Gui;
 using namespace Ember;
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 unsigned long GUIManager::msAutoGenId(0);
 
-
-GUIManager::GUIManager(Ogre::RenderWindow* window)
-: ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
-, ReloadGui("reloadgui", this, "Reloads the gui.")
-, ToggleGui("toggle_gui", this, "Toggle the gui display")
-, mGuiCommandMapper("gui", "key_bindings_gui")
-, mPicker(0)
-, mEntityWorldPickListener(0)
-, mSheet(0)
-, mWindowManager(0)
-, mDebugText(0)
-, mWindow(window)
-, mGuiSystem(0)
-, mGuiRenderer(0)
-, mLuaScriptModule(0)
-, mIconManager(0)
-, mActiveWidgetHandler(0)
-, mCEGUILogger(new Gui::CEGUILogger()) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+/**
+ * @brief Overrides colour modulation of CEGUI::RenderedStringTextComponent.
+ * The default implementation of CEGUI::RenderedStringTextComponent will always use the mod_colours to modulate the final colour.
+ * Since we use black text colours this means that all our colours will end up black (i.e. it will multiply by zero, which results in zero).
+ * This class overrides this behaviour to always disable the mod_colours.
+ */
+class RenderedColourStringTextComponent: public CEGUI::RenderedStringTextComponent
 {
-	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI );
+public:
+	RenderedColourStringTextComponent(const String& text, const String& font_name) :
+		CEGUI::RenderedStringTextComponent(text, font_name)
+	{
+	}
+
+	void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Vector2& position, const CEGUI::ColourRect* mod_colours, const CEGUI::Rect* clip_rect, const float vertical_space, const float space_extra) const
+	{
+		CEGUI::RenderedStringTextComponent::draw(buffer, position, 0, clip_rect, vertical_space, space_extra);
+	}
+
+	RenderedStringTextComponent* clone() const
+	{
+		return new RenderedColourStringTextComponent(*this);
+	}
+
+};
+
+/**
+ * @brief Overrides the default behaviour of CEGUI::BasicRenderedStringParser to use colour modulation.
+ * Since the CEGUI::RenderedStringTextComponent will use colour modulation and this will result in all colours being black if the modulation colour is black we need to use an instance of RenderedColourStringTextComponent whenever a colour different from the base colour is to be used.
+ */
+class ColouredRenderedStringParser: public CEGUI::BasicRenderedStringParser
+{
+protected:
+	void appendRenderedText(CEGUI::RenderedString& rs, const CEGUI::String& text) const
+	{
+		size_t cpos = 0;
+		// split the given string into lines based upon the newline character
+		while (text.length() > cpos) {
+			// find next newline
+			const size_t nlpos = text.find('\n', cpos);
+			// calculate length of this substring
+			const size_t len = ((nlpos != String::npos) ? nlpos : text.length()) - cpos;
+
+			// construct new text component and append it.
+			if (len > 0) {
+				//If we're using colours different from those of the default colours we'll also use our own implementation which doesn't do modulation.
+				if (d_initialColours.d_bottom_left != d_colours.d_bottom_left || d_initialColours.d_top_left != d_colours.d_top_left || d_initialColours.d_top_right != d_colours.d_top_right || d_initialColours.d_bottom_right != d_colours.d_bottom_right) {
+					RenderedColourStringTextComponent rtc(text.substr(cpos, len), d_fontName);
+					rtc.setPadding(d_padding);
+					rtc.setColours(d_colours);
+					rtc.setVerticalFormatting(d_vertAlignment);
+					rtc.setAspectLock(d_aspectLock);
+					rs.appendComponent(rtc);
+				} else {
+					CEGUI::RenderedStringTextComponent rtc(text.substr(cpos, len), d_fontName);
+					rtc.setPadding(d_padding);
+					rtc.setColours(d_colours);
+					rtc.setVerticalFormatting(d_vertAlignment);
+					rtc.setAspectLock(d_aspectLock);
+					rs.appendComponent(rtc);
+				}
+			}
+
+			// break line if needed
+			if (nlpos != String::npos)
+				rs.appendLineBreak();
+
+			// advance current position.  +1 to skip the \n char
+			cpos += len + 1;
+		}
+	}
+};
+
+GUIManager::GUIManager(Ogre::RenderWindow* window) :
+	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mEntityWorldPickListener(0), mSheet(0), mWindowManager(0), mDebugText(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+{
+	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
 	///we need this here just to force the linker to also link in the WidgetDefinitions
 	WidgetDefinitions w;
@@ -142,12 +200,12 @@ GUIManager::GUIManager(Ogre::RenderWindow* window)
 		}
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
-// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
+			// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 			throw Ember::Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
 
+		mGuiSystem->setDefaultCustomRenderedStringParser(new ColouredRenderedStringParser());
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
-
 
 		try {
 			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), "MouseArrow");
@@ -155,7 +213,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window)
 			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available. Message: " << ex.getMessage().c_str());
 			throw Ember::Exception(ex.getMessage().c_str());
 		}
-
 
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
 		mGuiSystem->setGUISheet(mSheet);
@@ -197,7 +254,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window)
 
 		Ogre::Root::getSingleton().addFrameListener(this);
 
-
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("GUIManager - error when creating gui. Message: " << ex.getMessage().c_str());
 		throw Ember::Exception(ex.getMessage().c_str());
@@ -205,7 +261,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window)
 	}
 
 }
-
 
 GUIManager::~GUIManager()
 {
@@ -253,16 +308,16 @@ void GUIManager::initialize()
 		mDebugText->setPosition(CEGUI::UVector2(UDim(0.0f, 0), UDim(1.0f, -25)));
 		mDebugText->setSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0, 25)));
 
-/*		mDebugText->setFrameEnabled(false);
-		mDebugText->setBackgroundEnabled(false);*/
+		/*		mDebugText->setFrameEnabled(false);
+		 mDebugText->setBackgroundEnabled(false);*/
 		//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
 
 
 		//the console and quit widgets are not lua scripts, and should be loaded explicit
-// 		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
-// 		if (!mConsoleWidget) {
-// 			throw Ember::Exception("Could not create console widget.");
-// 		}
+		// 		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
+		// 		if (!mConsoleWidget) {
+		// 			throw Ember::Exception("Could not create console widget.");
+		// 		}
 		createWidget("Quit");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets." << e);
@@ -280,19 +335,18 @@ void GUIManager::initialize()
 		S_LOG_FAILURE("GUIManager - error when creating entity icon manager." << e);
 	}
 
-
 	std::vector<std::string> widgetsToLoad;
 	widgetsToLoad.push_back("IngameChatWidget");
 	widgetsToLoad.push_back("InspectWidget");
 	widgetsToLoad.push_back("MakeEntityWidget");
-//	widgetsToLoad.push_back("JesusEdit");
+	//	widgetsToLoad.push_back("JesusEdit");
 	widgetsToLoad.push_back("ServerWidget");
 	widgetsToLoad.push_back("Help");
 	widgetsToLoad.push_back("MeshPreview");
 
 	///this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 	try {
-	///load the bootstrap script which will load all other scripts
+		///load the bootstrap script which will load all other scripts
 		Ember::EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script." << e);
@@ -323,11 +377,10 @@ void GUIManager::EmitEntityAction(const std::string& action, EmberEntity* entity
 	EventEntityAction.emit(action, entity);
 }
 
-
 CEGUI::Window* GUIManager::createWindow(const std::string& windowType)
 {
 	std::stringstream ss;
-	ss << "_autoWindow_" <<  (msAutoGenId++);
+	ss << "_autoWindow_" << (msAutoGenId++);
 	return createWindow(windowType, ss.str());
 }
 
@@ -363,9 +416,9 @@ Widget* GUIManager::createWidget(const std::string& name)
 		widget->init(this);
 		widget->buildWidget();
 		addWidget(widget);
-		S_LOG_INFO(  "Successfully loaded widget " << name );
+		S_LOG_INFO( "Successfully loaded widget " << name );
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE(  "Error when loading widget " << name << "." << e);
+		S_LOG_FAILURE( "Error when loading widget " << name << "." << e);
 		return 0;
 	}
 	return widget;
@@ -373,8 +426,7 @@ Widget* GUIManager::createWidget(const std::string& name)
 
 void GUIManager::destroyWidget(Widget* widget)
 {
-	if (!widget)
-	{
+	if (!widget) {
 		S_LOG_WARNING("Trying to destroy null widget.");
 		return;
 	}
@@ -382,11 +434,9 @@ void GUIManager::destroyWidget(Widget* widget)
 	delete widget;
 }
 
-
 void GUIManager::setDebugText(const std::string& text)
 {
-	if (mDebugText)
-	{
+	if (mDebugText) {
 		mDebugText->setText(text);
 	}
 }
@@ -395,7 +445,6 @@ Input& GUIManager::getInput() const
 {
 	return Input::getSingleton();
 }
-
 
 CEGUI::Window* GUIManager::getMainSheet() const
 {
@@ -415,11 +464,6 @@ void GUIManager::addWidget(Widget* widget)
 	mWidgets.push_back(widget);
 }
 
-
-
-
-
-
 bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 {
 	try {
@@ -427,18 +471,17 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	}
-// 	if (mPreviousInputMode == IM_GUI) {
-// 		if (!mInput->getInputMode()) {
-// 			EventInputModeChanged.emit(IM_MOVEMENT);
-// 			mPreviousInputMode = IM_MOVEMENT;
-// 		}
-// 	} else {
-// 		if (mInput->isInGUIMode()) {
-// 			EventInputModeChanged.emit(IM_GUI);
-// 			mPreviousInputMode = IM_GUI;
-// 		}
-// 	}
-
+	// 	if (mPreviousInputMode == IM_GUI) {
+	// 		if (!mInput->getInputMode()) {
+	// 			EventInputModeChanged.emit(IM_MOVEMENT);
+	// 			mPreviousInputMode = IM_MOVEMENT;
+	// 		}
+	// 	} else {
+	// 		if (mInput->isInGUIMode()) {
+	// 			EventInputModeChanged.emit(IM_GUI);
+	// 			mPreviousInputMode = IM_GUI;
+	// 		}
+	// 	}
 
 
 	//iterate over all widgets and send them a frameStarted event
@@ -458,13 +501,12 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 	return true;
 
-
 }
 
 bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	if (isInGUIMode()) {
-		const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+		const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&> (args);
 		S_LOG_VERBOSE("Main sheet is capturing input");
 		CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
 		if (aWindow) {
@@ -484,14 +526,13 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 		}
 	}
 
-
 	return true;
 }
 
 bool GUIManager::mSheet_MouseDoubleClick(const CEGUI::EventArgs& args)
 {
 
-	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
+	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&> (args);
 	S_LOG_VERBOSE("Main sheet double click.");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
 	if (aWindow) {
@@ -510,7 +551,6 @@ bool GUIManager::mSheet_MouseDoubleClick(const CEGUI::EventArgs& args)
 		mPicker->doMousePicking(position.d_x, position.d_y, pickerArgs);
 	}
 
-
 	return true;
 }
 
@@ -520,11 +560,13 @@ bool GUIManager::mSheet_CaptureLost(const CEGUI::EventArgs& args)
 	return true;
 }
 
-const bool GUIManager::isInMovementKeysMode() const {
+const bool GUIManager::isInMovementKeysMode() const
+{
 	return mSheet->isCapturedByThis() || !isInGUIMode();
 }
 
-const bool GUIManager::isInGUIMode() const {
+const bool GUIManager::isInGUIMode() const
+{
 	return getInput().getInputMode() == Input::IM_GUI;
 }
 
@@ -534,42 +576,43 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 
 		bool cut = (key.sym == SDLK_x);
 		CEGUI::Window* active = mSheet->getActiveChild();
-		if (!active) return;
+		if (!active)
+			return;
 
 		CEGUI::String seltext;
 		const CEGUI::String& type = active->getType();
 
 		if (type.find("/MultiLineEditbox") != CEGUI::String::npos) {
-			CEGUI::MultiLineEditbox* edit = static_cast<CEGUI::MultiLineEditbox*>(active);
+			CEGUI::MultiLineEditbox* edit = static_cast<CEGUI::MultiLineEditbox*> (active);
 			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
 			CEGUI::String::size_type len = edit->getSelectionLength();
-			seltext = edit->getText().substr( beg, len ).c_str();
+			seltext = edit->getText().substr(beg, len).c_str();
 
 			// are we cutting or just copying?
 			if (cut) {
-				if (edit->isReadOnly()) return;
+				if (edit->isReadOnly())
+					return;
 				CEGUI::String newtext = edit->getText();
-				edit->setText( newtext.erase( beg, len ) );
+				edit->setText(newtext.erase(beg, len));
 			}
 
 		} else if (type.find("/Editbox") != CEGUI::String::npos) {
-			CEGUI::Editbox* edit = static_cast<CEGUI::Editbox*>(active);
+			CEGUI::Editbox* edit = static_cast<CEGUI::Editbox*> (active);
 			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
 			CEGUI::String::size_type len = edit->getSelectionLength();
-			seltext = edit->getText().substr( beg, len ).c_str();
+			seltext = edit->getText().substr(beg, len).c_str();
 
 			// are we cutting or just copying?
 			if (cut) {
-				if (edit->isReadOnly()) return;
+				if (edit->isReadOnly())
+					return;
 				CEGUI::String newtext = edit->getText();
-				edit->setText( newtext.erase( beg, len ) );
+				edit->setText(newtext.erase(beg, len));
 			}
 		}
-		getInput().writeToClipboard( seltext.c_str() );
+		getInput().writeToClipboard(seltext.c_str());
 	}
 }
-
-
 
 void GUIManager::runCommand(const std::string &command, const std::string &args)
 {
@@ -653,7 +696,5 @@ Gui::EntityIconManager* GUIManager::getEntityIconManager()
 	return mEntityIconManager;
 }
 
-
 }
-
 
