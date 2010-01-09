@@ -49,7 +49,7 @@ class ScriptingService;
 Sometimes when you make a call into a scripting environment, from the C++ code, you want to be able to inspect and act upon the return values. However, different scripting languages handles these things differently, so instead of a common class we provide this very bare bone interface. It's then up to to each implementation of IScriptingProvider to make sure that it also provides a concrete implementation of this class and knows how to handle it.
 
 Whenever you then want to act on values returned from a call into a specific scripting environment you have to first create the suitable instance of a subclass of this, and then pass that onto a call to the ScriptingService::executeScript method.
-@author Erik Hjortsberg <erik.hjortsber@iteam.se>
+@author Erik Hjortsberg <erik.hjortsber@gmail.com>
 */
 class IScriptingCallContext
 {
