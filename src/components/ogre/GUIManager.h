@@ -91,7 +91,7 @@ public:
 	static const std::string TOGGLEINPUTMODE;
 
 
-	GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr);
+	GUIManager(Ogre::RenderWindow* window);
 	virtual ~GUIManager();
 
 	sigc::signal<void, const std::string&, EmberEntity*> AppendIGChatLine;

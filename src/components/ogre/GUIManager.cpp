@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2004  Miguel Guzman (Aganor)
+    Copyright (C) 2005  Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +31,7 @@
 #include <CEGUIFactoryModule.h>
 #include <ScriptingModules/LuaScriptModule/CEGUILua.h>
 #include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
+#include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUIMultiLineEditbox.h>
@@ -83,7 +85,7 @@ namespace EmberOgre {
 unsigned long GUIManager::msAutoGenId(0);
 
 
-GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
+GUIManager::GUIManager(Ogre::RenderWindow* window)
 : ToggleInputMode("toggle_inputmode", this, "Toggle the input mode.")
 , ReloadGui("reloadgui", this, "Reloads the gui.")
 , ToggleGui("toggle_gui", this, "Toggle the gui display")
@@ -122,6 +124,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 		CEGUI::ResourceProvider& resourceProvider = mGuiRenderer->createOgreResourceProvider();
 		resourceProvider.setDefaultResourceGroup("Gui");
 
+		CEGUI::ImageCodec& imageCodec = CEGUI::OgreRenderer::createOgreImageCodec();
+
 		Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
@@ -130,15 +134,15 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
 				mLuaScriptModule->executeString(""); ///We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
 			}
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, 0, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
 			Ember::EmberServices::getSingleton().getScriptingService()->EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, 0, 0, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, 0, "cegui/datafiles/configs/cegui.config");
 		}
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
-// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wromg with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
+// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 			throw Ember::Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
 
