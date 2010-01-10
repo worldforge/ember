@@ -404,9 +404,10 @@ void ServerService::runCommand(const std::string &command, const std::string &ar
 		std::string name = tokeniser.nextToken();
 		std::string sex = tokeniser.nextToken();
 		std::string type = tokeniser.nextToken();
+		std::string spawnPoint = tokeniser.nextToken();
 		std::string description = tokeniser.remainingTokens();
 
-		if (!createCharacter(name, sex, type, description)) {
+		if (!createCharacter(name, sex, type, description, spawnPoint)) {
 			return;
 		}
 
@@ -472,7 +473,7 @@ void ServerService::runCommand(const std::string &command, const std::string &ar
 	}
 }
 
-bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description)
+bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName)
 {
 	ConsoleBackend::getSingleton().pushMessage("Creating char...");
 	if (mAccount) {
@@ -486,6 +487,9 @@ bool ServerService::createCharacter(const std::string& name, const std::string& 
 		character->setName(name);
 		character->setAttr("sex", sex);
 		character->setAttr("description", description);
+		if (spawnName != "") {
+			character->setAttr("spawn_name", spawnName);
+		}
 		try {
 			mAccount->createCharacter(character);
 		} catch (const std::exception& except) {

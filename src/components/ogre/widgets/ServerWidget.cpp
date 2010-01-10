@@ -28,18 +28,17 @@
 
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
-#include <Eris/Metaserver.h>
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
+#include <Eris/SpawnPoint.h>
+#include <Eris/CharacterType.h>
 #include "services/EmberServices.h"
 #include <varconf/varconf.h>
 #include <fstream>
 
 #include "ColouredListItem.h"
-#include "../GUIManager.h"
-
 
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
@@ -65,27 +64,26 @@
 #include "components/entitymapping/Definitions/ActionDefinition.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 
-
 using namespace CEGUI;
-namespace EmberOgre {
-namespace Gui {
-
-
+namespace EmberOgre
+{
+namespace Gui
+{
 
 /*template<> WidgetLoader WidgetLoaderHolder<ServerWidget>::loader("ServerWidget", &createWidgetInstance);*/
 //WidgetLoader Widget::loader("ServerWidget", &createWidgetInstance<ServerWidget>);
 
-ServerWidget::ServerWidget() : mCharacterList(0), mModelPreviewRenderer(0)
+ServerWidget::ServerWidget() :
+	mCharacterList(0), mModelPreviewRenderer(0)
 {
 }
-
 
 ServerWidget::~ServerWidget()
 {
 	if (mCharacterList) {
 		///we'll store the id of the characters as string pointers in the ListBox, so we need to delete them ourselves when we cleanup
 		for (unsigned int i = 0; i < mCharacterList->getItemCount(); ++i) {
-			delete static_cast<std::string*>(mCharacterList->getListboxItemFromIndex(i)->getUserData());
+			delete static_cast<std::string*> (mCharacterList->getListboxItemFromIndex(i)->getUserData());
 		}
 	}
 	delete mModelPreviewRenderer;
@@ -94,45 +92,42 @@ ServerWidget::~ServerWidget()
 void ServerWidget::buildWidget()
 {
 
-
 	if (loadMainSheet("ServerWidget.layout", "Server/")) {
 
 		mMainWindow->setVisible(false);
 
-		CEGUI::PushButton* okButton = static_cast<CEGUI::PushButton*>(getWindow("NoCharactersAlert/OkButton"));
+		CEGUI::PushButton* okButton = static_cast<CEGUI::PushButton*> (getWindow("NoCharactersAlert/OkButton"));
 		if (okButton) {
 			BIND_CEGUI_EVENT(okButton, CEGUI::PushButton::EventClicked, ServerWidget::OkButton_Click);
 		}
 
-
-		CEGUI::PushButton* login = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/Login"));
+		CEGUI::PushButton* login = static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/Login"));
 		BIND_CEGUI_EVENT(login, CEGUI::PushButton::EventClicked, ServerWidget::Login_Click);
-		CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*>(getWindow("LoginPanel/CreateAcc"));
+		CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/CreateAcc"));
 		BIND_CEGUI_EVENT(createAcc, CEGUI::PushButton::EventClicked, ServerWidget::CreateAcc_Click);
 
-		mCharacterList = static_cast<CEGUI::Listbox*>(getWindow("ChooseCharacterPanel/CharacterList"));
-		CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*>(getWindow("ChooseCharacterPanel/Choose"));
-		mUseCreator =  static_cast<CEGUI::PushButton*>(getWindow("UseCreator"));
-		mCreateChar = static_cast<CEGUI::PushButton*>(getWindow("CreateCharacterPanel/CreateButton"));
+		mCharacterList = static_cast<CEGUI::Listbox*> (getWindow("ChooseCharacterPanel/CharacterList"));
+		CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*> (getWindow("ChooseCharacterPanel/Choose"));
+		mUseCreator = static_cast<CEGUI::PushButton*> (getWindow("UseCreator"));
+		mCreateChar = static_cast<CEGUI::PushButton*> (getWindow("CreateCharacterPanel/CreateButton"));
 
 		BIND_CEGUI_EVENT(chooseChar, CEGUI::PushButton::EventClicked, ServerWidget::Choose_Click);
 		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click);
 		BIND_CEGUI_EVENT(mCreateChar, CEGUI::PushButton::EventClicked, ServerWidget::CreateChar_Click);
 		BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
 
-		mNewCharName = static_cast<CEGUI::Editbox*>(getWindow("CreateCharacterPanel/NameEdit"));
-		mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*>(getWindow("CreateCharacterPanel/Description"));
-		mTypesList = static_cast<CEGUI::Combobox*>(getWindow("CreateCharacterPanel/Type"));
+		mNewCharName = static_cast<CEGUI::Editbox*> (getWindow("CreateCharacterPanel/NameEdit"));
+		mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*> (getWindow("CreateCharacterPanel/Description"));
+		mTypesList = static_cast<CEGUI::Combobox*> (getWindow("CreateCharacterPanel/Type"));
 
-		mGenderRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Male"));
-		CEGUI::RadioButton* femaleRadioButton =  static_cast<CEGUI::RadioButton*>(getWindow("CreateCharacterPanel/Gender/Female"));
+		mGenderRadioButton = static_cast<CEGUI::RadioButton*> (getWindow("CreateCharacterPanel/Gender/Male"));
+		CEGUI::RadioButton* femaleRadioButton = static_cast<CEGUI::RadioButton*> (getWindow("CreateCharacterPanel/Gender/Female"));
 
 		BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
 		BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
 		BIND_CEGUI_EVENT(mTypesList, CEGUI::Combobox::EventListSelectionChanged, ServerWidget::TypesList_SelectionChanged);
 		BIND_CEGUI_EVENT(mGenderRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
 		BIND_CEGUI_EVENT(femaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
-
 
 		updateNewCharacter();
 
@@ -141,7 +136,6 @@ void ServerWidget::buildWidget()
 
 		BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
 		BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
-
 
 		Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotConnection));
 		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
@@ -154,14 +148,14 @@ void ServerWidget::buildWidget()
 		addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
 
 		addEnterButton(login);
-	/*	addTabbableWindow(login);
-		addTabbableWindow(createAcc);*/
+		/*	addTabbableWindow(login);
+		 addTabbableWindow(createAcc);*/
 		closeTabGroup();
 
 		addTabbableWindow(mNewCharName);
-	// 	addTabbableWindow(mTypesList);
-	/*	addTabbableWindow(mGenderRadioButton);
-		addTabbableWindow(femaleRadioButton);*/
+		// 	addTabbableWindow(mTypesList);
+		/*	addTabbableWindow(mGenderRadioButton);
+		 addTabbableWindow(femaleRadioButton);*/
 		addTabbableWindow(mNewCharDescription);
 		addEnterButton(mCreateChar);
 		closeTabGroup();
@@ -169,7 +163,7 @@ void ServerWidget::buildWidget()
 		hide();
 
 		createPreviewTexture();
-//	getMainSheet()->addChildWindow(mMainWindow);
+		//	getMainSheet()->addChildWindow(mMainWindow);
 	}
 
 }
@@ -184,7 +178,6 @@ void ServerWidget::connection_GotConnection(Eris::Connection* connection)
 	connection->GotServerInfo.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotServerInfo));
 	connection->refreshServerInfo();
 }
-
 
 void ServerWidget::createdAccount(Eris::Account* account)
 {
@@ -204,9 +197,9 @@ void ServerWidget::showServerInfo()
 		std::stringstream ss;
 		ss << "Server name: " << sInfo.getServername() << "\n";
 		ss << "Ruleset: " << sInfo.getRuleset() << "\n";
-		ss << "Server type: " << sInfo.getServer() << " (v. "<< sInfo.getVersion() << ")\n";
+		ss << "Server type: " << sInfo.getServer() << " (v. " << sInfo.getVersion() << ")\n";
 		ss << "Ping: " << sInfo.getPing() << "\n";
-		ss << "Uptime: " << static_cast<int>(sInfo.getUptime() / (60*60*24)) << " days\n";
+		ss << "Uptime: " << static_cast<int> (sInfo.getUptime() / (60 * 60 * 24)) << " days\n";
 		ss << "Number of clients: " << sInfo.getNumClients() << "\n";
 		info->setText(ss.str());
 
@@ -219,7 +212,7 @@ void ServerWidget::showServerInfo()
 		CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
 		std::string savedUser = "";
 		std::string savedPass = "";
-		if (fetchCredentials(savedUser, savedPass) ) {
+		if (fetchCredentials(savedUser, savedPass)) {
 			nameBox->setText(savedUser);
 			passwordBox->setText(savedPass);
 		}
@@ -243,13 +236,10 @@ bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
 	std::string homeDir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
 
 	// fetch the configuration file
-	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general","serverauthenticationcache"))
-	{
-		cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general","serverauthenticationcache");
+	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general", "serverauthenticationcache")) {
+		cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general", "serverauthenticationcache");
 		S_LOG_VERBOSE("Server Cache File [ " << cacheFile << " ]");
-	}
-	else
-	{
+	} else {
 		// default fallback value
 		cacheFile = homeDir + "/.servercache";
 		S_LOG_VERBOSE("Default Server Cache [ " << cacheFile << "]. Config general:serverauthenticationcache is not present. ");
@@ -262,20 +252,17 @@ bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
 	varconf::Config serverCache;
 
 	// If an existing cachefile is present, then read it in.
-	if(!file.fail()) {
+	if (!file.fail()) {
 		// read in file
-// 		serverCache.readFromFile(cacheFile.c_str(),varconf::GLOBAL);
+		// 		serverCache.readFromFile(cacheFile.c_str(),varconf::GLOBAL);
 		S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
-		try
-		{
-			 // make sure it is well formed
-			 serverCache.parseStream(file, varconf::GLOBAL);
-		}
-		catch (varconf::ParseError p)
-		{
-			 std::string p_str(p);
-			 S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
-			 return false;
+		try {
+			// make sure it is well formed
+			serverCache.parseStream(file, varconf::GLOBAL);
+		} catch (varconf::ParseError p) {
+			std::string p_str(p);
+			S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
+			return false;
 		}
 		file.close();
 
@@ -284,8 +271,8 @@ bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
 		S_LOG_VERBOSE("psection post-clean [ " << psection << " ]");
 		if (serverCache.findSection(psection)) {
 			// we have a file, it's loaded, and we have a section that matches the server
-			user = static_cast<std::string>(serverCache.getItem(psection,"username"));
-			pass = static_cast<std::string>(serverCache.getItem(psection,"password"));
+			user = static_cast<std::string> (serverCache.getItem(psection, "username"));
+			pass = static_cast<std::string> (serverCache.getItem(psection, "password"));
 			if (!user.empty() && !pass.empty()) {
 				S_LOG_VERBOSE("Fetched Credentials for server [" << psection << "]" << " and user [" << user << "]");
 				return true;
@@ -294,11 +281,11 @@ bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
 			return false;
 		}
 		S_LOG_VERBOSE("Did not find section [ " << psection << " ]");
-	 }
+	}
 
-	 user = "";
-	 pass = "";
-	 return false;
+	user = "";
+	pass = "";
+	return false;
 }
 
 bool ServerWidget::saveCredentials()
@@ -317,7 +304,7 @@ bool ServerWidget::saveCredentials()
 	try {
 		nameBox = getWindow("LoginPanel/NameEdit");
 		passwordBox = getWindow("LoginPanel/PasswordEdit");
-		saveBox = static_cast<CEGUI::Checkbox*>(getWindow("LoginPanel/SavePassCheck"));
+		saveBox = static_cast<CEGUI::Checkbox*> (getWindow("LoginPanel/SavePassCheck"));
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when getting windows from CEGUI: " << ex.getMessage().c_str());
 		return false;
@@ -331,25 +318,22 @@ bool ServerWidget::saveCredentials()
 		std::string sname = sInfo.getHostname();
 		std::string homeDir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
 		std::string cacheFile;
-		if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general","serverauthenticationcache"))
-		{
-			cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general","serverauthenticationcache");
+		if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general", "serverauthenticationcache")) {
+			cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general", "serverauthenticationcache");
 			S_LOG_VERBOSE("Server Cache File [ " << cacheFile << " ]");
-		}
-		else
-		{
+		} else {
 			// default fallback value
 			cacheFile = homeDir + "/.servercache";
 			S_LOG_VERBOSE("Default Server Cache [ " << cacheFile << "]. Config general:serverauthenticationcache is not present. ");
 		}
 
 		/*
-		* Create a structure that looks like:
-		* [server]
-		*
-		* username=<user>
-		* password=<pass>
-		*/
+		 * Create a structure that looks like:
+		 * [server]
+		 *
+		 * username=<user>
+		 * password=<pass>
+		 */
 		std::string psection = sname.c_str();
 		std::ifstream file(cacheFile.c_str());
 
@@ -357,17 +341,14 @@ bool ServerWidget::saveCredentials()
 		varconf::Config serverCache;
 
 		// If an existing cachefile is present, then read it in.
-		if(!file.fail()) {
+		if (!file.fail()) {
 			// read in file
-// 			serverCache.readFromFile(cacheFile.c_str(),varconf::INSTANCE);
+			// 			serverCache.readFromFile(cacheFile.c_str(),varconf::INSTANCE);
 			S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
-			try
-			{
+			try {
 				// make sure it is well formed
-				serverCache.parseStream(file, varconf::INSTANCE );
-			}
-			catch (varconf::ParseError p)
-			{
+				serverCache.parseStream(file, varconf::INSTANCE);
+			} catch (varconf::ParseError p) {
 				std::string p_str(p);
 				S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
 				return false;
@@ -391,12 +372,11 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 	account->refreshCharacterInfo();
 	fillAllowedCharacterTypes(account);
 
-	CEGUI::Checkbox* saveBox = static_cast<CEGUI::Checkbox*>(getWindow("LoginPanel/SavePassCheck"));
-	if ( saveBox->isSelected() ) {
+	CEGUI::Checkbox* saveBox = static_cast<CEGUI::Checkbox*> (getWindow("LoginPanel/SavePassCheck"));
+	if (saveBox->isSelected()) {
 		try {
 			saveCredentials();
-		} catch (const std::exception& ex)
-		{
+		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when saving password."<< ex);
 		} catch (...) {
 			S_LOG_FAILURE("Unspecified error when saving password.");
@@ -407,20 +387,20 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 
 void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg)
 {
-	CEGUI::GUISheet* helpText = static_cast<CEGUI::GUISheet*>(getWindow("LoginPanel/HelpText"));
+	CEGUI::GUISheet* helpText = static_cast<CEGUI::GUISheet*> (getWindow("LoginPanel/HelpText"));
 	helpText->setYPosition(UDim(0.6, 0));
 
-	CEGUI::GUISheet* loginFailure = static_cast<CEGUI::GUISheet*>(getWindow("LoginPanel/LoginFailure"));
+	CEGUI::GUISheet* loginFailure = static_cast<CEGUI::GUISheet*> (getWindow("LoginPanel/LoginFailure"));
 	loginFailure->setText(msg);
 	loginFailure->setVisible(true);
 }
 
 bool ServerWidget::hideLoginFailure()
 {
-	CEGUI::GUISheet* helpText = static_cast<CEGUI::GUISheet*>(getWindow("LoginPanel/HelpText"));
+	CEGUI::GUISheet* helpText = static_cast<CEGUI::GUISheet*> (getWindow("LoginPanel/HelpText"));
 	helpText->setYPosition(UDim(0.55, 0));
 
-	CEGUI::GUISheet* loginFailure = static_cast<CEGUI::GUISheet*>(getWindow("LoginPanel/LoginFailure"));
+	CEGUI::GUISheet* loginFailure = static_cast<CEGUI::GUISheet*> (getWindow("LoginPanel/LoginFailure"));
 	loginFailure->setVisible(false);
 
 	return true;
@@ -442,22 +422,53 @@ bool ServerWidget::nameBox_TextChanged(const CEGUI::EventArgs& args)
 
 void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 {
-	const std::vector< std::string >& characters = account->getCharacterTypes();
+	/**
+	 * The preferred way is to use the spawn point system. However, older servers don't support that, and instead present a single list of characters.
+	 * For spawn points, we still want to show a single list of available characters. In those cases where a character is present in multiple spawn points we'll print out the spawn point name in parenthesis.
+	 */
+	const Eris::SpawnPointMap& spawnPoints = account->getSpawnPoints();
 
-	if (characters.size() == 0) {
+	for (Eris::SpawnPointMap::const_iterator I = spawnPoints.begin(); I != spawnPoints.end(); ++I) {
+		const Eris::SpawnPoint& spawnPoint = I->second;
+		for (Eris::CharacterTypeStore::const_iterator J = spawnPoint.getAvailableCharacterTypes().begin(); J != spawnPoint.getAvailableCharacterTypes().end(); ++J) {
+			mCharacterAndSpawns.insert(CharacterAndSpawnsStore::value_type(J->getName(), spawnPoint.getName()));
+		}
+	}
+
+	const std::vector<std::string>& characters = account->getCharacterTypes();
+
+	if (mCharacterAndSpawns.size() == 0 && characters.size() == 0) {
 		showNoCharactersAlert();
 	} else {
-		for(std::vector< std::string >::const_iterator I = characters.begin(); I != characters.end(); ++I) {
+		//The preferred way is by using spawn points. Using the character type list is kept for backwards compatibility.
+		if (mCharacterAndSpawns.size() > 0) {
+			unsigned int i = 0;
+			for (CharacterAndSpawnsStore::const_iterator I = mCharacterAndSpawns.begin(); I != mCharacterAndSpawns.end(); ++I) {
+				std::string name = I->first;
+				if (mCharacterAndSpawns.count(I->first) > 1) {
+					name += " (" + I->second + ")";
+				}
+				mTypesList->addItem(new Gui::ColouredListItem(name, i++, 0));
+			}
 
-			///if the user has access to the "creator" character, he/she can log in as this to get admin privileges
-			///thus we active our special "admin button"
-			if (*I == "creator") {
+			//Also check if we can access the creator
+			if (std::find(characters.begin(), characters.end(), "creator") != characters.end()) {
 				mUseCreator->setVisible(true);
 				mUseCreator->setEnabled(true);
 			}
+		} else {
+			for (std::vector<std::string>::const_iterator I = characters.begin(); I != characters.end(); ++I) {
 
-			CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, 0, 0);
-			mTypesList->addItem(item);
+				///if the user has access to the "creator" character, he/she can log in as this to get admin privileges
+				///thus we active our special "admin button"
+				if (*I == "creator") {
+					mUseCreator->setVisible(true);
+					mUseCreator->setEnabled(true);
+				}
+
+				CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, 0, 0);
+				mTypesList->addItem(item);
+			}
 		}
 	}
 }
@@ -469,17 +480,17 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 	Eris::CharacterMap::iterator I_end = cm.end();
 
 	if (I == I_end) {
-	//if the user has no previous characters, show the create character tab
+		//if the user has no previous characters, show the create character tab
 
-		CEGUI::TabControl* tabControl =  static_cast<CEGUI::TabControl*>(getWindow("CharacterTabControl"));
+		CEGUI::TabControl* tabControl = static_cast<CEGUI::TabControl*> (getWindow("CharacterTabControl"));
 		if (tabControl) {
 			//try {
-				tabControl->setSelectedTab(getPrefix() + "CreateCharacterPanel");
+			tabControl->setSelectedTab(getPrefix() + "CreateCharacterPanel");
 			//} catch (...) {};
 		}
 	} else {
 
-		for(;I != I_end; ++I) {
+		for (; I != I_end; ++I) {
 			const Atlas::Objects::Entity::RootEntity& entity = (*I).second;
 
 			std::string itemText("");
@@ -503,9 +514,8 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 {
 	CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
 	if (item) {
-/*	const Atlas::Objects::Entity::GameEntity & entity = static_cast<const Atlas::Objects::Entity::GameEntity &>(item->getUserData());*/
 
-		std::string* id = static_cast<std::string*>(item->getUserData());
+		std::string* id = static_cast<std::string*> (item->getUserData());
 
 		Ember::EmberServices::getSingletonPtr()->getServerService()->takeCharacter(*id);
 	}
@@ -515,15 +525,13 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
 {
 	///create a new admin character
-	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter("Lordi", "female", "creator", "Almighty");
+	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter("The Creator", "female", "creator", "Almighty", "");
 	return true;
 }
 
-
 bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
 {
-
-	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description);
+	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
 	return true;
 }
 
@@ -532,16 +540,26 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 	CEGUI::ListboxItem* item = mTypesList->getSelectedItem();
 	if (item) {
 
-		std::string type = item->getText().c_str();
-		mNewChar.type = type;
+		unsigned int itemIndex = item->getID();
+		//Check if we have a list of spawn points, or if not the older single character type list.
+		if (mCharacterAndSpawns.size() > 0) {
+			CharacterAndSpawnsStore::const_iterator I = mCharacterAndSpawns.begin();
+			for (int i = 0; i < itemIndex; ++i) {
+				I++;
+			}
+			mNewChar.type = I->first;
+			mNewChar.spawnPoint = I->second;
+		} else {
+			mNewChar.type = mAccount->getCharacterTypes()[itemIndex];
+		}
 
 		if (mModelPreviewRenderer) {
 
 			///we need to get the model mapping definition for this type
 			///once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
-			Eris::TypeService* typeService = Ember::EmberServices::getSingletonPtr()->getServerService()->getConnection()->getTypeService();
- 			Eris::TypeInfo* erisType = typeService->getTypeByName(type);
- 			if (erisType) {
+			Eris::TypeService* typeService = mAccount->getConnection()->getTypeService();
+			Eris::TypeInfo* erisType = typeService->getTypeByName(mNewChar.type);
+			if (erisType) {
 				const Ember::EntityMapping::Definitions::EntityMappingDefinition* definition = Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
 				if (definition) {
 					Ember::EntityMapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
@@ -594,9 +612,6 @@ void ServerWidget::updateNewCharacter()
 	mCreateChar->setEnabled(mNewChar.isValid());
 }
 
-
-
-
 bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 {
 	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
@@ -618,7 +633,7 @@ bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
 	CEGUI::String name = nameBox->getText();
 	CEGUI::String password = passwordBox->getText();
 
-	mAccount->createAccount(std::string(name.c_str()),std::string(name.c_str()),std::string(password.c_str()));
+	mAccount->createAccount(std::string(name.c_str()), std::string(name.c_str()), std::string(password.c_str()));
 	return true;
 }
 
@@ -634,13 +649,13 @@ bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args)
 void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 {
 	hide();
-/*	mGuiManager->removeWidget(this);
-	delete this;*/
+	/*	mGuiManager->removeWidget(this);
+	 delete this;*/
 }
 
 void ServerWidget::createPreviewTexture()
 {
-	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*>(getWindow("CreateCharacterPanel/Image"));
+	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*> (getWindow("CreateCharacterPanel/Image"));
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
 	} else {
@@ -657,14 +672,13 @@ void ServerWidget::showNoCharactersAlert()
 
 }
 
-
-bool NewCharacter::isValid( ) const
+bool NewCharacter::isValid() const
 {
 	return name != "" && gender != "" && type != "";
 }
 
-
-};
-};
-
+}
+;
+}
+;
 

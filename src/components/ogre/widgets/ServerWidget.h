@@ -32,6 +32,7 @@
 #include <Atlas/Message/Element.h>
 
 #include "Widget.h"
+#include <map>
 
 
 namespace EmberOgre {
@@ -47,6 +48,7 @@ public:
 	std::string description;
 	std::string gender;
 	std::string type;
+	std::string spawnPoint;
 	
 	bool isValid() const;
 	
@@ -67,6 +69,8 @@ public:
 	virtual void buildWidget();
 
 protected:
+
+	typedef std::multimap<std::string, std::string> CharacterAndSpawnsStore;
 
 	Eris::Account* mAccount;
 	CEGUI::Listbox* mCharacterList;
@@ -156,6 +160,8 @@ protected:
 	 * @brief Shows an alert explaining to the user that the server doesn't have any available characters and thus isn't correctly setup.
 	 */
 	void showNoCharactersAlert();
+
+	CharacterAndSpawnsStore mCharacterAndSpawns;
 
 };
 };

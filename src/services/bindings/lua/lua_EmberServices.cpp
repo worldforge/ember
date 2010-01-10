@@ -1461,7 +1461,8 @@ static int tolua_EmberServices_Ember_ServerService_createCharacter00(lua_State* 
      !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,4,0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,5,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,6,&tolua_err)
+     !tolua_iscppstring(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,7,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -1472,19 +1473,21 @@ static int tolua_EmberServices_Ember_ServerService_createCharacter00(lua_State* 
   const std::string sex = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
   const std::string type = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
   const std::string description = ((const std::string)  tolua_tocppstring(tolua_S,5,0));
+  const std::string spawnName = ((const std::string)  tolua_tocppstring(tolua_S,6,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'createCharacter'",NULL);
 #endif
   {
-   bool tolua_ret = (bool)  self->createCharacter(name,sex,type,description);
+   bool tolua_ret = (bool)  self->createCharacter(name,sex,type,description,spawnName);
    tolua_pushboolean(tolua_S,(bool)tolua_ret);
    tolua_pushcppstring(tolua_S,(const char*)name);
    tolua_pushcppstring(tolua_S,(const char*)sex);
    tolua_pushcppstring(tolua_S,(const char*)type);
    tolua_pushcppstring(tolua_S,(const char*)description);
+   tolua_pushcppstring(tolua_S,(const char*)spawnName);
   }
  }
- return 5;
+ return 6;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'createCharacter'.",&tolua_err);

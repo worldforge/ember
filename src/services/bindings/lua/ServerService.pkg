@@ -19,7 +19,7 @@ class ServerService
 	
     void takeCharacter(const std::string &id);
 
-	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description);
+	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
 
 	Eris::View* getView();
 	Eris::Avatar* getAvatar();
