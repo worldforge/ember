@@ -437,6 +437,13 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 
 	const std::vector<std::string>& characters = account->getCharacterTypes();
 
+	//If the account inherits from "admin" we're an admin and can create a creator entity.
+	if (std::find(account->getParents().begin(), account->getParents().end(), "admin") != account->getParents().end()) {
+		mUseCreator->setVisible(true);
+		mUseCreator->setEnabled(true);
+
+	}
+
 	if (mCharacterAndSpawns.size() == 0 && characters.size() == 0) {
 		showNoCharactersAlert();
 	} else {
@@ -451,20 +458,8 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 				mTypesList->addItem(new Gui::ColouredListItem(name, i++, 0));
 			}
 
-			//Also check if we can access the creator
-			if (std::find(characters.begin(), characters.end(), "creator") != characters.end()) {
-				mUseCreator->setVisible(true);
-				mUseCreator->setEnabled(true);
-			}
 		} else {
 			for (std::vector<std::string>::const_iterator I = characters.begin(); I != characters.end(); ++I) {
-
-				///if the user has access to the "creator" character, he/she can log in as this to get admin privileges
-				///thus we active our special "admin button"
-				if (*I == "creator") {
-					mUseCreator->setVisible(true);
-					mUseCreator->setEnabled(true);
-				}
 
 				CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, 0, 0);
 				mTypesList->addItem(item);
