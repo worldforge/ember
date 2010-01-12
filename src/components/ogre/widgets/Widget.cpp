@@ -321,7 +321,7 @@ namespace Gui {
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	void Widget::addTabbableWindow(CEGUI::Window* window)

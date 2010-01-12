@@ -57,7 +57,6 @@ bool ConsoleAdapter::consoleInputBox_KeyDown(const CEGUI::EventArgs& args)
 bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 {
 	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
-//	fprintf(stderr, (std::string("CEGUI - KEY UP:") + keyargs.scancode + "\n").c_str());
 	
 	if(keyargs.scancode != CEGUI::Key::Tab)
 	{
@@ -83,7 +82,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				mInputBox->setText(mBackend->getHistoryString());
 			}
 			
-			break;
+			return true;
 		}
 		case CEGUI::Key::ArrowDown:
 		{
@@ -101,7 +100,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				}
 			}
 			
-			break;
+			return true;
 		}
 		case CEGUI::Key::Tab:
 		{
@@ -110,7 +109,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 			// only process commands
 			if(sCommand[0] != '/')
 			{
-				break;
+				return true;
 			}
 			sCommand = sCommand.substr(1, mInputBox->getCaratIndex() - 1);
 			if(mTabPressed == true)
@@ -185,7 +184,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 							{
 								if(sCommonPrefix[i] != (*iCommand)[i])
 								{
-									break;
+									return true;
 								}
 								++i;
 							}
@@ -203,7 +202,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				}
 			}
 				
-			break;
+			return true;
 		}
 		case CEGUI::Key::Return:
 		case CEGUI::Key::NumpadEnter:
@@ -230,7 +229,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 				}
 			}
 		
-			break;
+			return true;
 		}
 		default:
 		{
@@ -238,7 +237,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 		}
 	}
 	
-	return true;
+	return false;
 }
 
 
