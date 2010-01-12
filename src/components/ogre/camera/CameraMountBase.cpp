@@ -60,7 +60,7 @@ void CameraMountBase::attachToCamera(MainCamera& camera)
 
 void CameraMountBase::detachFromCamera()
 {
-
+	mCamera = 0;
 }
 
 void CameraMountBase::move(const WFMath::Vector<3>& movement, const WFMath::Quaternion& orientation, float timeslice)
