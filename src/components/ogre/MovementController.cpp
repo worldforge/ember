@@ -90,12 +90,14 @@ MovementController::MovementController(Avatar& avatar) :
 		if (mFreeFlyingNode) {
 			if (mAvatar.getEmberEntity().getPredictedPos().isValid()) {
 				mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getPredictedPos()));
+				mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
 			}
-			mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
 			mFreeFlyingMotionHandler = std::auto_ptr<FreeFlyingCameraMotionHandler>(new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
 			mCameraMount = std::auto_ptr<Camera::ThirdPersonCameraMount>(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()));
 			mCameraMount->setMotionHandler(mFreeFlyingMotionHandler.get());
 			mCameraMount->attachToNode(mFreeFlyingNode);
+		} else {
+			S_LOG_FAILURE("Failed to create free flying camera node.");
 		}
 
 	} catch (const std::exception& ex) {
@@ -268,9 +270,8 @@ void MovementController::createDecal(Ogre::Vector3 position)
 		// 	mDecalNode->showBoundingBox(true);
 
 
-// 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
-	} catch (const std::exception& ex)
-	{
+		// 		mPulsatingController = new Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 1, 0.33, 0.25);
+	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when creating terrain decal." << ex);
 	}
 }
