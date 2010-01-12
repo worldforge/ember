@@ -193,7 +193,7 @@ bool GUICEGUIAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& fr
 	try {
 		mGuiSystem->injectMousePosition(motion.xPosition, motion.yPosition);
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
 	return true;
 }
@@ -214,8 +214,6 @@ bool GUICEGUIAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& butto
 	try {
 		mGuiSystem->injectMouseButtonUp(ceguiButton);
 		return false;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	} catch (const std::exception& e) {
 		S_LOG_WARNING("Error in CEGUI." << e);
 	} catch (...) {
@@ -237,14 +235,14 @@ bool GUICEGUIAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& but
 		try {
 			mGuiSystem->injectMouseWheelChange(-1.0);
 		} catch (const CEGUI::Exception& ex) {
-			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+			S_LOG_WARNING("Error in CEGUI." << ex);
 		}
 		return false;
 	} else if(button == Ember::Input::MouseWheelUp) {
 		try {
 			mGuiSystem->injectMouseWheelChange(1.0);
 		} catch (const CEGUI::Exception& ex) {
-			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+			S_LOG_WARNING("Error in CEGUI." << ex);
 		}
 		return false;
 	} else {
@@ -255,7 +253,7 @@ bool GUICEGUIAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& but
 		mGuiSystem->injectMouseButtonDown(ceguiButton);
 		return false;
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
 	return true;
 }
@@ -278,7 +276,7 @@ bool GUICEGUIAdapter::injectChar(char character)
 			mGuiSystem->injectChar(character);
 		}
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
 	return true;
 
@@ -287,9 +285,13 @@ bool GUICEGUIAdapter::injectChar(char character)
 bool GUICEGUIAdapter::injectKeyDown(const SDLKey& key)
 {
 	try {
-		mGuiSystem->injectKeyDown(mKeyMap[key]);
+		SDLKeyMap::const_iterator I =  mKeyMap.find(key);
+		if (I != mKeyMap.end())  {
+			unsigned int scanCode = I->second;
+			mGuiSystem->injectKeyDown(scanCode);
+		}
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
 	return true;
 
@@ -298,9 +300,13 @@ bool GUICEGUIAdapter::injectKeyDown(const SDLKey& key)
 bool GUICEGUIAdapter::injectKeyUp(const SDLKey& key)
 {
 	try {
-		mGuiSystem->injectKeyUp(mKeyMap[key]);
+		SDLKeyMap::const_iterator I =  mKeyMap.find(key);
+		if (I != mKeyMap.end())  {
+			unsigned int scanCode = I->second;
+			mGuiSystem->injectKeyUp(scanCode);
+		}
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
 	return true;
 
