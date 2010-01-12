@@ -102,8 +102,10 @@ EmberEntity::~EmberEntity()
 
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
+	Eris::Entity::init(ge, fromCreateOp);
 
 	assert(mEntityMapping);
+
 
 	///calling this will result in a call to setModel(...)
 	mEntityMapping->initialize();
@@ -112,7 +114,6 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	//	setSounds();
 
 
-	Eris::Entity::init(ge, fromCreateOp);
 
 	// set the Ogre node position and orientation based on Atlas data
 	std::stringstream ss;
