@@ -48,13 +48,13 @@ public:
 	ThirdPersonCameraMount(Ogre::SceneManager& sceneManager);
 
 	/**
-	 * emitted when the distance between the camera and the avatar has changed
+	 * emitted when the distance between the camera and the  has changed
 	 * @param Ogre::Real the new distance
 	 */
 	sigc::signal<void, Ogre::Real> EventChangedCameraDistance;
 
 	/**
-	 *    Sets the distance from the camera to the avatar.
+	 *    Sets the distance from the camera to the .
 	 * @param distance the new distance
 	 */
 	void setCameraDistance(Ogre::Real distance);
@@ -95,17 +95,19 @@ public:
 
 protected:
 
-	Ogre::SceneNode* mAvatarCameraRootNode;
-	Ogre::SceneNode* mAvatarCameraPitchNode;
-	Ogre::SceneNode* mAvatarCameraNode;
+	Ogre::SceneNode* mCameraRootNode;
+	Ogre::SceneNode* mCameraPitchNode;
+	Ogre::SceneNode* mCameraNode;
 
 	Ogre::Degree mDegreeOfPitchPerSecond;
 	Ogre::Degree mDegreeOfYawPerSecond;
 
 	Ogre::Vector3 mLastPosition;
-	Ogre::Real mWantedCameraDistance, mCurrentCameraDistance;
+	Ogre::Real mWantedCameraDistance;
+	Ogre::Real mCurrentCameraDistance;
 
-	Ogre::RaySceneQuery *mAdjustTerrainRaySceneQuery, *mCameraRaySceneQuery;
+	Ogre::RaySceneQuery* mAdjustTerrainRaySceneQuery;
+	Ogre::RaySceneQuery* mCameraRaySceneQuery;
 	Ogre::Ray mAdjustTerrainRay;
 
 	bool mIsAdjustedToTerrain;

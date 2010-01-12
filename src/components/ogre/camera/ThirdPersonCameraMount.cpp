@@ -30,7 +30,7 @@ namespace Camera
 {
 
 ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager) :
-	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mDegreeOfPitchPerSecond(50), mDegreeOfYawPerSecond(50), mAdjustTerrainRaySceneQuery(0), mIsAdjustedToTerrain(true), mInvertCamera(false)
+	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mDegreeOfPitchPerSecond(50), mDegreeOfYawPerSecond(50), mWantedCameraDistance(10), mCurrentCameraDistance(0), mAdjustTerrainRaySceneQuery(0), mCameraRaySceneQuery(0), mIsAdjustedToTerrain(true), mInvertCamera(false)
 {
 	createNodesForCamera(sceneManager);
 	createRayQueries(sceneManager);
@@ -38,15 +38,15 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager)
 
 void ThirdPersonCameraMount::attachToNode(Ogre::Node* sceneNode)
 {
-	if (sceneNode == mAvatarCameraRootNode->getParentSceneNode()) {
+	if (sceneNode == mCameraRootNode->getParentSceneNode()) {
 		return;
 	}
-	if (mAvatarCameraRootNode->getParentSceneNode()) {
+	if (mCameraRootNode->getParentSceneNode()) {
 		//first detach from our current node
-		mAvatarCameraRootNode->getParentSceneNode()->removeChild(mAvatarCameraRootNode);
+		mCameraRootNode->getParentSceneNode()->removeChild(mCameraRootNode);
 	}
 	if (sceneNode) {
-		sceneNode->addChild(mAvatarCameraRootNode);
+		sceneNode->addChild(mCameraRootNode);
 	}
 }
 
@@ -59,7 +59,7 @@ Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 	}
 
 	///prevent the camera from being turned upside down
-	const Ogre::Quaternion& orientation(mAvatarCameraPitchNode->getOrientation());
+	const Ogre::Quaternion& orientation(mCameraPitchNode->getOrientation());
 	Ogre::Degree pitch(orientation.getPitch());
 	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
 		degrees = std::min<float>(degrees.valueDegrees(), 90 - pitch.valueDegrees());
@@ -69,10 +69,10 @@ Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 	}
 
 	if (degrees.valueDegrees()) {
-		mAvatarCameraPitchNode->pitch(degrees);
+		mCameraPitchNode->pitch(degrees);
 
 		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
-		mAvatarCameraPitchNode->_update(true, false);
+		mCameraPitchNode->_update(true, false);
 	}
 
 	//Return true if the current pitch has changed.
@@ -84,26 +84,26 @@ Ogre::Degree ThirdPersonCameraMount::yaw(float relativeMovement)
 	Ogre::Degree degrees(mDegreeOfYawPerSecond * relativeMovement);
 
 	if (degrees.valueDegrees()) {
-		mAvatarCameraRootNode->yaw(degrees);
+		mCameraRootNode->yaw(degrees);
 
 		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
-		mAvatarCameraRootNode->_update(true, false);
+		mCameraRootNode->_update(true, false);
 	}
 	return degrees;
 }
 
 void ThirdPersonCameraMount::createNodesForCamera(Ogre::SceneManager& sceneManager)
 {
-	mAvatarCameraRootNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraRootNode"));
-	mAvatarCameraRootNode->setInheritOrientation(false);
-	//we need to adjust for the height of the avatar mesh
-	mAvatarCameraRootNode->setPosition(Ogre::Vector3(0, 2, 0));
+	mCameraRootNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraRootNode"));
+	mCameraRootNode->setInheritOrientation(false);
+	//we need to adjust for the height of the  mesh
+	mCameraRootNode->setPosition(Ogre::Vector3(0, 2, 0));
 	//rotate to sync with WF world
-	mAvatarCameraRootNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
+	mCameraRootNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90));
 
-	mAvatarCameraPitchNode = mAvatarCameraRootNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraPitchNode"));
-	mAvatarCameraPitchNode->setPosition(Ogre::Vector3(0, 0, 0));
-	mAvatarCameraNode = mAvatarCameraPitchNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraNode"));
+	mCameraPitchNode = mCameraRootNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraPitchNode"));
+	mCameraPitchNode->setPosition(Ogre::Vector3(0, 0, 0));
+	mCameraNode = mCameraPitchNode->createChildSceneNode(OgreInfo::createUniqueResourceName("ThirdPersonCameraNode"));
 	setCameraDistance(10);
 
 }
@@ -118,7 +118,7 @@ void ThirdPersonCameraMount::_setCameraDistance(Ogre::Real distance)
 {
 	mCurrentCameraDistance = distance;
 	Ogre::Vector3 pos(0, 0, distance);
-	mAvatarCameraNode->setPosition(pos);
+	mCameraNode->setPosition(pos);
 	if (mCamera && mCamera->getParentNode()) {
 		///We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
 		mCamera->getParentNode()->needUpdate(true);
@@ -139,13 +139,13 @@ void ThirdPersonCameraMount::createRayQueries(Ogre::SceneManager& sceneManager)
 void ThirdPersonCameraMount::attachToCamera(MainCamera& camera)
 {
 	CameraMountBase::attachToCamera(camera);
-	mAvatarCameraNode->attachObject(mCamera);
+	mCameraNode->attachObject(mCamera);
 }
 
 void ThirdPersonCameraMount::detachFromCamera()
 {
+	mCameraNode->detachObject(mCamera);
 	CameraMountBase::detachFromCamera();
-	mAvatarCameraNode->detachObject(mCamera);
 }
 
 void ThirdPersonCameraMount::runCommand(const std::string &command, const std::string &args)
