@@ -73,7 +73,9 @@ void OceanRepresentation::entity_Moved()
 
 void OceanRepresentation::updateWaterPosition()
 {
-	mWater.setLevel(mEntity.getPredictedPos().z());
+	if (mEntity.getPredictedPos().isValid()) {
+		mWater.setLevel(mEntity.getPredictedPos().z());
+	}
 }
 
 }
