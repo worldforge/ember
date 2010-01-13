@@ -27,13 +27,14 @@
 #include "OgreInfo.h"
 #include <sstream>
 
+#ifdef HAVE_OPENGL
 #if defined(__WIN32__)
 #elif defined(__APPLE__)
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
-
+#endif
 
 namespace EmberOgre {
 
@@ -46,10 +47,14 @@ bool OgreInfo::isIndirect()
 	///TODO: add checks for win32 too
 	return false;
 #else
+#ifdef HAVE_OPENGL
 	const GLubyte* pcRenderer = glGetString(GL_RENDERER);
 	const std::string renderer((const char*)pcRenderer);
 
 	return renderer.find("Indirect") != std::string::npos;
+#else
+	return false;
+#endif
 #endif
 
 }
