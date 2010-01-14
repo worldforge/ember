@@ -87,7 +87,8 @@ dnl AC_MSG_CHECKING(for glViewport in libGL)
 
 AC_CHECK_LIB([GL], [glViewport],[
     LIBS="$LIBS -lGL"
-	CXXFLAGS="$CXXFLAGS -I/usr/X11R6/include -I/usr/include -DHAVE_OPENGL"
+	CXXFLAGS="$CXXFLAGS -I/usr/X11R6/include -I/usr/include"
+	AC_DEFINE(HAVE_OPENGL, 1, [Define to 1 if you have the `OpenGL' library.])
     ],[
 	AC_MSG_NOTICE([Could not find OpenGL library. This only means that we can't check for indirect rendering.])
     ]
