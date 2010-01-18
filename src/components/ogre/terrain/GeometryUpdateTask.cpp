@@ -22,6 +22,7 @@
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainPageGeometry.h"
 #include "HeightMapUpdateTask.h"
+#include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
 
@@ -64,6 +65,12 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
 
+	for (PageSet::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
+		TerrainPage* page = *I;
+		if (page->getBridge()) {
+			page->getBridge()->updateTerrain();
+		}
+	}
 }
 
 void GeometryUpdateTask::executeTaskInMainThread()

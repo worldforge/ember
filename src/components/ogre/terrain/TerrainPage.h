@@ -86,6 +86,7 @@ public:
 	 * @brief Ctor.
 	 * @param position The page index in WF space.
 	 * @param manager The terrain manager.
+	 * @param terrain The Mercator terrain instance.
 	 */
 	TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain);
 
@@ -93,7 +94,6 @@ public:
 	 * @brief Dtor.
 	 */
 	~TerrainPage();
-
 
 	/**
 	 *    The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
@@ -119,7 +119,6 @@ public:
 	 */
 	const TerrainPosition& getWFPosition() const;
 
-
 	/**
 	 * @brief The material used for the page.
 	 * @return
@@ -135,7 +134,6 @@ public:
 	 * @brief Shows the foliage for this page, if no foliage exists it's created.
 	 */
 	void showFoliage();
-
 
 	/**
 	 * @brief Hides the foliage for this page, but does not destroy it.
@@ -167,7 +165,6 @@ public:
 	void updateAllShaderTextures(bool repopulate = true);
 
 	void regenerateCoverageMap();
-
 
 	int getPageSize() const;
 
@@ -205,16 +202,15 @@ public:
 	 */
 	const WFMath::AxisBox<2>& getExtent() const;
 
-// 	const PlantsStore& getPlants() const;
-
+	/**
+	 * @brief Accessor for the page surface belonging to this page.
+	 * @returns The page surface instance belonging to this page.
+	 */
 	const TerrainPageSurface* getSurface() const;
 
 	/**
 	 * @brief Place the plants for the supplied area in the supplied store.
-	 * @param layer The layer which we should use as base for determining what plants to get.
-	 * @param plantType The plant type.
-	 * @param area The enclosing area.
-	 * @param store The store in which to place the plants.
+	 * @param query A query result instance which will be populated by the method.
 	 */
 	void getPlantsForArea(PlantAreaQueryResult& queryResult) const;
 
@@ -223,8 +219,6 @@ public:
 	 * @returns The shadow instance which handles the shadow update and generation for this page.
 	 */
 	const TerrainPageShadow& getPageShadow() const;
-
-
 
 	/**
 	 * @brief Binds a bridge instance to this page.
@@ -245,6 +239,11 @@ public:
 	 */
 	void notifyBridgePageReady();
 
+	/**
+	 * @brief Accessor for a bridge registered to this page.
+	 * @returns A bridge instance, which acts as a connection between the page and any rendering system. Null if no bridge has been registered with the page.
+	 */
+	ITerrainPageBridge* getBridge() const;
 
 	/**
 	 * @brief Gets the normal at the specified local position.
@@ -254,8 +253,16 @@ public:
 	 */
 	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
+	/**
+	 * @brief Accessor for the geometry instance which handles the 2d geometry of the page.
+	 * @returns The geometry instance which handles the 2d geometry of the page.
+	 */
 	TerrainPageGeometry& getGeometry();
 
+	/**
+	 * @brief Accessor for the geometry instance which handles the 2d geometry of the page.
+	 * @returns The geometry instance which handles the 2d geometry of the page.
+	 */
 	const TerrainPageGeometry& getGeometry() const;
 
 

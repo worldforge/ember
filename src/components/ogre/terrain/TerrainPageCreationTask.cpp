@@ -24,10 +24,9 @@
 #include "TerrainPageGeometry.h"
 #include "TerrainMaterialCompilationTask.h"
 #include "HeightMapUpdateTask.h"
+#include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
-
-#include <OgreMaterial.h>
 
 namespace EmberOgre
 {
@@ -72,6 +71,9 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 	for (SegmentVector::const_iterator I = segmentVector.begin(); I != segmentVector.end(); ++I) {
 		segments.push_back(I->segment);
 	}
+	if (mBridge) {
+		mBridge->updateTerrain();
+	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
 }
 
@@ -79,12 +81,11 @@ void TerrainPageCreationTask::executeTaskInMainThread()
 {
 	if (mPage) {
 
-		//		mPage->loadShadow();
-		//		mPage->generateTerrainMaterials(false);
-
 		mTerrainManager.addPage(mPage);
 
-		mPage->notifyBridgePageReady();
+		if (mBridge) {
+			mBridge->terrainPageReady();
+		}
 	}
 }
 

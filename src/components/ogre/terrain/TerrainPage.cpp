@@ -120,10 +120,6 @@ void TerrainPage::repopulateGeometry()
 
 void TerrainPage::signalGeometryChanged()
 {
-	if (mBridge) {
-		mBridge->updateTerrain();
-	}
-
 	Ogre::Vector2 targetPage = Convert::toOgre<Ogre::Vector2>(mPosition);
 
 	///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
@@ -131,6 +127,11 @@ void TerrainPage::signalGeometryChanged()
 
 	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
 	mManager.getAdapter()->reloadPage(static_cast<unsigned int> (adjustedOgrePos.x), static_cast<unsigned int> (adjustedOgrePos.y));
+}
+
+ITerrainPageBridge* TerrainPage::getBridge() const
+{
+	return mBridge;
 }
 
 void TerrainPage::setupShadowTechnique()

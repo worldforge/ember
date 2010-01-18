@@ -155,8 +155,6 @@ void EmberPagingLandScapeData2D_HeightField::eventTerrainPageLoaded()
 {
 	S_LOG_VERBOSE("Terrain page at (" << mPageX << ", " << mPageZ << ") got TerrainPageLoaded event");
 
-	mBridge->updateTerrain();
-
 	// notify that terrain data has been loaded
 	mParent->getSceneManager()->getPageManager()->getPage(mPageX, mPageZ, false)->eventData2DLoaded(true);
 }
