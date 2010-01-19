@@ -53,6 +53,7 @@
 #include "framework/LoggingInstance.h"
 #include "framework/tasks/TaskQueue.h"
 #include "framework/tasks/SerialTask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include "services/config/ConfigService.h"
 
 #include "../Convert.h"
@@ -95,7 +96,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-class BasePointRetrieveTask: public Ember::Tasks::ITask
+class BasePointRetrieveTask: public Ember::Tasks::TemplateNamedTask<BasePointRetrieveTask>
 {
 
 private:
@@ -120,7 +121,7 @@ public:
 
 };
 
-class FoliagePreparationTask: public Ember::Tasks::ITask
+class FoliagePreparationTask: public Ember::Tasks::TemplateNamedTask<FoliagePreparationTask>
 {
 private:
 
@@ -224,7 +225,6 @@ TerrainShader* TerrainManager::createShader(const TerrainLayerDefinition* layerD
 	return shader;
 }
 
-
 void TerrainManager::addTerrainMod(TerrainMod* terrainMod)
 {
 	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
@@ -325,6 +325,11 @@ void TerrainManager::markShaderForUpdate(const TerrainShader* shader, Mercator::
 			updateRequest.UpdateAll = true;
 		}
 	}
+}
+
+const ShaderStore& TerrainManager::getAllShaders() const
+{
+	return mShaderMap;
 }
 
 bool TerrainManager::frameEnded(const Ogre::FrameEvent & evt)

@@ -294,6 +294,10 @@ public:
 	 */
 	bool isFoliageShown() const;
 
+	/**
+	 * @brief Adds a new page to the manager,
+	 * @param page A terrain page instance.
+	 */
 	void addPage(TerrainPage* page);
 
 	/**
@@ -304,10 +308,24 @@ public:
 	 */
 	void reloadTerrain(const std::vector<TerrainPosition>& positions);
 
+	/**
+	 * @brief Updates the positions of all entities contained on the supplied pages.
+	 * This should be called whenever the geometry of a page has changed, so that the entities which sits on it are adjusted correctly.
+	 * @param pagesToUpdate The pages which needs to have the contained entities' positions updated.
+	 */
 	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
 
+	/**
+	 * @brief Gets all currently defined basepoints asynchronously.
+	 * The call to the callback will happen in the main thread.
+	 * @param asyncCallback The callback which will be called when all base points have been fetched.
+	 */
 	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >& >& asyncCallback);
 
+	/**
+	 * @brief Sets the lightning instance to use.
+	 * @param lightning The lightning instance to use, or null if none should be used.
+	 */
 	void setLightning(ILightning* lightning);
 
 	/**
@@ -317,6 +335,12 @@ public:
 	 * @param asyncCallback A callback to be called when the query has been executed in a background thread.
 	 */
 	void getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const Terrain::PlantAreaQueryResult&> asyncCallback);
+
+	/**
+	 * @brief Accessor for the shaders registered with the manager.
+	 * @returns A store of all the shaders registered with the manager.
+	 */
+	const ShaderStore& getAllShaders() const;
 
 protected:
 
