@@ -22,6 +22,13 @@
 
 #include "framework/Exception.h"
 
+#define LOG_TASKS
+
+
+#ifdef LOG_TASKS
+#include "framework/TimedLog.h"
+#endif
+
 namespace Ember
 {
 
@@ -56,6 +63,10 @@ const TaskUnit::SubtasksStore& TaskUnit::getSubtasks() const
 
 void TaskUnit::executeInBackgroundThread(TaskExecutionContext& context)
 {
+#ifdef LOG_TASKS
+	TimedLog timedLog(mTask->getName() + ": background");
+#endif
+
 	try {
 		if (mListener) {
 			mListener->executionStarted();
@@ -79,6 +90,10 @@ void TaskUnit::executeInBackgroundThread(TaskExecutionContext& context)
 
 void TaskUnit::executeInMainThread()
 {
+#ifdef LOG_TASKS
+	TimedLog timedLog(mTask->getName() + ": foreground");
+#endif
+
 	//First execute all subtasks
 	for (SubtasksStore::const_iterator I = mSubtasks.begin(); I != mSubtasks.end(); ++I) {
 		(*I)->executeInMainThread();
