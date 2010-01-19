@@ -640,7 +640,7 @@ namespace Ogre
         const unsigned int totalNumTiles = NumPages * (NumTiles*NumTiles) + 1;
     	    
 		///EMBER: added for ember, since we never want the scale to be different from the page size
-		scale.x = scale.z = PageSize;
+		scale.x = scale.z = PageSize - 1;
 		scale.y = 1;
 // 	    setReal (scale.x, "ScaleX");
 //         setReal (scale.y, "ScaleY");
