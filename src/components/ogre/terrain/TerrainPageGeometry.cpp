@@ -27,6 +27,10 @@
 #include "TerrainPageGeometry.h"
 
 #include "TerrainPage.h"
+#include "OgreImage.h"
+#include "WFImage.h"
+#include "Buffer.h"
+#include "components/ogre/Convert.h"
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
 
@@ -45,8 +49,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page, float defaultHeight) :
-	mPage(page), mDefaultHeight(defaultHeight)
+TerrainPageGeometry::TerrainPageGeometry(TerrainPage& page, const Mercator::Terrain& terrain, float defaultHeight) :
+	mPage(page), mDefaultHeight(defaultHeight), mTerrain(terrain)
 {
 }
 
@@ -54,12 +58,15 @@ TerrainPageGeometry::~TerrainPageGeometry()
 {
 }
 
-void TerrainPageGeometry::init(const Mercator::Terrain& terrain)
+void TerrainPageGeometry::init()
 {
 	mLocalSegments.clear();
 	for (int y = 0; y < mPage.getNumberOfSegmentsPerAxis(); ++y) {
-		for (int x = 0; x < mPage.getNumberOfSegmentsPerAxis(); ++x) {
-			Mercator::Segment* segment = getSegmentAtLocalIndex(terrain, x, y);
+		//Note that we're getting one extra segment on the horizontal axis.
+		//This is because the WF world space and the Ogre space doesn't exactly line up, and there's one column of the Ogre page
+		//which needs to be taken from the extra segments. So, we basically need an extra columns of segments.
+		for (int x = 0; x < mPage.getNumberOfSegmentsPerAxis() + 1; ++x) {
+			Mercator::Segment* segment = getSegmentAtLocalIndex(mTerrain, x, y);
 			if (segment) {
 				mLocalSegments[x][y] = segment;
 			}
@@ -93,6 +100,7 @@ float TerrainPageGeometry::getMaxHeight() const
 }
 void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 {
+
 	float* heightDataPtr = heightData;
 	unsigned int sizeOfBitmap = mPage.getVerticeCount();
 	//Set the height of any uninitialized part to the default height. This might be optimized better though.
@@ -104,7 +112,8 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 		for (Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			Mercator::Segment* segment = J->second;
 			if (segment && segment->isValid()) {
-				blitSegmentToOgre(heightData, *segment, (I->first * 64), ((mPage.getNumberOfSegmentsPerAxis() - J->first - 1) * 64));
+				//Note that we add one to the x position here. That's to adjust for the slight mismatch between the WF Mercator::Segments and the Ogre space.
+				blitSegmentToOgre(heightData, *segment, (I->first * 64) + 1, ((mPage.getNumberOfSegmentsPerAxis() - J->first - 1) * 64));
 			}
 		}
 	}
@@ -112,26 +121,30 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 
 void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startY)
 {
+	int segmentWidth = segment.getSize();
+	size_t i, j;
+	int pageWidth = mPage.getPageSize();
+	size_t ogreDataSize = pageWidth * pageWidth;
 
-	unsigned int width = 64;
-	int finalBitmapWidth = mPage.getPageSize();
+	const float* sourcePtr = segment.getPoints();
+	float* destPtr = ogreHeightData;
 
-	float* segmentHeightPtr = segment.getPoints();
+	float* dataEnd = ogreHeightData + ogreDataSize;
 
-	float* start = ogreHeightData + (finalBitmapWidth * (startY)) + ((startX));
-	float* end = start + (width * finalBitmapWidth) + width;
-	///we need to do this to get the alignment correct
-	//segmentHeightPtr += (width + 1);
+	float* end = destPtr + (pageWidth * ((segmentWidth - 1) + startY)) + (((segmentWidth - 1) + startX));
 
-	float* tempPtr = end + 1;
-	for (unsigned int i = 0; i < width + 1; ++i) {
-		tempPtr -= width + 1;
-		for (unsigned int j = 0; j < width + 1; ++j) {
-			*(tempPtr) = *(segmentHeightPtr + j);
+	float* tempPtr = end;
+	for (i = 0; i < segmentWidth; ++i) {
+		tempPtr -= segmentWidth;
+		for (j = 0; j < segmentWidth; ++j) {
+
+			if (tempPtr >= ogreHeightData && tempPtr < dataEnd) {
+				*(tempPtr) = *(sourcePtr + j);
+			}
 			tempPtr += 1;
 		}
-		tempPtr -= finalBitmapWidth;
-		segmentHeightPtr += (width + 1);
+		tempPtr -= pageWidth;
+		sourcePtr += segmentWidth;
 	}
 }
 

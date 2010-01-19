@@ -65,11 +65,11 @@ namespace Terrain
 {
 
 TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain) :
-	mManager(manager), mPosition(position), mBridge(0), mGeometry(new TerrainPageGeometry(*this, -15)), mTerrainSurface(new TerrainPageSurface(*this, *mGeometry)), mShadow(*this), mShadowTechnique(0), mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))), mPageFoliage(new TerrainPageFoliage(mManager, *this))
+	mManager(manager), mPosition(position), mBridge(0), mGeometry(new TerrainPageGeometry(*this, terrain, -15)), mTerrainSurface(new TerrainPageSurface(*this, *mGeometry)), mShadow(*this), mShadowTechnique(0), mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))), mPageFoliage(new TerrainPageFoliage(mManager, *this))
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
-	mGeometry->init(terrain);
+	mGeometry->init();
 	setupShadowTechnique();
 	mTerrainSurface->setShadow(&mShadow);
 }

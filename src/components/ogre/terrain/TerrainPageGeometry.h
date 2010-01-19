@@ -120,6 +120,8 @@ private:
 	 */
 	TerrainPage& mPage;
 
+	const Mercator::Terrain& mTerrain;
+
 	/**
 	 * @brief A local copy of the segments for fast lookup. This will also include nonvalid segments.
 	 * The keys will be the local indices.
@@ -133,7 +135,7 @@ private:
 	 * @param page The TerrainPage instance to which this geometry belongs.
 	 * @param defaultHeight The default height of any parts of the terrain where no segment has been initialized.
 	 */
-	TerrainPageGeometry(TerrainPage& page, float defaultHeight);
+	TerrainPageGeometry(TerrainPage& page, const Mercator::Terrain& terrain, float defaultHeight);
 
 	/**
 	 * @brief Initializes the geometry.
@@ -141,7 +143,7 @@ private:
 	 * During initialization, the segments which make up this geometry will be collected, and populated.
 	 * Private so that only TerrainPage can initialize it.
 	 */
-	void init(const Mercator::Terrain& terrain);
+	void init();
 
 	/**
 	 * @brief Repopulates the segments which make up the page.
