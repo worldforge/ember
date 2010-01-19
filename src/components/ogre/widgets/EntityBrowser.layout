@@ -2,7 +2,7 @@
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
 		<Property Name='Visible' Value='false'/>
-		<Property Name='UnifiedSize' Value='{{0.00,350.0},{0.00,400.0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,400.0},{0,400.0}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity browser'/>
@@ -66,38 +66,90 @@
 						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Position'>
 							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-							<Property Name='UnifiedSize' Value='{{0,150},{0,25}}'/>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/X'>
+							<Property Name='UnifiedSize' Value='{{0,200},{0,25}}'/>
+							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Position/Text'>
 								<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+								<Property Name='Text' Value='Pos.:'/>
+								<Property Name='InheritsAlpha' Value='True'/>
+								<Property Name='VertFormatting' Value='TopAligned'/>
+								<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+								<Property Name='FrameEnabled' Value='false'/>
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/Y'>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/X'>
 								<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/Z'>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/Y'>
 								<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/Z'>
+								<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
 							</Window>
 						</Window>
 						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Orientation'>
 							<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
-							<Property Name='UnifiedSize' Value='{{0,200},{0,30}}'/>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/X'>
+							<Property Name='UnifiedSize' Value='{{0,250},{0,30}}'/>
+							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Orientation/Text'>
 								<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+								<Property Name='Text' Value='Orient.:'/>
+								<Property Name='InheritsAlpha' Value='True'/>
+								<Property Name='VertFormatting' Value='TopAligned'/>
+								<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+								<Property Name='FrameEnabled' Value='false'/>
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Y'>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/X'>
 								<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Z'>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Y'>
 								<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Scalar'>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Z'>
 								<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Scalar'>
+								<Property Name='UnifiedPosition' Value='{{0,200},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+						</Window>
+						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Scale'>
+							<Property Name='UnifiedPosition' Value='{{0,0},{0,60}}'/>
+							<Property Name='UnifiedSize' Value='{{0,200},{0,55}}'/>
+							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Scale/Text'>
+								<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+								<Property Name='Text' Value='Scale:'/>
+								<Property Name='InheritsAlpha' Value='True'/>
+								<Property Name='VertFormatting' Value='TopAligned'/>
+								<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+								<Property Name='FrameEnabled' Value='false'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Scale/X'>
+								<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Scale/Y'>
+								<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Scale/Z'>
+								<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
+								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							</Window>
+							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Scale/SizeText'>
+								<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
+								<Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
+								<Property Name='Text' Value='Size:'/>
+								<Property Name='InheritsAlpha' Value='True'/>
+								<Property Name='VertFormatting' Value='TopAligned'/>
+								<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+								<Property Name='FrameEnabled' Value='false'/>
 							</Window>
 						</Window>
 					</Window>

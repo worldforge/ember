@@ -49,6 +49,7 @@ end
 function EntityBrowser.updateSceneNodeInfo(sceneNode)
 	EntityBrowser.sceneNodes.positionAdapter:updateGui(sceneNode:getPosition())
 	EntityBrowser.sceneNodes.rotationAdapter:updateGui(sceneNode:getOrientation())
+	EntityBrowser.sceneNodes.scaleAdapter:updateGui(sceneNode:getScale())
 end
 
 function EntityBrowser.sceneNodes_positionAdapter_changed()
@@ -57,6 +58,10 @@ end
 
 function EntityBrowser.sceneNodes_rotationAdapter_changed()
 	EntityBrowser.sceneNodes.selectedSceneNode:setOrientation(EntityBrowser.sceneNodes.rotationAdapter:getValue())
+end
+
+function EntityBrowser.sceneNodes_scaleAdapter_changed()
+	EntityBrowser.sceneNodes.selectedSceneNode:setScale(EntityBrowser.sceneNodes.scaleAdapter:getValue())
 end
 
 function EntityBrowser.refreshSceneNodes()
@@ -148,6 +153,14 @@ function EntityBrowser.buildWidget()
 	local degreeW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/Scalar")
 	EntityBrowser.sceneNodes.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new_local(degreeW, xW, yW ,zW)
 	connect(EntityBrowser.connectors, EntityBrowser.sceneNodes.rotationAdapter.EventValueChanged, "EntityBrowser.sceneNodes_rotationAdapter_changed")
+
+	local xW = EntityBrowser.widget:getWindow("SceneNodeInfo/Scale/X")
+	local yW = EntityBrowser.widget:getWindow("SceneNodeInfo/Scale/Y")
+	local zW = EntityBrowser.widget:getWindow("SceneNodeInfo/Scale/Z")
+	EntityBrowser.sceneNodes.scaleAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW, yW ,zW)
+	connect(EntityBrowser.connectors, EntityBrowser.sceneNodes.scaleAdapter.EventValueChanged, "EntityBrowser.sceneNodes_scaleAdapter_changed")
+	
+	local sizeW = EntityBrowser.widget:getWindow("SceneNodeInfo/Scale/SizeText")
 	
 	--force a refresh the first time the window is shown
 	connect(EntityBrowser.connectors, EntityBrowser.widget.EventFirstTimeShown, EntityBrowser.refresh)
