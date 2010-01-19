@@ -56,6 +56,7 @@ void ShaderPassCoverageBatch::addLayer(const TerrainPageGeometry& geometry, cons
 void ShaderPassCoverageBatch::addCoverage(const TerrainPageSurfaceLayer* layer, unsigned int channel)
 {
 	layer->fillImage(mCombinedCoverageImage, channel);
+	mSyncedTextures.clear();
 }
 
 std::vector<const TerrainPageSurfaceLayer*>& ShaderPassCoverageBatch::getLayers()
@@ -65,20 +66,22 @@ std::vector<const TerrainPageSurfaceLayer*>& ShaderPassCoverageBatch::getLayers(
 
 void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr texture)
 {
-	Ember::TimedLog log("ShaderPassCoverageBatch::assignCombinedCoverageTexture");
-	Ogre::Image image;
+	if (std::find(mSyncedTextures.begin(), mSyncedTextures.end(), texture->getName()) == mSyncedTextures.end()) {
+		Ember::TimedLog log("ShaderPassCoverageBatch::assignCombinedCoverageTexture");
+		Ogre::Image image;
 
-	image.loadDynamicImage(mCombinedCoverageImage.getData(), mCombinedCoverageImage.getResolution(), mCombinedCoverageImage.getResolution(), 1, Ogre::PF_B8G8R8A8);
-	texture->loadImage(image);
-	log.report("image loaded");
-	///blit the whole image to the hardware buffer
-	Ogre::PixelBox sourceBox(image.getPixelBox());
-	//blit for each mipmap
-	for (int i = 0; i <= texture->getNumMipmaps(); ++i) {
-		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
-		hardwareBuffer->blitFromMemory(sourceBox);
+		image.loadDynamicImage(mCombinedCoverageImage.getData(), mCombinedCoverageImage.getResolution(), mCombinedCoverageImage.getResolution(), 1, Ogre::PF_B8G8R8A8);
+		texture->loadImage(image);
+		log.report("image loaded");
+		///blit the whole image to the hardware buffer
+		Ogre::PixelBox sourceBox(image.getPixelBox());
+		//blit for each mipmap
+		for (int i = 0; i <= texture->getNumMipmaps(); ++i) {
+			Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
+			hardwareBuffer->blitFromMemory(sourceBox);
+		}
+		mSyncedTextures.push_back(texture->getName());
 	}
-
 }
 
 void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture)

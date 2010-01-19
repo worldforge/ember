@@ -66,6 +66,12 @@ protected:
 	OgreImage mCombinedCoverageImage;
 	LayerStore mLayers;
 
+
+	/**
+	 * @brief A collection of names of textures which have already been synced with the image, to prevent us from blitting when we don't need.
+	 */
+	std::vector<std::string> mSyncedTextures;
+
 	void assignCombinedCoverageTexture(Ogre::TexturePtr texture);
 	void addCoverage(const TerrainPageSurfaceLayer* layer, unsigned int channel);
 
