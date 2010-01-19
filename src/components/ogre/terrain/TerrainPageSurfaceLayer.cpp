@@ -53,31 +53,6 @@ TerrainPageSurfaceLayer::~TerrainPageSurfaceLayer()
 
 }
 
-//Ogre::TexturePtr TerrainPageSurfaceLayer::createTexture()
-//{
-//	if (mTexture.isNull()) {
-//		///we need an unique name for our alpha texture
-//		std::stringstream splatTextureNameSS;
-//		splatTextureNameSS << "terrain_" << mTerrainPageSurface.getWFPosition().x() << "_" << mTerrainPageSurface.getWFPosition().y() << "_" << mSurfaceIndex;
-//		const Ogre::String splatTextureName(splatTextureNameSS.str());
-//
-//		//		mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(splatTextureName, "General", Ogre::TEX_TYPE_2D, getPixelWidth(), getPixelWidth(), 1, Ogre::PF_A8);
-//		///use no mipmaps since we had problems on nvidia cards with updating it
-//		mTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadImage(splatTextureName, "General", *mCoverageImage, Ogre::TEX_TYPE_2D, 0);
-//
-//	}
-//	return mTexture;
-//}
-//
-//bool TerrainPageSurfaceLayer::unloadTexture()
-//{
-//	if (!mTexture.isNull()) {
-//		mTexture->unload();
-//		return true;
-//	}
-//	return false;
-//}
-
 bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) const
 {
 	const SegmentVector validSegments = geometry.getValidSegments();
@@ -97,10 +72,10 @@ void TerrainPageSurfaceLayer::fillImage(Image& image, unsigned int channel) cons
 		if (mShader->checkIntersect(*I->segment)) {
 			Mercator::Surface* surface = getSurfaceForSegment(I->segment);
 			if (surface && surface->isValid()) {
-
 				int alphaChannel = 0;
 				WFImage sourceImage(new Image::ImageBuffer(65, 1, surface->getData()));
-				image.blit(sourceImage, channel, (int)I->index.x() * 64, (mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * 64);
+				//We need to adjust the position of the x index by one because there's a one pixel offset when converting between the Mercator Segments and the Ogre page.
+				image.blit(sourceImage, channel, ((int)I->index.x() * 64) + 1, ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * 64));
 			}
 		}
 	}

@@ -52,28 +52,27 @@ void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel
 	unsigned int width = 64;
 	size_t i, j;
 
+	size_t wfSegmentWidth = width * getChannels();
+	size_t ogreImageWidth = getResolution() * getChannels();
+
 	const unsigned char* sourcePtr = imageToBlit.getData();
 	unsigned char* destPtr = getData() + destinationChannel;
 
 	unsigned char* dataEnd = getData() + getSize();
 
 	unsigned char* end = destPtr + (getChannels() * getResolution() * ((width - 1) + heightOffset)) + (((width - 1) + widthOffset) * getChannels());
-	///we need to do this to get the alignment correct
-//	sourcePtr += imageToBlit.getResolution();
 
 	unsigned char* tempPtr = end;
 	for (i = 0; i < width; ++i) {
-		tempPtr -= (width * getChannels());
+		tempPtr -= wfSegmentWidth;
 		for (j = 0; j < width; ++j) {
-			///advance the number of channels
-			tempPtr += getChannels();
-
 			if (tempPtr >= getData() && tempPtr < dataEnd) {
 				*(tempPtr) = *(sourcePtr + j);
 			}
-
+			///advance the number of channels
+			tempPtr += getChannels();
 		}
-		tempPtr -= (getResolution() * getChannels());
+		tempPtr -= ogreImageWidth;
 		sourcePtr += imageToBlit.getResolution();
 	}
 	//	}
