@@ -31,13 +31,13 @@
 #include <Mercator/Terrain.h>
 
 #ifdef HAVE_LRINTF
-    #define I_ROUND(_x) (::lrintf(_x))
+#define I_ROUND(_x) (::lrintf(_x))
 #elif defined(HAVE_RINTF)
-    #define I_ROUND(_x) ((int)::rintf(_x))
+#define I_ROUND(_x) ((int)::rintf(_x))
 #elif defined(HAVE_RINT)
-    #define I_ROUND(_x) ((int)::rint(_x))
+#define I_ROUND(_x) ((int)::rint(_x))
 #else
-    #define I_ROUND(_x) ((int)(_x))
+#define I_ROUND(_x) ((int)(_x))
 #endif
 
 namespace EmberOgre
@@ -59,14 +59,10 @@ void TerrainPageGeometry::init(const Mercator::Terrain& terrain)
 	mLocalSegments.clear();
 	for (int y = 0; y < mPage.getNumberOfSegmentsPerAxis(); ++y) {
 		for (int x = 0; x < mPage.getNumberOfSegmentsPerAxis(); ++x) {
-			Mercator::Segment* segment = getSegmentAtLocalIndex(terrain, x,y);
+			Mercator::Segment* segment = getSegmentAtLocalIndex(terrain, x, y);
 			if (segment) {
-				if (!segment->isValid()) {
-					segment->populate();
-					segment->populateNormals();
-				}
+				mLocalSegments[x][y] = segment;
 			}
-			mLocalSegments[x][y] = segment;
 		}
 	}
 }
@@ -86,7 +82,6 @@ void TerrainPageGeometry::repopulate()
 	}
 }
 
-
 float TerrainPageGeometry::getMaxHeight() const
 {
 	SegmentVector validSegments = getValidSegments();
@@ -105,17 +100,13 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 		*(heightDataPtr++) = mDefaultHeight;
 	}
 
-	int i = 0;
 	for (Mercator::Terrain::Segmentstore::const_iterator I = mLocalSegments.begin(); I != mLocalSegments.end(); ++I) {
-		int j = 0;
 		for (Mercator::Terrain::Segmentcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			Mercator::Segment* segment = J->second;
 			if (segment && segment->isValid()) {
-				blitSegmentToOgre(heightData, *segment, (i * 64), ((mPage.getNumberOfSegmentsPerAxis() - j - 1) * 64));
+				blitSegmentToOgre(heightData, *segment, (I->first * 64), ((mPage.getNumberOfSegmentsPerAxis() - J->first - 1) * 64));
 			}
-			++j;
 		}
-		++i;
 	}
 }
 
@@ -132,12 +123,10 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 	///we need to do this to get the alignment correct
 	//segmentHeightPtr += (width + 1);
 
-	float* tempPtr = end + 1 ;
-	for (unsigned int i = 0; i < width + 1; ++i)
-	{
+	float* tempPtr = end + 1;
+	for (unsigned int i = 0; i < width + 1; ++i) {
 		tempPtr -= width + 1;
-		for (unsigned int j = 0; j < width + 1; ++j)
-		{
+		for (unsigned int j = 0; j < width + 1; ++j) {
 			*(tempPtr) = *(segmentHeightPtr + j);
 			tempPtr += 1;
 		}
@@ -152,7 +141,6 @@ Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalIndex(const Mercator::T
 	int segmentOffset = segmentsPerAxis;
 	int segX = (int)((mPage.getWFPosition().x() * segmentsPerAxis) + indexX);
 	int segY = (int)((mPage.getWFPosition().y() * segmentsPerAxis) + indexY) - segmentOffset;
-
 
 	return terrain.getSegment(segX, segY);
 }

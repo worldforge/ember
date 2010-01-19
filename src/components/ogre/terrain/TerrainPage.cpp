@@ -145,14 +145,12 @@ void TerrainPage::setupShadowTechnique()
 
 void TerrainPage::createShadowData(const WFMath::Vector<3>& lightDirection)
 {
-	mGeometry->repopulate();
 	mShadow.setLightDirection(lightDirection);
 	mShadow.updateShadow(*mGeometry);
 }
 
 void TerrainPage::updateShadow(const WFMath::Vector<3>& lightDirection)
 {
-	mGeometry->repopulate();
 	mShadow.setLightDirection(lightDirection);
 	mShadow.updateShadow(*mGeometry);
 }
@@ -246,7 +244,6 @@ const TerrainPageShadow& TerrainPage::getPageShadow() const
 TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 {
 	TerrainPageSurfaceLayer* layer = mTerrainSurface->createSurfaceLayer(*shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());
-	layer->populate(*mGeometry);
 	layer->setDiffuseTextureName(shader->getLayerDefinition()->getDiffuseTextureName());
 	layer->setNormalTextureName(shader->getLayerDefinition()->getNormalMapTextureName());
 	///get the scale by dividing the total size of the page with the size of each tile

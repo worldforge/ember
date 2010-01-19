@@ -22,8 +22,7 @@
 #include "TerrainPage.h"
 #include "TerrainShader.h"
 #include "TerrainPageGeometry.h"
-#include "TerrainMaterialCompilationTask.h"
-#include "HeightMapUpdateTask.h"
+#include "GeometryUpdateTask.h"
 #include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
@@ -56,25 +55,18 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 		mPage->addShader(*I);
 	}
 
-	mPage->updateAllShaderTextures(true);
-
-	mPage->createShadowData(mMainLightDirection);
-
 	// setup foliage
 	if (mTerrainManager.isFoliageShown()) {
 		mPage->showFoliage();
 	}
 
-	context.executeTask(new TerrainMaterialCompilationTask(mPage));
-	std::vector<Mercator::Segment*> segments;
-	const SegmentVector& segmentVector = mPage->getGeometry().getValidSegments();
-	for (SegmentVector::const_iterator I = segmentVector.begin(); I != segmentVector.end(); ++I) {
-		segments.push_back(I->segment);
-	}
-	if (mBridge) {
-		mBridge->updateTerrain();
-	}
-	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
+	GeometryUpdateTask::PageSet pageSet;
+	pageSet.insert(mPage);
+	std::vector<TerrainPosition> positions;
+	//	positions.push_back(mPage->getWFPosition());
+	context.executeTask(new GeometryUpdateTask(pageSet, positions, mTerrainManager, mTerrainManager.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
+
+	mPage->createShadowData(mMainLightDirection);
 }
 
 void TerrainPageCreationTask::executeTaskInMainThread()
