@@ -33,13 +33,13 @@ WFImage::WFImage(Image::ImageBuffer* buffer) :
 }
 
 
-void WFImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
+void WFImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset)
 {
 
 }
 
 
-void WFImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
+void WFImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset)
 {
 
 }

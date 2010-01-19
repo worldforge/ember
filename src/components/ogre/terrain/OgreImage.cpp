@@ -32,7 +32,7 @@ OgreImage::OgreImage(Image::ImageBuffer* buffer) :
 
 }
 
-void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
+void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset)
 {
 	if (imageToBlit.getChannels() > 1) {
 		return;
@@ -58,7 +58,6 @@ void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel
 	unsigned char* dataEnd = getData() + getSize();
 
 	unsigned char* end = destPtr + (getChannels() * getResolution() * ((width - 1) + heightOffset)) + (((width - 1) + widthOffset) * getChannels());
-	assert(end >= getData() && end < dataEnd);
 	///we need to do this to get the alignment correct
 //	sourcePtr += imageToBlit.getResolution();
 
@@ -80,7 +79,7 @@ void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel
 	//	}
 }
 
-void OgreImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, unsigned int widthOffset, unsigned int heightOffset)
+void OgreImage::blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset, int heightOffset)
 {
 
 }
