@@ -4,4 +4,4 @@ noinst_LIBRARIES = libTasks.a
 
 libTasks_a_SOURCES = TaskExecutor.cpp TaskExecutionContext.cpp TaskQueue.cpp TaskUnit.cpp SerialTask.cpp
 
-noinst_HEADERS = TaskExecutor.h ITask.h TaskExecutionContext.h ITaskExecutionListener.h TaskQueue.h TaskUnit.h SerialTask.h
+noinst_HEADERS = TaskExecutor.h ITask.h TaskExecutionContext.h ITaskExecutionListener.h TaskQueue.h TaskUnit.h SerialTask.h TemplateNamedTask.h

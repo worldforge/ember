@@ -19,7 +19,7 @@
 #ifndef TERRAINSHADERUPDATETASK_H_
 #define TERRAINSHADERUPDATETASK_H_
 
-#include "framework/tasks/ITask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
 #include <vector>
 #include <map>
@@ -47,7 +47,7 @@ class TerrainPageSurfaceCompilationInstance;
  * This will also recompile the terrain page material once the surface has been updated.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class TerrainShaderUpdateTask : public Ember::Tasks::ITask
+class TerrainShaderUpdateTask : public Ember::Tasks::TemplateNamedTask<TerrainShaderUpdateTask>
 {
 public:
 	/**

@@ -16,42 +16,38 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef PLANTQUERYTASK_H_
-#define PLANTQUERYTASK_H_
 
-#include "Types.h"
-#include "framework/tasks/TemplateNamedTask.h"
-#include "PlantAreaQueryResult.h"
+#ifndef TEMPLATENAMEDTASK_H_
+#define TEMPLATENAMEDTASK_H_
 
-#include <sigc++/slot.h>
+#include "ITask.h"
+#include <typeinfo>
+#include <string>
 
-namespace EmberOgre
+namespace Ember
 {
 
-namespace Terrain
+namespace Tasks
 {
 
-class TerrainPage;
-
-class PlantQueryTask : public Ember::Tasks::TemplateNamedTask<PlantQueryTask>
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief An utility subclass of ITask which will provide automatic templated typeinfo discovery for the ITask::getName method.
+ */
+template <typename T>
+class TemplateNamedTask : public ITask
 {
 public:
-	PlantQueryTask(const TerrainPage& page, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
-	virtual ~PlantQueryTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual std::string getName() const
+	{
+		return typeid(T).name();
+	}
 
-	virtual void executeTaskInMainThread();
 
-private:
-	const TerrainPage& mPage;
-	sigc::slot<void, const PlantAreaQueryResult&> mAsyncCallback;
-
-	PlantAreaQueryResult mQueryResult;
 };
 
 }
-
 }
 
-#endif /* PLANTQUERYTASK_H_ */
+#endif /* TEMPLATENAMEDTASK_H_ */

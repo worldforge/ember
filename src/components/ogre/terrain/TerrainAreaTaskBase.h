@@ -19,7 +19,7 @@
 #ifndef EMBEROGRETERRAINTERRAINAREATASKBASE_H_
 #define EMBEROGRETERRAINTERRAINAREATASKBASE_H_
 
-#include "framework/tasks/ITask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include <sigc++/slot.h>
 
 namespace Mercator {
@@ -41,7 +41,7 @@ class TerrainShader;
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Common base class for terrain area related tasks.
  */
-class TerrainAreaTaskBase: public Ember::Tasks::ITask
+class TerrainAreaTaskBase: public Ember::Tasks::TemplateNamedTask<TerrainAreaTaskBase>
 {
 public:
 	typedef sigc::slot<void, const TerrainShader*, Mercator::Area*> ShaderUpdateSlotType;

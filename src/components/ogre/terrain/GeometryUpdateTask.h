@@ -20,6 +20,7 @@
 #define GEOMETRYUPDATETASK_H_
 
 #include "framework/tasks/ITask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
 #include <set>
 
@@ -33,7 +34,7 @@ class TerrainManager;
 class HeightMapBufferProvider;
 class HeightMap;
 
-class GeometryUpdateTask : public Ember::Tasks::ITask
+class GeometryUpdateTask : public Ember::Tasks::TemplateNamedTask<GeometryUpdateTask>
 {
 public:
 	typedef std::set<TerrainPage*> PageSet;

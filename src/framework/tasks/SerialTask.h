@@ -19,7 +19,7 @@
 #ifndef SERIALTASK_H_
 #define SERIALTASK_H_
 
-#include "ITask.h"
+#include "TemplateNamedTask.h"
 #include <vector>
 
 namespace Ember
@@ -33,7 +33,7 @@ namespace Tasks
  * @brief A task which wraps two or more other tasks, which will be executed in order.
  * This is useful if you want to make sure that a certain task is executed after another task.
  */
-class SerialTask : public ITask
+class SerialTask : public TemplateNamedTask<SerialTask>
 {
 public:
 	typedef std::vector<ITask*> TaskStore;

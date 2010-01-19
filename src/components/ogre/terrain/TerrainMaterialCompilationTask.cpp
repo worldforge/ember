@@ -21,7 +21,6 @@
 #include "TerrainPage.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainPageSurface.h"
-#include "framework/TimedLog.h"
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
@@ -56,13 +55,11 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Ember::Tasks:
 
 void TerrainMaterialCompilationTask::executeTaskInMainThread()
 {
-	Ember::TimedLog log("TerrainMaterialCompilationTask::executeTaskInMainThread()");
 	for (CompilationInstanceStore::const_iterator J = mMaterialRecompilations.begin(); J != mMaterialRecompilations.end(); ++J) {
 		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
 		TerrainPage* page = J->second;
 		compilationInstance->compile(page->getMaterial());
 	}
-	log.report("Materials recompiled.");
 	updateSceneManagersAfterMaterialsChange();
 }
 

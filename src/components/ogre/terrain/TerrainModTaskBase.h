@@ -20,7 +20,7 @@
 #define TERRAINMODTASKBASE_H_
 
 
-#include "framework/tasks/ITask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
 #include <string>
 
@@ -43,7 +43,7 @@ class TerrainMod;
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Common base class for terrain mod related tasks.
  */
-class TerrainModTaskBase: public Ember::Tasks::ITask
+class TerrainModTaskBase: public Ember::Tasks::TemplateNamedTask<TerrainModTaskBase>
 {
 public:
 	TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);

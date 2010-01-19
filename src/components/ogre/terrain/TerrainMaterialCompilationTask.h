@@ -19,7 +19,7 @@
 #ifndef EMBEROGRETERRAINTERRAINMATERIALCOMPILATIONTASK_H_
 #define EMBEROGRETERRAINTERRAINMATERIALCOMPILATIONTASK_H_
 
-#include "framework/tasks/ITask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
 #include <vector>
 
@@ -36,7 +36,7 @@ class TerrainPage;
  * @brief Recompiles the material for a terrain page.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class TerrainMaterialCompilationTask : public Ember::Tasks::ITask
+class TerrainMaterialCompilationTask : public Ember::Tasks::TemplateNamedTask<TerrainMaterialCompilationTask>
 {
 public:
 

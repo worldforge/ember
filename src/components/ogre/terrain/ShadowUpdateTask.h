@@ -19,7 +19,7 @@
 #ifndef SHADOWUPDATETASK_H_
 #define SHADOWUPDATETASK_H_
 
-#include "framework/tasks/ITask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
 #include <wfmath/vector.h>
 
@@ -33,7 +33,7 @@ namespace Terrain
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Async task for updating shadows for pages.
  */
-class ShadowUpdateTask : public Ember::Tasks::ITask
+class ShadowUpdateTask : public Ember::Tasks::TemplateNamedTask<ShadowUpdateTask>
 {
 public:
 	ShadowUpdateTask(const PageVector& pages, const WFMath::Vector<3>& lightDirection);

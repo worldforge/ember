@@ -20,7 +20,7 @@
 #define TERRAINPAGECREATIONTASK_H_
 
 #include "components/ogre/Types.h"
-#include "framework/tasks/ITask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 
@@ -42,7 +42,7 @@ class ITerrainPageBridge;
 class HeightMapBufferProvider;
 class HeightMap;
 
-class TerrainPageCreationTask : public Ember::Tasks::ITask
+class TerrainPageCreationTask : public Ember::Tasks::TemplateNamedTask<TerrainPageCreationTask>
 {
 public:
 	TerrainPageCreationTask(TerrainManager& TerrainManager, Mercator::Terrain& terrain, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);

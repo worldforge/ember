@@ -19,6 +19,8 @@
 #ifndef TASK_H_
 #define TASK_H_
 
+#include <string>
+
 namespace Ember
 {
 
@@ -54,6 +56,13 @@ public:
 	 * Since this will happen in the main thread you shouldn't do any time consuming things here, since it will lock up the rendering.
 	 */
 	virtual void executeTaskInMainThread(){};
+
+	/**
+	 * @brief Gets the name of the task.
+	 * This is mainly used for logging purposes.
+	 * @return The name of the task.
+	 */
+	virtual std::string getName() const = 0;
 };
 
 }

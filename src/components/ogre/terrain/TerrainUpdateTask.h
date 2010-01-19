@@ -19,7 +19,7 @@
 #ifndef TERRAINUPDATETASK_H_
 #define TERRAINUPDATETASK_H_
 
-#include "framework/tasks/ITask.h"
+#include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
 
 namespace Mercator
@@ -37,7 +37,7 @@ namespace Terrain
 class TerrainManager;
 class TerrainInfo;
 
-class TerrainUpdateTask : public Ember::Tasks::ITask
+class TerrainUpdateTask : public Ember::Tasks::TemplateNamedTask<TerrainUpdateTask>
 {
 public:
 	TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainManager& terrainManager, TerrainInfo& terrainInfo, bool& hasTerrainInfo);
