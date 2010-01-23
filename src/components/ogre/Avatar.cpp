@@ -374,43 +374,49 @@ void Avatar::Config_LogChatMessages(const std::string& section, const std::strin
 
 WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 {
-	//If the avatar entity is moving, we're note moving on the client side, and we haven't sent something to the server lately, we should assume that we're moving as a result of server side actions, and therefore use the server side position
-	//	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
-	//		bool clientSideMovement = false;
-	//		if (mLastTransmittedMovements.size()) {
-	//			long currentTime = Ember::EmberServices::getSingleton().getTimeService()->currentTimeMillis();
-	//			if ((currentTime - mLastTransmittedMovements.rbegin()->first) < 1000) {
-	//				clientSideMovement = true;
-	//			}
-	//		}
-	//		if (!clientSideMovement) {
-	//			return mErisAvatarEntity.getPredictedPos();
-	//		}
-	//
-	//	}
-	if (mIsMovingServerOnly) {
-		return mErisAvatarEntity.getPredictedPos();
-	} else {
-		return mClientSideAvatarPosition;
-	}
+	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
+	return mErisAvatarEntity.getPredictedPos();
+//	//If the avatar entity is moving, we're note moving on the client side, and we haven't sent something to the server lately, we should assume that we're moving as a result of server side actions, and therefore use the server side position
+//	//	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
+//	//		bool clientSideMovement = false;
+//	//		if (mLastTransmittedMovements.size()) {
+//	//			long currentTime = Ember::EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+//	//			if ((currentTime - mLastTransmittedMovements.rbegin()->first) < 1000) {
+//	//				clientSideMovement = true;
+//	//			}
+//	//		}
+//	//		if (!clientSideMovement) {
+//	//			return mErisAvatarEntity.getPredictedPos();
+//	//		}
+//	//
+//	//	}
+//	if (mIsMovingServerOnly) {
+//		return mErisAvatarEntity.getPredictedPos();
+//	} else {
+//		return mClientSideAvatarPosition;
+//	}
 }
 
 WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 {
-	if (mIsMovingServerOnly) {
-		return mErisAvatarEntity.getOrientation();
-	} else {
-		return mClientSideAvatarOrientation;
-	}
+	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
+	return mErisAvatarEntity.getOrientation();
+//	if (mIsMovingServerOnly) {
+//		return mErisAvatarEntity.getOrientation();
+//	} else {
+//		return mClientSideAvatarOrientation;
+//	}
 }
 
 WFMath::Vector<3> Avatar::getClientSideAvatarVelocity() const
 {
-	if (mIsMovingServerOnly) {
-		return mErisAvatarEntity.getVelocity();
-	} else {
-		return mCurrentMovementState.movement;
-	}
+	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
+	return mErisAvatarEntity.getVelocity();
+//	if (mIsMovingServerOnly) {
+//		return mErisAvatarEntity.getVelocity();
+//	} else {
+//		return mCurrentMovementState.movement;
+//	}
 }
 
 }
