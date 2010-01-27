@@ -76,6 +76,10 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 {
 	///it's important that reset() has been called before this method is called
 
+	if (!mModel.isLoaded()) {
+		return;
+	}
+
 	///make a copy of the original bbox
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
 

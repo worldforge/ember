@@ -167,7 +167,12 @@ protected:
 	 */
 	void scaleNode();
 
-	// Glue functions to allow code from EmberPhysicalEntity work without changes.
+	/**
+	 * @brief Called when the model is reloaded, which also happens if background loading is enabled and the model has been loaded in the background.
+	 */
+	void model_Reloaded();
+
+
 	Model::Model* getModel();
 	bool hasBBox();
 	const WFMath::AxisBox<3> & getBBox();

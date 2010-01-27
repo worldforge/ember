@@ -220,6 +220,7 @@ void EntityCreator::setModel(const std::string& modelName)
 		}
 	}
 	mModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), modelName);
+	mModel->Reloaded.connect(sigc::mem_fun(*this, &EntityCreator::model_Reloaded));
 
 	///if the model definition isn't valid, use a placeholder
 	if (!mModel->getDefinition()->isValid()) {
@@ -278,9 +279,18 @@ void EntityCreator::initFromModel()
 	scaleNode();
 }
 
+void EntityCreator::model_Reloaded()
+{
+	initFromModel();
+}
+
 void EntityCreator::scaleNode()
 {
-	mModelMount->rescale(hasBBox() ? &getBBox() : 0);
+	if (mModelMount) {
+		mModelMount->rescale(hasBBox() ? &getBBox() : 0);
+	} else {
+		S_LOG_WARNING("Tried to scale node without there being a valid model mount.");
+	}
 }
 
 void EntityCreator::adapterValueChanged()
