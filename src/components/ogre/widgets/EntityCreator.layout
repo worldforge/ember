@@ -13,6 +13,7 @@
 			<Window Type='EmberLook/Listbox' Name='RecipesList'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 				<Property Name='UnifiedSize' Value='{{0,100},{1,-27}}'/>
+				<Property Name='Sort' Value='true'/>
 				<Event Name="ItemSelectionChanged" Function="EntityCreator.RecipesList_SelectionChanged"/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Create'>
