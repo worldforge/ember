@@ -62,10 +62,7 @@ void TerrainPageGeometry::init()
 {
 	mLocalSegments.clear();
 	for (int y = 0; y < mPage.getNumberOfSegmentsPerAxis(); ++y) {
-		//Note that we're getting one extra segment on the horizontal axis.
-		//This is because the WF world space and the Ogre space doesn't exactly line up, and there's one column of the Ogre page
-		//which needs to be taken from the extra segments. So, we basically need an extra columns of segments.
-		for (int x = 0; x < mPage.getNumberOfSegmentsPerAxis() + 1; ++x) {
+		for (int x = 0; x < mPage.getNumberOfSegmentsPerAxis(); ++x) {
 			Mercator::Segment* segment = getSegmentAtLocalIndex(mTerrain, x, y);
 			if (segment) {
 				mLocalSegments[x][y] = segment;
