@@ -79,9 +79,11 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 
 const std::string EmberEntity::BboxMaterialName("/global/authoring/bbox");
 
-EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
+EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager& sceneManager) :
 	Eris::Entity(id, ty, vw), mIsInitialized(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
+	/// we need a model mapping
+	createEntityMapping(sceneManager);
 }
 
 EmberEntity::~EmberEntity()
@@ -98,9 +100,6 @@ EmberEntity::~EmberEntity()
 
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-
-	/// we need a model mapping
-	createEntityMapping();
 
 	assert( mEntityMapping);
 
@@ -169,11 +168,11 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 	return false;
 }
 
-void EmberEntity::createEntityMapping()
+void EmberEntity::createEntityMapping(Ogre::SceneManager& sceneManager)
 {
 	delete mEntityMapping;
 	///the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
-	EmberEntityActionCreator creator(*this);
+	EmberEntityActionCreator creator(*this, sceneManager);
 	mEntityMapping = ::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(this, &creator);
 }
 

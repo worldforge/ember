@@ -64,8 +64,8 @@ using namespace Ember::EntityMapping;
 namespace EmberOgre
 {
 
-EmberEntityFactory::EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager) :
-	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0), mView(view), mAuthoringManager(new Authoring::AuthoringManager(mView)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager))
+EmberEntityFactory::EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager, Ogre::SceneManager& sceneManager) :
+	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0), mView(view), mAuthoringManager(new Authoring::AuthoringManager(mView)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager)), mSceneManager(sceneManager)
 {
 	mView.registerFactory(this);
 
@@ -91,7 +91,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	if (type->isA(mTerrainType)) {
 		emberEntity = createWorld(ge, type, w);
 	} else {
-		emberEntity = new EmberEntity(ge->getId(), type, w, EmberOgre::getSingleton().getSceneManager());
+		emberEntity = new EmberEntity(ge->getId(), type, w, mSceneManager);
 	}
 
 	S_LOG_VERBOSE("Entity added to game view.");
@@ -106,7 +106,7 @@ bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Er
 Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world)
 {
 	assert(!mWorldEntity);
-	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, EmberOgre::getSingleton().getSceneManager());
+	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, mSceneManager);
 	return mWorldEntity;
 }
 

@@ -301,8 +301,6 @@ public:
 
 	size_t calculateSize(void) const;
 
-	//Model* createModel(Ogre::String name, Ogre::SceneManager* sceneManager);
-
 	/**
 	 *    Gets the amount of scale that needs to be applied to derived Models.
 	 * @return

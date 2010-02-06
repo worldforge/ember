@@ -67,7 +67,7 @@ public:
 	/**
 	 Default constructor. This should be instantiated by EmberOgre or similiar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	 */
-	EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager);
+	EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager, Ogre::SceneManager& sceneManager);
 	virtual ~EmberEntityFactory();
 
 	/**
@@ -153,6 +153,11 @@ protected:
 	 * @brief Connects the authoring manager to the entity mover manager, so that the authoring info is updated as entities are moved.
 	 */
 	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
+
+	/**
+	 * @brief The scene manager which will handle the entities.
+	 */
+	Ogre::SceneManager& mSceneManager;
 };
 
 }

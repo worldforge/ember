@@ -69,7 +69,7 @@ void IconRenderer::setWorker(IconRenderWorker* worker)
 
 void IconRenderer::render(const std::string& modelName, Icon* icon)
 {
-	Model::Model* model = Model::Model::createModel(getRenderContext()->getSceneManager(), modelName);
+	Model::Model* model = Model::Model::createModel(*getRenderContext()->getSceneManager(), modelName);
 	if (model) {
 		if (model->isLoaded()) {
 			render(model, icon);

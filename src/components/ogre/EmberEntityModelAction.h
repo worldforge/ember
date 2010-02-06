@@ -26,6 +26,10 @@
 #include "components/entitymapping/Actions/Action.h"
 #include <string>
 
+namespace Ogre {
+class SceneManager;
+}
+
 namespace EmberOgre
 {
 
@@ -38,7 +42,7 @@ class EmberEntity;
 class EmberEntityModelAction: public Ember::EntityMapping::Actions::Action
 {
 public:
-	EmberEntityModelAction(EmberEntity& entity, std::string modelName);
+	EmberEntityModelAction(EmberEntity& entity, std::string modelName, Ogre::SceneManager& sceneManager);
 	~EmberEntityModelAction();
 
 	virtual void activate(Ember::EntityMapping::ChangeContext& context);
@@ -48,6 +52,8 @@ protected:
 	EmberEntity& mEntity;
 
 	std::string mModelName;
+
+	Ogre::SceneManager& mSceneManager;
 
 
 };

@@ -1030,7 +1030,7 @@ bool Model::isVisible(void) const
 	return Ogre::MovableObject::isVisible() && ModelDefinitionManager::getSingleton().getShowModels();
 }
 
-Model* Model::createModel(Ogre::SceneManager* sceneManager, const std::string& modelType, const std::string& name)
+Model* Model::createModel(Ogre::SceneManager& sceneManager, const std::string& modelType, const std::string& name)
 {
 
 	Ogre::String modelName(name);
@@ -1043,7 +1043,7 @@ Model* Model::createModel(Ogre::SceneManager* sceneManager, const std::string& m
 	// delegate to factory implementation
 	Ogre::NameValuePairList params;
 	params["modeldefinition"] = modelType;
-	return static_cast<Model*> (sceneManager->createMovableObject(modelName, ModelFactory::FACTORY_TYPE_NAME, &params));
+	return static_cast<Model*> (sceneManager.createMovableObject(modelName, ModelFactory::FACTORY_TYPE_NAME, &params));
 
 }
 

@@ -98,7 +98,7 @@ public:
 	 */
 	virtual void _notifyManager(Ogre::SceneManager* man);
 
-	static Model* createModel(Ogre::SceneManager* sceneManager, const std::string& modelType, const std::string& name = "");
+	static Model* createModel(Ogre::SceneManager& sceneManager, const std::string& modelType, const std::string& name = "");
 
 	/**
 	 * @brief Reloads the model from the modeldefinition.

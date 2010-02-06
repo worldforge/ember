@@ -132,7 +132,7 @@ public:
 	 * @param vw The world view to which this entity belongs.
 	 * @param sceneManager The scene manager to which this entity belongs.
 	 */
-	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
+	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Dtor.
@@ -140,9 +140,10 @@ public:
 	virtual ~EmberEntity();
 
 	/**
-	 *    Creates the model mapping for this entity. Call this once when initializing the entity.
+	 * @brief Creates the model mapping for this entity. Call this once when initializing the entity.
+	 * @param The scene manager to which any created model should belong.
 	 */
-	void createEntityMapping();
+	void createEntityMapping(Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.

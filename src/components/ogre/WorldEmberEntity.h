@@ -88,7 +88,7 @@ public:
 	 * @param vw The main Eris::View.
 	 * @param sceneManager The main Ogre scene manager.
 	 */
-	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager);
+	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Dtor
@@ -201,7 +201,7 @@ protected:
 	/**
 	 * @brief The main scene manager.
 	 */
-	EmberPagingSceneManager* mSceneManager;
+	EmberPagingSceneManager& mSceneManager;
 
 };
 

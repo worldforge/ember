@@ -9665,7 +9665,7 @@ static int tolua_EmberOgre_EmberOgre_Model_Model_createModel00(lua_State* tolua_
   Ogre::SceneManager* sceneManager = ((Ogre::SceneManager*)  tolua_tousertype(tolua_S,2,0));
   const std::string modelType = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
   {
-   EmberOgre::Model::Model* tolua_ret = (EmberOgre::Model::Model*)  EmberOgre::Model::Model::createModel(sceneManager,modelType);
+   EmberOgre::Model::Model* tolua_ret = (EmberOgre::Model::Model*)  EmberOgre::Model::Model::createModel(*sceneManager,modelType);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Model::Model");
    tolua_pushcppstring(tolua_S,(const char*)modelType);
   }
@@ -9698,7 +9698,7 @@ static int tolua_EmberOgre_EmberOgre_Model_Model_createModel01(lua_State* tolua_
   const std::string modelType = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
   const std::string name = ((const std::string)  tolua_tocppstring(tolua_S,4,0));
   {
-   EmberOgre::Model::Model* tolua_ret = (EmberOgre::Model::Model*)  EmberOgre::Model::Model::createModel(sceneManager,modelType,name);
+   EmberOgre::Model::Model* tolua_ret = (EmberOgre::Model::Model*)  EmberOgre::Model::Model::createModel(*sceneManager,modelType,name);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Model::Model");
    tolua_pushcppstring(tolua_S,(const char*)modelType);
    tolua_pushcppstring(tolua_S,(const char*)name);

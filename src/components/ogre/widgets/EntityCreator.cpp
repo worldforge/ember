@@ -219,7 +219,7 @@ void EntityCreator::setModel(const std::string& modelName)
 			EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
 		}
 	}
-	mModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), modelName);
+	mModel = Model::Model::createModel(*EmberOgre::getSingleton().getSceneManager(), modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &EntityCreator::model_Reloaded));
 
 	///if the model definition isn't valid, use a placeholder

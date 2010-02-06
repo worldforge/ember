@@ -39,12 +39,13 @@ class EmberEntity;
 class EmberEntityActionCreator : public Ember::EntityMapping::IActionCreator
 {
 public:
-    EmberEntityActionCreator(EmberEntity& entity);
+    EmberEntityActionCreator(EmberEntity& entity, Ogre::SceneManager& sceneManager);
 
     ~EmberEntityActionCreator();
 	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EmberEntity& mEntity;
+	Ogre::SceneManager& mSceneManager;
 
 
 };

@@ -52,13 +52,13 @@
 namespace EmberOgre
 {
 
-WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager* sceneManager) :
-	EmberEntity(id, ty, vw, sceneManager), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*> (sceneManager)))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager*> (sceneManager))
+WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager& sceneManager) :
+	EmberEntity(id, ty, vw, sceneManager), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*> (&sceneManager)))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (sceneManager))
 {
-	mSceneManager->registerProvider(mPageDataProvider);
+	mSceneManager.registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
 	mWorldPosition.LongitudeDegrees = 0;
-	Ogre::SceneNode* worldNode = sceneManager->getRootSceneNode()->createChildSceneNode("entity_" + getId());
+	Ogre::SceneNode* worldNode = sceneManager.getRootSceneNode()->createChildSceneNode("entity_" + getId());
 	if (worldNode) {
 		setAttachment(new WorldAttachment(*this, *worldNode, *mTerrainManager));
 	} else {
@@ -69,7 +69,7 @@ WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Er
 
 WorldEmberEntity::~WorldEmberEntity()
 {
-	mSceneManager->registerProvider(0);
+	mSceneManager.registerProvider(0);
 	delete mPageDataProvider;
 	delete mFoliage;
 	delete mEnvironment;

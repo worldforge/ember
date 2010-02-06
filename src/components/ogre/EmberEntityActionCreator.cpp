@@ -35,8 +35,8 @@ using namespace Ember::EntityMapping;
 
 namespace EmberOgre {
 
-EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity)
-: mEntity(entity)
+EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity, Ogre::SceneManager& sceneManager)
+: mEntity(entity), mSceneManager(sceneManager)
 {
 }
 
@@ -53,7 +53,7 @@ void EmberEntityActionCreator::createActions(EntityMapping& modelMapping, Cases:
 			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "display-model") {
-			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getValue());
+			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getValue(), mSceneManager);
 			aCase->addAction(action);
 		} else if (J->getType() == "hide-model") {
 			EmberEntityHideModelAction* action = new EmberEntityHideModelAction(mEntity);

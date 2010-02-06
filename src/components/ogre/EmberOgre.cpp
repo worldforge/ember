@@ -620,7 +620,7 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::Server_GotView(Eris::View* view)
 {
-	mEmberEntityFactory = new EmberEntityFactory(*view, *view->getAvatar()->getConnection()->getTypeService(), *mMoveManager);
+	mEmberEntityFactory = new EmberEntityFactory(*view, *view->getAvatar()->getConnection()->getTypeService(), *mMoveManager, *mSceneMgr);
 }
 
 void EmberOgre::Server_GotConnection(Eris::Connection* connection)

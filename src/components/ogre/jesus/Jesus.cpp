@@ -221,7 +221,7 @@ Model::Model* Jesus::createModelForBlockType(const std::string& blockType, const
 	if (I == mEntityMappings.end()) {
 		return 0;
 	}
-	Model::Model* aModel = Model::Model::createModel(EmberOgre::getSingleton().getSceneManager(), I->second, modelName);
+	Model::Model* aModel = Model::Model::createModel(*EmberOgre::getSingleton().getSceneManager(), I->second, modelName);
 	//aModel->create(I->second);
 	return aModel;
 //	return Model::Create(I->second + ".modeldef.xml", modelName);
