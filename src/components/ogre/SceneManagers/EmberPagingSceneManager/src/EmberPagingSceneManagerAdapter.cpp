@@ -146,6 +146,12 @@ namespace EmberOgre {
 		mSceneManager->getOption(strKey, pDestValue);
 	}
 
+	void EmberPagingSceneManagerAdapter::setUninitializedHeight(float height)
+	{
+		mSceneManager->getOptions()->uninitializedHeight = height;
+	}
+
+
 	Ogre::SceneManager* EmberPagingSceneManagerAdapter::getSceneManager() const
 	{
 		return mSceneManager;

@@ -206,6 +206,8 @@ void TerrainManager::loadTerrainOptions()
 
 	getAdapter()->setCamera(EmberOgre::getSingleton().getMainOgreCamera());
 
+	getAdapter()->setUninitializedHeight(getDefaultHeight());
+
 }
 
 ISceneManagerAdapter* TerrainManager::getAdapter() const
@@ -553,9 +555,14 @@ void TerrainManager::runCommand(const std::string& command, const std::string& a
 		updateShadows();
 	}
 }
-const TerrainInfo & TerrainManager::getTerrainInfo() const
+const TerrainInfo& TerrainManager::getTerrainInfo() const
 {
 	return *mTerrainInfo;
+}
+
+float TerrainManager::getDefaultHeight() const
+{
+	return -15;
 }
 
 void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const

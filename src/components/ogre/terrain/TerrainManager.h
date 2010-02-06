@@ -342,6 +342,12 @@ public:
 	 */
 	const ShaderStore& getAllShaders() const;
 
+	/**
+	 * @brief Gets the default height of any uninitialized or undefined terrain.
+	 * @return The default height.
+	 */
+	float getDefaultHeight() const;
+
 protected:
 
 	/**

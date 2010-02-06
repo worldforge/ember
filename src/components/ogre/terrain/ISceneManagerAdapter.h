@@ -109,6 +109,16 @@ public:
 	 */
 	virtual void getOption(const std::string& strKey, void* pDestValue) = 0;
 	
+
+	/**
+	 * @brief Sets the height used by any uninitialized terrain.
+	 * Uninitialized terrain often surrounds the main terrain. This might be because the server not yet has sent terrain data.
+	 * However, since uninitialized terrain often abruptly differs from the surrounding terrain there will be very large drops, which will affect the LOD, often leading to these edge segments having the highest LOD possible.
+	 * By specifying a height used by these segment the application can tell the terrain renderer to not include these heights when doing LOD calculations.
+	 * @param height The height of any uninitialized terrain.
+	 */
+	virtual void setUninitializedHeight(float height) = 0;
+
 	/**
 	 *    Returns the scene manager instance that handles the terrain. This is most often a specialized subclass of Ogre::SceneManager.
 	 * @return 

@@ -284,6 +284,12 @@ namespace Ogre
 			void clearTileInfo();
 			void saveMapInfo();
 
+			/**
+			 * @brief The default height of any uninitialized terrain.
+			 * Any terrain at exactly this height should be removed from the LOD calculation, as it's most often "surrounding" terrain.
+			 */
+			float uninitializedHeight;
+
         private:
 
             void loadcfg (const String &filename, ConfigFile& config);

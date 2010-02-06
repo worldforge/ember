@@ -61,6 +61,8 @@ public:
 	virtual void setOption(const std::string& strKey, const void* pValue);
 	virtual void getOption(const std::string& strKey, void* pDestValue);
 
+	virtual void setUninitializedHeight(float height);
+
 	virtual Ogre::SceneManager* getSceneManager() const;
 	virtual void reloadAllPages();
 	virtual void reloadPage(unsigned int x, unsigned int z);

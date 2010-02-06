@@ -765,6 +765,8 @@ namespace Ogre
 	   const bool lodMorph = opt->lodMorph; 
        const bool roughnessLod = opt->roughnessLod;
 
+       float uninitializedHeight = opt->uninitializedHeight;
+
 	   bool doComputeMinLevelDistSqr = mIsRectModified;
        if (mMinLevelDistSqr == 0)
 	   {
@@ -941,7 +943,7 @@ namespace Ogre
                         //the reason is that Ember will set the height for all invalid segments to -1
                         //if such a segment was to be next to a normal segment, the delta would be way to high, 
                         //resulting in a tile which was always in LOD 0
-                        isInValidVertex = v1.y == -1.0 || v2.y == -1.0 || v3.y == -1.0 || v4.y == -1.0;
+                        isInValidVertex = v1.y == uninitializedHeight || v2.y == uninitializedHeight || v3.y == uninitializedHeight || v4.y == uninitializedHeight;
                     }
 
 					if (!isInValidVertex) {

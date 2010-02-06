@@ -41,6 +41,7 @@
 #include "OgrePagingLandScapeTileInfo.h"
 
 #include "fileutils.h"
+#include <limits>
 
 namespace Ogre
 {
@@ -178,6 +179,8 @@ namespace Ogre
 
 		queryNoInterpolation = false;
 		queryResolutionFactor = 0.1f;
+
+		uninitializedHeight = std::numeric_limits<float>::min();
 #ifdef _MAPSPLITTER
 
         Blur = 0.0f;
