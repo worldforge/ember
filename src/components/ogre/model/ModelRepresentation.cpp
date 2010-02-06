@@ -194,7 +194,7 @@ void ModelRepresentation::initFromModel()
 
 	///see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
 	const RenderingDefinition* renderingDef = mModel.getDefinition()->getRenderingDefinition();
-	if (renderingDef && renderingDef->getScheme() == "forest") {
+	if (renderingDef && renderingDef->getScheme() == "forest" && mModel.isLoaded()) {
 		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
 		forest->addEmberEntity(this);
 	}

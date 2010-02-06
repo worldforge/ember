@@ -25,6 +25,7 @@
 
 #include <OgreMath.h>
 #include <OgreFrameListener.h>
+#include <sigc++/trackable.h>
 
 namespace Forests {
 class PagedGeometry;
@@ -55,7 +56,7 @@ class EmberEntityLoader;
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class Forest : public Ogre::FrameListener
+class Forest : public Ogre::FrameListener, public virtual sigc::trackable
 {
 public:
     Forest(Terrain::TerrainManager& terrainManager);
@@ -78,6 +79,11 @@ protected:
 	Forests::PagedGeometry *mTrees;
 	Forests::TreeLoader3D *mTreeLoader;
 	EmberEntityLoader* mEntityLoader;
+
+	/**
+	 * @brief Called when the size of the world has changed.
+	 */
+	void worldSizeChanged();
 
 };
 

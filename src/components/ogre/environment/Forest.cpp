@@ -53,6 +53,7 @@ Forest::Forest(Terrain::TerrainManager& terrainManager) :
 	mTerrainManager(terrainManager), mTrees(0), mTreeLoader(0), mEntityLoader(0)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
+	mTerrainManager.EventWorldSizeChanged.connect(sigc::mem_fun(*this, &Forest::worldSizeChanged));
 }
 
 Forest::~Forest()
@@ -143,6 +144,14 @@ void Forest::removeEmberEntity(EmberEntity* entity)
 		mEntityLoader->removeEmberEntity(entity);
 	}
 }
+
+void Forest::worldSizeChanged()
+{
+	if (!mEntityLoader) {
+		initialize();
+	}
+}
+
 
 }
 

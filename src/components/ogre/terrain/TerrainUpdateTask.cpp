@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 erik
+ Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -109,9 +109,6 @@ void TerrainUpdateTask::initializeTerrain()
 
 		///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
 		adapter->loadFirstPage();
-
-		//TODO: reactivate
-		//EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest()->initialize();
 	}
 }
 
