@@ -32,6 +32,7 @@
 namespace EmberOgre {
 
 class EmberEntity;
+class Scene;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -39,13 +40,13 @@ class EmberEntity;
 class EmberEntityActionCreator : public Ember::EntityMapping::IActionCreator
 {
 public:
-    EmberEntityActionCreator(EmberEntity& entity, Ogre::SceneManager& sceneManager);
+    EmberEntityActionCreator(EmberEntity& entity, Scene& scene);
 
     ~EmberEntityActionCreator();
 	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EmberEntity& mEntity;
-	Ogre::SceneManager& mSceneManager;
+	Scene& mScene;
 
 
 };

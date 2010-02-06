@@ -44,6 +44,7 @@ namespace EmberOgre
 class EmberEntity;
 class ViewEmberEntity;
 class WorldEmberEntity;
+class Scene;
 
 namespace Authoring
 {
@@ -155,9 +156,9 @@ protected:
 	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
 
 	/**
-	 * @brief The scene manager which will handle the entities.
+	 * @brief The scene which will handle the entities.
 	 */
-	Ogre::SceneManager& mSceneManager;
+	Scene* mScene;
 };
 
 }

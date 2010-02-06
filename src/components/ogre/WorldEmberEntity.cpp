@@ -21,12 +21,13 @@
 
 #include "EmberEntity.h"
 #include "WorldEmberEntity.h"
-
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
-
+#include "EmberOgre.h"
+#include "Avatar.h"
+#include "Convert.h"
+#include "Scene.h"
 #include "WorldAttachment.h"
-#include "model/Model.h"
+#include "ForestRenderingTechnique.h"
+
 #include "terrain/TerrainParser.h"
 #include "terrain/TerrainManager.h"
 #include "terrain/TerrainShaderParser.h"
@@ -35,9 +36,10 @@
 #include "environment/Environment.h"
 #include "environment/CaelumEnvironment.h"
 #include "environment/SimpleEnvironment.h"
-#include "EmberOgre.h"
-#include "Avatar.h"
-#include "Convert.h"
+
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
+
 #include "framework/Exception.h"
 
 #include "TerrainPageDataProvider.h"
@@ -52,13 +54,13 @@
 namespace EmberOgre
 {
 
-WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager& sceneManager) :
-	EmberEntity(id, ty, vw, sceneManager), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*> (&sceneManager)))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (sceneManager))
+WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
+	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*> (&scene.getSceneManager())))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
 {
 	mSceneManager.registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
 	mWorldPosition.LongitudeDegrees = 0;
-	Ogre::SceneNode* worldNode = sceneManager.getRootSceneNode()->createChildSceneNode("entity_" + getId());
+	Ogre::SceneNode* worldNode = mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + getId());
 	if (worldNode) {
 		setAttachment(new WorldAttachment(*this, *worldNode, *mTerrainManager));
 	} else {
@@ -69,6 +71,8 @@ WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Er
 
 WorldEmberEntity::~WorldEmberEntity()
 {
+	ISceneRenderingTechnique* technique = mScene.removeRenderingTechnique("forest");
+	delete technique;
 	mSceneManager.registerProvider(0);
 	delete mPageDataProvider;
 	delete mFoliage;
@@ -86,6 +90,8 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 
 	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()));
 	EventEnvironmentCreated.emit();
+
+	mScene.addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
 
 	///we will wait with creating the terrain and initializing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
 

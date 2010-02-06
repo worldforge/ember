@@ -39,6 +39,7 @@ namespace EmberOgre
 {
 class EmberEntity;
 class SoundEntity;
+class Scene;
 
 namespace Model
 {
@@ -123,8 +124,9 @@ public:
 	 * @brief Ctor.
 	 * @param entity The entity instance to bind to.
 	 * @param model The model instance used.
+	 * @param scene The scene to which the entity belongs.
 	 */
-	ModelRepresentation(EmberEntity& entity, Model& model);
+	ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene);
 
 	/**
 	 * @brief Dtor.
@@ -232,6 +234,11 @@ protected:
 	 * Note that the Model won't be directly connected to the main scene node, instead the mModelMount instance will take care of setting everything up to use an intermediary "scale node".
 	 */
 	Model& mModel;
+
+	/**
+	 * @brief The scene to which the entity belongs.
+	 */
+	Scene& mScene;
 
 	/**
 	 The current movement action of the entity, for example a walk action or a run action.

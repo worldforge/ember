@@ -24,6 +24,7 @@
 #include "config.h"
 #endif
 #include "EmberEntityModelAction.h"
+#include "Scene.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelRepresentation.h"
@@ -34,8 +35,8 @@
 namespace EmberOgre
 {
 
-EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, std::string modelName, Ogre::SceneManager& sceneManager) :
-	mEntity(entity), mModelName(modelName), mSceneManager(sceneManager)
+EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene) :
+	mEntity(entity), mModelName(modelName), mScene(scene)
 {
 }
 
@@ -48,7 +49,7 @@ void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& conte
 	Model::Model* model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
 	if (!model || model->getDefinition()->getName() != mModelName) {
 		mEntity.setGraphicalRepresentation(0);
-		model = Model::Model::createModel(mSceneManager, mModelName, mEntity.getId());
+		model = Model::Model::createModel(mScene.getSceneManager(), mModelName, mEntity.getId());
 
 		///if the model definition isn't valid, use a placeholder
 		if (!model->getDefinition()->isValid()) {
@@ -60,7 +61,7 @@ void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& conte
 			modelDef->reloadAllInstances();
 		}
 
-		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model);
+		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene);
 		mEntity.setGraphicalRepresentation(representation);
 		//		if (model->getDefinition()->isValid())
 		//		{

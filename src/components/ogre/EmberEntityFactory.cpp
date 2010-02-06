@@ -26,6 +26,7 @@
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/Avatar.h"
+#include "components/ogre/Scene.h"
 #include "components/ogre/authoring/AuthoringManager.h"
 #include "components/ogre/authoring/AuthoringMoverConnector.h"
 
@@ -65,7 +66,7 @@ namespace EmberOgre
 {
 
 EmberEntityFactory::EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager, Ogre::SceneManager& sceneManager) :
-	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0), mView(view), mAuthoringManager(new Authoring::AuthoringManager(mView)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager)), mSceneManager(sceneManager)
+	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0), mView(view), mAuthoringManager(new Authoring::AuthoringManager(mView)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager)), mScene(new Scene(sceneManager))
 {
 	mView.registerFactory(this);
 
@@ -78,6 +79,7 @@ EmberEntityFactory::~EmberEntityFactory()
 {
 	delete mAuthoringMoverConnector;
 	delete mAuthoringManager;
+	delete mScene;
 	/// there is no way to deregister the factory from the View, instead the View will delete the factory when deleted
 	// 	mView.deregisterFactory(this);
 }
@@ -91,7 +93,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	if (type->isA(mTerrainType)) {
 		emberEntity = createWorld(ge, type, w);
 	} else {
-		emberEntity = new EmberEntity(ge->getId(), type, w, mSceneManager);
+		emberEntity = new EmberEntity(ge->getId(), type, w, *mScene);
 	}
 
 	S_LOG_VERBOSE("Entity added to game view.");
@@ -106,7 +108,7 @@ bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Er
 Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world)
 {
 	assert(!mWorldEntity);
-	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, mSceneManager);
+	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, *mScene);
 	return mWorldEntity;
 }
 

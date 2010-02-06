@@ -28,8 +28,6 @@
 
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 
-#include "components/ogre/environment/Environment.h"
-#include "components/ogre/environment/Forest.h"
 #include "components/ogre/sound/SoundEntity.h"
 
 #include "components/ogre/Convert.h"
@@ -41,6 +39,7 @@
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/MotionManager.h"
+#include "components/ogre/Scene.h"
 
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/EntityMappingManager.h"
@@ -66,8 +65,8 @@ const char * const ModelRepresentation::ACTION_WALK("__movement_walk");
 const char * const ModelRepresentation::ACTION_SWIM("__movement_swim");
 const char * const ModelRepresentation::ACTION_FLOAT("__movement_float");
 
-ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model& model) :
-	mEntity(entity), mModel(model), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
+ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model& model, Scene& scene) :
+	mEntity(entity), mModel(model), mScene(scene), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
 {
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
@@ -194,9 +193,10 @@ void ModelRepresentation::initFromModel()
 
 	///see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
 	const RenderingDefinition* renderingDef = mModel.getDefinition()->getRenderingDefinition();
-	if (renderingDef && renderingDef->getScheme() == "forest" && mModel.isLoaded()) {
-		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
-		forest->addEmberEntity(this);
+	if (renderingDef && renderingDef->getScheme() != "" && mModel.isLoaded()) {
+		mScene.registerEntityWithTechnique(mEntity, renderingDef->getScheme());
+//		Environment::Forest* forest = EmberOgre::getSingleton().getEntityFactory()->getWorld()->getEnvironment()->getForest();
+//		forest->addEmberEntity(this);
 	}
 
 }

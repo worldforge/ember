@@ -86,9 +86,9 @@ public:
 	 * @param id The id of the entity.
 	 * @param ty The entity type.
 	 * @param vw The main Eris::View.
-	 * @param sceneManager The main Ogre scene manager.
+	 * @param scene The scene to which the world belongs.
 	 */
-	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager& sceneManager);
+	WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene);
 
 	/**
 	 * @brief Dtor
@@ -202,6 +202,11 @@ protected:
 	 * @brief The main scene manager.
 	 */
 	EmberPagingSceneManager& mSceneManager;
+
+	/**
+	 * @brief The scene to which the entity belongs.
+	 */
+	Scene& mScene;
 
 };
 

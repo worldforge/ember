@@ -48,6 +48,8 @@ class EntityMapping;
 namespace EmberOgre
 {
 
+class Scene;
+
 namespace Model
 {
 class Model;
@@ -130,9 +132,9 @@ public:
 	 * @param id The unique id of the entity.
 	 * @param ty The type info which specified the type for this entity.
 	 * @param vw The world view to which this entity belongs.
-	 * @param sceneManager The scene manager to which this entity belongs.
+	 * @param scene The scene to which this entity belongs.
 	 */
-	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Ogre::SceneManager& sceneManager);
+	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene);
 
 	/**
 	 * @brief Dtor.
@@ -141,9 +143,9 @@ public:
 
 	/**
 	 * @brief Creates the model mapping for this entity. Call this once when initializing the entity.
-	 * @param The scene manager to which any created model should belong.
+	 * @param scene The scene to which any created model should belong.
 	 */
-	void createEntityMapping(Ogre::SceneManager& sceneManager);
+	void createEntityMapping(Scene& scene);
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
