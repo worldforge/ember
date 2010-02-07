@@ -107,7 +107,8 @@ namespace EmberOgre {
 			return;
    		}
 		std::ifstream *filestream = OGRE_NEW_T(std::ifstream, Ogre::MEMCATEGORY_GENERAL)();
-		filestream->open(filePath.c_str(), std::ios::in);
+		//We need to open the file in binary mode for Ogre to handle line endings on both unix and windows systems.
+		filestream->open(filePath.c_str(), std::ios::in | std::ios::binary);
 
 		if (filestream->fail())
 		{
