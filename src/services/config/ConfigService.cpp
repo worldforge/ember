@@ -115,6 +115,9 @@ namespace Ember
 		//use this utility function for removing the file part
 		PathRemoveFileSpec ( cwd );
 		baseDir = std::string ( cwd ) + "\\";
+		mSharedDataDir = baseDir + "\\..\\share\\ember\\";
+		mEtcDir = baseDir + "\\..\\etc\\ember\\";
+		
 #endif
 
 #if !defined(__APPLE__) && !defined(__WIN32__)
@@ -361,8 +364,6 @@ namespace Ember
 #ifdef __APPLE__
 			static std::string path ( getBundleResourceDirPath() );
 			return path;
-#elif __WIN32__
-			return baseDir;
 #else
 			return mSharedDataDir;
 #endif
@@ -373,9 +374,6 @@ namespace Ember
 	const std::string& ConfigService::getSharedConfigDirectory() const
 	{
 #ifdef __APPLE__
-		static std::string path ( getSharedDataDirectory() + "/etc/ember/" );
-		return path;
-#elif __WIN32__
 		static std::string path ( getSharedDataDirectory() + "/etc/ember/" );
 		return path;
 #else
