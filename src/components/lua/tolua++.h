@@ -21,11 +21,12 @@
 
 //We need to redefine the TOLUA_API to get mingw to compile
 #ifndef TOLUA_API
-	#ifdef _WIN32
-		#define TOLUA_API __declspec(dllimport)
-	#else
-		#define TOLUA_API extern
-	#endif
+	#define TOLUA_API
+//	#ifdef _WIN32
+//		#define TOLUA_API __declspec(dllimport)
+//	#else
+//		#define TOLUA_API extern
+//	#endif
 #endif
 
 #include <tolua++.h>
