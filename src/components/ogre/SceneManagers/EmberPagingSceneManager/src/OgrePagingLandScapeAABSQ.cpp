@@ -35,7 +35,7 @@ email                : stevenklug@san.rr.com
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgrePagingLandScapeData2D.h"
-#include "OgrePagingLandScapeAxisAlignedBoxSceneQuery.h"
+#include "OgrePagingLandScapeAABSQ.h"
 
 #include "OgrePagingLandScapeSceneManager.h"
 #include "OgreEntity.h"

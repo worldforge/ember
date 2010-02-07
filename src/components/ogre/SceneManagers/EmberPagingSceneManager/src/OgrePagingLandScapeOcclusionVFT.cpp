@@ -2,9 +2,9 @@
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgrePagingLandScapeOcclusionTraversal.h"
-#include "OgrePagingLandScapeOcclusionVFTraversal.h"
+#include "OgrePagingLandScapeOcclusionVFT.h"
 
-#include "OgrePagingLandScapeOcclusionVisibilityData.h"
+#include "OgrePagingLandScapeOcclusionVData.h"
 
 #include "OgrePagingLandScapeOctreeCamera.h"
 #include "OgrePagingLandScapeOctree.h"

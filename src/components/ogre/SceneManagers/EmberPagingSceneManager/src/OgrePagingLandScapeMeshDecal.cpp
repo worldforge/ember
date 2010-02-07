@@ -34,7 +34,7 @@ email                : stevenklug@san.rr.com
 #include "Ogre.h"
 
 #include "OgrePagingLandScapeMeshDecal.h"
-#include "OgrePagingLandScapeAxisAlignedBoxSceneQuery.h"
+#include "OgrePagingLandScapeAABSQ.h"
 
 #include <numeric>
 

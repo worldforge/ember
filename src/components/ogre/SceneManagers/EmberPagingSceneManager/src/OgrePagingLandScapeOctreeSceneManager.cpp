@@ -37,11 +37,11 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 
 #include "OgrePagingLandScapeOctreeSceneManager.h"
 
-#include "OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.h"
-#include "OgrePagingLandScapeOctreeIntersectionSceneQuery.h"
-#include "OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h"
+#include "OgrePagingLandScapeOctreeAABSceneQuery.h"
+#include "OgrePagingLandScapeOctreeISQuery.h"
+#include "OgrePagingLandScapeOctreePBVLSQ.h"
 #include "OgrePagingLandScapeOctreeRaySceneQuery.h"
-#include "OgrePagingLandScapeOctreeSphereSceneQuery.h"
+#include "OgrePagingLandScapeOctreeSSQuery.h"
 #include "OgreRenderSystem.h"
 #include "OgreWireBoundingBox.h"
 #include "OgreRenderOperation.h"
@@ -56,12 +56,12 @@ Enhancements 2003 - 2004 (C) The OGRE Team
 
 #include "OgreOcclusionBoundingBox.h"
 #include "OgrePagingLandScapeOcclusionSorter.h"
-#include "OgrePagingLandScapeOcclusionVisibilityData.h"
+#include "OgrePagingLandScapeOcclusionVData.h"
 #include "OgrePagingLandScapeOcclusionTraversal.h"
-#include "OgrePagingLandScapeOcclusionCameraTraversal.h"
-#include "OgrePagingLandScapeOcclusionVFTraversal.h"
-#include "OgrePagingLandScapeOcclusionSWTraversal.h"
-#include "OgrePagingLandScapeOcclusionDebugTraversal.h"
+#include "OgrePagingLandScapeOcclusionCameraT.h"
+#include "OgrePagingLandScapeOcclusionVFT.h"
+#include "OgrePagingLandScapeOcclusionSWT.h"
+#include "OgrePagingLandScapeOcclusionDebugT.h"
 
 
 

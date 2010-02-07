@@ -42,7 +42,7 @@
 
 //caches
 #include "OgrePagingLandScapeIndexBuffer.h"
-#include "OgrePagingLandScapeTextureCoordinatesManager.h"
+#include "OgrePagingLandScapeTextureCoordMan.h"
 
 #include "OgrePagingLandScapeTile.h"
 #include "OgrePagingLandScapeTileInfo.h"

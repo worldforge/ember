@@ -1,16 +1,15 @@
 noinst_HEADERS = \
 			DRGNURBSSurface.h \
 			fileutils.h \
-			OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.h \
+			OgrePagingLandScapeOctreeAABSceneQuery.h \
 			OgrePagingLandScapeOctreeCamera.h \
 			OgrePagingLandScapeOctree.h \
-			OgrePagingLandScapeOctreeIntersectionSceneQuery.h \
-			OgrePagingLandScapeIntersectionSceneQuery.h \
+			OgrePagingLandScapeOctreeISQuery.h \
 			OgrePagingLandScapeOctreeNode.h \
-			OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h \
+			OgrePagingLandScapeOctreePBVLSQ.h \
 			OgrePagingLandScapeOctreeRaySceneQuery.h \
 			OgrePagingLandScapeOctreeSceneManager.h \
-			OgrePagingLandScapeOctreeSphereSceneQuery.h \
+			OgrePagingLandScapeOctreeSSQuery.h \
 			OgrePagingLandScapeCamera.h \
 			OgrePagingLandScapeData2D.h \
 			OgrePagingLandScapeData2DManager.h \
@@ -27,7 +26,7 @@ noinst_HEADERS = \
 			OgrePagingLandScapeRaySceneQuery.h \
 			OgrePagingLandScapeRenderable.h \
 			OgrePagingLandScapeRenderableManager.h \
-			OgrePagingLandScapeTextureCoordinatesManager.h \
+			OgrePagingLandScapeTextureCoordMan.h \
 			OgrePagingLandScapeSceneManager.h \
 			OgrePagingLandScapeTexture.h \
 			OgrePagingLandScapeTextureManager.h \
@@ -37,12 +36,12 @@ noinst_HEADERS = \
 			OgrePagingLandScapeOcclusion.h \
 			OgrePagingLandScapeOcclusionTraversal.h \
 			OgrePagingLandScapeOcclusionElement.h \
-			OgrePagingLandScapeOcclusionVisibilityData.h \
-			OgrePagingLandScapeOcclusionCameraTraversal.h \
-			OgrePagingLandScapeOcclusionCHCTraversal.h \
-			OgrePagingLandScapeOcclusionSWTraversal.h \
-			OgrePagingLandScapeOcclusionDebugTraversal.h \
-			OgrePagingLandScapeOcclusionVFTraversal.h \
+			OgrePagingLandScapeOcclusionVData.h \
+			OgrePagingLandScapeOcclusionCameraT.h \
+			OgrePagingLandScapeOcclusionCHCT.h \
+			OgrePagingLandScapeOcclusionSWT.h \
+			OgrePagingLandScapeOcclusionDebugT.h \
+			OgrePagingLandScapeOcclusionVFT.h \
 			OgreDebugRectangle2D.h \
 			OgreOcclusionBoundingBox.h \
 			OgrePagingLandScapeOcclusionQuerySet.h \
@@ -51,7 +50,7 @@ noinst_HEADERS = \
 			OgrePagingLandScapePrecompiledHeaders.h \
 			OgrePagingLandScapeCallBackEvent.h \
 			OgrePagingLandScapeCallback.h \
-			OgrePagingLandScapeAxisAlignedBoxSceneQuery.h \
+			OgrePagingLandScapeAABSQ.h \
 			OgrePagingLandScapeMeshDecal.h \
 			\
 EmberPagingLandScapeData2D_HeightField.h \

@@ -14,12 +14,12 @@
 #include "OgrePagingLandScapeOcclusionElement.h"
 
 #include "OgrePagingLandScapeOcclusionSorter.h"
-#include "OgrePagingLandScapeOcclusionVisibilityData.h"
+#include "OgrePagingLandScapeOcclusionVData.h"
 #include "OgrePagingLandScapeOcclusionTraversal.h"
-#include "OgrePagingLandScapeOcclusionCHCTraversal.h"
-#include "OgrePagingLandScapeOcclusionSWTraversal.h"
-#include "OgrePagingLandScapeOcclusionVFTraversal.h"
-#include "OgrePagingLandScapeOcclusionDebugTraversal.h"
+#include "OgrePagingLandScapeOcclusionCHCT.h"
+#include "OgrePagingLandScapeOcclusionSWT.h"
+#include "OgrePagingLandScapeOcclusionVFT.h"
+#include "OgrePagingLandScapeOcclusionDebugT.h"
 
 #include "OgrePagingLandScapeOcclusionQuerySet.h"
 

@@ -5,15 +5,15 @@ noinst_LIBRARIES = libEmberPagingSceneManager.a
 libEmberPagingSceneManager_a_SOURCES = \
 						DRGNURBSSurface.cpp \
 						filetutils.cpp \
-						OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.cpp \
+						OgrePagingLandScapeOctreeAABSceneQuery.cpp \
 						OgrePagingLandScapeOctreeCamera.cpp \
 						OgrePagingLandScapeOctree.cpp \
-						OgrePagingLandScapeOctreeIntersectionSceneQuery.cpp \
+						OgrePagingLandScapeOctreeISQuery.cpp \
 						OgrePagingLandScapeOctreeNode.cpp \
-						OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.cpp \
+						OgrePagingLandScapeOctreePBVLSQ.cpp \
 						OgrePagingLandScapeOctreeRaySceneQuery.cpp \
 						OgrePagingLandScapeOctreeSceneManager.cpp \
-						OgrePagingLandScapeOctreeSphereSceneQuery.cpp \
+						OgrePagingLandScapeOctreeSSQuery.cpp \
 						OgrePagingLandScapeCamera.cpp \
 						OgrePagingLandScapeData2D.cpp \
 						OgrePagingLandScapeData2DManager.cpp \
@@ -27,7 +27,7 @@ libEmberPagingSceneManager_a_SOURCES = \
 						OgrePagingLandScapeRaySceneQuery.cpp \
 						OgrePagingLandScapeRenderable.cpp \
 						OgrePagingLandScapeRenderableManager.cpp \
-						OgrePagingLandScapeTextureCoordinatesManager.cpp \
+						OgrePagingLandScapeTextureCoordMan.cpp \
 						OgrePagingLandScapeSceneManager.cpp \
 						OgrePagingLandScapeTexture.cpp \
 						OgrePagingLandScapeTextureManager.cpp \
@@ -35,16 +35,16 @@ libEmberPagingSceneManager_a_SOURCES = \
 						OgrePagingLandScapeTileManager.cpp \
 						OgrePagingLandScapeOcclusion.cpp \
 						OgrePagingLandScapeOcclusionElement.cpp \
-						OgrePagingLandScapeOcclusionCameraTraversal.cpp \
+						OgrePagingLandScapeOcclusionCameraT.cpp \
 						OgrePagingLandScapeOcclusionTraversal.cpp \
-						OgrePagingLandScapeOcclusionCHCTraversal.cpp \
-						OgrePagingLandScapeOcclusionSWTraversal.cpp \
-						OgrePagingLandScapeOcclusionDebugTraversal.cpp \
-						OgrePagingLandScapeOcclusionVFTraversal.cpp \
+						OgrePagingLandScapeOcclusionCHCT.cpp \
+						OgrePagingLandScapeOcclusionSWT.cpp \
+						OgrePagingLandScapeOcclusionDebugT.cpp \
+						OgrePagingLandScapeOcclusionVFT.cpp \
 						OgreDebugRectangle2D.cpp \
 						OgreOcclusionBoundingBox.cpp \
 						OgrePagingLandScapeOcclusionQuerySet.cpp \
-						OgrePagingLandScapeAxisAlignedBoxSceneQuery.cpp \
+						OgrePagingLandScapeAABSQ.cpp \
 						OgrePagingLandScapeMeshDecal.cpp \
 						\
 						EmberPagingSceneManager.cpp \

@@ -23,15 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------
 */
 /***************************************************************************
-OgrePagingLandScapeOctreeIntersectionSceneQuery.h  -  description
+OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h  -  description
 -------------------
 begin                : Tues July 20, 2004
 copyright            : (C) 2004 by Jon Anderson
 email                : janders@users.sf.net
 ***************************************************************************/
 
-#ifndef PagingLandScapeOctreeIntersectionSCENEQUERY_H
-#define PagingLandScapeOctreeIntersectionSCENEQUERY_H
+#ifndef PagingLandScapeOctreePlaneBoundedVolumeListSCENEQUERY_H
+#define PagingLandScapeOctreePlaneBoundedVolumeListSCENEQUERY_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSceneManager.h"
@@ -39,16 +39,15 @@ email                : janders@users.sf.net
 namespace Ogre
 {
 
-/** PagingLandScapeOctree implementation of IntersectionSceneQuery. */
-class _OgrePagingLandScapeExport PagingLandScapeOctreeIntersectionSceneQuery : 
-	public DefaultIntersectionSceneQuery
+/** PagingLandScapeOctree implementation of PlaneBoundedVolumeListSceneQuery. */
+class _OgrePagingLandScapeExport PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery : public DefaultPlaneBoundedVolumeListSceneQuery
 {
 public:
-    PagingLandScapeOctreeIntersectionSceneQuery(SceneManager* creator);
-    virtual ~PagingLandScapeOctreeIntersectionSceneQuery(void);
+    PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery(SceneManager* creator);
+    virtual ~PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery(void);
 
-    /** See IntersectionSceneQuery. */
-    void execute(IntersectionSceneQueryListener* listener);
+    /** See SceneQuery. */
+    void execute(SceneQueryListener* listener);
 };
 
 }

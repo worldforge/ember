@@ -10,7 +10,7 @@
 #include "OgrePagingLandScapeOcclusion.h"
 
 #include "OgrePagingLandScapeOcclusionTraversal.h"
-#include "OgrePagingLandScapeOcclusionCameraTraversal.h"
+#include "OgrePagingLandScapeOcclusionCameraT.h"
 
 namespace Ogre
 {

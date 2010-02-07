@@ -19,7 +19,7 @@ email                : spoke2@supercable.es && tuan.kuranes@free.fr
 
 #include "OgrePagingLandScapeSceneManager.h"
 #include "OgrePagingLandScapeOptions.h"
-#include "OgrePagingLandScapeTextureCoordinatesManager.h"
+#include "OgrePagingLandScapeTextureCoordMan.h"
 
 namespace Ogre
 {

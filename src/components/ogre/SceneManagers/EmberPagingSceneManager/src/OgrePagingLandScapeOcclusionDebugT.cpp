@@ -9,9 +9,9 @@
 #include "OgrePagingLandScapeOcclusionElement.h"
 #include "OgrePagingLandScapeOcclusion.h"
 
-#include "OgrePagingLandScapeOcclusionVisibilityData.h"
+#include "OgrePagingLandScapeOcclusionVData.h"
 #include "OgrePagingLandScapeOcclusionTraversal.h"
-#include "OgrePagingLandScapeOcclusionDebugTraversal.h"
+#include "OgrePagingLandScapeOcclusionDebugT.h"
 
 #include "OgreDebugRectangle2D.h"
 

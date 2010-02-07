@@ -23,15 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------
 */
 /***************************************************************************
-OgrePagingLandScapeOctreeSphereSceneQuery.h  -  description
+OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.h  -  description
 -------------------
 begin                : Tues July 20, 2004
 copyright            : (C) 2004 by Jon Anderson
 email                : janders@users.sf.net
 ***************************************************************************/
 
-#ifndef PagingLandScapeOctreeSphereSCENEQUERY_H
-#define PagingLandScapeOctreeSphereSCENEQUERY_H
+#ifndef PagingLandScapeOctreeAxisAlignedBoxSCENEQUERY_H
+#define PagingLandScapeOctreeAxisAlignedBoxSCENEQUERY_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSceneManager.h"
@@ -39,14 +39,15 @@ email                : janders@users.sf.net
 namespace Ogre
 {
 
-/** PagingLandScapeOctree implementation of SphereSceneQuery. */
-class _OgrePagingLandScapeExport PagingLandScapeOctreeSphereSceneQuery : public DefaultSphereSceneQuery
+/** PagingLandScapeOctree implementation of AxisAlignedBoxSceneQuery. */
+class _OgrePagingLandScapeExport PagingLandScapeOctreeAxisAlignedBoxSceneQuery : public DefaultAxisAlignedBoxSceneQuery
 {
 public:
-    PagingLandScapeOctreeSphereSceneQuery(SceneManager* creator);
-    virtual ~PagingLandScapeOctreeSphereSceneQuery(void);
+    PagingLandScapeOctreeAxisAlignedBoxSceneQuery(SceneManager* creator);
+    virtual ~PagingLandScapeOctreeAxisAlignedBoxSceneQuery(void);
 
-    /** See SceneQuery. */
+    /** See RayScenQuery. */
+	/** Finds any entities that intersect the AAB for the query. */
     void execute(SceneQueryListener* listener);
 };
 

@@ -35,7 +35,7 @@ email                : janders@users.sf.net
 
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
-#include "OgrePagingLandScapeOctreeIntersectionSceneQuery.h"
+#include "OgrePagingLandScapeOctreeISQuery.h"
 #include "OgrePagingLandScapeOctreeSceneManager.h"
 #include "OgreEntity.h"
 #include "OgreRoot.h"

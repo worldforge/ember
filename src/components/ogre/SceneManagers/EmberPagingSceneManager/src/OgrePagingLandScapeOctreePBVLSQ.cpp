@@ -35,7 +35,7 @@ email                : janders@users.sf.net
 
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
-#include "OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h"
+#include "OgrePagingLandScapeOctreePBVLSQ.h"
 #include "OgrePagingLandScapeOctreeSceneManager.h"
 #include "OgreEntity.h"
 

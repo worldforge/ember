@@ -23,15 +23,15 @@ http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------
 */
 /***************************************************************************
-OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h  -  description
+OgrePagingLandScapeOctreeSphereSceneQuery.h  -  description
 -------------------
 begin                : Tues July 20, 2004
 copyright            : (C) 2004 by Jon Anderson
 email                : janders@users.sf.net
 ***************************************************************************/
 
-#ifndef PagingLandScapeOctreePlaneBoundedVolumeListSCENEQUERY_H
-#define PagingLandScapeOctreePlaneBoundedVolumeListSCENEQUERY_H
+#ifndef PagingLandScapeOctreeSphereSCENEQUERY_H
+#define PagingLandScapeOctreeSphereSCENEQUERY_H
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgreSceneManager.h"
@@ -39,12 +39,12 @@ email                : janders@users.sf.net
 namespace Ogre
 {
 
-/** PagingLandScapeOctree implementation of PlaneBoundedVolumeListSceneQuery. */
-class _OgrePagingLandScapeExport PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery : public DefaultPlaneBoundedVolumeListSceneQuery
+/** PagingLandScapeOctree implementation of SphereSceneQuery. */
+class _OgrePagingLandScapeExport PagingLandScapeOctreeSphereSceneQuery : public DefaultSphereSceneQuery
 {
 public:
-    PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery(SceneManager* creator);
-    virtual ~PagingLandScapeOctreePlaneBoundedVolumeListSceneQuery(void);
+    PagingLandScapeOctreeSphereSceneQuery(SceneManager* creator);
+    virtual ~PagingLandScapeOctreeSphereSceneQuery(void);
 
     /** See SceneQuery. */
     void execute(SceneQueryListener* listener);

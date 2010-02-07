@@ -8,7 +8,7 @@
 
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeOctreeCamera.h"
-#include "OgrePagingLandScapeOcclusionVisibilityData.h"
+#include "OgrePagingLandScapeOcclusionVData.h"
 #include "OgreDebugRectangle2D.h"
 
 

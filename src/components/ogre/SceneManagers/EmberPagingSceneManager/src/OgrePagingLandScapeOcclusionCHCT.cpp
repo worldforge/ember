@@ -9,8 +9,8 @@
 
 #include "OgrePagingLandScapeOcclusionSorter.h"
 #include "OgrePagingLandScapeOcclusionTraversal.h"
-#include "OgrePagingLandScapeOcclusionCHCTraversal.h"
-#include "OgrePagingLandScapeOcclusionVisibilityData.h"
+#include "OgrePagingLandScapeOcclusionCHCT.h"
+#include "OgrePagingLandScapeOcclusionVData.h"
 
 namespace Ogre
 {

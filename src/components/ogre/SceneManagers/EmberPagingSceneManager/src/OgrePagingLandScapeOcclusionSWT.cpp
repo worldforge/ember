@@ -2,7 +2,7 @@
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
 #include "OgrePagingLandScapeOcclusionTraversal.h"
-#include "OgrePagingLandScapeOcclusionSWTraversal.h"
+#include "OgrePagingLandScapeOcclusionSWT.h"
 
 #include "OgrePagingLandScapeOctreeCamera.h"
 #include "OgrePagingLandScapeOctree.h"
@@ -11,7 +11,7 @@
 #include "OgrePagingLandScapeOcclusionSorter.h"
 #include "OgrePagingLandScapeOcclusionElement.h"
 #include "OgrePagingLandScapeOcclusion.h"
-#include "OgrePagingLandScapeOcclusionVisibilityData.h"
+#include "OgrePagingLandScapeOcclusionVData.h"
 
 namespace Ogre
 {

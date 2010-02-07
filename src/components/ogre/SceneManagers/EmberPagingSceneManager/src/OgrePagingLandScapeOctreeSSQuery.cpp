@@ -23,7 +23,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 -----------------------------------------------------------------------------
 */
 /***************************************************************************
-OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.cpp  -  description
+OgrePagingLandScapeOctreeSphereSceneQuery.cpp  -  description
 -------------------
 begin                : Tues July 20, 2004
 copyright            : (C) 2004by Jon Anderson
@@ -35,7 +35,7 @@ email                : janders@users.sf.net
 
 #include "OgrePagingLandScapePrecompiledHeaders.h"
 
-#include "OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.h"
+#include "OgrePagingLandScapeOctreeSSQuery.h"
 #include "OgrePagingLandScapeOctreeSceneManager.h"
 #include "OgreEntity.h"
 
@@ -43,32 +43,34 @@ namespace Ogre
 {
 
 //---------------------------------------------------------------------
-PagingLandScapeOctreeAxisAlignedBoxSceneQuery::PagingLandScapeOctreeAxisAlignedBoxSceneQuery(SceneManager* creator)
-	: DefaultAxisAlignedBoxSceneQuery(creator)
+PagingLandScapeOctreeSphereSceneQuery::PagingLandScapeOctreeSphereSceneQuery(SceneManager* creator)
+	: DefaultSphereSceneQuery(creator)
 {
 }
 
 //---------------------------------------------------------------------
-PagingLandScapeOctreeAxisAlignedBoxSceneQuery::~PagingLandScapeOctreeAxisAlignedBoxSceneQuery(void)
+PagingLandScapeOctreeSphereSceneQuery::~PagingLandScapeOctreeSphereSceneQuery(void)
 {
 }
 
 //---------------------------------------------------------------------
-void PagingLandScapeOctreeAxisAlignedBoxSceneQuery::execute(SceneQueryListener* listener)
+void PagingLandScapeOctreeSphereSceneQuery::execute(SceneQueryListener* listener)
 {
     std::list < SceneNode* > list;
     //find the nodes that intersect the AAB
-    static_cast< PagingLandScapeOctreeSceneManager* >(mParentSceneMgr)->findNodesIn(mAABB, list, 0);
+    static_cast< PagingLandScapeOctreeSceneManager* >(mParentSceneMgr)->findNodesIn(mSphere, list, 0);
 
     //grab all moveables from the node that intersect...
-    std::list < SceneNode* >::iterator it = list.begin();
-    while (it != list.end())
+    std::list< SceneNode* >::iterator it = list.begin();
+    while(it != list.end())
     {
         SceneNode::ObjectIterator oit = (*it)->getAttachedObjectIterator();
         while (oit.hasMoreElements())
         {
             MovableObject* m = oit.getNext();
-            if ((m->getQueryFlags() & mQueryMask) && m->isInScene() &&	mAABB.intersects(m->getWorldBoundingBox()))
+            if ((m->getQueryFlags() & mQueryMask) 
+                && m->isInScene() 
+                && mSphere.intersects(m->getWorldBoundingBox()))
             {
                 listener->queryResult(m);
             }
