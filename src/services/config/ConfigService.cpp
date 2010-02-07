@@ -32,14 +32,12 @@
 #include "framework/Tokeniser.h"
 
 #ifdef __WIN32__
+#define WIN32_LEAN_AND_MEAN 1
 #include <Windows.h>
 
 //we need this for the PathRemoveFileSpec(...) method
 #include <shlwapi.h>
 
-//win32 hack, not sure if this works
-#define SYSCONFDIR "."
-#define DATADIR "."
 #endif
 
 // #include <iostream>
@@ -120,8 +118,8 @@ namespace Ember
 #endif
 
 #if !defined(__APPLE__) && !defined(__WIN32__)
-		mSharedDataDir = DATADIR "/ember/";
-		mEtcDir = SYSCONFDIR "/ember/";
+		mSharedDataDir = EMBER_DATADIR "/ember/";
+		mEtcDir = EMBER_SYSCONFDIR "/ember/";
 #endif
 
 		setName ( "Configuration Service" );
@@ -399,7 +397,7 @@ namespace Ember
 //#elif __WIN32__
 //			return baseDir;
 //#else
-//			return BR_DATADIR("/games/ember/");
+//			return BR_EMBER_DATADIR("/games/ember/");
 //#endif
 			return getHomeDirectory();
 		}
