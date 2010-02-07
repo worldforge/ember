@@ -258,9 +258,7 @@ AC_DEFUN([AX_BOOST],
 		 succeeded=yes
 		 found_system=yes
          ifelse([$2], , :, [$2])
-       ],
-       [
-       ])
+       ],[])
        AC_LANG_POP([C++])
 		dnl if we found no boost with system layout we search for boost libraries
 		dnl built and installed without the --layout=system option or for a staged(not installed) version
