@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <limits.h>
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <SDL.h>
 #include <SDL_syswm.h>
 #else

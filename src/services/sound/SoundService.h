@@ -173,7 +173,7 @@ private:
 	 */
 	SoundSampleStore mBaseSamples;
 
-	#ifdef __WIN32__
+	#ifdef _MSC_VER
 	/**
 	 * @brief The main OpenAL context.
 	 */

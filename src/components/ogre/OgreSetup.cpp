@@ -37,9 +37,14 @@
 #include "services/config/ConfigService.h"
 
 #ifdef WIN32
+	#include <float.h>
+#ifdef _MSVC_VER
 	#include <SDL.h>
 	#include <SDL_syswm.h>
-	#include <float.h>
+#else
+	#include <SDL/SDL.h>
+	#include <SDL/SDL_syswm.h>
+#endif
 #else
 	#include <SDL/SDL.h>
 	#include <SDL/SDL_syswm.h>
@@ -899,6 +904,7 @@ bool OgreSetup::frameEnded(const Ogre::FrameEvent & evt)
 
 ///Taken from sage.
 int OgreSetup::isExtensionSupported(const char *extension) {
+#ifndef WIN32
 	SDL_SysWMinfo wmInfo;
 	SDL_VERSION(&wmInfo.version);
 	SDL_GetWMInfo(&wmInfo);
@@ -948,6 +954,7 @@ int OgreSetup::isExtensionSupported(const char *extension) {
 			return 1;
 		start = terminator;
 	}
+#endif
 	return 0;
 }
 

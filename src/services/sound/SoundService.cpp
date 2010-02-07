@@ -34,10 +34,10 @@
 #include <cstring>
 #include <algorithm>
 
-#ifndef __WIN32__
-#include <AL/alut.h>
-#else
+#ifdef _MSC_VER
 #include <ALUT/alut.h>
+#else
+#include <AL/alut.h>
 #endif
 
 
@@ -45,7 +45,7 @@ namespace Ember
 {
 /* Constructor */
 SoundService::SoundService()
-#ifdef WIN32
+#ifdef _MSC_VER
 	: mContext(0), mDevice(0), mResourceProvider(0)
 #else
 	: mResourceProvider(0)
@@ -75,7 +75,7 @@ Service::Status SoundService::start()
 			S_LOG_FAILURE("Can't start the sound system if it's already started.");
 		} else {
 
-		#ifndef __WIN32__
+		#ifndef _MSC_VER
 			mEnabled = alutInit(NULL, NULL) == ALC_TRUE;
 		#else
 			mDevice = alcOpenDevice("DirectSound3D");

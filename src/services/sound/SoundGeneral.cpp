@@ -26,11 +26,12 @@
 #include <AL/al.h>
 #endif
 
-#ifndef __WIN32__
-#include <AL/alut.h>
-#else
+#ifdef _MSC_VER
 #include <ALUT/alut.h>
+#else
+#include <AL/alut.h>
 #endif
+
 
 
 namespace Ember

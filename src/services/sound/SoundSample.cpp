@@ -26,7 +26,7 @@
 
 #include "SoundSource.h"
 
-#ifndef __WIN32__
+#ifndef _MSC_VER
 #include <AL/alut.h>
 #else
 #include <ALUT/alut.h>
