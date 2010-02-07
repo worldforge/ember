@@ -4,6 +4,12 @@ bin_PROGRAMS = ember.bin
 
 ember_bin_SOURCES = Application.cpp ConfigBoundLogObserver.cpp Ember.cpp
 
+if WIN32
+ember_bin_SOURCES += win32/OgreWin32Resources.rc win32/ember.ico
+.rc.o:
+	$(WINDRES) -o $@ -i $<
+endif
+
 ember_bin_LDADD = \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.a \

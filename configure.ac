@@ -100,8 +100,7 @@ AC_MSG_RESULT([
 
 	])
 	
-AM_PATH_SDL(1.2.0, 
-	    ,
+AM_PATH_SDL([1.2.0],,
 [
   AC_MSG_ERROR(Couldn't find SDL or insufficent version found. Please goto http://www.libsdl.org/ and get at least version $SDL_VERSION)
 ])
@@ -131,10 +130,14 @@ AC_LANG_PUSH(C)
 case "x$target_os" in
 	*ming* )
 		LIBS="$LIBS -lshlwapi"
+		AC_CHECK_TOOL(WINDRES, windres)
 		AC_MSG_RESULT([Building for windows.])
+		WIN32=true
 		break;
 		;;
 esac
+
+AM_CONDITIONAL(WIN32, [test x$WIN32 = xtrue])
 	
 	
 AC_LANG_POP(C)
