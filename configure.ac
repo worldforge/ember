@@ -128,8 +128,13 @@ AC_LANG_PUSH(C)
 #	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
 #	)
 
-
-
+case "x$target_os" in
+	*ming* )
+		LIBS="$LIBS -lshlwapi"
+		AC_MSG_RESULT([Building for windows.])
+		break;
+		;;
+esac
 	
 	
 AC_LANG_POP(C)
