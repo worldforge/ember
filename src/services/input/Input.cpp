@@ -201,7 +201,6 @@ void Input::processInput()
 	mLastTick = ticks;
 	pollMouse(secondsSinceLast);
 	pollEvents(secondsSinceLast);
-    SDL_PumpEvents();
 }
 
 
