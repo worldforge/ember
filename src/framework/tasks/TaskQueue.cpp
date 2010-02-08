@@ -76,20 +76,18 @@ TaskUnit* TaskQueue::fetchNextTask()
 {
 	//The semantics of this method is that if a null pointer is returned the task executor is required to exit its main processing loop, since this indicates that the queue is shuttin down.
 	TaskUnit* taskUnit(0);
-	while (!taskUnit) {
-		boost::mutex::scoped_lock lock(mUnprocessedQueueMutex);
-		if (!mUnprocessedTaskUnits.size()) {
-			if (!mActive) {
-				return 0;
-			}
-			mUnprocessedQueueCond.wait(lock);
+	boost::mutex::scoped_lock lock(mUnprocessedQueueMutex);
+	if (!mUnprocessedTaskUnits.size()) {
+		if (!mActive) {
+			return 0;
 		}
-		if (mUnprocessedTaskUnits.size()) {
-			taskUnit = mUnprocessedTaskUnits.front();
-			mUnprocessedTaskUnits.pop();
-		}
-		return taskUnit;
+		mUnprocessedQueueCond.wait(lock);
 	}
+	if (mUnprocessedTaskUnits.size()) {
+		taskUnit = mUnprocessedTaskUnits.front();
+		mUnprocessedTaskUnits.pop();
+	}
+	return taskUnit;
 }
 
 void TaskQueue::addProcessedTask(TaskUnit* taskUnit)
