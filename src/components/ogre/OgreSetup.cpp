@@ -279,7 +279,9 @@ bool OgreSetup::configure(void)
 	sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
 	putenv(tmp);
 
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0)
+	//Use a separate thread for the events. The idea here is that this should prevent
+	//us having to sleep each frame just to let the OS collect input events, but I'm not completely sure if it works. /erik
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE | SDL_INIT_EVENTTHREAD) < 0)
 		{
 		S_LOG_FAILURE("Couldn't initialize SDL:\n\t\t");
 		S_LOG_FAILURE(SDL_GetError());
