@@ -202,6 +202,14 @@ function AssetsManager.MeshesRefresh_Clicked(args)
 	AssetsManager.meshes.refresh()
 end
 
+function AssetsManager.MeshesList_ItemSelectionChanged(args)
+	local item = AssetsManager.meshes.controls.listbox:getFirstSelectedItem()
+	AssetsManager.showMesh(item:getText())
+end
+
+function AssetsManager.showMesh(meshName)
+	AssetsManager.meshes.renderer:showEntity(meshName)
+end
 
 
 function AssetsManager.RefreshWindows_Clicked(args)
@@ -355,6 +363,7 @@ function AssetsManager.buildWidget()
 	AssetsManager.meshes.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMeshes"))
 	AssetsManager.meshes.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.meshes.controls.listbox, AssetsManager.meshes.controls.filter)
 	AssetsManager.meshes.controls.textureView = AssetsManager.widget:getWindow("MeshInfo/Preview")
+	AssetsManager.meshes.renderer = EmberOgre.Gui.OgreEntityRenderer:new_local(AssetsManager.meshes.controls.textureView)
 
 	--the shaders part
 	AssetsManager.shaders.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ShadersList"))
