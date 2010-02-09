@@ -1,6 +1,7 @@
 --Lists all of the graphical resources available
 
 AssetsManager = {connectors={}, 
+controls = {},
 textures = {controls = {}, listbox = nil,selectedTexture = nil}, 
 materials = {controls = {}, listbox = nil,selectedTexture = nil}, 
 images = {controls = {}, listbox = nil,selectedTexture = nil}, 
@@ -326,6 +327,9 @@ function AssetsManager.buildWidget()
 	AssetsManager.widget = guiManager:createWidget()
 	AssetsManager.widget:loadMainSheet("AssetsManager.layout", "AssetsManager/")
 	
+	AssetsManager.controls.tabs = CEGUI.toTabControl(AssetsManager.widget:getWindow("MainTabControl"))
+	
+	
 
 	
 	--the texture part
@@ -379,6 +383,16 @@ function AssetsManager.buildWidget()
 	AssetsManager.widget:registerConsoleVisibilityToggleCommand("assetsManager")
 	AssetsManager.widget:enableCloseButton()
 	AssetsManager.widget:hide()
+	
+
+	--See if we automatically should show a certain mesh. This is useful for authoring when one wants to inspect a specific mesh.	
+	if emberServices:getConfigService():itemExists("authoring", "loadmesh") then
+		local meshNameVar = emberServices:getConfigService():getValue("authoring", "loadmesh")
+		local meshName = meshNameVar:as_string()
+		AssetsManager.widget:show()
+		AssetsManager.controls.tabs:setSelectedTab("Meshes")
+		AssetsManager.showMesh(meshName)
+	end
 
 
 end
