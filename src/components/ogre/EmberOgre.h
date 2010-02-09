@@ -308,7 +308,7 @@ public:
 
 	/**
 	 * @brief Renders one frame.
-	 * @return True if rendering should continue. False if the application should end.
+	 * @return True if rendering occurred.
 	 */
 	bool renderOneFrame();
 
