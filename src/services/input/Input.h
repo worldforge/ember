@@ -325,10 +325,16 @@ public:
 	void writeToClipboard(const std::string& text);
 	
 	/**
-	 *    @brief Gets the current mouse position.
+	 * @brief Gets the current mouse position.
 	 * @return The last mouse position.
 	 */
 	const MousePosition& getMousePosition() const;
+
+	/**
+	 * @brief Lets the application sleep a little.
+	 * @param milliseconds How long to sleep, in milliseconds.
+	 */
+	void sleep(unsigned int milliseconds);
 
 protected:
 

@@ -35,28 +35,28 @@ namespace EmberOgre
 }
 namespace Ember
 {
-	class EmberServices;
-	class LogObserver;
+class EmberServices;
+class LogObserver;
 
-	/**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+/**
+@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-	The main application class. There will only be one instance of this in the system, and this holds all other objects in the system. Ember is created and destroyed with this instance.
+The main application class. There will only be one instance of this in the system, and this holds all other objects in the system. Ember is created and destroyed with this instance.
 
-	After creating it, be sure to call these methods in order:
+After creating it, be sure to call these methods in order:
 
-	registerComponents();
-	prepareComponents();
-	initializeServices();
+registerComponents();
+prepareComponents();
+initializeServices();
 
-	start();
+start();
 
-	*/
-    class Application : public ConsoleObject, public Ember::Singleton<Application>
-    {
-    public:
-        typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
-		Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
+*/
+class Application : public ConsoleObject, public Ember::Singleton<Application>
+{
+public:
+	typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
+	Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
 
 	/**
 	* @brief At destruction pretty much all game objects will be destroyed.
@@ -66,8 +66,9 @@ namespace Ember
 	/**
 	* @brief Performs one step of the main loop.
 	* You only need to call this each "frame" if you're not using mainLoop().
+	* @param minMillisecondsPerFrame If the fps is capped, this is the minimum milliseconds needed to spend on each frame.
 	*/
-	void mainLoopStep();
+	void mainLoopStep(long minMillisecondsPerFrame);
 
 	/**
 	* @brief Enters the main loop.

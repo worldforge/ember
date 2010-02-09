@@ -477,5 +477,11 @@ const MousePosition& Input::getMousePosition() const
 	return mMousePosition;
 }
 
+void Input::sleep(unsigned int milliseconds)
+{
+	SDL_Delay(milliseconds);
+}
+
+
 }
 ;

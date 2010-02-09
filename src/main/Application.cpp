@@ -17,17 +17,17 @@
 #include "Application.h"
 
 #ifdef WIN32
-	#include <tchar.h>
-	#define snprintf _snprintf
-    #include <io.h> // for _access, Win32 version of stat()
-    #include <direct.h> // for _mkdir
+#include <tchar.h>
+#define snprintf _snprintf
+#include <io.h> // for _access, Win32 version of stat()
+#include <direct.h> // for _mkdir
 //	#include <sys/stat.h>
 
-	#include <iostream>
-	#include <fstream>
-	#include <ostream>
+#include <iostream>
+#include <fstream>
+#include <ostream>
 #else
-	#include <dirent.h>
+#include <dirent.h>
 #endif
 
 #include <Eris/View.h>
@@ -37,6 +37,7 @@
 #include "services/logging/LoggingService.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
+#include "services/config/ConfigListenerContainer.h"
 #include "services/metaserver/MetaserverService.h"
 #include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
@@ -56,16 +57,16 @@
 
 #include <tolua++.h>
 
-TOLUA_API int tolua_Ogre_open (lua_State* tolua_S);
-TOLUA_API int tolua_Eris_open (lua_State* tolua_S);
-TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S);
-TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S);
-TOLUA_API int tolua_Helpers_open (lua_State* tolua_S);
-TOLUA_API int tolua_Framework_open (lua_State* tolua_S);
-TOLUA_API int tolua_Application_open (lua_State* tolua_S);
-TOLUA_API int tolua_atlas_adapters_open (lua_State* tolua_S);
-TOLUA_API int tolua_Atlas_open (lua_State* tolua_S);
-TOLUA_API int tolua_Varconf_open (lua_State* tolua_S);
+TOLUA_API int tolua_Ogre_open(lua_State* tolua_S);
+TOLUA_API int tolua_Eris_open(lua_State* tolua_S);
+TOLUA_API int tolua_EmberServices_open(lua_State* tolua_S);
+TOLUA_API int tolua_EmberOgre_open(lua_State* tolua_S);
+TOLUA_API int tolua_Helpers_open(lua_State* tolua_S);
+TOLUA_API int tolua_Framework_open(lua_State* tolua_S);
+TOLUA_API int tolua_Application_open(lua_State* tolua_S);
+TOLUA_API int tolua_atlas_adapters_open(lua_State* tolua_S);
+TOLUA_API int tolua_Atlas_open(lua_State* tolua_S);
+TOLUA_API int tolua_Varconf_open(lua_State* tolua_S);
 
 #include <iostream>
 #include <sstream>
@@ -75,42 +76,87 @@ TOLUA_API int tolua_Varconf_open (lua_State* tolua_S);
 
 #include "framework/osdir.h"
 
-
 namespace Ember
 {
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A simple listener class for the general:desiredfps config setting, which configures the capped fps.
+ */
+class DesiredFpsListener: public ConfigListenerContainer
+{
+protected:
+
+	/**
+	 * @brief The desired frames per second.
+	 * If set to 0 no capping will occur.
+	 */
+	long mDesiredFps;
+
+	/**
+	 * @brief How long each frame should be in milliseconds.
+	 * If set to 0 no capping will occur.
+	 */
+	long mMillisecondsPerFrame;
+
+	void Config_DesiredFps(const std::string& section, const std::string& key, varconf::Variable& variable)
+	{
+		if (variable.is_int()) {
+			mDesiredFps = static_cast<int> (variable);
+			if (mDesiredFps != 0) {
+				mMillisecondsPerFrame = 1000L / mDesiredFps;
+			} else {
+				mMillisecondsPerFrame = 0;
+			}
+		}
+	}
+
+public:
+
+	/**
+	 * @brief Ctor.
+	 * A listener will be set up listening for the general:desiredfps config setting.
+	 */
+	DesiredFpsListener() :
+		mDesiredFps(0), mMillisecondsPerFrame(0)
+	{
+		registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &DesiredFpsListener::Config_DesiredFps));
+	}
+
+	/**
+	 * @brief Accessor for the desired framed per second.
+	 * If 0 no capping should occur.
+	 */
+	long getDesiredFps() const
+	{
+		return mDesiredFps;
+	}
+
+	/**
+	 * @brief Accessor for the minimum lenght (in milliseconds) that each frame should take in order for the desired fps to be kept.
+	 * If 0 no capping will occur.
+	 */
+	long getMillisecondsPerFrame() const
+	{
+		return mMillisecondsPerFrame;
+	}
+};
+
 template<> Ember::Application *Ember::Singleton<Ember::Application>::ms_Singleton = 0;
 
-
-Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings)
-: mOgreView(0)
-, mShouldQuit(false)
-, mPrefix(prefix)
-, mHomeDir(homeDir)
-, mLogObserver(0)
-, mServices(0)
-, mWorldView(0)
-, mPollEris(true)
-, mLastTimeErisPollStart(0)
-, mLastTimeErisPollEnd(0)
-, mLastTimeInputProcessingStart(0)
-, mLastTimeInputProcessingEnd(0)
-, mConfigSettings(configSettings)
-, mConsoleBackend(new ConsoleBackend())
-, Quit("quit", this, "Quit Ember.")
-, ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
+	mOgreView(0), mShouldQuit(false), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mPollEris(true), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 
 {
 
 }
-
 
 Application::~Application()
 {
 	EmberServices::getSingleton().getServerService()->stop(0);
 	///this will not destroy the scripting environments, since there are other components, such as windows in the gui, that depend on the scripting environment being available at destruction time
 	EmberServices::getSingleton().getScriptingService()->stop(0);
-// 	mOgreView->shutdownGui();
+	// 	mOgreView->shutdownGui();
 	delete mOgreView;
 	delete mServices;
 	S_LOG_INFO("Ember shut down normally.");
@@ -123,12 +169,21 @@ void Application::registerComponents()
 	mOgreView = new EmberOgre::EmberOgre();
 }
 
-
-void Application::mainLoopStep()
+void Application::mainLoopStep(long minMillisecondsPerFrame)
 {
 	Services::Time* timeService = EmberServices::getSingleton().getTimeService();
+	Ember::Input& input(Ember::Input::getSingleton());
 	long currentTimeMillis(0);
 	try {
+		//If we should cap the fps so that each frame should take a minimum amount of time,
+		//we need to see if we should sleep a little.
+		if (minMillisecondsPerFrame > 0) {
+			currentTimeMillis = timeService->currentTimeMillis();
+			long millisecondSinceLastFrame = currentTimeMillis - mLastTimeInputProcessingEnd;
+			if (millisecondSinceLastFrame < minMillisecondsPerFrame) {
+				input.sleep(minMillisecondsPerFrame - millisecondSinceLastFrame);
+			}
+		}
 		if (mPollEris) {
 			currentTimeMillis = timeService->currentTimeMillis();
 			EventStartErisPoll.emit((currentTimeMillis - mLastTimeErisPollStart) / 1000.0f);
@@ -143,7 +198,6 @@ void Application::mainLoopStep()
 		currentTimeMillis = timeService->currentTimeMillis();
 		EventBeforeInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingStart) / 1000.0f);
 		mLastTimeInputProcessingStart = currentTimeMillis;
-		Ember::Input& input(Ember::Input::getSingleton());
 		input.processInput();
 
 		currentTimeMillis = timeService->currentTimeMillis();
@@ -151,10 +205,9 @@ void Application::mainLoopStep()
 		mLastTimeInputProcessingEnd = currentTimeMillis;
 		mOgreView->renderOneFrame();
 		EmberServices::getSingleton().getSoundService()->cycle();
-	} catch (const std::exception& ex)
-	{
+	} catch (const std::exception& ex) {
 		S_LOG_CRITICAL("Got exception, shutting down." << ex);
-		throw;
+		throw ;
 	} catch (const std::string& ex)
 	{
 		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
@@ -173,9 +226,10 @@ void Application::mainLoop()
 	mLastTimeErisPollEnd = currentTimeMillis;
 	mLastTimeInputProcessingStart = currentTimeMillis;
 	mLastTimeInputProcessingEnd = currentTimeMillis;
+	DesiredFpsListener desiredFpsListener;
 	while(mShouldQuit == false)
 	{
-		mainLoopStep();
+		mainLoopStep(desiredFpsListener.getMillisecondsPerFrame());
 	}
 }
 
@@ -223,13 +277,12 @@ void Application::initializeServices()
 #endif
 	}
 
-
 	int result = chdir(EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
 	if (result) {
 		S_LOG_WARNING("Could not change directory to '"<< EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str() <<"'.");
 	}
 
-// 	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
+	// 	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
 	///make sure that there are files
 	///assureConfigFile("ember.conf", sharePath);
@@ -252,7 +305,7 @@ void Application::initializeServices()
 	/// Initialize and start the Metaserver Service.
 	S_LOG_INFO("Initializing metaserver service");
 
- 	EmberServices::getSingleton().getMetaserverService()->start();
+	EmberServices::getSingleton().getMetaserverService()->start();
 	///hoho, we get linking errors if we don't do some calls to the service
 	EmberServices::getSingleton().getMetaserverService()->getMetaServer();
 
@@ -267,13 +320,11 @@ void Application::initializeServices()
 	S_LOG_INFO("Initializing input service");
 	EmberServices::getSingleton().getInputService()->start();
 
-
 	S_LOG_INFO("Initializing scripting service");
 	EmberServices::getSingleton().getScriptingService()->start();
 
 	S_LOG_INFO("Initializing wfut service");
- 	EmberServices::getSingleton().getWfutService()->start();
-
+	EmberServices::getSingleton().getWfutService()->start();
 
 	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
 
@@ -292,8 +343,7 @@ void Application::initializeServices()
 	tolua_Varconf_open(luaProvider->getLuaState());
 	Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(luaProvider);
 
-
- 	EventServicesInitialized.emit();
+	EventServicesInitialized.emit();
 }
 
 void Application::Server_GotView(Eris::View* view)
@@ -351,7 +401,7 @@ void Application::runCommand(const std::string& command, const std::string& args
 {
 	if(command == Quit.getCommand()) {
 		quit();
-	} else if (ToggleErisPolling == command){
+	} else if (ToggleErisPolling == command) {
 		setErisPolling(!getErisPolling());
 	}
 }
@@ -365,8 +415,5 @@ bool Application::getErisPolling() const
 {
 	return mPollEris;
 }
-
-
-
 
 }
