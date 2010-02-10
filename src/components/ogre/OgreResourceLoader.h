@@ -26,6 +26,7 @@
 
 #include "EmberOgrePrerequisites.h"
 #include <OgreConfigFile.h>
+#include <map>
 namespace EmberOgre {
 
 class FileSystemArchiveFactory;
@@ -51,8 +52,14 @@ public:
 	unsigned int numberOfSections();
 
 protected:
+	typedef std::multimap<std::string, std::string> ResourceLocationsMap;
 	bool mLoadRecursive;
 	Ogre::ConfigFile mConfigFile;
+
+	/**
+	 * @brief A store of extra locations, as specified in config or command line.
+	 */
+	ResourceLocationsMap mExtraResourceLocations;
 
 	void loadSection(const std::string& sectionName);
 
