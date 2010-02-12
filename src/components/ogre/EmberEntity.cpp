@@ -86,6 +86,8 @@ EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* 
 {
 	/// we need a model mapping
 	createEntityMapping(scene);
+
+	assert( mEntityMapping);
 }
 
 EmberEntity::~EmberEntity()
@@ -103,9 +105,6 @@ EmberEntity::~EmberEntity()
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 	Eris::Entity::init(ge, fromCreateOp);
-
-	assert(mEntityMapping);
-
 
 	///calling this will result in a call to setModel(...)
 	mEntityMapping->initialize();
