@@ -181,7 +181,18 @@ Ogre::Root* OgreSetup::createOgreSystem()
 					success = true;
 					break;
 				} catch (...) {
-					S_LOG_INFO("Error when loading plugin '" << token << "' with path '" << pluginPath << "'. This is not fatal, we will continue trying with some other paths.");
+#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE
+					pluginPath = (*I) + "/" + token + "_d"+ pluginExtension;
+#else
+					pluginPath = token + "_d";
+#endif
+					try {
+						mRoot->loadPlugin(pluginPath);
+						success = true;
+						break;
+					} catch (...) {
+						S_LOG_INFO("Error when loading plugin '" << token << "' with path '" << pluginPath << "'. This is not fatal, we will continue trying with some other paths.");
+					}
 				}
 				if (!success) {
 					S_LOG_WARNING("Error when loading plugin '" << token << "' after trying different parts. We'll continue, but there might be problems later on.");
