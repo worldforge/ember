@@ -26,13 +26,14 @@
 namespace Ember
 {
 
+
+namespace EntityMapping
+{
+
 namespace Cases
 {
 class CaseBase;
 }
-
-namespace EntityMapping
-{
 
 class IVisitor;
 class ChangeContext;
