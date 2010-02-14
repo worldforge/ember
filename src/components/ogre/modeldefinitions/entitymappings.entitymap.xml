@@ -217,7 +217,25 @@
 				</attributematch>
 			</case>
 		</entitymatch>
-	</entitymapping>		
+	</entitymapping>
+	<entitymapping name="signpost">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">signpost</caseparam>
+				<action type="display-model">signpost</action>
+				<attributematch attribute="direction">
+					<case>
+						<caseparam type="equals">left</caseparam>
+						<action type="display-model">signpost_left</action>
+					</case>
+					<case>
+						<caseparam type="equals">right</caseparam>
+						<action type="display-model">signpost_right</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</entitymapping>				
 	
 	<!-- This will only work if the trousers and shirt has the same parts defined -->
 	<entitymapping name="clothes">
