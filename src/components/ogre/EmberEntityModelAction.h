@@ -52,6 +52,8 @@ protected:
 
 	Scene& mScene;
 
+	void ChangeContext_ContextComplete();
+
 
 };
 

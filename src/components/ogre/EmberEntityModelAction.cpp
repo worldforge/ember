@@ -31,9 +31,59 @@
 #include "components/ogre/model/ModelRepresentationManager.h"
 #include "components/ogre/EmberEntity.h"
 #include "framework/LoggingInstance.h"
+#include "components/entitymapping/ChangeContext.h"
+#include "components/entitymapping/EntityMapping.h"
+#include "components/entitymapping/IVisitor.h"
+#include "components/entitymapping/Cases/CaseBase.h"
 
 namespace EmberOgre
 {
+
+/**
+ * @brief Reactivates any model action which has previously been activated.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class ModelReactivatorVisitor: public Ember::EntityMapping::IVisitor
+{
+private:
+	Ember::EntityMapping::ChangeContext mChangeContext;
+	EmberEntityModelAction* mAction;
+public:
+
+	ModelReactivatorVisitor() :
+		mAction(0)
+	{
+
+	}
+
+	~ModelReactivatorVisitor()
+	{
+		if (mAction) {
+			mAction->activate(mChangeContext);
+		}
+	}
+
+	void visit(Ember::EntityMapping::Actions::Action& action)
+	{
+		EmberEntityModelAction* modelAction = dynamic_cast<EmberEntityModelAction*> (&action);
+		if (modelAction) {
+			if (modelAction->getCase()->getIsActive()) {
+				mAction = modelAction;
+			}
+		}
+	}
+
+	void visit(Ember::EntityMapping::Matches::MatchBase& match)
+	{
+
+	}
+
+	void visit(Ember::EntityMapping::Cases::CaseBase& caseBase)
+	{
+
+	}
+
+};
 
 EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene) :
 	mEntity(entity), mModelName(modelName), mScene(scene)
@@ -74,8 +124,19 @@ void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& conte
 void EmberEntityModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	mEntity.setGraphicalRepresentation(0);
-	//	mEntity.setModel("");
-	//	S_LOG_VERBOSE("Hiding model " << mModelName);
+	//As we've now deactivated our model action, removing the graphical representation, we should after the change context is complete also check if there are any other model actions which should be reactivated
+	context.EventContextComplete.connect(sigc::mem_fun(*this, &EmberEntityModelAction::ChangeContext_ContextComplete));
+}
+
+void EmberEntityModelAction::ChangeContext_ContextComplete()
+{
+	//If the entity has no graphical representation, check if there are any existing active model actions which we should reactivate.
+	if (!mEntity.getGraphicalRepresentation()) {
+		if (mEntity.getMapping()) {
+			ModelReactivatorVisitor visitor;
+			mEntity.getMapping()->getRootEntityMatch().accept(visitor);
+		}
+	}
 }
 
 }
