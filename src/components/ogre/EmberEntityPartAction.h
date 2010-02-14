@@ -44,12 +44,6 @@ public:
 	virtual void activate(Ember::EntityMapping::ChangeContext& context);
 	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 
-	/**
-	 * @brief Returns whether this part is currently active or not.
-	 * @returns True if the part is active.
-	 */
-	bool isActive() const;
-
 protected:
 
 	/**

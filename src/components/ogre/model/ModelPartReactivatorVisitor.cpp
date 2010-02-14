@@ -19,6 +19,7 @@
 #include "ModelPartReactivatorVisitor.h"
 
 #include "components/entitymapping/EntityMapping.h"
+#include "components/entitymapping/Cases/CaseBase.h"
 #include "components/ogre/EmberEntityPartAction.h"
 
 namespace EmberOgre
@@ -30,7 +31,7 @@ void ModelPartReactivatorVisitor::visit(Ember::EntityMapping::Actions::Action& a
 {
 	EmberEntityPartAction* partAction = dynamic_cast<EmberEntityPartAction*> (&action);
 	if (partAction) {
-		if (partAction->isActive()) {
+		if (partAction->getCase()->getIsActive()) {
 			partAction->activate(mChangeContext);
 		}
 	}
