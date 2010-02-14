@@ -1,6 +1,11 @@
 #!/bin/sh
 (cd ../src/main/bindings/lua; ./update.sh)
 (cd ../src/framework/bindings/lua; ./update.sh)
+(cd ../src/framework/bindings/lua/eris; ./update.sh)
+(cd ../src/framework/bindings/lua/atlas; ./update.sh)
+(cd ../src/framework/bindings/lua/varconf; ./update.sh)
 (cd ../src/components/ogre/scripting/bindings/lua; ./update.sh)
+(cd ../src/components/ogre/scripting/bindings/lua/ogre; ./update.sh)
+(cd ../src/components/ogre/scripting/bindings/lua/helpers; ./update.sh)
 (cd ../src/components/ogre/widgets/adapters/atlas/bindings/lua; ./update.sh)
 (cd ../src/services/bindings/lua; ./update.sh)
