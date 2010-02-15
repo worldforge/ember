@@ -138,7 +138,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 		return mIconStore.getIcon(key);
 	} else {
 		IconActionCreator actionCreator(*entity);
-		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator));
+		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &actionCreator, Ember::Application::getSingleton().getMainView()));
 		std::string modelName;
 		if (modelMapping.get()) {
 			modelMapping->initialize();
@@ -205,7 +205,7 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 					if (typeService) {
 						DummyEntity dummyEntity("-1", erisType, typeService);
 						IconActionCreator actionCreator(dummyEntity);
-						std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
+						std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, &actionCreator, Ember::Application::getSingleton().getMainView()));
 						std::string modelName;
 						if (modelMapping.get()) {
 							modelMapping->initialize();

@@ -28,6 +28,7 @@ namespace Eris
 {
 class Entity;
 class TypeService;
+class View;
 }
 
 namespace Ember {
@@ -73,8 +74,9 @@ public:
 	 * @param entity Entity to attach to.
 	 * @param actionCreator Client supplied action creator.
 	 * @param typeService A valid typeservice instance.
+	 * @param view An optional View instance.
 	 */
-	EntityMappingCreator( Definitions::EntityMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService);
+	EntityMappingCreator(Definitions::EntityMappingDefinition& definition, Eris::Entity& entity, IActionCreator* actionCreator, Eris::TypeService& typeService, Eris::View* view);
 
 	~EntityMappingCreator();
 
@@ -156,10 +158,11 @@ protected:
 	Cases::AttributeComparers::AttributeComparerWrapper* getAttributeCaseComparer(Matches::AttributeMatch* match, Definitions::MatchDefinition& matchDefinition, Definitions::CaseDefinition& caseDefinition);
 
 	IActionCreator* mActionCreator;
-	Eris::Entity* mEntity;
+	Eris::Entity& mEntity;
 	EntityMapping* mModelMap;
-	Definitions::EntityMappingDefinition* mDefinition;
-	Eris::TypeService* mTypeService;
+	Definitions::EntityMappingDefinition& mDefinition;
+	Eris::TypeService& mTypeService;
+	Eris::View* mView;
 };
 
 

@@ -38,14 +38,14 @@ namespace Cases {
 
 namespace AttributeComparers {
 
-HeightComparerWrapper::HeightComparerWrapper(NumericComparer* comparer, Eris::Entity* entity)
+HeightComparerWrapper::HeightComparerWrapper(NumericComparer* comparer, Eris::Entity& entity)
 : mNumericComparer(comparer), mEntity(entity)
 {
 }
 
 bool HeightComparerWrapper::testAttribute(const Atlas::Message::Element& attribute)
 {
-	return mEntity->hasBBox() && (mNumericComparer->test(mEntity->getBBox().upperBound(2) - mEntity->getBBox().lowerBound(2)));
+	return mEntity.hasBBox() && (mNumericComparer->test(mEntity.getBBox().upperBound(2) - mEntity.getBBox().lowerBound(2)));
 }
 
 

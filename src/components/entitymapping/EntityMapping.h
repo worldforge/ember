@@ -115,7 +115,7 @@ class EntityMapping
 public:
 	typedef std::vector<Cases::CaseBase*> CaseBaseStore;
 	typedef std::vector<Matches::Observers::AttributeObserver*> AttributeObserverStore;
-    EntityMapping(Eris::Entity* entity);
+    EntityMapping(Eris::Entity& entity);
 
     ~EntityMapping();
 
@@ -134,7 +134,7 @@ protected:
 
 	Matches::EntityTypeMatch mRootEntityMatch;
 
-	Eris::Entity* mEntity;
+	Eris::Entity& mEntity;
 };
 
 }

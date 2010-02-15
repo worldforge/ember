@@ -56,7 +56,7 @@ public:
 	* @param comparer The NumericComparer to use for comparison.
 	* @param entity
 	*/
-	HeightComparerWrapper(NumericComparer* comparer, Eris::Entity* entity);
+	HeightComparerWrapper(NumericComparer* comparer, Eris::Entity& entity);
 	virtual ~HeightComparerWrapper() {}
 
 	/**
@@ -66,7 +66,7 @@ public:
 
 protected:
 	std::auto_ptr<NumericComparer> mNumericComparer;
-	Eris::Entity* mEntity;
+	Eris::Entity& mEntity;
 };
 }
 

@@ -77,7 +77,8 @@ static const CaseDefinition::ParameterEntry* findCaseParameter(const CaseDefinit
 	return 0;
 }
 
-EntityMappingCreator::EntityMappingCreator(EntityMappingDefinition* definition, Eris::Entity* entity, IActionCreator* actionCreator, Eris::TypeService* typeService) : mActionCreator(actionCreator), mEntity(entity), mModelMap(0), mDefinition(definition), mTypeService(typeService)
+EntityMappingCreator::EntityMappingCreator(EntityMappingDefinition& definition, Eris::Entity& entity, IActionCreator* actionCreator, Eris::TypeService& typeService, Eris::View* view)
+: mActionCreator(actionCreator), mEntity(entity), mModelMap(0), mDefinition(definition), mTypeService(typeService), mView(view)
 {
 }
 
@@ -94,10 +95,10 @@ EntityMapping* EntityMappingCreator::create()
 
 EntityMapping* EntityMappingCreator::createMapping() {
 	mModelMap = new EntityMapping(mEntity);
-	addEntityTypeCases(&mModelMap->getRootEntityMatch(), mDefinition->getRoot());
+	addEntityTypeCases(&mModelMap->getRootEntityMatch(), mDefinition.getRoot());
 
 	///since we already have the entity, we can perform a check right away
-	mModelMap->getRootEntityMatch().setEntity(mEntity);
+	mModelMap->getRootEntityMatch().setEntity(&mEntity);
 // 	mModelMap->getRootEntityMatch().testEntity(mEntity);
 	return mModelMap;
 }
@@ -105,31 +106,29 @@ EntityMapping* EntityMappingCreator::createMapping() {
 void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, MatchDefinition& matchDefinition) {
 	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
-		if (mTypeService) {
-			EntityTypeCase* aCase = new EntityTypeCase();
+		EntityTypeCase* aCase = new EntityTypeCase();
 
-			for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
-				if (J->first == "equals") {
-					aCase->addEntityType(mTypeService->getTypeByName(J->second));
-				}
+		for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
+			if (J->first == "equals") {
+				aCase->addEntityType(mTypeService.getTypeByName(J->second));
 			}
+		}
 
 /*			const std::string& entityName = I->getProperties()["equals"];
-			std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
-			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
-				aCase->addEntityType(mTypeService->getTypeByName(*J));
-			}*/
-			if (mActionCreator) {
-				mActionCreator->createActions(*mModelMap, aCase, *I);
-			}
-
-			CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
-			for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
-				addMatch(aCase, *J);
-			}
-			entityTypeMatch->addCase( aCase);
-			aCase->setParentMatch( entityTypeMatch);
+		std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
+		for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
+			aCase->addEntityType(mTypeService.getTypeByName(*J));
+		}*/
+		if (mActionCreator) {
+			mActionCreator->createActions(*mModelMap, aCase, *I);
 		}
+
+		CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
+		for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
+			addMatch(aCase, *J);
+		}
+		entityTypeMatch->addCase( aCase);
+		aCase->setParentMatch( entityTypeMatch);
 	}
 }
 
@@ -137,30 +136,28 @@ void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& m
 {
 	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
 	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
-		if (mTypeService) {
-			OutfitCase* aCase = new OutfitCase();
+		OutfitCase* aCase = new OutfitCase();
 
-			for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
-				if (J->first == "equals") {
-					aCase->addEntityType(mTypeService->getTypeByName(J->second));
-				}
+		for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
+			if (J->first == "equals") {
+				aCase->addEntityType(mTypeService.getTypeByName(J->second));
 			}
-/*			const std::string& entityName = I->getProperties()["equals"];
-			std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
-			for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
-				aCase->addEntityType(mTypeService->getTypeByName(*J));
-			}*/
-			if (mActionCreator) {
-				mActionCreator->createActions(*mModelMap, aCase, *I);
-			}
-
-			CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
-			for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
-				addMatch(aCase, *J);
-			}
-			match->addCase( aCase);
-			aCase->setParentMatch( match);
 		}
+/*			const std::string& entityName = I->getProperties()["equals"];
+		std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
+		for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
+			aCase->addEntityType(mTypeService.getTypeByName(*J));
+		}*/
+		if (mActionCreator) {
+			mActionCreator->createActions(*mModelMap, aCase, *I);
+		}
+
+		CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
+		for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
+			addMatch(aCase, *J);
+		}
+		match->addCase( aCase);
+		aCase->setParentMatch( match);
 	}
 }
 
@@ -297,20 +294,21 @@ void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& 
 
 void EntityMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& matchDefinition)
 {
-	const std::string& attachmentName = matchDefinition.getProperties()["attachment"];
-	OutfitMatch* match = new OutfitMatch(attachmentName, mEntity->getView());
-	aCase->addMatch( match);
+	if (mView) {
+		const std::string& attachmentName = matchDefinition.getProperties()["attachment"];
+		OutfitMatch* match = new OutfitMatch(attachmentName, mView);
+		aCase->addMatch( match);
 
-	addOutfitCases(match, matchDefinition);
+		addOutfitCases(match, matchDefinition);
 
 
-	///observe the attribute by the use of an AttributeObserver
-	AttributeObserver* observer= new AttributeObserver(match, "outfit");
-	match->setAttributeObserver(observer);
+		///observe the attribute by the use of an AttributeObserver
+		AttributeObserver* observer= new AttributeObserver(match, "outfit");
+		match->setAttributeObserver(observer);
 
-	EntityCreationObserver* entityObserver = new EntityCreationObserver(*match);
-	match->setEntityCreationObserver(entityObserver);
-
+		EntityCreationObserver* entityObserver = new EntityCreationObserver(*match);
+		match->setEntityCreationObserver(entityObserver);
+	}
 
 }
 

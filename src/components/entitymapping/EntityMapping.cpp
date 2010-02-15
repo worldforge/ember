@@ -35,7 +35,7 @@ namespace Ember {
 namespace EntityMapping {
 
 
-EntityMapping::EntityMapping(Eris::Entity* entity): mEntity(entity)
+EntityMapping::EntityMapping(Eris::Entity& entity): mEntity(entity)
 {
 }
 
