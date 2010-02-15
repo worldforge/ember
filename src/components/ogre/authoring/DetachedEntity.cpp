@@ -17,14 +17,13 @@
  */
 
 #include "DetachedEntity.h"
-#include <Eris/EntityRouter.h>
 
 namespace EmberOgre
 {
 namespace Authoring
 {
-DetachedEntity::DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
-	Eris::Entity(id, ty, vw)
+DetachedEntity::DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService* typeService) :
+	Eris::Entity(id, ty), mTypeService(typeService)
 {
 }
 
@@ -66,24 +65,25 @@ void DetachedEntity::setFromMessage(const Atlas::Message::MapType& attrs)
 	endUpdate();
 }
 
-void DetachedEntity::shutdown()
+Eris::TypeService* DetachedEntity::getTypeService() const
 {
-	BeingDeleted.emit();
-	//	if (m_moving) m_view->removeFromPrediction(this);  // protected
-
-	while (!m_contents.empty()) {
-		Entity *e = m_contents.back();
-		e->shutdown();
-		delete e;
-	}
-	setLocation(NULL);
-
-	//	m_view->getConnection()->unregisterRouterForFrom(m_router, m_id);  // getConnection is protected
-	//  m_view->entityDeleted(this);  // avoid this because of assert
-	delete m_router;
-
-	m_initialised = false;
+	return mTypeService;
 }
+
+void DetachedEntity::removeFromMovementPrediction()
+{
+}
+
+void DetachedEntity::addToMovementPredition()
+{
+}
+
+Eris::Entity* DetachedEntity::getEntity(const std::string& id)
+{
+	return 0;
+}
+
+
 
 }
 }

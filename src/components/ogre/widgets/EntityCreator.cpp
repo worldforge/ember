@@ -176,7 +176,7 @@ void EntityCreator::createEntity()
 	Eris::View* view = Ember::Application::getSingleton().getMainView();
 	if (view) {
 		// Temporary entity
-		mEntity = new Authoring::DetachedEntity("-1", erisType, view);
+		mEntity = new Authoring::DetachedEntity("-1", erisType, mConn->getTypeService());
 		mEntity->setFromMessage(mEntityMessage);
 
 		// Creating scene node

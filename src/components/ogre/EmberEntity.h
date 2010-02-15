@@ -25,7 +25,7 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 
-#include <Eris/Entity.h>
+#include <Eris/ViewEntity.h>
 
 namespace Ogre
 {
@@ -74,7 +74,7 @@ class IEntityVisitor;
  * This is the base class for any entities in the world. It's therefore safe to case any instance of Eris::Entity into this class.
  * Any entity which has a graphical representation in the world, and under normal circumstances that's the most of them, will have mGraphicalRepresentation set to a subclass of IGraphicalRepresentation.
  */
-class EmberEntity: public Eris::Entity, public IVisualizable
+class EmberEntity: public Eris::ViewEntity, public IVisualizable
 {
 public:
 

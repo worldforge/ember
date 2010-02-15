@@ -36,9 +36,10 @@
 #include "components/entitymapping/IActionCreator.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "main/Application.h"
+#include "services/server/ServerService.h"
 #include <Eris/Entity.h>
 #include <Eris/TypeInfo.h>
-#include <Eris/View.h>
+#include <Eris/Connection.h>
 
 #include <OgreTextureManager.h>
 
@@ -48,6 +49,37 @@ namespace EmberOgre {
 namespace Gui {
 
 namespace Icons {
+
+
+class DummyEntity : public Eris::Entity
+{
+protected:
+	Eris::TypeService* mTypeService;
+
+public:
+	DummyEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService* typeService) : Eris::Entity(id, ty), mTypeService(typeService)
+	{}
+
+	Eris::TypeService* getTypeService() const
+	{
+		return mTypeService;
+	}
+
+	void removeFromMovementPrediction()
+	{}
+
+	void addToMovementPredition()
+	{}
+
+	Eris::Entity* getEntity(const std::string& id)
+	{
+		return 0;
+	}
+
+    virtual Eris::View* getView() const {
+    	return 0;
+    }
+};
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -167,26 +199,29 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 			///we need to get the model mapping definition for this type
 			///once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
 			if (erisType) {
-				Eris::View* view = Ember::Application::getSingleton().getMainView();
-				if (view) {
-					Eris::Entity dummyEntity("-1", erisType, view);
-					IconActionCreator actionCreator(dummyEntity);
-					std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
-					std::string modelName;
-					if (modelMapping.get()) {
-						modelMapping->initialize();
-						modelName = actionCreator.getModelName();
-					}
-					///if there's no model defined for this use the placeholder model
-					if (modelName == "") {
-						modelName = "placeholder";
-					}
-					///update the model preview window
-// 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
-					mIconRenderer.render(modelName, icon);
-// 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
+				Eris::Connection* conn = Ember::EmberServices::getSingleton().getServerService()->getConnection();
+				if (conn) {
+					Eris::TypeService* typeService = conn->getTypeService();
+					if (typeService) {
+						DummyEntity dummyEntity("-1", erisType, typeService);
+						IconActionCreator actionCreator(dummyEntity);
+						std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(&dummyEntity, &actionCreator));
+						std::string modelName;
+						if (modelMapping.get()) {
+							modelMapping->initialize();
+							modelName = actionCreator.getModelName();
+						}
+						///if there's no model defined for this use the placeholder model
+						if (modelName == "") {
+							modelName = "placeholder";
+						}
+						///update the model preview window
+	// 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
+						mIconRenderer.render(modelName, icon);
+	// 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
 
-					dummyEntity.shutdown();
+						dummyEntity.shutdown();
+					}
 				}
 			}
 		}

@@ -25,6 +25,7 @@
 #include <Atlas/Message/Element.h>
 #include <string>
 
+
 namespace EmberOgre
 {
 namespace Authoring
@@ -39,7 +40,7 @@ namespace Authoring
 class DetachedEntity: public Eris::Entity
 {
 public:
-	DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw);
+	DetachedEntity(const std::string& id, Eris::TypeInfo* ty, Eris::TypeService* typeService);
 	virtual ~DetachedEntity();
 
 	/**
@@ -48,14 +49,39 @@ public:
 	void setFromMessage(const Atlas::Message::MapType& attrs);
 
 	/**
-	 * Overrides Eris::Entity method to avoid call to Eris::View::entityDeleted.
-	 */
-	virtual void shutdown();
-
-	/**
 	 * Exposes setAttr to public.
 	 */
 	void setAttr(const std::string &p, const Atlas::Message::Element &v);
+
+protected:
+
+	Eris::TypeService* mTypeService;
+
+    /**
+     * @brief Gets the typeservice used throughout the Eris system.
+     * @returns A type service instance.
+     */
+    virtual Eris::TypeService* getTypeService() const;
+
+    /**
+     * @brief Removes the entity from any movement prediction service.
+     * This is called when movement has stopped.
+     */
+    virtual void removeFromMovementPrediction();
+
+    /**
+     * @brief Adds the entity to any movement prediction service.
+     * This is called when movement has started.
+     */
+    virtual void addToMovementPredition();
+
+    /**
+     * @brief Gets an entity with the supplied id from the system.
+     * @param id The id of the entity to get.
+     */
+    virtual Eris::Entity* getEntity(const std::string& id);
+
+    virtual Eris::View* getView() const {return 0;}
 };
 
 }
