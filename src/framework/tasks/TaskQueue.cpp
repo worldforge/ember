@@ -23,6 +23,7 @@
 #include "TaskUnit.h"
 
 #include "framework/LoggingInstance.h"
+#include "services/time/TimeService.h"
 
 namespace Ember
 {
@@ -98,6 +99,8 @@ void TaskQueue::addProcessedTask(TaskUnit* taskUnit)
 
 void TaskQueue::pollProcessedTasks()
 {
+	Ember::Services::Time* timeService = Ember::EmberServices::getSingleton().getTimeService();
+	long startTime = timeService->currentTimeMillis();
 	TaskUnitQueue processedCopy;
 	{
 		boost::mutex::scoped_lock l(mProcessedQueueMutex);
@@ -124,7 +127,21 @@ void TaskQueue::pollProcessedTasks()
 		} catch (...) {
 			S_LOG_FAILURE("Unknown error when deleting task in main thread.");
 		}
-
+		//Try to keep the time spent here each frame down, to keep the framerate up.
+		//10 milliseconds per frame is an absolute max (as there are a lot of other things which need to be handled each frame too).
+		if (timeService->currentTimeMillis() - startTime > 10) {
+			break;
+		}
+	}
+	//If there are any unprocessed tasks, put them back at the front of the queue.
+	if (processedCopy.size()) {
+		boost::mutex::scoped_lock l(mProcessedQueueMutex);
+		TaskUnitQueue queueCopy(mProcessedTaskUnits);
+		mProcessedTaskUnits = processedCopy;
+		while (queueCopy.size()) {
+			mProcessedTaskUnits.push(queueCopy.front());
+			queueCopy.pop();
+		}
 	}
 }
 
