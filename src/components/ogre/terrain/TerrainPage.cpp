@@ -127,6 +127,8 @@ void TerrainPage::signalGeometryChanged()
 
 	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
 	mManager.getAdapter()->reloadPage(static_cast<unsigned int> (adjustedOgrePos.x), static_cast<unsigned int> (adjustedOgrePos.y));
+	mManager.EventTerrainPageGeometryUpdated.emit(*this);
+
 }
 
 ITerrainPageBridge* TerrainPage::getBridge() const
@@ -186,7 +188,6 @@ void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
 {
 	if (heightData) {
 		mGeometry->updateOgreHeightData(heightData);
-		mManager.EventTerrainPageGeometryUpdated.emit(*this);
 	}
 }
 
