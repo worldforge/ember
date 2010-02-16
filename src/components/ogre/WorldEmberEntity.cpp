@@ -134,7 +134,7 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 						hasValidShaders = true;
 					}
 				}
-				mTerrainManager->updateTerrain(terrainParser.parseTerrain(terrainElement, getPredictedPos()));
+				mTerrainManager->updateTerrain(terrainParser.parseTerrain(terrainElement, getPosition().isValid() ? getPosition() : WFMath::Point<3>::ZERO()));
 				if (!hasValidShaders) {
 					terrainShaderParser.createDefaultShaders();
 					hasValidShaders = true;
