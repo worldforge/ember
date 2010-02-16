@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBEROGRETERRAINHEIGHTMAPSEGMENT_H_
-#define EMBEROGRETERRAINHEIGHTMAPSEGMENT_H_
+#ifndef EMBEROGRETERRAINHEIGHTMAPFLATSEGMENT_H_
+#define EMBEROGRETERRAINHEIGHTMAPFLATSEGMENT_H_
 
 #include "IHeightMapSegment.h"
 
@@ -27,26 +27,16 @@ namespace EmberOgre
 namespace Terrain
 {
 
-class HeightMapBuffer;
-
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Represents one segment (mapped to a Mercator::Segment) in the height map, backed by a height map buffer.
+ * @brief Represents one segment (mapped to a Mercator::Segment) in the height map which is completely flat.
+ * To save space we only need one single height, and don't need to allocate memory for a height map buffer.
  */
-class HeightMapSegment : public IHeightMapSegment
+class HeightMapFlatSegment : public IHeightMapSegment
 {
 public:
-
-	/**
-	 * @brief Ctor.
-	 * @param buffer The buffer to use for this segment. Ownership will be transferred.
-	 */
-	HeightMapSegment(HeightMapBuffer* buffer);
-
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~HeightMapSegment();
+	HeightMapFlatSegment(float height);
+	virtual ~HeightMapFlatSegment();
 
 	/**
 	 * @brief Gets the height at the specified location.
@@ -68,16 +58,13 @@ public:
      */
 	virtual void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const;
 
-private:
 
-	/**
-	 * @brief The buffer which contains the height data.
-	 */
-    HeightMapBuffer* mBuffer;
+protected:
+	float mHeight;
 };
 
 }
 
 }
 
-#endif /* EMBEROGRETERRAINHEIGHTMAPSEGMENT_H_ */
+#endif /* EMBEROGRETERRAINHEIGHTMAPFLATSEGMENT_H_ */

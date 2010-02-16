@@ -30,7 +30,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-class HeightMapSegment;
+class IHeightMapSegment;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -45,7 +45,7 @@ public:
     /**
      * @brief STL map to store sparse array of Segment pointers.
      */
-    typedef std::map<int, boost::shared_ptr<HeightMapSegment> > Segmentcolumn;
+    typedef std::map<int, boost::shared_ptr<IHeightMapSegment> > Segmentcolumn;
 
     /**
      * @brief STL map to store sparse array of Segment pointer columns.
@@ -71,7 +71,7 @@ public:
 	 * @param yIndex The y index.
 	 * @param segment The segment to insert.
 	 */
-	void insert(int xIndex, int yIndex, HeightMapSegment* segment);
+	void insert(int xIndex, int yIndex, IHeightMapSegment* segment);
 
 	/**
 	 * @brief Removes a segment at the specified index location.
@@ -127,7 +127,7 @@ private:
 	 * @param yIndex The y index.
 	 * @returns A shared pointer to a segment, or to null if no segment could be found.
 	 */
-	boost::shared_ptr<HeightMapSegment> getSegment(int xIndex, int yIndex) const;
+	boost::shared_ptr<IHeightMapSegment> getSegment(int xIndex, int yIndex) const;
 };
 
 }

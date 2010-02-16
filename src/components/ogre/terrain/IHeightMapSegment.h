@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,37 +16,22 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBEROGRETERRAINHEIGHTMAPSEGMENT_H_
-#define EMBEROGRETERRAINHEIGHTMAPSEGMENT_H_
+#ifndef EMBEROGRETERRAINIHEIGHTMAPSEGMENT_H_
+#define EMBEROGRETERRAINIHEIGHTMAPSEGMENT_H_
 
-#include "IHeightMapSegment.h"
+#include "Types.h"
 
-namespace EmberOgre
-{
-
-namespace Terrain
-{
-
-class HeightMapBuffer;
+namespace EmberOgre {
+namespace Terrain {
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Represents one segment (mapped to a Mercator::Segment) in the height map, backed by a height map buffer.
+ * @brief Represents one segment (mapped to a Mercator::Segment) in the height map.
  */
-class HeightMapSegment : public IHeightMapSegment
-{
+class IHeightMapSegment {
 public:
 
-	/**
-	 * @brief Ctor.
-	 * @param buffer The buffer to use for this segment. Ownership will be transferred.
-	 */
-	HeightMapSegment(HeightMapBuffer* buffer);
-
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~HeightMapSegment();
+	virtual ~IHeightMapSegment() {}
 
 	/**
 	 * @brief Gets the height at the specified location.
@@ -56,7 +41,7 @@ public:
 	 * @param y The y location, in world units.
 	 * @returns The height at the location.
 	 */
-	virtual float getHeight(int x, int y) const;
+	virtual float getHeight(int x, int y) const = 0;
 
     /**
      * @brief Gets the height and normal at the location.
@@ -66,18 +51,9 @@ public:
 	 * @param height The height will be stored here.
 	 * @param normal The normal will be stored here.
      */
-	virtual void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const;
-
-private:
-
-	/**
-	 * @brief The buffer which contains the height data.
-	 */
-    HeightMapBuffer* mBuffer;
+	virtual void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const = 0;
 };
-
+}
 }
 
-}
-
-#endif /* EMBEROGRETERRAINHEIGHTMAPSEGMENT_H_ */
+#endif /* EMBEROGRETERRAINIHEIGHTMAPSEGMENT_H_ */

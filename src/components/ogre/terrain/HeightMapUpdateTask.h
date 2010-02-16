@@ -40,7 +40,7 @@ namespace Terrain
 {
 class HeightMap;
 class HeightMapBufferProvider;
-class HeightMapSegment;
+class IHeightMapSegment;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -67,7 +67,7 @@ public:
 
 private:
 
-	typedef std::vector<std::pair<WFMath::Point<2>, HeightMapSegment*> > HeightMapSegmentStore;
+	typedef std::vector<std::pair<WFMath::Point<2>, IHeightMapSegment*> > HeightMapSegmentStore;
 
 	/**
 	 * @brief The provider which is tasked to create the HeightMapBuffer instances.

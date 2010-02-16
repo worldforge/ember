@@ -50,6 +50,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainAreaRemoveTask.cpp terrain/TerrainModAddTask.cpp terrain/TerrainModChangeTask.cpp terrain/TerrainModRemoveTask.cpp \
 	terrain/GeometryUpdateTask.cpp terrain/TerrainModTaskBase.cpp terrain/TerrainEditorOverlay.cpp terrain/TerrainDefPoint.cpp \
 	terrain/TerrainShaderParser.cpp terrain/TerrainUpdateTask.cpp terrain/ShadowUpdateTask.cpp terrain/PlantQueryTask.cpp \
+	terrain/HeightMapFlatSegment.cpp \
 \
 	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
@@ -132,7 +133,8 @@ noinst_HEADERS = \
 	terrain/HeightMapBufferProvider.h terrain/HeightMapUpdateTask.h terrain/TerrainAreaTaskBase.h terrain/TerrainAreaAddTask.h \
 	terrain/TerrainAreaRemoveTask.h terrain/TerrainModAddTask.h terrain/TerrainModChangeTask.h terrain/TerrainModRemoveTask.h \
 	terrain/GeometryUpdateTask.h terrain/TerrainModTaskBase.h terrain/TerrainEditorOverlay.h terrain/TerrainDefPoint.h \
-	terrain/TerrainShaderParser.h terrain/TerrainUpdateTask.h terrain/ShadowUpdateTask.h terrain/PlantQueryTask.h  \
+	terrain/TerrainShaderParser.h terrain/TerrainUpdateTask.h terrain/ShadowUpdateTask.h terrain/PlantQueryTask.h \
+	terrain/HeightMapFlatSegment.h terrain/IHeightMapSegment.h \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \

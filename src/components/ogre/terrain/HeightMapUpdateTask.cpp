@@ -20,6 +20,7 @@
 #include "HeightMapBuffer.h"
 #include "HeightMapSegment.h"
 #include "HeightMap.h"
+#include "HeightMapFlatSegment.h"
 #include "Buffer.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
@@ -61,11 +62,19 @@ void HeightMapUpdateTask::createHeightMapSegments()
 	for (SegmentStore::const_iterator I = mSegments.begin(); I != mSegments.end(); ++I) {
 		Mercator::Segment* segment = *I;
 		if (segment) {
-			HeightMapBuffer* buffer = mProvider.checkout();
-			if (buffer) {
-				memcpy(buffer->getBuffer()->getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
-				HeightMapSegment * heightMapSegment = new HeightMapSegment(buffer);
-				mHeightMapSegments.push_back(std::pair<WFMath::Point<2>, HeightMapSegment*>(WFMath::Point<2>(segment->getXRef() / segment->getResolution(), segment->getYRef() / segment->getResolution()), heightMapSegment));
+			IHeightMapSegment* heightMapSegment = 0;
+			Mercator::Matrix<2, 2, Mercator::BasePoint>& basePoints(segment->getControlPoints());
+			if ((basePoints[0].height() == basePoints[1].height()) && (basePoints[1].height() == basePoints[2].height()) && (basePoints[2].height() == basePoints[3].height())) {
+				heightMapSegment = new HeightMapFlatSegment(basePoints[0].height());
+			} else {
+				HeightMapBuffer* buffer = mProvider.checkout();
+				if (buffer) {
+					memcpy(buffer->getBuffer()->getData(), segment->getPoints(), sizeof(float) * segment->getSize() * segment->getSize());
+					heightMapSegment = new HeightMapSegment(buffer);
+				}
+			}
+			if (heightMapSegment) {
+				mHeightMapSegments.push_back(std::pair<WFMath::Point<2>, IHeightMapSegment*>(WFMath::Point<2>(segment->getXRef() / segment->getResolution(), segment->getYRef() / segment->getResolution()), heightMapSegment));
 			}
 		}
 	}
@@ -75,7 +84,7 @@ void HeightMapUpdateTask::injectHeightMapSegmentsIntoHeightMap()
 {
 	for (HeightMapSegmentStore::const_iterator I = mHeightMapSegments.begin(); I != mHeightMapSegments.end(); ++I) {
 		WFMath::Point<2> position = I->first;
-		HeightMapSegment* heightMapSegment = I->second;
+		IHeightMapSegment* heightMapSegment = I->second;
 		mHeightMap.insert(position.x(), position.y(), heightMapSegment);
 	}
 
