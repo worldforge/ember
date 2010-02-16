@@ -174,6 +174,7 @@ EmberOgre::EmberOgre() :
 
 EmberOgre::~EmberOgre()
 {
+	delete mMainCamera;
 	delete mModelRepresentationManager;
 	//	delete mCollisionDetectorVisualizer;
 	//	delete mCollisionManager;
