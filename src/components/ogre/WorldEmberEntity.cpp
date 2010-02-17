@@ -82,6 +82,11 @@ WorldEmberEntity::~WorldEmberEntity()
 
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
+	//Set some of the positioning values to sane ones. These values should never be anything else.
+	m_position = WFMath::Point<3>::ZERO();
+	m_velocity = WFMath::Vector<3>::ZERO();
+	m_orientation = WFMath::Quaternion().identity();
+	m_acc = WFMath::Vector<3>::ZERO();
 	///create the foliage
 	mFoliage = new Environment::Foliage(*mTerrainManager);
 	EventFoliageCreated.emit();
