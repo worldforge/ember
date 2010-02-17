@@ -69,14 +69,6 @@ public:
 	 * @brief Console command for updating all terrain shadow maps.
 	 */
 	const Ember::ConsoleCommandWrapper UpdateShadows;
-	
-	
-	/**
-	 * @brief Gets the shadow colour at the supplied position.
-	 * @param position The position in the world.
-	 * @param colour The shadow colour will be put into this value.
-	 */
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour);
 
 	/**
 	 * @brief Emitted when a terrain page has had its geometry updated.

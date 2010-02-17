@@ -26,7 +26,6 @@
 #include "../EmberOgrePrerequisites.h"
 #include "../Types.h"
 
-#include "TerrainPageShadow.h"
 
 #include <Mercator/Terrain.h>
 
@@ -173,18 +172,6 @@ public:
 	void signalGeometryChanged();
 
 	/**
-	 * @brief Creates a shadow texture for the page.
-	 * @param lightDirection The direction of the light, in world space.
-	 */
-	void createShadowData(const WFMath::Vector<3>& lightDirection);
-
-	/**
-	 * @brief Updates the shadow texture for the page.
-	 * @param lightDirection The direction of the light, in world space.
-	 */
-	void updateShadow(const WFMath::Vector<3>& lightDirection);
-
-	/**
 	 * @brief The size in pixels of one side of the AlphaTexture. This is in sizes of 64.
 	 * @return
 	 */
@@ -213,12 +200,6 @@ public:
 	 * @param query A query result instance which will be populated by the method.
 	 */
 	void getPlantsForArea(PlantAreaQueryResult& queryResult) const;
-
-	/**
-	 * @brief Gets the shadow instance belonging to this page.
-	 * @returns The shadow instance which handles the shadow update and generation for this page.
-	 */
-	const TerrainPageShadow& getPageShadow() const;
 
 	/**
 	 * @brief Binds a bridge instance to this page.
@@ -291,9 +272,6 @@ private:
 	unsigned int getAlphaMapScale() const;
 
 	std::auto_ptr<TerrainPageSurface> mTerrainSurface;
-	TerrainPageShadow mShadow;
-	ITerrainPageShadowTechnique* mShadowTechnique;
-	void setupShadowTechnique();
 
 	/**
 	 * @brief The extent of this page in meters, in WF space.

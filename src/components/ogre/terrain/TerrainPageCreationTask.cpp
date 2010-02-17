@@ -66,7 +66,6 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 	//	positions.push_back(mPage->getWFPosition());
 	context.executeTask(new GeometryUpdateTask(pageSet, positions, mTerrainManager, mTerrainManager.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
 
-	mPage->createShadowData(mMainLightDirection);
 }
 
 void TerrainPageCreationTask::executeTaskInMainThread()

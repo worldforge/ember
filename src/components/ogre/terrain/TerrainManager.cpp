@@ -485,12 +485,12 @@ void TerrainManager::setLightning(ILightning* lightning)
 
 void TerrainManager::updateShadows()
 {
-	if (mLightning) {
-		WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
-		mTaskQueue->enqueueTask(new Ember::Tasks::SerialTask(new ShadowUpdateTask(mPages, sunDirection), new TerrainMaterialCompilationTask(mPages)));
-	} else {
-		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
-	}
+//	if (mLightning) {
+//		WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
+//		mTaskQueue->enqueueTask(new Ember::Tasks::SerialTask(new ShadowUpdateTask(mPages, sunDirection), new TerrainMaterialCompilationTask(mPages)));
+//	} else {
+//		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
+//	}
 }
 
 bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
@@ -565,23 +565,23 @@ float TerrainManager::getDefaultHeight() const
 	return -15;
 }
 
-void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
-{
-	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
-	TerrainPosition wfPos(Convert::toWF(position));
-	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
-	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
-}
-
-void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
-{
-	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
-	TerrainPosition wfPos(Convert::toWF(position));
-	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
-	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
-}
+//void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
+//{
+//	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
+//	TerrainPosition wfPos(Convert::toWF(position));
+//	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
+//	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
+//	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
+//}
+//
+//void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
+//{
+//	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
+//	TerrainPosition wfPos(Convert::toWF(position));
+//	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
+//	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
+//	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
+//}
 
 void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {

@@ -24,16 +24,21 @@
 #include <OgreCommon.h>
 #include <OgreMemoryAllocatorConfig.h>
 #include <OgreVector3.h>
+#include <OgreVector2.h>
 
 namespace EmberOgre
 {
 
 namespace Terrain
 {
+
+template<typename> class Buffer;
+
 class PlantAreaQuery;
 class PlantAreaQueryResult
 {
 public:
+	typedef Buffer<unsigned char> ShadowBuffer;
 	/**
 	A store of plant positions. We keep this in ogre space for performance reasons.
 	*/
@@ -47,10 +52,18 @@ public:
 
 	const PlantAreaQuery& getQuery() const;
 
+	void getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::uint32& colour) const;
+	void getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
+
+	ShadowBuffer* getShadow() const;
+	void setShadow(ShadowBuffer* shadow);
+
 private:
 	const PlantAreaQuery* mQuery;
 
 	PlantStore mStore;
+
+	ShadowBuffer* mShadow;
 };
 
 }

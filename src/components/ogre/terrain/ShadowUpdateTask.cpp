@@ -37,9 +37,9 @@ ShadowUpdateTask::~ShadowUpdateTask()
 
 void ShadowUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		(*I)->updateShadow(mLightDirection);
-	}
+//	for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
+//		(*I)->updateShadow(mLightDirection);
+//	}
 }
 
 void ShadowUpdateTask::executeTaskInMainThread()

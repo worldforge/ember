@@ -84,7 +84,6 @@ public:
 	 */
 	TerrainPageSurfaceCompilationInstance* createSurfaceCompilationInstance(const TerrainPageGeometry& geometry) const;
 
-	void setShadow(TerrainPageShadow* shadow);
 
 	const TerrainPageSurfaceLayerStore& getLayers() const;
 
@@ -96,7 +95,6 @@ protected:
 	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::auto_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
-	TerrainPageShadow* mShadow;
 	TerrainPageGeometry& mGeometry;
 };
 

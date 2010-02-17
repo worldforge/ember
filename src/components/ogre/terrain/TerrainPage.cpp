@@ -65,18 +65,15 @@ namespace Terrain
 {
 
 TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain) :
-	mManager(manager), mPosition(position), mBridge(0), mGeometry(new TerrainPageGeometry(*this, terrain, manager.getDefaultHeight())), mTerrainSurface(new TerrainPageSurface(*this, *mGeometry)), mShadow(*this), mShadowTechnique(0), mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))), mPageFoliage(new TerrainPageFoliage(mManager, *this))
+	mManager(manager), mPosition(position), mBridge(0), mGeometry(new TerrainPageGeometry(*this, terrain, manager.getDefaultHeight())), mTerrainSurface(new TerrainPageSurface(*this, *mGeometry)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))), mPageFoliage(new TerrainPageFoliage(mManager, *this))
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
 	mGeometry->init();
-	setupShadowTechnique();
-	mTerrainSurface->setShadow(&mShadow);
 }
 
 TerrainPage::~TerrainPage()
 {
-	delete mShadowTechnique;
 	if (mBridge) {
 		///we don't own the bridge, so we shouldn't delete it
 		mBridge->unbindFromTerrainPage();
@@ -134,27 +131,6 @@ void TerrainPage::signalGeometryChanged()
 ITerrainPageBridge* TerrainPage::getBridge() const
 {
 	return mBridge;
-}
-
-void TerrainPage::setupShadowTechnique()
-{
-	if (mShadowTechnique) {
-		delete mShadowTechnique;
-	}
-	mShadowTechnique = new SimpleTerrainPageShadowTechnique();
-	mShadow.setShadowTechnique(mShadowTechnique);
-}
-
-void TerrainPage::createShadowData(const WFMath::Vector<3>& lightDirection)
-{
-	mShadow.setLightDirection(lightDirection);
-	mShadow.updateShadow(*mGeometry);
-}
-
-void TerrainPage::updateShadow(const WFMath::Vector<3>& lightDirection)
-{
-	mShadow.setLightDirection(lightDirection);
-	mShadow.updateShadow(*mGeometry);
 }
 
 void TerrainPage::regenerateCoverageMap()
@@ -235,11 +211,6 @@ void TerrainPage::getPlantsForArea(PlantAreaQueryResult& queryResult) const
 	if (mManager.isFoliageShown()) {
 		mPageFoliage->getPlantsForArea(*mGeometry, queryResult);
 	}
-}
-
-const TerrainPageShadow& TerrainPage::getPageShadow() const
-{
-	return mShadow;
 }
 
 TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)

@@ -41,7 +41,7 @@ namespace Terrain
 {
 
 TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, TerrainPageGeometry& geometry) :
-	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler()), mShadow(0), mGeometry(geometry)
+	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler()), mGeometry(geometry)
 {
 	///create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
@@ -106,12 +106,8 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 	for (TerrainPageSurfaceLayerStore::const_iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		constLayers.insert(SurfaceLayerStore::value_type(I->first, I->second));
 	}
-	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, mShadow, mTerrainPage);
-}
-
-void TerrainPageSurface::setShadow(TerrainPageShadow* shadow)
-{
-	mShadow = shadow;
+	//TODO: Add shadow
+	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, 0, mTerrainPage);
 }
 
 TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader)

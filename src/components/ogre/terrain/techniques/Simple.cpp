@@ -27,6 +27,7 @@
 #include "Simple.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
 #include "components/ogre/terrain/TerrainPageGeometry.h"
+#include "components/ogre/terrain/TerrainPageShadow.h"
 #include "components/ogre/terrain/OgreImage.h"
 #include <OgreTechnique.h>
 #include <OgrePass.h>

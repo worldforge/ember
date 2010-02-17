@@ -229,14 +229,14 @@ public:
 	 * @param position The position in the world.
 	 * @param colour The shadow colour will be put into this value.
 	 */
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
+//	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
 
 	/**
 	 * @brief Gets the shadow colour at the supplied position.
 	 * @param position The position in the world.
 	 * @param colour The shadow colour will be put into this value.
 	 */
-	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
+//	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
 
 	/**
 	 * @brief Gets the size of one page as indices.
