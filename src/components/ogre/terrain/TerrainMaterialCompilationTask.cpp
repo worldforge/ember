@@ -59,6 +59,7 @@ void TerrainMaterialCompilationTask::executeTaskInMainThread()
 		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
 		TerrainPage* page = J->second;
 		compilationInstance->compile(page->getMaterial());
+		delete compilationInstance;
 	}
 	updateSceneManagersAfterMaterialsChange();
 }
