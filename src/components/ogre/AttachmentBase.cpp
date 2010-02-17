@@ -69,6 +69,9 @@ void AttachmentBase::getOffsetForContainedNode(const IEntityAttachment& attachme
 {
 	if (mParentEntity.getAttachment()) {
 		WFMath::Vector<3> localPositionShift(mChildEntity.getPredictedPos());
+		if (!localPositionShift.isValid()) {
+			localPositionShift = WFMath::Vector<3>::ZERO();
+		}
 		WFMath::Point<3> adjustedLocalPosition = localPosition + localPositionShift;
 		mParentEntity.getAttachment()->getOffsetForContainedNode(attachment, adjustedLocalPosition, offset);
 	}

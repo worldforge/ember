@@ -125,48 +125,50 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 			if (&entity != &mEntity && entity.hasBBox()) {
 				///Ok, we have an entity which is close to our entity. Now check if any of the points of the bounding box is close.
 				WFMath::AxisBox<3> bbox = entity.getBBox();
-				WFMath::RotBox<3> rotbox;
-				rotbox.size() = bbox.highCorner() - bbox.lowCorner();
-				rotbox.corner0() = bbox.lowCorner();
-				rotbox.orientation().identity();
-				rotbox.rotatePoint(entity.getViewOrientation(), WFMath::Point<3>(0, 0, 0));
-				rotbox.shift(WFMath::Vector<3>(entity.getViewPosition()));
+				if (bbox.isValid()) {
+					WFMath::RotBox<3> rotbox;
+					rotbox.size() = bbox.highCorner() - bbox.lowCorner();
+					rotbox.corner0() = bbox.lowCorner();
+					rotbox.orientation().identity();
+					rotbox.rotatePoint(entity.getViewOrientation(), WFMath::Point<3>(0, 0, 0));
+					rotbox.shift(WFMath::Vector<3>(entity.getViewPosition()));
 
-				for (int i = 0; i < rotbox.numCorners(); ++i) {
-					WFMath::Point<3> point = rotbox.getCorner(i);
-					Ogre::SceneNode* currentNode(0);
-					//If there is any unclaimed debug node left we'll use it to visualize the corner
-					if (nodeIterator != mDebugNodes.end()) {
-						currentNode = *nodeIterator;
-						currentNode->setPosition(Convert::toOgre(point));
-						currentNode->setVisible(true);
-						nodeIterator++;
-					}
-					point.z() = 0;
-					for (int j = 0; j < currentRotbox.numCorners(); ++j) {
-						WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
-						currentPoint.z() = 0;
-						WFMath::CoordType distance = WFMath::Distance(currentPoint, point);
-						if (distance <= mSnapThreshold) {
-							if (currentNode) {
-								Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (currentNode->getAttachedObject(0));
-								if (sphereEntity) {
-									try {
-										sphereEntity->setMaterialName("/global/authoring/point/moved");
-									} catch (const std::exception& ex) {
-										S_LOG_WARNING("Error when setting material for point." << ex);
+					for (int i = 0; i < rotbox.numCorners(); ++i) {
+						WFMath::Point<3> point = rotbox.getCorner(i);
+						Ogre::SceneNode* currentNode(0);
+						//If there is any unclaimed debug node left we'll use it to visualize the corner
+						if (nodeIterator != mDebugNodes.end()) {
+							currentNode = *nodeIterator;
+							currentNode->setPosition(Convert::toOgre(point));
+							currentNode->setVisible(true);
+							nodeIterator++;
+						}
+						point.z() = 0;
+						for (int j = 0; j < currentRotbox.numCorners(); ++j) {
+							WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
+							currentPoint.z() = 0;
+							WFMath::CoordType distance = WFMath::Distance(currentPoint, point);
+							if (distance <= mSnapThreshold) {
+								if (currentNode) {
+									Ogre::Entity* sphereEntity = static_cast<Ogre::Entity*> (currentNode->getAttachedObject(0));
+									if (sphereEntity) {
+										try {
+											sphereEntity->setMaterialName("/global/authoring/point/moved");
+										} catch (const std::exception& ex) {
+											S_LOG_WARNING("Error when setting material for point." << ex);
+										}
 									}
 								}
-							}
-							if (!closestSnapping.get()) {
-								closestSnapping = std::auto_ptr<SnapPointCandidate>(new SnapPointCandidate());
-								closestSnapping->entity = &entity;
-								closestSnapping->distance = distance;
-								closestSnapping->adjustment = point - currentPoint;
-							} else if (distance < closestSnapping->distance) {
-								closestSnapping->entity = &entity;
-								closestSnapping->distance = distance;
-								closestSnapping->adjustment = point - currentPoint;
+								if (!closestSnapping.get()) {
+									closestSnapping = std::auto_ptr<SnapPointCandidate>(new SnapPointCandidate());
+									closestSnapping->entity = &entity;
+									closestSnapping->distance = distance;
+									closestSnapping->adjustment = point - currentPoint;
+								} else if (distance < closestSnapping->distance) {
+									closestSnapping->entity = &entity;
+									closestSnapping->distance = distance;
+									closestSnapping->adjustment = point - currentPoint;
+								}
 							}
 						}
 					}

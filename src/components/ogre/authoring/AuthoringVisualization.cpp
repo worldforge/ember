@@ -74,8 +74,12 @@ void AuthoringVisualization::updatePositionAndOrientation()
 		mSceneNode->setPosition(Convert::toOgre(mControlDelegate->getPosition()));
 		mSceneNode->setOrientation(Convert::toOgre(mControlDelegate->getOrientation()));
 	} else {
-		mSceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
-		mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
+		if (mEntity.getPredictedPos().isValid()) {
+			mSceneNode->setPosition(Convert::toOgre(mEntity.getPredictedPos()));
+		}
+		if (mEntity.getOrientation().isValid()) {
+			mSceneNode->setOrientation(Convert::toOgre(mEntity.getOrientation()));
+		}
 	}
 }
 

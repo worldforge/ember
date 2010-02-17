@@ -85,7 +85,14 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresen
 	instance.visibilityChangedConnection = entity.VisibilityChanged.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_VisibilityChanged), &entity));
 	instance.modelRepresentation = modelRepresentation;
 
-	Ogre::Vector3 position(Convert::toOgre(entity.getViewPosition()));
+	WFMath::Point<3> viewPosition = entity.getViewPosition();
+	bool isValidPos = false;
+	if (viewPosition.isValid()) {
+		isValidPos = true;
+	} else {
+		viewPosition = WFMath::Point<3>::ZERO();
+	}
+	Ogre::Vector3 position(Convert::toOgre(viewPosition));
 	instance.lastPosition = position;
 #if EMBERENTITYLOADER_USEBATCH
 	const int batchX = Ogre::Math::Floor(position.x / mBatchSize);
@@ -96,11 +103,12 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresen
 #else
 	EntityMap& entities(mEntities);
 #endif
-
 	entities[entity.getId()] = instance;
 
-	///Rebuild geometry if necessary
-	mGeom.reloadGeometryPage(position);
+	if (isValidPos) {
+		///Rebuild geometry if necessary
+		mGeom.reloadGeometryPage(position);
+	}
 
 }
 
@@ -138,8 +146,12 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 	}
 
 #endif
-	///Rebuild geometry if necessary.
-	mGeom.reloadGeometryPage(Convert::toOgre(entity->getViewPosition()));
+
+	WFMath::Point<3> pos = entity->getViewPosition();
+	if (pos.isValid()) {
+		///Rebuild geometry if necessary.
+		mGeom.reloadGeometryPage(Convert::toOgre(pos));
+	}
 }
 
 EmberEntityLoader::EntityMap* EmberEntityLoader::getStoreForEntity(EmberEntity* entity)
@@ -180,20 +192,23 @@ void EmberEntityLoader::loadPage(::Forests::PageInfo & page)
 		Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
 		EmberEntity& emberEntity = modelRepresentation->getEntity();
 		if (emberEntity.isVisible()) {
-			Ogre::Vector3 pos(Convert::toOgre(emberEntity.getViewPosition()));
-			Model::Model& model(modelRepresentation->getModel());
-			Ogre::Node* node = model.getParentNode();
-			if (node) {
-				const Ogre::Vector3& pos = node->_getDerivedPosition();
-				if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
-					for (Model::Model::SubModelSet::const_iterator J = model.getSubmodels().begin(); J != model.getSubmodels().end(); ++J) {
-						// 				if (!(*J)->getEntity()->getParentSceneNode()) {
-						// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
-						// 				}
-						//  				if ((*J)->getEntity()->isVisible()) {
-						addEntity((*J)->getEntity(), pos, node->_getDerivedOrientation(), modelRepresentation->getScale(), colour);
-						// 					(*J)->getEntity()->setVisible(false);
-						//  				}
+			WFMath::Point<3> viewPos = emberEntity.getViewPosition();
+			if (viewPos.isValid()) {
+				Ogre::Vector3 pos(Convert::toOgre(viewPos));
+				Model::Model& model(modelRepresentation->getModel());
+				Ogre::Node* node = model.getParentNode();
+				if (node) {
+					const Ogre::Vector3& pos = node->_getDerivedPosition();
+					if (pos.x > page.bounds.left && pos.x < page.bounds.right && pos.z > page.bounds.top && pos.z < page.bounds.bottom) {
+						for (Model::Model::SubModelSet::const_iterator J = model.getSubmodels().begin(); J != model.getSubmodels().end(); ++J) {
+							// 				if (!(*J)->getEntity()->getParentSceneNode()) {
+							// 					model->getParentSceneNode()->attachObject((*J)->getEntity());
+							// 				}
+							//  				if ((*J)->getEntity()->isVisible()) {
+							addEntity((*J)->getEntity(), pos, node->_getDerivedOrientation(), modelRepresentation->getScale(), colour);
+							// 					(*J)->getEntity()->setVisible(false);
+							//  				}
+						}
 					}
 				}
 			}
@@ -209,8 +224,11 @@ void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity)
 		if (I != entityMap->end()) {
 			ModelRepresentationInstance& instance(I->second);
 			mGeom.reloadGeometryPage(instance.lastPosition);
-			mGeom.reloadGeometryPage(Convert::toOgre(entity->getViewPosition()));
-			instance.lastPosition = Convert::toOgre(entity->getViewPosition());
+			WFMath::Point<3> viewPos = entity->getViewPosition();
+			if (viewPos.isValid()) {
+				mGeom.reloadGeometryPage(Convert::toOgre(viewPos));
+				instance.lastPosition = Convert::toOgre(viewPos);
+			}
 		}
 	}
 }
@@ -222,8 +240,11 @@ void EmberEntityLoader::EmberEntity_BeingDeleted(EmberEntity* entity)
 
 void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberEntity* entity)
 {
-	///When the visibility changes, we only need to reload the page the entity is on.
-	mGeom.reloadGeometryPage(Convert::toOgre(entity->getViewPosition()));
+	WFMath::Point<3> viewPos = entity->getViewPosition();
+	if (viewPos.isValid()) {
+		///When the visibility changes, we only need to reload the page the entity is on.
+		mGeom.reloadGeometryPage(Convert::toOgre(viewPos));
+	}
 }
 
 }

@@ -56,12 +56,14 @@ namespace EmberOgre
 
 	WFMath::Point<3> SoundEntity::getPosition() const
 	{
-		return mParentEntity.getViewPosition();
+		WFMath::Point<3> pos = mParentEntity.getViewPosition();
+		return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
 	}
 
 	WFMath::Vector<3> SoundEntity::getVelocity() const
 	{
-		return mParentEntity.getPredictedVelocity();
+		WFMath::Vector<3> velocity = mParentEntity.getPredictedVelocity();
+		return velocity.isValid() ? velocity : WFMath::Vector<3>::ZERO();
 	}
 
 	const SoundAction* SoundEntity::playAction(const std::string& name)

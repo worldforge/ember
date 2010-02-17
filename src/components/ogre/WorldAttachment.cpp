@@ -84,6 +84,8 @@ void WorldAttachment::updatePosition()
 
 void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
 {
+	assert(localPosition.isValid());
+	assert(offset.isValid());
 	float height = 0;
 	if (mTerrainManager.getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
 		offset.z() = height - localPosition.z();

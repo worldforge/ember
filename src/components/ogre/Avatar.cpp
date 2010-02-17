@@ -375,7 +375,8 @@ void Avatar::Config_LogChatMessages(const std::string& section, const std::strin
 WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
-	return mErisAvatarEntity.getPredictedPos();
+	WFMath::Point<3> pos = mErisAvatarEntity.getPredictedPos();
+	return pos.isValid() ? pos : WFMath::Point<3>::ZERO();
 //	//If the avatar entity is moving, we're note moving on the client side, and we haven't sent something to the server lately, we should assume that we're moving as a result of server side actions, and therefore use the server side position
 //	//	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
 //	//		bool clientSideMovement = false;
@@ -400,7 +401,7 @@ WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
-	return mErisAvatarEntity.getOrientation();
+	return mErisAvatarEntity.getOrientation().isValid() ? mErisAvatarEntity.getOrientation() : WFMath::Quaternion().identity();
 //	if (mIsMovingServerOnly) {
 //		return mErisAvatarEntity.getOrientation();
 //	} else {
@@ -411,7 +412,7 @@ WFMath::Quaternion Avatar::getClientSideAvatarOrientation() const
 WFMath::Vector<3> Avatar::getClientSideAvatarVelocity() const
 {
 	//NOTE: for now we've deactivated the client side prediction as it doesn't really work as it should
-	return mErisAvatarEntity.getVelocity();
+	return mErisAvatarEntity.getVelocity().isValid() ? mErisAvatarEntity.getVelocity() : WFMath::Vector<3>::ZERO();
 //	if (mIsMovingServerOnly) {
 //		return mErisAvatarEntity.getVelocity();
 //	} else {

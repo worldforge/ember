@@ -115,19 +115,20 @@ IEntityControlDelegate* NodeAttachment::getControlDelegate() const
 
 void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity)
 {
-	if (position.isValid()) {
-		WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
-		//If it's fixed it shouldn't be adjusted
-		if (getAttachedEntity().getPositioningMode() != EmberEntity::PM_FIXED) {
-			if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_FLOATING) {
-				//If the entity is floating, the z position should be 0.
-				adjustedOffset.z() = -position.z();
-			} else if (mParentEntity.getAttachment()) {
-				mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
-			}
+	assert(position.isValid());
+	assert(orientation.isValid());
+	assert(velocity.isValid());
+	WFMath::Vector<3> adjustedOffset = WFMath::Vector<3>::ZERO();
+	//If it's fixed it shouldn't be adjusted
+	if (getAttachedEntity().getPositioningMode() != EmberEntity::PM_FIXED) {
+		if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_FLOATING) {
+			//If the entity is floating, the z position should be 0.
+			adjustedOffset.z() = -position.z();
+		} else if (mParentEntity.getAttachment()) {
+			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
 		}
-		mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
 	}
+	mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));
 }
 Ogre::Node* NodeAttachment::getNode() const
 {

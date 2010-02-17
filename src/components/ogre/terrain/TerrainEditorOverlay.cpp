@@ -94,7 +94,7 @@ void BasePointUserObject::translate(Ogre::Real verticalMovement)
 
 void BasePointUserObject::setHeight(Ogre::Real height)
 {
-	Ogre::Vector3 position = getBasePointMarkerNode()->getPosition();
+	const Ogre::Vector3& position = getBasePointMarkerNode()->getPosition();
 	getBasePointMarkerNode()->setPosition(position.x, height, position.z);
 	markAsMoved();
 	EventUpdatedPosition();

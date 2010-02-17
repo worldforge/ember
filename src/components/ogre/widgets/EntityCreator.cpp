@@ -114,10 +114,10 @@ void EntityCreator::startCreation()
 
 	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
 
-	// Making inital position (orientation is preserved)
+	// Making initial position (orientation is preserved)
 	WFMath::Vector<3> offset(2, 0, 0);
 
-	mPos = avatar.getPosition() + offset.rotate(avatar.getOrientation());
+	mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
 
 	mRecipeConnection = mRecipe->EventValueChanged.connect(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged));
 
@@ -237,7 +237,9 @@ void EntityCreator::setModel(const std::string& modelName)
 	initFromModel();
 
 	// Setting inital position and orientation
-	mEntityNode->setPosition(Convert::toOgre(mPos));
+	if (mPos.isValid()) {
+		mEntityNode->setPosition(Convert::toOgre(mPos));
+	}
 	if (mRandomizeOrientation) {
 		WFMath::MTRand rng;
 		mOrientation.rotation(2, rng.rand() * 360.0f);

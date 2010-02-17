@@ -88,7 +88,9 @@ MovementController::MovementController(Avatar& avatar) :
 	try {
 		mFreeFlyingNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(OgreInfo::createUniqueResourceName("FreeFlyingCameraNode"));
 		if (mFreeFlyingNode) {
-			mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getPredictedPos()));
+			if (mAvatar.getEmberEntity().getPredictedPos().isValid()) {
+				mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getPredictedPos()));
+			}
 			mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
 			mFreeFlyingMotionHandler = std::auto_ptr<FreeFlyingCameraMotionHandler>(new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
 			mCameraMount = std::auto_ptr<Camera::ThirdPersonCameraMount>(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()));

@@ -93,6 +93,8 @@ Description:	Point, Vector and Quaternion converter
 #include <OgreAxisAlignedBox.h>
 #include <OgreCommon.h>
 
+#include <cassert>
+
 namespace EmberOgre {
 
 /**
@@ -192,15 +194,18 @@ static WFMath::AxisBox<2> toWF(const Ogre::TRect<Ogre::Real>& bounds);
 
 template<>
 inline Ogre::Vector3 Convert::toOgre<Ogre::Vector3>(const WFMath::Point<2>& p) {
+	assert(p.isValid() && "Never convert an invalid WFMath point into Ogre as there will only be pain on the other side.");
 	return Ogre::Vector3(p.x(),0,-p.y());
 }
 
 template<>
 inline Ogre::Vector2 Convert::toOgre<Ogre::Vector2>(const WFMath::Point<2>& p) {
+	assert(p.isValid() && "Never convert an invalid WFMath point into Ogre as there will only be pain on the other side.");
 	return Ogre::Vector2(p.x(),-p.y());
 }
 
 inline Ogre::Vector2 Convert::toOgre(const WFMath::Vector<2>& p) {
+	assert(p.isValid() && "Never convert an invalid WFMath vector into Ogre as there will only be pain on the other side.");
 	return Ogre::Vector2(p.x(),-p.y());
 }
 
@@ -225,17 +230,17 @@ inline WFMath::Vector<3> Convert::toWF<WFMath::Vector<3> >(const Ogre::Vector3& 
 }
 
 inline Ogre::Vector3 Convert::toOgre(const WFMath::Point<3>& p){
+	assert(p.isValid() && "Never convert an invalid WFMath point into Ogre as there will only be pain on the other side.");
 	return Ogre::Vector3(p.x(),p.z(),-p.y());
 }
 
 inline Ogre::Vector3 Convert::toOgre(const WFMath::Vector<3>& v){
+	assert(v.isValid() && "Never convert an invalid WFMath vector into Ogre as there will only be pain on the other side.");
 	return Ogre::Vector3(v.x(),v.z(),-v.y());
 }
 
 inline Ogre::Quaternion Convert::toOgre(const WFMath::Quaternion& aq){
-	if (!aq.isValid()) {
-		return Ogre::Quaternion::IDENTITY;
-	}
+	assert(aq.isValid() && "Never convert an invalid WFMath quaternion into Ogre as there will only be pain on the other side.");
 	return Ogre::Quaternion(aq.scalar(),aq.vector().x(),aq.vector().z(),-aq.vector().y());
 }
 
@@ -244,16 +249,12 @@ inline WFMath::Quaternion Convert::toWF(const Ogre::Quaternion& aq){
 }
 
 inline Ogre::AxisAlignedBox Convert::toOgre(const WFMath::AxisBox<3>& axisBox){
-	if (!axisBox.isValid()) {
-		return Ogre::AxisAlignedBox();
-	}
+	assert(axisBox.isValid() && "Never convert an invalid WFMath axis box into Ogre as there will only be pain on the other side.");
 	return Ogre::AxisAlignedBox(axisBox.lowCorner().x(), axisBox.lowCorner().z(), -axisBox.highCorner().y(), axisBox.highCorner().x(), axisBox.highCorner().z(), -axisBox.lowCorner().y());
 }
 
 inline Ogre::TRect<Ogre::Real> Convert::toOgre(const WFMath::AxisBox<2>& atlasBox) {
-	if (!atlasBox.isValid()) {
-		return Ogre::TRect<Ogre::Real>();
-	}
+	assert(atlasBox.isValid() && "Never convert an invalid WFMath axis box into Ogre as there will only be pain on the other side.");
 	return Ogre::TRect<Ogre::Real>(atlasBox.lowCorner().x(), -atlasBox.highCorner().y(), atlasBox.highCorner().x(), -atlasBox.lowCorner().y());
 }
 

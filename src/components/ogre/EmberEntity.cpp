@@ -101,7 +101,7 @@ EmberEntity::~EmberEntity()
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
 
-	assert( mEntityMapping);
+	assert(mEntityMapping);
 
 	///calling this will result in a call to setModel(...)
 	mEntityMapping->initialize();
@@ -184,9 +184,12 @@ Ember::EntityMapping::EntityMapping* EmberEntity::getMapping() const
 void EmberEntity::onMoved()
 {
 	if (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible()) {
-		mErisEntityBoundingBox->getParentNode()->setPosition(Convert::toOgre(getPosition()));
-		mErisEntityBoundingBox->getParentNode()->setOrientation(Convert::toOgre(getOrientation()));
-
+		if (getPosition().isValid()) {
+			mErisEntityBoundingBox->getParentNode()->setPosition(Convert::toOgre(getPosition()));
+		}
+		if (getOrientation().isValid()) {
+			mErisEntityBoundingBox->getParentNode()->setOrientation(Convert::toOgre(getOrientation()));
+		}
 	}
 	Eris::Entity::onMoved();
 }
@@ -392,7 +395,6 @@ void EmberEntity::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& ter
 	}
 }
 
-
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
 	if (str == "mode") {
@@ -401,9 +403,8 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
-	} else	///check for terrain updates
-	if (str == "terrain")
-	{
+	} else ///check for terrain updates
+	if (str == "terrain") {
 		Terrain::TerrainParser terrainParser;
 		updateTerrain(terrainParser.parseTerrain(v, getPredictedPos()));
 	}
@@ -498,8 +499,12 @@ void EmberEntity::showErisBoundingBox(bool show)
 				mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1, -0.1, -0.1, 0.1, 0.1, 0.1));
 			}
 
-			boundingBoxNode->setPosition(Convert::toOgre(getPredictedPos()));
-			boundingBoxNode->setOrientation(Convert::toOgre(getOrientation()));
+			if (getPredictedPos().isValid()) {
+				boundingBoxNode->setPosition(Convert::toOgre(getPredictedPos()));
+			}
+			if (getOrientation().isValid()) {
+				boundingBoxNode->setOrientation(Convert::toOgre(getOrientation()));
+			}
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when setting up eris bounding box.");
 			OGRE_DELETE mErisEntityBoundingBox;

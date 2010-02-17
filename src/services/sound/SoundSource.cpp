@@ -67,12 +67,14 @@ SoundSource::~SoundSource()
 
 void SoundSource::setPosition(const WFMath::Point<3>& pos)
 {
+	assert(pos.isValid());
 	alSource3f(mALSource, AL_POSITION, pos.x(), pos.y(), pos.z());
 	SoundGeneral::checkAlError("Setting sound source position.");
 }
 
 void SoundSource::setVelocity(const WFMath::Vector<3>& vel)
 {
+	assert(vel.isValid());
 	alSource3f(mALSource, AL_VELOCITY, vel.x(), vel.y(), vel.z());
 	SoundGeneral::checkAlError("Setting sound source velocity.");
 }

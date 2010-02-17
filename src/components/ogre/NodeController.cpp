@@ -24,10 +24,11 @@
 
 #include <sigc++/signal.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-NodeController::NodeController(NodeAttachment& attachment)
-: mAttachment(attachment)
+NodeController::NodeController(NodeAttachment& attachment) :
+	mAttachment(attachment)
 {
 	mAttachment.getAttachedEntity().Moved.connect(sigc::mem_fun(*this, &NodeController::entity_Moved));
 	updatePosition();
@@ -37,7 +38,6 @@ NodeController::~NodeController()
 {
 	MotionManager::getSingleton().removeMovable(this);
 }
-
 
 void NodeController::entity_Moved()
 {
@@ -52,16 +52,12 @@ void NodeController::movementUpdate()
 {
 	updatePosition();
 	MotionManager& motionManager = MotionManager::getSingleton();
-	if (mAttachment.getAttachedEntity().isMoving())
-	{
+	if (mAttachment.getAttachedEntity().isMoving()) {
 		motionManager.addMovable(this);
-	}
-	else
-	{
+	} else {
 		motionManager.removeMovable(this);
 	}
 }
-
 
 void NodeController::updateMotion(float timeSlice)
 {
@@ -70,14 +66,15 @@ void NodeController::updateMotion(float timeSlice)
 
 void NodeController::updatePosition()
 {
-	mAttachment.setPosition(mAttachment.getAttachedEntity().getPredictedPos(), mAttachment.getAttachedEntity().getOrientation(), mAttachment.getAttachedEntity().getPredictedVelocity());
+	WFMath::Point<3> pos = mAttachment.getAttachedEntity().getPredictedPos();
+	WFMath::Quaternion orientation = mAttachment.getAttachedEntity().getOrientation();
+	WFMath::Vector<3> velocity = mAttachment.getAttachedEntity().getPredictedVelocity();
+	mAttachment.setPosition(pos.isValid() ? pos : WFMath::Point<3>::ZERO(), orientation.isValid() ? orientation : orientation.identity(), velocity.isValid() ? velocity : WFMath::Vector<3>::ZERO());
 }
 
 IEntityControlDelegate* NodeController::getControlDelegate() const
 {
 	return 0;
 }
-
-
 
 }
