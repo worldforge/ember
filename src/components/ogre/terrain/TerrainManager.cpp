@@ -593,7 +593,8 @@ void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 
 void TerrainManager::application_EndErisPoll(float)
 {
-	mTaskQueue->pollProcessedTasks();
+	//10 milliseconds seems like a suitable time to limit each frame to. This could be extended to something more sophisticated though to better allow for a smooth frame rate.
+	mTaskQueue->pollProcessedTasks(10L);
 }
 
 }
