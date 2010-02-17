@@ -73,8 +73,10 @@ public:
 	/**
 	 * @brief Goes through all processed tasks, handled them and then deletes them
 	 * Call this often in the main thread (every frame or so).
+	 * By setting maxAllowedTimeMilliseconds you can limit the amount of time the queue will spend on processed tasks. This is useful for keeping framerate up.
+	 * @param maxAllowedTimeMilliseconds If set to something larger than 0, this is the maximum milliseconds that the queue is allowed to process tasks.
 	 */
-	void pollProcessedTasks();
+	void pollProcessedTasks(long maxAllowedTimeMilliseconds);
 
 protected:
 

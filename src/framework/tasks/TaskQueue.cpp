@@ -53,7 +53,7 @@ TaskQueue::~TaskQueue()
 	}
 
 	//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
-	pollProcessedTasks();
+	pollProcessedTasks(-1);
 	assert(!mProcessedTaskUnits.size());
 	assert(!mUnprocessedTaskUnits.size());
 }
@@ -97,7 +97,7 @@ void TaskQueue::addProcessedTask(TaskUnit* taskUnit)
 	mProcessedTaskUnits.push(taskUnit);
 }
 
-void TaskQueue::pollProcessedTasks()
+void TaskQueue::pollProcessedTasks(long maxAllowedTimeMilliseconds)
 {
 	Ember::Services::Time* timeService = Ember::EmberServices::getSingleton().getTimeService();
 	long startTime = timeService->currentTimeMillis();
@@ -128,8 +128,7 @@ void TaskQueue::pollProcessedTasks()
 			S_LOG_FAILURE("Unknown error when deleting task in main thread.");
 		}
 		//Try to keep the time spent here each frame down, to keep the framerate up.
-		//10 milliseconds per frame is an absolute max (as there are a lot of other things which need to be handled each frame too).
-		if (timeService->currentTimeMillis() - startTime > 10) {
+		if (maxAllowedTimeMilliseconds > 0 && timeService->currentTimeMillis() - startTime > maxAllowedTimeMilliseconds) {
 			break;
 		}
 	}
