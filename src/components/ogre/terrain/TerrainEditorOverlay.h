@@ -24,6 +24,7 @@
 #include "../IWorldPickListener.h"
 #include "services/input/IInputAdapter.h"
 #include "services/input/Input.h"
+#include <Mercator/BasePoint.h>
 #include <OgreUserDefinedObject.h>
 #include <map>
 
@@ -94,6 +95,12 @@ public:
 	const Mercator::BasePoint& getBasePoint() const;
 
 	/**
+	 * @brief Sets the base point for the user object.
+	 * @param basePoint The new base point to use.
+	 */
+	void setBasePoint(const Mercator::BasePoint& basePoint);
+
+	/**
 	 *    Gets the current height of the base point.
 	 * @return
 	 */
@@ -133,7 +140,7 @@ public:
 
 
 private:
-	const Mercator::BasePoint& mBasePoint;
+	Mercator::BasePoint mBasePoint;
 	Ogre::SceneNode* mBasePointMarkerNode;
 	const TerrainPosition mPosition;
 
@@ -231,7 +238,8 @@ TerrainPosition mPosition;
 class TerrainEditorOverlay: public Ember::IInputAdapter
 {
 public:
-	TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint> >& basePoints);
+	typedef std::map<int, std::map<int, Mercator::BasePoint> > BasePointStore;
+	TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, BasePointStore& basePoints);
 	virtual ~TerrainEditorOverlay();
 
 	void pickedBasePoint(BasePointUserObject* userObject);
@@ -318,7 +326,6 @@ private:
 	Ogre::SceneManager& mSceneManager;
 	TerrainManager& mManager;
 	Camera::MainCamera& mCamera;
-	std::map<int, std::map<int, Mercator::BasePoint> > mBasePoints;
 
 	Ogre::SceneNode* mOverlayNode;
 
@@ -332,7 +339,7 @@ private:
 	ActionStore mActions;
 	ActionStore mUndoneActions;
 
-	void createOverlay(Ogre::SceneNode& worldSceneNode);
+	void createOverlay(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints, Ogre::SceneNode& worldSceneNode);
 
 	/**
 	 * When moving an entity with the mouse, no other parts of Ember should get input.
@@ -354,8 +361,29 @@ private:
 	*/
 	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
-    bool getBasePoint(int x, int y, Mercator::BasePoint& z) const;
+	/**
+	 * @brief Callback for retrieving basepoints and sending updates to the server.
+	 * @param basePoints The current basepoints.
+	 */
+	void sendChangesToServerWithBasePoints(BasePointStore& basePoints);
 
+	/**
+	 * @brief Gets the base point at the specified position.
+	 * @param basePoints The collection of base points.
+	 * @param x The x index.
+	 * @param y The y index.
+	 * @param z The basepoint data will be copied here if successful.
+	 * @returns True if a basepoint could be found at the index.
+	 */
+    bool getBasePoint(const BasePointStore& basePoints, int x, int y, Mercator::BasePoint& z) const;
+
+    /**
+     * @brief Callback for committing action with base points.
+     * @param basePoints The colleciton of base points.
+     * @param action The action to commit.
+     * @param reverse Whether the action should be reversed.
+     */
+    void commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse);
 
 };
 

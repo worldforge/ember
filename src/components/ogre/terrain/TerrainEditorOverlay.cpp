@@ -41,12 +41,13 @@
 
 #include <Eris/Connection.h>
 #include <Mercator/Terrain.h>
-#include <Mercator/BasePoint.h>
 
 #include <sstream>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
+
+#include <sigc++/bind.h>
 
 namespace EmberOgre
 {
@@ -68,6 +69,12 @@ const Ogre::String & BasePointUserObject::getTypeName() const
 const Mercator::BasePoint& BasePointUserObject::getBasePoint() const
 {
 	return mBasePoint;
+}
+
+void BasePointUserObject::setBasePoint(const Mercator::BasePoint& basePoint)
+{
+	mBasePoint = basePoint;
+	setHeight(mBasePoint.height());
 }
 
 Ogre::SceneNode* BasePointUserObject::getBasePointMarkerNode() const
@@ -157,9 +164,9 @@ const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 
 }
 TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint> >& basePoints) :
-	mEditor(editor), mSceneManager(sceneManager), mManager(manager), mCamera(camera), mBasePoints(basePoints), mPickListener(*this), mCurrentUserObject(0), mOverlayNode(0)
+	mEditor(editor), mSceneManager(sceneManager), mManager(manager), mCamera(camera), mPickListener(*this), mCurrentUserObject(0), mOverlayNode(0)
 {
-	createOverlay(worldSceneNode);
+	createOverlay(basePoints, worldSceneNode);
 }
 
 TerrainEditorOverlay::~TerrainEditorOverlay()
@@ -177,13 +184,13 @@ TerrainEditorOverlay::~TerrainEditorOverlay()
 	mCamera.removeWorldPickListener(&mPickListener);
 }
 
-void TerrainEditorOverlay::createOverlay(Ogre::SceneNode& worldSceneNode)
+void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints, Ogre::SceneNode& worldSceneNode)
 {
 
 	mOverlayNode = worldSceneNode.createChildSceneNode();
 
 	int x, y;
-	for (Mercator::Terrain::Pointstore::const_iterator I = mBasePoints.begin(); I != mBasePoints.end(); ++I) {
+	for (Mercator::Terrain::Pointstore::const_iterator I = basePoints.begin(); I != basePoints.end(); ++I) {
 		x = I->first;
 		for (Mercator::Terrain::Pointcolumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			y = J->first;
@@ -365,6 +372,12 @@ void TerrainEditorOverlay::createAction(bool alsoCommit)
 
 void TerrainEditorOverlay::sendChangesToServer()
 {
+	sigc::slot<void, BasePointStore&> slot = sigc::mem_fun(*this, &TerrainEditorOverlay::sendChangesToServerWithBasePoints);
+	mManager.getBasePoints(slot);
+}
+
+void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints)
+{
 
 	try {
 		std::map<std::string, TerrainPosition> positions;
@@ -390,7 +403,7 @@ void TerrainEditorOverlay::sendChangesToServer()
 			Mercator::BasePoint bp;
 			WFMath::CoordType basepointX = I->second.x();
 			WFMath::CoordType basepointY = I->second.y();
-			getBasePoint(static_cast<int> (basepointX), static_cast<int> (basepointY), bp);
+			getBasePoint(basePoints, static_cast<int> (basepointX), static_cast<int> (basepointY), bp);
 
 			Atlas::Message::ListType & point = (pointMap[I->first] = Atlas::Message::ListType(3)).asList();
 			point[0] = (Atlas::Message::FloatType)(I->second.x());
@@ -450,6 +463,12 @@ bool TerrainEditorOverlay::redoAction()
 
 void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool reverse)
 {
+	sigc::slot<void, BasePointStore&> slot = sigc::bind(sigc::mem_fun(*this, &TerrainEditorOverlay::commitActionWithBasePoints), action, reverse);
+	mManager.getBasePoints(slot);
+}
+
+void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse) {
+
 	TerrainDefPointStore pointStore;
 
 	std::set<TerrainPage*> pagesToUpdate;
@@ -457,7 +476,7 @@ void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool re
 		Mercator::BasePoint bp;
 		int basepointX = static_cast<int> (I->getPosition().x());
 		int basepointY = static_cast<int> (I->getPosition().y());
-		getBasePoint(basepointX, basepointY, bp);
+		getBasePoint(basePoints, basepointX, basepointY, bp);
 		///check if we should do a reverse action (which is done when an action is undone)
 		bp.height() = bp.height() + (reverse ? -I->getVerticalMovement() : I->getVerticalMovement());
 		//EmberOgre::getSingleton().getTerrainManager()->getTerrain().setBasePoint(basepointX, basepointY, bp);
@@ -494,7 +513,7 @@ void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool re
 		///make sure the marker node is updated
 		BasePointUserObject* userObject = getUserObject(I->getPosition());
 		if (userObject) {
-			userObject->setHeight(bp.height());
+			userObject->setBasePoint(bp);
 		}
 
 	}
@@ -543,18 +562,18 @@ void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool re
 
 }
 
-bool TerrainEditorOverlay::getBasePoint(int x, int y, Mercator::BasePoint& z) const
+bool TerrainEditorOverlay::getBasePoint(const std::map<int, std::map<int, Mercator::BasePoint> >& basePoints, int x, int y, Mercator::BasePoint& z) const
 {
-    Mercator::Terrain::Pointstore::const_iterator I = mBasePoints.find(x);
-    if (I == mBasePoints.end()) {
-        return false;
-    }
-    Mercator::Terrain::Pointcolumn::const_iterator J = I->second.find(y);
-    if (J == I->second.end()) {
-        return false;
-    }
-    z = J->second;
-    return true;
+	Mercator::Terrain::Pointstore::const_iterator I = basePoints.find(x);
+	if (I == basePoints.end()) {
+		return false;
+	}
+	Mercator::Terrain::Pointcolumn::const_iterator J = I->second.find(y);
+	if (J == I->second.end()) {
+		return false;
+	}
+	z = J->second;
+	return true;
 }
 
 }
