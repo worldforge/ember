@@ -161,7 +161,7 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 	}
 }
 
-const Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos) const
+Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos) const
 {
 	int ix = I_ROUND(floor(pos.x() / 64));
 	int iy = I_ROUND(floor(pos.y() / 64));
@@ -177,7 +177,7 @@ const Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const Te
 	return &J->second->getSegment().getMercatorSegment();
 }
 
-const Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
+Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
 {
 	int ix = I_ROUND(floor(pos.x() / 64));
 	int iy = I_ROUND(floor(pos.y() / 64));

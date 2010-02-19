@@ -99,7 +99,7 @@ public:
 	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
 	 * @return A pointer to Mercator::Segment or null.
 	 */
-	const Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos) const;
+	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos) const;
 
 	/**
 	 * @brief Gets the segment positioned at the supplied position in local space and also translates the supplied position into a local position in the returned segment.
@@ -107,7 +107,7 @@ public:
 	 * @param localPositionInSegment The resulting position in the segment space.
 	 * @return A pointer to Mercator::Segment or null.
 	 */
-	const Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
+	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
 
 	/**
 	 * @brief Gets the collection of segments which make up this geometry.

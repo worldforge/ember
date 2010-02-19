@@ -184,10 +184,15 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 			float x = I->x;
 			float y = mCoverageMapPixelWidth - I->y;
 
-			const Mercator::Segment* segment = geometry.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
-			if ((segment == 0) || (!segment->isValid())) {
+			Mercator::Segment* segment = geometry.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
+			if (segment == 0) {
 				continue;
 			}
+
+			if (!segment->isValid()) {
+				segment->populate();
+			}
+
 
 			///start from the coverage for the active layer, and substract all layers above
 			///if the end result is below the threshold we'll show the plant
@@ -196,13 +201,19 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 				const TerrainLayerDefinition& currentLayerDef = J->second->getDefinition();
 				if (activeLayer) {
 					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
-					if (surface && surface->isValid()) {
+					if (surface) {
+						if (!surface->isValid()) {
+							surface->populate();
+						}
 						unsigned char localCoverage((*surface)(static_cast<unsigned int> (localPositionInSegment.x()), static_cast<unsigned int> (localPositionInSegment.y()), 0));
 						combinedCoverage -= std::min<unsigned char>(localCoverage, combinedCoverage);
 					}
 				} else if (!activeLayer && &currentLayerDef == &query.getLayerDef()) {
 					Mercator::Surface* surface = J->second->getSurfaceForSegment(segment);
-					if (surface && surface->isValid()) {
+					if (surface) {
+						if (!surface->isValid()) {
+							surface->populate();
+						}
 						combinedCoverage = (*surface)(static_cast<unsigned int> (localPositionInSegment.x()), static_cast<unsigned int> (localPositionInSegment.y()), 0);
 						if (combinedCoverage >= query.getThreshold()) {
 							activeLayer = J->second;
