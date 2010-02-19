@@ -26,6 +26,10 @@
 #include <string>
 #include <wfmath/point.h>
 
+namespace boost {
+template <typename> class shared_ptr;
+}
+
 namespace Mercator {
 	class Area;
 	class Terrain;
@@ -45,6 +49,9 @@ namespace EmberOgre {
 		class TerrainPage;
 		class TerrainShader;
 		class TerrainPageSurfaceLayer;
+		class TerrainPageGeometry;
+		class Segment;
+		class SegmentReference;
 
 		/**
 		 @brief Defines the height of a special "base point" in the terrain.
@@ -89,6 +96,12 @@ namespace EmberOgre {
 			bool UpdateAll;
 		};
 
+		typedef boost::shared_ptr<SegmentReference> SegmentRefPtr;
+
+		typedef std::map<int, SegmentRefPtr> SegmentRefColumn;
+
+		typedef std::map<int, SegmentRefColumn> SegmentRefStore;
+
 		typedef std::map<int, const TerrainShader*> AreaShaderstore;
 
 		typedef std::map<const TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
@@ -96,6 +109,10 @@ namespace EmberOgre {
 		typedef std::map<std::string, TerrainPage*> PageStore;
 
 		typedef std::vector<TerrainPage*> PageVector;
+
+		typedef boost::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
+
+		typedef std::vector<TerrainPageGeometryPtr> GeometryPtrVector;
 
 		typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 

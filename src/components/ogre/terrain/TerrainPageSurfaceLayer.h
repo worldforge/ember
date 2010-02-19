@@ -52,7 +52,7 @@ class Image;
 */
 class TerrainPageSurfaceLayer{
 public:
-    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, TerrainPageGeometry& geometry, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader);
+    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader);
 
     virtual ~TerrainPageSurfaceLayer();
 
@@ -83,7 +83,7 @@ public:
 
 	void populate(const TerrainPageGeometry& geometry);
 
-	void fillImage(Image& image, unsigned int channel) const;
+	void fillImage(const TerrainPageGeometry& geometry, Image& image, unsigned int channel) const;
 
 
 protected:
@@ -99,8 +99,6 @@ protected:
 	float mScale;
 
 	const TerrainLayerDefinition& mDefinition;
-
-	TerrainPageGeometry& mGeometry;
 
 };
 

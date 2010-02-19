@@ -49,13 +49,13 @@ ShaderPassCoverageBatch::~ShaderPassCoverageBatch()
 
 void ShaderPassCoverageBatch::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer)
 {
-	addCoverage(layer, mLayers.size());
+	addCoverage(geometry, layer, mLayers.size());
 	mLayers.push_back(layer);
 }
 
-void ShaderPassCoverageBatch::addCoverage(const TerrainPageSurfaceLayer* layer, unsigned int channel)
+void ShaderPassCoverageBatch::addCoverage(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel)
 {
-	layer->fillImage(mCombinedCoverageImage, channel);
+	layer->fillImage(geometry, mCombinedCoverageImage, channel);
 	mSyncedTextures.clear();
 }
 

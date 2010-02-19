@@ -25,15 +25,15 @@
 #include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
-
+#include <boost/shared_ptr.hpp>
 namespace EmberOgre
 {
 
 namespace Terrain
 {
 
-GeometryUpdateTask::GeometryUpdateTask(const PageSet& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
-	mPages(pages), mPositions(positions), mManager(manager), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+GeometryUpdateTask::GeometryUpdateTask(const GeometryPtrVector& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
+	mGeometry(pages), mPositions(positions), mManager(manager), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -47,38 +47,40 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 	std::vector<Mercator::Segment*> segments;
 
 	//first populate the geometry for all pages, and then regenerate the shaders
-	for (PageSet::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		TerrainPage* page = *I;
-		page->repopulateGeometry();
-		const SegmentVector& segmentVector = page->getGeometry().getValidSegments();
+	for (GeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
+		TerrainPageGeometryPtr geometry= *I;
+		geometry->repopulate();
+		const SegmentVector& segmentVector = geometry->getValidSegments();
 		for (SegmentVector::const_iterator I = segmentVector.begin(); I != segmentVector.end(); ++I) {
 			segments.push_back(I->segment);
 		}
 	}
-	PageVector pageVector;
-	for (PageSet::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		TerrainPage* page = *I;
-		pageVector.push_back(page);
-	}
 	for (ShaderStore::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
-		context.executeTask(new TerrainShaderUpdateTask(pageVector, I->second, AreaStore(), true, mManager.EventLayerUpdated));
+		context.executeTask(new TerrainShaderUpdateTask(mGeometry, I->second, AreaStore(), true, mManager.EventLayerUpdated));
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
 
-	for (PageSet::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		TerrainPage* page = *I;
+	for (GeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
+		TerrainPage* page = &(*I)->getPage();
 		if (page->getBridge()) {
-			page->getBridge()->updateTerrain();
+			page->getBridge()->updateTerrain(**I);
 		}
 	}
+
+	for (GeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
+		TerrainPage* page = &(*I)->getPage();
+		mPages.insert(page);
+	}
+	//Release Segment references as soon as we can
+	mGeometry.clear();
 }
 
 void GeometryUpdateTask::executeTaskInMainThread()
 {
-	for (PageSet::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		TerrainPage* page = *I;
-		page->signalGeometryChanged();
+	for (std::set<TerrainPage*>::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
+		(*I)->signalGeometryChanged();
 	}
+
 	mManager.updateEntityPositions(mPages);
 	mManager.EventAfterTerrainUpdate(mPositions, mPages);
 

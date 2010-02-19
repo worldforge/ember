@@ -73,7 +73,7 @@ protected:
 	std::vector<std::string> mSyncedTextures;
 
 	void assignCombinedCoverageTexture(Ogre::TexturePtr texture);
-	void addCoverage(const TerrainPageSurfaceLayer* layer, unsigned int channel);
+	void addCoverage(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel);
 
 };
 

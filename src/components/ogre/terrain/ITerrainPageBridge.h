@@ -27,6 +27,7 @@ namespace EmberOgre {
 namespace Terrain {
 
 class TerrainPage;
+class TerrainPageGeometry;
 
 /**
 
@@ -56,7 +57,7 @@ public:
 	 *
 	 * Call this when the heightdata has changed and you want the Ogre representation to be updated to reflect this.
 	 */
-	virtual void updateTerrain() = 0;
+	virtual void updateTerrain(TerrainPageGeometry& geometry) = 0;
 	
 	/**
 	 *    @brief Notifies class in the ogre side about the page being ready (after being created or so).

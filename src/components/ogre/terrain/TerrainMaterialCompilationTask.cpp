@@ -21,23 +21,25 @@
 #include "TerrainPage.h"
 #include "TerrainPageSurfaceCompiler.h"
 #include "TerrainPageSurface.h"
+#include "TerrainPageGeometry.h"
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
+#include <boost/shared_ptr.hpp>
 namespace EmberOgre
 {
 
 namespace Terrain
 {
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const PageVector& pages) :
-	mPages(pages)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry) :
+	mGeometry(geometry)
 {
 }
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPage* page)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry)
 {
-	mPages.push_back(page);
+	mGeometry.push_back(geometry);
 }
 
 TerrainMaterialCompilationTask::~TerrainMaterialCompilationTask()
@@ -46,11 +48,14 @@ TerrainMaterialCompilationTask::~TerrainMaterialCompilationTask()
 
 void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	for (PageVector::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
-		TerrainPageSurfaceCompilationInstance* compilationInstance = (*J)->getSurface()->createSurfaceCompilationInstance((*J)->getGeometry());
+	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
+		(*J)->repopulate();
+		TerrainPageSurfaceCompilationInstance* compilationInstance = (*J)->getPage().getSurface()->createSurfaceCompilationInstance(**J);
 		compilationInstance->prepare();
-		mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, *J));
+		mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &(*J)->getPage()));
 	}
+	//Release Segment references as soon as we can
+	mGeometry.clear();
 }
 
 void TerrainMaterialCompilationTask::executeTaskInMainThread()

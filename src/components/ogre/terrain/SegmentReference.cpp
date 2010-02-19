@@ -15,15 +15,8 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-#ifndef PLANTQUERYTASK_H_
-#define PLANTQUERYTASK_H_
-
-#include "Types.h"
-#include "framework/tasks/TemplateNamedTask.h"
-#include "PlantAreaQueryResult.h"
-
-#include <sigc++/slot.h>
+#include "SegmentReference.h"
+#include "SegmentHolder.h"
 
 namespace EmberOgre
 {
@@ -31,28 +24,22 @@ namespace EmberOgre
 namespace Terrain
 {
 
-class TerrainPage;
-class TerrainPageGeometry;
-
-class PlantQueryTask : public Ember::Tasks::TemplateNamedTask<PlantQueryTask>
+SegmentReference::SegmentReference(SegmentHolder& segmentHolder)
+: mSegmentHolder(segmentHolder)
 {
-public:
-	PlantQueryTask(TerrainPageGeometry* geometry, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
-	virtual ~PlantQueryTask();
+}
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+SegmentReference::~SegmentReference()
+{
+	mSegmentHolder.returnReference();
+}
 
-	virtual void executeTaskInMainThread();
 
-private:
-	TerrainPageGeometry* mGeometry;
-	sigc::slot<void, const PlantAreaQueryResult&> mAsyncCallback;
-
-	PlantAreaQueryResult mQueryResult;
-};
-
+Segment& SegmentReference::getSegment()
+{
+	return mSegmentHolder.getSegment();
 }
 
 }
 
-#endif /* PLANTQUERYTASK_H_ */
+}

@@ -37,8 +37,7 @@ class HeightMap;
 class GeometryUpdateTask : public Ember::Tasks::TemplateNamedTask<GeometryUpdateTask>
 {
 public:
-	typedef std::set<TerrainPage*> PageSet;
-	GeometryUpdateTask(const PageSet& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
+	GeometryUpdateTask(const GeometryPtrVector& geometry, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
 	virtual ~GeometryUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -47,12 +46,13 @@ public:
 
 private:
 
-	const PageSet mPages;
+	GeometryPtrVector mGeometry;
 	const std::vector<TerrainPosition> mPositions;
 	TerrainManager& mManager;
 	ShaderStore mShaders;
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;
+	std::set<TerrainPage*> mPages;
 
 };
 

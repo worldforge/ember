@@ -36,11 +36,12 @@ namespace Terrain
 
 class TerrainManager;
 class TerrainInfo;
+class SegmentManager;
 
 class TerrainUpdateTask : public Ember::Tasks::TemplateNamedTask<TerrainUpdateTask>
 {
 public:
-	TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainManager& terrainManager, TerrainInfo& terrainInfo, bool& hasTerrainInfo);
+	TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainManager& terrainManager, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager);
 	virtual ~TerrainUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -56,6 +57,7 @@ private:
 	TerrainManager& mTerrainManager;
 	TerrainInfo& mTerrainInfo;
 	bool& mHasTerrainInfo;
+	SegmentManager& mSegmentManager;
 
 	std::vector<TerrainPosition> mUpdatedPositions;
 	UpdateBasePointStore mUpdatedBasePoints;

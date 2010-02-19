@@ -64,6 +64,9 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 
 		mMaxArrayPos = mSize * mSize;
 		mHeightData = new Ogre::Real[mMaxArrayPos];
+		for (size_t i = 0; i < mMaxArrayPos; ++i) {
+			mHeightData[i] = 0.0f;
+		}
 
 		mBridge = new EmberTerrainPageBridge(*this);
 		provider->setUpTerrainPageAtIndex(Ogre::Vector2(x, z), *mBridge);
@@ -111,17 +114,19 @@ Ogre::Real EmberPagingLandScapeData2D_HeightField::getShadow(const Ogre::Real& m
 
 Ogre::Vector3 EmberPagingLandScapeData2D_HeightField::getNormal(const Ogre::Real& localPageX, const Ogre::Real& localPageZ) const
 {
-	///Use the bridge for quicker lookup.
-	if (mBridge) {
-		const Terrain::TerrainPage* terrainPage(mBridge->getTerrainPage());
-		if (terrainPage) {
-			WFMath::Vector<3> normal;
-			if (terrainPage->getNormal(TerrainPosition(localPageX, 512 - localPageZ), normal)) {
-				return Convert::toOgre(normal);
-			}
-		}
-	}
-	return Vector3::ZERO;
+
+	return PagingLandScapeData2D::getNormal(localPageX, localPageZ);
+//	///Use the bridge for quicker lookup.
+//	if (mBridge) {
+//		const Terrain::TerrainPage* terrainPage(mBridge->getTerrainPage());
+//		if (terrainPage) {
+//			WFMath::Vector<3> normal;
+//			if (terrainPage->getNormal(TerrainPosition(localPageX, 512 - localPageZ), normal)) {
+//				return Convert::toOgre(normal);
+//			}
+//		}
+//	}
+//	return Vector3::ZERO;
 }
 
 void EmberPagingLandScapeData2D_HeightField::_save()

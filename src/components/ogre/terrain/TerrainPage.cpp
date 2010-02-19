@@ -64,12 +64,11 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain) :
-	mManager(manager), mPosition(position), mBridge(0), mGeometry(new TerrainPageGeometry(*this, terrain, manager.getDefaultHeight())), mTerrainSurface(new TerrainPageSurface(*this, *mGeometry)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))), mPageFoliage(new TerrainPageFoliage(mManager, *this))
+TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager) :
+	mManager(manager), mPosition(position), mBridge(0), mTerrainSurface(new TerrainPageSurface(*this)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))), mPageFoliage(new TerrainPageFoliage(mManager, *this))
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
-	mGeometry->init();
 }
 
 TerrainPage::~TerrainPage()
@@ -80,10 +79,6 @@ TerrainPage::~TerrainPage()
 	}
 }
 
-float TerrainPage::getMaxHeight() const
-{
-	return mGeometry->getMaxHeight();
-}
 
 int TerrainPage::getPageSize() const
 {
@@ -98,21 +93,6 @@ int TerrainPage::getVerticeCount() const
 int TerrainPage::getNumberOfSegmentsPerAxis() const
 {
 	return (getPageSize() - 1) / 64;
-}
-
-TerrainPageGeometry& TerrainPage::getGeometry()
-{
-	return *mGeometry;
-}
-
-const TerrainPageGeometry& TerrainPage::getGeometry() const
-{
-	return *mGeometry;
-}
-
-void TerrainPage::repopulateGeometry()
-{
-	mGeometry->repopulate();
 }
 
 void TerrainPage::signalGeometryChanged()
@@ -160,18 +140,6 @@ unsigned int TerrainPage::getAlphaMapScale() const
 	}
 }
 
-void TerrainPage::updateOgreHeightData(Ogre::Real* heightData)
-{
-	if (heightData) {
-		mGeometry->updateOgreHeightData(heightData);
-	}
-}
-
-bool TerrainPage::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
-{
-	return mGeometry->getNormal(localPosition, normal);
-}
-
 void TerrainPage::showFoliage()
 {
 	prepareFoliage();
@@ -206,10 +174,10 @@ const TerrainPageSurface* TerrainPage::getSurface() const
 //	return mPageFoliage.get();
 //}
 
-void TerrainPage::getPlantsForArea(PlantAreaQueryResult& queryResult) const
+void TerrainPage::getPlantsForArea(PlantAreaQueryResult& queryResult, TerrainPageGeometry& geometry) const
 {
 	if (mManager.isFoliageShown()) {
-		mPageFoliage->getPlantsForArea(*mGeometry, queryResult);
+		mPageFoliage->getPlantsForArea(geometry, queryResult);
 	}
 }
 
@@ -224,15 +192,15 @@ TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 	return layer;
 }
 
-void TerrainPage::updateAllShaderTextures(bool repopulate)
+void TerrainPage::updateAllShaderTextures(TerrainPageGeometry& geometry, bool repopulate)
 {
 	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().begin();
 	for (; I != mTerrainSurface->getLayers().end(); ++I) {
-		mTerrainSurface->updateLayer(*mGeometry, I->second->getSurfaceIndex(), repopulate);
+		mTerrainSurface->updateLayer(geometry, I->second->getSurfaceIndex(), repopulate);
 	}
 }
 
-TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* shader, bool repopulate)
+TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* shader, TerrainPageGeometry& geometry, bool repopulate)
 {
 	TerrainPageSurfaceLayer* layer;
 	TerrainPageSurface::TerrainPageSurfaceLayerStore::const_iterator I = mTerrainSurface->getLayers().find(shader->getTerrainIndex());
@@ -241,7 +209,7 @@ TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* s
 	} else {
 		layer = I->second;
 	}
-	mTerrainSurface->updateLayer(*mGeometry, shader->getTerrainIndex(), repopulate);
+	mTerrainSurface->updateLayer(geometry, shader->getTerrainIndex(), repopulate);
 
 	return layer;
 }

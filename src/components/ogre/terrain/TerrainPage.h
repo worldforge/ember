@@ -26,22 +26,18 @@
 #include "../EmberOgrePrerequisites.h"
 #include "../Types.h"
 
-
-#include <Mercator/Terrain.h>
-
-#include <wfmath/point.h> // <wfmath/axisbox.h> doesn't include it at this point
+#include <wfmath/point.h>
+#include <wfmath/axisbox.h>
 
 #include <vector>
 
 
 namespace WFMath {
-	template<int> class AxisBox;
 	template<int> class Vector;
 }
 
 namespace Mercator {
 	class Segment;
-	class Terrain;
 }
 
 
@@ -59,17 +55,15 @@ class TerrainPage;
 class TerrainPageFoliage;
 class TerrainPageSurfaceLayer;
 class ITerrainPageBridge;
-//class terrainModListEntry;
-class TerrainPageGeometry;
 class PlantAreaQueryResult;
-
+class TerrainPageGeometry;
 
 /**
 
 @brief Represents one terrain page.
 
 This is a bridge class between one Ogre terrain page instance and one or many Mercator::Segment. Since each Segment is 64x64 meters, but one Ogre page often is much larger, we need to combine many Segments for every single Ogre page.
-All segments used will be contained in an instance of TerrainPageGeometry. Thus each instance of this holds a corresponding instance of TerrainPageGeometry.
+An instance of this is very light weight as it doesn't keep any geometry data around. Each time an action involving page geometry is to occur an instance of TerrainPageGeometry must therefore be created.
 
 Instances of this is created by TerrainManager.
 One terrain page is composed of both height data, a material, textures for the material and plant positions for the foliage system. This class handles all of these, some of them directly and some by other classes.
@@ -85,9 +79,8 @@ public:
 	 * @brief Ctor.
 	 * @param position The page index in WF space.
 	 * @param manager The terrain manager.
-	 * @param terrain The Mercator terrain instance.
 	 */
-	TerrainPage(const TerrainPosition& position, TerrainManager& manager, Mercator::Terrain& terrain);
+	TerrainPage(const TerrainPosition& position, TerrainManager& manager);
 
 	/**
 	 * @brief Dtor.
@@ -95,16 +88,11 @@ public:
 	~TerrainPage();
 
 	/**
-	 *    The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
-	 *    Mainly used to check if it's 1, in which case everything becomes much easier.
+	 * @brief The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
+	 * Mainly used to check if it's 1, in which case everything becomes much easier.
 	 * @return
 	 */
 	int getNumberOfSegmentsPerAxis() const;
-
-	/**
-	 * @brief Fills the bound height data with height data. If no buffer has been bound nothing will be done.
-	 */
-	void updateOgreHeightData(Ogre::Real* heightData);
 
 	/**
 	 * @brief The total number of vertices used for this page.
@@ -155,19 +143,17 @@ public:
 	 * @brief Updates the shader texture for the specific shader.
 	 * @param shader The shader to update.
 	 */
-	TerrainPageSurfaceLayer* updateShaderTexture(const TerrainShader* shader, bool repopulate = true);
+	TerrainPageSurfaceLayer* updateShaderTexture(const TerrainShader* shader, TerrainPageGeometry& geometry, bool repopulate = true);
 
 	/**
 	 * @brief Updates all the shader textures of the page.
 	 * You should usually call this after you've made a change to the terrain and already have called populateSurfaces().
 	 */
-	void updateAllShaderTextures(bool repopulate = true);
+	void updateAllShaderTextures(TerrainPageGeometry& geometry, bool repopulate = true);
 
 	void regenerateCoverageMap();
 
 	int getPageSize() const;
-
-	void repopulateGeometry();
 
 	void signalGeometryChanged();
 
@@ -177,11 +163,6 @@ public:
 	 */
 	int getAlphaTextureSize() const;
 
-	/**
-	 * @brief The max height of this page
-	 * @return Max height
-	 */
-	float getMaxHeight() const;
 
 	/**
 	 * @brief Gets the extent of this page in meters, in worldforge space.
@@ -198,8 +179,9 @@ public:
 	/**
 	 * @brief Place the plants for the supplied area in the supplied store.
 	 * @param query A query result instance which will be populated by the method.
+	 * @param geometry A geometry instance for this page.
 	 */
-	void getPlantsForArea(PlantAreaQueryResult& queryResult) const;
+	void getPlantsForArea(PlantAreaQueryResult& queryResult, TerrainPageGeometry& geometry) const;
 
 	/**
 	 * @brief Binds a bridge instance to this page.
@@ -234,19 +216,6 @@ public:
 	 */
 	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
-	/**
-	 * @brief Accessor for the geometry instance which handles the 2d geometry of the page.
-	 * @returns The geometry instance which handles the 2d geometry of the page.
-	 */
-	TerrainPageGeometry& getGeometry();
-
-	/**
-	 * @brief Accessor for the geometry instance which handles the 2d geometry of the page.
-	 * @returns The geometry instance which handles the 2d geometry of the page.
-	 */
-	const TerrainPageGeometry& getGeometry() const;
-
-
 private:
 
 	/**
@@ -258,12 +227,6 @@ private:
 	 * @brief Internal position
 	 */
 	TerrainPosition mPosition;
-
-	/**
-	 * @brief The geometry of this page.
-	 * This instance isn't exposed outside of this page, but passed on to the different instance which provide supporting features for the page (foliage, surface etc.).
-	 */
-	std::auto_ptr<TerrainPageGeometry> mGeometry;
 
 	/**
 	* @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).

@@ -26,6 +26,7 @@
 #include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
+#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {
@@ -33,20 +34,19 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageCreationTask::TerrainPageCreationTask(TerrainManager& TerrainManager, Mercator::Terrain& terrain, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection) :
-	mTerrainManager(TerrainManager), mTerrain(terrain), mPage(0), mPos(pos), mBridge(bridge), mMainLightDirection(mainLightDirection), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+TerrainPageCreationTask::TerrainPageCreationTask(TerrainManager& terrainManager, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection) :
+	mTerrainManager(terrainManager), mPage(0), mPos(pos), mBridge(bridge), mMainLightDirection(mainLightDirection), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
 
 TerrainPageCreationTask::~TerrainPageCreationTask()
 {
-
 }
 
 void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	mPage = new TerrainPage(mPos, mTerrainManager, mTerrain);
+	mPage = new TerrainPage(mPos, mTerrainManager);
 	mPage->registerBridge(mBridge);
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
@@ -60,11 +60,12 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 		mPage->showFoliage();
 	}
 
-	GeometryUpdateTask::PageSet pageSet;
-	pageSet.insert(mPage);
+	TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*mPage, mTerrainManager.getSegmentManager(), mTerrainManager.getDefaultHeight()));
+	GeometryPtrVector geometry;
+	geometry.push_back(geometryInstance);
 	std::vector<TerrainPosition> positions;
 	//	positions.push_back(mPage->getWFPosition());
-	context.executeTask(new GeometryUpdateTask(pageSet, positions, mTerrainManager, mTerrainManager.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
+	context.executeTask(new GeometryUpdateTask(geometry, positions, mTerrainManager, mTerrainManager.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
 
 }
 

@@ -42,8 +42,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, TerrainPageGeometry& geometry, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader) :
-	mTerrainPageSurface(terrainPageSurface), mShader(shader), mSurfaceIndex(surfaceIndex), mDefinition(definition), mGeometry(geometry)
+TerrainPageSurfaceLayer::TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader) :
+	mTerrainPageSurface(terrainPageSurface), mShader(shader), mSurfaceIndex(surfaceIndex), mDefinition(definition)
 {
 
 }
@@ -65,9 +65,9 @@ bool TerrainPageSurfaceLayer::intersects(const TerrainPageGeometry& geometry) co
 	return false;
 }
 
-void TerrainPageSurfaceLayer::fillImage(Image& image, unsigned int channel) const
+void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Image& image, unsigned int channel) const
 {
-	SegmentVector validSegments = mGeometry.getValidSegments();
+	SegmentVector validSegments = geometry.getValidSegments();
 	for (SegmentVector::const_iterator I = validSegments.begin(); I != validSegments.end(); ++I) {
 		if (mShader->checkIntersect(*I->segment)) {
 			Mercator::Surface* surface = getSurfaceForSegment(I->segment);
@@ -156,6 +156,9 @@ void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry)
 #else
 
 		Mercator::Segment* segment(I->segment);
+		if (!segment->isValid()) {
+			segment->populate();
+		}
 
 		Mercator::Segment::Surfacestore::iterator I(segment->getSurfaces().find(mSurfaceIndex));
 		if (I == segment->getSurfaces().end()) {

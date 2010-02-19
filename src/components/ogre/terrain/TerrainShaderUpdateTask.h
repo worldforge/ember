@@ -52,13 +52,13 @@ class TerrainShaderUpdateTask : public Ember::Tasks::TemplateNamedTask<TerrainSh
 public:
 	/**
 	 * @brief Ctor.
-	 * @param pages The pages which needs their surfaces updated.
+	 * @param geometry The geometry which needs the surfaces updated.
 	 * @param shader The shader which for each page will be be applied.
 	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
 	 * @param updateAll Whether all pages should be updated. Setting this to true will make the system skip checking the areas sent.
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
 	 */
-	TerrainShaderUpdateTask(PageVector& pages, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
+	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
 	virtual ~TerrainShaderUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -70,7 +70,7 @@ private:
 	/**
 	 * @brief The pages which will be updated.
 	 */
-	const PageVector mPages;
+	GeometryPtrVector mGeometry;
 
 	/**
 	 * @brief The shader which will be applied.

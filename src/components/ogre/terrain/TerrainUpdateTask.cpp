@@ -21,6 +21,7 @@
 #include "TerrainDefPoint.h"
 #include "TerrainInfo.h"
 #include "ISceneManagerAdapter.h"
+#include "SegmentManager.h"
 #include "framework/LoggingInstance.h"
 #include <Mercator/Terrain.h>
 #include <Mercator/BasePoint.h>
@@ -34,8 +35,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainUpdateTask::TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainManager& terrainManager, TerrainInfo& terrainInfo, bool& hasTerrainInfo) :
-	mTerrain(terrain), mTerrainPoints(terrainPoints), mTerrainManager(terrainManager), mTerrainInfo(terrainInfo), mHasTerrainInfo(hasTerrainInfo)
+TerrainUpdateTask::TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainManager& terrainManager, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager) :
+	mTerrain(terrain), mTerrainPoints(terrainPoints), mTerrainManager(terrainManager), mTerrainInfo(terrainInfo), mHasTerrainInfo(hasTerrainInfo), mSegmentManager(segmentManager)
 {
 
 }
@@ -62,6 +63,7 @@ void TerrainUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutio
 		mUpdatedBasePoints.push_back(UpdateBasePointStore::value_type(I->getPosition(), bp));
 		mUpdatedPositions.push_back(TerrainPosition(I->getPosition().x() * terrainRes, I->getPosition().y() * terrainRes));
 	}
+	mSegmentManager.syncWithTerrain();
 }
 
 void TerrainUpdateTask::executeTaskInMainThread()

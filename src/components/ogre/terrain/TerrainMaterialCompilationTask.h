@@ -44,13 +44,13 @@ public:
 	 * @brief Ctor.
 	 * @param pages The pages which needs to have their material recompiled.
 	 */
-	TerrainMaterialCompilationTask(const PageVector& pages);
+	TerrainMaterialCompilationTask(const GeometryPtrVector& geometry);
 
 	/**
 	 * @brief Ctor.
 	 * @param page The page which needs to have its material recompiled.
 	 */
-	TerrainMaterialCompilationTask(TerrainPage* page);
+	TerrainMaterialCompilationTask(TerrainPageGeometryPtr pageGeometry);
 
 	/**
 	 * @brief Dtor.
@@ -70,7 +70,7 @@ private:
 	/**
 	 * @brief The pages which needs recompilation.
 	 */
-	PageVector mPages;
+	GeometryPtrVector mGeometry;
 
 	/**
 	 * @brief The compilation instances and their corresponding pages.

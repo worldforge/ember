@@ -18,13 +18,15 @@
 
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainPage.h"
+#include "TerrainPageGeometry.h"
 #include "TerrainPageSurface.h"
 #include "TerrainMaterialCompilationTask.h"
+#include "framework/tasks/TaskExecutionContext.h"
+
 #include <wfmath/axisbox.h>
 #include <wfmath/intersect.h>
 
-#include "framework/tasks/TaskExecutionContext.h"
-
+#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {
@@ -32,8 +34,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(PageVector& pages, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
-	mPages(pages), mShader(shader), mAreas(areas), mUpdateAll(updateAll), mSignal(signal)
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
+	mGeometry(geometry), mShader(shader), mAreas(areas), mUpdateAll(updateAll), mSignal(signal)
 {
 
 }
@@ -44,33 +46,38 @@ TerrainShaderUpdateTask::~TerrainShaderUpdateTask()
 
 void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	PageVector updatedPages;
+	GeometryPtrVector updatedPages;
 	///We should either update all pages at once, or only those pages that intersect or contains the areas that have been changed
 	if (mUpdateAll) {
-		for (PageVector::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
+		for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
+			TerrainPageGeometryPtr geometry = *J;
+			TerrainPage& page = geometry->getPage();
 			///repopulate the layer
-			(*J)->updateShaderTexture(mShader, true);
+			page.updateShaderTexture(mShader, *geometry, true);
 			updatedPages.push_back((*J));
 		}
 	} else {
-		for (PageVector::const_iterator J = mPages.begin(); J != mPages.end(); ++J) {
-			TerrainPage* page = *J;
+		for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
+			TerrainPageGeometryPtr geometry = *J;
+			TerrainPage& page = geometry->getPage();
 			bool shouldUpdate = false;
 			for (AreaStore::const_iterator K = mAreas.begin(); K != mAreas.end(); ++K) {
-				if (WFMath::Intersect(page->getExtent(), *K, true) || WFMath::Contains(page->getExtent(), *K, true)) {
+				if (WFMath::Intersect(page.getExtent(), *K, true) || WFMath::Contains(page.getExtent(), *K, true)) {
 					shouldUpdate = true;
 					break;
 				}
 			}
 			if (shouldUpdate) {
 				///repopulate the layer
-				page->updateShaderTexture(mShader, true);
-				updatedPages.push_back(page);
+				page.updateShaderTexture(mShader, *geometry, true);
+				updatedPages.push_back(geometry);
 			}
 		}
 	}
 
 	context.executeTask(new TerrainMaterialCompilationTask(updatedPages));
+	//Release Segment references as soon as we can
+	mGeometry.clear();
 }
 
 void TerrainShaderUpdateTask::executeTaskInMainThread()

@@ -28,6 +28,7 @@
 #include "TerrainShader.h"
 #include "TerrainPage.h"
 #include "TerrainPageShadow.h"
+#include "TerrainPageGeometry.h"
 #include "TerrainArea.h"
 #include "TerrainMod.h"
 #include "TerrainInfo.h"
@@ -49,6 +50,7 @@
 #include "HeightMap.h"
 #include "HeightMapBufferProvider.h"
 #include "PlantAreaQuery.h"
+#include "SegmentManager.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/tasks/TaskQueue.h"
@@ -89,6 +91,9 @@
 #endif
 
 #include <limits>
+
+#include <boost/shared_ptr.hpp>
+
 
 using namespace Ogre;
 namespace EmberOgre
@@ -146,13 +151,14 @@ public:
 };
 
 TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0)
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0)
 {
 	mSceneManagerAdapter = adapter;
 
 	loadTerrainOptions();
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
+	mSegmentManager = new SegmentManager(*mTerrain, 64);
 	//The mercator buffers are one size larger than the resolution
 	mHeightMapBufferProvider = new HeightMapBufferProvider(mTerrain->getResolution() + 1);
 	mHeightMap = new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution());
@@ -182,6 +188,8 @@ TerrainManager::~TerrainManager()
 
 	delete mHeightMap;
 	delete mHeightMapBufferProvider;
+
+	delete mSegmentManager;
 
 	delete mSceneManagerAdapter;
 	delete mTerrain;
@@ -336,15 +344,20 @@ const ShaderStore& TerrainManager::getAllShaders() const
 
 bool TerrainManager::frameEnded(const Ogre::FrameEvent & evt)
 {
+
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {
+		GeometryPtrVector geometry;
+		for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
+			geometry.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight())));
+		}
 		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
 		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
-			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(mPages, I->first, I->second.Areas, I->second.UpdateAll, EventLayerUpdated), 0);
+			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, I->second.UpdateAll, EventLayerUpdated), 0);
 		}
+		mShadersToUpdate.clear();
 	}
 
-	mShadersToUpdate.clear();
 
 	return true;
 }
@@ -375,9 +388,9 @@ int TerrainManager::getPageMetersSize() const
 void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
 {
 	TerrainPosition wfPos(Convert::toWF(query.getCenter()));
-	const TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
+	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
 	if (terrainPage) {
-		mTaskQueue->enqueueTask(new PlantQueryTask(*terrainPage, query, asyncCallback));
+		mTaskQueue->enqueueTask(new PlantQueryTask(new TerrainPageGeometry(*terrainPage, *mSegmentManager, getDefaultHeight()), query, asyncCallback));
 	}
 }
 
@@ -418,7 +431,7 @@ void TerrainManager::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosit
 		if (mLightning) {
 			sunDirection = mLightning->getMainLightDirection();
 		}
-		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, *mTerrain, pos, &bridge, *mHeightMapBufferProvider, *mHeightMap, sunDirection));
+		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, pos, &bridge, *mHeightMapBufferProvider, *mHeightMap, sunDirection));
 	} else {
 		S_LOG_WARNING("Trying to set up TerrainPage at index [" << x << "," << y << "], but it was already created");
 	}
@@ -485,22 +498,23 @@ void TerrainManager::setLightning(ILightning* lightning)
 
 void TerrainManager::updateShadows()
 {
-//	if (mLightning) {
-//		WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
-//		mTaskQueue->enqueueTask(new Ember::Tasks::SerialTask(new ShadowUpdateTask(mPages, sunDirection), new TerrainMaterialCompilationTask(mPages)));
-//	} else {
-//		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
-//	}
+	//	if (mLightning) {
+	//		WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
+	//		mTaskQueue->enqueueTask(new Ember::Tasks::SerialTask(new ShadowUpdateTask(mPages, sunDirection), new TerrainMaterialCompilationTask(mPages)));
+	//	} else {
+	//		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
+	//	}
 }
 
 bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
 {
-	mTaskQueue->enqueueTask(new TerrainUpdateTask(*mTerrain, terrainPoints, *this, *mTerrainInfo, mHasTerrainInfo));
+	mTaskQueue->enqueueTask(new TerrainUpdateTask(*mTerrain, terrainPoints, *this, *mTerrainInfo, mHasTerrainInfo, *mSegmentManager));
 	return true;
 }
 
 void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions)
 {
+	GeometryPtrVector geometryToUpdate;
 	std::set<TerrainPage*> pagesToUpdate;
 	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
 		const TerrainPosition& worldPosition(*I);
@@ -511,6 +525,7 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
 				page = getTerrainPageAtPosition(position);
 				if (page) {
+					geometryToUpdate.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())));
 					pagesToUpdate.insert(page);
 				}
 			}
@@ -518,7 +533,7 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 	}
 
 	EventBeforeTerrainUpdate(positions, pagesToUpdate);
-	mTaskQueue->enqueueTask(new GeometryUpdateTask(pagesToUpdate, positions, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
+	mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, positions, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
 
 }
 
@@ -565,6 +580,11 @@ float TerrainManager::getDefaultHeight() const
 	return -15;
 }
 
+SegmentManager& TerrainManager::getSegmentManager()
+{
+	return *mSegmentManager;
+}
+
 //void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
 //{
 //	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
@@ -585,9 +605,13 @@ float TerrainManager::getDefaultHeight() const
 
 void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {
+	GeometryPtrVector geometry;
+	for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
+		geometry.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight())));
+	}
 	//Update all shaders on all pages
 	for (ShaderStore::const_iterator I = mShaderMap.begin(); I != mShaderMap.end(); ++I) {
-		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(mPages, I->second, AreaStore(), true, EventLayerUpdated), 0);
+		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, AreaStore(), true, EventLayerUpdated), 0);
 	}
 }
 

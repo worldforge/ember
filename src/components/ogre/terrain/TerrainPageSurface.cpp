@@ -40,8 +40,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, TerrainPageGeometry& geometry) :
-	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler()), mGeometry(geometry)
+TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage) :
+	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler())
 {
 	///create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
@@ -112,7 +112,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 
 TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader)
 {
-	TerrainPageSurfaceLayer* terrainSurface = new TerrainPageSurfaceLayer(*this, mGeometry, definition, surfaceIndex, shader);
+	TerrainPageSurfaceLayer* terrainSurface = new TerrainPageSurfaceLayer(*this, definition, surfaceIndex, shader);
 	mLayers.insert(TerrainPageSurfaceLayerStore::value_type(surfaceIndex, terrainSurface));
 	return terrainSurface;
 }

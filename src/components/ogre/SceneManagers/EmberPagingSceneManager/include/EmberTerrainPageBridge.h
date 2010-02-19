@@ -40,7 +40,7 @@ public:
 
 	virtual ~EmberTerrainPageBridge();
 
-	void updateTerrain();
+	void updateTerrain(Terrain::TerrainPageGeometry& geometry);
 
 	void terrainPageReady();
 

@@ -16,43 +16,45 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef PLANTQUERYTASK_H_
-#define PLANTQUERYTASK_H_
-
-#include "Types.h"
-#include "framework/tasks/TemplateNamedTask.h"
-#include "PlantAreaQueryResult.h"
-
-#include <sigc++/slot.h>
-
+#include "Segment.h"
+#include <Mercator/Segment.h>
+#include <sstream>
 namespace EmberOgre
 {
 
 namespace Terrain
 {
 
-class TerrainPage;
-class TerrainPageGeometry;
-
-class PlantQueryTask : public Ember::Tasks::TemplateNamedTask<PlantQueryTask>
+Segment::Segment(Mercator::Segment& segment) :
+	mSegment(segment)
 {
-public:
-	PlantQueryTask(TerrainPageGeometry* geometry, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
-	virtual ~PlantQueryTask();
+}
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+Segment::~Segment()
+{
+}
 
-	virtual void executeTaskInMainThread();
+Mercator::Segment& Segment::getMercatorSegment()
+{
+	return mSegment;
+}
 
-private:
-	TerrainPageGeometry* mGeometry;
-	sigc::slot<void, const PlantAreaQueryResult&> mAsyncCallback;
+int Segment::getXIndex() const
+{
+	return mSegment.getXRef() / mSegment.getResolution();
 
-	PlantAreaQueryResult mQueryResult;
-};
+}
+int Segment::getYIndex() const
+{
+	return mSegment.getYRef() / mSegment.getResolution();
+}
 
+std::string Segment::getKey() const
+{
+	std::stringstream ss;
+	ss << getXIndex() << "_" << getYIndex();
+	return ss.str();
+}
 }
 
 }
-
-#endif /* PLANTQUERYTASK_H_ */

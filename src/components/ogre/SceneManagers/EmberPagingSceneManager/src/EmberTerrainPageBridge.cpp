@@ -27,6 +27,7 @@
 #include "EmberTerrainPageBridge.h"
 #include "EmberPagingLandScapeData2D_HeightField.h"
 #include "terrain/TerrainPage.h"
+#include "terrain/TerrainPageGeometry.h"
 
 
 namespace EmberOgre {
@@ -44,10 +45,10 @@ EmberTerrainPageBridge::~EmberTerrainPageBridge()
 	}
 }
 
-void EmberTerrainPageBridge::updateTerrain()
+void EmberTerrainPageBridge::updateTerrain(Terrain::TerrainPageGeometry& geometry)
 {
-	mTerrainPage->updateOgreHeightData(mHeightField.getHeightData());
-	mHeightField.setMaxHeight(mTerrainPage->getMaxHeight());
+	geometry.updateOgreHeightData(mHeightField.getHeightData());
+	mHeightField.setMaxHeight(geometry.getMaxHeight());
 }
 
 void EmberTerrainPageBridge::terrainPageReady()

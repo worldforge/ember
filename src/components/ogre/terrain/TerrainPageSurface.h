@@ -54,7 +54,7 @@ class TerrainPageSurfaceCompilationInstance;
 class TerrainPageSurface{
 public:
 	typedef std::map<int, TerrainPageSurfaceLayer*> TerrainPageSurfaceLayerStore;
-    TerrainPageSurface(const TerrainPage& terrainPage, TerrainPageGeometry& geometry);
+    TerrainPageSurface(const TerrainPage& terrainPage);
 
     virtual ~TerrainPageSurface();
 
@@ -65,8 +65,6 @@ public:
 	 * @return
 	 */
 	const TerrainPosition& getWFPosition() const;
-
-//	const SegmentVector& getValidSegments() const;
 
 	/**
 	 *    The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
@@ -95,7 +93,6 @@ protected:
 	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::auto_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
-	TerrainPageGeometry& mGeometry;
 };
 
 }

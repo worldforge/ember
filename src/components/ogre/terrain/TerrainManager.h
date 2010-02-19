@@ -73,6 +73,7 @@ class HeightMapBufferProvider;
 class TerrainDefPoint;
 class PlantAreaQuery;
 class PlantAreaQueryResult;
+class SegmentManager;
 
 /**
  * @brief Handles generation and updates of the terrain.
@@ -348,6 +349,8 @@ public:
 	 */
 	float getDefaultHeight() const;
 
+	SegmentManager& getSegmentManager();
+
 protected:
 
 	/**
@@ -415,7 +418,16 @@ protected:
 	 */
 	Ember::Tasks::TaskQueue* mTaskQueue;
 
+	/**
+	 * @brief Provides lightning information for the terrain.
+	 */
 	ILightning* mLightning;
+
+	/**
+	 * @brief Handles the Segments used by the pages.
+	 * In order to better be able to conserve memory we don't directly interact with Mercator::Segment instances. Instead we use the Segment class which allows us to keep track of which segments can be released to preserve memory.
+	 */
+	SegmentManager* mSegmentManager;
 
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
