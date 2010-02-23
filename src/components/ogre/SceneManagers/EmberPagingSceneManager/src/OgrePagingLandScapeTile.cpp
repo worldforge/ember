@@ -290,10 +290,10 @@ void PagingLandScapeTile::unload()
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::_Notify(const Vector3 &pos, const PagingLandScapeCamera * const Cam)
 {
-	//const bool wasvisible = mVisible && mLoaded && (mRenderable != 0) && mRenderable->isVisible ();
-	if (1) {
-		//(pos - mWorldPosition).squaredLength() < mParent->getOptions()->renderable_factor
-		//&& Cam->isVisible (mWorldBoundsExt)
+	const bool wasvisible = mVisible && mLoaded && (mRenderable != 0) && mRenderable->isVisible ();
+//	if (1) {
+	if ((pos - mWorldPosition).squaredLength() < mParent->getOptions()->renderable_factor) {
+//		&& Cam->isVisible (mWorldBoundsExt)) {
 		touch();
 		mVisible = true;
 	} else {
