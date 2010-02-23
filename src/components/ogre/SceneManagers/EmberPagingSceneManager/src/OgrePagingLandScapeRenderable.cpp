@@ -229,7 +229,8 @@ namespace Ogre
                 StringConverter::toString(mInfo->mTileZ) + "Rend";
 
         mForcedMaxLod = false;
-        mUpperDistance = mParent->getOptions ()->renderable_factor;
+        setRenderingDistance(mParent->getOptions ()->renderable_factor);
+       // mUpperDistance = mParent->getOptions ()->renderable_factor;
         mIsLoaded = false;
 
 		//we can init texcoord buffer as it's data independent.
