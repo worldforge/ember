@@ -26,6 +26,8 @@
 
 #include "AdapterBase.h"
 
+#include "framework/LoggingInstance.h"
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -79,7 +81,12 @@ bool AdapterBase::hasChanges()
 	if (mRemoved) {
 		return true;
 	}
-	return _hasChanges();
+	try {
+		return _hasChanges();
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when checking for changes." << ex);
+		return false;
+	}
 }
 
 ::Atlas::Message::Element AdapterBase::getChangedElement()

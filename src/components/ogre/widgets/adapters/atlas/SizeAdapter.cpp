@@ -28,43 +28,45 @@
 #include <wfmath/axisbox.h>
 #include <wfmath/atlasconv.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Gui {
+namespace Gui
+{
 
-namespace Adapters {
+namespace Adapters
+{
 
-namespace Atlas {
+namespace Atlas
+{
 
-SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler, CEGUI::Window* infoWindow)
-: AdapterBase(element), mLowerXWindow(lowerXWindow), mLowerYWindow(lowerYWindow), mLowerZWindow(lowerZWindow), mUpperXWindow(upperXWindow), mUpperYWindow(upperYWindow), mUpperZWindow(upperZWindow), mScaler(scaler), mInfoWindow(infoWindow)
+SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* lowerXWindow, CEGUI::Window* lowerYWindow, CEGUI::Window* lowerZWindow, CEGUI::Window* upperXWindow, CEGUI::Window* upperYWindow, CEGUI::Window* upperZWindow, CEGUI::Slider* scaler, CEGUI::Window* infoWindow) :
+	AdapterBase(element), mLowerXWindow(lowerXWindow), mLowerYWindow(lowerYWindow), mLowerZWindow(lowerZWindow), mUpperXWindow(upperXWindow), mUpperYWindow(upperYWindow), mUpperZWindow(upperZWindow), mScaler(scaler), mInfoWindow(infoWindow)
 {
 	if (mLowerXWindow) {
-		addGuiEventConnection(mLowerXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this))); 
+		addGuiEventConnection(mLowerXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
 	if (mLowerYWindow) {
-		addGuiEventConnection(mLowerYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this))); 
+		addGuiEventConnection(mLowerYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
 	if (mLowerZWindow) {
-		addGuiEventConnection(mLowerZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this))); 
+		addGuiEventConnection(mLowerZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
 	if (mUpperXWindow) {
-		addGuiEventConnection(mUpperXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this))); 
+		addGuiEventConnection(mUpperXWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
 	if (mUpperYWindow) {
-		addGuiEventConnection(mUpperYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this))); 
+		addGuiEventConnection(mUpperYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
 	if (mUpperZWindow) {
-		addGuiEventConnection(mUpperZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this))); 
+		addGuiEventConnection(mUpperZWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&SizeAdapter::window_TextChanged, this)));
 	}
 	if (mScaler) {
 		addGuiEventConnection(mScaler->subscribeEvent(CEGUI::Slider::EventValueChanged, CEGUI::Event::Subscriber(&SizeAdapter::slider_ValueChanged, this)));
 	}
-	
-	
+
 	updateGui(mOriginalElement);
 }
-
 
 SizeAdapter::~SizeAdapter()
 {
@@ -73,29 +75,33 @@ SizeAdapter::~SizeAdapter()
 void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
 	AdapterSelfUpdateContext context(*this);
-	WFMath::AxisBox<3> axisBox(element);
-// 	axisBox.fromAtlas(element.asList());
+	WFMath::AxisBox<3> axisBox;
+	try {
+		axisBox.fromAtlas(element.asList());
+	} catch (...) {
+		axisBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, -0.5, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5));
+	}
 	if (mLowerXWindow) {
-		mLowerXWindow->setText(toString(axisBox.lowCorner().x())); 
+		mLowerXWindow->setText(toString(axisBox.lowCorner().x()));
 	}
 	if (mLowerYWindow) {
-		mLowerYWindow->setText(toString(axisBox.lowCorner().y())); 
+		mLowerYWindow->setText(toString(axisBox.lowCorner().y()));
 	}
 	if (mLowerZWindow) {
-		mLowerZWindow->setText(toString(axisBox.lowCorner().z())); 
+		mLowerZWindow->setText(toString(axisBox.lowCorner().z()));
 	}
 	if (mUpperXWindow) {
-		mUpperXWindow->setText(toString(axisBox.highCorner().x())); 
+		mUpperXWindow->setText(toString(axisBox.highCorner().x()));
 	}
 	if (mUpperYWindow) {
-		mUpperYWindow->setText(toString(axisBox.highCorner().y())); 
+		mUpperYWindow->setText(toString(axisBox.highCorner().y()));
 	}
 	if (mUpperZWindow) {
-		mUpperZWindow->setText(toString(axisBox.highCorner().z())); 
+		mUpperZWindow->setText(toString(axisBox.highCorner().z()));
 	}
-	
+
 	updateInfo();
-	
+
 }
 
 bool SizeAdapter::window_TextChanged(const CEGUI::EventArgs& e)
@@ -111,7 +117,7 @@ void SizeAdapter::updateInfo()
 {
 	WFMath::AxisBox<3> newBox;
 	newBox.fromAtlas(getValue());
-	
+
 	std::stringstream ss;
 	ss.precision(4);
 	ss << "w: " << (newBox.highCorner().x() - newBox.lowCorner().x()) << " d: " << (newBox.highCorner().y() - newBox.lowCorner().y()) << " h: " << (newBox.highCorner().z() - newBox.lowCorner().z());
@@ -122,7 +128,11 @@ bool SizeAdapter::slider_ValueChanged(const CEGUI::EventArgs& e)
 {
 	float value = mScaler->getCurrentValue();
 	WFMath::AxisBox<3> newBox;
-	newBox.fromAtlas(mOriginalElement);
+	try {
+		newBox.fromAtlas(mOriginalElement);
+	} catch (...) {
+		newBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, -0.5, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5));
+	}
 	WFMath::Point<3> lowerPoint = newBox.lowCorner();
 	WFMath::Point<3> upperPoint = newBox.highCorner();
 	lowerPoint.x() *= value;
@@ -132,11 +142,10 @@ bool SizeAdapter::slider_ValueChanged(const CEGUI::EventArgs& e)
 	upperPoint.y() *= value;
 	upperPoint.z() *= value;
 	newBox.setCorners(lowerPoint, upperPoint);
-// 	newBox *= value;
+	// 	newBox *= value;
 	updateGui(newBox.toAtlas());
 	return true;
 }
-
 
 void SizeAdapter::fillElementFromGui()
 {
@@ -144,22 +153,22 @@ void SizeAdapter::fillElementFromGui()
 	WFMath::Point<3> lowerPoint = axisBox.lowCorner();
 	WFMath::Point<3> upperPoint = axisBox.highCorner();
 	if (mLowerXWindow) {
-		lowerPoint.x() = atof(mLowerXWindow->getText().c_str()); 
+		lowerPoint.x() = atof(mLowerXWindow->getText().c_str());
 	}
 	if (mLowerYWindow) {
-		lowerPoint.y() = atof(mLowerYWindow->getText().c_str()); 
+		lowerPoint.y() = atof(mLowerYWindow->getText().c_str());
 	}
 	if (mLowerZWindow) {
-		lowerPoint.z() = atof(mLowerZWindow->getText().c_str()); 
+		lowerPoint.z() = atof(mLowerZWindow->getText().c_str());
 	}
 	if (mUpperXWindow) {
-		upperPoint.x() = atof(mUpperXWindow->getText().c_str()); 
+		upperPoint.x() = atof(mUpperXWindow->getText().c_str());
 	}
 	if (mUpperYWindow) {
-		upperPoint.y() = atof(mUpperYWindow->getText().c_str()); 
+		upperPoint.y() = atof(mUpperYWindow->getText().c_str());
 	}
 	if (mUpperZWindow) {
-		upperPoint.z() = atof(mUpperZWindow->getText().c_str()); 
+		upperPoint.z() = atof(mUpperZWindow->getText().c_str());
 	}
 	axisBox.setCorners(lowerPoint, upperPoint);
 	mEditedElement = axisBox.toAtlas();
@@ -167,11 +176,21 @@ void SizeAdapter::fillElementFromGui()
 
 bool SizeAdapter::_hasChanges()
 {
-	WFMath::AxisBox<3> originalBox;
-	originalBox.fromAtlas(mOriginalElement);
 	WFMath::AxisBox<3> newBox;
-	newBox.fromAtlas(getValue());
-	return originalBox != newBox;
+	try {
+		newBox.fromAtlas(getValue());
+	} catch (...) {
+		return false;
+	}
+
+	try {
+		WFMath::AxisBox<3> originalBox;
+		originalBox.fromAtlas(mOriginalElement);
+		return originalBox != newBox;
+	} catch (...) {
+		//We have an invalid original element, but a valid new element, so we'll consider ourselves changed
+		return true;
+	}
 }
 }
 
