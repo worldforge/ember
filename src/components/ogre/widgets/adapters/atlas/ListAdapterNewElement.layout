@@ -12,6 +12,7 @@
 			<Property Name='UnifiedPosition' Value='{{0,75},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,40},{0,20}}'/>
 			<Property Name='Text' Value='Add'/>
+			<Property Name='Tooltip' Value='Adds a new list element.' />
 		</Window>
 	</Window>
 </GUILayout>

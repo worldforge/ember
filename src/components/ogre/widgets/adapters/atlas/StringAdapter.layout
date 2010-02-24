@@ -6,6 +6,7 @@
 		<Window Type='EmberLook/Combobox' Name='String'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,100},{0,100}}'/>
+			<Property Name='Tooltip' Value='A string value.' />
 		</Window>
 	</Window>
 </GUILayout>

@@ -6,15 +6,18 @@
 		<Window Type='EmberLook/Combobox' Name='ElementName'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+			<Property Name='Tooltip' Value='Name of the element.' />
 		</Window>
 		<Window Type='EmberLook/Combobox' Name='ElementType'>
 			<Property Name='UnifiedPosition' Value='{{0,75},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+			<Property Name='Tooltip' Value='Type of the element.' />
 		</Window>
 		<Window Type='EmberLook/Button' Name='NewElementButton'>
 			<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,40},{0,20}}'/>
 			<Property Name='Text' Value='Add'/>
+			<Property Name='Tooltip' Value='Adds a new map element.' />
 		</Window>
 	</Window>
 </GUILayout>

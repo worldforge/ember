@@ -7,6 +7,7 @@
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
 			<Property Name='Text' Value='Show' />
+			<Property Name='Tooltip' Value='Shows a graphical representation of the terrain area.' />
 		</Window>
 		<Window Type='EmberLook/StaticText' Name='LayerText'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
@@ -19,6 +20,7 @@
 			<Property Name='UnifiedPosition' Value='{{0,75},{0,30}}'/>
 			<Property Name='UnifiedSize' Value='{{0,125},{0,125}}'/>
 			<Property Name='ReadOnly' Value='true'/>
+			<Property Name='Tooltip' Value='The terrain layer to use.' />
 		</Window>
 	</Window>
 </GUILayout>

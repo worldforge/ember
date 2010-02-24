@@ -6,10 +6,12 @@
 		<Window Type='EmberLook/Editbox' Name='x'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+			<Property Name='Tooltip' Value='X coord.' />
 		</Window>
 		<Window Type='EmberLook/Editbox' Name='y'>
 			<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+			<Property Name='Tooltip' Value='Y coord.' />
 		</Window>
 	</Window>
 </GUILayout>
