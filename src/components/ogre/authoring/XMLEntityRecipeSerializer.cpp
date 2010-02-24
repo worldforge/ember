@@ -257,7 +257,10 @@ void XMLEntityRecipeSerializer::readBindAdapters(EntityRecipePtr entRecipe, GUIA
 void XMLEntityRecipeSerializer::readScript(EntityRecipePtr entRecipe, TiXmlElement* scriptNode)
 {
 	S_LOG_VERBOSE("Read script.");
-	entRecipe->mScript = scriptNode->GetText();
+	const char* text = scriptNode->GetText();
+	if (text) {
+		entRecipe->mScript = text;
+	}
 }
 
 }
