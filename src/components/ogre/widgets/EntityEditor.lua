@@ -91,18 +91,20 @@ EntityEditor = {
 				wrapper.buttonPressed = function(args)
 					local name = wrapper.nameEditbox:getText()
 					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
-					local element = newAdapter.createNewElement()
-					local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype(name, element))
-					
-					EntityEditor.instance.addNewElement(element)
-					
-					if adapterWrapper ~= nil then
-						local newPrototype = {}
-						wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
-						EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
-						--by adding the window again we make sure that it's at the bottom of the child window list
-						wrapper.outercontainer:addChildWindow(wrapper.container)
-						wrapper.nameEditbox:setText("")
+					if newAdapter.createNewElement ~= nil then
+						local element = newAdapter.createNewElement()
+						local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype(name, element))
+						
+						EntityEditor.instance.addNewElement(element)
+						
+						if adapterWrapper ~= nil then
+							local newPrototype = {}
+							wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
+							EntityEditor.addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+							--by adding the window again we make sure that it's at the bottom of the child window list
+							wrapper.outercontainer:addChildWindow(wrapper.container)
+							wrapper.nameEditbox:setText("")
+						end
 					end
 					return true
 				end
@@ -160,18 +162,20 @@ EntityEditor = {
 				wrapper.newAdapters = EntityEditor.fillNewElementCombobox(wrapper.typeCombobox, "")
 				wrapper.buttonPressed = function(args)
 					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
-					local element = newAdapter.createNewElement()
-					local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype("", element))
-					
-					--store a reference to the element so it isn't garbage collected
-					EntityEditor.instance.addNewElement(element)
-					
-					if adapterWrapper ~= nil then
-						wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-						local newPrototype = {}
-						EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
-						--by adding the window again we make sure that it's at the bottom of the child window list
-						wrapper.outercontainer:addChildWindow(wrapper.container)
+					if newAdapter.createNewElement ~= nil then
+						local element = newAdapter.createNewElement()
+						local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype("", element))
+						
+						--store a reference to the element so it isn't garbage collected
+						EntityEditor.instance.addNewElement(element)
+						
+						if adapterWrapper ~= nil then
+							wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+							local newPrototype = {}
+							EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+							--by adding the window again we make sure that it's at the bottom of the child window list
+							wrapper.outercontainer:addChildWindow(wrapper.container)
+						end
 					end
 				end
 				wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
@@ -207,6 +211,9 @@ EntityEditor = {
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				wrapper.adapter = EntityEditor.factory:createSizeAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element)
 				return wrapper	
+			end,
+			createNewElement = function()
+				return EntityEditor.instance.helper:createListElement()
 			end
 		},
 		position = {
@@ -288,25 +295,27 @@ EntityEditor = {
 				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(EntityEditor.factory:getCurrentPrefix().. "NewElementButton"))
 				wrapper.buttonPressed = function(args)
 					local newAdapter = newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
-					local element = newAdapter.createNewElement()
-					local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype("", element))
-					
---[[					local adapterWrapper = nil
-					local element = nil
-					
-					if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
-						element = EntityEditor.instance.helper:createPosition2dElement()
-						adapterWrapper = EntityEditor.adapters.position2d.createAdapter(element, EntityEditor.getPrototype("", element))
-					end]]
-					
-					EntityEditor.instance.addNewElement(element)
-					
-					if adapterWrapper ~= nil then
-						local newPrototype = {}
-						wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
-						EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
-						--by adding the window again we make sure that it's at the bottom of the child window list
-						wrapper.outercontainer:addChildWindow(wrapper.container)
+					if newAdapter.createNewElement ~= nil then
+						local element = newAdapter.createNewElement()
+						local adapterWrapper = newAdapter.createAdapter(element, EntityEditor.getPrototype("", element))
+						
+	--[[					local adapterWrapper = nil
+						local element = nil
+						
+						if wrapper.typeCombobox:getSelectedItem():getID() == 0 then
+							element = EntityEditor.instance.helper:createPosition2dElement()
+							adapterWrapper = EntityEditor.adapters.position2d.createAdapter(element, EntityEditor.getPrototype("", element))
+						end]]
+						
+						EntityEditor.instance.addNewElement(element)
+						
+						if adapterWrapper ~= nil then
+							local newPrototype = {}
+							wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
+							EntityEditor.addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+							--by adding the window again we make sure that it's at the bottom of the child window list
+							wrapper.outercontainer:addChildWindow(wrapper.container)
+						end
 					end
 				end
 				wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
