@@ -595,8 +595,9 @@ bool PagingLandScapeTile::intersectSegmentFromBelow(const Vector3 & start,
 //-----------------------------------------------------------------------
 void PagingLandScapeTile::updateTerrain ()
 {
-	assert (mInit && mLoaded && mRenderable);
-	mRenderable->setNeedUpdate ();
+	if (mInit && mLoaded && mRenderable) {
+		mRenderable->setNeedUpdate ();
+	}
 }
 
 void PagingLandScapeTile::setRenderQueueGroup(uint8 qid)

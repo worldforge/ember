@@ -480,8 +480,8 @@ namespace Ogre
 				if (tile->getRenderable()) {
 					tile->getRenderable()->adjustDeformationRectangle(0, 0);
 					tile->getRenderable()->adjustDeformationRectangle(size, size);
+					tile->updateTerrain();
 				}
-				tile->updateTerrain();
 			}
 		}
 	}
