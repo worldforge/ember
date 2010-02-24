@@ -22,7 +22,7 @@
 
 #include "framework/Exception.h"
 
-#define LOG_TASKS
+//#define LOG_TASKS
 
 
 #ifdef LOG_TASKS
