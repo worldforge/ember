@@ -514,7 +514,7 @@ bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
 
 void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions)
 {
-	GeometryPtrVector geometryToUpdate;
+//	std::map<TerrainPage*, std::set<TerrainPosition> > pageAndPositions;
 	std::set<TerrainPage*> pagesToUpdate;
 	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
 		const TerrainPosition& worldPosition(*I);
@@ -525,7 +525,7 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
 				page = getTerrainPageAtPosition(position);
 				if (page) {
-					geometryToUpdate.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())));
+//					pageAndPositions[page].insert(position);
 					pagesToUpdate.insert(page);
 				}
 			}
@@ -533,7 +533,13 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 	}
 
 	EventBeforeTerrainUpdate(positions, pagesToUpdate);
-	mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, positions, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
+	//Spawn a separate task for each page to not bog down processing with all pages at once
+	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+		GeometryPtrVector geometryToUpdate;
+		TerrainPage* page = *I;
+		geometryToUpdate.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())));
+		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, positions, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
+	}
 
 }
 
