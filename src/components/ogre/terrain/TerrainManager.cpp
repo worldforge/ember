@@ -577,7 +577,7 @@ const TerrainInfo& TerrainManager::getTerrainInfo() const
 
 float TerrainManager::getDefaultHeight() const
 {
-	return -15;
+	return -4;
 }
 
 SegmentManager& TerrainManager::getSegmentManager()
