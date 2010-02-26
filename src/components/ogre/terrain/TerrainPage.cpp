@@ -159,7 +159,7 @@ void TerrainPage::prepareFoliage()
 	mPageFoliage->generateCoverageMap();
 }
 
-const WFMath::AxisBox<2>& TerrainPage::getExtent() const
+const WFMath::AxisBox<2>& TerrainPage::getWorldExtent() const
 {
 	return mExtent;
 }

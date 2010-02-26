@@ -168,7 +168,7 @@ public:
 	 * @brief Gets the extent of this page in meters, in worldforge space.
 	 * @return
 	 */
-	const WFMath::AxisBox<2>& getExtent() const;
+	const WFMath::AxisBox<2>& getWorldExtent() const;
 
 	/**
 	 * @brief Accessor for the page surface belonging to this page.

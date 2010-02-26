@@ -46,6 +46,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 {
 	std::vector<Mercator::Segment*> segments;
 
+	AreaStore affectedAreas;
 	//first populate the geometry for all pages, and then regenerate the shaders
 	for (GeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
 		TerrainPageGeometryPtr geometry= *I;
@@ -54,9 +55,10 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 		for (SegmentVector::const_iterator I = segmentVector.begin(); I != segmentVector.end(); ++I) {
 			segments.push_back(I->segment);
 		}
-	}
-	for (ShaderStore::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
-		context.executeTask(new TerrainShaderUpdateTask(mGeometry, I->second, AreaStore(), true, mManager.EventLayerUpdated));
+		affectedAreas.push_back(geometry->getPage().getWorldExtent());
+		for (ShaderStore::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
+			context.executeTask(new TerrainShaderUpdateTask(mGeometry, I->second, affectedAreas, true, mManager.EventLayerUpdated));
+		}
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
 

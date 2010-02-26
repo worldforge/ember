@@ -39,7 +39,7 @@ PlantQueryTask::~PlantQueryTask()
 
 void PlantQueryTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(mGeometry->getPage().getExtent());
+	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(mGeometry->getPage().getWorldExtent());
 	Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(mQueryResult.getQuery().getArea().left - ogrePageExtent.left, mQueryResult.getQuery().getArea().top - ogrePageExtent.top, mQueryResult.getQuery().getArea().right - ogrePageExtent.left, mQueryResult.getQuery().getArea().bottom - ogrePageExtent.top);
 	mGeometry->getPage().getPlantsForArea(mQueryResult, *mGeometry);
 	//Release Segment references as soon as we can

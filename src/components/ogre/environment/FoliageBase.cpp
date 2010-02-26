@@ -121,13 +121,10 @@ void FoliageBase::TerrainManager_EventShaderCreated(const Terrain::TerrainShader
 void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<TerrainPosition>& terrainPositions, const std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
 {
 	if (mPagedGeometry) {
-		mPagedGeometry->reloadGeometry();
-//HACK: for some reason I couldn't get the code below to work as it should, so we'll go with the brute way of just reloading all geometry. Newer versions of PagedGeometry contains additional methods for reloading sections of the geometry which we shoudl be able to use once we've updated the version used in Ember.
-#if 0
 		Ogre::Real pageSize(mPagedGeometry->getPageSize());
 		for (std::set< ::EmberOgre::Terrain::TerrainPage* >::const_iterator I = pages.begin(); I != pages.end(); ++I) {
 			const ::EmberOgre::Terrain::TerrainPage* page(*I);
-			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(page->getExtent()));
+			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(page->getWorldExtent()));
 
 			///update all paged geometry pages that are within the extent of the terrain page
 			Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);
@@ -137,7 +134,6 @@ void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<TerrainPos
 				}
 			}
 		}
-#endif
 	}
 }
 

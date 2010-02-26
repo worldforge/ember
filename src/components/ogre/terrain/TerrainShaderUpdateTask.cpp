@@ -62,7 +62,7 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 			TerrainPage& page = geometry->getPage();
 			bool shouldUpdate = false;
 			for (AreaStore::const_iterator K = mAreas.begin(); K != mAreas.end(); ++K) {
-				if (WFMath::Intersect(page.getExtent(), *K, true) || WFMath::Contains(page.getExtent(), *K, true)) {
+				if (WFMath::Intersect(page.getWorldExtent(), *K, true) || WFMath::Contains(page.getWorldExtent(), *K, true)) {
 					shouldUpdate = true;
 					break;
 				}

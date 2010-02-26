@@ -154,7 +154,7 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 		return;
 	}
 
-	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(mTerrainPage.getExtent());
+	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(mTerrainPage.getWorldExtent());
 	Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(query.getArea().left - ogrePageExtent.left, query.getArea().top - ogrePageExtent.top, query.getArea().right - ogrePageExtent.left, query.getArea().bottom - ogrePageExtent.top);
 
 	TerrainPosition localPositionInSegment;
