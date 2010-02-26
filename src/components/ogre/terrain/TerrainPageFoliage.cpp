@@ -34,6 +34,7 @@
 #include "TerrainPageGeometry.h"
 #include "PlantAreaQuery.h"
 #include "PlantAreaQueryResult.h"
+#include "PlantInstance.h"
 
 #include "components/ogre/Convert.h"
 
@@ -74,14 +75,20 @@ void TerrainPageFoliage::generatePlantPositions()
 		const TerrainLayerDefinition* layerDef = *I;
 		for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef->getFoliages().begin(); I != layerDef->getFoliages().end(); ++I) {
 			PlantBatchStore& plants = mPlantStores[I->getPlantType()];
-
-			if (I->getPopulationTechnique() == "cluster") {
-				ClusterPopulator populator(*this);
-				populator.setClusterDistance(atof(I->getParameter("clusterDistance").c_str()));
-				populator.setMinClusterRadius(atof(I->getParameter("minClusterRadius").c_str()));
-				populator.setMaxClusterRadius(atof(I->getParameter("maxClusterRadius").c_str()));
-				populator.setDensity(atof(I->getParameter("density").c_str()));
-				populator.setFalloff(atof(I->getParameter("falloff").c_str()));
+			const TerrainFoliageDefinition& foliageDef = *I;
+			if (foliageDef.getPopulationTechnique() == "cluster") {
+				std::auto_ptr<IScaler> scaler;
+				if (foliageDef.hasParameter("minScale")) {
+					scaler.reset(new UniformScaler(atof(foliageDef.getParameter("minScale").c_str()), atof(foliageDef.getParameter("maxScale").c_str())));
+				} else {
+					scaler.reset(new Scaler(atof(foliageDef.getParameter("minWidth").c_str()), atof(foliageDef.getParameter("maxWidth").c_str()), atof(foliageDef.getParameter("minHeight").c_str()),atof(foliageDef.getParameter("maxHeight").c_str())));
+				}
+				ClusterPopulator populator(*this, scaler.get());
+				populator.setClusterDistance(atof(foliageDef.getParameter("clusterDistance").c_str()));
+				populator.setMinClusterRadius(atof(foliageDef.getParameter("minClusterRadius").c_str()));
+				populator.setMaxClusterRadius(atof(foliageDef.getParameter("maxClusterRadius").c_str()));
+				populator.setDensity(atof(foliageDef.getParameter("density").c_str()));
+				populator.setFalloff(atof(foliageDef.getParameter("falloff").c_str()));
 
 				populator.populate(plants, index++, foliageBatchSize);
 			}
@@ -177,12 +184,13 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 	float height;
 	WFMath::Vector<3> normal;
 	for (PlantStore::const_iterator I = plants.begin(); I != plants.end(); ++I) {
-		if (I->x >= adjustedBounds.left && I->x <= adjustedBounds.right && I->y >= adjustedBounds.top && I->y <= adjustedBounds.bottom) {
+		const Plant2DInstance& plantInstance(*I);
+		if (plantInstance.position.x >= adjustedBounds.left && plantInstance.position.x <= adjustedBounds.right && plantInstance.position.y >= adjustedBounds.top && plantInstance.position.y <= adjustedBounds.bottom) {
 
 #if 1
 			unsigned char combinedCoverage(0);
-			float x = I->x;
-			float y = mCoverageMapPixelWidth - I->y;
+			float x = plantInstance.position.x;
+			float y = mCoverageMapPixelWidth - plantInstance.position.y;
 
 			Mercator::Segment* segment = geometry.getSegmentAtLocalPosition(TerrainPosition(x, y), localPositionInSegment);
 			if (segment == 0) {
@@ -192,7 +200,6 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 			if (!segment->isValid()) {
 				segment->populate();
 			}
-
 
 			///start from the coverage for the active layer, and substract all layers above
 			///if the end result is below the threshold we'll show the plant
@@ -227,7 +234,7 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 			}
 			if (combinedCoverage >= query.getThreshold()) {
 				segment->getHeightAndNormal(localPositionInSegment.x(), localPositionInSegment.y(), height, normal);
-				store.push_back(Ogre::Vector3(ogrePageExtent.left + I->x, height, ogrePageExtent.top + I->y));
+				store.push_back(PlantInstance(Ogre::Vector3(ogrePageExtent.left + plantInstance.position.x, height, ogrePageExtent.top + plantInstance.position.y), plantInstance.orientation, plantInstance.scale));
 			}
 
 #endif
@@ -246,6 +253,28 @@ void TerrainPageFoliage::getPlantsForArea(const TerrainPageGeometry& geometry, P
 
 void TerrainPageFoliage::setupBatches()
 {
+}
+
+UniformScaler::UniformScaler(float min, float max) :
+	mMin(min), mRange(max - min)
+{
+
+}
+void UniformScaler::scale(WFMath::MTRand& rnd, const Ogre::Vector2& pos, Ogre::Vector2& scale)
+{
+	scale.x = scale.y = mMin + rnd.rand(mRange);
+}
+
+Scaler::Scaler(float xMin, float xMax, float yMin, float yMax) :
+	mXMin(xMin), mXRange(xMax - xMin), mYMin(yMin), mYRange(yMax - yMin)
+{
+
+}
+void Scaler::scale(WFMath::MTRand& rnd, const Ogre::Vector2& pos, Ogre::Vector2& scale)
+{
+	scale.x = mXMin + rnd.rand(mXRange);
+	scale.y = mYMin + rnd.rand(mYRange);
+
 }
 
 }
@@ -302,8 +331,8 @@ void EmberOgre::Terrain::ClusterPopulator::setClusterDistance(float theValue)
 	mClusterDistance = theValue;
 }
 
-EmberOgre::Terrain::PlantPopulator::PlantPopulator(const TerrainPageFoliage & terrainPageFoliage) :
-	mTerrainPageFoliage(terrainPageFoliage)
+EmberOgre::Terrain::PlantPopulator::PlantPopulator(const TerrainPageFoliage & terrainPageFoliage, IScaler* scaler) :
+	mTerrainPageFoliage(terrainPageFoliage), mScaler(scaler)
 {
 
 }
@@ -312,8 +341,8 @@ EmberOgre::Terrain::PlantPopulator::~PlantPopulator()
 {
 }
 
-EmberOgre::Terrain::ClusterPopulator::ClusterPopulator(const TerrainPageFoliage& terrainPageFoliage) :
-	EmberOgre::Terrain::ClusterPopulator::PlantPopulator(terrainPageFoliage)
+EmberOgre::Terrain::ClusterPopulator::ClusterPopulator(const TerrainPageFoliage& terrainPageFoliage, IScaler* scaler) :
+	EmberOgre::Terrain::ClusterPopulator::PlantPopulator(terrainPageFoliage, scaler)
 {
 }
 
@@ -359,7 +388,11 @@ void EmberOgre::Terrain::ClusterPopulator::populate(EmberOgre::Terrain::TerrainP
 						const int batchY = Ogre::Math::Floor(plantY / batchSize);
 						EmberOgre::Terrain::TerrainPageFoliage::PlantStore& plantStore = plantBatchStore[batchX][batchY];
 
-						plantStore.push_back(Ogre::Vector2(plantX, plantY));
+						Ogre::Vector2 scale;
+						Ogre::Vector2 pos(plantX, plantY);
+						mScaler->scale(rng, pos, scale);
+
+						plantStore.push_back(Plant2DInstance(pos, rng.rand(360.0), scale));
 						plantCount++;
 					}
 				}

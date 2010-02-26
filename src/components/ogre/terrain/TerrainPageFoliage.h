@@ -32,6 +32,10 @@
 #include <map>
 #include <vector>
 
+namespace WFMath
+{
+class MTRand;
+}
 
 namespace Ogre
 {
@@ -51,6 +55,7 @@ class TerrainPageFoliage;
 class TerrainLayerDefinition;
 class TerrainPageGeometry;
 class PlantAreaQueryResult;
+class Plant2DInstance;
 // struct PlantPosition
 // {
 // 	Ogre::Vector2 pos;
@@ -67,7 +72,7 @@ public:
 	/**
 	A store of plant positions. We keep this in ogre space for performance reasons.
 	*/
-	typedef std::vector<Ogre::Vector2, Ogre::STLAllocator<Ogre::Vector2, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GEOMETRY> > > PlantStore;
+	typedef std::vector<Plant2DInstance> PlantStore;
 	typedef std::map<int, PlantStore> PlantBatchColumn;
 	typedef std::map<int, PlantBatchColumn> PlantBatchStore;
 	typedef std::map<std::string, PlantBatchStore> PlantStoreMap;
@@ -127,11 +132,39 @@ protected:
 
 };
 
+class IScaler
+{
+public:
+	virtual void scale(WFMath::MTRand& rnd, const Ogre::Vector2& pos, Ogre::Vector2& scale) = 0;
+};
+
+class UniformScaler : public IScaler
+{
+public:
+	UniformScaler(float min, float max);
+	virtual void scale(WFMath::MTRand& rnd, const Ogre::Vector2& pos, Ogre::Vector2& scale);
+private:
+	float mMin;
+	float mRange;
+};
+
+class Scaler : public IScaler
+{
+public:
+	Scaler(float xMin, float xMax, float yMin, float yMax);
+	virtual void scale(WFMath::MTRand& rnd, const Ogre::Vector2& pos, Ogre::Vector2& scale);
+private:
+	float mXMin;
+	float mXRange;
+	float mYMin;
+	float mYRange;
+};
+
 class PlantPopulator
 {
 public:
 
-	PlantPopulator(const TerrainPageFoliage& terrainPageFoliage);
+	PlantPopulator(const TerrainPageFoliage& terrainPageFoliage, IScaler* scaler);
 	virtual ~PlantPopulator();
 
 	virtual void populate(TerrainPageFoliage::PlantBatchStore& plantBatchStore, int plantIndex, unsigned int batchSize) = 0;
@@ -139,13 +172,14 @@ public:
 protected:
 
 	const TerrainPageFoliage& mTerrainPageFoliage;
+	IScaler* mScaler;
 
 };
 
 class ClusterPopulator : public PlantPopulator
 {
 public:
-	ClusterPopulator(const TerrainPageFoliage& terrainPageFoliage);
+	ClusterPopulator(const TerrainPageFoliage& terrainPageFoliage, IScaler* scaler);
 	virtual ~ClusterPopulator();
 
 	virtual void populate(TerrainPageFoliage::PlantBatchStore& plantBatchStore, int plantIndex, unsigned int batchSize);
@@ -165,6 +199,7 @@ public:
 	void setClusterDistance ( float theValue );
 	float getClusterDistance() const;
 
+
 protected:
 
 	float mMinClusterRadius;
@@ -172,6 +207,7 @@ protected:
 	float mClusterDistance;
 	float mDensity;
 	float mFalloff;
+
 
 };
 

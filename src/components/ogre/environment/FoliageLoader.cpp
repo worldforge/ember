@@ -34,6 +34,7 @@
 #include "../terrain/TerrainPageFoliage.h"
 #include "../terrain/TerrainPage.h"
 #include "../terrain/TerrainLayerDefinition.h"
+#include "../terrain/PlantInstance.h"
 #include "framework/LoggingInstance.h"
 #include <wfmath/intersect.h>
 
@@ -69,7 +70,7 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
 		for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
 			float height = 0;
-			Ogre::Vector3 pos(I->x, I->y, I->z);
+			Ogre::Vector3 pos(I->position.x, I->position.y, I->position.z);
 
 			float scale = Ogre::Math::RangeRandom(mMinScale, mMaxScale);
 			//			pos2D.x = pos.x;

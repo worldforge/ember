@@ -135,7 +135,7 @@ noinst_HEADERS = \
 	terrain/GeometryUpdateTask.h terrain/TerrainModTaskBase.h terrain/TerrainEditorOverlay.h terrain/TerrainDefPoint.h \
 	terrain/TerrainShaderParser.h terrain/TerrainUpdateTask.h terrain/ShadowUpdateTask.h terrain/PlantQueryTask.h \
 	terrain/HeightMapFlatSegment.h terrain/IHeightMapSegment.h terrain/Segment.h terrain/SegmentHolder.h terrain/SegmentReference.h \
-	terrain/SegmentManager.h \
+	terrain/SegmentManager.h terrain/PlantInstance.h \
 \
 	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \

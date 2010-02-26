@@ -35,6 +35,7 @@
 #include "../terrain/TerrainPage.h"
 #include "../terrain/TerrainPageShadow.h"
 #include "../terrain/TerrainLayerDefinition.h"
+#include "../terrain/PlantInstance.h"
 #include "framework/LoggingInstance.h"
 #include <wfmath/intersect.h>
 
@@ -108,8 +109,8 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 			if (finalGrassCount == grassCount) {
 				break;
 			}
-			*posBuff++ = I->x;
-			*posBuff++ = I->z;
+			*posBuff++ = I->position.x;
+			*posBuff++ = I->position.z;
 			finalGrassCount++;
 		}
 	} else {

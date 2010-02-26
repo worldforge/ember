@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 erik
+ Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #include <vector>
 
 #include <OgreCommon.h>
-#include <OgreMemoryAllocatorConfig.h>
 #include <OgreVector3.h>
 #include <OgreVector2.h>
 
@@ -34,6 +33,7 @@ namespace Terrain
 
 template<typename> class Buffer;
 
+class PlantInstance;
 class PlantAreaQuery;
 class PlantAreaQueryResult
 {
@@ -42,7 +42,7 @@ public:
 	/**
 	A store of plant positions. We keep this in ogre space for performance reasons.
 	*/
-	typedef std::vector<Ogre::Vector3, Ogre::STLAllocator<Ogre::Vector3, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GEOMETRY> > > PlantStore;
+	typedef std::vector<PlantInstance> PlantStore;
 
 	PlantAreaQueryResult(const PlantAreaQuery& query);
 	virtual ~PlantAreaQueryResult();
