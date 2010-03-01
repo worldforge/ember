@@ -128,6 +128,11 @@ public:
 
 //	const Ember::ConsoleCommandWrapper MoveCameraTo;
 
+	/**
+	 * @brief Repositions the free flying camera on the avatar.
+	 * This command is useful when you want to find the avatar when in free flying mode, or if you're moving the avatar through teleporting and want the camera to follow.
+	 */
+	const Ember::ConsoleCommandWrapper CameraOnAvatar;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method

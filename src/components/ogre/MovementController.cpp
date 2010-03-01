@@ -71,7 +71,7 @@ void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButt
 }
 
 MovementController::MovementController(Avatar& avatar) :
-	RunToggle("+run", this, "Toggle running mode."), ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."), MovementMoveForward("+movement_move_forward", this, "Move forward."), MovementMoveBackward("+movement_move_backward", this, "Move backward."), MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."), MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."), MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."), MovementStrafeRight("+movement_strafe_right", this, "Strafe right.")
+	RunToggle("+run", this, "Toggle running mode."), ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."), MovementMoveForward("+movement_move_forward", this, "Move forward."), MovementMoveBackward("+movement_move_backward", this, "Move backward."), MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."), MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."), MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."), MovementStrafeRight("+movement_strafe_right", this, "Strafe right."), CameraOnAvatar("camera_on_avatar", this, "Positions the free flying camera on the avatar.")
 	/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
 	 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
 	//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
@@ -110,7 +110,7 @@ MovementController::~MovementController()
 
 void MovementController::setCameraFreeFlying(bool freeFlying)
 {
-	if (freeFlying) {
+	if (freeFlying && mCameraMount.get()) {
 		EmberOgre::getSingleton().getMainCamera()->attachToMount(mCameraMount.get());
 		mIsFreeFlying = true;
 	} else {
@@ -174,6 +174,10 @@ void MovementController::runCommand(const std::string &command, const std::strin
 		//				mFreeFlyingCameraNode->setPosition(position);
 		//			}
 		//		}
+	} else if (CameraOnAvatar == command) {
+		if (mFreeFlyingNode && mAvatar.getEmberEntity().getPosition().isValid()) {
+			mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getViewPosition()));
+		}
 	}
 }
 
