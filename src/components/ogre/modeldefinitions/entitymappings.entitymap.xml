@@ -629,10 +629,36 @@
 		</entitymatch>
 	</entitymapping>
 	
-	<autoentitymapping name="bush" />
 	<autoentitymapping name="leaf" />
-	<autoentitymapping name="shrubA" />
-	<autoentitymapping name="shrubB" />
+	<entitymapping name="shrub">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">shrub</caseparam>
+				<action type="display-model">shrubB</action>
+				<attributematch attribute="species" >
+					<case>
+						<caseparam type="equals">magnolia</caseparam>
+						<action type="display-model">shrubB</action>
+					</case>
+					<case>
+						<caseparam type="equals">oakleaf</caseparam>
+						<action type="display-model">shrubA</action>
+					</case>
+					<case>
+						<caseparam type="equals">wormwood</caseparam>
+						<action type="display-model">bush</action>
+						<action type="display-part">brown</action>
+					</case>
+					<case>
+						<caseparam type="equals">willow</caseparam>
+						<action type="display-model">bush</action>
+						<action type="display-part">green</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</entitymapping> 	
+
 	
 	
 	<!-- We'll use jayrs new oak for now -->
