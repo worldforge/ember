@@ -30,9 +30,11 @@
 #include <Mercator/Area.h>
 #include <wfmath/atlasconv.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Terrain {
+namespace Terrain
+{
 
 bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMath::Polygon<2>& poly, int& layer)
 {
@@ -45,11 +47,11 @@ bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMat
 	}
 
 	Atlas::Message::MapType::const_iterator it = areaData.find("layer");
-	if ((it == areaData.end()) || !it->second.isInt()) {
-		S_LOG_FAILURE("malformed area attribute on entity, no layer data");
-		return false;
+	if ((it != areaData.end()) && it->second.isInt()) {
+		layer = it->second.asInt();
+	} else {
+		layer = 0;
 	}
-	layer = it->second.asInt();
 
 	return true;
 }
@@ -57,15 +59,16 @@ bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMat
 const Atlas::Message::Element TerrainAreaParser::createElement(const WFMath::Polygon<2>& poly, int layer)
 {
 	Atlas::Message::Element map(poly.toAtlas());
-	if (map.isMap()) {
-		map.asMap()["layer"] = layer;
-	} else {
-		S_LOG_WARNING("A polygon should be serialized into a map.");
+	if (layer != 0) {
+		if (map.isMap()) {
+			map.asMap()["layer"] = layer;
+		} else {
+			S_LOG_WARNING("A polygon should be serialized into a map.");
+		}
 	}
 	return map;
 
 }
-
 
 }
 

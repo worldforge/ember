@@ -377,6 +377,8 @@ EntityEditor = {
 				wrapper.container = guiManager:createWindow("DefaultGUISheet")
 				wrapper.adapter = EntityEditor.factory:createAreaAdapter(wrapper.container, EntityEditor.instance.entity:getId(), element, EntityEditor.instance.entity)
 				
+				wrapper.adapter:addAreaSuggestion(0, "none")
+				
 				--fill the area adapter with suggested areas, which we get from the terrain layer definitions
 				local layerDefinitions = EmberOgre.Terrain.TerrainLayerDefinitionManager:getSingleton():getDefinitions()
 				for index,value in layerDefinitions:ipairs() do

@@ -118,7 +118,7 @@ void AreaAdapter::fillElementFromGui()
 		Terrain::TerrainAreaParser parser;
 		mEditedElement = parser.createElement(mPolygonAdapter->getShape(), mLayer);
 	} else {
-		if (mEditedElement.isMap()) {
+		if (mEditedElement.isMap() && mLayer) {
 			mEditedElement.asMap()["layer"] = mLayer;
 		}
 	}
