@@ -363,7 +363,7 @@ namespace Ogre
         // got called which could be disastrous
 	    // so check for init
         assert(mPageManager);
-        if (isRenderQueueToBeProcessed(mPageManager->getPageRenderQueue()))
+        if (cam == mOptions->primaryCamera && isRenderQueueToBeProcessed(mPageManager->getPageRenderQueue()))
         {
 	        if (mWorldGeomIsInit)
             {
