@@ -76,8 +76,18 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& mo
 	// 		direction = direction * 5;
 	// 	}
 
+	Quaternion orientation = Convert::toWF(EmberOgre::getSingleton().getMainCamera()->getOrientation());
+
+	//We need to constraint the orientation to only around the z axis.
+	WFMath::Vector<3> rotator(1.0, 0.0, 0.0);
+	rotator.rotate(orientation);
+	WFMath::Quaternion adjustedOrientation;
+	adjustedOrientation.fromRotMatrix(WFMath::RotMatrix<3>().rotationZ(atan2(rotator.y(), rotator.x())));
+
+	orientation = adjustedOrientation;
+
 	///move it relative to the camera
-	direction = direction.rotate(Convert::toWF(EmberOgre::getSingleton().getMainCamera()->getOrientation()));
+	direction = direction.rotate(orientation);
 
 	getBridge()->move(direction);//move the entity a fixed distance for each mouse movement.
 
