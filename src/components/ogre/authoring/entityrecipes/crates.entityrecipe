@@ -15,12 +15,12 @@
     <bindings>
     </bindings>
   </entityrecipe>
-  <entityrecipe name="open crate">
+  <entityrecipe name="crate open">
     <author>Erik Hjortsberg</author>
     <description>
       An open crate.
     </description>
-    <entity type="open_crate">
+    <entity type="crate_open">
       <atlas>
         <map>
         </map>

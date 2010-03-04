@@ -448,6 +448,16 @@
 	<autoentitymapping name="don_jon" modelname="cg_don_jon" />
 	<autoentitymapping name="gateway" modelname="cg_gateway" />
 	<autoentitymapping name="keep" />
+	
+	<autoentitymapping name="concrete_stairs" />
+	<autoentitymapping name="castle_house_ruin" modelname="cg_house_ruin" />
+	<autoentitymapping name="castle_house_a" modelname="cg_house_A" />
+	<autoentitymapping name="castle_house_b" modelname="cg_house_B" />
+	<autoentitymapping name="castle_house_c" modelname="cg_houseC" />
+	<autoentitymapping name="castle_house_d" modelname="cg_house_D" />
+	<autoentitymapping name="castle_don_jon" modelname="cg_don_jon" />
+	<autoentitymapping name="castle_inn" modelname="cg_inn" />
+	<autoentitymapping name="castle_smithy" modelname="cg_smithy" />
 	<entitymapping name="castle_house">
 		<entitymatch>
 			<case>
