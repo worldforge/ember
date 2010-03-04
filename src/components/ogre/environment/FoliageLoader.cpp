@@ -69,19 +69,13 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 	if (mLatestPlantsResult) {
 		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
 		for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
-			float height = 0;
-			Ogre::Vector3 pos(I->position.x, I->position.y, I->position.z);
-
-			float scale = Ogre::Math::RangeRandom(mMinScale, mMaxScale);
+			const PlantInstance& plantInstance(*I);
+			Ogre::Vector3 pos(plantInstance.position.x, plantInstance.position.y, plantInstance.position.z);
 			//			pos2D.x = pos.x;
 			//			pos2D.y = pos.z;
 			// 			TerrainManager->getShadowColourAt(pos2D, colour);
 
-			//Get rotation
-			Ogre::Degree angle(Ogre::Math::RangeRandom(0, 360.0f));
-			Ogre::Quaternion rot(angle, Ogre::Vector3::UNIT_Y);
-
-			addEntity(mEntity, pos, rot, Ogre::Vector3(scale, scale, scale), colour);
+			addEntity(mEntity, pos, Ogre::Quaternion(Ogre::Degree(plantInstance.orientation), Ogre::Vector3::UNIT_Y), Ogre::Vector3(plantInstance.scale.x, plantInstance.scale.y, plantInstance.scale.x), colour);
 		}
 	} else {
 		unsigned char threshold(100);
