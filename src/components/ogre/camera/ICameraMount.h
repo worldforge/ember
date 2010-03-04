@@ -37,6 +37,7 @@ class MainCamera;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
  * @brief A mount for a camera.
  *
  * The camera mount is responsible for handling how the camera is moved and rotated. This is independent from the MainCamera class to allow for many different styles of camera attachment. The most obvious ones would be a third person camera mount, and a first person mount.
