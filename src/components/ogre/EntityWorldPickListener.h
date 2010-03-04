@@ -37,7 +37,8 @@ namespace EmberOgre
 class EmberEntity;
 class EntityWorldPickListener;
 /**
- * Struct used for returning the result of a mouse pick.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Struct used for returning the result of a mouse pick.
  */
 struct EntityPickResult
 {
@@ -48,7 +49,8 @@ struct EntityPickResult
 };
 
 /**
- Visualizes the picking operation by placing a large ball at the picked position.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Visualizes the picking operation by placing a large ball at the picked position.
  */
 class EntityWorldPickListenerVisualizer: public virtual sigc::trackable
 {
@@ -63,7 +65,10 @@ private:
 };
 
 /**
- @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Listens for mouse picking of entities in the world.
+ *
+ * An instance of this is used to allow for picking of entities and terrain in the world.
  */
 class EntityWorldPickListener: public IWorldPickListener, public Ember::ConsoleObject
 {

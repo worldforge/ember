@@ -187,9 +187,9 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 				S_LOG_WARNING("Should be only one adapter without calling function.");
 			}
 		} else {
-			LuaScriptingCallContext callContext;
+			Ember::Lua::LuaScriptingCallContext callContext;
 
-			lua_State* L = static_cast<LuaScriptingProvider*> (Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider"))->getLuaState();
+			lua_State* L = static_cast<Ember::Lua::LuaScriptingProvider*> (Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider"))->getLuaState();
 
 			// Pushing function params
 			std::vector<std::string>& adapters = I->second->getAdapters();

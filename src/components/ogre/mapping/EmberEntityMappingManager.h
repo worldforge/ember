@@ -33,6 +33,9 @@
 
 namespace EmberOgre {
 
+/**
+ * @brief Namespace for the EmberOgre specific integration with the Entity Mapping framework.
+ */
 namespace Mapping {
 
 

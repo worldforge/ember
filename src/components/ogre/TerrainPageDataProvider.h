@@ -31,6 +31,9 @@ class TerrainPage;
 class ITerrainPageBridge;
 }
 
+/**
+ * @brief Page data as provided by the Mercator based terrain system.
+ */
 class TerrainPageData : public IPageData
 {
 public:
@@ -42,6 +45,9 @@ private:
 
 };
 
+/**
+ * @brief Provides terrain data from the Mercator based terrain system.
+ */
 class TerrainPageDataProvider : public IPageDataProvider
 {
 public:

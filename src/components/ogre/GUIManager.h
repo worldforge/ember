@@ -106,7 +106,7 @@ public:
 	sigc::signal<void, float> EventFrameStarted;
 
 	/**
-	 *    @brief Emits an action for a certain entity.
+	 * @brief Emits an action for a certain entity.
 	 *    An action could be something like "touch" or "inspect". This is a rather undefined mechanism for easily letting different parts of the gui interact and react on common entity actions.
 	 * @param action The name of the action.
 	 * @param entity The entity for which we want to perform a certain action.
@@ -133,7 +133,7 @@ public:
 	bool frameStarted(const Ogre::FrameEvent& evt);
 
 	/**
-	 *    @brief Gets the root sheet of the CEGUI windowing system.
+	 * @brief Gets the root sheet of the CEGUI windowing system.
 	 * @return
 	 */
 	CEGUI::Window* getMainSheet() const;

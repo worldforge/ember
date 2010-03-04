@@ -25,7 +25,7 @@
 
 #include "framework/Service.h"
 
-///include the EmberServices here, since you always need that anyway whenever you need to access the service
+//include the EmberServices here, since you always need that anyway whenever you need to access the service
 #include "../EmberServices.h"
 
 #ifdef __WIN32__

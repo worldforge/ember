@@ -57,6 +57,9 @@ class EmberEntity;
 class ShaderManager;
 class ILightning;
 
+/**
+ * @brief Namespace for all terrain related classes and activities.
+ */
 namespace Terrain {
 
 class TerrainShader;
@@ -289,7 +292,7 @@ public:
 	sigc::signal<void, TerrainPage&> EventTerrainPageGeometryUpdated;
 
 	/**
-	 *    @brief Whether the foliage should be shown or not.
+	 * @brief Whether the foliage should be shown or not.
 	 *    @note If the GPU doesn't support the required shaders, this will return false even though it's set in the config.
 	 * @return
 	 */
@@ -442,7 +445,7 @@ protected:
 	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
 	/**
-	 *    @brief Iterates through all TerrainPages and shows or hides the foliage.
+	 * @brief Iterates through all TerrainPages and shows or hides the foliage.
 	 */
 	void updateFoliageVisibility();
 

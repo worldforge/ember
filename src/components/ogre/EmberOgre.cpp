@@ -724,7 +724,7 @@ void EmberOgre::Application_ServicesInitialized()
 
 	Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 	if (provider != 0) {
-		LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
+		Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
 		LuaConnector::setState(luaScriptProvider->getLuaState());
 	}
 

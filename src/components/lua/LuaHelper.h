@@ -31,23 +31,32 @@ extern "C" {
 #include "lua.h"
 }
 
-namespace EmberOgre {
+namespace Ember {
 
-
+namespace Lua {
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Helper functions for Lua scripting.
+ */
 class LuaHelper{
 public:
+	/**
+	 * @brief Handles lua error by printing out a stracktrace.
+	 * @param L The lua state.
+	 */
 	static int luaErrorHandler(lua_State *L);
 
 	/**
-	pushes the lua method onto the stack
-	*/
+	 * @brief Pushes the lua method onto the stack.
+	 * @param state The lua state.
+	 * @param luaMethod A lua method name.
+	 */
 	static void pushNamedFunction(lua_State* state, const std::string luaMethod);
 
 };
+
+}
 
 }
 

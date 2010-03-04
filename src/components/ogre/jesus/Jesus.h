@@ -195,9 +195,8 @@ protected:
 inline const Carpenter::AttachPoint* AttachPointNode::getAttachPoint() const { return mAttachPoint;}
 
 /**
-
-A mapping between a Carpenter::BuildingBlock and an Ember::Model.
-*/
+ * @brief A mapping between a Carpenter::BuildingBlock and an Ember::Model.
+ */
 class ModelBlock
 {
 public:
@@ -231,8 +230,8 @@ inline Construction* ModelBlock::getConstruction() const { return mConstruction;
 
 
 /**
-	Mapping between a Carpenter block type and a Ember Model.
-*/
+ * @brief Mapping between a Carpenter block type and a Ember Model.
+ */
 struct EntityMapping
 {
 
@@ -242,10 +241,8 @@ public:
 };
 
 /**
-
-An Ember representation of a BluePrint.
-
-*/
+ * @brief An Ember representation of a BluePrint.
+ */
 class Construction
 {
 public:

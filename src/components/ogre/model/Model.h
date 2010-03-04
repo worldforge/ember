@@ -29,6 +29,10 @@
 
 namespace EmberOgre
 {
+
+/**
+ * @brief Namespace for Models, which is the main aggregate object used for representing entities in the world.
+ */
 namespace Model
 {
 

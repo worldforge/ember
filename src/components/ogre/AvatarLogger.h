@@ -37,7 +37,9 @@ class Avatar;
 class EmberEntity;
 
 /**
-	Handles logging of ingame events such as chat to a file. The file will be created when an instance of this is created and the connection will be severed at its destruction.
+	@brief Handles logging of ingame events such as chat to a file.
+
+	The file will be created when an instance of this is created and the connection will be severed at its destruction.
 	The log file will be located in the directory returned by a call to ConfigService::getHomeDirectory()
 
 	@author Sean Ryan <sryan@evercrack.com>
@@ -69,7 +71,8 @@ protected:
 };
 
 /**
-Handles the creation of an instance of AvatarLogger.
+@brief Handles the creation of an instance of AvatarLogger.
+
 Since the AvatarLogger is dependent on an actual EmberEntity instance it can't be created until such an instance exists in the system. This class will take care of delaying the creation until it's suitable.
 You can create an instance of this anytime.
 */

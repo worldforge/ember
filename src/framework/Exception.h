@@ -87,7 +87,7 @@ public:
 	virtual ~Exception() throw();
  
 	/**
-	*    @brief Gets a descriptive string of the exception.
+	* @brief Gets a descriptive string of the exception.
 	* @see what()
 	* @return A description of the error.
 	*/

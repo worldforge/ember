@@ -82,7 +82,7 @@ void ConnectorBase::connect(int luaMethod)
 
 void ConnectorBase::pushNamedFunction(lua_State* state)
 {
-	LuaHelper::pushNamedFunction(state, mLuaMethod);
+	Lua::LuaHelper::pushNamedFunction(state, mLuaMethod);
 }
 
 //template<> void ConnectorBase::callLuaMethod(std::string t0, std::string t1, Empty t2, Empty t3);
@@ -114,7 +114,7 @@ template<typename Treturn, typename T0, typename T1, typename T2, typename T3> T
 		///push our error handling method before calling the code
 		int error_index = lua_gettop(state) - numberOfArguments;
 #if LUA51
-		lua_pushcfunction(state, LuaHelper::luaErrorHandler);
+		lua_pushcfunction(state, Ember::Lua::LuaHelper::luaErrorHandler);
 #else
 		lua_pushliteral(state, "_TRACEBACK");
 		lua_rawget(state, LUA_GLOBALSINDEX); /* get traceback function */

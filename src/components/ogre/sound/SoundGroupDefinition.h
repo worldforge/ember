@@ -32,9 +32,8 @@ namespace EmberOgre
 class SoundDefinition;
 
 /**
-* The SoundGroupDefinition class describes a set
-* of sound samples (SoundDefinitions)
-*/
+ * @brief Describes a set of sound samples (SoundDefinitions).
+ */
 class SoundGroupDefinition
 {
 public:

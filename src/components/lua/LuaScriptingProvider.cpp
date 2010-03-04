@@ -46,7 +46,9 @@ extern "C" {
 
 
 
-namespace EmberOgre {
+namespace Ember {
+
+namespace Lua {
 
 LuaScriptingProvider::LuaScriptingProvider()
 : mService(0), mErrorHandlingFunctionName("")
@@ -366,6 +368,6 @@ void LuaScriptingProvider::forceGC()
 // }
 
 
-
+}
 
 }

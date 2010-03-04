@@ -25,8 +25,8 @@
 namespace EmberOgre 
 {
 /**
-* The SoundDefinition class represent each buffer described inside specific sound groups.
-*/
+ * @brief Represent each buffer described inside specific sound groups.
+ */
 class SoundDefinition
 {
 

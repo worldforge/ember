@@ -48,7 +48,10 @@ class View;
 namespace Ember {
 
 
-
+/**
+ * @brief Namespace for entity mapping, which is the main way entities are mapped to graphical representation.
+ * The mapping framework is a rule based engine which evaluates entities and their attributes to determine what action should be taken for presenting the entity to the user.
+ */
 namespace EntityMapping {
 
 namespace Cases {

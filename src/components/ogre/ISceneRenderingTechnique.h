@@ -27,6 +27,7 @@ class EmberEntity;
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A technique for rending an entity in a scene.
+ *
  * The main method for rending entities in a scene is as a Model, but for some entities we want to use alternate rending methods (imposters for example).
  */
 class ISceneRenderingTechnique

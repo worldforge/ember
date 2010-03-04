@@ -35,6 +35,10 @@ Utility define for binding CEGUI elements to methods.
 
 
 class GUIManager;
+
+/**
+ * @brief Namespace for any GUI related classes or activity.
+ */
 namespace Gui {
 
 class WidgetLoader;

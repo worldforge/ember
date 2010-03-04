@@ -217,6 +217,7 @@ inline const WorldEmberEntity::WorldPosition& WorldEmberEntity::getWorldPosition
 
 /**
  @brief Allows for a delayed initialization of the foliage.
+
  The initialization will occrur when either the sight queue is empty, or a certain time has elapsed.
  The main reason for doing this is that whenever a new area is added to the world, the foliage is invalidated and reloaded.
  As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.

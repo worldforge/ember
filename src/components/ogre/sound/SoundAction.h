@@ -33,11 +33,8 @@ namespace EmberOgre
 class SoundGroup;
 class SoundEntity;
 /**
-* SoundAction class is responsible for handling
-* actions (defined in modeldef). It contain
-* references for sound groups defined within
-* the action
-*/
+ * @brief Responsible for handling actions (defined in modeldef). It contain references for sound groups defined within the action.
+ */
 class SoundAction : public Ember::ISoundMotionProvider
 {
 public:
@@ -46,7 +43,7 @@ public:
 	virtual ~SoundAction();
 
 	/**
-	* Register a group within this action.
+	* @brief Register a group within this action.
 	* When you ask a group to be registered, an
 	* instance of the group type (defined by its name)
 	* will be added to the mGroups map.
@@ -57,7 +54,7 @@ public:
 	SoundGroup* setGroup(const std::string& name);
 
 	/**
-	* Return a pointer to a sound group from its name
+	* @brief Return a pointer to a sound group from its name
 	*
 	* @param name Group Name
 	* @return A pointer to the group, if it doesnt exists, returns NULL
@@ -65,12 +62,12 @@ public:
 	SoundGroup* getGroup();
 
 	/**
-	* Play this action groups, usually called from the SoundEntity class
+	* @brief Play this action groups, usually called from the SoundEntity class
 	*/
 	void play();
 
 	/**
-	* Stop all groups playing in this action
+	* @brief Stop all groups playing in this action
 	*/
 	void stop();
 	

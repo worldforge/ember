@@ -84,7 +84,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 
 /// @file
 
-/** @mainpage
+/** @page CaelumMain Caelum API Documentation
  *
  *  %Caelum is an Ogre add-on for atmospheric rendering. It is composed of a
  *  number of small mostly self-contained components and a big

@@ -29,10 +29,12 @@ struct lua_State;
 
 namespace Ember
 {
-	class ScriptingService;
-}
+class ScriptingService;
 
-namespace EmberOgre {
+/**
+ * @brief Namespace for bindings to the Lua scripting environment.
+ */
+namespace Lua {
 
 class LuaScriptingCallContext;
 
@@ -52,13 +54,13 @@ public:
     virtual ~LuaScriptingProvider();
 
 	/**
-	 *    @brief Loads the script from the wrapper.
+	 * @brief Loads the script from the wrapper.
 	 * @param resourceWrapper A resource wrapper pointing to a valid resource which can be loaded. This should contain a text file with the script contents.
 	 */
 	virtual void loadScript(Ember::ResourceWrapper& resWrapper);
 
 	/**
-	 *    @brief Executes the supplied string directly into the scripting environment.
+	 * @brief Executes the supplied string directly into the scripting environment.
 	 * Optionally a pointer to a scripting call context can be submitted too, which will then be populated with return values and other scripting environment specific info.
 	 * @param scriptCode The code to excute.
 	 * @param callContext An optional pointer to a scripting call context. This will be populated with return values and other info. If you don't have any need for such info, leave this empty.
@@ -95,14 +97,14 @@ public:
 
 
 	/**
-	 *    @brief Stops the lua environment, which mainly means that all objects are destroyed.
+	 * @brief Stops the lua environment, which mainly means that all objects are destroyed.
 	 * Call this before this object is destroyed to make sure that all held objects and references are properly released. If not, there's a risk of dangling pointers.
 	 */
 	virtual void stop();
 
 
 	/**
-	 *    @brief Gets the current lua state.
+	 * @brief Gets the current lua state.
 	 * This will always return a valid lua virtual machine, but note that if @see stop() already has been called it will porbably be in an invalid state.
 	 * @return The current lua environment.
 	 */
@@ -121,7 +123,7 @@ public:
 private:
 
 	/**
-	 *    @brief Executes the supplied script code.
+	 * @brief Executes the supplied script code.
 	 * @param scriptCode The code to execute.
 	 * @param luaCallContext An optional lua call context, which if present will contain any return values.
 	 * @param scriptName The name of the script, mainly used for debugging purpose.
@@ -161,6 +163,8 @@ private:
 	std::string mErrorHandlingFunctionName;
 
 };
+
+}
 
 }
 

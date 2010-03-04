@@ -35,7 +35,11 @@
 #include <vector>
 #include <map>
 
- namespace Carpenter {
+/**
+ * @brief Namespace for the Carpenter system
+ * Carpenter is a system for allow easy construction of building and structures from prefabs. These prefabs have "attachment points" defined, which are then used to glue multiple prefabs together. One can very much liken it to how Lego is used.
+ */
+namespace Carpenter {
 
 /**
 @author Erik Hjortsberg

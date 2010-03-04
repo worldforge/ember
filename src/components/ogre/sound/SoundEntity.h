@@ -31,6 +31,7 @@ class SoundAction;
 class EmberEntity;
 /**
 * @brief Represents an ingame EmberEntity instance, providing sound bindings and making sure that the correct sound is played for actions and movements.
+*
 * Not all ingame entities have sounds attached to them, but for those that do, an instance of this class is responsible for making sure that the correct sounds are played for the correct action.
 * Normally you only need to create an instance of this and it will take care of everything itself.
 * The only thing that needs extra input is whenever the movement mode is changed, at which point playMovementSound() should be called.

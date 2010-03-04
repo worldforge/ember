@@ -69,11 +69,10 @@ public:
 };
 
 /**
- * This class holds the Avatar. In general it recieves instructions from mainly
- * MovementController to attempt to move or rotate the avatar. After checking
- * with the world rules if such a thing is allowed, the world node is manipulated.
- * If it's a movement it has to be animated.
+ * @brief Represents the avatar used by the client on the server.
  *
+ * In general it receives instructions from mainly an instance of MovementController to attempt to move or rotate the avatar.
+ * This class is also responsible for making sure that the client local representation of the avatar is kept up to date with the server side representation. This can involve some client side prediction with regards to movement.
  */
 class Avatar: public sigc::trackable, public Ember::ConfigListenerContainer, public Ember::ConsoleObject
 {
@@ -110,10 +109,8 @@ public:
 	EmberEntity& getEmberEntity();
 
 	/**
-	 * @brief Sets the minimum interval to wait before sending new rotation changes to the server.
-	 *    this is not done instantly to prevent swamping of data to the server
-	 *    set this lower if you experience too jerky game play
-	 * @param milliseconds
+	 * @brief Sets the minimum interval to wait before sending new rotation changes to the server. This is not done instantly to prevent swamping of data to the server. Set this lower if you experience too jerky game play
+	 * @param milliseconds The amount of milliseconds to wait between sending rotation updates to the server.
 	 */
 	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
 
@@ -266,21 +263,19 @@ protected:
 	bool mIsMovingServerOnly;
 
 	/**
-	 * This method will determine if it's ok to send a small movement change, such as
-	 * a small deviation direction during an already begun movement to the server.
+	 * @brief This method will determine if it's ok to send a small movement change, such as a small deviation direction during an already begun movement to the server.
 	 */
 	bool isOkayToSendRotationMovementChangeToServer();
 
 	/**
 	 * @brief Attempts to move the avatar in a certain direction.
 	 * Note that depending on what the rules allows (i.e. collision detection, character rules etc.) the outcome of the attempt is uncertain.
-	 *
 	 */
 	void attemptMove();
 
 	/**
 	 * @brief Listen for location changes, since after a location change we need to honour the onMoved updates even if we're in movement mode.
-	 * @param entity
+	 * @param entity The new parent entity.
 	 */
 	void avatar_LocationChanged(Eris::Entity* entity);
 

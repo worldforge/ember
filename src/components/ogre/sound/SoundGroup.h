@@ -37,6 +37,7 @@ class SoundDefinition;
 /**
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 @brief Provides sound binding functionality for a SoundGroup.
+
 What makes this differ a little from normal sound binding is that the sound group is made up of many different sounds. If all sounds are static there's no problem, as the sound buffers then can be queued as they are. If however any sample is streaming it becomes a little more complex, since we then must update the buffers etc. as long as we're playing the streaming sample.
 */
 class SoundGroupBinding
@@ -67,9 +68,7 @@ protected:
 };
 
 /**
-* The class SoundGroup is responsible to keep
-* sound buffers together and play them in a determinated
-* way (specified in the sounddefs)
+* @brief Responsible to keep sound buffers together and play them in a determinated way (specified in the sounddefs).
 */
 class SoundGroup
 {

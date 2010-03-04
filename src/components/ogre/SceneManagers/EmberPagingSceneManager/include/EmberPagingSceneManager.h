@@ -39,6 +39,9 @@ namespace Model {
 class Model;
 }
 
+/**
+ * @brief Page data for one page in the terrain rendering system.
+ */
 class IPageData
 {
 public:
@@ -48,6 +51,9 @@ public:
 };
 
 
+/**
+ * @brief Provies IPageData instances for the terrain rendering system.
+ */
 class IPageDataProvider
 {
 public:

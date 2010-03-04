@@ -35,6 +35,10 @@ namespace Terrain
 class TerrainManager;
 }
 
+/**
+ * @brief Namespace for environemnt related classes and activities.
+ * With "environment" we refer to things like the weather, the ocean, the foliage etc.
+ */
 namespace Environment {
 
 class Forest;
@@ -103,6 +107,11 @@ public:
 	virtual bool setUserObject(Ogre::UserDefinedObject *obj) = 0;
 };
 
+/**
+ * @brief An interface for environment providers.
+ *
+ * An implementation of this is expected to be able to supply the instances which make up the environment.
+ */
 class IEnvironmentProvider
 {
 public:
@@ -129,11 +138,24 @@ public:
 };
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief Represents the environment.
+ *
+ * The environment is made up of a sun, a sky, water, a forest and foliage handler and fog.
+ *
+ * Note that the actual instances used are provided by an instance of IEnvironmentProvider.
+ */
 class Environment : public Ember::ConsoleObject
 {
 public:
+
+	/**
+	 * @brief Ctor.
+	 * @param terrainManager The main terrain manager.
+	 * @param provider Main environment provider.
+	 * @param fallbackProvider A fallback provider which is used if the main provider for some reason fails to create the environment (if for instance the hardware doesn't support it).
+	 */
     Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
 
     ~Environment();
@@ -176,7 +198,8 @@ public:
 
 
    	/**
-	* emitted when the world ambient light is changed
+	* @brief Emitted when the world ambient light is changed.
+	* The first param is the new colour value of the ambient light.
 	*/
 	sigc::signal<void, const Ogre::ColourValue&> EventUpdatedAmbientLight;
 
@@ -184,11 +207,6 @@ private:
 
 	IEnvironmentProvider* mProvider, *mFallbackProvider;
 	Forest* mForest;
-// 	ISun* mSun;
-// 	ISky* mSky;
-// 	IFog* mFog;
-// 	IWater* mWater;
-
 };
 
 inline ISun* Environment::getSun()

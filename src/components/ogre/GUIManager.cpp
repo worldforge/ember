@@ -123,7 +123,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, Ogre::SceneManager* sceneMgr)
 
 		Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
-			LuaScriptingProvider* luaScriptProvider = static_cast<LuaScriptingProvider*>(provider);
+			Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
 			mLuaScriptModule = new LuaScriptModule(luaScriptProvider->getLuaState());
 			if (luaScriptProvider->getErrorHandlingFunctionName().size() != 0) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());

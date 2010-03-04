@@ -32,6 +32,7 @@ namespace EmberOgre
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Utility class providing entity deletion observation functionality.
+ *
  * Often features in the client needs to attach to entities. However, all entities can at any time be deleted, and this requires that these features provide functionality for listening to deletion signals and acting accordingly, often cleaning up.
  * By inheriting from this class such features can simplify the setup needed for detecting entity deletions. At entity deletion time, the method cleanup() will be called automatically.
  * Depending on whether mDeleteOurselvesWhenDone is true of false the instance can then take care of deleting itself.

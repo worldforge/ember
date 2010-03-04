@@ -33,7 +33,7 @@ class EmberEntity;
 class Scene;
 
 /**
- * @briefShow a certain Model.
+ * @brief Show a certain Model.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
 class EmberEntityModelAction: public Ember::EntityMapping::Actions::Action

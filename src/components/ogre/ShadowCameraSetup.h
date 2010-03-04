@@ -30,6 +30,7 @@ namespace EmberOgre {
 
 /**
 @brief This takes care of the setup of the pssm shadow camera.
+
 Apart from setting up the camera it also listens for changes to the varconf settings dealing with the shadows and update the shadow settings accordingly.
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>

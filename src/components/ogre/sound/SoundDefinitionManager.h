@@ -35,8 +35,9 @@ namespace EmberOgre {
 class SoundGroupDefinition;
 class XMLSoundDefParser;
 /**
-	@author Romulo Fernandes <abra185@gmail.com>
-*/
+ * @author Romulo Fernandes <abra185@gmail.com>
+ * @brief Handles all sound definitions.
+ */
 class SoundDefinitionManager : public Ogre::ResourceManager, public Ember::Singleton<SoundDefinitionManager>
 {
 public:

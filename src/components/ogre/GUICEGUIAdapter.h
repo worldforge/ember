@@ -43,10 +43,10 @@ namespace EmberOgre {
 TYPEDEF_STL_MAP(SDLKey, CEGUI::Key::Scan, SDLKeyMap);
 
 /**
-@author Erik Hjortsberg
-
-Provides an adapter between the input system and CEGUI.
-*/
+ * @author Erik Hjortsberg
+ *
+ * @brief Provides an adapter between the input system and CEGUI.
+ */
 class GUICEGUIAdapter : public Ember::IInputAdapter {
 public:
 

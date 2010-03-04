@@ -62,6 +62,9 @@ class ICameraMotionHandler;
 struct MousePickerArgs;
 class AvatarTerrainCursor;
 
+/**
+ * @brief Namespace for all camera related classes and activities.
+ */
 namespace Camera
 {
 class ICameraMount;

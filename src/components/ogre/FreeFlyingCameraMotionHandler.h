@@ -24,6 +24,11 @@
 
 namespace EmberOgre {
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A motion handler for a free flying camera.
+ * The handler is attached to an Ogre::SceneNode which is moved without constraints.
+ */
 class FreeFlyingCameraMotionHandler : public ICameraMotionHandler
 {
 public:

@@ -26,7 +26,9 @@
 
 #include "LuaScriptingCallContext.h"
 
-namespace EmberOgre {
+namespace Ember {
+
+namespace Lua {
 
 LuaScriptingCallContext::LuaScriptingCallContext() : mReturnValue(0)
 {
@@ -37,5 +39,6 @@ LuaScriptingCallContext::~LuaScriptingCallContext()
 	delete mReturnValue;
 }
 
+}
 
 }

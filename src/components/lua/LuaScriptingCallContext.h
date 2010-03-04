@@ -26,13 +26,16 @@
 #include "luaobject.h"
 #include "framework/IScriptingProvider.h"
 
-namespace EmberOgre {
+namespace Ember {
+
+namespace Lua {
 
 /**
-@brief A scripting call context for lua scripts.
-Whenever you want to be able to inspect return values from calling lua scripts, you should use an instance of this class and submit it when calling executeCode(...).
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ * @brief A scripting call context for lua scripts.
+ *
+ * Whenever you want to be able to inspect return values from calling lua scripts, you should use an instance of this class and submit it when calling executeCode(...).
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class LuaScriptingCallContext : public Ember::IScriptingCallContext
 {
 friend class LuaScriptingProvider;
@@ -66,6 +69,8 @@ inline void LuaScriptingCallContext::setReturnValue(LuaRef* returnValue)
 inline LuaRef LuaScriptingCallContext::getReturnValue()
 {
 	return *mReturnValue;
+}
+
 }
 
 }

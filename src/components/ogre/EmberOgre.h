@@ -56,6 +56,13 @@ namespace OgreOpcode
 class CollisionManager;
 }
 
+/**
+ * @brief Namespace for all classes and functions which interact with Ogre to present the world to the user.
+ *
+ * In reality that means that this is the single largest namespace in Ember, and as a result of that is further divided into sub-namespaces.
+ * @note While a more natural name for this namespace would be Ember::Ogre, such a naming would be to cumbersome as it would clash with the Ogre namespace.
+ *
+ */
 namespace EmberOgre
 {
 

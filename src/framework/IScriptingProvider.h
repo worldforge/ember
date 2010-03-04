@@ -75,13 +75,13 @@ public:
 	virtual ~IScriptingProvider(){}
 	
 	/**
-	 *    @brief Loads the script from the wrapper.
+	 * @brief Loads the script from the wrapper.
 	 * @param resourceWrapper A resource wrapper pointing to a valid resource which can be loaded. This should contain a text file with the script contents.
 	 */
 	virtual void loadScript(ResourceWrapper& resourceWrapper) = 0;
 	
 	/**
-	 *    @brief Executes the supplied string directly into the scripting environment.
+	 * @brief Executes the supplied string directly into the scripting environment.
 	 * Optionally a pointer to a scripting call context can be submitted too, which will then be populated with return values and other scripting environment specific info.
 	 * @param scriptCode The code to excute.
 	 * @param callContext An optional pointer to a scripting call context. This will be populated with return values and other info. If you don't have any need for such info, leave this empty.

@@ -329,7 +329,7 @@ void Application::initializeServices()
 	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
 
 	///register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
-	EmberOgre::LuaScriptingProvider* luaProvider = new EmberOgre::LuaScriptingProvider();
+	Lua::LuaScriptingProvider* luaProvider = new Lua::LuaScriptingProvider();
 
 	tolua_Framework_open(luaProvider->getLuaState());
 	tolua_EmberOgre_open(luaProvider->getLuaState());

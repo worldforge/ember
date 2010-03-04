@@ -35,8 +35,9 @@ class EmberEntity;
 class Scene;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Creates actions specific to the EmberOgre environment.
+ */
 class EmberEntityActionCreator : public Ember::EntityMapping::IActionCreator
 {
 public:

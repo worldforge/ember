@@ -28,6 +28,9 @@
 namespace Ember
 {
 
+/**
+ * @brief Namespace for tasks, which is a mechanism for better separate and field data for threading purposes.
+ */
 namespace Tasks
 {
 

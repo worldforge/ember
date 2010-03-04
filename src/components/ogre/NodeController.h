@@ -32,6 +32,7 @@ class IEntityControlDelegate;
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Handles the position and orientation updates of a NodeAttachment.
+ *
  * This functionality is separated from the NodeAttachment so that it will be possible to intercept and alter it, as is the case when a player controls one of the entities.
  * In normal behavior, all position and orientation updates are fetched from the entity to which the attachment is attached.
  * This class is however expected to be extended with a subclass which provides other behavior.

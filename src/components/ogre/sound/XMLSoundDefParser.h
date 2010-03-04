@@ -27,6 +27,9 @@ namespace EmberOgre {
 class SoundGroupDefinition;
 class SoundDefinitionManager;
 
+/**
+ * @brief Parses sound definitions from xml files.
+ */
 class XMLSoundDefParser
 {
 public:

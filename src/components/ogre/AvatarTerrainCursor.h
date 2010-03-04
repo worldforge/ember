@@ -34,14 +34,16 @@
 namespace EmberOgre {
 
 	/**
-	Provides an easy way to get the terrain position currently under the cursor. An instance of this is usually held only by the AvatarCamera.
-	The class will take care of checking when either the mouse or camera has moved, and won't do a new ray check until any of those two has changed. This helps with keeping the performance up. It's therefore ok to call getTerrainCursorPosition every frame.
-
-	If the mouse position has been updated a new ray check will always be executed, but if only the camera has been moved the update of the ray check will only happen after a certain interval, which can be set through setThreshold(unsigned int).
-
-	@author Sean Ryan <sean@evercrack.com>
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-	*/
+	 * @brief Provides an easy way to get the terrain position currently under the cursor.
+	 *
+	 * An instance of this is usually held only by the AvatarCamera.
+	 * The class will take care of checking when either the mouse or camera has moved, and won't do a new ray check until any of those two has changed. This helps with keeping the performance up. It's therefore ok to call getTerrainCursorPosition every frame.
+	 *
+	 * If the mouse position has been updated a new ray check will always be executed, but if only the camera has been moved the update of the ray check will only happen after a certain interval, which can be set through setThreshold(unsigned int).
+	 *
+	 * @author Sean Ryan <sean@evercrack.com>
+	 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+	 */
 	class AvatarTerrainCursor : public sigc::trackable, Ember::ConfigListenerContainer
 	{
 	public:

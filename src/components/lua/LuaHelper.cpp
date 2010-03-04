@@ -29,8 +29,8 @@
 #include <vector>
 #include <sstream>
 
-namespace EmberOgre {
-
+namespace Ember {
+namespace Lua {
 
 int LuaHelper::luaErrorHandler(lua_State *L) {
 #if LUA_VERSION_NUM >= 501
@@ -127,6 +127,8 @@ void LuaHelper::pushNamedFunction(lua_State* state, const std::string luaMethod)
 	{
 		throw Ember::Exception( "\"" + luaMethod + "\" does not represent a Lua function" );
 	}
+}
+
 }
 
 }

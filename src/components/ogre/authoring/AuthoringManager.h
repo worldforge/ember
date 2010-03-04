@@ -42,6 +42,11 @@ class ConfigListenerContainer;
 namespace EmberOgre
 {
 class EmberEntity;
+
+/**
+ * @brief Namespace for authoring classes and activities.
+ * Any class or mechanism which deals with how to alter the world should go in here.
+ */
 namespace Authoring
 {
 

@@ -54,10 +54,10 @@ class EntityMoveManager;
 }
 
 /**
- * Creates the EmberEntities required.
+ * @brief Creates the EmberEntities required.
+ *
  * Basically this attaches to Eris and creates Entites on demand.
  * @see Eris::Factory
- *
  */
 class EmberEntityFactory: public Eris::Factory, public sigc::trackable, public Ember::ConsoleObject
 {
