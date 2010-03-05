@@ -43,7 +43,7 @@ class Simple : public Base
 {
 public:
 
-	Simple(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
+	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
 
     virtual bool prepareMaterial();
     virtual bool compileMaterial(Ogre::MaterialPtr material);

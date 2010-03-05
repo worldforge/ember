@@ -50,7 +50,7 @@ void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Ember::Tasks:
 {
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
 		(*J)->repopulate();
-		TerrainPageSurfaceCompilationInstance* compilationInstance = (*J)->getPage().getSurface()->createSurfaceCompilationInstance(**J);
+		TerrainPageSurfaceCompilationInstance* compilationInstance = (*J)->getPage().getSurface()->createSurfaceCompilationInstance(*J);
 		compilationInstance->prepare();
 		mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &(*J)->getPage()));
 	}

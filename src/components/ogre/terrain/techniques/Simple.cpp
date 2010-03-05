@@ -45,8 +45,8 @@ namespace Terrain
 namespace Techniques
 {
 
-Simple::Simple(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) :
-	Base::Base(geometry, terrainPageSurfaces, terrainPageShadow, page)
+Simple::Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
+	Base::Base(geometry, terrainPageSurfaces, terrainPageShadow)
 {
 
 }
@@ -70,8 +70,8 @@ bool Simple::compileMaterial(Ogre::MaterialPtr material)
 			textureUnitState->setTextureName(surfaceLayer->getDiffuseTextureName());
 			textureUnitState->setTextureCoordSet(0);
 		} else {
-			if (surfaceLayer->intersects(mGeometry)) {
-				addPassToTechnique(mGeometry, technique, surfaceLayer);
+			if (surfaceLayer->intersects(*mGeometry)) {
+				addPassToTechnique(*mGeometry, technique, surfaceLayer);
 			}
 		}
 	}

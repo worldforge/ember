@@ -51,9 +51,9 @@ TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 {
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) const
+TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
 {
-	return new TerrainPageSurfaceCompilationInstance(selectTechnique(geometry, terrainPageSurfaces, terrainPageShadow, page));
+	return new TerrainPageSurfaceCompilationInstance(selectTechnique(geometry, terrainPageSurfaces, terrainPageShadow));
 
 }
 
@@ -80,7 +80,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompila
 //	mTechnique->compileMaterial(geometry, material, terrainPageSurfaces, terrainPageShadow);
 //}
 
-TerrainPageSurfaceCompilerTechnique* TerrainPageSurfaceCompiler::selectTechnique(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) const
+TerrainPageSurfaceCompilerTechnique* TerrainPageSurfaceCompiler::selectTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
 {
 	std::string preferredTech("");
 	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("terrain", "preferredtechnique")) {
@@ -99,18 +99,18 @@ TerrainPageSurfaceCompilerTechnique* TerrainPageSurfaceCompiler::selectTechnique
 
 	if (preferredTech == "ShaderNormalMapped" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		///Use normal mapped shader tech with shadows
-		return new Techniques::ShaderNormalMapped(true, geometry, terrainPageSurfaces, terrainPageShadow, page);
+		return new Techniques::ShaderNormalMapped(true, geometry, terrainPageSurfaces, terrainPageShadow);
 	} else if (preferredTech == "ShaderNormalMapped" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 		///Use normal mapped shader tech without shadows
-		return new Techniques::ShaderNormalMapped(false, geometry, terrainPageSurfaces, terrainPageShadow, page);
+		return new Techniques::ShaderNormalMapped(false, geometry, terrainPageSurfaces, terrainPageShadow);
 	} else if (preferredTech == "Shader" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		///Use shader tech with shadows
-		return new Techniques::Shader(true, geometry, terrainPageSurfaces, terrainPageShadow, page);
+		return new Techniques::Shader(true, geometry, terrainPageSurfaces, terrainPageShadow);
 	} else if (preferredTech == "Shader" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 		///Use shader tech without shadows
-		return new Techniques::Shader(false, geometry, terrainPageSurfaces, terrainPageShadow, page);
+		return new Techniques::Shader(false, geometry, terrainPageSurfaces, terrainPageShadow);
 	} else {
-		return new Techniques::Simple(geometry, terrainPageSurfaces, terrainPageShadow, page);
+		return new Techniques::Simple(geometry, terrainPageSurfaces, terrainPageShadow);
 	}
 	//
 

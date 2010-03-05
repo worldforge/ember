@@ -32,8 +32,8 @@ namespace Terrain
 namespace Techniques
 {
 
-ShaderNormalMapped::ShaderNormalMapped(bool includeShadows, const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) :
-	Shader::Shader(includeShadows, geometry, terrainPageSurfaces, terrainPageShadow, page)
+ShaderNormalMapped::ShaderNormalMapped(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
+	Shader::Shader(includeShadows, geometry, terrainPageSurfaces, terrainPageShadow)
 {
 }
 

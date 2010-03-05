@@ -38,7 +38,7 @@ public:
 	 * @brief Ctor.
 	 * @param includeShadows If true, shadows will be used.
 	 */
-	ShaderNormalMapped(bool includeShadows, const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
+	ShaderNormalMapped(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
 protected:
 	virtual ShaderPass* addPass();
 

@@ -17,6 +17,8 @@
  */
 
 #include "Base.h"
+#include "components/ogre/terrain/TerrainPageGeometry.h"
+#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {
@@ -27,8 +29,8 @@ namespace Terrain
 namespace Techniques
 {
 
-Base::Base(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page)
-: mGeometry(geometry), mTerrainPageSurfaces(terrainPageSurfaces), mTerrainPageShadow(terrainPageShadow), mPage(page)
+Base::Base(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow)
+: mGeometry(geometry), mTerrainPageSurfaces(terrainPageSurfaces), mTerrainPageShadow(terrainPageShadow), mPage(geometry->getPage())
 {
 }
 

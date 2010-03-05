@@ -34,12 +34,17 @@ namespace Techniques
 class Base : public TerrainPageSurfaceCompilerTechnique
 {
 public:
-	Base(const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
+	Base(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
 	virtual ~Base();
 protected:
-	const TerrainPageGeometry& mGeometry;
+	TerrainPageGeometryPtr mGeometry;
 	const SurfaceLayerStore mTerrainPageSurfaces;
 	const TerrainPageShadow* mTerrainPageShadow;
+
+	/**
+	 * @brief The affected page.
+	 * @note This can be obtained through mGeometry, but we'll keep a copy for the case that the mGeometry pointer is cleared.
+	 */
 	const TerrainPage& mPage;
 
 };

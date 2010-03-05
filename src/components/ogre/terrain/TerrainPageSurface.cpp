@@ -99,7 +99,7 @@ const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 	return mMaterial;
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometry& geometry) const
+TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const
 {
 	//The compiler only works with const surfaces, so we need to create such a copy of our surface map.
 	SurfaceLayerStore constLayers;
@@ -107,7 +107,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 		constLayers.insert(SurfaceLayerStore::value_type(I->first, I->second));
 	}
 	//TODO: Add shadow
-	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, 0, mTerrainPage);
+	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, 0);
 }
 
 TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader)

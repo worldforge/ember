@@ -22,6 +22,8 @@
 #include <OgrePass.h>
 #include <OgreTechnique.h>
 
+#include <boost/shared_ptr.hpp>
+
 namespace EmberOgre
 {
 
@@ -31,8 +33,8 @@ namespace Terrain
 namespace Techniques
 {
 
-Shader::Shader(bool includeShadows, const TerrainPageGeometry& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page) :
-	mIncludeShadows(includeShadows), Base::Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow, page)
+Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
+	mIncludeShadows(includeShadows), Base::Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow)
 {
 }
 
@@ -69,8 +71,8 @@ bool Shader::prepareMaterial()
 				if (I == mTerrainPageSurfaces.begin()) {
 					shaderPass->setBaseLayer(surfaceLayer);
 				} else {
-					if (surfaceLayer->intersects(mGeometry)) {
-						shaderPass->addLayer(mGeometry, surfaceLayer);
+					if (surfaceLayer->intersects(*mGeometry)) {
+						shaderPass->addLayer(*mGeometry, surfaceLayer);
 					}
 				}
 			} else {
@@ -78,6 +80,8 @@ bool Shader::prepareMaterial()
 			}
 		}
 	}
+	//We don't need the geometry any more, so we'll release it as soon as we can.
+	mGeometry.reset();
 }
 
 bool Shader::compileMaterial(Ogre::MaterialPtr material)

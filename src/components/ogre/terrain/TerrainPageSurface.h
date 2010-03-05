@@ -24,7 +24,7 @@
 #define EMBEROGRETERRAINPAGESURFACE_H
 
 #include "../EmberOgrePrerequisites.h"
-#include "../Types.h"
+#include "Types.h"
 #include "TerrainPage.h"
 #include <OgreMaterial.h>
 
@@ -80,7 +80,7 @@ public:
 	 * @brief Recompiles the material.
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
 	 */
-	TerrainPageSurfaceCompilationInstance* createSurfaceCompilationInstance(const TerrainPageGeometry& geometry) const;
+	TerrainPageSurfaceCompilationInstance* createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const;
 
 
 	const TerrainPageSurfaceLayerStore& getLayers() const;

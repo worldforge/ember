@@ -44,7 +44,7 @@ public:
      * @brief Ctor.
      * @param includeShadows If true, shadows will be used.
      */
-	Shader(bool includeShadows, const TerrainPageGeometry& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
+	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
     virtual ~Shader();
 
     virtual bool prepareMaterial();
