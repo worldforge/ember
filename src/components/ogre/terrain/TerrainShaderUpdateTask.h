@@ -55,10 +55,9 @@ public:
 	 * @param geometry The geometry which needs the surfaces updated.
 	 * @param shader The shader which for each page will be be applied.
 	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
-	 * @param updateAll Whether all pages should be updated. Setting this to true will make the system skip checking the areas sent.
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
 	 */
-	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
+	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
 	virtual ~TerrainShaderUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -78,14 +77,9 @@ private:
 	const TerrainShader* mShader;
 
 	/**
-	 * @brief An optional collection of areas. If mUpdateAll is set to false, only the pages affected by the areas will be updated.
+	 * @brief Only the pages affected by the areas will be updated.
 	 */
 	const AreaStore mAreas;
-
-	/**
-	 * @brief If set to true, all pages will be updated, never checking whether any pages are affected by areas.
-	 */
-	const bool mUpdateAll;
 
 	/**
 	 * @brief A signal to emit once the update is done.

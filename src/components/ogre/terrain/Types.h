@@ -89,11 +89,6 @@ namespace EmberOgre {
 			 * Unless UpdateAll is true, this should be used for determining what geometry needs updating.
 			 */
 			AreaStore Areas;
-
-			/**
-			 * @brief If this is set to true, all geometry should be updated, no matter what areas are specified in Areas.
-			 */
-			bool UpdateAll;
 		};
 
 		typedef boost::shared_ptr<SegmentReference> SegmentRefPtr;

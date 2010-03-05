@@ -350,7 +350,7 @@ bool TerrainManager::frameEnded(const Ogre::FrameEvent & evt)
 		}
 		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
 		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
-			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, I->second.UpdateAll, EventLayerUpdated), 0);
+			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, EventLayerUpdated), 0);
 		}
 		mShadersToUpdate.clear();
 	}
@@ -612,9 +612,14 @@ void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 	for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
 		geometry.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight())));
 	}
+
+	//Update all pages
+	AreaStore areas;
+	areas.push_back(mTerrainInfo->getWorldSizeInIndices());
+
 	//Update all shaders on all pages
 	for (ShaderStore::const_iterator I = mShaderMap.begin(); I != mShaderMap.end(); ++I) {
-		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, AreaStore(), true, EventLayerUpdated), 0);
+		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, areas, EventLayerUpdated), 0);
 	}
 }
 

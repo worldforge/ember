@@ -34,8 +34,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, bool updateAll, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
-	mGeometry(geometry), mShader(shader), mAreas(areas), mUpdateAll(updateAll), mSignal(signal)
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
+	mGeometry(geometry), mShader(shader), mAreas(areas), mSignal(signal)
 {
 
 }
@@ -47,31 +47,20 @@ TerrainShaderUpdateTask::~TerrainShaderUpdateTask()
 void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
 	GeometryPtrVector updatedPages;
-	///We should either update all pages at once, or only those pages that intersect or contains the areas that have been changed
-	if (mUpdateAll) {
-		for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
-			TerrainPageGeometryPtr geometry = *J;
-			TerrainPage& page = geometry->getPage();
+	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
+		TerrainPageGeometryPtr geometry = *J;
+		TerrainPage& page = geometry->getPage();
+		bool shouldUpdate = false;
+		for (AreaStore::const_iterator K = mAreas.begin(); K != mAreas.end(); ++K) {
+			if (WFMath::Intersect(page.getWorldExtent(), *K, true) || WFMath::Contains(page.getWorldExtent(), *K, true)) {
+				shouldUpdate = true;
+				break;
+			}
+		}
+		if (shouldUpdate) {
 			///repopulate the layer
 			page.updateShaderTexture(mShader, *geometry, true);
-			updatedPages.push_back((*J));
-		}
-	} else {
-		for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
-			TerrainPageGeometryPtr geometry = *J;
-			TerrainPage& page = geometry->getPage();
-			bool shouldUpdate = false;
-			for (AreaStore::const_iterator K = mAreas.begin(); K != mAreas.end(); ++K) {
-				if (WFMath::Intersect(page.getWorldExtent(), *K, true) || WFMath::Contains(page.getWorldExtent(), *K, true)) {
-					shouldUpdate = true;
-					break;
-				}
-			}
-			if (shouldUpdate) {
-				///repopulate the layer
-				page.updateShaderTexture(mShader, *geometry, true);
-				updatedPages.push_back(geometry);
-			}
+			updatedPages.push_back(geometry);
 		}
 	}
 

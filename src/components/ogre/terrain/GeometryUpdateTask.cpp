@@ -57,7 +57,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 		}
 		affectedAreas.push_back(geometry->getPage().getWorldExtent());
 		for (ShaderStore::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
-			context.executeTask(new TerrainShaderUpdateTask(mGeometry, I->second, affectedAreas, true, mManager.EventLayerUpdated));
+			context.executeTask(new TerrainShaderUpdateTask(mGeometry, I->second, affectedAreas, mManager.EventLayerUpdated));
 		}
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
