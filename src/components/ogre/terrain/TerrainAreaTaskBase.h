@@ -28,6 +28,10 @@ namespace Mercator {
 	class Area;
 
 }
+
+namespace WFMath {
+	template <int> class AxisBox;
+}
 namespace EmberOgre
 {
 
@@ -44,7 +48,7 @@ class TerrainShader;
 class TerrainAreaTaskBase: public Ember::Tasks::TemplateNamedTask<TerrainAreaTaskBase>
 {
 public:
-	typedef sigc::slot<void, const TerrainShader*, Mercator::Area*> ShaderUpdateSlotType;
+	typedef sigc::slot<void, const TerrainShader*, const WFMath::AxisBox<2>&> ShaderUpdateSlotType;
 
 	TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType shaderUpdateSlot);
 	virtual ~TerrainAreaTaskBase();

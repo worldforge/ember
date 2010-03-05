@@ -65,7 +65,7 @@ void TerrainAreaAddTask::executeTaskInMainThread()
 		if (mAreaShaders.count(mArea->getLayer())) {
 			///mark the shader for update
 			///we'll not update immediately, we try to batch many area updates and then only update once per frame
-			mShaderUpdateSlot(mAreaShaders[mArea->getLayer()], mArea);
+			mShaderUpdateSlot(mAreaShaders[mArea->getLayer()], mArea->bbox());
 		}
 	}
 }

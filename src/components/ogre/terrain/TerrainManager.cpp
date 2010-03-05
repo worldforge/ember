@@ -285,12 +285,13 @@ void TerrainManager::TerrainArea_Changed(TerrainArea* terrainArea)
 	AreaMap::const_iterator I = mAreas.find(terrainArea->getEntityId());
 	if (I != mAreas.end()) {
 		Mercator::Area* area = I->second;
+		WFMath::AxisBox<2> oldShape = area->bbox();
 		area->setShape(terrainArea->getArea()->shape());
 		const TerrainShader* shader = 0;
 		if (mAreaShaders.count(area->getLayer())) {
 			shader = mAreaShaders[area->getLayer()];
 		}
-		mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, area, sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), shader));
+		mTaskQueue->enqueueTask(new TerrainAreaUpdateTask(*mTerrain, area, sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), shader, oldShape));
 
 	}
 }
@@ -325,15 +326,11 @@ void TerrainManager::TerrainArea_Swapped(Mercator::Area& oldArea, TerrainArea* t
 		mTaskQueue->enqueueTask(new TerrainAreaAddTask(*mTerrain, newArea, sigc::mem_fun(*this, &TerrainManager::markShaderForUpdate), *this, TerrainLayerDefinitionManager::getSingleton(), mAreaShaders, mAreas, terrainArea->getEntityId()));
 	}
 }
-void TerrainManager::markShaderForUpdate(const TerrainShader* shader, Mercator::Area* terrainArea)
+void TerrainManager::markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea)
 {
 	if (shader) {
 		ShaderUpdateRequest& updateRequest = mShadersToUpdate[shader];
-		if (terrainArea) {
-			updateRequest.Areas.push_back(terrainArea->bbox());
-		} else {
-			updateRequest.UpdateAll = true;
-		}
+		updateRequest.Areas.push_back(affectedArea);
 	}
 }
 

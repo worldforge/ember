@@ -20,6 +20,9 @@
 #define EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_
 #include "TerrainAreaTaskBase.h"
 
+#include <wfmath/point.h>
+#include <wfmath/axisbox.h>
+
 namespace EmberOgre
 {
 
@@ -41,8 +44,9 @@ public:
 	 * @param area The terrain area which is updated.
 	 * @param shader The affected shader.
 	 * @param markForUpdateSlot A slot which will be called in the main thread when the update is complete.
+	 * @param oldShape The old shape, before the update.
 	 */
-	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader);
+	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, const WFMath::AxisBox<2>& oldShape);
 	virtual ~TerrainAreaUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -55,6 +59,8 @@ private:
 	 * @brief The terrain shader affected.
 	 */
 	const TerrainShader* mShader;
+
+	const WFMath::AxisBox<2> mOldShape;
 
 };
 

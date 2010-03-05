@@ -436,9 +436,9 @@ protected:
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
 	 * For performance reasons we want to batch together multiple request for shader updates, so we can do them all at once, normally on frameEnded(). By calling this method the supplied shader will be marked for updating.
 	 * @param shader The shader to update.
-	 * @param terrainArea If an area is specified here, only pages touched by the area will be updated.
+	 * @param affectedArea The area affected.
 	 */
-	void markShaderForUpdate(const TerrainShader* shader,  Mercator::Area* terrainArea = 0);
+	void markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea);
 
 	void loadTerrainOptions();
 
