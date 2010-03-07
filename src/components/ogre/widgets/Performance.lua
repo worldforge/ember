@@ -11,11 +11,19 @@ function Performance.buildWidget()
 	
 --	EmberOgre::getSingleton().EventStartErisPoll.connect(sigc::mem_fun(*this, &Performance::startErisPolling));
 --	EmberOgre::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &Performance::endErisPolling));
+
+	connect(Performance.connectors, emberOgre.EventTerrainManagerCreated, "Performance.terrainManagerCreated")
+	
+	
 	
 	
 	Performance.widget:registerConsoleVisibilityToggleCommand("performance")
 	Performance.widget:enableCloseButton()
 	Performance.widget:hide()
+end
+
+function Performance.terrainManagerCreated(terrainManager)
+	Performance.terrainManager = terrainManager
 end
 
 function Performance.framestarted(timeSinceLastFrame)
@@ -33,6 +41,10 @@ function Performance.framestarted(timeSinceLastFrame)
 		statString = statString .. "\nAnimated: " .. motionInfo.AnimatedEntities
 		statString = statString .. "\nMoving: " .. motionInfo.MovingEntities
 		--ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n"
+		
+		if Performance.terrainManager ~= nil then
+			statString = statString .. "\n" .. Performance.terrainManager:getAdapter():getDebugInfo()
+		end
 	
 		Performance.mainText:setText(statString)
 	end

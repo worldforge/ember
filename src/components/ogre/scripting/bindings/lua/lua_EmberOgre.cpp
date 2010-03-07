@@ -15,6 +15,7 @@ TOLUA_API int  tolua_EmberOgre_open (lua_State* tolua_S);
 
 #include "required.h"
 #include "components/ogre/IGraphicalRepresentation.h"
+#include "components/ogre/terrain/ISceneManagerAdapter.h"
 #include "components/ogre/terrain/TerrainEditorOverlay.h"
 #include "components/ogre/terrain/TerrainEditor.h"
 #include "components/ogre/widgets/AssetsManager.h"
@@ -3447,6 +3448,38 @@ static int tolua_EmberOgre_EmberOgre_Terrain_TerrainLayerDefinition_getTileSize0
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getDebugInfo of class  EmberOgre::Terrain::ISceneManagerAdapter */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_ISceneManagerAdapter_getDebugInfo00
+static int tolua_EmberOgre_EmberOgre_Terrain_ISceneManagerAdapter_getDebugInfo00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Terrain::ISceneManagerAdapter",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Terrain::ISceneManagerAdapter* self = (EmberOgre::Terrain::ISceneManagerAdapter*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getDebugInfo'",NULL);
+#endif
+  {
+   std::string tolua_ret = (std::string)  self->getDebugInfo();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getDebugInfo'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getMax of class  EmberOgre::Terrain::TerrainManager */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainManager_getMax00
 static int tolua_EmberOgre_EmberOgre_Terrain_TerrainManager_getMax00(lua_State* tolua_S)
@@ -3630,6 +3663,38 @@ static int tolua_set_EmberOgre__Terrain__TerrainManager_EventTerrainPageGeometry
   self->EventTerrainPageGeometryUpdated = *((sigc::signal<void,EmberOgre::Terrain::TerrainPage&>*)  tolua_tousertype(tolua_S,2,0))
 ;
  return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getAdapter of class  EmberOgre::Terrain::TerrainManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Terrain_TerrainManager_getAdapter00
+static int tolua_EmberOgre_EmberOgre_Terrain_TerrainManager_getAdapter00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const EmberOgre::Terrain::TerrainManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const EmberOgre::Terrain::TerrainManager* self = (const EmberOgre::Terrain::TerrainManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAdapter'",NULL);
+#endif
+  {
+   EmberOgre::Terrain::ISceneManagerAdapter* tolua_ret = (EmberOgre::Terrain::ISceneManagerAdapter*)  self->getAdapter();
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::Terrain::ISceneManagerAdapter");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getAdapter'.",&tolua_err);
+ return 0;
+#endif
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -22158,6 +22223,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_endmodule(tolua_S);
     tolua_cclass(tolua_S,"ISceneManagerAdapter","EmberOgre::Terrain::ISceneManagerAdapter","",NULL);
     tolua_beginmodule(tolua_S,"ISceneManagerAdapter");
+     tolua_function(tolua_S,"getDebugInfo",tolua_EmberOgre_EmberOgre_Terrain_ISceneManagerAdapter_getDebugInfo00);
     tolua_endmodule(tolua_S);
     tolua_cclass(tolua_S,"TerrainManager","EmberOgre::Terrain::TerrainManager","",NULL);
     tolua_beginmodule(tolua_S,"TerrainManager");
@@ -22167,7 +22233,14 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"updateShadows",tolua_EmberOgre_EmberOgre_Terrain_TerrainManager_updateShadows00);
      tolua_variable(tolua_S,"UpdateShadows",tolua_get_EmberOgre__Terrain__TerrainManager_UpdateShadows,NULL);
      tolua_variable(tolua_S,"EventTerrainPageGeometryUpdated",tolua_get_EmberOgre__Terrain__TerrainManager_EventTerrainPageGeometryUpdated,tolua_set_EmberOgre__Terrain__TerrainManager_EventTerrainPageGeometryUpdated);
+     tolua_function(tolua_S,"getAdapter",tolua_EmberOgre_EmberOgre_Terrain_TerrainManager_getAdapter00);
     tolua_endmodule(tolua_S);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
+  tolua_module(tolua_S,"EmberOgre",0);
+  tolua_beginmodule(tolua_S,"EmberOgre");
+   tolua_module(tolua_S,"Terrain",0);
+   tolua_beginmodule(tolua_S,"Terrain");
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Mercator",0);

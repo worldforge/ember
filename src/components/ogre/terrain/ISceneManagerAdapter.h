@@ -46,14 +46,14 @@ public:
 	virtual ~ISceneManagerAdapter() {}
 
 	/**
-	 *    Gets the size of the width of one page, in indices (so it's often a power of two + 1)
+	 * @brief Gets the size of the width of one page, in indices (so it's often a power of two + 1)
 	 * @return 
 	 */
 	virtual int getPageSize() = 0;
 	
 	
 	/**
-	 *    Returns the height at the given position.
+	 * @brief Returns the height at the given position.
 	 * @param x The x position, in world coords.
 	 * @param z The y position, in world coords.
 	 * @return The height at the specified position.
@@ -61,7 +61,7 @@ public:
 	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z) = 0;
 	
 	/**
-	 *    Sets the new dimensions of the world, in pages. Since the underlying terrain engine often works with pages, it needs to know exactly how many to load.
+	 * @brief Sets the new dimensions of the world, in pages. Since the underlying terrain engine often works with pages, it needs to know exactly how many to load.
 	 * @param numberOfPagesHeight The total number of pages in Ogre x space.
 	 * @param numberOfPagesWidth The total number of pages in Ogre z space.
 	 * @param heightOffsetInPages How much the terrain should be offset in x space in order to get the terrain point 0 to align with the world 0.
@@ -70,40 +70,40 @@ public:
 	virtual void setWorldPagesDimensions(int numberOfPagesWidth, int numberOfPagesHeight, int widthOffsetInPages, int heightOffsetInPages) = 0;
 
 	/**
-	 *    Sets the main camera used.
+	 * @brief Sets the main camera used.
 	 * The terrain system needs to know where the main camera is in order to properly calculate proper LOD levels and similiar.
 	 * @param camera The main camera.
 	 */
 	virtual void setCamera(Ogre::Camera* camera) = 0;
 	/**
-	 *    Sets the name of the resource group from where the terrain engine should load its resources.
+	 * @brief Sets the name of the resource group from where the terrain engine should load its resources.
 	 * @param groupName The name of a resource group.
 	 */
 	virtual void setResourceGroupName(const std::string& groupName) = 0;
 	/**
-	 *    Loads terrain engine specific options from a file. This is specific for each terrain engine.
+	 * @brief Loads terrain engine specific options from a file. This is specific for each terrain engine.
 	 * @param filePath The absolute path to the file with the options.
 	 */
 	virtual void loadOptions(const std::string& filePath) = 0;
 	/**
-	 *    Sets the new dimensions of the world. Call this whenever the bounds of the world changes. It allows the terrain engine to update it's internal structures for better space partitioning and similiar things.
+	 * @brief Sets the new dimensions of the world. Call this whenever the bounds of the world changes. It allows the terrain engine to update it's internal structures for better space partitioning and similiar things.
 	 * @param newSize The new size of the world.
 	 * @param levels The number of levels for which to generate partitioning blocks. 16 should be a good number.
 	 */
 	virtual void resize(Ogre::AxisAlignedBox newSize, int levels) = 0;
 	/**
-	 *    Loads the whole scene. Call this when the terrain has been set up and you want to show it.
+	 * @brief Loads the whole scene. Call this when the terrain has been set up and you want to show it.
 	 */
 	virtual void loadScene() = 0;
 	
 	/**
-	 *    Sets an arbitrary option.
+	 * @brief Sets an arbitrary option.
 	 * @param strKey The key of the option to set.
 	 * @param pValue The value to set.
 	 */
 	virtual void setOption(const std::string& strKey, const void* pValue) = 0;
 	/**
-	 *    Gets an arbitrary option.
+	 * @brief Gets an arbitrary option.
 	 * @param strKey The key of the option to get.
 	 * @param pDestValue The value of the option.
 	 */
@@ -120,18 +120,18 @@ public:
 	virtual void setUninitializedHeight(float height) = 0;
 
 	/**
-	 *    Returns the scene manager instance that handles the terrain. This is most often a specialized subclass of Ogre::SceneManager.
+	 * @brief Returns the scene manager instance that handles the terrain. This is most often a specialized subclass of Ogre::SceneManager.
 	 * @return 
 	 */
 	virtual Ogre::SceneManager* getSceneManager() const = 0;
 	
 	/**
-	 *    Reloads all pages. This can be very expensive since it will do a full reload of all the terrain. In most instances you don't want to do this and instead just want to reload a page.
+	 * @brief Reloads all pages. This can be very expensive since it will do a full reload of all the terrain. In most instances you don't want to do this and instead just want to reload a page.
 	 * @see reloadPage
 	 */
 	virtual void reloadAllPages() = 0;
 	/**
-	 *    Reloads a single page.
+	 * @brief Reloads a single page.
 	 * @param x The x index of the page.
 	 * @param z The z index of the page.
 	 */
@@ -139,10 +139,16 @@ public:
 	
 	
 	/**
-	 *    Force the loading of the first page. Call this just after the terrain has been set up to load the current page the camera is on. 
+	 * @brief Force the loading of the first page. Call this just after the terrain has been set up to load the current page the camera is on.
 	 This is to prevent an empty world as the pages are loaded.
 	 */
 	virtual void loadFirstPage() = 0;
+
+	/**
+	 * @brief Provide a short debug information string to be shown in game, for the benefit of the developer.
+	 * @return A short debug information string about the current situation of the scene manager.
+	 */
+	virtual std::string getDebugInfo() = 0;
 
 };
 }

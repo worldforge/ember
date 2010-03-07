@@ -76,6 +76,13 @@ public:
 	 * This often signals that a page is to be loaded and rendered.
 	 */
 	sigc::signal<void, EmberOgre::Terrain::TerrainPage&> EventTerrainPageGeometryUpdated;
+	
+	/**
+	 * @brief Gets the adapter used to bind this manager to a scene manager.
+	 * @return The adapter in use, or null if there is no one registered yet.
+	 */
+	EmberOgre::Terrain::ISceneManagerAdapter* getAdapter() const;
+	
 };
 
 }

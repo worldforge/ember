@@ -69,6 +69,9 @@ public:
 	
 	virtual void loadFirstPage();
 
+	virtual std::string getDebugInfo();
+
+
 private:
 	EmberPagingSceneManager* mSceneManager;
 	Ogre::PagingLandScapeOptions* getOptions();

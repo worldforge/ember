@@ -29,6 +29,8 @@
 #include "OgrePagingLandScapePage.h"
 #include "OgrePagingLandScapeData2DManager.h"
 #include "OgreMemoryAllocatorConfig.h"
+#include "OgrePagingLandScapeRenderableManager.h"
+#include "OgrePagingLandScapeTileManager.h"
 
 namespace EmberOgre {
 
@@ -190,5 +192,15 @@ namespace EmberOgre {
 			mSceneManager->getPageManager()->LoadFirstPage(mSceneManager->getOptions()->primaryCamera);
 		}
 	}
+
+	std::string EmberPagingSceneManagerAdapter::getDebugInfo()
+	{
+		std::stringstream ss;
+
+		Ogre::PagingLandScapeRenderableManager* renderableManager(mSceneManager->getRenderableManager());
+		ss << "Renderables: " << renderableManager->numRenderables() << "\nFree: " << renderableManager->numFree() << "\nLoading: " << renderableManager->numLoading() << "\nVisible: " << renderableManager->numVisibles() << "\nTiles: " << mSceneManager->getTileManager()->numTiles() << "\nFree tiles: " << mSceneManager->getTileManager()->numFree();
+		return ss.str();
+	}
+
 
 }
