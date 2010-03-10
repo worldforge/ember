@@ -1,0 +1,45 @@
+//
+// C++ Interface: ISceneManagerAdapter
+//
+// Description: 
+//
+//
+// Author: Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2006
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+$#include "components/ogre/terrain/ISceneManagerAdapter.h"
+
+
+namespace EmberOgre {
+namespace Terrain {
+
+
+/**
+Acts as a bridge between the Mercator terrain system and the Ogre terrain rendering engine. We don't want to directly interface with the terrain rendering system since we want to have the ability to replace or alter that, thus we use an instance of this whenever we need to interact directly to it.
+
+Thus, if you have a feature which requires some kind of interfacing with the terrain rendering system that's not currently available, this is where you put it (and then implement it in the concrete class which implements this interface).
+
+@author Erik Hjortsberg
+*/
+class ISceneManagerAdapter
+{
+public:
+
+	virtual std::string getDebugInfo();
+
+};
+}
+}
