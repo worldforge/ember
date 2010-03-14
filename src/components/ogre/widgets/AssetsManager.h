@@ -23,8 +23,9 @@
 #ifndef EMBEROGRE_GUIASSETSMANAGER_H
 #define EMBEROGRE_GUIASSETSMANAGER_H
 
+#include "TexturePair.h"
+
 #include <string>
-#include <OgreTexture.h>
 
 namespace CEGUI
 {
@@ -38,25 +39,7 @@ namespace EmberOgre {
 
 namespace Gui {
 
-class TexturePair
-{
-public:
-	TexturePair(Ogre::TexturePtr mOgreTexture, const CEGUI::Image* mTextureImage, CEGUI::Imageset* mTextureImageset);
-	TexturePair();
-	
-	Ogre::TexturePtr getOgreTexture() const;
-// 	CEGUI::Texture* getOgreCEGUITexture() const;
-	const CEGUI::Image* getTextureImage() const;
-	CEGUI::Imageset* getTextureImageset() const;
-	
-	bool hasData();
 
-protected:
-	Ogre::TexturePtr mOgreTexture;
-// 	CEGUI::Texture* mOgreCEGUITexture;
-	const CEGUI::Image* mTextureImage;
-	CEGUI::Imageset* mTextureImageset;
-};
 
 /**
 	@brief A helper class for the AssetManager, providing resource related methods.
@@ -101,6 +84,13 @@ public:
 	 * @return A string which is a representation of the material as defined in a .material file.
 	 */
 	std::string materialAsText(Ogre::MaterialPtr material);
+
+	/**
+	 * @brief Tries to resolve a file path to a local resource path.
+	 * @param filePath A fully qualified file path.
+	 * @returns A local resource path, if a match if found. Else the original file path.	 *
+	 */
+	std::string resolveResourceNameFromFilePath(const std::string& filePath);
 
 private:
 

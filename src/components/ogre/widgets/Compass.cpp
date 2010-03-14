@@ -26,17 +26,20 @@
 
 #include "Compass.h"
 
+#include "AssetsManager.h"
+
+#include "../EmberOgre.h"
+#include "../Avatar.h"
+#include "../terrain/Map.h"
+
+#include "framework/LoggingInstance.h"
+
 #include <Ogre.h>
 
 #include <CEGUIImageset.h>
 #include <CEGUIImage.h>
 #include <CEGUIRect.h>
 
-#include "../terrain/Map.h"
-
-#include "framework/LoggingInstance.h"
-#include "../EmberOgre.h"
-#include "../Avatar.h"
 
 using namespace EmberOgre::Terrain;
 

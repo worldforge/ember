@@ -39,18 +39,20 @@
 #include "framework/Exception.h"
 #include <OgreTextureManager.h>
 #include <OgreTexture.h>
+#include <OgreString.h>
 // #include <OgreBitwise.h>
 
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Gui {
+namespace Gui
+{
 
 AssetsManager::AssetsManager()
 {
-// 	createTextureImage();
+	// 	createTextureImage();
 }
-
 
 AssetsManager::~AssetsManager()
 {
@@ -58,12 +60,12 @@ AssetsManager::~AssetsManager()
 
 TexturePair AssetsManager::showTexture(const std::string textureName)
 {
-// 	if (!mOgreCEGUITexture) {
-// 		S_LOG_WARNING("You must first create a valid OgreCEGUITexture instance.");
-// 		return;
-// 	}
+	// 	if (!mOgreCEGUITexture) {
+	// 		S_LOG_WARNING("You must first create a valid OgreCEGUITexture instance.");
+	// 		return;
+	// 	}
 	if (Ogre::TextureManager::getSingleton().resourceExists(textureName)) {
-		Ogre::TexturePtr texturePtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(textureName));
+		Ogre::TexturePtr texturePtr = static_cast<Ogre::TexturePtr> (Ogre::TextureManager::getSingleton().getByName(textureName));
 		if (!texturePtr.isNull()) {
 			if (!texturePtr->isLoaded()) {
 				try {
@@ -73,24 +75,23 @@ TexturePair AssetsManager::showTexture(const std::string textureName)
 					return TexturePair();
 				}
 			}
-			std::string textureName (texturePtr->getName());
+			std::string textureName(texturePtr->getName());
 			std::string imageSetName(textureName + "_AssetsManager");
 
 			return createTextureImage(texturePtr, imageSetName);
-// 			mOgreCEGUITexture->setOgreTexture(texturePtr);
+			// 			mOgreCEGUITexture->setOgreTexture(texturePtr);
 		}
 	}
 	return TexturePair();
 
 }
 
-
 TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const std::string& imageSetName)
 {
-// 	if (mOgreCEGUITexture) {
-// 		GUIManager::getSingleton().getGuiRenderer()->destroyTexture(mOgreCEGUITexture);
-// 		mOgreCEGUITexture = 0;
-// 	}
+	// 	if (mOgreCEGUITexture) {
+	// 		GUIManager::getSingleton().getGuiRenderer()->destroyTexture(mOgreCEGUITexture);
+	// 		mOgreCEGUITexture = 0;
+	// 	}
 
 
 	CEGUI::Imageset* textureImageset;
@@ -104,10 +105,10 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 
 		///we need a imageset in order to create GUI elements from the ceguiTexture
 		S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName);
-		textureImageset = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName , ogreCEGUITexture);
+		textureImageset = CEGUI::ImagesetManager::getSingleton().createImageset(imageSetName, ogreCEGUITexture);
 
 		///we only want one element: the whole texture
-		textureImageset->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0,0));
+		textureImageset->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0, 0));
 	}
 	///assign our image element to the StaticImage widget
 	const CEGUI::Image* textureImage = &textureImageset->getImage("full_image");
@@ -126,53 +127,23 @@ std::string AssetsManager::materialAsText(Ogre::MaterialPtr material)
 	return serializer.getQueuedAsString();
 }
 
+std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& filePath)
+{
+	const std::multimap<std::string, std::string>& locations = EmberOgre::getSingleton().getResourceLocations();
+
+	for (std::multimap<std::string, std::string>::const_iterator I = locations.begin(); I != locations.end(); ++I) {
+		const std::string resourceLocation = I->second;
+		if (Ogre::StringUtil::startsWith(filePath, resourceLocation, true)) {
+			return filePath.substr(resourceLocation.length(), std::string::npos);
+		}
+	}
+	return filePath;
+}
 
 // bool AssetsManager::exportTexture(Ogre::TexturePtr texturePtr)
 // {
 //  getRenderTarget()->writeContentsToFile();
 // }
-
-
-TexturePair::TexturePair(Ogre::TexturePtr ogreTexture, const CEGUI::Image* textureImage, CEGUI::Imageset* textureImageset)
-: mOgreTexture(ogreTexture)
-// , mOgreCEGUITexture(ogreCEGUITexture)
-, mTextureImage(textureImage)
-, mTextureImageset(textureImageset)
-{
-}
-
-TexturePair::TexturePair()
-: mOgreTexture(0)
-// , mOgreCEGUITexture(0)
-, mTextureImage(0)
-, mTextureImageset(0)
-{
-}
-
-Ogre::TexturePtr TexturePair::getOgreTexture() const
-{
-	return mOgreTexture;
-}
-
-// CEGUI::Texture* TexturePair::getOgreCEGUITexture() const
-// {
-// 	return OgreCEGUITexture;
-// }
-
-const CEGUI::Image* TexturePair::getTextureImage() const
-{
-	return mTextureImage;
-}
-
-CEGUI::Imageset* TexturePair::getTextureImageset() const
-{
-	return mTextureImageset;
-}
-
-bool TexturePair::hasData()
-{
-	return mTextureImageset != 0;
-}
 
 
 }

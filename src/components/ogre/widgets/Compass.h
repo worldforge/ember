@@ -23,8 +23,8 @@
 #ifndef EMBEROGRE_GUICOMPASS_H
 #define EMBEROGRE_GUICOMPASS_H
 
+#include "TexturePair.h"
 #include <memory>
-#include "AssetsManager.h"
 #include <OgreMaterial.h>
 #include <OgreFrameListener.h>
 #include <OgreMath.h>
