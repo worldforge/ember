@@ -102,16 +102,18 @@ bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 	static const std::string& sharedMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
 
 	bool foundDir = false;
+	std::string finalPath(sharedMediaPath + path);
 
-	S_LOG_INFO("Looking for " << sharedMediaPath + path);
-	if (isExistingDir(sharedMediaPath + path)) {
-		S_LOG_INFO("Adding dir " << sharedMediaPath + path);
+	S_LOG_INFO("Looking for " << finalPath);
+	if (isExistingDir(finalPath)) {
+		S_LOG_INFO("Adding dir " << finalPath);
 		try {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(sharedMediaPath + path, type, section, recursive);
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
 			foundDir = true;
+			mResourceLocations.insert(std::make_pair(section, finalPath));
 		} catch (const Ogre::Exception& ex) {
 			const std::string& message = ex.getFullDescription();
-			S_LOG_FAILURE("Couldn't load " + sharedMediaPath + path + ". Error: "<< message);
+			S_LOG_FAILURE("Couldn't load " + finalPath + ". Error: "<< message);
 		}
 	}
 
@@ -124,27 +126,31 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	static const std::string& emberMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberMediaDirectory();
 
 	bool foundDir = false;
+	std::string finalPath(userMediaPath + path);
 
-	S_LOG_VERBOSE("Looking for " << userMediaPath + path);
-	if (isExistingDir(userMediaPath + path)) {
-		S_LOG_VERBOSE("Adding dir " << userMediaPath + path);
+	S_LOG_VERBOSE("Looking for " << finalPath);
+	if (isExistingDir(finalPath)) {
+		S_LOG_VERBOSE("Adding dir " << finalPath);
 		try {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(userMediaPath + path, type, section, recursive);
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
 			foundDir = true;
+			mResourceLocations.insert(std::make_pair(section, finalPath));
 		} catch (const Ogre::Exception&) {
 			///don't report anything
 		}
 	}
 
 	///try with ember-media
-	S_LOG_VERBOSE("Looking for " << emberMediaPath + path);
-	if (isExistingDir(emberMediaPath + path)) {
-		S_LOG_VERBOSE("Adding dir " << emberMediaPath + path);
+	finalPath = emberMediaPath + path;
+	S_LOG_VERBOSE("Looking for " << finalPath);
+	if (isExistingDir(finalPath)) {
+		S_LOG_VERBOSE("Adding dir " << finalPath);
 		try {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(emberMediaPath + path, type, section, recursive);
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
 			foundDir = true;
+			mResourceLocations.insert(std::make_pair(section, finalPath));
 		} catch (const Ogre::Exception&) {
-			S_LOG_FAILURE("Couldn't load " + emberMediaPath + path + ". Continuing as if nothing happened.");
+			S_LOG_FAILURE("Couldn't load " + finalPath + ". Continuing as if nothing happened.");
 		}
 	}
 	return foundDir;
@@ -290,5 +296,11 @@ bool OgreResourceLoader::isExistingDir(const std::string& path) const
 	}
 	return exists;
 }
+
+const OgreResourceLoader::ResourceLocationsMap& OgreResourceLoader::getResourceLocations() const
+{
+	return mResourceLocations;
+}
+
 
 }

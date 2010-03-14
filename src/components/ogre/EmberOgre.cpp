@@ -735,4 +735,10 @@ Eris::View* EmberOgre::getMainView()
 	return Ember::Application::getSingleton().getMainView();
 }
 
+const std::multimap<std::string, std::string>& EmberOgre::getResourceLocations() const
+{
+	return mResourceLoader->getResourceLocations();
+}
+
+
 }

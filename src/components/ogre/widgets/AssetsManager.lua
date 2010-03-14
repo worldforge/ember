@@ -389,6 +389,7 @@ function AssetsManager.buildWidget()
 	if emberServices:getConfigService():itemExists("authoring", "loadmesh") then
 		local meshNameVar = emberServices:getConfigService():getValue("authoring", "loadmesh")
 		local meshName = meshNameVar:as_string()
+		meshName = AssetsManager.helper:resolveResourceNameFromFilePath(meshName)
 		AssetsManager.widget:show()
 		AssetsManager.controls.tabs:setSelectedTab("Meshes")
 		AssetsManager.showMesh(meshName)

@@ -333,6 +333,12 @@ public:
 
 	void raiseCreatedAvatarEntity(EmberEntity& entity);
 
+	/**
+	 * @brief Gets all resource locations.
+	 * @returns All resource locations defined. The keys are the resource groups and the values the locations.
+	 */
+	const std::multimap<std::string, std::string>& getResourceLocations() const;
+
 protected:
 
 	/**

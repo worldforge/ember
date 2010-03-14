@@ -7438,6 +7438,41 @@ static int tolua_EmberOgre_EmberOgre_Gui_AssetsManager_materialAsText00(lua_Stat
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: resolveResourceNameFromFilePath of class  EmberOgre::Gui::AssetsManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_AssetsManager_resolveResourceNameFromFilePath00
+static int tolua_EmberOgre_EmberOgre_Gui_AssetsManager_resolveResourceNameFromFilePath00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::AssetsManager",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::AssetsManager* self = (EmberOgre::Gui::AssetsManager*)  tolua_tousertype(tolua_S,1,0);
+  const std::string filePath = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'resolveResourceNameFromFilePath'",NULL);
+#endif
+  {
+   std::string tolua_ret = (std::string)  self->resolveResourceNameFromFilePath(filePath);
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+   tolua_pushcppstring(tolua_S,(const char*)filePath);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'resolveResourceNameFromFilePath'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: serialize of class  EmberOgre::Gui::AtlasHelper */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_AtlasHelper_serialize00
 static int tolua_EmberOgre_EmberOgre_Gui_AtlasHelper_serialize00(lua_State* tolua_S)
@@ -22417,6 +22452,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
      tolua_function(tolua_S,"showTexture",tolua_EmberOgre_EmberOgre_Gui_AssetsManager_showTexture00);
      tolua_function(tolua_S,"createTextureImage",tolua_EmberOgre_EmberOgre_Gui_AssetsManager_createTextureImage00);
      tolua_function(tolua_S,"materialAsText",tolua_EmberOgre_EmberOgre_Gui_AssetsManager_materialAsText00);
+     tolua_function(tolua_S,"resolveResourceNameFromFilePath",tolua_EmberOgre_EmberOgre_Gui_AssetsManager_resolveResourceNameFromFilePath00);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);

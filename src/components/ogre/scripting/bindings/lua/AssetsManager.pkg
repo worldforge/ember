@@ -87,6 +87,13 @@ public:
 	 */
 	std::string materialAsText(Ogre::MaterialPtr material);
 
+	/**
+	 * @brief Tries to resolve a file path to a local resource path.
+	 * @param filePath A fully qualified file path.
+	 * @returns A local resource path, if a match if found. Else the original file path.	 * 
+	 */
+	std::string resolveResourceNameFromFilePath(const std::string& filePath);
+
 };
 
 }
