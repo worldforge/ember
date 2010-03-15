@@ -31,8 +31,6 @@
 #include "../terrain/PlantAreaQuery.h"
 #include "../terrain/PlantAreaQueryResult.h"
 #include "../terrain/TerrainManager.h"
-#include "../terrain/TerrainPageFoliage.h"
-#include "../terrain/TerrainPage.h"
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/PlantInstance.h"
 #include "framework/LoggingInstance.h"
@@ -78,11 +76,7 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 			addEntity(mEntity, pos, Ogre::Quaternion(Ogre::Degree(plantInstance.orientation), Ogre::Vector3::UNIT_Y), Ogre::Vector3(plantInstance.scale.x, plantInstance.scale.y, plantInstance.scale.x), colour);
 		}
 	} else {
-		unsigned char threshold(100);
-		if (mFoliageDefinition.getParameter("threshold") != "") {
-			threshold = static_cast<unsigned char> (atoi(mFoliageDefinition.getParameter("threshold").c_str()));
-		}
-		PlantAreaQuery query(mTerrainLayerDefinition, threshold, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
+		PlantAreaQuery query(mTerrainLayerDefinition, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLoader::plantQueryExecuted);
 
 		mTerrainManager.getPlantsForArea(query, slot);

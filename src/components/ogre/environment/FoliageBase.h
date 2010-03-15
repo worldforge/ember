@@ -79,6 +79,8 @@ public:
 	 */
 	virtual ~FoliageBase();
 	
+	void reloadAtPosition(const WFMath::Point<2>& worldPosition);
+
 	virtual void initialize() = 0;
 
 	virtual void frameStarted(const Ogre::FrameEvent & evt) = 0;

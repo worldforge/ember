@@ -39,6 +39,7 @@
 #include "../terrain/TerrainLayerDefinitionManager.h"
 
 #include "pagedgeometry/include/PagedGeometry.h"
+#include <wfmath/point.h>
 
 using namespace EmberOgre::Terrain;
 
@@ -136,6 +137,14 @@ void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<TerrainPos
 		}
 	}
 }
+
+void FoliageBase::reloadAtPosition(const WFMath::Point<2>& worldPosition)
+{
+	if (mPagedGeometry) {
+		mPagedGeometry->reloadGeometryPage(Ogre::Vector3(worldPosition.x(), 0, -worldPosition.y()), true);
+	}
+}
+
 
 //Gets the height of the terrain at the specified x/z coordinate
 //The userData parameter isn't used in this implementation of a height function, since

@@ -31,9 +31,6 @@
 #include "../terrain/PlantAreaQuery.h"
 #include "../terrain/PlantAreaQueryResult.h"
 #include "../terrain/TerrainManager.h"
-#include "../terrain/TerrainPageFoliage.h"
-#include "../terrain/TerrainPage.h"
-#include "../terrain/TerrainPageShadow.h"
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/PlantInstance.h"
 #include "framework/LoggingInstance.h"
@@ -87,11 +84,7 @@ unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float den
 	if (mLatestPlantsResult) {
 		return static_cast<unsigned int> (densityFactor * volume * mDensity);
 	} else {
-		unsigned char threshold(100);
-		if (mFoliageDefinition->getParameter("threshold") != "") {
-			threshold = static_cast<unsigned char> (atoi(mFoliageDefinition->getParameter("threshold").c_str()));
-		}
-		PlantAreaQuery query(*mTerrainLayerDefinition, threshold, mFoliageDefinition->getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
+		PlantAreaQuery query(*mTerrainLayerDefinition, mFoliageDefinition->getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLayer::plantQueryExecuted);
 
 		mTerrainManager->getPlantsForArea(query, slot);
@@ -129,7 +122,7 @@ void FoliageLayer::plantQueryExecuted(const Terrain::PlantAreaQueryResult& query
 
 Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 {
-	if (mLatestPlantsResult) {
+	if (mLatestPlantsResult && mLatestPlantsResult->hasShadow()) {
 		Ogre::Vector2 pos;
 		Ogre::uint32 colour;
 		pos.x = x;
@@ -137,7 +130,7 @@ Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 		mLatestPlantsResult->getShadowColourAtWorldPosition(pos, colour);
 		return colour;
 	}
-	return 0xFFFFFFFF;
+	return geom->getSceneManager()->getAmbientLight().getAsARGB();
 }
 
 }

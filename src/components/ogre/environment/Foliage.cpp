@@ -24,7 +24,6 @@
 #include "config.h"
 #endif
 
-
 #include "Foliage.h"
 #include "FoliageBase.h"
 #include "GrassFoliage.h"
@@ -34,21 +33,22 @@
 #include "../terrain/TerrainLayerDefinitionManager.h"
 
 #include "framework/LoggingInstance.h"
+#include "framework/Tokeniser.h"
 #include "services/config/ConfigService.h"
 
 #include <OgreRoot.h>
 
-
 template<> EmberOgre::Environment::Foliage* Ember::Singleton<EmberOgre::Environment::Foliage>::ms_Singleton = 0;
 using namespace EmberOgre::Terrain;
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Environment {
+namespace Environment
+{
 
-
-Foliage::Foliage(Terrain::TerrainManager& terrainManager)
-: mTerrainManager(terrainManager)
+Foliage::Foliage(Terrain::TerrainManager& terrainManager) :
+	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -82,8 +82,7 @@ void Foliage::initialize()
 					foliageBase->initialize();
 					mFoliages.push_back(foliageBase);
 				}
-			} catch (const std::exception& ex)
-			{
+			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when creating foliage." << ex);
 				try {
 					delete foliageBase;
@@ -95,6 +94,23 @@ void Foliage::initialize()
 	}
 }
 
+void Foliage::runCommand(const std::string &command, const std::string &args)
+{
+	if (ReloadFoliage == command) {
+		Ember::Tokeniser tokeniser(args);
+		std::string xString = tokeniser.nextToken();
+		std::string yString = tokeniser.nextToken();
+
+		reloadAtPosition(WFMath::Point<2>(atof(xString.c_str()), atof(yString.c_str())));
+	}
+}
+
+void Foliage::reloadAtPosition(const WFMath::Point<2>& worldPosition)
+{
+	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
+		(*I)->reloadAtPosition(worldPosition);
+	}
+}
 
 bool Foliage::frameStarted(const Ogre::FrameEvent& evt)
 {
@@ -103,7 +119,6 @@ bool Foliage::frameStarted(const Ogre::FrameEvent& evt)
 	}
 
 	return true;
-
 }
 }
 }

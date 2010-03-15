@@ -25,7 +25,14 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/Singleton.h"
+#include "framework/ConsoleObject.h"
+
 #include <OgreFrameListener.h>
+
+namespace WFMath
+{
+	template<int> class Point;
+}
 
 namespace Forests {
 	class PagedGeometry;
@@ -48,7 +55,7 @@ class FoliageBase;
 /**
 @author Erik Hjortsberg
 */
-class Foliage : public Ember::Singleton<Foliage>, public Ogre::FrameListener
+class Foliage : public Ember::Singleton<Foliage>, public Ogre::FrameListener, public Ember::ConsoleObject
 {
 
 public:
@@ -63,6 +70,16 @@ public:
 	void initialize();
 
 	virtual bool frameStarted(const Ogre::FrameEvent& evt);
+
+	void reloadAtPosition(const WFMath::Point<2>& worldPosition);
+
+	/**
+	 * @copydoc ConsoleObject::runCommand
+	 */
+	virtual void runCommand(const std::string &command, const std::string &args);
+
+	const Ember::ConsoleCommandWrapper ReloadFoliage;
+
 
 protected:
 
