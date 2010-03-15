@@ -74,6 +74,15 @@ public:
 	const DataType* getData() const;
 
 	/**
+	 * @brief Gets the value at the specified position.
+	 * @note No bounds checking will be done, so be sure that the positions are valid.
+	 * @param x X position.
+	 * @param y Y position.
+	 * @param channel The channel to .
+	 */
+	DataType getValueAt(unsigned int x, unsigned int y, unsigned int channel);
+
+	/**
 	 * @brief Accessor for the number of channels.
 	 * @returns The number of channels.
 	 */
@@ -151,6 +160,12 @@ template<typename DataType>
 const DataType* Buffer<DataType>::getData() const
 {
 	return mData;
+}
+
+template<typename DataType>
+DataType Buffer<DataType>::getValueAt(unsigned int x, unsigned int y, unsigned int channel)
+{
+	return mData[(y * mResolution * mChannels) + (x * mChannels) + (channel - 1)];
 }
 
 template<typename DataType>
