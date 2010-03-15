@@ -32,20 +32,6 @@ class IScriptingProvider{
 public:
 	
 	/**
-	 *    Executes the supplied string directly into the scripting environment.
-	 * @param scriptCode 
-	 */
-	virtual void executeScript(const std::string& scriptCode) = 0;
-	
-	
-	/**
-	 *    Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
-	 * @param scriptName 
-	 * @return 
-	 */
-	virtual bool willLoadScript(const std::string& scriptName) = 0;
-	
-	/**
 	 *    Gets the unique name of the scripting provider.
 	 * @return 
 	 */

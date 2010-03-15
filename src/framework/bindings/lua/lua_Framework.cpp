@@ -14,6 +14,7 @@
 TOLUA_API int  tolua_Framework_open (lua_State* tolua_S);
 
 #include "required.h"
+#include "../../IScriptingProvider.h"
 #include <ostream>
 #include <istream>
 #include <sstream>
@@ -49,11 +50,12 @@ static int tolua_collect_Ember__Tokeniser (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"std::ostream");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Message::Element&>");
  tolua_usertype(tolua_S,"std::iostream");
- tolua_usertype(tolua_S,"std::vector<std::string>");
+ tolua_usertype(tolua_S,"Ember::IScriptingProvider");
  tolua_usertype(tolua_S,"std::stringstream");
  tolua_usertype(tolua_S,"sigc::signal<bool,const std::string&>");
- tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Message::Element&>");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"Eris::Entity");
  tolua_usertype(tolua_S,"Ember::Tokeniser");
  tolua_usertype(tolua_S,"Ember::AttributeObserver");
@@ -628,6 +630,69 @@ static int tolua_Framework_S_LOG_CRITICAL00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: getName of class  Ember::IScriptingProvider */
+#ifndef TOLUA_DISABLE_tolua_Framework_Ember_IScriptingProvider_getName00
+static int tolua_Framework_Ember_IScriptingProvider_getName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const Ember::IScriptingProvider",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const Ember::IScriptingProvider* self = (const Ember::IScriptingProvider*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getName'",NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getName();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: forceGC of class  Ember::IScriptingProvider */
+#ifndef TOLUA_DISABLE_tolua_Framework_Ember_IScriptingProvider_forceGC00
+static int tolua_Framework_Ember_IScriptingProvider_forceGC00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ember::IScriptingProvider",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ember::IScriptingProvider* self = (Ember::IScriptingProvider*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'forceGC'",NULL);
+#endif
+  {
+   self->forceGC();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'forceGC'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: new of class  std::stringstream */
 #ifndef TOLUA_DISABLE_tolua_Framework_std_stringstream_new00
 static int tolua_Framework_std_stringstream_new00(lua_State* tolua_S)
@@ -1176,6 +1241,14 @@ TOLUA_API int tolua_Framework_open (lua_State* tolua_S)
    lua_settop(tolua_S, top);
   } /* end of embedded lua code */
 
+  tolua_module(tolua_S,"Ember",0);
+  tolua_beginmodule(tolua_S,"Ember");
+   tolua_cclass(tolua_S,"IScriptingProvider","Ember::IScriptingProvider","",NULL);
+   tolua_beginmodule(tolua_S,"IScriptingProvider");
+    tolua_function(tolua_S,"getName",tolua_Framework_Ember_IScriptingProvider_getName00);
+    tolua_function(tolua_S,"forceGC",tolua_Framework_Ember_IScriptingProvider_forceGC00);
+   tolua_endmodule(tolua_S);
+  tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"std",0);
   tolua_beginmodule(tolua_S,"std");
    #ifdef __cplusplus
