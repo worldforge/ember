@@ -6,7 +6,7 @@
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">10</param>
 				<param key="clusterDistance">25</param>
-				<param key="density">2</param>
+				<param key="density">1.5</param>
 				<param key="falloff">0.6</param>
 				<param key="material">/global/plants/grass/ducktail_yellow</param>
 				<param key="minHeight">2.0</param>
@@ -45,7 +45,7 @@
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">10</param>
 				<param key="clusterDistance">25</param>
-				<param key="density">4</param>
+				<param key="density">2</param>
 				<param key="falloff">0.6</param>
 				<param key="material">/global/plants/grass/bittergrass_green</param>
 
@@ -95,7 +95,7 @@
 				<param key="minClusterRadius">1</param>
 				<param key="maxClusterRadius">3</param>
 				<param key="clusterDistance">30</param>
-				<param key="density">2</param>
+				<param key="density">1</param>
 				<param key="falloff">0.7</param>
 			</foliage>
 			<foliage planttype="camelia" populationtechnique="cluster" rendertechnique="shrubbery">
@@ -119,7 +119,7 @@
 				<param key="minClusterRadius">2</param>
 				<param key="maxClusterRadius">5</param>
 				<param key="clusterDistance">35</param>
-				<param key="density">2</param>
+				<param key="density">1</param>
 				<param key="falloff">0.7</param>
 			</foliage>
 		</layer>
