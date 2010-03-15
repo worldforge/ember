@@ -25,6 +25,7 @@
 #define EMBEROGREOGRERESOURCELOADER_H
 
 #include "EmberOgrePrerequisites.h"
+#include "framework/ConsoleObject.h"
 #include <OgreConfigFile.h>
 #include <map>
 namespace EmberOgre {
@@ -49,7 +50,7 @@ The value in brackets following the type of location (for example "EmberFileSyst
  "shared" means that Ember will look for the media in PREFIX/shared/ember/media/shared only. This is media that is static and shared by all users on the system, and which won't be updated through wfut.
 If a directory contains a file named "norecurse" (it can be empty) Ember won't recurse further into it
 */
-class OgreResourceLoader{
+class OgreResourceLoader : public Ember::ConsoleObject {
 public:
 	typedef std::multimap<std::string, std::string> ResourceLocationsMap;
 
@@ -72,6 +73,16 @@ public:
 	 * @returns All resource locations defined. The keys are the resource groups and the values the locations.
 	 */
 	const ResourceLocationsMap& getResourceLocations() const;
+
+	/**
+	 * @copydoc ConsoleObject::runCommand
+	 */
+	virtual void runCommand(const std::string &command, const std::string &args);
+
+	/**
+	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
+	 */
+	const Ember::ConsoleCommandWrapper UnloadUnusedResources;
 
 protected:
 	bool mLoadRecursive;

@@ -36,15 +36,16 @@
 #include "EmberOgreFileSystem.h"
 
 #include "framework/osdir.h"
+#include "framework/TimedLog.h"
 #include <OgreArchiveManager.h>
-
+#include <OgreResourceGroupManager.h>
 #include <fstream>
 
 namespace EmberOgre
 {
 
 OgreResourceLoader::OgreResourceLoader() :
-	mLoadRecursive(false)
+		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."), mLoadRecursive(false)
 {
 	mFileSystemArchiveFactory = new ::EmberOgre::FileSystemArchiveFactory();
 	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory);
@@ -96,6 +97,20 @@ unsigned int OgreResourceLoader::numberOfSections()
 	}
 	return numberOfSections - 1;
 }
+
+void OgreResourceLoader::runCommand(const std::string &command, const std::string &args)
+{
+	if (UnloadUnusedResources == command) {
+		Ember::TimedLog l("Unload unused resources.");
+		Ogre::ResourceGroupManager& resourceGroupManager(Ogre::ResourceGroupManager::getSingleton());
+
+		Ogre::StringVector resourceGroups = resourceGroupManager.getResourceGroups();
+		for (Ogre::StringVector::const_iterator I = resourceGroups.begin(); I != resourceGroups.end(); ++I) {
+			resourceGroupManager.unloadUnreferencedResourcesInGroup(*I, false);
+		}
+	}
+}
+
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
