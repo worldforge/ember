@@ -19,6 +19,8 @@
 #ifndef WORLDEMBER_ENTITY_H
 #define WORLDEMBER_ENTITY_H
 
+#include "services/config/ConfigListenerContainer.h"
+
 namespace Eris
 {
 class Timeout;
@@ -60,7 +62,7 @@ class EmberEntity;
 
  @author Erik Hjortsberg <erik@worldforge.org>
  */
-class WorldEmberEntity: public EmberEntity
+class WorldEmberEntity: public EmberEntity, public Ember::ConfigListenerContainer
 {
 public:
 
@@ -207,6 +209,8 @@ protected:
 	 * @brief The scene to which the entity belongs.
 	 */
 	Scene& mScene;
+
+	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 };
 

@@ -87,9 +87,8 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	m_velocity = WFMath::Vector<3>::ZERO();
 	m_orientation = WFMath::Quaternion().identity();
 	m_acc = WFMath::Vector<3>::ZERO();
-	///create the foliage
-	mFoliage = new Environment::Foliage(*mTerrainManager);
-	EventFoliageCreated.emit();
+
+	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &WorldEmberEntity::Config_Foliage));
 
 	EmberEntity::init(ge, fromCreateOp);
 
@@ -100,6 +99,26 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 
 	///we will wait with creating the terrain and initializing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
 
+}
+
+void WorldEmberEntity::Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_bool() && static_cast<bool>(variable)) {
+		if (!mFoliage) {
+			///create the foliage
+			mFoliage = new Environment::Foliage(*mTerrainManager);
+			EventFoliageCreated.emit();
+			if (!mHasBeenInitialized) {
+				mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
+			} else {
+				mFoliage->initialize();
+			}
+		}
+	} else {
+		delete mFoliage;
+		mFoliage = 0;
+		mFoliageInitializer.reset();
+	}
 
 }
 
