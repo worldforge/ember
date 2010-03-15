@@ -55,11 +55,6 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 		mPage->addShader(*I);
 	}
 
-	// setup foliage
-	if (mTerrainManager.isFoliageShown()) {
-		mPage->showFoliage();
-	}
-
 	TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*mPage, mTerrainManager.getSegmentManager(), mTerrainManager.getDefaultHeight()));
 	GeometryPtrVector geometry;
 	geometry.push_back(geometryInstance);

@@ -52,7 +52,6 @@ class TerrainShader;
 class TerrainManager;
 class TerrainPageSurface;
 class TerrainPage;
-class TerrainPageFoliage;
 class TerrainPageSurfaceLayer;
 class ITerrainPageBridge;
 class PlantAreaQueryResult;
@@ -66,7 +65,6 @@ This is a bridge class between one Ogre terrain page instance and one or many Me
 An instance of this is very light weight as it doesn't keep any geometry data around. Each time an action involving page geometry is to occur an instance of TerrainPageGeometry must therefore be created.
 
 Instances of this is created by TerrainManager.
-One terrain page is composed of both height data, a material, textures for the material and plant positions for the foliage system. This class handles all of these, some of them directly and some by other classes.
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
@@ -113,27 +111,6 @@ public:
 	const Ogre::MaterialPtr getMaterial() const;
 
 	/**
-	 * @brief Creates a new foliage for this page, but does not show it yet.
-	 */
-	void prepareFoliage();
-
-	/**
-	 * @brief Shows the foliage for this page, if no foliage exists it's created.
-	 */
-	void showFoliage();
-
-	/**
-	 * @brief Hides the foliage for this page, but does not destroy it.
-	 */
-	void hideFoliage();
-
-
-	/**
-	 * @brief Destroys the foliage for this page.
-	 */
-	void destroyFoliage();
-
-	/**
 	 * @brief Adds a shader to the page, meaning that it will be used in rendering.
 	 * @param shader The new shader to add.
 	 */
@@ -150,8 +127,6 @@ public:
 	 * You should usually call this after you've made a change to the terrain and already have called populateSurfaces().
 	 */
 	void updateAllShaderTextures(TerrainPageGeometry& geometry, bool repopulate = true);
-
-	void regenerateCoverageMap();
 
 	int getPageSize() const;
 
@@ -175,13 +150,6 @@ public:
 	 * @returns The page surface instance belonging to this page.
 	 */
 	const TerrainPageSurface* getSurface() const;
-
-	/**
-	 * @brief Place the plants for the supplied area in the supplied store.
-	 * @param query A query result instance which will be populated by the method.
-	 * @param geometry A geometry instance for this page.
-	 */
-	void getPlantsForArea(PlantAreaQueryResult& queryResult, TerrainPageGeometry& geometry) const;
 
 	/**
 	 * @brief Binds a bridge instance to this page.
@@ -240,7 +208,6 @@ private:
 	 * @brief The extent of this page in meters, in WF space.
 	 */
 	const WFMath::AxisBox<2> mExtent;
-	std::auto_ptr<TerrainPageFoliage> mPageFoliage;
 
 
 

@@ -36,13 +36,11 @@
 #include "../EmberOgre.h"
 #include "../Convert.h"
 
-#include "../environment/Foliage.h"
 #include "TerrainManager.h"
 #include "TerrainInfo.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
-#include "TerrainPageFoliage.h"
 #include "PlantAreaQueryResult.h"
 #include "ISceneManagerAdapter.h"
 
@@ -57,15 +55,13 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
 
-using namespace EmberOgre::Environment;
-
 namespace EmberOgre
 {
 namespace Terrain
 {
 
 TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager) :
-	mManager(manager), mPosition(position), mBridge(0), mTerrainSurface(new TerrainPageSurface(*this)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1))), mPageFoliage(new TerrainPageFoliage(mManager, *this))
+	mManager(manager), mPosition(position), mBridge(0), mTerrainSurface(new TerrainPageSurface(*this)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1)))
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
@@ -113,11 +109,6 @@ ITerrainPageBridge* TerrainPage::getBridge() const
 	return mBridge;
 }
 
-void TerrainPage::regenerateCoverageMap()
-{
-	mPageFoliage->generateCoverageMap();
-}
-
 const TerrainPosition& TerrainPage::getWFPosition() const
 {
 	return mPosition;
@@ -140,25 +131,6 @@ unsigned int TerrainPage::getAlphaMapScale() const
 	}
 }
 
-void TerrainPage::showFoliage()
-{
-	prepareFoliage();
-}
-
-void TerrainPage::hideFoliage()
-{
-}
-
-void TerrainPage::destroyFoliage()
-{
-}
-
-void TerrainPage::prepareFoliage()
-{
-	mPageFoliage->generatePlantPositions();
-	mPageFoliage->generateCoverageMap();
-}
-
 const WFMath::AxisBox<2>& TerrainPage::getWorldExtent() const
 {
 	return mExtent;
@@ -167,18 +139,6 @@ const WFMath::AxisBox<2>& TerrainPage::getWorldExtent() const
 const TerrainPageSurface* TerrainPage::getSurface() const
 {
 	return mTerrainSurface.get();
-}
-
-//const TerrainPageFoliage* TerrainPage::getPageFoliage() const
-//{
-//	return mPageFoliage.get();
-//}
-
-void TerrainPage::getPlantsForArea(PlantAreaQueryResult& queryResult, TerrainPageGeometry& geometry) const
-{
-	if (mManager.isFoliageShown()) {
-		mPageFoliage->getPlantsForArea(geometry, queryResult);
-	}
 }
 
 TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
