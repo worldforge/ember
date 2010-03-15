@@ -57,6 +57,7 @@ public:
 
 	ShadowBuffer* getShadow() const;
 	void setShadow(ShadowBuffer* shadow);
+	bool hasShadow() const;
 
 private:
 	const PlantAreaQuery* mQuery;

@@ -66,6 +66,10 @@ void PlantAreaQueryResult::setShadow(PlantAreaQueryResult::ShadowBuffer* shadow)
 	mShadow = shadow;
 }
 
+bool PlantAreaQueryResult::hasShadow() const
+{
+	return mShadow != 0;
+}
 void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::uint32& colour) const
 {
 	Ogre::uint8* aVal((Ogre::uint8*)&colour);
