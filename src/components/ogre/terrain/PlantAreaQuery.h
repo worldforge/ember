@@ -41,16 +41,14 @@ class PlantAreaQuery
 {
 public:
 
-	PlantAreaQuery(const TerrainLayerDefinition& layerDef, unsigned char threshold, const std::string& plantType, Ogre::TRect<float> area, Ogre::Vector2 center);
+	PlantAreaQuery(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<float> area, Ogre::Vector2 center);
 
 	const TerrainLayerDefinition& getLayerDef() const;
-	unsigned char getThreshold() const;
 	const std::string& getPlantType() const;
 	const Ogre::TRect<float>& getArea() const;
 	const Ogre::Vector2& getCenter() const;
 private:
 	const TerrainLayerDefinition& mLayerDef;
-	unsigned char mThreshold;
 	const std::string& mPlantType;
 	Ogre::Vector2 mCenter;
 	Ogre::TRect<float> mArea;
