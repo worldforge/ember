@@ -17,10 +17,10 @@
  */
 
 #include "PlantQueryTask.h"
-#include "TerrainPage.h"
-#include "TerrainPageGeometry.h"
 #include "PlantAreaQuery.h"
+#include "foliage/PlantPopulator.h"
 #include "components/ogre/Convert.h"
+#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {
@@ -28,8 +28,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-PlantQueryTask::PlantQueryTask(TerrainPageGeometry* geometry, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
-	mGeometry(geometry), mQueryResult(query), mAsyncCallback(asyncCallback)
+PlantQueryTask::PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
+	mSegmentRef(segmentRef), mPlantPopulator(plantPopulator), mQueryResult(query), mAsyncCallback(asyncCallback)
 {
 }
 
@@ -39,11 +39,9 @@ PlantQueryTask::~PlantQueryTask()
 
 void PlantQueryTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(mGeometry->getPage().getWorldExtent());
-	Ogre::TRect<float> adjustedBounds = Ogre::TRect<float>(mQueryResult.getQuery().getArea().left - ogrePageExtent.left, mQueryResult.getQuery().getArea().top - ogrePageExtent.top, mQueryResult.getQuery().getArea().right - ogrePageExtent.left, mQueryResult.getQuery().getArea().bottom - ogrePageExtent.top);
-	mGeometry->getPage().getPlantsForArea(mQueryResult, *mGeometry);
+	mPlantPopulator.populate(mQueryResult, mSegmentRef);
 	//Release Segment references as soon as we can
-	delete mGeometry;
+	mSegmentRef.reset();
 }
 
 void PlantQueryTask::executeTaskInMainThread()

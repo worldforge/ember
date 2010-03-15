@@ -78,6 +78,10 @@ class PlantAreaQuery;
 class PlantAreaQueryResult;
 class SegmentManager;
 
+namespace Foliage {
+class Vegetation;
+}
+
 /**
  * @brief Handles generation and updates of the terrain.
  *
@@ -432,6 +436,10 @@ protected:
 	 */
 	SegmentManager* mSegmentManager;
 
+	unsigned int mFoliageBatchSize;
+
+	Foliage::Vegetation* mVegetation;
+
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
 	 * For performance reasons we want to batch together multiple request for shader updates, so we can do them all at once, normally on frameEnded(). By calling this method the supplied shader will be marked for updating.
@@ -479,8 +487,6 @@ protected:
 	Note that even though this is passed as a parameter in the constructor, this class is then responsible for its destruction.
 	*/
 	void TerrainMod_Deleted(TerrainMod* terrainMod);
-
-	unsigned int mFoliageBatchSize;
 
 	/**
 	 * @brief Listen to graphic level updates and ask the pages to regenerate their materials (since they will use different materials depending on the level chosen).

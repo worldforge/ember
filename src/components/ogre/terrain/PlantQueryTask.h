@@ -34,10 +34,14 @@ namespace Terrain
 class TerrainPage;
 class TerrainPageGeometry;
 
+namespace Foliage {
+class PlantPopulator;
+}
+
 class PlantQueryTask : public Ember::Tasks::TemplateNamedTask<PlantQueryTask>
 {
 public:
-	PlantQueryTask(TerrainPageGeometry* geometry, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
+	PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
 	virtual ~PlantQueryTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -45,7 +49,8 @@ public:
 	virtual void executeTaskInMainThread();
 
 private:
-	TerrainPageGeometry* mGeometry;
+	SegmentRefPtr mSegmentRef;
+	Foliage::PlantPopulator& mPlantPopulator;
 	sigc::slot<void, const PlantAreaQueryResult&> mAsyncCallback;
 
 	PlantAreaQueryResult mQueryResult;

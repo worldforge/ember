@@ -52,6 +52,8 @@
 #include "PlantAreaQuery.h"
 #include "SegmentManager.h"
 
+#include "foliage/Vegetation.h"
+
 #include "framework/LoggingInstance.h"
 #include "framework/tasks/TaskQueue.h"
 #include "framework/tasks/SerialTask.h"
@@ -94,7 +96,6 @@
 
 #include <boost/shared_ptr.hpp>
 
-
 using namespace Ogre;
 namespace EmberOgre
 {
@@ -126,32 +127,8 @@ public:
 
 };
 
-class FoliagePreparationTask: public Ember::Tasks::TemplateNamedTask<FoliagePreparationTask>
-{
-private:
-
-	PageVector mPages;
-
-public:
-	FoliagePreparationTask(const PageVector& pages) :
-		mPages(pages)
-	{
-	}
-	virtual ~FoliagePreparationTask()
-	{
-	}
-
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
-	{
-		for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-			(*I)->prepareFoliage();
-		}
-	}
-
-};
-
 TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mFoliageBatchSize(32), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0)
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation())
 {
 	mSceneManagerAdapter = adapter;
 
@@ -185,6 +162,8 @@ TerrainManager::~TerrainManager()
 	for (ShaderStore::iterator J = mShaderMap.begin(); J != mShaderMap.end(); ++J) {
 		delete J->second;
 	}
+
+	delete mVegetation;
 
 	delete mHeightMap;
 	delete mHeightMapBufferProvider;
@@ -231,6 +210,9 @@ TerrainShader* TerrainManager::createShader(const TerrainLayerDefinition* layerD
 
 	mBaseShaders.push_back(shader);
 	mShaderMap[shader->getShader()] = shader;
+	for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef->getFoliages().begin(); I != layerDef->getFoliages().end(); ++I) {
+		mVegetation->createPopulator(*I, index);
+	}
 	EventShaderCreated.emit(shader);
 	return shader;
 }
@@ -355,7 +337,6 @@ bool TerrainManager::frameEnded(const Ogre::FrameEvent & evt)
 		mShadersToUpdate.clear();
 	}
 
-
 	return true;
 }
 
@@ -384,10 +365,17 @@ int TerrainManager::getPageMetersSize() const
 
 void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
 {
-	TerrainPosition wfPos(Convert::toWF(query.getCenter()));
-	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-	if (terrainPage) {
-		mTaskQueue->enqueueTask(new PlantQueryTask(new TerrainPageGeometry(*terrainPage, *mSegmentManager, getDefaultHeight()), query, asyncCallback));
+	Foliage::PlantPopulator* populator = mVegetation->getPopulator(query.getPlantType());
+	if (populator) {
+		TerrainPosition wfPos(Convert::toWF(query.getCenter()));
+
+		int xIndex = static_cast<int> (floor(wfPos.x() / mTerrain->getResolution()));
+		int yIndex = static_cast<int> (floor(wfPos.y() / mTerrain->getResolution()));
+		SegmentRefPtr segmentRef = mSegmentManager->getSegmentReference(xIndex, yIndex);
+		if (segmentRef.get()) {
+			mTaskQueue->enqueueTask(new PlantQueryTask(segmentRef, *populator, query, asyncCallback));
+
+		}
 	}
 }
 
@@ -451,19 +439,18 @@ TerrainPage* TerrainManager::getTerrainPageAtIndex(const Ogre::Vector2& ogreInde
 
 void TerrainManager::updateFoliageVisibility()
 {
-	bool showFoliage = isFoliageShown();
-
-	PageVector::iterator I = mPages.begin();
-	for (; I != mPages.end(); ++I) {
-		if (showFoliage) {
-			PageVector pages;
-			pages.push_back(*I);
-			mTaskQueue->enqueueTask(new FoliagePreparationTask(pages));
-		} else {
-			//TODO: implement destruction of the foliage data
-			(*I)->hideFoliage();
-		}
-	}
+//	bool showFoliage = isFoliageShown();
+//
+//	PageVector::iterator I = mPages.begin();
+//	for (; I != mPages.end(); ++I) {
+//		if (showFoliage) {
+//			PageVector pages;
+//			pages.push_back(*I);
+//			mTaskQueue->enqueueTask(new FoliagePreparationTask(pages));
+//		} else {
+//			//TODO: implement destruction of the foliage data
+//		}
+//	}
 }
 
 void TerrainManager::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
@@ -511,7 +498,6 @@ bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
 
 void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions)
 {
-//	std::map<TerrainPage*, std::set<TerrainPosition> > pageAndPositions;
 	std::set<TerrainPage*> pagesToUpdate;
 	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
 		const TerrainPosition& worldPosition(*I);
@@ -522,7 +508,6 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
 				page = getTerrainPageAtPosition(position);
 				if (page) {
-//					pageAndPositions[page].insert(position);
 					pagesToUpdate.insert(page);
 				}
 			}
@@ -587,24 +572,6 @@ SegmentManager& TerrainManager::getSegmentManager()
 {
 	return *mSegmentManager;
 }
-
-//void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const
-//{
-//	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
-//	TerrainPosition wfPos(Convert::toWF(position));
-//	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-//	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
-//	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
-//}
-//
-//void TerrainManager::getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
-//{
-//	//TODO: add caching of the last fetched terrain page and first check if the position isn't at that page, since we'll in most cass will call this method with positions that are close to eachother
-//	TerrainPosition wfPos(Convert::toWF(position));
-//	TerrainPage* terrainPage = getTerrainPageAtPosition(wfPos);
-//	Ogre::TRect<float> ogrePageExtent = Convert::toOgre(terrainPage->getExtent());
-//	terrainPage->getPageShadow().getShadowColourAt(Ogre::Vector2(position.x - ogrePageExtent.left, position.y - ogrePageExtent.top), colour);
-//}
 
 void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 {
