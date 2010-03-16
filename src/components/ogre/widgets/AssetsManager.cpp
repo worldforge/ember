@@ -134,7 +134,10 @@ std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& fi
 	for (std::multimap<std::string, std::string>::const_iterator I = locations.begin(); I != locations.end(); ++I) {
 		const std::string resourceLocation = I->second;
 		if (Ogre::StringUtil::startsWith(filePath, resourceLocation, true)) {
-			return filePath.substr(resourceLocation.length(), std::string::npos);
+			//Replace backwards slashes on windows with forwards slashes as that's what's used in the Ogre resource system.
+			std::string localMeshPath = filePath.substr(resourceLocation.length(), std::string::npos);
+			std::replace(localMeshPath.begin(), localMeshPath.end(), '\\', '/');
+			return localMeshPath;
 		}
 	}
 	return filePath;
