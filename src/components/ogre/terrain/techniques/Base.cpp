@@ -18,7 +18,6 @@
 
 #include "Base.h"
 #include "components/ogre/terrain/TerrainPageGeometry.h"
-#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {

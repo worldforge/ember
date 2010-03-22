@@ -22,7 +22,6 @@
 #include <OgrePass.h>
 #include <OgreTechnique.h>
 
-#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {

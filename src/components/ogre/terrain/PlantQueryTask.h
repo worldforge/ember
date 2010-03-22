@@ -24,6 +24,7 @@
 #include "PlantAreaQueryResult.h"
 
 #include <sigc++/slot.h>
+#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {

@@ -20,7 +20,6 @@
 #include "PlantAreaQuery.h"
 #include "foliage/PlantPopulator.h"
 #include "components/ogre/Convert.h"
-#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {
