@@ -19,6 +19,7 @@
 #include "HeightMap.h"
 #include "IHeightMapSegment.h"
 #include "framework/LoggingInstance.h"
+#include <wfmath/vector.h>
 #include <cmath>
 
 #ifdef HAVE_LRINTF

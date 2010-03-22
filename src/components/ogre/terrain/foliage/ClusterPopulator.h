@@ -10,6 +10,11 @@
 
 #include "PlantPopulator.h"
 
+namespace WFMath
+{
+	template<int> class Ball;
+}
+
 namespace EmberOgre
 {
 

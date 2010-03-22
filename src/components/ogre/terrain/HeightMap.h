@@ -23,6 +23,10 @@
 #include <boost/smart_ptr.hpp>
 #include <map>
 
+namespace WFMath
+{
+	template<int> class Vector;
+}
 
 namespace EmberOgre
 {

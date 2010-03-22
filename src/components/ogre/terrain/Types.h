@@ -24,7 +24,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <wfmath/point.h>
 
 namespace boost {
 template <typename> class shared_ptr;

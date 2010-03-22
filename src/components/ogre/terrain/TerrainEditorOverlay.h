@@ -24,6 +24,7 @@
 #include "../IWorldPickListener.h"
 #include "services/input/IInputAdapter.h"
 #include "services/input/Input.h"
+#include <wfmath/point.h>
 #include <Mercator/BasePoint.h>
 #include <OgreUserDefinedObject.h>
 #include <map>

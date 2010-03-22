@@ -21,6 +21,11 @@
 
 #include "Types.h"
 
+namespace WFMath
+{
+	template<int> class Vector;
+}
+
 namespace EmberOgre {
 namespace Terrain {
 
