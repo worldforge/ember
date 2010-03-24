@@ -716,10 +716,7 @@ void GeometryPageManager::reloadGeometryPage(const Vector3 &point, bool forceLoa
 				pendingList.remove(page);
 				page->_pending = false;
 			}
-
-			//Flag the page so it won't expire and be deleted in a few seconds if
-			//it's currently not in the viewing range.
-			page->_keepLoaded = true;		}
+		}
 	}
 }
 
@@ -1050,7 +1047,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 
 GeometryPage::GeometryPage()
 {
-	_visible = _fadeEnable = _pending = _pending = _loaded = _needsUnload = false;
+	_visible = _fadeEnable = _pending = _pending = _loaded = _needsUnload = _keepLoaded = false;
 	_trueBoundsUndefined = true;
 	_inactiveTime = 0; _xIndex = _zIndex = 0; 
 	_centerPoint = Ogre::Vector3::ZERO; 
