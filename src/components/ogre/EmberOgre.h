@@ -130,6 +130,8 @@ class ShaderManager;
 
 class ConsoleObjectImpl;
 
+class ICameraMotionHandler;
+
 /**
  @brief The main class of ember. This functions as a hub for almost all subsystems.
 
@@ -497,6 +499,11 @@ protected:
 	 * @brief The main console object.
 	 */
 	ConsoleObjectImpl* mConsoleObjectImpl;
+
+	/**
+	 * @brief The main motion handler for the avatar camera.
+	 */
+	ICameraMotionHandler* mAvatarCameraMotionHandler;
 
 	/**
 	 * @brief Gets the main Eris View instance, which is the main inteface to the world.

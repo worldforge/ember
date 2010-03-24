@@ -167,7 +167,7 @@ EmberOgre::EmberOgre() :
 			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 			//mCollisionManager(0),
 			//mCollisionDetectorVisualizer(0),
-			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mMainCamera(0), mOgreMainCamera(0)
+			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mMainCamera(0), mOgreMainCamera(0), mAvatarCameraMotionHandler(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -186,6 +186,7 @@ EmberOgre::~EmberOgre()
 	// 	delete mEmberEntityFactory;
 	delete mMovementController;
 	delete mAvatar;
+	delete mAvatarCameraMotionHandler;
 
 	///start with deleting the eris world, then shut down ogre
 	// 	delete mWorldView;
@@ -477,7 +478,8 @@ void EmberOgre::raiseCreatedAvatarEntity(EmberEntity& entity)
 {
 	//Set up the third person avatar camera and switch to it.
 	mAvatar = new Avatar(entity);
-	mAvatar->getCameraMount().setMotionHandler(new AvatarCameraMotionHandler(*mAvatar));
+	mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
+	mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
 	mMovementController = new MovementController(*mAvatar);
 	mMainCamera->setMovementProvider(mMovementController);
 	mMainCamera->attachToMount(&mAvatar->getCameraMount());

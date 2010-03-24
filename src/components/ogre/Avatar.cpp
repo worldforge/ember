@@ -99,7 +99,8 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity) :
 
 Avatar::~Avatar()
 {
-
+	mErisAvatarEntity.setAttachmentControlDelegate(0);
+	delete mAvatarAttachmentController;
 }
 
 void Avatar::runCommand(const std::string &command, const std::string &args)
