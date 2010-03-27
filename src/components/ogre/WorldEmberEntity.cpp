@@ -144,6 +144,7 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 	if (!mHasBeenInitialized) {
 		mEnvironment->initialize();
 		if (mTerrainManager) {
+			mTerrainAfterUpdateConnection = mTerrainManager->EventWorldSizeChanged.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrain_WorldSizeChanged));
 			mTerrainManager->setLightning(mEnvironment->getSun());
 			bool hasValidShaders = false;
 			Terrain::TerrainShaderParser terrainShaderParser(*mTerrainManager);
@@ -175,15 +176,21 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 		///TODO: Parse world location data when it's available
 		mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
 
-		///wait a little with initializing the foliage
-		if (mFoliage) {
-			mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
-		}
 		mHasBeenInitialized = true;
 	}
 
 	Eris::Entity::onVisibilityChanged(vis);
 }
+
+void WorldEmberEntity::terrain_WorldSizeChanged()
+{
+	mTerrainAfterUpdateConnection.disconnect();
+	///wait a little with initializing the foliage
+	if (mFoliage) {
+		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
+	}
+}
+
 void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
 	Eris::Entity::onLocationChanged(oldLocation);

@@ -21,6 +21,8 @@
 
 #include "services/config/ConfigListenerContainer.h"
 
+#include <sigc++/connection.h>
+
 namespace Eris
 {
 class Timeout;
@@ -31,6 +33,7 @@ namespace EmberOgre
 {
 
 class EmberPagingSceneManager;
+
 namespace Environment
 {
 class Environment;
@@ -164,6 +167,10 @@ protected:
 
 	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
 
+	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	void terrain_WorldSizeChanged();
+
 	/**
 	 * @brief The terrain manager, owned by this instance.
 	 */
@@ -210,7 +217,8 @@ protected:
 	 */
 	Scene& mScene;
 
-	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
+	sigc::connection mTerrainAfterUpdateConnection;
+
 
 };
 
