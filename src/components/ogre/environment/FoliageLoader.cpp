@@ -57,23 +57,25 @@ FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManag
 
 FoliageLoader::~FoliageLoader()
 {
+	if (mEntity) {
+		mEntity->_getManager()->destroyEntity(mEntity);
+	}
 }
 
 void FoliageLoader::loadPage(::Forests::PageInfo &page)
 {
-	Ogre::Vector2 pos2D;
 	Ogre::ColourValue colour(1, 1, 1, 1);
 
 	if (mLatestPlantsResult) {
 		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
 		for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
 			const PlantInstance& plantInstance(*I);
-			Ogre::Vector3 pos(plantInstance.position.x, plantInstance.position.y, plantInstance.position.z);
+//			Ogre::Vector3 pos(plantInstance.position.x, plantInstance.position.y, plantInstance.position.z);
 			//			pos2D.x = pos.x;
 			//			pos2D.y = pos.z;
 			// 			TerrainManager->getShadowColourAt(pos2D, colour);
 
-			addEntity(mEntity, pos, Ogre::Quaternion(Ogre::Degree(plantInstance.orientation), Ogre::Vector3::UNIT_Y), Ogre::Vector3(plantInstance.scale.x, plantInstance.scale.y, plantInstance.scale.x), colour);
+			addEntity(mEntity, plantInstance.position, Ogre::Quaternion(Ogre::Degree(plantInstance.orientation), Ogre::Vector3::UNIT_Y), Ogre::Vector3(plantInstance.scale.x, plantInstance.scale.y, plantInstance.scale.x), colour);
 		}
 	} else {
 		PlantAreaQuery query(mTerrainLayerDefinition, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
