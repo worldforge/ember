@@ -428,8 +428,9 @@ void BatchPage::_updateShaders()
 			}
 		}
 
+		std::string fragmentProgramName("BatchFragStandard");
 		//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
-		if (HighLevelGpuProgramManager::getSingleton().getByName("BatchFragStandard").isNull()){
+		if (HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName).isNull()){
 			Pass *pass = mat->getTechnique(0)->getPass(0);
 
 			String fragmentProgSource = "void main \n"
@@ -452,7 +453,7 @@ void BatchPage::_updateShaders()
 				shaderLanguage = "cg";
 
 			HighLevelGpuProgramPtr fragShader = HighLevelGpuProgramManager::getSingleton().createProgram(
-				"BatchFrag",
+				fragmentProgramName,
 				ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 				shaderLanguage, GPT_FRAGMENT_PROGRAM);
 
@@ -495,7 +496,7 @@ void BatchPage::_updateShaders()
 						pass->setVertexProgram(vertexProgName);
 
 					if (pass->getFragmentProgramName() == "")
-						pass->setFragmentProgram("BatchFrag");
+						pass->setFragmentProgram(fragmentProgramName);
 
 					try{
 						GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
