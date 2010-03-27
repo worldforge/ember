@@ -486,8 +486,9 @@ void BatchPage::_updateShaders()
 			generatedMaterial = mat->clone(materialSignature.str());
 
 			//And apply the fade shader
-			for (unsigned short t = 0; t < generatedMaterial->getNumTechniques(); ++t){
-				Technique *tech = generatedMaterial->getTechnique(t);
+			Ogre::Material::TechniqueIterator I = generatedMaterial->getSupportedTechniqueIterator();
+			while (I.hasMoreElements()) {
+				Technique *tech = I.getNext();
 				for (unsigned short p = 0; p < tech->getNumPasses(); ++p){
 					Pass *pass = tech->getPass(p);
 
