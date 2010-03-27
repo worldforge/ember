@@ -484,8 +484,22 @@ void EmberOgre::raiseCreatedAvatarEntity(EmberEntity& entity)
 	mMainCamera->setMovementProvider(mMovementController);
 	mMainCamera->attachToMount(&mAvatar->getCameraMount());
 
+	entity.BeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::avatarEntity_BeingDeleted));
+
 	EventMovementControllerCreated.emit();
 	EventCreatedAvatarEntity.emit(entity);
+}
+
+void EmberOgre::avatarEntity_BeingDeleted()
+{
+	mMainCamera->attachToMount(0);
+	mMainCamera->setMovementProvider(0);
+	delete mMovementController;
+	mMovementController = 0;
+	delete mAvatarCameraMotionHandler;
+	mAvatarCameraMotionHandler = 0;
+	delete mAvatar;
+	mAvatar = 0;
 }
 
 EmberEntity* EmberOgre::getEmberEntity(const std::string & eid)

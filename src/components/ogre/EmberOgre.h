@@ -133,10 +133,10 @@ class ConsoleObjectImpl;
 class ICameraMotionHandler;
 
 /**
- @brief The main class of ember. This functions as a hub for almost all subsystems.
+ @brief The main class of the Ogre rendering component. This functions as a hub for almost all subsystems used when rendering the world.
 
  This is the central class for the whole Ogre related part of Ember. It's quite large and could perhaps be refactored into smaller parts though.
- It holds references to most subcomponents, and is instanciated at the start of Ember. A lot of different signals from different subsystems are routed through here. If you're not sure how to get access to a certain subsystem from another unrelated class, this is probably the first place you should look.
+ It holds references to most subcomponents, and is instantiated at the start of Ember. A lot of different signals from different subsystems are routed through here. If you're not sure how to get access to a certain subsystem from another unrelated class, this is probably the first place you should look.
 
  It's a singleton so you can access it through
  @code
@@ -165,6 +165,7 @@ public:
 
 	/**
 	 * @brief Initialize all Ember services needed for this application
+	 *
 	 * @param  the prefix for the application, not appliable if running under win32
 	 * @param  the an alternative home directory. If the default should be used, send an empty string.
 	 */
@@ -172,12 +173,14 @@ public:
 
 	/**
 	 * @brief Gets the main avatar instance.
+	 *
 	 * @return The main avatar instance. This is currently valid even before the user has logged in to a server, but this will probably change in the future.
 	 */
 	Avatar* getAvatar() const;
 
 	/**
 	 * @brief Gets the main scene manager.
+	 *
 	 * There will be many different scene managers created by Ember, but this one is the main one which represents the world.
 	 * @return The main scene manager.
 	 */
@@ -185,30 +188,35 @@ public:
 
 	/**
 	 * @brief Gets the motion manager, which is responsible for handling all motion and animations of entities.
+	 *
 	 * @return The motion manager.
 	 */
 	MotionManager* getMotionManager() const;
 
 	/**
 	 * @brief Gets the Ogre root object.
+	 *
 	 * @return The Ogre root object, which acts as an entry point for most of Ogre.
 	 */
 	Ogre::Root* getOgreRoot() const;
 
 	/**
 	 * @brief Gets the entity factory which is responsible for creating all new entities in the world.
+	 *
 	 * @return The entity factory.
 	 */
 	EmberEntityFactory* getEntityFactory() const;
 
 	/**
 	 * @brief Gets the main camera.
+	 *
 	 * @return The main camera.
 	 */
 	Camera::MainCamera* getMainCamera() const;
 
 	/**
 	 * @brief Gets the main Ogre camera.
+	 *
 	 * @note This is a shortcut for calling getMainCamera()->getCamera().
 	 * @return The main Ogre camera.
 	 */
@@ -216,24 +224,28 @@ public:
 
 	/**
 	 * @brief Gets the avatar controller, which recieves input and makes sure that the Avatar is moved.
+	 *
 	 * @return The avatar controller.
 	 */
 	MovementController* getMovementController() const;
 
 	/**
 	 * @brief Gets the entity move manager, which handles movement of entities in the world by the user.
+	 *
 	 * @return The entity move manager.
 	 */
 	Authoring::EntityMoveManager* getMoveManager() const;
 
 	/**
 	 * @brief Gets the shader manager, which handles setup of the graphic level and the shaders.
+	 *
 	 * @return The shader manager.
 	 */
 	ShaderManager* getShaderManager() const;
 
 	/**
 	 * @brief Finds and returns the entity with the given id, if it's available.
+	 *
 	 * @param id The unique id for the entity.
 	 * @return An instance of EmberEntity or null if no entity with the specified id could be found.
 	 */
@@ -241,12 +253,14 @@ public:
 
 	/**
 	 * @brief Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
+	 *
 	 * @return The main Jesus instance.
 	 */
 	//	Jesus* getJesus() const;
 
 	/**
 	 * @brief Gets the main render window.
+	 *
 	 * The system can contains many different render windows, but there's only one that's the main window.
 	 * @return The main render window.
 	 */
@@ -269,6 +283,7 @@ public:
 
 	/**
 	 * @brief Returns the scenenode of the world entity.
+	 *
 	 * Throws en exception if no such node has been created yet.
 	 * @return
 	 */
@@ -329,6 +344,7 @@ public:
 
 	/**
 	 * @brief Shuts down the gui.
+	 *
 	 * Call this at closing time, right before you destroy the view and shut down the scripting service.
 	 */
 	void shutdownGui();
@@ -369,7 +385,9 @@ protected:
 	EmberPagingSceneManager* mSceneMgr;
 
 	/**
-	 * @brief The main render window. There can be many more render targets in the system, but they will all reside within this render window (such as entity preview through CEGUI).
+	 * @brief The main render window.
+	 *
+	 * There can be many more render targets in the system, but they will all reside within this render window (such as entity preview through CEGUI).
 	 */
 	Ogre::RenderWindow* mWindow;
 
@@ -430,6 +448,7 @@ protected:
 
 	/**
 	 * @brief Main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
+	 *
 	 * @note The Jesus and Carpenter system hasn't been touched in quite a while, and it's not certain that it will remain in Ember.
 	 */
 	//	Jesus* mJesus;
@@ -470,18 +489,23 @@ protected:
 	//	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
 
 	/**
-	 *@brief Handles loading of resources. This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
+	 * @brief Handles loading of resources.
+	 *
+	 * This will also take care of registering our own Ogre::ArchiveFactory instance, so it needs to be destroyed first after ogre is shutdown (since there's no way to remove an already added ArchiveFactory instance from Ogre).
 	 */
 	OgreResourceLoader* mResourceLoader;
 
 	/**
 	 * @brief We hold a reference to our own Ogre log manager, thus making sure that Ogre doesn't create one itself.
+	 *
 	 * Since we do this we can better steer how Ogre log messages are handled.
 	 */
 	Ogre::LogManager* mOgreLogManager;
 
 	/**
-	 * @brief Set this to true when we're not rendering. The reason is that later on, when we resume rendering, we need to reset the event times to prevent various particle effect strangeness.
+	 * @brief Set this to true when we're not rendering.
+	 *
+	 * The reason is that later on, when we resume rendering, we need to reset the event times to prevent various particle effect strangeness.
 	 */
 	bool mIsInPausedMode;
 
@@ -507,6 +531,7 @@ protected:
 
 	/**
 	 * @brief Gets the main Eris View instance, which is the main inteface to the world.
+	 *
 	 * The View can also be accessed through the Server service, but this can be used for convenience.
 	 * @return The main Eris View instance which represents the server world.
 	 */
@@ -514,12 +539,14 @@ protected:
 
 	/**
 	 * @brief Sent from the server service when we've recieved a Eris::View instance from the server.
+	 *
 	 * @param world
 	 */
 	void Server_GotView(Eris::View* world);
 
 	/**
 	 * @brief Sent from the server when we've successfully connected.
+	 *
 	 * @param connection
 	 */
 	void Server_GotConnection(Eris::Connection* connection);
@@ -532,21 +559,32 @@ protected:
 
 	/**
 	 * @brief Preloads the media, thus avoiding frame rate drops ingame.
+	 *
 	 * Note that preloading media can take quite a while.
 	 */
 	void preloadMedia();
 
 	/**
 	 * @brief Makes sure that there are files in ~/.ember.
+	 *
 	 * Call this early on at application startup. If the required files cannot be found they are copied there from their default versions as installed in the shared location.
 	 */
 	void checkForConfigFiles();
 
 	/**
 	 * @brief Listen for when all of the application services has been initialized and then register needed objects with them.
+	 *
 	 * This should occur fairly early on in the application life cycle.
 	 */
 	void Application_ServicesInitialized();
+
+
+	/**
+	 * @brief Called when the avatar entity is being deleted.
+	 *
+	 * This means that we should clean up our avatar objects.
+	 */
+	void avatarEntity_BeingDeleted();
 
 };
 
