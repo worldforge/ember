@@ -24,6 +24,7 @@
 #define EMBEROGRE_ENVIRONMENTFOLIAGELOADER_H
 
 #include "pagedgeometry/include/PagedGeometry.h"
+#include <sigc++/trackable.h>
 
 namespace Ogre
 {
@@ -46,7 +47,7 @@ namespace Environment {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class FoliageLoader : public ::Forests::PageLoader
+class FoliageLoader : public ::Forests::PageLoader, public virtual sigc::trackable
 {
 public:
     FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition, ::Forests::PagedGeometry& pagedGeometry);
