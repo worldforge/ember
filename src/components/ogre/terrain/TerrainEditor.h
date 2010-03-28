@@ -26,7 +26,7 @@
 
 #include <sigc++/signal.h>
 #include <map>
-
+#include <sigc++/trackable.h>
 
 namespace Mercator {
 
@@ -47,10 +47,14 @@ class TerrainManager;
 class TerrainEditorOverlay;
 
 /**
-	Provides terrain editing capabilities. Through this class base points in the terrain can be changed, and the changes sent to the server. The editor supports undo and redo functionality.
+	@brief Provides terrain editing capabilities.
+
+	Through this class base points in the terrain can be changed, and the changes sent to the server. The editor supports undo and redo functionality.
+
+	@note Inherits from sigc::trackable because we use an async callback when fetching base points.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class TerrainEditor
+class TerrainEditor : public virtual sigc::trackable
 {
 public:
     TerrainEditor(TerrainManager& manager, Camera::MainCamera& camera);

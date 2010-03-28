@@ -28,6 +28,7 @@
 #include <Mercator/BasePoint.h>
 #include <OgreUserDefinedObject.h>
 #include <map>
+#include <sigc++/trackable.h>
 
 namespace Mercator {
 	class Terrain;
@@ -236,7 +237,7 @@ TerrainPosition mPosition;
 
 
 
-class TerrainEditorOverlay: public Ember::IInputAdapter
+class TerrainEditorOverlay: public Ember::IInputAdapter, public virtual sigc::trackable
 {
 public:
 	typedef std::map<int, std::map<int, Mercator::BasePoint> > BasePointStore;

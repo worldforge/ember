@@ -24,6 +24,9 @@
 #define EMBEROGRE_ENVIRONMENTFOLIAGELAYER_H
 
 #include "pagedgeometry/include/GrassLoader.h"
+
+#include <sigc++/trackable.h>
+
 namespace Forests
 {
 	class PagedGeometry;
@@ -47,7 +50,7 @@ namespace Environment {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class FoliageLayer : public Forests::GrassLayerBase
+class FoliageLayer : public Forests::GrassLayerBase, public virtual sigc::trackable
 {
 public:
     FoliageLayer(Forests::PagedGeometry *geom, Forests::GrassLoader<FoliageLayer> *ldr);
