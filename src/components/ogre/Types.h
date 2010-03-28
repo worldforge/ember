@@ -23,6 +23,11 @@
 #ifndef EMBEROGRETYPES_H
 #define EMBEROGRETYPES_H
 
+namespace std
+{
+template <typename, typename> class pair;
+}
+
 namespace WFMath
 {
 template<int> class Point;
@@ -34,6 +39,11 @@ namespace EmberOgre {
  * @brief A 2d position in the world.
  */
 typedef WFMath::Point<2> TerrainPosition;
+
+/**
+ * @brief A 2d index in the world.
+ */
+typedef std::pair<int, int> TerrainIndex;
 
 }
 #endif //EMBEROGRETYPES_H

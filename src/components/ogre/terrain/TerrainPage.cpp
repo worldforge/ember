@@ -31,7 +31,6 @@
 #include "TerrainPageGeometry.h"
 #include "TerrainShader.h"
 #include "TerrainPageSurfaceLayer.h"
-#include "ITerrainPageBridge.h"
 
 #include "../EmberOgre.h"
 #include "../Convert.h"
@@ -60,19 +59,15 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainPage::TerrainPage(const TerrainPosition& position, TerrainManager& manager) :
-	mManager(manager), mPosition(position), mBridge(0), mTerrainSurface(new TerrainPageSurface(*this)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1)))
+TerrainPage::TerrainPage(const TerrainIndex& index, TerrainManager& manager) :
+	mManager(manager), mIndex(index), mPosition(index.first, index.second), mTerrainSurface(new TerrainPageSurface(*this)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1)))
 {
 
-	S_LOG_VERBOSE("Creating TerrainPage at position " << position.x() << ":" << position.y());
+	S_LOG_VERBOSE("Creating TerrainPage at position " << index.first << ":" << index.second);
 }
 
 TerrainPage::~TerrainPage()
 {
-	if (mBridge) {
-		///we don't own the bridge, so we shouldn't delete it
-		mBridge->unbindFromTerrainPage();
-	}
 }
 
 
@@ -104,15 +99,16 @@ void TerrainPage::signalGeometryChanged()
 
 }
 
-ITerrainPageBridge* TerrainPage::getBridge() const
-{
-	return mBridge;
-}
-
 const TerrainPosition& TerrainPage::getWFPosition() const
 {
 	return mPosition;
 }
+
+const TerrainIndex& TerrainPage::getWFIndex() const
+{
+	return mIndex;
+}
+
 
 const Ogre::MaterialPtr TerrainPage::getMaterial() const
 {
@@ -174,22 +170,6 @@ TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* s
 	return layer;
 }
 
-void TerrainPage::registerBridge(ITerrainPageBridge* bridge)
-{
-	mBridge = bridge;
-	mBridge->bindToTerrainPage(this);
-}
-
-void TerrainPage::unregisterBridge()
-{
-	///we're not responsible for this one, so we don't destroy it here
-	mBridge = 0;
-}
-
-void TerrainPage::notifyBridgePageReady()
-{
-	mBridge->terrainPageReady();
-}
 
 }
 }

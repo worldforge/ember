@@ -51,6 +51,7 @@ namespace EmberOgre {
 		class TerrainPageGeometry;
 		class Segment;
 		class SegmentReference;
+		class ITerrainPageBridge;
 
 		/**
 		 @brief Defines the height of a special "base point" in the terrain.
@@ -107,6 +108,10 @@ namespace EmberOgre {
 		typedef boost::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
 
 		typedef std::vector<TerrainPageGeometryPtr> GeometryPtrVector;
+
+		typedef boost::shared_ptr<ITerrainPageBridge> ITerrainPageBridgePtr;
+
+		typedef std::vector<std::pair<TerrainPageGeometryPtr, ITerrainPageBridgePtr> > BridgeBoundGeometryPtrVector;
 
 		typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 

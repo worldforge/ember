@@ -53,7 +53,6 @@ class TerrainManager;
 class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageSurfaceLayer;
-class ITerrainPageBridge;
 class PlantAreaQueryResult;
 class TerrainPageGeometry;
 
@@ -75,10 +74,10 @@ public:
 
 	/**
 	 * @brief Ctor.
-	 * @param position The page index in WF space.
+	 * @param index The page index in WF space.
 	 * @param manager The terrain manager.
 	 */
-	TerrainPage(const TerrainPosition& position, TerrainManager& manager);
+	TerrainPage(const TerrainIndex& index, TerrainManager& manager);
 
 	/**
 	 * @brief Dtor.
@@ -99,10 +98,16 @@ public:
 	int getVerticeCount() const;
 
 	/**
-	 * @brief The position of the page in Worldforge space.
-	 * @return
+	 * @brief The index position of the page in Worldforge space.
+	 * @return The index position of the page.
 	 */
 	const TerrainPosition& getWFPosition() const;
+
+	/**
+	 * @brief The index of the page in the Worldforge space.
+	 * @return The index of the page.
+	 */
+	const TerrainIndex& getWFIndex() const;
 
 	/**
 	 * @brief The material used for the page.
@@ -138,7 +143,6 @@ public:
 	 */
 	int getAlphaTextureSize() const;
 
-
 	/**
 	 * @brief Gets the extent of this page in meters, in worldforge space.
 	 * @return
@@ -150,31 +154,6 @@ public:
 	 * @returns The page surface instance belonging to this page.
 	 */
 	const TerrainPageSurface* getSurface() const;
-
-	/**
-	 * @brief Binds a bridge instance to this page.
-	 * The bridge will be responsible for updating the terrain engine after the Mercator terrain has changed.
-	 * This class won't take ownership of the bridge, so it's up to the calling class to make sure that it's properly destroyed, and when so also calling @see unregisterBridge()
-	 * @param bridge A valid bridge instance.
-	 */
-	void registerBridge(ITerrainPageBridge* bridge);
-
-	/**
-	 * @brief Unregisters the current terrain bridge.
-	 * Make sure to call this when the bridge is destroyed, so as not to leave any dangling pointers. This won't however delete the bridge.
-	 */
-	void unregisterBridge();
-
-	/**
-	 * @brief Notifies Ogre throught the bridge that page is ready.
-	 */
-	void notifyBridgePageReady();
-
-	/**
-	 * @brief Accessor for a bridge registered to this page.
-	 * @returns A bridge instance, which acts as a connection between the page and any rendering system. Null if no bridge has been registered with the page.
-	 */
-	ITerrainPageBridge* getBridge() const;
 
 	/**
 	 * @brief Gets the normal at the specified local position.
@@ -192,15 +171,14 @@ private:
 	TerrainManager& mManager;
 
 	/**
+	 * @brief Page index.
+	 */
+	TerrainIndex mIndex;
+
+	/**
 	 * @brief Internal position
 	 */
 	TerrainPosition mPosition;
-
-	/**
-	* @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
-	* This value is taken from the config file.
-	*/
-	unsigned int getAlphaMapScale() const;
 
 	std::auto_ptr<TerrainPageSurface> mTerrainSurface;
 
@@ -209,15 +187,11 @@ private:
 	 */
 	const WFMath::AxisBox<2> mExtent;
 
-
-
 	/**
-	 *@brief Bridge to the ogre terrain engine.
-	 * When the terrain data is changed we need to also update the actual ingame representation that the terrain engine provides. This instance will take care of that.
-	 */
-	ITerrainPageBridge* mBridge;
-
-
+	* @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
+	* This value is taken from the config file.
+	*/
+	unsigned int getAlphaMapScale() const;
 };
 
 inline int TerrainPage::getAlphaTextureSize() const

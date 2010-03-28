@@ -20,6 +20,7 @@
 #define TERRAINPAGEDATAPROVIDER_H_
 
 #include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "Types.h"
 
 namespace EmberOgre
 {
@@ -54,11 +55,19 @@ public:
 	TerrainPageDataProvider(Terrain::TerrainManager& manager);
 	virtual ~TerrainPageDataProvider();
 
-	virtual IPageData* getPageData(const Ogre::Vector2& position);
+	virtual IPageData* getPageData(const Ogre::Vector2& ogreIndexPosition);
 	virtual int getPageIndexSize() const;
-	virtual void setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, Terrain::ITerrainPageBridge& bridge);
+	virtual void setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge);
+	virtual void removeBridge(const Ogre::Vector2& ogreIndexPosition);
+
 protected:
 	Terrain::TerrainManager& mManager;
+
+	/**
+	 * @brief Converts the ogre index position to wf local index.
+	 */
+	TerrainIndex convertToWFTerrainIndex(const Ogre::Vector2& ogreIndexPosition);
+
 };
 
 }

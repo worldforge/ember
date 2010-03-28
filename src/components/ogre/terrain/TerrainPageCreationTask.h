@@ -23,6 +23,7 @@
 #include "framework/tasks/TemplateNamedTask.h"
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
+#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {
@@ -40,7 +41,7 @@ class HeightMap;
 class TerrainPageCreationTask : public Ember::Tasks::TemplateNamedTask<TerrainPageCreationTask>
 {
 public:
-	TerrainPageCreationTask(TerrainManager& TerrainManager, const TerrainPosition& pos, ITerrainPageBridge* bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
+	TerrainPageCreationTask(TerrainManager& TerrainManager, const TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
 	virtual ~TerrainPageCreationTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -51,8 +52,8 @@ private:
 	TerrainManager& mTerrainManager;
 
 	TerrainPage* mPage;
-	TerrainPosition mPos;
-	ITerrainPageBridge* mBridge;
+	TerrainIndex mIndex;
+	boost::shared_ptr<ITerrainPageBridge> mBridge;
 	WFMath::Vector<3> mMainLightDirection;
 
 	HeightMapBufferProvider& mHeightMapBufferProvider;

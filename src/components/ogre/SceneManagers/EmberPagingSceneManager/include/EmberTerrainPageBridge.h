@@ -25,6 +25,13 @@
 
 #include "terrain/ITerrainPageBridge.h"
 
+#include <boost/shared_array.hpp>
+
+namespace Ogre
+{
+class PagingLandScapeData2DManager;
+}
+
 namespace EmberOgre {
 
 class EmberPagingLandScapeData2D_HeightField;
@@ -36,7 +43,8 @@ class EmberPagingLandScapeData2D_HeightField;
 class EmberTerrainPageBridge : public ::EmberOgre::Terrain::ITerrainPageBridge
 {
 public:
-	EmberTerrainPageBridge(EmberPagingLandScapeData2D_HeightField& heightField);
+	typedef std::pair<unsigned int, unsigned int> UnsignedIndexType;
+	EmberTerrainPageBridge(Ogre::PagingLandScapeData2DManager& data2dManager, const boost::shared_array<float>& heightData, UnsignedIndexType index);
 
 	virtual ~EmberTerrainPageBridge();
 
@@ -45,10 +53,16 @@ public:
 	void terrainPageReady();
 
 protected:
-	/**
-	 * @brief The heightfield instance to which this bridge is connected.
-	 */
-	EmberPagingLandScapeData2D_HeightField& mHeightField;
+
+	Ogre::PagingLandScapeData2DManager& mData2dManager;
+
+	boost::shared_array<float> mHeightData;
+
+	UnsignedIndexType mIndex;
+
+	float mMaxHeight;
+
+	EmberPagingLandScapeData2D_HeightField* getData2D();
 };
 
 }

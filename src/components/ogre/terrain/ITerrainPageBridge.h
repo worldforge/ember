@@ -34,7 +34,7 @@ class TerrainPageGeometry;
 @brief Implementation of this interface acts as bridges between an Ember TerrainPage and an Ogre terrain page.
 
 Because we don't want to make Ember and the scene manager used for terrain rendering too tightly coupled we provide this interface instead of letting TerrainPage know of any scene manager classes.
-It's up to the scene manager speficic adapter code to provide concrete instances of this interface which knows how to react mainly to calls to updateTerrain(), and update the Ogre representation accordinly.
+It's up to the scene manager specific adapter code to provide concrete instances of this interface which knows how to react mainly to calls to updateTerrain(), and update the Ogre representation accordinly.
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */

@@ -114,7 +114,9 @@ void PagingLandScapeData2D::unload()
 	{
 		if (mIsModified && mParent->getOptions()->saveDeformation)
 			_save ();
-		delete[] mHeightData;
+		//Use the shared pointer for deletion
+//		delete[] mHeightData;
+		mHeightDataPtr.reset(0);
 		mHeightData = 0;
 		_unload();
 		mIsLoaded = false;

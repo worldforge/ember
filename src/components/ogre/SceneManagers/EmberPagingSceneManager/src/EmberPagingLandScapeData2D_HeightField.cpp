@@ -44,7 +44,7 @@ namespace EmberOgre
 {
 
 EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager* pageMgr) :
-	Ogre::PagingLandScapeData2D(pageMgr), mBridge(0)
+	Ogre::PagingLandScapeData2D(pageMgr)
 {
 	///set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
 	///in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
@@ -55,7 +55,6 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 {
 	// 	assert(!mTerrainPage);
 	assert(!mHeightData);
-	assert(!mBridge);
 
 	EmberPagingSceneManager* emberPagingSceneManager = static_cast<EmberPagingSceneManager*> (mParent->getSceneManager());
 	IPageDataProvider* provider = emberPagingSceneManager->getProvider();
@@ -64,12 +63,14 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 
 		mMaxArrayPos = mSize * mSize;
 		mHeightData = new Ogre::Real[mMaxArrayPos];
+		mHeightDataPtr = boost::shared_array<Ogre::Real>(mHeightData);
+		float* heightDataPtr = mHeightData;
 		for (size_t i = 0; i < mMaxArrayPos; ++i) {
-			mHeightData[i] = 0.0f;
+			*(heightDataPtr++) = 0.0f;
 		}
 
-		mBridge = new EmberTerrainPageBridge(*this);
-		provider->setUpTerrainPageAtIndex(Ogre::Vector2(x, z), *mBridge);
+		EmberTerrainPageBridge* bridge = new EmberTerrainPageBridge(*emberPagingSceneManager->getData2DManager(), mHeightDataPtr, std::pair<unsigned int, unsigned int>(x, z));
+		provider->setUpTerrainPageAtIndex(Ogre::Vector2(x, z), bridge);
 
 		return true;
 	}
@@ -78,10 +79,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 
 EmberPagingLandScapeData2D_HeightField::~EmberPagingLandScapeData2D_HeightField()
 {
-	if (mBridge) {
-		// 		mTerrainPage->unregisterBridge();
-		delete mBridge;
-	}
+
 }
 ;
 
@@ -142,11 +140,11 @@ void EmberPagingLandScapeData2D_HeightField::_load()
 void EmberPagingLandScapeData2D_HeightField::_unload()
 {
 	S_LOG_VERBOSE("Unloading terrain page at x: " << mPageX << " z:" << mPageZ << ".");
-	if (mBridge) {
-		// 		mTerrainPage->unregisterBridge();
-		delete mBridge;
+	EmberPagingSceneManager* emberPagingSceneManager = static_cast<EmberPagingSceneManager*> (mParent->getSceneManager());
+	IPageDataProvider* provider = emberPagingSceneManager->getProvider();
+	if (provider) {
+		provider->removeBridge(Ogre::Vector2(mPageX, mPageZ));
 	}
-	mBridge = 0;
 }
 
 Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight() const

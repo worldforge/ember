@@ -25,35 +25,40 @@
 #endif
 
 #include "EmberTerrainPageBridge.h"
+#include "OgrePagingLandScapeData2DManager.h"
 #include "EmberPagingLandScapeData2D_HeightField.h"
-#include "terrain/TerrainPage.h"
 #include "terrain/TerrainPageGeometry.h"
 
+namespace EmberOgre
+{
 
-namespace EmberOgre {
-
-EmberTerrainPageBridge::EmberTerrainPageBridge(EmberPagingLandScapeData2D_HeightField& heightField)
-: ITerrainPageBridge(), mHeightField(heightField)
+EmberTerrainPageBridge::EmberTerrainPageBridge(Ogre::PagingLandScapeData2DManager& data2dManager, const boost::shared_array<float>& heightData, UnsignedIndexType index) :
+	mData2dManager(data2dManager), mHeightData(heightData), mIndex(index), mMaxHeight(0)
 {
 }
 
-
 EmberTerrainPageBridge::~EmberTerrainPageBridge()
 {
-	if (mTerrainPage) {
-		mTerrainPage->unregisterBridge();
-	}
 }
 
 void EmberTerrainPageBridge::updateTerrain(Terrain::TerrainPageGeometry& geometry)
 {
-	geometry.updateOgreHeightData(mHeightField.getHeightData());
-	mHeightField.setMaxHeight(geometry.getMaxHeight());
+	geometry.updateOgreHeightData(mHeightData.get());
+	mMaxHeight = geometry.getMaxHeight();
 }
 
 void EmberTerrainPageBridge::terrainPageReady()
 {
-	mHeightField.eventTerrainPageLoaded();
+	EmberPagingLandScapeData2D_HeightField* heightField = getData2D();
+	if (heightField) {
+		heightField->setMaxHeight(mMaxHeight);
+		heightField->eventTerrainPageLoaded();
+	}
+}
+
+EmberPagingLandScapeData2D_HeightField* EmberTerrainPageBridge::getData2D()
+{
+	return static_cast<EmberPagingLandScapeData2D_HeightField*> (mData2dManager.getData2D(mIndex.first, mIndex.second, false));
 }
 
 }

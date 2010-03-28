@@ -59,7 +59,8 @@ class IPageDataProvider
 public:
 	virtual IPageData* getPageData(const Ogre::Vector2& position) = 0;
 	virtual int getPageIndexSize() const = 0;
-	virtual void setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ::EmberOgre::Terrain::ITerrainPageBridge& bridge) = 0;
+	virtual void setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ::EmberOgre::Terrain::ITerrainPageBridge* bridge) = 0;
+	virtual void removeBridge(const Ogre::Vector2& ogreIndexPosition) = 0;
 };
 
 

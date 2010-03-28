@@ -23,6 +23,8 @@
 #include "OgrePagingLandScapeData2DManager.h"
 #include "OgrePagingLandScapeOptions.h"
 
+#include <boost/shared_array.hpp>
+
 namespace Ogre
 {
 /**
@@ -242,6 +244,14 @@ protected:
 
 	//  computed Height Data  (scaled)
 	Real* mHeightData;
+
+	/**
+	 * @brief A shared array pointer which holds the height data.
+	 *
+	 * This instance determines the lifetime of the data. As the data is handled asynchronously it's important that the data isn't destroyed unless there are no more references to it.
+	 */
+	boost::shared_array<Ogre::Real> mHeightDataPtr;
+
 	//  maximum position in Array
 	unsigned int mMaxArrayPos;
 	//  data side maximum size

@@ -18,7 +18,9 @@
 
 #include "TerrainPageDataProvider.h"
 #include "components/ogre/terrain/TerrainManager.h"
+#include "components/ogre/terrain/TerrainInfo.h"
 #include "components/ogre/terrain/TerrainPage.h"
+#include "Convert.h"
 
 namespace EmberOgre
 {
@@ -30,7 +32,6 @@ TerrainPageData::TerrainPageData(Terrain::TerrainPage* page) :
 TerrainPageData::~TerrainPageData()
 {
 }
-
 
 Ogre::MaterialPtr TerrainPageData::getMaterial()
 {
@@ -50,18 +51,31 @@ TerrainPageDataProvider::~TerrainPageDataProvider()
 {
 }
 
-IPageData* TerrainPageDataProvider::getPageData(const Ogre::Vector2& position)
+IPageData* TerrainPageDataProvider::getPageData(const Ogre::Vector2& ogreIndexPosition)
 {
-	return new TerrainPageData(mManager.getTerrainPageAtIndex(position));
+	return new TerrainPageData(mManager.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition)));
 }
 
 int TerrainPageDataProvider::getPageIndexSize() const
 {
 	return mManager.getPageIndexSize();
 }
-void TerrainPageDataProvider::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, Terrain::ITerrainPageBridge& bridge)
+void TerrainPageDataProvider::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge)
 {
-	mManager.setUpTerrainPageAtIndex(ogreIndexPosition, bridge);
+	mManager.setUpTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition), bridge);
+}
+
+void TerrainPageDataProvider::removeBridge(const Ogre::Vector2& ogreIndexPosition)
+{
+	mManager.removeBridge(convertToWFTerrainIndex(ogreIndexPosition));
+}
+
+TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const Ogre::Vector2& ogreIndexPosition)
+{
+	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
+	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mManager.getTerrainInfo().getPageOffsetY(), ogreIndexPosition.y - mManager.getTerrainInfo().getPageOffsetX());
+
+	return TerrainIndex(adjustedOgrePos.x, -adjustedOgrePos.y);
 }
 
 }

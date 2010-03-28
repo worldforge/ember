@@ -185,7 +185,6 @@ void TerrainManager::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstor
 
 void TerrainManager::loadTerrainOptions()
 {
-	chdir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory().c_str());
 
 	getAdapter()->setResourceGroupName("General");
 
@@ -388,27 +387,27 @@ TerrainPage* TerrainManager::getTerrainPageAtPosition(const TerrainPosition& wor
 	int xIndex = static_cast<int> (floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
 	int yIndex = static_cast<int> (ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 
-	TerrainPagestore::const_iterator I = mTerrainPages.find(xIndex);
-	if (I != mTerrainPages.end()) {
-		TerrainPagecolumn::const_iterator J = I->second.find(yIndex);
-		if (J != I->second.end()) {
-			return J->second;
-		}
-	}
-	return 0;
+	return getTerrainPageAtIndex(TerrainIndex(xIndex, yIndex));
 }
 
-void TerrainManager::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ITerrainPageBridge& bridge)
+void TerrainManager::removeBridge(const TerrainIndex& index)
+{
+	PageBridgeStore::iterator I = mPageBridges.find(index);
+	if (I != mPageBridges.end()) {
+		mPageBridges.erase(I);
+	}
+}
+
+void TerrainManager::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge)
 {
 	//_fpreset();
 
-	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
-	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo->getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo->getPageOffsetX());
+	int x = index.first;
+	int y = index.second;
 
-	TerrainPosition pos(Convert::toWF(adjustedOgrePos));
-
-	int x = static_cast<int> (pos.x());
-	int y = static_cast<int> (pos.y());
+	boost::shared_ptr<ITerrainPageBridge> bridgePtr(bridge);
+	//Add to our store of page bridges
+	mPageBridges.insert(PageBridgeStore::value_type(index, bridgePtr));
 
 	S_LOG_INFO("Setting up TerrainPage at index [" << x << "," << y << "]");
 	if (mTerrainPages[x][y] == 0) {
@@ -416,41 +415,39 @@ void TerrainManager::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosit
 		if (mLightning) {
 			sunDirection = mLightning->getMainLightDirection();
 		}
-		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, pos, &bridge, *mHeightMapBufferProvider, *mHeightMap, sunDirection));
+		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, index, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection));
 	} else {
 		S_LOG_WARNING("Trying to set up TerrainPage at index [" << x << "," << y << "], but it was already created");
 	}
 }
 
-TerrainPage* TerrainManager::getTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition)
+TerrainPage* TerrainManager::getTerrainPageAtIndex(const TerrainIndex& index) const
 {
-	//_fpreset();
 
-	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
-	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mTerrainInfo->getPageOffsetY(), ogreIndexPosition.y - mTerrainInfo->getPageOffsetX());
-
-	TerrainPosition pos(Convert::toWF(adjustedOgrePos));
-
-	int x = static_cast<int> (pos.x());
-	int y = static_cast<int> (pos.y());
-
-	return mTerrainPages[x][y];
+	TerrainPagestore::const_iterator I = mTerrainPages.find(index.first);
+	if (I != mTerrainPages.end()) {
+		TerrainPagecolumn::const_iterator J = I->second.find(index.second);
+		if (J != I->second.end()) {
+			return J->second;
+		}
+	}
+	return 0;
 }
 
 void TerrainManager::updateFoliageVisibility()
 {
-//	bool showFoliage = isFoliageShown();
-//
-//	PageVector::iterator I = mPages.begin();
-//	for (; I != mPages.end(); ++I) {
-//		if (showFoliage) {
-//			PageVector pages;
-//			pages.push_back(*I);
-//			mTaskQueue->enqueueTask(new FoliagePreparationTask(pages));
-//		} else {
-//			//TODO: implement destruction of the foliage data
-//		}
-//	}
+	//	bool showFoliage = isFoliageShown();
+	//
+	//	PageVector::iterator I = mPages.begin();
+	//	for (; I != mPages.end(); ++I) {
+	//		if (showFoliage) {
+	//			PageVector pages;
+	//			pages.push_back(*I);
+	//			mTaskQueue->enqueueTask(new FoliagePreparationTask(pages));
+	//		} else {
+	//			//TODO: implement destruction of the foliage data
+	//		}
+	//	}
 }
 
 void TerrainManager::config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
@@ -517,9 +514,14 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 	EventBeforeTerrainUpdate(positions, pagesToUpdate);
 	//Spawn a separate task for each page to not bog down processing with all pages at once
 	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
-		GeometryPtrVector geometryToUpdate;
+		BridgeBoundGeometryPtrVector geometryToUpdate;
 		TerrainPage* page = *I;
-		geometryToUpdate.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())));
+		ITerrainPageBridgePtr bridgePtr;
+		PageBridgeStore::const_iterator J = mPageBridges.find(page->getWFIndex());
+		if (J != mPageBridges.end()) {
+			bridgePtr = J->second;
+		}
+		geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
 		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, positions, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
 	}
 

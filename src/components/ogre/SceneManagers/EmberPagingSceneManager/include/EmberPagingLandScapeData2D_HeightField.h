@@ -69,12 +69,6 @@ The PagingLandscape SceneManager comes with a whole set of different heightfield
 			virtual bool _load(unsigned int x, unsigned int z);
 			virtual void _load();
 			virtual void _unload();
-
-		private:
-			/**
-			The bridge is the main interface to the TerrainPage to which this page is connected. It's owned by us, so we must make sure to delete it when an instance of this class is deleted or unloaded.
-			*/
-			EmberTerrainPageBridge* mBridge;
 	};
 
 }
