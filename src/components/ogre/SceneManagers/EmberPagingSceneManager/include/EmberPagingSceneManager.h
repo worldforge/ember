@@ -26,7 +26,6 @@
 
 #include "../../../EmberOgrePrerequisites.h"
 #include "OgrePagingLandScapeSceneManager.h"
-// #include "OgrePagingLandScapeOptions.h"
 
 
 namespace EmberOgre {
@@ -46,21 +45,21 @@ class IPageData
 {
 public:
 	virtual ~IPageData() {}
-//	void createHeightData(Ogre::Real* heightData);
 	virtual Ogre::MaterialPtr getMaterial() = 0;
 };
 
 
 /**
- * @brief Provies IPageData instances for the terrain rendering system.
+ * @brief Provides IPageData instances for the terrain rendering system.
  */
 class IPageDataProvider
 {
 public:
-	virtual IPageData* getPageData(const Ogre::Vector2& position) = 0;
+	typedef std::pair<unsigned int, unsigned int> OgreIndex;
+	virtual IPageData* getPageData(const OgreIndex& index) = 0;
 	virtual int getPageIndexSize() const = 0;
-	virtual void setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, ::EmberOgre::Terrain::ITerrainPageBridge* bridge) = 0;
-	virtual void removeBridge(const Ogre::Vector2& ogreIndexPosition) = 0;
+	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, ::EmberOgre::Terrain::ITerrainPageBridge* bridge) = 0;
+	virtual void removeBridge(const OgreIndex& ogreIndexPosition) = 0;
 };
 
 
@@ -86,43 +85,9 @@ public:
 class EmberPagingSceneManager  : public Ogre::PagingLandScapeSceneManager  {
 public:
 
-
-
-        /** Things that need to be allocated once 
-		 */
 	void InitScene( void );
 
     EmberPagingSceneManager(const Ogre::String &name);
-
-// 	EmberTerrainSceneManager();
-// 	virtual ~EmberTerrainSceneManager();
-
-// 	void attachPage(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page,float maxY, float minY);
-// 	Ogre::TerrainPage* getTerrainPage( const Ogre::Vector3 & pt );
-
-	/*
-	 * Resizes the octree. Do this after adding pages.
-	 */
-// 	void doResize();
-	
-	/*
-	 * The scenemanager stores the pages in vectors. This does not allow
-	 * for pages with negative indices.
-	 * But WF uses negative terrain coordinates.
-	 * Thus we need to offset the indices.
-	 */
-/*	int getPageOffset();
-	
-	void setWorldGeometry( const Ogre::String& filename );
-	void setWorldGeometry(  Ogre::TerrainOptions& options );*/
-	
-	
- /*       const Ogre::PagingLandScapeOptions * getOptions() const
-        {
-            assert(mOptions);
-            return mOptions;
-        }*/
-	
 	
 	/**
 	 *    Utility method for creating a new Model.
@@ -130,9 +95,7 @@ public:
 	 * @param modelDefinitionName the name of the model defition from which the model should be created
 	 * @return 
 	 */
-	Model::Model* createModel(
-									const Ogre::String& modelName,
-									const Ogre::String& modelDefinitionName );
+	Model::Model* createModel(const Ogre::String& modelName, const Ogre::String& modelDefinitionName);
 									
 	void registerProvider(IPageDataProvider* provider);
 	
@@ -147,11 +110,6 @@ protected:
 	 */
 	Ogre::ushort mPageOffset;
 	
-// 	/*
-// 	 * Stitches the neighbours, preventing gaps
-// 	 */
-// 	void setupPageNeighbors(Ogre::ushort pageX, Ogre::ushort pageZ, Ogre::TerrainPage* page); 
-
 	/*
 	 * Max and min values for the world. Used to resize the octree.
 	 */

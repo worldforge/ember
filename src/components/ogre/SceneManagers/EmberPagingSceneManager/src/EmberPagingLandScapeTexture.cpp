@@ -24,7 +24,6 @@
 #include "EmberPagingLandScapeTexture.h"
 #include "EmberPagingSceneManager.h"
 #include "OgrePagingLandScapeTextureManager.h"
-#include <OgreVector2.h>
 #include <memory>
 
 namespace EmberOgre
@@ -59,7 +58,7 @@ void EmberPagingLandScapeTexture::_loadMaterial()
 	EmberPagingSceneManager* emberPagingSceneManager = static_cast<EmberPagingSceneManager*> (mParent->getSceneManager());
 	IPageDataProvider* provider = emberPagingSceneManager->getProvider();
 	if (provider) {
-		std::auto_ptr<IPageData> pageData(provider->getPageData(Ogre::Vector2(mDataX, mDataZ)));
+		std::auto_ptr<IPageData> pageData(provider->getPageData(IPageDataProvider::OgreIndex(mDataX, mDataZ)));
 		mMaterial = pageData->getMaterial();
 	}
 }

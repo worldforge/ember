@@ -33,11 +33,7 @@
 #include "EmberTerrainPageBridge.h"
 
 #include "Convert.h"
-#include "terrain/TerrainPage.h"
 
-//#include <OgreCodec.h>
-//#include <OgreImage.h>
-//#include <OgreImageCodec.h>
 using namespace Ogre;
 
 namespace EmberOgre
@@ -53,7 +49,6 @@ EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(O
 
 bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int z)
 {
-	// 	assert(!mTerrainPage);
 	assert(!mHeightData);
 
 	EmberPagingSceneManager* emberPagingSceneManager = static_cast<EmberPagingSceneManager*> (mParent->getSceneManager());
@@ -69,8 +64,12 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 			*(heightDataPtr++) = 0.0f;
 		}
 
+		static size_t totalSize = 0;
+		totalSize += (mMaxArrayPos * sizeof(Ogre::Real));
+		S_LOG_VERBOSE("Created height data of size " << mMaxArrayPos << ". Total data size: " << totalSize << ".");
+
 		EmberTerrainPageBridge* bridge = new EmberTerrainPageBridge(*emberPagingSceneManager->getData2DManager(), mHeightDataPtr, std::pair<unsigned int, unsigned int>(x, z));
-		provider->setUpTerrainPageAtIndex(Ogre::Vector2(x, z), bridge);
+		provider->setUpTerrainPageAtIndex(IPageDataProvider::OgreIndex(x, z), bridge);
 
 		return true;
 	}
@@ -79,9 +78,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 
 EmberPagingLandScapeData2D_HeightField::~EmberPagingLandScapeData2D_HeightField()
 {
-
 }
-;
 
 void EmberPagingLandScapeData2D_HeightField::setMaxHeight(float maxHeight)
 {
@@ -114,17 +111,17 @@ Ogre::Vector3 EmberPagingLandScapeData2D_HeightField::getNormal(const Ogre::Real
 {
 
 	return PagingLandScapeData2D::getNormal(localPageX, localPageZ);
-//	///Use the bridge for quicker lookup.
-//	if (mBridge) {
-//		const Terrain::TerrainPage* terrainPage(mBridge->getTerrainPage());
-//		if (terrainPage) {
-//			WFMath::Vector<3> normal;
-//			if (terrainPage->getNormal(TerrainPosition(localPageX, 512 - localPageZ), normal)) {
-//				return Convert::toOgre(normal);
-//			}
-//		}
-//	}
-//	return Vector3::ZERO;
+	//	///Use the bridge for quicker lookup.
+	//	if (mBridge) {
+	//		const Terrain::TerrainPage* terrainPage(mBridge->getTerrainPage());
+	//		if (terrainPage) {
+	//			WFMath::Vector<3> normal;
+	//			if (terrainPage->getNormal(TerrainPosition(localPageX, 512 - localPageZ), normal)) {
+	//				return Convert::toOgre(normal);
+	//			}
+	//		}
+	//	}
+	//	return Vector3::ZERO;
 }
 
 void EmberPagingLandScapeData2D_HeightField::_save()
@@ -143,7 +140,7 @@ void EmberPagingLandScapeData2D_HeightField::_unload()
 	EmberPagingSceneManager* emberPagingSceneManager = static_cast<EmberPagingSceneManager*> (mParent->getSceneManager());
 	IPageDataProvider* provider = emberPagingSceneManager->getProvider();
 	if (provider) {
-		provider->removeBridge(Ogre::Vector2(mPageX, mPageZ));
+		provider->removeBridge(IPageDataProvider::OgreIndex(mPageX, mPageZ));
 	}
 }
 
@@ -159,7 +156,10 @@ void EmberPagingLandScapeData2D_HeightField::eventTerrainPageLoaded()
 	S_LOG_VERBOSE("Terrain page at (" << mPageX << ", " << mPageZ << ") got TerrainPageLoaded event");
 
 	// notify that terrain data has been loaded
-	mParent->getSceneManager()->getPageManager()->getPage(mPageX, mPageZ, false)->eventData2DLoaded(true);
+	PagingLandScapePage* page = mParent->getSceneManager()->getPageManager()->getPage(mPageX, mPageZ, false);
+	if (page) {
+		page->eventData2DLoaded(true);
+	}
 }
 
 }

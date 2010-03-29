@@ -51,7 +51,7 @@ TerrainPageDataProvider::~TerrainPageDataProvider()
 {
 }
 
-IPageData* TerrainPageDataProvider::getPageData(const Ogre::Vector2& ogreIndexPosition)
+IPageData* TerrainPageDataProvider::getPageData(const OgreIndex& ogreIndexPosition)
 {
 	return new TerrainPageData(mManager.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition)));
 }
@@ -60,22 +60,20 @@ int TerrainPageDataProvider::getPageIndexSize() const
 {
 	return mManager.getPageIndexSize();
 }
-void TerrainPageDataProvider::setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge)
+void TerrainPageDataProvider::setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge)
 {
 	mManager.setUpTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition), bridge);
 }
 
-void TerrainPageDataProvider::removeBridge(const Ogre::Vector2& ogreIndexPosition)
+void TerrainPageDataProvider::removeBridge(const OgreIndex& ogreIndexPosition)
 {
 	mManager.removeBridge(convertToWFTerrainIndex(ogreIndexPosition));
 }
 
-TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const Ogre::Vector2& ogreIndexPosition)
+TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition)
 {
 	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
-	Ogre::Vector2 adjustedOgrePos(ogreIndexPosition.x - mManager.getTerrainInfo().getPageOffsetY(), ogreIndexPosition.y - mManager.getTerrainInfo().getPageOffsetX());
-
-	return TerrainIndex(adjustedOgrePos.x, -adjustedOgrePos.y);
+	return TerrainIndex(ogreIndexPosition.first - mManager.getTerrainInfo().getPageOffsetY(), -(ogreIndexPosition.second - mManager.getTerrainInfo().getPageOffsetX()));
 }
 
 }

@@ -55,10 +55,10 @@ public:
 	TerrainPageDataProvider(Terrain::TerrainManager& manager);
 	virtual ~TerrainPageDataProvider();
 
-	virtual IPageData* getPageData(const Ogre::Vector2& ogreIndexPosition);
+	virtual IPageData* getPageData(const OgreIndex& ogreIndexPosition);
 	virtual int getPageIndexSize() const;
-	virtual void setUpTerrainPageAtIndex(const Ogre::Vector2& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge);
-	virtual void removeBridge(const Ogre::Vector2& ogreIndexPosition);
+	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge);
+	virtual void removeBridge(const OgreIndex& ogreIndexPosition);
 
 protected:
 	Terrain::TerrainManager& mManager;
@@ -66,7 +66,7 @@ protected:
 	/**
 	 * @brief Converts the ogre index position to wf local index.
 	 */
-	TerrainIndex convertToWFTerrainIndex(const Ogre::Vector2& ogreIndexPosition);
+	TerrainIndex convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition);
 
 };
 
