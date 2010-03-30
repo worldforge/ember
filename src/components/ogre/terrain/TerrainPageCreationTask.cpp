@@ -69,7 +69,7 @@ void TerrainPageCreationTask::executeTaskInMainThread()
 
 		mTerrainManager.addPage(mPage);
 
-		if (mBridge) {
+		if (mBridge.get()) {
 			mBridge->terrainPageReady();
 		}
 	}
