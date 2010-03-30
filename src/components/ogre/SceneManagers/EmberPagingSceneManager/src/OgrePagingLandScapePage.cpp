@@ -493,7 +493,7 @@ namespace Ogre
 			return;
 		}
 
-		S_LOG_VERBOSE("Showing/hiding PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
+		S_LOG_VERBOSE((do_show ? "Showing" : "Hiding") << " PagingLandScapePage at (" << mTableX << ", " << mTableZ << ")");
 
 		// set tiles in use or not according with visibility
 		for (size_t i = 0; i < mTiles.size(); ++i) {
@@ -503,7 +503,6 @@ namespace Ogre
 		}
 
 		if (do_show) {
-			assert (!mVisible);
 
 			// add node to the scene
 			if (!mPageNode->getParent()) {
@@ -516,7 +515,6 @@ namespace Ogre
 			fireEvent(EVENT_SHOW);
 
 		} else {
-			assert (mVisible);
 
 			// remove node from the scene
 			if (mPageNode->getParent()) {
