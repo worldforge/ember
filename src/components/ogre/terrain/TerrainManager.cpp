@@ -58,6 +58,8 @@
 #include "framework/tasks/TaskQueue.h"
 #include "framework/tasks/SerialTask.h"
 #include "framework/tasks/TemplateNamedTask.h"
+#include "framework/tasks/TaskExecutionContext.h"
+
 #include "services/config/ConfigService.h"
 
 #include "../Convert.h"
@@ -123,6 +125,47 @@ public:
 	void executeTaskInMainThread()
 	{
 		mAsyncCallback(mPoints);
+	}
+
+};
+
+class TerrainPageReloadTask: public Ember::Tasks::TemplateNamedTask<TerrainPageReloadTask>
+{
+private:
+	TerrainManager& mManager;
+	ITerrainPageBridgePtr mBridge;
+	TerrainPageGeometryPtr mGeometry;
+	const ShaderStore mShaders;
+	const WFMath::AxisBox<2> mArea;
+
+public:
+	TerrainPageReloadTask(TerrainManager& manager, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry, const ShaderStore& shaders, const WFMath::AxisBox<2>& area) :
+		mManager(manager), mBridge(bridge), mGeometry(geometry), mShaders(shaders), mArea(area)
+	{
+	}
+
+	void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+	{
+		mGeometry->repopulate();
+		std::vector<const TerrainShader*> shaders;
+		for (ShaderStore::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
+			shaders.push_back(I->second);
+		}
+		AreaStore areas;
+		areas.push_back(mArea);
+		GeometryPtrVector geometries;
+		geometries.push_back(mGeometry);
+		context.executeTask(new TerrainShaderUpdateTask(geometries, shaders, areas, mManager.EventLayerUpdated));
+		if (mBridge.get()) {
+			mBridge->updateTerrain(*mGeometry);
+		}
+	}
+
+	void executeTaskInMainThread()
+	{
+		if (mBridge.get()) {
+			mBridge->terrainPageReady();
+		}
 	}
 
 };
@@ -417,7 +460,10 @@ void TerrainManager::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 		}
 		mTaskQueue->enqueueTask(new TerrainPageCreationTask(*this, index, bridgePtr, *mHeightMapBufferProvider, *mHeightMap, sunDirection));
 	} else {
-		S_LOG_WARNING("Trying to set up TerrainPage at index [" << x << "," << y << "], but it was already created");
+		TerrainPage* page = mTerrainPages[x][y];
+		TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*page, getSegmentManager(), getDefaultHeight()));
+
+		mTaskQueue->enqueueTask(new TerrainPageReloadTask(*this, bridgePtr, geometryInstance, getAllShaders(), page->getWorldExtent()));
 	}
 }
 
