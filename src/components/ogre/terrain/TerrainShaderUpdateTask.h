@@ -50,6 +50,7 @@ class TerrainPageSurfaceCompilationInstance;
 class TerrainShaderUpdateTask : public Ember::Tasks::TemplateNamedTask<TerrainShaderUpdateTask>
 {
 public:
+
 	/**
 	 * @brief Ctor.
 	 * @param geometry The geometry which needs the surfaces updated.
@@ -58,6 +59,16 @@ public:
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
 	 */
 	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
+
+	/**
+	 * @brief Ctor.
+	 * @param geometry The geometry which needs the surfaces updated.
+	 * @param shaders The shaders which for each page will be be applied.
+	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
+	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
+	 */
+	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
+
 	virtual ~TerrainShaderUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -74,7 +85,7 @@ private:
 	/**
 	 * @brief The shader which will be applied.
 	 */
-	const TerrainShader* mShader;
+	std::vector<const TerrainShader*> mShaders;
 
 	/**
 	 * @brief Only the pages affected by the areas will be updated.

@@ -35,9 +35,14 @@ namespace Terrain
 {
 
 TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
-	mGeometry(geometry), mShader(shader), mAreas(areas), mSignal(signal)
+	mGeometry(geometry), mAreas(areas), mSignal(signal)
 {
+	mShaders.push_back(shader);
+}
 
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
+	mGeometry(geometry), mShaders(shaders), mAreas(areas), mSignal(signal)
+{
 }
 
 TerrainShaderUpdateTask::~TerrainShaderUpdateTask()
@@ -58,8 +63,10 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 			}
 		}
 		if (shouldUpdate) {
-			///repopulate the layer
-			page.updateShaderTexture(mShader, *geometry, true);
+			for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
+				///repopulate the layer
+				page.updateShaderTexture(*I, *geometry, true);
+			}
 			updatedPages.push_back(geometry);
 		}
 	}
@@ -72,10 +79,12 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 void TerrainShaderUpdateTask::executeTaskInMainThread()
 {
 
-	if (mAreas.size()) {
-		mSignal(mShader, &mAreas);
-	} else {
-		mSignal(mShader, 0);
+	for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
+		if (mAreas.size()) {
+			mSignal(*I, &mAreas);
+		} else {
+			mSignal(*I, 0);
+		}
 	}
 }
 
