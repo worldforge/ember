@@ -430,7 +430,8 @@ void BatchPage::_updateShaders()
 
 		std::string fragmentProgramName("BatchFragStandard");
 		//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
-		if (HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName).isNull()){
+		HighLevelGpuProgramPtr fragShader = static_cast<HighLevelGpuProgramPtr>(HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName));
+		if (fragShader.isNull()){
 			Pass *pass = mat->getTechnique(0)->getPass(0);
 
 			String fragmentProgSource = "void main \n"
@@ -452,7 +453,7 @@ void BatchPage::_updateShaders()
 			else
 				shaderLanguage = "cg";
 
-			HighLevelGpuProgramPtr fragShader = HighLevelGpuProgramManager::getSingleton().createProgram(
+			fragShader = HighLevelGpuProgramManager::getSingleton().createProgram(
 				fragmentProgramName,
 				ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 				shaderLanguage, GPT_FRAGMENT_PROGRAM);
@@ -496,7 +497,7 @@ void BatchPage::_updateShaders()
 					if (pass->getVertexProgramName() == "")
 						pass->setVertexProgram(vertexProgName);
 
-					if (pass->getFragmentProgramName() == "")
+					if (pass->getFragmentProgramName() == "" && fragShader->isSupported())
 						pass->setFragmentProgram(fragmentProgramName);
 
 					try{
@@ -533,10 +534,11 @@ void BatchPage::_updateShaders()
 								pass->setSceneBlending(SBT_TRANSPARENT_ALPHA);
 						}
 
-						params = pass->getFragmentProgramParameters();
-						params->setIgnoreMissingParams(true);
- 						params->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
-
+						if (pass->hasFragmentProgram()) {
+							params = pass->getFragmentProgramParameters();
+							params->setIgnoreMissingParams(true);
+							params->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
+						}
 					}
 					catch (...) {
 						OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Error configuring batched geometry transitions. If you're using materials with custom vertex shaders, they will need to implement fade transitions to be compatible with BatchPage.", "BatchPage::_updateShaders()");
