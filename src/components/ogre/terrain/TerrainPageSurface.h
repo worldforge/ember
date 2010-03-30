@@ -89,7 +89,7 @@ public:
 
 protected:
 
-	Ogre::MaterialPtr mMaterial;
+	std::string mMaterialName;
 	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::auto_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;

@@ -48,9 +48,7 @@ TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage) :
 	std::stringstream materialNameSS;
 	materialNameSS << "EmberTerrain_Segment";
 	materialNameSS << "_" << terrainPage.getWFPosition().x() << "_" << terrainPage.getWFPosition().y();
-
-	///create the actual material
-	mMaterial = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().create(materialNameSS.str(), "General"));
+	mMaterialName = materialNameSS.str();
 
 }
 
@@ -96,7 +94,8 @@ unsigned int TerrainPageSurface::getPixelWidth() const
 
 const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 {
-	return mMaterial;
+	std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve(mMaterialName, "General");
+	return static_cast<Ogre::MaterialPtr>(result.first);
 }
 
 TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const
