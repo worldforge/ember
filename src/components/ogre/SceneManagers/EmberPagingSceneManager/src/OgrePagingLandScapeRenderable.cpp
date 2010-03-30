@@ -539,126 +539,129 @@ namespace Ogre
     {
 	    if (mInUse && mIsLoaded && mVisible)
         {     
-            // if some deformation
-            if (mNeedReload)
-            {
-                // if between deformation and now, tile have been unloaded
-                if (!load ())
-                {
-                    mVisible = false;
-                    return;
-                }
-            }
-            // Horizon occlusion. (needs data to be loaded or reloaded)                
-            if (mParent->getOptions ()->VisMap)
-            {
-                PagingLandScapeCamera* plscam = static_cast<PagingLandScapeCamera*> (cam);
-                if(!mParent->getSceneManager()->getHorizon()->IsTileVisible(plscam, mInfo))
-                {
-                    mVisible = false;
-                    return;
-                }
-			}
-			const int oldRenderLevel = mRenderLevel;
-            if (mForcedMaxLod)
-            {
-                mRenderLevel = 0;
-                mMaterialLODIndex = 0;
-            }
-            else
-			{      
-                // get distance between renderable and tile and  adjust it by the camera bias
-                mDistanceToCam =  (getWorldPosition() - cam -> getDerivedPosition()).squaredLength() * cam->getLodBias ();
-              
-                // Material LOD
-                if (!mMaterial.isNull() 
-                    && mMaterial->getNumLodLevels(MaterialManager::getSingleton()._getActiveSchemeIndex()) > 1
-                    )
+	    	//Only recalculate LOD if the camera is the primary camera, or if no neightbours etc. have been set up
+	    	if (mParent->getOptions()->primaryCamera == cam || mRenderLevel == -1) {
+				// if some deformation
+				if (mNeedReload)
 				{
-					const unsigned short LODIndex = mMaterial->getLodIndexSquaredDepth (mDistanceToCam);
-					if (LODIndex != mMaterialLODIndex)
-						mMaterialLODIndex = LODIndex; 
+					// if between deformation and now, tile have been unloaded
+					if (!load ())
+					{
+						mVisible = false;
+						return;
+					}
 				}
-                mRenderLevel = -1;
-				const int maxMipmap = static_cast <int> (mParent->getOptions ()->maxRenderLevel);
-				assert (mMinLevelDistSqr);
-                for (int i = 0; i < maxMipmap; i++)
-                {
-                    
-                    if ((*mMinLevelDistSqr)[ i ] > mDistanceToCam)
-                    {
-                        mRenderLevel = i - 1;
-                        break;
-                    }
-                }
-                if (mRenderLevel < 0)
-                    mRenderLevel = maxMipmap - 1;
-                        
-                // Get the next LOD level down
-                if (mParent->getOptions ()->lodMorph)
-                {
-                    // Get the next LOD level down
-                    const int nextLevel = mNextLevelDown[mRenderLevel];                
-                    if (nextLevel == 0)
-                    {
-                        // No next level, so never morph
-                        mLODMorphFactor = 0.0f;
-                        mCustomGpuParameters.w = mLODMorphFactor;
-                    }
-                    else
-                    {
-                        // Set the morph such that the morph happens in the last 0.25 of
-                        // the distance range
-                        const Real range = (*mMinLevelDistSqr)[nextLevel] - (*mMinLevelDistSqr)[mRenderLevel];
-                        if (range)
-                        {
-                            const Real percent = (mDistanceToCam - (*mMinLevelDistSqr)[mRenderLevel]) / range;
-                            // scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
-                            const Real rescale = 1.0f / (1.0f - mParent->getOptions ()->lodMorphStart);
-                            mLODMorphFactor = std::max((percent - mParent->getOptions ()->lodMorphStart) * rescale, 
-				                                        static_cast<Real>(0.0f));
-                            mCustomGpuParameters.w = mLODMorphFactor;
-                            assert (mLODMorphFactor <= 1.0f);
-                        }
-                        else
-                        {
-                            // Identical ranges
-                            mLODMorphFactor = 0.0f;
-                            mCustomGpuParameters.w = mLODMorphFactor;
-                        }                
-                    }
-                    // Bind the correct delta buffer if it has changed
-                    // nextLevel - 1 since the first entry is for LOD 1 (since LOD 0 never needs it)
-                    if (mLastNextLevel != nextLevel)
-                    {   
-                        assert (mDeltaBuffers);
-                        
-                        if (nextLevel > 1)
-                        {
-                            mCurrVertexes->vertexBufferBinding->setBinding(DELTA_BINDING, 
-                                mDeltaBuffers[nextLevel - 1]);
-                        }
-                        else
-                        {
-                            // bind dummy (in case bindings checked)
-                            mCurrVertexes->vertexBufferBinding->setBinding(DELTA_BINDING, 
-                                mDeltaBuffers[0]);
-                        }
-                    }
-                    mLastNextLevel = nextLevel;
-				}
-			}
-			//// If we change LOD update self and neighbor
-			if (oldRenderLevel != mRenderLevel || mCurrIndexes == 0)
-			{
-				update ();
-				for (unsigned int i = 0; i < 4; i++)
+				// Horizon occlusion. (needs data to be loaded or reloaded)
+				if (mParent->getOptions ()->VisMap)
 				{
-					PagingLandScapeRenderable * const r = mNeighbors[i];
-					if (r && r->isLoaded () && r->isVisible ())
-						r->update ();
+					PagingLandScapeCamera* plscam = static_cast<PagingLandScapeCamera*> (cam);
+					if(!mParent->getSceneManager()->getHorizon()->IsTileVisible(plscam, mInfo))
+					{
+						mVisible = false;
+						return;
+					}
 				}
-			}
+				const int oldRenderLevel = mRenderLevel;
+				if (mForcedMaxLod)
+				{
+					mRenderLevel = 0;
+					mMaterialLODIndex = 0;
+				}
+				else
+				{
+					// get distance between renderable and tile and  adjust it by the camera bias
+					mDistanceToCam =  (getWorldPosition() - cam -> getDerivedPosition()).squaredLength() * cam->getLodBias ();
+
+					// Material LOD
+					if (!mMaterial.isNull()
+						&& mMaterial->getNumLodLevels(MaterialManager::getSingleton()._getActiveSchemeIndex()) > 1
+						)
+					{
+						const unsigned short LODIndex = mMaterial->getLodIndexSquaredDepth (mDistanceToCam);
+						if (LODIndex != mMaterialLODIndex)
+							mMaterialLODIndex = LODIndex;
+					}
+					mRenderLevel = -1;
+					const int maxMipmap = static_cast <int> (mParent->getOptions ()->maxRenderLevel);
+					assert (mMinLevelDistSqr);
+					for (int i = 0; i < maxMipmap; i++)
+					{
+
+						if ((*mMinLevelDistSqr)[ i ] > mDistanceToCam)
+						{
+							mRenderLevel = i - 1;
+							break;
+						}
+					}
+					if (mRenderLevel < 0)
+						mRenderLevel = maxMipmap - 1;
+
+					// Get the next LOD level down
+					if (mParent->getOptions ()->lodMorph)
+					{
+						// Get the next LOD level down
+						const int nextLevel = mNextLevelDown[mRenderLevel];
+						if (nextLevel == 0)
+						{
+							// No next level, so never morph
+							mLODMorphFactor = 0.0f;
+							mCustomGpuParameters.w = mLODMorphFactor;
+						}
+						else
+						{
+							// Set the morph such that the morph happens in the last 0.25 of
+							// the distance range
+							const Real range = (*mMinLevelDistSqr)[nextLevel] - (*mMinLevelDistSqr)[mRenderLevel];
+							if (range)
+							{
+								const Real percent = (mDistanceToCam - (*mMinLevelDistSqr)[mRenderLevel]) / range;
+								// scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
+								const Real rescale = 1.0f / (1.0f - mParent->getOptions ()->lodMorphStart);
+								mLODMorphFactor = std::max((percent - mParent->getOptions ()->lodMorphStart) * rescale,
+															static_cast<Real>(0.0f));
+								mCustomGpuParameters.w = mLODMorphFactor;
+								assert (mLODMorphFactor <= 1.0f);
+							}
+							else
+							{
+								// Identical ranges
+								mLODMorphFactor = 0.0f;
+								mCustomGpuParameters.w = mLODMorphFactor;
+							}
+						}
+						// Bind the correct delta buffer if it has changed
+						// nextLevel - 1 since the first entry is for LOD 1 (since LOD 0 never needs it)
+						if (mLastNextLevel != nextLevel)
+						{
+							assert (mDeltaBuffers);
+
+							if (nextLevel > 1)
+							{
+								mCurrVertexes->vertexBufferBinding->setBinding(DELTA_BINDING,
+									mDeltaBuffers[nextLevel - 1]);
+							}
+							else
+							{
+								// bind dummy (in case bindings checked)
+								mCurrVertexes->vertexBufferBinding->setBinding(DELTA_BINDING,
+									mDeltaBuffers[0]);
+							}
+						}
+						mLastNextLevel = nextLevel;
+					}
+				}
+				//// If we change LOD update self and neighbor
+				if (oldRenderLevel != mRenderLevel || mCurrIndexes == 0)
+				{
+					update ();
+					for (unsigned int i = 0; i < 4; i++)
+					{
+						PagingLandScapeRenderable * const r = mNeighbors[i];
+						if (r && r->isLoaded () && r->isVisible ())
+							r->update ();
+					}
+				}
+	    	}
 			mVisible = true;  
         }
 		else
