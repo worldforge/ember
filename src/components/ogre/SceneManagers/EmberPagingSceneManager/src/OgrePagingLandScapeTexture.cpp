@@ -732,10 +732,31 @@ void PagingLandScapeTexture::unload()
 		assert (!mMaterial.isNull() && "PagingLandScapeTexture::unload");      
 		mMaterial->unload();
 		mMaterial.setNull();
-		///ember change start
-		///don't remove from the manager, since it's tricky to add it again it later on
-// 			MaterialManager::getSingleton().remove (resourceName);
-		///ember change stop
+		MaterialManager::getSingleton().remove (resourceName);
+
+
+		if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
+			Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
+
+			while (scenesIter.hasMoreElements()) {
+				Ogre::SceneManager* pScene = scenesIter.getNext();
+				if (pScene) {
+					Ogre::RenderQueue* pQueue = pScene->getRenderQueue();
+					if (pQueue) {
+						Ogre::RenderQueue::QueueGroupIterator groupIter = pQueue->_getQueueGroupIterator();
+						while (groupIter.hasMoreElements()) {
+							Ogre::RenderQueueGroup* pGroup = groupIter.getNext();
+							if (pGroup)
+								pGroup->clear(false);
+						}//end_while(groupIter.hasMoreElements())
+					}//end_if(pScene)
+				}//end_if(pScene)
+			}//end_while(scenesIter.hasMoreElements())
+
+			// Now trigger the pending pass updates
+			Ogre::Pass::processPendingPassUpdates();
+
+		}//end_if(m_Root..
 			
 	        mIsLoaded = false;
         }
