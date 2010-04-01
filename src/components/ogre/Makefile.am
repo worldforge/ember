@@ -171,5 +171,6 @@ noinst_HEADERS = \
 	AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h \
 	AttachmentBase.h AvatarCameraMotionHandler.h FreeFlyingCameraMotionHandler.h \
 	ICollisionDetector.h INodeProvider.h SceneNodeProvider.h IVisualizable.h IEntityVisitor.h \
-	EntityObserverBase.h TerrainPageDataProvider.h ILightning.h Scene.h ForestRenderingTechnique.h
+	EntityObserverBase.h TerrainPageDataProvider.h ILightning.h Scene.h ForestRenderingTechnique.h \
+	ISceneRenderingTechnique.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h
