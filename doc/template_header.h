@@ -3,7 +3,7 @@
 
 // Additional guidelines:
 //
-// - The indent is tab (tab size is four spaces)
+// - The indent is tab
 //
 // - Opening braces on new lines
 //
@@ -38,6 +38,7 @@
 //
 // - When documenting a class, member or field always use the @brief doxygen keyword first to provide a quick description. Always use full English sentences, i.e. with uppercase initial letter and a period on the end. See examples later on in this document.
 //
+// - If you're using Eclipse there's a coding style file available at EclipseCodeStyle.xml
 //
 //---------------------------------------------------------------------------------------------------
 //

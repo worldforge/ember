@@ -1,17 +1,17 @@
 Ember Installation Instructions 
 
-(Last Updated: 2005-01-22)
+(Last Updated: 2010-04-03)
 
  Dependencies
 
 Ember currently depends on the following libraries:
 
 * Ogre 3d library
-  Version: 1.0.4
+  Version: 1.6+
   http://www.ogre3d.org
 
 * CEGUI gui system
-  Version: 0.4.0
+  Version: 0.6+
   http://www.cegui.org.uk
 
 * SDL Simple DirectMedia Layer 
@@ -57,18 +57,3 @@ make install
 Here we'll address typical problems with the 
 installation, and how to fix them
 
- I get link errors with "Ogre::MemoryManager..."
-
-If you build ogre om debug mode it will use an internal 
-memory manager, which can mess with the linking. A 
-simple solution is to edit the file 
-OgreMain/include/OgreConfig.h and change 
-
-#define OGRE_DEBUG_MEMORY_MANAGER 1 
-
-to 
-
-#define OGRE_DEBUG_MEMORY_MANAGER 0 
-
-This will remove the use of the memory manager even 
-from debug builds.
