@@ -52,7 +52,7 @@ class Image;
 */
 class TerrainPageSurfaceLayer{
 public:
-    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader* shader);
+    TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader);
 
     virtual ~TerrainPageSurfaceLayer();
 
@@ -88,7 +88,7 @@ public:
 
 protected:
 	TerrainPageSurface& mTerrainPageSurface;
-	const Mercator::Shader* mShader;
+	const Mercator::Shader& mShader;
 
 	std::string mDiffuseTextureName;
 	std::string mSpecularTextureName;

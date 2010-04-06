@@ -83,10 +83,10 @@ void FoliageBase::TerrainManager_LayerUpdated(const Terrain::TerrainShader* shad
 	if (mPagedGeometry) {
 		///check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
 		bool isRelevant(0);
-		if (shader->getLayerDefinition() == &mTerrainLayerDefinition) {
+		if (&shader->getLayerDefinition() == &mTerrainLayerDefinition) {
 			isRelevant = true;
 		} else {
-			if (std::find(mDependentDefinitions.begin(), mDependentDefinitions.end(), shader->getLayerDefinition()) != mDependentDefinitions.end()) {
+			if (std::find(mDependentDefinitions.begin(), mDependentDefinitions.end(), &shader->getLayerDefinition()) != mDependentDefinitions.end()) {
 				isRelevant = true;
 			}
 		}
@@ -113,7 +113,7 @@ void FoliageBase::TerrainManager_LayerUpdated(const Terrain::TerrainShader* shad
 void FoliageBase::TerrainManager_EventShaderCreated(const Terrain::TerrainShader* shader)
 {
 	///we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
-	mDependentDefinitions.push_back(shader->getLayerDefinition());
+	mDependentDefinitions.push_back(&shader->getLayerDefinition());
 	if (mPagedGeometry) {
 		mPagedGeometry->reloadGeometry();
 	}

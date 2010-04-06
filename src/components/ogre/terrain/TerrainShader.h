@@ -19,11 +19,13 @@
 #ifndef TERRAINSHADER_H
 #define TERRAINSHADER_H
 
-#include "../EmberOgrePrerequisites.h"
-#include <Mercator/Shader.h>
-#include <Mercator/Terrain.h>
-#include <Mercator/Segment.h>
 
+namespace Mercator {
+class Terrain;
+class Shader;
+class Surface;
+class Segment;
+}
 
 namespace EmberOgre {
 namespace Terrain {
@@ -33,48 +35,27 @@ class TerrainLayerDefinition;
 class TerrainShader{
 public:
 
-	TerrainShader(Mercator::Terrain* terrain, int terrainIndex, const TerrainLayerDefinition* layerDef, const Mercator::Shader* shader);
+	TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const TerrainLayerDefinition& layerDef, const Mercator::Shader* shader);
 	virtual ~TerrainShader();
 
-	const Mercator::Shader* getShader() const;
-
-	/**
-	 * @brief Adds a texture unit with a splatting alpha texture to the supplied pass.
-	 * Use this when you're using many texture units in the same pass
-	 */
-	void addTextureUnitsToPass(Ogre::Pass* pass, const std::string& splatTextureName);
-
-	/**
-	 * @brief Adds a pass with a splatting alpha texture to the supplied technique.
-	 * Use this when you're using many passes. This is more expensive than
-	 * addTextureUnitsToPass(...) but works on card with a low number of
-	 * TextureUnits.
-	 */
-	Ogre::Pass* addPassToTechnique(Ogre::Technique* technique, const std::string& splatTextureName);
+	const Mercator::Shader& getShader() const;
 
 	int getTerrainIndex() const;
 
-	void addMaterialToTechnique(Ogre::Technique* technique, const std::string& splatTextureName);
-	void addSplatToTechnique(Ogre::Technique* technique, const std::string& splatTextureName);
-
-
 	/**
-	 *    returns the Surface for the given segment
+	 * @brief Returns the Surface for the given segment.
 	 * @param segment
 	 * @return a surface, or null if no could be found
 	 */
-	Mercator::Surface* getSurfaceForSegment(Mercator::Segment* segment) const;
+	Mercator::Surface* getSurfaceForSegment(Mercator::Segment& segment) const;
 
-
-	const TerrainLayerDefinition* getLayerDefinition() const;
+	const TerrainLayerDefinition& getLayerDefinition() const;
 
 protected:
-	const TerrainLayerDefinition* mLayerDef;
+	const TerrainLayerDefinition& mLayerDef;
 	const Mercator::Shader* mShader;
-	Mercator::Terrain* mTerrain;
+	Mercator::Terrain& mTerrain;
 	int mTerrainIndex;
-
-	Ogre::ushort getMaxTextureUnits() const;
 };
 
 inline int TerrainShader::getTerrainIndex() const

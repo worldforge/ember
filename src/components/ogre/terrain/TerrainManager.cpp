@@ -248,10 +248,10 @@ TerrainShader* TerrainManager::createShader(const TerrainLayerDefinition* layerD
 {
 	size_t index = mShaderMap.size();
 	S_LOG_VERBOSE("Creating new shader for shader " << layerDef->getShaderName() <<" with index " << index);
-	TerrainShader* shader = new TerrainShader(mTerrain, index, layerDef, mercatorShader);
+	TerrainShader* shader = new TerrainShader(*mTerrain, index, *layerDef, mercatorShader);
 
 	mBaseShaders.push_back(shader);
-	mShaderMap[shader->getShader()] = shader;
+	mShaderMap[&shader->getShader()] = shader;
 	for (TerrainLayerDefinition::TerrainFoliageDefinitionStore::const_iterator I = layerDef->getFoliages().begin(); I != layerDef->getFoliages().end(); ++I) {
 		mVegetation->createPopulator(*I, index);
 	}
