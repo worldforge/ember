@@ -31,7 +31,7 @@
 namespace EmberOgre {
 namespace Terrain {
 
-TerrainShader::TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const TerrainLayerDefinition& layerDef, const Mercator::Shader* shader)
+TerrainShader::TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const TerrainLayerDefinition& layerDef, Mercator::Shader* shader)
 : mLayerDef(layerDef)
 , mShader(shader)
 , mTerrain(terrain)

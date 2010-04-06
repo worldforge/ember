@@ -35,7 +35,7 @@ class TerrainLayerDefinition;
 class TerrainShader{
 public:
 
-	TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const TerrainLayerDefinition& layerDef, const Mercator::Shader* shader);
+	TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const TerrainLayerDefinition& layerDef, Mercator::Shader* shader);
 	virtual ~TerrainShader();
 
 	const Mercator::Shader& getShader() const;
