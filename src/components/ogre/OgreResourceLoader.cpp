@@ -148,12 +148,8 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
 			foundDir = true;
-<<<<<<< HEAD
 			mResourceLocations.insert(std::make_pair(section, finalPath));
-		} catch (const Ogre::Exception&) {
-=======
 		} catch (const std::exception&) {
->>>>>>> Removed most references to Ogre::Exception in favour of std::exception.
 			///don't report anything
 		}
 	}
@@ -166,14 +162,9 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
 			foundDir = true;
-<<<<<<< HEAD
 			mResourceLocations.insert(std::make_pair(section, finalPath));
-		} catch (const Ogre::Exception&) {
-			S_LOG_FAILURE("Couldn't load " + finalPath + ". Continuing as if nothing happened.");
-=======
 		} catch (const std::exception&) {
 			S_LOG_FAILURE("Couldn't load " << emberMediaPath << path << ". Continuing as if nothing happened.");
->>>>>>> Removed most references to Ogre::Exception in favour of std::exception.
 		}
 	}
 	return foundDir;
