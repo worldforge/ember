@@ -74,7 +74,6 @@ namespace Ogre
         MovableObject(),
         mParent(renderableMgr),
         mCurrVertexes (0),
-        mCurrIndexes (0),
 	    mInfo (0),
 	    mMaterialLODIndex (0),
 	    mInUse  (false),
@@ -203,7 +202,6 @@ namespace Ogre
         mParent->freeRenderable(this);
         mInfo = 0;
         mHeightfield = 0;
-        mCurrIndexes = 0;
         mLastNextLevel = -1;
         mRenderLevel = -1;
         mVisible = false;
@@ -651,7 +649,7 @@ namespace Ogre
 					}
 				}
 				//// If we change LOD update self and neighbor
-				if (oldRenderLevel != mRenderLevel || mCurrIndexes == 0)
+				if (oldRenderLevel != mRenderLevel || mIndex == 0)
 				{
 					update ();
 					for (unsigned int i = 0; i < 4; i++)

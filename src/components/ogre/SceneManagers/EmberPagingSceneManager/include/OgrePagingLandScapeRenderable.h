@@ -186,7 +186,6 @@ namespace Ogre
 	protected:	
 
 		VertexData* mCurrVertexes;
-		IndexData* mCurrIndexes;
 		
 		/// Bounding box of this tile
 		AxisAlignedBox mBounds;
