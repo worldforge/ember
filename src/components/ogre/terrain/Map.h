@@ -238,7 +238,7 @@ public:
 
 	/**
 	 * @brief Sets the resolution of the map.
-	 * The map will be rerendered after the resolution has been changed.
+	 * @note This will not rerender the map, so a call to render() needs to be made if you want the update to show.
 	 * @param metersPerPixel The resolution of the map in pixels per meter.
 	 */
 	void setResolution(float metersPerPixel);

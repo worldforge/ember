@@ -121,7 +121,6 @@ void Map::setResolution(float metersPerPixel)
 {
 	if (metersPerPixel > 0) {
 		mMetersPerPixel = metersPerPixel;
-		render();
 		mView.recalculateBounds();
 	}
 }
