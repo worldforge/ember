@@ -265,11 +265,6 @@ namespace Ogre
 					PagingLandScapeTexture* tex = mTexture->getTexture(x, z);
 					assert(tex);
 
-					// update Page Texture if needed
-					if (mOptions->lightmoved)
-						tex->lightUpdate();
-					if (tex->needUpdate())
-						tex->update();
 				}
 			} else {
 				// hide page not visible by this Camera

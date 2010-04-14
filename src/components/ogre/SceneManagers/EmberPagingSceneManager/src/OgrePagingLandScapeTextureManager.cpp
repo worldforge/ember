@@ -73,8 +73,6 @@ namespace Ogre
 							break;
 						++iTexFormatCurr;
 					}
-					if (iTexFormatCurr == mTextureTypeMap.end())
-						registerTextureType(new PagingLandScapeTexture(this, textureFormat));
 				}
 				++itTexFormatSupp;
 			}
@@ -135,10 +133,6 @@ namespace Ogre
 #ifdef _DEBUG
             std::cout << "Trying " << mTextureTypeMap[nextTextureType]->getName () << '\n';
 #endif //_DEBUG
-            if (mTextureTypeMap[nextTextureType]->isMaterialSupported())
-            {
-                return mTextureTypeMap[nextTextureType]->getName();
-            }
 
             nextTextureType ++ ;
             if (nextTextureType == numTextureTypes)
@@ -318,24 +312,7 @@ namespace Ogre
                 const String &modeName = mTextureTypeMap[i]->getName ();
                 if (modeName == mTextureFormat)
                 {
-					if (!mTextureTypeMap[i]->isMaterialSupported())
-					{
-						mTextureFormat = getNextTextureFormat();// not supported, find first supported.
-						for (unsigned int k = 0; k != numTextureTypes; ++k)
-						{
-							const String &newmodeName = mTextureTypeMap[k]->getName ();
-							if (newmodeName == mTextureFormat)
-							{
-								mTextureType = k;
-								i = k;
-								break;
-							}
-						}
-					}
-					else
-					{
-						mTextureType = i;
-					}
+					mTextureType = i;
                     break;
                 }
             }
@@ -345,29 +322,12 @@ namespace Ogre
                         "TextureMode not supplied or wrong (check case) !",
 		                " PagingLandScapeTextureManager::load ");
             }
-            if (!mTextureTypeMap[mTextureType]->isMaterialSupported())
-            {
-                OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-                        "TextureMode not supported by current hardware!  (shaders/num texture units...)",
-		                " PagingLandScapeTextureManager::load ");
-            }
             mTexturePageSize = mOptions->PageSize - 1;
         }
         setPageSize();      
-		mTextureTypeMap[mTextureType]->setOptions();
         WorldDimensionChange();
     }
 
-	//-----------------------------------------------------------------------
-	unsigned int PagingLandScapeTextureManager::getNumChannels()
-	{ 
-		return mTextureTypeMap[mTextureType]->getNumChannels ();
-	}
-    //-----------------------------------------------------------------------
-    unsigned int PagingLandScapeTextureManager::getNumChannelsperTexture(const size_t i)
-    { 
-        return mTextureTypeMap[mTextureType]->getNumChannelsperTexture (i);
-    }
     //-----------------------------------------------------------------------
     void PagingLandScapeTextureManager::clear ()
     {
@@ -434,15 +394,6 @@ namespace Ogre
         PagingLandScapeTexture* tex = getTexture (texX , texZ);
 	    tex->unload();
 	    tex->load(texX, texZ);
-        const unsigned int tsize =  mOptions->TileSize;
-        const unsigned int psize =  mOptions->PageSize;
-        for (unsigned int z = 0; z <= psize ; z += tsize)
-        {
-            for (unsigned int x = 0; x <= psize ; x += tsize)
-            {                       
-	            tex->adjustDeformationRectangle (x, z);
-            }
-        }
     }
     //-----------------------------------------------------------------------
     bool PagingLandScapeTextureManager::isLoaded(const unsigned int texX, const unsigned int texZ)
@@ -462,232 +413,12 @@ namespace Ogre
 												const Real paintForce, 
 												const PagingLandScapeTileInfo *info)
     {
-		const unsigned int pX = info->mPageX;
-		const unsigned int pZ = info->mPageZ;
-        const unsigned int pSize = mOptions->PageSize - 1;
-        // adjust x and z to be local to page
-        const unsigned int x = static_cast<unsigned int> (currpoint.x
-                                            - pX * pSize
-                                            + mOptions->maxUnScaledX);
-        const unsigned int z = static_cast<unsigned int> (currpoint.z
-                                            - pZ * pSize
-                                            + mOptions->maxUnScaledZ);
 
-        PagingLandScapeTexture* tex = getTexture (pX , pZ, false);
-        if (tex && tex->isLoaded())
-        {
-            const unsigned int tSize = pSize - 1;
-            const bool rightlimit = (x >= tSize);
-            const bool uplimit    = (z >= tSize);
-
-            // If we're not on a page edge
-            if (!rightlimit && !uplimit)
-            {
-				tex->paint (x, z, paintForce);
-            }
-
-            // we must duplicate the change on the 
-            // neighbor page (if it has one...)    
-            const unsigned int wL = mOptions->world_width;
-            const unsigned int hL = mOptions->world_height;
-            const bool right = false;//(rightlimit && pX < wL - 1);
-            const bool up    = false;//(uplimit    && pZ < hL - 1);
-            const bool left  = (x == 0     && pX != 0);
-            const bool down  = (z == 0     && pZ != 0);
-
-            assert (z <= tSize && x <= tSize);
-
-            if (left)
-            {
-                if (down)
-                {               
-                    //  lower left corner 
-                    tex = getTexture (pX - 1 , pZ - 1, false);
-                    if (tex && tex->isLoaded())
-					{
-						tex->paint (tSize, tSize, paintForce);
-                    } 
-                }
-                else if (up)
-                {
-					//  upper left corner 
-					tex = getTexture (pX - 1 , pZ + 1, false);
-					if (tex && tex->isLoaded())
-					{
-						tex->paint (tSize, 0, paintForce);
-                    } 
-                } 
-                else
-                {
-					// left only 
-					tex = getTexture (pX - 1 , pZ, false);
-					if (tex && tex->isLoaded())
-					{
-						tex->paint (tSize, z, paintForce);
-                    } 
-                }
-            }
-            else if (right)
-            {
-                if (up)
-                {
-					//  upper right corner 
-					tex = getTexture (pX + 1 , pZ + 1, false);
-					if (tex && tex->isLoaded())
-					{
-						tex->paint (0, 0, paintForce);
-                    } 
-                }
-                else if (down)
-                {
-					//  lower right corner 
-					tex = getTexture (pX + 1 , pZ - 1, false);
-					if (tex && tex->isLoaded())
-					{
-						tex->paint (0, tSize, paintForce);
-                    } 
-                }  
-                else
-                {
-					// right only
-					tex = getTexture (pX + 1 , pZ, false);
-					if (tex && tex->isLoaded())
-					{
-						tex->paint (0, z, paintForce);
-                    } // if (tex->isLoaded())   
-                }
-            }
-            else if (down)
-            {        
-				//  lower  (down only)    
-				tex = getTexture (pX, pZ - 1, false);
-				if (tex && tex->isLoaded())
-				{
-					tex->paint (x, tSize, paintForce);
-                } 
-            }
-            else if (up)
-            {
-				// upper (up only)
-				tex = getTexture (pX, pZ + 1, false);
-				if (tex && tex->isLoaded())
-				{
-					tex->paint (x, 0, paintForce);
-                } 
-            }     
-        }
     }
     //-----------------------------------------------------------------------
     void PagingLandScapeTextureManager::deformHeight (const Vector3 &currpoint,
         const PagingLandScapeTileInfo *info)
     {
-        const unsigned int pX = info->mPageX;
-        const unsigned int pZ = info->mPageZ;
-        const unsigned int pSize = mOptions->PageSize - 1;
-        // adjust x and z to be local to page
-        const unsigned int x = static_cast<unsigned int> (currpoint.x
-                                            - pX * pSize
-                                            + mOptions->maxUnScaledX);
-        const unsigned int z = static_cast<unsigned int> (currpoint.z
-                                            - pZ * pSize
-                                            + mOptions->maxUnScaledZ);
 
-		PagingLandScapeTexture* tex = getTexture (pX , pZ, false);
-		if (tex && tex->isLoaded())
-        {
-            const unsigned int tSize = pSize - 1;
-            const bool rightlimit = (x >= tSize);
-            const bool uplimit    = (z >= tSize);
-
-            // If we're on a page edge
-            if (!(rightlimit && uplimit))
-            {
-                tex->adjustDeformationRectangle(x, z); 
-            }
-
-            // we must duplicate the change on the 
-            // neighbour page (if it has one...)    
-            const unsigned int wL = mOptions->world_width;
-            const unsigned int hL = mOptions->world_height;
-            const bool right = false;//(rightlimit && pX < wL - 1);
-            const bool up    = false;//(uplimit    && pZ < hL - 1);
-            const bool left  = (x == 0     && pX != 0);
-            const bool down  = (z == 0     && pZ != 0);
-
-            assert (z <= tSize && x <= tSize);
-
-            if (left)
-            {
-                if (down)
-                {               
-					//  lower left corner 
-					tex = getTexture (pX - 1 , pZ - 1, false);
-					if (tex && tex->isLoaded())
-                    {
-                        tex->adjustDeformationRectangle(tSize, tSize); 
-                    } 
-                }
-                else if (up)
-                {
-					//  upper left corner 
-					tex = getTexture (pX - 1 , pZ + 1, false);
-					if (tex && tex->isLoaded())
-                    {
-                        tex->adjustDeformationRectangle(tSize, 0); 
-                    } 
-                } 
-				// left
-				tex = getTexture (pX - 1 , pZ, false);
-				if (tex && tex->isLoaded())
-                {
-                    tex->adjustDeformationRectangle(tSize, z); 
-                } 
-            }
-            else if (right)
-            {
-                if (up)
-                {
-					//  upper right corner 
-					tex = getTexture (pX + 1 , pZ + 1, false);
-					if (tex && tex->isLoaded())
-                    {
-                        tex->adjustDeformationRectangle(0, 0); 
-                    } 
-                }
-                else if (down)
-                {
-					//  lower right corner 
-					tex = getTexture (pX + 1 , pZ - 1, false);
-					if (tex && tex->isLoaded())
-                    {
-                        tex->adjustDeformationRectangle(0, tSize); 
-                    } 
-                }  
-				// right only
-				tex = getTexture (pX + 1 , pZ, false);
-				if (tex && tex->isLoaded())
-                {
-                    tex->adjustDeformationRectangle(0, z); 
-                } 
-            }
-            if (down)
-            {        
-				//  lower  (down only)    
-				tex = getTexture (pX, pZ - 1, false);
-				if (tex && tex->isLoaded())
-                {
-                    tex->adjustDeformationRectangle(x, tSize); 
-                } 
-            }
-            else if (up)
-            {
-				// upper (up only)
-				tex = getTexture (pX, pZ + 1, false);
-				if (tex && tex->isLoaded())
-                {
-                    tex->adjustDeformationRectangle(x, 0); 
-                } 
-            }     
-        } // if (tex->isLoaded())          
     } 
 } //namespace

@@ -1389,17 +1389,6 @@ namespace Ogre
 	    }
 		
         // Paint
-        if (strKey == "NumChannels")
-        {
-            * static_cast < unsigned int * > (pDestValue) = mTextureManager->getNumChannels();
-            return true;
-        }
-        if (strKey == "getNumChannelsperTexture")
-		{            
-			unsigned int requestChannel = *static_cast<unsigned int *>(pDestValue);
-			* static_cast < unsigned int * > (pDestValue) = mTextureManager->getNumChannelsperTexture(requestChannel);
-			return true;
-        }
         if (strKey == "currentColors")
         {
             //

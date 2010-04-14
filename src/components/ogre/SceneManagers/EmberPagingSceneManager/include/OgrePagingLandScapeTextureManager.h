@@ -76,9 +76,6 @@ namespace Ogre
 			PagingLandScapeTexture* getNewTexture(const unsigned int i, const unsigned int j);
 			void releaseTexture (PagingLandScapeTexture*p );
 
-			unsigned int getNumChannels();
-			unsigned int getNumChannelsperTexture(const size_t i);
-
 
             inline PagingLandScapeSceneManager *getSceneManager(){return mSceneManager;}
             inline PagingLandScapeOptions*		getOptions(){return mOptions;}
