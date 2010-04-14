@@ -103,8 +103,9 @@ void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& p
 
 void PlantAreaQueryResult::setDefaultShadowColour(const Ogre::ColourValue& colour)
 {
-	mDefaultShadowColourValue = colour;
-	mDefaultShadowColourLong = colour.getAsARGB();
+	//Make sure to saturate so the values are clamped to [0..1]
+	mDefaultShadowColourValue = colour.saturateCopy();
+	mDefaultShadowColourLong = mDefaultShadowColourValue.getAsARGB();
 }
 
 }
