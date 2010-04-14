@@ -8969,6 +8969,102 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: render of class  EmberOgre::Gui::Icons::IconManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render00
+static int tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Icons::IconManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::Gui::Icons::Icon",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::Gui::Icons::IconManager* self = (EmberOgre::Gui::Icons::IconManager*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Gui::Icons::Icon* icon = ((EmberOgre::Gui::Icons::Icon*)  tolua_tousertype(tolua_S,2,0));
+  const std::string modelName = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'render'",NULL);
+#endif
+  {
+   self->render(*icon,modelName);
+   tolua_pushcppstring(tolua_S,(const char*)modelName);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'render'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: render of class  EmberOgre::Gui::Icons::IconManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render01
+static int tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Icons::IconManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::Gui::Icons::Icon",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"EmberOgre::EmberEntity",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  EmberOgre::Gui::Icons::IconManager* self = (EmberOgre::Gui::Icons::IconManager*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Gui::Icons::Icon* icon = ((EmberOgre::Gui::Icons::Icon*)  tolua_tousertype(tolua_S,2,0));
+  EmberOgre::EmberEntity* entity = ((EmberOgre::EmberEntity*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'render'",NULL);
+#endif
+  {
+   self->render(*icon,*entity);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: render of class  EmberOgre::Gui::Icons::IconManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render02
+static int tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render02(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::Gui::Icons::IconManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::Gui::Icons::Icon",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Eris::TypeInfo",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  EmberOgre::Gui::Icons::IconManager* self = (EmberOgre::Gui::Icons::IconManager*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Gui::Icons::Icon* icon = ((EmberOgre::Gui::Icons::Icon*)  tolua_tousertype(tolua_S,2,0));
+  Eris::TypeInfo* erisType = ((Eris::TypeInfo*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'render'",NULL);
+#endif
+  {
+   self->render(*icon,*erisType);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render01(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: addEntityIcon of class  EmberOgre::Gui::EntityIconSlot */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_addEntityIcon00
 static int tolua_EmberOgre_EmberOgre_Gui_EntityIconSlot_addEntityIcon00(lua_State* tolua_S)
@@ -22697,6 +22793,9 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
       tolua_function(tolua_S,"delete",tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_delete00);
       tolua_function(tolua_S,"getIcon",tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_getIcon00);
       tolua_function(tolua_S,"getIcon",tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_getIcon01);
+      tolua_function(tolua_S,"render",tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render00);
+      tolua_function(tolua_S,"render",tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render01);
+      tolua_function(tolua_S,"render",tolua_EmberOgre_EmberOgre_Gui_Icons_IconManager_render02);
      tolua_endmodule(tolua_S);
     tolua_endmodule(tolua_S);
    tolua_endmodule(tolua_S);

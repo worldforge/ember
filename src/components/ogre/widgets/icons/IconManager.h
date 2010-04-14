@@ -52,6 +52,11 @@ public:
     
     Icon* getIcon(int pixelWidth, EmberEntity* entity);
     Icon* getIcon(int pixelWidth, Eris::TypeInfo* erisType);
+
+    void render(Icon& icon, const std::string& modelName);
+    void render(Icon& icon, EmberEntity& entity);
+    void render(Icon& icon, Eris::TypeInfo& erisType);
+
 protected:
 
 	IconStore mIconStore;
