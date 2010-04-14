@@ -88,7 +88,7 @@ WFMath::Vector<3> CaelumSun::getMainLightDirection() const
 
 Ogre::ColourValue CaelumSun::getAmbientLightColour() const
 {
-	return mSun->getLightColour();
+	return mSun->getMainLight()->getDiffuseColour();
 }
 
 void CaelumSun::Config_SunAmbientMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)
