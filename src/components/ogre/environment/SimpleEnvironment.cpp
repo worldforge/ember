@@ -62,6 +62,12 @@ WFMath::Vector<3> SimpleSun::getMainLightDirection() const
 	return Convert::toWF<WFMath::Vector<3> >(getSunDirection());
 }
 
+Ogre::ColourValue SimpleSun::getAmbientLightColour() const
+{
+	return mMainLight->getDiffuseColour();
+}
+
+
 
 SimpleFog::SimpleFog(Ogre::SceneManager *sceneMgr)
 {

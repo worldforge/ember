@@ -24,6 +24,10 @@ namespace WFMath
 	template<int> class Vector;
 }
 
+namespace Ogre {
+	class ColourValue;
+}
+
 namespace EmberOgre {
 
 /**
@@ -40,6 +44,12 @@ public:
 	 * @returns The direction of the main light, in world space.
 	 */
 	virtual WFMath::Vector<3> getMainLightDirection() const = 0;
+
+	/**
+	 * @brief Gets the default ambient light colour.
+	 * @returns The default ambient light colour.
+	 */
+	virtual Ogre::ColourValue getAmbientLightColour() const = 0;
 
 };
 }

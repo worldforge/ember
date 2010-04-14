@@ -58,6 +58,8 @@ public:
 
 	virtual WFMath::Vector<3> getMainLightDirection() const;
 
+	virtual Ogre::ColourValue getAmbientLightColour() const;
+
 private:
 
 	Caelum::BaseSkyLight* mSun;

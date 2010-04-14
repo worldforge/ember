@@ -52,13 +52,13 @@ CaelumSun::CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun) 
 	sun->setSpecularMultiplier(Ogre::ColourValue(5, 5, 5));
 
 	sun->setAutoDisable(true);
-    sun->setAutoDisableThreshold(0.05);
+	sun->setAutoDisableThreshold(0.05);
 
-    Caelum::BaseSkyLight* moon = mCaelumSystem->getMoon();
-    if (moon) {
-    	moon->setAutoDisable(true);
-    	moon->setAutoDisableThreshold(0.05);
-    }
+	Caelum::BaseSkyLight* moon = mCaelumSystem->getMoon();
+	if (moon) {
+		moon->setAutoDisable(true);
+		moon->setAutoDisableThreshold(0.05);
+	}
 
 	registerConfigListener("caelum", "sunambientmultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunAmbientMultiplier));
 	registerConfigListener("caelum", "sundiffusemultiplier", sigc::mem_fun(*this, &CaelumSun::Config_SunDiffuseMultiplier));
@@ -84,6 +84,11 @@ Ogre::Vector3 CaelumSun::getSunDirection() const
 WFMath::Vector<3> CaelumSun::getMainLightDirection() const
 {
 	return Convert::toWF<WFMath::Vector<3> >(getSunDirection());
+}
+
+Ogre::ColourValue CaelumSun::getAmbientLightColour() const
+{
+	return mSun->getLightColour();
 }
 
 void CaelumSun::Config_SunAmbientMultiplier(const std::string& section, const std::string& key, varconf::Variable& variable)

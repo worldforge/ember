@@ -47,6 +47,9 @@ public:
 	virtual void setAmbientLight(const Ogre::ColourValue& colour);
 	virtual Ogre::Vector3 getSunDirection() const;
 	virtual WFMath::Vector<3> getMainLightDirection() const;
+
+	virtual Ogre::ColourValue getAmbientLightColour() const;
+
 protected:
 	Ogre::Light* mMainLight;
 };
