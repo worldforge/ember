@@ -174,6 +174,9 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		S_LOG_WARNING("Error when setting fragment program '" << fragmentProgramName << "'." << ex);
 		return false;
 	}
+	if (!pass.hasFragmentProgram()) {
+		return false;
+	}
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getFragmentProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
@@ -232,6 +235,9 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	pass.setVertexProgram(lightningVpProgram);
 
 	try {
+		if (!pass.hasVertexProgram()) {
+			return false;
+		}
 		pass.getVertexProgram()->setSurfaceAndPassLightStates(true);
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getVertexProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
