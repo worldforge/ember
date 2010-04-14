@@ -122,7 +122,7 @@ void FoliageLayer::plantQueryExecuted(const Terrain::PlantAreaQueryResult& query
 
 Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 {
-	if (mLatestPlantsResult && mLatestPlantsResult->hasShadow()) {
+	if (mLatestPlantsResult) {
 		Ogre::Vector2 pos;
 		Ogre::uint32 colour;
 		pos.x = x;

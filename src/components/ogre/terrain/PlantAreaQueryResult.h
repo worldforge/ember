@@ -24,6 +24,7 @@
 #include <OgreCommon.h>
 #include <OgreVector3.h>
 #include <OgreVector2.h>
+#include <OgreColourValue.h>
 
 namespace EmberOgre
 {
@@ -55,6 +56,8 @@ public:
 	void getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::uint32& colour) const;
 	void getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
 
+	void setDefaultShadowColour(const Ogre::ColourValue& colour);
+
 	ShadowBuffer* getShadow() const;
 	void setShadow(ShadowBuffer* shadow);
 	bool hasShadow() const;
@@ -65,6 +68,10 @@ private:
 	PlantStore mStore;
 
 	ShadowBuffer* mShadow;
+
+	Ogre::ColourValue mDefaultShadowColourValue;
+	Ogre::uint32 mDefaultShadowColourLong;
+
 };
 
 }

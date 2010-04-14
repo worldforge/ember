@@ -20,7 +20,6 @@
 #include "PlantAreaQuery.h"
 #include "PlantInstance.h"
 #include "Buffer.h"
-#include <OgreColourValue.h>
 
 namespace EmberOgre
 {
@@ -31,7 +30,7 @@ namespace Terrain
 PlantAreaQueryResult::PlantAreaQueryResult(const PlantAreaQuery& query) :
 	mQuery(new PlantAreaQuery(query)), mShadow(0)
 {
-
+	setDefaultShadowColour(Ogre::ColourValue(1, 1, 1, 1));
 }
 
 PlantAreaQueryResult::~PlantAreaQueryResult()
@@ -72,8 +71,8 @@ bool PlantAreaQueryResult::hasShadow() const
 }
 void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::uint32& colour) const
 {
-	Ogre::uint8* aVal((Ogre::uint8*)&colour);
 	if (mShadow) {
+		Ogre::uint8* aVal((Ogre::uint8*)&colour);
 		//first translate world position to local coords
 		Ogre::Vector2 localPos = position - Ogre::Vector2(mQuery->getArea().left, mQuery->getArea().bottom);
 		if (localPos.x >= 0 && localPos.x < mQuery->getArea().width() && localPos.y >= 0 && localPos.y < mQuery->getArea().height()) {
@@ -83,7 +82,7 @@ void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& p
 			return;
 		}
 	}
-	aVal[0] = aVal[1] = aVal[2] = aVal[3] = 0xFF;
+	colour = mDefaultShadowColourLong;
 }
 
 void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& position, Ogre::ColourValue& colour) const
@@ -99,7 +98,13 @@ void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& p
 			return;
 		}
 	}
-	colour.r = colour.g = colour.b = colour.a = 1.0f;
+	colour = mDefaultShadowColourValue;
+}
+
+void PlantAreaQueryResult::setDefaultShadowColour(const Ogre::ColourValue& colour)
+{
+	mDefaultShadowColourValue = colour;
+	mDefaultShadowColourLong = colour.getAsARGB();
 }
 
 }

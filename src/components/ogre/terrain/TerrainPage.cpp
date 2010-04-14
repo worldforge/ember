@@ -40,7 +40,6 @@
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
-#include "PlantAreaQueryResult.h"
 #include "ISceneManagerAdapter.h"
 
 #include "framework/LoggingInstance.h"

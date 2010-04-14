@@ -415,7 +415,11 @@ void TerrainManager::getPlantsForArea(PlantAreaQuery& query, sigc::slot<void, co
 		int yIndex = static_cast<int> (floor(wfPos.y() / mTerrain->getResolution()));
 		SegmentRefPtr segmentRef = mSegmentManager->getSegmentReference(xIndex, yIndex);
 		if (segmentRef.get()) {
-			mTaskQueue->enqueueTask(new PlantQueryTask(segmentRef, *populator, query, asyncCallback));
+			Ogre::ColourValue defaultShadowColour;
+			if (mLightning) {
+				defaultShadowColour = mLightning->getAmbientLightColour();
+			}
+			mTaskQueue->enqueueTask(new PlantQueryTask(segmentRef, *populator, query, defaultShadowColour, asyncCallback));
 
 		}
 	}

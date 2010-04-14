@@ -53,7 +53,6 @@ class TerrainManager;
 class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageSurfaceLayer;
-class PlantAreaQueryResult;
 class TerrainPageGeometry;
 
 /**

@@ -27,9 +27,10 @@ namespace EmberOgre
 namespace Terrain
 {
 
-PlantQueryTask::PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
+PlantQueryTask::PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, const Ogre::ColourValue& defaultShadowColour, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
 	mSegmentRef(segmentRef), mPlantPopulator(plantPopulator), mQueryResult(query), mAsyncCallback(asyncCallback)
 {
+	mQueryResult.setDefaultShadowColour(defaultShadowColour);
 }
 
 PlantQueryTask::~PlantQueryTask()

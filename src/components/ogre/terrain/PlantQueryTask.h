@@ -42,7 +42,7 @@ class PlantPopulator;
 class PlantQueryTask : public Ember::Tasks::TemplateNamedTask<PlantQueryTask>
 {
 public:
-	PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
+	PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, const Ogre::ColourValue& defaultShadowColour, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
 	virtual ~PlantQueryTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
