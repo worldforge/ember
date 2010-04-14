@@ -54,6 +54,9 @@
 #include "OgrePagingLandScapePageManager.h"
 #include "OgrePagingLandScapeHorizon.h"
 
+#include <OgreRoot.h>
+#include <OgreRenderSystem.h>
+
 namespace Ogre
 {
 
@@ -706,6 +709,12 @@ namespace Ogre
                             mLightList);
             mLightListDirty = false;
          }
+        //There's an issue with Ogre when using shaders for lightning and having another viewport being updated.
+        //The issue is that for the next frame, the lightning isn't updated properly for these renderable, so the lightning used in the other viewport will be used.
+        //The result is that the terrain for just one frame will have an incorrect lightning.  I'm not sure, but this seems like a bug with Ogre.
+        //One solution would be to enable lightning for the terrain pass, but that would cause the GPU to do vertex lightning calculation, which is unnecessary.
+        //So instead we'll access the render system directly here and make it update the lights. It's not exactly pretty, but it does what's needed.
+        Ogre::Root::getSingleton().getRenderSystem()->_useLights(mLightList, 3);
         return mLightList;
     }
     //-----------------------------------------------------------------------

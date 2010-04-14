@@ -157,9 +157,9 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 
 	std::string fragmentProgramName(ss.str());
 
-	if (useShadows) {
-		pass.setLightingEnabled(true);
-	}
+	//Disable lightning here since we're forcing lights to be set for the shaders in PagingLandScapeRenderable::getLights
+	pass.setLightingEnabled(false);
+
 	pass.setMaxSimultaneousLights(3);
 	// 	pass.setFog(true, Ogre::FOG_NONE);
 
@@ -232,6 +232,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	pass.setVertexProgram(lightningVpProgram);
 
 	try {
+		pass.getVertexProgram()->setSurfaceAndPassLightStates(true);
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getVertexProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
 		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
