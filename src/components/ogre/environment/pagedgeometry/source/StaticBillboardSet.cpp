@@ -75,14 +75,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 		
 		//Load vertex shader to align billboards to face the camera (if not loaded already)
 		if (++selfInstances == 1){
-			String shaderLanguage;
-			if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-				shaderLanguage = "hlsl";
-			else if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-				shaderLanguage = "glsl";
-			else
-				shaderLanguage = "cg";
-
+			String shaderLanguage = getShaderLanguage();
 
 			const std::string fragmentProgramName("ImposterFragStandard");
 			//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
@@ -97,11 +90,12 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	 float				iFog 			: FOG, \n"
 					"	 out float4         oColour			: COLOR, \n"
 					"    uniform sampler2D  diffuseTexture	: TEXUNIT0, \n"
-					"    uniform float3		iFogColour \n"
+					"    uniform float3		iFogColour, \n"
+					"	 uniform float4 	iLightAmbient \n"
 					") \n"
 					"{ \n"
 					"	oColour = tex2D(diffuseTexture, iTexcoord.xy); \n"
-					"   oColour.xyz = lerp(oColour.xyz, iFogColour, iFog);\n"
+					"   oColour.xyz = lerp((iLightAmbient * oColour + oColour).xyz, iFogColour, iFog);\n"
 					"}";
 				} else {
 					fragmentProgSource = "uniform sampler2D diffuseMap;\n"
@@ -719,9 +713,7 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 		//Otherwise clone the material
 		fadeMaterial = materialPtr->clone(getUniqueID("ImpostorFade"));
 
-		bool isglsl = false;
-		if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-			isglsl = true;
+		bool isglsl = (getShaderLanguage() == "glsl");
 
 		//And apply the fade shader
 		for (unsigned short t = 0; t < fadeMaterial->getNumTechniques(); ++t){
@@ -760,6 +752,7 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 					params = pass->getFragmentProgramParameters();
 					params->setIgnoreMissingParams(true);
 					params->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
+					params->setNamedAutoConstant("iLightAmbient", GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
 				}
 			}
 		}
@@ -781,9 +774,7 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 		vRight.normalise();
 		vUp.normalise();
 
-		bool isglsl = false;
-		if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-			isglsl = true;
+		bool isglsl = (getShaderLanguage() == "glsl");
 
 		//Even if camera is upside down, the billboards should remain upright
 		if (vUp.y < 0) vUp *= -1;
@@ -836,6 +827,7 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 				if (p->hasFragmentProgram()) {
 					p->getFragmentProgramParameters()->setIgnoreMissingParams(true);
 					p->getFragmentProgramParameters()->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
+					p->getFragmentProgramParameters()->setNamedAutoConstant("iLightAmbient", GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
 				}
 			}
 			
@@ -861,6 +853,16 @@ void StaticBillboardSet::setBillboardOrigin(BillboardOrigin origin)
 		bbOrigin = origin;
 		fallbackSet->setBillboardOrigin(origin);
 	}
+}
+
+std::string StaticBillboardSet::getShaderLanguage()
+{
+	if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
+		return "hlsl";
+	else if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
+		return "glsl";
+	else
+		return "cg";
 }
 
 
