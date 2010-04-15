@@ -12,6 +12,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "GrassLoader.h"
 #include "PagedGeometry.h"
 #include "PropertyMaps.h"
+#include "RandomTable.h"
 
 #include <OgreRoot.h>
 #include <OgreTimer.h>
@@ -181,13 +182,15 @@ unsigned int GrassLayer::_populateGrassList_Uniform(PageInfo page, float *posBuf
 {
 	float *posPtr = posBuff;
 
+	parent->rTable->resetRandomIndex();
+
 	//No density map
 	if (!minY && !maxY){
 		//No height range
 		for (unsigned int i = 0; i < grassCount; ++i){
 			//Pick a random position
-			float x = Math::RangeRandom(page.bounds.left, page.bounds.right);
-			float z = Math::RangeRandom(page.bounds.top, page.bounds.bottom);
+			float x = parent->rTable->getRangeRandom(page.bounds.left, page.bounds.right);
+			float z = parent->rTable->getRangeRandom(page.bounds.top, page.bounds.bottom);
 
 			//Add to list in within bounds
 			if (!colorMap){
@@ -197,6 +200,8 @@ unsigned int GrassLayer::_populateGrassList_Uniform(PageInfo page, float *posBuf
 				*posPtr++ = x;
 				*posPtr++ = z;
 			}
+			*posPtr++ = parent->rTable->getUnitRandom();
+			*posPtr++ = parent->rTable->getRangeRandom(0, Math::TWO_PI);
 		}
 	} else {
 		//Height range
@@ -206,8 +211,8 @@ unsigned int GrassLayer::_populateGrassList_Uniform(PageInfo page, float *posBuf
 
 		for (unsigned int i = 0; i < grassCount; ++i){
 			//Pick a random position
-			float x = Math::RangeRandom(page.bounds.left, page.bounds.right);
-			float z = Math::RangeRandom(page.bounds.top, page.bounds.bottom);
+			float x = parent->rTable->getRangeRandom(page.bounds.left, page.bounds.right);
+			float z = parent->rTable->getRangeRandom(page.bounds.top, page.bounds.bottom);
 
 			//Calculate height
 			float y = parent->heightFunction(x, z, parent->heightFunctionUserData);
@@ -218,15 +223,19 @@ unsigned int GrassLayer::_populateGrassList_Uniform(PageInfo page, float *posBuf
 				if (!colorMap){
 					*posPtr++ = x;
 					*posPtr++ = z;
+					*posPtr++ = parent->rTable->getUnitRandom();
+					*posPtr++ = parent->rTable->getRangeRandom(0, Math::PI);
 				} else if (x >= mapBounds.left && x <= mapBounds.right && z >= mapBounds.top && z <= mapBounds.bottom){
 					*posPtr++ = x;
 					*posPtr++ = z;
+					*posPtr++ = parent->rTable->getUnitRandom();
+					*posPtr++ = parent->rTable->getRangeRandom(0, Math::PI);
 				}
 			}
 		}
 	}
 
-	grassCount = (posPtr - posBuff) / 2;
+	grassCount = (posPtr - posBuff) / 4;
 	return grassCount;
 }
 
@@ -234,21 +243,31 @@ unsigned int GrassLayer::_populateGrassList_UnfilteredDM(PageInfo page, float *p
 {
 	float *posPtr = posBuff;
 
+	parent->rTable->resetRandomIndex();
+
 	//Use density map
 	if (!minY && !maxY){
 		//No height range
 		for (unsigned int i = 0; i < grassCount; ++i){
 			//Pick a random position
-			float x = Math::RangeRandom(page.bounds.left, page.bounds.right);
-			float z = Math::RangeRandom(page.bounds.top, page.bounds.bottom);
+			float x = parent->rTable->getRangeRandom(page.bounds.left, page.bounds.right);
+			float z = parent->rTable->getRangeRandom(page.bounds.top, page.bounds.bottom);
 
 			//Determine whether this grass will be added based on the local density.
 			//For example, if localDensity is .32, grasses will be added 32% of the time.
-			if (Math::UnitRandom() < densityMap->_getDensityAt_Unfiltered(x, z, mapBounds)){
+			if (parent->rTable->getUnitRandom() < densityMap->_getDensityAt_Unfiltered(x, z, mapBounds)){
 				//Add to list
 				*posPtr++ = x;
 				*posPtr++ = z;
+				*posPtr++ = parent->rTable->getUnitRandom();
+				*posPtr++ = parent->rTable->getRangeRandom(0, Math::TWO_PI);
 			}
+			else
+			{
+				parent->rTable->getUnitRandom();
+				parent->rTable->getUnitRandom();
+			}
+
 		}
 	} else {
 		//Height range
@@ -258,12 +277,12 @@ unsigned int GrassLayer::_populateGrassList_UnfilteredDM(PageInfo page, float *p
 
 		for (unsigned int i = 0; i < grassCount; ++i){
 			//Pick a random position
-			float x = Math::RangeRandom(page.bounds.left, page.bounds.right);
-			float z = Math::RangeRandom(page.bounds.top, page.bounds.bottom);
+			float x = parent->rTable->getRangeRandom(page.bounds.left, page.bounds.right);
+			float z = parent->rTable->getRangeRandom(page.bounds.top, page.bounds.bottom);
 
 			//Determine whether this grass will be added based on the local density.
 			//For example, if localDensity is .32, grasses will be added 32% of the time.
-			if (Math::UnitRandom() < densityMap->_getDensityAt_Unfiltered(x, z, mapBounds)){
+			if (parent->rTable->getUnitRandom() < densityMap->_getDensityAt_Unfiltered(x, z, mapBounds)){
 				//Calculate height
 				float y = parent->heightFunction(x, z, parent->heightFunctionUserData);
 
@@ -272,12 +291,24 @@ unsigned int GrassLayer::_populateGrassList_UnfilteredDM(PageInfo page, float *p
 					//Add to list
 					*posPtr++ = x;
 					*posPtr++ = z;
+					*posPtr++ = parent->rTable->getUnitRandom();
+					*posPtr++ = parent->rTable->getRangeRandom(0, Math::TWO_PI);
 				}
+				else
+				{
+					parent->rTable->getUnitRandom();
+					parent->rTable->getUnitRandom();
+				}
+			}
+			else
+			{
+				parent->rTable->getUnitRandom();
+				parent->rTable->getUnitRandom();
 			}
 		}
 	}
 
-	grassCount = (posPtr - posBuff) / 2;
+	grassCount = (posPtr - posBuff) / 4;
 	return grassCount;
 }
 
@@ -285,19 +316,28 @@ unsigned int GrassLayer::_populateGrassList_BilinearDM(PageInfo page, float *pos
 {
 	float *posPtr = posBuff;
 
+	parent->rTable->resetRandomIndex();
+
 	if (!minY && !maxY){
 		//No height range
 		for (unsigned int i = 0; i < grassCount; ++i){
 			//Pick a random position
-			float x = Math::RangeRandom(page.bounds.left, page.bounds.right);
-			float z = Math::RangeRandom(page.bounds.top, page.bounds.bottom);
+			float x = parent->rTable->getRangeRandom(page.bounds.left, page.bounds.right);
+			float z = parent->rTable->getRangeRandom(page.bounds.top, page.bounds.bottom);
 
 			//Determine whether this grass will be added based on the local density.
 			//For example, if localDensity is .32, grasses will be added 32% of the time.
-			if (Math::UnitRandom() < densityMap->_getDensityAt_Bilinear(x, z, mapBounds)){
+			if (parent->rTable->getUnitRandom() < densityMap->_getDensityAt_Bilinear(x, z, mapBounds)){
 				//Add to list
 				*posPtr++ = x;
 				*posPtr++ = z;
+				*posPtr++ = parent->rTable->getUnitRandom();
+				*posPtr++ = parent->rTable->getRangeRandom(0, Math::TWO_PI);
+			}
+			else
+			{
+				parent->rTable->getUnitRandom();
+				parent->rTable->getUnitRandom();
 			}
 		}
 	} else {
@@ -308,12 +348,12 @@ unsigned int GrassLayer::_populateGrassList_BilinearDM(PageInfo page, float *pos
 
 		for (unsigned int i = 0; i < grassCount; ++i){
 			//Pick a random position
-			float x = Math::RangeRandom(page.bounds.left, page.bounds.right);
-			float z = Math::RangeRandom(page.bounds.top, page.bounds.bottom);
+			float x = parent->rTable->getRangeRandom(page.bounds.left, page.bounds.right);
+			float z = parent->rTable->getRangeRandom(page.bounds.top, page.bounds.bottom);
 
 			//Determine whether this grass will be added based on the local density.
 			//For example, if localDensity is .32, grasses will be added 32% of the time.
-			if (Math::UnitRandom() < densityMap->_getDensityAt_Bilinear(x, z, mapBounds)){
+			if (parent->rTable->getUnitRandom() < densityMap->_getDensityAt_Bilinear(x, z, mapBounds)){
 				//Calculate height
 				float y = parent->heightFunction(x, z, parent->heightFunctionUserData);
 
@@ -322,12 +362,24 @@ unsigned int GrassLayer::_populateGrassList_BilinearDM(PageInfo page, float *pos
 					//Add to list
 					*posPtr++ = x;
 					*posPtr++ = z;
+					*posPtr++ = parent->rTable->getUnitRandom();
+					*posPtr++ = parent->rTable->getRangeRandom(0, Math::TWO_PI);
 				}
+				else
+				{
+					parent->rTable->getUnitRandom();
+					parent->rTable->getUnitRandom();
+				}
+			}
+			else
+			{
+				parent->rTable->getUnitRandom();
+				parent->rTable->getUnitRandom();
 			}
 		}
 	}
 
-	grassCount = (posPtr - posBuff) / 2;
+	grassCount = (posPtr - posBuff) / 4;
 	return grassCount;
 }
 
@@ -721,21 +773,31 @@ void GrassPage::addEntity(Entity *entity, const Vector3 &position, const Quatern
 	node->setPosition(position);
 	nodeList.push_back(node);
 
-	Entity *ent = entity->clone(getUniqueID());
-	ent->setCastShadows(false);
+	entity->setCastShadows(false);
 	if(hasQueryFlag())
-		ent->setQueryFlags(getQueryFlag());
-	ent->setRenderQueueGroup(entity->getRenderQueueGroup());
-	node->attachObject(ent);
+		entity->setQueryFlags(getQueryFlag());
+	entity->setRenderQueueGroup(entity->getRenderQueueGroup());
+	node->attachObject(entity);
 }
 
 void GrassPage::removeEntities()
 {
 	std::list<SceneNode*>::iterator i;
-	for (i = nodeList.begin(); i != nodeList.end(); ++i){
+	for (i = nodeList.begin(); i != nodeList.end(); ++i)
+	{
 		SceneNode *node = *i;
-		sceneMgr->destroyEntity(static_cast<Entity*>(node->getAttachedObject(0)));
-		sceneMgr->destroySceneNode(node->getName());
+		int numObjs = node->numAttachedObjects();
+		for(int j = 0; j < numObjs; j++)
+		{
+			Entity *ent = static_cast<Entity*>(node->getAttachedObject(j));
+			if(!ent) continue;
+			// remove the mesh
+			MeshManager::getSingleton().remove(ent->getMesh()->getName());
+			// then the entity
+			sceneMgr->destroyEntity(ent);
+			// and finally the scene node
+			sceneMgr->destroySceneNode(node);
+		}
 	}
 	nodeList.clear();
 }

@@ -104,6 +104,8 @@ unsigned int FoliageLayer::_populateGrassList(PageInfo page, float *posBuff, uns
 			}
 			*posBuff++ = I->position.x;
 			*posBuff++ = I->position.z;
+			*posBuff++ = I->scale.x;
+			*posBuff++ = I->orientation;
 			finalGrassCount++;
 		}
 	} else {

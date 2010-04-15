@@ -25,10 +25,11 @@ using namespace std;
 namespace Forests {
 
 //-------------------------------------------------------------------------------------
-PagedGeometry::PagedGeometry(Camera* cam, const Real pageSize)
+PagedGeometry::PagedGeometry(Camera* cam, const Real pageSize, Ogre::RenderQueueGroupID queue) : mRenderQueue(queue)
 {
 	//Setup camera, scene manager, and scene node
-	if (cam){
+	if (cam)
+	{
 		sceneCam = cam;
 		sceneMgr = sceneCam->getSceneManager();
 		oldCamPos = sceneCam->getDerivedPosition();
@@ -393,6 +394,11 @@ float PagedGeometry::getCustomParam(string paramName, float defaultParamValue) c
 	}
 	else
 		return defaultParamValue;
+}
+
+Ogre::RenderQueueGroupID PagedGeometry::getRenderQueue() const
+{
+	return mRenderQueue;
 }
 
 //-------------------------------------------------------------------------------------

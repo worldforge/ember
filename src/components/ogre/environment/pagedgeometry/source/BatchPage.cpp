@@ -36,14 +36,15 @@ unsigned long BatchPage::refCount = 0;
 unsigned long BatchPage::GUID = 0;
 
 
-void BatchPage::init(PagedGeometry *geom, const Any &data)
+void BatchPage::init(PagedGeometry *_geom, const Any &data)
 {
+	geom = _geom;
 	int datacast = data.isEmpty() ? 0 : Ogre::any_cast<int>(data);
 #ifdef _DEBUG
 	if ( datacast < 0)
 		OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,"Data of BatchPage must be a positive integer. It representing the LOD level this detail level stores.","BatchPage::BatchPage");
 #endif
-	mLODLevel = datacast;
+	mLODLevel = datacast; 
 
 	sceneMgr = geom->getSceneManager();
 	batch = new BatchedGeometry(sceneMgr, geom->getSceneNode());
@@ -86,7 +87,7 @@ void BatchPage::addEntity(Entity *ent, const Vector3 &position, const Quaternion
 		Ogre::LogManager::getSingleton().logMessage( "BatchPage::addEntity: " + ent->getName() + " entity has less than " + Ogre::StringConverter::toString(mLODLevel) + " manual lod level(s). Performance warning.");
 #endif
 
-	if (mLODLevel == 0 || numManLod == 0)
+	if (mLODLevel == 0 || numManLod == 0) 
 		batch->addEntity(ent, position, rotation, scale, color);
 	else
 	{
@@ -145,16 +146,22 @@ void BatchPage::setFade(bool enabled, Real visibleDist, Real invisibleDist)
 		return;
 
 	//If fade status has changed...
-	if (fadeEnabled != enabled){
+	if (fadeEnabled != enabled)
+	{
 		fadeEnabled = enabled;
 
-// 		if (enabled) {
+ 		if (enabled)
+		{
 			//Transparent batches should render after impostors
-			batch->setRenderQueueGroup(RENDER_QUEUE_6);
-// 		} else {
-// 			//Opaque batches should render in the normal render queue
-// 			batch->setRenderQueueGroup(RENDER_QUEUE_MAIN);
-// 		}
+			if(geom)
+				batch->setRenderQueueGroup(geom->getRenderQueue());
+			else
+				batch->setRenderQueueGroup(RENDER_QUEUE_6);
+
+ 		} else {
+ 			//Opaque batches should render in the normal render queue
+ 			batch->setRenderQueueGroup(RENDER_QUEUE_MAIN);
+ 		}
 
 		this->visibleDist = visibleDist;
 		this->invisibleDist = invisibleDist;

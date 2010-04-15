@@ -526,10 +526,10 @@ void ImpostorTexture::renderTextures(bool force)
 	Ogre::SceneManager::SpecialCaseRenderQueueMode OldSpecialCaseRenderQueueMode = sceneMgr->getSpecialCaseRenderQueueMode();
 	//Only render the entity
 	sceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE); 
-	sceneMgr->addSpecialCaseRenderQueue(RENDER_QUEUE_6 + 1);
+	sceneMgr->addSpecialCaseRenderQueue(group->geom->getRenderQueue() + 1);
 
 	uint8 oldRenderQueueGroup = entity->getRenderQueueGroup();
-	entity->setRenderQueueGroup(RENDER_QUEUE_6 + 1);
+	entity->setRenderQueueGroup(group->geom->getRenderQueue() + 1);
 	bool oldVisible = entity->getVisible();
 	entity->setVisible(true);
 	float oldMaxDistance = entity->getRenderingDistance();
@@ -599,8 +599,7 @@ void ImpostorTexture::renderTextures(bool force)
 	
 #ifdef IMPOSTOR_FILE_SAVE
 		//Save RTT to file with respecting the temp dir
-		String tempFileName = tempdir.empty()?fileNamePNG:tempdir + fileNamePNG;
-		renderTarget->writeContentsToFile(tempFileName);
+		renderTarget->writeContentsToFile(tempdir + fileNamePNG);
 
 		//Load the render into the appropriate texture view
 		texture = TextureManager::getSingleton().load(fileNamePNG, "BinFolder", TEX_TYPE_2D, MIP_UNLIMITED);
@@ -613,7 +612,7 @@ void ImpostorTexture::renderTextures(bool force)
 	entity->setVisible(oldVisible);
 	entity->setRenderQueueGroup(oldRenderQueueGroup);
 	entity->setRenderingDistance(oldMaxDistance);
-	sceneMgr->removeSpecialCaseRenderQueue(RENDER_QUEUE_6 + 1);
+	sceneMgr->removeSpecialCaseRenderQueue(group->geom->getRenderQueue() + 1);
 	// Restore original state
 	sceneMgr->setSpecialCaseRenderQueueMode(OldSpecialCaseRenderQueueMode); 
 

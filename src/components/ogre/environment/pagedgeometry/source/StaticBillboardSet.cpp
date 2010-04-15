@@ -55,14 +55,14 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 	fadeEnabled = false;
 	bbOrigin = BBO_CENTER;
 	subMesh = NULL;
-
+	
 	//Fall back to BB_METHOD_COMPATIBLE if vertex shaders are not available
 	if (renderMethod == BB_METHOD_ACCELERATED){
 		const RenderSystemCapabilities *caps = Root::getSingleton().getRenderSystem()->getCapabilities();
 		if (!caps->hasCapability(RSC_VERTEX_PROGRAM))
 			renderMethod = BB_METHOD_COMPATIBLE;
 	}
-
+	
 	node = rootSceneNode->createChildSceneNode();
 	entityName = getUniqueID("SBSentity");
 
@@ -72,13 +72,26 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 		uFactor = 1.0f;
 		vFactor = 1.0f;
-
+		
 		//Load vertex shader to align billboards to face the camera (if not loaded already)
 		if (++selfInstances == 1){
+			String shaderLanguage;
+			if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
+				shaderLanguage = "hlsl";
+			else if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
+				shaderLanguage = "glsl";
+			else
+				shaderLanguage = "cg";
+
+
 			const std::string fragmentProgramName("ImposterFragStandard");
 			//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
 			if (HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName).isNull()){
-				String fragmentProgSource = "void main \n"
+				String fragmentProgSource;
+
+				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
+				{
+					fragmentProgSource = "void main \n"
 					"( \n"
 					"    float2				iTexcoord		: TEXCOORD0, \n"
 					"	 float				iFog 			: FOG, \n"
@@ -90,12 +103,14 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	oColour = tex2D(diffuseTexture, iTexcoord.xy); \n"
 					"   oColour.xyz = lerp(oColour.xyz, iFogColour, iFog);\n"
 					"}";
+				} else {
+					fragmentProgSource = "uniform sampler2D diffuseMap;\n"
+					"void main()	{"
+					"	gl_FragColor = texture2D(diffuseMap, gl_TexCoord[0].st);"
+					"	gl_FragColor.rgb = mix(gl_Fog.color, (gl_LightModel.ambient * gl_FragColor + gl_FragColor), gl_FogFragCoord).rgb;"
+					"}";
+				}
 
-				String shaderLanguage;
-				if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-					shaderLanguage = "hlsl";
-				else
-					shaderLanguage = "cg";
 
 				HighLevelGpuProgramPtr fragShader = HighLevelGpuProgramManager::getSingleton().createProgram(
 					fragmentProgramName,
@@ -104,12 +119,15 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 
 				fragShader->setSource(fragmentProgSource);
 
-				if (shaderLanguage == "hlsl")
+				if (shaderLanguage == "hlsl") {
 					fragShader->setParameter("target", "ps_2_0");
-				else
+					fragShader->setParameter("entry_point", "main");
+				} else {
 					fragShader->setParameter("profiles", "ps_2_0 arbfp1");
+					fragShader->setParameter("entry_point", "main");
+				}
+				//No need with glsl
 
-				fragShader->setParameter("entry_point", "main");
 				fragShader->load();
 				if (fragShader->hasCompileError()) {
 					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard fragment shader.");
@@ -121,7 +139,10 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 			HighLevelGpuProgramPtr vertexShader;
 			vertexShader = HighLevelGpuProgramManager::getSingleton().getByName("Sprite_vp");
 			if (vertexShader.isNull()){
-				String vertexProg =
+				String vertexProg;
+				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
+				{
+					vertexProg =
 					"void Sprite_vp(	\n"
 					"	float4 position : POSITION,	\n"
 					"	float3 normal   : NORMAL,	\n"
@@ -141,15 +162,15 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					"	float4 vCenter = float4( position.x, position.y, position.z, 1.0f );	\n"
 					"	float4 vScale = float4( normal.x, normal.y, normal.x, 1.0f );	\n"
 					"	oPosition = mul( worldViewProj, vCenter + (preRotatedQuad[normal.z] * vScale) );  \n"
-
+					
 					//Color
 					"	oColor = color;   \n"
-
+					
 					//UV Scroll
 					"	oUv = uv;	\n"
 					"	oUv.x += uScroll; \n"
 					"	oUv.y += vScroll; \n";
-
+					
 					//Fog
 					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
 						vertexProg +=
@@ -158,14 +179,40 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 						vertexProg +=
 							"	oFog = oPosition.z; \n";
 					}
-					vertexProg +=
-					"}";
-
-				String shaderLanguage;
-				if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-					shaderLanguage = "hlsl";
+					vertexProg += "}";
+				}
 				else
-					shaderLanguage = "cg";
+				{
+					// Must be GLSL
+					vertexProg =
+					"uniform float uScroll; \n"
+					"uniform float vScroll; \n"
+					"uniform vec4  preRotatedQuad[4]; \n"
+
+					"void main() { \n"
+					//Face the camera
+					"	vec4 vCenter = vec4( gl_Vertex.x, gl_Vertex.y, gl_Vertex.z, 1.0 ); \n"
+					"	vec4 vScale = vec4( gl_Normal.x, gl_Normal.y, gl_Normal.x , 1.0 ); \n"
+					"	gl_Position = gl_ModelViewProjectionMatrix * (vCenter + (preRotatedQuad[int(gl_Normal.z)] * vScale) ); \n"
+
+					//Color
+					"	gl_FrontColor = gl_Color; \n"
+
+					//UV Scroll
+					"	gl_TexCoord[0] = gl_MultiTexCoord0; \n"
+					"	gl_TexCoord[0].x += uScroll; \n"
+					"	gl_TexCoord[0].y += vScroll; \n";
+
+					//Fog
+					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
+						vertexProg +=
+							"	gl_FogFragCoord = clamp(exp(- gl_Fog.density * gl_Fog.density * gl_Position.z * gl_Position.z), 0.0, 1.0);";
+					} else {
+						vertexProg +=
+							"	gl_FogFragCoord = gl_Position.z; \n";
+					}
+					vertexProg += "}";
+				}
 
 				vertexShader = HighLevelGpuProgramManager::getSingleton()
 					.createProgram("Sprite_vp",
@@ -174,11 +221,17 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				vertexShader->setSource(vertexProg);
 
 				if (shaderLanguage == "hlsl")
+				{
 					vertexShader->setParameter("target", "vs_1_1");
-				else
+					vertexShader->setParameter("entry_point", "Sprite_vp");
+				}
+				else if(shaderLanguage == "cg")
+				{
 					vertexShader->setParameter("profiles", "vs_1_1 arbvp1");
+					vertexShader->setParameter("entry_point", "Sprite_vp");
+				}
+				// GLSL can only have one entry point "main".
 
-				vertexShader->setParameter("entry_point", "Sprite_vp");
 				vertexShader->load();
 				if (vertexShader->hasCompileError()) {
 					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard vertex shader.");
@@ -189,7 +242,10 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 			HighLevelGpuProgramPtr vertexShader2;
 			vertexShader2 = HighLevelGpuProgramManager::getSingleton().getByName("SpriteFade_vp");
 			if (vertexShader2.isNull()){
-				String vertexProg2 =
+				String vertexProg2;
+				if(!shaderLanguage.compare("hlsl") || !shaderLanguage.compare("cg"))
+				{
+					vertexProg2 =
 					"void SpriteFade_vp(	\n"
 					"	float4 position : POSITION,	\n"
 					"	float3 normal   : NORMAL,	\n"
@@ -234,15 +290,47 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 						vertexProg2 +=
 							"	oFog = oPosition.z; \n";
 					}
-					vertexProg2 +=
-					"}";
-
-				String shaderLanguage;
-				if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-					shaderLanguage = "hlsl";
+					vertexProg2 += "}";
+				}
 				else
-					shaderLanguage = "cg";
+				{
+					// Must be GLSL
+					vertexProg2 =
+					"uniform vec3  camPos; \n"
+					"uniform float fadeGap; \n"
+					"uniform float invisibleDist; \n"
+					"uniform float uScroll; \n"
+					"uniform float vScroll; \n"
+					"uniform vec4  preRotatedQuad[4]; \n"
 
+					"void main() { \n"
+					//Face the camera
+					"	vec4 vCenter = vec4( gl_Vertex.x, gl_Vertex.y, gl_Vertex.z, 1.0 ); \n"
+					"	vec4 vScale = vec4( gl_Normal.x, gl_Normal.y, gl_Normal.x , 1.0 ); \n"
+					"	gl_Position = gl_ModelViewProjectionMatrix * (vCenter + (preRotatedQuad[int(gl_Normal.z)] * vScale) ); \n"
+
+					"	gl_FrontColor.xyz = gl_Color.xyz; \n"
+
+					//Fade out in the distance
+					"	vec4 position = gl_Vertex; \n"
+					"	float dist = distance(camPos.xz, position.xz); \n"
+					"	gl_FrontColor.w = (invisibleDist - dist) / fadeGap; \n"
+
+					//UV scroll
+					"	gl_TexCoord[0] = gl_MultiTexCoord0; \n"
+					"	gl_TexCoord[0].x += uScroll; \n"
+					"	gl_TexCoord[0].y += vScroll; \n";
+
+					//Fog
+					if (mgr->getFogMode() == Ogre::FOG_EXP2) {
+						vertexProg2 +=
+							"	gl_FogFragCoord = clamp(exp(- gl_Fog.density * gl_Fog.density * gl_Position.z * gl_Position.z), 0.0, 1.0);";
+					} else {
+						vertexProg2 +=
+							"	gl_FogFragCoord = gl_Position.z; \n";
+					}
+					vertexProg2 += "}";
+				}
 				vertexShader2 = HighLevelGpuProgramManager::getSingleton()
 					.createProgram("SpriteFade_vp",
 					ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -250,11 +338,17 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 				vertexShader2->setSource(vertexProg2);
 
 				if (shaderLanguage == "hlsl")
+				{
 					vertexShader2->setParameter("target", "vs_1_1");
-				else
+					vertexShader2->setParameter("entry_point", "SpriteFade_vp");
+				}
+				else if(shaderLanguage == "cg")
+				{
 					vertexShader2->setParameter("profiles", "vs_1_1 arbvp1");
+					vertexShader2->setParameter("entry_point", "SpriteFade_vp");
+				}
+				// GLSL can only have one entry point "main".
 
-				vertexShader2->setParameter("entry_point", "SpriteFade_vp");
 				vertexShader2->load();
 				if (vertexShader2->hasCompileError()) {
 					Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Error loading the billboard vertex shader.");
@@ -307,7 +401,7 @@ void StaticBillboardSet::clear()
 			node->detachAllObjects();
 			sceneMgr->destroyEntity(entity);
 			entity = 0;
-
+			
 			//Delete mesh
 			assert(!mesh.isNull());
 			String meshName(mesh->getName());
@@ -340,7 +434,7 @@ void StaticBillboardSet::build()
 			node->detachAllObjects();
 			sceneMgr->destroyEntity(entity);
 			entity = 0;
-
+			
 			//Delete mesh
 			assert(!mesh.isNull());
 			String meshName(mesh->getName());
@@ -362,7 +456,7 @@ void StaticBillboardSet::build()
 		subMesh->vertexData = new VertexData;
 		subMesh->vertexData->vertexStart = 0;
 		subMesh->vertexData->vertexCount = 4 * billboardBuffer.size();
-
+		
 		VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
 		size_t offset = 0;
 		dcl->addElement(0, offset, VET_FLOAT3, VES_POSITION);
@@ -378,7 +472,7 @@ void StaticBillboardSet::build()
 		HardwareVertexBufferSharedPtr vbuf = HardwareBufferManager::getSingleton()
 											.createVertexBuffer(offset, subMesh->vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
 		float* pReal = static_cast<float*>(vbuf->lock(HardwareBuffer::HBL_DISCARD));
-
+		
 		float minX = Math::POS_INFINITY, minY = Math::POS_INFINITY, minZ = Math::POS_INFINITY;
 		float maxX = Math::NEG_INFINITY, maxY = Math::NEG_INFINITY, maxZ = Math::NEG_INFINITY;
 
@@ -390,7 +484,7 @@ void StaticBillboardSet::build()
 			StaticBillboard *bb = (*i1);
 			float halfXScale = bb->xScale * 0.5f;
 			float halfYScale = bb->yScale * 0.5f;
-
+			
 			// position
 			*pReal++ = bb->position.x;
 			*pReal++ = bb->position.y;
@@ -404,7 +498,7 @@ void StaticBillboardSet::build()
 			// uv
 			*pReal++ = (bb->texcoordIndexU * uFactor);
 			*pReal++ = (bb->texcoordIndexV * vFactor);
-
+			
 			// position
 			*pReal++ = bb->position.x;
 			*pReal++ = bb->position.y;
@@ -446,7 +540,7 @@ void StaticBillboardSet::build()
 			// uv
 			*pReal++ = ((bb->texcoordIndexU + 1) * uFactor);
 			*pReal++ = ((bb->texcoordIndexV + 1) * vFactor);
-
+			
 			//Update bounding box
 			if (bb->position.x - halfXScale < minX) minX = bb->position.x - halfXScale;
 			if (bb->position.x + halfXScale > maxX) maxX = bb->position.x + halfXScale;
@@ -454,15 +548,15 @@ void StaticBillboardSet::build()
 			if (bb->position.y + halfYScale > maxY) maxY = bb->position.y + halfYScale;
 			if (bb->position.z - halfXScale < minZ) minZ = bb->position.z - halfXScale;
 			if (bb->position.z + halfXScale > maxZ) maxZ = bb->position.z + halfXScale;
-
+			
 			delete bb;
 			++i1;
 		}
 		AxisAlignedBox bounds(minX, minY, minZ, maxX, maxY, maxZ);
-
+		
 		vbuf->unlock();
 		subMesh->vertexData->vertexBufferBinding->setBinding(0, vbuf);
-
+		
 		//Populate index buffer
 		subMesh->indexData->indexStart = 0;
 		subMesh->indexData->indexCount = 6 * billboardBuffer.size();
@@ -481,7 +575,7 @@ void StaticBillboardSet::build()
 			*pI++ = 2 + offset;
 			*pI++ = 3 + offset;
 		}
-
+		
 		subMesh->indexData->indexBuffer->unlock();
 
 		//Finish up mesh
@@ -495,7 +589,7 @@ void StaticBillboardSet::build()
 
 		//Empty the billboardBuffer now, because all billboards have been built
 		billboardBuffer.clear();
-
+		
 		//Create an entity for the mesh
 		entity = sceneMgr->createEntity(entityName, mesh->getName());
 		entity->setCastShadows(false);
@@ -535,7 +629,7 @@ void StaticBillboardSet::setMaterial(const String &materialName)
 			} else {
 				SBMaterialRef::addMaterialRef(materialPtr, bbOrigin);
 			}
-
+			
 			//Apply material to entity
 			if (entity){
 				if (fadeEnabled){
@@ -571,7 +665,7 @@ void StaticBillboardSet::setFade(bool enabled, Real visibleDist, Real invisibleD
 
 			fadeMaterialPtr = getFadeMaterial(visibleDist, invisibleDist);
 			SBMaterialRef::addMaterialRef(fadeMaterialPtr, bbOrigin);
-
+			
 			//Apply material to entity
 			if (entity)
 				entity->setMaterialName(fadeMaterialPtr->getName());
@@ -586,7 +680,7 @@ void StaticBillboardSet::setFade(bool enabled, Real visibleDist, Real invisibleD
 				assert(!materialPtr.isNull());
 				SBMaterialRef::removeMaterialRef(fadeMaterialPtr);
 				SBMaterialRef::addMaterialRef(materialPtr, bbOrigin);
-
+				
 				//Apply material to entity
 				if (entity)
 					entity->setMaterialName(materialPtr->getName());
@@ -625,6 +719,10 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 		//Otherwise clone the material
 		fadeMaterial = materialPtr->clone(getUniqueID("ImpostorFade"));
 
+		bool isglsl = false;
+		if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
+			isglsl = true;
+
 		//And apply the fade shader
 		for (unsigned short t = 0; t < fadeMaterial->getNumTechniques(); ++t){
 			Technique *tech = fadeMaterial->getTechnique(t);
@@ -636,7 +734,8 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 				pass->setFragmentProgram("ImposterFragStandard");
 				GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
 				params->setIgnoreMissingParams(true);
-				params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+				//glsl can use the built in gl_ModelViewProjectionMatrix
+				if(!isglsl) params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 				params->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
 				params->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
 				params->setNamedAutoConstant("vScroll", GpuProgramParameters::ACT_CUSTOM);
@@ -652,15 +751,16 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 				//Set fade ranges
 				params->setNamedConstant("invisibleDist", invisibleDist);
 				params->setNamedConstant("fadeGap", invisibleDist - visibleDist);
-
+				
 				pass->setSceneBlending(SBT_TRANSPARENT_ALPHA);
 				//pass->setAlphaRejectFunction(CMPF_ALWAYS_PASS);
 				//pass->setDepthWriteEnabled(false);
 
-				params = pass->getFragmentProgramParameters();
-				params->setIgnoreMissingParams(true);
-				params->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
-
+				if (pass->hasFragmentProgram()) {
+					params = pass->getFragmentProgramParameters();
+					params->setIgnoreMissingParams(true);
+					params->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
+				}
 			}
 		}
 
@@ -680,6 +780,10 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 		Vector3 vUp = forward.crossProduct(vRight);
 		vRight.normalise();
 		vUp.normalise();
+
+		bool isglsl = false;
+		if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
+			isglsl = true;
 
 		//Even if camera is upside down, the billboards should remain upright
 		if (vUp.y < 0) vUp *= -1;
@@ -720,7 +824,8 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 				p->setVertexProgram("Sprite_vp");
 				p->getVertexProgramParameters()->setIgnoreMissingParams(true);
 				p->getVertexProgramParameters()->setNamedAutoConstant("iFogParams", GpuProgramParameters::ACT_FOG_PARAMS);
-				p->getVertexProgramParameters()->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+				//glsl can use the built in gl_ModelViewProjectionMatrix
+				if(!isglsl) p->getVertexProgramParameters()->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 				p->getVertexProgramParameters()->setNamedAutoConstant("uScroll", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("vScroll", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[0]", GpuProgramParameters::ACT_CUSTOM);
@@ -728,10 +833,12 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[2]", GpuProgramParameters::ACT_CUSTOM);
 				p->getVertexProgramParameters()->setNamedAutoConstant("preRotatedQuad[3]", GpuProgramParameters::ACT_CUSTOM);
 				p->setFragmentProgram("ImposterFragStandard");
-				p->getFragmentProgramParameters()->setIgnoreMissingParams(true);
-				p->getFragmentProgramParameters()->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
+				if (p->hasFragmentProgram()) {
+					p->getFragmentProgramParameters()->setIgnoreMissingParams(true);
+					p->getFragmentProgramParameters()->setNamedAutoConstant("iFogColour", GpuProgramParameters::ACT_FOG_COLOUR);
+				}
 			}
-
+			
 			//Update the vertex shader parameters
 			GpuProgramParametersSharedPtr params = p->getVertexProgramParameters();
 			params->setNamedConstant("preRotatedQuad[0]", preRotatedQuad, 4);

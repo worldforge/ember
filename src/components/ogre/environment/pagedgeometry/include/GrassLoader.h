@@ -1,6 +1,5 @@
 /*-------------------------------------------------------------------------------------
 Copyright (c) 2006 John Judnich
-Modified 2008 by Erik Hjortsberg (erik.hjortsberg@gmail.com)
 
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
@@ -14,6 +13,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 #include "PagedGeometry.h"
 #include "PropertyMaps.h"
+#include "RandomTable.h"
 
 #include <OgrePrerequisites.h>
 #include <OgreMaterial.h>
@@ -53,7 +53,7 @@ namespace Forests {
 class GrassLayer;
 class GrassLayerBase;
 
-/** \brief A PageLoader-derived object you can use with PagedGeometry to produce realistic grass.
+/** \brief A PageLoader-derived object you can use with PagedGeometry to produce realistic grass. 
 
 Using a GrassLoader is simple - simply create an instance, attach it to your PagedGeometry object
 with PagedGeometry::setPageLoader(), and add your grass. Important: For best performance, it is
@@ -85,20 +85,20 @@ template <typename TGrassLayer>
 class GrassLoader: public PageLoader
 {
 public:
-	/** \brief Creates a new GrassLoader object.
+	/** \brief Creates a new GrassLoader object. 
 	\param geom The PagedGeometry object that this GrassLoader will be assigned to.*/
 	inline GrassLoader(PagedGeometry *geom);
 	~GrassLoader();
 
 	/** \brief Adds a grass layer to the scene.
 	\param material The initial grass texture to use (this can be changed later).
-
+	
 	Since all grass is potentially infinite, it is not added like normal entities which
 	have a specific position. Instead you add a grass "layer" to the scene. A grass layer
 	is a "carpet" of a single type of grass that gets applied everywhere in your world.
 	If you want multiple types of grass with different appearances, you'll have to add
 	a multiple grass layers for each style.
-
+	
 	Of course, a grass layer is not completely uniform. The GrassLayer class contains
 	functions to vary grass size and density levels as desired.
 
@@ -111,7 +111,7 @@ public:
 	void deleteLayer(TGrassLayer *layer);
 
 	/** \brief Returns a list of added grass layers.
-
+	
 	This function returns a std::list<GrassLayer*> reference, which contains all grass
 	layers which have been added to this GrassLoader. */
 	inline std::list<TGrassLayer*> &getLayerList() { return layerList; }
@@ -124,7 +124,7 @@ public:
 	wind direction which affects all animated grass associated with this PageLoader.
 
 	Default value is Vector3::UNIT_X.
-
+		
 	\note This only affects grass layers which have breeze animations enabled.
 	*/
 	inline void setWindDirection(Ogre::Vector3 &dir) { windDir = dir; }
@@ -158,7 +158,7 @@ public:
 
 	/** \brief Sets the render queue group the grass will be rendered through
 	\param queueID Enumerated value of the queue group to use
-
+	
 	Like Ogre's MovableObject::setRenderQueueGroup(), this allows you to customize
 	the rendering order of your scene. Since grass is transparent, it's likely that
 	you may encounter alpha-sorting issues between grass and your particle effects,
@@ -212,9 +212,12 @@ public:
 	/** INTERNAL FUNCTION - DO NOT USE */
 	void loadPage(PageInfo &page);
 	/** INTERNAL FUNCTION - DO NOT USE */
-	void unloadPage(const PageInfo &page);
+	void unloadPage(PageInfo &page);
 	/** INTERNAL FUNCTION - DO NOT USE */
 	void frameUpdate();
+
+	static float getRangeRandom(float start, float end);
+
 
 private:
 	friend class GrassLayer;
@@ -235,6 +238,9 @@ private:
 	PagedGeometry *geom;
 	Ogre::uint8 renderQueue;
 	float densityFactor;
+
+	// random table
+	RandomTable *rTable;
 
 	//Animation
 	Ogre::Timer windTimer;
@@ -374,7 +380,7 @@ public:
 
 	This function can be used to set the maximum slope you want your grass to be placed on
 	(although it doesn't work for sprite grass). By default grass is allowed on any slope.
-
+	
 	This version of setMaxSlope() accepts a slope ratio value, where ATan(maxSlopeRatio) =
 	maxSlopeAngle. If you wish to provide a maximum slope as an angle, either use the other
 	overload of this function, or convert your angle to a slope ratio first with Tan().*/
@@ -467,7 +473,7 @@ public:
 	/** \brief Sets the density map used for this grass layer
 	\param mapFile The density map image
 	\param channel The color channel(s) to from the image to interpret as density
-
+	
 	A density map is simply a greyscale image, similar to a heightmap, that specifies the grass
 	density on your map. Full pixel intensity indicates that grass should be fully dense at that
 	point (the maximum density is specified by GrassLayer::setDensity()), while no pixel intensity
@@ -477,7 +483,7 @@ public:
 	red, green, blue, alpha, or color values. For example, you may store density values in the
 	alpha channel, in which case you would use CHANNEL_ALPHA. By default, CHANNEL_COLOR is used,
 	which means the image color is converted to greyscale internally and used as a density map.
-
+	
 	Note that GrassLayer by default has no idea of your terrain/world boundaries, so you
 	must specify a rectangular/square area of your world that is affected by density/color maps.
 	To do this, use the setMapBounds() function. Normally this is set to your terrain's bounds
@@ -489,7 +495,7 @@ public:
 
 	Overloaded to accept a Texture object. See the original setDensityMap() documentation above
 	for more detailed information on density maps.
-
+	
 	\note The texture data you provide is copied into the GrassLayer's own memory space, so you
 	can delete the texture after calling this function without risk of crashing. */
 	void setDensityMap(Ogre::TexturePtr map, MapChannel channel = CHANNEL_COLOR);
@@ -509,7 +515,7 @@ public:
 	/** \brief Sets the color map used for this grass layer
 	\param mapFile The color map image
 	\param channel The color channel(s) to from the image to use
-
+	
 	A color map is simply a texture that allows you to vary the color and shading of grass
 	across your world for a more realistic look. For example, adding a dark spot to the center
 	of your color map will make grass near the center of your terrain look darker, as long as
@@ -520,7 +526,7 @@ public:
 	grass in the red channel of an image, in which case you would use CHANNEL_RED (when you choose
 	a single channel, it is converted to a greyscale color). By default, CHANNEL_COLOR is used,
 	which uses the full color information available in the image.
-
+	
 	Remember that GrassLayer by default has no idea of your terrain/world boundaries, so you
 	must specify a rectangular/square area of your world that is affected by density/color maps.
 	To do this, use the setMapBounds() function. Normally this is set to your terrain's bounds
@@ -532,7 +538,7 @@ public:
 
 	Overloaded to accept a Texture object. See the original setColorMap() documentation above
 	for more detailed information on color maps.
-
+	
 	\note The texture data you provide is copied into RAM, so you can delete the texture after
 	calling this function without risk of crashing. */
 	void setColorMap(Ogre::TexturePtr map, MapChannel channel = CHANNEL_COLOR);
@@ -543,7 +549,7 @@ public:
 	grass. By default, bilinear filtering is used (MAPFILTER_BILINEAR). If you disable filtering
 	by using MAPFILTER_NONE, the resulting grass coloration may appear slightly pixelated,
 	depending on the resolution of your color map.
-
+	
 	MAPFILTER_NONE is slightly faster than MAPFILTER_BILINEAR, so use it if you don't notice any
 	considerable pixelation.
 	*/
@@ -673,12 +679,15 @@ GrassLoader<TGrassLayer>::GrassLoader(PagedGeometry *geom)
 {
 	GrassLoader<TGrassLayer>::geom = geom;
 
+	// generate some random numbers
+	rTable = new RandomTable();
+
 	heightFunction = NULL;
 	heightFunctionUserData = NULL;
 
 	windDir = Ogre::Vector3::UNIT_X;
 	densityFactor = 1.0f;
-	renderQueue = Ogre::RENDER_QUEUE_6;
+	renderQueue = geom->getRenderQueue();
 
 	windTimer.reset();
 	lastTime = 0;
@@ -692,6 +701,13 @@ GrassLoader<TGrassLayer>::~GrassLoader()
 		delete *it;
 	}
 	layerList.clear();
+
+	if(rTable)
+	{
+		delete(rTable);
+		rTable=0;
+	}
+
 }
 
 template <class TGrassLayer>
@@ -748,19 +764,17 @@ void GrassLoader<TGrassLayer>::frameUpdate()
 template <class TGrassLayer>
 void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 {
-	//Seed random number generator based on page indexes
-	Ogre::uint16 xSeed = static_cast<Ogre::uint16>(page.xIndex % 0xFFFF);
-	Ogre::uint16 zSeed = static_cast<Ogre::uint16>(page.zIndex % 0xFFFF);
-	Ogre::uint32 seed = (xSeed << 16) | zSeed;
-	srand(seed);
-
-	//Keep a list of a generated meshes
-	std::vector<Mesh*> *meshList = new std::vector<Mesh*>();
-	page.userData = (void*)meshList;
-
+	//Generate meshes
 	typename std::list<TGrassLayer*>::iterator it;
 	for (it = layerList.begin(); it != layerList.end(); ++it){
 		TGrassLayer *layer = *it;
+
+		// Continue to the next layer if the current page is outside of the layers map boundaries.
+		if(layer->mapBounds.right < page.bounds.left || layer->mapBounds.left > page.bounds.right ||
+		   layer->mapBounds.bottom < page.bounds.top || layer->mapBounds.top > page.bounds.bottom)
+		{
+			continue;
+		}
 
 		//Calculate how much grass needs to be added
 		float volume = page.bounds.width() * page.bounds.height();
@@ -772,12 +786,12 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 
 			//Precompute grass locations into an array of floats. A plain array is used for speed;
 			//there's no need to use a dynamic sized array since a maximum size is known.
-			float *position = new float[grassCount*2];
+			float *position = new float[grassCount*4];
 			grassCount = layer->_populateGrassList(page, position, grassCount);
 
 			//Don't build a mesh unless it contains something
 			if (grassCount != 0){
-				Ogre::Mesh *mesh = NULL;
+				Mesh *mesh = NULL;
 				switch (layer->renderTechnique){
 					case GRASSTECH_QUAD:
 						mesh = generateGrass_QUAD(page, layer, position, grassCount);
@@ -792,34 +806,26 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 				assert(mesh);
 
 				//Add the mesh to PagedGeometry
-				Ogre::Entity *entity = geom->getCamera()->getSceneManager()->createEntity(getUniqueID(), mesh->getName());
+				Entity *entity = geom->getCamera()->getSceneManager()->createEntity(getUniqueID(), mesh->getName());
 				entity->setRenderQueueGroup(renderQueue);
 				entity->setCastShadows(false);
-				addEntity(entity, page.centerPoint, Ogre::Quaternion::IDENTITY, Ogre::Vector3::UNIT_SCALE);
-				geom->getSceneManager()->destroyEntity(entity);
+				addEntity(entity, page.centerPoint, Quaternion::IDENTITY, Vector3::UNIT_SCALE);
 
 				//Store the mesh pointer
-				meshList->push_back(mesh);
+				page.meshList.push_back(mesh);
 			}
 
 			//Delete the position list
 			delete[] position;
 		}
 	}
+
 }
 
 template <class TGrassLayer>
-void GrassLoader<TGrassLayer>::unloadPage(const PageInfo &page)
+void GrassLoader<TGrassLayer>::unloadPage(PageInfo &page)
 {
-	//Unload meshes
-	std::vector<Mesh*> *meshList = (std::vector<Mesh*>*)page.userData;
-	std::vector<Mesh*>::iterator i;
-	for (i = meshList->begin(); i != meshList->end(); ++i) {
-		Mesh *mesh = *i;
-		MeshManager::getSingleton().remove(mesh->getName());
-	}
-	meshList->clear();
-	delete meshList;
+	// we unload the page in the page's destructor
 }
 template <class TGrassLayer>
 Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
