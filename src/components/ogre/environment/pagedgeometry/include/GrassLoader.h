@@ -828,146 +828,24 @@ void GrassLoader<TGrassLayer>::unloadPage(PageInfo &page)
 	// we unload the page in the page's destructor
 }
 template <class TGrassLayer>
-Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
+Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
 {
 	//Calculate the number of quads to be added
 	unsigned int quadCount;
 	quadCount = grassCount;
 
-	//Create manual mesh to store grass quads
-	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().createManual(getUniqueID(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	Ogre::SubMesh *subMesh = mesh->createSubMesh();
-	subMesh->useSharedVertices = false;
-
-	//Setup vertex format information
-	subMesh->vertexData = new Ogre::VertexData;
-	subMesh->vertexData->vertexStart = 0;
-	subMesh->vertexData->vertexCount = 4 * quadCount;
-
-	Ogre::VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
-	size_t offset = 0;
-	dcl->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
-	dcl->addElement(0, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
-	dcl->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
-
-	//Populate a new vertex buffer with grass
-	Ogre::HardwareVertexBufferSharedPtr vbuf = Ogre::HardwareBufferManager::getSingleton()
-		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
-	float* pReal = static_cast<float*>(vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD));
-
-	//Calculate size variance
-	float rndWidth = layer->maxWidth - layer->minWidth;
-	float rndHeight = layer->maxHeight - layer->minHeight;
-
-	float minY = Ogre::Math::POS_INFINITY, maxY = Ogre::Math::NEG_INFINITY;
-	float *posPtr = grassPositions;	//Position array "iterator"
-	for (Ogre::uint16 i = 0; i < grassCount; ++i)
+	// check for overflows of the uint16's
+	unsigned int maxUInt16 = std::numeric_limits<uint16>::max();
+	if(grassCount > maxUInt16)
 	{
-		//Get the x and z positions from the position array
-		float x = *posPtr++;
-		float z = *posPtr++;
-
-		//Get the color at the grass position
-		Ogre::uint32 color(layer->getColorAt(x, z));
-
-		//Calculate size
-		float rnd = Ogre::Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
-		float halfScaleX = (layer->minWidth + rndWidth * rnd) * 0.5f;
-		float scaleY = (layer->minHeight + rndHeight * rnd);
-
-		//Calculate rotation
-		float angle = Ogre::Math::RangeRandom(0, Ogre::Math::TWO_PI);
-		float xTrans = Ogre::Math::Cos(angle) * halfScaleX;
-		float zTrans = Ogre::Math::Sin(angle) * halfScaleX;
-
-		//Calculate heights and edge positions
-		float x1 = x - xTrans, z1 = z - zTrans;
-		float x2 = x + xTrans, z2 = z + zTrans;
-
-		float y1, y2;
-		if (heightFunction){
-			y1 = heightFunction(x1, z1, heightFunctionUserData);
-			y2 = heightFunction(x2, z2, heightFunctionUserData);
-		} else {
-			y1 = 0;
-			y2 = 0;
-		}
-
-		//Add vertices
-		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1 + scaleY); *pReal++ = (z1 - page.centerPoint.z);	//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
-		*pReal++ = 0; *pReal++ = 0;								//uv
-
-		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2 + scaleY); *pReal++ = (z2 - page.centerPoint.z);	//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
-		*pReal++ = 1; *pReal++ = 0;								//uv
-
-		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1); *pReal++ = (z1 - page.centerPoint.z);			//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
-		*pReal++ = 0; *pReal++ = 1;								//uv
-
-		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2); *pReal++ = (z2 - page.centerPoint.z);			//pos
-		*((Ogre::uint32*)pReal++) = color;							//color
-		*pReal++ = 1; *pReal++ = 1;								//uv
-
-		//Update bounds
-		if (y1 < minY) minY = y1;
-		if (y2 < minY) minY = y2;
-		if (y1 + scaleY > maxY) maxY = y1 + scaleY;
-		if (y2 + scaleY > maxY) maxY = y2 + scaleY;
+		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		return 0;
 	}
-
-	vbuf->unlock();
-	subMesh->vertexData->vertexBufferBinding->setBinding(0, vbuf);
-
-	//Populate index buffer
-	subMesh->indexData->indexStart = 0;
-	subMesh->indexData->indexCount = 6 * quadCount;
-	subMesh->indexData->indexBuffer = Ogre::HardwareBufferManager::getSingleton()
-		.createIndexBuffer(Ogre::HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-	Ogre::uint16* pI = static_cast<Ogre::uint16*>(subMesh->indexData->indexBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
-	for (Ogre::uint16 i = 0; i < quadCount; ++i)
+	if(quadCount > maxUInt16)
 	{
-		Ogre::uint16 offset = i * 4;
-
-		*pI++ = 0 + offset;
-		*pI++ = 2 + offset;
-		*pI++ = 1 + offset;
-
-		*pI++ = 1 + offset;
-		*pI++ = 2 + offset;
-		*pI++ = 3 + offset;
+		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		return 0;
 	}
-
-	subMesh->indexData->indexBuffer->unlock();
-
-	//Finish up mesh
-	Ogre::AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
-		page.bounds.right - page.centerPoint.x, maxY, page.bounds.bottom - page.centerPoint.z);
-	mesh->_setBounds(bounds);
-	Ogre::Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
-	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
-
-	Ogre::LogManager::getSingleton().setLogDetail(static_cast<Ogre::LoggingLevel>(0));
-	mesh->load();
-	Ogre::LogManager::getSingleton().setLogDetail(Ogre::LL_NORMAL);
-
-	//Apply grass material to mesh
-	subMesh->setMaterialName(layer->material->getName());
-
-	//Return the mesh
-	return mesh.getPointer();
-}
-
-template <class TGrassLayer>
-Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
-{
-	//Calculate the number of quads to be added
-	unsigned int quadCount;
-	quadCount = grassCount * 2;
 
 	//Create manual mesh to store grass quads
 	MeshPtr mesh = MeshManager::getSingleton().createManual(getUniqueID(), ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -1009,12 +887,169 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 		Ogre::uint32 color(layer->getColorAt(x, z));
 
 		//Calculate size
-		float rnd = Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
+		float rnd = *posPtr++;	//The same rnd value is used for width and height to maintain aspect ratio
 		float halfScaleX = (layer->minWidth + rndWidth * rnd) * 0.5f;
 		float scaleY = (layer->minHeight + rndHeight * rnd);
 
 		//Calculate rotation
-		float angle = Math::RangeRandom(0, Math::TWO_PI);
+		float angle = *posPtr++;
+		float xTrans = Math::Cos(angle) * halfScaleX;
+		float zTrans = Math::Sin(angle) * halfScaleX;
+
+		//Calculate heights and edge positions
+		float x1 = x - xTrans, z1 = z - zTrans;
+		float x2 = x + xTrans, z2 = z + zTrans;
+
+		float y1, y2;
+		if (heightFunction){
+			y1 = heightFunction(x1, z1, heightFunctionUserData);
+			y2 = heightFunction(x2, z2, heightFunctionUserData);
+
+			if (layer->getMaxSlope() < (Math::Abs(y1 - y2) / (halfScaleX * 2))) {
+				//Degenerate the face
+				x2 = x1;
+				y2 = y1;
+				z2 = z1;
+			}
+		} else {
+			y1 = 0;
+			y2 = 0;
+		}
+
+		//Add vertices
+		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1 + scaleY); *pReal++ = (z1 - page.centerPoint.z);	//pos
+		*((uint32*)pReal++) = color;							//color
+		*pReal++ = 0; *pReal++ = 0;								//uv
+
+		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2 + scaleY); *pReal++ = (z2 - page.centerPoint.z);	//pos
+		*((uint32*)pReal++) = color;							//color
+		*pReal++ = 1; *pReal++ = 0;								//uv
+
+		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1); *pReal++ = (z1 - page.centerPoint.z);			//pos
+		*((uint32*)pReal++) = color;							//color
+		*pReal++ = 0; *pReal++ = 1;								//uv
+
+		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2); *pReal++ = (z2 - page.centerPoint.z);			//pos
+		*((uint32*)pReal++) = color;							//color
+		*pReal++ = 1; *pReal++ = 1;								//uv
+
+		//Update bounds
+		if (y1 < minY) minY = y1;
+		if (y2 < minY) minY = y2;
+		if (y1 + scaleY > maxY) maxY = y1 + scaleY;
+		if (y2 + scaleY > maxY) maxY = y2 + scaleY;
+	}
+
+	vbuf->unlock();
+	subMesh->vertexData->vertexBufferBinding->setBinding(0, vbuf);
+
+	//Populate index buffer
+	subMesh->indexData->indexStart = 0;
+	subMesh->indexData->indexCount = 6 * quadCount;
+	subMesh->indexData->indexBuffer = HardwareBufferManager::getSingleton()
+		.createIndexBuffer(HardwareIndexBuffer::IT_16BIT, subMesh->indexData->indexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+	uint16* pI = static_cast<uint16*>(subMesh->indexData->indexBuffer->lock(HardwareBuffer::HBL_DISCARD));
+	for (uint16 i = 0; i < quadCount; ++i)
+	{
+		uint16 offset = i * 4;
+
+		*pI++ = 0 + offset;
+		*pI++ = 2 + offset;
+		*pI++ = 1 + offset;
+
+		*pI++ = 1 + offset;
+		*pI++ = 2 + offset;
+		*pI++ = 3 + offset;
+	}
+
+	subMesh->indexData->indexBuffer->unlock();
+	//subMesh->setBuildEdgesEnabled(autoEdgeBuildEnabled);
+
+	//Finish up mesh
+	AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
+		page.bounds.right - page.centerPoint.x, maxY, page.bounds.bottom - page.centerPoint.z);
+	mesh->_setBounds(bounds);
+	Vector3 temp = bounds.getMaximum() - bounds.getMinimum();
+	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
+
+	LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
+	mesh->setAutoBuildEdgeLists(autoEdgeBuildEnabled);
+	mesh->load();
+	LogManager::getSingleton().setLogDetail(LL_NORMAL);
+
+	//Apply grass material to mesh
+	subMesh->setMaterialName(layer->material->getName());
+
+	//Return the mesh
+	return mesh.getPointer();
+}
+
+template <class TGrassLayer>
+Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
+{
+	//Calculate the number of quads to be added
+	unsigned int quadCount;
+	quadCount = grassCount * 2;
+
+	// check for overflows of the uint16's
+	unsigned int maxUInt16 = std::numeric_limits<uint16>::max();
+	if(grassCount > maxUInt16)
+	{
+		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		return 0;
+	}
+	if(quadCount > maxUInt16)
+	{
+		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		return 0;
+	}
+
+	//Create manual mesh to store grass quads
+	MeshPtr mesh = MeshManager::getSingleton().createManual(getUniqueID(), ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	SubMesh *subMesh = mesh->createSubMesh();
+	subMesh->useSharedVertices = false;
+
+	//Setup vertex format information
+	subMesh->vertexData = new VertexData;
+	subMesh->vertexData->vertexStart = 0;
+	subMesh->vertexData->vertexCount = 4 * quadCount;
+
+	VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
+	size_t offset = 0;
+	dcl->addElement(0, offset, VET_FLOAT3, VES_POSITION);
+	offset += VertexElement::getTypeSize(VET_FLOAT3);
+	dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
+	offset += VertexElement::getTypeSize(VET_COLOUR);
+	dcl->addElement(0, offset, VET_FLOAT2, VES_TEXTURE_COORDINATES);
+	offset += VertexElement::getTypeSize(VET_FLOAT2);
+
+	//Populate a new vertex buffer with grass
+	HardwareVertexBufferSharedPtr vbuf = HardwareBufferManager::getSingleton()
+		.createVertexBuffer(offset, subMesh->vertexData->vertexCount, HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+	float* pReal = static_cast<float*>(vbuf->lock(HardwareBuffer::HBL_DISCARD));
+
+	//Calculate size variance
+	float rndWidth = layer->maxWidth - layer->minWidth;
+	float rndHeight = layer->maxHeight - layer->minHeight;
+
+	float minY = Math::POS_INFINITY, maxY = Math::NEG_INFINITY;
+	float *posPtr = grassPositions;	//Position array "iterator"
+	for (uint16 i = 0; i < grassCount; ++i)
+	{
+		//Get the x and z positions from the position array
+		float x = *posPtr++;
+		float z = *posPtr++;
+
+		//Get the color at the grass position
+		Ogre::uint32 color(layer->getColorAt(x, z));
+
+		//Calculate size
+		float rnd = *posPtr++;	//The same rnd value is used for width and height to maintain aspect ratio
+		float halfScaleX = (layer->minWidth + rndWidth * rnd) * 0.5f;
+		float scaleY = (layer->minHeight + rndHeight * rnd);
+
+		//Calculate rotation
+		float angle = *posPtr++;
 		float xTrans = Math::Cos(angle) * halfScaleX;
 		float zTrans = Math::Sin(angle) * halfScaleX;
 
@@ -1128,6 +1163,8 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 	}
 
 	subMesh->indexData->indexBuffer->unlock();
+	//subMesh->setBuildEdgesEnabled(autoEdgeBuildEnabled);
+
 
 	//Finish up mesh
 	AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
@@ -1137,6 +1174,7 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
 
 	LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
+	mesh->setAutoBuildEdgeLists(autoEdgeBuildEnabled);
 	mesh->load();
 	LogManager::getSingleton().setLogDetail(LL_NORMAL);
 
@@ -1148,11 +1186,24 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, T
 }
 
 template <class TGrassLayer>
-Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
+Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer *layer, float *grassPositions, unsigned int grassCount)
 {
 	//Calculate the number of quads to be added
 	unsigned int quadCount;
 	quadCount = grassCount;
+
+	// check for overflows of the uint16's
+	unsigned int maxUInt16 = std::numeric_limits<uint16>::max();
+	if(grassCount > maxUInt16)
+	{
+		LogManager::getSingleton().logMessage("grass count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		return 0;
+	}
+	if(quadCount > maxUInt16)
+	{
+		LogManager::getSingleton().logMessage("quad count overflow: you tried to use more than " + StringConverter::toString(maxUInt16) + " (thats the maximum) grass meshes for one page");
+		return 0;
+	}
 
 	//Create manual mesh to store grass quads
 	MeshPtr mesh = MeshManager::getSingleton().createManual(getUniqueID(), ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -1207,13 +1258,13 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 		Ogre::uint32 color(layer->getColorAt(x, z));
 
 		//Calculate size
-		float rnd = Math::UnitRandom();	//The same rnd value is used for width and height to maintain aspect ratio
+		float rnd = *posPtr++;	//The same rnd value is used for width and height to maintain aspect ratio
 		float halfXScale = (layer->minWidth + rndWidth * rnd) * 0.5f;
 		float scaleY = (layer->minHeight + rndHeight * rnd);
 
 		//Randomly mirror grass textures
 		float uvLeft, uvRight;
-		if (Math::UnitRandom() > 0.5f){
+		if (*posPtr++ > 0.5f){
 			uvLeft = 0;
 			uvRight = 1;
 		} else {
@@ -1270,6 +1321,8 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 	}
 
 	subMesh->indexData->indexBuffer->unlock();
+	//subMesh->setBuildEdgesEnabled(autoEdgeBuildEnabled);
+
 
 	//Finish up mesh
 	AxisAlignedBox bounds(page.bounds.left - page.centerPoint.x, minY, page.bounds.top - page.centerPoint.z,
@@ -1279,6 +1332,7 @@ Ogre::Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGras
 	mesh->_setBoundingSphereRadius(temp.length() * 0.5f);
 
 	LogManager::getSingleton().setLogDetail(static_cast<LoggingLevel>(0));
+	mesh->setAutoBuildEdgeLists(autoEdgeBuildEnabled);
 	mesh->load();
 	LogManager::getSingleton().setLogDetail(LL_NORMAL);
 
