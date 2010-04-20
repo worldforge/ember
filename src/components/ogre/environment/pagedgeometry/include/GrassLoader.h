@@ -743,8 +743,9 @@ void GrassLoader<TGrassLayer>::frameUpdate()
 
 		layer->_updateShaders();
 
-		if (layer->material->getNumSupportedTechniques()) {
-			Ogre::GpuProgramParametersSharedPtr params = layer->material->getSupportedTechnique(0)->getPass(0)->getVertexProgramParameters();
+		Ogre::Technique* tech = layer->material->getBestTechnique();
+		if (tech && tech->getNumPasses()) {
+			Ogre::GpuProgramParametersSharedPtr params = tech->getPass(0)->getVertexProgramParameters();
 			if (!params.isNull() && layer->animate){
 				//Increment animation frame
 				layer->waveCount += ellapsed * (layer->animSpeed * Ogre::Math::PI);

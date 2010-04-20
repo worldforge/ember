@@ -709,35 +709,39 @@ void GrassLayerBase::_updateShaders()
 				//Now the vertex shader (vertexShader) has either been found or just generated
 				//(depending on whether or not it was already generated).
 
-				//Apply the shader to the material
-				Pass *pass = tmpMat->getTechnique(0)->getPass(0);
-				pass->setVertexProgram(vsName);
-				GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
+				tmpMat->load();
+				Ogre::Material::TechniqueIterator techIterator = tmpMat->getSupportedTechniqueIterator();
+				while (techIterator.hasMoreElements()) {
+					Ogre::Technique* tech = techIterator.getNext();
+					//Apply the shader to the material
+					Pass *pass = tech->getPass(0);
+					pass->setVertexProgram(vsName);
+					GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
 
-				if(shaderLanguage.compare("glsl"))
-					//glsl can use the built in gl_ModelViewProjectionMatrix
-					params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-				params->setNamedAutoConstant("camPos", GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
-				params->setNamedAutoConstant("fadeRange", GpuProgramParameters::ACT_CUSTOM, 1);
+					if(shaderLanguage.compare("glsl"))
+						//glsl can use the built in gl_ModelViewProjectionMatrix
+						params->setNamedAutoConstant("worldViewProj", GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+					params->setNamedAutoConstant("camPos", GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
+					params->setNamedAutoConstant("fadeRange", GpuProgramParameters::ACT_CUSTOM, 1);
 
-				if (animate){
-					params->setNamedAutoConstant("time", GpuProgramParameters::ACT_CUSTOM, 1);
-					params->setNamedAutoConstant("frequency", GpuProgramParameters::ACT_CUSTOM, 1);
-					params->setNamedAutoConstant("direction", GpuProgramParameters::ACT_CUSTOM, 4);
+					if (animate){
+						params->setNamedConstant("time", 1.0f);
+						params->setNamedConstant("frequency", 1.0f);
+						params->setNamedConstant("direction", Ogre::Vector4::ZERO);
+					}
+
+					if (lighting){
+						params->setNamedAutoConstant("objSpaceLight", GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE);
+						params->setNamedAutoConstant("lightDiffuse", GpuProgramParameters::ACT_DERIVED_LIGHT_DIFFUSE_COLOUR);
+						params->setNamedAutoConstant("lightAmbient", GpuProgramParameters::ACT_DERIVED_AMBIENT_LIGHT_COLOUR);
+					}
+
+					if (fadeTechnique == FADETECH_GROW || fadeTechnique == FADETECH_ALPHAGROW){
+						params->setNamedConstant("grassHeight", maxHeight * 1.05f);
+					}
+
+					pass->getVertexProgramParameters()->setNamedConstant("fadeRange", fadeRange);
 				}
-
-				if (lighting){
-					params->setNamedAutoConstant("objSpaceLight", GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE);
-					params->setNamedAutoConstant("lightDiffuse", GpuProgramParameters::ACT_DERIVED_LIGHT_DIFFUSE_COLOUR);
-					params->setNamedAutoConstant("lightAmbient", GpuProgramParameters::ACT_DERIVED_AMBIENT_LIGHT_COLOUR);
-				}
-
-				if (fadeTechnique == FADETECH_GROW || fadeTechnique == FADETECH_ALPHAGROW){
-					params->setNamedAutoConstant("grassHeight", GpuProgramParameters::ACT_CUSTOM, 1);
-					params->setNamedConstant("grassHeight", maxHeight * 1.05f);
-				}
-
-				pass->getVertexProgramParameters()->setNamedConstant("fadeRange", fadeRange);
 			}
 			//Now the material (tmpMat) has either been found or just created (depending on whether or not it was already
 			//created). The appropriate vertex shader should be applied and the material is ready for use.
