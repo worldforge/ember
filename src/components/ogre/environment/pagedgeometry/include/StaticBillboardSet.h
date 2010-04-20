@@ -275,12 +275,6 @@ private:
 		return prefix + Ogre::StringConverter::toString(++GUID);
 	}
 
-	/**
-	\brief Gets the currently used shader language.
-
-	This can be either "glsl", "hlsl" or "cg".
-	*/
-	static std::string getShaderLanguage();
 };
 
 

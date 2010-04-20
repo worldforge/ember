@@ -13,6 +13,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 #include "PagedGeometry.h"
 #include "PropertyMaps.h"
 #include "RandomTable.h"
+#include "ShaderHelper.h"
 
 #include <OgreRoot.h>
 #include <OgreTimer.h>
@@ -462,16 +463,10 @@ void GrassLayerBase::_updateShaders()
 				//tmpMat->setReceiveShadows(false);
 
 				//Check if the desired shader already exists (if not, compile it)
-				String shaderLanguage;
+				String shaderLanguage = ShaderHelper::getShaderLanguage();
 				HighLevelGpuProgramPtr vertexShader = HighLevelGpuProgramManager::getSingleton().getByName(vsName);
 				if (vertexShader.isNull())
 				{
-					if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-						shaderLanguage = "hlsl";
-					else if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-						shaderLanguage = "glsl";
-					else
-						shaderLanguage = "cg";
 
 					//Generate the grass shader
 					String vertexProgSource;

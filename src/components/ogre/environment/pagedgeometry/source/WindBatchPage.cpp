@@ -14,6 +14,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 #include "WindBatchPage.h"
 #include "WindBatchedGeometry.h"
+#include "ShaderHelper.h"
 
 #include <OgreRoot.h>
 #include <OgreCamera.h>
@@ -112,13 +113,7 @@ void WindBatchPage::_updateShaders()
 
 		const String vertexProgName = tmpName.str();
 
-		String shaderLanguage;
-		if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-			shaderLanguage = "hlsl";
-		else if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-			shaderLanguage = "glsl";
-		else
-			shaderLanguage = "cg";
+		String shaderLanguage = ShaderHelper::getShaderLanguage();
 
 		//If the shader hasn't been created yet, create it
 		if (HighLevelGpuProgramManager::getSingleton().getByName(vertexProgName).isNull())

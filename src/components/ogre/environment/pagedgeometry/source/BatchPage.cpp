@@ -14,6 +14,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 #include "BatchPage.h"
 #include "BatchedGeometry.h"
+#include "ShaderHelper.h"
 
 #include <OgreRoot.h>
 #include <OgreCamera.h>
@@ -224,13 +225,7 @@ void BatchPage::_updateShaders()
 
 		const String vertexProgName = tmpName.str();
 
-		String shaderLanguage;
-		if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-			shaderLanguage = "hlsl";
-		else if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-			shaderLanguage = "glsl";
-		else
-			shaderLanguage = "cg";
+		String shaderLanguage = ShaderHelper::getShaderLanguage();
 
 		//If the shader hasn't been created yet, create it
 		if (HighLevelGpuProgramManager::getSingleton().getByName(vertexProgName).isNull())
@@ -436,29 +431,33 @@ void BatchPage::_updateShaders()
 		}
 
 		std::string fragmentProgramName("BatchFragStandard");
+		String fragmentProgSource;
 		//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
 		HighLevelGpuProgramPtr fragShader = static_cast<HighLevelGpuProgramPtr>(HighLevelGpuProgramManager::getSingleton().getByName(fragmentProgramName));
 		if (fragShader.isNull()){
 			Pass *pass = mat->getTechnique(0)->getPass(0);
 
-			String fragmentProgSource = "void main \n"
-				"( \n"
-				"    float2				iTexcoord		: TEXCOORD0, \n"
-				"	 float				iFog 			: FOG, \n"
-				"	 out float4         oColour			: COLOR, \n"
-				"    uniform sampler2D  diffuseTexture	: TEXUNIT0, \n"
-				"    uniform float3		iFogColour \n"
-				") \n"
-				"{ \n"
-				"	oColour = tex2D(diffuseTexture, iTexcoord.xy); \n"
-				"   oColour.xyz = lerp(oColour.xyz, iFogColour, iFog);\n"
-				"}";
+			if (shaderLanguage == "glsl") {
+				fragmentProgSource = "uniform sampler2D diffuseMap;\n"
+					"void main()	{"
+					"	gl_FragColor = texture2D(diffuseMap, gl_TexCoord[0].st);"
+					"	gl_FragColor.rgb = mix(gl_Fog.color, (gl_LightModel.ambient * gl_FragColor + gl_FragColor), gl_FogFragCoord).rgb;"
+					"}";
 
-			String shaderLanguage;
-			if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-				shaderLanguage = "hlsl";
-			else
-				shaderLanguage = "cg";
+			} else {
+				fragmentProgSource = "void main \n"
+					"( \n"
+					"    float2				iTexcoord		: TEXCOORD0, \n"
+					"	 float				iFog 			: FOG, \n"
+					"	 out float4         oColour			: COLOR, \n"
+					"    uniform sampler2D  diffuseTexture	: TEXUNIT0, \n"
+					"    uniform float3		iFogColour \n"
+					") \n"
+					"{ \n"
+					"	oColour = tex2D(diffuseTexture, iTexcoord.xy); \n"
+					"   oColour.xyz = lerp(oColour.xyz, iFogColour, iFog);\n"
+					"}";
+			}
 
 			fragShader = HighLevelGpuProgramManager::getSingleton().createProgram(
 				fragmentProgramName,
@@ -467,12 +466,14 @@ void BatchPage::_updateShaders()
 
 			fragShader->setSource(fragmentProgSource);
 
-			if (shaderLanguage == "hlsl")
+			if (shaderLanguage == "hlsl") {
+				fragShader->setParameter("entry_point", "main");
 				fragShader->setParameter("target", "ps_2_0");
-			else
+			} else if (shaderLanguage == "cg") {
 				fragShader->setParameter("profiles", "ps_2_0 arbfp1");
+				fragShader->setParameter("entry_point", "main");
+			}
 
-			fragShader->setParameter("entry_point", "main");
 			fragShader->load();
 			if (fragShader->hasCompileError()) {
 				OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, "Error loading the batching fragment shader.", "BatchPage::_updateShaders()");

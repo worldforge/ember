@@ -15,6 +15,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 //-------------------------------------------------------------------------------------
 
 #include "StaticBillboardSet.h"
+#include "ShaderHelper.h"
 
 #include <OgreRoot.h>
 #include <OgreCamera.h>
@@ -75,7 +76,7 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 		
 		//Load vertex shader to align billboards to face the camera (if not loaded already)
 		if (++selfInstances == 1){
-			String shaderLanguage = getShaderLanguage();
+			String shaderLanguage = ShaderHelper::getShaderLanguage();
 
 			const std::string fragmentProgramName("ImposterFragStandard");
 			//We also need a fragment program to go with our vertex program. Especially on ATI cards on Linux where we can't mix shaders and the fixed function pipeline.
@@ -713,7 +714,7 @@ MaterialPtr StaticBillboardSet::getFadeMaterial(Real visibleDist, Real invisible
 		//Otherwise clone the material
 		fadeMaterial = materialPtr->clone(getUniqueID("ImpostorFade"));
 
-		bool isglsl = (getShaderLanguage() == "glsl");
+		bool isglsl = (ShaderHelper::getShaderLanguage() == "glsl");
 
 		//And apply the fade shader
 		for (unsigned short t = 0; t < fadeMaterial->getNumTechniques(); ++t){
@@ -774,7 +775,7 @@ void StaticBillboardSet::updateAll(const Vector3 &cameraDirection)
 		vRight.normalise();
 		vUp.normalise();
 
-		bool isglsl = (getShaderLanguage() == "glsl");
+		bool isglsl = (ShaderHelper::getShaderLanguage() == "glsl");
 
 		//Even if camera is upside down, the billboards should remain upright
 		if (vUp.y < 0) vUp *= -1;
@@ -854,17 +855,6 @@ void StaticBillboardSet::setBillboardOrigin(BillboardOrigin origin)
 		fallbackSet->setBillboardOrigin(origin);
 	}
 }
-
-std::string StaticBillboardSet::getShaderLanguage()
-{
-	if (Root::getSingleton().getRenderSystem()->getName() == "Direct3D9 Rendering Subsystem")
-		return "hlsl";
-	else if(Root::getSingleton().getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-		return "glsl";
-	else
-		return "cg";
-}
-
 
 //-------------------------------------------------------------------------------------
 
