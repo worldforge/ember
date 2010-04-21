@@ -55,6 +55,7 @@ FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLa
 	maxWidth = 1.0f;
 	minHeight = 1.0f;
 	maxHeight = 1.0f;
+	maxSlope = 1000;
 	// 	minY = 0; maxY = 0;
 	renderTechnique = GRASSTECH_QUAD;
 	fadeTechnique = FADETECH_ALPHA;
@@ -62,6 +63,7 @@ FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLa
 	animSpeed = 1.0f;
 	animFreq = 1.0f;
 	waveCount = 0.0f;
+	lighting = false;
 	animate = true;
 	blend = false;
 	shaderNeedsUpdate = true;
@@ -82,7 +84,7 @@ void FoliageLayer::configure(Terrain::TerrainManager* terrainManager, const Terr
 unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume)
 {
 	if (mLatestPlantsResult) {
-		return static_cast<unsigned int> (densityFactor * volume * mDensity);
+		return mLatestPlantsResult->getStore().size();
 	} else {
 		PlantAreaQuery query(*mTerrainLayerDefinition, mFoliageDefinition->getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLayer::plantQueryExecuted);
