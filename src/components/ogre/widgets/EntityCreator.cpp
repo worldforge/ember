@@ -341,6 +341,7 @@ void EntityCreator::cleanupCreation()
 	mModelMount = 0;
 
 	mEntityNode->detachAllObjects();
+	mOrientation = Convert::toWF(mEntityNode->getOrientation());
 	EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
 	//	delete mEntityNode;
 	mEntityNode = 0;
