@@ -82,6 +82,7 @@
 #include <Mercator/TerrainMod.h>
 
 #include <wfmath/intersect.h>
+#include <wfmath/point.h>
 
 #include <sigc++/object_slot.h>
 #include <sigc++/bind.h>
@@ -548,38 +549,13 @@ bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
 void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions)
 {
 	std::vector<WFMath::AxisBox<2> > areas;
-	std::set<TerrainPage*> pagesToUpdate;
 	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
 		const TerrainPosition& worldPosition(*I);
-		TerrainPage* page;
-		///make sure we sample pages from all four points around the base point, in case the base point is on a page border
-		for (int i = -65; i < 66; i += 64) {
-			for (int j = -65; j < 66; j += 64) {
-				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
-				page = getTerrainPageAtPosition(position);
-				if (page) {
-					pagesToUpdate.insert(page);
-				}
-			}
-		}
-		WFMath::AxisBox<2> area(WFMath::Point<2>(worldPosition.x() - 32, worldPosition.y() - 32), WFMath::Point<2>(worldPosition.x() + 32, worldPosition.y() + 32));
-		areas.push_back(area);
+		//Make an area which will cover the area affected by the basepoint
+		int res = mTerrain->getResolution();
+		areas.push_back(WFMath::AxisBox<2>(worldPosition - WFMath::Vector<2>(res, res), worldPosition + WFMath::Vector<2>(res, res)));
 	}
-
-	EventBeforeTerrainUpdate(positions, pagesToUpdate);
-	//Spawn a separate task for each page to not bog down processing with all pages at once
-	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
-		BridgeBoundGeometryPtrVector geometryToUpdate;
-		TerrainPage* page = *I;
-		ITerrainPageBridgePtr bridgePtr;
-		PageBridgeStore::const_iterator J = mPageBridges.find(page->getWFIndex());
-		if (J != mPageBridges.end()) {
-			bridgePtr = J->second;
-		}
-		geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
-		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
-	}
-
+	reloadTerrain(areas);
 }
 
 void TerrainManager::reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas)
@@ -595,7 +571,7 @@ void TerrainManager::reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas
 		}
 	}
 
-	//EventBeforeTerrainUpdate(positions, pagesToUpdate);
+	EventBeforeTerrainUpdate(areas, pagesToUpdate);
 	//Spawn a separate task for each page to not bog down processing with all pages at once
 	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
 		BridgeBoundGeometryPtrVector geometryToUpdate;

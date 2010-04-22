@@ -58,7 +58,7 @@ public:
 	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
 	 */
-	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
+	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal);
 
 	/**
 	 * @brief Ctor.
@@ -67,7 +67,7 @@ public:
 	 * @param areas Any areas which define the area to update. This will only be applied if updateAll is set to false.
 	 * @param signal A signal which will be emitted in the main thread once all surfaces have been updated.
 	 */
-	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal);
+	TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal);
 
 	virtual ~TerrainShaderUpdateTask();
 
@@ -95,7 +95,7 @@ private:
 	/**
 	 * @brief A signal to emit once the update is done.
 	 */
-	sigc::signal<void, const TerrainShader*, const AreaStore* >& mSignal;
+	sigc::signal<void, const TerrainShader*, const AreaStore& >& mSignal;
 
 };
 

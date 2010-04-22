@@ -286,7 +286,7 @@ public:
 	 *
 	 * The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
 	 */
-	sigc::signal<void, const TerrainShader*, const AreaStore* > EventLayerUpdated;
+	sigc::signal<void, const TerrainShader*, const AreaStore& > EventLayerUpdated;
 
 	/**
 	 * @brief Emitted when a new shader is created.
@@ -299,16 +299,16 @@ public:
 	 * @brief Emitted before the terrain geometry is changed.
 	 *
 	 * When the terrain geometry is about to be changed this signal is emitted.
-	 * The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
+	 * The first parameter is the areas which are affected by the change.
 	 * The second parameter is the pages that will be updated.
 	 */
-	sigc::signal<void, const std::vector<TerrainPosition>&, const std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
+	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
 
 	/**
 	 * @brief Emitted after the terrain geometry has changed.
 	 *
 	 * When the terrain geometry has been changed this signal is emitted.
-	 * The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
+	 * The first parameter is the areas which are affected by the change.
 	 * The second parameter is the pages that were updated.
 	 */
 	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventAfterTerrainUpdate;
@@ -339,12 +339,17 @@ public:
 	/**
 	 * @brief Reloads the terrain found at the specified positions.
 	 *
-	 * Calling this method will update both the internal Mercator heightfield data as well as the Ogre graphical representation.
+	 * Calling this method will update both the internal Mercator heightfield data as well as the Ogre graphical representation, and will trigger updates of any dependent featues (such as the foliage).
 	 * @param positions A vector of terrain positions, in world space. The terrain found at these positions will be reloaded. Note that if there's any pages between these positions, these will not be updated.
-	 * TODO: Add a similiar method which also takes a WFMath::AxisBox<2> or another area.
 	 */
 	void reloadTerrain(const std::vector<TerrainPosition>& positions);
 
+	/**
+	 * @brief Reloads the terrain found at the specified areas.
+	 *
+	 * Calling this method will update both the internal Mercator heightfield data as well as the Ogre graphical representation, and will trigger updates of any dependent featues (such as the foliage).
+	 * @param positions A vector of terrain areas, in world space. The terrain found at these areas will be reloaded.
+	 */
 	void reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas);
 
 

@@ -34,13 +34,13 @@ namespace EmberOgre
 namespace Terrain
 {
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const TerrainShader* shader, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal) :
 	mGeometry(geometry), mAreas(areas), mSignal(signal)
 {
 	mShaders.push_back(shader);
 }
 
-TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore*>& signal) :
+TerrainShaderUpdateTask::TerrainShaderUpdateTask(const GeometryPtrVector& geometry, const std::vector<const TerrainShader*>& shaders, const AreaStore& areas, sigc::signal<void, const TerrainShader*, const AreaStore&>& signal) :
 	mGeometry(geometry), mShaders(shaders), mAreas(areas), mSignal(signal)
 {
 }
@@ -80,11 +80,7 @@ void TerrainShaderUpdateTask::executeTaskInMainThread()
 {
 
 	for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
-		if (mAreas.size()) {
-			mSignal(*I, &mAreas);
-		} else {
-			mSignal(*I, 0);
-		}
+		mSignal(*I, mAreas);
 	}
 }
 

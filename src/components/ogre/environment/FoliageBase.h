@@ -96,7 +96,7 @@ protected:
 	TerrainLayerDefinitionStore mDependentDefinitions;
 	
 	void initializeDependentLayers();
-	void TerrainManager_LayerUpdated(const Terrain::TerrainShader* shader, const ::EmberOgre::Terrain::AreaStore* areas);
+	void TerrainManager_LayerUpdated(const Terrain::TerrainShader* shader, const ::EmberOgre::Terrain::AreaStore& areas);
 	void TerrainManager_EventShaderCreated(const Terrain::TerrainShader* shader);
 	void TerrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::EmberOgre::Terrain::TerrainPage* >& pages);
 
