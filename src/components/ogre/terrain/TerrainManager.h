@@ -311,7 +311,7 @@ public:
 	 * The first parameter is the TerrainPositions that were updated, i.e. the BasePoints that were changed. The terrain is generated from a series of base points, in the default setting dispersed with 64 meters between them.
 	 * The second parameter is the pages that were updated.
 	 */
-	sigc::signal<void, const std::vector<TerrainPosition>&, const std::set<TerrainPage*>&> EventAfterTerrainUpdate;
+	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventAfterTerrainUpdate;
 
 	/**
 	 * @brief Emitted when a terrain page has had its geometry updated.
@@ -344,6 +344,9 @@ public:
 	 * TODO: Add a similiar method which also takes a WFMath::AxisBox<2> or another area.
 	 */
 	void reloadTerrain(const std::vector<TerrainPosition>& positions);
+
+	void reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas);
+
 
 	/**
 	 * @brief Updates the positions of all entities contained on the supplied pages.

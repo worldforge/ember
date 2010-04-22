@@ -22,6 +22,7 @@
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
 #include <Eris/TerrainMod.h>
+#include <wfmath/axisbox.h>
 
 namespace EmberOgre
 {
@@ -45,7 +46,7 @@ void TerrainModAddTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutio
 	/// We need to save this pointer to use when the modifier is changed or deleted
 	mManagerLocalTerrainMod = mTerrain.addMod(*mOriginalTerrainMod);
 	if (mManagerLocalTerrainMod) {
-		mUpdatedPositions.push_back(TerrainPosition(mManagerLocalTerrainMod->bbox().getCenter().x(), mManagerLocalTerrainMod->bbox().getCenter().y()));
+		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
 	}
 
 }
@@ -54,7 +55,7 @@ void TerrainModAddTask::executeTaskInMainThread()
 {
 	if (mManagerLocalTerrainMod) {
 		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
-		mManager.reloadTerrain(mUpdatedPositions);
+		mManager.reloadTerrain(mUpdatedAreas);
 	}
 }
 }

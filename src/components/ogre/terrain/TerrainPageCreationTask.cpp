@@ -58,9 +58,10 @@ void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 	TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*mPage, mTerrainManager.getSegmentManager(), mTerrainManager.getDefaultHeight()));
 	BridgeBoundGeometryPtrVector geometry;
 	geometry.push_back(BridgeBoundGeometryPtrVector::value_type(geometryInstance, mBridge));
-	std::vector<TerrainPosition> positions;
+	std::vector<WFMath::AxisBox<2> > areas;
+	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
-	context.executeTask(new GeometryUpdateTask(geometry, positions, mTerrainManager, mTerrainManager.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
+	context.executeTask(new GeometryUpdateTask(geometry, areas, mTerrainManager, mTerrainManager.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
 
 }
 

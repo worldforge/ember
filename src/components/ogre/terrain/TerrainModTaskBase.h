@@ -75,7 +75,7 @@ protected:
 	 */
 	TerrainModMap& mTerrainMods;
 
-	std::vector<TerrainPosition> mUpdatedPositions;
+	std::vector<WFMath::AxisBox<2> > mUpdatedAreas;
 
 };
 

@@ -18,6 +18,7 @@
 
 #include "TerrainModTaskBase.h"
 #include <wfmath/point.h>
+#include <wfmath/axisbox.h>
 
 namespace EmberOgre
 {

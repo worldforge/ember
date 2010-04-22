@@ -81,6 +81,8 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/TerrainMod.h>
 
+#include <wfmath/intersect.h>
+
 #include <sigc++/object_slot.h>
 #include <sigc++/bind.h>
 
@@ -545,6 +547,7 @@ bool TerrainManager::updateTerrain(const TerrainDefPointStore& terrainPoints)
 
 void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions)
 {
+	std::vector<WFMath::AxisBox<2> > areas;
 	std::set<TerrainPage*> pagesToUpdate;
 	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
 		const TerrainPosition& worldPosition(*I);
@@ -559,6 +562,8 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 				}
 			}
 		}
+		WFMath::AxisBox<2> area(WFMath::Point<2>(worldPosition.x() - 32, worldPosition.y() - 32), WFMath::Point<2>(worldPosition.x() + 32, worldPosition.y() + 32));
+		areas.push_back(area);
 	}
 
 	EventBeforeTerrainUpdate(positions, pagesToUpdate);
@@ -572,9 +577,37 @@ void TerrainManager::reloadTerrain(const std::vector<TerrainPosition>& positions
 			bridgePtr = J->second;
 		}
 		geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
-		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, positions, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
+		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
 	}
 
+}
+
+void TerrainManager::reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas)
+{
+	std::set<TerrainPage*> pagesToUpdate;
+	for (std::vector<WFMath::AxisBox<2> >::const_iterator I(areas.begin()); I != areas.end(); ++I) {
+		const WFMath::AxisBox<2>& area = *I;
+		for (PageVector::const_iterator pageI = mPages.begin(); pageI != mPages.end(); ++pageI) {
+			TerrainPage* page = *pageI;
+			if (WFMath::Contains(page->getWorldExtent(), area, false) || WFMath::Intersect(page->getWorldExtent(), area, false) || WFMath::Contains(area, page->getWorldExtent(), false)) {
+				pagesToUpdate.insert(page);
+			}
+		}
+	}
+
+	//EventBeforeTerrainUpdate(positions, pagesToUpdate);
+	//Spawn a separate task for each page to not bog down processing with all pages at once
+	for (std::set<TerrainPage*>::const_iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
+		BridgeBoundGeometryPtrVector geometryToUpdate;
+		TerrainPage* page = *I;
+		ITerrainPageBridgePtr bridgePtr;
+		PageBridgeStore::const_iterator J = mPageBridges.find(page->getWFIndex());
+		if (J != mPageBridges.end()) {
+			bridgePtr = J->second;
+		}
+		geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
+		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
+	}
 }
 
 void TerrainManager::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)

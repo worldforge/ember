@@ -23,6 +23,7 @@
 #include <Mercator/Terrain.h>
 #include <Eris/TerrainMod.h>
 #include <Eris/Entity.h>
+#include <wfmath/axisbox.h>
 
 namespace EmberOgre
 {
@@ -44,7 +45,7 @@ TerrainModChangeTask::~TerrainModChangeTask()
 void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
 	if (mManagerLocalTerrainMod) {
-		mUpdatedPositions.push_back(TerrainPosition(mManagerLocalTerrainMod->bbox().getCenter().x(), mManagerLocalTerrainMod->bbox().getCenter().y()));
+		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
 		// Use the pointer returned from addMod() to remove it
 		mTerrain.removeMod(mManagerLocalTerrainMod);
 		delete mManagerLocalTerrainMod;
@@ -52,7 +53,7 @@ void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecu
 
 	mManagerLocalTerrainMod = mTerrain.addMod(*mNewTerrainMod);
 	if (mManagerLocalTerrainMod) {
-		mUpdatedPositions.push_back(TerrainPosition(mManagerLocalTerrainMod->bbox().getCenter().x(), mManagerLocalTerrainMod->bbox().getCenter().y()));
+		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
 	}
 
 }
@@ -63,7 +64,7 @@ void TerrainModChangeTask::executeTaskInMainThread()
 	if (mManagerLocalTerrainMod) {
 		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
 	}
-	mManager.reloadTerrain(mUpdatedPositions);
+	mManager.reloadTerrain(mUpdatedAreas);
 }
 }
 

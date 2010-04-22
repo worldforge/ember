@@ -95,13 +95,7 @@ void FoliageBase::TerrainManager_LayerUpdated(const Terrain::TerrainShader* shad
 			if (areas) {
 				for (AreaStore::const_iterator I = areas->begin(); I != areas->end(); ++I) {
 					const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(*I));
-					Ogre::Real pageSize(mPagedGeometry->getPageSize());
-					Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);
-					for (; pos.x < ogreExtent.right; pos.x += pageSize) {
-						for (; pos.z < ogreExtent.bottom; pos.z += pageSize) {
-							mPagedGeometry->reloadGeometryPage(pos);
-						}
-					}
+					mPagedGeometry->reloadGeometryPages(ogreExtent);
 				}
 			} else {
 				mPagedGeometry->reloadGeometry();
@@ -119,21 +113,14 @@ void FoliageBase::TerrainManager_EventShaderCreated(const Terrain::TerrainShader
 	}
 }
 
-void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<TerrainPosition>& terrainPositions, const std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
+void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
 {
 	if (mPagedGeometry) {
-		Ogre::Real pageSize(mPagedGeometry->getPageSize());
-		for (std::set< ::EmberOgre::Terrain::TerrainPage* >::const_iterator I = pages.begin(); I != pages.end(); ++I) {
-			const ::EmberOgre::Terrain::TerrainPage* page(*I);
-			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(page->getWorldExtent()));
+		for (std::vector<WFMath::AxisBox<2> >::const_iterator I = areas.begin(); I != areas.end(); ++I) {
+			const WFMath::AxisBox<2>& area(*I);
+			const Ogre::TRect<Ogre::Real> ogreExtent(Convert::toOgre(area));
 
-			///update all paged geometry pages that are within the extent of the terrain page
-			Ogre::Vector3 pos(ogreExtent.left, 0, ogreExtent.top);
-			for (; pos.x < ogreExtent.right; pos.x += pageSize) {
-				for (; pos.z < ogreExtent.bottom; pos.z += pageSize) {
-					mPagedGeometry->reloadGeometryPage(pos);
-				}
-			}
+			mPagedGeometry->reloadGeometryPages(ogreExtent);
 		}
 	}
 }

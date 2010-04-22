@@ -23,6 +23,7 @@
 #include <Mercator/Terrain.h>
 #include <Eris/TerrainMod.h>
 #include <Eris/Entity.h>
+#include <wfmath/axisbox.h>
 
 namespace EmberOgre
 {
@@ -44,16 +45,16 @@ void TerrainModRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecu
 {
 	if (mManagerLocalTerrainMod) {
 		mTerrain.removeMod(mManagerLocalTerrainMod);
-		mUpdatedPositions.push_back(TerrainPosition(mManagerLocalTerrainMod->bbox().getCenter().x(), mManagerLocalTerrainMod->bbox().getCenter().y()));
+		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
 		delete mManagerLocalTerrainMod;
 	}
 }
 
 void TerrainModRemoveTask::executeTaskInMainThread()
 {
-	if (mUpdatedPositions.size()) {
+	if (mUpdatedAreas.size()) {
 
-		mManager.reloadTerrain(mUpdatedPositions);
+		mManager.reloadTerrain(mUpdatedAreas);
 	}
 }
 

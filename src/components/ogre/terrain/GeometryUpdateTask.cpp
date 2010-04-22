@@ -32,8 +32,8 @@ namespace EmberOgre
 namespace Terrain
 {
 
-GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages, const std::vector<TerrainPosition>& positions, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
-	mGeometry(pages), mPositions(positions), mManager(manager), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages, const std::vector<WFMath::AxisBox<2> >& areas, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
+	mGeometry(pages), mAreas(areas), mManager(manager), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -46,7 +46,6 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 {
 	std::vector<Mercator::Segment*> segments;
 
-	AreaStore affectedAreas;
 	//first populate the geometry for all pages, and then regenerate the shaders
 	for (BridgeBoundGeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
 		TerrainPageGeometryPtr geometry = I->first;
@@ -57,9 +56,8 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 		}
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
-		affectedAreas.push_back(geometry->getPage().getWorldExtent());
 		for (ShaderStore::const_iterator J = mShaders.begin(); J != mShaders.end(); ++J) {
-			context.executeTask(new TerrainShaderUpdateTask(geometries, J->second, affectedAreas, mManager.EventLayerUpdated));
+			context.executeTask(new TerrainShaderUpdateTask(geometries, J->second, mAreas, mManager.EventLayerUpdated));
 		}
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
@@ -87,7 +85,7 @@ void GeometryUpdateTask::executeTaskInMainThread()
 	}
 
 	mManager.updateEntityPositions(mPages);
-	mManager.EventAfterTerrainUpdate(mPositions, mPages);
+	mManager.EventAfterTerrainUpdate(mAreas, mPages);
 
 }
 }
