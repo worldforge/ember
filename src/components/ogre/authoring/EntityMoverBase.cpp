@@ -36,9 +36,47 @@ namespace EmberOgre
 {
 namespace Authoring
 {
-EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node) :
-	SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true), mEntity(entity), mNode(node), mSnapping(0)
+
+SnapListener* EntityMoverBase::msSnapListener(0);
+
+SnapListener::SnapListener()
+ : SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true)
 {
+
+}
+
+SnapListener::~SnapListener()
+{
+
+}
+
+void SnapListener::runCommand(const std::string &command, const std::string &args)
+{
+	if (SnapTo == command) {
+		setSnapToEnabled(true);
+	} else if (SnapTo.getInverseCommand() == command) {
+		setSnapToEnabled(false);
+	}
+}
+
+void SnapListener::setSnapToEnabled(bool snapTo)
+{
+	mSnappingEnabled = snapTo;
+	EventSnappingChanged.emit(snapTo);
+}
+
+bool SnapListener::getSnappingEnabled() const {
+	return mSnappingEnabled;
+}
+
+EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node) :
+	mEntity(entity), mNode(node), mSnapping(0)
+{
+	SnapListener& snapListener = getSnapListener();
+	if (snapListener.getSnappingEnabled()) {
+		setSnapToEnabled(true);
+	}
+	snapListener.EventSnappingChanged.connect(sigc::mem_fun(*this, &EntityMoverBase::snapListener_SnappingChanged));
 }
 
 EntityMoverBase::~EntityMoverBase()
@@ -113,15 +151,8 @@ void EntityMoverBase::newEntityPosition(const Ogre::Vector3& position)
 {
 }
 
-void EntityMoverBase::runCommand(const std::string &command, const std::string &args)
-{
-	if (SnapTo == command) {
-		setSnapToEnabled(true);
-	} else if (SnapTo.getInverseCommand() == command) {
-		setSnapToEnabled(false);
-	}
 
-}
+
 void EntityMoverBase::setSnapToEnabled(bool snapTo)
 {
 	if (snapTo && EmberOgre::getSingleton().getSceneManager()) {
@@ -133,6 +164,19 @@ void EntityMoverBase::setSnapToEnabled(bool snapTo)
 		mSnapping.reset();
 	}
 }
+
+SnapListener& EntityMoverBase::getSnapListener() const
+{
+	if (!msSnapListener) {
+		msSnapListener = new SnapListener();
+	}
+	return *msSnapListener;
+}
+
+void EntityMoverBase::snapListener_SnappingChanged(bool snapTo){
+	setSnapToEnabled(snapTo);
+}
+
 
 }
 }
