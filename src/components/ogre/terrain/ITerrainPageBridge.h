@@ -69,20 +69,22 @@ public:
 	 * @return A pointer to the terrain page, or null if no page yet has been bound.
 	 */
 	TerrainPage* getTerrainPage() const;
-	
-protected:
-	
+
 	/**
 	 *    @brief Binds the bridge to a TerrainPage.
 	 * @param terrainPage 
 	 */
 	void bindToTerrainPage(TerrainPage* terrainPage);
+
 	/**
 	 *    @brief Unbinds from a TerrainPage.
 	 * Call this when the TerrainPage to which this bridge is connected to is destroyed. If not, you run the risk of segfaults since the bridge will still keep a pointer to the now deleted TerrainPage.
 	 */
 	void unbindFromTerrainPage();
 	
+protected:
+
+
 	/**
 	@brief The TerrainPage instance to which this bridge is connected to.
 	*/

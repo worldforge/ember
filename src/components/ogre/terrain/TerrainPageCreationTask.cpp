@@ -47,6 +47,7 @@ TerrainPageCreationTask::~TerrainPageCreationTask()
 void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
 	mPage = new TerrainPage(mIndex, mTerrainManager);
+	mBridge->bindToTerrainPage(mPage);
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
 	const std::list<TerrainShader*>& baseShaders = mTerrainManager.getBaseShaders();
