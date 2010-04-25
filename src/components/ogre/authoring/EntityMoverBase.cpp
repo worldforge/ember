@@ -40,7 +40,7 @@ namespace Authoring
 SnapListener* EntityMoverBase::msSnapListener(0);
 
 SnapListener::SnapListener()
- : SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true)
+ : SnapTo("+snaptomovement", this, "Activates the 'snap to' behavior when moving an entity.", true), mSnappingEnabled(false)
 {
 
 }
