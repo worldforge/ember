@@ -47,39 +47,15 @@ PassiveEntityPage::~PassiveEntityPage()
 
 void PassiveEntityPage::addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color)
 {
-	mEntities.push_back(EntityStore::value_type(ent->getParentNode(), ent));
-/*	ent->setVisible(true);
-	ent->getParentSceneNode()->detachObject(ent);*/
 }
 
 void PassiveEntityPage::removeEntities()
 {
-// 	for (EntityStore::iterator I(mEntities.begin()); I != mEntities.end(); ++I) {
-// 		if (!I->second->getParentSceneNode()) {
-// 			I->first->attachObject(I->second);
-// 		}
-// 	}
-	mEntities.clear();
 }
-
 
 void PassiveEntityPage::setVisible(bool visible)
 {
-	if (visible) {
-		for (EntityStore::iterator I(mEntities.begin()); I != mEntities.end(); ++I) {
-			I->second->setVisible(true);
-/*			if (!I->second->getParentSceneNode()) {
-				I->first->attachObject(I->second);
-			}*/
-		}
-	} else {
-		for (EntityStore::iterator I(mEntities.begin()); I != mEntities.end(); ++I) {
-			I->second->setVisible(false);
-/*			if (I->second->getParentSceneNode()) {
-				I->first->detachObject(I->second);
-			}*/
-		}
-	}
+
 }
 
 void PassiveEntityPage::setFade(bool enabled, Ogre::Real visibleDist, Ogre::Real invisibleDist)

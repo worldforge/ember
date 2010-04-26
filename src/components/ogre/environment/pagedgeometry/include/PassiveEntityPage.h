@@ -27,7 +27,6 @@ namespace Forests {
 class PassiveEntityPage: public GeometryPage
 {
 public:
-	typedef std::vector<std::pair<Ogre::Node*, Ogre::Entity*> > EntityStore;
 
 	void init(::Forests::PagedGeometry *geom, const Ogre::Any &data);
 	PassiveEntityPage();
@@ -41,7 +40,6 @@ public:
 
 private:
 	Ogre::SceneManager *sceneMgr;
-	EntityStore mEntities;
 
 	static unsigned long GUID;
 	static inline Ogre::String getUniqueID(const Ogre::String &prefix)
