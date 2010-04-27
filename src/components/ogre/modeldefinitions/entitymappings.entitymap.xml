@@ -329,6 +329,9 @@
 
 <!-- outdoor structures -->
 	<autoentitymapping name="palisade" />
+	<autoentitymapping name="palissade_unit" modelname="palisade_unit" />
+	<autoentitymapping name="palissade_entry" modelname="palisade_entry" />
+	<autoentitymapping name="palissade_circle" modelname="palisade_circle" />
 	<autoentitymapping name="palisade_earth" />
 	<entitymapping name="stone_palisade">
 		<entitymatch>

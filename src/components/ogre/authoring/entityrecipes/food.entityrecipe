@@ -1,0 +1,37 @@
+<entityrecipes>
+  <entityrecipe name="ham">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A piece of ham.
+    </description>
+    <entity type="ham" />
+  </entityrecipe>
+  <entityrecipe name="breadslice">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A slice of bread.
+    </description>
+    <entity type="breadslice" />
+  </entityrecipe>
+  <entityrecipe name="bread">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A piece of bread.
+    </description>
+    <entity type="bread">
+      <atlas>
+        <map>
+          <float name="status">$status</float>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="status" type="number" title="Status" tooltip="The status of the bread, i.e. how much of the loaf hasn't been sliced off yet. 1.0 is a full bread."  default="1"/>
+    </adapters>
+    <bindings>
+      <bind name="status">
+        <adapter name="status" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

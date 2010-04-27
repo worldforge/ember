@@ -1,0 +1,66 @@
+<entityrecipes>
+  <entityrecipe name="deer">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A deer.
+    </description>
+    <entity type="deer">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="wolf">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A wolf.
+    </description>
+    <entity type="wolf">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="squirrel">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A squirrel.
+    </description>
+    <entity type="squirrel">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="rabbit">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A rabbit.
+    </description>
+    <entity type="rabbit">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

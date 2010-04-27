@@ -22,5 +22,367 @@
         <adapter name="roof" />
       </bind>
     </bindings>
+   </entityrecipe>
+   <entityrecipe name="castle smithy">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle smithy.
+    </description>
+    <entity type="castle_smithy">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+          <map name="area">
+            <int name="layer">7</int>
+            <list name="points"><list><float>-0.496538</float><float>-10.7893</float></list>
+              <list><float>-0.426239</float><float>-9.34279</float></list>
+              <list><float>-10.1988</float><float>-9.29721</float></list>
+              <list><float>-10.1344</float><float>-0.0730419</float></list>
+              <list><float>-0.14595</float><float>0.0127713</float></list>
+              <list><float>-0.0287538</float><float>6.28406</float></list>
+              <list><float>4.78819</float><float>6.24456</float></list>
+              <list><float>4.96602</float><float>-10.7577</float></list>
+            </list>
+          </map>
+          <map name="terrainmod">
+            <float name="heightoffset">0</float>
+            <map name="shape">
+              <list name="points"><list><float>-0.496538</float><float>-10.7893</float></list>
+                <list><float>-0.426239</float><float>-9.34279</float></list>
+                <list><float>-10.1988</float><float>-9.29721</float></list>
+                <list><float>-10.1344</float><float>-0.0730419</float></list>
+                <list><float>-0.14595</float><float>0.0127713</float></list>
+                <list><float>-0.0287538</float><float>6.28406</float></list>
+                <list><float>4.78819</float><float>6.24456</float></list>
+                <list><float>4.96602</float><float>-10.7577</float></list>
+              </list>
+              <string name="type">polygon</string>
+            </map>
+            <string name="type">levelmod</string>
+          </map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="shingle">Shingle</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle gateway">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle gateway.
+    </description>
+    <entity type="castle_gateway">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="shingle">Shingle</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle inn">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle inn, two stories.
+    </description>
+    <entity type="castle_inn">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+          <map name="area">
+            <int name="layer">7</int>
+            <list name="points"><list><float>3.35904</float><float>-0.0330087</float></list>
+              <list><float>2.93664</float><float>-8.21518</float></list>
+              <list><float>2.38888</float><float>-8.27803</float></list>
+              <list><float>2.40824</float><float>-10.0172</float></list>
+              <list><float>0.235201</float><float>-10.0154</float></list>
+              <list><float>0.228893</float><float>-8.26947</float></list>
+              <list><float>-12.1663</float><float>-8.44085</float></list>
+              <list><float>-12.5411</float><float>3.99713</float></list>
+              <list><float>-9.92374</float><float>3.85007</float></list>
+              <list><float>-10.1851</float><float>6.66209</float></list>
+              <list><float>-8.55103</float><float>6.56119</float></list>
+              <list><float>-8.5686</float><float>7.0901</float></list>
+              <list><float>-0.183271</float><float>7.05797</float></list>
+              <list><float>-0.19835</float><float>-0.231897</float></list>
+            </list>
+          </map>
+          <map name="terrainmod">
+            <float name="heightoffset">0</float>
+            <map name="shape">
+              <list name="points"><list><float>3.35904</float><float>-0.0330087</float></list>
+                <list><float>2.93664</float><float>-8.21518</float></list>
+                <list><float>2.38888</float><float>-8.27803</float></list>
+                <list><float>2.40824</float><float>-10.0172</float></list>
+                <list><float>0.235201</float><float>-10.0154</float></list>
+                <list><float>0.228893</float><float>-8.26947</float></list>
+                <list><float>-12.1663</float><float>-8.44085</float></list>
+                <list><float>-12.5411</float><float>3.99713</float></list>
+                <list><float>-9.92374</float><float>3.85007</float></list>
+                <list><float>-10.1851</float><float>6.66209</float></list>
+                <list><float>-8.55103</float><float>6.56119</float></list>
+                <list><float>-8.5686</float><float>7.0901</float></list>
+                <list><float>-0.183271</float><float>7.05797</float></list>
+                <list><float>-0.19835</float><float>-0.231897</float></list>
+              </list>
+              <string name="type">polygon</string>
+            </map>
+            <string name="type">levelmod</string>
+          </map>    
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="shingle">Shingle</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle house A">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle house, type A. One room, one story. Small, like a shed.
+    </description>
+    <entity type="castle_house_a">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+          <map name="area">
+            <int name="layer">7</int>
+            <list name="points"><list><float>-1.66248</float><float>-2.5929</float></list>
+              <list><float>-1.76312</float><float>5.32703</float></list>
+              <list><float>2.22217</float><float>5.2926</float></list>
+              <list><float>2.48407</float><float>-2.76794</float></list>
+            </list>
+          </map>
+          <map name="terrainmod">
+            <float name="heightoffset">0</float>
+            <map name="shape">
+              <list name="points"><list><float>-1.99301</float><float>-3.04085</float></list>
+                <list><float>-1.93121</float><float>5.54042</float></list>
+                <list><float>2.85207</float><float>5.87984</float></list>
+                <list><float>2.89938</float><float>-2.55188</float></list>
+              </list>
+              <string name="type">polygon</string>
+            </map>
+            <string name="type">levelmod</string>
+          </map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="shingle">Shingle</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle house B">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle house, type B. One room, one story. Large.
+    </description>
+    <entity type="castle_house_b">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+          <map name="area">
+            <int name="layer">7</int>
+            <list name="points"><list><float>-5.57236</float><float>-6.84199</float></list>
+              <list><float>-5.51594</float><float>6.83854</float></list>
+              <list><float>6.18699</float><float>6.7686</float></list>
+              <list><float>6.27952</float><float>-6.74529</float></list>
+            </list>
+          </map>
+          <map name="terrainmod">
+            <float name="heightoffset">0</float>
+            <map name="shape">
+              <list name="points"><list><float>-5.57236</float><float>-6.84199</float></list>
+                <list><float>-5.51594</float><float>6.83854</float></list>
+                <list><float>6.18699</float><float>6.7686</float></list>
+                <list><float>6.27952</float><float>-6.74529</float></list>
+              </list>
+              <string name="type">polygon</string>
+            </map>
+            <string name="type">levelmod</string>
+          </map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="shingle">Shingle</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle house C">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle house, type C. Two rooms, two stories.
+    </description>
+    <entity type="castle_house_c">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+          <map name="area">
+            <int name="layer">7</int>
+            <list name="points"><list><float>-3.31533</float><float>-6.34274</float></list>
+              <list><float>-3.26379</float><float>0.686108</float></list>
+              <list><float>-5.10046</float><float>0.734425</float></list>
+              <list><float>-5.37558</float><float>5.2547</float></list>
+              <list><float>4.30876</float><float>5.23085</float></list>
+              <list><float>4.44796</float><float>1.44866</float></list>
+              <list><float>7.31457</float><float>1.26146</float></list>
+              <list><float>7.43932</float><float>-6.33775</float></list>
+            </list>
+          </map>
+          <map name="terrainmod">
+            <float name="heightoffset">0</float>
+            <map name="shape">
+              <list name="points"><list><float>-3.31533</float><float>-6.34274</float></list>
+                <list><float>-3.26379</float><float>0.686108</float></list>
+                <list><float>-5.10046</float><float>0.734425</float></list>
+                <list><float>-5.37558</float><float>5.2547</float></list>
+                <list><float>4.30876</float><float>5.23085</float></list>
+                <list><float>4.44796</float><float>1.44866</float></list>
+                <list><float>7.31457</float><float>1.26146</float></list>
+                <list><float>7.43932</float><float>-6.33775</float></list>
+              </list>
+              <string name="type">polygon</string>
+            </map>
+            <string name="type">levelmod</string>
+          </map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="shingle">Shingle</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle house D">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle house, type D. One room, one story. Cottage like.
+    </description>
+    <entity type="castle_house_d">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="shingle">Shingle</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle house ruin">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle house ruin.
+    </description>
+    <entity type="castle_house_ruin">
+      <atlas>
+      	<map>
+          <map name="terrainmod">
+            <float name="heightoffset">0</float>
+            <map name="shape">
+              <list name="points"><list><float>-0.504409</float><float>-3.23949</float></list>
+                <list><float>-0.462855</float><float>-2.50894</float></list>
+                <list><float>1.86193</float><float>-2.61019</float></list>
+                <list><float>1.71665</float><float>1.22549</float></list>
+                <list><float>-2.9675</float><float>0.970188</float></list>
+                <list><float>-2.97109</float><float>-0.107044</float></list>
+                <list><float>-3.94904</float><float>0.100751</float></list>
+                <list><float>-3.90045</float><float>2.06009</float></list>
+                <list><float>2.95446</float><float>1.92518</float></list>
+                <list><float>2.74534</float><float>-3.35842</float></list>
+              </list> 
+              <string name="type">polygon</string>
+            </map>
+            <string name="type">levelmod</string>
+          </map>
+      	</map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="castle don jon">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A castle don jon, i.e. a round tower attached to a wall corner.
+    </description>
+    <entity type="castle_don_jon">
+      <atlas>
+        <map>
+          <string name="roof">$roof</string>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+      <adapter name="roof" type="string" title="Roof style" allowrandom="yes" default="Random">
+        <item value="shingle">Shingle</item>
+        <item value="shale">Shale</item>
+      </adapter>
+    </adapters>
+    <bindings>
+      <bind name="roof">
+        <adapter name="roof" />
+      </bind>
+    </bindings>
   </entityrecipe>
 </entityrecipes>

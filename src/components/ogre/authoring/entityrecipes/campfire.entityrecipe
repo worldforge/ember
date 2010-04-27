@@ -1,0 +1,18 @@
+<entityrecipes>
+  <entityrecipe name="campfire">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A campfire.
+    </description>
+    <entity type="campfire">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>

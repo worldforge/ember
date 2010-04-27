@@ -1,0 +1,50 @@
+<entityrecipes>
+  <entityrecipe name="cow">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A cow.
+    </description>
+    <entity type="cow">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="chicken">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A chicken.
+    </description>
+    <entity type="chicken">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+  <entityrecipe name="pig">
+    <author>Erik Hjortsberg</author>
+    <description>
+      A pig.
+    </description>
+    <entity type="pig">
+      <atlas>
+        <map>
+        </map>
+      </atlas>
+    </entity>
+    <adapters>
+    </adapters>
+    <bindings>
+    </bindings>
+  </entityrecipe>
+</entityrecipes>
