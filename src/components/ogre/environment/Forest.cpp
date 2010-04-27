@@ -39,6 +39,8 @@
 
 #include "../Convert.h"
 #include "../EmberOgre.h"
+#include "../model/ModelRepresentation.h"
+#include "../model/Model.h"
 #include "../terrain/TerrainInfo.h"
 #include "../terrain/TerrainManager.h"
 #include "../terrain/ISceneManagerAdapter.h"
@@ -50,7 +52,7 @@ namespace Environment
 {
 
 Forest::Forest(Terrain::TerrainManager& terrainManager) :
-	mTerrainManager(terrainManager), mTrees(0), mTreeLoader(0), mEntityLoader(0)
+	mTerrainManager(terrainManager), mTrees(0), mTreeLoader(0), mEntityLoader(0), mMaxRange(500)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 	mTerrainManager.EventWorldSizeChanged.connect(sigc::mem_fun(*this, &Forest::worldSizeChanged));
@@ -90,7 +92,7 @@ void Forest::initialize()
 		// 	mTrees->addDetailLevel<Forests::BatchPage>(150, 50);		//Use batches up to 150 units away, and fade for 30 more units
 		//  mTrees->addDetailLevel<Forests::DummyPage>(100, 0);		//Use batches up to 150 units away, and fade for 30 more units
 		mTrees->addDetailLevel<Forests::PassiveEntityPage> (150, 0); //Use standard entities up to 150 units away, and don't fade since the PassiveEntityPage doesn't support this (yet)
-		mTrees->addDetailLevel<ExclusiveImposterPage> (5000, 50); //Use impostors up to 400 units, and for for 50 more units
+		mTrees->addDetailLevel<ExclusiveImposterPage> (mMaxRange, 50); //Use impostors up to 400 units, and for for 50 more units
 
 		//Create a new TreeLoader2D object
 		mEntityLoader = new EmberEntityLoader(*mTrees, 64);
@@ -135,6 +137,7 @@ void Forest::addEmberEntity(Model::ModelRepresentation* modelRepresentation)
 {
 	if (mEntityLoader) {
 		mEntityLoader->addEmberEntity(modelRepresentation);
+		modelRepresentation->getModel().setRenderingDistance(mMaxRange);
 	}
 }
 

@@ -81,6 +81,11 @@ protected:
 	EmberEntityLoader* mEntityLoader;
 
 	/**
+	 * @brief The max range for entities to be rendered in the forest.
+	 */
+	float mMaxRange;
+
+	/**
 	 * @brief Called when the size of the world has changed.
 	 */
 	void worldSizeChanged();
