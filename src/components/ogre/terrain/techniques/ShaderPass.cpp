@@ -238,7 +238,8 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		if (!pass.hasVertexProgram()) {
 			return false;
 		}
-		pass.getVertexProgram()->setSurfaceAndPassLightStates(true);
+		//Not available in Ogre 1.7
+		//pass.getVertexProgram()->setSurfaceAndPassLightStates(true);
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getVertexProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
 		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
