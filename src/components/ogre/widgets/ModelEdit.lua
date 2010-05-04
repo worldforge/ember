@@ -14,7 +14,7 @@ function ModelEdit.selectMaterial(subentity)
 --			ModelEdit.model
 --		else 
 		if materialName ~= "" then
-			item = ModelEdit.contentparts.submeshInfo.materiallist:findItemWithText(subentity:getMaterialName(), ModelEdit.contentparts.submeshInfo.materiallist:getListboxItemFromIndex(0))
+			item = ModelEdit.contentparts.submeshInfo.materiallist:findItemWithText(materialName, ModelEdit.contentparts.submeshInfo.materiallist:getListboxItemFromIndex(0))
 		end
 		
 		if item ~= nil then
@@ -49,19 +49,7 @@ function ModelEdit.reloadModel()
 end
 
 function ModelEdit.fillMaterialList()
-	ModelEdit.contentparts.submeshInfo.listholder:resetList()
-	local materialDefMgr = Ogre.MaterialManager:getSingleton()
-	local I = materialDefMgr:getResourceIterator()
-	local i = 0
-	while I:hasMoreElements() do
-		local materialDef = I:getNext()
-		materialDef = tolua.cast(materialDef, "Ogre::MaterialPtr")
-		local material = materialDef:get()
-		local name = material:getName()
-		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
-		ModelEdit.contentparts.submeshInfo.listholder:addItem(item)
-		i = i + 1
-	end
+	ModelEdit.contentparts.submeshInfo.listadapter:update()
 end
 
 function ModelEdit.fillMeshList()
@@ -805,6 +793,7 @@ function ModelEdit.buildWidget()
 		ModelEdit.contentparts.submeshInfo.filter = ModelEdit.widget:getWindow("FilterMaterials")
 		ModelEdit.contentparts.submeshInfo.filter = CEGUI.toEditbox(ModelEdit.contentparts.submeshInfo.filter)
 		ModelEdit.contentparts.submeshInfo.listholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.contentparts.submeshInfo.materiallist, ModelEdit.contentparts.submeshInfo.filter)
+		ModelEdit.contentparts.submeshInfo.listadapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(ModelEdit.contentparts.submeshInfo.listholder, Ogre.MaterialManager:getSingleton())
 		
 		ModelEdit.contentparts.submeshInfo.removeSubMeshButton = ModelEdit.widget:getWindow("RemoveSubMeshButton")
 		ModelEdit.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("Clicked", "ModelEdit.submeshinforemovesubmesh_Clicked")
