@@ -178,10 +178,15 @@ namespace Gui {
 
 	void LoadingBar::updateRender()
 	{
-		try {
-			mWindow->update();
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when updating render for loading bar." << ex);
+		static unsigned long oneFrame = 1000L / 60L;
+		unsigned long millisecondsSinceLastFrame = mTimer.getMilliseconds();
+		if (millisecondsSinceLastFrame > oneFrame) {
+			try {
+				mWindow->update();
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Error when updating render for loading bar." << ex);
+			}
+			mTimer.reset();
 		}
 	}
 

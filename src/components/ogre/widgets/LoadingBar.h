@@ -28,6 +28,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include <sigc++/trackable.h>
 
 #include <OgreResourceGroupManager.h>
+#include <OgreTimer.h>
 namespace EmberOgre {
 namespace Gui {
 
@@ -138,6 +139,8 @@ protected:
 	Ogre::OverlayElement* mLoadingDescriptionElement;
 	Ogre::OverlayElement* mLoadingCommentElement;
 	Ogre::OverlayElement* mVersionElement;
+
+	Ogre::Timer mTimer;
 
 	/**
 	 * @brief Updates the render of the loading bar.
