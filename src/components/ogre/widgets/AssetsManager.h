@@ -92,6 +92,23 @@ public:
 	 */
 	std::string resolveResourceNameFromFilePath(const std::string& filePath);
 
+	/**
+	 * @brief Tries to resolve the file path for a mesh.
+	 *
+	 * @param meshPtr The mesh.
+	 * @returns A fully qualified file name, or an empty string if none could be resolved.
+	 */
+	std::string resolveFilePathForMesh(Ogre::MeshPtr meshPtr);
+
+	/**
+	 * @brief Exports a mesh.
+	 *
+	 * @param mesh The mesh to export.
+	 * @param filePath The path to export to, local on the file system.
+	 * @returns True if the mesh was exported successfully.
+	 */
+	bool exportMesh(Ogre::MeshPtr mesh, const std::string& filePath);
+
 private:
 
 

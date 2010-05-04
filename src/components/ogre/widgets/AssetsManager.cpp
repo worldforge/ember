@@ -40,6 +40,7 @@
 #include <OgreTextureManager.h>
 #include <OgreTexture.h>
 #include <OgreString.h>
+#include <OgreMeshSerializer.h>
 // #include <OgreBitwise.h>
 
 
@@ -141,6 +142,40 @@ std::string AssetsManager::resolveResourceNameFromFilePath(const std::string& fi
 		}
 	}
 	return filePath;
+}
+
+std::string AssetsManager::resolveFilePathForMesh(Ogre::MeshPtr meshPtr)
+{
+	Ogre::ResourceGroupManager& manager = Ogre::ResourceGroupManager::getSingleton();
+	const std::multimap<std::string, std::string>& locations = EmberOgre::getSingleton().getResourceLocations();
+
+	for (std::multimap<std::string, std::string>::const_iterator I = locations.begin(); I != locations.end(); ++I) {
+		std::string group = I->first;
+		std::string fileName = meshPtr->getName();
+		Ogre::FileInfoListPtr files = manager.findResourceFileInfo(group, fileName, false);
+		for (Ogre::FileInfoList::const_iterator J = files->begin(); J != files->end(); ++J) {
+			if (J->filename == fileName) {
+				return I->second + J->filename;
+			}
+		}
+	}
+	return "";
+
+}
+
+bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)
+{
+	if (filePath != "") {
+		Ogre::MeshSerializer serializer;
+		try {
+			serializer.exportMesh(mesh.get(), filePath);
+		} catch (const Ogre::Exception& ex) {
+			S_LOG_FAILURE("Error when exporting mesh " << mesh->getName() << "to path " << filePath <<"." << ex);
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
 
 // bool AssetsManager::exportTexture(Ogre::TexturePtr texturePtr)
