@@ -6,7 +6,7 @@ textures = {controls = {}, listbox = nil,selectedTexture = nil},
 materials = {controls = {}, listbox = nil,selectedTexture = nil}, 
 images = {controls = {}, listbox = nil,selectedTexture = nil}, 
 windows = {controls = {}, listbox = nil, selectedWindow = nil},
-meshes = {controls = {}, listbox = nil, selectedWindow = nil},
+meshes = {controls = {}, listbox = nil, selectedWindow = nil, current = {}},
 shaders = {controls = {}, listbox = nil, selectedTexture = nil}
 }
 
@@ -104,6 +104,14 @@ end
 
 function AssetsManager.MaterialsReload_Clicked(args)
 	AssetsManager.reloadResourceFromList(AssetsManager.materials.controls.listbox, Ogre.MaterialManager:getSingleton())
+	return true
+end
+
+function AssetsManager.MeshInfoEditShowButton_Clicked(args)
+	local editWindow = AssetsManager.widget:getWindow("MeshInfoEdit")
+	if editWindow ~= nil then
+		editWindow:setVisible(not editWindow:isVisible())
+	end
 end
 
 function AssetsManager.RefreshShaders_Clicked(args)
@@ -201,17 +209,113 @@ end
 
 function AssetsManager.MeshesRefresh_Clicked(args)
 	AssetsManager.meshes.refresh()
+	return true
 end
 
 function AssetsManager.MeshesList_ItemSelectionChanged(args)
 	local item = AssetsManager.meshes.controls.listbox:getFirstSelectedItem()
 	AssetsManager.showMesh(item:getText())
+	return true
+end
+
+function AssetsManager.SubMeshesList_ItemSelectionChanged(args)
+	local item = AssetsManager.meshes.controls.submeshesListbox:getFirstSelectedItem()
+	if item ~= nil then
+		local submeshIndex = item:getID()
+		
+		local mesh = AssetsManager.meshes.current.meshPtr:get()
+		AssetsManager.meshes.current.submesh = mesh:getSubMesh(submeshIndex)
+		
+		AssetsManager.selectMaterial(AssetsManager.meshes.current.submesh)
+	end
+	return true
+end
+
+function AssetsManager.SubMeshMaterialsList_ItemSelectionChanged(args)
+	if AssetsManager.meshes.current ~= nil and AssetsManager.meshes.current.submesh ~= nil then
+		local list = AssetsManager.meshes.controls.materialListbox
+		local item = list:getFirstSelectedItem()
+		if item ~= nil then
+			AssetsManager.meshes.current.submesh:setMaterialName(item:getText())
+			AssetsManager.meshes.renderer:showEntity(AssetsManager.meshes.current.meshPtr:get():getName())
+		end
+	end
+	return true
+end
+
+function AssetsManager.MeshInfoSaveButton_Clicked(args)
+	if AssetsManager.meshes.current ~= nil and AssetsManager.meshes.current.meshPtr ~= nil then
+		local mesh = AssetsManager.meshes.current.meshPtr:get()
+		--Make sure that a path is specified for the mesh 
+--		if mesh:getOrigin() ~= "" then
+			AssetsManager.helper:exportMesh(AssetsManager.meshes.current.meshPtr, AssetsManager.helper:resolveFilePathForMesh(AssetsManager.meshes.current.meshPtr))
+--		end
+	end
+	return true
 end
 
 function AssetsManager.showMesh(meshName)
 	AssetsManager.meshes.renderer:showEntity(meshName)
+
+	--we need to get hold of a mesh instance
+	local manager = Ogre.MeshManager:getSingleton()
+	local meshPtr = manager:getByName(meshName)
+	AssetsManager.meshes.current = {}
+	AssetsManager.meshes.current.meshPtr = meshPtr
+
+	AssetsManager.fillSubMeshList(AssetsManager.meshes.current.meshPtr)
 end
 
+function AssetsManager.getSubMeshName(mesh, index)
+	local submeshname = EmberOgre.OgreUtils:getSubMeshName(mesh, index)
+	if submeshname == "" then
+		submeshname = "(index: " .. index .. ")"
+	end
+	return submeshname
+end
+
+function AssetsManager.fillSubMeshList(meshPtr)
+	local mesh = meshPtr:get()
+	local list = AssetsManager.meshes.controls.submeshesListbox
+	list:resetList();	
+	
+	--for now, since we don't have any good method for getting the submodel names yet we'll just use the index numbers
+	local numberOfSubmeshes = mesh:getNumSubMeshes()
+	local i = 0
+	while i < numberOfSubmeshes do
+		local submeshname = AssetsManager.getSubMeshName(mesh, i)
+		local item = EmberOgre.Gui.ColouredListItem:new(submeshname, i)
+		list:addItem(item)
+		i = i + 1
+	end	
+end
+
+function AssetsManager.selectMaterial(submesh)
+
+	if AssetsManager.meshes.materialListadapter == nil then
+		AssetsManager.meshes.materialListadapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(AssetsManager.meshes.materialListholder, Ogre.MaterialManager:getSingleton())
+		AssetsManager.meshes.materialListadapter:update()
+	end
+
+	local list = AssetsManager.meshes.controls.materialListbox
+	if submesh == nil then
+		list:clearAllSelections()
+	else
+		local materialName = submesh:getMaterialName()
+		local item
+
+		if materialName ~= "" then
+			item = list:findItemWithText(materialName, list:getListboxItemFromIndex(0))
+		end
+		
+		if item ~= nil then
+			list:setItemSelectState(item, true)
+			list:ensureItemIsVisible(item)
+		else
+			list:clearAllSelections()
+		end
+	end
+end
 
 function AssetsManager.RefreshWindows_Clicked(args)
 	AssetsManager.windows.refresh()
@@ -325,64 +429,70 @@ end
 function AssetsManager.buildWidget()
 
 	AssetsManager.widget = guiManager:createWidget()
+
+	--delay setup of the widget until it's shown for the first time
+	local setup = function()
+
+		AssetsManager.controls.tabs = CEGUI.toTabControl(AssetsManager.widget:getWindow("MainTabControl"))
+		
+		--the texture part
+		AssetsManager.textures.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("TexturesList"))
+	-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+		AssetsManager.textures.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterTextures"))
+		AssetsManager.textures.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.textures.controls.listbox, AssetsManager.textures.controls.filter)
+		AssetsManager.textures.controls.textureView = AssetsManager.widget:getWindow("TextureInfo/Image")
+		
+		--the materials part
+		AssetsManager.materials.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("MaterialsList"))
+	-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+		AssetsManager.materials.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMaterials"))
+		AssetsManager.materials.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.materials.controls.listbox, AssetsManager.materials.controls.filter)
+		AssetsManager.materials.controls.textWidget = AssetsManager.widget:getWindow("MaterialInfo/Text")
+		
+		
+		--the images part
+		AssetsManager.images.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ImagesList"))
+	-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+		AssetsManager.images.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterImages"))
+		AssetsManager.images.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.images.controls.listbox, AssetsManager.images.controls.filter)
+		AssetsManager.images.controls.textureView = AssetsManager.widget:getWindow("ImagesInfo/Image")
+		
+		--the windows part
+		AssetsManager.windows.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("WindowsList"))
+		AssetsManager.windows.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterWindows"))
+		AssetsManager.windows.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.windows.controls.listbox, AssetsManager.windows.controls.filter)
+		AssetsManager.windows.controls.visibleCheckbox = CEGUI.toCheckbox(AssetsManager.widget:getWindow("WindowInfo/Visible"))
+		AssetsManager.windows.controls.infoText = AssetsManager.widget:getWindow("WindowInfo/Text")
+		
+		--the meshes part
+		AssetsManager.meshes.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("MeshesList"))
+		AssetsManager.meshes.controls.submeshesListbox = CEGUI.toListbox(AssetsManager.widget:getWindow("SubMeshesList"))
+		AssetsManager.meshes.controls.materialListbox = CEGUI.toListbox(AssetsManager.widget:getWindow("SubMeshMaterialsList"))
+		AssetsManager.meshes.controls.materialFilter = CEGUI.toEditbox(AssetsManager.widget:getWindow("SubMeshMaterialsFilter"))
+	-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+		AssetsManager.meshes.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMeshes"))
+		AssetsManager.meshes.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.meshes.controls.listbox, AssetsManager.meshes.controls.filter)
+		AssetsManager.meshes.controls.textureView = AssetsManager.widget:getWindow("MeshInfo/Preview")
+		AssetsManager.meshes.renderer = EmberOgre.Gui.OgreEntityRenderer:new_local(AssetsManager.meshes.controls.textureView)
+		AssetsManager.meshes.materialListholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.meshes.controls.materialListbox, AssetsManager.meshes.controls.materialFilter)
+	
+		--the shaders part
+		AssetsManager.shaders.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ShadersList"))
+	-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
+		AssetsManager.shaders.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterShaders"))
+		AssetsManager.shaders.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.shaders.controls.listbox, AssetsManager.shaders.controls.filter)
+		AssetsManager.shaders.controls.textWidget = AssetsManager.widget:getWindow("ShadersInfo/Text")
+	
+	
+	
+		AssetsManager.helper = EmberOgre.Gui.AssetsManager:new_local()
+	
+		AssetsManager.widget:enableCloseButton()
+	end
+	
+	connect(AssetsManager.connectors, AssetsManager.widget.EventFirstTimeShown, setup)
 	AssetsManager.widget:loadMainSheet("AssetsManager.layout", "AssetsManager/")
-	
-	AssetsManager.controls.tabs = CEGUI.toTabControl(AssetsManager.widget:getWindow("MainTabControl"))
-	
-	
-
-	
-	--the texture part
-	AssetsManager.textures.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("TexturesList"))
--- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
-	AssetsManager.textures.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterTextures"))
-	AssetsManager.textures.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.textures.controls.listbox, AssetsManager.textures.controls.filter)
-	AssetsManager.textures.controls.textureView = AssetsManager.widget:getWindow("TextureInfo/Image")
-	
-	--the materials part
-	AssetsManager.materials.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("MaterialsList"))
--- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
-	AssetsManager.materials.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMaterials"))
-	AssetsManager.materials.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.materials.controls.listbox, AssetsManager.materials.controls.filter)
-	AssetsManager.materials.controls.textWidget = AssetsManager.widget:getWindow("MaterialInfo/Text")
-	
-	
-	--the images part
-	AssetsManager.images.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ImagesList"))
--- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
-	AssetsManager.images.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterImages"))
-	AssetsManager.images.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.images.controls.listbox, AssetsManager.images.controls.filter)
-	AssetsManager.images.controls.textureView = AssetsManager.widget:getWindow("ImagesInfo/Image")
-	
-	--the windows part
-	AssetsManager.windows.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("WindowsList"))
-	AssetsManager.windows.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterWindows"))
-	AssetsManager.windows.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.windows.controls.listbox, AssetsManager.windows.controls.filter)
-	AssetsManager.windows.controls.visibleCheckbox = CEGUI.toCheckbox(AssetsManager.widget:getWindow("WindowInfo/Visible"))
-	AssetsManager.windows.controls.infoText = AssetsManager.widget:getWindow("WindowInfo/Text")
-	
-	--the meshes part
-	AssetsManager.meshes.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("MeshesList"))
--- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
-	AssetsManager.meshes.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMeshes"))
-	AssetsManager.meshes.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.meshes.controls.listbox, AssetsManager.meshes.controls.filter)
-	AssetsManager.meshes.controls.textureView = AssetsManager.widget:getWindow("MeshInfo/Preview")
-	AssetsManager.meshes.renderer = EmberOgre.Gui.OgreEntityRenderer:new_local(AssetsManager.meshes.controls.textureView)
-
-	--the shaders part
-	AssetsManager.shaders.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ShadersList"))
--- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
-	AssetsManager.shaders.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterShaders"))
-	AssetsManager.shaders.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.shaders.controls.listbox, AssetsManager.shaders.controls.filter)
-	AssetsManager.shaders.controls.textWidget = AssetsManager.widget:getWindow("ShadersInfo/Text")
-
-
-
-	AssetsManager.helper = EmberOgre.Gui.AssetsManager:new_local()
-
 	AssetsManager.widget:registerConsoleVisibilityToggleCommand("assetsManager")
-	AssetsManager.widget:enableCloseButton()
-	AssetsManager.widget:hide()
 	
 
 	--See if we automatically should show a certain mesh. This is useful for authoring when one wants to inspect a specific mesh.	
