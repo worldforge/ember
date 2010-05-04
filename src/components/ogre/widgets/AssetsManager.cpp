@@ -169,6 +169,7 @@ bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)
 		Ogre::MeshSerializer serializer;
 		try {
 			serializer.exportMesh(mesh.get(), filePath);
+			S_LOG_INFO("Exported mesh " << filePath);
 		} catch (const Ogre::Exception& ex) {
 			S_LOG_FAILURE("Error when exporting mesh " << mesh->getName() << "to path " << filePath <<"." << ex);
 			return false;
