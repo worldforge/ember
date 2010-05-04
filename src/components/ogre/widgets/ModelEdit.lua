@@ -159,21 +159,7 @@ function ModelEdit.showPreview(definitionName)
 end
 
 function ModelEdit.fillModellist()
-	ModelEdit.modelslistholder:resetList()
-	ModelEdit.models:clearAllSelections()
-	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
-	local I = modelDefMgr:getResourceIterator()
-	local i = 0
-	while I:hasMoreElements() do
-		local modelPtr = I:getNext()
-		modelPtr = tolua.cast(modelPtr, "EmberOgre::Model::ModelDefnPtr")
-		local model = modelPtr:get()
-		local name = model:getName()
-		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
-		ModelEdit.modelslistholder:addItem(item)
-		i = i + 1
-	end
-
+	ModelEdit.modelsAdapter:update()
 end
 
 function ModelEdit.updateModelInfo()
@@ -745,6 +731,7 @@ function ModelEdit.buildWidget()
 		ModelEdit.modelsfilter = ModelEdit.widget:getWindow("FilterModels")
 		ModelEdit.modelsfilter = CEGUI.toEditbox(ModelEdit.modelsfilter)
 		ModelEdit.modelslistholder = EmberOgre.Gui.ListHolder:new_local(ModelEdit.models, ModelEdit.modelsfilter)
+		ModelEdit.modelsAdapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(ModelEdit.modelslistholder, EmberOgre.Model.ModelDefinitionManager:getSingleton())
 		
 		local xW = ModelEdit.widget:getWindow("ModelTranslate_x")
 		local yW = ModelEdit.widget:getWindow("ModelTranslate_y")

@@ -39,20 +39,7 @@ function AssetsManager.TexturesRefresh_Clicked(args)
 end
 
 function AssetsManager.textures.refresh()
-	AssetsManager.textures.listholder:resetList()
-	
-	local manager = Ogre.TextureManager:getSingleton()
-	local I = manager:getResourceIterator()
-	local i = 0
-	while I:hasMoreElements() do
-		local definitionPtr = I:getNext()
-		definitionPtr = tolua.cast(definitionPtr, "Ogre::TexturePtr")
-		local definition = definitionPtr:get()
-		local name = definition:getName()
-		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
-		AssetsManager.textures.listholder:addItem(item)
-		i = i + 1
-	end	
+	AssetsManager.textures.adapter:update()
 end
 
 
@@ -73,20 +60,7 @@ function AssetsManager.MaterialsRefresh_Clicked(args)
 end
 
 function AssetsManager.materials.refresh()
-	AssetsManager.materials.listholder:resetList()
-	
-	local manager = Ogre.MaterialManager:getSingleton()
-	local I = manager:getResourceIterator()
-	local i = 0
-	while I:hasMoreElements() do
-		local definitionPtr = I:getNext()
-		definitionPtr = tolua.cast(definitionPtr, "Ogre::MaterialPtr")
-		local definition = definitionPtr:get()
-		local name = definition:getName()
-		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
-		AssetsManager.materials.listholder:addItem(item)
-		i = i + 1
-	end	
+	AssetsManager.materials.adapter:update()
 end
 
 function AssetsManager.MaterialsList_ItemSelectionChanged(args)
@@ -119,20 +93,7 @@ function AssetsManager.RefreshShaders_Clicked(args)
 end
 
 function AssetsManager.shaders.refresh()
-	AssetsManager.shaders.listholder:resetList()
-	
-	local manager = Ogre.HighLevelGpuProgramManager:getSingleton()
-	local I = manager:getResourceIterator()
-	local i = 0
-	while I:hasMoreElements() do
-		local definitionPtr = I:getNext()
-		--definitionPtr = tolua.cast(definitionPtr, "Ogre::MaterialPtr")
-		local definition = definitionPtr:get()
-		local name = definition:getName()
-		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
-		AssetsManager.shaders.listholder:addItem(item)
-		i = i + 1
-	end	
+	AssetsManager.shaders.adapter:update()
 end
 
 function AssetsManager.ShadersList_ItemSelectionChanged(args)
@@ -441,6 +402,7 @@ function AssetsManager.buildWidget()
 		AssetsManager.textures.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterTextures"))
 		AssetsManager.textures.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.textures.controls.listbox, AssetsManager.textures.controls.filter)
 		AssetsManager.textures.controls.textureView = AssetsManager.widget:getWindow("TextureInfo/Image")
+		AssetsManager.textures.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(AssetsManager.textures.listholder, Ogre.TextureManager:getSingleton())
 		
 		--the materials part
 		AssetsManager.materials.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("MaterialsList"))
@@ -448,7 +410,7 @@ function AssetsManager.buildWidget()
 		AssetsManager.materials.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMaterials"))
 		AssetsManager.materials.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.materials.controls.listbox, AssetsManager.materials.controls.filter)
 		AssetsManager.materials.controls.textWidget = AssetsManager.widget:getWindow("MaterialInfo/Text")
-		
+		AssetsManager.materials.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(AssetsManager.materials.listholder, Ogre.MaterialManager:getSingleton())
 		
 		--the images part
 		AssetsManager.images.controls.listbox = CEGUI.toListbox(AssetsManager.widget:getWindow("ImagesList"))
@@ -482,6 +444,7 @@ function AssetsManager.buildWidget()
 		AssetsManager.shaders.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterShaders"))
 		AssetsManager.shaders.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.shaders.controls.listbox, AssetsManager.shaders.controls.filter)
 		AssetsManager.shaders.controls.textWidget = AssetsManager.widget:getWindow("ShadersInfo/Text")
+		AssetsManager.shaders.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(AssetsManager.shaders.listholder, Ogre.HighLevelGpuProgramManager:getSingleton())
 	
 	
 	
