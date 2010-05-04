@@ -13,6 +13,7 @@
 			<Window Type='EmberLook/Listbox' Name='Models'>
 				<Property Name='UnifiedAreaRect' Value='{{0.013230,0.0},{0.055224,0.0},{0.219481,0.0},{0.414926,0.0}}'/>
 				<Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
+				<Property Name='Sort' Value='true'/>
 			</Window>
 			<Window Type='EmberLook/Tree' Name='ModelContentsTree'>
 				<Property Name='UnifiedAreaRect' Value='{{0.236621,0.0},{0.058209,0.0},{0.442871,0.0},{0.458209,0.0}}'/>
