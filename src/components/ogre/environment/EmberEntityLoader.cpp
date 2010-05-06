@@ -146,6 +146,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 		instance.beingDeletedConnection.disconnect();
 		//Reset the rendering distance to the one set by the model def.
 		modelRepresentation->getModel().setRenderingDistance(modelRepresentation->getModel().getDefinition()->getRenderingDistance());
+		mEntities.erase(I);
 	}
 
 #endif
