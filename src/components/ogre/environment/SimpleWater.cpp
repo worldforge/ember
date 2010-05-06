@@ -76,7 +76,7 @@ bool SimpleWater::initialize()
 		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode("water");
 
 		mWaterEntity = mSceneMgr.createEntity("water", "SimpleWaterPlane");
-		mWaterEntity->setMaterialName("/global/environment/ground/water/simple");
+		mWaterEntity->setMaterialName("/global/environment/water/ocean");
 		mWaterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_6);
 		mWaterEntity->setCastShadows(false);
 		mWaterEntity->setQueryFlags(MousePicker::CM_NATURE);
