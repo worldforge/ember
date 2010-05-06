@@ -7,32 +7,32 @@
                 <parts>
                     <part name="A" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/environment/moraf" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                     <part name="B" group="main" show="false">
                         <subentities>
-                            <subentity index="1" material="/global/environment/moraf" />
+                            <subentity index="1" />
                         </subentities>
                     </part>
                     <part name="C" group="main" show="false">
                         <subentities>
-                            <subentity index="2" material="/global/environment/moraf" />
+                            <subentity index="2" />
                         </subentities>
                     </part>
                     <part name="D" group="main" show="false">
                         <subentities>
-                            <subentity index="3" material="/global/environment/moraf" />
+                            <subentity index="3" />
                         </subentities>
                     </part>
                     <part name="E" group="main" show="false">
                         <subentities>
-                            <subentity index="4" material="/global/environment/moraf" />
+                            <subentity index="4" />
                         </subentities>
                     </part>
                     <part name="F" group="main" show="false">
                         <subentities>
-                            <subentity index="5" material="/global/environment/moraf" />
+                            <subentity index="5" />
                         </subentities>
                     </part>
                 </parts>

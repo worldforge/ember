@@ -6,11 +6,6 @@
             <submodel mesh="3d_objects/items/containers/models/bottlejug/bottlejug.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/containers/bottle/cork" />
-                            <subentity index="1" material="/global/containers/bottle/glass" />
-                            <subentity index="2" material="/global/containers/bottle/glass" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

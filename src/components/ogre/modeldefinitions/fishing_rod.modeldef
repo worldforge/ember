@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/items/tools/models/fishing_rod/fishing_rod.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/tools/fishing_rod" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

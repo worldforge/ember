@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/structures/models/cg_house_ruin/cg_house_ruin.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/rezpa_wall" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

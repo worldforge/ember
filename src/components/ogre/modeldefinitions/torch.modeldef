@@ -7,11 +7,6 @@
             <submodel mesh="3d_objects/items/tools/models/torch/torch.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/tool/tool_handle" />
-                            <subentity index="1" material="/global/items/tool/tool_handle" />
-                            <subentity index="2" material="/global/items/tool/tool_handle" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

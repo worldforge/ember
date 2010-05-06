@@ -6,11 +6,6 @@
             <submodel mesh="3d_objects/structures/models/fire_place_A/fire_place_A.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_brick" />
-                            <subentity index="1" material="/global/structures/rezpa_concrete" />
-                            <subentity index="2" material="/global/structures/rezpa_wall" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

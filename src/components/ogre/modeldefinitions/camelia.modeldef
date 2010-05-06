@@ -6,11 +6,6 @@
             <submodel mesh="3d_objects/plants/flowers/models/camellia/camellia.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/flowers/camellia" />
-                            <subentity index="1" material="/global/plants/flowers/camellia" />
-                            <subentity index="2" material="/global/plants/flowers/camellia" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

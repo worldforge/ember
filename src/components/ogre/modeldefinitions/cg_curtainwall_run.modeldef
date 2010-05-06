@@ -6,15 +6,6 @@
             <submodel mesh="3d_objects/structures/models/cg_curtainwall_run/cg_curtainwall_run.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_brick" />
-                            <subentity index="1" material="/global/structures/ossyja_post" />
-                            <subentity index="2" material="/global/structures/ossyja_rough_beams" />
-                            <subentity index="3" material="/global/structures/rezpa_stonetrim" />
-                            <subentity index="4" material="/global/structures/roof_shale" />
-                            <subentity index="5" material="/global/structures/roof_trim" />
-                            <subentity index="6" material="/global/structures/stone_palisade" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

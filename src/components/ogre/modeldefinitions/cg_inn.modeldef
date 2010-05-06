@@ -6,21 +6,6 @@
             <submodel mesh="3d_objects/structures/models/cg_inn/cg_inn.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/foundation_brick" />
-                            <subentity index="1" material="/global/structures/ossyja_brick" />
-                            <subentity index="2" material="/global/structures/ossyja_brick_trim" />
-                            <subentity index="3" material="/global/structures/ossyja_ceiling_tiles" />
-                            <subentity index="4" material="/global/structures/ossyja_planks" />
-                            <subentity index="5" material="/global/structures/ossyja_post" />
-                            <subentity index="6" material="/global/structures/ossyja_rough_beams" />
-                            <subentity index="7" material="/global/structures/ossyja_wall_cobblestone" />
-                            <subentity index="8" material="/global/structures/rezpa_interior_floor_stone" />
-                            <subentity index="9" material="/global/structures/rezpa_stained_walls" />
-                            <subentity index="10" material="/global/structures/rezpa_wood" />
-                            <subentity index="11" material="/global/structures/roof_shale" />
-                            <subentity index="12" material="/global/structures/wall_inner_stained" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

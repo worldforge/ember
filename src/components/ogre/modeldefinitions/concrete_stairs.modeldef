@@ -6,10 +6,6 @@
             <submodel mesh="3d_objects/structures/models/concrete_stairs/concrete_stairs.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_floor_planks" />
-                            <subentity index="1" material="/global/structures/rezpa_concrete" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/items/weapons/models/arrow/arrow.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/weapons/arrow" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

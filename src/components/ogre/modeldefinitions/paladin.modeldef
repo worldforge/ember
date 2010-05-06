@@ -6,22 +6,6 @@
             <submodel mesh="3d_skeletons/bipeds/races/human/paladin/paladin.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" />
-                            <subentity index="1" />
-                            <subentity index="2" />
-                            <subentity index="3" />
-                            <subentity index="4" />
-                            <subentity index="5" />
-                            <subentity index="6" />
-                            <subentity index="7" />
-                            <subentity index="8" />
-                            <subentity index="9" />
-                            <subentity index="10" />
-                            <subentity index="11" />
-                            <subentity index="12" />
-                            <subentity index="13" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

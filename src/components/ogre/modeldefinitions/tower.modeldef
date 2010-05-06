@@ -6,11 +6,6 @@
             <submodel mesh="junkyard/models/broken_tower/Tower01.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/moraf_normal_wall" />
-                            <subentity index="1" material="/global/structures/moraf_floor" />
-                            <subentity index="2" material="/global/structures/moraf_stone_wall_side" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

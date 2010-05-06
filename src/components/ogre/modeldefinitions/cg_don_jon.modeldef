@@ -6,28 +6,6 @@
             <submodel mesh="3d_objects/structures/models/cg_don_jon/cg_don_jon.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_brick" />
-                            <subentity index="1" material="/global/structures/ossyja_brick_trim" />
-                            <subentity index="2" material="/global/structures/ossyja_post" />
-                            <subentity index="3" material="/global/structures/ossyja_rough_beams" />
-                            <subentity index="4" material="/global/structures/ossyja_wall_cobblestone" />
-                            <subentity index="5" material="/global/structures/rezpa_arch" />
-                            <subentity index="6" material="/global/structures/rezpa_cobblestone" />
-                            <subentity index="7" material="/global/structures/rezpa_collumn" />
-                            <subentity index="8" material="/global/structures/rezpa_collumn_base" />
-                            <subentity index="9" material="/global/structures/rezpa_concrete" />
-                            <subentity index="10" material="/global/structures/rezpa_inner_walls" />
-                            <subentity index="11" material="/global/structures/rezpa_interior_floor_stone" />
-                            <subentity index="12" material="/global/structures/rezpa_masonry" />
-                            <subentity index="13" material="/global/structures/rezpa_ornament" />
-                            <subentity index="14" material="/global/structures/rezpa_plaster" />
-                            <subentity index="15" material="/global/structures/rezpa_staced_masonry" />
-                            <subentity index="16" material="/global/structures/rezpa_stonetrim" />
-                            <subentity index="17" material="/global/structures/roof_shale" />
-                            <subentity index="18" material="/global/structures/roof_trim" />
-                            <subentity index="19" material="/global/structures/stone_palisade" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

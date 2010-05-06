@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/items/valuables/models/moraf_coin/moraf_coin.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/valuables/moraf_coin" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

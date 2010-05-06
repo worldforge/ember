@@ -6,10 +6,6 @@
             <submodel mesh="3d_objects/items/tools/models/bucksaw/bucksaw.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/tool/tool_head" />
-                            <subentity index="1" material="/global/items/tool/tool_handle" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

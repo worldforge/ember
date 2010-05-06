@@ -1,16 +1,6 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-	<model name="birch" usescaleof="height" scale="2" renderingdistance="200" >
-    	<rendering scheme="forest" />
-		<submodels>
-			<submodel mesh="3d_objects/plants/tree/models/Straight_up_tree/Straight_up_tree.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>
-    
+
 	<model name="pineA" usescaleof="height" showcontained="true" scale="2.000000" icon="3d_objects/plants/trees/textures/tree_pine/I.png ">
     	<rendering scheme="forest" />
         <translate x="0.000000" y="0.000000" z="0.000000" />

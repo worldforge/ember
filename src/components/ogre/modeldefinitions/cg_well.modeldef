@@ -6,16 +6,6 @@
             <submodel mesh="3d_objects/structures/models/cg_well/cg_well.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_post" />
-                            <subentity index="1" material="/global/structures/ossyja_rope" />
-                            <subentity index="2" material="/global/structures/ossyja_rough_beams" />
-                            <subentity index="3" material="/global/structures/rezpa_masonry" />
-                            <subentity index="4" material="/global/structures/roof" />
-                            <subentity index="5" material="/global/structures/roof_shale" />
-                            <subentity index="6" material="/global/structures/roof_trim" />
-                            <subentity index="7" material="/global/structures/wooden_fence" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

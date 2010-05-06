@@ -6,10 +6,6 @@
             <submodel mesh="3d_objects/structures/models/castlegrad/cg_wall_corner.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/curtain_wall_shale" />
-                            <subentity index="1" material="/global/structures/wall_outer" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

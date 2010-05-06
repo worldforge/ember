@@ -6,11 +6,6 @@
             <submodel mesh="3d_objects/structures/models/temple/temple.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/temple_base" />
-                            <subentity index="1" material="/global/structures/temple_main" />
-                            <subentity index="2" material="/global/structures/temple_roof" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

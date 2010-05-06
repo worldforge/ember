@@ -6,22 +6,12 @@
             <submodel mesh="3d_objects/structures/models/castlegrad/cg_keep_outer_wall.mesh">
                 <parts>
                     <part name="outer" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/wall_outer" />
-                            <subentity index="1" material="/global/structures/wall_outer" />
-                            <subentity index="2" material="/global/structures/wall_outer" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
             <submodel mesh="3d_objects/structures/models/castlegrad/cg_keep_walls.mesh">
                 <parts>
                     <part name="inner" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/wall_inner_luxurious" />
-                            <subentity index="1" material="/global/structures/ossyja_floor_planks" />
-                            <subentity index="2" material="/global/structures/ossyja_floor_planks" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

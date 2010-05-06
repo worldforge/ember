@@ -6,19 +6,12 @@
             <submodel mesh="3d_objects/structures/models/castlegrad/cg_gateway.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/wall_outer" />
-                            <subentity index="1" material="/global/structures/bailey_roof_shale" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
             <submodel mesh="3d_objects/structures/models/castlegrad/cg_gateway_gate.mesh">
                 <parts>
                     <part name="gate" show="false">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/wall_outer" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

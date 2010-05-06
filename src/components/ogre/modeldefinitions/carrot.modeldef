@@ -6,10 +6,6 @@
             <submodel mesh="3d_objects/plants/fruit/models/carrot/carrot.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/fruit/carrot" />
-                            <subentity index="1" material="/global/plants/fruit/carrot/nonculled" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

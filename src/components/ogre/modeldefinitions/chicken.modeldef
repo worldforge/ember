@@ -1,23 +1,32 @@
 <models>
     <model name="chicken" usescaleof="height" showcontained="false" icon="">
         <translate x="0.000000" y="0.200000" z="0.000000" />
-        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <rotation x="1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
         <submodels>
-            <submodel mesh="3d_skeletons/avian/models/chicken/chicken.mesh">
+            <submodel mesh="3d_objects/creatures/chicken/chicken.mesh">
                 <parts>
-                    <part name="redchicken" group="main" show="false">
+                    <part name="redchicken" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/avian/buzzard" />
+                            <subentity index="0" material="/global/creatures/chicken/redchicken" />
+                            <subentity index="1" material="/global/creatures/chicken/redchicken" />
                         </subentities>
                     </part>
-                    <part name="greychicken" group="main" show="true">
+                    <part name="red" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/avian/greychicken" />
+                            <subentity index="0" material="/global/creatures/chicken/red" />
+                            <subentity index="1" material="/global/creatures/chicken/red" />
                         </subentities>
                     </part>
-                    <part name="buzzard" group="main" show="false">
+                    <part name="greychicken" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/avian/buzzard" />
+                            <subentity index="0" material="/global/creatures/chicken/greychicken" />
+                            <subentity index="1" material="/global/creatures/chicken/greychicken" />
+                        </subentities>
+                    </part>
+                    <part name="buzzard" show="false">
+                        <subentities>
+                            <subentity index="0" material="/global/creatures/chicken/buzzard" />
+                            <subentity index="1" material="/global/creatures/chicken/buzzard" />
                         </subentities>
                     </part>
                 </parts>
@@ -96,5 +105,6 @@
         </actions>
         <attachpoints />
         <views />
+        <lights />
     </model>
 </models>

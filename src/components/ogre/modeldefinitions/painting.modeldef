@@ -5,9 +5,14 @@
         <submodels>
             <submodel mesh="3d_objects/items/furniture/models/painting/painting.mesh">
                 <parts>
-                    <part name="main" show="true">
+                    <part name="pirate" show="true">
                         <subentities>
                             <subentity index="0" />
+                        </subentities>
+                    </part>
+                    <part name="wizard" show="false">
+                        <subentities>
+                            <subentity index="0" material="/global/items/furniture/painting/wizard" />
                         </subentities>
                     </part>
                 </parts>
@@ -16,5 +21,6 @@
         <actions />
         <attachpoints />
         <views />
+        <lights />
     </model>
 </models>

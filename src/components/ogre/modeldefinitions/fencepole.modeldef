@@ -7,12 +7,12 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/structures/wooden_fence" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                     <part name="spacer" show="false">
                         <subentities>
-                            <subentity index="1" material="/global/structures/wooden_fence" />
+                            <subentity index="1" />
                         </subentities>
                     </part>
                 </parts>

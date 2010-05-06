@@ -7,7 +7,7 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/environment/ground/water" />
+                            <subentity index="0" material="/global/environment/water" />
                         </subentities>
                     </part>
                 </parts>
@@ -16,5 +16,6 @@
         <actions />
         <attachpoints />
         <views />
+        <lights />
     </model>
 </models>

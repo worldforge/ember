@@ -6,17 +6,6 @@
             <submodel mesh="3d_objects/structures/models/cg_house_D/cg_house_D.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/foundation_brick" />
-                            <subentity index="1" material="/global/structures/moraf_roof_shingles_combo" />
-                            <subentity index="2" material="/global/structures/ossyja_brick_trim" />
-                            <subentity index="3" material="/global/structures/ossyja_floor_planks" />
-                            <subentity index="4" material="/global/structures/ossyja_inner_walls" />
-                            <subentity index="5" material="/global/structures/ossyja_rough_beams" />
-                            <subentity index="6" material="/global/structures/ossyja_wall_cobblestone" />
-                            <subentity index="7" material="/global/structures/ozark_planks" />
-                            <subentity index="8" material="/global/structures/rezpa_concrete" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

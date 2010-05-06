@@ -7,9 +7,6 @@
             <submodel mesh="3d_objects/items/containers/models/open_crate/open_crate.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/containers/crate_aged" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

@@ -6,22 +6,6 @@
             <submodel mesh="3d_objects/structures/models/cg_smithy/cg_smithy.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/firepit_embers" />
-                            <subentity index="1" material="/global/structures/ossyja_brick_trim" />
-                            <subentity index="2" material="/global/structures/ossyja_copper_rivet" />
-                            <subentity index="3" material="/global/structures/ossyja_metal_rivet" />
-                            <subentity index="4" material="/global/structures/ossyja_post" />
-                            <subentity index="5" material="/global/structures/ossyja_rough_beams" />
-                            <subentity index="6" material="/global/structures/ossyja_stairs" />
-                            <subentity index="7" material="/global/structures/ossyja_wall_cobblestone" />
-                            <subentity index="8" material="/global/structures/rezpa_interior_floor_stone" />
-                            <subentity index="9" material="/global/structures/rezpa_masonry" />
-                            <subentity index="10" material="/global/structures/rezpa_stained_walls" />
-                            <subentity index="11" material="/global/structures/rezpa_stonecircularfloor" />
-                            <subentity index="12" material="/global/structures/rezpa_wood" />
-                            <subentity index="13" material="/global/structures/roof_shale" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

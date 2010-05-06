@@ -1,0 +1,49 @@
+<models>
+    <model name="cow" usescaleof="height" showcontained="false" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <submodels>
+            <submodel mesh="3d_objects/creatures/cow/cow.mesh">
+                <parts>
+                    <part name="brown" show="true">
+                        <subentities>
+                            <subentity index="0" />
+                            <subentity index="1" />
+                        </subentities>
+                    </part>
+                    <part name="spotted_a" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/creatures/cow/spotted_a" />
+                            <subentity index="1" material="/global/creatures/cow/spotted_a" />
+                        </subentities>
+                    </part>
+                    <part name="spotted_b" show="true">
+                        <subentities>
+                            <subentity index="0" material="/global/creatures/cow/spotted_b" />
+                            <subentity index="1" material="/global/creatures/cow/spotted_b" />
+                        </subentities>
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="__movement_walk" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Walk" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="__movement_idle" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
+        <attachpoints />
+        <views />
+        <lights />
+    </model>
+</models>

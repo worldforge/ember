@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/items/furniture/models/chair/chair.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/furniture/avalon"/>
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
@@ -22,9 +19,6 @@
             <submodel mesh="3d_objects/items/furniture/models/longtable/longtable.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/furniture/avalon" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
@@ -38,9 +32,6 @@
             <submodel mesh="3d_objects/items/furniture/models/shelf_table/shelf_table.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/furniture/avalon" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
@@ -54,9 +45,6 @@
             <submodel mesh="3d_objects/items/furniture/models/shelf/simple_shelf.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/furniture/avalon" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
@@ -70,14 +58,6 @@
             <submodel mesh="3d_objects/items/furniture/models/stool/stool.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/furniture/avalon" />
-                            <subentity index="1" material="/global/items/furniture/avalon" />
-                            <subentity index="2" material="/global/items/furniture/avalon" />
-                            <subentity index="3" material="/global/items/furniture/avalon" />
-                            <subentity index="4" material="/global/items/furniture/avalon" />
-                            <subentity index="5" material="/global/items/furniture/avalon" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
@@ -89,9 +69,6 @@
 			<submodel mesh="3d_objects/items/furniture/models/simple_table/simple_table.mesh" >
 				<parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/furniture/avalon" />
-                        </subentities>
                     </part>
 				</parts>
 			</submodel>

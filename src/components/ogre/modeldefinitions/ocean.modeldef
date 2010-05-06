@@ -1,6 +1,5 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-    <model name="ocean" usescaleof="all" showcontained="true">
+    <model name="ocean" usescaleof="all" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -8,14 +7,15 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/environment/ground/water/simple" />
-                 	    </subentities>
+                            <subentity index="0" material="/global/environment/water" />
+                        </subentities>
                     </part>
-                 </parts>
+                </parts>
             </submodel>
         </submodels>
         <actions />
         <attachpoints />
         <views />
+        <lights />
     </model>
 </models>

@@ -1,29 +1,25 @@
 <models>
     <model name="kobold" usescaleof="height" showcontained="false" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <rotation x="-1.000000" y="0.000000" z="0.000000" degrees="360.000000" />
         <submodels>
-            <submodel mesh="3d_skeletons/bipeds/races/kobold/male/goblin.mesh">
+            <submodel mesh="3d_objects/creatures/goblin/goblin.mesh">
                 <parts>
                     <part name="body/green" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/bipeds/races/kobold/male/body/green" />
+                            <subentity index="0" material="/global/creatures/goblin/green" />
                         </subentities>
                     </part>
                     <part name="body/brown" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/bipeds/races/kobold/male/body/brown" />
+                            <subentity index="0" material="/global/creatures/goblin/brown" />
                         </subentities>
                     </part>
                 </parts>
             </submodel>
-            <submodel mesh="3d_skeletons/bipeds/races/kobold/male/accessories/belt/belt.mesh">
+            <submodel mesh="3d_objects/creatures/goblin/goblin_belt.mesh">
                 <parts>
-                    <part name="belt" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/bipeds/races/kobold/male/accessories/belt" />
-                        </subentities>
-                    </part>
+                    <part name="belt" show="true" />
                 </parts>
             </submodel>
         </submodels>
@@ -100,5 +96,6 @@
             </attachpoint>
         </attachpoints>
         <views />
+        <lights />
     </model>
 </models>

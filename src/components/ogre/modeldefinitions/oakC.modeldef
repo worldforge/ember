@@ -6,10 +6,6 @@
             <submodel mesh="3d_objects/plants/trees/models/oak/oakC.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="1" material="/global/plants/trees/oak/nonculled" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

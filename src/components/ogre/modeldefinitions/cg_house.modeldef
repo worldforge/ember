@@ -7,8 +7,8 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/structures/wall_outer" />
-                            <subentity index="3" material="/global/structures/ossyja_floor_planks" />
+                            <subentity index="0" />
+                            <subentity index="3" />
                         </subentities>
                     </part>
                     <part name="roof_shale" show="true" group="roof">

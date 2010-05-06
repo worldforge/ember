@@ -7,17 +7,17 @@
                 <parts>
                     <part name="high" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/containers/bowls" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                     <part name="medium" group="main" show="false">
                         <subentities>
-                            <subentity index="1" material="/global/containers/bowls" />
+                            <subentity index="1" />
                         </subentities>
                     </part>
                     <part name="flat" group="main" show="false">
                         <subentities>
-                            <subentity index="2" material="/global/containers/bowls" />
+                            <subentity index="2" />
                         </subentities>
                     </part>
                 </parts>

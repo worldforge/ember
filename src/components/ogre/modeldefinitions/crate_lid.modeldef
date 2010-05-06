@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/items/containers/models/crate/craftsman_wood_crate_lid.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/containers/crate_aged" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

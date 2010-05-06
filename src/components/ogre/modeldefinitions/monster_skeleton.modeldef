@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/environment/models/monster_skeleton/monster_skeleton.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/environment/monster_skeleton/petrified" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

@@ -6,10 +6,6 @@
             <submodel mesh="3d_objects/plants/fruit/models/apple/apple.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/fruit/apple" />
-                            <subentity index="1" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

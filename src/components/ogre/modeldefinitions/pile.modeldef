@@ -5,16 +5,13 @@
         <submodels>
             <submodel mesh="3d_objects/structures/models/ground_pallisade/ground_pallisade.mesh">
                 <parts>
-                    <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/environment/ground/ground_dirt_garden" />
-                        </subentities>
-                    </part>
+                    <part name="main" show="true" />
                 </parts>
             </submodel>
         </submodels>
         <actions />
         <attachpoints />
         <views />
+        <lights />
     </model>
 </models>

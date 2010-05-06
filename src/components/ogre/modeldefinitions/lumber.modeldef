@@ -6,11 +6,6 @@
             <submodel mesh="3d_objects/structures/models/log/tree_log.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="1" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="2" material="/global/plants/trees/oak/nonculled" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

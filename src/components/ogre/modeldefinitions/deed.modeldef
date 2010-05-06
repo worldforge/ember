@@ -3,13 +3,9 @@
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_objects/items/parchments/models/curly_document/curly_document.mesh">
+            <submodel mesh="3d_objects/items/parchments/models/parchment/parchment.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/parchments/parchment_text" />
-                            <subentity index="1" material="/global/items/parchments/parchment" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

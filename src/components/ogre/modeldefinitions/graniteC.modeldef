@@ -5,19 +5,19 @@
         <submodels>
             <submodel mesh="3d_objects/environment/models/boulder/graniteC.mesh">
                 <parts>
-                    <part name="granite" show="true" group="main">
+                    <part name="granite" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/environment/ground/stone_granite" />
+                            <subentity index="0" material="/global/environment/stone_granite" />
                         </subentities>
                     </part>
-                    <part name="felsite" show="false" group="main">
+                    <part name="felsite" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/environment/ground/stone_felsite" />
+                            <subentity index="0" material="/global/environment/stone_felsite" />
                         </subentities>
                     </part>
-                    <part name="felsite_face" show="false" group="main">
+                    <part name="felsite_face" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/environment/ground/stone_felsite_face" />
+                            <subentity index="0" material="/global/environment/stone_felsite_face" />
                         </subentities>
                     </part>
                 </parts>
@@ -26,5 +26,6 @@
         <actions />
         <attachpoints />
         <views />
+        <lights />
     </model>
 </models>

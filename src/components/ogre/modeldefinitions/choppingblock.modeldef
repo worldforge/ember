@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/items/tools/models/chopping_block/chopping_block.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/tools/chopping_block" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

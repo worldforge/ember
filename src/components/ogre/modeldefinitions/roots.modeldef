@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/environment/models/roots/root.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/environment/bare_roots" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

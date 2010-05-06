@@ -7,7 +7,7 @@
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/structures/wall_outer" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>

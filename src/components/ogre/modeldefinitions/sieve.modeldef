@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/items/tools/models/sieve/sieve.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/tools/sieve" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/items/containers/models/tinderbox/tinderbox.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/containers/tinderbox" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

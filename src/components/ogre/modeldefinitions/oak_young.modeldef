@@ -6,30 +6,18 @@
             <submodel mesh="3d_objects/plants/trees/models/oak/oak_youngA.mesh">
                 <parts>
                     <part name="A" group="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="1" material="/global/plants/trees/oak/nonculled" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
             <submodel mesh="3d_objects/plants/trees/models/oak/oak_youngB.mesh">
                 <parts>
                     <part name="B" group="main" show="false">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="1" material="/global/plants/trees/oak/nonculled" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
             <submodel mesh="3d_objects/plants/trees/models/oak/oak_youngC.mesh">
                 <parts>
                     <part name="C" group="main" show="false">
-                        <subentities>
-                            <subentity index="0" material="/global/plants/trees/oak/nonculled" />
-                            <subentity index="1" material="/global/plants/trees/oak/nonculled" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

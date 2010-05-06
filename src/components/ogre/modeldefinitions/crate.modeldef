@@ -6,18 +6,12 @@
             <submodel mesh="3d_objects/items/containers/models/crate/craftsman_wood_crate_closed.mesh">
                 <parts>
                     <part name="open" group="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/items/containers/crate_aged" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
             <submodel mesh="3d_objects/items/containers/models/crate/craftsman_wood_crate_open.mesh">
                 <parts>
                     <part name="closed" group="main" show="false">
-                        <subentities>
-                            <subentity index="0" material="/global/items/containers/crate_aged" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

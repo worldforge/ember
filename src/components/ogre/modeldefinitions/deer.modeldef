@@ -6,9 +6,6 @@
             <submodel mesh="3d_skeletons/creatures/quadruped_v2/models/deer/deer.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

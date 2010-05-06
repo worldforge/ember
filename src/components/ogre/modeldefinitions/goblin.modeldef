@@ -7,14 +7,14 @@
                 <parts>
                     <part name="body" group="main" show="true">
                         <subentities>
-                            <subentity index="1" material="/global/bipeds/races/goblin/male/body" />
+                            <subentity index="1" />
                         </subentities>
                     </part>
                     <part name="head" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/bipeds/races/goblin/male/head" />
-                            <subentity index="2" material="/global/bipeds/races/goblin/male/head" />
-                            <subentity index="3" material="/global/bipeds/races/goblin/male/head" />
+                            <subentity index="0" />
+                            <subentity index="2" />
+                            <subentity index="3" />
                         </subentities>
                     </part>
                 </parts>

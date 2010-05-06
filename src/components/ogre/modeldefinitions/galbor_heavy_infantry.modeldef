@@ -1,0 +1,60 @@
+<models>
+    <model name="galbor_heavy_infantry" usescaleof="all" showcontained="true" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <submodels>
+            <submodel mesh="3d_skeletons/bipeds/races/human/galbor/galbor_heavy_infantry.mesh">
+                <parts>
+                    <part name="main" show="true">
+                    </part>
+                </parts>
+            </submodel>
+        </submodels>
+		<actions>
+			<action name="__movement_idle" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="idle_Clip" weight="1" />
+					</animation>
+				</animations>
+			</action>
+			<action name="__movement_walk" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="walk_loop_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="__movement_swim" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="walk_loop_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="__movement_run" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="run_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="cut" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="attack_roundhouse_slash_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+			<action name="punch" speed="1.000000">
+				<animations>
+					<animation>
+						<animationpart name="attack_roundhouse_slash_Clip" weight="1.000000" />
+					</animation>
+				</animations>
+			</action>
+		</actions>
+        <attachpoints />
+        <views />
+    </model>
+</models>

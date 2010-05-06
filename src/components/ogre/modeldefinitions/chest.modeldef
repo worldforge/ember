@@ -6,10 +6,6 @@
             <submodel mesh="3d_objects/items/containers/models/chest/chest.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/containers/chest" />
-                            <subentity index="1" material="/global/containers/chest" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

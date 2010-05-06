@@ -8,7 +8,7 @@
                 <parts>
                     <part name="trunk" group="trunk" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/plants/trees/bark_fir" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                     <part name="leaves" group="leaves" show="true">

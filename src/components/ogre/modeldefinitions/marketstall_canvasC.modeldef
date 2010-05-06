@@ -8,8 +8,8 @@
                 <parts>
                     <part name="frame" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_post" />
-                            <subentity index="3" material="/global/structures/ossyja_planks" />
+                            <subentity index="0" />
+                            <subentity index="3" />
                         </subentities>
                     </part>
                     <part name="canvas_blue_green" group="canvas" show="true">

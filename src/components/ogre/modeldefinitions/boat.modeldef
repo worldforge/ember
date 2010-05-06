@@ -6,10 +6,6 @@
             <submodel mesh="3d_objects/items/vehicle/models/goatboat/goatboat.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/moraf_timber_beam" />
-                            <subentity index="1" material="/global/structures/moraf_beam_end" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>

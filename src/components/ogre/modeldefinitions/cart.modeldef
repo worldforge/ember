@@ -7,7 +7,7 @@
                 <parts>
                     <part name="1" group="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_planks" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>
@@ -16,7 +16,7 @@
                 <parts>
                     <part name="2" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_planks" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>
@@ -25,7 +25,7 @@
                 <parts>
                     <part name="3" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_planks" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>
@@ -34,7 +34,7 @@
                 <parts>
                     <part name="4" group="main" show="false">
                         <subentities>
-                            <subentity index="0" material="/global/structures/ossyja_planks" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>

@@ -6,9 +6,6 @@
             <submodel mesh="3d_objects/structures/models/castlegrad/cg_house_door.mesh">
                 <parts>
                     <part name="main" show="true">
-                        <subentities>
-                            <subentity index="0" material="/global/structures/rough_timber/door_element" />
-                        </subentities>
                     </part>
                 </parts>
             </submodel>
