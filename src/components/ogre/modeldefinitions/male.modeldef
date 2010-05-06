@@ -43,22 +43,22 @@
                     </part>
                     <part name="eyes/blue" group="eyes" show="true">
                         <subentities>
-                            <subentity index="2" material="/global/bipeds/races/universal/eyes/blue" />
+                            <subentity index="2" material="/global/characters/universal/eyes/blue" />
                         </subentities>
                     </part>
                     <part name="eyes/green" group="eyes" show="false">
                         <subentities>
-                            <subentity index="2" material="/global/bipeds/races/universal/eyes/green" />
+                            <subentity index="2" material="/global/characters/universal/eyes/green" />
                         </subentities>
                     </part>
                     <part name="eyes/brown" group="eyes" show="false">
                         <subentities>
-                            <subentity index="2" material="/global/bipeds/races/universal/eyes/brown" />
+                            <subentity index="2" material="/global/characters/universal/eyes/brown" />
                         </subentities>
                     </part>
                     <part name="eyes/hazel" group="eyes" show="false">
                         <subentities>
-                            <subentity index="2" material="/global/bipeds/races/universal/eyes/hazel" />
+                            <subentity index="2" material="/global/characters/universal/eyes/hazel" />
                         </subentities>
                     </part>
                 </parts>
