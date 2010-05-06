@@ -144,7 +144,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 			///If there's no bbox, and no scaling in the model (i.e. not even "1") we'll set the size of the model to a hardcoded small value (0.25 meters in each dimension).
 			///This is of course a last resort; all good models that can belong to entities without bounding boxes should have a scale set
 
-			S_LOG_WARNING("Could not find any scale set in the model '" << getModel().getName() << "'. We'll thus default to scaling the mesh so it's 0.25 meters in each dimension.");
+			S_LOG_WARNING("Could not find any scale set in the model '" << getModel().getName() << "' of type '" << getModel().getDefinition()->getName() << "'. We'll thus default to scaling the mesh so it's 0.25 meters in each dimension.");
 
 			Ogre::Real scaleX = (0.25 / defaultSize.x);
 			Ogre::Real scaleY = (0.25 / defaultSize.y);
