@@ -1,7 +1,7 @@
 <models>
     <model name="chicken" usescaleof="height" showcontained="false" icon="">
         <translate x="0.000000" y="0.200000" z="0.000000" />
-        <rotation x="1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/creatures/chicken/chicken.mesh">
                 <parts>
