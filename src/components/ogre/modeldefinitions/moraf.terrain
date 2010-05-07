@@ -8,7 +8,7 @@
 				<param key="clusterDistance">25</param>
 				<param key="density">1.5</param>
 				<param key="falloff">0.6</param>
-				<param key="material">/global/plants/grass/ducktail_yellow</param>
+				<param key="material">/global/plants/grass/ducktail_yellow/simple</param>
 				<param key="minHeight">2.0</param>
 				<param key="maxHeight">2.5</param>
 				<param key="minWidth">1.0</param>
@@ -24,7 +24,7 @@
 				<param key="clusterDistance">25</param>
 				<param key="density">2</param>
 				<param key="falloff">0.6</param>
-				<param key="material">/global/plants/grass/bittergrass_green</param>
+				<param key="material">/global/plants/grass/bittergrass_green/simple</param>
 				<param key="minHeight">0.75</param>
 				<param key="maxHeight">1.25</param>
 				<param key="minWidth">0.75</param>
@@ -47,7 +47,7 @@
 				<param key="clusterDistance">25</param>
 				<param key="density">2</param>
 				<param key="falloff">0.6</param>
-				<param key="material">/global/plants/grass/bittergrass_green</param>
+				<param key="material">/global/plants/grass/bittergrass_green/simple</param>
 
 				<param key="minHeight">0.45</param>
 				<param key="maxHeight">0.65</param>
@@ -62,7 +62,7 @@
 				<param key="clusterDistance">24</param>
 				<param key="density">2</param>
 				<param key="falloff">0.6</param>
-				<param key="material">/global/plants/grass/bittergrass_brown</param>
+				<param key="material">/global/plants/grass/bittergrass_brown/simple</param>
 
 				<param key="minHeight">0.45</param>
 				<param key="maxHeight">0.65</param>
@@ -77,7 +77,7 @@
 				<param key="clusterDistance">23</param>
 				<param key="density">2</param>
 				<param key="falloff">0.6</param>
-				<param key="material">/global/plants/grass/bittergrass_yellow</param>
+				<param key="material">/global/plants/grass/bittergrass_yellow/simple</param>
 
 				<param key="minHeight">0.45</param>
 				<param key="maxHeight">0.65</param>
