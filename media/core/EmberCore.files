@@ -5,7 +5,7 @@ resources/ogre/core/EmberCore.material
 resources/ogre/core/Ember.fontdef
 resources/ogre/core/EmberLoadingPanel.overlay
 3d_objects/primitives/models/axes.mesh
-3d_objects/primitives/textures/axes.png
+3d_objects/primitives/textures/axes/D.png
 themes/ember/gui/fonts/AUTHORS
 themes/ember/gui/fonts/DejaVuSans.ttf
 themes/ember/gui/fonts/LICENSE

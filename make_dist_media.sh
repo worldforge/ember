@@ -6,11 +6,21 @@
 #note that the script must be run in the ember source root dir
 
 current=${PWD}
-original_media=$1
-media_dir=$2
+original_media=`readlink -m $1`
+media_dir=`readlink -m $2`
 textureSize=$3
 user_dir=${media_dir}/media/user
 shared_dir=${media_dir}/media/shared
+shared_common_dir=${shared_dir}/common
+
+common_textures_list=`mktemp`
+common_textures_cleaned_list=`mktemp`
+common_meshes_list=`mktemp`
+common_skeletons_list=`mktemp`
+shared_packs_list=`mktemp`
+common_sounds_list=`mktemp`
+media_textures_list=`mktemp`
+
 
 srcdir=${PWD}
 
@@ -22,38 +32,37 @@ program_dir=${script_dir}/programs
 
 #start with shared media
 
-mkdir -p ${shared_dir}/common
+mkdir -p ${shared_common_dir}
 cd ${shared_dir}
 
-
 #try to get the textures needed
-#don't include lines starting with "/"
-grep -rIE --no-filename "^[^/].*texture "  ${material_dir}/*.material | sed -e 's/texture //g' > common_textures.list
-grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap "  ${material_dir}/*.material | sed -e 's/set_texture_alias DiffuseMap //g' >> common_textures.list
-# grep -rIE --no-filename "^[^/].*set_texture_alias DiffuseMap art\/3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias DiffuseMap art\/3d_/art\/3d_/g' >> common_textures.list
-# grep -rIE --no-filename "^[^/].*texture themes"  ${original_media}/materials/scripts/*.material | sed -e 's/texture themes/themes/g' >> common_textures.list
-# grep -rIE --no-filename "^[^/].*set_texture_alias NormalMap 3d"  ${original_media}/materials/scripts/*.material | sed -e 's/set_texture_alias NormalMap 3d_/3d_/g' >> common_textures.list
-grep -rIE --no-filename "^[^/].*set_texture_alias NormalHeightMap "  ${material_dir}/*.material | sed -e 's/set_texture_alias NormalHeightMap //g' >> common_textures.list
-grep -rIE --no-filename "^[^/].*set_texture_alias SpecularMap "  ${material_dir}/*.material | sed -e 's/set_texture_alias SpecularMap //g' >> common_textures.list
-grep -orIE --no-filename "icon=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' >> common_textures.list
-grep -orIE --no-filename "diffusetexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/diffusetexture=\"//g' | sed -e 's/\"//g' >> common_textures.list
-grep -orIE --no-filename "normalmaptexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/normalmaptexture=\"//g' | sed -e 's/\"//g' >> common_textures.list
+#don't include materials in the ogre or ogre core
+for filename in `find ${original_media} -name *.material  -not -wholename "*resources/ogre/caelum/core*" -not -wholename "*resources/ogre/core/*"`
+do
+  grep -IE --no-filename "^[^/].*texture "  ${filename} | sed -e 's/texture //g' >> ${common_textures_list}
+  grep -IE --no-filename "^[^/].*set_texture_alias DiffuseMap "  ${filename} | sed -e 's/set_texture_alias DiffuseMap //g' >> ${common_textures_list}
+  grep -IE --no-filename "^[^/].*set_texture_alias NormalHeightMap "  ${filename} | sed -e 's/set_texture_alias NormalHeightMap //g' >> ${common_textures_list}
+  grep -IE --no-filename "^[^/].*set_texture_alias SpecularMap "  ${filename}| sed -e 's/set_texture_alias SpecularMap //g' >> ${common_textures_list}
+done
+grep -orIE --no-filename "icon=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
+grep -orIE --no-filename "diffusetexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/diffusetexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
+grep -orIE --no-filename "normalmaptexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/normalmaptexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
 
 #remove all duplicates
-sort --unique common_textures.list > common_textures_cleaned.list
+sort --unique ${common_textures_list} | sed '/^$/d' | dos2unix -U > ${common_textures_cleaned_list}
 
 #first copy all textures
 # cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures_cleaned.list ` | ( cd ${shared_dir}/common; tar xvf -)
 
 #then convert them to a little lower smaller
 echo "Converting images"
-for filename in `cat ${shared_dir}/common_textures_cleaned.list `
+for filename in `cat ${common_textures_cleaned_list} `
 do
-	origfile="${original_media}/${filename}"
-	newfile="${shared_dir}/common/${filename}"
+	origfile="${original_media}/${filename// /}"
+	newfile="${shared_common_dir}/${filename// /}"
 	if [ ! -e $origfile ]
 	then
-		echo "File $origfile does not exist!"
+		echo "File ${origfile} does not exist!"
 	else
 		#only convert if the original image is newer
 		if [ $origfile -nt $newfile ]
@@ -71,40 +80,38 @@ do
 	
 done
 
-
 #copy all meshes in use
 echo "Copying meshes"
 cd ${shared_dir}
-grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > ${shared_dir}/common_meshes.list
-# grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
-grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
-# grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${shared_dir}/common_meshes.list
-cd ${original_media} ; tar cf - `cat ${shared_dir}/common_meshes.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > ${common_meshes_list}
+# grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
+grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
+# grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
+cd ${original_media} ; tar cf - `cat ${common_meshes_list} ` | ( cd ${shared_common_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
 # exit
 # mkdir -p ${shared_dir}/models
 # cd ${original_media}/models ; tar cf - `find -L . -iname \*.mesh` | ( cd ${shared_dir}/models; tar --keep-newer-files -xvf -) 2>  /dev/null
 
-
 echo "Copying skeletons"
 #just copy all skeletons, since the method involving meshmagick can't resolve the correct file name when using relative skeleton names
-cd ${original_media}/3d_objects ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_objects; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${original_media}/3d_skeletons ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_dir}/common/3d_skeletons; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/3d_objects ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_common_dir}/3d_objects; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/3d_skeletons ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_common_dir}/3d_skeletons; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 # #use meshmagick to figure out the needed skeletons
 # for filename in `find ${shared_dir}/common -name "*.mesh"`
 # do
-# 	meshmagick info ${filename} | grep -oE "skeletonfile.*.skeleton" | sed -e 's/skeletonfile //' >> ${shared_dir}/common_skeletons.list
-# 	meshmagick info ${filename} | grep -oE "skeleton file.*.skeleton" | sed -e 's/skeleton file //' >> ${shared_dir}/common_skeletons.list
+# 	meshmagick info ${filename} | grep -oE "skeletonfile.*.skeleton" | sed -e 's/skeletonfile //' >> ${common_skeleton_list}
+# 	meshmagick info ${filename} | grep -oE "skeleton file.*.skeleton" | sed -e 's/skeleton file //' >> ${common_skeleton_list}
 # done
-# cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_skeletons.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+# cd ${original_media}/common ; tar cf - `cat ${common_skeleton_list} ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 
 #copy all sounds in use
 echo "Copying sounds"
 cd ${shared_dir}
-grep -orIE --no-filename "filename=\"[^\"]*\"" ${srcdir}/src/components/ogre/sounddefinitions/*.sounddef | sed -e 's/filename=\"//g' | sed -e 's/\"//g' > ${shared_dir}/common_sounds.list
-cd ${original_media} ; tar cf - `cat ${shared_dir}/common_sounds.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+grep -orIE --no-filename "filename=\"[^\"]*\"" ${srcdir}/src/components/ogre/sounddefinitions/*.sounddef | sed -e 's/filename=\"//g' | sed -e 's/\"//g' > ${common_sounds_list}
+cd ${original_media} ; tar cf - `cat ${common_sounds_list} ` | ( cd ${shared_common_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 cd ${shared_dir}
@@ -118,41 +125,43 @@ cp -a ${original_media}/COPYING.txt .
 
 echo "Copying gui files"
 cd ${shared_dir}
-grep -orIE --no-filename "Imagefile=\"[^\"]*\"" ${srcdir}/src/components/ogre/cegui/datafiles/imagesets/*.imageset | sed -e 's/Imagefile=\"//g' | sed -e 's/\"//g' > ${shared_dir}/media_textures.list
-cd ${original_media} ; tar cf - `cat ${shared_dir}/media_textures.list ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
+grep -orIE --no-filename "Imagefile=\"[^\"]*\"" ${srcdir}/src/components/cegui/datafiles/imagesets/*.imageset | sed -e 's/Imagefile=\"//g' | sed -e 's/\"//g' > ${media_textures_list}
+cd ${original_media} ; tar cf - `cat ${media_textures_list} ` | ( cd ${shared_dir}/common; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 echo "Copying shared media packs"
 cd ${shared_dir}
-grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > shared_packs.list
-cd ${original_media} ; tar cf - `cat ${shared_dir}/shared_packs.list ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
+grep -rIE --no-filename "^Zip\[shared\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[shared\]=//g' > ${shared_packs_list}
+cd ${original_media} ; tar cf - `cat ${shared_packs_list} ` | ( cd ${shared_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 echo "Copy fonts"
 mkdir -p ${shared_dir}/common/themes/ember/gui/fonts
 cp -a ${original_media}/themes/ember/gui/fonts/* ${shared_dir}/common/themes/ember/gui/fonts
 
 echo "Copying materials"
-shared_ogre_dir=${shared_dir}/common/resources/ogre
-mkdir -p ${shared_ogre_dir}/scripts/materials
-mkdir -p ${shared_ogre_dir}/scripts/overlays
-mkdir -p ${shared_ogre_dir}/scripts/programs
-cd ${script_dir} ; tar cf - `find . -iname \*.cg` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${script_dir} ; tar cf - `find . -iname \*.glsl` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${script_dir} ; tar cf - `find . -iname \*.program` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${script_dir} ; tar cf - `find . -iname \*.asm` | ( cd ${shared_ogre_dir}/scriptss; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${script_dir} ; tar cf - `find . -iname \*.ps` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${script_dir} ; tar cf - `find . -iname \*.material` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${script_dir} ; tar cf - `find . -iname \*.overlay` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${script_dir} ; tar cf - `find . -iname \*.particle` | ( cd ${shared_ogre_dir}/scripts; tar --keep-newer-files -xvf -) 2>  /dev/null
 
+cd ${original_media}
+for filename in `find . -iname \*.cg -o -iname \*.gls -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle`
+do
+	origfile="${original_media}/${filename#.\/}"
+	newfile="${shared_common_dir}/${filename#.\/}"
+	#only copy if the original image is newer
+	if [ $origfile -nt $newfile ]
+	then
+		if [  ! -e `dirname $newfile` ]; then
+			mkdir -p `dirname $newfile`
+		fi
+		cp -uf $origfile $newfile
+		echo "Copied $filename to $newfile"
+	fi
+done
+
+
+shared_ogre_dir=${shared_common_dir}/resources/ogre
 #Note: we'll keep this for now, until we have a nicer way of copying all the textures that's needed
 mkdir -p ${shared_ogre_dir}/textures
 cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.png` | ( cd ${shared_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
 cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.jpg` | ( cd ${shared_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
-
-
-#cd ${original_media}/models ; tar cf - `find . -iname \*.mesh` | ( cd ${user_dir}/models; tar xvf -)
-#cd ${original_media}/models ; tar cf - `find . -iname \*.skeleton` | ( cd ${user_dir}/models; tar xvf -)
 
 
 echo "Copying core files"
@@ -169,8 +178,8 @@ cd ${original_media}/resources/ogre/caelum
 for filename in `find . ! -regex '.*/\..*' `
 do
 	echo $filename
-	mkdir -p `dirname ${shared_dir}/common/resources/ogre/caelum/${filename}`
-	cp -uf ${filename} ${shared_dir}/common/resources/ogre/caelum/${filename}
+	mkdir -p `dirname ${shared_common_dir}/resources/ogre/caelum/${filename}`
+	cp -uf ${filename} ${shared_common_dir}/resources/ogre/caelum/${filename}
 done
 
 
@@ -186,61 +195,19 @@ echo "User media"
 mkdir -p ${user_dir}
 cd ${user_dir}
 
-# #get the gui files
-# mkdir -p ${shared_dir}/gui/cegui
-# mkdir -p ${shared_dir}/gui/icons
-# mkdir -p ${shared_dir}/gui/status
-# cp -a ${original_media}/common/themes/ember/gui/cegui/EmberLook.png ${shared_dir}/gui/cegui
-# cp -a ${original_media}/common/themes/ember/gui/icons/ember.png ${shared_dir}/gui/icons
-# cp -a ${original_media}/common/themes/ember/gui/icons/iconset_mason.png ${shared_dir}/gui/icons
-# cp -a ${original_media}/common/themes/ember/gui/icons/iconset_standard.png ${shared_dir}/gui/icons
-# cp -a ${original_media}/common/themes/ember/gui/status/bars.png ${shared_dir}/gui/status
-# cp -a ${original_media}/common/themes/ember/gui/status/main.png ${shared_dir}/gui/status
-
-
-#get the theme media dir
-#mkdir -p ${current}/${media_dir}/media/common/themes/ember
-#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.png` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
-#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.tga` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
-#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.jpeg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
-#cd ${current}/media/common/themes/ember ; tar cf - `find . -iname \*.jpg` | ( cd ${current}/${media_dir}/media/common/themes/ember; tar xvf -)
-
-# echo "Copying definitions"
-# mkdir -p ${user_dir}/modeldefinitions
-# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modeldef.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.modelmap.xml` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-# cd ${original_media}/modeldefinitions ; tar cf - `find . -iname \*.terrain` | ( cd ${user_dir}/modeldefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-# cd ${original_media}/sounddefinitions ; tar cf - `find . -iname \*.sounddef` | ( cd ${user_dir}/sounddefinitions; tar --keep-newer-files -xvf -) 2>  /dev/null
-
-
-
-
-
-#We don't have any user packs, and this only conflicts with the base.zip archive (i.e. it copies it when it really shouldn't)
-# echo "Copying user media packs"
-# cd ${user_dir}
-# grep -rIE --no-filename "^Zip\[user\]=.*" ${current}/src/components/ogre/resources.cfg | sed -e 's/Zip\[user\]=//g' > user_packs.list
-# cd ${original_media} ; tar cf - `cat ${user_dir}/user_packs.list ` | ( cd ${user_dir}/; tar --keep-newer-files -xvf -) 2>  /dev/null
-
-
-
 cd ${user_dir}
 cp -a ${srcdir}/media/README .
 cp -a ${original_media}/LICENSING.txt .
 cp -a ${original_media}/COPYING.txt .
 
 echo "Cleanup"
-rm -f ${shared_dir}/common_textures.list
-rm -f ${shared_dir}/common_textures_cleaned.list
-rm -f ${shared_dir}/common_meshes.list
-rm -f ${shared_dir}/common_skeletons.list
-rm -f ${shared_dir}/shared_packs.list
-rm -f ${shared_dir}/common_sounds.list
-rm -f ${shared_dir}/media_textures.list
-
-rm -f ${user_dir}/user_packs.list
+unlink ${common_textures_list}
+unlink ${common_textures_cleaned_list}
+unlink ${common_meshes_list}
+unlink ${common_skeletons_list}
+unlink ${shared_packs_list}
+unlink ${common_sounds_list}
+unlink ${media_textures_list}
 
 echo "Done!"
 
