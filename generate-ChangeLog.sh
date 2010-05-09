@@ -1,3 +1,2 @@
 #! /bin/sh
-git log --numstat > ChangeLog
-
+git log --stat --name-only --date=short --abbrev-commit > $1
