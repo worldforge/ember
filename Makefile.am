@@ -47,3 +47,7 @@ docs:
 	@echo "running doxygen..."
 	@doxygen ember.dox
 	@echo "documentation is in doc/."
+	
+dist-hook:
+	@echo "Generating ChangeLog. This requires that you create the dist in the git repository."
+	sh $(top_srcdir)/generate-ChangeLog.sh $(distdir)/ChangeLog
