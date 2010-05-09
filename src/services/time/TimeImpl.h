@@ -45,17 +45,6 @@ public:
     ~TimeImpl();
 
 	/**
-	 *    Gets the local time of the client machine.
-	 * @param year 
-	 * @param month 
-	 * @param day 
-	 * @param hour 
-	 * @param minute 
-	 * @param second 
-	 */
-	void getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second);
-	
-	/**
 	 *    Gets the server time. If we for some reason can't get the server time, local time is returned.
 	 * @param year 
 	 * @param month 

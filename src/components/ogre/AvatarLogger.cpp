@@ -29,7 +29,7 @@
 #include "EmberEntity.h"
 #include "GUIManager.h"
 #include "services/config/ConfigService.h"
-#include "services/time/TimeService.h"
+#include "framework/Time.h"
 
 
 #include "framework/osdir.h"
@@ -64,7 +64,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
 
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
-		*mChatLogger << "Chat Logging Initialized at " <<  Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << std::endl;
+		*mChatLogger << "Chat Logging Initialized at " <<  Ember::Time::getLocalTimeStr() << std::endl;
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
 
 		///wait with connecting until everything has been properly set up
@@ -79,13 +79,13 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 AvatarLogger::~AvatarLogger()
 {
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
-	*mChatLogger << "Chat Logging Ended at " <<  Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << std::endl;
+	*mChatLogger << "Chat Logging Ended at " <<  Ember::Time::getLocalTimeStr() << std::endl;
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
 }
 
 void AvatarLogger::GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity)
 {
-	*mChatLogger << "[" << Ember::EmberServices::getSingleton().getTimeService()->getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << message << std::endl;
+	*mChatLogger << "[" << Ember::Time::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << message << std::endl;
 }
 
 AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)

@@ -28,6 +28,7 @@
 #include "../EmberServices.h"
 #include "../server/ServerService.h"
 #include "framework/LoggingInstance.h"
+#include "framework/Time.h"
 #include <time.h>
 
 #include <Eris/Calendar.h>
@@ -57,20 +58,6 @@ void TimeImpl::initialize()
 	}
 }
 
-
-void TimeImpl::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
-{
-	/// Set some time parameters
-	time_t t = time (&t);
-	struct tm *t2 = localtime (&t);
-	year = t2->tm_year;
-	month = t2->tm_mon;
-	day = t2->tm_mday;
-	hour = t2->tm_hour;
-	minute = t2->tm_min;
-	second = t2->tm_sec;
-}
-
 bool TimeImpl::getServerTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
 	///try to get the server time, and if not possible fall back to the local time
@@ -86,7 +73,7 @@ bool TimeImpl::getServerTime(int& year, int& month, int& day, int& hour, int& mi
 			return true;
 		}
 	}
-	getLocalTime(year, month, day, hour, minute, second);
+	Ember::Time::getLocalTime(year, month, day, hour, minute, second);
 	return false;
 }
 

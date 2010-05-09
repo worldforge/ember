@@ -21,9 +21,8 @@
 
 #include "TimedLog.h"
 
-#include "services/EmberServices.h"
-#include "services/time/TimeService.h"
-#include "framework/LoggingInstance.h"
+#include "Time.h"
+#include "LoggingInstance.h"
 
 namespace Ember
 {
@@ -31,18 +30,18 @@ namespace Ember
 TimedLog::TimedLog(const std::string& logName) :
 	mLogName(logName), mStartMilliseconds(0), mLastReportMilliseconds(0)
 {
-	mStartMilliseconds = EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+	mStartMilliseconds = Ember::Time::currentTimeMillis();
 }
 
 TimedLog::~TimedLog()
 {
-	long currentTime = EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+	long currentTime = Ember::Time::currentTimeMillis();
 	S_LOG_VERBOSE("Ended task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds.");
 }
 
 void TimedLog::report()
 {
-	long currentTime = EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+	long currentTime = Ember::Time::currentTimeMillis();
 	if (mLastReportMilliseconds) {
 		S_LOG_VERBOSE("Reported on task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds, "<< currentTime - mLastReportMilliseconds <<" since last reported time.");
 	} else {
@@ -52,7 +51,7 @@ void TimedLog::report()
 }
 void TimedLog::report(const std::string& reportName)
 {
-	long currentTime = EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+	long currentTime = Ember::Time::currentTimeMillis();
 	if (mLastReportMilliseconds) {
 		S_LOG_VERBOSE("Reported '" << reportName << "' on task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds, "<< currentTime - mLastReportMilliseconds <<" since last reported time.");
 	} else {

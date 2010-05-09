@@ -28,16 +28,6 @@
 //include the EmberServices here, since you always need that anyway whenever you need to access the service
 #include "../EmberServices.h"
 
-#ifdef __WIN32__
-// GetTickCount()
-#include <windows.h>
-#else
-// for gettimeofday and timeval struct
-// TODO: there has to be a better more c++ ish way to do this
-#include <sys/time.h>
-#include <time.h>
-#endif
-
 namespace Ember {
 
 namespace Services {
@@ -69,28 +59,6 @@ public:
      * @param stop code.
      */
     void stop(int code);    
-    
-	/**
-	 *    Gets the local time of the client machine.
-	 * @param year 
-	 * @param month 
-	 * @param day 
-	 * @param hour 
-	 * @param minute 
-	 * @param second 
-	 */
-	void getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second);
-	
-	/**
-	 * utility method to get a string of the current time
-	 */
-	std::string getLocalTimeStr(void);
-
-	/**
-	 * utility that will get the epoc time in milliseconds from the local system
-	 * @return long int value representing current local time in milliseconds
-	 */
-	long currentTimeMillis(void);
 	
 	/**
 	 *    Gets the server time. If we for some reason can't get the server time, local time is returned.

@@ -48,6 +48,7 @@
 
 #include "framework/ConsoleBackend.h"
 #include "framework/StreamLogObserver.h"
+#include "framework/Time.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 
@@ -171,36 +172,35 @@ void Application::registerComponents()
 
 void Application::mainLoopStep(long minMillisecondsPerFrame)
 {
-	Services::Time* timeService = EmberServices::getSingleton().getTimeService();
 	Ember::Input& input(Ember::Input::getSingleton());
 	long currentTimeMillis(0);
 	try {
 		//If we should cap the fps so that each frame should take a minimum amount of time,
 		//we need to see if we should sleep a little.
 		if (minMillisecondsPerFrame > 0) {
-			currentTimeMillis = timeService->currentTimeMillis();
+			currentTimeMillis = Ember::Time::currentTimeMillis();
 			long millisecondSinceLastFrame = currentTimeMillis - mLastTimeInputProcessingEnd;
 			if (millisecondSinceLastFrame < minMillisecondsPerFrame) {
 				input.sleep(minMillisecondsPerFrame - millisecondSinceLastFrame);
 			}
 		}
 		if (mPollEris) {
-			currentTimeMillis = timeService->currentTimeMillis();
+			currentTimeMillis = Ember::Time::currentTimeMillis();
 			EventStartErisPoll.emit((currentTimeMillis - mLastTimeErisPollStart) / 1000.0f);
 			mLastTimeErisPollStart = currentTimeMillis;
 			Eris::PollDefault::poll(1);
 			if (mWorldView)
 				mWorldView->update();
-			currentTimeMillis = timeService->currentTimeMillis();
+			currentTimeMillis = Ember::Time::currentTimeMillis();
 			EventEndErisPoll.emit((currentTimeMillis - mLastTimeErisPollEnd) / 1000.0f);
 			mLastTimeErisPollEnd = currentTimeMillis;
 		}
-		currentTimeMillis = timeService->currentTimeMillis();
+		currentTimeMillis = Ember::Time::currentTimeMillis();
 		EventBeforeInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingStart) / 1000.0f);
 		mLastTimeInputProcessingStart = currentTimeMillis;
 		input.processInput();
 
-		currentTimeMillis = timeService->currentTimeMillis();
+		currentTimeMillis = Ember::Time::currentTimeMillis();
 		EventAfterInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingEnd) / 1000.0f);
 		mLastTimeInputProcessingEnd = currentTimeMillis;
 		mOgreView->renderOneFrame();
@@ -221,7 +221,7 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 
 void Application::mainLoop()
 {
-	long currentTimeMillis = EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+	long currentTimeMillis = Ember::Time::currentTimeMillis();
 	mLastTimeErisPollStart = currentTimeMillis;
 	mLastTimeErisPollEnd = currentTimeMillis;
 	mLastTimeInputProcessingStart = currentTimeMillis;

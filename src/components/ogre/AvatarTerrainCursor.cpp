@@ -29,9 +29,9 @@
 #include "EmberOgrePrerequisites.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
-#include "services/time/TimeService.h"
 #include "EmberOgre.h"
 #include "services/input/Input.h"
+#include "framework/Time.h"
 
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
@@ -85,7 +85,7 @@ namespace EmberOgre {
 			///the mouse hasn't moved, perhaps the camera has?
 			if (mLastCameraPosition != mCamera.getDerivedPosition() || mLastCameraOrientation != mCamera.getDerivedOrientation()) {
 				///ok, the camera has moved, but has enough time elapsed since our last update to warrant a new update?
-				long now = Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis();
+				long now = Ember::Time::currentTimeMillis();
 				long delta = now - mLastUpdated;
 
 				// if enough time has lapsed, we'll update, otherwise we return the last known position
@@ -98,7 +98,7 @@ namespace EmberOgre {
 		if(shouldRecalculate)
 		{
 			// mark update time
-			mLastUpdated = Ember::EmberServices::getSingletonPtr()->getTimeService()->currentTimeMillis();
+			mLastUpdated = Ember::Time::currentTimeMillis();
 			mLastMouseX = mousePosition.xPixelPosition;
 			mLastMouseY = mousePosition.yPixelPosition;
 			mLastCameraPosition = mCamera.getDerivedPosition();

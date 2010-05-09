@@ -28,11 +28,6 @@
 
 #include "TimeImpl.h"
 
-// for the stringstream 
-#include <sstream>
-#include <iomanip>
-
-
 namespace Ember {
 
 namespace Services {
@@ -55,62 +50,7 @@ Service::Status Time::start()
 
 void Time::stop(int code)
 {
-
 }
-
-void Time::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
-{
-	mImpl->getLocalTime(year, month, day, hour, minute, second);
-}
-
-std::string Time::getLocalTimeStr()
-{
-	int year,month,day,hour,minute,second;
-	std::stringstream s;
-	
-	mImpl->getLocalTime(year, month, day, hour, minute, second);
-	
-	// YYYY-MM-DD HH:MM:SS
-	// TODO: see if there is a better way to do this
-	s.fill('0');
-	s << std::setw(4) << (1900+year);
-	s << "-";
-	s << std::setw(2) << month;
-	s << "-";
-	s << std::setw(2) << day;
-	s << " ";
-	s << std::setw(2) << hour;
-	s << ":";
-	s << std::setw(2) << minute;
-	s << ":";
-	s << std::setw(2) << second;
-			
-	return s.str();
-		
-}
-
-/*
- *     Almost precision time acquisition
- * NOTE: there is no reliable way to get time in milliseconds reliably cross platform
- */
-long Time::currentTimeMillis(void)
-{
-	long ttime;
-
-	#ifdef __WIN32__
-	  // ttime set to milliseconds *since midnight*
-	  ttime = (long)GetTickCount();
-	#else
-	  // tv_usec is microseconds
-	  // tv_sec  is seconds
-	  // ttime is set to epoc milliseconds
-	  struct timeval detail_time;	
-	  gettimeofday(&detail_time,NULL);
-	  ttime = (long)((detail_time.tv_usec/1000) + (detail_time.tv_sec*1000));
-	#endif
-	return( ttime );
-}
-
 
 bool Time::getServerTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
