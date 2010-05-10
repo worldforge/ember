@@ -17,7 +17,7 @@ dist_icon_DATA = ember.png
 docdir = $(datadir)/doc/ember-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS NEWS
 
-EXTRA_DIST = autogen.sh Ember-Info.plist Ember.xcodeproj/project.pbxproj
+EXTRA_DIST = autogen.sh Ember-Info.plist Ember.xcodeproj/project.pbxproj ChangeLog-CVS generate-ChangeLog.sh
 
 devmedia:
 	echo "I will now use rsync to update the development media from amber.worldforge.org."
@@ -49,5 +49,4 @@ docs:
 	@echo "documentation is in doc/."
 	
 dist-hook:
-	@echo "Generating ChangeLog by appending the old CVS ChaneLog to the one generated from git. This requires that you create the dist in the git repository."
-	sh $(top_srcdir)/generate-ChangeLog.sh > $(distdir)/ChangeLog && cat $(top_srcdir)/ChangeLog-CVS >> $(distdir)/ChangeLog 
+	sh $(top_srcdir)/generate-ChangeLog.sh $(top_srcdir) $(distdir)
