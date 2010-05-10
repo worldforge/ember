@@ -49,5 +49,5 @@ docs:
 	@echo "documentation is in doc/."
 	
 dist-hook:
-	@echo "Generating ChangeLog. This requires that you create the dist in the git repository."
-	sh $(top_srcdir)/generate-ChangeLog.sh $(distdir)/ChangeLog
+	@echo "Generating ChangeLog by appending the old CVS ChaneLog to the one generated from git. This requires that you create the dist in the git repository."
+	sh $(top_srcdir)/generate-ChangeLog.sh > $(distdir)/ChangeLog && cat $(top_srcdir)/ChangeLog-CVS >> $(distdir)/ChangeLog 
