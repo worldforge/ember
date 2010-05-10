@@ -29,8 +29,8 @@
 // for gettimeofday and timeval struct
 // TODO: there has to be a better more c++ ish way to do this
 #include <sys/time.h>
-#include <time.h>
 #endif
+#include <time.h>
 
 // for the stringstream
 #include <sstream>

@@ -29,7 +29,6 @@
 #include "../server/ServerService.h"
 #include "framework/LoggingInstance.h"
 #include "framework/Time.h"
-#include <time.h>
 
 #include <Eris/Calendar.h>
 
