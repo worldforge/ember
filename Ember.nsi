@@ -8,10 +8,10 @@
 ;--------------------------------
 
 ; The name of the installer
-Name "Ember-0.5.3"
+Name "Ember-0.5.8"
 
 ; The file to write
-OutFile "Ember-0.5.3.exe"
+OutFile "Ember-0.5.8.exe"
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\Worldforge\Ember
@@ -39,11 +39,11 @@ Section "Ember (required)"
 
   SectionIn RO
 
-  SetOutPath $APPDATA\Ember
-  File /oname=ogre.cfg etc\ember\ogre.cfg 
+;  SetOutPath $APPDATA\Ember
+;  File /oname=ogre.cfg etc\ember\ogre.cfg 
 
-  SetOutPath $APPDATA\Ember\ember-media-0.5.3
-  File /r media\user\*.*
+;  SetOutPath $APPDATA\Ember\ember-media-0.5.3
+;  File /r media\user\*.*
   
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
@@ -72,7 +72,7 @@ Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\Ember"
   CreateShortCut "$SMPROGRAMS\Ember\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Ember\Ember.lnk" "$INSTDIR\Ember.exe" "" "$INSTDIR\ember.ico"
+  CreateShortCut "$SMPROGRAMS\Ember\Ember.lnk" "$INSTDIR\bin\ember.bin.exe" "" "$INSTDIR\bin\ember.bin.exe"
   
 SectionEnd
 
