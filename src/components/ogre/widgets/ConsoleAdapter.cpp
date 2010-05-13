@@ -50,8 +50,9 @@ bool ConsoleAdapter::consoleInputBox_KeyDown(const CEGUI::EventArgs& args)
 	const CEGUI::KeyEventArgs& keyargs = static_cast<const CEGUI::KeyEventArgs&>(args);
 	if (keyargs.scancode == CEGUI::Key::Return || keyargs.scancode == CEGUI::Key::NumpadEnter) {
 		mReturnKeyDown = true;
+		return true;
 	}
-	return true;
+	return false;
 }
 
 bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
