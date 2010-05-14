@@ -105,7 +105,6 @@ namespace EmberOgre {
 	
 	const Ogre::Pass* EmberPagingSceneManager::deriveShadowCasterPass(const Ogre::Pass* pass)
 	{
-		return Ogre::SceneManager::deriveShadowCasterPass(pass);
 		///This behaves very much like the original method found in Ogre::SceneManager, with the exception that we'll copy parameters from the original pass even to technique specific custom shadow material (whereas the superclass method would only to that for the scene manager general material)
 		if (isShadowTechniqueTextureBased())
 		{
