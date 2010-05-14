@@ -166,6 +166,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 					}
 					else
 					{
+						//If there are multiple matches we need to find the lowest common denominator. We'll do this by iterating through all characters and then checking with all the possible commands if they match that prefix, until we get a false.
 						std::set< std::string >::const_iterator iSelected(commands.begin());
 						std::set< std::string >::const_iterator iCommand(commands.begin());
 						std::string sCommonPrefix(*iCommand);
@@ -178,14 +179,14 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 							{
 								iSelected = iCommand;
 							}
-							
+
 							std::string::size_type i(0);
-							
+
 							while((i < sCommonPrefix.length()) && (i < (*iCommand).length()))
 							{
 								if(sCommonPrefix[i] != (*iCommand)[i])
 								{
-									return true;
+									break;
 								}
 								++i;
 							}
