@@ -556,7 +556,8 @@ function ModelEdit.updateModelContentList()
 		
 		local treeItem = EmberOgre.Gui.ColouredTreeItem:new(name, table.getn(ModelEdit.modelContentsItems)) 
 		treeItem:toggleIsOpen()
-		treeItem:setTooltipText("Mesh '" .. name .. "'")
+		--We need to use a CEGUI.String instead of a regular string as the CEGUI lua bindings for the TreeItem specifically use "String" rather than "string" (which should probably be considered a bug).
+		treeItem:setTooltipText(CEGUI.String("Mesh '" .. name .. "'"))
 		ModelEdit.modelcontentstree:addItem(treeItem)
 		
 		--add all parts
