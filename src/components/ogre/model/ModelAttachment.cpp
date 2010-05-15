@@ -124,7 +124,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 				return 0;
 			}
 		} else {
-			nodeProvider = mNodeProvider->createChildProvider();
+			nodeProvider = mNodeProvider->createChildProvider(modelRepresentation ? &modelRepresentation->getModel() : 0);
 		}
 		if (modelRepresentation) {
 			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);

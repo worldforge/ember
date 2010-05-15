@@ -87,10 +87,12 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//		return new NodeAttachment(*currentNodeAttachment, *this);
 	//	}
 	//	else {
+
+	//If there's a model representation available, use a "ModelAttachment" instance to attach to it, otherwise just use a regular NodeAttachment.
 	if (modelRepresentation) {
 		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
 	} else {
-		return new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+		return new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider());
 	}
 	//	}
 }
