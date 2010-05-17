@@ -51,6 +51,8 @@ EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int widt
 
 EntityCEGUITexture::~EntityCEGUITexture()
 {
+	CEGUI::ImagesetManager::getSingleton().destroy(mImageSet->getName());
+	GUIManager::getSingleton().getGuiRenderer()->destroyTexture(*mCeguiTexture);
 }
 
 

@@ -315,6 +315,8 @@ private:
 	*/
 	CameraPositioningMode mCameraPositionMode;
 
+	bool mTextureOwned;
+
 };
 
 inline Ogre::Real SimpleRenderContext::getDefaultCameraDistance() const

@@ -38,6 +38,7 @@
 #include <OgreRenderTexture.h>
 #include <OgreViewport.h>
 #include <OgreTextureManager.h>
+#include <OgreTexture.h>
 
 namespace EmberOgre {
 
@@ -59,7 +60,7 @@ void SimpleRenderContextResourceLoader::loadResource (Ogre::Resource *resource)
 
 
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, int height)
-: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER)
+: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER), mTextureOwned(true)
 {
 
 	setupScene(prefix);
@@ -67,7 +68,7 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, i
 }
 
 SimpleRenderContext::SimpleRenderContext(const std::string& prefix, Ogre::TexturePtr texture)
-: mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black)
+: mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mTextureOwned(false)
 {
 
 	setupScene(prefix);
@@ -76,6 +77,9 @@ SimpleRenderContext::SimpleRenderContext(const std::string& prefix, Ogre::Textur
 
 SimpleRenderContext::~SimpleRenderContext()
 {
+	if (mTextureOwned) {
+		Ogre::TextureManager::getSingleton().remove(mTexture->getHandle());
+	}
 	if (mCamera) {
 		mSceneManager->destroyCamera(mCamera);
 	}

@@ -40,6 +40,7 @@ namespace Gui
 {
 
 class EntityCEGUITexture;
+class CEGUIWindowUpdater;
 
 /**
  Class used for rendering a single Ogre::MovableObject to a EntityCEGUITexture
@@ -244,6 +245,13 @@ protected:
 
 	Ogre::Entity* mAxisEntity;
 	Ogre::SceneNode* mAxesNode;
+
+	/**
+	 * @brief Handles the invalidation of the Window whenever the render texture is updated.
+	 *
+	 * @note This class shouldn't be needed as there's a way with CEGUI 0.7 now to let CEGUI directly use a Ogre render texture.
+	 */
+	CEGUIWindowUpdater* mWindowUpdater;
 
 };
 }

@@ -42,19 +42,40 @@
 #include <OgreEntity.h>
 #include <OgreRenderTexture.h>
 #include <OgreTexture.h>
+#include <OgreRenderTargetListener.h>
 
 using namespace Ember;
 namespace EmberOgre {
 namespace Gui {
 
-MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
-: mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0)
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Responsible for invalidating a CEGUI Window whenever something is drawn to a viewport which the window is showing.
+ *
+ * This class shouldn't be needed though as with CEGUI 0.7 there's a way to make CEGUI directly use an Ogre render texture.
+ */
+class CEGUIWindowUpdater : public Ogre::RenderTargetListener
 {
-	std::string name(image->getName().c_str());
+protected:
+	CEGUI::Window& mWindow;
+public:
+	CEGUIWindowUpdater(CEGUI::Window& window) : mWindow(window)
+	{
+	}
+
+	virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+	{
+		mWindow.invalidate();
+	}
+};
+
+MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
+: mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
+{
 	int width = static_cast<int>(image->getPixelSize().d_width);
 	int height = static_cast<int>(image->getPixelSize().d_height);
 	if (width != 0 && height != 0) {
-		mTexture = new EntityCEGUITexture(name, width, height);
+		mTexture = new EntityCEGUITexture(image->getName().c_str(), width, height);
 		///most models are rotated away from the camera, so as a convenience we'll rotate the node
 		//mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
 
@@ -66,6 +87,8 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 
 		/// Register this as a frame listener
 		Ogre::Root::getSingleton().addFrameListener(this);
+		mWindowUpdater = new CEGUIWindowUpdater(*mImage);
+		mTexture->getRenderContext()->getRenderTexture()->addListener(mWindowUpdater);
 	} else {
 		throw Ember::Exception("Image dimension cannot be 0.");
 	}
@@ -74,9 +97,15 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 
 MovableObjectRenderer::~MovableObjectRenderer()
 {
-	if (mTexture) {
-		delete mTexture;
+	if (mImage) {
+		mImage->setProperty("Image", "");
 	}
+	if (mTexture && mWindowUpdater) {
+		mTexture->getRenderContext()->getRenderTexture()->removeListener(mWindowUpdater);
+	}
+
+	delete mTexture;
+	delete mWindowUpdater;
 	/// Register this as a frame listener
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
