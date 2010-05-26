@@ -66,8 +66,8 @@ function debugObject(object)
 end
 
 --creates a connection between the supplied event and a function, stores the connection object in the supplied table and returns it
-function connect(connectorTable, event, functionName)
-	local connector = EmberOgre.LuaConnector:new_local(event):connect(functionName)
+function connect(connectorTable, event, functionName, selfRef)
+	local connector = EmberOgre.LuaConnector:new_local(event):connect(functionName, selfRef)
 	if connectorTable ~= nil then
 		table.insert(connectorTable, connector)
 	end
