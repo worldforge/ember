@@ -80,7 +80,7 @@ static int tolua_Helpers_EmberOgre_LuaConnector_connect00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertype(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
@@ -88,11 +88,12 @@ static int tolua_Helpers_EmberOgre_LuaConnector_connect00(lua_State* tolua_S)
  {
   EmberOgre::LuaConnector* self = (EmberOgre::LuaConnector*)  tolua_tousertype(tolua_S,1,0);
   lua_Object luaMethod = ((lua_Object)  tolua_tovalue(tolua_S,2,0));
+  lua_Object selfIndex = ((lua_Object)  tolua_tovalue(tolua_S,3,LUA_NOREF));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'connect'",NULL);
 #endif
   {
-   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  self->connect(luaMethod);
+   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  self->connect(luaMethod,selfIndex);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
   }
  }
@@ -113,18 +114,19 @@ static int tolua_Helpers_EmberOgre_LuaConnector_connect01(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
      !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
   goto tolua_lerror;
  else
  {
   EmberOgre::LuaConnector* self = (EmberOgre::LuaConnector*)  tolua_tousertype(tolua_S,1,0);
   const std::string luaMethod = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  lua_Object selfIndex = ((lua_Object)  tolua_tovalue(tolua_S,3,LUA_NOREF));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'connect'",NULL);
 #endif
   {
-   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  self->connect(luaMethod);
+   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  self->connect(luaMethod,selfIndex);
    tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
    tolua_pushcppstring(tolua_S,(const char*)luaMethod);
   }
@@ -161,6 +163,39 @@ static int tolua_Helpers_EmberOgre_LuaConnector_disconnect00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'disconnect'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSelf of class  EmberOgre::LuaConnector */
+#ifndef TOLUA_DISABLE_tolua_Helpers_EmberOgre_LuaConnector_setSelf00
+static int tolua_Helpers_EmberOgre_LuaConnector_setSelf00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::LuaConnector",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::LuaConnector* self = (EmberOgre::LuaConnector*)  tolua_tousertype(tolua_S,1,0);
+  lua_Object selfIndex = ((lua_Object)  tolua_tovalue(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSelf'",NULL);
+#endif
+  {
+   EmberOgre::LuaConnector* tolua_ret = (EmberOgre::LuaConnector*)  self->setSelf(selfIndex);
+   tolua_pushusertype(tolua_S,(void*)tolua_ret,"EmberOgre::LuaConnector");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSelf'.",&tolua_err);
  return 0;
 #endif
 }
@@ -1837,6 +1872,7 @@ TOLUA_API int tolua_Helpers_open (lua_State* tolua_S)
     tolua_function(tolua_S,"connect",tolua_Helpers_EmberOgre_LuaConnector_connect00);
     tolua_function(tolua_S,"connect",tolua_Helpers_EmberOgre_LuaConnector_connect01);
     tolua_function(tolua_S,"disconnect",tolua_Helpers_EmberOgre_LuaConnector_disconnect00);
+    tolua_function(tolua_S,"setSelf",tolua_Helpers_EmberOgre_LuaConnector_setSelf00);
     tolua_function(tolua_S,"new",tolua_Helpers_EmberOgre_LuaConnector_new00);
     tolua_function(tolua_S,"new_local",tolua_Helpers_EmberOgre_LuaConnector_new00_local);
     tolua_function(tolua_S,".call",tolua_Helpers_EmberOgre_LuaConnector_new00_local);

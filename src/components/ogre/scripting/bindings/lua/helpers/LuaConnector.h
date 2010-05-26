@@ -116,6 +116,13 @@ public:
 	 */
 	void disconnect();
 
+	/**
+	 * @brief Sets a "self" index, which is a table which will be prepended as an argument to the call into Lua.
+	 *
+	 * @param selfIndex Index of a lua table.
+	 */
+	void setSelfIndex(int selfIndex);
+
 	template<typename Treturn, typename T0, typename T1, typename T2, typename T3> Treturn callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3);
 
 protected:
@@ -144,6 +151,13 @@ protected:
 	 The connection.
 	 */
 	sigc::connection mConnection;
+
+	/**
+	 * @brief An optional "self" index, which is a table which will be prepended to any lua call.
+	 *
+	 * This is useful for providing object oriented features to Lua.
+	 */
+	int mLuaSelfIndex;
 
 	template<typename Treturn> Treturn returnValueFromLua(lua_State* state);
 	/*			void returnValueFromLua(lua_State* state, bool& returnValueHolder);
@@ -236,9 +250,23 @@ private:
 class LuaConnector
 {
 public:
+
+	/**
+	 * @brief Sets the common lua state.
+	 *
+	 * @param state The common lua state.
+	 */
 	static void setState(lua_State* state);
+
+	/**
+	 * @brief Gets the common lua state.
+	 *
+	 * @return The common lua state.
+	 */
 	static lua_State* getState();
+
 	static lua_State* sState;
+
 	template<typename T> static void pushValue(T theValue, const std::string& luaTypename);
 	static void pushValue(const std::string& theValue, const std::string& luaTypename);
 	static void pushValue(const float& theValue, const std::string& luaTypename);
@@ -299,29 +327,47 @@ public:
 	~LuaConnector();
 
 	/**
-	 *    Connects to the named lua method.
+	 * @brief Connects to the named lua method.
+	 *
 	 * @param luaMethod The fully qualified name of the method.
-	 * @return
+	 * @param selfIndex An optional lua table index to be used as a "self" parameter.
+	 *
+	 * @return This instance.
 	 */
-	LuaConnector* connect(const std::string& luaMethod);
+	LuaConnector* connect(const std::string& luaMethod, lua_Object selfIndex = LUA_NOREF);
 
 	/**
-	 *    Connects to the lua method.
+	 * @brief Connects to the lua method.
+	 *
 	 * @param luaMethod The lua method.
-	 * @return
+	 * @param selfIndex An optional lua table index to be used as a "self" parameter.
+	 *
+	 * @return This instance.
 	 */
-	LuaConnector* connect(int luaMethod);
+	LuaConnector* connect(lua_Object luaMethod, lua_Object selfIndex = LUA_NOREF);
 
 	/**
-	 Disconnects from the signal.
+	 * @brief Disconnects from the signal.
 	 */
 	void disconnect();
 
+	/**
+	 * @brief Sets a "self" reference which will be prepended to any lua call.
+	 *
+	 * @param selfIndex The lua index of the self reference.
+	 */
+	LuaConnector* setSelf(int selfIndex);
+
 private:
+
+	/**
+	 * @brief The internal connector which will handle the actual lua binding.
+	 */
 	LuaConnectors::ConnectorBase* mConnector;
 
 	/**
-	 * Checks that the signal submitted isn't null. If so, mConnector will be set to null and no connection will occur.
+	 * @brief Checks that the signal submitted isn't null. If so, mConnector will be set to null and no connection will occur.
+	 *
 	 * @param signal A pointer to a signal.
 	 * @return True if the supplied signal isn't null.
 	 */

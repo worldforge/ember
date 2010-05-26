@@ -51,12 +51,12 @@ namespace LuaConnectors
 {
 
 ConnectorBase::ConnectorBase() :
-	mLuaFunctionIndex(LUA_NOREF)
+	mLuaFunctionIndex(LUA_NOREF), mLuaSelfIndex(LUA_NOREF)
 {
 }
 
 ConnectorBase::ConnectorBase(const LuaTypeStore& luaTypeNames) :
-	mLuaTypeNames(luaTypeNames), mLuaFunctionIndex(LUA_NOREF)
+	mLuaTypeNames(luaTypeNames), mLuaFunctionIndex(LUA_NOREF), mLuaSelfIndex(LUA_NOREF)
 {
 }
 
@@ -85,6 +85,12 @@ void ConnectorBase::pushNamedFunction(lua_State* state)
 	Lua::LuaHelper::pushNamedFunction(state, mLuaMethod);
 }
 
+void ConnectorBase::setSelfIndex(int selfIndex)
+{
+	mLuaSelfIndex = selfIndex;
+}
+
+
 //template<> void ConnectorBase::callLuaMethod(std::string t0, std::string t1, Empty t2, Empty t3);
 template<typename Treturn, typename T0, typename T1, typename T2, typename T3> Treturn ConnectorBase::callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3)
 {
@@ -100,6 +106,12 @@ template<typename Treturn, typename T0, typename T1, typename T2, typename T3> T
 
 		///get the lua function
 		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
+
+		//Check if there's a "self" table specified. If so, prepend that as the first argument and increase the number of arguments counter.
+		if (mLuaSelfIndex != LUA_NOREF) {
+			lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaSelfIndex);
+			numberOfArguments++;
+		}
 
 		LuaTypeStore::const_iterator I = mLuaTypeNames.begin();
 		if (I != mLuaTypeNames.end())
@@ -140,10 +152,7 @@ template<typename Treturn, typename T0, typename T1, typename T2, typename T3> T
 
 	} catch (const CEGUI::String& str) {
 		lua_settop(state, top);
-		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: "<<mLuaMethod<<"\n"<<str.c_str());
-	} catch (const CEGUI::Exception& ex) {
-		lua_settop(state, top);
-		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: "<<mLuaMethod<<"\n"<<ex.getMessage().c_str());
+		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: " << mLuaMethod<<".\n" << str.c_str());
 	} catch (const std::exception& ex) {
 		lua_settop(state, top);
 		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler '" << mLuaMethod << "'." << ex);
@@ -383,21 +392,23 @@ lua_State* LuaConnector::getState()
 	return sState;
 }
 
-LuaConnector* LuaConnector::connect(const std::string& luaMethod)
+LuaConnector* LuaConnector::connect(const std::string& luaMethod, lua_Object selfIndex)
 {
 	if (!mConnector) {
 		S_LOG_WARNING("Tried to connect the lua method '" << luaMethod << "' to a non existent signal.");
 	} else {
+		setSelf(selfIndex);
 		mConnector->connect(luaMethod);
 	}
 	return this;
 }
 
-LuaConnector* LuaConnector::connect(int luaMethod)
+LuaConnector* LuaConnector::connect(lua_Object luaMethod, lua_Object selfIndex)
 {
 	if (!mConnector) {
 		S_LOG_WARNING("Tried to connect lua method to a non existent signal.");
 	} else {
+		setSelf(selfIndex);
 		///we need to get the correct lua function
 		int luaType = lua_type(sState, -1);
 		if (luaType == LUA_TFUNCTION) {
@@ -417,6 +428,20 @@ void LuaConnector::disconnect()
 		mConnector->disconnect();
 	}
 }
+
+LuaConnector* LuaConnector::setSelf(int selfIndex)
+{
+	if (mConnector) {
+		///we need to get the correct lua table
+		int luaType = lua_type(sState, -1);
+		int index = luaL_ref(sState, LUA_REGISTRYINDEX);
+		if (luaType == LUA_TTABLE) {
+			mConnector->setSelfIndex(index);
+		}
+	}
+	return this;
+}
+
 
 bool LuaConnector::checkSignalExistence(void* signal)
 {

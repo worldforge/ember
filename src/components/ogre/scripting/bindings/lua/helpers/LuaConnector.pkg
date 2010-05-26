@@ -3,25 +3,38 @@ namespace EmberOgre {
 class LuaConnector{
 	
 	/**
-	 *    Connects to the lua method.
+	 * @brief Connects to the lua method.
+	 *
 	 * @param luaMethod The lua method.
-	 * @return 
+	 * @param selfIndex An optional lua table index to be used as a "self" parameter.
+	 *
+	 * @return This instance.
 	 */
-	LuaConnector* connect(lua_Object luaMethod);
+	LuaConnector* connect(lua_Object luaMethod, lua_Object selfIndex = LUA_NOREF);
 	
 	/**
-	 *    Connects to the named lua method.
+	 * @brief Connects to the named lua method.
+	 *
 	 * @param luaMethod The fully qualified name of the method.
-	 * @return 
+	 * @param selfIndex An optional lua table index to be used as a "self" parameter.
+	 *
+	 * @return This instance.
 	 */
-	LuaConnector* connect(const std::string& luaMethod);
-	
+	LuaConnector* connect(const std::string& luaMethod, lua_Object selfIndex = LUA_NOREF);
+
 		
 	/**
 	Disconnects from the signal.
 	*/
 	void disconnect();
-
+	
+	/**
+	 * @brief Sets a "self" reference which will be prepended to any lua call.
+	 *
+	 * @param selfIndex The lua index of the self reference.
+	 */
+	LuaConnector* setSelf(lua_Object selfIndex);
+ 	
  	LuaConnector(sigc::signal<void>& signal);
     LuaConnector(sigc::signal<void, const std::string&, EmberOgre::EmberEntity*>& signal);
     LuaConnector(sigc::signal<void, Eris::Connection*>& signal);
