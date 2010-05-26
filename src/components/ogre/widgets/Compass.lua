@@ -1,14 +1,5 @@
 Compass = {
-connectors={},
-map = nil,
-widget = nil,
-renderImage = nil,
-helper = nil,
-previousPosX = 0,
-previousPosY = 0,
-updateFrameCountDown = -1, --this is used for triggering delayed render updates. If it's more than zero, it's decreased each frame until it's zero, and a render is then carried out. If it's below zero nothing is done.
-zoomInButton = nil,
-anchor = nil
+	connectors={}
 }
 
 function Compass:Refresh_Clicked(args)
@@ -77,17 +68,32 @@ function Compass:CreatedAvatarEntity(avatarEntity)
 	connect(self.connectors, guiManager.EventFrameStarted, self.framestarted, self)
 end
 
-function Compass:buildWidget(terrainManager)
-	self.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new_local()
-
-	self.helper = EmberOgre.Gui.Compass:new_local(self.helperImpl)
-	self.map = self.helper:getMap()
+function Compass.buildWidget(terrainManager)
+	compass = {
+		connectors={},
+		map = nil,
+		widget = nil,
+		renderImage = nil,
+		helper = nil,
+		previousPosX = 0,
+		previousPosY = 0,
+		updateFrameCountDown = -1, --this is used for triggering delayed render updates. If it's more than zero, it's decreased each frame until it's zero, and a render is then carried out. If it's below zero nothing is done.
+		zoomInButton = nil,
+		anchor = nil
+	}
+	setmetatable(compass, {__index = Compass})
 	
-	self:buildCEGUIWidget()
+
+	compass.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new_local()
+
+	compass.helper = EmberOgre.Gui.Compass:new_local(compass.helperImpl)
+	compass.map = compass.helper:getMap()
+	
+	compass:buildCEGUIWidget()
 	
 	--don't show the compass here, instead wait until we've gotten some terrain (by listening 
-	connect(self.connectors, emberOgre.EventCreatedAvatarEntity, self.CreatedAvatarEntity, self)
-	connect(self.connectors, terrainManager.EventTerrainPageGeometryUpdated, self.TerrainPageGeometryUpdated, self)
+	connect(compass.connectors, emberOgre.EventCreatedAvatarEntity, compass.CreatedAvatarEntity, compass)
+	connect(compass.connectors, terrainManager.EventTerrainPageGeometryUpdated, compass.TerrainPageGeometryUpdated, compass)
 
 end
 
@@ -123,4 +129,4 @@ function Compass:buildCEGUIWidget()
 	self.widget:hide()
 end
 
-connect(Compass.connectors, emberOgre.EventTerrainManagerCreated, Compass.buildWidget, Compass)
+connect(Compass.connectors, emberOgre.EventTerrainManagerCreated, Compass.buildWidget)
