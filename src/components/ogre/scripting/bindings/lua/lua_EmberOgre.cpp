@@ -2981,6 +2981,39 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: destroyWidget of class  EmberOgre::GUIManager */
+#ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_GUIManager_destroyWidget00
+static int tolua_EmberOgre_EmberOgre_GUIManager_destroyWidget00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"EmberOgre::GUIManager",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"EmberOgre::Gui::Widget",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  EmberOgre::GUIManager* self = (EmberOgre::GUIManager*)  tolua_tousertype(tolua_S,1,0);
+  EmberOgre::Gui::Widget* widget = ((EmberOgre::Gui::Widget*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'destroyWidget'",NULL);
+#endif
+  {
+   self->destroyWidget(widget);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'destroyWidget'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getDefaultScheme of class  EmberOgre::GUIManager */
 #ifndef TOLUA_DISABLE_tolua_EmberOgre_EmberOgre_GUIManager_getDefaultScheme00
 static int tolua_EmberOgre_EmberOgre_GUIManager_getDefaultScheme00(lua_State* tolua_S)
@@ -22291,6 +22324,36 @@ static int tolua_set_EmberOgre__EmberOgre_EventTerrainManagerCreated(lua_State* 
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: EventTerrainManagerDestroyed of class  EmberOgre::EmberOgre */
+#ifndef TOLUA_DISABLE_tolua_get_EmberOgre__EmberOgre_EventTerrainManagerDestroyed
+static int tolua_get_EmberOgre__EmberOgre_EventTerrainManagerDestroyed(lua_State* tolua_S)
+{
+  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventTerrainManagerDestroyed'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->EventTerrainManagerDestroyed,"sigc::signal<void>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: EventTerrainManagerDestroyed of class  EmberOgre::EmberOgre */
+#ifndef TOLUA_DISABLE_tolua_set_EmberOgre__EmberOgre_EventTerrainManagerDestroyed
+static int tolua_set_EmberOgre__EmberOgre_EventTerrainManagerDestroyed(lua_State* tolua_S)
+{
+  EmberOgre::EmberOgre* self = (EmberOgre::EmberOgre*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'EventTerrainManagerDestroyed'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->EventTerrainManagerDestroyed = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: EventMovementControllerCreated of class  EmberOgre::EmberOgre */
 #ifndef TOLUA_DISABLE_tolua_get_EmberOgre__EmberOgre_EventMovementControllerCreated
 static int tolua_get_EmberOgre__EmberOgre_EventMovementControllerCreated(lua_State* tolua_S)
@@ -22478,6 +22541,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"createWindow",tolua_EmberOgre_EmberOgre_GUIManager_createWindow01);
     tolua_function(tolua_S,"createWidget",tolua_EmberOgre_EmberOgre_GUIManager_createWidget00);
     tolua_function(tolua_S,"createWidget",tolua_EmberOgre_EmberOgre_GUIManager_createWidget01);
+    tolua_function(tolua_S,"destroyWidget",tolua_EmberOgre_EmberOgre_GUIManager_destroyWidget00);
     tolua_function(tolua_S,"getDefaultScheme",tolua_EmberOgre_EmberOgre_GUIManager_getDefaultScheme00);
     tolua_function(tolua_S,"getEntityPickListener",tolua_EmberOgre_EmberOgre_GUIManager_getEntityPickListener00);
     tolua_function(tolua_S,"getIconManager",tolua_EmberOgre_EmberOgre_GUIManager_getIconManager00);
@@ -23980,6 +24044,7 @@ TOLUA_API int tolua_EmberOgre_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"EventGUIManagerInitialized",tolua_get_EmberOgre__EmberOgre_EventGUIManagerInitialized,tolua_set_EmberOgre__EmberOgre_EventGUIManagerInitialized);
     tolua_variable(tolua_S,"EventMotionManagerCreated",tolua_get_EmberOgre__EmberOgre_EventMotionManagerCreated,tolua_set_EmberOgre__EmberOgre_EventMotionManagerCreated);
     tolua_variable(tolua_S,"EventTerrainManagerCreated",tolua_get_EmberOgre__EmberOgre_EventTerrainManagerCreated,tolua_set_EmberOgre__EmberOgre_EventTerrainManagerCreated);
+    tolua_variable(tolua_S,"EventTerrainManagerDestroyed",tolua_get_EmberOgre__EmberOgre_EventTerrainManagerDestroyed,tolua_set_EmberOgre__EmberOgre_EventTerrainManagerDestroyed);
     tolua_variable(tolua_S,"EventMovementControllerCreated",tolua_get_EmberOgre__EmberOgre_EventMovementControllerCreated,tolua_set_EmberOgre__EmberOgre_EventMovementControllerCreated);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
