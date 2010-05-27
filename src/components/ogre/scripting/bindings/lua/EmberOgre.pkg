@@ -163,7 +163,12 @@ class EmberOgre
 	
 	
 	sigc::signal<void, EmberOgre::Terrain::TerrainManager&> EventTerrainManagerCreated;
-	
+
+	/**
+	 * @brief Emitted after the TerrainManager has been destroyed.
+	 */
+	sigc::signal<void> EventTerrainManagerDestroyed;
+		
 	sigc::signal<void> EventMovementControllerCreated;
 	
 	

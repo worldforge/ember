@@ -296,27 +296,32 @@ public:
 	Ogre::SceneNode* getRootSceneNode() const;
 
 	/**
-	 * @brief Emitted after the GUIManager has been created, but not yet initialized
+	 * @brief Emitted after the GUIManager has been created, but not yet initialized.
 	 */
 	sigc::signal<void, GUIManager&> EventGUIManagerCreated;
 
 	/**
-	 * @brief Emitted after the GUIManager has been initilized
+	 * @brief Emitted after the GUIManager has been initialized.
 	 */
 	sigc::signal<void, GUIManager&> EventGUIManagerInitialized;
 
 	/**
-	 * @brief Emitted after the Motion has been created
+	 * @brief Emitted after the Motion has been created.
 	 */
 	sigc::signal<void, MotionManager&> EventMotionManagerCreated;
 
 	/**
-	 * @brief Emitted after the TerrainManager has been created
+	 * @brief Emitted after the TerrainManager has been created.
 	 */
 	sigc::signal<void, Terrain::TerrainManager&> EventTerrainManagerCreated;
 
 	/**
-	 * @brief Emitted after the MovementController has been created
+	 * @brief Emitted after the TerrainManager has been destroyed.
+	 */
+	sigc::signal<void> EventTerrainManagerDestroyed;
+
+	/**
+	 * @brief Emitted after the MovementController has been created.
 	 */
 	sigc::signal<void> EventMovementControllerCreated;
 

@@ -78,6 +78,9 @@ WorldEmberEntity::~WorldEmberEntity()
 	delete mFoliage;
 	delete mEnvironment;
 	delete mTerrainManager;
+	if (mTerrainManager) {
+		EmberOgre::getSingleton().EventTerrainManagerDestroyed.emit();
+	}
 }
 
 void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
