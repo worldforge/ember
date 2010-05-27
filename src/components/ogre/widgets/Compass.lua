@@ -58,7 +58,7 @@ function Compass:TerrainPageGeometryUpdated(page)
 end
 
 function Compass:initialize()
-	self.anchor = EmberOgre.Gui.CompassCameraAnchor:new_local(self.helper, emberOgre:getMainOgreCamera())
+	self.anchor = EmberOgre.Gui.CompassCameraAnchor:new(self.helper, emberOgre:getMainOgreCamera())
 	if self.widget ~= nil then
 		self.widget:show()
 	end
@@ -66,6 +66,15 @@ end
 
 function Compass:CreatedAvatarEntity(avatarEntity)
 	connect(self.connectors, guiManager.EventFrameStarted, self.framestarted, self)
+end
+
+function Compass:shutdown()
+	guiManager:destroyWidget(self.widget)
+	self.helper:delete()
+	self.helperImpl:delete()
+	if self.anchor ~= nil then
+		self.anchor:delete()
+	end
 end
 
 function Compass.buildWidget(terrainManager)
@@ -84,9 +93,9 @@ function Compass.buildWidget(terrainManager)
 	setmetatable(compass, {__index = Compass})
 	
 
-	compass.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new_local()
+	compass.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new()
 
-	compass.helper = EmberOgre.Gui.Compass:new_local(compass.helperImpl)
+	compass.helper = EmberOgre.Gui.Compass:new(compass.helperImpl)
 	compass.map = compass.helper:getMap()
 	
 	compass:buildCEGUIWidget()
@@ -94,6 +103,8 @@ function Compass.buildWidget(terrainManager)
 	--don't show the compass here, instead wait until we've gotten some terrain (by listening 
 	connect(compass.connectors, emberOgre.EventCreatedAvatarEntity, compass.CreatedAvatarEntity, compass)
 	connect(compass.connectors, terrainManager.EventTerrainPageGeometryUpdated, compass.TerrainPageGeometryUpdated, compass)
+	
+	connect(compass.connectors, emberOgre.EventTerrainManagerDestroyed, compass.shutdown, compass)
 
 end
 
