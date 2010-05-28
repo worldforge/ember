@@ -331,9 +331,7 @@ void IngameChatWidget::Label::frameStarted(const Ogre::FrameEvent & event)
 		if (mChatText) {
 			bool keep = mChatText->frameStarted(event);
 			if (!keep) {
-				mChatText->attachToLabel(0);
-				mContainerWidget.getChatTextPool().returnWidget(mChatText);
-				mChatText = 0;
+				removeChatText();
 			}
 		}
 		// 		placeWindowOnEntity();
@@ -343,6 +341,16 @@ void IngameChatWidget::Label::frameStarted(const Ogre::FrameEvent & event)
 		setActive(false);
 	}
 }
+
+void IngameChatWidget::Label::removeChatText()
+{
+	if (mChatText) {
+		mChatText->attachToLabel(0);
+		mContainerWidget.getChatTextPool().returnWidget(mChatText);
+		mChatText = 0;
+	}
+}
+
 
 void IngameChatWidget::Label::setModelRepresentation(Model::ModelRepresentation* modelRepresentation)
 {
@@ -391,18 +399,6 @@ void IngameChatWidget::Label::setActive(bool active)
 Window * IngameChatWidget::Label::getWindow()
 {
 	return mWindow;
-}
-
-bool IngameChatWidget::Label::buttonResponse_Click(const EventArgs& args)
-{
-	const MouseEventArgs *mouseArgs = static_cast<const MouseEventArgs*> (&args);
-	if (mouseArgs) {
-		///each button contains a static text window, which is the one containg the actual text
-		const String text = mouseArgs->window->getChild(0)->getText();
-		Ember::EmberServices::getSingletonPtr()->getServerService()->say(std::string(text.c_str()));
-	}
-	//	removeMenu();
-	return true;
 }
 
 void IngameChatWidget::Label::updateText(const std::string & line)
@@ -474,13 +470,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 		// 		Window* responseWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "ResponseList"));
 
 
-		//remove all existing response windows
-		std::vector<Window*>::const_iterator responses_I = mResponseTextWidgets.begin();
-		std::vector<Window*>::const_iterator responses_I_end = mResponseTextWidgets.end();
-		for (; responses_I != responses_I_end; ++responses_I) {
-			WindowManager::getSingleton().destroyWindow(*responses_I);
-		}
-		mResponseTextWidgets.clear();
+		clearResponses();
 
 		//for each response, create a button
 		const std::vector<std::string>& responses = mLabel->getEntity()->getSuggestedResponses();
@@ -542,9 +532,22 @@ bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& ar
 		///each button contains a static text window, which is the one containg the actual text
 		const String text = mouseArgs->window->getChild(0)->getText();
 		Ember::EmberServices::getSingletonPtr()->getServerService()->say(std::string(text.c_str()));
+		clearResponses();
 	}
 	return true;
 }
+
+void IngameChatWidget::ChatText::clearResponses()
+{
+	//remove all existing response windows
+	std::vector<Window*>::const_iterator responses_I = mResponseTextWidgets.begin();
+	std::vector<Window*>::const_iterator responses_I_end = mResponseTextWidgets.end();
+	for (; responses_I != responses_I_end; ++responses_I) {
+		WindowManager::getSingleton().destroyWindow(*responses_I);
+	}
+	mResponseTextWidgets.clear();
+}
+
 
 void IngameChatWidget::ChatText::attachToLabel(Label* label)
 {

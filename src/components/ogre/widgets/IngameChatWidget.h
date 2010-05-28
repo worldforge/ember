@@ -144,6 +144,11 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 
 			void updateEntityName();
 
+			/**
+			 * @brief Removes the attached chat text widget (i.e. the widget which shows what an entity says, and any optional response buttons).
+			 */
+			void removeChatText();
+
 		protected:
 
 			CEGUI::Window* mWindow;
@@ -151,8 +156,6 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			CEGUI::WindowManager* mWindowManager;
 			IngameChatWidget& mContainerWidget;
-
-			bool buttonResponse_Click(const CEGUI::EventArgs& args);
 
 			bool mActive;
 			const std::string mPrefix;
@@ -204,6 +207,11 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 			std::string mPrefix;
 
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
+
+			/**
+			 * @brief Removes all response buttons.
+			 */
+			void clearResponses();
 	};
 
 
