@@ -60,7 +60,7 @@ EntityIconSlot* EntityIconManager::createSlot(unsigned int pixelSize)
 	
 	CEGUI::Window* container = mGuiManager.createWindow("DefaultGUISheet", ss.str());
 	container->setSize(CEGUI::UVector2(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
-	EntityIconSlot* slot = new EntityIconSlot(*this, container);
+	EntityIconSlot* slot = new EntityIconSlot(container);
 	mSlots.push_back(slot);
 	return slot;
 }

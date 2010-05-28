@@ -35,8 +35,8 @@ namespace EmberOgre {
 
 namespace Gui {
 
-EntityIconSlot::EntityIconSlot(EntityIconManager& manager, CEGUI::Window* container)
-: EntityIconDragDropTarget(container), mManager(manager), mContainer(container), mContainedIcon(0)
+EntityIconSlot::EntityIconSlot(CEGUI::Window* container)
+: EntityIconDragDropTarget(container), mContainer(container), mContainedIcon(0)
 {
 }
 

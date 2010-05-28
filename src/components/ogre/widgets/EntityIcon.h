@@ -159,17 +159,59 @@ protected:
 	 * @param entity The entity to which this icon belongs. Ownership is not transferred.
 	 */
 	EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity);
+
+	/**
+	 * @brief Dtor.
+	 *
+	 * If the ícon is attached to a slot it will be detached at destruction.
+	 */
 	virtual ~EntityIcon();
 	
+	/**
+	 * @brief The main entity icon manager.
+	 */
 	EntityIconManager& mManager;
+
+	/**
+	 * @brief The CEGUI drag container instance which provides drag and drop behavior for this entity icon.
+	 */
 	CEGUI::DragContainer* mDragContainer;
+
+	/**
+	 * @brief The image which represents the entity. In many cases this will be the same image as provided by the icon parameter.
+	 */
 	CEGUI::Window* mImage;
+
+	/**
+	 * @brief The Icon instance responsible for providing the image.
+	 */
 	Gui::Icons::Icon* mIcon;
+
+	/**
+	 * @brief The user data attached to the window which binds it to this instance.
+	 */
 	EntityIconUserData mUserData;
+
+	/**
+	 * @brief If the icon is attached to any slot it's stored here.
+	 */
 	EntityIconSlot* mCurrentSlot;
+
+	/**
+	 * @brief The entity which the icon represents.
+	 */
 	EmberEntity* mEntity;
 	
+	/**
+	 * @brief Handler for CEGUI drag start event.
+	 * @param args Event args.
+	 */
 	bool dragContainer_DragStarted(const CEGUI::EventArgs& args);
+
+	/**
+	 * @brief Handler for CEGUI drag stop event.
+	 * @param args Event args.
+	 */
 	bool dragContainer_DragStopped(const CEGUI::EventArgs& args);
 	
 	virtual bool handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon);
