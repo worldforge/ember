@@ -68,7 +68,7 @@ public:
 
 protected:
 
-	unsigned int mLayerIndex;
+	int mLayerIndex;
 	IScaler* mScaler;
 	unsigned int mPlantIndex;
 

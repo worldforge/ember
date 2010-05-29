@@ -48,7 +48,6 @@ void ClusterPopulator::populate(PlantAreaQueryResult& result, SegmentRefPtr segm
 	}
 
 	const PlantAreaQuery& query = result.getQuery();
-	PlantAreaQueryResult::PlantStore& plants = result.getStore();
 
 	const WFMath::AxisBox<2>& area = Convert::toWF(query.getArea());
 
@@ -131,7 +130,6 @@ void ClusterPopulator::populateWithClusters(const SegmentRefPtr& segmentRef, Pla
 
 void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, PlantAreaQueryResult& result, const WFMath::AxisBox<2>& area, const WFMath::Ball<2>& cluster, const Buffer<unsigned char>& combinedCoverage)
 {
-	const PlantAreaQuery& query = result.getQuery();
 	PlantAreaQueryResult::PlantStore& plants = result.getStore();
 	Mercator::Segment& mercatorSegment = segmentRef->getSegment().getMercatorSegment();
 

@@ -28,7 +28,7 @@ namespace Terrain
 {
 
 PlantQueryTask::PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, const Ogre::ColourValue& defaultShadowColour, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback) :
-	mSegmentRef(segmentRef), mPlantPopulator(plantPopulator), mQueryResult(query), mAsyncCallback(asyncCallback)
+	mSegmentRef(segmentRef), mPlantPopulator(plantPopulator), mAsyncCallback(asyncCallback), mQueryResult(query)
 {
 	mQueryResult.setDefaultShadowColour(defaultShadowColour);
 }

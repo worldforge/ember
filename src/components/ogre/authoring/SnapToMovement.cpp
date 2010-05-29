@@ -36,6 +36,7 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 #include <memory>
+#include <boost/shared_ptr.hpp>
 
 namespace EmberOgre
 {

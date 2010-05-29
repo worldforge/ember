@@ -40,6 +40,8 @@
 #include <OgreRay.h>
 #include <OgreSceneManager.h>
 
+#include <boost/shared_ptr.hpp>
+
 namespace EmberOgre
 {
 
