@@ -719,6 +719,16 @@ LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Objects::Root&>& sign
 	}
 }
 
+LuaConnector::LuaConnector(sigc::signal<void, Eris::Avatar*>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("Eris::Avatar");
+		mConnector = new LuaConnectors::ConnectorOne<void, Eris::Avatar*>(signal, luaTypes);
+	}
+}
+
+
 
 
 }

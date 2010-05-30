@@ -81,6 +81,11 @@ class ServerService
 	sigc::signal<void, Eris::Account *, const std::string &> LoginFailure;
 	sigc::signal<void, const Atlas::Objects::Entity::RootEntity &> GotCharacterInfo;
 	sigc::signal<void, Eris::Account *> GotAllCharacters;
+	
+	/**
+	 * @brief Emitted when the Account object has been destroyed.
+	 */
+	sigc::signal<void> DestroyedAccount;
 
 	/**
 	 * @brief Emitted when an object is about to be sent to the server.

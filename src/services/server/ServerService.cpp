@@ -158,6 +158,7 @@ void ServerService::disconnect()
 		Eris::Account* tempAccount = mAccount;
 		mAccount = 0;
 		delete tempAccount;
+		DestroyedAccount.emit();
 	} catch (const std::exception& e) {
 		S_LOG_WARNING("Got error on account deletion." << e);
 		return;

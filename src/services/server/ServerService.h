@@ -199,6 +199,11 @@ public:
 	sigc::signal<void, Eris::Account*> GotAllCharacters;
 
 	/**
+	 * @brief Emitted when the Account object has been destroyed.
+	 */
+	sigc::signal<void> DestroyedAccount;
+
+	/**
 	 * @brief Emitted when an object is about to be sent to the server.
 	 */
 	sigc::signal<void, const Atlas::Objects::Root&> EventSendingObject;

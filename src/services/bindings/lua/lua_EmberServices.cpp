@@ -64,26 +64,27 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"Ember::ConfigService");
  tolua_usertype(tolua_S,"sigc::signal<void,const Ember::MouseMotion&,Ember::Input::InputMode>");
- tolua_usertype(tolua_S,"Ember::ScriptingService");
+ tolua_usertype(tolua_S,"WFMath::Quaternion");
  tolua_usertype(tolua_S,"sigc::signal<void,const SDL_keysym&,Ember::Input::InputMode>");
  tolua_usertype(tolua_S,"Eris::View");
  tolua_usertype(tolua_S,"Ember::EmberServices");
  tolua_usertype(tolua_S,"Ember::IInputAdapter");
+ tolua_usertype(tolua_S,"std::vector<std::string>");
  tolua_usertype(tolua_S,"Atlas::Message::MapType");
  tolua_usertype(tolua_S,"Eris::Connection");
  tolua_usertype(tolua_S,"Ember::ServerService");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&,const std::string&>");
  tolua_usertype(tolua_S,"Ember::InputService");
- tolua_usertype(tolua_S,"std::vector<std::string>");
- tolua_usertype(tolua_S,"WFMath::Quaternion");
+ tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Root&>");
+ tolua_usertype(tolua_S,"Ember::IScriptingProvider");
  tolua_usertype(tolua_S,"Ember::Input");
  tolua_usertype(tolua_S,"Eris::Entity");
  tolua_usertype(tolua_S,"varconf::Variable");
- tolua_usertype(tolua_S,"Ember::IScriptingProvider");
+ tolua_usertype(tolua_S,"Ember::ScriptingService");
  tolua_usertype(tolua_S,"sigc::signal<void,const std::string&>");
  tolua_usertype(tolua_S,"Ember::MetaserverService");
  tolua_usertype(tolua_S,"sigc::signal<void,Ember::Input::MouseButton,Ember::Input::InputMode>");
- tolua_usertype(tolua_S,"sigc::signal<void,const Atlas::Objects::Root&>");
+ tolua_usertype(tolua_S,"sigc::signal<void>");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*,const std::string&>");
  tolua_usertype(tolua_S,"Eris::Meta");
  tolua_usertype(tolua_S,"sigc::signal<void,Eris::Account*>");
@@ -2555,6 +2556,36 @@ static int tolua_set_Ember__ServerService_GotAllCharacters(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: DestroyedAccount of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_get_Ember__ServerService_DestroyedAccount
+static int tolua_get_Ember__ServerService_DestroyedAccount(lua_State* tolua_S)
+{
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'DestroyedAccount'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->DestroyedAccount,"sigc::signal<void>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: DestroyedAccount of class  Ember::ServerService */
+#ifndef TOLUA_DISABLE_tolua_set_Ember__ServerService_DestroyedAccount
+static int tolua_set_Ember__ServerService_DestroyedAccount(lua_State* tolua_S)
+{
+  Ember::ServerService* self = (Ember::ServerService*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'DestroyedAccount'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->DestroyedAccount = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* get function: EventSendingObject of class  Ember::ServerService */
 #ifndef TOLUA_DISABLE_tolua_get_Ember__ServerService_EventSendingObject
 static int tolua_get_Ember__ServerService_EventSendingObject(lua_State* tolua_S)
@@ -3469,6 +3500,7 @@ TOLUA_API int tolua_EmberServices_open (lua_State* tolua_S)
     tolua_variable(tolua_S,"LoginFailure",tolua_get_Ember__ServerService_LoginFailure,tolua_set_Ember__ServerService_LoginFailure);
     tolua_variable(tolua_S,"GotCharacterInfo",tolua_get_Ember__ServerService_GotCharacterInfo,tolua_set_Ember__ServerService_GotCharacterInfo);
     tolua_variable(tolua_S,"GotAllCharacters",tolua_get_Ember__ServerService_GotAllCharacters,tolua_set_Ember__ServerService_GotAllCharacters);
+    tolua_variable(tolua_S,"DestroyedAccount",tolua_get_Ember__ServerService_DestroyedAccount,tolua_set_Ember__ServerService_DestroyedAccount);
     tolua_variable(tolua_S,"EventSendingObject",tolua_get_Ember__ServerService_EventSendingObject,tolua_set_Ember__ServerService_EventSendingObject);
     tolua_variable(tolua_S,"EventReceivedObject",tolua_get_Ember__ServerService_EventReceivedObject,tolua_set_Ember__ServerService_EventReceivedObject);
    tolua_endmodule(tolua_S);
