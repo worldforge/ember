@@ -33,8 +33,6 @@
 #include "../GUIManager.h"
 #include "../AvatarTerrainCursor.h"
 #include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 
 #include "../authoring/DetachedEntity.h"
 #include <Atlas/Message/Element.h>
@@ -69,11 +67,12 @@ namespace EmberOgre
 namespace Gui
 {
 
-EntityCreator::EntityCreator() :
-	mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0), mAxisMarker(0)
+EntityCreator::EntityCreator(Eris::Connection& conn) :
+	mConn(conn), mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0), mAxisMarker(0)
 {
+	mConn.getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
+
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EntityCreator::connectedToServer));
 
 	mOrientation.identity();
 }
@@ -128,14 +127,12 @@ void EntityCreator::startCreation()
 
 void EntityCreator::loadAllTypes()
 {
-	if (mConn) {
-		Eris::TypeService* typeservice = mConn->getTypeService();
-		if (typeservice) {
-			Eris::TypeInfo* typeInfo = typeservice->getTypeByName("game_entity");
-			if (typeInfo) {
-				if (typeInfo->hasUnresolvedChildren()) {
-					typeInfo->resolveChildren();
-				}
+	Eris::TypeService* typeservice = mConn.getTypeService();
+	if (typeservice) {
+		Eris::TypeInfo* typeInfo = typeservice->getTypeByName("game_entity");
+		if (typeInfo) {
+			if (typeInfo->hasUnresolvedChildren()) {
+				typeInfo->resolveChildren();
 			}
 		}
 	}
@@ -153,8 +150,8 @@ void EntityCreator::stopCreation()
 void EntityCreator::createEntity()
 {
 	// Creating entity data
-	mEntityMessage = mRecipe->createEntity(*mConn->getTypeService());
-	Eris::TypeInfo* erisType = mConn->getTypeService()->getTypeByName(mRecipe->getEntityType());
+	mEntityMessage = mRecipe->createEntity(*mConn.getTypeService());
+	Eris::TypeInfo* erisType = mConn.getTypeService()->getTypeByName(mRecipe->getEntityType());
 	if (!erisType) {
 		S_LOG_FAILURE("Type " << mRecipe->getEntityType() << " not found in recipe " << mRecipe->getName());
 		return;
@@ -176,7 +173,7 @@ void EntityCreator::createEntity()
 	Eris::View* view = Ember::Application::getSingleton().getMainView();
 	if (view) {
 		// Temporary entity
-		mEntity = new Authoring::DetachedEntity("-1", erisType, mConn->getTypeService());
+		mEntity = new Authoring::DetachedEntity("-1", erisType, mConn.getTypeService());
 		mEntity->setFromMessage(mEntityMessage);
 
 		// Creating scene node
@@ -314,12 +311,12 @@ void EntityCreator::finalizeCreation()
 	c->setFrom(avatar.getId());
 	///if the avatar is a "creator", i.e. and admin, we will set the TO property
 	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (avatar.getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
+	if (avatar.getType()->isA(mConn.getTypeService()->getTypeByName("creator"))) {
 		c->setTo(avatar.getId());
 	}
 
 	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage));
-	mConn->send(c);
+	mConn.send(c);
 
 	std::stringstream ss;
 	ss << mPos;
@@ -356,18 +353,12 @@ void EntityCreator::cleanupCreation()
 	delete mEntity;
 }
 
-void EntityCreator::connectedToServer(Eris::Connection* conn)
-{
-	mConn = conn;
-	mConn->getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
-}
-
 void EntityCreator::checkTypeInfoBound()
 {
 	if (mRecipe) {
 		const std::string& typeName = mRecipe->getEntityType();
 		///Calling getTypeByName will also send a request for type info to the server if no type info exists yet
-		Eris::TypeInfo* typeInfo = mConn->getTypeService()->getTypeByName(typeName);
+		Eris::TypeInfo* typeInfo = mConn.getTypeService()->getTypeByName(typeName);
 		if (typeInfo) {
 			if (typeInfo->isBound()) {
 				EventTypeInfoLoaded.emit();

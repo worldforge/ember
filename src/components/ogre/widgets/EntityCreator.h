@@ -70,7 +70,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	EntityCreator();
+	EntityCreator(Eris::Connection& conn);
 
 	/**
 	 * Destructor.
@@ -178,14 +178,9 @@ protected:
 	const WFMath::AxisBox<3> & getBBox();
 
 	/**
-	 * Sets Eris connection on connect to server event.
-	 */
-	void connectedToServer(Eris::Connection* conn);
-
-	/**
 	 * Eris connection.
 	 */
-	Eris::Connection* mConn;
+	Eris::Connection& mConn;
 
 	/**
 	 * Stores, are we in create mode.
