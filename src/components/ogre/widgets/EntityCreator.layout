@@ -14,14 +14,12 @@
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 				<Property Name='UnifiedSize' Value='{{0,100},{1,-27}}'/>
 				<Property Name='Sort' Value='true'/>
-				<Event Name="ItemSelectionChanged" Function="EntityCreator.RecipesList_SelectionChanged"/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Create'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{1,-25}}'/>
 				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
 				<Property Name='Text' Value='Create'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="Clicked" Function="EntityCreator.Create_Click" />
 			</Window>
 			<Window Type='DefaultGUISheet' Name='CreateSection'>
 				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
@@ -39,7 +37,6 @@
 					<Property Name='Selected' Value='True'/>
 					<Property Name='Tooltip' Value='If checked, will randomize the orientation of all new entities.'/>
 					<Property Name='Text' Value='Random orientation'/>
-					<Event Name="CheckStateChanged" Function="EntityCreator.RandomizeOrientation_CheckStateChanged" />
 				</Window>
 				<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
 					<Property Name='UnifiedPosition' Value='{{0,0},{0,75}}'/>
