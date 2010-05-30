@@ -1,6 +1,4 @@
-Compass = {
-	connectors={}
-}
+Compass = {}
 
 function Compass:Refresh_Clicked(args)
 	self.helper:refresh()
@@ -140,4 +138,4 @@ function Compass:buildCEGUIWidget()
 	self.widget:hide()
 end
 
-connect(Compass.connectors, emberOgre.EventTerrainManagerCreated, Compass.buildWidget)
+connect(connectors, emberOgre.EventTerrainManagerCreated, Compass.buildWidget)
