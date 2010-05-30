@@ -432,11 +432,13 @@ void LuaConnector::disconnect()
 LuaConnector* LuaConnector::setSelf(int selfIndex)
 {
 	if (mConnector) {
-		///we need to get the correct lua table
-		int luaType = lua_type(sState, -1);
-		int index = luaL_ref(sState, LUA_REGISTRYINDEX);
-		if (luaType == LUA_TTABLE) {
-			mConnector->setSelfIndex(index);
+		if (selfIndex != LUA_NOREF) {
+			///we need to get the correct lua table
+			int luaType = lua_type(sState, -1);
+			int index = luaL_ref(sState, LUA_REGISTRYINDEX);
+			if (luaType == LUA_TTABLE) {
+				mConnector->setSelfIndex(index);
+			}
 		}
 	}
 	return this;
