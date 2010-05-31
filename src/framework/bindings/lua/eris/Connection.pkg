@@ -4,6 +4,13 @@ namespace Eris {
 class Connection {
 
     TypeService* getTypeService() const;
-
+    
+    sigc::signal<void> GotServerInfo;
+        
+    /// sent on successful negotiation of a game server connection
+    sigc::signal<void> Connected;
+    
+    /// final disconnect (or hard disocnnect) notifcation
+    sigc::signal<void> Disconnected;
 };
 }

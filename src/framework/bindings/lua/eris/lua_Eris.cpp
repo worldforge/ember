@@ -1980,6 +1980,96 @@ static int tolua_Eris_Eris_Connection_getTypeService00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: GotServerInfo of class  Eris::Connection */
+#ifndef TOLUA_DISABLE_tolua_get_Eris__Connection_GotServerInfo
+static int tolua_get_Eris__Connection_GotServerInfo(lua_State* tolua_S)
+{
+  Eris::Connection* self = (Eris::Connection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'GotServerInfo'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->GotServerInfo,"sigc::signal<void>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: GotServerInfo of class  Eris::Connection */
+#ifndef TOLUA_DISABLE_tolua_set_Eris__Connection_GotServerInfo
+static int tolua_set_Eris__Connection_GotServerInfo(lua_State* tolua_S)
+{
+  Eris::Connection* self = (Eris::Connection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'GotServerInfo'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->GotServerInfo = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: Connected of class  Eris::Connection */
+#ifndef TOLUA_DISABLE_tolua_get_Eris__Connection_Connected
+static int tolua_get_Eris__Connection_Connected(lua_State* tolua_S)
+{
+  Eris::Connection* self = (Eris::Connection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Connected'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->Connected,"sigc::signal<void>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: Connected of class  Eris::Connection */
+#ifndef TOLUA_DISABLE_tolua_set_Eris__Connection_Connected
+static int tolua_set_Eris__Connection_Connected(lua_State* tolua_S)
+{
+  Eris::Connection* self = (Eris::Connection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Connected'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->Connected = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* get function: Disconnected of class  Eris::Connection */
+#ifndef TOLUA_DISABLE_tolua_get_Eris__Connection_Disconnected
+static int tolua_get_Eris__Connection_Disconnected(lua_State* tolua_S)
+{
+  Eris::Connection* self = (Eris::Connection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Disconnected'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->Disconnected,"sigc::signal<void>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: Disconnected of class  Eris::Connection */
+#ifndef TOLUA_DISABLE_tolua_set_Eris__Connection_Disconnected
+static int tolua_set_Eris__Connection_Disconnected(lua_State* tolua_S)
+{
+  Eris::Connection* self = (Eris::Connection*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'Disconnected'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->Disconnected = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: lookQueueSize of class  Eris::View */
 #ifndef TOLUA_DISABLE_tolua_Eris_Eris_View_lookQueueSize00
 static int tolua_Eris_Eris_View_lookQueueSize00(lua_State* tolua_S)
@@ -2824,6 +2914,9 @@ TOLUA_API int tolua_Eris_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"Connection","Eris::Connection","",NULL);
    tolua_beginmodule(tolua_S,"Connection");
     tolua_function(tolua_S,"getTypeService",tolua_Eris_Eris_Connection_getTypeService00);
+    tolua_variable(tolua_S,"GotServerInfo",tolua_get_Eris__Connection_GotServerInfo,tolua_set_Eris__Connection_GotServerInfo);
+    tolua_variable(tolua_S,"Connected",tolua_get_Eris__Connection_Connected,tolua_set_Eris__Connection_Connected);
+    tolua_variable(tolua_S,"Disconnected",tolua_get_Eris__Connection_Disconnected,tolua_set_Eris__Connection_Disconnected);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Eris",0);
