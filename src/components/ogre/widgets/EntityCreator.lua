@@ -120,19 +120,20 @@ function EntityCreator:addAdapter(adapter, title, container, parentContainer)
 	function syncWindowHeights(args)
 		outercontainer:setHeight(container:getHeight())
 	end
-	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights, self)
+	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 
 	outercontainer:addChildWindow(label)
 	outercontainer:addChildWindow(container)
 
 	parentContainer:addChildWindow(outercontainer)
-	parentContainer:notifyScreenAreaChanged(true)
 	return outercontainer
 end
 
 function EntityCreator:shutdown()
 	guiManager:destroyWidget(self.widget)
-	self.helper:delete()
+	if self.helper ~= nil then
+		self.helper:delete()
+	end
 end
 
 -- Builds widget
@@ -177,7 +178,7 @@ function EntityCreator.buildWidget(avatar)
 	entityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator/")
 	
 	connect(entityCreator.connectors, emberServices:getServerService().DestroyedAccount, function()
-			entityCreator:shutDown()
+			entityCreator:shutdown()
 			entityCreator = nil
 		end
 		, entityCreator)
