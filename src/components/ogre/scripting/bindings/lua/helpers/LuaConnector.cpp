@@ -728,6 +728,16 @@ LuaConnector::LuaConnector(sigc::signal<void, Eris::Avatar*>& signal)
 	}
 }
 
+LuaConnector::LuaConnector(sigc::signal<void, Eris::View*>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("Eris::View");
+		mConnector = new LuaConnectors::ConnectorOne<void, Eris::View*>(signal, luaTypes);
+	}
+}
+
+
 
 
 

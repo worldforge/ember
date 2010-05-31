@@ -325,6 +325,7 @@ public:
 	LuaConnector(sigc::signal<void, Terrain::TerrainPage&>& signal);
 	LuaConnector(sigc::signal<void, const Atlas::Objects::Root&>& signal);
 	LuaConnector(sigc::signal<void, Eris::Avatar*>& signal);
+	LuaConnector(sigc::signal<void, Eris::View*>& signal);
 
 	~LuaConnector();
 

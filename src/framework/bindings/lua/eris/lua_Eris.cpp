@@ -2102,6 +2102,36 @@ static int tolua_Eris_Eris_View_lookQueueSize00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* get function: TopLevelEntityChanged of class  Eris::View */
+#ifndef TOLUA_DISABLE_tolua_get_Eris__View_TopLevelEntityChanged
+static int tolua_get_Eris__View_TopLevelEntityChanged(lua_State* tolua_S)
+{
+  Eris::View* self = (Eris::View*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'TopLevelEntityChanged'",NULL);
+#endif
+  tolua_pushusertype(tolua_S,(void*)&self->TopLevelEntityChanged,"sigc::signal<void>");
+ return 1;
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* set function: TopLevelEntityChanged of class  Eris::View */
+#ifndef TOLUA_DISABLE_tolua_set_Eris__View_TopLevelEntityChanged
+static int tolua_set_Eris__View_TopLevelEntityChanged(lua_State* tolua_S)
+{
+  Eris::View* self = (Eris::View*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  tolua_Error tolua_err;
+  if (!self) tolua_error(tolua_S,"invalid 'self' in accessing variable 'TopLevelEntityChanged'",NULL);
+  if (!tolua_isusertype(tolua_S,2,"sigc::signal<void>",0,&tolua_err))
+   tolua_error(tolua_S,"#vinvalid type in variable assignment.",&tolua_err);
+#endif
+  self->TopLevelEntityChanged = *((sigc::signal<void>*)  tolua_tousertype(tolua_S,2,0))
+;
+ return 0;
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: isA of class  Eris::TypeInfo */
 #ifndef TOLUA_DISABLE_tolua_Eris_Eris_TypeInfo_isA00
 static int tolua_Eris_Eris_TypeInfo_isA00(lua_State* tolua_S)
@@ -2930,6 +2960,7 @@ TOLUA_API int tolua_Eris_open (lua_State* tolua_S)
    tolua_cclass(tolua_S,"View","Eris::View","",NULL);
    tolua_beginmodule(tolua_S,"View");
     tolua_function(tolua_S,"lookQueueSize",tolua_Eris_Eris_View_lookQueueSize00);
+    tolua_variable(tolua_S,"TopLevelEntityChanged",tolua_get_Eris__View_TopLevelEntityChanged,tolua_set_Eris__View_TopLevelEntityChanged);
    tolua_endmodule(tolua_S);
   tolua_endmodule(tolua_S);
   tolua_module(tolua_S,"Eris",0);

@@ -20,7 +20,6 @@
 			<Window Type='EmberLook/Slider' Name='Time'>
 				<Property Name='UnifiedSize' Value='{{1.00,-20.0},{0.0,15.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,30.0}}'/>
-				<Event Name="ValueChanged" Function="Environment.Time_ValueChanged" />
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='FogDistanceText'>
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,25.0}}'/>
@@ -34,7 +33,6 @@
 				<Property Name='UnifiedSize' Value='{{1.0,-20.0},{0.0,15.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,90.0}}'/>
 				<Property Name='Value' Value='0.25'/>
-				<Event Name="ValueChanged" Function="Environment.FogDistance_ValueChanged" />
 			</Window>
 		</Window>
 	</Window>

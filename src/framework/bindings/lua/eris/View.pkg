@@ -18,6 +18,9 @@ class View
     Eg, this could be displayed as a bar-chart on screen in a client (optionally)
     */
     unsigned int lookQueueSize() const;
+    
+    /// emitted when the TLVE changes
+    sigc::signal<void> TopLevelEntityChanged;    
 };
 
 } // of namespace Eris
