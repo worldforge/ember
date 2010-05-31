@@ -86,6 +86,7 @@ loadScript("Math.lua")
 
 loadScript("MainIconBar.lua")
 loadScript("Chat.lua")
+loadScript("Server.lua")
 loadScript("ServerBrowser.lua")
 loadScript("Performance.lua")
 loadScript("EntityPicker.lua")

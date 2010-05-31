@@ -103,8 +103,11 @@ function ServerBrowser.doConnect()
 	end
 end
 
-function ServerBrowser.Server_GotConnection()
+function ServerBrowser.Server_GotConnection(connection)
 	ServerBrowser.widget:hide()
+	connect(ServerBrowser.connectors, connection.Disconnected, function()
+			 ServerBrowser.widget:show()
+		end)
 end
 
 function ServerBrowser.Refresh_Click(args)

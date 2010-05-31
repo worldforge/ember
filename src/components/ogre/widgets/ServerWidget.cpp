@@ -26,19 +26,30 @@
 
 #include "ServerWidget.h"
 
+#include "ColouredListItem.h"
+#include "ModelRenderer.h"
+
+#include "components/entitymapping/EntityMappingManager.h"
+#include "components/entitymapping/EntityMapping.h"
+#include "components/entitymapping/Definitions/EntityMappingDefinition.h"
+#include "components/entitymapping/Definitions/MatchDefinition.h"
+#include "components/entitymapping/Definitions/CaseDefinition.h"
+#include "components/entitymapping/Definitions/ActionDefinition.h"
+#include "components/ogre/mapping/EmberEntityMappingManager.h"
+#include "components/ogre/GUIManager.h"
+
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
+#include "services/EmberServices.h"
+
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
 #include <Eris/SpawnPoint.h>
 #include <Eris/CharacterType.h>
-#include "services/EmberServices.h"
 #include <varconf/varconf.h>
 #include <fstream>
-
-#include "ColouredListItem.h"
 
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
@@ -54,15 +65,7 @@
 #include <elements/CEGUIGUISheet.h>
 #include <CEGUIExceptions.h>
 
-#include "ModelRenderer.h"
 
-#include "components/entitymapping/EntityMappingManager.h"
-#include "components/entitymapping/EntityMapping.h"
-#include "components/entitymapping/Definitions/EntityMappingDefinition.h"
-#include "components/entitymapping/Definitions/MatchDefinition.h"
-#include "components/entitymapping/Definitions/CaseDefinition.h"
-#include "components/entitymapping/Definitions/ActionDefinition.h"
-#include "components/ogre/mapping/EmberEntityMappingManager.h"
 
 using namespace CEGUI;
 namespace EmberOgre
@@ -93,8 +96,6 @@ void ServerWidget::buildWidget()
 {
 
 	if (loadMainSheet("ServerWidget.layout", "Server/")) {
-
-		mMainWindow->setVisible(false);
 
 		CEGUI::PushButton* okButton = static_cast<CEGUI::PushButton*> (getWindow("NoCharactersAlert/OkButton"));
 		if (okButton) {
@@ -137,7 +138,6 @@ void ServerWidget::buildWidget()
 		BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
 		BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
 
-		Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotConnection));
 		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
 		Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
 		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
@@ -160,10 +160,9 @@ void ServerWidget::buildWidget()
 		addEnterButton(mCreateChar);
 		closeTabGroup();
 
-		hide();
-
 		createPreviewTexture();
-		//	getMainSheet()->addChildWindow(mMainWindow);
+
+		setConnection(Ember::EmberServices::getSingleton().getServerService()->getConnection());
 	}
 
 }
@@ -173,10 +172,16 @@ void ServerWidget::connection_GotServerInfo()
 	showServerInfo();
 }
 
-void ServerWidget::connection_GotConnection(Eris::Connection* connection)
+void ServerWidget::setConnection(Eris::Connection* connection)
 {
 	connection->GotServerInfo.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotServerInfo));
 	connection->refreshServerInfo();
+	connection->Disconnected.connect(sigc::mem_fun(*this, &ServerWidget::connection_Disconnected));
+}
+
+void ServerWidget::connection_Disconnected()
+{
+	mGuiManager->destroyWidget(this);
 }
 
 void ServerWidget::createdAccount(Eris::Account* account)
@@ -539,7 +544,7 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 		//Check if we have a list of spawn points, or if not the older single character type list.
 		if (mCharacterAndSpawns.size() > 0) {
 			CharacterAndSpawnsStore::const_iterator I = mCharacterAndSpawns.begin();
-			for (int i = 0; i < itemIndex; ++i) {
+			for (unsigned int i = 0; i < itemIndex; ++i) {
 				I++;
 			}
 			mNewChar.type = I->first;
@@ -643,9 +648,7 @@ bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args)
 
 void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 {
-	hide();
-	/*	mGuiManager->removeWidget(this);
-	 delete this;*/
+	mGuiManager->destroyWidget(this);
 }
 
 void ServerWidget::createPreviewTexture()

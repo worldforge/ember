@@ -340,7 +340,6 @@ void GUIManager::initialize()
 	widgetsToLoad.push_back("InspectWidget");
 	widgetsToLoad.push_back("MakeEntityWidget");
 	//	widgetsToLoad.push_back("JesusEdit");
-	widgetsToLoad.push_back("ServerWidget");
 	widgetsToLoad.push_back("Help");
 	widgetsToLoad.push_back("MeshPreview");
 

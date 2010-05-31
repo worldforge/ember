@@ -64,7 +64,6 @@ namespace Gui {
 		if (mMainWindow) {
 			CEGUI::WindowManager::getSingleton().destroyWindow(mMainWindow);
 		}
-		//mGuiManager->removeWidget(this);
 	}
 
 	void Widget::frameStarted(const Ogre::FrameEvent& evt)

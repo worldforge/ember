@@ -149,8 +149,10 @@ protected:
 	 */
 	void connection_GotServerInfo();
 	
-	void connection_GotConnection(Eris::Connection* connection);
+	void setConnection(Eris::Connection* connection);
 	
+	void connection_Disconnected();
+
 	/**
 	 *    Shows server info.
 	 */
