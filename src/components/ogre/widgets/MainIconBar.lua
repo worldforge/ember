@@ -22,7 +22,11 @@ function MainIconBar.addIcon(iconName, foregroundImage, tooltipText)
 	MainIconBar.iconBar:addIcon(iconBase)
 	iconBase:getButton():setTooltipText(tooltipText)
 	return iconBase
+end
 
+function MainIconBar.removeIcon(icon)
+	--Note that this won't delete the icon, it's up to the caller to do that.
+	MainIconBar.iconBar:removeIcon(icon)
 end
 
 function MainIconBar.buildWidget()
