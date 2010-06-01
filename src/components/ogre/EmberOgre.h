@@ -37,6 +37,7 @@ namespace Eris
 {
 class View;
 class Connection;
+class Entity;
 }
 
 namespace Carpenter
@@ -354,8 +355,6 @@ public:
 	 */
 	void shutdownGui();
 
-	void raiseCreatedAvatarEntity(EmberEntity& entity);
-
 	/**
 	 * @brief Gets all resource locations.
 	 * @returns All resource locations defined. The keys are the resource groups and the values the locations.
@@ -555,6 +554,15 @@ protected:
 	 * @param connection
 	 */
 	void Server_GotConnection(Eris::Connection* connection);
+
+	/**
+	 * @brief Sent from the view when an avatar entity has been created.
+	 *
+	 * We'll listen to this and setup the cameras etc. when this happens.
+	 * @param entity The avatar entity.
+	 */
+	void View_gotAvatarCharacter(Eris::Entity* entity);
+
 
 	/**
 	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.

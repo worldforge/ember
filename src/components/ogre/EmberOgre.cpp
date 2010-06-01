@@ -162,12 +162,12 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-	mAvatar(0), mMovementController(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mEmberEntityFactory(0), mSoundManager(0), mMotionManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0), mMoveManager(0), mConsoleObjectImpl(0),
+	mAvatar(0), mMovementController(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mEmberEntityFactory(0), mSoundManager(0), mMotionManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0), mMoveManager(0),
 	//mJesus(0),
 			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 			//mCollisionManager(0),
 			//mCollisionDetectorVisualizer(0),
-			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mMainCamera(0), mOgreMainCamera(0), mAvatarCameraMotionHandler(0)
+			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mMainCamera(0), mOgreMainCamera(0), mConsoleObjectImpl(0), mAvatarCameraMotionHandler(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -474,22 +474,6 @@ bool EmberOgre::setup()
 	return true;
 }
 
-void EmberOgre::raiseCreatedAvatarEntity(EmberEntity& entity)
-{
-	//Set up the third person avatar camera and switch to it.
-	mAvatar = new Avatar(entity);
-	mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
-	mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
-	mMovementController = new MovementController(*mAvatar);
-	mMainCamera->setMovementProvider(mMovementController);
-	mMainCamera->attachToMount(&mAvatar->getCameraMount());
-
-	entity.BeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::avatarEntity_BeingDeleted));
-
-	EventMovementControllerCreated.emit();
-	EventCreatedAvatarEntity.emit(entity);
-}
-
 void EmberOgre::avatarEntity_BeingDeleted()
 {
 	mMainCamera->attachToMount(0);
@@ -639,11 +623,34 @@ void EmberOgre::preloadMedia(void)
 void EmberOgre::Server_GotView(Eris::View* view)
 {
 	mEmberEntityFactory = new EmberEntityFactory(*view, *view->getAvatar()->getConnection()->getTypeService(), *mMoveManager, *mSceneMgr);
+	view->registerFactory(mEmberEntityFactory);
+	view->getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberOgre::View_gotAvatarCharacter));
 }
 
 void EmberOgre::Server_GotConnection(Eris::Connection* connection)
 {
 	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
+}
+
+void EmberOgre::View_gotAvatarCharacter(Eris::Entity* entity)
+{
+	if (entity) {
+		EmberEntity& emberEntity = static_cast<EmberEntity&>(*entity);
+		//Set up the third person avatar camera and switch to it.
+		mAvatar = new Avatar(emberEntity);
+		mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
+		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
+		mMovementController = new MovementController(*mAvatar);
+		mMainCamera->setMovementProvider(mMovementController);
+		mMainCamera->attachToMount(&mAvatar->getCameraMount());
+
+		emberEntity.BeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::avatarEntity_BeingDeleted));
+
+		EventMovementControllerCreated.emit();
+		EventCreatedAvatarEntity.emit(emberEntity);
+	} else {
+		S_LOG_CRITICAL("Somehow got a null avatar entity.");
+	}
 }
 
 Avatar* EmberOgre::getAvatar() const

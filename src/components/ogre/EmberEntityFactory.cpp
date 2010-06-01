@@ -66,13 +66,9 @@ namespace EmberOgre
 {
 
 EmberEntityFactory::EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager, Ogre::SceneManager& sceneManager) :
-	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0), mView(view), mAuthoringManager(new Authoring::AuthoringManager(mView)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager)), mScene(new Scene(sceneManager))
+	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0),mAuthoringManager(new Authoring::AuthoringManager(view)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager)), mScene(new Scene(sceneManager))
 {
-	mView.registerFactory(this);
-
 	mTerrainType = mTypeService.getTypeByName("world");
-
-	getErisAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberEntityFactory::gotAvatarCharacter));
 }
 
 EmberEntityFactory::~EmberEntityFactory()
@@ -80,8 +76,6 @@ EmberEntityFactory::~EmberEntityFactory()
 	delete mAuthoringMoverConnector;
 	delete mAuthoringManager;
 	delete mScene;
-	/// there is no way to deregister the factory from the View, instead the View will delete the factory when deleted
-	// 	mView.deregisterFactory(this);
 }
 
 /// create whatever entity the client desires
@@ -117,24 +111,9 @@ WorldEmberEntity* EmberEntityFactory::getWorld() const
 	return mWorldEntity;
 }
 
-void EmberEntityFactory::gotAvatarCharacter(Eris::Entity* entity)
-{
-	if (entity) {
-		EmberEntity* avatarEntity = static_cast<EmberEntity*> (entity);
-		EmberOgre::getSingleton().raiseCreatedAvatarEntity(*avatarEntity);
-	} else {
-		S_LOG_CRITICAL("Somehow got a null avatar entity.");
-	}
-}
-
 int EmberEntityFactory::priority()
 {
 	return 10;
-}
-
-Eris::Avatar* EmberEntityFactory::getErisAvatar()
-{
-	return mView.getAvatar();
 }
 
 void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) const
@@ -180,10 +159,6 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 		tokeniser.initTokens(args);
 		std::string value = tokeniser.nextToken();
 		if (value == "") {
-			if (getErisAvatar()) {
-				dumpAttributesOfEntity(getErisAvatar()->getEntity()->getId());
-			}
-		} else {
 			dumpAttributesOfEntity(value);
 		}
 	}

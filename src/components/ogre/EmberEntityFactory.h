@@ -128,22 +128,13 @@ protected:
 	 */
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world);
 
-	void gotAvatarCharacter(Eris::Entity* entity);
-
 	Eris::TypeService& mTypeService;
 	Eris::TypeInfo* mTerrainType;
-
-	Eris::Avatar* getErisAvatar();
 
 	/**
 	 * @brief The world entity, which is also the base entity of the view.
 	 */
 	WorldEmberEntity *mWorldEntity;
-
-	/**
-	 * @brief The main view of the world.
-	 */
-	Eris::View& mView;
 
 	/**
 	 * @brief The authoring manager, used for displaying authoring markers.
