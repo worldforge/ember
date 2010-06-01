@@ -885,7 +885,7 @@
 				<caseparam type="equals">crab</caseparam>
 				<caseparam type="equals">spider</caseparam>
 				<action type="display-model">spider</action>
-				<attributematch attribute="colour">
+				<!-- attributematch attribute="colour">
 					<case>
 						<caseparam type="equals">carrion</caseparam>
 						<action type="display-part">body/carrion</action>
@@ -894,7 +894,7 @@
 						<caseparam type="equals">emerald</caseparam>
 						<action type="display-part">body/emerald</action>
 					</case>
-				</attributematch>
+				</attributematch -->
 			</case>
 		</entitymatch>
 	</entitymapping>	

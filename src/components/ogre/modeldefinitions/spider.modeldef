@@ -1,18 +1,13 @@
 <models>
     <model name="spider" usescaleof="width" showcontained="false" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_skeletons/insects/models/spider/spider.mesh">
+            <submodel mesh="3d_objects/creatures/spider/spider.mesh">
                 <parts>
-                    <part name="body/emerald" group="main" show="true">
+                    <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/creature/insect/emerald" />
-                        </subentities>
-                    </part>
-                    <part name="body/carrion" group="main" show="false">
-                        <subentities>
-                            <subentity index="0" material="/global/creature/insect/carrion" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>
@@ -50,5 +45,6 @@
         </actions>
         <attachpoints />
         <views />
+        <lights />
     </model>
 </models>
