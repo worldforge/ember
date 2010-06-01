@@ -14,7 +14,8 @@ if EmberOgre.OgreInfo:isIndirect() then
 	
 	IndirectRenderingChecker.widget:getWindow("OkButton"):subscribeEvent("MouseClick", 
 		function()
-			IndirectRenderingChecker.widget:hide()
+			guiManager:destroyWidget(IndirectRenderingChecker.widget)
+			IndirectRenderingChecker = nil
 		end)
 
 end
