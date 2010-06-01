@@ -4,63 +4,25 @@ We'll use the existing icon bar and add a new icon to it, so the MainIconBar.lua
 The creation of the amdmin menu is delayed until we've actually logged in as an admin; if not it will never be created.
 ]]--
 
-Admin = {connectors={}, adminIcon=nil}
+Admin = {}
 
 --adds a standard menu item to the main popup menu.
-function Admin.addMenuItem(labelText, clickMethod, tooltipText)
+function Admin:addMenuItem(labelText, clickMethod, tooltipText)
 	local menuItem = windowManager:createWindow("EmberLook/MenuItem")
 	menuItem:setText(labelText)
-	menuItem:subscribeEvent("Clicked", clickMethod)
+	menuItem:subscribeEvent("Clicked", clickMethod, self)
 	menuItem:setTooltipText(tooltipText)
-	Admin.popup:addChildWindow(menuItem)
+	self.popup:addChildWindow(menuItem)
 	return menuItem
 end
 
---[[
-Add an icon to the icon bar and build a popup menu which will be shown when the icon is clicked
-]]--
-function Admin.buildWidget()
-
-	if MainIconBar.addIcon ~= nil then
-		--we'll use the "spell" icon from the "iconset_mason" for now until we get a better icon
-		local foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_mason", "spell")
-		Admin.adminIcon = MainIconBar.addIcon("admin", foreground, "Click here to access the admin menu.")
-		Admin.adminIcon:getButton():subscribeEvent("MouseClick", "Admin.admin_MouseClick")
-	
-		Admin.popup = windowManager:createWindow("EmberLook/PopupMenu")
-		Admin.popup = CEGUI.toPopupMenu(Admin.popup)
-		Admin.popup:subscribeEvent("MouseLeave", "Admin.popupMenu_MouseLeaves")
-		
-		Admin.addMenuItem("Model editor", "Admin.ModelEditor_Click", "Shows the model editor.")
-		Admin.addMenuItem("Terrain editor", "Admin.TerrainEditor_Click", "Shows the terrain editor.")
-		Admin.addMenuItem("Switch camera", "Admin.SwitchCamera_Click", "Switches camera mode between free flying and attached to the avatar.")
-		Admin.addMenuItem("Entity creator", "Admin.EntityCreator_Click", "Shows the entity creator.")
-		Admin.addMenuItem("Script editor", "Admin.ScriptEditor_Click", "Shows the script editor.")
-		Admin.addMenuItem("Entity browser", "Admin.EntityBrowser_Click", "Shows the entity browser.")
-		Admin.addMenuItem("Assets manager", "Admin.AssetsManager_Click", "Shows the assets manager.")
-		Admin.addMenuItem("Picking info", "Admin.PickingInfo_Click", "Shows mouse picking info.")
-		Admin.addMenuItem("Environment", "Admin.Environment_Click", "Shows environment widget.")
-		Admin.addMenuItem("Network log", "Admin.NetworkLog_Click", "Shows network log widget.")
-		Admin.addMenuItem("Visualize entities", "Admin.VisualizeEntities_Click", "Visualizes entities.")
-		Admin.addMenuItem("Type manager", 
-			function(args)
-				console:runCommand("/show_typeManager")
-				return true
-			end,
-			"Manage server types.")
-		
-	
-		root:addChildWindow(Admin.popup)
-	end 
-end
-
 --hide the menu when the mouse leaves it
-function Admin.popupMenu_MouseLeaves(args)
+function Admin:popupMenu_MouseLeaves(args)
 	--only hide if we're not moved to another menu item
 	local mousePosition = CEGUI.MouseCursor:getSingleton():getPosition()
-	local windowUnderTheCursor = Admin.popup:getTargetChildAtPosition(mousePosition)
+	local windowUnderTheCursor = self.popup:getTargetChildAtPosition(mousePosition)
 	if windowUnderTheCursor == nil then
-		Admin.popup:closePopupMenu()
+		self.popup:closePopupMenu()
 	end
 	return true
 end
@@ -68,30 +30,30 @@ end
 --[[
 Show the admin menu at the mouse position
 ]]--
-function Admin.admin_MouseClick(args)
-	Admin.popup:openPopupMenu()
+function Admin:admin_MouseClick(args)
+	self.popup:openPopupMenu()
 	
---[[	local adminContainer = Admin.adminIcon:getContainer()
+--[[	local adminContainer = self.adminIcon:getContainer()
 	local x = adminContainer:getXPosition():asAbsolute(0) + (adminContainer:getWidth():asAbsolute(0) * 0.5)
-	local y = adminContainer:getYPosition():asAbsolute(0) - Admin.popup.getHeight():asAbsolute(0);]]
+	local y = adminContainer:getYPosition():asAbsolute(0) - self.popup.getHeight():asAbsolute(0);]]
 	
 	local mousePosition = CEGUI.MouseCursor:getSingleton():getPosition()
-	local x = mousePosition.x - Admin.popup:getWidth():asAbsolute(0) * 0.5
-	local y = mousePosition.y - Admin.popup:getHeight():asAbsolute(0) + 5
+	local x = mousePosition.x - self.popup:getWidth():asAbsolute(0) * 0.5
+	local y = mousePosition.y - self.popup:getHeight():asAbsolute(0) + 5
 	
 	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,x), CEGUI.UDim(0,y))
 	
-	Admin.popup:setPosition(uPosition)
-	Admin.popup:moveToFront()
+	self.popup:setPosition(uPosition)
+	self.popup:moveToFront()
 	return true
 end
 
-function Admin.ModelEditor_Click(args)
+function Admin:ModelEditor_Click(args)
 	console:runCommand("/show_modelEdit")
 	return true
 end
 
-function Admin.TerrainEditor_Click(args)
+function Admin:TerrainEditor_Click(args)
 	if TerrainEditor == nil then
 		loadScript("TerrainEditor.lua")
 	end
@@ -99,49 +61,49 @@ function Admin.TerrainEditor_Click(args)
 	return true
 end
 
-function Admin.SwitchCamera_Click(args)
+function Admin:SwitchCamera_Click(args)
 	console:runCommand("/toggle_cameraattached")
 	return true
 end
 
-function Admin.EntityCreator_Click(args)
+function Admin:EntityCreator_Click(args)
 	console:runCommand("/show_advEntityCreator")
 	return true
 end
 
-function Admin.ScriptEditor_Click(args)
+function Admin:ScriptEditor_Click(args)
 	console:runCommand("/show_scriptEdit")
 	return true
 end
 
-function Admin.EntityBrowser_Click(args)
+function Admin:EntityBrowser_Click(args)
 	console:runCommand("/show_entityBrowser")
 	return true
 end
 
-function Admin.AssetsManager_Click(args)
+function Admin:AssetsManager_Click(args)
 	console:runCommand("/show_assetsManager")
 	return true
 end
 
-function Admin.PickingInfo_Click(args)
+function Admin:PickingInfo_Click(args)
 	console:runCommand("/show_pickingInfo")
 	return true
 end
 
-function Admin.Environment_Click(args)
+function Admin:Environment_Click(args)
 	console:runCommand("/show_environment")
 	return true
 end
 
-function Admin.NetworkLog_Click(args)
+function Admin:NetworkLog_Click(args)
 	console:runCommand("/show_serverLogger")
 	return true
 end
 
 
 
-function Admin.VisualizeEntities_Click(args)
+function Admin:VisualizeEntities_Click(args)
 	if emberServices:getConfigService():itemExists("authoring", "visualizations") then
 		local visualizeVariable = emberServices:getConfigService():getValue("authoring", "visualizations")
 		if visualizeVariable ~= nil then
@@ -152,15 +114,74 @@ function Admin.VisualizeEntities_Click(args)
 			end
 		end
     end
+    return true
 
 end
 
---only show the admin menu if we're logged in as an admin
-function Admin.createdAvatarEmberEntity(avatarEntity)
-	if emberOgre:getAvatar():isAdmin() then
-		Admin.buildWidget()
+--[[
+Add an icon to the icon bar and build a popup menu which will be shown when the icon is clicked
+]]--
+function Admin:buildWidget()
+
+	if MainIconBar.addIcon ~= nil then
+		--we'll use the "spell" icon from the "iconset_mason" for now until we get a better icon
+		local foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_mason", "spell")
+		self.adminIcon = MainIconBar.addIcon("admin", foreground, "Click here to access the admin menu.")
+		self.adminIcon:getButton():subscribeEvent("MouseClick", self.admin_MouseClick, self)
+	
+		self.popup = CEGUI.toPopupMenu(windowManager:createWindow("EmberLook/PopupMenu"))
+		self.popup:subscribeEvent("MouseLeave", self.popupMenu_MouseLeaves, self)
+		
+		self:addMenuItem("Model editor", self.ModelEditor_Click, "Shows the model editor.")
+		self:addMenuItem("Terrain editor", self.TerrainEditor_Click, "Shows the terrain editor.")
+		self:addMenuItem("Switch camera", self.SwitchCamera_Click, "Switches camera mode between free flying and attached to the avatar.")
+		self:addMenuItem("Entity creator", self.EntityCreator_Click, "Shows the entity creator.")
+		self:addMenuItem("Script editor", self.ScriptEditor_Click, "Shows the script editor.")
+		self:addMenuItem("Entity browser", self.EntityBrowser_Click, "Shows the entity browser.")
+		self:addMenuItem("Assets manager", self.AssetsManager_Click, "Shows the assets manager.")
+		self:addMenuItem("Picking info", self.PickingInfo_Click, "Shows mouse picking info.")
+		self:addMenuItem("Environment", self.Environment_Click, "Shows environment widget.")
+		self:addMenuItem("Network log", self.NetworkLog_Click, "Shows network log widget.")
+		self:addMenuItem("Visualize entities", self.VisualizeEntities_Click, "Visualizes entities.")
+		self:addMenuItem("Type manager", 
+			function(args)
+				console:runCommand("/show_typeManager")
+				return true
+			end,
+			"Manage server types.")
+		
+	
+		root:addChildWindow(self.popup)
+	end 
+end
+
+function Admin:shutdown()
+	if self.popup ~= nil then
+		windowManager:destroyWindow(self.popup)
+		self.popup = nil
+	end
+	if self.adminIcon ~= nil then
+		MainIconBar.removeIcon(self.adminIcon)
+		self.adminIcon:delete()
+		self.adminIcon = nil
 	end
 end
 
 --listen for when we've gotten an avatar entity, and see if we're admin
-connect(Admin.connectors, emberOgre.EventCreatedAvatarEntity, "Admin.createdAvatarEmberEntity")
+Admin.createdAvatarConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(
+	function(avatarEntity)
+		--only show the admin menu if we're logged in as an admin
+		if emberOgre:getAvatar():isAdmin() then
+			admin = {connectors={}, adminIcon=nil}
+			setmetatable(admin, {__index = Admin})
+			
+			admin:buildWidget()
+			
+			connect(admin.connectors, avatarEntity.BeingDeleted, 
+				function()
+					admin:shutdown()
+					admin = {}
+				end)
+		end
+	end
+)
