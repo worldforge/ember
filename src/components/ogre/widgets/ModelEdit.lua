@@ -581,7 +581,7 @@ function ModelEdit.updateModelContentList()
 				
 				local treeItem2 = EmberOgre.Gui.ColouredTreeItem:new(name .. partVisible, table.getn(ModelEdit.modelContentsItems))
 				treeItem2:toggleIsOpen()
-				treeItem2:setTooltipText("Part '" .. name .. "'")
+				treeItem2:setTooltipText(CEGUI.String("Part '" .. name .. "'"))
 				treeItem:addItem(treeItem2)
 			
 				if part ~= nil then
@@ -600,7 +600,7 @@ function ModelEdit.updateModelContentList()
 						
 						local treeItem3 = EmberOgre.Gui.ColouredTreeItem:new(submeshname, table.getn(ModelEdit.modelContentsItems))
 						treeItem3:toggleIsOpen()
-						treeItem3:setTooltipText("Submesh '" .. submeshname .. "'")
+						treeItem3:setTooltipText(CEGUI.String("Submesh '" .. submeshname .. "'"))
 						treeItem2:addItem(treeItem3)
 					end
 				end
