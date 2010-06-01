@@ -189,7 +189,7 @@ namespace Ogre {
         @param skelName The name of the .skeleton file to use, or an empty string to use
             no skeleton
         */
-//         void setSkeletonName(const String& skelName);
+        void setSkeletonName(const std::string& skelName);
 
         /** Returns true if this Mesh has a linked Skeleton. */
         bool hasSkeleton(void) const;

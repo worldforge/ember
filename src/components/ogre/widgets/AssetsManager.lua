@@ -207,6 +207,7 @@ end
 function AssetsManager.MeshInfoSaveButton_Clicked(args)
 	if AssetsManager.meshes.current ~= nil and AssetsManager.meshes.current.meshPtr ~= nil then
 		local mesh = AssetsManager.meshes.current.meshPtr:get()
+		mesh:setSkeletonName(AssetsManager.meshes.controls.skeletonPath:getText())
 		--Make sure that a path is specified for the mesh 
 --		if mesh:getOrigin() ~= "" then
 			AssetsManager.helper:exportMesh(AssetsManager.meshes.current.meshPtr, AssetsManager.helper:resolveFilePathForMesh(AssetsManager.meshes.current.meshPtr))
@@ -225,6 +226,8 @@ function AssetsManager.showMesh(meshName)
 	AssetsManager.meshes.current.meshPtr = meshPtr
 
 	AssetsManager.fillSubMeshList(AssetsManager.meshes.current.meshPtr)
+	local mesh = meshPtr:get()
+	AssetsManager.meshes.controls.skeletonPath:setText(mesh:getSkeletonName())
 end
 
 function AssetsManager.getSubMeshName(mesh, index)
@@ -431,6 +434,7 @@ function AssetsManager.buildWidget()
 		AssetsManager.meshes.controls.submeshesListbox = CEGUI.toListbox(AssetsManager.widget:getWindow("SubMeshesList"))
 		AssetsManager.meshes.controls.materialListbox = CEGUI.toListbox(AssetsManager.widget:getWindow("SubMeshMaterialsList"))
 		AssetsManager.meshes.controls.materialFilter = CEGUI.toEditbox(AssetsManager.widget:getWindow("SubMeshMaterialsFilter"))
+		AssetsManager.meshes.controls.skeletonPath = CEGUI.toEditbox(AssetsManager.widget:getWindow("MeshSkeletonPath"))
 	-- 	AssetsManager.sceneNodes.nodeInfo = AssetsManager.widget:getWindow("SceneNodeInfo")
 		AssetsManager.meshes.controls.filter = CEGUI.toEditbox(AssetsManager.widget:getWindow("FilterMeshes"))
 		AssetsManager.meshes.listholder = EmberOgre.Gui.ListHolder:new_local(AssetsManager.meshes.controls.listbox, AssetsManager.meshes.controls.filter)

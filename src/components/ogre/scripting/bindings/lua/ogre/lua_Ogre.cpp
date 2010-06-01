@@ -2776,6 +2776,40 @@ static int tolua_Ogre_Ogre_Mesh_getBounds00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setSkeletonName of class  Ogre::Mesh */
+#ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Mesh_setSkeletonName00
+static int tolua_Ogre_Ogre_Mesh_setSkeletonName00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Ogre::Mesh",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Ogre::Mesh* self = (Ogre::Mesh*)  tolua_tousertype(tolua_S,1,0);
+  const std::string skelName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSkeletonName'",NULL);
+#endif
+  {
+   self->setSkeletonName(skelName);
+   tolua_pushcppstring(tolua_S,(const char*)skelName);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSkeletonName'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: hasSkeleton of class  Ogre::Mesh */
 #ifndef TOLUA_DISABLE_tolua_Ogre_Ogre_Mesh_hasSkeleton00
 static int tolua_Ogre_Ogre_Mesh_hasSkeleton00(lua_State* tolua_S)
@@ -19975,6 +20009,7 @@ TOLUA_API int tolua_Ogre_open (lua_State* tolua_S)
     tolua_function(tolua_S,"getNumSubMeshes",tolua_Ogre_Ogre_Mesh_getNumSubMeshes00);
     tolua_function(tolua_S,"getSubMesh",tolua_Ogre_Ogre_Mesh_getSubMesh00);
     tolua_function(tolua_S,"getBounds",tolua_Ogre_Ogre_Mesh_getBounds00);
+    tolua_function(tolua_S,"setSkeletonName",tolua_Ogre_Ogre_Mesh_setSkeletonName00);
     tolua_function(tolua_S,"hasSkeleton",tolua_Ogre_Ogre_Mesh_hasSkeleton00);
     tolua_function(tolua_S,"getSkeletonName",tolua_Ogre_Ogre_Mesh_getSkeletonName00);
     tolua_function(tolua_S,"getNumLodLevels",tolua_Ogre_Ogre_Mesh_getNumLodLevels00);

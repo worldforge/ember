@@ -149,14 +149,25 @@
 								</Window>
 								<Window Type='EmberLook/Listbox' Name='SubMeshMaterialsList'>
 									<Property Name='UnifiedPosition' Value='{{0,210},{0,5}}'/>
-									<Property Name='UnifiedSize' Value='{{0,200},{1,-30}}'/>
+									<Property Name='UnifiedSize' Value='{{0,200},{1,-45}}'/>
 									<Property Name='InheritsAlpha' Value='True'/>
 									<Event Name="ItemSelectionChanged" Function="AssetsManager.SubMeshMaterialsList_ItemSelectionChanged" />
 								</Window>
 								<Window Type='EmberLook/Editbox' Name='SubMeshMaterialsFilter'>
-									<Property Name='UnifiedPosition' Value='{{0,210},{1,-30}}'/>
+									<Property Name='UnifiedPosition' Value='{{0,210},{1,-35}}'/>
 									<Property Name='UnifiedSize' Value='{{0,150},{0,25}}'/>
 								</Window>								
+								<Window Type='EmberLook/StaticText' Name='MeshSkeletonPathText'>
+									<Property Name='UnifiedPosition' Value='{{0,420},{0,5}}'/>
+									<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+									<Property Name='FrameEnabled' Value='false' />
+									<Property Name='BackgroundEnabled' Value='false' />
+									<Property Name='Text' Value='Skeleton path:' />
+								</Window>
+								<Window Type='EmberLook/Editbox' Name='MeshSkeletonPath'>
+									<Property Name='UnifiedPosition' Value='{{0,420},{0,30}}'/>
+									<Property Name='UnifiedSize' Value='{{0,200},{0,25}}'/>
+								</Window>	
 								<Window Type='EmberLook/Button' Name='MeshInfoSaveButton'>
 									<Property Name='UnifiedPosition' Value='{{0,55},{0,5}}'/>
 									<Property Name='UnifiedSize' Value='{{0,50},{0,25}}'/>
