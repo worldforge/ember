@@ -32,7 +32,6 @@
 			<Window Type='EmberLook/Slider' Name='FogDistance'>
 				<Property Name='UnifiedSize' Value='{{1.0,-20.0},{0.0,15.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,90.0}}'/>
-				<Property Name='Value' Value='0.25'/>
 			</Window>
 		</Window>
 	</Window>

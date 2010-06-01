@@ -3404,7 +3404,6 @@
     ***************************************************
     -->
     <WidgetLook name="EmberLook/Slider">
-        <Property name="HorizontalSlider" value="True" />
         <Property name="MouseButtonDownAutoRepeat" value="True" />
         <Property name="WantsMultiClickEvents" value="False" />
         <NamedArea name="ThumbTrackArea">
