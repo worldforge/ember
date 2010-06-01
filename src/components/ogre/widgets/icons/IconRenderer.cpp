@@ -267,6 +267,11 @@ DelayedIconRendererWorker::DelayedIconRendererWorker(IconRenderer& renderer) :
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
+DelayedIconRendererWorker::~DelayedIconRendererWorker()
+{
+	Ogre::Root::getSingleton().removeFrameListener(this);
+}
+
 void DelayedIconRendererWorker::render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry)
 {
 	DelayedIconRendererEntry entry(*this, model, icon);

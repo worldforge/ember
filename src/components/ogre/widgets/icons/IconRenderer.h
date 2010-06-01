@@ -114,6 +114,9 @@ class DelayedIconRendererWorker : public Ogre::FrameListener, public IconRenderW
 friend class DelayedIconRendererEntry;
 public:
 	DelayedIconRendererWorker(IconRenderer& renderer);
+
+	virtual ~DelayedIconRendererWorker();
+
 	/**
 	* Calles by Ogre. At each frame we'll see if there's any entries in our queue. If so, we'll call frameStarted on the first entry in the list.
 	*/

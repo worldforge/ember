@@ -197,6 +197,7 @@ TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
 
 TerrainManager::~TerrainManager()
 {
+	Ogre::Root::getSingleton().removeFrameListener(this);
 
 	//Deleting the task queue will purge it, making sure that all jobs are processed first.
 	delete mTaskQueue;

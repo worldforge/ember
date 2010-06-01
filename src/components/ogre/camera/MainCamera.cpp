@@ -108,7 +108,7 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 
 MainCamera::~MainCamera()
 {
-
+	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
 Ogre::Camera& MainCamera::getCamera()
