@@ -1,9 +1,14 @@
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-METASOURCES = AUTO
+SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 
-#if USE_LUA
-#liblua_scripting_a_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
+.pkg.cxx:
+	cd $(srcdir) && $(top_srcdir)/scripts/update_lua_bindings.sh `basename $@ .cxx` `basename $@ .cxx`.pkg $(abs_builddir)/`basename $@` $<
+
+INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+
 noinst_LIBRARIES = liblua_Varconf.a
-liblua_Varconf_a_SOURCES = lua_Varconf.cpp 
-noinst_HEADERS = 
-#endif
+liblua_Varconf_a_SOURCES = Varconf.cxx
+
+CLEANFILES = Varconf.cxx
+EXTRA_DIST = Varconf.pkg variable.pkg
+
+bindings: clean all

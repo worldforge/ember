@@ -494,6 +494,8 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/widgets/Makefile
 		 src/components/ogre/widgets/adapters/Makefile
 		 src/components/ogre/widgets/adapters/atlas/Makefile
+		 src/components/ogre/widgets/adapters/atlas/bindings/Makefile
+		 src/components/ogre/widgets/adapters/atlas/bindings/lua/Makefile
 		 src/components/ogre/environment/caelum/Makefile
 		 src/components/ogre/environment/pagedgeometry/Makefile
 		 src/components/ogre/environment/meshtree/Makefile

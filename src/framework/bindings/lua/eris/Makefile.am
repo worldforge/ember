@@ -1,9 +1,15 @@
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-METASOURCES = AUTO
+SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 
-#if USE_LUA
-#liblua_scripting_a_LDFLAGS = -nodefaultlibs -rdynamic -export-dynamic -dlpreopen self
+.pkg.cxx:
+	cd $(srcdir) && $(top_srcdir)/scripts/update_lua_bindings.sh `basename $@ .cxx` `basename $@ .cxx`.pkg $(abs_builddir)/`basename $@` $<
+
+INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+
 noinst_LIBRARIES = liblua_Eris.a
-liblua_Eris_a_SOURCES = lua_Eris.cpp 
+liblua_Eris_a_SOURCES = Eris.cxx
+
+CLEANFILES = Eris.cxx
+EXTRA_DIST = Account.pkg Avatar.pkg Connection.pkg Entity.pkg Eris.pkg Metaserver.pkg ServerInfo.pkg Task.pkg TypeInfo.pkg Types.pkg TypeService.pkg View.pkg
 noinst_HEADERS = required.h
-#endif
+
+bindings: clean all

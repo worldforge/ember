@@ -1,3 +1,4 @@
+SUBDIRS=bindings
 current = $(PWD)
 
 dist-hook:
