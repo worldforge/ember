@@ -1,7 +1,7 @@
 SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 
 .pkg.cxx:
-	cd $(srcdir) && $(top_srcdir)/scripts/update_lua_bindings.sh `basename $@ .cxx` `basename $@ .cxx`.pkg $(abs_builddir)/`basename $@` $<
+	cd $(srcdir) && TOLUAXX=${TOLUAXX} $(top_srcdir)/scripts/update_lua_bindings.sh `basename $@ .cxx` `basename $@ .cxx`.pkg $(abs_builddir)/`basename $@` $<
 
 INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
@@ -9,7 +9,7 @@ noinst_LIBRARIES = liblua_AtlasAdapters.a
 liblua_AtlasAdapters_a_SOURCES = AtlasAdapters.cxx
 
 CLEANFILES = AtlasAdapters.cxx
-EXTRA_DIST = AdapterBase.pkg AdapterFactory.pkg AreaAdapter.pkg bindings.pkg ListAdapter.pkg MapAdapter.pkg NumberAdapter.pkg OrientationAdapter.pkg \
+EXTRA_DIST = AdapterBase.pkg AdapterFactory.pkg AreaAdapter.pkg AtlasAdapters.pkg ListAdapter.pkg MapAdapter.pkg NumberAdapter.pkg OrientationAdapter.pkg \
  PolygonAdapter.pkg Position2DAdapter.pkg PositionAdapter.pkg SizeAdapter.pkg StaticAdapter.pkg StringAdapter.pkg TerrainModAdapter.pkg
 
 bindings: clean all

@@ -272,6 +272,8 @@ AC_CHECK_LIB([CEGUItoluapp], [main],
     ]
 )
 
+AM_CHECK_TOLUAXX
+
 # We have lua and tolua++. Now, check for CEGUI lua module
 AC_CHECK_LIB([CEGUILuaScriptModule], [main],
     [

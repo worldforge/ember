@@ -76,6 +76,19 @@ AC_ARG_WITH(cppunit-exec-prefix,[  --with-cppunit-exec-prefix=PFX  Exec prefix w
   AC_SUBST(CPPUNIT_LIBS)
 ])
 
+AC_DEFUN([AM_CHECK_TOLUAXX],
+[
+	AC_ARG_WITH(toluaxx-prefix,AS_HELP_STRING([--with-tolua++=CMD],[Tolua++ command (default=tolua++)]),
+    	toluaxx_command="$withval", toluaxx_command="tolua++")
+  
+	AC_CHECK_TOOL(TOLUAXX, $toluaxx_command)
+
+	if test "x$TOLUAXX" = "x"; then
+		AC_MSG_ERROR([Could not find a working tolua++ command (tried '$toluaxx_command'). Use the --with-tolua++ switch to set the proper command to use.])
+	fi
+])
+
+
 dnl worldforge check for the GL library,
 dnl the -l flag is added directly to LIBS
 
