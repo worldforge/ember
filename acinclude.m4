@@ -78,7 +78,7 @@ AC_ARG_WITH(cppunit-exec-prefix,[  --with-cppunit-exec-prefix=PFX  Exec prefix w
 
 AC_DEFUN([AM_CHECK_TOLUAXX],
 [
-	AC_ARG_WITH(toluaxx-prefix,AS_HELP_STRING([--with-tolua++=CMD],[Tolua++ command (default=tolua++)]),
+	AC_ARG_WITH(tolua++,AS_HELP_STRING([--with-tolua++=CMD],[Tolua++ command (default=tolua++)]),
     	toluaxx_command="$withval", toluaxx_command="tolua++")
   
 	AC_CHECK_TOOL(TOLUAXX, $toluaxx_command)
