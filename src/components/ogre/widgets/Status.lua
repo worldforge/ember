@@ -1,145 +1,158 @@
 Status = {connectors={}}
+StatusInstance = {}
 
-function Status.createStatusInstance(name)
-	local wrapper = {}
-	wrapper.widget = guiManager:createWidget()
-	wrapper.widget:loadMainSheet("Status.layout", "Status_" .. name .. "/")
-	wrapper.widget:setIsActiveWindowOpaque(false)
-	
-	wrapper.healthBar = CEGUI.toProgressBar(wrapper.widget:getWindow("HealthBar"))
-	wrapper.staminaBar = CEGUI.toProgressBar(wrapper.widget:getWindow("StaminaBar"))
-	wrapper.strengthBar = CEGUI.toProgressBar(wrapper.widget:getWindow("StrengthBar"))
-	
-	wrapper.renderImage = wrapper.widget:getWindow("RenderImage")
-	wrapper.renderer = EmberOgre.Gui.ModelRenderer:new_local(wrapper.renderImage)
-	wrapper.renderer:setActive(false)
-	wrapper.renderer:setIsInputCatchingAllowed(false)
-	
-	wrapper.nameWindow = wrapper.widget:getWindow("EntityName")
-	
-	wrapper.entity = nil
-	
-	wrapper.updateStatus = function()
-		if wrapper.entity:hasAttr("status") then
-			local statusElement = wrapper.entity:valueOfAttr("status")
-			local status = 0
-			if statusElement:isFloat() then
-				status = statusElement:asFloat()
-			end
-			wrapper.healthBar:setProgress(status)
-			wrapper.healthBar:setTooltipText("Health: " .. status * 100 .. "/100")
+function StatusInstance:updateStatus()
+	if self.entity:hasAttr("status") then
+		local statusElement = self.entity:valueOfAttr("status")
+		local status = 0
+		if statusElement:isFloat() then
+			status = statusElement:asFloat()
 		end
-		if wrapper.entity:hasAttr("stamina") then
-			local element = wrapper.entity:valueOfAttr("stamina")
-			local value = 0
-			if element:isFloat() then
-				value = element:asFloat()
-			end
-			wrapper.staminaBar:setProgress(value)
-			wrapper.staminaBar:setTooltipText("Stamina: " .. value * 100 .. "/100")
+		self.healthBar:setProgress(status)
+		self.healthBar:setTooltipText("Health: " .. status * 100 .. "/100")
+	end
+	if self.entity:hasAttr("stamina") then
+		local element = self.entity:valueOfAttr("stamina")
+		local value = 0
+		if element:isFloat() then
+			value = element:asFloat()
 		end
-		if wrapper.entity:hasAttr("strength") then
-			local element = wrapper.entity:valueOfAttr("strength")
-			local value = 0
-			if element:isFloat() then
-				value = element:asFloat()
-			end
-			wrapper.strengthBar:setProgress(value)
-			wrapper.strengthBar:setTooltipText("Strength: " .. value * 100 .. "/100")
+		self.staminaBar:setProgress(value)
+		self.staminaBar:setTooltipText("Stamina: " .. value * 100 .. "/100")
+	end
+	if self.entity:hasAttr("strength") then
+		local element = self.entity:valueOfAttr("strength")
+		local value = 0
+		if element:isFloat() then
+			value = element:asFloat()
+		end
+		self.strengthBar:setProgress(value)
+		self.strengthBar:setTooltipText("Strength: " .. value * 100 .. "/100")
+	end
+end
+
+function StatusInstance:setEntity(entity)
+	self.entity = entity
+
+	if self.connectors ~= nil then
+		if self.connectors.changedConnector ~= nil then
+			self.connectors.changedConnector:disconnect()
+		end
+		if self.connectors.deleteConnector ~= nil then
+			self.connectors.deleteConnector:disconnect()
 		end
 	end
-	
-	wrapper.setEntity = function(entity)
-		wrapper.entity = entity
-		if entity == nil then
-			wrapper.widget:hide()
+	self.connectors = {}
+
+	if entity == nil then
+		self.widget:hide()
+	else
+		self.connectors.changedConnector = EmberOgre.LuaConnector:new_local(entity.Changed):connect(self.entity_Changed, self)
+		self.connectors.deleteConnector = EmberOgre.LuaConnector:new_local(entity.BeingDeleted):connect(self.entity_BeingDeleted, self)
+
+		if entity:getName() == "" then
+			self.nameWindow:setText(entity:getType():getName())
 		else
-			if entity:getName() == "" then
-				wrapper.nameWindow:setText(entity:getType():getName())
-			else
-				wrapper.nameWindow:setText(entity:getName())
-			end
-			wrapper.updateStatus()
-			
-			--don't cast the world
-			--HACK: we need to refactor the entity classes so we don't have to do it like this
-			local model = EmberOgre.Model.ModelRepresentationManager:getSingleton():getModelForEntity(entity)
-			if model ~= nil then
-				wrapper.renderer:showModel(model:getDefinition():get():getName())
-				wrapper.renderer:setCameraDistance(0.75)
-			else 
-				wrapper.renderer:showModel("")
-			end
-			wrapper.renderer:updateRender()
--- 			wrapper.renderer:pitch(Ogre.Degree:new_local(-45))
-			wrapper.widget:show()
+			self.nameWindow:setText(entity:getName())
+		end
+		self:updateStatus()
+		
+		local model = EmberOgre.Model.ModelRepresentationManager:getSingleton():getModelForEntity(entity)
+		if model ~= nil then
+			self.renderer:showModel(model:getDefinition():get():getName())
+			self.renderer:setCameraDistance(0.75)
+		else 
+			self.renderer:showModel("")
+		end
+		self.renderer:updateRender()
+		self.widget:show()
 
+	end
+end
+
+function StatusInstance:entity_Changed(keys)
+	self:updateStatus()
+end
+
+function StatusInstance:entity_BeingDeleted()
+	self:setEntity(nil)
+end
+
+function StatusInstance:shutdown()
+	if self.connectors ~= nil then
+		if self.connectors.changedConnector ~= nil then
+			self.connectors.changedConnector:disconnect()
+		end
+		if self.connectors.deleteConnector ~= nil then
+			self.connectors.deleteConnector:disconnect()
 		end
 	end
-	wrapper.widget:hide()
-	return wrapper
+	
+	if self.renderer ~= nil then
+		self.renderer:delete()
+	end
+	if self.widget ~= nil then
+		guiManager:destroyWidget(self.widget)
+	end
 end
 
-function Status.buildWidget()
+function Status:createStatusInstance(name)
+	local statusInstance = {}
+	setmetatable(statusInstance, {__index = StatusInstance})
+	statusInstance.widget = guiManager:createWidget()
+	statusInstance.widget:loadMainSheet("Status.layout", "Status_" .. name .. "/")
+	statusInstance.widget:setIsActiveWindowOpaque(false)
+	
+	statusInstance.healthBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("HealthBar"))
+	statusInstance.staminaBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("StaminaBar"))
+	statusInstance.strengthBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("StrengthBar"))
+	
+	statusInstance.renderImage = statusInstance.widget:getWindow("RenderImage")
+	statusInstance.renderer = EmberOgre.Gui.ModelRenderer:new(statusInstance.renderImage)
+	statusInstance.renderer:setActive(false)
+	statusInstance.renderer:setIsInputCatchingAllowed(false)
+	
+	statusInstance.nameWindow = statusInstance.widget:getWindow("EntityName")
+	
+	statusInstance.entity = nil
 
---[[	Status.widget = guiManager:createWidget()
-	Status.widget:loadMainSheet("Status.layout", "Status/")
-	
-	Status.healthBar = CEGUI.toProgressBar(Status.widget:getWindow("HealthBar"))
-	Status.staminaBar = CEGUI.toProgressBar(Status.widget:getWindow("StaminaBar"))
-	Status.strengthBar = CEGUI.toProgressBar(Status.widget:getWindow("StrengthBar"))
-	
--- 	Status.healthBar:setProgress(0.5)
--- 	Status.staminaBar:setProgress(0.5)
+	statusInstance.widget:hide()
+	return statusInstance
+end
 
-	Status.nameWindow = Status.widget:getWindow("EntityName")]]
+function Status:buildWidget(avatarEntity)
 	
-	Status.avatarStatus = Status.createStatusInstance("avatar")
+	self.avatarStatus = self:createStatusInstance("avatar")
 	
-	Status.npcStatus = Status.createStatusInstance("npc")
+	self.npcStatus = self:createStatusInstance("npc")
 	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,150), CEGUI.UDim(0,0))
-	Status.npcStatus.widget:getMainWindow():setPosition(uPosition )
+	self.npcStatus.widget:getMainWindow():setPosition(uPosition )
 	
-	connect(Status.connectors, emberOgre.EventCreatedAvatarEntity, "Status.emberOgre_CreatedAvatarEntity")
-
---	Tasks.widget:hide()
+	connect(self.connectors, guiManager.EventEntityAction, Status.handleAction, self)
+	self.avatarStatus:setEntity(avatarEntity)
 
 end
 
-function Status.emberOgre_CreatedAvatarEntity(avatarEntity)
---wire up the listening for status
-	connect(Status.connectors, guiManager.EventEntityAction, "Status.handleAction")
-	connect(Status.connectors, avatarEntity.Changed, "Status.entity_Changed")
-	Status.avatarStatus.setEntity(avatarEntity)
-end
-
-function Status.handleAction(action, entity) 
-
+function Status:handleAction(action, entity) 
 	if action == "use" or action == "inspect" or action == "attack" then
-		Status.observerNpc(entity)
+		self.npcStatus:setEntity(entity)
 	end
 end
 
-function Status.observerNpc(entity)
-	Status.npcStatus.setEntity(entity)
-	if Status.connectors.npcChangedConnector ~= nil then
-		Status.connectors.npcChangedConnector:disconnect()
+function Status:shutdown()
+	disconnectAll(self.connectors)
+	self.npcStatus:shutdown()
+	self.avatarStatus:shutdown()
+end
+
+Status.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
+		status = {connectors={} }
+		setmetatable(status, {__index = Status})
+		status:buildWidget(avatarEntity)
+		connect(status.connectors, avatarEntity.BeingDeleted, function()
+				status:shutdown()
+				status = nil
+			end
+		)		
 	end
-	if entity ~= nil then
-		Status.connectors.npcChangedConnector = EmberOgre.LuaConnector:new_local(entity.Changed):connect("Status.npc_Changed")
-		Status.connectors.npcConnector = EmberOgre.LuaConnector:new_local(entity.BeingDeleted):connect("Status.npc_BeingDeleted")
-	end
-end
-
-function Status.entity_Changed(keys)
-	Status.avatarStatus.updateStatus()
-end
-
-function Status.npc_Changed(keys)
-	Status.npcStatus.updateStatus()
-end
-
-function Status.npc_BeingDeleted()
-	Status.observerNpc(nil)
-end
-Status.buildWidget()
+)
