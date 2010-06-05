@@ -95,6 +95,30 @@ void ServerService::stop(int code)
 	disconnect();
 }
 
+void ServerService::cleanUpAccount()
+{
+	try {
+		if (mAccount) {
+			Eris::Account* tempAccount = mAccount;
+			mAccount = 0;
+			delete tempAccount;
+		}
+	} catch (const std::exception& e) {
+		S_LOG_WARNING("Got error on account deletion." << e);
+	} catch (...) {
+		S_LOG_WARNING( "Got unknown error on account deletion.");
+	}
+	DestroyedAccount.emit();
+	if (mView) {
+		DestroyedView.emit();
+		mView = 0;
+	}
+	if (mAvatar) {
+		DestroyedAvatar.emit();
+		mAvatar = 0;
+	}
+}
+
 /* Interface method for connecting to host */
 bool ServerService::connect(const std::string& host, short port)
 {
@@ -155,18 +179,6 @@ void ServerService::disconnect()
 	if (!mConn)
 		return;
 	try {
-		Eris::Account* tempAccount = mAccount;
-		mAccount = 0;
-		delete tempAccount;
-		DestroyedAccount.emit();
-	} catch (const std::exception& e) {
-		S_LOG_WARNING("Got error on account deletion." << e);
-		return;
-	} catch (...) {
-		S_LOG_WARNING( "Got unknown error on account deletion.");
-		return;
-	}
-	try {
 		mConn->disconnect();
 	} catch (const std::exception& e) {
 		S_LOG_WARNING("Got error on disconnect." << e);
@@ -215,9 +227,7 @@ void ServerService::connected()
 bool ServerService::disconnecting()
 {
 	S_LOG_INFO("Disconnecting");
-	Eris::Account* tempAccount = mAccount;
-	mAccount = 0;
-	delete tempAccount;
+	cleanUpAccount();
 	return true;
 }
 
@@ -231,8 +241,12 @@ void ServerService::disconnected()
 	mConnected = false;
 	delete mOOGChat;
 	mOOGChat = NULL;
+	cleanUpAccount();
 
 	ConsoleBackend::getSingleton().pushMessage("Disconnected from server.");
+
+	delete mServerAdapter;
+	mServerAdapter = new NonConnectedAdapter();
 }
 
 void ServerService::statusChanged(Eris::BaseConnection::Status status)
@@ -282,8 +296,6 @@ void ServerService::loginFailure(const std::string& msg)
 
 void ServerService::loginSuccess()
 {
-	//mView = new Eris::View(mAccount, mConn);
-
 	S_LOG_INFO("Login Success.");
 	ConsoleBackend::getSingleton().pushMessage("Login Successful");
 	LoginSuccess.emit(mAccount);
@@ -311,19 +323,17 @@ void ServerService::gotAvatarSuccess(Eris::Avatar* avatar)
 
 void ServerService::gotAvatarDeactivated(Eris::Avatar* avatar)
 {
-	mAvatar = 0;
 	mView = 0;
-	delete mServerAdapter;
-	mServerAdapter = new NonConnectedAdapter();
+	DestroyedView.emit();
+	mAvatar = 0;
+	DestroyedAvatar.emit();
 }
 
 void ServerService::logoutComplete(bool clean)
 {
-	//     delete mView;
-	mView = 0;
-
 	S_LOG_INFO("Logout Complete cleanness=" << clean);
 	ConsoleBackend::getSingleton().pushMessage("Logged out from server");
+	cleanUpAccount();
 }
 
 void ServerService::runCommand(const std::string &command, const std::string &args)
@@ -625,6 +635,5 @@ void ServerService::setTypeInfo(const Atlas::Objects::Root& typeInfo)
 {
 	mServerAdapter->setTypeInfo(typeInfo);
 }
-
 
 } // namespace Ember

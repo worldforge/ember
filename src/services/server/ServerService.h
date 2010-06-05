@@ -203,6 +203,8 @@ public:
 	 */
 	sigc::signal<void> DestroyedAccount;
 
+	sigc::signal<void> DestroyedAvatar;
+	sigc::signal<void> DestroyedView;
 	/**
 	 * @brief Emitted when an object is about to be sent to the server.
 	 */
@@ -301,6 +303,11 @@ private:
 	void loginSuccess();
 
 	void logoutComplete(bool clean);
+
+	/**
+	 * @brief Destroys the account object and emits suitable signals.
+	 */
+	void cleanUpAccount();
 
 };
 
