@@ -623,8 +623,15 @@ void EmberOgre::preloadMedia(void)
 void EmberOgre::Server_GotView(Eris::View* view)
 {
 	mEmberEntityFactory = new EmberEntityFactory(*view, *view->getAvatar()->getConnection()->getTypeService(), *mMoveManager, *mSceneMgr);
+	//When calling Eris::View::registerFactory ownership is transferred
 	view->registerFactory(mEmberEntityFactory);
 	view->getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberOgre::View_gotAvatarCharacter));
+}
+
+void EmberOgre::Server_DestroyedView()
+{
+	//The Eris::View will handle the deletion of the factory when shutting down, but we need to reset the reference.
+	mEmberEntityFactory = 0;
 }
 
 void EmberOgre::Server_GotConnection(Eris::Connection* connection)
@@ -738,6 +745,7 @@ void EmberOgre::Application_ServicesInitialized()
 {
 	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotConnection));
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
+	Ember::EmberServices::getSingleton().getServerService()->DestroyedView.connect(sigc::mem_fun(*this, &EmberOgre::Server_DestroyedView));
 
 	mScriptingResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));
 	Ember::EmberServices::getSingleton().getScriptingService()->setResourceProvider(mScriptingResourceProvider.get());

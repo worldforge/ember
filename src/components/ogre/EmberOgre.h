@@ -549,6 +549,11 @@ protected:
 	void Server_GotView(Eris::View* world);
 
 	/**
+	 * @brief Sent from the server service when the View instance is destroyed.
+	 */
+	void Server_DestroyedView();
+
+	/**
 	 * @brief Sent from the server when we've successfully connected.
 	 *
 	 * @param connection
