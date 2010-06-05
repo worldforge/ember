@@ -174,7 +174,7 @@ public:
 };
 
 TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mSceneManagerAdapter(0), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation())
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mSceneManagerAdapter(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation())
 {
 	mSceneManagerAdapter = adapter;
 
@@ -201,6 +201,8 @@ TerrainManager::~TerrainManager()
 
 	//Deleting the task queue will purge it, making sure that all jobs are processed first.
 	delete mTaskQueue;
+
+	getAdapter()->reset();
 
 	for (PageVector::iterator J = mPages.begin(); J != mPages.end(); ++J) {
 		delete (*J);
@@ -265,7 +267,6 @@ TerrainShader* TerrainManager::createShader(const TerrainLayerDefinition* layerD
 
 void TerrainManager::addTerrainMod(TerrainMod* terrainMod)
 {
-	Eris::TerrainMod* erisTerrainMod(terrainMod->getErisMod());
 	/// Listen for changes to the modifier
 	terrainMod->EventModChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::TerrainMod_Changed), terrainMod));
 	/// Listen for deletion of the modifier
