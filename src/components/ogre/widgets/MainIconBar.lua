@@ -73,7 +73,9 @@ function MainIconBar.buildWidget()
 	
 	
 	connect(MainIconBar.connectors, emberOgre.EventMovementControllerCreated, "MainIconBar.EmberOgre_movementControllerCreated")
-
+	connect(MainIconBar.connectors, emberOgre.EventMovementControllerDestroyed, function()
+			MainIconBar.movementModeIcon:getContainer():setVisible(false)
+		end)
 end
 
 --just show the help window when the help button is clicked
