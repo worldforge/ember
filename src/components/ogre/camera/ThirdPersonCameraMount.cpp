@@ -36,6 +36,16 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager)
 	createRayQueries(sceneManager);
 }
 
+ThirdPersonCameraMount::~ThirdPersonCameraMount()
+{
+	if (mCameraRootNode) {
+		//This will handle the mCameraPitchNode and the mCameraNode too.
+		mCameraRootNode->removeAndDestroyAllChildren();
+		mCameraRootNode->getCreator()->destroySceneNode(mCameraRootNode);
+	}
+}
+
+
 void ThirdPersonCameraMount::attachToNode(Ogre::Node* sceneNode)
 {
 	if (sceneNode == mCameraRootNode->getParentSceneNode()) {

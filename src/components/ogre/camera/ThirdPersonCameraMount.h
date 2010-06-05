@@ -47,6 +47,8 @@ public:
 	 */
 	ThirdPersonCameraMount(Ogre::SceneManager& sceneManager);
 
+	virtual ~ThirdPersonCameraMount();
+
 	/**
 	 * emitted when the distance between the camera and the  has changed
 	 * @param Ogre::Real the new distance

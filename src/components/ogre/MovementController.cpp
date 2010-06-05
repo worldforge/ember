@@ -107,6 +107,15 @@ MovementController::MovementController(Avatar& avatar) :
 }
 MovementController::~MovementController()
 {
+	if (mFreeFlyingNode) {
+		mFreeFlyingNode->getCreator()->destroySceneNode(mFreeFlyingNode);
+	}
+	if (mDecalNode) {
+		mDecalNode->getCreator()->destroySceneNode(mDecalNode);
+	}
+	if (mDecalObject) {
+		EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mDecalObject);
+	}
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
