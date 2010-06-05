@@ -55,7 +55,7 @@ namespace EmberOgre
 {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
-	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager*> (&scene.getSceneManager())))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
+	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
 {
 	mSceneManager.registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;

@@ -44,7 +44,7 @@ class EmberPagingSceneManagerAdapter : public Terrain::ISceneManagerAdapter
 
 public:
 
-	EmberPagingSceneManagerAdapter(EmberPagingSceneManager* scenemanager);
+	EmberPagingSceneManagerAdapter(EmberPagingSceneManager& scenemanager);
 	
 	
 	virtual int getPageSize();
@@ -57,13 +57,14 @@ public:
 	virtual void loadOptions(const std::string& filePath);
 	virtual void resize(Ogre::AxisAlignedBox newSize, int levels);
 	virtual void loadScene();
+	virtual void reset();
 
 	virtual void setOption(const std::string& strKey, const void* pValue);
 	virtual void getOption(const std::string& strKey, void* pDestValue);
 
 	virtual void setUninitializedHeight(float height);
 
-	virtual Ogre::SceneManager* getSceneManager() const;
+	virtual Ogre::SceneManager& getSceneManager() const;
 	virtual void reloadAllPages();
 	virtual void reloadPage(unsigned int x, unsigned int z);
 	
@@ -73,7 +74,7 @@ public:
 
 
 private:
-	EmberPagingSceneManager* mSceneManager;
+	EmberPagingSceneManager& mSceneManager;
 	Ogre::PagingLandScapeOptions* getOptions();
 
 };

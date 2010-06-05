@@ -36,10 +36,10 @@ namespace EmberOgre {
 
 	Ogre::PagingLandScapeOptions* EmberPagingSceneManagerAdapter::getOptions()
 	{
-		return mSceneManager->getOptions();
+		return mSceneManager.getOptions();
 	}
 
-	EmberPagingSceneManagerAdapter::EmberPagingSceneManagerAdapter(EmberPagingSceneManager* scenemanager) : mSceneManager(scenemanager)
+	EmberPagingSceneManagerAdapter::EmberPagingSceneManagerAdapter(EmberPagingSceneManager& scenemanager) : mSceneManager(scenemanager)
 	{
 	}
 
@@ -50,7 +50,7 @@ namespace EmberOgre {
 
 	Ogre::Real EmberPagingSceneManagerAdapter::getHeightAt(const Ogre::Real x, const Ogre::Real z)
 	{
-		return mSceneManager->getHeightAt(x, z);
+		return mSceneManager.getHeightAt(x, z);
 	}
 
 
@@ -84,19 +84,19 @@ namespace EmberOgre {
 
 	void EmberPagingSceneManagerAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 	{
-		mSceneManager->resize(newSize, levels);
+		mSceneManager.resize(newSize, levels);
 	}
 
 	void EmberPagingSceneManagerAdapter::setCamera(Ogre::Camera* camera)
 	{
-		mSceneManager->setOption("primaryCamera", camera);
+		mSceneManager.setOption("primaryCamera", camera);
 	}
 
 	void EmberPagingSceneManagerAdapter::setResourceGroupName(const std::string& groupName)
 	{
-		mSceneManager->setOption("GroupName", &groupName);
-		mSceneManager->getOptions()->groupName = groupName;
-		mSceneManager->getOptions()->cfgGroupName = groupName;
+		mSceneManager.setOption("GroupName", &groupName);
+		mSceneManager.getOptions()->groupName = groupName;
+		mSceneManager.getOptions()->cfgGroupName = groupName;
 	}
 
 	void EmberPagingSceneManagerAdapter::loadOptions(const std::string& filePath)
@@ -128,52 +128,58 @@ namespace EmberOgre {
 			return;
         }
 
-		mSceneManager->getOptions()->loadMapOptions(dataPtr);
+		mSceneManager.getOptions()->loadMapOptions(dataPtr);
 
-		mSceneManager->getOptions()->setTextureFormat("EmberTexture");
+		mSceneManager.getOptions()->setTextureFormat("EmberTexture");
 	}
 
 	void EmberPagingSceneManagerAdapter::loadScene()
 	{
-		mSceneManager->loadScene();
-		mSceneManager->getOptions()->setOption("LoadNow", 0);
+		mSceneManager.loadScene();
+		mSceneManager.getOptions()->setOption("LoadNow", 0);
 	}
+
+	void EmberPagingSceneManagerAdapter::reset()
+	{
+		mSceneManager.resetScene();
+	}
+
 
 	void EmberPagingSceneManagerAdapter::setOption(const std::string& strKey, const void* pValue)
 	{
-		mSceneManager->setOption(strKey, pValue);
+		mSceneManager.setOption(strKey, pValue);
 	}
 
 	void EmberPagingSceneManagerAdapter::getOption(const std::string& strKey, void* pDestValue)
 	{
-		mSceneManager->getOption(strKey, pDestValue);
+		mSceneManager.getOption(strKey, pDestValue);
 	}
 
 	void EmberPagingSceneManagerAdapter::setUninitializedHeight(float height)
 	{
-		mSceneManager->getOptions()->uninitializedHeight = height;
+		mSceneManager.getOptions()->uninitializedHeight = height;
 	}
 
 
-	Ogre::SceneManager* EmberPagingSceneManagerAdapter::getSceneManager() const
+	Ogre::SceneManager& EmberPagingSceneManagerAdapter::getSceneManager() const
 	{
 		return mSceneManager;
 	}
 
 	void EmberPagingSceneManagerAdapter::reloadAllPages()
 	{
-		mSceneManager->getPageManager()->load();
+		mSceneManager.getPageManager()->load();
 	}
 
 	void EmberPagingSceneManagerAdapter::reloadPage(unsigned int x, unsigned int z)
 	{
 // 		Ogre::Vector2 position(x,z);
 // 		setOption("PageUpdate", &position);
-		Ogre::PagingLandScapePage* page=  mSceneManager->getPageManager()->getPage(x, z, false);
+		Ogre::PagingLandScapePage* page=  mSceneManager.getPageManager()->getPage(x, z, false);
 		if (page) {
 //			page->reload();
-//			mSceneManager->getData2DManager()->load();
- 			//mSceneManager->getData2DManager()->reload(x, z);
+//			mSceneManager.getData2DManager()->load();
+ 			//mSceneManager.getData2DManager()->reload(x, z);
 			page->updateTerrain();
 /*			page->getSceneNode()->_update(true, true);*/
 /*			page->unload();
@@ -182,14 +188,14 @@ namespace EmberOgre {
 		} else {
 			S_LOG_WARNING("Trying to reload page which doesn't exist at position x: " << x << " y: " << z << ".");
 		}
-// 		mSceneManager->getRootSceneNode()->_update(true, true);
-// 		mSceneManager->PagingLandScapeOctreeResize();
+// 		mSceneManager.getRootSceneNode()->_update(true, true);
+// 		mSceneManager.PagingLandScapeOctreeResize();
 	}
 
 	void EmberPagingSceneManagerAdapter::loadFirstPage()
 	{
-		if (mSceneManager->getOptions()->primaryCamera) {
-			mSceneManager->getPageManager()->LoadFirstPage(mSceneManager->getOptions()->primaryCamera);
+		if (mSceneManager.getOptions()->primaryCamera) {
+			mSceneManager.getPageManager()->LoadFirstPage(mSceneManager.getOptions()->primaryCamera);
 		}
 	}
 
@@ -197,8 +203,8 @@ namespace EmberOgre {
 	{
 		std::stringstream ss;
 
-		Ogre::PagingLandScapeRenderableManager* renderableManager(mSceneManager->getRenderableManager());
-		ss << "Renderables: " << renderableManager->numRenderables() << "\nFree: " << renderableManager->numFree() << "\nLoading: " << renderableManager->numLoading() << "\nVisible: " << renderableManager->numVisibles() << "\nTiles: " << mSceneManager->getTileManager()->numTiles() << "\nFree tiles: " << mSceneManager->getTileManager()->numFree();
+		Ogre::PagingLandScapeRenderableManager* renderableManager(mSceneManager.getRenderableManager());
+		ss << "Renderables: " << renderableManager->numRenderables() << "\nFree: " << renderableManager->numFree() << "\nLoading: " << renderableManager->numLoading() << "\nVisible: " << renderableManager->numVisibles() << "\nTiles: " << mSceneManager.getTileManager()->numTiles() << "\nFree tiles: " << mSceneManager.getTileManager()->numFree();
 		return ss.str();
 	}
 
