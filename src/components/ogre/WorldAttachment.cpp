@@ -31,6 +31,7 @@
 
 #include <OgreSceneNode.h>
 #include <OgreVector3.h>
+#include <OgreSceneManager.h>
 
 #include <wfmath/vector.h>
 #include <wfmath/point.h>
@@ -47,6 +48,7 @@ WorldAttachment::WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode&
 
 WorldAttachment::~WorldAttachment()
 {
+	mWorldNode.getCreator()->destroySceneNode(&mWorldNode);
 }
 
 IGraphicalRepresentation* WorldAttachment::getGraphicalRepresentation() const
