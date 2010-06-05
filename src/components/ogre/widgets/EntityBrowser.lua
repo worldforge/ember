@@ -92,11 +92,13 @@ end
 
 function EntityBrowser.refresh()
 	EntityBrowser.listholder:resetList()
-	EntityBrowser.addEntity(emberOgre:getEntityFactory():getWorld(), 0)
+	if emberOgre:getEntityFactory() ~= nil then
+		EntityBrowser.addEntity(emberOgre:getEntityFactory():getWorld(), 0)
+	end
 end
 
 function EntityBrowser.addEntity(entity, level)
---	if entity ~= nil then
+	if entity ~= nil then
 		local label = ""
 		for i = 0, level  do
 			label = label .. "-"
@@ -112,7 +114,7 @@ function EntityBrowser.addEntity(entity, level)
 			local childEntity = entity:getContained(i)
 			EntityBrowser.addEntity(childEntity, level + 1)
 		end 
---	end
+	end
 end
 
 function EntityBrowser.buildWidget()
