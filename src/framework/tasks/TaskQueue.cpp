@@ -43,7 +43,10 @@ TaskQueue::TaskQueue(unsigned int numberOfExecutors) :
 
 TaskQueue::~TaskQueue()
 {
-	mActive = false;
+	{
+		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
+		mActive = false;
+	}
 	mUnprocessedQueueCond.notify_all();
 	//Join all executors. Since the queue is shutting down they will all exit their main loop if there are no more tasks to process.
 	for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
@@ -60,12 +63,9 @@ TaskQueue::~TaskQueue()
 
 void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
 {
+	boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
 	if (mActive) {
-		{
-			boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
-
-			mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
-		}
+		mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
 		mUnprocessedQueueCond.notify_one();
 	} else {
 		S_LOG_WARNING("Tried to enqueue a task on a task queue which isn't active (i.e. is shutting down).");
