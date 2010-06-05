@@ -225,7 +225,7 @@ public:
 	 */
 	Eris::View* getMainView();
 
-    private:
+private:
 
 //	IGameView mGraphicalComponent;
 	/**
@@ -282,6 +282,8 @@ public:
 	 * @param view The world view.
 	 */
 	void Server_GotView(Eris::View* view);
+
+	void Server_DestroyedView();
 
 	/**
 	 * @brief We hold a pointer to the stream to which all logging messages are written.

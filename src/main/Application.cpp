@@ -326,7 +326,8 @@ void Application::initializeServices()
 	S_LOG_INFO("Initializing wfut service");
 	EmberServices::getSingleton().getWfutService()->start();
 
-	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
+    EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
+    EmberServices::getSingleton().getServerService()->DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
 
 	///register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	Lua::LuaScriptingProvider* luaProvider = new Lua::LuaScriptingProvider();
@@ -349,6 +350,11 @@ void Application::initializeServices()
 void Application::Server_GotView(Eris::View* view)
 {
 	mWorldView = view;
+}
+
+void Application::Server_DestroyedView()
+{
+    mWorldView = 0;
 }
 
 Eris::View* Application::getMainView()
