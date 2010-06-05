@@ -171,6 +171,11 @@ class EmberOgre
 		
 	sigc::signal<void> EventMovementControllerCreated;
 	
+	/**
+	 * @brief Emitted after the MovementController has been destroyed.
+	 */
+	sigc::signal<void> EventMovementControllerDestroyed;
+
 	
 };
 

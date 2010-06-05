@@ -480,6 +480,7 @@ void EmberOgre::avatarEntity_BeingDeleted()
 	mMainCamera->setMovementProvider(0);
 	delete mMovementController;
 	mMovementController = 0;
+	EventMovementControllerDestroyed.emit();
 	delete mAvatarCameraMotionHandler;
 	mAvatarCameraMotionHandler = 0;
 	delete mAvatar;

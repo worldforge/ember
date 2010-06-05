@@ -327,6 +327,11 @@ public:
 	sigc::signal<void> EventMovementControllerCreated;
 
 	/**
+	 * @brief Emitted after the MovementController has been destroyed.
+	 */
+	sigc::signal<void> EventMovementControllerDestroyed;
+
+	/**
 	 * @brief Emitted before the main Ogre render window is rendered.
 	 */
 	sigc::signal<void> EventBeforeRender;
