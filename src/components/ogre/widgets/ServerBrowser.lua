@@ -107,6 +107,7 @@ function ServerBrowser.Server_GotConnection(connection)
 	ServerBrowser.widget:hide()
 	connect(ServerBrowser.connectors, connection.Disconnected, function()
 			 ServerBrowser.widget:show()
+			 ServerBrowser.widget:getMainWindow():activate()
 		end)
 end
 
