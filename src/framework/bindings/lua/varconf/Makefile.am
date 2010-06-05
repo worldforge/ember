@@ -9,6 +9,8 @@ noinst_LIBRARIES = liblua_Varconf.a
 liblua_Varconf_a_SOURCES = Varconf.cxx
 
 CLEANFILES = Varconf.cxx
-EXTRA_DIST = Varconf.pkg variable.pkg
+TOLUA_PKGS = Varconf.pkg variable.pkg
+EXTRA_DIST = $(TOLUA_PKGS)
+Varconf.cxx: $(TOLUA_PKGS)
 
 bindings: clean all

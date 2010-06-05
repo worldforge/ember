@@ -9,7 +9,10 @@ noinst_LIBRARIES = liblua_Main.a
 liblua_Main_a_SOURCES = Application.cxx
 
 CLEANFILES = Application.cxx
-EXTRA_DIST = Application.pkg
+TOLUA_PKGS = Application.pkg
+EXTRA_DIST = $(TOLUA_PKGS)
+Application.cxx: $(TOLUA_PKGS)
+
 noinst_HEADERS = required.h
 
 bindings: clean all

@@ -11,7 +11,7 @@ noinst_LIBRARIES = liblua_EmberOgre.a
 liblua_EmberOgre_a_SOURCES = EmberOgre.cxx
 
 CLEANFILES = EmberOgre.cxx
-EXTRA_DIST = AssetsManager.pkg AtlasHelper.pkg AtlasObjectDecoder.pkg AuthoringManager.pkg Avatar.pkg Carpenter.pkg ColouredListItem.pkg Compass.pkg \
+TOLUA_PKGS = AssetsManager.pkg AtlasHelper.pkg AtlasObjectDecoder.pkg AuthoringManager.pkg Avatar.pkg Carpenter.pkg ColouredListItem.pkg Compass.pkg \
  ConsoleAdapter.pkg Convert.pkg EmberEntity.pkg EmberEntityFactory.pkg EmberOgre.pkg EntityCEGUITexture.pkg EntityCreator.pkg EntityEditor.pkg EntityIcon.pkg \
   EntityIconDragDropTarget.pkg EntityIconManager.pkg EntityIconSlot.pkg EntityMoveManager.pkg EntityRecipe.pkg EntityRecipeManager.pkg EntityWorldPickListener.pkg \
   Environment.pkg GUIAdapter.pkg GUIManager.pkg Icon.pkg IconBar.pkg IconBase.pkg IconManager.pkg IGraphicalRepresentation.pkg ISceneManagerAdapter.pkg \
@@ -20,6 +20,8 @@ EXTRA_DIST = AssetsManager.pkg AtlasHelper.pkg AtlasObjectDecoder.pkg AuthoringM
   MovementController.pkg OgreEntityRenderer.pkg OgreInfo.pkg QuaternionAdapter.pkg RawTypeInfoRepository.pkg ResourceListAdapter.pkg sigc.pkg SimpleRenderContext.pkg \
   StackableContainer.pkg stdlib.pkg SubModel.pkg TerrainArea.pkg TerrainEditor.pkg TerrainLayerDefinition.pkg TerrainLayerDefinitionManager.pkg TerrainManager.pkg \
   TypeTreeAdapter.pkg Vector3Adapter.pkg Widget.pkg WorldEmberEntity.pkg
+EXTRA_DIST = $(TOLUA_PKGS)
+EmberOgre.cxx: $(TOLUA_PKGS)
 noinst_HEADERS = required.h
 
 bindings: clean all

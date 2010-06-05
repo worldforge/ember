@@ -11,7 +11,9 @@ noinst_LIBRARIES = liblua_Framework.a
 liblua_Framework_a_SOURCES = Framework.cxx
 
 CLEANFILES = Framework.cxx
-EXTRA_DIST = AttributeObserver.pkg ConsoleBackend.pkg Framework.pkg IScriptingProvider.pkg Log.pkg LoggingInstance.pkg stdlib.pkg Tokeniser.pkg
+TOLUA_PKGS = AttributeObserver.pkg ConsoleBackend.pkg Framework.pkg IScriptingProvider.pkg Log.pkg LoggingInstance.pkg stdlib.pkg Tokeniser.pkg
+EXTRA_DIST = $(TOLUA_PKGS)
+Framework.cxx: $(TOLUA_PKGS)
 noinst_HEADERS = required.h
 
 bindings: clean all

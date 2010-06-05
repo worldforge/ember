@@ -9,7 +9,10 @@ noinst_LIBRARIES = liblua_EmberServices.a
 liblua_EmberServices_a_SOURCES = EmberServices.cxx
 
 CLEANFILES = EmberServices.cxx
-EXTRA_DIST = ConfigService.pkg EmberServices.pkg IInputAdapter.pkg Input.pkg InputService.pkg LoggingService.pkg MetaserverService.pkg ScriptingService.pkg ServerService.pkg
+TOLUA_PKGS = ConfigService.pkg EmberServices.pkg IInputAdapter.pkg Input.pkg InputService.pkg LoggingService.pkg MetaserverService.pkg ScriptingService.pkg ServerService.pkg
+EXTRA_DIST = $(TOLUA_PKGS)
+EmberServices.cxx: $(TOLUA_PKGS)
 noinst_HEADERS = required.h
 
 bindings: clean all
+

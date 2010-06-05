@@ -8,8 +8,10 @@ INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@pre
 noinst_LIBRARIES = liblua_Helpers.a
 liblua_Helpers_a_SOURCES = Helpers.cxx LuaConnector.cpp LuaConsoleObject.cpp OgreUtils.cpp
 
-CLEANFILES = Helpers.cxx
-EXTRA_DIST = Helpers.pkg LuaConnector.pkg LuaConsoleObject.pkg OgreUtils.pkg
+TOLUA_PKGS = Helpers.pkg LuaConnector.pkg LuaConsoleObject.pkg OgreUtils.pkg
+EXTRA_DIST = $(TOLUA_PKGS)
+Helpers.cxx: $(TOLUA_PKGS)
+
 noinst_HEADERS = required.h LuaConnector.h LuaConsoleObject.h OgreUtils.h
 
 bindings: clean all
