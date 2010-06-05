@@ -134,6 +134,7 @@ function EntityCreator:shutdown()
 	if self.helper ~= nil then
 		self.helper:delete()
 	end
+	disconnectAll(self.connectors)
 end
 
 -- Builds widget

@@ -73,6 +73,7 @@ function Compass:shutdown()
 	if self.anchor ~= nil then
 		self.anchor:delete()
 	end
+	disconnectAll(self.connectors)
 end
 
 function Compass.buildWidget(terrainManager)

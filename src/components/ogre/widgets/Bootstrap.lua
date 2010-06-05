@@ -77,6 +77,13 @@ function connect(connectorTable, event, functionName, selfRef)
 	return connector
 end
 
+--Iterates through all entries in a table of connectors (for example used in the connect(...) function) and disconnects them
+function disconnectAll(connectorTable)
+	for key,value in pairs(connectorTable) do
+		value:disconnect()
+	end
+end
+
 -- Helper math library
 loadScript("Math.lua")
 

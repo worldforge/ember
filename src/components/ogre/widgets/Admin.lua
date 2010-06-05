@@ -165,6 +165,7 @@ function Admin:shutdown()
 		self.adminIcon:delete()
 		self.adminIcon = nil
 	end
+	disconnectAll(self.connectors)
 end
 
 --listen for when we've gotten an avatar entity, and see if we're admin
