@@ -1,65 +1,63 @@
-TypeManager = {connectors={}, codecClass=Atlas.Codecs.XML}
+TypeManager = {}
 
+function TypeManager:buildWidget()
 
-function TypeManager.buildWidget()
-
-	TypeManager.widget = guiManager:createWidget()
+	self.widget = guiManager:createWidget()
 
 	local setup = function()
 		
-		TypeManager.typeTree = tolua.cast(TypeManager.widget:getWindow("TypeList"), "CEGUI::Tree")
-		TypeManager.typeTree:subscribeEvent("ItemSelectionChanged", "TypeManager.TypeList_SelectionChanged")
+		self.typeTree = tolua.cast(self.widget:getWindow("TypeList"), "CEGUI::Tree")
+		self.typeTree:subscribeEvent("ItemSelectionChanged", self.TypeList_SelectionChanged, self)
 	
-		TypeManager.codecTypeCombobox = CEGUI.toCombobox(TypeManager.widget:getWindow("CodecType"))
+		self.codecTypeCombobox = CEGUI.toCombobox(self.widget:getWindow("CodecType"))
 		
 		local item = EmberOgre.Gui.ColouredListItem:new("XML", 0)
-		TypeManager.codecTypeCombobox:addItem(item)
+		self.codecTypeCombobox:addItem(item)
 		item = EmberOgre.Gui.ColouredListItem:new("Bach", 1)
-		TypeManager.codecTypeCombobox:addItem(item)
+		self.codecTypeCombobox:addItem(item)
 		item = EmberOgre.Gui.ColouredListItem:new("Packed", 2)
-		TypeManager.codecTypeCombobox:addItem(item)
-		TypeManager.codecTypeCombobox:setItemSelectState(0, true)
-		TypeManager.codecTypeCombobox:setSingleClickEnabled(true)
-		TypeManager.codecTypeCombobox:subscribeEvent("ListSelectionChanged", "TypeManager.CodecType_ListSelectionChanged")
+		self.codecTypeCombobox:addItem(item)
+		self.codecTypeCombobox:setItemSelectState(0, true)
+		self.codecTypeCombobox:setSingleClickEnabled(true)
+		self.codecTypeCombobox:subscribeEvent("ListSelectionChanged", self.CodecType_ListSelectionChanged, self)
 	
 		
-		TypeManager.typeInfoText = CEGUI.toMultiLineEditbox(TypeManager.widget:getWindow("TypeInfoText"))
+		self.typeInfoText = CEGUI.toMultiLineEditbox(self.widget:getWindow("TypeInfoText"))
 	
-		TypeManager.typeAdapter = EmberOgre.Gui.Adapters.Eris.TypeTreeAdapter:new_local(emberServices:getServerService():getConnection():getTypeService(), TypeManager.typeTree)
-		TypeManager.typeAdapter:initialize("root")
+		self.typeAdapter = EmberOgre.Gui.Adapters.Eris.TypeTreeAdapter:new_local(emberServices:getServerService():getConnection():getTypeService(), self.typeTree)
+		self.typeAdapter:initialize("root")
 		
-		TypeManager.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", "TypeManager.SendToServerButton_Clicked")
+		self.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", self.SendToServerButton_Clicked, self)
 			
-		TypeManager.widget:enableCloseButton()
+		self.widget:enableCloseButton()
 	end
 
-	connect(TypeManager.connectors, TypeManager.widget.EventFirstTimeShown, setup)
-	TypeManager.widget:loadMainSheet("TypeManager.layout", "TypeManager/")
-	TypeManager.widget:registerConsoleVisibilityToggleCommand("typeManager")
+	connect(self.connectors, self.widget.EventFirstTimeShown, setup)
+	self.widget:loadMainSheet("TypeManager.layout", "TypeManager/")
+	self.widget:registerConsoleVisibilityToggleCommand("typeManager")
 
 end
 
-function TypeManager.CreatedAvatarEntity()
-	TypeManager.buildWidget()
-end
-
-function TypeManager.CodecType_ListSelectionChanged()
-	local selectId = TypeManager.codecTypeCombobox:getSelectedItem():getID()
-	if selectId == 0 then
-		TypeManager.codecClass = Atlas.Codecs.XML
-	elseif selectId == 1 then
-		TypeManager.codecClass = Atlas.Codecs.Bach
-	else
-		TypeManager.codecClass = Atlas.Codecs.Packed
+function TypeManager:CodecType_ListSelectionChanged()
+	local item = self.codecTypeCombobox:getSelectedItem()
+	if item ~= nil then
+		local selectId = item:getID()
+		if selectId == 0 then
+			self.codecClass = Atlas.Codecs.XML
+		elseif selectId == 1 then
+			self.codecClass = Atlas.Codecs.Bach
+		else
+			self.codecClass = Atlas.Codecs.Packed
+		end
+		self:printType()
 	end
-	TypeManager.printType()
 end
 
-function TypeManager.sendTypeToServer()
-	local outstream = std.stringstream:new_local(TypeManager.typeInfoText:getText())
+function TypeManager:sendTypeToServer()
+	local outstream = std.stringstream:new_local(self.typeInfoText:getText())
 	local decoder = EmberOgre.Authoring.AtlasObjectDecoder:new_local()
 
-	local codec = TypeManager.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
+	local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
 	codec:poll(true)
 	
 	local parsedObject = decoder:getLastObject()
@@ -74,14 +72,14 @@ function TypeManager.sendTypeToServer()
 	end
 end
 
-function TypeManager.SendToServerButton_Clicked(args)
+function TypeManager:SendToServerButton_Clicked(args)
 
-	TypeManager.sendTypeToServer()
+	self:sendTypeToServer()
 	return true
 end
 
-function TypeManager.printType()
-	local typeInfo = TypeManager.typeAdapter:getSelectedTypeInfo()
+function TypeManager:printType()
+	local typeInfo = self.typeAdapter:getSelectedTypeInfo()
 	
 	if typeInfo ~= nil then
 	
@@ -92,7 +90,7 @@ function TypeManager.printType()
 			local outstream = std.stringstream:new_local()
 			local decoder = Atlas.Message.QueuedDecoder:new_local()
 		
-			local codec = TypeManager.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
+			local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
 			local formatter = Atlas.Formatter:new_local(outstream, tolua.cast(codec, "Atlas::Bridge"))
 			local encoder = Atlas.Message.Encoder:new_local(tolua.cast(formatter, "Atlas::Bridge"))
 			local message = Atlas.Message.MapType:new_local()
@@ -102,16 +100,33 @@ function TypeManager.printType()
 		
 			formatter:streamEnd();
 		
-			TypeManager.typeInfoText:setText(outstream:str())
+			self.typeInfoText:setText(outstream:str())
 		end
 	end
 end
 
-function TypeManager.TypeList_SelectionChanged(args)
+function TypeManager:TypeList_SelectionChanged(args)
 
-	TypeManager.printType()
+	self:printType()
 	return true
 end
 
-connect(TypeManager.connectors, emberOgre.EventCreatedAvatarEntity, TypeManager.CreatedAvatarEntity)
+function TypeManager:shutdown()
+	disconnectAll(self.connectors)
+	guiManager:destroyWidget(self.widget)
+end
+
+TypeManager.createdAvatarConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedEmberEntityFactory):connect(function(factory)
+		typeManager = {connectors={}, codecClass=Atlas.Codecs.XML}
+		setmetatable(typeManager, {__index = TypeManager})
+		
+		typeManager:buildWidget()
+		connect(typeManager.connectors, emberServices:getServerService().DestroyedAccount, function()
+				typeManager:shutdown()
+				typeManager = nil
+			end
+		)
+	end
+)
+
 
