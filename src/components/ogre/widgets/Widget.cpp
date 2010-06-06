@@ -60,6 +60,7 @@ namespace Gui {
 	{
 		if (mCommandSuffix != "") {
 			Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand("show_" + mCommandSuffix);
+			Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand("hide_" + mCommandSuffix);
 		}
 		if (mMainWindow) {
 			CEGUI::WindowManager::getSingleton().destroyWindow(mMainWindow);
