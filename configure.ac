@@ -202,7 +202,7 @@ PKG_CHECK_MODULES(CEGUI, CEGUI >= $CEGUI_VERSION,
 		LIBS="$LIBS $CEGUI_LIBS"
 	],
 	[
-		AC_MSG_ERROR([Couldn't find CEGUI-OGRE or tests failed:
+		AC_MSG_ERROR([Couldn't find CEGUI or tests failed:
 $CEGUI_PKG_ERRORS
 Please go to http://crayzedsgui.sourceforge.net to get the latest, or check
 config.log to see why the tests failed, and fix it.])
@@ -232,7 +232,7 @@ PKG_CHECK_MODULES(CEGUIOGRE, [CEGUI-OGRE >= $CEGUI_VERSION],
 	],
 	[
 		AC_MSG_ERROR([Couldn't find CEGUI-OGRE adapter. Make sure that you've compiled Ogre before compiling CEGUI, and that CEGUI found the Ogre libs so that the Ogre renderer is built.
-$OGRE_PKG_ERRORS])
+$CEGUIOGRE_PKG_ERRORS])
 	])
 
 
