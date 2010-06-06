@@ -2,94 +2,64 @@
 
 
 -----------------------------------------
-Inventory = {
-connectors={},
-iconsize = 32,
-columns = 4,
-iconcounter = 0,
-slotcounter = 0,
-icons = {},
-slots = {},
-menu = {menuShown = false, activeEntityWrapper = nil},
-newEntityListeners = {}
-}
+Inventory = {}
 
-function Inventory.CreatedAvatarEntity(avatarEntity)
-	
-	connect(Inventory.connectors, emberOgre:getAvatar().EventAddedEntityToInventory, "Inventory.AddedEntityToInventory")
-	connect(Inventory.connectors, emberOgre:getAvatar().EventRemovedEntityFromInventory, "Inventory.RemovedEntityFromInventory")
-	
-	Inventory.widget:registerConsoleVisibilityToggleCommand("inventory")
-	if emberOgre:getAvatar():isAdmin() == false then
-		Inventory.avatarEntity = avatarEntity
-		Inventory.setupDoll(avatarEntity)
-		connect(Inventory.connectors, avatarEntity.Changed, "Inventory.avatarEntity_Changed")
-		Inventory.widget:show()
-	end
-	
-	
-end
-
-function Inventory.avatarEntity_Changed(keys)
-	Inventory.updateDoll()
-end
-
-function Inventory.AddedEntityToInventory(entity)
-	local entityIconWrapper = Inventory.createIcon(entity)
+function Inventory:AddedEntityToInventory(entity)
+	local entityIconWrapper = self:createIcon(entity)
 	if entityIconWrapper ~= nil then
-		local slotWrapper = Inventory.getFreeSlot()
+		local slotWrapper = self:getFreeSlot()
 		local slot = slotWrapper.slot
 		slot:addEntityIcon(entityIconWrapper.entityIcon)
 		local entityIconBucket = {}
-		if Inventory.icons[entity:getId()] == nil then
-			Inventory.icons[entity:getId()] = entityIconBucket
+		if self.icons[entity:getId()] == nil then
+			self.icons[entity:getId()] = entityIconBucket
 		else
-			entityIconBucket = Inventory.icons[entity:getId()]
+			entityIconBucket = self.icons[entity:getId()]
 		end
 		table.insert(entityIconBucket, entityIconWrapper)
-		for k,v in pairs(Inventory.newEntityListeners) do
+		for k,v in pairs(self.newEntityListeners) do
 			v(entity)
 		end
 	end
 end
 
-function Inventory.RemovedEntityFromInventory(entity)
-	local entityIconBucket = Inventory.icons[entity:getId()]
+function Inventory:RemovedEntityFromInventory(entity)
+	local entityIconBucket = self.icons[entity:getId()]
 	if entityIconBucket ~= nil then
 		for k,v in pairs(entityIconBucket) do 
 			local entityIconWrapper = v
 			entityIconWrapper.entityIcon:setSlot(nil)
 			--guiManager:getIconManager():destroyIcon(entityIconWrapper.entityIcon:getIcon())
-			Inventory.entityIconManager:destroyIcon(entityIconWrapper.entityIcon)
+			self.entityIconManager:destroyIcon(entityIconWrapper.entityIcon)
 		end
 	end
-	Inventory.icons[entity:getId()] = nil
+	self.icons[entity:getId()] = nil
 end
 	
-function Inventory.getFreeSlot()
+function Inventory:getFreeSlot()
 	--see if there's any free slots
-	for k,v in pairs(Inventory.slots) do 
+	for k,v in pairs(self.slots) do 
 		if v.slot:getEntityIcon() == nil then
 			return v
 		end
 	end
 	--if we couldn't find a free one, add one
-	return Inventory.addSlot()
+	return self:addSlot()
 end
 
-function Inventory.addSlot()
-	local yPosition = math.floor(Inventory.slotcounter / Inventory.columns)
-	local xPosition = Inventory.slotcounter - math.floor(Inventory.slotcounter/Inventory.columns)*Inventory.columns  --lua 5.0 can't do modulus, in 5.1 we would have done: Inventory.slotcounter % Inventory.columns
+function Inventory:addSlot()
+	local yPosition = math.floor(self.slotcounter / self.columns)
+	local xPosition = self.slotcounter - math.floor(self.slotcounter/self.columns)*self.columns  --lua 5.0 can't do modulus, in 5.1 we would have done: self.slotcounter % self.columns
 	
 	
 	
-	Inventory.slotcounter = Inventory.slotcounter + 1
+	self.slotcounter = self.slotcounter + 1
 	
-	local slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
-	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, Inventory.iconsize * xPosition), CEGUI.UDim(0, Inventory.iconsize * yPosition)))
-	Inventory.iconContainer:addChildWindow(slot:getWindow())
+	local slot = self.entityIconManager:createSlot(self.iconsize)
+	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconsize * xPosition), CEGUI.UDim(0, self.iconsize * yPosition)))
+	self.iconContainer:addChildWindow(slot:getWindow())
 	local slotWrapper = {slot = slot}
-	table.insert(Inventory.slots, slotWrapper)
+	table.insert(self.slots, slotWrapper)
 	slotWrapper.entityIconDropped = function(entityIcon)
 		local oldSlot = entityIcon:getSlot()
 		slotWrapper.slot:addEntityIcon(entityIcon)
@@ -102,42 +72,42 @@ function Inventory.addSlot()
 	return slotWrapper
 end
 
-function Inventory.showMenu(args, entityIconWrapper)
-	Inventory.menu.activeEntityWrapper = entityIconWrapper
-	entityIconWrapper.entityIcon:getDragContainer():addChildWindow(Inventory.menu.container)
-	Inventory.menu.menuShown = true
-	Inventory.menu.container:setXPosition(CEGUI.UDim(0.5, -Inventory.menu.container:getWidth():asAbsolute(0) * 0.5))
-	Inventory.menu.innercontainer:setYPosition(CEGUI.UDim(1, -(Inventory.iconsize + Inventory.menu.innercontainer:getHeight():asAbsolute(0))))
-	Inventory.menu.container:setHeight(CEGUI.UDim(0, Inventory.iconsize + Inventory.menu.innercontainer:getHeight():asAbsolute(0) + 10))
-	Inventory.menu.container:setYPosition(CEGUI.UDim(1, -Inventory.menu.container:getHeight():asAbsolute(0)))
+function Inventory:showMenu(args, entityIconWrapper)
+	self.menu.activeEntityWrapper = entityIconWrapper
+	entityIconWrapper.entityIcon:getDragContainer():addChildWindow(self.menu.container)
+	self.menu.menuShown = true
+	self.menu.container:setXPosition(CEGUI.UDim(0.5, -self.menu.container:getWidth():asAbsolute(0) * 0.5))
+	self.menu.innercontainer:setYPosition(CEGUI.UDim(1, -(self.iconsize + self.menu.innercontainer:getHeight():asAbsolute(0))))
+	self.menu.container:setHeight(CEGUI.UDim(0, self.iconsize + self.menu.innercontainer:getHeight():asAbsolute(0) + 10))
+	self.menu.container:setYPosition(CEGUI.UDim(1, -self.menu.container:getHeight():asAbsolute(0)))
 	
 	--only show the eat button if the entity has biomass (and thus is edible)
 	if entityIconWrapper.entity:hasAttr("biomass") then
-		Inventory.menu.eatButton:setVisible(true)
+		self.menu.eatButton:setVisible(true)
 	else
-		Inventory.menu.eatButton:setVisible(false)
+		self.menu.eatButton:setVisible(false)
 	end
 	
 
-	--Inventory.menu.container:setPosition()
+	--self.menu.container:setPosition()
 end
 
--- function Inventory.input_MouseButtonReleased()
--- 	if Inventory.menu.menuShown then
--- 		Inventory.menu.container:setVisible(false)
--- 		Inventory.menu.menuShown = false
+-- function Inventory:input_MouseButtonReleased()
+-- 	if self.menu.menuShown then
+-- 		self.menu.container:setVisible(false)
+-- 		self.menu.menuShown = false
 -- 	end
 -- end
 
-function Inventory.createIcon(entity)
+function Inventory:createIcon(entity)
 	--return nil
---	local icon = guiManager:getIconManager():getIcon(Inventory.iconsize, entity:getType())
-	local icon = guiManager:getIconManager():getIcon(Inventory.iconsize, entity)
+--	local icon = guiManager:getIconManager():getIcon(self.iconsize, entity:getType())
+	local icon = guiManager:getIconManager():getIcon(self.iconsize, entity)
 	
 	if icon ~= nil then
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 		local entityIconWrapper = {}
-		entityIconWrapper.entityIcon = Inventory.entityIconManager:createIcon(icon, entity, Inventory.iconsize)
+		entityIconWrapper.entityIcon = self.entityIconManager:createIcon(icon, entity, self.iconsize)
 		entityIconWrapper.entityIcon:setTooltipText(name)
 		entityIconWrapper.entity = entity
 		entityIconWrapper.mouseEnters = function(args)
@@ -147,7 +117,7 @@ function Inventory.createIcon(entity)
 			entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "false")
 		end
 		entityIconWrapper.mouseClick = function(args)
-			Inventory.showMenu(args, entityIconWrapper)
+			self:showMenu(args, entityIconWrapper)
 		end
 		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseClick", entityIconWrapper.mouseClick)
 		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseEnter", entityIconWrapper.mouseEnters)
@@ -158,127 +128,138 @@ function Inventory.createIcon(entity)
 	end
 end
 
-function Inventory.buildWidget()
+function Inventory:buildWidget(avatarEntity)
 	
-	Inventory.widget = guiManager:createWidget()
-	Inventory.widget:loadMainSheet("Inventory.layout", "Inventory/")
+	self.widget = guiManager:createWidget()
+	self.widget:loadMainSheet("Inventory.layout", "Inventory/")
 	
-	Inventory.entityIconManager = guiManager:getEntityIconManager()
+	self.entityIconManager = guiManager:getEntityIconManager()
 	
-	Inventory.iconContainer = Inventory.widget:getWindow("IconContainer");
+	self.iconContainer = self.widget:getWindow("IconContainer");
 	
-	Inventory.widget:enableCloseButton()
-	Inventory.widget:hide()
+	self.widget:enableCloseButton()
 	
-	connect(Inventory.connectors, emberOgre.EventCreatedAvatarEntity, "Inventory.CreatedAvatarEntity")
+	self.menu.container = guiManager:createWindow("DefaultGUISheet")
+	self.menu.container:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
+	self.menu.container:setClippedByParent(false)
 	
-	Inventory.menu.container = guiManager:createWindow("DefaultGUISheet")
-	Inventory.menu.container:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
-	Inventory.menu.container:setClippedByParent(false)
+	self.menu.innercontainer = guiManager:createWindow("DefaultGUISheet")
+	self.menu.innercontainer:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
+	self.menu.innercontainer:setClippedByParent(false)
+	self.menu.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(self.menu.innercontainer)
+	self.menu.stackableContainer:setInnerContainerWindow(self.menu.innercontainer)
+	self.menu.container:addChildWindow(self.menu.innercontainer)
+	self.menu.innercontainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 10), CEGUI.UDim(1, -self.iconsize)))
 	
-	Inventory.menu.innercontainer = guiManager:createWindow("DefaultGUISheet")
-	Inventory.menu.innercontainer:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
-	Inventory.menu.innercontainer:setClippedByParent(false)
-	Inventory.menu.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(Inventory.menu.innercontainer)
-	Inventory.menu.stackableContainer:setInnerContainerWindow(Inventory.menu.innercontainer)
-	Inventory.menu.container:addChildWindow(Inventory.menu.innercontainer)
-	Inventory.menu.innercontainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 10), CEGUI.UDim(1, -Inventory.iconsize)))
-	
-	Inventory.menu.hide = function()
-		Inventory.menu.container:getParent():removeChildWindow(Inventory.menu.container)
-		Inventory.menu.menuShown = false
+	self.menu.hide = function()
+		self.menu.container:getParent():removeChildWindow(self.menu.container)
+		self.menu.menuShown = false
 	end
 	
-	Inventory.menu.mouseLeaves = function(args)
-		if Inventory.menu.menuShown then
+	self.menu.mouseLeaves = function(args)
+		if self.menu.menuShown then
 			local window = CEGUI.System:getSingleton():getWindowContainingMouse()
-			if window:isAncestor(Inventory.menu.container) == false then
-				Inventory.menu.hide()
+			if window:isAncestor(self.menu.container) == false then
+				self.menu.hide()
 			end
 		end
 	end
 	
-	Inventory.menu.container:subscribeEvent("MouseLeave", Inventory.menu.mouseLeaves)
+	self.menu.container:subscribeEvent("MouseLeave", self.menu.mouseLeaves)
 	
 	
 	--add default buttons
 	
-	Inventory.menu.eatButton = guiManager:createWindow("EmberLook/Button")
-	Inventory.menu.eatButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-	Inventory.menu.eatButton:setText("eat")
-	Inventory.menu.eatButton_MouseClick = function(args)
-		if Inventory.menu.activeEntityWrapper ~= nil then
-			if Inventory.menu.activeEntityWrapper.entity ~= nil then
-				emberServices:getServerService():eat(Inventory.menu.activeEntityWrapper.entity)
+	self.menu.eatButton = guiManager:createWindow("EmberLook/Button")
+	self.menu.eatButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	self.menu.eatButton:setText("eat")
+	self.menu.eatButton_MouseClick = function(args)
+		if self.menu.activeEntityWrapper ~= nil then
+			if self.menu.activeEntityWrapper.entity ~= nil then
+				emberServices:getServerService():eat(self.menu.activeEntityWrapper.entity)
 			end
 		end
-		Inventory.menu.hide()
+		self.menu.hide()
 	end
-	Inventory.menu.eatButton:subscribeEvent("Clicked", Inventory.menu.eatButton_MouseClick)
-	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.eatButton)
+	self.menu.eatButton:subscribeEvent("Clicked", self.menu.eatButton_MouseClick)
+	self.menu.innercontainer:addChildWindow(self.menu.eatButton)
 	
 	
-	Inventory.menu.dropButton = guiManager:createWindow("EmberLook/Button")
-	Inventory.menu.dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-	Inventory.menu.dropButton:setText("drop")
-	Inventory.menu.dropButton_MouseClick = function(args)
-		if Inventory.menu.activeEntityWrapper ~= nil then
-			if Inventory.menu.activeEntityWrapper.entity ~= nil then
-				emberServices:getServerService():drop(Inventory.menu.activeEntityWrapper.entity)
+	self.menu.dropButton = guiManager:createWindow("EmberLook/Button")
+	self.menu.dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	self.menu.dropButton:setText("drop")
+	self.menu.dropButton_MouseClick = function(args)
+		if self.menu.activeEntityWrapper ~= nil then
+			if self.menu.activeEntityWrapper.entity ~= nil then
+				emberServices:getServerService():drop(self.menu.activeEntityWrapper.entity)
 			end
 		end
-		Inventory.menu.hide()
+		self.menu.hide()
 	end
-	Inventory.menu.dropButton:subscribeEvent("Clicked", Inventory.menu.dropButton_MouseClick)
-	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.dropButton)
+	self.menu.dropButton:subscribeEvent("Clicked", self.menu.dropButton_MouseClick)
+	self.menu.innercontainer:addChildWindow(self.menu.dropButton)
 		
 		
-	Inventory.menu.wieldButton = guiManager:createWindow("EmberLook/Button")
-	Inventory.menu.wieldButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-	Inventory.menu.wieldButton:setText("wield")
-	Inventory.menu.wieldButton_MouseClick = function(args)
-		if Inventory.menu.activeEntityWrapper ~= nil then
-			if Inventory.menu.activeEntityWrapper.entity ~= nil then
-				emberServices:getServerService():wield(Inventory.menu.activeEntityWrapper.entity)
+	self.menu.wieldButton = guiManager:createWindow("EmberLook/Button")
+	self.menu.wieldButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	self.menu.wieldButton:setText("wield")
+	self.menu.wieldButton_MouseClick = function(args)
+		if self.menu.activeEntityWrapper ~= nil then
+			if self.menu.activeEntityWrapper.entity ~= nil then
+				emberServices:getServerService():wield(self.menu.activeEntityWrapper.entity)
 			end
 		end
-		Inventory.menu.hide()
+		self.menu.hide()
 	end
-	Inventory.menu.wieldButton:subscribeEvent("Clicked", Inventory.menu.wieldButton_MouseClick)
-	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.wieldButton)
+	self.menu.wieldButton:subscribeEvent("Clicked", self.menu.wieldButton_MouseClick)
+	self.menu.innercontainer:addChildWindow(self.menu.wieldButton)
 	
-	Inventory.menu.useButton = guiManager:createWindow("EmberLook/Button")
-	Inventory.menu.useButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
-	Inventory.menu.useButton:setText("use")
-	Inventory.menu.useButton_MouseClick = function(args)
-		if Inventory.menu.activeEntityWrapper ~= nil then
-			if Inventory.menu.activeEntityWrapper.entity ~= nil then
-				emberServices:getServerService():use(Inventory.menu.activeEntityWrapper.entity)
+	self.menu.useButton = guiManager:createWindow("EmberLook/Button")
+	self.menu.useButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	self.menu.useButton:setText("use")
+	self.menu.useButton_MouseClick = function(args)
+		if self.menu.activeEntityWrapper ~= nil then
+			if self.menu.activeEntityWrapper.entity ~= nil then
+				emberServices:getServerService():use(self.menu.activeEntityWrapper.entity)
 			end
 		end
-		Inventory.menu.hide()
+		self.menu.hide()
 	end
-	Inventory.menu.useButton:subscribeEvent("Clicked", Inventory.menu.useButton_MouseClick)
-	Inventory.menu.innercontainer:addChildWindow(Inventory.menu.useButton)
+	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
+	self.menu.innercontainer:addChildWindow(self.menu.useButton)
 	
 
 		
 	
-	Inventory.menu.container:setVisible(true)
--- 	connect(Inventory.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, "Inventory.input_MouseButtonReleased")
---	guiManager:getMainSheet():addChildWindow(Inventory.menu.container)
+	self.menu.container:setVisible(true)
+	
+	
+	connect(self.connectors, emberOgre:getAvatar().EventAddedEntityToInventory, self.AddedEntityToInventory, self)
+	connect(self.connectors, emberOgre:getAvatar().EventRemovedEntityFromInventory, self.RemovedEntityFromInventory, self)
+	
+	self.widget:registerConsoleVisibilityToggleCommand("inventory")
+	self.avatarEntity = avatarEntity
+	self:setupDoll(avatarEntity)
+	connect(self.connectors, avatarEntity.Changed, function(self, keys)
+			self:updateDoll()
+		end
+	, self)
+	self.widget:show()
+		
+-- 	connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, self.input_MouseButtonReleased, self)
+--	guiManager:getMainSheet():addChildWindow(self.menu.container)
 
 	
 end
 
-function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
--- 	Inventory.doll.torso = Inventory.createDollSlot("body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
+function Inventory:createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
+-- 	self.doll.torso = self:createDollSlot("body", self.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
 	dollSlot.droppedHandler = function(entityIcon)
 		if dollSlot.isValidDrop(entityIcon) then
 			emberServices:getServerService():wield(entityIcon:getEntity(), dollSlot.wearRestriction)
 			local icon = dollSlot.slot:getEntityIcon()
 			if icon ~= null then
-				local slot = Inventory.getFreeSlot()
+				local slot = self:getFreeSlot()
 				slot:addEntityIcon(icon)
 			end
 			dollSlot.slot:addEntityIcon(entityIcon)
@@ -290,7 +271,7 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 		if element:isString() then
 			local entityId = element:asString()
 			local slotUpdateFunc = function()
-				local entityBucket = Inventory.icons[entityId]
+				local entityBucket = self.icons[entityId]
 
 				if entityBucket ~= nil then
 					local icon = entityBucket[1].entityIcon
@@ -300,7 +281,7 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 							local oldIcon = dollSlot.slot:removeEntityIcon()
 							dollSlot.slot:addEntityIcon(icon)
 							if oldIcon ~= nil then
-								local slotWrapper = Inventory.getFreeSlot()
+								local slotWrapper = self:getFreeSlot()
 								local slot = slotWrapper.slot
 								slot:addEntityIcon(oldIcon)
 							end
@@ -310,17 +291,17 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 			end
 
 			--Either we have created an icon for the entity yet, or we have to wait a little until it's available			
-			local entityBucket = Inventory.icons[entityId]
+			local entityBucket = self.icons[entityId]
 			if entityBucket ~= nil then
 				slotUpdateFunc()
 			else
 				local delayedUpdater = function(newEntity)
 					if newEntity:getId() == entityId then
 						slotUpdateFunc()
-						Inventory.newEntityListeners[dollSlot.attributePath] = nil
+						self.newEntityListeners[dollSlot.attributePath] = nil
 					end
 				end
-				Inventory.newEntityListeners[dollSlot.attributePath] = delayedUpdater
+				self.newEntityListeners[dollSlot.attributePath] = delayedUpdater
 			end
 		end
 	end
@@ -339,54 +320,54 @@ function Inventory.createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 --		end
 --	end
 	
---	table.insert(Inventory.newEntityListeners, dollSlot.newEntityCreated)
+--	table.insert(self.newEntityListeners, dollSlot.newEntityCreated)
 	
 -- 	dollSlot.attributeChanged(avatarEntity:valueOfAttr("outfit"))
 end
 
-function Inventory.setupDoll(avatarEntity)
-	Inventory.doll = {}
+function Inventory:setupDoll(avatarEntity)
+	self.doll = {}
 	local model = EmberOgre.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
 	if model ~= nil then
-		Inventory.doll.image = Inventory.widget:getWindow("DollImage")
-		Inventory.doll.renderer = EmberOgre.Gui.ModelRenderer:new_local(Inventory.doll.image)
-		Inventory.doll.renderer:setActive(false)
-		Inventory.doll.renderer:setIsInputCatchingAllowed(false)
+		self.doll.image = self.widget:getWindow("DollImage")
+		self.doll.renderer = EmberOgre.Gui.ModelRenderer:new(self.doll.image)
+		self.doll.renderer:setActive(false)
+		self.doll.renderer:setIsInputCatchingAllowed(false)
 		
-		Inventory.doll.renderer:showModel(model:getDefinition():get():getName())
-		Inventory.doll.renderer:setCameraDistance(0.75)
-		Inventory.doll.renderer:updateRender()
+		self.doll.renderer:showModel(model:getDefinition():get():getName())
+		self.doll.renderer:setCameraDistance(0.75)
+		self.doll.renderer:updateRender()
 				
-		Inventory.doll.rightHand = Inventory.createDollSlot("right_hand_wield", Inventory.widget:getWindow("Doll/RightHand"), "Drop an entity here to attach it to the right hand.", "")
-		Inventory.doll.rightHandOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.rightHand, "")
+		self.doll.rightHand = self:createDollSlot("right_hand_wield", self.widget:getWindow("Doll/RightHand"), "Drop an entity here to attach it to the right hand.", "")
+		self.doll.rightHandOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.rightHand, "")
 		
-		Inventory.doll.torso = Inventory.createDollSlot("outfit.body", Inventory.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.", "body")
-		Inventory.doll.torsoOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.torso, "body")
+		self.doll.torso = self:createDollSlot("outfit.body", self.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.", "body")
+		self.doll.torsoOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.torso, "body")
 		
-		Inventory.doll.back = Inventory.createDollSlot("outfit.back", Inventory.widget:getWindow("Doll/Back"), "Drop an entity here to attach it to the back.", "back")
-		Inventory.doll.backOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.back, "back")
+		self.doll.back = self:createDollSlot("outfit.back", self.widget:getWindow("Doll/Back"), "Drop an entity here to attach it to the back.", "back")
+		self.doll.backOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.back, "back")
 
-		Inventory.doll.head = Inventory.createDollSlot("outfit.head", Inventory.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.", "head")
-		Inventory.doll.headOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.head, "head")
+		self.doll.head = self:createDollSlot("outfit.head", self.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.", "head")
+		self.doll.headOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.head, "head")
 	
-		Inventory.doll.legs = Inventory.createDollSlot("outfit.legs", Inventory.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.", "legs")
-		Inventory.doll.legsOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.legs, "legs")
+		self.doll.legs = self:createDollSlot("outfit.legs", self.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.", "legs")
+		self.doll.legsOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.legs, "legs")
 		
-		Inventory.doll.feet = Inventory.createDollSlot("outfit.feet", Inventory.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.", "feet")
-		Inventory.doll.feetOutfitSlot = Inventory.createOutfitSlot(avatarEntity, Inventory.doll.feet, "feet")
+		self.doll.feet = self:createDollSlot("outfit.feet", self.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.", "feet")
+		self.doll.feetOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.feet, "feet")
 	end
 end
 
-function Inventory.updateDoll()
-	if Inventory.avatarEntity:hasAttr("right_hand_wield") then
+function Inventory:updateDoll()
+	if self.avatarEntity:hasAttr("right_hand_wield") then
 		
 	end
 end
 
 
-function Inventory.createDollSlot(attributePath, containerWindow, tooltipText, wearRestriction)
+function Inventory:createDollSlot(attributePath, containerWindow, tooltipText, wearRestriction)
 	local dollSlot = {}
-	dollSlot.slot = Inventory.entityIconManager:createSlot(Inventory.iconsize)
+	dollSlot.slot = self.entityIconManager:createSlot(self.iconsize)
 	dollSlot.container = containerWindow
 	dollSlot.container:addChildWindow(dollSlot.slot:getWindow())
 	dollSlot.slot:getWindow():setInheritsTooltipText(true)
@@ -422,11 +403,63 @@ function Inventory.createDollSlot(attributePath, containerWindow, tooltipText, w
 		dollSlot.container:setProperty("FrameEnabled", "true")
 	end
 	
-	dollSlot.entityIconDragStart_connector = EmberOgre.LuaConnector:new_local(Inventory.entityIconManager.EventIconDragStart):connect(dollSlot.entityIconDragStart)
-	dollSlot.entityIconDragStop_connector = EmberOgre.LuaConnector:new_local(Inventory.entityIconManager.EventIconDragStop):connect(dollSlot.entityIconDragStop)
+	dollSlot.entityIconDragStart_connector = EmberOgre.LuaConnector:new_local(self.entityIconManager.EventIconDragStart):connect(dollSlot.entityIconDragStart)
+	dollSlot.entityIconDragStop_connector = EmberOgre.LuaConnector:new_local(self.entityIconManager.EventIconDragStop):connect(dollSlot.entityIconDragStop)
+
+	dollSlot.shutdown = function()
+		self.entityIconManager:destroySlot(dollSlot.slot)
+		dollSlot.entityIconDragStart_connector:disconnect()
+		dollSlot.entityIconDragStop_connector:disconnect()
+	end
 
 	return dollSlot
 end
 
+function Inventory:shutdown()
+	disconnectAll(self.connectors)
+	if self.doll ~= nil then
+		if self.doll.renderer ~= nil then
+			self.doll.renderer:delete()
+			self.doll.rightHand.shutdown()
+			self.doll.torso.shutdown()
+			self.doll.back.shutdown()
+			self.doll.head.shutdown()
+			self.doll.legs.shutdown()
+			self.doll.feet.shutdown()
+		end
+	end
+	for k,v in pairs(self.slots) do
+		self.entityIconManager:destroySlot(v.slot)
+	end
+	for k,v in pairs(self.icons) do
+		local bucket = v
+		for k,v in pairs(bucket) do
+			self.entityIconManager:destroyIcon(v.entityIcon)
+		end
+	end
+	
+	windowManager:destroyWindow(self.menu.container)
+	guiManager:destroyWidget(self.widget)
+end
 
-Inventory.buildWidget()
+Inventory.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
+		if emberOgre:getAvatar():isAdmin() == false then
+			inventory = {connectors={},
+				iconsize = 32,
+				columns = 4,
+				iconcounter = 0,
+				slotcounter = 0,
+				icons = {},
+				slots = {},
+				menu = {menuShown = false, activeEntityWrapper = nil},
+				newEntityListeners = {}}
+			setmetatable(inventory, {__index = Inventory})
+			inventory:buildWidget(avatarEntity)
+			connect(inventory.connectors, avatarEntity.BeingDeleted, function()
+					inventory:shutdown()
+					inventory = nil
+				end
+			)
+		end
+	end
+)
