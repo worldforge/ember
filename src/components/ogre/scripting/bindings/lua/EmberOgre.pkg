@@ -46,6 +46,7 @@ $pfile "EntityIconSlot.pkg"
 $pfile "EntityIcon.pkg"
 $pfile "EntityIconManager.pkg"
 $pfile "EntityIconDragDropTarget.pkg"
+$pfile "EntityIconDragDropPreview.pkg"
 
 $pfile "Model.pkg"
 $pfile "ModelRepresentation.pkg"

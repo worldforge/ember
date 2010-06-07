@@ -92,7 +92,7 @@ class EntityIconDragDropPreviewMovement
 {
 public:
 
-	EntityIconDragDropPreviewMovement(EntityIconDragDropPreview& mEntityIconDragDropPreview, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	EntityIconDragDropPreviewMovement(EntityIconDragDropPreview& mEntityIconDragDropPreview, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
 	~EntityIconDragDropPreviewMovement();
 
 protected:

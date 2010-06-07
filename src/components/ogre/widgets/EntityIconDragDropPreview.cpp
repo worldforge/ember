@@ -1,4 +1,5 @@
 #include "EntityIconDragDropPreview.h"
+#include "components/ogre/World.h"
 
 #include "main/Application.h"
 #include "../EmberOgre.h"
@@ -7,6 +8,7 @@
 
 #include "EntityIcon.h"
 #include <Eris/TypeInfo.h>
+#include <Eris/Avatar.h>
 #include "components/ogre/EmberEntity.h"
 #include "../authoring/DetachedEntity.h"
 #include <Eris/Connection.h>
@@ -47,7 +49,7 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 	EmberEntity* entity = icon->getEntity();
 	Eris::TypeInfo* erisType = entity->getType();
 
-	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
+	EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
 
 	WFMath::Vector<3> offset(2, 0, 0);
 	mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
@@ -62,7 +64,7 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 	if (view)
 	{
 		// Temporary entity
-		mEntity = new Authoring::DetachedEntity("-1", erisType, mConn.getTypeService());
+		mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
 		mEntity->setFromMessage(mEntityMessage);
 
 		// Creating scene node
@@ -85,7 +87,7 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 		}
 
 		// Registering move adapter to track mouse movements
-		mMovement = new EntityIconDragDropPreviewMovement(*this, *mEntity, mEntityNode);
+		mMovement = new EntityIconDragDropPreviewMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
 		//mMoveAdapter->addAdapter();
 	}
 }
@@ -183,7 +185,7 @@ void EntityIconDragDropPreviewActionCreator::createActions(EntityMapping::Entity
 }
 
 EntityIconDragDropPreviewMovementBridge::EntityIconDragDropPreviewMovementBridge(EntityIconDragDropPreview& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-	::EmberOgre::Authoring::EntityMoverBase(entity, node), mCreator(creator)
+	::EmberOgre::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mCreator(creator)
 {
 }
 
@@ -198,7 +200,8 @@ void EntityIconDragDropPreviewMovementBridge::cancelMovement()
 {
 }
 
-EntityIconDragDropPreviewMovement::EntityIconDragDropPreviewMovement(EntityIconDragDropPreview& mEntityIconDragDropPreview, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
+EntityIconDragDropPreviewMovement::EntityIconDragDropPreviewMovement(EntityIconDragDropPreview& mEntityIconDragDropPreview, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
+:mMoveAdapter(camera)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
