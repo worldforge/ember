@@ -235,7 +235,16 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.useButton)
 	
-
+	--User has dragged an entityIcon from the inventory to the world
+	root.DragDrop = EmberOgre.Gui.EntityIconDragDropTarget(root)
+	root.DragDrop_dropped = function(entityIcon)
+		if entityIcon ~= nil then
+			if entityIcon:getEntity() ~= nil then
+				emberServices:getServerService():drop(entityIcon:getEntity())
+			end
+		end
+	end
+	root.DragDrop.dropped_connector = EmberOgre.LuaConnector:new_local(root.DragDrop.EventIconDropped):connect(root.DragDrop_dropped)
 		
 	
 	self.menu.container:setVisible(true)
