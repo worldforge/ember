@@ -67,6 +67,13 @@ function Inventory:addSlot()
 			oldSlot:notifyIconDraggedOff(entityIcon)
 		end
 	end
+	
+	--slotWrapper.DragDrop = EmberOgre.Gui.EntityIconDragDropTarget(slot:getWindow())
+	--slotWrapper.entityIconDraggedOff = function (entityIcon)
+	--	emberServices:getServerService():say("dragged off")
+	--end
+	
+	--slotWrapper.entityIconDraggedOff_connector = EmberOgre.LuaConnector:new_local(slotWrapper.DragDrop.EventIconLeaves):connect(slotWrapper.entityIconDraggedOff)
 	slotWrapper.entityIconDropped_connector = createConnector(slot.EventIconDropped):connect(slotWrapper.entityIconDropped)
 	
 	return slotWrapper
@@ -237,15 +244,15 @@ function Inventory:buildWidget(avatarEntity)
 	
 	--User has dragged an entityIcon from the inventory to the world
 	root.DragDrop = EmberOgre.Gui.EntityIconDragDropTarget(root)
-	root.DragDrop_dropped = function(entityIcon)
+	root.DragDrop_DraggedOver = function(entityIcon)
 		if entityIcon ~= nil then
 			if entityIcon:getEntity() ~= nil then
-				emberServices:getServerService():drop(entityIcon:getEntity())
+				emberServices:getServerService():say("icon was dragged over")
+				--emberServices:getServerService():drop(entityIcon:getEntity())
 			end
 		end
 	end
-	root.DragDrop.dropped_connector = EmberOgre.LuaConnector:new_local(root.DragDrop.EventIconDropped):connect(root.DragDrop_dropped)
-		
+	root.DragDrop_DraggedOver_connector = EmberOgre.LuaConnector:new_local(root.DragDrop.EventIconEntered):connect(root.DragDrop_DraggedOver)
 	
 	self.menu.container:setVisible(true)
 	
