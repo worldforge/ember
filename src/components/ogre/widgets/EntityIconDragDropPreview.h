@@ -10,6 +10,7 @@
 #include <wfmath/quaternion.h>
 
 namespace Eris {
+class Entity;
 class Connection;
 class TypeInfo;
 }
@@ -38,6 +39,8 @@ public:
 	void createPreview(EntityIcon* icon);
 	void setModel(const std::string& modelName);
 
+	void cleanupCreation();
+	void finalizeCreation();
 
 	void initFromModel();
 
@@ -52,16 +55,17 @@ public:
 	void typeService_BoundType(Eris::TypeInfo* typeInfo);
 
 private:
+	EmberEntity* mIconEntity;
 	Eris::Connection& mConn;
 	Authoring::DetachedEntity* mEntity;
 	Atlas::Message::MapType mEntityMessage;
 	Ogre::SceneNode* mEntityNode;
-	Ogre::Entity* mAxisMarker;
 	Model::Model* mModel;
 	Model::ModelMount* mModelMount;
 	WFMath::Point<3> mPos;
 	WFMath::Quaternion mOrientation;
 	EntityIconDragDropPreviewMovement* mMovement;
+	bool mActiveIcon;
 };
 
 class EntityIconDragDropPreviewActionCreator  : public Ember::EntityMapping::IActionCreator {

@@ -6,6 +6,9 @@
 #include "../Avatar.h"
 #include "../Convert.h"
 
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
+
 #include "EntityIcon.h"
 #include <Eris/TypeInfo.h>
 #include <Eris/Avatar.h>
@@ -33,7 +36,7 @@ namespace Gui
 
 
 EntityIconDragDropPreview::EntityIconDragDropPreview(Eris::Connection& conn) :
-		mConn(conn), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0)
+		mConn(conn), mModelMount(0), mModel(0), mMovement(0), mActiveIcon(false)
 {
 
 	mOrientation.identity();
@@ -45,42 +48,46 @@ EntityIconDragDropPreview::~EntityIconDragDropPreview()
 
 void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 {
-
-	EmberEntity* entity = icon->getEntity();
-	Eris::TypeInfo* erisType = entity->getType();
-
-	EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
-
-	WFMath::Vector<3> offset(2, 0, 0);
-	mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
-
-	mEntityMessage = entity->getAttributes();
-	mEntityMessage["loc"] = avatar.getLocation()->getId();
-	mEntityMessage["name"] = erisType->getName();
-	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
-
-	Eris::View* view = Ember::Application::getSingleton().getMainView();
-
-	if (view)
+	if (!mActiveIcon)
 	{
-		// Temporary entity
-		mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
-		mEntity->setFromMessage(mEntityMessage);
 
-		// Creating scene node
-		mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
+		mIconEntity = icon->getEntity();
+		Eris::TypeInfo* erisType = mIconEntity->getType();
 
-		// Making model from temporary entity
-		EntityIconDragDropPreviewActionCreator actionCreator(*this);
-		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
-		if (modelMapping.get()) {
-			modelMapping->initialize();
+		EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
+
+		WFMath::Vector<3> offset(2, 0, 0);
+		mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
+
+		mEntityMessage = mIconEntity->getAttributes();
+		mEntityMessage["loc"] = avatar.getLocation()->getId();
+		mEntityMessage["name"] = erisType->getName();
+		mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
+
+		Eris::View* view = Ember::Application::getSingleton().getMainView();
+
+		if (view)
+		{
+			// Temporary entity
+			mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
+			mEntity->setFromMessage(mEntityMessage);
+
+			// Creating scene node
+			mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
+
+			// Making model from temporary entity
+			EntityIconDragDropPreviewActionCreator actionCreator(*this);
+			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
+			if (modelMapping.get()) {
+				modelMapping->initialize();
+			}
+
+			// Registering move adapter to track mouse movements
+			mMovement = new EntityIconDragDropPreviewMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
+			//mMoveAdapter->addAdapter();
+			setModel(erisType->getName());
+			mActiveIcon = true;
 		}
-
-		// Registering move adapter to track mouse movements
-		mMovement = new EntityIconDragDropPreviewMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
-		//mMoveAdapter->addAdapter();
-		setModel(erisType->getName());
 	}
 }
 
@@ -139,6 +146,39 @@ void EntityIconDragDropPreview::scaleNode()
 	}
 }
 
+void EntityIconDragDropPreview::cleanupCreation()
+{
+	if (mActiveIcon)
+	{
+		delete mMovement;
+		mMovement = 0;
+
+		delete mModelMount;
+		mModelMount = 0;
+
+		mEntityNode->detachAllObjects();
+		mOrientation = Convert::toWF(mEntityNode->getOrientation());
+		EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
+		//	delete mEntityNode;
+		mEntityNode = 0;
+
+		EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
+		mModel = 0;
+
+		// Deleting temporary entity
+		mEntity->shutdown();
+		delete mEntity;
+
+		mActiveIcon = false;
+	}
+}
+
+void EntityIconDragDropPreview::finalizeCreation()
+{
+//	EmberServices::getSingleton().getServerService()->drop(mIconEntity, Convert::toWF<WFMath::Vector<3> >(mEntityNode->getPosition()));
+	cleanupCreation();
+}
+
 Model::Model* EntityIconDragDropPreview::getModel()
 {
 	return mModel;
@@ -166,14 +206,6 @@ EntityIconDragDropPreviewActionCreator::~EntityIconDragDropPreviewActionCreator(
 
 void EntityIconDragDropPreviewActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 {
-	EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-	for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
-		if (J->getType() == "display-model") {
-			mEntityIconDragDropPreview.setModel(J->getValue());
-		} else if (J->getType() == "hide-model") {
-			mEntityIconDragDropPreview.setModel("");
-		}
-	}
 }
 
 EntityIconDragDropPreviewMovementBridge::EntityIconDragDropPreviewMovementBridge(EntityIconDragDropPreview& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
@@ -187,9 +219,11 @@ EntityIconDragDropPreviewMovementBridge::~EntityIconDragDropPreviewMovementBridg
 
 void EntityIconDragDropPreviewMovementBridge::finalizeMovement()
 {
+	mCreator.finalizeCreation();
 }
 void EntityIconDragDropPreviewMovementBridge::cancelMovement()
 {
+	mCreator.cleanupCreation();
 }
 
 EntityIconDragDropPreviewMovement::EntityIconDragDropPreviewMovement(EntityIconDragDropPreview& mEntityIconDragDropPreview, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
