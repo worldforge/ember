@@ -70,15 +70,6 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 		// Creating scene node
 		mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
 
-		if (!mAxisMarker) {
-			try {
-				mAxisMarker = mEntityNode->getCreator()->createEntity("EntityCreator_axisMarker", "axes.mesh");
-				mEntityNode->attachObject(mAxisMarker);
-			} catch (const std::exception& ex) {
-				S_LOG_WARNING("Error when loading axes mesh."<< ex);
-			}
-		}
-
 		// Making model from temporary entity
 		EntityIconDragDropPreviewActionCreator actionCreator(*this);
 		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
@@ -89,6 +80,7 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 		// Registering move adapter to track mouse movements
 		mMovement = new EntityIconDragDropPreviewMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
 		//mMoveAdapter->addAdapter();
+		setModel(erisType->getName());
 	}
 }
 
