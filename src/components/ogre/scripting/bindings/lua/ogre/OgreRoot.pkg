@@ -699,7 +699,6 @@ namespace Ogre
 		*/
 // 		uint32 _allocateNextMovableObjectTypeFlag(void);
 
-// 		typedef ConstMapIterator<MovableObjectFactoryMap> MovableObjectFactoryIterator;
 		/** Return an iterator over all the MovableObjectFactory instances currently
 			registered.
 		*/

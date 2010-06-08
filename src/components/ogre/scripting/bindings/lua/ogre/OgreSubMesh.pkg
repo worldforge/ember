@@ -86,7 +86,7 @@ namespace Ogre {
                 The use of shared or non-shared index map is determined when
                 model data is converted to the OGRE .mesh format.
         */
-//         typedef std::vector<unsigned short> IndexMap;
+
 //         IndexMap blendIndexToBoneIndexMap;
 
 //         ProgressiveMesh::LODFaceList mLodFaceList;
@@ -131,10 +131,6 @@ namespace Ogre {
         */
 //         void clearBoneAssignments(void);
 
-        /// Multimap of verex bone assignments (orders by vertex index)
-//         typedef std::multimap<size_t, VertexBoneAssignment> VertexBoneAssignmentList;
-//         typedef MapIterator<VertexBoneAssignmentList> BoneAssignmentIterator;
-
         /** Gets an iterator for access all bone assignments. 
         @remarks
             Only valid if this SubMesh has dedicated geometry.
@@ -144,7 +140,6 @@ namespace Ogre {
         /** Must be called once to compile bone assignments into geometry buffer. */
 //         void _compileBoneAssignments(void);
 
-//         typedef ConstMapIterator<AliasTextureNamePairList> AliasTextureIterator;
         /** Gets an constant iterator to access all texture alias names assigned to this submesh. 
 
         */

@@ -66,26 +66,6 @@ namespace Ogre {
     class  Mesh: public Resource
     {
 
-/*    public:
-		typedef std::vector<Real> LodDistanceList;
-        /// Multimap of vertex bone assignments (orders by vertex index)
-        typedef std::multimap<size_t, VertexBoneAssignment> VertexBoneAssignmentList;
-        typedef MapIterator<VertexBoneAssignmentList> BoneAssignmentIterator;
-        typedef std::vector<SubMesh*> SubMeshList;
-
-    public:*/
-		/** A hashmap used to store optional SubMesh names.
-			Translates a name into SubMesh index
-		*/
-// 		typedef HashMap<String, ushort> SubMeshNameMap ;
-        /** Default constructor - used by MeshManager
-            @warning
-                Do not call this method directly.
-        */
-//         Mesh(ResourceManager* creator, const String& name, ResourceHandle handle,
-//             const String& group, bool isManual = false, ManualResourceLoader* loader = 0);
-//         ~Mesh();
-
 		/// @copydoc Resource::load
 // 		void load(void);
 
@@ -127,7 +107,6 @@ namespace Ogre {
 		*/
 		//Ogre::SubMesh* getSubMesh(const String& name) const ;
 
-//         typedef VectorIterator<SubMeshList> SubMeshIterator;
         /// Gets an iterator over the available submeshes
 /*        SubMeshIterator getSubMeshIterator(void)
         { return SubMeshIterator(mSubMeshList.begin(), mSubMeshList.end()); }*/

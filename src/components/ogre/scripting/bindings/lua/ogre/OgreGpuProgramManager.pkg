@@ -34,7 +34,6 @@ namespace Ogre {
 	{
 	public:
 
-		typedef std::set<String> SyntaxCodes;
 
 
         /** Loads a GPU program from a file of assembly. 

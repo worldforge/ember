@@ -55,10 +55,7 @@ namespace Ogre {
             /// Transform is relative to world space
             TS_WORLD
         };
-                
-        typedef HashMap<std::string, Ogre::Node*> ChildNodeMap;
-        typedef MapIterator<ChildNodeMap> ChildNodeIterator;
-		typedef ConstMapIterator<ChildNodeMap> ConstChildNodeIterator;
+             
 
         /** Returns the name of the node. */
         const std::string& getName(void) const;

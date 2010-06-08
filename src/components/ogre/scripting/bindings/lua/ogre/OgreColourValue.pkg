@@ -29,10 +29,6 @@ Torus Knot Software Ltd.
 
 namespace Ogre {
 
-    //typedef uint32 RGBA;
-    //typedef uint32 ARGB;
-    //typedef uint32 ABGR;
-	//typedef uint32 BGRA;
 
     /** Class representing colour.
 	    @remarks

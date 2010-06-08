@@ -57,12 +57,7 @@ namespace Ogre {
 	No functions were declared virtual to improve performance.
 	*/
 	class Entity: public Ogre::MovableObject
-	{
-		typedef std::set<Ogre::Entity*> EntitySet;
-
-		/// Contains the child objects (attached to bones) indexed by name
-		typedef std::map<std::string, Ogre::MovableObject*> ChildObjectList;
-		
+	{		
 
 		/** Gets the Mesh that this Entity is based on.
 		*/
@@ -246,7 +241,6 @@ namespace Ogre {
 		/// Detach all MovableObjects previously attached using attachObjectToBone
 		void detachAllObjectsFromBone(void);
 
-		typedef Ogre::MapIterator<Ogre::Entity::ChildObjectList> ChildObjectListIterator;
 		/** Gets an iterator to the list of objects attached to bones on this entity. */
 		Ogre::Entity::ChildObjectListIterator getAttachedObjectIterator(void);
 		/** @see MovableObject::getBoundingRadius */

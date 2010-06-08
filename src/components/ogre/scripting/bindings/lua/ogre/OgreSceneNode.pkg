@@ -44,9 +44,7 @@ namespace Ogre {
     class SceneNode : public Ogre::Node
     {
     public:
-        typedef HashMap<std::string, Ogre::MovableObject*> ObjectMap;
-        typedef MapIterator<ObjectMap> ObjectIterator;
-		typedef ConstMapIterator<ObjectMap> ConstObjectIterator;
+
 
         /** Adds an instance of a scene object to this node.
         @remarks

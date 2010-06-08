@@ -135,7 +135,6 @@ namespace Ogre {
 //         void removeTechnique(unsigned short index);		
         /** Removes all the techniques in this Material. */
 //         void removeAllTechniques(void);
-//         typedef VectorIterator<Techniques> TechniqueIterator;
         /** Get an iterator over the Techniques in this Material. */
 //         TechniqueIterator getTechniqueIterator(void);
         /** Gets an iterator over all the Techniques which are supported by the current card. 
