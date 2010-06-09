@@ -242,13 +242,32 @@ function Inventory:buildWidget(avatarEntity)
 	root.DragDrop_DraggedOver = function(entityIcon)
 		if entityIcon ~= nil then
 			if entityIcon:getEntity() ~= nil then
-				emberServices:getServerService():say("icon was dragged over")
-				--emberServices:getServerService():drop(entityIcon:getEntity())
+				--alpha is already low when dragging, so 0.7 of an already reduced alpha
+				entityIcon:getImage():setAlpha(0.7)
 				self.helper:createPreview(entityIcon)
 			end
 		end
 	end
 	root.DragDrop_DraggedOver_connector = EmberOgre.LuaConnector:new_local(root.DragDrop.EventIconEntered):connect(root.DragDrop_DraggedOver)
+	
+	--User has dragged an entityIcon over the world, and onto another window
+	root.DragDrop_DragLeaves = function(entityIcon)
+		if entityIcon ~= nil then
+			if entityIcon:getEntity() ~= nil then
+				entityIcon:getImage():setAlpha(1.0)
+			end
+		end
+	end
+	root.DragDrop_DraggedOver_connector = EmberOgre.LuaConnector:new_local(root.DragDrop.EventIconLeaves):connect(root.DragDrop_DragLeaves)
+	
+	--Responds when preview model has been released on the world
+	root.DragDrop_Finalize = function(emberEntity)
+		if emberEntity ~= nil then
+			emberServices:getServerService():drop(emberEntity)
+		end
+	end
+	root.DragDrop_Finalized_connector = EmberOgre.LuaConnector:new_local(self.helper.EventEntityFinalized):connect(root.DragDrop_Finalize)
+	
 	
 	self.menu.container:setVisible(true)
 	

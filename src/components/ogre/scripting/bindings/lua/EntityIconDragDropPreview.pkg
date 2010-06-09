@@ -31,6 +31,8 @@ class EntityIconDragDropPreview
 public:
 	EntityIconDragDropPreview(Eris::Connection& conn);
 	void createPreview(EntityIcon* icon);
+	void setModel(const std::string& modelName);
+	sigc::signal<void, EmberEntity*> EventEntityFinalized;
 
 };
 

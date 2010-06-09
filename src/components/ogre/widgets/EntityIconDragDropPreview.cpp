@@ -1,3 +1,25 @@
+//
+// C++ Implementation: EntityIconDragDropTarget
+//
+// Description:
+//
+//
+// Author: Tiberiu Paunescu <tpa12@sfu.ca>, (C) 2010
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//#ifndef EMBEROGRE_GUIENTITYICONDRAGDROPPREVIEW_H
+//
 #include "EntityIconDragDropPreview.h"
 #include "components/ogre/World.h"
 
@@ -50,7 +72,6 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 {
 	if (!mActiveIcon)
 	{
-
 		mIconEntity = icon->getEntity();
 		Eris::TypeInfo* erisType = mIconEntity->getType();
 
@@ -87,6 +108,9 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 			//mMoveAdapter->addAdapter();
 			setModel(erisType->getName());
 			mActiveIcon = true;
+		} else {
+			Eris::TypeInfo* erisType = mIconEntity->getType();
+			setModel(erisType->getName());
 		}
 	}
 }
@@ -175,13 +199,18 @@ void EntityIconDragDropPreview::cleanupCreation()
 
 void EntityIconDragDropPreview::finalizeCreation()
 {
-//	EmberServices::getSingleton().getServerService()->drop(mIconEntity, Convert::toWF<WFMath::Vector<3> >(mEntityNode->getPosition()));
+	EventEntityFinalized.emit(mIconEntity);
 	cleanupCreation();
 }
 
 Model::Model* EntityIconDragDropPreview::getModel()
 {
 	return mModel;
+}
+
+WFMath::Vector<3> & EntityIconDragDropPreview::getDropOffset()
+{
+	return mDropOffset;
 }
 
 bool EntityIconDragDropPreview::hasBBox()
