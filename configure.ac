@@ -255,10 +255,32 @@ PKG_CHECK_MODULES(LUA, lua5.1 >= 5.1,
 	])
 ])
 
+
+AC_ARG_ENABLE(cegui_toluapp,
+  [  AS_HELP_STRING([--enable-cegui-toluapp], [allow Ember to use the CEGUI provided tolua++ library. This requires that you've also had CEGUI build the tolua++ generator, and that generator by this build (see --with-tolua++) (default is disabled)])],
+  [
+    if test "$enableval" = "yes"; then
+      cegui_toluapp="true"
+    else
+      cegui_toluapp="false"
+    fi
+  ],[
+    cegui_toluapp="false"
+  ]
+)
+
 # Check for tolua++
 AC_CHECK_LIB([CEGUItoluapp], [main],
     [
-        LIBS="-lCEGUItoluapp $LIBS"
+	    if test "$cegui_toluapp" = "true"; then
+	        LIBS="-lCEGUItoluapp $LIBS"
+	        AC_MSG_NOTICE([Using CEGUI provided tolua++ implementation. Make sure that you're also using the CEGUI provided tolua++ generator (see --with-tolua++)])
+	    else
+	    	AC_MSG_ERROR([A CEGUI provided tolua++ implementation was found. By default this is not allowed. The reason is that CEGUI normally doesn't build the tolua++ generator needed by Ember, and there's a risk then that Ember will use a tolua++ generator installed by the system together with the tolua++ library provided by CEGUI. This will in most cases lead to strange compilation errors.
+	    		You have two options:
+	    			1) Make sure that there's a tolua++ (http://www.codenix.com/~tolua/) development package installed on the system, and recompile CEGUI so that it recognizes and uses this (make sure to uninstall CEGUI first).
+	    			2) If you're certain that you've told CEGUI to also compile the tolua++ code generator and want to have Ember use the CEGUI provided tolua++ implementation, use the --enable-cegui-toluapp to disable this check. Use --with-tolua++ to make sure that the CEGUI provided tolua++ generator is used.])
+	    fi
     ],
     [
         AC_CHECK_LIB([tolua++], [main],
@@ -266,7 +288,7 @@ AC_CHECK_LIB([CEGUItoluapp], [main],
                 LIBS="-ltolua++ $LIBS"
             ],
             [
-                AC_MSG_ERROR([Couldn't find tolua++. Make sure that CEGUI compiled with Lua scripting support.])
+                AC_MSG_ERROR([Couldn't find tolua++. Make sure that tolua++ (http://www.codenix.com/~tolua/) is installed and CEGUI is compiled with Lua scripting support.])
             ]
         )
     ]
