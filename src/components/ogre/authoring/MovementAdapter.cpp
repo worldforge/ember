@@ -171,6 +171,8 @@ bool MovementAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& butto
 {
 	if (button == Input::MouseButtonLeft) {
 		finalizeMovement();
+		//After we've finalized we've done here, so we should let other IInputAdapters handle the mouse button up (we've had an issue where cegui didn't receive the mouse up event, which made it think that icons that were dragged were still being dragged (as the end-drag event is emitted on mouse up))
+		return true;
 	} else if (button == Input::MouseButtonRight) {
 	} else {
 		return false;
