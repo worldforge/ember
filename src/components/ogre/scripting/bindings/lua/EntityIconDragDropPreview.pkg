@@ -32,9 +32,8 @@ public:
 	EntityIconDragDropPreview(Eris::Connection& conn);
 	void createPreview(EntityIcon* icon);
 	void setModel(const std::string& modelName);
-	const WFMath::Vector<3> & getDropOffset();
+	WFMath::Vector<3> & getDropOffset();
 	sigc::signal<void, EmberEntity*> EventEntityFinalized;
-
 };
 
 }

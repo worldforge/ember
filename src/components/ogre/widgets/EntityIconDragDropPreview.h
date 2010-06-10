@@ -28,6 +28,7 @@
 #include "components/ogre/authoring/MovementAdapter.h"
 #include "components/ogre/authoring/IMovementBridge.h"
 #include "components/ogre/authoring/EntityMoverBase.h"
+#include "components/entitymapping/Actions/Action.h"
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 
@@ -90,6 +91,16 @@ public:
 	void setModel(const std::string& modelName);
 
 	/**
+	 * Shows preview model part
+	 */
+	void showModelPart(const std::string& partName);
+
+	/**
+	 * Hide preview model part
+	 */
+	void hideModelPart(const std::string& partName);
+
+	/**
 	 * @brief Clean up after finalizing or cancelling the user action
 	 */
 	void cleanupCreation();
@@ -103,7 +114,7 @@ public:
 	 * @brief Returns the offset between the preview model and the avatar
 	 * @return vector of the offset between the preview model and the avatar
 	 */
-	const WFMath::Vector<3> & getDropOffset();
+	WFMath::Vector<3> & getDropOffset();
 
 	/**
 	 * @brief Emitted when we finalize our intended action
@@ -204,6 +215,68 @@ private:
 	 * @brief Keeps track of whether or not we are generating a preview
 	 */
 	bool mActiveIcon;
+};
+
+/**
+ * @brief Shows or hides specific model part in entity creator preview.
+ */
+class EntityIconDragDropPreviewPartAction : public Ember::EntityMapping::Actions::Action
+{
+public:
+	EntityIconDragDropPreviewPartAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string partName);
+	~EntityIconDragDropPreviewPartAction();
+	/**
+	 * Shows specific model part. Called by model mapping framework.
+	 */
+	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	/**
+	 * Hides specific model part. Called by model mapping framework.
+	 */
+	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+protected:
+	EntityIconDragDropPreview& mEntityIconDragDropPreview;
+	std::string mPartName;
+};
+
+/**
+ * Shows or hides specific model in entity creator preview.
+ */
+class EntityIconDragDropPreviewHideModelAction : public Ember::EntityMapping::Actions::Action
+{
+public:
+	EntityIconDragDropPreviewHideModelAction(EntityIconDragDropPreview& entityIconDragDropPreview);
+	virtual ~EntityIconDragDropPreviewHideModelAction();
+	/**
+	 * Hides model. Called by model mapping framework.
+	 */
+	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	/**
+	 * Does nothing. Called by model mapping framework.
+	 */
+	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+protected:
+	EntityIconDragDropPreview& mEntityIconDragDropPreview;
+};
+
+/**
+ * @brief Shows or hides specific model in entity creator preview.
+ */
+class EntityIconDragDropPreviewModelAction : public Ember::EntityMapping::Actions::Action
+{
+public:
+	EntityIconDragDropPreviewModelAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string modelName);
+	~EntityIconDragDropPreviewModelAction();
+	/**
+	 * Shows specific model. Called by model mapping framework.
+	 */
+	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	/**
+	 * Hides model. Called by model mapping framework.
+	 */
+	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+protected:
+	EntityIconDragDropPreview& mEntityIconDragDropPreview;
+	std::string mModelName;
 };
 
 class EntityIconDragDropPreviewActionCreator  : public Ember::EntityMapping::IActionCreator {

@@ -108,7 +108,6 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 				// Registering move adapter to track mouse movements
 				mMovement = new EntityIconDragDropPreviewMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
 				//mMoveAdapter->addAdapter();
-				setModel(erisType->getName());
 				mActiveIcon = true;
 			}
 		}
@@ -151,6 +150,20 @@ void EntityIconDragDropPreview::setModel(const std::string& modelName)
 	mEntityNode->setOrientation(Convert::toOgre(mOrientation));
 }
 
+void EntityIconDragDropPreview::showModelPart(const std::string& partName)
+{
+	if (mModel) {
+		mModel->showPart(partName);
+	}
+}
+
+void EntityIconDragDropPreview::hideModelPart(const std::string& partName)
+{
+	if (mModel) {
+		mModel->hidePart(partName);
+	}
+}
+
 void EntityIconDragDropPreview::initFromModel()
 {
 	scaleNode();
@@ -174,6 +187,8 @@ void EntityIconDragDropPreview::cleanupCreation()
 {
 	if (mActiveIcon)
 	{
+		mIconEntity = 0;
+
 		delete mMovement;
 		mMovement = 0;
 
@@ -209,7 +224,7 @@ Model::Model* EntityIconDragDropPreview::getModel()
 	return mModel;
 }
 
-const WFMath::Vector<3> & EntityIconDragDropPreview::getDropOffset()
+WFMath::Vector<3> & EntityIconDragDropPreview::getDropOffset()
 {
 	return mDropOffset;
 }
@@ -224,6 +239,67 @@ const WFMath::AxisBox<3> & EntityIconDragDropPreview::getBBox()
 	return mEntity->getBBox();
 }
 
+EntityIconDragDropPreviewPartAction::EntityIconDragDropPreviewPartAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string partName)
+		: mEntityIconDragDropPreview(entityIconDragDropPreview), mPartName(partName)
+{
+}
+
+EntityIconDragDropPreviewPartAction::~EntityIconDragDropPreviewPartAction()
+{
+}
+
+void EntityIconDragDropPreviewPartAction::activate(Ember::EntityMapping::ChangeContext& context)
+{
+	S_LOG_VERBOSE("Showing creator part " << mPartName);
+	mEntityIconDragDropPreview.showModelPart(mPartName);
+}
+
+void EntityIconDragDropPreviewPartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+{
+	S_LOG_VERBOSE("Hiding creator part " << mPartName);
+	mEntityIconDragDropPreview.hideModelPart(mPartName);
+}
+
+
+EntityIconDragDropPreviewModelAction::EntityIconDragDropPreviewModelAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string modelName)
+		: mEntityIconDragDropPreview(entityIconDragDropPreview), mModelName(modelName)
+{
+}
+
+EntityIconDragDropPreviewModelAction::~EntityIconDragDropPreviewModelAction()
+{
+}
+
+void EntityIconDragDropPreviewModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+{
+	S_LOG_VERBOSE("Showing creator model " << mModelName);
+	mEntityIconDragDropPreview.setModel(mModelName);
+}
+
+void EntityIconDragDropPreviewModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+{
+	S_LOG_VERBOSE("Hiding creator model " << mModelName);
+	mEntityIconDragDropPreview.setModel("");
+}
+
+EntityIconDragDropPreviewHideModelAction::EntityIconDragDropPreviewHideModelAction(EntityIconDragDropPreview& entityIconDragDropPreview)
+		: mEntityIconDragDropPreview(entityIconDragDropPreview)
+{
+}
+
+EntityIconDragDropPreviewHideModelAction::~EntityIconDragDropPreviewHideModelAction()
+{
+}
+
+void EntityIconDragDropPreviewHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+{
+	mEntityIconDragDropPreview.setModel("");
+}
+
+void EntityIconDragDropPreviewHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+{
+}
+
 
 EntityIconDragDropPreviewActionCreator::EntityIconDragDropPreviewActionCreator(EntityIconDragDropPreview& entityIconDragDropPreview)
 		: mEntityIconDragDropPreview(entityIconDragDropPreview)
@@ -236,6 +312,19 @@ EntityIconDragDropPreviewActionCreator::~EntityIconDragDropPreviewActionCreator(
 
 void EntityIconDragDropPreviewActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 {
+	EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
+	for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+		if (J->getType() == "display-part") {
+			EntityIconDragDropPreviewPartAction* action = new EntityIconDragDropPreviewPartAction(mEntityIconDragDropPreview, J->getValue());
+			aCase->addAction(action);
+		} else if (J->getType() == "display-model") {
+			EntityIconDragDropPreviewModelAction* action = new EntityIconDragDropPreviewModelAction(mEntityIconDragDropPreview, J->getValue());
+			aCase->addAction(action);
+		} else if (J->getType() == "hide-model") {
+			EntityIconDragDropPreviewHideModelAction* action = new EntityIconDragDropPreviewHideModelAction(mEntityIconDragDropPreview);
+			aCase->addAction(action);
+		}
+	}
 }
 
 EntityIconDragDropPreviewMovementBridge::EntityIconDragDropPreviewMovementBridge(EntityIconDragDropPreview& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
