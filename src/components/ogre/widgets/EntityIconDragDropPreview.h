@@ -60,59 +60,59 @@ class EntityIconDragDropPreviewMovement;
 @brief Creates a temporary preview model to allow the user to visualise their actions.
 
 An instance of this class can be used to generate a preview of a model visible to the user, based on an existing entity.
-A user can cancel the current action or complete it, the action performed for completion can be signaled using EventIconFinalized
+A user can cancel the current action or complete it, the action performed for completion can be signaled using EventIconFinalized.
 
-@note implementation is very similar to that of EntityCreator, may wish to consolidate similarities
+@note Implementation is very similar to that of EntityCreator, may wish to consolidate similarities.
 */
 class EntityIconDragDropPreview {
 public:
 	/**
 	 * @brief Constructor
-	 * @param conn Connection between the server and the client
+	 * @param conn Connection between the server and the client.
 	 */
 	EntityIconDragDropPreview(Eris::Connection& conn);
 
 	/**
-	 * @brief Desctructor
+	 * @brief Destructor
 	 */
 	virtual ~EntityIconDragDropPreview();
 
 	/**
-	 * @brief Begins the creation of preview model
-	 * @param icon the icon of the entity for which the preview is generated
-	 * @note will be changed take EmberEntity as input
+	 * @brief Begins the creation of preview model.
+	 * @param icon The icon of the entity for which the preview is generated.
+	 * @note Will be changed to take EmberEntity as input.
 	 */
 	void createPreview(EntityIcon* icon);
 
 	/**
-	 * @brief Sets model information based on the entity type
-	 * @param modelName the name of the model
+	 * @brief Sets model information based on the entity type.
+	 * @param modelName The name of the model.
 	 */
 	void setModel(const std::string& modelName);
 
 	/**
-	 * Shows preview model part
+	 * @brief Shows preview model part.
 	 */
 	void showModelPart(const std::string& partName);
 
 	/**
-	 * Hide preview model part
+	 * @brief Hide preview model part.
 	 */
 	void hideModelPart(const std::string& partName);
 
 	/**
-	 * @brief Clean up after finalizing or cancelling the user action
+	 * @brief Clean up after finalizing or cancelling the user action.
 	 */
 	void cleanupCreation();
 
 	/**
-	 * @brief Notifies of action commitment
+	 * @brief Notifies of action commitment.
 	 */
 	void finalizeCreation();
 
 	/**
-	 * @brief Returns the offset between the preview model and the avatar
-	 * @return vector of the offset between the preview model and the avatar
+	 * @brief Returns the offset between the preview model and the avatar.
+	 * @return Vector of the offset between the preview model and the avatar.
 	 */
 	WFMath::Vector<3> & getDropOffset();
 
@@ -137,31 +137,31 @@ protected:
 	void model_Reloaded();
 
 	/**
-	 * @brief Returns the model for the preview
-	 * @return model for the preview
+	 * @brief Returns the model for the preview.
+	 * @return Model for the preview.
 	 */
 	Model::Model* getModel();
 
 	/**
-	 * @brief Returns true if our detached entity has a bounding box
-	 * @return Does the detached entity have a bounding box
+	 * @brief Returns true if our detached entity has a bounding box.
+	 * @return Does the detached entity have a bounding box.
 	 */
 	bool hasBBox();
 
 	/**
-	 * @brief Returns the bounding box our detached entity
-	 * @return the bounding box
+	 * @brief Returns the bounding box our detached entity.
+	 * @return The bounding box.
 	 */
 	const WFMath::AxisBox<3> & getBBox();
 
 private:
 	/**
-	 * @brief The entity we are generating a preview model for
+	 * @brief The entity we are generating a preview model for.
 	 */
 	EmberEntity* mIconEntity;
 
 	/**
-	 * @brief Eris connection
+	 * @brief Eris connection.
 	 */
 	Eris::Connection& mConn;
 
@@ -171,7 +171,7 @@ private:
 	Authoring::DetachedEntity* mEntity;
 
 	/**
-	* @brief Message that is composed from attributes of the entity we're creating a preview for
+	* @brief Message that is composed from attributes of the entity we're creating a preview for.
 	*/
 	Atlas::Message::MapType mEntityMessage;
 
@@ -186,7 +186,7 @@ private:
 	Model::Model* mModel;
 
 	/**
-	 * @brief Preview model mount
+	 * @brief Preview model mount.
 	 */
 	Model::ModelMount* mModelMount;
 
@@ -197,7 +197,7 @@ private:
 
 	/**
 	 * @brief Current orientation of preview in the world.
-	 * @note we don't change the orientation
+	 * @note We don't change the orientation.
 	 */
 	WFMath::Quaternion mOrientation;
 
@@ -223,68 +223,141 @@ private:
 class EntityIconDragDropPreviewPartAction : public Ember::EntityMapping::Actions::Action
 {
 public:
-	EntityIconDragDropPreviewPartAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string partName);
-	~EntityIconDragDropPreviewPartAction();
 	/**
-	 * Shows specific model part. Called by model mapping framework.
+	 * @brief Constructor
+	 * @param entityIconDragDropPreview The preview model class that holds the model
+	 * @param partName The specific model part to monitor
+	 */
+	EntityIconDragDropPreviewPartAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string partName);
+
+	/**
+	 * @brief Desctructor
+	 */
+	~EntityIconDragDropPreviewPartAction();
+
+	/**
+	 * @brief Shows specific model part. Called by model mapping framework.
 	 */
 	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+
 	/**
-	 * Hides specific model part. Called by model mapping framework.
+	 * @brief Hides specific model part. Called by model mapping framework.
 	 */
 	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 protected:
+
+	/**
+	 * @brief The preview model class that holds the model
+	 */
+
 	EntityIconDragDropPreview& mEntityIconDragDropPreview;
+	/**
+	 * @brief The specific model part to hide/show
+	 */
 	std::string mPartName;
 };
 
 /**
- * Shows or hides specific model in entity creator preview.
+ * @brief Hides specific model in entity creator preview.
  */
 class EntityIconDragDropPreviewHideModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
-	EntityIconDragDropPreviewHideModelAction(EntityIconDragDropPreview& entityIconDragDropPreview);
-	virtual ~EntityIconDragDropPreviewHideModelAction();
 	/**
-	 * Hides model. Called by model mapping framework.
+	 * @brief Constructor
+	 * @param entityIconDragDropPreview The preview model class that holds the model
+	 */
+	EntityIconDragDropPreviewHideModelAction(EntityIconDragDropPreview& entityIconDragDropPreview);
+
+	/**
+	 * @brief Destructor
+	 */
+	virtual ~EntityIconDragDropPreviewHideModelAction();
+
+	/**
+	 * @brief Hides model. Called by model mapping framework.
 	 */
 	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+
 	/**
-	 * Does nothing. Called by model mapping framework.
+	 * @brief Does nothing. Called by model mapping framework.
 	 */
 	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 protected:
+
+	/**
+	 * @brief The preview model class that holds the model
+	 */
 	EntityIconDragDropPreview& mEntityIconDragDropPreview;
 };
 
 /**
- * @brief Shows or hides specific model in entity creator preview.
+ * @brief Shows the specific model in entity creator preview.
  */
 class EntityIconDragDropPreviewModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
-	EntityIconDragDropPreviewModelAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string modelName);
-	~EntityIconDragDropPreviewModelAction();
 	/**
-	 * Shows specific model. Called by model mapping framework.
+	 * @brief Constructor
+	 * @param entityIconDragDropPreview The preview model class that holds the model
+	 * @param partName The specific model to monitor
+	 */
+	EntityIconDragDropPreviewModelAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string modelName);
+
+	/**
+	 * @brief Destructor
+	 */
+	~EntityIconDragDropPreviewModelAction();
+
+	/**
+	 * @brief Shows specific model. Called by model mapping framework.
 	 */
 	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+
 	/**
-	 * Hides model. Called by model mapping framework.
+	 * @brief Hides model. Called by model mapping framework.
 	 */
 	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 protected:
+	/**
+	 * @brief The preview model class that holds the model
+	 */
 	EntityIconDragDropPreview& mEntityIconDragDropPreview;
+
+	/**
+	 * @brief The specific model to hide/show
+	 */
 	std::string mModelName;
 };
 
+	/**
+	 * @brief Class that controls the visibility of the preview model
+	 */
 class EntityIconDragDropPreviewActionCreator  : public Ember::EntityMapping::IActionCreator {
 public:
+	/**
+	 * @brief Constructor
+	 * @param entityIconDragDrop Preview model class that holds the model
+	 */
 	EntityIconDragDropPreviewActionCreator(EntityIconDragDropPreview& entityIconDragDrop);
+
+	/**
+	 * @brief Destructor
+	 */
 	~EntityIconDragDropPreviewActionCreator();
+
+	/**
+	 * @brief Creates the actions we can perform on the model
+	 * @param modelMapping
+	 * @param aCase
+	 * @param caseDefinition
+	 */
 	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
+
+	/**
+	 * @brief Preview model class that holds the model
+	 */
 	EntityIconDragDropPreview& mEntityIconDragDropPreview;
 };
 
