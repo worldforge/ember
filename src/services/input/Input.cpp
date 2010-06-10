@@ -222,8 +222,10 @@ void Input::pollMouse(float secondsSinceLast)
 			//if we're in gui mode, we'll just send the mouse movement on to CEGUI
 			if (mCurrentInputMode == IM_GUI) {
 
-				for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
-					if (!(*I)->injectMouseMove(motion, freezeMouse))
+				for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+					IInputAdapter* adapter = *I;
+					++I;
+					if (!(adapter)->injectMouseMove(motion, freezeMouse))
 						break;
 				}
 
@@ -276,8 +278,10 @@ void Input::pollEvents(float secondsSinceLast)
 
 				} else if (event.button.button == SDL_BUTTON_LEFT) {
 					//left mouse button released
-					for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
-						if (!(*I)->injectMouseButtonUp(Input::MouseButtonLeft))
+					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+						IInputAdapter* adapter = *I;
+						++I;
+						if (!(adapter)->injectMouseButtonUp(Input::MouseButtonLeft))
 							break;
 					}
 
@@ -285,8 +289,10 @@ void Input::pollEvents(float secondsSinceLast)
 
 				} else if (event.button.button == SDL_BUTTON_MIDDLE) {
 					//middle mouse button released
-					for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
-						if (!(*I)->injectMouseButtonUp(Input::MouseButtonMiddle))
+					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+						IInputAdapter* adapter = *I;
+						++I;
+						if (!(adapter)->injectMouseButtonUp(Input::MouseButtonMiddle))
 							break;
 					}
 
@@ -307,18 +313,20 @@ void Input::pollEvents(float secondsSinceLast)
 				} else if (event.button.button == SDL_BUTTON_LEFT) {
 					//left mouse button pressed
 
-					for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
-						if (*I) {
-							if (!(*I)->injectMouseButtonDown(Input::MouseButtonLeft))
-								break;
-						}
+					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+						IInputAdapter* adapter = *I;
+						++I;
+						if (!(adapter)->injectMouseButtonDown(Input::MouseButtonLeft))
+							break;
 					}
 
 					EventMouseButtonPressed.emit(MouseButtonLeft, mCurrentInputMode);
 				} else if (event.button.button == SDL_BUTTON_MIDDLE) {
 					//middle mouse button pressed
-					for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
-						if (!(*I)->injectMouseButtonDown(Input::MouseButtonMiddle))
+					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+						IInputAdapter* adapter = *I;
+						++I;
+						if (!(adapter)->injectMouseButtonDown(Input::MouseButtonMiddle))
 							break;
 					}
 
@@ -326,19 +334,19 @@ void Input::pollEvents(float secondsSinceLast)
 
 				} else if (event.button.button == SDL_BUTTON_WHEELUP) {
 					EventMouseButtonPressed.emit(MouseWheelUp, mCurrentInputMode);
-					for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
-						if (*I) {
-							if (!(*I)->injectMouseButtonDown(Input::MouseWheelUp))
-								break;
-						}
+					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+						IInputAdapter* adapter = *I;
+						++I;
+						if (!(adapter)->injectMouseButtonDown(Input::MouseWheelUp))
+							break;
 					}
 				} else if (event.button.button == SDL_BUTTON_WHEELDOWN) {
 					EventMouseButtonPressed.emit(MouseWheelDown, mCurrentInputMode);
-					for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
-						if (*I) {
-							if (!(*I)->injectMouseButtonDown(Input::MouseWheelDown))
-								break;
-						}
+					for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+						IInputAdapter* adapter = *I;
+						++I;
+						if (!(adapter)->injectMouseButtonDown(Input::MouseWheelDown))
+							break;
 					}
 				}
 			}
@@ -360,8 +368,10 @@ void Input::pasteFromClipboard()
 
 	get_scrap(T('T','E','X','T'), &scraplen, &scrap);
 	for (int i = 0; i < scraplen; ++i) {
-		for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend(); ++I) {
-			if (!(*I)->injectChar(scrap[i]))
+		for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
+			IInputAdapter* adapter = *I;
+			++I;
+			if (!(adapter)->injectChar(scrap[i]))
 				break;
 		}
 	}
@@ -400,15 +410,19 @@ void Input::keyPressed(const SDL_KeyboardEvent &keyEvent)
 	if (mCurrentInputMode == IM_GUI) {
 		// do event injection
 		// key down
-		for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend() && !mSuppressForCurrentEvent; ++I) {
-			if (!(*I)->injectKeyDown(keyEvent.keysym.sym))
+		for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
+			IInputAdapter* adapter = *I;
+			++I;
+			if (!(adapter)->injectKeyDown(keyEvent.keysym.sym))
 				break;
 		}
 
 		// now character
 		if (mNonCharKeys.find(keyEvent.keysym.sym) == mNonCharKeys.end()) {
-			for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend() && !mSuppressForCurrentEvent; ++I) {
-				if (!(*I)->injectChar(keyEvent.keysym.unicode))
+			for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
+				IInputAdapter* adapter = *I;
+				++I;
+				if (!(adapter)->injectChar(keyEvent.keysym.unicode))
 					break;
 			}
 		}
@@ -424,8 +438,10 @@ void Input::keyReleased(const SDL_KeyboardEvent &keyEvent)
 {
 	mSuppressForCurrentEvent = false;
 	if (mCurrentInputMode == IM_GUI) {
-		for (IInputAdapterStore::reverse_iterator I = mAdapters.rbegin(); I != mAdapters.rend() && !mSuppressForCurrentEvent; ++I) {
-			if (!(*I)->injectKeyUp(keyEvent.keysym.sym))
+		for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end() && !mSuppressForCurrentEvent;) {
+			IInputAdapter* adapter = *I;
+			++I;
+			if (!(adapter)->injectKeyUp(keyEvent.keysym.sym))
 				break;
 		}
 	}
@@ -459,17 +475,12 @@ Input::InputMode Input::toggleInputMode()
 
 void Input::addAdapter(IInputAdapter* adapter)
 {
-	mAdapters.push_back(adapter);
+	mAdapters.push_front(adapter);
 }
 
 void Input::removeAdapter(IInputAdapter* adapter)
 {
-	for (IInputAdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
-		if (*I == adapter) {
-			mAdapters.erase(I);
-			return;
-		}
-	}
+	mAdapters.remove(adapter);
 }
 
 const MousePosition& Input::getMousePosition() const
