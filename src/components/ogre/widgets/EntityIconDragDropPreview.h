@@ -103,7 +103,7 @@ public:
 	 * @brief Returns the offset between the preview model and the avatar
 	 * @return vector of the offset between the preview model and the avatar
 	 */
-	WFMath::Vector<3> & getDropOffset();
+	const WFMath::Vector<3> & getDropOffset();
 
 	/**
 	 * @brief Emitted when we finalize our intended action

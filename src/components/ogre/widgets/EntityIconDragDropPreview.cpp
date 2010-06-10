@@ -72,45 +72,45 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 {
 	if (!mActiveIcon)
 	{
-		mIconEntity = icon->getEntity();
-		Eris::TypeInfo* erisType = mIconEntity->getType();
-
-		EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
-
-		WFMath::Vector<3> offset(2, 0, 0);
-		mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
-
-		mEntityMessage = mIconEntity->getAttributes();
-		mEntityMessage["loc"] = avatar.getLocation()->getId();
-		mEntityMessage["name"] = erisType->getName();
-		mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
-
-		Eris::View* view = Ember::Application::getSingleton().getMainView();
-
-		if (view)
+		if (icon && icon->getEntity())
 		{
-			// Temporary entity
-			mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
-			mEntity->setFromMessage(mEntityMessage);
-
-			// Creating scene node
-			mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
-
-			// Making model from temporary entity
-			EntityIconDragDropPreviewActionCreator actionCreator(*this);
-			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
-			if (modelMapping.get()) {
-				modelMapping->initialize();
-			}
-
-			// Registering move adapter to track mouse movements
-			mMovement = new EntityIconDragDropPreviewMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
-			//mMoveAdapter->addAdapter();
-			setModel(erisType->getName());
-			mActiveIcon = true;
-		} else {
+			mIconEntity = icon->getEntity();
 			Eris::TypeInfo* erisType = mIconEntity->getType();
-			setModel(erisType->getName());
+
+			EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
+
+			WFMath::Vector<3> offset(2, 0, 0);
+			mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
+
+			mEntityMessage = mIconEntity->getAttributes();
+			mEntityMessage["loc"] = avatar.getLocation()->getId();
+			mEntityMessage["name"] = erisType->getName();
+			mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
+
+			Eris::View* view = Ember::Application::getSingleton().getMainView();
+
+			if (view)
+			{
+				// Temporary entity
+				mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
+				mEntity->setFromMessage(mEntityMessage);
+
+				// Creating scene node
+				mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
+
+				// Making model from temporary entity
+				EntityIconDragDropPreviewActionCreator actionCreator(*this);
+				std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
+				if (modelMapping.get()) {
+					modelMapping->initialize();
+				}
+
+				// Registering move adapter to track mouse movements
+				mMovement = new EntityIconDragDropPreviewMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
+				//mMoveAdapter->addAdapter();
+				setModel(erisType->getName());
+				mActiveIcon = true;
+			}
 		}
 	}
 }
@@ -199,6 +199,7 @@ void EntityIconDragDropPreview::cleanupCreation()
 
 void EntityIconDragDropPreview::finalizeCreation()
 {
+	mDropOffset = Convert::toWF<WFMath::Point<3> >(mEntityNode->getPosition()) - EmberOgre::getSingleton().getWorld()->getAvatar()->getClientSideAvatarPosition();
 	EventEntityFinalized.emit(mIconEntity);
 	cleanupCreation();
 }
@@ -208,7 +209,7 @@ Model::Model* EntityIconDragDropPreview::getModel()
 	return mModel;
 }
 
-WFMath::Vector<3> & EntityIconDragDropPreview::getDropOffset()
+const WFMath::Vector<3> & EntityIconDragDropPreview::getDropOffset()
 {
 	return mDropOffset;
 }

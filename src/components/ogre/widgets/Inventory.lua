@@ -263,7 +263,7 @@ function Inventory:buildWidget(avatarEntity)
 	--Responds when preview model has been released on the world
 	root.DragDrop_Finalize = function(emberEntity)
 		if emberEntity ~= nil then
-			emberServices:getServerService():drop(emberEntity)
+			emberServices:getServerService():drop(emberEntity, self.helper:getDropOffset())
 		end
 	end
 	root.DragDrop_Finalized_connector = EmberOgre.LuaConnector:new_local(self.helper.EventEntityFinalized):connect(root.DragDrop_Finalize)
