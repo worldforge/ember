@@ -29,10 +29,9 @@ namespace Gui {
 class EntityIconDragDropPreview
 {
 public:
-	EntityIconDragDropPreview(Eris::Connection& conn);
+	EntityIconDragDropPreview();
 	void createPreview(EntityIcon* icon);
-	void setModel(const std::string& modelName);
-	WFMath::Vector<3> & getDropOffset();
+	WFMath::Vector<3> getDropOffset();
 	sigc::signal<void, EmberEntity*> EventEntityFinalized;
 };
 

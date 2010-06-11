@@ -57,15 +57,15 @@ namespace Gui
 
 
 
-EntityIconDragDropPreview::EntityIconDragDropPreview(Eris::Connection& conn) :
-		mConn(conn), mModelMount(0), mModel(0), mMovement(0), mActiveIcon(false)
+EntityIconDragDropPreview::EntityIconDragDropPreview() :
+		mModelPreviewBase(0), mIconEntity(0), mActiveIcon(false)
 {
-
-	mOrientation.identity();
 }
 
 EntityIconDragDropPreview::~EntityIconDragDropPreview()
 {
+	//everything should be cleaned up, but we'll check anyway
+	cleanupCreation();
 }
 
 void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
@@ -75,46 +75,95 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 		if (icon && icon->getEntity())
 		{
 			mIconEntity = icon->getEntity();
-			Eris::TypeInfo* erisType = mIconEntity->getType();
-
-			EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
-
-			WFMath::Vector<3> offset(2, 0, 0);
-			mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
-
-			mEntityMessage = mIconEntity->getAttributes();
-			mEntityMessage["loc"] = avatar.getLocation()->getId();
-			mEntityMessage["name"] = erisType->getName();
-			mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
-
-			Eris::View* view = Ember::Application::getSingleton().getMainView();
-
-			if (view)
-			{
-				// Temporary entity
-				mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
-				mEntity->setFromMessage(mEntityMessage);
-
-				// Creating scene node
-				mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
-
-				// Making model from temporary entity
-				EntityIconDragDropPreviewActionCreator actionCreator(*this);
-				std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
-				if (modelMapping.get()) {
-					modelMapping->initialize();
-				}
-
-				// Registering move adapter to track mouse movements
-				mMovement = new EntityIconDragDropPreviewMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
-				//mMoveAdapter->addAdapter();
-				mActiveIcon = true;
-			}
+			mModelPreviewBase = new ModelPreviewBase(mIconEntity);
+			mModelPreviewBase->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
+			mModelPreviewBase->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
+			mActiveIcon = true;
 		}
 	}
 }
 
-void EntityIconDragDropPreview::setModel(const std::string& modelName)
+void EntityIconDragDropPreview::cleanupCreation()
+{
+	if (mActiveIcon)
+	{
+		mIconEntity = 0;
+		delete mModelPreviewBase;
+		mActiveIcon = false;
+	}
+}
+
+void EntityIconDragDropPreview::finalizeCreation()
+{
+	mDropOffset = mModelPreviewBase->getPosition() - EmberOgre::getSingleton().getWorld()->getAvatar()->getClientSideAvatarPosition();
+	EventEntityFinalized.emit(mIconEntity);
+	cleanupCreation();
+}
+
+WFMath::Vector<3> EntityIconDragDropPreview::getDropOffset()
+{
+	return mDropOffset;
+}
+
+ModelPreviewBase::ModelPreviewBase(Eris::Entity* entity) : mModel(0), mEntity(0), mEntityNode(0), mModelMount(0), mMovement(0)
+{
+	mOrientation.identity();
+
+	Eris::TypeInfo* erisType = entity->getType();
+
+	EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
+
+	WFMath::Vector<3> offset(2, 0, 0);
+	mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
+
+	mEntityMessage = entity->getAttributes();
+	mEntityMessage["loc"] = avatar.getLocation()->getId();
+	mEntityMessage["name"] = erisType->getName();
+	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
+
+
+	// Temporary entity
+	mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
+	mEntity->setFromMessage(mEntityMessage);
+
+	// Creating scene node
+	mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
+
+	// Making model from temporary entity
+	ModelPreviewBaseActionCreator actionCreator(*this);
+	std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
+	if (modelMapping.get()) {
+		modelMapping->initialize();
+	}
+
+	// Registering move adapter to track mouse movements
+	mMovement = new ModelPreviewBaseMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
+	//mMoveAdapter->addAdapter();
+}
+
+ModelPreviewBase::~ModelPreviewBase()
+{
+	delete mMovement;
+	mMovement = 0;
+
+	delete mModelMount;
+	mModelMount = 0;
+
+	mEntityNode->detachAllObjects();
+	mOrientation = Convert::toWF(mEntityNode->getOrientation());
+	EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
+	//	delete mEntityNode;
+	mEntityNode = 0;
+
+	EmberOgre::getSingleton().getWorld()->getSceneManager().destroyMovableObject(mModel);
+	mModel = 0;
+
+	// Deleting temporary entity
+	mEntity->shutdown();
+	delete mEntity;
+}
+
+void ModelPreviewBase::setModel(const std::string& modelName)
 {
 	if (mModel) {
 		if (mModel->getDefinition()->getName() == modelName) {
@@ -127,7 +176,7 @@ void EntityIconDragDropPreview::setModel(const std::string& modelName)
 		}
 	}
 	mModel = Model::Model::createModel(EmberOgre::getSingleton().getWorld()->getSceneManager(), modelName);
-	mModel->Reloaded.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::model_Reloaded));
+	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewBase::model_Reloaded));
 
 	///if the model definition isn't valid, use a placeholder
 	if (!mModel->getDefinition()->isValid()) {
@@ -150,31 +199,36 @@ void EntityIconDragDropPreview::setModel(const std::string& modelName)
 	mEntityNode->setOrientation(Convert::toOgre(mOrientation));
 }
 
-void EntityIconDragDropPreview::showModelPart(const std::string& partName)
+WFMath::Point<3> ModelPreviewBase::getPosition()
+{
+	return Convert::toWF<WFMath::Point<3> >(mEntityNode->getPosition());
+}
+
+void ModelPreviewBase::showModelPart(const std::string& partName)
 {
 	if (mModel) {
 		mModel->showPart(partName);
 	}
 }
 
-void EntityIconDragDropPreview::hideModelPart(const std::string& partName)
+void ModelPreviewBase::hideModelPart(const std::string& partName)
 {
 	if (mModel) {
 		mModel->hidePart(partName);
 	}
 }
 
-void EntityIconDragDropPreview::initFromModel()
+void ModelPreviewBase::initFromModel()
 {
 	scaleNode();
 }
 
-void EntityIconDragDropPreview::model_Reloaded()
+void ModelPreviewBase::model_Reloaded()
 {
 	initFromModel();
 }
 
-void EntityIconDragDropPreview::scaleNode()
+void ModelPreviewBase::scaleNode()
 {
 	if (mModelMount) {
 		mModelMount->rescale(hasBBox() ? &getBBox() : 0);
@@ -183,179 +237,133 @@ void EntityIconDragDropPreview::scaleNode()
 	}
 }
 
-void EntityIconDragDropPreview::cleanupCreation()
-{
-	if (mActiveIcon)
-	{
-		mIconEntity = 0;
-
-		delete mMovement;
-		mMovement = 0;
-
-		delete mModelMount;
-		mModelMount = 0;
-
-		mEntityNode->detachAllObjects();
-		mOrientation = Convert::toWF(mEntityNode->getOrientation());
-		EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
-		//	delete mEntityNode;
-		mEntityNode = 0;
-
-		EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
-		mModel = 0;
-
-		// Deleting temporary entity
-		mEntity->shutdown();
-		delete mEntity;
-
-		mActiveIcon = false;
-	}
-}
-
-void EntityIconDragDropPreview::finalizeCreation()
-{
-	mDropOffset = Convert::toWF<WFMath::Point<3> >(mEntityNode->getPosition()) - EmberOgre::getSingleton().getWorld()->getAvatar()->getClientSideAvatarPosition();
-	EventEntityFinalized.emit(mIconEntity);
-	cleanupCreation();
-}
-
-Model::Model* EntityIconDragDropPreview::getModel()
-{
-	return mModel;
-}
-
-WFMath::Vector<3> & EntityIconDragDropPreview::getDropOffset()
-{
-	return mDropOffset;
-}
-
-bool EntityIconDragDropPreview::hasBBox()
+bool ModelPreviewBase::hasBBox()
 {
 	return mEntity->hasBBox();
 }
 
-const WFMath::AxisBox<3> & EntityIconDragDropPreview::getBBox()
+const WFMath::AxisBox<3> & ModelPreviewBase::getBBox()
 {
 	return mEntity->getBBox();
 }
 
-EntityIconDragDropPreviewPartAction::EntityIconDragDropPreviewPartAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string partName)
-		: mEntityIconDragDropPreview(entityIconDragDropPreview), mPartName(partName)
+ModelPreviewBasePartAction::ModelPreviewBasePartAction(ModelPreviewBase& modelPreviewBase, std::string partName)
+		: mModelPreviewBase(modelPreviewBase), mPartName(partName)
 {
 }
 
-EntityIconDragDropPreviewPartAction::~EntityIconDragDropPreviewPartAction()
+ModelPreviewBasePartAction::~ModelPreviewBasePartAction()
 {
 }
 
-void EntityIconDragDropPreviewPartAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewBasePartAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator part " << mPartName);
-	mEntityIconDragDropPreview.showModelPart(mPartName);
+	mModelPreviewBase.showModelPart(mPartName);
 }
 
-void EntityIconDragDropPreviewPartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewBasePartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator part " << mPartName);
-	mEntityIconDragDropPreview.hideModelPart(mPartName);
+	mModelPreviewBase.hideModelPart(mPartName);
 }
 
 
-EntityIconDragDropPreviewModelAction::EntityIconDragDropPreviewModelAction(EntityIconDragDropPreview& entityIconDragDropPreview, std::string modelName)
-		: mEntityIconDragDropPreview(entityIconDragDropPreview), mModelName(modelName)
+ModelPreviewBaseModelAction::ModelPreviewBaseModelAction(ModelPreviewBase& modelPreviewBase, std::string modelName)
+		: mModelPreviewBase(modelPreviewBase), mModelName(modelName)
 {
 }
 
-EntityIconDragDropPreviewModelAction::~EntityIconDragDropPreviewModelAction()
+ModelPreviewBaseModelAction::~ModelPreviewBaseModelAction()
 {
 }
 
-void EntityIconDragDropPreviewModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewBaseModelAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator model " << mModelName);
-	mEntityIconDragDropPreview.setModel(mModelName);
+	mModelPreviewBase.setModel(mModelName);
 }
 
-void EntityIconDragDropPreviewModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewBaseModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator model " << mModelName);
-	mEntityIconDragDropPreview.setModel("");
+	mModelPreviewBase.setModel("");
 }
 
-EntityIconDragDropPreviewHideModelAction::EntityIconDragDropPreviewHideModelAction(EntityIconDragDropPreview& entityIconDragDropPreview)
-		: mEntityIconDragDropPreview(entityIconDragDropPreview)
+ModelPreviewBaseHideModelAction::ModelPreviewBaseHideModelAction(ModelPreviewBase& modelPreviewBase)
+		: mModelPreviewBase(modelPreviewBase)
 {
 }
 
-EntityIconDragDropPreviewHideModelAction::~EntityIconDragDropPreviewHideModelAction()
+ModelPreviewBaseHideModelAction::~ModelPreviewBaseHideModelAction()
 {
 }
 
-void EntityIconDragDropPreviewHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewBaseHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
-	mEntityIconDragDropPreview.setModel("");
+	mModelPreviewBase.setModel("");
 }
 
-void EntityIconDragDropPreviewHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
-{
-}
-
-
-EntityIconDragDropPreviewActionCreator::EntityIconDragDropPreviewActionCreator(EntityIconDragDropPreview& entityIconDragDropPreview)
-		: mEntityIconDragDropPreview(entityIconDragDropPreview)
+void ModelPreviewBaseHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 }
 
-EntityIconDragDropPreviewActionCreator::~EntityIconDragDropPreviewActionCreator()
+
+ModelPreviewBaseActionCreator::ModelPreviewBaseActionCreator(ModelPreviewBase& modelPreviewBase)
+		: mModelPreviewBase(modelPreviewBase)
 {
 }
 
-void EntityIconDragDropPreviewActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
+ModelPreviewBaseActionCreator::~ModelPreviewBaseActionCreator()
+{
+}
+
+void ModelPreviewBaseActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 {
 	EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 	for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 		if (J->getType() == "display-part") {
-			EntityIconDragDropPreviewPartAction* action = new EntityIconDragDropPreviewPartAction(mEntityIconDragDropPreview, J->getValue());
+			ModelPreviewBasePartAction* action = new ModelPreviewBasePartAction(mModelPreviewBase, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "display-model") {
-			EntityIconDragDropPreviewModelAction* action = new EntityIconDragDropPreviewModelAction(mEntityIconDragDropPreview, J->getValue());
+			ModelPreviewBaseModelAction* action = new ModelPreviewBaseModelAction(mModelPreviewBase, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "hide-model") {
-			EntityIconDragDropPreviewHideModelAction* action = new EntityIconDragDropPreviewHideModelAction(mEntityIconDragDropPreview);
+			ModelPreviewBaseHideModelAction* action = new ModelPreviewBaseHideModelAction(mModelPreviewBase);
 			aCase->addAction(action);
 		}
 	}
 }
 
-EntityIconDragDropPreviewMovementBridge::EntityIconDragDropPreviewMovementBridge(EntityIconDragDropPreview& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-	::EmberOgre::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mCreator(creator)
+ModelPreviewBaseMovementBridge::ModelPreviewBaseMovementBridge(ModelPreviewBase& modelPreviewBase, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
+	::EmberOgre::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewBase(modelPreviewBase)
 {
 }
 
-EntityIconDragDropPreviewMovementBridge::~EntityIconDragDropPreviewMovementBridge()
+ModelPreviewBaseMovementBridge::~ModelPreviewBaseMovementBridge()
 {
 }
 
-void EntityIconDragDropPreviewMovementBridge::finalizeMovement()
+void ModelPreviewBaseMovementBridge::finalizeMovement()
 {
-	mCreator.finalizeCreation();
+	mModelPreviewBase.EventFinalizeCreation.emit();
 }
-void EntityIconDragDropPreviewMovementBridge::cancelMovement()
+void ModelPreviewBaseMovementBridge::cancelMovement()
 {
-	mCreator.cleanupCreation();
+	mModelPreviewBase.EventCleanupCreation.emit();
 }
 
-EntityIconDragDropPreviewMovement::EntityIconDragDropPreviewMovement(EntityIconDragDropPreview& mEntityIconDragDropPreview, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
+ModelPreviewBaseMovement::ModelPreviewBaseMovement(ModelPreviewBase& mModelPreviewBase, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
 :mMoveAdapter(camera)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
-	EntityIconDragDropPreviewMovementBridge* bridge = new EntityIconDragDropPreviewMovementBridge(mEntityIconDragDropPreview, entity, node);
+	ModelPreviewBaseMovementBridge* bridge = new ModelPreviewBaseMovementBridge(mModelPreviewBase, entity, node);
 	mMoveAdapter.attachToBridge(bridge);
 	mMoveAdapter.update();
 }
 
-EntityIconDragDropPreviewMovement::~EntityIconDragDropPreviewMovement()
+ModelPreviewBaseMovement::~ModelPreviewBaseMovement()
 {
 }
 

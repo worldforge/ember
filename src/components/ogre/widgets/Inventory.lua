@@ -236,38 +236,38 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.useButton)
 	
-	Inventory.helper = EmberOgre.Gui.EntityIconDragDropPreview:new(emberServices:getServerService():getAvatar():getConnection())
+	self.helper = EmberOgre.Gui.EntityIconDragDropPreview:new()
 	--User has dragged an entityIcon from the inventory to the world
-	root.DragDrop = EmberOgre.Gui.EntityIconDragDropTarget(root)
-	root.DragDrop_DraggedOver = function(entityIcon)
+	self.DragDrop = EmberOgre.Gui.EntityIconDragDropTarget(root)
+	self.DragDrop_DraggedOver = function(entityIcon)
 		if entityIcon ~= nil then
-			if entityIcon:getEntity() ~= nil then
+			if entityIcon:getImage() ~= nil then
 				--alpha is already low when dragging, so 0.7 of an already reduced alpha
 				entityIcon:getImage():setAlpha(0.7)
 				self.helper:createPreview(entityIcon)
 			end
 		end
 	end
-	root.DragDrop_DraggedOver_connector = EmberOgre.LuaConnector:new_local(root.DragDrop.EventIconEntered):connect(root.DragDrop_DraggedOver)
+	self.DragDrop_DraggedOver_connector = EmberOgre.LuaConnector:new_local(self.DragDrop.EventIconEntered):connect(self.DragDrop_DraggedOver)
 	
 	--User has dragged an entityIcon over the world, and onto another window
-	root.DragDrop_DragLeaves = function(entityIcon)
+	self.DragDrop_DragLeaves = function(entityIcon)
 		if entityIcon ~= nil then
 			if entityIcon:getEntity() ~= nil then
 				entityIcon:getImage():setAlpha(1.0)
 			end
 		end
 	end
-	root.DragDrop_DragLeaves_connector = EmberOgre.LuaConnector:new_local(root.DragDrop.EventIconLeaves):connect(root.DragDrop_DragLeaves)
+	self.DragDrop_DragLeaves_connector = EmberOgre.LuaConnector:new_local(self.DragDrop.EventIconLeaves):connect(self.DragDrop_DragLeaves)
 	
 	--Responds when preview model has been released on the world
-	root.DragDrop_Finalize = function(emberEntity)
+	self.DragDrop_Finalize = function(emberEntity)
 		if emberEntity ~= nil then
 			local offset = self.helper:getDropOffset()
 			emberServices:getServerService():drop(emberEntity, offset)
 		end
 	end
-	root.DragDrop_Finalized_connector = EmberOgre.LuaConnector:new_local(self.helper.EventEntityFinalized):connect(root.DragDrop_Finalize)
+	self.DragDrop_Finalized_connector = EmberOgre.LuaConnector:new_local(self.helper.EventEntityFinalized):connect(self.DragDrop_Finalize)
 	
 	
 	self.menu.container:setVisible(true)
@@ -474,6 +474,9 @@ function Inventory:shutdown()
 		for k,v in pairs(bucket) do
 			self.entityIconManager:destroyIcon(v.entityIcon)
 		end
+	end
+	if self.helper ~= nil then
+		self.helper:delete()
 	end
 	
 	windowManager:destroyWindow(self.menu.container)
