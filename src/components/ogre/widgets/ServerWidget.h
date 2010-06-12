@@ -79,16 +79,19 @@ protected:
 	void gotAvatar(Eris::Avatar* avatar);
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
+	bool LogoutButton_Click(const CEGUI::EventArgs& args);
 	bool Choose_Click(const CEGUI::EventArgs& args);
 	bool UseCreator_Click(const CEGUI::EventArgs& args);
 	bool CreateChar_Click(const CEGUI::EventArgs& args);
 	bool CreateAcc_Click(const CEGUI::EventArgs& args);
 	bool OkButton_Click(const CEGUI::EventArgs& args);
+	bool Disconnect_Click(const CEGUI::EventArgs& args);
 	
 	bool fetchCredentials(std::string& user, std::string& pass);
 	bool saveCredentials(void);
 	void loginSuccess(Eris::Account* account);
-    
+	void logoutComplete(bool clean);
+
 	
 	/**
 	* Shows the error message sent from Eris if the login does not succeed.

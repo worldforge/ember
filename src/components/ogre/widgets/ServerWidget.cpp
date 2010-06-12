@@ -116,6 +116,7 @@ void ServerWidget::buildWidget()
 		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click);
 		BIND_CEGUI_EVENT(mCreateChar, CEGUI::PushButton::EventClicked, ServerWidget::CreateChar_Click);
 		BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
+		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (getWindow("LogoutButton")), CEGUI::PushButton::EventClicked, ServerWidget::LogoutButton_Click);
 
 		mNewCharName = static_cast<CEGUI::Editbox*> (getWindow("CreateCharacterPanel/NameEdit"));
 		mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*> (getWindow("CreateCharacterPanel/Description"));
@@ -130,6 +131,8 @@ void ServerWidget::buildWidget()
 		BIND_CEGUI_EVENT(mGenderRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
 		BIND_CEGUI_EVENT(femaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
 
+
+
 		updateNewCharacter();
 
 		CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
@@ -137,6 +140,8 @@ void ServerWidget::buildWidget()
 
 		BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
 		BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
+		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/Disconnect")), CEGUI::PushButton::EventClicked, ServerWidget::Disconnect_Click);
+
 
 		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
 		Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
@@ -370,10 +375,17 @@ bool ServerWidget::saveCredentials()
 	return false;
 }
 
+void ServerWidget::logoutComplete(bool clean)
+{
+	getWindow("LoginPanel")->setVisible(true);
+	getWindow("LoggedInPanel")->setVisible(false);
+}
+
 void ServerWidget::loginSuccess(Eris::Account* account)
 {
+	account->LogoutComplete.connect(sigc::mem_fun(*this, &ServerWidget::logoutComplete));
 	getWindow("LoginPanel")->setVisible(false);
-	getWindow("CharacterTabControl")->setVisible(true);
+	getWindow("LoggedInPanel")->setVisible(true);
 	account->refreshCharacterInfo();
 	fillAllowedCharacterTypes(account);
 
@@ -532,6 +544,18 @@ bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
 bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
 {
 	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
+	return true;
+}
+
+bool ServerWidget::LogoutButton_Click(const CEGUI::EventArgs& args)
+{
+	Ember::EmberServices::getSingletonPtr()->getServerService()->logout();
+	return true;
+}
+
+bool ServerWidget::Disconnect_Click(const CEGUI::EventArgs& args)
+{
+	Ember::EmberServices::getSingleton().getServerService()->disconnect();
 	return true;
 }
 
