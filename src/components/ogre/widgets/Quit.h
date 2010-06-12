@@ -51,8 +51,9 @@ public:
 	
 protected:
 	
-	bool Yes_Click(const CEGUI::EventArgs& args);
-	bool No_Click(const CEGUI::EventArgs& args);
+	bool Shutdown_Click(const CEGUI::EventArgs& args);
+	bool Logout_Click(const CEGUI::EventArgs& args);
+	bool Cancel_Click(const CEGUI::EventArgs& args);
 	
 	void EmberOgre_RequestQuit(bool& handled);
 	

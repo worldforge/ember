@@ -1,35 +1,36 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,250.0},{0.0,100.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.500000,-125.0},{0.500000,-50.0}}'/>
+		<Property Name='UnifiedSize' Value='{{0.0,250.0},{0.0,130.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.5,-125.0},{0.5,-80.0}}'/>
 		<Property Name='SizingEnabled' Value='false'/>
 		<Property Name='Alpha' Value='1.0'/>
 		<Property Name='Text' Value='Quit?'/>
-		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-4},{1,0}}'/>
+		<Window Type='EmberLook/StaticText' Name='Text'>
+			<Property Name='UnifiedSize' Value='{{0.95,0.0},{0,25.0}}'/>
+			<Property Name='BackgroundEnabled' Value='False'/>
+			<Property Name='Text' Value='A quitter, eh?'/>
 			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/StaticText' Name='Text'>
-				<Property Name='UnifiedSize' Value='{{0.950000,0.0},{0.600000,0.0}}'/>
-				<Property Name='BackgroundEnabled' Value='False'/>
-				<Property Name='Text' Value='A quitter, eh?'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='HorzFormatting' Value='WordWrapMiddleAligned'/>
-				<Property Name='FrameEnabled' Value='False'/>
-			</Window>
-			<Window Type='EmberLook/Button' Name='YesButton'>
-				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.500000,-80.0},{1.00,-40.0}}'/>
-				<Property Name='Text' Value='Yes'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
-			<Window Type='EmberLook/Button' Name='NoButton'>
-				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.500000,5.0},{1.00,-40.0}}'/>
-				<Property Name='Text' Value='No'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
+			<Property Name='HorzFormatting' Value='WordWrapMiddleAligned'/>
+			<Property Name='FrameEnabled' Value='False'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='ShutdownButton'>
+			<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.5,-80.0},{0,30.0}}'/>
+			<Property Name='Text' Value='Shutdown'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='LogoutButton'>
+			<Property Name='UnifiedSize' Value='{{0.0,80.0},{0.0,25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.5,5},{0,30.0}}'/>
+			<Property Name='Text' Value='Logout'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+		</Window>			
+		<Window Type='EmberLook/Button' Name='CancelButton'>
+			<Property Name='UnifiedSize' Value='{{0.0,80.0},{0.0,25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.5,-40.0},{0,60.0}}'/>
+			<Property Name='Text' Value='Cancel'/>
+			<Property Name='InheritsAlpha' Value='True'/>
 		</Window>
 	</Window>
 </GUILayout>

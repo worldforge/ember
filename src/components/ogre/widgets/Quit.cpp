@@ -32,6 +32,7 @@
 #include "framework/ConsoleBackend.h"
 #include "../GUIManager.h"
 #include "services/input/Input.h"
+#include "services/server/ServerService.h"
 
 namespace EmberOgre {
 namespace Gui {
@@ -52,15 +53,13 @@ void Quit::buildWidget()
 	
 	Ember::Application::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
 	
-	CEGUI::PushButton* yesButton = static_cast<CEGUI::PushButton*>(getWindow("YesButton"));
-	CEGUI::PushButton* noButton = static_cast<CEGUI::PushButton*>(getWindow("NoButton"));
+	CEGUI::PushButton* shutdownButton = static_cast<CEGUI::PushButton*>(getWindow("ShutdownButton"));
+	CEGUI::PushButton* logoutButton = static_cast<CEGUI::PushButton*>(getWindow("LogoutButton"));
+	CEGUI::PushButton* cancelButton = static_cast<CEGUI::PushButton*>(getWindow("CancelButton"));
 	
-	if (yesButton) {
-		BIND_CEGUI_EVENT(noButton, CEGUI::PushButton::EventClicked, Quit::No_Click );
-	}
-	if (noButton) {
-		BIND_CEGUI_EVENT(yesButton, CEGUI::PushButton::EventClicked, Quit::Yes_Click );
-	}
+	BIND_CEGUI_EVENT(cancelButton, CEGUI::PushButton::EventClicked, Quit::Cancel_Click );
+	BIND_CEGUI_EVENT(shutdownButton, CEGUI::PushButton::EventClicked, Quit::Shutdown_Click );
+	BIND_CEGUI_EVENT(logoutButton, CEGUI::PushButton::EventClicked, Quit::Logout_Click );
 	
 	registerConsoleVisibilityToggleCommand("quit");
 	enableCloseButton();
@@ -68,13 +67,21 @@ void Quit::buildWidget()
 	mMainWindow->setVisible(false);
 }
 
-bool Quit::Yes_Click(const CEGUI::EventArgs& args)
+bool Quit::Shutdown_Click(const CEGUI::EventArgs& args)
 {
 	Ember::Application::getSingleton().quit();
+	mMainWindow->setVisible(false);
 	return true;
 }
 
-bool Quit::No_Click(const CEGUI::EventArgs& args)
+bool Quit::Logout_Click(const CEGUI::EventArgs& args)
+{
+	Ember::EmberServices::getSingleton().getServerService()->logout();
+	mMainWindow->setVisible(false);
+	return true;
+}
+
+bool Quit::Cancel_Click(const CEGUI::EventArgs& args)
 {
 	mMainWindow->setVisible(false);
 	return true;
