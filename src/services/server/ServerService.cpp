@@ -190,6 +190,41 @@ void ServerService::disconnect()
 
 }
 
+bool ServerService::logoutAccount()
+{
+	if (mAccount) {
+		Eris::Result result = mAccount->logout();
+		if (result == Eris::NO_ERR) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ServerService::logoutAvatar()
+{
+	if (mAvatar) {
+		try {
+			mAvatar->deactivate();
+			return true;
+		} catch (const std::exception& ex) {
+			S_LOG_FAILURE("Error when logging out avatar." << ex);
+		}
+	}
+	return false;
+}
+
+bool ServerService::logout()
+{
+	if (mAvatar) {
+		return logoutAvatar();
+	} else if (mAccount) {
+		return logoutAccount();
+	}
+	return false;
+}
+
+
 void ServerService::gotFailure(const std::string & msg)
 {
 	std::ostringstream temp;
@@ -333,7 +368,6 @@ void ServerService::logoutComplete(bool clean)
 {
 	S_LOG_INFO("Logout Complete cleanness=" << clean);
 	ConsoleBackend::getSingleton().pushMessage("Logged out from server");
-	cleanUpAccount();
 }
 
 void ServerService::runCommand(const std::string &command, const std::string &args)

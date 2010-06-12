@@ -81,6 +81,32 @@ public:
 
 	void disconnect();
 
+	/**
+	 * @brief Tries to log the account out from the server.
+	 *
+	 * @returns True if successful.
+	 */
+	bool logoutAccount();
+
+	/**
+	 * @brief Tries to log the avatar out from the server.
+	 *
+	 * @returns True if successful.
+	 */
+	bool logoutAvatar();
+
+	/**
+	 * @brief Logs out the user.
+	 *
+	 * If the user has an avatar, that will be logged out. If the user doesn't have an avatar yet but is logged in through the account, the account will be logged out.
+	 */
+	bool logout();
+
+	/**
+	 * @brief Takes the character with the specified id.
+	 *
+	 * @param id The id of the character to take.
+	 */
 	void takeCharacter(const std::string &id);
 
 	/**
