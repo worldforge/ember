@@ -52,8 +52,8 @@ class DetachedEntity;
 namespace Gui {
 
 class EntityIcon;
-class ModelPreviewBaseMovement;
-class ModelPreviewBase;
+class ModelPreviewWorkerMovement;
+class ModelPreviewWorker;
 
 /**
 @author Tiberiu Paunescu <tpa12@sfu.ca>
@@ -122,20 +122,15 @@ private:
 	/**
 	 * @brief Manages the detached entity / preview model used
 	 */
-	ModelPreviewBase* mModelPreviewBase;
-
-	/**
-	 * @brief Keeps track of whether or not we are generating a preview
-	 */
-	bool mActiveIcon;
+	ModelPreviewWorker *mModelPreviewWorker;
 
 };
 
-class ModelPreviewBase
+class ModelPreviewWorker
 {
 public:
-	ModelPreviewBase(Eris::Entity* entity);
-	~ModelPreviewBase();
+	ModelPreviewWorker(Eris::Entity* entity);
+	~ModelPreviewWorker();
 	/**
 	 * @brief Sets model information based on the entity type.
 	 * @param modelName The name of the model.
@@ -155,7 +150,7 @@ public:
 	/**
 	 * @brief Get the current position of the world
 	 */
-	WFMath::Point<3> getPosition();
+	const WFMath::Point<3> getPosition();
 
 	sigc::signal<void> EventFinalizeCreation;
 	sigc::signal<void> EventCleanupCreation;
@@ -229,13 +224,13 @@ private:
 	/**
 	 * @brief Movement adapter for our preview model
 	 */
-	ModelPreviewBaseMovement* mMovement;
+	ModelPreviewWorkerMovement* mMovement;
 };
 
 /**
  * @brief Shows or hides specific model part in entity creator preview.
  */
-class ModelPreviewBasePartAction : public Ember::EntityMapping::Actions::Action
+class ModelPreviewWorkerPartAction : public Ember::EntityMapping::Actions::Action
 {
 public:
 	/**
@@ -243,12 +238,12 @@ public:
 	 * @param entityIconDragDropPreview The preview model class that holds the model
 	 * @param partName The specific model part to monitor
 	 */
-	ModelPreviewBasePartAction(ModelPreviewBase& modelPreviewBase, std::string partName);
+	ModelPreviewWorkerPartAction(ModelPreviewWorker& modelPreviewWorker, std::string partName);
 
 	/**
 	 * @brief Desctructor
 	 */
-	~ModelPreviewBasePartAction();
+	~ModelPreviewWorkerPartAction();
 
 	/**
 	 * @brief Shows specific model part. Called by model mapping framework.
@@ -265,7 +260,7 @@ protected:
 	 * @brief The preview model class that holds the model
 	 */
 
-	ModelPreviewBase& mModelPreviewBase;
+	ModelPreviewWorker& mModelPreviewWorker;
 	/**
 	 * @brief The specific model part to hide/show
 	 */
@@ -275,19 +270,19 @@ protected:
 /**
  * @brief Hides specific model in entity creator preview.
  */
-class ModelPreviewBaseHideModelAction : public Ember::EntityMapping::Actions::Action
+class ModelPreviewWorkerHideModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
 	/**
 	 * @brief Constructor
 	 * @param entityIconDragDropPreview The preview model class that holds the model
 	 */
-	ModelPreviewBaseHideModelAction(ModelPreviewBase& modelPreviewBase);
+	ModelPreviewWorkerHideModelAction(ModelPreviewWorker& modelPreviewWorker);
 
 	/**
 	 * @brief Destructor
 	 */
-	virtual ~ModelPreviewBaseHideModelAction();
+	virtual ~ModelPreviewWorkerHideModelAction();
 
 	/**
 	 * @brief Hides model. Called by model mapping framework.
@@ -303,13 +298,13 @@ protected:
 	/**
 	 * @brief The preview model class that holds the model
 	 */
-	ModelPreviewBase& mModelPreviewBase;
+	ModelPreviewWorker& mModelPreviewWorker;
 };
 
 /**
  * @brief Shows the specific model in entity creator preview.
  */
-class ModelPreviewBaseModelAction : public Ember::EntityMapping::Actions::Action
+class ModelPreviewWorkerModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
 	/**
@@ -317,12 +312,12 @@ public:
 	 * @param entityIconDragDropPreview The preview model class that holds the model
 	 * @param partName The specific model to monitor
 	 */
-	ModelPreviewBaseModelAction(ModelPreviewBase& modelPreviewBase, std::string modelName);
+	ModelPreviewWorkerModelAction(ModelPreviewWorker& modelPreviewWorker, std::string modelName);
 
 	/**
 	 * @brief Destructor
 	 */
-	~ModelPreviewBaseModelAction();
+	~ModelPreviewWorkerModelAction();
 
 	/**
 	 * @brief Shows specific model. Called by model mapping framework.
@@ -337,7 +332,7 @@ protected:
 	/**
 	 * @brief The preview model class that holds the model
 	 */
-	ModelPreviewBase& mModelPreviewBase;
+	ModelPreviewWorker& mModelPreviewWorker;
 
 	/**
 	 * @brief The specific model to hide/show
@@ -348,18 +343,18 @@ protected:
 	/**
 	 * @brief Class that controls the visibility of the preview model
 	 */
-class ModelPreviewBaseActionCreator  : public Ember::EntityMapping::IActionCreator {
+class ModelPreviewWorkerActionCreator  : public Ember::EntityMapping::IActionCreator {
 public:
 	/**
 	 * @brief Constructor
 	 * @param entityIconDragDrop Preview model class that holds the model
 	 */
-	ModelPreviewBaseActionCreator(ModelPreviewBase& modelPreviewBase);
+	ModelPreviewWorkerActionCreator(ModelPreviewWorker& modelPreviewWorker);
 
 	/**
 	 * @brief Destructor
 	 */
-	~ModelPreviewBaseActionCreator();
+	~ModelPreviewWorkerActionCreator();
 
 	/**
 	 * @brief Creates the actions we can perform on the model
@@ -373,30 +368,30 @@ protected:
 	/**
 	 * @brief Preview model class that holds the model
 	 */
-	ModelPreviewBase& mModelPreviewBase;
+	ModelPreviewWorker& mModelPreviewWorker;
 };
 
-class ModelPreviewBaseMovementBridge : public ::EmberOgre::Authoring::EntityMoverBase
+class ModelPreviewWorkerMovementBridge : public ::EmberOgre::Authoring::EntityMoverBase
 {
 public:
 
-	ModelPreviewBaseMovementBridge(ModelPreviewBase& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
-	virtual ~ModelPreviewBaseMovementBridge();
+	ModelPreviewWorkerMovementBridge(ModelPreviewWorker& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	virtual ~ModelPreviewWorkerMovementBridge();
 
 	virtual void finalizeMovement();
 	virtual void cancelMovement();
 
 private:
-	ModelPreviewBase& mModelPreviewBase;
+	ModelPreviewWorker& mModelPreviewWorker;
 
 };
 
-class ModelPreviewBaseMovement
+class ModelPreviewWorkerMovement
 {
 public:
 
-	ModelPreviewBaseMovement(ModelPreviewBase& mModelPreviewBase, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
-	~ModelPreviewBaseMovement();
+	ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	~ModelPreviewWorkerMovement();
 
 protected:
 	Authoring::MovementAdapter mMoveAdapter;

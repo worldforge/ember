@@ -58,7 +58,7 @@ namespace Gui
 
 
 EntityIconDragDropPreview::EntityIconDragDropPreview() :
-		mModelPreviewBase(0), mIconEntity(0), mActiveIcon(false)
+		mModelPreviewWorker(0), mIconEntity(0)
 {
 }
 
@@ -70,32 +70,31 @@ EntityIconDragDropPreview::~EntityIconDragDropPreview()
 
 void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 {
-	if (!mActiveIcon)
+	if (!mModelPreviewWorker)
 	{
 		if (icon && icon->getEntity())
 		{
 			mIconEntity = icon->getEntity();
-			mModelPreviewBase = new ModelPreviewBase(mIconEntity);
-			mModelPreviewBase->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
-			mModelPreviewBase->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
-			mActiveIcon = true;
+			mModelPreviewWorker = new ModelPreviewWorker(mIconEntity);
+			mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
+			mModelPreviewWorker->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
 		}
 	}
 }
 
 void EntityIconDragDropPreview::cleanupCreation()
 {
-	if (mActiveIcon)
+	if (mModelPreviewWorker)
 	{
 		mIconEntity = 0;
-		delete mModelPreviewBase;
-		mActiveIcon = false;
+		delete mModelPreviewWorker;
+		mModelPreviewWorker = 0;
 	}
 }
 
 void EntityIconDragDropPreview::finalizeCreation()
 {
-	mDropOffset = mModelPreviewBase->getPosition() - EmberOgre::getSingleton().getWorld()->getAvatar()->getClientSideAvatarPosition();
+	mDropOffset = mModelPreviewWorker->getPosition() - EmberOgre::getSingleton().getWorld()->getAvatar()->getClientSideAvatarPosition();
 	EventEntityFinalized.emit(mIconEntity);
 	cleanupCreation();
 }
@@ -105,7 +104,7 @@ WFMath::Vector<3> EntityIconDragDropPreview::getDropOffset()
 	return mDropOffset;
 }
 
-ModelPreviewBase::ModelPreviewBase(Eris::Entity* entity) : mModel(0), mEntity(0), mEntityNode(0), mModelMount(0), mMovement(0)
+ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mModel(0), mEntity(0), mEntityNode(0), mModelMount(0), mMovement(0)
 {
 	mOrientation.identity();
 
@@ -116,10 +115,10 @@ ModelPreviewBase::ModelPreviewBase(Eris::Entity* entity) : mModel(0), mEntity(0)
 	WFMath::Vector<3> offset(2, 0, 0);
 	mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
 
-	mEntityMessage = entity->getAttributes();
-	mEntityMessage["loc"] = avatar.getLocation()->getId();
-	mEntityMessage["name"] = erisType->getName();
-	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
+	mEntityMessage = entity->getInstanceAttributes();
+	//mEntityMessage["loc"] = avatar.getLocation()->getId();
+	//mEntityMessage["name"] = erisType->getName();
+	//mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
 
 
 	// Temporary entity
@@ -130,40 +129,36 @@ ModelPreviewBase::ModelPreviewBase(Eris::Entity* entity) : mModel(0), mEntity(0)
 	mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
 
 	// Making model from temporary entity
-	ModelPreviewBaseActionCreator actionCreator(*this);
+	ModelPreviewWorkerActionCreator actionCreator(*this);
 	std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
 	if (modelMapping.get()) {
 		modelMapping->initialize();
 	}
 
 	// Registering move adapter to track mouse movements
-	mMovement = new ModelPreviewBaseMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
+	mMovement = new ModelPreviewWorkerMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
 	//mMoveAdapter->addAdapter();
 }
 
-ModelPreviewBase::~ModelPreviewBase()
+ModelPreviewWorker::~ModelPreviewWorker()
 {
 	delete mMovement;
-	mMovement = 0;
 
 	delete mModelMount;
-	mModelMount = 0;
 
 	mEntityNode->detachAllObjects();
 	mOrientation = Convert::toWF(mEntityNode->getOrientation());
 	EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
 	//	delete mEntityNode;
-	mEntityNode = 0;
 
 	EmberOgre::getSingleton().getWorld()->getSceneManager().destroyMovableObject(mModel);
-	mModel = 0;
 
 	// Deleting temporary entity
 	mEntity->shutdown();
 	delete mEntity;
 }
 
-void ModelPreviewBase::setModel(const std::string& modelName)
+void ModelPreviewWorker::setModel(const std::string& modelName)
 {
 	if (mModel) {
 		if (mModel->getDefinition()->getName() == modelName) {
@@ -176,7 +171,7 @@ void ModelPreviewBase::setModel(const std::string& modelName)
 		}
 	}
 	mModel = Model::Model::createModel(EmberOgre::getSingleton().getWorld()->getSceneManager(), modelName);
-	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewBase::model_Reloaded));
+	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
 
 	///if the model definition isn't valid, use a placeholder
 	if (!mModel->getDefinition()->isValid()) {
@@ -199,36 +194,36 @@ void ModelPreviewBase::setModel(const std::string& modelName)
 	mEntityNode->setOrientation(Convert::toOgre(mOrientation));
 }
 
-WFMath::Point<3> ModelPreviewBase::getPosition()
+const WFMath::Point<3> ModelPreviewWorker::getPosition()
 {
 	return Convert::toWF<WFMath::Point<3> >(mEntityNode->getPosition());
 }
 
-void ModelPreviewBase::showModelPart(const std::string& partName)
+void ModelPreviewWorker::showModelPart(const std::string& partName)
 {
 	if (mModel) {
 		mModel->showPart(partName);
 	}
 }
 
-void ModelPreviewBase::hideModelPart(const std::string& partName)
+void ModelPreviewWorker::hideModelPart(const std::string& partName)
 {
 	if (mModel) {
 		mModel->hidePart(partName);
 	}
 }
 
-void ModelPreviewBase::initFromModel()
+void ModelPreviewWorker::initFromModel()
 {
 	scaleNode();
 }
 
-void ModelPreviewBase::model_Reloaded()
+void ModelPreviewWorker::model_Reloaded()
 {
 	initFromModel();
 }
 
-void ModelPreviewBase::scaleNode()
+void ModelPreviewWorker::scaleNode()
 {
 	if (mModelMount) {
 		mModelMount->rescale(hasBBox() ? &getBBox() : 0);
@@ -237,133 +232,133 @@ void ModelPreviewBase::scaleNode()
 	}
 }
 
-bool ModelPreviewBase::hasBBox()
+bool ModelPreviewWorker::hasBBox()
 {
 	return mEntity->hasBBox();
 }
 
-const WFMath::AxisBox<3> & ModelPreviewBase::getBBox()
+const WFMath::AxisBox<3> & ModelPreviewWorker::getBBox()
 {
 	return mEntity->getBBox();
 }
 
-ModelPreviewBasePartAction::ModelPreviewBasePartAction(ModelPreviewBase& modelPreviewBase, std::string partName)
-		: mModelPreviewBase(modelPreviewBase), mPartName(partName)
+ModelPreviewWorkerPartAction::ModelPreviewWorkerPartAction(ModelPreviewWorker& modelPreviewWorker, std::string partName)
+		: mModelPreviewWorker(modelPreviewWorker), mPartName(partName)
 {
 }
 
-ModelPreviewBasePartAction::~ModelPreviewBasePartAction()
+ModelPreviewWorkerPartAction::~ModelPreviewWorkerPartAction()
 {
 }
 
-void ModelPreviewBasePartAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerPartAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator part " << mPartName);
-	mModelPreviewBase.showModelPart(mPartName);
+	mModelPreviewWorker.showModelPart(mPartName);
 }
 
-void ModelPreviewBasePartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerPartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator part " << mPartName);
-	mModelPreviewBase.hideModelPart(mPartName);
+	mModelPreviewWorker.hideModelPart(mPartName);
 }
 
 
-ModelPreviewBaseModelAction::ModelPreviewBaseModelAction(ModelPreviewBase& modelPreviewBase, std::string modelName)
-		: mModelPreviewBase(modelPreviewBase), mModelName(modelName)
+ModelPreviewWorkerModelAction::ModelPreviewWorkerModelAction(ModelPreviewWorker& modelPreviewWorker, std::string modelName)
+		: mModelPreviewWorker(modelPreviewWorker), mModelName(modelName)
 {
 }
 
-ModelPreviewBaseModelAction::~ModelPreviewBaseModelAction()
+ModelPreviewWorkerModelAction::~ModelPreviewWorkerModelAction()
 {
 }
 
-void ModelPreviewBaseModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerModelAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator model " << mModelName);
-	mModelPreviewBase.setModel(mModelName);
+	mModelPreviewWorker.setModel(mModelName);
 }
 
-void ModelPreviewBaseModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator model " << mModelName);
-	mModelPreviewBase.setModel("");
+	mModelPreviewWorker.setModel("");
 }
 
-ModelPreviewBaseHideModelAction::ModelPreviewBaseHideModelAction(ModelPreviewBase& modelPreviewBase)
-		: mModelPreviewBase(modelPreviewBase)
+ModelPreviewWorkerHideModelAction::ModelPreviewWorkerHideModelAction(ModelPreviewWorker& modelPreviewWorker)
+		: mModelPreviewWorker(modelPreviewWorker)
 {
 }
 
-ModelPreviewBaseHideModelAction::~ModelPreviewBaseHideModelAction()
+ModelPreviewWorkerHideModelAction::~ModelPreviewWorkerHideModelAction()
 {
 }
 
-void ModelPreviewBaseHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
-	mModelPreviewBase.setModel("");
+	mModelPreviewWorker.setModel("");
 }
 
-void ModelPreviewBaseHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
-{
-}
-
-
-ModelPreviewBaseActionCreator::ModelPreviewBaseActionCreator(ModelPreviewBase& modelPreviewBase)
-		: mModelPreviewBase(modelPreviewBase)
+void ModelPreviewWorkerHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 }
 
-ModelPreviewBaseActionCreator::~ModelPreviewBaseActionCreator()
+
+ModelPreviewWorkerActionCreator::ModelPreviewWorkerActionCreator(ModelPreviewWorker& modelPreviewWorker)
+		: mModelPreviewWorker(modelPreviewWorker)
 {
 }
 
-void ModelPreviewBaseActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
+ModelPreviewWorkerActionCreator::~ModelPreviewWorkerActionCreator()
+{
+}
+
+void ModelPreviewWorkerActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 {
 	EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 	for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 		if (J->getType() == "display-part") {
-			ModelPreviewBasePartAction* action = new ModelPreviewBasePartAction(mModelPreviewBase, J->getValue());
+			ModelPreviewWorkerPartAction* action = new ModelPreviewWorkerPartAction(mModelPreviewWorker, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "display-model") {
-			ModelPreviewBaseModelAction* action = new ModelPreviewBaseModelAction(mModelPreviewBase, J->getValue());
+			ModelPreviewWorkerModelAction* action = new ModelPreviewWorkerModelAction(mModelPreviewWorker, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "hide-model") {
-			ModelPreviewBaseHideModelAction* action = new ModelPreviewBaseHideModelAction(mModelPreviewBase);
+			ModelPreviewWorkerHideModelAction* action = new ModelPreviewWorkerHideModelAction(mModelPreviewWorker);
 			aCase->addAction(action);
 		}
 	}
 }
 
-ModelPreviewBaseMovementBridge::ModelPreviewBaseMovementBridge(ModelPreviewBase& modelPreviewBase, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-	::EmberOgre::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewBase(modelPreviewBase)
+ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
+	::EmberOgre::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker)
 {
 }
 
-ModelPreviewBaseMovementBridge::~ModelPreviewBaseMovementBridge()
+ModelPreviewWorkerMovementBridge::~ModelPreviewWorkerMovementBridge()
 {
 }
 
-void ModelPreviewBaseMovementBridge::finalizeMovement()
+void ModelPreviewWorkerMovementBridge::finalizeMovement()
 {
-	mModelPreviewBase.EventFinalizeCreation.emit();
+	mModelPreviewWorker.EventFinalizeCreation.emit();
 }
-void ModelPreviewBaseMovementBridge::cancelMovement()
+void ModelPreviewWorkerMovementBridge::cancelMovement()
 {
-	mModelPreviewBase.EventCleanupCreation.emit();
+	mModelPreviewWorker.EventCleanupCreation.emit();
 }
 
-ModelPreviewBaseMovement::ModelPreviewBaseMovement(ModelPreviewBase& mModelPreviewBase, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
+ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
 :mMoveAdapter(camera)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
-	ModelPreviewBaseMovementBridge* bridge = new ModelPreviewBaseMovementBridge(mModelPreviewBase, entity, node);
+	ModelPreviewWorkerMovementBridge* bridge = new ModelPreviewWorkerMovementBridge(mModelPreviewWorker, entity, node);
 	mMoveAdapter.attachToBridge(bridge);
 	mMoveAdapter.update();
 }
 
-ModelPreviewBaseMovement::~ModelPreviewBaseMovement()
+ModelPreviewWorkerMovement::~ModelPreviewWorkerMovement()
 {
 }
 
