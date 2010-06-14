@@ -191,7 +191,6 @@ void ServerWidget::connection_Disconnected()
 
 void ServerWidget::createdAccount(Eris::Account* account)
 {
-
 	mAccount = account;
 	show();
 	mMainWindow->moveToFront();
@@ -672,7 +671,16 @@ bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args)
 
 void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 {
-	mGuiManager->destroyWidget(this);
+	mAccount->AvatarDeactivated.connect(sigc::mem_fun(*this, &ServerWidget::avatar_Deactivated));
+	hide();
+}
+
+void ServerWidget::avatar_Deactivated(bool clean)
+{
+	show();
+	mMainWindow->moveToFront();
+	getWindow("LoginPanel")->setVisible(false);
+	getWindow("LoggedInPanel")->setVisible(true);
 }
 
 void ServerWidget::createPreviewTexture()
@@ -691,7 +699,6 @@ void ServerWidget::showNoCharactersAlert()
 	CEGUI::Window* alert = getWindow("NoCharactersAlert");
 	alert->setVisible(true);
 	alert->moveToFront();
-
 }
 
 bool NewCharacter::isValid() const

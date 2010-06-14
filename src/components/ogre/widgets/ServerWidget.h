@@ -77,6 +77,7 @@ protected:
 
 	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
+	void avatar_Deactivated(bool clean);
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
 	bool LogoutButton_Click(const CEGUI::EventArgs& args);
