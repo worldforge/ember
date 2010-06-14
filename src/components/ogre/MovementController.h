@@ -20,22 +20,18 @@
 #define MovementController_H
 
 #include "EmberOgrePrerequisites.h"
-
-
-// #include <SDL.h>
-#include <sigc++/trackable.h>
+#include "EntityWorldPickListener.h"
+#include "components/ogre/IMovementProvider.h"
 
 #include "services/input/Input.h"
 #include "services/input/InputCommandMapper.h"
 #include "framework/ConsoleObject.h"
-#include "EntityWorldPickListener.h"
-#include "components/ogre/IMovementProvider.h"
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 #include <OgreFrameListener.h>
 
 #include <wfmath/vector.h>
-
+#include <sigc++/trackable.h>
 
 
 namespace EmberOgre {
@@ -68,7 +64,7 @@ public:
 /**
 Listens for left mouse button pressed in movement mode and moves the character forward.
 */
-class MovementControllerInputListener
+class MovementControllerInputListener : public virtual sigc::trackable
 {
 public:
 	MovementControllerInputListener(MovementController& controller);
