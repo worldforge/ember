@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.00,200.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{1.00,-300.0},{1.00,-520.0}}'/>
+		<Property Name='Alpha' Value='0.6'/>
+		<Property Name='Text' Value='Help'/>
+		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/MultiLineEditbox' Name='HelpTextBox'>
+				<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.8,0.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.0,0.0}}'/>
+				<Property Name='Text' Value=''/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='ReadOnly' Value='true'/>
+				<Property Name ='HorzFormatting' Value='WordWrapLeftAligned'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='Back'>
+				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.15,0.00}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.82,0.0}}'/>
+				<Property Name='Text' Value='Back'/>
+			</Window>
+			<Window Type='EmberLook/Button' Name='Next'>
+				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.15,0.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.78,0.0},{0.82,0.0}}'/>
+				<Property Name='Text' Value='Next'/>
+			</Window>
+			<Window Type='EmberLook/Checkbox' Name='Hide'>
+				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.2,0.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.35,0.0},{0.82,0.0}}'/>
+				<Property Name='Tooltip' Value='If checked, the help system will be disabled'/>
+				<Property Name='Text' Value='Hide Tutorial'/>
+				<Property Name='Selected' Value='False'/>
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>

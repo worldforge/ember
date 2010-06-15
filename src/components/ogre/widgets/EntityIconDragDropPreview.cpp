@@ -75,8 +75,10 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 	{
 		if (icon && icon->getEntity())
 		{
-			Gui::QuickHelp::getSingleton().updateText("Drag your item to the world to see a preview of it. You can drop the item by releasing the left mouse button");
 			mIconEntity = icon->getEntity();
+			Gui::QuickHelp::getSingleton().updateText("This is the 1st message");
+			Gui::QuickHelp::getSingleton().updateText("This is the 2nd message");
+			Gui::QuickHelp::getSingleton().updateText("This is the 3rd message");
 			mModelPreviewWorker = new ModelPreviewWorker(mIconEntity);
 			mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
 			mModelPreviewWorker->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
