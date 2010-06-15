@@ -229,8 +229,16 @@ public:
 	 */
 	sigc::signal<void> DestroyedAccount;
 
+	/**
+	 * @brief Emitted when the Avatar instance has been destroyed.
+	 */
 	sigc::signal<void> DestroyedAvatar;
+
+	/**
+	 * @brief Emitted when the View instance has been destroyed.
+	 */
 	sigc::signal<void> DestroyedView;
+
 	/**
 	 * @brief Emitted when an object is about to be sent to the server.
 	 */

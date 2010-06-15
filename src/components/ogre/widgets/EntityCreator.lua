@@ -178,11 +178,10 @@ function EntityCreator.buildWidget(avatar)
 	entityCreator.widget:registerConsoleVisibilityToggleCommand("advEntityCreator")
 	entityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator/")
 	
-	connect(entityCreator.connectors, emberServices:getServerService().DestroyedAccount, function()
+	connect(entityCreator.connectors, emberServices:getServerService().DestroyedAvatar, function()
 			entityCreator:shutdown()
 			entityCreator = nil
-		end
-		, entityCreator)
+		end)
 	
 end
 
