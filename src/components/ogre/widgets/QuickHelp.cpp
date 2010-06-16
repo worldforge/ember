@@ -43,11 +43,11 @@ void QuickHelp::updateText(const std::string& text)
 {
 	TutorialMessage *message = new TutorialMessage(text);
 	if (mTutorialText.size() == MAXTUTORIALS)
-		mTutorialText.pop_back();
-	mTutorialText.push_front(*message);
+		mTutorialText.pop_front();
+	mTutorialText.push_back(*message);
 	mCurrentPosition = mTutorialText.end();
 	mCurrentPosition--;
-	EventUpdateText.emit(text);
+	EventUpdateText.emit((*mCurrentPosition).getHelp());
 }
 
 }
