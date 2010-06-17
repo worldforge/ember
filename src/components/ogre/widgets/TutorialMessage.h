@@ -34,7 +34,7 @@ namespace Gui
 /**
 @author Tiberiu Paunescu <tpa12@sfu.ca>
 
-@brief Class that holds tutorial / help messages
+@brief Class that holds tutorial / help messages.
 
 Currently, it only holds plain text messages but future implementations will contain more information regarding the text.
 
@@ -62,9 +62,13 @@ public:
 	 * @brief Returns the message stored.
 	 * @return The message.
 	 */
-	const std::string& getHelp();
+	const std::string& getHelp() const;
 
 private:
+
+	/**
+	 * @brief Stores the plain text mesasge.
+	 */
 	std::string mMessage;
 };
 }

@@ -47,7 +47,7 @@ $pfile "EntityIcon.pkg"
 $pfile "EntityIconManager.pkg"
 $pfile "EntityIconDragDropTarget.pkg"
 $pfile "EntityIconDragDropPreview.pkg"
-$pfile "QuickHelp.pkg"
+$pfile "QuickHelpCursor.pkg"
 
 
 $pfile "Model.pkg"

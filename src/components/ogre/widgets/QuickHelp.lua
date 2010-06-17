@@ -4,13 +4,6 @@
 -----------------------------------------
 QuickHelp = {}
 
-function QuickHelp:Next_Click(args)
-	EmberOgre.Gui.QuickHelp:getSingleton():nextMessage();
-end
-
-function QuickHelp:Back_Click(args)
-	EmberOgre.Gui.QuickHelp:getSingleton():previousMessage();
-end
 
 function QuickHelp:buildWidget()
 	
@@ -19,17 +12,27 @@ function QuickHelp:buildWidget()
 	
 	self.textWindow = self.widget:getWindow("HelpTextBox")
 	
+	self.helper = EmberOgre.Gui.QuickHelpCursor:new()
+	
 	function self.updateText(text)
 		self.textWindow:setText(text)
 	end
 	
-	self.updateText_connector = EmberOgre.LuaConnector:new_local(EmberOgre.Gui.QuickHelp:getSingleton().EventUpdateText):connect(self.updateText)
+	self.updateText_connector = EmberOgre.LuaConnector:new_local(self.helper.EventUpdateText):connect(self.updateText)
 	
-	self.widget:getWindow("Next"):subscribeEvent("Clicked", "QuickHelp.Next_Click")
-	self.widget:getWindow("Back"):subscribeEvent("Clicked", "QuickHelp.Back_Click")
+	self.widget:getWindow("Next"):subscribeEvent("Clicked", "QuickHelp.Next_Click", self)
+	self.widget:getWindow("Back"):subscribeEvent("Clicked", "QuickHelp.Back_Click", self)
 	
 	self.widget:enableCloseButton()
 	self.widget:show()
+end
+
+function QuickHelp:Next_Click(args)
+	self.helper:nextMessage()
+end
+
+function QuickHelp:Back_Click(args)
+	self.helper:previousMessage()
 end
 
 function QuickHelp:shutdown()

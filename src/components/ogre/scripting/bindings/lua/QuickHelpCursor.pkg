@@ -1,13 +1,13 @@
-$#include "components/ogre/widgets/QuickHelp.h"
+$#include "components/ogre/widgets/QuickHelpCursor.h"
 
 namespace EmberOgre {
 
 namespace Gui {
 
-class QuickHelp : public Ember::Singleton<QuickHelp>
+class QuickHelpCursor
 {
 public:
-	static QuickHelp& getSingleton( void );
+	QuickHelpCursor();
 	void nextMessage();
 	void previousMessage();
 

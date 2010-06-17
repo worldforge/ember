@@ -33,7 +33,7 @@ namespace Gui
 
 QuickHelp::QuickHelp()
 {
-	mCurrentPosition = mTutorialText.begin();
+
 }
 
 QuickHelp::~QuickHelp()
@@ -41,37 +41,24 @@ QuickHelp::~QuickHelp()
 	mTutorialText.clear();
 }
 
-void QuickHelp::nextMessage()
+const std::list<TutorialMessage>::const_iterator QuickHelp::getEnd() const
 {
-	//list.end() returns an iterator that is one past the front of the list, so we have a bit of extra work
-	mCurrentPosition++;
-	if (mCurrentPosition != mTutorialText.end())
-	{
-		EventUpdateText.emit((*mCurrentPosition).getHelp());
-	} else {
-		mCurrentPosition--;
-	}
+	return mTutorialText.end();
 }
 
-void QuickHelp::previousMessage()
+const std::list<TutorialMessage>::const_iterator QuickHelp::getBeginning() const
 {
-	if (mCurrentPosition != mTutorialText.begin())
-	{
-		mCurrentPosition--;
-		EventUpdateText.emit((*mCurrentPosition).getHelp());
-	}
+	return mTutorialText.begin();
 }
 
 void QuickHelp::updateText(const std::string& text)
 {
-	TutorialMessage *message = new TutorialMessage(text);
+	TutorialMessage message(text);
 	if (mTutorialText.size() == MAXTUTORIALS)
 		mTutorialText.pop_front();
 
-	mTutorialText.push_back(*message);
-	mCurrentPosition = mTutorialText.end();
-	mCurrentPosition--;
-	EventUpdateText.emit((*mCurrentPosition).getHelp());
+	mTutorialText.push_back(message);
+	EventTutorialAdded.emit();
 }
 
 }

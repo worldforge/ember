@@ -20,7 +20,7 @@ void TutorialMessage::setHelp(const std::string &message)
 	mMessage = message;
 }
 
-const std::string& TutorialMessage::getHelp()
+const std::string& TutorialMessage::getHelp() const
 {
 	return mMessage;
 }

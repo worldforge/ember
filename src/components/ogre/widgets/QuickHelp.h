@@ -23,12 +23,13 @@
 #ifndef EMBEROGRE_QUICKHELP_H
 #define EMBEROGRE_QUICKHELP_H
 
+#include "TutorialMessage.h"
 #include "framework/Singleton.h"
-#include <sigc++/signal.h>
 #include <string>
 #include <list>
 #include <iterator>
-#include "TutorialMessage.h"
+#include <sigc++/signal.h>
+
 
 namespace EmberOgre {
 
@@ -59,38 +60,31 @@ public:
 	virtual ~QuickHelp();
 
 	/**
-	 * @brief Add the message to the front of the list and update the widget
-	 * @params The new message we're adding
+	 * @brief Add the message to the front of the list and update the widget.
+	 * @params The new message we're adding.
 	 */
 	void updateText(const std::string& text);
 
 	/**
-	 * @brief Called when the next buttons is clicked, increments the current message
+	 * @brief Returns an iterator to the end of the list of messages
+	 *
 	 */
-	void nextMessage();
+	const std::list<TutorialMessage>::const_iterator getEnd() const;
 
 	/**
-	 * @brief Called when the back buttons is clicked, decrements the current message
+	 * @brief Returns an iterator to the beginning of the list of messages
+	 *
 	 */
-	void previousMessage();
+	const std::list<TutorialMessage>::const_iterator getBeginning() const;
 
-	/**
-	 * @brief Updates the text in the widget
-	 */
-	sigc::signal <void,const std::string&> EventUpdateText;
+	sigc::signal <void> EventTutorialAdded;
 
 private:
 
 	/**
-	 * @brief Holds a list of all of the messages. At most MAXTUTORIALS messages
+	 * @brief Holds a list of all of the messages. At most MAXTUTORIALS messages.
 	 */
 	std::list<TutorialMessage> mTutorialText;
-
-	/**
-	 * @brief Holds the position of the current message displayed in the widget
-	 */
-	std::list<TutorialMessage>::iterator mCurrentPosition;
-
 };
 
 }
