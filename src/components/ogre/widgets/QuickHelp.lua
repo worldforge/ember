@@ -11,10 +11,14 @@ function QuickHelp:buildWidget()
 	self.widget:loadMainSheet("QuickHelp.layout", "QuickHelp/")
 	
 	self.textWindow = self.widget:getWindow("HelpTextBox")
+	self.enabledCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Hide"))
 	
 	self.helper = EmberOgre.Gui.QuickHelpCursor:new()
 	
 	function self.updateText(text)
+		if not self.enabledCheckbox:isSelected() then
+			self.widget:show()
+		end
 		self.textWindow:setText(text)
 	end
 	
