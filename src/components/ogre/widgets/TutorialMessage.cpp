@@ -6,7 +6,7 @@ namespace EmberOgre
 {
 namespace Gui
 {
-TutorialMessage::TutorialMessage(const std::string &message, const std::string &caption, short int Id) : mMessage(message), mCaption(caption), mId(Id)
+TutorialMessage::TutorialMessage(const std::string &message, const std::string &caption, const std::string& Id) : mMessage(message), mCaption(caption), mId(Id)
 {
 }
 
@@ -24,7 +24,7 @@ const std::string& TutorialMessage::getHelp() const
 	return mMessage;
 }
 
-const short int TutorialMessage::getId() const
+const std::string& TutorialMessage::getId() const
 {
 	return mId;
 }

@@ -77,9 +77,9 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 		{
 			mIconEntity = icon->getEntity();
 			Gui::TutorialMessage message1("Title1", "This is the 1st message");
-			Gui::TutorialMessage message2("Title2", "This is the 2nd message", 1);
+			Gui::TutorialMessage message2("Title2", "This is the 2nd message", "moveMessage");
 			Gui::TutorialMessage message3("Title3", "This is the 3rd message");
-			Gui::TutorialMessage message4("Title2", "This is the 2nd message", 1);
+			Gui::TutorialMessage message4("Title2", "This is the 2nd message", "moveMessage");
 			Gui::QuickHelp::getSingleton().updateText(message1);
 			Gui::QuickHelp::getSingleton().updateText(message2);
 			Gui::QuickHelp::getSingleton().updateText(message3);

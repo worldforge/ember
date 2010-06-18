@@ -45,7 +45,7 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	TutorialMessage(const std::string &message, const std::string &caption, short int Id = -1);
+	TutorialMessage(const std::string &message, const std::string &caption, const std::string& Id = "");
 
 	/**
 	 * @brief Desctructor
@@ -64,7 +64,7 @@ public:
 	 */
 	const std::string& getHelp() const;
 
-	const short int getId() const;
+	const std::string& getId() const;
 
 private:
 
@@ -73,7 +73,7 @@ private:
 	 */
 	std::string mMessage;
 	std::string mCaption;
-	unsigned short int mId;
+	std::string mId;
 };
 }
 }
