@@ -30,7 +30,7 @@ public:
 
 	void updateMessage();
 
-	void getLatestTutorial();
+	void getLatestTutorial(std::list<TutorialMessage>::const_iterator position);
 
 	/**
 	 * @brief Called when position iterator changes

@@ -51,14 +51,37 @@ const std::list<TutorialMessage>::const_iterator QuickHelp::getBeginning() const
 	return mTutorialText.begin();
 }
 
-void QuickHelp::updateText(const std::string& text)
+const std::list<TutorialMessage>::const_iterator QuickHelp::insertAtEnd(const TutorialMessage& message)
 {
-	TutorialMessage message(text);
+	mTutorialText.push_back(message);
+	return --(mTutorialText.end());
+}
+
+const std::list<TutorialMessage>::const_iterator QuickHelp::messagePosition(const TutorialMessage& message)
+{
+	//If the message doesn't have an optional id, we can just insert.
+	if (message.getId() == -1)
+	{
+		return insertAtEnd(message);
+	}
+
+	//Does the Id exist? If it does, return the position.
+	for (std::list<TutorialMessage>::const_iterator list_iterator = mTutorialText.begin(); list_iterator != mTutorialText.end(); list_iterator++)
+	{
+		if (list_iterator->getId() == message.getId())
+			return list_iterator;
+	}
+
+	//Message has a unique id, and isn't inserted.
+	return insertAtEnd(message);
+}
+
+void QuickHelp::updateText(const TutorialMessage& message)
+{
 	if (mTutorialText.size() == MAXTUTORIALS)
 		mTutorialText.pop_front();
 
-	mTutorialText.push_back(message);
-	EventTutorialAdded.emit();
+	EventTutorialAdded.emit(messagePosition(message));
 }
 
 }

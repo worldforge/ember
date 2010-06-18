@@ -45,7 +45,7 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	TutorialMessage(const std::string &message);
+	TutorialMessage(const std::string &message, const std::string &caption, short int Id = -1);
 
 	/**
 	 * @brief Desctructor
@@ -64,12 +64,16 @@ public:
 	 */
 	const std::string& getHelp() const;
 
+	const short int getId() const;
+
 private:
 
 	/**
 	 * @brief Stores the plain text mesasge.
 	 */
 	std::string mMessage;
+	std::string mCaption;
+	unsigned short int mId;
 };
 }
 }

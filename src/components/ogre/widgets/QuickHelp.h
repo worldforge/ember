@@ -63,7 +63,7 @@ public:
 	 * @brief Add the message to the front of the list and update the widget.
 	 * @params The new message we're adding.
 	 */
-	void updateText(const std::string& text);
+	void updateText(const TutorialMessage& message);
 
 	/**
 	 * @brief Returns an iterator to the end of the list of messages
@@ -77,7 +77,12 @@ public:
 	 */
 	const std::list<TutorialMessage>::const_iterator getBeginning() const;
 
-	sigc::signal <void> EventTutorialAdded;
+
+	const std::list<TutorialMessage>::const_iterator insertAtEnd(const TutorialMessage& message);
+
+	const std::list<TutorialMessage>::const_iterator messagePosition(const TutorialMessage& message);
+
+	sigc::signal <void, std::list<TutorialMessage>::const_iterator> EventTutorialAdded;
 
 private:
 

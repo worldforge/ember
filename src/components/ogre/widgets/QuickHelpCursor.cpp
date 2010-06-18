@@ -13,7 +13,10 @@ namespace Gui
 QuickHelpCursor::QuickHelpCursor() : mQuickHelp(Gui::QuickHelp::getSingleton())
 {
 	mQuickHelp.EventTutorialAdded.connect(sigc::mem_fun(*this, &QuickHelpCursor::getLatestTutorial));
-	getLatestTutorial();
+
+	mCurrentPosition = mQuickHelp.getEnd();
+	mCurrentPosition--;
+	updateMessage();
 }
 
 QuickHelpCursor::~QuickHelpCursor()
@@ -21,11 +24,10 @@ QuickHelpCursor::~QuickHelpCursor()
 
 }
 
-void QuickHelpCursor::getLatestTutorial()
+void QuickHelpCursor::getLatestTutorial(std::list<TutorialMessage>::const_iterator position)
 {
 	//getEnd returns one past the last element.
-	mCurrentPosition = mQuickHelp.getEnd();
-	mCurrentPosition--;
+	mCurrentPosition = position;
 	updateMessage();
 }
 
