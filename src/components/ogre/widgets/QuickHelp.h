@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_QUICKHELP_H
 #define EMBEROGRE_QUICKHELP_H
 
-#include "TutorialMessage.h"
+#include "HelpMessage.h"
 #include "framework/Singleton.h"
 #include <string>
 #include <list>
@@ -63,33 +63,33 @@ public:
 	 * @brief Add the message to the front of the list and update the widget.
 	 * @params The new message we're adding.
 	 */
-	void updateText(const TutorialMessage& message);
+	void updateText(const HelpMessage& message);
 
 	/**
 	 * @brief Returns an iterator to the end of the list of messages
 	 *
 	 */
-	const std::list<TutorialMessage>::const_iterator getEnd() const;
+	const std::list<HelpMessage>::const_iterator getEnd() const;
 
 	/**
 	 * @brief Returns an iterator to the beginning of the list of messages
 	 *
 	 */
-	const std::list<TutorialMessage>::const_iterator getBeginning() const;
+	const std::list<HelpMessage>::const_iterator getBeginning() const;
 
 
-	const std::list<TutorialMessage>::const_iterator insertAtEnd(const TutorialMessage& message);
+	const std::list<HelpMessage>::const_iterator insertAtEnd(const HelpMessage& message);
 
-	const std::list<TutorialMessage>::const_iterator messagePosition(const TutorialMessage& message);
+	const std::list<HelpMessage>::const_iterator messagePosition(const HelpMessage& message);
 
-	sigc::signal <void, std::list<TutorialMessage>::const_iterator> EventTutorialAdded;
+	sigc::signal <void, std::list<HelpMessage>::const_iterator> EventTutorialAdded;
 
 private:
 
 	/**
 	 * @brief Holds a list of all of the messages. At most MAXTUTORIALS messages.
 	 */
-	std::list<TutorialMessage> mTutorialText;
+	std::list<HelpMessage> mTutorialText;
 };
 
 }

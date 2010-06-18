@@ -41,23 +41,23 @@ QuickHelp::~QuickHelp()
 	mTutorialText.clear();
 }
 
-const std::list<TutorialMessage>::const_iterator QuickHelp::getEnd() const
+const std::list<HelpMessage>::const_iterator QuickHelp::getEnd() const
 {
 	return mTutorialText.end();
 }
 
-const std::list<TutorialMessage>::const_iterator QuickHelp::getBeginning() const
+const std::list<HelpMessage>::const_iterator QuickHelp::getBeginning() const
 {
 	return mTutorialText.begin();
 }
 
-const std::list<TutorialMessage>::const_iterator QuickHelp::insertAtEnd(const TutorialMessage& message)
+const std::list<HelpMessage>::const_iterator QuickHelp::insertAtEnd(const HelpMessage& message)
 {
 	mTutorialText.push_back(message);
 	return --(mTutorialText.end());
 }
 
-const std::list<TutorialMessage>::const_iterator QuickHelp::messagePosition(const TutorialMessage& message)
+const std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const HelpMessage& message)
 {
 	//If the message doesn't have an optional id, we can just insert.
 	if (message.getId() == "")
@@ -66,7 +66,7 @@ const std::list<TutorialMessage>::const_iterator QuickHelp::messagePosition(cons
 	}
 
 	//Does the Id exist? If it does, return the position.
-	for (std::list<TutorialMessage>::const_iterator list_iterator = mTutorialText.begin(); list_iterator != mTutorialText.end(); list_iterator++)
+	for (std::list<HelpMessage>::const_iterator list_iterator = mTutorialText.begin(); list_iterator != mTutorialText.end(); list_iterator++)
 	{
 		if (list_iterator->getId() == message.getId())
 			return list_iterator;
@@ -76,7 +76,7 @@ const std::list<TutorialMessage>::const_iterator QuickHelp::messagePosition(cons
 	return insertAtEnd(message);
 }
 
-void QuickHelp::updateText(const TutorialMessage& message)
+void QuickHelp::updateText(const HelpMessage& message)
 {
 	if (mTutorialText.size() == MAXTUTORIALS)
 		mTutorialText.pop_front();

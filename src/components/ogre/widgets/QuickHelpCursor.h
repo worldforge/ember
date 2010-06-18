@@ -10,7 +10,7 @@ namespace EmberOgre {
 namespace Gui {
 
 class QuickHelp;
-class TutorialMessage;
+class HelpMessage;
 
 class QuickHelpCursor
 {
@@ -30,7 +30,7 @@ public:
 
 	void updateMessage();
 
-	void getLatestTutorial(std::list<TutorialMessage>::const_iterator position);
+	void getLatestTutorial(std::list<HelpMessage>::const_iterator position);
 
 	/**
 	 * @brief Called when position iterator changes
@@ -41,7 +41,7 @@ private:
 	/**
 	 * @brief Holds the position of the current message displayed in the widget.
 	 */
-	std::list<TutorialMessage>::const_iterator mCurrentPosition;
+	std::list<HelpMessage>::const_iterator mCurrentPosition;
 
 	QuickHelp& mQuickHelp;
 

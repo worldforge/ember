@@ -1,6 +1,6 @@
 #include "QuickHelpCursor.h"
 #include "QuickHelp.h"
-#include "TutorialMessage.h"
+#include "HelpMessage.h"
 
 using namespace EmberOgre;
 
@@ -24,7 +24,7 @@ QuickHelpCursor::~QuickHelpCursor()
 
 }
 
-void QuickHelpCursor::getLatestTutorial(std::list<TutorialMessage>::const_iterator position)
+void QuickHelpCursor::getLatestTutorial(std::list<HelpMessage>::const_iterator position)
 {
 	//getEnd returns one past the last element.
 	mCurrentPosition = position;

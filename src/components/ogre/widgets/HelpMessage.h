@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_TUTORIALMESSAGE_H
-#define EMBEROGRE_TUTORIALMESSAGE_H
+#ifndef EMBEROGRE_HELPMESSAGE_H
+#define EMBEROGRE_HELPMESSAGE_H
 
 #include <string>
 
@@ -39,18 +39,18 @@ namespace Gui
 Currently, it only holds plain text messages but future implementations will contain more information regarding the text.
 
 */
-class TutorialMessage
+class HelpMessage
 {
 public:
 	/**
 	 * @brief Constructor
 	 */
-	TutorialMessage(const std::string &message, const std::string &caption, const std::string& Id = "");
+	HelpMessage(const std::string &message, const std::string &caption, const std::string& Id = "");
 
 	/**
 	 * @brief Desctructor
 	 */
-	~TutorialMessage();
+	~HelpMessage();
 
 	/**
 	 * @brief Sets the message.
