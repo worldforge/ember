@@ -6,7 +6,7 @@ namespace EmberOgre
 {
 namespace Gui
 {
-HelpMessage::HelpMessage(const std::string &message, const std::string &caption, const std::string& Id) : mMessage(message), mCaption(caption), mId(Id)
+HelpMessage::HelpMessage(const std::string &message, const std::string &caption, const std::string& id) : mMessage(message), mCaption(caption), mId(id)
 {
 }
 
@@ -27,6 +27,11 @@ const std::string& HelpMessage::getHelp() const
 const std::string& HelpMessage::getId() const
 {
 	return mId;
+}
+
+bool HelpMessage::hasId() const
+{
+	return mId.size() != 0;
 }
 
 }

@@ -60,7 +60,7 @@ const std::list<HelpMessage>::const_iterator QuickHelp::insertAtEnd(const HelpMe
 const std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const HelpMessage& message)
 {
 	//If the message doesn't have an optional id, we can just insert.
-	if (message.getId() == "")
+	if (!message.hasId())
 	{
 		return insertAtEnd(message);
 	}

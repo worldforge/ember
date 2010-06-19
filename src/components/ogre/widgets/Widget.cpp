@@ -226,6 +226,15 @@ namespace Gui {
 		}
 	}
 
+	bool Widget::isVisible()
+	{
+		if (mMainWindow)
+		{
+			return mMainWindow->isVisible();
+		}
+		return false;
+	}
+
 	bool Widget::MainWindow_CloseClick(const CEGUI::EventArgs& args)
 	{
 		hide();
