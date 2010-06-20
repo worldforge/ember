@@ -1,22 +1,22 @@
 /*
-    Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
-    Copyright (C) 2005	Erik Hjortsberg
-    Based on YUP::Metacmd code by Adam Wendt
+ Copyright (C) 2002  Miguel Guzman Miranda [Aglanor]
+ Copyright (C) 2005	Erik Hjortsberg
+ Based on YUP::Metacmd code by Adam Wendt
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -25,10 +25,15 @@
 #include "MetaserverService.h"
 
 // Current project
-#include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 #include "services/EmberServices.h"
+#include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/Tokeniser.h"
+
+
+#include <Eris/Metaserver.h>
+#include <Eris/ServerInfo.h>
 
 // System headers
 #include <iostream>
@@ -40,41 +45,37 @@
 
 #include <sigc++/signal.h>
 
-#include <Eris/Metaserver.h>
-#include <Eris/ServerInfo.h>
-
 
 using namespace std;
 
 namespace Ember
 {
 
-  typedef std::list<Eris::ServerInfo> svrl;
-  typedef svrl::iterator Iter;
+typedef std::list<Eris::ServerInfo> svrl;
+typedef svrl::iterator Iter;
 
-  MetaserverService::MetaserverService() :mMetaserver(0)
-  , MetaRefresh("meta_refresh", this, "Refresh the meta server listing.")
-  , MetaAbort("meta_abort", this, "Abort the meta server update process.")
+MetaserverService::MetaserverService() :
+	mMetaserver(0), MetaRefresh("meta_refresh", this, "Refresh the meta server listing."), MetaAbort("meta_abort", this, "Abort the meta server update process.")
 //   , MetaList("meta_list", this, "List all servers.")
-  {
-    setName("Metaserver Service");
-    setDescription("Service for Metaserver session");
-    // TODO(zzorn, 2002-01-19): Set the status of the service to OK.
-    //        setStatus( Service::Status::OK );
-   S_LOG_INFO("Metaserver Service created");
-  }
+{
+	setName("Metaserver Service");
+	setDescription("Service for Metaserver session");
+	// TODO(zzorn, 2002-01-19): Set the status of the service to OK.
+	//        setStatus( Service::Status::OK );
+	S_LOG_INFO("Metaserver Service created");
+}
 
-  /* dtor */
-  MetaserverService::~MetaserverService()
-  {
-    delete mMetaserver;
-  }
+/* dtor */
+MetaserverService::~MetaserverService()
+{
+	delete mMetaserver;
+}
 
-  /* Method for starting this service 	*/
-  Service::Status MetaserverService::start()
-  {
-    setStatus(Service::OK);
-    setRunning( true );
+/* Method for starting this service 	*/
+Service::Status MetaserverService::start()
+{
+	setStatus(Service::OK);
+	setRunning(true);
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
@@ -84,90 +85,119 @@ namespace Ember
 	} else {
 		metaserverHostname = "metaserver.worldforge.org";
 	}
-	
-    mMetaserver = new Eris::Meta(metaserverHostname, 20);
-    mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
-    mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
-    mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));
-   
-    
-//     std::string metaserver = "metaserver.worldforge.org";
-// 
-//     msrv = new Eris::Meta(metaserver, 10);
-//     msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
-//     msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
-//     msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
-//     listed = false;
+
+	mMetaserver = new Eris::Meta(metaserverHostname, 20);
+	mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
+	mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
+	mMetaserver->CompletedServerList.connect(sigc::mem_fun(*this, &MetaserverService::completedServerList));
+
+	//     std::string metaserver = "metaserver.worldforge.org";
+	//
+	//     msrv = new Eris::Meta(metaserver, 10);
+	//     msrv->Failure.connect(SigC::slot(*this, &MetaserverService::gotFailure));
+	//     msrv->ReceivedServerInfo.connect(SigC::slot(*this, &MetaserverService::receivedServerInfo));
+	//     msrv->CompletedServerList.connect(SigC::slot(*this, &MetaserverService::completedServerList));
+	//     listed = false;
 
 
-    return Service::OK;
-  }
+	return Service::OK;
+}
 
-  /* Interface method for stopping this service 	*/
-  void MetaserverService::stop(int code)
-  {
+/* Interface method for stopping this service 	*/
+void MetaserverService::stop(int code)
+{
 	Service::stop(code);
 	setStatus(Service::OK);
-  }
+}
 
-    
-  void MetaserverService::gotFailure(const string& msg)
-  {
-  	S_LOG_WARNING("Got Meta-server error: " << msg);
-  }
-    
-  void MetaserverService::receivedServerInfo(const Eris::ServerInfo& sInfo)
-  {
+void MetaserverService::gotFailure(const string& msg)
+{
+	S_LOG_WARNING("Got Meta-server error: " << msg);
+}
 
-    S_LOG_VERBOSE("Got serverinfo:\n"
-      << "Hostname: " <<sInfo.getHostname()
-      << "\nServerName: "<<sInfo.getServername()
-      << "\nRuleset: "<<sInfo.getRuleset()
-      << "\nServer Type: "<<sInfo.getServer()
-      << "\nClients: "<<sInfo.getNumClients()
-      << "\nPing: "<< sInfo.getPing()
-      << "\nUptime: "<< (int)sInfo.getUptime());
-  }
+void MetaserverService::receivedServerInfo(const Eris::ServerInfo& sInfo)
+{
 
-  void MetaserverService::completedServerList(int count)
-  {
-    S_LOG_INFO("Server List completed.");
-    S_LOG_INFO("Servers: " << count);
-	
-//     stringstream out;
-//     out << "Listing hostnames..." << endl;
-// 		
-//     for(int i = 0; i < count; i++)
-//       {	
-// 	//HINT: Always use .c_str() for compatibility to MSVC
-// 	Eris::ServerInfo inf = mMetaserver->getInfoForServer(i);
-// 	
-// 
-// 	out << "Hostname: " << inf.getHostname().c_str() << endl;
-//       }
-// 
-// 
-//     S_LOG_INFO( out.str());
+	S_LOG_VERBOSE("Got serverinfo:\n"
+			<< "Hostname: " <<sInfo.getHostname()
+			<< "\nServerName: "<<sInfo.getServername()
+			<< "\nRuleset: "<<sInfo.getRuleset()
+			<< "\nServer Type: "<<sInfo.getServer()
+			<< "\nClients: "<<sInfo.getNumClients()
+			<< "\nPing: "<< sInfo.getPing()
+			<< "\nUptime: "<< (int)sInfo.getUptime());
+}
 
-  }
+void MetaserverService::completedServerList(int count)
+{
+	S_LOG_INFO("Server List completed.");
+	S_LOG_INFO("Servers: " << count);
+
+	//     stringstream out;
+	//     out << "Listing hostnames..." << endl;
+	//
+	//     for(int i = 0; i < count; i++)
+	//       {
+	// 	//HINT: Always use .c_str() for compatibility to MSVC
+	// 	Eris::ServerInfo inf = mMetaserver->getInfoForServer(i);
+	//
+	//
+	// 	out << "Hostname: " << inf.getHostname().c_str() << endl;
+	//       }
+	//
+	//
+	//     S_LOG_INFO( out.str());
+
+}
 
 Eris::Meta& MetaserverService::getMetaServer() const
 {
 	return *mMetaserver;
 }
 
+void MetaserverService::runCommand(const std::string &command, const std::string &args)
+{
+	if (!mMetaserver)
+		return;
+	/*    if (MetaList == command){
+	 } else */
+	if (MetaAbort == command) {
+		mMetaserver->cancel();
+	} else if (MetaRefresh == command) {
+		mMetaserver->refresh();
+	}
 
-  void MetaserverService::runCommand(const std::string &command, const std::string &args)
-  {
-    if (!mMetaserver) return;
-/*    if (MetaList == command){
-    } else */
-    if (MetaAbort == command) {
-      mMetaserver->cancel();
-    } else if (MetaRefresh == command) {
-      mMetaserver->refresh();
-    }
+	return;
+}
 
-    return;
-  }
+int MetaserverService::compareVersions(const std::string& firstVersion, const std::string& secondVersion)
+{
+	std::vector<std::string> firstVersionStrings = Ember::Tokeniser::split(firstVersion, ".");
+	std::vector<std::string> secondVersionStrings = Ember::Tokeniser::split(secondVersion, ".");
+
+	std::vector<std::string>::const_iterator firstI = firstVersionStrings.begin();
+	std::vector<std::string>::const_iterator secondI = secondVersionStrings.begin();
+
+	while (firstI != firstVersionStrings.end() && secondI != secondVersionStrings.end()) {
+		std::stringstream ss(*firstI);
+		int firstNumber;
+		if ((ss >> firstNumber).fail() || !(ss >> std::ws).eof()) {
+			return 0;
+		}
+		std::stringstream ssSecond(*secondI);
+		int secondNumber;
+		if ((ssSecond >> secondNumber).fail() || !(ssSecond >> std::ws).eof()) {
+			return 0;
+		}
+		if (firstNumber > secondNumber) {
+			return 1;
+		} else if (secondNumber > firstNumber) {
+			return -1;
+		}
+		firstI++;
+		secondI++;
+	}
+	return 0;
+}
+
 } // namespace Ember

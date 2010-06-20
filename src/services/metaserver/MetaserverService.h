@@ -98,6 +98,16 @@ class MetaserverService: public Service,
      */ 
     virtual void runCommand(const std::string &command, const std::string &args);
 
+    /**
+     * @brief Compares two version strings.
+     *
+     * A version string should be in the format <major>.<minor>.<point>.
+     * @returns 0 if the versions are the same, or if it wasn't possible to correctly parse the version string. 1 if the first version was larger than the second. -1 if the second version was larger then the first.
+     * @param firstVersion The first version to compare.
+     * @param secondVersion The second version to compare.
+     */
+    static int compareVersions(const std::string& firstVersion, const std::string& secondVersion);
+
 }; //MetaserverService
 
 } // namespace Ember
