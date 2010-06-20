@@ -24,7 +24,7 @@
 			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-30.0}}'/>
 			<Property Name='FrameEnabled' Value='false' />
 			<Property Name='BackgroundEnabled' Value='false' />
-			<Property Name='Text' Value='Manul address:'/>
+			<Property Name='Text' Value='Manual connect:'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='Tooltip' Value='Enter a server address here to manually connect to it. Press Enter to connect.' />
 		</Window>

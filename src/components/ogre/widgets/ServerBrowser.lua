@@ -1,19 +1,9 @@
------------------------------------------
--- Start of handler functions
------------------------------------------
+ServerBrowser = {}
 
------------------------------------------
--- Script Entry Point
------------------------------------------
-ServerBrowser = {connectors={}, hideOldServers = false, minimumVersion = ''}
-
-
-function ServerBrowser.connectToMetaServer()
+function ServerBrowser:connectToMetaServer()
 	local metaServer = emberServices:getMetaserverService():getMetaServer()
 	
---    EmberOgre.LuaConnector:new(metaServer:Failure.connect, "MetaServer_Failure")
-	connect(ServerBrowser.connectors, metaServer.ReceivedServerInfo, "ServerBrowser.MetaServer_ReceivedServerInfo")
---    EmberOgre.LuaConnector:new(metaServer:CompletedServerList.connect, "MetaServer_CompletedServerList.connect")
+	connect(self.connectors, metaServer.ReceivedServerInfo, self.MetaServer_ReceivedServerInfo, self)
 	--only refresh if it's enabled in the config
 	if emberServices:getConfigService():isItemSet("metaserver", "enabled", "true") then
     	metaServer:refresh()
@@ -21,37 +11,38 @@ function ServerBrowser.connectToMetaServer()
 end
 
 
-function ServerBrowser.buildWidget()
-	ServerBrowser.widget = guiManager:createWidget()
-	ServerBrowser.widget:loadMainSheet("ServerBrowser.layout", "ServerBrowser/")
+function ServerBrowser:buildWidget()
+	self.widget = guiManager:createWidget()
+	self.widget:loadMainSheet("ServerBrowser.layout", "ServerBrowser/")
 	
 	local wee
-	wee = ServerBrowser.widget:getWindow("ServerList")
-	ServerBrowser.serverList = CEGUI.toMultiColumnList(wee)
-	ServerBrowser.serverList:subscribeEvent("MouseDoubleClick", "ServerBrowser.ServerList_DoubleClick")
+	wee = self.widget:getWindow("ServerList")
+	self.serverList = CEGUI.toMultiColumnList(wee)
+	self.serverList:subscribeEvent("MouseDoubleClick", self.ServerList_DoubleClick, self)
 	
-	wee = ServerBrowser.widget:getWindow("Refresh")
+	wee = self.widget:getWindow("Refresh")
 	local refreshButton = CEGUI.toPushButton(wee)
-	refreshButton:subscribeEvent("Clicked", "ServerBrowser.Refresh_Click")
+	refreshButton:subscribeEvent("Clicked", self.Refresh_Click, self)
 	
-	wee = ServerBrowser.widget:getWindow("Connect")
+	wee = self.widget:getWindow("Connect")
 	local connectButton = CEGUI.toPushButton(wee)
-	connectButton:subscribeEvent("Clicked", "ServerBrowser.Connect_Click")
+	connectButton:subscribeEvent("Clicked", self.Connect_Click, self)
 		
-	wee = ServerBrowser.widget:getWindow("ManualServerName")
-	ServerBrowser.manualServerNameTextbox = CEGUI.toPushButton(wee)
-	ServerBrowser.manualServerNameTextbox:subscribeEvent("TextAccepted", "ServerBrowser.manualServerNameTextbox_TextAcceptedEvent")
+	wee = self.widget:getWindow("ManualServerName")
+	self.manualServerNameTextbox = CEGUI.toPushButton(wee)
+	self.manualServerNameTextbox:subscribeEvent("TextAccepted", self.manualServerNameTextbox_TextAcceptedEvent, self)
 	
-	wee = ServerBrowser.widget:getWindow("HideOldServers")
-	ServerBrowser.hideOldServersCheckbox = CEGUI.toCheckbox(wee)
+	wee = self.widget:getWindow("HideOldServers")
+	self.hideOldServersCheckbox = CEGUI.toCheckbox(wee)
 	--Only show the checkbox for filtering old servers if the metaserver:minimumversion value is set in the config
 	if emberServices:getConfigService():itemExists("metaserver", "minimumversion") then
 		local minimumversion = emberServices:getConfigService():getValue("metaserver", "minimumversion")
 		if minimumversion ~= nil then
 			if minimumversion:is_string() then
-				ServerBrowser.minimumVersion = minimumversion:as_string()
-				ServerBrowser.hideOldServersCheckbox:setVisible(true)
-				ServerBrowser.hideOldServers = ServerBrowser.hideOldServersCheckbox:isSelected()
+				self.minimumVersion = minimumversion:as_string()
+				self.hideOldServersCheckbox:setVisible(true)
+				self.hideOldServersCheckbox:subscribeEvent("CheckStateChanged", self.hideOldServers_CheckStateChanged, self)
+				self.hideOldServers = self.hideOldServersCheckbox:isSelected()
 			end
 		end
 	end
@@ -59,11 +50,11 @@ function ServerBrowser.buildWidget()
 	
 	
 	local serverService = emberServices:getServerService()
-	connect(ServerBrowser.connectors, serverService.GotConnection, "ServerBrowser.Server_GotConnection")
+	connect(self.connectors, serverService.GotConnection, self.Server_GotConnection, self)
 	
-	ServerBrowser.connectToMetaServer()
-	ServerBrowser.widget:show()
-	ServerBrowser.widget:getMainWindow():activate()
+	self:connectToMetaServer()
+	self.widget:show()
+	self.widget:getMainWindow():activate()
 	
 	--If the "autoconnect" value is set, try to connect to the specified server
 	if emberServices:getConfigService():itemExists("metaserver", "autoconnect") then
@@ -82,13 +73,13 @@ function ServerBrowser.buildWidget()
 end
 
 
-function ServerBrowser.connectWithColumnList()
+function ServerBrowser:connectWithColumnList()
 	local serverName
-	if ServerBrowser.serverList:getFirstSelectedItem() ~= nil then
-		local selectedRowIndex = ServerBrowser.serverList:getItemRowIndex(ServerBrowser.serverList:getFirstSelectedItem())
+	if self.serverList:getFirstSelectedItem() ~= nil then
+		local selectedRowIndex = self.serverList:getItemRowIndex(self.serverList:getFirstSelectedItem())
 	
 		if selectedRowIndex ~= -1 then
-			local selectedItem = ServerBrowser.serverList:getItemAtGridReference(CEGUI.MCLGridRef:new_local(selectedRowIndex, 6))
+			local selectedItem = self.serverList:getItemAtGridReference(CEGUI.MCLGridRef:new_local(selectedRowIndex, 6))
 			if selectedItem ~= nil then
 				serverName = selectedItem:getText()
 			end
@@ -99,14 +90,14 @@ function ServerBrowser.connectWithColumnList()
 	end
 end
 
-function ServerBrowser.doConnect()
+function ServerBrowser:doConnect()
 	local serverName
 
 	--first we check if there is text in the ManualServerName textbox
 	--if so, we try to connect to the server specified there
 	
-	if ServerBrowser.manualServerNameTextbox:getText() ~= "" then
-		serverName = ServerBrowser.manualServerNameTextbox:getText()
+	if self.manualServerNameTextbox:getText() ~= "" then
+		serverName = self.manualServerNameTextbox:getText()
 		--Try to separate the port number, if available.
 		if serverName:find(":") ~= nil then
 			local port = serverName:sub(serverName:find(":") + 1, serverName:len())
@@ -115,82 +106,103 @@ function ServerBrowser.doConnect()
 		else
 			Ember.EmberServices:getSingleton():getServerService():connect(serverName)
 		end
-	elseif ServerBrowser.serverList:getFirstSelectedItem() ~= nil then
+	elseif self.serverList:getFirstSelectedItem() ~= nil then
 		--if ManualServerName is empty we try to connect to the server selected from the list 
-		ServerBrowser.connectWithColumnList()
+		self:connectWithColumnList()
 	end
 end
 
-function ServerBrowser.Server_GotConnection(connection)
-	ServerBrowser.widget:hide()
-	connect(ServerBrowser.connectors, connection.Disconnected, function()
-			 ServerBrowser.widget:show()
-			 ServerBrowser.widget:getMainWindow():activate()
+function ServerBrowser:Server_GotConnection(connection)
+	self.widget:hide()
+	connect(self.connectors, connection.Disconnected, function()
+			 self.widget:show()
+			 self.widget:getMainWindow():activate()
 		end)
 end
 
-function ServerBrowser.Refresh_Click(args)
-	ServerBrowser.serverList:resetList()
-	--Ember.EmberServices:getSingleton():getMetaserverService():getMetaserver():refresh()
+function ServerBrowser:Refresh_Click(args)
+	self.serverList:resetList()
+	Ember.EmberServices:getSingleton():getMetaserverService():getMetaserver():refresh()
+	return true
 end
 
-function ServerBrowser.Connect_Click(args)
-	ServerBrowser.doConnect()
+function ServerBrowser:Connect_Click(args)
+	self:doConnect()
+	return true
 end
 
-function ServerBrowser.manualServerNameTextbox_TextAcceptedEvent(args)
-	ServerBrowser.doConnect()
+function ServerBrowser:manualServerNameTextbox_TextAcceptedEvent(args)
+	self:doConnect()
+	return true
 end
 
-function ServerBrowser.ServerList_DoubleClick(args)
-	ServerBrowser.connectWithColumnList()
+function hideOldServers_CheckStateChanged(args)
+	return true
 end
 
-function ServerBrowser.MetaServer_ReceivedServerInfo(sInfo)
-	--we got some server info, add it to the server list
+function ServerBrowser:ServerList_DoubleClick(args)
+	self:connectWithColumnList()
+	return true
+end
 
-	--mGuiManager->setDebugText("Got server info.");
+function ServerBrowser:hideOldServers_CheckStateChanged(args)
+	self.hideOldServers = self.hideOldServersCheckbox:isSelected()
+	self:refreshServerList()
+	return true
+end
+
+function ServerBrowser:refreshServerList()
+	local metaServer = emberServices:getMetaserverService():getMetaServer()
+	self.serverList:resetList()
+	local numberOfServerInfos = metaServer:getGameServerCount()
 	
-	if ServerBrowser.hideOldServers then
-		if Ember.MetaserverService:compareVersions(ServerBrowser.minimumVersion, sInfo:getVersion()) > 0 then
+	for i = 0, numberOfServerInfos - 1 do
+		local sInfo = metaServer:getInfoForServer(i)
+		if sInfo:getStatus() == Eris.ServerInfo.VALID then
+			self:addRow(sInfo)
+		end
+	end
+end
+
+function ServerBrowser:addRow(sInfo)
+	if self.hideOldServers then
+		if Ember.MetaserverService:compareVersions(self.minimumVersion, sInfo:getVersion()) > 0 then
 			return
 		end
 	end
-	
-	local rowNumber = ServerBrowser.serverList:getRowCount()
-	ServerBrowser.serverList:addRow()
+
+	local rowNumber = self.serverList:getRowCount()
+	self.serverList:addRow()
 	
 	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getServername())
---	item->setUserData(&sInfo);
+	self.serverList:setItem(item, 0, rowNumber)
 	
+	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getPing())
+	self.serverList:setItem(item, 1, rowNumber)
 	
-	ServerBrowser.serverList:setItem(item, 0, rowNumber)
-	local ss_ping = sInfo:getPing()
-	local ss_clientNum = sInfo:getNumClients()
+	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getNumClients())
+	self.serverList:setItem(item, 2 ,rowNumber)
 	
-	item = EmberOgre.Gui.ColouredListItem:new(ss_ping)
-	ServerBrowser.serverList:setItem(item, 1, rowNumber)
+	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getRuleset())
+	self.serverList:setItem(item, 3, rowNumber)
 	
-	item = EmberOgre.Gui.ColouredListItem:new(ss_clientNum)
-	ServerBrowser.serverList:setItem(item, 2 ,rowNumber)
+	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getServer())
+	self.serverList:setItem(item, 4, rowNumber)
 	
-	item = EmberOgre.Gui.ColouredListItem:new(sInfo:getRuleset())
-	ServerBrowser.serverList:setItem(item, 3, rowNumber)
+	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getVersion())
+	self.serverList:setItem(item, 5, rowNumber)
 	
-	item = EmberOgre.Gui.ColouredListItem:new(sInfo:getServer())
-	ServerBrowser.serverList:setItem(item, 4, rowNumber)
-	
-	item = EmberOgre.Gui.ColouredListItem:new(sInfo:getVersion())
-	ServerBrowser.serverList:setItem(item, 5, rowNumber)
-	
-	item = EmberOgre.Gui.ColouredListItem:new(sInfo:getHostname())
-	ServerBrowser.serverList:setItem(item, 6, rowNumber)
-	
-	
-	
-	--CEGUI::ListboxItem* item = new CEGUI::ListboxItem;
-	--item->setUserData(sInfo);
+	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getHostname())
+	self.serverList:setItem(item, 6, rowNumber)
 end
 
+function ServerBrowser:MetaServer_ReceivedServerInfo(sInfo)
+	--we got some server info, add it to the server list
 
-ServerBrowser.buildWidget()
+	self:addRow(sInfo)
+	
+end
+
+serverBrowser = {connectors={}, hideOldServers = false, minimumVersion = '', rows = {}}
+setmetatable(serverBrowser, {__index = ServerBrowser})
+serverBrowser:buildWidget()
