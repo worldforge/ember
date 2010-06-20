@@ -6,41 +6,56 @@
 		<Property Name='SizingEnabled' Value='false'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Server browser'/>
-		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
+		<Window Type='EmberLook/MultiColumnList' Name='ServerList'>
+			<Property Name='UnifiedPosition' Value='{{0.0,1},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0,-2.0},{1.0,-35.0}}'/>
+			<Property Name='InheritsAlpha' Value='true'/>
+			<Property Name='SelectionMode' Value='RowSingle'/>
+			<Property Name='ColumnHeader' Value='text:Server Name width:{0.30, 0} id:0'/>
+			<Property Name='ColumnHeader' Value='text:Ping width:{0.1, 0} id:1'/>
+			<Property Name='ColumnHeader' Value='text:Clients width:{0.1, 0} id:2'/>
+			<Property Name='ColumnHeader' Value='text:Ruleset width:{0.1, 0} id:3'/>
+			<Property Name='ColumnHeader' Value='text:Server type width:{0.15, 0} id:4'/>
+			<Property Name='ColumnHeader' Value='text:Version width:{0.1, 0} id:5'/>
+			<Property Name='ColumnHeader' Value='text:Address width:{0.15, 0} id:6'/>
+		</Window>
+		<Window Type='EmberLook/StaticText' Name='ManualServerNameText'>
+			<Property Name='UnifiedSize' Value='{{0.0,95.0},{0.0,25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-30.0}}'/>
+			<Property Name='FrameEnabled' Value='false' />
+			<Property Name='BackgroundEnabled' Value='false' />
+			<Property Name='Text' Value='Manul address:'/>
+			<Property Name='InheritsAlpha' Value='true'/>
+			<Property Name='Tooltip' Value='Enter a server address here to manually connect to it. Press Enter to connect.' />
+		</Window>
+		<Window Type='EmberLook/Editbox' Name='ManualServerName'>
+			<Property Name='UnifiedSize' Value='{{0.0,150.0},{0.0,25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,100.0},{1.0,-30.0}}'/>
+			<Property Name='Text' Value=''/>
+			<Property Name='InheritsAlpha' Value='true'/>
+			<Property Name='Tooltip' Value='Enter a server address here to manually connect to it. Press Enter to connect.' />
+		</Window>
+		<Window Type='EmberLook/Checkbox' Name='HideOldServers'>
+			<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.00,30.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,310.0},{1.0,-30.0}}'/>
+			<Property Name='Text' Value='Hide old servers'/>
+			<Property Name='Tooltip' Value='Hides old and outdated servers from the list.'/>
+			<Property Name='Selected' Value='True'/>
+			<Property Name='Visible' Value='False'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='Refresh'>
+			<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0,-160.0},{1.0,-30.0}}'/>
+			<Property Name='Text' Value='Refresh'/>
 			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/MultiColumnList' Name='ServerList'>
-				<Property Name='UnifiedPosition' Value='{{0.0,1},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1.0,-2.0},{1.0,-35.0}}'/>
-				<Property Name='InheritsAlpha' Value='true'/>
-				<Property Name='SelectionMode' Value='RowSingle'/>
-				<Property Name='ColumnHeader' Value='text:Server Name width:{0.30, 0} id:0'/>
-				<Property Name='ColumnHeader' Value='text:Ping width:{0.1, 0} id:1'/>
-				<Property Name='ColumnHeader' Value='text:Clients width:{0.1, 0} id:2'/>
-				<Property Name='ColumnHeader' Value='text:Ruleset width:{0.1, 0} id:3'/>
-				<Property Name='ColumnHeader' Value='text:Server type width:{0.15, 0} id:4'/>
-				<Property Name='ColumnHeader' Value='text:Version width:{0.1, 0} id:5'/>
-				<Property Name='ColumnHeader' Value='text:Address width:{0.15, 0} id:6'/>
-			</Window>
-			<Window Type='EmberLook/Editbox' Name='ManualServerName'>
-				<Property Name='UnifiedSize' Value='{{0.0,150.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-30.0}}'/>
-				<Property Name='Text' Value=''/>
-				<Property Name='InheritsAlpha' Value='true'/>
-			</Window>
-			<Window Type='EmberLook/Button' Name='Refresh'>
-				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{1.0,-160.0},{1.0,-30.0}}'/>
-				<Property Name='Text' Value='Refresh'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
-			<Window Type='EmberLook/Button' Name='Connect'>
-				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{1.0,-80.0},{1.0,-30.0}}'/>
-				<Property Name='Text' Value='Connect'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
+			<Property Name='Tooltip' Value='Refresh the server list.' />
+		</Window>
+		<Window Type='EmberLook/Button' Name='Connect'>
+			<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0,-80.0},{1.0,-30.0}}'/>
+			<Property Name='Text' Value='Connect'/>
+			<Property Name='InheritsAlpha' Value='True'/>
+			<Property Name='Tooltip' Value='Try to connect to either the selected server in the list, or the server entered into the manual text box.' />
 		</Window>
 	</Window>
 </GUILayout>

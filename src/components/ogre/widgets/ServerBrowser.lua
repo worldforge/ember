@@ -5,7 +5,7 @@
 -----------------------------------------
 -- Script Entry Point
 -----------------------------------------
-ServerBrowser = {connectors={}}
+ServerBrowser = {connectors={}, hideOldServers = false, minimumVersion = ''}
 
 
 function ServerBrowser.connectToMetaServer()
@@ -42,6 +42,21 @@ function ServerBrowser.buildWidget()
 	ServerBrowser.manualServerNameTextbox = CEGUI.toPushButton(wee)
 	ServerBrowser.manualServerNameTextbox:subscribeEvent("TextAccepted", "ServerBrowser.manualServerNameTextbox_TextAcceptedEvent")
 	
+	wee = ServerBrowser.widget:getWindow("HideOldServers")
+	ServerBrowser.hideOldServersCheckbox = CEGUI.toCheckbox(wee)
+	--Only show the checkbox for filtering old servers if the metaserver:minimumversion value is set in the config
+	if emberServices:getConfigService():itemExists("metaserver", "minimumversion") then
+		local minimumversion = emberServices:getConfigService():getValue("metaserver", "minimumversion")
+		if minimumversion ~= nil then
+			if minimumversion:is_string() then
+				ServerBrowser.minimumVersion = minimumversion:as_string()
+				ServerBrowser.hideOldServersCheckbox:setVisible(true)
+				ServerBrowser.hideOldServers = ServerBrowser.hideOldServersCheckbox:isSelected()
+			end
+		end
+	end
+		
+	
 	
 	local serverService = emberServices:getServerService()
 	connect(ServerBrowser.connectors, serverService.GotConnection, "ServerBrowser.Server_GotConnection")
@@ -60,6 +75,9 @@ function ServerBrowser.buildWidget()
 			end
 		end
     end
+
+
+    
 
 end
 
@@ -132,6 +150,12 @@ function ServerBrowser.MetaServer_ReceivedServerInfo(sInfo)
 	--we got some server info, add it to the server list
 
 	--mGuiManager->setDebugText("Got server info.");
+	
+	if ServerBrowser.hideOldServers then
+		if Ember.MetaserverService:compareVersions(ServerBrowser.minimumVersion, sInfo:getVersion()) > 0 then
+			return
+		end
+	end
 	
 	local rowNumber = ServerBrowser.serverList:getRowCount()
 	ServerBrowser.serverList:addRow()
