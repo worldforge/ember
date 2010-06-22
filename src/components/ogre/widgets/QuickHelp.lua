@@ -15,19 +15,23 @@ function QuickHelp:buildWidget()
 	
 	self.helper = EmberOgre.Gui.QuickHelpCursor:new()
 	
-	self.timeToShowBlurb = 5
+	
+	self.timeToShowBlurb = 4
+	self.timeToFade = 5
 	self.timeBlurbShown = 0
 	
 	function self.frameStarted(timeSinceLastUpdate)
 		self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
-		self.widget:getMainWindow():setAlpha(1.0 - (self.timeBlurbShown / self.timeToShowBlurb ));
-			
 		if self.timeBlurbShown > self.timeToShowBlurb then
-			emberServices:getServerService():say("removed window")
-			self.updateAlpha_connector:disconnect()
-			self.updateAlpha_connector:delete()
-			self.timeBlurbShown = 0
-			self.widget:hide()
+		
+			self.widget:getMainWindow():setAlpha(1.0 - ((self.timeBlurbShown-self.timeToShowBlurb) / self.timeToFade ))
+			
+			if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
+				self.timeBlurbShown = 0
+				self.widget:hide()
+				self.updateAlpha_connector:disconnect()
+				self.updateAlpha_connector:delete()
+			end
 		end
 	end
 	
@@ -37,6 +41,7 @@ function QuickHelp:buildWidget()
 				self.updateAlpha_connector = EmberOgre.LuaConnector:new(self.widget.EventFrameStarted):connect(self.frameStarted)
 			end
 			self.widget:show()
+			self.widget:getMainWindow():activate()
 		end
 		self.textWindow:setText(text)
 	end
