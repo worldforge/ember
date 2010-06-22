@@ -41,7 +41,7 @@ function QuickHelp:buildWidget()
 				self.updateAlpha_connector = EmberOgre.LuaConnector:new(self.widget.EventFrameStarted):connect(self.frameStarted)
 			end
 			self.widget:show()
-			self.widget:getMainWindow():activate()
+			self.widget:getMainWindow():setAlpha(1.0)
 		end
 		self.textWindow:setText(text)
 	end
