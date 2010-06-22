@@ -24,6 +24,7 @@
 #define EMBEROGRE_HELPMESSAGE_H
 
 #include <string>
+#include <list>
 
 namespace EmberOgre
 {
@@ -45,7 +46,7 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	HelpMessage(const std::string &message, const std::string &caption, const std::string& id = "");
+	HelpMessage(const std::string &message, const std::string &caption, const std::string& tags, const std::string& id = "");
 
 	/**
 	 * @brief Desctructor
@@ -66,6 +67,8 @@ public:
 
 	const std::string& getId() const;
 
+	const std::string getTags() const;
+
 	bool hasId() const;
 
 private:
@@ -73,6 +76,7 @@ private:
 	/**
 	 * @brief Stores the plain text mesasge.
 	 */
+	std::list<std::string> mTags;
 	std::string mMessage;
 	std::string mCaption;
 	std::string mId;

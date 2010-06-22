@@ -76,10 +76,10 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 		if (icon && icon->getEntity())
 		{
 			mIconEntity = icon->getEntity();
-			Gui::HelpMessage message1("Title1", "This is the 1st message");
-			Gui::HelpMessage message2("Title2", "This is the 2nd message", "moveMessage");
-			Gui::HelpMessage message3("Title3", "This is the 3rd message");
-			Gui::HelpMessage message4("Title2", "This is the 2nd message", "moveMessage");
+			Gui::HelpMessage message1("Title1", "This is the 1st message", "entity icon drag drop");
+			Gui::HelpMessage message2("Title2", "This is the 2nd message", "entity icon drag drop", "moveMessage");
+			Gui::HelpMessage message3("Title3", "This is the 3rd message", "entity icon drag drop");
+			Gui::HelpMessage message4("Title2", "This is the 2nd message", "entity icon drag drop", "moveMessage");
 			Gui::QuickHelp::getSingleton().updateText(message1);
 			Gui::QuickHelp::getSingleton().updateText(message2);
 			Gui::QuickHelp::getSingleton().updateText(message3);
