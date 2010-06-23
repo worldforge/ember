@@ -9,27 +9,27 @@
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/MultiLineEditbox' Name='HelpTextBox'>
 				<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.8,0.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.0,0.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.02,0.0}}'/>
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='ReadOnly' Value='true'/>
 				<Property Name ='HorzFormatting' Value='WordWrapLeftAligned'/>
 			</Window>
-			<Window Type='EmberLook/Button' Name='Back'>
-				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.15,0.00}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.82,0.0}}'/>
-				<Property Name='Text' Value='Back'/>
+			<Window Type='EmberLook/Button' Name='Previous'>
+				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.14,0.00}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.84,0.0}}'/>
+				<Property Name='Text' Value='Previous'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Next'>
-				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.15,0.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.78,0.0},{0.82,0.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.14,0.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.78,0.0},{0.84,0.0}}'/>
 				<Property Name='Text' Value='Next'/>
 			</Window>
 			<Window Type='EmberLook/Checkbox' Name='Hide'>
-				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.2,0.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.35,0.0},{0.82,0.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.48,0.0},{0.2,0.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.25,0.0},{0.84,0.0}}'/>
 				<Property Name='Tooltip' Value='If checked, the help system will be disabled'/>
-				<Property Name='Text' Value='Hide Tutorial'/>
+				<Property Name='Text' Value="Don't Show Notifications"/>
 				<Property Name='Selected' Value='False'/>
 			</Window>
 		</Window>
