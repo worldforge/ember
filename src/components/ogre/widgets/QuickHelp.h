@@ -39,11 +39,11 @@ const short unsigned int MAXTUTORIALS = 5;
 /**
 @author Tiberiu Paunescu <tpa12@sfu.ca>
 
-@brief Interface for handling all tutorial messages
+@brief Interface for managing help messages
 
 This class is a singleton, and accessbile using EmberOgre::Gui::QuickHelp.getSingleton().
 Tutorial messages are held in a list structure, and are added using the updateText function.
-The functions nextMessage and previousMessage are called from the lua code for the tutorial widget.
+When a message is added, an event is emitted containing an iterator to the position in the list where the message is located.
 
 */
 class QuickHelp : public Ember::Singleton<QuickHelp>
@@ -61,27 +61,40 @@ public:
 
 	/**
 	 * @brief Add the message to the front of the list and update the widget.
-	 * @params The new message we're adding.
+	 * @params message The new message we're adding.
 	 */
 	void updateText(const HelpMessage& message);
 
 	/**
-	 * @brief Returns an iterator to the end of the list of messages
+	 * @brief Returns an iterator to the end of the list of messages.
 	 *
 	 */
 	const std::list<HelpMessage>::const_iterator getEnd() const;
 
 	/**
-	 * @brief Returns an iterator to the beginning of the list of messages
+	 * @brief Returns an iterator to the beginning of the list of messages.
 	 *
 	 */
 	const std::list<HelpMessage>::const_iterator getBeginning() const;
 
-
+	/**
+	 * @brief Inserts a help message at the end of the list.
+	 * @params message The message to insert.
+	 * @return An iterator to the end of the list.
+	 */
 	const std::list<HelpMessage>::const_iterator insertAtEnd(const HelpMessage& message);
 
+	/**
+	 * @brief Finds the position to insert the message and inserts it if it doesn't already exist.
+	 * @params message The message to insert.
+	 * @return The position where the message is located in the list.
+	 */
 	const std::list<HelpMessage>::const_iterator messagePosition(const HelpMessage& message);
 
+	/**
+	 * @brief Emitted when a help message is added to the list.
+	 * @note Emits an iterator to the message.
+	 */
 	sigc::signal <void, std::list<HelpMessage>::const_iterator> EventTutorialAdded;
 
 private:

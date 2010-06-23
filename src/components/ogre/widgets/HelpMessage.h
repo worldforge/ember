@@ -67,8 +67,15 @@ public:
 
 	const std::string& getId() const;
 
+	/**
+	 * @brief Iterates over the list of tags and returns a string containing all of them
+	 * @return String containing all of the tags
+	 */
 	const std::string getTags() const;
 
+	/**
+	 * @brief Checks if the message contains an optional id.
+	 */
 	bool hasId() const;
 
 private:

@@ -41,7 +41,7 @@ const std::string HelpMessage::getTags() const
 {
 	std::string tags;
 	for (std::list<std::string>::const_iterator list_iterator = mTags.begin(); list_iterator != mTags.end(); list_iterator++ )
-		tags += (*list_iterator);
+		tags += " " + (*list_iterator);
 	return tags;
 }
 
