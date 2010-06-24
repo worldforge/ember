@@ -112,12 +112,15 @@ function Inventory:createIcon(entity)
 		entityIconWrapper.entity = entity
 		entityIconWrapper.mouseEnters = function(args)
 			entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "true")
+			return true
 		end
 		entityIconWrapper.mouseLeaves = function(args)
 			entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "false")
+			return true
 		end
 		entityIconWrapper.mouseClick = function(args)
 			self:showMenu(args, entityIconWrapper)
+			return true
 		end
 		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseClick", entityIconWrapper.mouseClick)
 		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseEnter", entityIconWrapper.mouseEnters)
@@ -163,6 +166,7 @@ function Inventory:buildWidget(avatarEntity)
 				self.menu.hide()
 			end
 		end
+		return true
 	end
 	
 	self.menu.container:subscribeEvent("MouseLeave", self.menu.mouseLeaves)
@@ -180,6 +184,7 @@ function Inventory:buildWidget(avatarEntity)
 			end
 		end
 		self.menu.hide()
+		return true
 	end
 	self.menu.eatButton:subscribeEvent("Clicked", self.menu.eatButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.eatButton)
@@ -195,6 +200,7 @@ function Inventory:buildWidget(avatarEntity)
 			end
 		end
 		self.menu.hide()
+		return true
 	end
 	self.menu.dropButton:subscribeEvent("Clicked", self.menu.dropButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.dropButton)
@@ -210,6 +216,7 @@ function Inventory:buildWidget(avatarEntity)
 			end
 		end
 		self.menu.hide()
+		return true
 	end
 	self.menu.wieldButton:subscribeEvent("Clicked", self.menu.wieldButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.wieldButton)
@@ -224,6 +231,7 @@ function Inventory:buildWidget(avatarEntity)
 			end
 		end
 		self.menu.hide()
+		return true
 	end
 	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.useButton)
