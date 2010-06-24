@@ -79,7 +79,7 @@ private:
 	Additionally, another entity icon can be dragged and dropped onto an instance of this class. When this happens the EvenIcon* events are emitted. This allows you to implement functionality for combining different entities.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class EntityIcon : public EntityIconDragDropTarget, protected virtual sigc::trackable
+class EntityIcon : public EntityIconDragDropTarget, public virtual sigc::trackable
 {
 friend class EntityIconManager;
 public:
