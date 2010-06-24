@@ -235,6 +235,15 @@ namespace Gui {
 		return false;
 	}
 
+	bool Widget::isActive()
+	{
+		if (mMainWindow)
+		{
+			return mMainWindow->isActive();
+		}
+		return false;
+	}
+
 	bool Widget::MainWindow_CloseClick(const CEGUI::EventArgs& args)
 	{
 		hide();

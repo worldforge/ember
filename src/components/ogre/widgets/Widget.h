@@ -136,10 +136,16 @@ public:
 	virtual void hide();
 	
 	/**
-	 * @brief Checks if the window is visible using CEGUI isVisible
-	 * @return Visibility status of window
+	 * @brief Checks if the window is visible using CEGUI isVisible.
+	 * @return Visibility status of window.
 	 */
 	virtual bool isVisible();
+
+	/**
+	 * @brief Checks if the window is active.
+	 * @return Is the window active.
+	 */
+	virtual bool isActive();
 	/**
 	 *    Get's the window with the supplied name from the WindowManager. Note that you shouldn't supply the prefix (as defined in loadMainSheet) since that will be added by the method.
 	 * @param windowName The name of the window, without the suffix.

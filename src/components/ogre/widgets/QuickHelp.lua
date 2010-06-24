@@ -12,15 +12,22 @@ function QuickHelp:buildWidget()
 	
 	self.textWindow = self.widget:getWindow("HelpTextBox")
 	self.enabledCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Hide"))
+	self.frameWindow = CEGUI.toFrameWindow(self.widget:getWindow("MainWindow"))
+	
+	self.frameWindow:setRollupEnabled(false)
 	
 	self.helper = EmberOgre.Gui.QuickHelpCursor:new()
 	
+	self.widget:enableCloseButton()
 	
 	self.timeToShowBlurb = 4
 	self.timeToFade = 5
 	self.timeBlurbShown = 0
 	
 	function self.frameStarted(timeSinceLastUpdate)
+		if self.widget:isActive() then 
+			self.disableAlphaConnector()
+		end
 		self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
 		if self.timeBlurbShown > self.timeToShowBlurb then
 		
@@ -29,10 +36,14 @@ function QuickHelp:buildWidget()
 			if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
 				self.timeBlurbShown = 0
 				self.widget:hide()
-				self.updateAlpha_connector:disconnect()
-				self.updateAlpha_connector:delete()
+				self.disableAlphaConnector()
 			end
 		end
+	end
+	
+	function self.disableAlphaConnector()
+		self.updateAlpha_connector:disconnect()
+		self.updateAlpha_connector:delete()
 	end
 	
 	function self.updateText(text)
@@ -53,7 +64,6 @@ function QuickHelp:buildWidget()
 	self.widget:getWindow("Next"):subscribeEvent("Clicked", "QuickHelp.Next_Click", self)
 	self.widget:getWindow("Back"):subscribeEvent("Clicked", "QuickHelp.Back_Click", self)
 	
-	self.widget:enableCloseButton()
 	self.widget:show()
 end
 

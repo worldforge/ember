@@ -61,6 +61,12 @@ public:
 	void previousMessage();
 
 	/**
+	 * @brief Called when position iterator changes.
+	 */
+	sigc::signal <void,const std::string&> EventUpdateText;
+private:
+
+	/**
 	 * @brief When the position iterator changes, we call this to emit the current message.
 	 */
 	void updateMessage();
@@ -69,12 +75,6 @@ public:
 	 * @brief Catches new messages emitted from QuickHelp.
 	 */
 	void getLatestTutorial(std::list<HelpMessage>::const_iterator position);
-
-	/**
-	 * @brief Called when position iterator changes.
-	 */
-	sigc::signal <void,const std::string&> EventUpdateText;
-private:
 
 	/**
 	 * @brief Holds the position of the current message displayed in the widget.
