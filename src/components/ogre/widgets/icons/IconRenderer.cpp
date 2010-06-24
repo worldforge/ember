@@ -159,6 +159,8 @@ void IconRenderer::blitRenderToIcon(Icon* icon)
 
 		srcBuffer->blitToMemory(icon->getImageStoreEntry()->getImagePixelBox());
 		dstBuffer->blitFromMemory(icon->getImageStoreEntry()->getImagePixelBox(), dstBox);
+		//Now that the icon is updated, emit a signal to this effect.
+		icon->EventUpdated.emit();
 	}
 	//  	static int counter(0);
 	//  	std::stringstream ss;

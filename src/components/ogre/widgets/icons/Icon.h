@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUI_ICONSICON_H
 
 #include <string>
+#include <sigc++/signal.h>
 
 namespace CEGUI {
 	class Imageset;
@@ -65,6 +66,10 @@ public:
 	 */
 	const CEGUI::Image* getImage() const;
 	
+	/**
+	 * @brief Emitted when the icon is updated.
+	 */
+	sigc::signal<void> EventUpdated;
 
 private:
 	/**
