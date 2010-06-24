@@ -27,6 +27,7 @@
 #include "icons/Icon.h"
 #include "EntityIconManager.h"
 #include "EntityIconDragDropTarget.h"
+#include <sigc++/trackable.h>
 
 namespace CEGUI {
 class DragContainer;
@@ -78,7 +79,7 @@ private:
 	Additionally, another entity icon can be dragged and dropped onto an instance of this class. When this happens the EvenIcon* events are emitted. This allows you to implement functionality for combining different entities.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class EntityIcon : public EntityIconDragDropTarget
+class EntityIcon : public EntityIconDragDropTarget, protected virtual sigc::trackable
 {
 friend class EntityIconManager;
 public:
@@ -217,6 +218,8 @@ protected:
 	virtual bool handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon);
 	virtual bool handleDragLeave(const CEGUI::EventArgs& args, EntityIcon* icon);
 	virtual bool handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* icon);
+
+	void icon_Updated();
 
 };
 

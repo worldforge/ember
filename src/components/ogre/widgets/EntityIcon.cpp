@@ -39,6 +39,7 @@ EntityIcon::EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragCon
 	mDragContainer->setUserData(&mUserData);
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStarted, this)); 
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStopped, this)); 
+	icon->EventUpdated.connect(sigc::mem_fun(*this, &EntityIcon::icon_Updated));
 
 }
 
@@ -97,6 +98,12 @@ bool EntityIcon::dragContainer_DragStopped(const CEGUI::EventArgs& args)
 EmberEntity* EntityIcon::getEntity()
 {
 	return mEntity;
+}
+
+void EntityIcon::icon_Updated()
+{
+	//It seems that we're forced to invalidate the CEGUI Window to get it to update itself. This is perhaps a bug in CEGUI?
+	mImage->invalidate();
 }
 
 bool EntityIcon::handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon)
