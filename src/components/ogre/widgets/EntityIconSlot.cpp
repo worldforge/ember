@@ -26,9 +26,10 @@
 
 #include "EntityIconSlot.h"
 #include "Widget.h"
-#include <CEGUI.h>
 #include "EntityIconManager.h"
 #include "EntityIcon.h"
+#include <CEGUI.h>
+#include <CEGUIWindowManager.h>
 
 using namespace CEGUI;
 namespace EmberOgre {
@@ -43,6 +44,7 @@ EntityIconSlot::EntityIconSlot(CEGUI::Window* container)
 EntityIconSlot::~EntityIconSlot()
 {
 	removeEntityIcon();
+	CEGUI::WindowManager::getSingleton().destroyWindow(mContainer);
 }
 
 
