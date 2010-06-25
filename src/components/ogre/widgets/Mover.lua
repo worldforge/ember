@@ -1,8 +1,8 @@
 --Shows a simple help window when moving an entity.
 
-Mover = {}
+Mover = {connectors={}}
 
-function Mover:updateEntityText(entity)
+function Mover.updateEntityText(entity)
 	--if the entity has a name, use it, else use the type name
 	--perhaps we should prefix the type name with an "a" or "an"?
 	name = ""
@@ -12,41 +12,26 @@ function Mover:updateEntityText(entity)
 		name = entity:getType():getName()
 	end	
 
-	self.widget:getWindow("EntityText"):setText("Moving " .. name .. ". Press left mouse button to place, escape to cancel. Pressing and holding shift decreases movement speed. Mouse wheel rotates.")
+	
+	local message = EmberOgre.Gui.HelpMessage:new_local("Entity Move", "Moving " .. name .. ". Press left mouse button to place, escape to cancel. Pressing and holding shift decreases movement speed. Mouse wheel rotates.", "entity move help", "moveMessage")
+	EmberOgre.Gui.QuickHelp:getSingleton():updateText(message)
 end
 
-function Mover:StartMoving(entity, mover)
-	self.widget:show()
-	self:updateEntityText(entity)
+function Mover.StartMoving(entity, mover)
+	Mover.updateEntityText(entity)
 end 
 
-function Mover:FinishedMoving()
-	self.widget:hide()
-end 
+function Mover.buildWidget()
 
-function Mover:CancelledMoving()
-	self.widget:hide()
-end 
-
-function Mover:buildWidget(world)
-
-	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("Mover.layout", "Mover/")
 	
-	local moveManager = world:getMoveManager()
+	local moveManager = emberOgre:getWorld():getMoveManager()
 	
-	connect(self.connectors, moveManager.EventStartMoving, self.StartMoving, self)
-	connect(self.connectors, moveManager.EventFinishedMoving, self.FinishedMoving, self)
-	connect(self.connectors, moveManager.EventCancelledMoving, self.CancelledMoving, self)
+	connect(Mover.connectors, moveManager.EventStartMoving, Mover.StartMoving)
+	connect(Mover.connectors, moveManager.EventFinishedMoving, Mover.FinishedMoving)
+	connect(Mover.connectors, moveManager.EventCancelledMoving, Mover.CancelledMoving)
 	
 
-	self.widget:hide()
 
-end
-
-function Mover:shutdown()
-	disconnectAll(self.connectors)
-	guiManager:destroyWidget(self.widget)
 end
 
 connect(connectors, emberOgre.EventWorldCreated, function(world) 

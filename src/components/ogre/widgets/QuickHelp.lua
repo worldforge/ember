@@ -57,12 +57,10 @@ function QuickHelp:buildWidget()
 		self.textWindow:setText(text)
 	end
 	
-	
-	
 	self.updateText_connector = EmberOgre.LuaConnector:new_local(self.helper.EventUpdateText):connect(self.updateText)
 		
 	self.widget:getWindow("Next"):subscribeEvent("Clicked", "QuickHelp.Next_Click", self)
-	self.widget:getWindow("Back"):subscribeEvent("Clicked", "QuickHelp.Back_Click", self)
+	self.widget:getWindow("Previous"):subscribeEvent("Clicked", "QuickHelp.Back_Click", self)
 	
 	self.widget:show()
 end

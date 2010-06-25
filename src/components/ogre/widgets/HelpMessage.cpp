@@ -8,7 +8,7 @@ namespace EmberOgre
 {
 namespace Gui
 {
-HelpMessage::HelpMessage(const std::string &message, const std::string &caption, const std::string& tags, const std::string& id) : mMessage(message), mCaption(caption), mId(id)
+HelpMessage::HelpMessage(const std::string &title, const std::string &message, const std::string& tags, const std::string& id) : mMessage(message), mCaption(title), mId(id)
 {
 	boost::split(mTags, tags, boost::is_any_of(" "));
 }

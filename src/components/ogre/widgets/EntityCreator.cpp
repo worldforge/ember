@@ -41,6 +41,7 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/SceneNodeProvider.h"
 
+#include "QuickHelp.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
 #include "components/ogre/model/ModelMount.h"
@@ -69,7 +70,7 @@ namespace Gui
 {
 
 EntityCreator::EntityCreator(World& world) :
-	mWorld(world), mTypeService(*mWorld.getView().getAvatar()->getConnection()->getTypeService()), mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0), mAxisMarker(0)
+	mWorld(world), mTypeService(*mWorld.getView().getAvatar()->getConnection()->getTypeService()), mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mRandomizeOrientation(true), mMovement(0), mAxisMarker(0)
 {
 	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 
@@ -122,6 +123,9 @@ void EntityCreator::startCreation()
 	mRecipeConnection = mRecipe->EventValueChanged.connect(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged));
 
 	mWidget->getMainWindow()->setAlpha(0.6);
+
+	Gui::HelpMessage message("EntityCreator", "Click the left mouse button to place the entity. Press Escape to exit from CREATE mode.", "entity creator placement", "entityCreatorMessage");
+	Gui::QuickHelp::getSingleton().updateText(message);
 
 	createEntity();
 }
@@ -371,52 +375,6 @@ void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo)
 	}
 }
 
-void EntityCreator::showBlurb_frameStarted(const Ogre::FrameEvent& event)
-{
-	if (mBlurbShown) {
-		return;
-	}
-
-	if (!mBlurb) {
-		try {
-			mBlurb = static_cast<CEGUI::GUISheet*> (CEGUI::WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/StaticText", "EntityCreator/Blurb"));
-			mBlurb->setSize(CEGUI::UVector2(CEGUI::UDim(0.3f, 0), CEGUI::UDim(0.1f, 0)));
-			mBlurb->setPosition(CEGUI::UVector2(CEGUI::UDim(0.35f, 0), CEGUI::UDim(0.3f, 0)));
-			mBlurb->setProperty("HorzFormatting", "WordWrapLeftAligned");
-			mBlurb->setText("Click left mouse button to place the entity. Press Escape to exit from CREATE mode.");
-
-			mWidget->getMainSheet()->addChildWindow(mBlurb);
-			mBlurb->setVisible(false);
-			mTimeBlurbShown = 0;
-
-			mTimeUntilShowBlurb = 1;
-			mTimeToShowBlurb = 5;
-		} catch (const CEGUI::Exception& ex) {
-			S_LOG_FAILURE("Error when creating help blurb. Message:\n" << ex.getMessage().c_str());
-		}
-	}
-
-	if (mBlurb) {
-		if (!mBlurb->isVisible()) {
-			mTimeUntilShowBlurb -= event.timeSinceLastFrame;
-			if (mTimeUntilShowBlurb < 0) {
-				mBlurb->setVisible(true);
-			}
-		} else {
-			mTimeBlurbShown += event.timeSinceLastFrame;
-			mBlurb->setAlpha(1.0f - (mTimeBlurbShown / mTimeToShowBlurb));
-
-			if (mTimeBlurbShown > mTimeToShowBlurb) {
-				CEGUI::WindowManager::getSingleton().destroyWindow(mBlurb);
-				mBlurb = 0;
-				mBlurbShown = true;
-			}
-		}
-	}
-
-	return;
-}
-
 EntityCreatorMoveAdapter::EntityCreatorMoveAdapter(EntityCreator& entityCreator) :
 	mEntityCreator(entityCreator)
 {
@@ -439,7 +397,6 @@ void EntityCreatorMoveAdapter::removeAdapter()
 
 bool EntityCreatorMoveAdapter::frameStarted(const Ogre::FrameEvent& event)
 {
-	mEntityCreator.showBlurb_frameStarted(event);
 	return true;
 }
 

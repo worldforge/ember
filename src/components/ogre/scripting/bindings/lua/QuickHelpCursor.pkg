@@ -1,8 +1,23 @@
+$#include "components/ogre/widgets/HelpMessage.h"
+$#include "components/ogre/widgets/QuickHelp.h"
 $#include "components/ogre/widgets/QuickHelpCursor.h"
 
 namespace EmberOgre {
 
 namespace Gui {
+
+class HelpMessage
+{
+public:
+	HelpMessage(const std::string &title, const std::string &message, const std::string& tags, const std::string& id = "");
+};
+
+class QuickHelp
+{
+public:
+	static QuickHelp& getSingleton( void );
+	void updateText(const HelpMessage& message);
+};
 
 class QuickHelpCursor
 {

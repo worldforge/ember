@@ -76,14 +76,8 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 		if (icon && icon->getEntity())
 		{
 			mIconEntity = icon->getEntity();
-			Gui::HelpMessage message1("Title1", "This is the 1st message", "entity icon drag drop");
-			Gui::HelpMessage message2("Title2", "This is the 2nd message", "entity icon drag drop", "moveMessage");
-			Gui::HelpMessage message3("Title3", "This is the 3rd message", "entity icon drag drop");
-			Gui::HelpMessage message4("Title2", "This is the 2nd message", "entity icon drag drop", "moveMessage");
-			Gui::QuickHelp::getSingleton().updateText(message1);
-			Gui::QuickHelp::getSingleton().updateText(message2);
-			Gui::QuickHelp::getSingleton().updateText(message3);
-			Gui::QuickHelp::getSingleton().updateText(message4);
+			Gui::HelpMessage message("Entity Drag Preview", "Click the left mouse button to place the entity at the selected location. Press Escape to cancel." , "entity icon drag drop preview", "dragDropMessage");
+			Gui::QuickHelp::getSingleton().updateText(message);
 			mModelPreviewWorker = new ModelPreviewWorker(mIconEntity);
 			mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
 			mModelPreviewWorker->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));

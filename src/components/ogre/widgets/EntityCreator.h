@@ -137,11 +137,6 @@ public:
 	void hideModelPart(const std::string& partName);
 
 	/**
-	 * Called each frame to update a blurb with help text.
-	 */
-	void showBlurb_frameStarted(const Ogre::FrameEvent& event);
-
-	/**
 	 * Entity creator widget. Set from Lua, so it is public.
 	 */
 	::EmberOgre::Gui::Widget* mWidget;
@@ -259,16 +254,6 @@ protected:
 	 * Message that is composed from recipe entity spec with placeholders substitued with adapters values.
 	 */
 	Atlas::Message::MapType mEntityMessage;
-
-	/**
-	 * Contains a blurb with help text.
-	 */
-	CEGUI::Window* mBlurb;
-
-	/**
-	 * Is blurb already shown.
-	 */
-	bool mBlurbShown;
 
 	/**
 	 * Parameters for blurb timing.
