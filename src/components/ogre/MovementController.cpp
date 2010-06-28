@@ -30,6 +30,7 @@
 #include "components/ogre/Convert.h"
 #include "components/ogre/FreeFlyingCameraMotionHandler.h"
 #include "components/ogre/camera/MainCamera.h"
+#include "components/ogre/camera/FirstPersonCameraMount.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
 #include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/ISceneManagerAdapter.h"
@@ -93,7 +94,7 @@ MovementController::MovementController(Avatar& avatar) :
 				mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
 			}
 			mFreeFlyingMotionHandler = std::auto_ptr<FreeFlyingCameraMotionHandler>(new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
-			mCameraMount = std::auto_ptr<Camera::ThirdPersonCameraMount>(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()));
+			mCameraMount = std::auto_ptr<Camera::FirstPersonCameraMount>(new Camera::FirstPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()));
 			mCameraMount->setMotionHandler(mFreeFlyingMotionHandler.get());
 			mCameraMount->attachToNode(mFreeFlyingNode);
 		} else {

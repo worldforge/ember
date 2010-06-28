@@ -37,7 +37,7 @@
 namespace EmberOgre {
 
 namespace Camera {
-class ThirdPersonCameraMount;
+class FirstPersonCameraMount;
 }
 class FreeFlyingCameraMotionHandler;
 class Avatar;
@@ -196,7 +196,7 @@ protected:
 
 	Ogre::SceneNode* mFreeFlyingNode;
 	std::auto_ptr<FreeFlyingCameraMotionHandler> mFreeFlyingMotionHandler;
-	std::auto_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
+	std::auto_ptr<Camera::FirstPersonCameraMount> mCameraMount;
 	bool mIsFreeFlying;
 };
 
