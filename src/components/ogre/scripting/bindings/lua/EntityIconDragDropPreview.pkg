@@ -31,6 +31,7 @@ class EntityIconDragDropPreview
 public:
 	EntityIconDragDropPreview();
 	void createPreview(EntityIcon* icon);
+	void cleanupCreation();
 	WFMath::Vector<3> getDropOffset();
 	sigc::signal<void, EmberEntity*> EventEntityFinalized;
 };

@@ -44,6 +44,7 @@ EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, const
 
 EntityCreatorMovement::~EntityCreatorMovement()
 {
+	mMoveAdapter.detach();
 }
 
 }

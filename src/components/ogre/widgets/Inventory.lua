@@ -255,6 +255,7 @@ function Inventory:buildWidget(avatarEntity)
 		if entityIcon ~= nil then
 			if entityIcon:getEntity() ~= nil then
 				entityIcon:getImage():setAlpha(1.0)
+				self.helper:cleanupCreation()
 			end
 		end
 	end

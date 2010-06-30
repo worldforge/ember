@@ -360,6 +360,7 @@ ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mMode
 
 ModelPreviewWorkerMovement::~ModelPreviewWorkerMovement()
 {
+	mMoveAdapter.detach();
 }
 
 }
