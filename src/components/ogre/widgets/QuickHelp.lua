@@ -1,12 +1,27 @@
------------------------------------------
 
-
------------------------------------------
-QuickHelp = {}
-
+QuickHelp = {
+		helper = nil,
+		timeToShowBlurb = 0,
+		timeToFade = 0,
+		timeBlurbShown = 0,
+		updateText_connector = nil,
+		updateAlpha_connector = nil
+		}
 
 function QuickHelp:buildWidget()
 	
+	self.helper = EmberOgre.Gui.QuickHelpCursor:new()
+	
+	self.timeToShowBlurb = 4
+	self.timeToFade = 5
+	self.timeBlurbShown = 0
+	
+	self.updateText_connector = EmberOgre.LuaConnector:new_local(self.helper.EventUpdateText):connect(self.updateText, self)
+	
+	self:buildCEGUIWidget()
+end
+
+function QuickHelp:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("QuickHelp.layout", "QuickHelp/")
 	
@@ -16,53 +31,45 @@ function QuickHelp:buildWidget()
 	
 	self.frameWindow:setRollupEnabled(false)
 	
-	self.helper = EmberOgre.Gui.QuickHelpCursor:new()
-	
 	self.widget:enableCloseButton()
 	
-	self.timeToShowBlurb = 4
-	self.timeToFade = 5
-	self.timeBlurbShown = 0
-	
-	function self.frameStarted(timeSinceLastUpdate)
-		if self.widget:isActive() then 
-			self.disableAlphaConnector()
-		end
-		self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
-		if self.timeBlurbShown > self.timeToShowBlurb then
-		
-			self.widget:getMainWindow():setAlpha(1.0 - ((self.timeBlurbShown-self.timeToShowBlurb) / self.timeToFade ))
-			
-			if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
-				self.timeBlurbShown = 0
-				self.widget:hide()
-				self.disableAlphaConnector()
-			end
-		end
-	end
-	
-	function self.disableAlphaConnector()
-		self.updateAlpha_connector:disconnect()
-		self.updateAlpha_connector:delete()
-	end
-	
-	function self.updateText(text)
-		if not self.enabledCheckbox:isSelected() then
-			if not self.widget:isVisible() then
-				self.updateAlpha_connector = EmberOgre.LuaConnector:new(self.widget.EventFrameStarted):connect(self.frameStarted)
-			end
-			self.widget:show()
-			self.widget:getMainWindow():setAlpha(1.0)
-		end
-		self.textWindow:setText(text)
-	end
-	
-	self.updateText_connector = EmberOgre.LuaConnector:new_local(self.helper.EventUpdateText):connect(self.updateText)
-		
 	self.widget:getWindow("Next"):subscribeEvent("Clicked", "QuickHelp.Next_Click", self)
 	self.widget:getWindow("Previous"):subscribeEvent("Clicked", "QuickHelp.Back_Click", self)
 	
 	self.widget:show()
+end
+
+function QuickHelp:frameStarted(timeSinceLastUpdate)
+	if self.widget:isActive() then 
+		self:disableAlphaConnector()
+	end
+	self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
+	if self.timeBlurbShown > self.timeToShowBlurb then
+		
+		self.widget:getMainWindow():setAlpha(1.0 - ((self.timeBlurbShown-self.timeToShowBlurb) / self.timeToFade ))
+		
+		if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
+			self.timeBlurbShown = 0
+			self.widget:hide()
+			self:disableAlphaConnector()
+		end
+	end
+end
+
+function QuickHelp:updateText(text)
+	if not self.enabledCheckbox:isSelected() then
+		if not self.widget:isVisible() then
+			self.updateAlpha_connector = EmberOgre.LuaConnector:new(self.widget.EventFrameStarted):connect(self.frameStarted, self)
+		end
+		self.widget:show()
+		self.widget:getMainWindow():setAlpha(1.0)
+	end
+	self.textWindow:setText(text)
+end
+
+function QuickHelp:disableAlphaConnector()
+	self.updateAlpha_connector:disconnect()
+	self.updateAlpha_connector:delete()
 end
 
 function QuickHelp:Next_Click(args)
@@ -76,4 +83,4 @@ end
 function QuickHelp:shutdown()
 end
 
-connect(connectors, emberServices:getServerService().GotAvatar, QuickHelp.buildWidget)
+QuickHelp:buildWidget()
