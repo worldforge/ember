@@ -1,9 +1,4 @@
-ActionBar = {   iconsize = 32,
-				columns = 1,
-				iconcounter = 0,
-				slotcounter = 0,
-				icons = {},
-				slots = {}}
+ActionBar = {}
 
 function ActionBar:addSlot()
 	local yPosition = math.floor(self.slotcounter / self.columns)
@@ -30,9 +25,7 @@ function ActionBar:addSlot()
 	return slotWrapper
 end
 
-function ActionBar:buildWidget()
-
-	self.entityIconManager = guiManager:getEntityIconManager()
+function ActionBar:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("ActionBar.layout", "ActionBar/")
 	self.iconContainer = self.widget:getWindow("IconContainer")
@@ -43,5 +36,18 @@ function ActionBar:buildWidget()
 	self:addSlot()
 end
 
+function ActionBar.buildWidget()
+	actionbar = {   iconsize = 32,
+				columns = 1,
+				iconcounter = 0,
+				slotcounter = 0,
+				icons = {},
+				slots = {}}
+				
+	setmetatable(actionbar, {__index = ActionBar})
+	actionbar.entityIconManager = guiManager:getEntityIconManager()
+	actionbar:buildCEGUIWidget()
+end
+
 --connect(connectors, emberServices:getServerService().GotAvatar, ActionBar.buildWidget)
-ActionBar:buildWidget()
+ActionBar.buildWidget()
