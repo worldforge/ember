@@ -1,5 +1,7 @@
+QuickHelp = {}
 
-QuickHelp = {
+function QuickHelp.buildWidget()
+	quickhelp = {
 		helper = nil,
 		timeToShowBlurb = 0,
 		timeToFade = 0,
@@ -7,18 +9,17 @@ QuickHelp = {
 		updateText_connector = nil,
 		updateAlpha_connector = nil
 		}
-
-function QuickHelp:buildWidget()
+	setmetatable(quickhelp, {__index = QuickHelp})
+		
+	quickhelp.helper = EmberOgre.Gui.QuickHelpCursor:new()
 	
-	self.helper = EmberOgre.Gui.QuickHelpCursor:new()
+	quickhelp.timeToShowBlurb = 4
+	quickhelp.timeToFade = 5
+	quickhelp.timeBlurbShown = 0
 	
-	self.timeToShowBlurb = 4
-	self.timeToFade = 5
-	self.timeBlurbShown = 0
+	quickhelp.updateText_connector = EmberOgre.LuaConnector:new_local(quickhelp.helper.EventUpdateText):connect(quickhelp.updateText, quickhelp)
 	
-	self.updateText_connector = EmberOgre.LuaConnector:new_local(self.helper.EventUpdateText):connect(self.updateText, self)
-	
-	self:buildCEGUIWidget()
+	quickhelp:buildCEGUIWidget()
 end
 
 function QuickHelp:buildCEGUIWidget()
@@ -83,4 +84,4 @@ end
 function QuickHelp:shutdown()
 end
 
-QuickHelp:buildWidget()
+QuickHelp.buildWidget()
