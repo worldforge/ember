@@ -74,12 +74,13 @@ end
 
 function Inventory:showMenu(args, entityIconWrapper)
 	self.menu.activeEntityWrapper = entityIconWrapper
-	entityIconWrapper.entityIcon:getDragContainer():addChildWindow(self.menu.container)
+	guiManager:getMainSheet():addChildWindow(self.menu.container)
 	self.menu.menuShown = true
-	self.menu.container:setXPosition(CEGUI.UDim(0.5, -self.menu.container:getWidth():asAbsolute(0) * 0.5))
 	self.menu.innercontainer:setYPosition(CEGUI.UDim(1, -(self.iconsize + self.menu.innercontainer:getHeight():asAbsolute(0))))
 	self.menu.container:setHeight(CEGUI.UDim(0, self.iconsize + self.menu.innercontainer:getHeight():asAbsolute(0) + 10))
-	self.menu.container:setYPosition(CEGUI.UDim(1, -self.menu.container:getHeight():asAbsolute(0)))
+	local mousePos = CEGUI.MouseCursor:getSingleton():getPosition()
+	local menuPos = CEGUI.UVector2(CEGUI.UDim(0, mousePos.x - (self.menu.container:getWidth():asAbsolute(0) * 0.5)), CEGUI.UDim(0, mousePos.y - self.menu.innercontainer:getHeight():asAbsolute(0)))
+	self.menu.container:setPosition(menuPos)
 	
 	--only show the eat button if the entity has biomass (and thus is edible)
 	if entityIconWrapper.entity:hasAttr("biomass") then
@@ -100,8 +101,6 @@ end
 -- end
 
 function Inventory:createIcon(entity)
-	--return nil
---	local icon = guiManager:getIconManager():getIcon(self.iconsize, entity:getType())
 	local icon = guiManager:getIconManager():getIcon(self.iconsize, entity)
 	
 	if icon ~= nil then
