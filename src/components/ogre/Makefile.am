@@ -57,7 +57,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/HeightMapFlatSegment.cpp terrain/Segment.cpp terrain/SegmentHolder.cpp terrain/SegmentReference.cpp terrain/SegmentManager.cpp \
 	terrain/foliage/PlantPopulator.cpp terrain/foliage/ClusterPopulator.cpp terrain/foliage/Vegetation.cpp \
 \
-	widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
+	widgets/ActionBarInput.cpp widgets/AssetsManager.cpp widgets/ColouredListItem.cpp widgets/Compass.cpp \
 	widgets/ConsoleAdapter.cpp widgets/EntityCEGUITexture.cpp widgets/EntityCreator.cpp widgets/EntityCreatorActionCreator.cpp \
 	widgets/EntityCreatorHideModelAction.cpp widgets/EntityCreatorModelAction.cpp widgets/EntityCreatorMovement.cpp \
 	widgets/EntityCreatorMovementBridge.cpp widgets/EntityCreatorPartAction.cpp widgets/EntityEditor.cpp widgets/EntityIcon.cpp \
@@ -144,7 +144,7 @@ noinst_HEADERS = \
 	terrain/HeightMapFlatSegment.h terrain/IHeightMapSegment.h terrain/Segment.h terrain/SegmentHolder.h terrain/SegmentReference.h \
 	terrain/SegmentManager.h terrain/PlantInstance.h terrain/foliage/PlantPopulator.h terrain/foliage/ClusterPopulator.h terrain/foliage/Vegetation.h \
 \
-	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
+	widgets/ActionBarInput.h widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \
 	widgets/EntityCreatorHideModelAction.h widgets/EntityCreatorModelAction.h widgets/EntityCreatorMovement.h \
 	widgets/EntityCreatorMovementBridge.h widgets/EntityCreatorPartAction.h widgets/EntityEditor.h widgets/EntityIcon.h \

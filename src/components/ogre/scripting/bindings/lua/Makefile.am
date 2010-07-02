@@ -11,7 +11,7 @@ noinst_LIBRARIES = liblua_EmberOgre.a
 liblua_EmberOgre_a_SOURCES = EmberOgre.cxx
 
 CLEANFILES = EmberOgre.cxx
-TOLUA_PKGS = AssetsManager.pkg AtlasHelper.pkg AtlasObjectDecoder.pkg AuthoringManager.pkg Avatar.pkg Carpenter.pkg ColouredListItem.pkg Compass.pkg \
+TOLUA_PKGS = ActionBar.pkg AssetsManager.pkg AtlasHelper.pkg AtlasObjectDecoder.pkg AuthoringManager.pkg Avatar.pkg Carpenter.pkg ColouredListItem.pkg Compass.pkg \
  ConsoleAdapter.pkg Convert.pkg EmberEntity.pkg EmberEntityFactory.pkg EmberOgre.pkg EntityCEGUITexture.pkg EntityCreator.pkg EntityEditor.pkg EntityIcon.pkg \
   EntityIconDragDropTarget.pkg EntityIconDragDropPreview.pkg EntityIconManager.pkg EntityIconSlot.pkg EntityMoveManager.pkg EntityRecipe.pkg EntityRecipeManager.pkg EntityWorldPickListener.pkg \
   Environment.pkg GUIAdapter.pkg GUIManager.pkg Icon.pkg IconBar.pkg IconBase.pkg IconManager.pkg IGraphicalRepresentation.pkg ISceneManagerAdapter.pkg \

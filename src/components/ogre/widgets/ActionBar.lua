@@ -36,16 +36,27 @@ function ActionBar:buildCEGUIWidget()
 	self:addSlot()
 end
 
+function ActionBar:gotInput(args)
+	debugObject(args)
+end
+
 function ActionBar.buildWidget()
 	actionbar = {   iconsize = 32,
 				columns = 1,
 				iconcounter = 0,
 				slotcounter = 0,
+				inputHelper = nil,
 				icons = {},
+				connectors={},
 				slots = {}}
 				
 	setmetatable(actionbar, {__index = ActionBar})
+	--TODO: When we implement the shutdown method, we need to delete this
+	actionbar.inputHelper = EmberOgre.Gui.ActionBarInput:new()
 	actionbar.entityIconManager = guiManager:getEntityIconManager()
+	
+	connect(actionbar.connectors, actionbar.inputHelper.EventGotHotkeyInput, actionbar.gotInput, actionbar)
+	
 	actionbar:buildCEGUIWidget()
 end
 

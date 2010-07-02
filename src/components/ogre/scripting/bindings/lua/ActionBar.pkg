@@ -1,0 +1,15 @@
+$#include "components/ogre/widgets/ActionBarInput.h"
+
+namespace EmberOgre
+{
+namespace Gui
+{
+class ActionBarInput
+{
+public:
+	ActionBarInput();
+	sigc::signal<void, const std::string&> EventGotHotkeyInput;
+};
+
+}
+}
