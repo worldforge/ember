@@ -56,7 +56,6 @@ namespace Gui
 {
 
 class EntityCreatorInputAdapter;
-class EntityCreatorMoveAdapter;
 class EntityCreatorMovement;
 
 /**
@@ -229,11 +228,6 @@ protected:
 	WFMath::Quaternion mOrientation;
 
 	/**
-	 * Adapter that listens to changes of terrain cursor changes and positions preview accordingly.
-	 */
-	EntityCreatorMoveAdapter* mMoveAdapter;
-
-	/**
 	 * Detached entity that is used in process of creating preview.
 	 */
 	Authoring::DetachedEntity* mEntity;
@@ -274,30 +268,6 @@ protected:
 
 
 	Ogre::Entity* mAxisMarker;
-};
-
-/**
- * Adapter for position entity preview.
- */
-class EntityCreatorMoveAdapter: public Ogre::FrameListener
-{
-public:
-	EntityCreatorMoveAdapter(EntityCreator& adapter);
-	~EntityCreatorMoveAdapter();
-	/**
-	 * Registers adapter in input service.
-	 */
-	void addAdapter();
-	/**
-	 * Unregisters adapter in input service.
-	 */
-	void removeAdapter();
-	/**
-	 * Called each frame to update position of preview.
-	 */
-	bool frameStarted(const Ogre::FrameEvent& event);
-protected:
-	EntityCreator& mEntityCreator;
 };
 
 }

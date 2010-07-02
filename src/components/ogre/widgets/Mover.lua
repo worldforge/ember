@@ -13,7 +13,7 @@ function Mover.updateEntityText(entity)
 	end	
 
 	
-	local message = EmberOgre.Gui.HelpMessage:new_local("Entity Move", "Moving " .. name .. ". Press left mouse button to place, escape to cancel. Pressing and holding shift decreases movement speed. Mouse wheel rotates.", "entity move help", "moveMessage")
+	local message = EmberOgre.Gui.HelpMessage:new_local("Entity Move", "Moving " .. name .. ". Release left mouse button to place, escape to cancel. Pressing and holding shift decreases movement speed. Mouse wheel rotates.", "entity move help", "moveMessage")
 	EmberOgre.Gui.QuickHelp:getSingleton():updateText(message)
 end
 

@@ -74,14 +74,12 @@ EntityCreator::EntityCreator(World& world) :
 {
 	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 
-	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
 
 	mOrientation.identity();
 }
 
 EntityCreator::~EntityCreator()
 {
-	delete mMoveAdapter;
 	delete mModelMount;
 }
 
@@ -198,7 +196,6 @@ void EntityCreator::createEntity()
 	// Registering move adapter to track mouse movements
 	// 		mInputAdapter->addAdapter();
 	mMovement = new EntityCreatorMovement(*this, mWorld.getMainCamera(), *mEntity, mEntityNode);
-	mMoveAdapter->addAdapter();
 
 	mCreateMode = true;
 }
@@ -331,7 +328,6 @@ void EntityCreator::cleanupCreation()
 	delete mMovement;
 	mMovement = 0;
 	// 	mInputAdapter->removeAdapter();
-	mMoveAdapter->removeAdapter();
 
 	delete mModelMount;
 	mModelMount = 0;
@@ -373,31 +369,6 @@ void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo)
 			EventTypeInfoLoaded.emit();
 		}
 	}
-}
-
-EntityCreatorMoveAdapter::EntityCreatorMoveAdapter(EntityCreator& entityCreator) :
-	mEntityCreator(entityCreator)
-{
-}
-
-EntityCreatorMoveAdapter::~EntityCreatorMoveAdapter()
-{
-}
-
-void EntityCreatorMoveAdapter::addAdapter()
-{
-	/// Register this as a frame listener
-	Ogre::Root::getSingleton().addFrameListener(this);
-}
-
-void EntityCreatorMoveAdapter::removeAdapter()
-{
-	Ogre::Root::getSingleton().removeFrameListener(this);
-}
-
-bool EntityCreatorMoveAdapter::frameStarted(const Ogre::FrameEvent& event)
-{
-	return true;
 }
 
 }
