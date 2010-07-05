@@ -25,40 +25,53 @@ function ActionBar:addSlot()
 	return slotWrapper
 end
 
-function ActionBar:buildCEGUIWidget()
+function ActionBar:buildCEGUIWidget(args)
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("ActionBar.layout", "ActionBar/")
+	if args == nil then
+		args = "ActionBar/"
+	end
+	self.widget:loadMainSheet("ActionBar.layout", args)
 	self.iconContainer = self.widget:getWindow("IconContainer")
 	self.widget:show()
-	self:addSlot()
-	self:addSlot()
-	self:addSlot()
-	self:addSlot()
+--	self:addSlot()
+--	self:addSlot()
+--	self:addSlot()
+--	self:addSlot()
 end
 
 function ActionBar:gotInput(args)
 	debugObject(args)
 end
 
-function ActionBar.buildWidget()
-	actionbar = {   iconsize = 32,
+function ActionBar:new()
+	local actionbar = {   iconsize = 32,
 				columns = 1,
 				iconcounter = 0,
 				slotcounter = 0,
 				inputHelper = nil,
+				iconContainer = nil,
 				icons = {},
 				connectors={},
-				slots = {}}
+				widget = nil,
+				slots = {}};
 				
-	setmetatable(actionbar, {__index = ActionBar})
+	setmetatable(actionbar,{__index=ActionBar})
+	return actionbar
+end
+
+function ActionBar:init(args)
 	--TODO: When we implement the shutdown method, we need to delete this
-	actionbar.inputHelper = EmberOgre.Gui.ActionBarInput:new()
-	actionbar.entityIconManager = guiManager:getEntityIconManager()
+	--self.inputHelper = EmberOgre.Gui.ActionBarInput:new()
+	--self.entityIconManager = guiManager:getEntityIconManager()
 	
-	connect(actionbar.connectors, actionbar.inputHelper.EventGotHotkeyInput, actionbar.gotInput, actionbar)
+	--connect(self.connectors, self.inputHelper.EventGotHotkeyInput, self.gotInput, self)
 	
-	actionbar:buildCEGUIWidget()
+	self:buildCEGUIWidget(args)
+end
+
+function ActionBar:shutdown()
+	disconnectAll(self.connectors)
+	guiManager:destroyWidget(self.widget)
 end
 
 --connect(connectors, emberServices:getServerService().GotAvatar, ActionBar.buildWidget)
-ActionBar.buildWidget()
