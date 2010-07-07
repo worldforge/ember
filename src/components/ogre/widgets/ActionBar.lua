@@ -6,8 +6,8 @@ function ActionBar:addSlot()
 	
 	self.slotcounter = self.slotcounter + 1
 	
-	local slot = self.entityIconManager:createSlot(self.iconsize)
-	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconsize * xPosition), CEGUI.UDim(0, self.iconsize * yPosition)))
+	local slot = self.entityIconManager:createSlot(self.iconSize)
+	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconSize * xPosition), CEGUI.UDim(0, self.iconSize * yPosition)))
 	slot:getWindow():setAlpha(1.0)
 	slot:getWindow():setProperty("FrameEnabled", "true")
 	slot:getWindow():setProperty("BackgroundEnabled", "true")
@@ -35,6 +35,10 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	end
 	self.widget:loadMainSheet("ActionBar.layout", widgetName)
 	self.iconContainer = self.widget:getWindow("IconContainer")
+	
+	local x = (self.maxSlots*self.iconSize)+(self.maxSlots*2)
+	self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,x),CEGUI.UDim(0.0,self.iconSize))) 
+	
 	self.widget:show()
 	
 	--Make 10 slots in the ActionBar.
@@ -49,8 +53,8 @@ function ActionBar:gotInput(args)
 end
 
 function ActionBar.new()
-	local actionbar = {   iconsize = 50,
-				maxSlots = 5,
+	local actionbar = {   iconSize = 50,
+				maxSlots = 10,
 				iconcounter = 0,
 				slotcounter = 0,
 				inputHelper = nil,

@@ -8,6 +8,7 @@
 		<Window Type='DefaultGUISheet' Name='IconContainer'>
 			<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 			<Property Name='Text' Value=''/>
+			<Property Name='HorizontalAlignment' Value='Centre'/>
 		</Window>
 	</Window>
 </GUILayout>
