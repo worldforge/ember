@@ -52,6 +52,8 @@ bool EntityIconSlot::addEntityIcon(EntityIcon* icon)
 {
 	if (icon) {
 		if (!mContainedIcon) {
+			//Resize the icon window to fit entirely in the slot window.
+			icon->getDragContainer()->setSize(this->getWindow()->getSize());
 			mContainedIcon = icon;
 			mContainer->addChildWindow(icon->getDragContainer()); 
 			icon->setSlot(this);

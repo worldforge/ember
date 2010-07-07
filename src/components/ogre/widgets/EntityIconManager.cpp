@@ -57,8 +57,8 @@ EntityIconSlot* EntityIconManager::createSlot(unsigned int pixelSize)
 {
 	std::stringstream ss;
 	ss << "entityIconSlot" << mSlotsCounter++;
-	
-	CEGUI::Window* container = mGuiManager.createWindow("DefaultGUISheet", ss.str());
+	//Make the slot more visible.
+	CEGUI::Window* container = mGuiManager.createWindow("EmberLook/StaticImage", ss.str());
 	container->setSize(CEGUI::UVector2(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 	EntityIconSlot* slot = new EntityIconSlot(container);
 	mSlots.push_back(slot);

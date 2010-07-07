@@ -1,13 +1,16 @@
 ActionBar = {}
 
 function ActionBar:addSlot()
-	local yPosition = math.floor(self.slotcounter / self.columns)
-	local xPosition = self.slotcounter - math.floor(self.slotcounter%self.columns)*self.columns
+	local yPosition = math.floor(self.slotcounter / self.maxSlots)
+	local xPosition = self.slotcounter - math.floor(self.slotcounter/self.maxSlots)*self.maxSlots 
 	
 	self.slotcounter = self.slotcounter + 1
 	
 	local slot = self.entityIconManager:createSlot(self.iconsize)
 	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconsize * xPosition), CEGUI.UDim(0, self.iconsize * yPosition)))
+	slot:getWindow():setAlpha(1.0)
+	slot:getWindow():setProperty("FrameEnabled", "true")
+	slot:getWindow():setProperty("BackgroundEnabled", "true")
 	self.iconContainer:addChildWindow(slot:getWindow())
 	local slotWrapper = {slot = slot}
 	table.insert(self.slots, slotWrapper)
@@ -33,10 +36,12 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	self.widget:loadMainSheet("ActionBar.layout", widgetName)
 	self.iconContainer = self.widget:getWindow("IconContainer")
 	self.widget:show()
---	self:addSlot()
---	self:addSlot()
---	self:addSlot()
---	self:addSlot()
+	
+	--Make 10 slots in the ActionBar.
+	for i = 1,self.maxSlots do
+		self:addSlot()
+	end
+	
 end
 
 function ActionBar:gotInput(args)
@@ -44,8 +49,8 @@ function ActionBar:gotInput(args)
 end
 
 function ActionBar.new()
-	local actionbar = {   iconsize = 32,
-				columns = 1,
+	local actionbar = {   iconsize = 50,
+				maxSlots = 5,
 				iconcounter = 0,
 				slotcounter = 0,
 				inputHelper = nil,
@@ -61,10 +66,10 @@ end
 
 function ActionBar:init(widgetName)
 	--TODO: When we implement the shutdown method, we need to delete this
-	--self.inputHelper = EmberOgre.Gui.ActionBarInput:new()
-	--self.entityIconManager = guiManager:getEntityIconManager()
+	self.inputHelper = EmberOgre.Gui.ActionBarInput:new()
+	self.entityIconManager = guiManager:getEntityIconManager()
 	
-	--connect(self.connectors, self.inputHelper.EventGotHotkeyInput, self.gotInput, self)
+	connect(self.connectors, self.inputHelper.EventGotHotkeyInput, self.gotInput, self)
 	
 	self:buildCEGUIWidget(widgetName)
 end
@@ -73,5 +78,3 @@ function ActionBar:shutdown()
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 end
-
---connect(connectors, emberServices:getServerService().GotAvatar, ActionBar.buildWidget)
