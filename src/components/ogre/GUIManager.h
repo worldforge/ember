@@ -62,6 +62,7 @@ namespace Gui {
 class QuickHelp;
 class Widget;
 class EntityIconManager;
+class ActionBarIconManager;
 class ActiveWidgetHandler;
 class CEGUILogger;
 namespace Icons {
@@ -273,6 +274,12 @@ public:
 	 */
 	Gui::EntityIconManager* getEntityIconManager();
 
+	/**
+	 *    Accessor for the ActionBarIconManager, which handles ActionBar icons and slots.
+	 * @return The main ActionBarIconManager
+	 */
+	Gui::ActionBarIconManager* getActionBarIconManager();
+
 protected:
 
 	/**
@@ -333,6 +340,7 @@ protected:
 
 	Gui::Icons::IconManager* mIconManager;
 	Gui::EntityIconManager* mEntityIconManager;
+	Gui::ActionBarIconManager* mActionBarIconManager;
 	Gui::ActiveWidgetHandler* mActiveWidgetHandler;
 
 	/**

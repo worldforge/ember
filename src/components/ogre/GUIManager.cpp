@@ -61,6 +61,7 @@
 
 #include "widgets/icons/IconManager.h"
 #include "widgets/EntityIconManager.h"
+#include "widgets/ActionBarIconManager.h"
 
 #include "services/input/Input.h"
 #include <OgreRenderWindow.h>
@@ -329,6 +330,11 @@ void GUIManager::initialize()
 		mEntityIconManager = new Gui::EntityIconManager(*this);
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when creating entity icon manager." << e);
+	}
+	try {
+		mActionBarIconManager = new Gui::ActionBarIconManager(*this);
+	} catch (const std::exception& e) {
+		S_LOG_FAILURE("GUIManager - error when creating ActionBar icon manager." << e);
 	}
 
 	std::vector<std::string> widgetsToLoad;
@@ -677,6 +683,11 @@ Gui::Icons::IconManager* GUIManager::getIconManager()
 Gui::EntityIconManager* GUIManager::getEntityIconManager()
 {
 	return mEntityIconManager;
+}
+
+Gui::ActionBarIconManager* GUIManager::getActionBarIconManager()
+{
+	return mActionBarIconManager;
 }
 
 }
