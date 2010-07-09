@@ -87,10 +87,11 @@ end
 
 function ActionBar:init(widgetName)
 	--TODO: When we implement the shutdown method, we need to delete this
-	self.inputHelper = EmberOgre.Gui.ActionBarInput:new()
+	self.input1 = EmberOgre.Gui.ActionBarInput:new("1")
+	
 	self.entityIconManager = guiManager:getEntityIconManager()
 	
-	connect(self.connectors, self.inputHelper.EventGotHotkeyInput, self.gotInput, self)
+	connect(self.connectors, self.input1.EventGotHotkeyInput, self.gotInput, self)
 	
 	self:buildCEGUIWidget(widgetName)
 end
@@ -98,4 +99,5 @@ end
 function ActionBar:shutdown()
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
+
 end

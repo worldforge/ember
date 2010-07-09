@@ -7,7 +7,7 @@ namespace Gui
 class ActionBarInput
 {
 public:
-	ActionBarInput();
+	ActionBarInput(const std::string& actionBarNum);
 	sigc::signal<void, const std::string&> EventGotHotkeyInput;
 };
 

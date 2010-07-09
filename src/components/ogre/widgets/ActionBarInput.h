@@ -34,13 +34,14 @@ namespace Gui
 class ActionBarInput : public Ember::ConsoleObject
 {
 public:
-	ActionBarInput();
+	ActionBarInput(const std::string& actionBarNum);
 
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
 	sigc::signal<void, const std::string&> EventGotHotkeyInput;
 private:
-	const Ember::ConsoleCommandWrapper ActionBarButton1;
+	std::string mHotkey;
+	const Ember::ConsoleCommandWrapper ActionBarButton;
 };
 }
 }
