@@ -1,8 +1,15 @@
 ActionBar = {}
 
 function ActionBar:addSlot()
-	local yPosition = math.floor(self.slotcounter / self.maxSlots)
-	local xPosition = self.slotcounter - math.floor(self.slotcounter/self.maxSlots)*self.maxSlots 
+	local yPosition = 0
+	local xPosition = 0
+	if self.layout == "Horiz" then
+		yPosition = math.floor(self.slotcounter / self.maxSlots)
+		xPosition = self.slotcounter - math.floor(self.slotcounter/self.maxSlots)*self.maxSlots 
+	else
+		yPosition = self.slotcounter - math.floor(self.slotcounter/self.maxSlots)*self.maxSlots 
+		xPosition = math.floor(self.slotcounter / self.maxSlots)
+	end	
 	
 	self.slotcounter = self.slotcounter + 1
 	
@@ -36,9 +43,18 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	self.widget:loadMainSheet("ActionBar.layout", widgetName)
 	self.iconContainer = self.widget:getWindow("IconContainer")
 	
-	local x = (self.maxSlots*self.iconSize)+(self.maxSlots*2)
-	self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,x),CEGUI.UDim(0.0,self.iconSize))) 
+	local slotSize = (self.maxSlots*self.iconSize)+(self.maxSlots*2)
+	self.dragBar = self.widget:getWindow("TitleBar")
 	
+	if self.layout == "Horiz" then
+		self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,slotSize),CEGUI.UDim(0.0,self.iconSize))) 
+	else
+		self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,self.iconSize),CEGUI.UDim(0.0,slotSize+20)))
+		--Drag bar needs to be resized to the top for vertical action bars.
+		self.dragBar:setSize(CEGUI.UVector2(CEGUI.UDim(1.0,0.0),CEGUI.UDim(0.0,12.0)))
+		--Need to shift the icon container down so that our drag bar doesn't overlap.
+		self.iconContainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0.0,0.0),CEGUI.UDim(0.0,12.0)))
+	end
 	self.widget:show()
 	
 	--Make 10 slots in the ActionBar.
@@ -52,9 +68,9 @@ function ActionBar:gotInput(args)
 	debugObject(args)
 end
 
-function ActionBar.new()
+function ActionBar.new(rotation)
 	local actionbar = {   iconSize = 50,
-				maxSlots = 10,
+				maxSlots = 5,
 				iconcounter = 0,
 				slotcounter = 0,
 				inputHelper = nil,
@@ -62,6 +78,7 @@ function ActionBar.new()
 				icons = {},
 				connectors={},
 				widget = nil,
+				layout = rotation, --Vertical or horizontal action bar
 				slots = {}};
 				
 	setmetatable(actionbar,{__index=ActionBar})

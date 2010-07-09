@@ -5,8 +5,11 @@ function ActionBarCreator:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("ActionBarCreator.layout", "ActionBarCreator/")
 	
-	self.createButton = CEGUI.toPushButton(self.widget:getWindow("Create"))
-	self.createButton:subscribeEvent("Clicked", self.Create_Click, self)
+	self.createHButton = CEGUI.toPushButton(self.widget:getWindow("Create_Horiz"))
+	self.createHButton:subscribeEvent("Clicked", self.CreateHoriz_Click, self)
+	
+	self.createVButton = CEGUI.toPushButton(self.widget:getWindow("Create_Vert"))
+	self.createVButton:subscribeEvent("Clicked", self.CreateVert_Click, self)
 	
 	self.deleteButton = CEGUI.toPushButton(self.widget:getWindow("Delete"))
 	self.deleteButton:subscribeEvent("Clicked", self.Delete_Click, self)
@@ -17,7 +20,7 @@ function ActionBarCreator:buildCEGUIWidget()
 	self.widget:show()
 end
 
-function ActionBarCreator:createActionBar()
+function ActionBarCreator:createActionBar(layout)
 	--Find the first available actionbar#.
 	local i = 1
 	while self.actionbars["ActionBar"..i] ~= nil do
@@ -28,7 +31,7 @@ function ActionBarCreator:createActionBar()
 	local name = "ActionBar"..i
 	
 	--Create the new Actionbar.
-	a1 = ActionBar.new()
+	a1 = ActionBar.new(layout)
 	a1:init(name)
 	
 	--Insert into our dictionary.
@@ -63,8 +66,14 @@ function ActionBarCreator:Delete_Click()
 	self:deleteActionBar()
 end
 
-function ActionBarCreator:Create_Click()
-	self:createActionBar()
+function ActionBarCreator:CreateVert_Click()
+	local type = "Vert"
+	self:createActionBar(type)
+end
+
+function ActionBarCreator:CreateHoriz_Click()
+	local type = "Horiz"
+	self:createActionBar(type)
 end
 
 function ActionBarCreator.buildWidget()
