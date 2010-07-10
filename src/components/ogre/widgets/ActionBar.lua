@@ -1,5 +1,7 @@
 ActionBar = {}
 
+loadScript("ActionBarDefaultAction.lua")
+
 function ActionBar:addSlot()
 	local yPosition = 0
 	local xPosition = 0
@@ -12,22 +14,34 @@ function ActionBar:addSlot()
 	end	
 	
 	self.slotcounter = self.slotcounter + 1
-	
 	local slot = self.entityIconManager:createSlot(self.iconSize)
 	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconSize * xPosition), CEGUI.UDim(0, self.iconSize * yPosition)))
 	slot:getWindow():setAlpha(1.0)
 	slot:getWindow():setProperty("FrameEnabled", "true")
 	slot:getWindow():setProperty("BackgroundEnabled", "true")
 	self.iconContainer:addChildWindow(slot:getWindow())
-	local slotWrapper = {slot = slot}
+	
+	local slotWrapper = {slot = slot,
+						defaultAction = nil,
+						}
+	slotWrapper.defaultAction = ActionBarDefaultAction:new()
+	
 	table.insert(self.slots, slotWrapper)
 	
 	slotWrapper.entityIconDropped = function(entityIcon)
+		slotWrapper.defaultAction:init(entityIcon)
 		local oldSlot = entityIcon:getSlot()
 		slotWrapper.slot:addEntityIcon(entityIcon)
 		if oldSlot ~= nil then
 			oldSlot:notifyIconDraggedOff(entityIcon)
 		end
+
+		slotWrapper.windowClick = function(args)
+			debugObject("got icon click")
+			slotWrapper.defaultAction:executeAction()
+			return true
+		end
+		entityIcon:getDragContainer():subscribeEvent("MouseClick", slotWrapper.windowClick)
 	end
 	
 	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventIconDropped):connect(slotWrapper.entityIconDropped)
@@ -61,7 +75,6 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	for i = 1,self.maxSlots do
 		self:addSlot()
 	end
-	
 end
 
 function ActionBar:gotInput(args)
@@ -79,6 +92,7 @@ function ActionBar.new(rotation)
 				connectors={},
 				widget = nil,
 				layout = rotation, --Vertical or horizontal action bar
+				defaultAction = nil,
 				slots = {}};
 				
 	setmetatable(actionbar,{__index=ActionBar})
