@@ -38,6 +38,7 @@ namespace Gui {
 
 class ActionBarIcon;
 class ActionBarIconManager;
+class EntityIcon;
 
 /**
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>

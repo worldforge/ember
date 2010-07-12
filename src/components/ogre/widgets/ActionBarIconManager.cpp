@@ -73,7 +73,7 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, EmberEnt
 		return 0;
 	}
 	std::stringstream ss;
-	ss << "entityIcon" << mIconsCounter++;
+	ss << "actionBarIcon" << mIconsCounter++;
 
 	CEGUI::DragContainer* item = static_cast<CEGUI::DragContainer*>(mGuiManager.createWindow("DragContainer", ss.str()));
 
@@ -91,9 +91,9 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, EmberEnt
 			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
 			item->addChildWindow(iconWindow);
 
-			EntityActionBarIcon* entityActionBarIcon = new EntityActionBarIcon(*this, item, iconWindow, icon, entity);
-			mIcons.push_back(entityActionBarIcon);
-			return entityActionBarIcon;
+			ActionBarIcon* actionBarIcon = new ActionBarIcon(*this, item, iconWindow, icon, entity);
+			mIcons.push_back(actionBarIcon);
+			return actionBarIcon;
 		}
 	}
 	return 0;

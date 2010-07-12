@@ -85,16 +85,6 @@ class ActionBarIcon : public ActionBarIconDragDropTarget, public virtual sigc::t
 friend class ActionBarIconManager;
 public:
 	/**
-	 * @brief Ctor. This is normally only called from the EntityIconManager.
-	 * @param manager The icon manager to which this entity belongs.
-	 * @param dragContainer The CEGUI drag container instance which provides drag and drop behavior for this entity icon. Ownership will not be transferred.
-	 * @param image The image which represents the entity. In many cases this will be the same image as provided by the icon parameter. Ownership is not transferred.
-	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
-	 * @param entity The entity to which this icon belongs. Ownership is not transferred.
-	 */
-	ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon);
-
-	/**
 	 * @brief Dtor.
 	 *
 	 * If the ícon is attached to a slot it will be detached at destruction.
@@ -133,6 +123,12 @@ public:
 	 * @return The entity slot to which this entity icon is attached, or null if it's not connected to any slot.
 	 */
 	ActionBarIconSlot* getSlot();
+
+	/**
+	 * @brief Gets the entity which this icon represents.
+	 * @return The entity which this icon represents.
+	 */
+	EmberEntity* getEntity();
 
 	/**
 	 * @brief Sets the tool tip for this entity icon.
@@ -182,6 +178,17 @@ public:
 	void icon_Updated();
 
 protected:
+
+	/**
+	 * @brief Ctor. This is normally only called from the EntityIconManager.
+	 * @param manager The icon manager to which this entity belongs.
+	 * @param dragContainer The CEGUI drag container instance which provides drag and drop behavior for this entity icon. Ownership will not be transferred.
+	 * @param image The image which represents the entity. In many cases this will be the same image as provided by the icon parameter. Ownership is not transferred.
+	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
+	 * @param entity The entity to which this icon belongs. Ownership is not transferred.
+	 */
+	ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity);
+
 	/**
 	 * @brief The main entity icon manager.
 	 */
@@ -212,27 +219,12 @@ protected:
 	 */
 	ActionBarIconSlot* mCurrentSlot;
 
-};
-
-class EntityActionBarIcon : public ActionBarIcon
-{
-friend class ActionBarIconManager;
-public:
-protected:
-	EntityActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity);
-
-	/**
-	 * @brief Gets the entity which this icon represents.
-	 * @return The entity which this icon represents.
-	 */
-	EmberEntity* getEntity();
-private:
 	/**
 	 * @brief The entity which the icon represents.
 	 */
 	EmberEntity* mEntity;
-};
 
+};
 
 }
 

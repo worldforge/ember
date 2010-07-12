@@ -270,6 +270,7 @@ GUIManager::~GUIManager()
 
 	delete mActiveWidgetHandler;
 	delete mEntityIconManager;
+	delete mActionBarIconManager;
 	delete mIconManager;
 
 	CEGUI::System::destroy();

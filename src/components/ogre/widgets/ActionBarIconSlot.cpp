@@ -28,6 +28,7 @@
 #include "Widget.h"
 #include "ActionBarIconManager.h"
 #include "ActionBarIcon.h"
+#include "EntityIcon.h"
 #include <CEGUI.h>
 #include <CEGUIWindowManager.h>
 

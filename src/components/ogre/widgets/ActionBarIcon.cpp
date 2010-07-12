@@ -31,8 +31,8 @@ namespace EmberOgre {
 
 namespace Gui {
 
-ActionBarIcon::ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon)
-: ActionBarIconDragDropTarget(dragContainer), mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0)
+ActionBarIcon::ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity)
+: ActionBarIconDragDropTarget(dragContainer), mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0), mEntity(entity)
 {
 	mDragContainer->setUserData(&mUserData);
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(& ActionBarIcon::dragContainer_DragStarted, this));
@@ -80,6 +80,11 @@ void ActionBarIcon::setSlot(ActionBarIconSlot* slot)
 ActionBarIconSlot* ActionBarIcon::getSlot()
 {
 	return mCurrentSlot;
+}
+
+EmberEntity* ActionBarIcon::getEntity()
+{
+	return mEntity;
 }
 
 void ActionBarIcon::setTooltipText(const std::string& text)
@@ -142,17 +147,6 @@ ActionBarIconUserData::ActionBarIconUserData(ActionBarIcon& actionBarIcon)
 ActionBarIcon& ActionBarIconUserData::getActionBarIcon()
 {
 	return mActionBarIcon;
-}
-
-EntityActionBarIcon::EntityActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity)
-: ActionBarIcon(manager, dragContainer, image, icon)
-{
-	mEntity = entity;
-}
-
-EmberEntity* EntityActionBarIcon::getEntity()
-{
-	return mEntity;
 }
 
 }
