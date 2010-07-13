@@ -86,6 +86,7 @@ EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* e
 		if (iconWindow) {
 			iconWindow->setProperty("BackgroundEnabled", "false");
  			iconWindow->setProperty("FrameEnabled", "false");
+ 			iconWindow->setProperty("InheritsAlpha", "true");
 			iconWindow->disable();
 // 			iconWindow->setProperty("FrameEnabled", "false");
 			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));

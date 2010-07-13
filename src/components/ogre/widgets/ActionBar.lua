@@ -16,7 +16,7 @@ function ActionBar:addSlot()
 	self.slotcounter = self.slotcounter + 1
 	local slot = self.actionBarIconManager:createSlot(self.iconSize)
 	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconSize * xPosition), CEGUI.UDim(0, self.iconSize * yPosition)))
-	slot:getWindow():setAlpha(1.0)
+	slot:getWindow():setAlpha(0.6)
 	slot:getWindow():setProperty("FrameEnabled", "true")
 	slot:getWindow():setProperty("BackgroundEnabled", "true")
 	self.iconContainer:addChildWindow(slot:getWindow())
@@ -61,6 +61,8 @@ function ActionBar:createActionBarIcon(entity)
 		local actionBarIconWrapper = {}
 		actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, entity, self.iconSize)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
+		actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
+		actionBarIconWrapper.actionBarIcon:getImage():setAlpha(1.0)
 		actionBarIconWrapper.entity = entity
 		actionBarIconWrapper.mouseEnters = function(args)
 			actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "true")
@@ -93,6 +95,7 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	
 	local slotSize = (self.maxSlots*self.iconSize)+(self.maxSlots*2)
 	self.dragBar = self.widget:getWindow("TitleBar")
+	self.dragBar:setWantsMultiClickEvents(false)
 	
 	if self.layout == "Horiz" then
 		self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,slotSize),CEGUI.UDim(0.0,self.iconSize))) 
