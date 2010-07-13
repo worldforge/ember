@@ -34,8 +34,8 @@
 #include "IEntityVisitor.h"
 #include "EmberOgre.h"
 #include "mapping/EmberEntityMappingManager.h"
-#include "framework/Service.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/MultiLineListFormatter.h"
 #include "services/EmberServices.h"
 
 #include <OgreWireBoundingBox.h>
@@ -45,7 +45,6 @@
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
-#include <Atlas/Formatter.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
@@ -586,7 +585,7 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 	Atlas::Message::QueuedDecoder decoder;
 
 	Atlas::Codecs::XML codec(outstream, decoder);
-	Atlas::Formatter formatter(outstream, codec);
+	Ember::MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
 	encoder.streamMessageElement(getAttributes());

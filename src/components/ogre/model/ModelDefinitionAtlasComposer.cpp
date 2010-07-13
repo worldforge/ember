@@ -27,8 +27,13 @@
 #include "ModelDefinitionAtlasComposer.h"
 #include "Model.h"
 
+#include "../Convert.h"
+#include "services/config/ConfigService.h"
+
+#include "framework/osdir.h"
+#include "framework/MultiLineListFormatter.h"
+
 #include <Atlas/Message/Element.h>
-#include <Atlas/Formatter.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
@@ -36,10 +41,6 @@
 #include <Ogre.h>
 #include <wfmath/axisbox.h>
 #include <wfmath/atlasconv.h>
-#include "../Convert.h"
-#include "services/config/ConfigService.h"
-
-#include "framework/osdir.h"
 
 #ifdef WIN32
 #include <tchar.h>
@@ -111,7 +112,7 @@ void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Mod
 	//std::fstream file;
 
 	Atlas::Codecs::XML codec(outstream, decoder);
-	Atlas::Formatter formatter(outstream, codec);
+	Ember::MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
 	encoder.streamMessageElement(compose(model, typeName, parentTypeName, scale));
