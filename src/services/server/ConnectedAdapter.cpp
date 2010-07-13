@@ -261,17 +261,27 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 	try {
 		Atlas::Objects::Entity::Anonymous what;
 		what->setId(entity->getId());
+		//We'll use this flag to make sure that nothing gets sent in the case that the only thing changed was immutable attributes (like "pos").
+		bool areAttributesToSend = false;
 		for (Atlas::Message::MapType::iterator I = elements.begin(); I != elements.end(); ++I) {
-			what->setAttr(I->first, I->second);
+			//The "pos" attribute is immutable and cannot be altered by a "set" op. Instead we must use a "move" op.
+			if (I->first == "pos") {
+				place(entity, entity->getLocation(), WFMath::Point<3>(I->second));
+			} else {
+				what->setAttr(I->first, I->second);
+				areAttributesToSend = true;
+			}
 		}
 
-		Atlas::Objects::Operation::Set setOp;
-		setOp->setFrom(mAvatar.getEntity()->getId());
-		//setOp->setTo(entity->getId());
-		setOp->setArgs1(what);
+		if (areAttributesToSend) {
+			Atlas::Objects::Operation::Set setOp;
+			setOp->setFrom(mAvatar.getEntity()->getId());
+			//setOp->setTo(entity->getId());
+			setOp->setArgs1(what);
 
-		S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
-		mConnection.send(setOp);
+			S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
+			mConnection.send(setOp);
+		}
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on setting attributes on entity." << ex);
 	}
