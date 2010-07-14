@@ -59,6 +59,7 @@ class MovementController;
 class ColouredRenderedStringParser;
 
 namespace Gui {
+class QuickHelp;
 class Widget;
 class EntityIconManager;
 class ActiveWidgetHandler;
@@ -346,6 +347,11 @@ protected:
 	 * Owner by this instance.
 	 */
 	ColouredRenderedStringParser* mRenderedStringParser;
+
+	/*
+	 * @brief Responsible for the help system
+	 */
+	Gui::QuickHelp* mQuickHelp;
 };
 
 inline MousePicker* GUIManager::getMousePicker() { return  mMousePickers.top(); }

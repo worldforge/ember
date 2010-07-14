@@ -41,6 +41,7 @@
 
 #include "widgets/Widget.h"
 #include "MousePicker.h"
+#include "widgets/QuickHelp.h"
 
 #include "components/ogre/camera/MainCamera.h"
 #include "EmberOgre.h"
@@ -246,6 +247,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 
 		Ogre::Root::getSingleton().addFrameListener(this);
 
+		mQuickHelp = new Gui::QuickHelp();
+
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("GUIManager - error when creating gui." << ex);
 		throw Ember::Exception(ex.getMessage().c_str());
@@ -284,6 +287,7 @@ GUIManager::~GUIManager()
 	delete mRenderedStringParser;
 	//delete mMousePicker;
 	//mMousePicker = 0;
+	delete mQuickHelp;
 
 	WidgetLoader::removeAllWidgetFactories();
 

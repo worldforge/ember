@@ -1,0 +1,16 @@
+$#include "components/ogre/widgets/QuickHelp.h"
+
+namespace EmberOgre {
+
+namespace Gui {
+
+class QuickHelp : public Ember::Singleton<QuickHelp>
+{
+public:
+	static QuickHelp& getSingleton( void );
+	sigc::signal <void, const std::string&> EventUpdateText;
+};
+
+}
+}
+

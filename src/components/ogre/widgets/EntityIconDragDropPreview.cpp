@@ -30,6 +30,7 @@
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
+#include "QuickHelp.h"
 
 #include "EntityIcon.h"
 #include <Eris/TypeInfo.h>
@@ -74,6 +75,7 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 	{
 		if (icon && icon->getEntity())
 		{
+			Gui::QuickHelp::getSingleton().updateText("Drag your item to the world to see a preview of it. You can drop the item by releasing the left mouse button");
 			mIconEntity = icon->getEntity();
 			mModelPreviewWorker = new ModelPreviewWorker(mIconEntity);
 			mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
