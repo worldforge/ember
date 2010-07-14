@@ -78,13 +78,13 @@ AC_ARG_WITH(cppunit-exec-prefix,[  --with-cppunit-exec-prefix=PFX  Exec prefix w
 
 AC_DEFUN([AM_CHECK_TOLUAXX],
 [
-	AC_ARG_WITH(tolua++,AS_HELP_STRING([--with-tolua++=CMD],[Tolua++ command (default=tolua++)]),
+	AC_ARG_WITH(toluaxx,AS_HELP_STRING([--with-toluaxx=CMD],[Tolua++ command (default=tolua++)]),
     	toluaxx_command="$withval", toluaxx_command="tolua++")
   
 	AC_CHECK_TOOL(TOLUAXX, $toluaxx_command)
 
 	if test "x$TOLUAXX" = "x"; then
-		AC_MSG_ERROR([Could not find a working tolua++ command (tried '$toluaxx_command'). Use the --with-tolua++ switch to set the proper command to use.])
+		AC_MSG_ERROR([Could not find a working tolua++ command (tried '$toluaxx_command'). Use the --with-toluaxx switch to set the proper command to use.])
 	fi
 ])
 
