@@ -66,7 +66,7 @@ ActionBarIconSlot* ActionBarIconManager::createSlot(unsigned int pixelSize)
 }
 
 
-ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize)
+ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned int pixelSize)
 {
 	if (!icon) {
 		S_LOG_WARNING("Trying to create an EntityIcon with an invalid Icon.");
@@ -91,7 +91,7 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, EmberEnt
 			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
 			item->addChildWindow(iconWindow);
 
-			ActionBarIcon* actionBarIcon = new ActionBarIcon(*this, item, iconWindow, icon, entity);
+			ActionBarIcon* actionBarIcon = new ActionBarIcon(*this, item, iconWindow, icon);
 			mIcons.push_back(actionBarIcon);
 			return actionBarIcon;
 		}

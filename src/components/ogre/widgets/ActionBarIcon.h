@@ -125,12 +125,6 @@ public:
 	ActionBarIconSlot* getSlot();
 
 	/**
-	 * @brief Gets the entity which this icon represents.
-	 * @return The entity which this icon represents.
-	 */
-	EmberEntity* getEntity();
-
-	/**
 	 * @brief Sets the tool tip for this entity icon.
 	 * The tooltip will be displayed when the user hovers the mouse over the icon.
 	 * @param text A text to show when the user hovers the mouse over the icon.
@@ -187,7 +181,7 @@ protected:
 	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
 	 * @param entity The entity to which this icon belongs. Ownership is not transferred.
 	 */
-	ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity);
+	ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon);
 
 	/**
 	 * @brief The main entity icon manager.
@@ -218,11 +212,6 @@ protected:
 	 * @brief If the icon is attached to any slot it's stored here.
 	 */
 	ActionBarIconSlot* mCurrentSlot;
-
-	/**
-	 * @brief The entity which the icon represents.
-	 */
-	EmberEntity* mEntity;
 
 };
 

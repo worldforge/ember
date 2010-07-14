@@ -29,20 +29,13 @@ function ActionBar:addSlot()
 	table.insert(self.slots, slotWrapper)
 	
 	slotWrapper.actionBarIconDropped = function(entityIcon)
+		--Create a new ActionBarIcon from the existing entityIcon.
 		local newIconWrapper = self:createActionBarIcon(entityIcon:getEntity())
-		debugObject("created a new icon")
-		debugObject(newIconWrapper.actionBarIcon)
 		slotWrapper.defaultAction:init(entityIcon)
-		debugObject("default actions")
-		--local oldSlot = entityIcon:getSlot()
 		slotWrapper.slot:addActionBarIcon(newIconWrapper.actionBarIcon)
-		debugObject("added new icon")
-		--if oldSlot ~= nil then
-			--oldSlot:notifyIconDraggedOff(entityIcon)
-		--end
 
+		--Default action for icon click.
 		slotWrapper.windowClick = function(args)
-			debugObject("got icon click")
 			slotWrapper.defaultAction:executeAction()
 			return true
 		end
@@ -59,7 +52,7 @@ function ActionBar:createActionBarIcon(entity)
 	if icon ~= nil then
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 		local actionBarIconWrapper = {}
-		actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, entity, self.iconSize)
+		actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, self.iconSize)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
 		actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
 		actionBarIconWrapper.actionBarIcon:getImage():setAlpha(1.0)
@@ -72,11 +65,7 @@ function ActionBar:createActionBarIcon(entity)
 			actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "false")
 			return true
 		end
-		actionBarIconWrapper.mouseClick = function(args)
-			self:showMenu(args, actionBarIconWrapper)
-			return true
-		end
-		--entityIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseClick", actionBarIconWrapper.mouseClick)
+		
 		actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseEnter", actionBarIconWrapper.mouseEnters)
 		actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeave", actionBarIconWrapper.mouseLeaves)
 		return actionBarIconWrapper
@@ -95,6 +84,7 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	
 	local slotSize = (self.maxSlots*self.iconSize)+(self.maxSlots*2)
 	self.dragBar = self.widget:getWindow("TitleBar")
+	--Need to disable double clicks as the TitleBar treats the parent window as a FrameWindow.
 	self.dragBar:setWantsMultiClickEvents(false)
 	
 	if self.layout == "Horiz" then

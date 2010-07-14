@@ -84,7 +84,7 @@ public:
 	 * @param pixelSize The size of the icon in pixels.
 	 * @returns An entity icon instance.
 	 */
-	ActionBarIcon* createIcon(Gui::Icons::Icon* icon, EmberEntity* entity, unsigned int pixelSize = 64);
+	ActionBarIcon* createIcon(Gui::Icons::Icon* icon, unsigned int pixelSize = 64);
 
 	/**
 	 * @brief Destroys an entity icon.

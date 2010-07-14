@@ -39,7 +39,7 @@ public:
 	EmberOgre::Gui::ActionBarIconSlot* createSlot(unsigned int pixelSize = 64);
 	void destroySlot(EmberOgre::Gui::ActionBarIconSlot* slot);
 	
-	EmberOgre::Gui::ActionBarIcon* createIcon(EmberOgre::Gui::Icons::Icon* icon,  EmberEntity* entity, unsigned int pixelSize = 64);
+	EmberOgre::Gui::ActionBarIcon* createIcon(EmberOgre::Gui::Icons::Icon* icon, unsigned int pixelSize = 64);
 	void destroyIcon(EmberOgre::Gui::ActionBarIcon* icon);
 	
 	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStart;
