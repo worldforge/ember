@@ -29,6 +29,11 @@ function ActionBar:addSlot()
 	table.insert(self.slots, slotWrapper)
 	
 	slotWrapper.actionBarIconDropped = function(entityIcon)
+		--If an icon exists in that slot, then delete and replace.
+		if slotWrapper.slot:getActionBarIcon() ~= nil then
+			self.actionBarIconManager:destroyIcon(slotWrapper.slot:getActionBarIcon())
+		end
+		
 		--Create a new ActionBarIcon from the existing entityIcon.
 		local newIconWrapper = self:createActionBarIcon(entityIcon:getEntity())
 		slotWrapper.defaultAction:init(entityIcon)
