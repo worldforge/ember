@@ -35,9 +35,9 @@ namespace EmberOgre {
 namespace Gui {
 
 EntityIcon::EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon, EmberEntity* entity)
-: EntityIconDragDropTarget(dragContainer), mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0), mEntity(entity)
+: EntityIconDragDropTarget(dragContainer), mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mUserDataWrapper(mUserData), mCurrentSlot(0), mEntity(entity)
 {
-	mDragContainer->setUserData(&mUserData);
+	mDragContainer->setUserData(&mUserDataWrapper);
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStarted, this)); 
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStopped, this)); 
 	icon->EventUpdated.connect(sigc::mem_fun(*this, &EntityIcon::icon_Updated));
@@ -141,7 +141,7 @@ EntityIconUserData::EntityIconUserData(EntityIcon& entityIcon)
 {
 }
 
-EntityIcon& EntityIconUserData::getEntityIcon()
+EntityIcon& EntityIconUserData::getEntityIcon() const
 {
 	return mEntityIcon;
 }

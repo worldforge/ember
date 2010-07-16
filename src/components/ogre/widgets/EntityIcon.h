@@ -28,6 +28,7 @@
 #include "EntityIconManager.h"
 #include "EntityIconDragDropTarget.h"
 #include <sigc++/trackable.h>
+#include <boost/any.hpp>
 
 namespace CEGUI {
 class DragContainer;
@@ -56,7 +57,7 @@ public:
 	 * @brief Gets the entity icon instance to which this user data instance belongs.
 	 * @return The entity icon to which to which this user data belongs.
 	 */
-	EntityIcon& getEntityIcon();
+	EntityIcon& getEntityIcon() const;
 private:
 	/**
 	 * @brief Ctor.
@@ -192,6 +193,13 @@ protected:
 	 * @brief The user data attached to the window which binds it to this instance.
 	 */
 	EntityIconUserData mUserData;
+
+	/**
+	 * @brief Holds the mUserData and is attached to the CEGUI::DragContainer.
+	 *
+	 * This allows us to better query for type, as the boost::any class stores the type id of the wrapped object.
+	 */
+	boost::any mUserDataWrapper;
 
 	/**
 	 * @brief If the icon is attached to any slot it's stored here.

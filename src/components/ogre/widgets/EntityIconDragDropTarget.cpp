@@ -28,6 +28,7 @@
 #include "EntityIcon.h"
 #include <elements/CEGUIDragContainer.h>
 #include <CEGUIWindow.h>
+#include <boost/any.hpp>
 
 using namespace CEGUI;
 
@@ -98,9 +99,10 @@ EntityIcon* EntityIconDragDropTarget::parseIcon(const CEGUI::EventArgs& args)
 	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
 	DragContainer* container = ddea.dragDropItem;
 	if (container) {
-		EntityIconUserData* mUserData = static_cast<EntityIconUserData*>(container->getUserData());
-		if (mUserData) {
-			return &mUserData->getEntityIcon();
+		const boost::any* anyData = static_cast<const boost::any*>(container->getUserData());
+		if (typeid(EntityIconUserData) == anyData->type()) {
+			const EntityIconUserData& mUserData = boost::any_cast<const EntityIconUserData&>(*anyData);
+			return &mUserData.getEntityIcon();
 		}
 	}
 	return 0;
