@@ -24,6 +24,7 @@ static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Eris::Task> > @ createConnector(sigc::signal<void, Eris::Task*>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const std::set<std::string> > > @ createConnector(sigc::signal<void, const std::set<std::string>&>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<EmberOgre::Gui::EntityIcon> > @ createConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<EmberOgre::Gui::ActionBarIcon> > @ createConnector(sigc::signal<void, EmberOgre::Gui::ActionBarIcon*>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const Atlas::Message::Element> > @ createConnector(sigc::signal<void, const Atlas::Message::Element&>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::NumberValueAdapter<EmberOgre::MovementControllerMode::Mode> > @ createConnector(sigc::signal<void, EmberOgre::MovementControllerMode::Mode>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::Terrain::TerrainPage> > @ createConnector(sigc::signal<void, EmberOgre::Terrain::TerrainPage&>&);

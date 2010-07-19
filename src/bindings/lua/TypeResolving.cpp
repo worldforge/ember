@@ -70,6 +70,8 @@ const char* resolveLuaTypename<const Eris::Task>(){return "Eris::Task";}
 template <>
 const char* resolveLuaTypename<const EmberOgre::Gui::EntityIcon>(){return "EmberOgre::Gui::EntityIcon";}
 template <>
+const char* resolveLuaTypename<const EmberOgre::Gui::ActionBarIcon>(){return "EmberOgre::Gui::ActionBarIcon";}
+template <>
 const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainPage>(){return "EmberOgre::Terrain::TerrainPage";}
 template <>
 const char* resolveLuaTypename<const Eris::Avatar>(){return "Eris::Avatar";}
