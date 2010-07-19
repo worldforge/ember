@@ -25,6 +25,11 @@
 
 #include <sigc++/signal.h>
 
+namespace boost
+{
+	class any;
+}
+
 namespace CEGUI
 {
 	class Window;
@@ -36,6 +41,7 @@ namespace EmberOgre {
 namespace Gui {
 
 class ActionBarIcon;
+class EntityIcon;
 
 /**
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -73,9 +79,14 @@ public:
 	sigc::signal<void, ActionBarIcon*> EventIconLeaves;
 
 	/**
+	 * @brief Emitted when an action bar icon is dropped on window.
+	 */
+	sigc::signal<void, ActionBarIcon*> EventActionBarIconDropped;
+
+	/**
 	 * @brief Emitted when an entity icon is dropped on window.
 	 */
-	sigc::signal<void, ActionBarIcon*> EventIconDropped;
+	sigc::signal<void, EntityIcon*> EventEntityIconDropped;
 
 protected:
 
@@ -94,11 +105,18 @@ protected:
 	virtual bool handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon* icon);
 
 	/**
+	 * @brief Handle an action bar icon being dropped onto the window.
+	 * @param args Event args.
+	 * @param icon The action bar icon being dropped.
+	 */
+	virtual bool handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+
+	/**
 	 * @brief Handle an entity icon being dropped onto the window.
 	 * @param args Event args.
 	 * @param icon The entity icon being dropped.
 	 */
-	virtual bool handleDragDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+	virtual bool handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon);
 
 private:
 
@@ -126,6 +144,8 @@ private:
 	 * @returns An entity icon instance, or null if none could be found.
 	 */
 	ActionBarIcon* parseIcon(const CEGUI::EventArgs& args);
+
+	const boost::any* getUserData(const CEGUI::EventArgs& args) const;
 
 };
 

@@ -2,6 +2,14 @@ ActionBar = {}
 
 loadScript("ActionBarDefaultAction.lua")
 
+function ActionBar:removeExistingIcon(slot)
+	--If an icon exists in that slot, then delete and replace.
+	debugObject("trying to delete")
+	if actionBarIcon ~= nil then
+		self.actionBarIconManager:destroyIcon(actionBarIcon)
+	end
+end
+	
 function ActionBar:addSlot()
 	local yPosition = 0
 	local xPosition = 0
@@ -28,15 +36,14 @@ function ActionBar:addSlot()
 	
 	table.insert(self.slots, slotWrapper)
 	
-	slotWrapper.actionBarIconDropped = function(entityIcon)
-		--If an icon exists in that slot, then delete and replace.
-		if slotWrapper.slot:getActionBarIcon() ~= nil then
-			self.actionBarIconManager:destroyIcon(slotWrapper.slot:getActionBarIcon())
-		end
-		
+
+	
+	slotWrapper.entityIconDropped = function(entityIcon)
+		self:removeExistingIcon(slotWrapper.slot:getActionBarIcon())
+
 		--Create a new ActionBarIcon from the existing entityIcon.
-		local newIconWrapper = self:createActionBarIcon(entityIcon:getEntity())
-		slotWrapper.defaultAction:init(entityIcon)
+		local newIconWrapper = self:createActionBarIconFromEntity(entityIcon:getEntity())
+		slotWrapper.defaultAction:initFromEntityIcon()
 		slotWrapper.slot:addActionBarIcon(newIconWrapper.actionBarIcon)
 
 		--Default action for icon click.
@@ -47,36 +54,51 @@ function ActionBar:addSlot()
 		newIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseClick", slotWrapper.windowClick)
 	end
 	
-	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventIconDropped):connect(slotWrapper.actionBarIconDropped)
+	slotWrapper.actionBarIconDropped = function(actionBarIcon)
+		self:removeExistingIcon(slotWrapper.slot:getActionBarIcon())
+		
+		local oldSlot = actionBarIcon:getSlot()
+		slotWrapper.slot:addActionBarIcon(actionBarIcon)
+		if oldSlot ~= nil then
+			oldSlot:notifyIconDraggedOff(actionBarIcon)
+		end
+	end
 	
+	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventActionBarIconDropped):connect(slotWrapper.actionBarIconDropped)
+	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventEntityIconDropped):connect(slotWrapper.entityIconDropped)
 	return slotWrapper
 end
 
-function ActionBar:createActionBarIcon(entity)
+function ActionBar:createActionBarIconFromEntity(entity)
 	local icon = guiManager:getIconManager():getIcon(self.iconSize, entity)
 	if icon ~= nil then
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 		local actionBarIconWrapper = {}
-		actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, self.iconSize)
+		self:createActionBarIcon(actionBarIconWrapper, icon)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
-		actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
-		actionBarIconWrapper.actionBarIcon:getImage():setAlpha(1.0)
-		actionBarIconWrapper.entity = entity
-		actionBarIconWrapper.mouseEnters = function(args)
-			actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "true")
-			return true
-		end
-		actionBarIconWrapper.mouseLeaves = function(args)
-			actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "false")
-			return true
-		end
-		
-		actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseEnter", actionBarIconWrapper.mouseEnters)
-		actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeave", actionBarIconWrapper.mouseLeaves)
-		return actionBarIconWrapper
+		return actionBarIconWrapper	
 	else 
 		return nil
 	end
+end
+
+function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
+	actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, self.iconSize)
+	actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
+	actionBarIconWrapper.actionBarIcon:getImage():setAlpha(1.0)
+	actionBarIconWrapper.entity = entity
+	
+	actionBarIconWrapper.mouseEnters = function(args)
+		actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "true")
+		return true
+	end
+	actionBarIconWrapper.mouseLeaves = function(args)
+		actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "false")
+		return true
+	end
+		
+	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseEnter", actionBarIconWrapper.mouseEnters)
+	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeave", actionBarIconWrapper.mouseLeaves)
 end
 
 function ActionBar:buildCEGUIWidget(widgetName)
@@ -102,6 +124,16 @@ function ActionBar:buildCEGUIWidget(widgetName)
 		self.iconContainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0.0,0.0),CEGUI.UDim(0.0,12.0)))
 	end
 	self.widget:show()
+	
+	self.worldDragDrop = EmberOgre.Gui.ActionBarIconDragDropTarget(root)
+	
+--	self.worldDragDrop_Dropped = function(actionBarIcon)
+--		if actionBarIcon ~= nil then
+--			self:removeExistingIcon(actionBarIcon)
+--		end
+--	end
+--	self.worldDragDrop_Dropped_connector = EmberOgre.LuaConnector:new_local(self.worldDragDrop.EventActionBarIconDropped):connect(self.worldDragDrop_Dropped)
+	
 	
 	--Make 10 slots in the ActionBar.
 	for i = 1,self.maxSlots do

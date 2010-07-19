@@ -30,7 +30,7 @@ namespace Gui {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class ActionBarIconSlot : public EntityIconDragDropTarget
+class ActionBarIconSlot : public ActionBarIconDragDropTarget
 {
 public:
 	

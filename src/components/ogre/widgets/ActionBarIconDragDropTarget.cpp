@@ -26,8 +26,10 @@
 
 #include "ActionBarIconDragDropTarget.h"
 #include "ActionBarIcon.h"
+#include "EntityIcon.h"
 #include <elements/CEGUIDragContainer.h>
 #include <CEGUIWindow.h>
+#include <boost/any.hpp>
 
 using namespace CEGUI;
 
@@ -68,9 +70,19 @@ bool ActionBarIconDragDropTarget::dragContainer_DragLeave(const CEGUI::EventArgs
 
 bool ActionBarIconDragDropTarget::dragContainer_DragDropped(const CEGUI::EventArgs& args)
 {
-	ActionBarIcon* actionBarIcon = parseIcon(args);
-	if (actionBarIcon) {
-		return handleDragDropped(args, actionBarIcon);
+	const boost::any* anyData = getUserData(args);
+	if (anyData)
+	{
+		if (typeid(ActionBarIconUserData) == anyData->type()) {
+			const ActionBarIconUserData& mUserData = boost::any_cast<const ActionBarIconUserData&>(*anyData);
+			if (&mUserData.getActionBarIcon())
+				return handleDragActionBarIconDropped(args, &mUserData.getActionBarIcon());
+		}
+		if (typeid(EntityIconUserData) == anyData->type()) {
+			const EntityIconUserData& mUserData = boost::any_cast<const EntityIconUserData&>(*anyData);
+			if (&mUserData.getEntityIcon())
+				return handleDragEntityIconDropped(args, &mUserData.getEntityIcon());
+		}
 	}
 	return true;
 }
@@ -87,25 +99,38 @@ bool ActionBarIconDragDropTarget::handleDragLeave(const CEGUI::EventArgs& args, 
 	EventIconLeaves.emit(icon);
 	return true;
 }
-bool ActionBarIconDragDropTarget::handleDragDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon)
+bool ActionBarIconDragDropTarget::handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon)
 {
-	EventIconDropped.emit(icon);
+	EventActionBarIconDropped.emit(icon);
+	return true;
+}
+bool ActionBarIconDragDropTarget::handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon)
+{
+	EventEntityIconDropped.emit(icon);
 	return true;
 }
 
 ActionBarIcon* ActionBarIconDragDropTarget::parseIcon(const CEGUI::EventArgs& args)
 {
-	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
-	DragContainer* container = ddea.dragDropItem;
-	if (container) {
-		ActionBarIconUserData* mUserData = static_cast<ActionBarIconUserData*>(container->getUserData());
-		if (mUserData) {
-			return &mUserData->getActionBarIcon();
+	const boost::any* anyData = getUserData(args);
+	if (anyData)
+	{
+		if (typeid(ActionBarIconUserData) == anyData->type()) {
+			const ActionBarIconUserData& mUserData = boost::any_cast<const ActionBarIconUserData&>(*anyData);
+			return &mUserData.getActionBarIcon();
 		}
 	}
 	return 0;
 }
 
+const boost::any* ActionBarIconDragDropTarget::getUserData(const CEGUI::EventArgs& args) const
+{
+	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
+	DragContainer* container = ddea.dragDropItem;
+	if (container)
+		return static_cast<const boost::any*>(container->getUserData());
+	return 0;
+}
 
 
 }

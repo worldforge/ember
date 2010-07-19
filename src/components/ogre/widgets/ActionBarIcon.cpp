@@ -32,9 +32,9 @@ namespace EmberOgre {
 namespace Gui {
 
 ActionBarIcon::ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon)
-: ActionBarIconDragDropTarget(dragContainer), mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mCurrentSlot(0)
+: ActionBarIconDragDropTarget(dragContainer), mManager(manager), mDragContainer(dragContainer), mImage(image), mIcon(icon), mUserData(*this), mUserDataWrapper(mUserData), mCurrentSlot(0)
 {
-	mDragContainer->setUserData(&mUserData);
+	mDragContainer->setUserData(&mUserDataWrapper);
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(& ActionBarIcon::dragContainer_DragStarted, this));
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(& ActionBarIcon::dragContainer_DragStopped, this));
 	icon->EventUpdated.connect(sigc::mem_fun(*this, &ActionBarIcon::icon_Updated));
@@ -125,9 +125,9 @@ bool ActionBarIcon::handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon*
 }
 bool ActionBarIcon::handleDragDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon)
 {
-	ActionBarIconDragDropTarget::handleDragDropped(args, icon);
+	ActionBarIconDragDropTarget::handleDragActionBarIconDropped(args, icon);
 	if (mCurrentSlot) {
-		return mCurrentSlot->handleDragDropped(args, icon);
+		return mCurrentSlot->handleDragActionBarIconDropped(args, icon);
 	}
 	return true;
 
@@ -139,7 +139,7 @@ ActionBarIconUserData::ActionBarIconUserData(ActionBarIcon& actionBarIcon)
 {
 }
 
-ActionBarIcon& ActionBarIconUserData::getActionBarIcon()
+ActionBarIcon& ActionBarIconUserData::getActionBarIcon() const
 {
 	return mActionBarIcon;
 }

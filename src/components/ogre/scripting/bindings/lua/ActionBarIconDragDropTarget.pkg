@@ -37,7 +37,8 @@ public:
 	virtual ~ActionBarIconDragDropTarget();
 	sigc::signal<void, ActionBarIcon*> EventIconEntered;
 	sigc::signal<void, ActionBarIcon*> EventIconLeaves;
-	sigc::signal<void, ActionBarIcon*> EventIconDropped;
+	sigc::signal<void, ActionBarIcon*> EventActionBarIconDropped;
+	sigc::signal<void, EntityIcon*> EventEntityIconDropped;
 
 };
 

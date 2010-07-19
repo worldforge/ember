@@ -8,16 +8,6 @@ end
 function ActionBarDefaultAction:setEntityDefaultFunction()
 	--TODO: Based on the entity type, set the default function
 	self.mDefaultFunction = ActionBarDefaultAction.wieldCommandObject
-	debugObject(self.mDefaultFunction)
-	debugObject(ActionBarDefaultAction.wieldCommandObject)
-end
-
-function ActionBarDefaultAction:getCommandObject(commandObjectIcon)
-	--Check if our command object contains an entity.
-	if commandObjectIcon:getEntity() ~= nil then
-		self.mCommandObject = commandObjectIcon:getEntity()
-		self:setEntityDefaultFunction()
-	end
 end
 
 function ActionBarDefaultAction:executeAction()
@@ -25,8 +15,9 @@ function ActionBarDefaultAction:executeAction()
 	self:mDefaultFunction()
 end
 
-function ActionBarDefaultAction:init(commandObjectIcon)
-	self:getCommandObject(commandObjectIcon)
+function ActionBarDefaultAction:initFromEntityIcon(entity)
+	self.mCommandObject = entity
+	self:setEntityDefaultFunction()
 end
 
 function ActionBarDefaultAction:new()
