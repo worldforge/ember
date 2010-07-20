@@ -127,8 +127,9 @@ const boost::any* ActionBarIconDragDropTarget::getUserData(const CEGUI::EventArg
 {
 	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
 	DragContainer* container = ddea.dragDropItem;
-	if (container)
+	if (container) {
 		return static_cast<const boost::any*>(container->getUserData());
+	}
 	return 0;
 }
 
