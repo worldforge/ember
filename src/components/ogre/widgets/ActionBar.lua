@@ -31,10 +31,7 @@ function ActionBar:addSlot()
 	slot:getWindow():setProperty("BackgroundEnabled", "true")
 	self.iconContainer:addChildWindow(slot:getWindow())
 	
-	local slotWrapper = {slot = slot,
-						defaultAction = nil,
-						}
-	slotWrapper.defaultAction = ActionBarDefaultAction:new()
+	local slotWrapper = {slot = slot}
 	
 	table.insert(self.slots, slotWrapper)
 	
@@ -46,15 +43,7 @@ function ActionBar:addSlot()
 
 		--Create a new ActionBarIcon from the existing entityIcon.
 		local newIconWrapper = self:createActionBarIconFromEntity(entityIcon:getEntity())
-		slotWrapper.defaultAction:initFromEntityIcon(entityIcon:getEntity())
 		slotWrapper.slot:addActionBarIcon(newIconWrapper.actionBarIcon)
-
-		--Default action for icon click.
-		slotWrapper.windowClick = function(args)
-			slotWrapper.defaultAction:executeAction()
-			return true
-		end
-		newIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseClick", slotWrapper.windowClick)
 	end
 	
 	slotWrapper.actionBarIconDropped = function(actionBarIcon)		
@@ -74,9 +63,10 @@ function ActionBar:createActionBarIconFromEntity(entity)
 	local icon = guiManager:getIconManager():getIcon(self.iconSize, entity)
 	if icon ~= nil then
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
-		local actionBarIconWrapper = {}
+		local actionBarIconWrapper = {defaultAction = nil}
 		self:createActionBarIcon(actionBarIconWrapper, icon)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
+		actionBarIconWrapper.defaultAction:initFromEntityIcon(entity)
 		return actionBarIconWrapper	
 	else 
 		return nil
@@ -84,10 +74,10 @@ function ActionBar:createActionBarIconFromEntity(entity)
 end
 
 function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
+	actionBarIconWrapper.defaultAction = ActionBarDefaultAction:new()
 	actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, self.iconSize)
 	actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
 	actionBarIconWrapper.actionBarIcon:getImage():setAlpha(1.0)
-	actionBarIconWrapper.entity = entity
 	
 	actionBarIconWrapper.mouseEnters = function(args)
 		actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "true")
@@ -97,6 +87,13 @@ function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
 		actionBarIconWrapper.actionBarIcon:getImage():setProperty("FrameEnabled", "false")
 		return true
 	end
+	
+	--Default action for icon click.
+	actionBarIconWrapper.windowClick = function(args)
+		actionBarIconWrapper.defaultAction:executeAction()
+		return true
+	end
+	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseClick", actionBarIconWrapper.windowClick)
 		
 	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseEnter", actionBarIconWrapper.mouseEnters)
 	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeave", actionBarIconWrapper.mouseLeaves)
