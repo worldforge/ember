@@ -168,7 +168,8 @@ public:
 
 	virtual bool handleDragEnter(const CEGUI::EventArgs& args, ActionBarIcon* icon);
 	virtual bool handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon* icon);
-	virtual bool handleDragDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+	virtual bool handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+	virtual bool handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon);
 
 	void icon_Updated();
 

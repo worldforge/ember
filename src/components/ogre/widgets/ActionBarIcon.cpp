@@ -123,7 +123,8 @@ bool ActionBarIcon::handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon*
 	}
 	return true;
 }
-bool ActionBarIcon::handleDragDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon)
+
+bool ActionBarIcon::handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon)
 {
 	ActionBarIconDragDropTarget::handleDragActionBarIconDropped(args, icon);
 	if (mCurrentSlot) {
@@ -132,7 +133,14 @@ bool ActionBarIcon::handleDragDropped(const CEGUI::EventArgs& args, ActionBarIco
 	return true;
 
 }
-
+bool ActionBarIcon::handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon)
+{
+	ActionBarIconDragDropTarget::handleDragEntityIconDropped(args, icon);
+	if (mCurrentSlot) {
+		return mCurrentSlot->handleDragEntityIconDropped(args, icon);
+	}
+	return true;
+}
 
 ActionBarIconUserData::ActionBarIconUserData(ActionBarIcon& actionBarIcon)
 : mActionBarIcon(actionBarIcon)
