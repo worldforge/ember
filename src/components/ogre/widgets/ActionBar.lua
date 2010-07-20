@@ -4,8 +4,10 @@ loadScript("ActionBarDefaultAction.lua")
 
 function ActionBar:removeExistingIcon(slot)
 	--If an icon exists in that slot, then delete and replace.
-	debugObject("trying to delete")
-	if actionBarIcon ~= nil then
+	if slot:getActionBarIcon() ~= nil then
+		debugObject("Attempting to remove an existing icon.")
+		slot:getActionBarIcon():setSlot(nil)
+		slot:notifyIconDraggedOff(slot:getActionBarIcon())
 		self.actionBarIconManager:destroyIcon(actionBarIcon)
 	end
 end
@@ -39,11 +41,12 @@ function ActionBar:addSlot()
 
 	
 	slotWrapper.entityIconDropped = function(entityIcon)
-		self:removeExistingIcon(slotWrapper.slot:getActionBarIcon())
+		debugObject("Got an entity icon drop.")
+		self:removeExistingIcon(slotWrapper.slot)
 
 		--Create a new ActionBarIcon from the existing entityIcon.
 		local newIconWrapper = self:createActionBarIconFromEntity(entityIcon:getEntity())
-		slotWrapper.defaultAction:initFromEntityIcon()
+		slotWrapper.defaultAction:initFromEntityIcon(entityIcon:getEntity())
 		slotWrapper.slot:addActionBarIcon(newIconWrapper.actionBarIcon)
 
 		--Default action for icon click.
@@ -54,13 +57,11 @@ function ActionBar:addSlot()
 		newIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseClick", slotWrapper.windowClick)
 	end
 	
-	slotWrapper.actionBarIconDropped = function(actionBarIcon)
-		self:removeExistingIcon(slotWrapper.slot:getActionBarIcon())
-		
+	slotWrapper.actionBarIconDropped = function(actionBarIcon)		
 		local oldSlot = actionBarIcon:getSlot()
 		slotWrapper.slot:addActionBarIcon(actionBarIcon)
 		if oldSlot ~= nil then
-			oldSlot:notifyIconDraggedOff(actionBarIcon)
+			self:removeExistingIcon(oldSlot)
 		end
 	end
 	
@@ -127,13 +128,12 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	
 	self.worldDragDrop = EmberOgre.Gui.ActionBarIconDragDropTarget(root)
 	
---	self.worldDragDrop_Dropped = function(actionBarIcon)
---		if actionBarIcon ~= nil then
---			self:removeExistingIcon(actionBarIcon)
---		end
---	end
---	self.worldDragDrop_Dropped_connector = EmberOgre.LuaConnector:new_local(self.worldDragDrop.EventActionBarIconDropped):connect(self.worldDragDrop_Dropped)
-	
+	self.worldDragDrop_Dropped = function(actionBarIcon)
+		if actionBarIcon ~= nil and actionBarIcon:getSlot() ~= nil then
+			self:removeExistingIcon(actionBarIcon:getSlot())
+		end
+	end
+	self.worldDragDrop_Dropped_connector = EmberOgre.LuaConnector:new_local(self.worldDragDrop.EventActionBarIconDropped):connect(self.worldDragDrop_Dropped)
 	
 	--Make 10 slots in the ActionBar.
 	for i = 1,self.maxSlots do

@@ -2,7 +2,9 @@ ActionBarDefaultAction = {}
 
 function ActionBarDefaultAction:wieldCommandObject()
 	debugObject("attempting to wield")
-	emberServices:getServerService():wield(self.mCommandObject)
+	if self.mCommandObject ~= nil then
+		emberServices:getServerService():wield(self.mCommandObject)
+	end
 end
 
 function ActionBarDefaultAction:setEntityDefaultFunction()
