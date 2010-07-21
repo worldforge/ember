@@ -24,6 +24,7 @@
 #define EMBEROGREPARTICLESYSTEM_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
+#include <OgreVector3.h>
 #include <vector>
 
 namespace EmberOgre {
@@ -39,7 +40,7 @@ typedef std::vector<ParticleSystemBinding*> ParticleSystemBindingsPtrSet;
 class ParticleSystem
 {
 public:
-	ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem);
+	ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem, const Ogre::Vector3& direction);
 	virtual ~ParticleSystem();
 	Ogre::ParticleSystem* getOgreParticleSystem();
 	
@@ -57,9 +58,24 @@ public:
 	 * @param visibility Whether the particle system should be shown.
 	 */
 	void setVisible(bool visibility);
+
+	/**
+	 * @brief The direction of the particle system, in world coords.
+	 *
+	 * If the vector is invalid no direction is specified, and the particle system should use the local coords of its parent scene node.
+	 */
+	const Ogre::Vector3& getDirection() const;
+
 protected:
 	Ogre::ParticleSystem* mOgreParticleSystem;
 	ParticleSystemBindingsPtrSet mBindings;
+
+	/**
+	 * @brief The direction of the particle system, in world coords.
+	 *
+	 * If the vector is invalid no direction is specified, and the particle system should use the local coords of its parent scene node.
+	 */
+	Ogre::Vector3 mDirection;
 
 };
 

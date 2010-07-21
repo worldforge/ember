@@ -38,8 +38,8 @@ Ogre::ParticleSystem* ParticleSystem::getOgreParticleSystem()
 	return mOgreParticleSystem;
 }
 
-ParticleSystem::ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem) :
-		mOgreParticleSystem(ogreParticleSystem)
+ParticleSystem::ParticleSystem(Ogre::ParticleSystem* ogreParticleSystem, const Ogre::Vector3& direction) :
+		mOgreParticleSystem(ogreParticleSystem), mDirection(direction)
 {
 	assert(ogreParticleSystem);
 }
@@ -77,6 +77,12 @@ void ParticleSystem::setVisible(bool visibility)
 		mOgreParticleSystem->setVisible(visibility);
 	}
 }
+
+const Ogre::Vector3& ParticleSystem::getDirection() const
+{
+	return mDirection;
+}
+
 
 
 }
