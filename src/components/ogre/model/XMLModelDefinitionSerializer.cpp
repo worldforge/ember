@@ -867,6 +867,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 		exportLights(modelDef, modelElem);
 
+		exportParticleSystems(modelDef, modelElem);
+
 		elem.InsertEndChild(modelElem);
 
 		xmlDoc.InsertEndChild(elem);
@@ -1052,5 +1054,33 @@ void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiX
 	modelElem.InsertEndChild(lightsElem);
 }
 
+void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
+{
+	if (modelDef->mParticleSystems.size()) {
+		TiXmlElement particleSystemsElem("particlesystems");
+
+		for (ModelDefinition::ParticleSystemSet::const_iterator I = modelDef->mParticleSystems.begin(); I != modelDef->mParticleSystems.end(); ++I) {
+			TiXmlElement particleSystemElem("particlesystem");
+			particleSystemElem.SetAttribute("script", I->Script.c_str());
+			if (!I->Direction.isNaN()) {
+				TiXmlElement directionElem("direction");
+				XMLHelper::fillElementFromVector3(directionElem, I->Direction);
+				particleSystemElem.InsertEndChild(directionElem);
+			}
+			if (I->Bindings.size()) {
+				TiXmlElement bindingsElem("bindings");
+
+				for (ModelDefinition::BindingSet::const_iterator J = I->Bindings.begin(); J != I->Bindings.end(); ++J) {
+					TiXmlElement bindingElem("binding");
+					bindingsElem.SetAttribute("emittervar", J->EmitterVar);
+					bindingsElem.SetAttribute("atlasattribute", J->AtlasAttribute);
+					particleSystemElem.InsertEndChild(bindingsElem);
+				}
+			}
+			particleSystemsElem.InsertEndChild(particleSystemElem);
+		}
+		modelElem.InsertEndChild(particleSystemsElem);
+	}
+}
 } //end namespace
 }

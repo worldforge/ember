@@ -71,6 +71,7 @@ private:
 	void exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	void exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	void exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+	void exportParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	
 	/**
 	 * @brief Exports the light data.
