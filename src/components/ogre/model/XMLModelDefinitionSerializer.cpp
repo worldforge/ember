@@ -36,6 +36,7 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include <OgreStringConverter.h>
+#include <limits>
 
 #ifdef WIN32
 	#include <tchar.h>
@@ -553,6 +554,13 @@ void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr model
 		elem = apElem->FirstChildElement("bindings");
 		if (elem)
 			readParticleSystemsBindings(def, elem);
+
+		elem = apElem->FirstChildElement("direction");
+		if (elem) {
+			def.Direction = XMLHelper::fillVector3FromElement(elem);
+		} else {
+			def.Direction = Ogre::Vector3(std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN());
+		}
 
 
 		particleSystems.push_back(def);
