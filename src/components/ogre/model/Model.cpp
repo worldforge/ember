@@ -44,6 +44,7 @@
 #include <OgreAnimationState.h>
 #include <OgreSubEntity.h>
 #include <OgreParticleSystem.h>
+#include <OgreParticleEmitter.h>
 
 namespace EmberOgre
 {
@@ -325,7 +326,7 @@ void Model::createParticles()
 		}
 		if (ogreParticleSystem) {
 			//ogreParticleSystem->setDefaultDimensions(1, 1);
-			ParticleSystem* particleSystem = new ParticleSystem(ogreParticleSystem);
+			ParticleSystem* particleSystem = new ParticleSystem(ogreParticleSystem, I_particlesys->Direction);
 			for (ModelDefinition::BindingSet::const_iterator I = I_particlesys->Bindings.begin(); I != I_particlesys->Bindings.end(); ++I) {
 				ParticleSystemBinding* binding = particleSystem->addBinding(I->EmitterVar, I->AtlasAttribute);
 				mAllParticleSystemBindings.push_back(binding);
@@ -876,7 +877,18 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 		}
 		ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
 		for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-			(*I)->getOgreParticleSystem()->_updateRenderQueue(queue);
+			Ogre::ParticleSystem* particleSystem = (*I)->getOgreParticleSystem();
+			//Alter the direction of the emitter so that it's always emits upwards in the world
+			if (!(*I)->getDirection().isNaN()) {
+				Ogre::Vector3 direction = particleSystem->getParentNode()->convertWorldToLocalPosition((*I)->getDirection());
+				direction.normalise();
+				//const Ogre::Quaternion& rotation = particleSystem->getParentNode()->_getDerivedOrientation();
+				Ogre::Quaternion rotation = particleSystem->getParentNode()->convertWorldToLocalOrientation(Ogre::Quaternion(Ogre::Degree(0), (*I)->getDirection()));
+				for (int i = 0; i < particleSystem->getNumEmitters(); ++i) {
+					particleSystem->getEmitter(i)->setDirection(rotation * (*I)->getDirection());
+				}
+			}
+			particleSystem->_updateRenderQueue(queue);
 		}
 
 		LightSet::const_iterator lightsI_end = mLights.end();
