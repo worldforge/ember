@@ -457,9 +457,32 @@ private:
 
 	typedef std::vector<BindingDefinition> BindingSet;
 
+	/**
+	 * @brief A definition of a particle system.
+	 */
 	struct ParticleSystemDefinition
 	{
+		/**
+		 * @brief The script to use for the particle system.
+		 *
+		 * This must be defined in a separate Ogre .particle script.
+		 */
 		std::string Script;
+
+		/**
+		 * @brief An optional world direction to which the particle system should be locked.
+		 *
+		 * In most cases this would be up, since most particle systems would want to be emitted upwards (smoke, fire etc.).
+		 * If no direction is defined, this will be invalid. In these cases, the particle system will use the local coords of the parent scene node. If the particle system is directional, this will look strange when the model is attached to another model (such as when wielded).
+		 */
+		Ogre::Vector3 Direction;
+
+		/**
+		 * @brief A set of bindings.
+		 *
+		 * A binding is a connection between an entity attribute and a parameter of the particle system.
+		 * This allows for such effects as a fire growing larger as the status of the fire entity increases.
+		 */
 		BindingSet Bindings;
 	};
 
