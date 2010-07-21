@@ -236,7 +236,7 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.useButton)
 	
-	self.helper = EmberOgre.Gui.EntityIconDragDropPreview:new()
+	self.helper = EmberOgre.Gui.EntityIconDragDropPreview()
 	--User has dragged an entityIcon from the inventory to the world
 	self.DragDrop = EmberOgre.Gui.EntityIconDragDropTarget(root)
 	self.DragDrop_DraggedOver = function(entityIcon)
@@ -475,9 +475,6 @@ function Inventory:shutdown()
 		for k,v in pairs(bucket) do
 			self.entityIconManager:destroyIcon(v.entityIcon)
 		end
-	end
-	if self.helper ~= nil then
-		self.helper:delete()
 	end
 	
 	windowManager:destroyWindow(self.menu.container)
