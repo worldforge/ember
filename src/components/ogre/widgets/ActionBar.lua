@@ -172,6 +172,14 @@ function ActionBar:init(widgetName)
 end
 
 function ActionBar:shutdown()
+	for k,v in pairs(self.slots) do
+		self.actionBarIconManager:destroySlot(v.slot)
+	end
+	
+	for k,v in pairs(self.icons) do
+		self.actionBarIconManager:destroyIcon(v.actionBarIcon)
+	end
+	
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 

@@ -76,14 +76,27 @@ function ActionBarCreator:CreateHoriz_Click()
 	self:createActionBar(type)
 end
 
-function ActionBarCreator.buildWidget()
-	actionbarCreator = {
-	actionbars = {},
-	}
+function ActionBarCreator:shutdown()
+	for k,v in pairs(self.actionbars) do
+		v:shutdown()
+	end
 	
-	setmetatable(actionbarCreator, {__index = ActionBarCreator})
-	
-	actionbarCreator:buildCEGUIWidget()
+	disconnectAll(self.connectors)
+	guiManager:destroyWidget(self.widget)
 end
 
-ActionBarCreator.buildWidget()
+
+ActionBarCreator.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
+		if emberOgre:getWorld():getAvatar():isAdmin() == false then
+			actionbarCreator = {connectors={},
+				actionbars = {}}
+			setmetatable(actionbarCreator, {__index = ActionBarCreator})
+			actionbarCreator:buildCEGUIWidget()
+			connect(actionbarCreator.connectors, avatarEntity.BeingDeleted, function()
+					actionbarCreator:shutdown()
+					actionbarCreator = nil
+				end
+			)
+		end
+	end
+)
