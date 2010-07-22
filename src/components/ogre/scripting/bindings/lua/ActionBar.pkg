@@ -8,6 +8,7 @@ class ActionBarInput
 {
 public:
 	ActionBarInput(const std::string& actionBarNum);
+	~ActionBarInput();
 	sigc::signal<void, const std::string&> EventGotHotkeyInput;
 };
 

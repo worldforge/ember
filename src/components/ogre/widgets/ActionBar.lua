@@ -63,10 +63,12 @@ function ActionBar:createActionBarIconFromEntity(entity)
 	local icon = guiManager:getIconManager():getIcon(self.iconSize, entity)
 	if icon ~= nil then
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
-		local actionBarIconWrapper = {defaultAction = nil}
+		local actionBarIconWrapper = {actionBarIcon = nil,
+										defaultAction = nil}
 		self:createActionBarIcon(actionBarIconWrapper, icon)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
 		actionBarIconWrapper.defaultAction:initFromEntityIcon(entity)
+		table.insert(self.icons, actionBarIconWrapper)
 		return actionBarIconWrapper	
 	else 
 		return nil
@@ -139,7 +141,13 @@ function ActionBar:buildCEGUIWidget(widgetName)
 end
 
 function ActionBar:gotInput(args)
-	debugObject(args)
+	local slotNum = self.hotkeys[args].slotNum
+	local actionBarIcon = self.slots[slotNum].slot:getActionBarIcon()
+	for k,v in pairs(self.icons) do
+		if actionBarIcon == v.actionBarIcon and v.defaultAction ~= nil then
+			v.defaultAction:executeAction()
+		end
+	end
 end
 
 function ActionBar.new(rotation)
@@ -154,19 +162,33 @@ function ActionBar.new(rotation)
 				widget = nil,
 				layout = rotation, --Vertical or horizontal action bar
 				defaultAction = nil,
+				hotkeys = {},
 				slots = {}};
 				
 	setmetatable(actionbar,{__index=ActionBar})
 	return actionbar
 end
 
-function ActionBar:init(widgetName)
-	--TODO: When we implement the shutdown method, we need to delete this
-	self.input1 = EmberOgre.Gui.ActionBarInput:new("1")
+function ActionBar:defaultKeyMapping()
+	self:keyMapping("1",1)
+	self:keyMapping("2",2)
+	self:keyMapping("3",3)
+	self:keyMapping("4",4)
+	self:keyMapping("5",5)
 	
+end
+
+function ActionBar:keyMapping(key, slotNum)
+	local input = {}
+ 	input.key = EmberOgre.Gui.ActionBarInput:new(key)
+ 	input.slotNum = slotNum
+	self.hotkeys[key] = input
+	
+	connect(self.connectors, input.key.EventGotHotkeyInput, self.gotInput, self)
+end
+
+function ActionBar:init(widgetName)	
 	self.actionBarIconManager = guiManager:getActionBarIconManager()
-	
-	connect(self.connectors, self.input1.EventGotHotkeyInput, self.gotInput, self)
 	
 	self:buildCEGUIWidget(widgetName)
 end
@@ -180,6 +202,9 @@ function ActionBar:shutdown()
 		self.actionBarIconManager:destroyIcon(v.actionBarIcon)
 	end
 	
+	for k,v in pairs(self.hotkeys) do
+		v.key:delete()
+	end 
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 

@@ -6,7 +6,7 @@ namespace EmberOgre
 namespace Gui
 {
 
-ActionBarInput::ActionBarInput(const std::string& actionBarNum) : ActionBarButton("actionbar_" + actionBarNum, this, "Hotkey for ActionBar item number: " + actionBarNum + "."), mHotkey(actionBarNum)
+ActionBarInput::ActionBarInput(const std::string& actionBarKey) : ActionBarButton("actionbar_" + actionBarKey, this, "Hotkey for ActionBar key: " + actionBarKey + "."), mHotkey(actionBarKey)
 {
 }
 
@@ -14,6 +14,10 @@ void ActionBarInput::runCommand(const std::string &command, const std::string &a
 {
 	if (ActionBarButton == command)
 		EventGotHotkeyInput.emit(mHotkey);
+}
+
+ActionBarInput::~ActionBarInput()
+{
 }
 
 }

@@ -41,6 +41,7 @@ function ActionBarCreator:createActionBar(layout)
 	local actionBar = EmberOgre.Gui.ColouredListItem:new(name)
 	self.actionBarListbox:addItem(actionBar)
 	
+	return a1
 end
 
 function ActionBarCreator:deleteActionBar()
@@ -85,6 +86,11 @@ function ActionBarCreator:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
+function ActionBarCreator:init()
+	--Create inital actionbar.
+	self:createActionBar("Horiz"):defaultKeyMapping()
+end
+
 
 ActionBarCreator.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
 		if emberOgre:getWorld():getAvatar():isAdmin() == false then
@@ -92,6 +98,7 @@ ActionBarCreator.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local
 				actionbars = {}}
 			setmetatable(actionbarCreator, {__index = ActionBarCreator})
 			actionbarCreator:buildCEGUIWidget()
+			actionbarCreator:init()
 			connect(actionbarCreator.connectors, avatarEntity.BeingDeleted, function()
 					actionbarCreator:shutdown()
 					actionbarCreator = nil
