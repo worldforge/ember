@@ -41,11 +41,11 @@ class ActionBarIcon;
 
 /**
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-@brief Handles and manages entity icons.
+@brief Handles and manages action bar icons.
 
-An entity icon is an icon which is connected to an entity. The icons can be dragged and dropped onto slots (for example when creating a system for outfits, or an action bar.
+An action bar icon is an icon which can be used to execute actions on a number of different objects. The icons can be dragged and dropped onto slots and created when other icons are dragged on the action bar.
 This class is responsible for handling all of them in the UI, creating new and destroying old.
-You normally don't create instances of neither EntityIconSlot nor EntityIcon yourself, but use the create* and destroy* methods in this class instead.
+You normally don't create instances of neither ActionBarIconSlot nor ActionBarIcon yourself, but use the create* and destroy* methods in this class instead.
 */
 class ActionBarIconManager
 {
@@ -65,31 +65,30 @@ public:
 	virtual ~ActionBarIconManager();
 
 	/**
-	 * @brief Creates a new entity icon slot.
+	 * @brief Creates a new action bar icon slot.
 	 * @param pixelSize The size of the slot in pixels.
 	 * @returns A new slot instance.
 	 */
 	ActionBarIconSlot* createSlot(unsigned int pixelSize = 64);
 
 	/**
-	 * @brief Destroys an entity icon slot.
+	 * @brief Destroys an action bar icon slot.
 	 * @param slot The slot to destroy.
 	 */
 	void destroySlot(ActionBarIconSlot* slot);
 
 	/**
-	 * @brief Creates a new entity icon.
+	 * @brief Creates a new action bar icon.
 	 * @param icon An empty icon instance which will be used by the entity icon.
-	 * @param entity The entity to use.
 	 * @param pixelSize The size of the icon in pixels.
-	 * @returns An entity icon instance.
+	 * @returns An action bar icon instance.
 	 */
 	ActionBarIcon* createIcon(Gui::Icons::Icon* icon, unsigned int pixelSize = 64);
 
 	/**
-	 * @brief Destroys an entity icon.
+	 * @brief Destroys an action bar icon.
 	 *
-	 * @param The entity icon to destroy.
+	 * @param The action bar icon to destroy.
 	 */
 	void destroyIcon(ActionBarIcon* icon);
 
@@ -108,12 +107,12 @@ protected:
 	typedef std::vector<ActionBarIcon*> ActionBarIconStore;
 
 	/**
-	 * @brief All of the entity icon slots managed by this instance.
+	 * @brief All of the action bar icon slots managed by this instance.
 	 */
 	ActionBarIconSlotStore mSlots;
 
 	/**
-	 * @brief All of the entity icons managed by this instance.
+	 * @brief All of the action bar icons managed by this instance.
 	 */
 	ActionBarIconStore mIcons;
 

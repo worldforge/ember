@@ -1,7 +1,14 @@
+--[[
+Responsible for the functionality of an ActionBar. To add support for different types of icons, first the ActionBarIconDragDropTarget class needs to be updated.
+You can then catch the event of the icon being dropped, and deal with it accordingly. Currently supported are: EntityIcons and ActionBarIcons.
+]]--
 ActionBar = {}
 
+--ActionBarDefaultAction is required for handling the default action taken when an action bar icon is executed, either by clicking or hotkeys.
 loadScript("ActionBarDefaultAction.lua")
 
+--If the slot passed contains an action bar icon, then we remove it.
+--@param slot The slot we want to remove any icons from.
 function ActionBar:removeExistingIcon(slot)
 	--If an icon exists in that slot, then delete and replace.
 	if slot:getActionBarIcon() ~= nil then
@@ -12,13 +19,17 @@ function ActionBar:removeExistingIcon(slot)
 	end
 end
 	
+--Add a slot to the action bar. Handles adding slots to both horizontal and vertical action bars.
+--We also handle the drop events received by the slot here.	
 function ActionBar:addSlot()
 	local yPosition = 0
 	local xPosition = 0
+	--If we have a horizontal action bar, we add a slot to the right of the drag bar.
 	if self.layout == "Horiz" then
 		yPosition = math.floor(self.slotcounter / self.maxSlots)
 		xPosition = self.slotcounter - math.floor(self.slotcounter/self.maxSlots)*self.maxSlots 
 	else
+	--If we have a vertical action bar, we add a slot below the drag bar.
 		yPosition = self.slotcounter - math.floor(self.slotcounter/self.maxSlots)*self.maxSlots 
 		xPosition = math.floor(self.slotcounter / self.maxSlots)
 	end	
@@ -27,6 +38,7 @@ function ActionBar:addSlot()
 	local slot = self.actionBarIconManager:createSlot(self.iconSize)
 	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconSize * xPosition), CEGUI.UDim(0, self.iconSize * yPosition)))
 	slot:getWindow():setAlpha(0.6)
+	--We want to present an outline of the slot to the user.
 	slot:getWindow():setProperty("FrameEnabled", "true")
 	slot:getWindow():setProperty("BackgroundEnabled", "true")
 	self.iconContainer:addChildWindow(slot:getWindow())
@@ -35,10 +47,11 @@ function ActionBar:addSlot()
 	
 	table.insert(self.slots, slotWrapper)
 	
-
-	
+	--Handle an entity icon dropped on the action bar slot
+	--We create a new action bar icon based on the entity icon
 	slotWrapper.entityIconDropped = function(entityIcon)
 		debugObject("Got an entity icon drop.")
+		--If we have an existing icon in the slot, we remove it.
 		self:removeExistingIcon(slotWrapper.slot)
 
 		--Create a new ActionBarIcon from the existing entityIcon.
@@ -46,6 +59,7 @@ function ActionBar:addSlot()
 		slotWrapper.slot:addActionBarIcon(newIconWrapper.actionBarIcon)
 	end
 	
+	--Handle an action bar icon dropped on the action bar slot.
 	slotWrapper.actionBarIconDropped = function(actionBarIcon)		
 		local oldSlot = actionBarIcon:getSlot()
 		slotWrapper.slot:addActionBarIcon(actionBarIcon)
@@ -59,14 +73,17 @@ function ActionBar:addSlot()
 	return slotWrapper
 end
 
+--Create a new action bar icon based on an entity.
 function ActionBar:createActionBarIconFromEntity(entity)
 	local icon = guiManager:getIconManager():getIcon(self.iconSize, entity)
 	if icon ~= nil then
+		--We use the name to set the tooltip text
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 		local actionBarIconWrapper = {actionBarIcon = nil,
 										defaultAction = nil}
 		self:createActionBarIcon(actionBarIconWrapper, icon)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
+		--Our command object for the default action is the entity.
 		actionBarIconWrapper.defaultAction:initFromEntityIcon(entity)
 		table.insert(self.icons, actionBarIconWrapper)
 		return actionBarIconWrapper	
@@ -75,8 +92,13 @@ function ActionBar:createActionBarIconFromEntity(entity)
 	end
 end
 
+--Generic code all action bar icons require.
+--@param actionBarIconWrapper Contains
+--@param icon Generic icon to use for the layout.
 function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
+	--Create and attach an empty default action for the icon.
 	actionBarIconWrapper.defaultAction = ActionBarDefaultAction:new()
+	--Based on the generic icon passed, we create an action bar icon.
 	actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, self.iconSize)
 	actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
 	actionBarIconWrapper.actionBarIcon:getImage():setAlpha(1.0)
@@ -90,7 +112,7 @@ function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
 		return true
 	end
 	
-	--Default action for icon click.
+	--Execute the default action of the icon on a mouse button click.
 	actionBarIconWrapper.windowClick = function(args)
 		actionBarIconWrapper.defaultAction:executeAction()
 		return true
@@ -101,6 +123,8 @@ function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
 	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeave", actionBarIconWrapper.mouseLeaves)
 end
 
+--Build the action bar widget.
+--@param widgetName Unique widget name passed by AcionBarCreator.
 function ActionBar:buildCEGUIWidget(widgetName)
 	self.widget = guiManager:createWidget()
 	if widgetName == nil then
@@ -127,6 +151,7 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	
 	self.worldDragDrop = EmberOgre.Gui.ActionBarIconDragDropTarget(root)
 	
+	--Dragging an icon from the action bar to the world, and releasing it, should cause that icon to be destroyed.
 	self.worldDragDrop_Dropped = function(actionBarIcon)
 		if actionBarIcon ~= nil and actionBarIcon:getSlot() ~= nil then
 			self:removeExistingIcon(actionBarIcon:getSlot())
@@ -134,14 +159,16 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	end
 	self.worldDragDrop_Dropped_connector = EmberOgre.LuaConnector:new_local(self.worldDragDrop.EventActionBarIconDropped):connect(self.worldDragDrop_Dropped)
 	
-	--Make 10 slots in the ActionBar.
+	--Create our slots in the ActionBar.
 	for i = 1,self.maxSlots do
 		self:addSlot()
 	end
 end
 
-function ActionBar:gotInput(args)
-	local slotNum = self.hotkeys[args].slotNum
+--Input caught by ActionBarInput is handled here.
+--@param key The hotkey pressed.
+function ActionBar:gotInput(key)
+	local slotNum = self.hotkeys[key].slotNum
 	local actionBarIcon = self.slots[slotNum].slot:getActionBarIcon()
 	for k,v in pairs(self.icons) do
 		if actionBarIcon == v.actionBarIcon and v.defaultAction ~= nil then
@@ -150,6 +177,8 @@ function ActionBar:gotInput(args)
 	end
 end
 
+--Create a new action bar.
+--@param rotation The rotation of the action bar, either horizontal or veritcal.
 function ActionBar.new(rotation)
 	local actionbar = {   iconSize = 50,
 				maxSlots = 5,
@@ -169,15 +198,18 @@ function ActionBar.new(rotation)
 	return actionbar
 end
 
+--The default hotkey mapping of an actionbar. Only the first action bar created should respond to these.
 function ActionBar:defaultKeyMapping()
 	self:keyMapping("1",1)
 	self:keyMapping("2",2)
 	self:keyMapping("3",3)
 	self:keyMapping("4",4)
 	self:keyMapping("5",5)
-	
 end
 
+--Given a key and the slot number in the action bar, we create a hotkey mapping.
+--@param key The key which we wish to use as a hotkey.
+--@param slotNum The slot number executed by the key press.
 function ActionBar:keyMapping(key, slotNum)
 	local input = {}
  	input.key = EmberOgre.Gui.ActionBarInput:new(key)
@@ -187,21 +219,24 @@ function ActionBar:keyMapping(key, slotNum)
 	connect(self.connectors, input.key.EventGotHotkeyInput, self.gotInput, self)
 end
 
+--Initialization of the action bar, we build the widget here.
 function ActionBar:init(widgetName)	
 	self.actionBarIconManager = guiManager:getActionBarIconManager()
-	
 	self:buildCEGUIWidget(widgetName)
 end
 
 function ActionBar:shutdown()
+	--Delete all of the action bar slots.
 	for k,v in pairs(self.slots) do
 		self.actionBarIconManager:destroySlot(v.slot)
 	end
 	
+	--Delete all of the action bar icons.
 	for k,v in pairs(self.icons) do
 		self.actionBarIconManager:destroyIcon(v.actionBarIcon)
 	end
 	
+	--Delete all of the action bar hotkeys.
 	for k,v in pairs(self.hotkeys) do
 		v.key:delete()
 	end 

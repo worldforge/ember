@@ -74,11 +74,11 @@ private:
 
 
 /**
-	@brief An entity icon, representing a specific entity.
-	An entity icon is a draggable element, which can be dragged and dropped onto different slots.
-	The most common slot on which it can be dragged and dropped would be an instance of EntityIconSlot. An entity icon doesn't necessarily have to be connected to a slot, but in most cases they are.
+	@brief An action bar icon, representing a generic icon that exists on the action bars.
+	An action icon is a draggable element, which can be dragged and dropped onto different slots.
+	The most common slot on which it can be dragged and dropped would be an instance of ActionIconSlot. An action bar icon doesn't necessarily have to be connected to a slot, but in most cases they are.
 
-	Additionally, another entity icon can be dragged and dropped onto an instance of this class. When this happens the EvenIcon* events are emitted. This allows you to implement functionality for combining different entities.
+	Additionally, another action bar icon can be dragged and dropped onto an instance of this class. When this happens the EventIcon* events are emitted. This allows you to implement functionality for combining different entities.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
 class ActionBarIcon : public ActionBarIconDragDropTarget, public virtual sigc::trackable
@@ -95,7 +95,7 @@ public:
 
 	virtual void defaultAction();
 	/**
-	 * @brief Gets the CEGUI image which shows the entity. This can in some cases be a 3d render of the icon, or a prerendered texture. The actual handling of this is often taken care of by the mIcon instance.
+	 * @brief Gets the CEGUI image which shows the object represented. This can in some cases be a 3d render of the icon, or a prerendered texture. The actual handling of this is often taken care of by the mIcon instance.
 	 * @return The image displaying the entity in the CEGUI system.
 	 */
 	CEGUI::Window* getImage();
@@ -113,42 +113,42 @@ public:
 	Gui::Icons::Icon* getIcon();
 
 	/**
-	 * @brief Sets the slot to which this entity icon is attached. This will make the entity icon appear within the slot.
-	 * Calling this on an entity which is already connected to a slot will make the icon first disconnect from that slot.
+	 * @brief Sets the slot to which this action bar icon is attached. This will make the action bar icon appear within the slot.
+	 * Calling this on an action bar icon which is already connected to a slot will make the icon first disconnect from that slot.
 	 * @param slot The slot to which the entity icon should be connected.
 	 */
 	void setSlot(ActionBarIconSlot* slot);
 
 	/**
-	 * @brief Gets the icon entity slot to which this entity currently is attached to.
-	 * @return The entity slot to which this entity icon is attached, or null if it's not connected to any slot.
+	 * @brief Gets the icon action bar slot to which this entity currently is attached to.
+	 * @return The action bar slot to which this action bar icon is attached, or null if it's not connected to any slot.
 	 */
 	ActionBarIconSlot* getSlot();
 
 	/**
-	 * @brief Sets the tool tip for this entity icon.
+	 * @brief Sets the tool tip for this action bar icon.
 	 * The tooltip will be displayed when the user hovers the mouse over the icon.
 	 * @param text A text to show when the user hovers the mouse over the icon.
 	 */
 	void setTooltipText(const std::string& text);
 
 	/**
-	 * @brief Emitted when another EntityIcon instance is dragged and enters this icon.
+	 * @brief Emitted when another ActionBarIcon instance is dragged and enters this icon.
 	 */
 	sigc::signal<void, ActionBarIcon*> EventIconEntered;
 
 	/**
-	 * @brief Emitted when another EntityIcon instance is dragged and leaves this icon.
+	 * @brief Emitted when another action instance is dragged and leaves this icon.
 	 */
 	sigc::signal<void, ActionBarIcon*> EventIconLeaves;
 
 	/**
-	 * @brief Emitted when another EntityIcon instance is dragged and dropped on this icon.
+	 * @brief Emitted when another action instance is dragged and dropped on this icon.
 	 */
 	sigc::signal<void, ActionBarIcon*> EventIconDropped;
 
 	/**
-	 * @brief The main reason for having this is an issue in the lua bindings where comparisons of two EntityIcon instances always generated a lua error.
+	 * @brief The main reason for having this is an issue in the lua bindings where comparisons of two ActionBar instances always generated a lua error.
 	 * @param value Another object to compare to.
 	 * @return True if the objects are identical.
 	 */
@@ -181,7 +181,6 @@ protected:
 	 * @param dragContainer The CEGUI drag container instance which provides drag and drop behavior for this entity icon. Ownership will not be transferred.
 	 * @param image The image which represents the entity. In many cases this will be the same image as provided by the icon parameter. Ownership is not transferred.
 	 * @param icon The Icon instance responsible for providing the image. Ownership is not transferred.
-	 * @param entity The entity to which this icon belongs. Ownership is not transferred.
 	 */
 	ActionBarIcon(ActionBarIconManager& manager, CEGUI::DragContainer* dragContainer, CEGUI::Window* image, Gui::Icons::Icon* icon);
 

@@ -31,16 +31,34 @@ namespace EmberOgre
 {
 namespace Gui
 {
+/**
+	@brief
+	@author Tiberiu Paunescu <tpa12@sfu.ca>
+*/
 class ActionBarInput : public Ember::ConsoleObject
 {
 public:
+	/**
+	 * @brief Ctor
+	 * @param actionBarKey The key we intend to capture presses from.
+	 */
 	ActionBarInput(const std::string& actionBarKey);
+
+	/**
+	 * @brief Dtor
+	 */
 	~ActionBarInput();
 
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
+	/**
+	 * @brief Signal the event when we get a key press
+	 */
 	sigc::signal<void, const std::string&> EventGotHotkeyInput;
 private:
+	/**
+	 * @brief The hotkey we're monitoring.
+	 */
 	std::string mHotkey;
 	const Ember::ConsoleCommandWrapper ActionBarButton;
 };

@@ -46,10 +46,10 @@ class EntityIcon;
 /**
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-@brief Attaches to a CEGUI::Window and allows that window to have EntityIcons dragged and dropped on it.
+@brief Attaches to a CEGUI::Window and allows that window to have EntityIcons and ActionBarIcons dragged and dropped on it.
 
-An instance of this class will attach to a CEGUI::Window and listen to drag and drop events. When an entity icon is dragged onto it events are signalled.
-Use this as an easy way to activate entity icon dragging onto arbitrary CEGUI windows.
+An instance of this class will attach to a CEGUI::Window and listen to drag and drop events. When an entity icon or action bar icon is dragged onto it events are signalled.
+Use this as an easy way to activate entity icon or action bar icon dragging onto arbitrary CEGUI windows.
 
 @note Subclasses of this which want to implement their own behaviour should override the handle* methods.
 */
@@ -58,7 +58,7 @@ class ActionBarIconDragDropTarget
 public:
 	/**
 	 * @brief Ctor.
-	 * @param container The window which will be able to have entity icons dragged and dropped on it.
+	 * @param container The window which will be able to have entity icons and action bar icons dragged and dropped on it.
 	 *
 	 */
 	ActionBarIconDragDropTarget(CEGUI::Window* container);
@@ -69,12 +69,12 @@ public:
 	virtual ~ActionBarIconDragDropTarget();
 
 	/**
-	 * @brief Emitted when an entity icon is dragged over the window.
+	 * @brief Emitted when an action bar icon is dragged over the window.
 	 */
 	sigc::signal<void, ActionBarIcon*> EventIconEntered;
 
 	/**
-	 * @brief Emitted when an entity icon is dragged off the window.
+	 * @brief Emitted when an action bar icon is dragged off the window.
 	 */
 	sigc::signal<void, ActionBarIcon*> EventIconLeaves;
 
@@ -91,16 +91,16 @@ public:
 protected:
 
 	/**
-	 * @brief Handle an entity icon being dragged onto the window.
+	 * @brief Handle an action bar icon being dragged onto the window.
 	 * @param args Event args.
-	 * @param icon The entity icon being dragged.
+	 * @param icon The action bar icon being dragged.
 	 */
 	virtual bool handleDragEnter(const CEGUI::EventArgs& args, ActionBarIcon* icon);
 
 	/**
-	 * @brief Handle an entity icon being dragged off the window.
+	 * @brief Handle an action bar icon being dragged off the window.
 	 * @param args Event args.
-	 * @param icon The entity icon being dragged.
+	 * @param icon The action bar icon being dragged.
 	 */
 	virtual bool handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon* icon);
 
@@ -145,6 +145,12 @@ private:
 	 */
 	ActionBarIcon* parseIcon(const CEGUI::EventArgs& args);
 
+	/**
+	 * @brief Based on the events args, extract the user data
+	 * @param args Event args.
+	 * @returns User data attached to the window in the form of a boost::any class.
+	 * @note boost::any allows us to determine the type of icon dropped
+	 */
 	const boost::any* getUserData(const CEGUI::EventArgs& args) const;
 
 };

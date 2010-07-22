@@ -43,10 +43,10 @@ class EntityIcon;
 /**
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-@brief A slot for an entity icon.
+@brief A slot for an action bar icon.
 
-An instance of this represent a slot into which an entity icon can be placed. Icons can be dragged both to and from a slot.
-A typical usage example would be an inventory, where each entity icon is stored in a slot. By dragging entity icons between different slots the inventory is rearranged.
+An instance of this represent a slot into which an action bar icon can be placed. Icons can be dragged both to and from a slot.
+A typical usage example would be an action bar which contains slots that the user can drag other icons to.
 
 @note You don't normally directly create or destroy an instance of this. Instead use the EntityIconManager.
 */
@@ -57,7 +57,7 @@ friend class ActionBarIcon;
 public:
 
 	/**
-	 * @brief Adds an EntityIcon to the slot. If the slot already contains an icon, the method will return false and an error will be logged.
+	 * @brief Adds an ActionBarIcon to the slot. If the slot already contains an icon, the method will return false and an error will be logged.
 	 * @param icon
 	 * @return true if successful, else false
 	 */
@@ -65,13 +65,13 @@ public:
 	bool addActionBarIcon(ActionBarIcon* icon);
 
 	/**
-	 * @brief Removes and returns the contained EntityIcon. If none is contained, nothing will happen.
-	 * @return The contained EntityIcon or null if none contained.
+	 * @brief Removes and returns the contained ActionBarIcon. If none is contained, nothing will happen.
+	 * @return The contained ActionBarIcon or null if none contained.
 	 */
 	ActionBarIcon* removeActionBarIcon();
 
 	/**
-	 * @brief Gets the contained EntityIcon
+	 * @brief Gets the contained ActionBarIcon.
 	 * @return
 	 */
 	ActionBarIcon* getActionBarIcon();
@@ -98,7 +98,7 @@ protected:
 	/**
 	 * @brief Ctor.
 	 *
-	 * @param The main entity icon manager.
+	 * @param The main action bar icon manager.
 	 * @param container The CEGUI window which will be used by the slot. This can be any window, but should preferably be something which makes it clear that it's a slot onto which an icon can be dragged and dropped.
 	 */
 	ActionBarIconSlot(CEGUI::Window* container);
@@ -120,7 +120,7 @@ protected:
 	ActionBarIcon* mContainedIcon;
 
 	/**
-	 * @brief Internal method called by the EntityIcon when it's removed from the slot.
+	 * @brief Internal method called by the ActionBarIcon when it's removed from the slot.
 	 */
 	void notifyIconRemoved();
 
