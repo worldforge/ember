@@ -84,6 +84,17 @@ function disconnectAll(connectorTable)
 	end
 end
 
+--A method for safely deleting C++ instances. This removes the need to have to check for nil all the time.
+--@param objectToDelete The instance to delete. This can be null
+--@returns True if a valid object was submitted, else false.
+function deleteSafe(objectToDelete)
+	if objectToDelete ~= nil then
+		objectToDelete:delete()
+		return true
+	end
+	return false
+end
+
 -- Helper math library
 loadScript("Math.lua")
 

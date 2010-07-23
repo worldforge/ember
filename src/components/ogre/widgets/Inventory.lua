@@ -425,8 +425,7 @@ end
 function Inventory:shutdown()
 	disconnectAll(self.connectors)
 	if self.doll ~= nil then
-		if self.doll.renderer ~= nil then
-			self.doll.renderer:delete()
+		if deleteSafe(self.doll.renderer) then
 			self.doll.rightHand.shutdown()
 			self.doll.torso.shutdown()
 			self.doll.back.shutdown()

@@ -68,11 +68,9 @@ end
 
 function Compass:shutdown()
 	guiManager:destroyWidget(self.widget)
-	self.helper:delete()
-	self.helperImpl:delete()
-	if self.anchor ~= nil then
-		self.anchor:delete()
-	end
+	deleteSafe(self.helper)
+	deleteSafe(self.helperImpl)
+	deleteSafe(self.anchor)
 	disconnectAll(self.connectors)
 end
 

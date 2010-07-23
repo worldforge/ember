@@ -88,9 +88,7 @@ function StatusInstance:shutdown()
 		end
 	end
 	
-	if self.renderer ~= nil then
-		self.renderer:delete()
-	end
+	deleteSafe(self.renderer)
 	if self.widget ~= nil then
 		guiManager:destroyWidget(self.widget)
 	end

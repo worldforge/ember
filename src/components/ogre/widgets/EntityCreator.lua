@@ -131,9 +131,7 @@ end
 
 function EntityCreator:shutdown()
 	guiManager:destroyWidget(self.widget)
-	if self.helper ~= nil then
-		self.helper:delete()
-	end
+	deleteSafe(self.helper)
 	disconnectAll(self.connectors)
 end
 
