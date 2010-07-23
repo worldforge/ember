@@ -27,6 +27,8 @@
 #include "icons/Icon.h"
 #include "ActionBarIconManager.h"
 #include "ActionBarIconDragDropTarget.h"
+#include "ActionBarIconSlot.h"
+#include "GenericIconUserData.h"
 #include <sigc++/trackable.h>
 #include <boost/any.hpp>
 
@@ -42,7 +44,6 @@ namespace Gui {
 
 class ActionBarIconSlot;
 class ActionBarIcon;
-
 
 /**
 	@brief A very lightweight class which can be used as a "user data" instance in CEGUI.
@@ -207,7 +208,7 @@ protected:
 	/**
 	 * @brief The user data attached to the window which binds it to this instance.
 	 */
-	ActionBarIconUserData mUserData;
+	GenericIconUserData<ActionBarIcon> mUserData;
 
 	/**
 	 * @brief Holds the mUserData and is attached to the CEGUI::DragContainer.

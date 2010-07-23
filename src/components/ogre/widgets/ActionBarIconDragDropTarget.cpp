@@ -27,6 +27,7 @@
 #include "ActionBarIconDragDropTarget.h"
 #include "ActionBarIcon.h"
 #include "EntityIcon.h"
+#include "GenericIconUserData.h"
 #include <elements/CEGUIDragContainer.h>
 #include <CEGUIWindow.h>
 #include <boost/any.hpp>
@@ -73,15 +74,15 @@ bool ActionBarIconDragDropTarget::dragContainer_DragDropped(const CEGUI::EventAr
 	const boost::any* anyData = getUserData(args);
 	if (anyData)
 	{
-		if (typeid(ActionBarIconUserData) == anyData->type()) {
-			const ActionBarIconUserData& mUserData = boost::any_cast<const ActionBarIconUserData&>(*anyData);
-			if (&mUserData.getActionBarIcon())
-				return handleDragActionBarIconDropped(args, &mUserData.getActionBarIcon());
+		if (typeid(GenericIconUserData<ActionBarIcon>) == anyData->type()) {
+			const GenericIconUserData<ActionBarIcon>& mUserData = boost::any_cast<const GenericIconUserData<ActionBarIcon>&>(*anyData);
+			if (&mUserData.getIcon())
+				return handleDragActionBarIconDropped(args, &mUserData.getIcon());
 		}
-		if (typeid(EntityIconUserData) == anyData->type()) {
-			const EntityIconUserData& mUserData = boost::any_cast<const EntityIconUserData&>(*anyData);
-			if (&mUserData.getEntityIcon())
-				return handleDragEntityIconDropped(args, &mUserData.getEntityIcon());
+		if (typeid(GenericIconUserData<EntityIcon>) == anyData->type()) {
+			const GenericIconUserData<EntityIcon>& mUserData = boost::any_cast<const GenericIconUserData<EntityIcon>&>(*anyData);
+			if (&mUserData.getIcon())
+				return handleDragEntityIconDropped(args, &mUserData.getIcon());
 		}
 	}
 	return true;
@@ -115,9 +116,9 @@ ActionBarIcon* ActionBarIconDragDropTarget::parseIcon(const CEGUI::EventArgs& ar
 	const boost::any* anyData = getUserData(args);
 	if (anyData)
 	{
-		if (typeid(ActionBarIconUserData) == anyData->type()) {
-			const ActionBarIconUserData& mUserData = boost::any_cast<const ActionBarIconUserData&>(*anyData);
-			return &mUserData.getActionBarIcon();
+		if (typeid(GenericIconUserData<ActionBarIcon>) == anyData->type()) {
+			const GenericIconUserData<ActionBarIcon>& mUserData = boost::any_cast<const GenericIconUserData<ActionBarIcon>&>(*anyData);
+			return &mUserData.getIcon();
 		}
 	}
 	return 0;

@@ -22,7 +22,7 @@
 //
 
 #include "ActionBarIcon.h"
-#include "ActionBarIconSlot.h"
+
 #include <elements/CEGUIDragContainer.h>
 #include <CEGUIWindowManager.h>
 
@@ -140,16 +140,6 @@ bool ActionBarIcon::handleDragEntityIconDropped(const CEGUI::EventArgs& args, En
 		return mCurrentSlot->handleDragEntityIconDropped(args, icon);
 	}
 	return true;
-}
-
-ActionBarIconUserData::ActionBarIconUserData(ActionBarIcon& actionBarIcon)
-: mActionBarIcon(actionBarIcon)
-{
-}
-
-ActionBarIcon& ActionBarIconUserData::getActionBarIcon() const
-{
-	return mActionBarIcon;
 }
 
 }

@@ -148,7 +148,7 @@ noinst_HEADERS = \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \
 	widgets/EntityCreatorHideModelAction.h widgets/EntityCreatorModelAction.h widgets/EntityCreatorMovement.h \
 	widgets/EntityCreatorMovementBridge.h widgets/EntityCreatorPartAction.h widgets/EntityEditor.h widgets/EntityIcon.h \
-	widgets/EntityIconDragDropPreview.h widgets/EntityIconDragDropTarget.h widgets/EntityIconManager.h widgets/EntityIconSlot.h widgets/Help.h widgets/IconBar.h widgets/IconBase.h \
+	widgets/EntityIconDragDropPreview.h widgets/EntityIconDragDropTarget.h widgets/EntityIconManager.h widgets/EntityIconSlot.h widgets/GenericIconUserData.h widgets/Help.h widgets/IconBar.h widgets/IconBase.h \
 	widgets/IngameChatWidget.h widgets/InspectWidget.h widgets/ListHolder.h widgets/LoadingBar.h \
 	widgets/MakeEntityWidget.h widgets/MeshPreview.h widgets/ModelRenderer.h widgets/MovableObjectRenderer.h \
 	widgets/OgreEntityRenderer.h widgets/QuaternionAdapter.h widgets/QuickHelp.h widgets/QuickHelpCursor.h widgets/Quit.h widgets/ServerWidget.h widgets/StackableContainer.h  widgets/HelpMessage.h \

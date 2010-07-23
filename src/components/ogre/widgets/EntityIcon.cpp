@@ -134,20 +134,6 @@ bool EntityIcon::handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* ico
 	return true;
 
 }
-
-
-EntityIconUserData::EntityIconUserData(EntityIcon& entityIcon)
-: mEntityIcon(entityIcon)
-{
-}
-
-EntityIcon& EntityIconUserData::getEntityIcon() const
-{
-	return mEntityIcon;
-}
-
-
-
 }
 
 }

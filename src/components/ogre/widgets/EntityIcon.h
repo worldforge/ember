@@ -27,6 +27,7 @@
 #include "icons/Icon.h"
 #include "EntityIconManager.h"
 #include "EntityIconDragDropTarget.h"
+#include "GenericIconUserData.h"
 #include <sigc++/trackable.h>
 #include <boost/any.hpp>
 
@@ -192,7 +193,7 @@ protected:
 	/**
 	 * @brief The user data attached to the window which binds it to this instance.
 	 */
-	EntityIconUserData mUserData;
+	GenericIconUserData<EntityIcon> mUserData;
 
 	/**
 	 * @brief Holds the mUserData and is attached to the CEGUI::DragContainer.
