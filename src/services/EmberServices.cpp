@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Hans Häggström
+    Copyright (C) 2002  Hans HÃ¤ggstrÃ¶m
     Copyright (C) 2005	Erik Hjortsberg
 
     This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 #include "scripting/ScriptingService.h"
 #include "wfut/WfutService.h"
 #include "time/TimeService.h"
+#include "serversettings/ServerSettings.h"
 
 
 namespace Ember{
@@ -108,6 +109,10 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
 		return mTimeService->getService();
 	}
 	
+	Ember::Services::ServerSettings* EmberServices::getServerSettingsService() {
+		return mServerSettingsService->getService();
+	}
+
 	EmberServices::EmberServices()
 	: mScriptingService(std::auto_ptr<ServiceContainer<ScriptingService> >(new ServiceContainer<ScriptingService>()) )
 	, mSoundService(std::auto_ptr<ServiceContainer<SoundService> >(new ServiceContainer<SoundService>()) )
@@ -117,6 +122,7 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
 	, mWfutService(std::auto_ptr<ServiceContainer<WfutService> >(new ServiceContainer<WfutService>()) )
 	, mConfigService(std::auto_ptr<ServiceContainer<ConfigService> >(new ServiceContainer<ConfigService>()) )
 	, mTimeService(std::auto_ptr<ServiceContainer<Services::Time> >(new ServiceContainer<Services::Time>()) )
+	, mServerSettingsService(std::auto_ptr<ServiceContainer<Services::ServerSettings> >(new ServiceContainer<Services::ServerSettings>()) )
 	{
 	}
 

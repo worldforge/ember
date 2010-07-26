@@ -45,6 +45,7 @@
 #include "services/time/TimeService.h"
 #include "services/input/InputService.h"
 #include "services/input/Input.h"
+#include "services/serversettings/ServerSettings.h"
 
 #include "framework/ConsoleBackend.h"
 #include "framework/StreamLogObserver.h"
@@ -325,6 +326,10 @@ void Application::initializeServices()
 
 	S_LOG_INFO("Initializing wfut service");
 	EmberServices::getSingleton().getWfutService()->start();
+
+	S_LOG_INFO("Initializing server settings service");
+	EmberServices::getSingleton().getServerSettingsService()->start();
+
 
     EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
     EmberServices::getSingleton().getServerService()->DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));

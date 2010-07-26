@@ -502,6 +502,7 @@ AC_CONFIG_FILES([Makefile
 		 src/services/bindings/lua/Makefile
 		 src/services/wfut/Makefile
 		 src/services/input/Makefile
+		 src/services/serversettings/Makefile
 		 ember.dox
 		 ember
 		 ember.spec

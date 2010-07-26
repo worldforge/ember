@@ -3,7 +3,7 @@ INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src
 METASOURCES = AUTO
 
 SUBDIRS = bindings config input logging metaserver scripting server sound time \
-	wfut
+	wfut serversettings
 # removed subdirs: gui platform datamodel  input image font test sound
 noinst_LIBRARIES = libServices.a
 

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2002  Hans Häggström
+    Copyright (C) 2002  Hans HÃ¤ggstrÃ¶m
     Copyright (C) 2005	Erik Hjortsberg
 
     This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,6 @@ namespace Ember {
 	class LoggingService;
 	class ConfigService;
 	class InputService;
-	//class GuiService;
 	class MetaserverService;
 	class ServerService;
 	class SoundService;
@@ -39,6 +38,7 @@ namespace Ember {
 	class WfutService;
 	namespace Services {
 		class Time;
+		class ServerSettings;
 	}
 
 
@@ -159,7 +159,7 @@ private:
  *
  * </code>
  *
- * @author Hans Häggström
+ * @author Hans Hï¿½ggstrï¿½m
  */
 class EmberServices : public Ember::Singleton<EmberServices>
 {
@@ -194,11 +194,6 @@ public:
 	Ember::InputService *getInputService();
 	
 	/**
-	* Returns an instance of the GuiService
-	*/
-	//Ember::GuiService *getGuiService();
-	
-	/**
 	* Returns an instance of the MetaserverService
 	*/
 	Ember::MetaserverService *getMetaserverService();
@@ -209,8 +204,8 @@ public:
 	Ember::ServerService *getServerService();
 	
 	/**
-		* Returns an instance of the SoundService
-		*/
+	* Returns an instance of the SoundService
+	*/
 	Ember::SoundService *getSoundService();
 	
 	/**
@@ -228,6 +223,13 @@ public:
 	*/
 	Ember::Services::Time* getTimeService();
 	
+	/**
+	 * @brief Returns the server settings service.
+	 *
+	 * @returns The server settings service.
+	 */
+	Ember::Services::ServerSettings* getServerSettingsService();
+
 	//----------------------------------------------------------------------
 	// Setters
 	
@@ -265,6 +267,7 @@ private:
 	std::auto_ptr<ServiceContainer<WfutService> > mWfutService;
 	std::auto_ptr<ServiceContainer<ConfigService> > mConfigService;
 	std::auto_ptr<ServiceContainer<Services::Time> > mTimeService;
+	std::auto_ptr<ServiceContainer<Services::ServerSettings> > mServerSettingsService;
 
 };
 }
