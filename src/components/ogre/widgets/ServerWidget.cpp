@@ -40,6 +40,8 @@
 
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
+#include "services/serversettings/ServerSettings.h"
+#include "services/serversettings/ServerSettingsCredentials.h"
 #include "services/EmberServices.h"
 
 #include <Eris/ServerInfo.h>
@@ -241,65 +243,21 @@ bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
 	Eris::ServerInfo sInfo;
 	mAccount->getConnection()->getServerInfo(sInfo);
 	std::string sname = sInfo.getHostname();
-	std::string cacheFile;
-	std::string homeDir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
 
-	// fetch the configuration file
-	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general", "serverauthenticationcache")) {
-		cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general", "serverauthenticationcache");
-		S_LOG_VERBOSE("Server Cache File [ " << cacheFile << " ]");
-	} else {
-		// default fallback value
-		cacheFile = homeDir + "/.servercache";
-		S_LOG_VERBOSE("Default Server Cache [ " << cacheFile << "]. Config general:serverauthenticationcache is not present. ");
+	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
+	if (serverSettings->findItem(serverCredentials, "username")) {
+		user = static_cast<std::string>(serverSettings->getItem(serverCredentials, "username"));
 	}
-
-	std::string psection = sname.c_str();
-	std::ifstream file(cacheFile.c_str());
-
-	// create an empty config
-	varconf::Config serverCache;
-
-	// If an existing cachefile is present, then read it in.
-	if (!file.fail()) {
-		// read in file
-		// 		serverCache.readFromFile(cacheFile.c_str(),varconf::GLOBAL);
-		S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
-		try {
-			// make sure it is well formed
-			serverCache.parseStream(file, varconf::GLOBAL);
-		} catch (varconf::ParseError p) {
-			std::string p_str(p);
-			S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
-			return false;
-		}
-		file.close();
-
-		S_LOG_VERBOSE("psection pre-clean [ " << psection << " ]");
-		serverCache.clean(psection);
-		S_LOG_VERBOSE("psection post-clean [ " << psection << " ]");
-		if (serverCache.findSection(psection)) {
-			// we have a file, it's loaded, and we have a section that matches the server
-			user = static_cast<std::string> (serverCache.getItem(psection, "username"));
-			pass = static_cast<std::string> (serverCache.getItem(psection, "password"));
-			if (!user.empty() && !pass.empty()) {
-				S_LOG_VERBOSE("Fetched Credentials for server [" << psection << "]" << " and user [" << user << "]");
-				return true;
-			}
-			S_LOG_VERBOSE("username or password was empty");
-			return false;
-		}
-		S_LOG_VERBOSE("Did not find section [ " << psection << " ]");
+	if (serverSettings->findItem(serverCredentials, "password")) {
+		pass = static_cast<std::string>(serverSettings->getItem(serverCredentials, "password"));
 	}
-
-	user = "";
-	pass = "";
-	return false;
+	return pass != "" && user != "";
 }
 
 bool ServerWidget::saveCredentials()
 {
-	S_LOG_VERBOSE("Saving credantials.");
+	S_LOG_VERBOSE("Saving credentials.");
 
 	// check the main account is good, and fetch server info
 	assert(mAccount);
@@ -325,50 +283,11 @@ bool ServerWidget::saveCredentials()
 		CEGUI::String name = nameBox->getText();
 		CEGUI::String password = passwordBox->getText();
 		std::string sname = sInfo.getHostname();
-		std::string homeDir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory();
-		std::string cacheFile;
-		if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general", "serverauthenticationcache")) {
-			cacheFile = homeDir + "/" + (std::string)Ember::EmberServices::getSingleton().getConfigService()->getValue("general", "serverauthenticationcache");
-			S_LOG_VERBOSE("Server Cache File [ " << cacheFile << " ]");
-		} else {
-			// default fallback value
-			cacheFile = homeDir + "/.servercache";
-			S_LOG_VERBOSE("Default Server Cache [ " << cacheFile << "]. Config general:serverauthenticationcache is not present. ");
-		}
-
-		/*
-		 * Create a structure that looks like:
-		 * [server]
-		 *
-		 * username=<user>
-		 * password=<pass>
-		 */
-		std::string psection = sname.c_str();
-		std::ifstream file(cacheFile.c_str());
-
-		// create an empty config
-		varconf::Config serverCache;
-
-		// If an existing cachefile is present, then read it in.
-		if (!file.fail()) {
-			// read in file
-			// 			serverCache.readFromFile(cacheFile.c_str(),varconf::INSTANCE);
-			S_LOG_VERBOSE ( "Loading existing server cache [ " << cacheFile << " ]");
-			try {
-				// make sure it is well formed
-				serverCache.parseStream(file, varconf::INSTANCE);
-			} catch (varconf::ParseError p) {
-				std::string p_str(p);
-				S_LOG_FAILURE ( "Error loading server cache file: " << p_str );
-				return false;
-			}
-			file.close();
-		}
-
-		// rea
-		serverCache.setItem(psection, "username", name.c_str());
-		serverCache.setItem(psection, "password", password.c_str());
-		serverCache.writeToFile(cacheFile, varconf::INSTANCE);
+		Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+		Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
+		serverSettings->setItem(serverCredentials, "username", name.c_str());
+		serverSettings->setItem(serverCredentials, "password", password.c_str());
+		serverSettings->writeToDisk();
 		return true;
 	}
 	return false;
