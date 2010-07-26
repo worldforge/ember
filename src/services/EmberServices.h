@@ -159,7 +159,7 @@ private:
  *
  * </code>
  *
- * @author Hans H�ggstr�m
+ * @author Hans Häggström
  */
 class EmberServices : public Ember::Singleton<EmberServices>
 {

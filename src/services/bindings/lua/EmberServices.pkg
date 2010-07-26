@@ -21,6 +21,8 @@ $pfile "ServerService.pkg";
 $pfile "ScriptingService.pkg";
 $pfile "InputService.pkg";
 $pfile "IInputAdapter.pkg";
+$pfile "ServerSettings.pkg";
+$pfile "ServerSettingsCredentials.pkg";
 //  class SoundService;
 
 namespace Ember {
@@ -57,6 +59,13 @@ class EmberServices
 //    Ember::SoundService *getSoundService();
     
     Ember::ScriptingService *getScriptingService();
+    
+	/**
+	 * @brief Returns the server settings service.
+	 *
+	 * @returns The server settings service.
+	 */
+	Ember::Services::ServerSettings* getServerSettingsService();
 
 
 };
