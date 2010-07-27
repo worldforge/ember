@@ -8,7 +8,8 @@ ActionBarDefaultAction = {}
 function ActionBarDefaultAction:wieldCommandObject()
 	debugObject("attempting to wield")
 	if self.mCommandObject ~= nil then
-		emberServices:getServerService():wield(self.mCommandObject)
+		self.wearFunction = self.mDefaultActionList:getDefaultWearableFunction()
+		self:wearFunction(self.mCommandObject)
 	end
 end
 
@@ -20,7 +21,6 @@ end
 
 --Execute our default action on the command object.
 function ActionBarDefaultAction:executeAction()
-	debugObject(self.mDefaultFunction)
 	self:mDefaultFunction()
 end
 
@@ -31,10 +31,11 @@ function ActionBarDefaultAction:initFromEntityIcon(entity)
 end
 
 --Create a new action bar actio.
-function ActionBarDefaultAction:new()
+function ActionBarDefaultAction:new(defaultActionList)
 	local actionbarDefaultAction = {
 			mCommandObject = nil,
 			mDefaultFunction = nil,
+			mDefaultActionList = defaultActionList
 		}
 	setmetatable(actionbarDefaultAction,{__index=ActionBarDefaultAction})
 	return actionbarDefaultAction

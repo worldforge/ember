@@ -97,7 +97,7 @@ end
 --@param icon Generic icon to use for the layout.
 function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
 	--Create and attach an empty default action for the icon.
-	actionBarIconWrapper.defaultAction = ActionBarDefaultAction:new()
+	actionBarIconWrapper.defaultAction = ActionBarDefaultAction:new(self.defaultActionList)
 	--Based on the generic icon passed, we create an action bar icon.
 	actionBarIconWrapper.actionBarIcon = self.actionBarIconManager:createIcon(icon, self.iconSize)
 	actionBarIconWrapper.actionBarIcon:getImage():setProperty("InheritsAlpha", "false")
@@ -179,7 +179,7 @@ end
 
 --Create a new action bar.
 --@param rotation The rotation of the action bar, either horizontal or veritcal.
-function ActionBar.new(rotation)
+function ActionBar.new(rotation, defActionList)
 	local actionbar = {   iconSize = 50,
 				maxSlots = 5,
 				iconcounter = 0,
@@ -190,7 +190,7 @@ function ActionBar.new(rotation)
 				connectors={},
 				widget = nil,
 				layout = rotation, --Vertical or horizontal action bar
-				defaultAction = nil,
+				defaultActionList = defActionList,
 				hotkeys = {},
 				slots = {}};
 				

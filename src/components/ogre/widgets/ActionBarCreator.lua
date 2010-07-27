@@ -4,6 +4,8 @@ as well as deleting existing bars by selecting them in the list and clicking del
 ]]--
 ActionBarCreator = {}
 
+loadScript("DefaultEntityActions.lua")
+
 function ActionBarCreator:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("ActionBarCreator.layout", "ActionBarCreator/")
@@ -37,7 +39,7 @@ function ActionBarCreator:createActionBar(layout)
 	local name = "ActionBar"..i
 	
 	--Create the new Actionbar.
-	a1 = ActionBar.new(layout)
+	a1 = ActionBar.new(layout, self.defaultActionList)
 	a1:init(name)
 	
 	--Insert into our dictionary.
@@ -108,7 +110,8 @@ end
 ActionBarCreator.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
 		if emberOgre:getWorld():getAvatar():isAdmin() == false then
 			actionbarCreator = {connectors={},
-				actionbars = {}}
+				actionbars = {},
+				defaultActionList = DefaultEntityActions.new()}
 			setmetatable(actionbarCreator, {__index = ActionBarCreator})
 			actionbarCreator:buildCEGUIWidget()
 			actionbarCreator:init()
