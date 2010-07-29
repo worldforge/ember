@@ -43,7 +43,7 @@ namespace Ember
 class ConnectedAdapter: public IServerAdapter
 {
 public:
-    ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar, Eris::Connection& connection);
+    ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar);
 
 	~ConnectedAdapter();
 

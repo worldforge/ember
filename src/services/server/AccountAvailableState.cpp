@@ -62,8 +62,8 @@ void AccountAvailableState::loginSuccess()
 {
 	S_LOG_INFO("Login Success.");
 	ConsoleBackend::getSingleton().pushMessage("Login Successful");
-	getSignals().LoginSuccess.emit(&mAccount);
 	setChildState(new LoggedInState(*this, mAccount));
+	getSignals().LoginSuccess.emit(&mAccount);
 }
 
 void AccountAvailableState::runCommand(const std::string &command, const std::string &args)

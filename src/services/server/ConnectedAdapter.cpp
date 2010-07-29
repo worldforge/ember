@@ -45,8 +45,8 @@
 namespace Ember
 {
 
-ConnectedAdapter::ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar, Eris::Connection& connection) :
-	mAccount(account), mAvatar(avatar), mConnection(connection)
+ConnectedAdapter::ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar) :
+	mAccount(account), mAvatar(avatar), mConnection(*avatar.getConnection())
 {
 }
 

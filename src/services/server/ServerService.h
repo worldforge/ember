@@ -19,16 +19,19 @@
 #ifndef SERVERSERVICE_H
 #define SERVERSERVICE_H
 
-#include <framework/Service.h>
-#include <framework/ConsoleObject.h>
-#include <framework/ConsoleCommandWrapper.h>
+#include "ServerServiceSignals.h"
 
-#include <Atlas/Objects/RootOperation.h>
-#include <Eris/BaseConnection.h>
+#include "framework/Service.h"
+
+#include <wfmath/vector.h>
+#include <wfmath/point.h>
+#include <wfmath/quaternion.h>
+
+#include <Atlas/Message/Element.h>
 
 #include <sigc++/object_slot.h>
+#include <memory>
 
-#include "IServerAdapter.h"
 
 namespace Eris
 {
@@ -37,12 +40,15 @@ class Connection;
 class View;
 class Lobby;
 class Account;
+class Entity;
 }
 
 namespace Ember
 {
 
 class OOGChat;
+class NonConnectedState;
+class IServerAdapter;
 
 /**
  * @brief Ember Server Service
@@ -55,7 +61,7 @@ class OOGChat;
  * @see Ember::MetaserverService
  * @see Ember::ConsoleObject
  */
-class ServerService: public Service, public ConsoleObject
+class ServerService: public Service, public ServerServiceSignals
 {
 public:
 
@@ -82,20 +88,6 @@ public:
 	void disconnect();
 
 	/**
-	 * @brief Tries to log the account out from the server.
-	 *
-	 * @returns True if successful.
-	 */
-	bool logoutAccount();
-
-	/**
-	 * @brief Tries to log the avatar out from the server.
-	 *
-	 * @returns True if successful.
-	 */
-	bool logoutAvatar();
-
-	/**
 	 * @brief Logs out the user.
 	 *
 	 * If the user has an avatar, that will be logged out. If the user doesn't have an avatar yet but is logged in through the account, the account will be logged out.
@@ -119,9 +111,7 @@ public:
 	 */
 	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
 
-	void runCommand(const std::string &, const std::string &);
-
-	Eris::View* getView() const;
+//	Eris::View* getView() const;
 	Eris::Avatar* getAvatar() const;
 
 	/**
@@ -148,13 +138,6 @@ public:
 	 * @param velocity The velocity with which to move the user.
 	 */
 	void moveInDirection(const WFMath::Vector<3>& velocity);
-	/**
-	 *    Teleports the avatar to the specified location.
-	 *    NOTE: This will only work if the user is logged in as admin.
-	 * @param dest The destination coords.
-	 * @param entity The location entity. In most cases this will be the world entity.
-	 */
-	// 	void teleportTo(const WFMath::Point<3>& dest, Eris::Entity* entity);
 
 	/**
 	 * @brief Say something out loud.
@@ -212,70 +195,23 @@ public:
 	 */
 	void setTypeInfo(const Atlas::Objects::Root& typeInfo);
 
-	//void use(Eris::Entity* entity);
-
-	//----------------------------------------------------------------------
-	// Signals
-	sigc::signal<void, Eris::Avatar*> GotAvatar;
-	sigc::signal<void, Eris::View*> GotView;
-	sigc::signal<void, Eris::Connection*> GotConnection;
-	sigc::signal<void, Eris::Account*> GotAccount;
-	sigc::signal<void, Eris::Account*> LoginSuccess;
-	sigc::signal<void, Eris::Account*, const std::string&> LoginFailure;
-	sigc::signal<void, const Atlas::Objects::Entity::RootEntity&> GotCharacterInfo;
-	sigc::signal<void, Eris::Account*> GotAllCharacters;
-
-	/**
-	 * @brief Emitted when the Account object has been destroyed.
-	 */
-	sigc::signal<void> DestroyedAccount;
-
-	/**
-	 * @brief Emitted when the Avatar instance has been destroyed.
-	 */
-	sigc::signal<void> DestroyedAvatar;
-
-	/**
-	 * @brief Emitted when the View instance has been destroyed.
-	 */
-	sigc::signal<void> DestroyedView;
-
-	/**
-	 * @brief Emitted when an object is about to be sent to the server.
-	 */
-	sigc::signal<void, const Atlas::Objects::Root&> EventSendingObject;
-
-	/**
-	 * @brief Emitted when an object has been received.
-	 */
-	sigc::signal<void, const Atlas::Objects::Root&> EventReceivedObject;
-
-	/**
-	 * @brief Emitted when the current connection status changes.
-	 */
-	sigc::signal<void, Eris::BaseConnection::Status> EventStatusChanged;
-
 private:
 
-	/**
-	 * @brief Holds our connection to the server
-	 */
-	Eris::Connection *mConn;
+	void gotConnection(Eris::Connection* connection);
 
-	/**
-	 * @brief Holds the player object we are connected with
-	 */
-	Eris::Account *mAccount;
+	void gotAvatar(Eris::Avatar* avatar);
 
-	/**
-	 * @brief Holds the world object of this server
-	 */
-	Eris::View *mView;
+	void gotAccount(Eris::Account* account);
 
-	/**
-	 * @brief Holds the current avatar
-	 */
-	Eris::Avatar *mAvatar;
+	void destroyedAccount();
+
+	void destroyedAvatar();
+
+	IServerAdapter& getAdapter();
+
+	Eris::Connection* mConnection;
+	Eris::Account* mAccount;
+	Eris::Avatar* mAvatar;
 
 	/**
 	 * @brief Contains the class that controls Out of Game Chat
@@ -283,93 +219,14 @@ private:
 	OOGChat *mOOGChat;
 
 	/**
-	 * @brief The host we are connected/ing to at present
-	 */
-	std::string myHost;
-
-	/**
-	 * @brief The port we are using to connect
-	 */
-	short myPort;
-
-	/**
-	 * @brief True if and only if we are successfully connected to the server
-	 */
-	bool mConnected;
-
-	const ConsoleCommandWrapper Connect;
-	//const ConsoleCommandWrapper ReConnect;
-	const ConsoleCommandWrapper DisConnect;
-	const ConsoleCommandWrapper CreateAcc;
-	const ConsoleCommandWrapper Login;
-	const ConsoleCommandWrapper Logout;
-	const ConsoleCommandWrapper CreateChar;
-	const ConsoleCommandWrapper TakeChar;
-	const ConsoleCommandWrapper ListChars;
-	const ConsoleCommandWrapper Say;
-	const ConsoleCommandWrapper Emote;
-	const ConsoleCommandWrapper Delete;
-	const ConsoleCommandWrapper AdminTell;
-
-	/**
 	 * @brief The adapter which holds the actual implementation of any server communication.
 	 * When the client isn't connected this will be represented by an instance of NonConnectedAdapter, whereas when it is connected to a server it will be represented by an instance of ConnectedAdapter.
 	 */
 	IServerAdapter* mServerAdapter;
 
-	void gotFailure(const std::string& msg);
-
-	void connected();
-
-	bool disconnecting();
-
-	void disconnected();
-
-	void statusChanged(Eris::BaseConnection::Status status);
-
-	void timeout(Eris::BaseConnection::Status status);
-
-	void gotAvatarSuccess(Eris::Avatar* avatar);
-
-	void gotAvatarDeactivated(Eris::Avatar* avatar);
-
-	void gotCharacterInfo(const Atlas::Objects::Entity::RootEntity& characterInfo);
-
-	void gotAllCharacters();
-
-	//    void loginFailure(Eris::LoginFailureType, const std::string &);
-	void loginFailure(const std::string& message);
-
-	void loginSuccess();
-
-	void logoutComplete(bool clean);
-
-	/**
-	 * @brief Destroys the account object and emits suitable signals.
-	 */
-	void cleanUpAccount();
+	std::auto_ptr<NonConnectedState> mNonConnectedState;
 
 };
-
-inline bool ServerService::isConnected() const
-{
-	return mConnected;
-}
-
-inline Eris::View* ServerService::getView() const
-{
-	return mView;
-}
-
-inline Eris::Avatar* ServerService::getAvatar() const
-{
-	return mAvatar;
-}
-
-inline Eris::Connection* ServerService::getConnection() const
-{
-	return mConn;
-}
 
 } // namespace Ember
 

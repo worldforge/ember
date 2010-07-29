@@ -101,6 +101,7 @@ void ConnectingState::connected()
 
 void ConnectingState::statusChanged(Eris::BaseConnection::Status status)
 {
+	getSignals().EventStatusChanged.emit(status);
 	S_LOG_INFO("Status Changed to: " << status);
 }
 

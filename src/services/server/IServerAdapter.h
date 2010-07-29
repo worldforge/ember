@@ -38,7 +38,7 @@ namespace Ember {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class IServerAdapter{
+class IServerAdapter {
 public:
 
 	virtual ~IServerAdapter() {}

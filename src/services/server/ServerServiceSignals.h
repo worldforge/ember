@@ -22,6 +22,7 @@
 #include <sigc++/signal.h>
 
 #include <Atlas/Objects/ObjectsFwd.h>
+#include <Eris/BaseConnection.h>
 #include <string>
 
 namespace Eris
@@ -73,6 +74,11 @@ public:
 	 * @brief Emitted when an object has been received.
 	 */
 	sigc::signal<void, const Atlas::Objects::Root&> EventReceivedObject;
+
+	/**
+	 * @brief Emitted when the current connection status changes.
+	 */
+	sigc::signal<void, Eris::BaseConnection::Status> EventStatusChanged;
 
 };
 }
