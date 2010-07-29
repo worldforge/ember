@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 erik
+ Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,17 +26,41 @@ namespace Ember {
 class ServerServiceSignals;
 class IServerAdapter;
 
+/**
+ * @brief Represents one state in the server connection process, from a connection is created, to the user has entered into the world (and beyond, when the user might be teleporting to another server).
+ *
+ * Each state can have a child state, which represents the next possible connection state (for example going from "connecting" to "connected"). When a state is destroyed it must also destroy its child state.
+ */
 class IState
 {
 public:
-	virtual ~IState() {};
 
+	/**
+	 * @brief Dtor.
+	 * When the state is destroyed, any child state needs to be destroyed as well.
+	 */
+	virtual ~IState() {}
+
+	/**
+	 * @brief Destroys any child state.
+	 */
 	virtual void destroyChildState() = 0;
 
+	/**
+	 * @brief Gets the server service signals.
+	 * @return The server service signals.
+	 */
 	virtual ServerServiceSignals& getSignals() const = 0;
 
+	/**
+	 * @brief Gets the top state in the state hierarchy.
+	 * @return The top state.
+	 */
 	virtual IState& getTopState() = 0;
 
+	/**
+	 * @brief Disconnects from the server.
+	 */
 	virtual void disconnect() = 0;
 
 	/**
@@ -63,6 +87,11 @@ public:
 	 */
 	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName) = 0;
 
+	/**
+	 * @brief Gets the server adapter.
+	 * The server adapter is the main class for performing actions against the server (move, take, drop etc.) once the user has entered into the world.
+	 * @return The server adapter.
+	 */
 	virtual IServerAdapter& getServerAdapter() = 0;
 
 };

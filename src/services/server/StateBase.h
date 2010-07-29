@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 erik
+ Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -23,11 +23,17 @@
 #include "NonConnectedAdapter.h"
 #include <sigc++/trackable.h>
 
-namespace Ember {
+namespace Ember
+{
 
 class ServerServiceSignals;
 
-class StateBaseCore : public IState, public virtual sigc::trackable
+/**
+ * @brief Base core class for most instances of IState. The default behavior of all methods is to delegate to the parent state.
+ *
+ * This allows subclasses to rely on all methods being propagated upwards, unless they override on of the methods and provide their own implementation.
+ */
+class StateBaseCore: public IState, public virtual sigc::trackable
 {
 public:
 	StateBaseCore(IState& parentState);
@@ -54,8 +60,11 @@ private:
 	IState& mParentState;
 };
 
-template <typename TChildState>
-class StateBase : public StateBaseCore
+/**
+ * @brief Base class for any states which will contain a parent state (which is pretty much each one).
+ */
+template<typename TChildState>
+class StateBase: public StateBaseCore
 {
 public:
 	StateBase(IState& parentState);
@@ -77,15 +86,14 @@ private:
 	TChildState* mChildState;
 };
 
-inline StateBaseCore::StateBaseCore(IState& parentState)
-: mParentState(parentState)
+inline StateBaseCore::StateBaseCore(IState& parentState) :
+	mParentState(parentState)
 {
 }
 
 inline StateBaseCore::~StateBaseCore()
 {
 }
-
 
 inline IState& StateBaseCore::getParentState() const
 {
@@ -122,46 +130,44 @@ inline IServerAdapter& StateBaseCore::getServerAdapter()
 	return sNonConnectedAdapter;
 }
 
-
-template <typename TChildState>
-inline StateBase<TChildState>::StateBase(IState& parentState)
-: StateBaseCore::StateBaseCore(parentState), mChildState(0)
+template<typename TChildState>
+inline StateBase<TChildState>::StateBase(IState& parentState) :
+	StateBaseCore::StateBaseCore(parentState), mChildState(0)
 {
 }
 
-template <typename TChildState>
+template<typename TChildState>
 inline StateBase<TChildState>::~StateBase()
 {
 	delete mChildState;
 }
 
-
-template <typename TChildState>
+template<typename TChildState>
 inline void StateBase<TChildState>::destroyChildState()
 {
 	delete mChildState;
 	mChildState = 0;
 }
 
-template <>
+template<>
 inline void StateBase<void>::destroyChildState()
 {
 }
 
-template <typename TChildState>
+template<typename TChildState>
 inline void StateBase<TChildState>::setChildState(TChildState* childState)
 {
 	delete mChildState;
 	mChildState = childState;
 }
 
-template <typename TChildState>
+template<typename TChildState>
 inline TChildState* StateBase<TChildState>::getChildState() const
 {
 	return mChildState;
 }
 
-template <typename TChildState>
+template<typename TChildState>
 inline IState& StateBase<TChildState>::getTopState()
 {
 	if (mChildState) {
@@ -169,8 +175,6 @@ inline IState& StateBase<TChildState>::getTopState()
 	}
 	return *this;
 }
-
-
 
 }
 

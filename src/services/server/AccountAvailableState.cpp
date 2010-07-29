@@ -1,0 +1,107 @@
+/*
+ Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "AccountAvailableState.h"
+#include "LoggedInState.h"
+#include "ServerServiceSignals.h"
+#include "framework/Tokeniser.h"
+#include "framework/ConsoleBackend.h"
+#include "framework/LoggingInstance.h"
+
+#include <iostream>
+#include <sstream>
+
+namespace Ember
+{
+
+AccountAvailableState::AccountAvailableState(IState& parentState, Eris::Connection& connection) :
+	StateBase<LoggedInState>::StateBase(parentState), CreateAcc("create", this, "Create an account on the server."), Login("login", this, "Login to the connected server."), mAccount(&connection)
+{
+	mAccount.LoginFailure.connect(sigc::mem_fun(*this, &AccountAvailableState::loginFailure));
+	mAccount.LoginSuccess.connect(sigc::mem_fun(*this, &AccountAvailableState::loginSuccess));
+	getSignals().GotAccount.emit(&mAccount);
+
+}
+
+AccountAvailableState::~AccountAvailableState()
+{
+	getSignals().DestroyedAccount.emit();
+}
+
+void AccountAvailableState::loginFailure(const std::string& msg)
+{
+	std::ostringstream temp;
+
+	temp << "Login Failure:" << msg;
+	S_LOG_WARNING(temp.str());
+
+	ConsoleBackend::getSingleton().pushMessage(temp.str());
+	getSignals().LoginFailure.emit(&mAccount, msg);
+}
+
+void AccountAvailableState::loginSuccess()
+{
+	S_LOG_INFO("Login Success.");
+	ConsoleBackend::getSingleton().pushMessage("Login Successful");
+	getSignals().LoginSuccess.emit(&mAccount);
+	setChildState(new LoggedInState(*this, mAccount));
+}
+
+void AccountAvailableState::runCommand(const std::string &command, const std::string &args)
+{
+	if (CreateAcc == command) {
+
+		Tokeniser tokeniser = Tokeniser();
+		tokeniser.initTokens(args);
+		std::string uname = tokeniser.nextToken();
+		std::string password = tokeniser.nextToken();
+		std::string realname = tokeniser.remainingTokens();
+
+		std::string msg;
+		msg = "Creating account: Name: [" + uname + "], Password: [" + password + "], Real Name: [" + realname + "]";
+
+		try {
+			mAccount.createAccount(uname, realname, password);
+		} catch (const std::exception& except) {
+			S_LOG_WARNING("Got error on account creation." << except);
+			return;
+		} catch (...) {
+			S_LOG_WARNING("Got unknown error on account creation.");
+			return;
+		}
+
+	} else if (Login == command) {
+
+		// Split string into userid / password pair
+		Tokeniser tokeniser = Tokeniser();
+		tokeniser.initTokens(args);
+		std::string userid = tokeniser.nextToken();
+		std::string password = tokeniser.remainingTokens();
+
+		mAccount.login(userid, password);
+
+		std::string msg;
+		msg = "Login: [" + userid + "," + password + "]";
+		ConsoleBackend::getSingleton().pushMessage(msg);
+	}
+}
+}

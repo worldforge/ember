@@ -25,28 +25,32 @@
 
 #include "IServerAdapter.h"
 
-namespace Eris {
-	class Avatar;
-	class Connection;
-	class Account;
+namespace Eris
+{
+class Avatar;
+class Connection;
+class Account;
 }
 
-namespace Ember {
+namespace Ember
+{
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class ConnectedAdapter : public IServerAdapter
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief A server adapter used when the user is connected and have an entity in the world.
+ */
+class ConnectedAdapter: public IServerAdapter
 {
 public:
     ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar, Eris::Connection& connection);
 
-    ~ConnectedAdapter();
+	~ConnectedAdapter();
 
 	virtual void moveToPoint(const WFMath::Point<3>& dest);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity);
-// 	virtual void teleportTo(const WFMath::Point<3>& dest);
+	// 	virtual void teleportTo(const WFMath::Point<3>& dest);
 	virtual void say(const std::string &message);
 	virtual void touch(Eris::Entity* entity);
 	virtual void emote(const std::string& emote);
