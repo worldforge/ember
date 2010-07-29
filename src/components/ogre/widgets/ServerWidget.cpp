@@ -67,6 +67,8 @@
 #include <elements/CEGUIGUISheet.h>
 #include <CEGUIExceptions.h>
 
+#include <sigc++/bind.h>
+
 
 
 using namespace CEGUI;
@@ -79,7 +81,7 @@ namespace Gui
 //WidgetLoader Widget::loader("ServerWidget", &createWidgetInstance<ServerWidget>);
 
 ServerWidget::ServerWidget() :
-	mCharacterList(0), mModelPreviewRenderer(0)
+	mCharacterList(0), mModelPreviewRenderer(0), mAccount(0)
 {
 }
 
@@ -174,14 +176,14 @@ void ServerWidget::buildWidget()
 
 }
 
-void ServerWidget::connection_GotServerInfo()
+void ServerWidget::connection_GotServerInfo(Eris::Connection* connection)
 {
-	showServerInfo();
+	showServerInfo(connection);
 }
 
 void ServerWidget::setConnection(Eris::Connection* connection)
 {
-	connection->GotServerInfo.connect(sigc::mem_fun(*this, &ServerWidget::connection_GotServerInfo));
+	connection->GotServerInfo.connect(sigc::bind(sigc::mem_fun(*this, &ServerWidget::connection_GotServerInfo), connection));
 	connection->refreshServerInfo();
 	connection->Disconnected.connect(sigc::mem_fun(*this, &ServerWidget::connection_Disconnected));
 }
@@ -198,13 +200,12 @@ void ServerWidget::createdAccount(Eris::Account* account)
 	mMainWindow->moveToFront();
 }
 
-void ServerWidget::showServerInfo()
+void ServerWidget::showServerInfo(Eris::Connection* connection)
 {
 	try {
 		CEGUI::Window* info = getWindow("Info");
-		assert(mAccount);
 		Eris::ServerInfo sInfo;
-		mAccount->getConnection()->getServerInfo(sInfo);
+		connection->getServerInfo(sInfo);
 		std::stringstream ss;
 		ss << "Server name: " << sInfo.getServername() << "\n";
 		ss << "Ruleset: " << sInfo.getRuleset() << "\n";
@@ -223,7 +224,7 @@ void ServerWidget::showServerInfo()
 		CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
 		std::string savedUser = "";
 		std::string savedPass = "";
-		if (fetchCredentials(savedUser, savedPass)) {
+		if (fetchCredentials(connection, savedUser, savedPass)) {
 			nameBox->setText(savedUser);
 			passwordBox->setText(savedPass);
 		}
@@ -234,14 +235,12 @@ void ServerWidget::showServerInfo()
 	}
 }
 
-bool ServerWidget::fetchCredentials(std::string& user, std::string& pass)
+bool ServerWidget::fetchCredentials(Eris::Connection* connection, std::string& user, std::string& pass)
 {
 	S_LOG_VERBOSE("Fetching saved credentials.");
 
-	// check the main account is good, and fetch server info
-	assert(mAccount);
 	Eris::ServerInfo sInfo;
-	mAccount->getConnection()->getServerInfo(sInfo);
+	connection->getServerInfo(sInfo);
 	std::string sname = sInfo.getHostname();
 
 	Ember::Services::ServerSettingsCredentials serverCredentials(sname);

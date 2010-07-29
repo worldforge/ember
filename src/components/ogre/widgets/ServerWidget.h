@@ -88,7 +88,7 @@ protected:
 	bool OkButton_Click(const CEGUI::EventArgs& args);
 	bool Disconnect_Click(const CEGUI::EventArgs& args);
 	
-	bool fetchCredentials(std::string& user, std::string& pass);
+	bool fetchCredentials(Eris::Connection* connection, std::string& user, std::string& pass);
 	bool saveCredentials(void);
 	void loginSuccess(Eris::Account* account);
 	void logoutComplete(bool clean);
@@ -151,7 +151,7 @@ protected:
 	/**
 	 *    Consume Eris::Connection::GotServerInfo signals.
 	 */
-	void connection_GotServerInfo();
+	void connection_GotServerInfo(Eris::Connection* connection);
 	
 	void setConnection(Eris::Connection* connection);
 	
@@ -160,7 +160,7 @@ protected:
 	/**
 	 *    Shows server info.
 	 */
-	void showServerInfo();
+	void showServerInfo(Eris::Connection* connection);
 	
 	/**
 	 * @brief Shows an alert explaining to the user that the server doesn't have any available characters and thus isn't correctly setup.

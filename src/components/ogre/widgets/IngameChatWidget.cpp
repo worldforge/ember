@@ -53,8 +53,8 @@
 #include "components/ogre/camera/MainCamera.h"
 
 #include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
+#include "services/config/ConfigService.h"
 #include <sigc++/slot.h>
 
 #include <OgreCamera.h>
@@ -110,7 +110,7 @@ Window* IngameChatWidget::getLabelSheet()
 
 void IngameChatWidget::ServerService_GotView(Eris::View* view)
 {
-	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
+	Eris::TypeService* typeService = view->getAvatar()->getConnection()->getTypeService();
 	mLabelTypes.push_back(typeService->getTypeByName("character"));
 
 	view->EntitySeen.connect(sigc::mem_fun(*this, &IngameChatWidget::View_EntitySeen));
