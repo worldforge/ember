@@ -34,14 +34,14 @@
 			<Window Type='EmberLook/StaticText' Name='WieldFunction/Text'>
 				<Property Name='UnifiedSize' Value='{{0.0,90.0},{0.0,20.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,2.0}}'/>
-				<Property Name='Text' Value='Wield Function: '/>
+				<Property Name='Text' Value='Wieldable Attr.: '/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='FrameEnabled' Value='False'/>
 				<Property Name='BackgroundEnabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/Combobox' Name='WieldFunction'>
-				<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.0,30.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,90.0},{0.0,2.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.0,100.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,100.0},{0.0,2.0}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='ReadOnly' Value='true'/>
 				<Property Name='Tooltip' Value='The default action for wieldable entities.'/>
@@ -49,14 +49,14 @@
 				<Window Type='EmberLook/StaticText' Name='EdibleFunction/Text'>
 				<Property Name='UnifiedSize' Value='{{0.0,90.0},{0.0,20.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,32.0}}'/>
-				<Property Name='Text' Value='Edible Function: '/>
+				<Property Name='Text' Value='Edible Attri.: '/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='FrameEnabled' Value='False'/>
 				<Property Name='BackgroundEnabled' Value='False'/>
 			</Window>
 			<Window Type='EmberLook/Combobox' Name='EdibleFunction'>
-				<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.0,30.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,90.0},{0.0,32.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.0,100.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,100.0},{0.0,32.0}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='ReadOnly' Value='true'/>
 				<Property Name='Tooltip' Value='The default action for edible entities.'/>

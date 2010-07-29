@@ -19,6 +19,18 @@ function ActionBarCreator:buildCEGUIWidget()
 	self.deleteButton = CEGUI.toPushButton(self.widget:getWindow("Delete"))
 	self.deleteButton:subscribeEvent("Clicked", self.Delete_Click, self)
 	
+	self.wieldComboBox = CEGUI.toCombobox(self.widget:getWindow("WieldFunction"))
+	self.wieldComboBox:subscribeEvent("ListSelectionChanged", self.WieldComboBox_Change ,self)
+	self:populateCombobox(self.wieldComboBox)
+	self.wieldComboBox:setItemSelectState(0, true)
+	self.wieldComboBox:setShowVertScrollbar(true)
+	
+	self.edibleComboBox = CEGUI.toCombobox(self.widget:getWindow("EdibleFunction"))
+	self.edibleComboBox:subscribeEvent("ListSelectionChanged", self.EdibleComboBox_Change ,self)
+	self:populateCombobox(self.edibleComboBox)
+	self.edibleComboBox:setItemSelectState(1, true)
+	self.edibleComboBox:setShowVertScrollbar(true)
+		
 	self.actionBarListbox = CEGUI.toListbox(self.widget:getWindow("ActionBarList"))
 	--We only want the use to select one action bar at a time.
 	self.actionBarListbox:setMultiselectEnabled(false)
@@ -73,6 +85,16 @@ function ActionBarCreator:deleteActionBar()
 	self.actionbarCount = self.actionbarCount-1
 end
 
+function ActionBarCreator:populateCombobox(combobox)
+	local item = EmberOgre.Gui.ColouredListItem:new("Wield", 0)
+	combobox:addItem(item)
+	item = EmberOgre.Gui.ColouredListItem:new("Eat", 1)
+	combobox:addItem(item)
+	combobox:setItemSelectState(0, true)
+	combobox:setSingleClickEnabled(true)
+	debugObject("blah")
+end
+
 --Capture user clicks of the delete button.
 function ActionBarCreator:Delete_Click()
 	self:deleteActionBar()
@@ -82,6 +104,30 @@ end
 function ActionBarCreator:CreateVert_Click()
 	local type = "Vert"
 	self:createActionBar(type)
+end
+
+function ActionBarCreator:WieldComboBox_Change()
+	local item = self.wieldComboBox:getSelectedItem()
+	if item ~= nil then
+		local selectId = item:getID()
+		if selectId == 0 then
+			self.defaultActionList:setDefaultWearableFunction(self.defaultActionList.wield)
+		elseif selectId == 1 then
+			self.defaultActionList:setDefaultWearableFunction(self.defaultActionList.eat)
+		end
+	end
+end
+
+function ActionBarCreator:EdibleComboBox_Change()
+	local item = self.edibleComboBox:getSelectedItem()
+	if item ~= nil then
+		local selectId = item:getID()
+		if selectId == 0 then
+			self.defaultActionList:setDefaultBioMassFunction(self.defaultActionList.wield)
+		elseif selectId == 1 then
+			self.defaultActionList:setDefaultBioMassFunction(self.defaultActionList.eat)
+		end
+	end
 end
 
 --Capture user clicks of the create horizontal action bar button.

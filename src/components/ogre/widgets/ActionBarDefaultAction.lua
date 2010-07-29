@@ -5,18 +5,28 @@ Responsible for managing the default action executed when a user clicks on an ac
 ActionBarDefaultAction = {}
 
 --Executed on entities that can be equipped.
-function ActionBarDefaultAction:wieldCommandObject()
-	debugObject("attempting to wield")
+function ActionBarDefaultAction:wieldableCommandObject()
 	if self.mCommandObject ~= nil then
 		self.wearFunction = self.mDefaultActionList:getDefaultWearableFunction()
 		self:wearFunction(self.mCommandObject)
 	end
 end
 
+--Executed on entities that are edible.
+function ActionBarDefaultAction:edibleCommandObject()
+	if self.mCommandObject ~= nil then
+		self.eatFunction = self.mDefaultActionList:getDefaultBioMassFunction()
+		self:eatFunction(self.mCommandObject)
+	end
+end
+
 --Based on the entity, we attempt to figure out what action to take
 function ActionBarDefaultAction:setEntityDefaultFunction()
-	--TODO: Based on the entity type, set the default function
-	self.mDefaultFunction = ActionBarDefaultAction.wieldCommandObject
+	if self.mCommandObject:hasAttr("biomass") then
+		self.mDefaultFunction = self.edibleCommandObject
+	else
+		self.mDefaultFunction = self.wieldableCommandObject
+	end
 end
 
 --Execute our default action on the command object.
@@ -30,7 +40,7 @@ function ActionBarDefaultAction:initFromEntityIcon(entity)
 	self:setEntityDefaultFunction()
 end
 
---Create a new action bar actio.
+--Create a new action bar action.
 function ActionBarDefaultAction:new(defaultActionList)
 	local actionbarDefaultAction = {
 			mCommandObject = nil,
