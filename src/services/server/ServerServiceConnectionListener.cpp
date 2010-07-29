@@ -17,12 +17,13 @@
  */
 
 #include "ServerServiceConnectionListener.h"
-#include "ServerService.h"
+#include "ServerServiceSignals.h"
 #include <Atlas/Objects/Root.h>
+
 namespace Ember
 {
-ServerServiceConnectionListener::ServerServiceConnectionListener(ServerService& serverService) :
-	mServerService(serverService)
+ServerServiceConnectionListener::ServerServiceConnectionListener(ServerServiceSignals& signals) :
+	mSignals(signals)
 {
 }
 
@@ -32,12 +33,12 @@ ServerServiceConnectionListener::~ServerServiceConnectionListener()
 
 void ServerServiceConnectionListener::sendingObject(const Atlas::Objects::Root& obj)
 {
-	mServerService.EventSendingObject.emit(obj);
+	mSignals.EventSendingObject.emit(obj);
 
 }
 void ServerServiceConnectionListener::receivedObject(const Atlas::Objects::Root& obj)
 {
-	mServerService.EventReceivedObject.emit(obj);
+	mSignals.EventReceivedObject.emit(obj);
 
 }
 

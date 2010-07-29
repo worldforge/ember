@@ -24,19 +24,19 @@
 namespace Ember
 {
 
-class ServerService;
+class ServerServiceSignals;
 
 class ServerServiceConnectionListener: public IConnectionListener
 {
 public:
-	ServerServiceConnectionListener(ServerService& serverService);
+	ServerServiceConnectionListener(ServerServiceSignals& signals);
 	virtual ~ServerServiceConnectionListener();
 
 	virtual void sendingObject(const Atlas::Objects::Root& obj);
 	virtual void receivedObject(const Atlas::Objects::Root& obj);
 
 protected:
-	ServerService& mServerService;
+	ServerServiceSignals& mSignals;
 };
 }
 #endif /* SERVERSERVICECONNECTIONLISTENER_H_ */
