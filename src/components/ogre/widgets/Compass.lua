@@ -125,7 +125,7 @@ function Compass:buildCEGUIWidget()
 		
 	if self.helperImpl:getPointerTexture():isNull() == false then
 		--also set up the pointer image
-		texturePair = assetManager:createTextureImage(self.helperImpl:getPointerTexture(), "CompassPointer")
+		local texturePair = assetManager:createTextureImage(self.helperImpl:getPointerTexture(), "CompassPointer")
 		if texturePair:hasData() then 
 			self.pointerImage:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
 		end
