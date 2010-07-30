@@ -55,6 +55,7 @@ PagingLandScapeTile::PagingLandScapeTile(PagingLandScapeTileManager *tileMgr) :
 		mInit (false),
 		mLoaded (false),
 		mLoading (false),
+		mVisible (false),
 		mTimeUntouched(0)
 {
 	for (unsigned int i = 0; i < 4; i++)
