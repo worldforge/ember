@@ -159,7 +159,7 @@ protected:
 };
 
 GUIManager::GUIManager(Ogre::RenderWindow* window) :
-	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mEntityWorldPickListener(0), mSheet(0), mWindowManager(0), mDebugText(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mEntityWorldPickListener(0), mSheet(0), mWindowManager(0), mDebugText(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -204,7 +204,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 			throw Ember::Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
 
-		mGuiSystem->setDefaultCustomRenderedStringParser(new ColouredRenderedStringParser());
+		mRenderedStringParser = new ColouredRenderedStringParser();
+		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser);
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
 		try {
@@ -290,6 +291,7 @@ GUIManager::~GUIManager()
 	if (mLuaScriptModule) {
 		LuaScriptModule::destroy(*mLuaScriptModule);
 	}
+	delete mRenderedStringParser;
 	//delete mMousePicker;
 	//mMousePicker = 0;
 

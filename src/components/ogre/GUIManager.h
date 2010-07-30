@@ -57,6 +57,7 @@ class MousePicker;
 class GUICEGUIAdapter;
 class EntityWorldPickListener;
 class MovementController;
+class ColouredRenderedStringParser;
 
 namespace Gui {
 class Widget;
@@ -345,10 +346,17 @@ protected:
 	Gui::ActiveWidgetHandler* mActiveWidgetHandler;
 
 	/**
-	We'll provide our own CEGUI logger instance, which will route all cegui log messages to the main ember log.
-	@note We will not delete this instance at desctruction, because the main CEGUI System instance will do that itself in its desctructor, even though it didn't create the instance itself.
-	*/
+	 * @brief We'll provide our own CEGUI logger instance, which will route all cegui log messages to the main ember log.
+	 * @note We will not delete this instance at desctruction, because the main CEGUI System instance will do that itself in its desctructor, even though it didn't create the instance itself.
+	 */
 	Gui::CEGUILogger* mCEGUILogger;
+
+	/**
+	 * @brief An instance of our own CEGUI RenderedStringParser which will better handle coloured strings.
+	 *
+	 * Owner by this instance.
+	 */
+	ColouredRenderedStringParser* mRenderedStringParser;
 };
 
 inline MousePicker* GUIManager::getMousePicker() { return  mMousePickers.top(); }
