@@ -3,11 +3,11 @@
 #include <cppunit/ui/text/TestRunner.h>
 
 //#include "DataModelTest.h"
-#include "InputServiceTest.h"
+//#include "InputServiceTest.h"
 //#include "StateManagerTest.h"
 
 //CPPUNIT_TEST_SUITE_REGISTRATION( dime::DataModelTestCase );
-CPPUNIT_TEST_SUITE_REGISTRATION( dime::InputServiceTestCase );
+//CPPUNIT_TEST_SUITE_REGISTRATION( dime::InputServiceTestCase );
 //CPPUNIT_TEST_SUITE_REGISTRATION( dime::StateManagerTestCase );
 
 
