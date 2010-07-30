@@ -80,6 +80,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity) :
 	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
 	if (mErisAvatarEntity.getType()->isA(typeService->getTypeByName("creator"))) {
 		mIsAdmin = true;
+		 Ember::EmberServices::getSingleton().getServerService()->getAvatar()->setIsAdmin(true);
 	} else {
 		mIsAdmin = false;
 	}
