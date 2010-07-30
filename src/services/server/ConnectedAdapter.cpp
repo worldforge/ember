@@ -131,30 +131,7 @@ void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const W
 void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient)
 {
 	try {
-		std::stringstream ss;
-		ss << "Placing " << entity->getName() << " inside " << target->getName() << " at position " << pos << " and orientation " << orient << ".";
-		S_LOG_VERBOSE(ss.str());
-		/// we want to do orientation too so we can't use the Avatar::place method until that's updated
-		Atlas::Objects::Entity::Anonymous what;
-		what->setLoc(target->getId());
-		what->setPosAsList(Atlas::Message::Element(pos.toAtlas()).asList());
-		what->setAttr("orientation", orient.toAtlas());
-
-		what->setId(entity->getId());
-
-		Atlas::Objects::Operation::Move moveOp;
-		moveOp->setFrom(mAvatar.getEntity()->getId());
-		moveOp->setArgs1(what);
-
-		///if the avatar is a "creator", i.e. and admin, we will set the TO property
-		///this will bypass all of the server's filtering, allowing us to place any entity, unrelated to if it's too heavy or belong to someone else
-		if (mAvatar.getEntity()->getType()->isA(mConnection.getTypeService()->getTypeByName("creator"))) {
-			moveOp->setTo(entity->getId());
-		}
-
-		mConnection.send(moveOp);
-
-		// 			mAvatar.place(entity, target, pos, orient);
+		mAvatar.place(entity, target, pos, orient);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on dropping." << ex);
 	}
