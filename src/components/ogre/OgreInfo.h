@@ -52,6 +52,13 @@ public:
      */
     static std::string createUniqueResourceName(const std::string& resourceName);
 
+    /**
+     * @brief Performs simple diagnosis of the current state of the Ogre system and writes to the supplied stream.
+     *
+     * @param outputStream Stream to which the diagnosis information will be written.
+     */
+    static void diagnose(std::ostream& outputStream);
+
 private:
 
 	/**

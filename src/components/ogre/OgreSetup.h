@@ -28,6 +28,8 @@ typedef void (*sighandler_t)(int);
 #endif
 
 #include "EmberOgrePrerequisites.h"
+#include "framework/ConsoleCommandWrapper.h"
+#include "framework/ConsoleObject.h"
 #include <OgreConfigOptionMap.h>
 #include <OgreFrameListener.h>
 
@@ -40,10 +42,12 @@ class EmberPagingSceneManagerFactory;
 class MeshSerializerListener;
 
 /**
-	@brief A class used for setting up Ogre. Instead of creating the Ogre root object and the main render window direclty, use this to guarantee that everything is set up correctly.
+	@brief A class used for setting up Ogre.
+
+	Instead of creating the Ogre root object and the main render window directly, use this to guarantee that everything is set up correctly.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class OgreSetup : Ogre::FrameListener
+class OgreSetup : public Ogre::FrameListener, public Ember::ConsoleObject
 {
 public:
 	OgreSetup();
@@ -51,7 +55,7 @@ public:
 	~OgreSetup();
 
 	/**
-	* Creates the ogre base system.
+	* Creates the Ogre base system.
 	* @return The new Ogre Root object.
 	*/
 	Ogre::Root* createOgreSystem();
@@ -81,16 +85,24 @@ public:
 	EmberPagingSceneManager* chooseSceneManager();
 
 	/**
-	* @brief Shuts down the ogre system.
+	* @brief Shuts down the Ogre system.
 	*/
 	void shutdown();
 
 	/**
 	 * @brief Swap the double buffers every frame.
-	 * @param evt The ogre frame event.
+	 * @param evt The Ogre frame event.
 	 * @return Always return true.
 	 */
 	bool frameEnded(const Ogre::FrameEvent & evt);
+
+	virtual void runCommand(const std::string& command, const std::string& args);
+
+
+	/**
+	 * @brief Command for simple diagnosis of Ogre.
+	 */
+	Ember::ConsoleCommandWrapper DiagnoseOgre;
 
 private:
 
@@ -106,7 +118,7 @@ private:
 
 
 	/**
-	 * @brief Attempts to parse out the user selected geometry options for ogre.
+	 * @brief Attempts to parse out the user selected geometry options for Ogre.
 	 * @param config The option map, usually found inside the currently selected RenderSystem.
 	 * @param width The width of the window in pixels.
 	 * @param height The height of the window in pixels.
@@ -115,7 +127,7 @@ private:
 	void parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen);
 
 	/**
-	 * @brief Sets standard values in the ogre environment.
+	 * @brief Sets standard values in the Ogre environment.
 	 */
 	void setStandardValues();
 

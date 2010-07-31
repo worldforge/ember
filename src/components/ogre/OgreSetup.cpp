@@ -27,14 +27,17 @@
 #endif
 
 #include "OgreSetup.h"
+#include "OgreInfo.h"
+#include "MeshSerializerListener.h"
 
 // Should be before GL/glx.h for OGRE < 1.6.2
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 
-#include "MeshSerializerListener.h"
-
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+
+#include "framework/Tokeniser.h"
+#include "framework/ConsoleBackend.h"
 
 #ifdef WIN32
 #include <float.h>
@@ -52,7 +55,6 @@
 #include <GL/glx.h>
 #endif
 // #include "image/OgreILCodecs.h"
-#include "framework/Tokeniser.h"
 
 #include <OgreRenderWindow.h>
 #include <OgreMeshManager.h>
@@ -74,12 +76,22 @@ namespace EmberOgre
 {
 
 OgreSetup::OgreSetup() :
-	mRoot(0), mRenderWindow(0), mIconSurface(0), mSceneManagerFactory(0), mMainVideoSurface(0), mMeshSerializerListener(0)
+	DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."), mRoot(0), mRenderWindow(0), mIconSurface(0), mSceneManagerFactory(0), mMainVideoSurface(0), mMeshSerializerListener(0)
 {
 }
 
 OgreSetup::~OgreSetup()
 {
+}
+
+void OgreSetup::runCommand(const std::string& command, const std::string& args)
+{
+	if (DiagnoseOgre == command) {
+		std::stringstream ss;
+		OgreInfo::diagnose(ss);
+		S_LOG_INFO(ss.str());
+		Ember::ConsoleBackend::getSingleton().pushMessage("Ogre diagnosis information has been written to the log.");
+	}
 }
 
 void OgreSetup::shutdown()
@@ -182,7 +194,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 					break;
 				} catch (...) {
 #if OGRE_PLATFORM != OGRE_PLATFORM_APPLE
-					pluginPath = (*I) + "/" + token + "_d"+ pluginExtension;
+					pluginPath = (*I) + "/" + token + "_d" + pluginExtension;
 #else
 					pluginPath = token + "_d";
 #endif

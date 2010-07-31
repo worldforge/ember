@@ -25,6 +25,12 @@
 #endif
 
 #include "OgreInfo.h"
+#include <OgreSceneManagerEnumerator.h>
+#include <OgreSceneManager.h>
+#include <OgreCamera.h>
+#include <OgreLight.h>
+#include <OgreRoot.h>
+#include <OgreEntity.h>
 #include <sstream>
 
 #ifdef HAVE_OPENGL
@@ -36,10 +42,10 @@
 #endif
 #endif
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
 long long int OgreInfo::sResourceCounter(1);
-
 
 bool OgreInfo::isIndirect()
 {
@@ -62,9 +68,68 @@ bool OgreInfo::isIndirect()
 std::string OgreInfo::createUniqueResourceName(const std::string& resourceName)
 {
 	std::stringstream ss;
-	ss << resourceName << "_" <<  sResourceCounter++;
+	ss << resourceName << "_" << sResourceCounter++;
 	return ss.str();
 }
 
+unsigned int countNodes(Ogre::Node* node)
+{
+	unsigned int counter = 1;
+	for (unsigned short i = 0; i < node->numChildren(); ++i) {
+		counter += countNodes(node->getChild(i));
+	}
+	return counter;
+}
+
+void OgreInfo::diagnose(std::ostream& outputStream)
+{
+	Ogre::SceneManagerEnumerator::SceneManagerIterator sceneManagerI = Ogre::Root::getSingleton().getSceneManagerIterator();
+	while (sceneManagerI.hasMoreElements()) {
+		Ogre::SceneManager* sceneManager = sceneManagerI.getNext();
+		outputStream << "Scenemanager(" << sceneManager->getTypeName() << ") " << sceneManager->getName() << std::endl;
+		outputStream << " Number of scene nodes: " << countNodes(sceneManager->getRootSceneNode()) << std::endl;
+		outputStream << " Movable objects:" << std::endl;
+		unsigned int movableObjectCounter = 0;
+		Ogre::Root::MovableObjectFactoryIterator movableObjectFactoryI = Ogre::Root::getSingleton().getMovableObjectFactoryIterator();
+		while (movableObjectFactoryI.hasMoreElements()) {
+			Ogre::MovableObjectFactory* factory = movableObjectFactoryI.getNext();
+			std::string type(factory->getType());
+			{
+				Ogre::SceneManager::MovableObjectIterator I = sceneManager->getMovableObjectIterator(type);
+				while (I.hasMoreElements()) {
+					movableObjectCounter++;
+					Ogre::MovableObject* movable = I.getNext();
+					if (movable->getMovableType() == "Light") {
+						Ogre::Light* light = static_cast<Ogre::Light*> (movable);
+						outputStream << "  * Light " << light->getName() << "(" << (light->isInScene() ? "in scene" : "not in scene") << ")" << std::endl;
+						outputStream << "   Pos: " << light->getDerivedPosition() << std::endl;
+						outputStream << "   Direction: " << light->getDerivedDirection() << std::endl;
+
+					} else {
+						outputStream << "  * " << type << " " << movable->getName() << "(" << (movable->isInScene() ? "in scene" : "not in scene") << ")" << std::endl;
+						//					outputStream << "  Pos: " << light->getDerivedPosition() << std::endl;
+						//					outputStream << "  Direction: " << light->getDerivedDirection() << std::endl;
+					}
+				}
+			}
+		}
+
+		outputStream << " Number of movable objects: " << movableObjectCounter << std::endl;
+
+		outputStream << " Cameras:" << std::endl;
+		{
+			Ogre::SceneManager::CameraIterator I = sceneManager->getCameraIterator();
+			while (I.hasMoreElements()) {
+				Ogre::Camera* camera = I.getNext();
+				outputStream << "  Camera " << camera->getName() << "(" << (camera->isInScene() ? "in scene" : "not in scene") << ")" << std::endl;
+				outputStream << "  Pos: " << camera->getDerivedPosition() << std::endl;
+				outputStream << "  Direction: " << camera->getDerivedDirection() << std::endl;
+			}
+		}
+
+	}
+
+	outputStream << std::flush;
+}
 
 }
