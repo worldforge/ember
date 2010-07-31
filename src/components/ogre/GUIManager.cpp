@@ -256,7 +256,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 		Ogre::Root::getSingleton().addFrameListener(this);
 
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("GUIManager - error when creating gui. Message: " << ex.getMessage().c_str());
+		S_LOG_FAILURE("GUIManager - error when creating gui." << ex);
 		throw Ember::Exception(ex.getMessage().c_str());
 
 	}
