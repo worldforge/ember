@@ -49,10 +49,9 @@ function QuickHelp:frameStarted(timeSinceLastUpdate)
 		self:disableAlphaConnector()
 	end
 	self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
-	self.timer:setText((self.timeToShowBlurb+self.timeToFade)-self.timeBlurbShown)
+	self.timer:setText(math.max(self.timeToShowBlurb-self.timeBlurbShown, 0))
 	if self.timeBlurbShown > self.timeToShowBlurb then
 		self.widget:getMainWindow():setAlpha(1.0 - ((self.timeBlurbShown-self.timeToShowBlurb) / self.timeToFade ))
-		
 		if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
 			self.timer:setText("")
 			self.timeBlurbShown = 0
