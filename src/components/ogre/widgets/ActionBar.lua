@@ -62,9 +62,11 @@ function ActionBar:addSlot()
 	--Handle an action bar icon dropped on the action bar slot.
 	slotWrapper.actionBarIconDropped = function(actionBarIcon)		
 		local oldSlot = actionBarIcon:getSlot()
-		slotWrapper.slot:addActionBarIcon(actionBarIcon)
-		if oldSlot ~= nil then
-			self:removeExistingIcon(oldSlot)
+		if oldSlot ~= slotWrapper.slot then
+			slotWrapper.slot:addActionBarIcon(actionBarIcon)
+			if oldSlot ~= nil then
+				self:removeExistingIcon(oldSlot)
+			end
 		end
 	end
 	
