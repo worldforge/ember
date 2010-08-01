@@ -95,9 +95,14 @@ public:
 	 * @brief Emitted when a help message is added to the list.
 	 * @note Emits an iterator to the message.
 	 */
+
+	void showWidget() const;
+
 	sigc::signal <void, std::list<HelpMessage>::const_iterator> EventTutorialAdded;
 
 	sigc::signal <void, int> EventTutorialLocationChanged;
+
+	sigc::signal <void> EventToggleWidgetVisibility;
 
 	const int getSize() const;
 

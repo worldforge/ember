@@ -96,5 +96,10 @@ const int QuickHelp::getSize() const
 	return mTutorialText.size();
 }
 
+void QuickHelp::showWidget() const
+{
+	EventToggleWidgetVisibility.emit();
+}
+
 }
 }

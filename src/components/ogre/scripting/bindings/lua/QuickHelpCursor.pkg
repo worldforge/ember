@@ -17,6 +17,8 @@ class QuickHelp
 public:
 	static QuickHelp& getSingleton( void );
 	void updateText(const HelpMessage& message);
+	void showWidget() const;
+	sigc::signal <void> EventToggleWidgetVisibility;
 };
 
 class QuickHelpCursor

@@ -81,6 +81,7 @@ end
 --just show the help window when the help button is clicked
 function MainIconBar.help_Clicked(args)
 	console:runCommand("/help");
+	EmberOgre.Gui.QuickHelp:getSingleton():showWidget()
 	return true
 end
 
