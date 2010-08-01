@@ -29,6 +29,7 @@ function QuickHelp:buildCEGUIWidget()
 	self.textWindow = self.widget:getWindow("HelpTextBox")
 	self.enabledCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Hide"))
 	self.frameWindow = CEGUI.toFrameWindow(self.widget:getWindow("MainWindow"))
+	self.messagePosition = self.widget:getWindow("PageNumber")
 	
 	self.frameWindow:setRollupEnabled(false)
 	
@@ -66,6 +67,7 @@ function QuickHelp:updateText(text)
 		self.widget:getMainWindow():setAlpha(1.0)
 	end
 	self.textWindow:setText(text)
+	self.messagePosition:setText(quickhelp.helper:getCursorLocation() .. "/" .. quickhelp.helper:getSize())
 end
 
 function QuickHelp:disableAlphaConnector()

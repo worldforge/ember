@@ -7,9 +7,17 @@
 		<Property Name='Text' Value='Help'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
 			<Property Name='InheritsAlpha' Value='True'/>
+			<Window Type='EmberLook/StaticText' Name='PageNumber'>
+				<Property Name='UnifiedPosition' Value='{{0.90,0},{0.01,0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.08,0},{0.06,00}}'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Text' Value='0/0' />
+				<Property Name='FrameEnabled' Value='false' />
+				<Property Name='BackgroundEnabled' Value='false' />
+			</Window>
 			<Window Type='EmberLook/MultiLineEditbox' Name='HelpTextBox'>
-				<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.8,0.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.02,0.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.74,0.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.08,0.0}}'/>
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='ReadOnly' Value='true'/>

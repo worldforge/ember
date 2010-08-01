@@ -54,6 +54,7 @@ const std::list<HelpMessage>::const_iterator QuickHelp::getBeginning() const
 const std::list<HelpMessage>::const_iterator QuickHelp::insertAtEnd(const HelpMessage& message)
 {
 	mTutorialText.push_back(message);
+	EventTutorialLocationChanged.emit(getSize());
 	return --(mTutorialText.end());
 }
 
@@ -66,10 +67,16 @@ const std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const He
 	}
 
 	//Does the Id exist? If it does, return the position.
+	int location = 1;
 	for (std::list<HelpMessage>::const_iterator list_iterator = mTutorialText.begin(); list_iterator != mTutorialText.end(); list_iterator++)
 	{
+
 		if (list_iterator->getId() == message.getId())
+		{
+			EventTutorialLocationChanged.emit(location);
 			return list_iterator;
+		}
+		location++;
 	}
 
 	//Message has a unique id, and isn't inserted.
@@ -82,6 +89,11 @@ void QuickHelp::updateText(const HelpMessage& message)
 		mTutorialText.pop_front();
 
 	EventTutorialAdded.emit(messagePosition(message));
+}
+
+const int QuickHelp::getSize() const
+{
+	return mTutorialText.size();
 }
 
 }

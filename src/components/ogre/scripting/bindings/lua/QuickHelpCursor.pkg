@@ -25,6 +25,8 @@ public:
 	QuickHelpCursor();
 	void nextMessage();
 	void previousMessage();
+	const int getSize() const;
+	const int getCursorLocation() const;
 
 	sigc::signal <void,const std::string&> EventUpdateText;
 };

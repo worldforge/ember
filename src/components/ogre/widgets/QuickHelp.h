@@ -97,6 +97,10 @@ public:
 	 */
 	sigc::signal <void, std::list<HelpMessage>::const_iterator> EventTutorialAdded;
 
+	sigc::signal <void, int> EventTutorialLocationChanged;
+
+	const int getSize() const;
+
 private:
 
 	/**

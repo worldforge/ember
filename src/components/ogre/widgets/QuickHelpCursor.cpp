@@ -35,10 +35,12 @@ namespace Gui
 QuickHelpCursor::QuickHelpCursor() : mQuickHelp(Gui::QuickHelp::getSingleton())
 {
 	mQuickHelp.EventTutorialAdded.connect(sigc::mem_fun(*this, &QuickHelpCursor::getLatestTutorial));
+	mQuickHelp.EventTutorialLocationChanged.connect(sigc::mem_fun(*this, &QuickHelpCursor::setCursorLocation));
 
 	mCurrentPosition = mQuickHelp.getEnd();
 	mCurrentPosition--;
 	updateMessage();
+	mCursorLocation = getSize();
 }
 
 QuickHelpCursor::~QuickHelpCursor()
@@ -63,6 +65,7 @@ void QuickHelpCursor::nextMessage()
 	mCurrentPosition++;
 	if (mCurrentPosition != mQuickHelp.getEnd())
 	{
+		mCursorLocation++;
 		updateMessage();
 	} else {
 		mCurrentPosition--;
@@ -73,9 +76,25 @@ void QuickHelpCursor::previousMessage()
 {
 	if (mCurrentPosition != mQuickHelp.getBeginning())
 	{
+		mCursorLocation--;
 		mCurrentPosition--;
 		updateMessage();
 	}
+}
+
+const int QuickHelpCursor::getSize() const
+{
+	return mQuickHelp.getSize();
+}
+
+const int QuickHelpCursor::getCursorLocation() const
+{
+	return mCursorLocation;
+}
+
+void QuickHelpCursor::setCursorLocation(const int cursorLocation)
+{
+	mCursorLocation = cursorLocation;
 }
 
 

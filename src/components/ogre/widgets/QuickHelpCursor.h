@@ -64,6 +64,12 @@ public:
 	 * @brief Called when position iterator changes.
 	 */
 	sigc::signal <void,const std::string&> EventUpdateText;
+
+	const int getSize() const;
+
+	const int getCursorLocation() const;
+
+	void setCursorLocation(const int cursorLocation);
 private:
 
 	/**
@@ -82,6 +88,8 @@ private:
 	std::list<HelpMessage>::const_iterator mCurrentPosition;
 
 	QuickHelp& mQuickHelp;
+
+	int mCursorLocation;
 
 };
 
