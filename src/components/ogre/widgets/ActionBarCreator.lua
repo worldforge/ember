@@ -92,7 +92,6 @@ function ActionBarCreator:populateCombobox(combobox)
 	combobox:addItem(item)
 	combobox:setItemSelectState(0, true)
 	combobox:setSingleClickEnabled(true)
-	debugObject("blah")
 end
 
 --Capture user clicks of the delete button.

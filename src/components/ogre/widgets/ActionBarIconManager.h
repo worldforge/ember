@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUIACTIONBARICONMANAGER_H
 
 #include <sigc++/signal.h>
+#include <string>
 #include <vector>
 
 namespace EmberOgre {
@@ -91,6 +92,10 @@ public:
 	 * @param The action bar icon to destroy.
 	 */
 	void destroyIcon(ActionBarIcon* icon);
+
+	const std::string& getSavedIcon(const std::string& name) const;
+
+	void saveIcon(const std::string& key, const std::string& value);
 
 	/**
 	 * @brief Emitted when a drag action of an entity icon has started.

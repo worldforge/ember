@@ -224,10 +224,16 @@ end
 --Initialization of the action bar, we build the widget here.
 function ActionBar:init(widgetName)	
 	self.actionBarIconManager = guiManager:getActionBarIconManager()
+	
+	self.actionBarIconManager:saveIcon("actionbaricon_1", "foobar")
+	debugObject(self.actionBarIconManager:getSavedIcon("actionbaricon_1"))
+		
 	self:buildCEGUIWidget(widgetName)
 end
 
 function ActionBar:shutdown()
+
+	
 	--Delete all of the action bar slots.
 	for k,v in pairs(self.slots) do
 		self.actionBarIconManager:destroySlot(v.slot)

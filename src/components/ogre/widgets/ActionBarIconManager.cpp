@@ -25,12 +25,21 @@
 #endif
 
 #include "ActionBarIconManager.h"
-#include <string>
 #include <CEGUI.h>
 #include "../GUIManager.h"
 #include "ActionBarIcon.h"
 #include "ActionBarIconSlot.h"
 #include "icons/Icon.h"
+
+#include "services/server/ServerService.h"
+#include "services/config/ConfigService.h"
+#include "services/serversettings/ServerSettings.h"
+#include "services/serversettings/ServerSettingsCredentials.h"
+#include "services/EmberServices.h"
+
+#include <Eris/ServerInfo.h>
+#include <Eris/Connection.h>
+
 namespace EmberOgre {
 
 namespace Gui {
@@ -97,6 +106,33 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned
 		}
 	}
 	return 0;
+}
+
+const std::string& ActionBarIconManager::getSavedIcon(const std::string& key) const
+{
+	Eris::ServerInfo sInfo;
+	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
+	std::string sname = sInfo.getHostname();
+
+	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
+
+	if (serverSettings->findItem(serverCredentials, key)) {
+		return static_cast<std::string>(serverSettings->getItem(serverCredentials, key));
+	}
+}
+
+void ActionBarIconManager::saveIcon(const std::string& key, const std::string& value)
+{
+	Eris::ServerInfo sInfo;
+	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
+	std::string sname = sInfo.getHostname();
+
+	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
+
+	serverSettings->setItem(serverCredentials, key, value);
+	serverSettings->writeToDisk();
 }
 
 void ActionBarIconManager::destroyIcon(ActionBarIcon* icon)
