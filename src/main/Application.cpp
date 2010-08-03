@@ -77,6 +77,7 @@ TOLUA_API int tolua_Varconf_open(lua_State* tolua_S);
 #endif
 
 #include "framework/osdir.h"
+#include <sys/stat.h>
 
 namespace Ember
 {
