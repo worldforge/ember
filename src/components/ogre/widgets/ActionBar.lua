@@ -87,11 +87,22 @@ function ActionBar:createActionBarIconFromEntity(entity)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
 		--Our command object for the default action is the entity.
 		actionBarIconWrapper.defaultAction:initFromEntityIcon(entity)
-		table.insert(self.icons, actionBarIconWrapper)
+		
+		self.icons[entity:getId()] = actionBarIconWrapper
+		connect(self.connectors, emberOgre:getWorld():getAvatar().EventRemovedEntityFromInventory, self.RemovedEntityFromInventory, self)
 		return actionBarIconWrapper	
 	else 
 		return nil
 	end
+end
+
+function ActionBar:RemovedEntityFromInventory(entity)
+	local actionBarIconWrapper = self.icons[entity:getId()]
+	if actionBarIconWrapper ~= nil then
+		actionBarIconWrapper.actionBarIcon:setSlot(nil)
+		self.actionBarIconManager:destroyIcon(actionBarIconWrapper.actionBarIcon)
+	end
+	self.icons[entity:getId()] = nil
 end
 
 --Generic code all action bar icons require.
