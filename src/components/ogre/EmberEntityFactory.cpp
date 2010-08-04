@@ -24,9 +24,7 @@
 
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/WorldEmberEntity.h"
-#include "components/ogre/EmberOgre.h"
 #include "components/ogre/Avatar.h"
-#include "components/ogre/Scene.h"
 #include "components/ogre/authoring/AuthoringManager.h"
 #include "components/ogre/authoring/AuthoringMoverConnector.h"
 
@@ -47,6 +45,8 @@
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/Avatar.h>
+#include <Eris/Connection.h>
+
 
 #ifdef WIN32
 #include <tchar.h>
@@ -65,17 +65,17 @@ using namespace Ember::EntityMapping;
 namespace EmberOgre
 {
 
-EmberEntityFactory::EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager, Ogre::SceneManager& sceneManager) :
-	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mTypeService(typeService), mTerrainType(0), mWorldEntity(0),mAuthoringManager(new Authoring::AuthoringManager(view)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager)), mScene(new Scene(sceneManager))
+EmberEntityFactory::EmberEntityFactory(Eris::View& view, Authoring::EntityMoveManager& entityMoveManager, Scene& scene) :
+	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene), mTerrainType(0), mWorldEntity(0), mAuthoringManager(new Authoring::AuthoringManager(view)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager))
 {
 	mTerrainType = mTypeService.getTypeByName("world");
 }
 
 EmberEntityFactory::~EmberEntityFactory()
 {
+	EventBeingDeleted();
 	delete mAuthoringMoverConnector;
 	delete mAuthoringManager;
-	delete mScene;
 }
 
 /// create whatever entity the client desires
@@ -87,7 +87,7 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	if (type->isA(mTerrainType)) {
 		emberEntity = createWorld(ge, type, w);
 	} else {
-		emberEntity = new EmberEntity(ge->getId(), type, w, *mScene);
+		emberEntity = new EmberEntity(ge->getId(), type, w, mScene);
 	}
 
 	S_LOG_VERBOSE("Entity added to game view.");
@@ -102,7 +102,7 @@ bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Er
 Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world)
 {
 	assert(!mWorldEntity);
-	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, *mScene);
+	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, mScene);
 	return mWorldEntity;
 }
 
@@ -118,7 +118,7 @@ int EmberEntityFactory::priority()
 
 void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) const
 {
-	EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
+	EmberEntity* entity = static_cast<EmberEntity*>(mView.getEntity(entityId));
 	if (entity) {
 		///make sure the directory exists
 		std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/entityexport/");
@@ -169,7 +169,6 @@ Authoring::AuthoringManager& EmberEntityFactory::getAuthoringManager() const
 	//This can never be null.
 	return *mAuthoringManager;
 }
-
 
 }
 

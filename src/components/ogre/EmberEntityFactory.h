@@ -27,6 +27,7 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 #include <set>
 
 namespace Eris
@@ -66,13 +67,15 @@ public:
 	typedef std::set<std::string> StringSet;
 
 	/**
-	 Default constructor. This should be instantiated by EmberOgre or similiar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
+	 * @brief Ctor.
+	 *
+	 * This should be instantiated by EmberOgre or similar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	 */
-	EmberEntityFactory(Eris::View& view, Eris::TypeService& typeService, Authoring::EntityMoveManager& entityMoveManager, Ogre::SceneManager& sceneManager);
+	EmberEntityFactory(Eris::View& view, Authoring::EntityMoveManager& entityMoveManager, Scene& scene);
 	virtual ~EmberEntityFactory();
 
 	/**
-	 Will always return true.
+	 * @brief Will always return true as we want all entities created to be handled by this class.
 	 */
 	virtual bool accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type);
 
@@ -121,6 +124,11 @@ public:
 	 */
 	Authoring::AuthoringManager& getAuthoringManager() const;
 
+	/**
+	 * @brief Emitted when the factory is being deleted.
+	 */
+	sigc::signal<void> EventBeingDeleted;
+
 protected:
 
 	/**
@@ -128,7 +136,16 @@ protected:
 	 */
 	Eris::Entity* createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world);
 
+	Eris::View& mView;
+
 	Eris::TypeService& mTypeService;
+
+	/**
+	 * @brief The scene which will handle the entities.
+	 */
+	Scene& mScene;
+
+
 	Eris::TypeInfo* mTerrainType;
 
 	/**
@@ -146,10 +163,6 @@ protected:
 	 */
 	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
 
-	/**
-	 * @brief The scene which will handle the entities.
-	 */
-	Scene* mScene;
 };
 
 }
