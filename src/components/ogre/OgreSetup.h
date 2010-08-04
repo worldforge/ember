@@ -26,6 +26,7 @@
 #include "EmberOgrePrerequisites.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
+#include "OgreIncludes.h"
 #include <OgreConfigOptionMap.h>
 #include <OgreFrameListener.h>
 
@@ -78,7 +79,7 @@ public:
 	 * @brief Chooses and sets up the correct scene manager.
 	 * @return The newly created scene manager.
 	 */
-	EmberPagingSceneManager* chooseSceneManager();
+	Ogre::SceneManager* chooseSceneManager();
 
 	/**
 	* @brief Shuts down the Ogre system.

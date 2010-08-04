@@ -842,6 +842,12 @@ bool OgreSetup::configure(void)
 
 		setStandardValues();
 
+		/// Create new scene manager factory
+		mSceneManagerFactory = new EmberPagingSceneManagerFactory();
+
+		/// Register our factory
+		Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
+
 		return true;
 	} else {
 		return false;
@@ -863,19 +869,10 @@ void OgreSetup::setStandardValues()
 	Ogre::MovableObject::setDefaultQueryFlags(0);
 }
 
-EmberPagingSceneManager* OgreSetup::chooseSceneManager()
+Ogre::SceneManager* OgreSetup::chooseSceneManager()
 {
-	/// Create new scene manager factory
-	mSceneManagerFactory = new EmberPagingSceneManagerFactory();
 
-	/// Register our factory
-	Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
-
-	EmberPagingSceneManager* sceneMgr = static_cast<EmberPagingSceneManager*> (mRoot->createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManager"));
-
-	///We need to call init scene since a lot of components used by the scene manager are thus created
-	sceneMgr->InitScene();
-
+	Ogre::SceneManager* sceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
 	return sceneMgr;
 }
 
