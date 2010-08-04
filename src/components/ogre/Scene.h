@@ -39,7 +39,7 @@ public:
 	 * @brief Ctor.
 	 * @param sceneManager The scene manager which represents the world.
 	 */
-	Scene(Ogre::SceneManager& sceneManager);
+	Scene();
 
 	/**
 	 * @brief Dtor.
@@ -74,18 +74,33 @@ public:
 	 */
 	ISceneRenderingTechnique* removeRenderingTechnique(const std::string& name);
 
+	/**
+	 * @brief Gets the main camera of the scene.
+	 *
+	 * Each scene has one main camera used to render it. There can of course be many more cameras.
+	 * @returns The main camera.
+	 */
+	Ogre::Camera& getMainCamera() const;
+
 protected:
 	typedef std::map<std::string, ISceneRenderingTechnique*> RenderingTechniqueStore;
 
 	/**
 	 * @brief The scene manager which manages the main world.
 	 */
-	Ogre::SceneManager& mSceneManager;
+	Ogre::SceneManager* mSceneManager;
+
+	/**
+	 * @brief The main camera used to render the world.
+	 * There can be many different cameras in the world, but this is the main one used by most components.
+	 */
+	Ogre::Camera* mMainCamera;
 
 	/**
 	 * @brief A store of rendering techniques.
 	 */
 	RenderingTechniqueStore mTechniques;
+
 };
 
 }

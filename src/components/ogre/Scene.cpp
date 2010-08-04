@@ -24,12 +24,24 @@
 #include "ISceneRenderingTechnique.h"
 #include "framework/LoggingInstance.h"
 
+#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+
+#include <OgreRoot.h>
+
 namespace EmberOgre
 {
 
-Scene::Scene(Ogre::SceneManager& sceneManager) :
-	mSceneManager(sceneManager)
+Scene::Scene() :
+	mSceneManager(0), mMainCamera(0)
 {
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManagerInstance");
+
+	///We need to call init scene since a lot of components used by the scene manager are thus created
+	static_cast<EmberPagingSceneManager*> (mSceneManager)->InitScene();
+
+	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
+	mMainCamera = mSceneManager->createCamera("MainCamera");
+
 }
 
 Scene::~Scene()
@@ -37,11 +49,13 @@ Scene::~Scene()
 	if (mTechniques.size() > 0) {
 		S_LOG_WARNING("Scene was deleted while there still was registered techniques.");
 	}
+	//No need to delete the camera, as that will taken care of when destroying the scene manager.
+	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
 
 Ogre::SceneManager& Scene::getSceneManager()
 {
-	return mSceneManager;
+	return *mSceneManager;
 }
 
 void Scene::registerEntityWithTechnique(EmberEntity& entity, const std::string& technique)
@@ -69,5 +83,11 @@ ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& nam
 	}
 	return 0;
 }
+
+Ogre::Camera& Scene::getMainCamera() const
+{
+	return *mMainCamera;
+}
+
 
 }
