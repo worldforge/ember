@@ -29,7 +29,7 @@ namespace Gui {
 
 class EntityCreator{
 public:
-	EntityCreator(Eris::Connection& conn);
+	EntityCreator(EmberOgre::World& world);
 	~EntityCreator();
 	void setRecipe(EmberOgre::Authoring::EntityRecipe& recipe);
 	void toggleCreateMode();

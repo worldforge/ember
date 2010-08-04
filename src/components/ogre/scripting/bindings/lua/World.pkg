@@ -1,0 +1,79 @@
+$#include "components/ogre/World.h"
+
+
+namespace EmberOgre {
+
+
+class World
+{
+public:
+
+	//Scene& getScene() const;
+
+	Ogre::SceneManager& getSceneManager() const;
+
+	Eris::View& getView() const;
+
+	/**
+	 * @brief Gets the main avatar instance.
+	 *
+	 * @return The main avatar instance.
+	 */
+	EmberOgre::Avatar* getAvatar() const;
+
+	/**
+	 * @brief Gets the motion manager, which is responsible for handling all motion and animations of entities.
+	 *
+	 * @return The motion manager.
+	 */
+	EmberOgre::MotionManager& getMotionManager() const;
+
+	/**
+	 * @brief Gets the entity factory which is responsible for creating all new entities in the world.
+	 *
+	 * @return The entity factory.
+	 */
+	EmberOgre::EmberEntityFactory& getEntityFactory() const;
+
+
+	/**
+	 * @brief Gets the main camera.
+	 *
+	 * @return The main camera.
+	 */
+	EmberOgre::Camera::MainCamera& getMainCamera() const;
+
+	/**
+	 * @brief Gets the avatar controller, which recieves input and makes sure that the Avatar is moved.
+	 *
+	 * @return The avatar controller.
+	 */
+	EmberOgre::MovementController* getMovementController() const;
+
+	/**
+	 * @brief Gets the entity move manager, which handles movement of entities in the world by the user.
+	 *
+	 * @return The entity move manager.
+	 */
+	EmberOgre::Authoring::EntityMoveManager& getMoveManager() const;
+
+	/**
+	 * @brief Finds and returns the entity with the given id, if it's available.
+	 *
+	 * @param id The unique id for the entity.
+	 * @return An instance of EmberEntity or null if no entity with the specified id could be found.
+	 */
+	EmberOgre::EmberEntity* getEmberEntity(const std::string& eid) const;
+	
+	/**
+	 * @brief Gets the world entity pick listener, which listens to pick events for entities.
+	 *
+	 * @returns The main entity pick listener.
+	 */
+	EmberOgre::EntityWorldPickListener& getEntityPickListener() const;
+
+
+};
+
+
+}

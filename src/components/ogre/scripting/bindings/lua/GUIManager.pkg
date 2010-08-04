@@ -76,7 +76,7 @@ class GUIManager
 	 */
 	const std::string& getDefaultScheme() const;
 
-	EmberOgre::EntityWorldPickListener* getEntityPickListener() const;
+	//EmberOgre::EntityWorldPickListener* getEntityPickListener() const;
 
 	/**
 	 *    Accessor for the IconManager which handles low level icons.
