@@ -26,19 +26,13 @@
 #endif
 
 #include "MousePicker.h"
-#include "components/ogre/EmberEntity.h"
+#include "components/ogre/World.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/camera/MainCamera.h"
-#include "components/ogre/GUIManager.h"
 
 
 
 namespace EmberOgre {
-
-MousePicker::MousePicker()
-{
-}
-
 
 MousePicker::~MousePicker()
 {
@@ -46,32 +40,12 @@ MousePicker::~MousePicker()
 
 void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const MousePickerArgs& args)
 {
-	Camera::MainCamera* camera = EmberOgre::getSingleton().getMainCamera();
+	World* world = EmberOgre::getSingleton().getWorld();
 
-	if (camera) {
-		camera->pickInWorld(x, y, args);
+	if (world) {
+		world->getMainCamera().pickInWorld(x, y, args);
 	}
-/*	if (result.entity) {
-		mLastPickedEntityResult = result;
-		onEventPickedEntity(mLastPickedEntityResult, args);
-	} else {
-		onEventPickedNothing(args);
-	}*/
 
 }
-
-
-
-// void MousePicker::onEventPickedEntity(const EntityPickResult & result, const MousePickerArgs& args)
-// {
-// 	EventPickedEntity.emit(result, args);
-// }
-//
-// void MousePicker::onEventPickedNothing(const MousePickerArgs& args)
-// {
-// 	EventPickedNothing.emit(args);
-// }
-
-
 
 };

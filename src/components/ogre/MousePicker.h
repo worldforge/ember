@@ -49,8 +49,6 @@ public:
 		CM_UNDEFINED = 1<<12,
 		CM_NONPICKABLE = 1<<13
 	};
-    
-    MousePicker();
 
     virtual ~MousePicker();
 
