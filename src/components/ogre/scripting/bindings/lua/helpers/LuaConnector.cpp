@@ -367,6 +367,15 @@ void LuaConnector::pushValue(const Terrain::TerrainManager& theValue, const std:
 	pushUserTypeValue(theValue, luaTypename);
 }
 
+void LuaConnector::pushValue(const World& theValue, const std::string& luaTypename)
+{
+	pushUserTypeValue(theValue, luaTypename);
+}
+
+void LuaConnector::pushValue(const EmberEntityFactory& theValue, const std::string& luaTypename)
+{
+	pushUserTypeValue(theValue, luaTypename);
+}
 
 
 template<typename T>
@@ -548,12 +557,12 @@ LuaConnector::LuaConnector(sigc::signal<void, Input::InputMode>& signal)
 	}
 }
 
-LuaConnector::LuaConnector(sigc::signal<void, EmberEntityFactory*>& signal)
+LuaConnector::LuaConnector(sigc::signal<void, EmberEntityFactory&>& signal)
 {
 	if (checkSignalExistence(&signal)) {
 		LuaTypeStore luaTypes;
 		luaTypes.push_back("EmberOgre::EmberEntityFactory");
-		mConnector = new LuaConnectors::ConnectorOne<void, EmberEntityFactory*>(signal, luaTypes);
+		mConnector = new LuaConnectors::ConnectorOne<void, EmberEntityFactory&>(signal, luaTypes);
 	}
 }
 LuaConnector::LuaConnector(sigc::signal<void, Jesus*>& signal)
@@ -737,6 +746,14 @@ LuaConnector::LuaConnector(sigc::signal<void, Eris::View*>& signal)
 	}
 }
 
+LuaConnector::LuaConnector(sigc::signal<void, World&>& signal)
+{
+	if (checkSignalExistence(&signal)) {
+		LuaTypeStore luaTypes;
+		luaTypes.push_back("EmberOgre::World");
+		mConnector = new LuaConnectors::ConnectorOne<void, World&>(signal, luaTypes);
+	}
+}
 
 
 

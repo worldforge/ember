@@ -45,7 +45,7 @@ class LuaConnector{
 	LuaConnector(sigc::signal<void, const EmberOgre::MousePickerArgs&>& signal);
 	LuaConnector(sigc::signal<void, Ember::Input::MouseButton, Ember::Input::InputMode>& signal);
 	LuaConnector(sigc::signal<void, Ember::Input::InputMode>& signal);
-	LuaConnector(sigc::signal<void, EmberOgre::EmberEntityFactory*>& signal);
+	LuaConnector(sigc::signal<void, EmberOgre::EmberEntityFactory&>& signal);
 	LuaConnector(sigc::signal<void, EmberOgre::Jesus*>& signal);
 	LuaConnector(sigc::signal<void, EmberOgre::EmberEntity*>& signal);
 	LuaConnector(sigc::signal<void, EmberOgre::EmberEntity&>& signal);
@@ -66,7 +66,7 @@ class LuaConnector{
 	LuaConnector(sigc::signal<void, const Atlas::Objects::Root&>& signal);
 	LuaConnector(sigc::signal<void, Eris::Avatar*>& signal);
 	LuaConnector(sigc::signal<void, Eris::View*>& signal);
-
+	LuaConnector(sigc::signal<void, EmberOgre::World&>& signal);
 };
 
 }
