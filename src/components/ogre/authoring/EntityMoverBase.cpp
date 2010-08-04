@@ -27,7 +27,6 @@
 
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
-#include "components/ogre/EmberOgre.h"
 
 #include <Eris/Entity.h>
 #include <OgreSceneNode.h>
@@ -69,8 +68,8 @@ bool SnapListener::getSnappingEnabled() const {
 	return mSnappingEnabled;
 }
 
-EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node) :
-	mEntity(entity), mNode(node), mSnapping(0)
+EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::SceneManager& sceneManager) :
+	mEntity(entity), mNode(node), mSceneManager(mSceneManager), mSnapping(0)
 {
 	SnapListener& snapListener = getSnapListener();
 	if (snapListener.getSnappingEnabled()) {
@@ -155,9 +154,9 @@ void EntityMoverBase::newEntityPosition(const Ogre::Vector3& position)
 
 void EntityMoverBase::setSnapToEnabled(bool snapTo)
 {
-	if (snapTo && EmberOgre::getSingleton().getSceneManager()) {
+	if (snapTo) {
 		if (!mSnapping.get()) {
-			mSnapping.reset(new Authoring::SnapToMovement(mEntity, *mNode, 2.0f, *EmberOgre::getSingleton().getSceneManager(), true));
+			mSnapping.reset(new Authoring::SnapToMovement(mEntity, *mNode, 2.0f, mSceneManager, true));
 			setPosition(Convert::toWF<WFMath::Point<3> >(mNode->getPosition()));
 		}
 	} else {
