@@ -22,16 +22,14 @@
 #define __EmberOgre_H__
 
 #include "EmberOgrePrerequisites.h"
-#include <OgreFrameListener.h>
 
-// ------------------------------
-// Include sigc header files
-// ------------------------------
-#include <sigc++/trackable.h>
-#include <sigc++/signal.h>
-
+#include "EmberOgreSignals.h"
 #include "framework/Singleton.h"
+
+#include <sigc++/trackable.h>
+
 #include <memory>
+#include <map>
 
 namespace Eris
 {
@@ -86,11 +84,6 @@ class ModelDefinitionManager;
 class ModelRepresentationManager;
 }
 
-namespace Camera
-{
-class MainCamera;
-}
-;
 
 namespace Authoring
 {
@@ -102,15 +95,6 @@ class EntityRecipeManager;
 
 }
 
-class Avatar;
-
-class MovementController;
-
-class EmberEntityFactory;
-
-class EmberPagingSceneManager;
-
-class MotionManager;
 
 class GUIManager;
 
@@ -131,7 +115,7 @@ class ShaderManager;
 
 class ConsoleObjectImpl;
 
-class ICameraMotionHandler;
+class World;
 
 /**
  @brief The main class of the Ogre rendering component. This functions as a hub for almost all subsystems used when rendering the world.
@@ -147,7 +131,7 @@ class ICameraMotionHandler;
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  */
-class EmberOgre: public Ember::Singleton<EmberOgre>, public sigc::trackable, public Ogre::FrameListener
+class EmberOgre: public Ember::Singleton<EmberOgre>, public sigc::trackable, public EmberOgreSignals
 {
 public:
 
@@ -161,8 +145,6 @@ public:
 	 */
 	~EmberOgre();
 
-	virtual bool frameStarted(const Ogre::FrameEvent & evt);
-	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
 	/**
 	 * @brief Initialize all Ember services needed for this application
@@ -172,12 +154,6 @@ public:
 	 */
 	void initializeEmberServices(const std::string& prefix, const std::string& homeDir);
 
-	/**
-	 * @brief Gets the main avatar instance.
-	 *
-	 * @return The main avatar instance. This is currently valid even before the user has logged in to a server, but this will probably change in the future.
-	 */
-	Avatar* getAvatar() const;
 
 	/**
 	 * @brief Gets the main scene manager.
@@ -187,12 +163,6 @@ public:
 	 */
 	Ogre::SceneManager* getSceneManager() const;
 
-	/**
-	 * @brief Gets the motion manager, which is responsible for handling all motion and animations of entities.
-	 *
-	 * @return The motion manager.
-	 */
-	MotionManager* getMotionManager() const;
 
 	/**
 	 * @brief Gets the Ogre root object.
@@ -201,41 +171,6 @@ public:
 	 */
 	Ogre::Root* getOgreRoot() const;
 
-	/**
-	 * @brief Gets the entity factory which is responsible for creating all new entities in the world.
-	 *
-	 * @return The entity factory.
-	 */
-	EmberEntityFactory* getEntityFactory() const;
-
-	/**
-	 * @brief Gets the main camera.
-	 *
-	 * @return The main camera.
-	 */
-	Camera::MainCamera* getMainCamera() const;
-
-	/**
-	 * @brief Gets the main Ogre camera.
-	 *
-	 * @note This is a shortcut for calling getMainCamera()->getCamera().
-	 * @return The main Ogre camera.
-	 */
-	Ogre::Camera* getMainOgreCamera() const;
-
-	/**
-	 * @brief Gets the avatar controller, which recieves input and makes sure that the Avatar is moved.
-	 *
-	 * @return The avatar controller.
-	 */
-	MovementController* getMovementController() const;
-
-	/**
-	 * @brief Gets the entity move manager, which handles movement of entities in the world by the user.
-	 *
-	 * @return The entity move manager.
-	 */
-	Authoring::EntityMoveManager* getMoveManager() const;
 
 	/**
 	 * @brief Gets the shader manager, which handles setup of the graphic level and the shaders.
@@ -243,14 +178,6 @@ public:
 	 * @return The shader manager.
 	 */
 	ShaderManager* getShaderManager() const;
-
-	/**
-	 * @brief Finds and returns the entity with the given id, if it's available.
-	 *
-	 * @param id The unique id for the entity.
-	 * @return An instance of EmberEntity or null if no entity with the specified id could be found.
-	 */
-	EmberEntity* getEmberEntity(const std::string & eid);
 
 	/**
 	 * @brief Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
@@ -268,14 +195,11 @@ public:
 	Ogre::RenderWindow* getRenderWindow() const;
 
 	/**
-	 * @brief Emitted when the Ember entity factory has been created.
+	 * @brief Gets the World instance, which represents a scene of a server supplied View instance.
+	 *
+	 * @returns A World instance, or null if no such exists. The instance is created first when the client has connected and received an Eris::View instance.
 	 */
-	sigc::signal<void, EmberEntityFactory*> EventCreatedEmberEntityFactory;
-
-	/**
-	 * @brief Emitted when the avatar entity has been created.
-	 */
-	sigc::signal<void, EmberEntity&> EventCreatedAvatarEntity;
+	World* getWorld() const;
 
 	/**
 	 * @brief Emitted when the Jesus subsystem has been created.
@@ -295,51 +219,6 @@ public:
 	 * @return The Ogre root scene node.
 	 */
 	Ogre::SceneNode* getRootSceneNode() const;
-
-	/**
-	 * @brief Emitted after the GUIManager has been created, but not yet initialized.
-	 */
-	sigc::signal<void, GUIManager&> EventGUIManagerCreated;
-
-	/**
-	 * @brief Emitted after the GUIManager has been initialized.
-	 */
-	sigc::signal<void, GUIManager&> EventGUIManagerInitialized;
-
-	/**
-	 * @brief Emitted after the Motion has been created.
-	 */
-	sigc::signal<void, MotionManager&> EventMotionManagerCreated;
-
-	/**
-	 * @brief Emitted after the TerrainManager has been created.
-	 */
-	sigc::signal<void, Terrain::TerrainManager&> EventTerrainManagerCreated;
-
-	/**
-	 * @brief Emitted after the TerrainManager has been destroyed.
-	 */
-	sigc::signal<void> EventTerrainManagerDestroyed;
-
-	/**
-	 * @brief Emitted after the MovementController has been created.
-	 */
-	sigc::signal<void> EventMovementControllerCreated;
-
-	/**
-	 * @brief Emitted after the MovementController has been destroyed.
-	 */
-	sigc::signal<void> EventMovementControllerDestroyed;
-
-	/**
-	 * @brief Emitted before the main Ogre render window is rendered.
-	 */
-	sigc::signal<void> EventBeforeRender;
-
-	/**
-	 * @brief Emitted after the main Ogre render window is rendered.
-	 */
-	sigc::signal<void> EventAfterRender;
 
 	/**
 	 * @brief Renders one frame.
@@ -374,16 +253,6 @@ protected:
 	std::auto_ptr<OgreSetup> mOgreSetup;
 
 	/**
-	 * @brief The main user avatar
-	 */
-	Avatar* mAvatar;
-
-	/**
-	 * @brief When connected to a world, handles the avatar and patches mouse and keyboard movement events on the avatar.
-	 */
-	MovementController* mMovementController;
-
-	/**
 	 * @brief The main Ogre root object. All of Ogre is accessed through this.
 	 */
 	Ogre::Root *mRoot;
@@ -391,7 +260,7 @@ protected:
 	/**
 	 * @brief The main scene manager of the world.
 	 */
-	EmberPagingSceneManager* mSceneMgr;
+	Ogre::SceneManager* mSceneMgr;
 
 	/**
 	 * @brief The main render window.
@@ -411,19 +280,9 @@ protected:
 	std::auto_ptr<Ember::InputCommandMapper> mGeneralCommandMapper;
 
 	/**
-	 * @brief Main factory for all entities created in the world.
-	 */
-	EmberEntityFactory* mEmberEntityFactory;
-
-	/**
 	 * @brief Responsible for handling sound loading
 	 */
 	SoundDefinitionManager* mSoundManager;
-
-	/**
-	 * @brief Responsible for updating motions and animations of entities.
-	 */
-	MotionManager* mMotionManager;
 
 	/**
 	 * @brief Responsible for the GUI.
@@ -450,10 +309,6 @@ protected:
 	 */
 	Authoring::EntityRecipeManager* mEntityRecipeManager;
 
-	/**
-	 * @brief Responsible for allowing movement of entities in the world by the user.
-	 */
-	Authoring::EntityMoveManager* mMoveManager;
 
 	/**
 	 * @brief Main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
@@ -519,11 +374,6 @@ protected:
 	bool mIsInPausedMode;
 
 	/**
-	 * @brief The main camera, which handles input to be shown in the main viewpoint.
-	 */
-	Camera::MainCamera* mMainCamera;
-
-	/**
 	 * @brief The Ogre main camera. This is in most cases handled by mMainCamera.
 	 */
 	Ogre::Camera* mOgreMainCamera;
@@ -534,17 +384,19 @@ protected:
 	ConsoleObjectImpl* mConsoleObjectImpl;
 
 	/**
-	 * @brief The main motion handler for the avatar camera.
-	 */
-	ICameraMotionHandler* mAvatarCameraMotionHandler;
-
-	/**
 	 * @brief Gets the main Eris View instance, which is the main inteface to the world.
 	 *
 	 * The View can also be accessed through the Server service, but this can be used for convenience.
 	 * @return The main Eris View instance which represents the server world.
 	 */
 	Eris::View* getMainView();
+
+	/**
+	 * @brief The main World instance will be contained here, when the client is connected to a server and has received a View instance.
+	 *
+	 * The World instance is only available when the client through an Avatar and View instance has entered into the server side world.
+	 */
+	World* mWorld;
 
 	/**
 	 * @brief Sent from the server service when we've recieved a Eris::View instance from the server.
@@ -556,7 +408,7 @@ protected:
 	/**
 	 * @brief Sent from the server service when the View instance is destroyed.
 	 */
-	void Server_DestroyedView();
+	void EntityFactory_BeingDeleted();
 
 	/**
 	 * @brief Sent from the server when we've successfully connected.
@@ -564,15 +416,6 @@ protected:
 	 * @param connection
 	 */
 	void Server_GotConnection(Eris::Connection* connection);
-
-	/**
-	 * @brief Sent from the view when an avatar entity has been created.
-	 *
-	 * We'll listen to this and setup the cameras etc. when this happens.
-	 * @param entity The avatar entity.
-	 */
-	void View_gotAvatarCharacter(Eris::Entity* entity);
-
 
 	/**
 	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
@@ -602,19 +445,8 @@ protected:
 	void Application_ServicesInitialized();
 
 
-	/**
-	 * @brief Called when the avatar entity is being deleted.
-	 *
-	 * This means that we should clean up our avatar objects.
-	 */
-	void avatarEntity_BeingDeleted();
 
 };
-
-inline Authoring::EntityMoveManager* EmberOgre::getMoveManager() const
-{
-	return mMoveManager;
-}
 
 inline Ogre::RenderWindow* EmberOgre::getRenderWindow() const
 {

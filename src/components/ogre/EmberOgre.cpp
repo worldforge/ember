@@ -50,15 +50,8 @@
 
 #include "EmberOgrePrerequisites.h"
 
-// ------------------------------
-// Include Eris header files
-// ------------------------------
-/*#include <Eris/PollDefault.h>*/
-#include <Eris/Connection.h>
-#include <Eris/View.h>
-#include <Eris/Avatar.h>
+#include "World.h"
 
-//Ember headers
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
@@ -67,27 +60,12 @@
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/LoggingInstance.h"
 
-#include "camera/MainCamera.h"
-#include "camera/ThirdPersonCameraMount.h"
-#include "components/ogre/AvatarCameraMotionHandler.h"
-// ------------------------------
-// Include OGRE Ember client files
-// ------------------------------
 #include "terrain/TerrainLayerDefinitionManager.h"
 
 #include "sound/SoundDefinitionManager.h"
 
 #include "ConsoleObjectImpl.h"
-#include "Avatar.h"
-#include "components/ogre/camera/MainCamera.h"
-#include "MovementController.h"
-#include "EmberEntityFactory.h"
-#include "MotionManager.h"
 #include "GUIManager.h"
-#include "authoring/EntityMoveManager.h"
-
-#include "EmberEntity.h"
-#include "WorldEmberEntity.h"
 
 #include "environment/meshtree/TParameters.h"
 #include "environment/Tree.h"
@@ -95,9 +73,6 @@
 //#include "carpenter/Carpenter.h"
 //#include "carpenter/BluePrint.h"
 
-#include <OgreSceneManager.h>
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
 #include "model/ModelDefinitionManager.h"
 #include "model/ModelDefinition.h"
 #include "model/ModelRepresentationManager.h"
@@ -110,9 +85,6 @@
 
 #include "ShaderManager.h"
 
-// ------------------------------
-// Include Ember header files
-// ------------------------------
 
 //#include "jesus/Jesus.h"
 //#include "jesus/XMLJesusSerializer.h"
@@ -122,6 +94,8 @@
 #include "framework/Exception.h"
 #include "OgreLogObserver.h"
 #include "OgreResourceLoader.h"
+
+#include "EmberEntityFactory.h"
 
 #include "widgets/LoadingBar.h"
 
@@ -139,6 +113,11 @@
 #include "OgreResourceProvider.h"
 #include "components/lua/LuaScriptingProvider.h"
 #include "components/ogre/scripting/bindings/lua/helpers/LuaConnector.h"
+
+#include <Eris/Connection.h>
+#include <Eris/View.h>
+
+#include <OgreSceneManager.h>
 
 template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
 
@@ -162,39 +141,24 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-	mAvatar(0), mMovementController(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mEmberEntityFactory(0), mSoundManager(0), mMotionManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0), mMoveManager(0),
+	mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
 	//mJesus(0),
 			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 			//mCollisionManager(0),
 			//mCollisionDetectorVisualizer(0),
-			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mMainCamera(0), mOgreMainCamera(0), mConsoleObjectImpl(0), mAvatarCameraMotionHandler(0)
+			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mConsoleObjectImpl(0), mWorld(0)
 {
 	Ember::Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
 
 EmberOgre::~EmberOgre()
 {
-	delete mMainCamera;
+	delete mWorld;
 	delete mModelRepresentationManager;
 	//	delete mCollisionDetectorVisualizer;
 	//	delete mCollisionManager;
 	delete mMaterialEditor;
 	//	delete mJesus;
-	delete mMoveManager;
-
-	///The factory will be deleted by the mWorldView when that is deleted later on, so we shall not delete it here
-	// 	delete mEmberEntityFactory;
-	delete mMovementController;
-	delete mAvatar;
-	delete mAvatarCameraMotionHandler;
-
-	///start with deleting the eris world, then shut down ogre
-	// 	delete mWorldView;
-
-	if (mRoot) {
-		mRoot->removeFrameListener(mMotionManager);
-	}
-	delete mMotionManager;
 
 	Ember::EmberServices::getSingleton().getSoundService()->setResourceProvider(0);
 	delete mSoundManager;
@@ -231,40 +195,12 @@ EmberOgre::~EmberOgre()
 	delete mResourceLoader;
 
 	delete mConsoleObjectImpl;
-
-	/*	delete mOgreResourceLoader;
-	 //	mSceneMgr->shutdown();
-	 //		delete mWorldView;
-	 //mSceneMgr->removeAllCameras();
-	 //		mSceneMgr->clearScene();
-	 delete mGUIManager;
-	 delete mMotionManager;
-	 //	if (mAvatar)
-	 //		delete mAvatar;
-	 delete mMovementController;*/
-	//		delete mModelDefinitionManager;
-	/*	if (mEmberEntityFactory)
-	 delete mEmberEntityFactory;*/
-	//		delete mRoot;
-
-
-}
-
-bool EmberOgre::frameEnded(const Ogre::FrameEvent & evt)
-{
-	return true;
-}
-
-bool EmberOgre::frameStarted(const Ogre::FrameEvent & evt)
-{
-	mModelDefinitionManager->pollBackgroundLoaders();
-	//OgreOpcode::CollisionManager::getSingletonPtr()->getDefaultContext()->visualize(true, false, false, false, true, true);
-	return true;
 }
 
 bool EmberOgre::renderOneFrame()
 {
 	Ember::Input& input(Ember::Input::getSingleton());
+	mModelDefinitionManager->pollBackgroundLoaders();
 	if (input.isApplicationVisible()) {
 		///If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
@@ -418,9 +354,6 @@ bool EmberOgre::setup()
 	/// Create shader manager
 	mShaderManager = new ShaderManager;
 
-	///add ourself as a frame listener
-	Ogre::Root::getSingleton().addFrameListener(this);
-
 	///should media be preloaded?
 	if (preloadMedia) {
 		S_LOG_INFO( "Begin preload.");
@@ -440,12 +373,6 @@ bool EmberOgre::setup()
 		S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
 	}
 
-	mMotionManager = new MotionManager();
-	EventMotionManagerCreated.emit(*mMotionManager);
-
-	mMoveManager = new Authoring::EntityMoveManager();
-
-	mRoot->addFrameListener(mMotionManager);
 	mConsoleObjectImpl = new ConsoleObjectImpl();
 
 	try {
@@ -468,29 +395,14 @@ bool EmberOgre::setup()
 
 	mModelRepresentationManager = new Model::ModelRepresentationManager();
 
-	mMainCamera = new Camera::MainCamera(*mSceneMgr, *mWindow, Ember::Input::getSingleton(), *mOgreMainCamera);
 	loadingBar.finish();
 
 	return true;
 }
 
-void EmberOgre::avatarEntity_BeingDeleted()
+World* EmberOgre::getWorld() const
 {
-	mMainCamera->attachToMount(0);
-	mMainCamera->setMovementProvider(0);
-	delete mMovementController;
-	mMovementController = 0;
-	EventMovementControllerDestroyed.emit();
-	delete mAvatarCameraMotionHandler;
-	mAvatarCameraMotionHandler = 0;
-	delete mAvatar;
-	mAvatar = 0;
-}
-
-EmberEntity* EmberOgre::getEmberEntity(const std::string & eid)
-{
-	assert(getMainView());
-	return static_cast<EmberEntity*> (getMainView()->getEntity(eid));
+	return mWorld;
 }
 
 void EmberOgre::checkForConfigFiles()
@@ -623,57 +535,27 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::Server_GotView(Eris::View* view)
 {
-	mEmberEntityFactory = new EmberEntityFactory(*view, *view->getAvatar()->getConnection()->getTypeService(), *mMoveManager, *mSceneMgr);
-	//When calling Eris::View::registerFactory ownership is transferred
-	view->registerFactory(mEmberEntityFactory);
-	view->getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &EmberOgre::View_gotAvatarCharacter));
+	mWindow->removeAllViewports();
+	mWorld = new World(*view, *mWindow, *this);
+	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
+	EventWorldCreated.emit(*mWorld);
 }
 
-void EmberOgre::Server_DestroyedView()
+void EmberOgre::EntityFactory_BeingDeleted()
 {
-	//The Eris::View will handle the deletion of the factory when shutting down, but we need to reset the reference.
-	mEmberEntityFactory = 0;
+	delete mWorld;
+	mWorld = 0;
+	mWindow->removeAllViewports();
+	mWindow->addViewport(mOgreMainCamera);
 }
 
 void EmberOgre::Server_GotConnection(Eris::Connection* connection)
 {
-	EventCreatedEmberEntityFactory.emit(mEmberEntityFactory);
-}
-
-void EmberOgre::View_gotAvatarCharacter(Eris::Entity* entity)
-{
-	if (entity) {
-		EmberEntity& emberEntity = static_cast<EmberEntity&>(*entity);
-		//Set up the third person avatar camera and switch to it.
-		mAvatar = new Avatar(emberEntity);
-		mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
-		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
-		mMovementController = new MovementController(*mAvatar);
-		mMainCamera->setMovementProvider(mMovementController);
-		mMainCamera->attachToMount(&mAvatar->getCameraMount());
-
-		emberEntity.BeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::avatarEntity_BeingDeleted));
-
-		EventMovementControllerCreated.emit();
-		EventCreatedAvatarEntity.emit(emberEntity);
-	} else {
-		S_LOG_CRITICAL("Somehow got a null avatar entity.");
-	}
-}
-
-Avatar* EmberOgre::getAvatar() const
-{
-	return mAvatar;
 }
 
 Ogre::SceneManager* EmberOgre::getSceneManager() const
 {
 	return mSceneMgr;
-}
-
-MotionManager* EmberOgre::getMotionManager() const
-{
-	return mMotionManager;
 }
 
 Ogre::Root* EmberOgre::getOgreRoot() const
@@ -701,25 +583,6 @@ Ogre::SceneNode* EmberOgre::getRootSceneNode() const
 	return mSceneMgr->getRootSceneNode();
 }
 
-Camera::MainCamera* EmberOgre::getMainCamera() const
-{
-	return mMainCamera;
-}
-
-Ogre::Camera* EmberOgre::getMainOgreCamera() const
-{
-	return mOgreMainCamera;
-}
-
-EmberEntityFactory* EmberOgre::getEntityFactory() const
-{
-	return mEmberEntityFactory;
-}
-
-MovementController* EmberOgre::getMovementController() const
-{
-	return mMovementController;
-}
 
 ShaderManager* EmberOgre::getShaderManager() const
 {
@@ -746,7 +609,6 @@ void EmberOgre::Application_ServicesInitialized()
 {
 	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotConnection));
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
-	Ember::EmberServices::getSingleton().getServerService()->DestroyedView.connect(sigc::mem_fun(*this, &EmberOgre::Server_DestroyedView));
 
 	mScriptingResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));
 	Ember::EmberServices::getSingleton().getScriptingService()->setResourceProvider(mScriptingResourceProvider.get());
@@ -756,7 +618,7 @@ void EmberOgre::Application_ServicesInitialized()
 
 	Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 	if (provider != 0) {
-		Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
+		Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*> (provider);
 		LuaConnector::setState(luaScriptProvider->getLuaState());
 	}
 
@@ -771,6 +633,5 @@ const std::multimap<std::string, std::string>& EmberOgre::getResourceLocations()
 {
 	return mResourceLoader->getResourceLocations();
 }
-
 
 }
