@@ -55,7 +55,6 @@ namespace EmberOgre {
 class EmberEntity;
 class MousePicker;
 class GUICEGUIAdapter;
-class EntityWorldPickListener;
 class MovementController;
 class ColouredRenderedStringParser;
 
@@ -245,8 +244,6 @@ public:
 	 */
 	const std::string& getDefaultScheme() const;
 
-	EntityWorldPickListener* getEntityPickListener() const;
-
 	/**
 	Command for toggling between the input modes.
 	*/
@@ -286,8 +283,6 @@ protected:
 
 	MousePicker* mPicker;
 
-	EntityWorldPickListener* mEntityWorldPickListener;
-
 	CEGUI::Window* mSheet;
 	CEGUI::WindowManager* mWindowManager;
 	CEGUI::GUISheet* mDebugText;
@@ -318,12 +313,6 @@ protected:
 	 * @param entity
 	 */
 	void EmberOgre_CreatedAvatarEntity(EmberEntity& entity);
-
-	/**
-	 *    hooked to EmberOgre::EventMovementControllerCreated, connects the mEntityWorldPickListener to the main AvatarCamera
-	 * @param controller
-	 */
-	void EmberOgre_MovementControllerCreated();
 
 // 	InputMode mPreviousInputMode;
 	void pressedKey(const SDL_keysym& key, Ember::Input::InputMode inputMode);

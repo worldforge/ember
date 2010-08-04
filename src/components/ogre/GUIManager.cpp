@@ -72,8 +72,6 @@
 #include <direct.h>
 #endif
 
-#include "EntityWorldPickListener.h"
-
 template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Singleton = 0;
 
 using namespace CEGUI;
@@ -159,7 +157,7 @@ protected:
 };
 
 GUIManager::GUIManager(Ogre::RenderWindow* window) :
-	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mEntityWorldPickListener(0), mSheet(0), mWindowManager(0), mDebugText(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mDebugText(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -232,13 +230,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 
 		mPicker = new MousePicker();
 
-		///create a new entity world pick listener which listens for event
-		///TODO: should this really be here?
-		mEntityWorldPickListener = new EntityWorldPickListener();
-
-		///don't connect it yet since there's no AvatarCamera yet, wait until that's created
-		EmberOgre::getSingleton().EventMovementControllerCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_MovementControllerCreated));
-
 		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		getInput().setInputMode(Input::IM_GUI);
 
@@ -283,7 +274,6 @@ GUIManager::~GUIManager()
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCEGUIAdapter;
 
-	delete mEntityWorldPickListener;
 	delete mPicker;
 	if (mGuiRenderer) {
 		CEGUI::OgreRenderer::destroy(*mGuiRenderer);
@@ -666,11 +656,6 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 	getInput().setInputMode(Input::IM_MOVEMENT);
 }
 
-void GUIManager::EmberOgre_MovementControllerCreated()
-{
-	EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mEntityWorldPickListener);
-}
-
 const std::string& GUIManager::getLayoutDir() const
 {
 	static std::string dir("cegui/datafiles/layouts/");
@@ -680,11 +665,6 @@ const std::string& GUIManager::getLayoutDir() const
 const std::string& GUIManager::getDefaultScheme() const
 {
 	return mDefaultScheme;
-}
-
-EntityWorldPickListener* GUIManager::getEntityPickListener() const
-{
-	return mEntityWorldPickListener;
 }
 
 Gui::Icons::IconManager* GUIManager::getIconManager()
