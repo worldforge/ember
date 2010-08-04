@@ -29,6 +29,8 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/Convert.h"
+#include "components/ogre/World.h"
+#include "components/ogre/Scene.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -39,7 +41,7 @@ namespace EmberOgre
 namespace Authoring
 {
 EntityMover::EntityMover(NodeAttachment& nodeAttachment, EntityMoveManager& manager) :
-	EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode()), mNodeAttachment(nodeAttachment), mManager(manager), mPreviousControlDelegate(nodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
+	EntityMoverBase(nodeAttachment.getAttachedEntity(), nodeAttachment.getNode(), manager.getWorld().getScene().getSceneManager()), mNodeAttachment(nodeAttachment), mManager(manager), mPreviousControlDelegate(nodeAttachment.getControlDelegate()), mControlDelegate(new EntityMoverControlDelegate(*this))
 {
 	nodeAttachment.setControlDelegate(mControlDelegate);
 }

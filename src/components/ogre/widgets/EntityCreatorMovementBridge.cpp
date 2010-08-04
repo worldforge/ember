@@ -37,7 +37,7 @@ namespace Gui
 {
 
 EntityCreatorMovementBridge::EntityCreatorMovementBridge(EntityCreator& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-	::EmberOgre::Authoring::EntityMoverBase(entity, node), mCreator(creator)
+	::EmberOgre::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mCreator(creator)
 {
 }
 
