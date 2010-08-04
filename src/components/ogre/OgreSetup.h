@@ -23,10 +23,6 @@
 #ifndef EMBEROGREOGRESETUP_H
 #define EMBEROGREOGRESETUP_H
 
-#ifndef HAVE_SIGHANDLER_T
-typedef void (*sighandler_t)(int);
-#endif
-
 #include "EmberOgrePrerequisites.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"

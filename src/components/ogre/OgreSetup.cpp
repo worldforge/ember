@@ -65,6 +65,12 @@
 #define SDL_GL_SWAP_CONTROL 16
 #endif
 
+#ifndef HAVE_SIGHANDLER_T
+typedef void (*sighandler_t)(int);
+#endif
+
+
+
 extern "C"
 {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
