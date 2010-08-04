@@ -136,6 +136,12 @@ const TerrainPageSurface* TerrainPage::getSurface() const
 	return mTerrainSurface.get();
 }
 
+TerrainManager& TerrainPage::getManager() const
+{
+	return mManager;
+}
+
+
 TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 {
 	TerrainPageSurfaceLayer* layer = mTerrainSurface->createSurfaceLayer(shader->getLayerDefinition(), shader->getTerrainIndex(), shader->getShader());

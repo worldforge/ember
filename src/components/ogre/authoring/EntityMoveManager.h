@@ -86,6 +86,12 @@ public:
 	virtual void runCommand(const std::string &command, const std::string &args);
 
 	/**
+	 * @brief Accessor for the World instance that this manager operates within.
+	 * @returns The World instance to which this manager belongs.
+	 */
+	World& getWorld() const;
+
+	/**
 	 * @brief Emitted when the movement of an entity starts
 	 */
 	sigc::signal<void, EmberEntity&, EntityMover&> EventStartMoving;

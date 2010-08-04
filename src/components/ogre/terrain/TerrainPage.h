@@ -162,6 +162,12 @@ public:
 	 */
 	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
+	/**
+	 * @brief Accessor for the terrain manager.
+	 * @returns The terrain manager.
+	 */
+	TerrainManager& getManager() const;
+
 private:
 
 	/**

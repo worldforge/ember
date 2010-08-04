@@ -107,6 +107,12 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 	}
 }
 
+World& EntityMoveManager::getWorld() const
+{
+	return mWorld;
+}
+
+
 }
 
 }
