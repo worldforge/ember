@@ -54,7 +54,7 @@ class ICompassImpl;
 class Compass
 {
 public:
-    Compass(ICompassImpl* compassImpl);
+    Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager);
 
     virtual ~Compass();
 

@@ -27,8 +27,8 @@
 #include "TerrainEditor.h"
 #include "TerrainEditorOverlay.h"
 #include "TerrainManager.h"
-#include "components/ogre/EmberOgre.h"
-
+#include "components/ogre/Scene.h"
+#include <OgreSceneManager.h>
 
 using namespace Ember;
 namespace EmberOgre
@@ -88,7 +88,7 @@ void TerrainEditor::setFalloff(float falloff)
 void TerrainEditor::basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints)
 {
 	delete mOverlay;
-	mOverlay = new TerrainEditorOverlay(*this, *EmberOgre::getSingleton().getSceneManager(), *EmberOgre::getSingleton().getWorldSceneNode(), mManager, mCamera, basePoints);
+	mOverlay = new TerrainEditorOverlay(*this, mManager.getScene().getSceneManager(), *mManager.getScene().getSceneManager().getRootSceneNode(), mManager, mCamera, basePoints);
 	EventOverlayCreated(*mOverlay);
 }
 

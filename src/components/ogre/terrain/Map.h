@@ -131,7 +131,7 @@ protected:
 class MapCamera
 {
 public:
-	MapCamera(Map& map, Ogre::SceneManager* manager);
+	MapCamera(Map& map, Ogre::SceneManager& manager);
 	virtual ~MapCamera();
 
 	void render();
@@ -207,7 +207,7 @@ protected:
 */
 class Map{
 public:
-    Map();
+    Map(Ogre::SceneManager& sceneManager);
 
     virtual ~Map();
 

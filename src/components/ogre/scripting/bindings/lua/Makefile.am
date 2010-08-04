@@ -19,7 +19,7 @@ TOLUA_PKGS = AssetsManager.pkg AtlasHelper.pkg AtlasObjectDecoder.pkg AuthoringM
   ModelDefinitionManager.pkg ModelRenderer.pkg ModelRepresentation.pkg ModelRepresentationManager.pkg MotionManager.pkg MousePicker.pkg MovableObjectRenderer.pkg \
   MovementController.pkg OgreEntityRenderer.pkg OgreInfo.pkg QuaternionAdapter.pkg RawTypeInfoRepository.pkg ResourceListAdapter.pkg sigc.pkg SimpleRenderContext.pkg \
   StackableContainer.pkg stdlib.pkg SubModel.pkg TerrainArea.pkg TerrainEditor.pkg TerrainLayerDefinition.pkg TerrainLayerDefinitionManager.pkg TerrainManager.pkg \
-  TypeTreeAdapter.pkg Vector3Adapter.pkg Widget.pkg WorldEmberEntity.pkg World.pkg
+  TypeTreeAdapter.pkg Vector3Adapter.pkg Widget.pkg WorldEmberEntity.pkg World.pkg Scene.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 EmberOgre.cxx: $(TOLUA_PKGS)
 noinst_HEADERS = required.h

@@ -234,6 +234,11 @@ public:
 	 */
 	ISceneManagerAdapter* getAdapter() const;
 
+	/**
+	 * @brief Accessor for the Scene instance to which this terrain manager is attached to.
+	 *
+	 * @returns The Scene instance used by the manager.
+	 */
 	Scene& getScene() const;
 
 	/**

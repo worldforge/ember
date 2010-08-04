@@ -47,8 +47,8 @@ namespace EmberOgre {
 
 namespace Gui {
 
-Compass::Compass(ICompassImpl* compassImpl)
-: mMap(new Map()), mCompassImpl(compassImpl)
+Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager)
+: mMap(new Map(sceneManager)), mCompassImpl(compassImpl)
 {
 	mMap->initialize();
 	if (compassImpl) {

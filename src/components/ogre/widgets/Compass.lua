@@ -92,7 +92,7 @@ function Compass.buildWidget(terrainManager)
 
 	compass.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new()
 
-	compass.helper = EmberOgre.Gui.Compass:new(compass.helperImpl)
+	compass.helper = EmberOgre.Gui.Compass:new(compass.helperImpl, terrainManager:getScene():getSceneManager())
 	compass.map = compass.helper:getMap()
 	
 	compass:buildCEGUIWidget()

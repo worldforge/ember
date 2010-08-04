@@ -25,7 +25,6 @@
 #endif
 
 #include "Map.h"
-#include "../EmberOgre.h"
 #include <OgreCamera.h>
 #include <OgreTextureManager.h>
 #include <OgreRenderTexture.h>
@@ -36,12 +35,12 @@ namespace EmberOgre {
 
 namespace Terrain {
 
-Map::Map()
+Map::Map(Ogre::SceneManager& sceneManager)
 :
 mRenderTexture(0)
 , mTexturePixelSize(256)
 , mMetersPerPixel(1.0f)
-, mCamera(*this, EmberOgre::getSingleton().getSceneManager())
+, mCamera(*this, sceneManager)
 , mView(*this, mCamera)
 {
 }
@@ -207,10 +206,10 @@ void MapView::recalculateBounds()
 
 
 
-MapCamera::MapCamera(Map& map, Ogre::SceneManager* manager)
-: mMap(map), mViewport(0), mDistance(400), mLightning(*manager)
+MapCamera::MapCamera(Map& map, Ogre::SceneManager& manager)
+: mMap(map), mViewport(0), mDistance(400), mLightning(manager)
 {
-	mCamera = manager->createCamera("TerrainMapCamera");
+	mCamera = manager.createCamera("TerrainMapCamera");
 	mCamera->setPosition(Ogre::Vector3(0, 0, 0));
 	///look down
 	mCamera->pitch(Ogre::Degree(-90));

@@ -26,7 +26,6 @@
 
 #include "CaelumSun.h"
 #include "caelum/include/CaelumSystem.h"
-#include "components/ogre/EmberOgre.h"
 #include "components/ogre/Convert.h"
 #include "caelum/include/Sun.h"
 
@@ -73,7 +72,7 @@ CaelumSun::~CaelumSun()
 
 void CaelumSun::setAmbientLight(const Ogre::ColourValue& colour)
 {
-	EmberOgre::getSingleton().getSceneManager()->setAmbientLight(colour);
+	mCaelumSystem->getSceneMgr()->setAmbientLight(colour);
 }
 
 Ogre::Vector3 CaelumSun::getSunDirection() const

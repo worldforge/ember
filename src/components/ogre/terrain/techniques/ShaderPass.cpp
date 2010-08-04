@@ -20,8 +20,9 @@
 #include "ShaderPassCoverageBatch.h"
 
 #include "components/ogre/terrain/TerrainPage.h"
+#include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
-#include "components/ogre/EmberOgre.h"
+#include "components/ogre/Scene.h"
 #include "framework/LoggingInstance.h"
 
 #include <OgreTexture.h>
@@ -189,7 +190,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
 
 		if (useShadows) {
-			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*> (EmberOgre::getSingleton().getSceneManager()->getShadowCameraSetup().get());
+			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*> (mPage.getManager().getScene().getSceneManager().getShadowCameraSetup().get());
 			if (pssmSetup) {
 				Ogre::Vector4 splitPoints;
 				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
@@ -217,7 +218,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 
 	///add vertex shader for fog
 	std::string lightningVpProgram;
-	if (EmberOgre::getSingleton().getSceneManager()->getFogMode() == Ogre::FOG_EXP2) {
+	if (mPage.getManager().getScene().getSceneManager().getFogMode() == Ogre::FOG_EXP2) {
 		if (useShadows) {
 			lightningVpProgram = "Lighting/ShadowVp";
 		} else {

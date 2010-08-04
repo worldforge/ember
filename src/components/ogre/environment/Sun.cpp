@@ -163,7 +163,9 @@ void Sun::setSunColour(const Ogre::ColourValue& colour) {
 }
 
 void Sun::setAmbientLight(const Ogre::ColourValue& colour) {
-	EmberOgre::getSingleton().getSceneManager()->setAmbientLight(colour);
+	if (mSun->_getManager()) {
+		mSun->_getManager()->setAmbientLight(colour);
+	}
 	EventUpdatedAmbientLight.emit(this, colour);
 }
 
