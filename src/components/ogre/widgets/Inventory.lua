@@ -241,8 +241,8 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.container:setVisible(true)
 	
 	
-	connect(self.connectors, emberOgre:getAvatar().EventAddedEntityToInventory, self.AddedEntityToInventory, self)
-	connect(self.connectors, emberOgre:getAvatar().EventRemovedEntityFromInventory, self.RemovedEntityFromInventory, self)
+	connect(self.connectors, emberOgre:getWorld():getAvatar().EventAddedEntityToInventory, self.AddedEntityToInventory, self)
+	connect(self.connectors, emberOgre:getWorld():getAvatar().EventRemovedEntityFromInventory, self.RemovedEntityFromInventory, self)
 	
 	self.widget:registerConsoleVisibilityToggleCommand("inventory")
 	self.avatarEntity = avatarEntity
@@ -449,7 +449,7 @@ function Inventory:shutdown()
 end
 
 Inventory.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
-		if emberOgre:getAvatar():isAdmin() == false then
+		if emberOgre:getWorld():getAvatar():isAdmin() == false then
 			inventory = {connectors={},
 				iconsize = 32,
 				columns = 4,

@@ -25,14 +25,15 @@
 #endif
 #include "EntityWorldPickListener.h"
 #include "ICollisionDetector.h"
-#include "EmberOgre.h"
 #include "EmberEntityUserObject.h"
 #include "EmberEntityFactory.h"
+#include "Scene.h"
 
 #include "EmberEntity.h"
 #include "WorldEmberEntity.h"
 
 #include "MousePicker.h"
+#include "Scene.h"
 
 #include "model/Model.h"
 
@@ -45,12 +46,12 @@
 namespace EmberOgre
 {
 
-EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener) :
+EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener, Ogre::SceneManager& sceneManager) :
 	mEntity(0), mDebugNode(0)
 {
-	mDebugNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	mDebugNode = sceneManager.getRootSceneNode()->createChildSceneNode();
 	try {
-		Ogre::Entity* mEntity = EmberOgre::getSingleton().getSceneManager()->createEntity("pickerDebugObject", "3d_objects/primitives/models/sphere.mesh");
+		Ogre::Entity* mEntity = sceneManager.createEntity("pickerDebugObject", "3d_objects/primitives/models/sphere.mesh");
 		///start out with a normal material
 		mEntity->setMaterialName("BasePointMarkerMaterial");
 		mEntity->setRenderingDistance(300);
@@ -66,10 +67,10 @@ EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorld
 EntityWorldPickListenerVisualizer::~EntityWorldPickListenerVisualizer()
 {
 	if (mEntity) {
-		EmberOgre::getSingleton().getSceneManager()->destroyEntity(mEntity);
+		mEntity->_getManager()->destroyEntity(mEntity);
 	}
 	if (mDebugNode) {
-		EmberOgre::getSingleton().getSceneManager()->destroySceneNode(mDebugNode->getName());
+		mDebugNode->getCreator()->destroySceneNode(mDebugNode);
 	}
 }
 
@@ -78,8 +79,8 @@ void EntityWorldPickListenerVisualizer::picker_EventPickedEntity(const std::vect
 	mDebugNode->setPosition(result.begin()->position);
 }
 
-EntityWorldPickListener::EntityWorldPickListener() :
-	VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mVisualizer(0)
+EntityWorldPickListener::EntityWorldPickListener(EmberEntityFactory& entityFactory, Scene& scene) :
+	VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mVisualizer(0), mEntityFactory(entityFactory), mScene(scene)
 {
 }
 
@@ -116,7 +117,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 
 			if (mFurthestPickingDistance == 0 || !mResult.size()) {
 				EntityPickResult result;
-				result.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
+				result.entity = mEntityFactory.getWorld();
 				result.position = wf->singleIntersection;
 				result.distance = entry.distance;
 				result.isTransparent = false;
@@ -129,7 +130,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 						mResult.pop_back();
 					}
 					EntityPickResult result;
-					result.entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
+					result.entity = mEntityFactory.getWorld();
 					result.position = wf->singleIntersection;
 					result.distance = entry.distance;
 					result.isTransparent = false;
@@ -193,7 +194,7 @@ void EntityWorldPickListener::runCommand(const std::string &command, const std::
 		if (mVisualizer.get()) {
 			mVisualizer.reset();
 		} else {
-			mVisualizer = std::auto_ptr<EntityWorldPickListenerVisualizer>(new EntityWorldPickListenerVisualizer(*this));
+			mVisualizer = std::auto_ptr<EntityWorldPickListenerVisualizer>(new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
 		}
 	}
 }

@@ -25,15 +25,12 @@
 #endif
 
 #include "MovementAdapter.h"
-#include "../EmberOgre.h"
 #include "IMovementBridge.h"
 #include "EntityMoveManager.h"
 #include "components/ogre/camera/MainCamera.h"
 #include "../AvatarTerrainCursor.h"
-#include "../GUIManager.h"
 #include "../Convert.h"
 #include <OgreRoot.h>
-//#include "../input/Input.h"
 
 using namespace WFMath;
 using namespace Ember;
@@ -57,6 +54,12 @@ IMovementBridge* MovementAdapterWorkerBase::getBridge()
 	return mAdapter.mBridge;
 }
 
+const Camera::MainCamera& MovementAdapterWorkerBase::getCamera() const
+{
+	return mAdapter.mCamera;
+}
+
+
 MovementAdapterWorkerDiscrete::MovementAdapterWorkerDiscrete(MovementAdapter& adapter) :
 	MovementAdapterWorkerBase(adapter), mMovementSpeed(10)
 {
@@ -76,7 +79,7 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& mo
 	// 		direction = direction * 5;
 	// 	}
 
-	Quaternion orientation = Convert::toWF(EmberOgre::getSingleton().getMainCamera()->getOrientation());
+	Quaternion orientation = Convert::toWF(getCamera().getOrientation());
 
 	//We need to constraint the orientation to only around the z axis.
 	WFMath::Vector<3> rotator(1.0, 0.0, 0.0);
@@ -124,13 +127,13 @@ bool MovementAdapterWorkerTerrainCursor::frameStarted(const Ogre::FrameEvent& ev
 void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate)
 {
 	const Ogre::Vector3* position(0);
-	if (EmberOgre::getSingleton().getMainCamera()->getTerrainCursor().getTerrainCursorPosition(&position) || forceUpdate) {
+	if (getCamera().getTerrainCursor().getTerrainCursorPosition(&position) || forceUpdate) {
 		getBridge()->setPosition(Convert::toWF<WFMath::Point<3> >(*position));
 	}
 }
 
-MovementAdapter::MovementAdapter() :
-	mBridge(0), mWorker(0)
+MovementAdapter::MovementAdapter(const Camera::MainCamera& camera) :
+	mCamera(camera), mBridge(0), mWorker(0)
 {
 }
 

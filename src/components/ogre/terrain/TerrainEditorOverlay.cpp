@@ -31,6 +31,7 @@
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberEntityFactory.h"
 #include "components/ogre/MousePicker.h"
+#include "components/ogre/World.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -411,7 +412,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 
 		Atlas::Message::ListType sargsList(1, sarg);
 		s->setArgsAsList(sargsList);
-		s->setFrom(EmberOgre::getSingleton().getAvatar()->getEmberEntity().getId());
+		s->setFrom(EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity().getId());
 
 		Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");

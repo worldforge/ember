@@ -10,7 +10,7 @@ function PickingInfo.buildWidget()
 
 	PickingInfo.widget = guiManager:createWidget()
 	
- 	connect(PickingInfo.connectors, guiManager:getEntityPickListener().EventPickedEntity, "PickingInfo.pickedEntity")
+ 	connect(PickingInfo.connectors, emberOgre:getWorld():getEntityPickListener().EventPickedEntity, "PickingInfo.pickedEntity")
     
 	PickingInfo.widget:loadMainSheet("PickingInfo.layout", "PickingInfo/")
 
@@ -48,5 +48,5 @@ Distance: %.2f]], firstPickResult.entity:getName(), firstPickResult.entity:getId
 end
 
 
+connect(connectors, emberOgre.EventWorldCreated, PickingInfo.buildWidget)
 
-PickingInfo.buildWidget()

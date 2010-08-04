@@ -83,7 +83,7 @@ function TypeManager:printType()
 	
 	if typeInfo ~= nil then
 	
-		local rawTypeData = emberOgre:getEntityFactory():getAuthoringManager():getRawTypeInfoRepository():getRawTypeData(typeInfo:getName())
+		local rawTypeData = emberOgre:getWorld():getEntityFactory():getAuthoringManager():getRawTypeInfoRepository():getRawTypeData(typeInfo:getName())
 	
 		if rawTypeData:isValid() then
 		

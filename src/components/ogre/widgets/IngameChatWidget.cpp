@@ -44,6 +44,7 @@
 #include <Eris/Avatar.h>
 
 #include "../EmberOgre.h"
+#include "../World.h"
 #include "../Avatar.h"
 
 #include "../EmberEntity.h"
@@ -67,7 +68,7 @@ namespace Gui
 {
 
 IngameChatWidget::IngameChatWidget() :
-	mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId(""), mMainCamera(*EmberOgre::getSingleton().getMainOgreCamera())
+	mTimeShown(0), mDistanceShown(100), mLabelCreator(*this), mLabelPool(mLabelCreator), mChatTextCreator(*this), mChatTextPool(mChatTextCreator), mAvatarEntityId(""), mCamera(0)
 {
 
 	registerConfigListener("ingamechatwidget", "timeshown", sigc::mem_fun(*this, &IngameChatWidget::Config_TimeShown));
@@ -89,7 +90,7 @@ void IngameChatWidget::buildWidget()
 
 	mLabelPool.initializePool(15);
 	mChatTextPool.initializePool(5);
-	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &IngameChatWidget::ServerService_GotView));
+	EmberOgre::getSingleton().EventWorldCreated.connect(sigc::mem_fun(*this, &IngameChatWidget::EmberOgre_WorldCreated));
 
 }
 
@@ -108,13 +109,14 @@ Window* IngameChatWidget::getLabelSheet()
 	return mLabelSheet;
 }
 
-void IngameChatWidget::ServerService_GotView(Eris::View* view)
+void IngameChatWidget::EmberOgre_WorldCreated(World& world)
 {
-	Eris::TypeService* typeService = view->getAvatar()->getConnection()->getTypeService();
+	mCamera = &world.getMainCamera();
+	Eris::TypeService* typeService = world.getView().getAvatar()->getConnection()->getTypeService();
 	mLabelTypes.push_back(typeService->getTypeByName("character"));
 
-	view->EntitySeen.connect(sigc::mem_fun(*this, &IngameChatWidget::View_EntitySeen));
-	mAvatarEntityId = view->getAvatar()->getId();
+	world.getView().EntitySeen.connect(sigc::mem_fun(*this, &IngameChatWidget::View_EntitySeen));
+	mAvatarEntityId = world.getView().getAvatar()->getId();
 }
 
 void IngameChatWidget::View_EntitySeen(Eris::Entity* entity)
@@ -249,7 +251,7 @@ void IngameChatWidget::EntityObserver::entity_attributeChanged(const Atlas::Mess
 void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 {
 	///only update when being rendered by the main camera
-	if (camera == &mChatWidget.mMainCamera) {
+	if (camera == &mChatWidget.mCamera->getCamera()) {
 		// 	const Ogre::Vector3& entityWorldCoords = mEntity->getDerivedPosition();
 		//	Ogre::Vector3 entityWorldCoords = mEntity->getWorldBoundingBox(true).getCenter();
 		//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
@@ -314,7 +316,7 @@ void IngameChatWidget::Label::placeWindowOnEntity()
 	Ogre::Vector3 entityWorldCoords = mModelRepresentation->getWorldBoundingSphere().getCenter();
 	entityWorldCoords.y = mModelRepresentation->getWorldBoundingBox().getMaximum().y;
 	///check what the new position is in screen coords
-	result = EmberOgre::getSingleton().getMainCamera()->worldToScreen(entityWorldCoords, screenCoords);
+	result = mContainerWidget.mCamera->worldToScreen(entityWorldCoords, screenCoords);
 
 	if (result) {
 		mWindow->setVisible(true);

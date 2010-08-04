@@ -367,7 +367,10 @@ end
 
 function AssetsManager.refresh()
 	AssetsManager.listholder:resetList()
-	AssetsManager.addEntity(emberOgre:getEntityFactory():getWorld(), 0)
+	local world = emberOgre:getWorld()
+	if world then
+		AssetsManager.addEntity(world:getEntityFactory():getWorld(), 0)
+	end
 end
 
 function AssetsManager.addEntity(entity, level)

@@ -32,7 +32,8 @@ namespace EmberOgre
 namespace Gui
 {
 
-EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
+EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
+: mMoveAdapter(camera)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference

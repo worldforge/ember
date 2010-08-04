@@ -45,9 +45,10 @@ namespace EmberOgre {
 	, mLastMouseX(-1)
 	, mLastMouseY(-1)
 	, mCamera(camera)
+	, mTerrainCursorRayQuery(0)
 	, mUpdatePositionThreshold(AvatarTerrainCursor::DEFAULT_THRESHOLD_MILLIS)
 	{
-		mTerrainCursorRayQuery = EmberOgre::getSingletonPtr()->getSceneManager()->createRayQuery(Ogre::Ray(), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+		mTerrainCursorRayQuery = camera.getSceneManager()->createRayQuery(Ogre::Ray(), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 		mTerrainCursorRayQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 		mTerrainCursorRayQuery->setSortByDistance(true);
 		mTerrainCursorRayQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
@@ -57,7 +58,7 @@ namespace EmberOgre {
 
 	AvatarTerrainCursor::~AvatarTerrainCursor()
 	{
-		EmberOgre::getSingleton().getSceneManager()->destroyQuery( mTerrainCursorRayQuery );
+		mCamera.getSceneManager()->destroyQuery( mTerrainCursorRayQuery );
 	}
 
 	unsigned int AvatarTerrainCursor::getThreshold()

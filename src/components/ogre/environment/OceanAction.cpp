@@ -24,6 +24,7 @@
 #include "components/ogre/EmberEntityFactory.h"
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberOgre.h"
+#include "components/ogre/World.h"
 
 #include "framework/LoggingInstance.h"
 
@@ -42,8 +43,9 @@ OceanAction::~OceanAction()
 
 void OceanAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
-	if (EmberEntityFactory* factory = EmberOgre::getSingleton().getEntityFactory()) {
-		if (WorldEmberEntity* world = factory->getWorld()) {
+	if (EmberOgre::getSingleton().getWorld()) {
+		EmberEntityFactory& factory = EmberOgre::getSingleton().getWorld()->getEntityFactory();
+		if (WorldEmberEntity* world = factory.getWorld()) {
 			if (Environment * environment = world->getEnvironment()) {
 				if (IWater* water = environment->getWater()) {
 					OceanRepresentation* ocean = new OceanRepresentation(mEntity, *water);

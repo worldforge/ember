@@ -59,6 +59,7 @@ class EmberEntity;
 class AvatarLogger;
 class AvatarLoggerParent;
 class AvatarAttachmentController;
+class Scene;
 
 struct AvatarMovementState
 {
@@ -83,8 +84,9 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param erisAvatarEntity The entity which represents the avatar.
+	 * @param scene The scene in which the entities are shown.
 	 */
-	Avatar(EmberEntity& erisAvatarEntity);
+	Avatar(EmberEntity& erisAvatarEntity, Scene& scene);
 
 	/**
 	 * @brief Dtor.
@@ -96,6 +98,12 @@ public:
 	 * @return The scene node to which the avatar entity is attached to, or null if the avatar isn't attached to any scene node.
 	 */
 	Ogre::Node* getAvatarSceneNode() const;
+
+	/**
+	 * @brief Gets the scene in which the entities are shown.
+	 * @returns The scene in which entities are shown.
+	 */
+	Scene& getScene() const;
 
 	/**
 	 * @brief Call this when the avatar entity has moved in the world.
@@ -261,6 +269,8 @@ protected:
 	 * Normally we'll ignore most of the movement updates sent from the server, since we want to provide client side prediction. But if the server is controlling the movement we instead want to use the server side position updates directly.
 	 */
 	bool mIsMovingServerOnly;
+
+	Scene& mScene;
 
 	/**
 	 * @brief This method will determine if it's ok to send a small movement change, such as a small deviation direction during an already begun movement to the server.

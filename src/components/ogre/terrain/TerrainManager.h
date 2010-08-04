@@ -56,6 +56,8 @@ namespace EmberOgre {
 class EmberEntity;
 class ShaderManager;
 class ILightning;
+class Scene;
+class WorldEmberEntity;
 
 /**
  * @brief Namespace for all terrain related classes and activities.
@@ -99,8 +101,10 @@ public:
 	 * @brief Default ctor.
 	 *
 	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain manager will take ownership of the adapter and will destroy it upon it's destruction.
+	 * @param scene The world scene.
+	 * @param worldEntity The world entity.
 	 */
-	TerrainManager(ISceneManagerAdapter* adapter);
+	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, WorldEmberEntity& worldEntity);
 
 	/**
 	 * @brief Dtor.
@@ -229,6 +233,8 @@ public:
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
 	ISceneManagerAdapter* getAdapter() const;
+
+	Scene& getScene() const;
 
 	/**
 	 * @brief Gets the size of each foliage batch. This is used by the foliage system for setting up batch system for performance.
@@ -493,6 +499,10 @@ protected:
 	Foliage::Vegetation* mVegetation;
 
 	PageBridgeStore mPageBridges;
+
+	Scene& mScene;
+
+	WorldEmberEntity& mWorldEntity;
 
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.

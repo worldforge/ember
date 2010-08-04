@@ -74,7 +74,7 @@ bool SimpleWater::initialize()
 		// create a water plane/scene node
 		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, waterPlane, 10000, 10000, 5, 5, true, 1, 1000, 1000, Ogre::Vector3::UNIT_Z);
 
-		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode("water");
+		mWaterNode = mSceneMgr.getRootSceneNode()->createChildSceneNode("water");
 
 		mWaterEntity = mSceneMgr.createEntity("water", "SimpleWaterPlane");
 		mWaterEntity->setMaterialName("/global/environment/water/ocean");

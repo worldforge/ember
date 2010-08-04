@@ -25,9 +25,9 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/GUIManager.h"
 #include "components/ogre/Avatar.h"
-#include "components/ogre/EmberOgre.h"
 #include "components/ogre/OgreInfo.h"
 #include "components/ogre/Convert.h"
+#include "components/ogre/Scene.h"
 #include "components/ogre/FreeFlyingCameraMotionHandler.h"
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/camera/FirstPersonCameraMount.h"
@@ -71,12 +71,12 @@ void MovementControllerInputListener::input_MouseButtonReleased(Input::MouseButt
 	}
 }
 
-MovementController::MovementController(Avatar& avatar) :
+MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camera) :
 	RunToggle("+run", this, "Toggle running mode."), ToggleCameraAttached("toggle_cameraattached", this, "Toggle between the camera being attached to the avatar and free flying."), MovementMoveForward("+movement_move_forward", this, "Move forward."), MovementMoveBackward("+movement_move_backward", this, "Move backward."), MovementMoveDownwards("+movement_move_downwards", this, "Move downwards."), MovementMoveUpwards("+movement_move_upwards", this, "Move upwards."), MovementStrafeLeft("+movement_strafe_left", this, "Strafe left."), MovementStrafeRight("+movement_strafe_right", this, "Strafe right."), CameraOnAvatar("camera_on_avatar", this, "Positions the free flying camera on the avatar.")
 	/*, MovementRotateLeft("+Movement_rotate_left", this, "Rotate left.")
 	 , MovementRotateRight("+Movement_rotate_right", this, "Rotate right.")*/
 	//, MoveCameraTo("movecamerato", this, "Moves the camera to a point.")
-			, mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false)
+			, mCamera(camera), mMovementCommandMapper("movement", "key_bindings_movement"), mIsRunning(false), mMovementDirection(WFMath::Vector<3>::ZERO()), mDecalObject(0), mDecalNode(0), mControllerInputListener(*this), mAvatar(avatar), mFreeFlyingNode(0), mIsFreeFlying(false)
 {
 
 	mMovementCommandMapper.restrictToInputMode(Input::IM_MOVEMENT);
@@ -87,14 +87,14 @@ MovementController::MovementController(Avatar& avatar) :
 	Ember::Input::getSingleton().setMovementModeEnabled(true);
 
 	try {
-		mFreeFlyingNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode(OgreInfo::createUniqueResourceName("FreeFlyingCameraNode"));
+		mFreeFlyingNode = mAvatar.getScene().getSceneManager().getRootSceneNode()->createChildSceneNode(OgreInfo::createUniqueResourceName("FreeFlyingCameraNode"));
 		if (mFreeFlyingNode) {
 			if (mAvatar.getEmberEntity().getPredictedPos().isValid()) {
 				mFreeFlyingNode->setPosition(Convert::toOgre(mAvatar.getEmberEntity().getPredictedPos()));
 				mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
 			}
 			mFreeFlyingMotionHandler = std::auto_ptr<FreeFlyingCameraMotionHandler>(new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
-			mCameraMount = std::auto_ptr<Camera::FirstPersonCameraMount>(new Camera::FirstPersonCameraMount(*EmberOgre::getSingleton().getSceneManager()));
+			mCameraMount = std::auto_ptr<Camera::FirstPersonCameraMount>(new Camera::FirstPersonCameraMount(mAvatar.getScene().getSceneManager()));
 			mCameraMount->setMotionHandler(mFreeFlyingMotionHandler.get());
 			mCameraMount->attachToNode(mFreeFlyingNode);
 		} else {
@@ -115,7 +115,7 @@ MovementController::~MovementController()
 		mDecalNode->getCreator()->destroySceneNode(mDecalNode);
 	}
 	if (mDecalObject) {
-		EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mDecalObject);
+		mDecalObject->_getManager()->destroyMovableObject(mDecalObject);
 	}
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
@@ -123,10 +123,10 @@ MovementController::~MovementController()
 void MovementController::setCameraFreeFlying(bool freeFlying)
 {
 	if (freeFlying && mCameraMount.get()) {
-		EmberOgre::getSingleton().getMainCamera()->attachToMount(mCameraMount.get());
+		mCamera.attachToMount(mCameraMount.get());
 		mIsFreeFlying = true;
 	} else {
-		EmberOgre::getSingleton().getMainCamera()->attachToMount(&mAvatar.getCameraMount());
+		mCamera.attachToMount(&mAvatar.getCameraMount());
 		mIsFreeFlying = false;
 	}
 }
@@ -262,19 +262,19 @@ void MovementController::createDecal(Ogre::Vector3 position)
 {
 	try {
 		// Create object MeshDecal
-		Ogre::SceneManager* sceneManager = EmberOgre::getSingleton().getSceneManager();
+		Ogre::SceneManager& sceneManager = mAvatar.getScene().getSceneManager();
 		Ogre::NameValuePairList params;
 		params["materialName"] = "/global/ember/terraindecal";
 		params["width"] = StringConverter::toString(2);
 		params["height"] = StringConverter::toString(2);
-		params["sceneMgrInstance"] = sceneManager->getName();
+		params["sceneMgrInstance"] = sceneManager.getName();
 
-		mDecalObject = sceneManager->createMovableObject("MovementControllerMoveToDecal", "PagingLandScapeMeshDecal", &params);
+		mDecalObject = sceneManager.createMovableObject("MovementControllerMoveToDecal", "PagingLandScapeMeshDecal", &params);
 
 		// Add MeshDecal to Scene
-		mDecalNode = sceneManager->createSceneNode("MovementControllerMoveToDecalNode");
+		mDecalNode = sceneManager.createSceneNode("MovementControllerMoveToDecalNode");
 		///the decal code is a little shaky and relies on us setting the position of the node before we add the moveable object
-		EmberOgre::getSingleton().getWorldSceneNode()->addChild(mDecalNode);
+		sceneManager.getRootSceneNode()->addChild(mDecalNode);
 		mDecalNode->setPosition(position);
 		mDecalNode->attachObject(mDecalObject);
 		// 	mDecalNode->showBoundingBox(true);

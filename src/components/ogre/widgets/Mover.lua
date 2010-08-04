@@ -33,14 +33,15 @@ function Mover.buildWidget()
 	Mover.widget = guiManager:createWidget()
 	Mover.widget:loadMainSheet("Mover.layout", "Mover/")
 	
-	connect(Mover.connectors, emberOgre:getMoveManager().EventStartMoving, "Mover.StartMoving")
-	connect(Mover.connectors, emberOgre:getMoveManager().EventFinishedMoving, "Mover.FinishedMoving")
-	connect(Mover.connectors, emberOgre:getMoveManager().EventCancelledMoving, "Mover.CancelledMoving")
+	local moveManager = emberOgre:getWorld():getMoveManager()
+	
+	connect(Mover.connectors, moveManager.EventStartMoving, Mover.StartMoving)
+	connect(Mover.connectors, moveManager.EventFinishedMoving, Mover.FinishedMoving)
+	connect(Mover.connectors, moveManager.EventCancelledMoving, Mover.CancelledMoving)
 	
 
 	Mover.widget:hide()
 
 end
 
-
-Mover.buildWidget()
+connect(connectors, emberOgre.EventWorldCreated, Mover.buildWidget)

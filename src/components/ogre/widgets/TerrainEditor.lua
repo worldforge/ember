@@ -76,12 +76,12 @@ function TerrainEditor.overlayCreated(overlay)
 end
 
 function TerrainEditor.buildWidget()
-	local entityFactory = emberOgre:getEntityFactory()
+	local entityFactory = emberOgre:getWorld():getEntityFactory()
 	if entityFactory ~= nil then
 		local worldEntity = entityFactory:getWorld()
 		if worldEntity ~= nil then
 			local terrainManager = worldEntity:getTerrainManager()
-			local mainCamera = emberOgre:getMainCamera()
+			local mainCamera = emberOgre:getWorld():getMainCamera()
 			if mainCamera ~= nil then
 				TerrainEditor.widget = guiManager:createWidget()
 				TerrainEditor.widget:loadMainSheet("TerrainEditor.layout", "TerrainEditor/")
@@ -121,4 +121,5 @@ function TerrainEditor.buildWidget()
 	
 
 end
-TerrainEditor.buildWidget()
+
+connect(connectors, emberOgre.EventTerrainManagerCreated, TerrainEditor.buildWidget)

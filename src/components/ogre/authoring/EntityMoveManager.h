@@ -34,6 +34,8 @@ namespace EmberOgre
 {
 
 class EmberEntity;
+class World;
+
 namespace Authoring
 {
 
@@ -63,7 +65,7 @@ private:
 class EntityMoveManager: public Ember::ConsoleObject, public sigc::trackable
 {
 public:
-	EntityMoveManager();
+	EntityMoveManager(World& world);
 
 	/**
 	 * @brief Console command for starting the movement operation.
@@ -99,6 +101,9 @@ public:
 	sigc::signal<void> EventCancelledMoving;
 
 protected:
+
+	World& mWorld;
+
 	/**
 	 * @brief Main adapter which will intercept mouse and keyboard input to allow for movement of an entity.
 	 */

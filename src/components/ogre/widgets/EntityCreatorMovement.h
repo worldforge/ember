@@ -42,10 +42,11 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param entityCreator The owning entity creator instance.
+	 * @param camera The main camera in the world.
 	 * @param entity The entity which should be moved.
 	 * @param node The node to which the entity belongs.
 	 */
-	EntityCreatorMovement(EntityCreator& entityCreator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	EntityCreatorMovement(EntityCreator& entityCreator, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
 
 	/**
 	 * @brief Dtor.

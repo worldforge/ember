@@ -26,7 +26,6 @@
 #include "components/ogre/authoring/EntityRecipe.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/widgets/Widget.h"
-#include <Eris/Connection.h>
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 #include <CEGUIWindow.h>
@@ -37,10 +36,13 @@
 namespace Eris
 {
 class TypeInfo;
+class TypeService;
 }
 
 namespace EmberOgre
 {
+
+class World;
 
 namespace Authoring
 {
@@ -70,7 +72,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	EntityCreator(Eris::Connection& conn);
+	EntityCreator(World& world);
 
 	/**
 	 * Destructor.
@@ -178,9 +180,11 @@ protected:
 	const WFMath::AxisBox<3> & getBBox();
 
 	/**
-	 * Eris connection.
+	 * @brief The main world.
 	 */
-	Eris::Connection& mConn;
+	World& mWorld;
+
+	Eris::TypeService& mTypeService;
 
 	/**
 	 * Stores, are we in create mode.

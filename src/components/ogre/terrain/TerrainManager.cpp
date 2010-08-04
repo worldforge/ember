@@ -65,10 +65,10 @@
 #include "../Convert.h"
 #include "../EmberOgre.h"
 #include "../EmberEntity.h"
-#include "../EmberEntityFactory.h"
 #include "../ShaderManager.h"
 #include "../WorldEmberEntity.h"
 #include "../ILightning.h"
+#include "../Scene.h"
 
 #include "main/Application.h"
 
@@ -173,8 +173,8 @@ public:
 
 };
 
-TerrainManager::TerrainManager(ISceneManagerAdapter* adapter) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mSceneManagerAdapter(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation())
+TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, WorldEmberEntity& worldEntity) :
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mSceneManagerAdapter(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mWorldEntity(worldEntity)
 {
 	mSceneManagerAdapter = adapter;
 
@@ -239,7 +239,7 @@ void TerrainManager::loadTerrainOptions()
 
 	getAdapter()->loadOptions(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "terrain.cfg");
 
-	getAdapter()->setCamera(EmberOgre::getSingleton().getMainOgreCamera());
+	getAdapter()->setCamera(&getScene().getMainCamera());
 
 	getAdapter()->setUninitializedHeight(getDefaultHeight());
 
@@ -590,10 +590,7 @@ void TerrainManager::reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas
 
 void TerrainManager::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
 {
-	EmberEntity* entity = EmberOgre::getSingleton().getEntityFactory()->getWorld();
-	if (entity) {
-		updateEntityPosition(entity, pagesToUpdate);
-	}
+	updateEntityPosition(&mWorldEntity, pagesToUpdate);
 }
 
 void TerrainManager::updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate)
@@ -629,6 +626,11 @@ const TerrainInfo& TerrainManager::getTerrainInfo() const
 float TerrainManager::getDefaultHeight() const
 {
 	return -4;
+}
+
+Scene& TerrainManager::getScene() const
+{
+	return mScene;
 }
 
 SegmentManager& TerrainManager::getSegmentManager()

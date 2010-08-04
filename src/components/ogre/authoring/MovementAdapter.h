@@ -29,6 +29,9 @@
 
 namespace EmberOgre
 {
+namespace Camera {
+class MainCamera;
+}
 namespace Authoring
 {
 class IMovementBridge;
@@ -67,6 +70,13 @@ protected:
 	 * @return
 	 */
 	IMovementBridge* getBridge();
+
+	/**
+	 * @brief Gets the main world camera.
+	 * @returns The main world camera.
+	 */
+	const Camera::MainCamera& getCamera() const;
+
 	MovementAdapter& mAdapter;
 
 };
@@ -134,9 +144,9 @@ public:
 
 	/**
 	 * @brief Ctor.
-	 * @param manager The manager to which this adapter belongs.
+	 * @param camera The main camera used in the world.
 	 */
-	MovementAdapter();
+	MovementAdapter(const Camera::MainCamera& camera);
 	virtual ~MovementAdapter();
 
 	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
@@ -185,6 +195,11 @@ protected:
 	 * @brief Finalizes the current movement, sending updates for the IMovementBridge to the server.
 	 */
 	virtual void finalizeMovement();
+
+	/**
+	 * @brief The main camera used in the scene.
+	 */
+	const Camera::MainCamera& mCamera;
 
 	/**
 	 * @brief The bridge through which all movement happens.

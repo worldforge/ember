@@ -33,6 +33,7 @@
 #include "../Convert.h"
 #include "../Avatar.h"
 #include "../EmberEntity.h"
+#include "../World.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -192,7 +193,7 @@ void MakeEntityWidget::createPreviewTexture()
 void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 {
 	Atlas::Objects::Operation::Create c;
-	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
+	EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
 	c->setFrom(avatar.getId());
 	///if the avatar is a "creator", i.e. and admin, we will set the TO property
 	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too

@@ -190,7 +190,7 @@ bool Water::initialize()
 			Ogre::Vector3::UNIT_Z
 		);
 
-		mWaterNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode("water");
+		mWaterNode = mSceneMgr.getRootSceneNode()->createChildSceneNode("water");
 
 		mRefractionListener = new RefractionTextureListener();
 		mReflectionListener = new ReflectionTextureListener();

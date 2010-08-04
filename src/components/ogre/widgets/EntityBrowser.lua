@@ -20,10 +20,10 @@ function EntityBrowser.EntityList_SelectionChanged(args)
 	local item = EntityBrowser.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local entityId = item:getID()
-		local entity = emberOgre:getEmberEntity(entityId);
+		local entity = emberOgre:getWorld():getEmberEntity(entityId);
 		if (entity ~= nil) then
 			--if we're admin, edit, else just inspect
-			if emberOgre:getAvatar():isAdmin() then
+			if emberOgre:getWorld():getAvatar():isAdmin() then
 				guiManager:EmitEntityAction("edit", entity)
 			else
 				guiManager:EmitEntityAction("inspect", entity)
@@ -92,8 +92,9 @@ end
 
 function EntityBrowser.refresh()
 	EntityBrowser.listholder:resetList()
-	if emberOgre:getEntityFactory() ~= nil then
-		EntityBrowser.addEntity(emberOgre:getEntityFactory():getWorld(), 0)
+	local world = emberOgre:getWorld()
+	if world ~= nil then
+		EntityBrowser.addEntity(world:getEntityFactory():getWorld(), 0)
 	end
 end
 

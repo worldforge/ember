@@ -55,7 +55,7 @@ namespace EmberOgre
 {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
-	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())))), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
+	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), scene, *this)), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
 {
 	mSceneManager.registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
@@ -95,7 +95,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 
 	EmberEntity::init(ge, fromCreateOp);
 
-	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()), new Environment::SimpleEnvironment(EmberOgre::getSingleton().getSceneManager(), EmberOgre::getSingleton().getRenderWindow(), *EmberOgre::getSingleton().getMainOgreCamera()));
+	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(&mSceneManager, EmberOgre::getSingleton().getRenderWindow(), mScene.getMainCamera()), new Environment::SimpleEnvironment(&mSceneManager, EmberOgre::getSingleton().getRenderWindow(), mScene.getMainCamera()));
 	EventEnvironmentCreated.emit();
 
 	mScene.addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));

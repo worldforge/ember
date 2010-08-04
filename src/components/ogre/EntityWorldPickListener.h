@@ -36,6 +36,8 @@ namespace EmberOgre
 
 class EmberEntity;
 class EntityWorldPickListener;
+class EmberEntityFactory;
+class Scene;
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Struct used for returning the result of a mouse pick.
@@ -55,7 +57,7 @@ struct EntityPickResult
 class EntityWorldPickListenerVisualizer: public virtual sigc::trackable
 {
 public:
-	EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener);
+	EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener, Ogre::SceneManager& sceneManager);
 	virtual ~EntityWorldPickListenerVisualizer();
 
 private:
@@ -73,7 +75,7 @@ private:
 class EntityWorldPickListener: public IWorldPickListener, public Ember::ConsoleObject
 {
 public:
-	EntityWorldPickListener();
+	EntityWorldPickListener(EmberEntityFactory& entityFactory, Scene& scene);
 
 	~EntityWorldPickListener();
 
@@ -99,6 +101,10 @@ protected:
 	std::vector<EntityPickResult> mResult;
 
 	std::auto_ptr<EntityWorldPickListenerVisualizer> mVisualizer;
+
+	EmberEntityFactory& mEntityFactory;
+
+	Scene& mScene;
 
 };
 

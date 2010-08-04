@@ -33,8 +33,8 @@ namespace EmberOgre
 namespace Authoring
 {
 
-PolygonPointMovement::PolygonPointMovement(PolygonPoint& point, IMovementListener* movementListener) :
-	mPoint(point)
+PolygonPointMovement::PolygonPointMovement(PolygonPoint& point, IMovementListener* movementListener, const Camera::MainCamera& camera) :
+	mPoint(point), mMoveAdapter(camera)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference

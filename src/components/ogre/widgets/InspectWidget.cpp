@@ -29,6 +29,7 @@
 #include "ColouredListItem.h"
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
+#include "../World.h"
 
 
 #include "../EmberOgre.h"
@@ -139,7 +140,7 @@ void InspectWidget::runCommand(const std::string &command, const std::string &ar
 		tokeniser.initTokens(args);
 		std::string entityId = tokeniser.nextToken();
 		if (entityId != "") {
-			EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
+			EmberEntity* entity = EmberOgre::getSingleton().getWorld()->getEmberEntity(entityId);
 			if (entity != 0) {
 				startInspecting(entity);
 			}

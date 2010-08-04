@@ -30,7 +30,7 @@ end
 
 
 function Compass:repositionAtAvatar()
-	local pos = emberOgre:getAvatar():getClientSideAvatarPosition()
+	local pos = emberOgre:getWorld():getAvatar():getClientSideAvatarPosition()
 	self.helper:reposition(pos.x(), -pos.y())
 end
 
@@ -56,7 +56,7 @@ function Compass:TerrainPageGeometryUpdated(page)
 end
 
 function Compass:initialize()
-	self.anchor = EmberOgre.Gui.CompassCameraAnchor:new(self.helper, emberOgre:getMainOgreCamera())
+	self.anchor = EmberOgre.Gui.CompassCameraAnchor:new(self.helper, emberOgre:getWorld():getMainCamera():getCamera())
 	if self.widget ~= nil then
 		self.widget:show()
 	end

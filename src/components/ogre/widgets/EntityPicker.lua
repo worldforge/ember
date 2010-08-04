@@ -14,7 +14,7 @@ EntityPicker.selectorWidget = guiManager:createWidget()
 
 function EntityPicker.buildWidget()
 
-	local entityPickListener = guiManager:getEntityPickListener()
+	local entityPickListener = emberOgre:getWorld():getEntityPickListener()
  	connect(EntityPicker.connectors, entityPickListener.EventPickedEntity, "EntityPicker.pickedEntity")
  	--EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect("EntityPicker.pickedNothing")
     
@@ -83,7 +83,7 @@ function EntityPicker.showMenu(position)
 	EntityPicker.widget:show()
 	
 	--disble the edit and teleport buttons if we're not admin
-	if emberOgre:getAvatar():isAdmin() then
+	if emberOgre:getWorld():getAvatar():isAdmin() then
 		EntityPicker.buttons.edit:setVisible(true)
 		EntityPicker.buttons.teleportto:setVisible(true)
 	else
@@ -227,7 +227,7 @@ function EntityPicker.checkUse(entity)
 	end	
 	
 	--then fill up with operations that can be performed with the currently wielded entity
-	local wieldedEntity = emberOgre:getAvatar():getEmberEntity():getAttachedEntity("right_hand_wield")
+	local wieldedEntity = emberOgre:getWorld():getAvatar():getEmberEntity():getAttachedEntity("right_hand_wield")
 	if wieldedEntity then
 		local operatorList = wieldedEntity:getDefaultUseOperators();
 		if operatorList:size() > 0 then 
@@ -243,7 +243,7 @@ end
 
 function EntityPicker.addUse(buttonWrapper, entityId, wieldedEntity, operation)
 	buttonWrapper.clickedHandler = function()
-		local entity = emberOgre:getEmberEntity(entityId)
+		local entity = emberOgre:getWorld():getEmberEntity(entityId)
 		if entity ~= nil then
 			emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(EntityPicker.position), operation)
 			guiManager:EmitEntityAction("use", entity)
@@ -262,7 +262,7 @@ end
 
 function EntityPicker.addAction(buttonWrapper, entityId, action)
 	buttonWrapper.clickedHandler = function()
-		local entity = emberOgre:getEmberEntity(entityId)
+		local entity = emberOgre:getWorld():getEmberEntity(entityId)
 		if entity ~= nil then
 			emberServices:getServerService():actuate(entity, action)
 			guiManager:EmitEntityAction("actuate", entity)
@@ -287,13 +287,13 @@ function EntityPicker.doWithPickedEntity(aFunction)
 end
 
 function EntityPicker.buttonMoveto_Click(args)
-	emberOgre:getMovementController():moveToPoint(EntityPicker.position)
+	emberOgre:getWorld():getMovementController():moveToPoint(EntityPicker.position)
 	EntityPickerWidget_removeMenu()
 end
 
 function EntityPicker.buttonTeleportto_Click(args)
 	EntityPicker.doWithPickedEntity(function (entity)
-		emberOgre:getMovementController():teleportTo(EntityPicker.position, entity)
+		emberOgre:getWorld():getMovementController():teleportTo(EntityPicker.position, entity)
 	end)
 	EntityPickerWidget_removeMenu()
 end
@@ -372,4 +372,5 @@ function EntityPicker.input_MouseButtonReleased(button,  mode)
 	end
 end
 
-EntityPicker.buildWidget()
+connect(connectors, emberOgre.EventWorldCreated, EntityPicker.buildWidget)
+

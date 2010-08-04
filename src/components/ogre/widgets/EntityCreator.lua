@@ -136,7 +136,7 @@ function EntityCreator:shutdown()
 end
 
 -- Builds widget
-function EntityCreator.buildWidget(avatar)
+function EntityCreator.buildWidget(world)
 
 	entityCreator = {connectors={}}
 	setmetatable(entityCreator, {__index = EntityCreator})
@@ -147,7 +147,7 @@ function EntityCreator.buildWidget(avatar)
 	local setup = function()
 		-- Initializing helper classes
 		debugObject(avatar)
-		entityCreator.helper = EmberOgre.Gui.EntityCreator:new(avatar:getConnection())
+		entityCreator.helper = EmberOgre.Gui.EntityCreator:new(world)
 
 		connect(entityCreator.connectors, entityCreator.helper.EventTypeInfoLoaded, entityCreator.showRecipe, entityCreator)
 		entityCreator.helper.mWidget = entityCreator.widget
@@ -183,5 +183,5 @@ function EntityCreator.buildWidget(avatar)
 	
 end
 
-connect(connectors, emberServices:getServerService().GotAvatar, EntityCreator.buildWidget)
+connect(connectors, emberOgre.EventWorldCreated, EntityCreator.buildWidget)
 

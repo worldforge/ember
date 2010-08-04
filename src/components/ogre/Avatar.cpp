@@ -29,6 +29,7 @@
 #include "components/ogre/AvatarLogger.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/AvatarAttachmentController.h"
+#include "components/ogre/Scene.h"
 
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
@@ -61,8 +62,8 @@
 namespace EmberOgre
 {
 
-Avatar::Avatar(EmberEntity& erisAvatarEntity) :
-	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(*EmberOgre::getSingleton().getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(0), mIsMovingServerOnly(false)
+Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene) :
+	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(scene.getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(0), mIsMovingServerOnly(false), mScene(scene)
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
@@ -286,6 +287,12 @@ Ogre::Node* Avatar::getAvatarSceneNode() const
 	}
 	return 0;
 }
+
+Scene& Avatar::getScene() const
+{
+	return mScene;
+}
+
 
 void Avatar::movedInWorld()
 {

@@ -172,7 +172,7 @@ end
 Admin.createdAvatarConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(
 	function(avatarEntity)
 		--only show the admin menu if we're logged in as an admin
-		if emberOgre:getAvatar():isAdmin() then
+		if emberOgre:getWorld():getAvatar():isAdmin() then
 			admin = {connectors={}, adminIcon=nil}
 			setmetatable(admin, {__index = Admin})
 			

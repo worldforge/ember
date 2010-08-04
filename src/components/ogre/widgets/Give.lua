@@ -30,8 +30,8 @@ function Give.buildWidget()
 end
 
 function Give.createdAvatarEmberEntity(avatarEntity)
-	connect(Give.connectors, emberOgre:getAvatar().EventAddedEntityToInventory, "Give.addedEntity")
-	connect(Give.connectors, emberOgre:getAvatar().EventRemovedEntityFromInventory, "Give.removedEntity")
+	connect(Give.connectors, emberOgre:getWorld():getAvatar().EventAddedEntityToInventory, "Give.addedEntity")
+	connect(Give.connectors, emberOgre:getWorld():getAvatar().EventRemovedEntityFromInventory, "Give.removedEntity")
 end
 
 function Give.addedEntity(entity)
@@ -54,7 +54,7 @@ function Give.Give_Click(args)
 	local item = Give.listbox:getFirstSelectedItem()
 	while (item ~= nil) do
 		local entityId = item:getID()
-		local entity = emberOgre:getEmberEntity(entityId);
+		local entity = emberOgre:getWorld():getEmberEntity(entityId);
 		if (entity ~= nil) then
 			emberOgre:doWithEntity(Give.targetEntityId, function (targetEntity) 
 				emberServices:getServerService():place(entity, targetEntity)

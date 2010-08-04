@@ -494,7 +494,7 @@ EntityEditor.defaultPrototypes =
 
 
 function editEntity(id)
-	local entity = emberOgre:getEmberEntity(id)
+	local entity = emberOgre:getWorld():getEmberEntity(id)
 	if entity ~= nil then
 		EntityEditor.editEntity(entity)
 	end
@@ -829,7 +829,7 @@ function EntityEditor.RefreshAtlas_Clicked(args)
 end
 
 function EntityEditor.ExportButton_Clicked(args)
-	emberOgre:getEntityFactory():dumpAttributesOfEntity(EntityEditor.instance.entity:getId())
+	emberOgre:getWorld():getEntityFactory():dumpAttributesOfEntity(EntityEditor.instance.entity:getId())
 	return true
 end
 

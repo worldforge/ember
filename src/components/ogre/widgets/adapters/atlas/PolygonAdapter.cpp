@@ -27,6 +27,7 @@
 #include "PolygonAdapter.h"
 
 #include "components/ogre/EmberOgre.h"
+#include "components/ogre/World.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/authoring/PolygonPointPickListener.h"
@@ -91,7 +92,7 @@ PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::
 PolygonAdapter::~PolygonAdapter()
 {
 	if (mPickListener) {
-		EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(mPickListener);
+		EmberOgre::getSingleton().getWorld()->getMainCamera().removeWorldPickListener(mPickListener);
 		try {
 			delete mPickListener;
 		} catch (const std::exception& ex) {
@@ -141,7 +142,7 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 						mPolygon->loadFromShape(poly);
 						mPickListener = new ::EmberOgre::Authoring::PolygonPointPickListener(*mPolygon);
 						mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
-						EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
+						EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
 					} catch (const WFMath::_AtlasBadParse& ex) {
 						createNewPolygon();
 					}
@@ -153,7 +154,7 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 		}
 	} else {
 		if (mPickListener) {
-			EmberOgre::getSingleton().getMainCamera()->removeWorldPickListener(mPickListener);
+			EmberOgre::getSingleton().getWorld()->getMainCamera().removeWorldPickListener(mPickListener);
 			try {
 				delete mPickListener;
 			} catch (const std::exception& ex) {
@@ -186,7 +187,7 @@ void PolygonAdapter::createNewPolygon()
 		mPolygon->loadFromShape(poly);
 		mPickListener = new ::EmberOgre::Authoring::PolygonPointPickListener(*mPolygon);
 		mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
-		EmberOgre::getSingleton().getMainCamera()->pushWorldPickListener(mPickListener);
+		EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
 	}
 
 }
@@ -206,7 +207,7 @@ bool PolygonAdapter::_hasChanges()
 void PolygonAdapter::pickListener_PickedPoint(Authoring::PolygonPoint& point)
 {
 	delete mPointMovement;
-	mPointMovement = new Authoring::PolygonPointMovement(point, this);
+	mPointMovement = new Authoring::PolygonPointMovement(point, this, EmberOgre::getSingleton().getWorld()->getMainCamera());
 }
 
 void PolygonAdapter::endMovement()

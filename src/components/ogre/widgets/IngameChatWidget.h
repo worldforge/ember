@@ -31,12 +31,18 @@
 
 namespace EmberOgre {
 
+namespace Camera
+{
+class MainCamera;
+}
+
 namespace Model {
 class ModelRepresentation;
 }
 class GUIManager;
 class Widget;
 class EmberEntity;
+class World;
 
 namespace Gui {
 
@@ -254,7 +260,7 @@ public:
 protected:
 
 	void View_EntitySeen(Eris::Entity* entity);
-	void ServerService_GotView(Eris::View* view);
+	void EmberOgre_WorldCreated(World& world);
 
 	void Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 	void Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable);
@@ -281,7 +287,7 @@ protected:
 
 	std::string mAvatarEntityId;
 
-	Ogre::Camera& mMainCamera;
+	Camera::MainCamera* mCamera;
 
 };
 

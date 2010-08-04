@@ -26,6 +26,7 @@
 #endif
 
 #include "EntityMoveManager.h"
+#include "components/ogre/World.h"
 #include "MovementAdapter.h"
 #include "EntityMover.h"
 #include "../GUIManager.h"
@@ -57,8 +58,8 @@ void EntityMoveInstance::cleanup()
 	mMoveAdapter.detach();
 }
 
-EntityMoveManager::EntityMoveManager() :
-	Move("move", this, "Moves an entity."), mMoveAdapter(), mAdjuster(this)
+EntityMoveManager::EntityMoveManager(World& world) :
+	Move("move", this, "Moves an entity."), mWorld(world), mMoveAdapter(world.getMainCamera()), mAdjuster(this)
 {
 	GUIManager::getSingleton().EventEntityAction.connect(sigc::mem_fun(*this, &EntityMoveManager::GuiManager_EntityAction));
 }
@@ -95,7 +96,7 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 		tokeniser.initTokens(args);
 		std::string entityId = tokeniser.nextToken();
 		if (entityId != "") {
-			EmberEntity* entity = EmberOgre::getSingleton().getEmberEntity(entityId);
+			EmberEntity* entity = mWorld.getEmberEntity(entityId);
 			if (entity != 0) {
 				startMove(*entity);
 			}

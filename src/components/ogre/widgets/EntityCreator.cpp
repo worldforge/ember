@@ -28,20 +28,15 @@
 
 #include "EntityCreatorMovement.h"
 #include "EntityCreatorActionCreator.h"
+#include "components/ogre/World.h"
 #include "components/ogre/authoring/DetachedEntity.h"
 
 #include "../GUIManager.h"
-#include "../AvatarTerrainCursor.h"
 #include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
 
 #include "../authoring/DetachedEntity.h"
-#include <Atlas/Message/Element.h>
-#include <wfmath/atlasconv.h>
-#include <wfmath/MersenneTwister.h>
-#include <Eris/TypeInfo.h>
 #include "../Convert.h"
 
-#include "../EmberOgre.h"
 #include "../Avatar.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/SceneNodeProvider.h"
@@ -54,7 +49,13 @@
 #include "components/entitymapping/EntityMapping.h"
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/IActionCreator.h"
-#include "main/Application.h"
+
+#include <Atlas/Message/Element.h>
+#include <wfmath/atlasconv.h>
+#include <wfmath/MersenneTwister.h>
+#include <Eris/TypeInfo.h>
+#include <Eris/Connection.h>
+#include <Eris/Avatar.h>
 
 #include <CEGUIWindow.h>
 #include <OgreRoot.h>
@@ -67,10 +68,10 @@ namespace EmberOgre
 namespace Gui
 {
 
-EntityCreator::EntityCreator(Eris::Connection& conn) :
-	mConn(conn), mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0), mAxisMarker(0)
+EntityCreator::EntityCreator(World& world) :
+	mWorld(world), mTypeService(*mWorld.getView().getAvatar()->getConnection()->getTypeService()), mCreateMode(false), mRecipe(0), mModelMount(0), mModel(0), mBlurb(0), mBlurbShown(false), mRandomizeOrientation(true), mMovement(0), mAxisMarker(0)
 {
-	mConn.getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
+	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
 
 	mMoveAdapter = new EntityCreatorMoveAdapter(*this);
 
@@ -111,7 +112,7 @@ void EntityCreator::startCreation()
 		return;
 	}
 
-	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
+	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 
 	// Making initial position (orientation is preserved)
 	WFMath::Vector<3> offset(2, 0, 0);
@@ -127,13 +128,10 @@ void EntityCreator::startCreation()
 
 void EntityCreator::loadAllTypes()
 {
-	Eris::TypeService* typeservice = mConn.getTypeService();
-	if (typeservice) {
-		Eris::TypeInfo* typeInfo = typeservice->getTypeByName("game_entity");
-		if (typeInfo) {
-			if (typeInfo->hasUnresolvedChildren()) {
-				typeInfo->resolveChildren();
-			}
+	Eris::TypeInfo* typeInfo = mTypeService.getTypeByName("game_entity");
+	if (typeInfo) {
+		if (typeInfo->hasUnresolvedChildren()) {
+			typeInfo->resolveChildren();
 		}
 	}
 }
@@ -150,14 +148,14 @@ void EntityCreator::stopCreation()
 void EntityCreator::createEntity()
 {
 	// Creating entity data
-	mEntityMessage = mRecipe->createEntity(*mConn.getTypeService());
-	Eris::TypeInfo* erisType = mConn.getTypeService()->getTypeByName(mRecipe->getEntityType());
+	mEntityMessage = mRecipe->createEntity(mTypeService);
+	Eris::TypeInfo* erisType = mTypeService.getTypeByName(mRecipe->getEntityType());
 	if (!erisType) {
 		S_LOG_FAILURE("Type " << mRecipe->getEntityType() << " not found in recipe " << mRecipe->getName());
 		return;
 	}
 
-	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
+	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 
 	/*
 	 if (mName->getText().length() > 0) {
@@ -170,36 +168,33 @@ void EntityCreator::createEntity()
 	mEntityMessage["name"] = erisType->getName();
 	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
 
-	Eris::View* view = Ember::Application::getSingleton().getMainView();
-	if (view) {
-		// Temporary entity
-		mEntity = new Authoring::DetachedEntity("-1", erisType, mConn.getTypeService());
-		mEntity->setFromMessage(mEntityMessage);
+	// Temporary entity
+	mEntity = new Authoring::DetachedEntity("-1", erisType, &mTypeService);
+	mEntity->setFromMessage(mEntityMessage);
 
-		// Creating scene node
-		mEntityNode = EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	// Creating scene node
+	mEntityNode = mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode();
 
-		if (!mAxisMarker) {
-			try {
-				mAxisMarker = mEntityNode->getCreator()->createEntity("EntityCreator_axisMarker", "axes.mesh");
-				mEntityNode->attachObject(mAxisMarker);
-			} catch (const std::exception& ex) {
-				S_LOG_WARNING("Error when loading axes mesh."<< ex);
-			}
+	if (!mAxisMarker) {
+		try {
+			mAxisMarker = mEntityNode->getCreator()->createEntity("EntityCreator_axisMarker", "axes.mesh");
+			mEntityNode->attachObject(mAxisMarker);
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when loading axes mesh."<< ex);
 		}
-
-		// Making model from temporary entity
-		EntityCreatorActionCreator actionCreator(*this);
-		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
-		if (modelMapping.get()) {
-			modelMapping->initialize();
-		}
-
-		// Registering move adapter to track mouse movements
-		// 		mInputAdapter->addAdapter();
-		mMovement = new EntityCreatorMovement(*this, *mEntity, mEntityNode);
-		mMoveAdapter->addAdapter();
 	}
+
+	// Making model from temporary entity
+	EntityCreatorActionCreator actionCreator(*this);
+	std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
+	if (modelMapping.get()) {
+		modelMapping->initialize();
+	}
+
+	// Registering move adapter to track mouse movements
+	// 		mInputAdapter->addAdapter();
+	mMovement = new EntityCreatorMovement(*this, mWorld.getMainCamera(), *mEntity, mEntityNode);
+	mMoveAdapter->addAdapter();
 
 	mCreateMode = true;
 }
@@ -213,10 +208,10 @@ void EntityCreator::setModel(const std::string& modelName)
 			///Reset the model mount to start with.
 			delete mModelMount;
 			mModelMount = 0;
-			EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
+			mModel->_getManager()->destroyMovableObject(mModel);
 		}
 	}
-	mModel = Model::Model::createModel(*EmberOgre::getSingleton().getSceneManager(), modelName);
+	mModel = Model::Model::createModel(mWorld.getSceneManager(), modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &EntityCreator::model_Reloaded));
 
 	///if the model definition isn't valid, use a placeholder
@@ -307,16 +302,16 @@ void EntityCreator::finalizeCreation()
 
 	// Making create operation message
 	Atlas::Objects::Operation::Create c;
-	EmberEntity& avatar = EmberOgre::getSingleton().getAvatar()->getEmberEntity();
+	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 	c->setFrom(avatar.getId());
 	///if the avatar is a "creator", i.e. and admin, we will set the TO property
 	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (avatar.getType()->isA(mConn.getTypeService()->getTypeByName("creator"))) {
+	if (avatar.getType()->isA(mTypeService.getTypeByName("creator"))) {
 		c->setTo(avatar.getId());
 	}
 
 	c->setArgsAsList(Atlas::Message::ListType(1, mEntityMessage));
-	mConn.send(c);
+	mWorld.getView().getAvatar()->getConnection()->send(c);
 
 	std::stringstream ss;
 	ss << mPos;
@@ -339,11 +334,11 @@ void EntityCreator::cleanupCreation()
 
 	mEntityNode->detachAllObjects();
 	mOrientation = Convert::toWF(mEntityNode->getOrientation());
-	EmberOgre::getSingleton().getSceneManager()->getRootSceneNode()->removeChild(mEntityNode);
+	mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
 	//	delete mEntityNode;
 	mEntityNode = 0;
 
-	EmberOgre::getSingleton().getSceneManager()->destroyMovableObject(mModel);
+	mWorld.getSceneManager().destroyMovableObject(mModel);
 	mModel = 0;
 
 	mCreateMode = false;
@@ -358,7 +353,7 @@ void EntityCreator::checkTypeInfoBound()
 	if (mRecipe) {
 		const std::string& typeName = mRecipe->getEntityType();
 		///Calling getTypeByName will also send a request for type info to the server if no type info exists yet
-		Eris::TypeInfo* typeInfo = mConn.getTypeService()->getTypeByName(typeName);
+		Eris::TypeInfo* typeInfo = mTypeService.getTypeByName(typeName);
 		if (typeInfo) {
 			if (typeInfo->isBound()) {
 				EventTypeInfoLoaded.emit();

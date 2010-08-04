@@ -125,7 +125,7 @@ function MainIconBar.checkMovementMode()
 		MainIconBar.originalCursorImage = CEGUI.MouseCursor:getSingleton():getImage()
 	end
 
-	if emberOgre:getMovementController():getMode() == EmberOgre.MovementControllerMode.MM_RUN then
+	if emberOgre:getWorld():getMovementController():getMode() == EmberOgre.MovementControllerMode.MM_RUN then
 		MainIconBar.movementModeIcon:setForeground(MainIconBar.movementImage_run)
 		CEGUI.MouseCursor:getSingleton():setImage(MainIconBar.movementImage_run)
 	else
@@ -137,7 +137,7 @@ end
 --Only show the movement icon when we've actually connected to a server; it makes no sense before that
 function MainIconBar.EmberOgre_movementControllerCreated()
 	MainIconBar.movementModeIcon:getContainer():setVisible(true)
-	connect(MainIconBar.connectors, emberOgre:getMovementController().EventMovementModeChanged, 
+	connect(MainIconBar.connectors, emberOgre:getWorld():getMovementController().EventMovementModeChanged, 
 		function(mode)
 			if MainIconBar.currentMode == Ember.Input.IM_MOVEMENT then
 				MainIconBar.checkMovementMode()

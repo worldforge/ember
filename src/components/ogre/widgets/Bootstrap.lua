@@ -25,7 +25,7 @@ emberOgre = EmberOgre.EmberOgre:getSingleton()
 --@param doIfEntityNotFound An optional function which will be called if the entity isn't found. The first argument is the entity id.
 emberOgre.doWithEntity = function(this, entityId, doIfEntityFound, doIfEntityNotFound)
 	if entityId ~= nil then
-		local entity = this:getEmberEntity(entityId)
+		local entity = this:getWorld():getEmberEntity(entityId)
 		if entity ~= nil then
 			doIfEntityFound(entity)
 		else 

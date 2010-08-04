@@ -57,32 +57,33 @@ MeshPreviewHandler::MeshPreviewHandler() : mEntityCounter(0)
 
 size_t MeshPreviewHandler::createInstance(const std::string& meshName)
 {
-	Ogre::Entity* entity = 0;
-	try {
-		entity = EmberOgre::getSingleton().getSceneManager()->createEntity(std::string("meshPreview_" + mEntityCounter++ ), meshName);
-	} catch (const std::exception&) {
-		return 0;
-	}
-	if (!entity) {
-		return 0;
-	}
-
-
-	Ogre::SceneNode* node = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
-
-	//place it five meters in front of the camera
-	Ogre::Vector3 o_vector(0,0,-5);
-	Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();
-	Ogre::Vector3 o_pos = camera->getDerivedPosition() + (camera->getDerivedOrientation() * o_vector);
-	node->setPosition(o_pos);
-
-	node->attachObject(entity);
-	MeshPreviewMeshInstance instance(entity);
-	mInstances.push_back(instance);
-	//mEntities.push_back(entity);
-	//createdNewEntity(entity, node);
-	EventCreatedInstance.emit(mInstances.size() - 1);
-	return mInstances.size();
+	return 0;
+//	Ogre::Entity* entity = 0;
+//	try {
+//		entity = EmberOgre::getSingleton().getSceneManager()->createEntity(std::string("meshPreview_" + mEntityCounter++ ), meshName);
+//	} catch (const std::exception&) {
+//		return 0;
+//	}
+//	if (!entity) {
+//		return 0;
+//	}
+//
+//
+//	Ogre::SceneNode* node = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
+//
+//	//place it five meters in front of the camera
+//	Ogre::Vector3 o_vector(0,0,-5);
+//	Ogre::Camera* camera = EmberOgre::getSingleton().getMainOgreCamera();
+//	Ogre::Vector3 o_pos = camera->getDerivedPosition() + (camera->getDerivedOrientation() * o_vector);
+//	node->setPosition(o_pos);
+//
+//	node->attachObject(entity);
+//	MeshPreviewMeshInstance instance(entity);
+//	mInstances.push_back(instance);
+//	//mEntities.push_back(entity);
+//	//createdNewEntity(entity, node);
+//	EventCreatedInstance.emit(mInstances.size() - 1);
+//	return mInstances.size();
 
 
 

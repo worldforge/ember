@@ -38,6 +38,7 @@ namespace EmberOgre {
 
 namespace Camera {
 class FirstPersonCameraMount;
+class MainCamera;
 }
 class FreeFlyingCameraMotionHandler;
 class Avatar;
@@ -88,7 +89,12 @@ public IMovementProvider
 public:
     friend class MovementControllerInputListener;
 
-    MovementController(Avatar& avatar);
+    /**
+     * @brief Ctor.
+     * @param avatar The main avatar.
+     * @param camera The main camera.
+     */
+    MovementController(Avatar& avatar, Camera::MainCamera& camera);
 
 	virtual ~MovementController();
 
@@ -159,6 +165,11 @@ public:
 
 
 protected:
+
+	/**
+	 * @brief The main camera.
+	 */
+	Camera::MainCamera& mCamera;
 
 	Ember::InputCommandMapper mMovementCommandMapper;
 
