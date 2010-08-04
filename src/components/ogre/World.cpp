@@ -58,7 +58,6 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 	signals.EventMotionManagerCreated.emit(*mMotionManager);
 	Ogre::Root::getSingleton().addFrameListener(mMotionManager);
 
-	mEmberEntityFactory = ;
 	//When calling Eris::View::registerFactory ownership is transferred
 	view.registerFactory(mEmberEntityFactory);
 	signals.EventCreatedEmberEntityFactory.emit(*mEmberEntityFactory);
