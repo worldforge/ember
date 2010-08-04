@@ -61,7 +61,7 @@ void ServerSettings::writeToDisk()
 {
 	std::string filePath = getFullConfigFilePath();
 
-	mConfig->writeToFile(filePath, varconf::INSTANCE);
+	mConfig->writeToFile(filePath, varconf::GLOBAL);
 }
 
 void ServerSettings::readFromDisk()
