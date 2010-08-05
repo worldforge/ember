@@ -44,8 +44,50 @@
 
 namespace EmberOgre {
 
+/**
+ * @brief A shader setup instance which envelops a scene manager and handles the shadow camera setup for that manager.
+ */
+class ShaderSetupInstance {
+private:
+
+	Ogre::SceneManager& mSceneManager;
+
+	/**
+	 * @brief Takes care of the setup of the pssm shadow camera. Owned by this instance.
+	 */
+	ShadowCameraSetup* mShadowCameraSetup;
+
+public:
+
+	ShaderSetupInstance(Ogre::SceneManager& sceneManager)
+	: mSceneManager(sceneManager), mShadowCameraSetup(0)
+	{
+
+	}
+
+	~ShaderSetupInstance()
+	{
+		delete mShadowCameraSetup;
+	}
+
+	void setPSSMShadows()
+	{
+		delete mShadowCameraSetup;
+		mShadowCameraSetup = new ShadowCameraSetup(mSceneManager);
+	}
+
+	void setNoShadows()
+	{
+		delete mShadowCameraSetup;
+		mShadowCameraSetup = 0;
+		mSceneManager.setShadowTechnique(Ogre::SHADOWTYPE_NONE);
+		///This will make any other camera setup delete itself (unless held by another shared pointer).
+		mSceneManager.setShadowCameraSetup(Ogre::ShadowCameraSetupPtr());
+	}
+};
+
 ShaderManager::ShaderManager() :
-	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mShadowCameraSetup(0)
+	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT)
 {
 	mGraphicSchemes[LEVEL_DEFAULT]		= std::string("Default");
 	mGraphicSchemes[LEVEL_LOW]			= std::string("Low");
@@ -130,7 +172,9 @@ bool ShaderManager::checkMaterial(const std::string& materialName, const std::st
 
 ShaderManager::~ShaderManager()
 {
-	delete mShadowCameraSetup;
+	for (ShaderSetupStore::const_iterator I = mShaderSetups.begin(); I != mShaderSetups.end(); ++I) {
+		delete I->second;
+	}
 }
 
 ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel()
@@ -172,6 +216,22 @@ ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string &le
 	return LEVEL_DEFAULT;
 }
 
+void ShaderManager::registerSceneManager(Ogre::SceneManager* sceneManager)
+{
+	ShaderSetupInstance* instance = new ShaderSetupInstance(*sceneManager);
+	mShaderSetups.insert(ShaderSetupStore::value_type(sceneManager, instance));
+	setGraphicsLevel(mGraphicsLevel); //TODO: set it per new scene manager instead
+}
+
+void ShaderManager::deregisterSceneManager(Ogre::SceneManager* sceneManager)
+{
+	ShaderSetupStore::iterator I = mShaderSetups.find(sceneManager);
+	if (I != mShaderSetups.end()) {
+		delete I->second;
+		mShaderSetups.erase(I);
+	}
+}
+
 ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::GraphicsLevel newLevel)
 {
 	if (newLevel > mBestGraphicsLevel) {
@@ -208,18 +268,16 @@ ShaderManager::GraphicsLevel ShaderManager::setGraphicsLevel(ShaderManager::Grap
 
 void ShaderManager::setPSSMShadows()
 {
-	delete mShadowCameraSetup;
-	mShadowCameraSetup = new ShadowCameraSetup(*EmberOgre::getSingleton().getSceneManager());
+	for (ShaderSetupStore::const_iterator I = mShaderSetups.begin(); I != mShaderSetups.end(); ++I) {
+		I->second->setPSSMShadows();
+	}
 }
 
 void ShaderManager::setNoShadows()
 {
-	delete mShadowCameraSetup;
-	mShadowCameraSetup = 0;
-	Ogre::SceneManager* sceneMgr = EmberOgre::getSingleton().getSceneManager();
-	sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
-	///This will make any other camera setup delete itself (unless held by another shared pointer).
-	sceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr());
+	for (ShaderSetupStore::const_iterator I = mShaderSetups.begin(); I != mShaderSetups.end(); ++I) {
+		I->second->setNoShadows();
+	}
 }
 
 }

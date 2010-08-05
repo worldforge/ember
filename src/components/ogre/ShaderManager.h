@@ -25,6 +25,7 @@
 
 #include "framework/ConsoleObject.h"
 #include "services/config/ConfigListenerContainer.h"
+#include "OgreIncludes.h"
 
 #include <string>
 #include <map>
@@ -33,6 +34,7 @@
 namespace EmberOgre {
 
 class ShadowCameraSetup;
+class ShaderSetupInstance;
 
 /**
  * @brief Utility class for setup shaders
@@ -107,11 +109,28 @@ public:
 	GraphicsLevel getLevelByName(const std::string &level);
 
 	/**
+	 * @brief Registers a scene manager with the shader manager.
+	 *
+	 * This allows the shader manager to handle the shadow and shader setup for the scene manager.
+	 * @param sceneManager The scene manager to register.
+	 */
+	void registerSceneManager(Ogre::SceneManager* sceneManager);
+
+	/**
+	 * @brief Deregisters a scene manager with the shader manager.
+	 *
+	 * @param sceneManager The scene manager to deregister.
+	 */
+	void deregisterSceneManager(Ogre::SceneManager* sceneManager);
+
+	/**
 	 * @brief Emitted when the graphical level is changed.
 	 */
 	sigc::signal<void> EventLevelChanged;
 
 private:
+
+	typedef std::map<Ogre::SceneManager*, ShaderSetupInstance*> ShaderSetupStore;
 	/**
 	 * Current graphics level
 	 */
@@ -126,6 +145,8 @@ private:
 	 * Map of levels and schemes. Also used to convert levels to strings
 	 */
 	std::map<GraphicsLevel, std::string> mGraphicSchemes;
+
+	ShaderSetupStore mShaderSetups;
 
 	/**
 	 * Checks whether material is supported in current scheme
@@ -149,11 +170,6 @@ private:
 	 * @param variable
 	 */
 	void Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-	/**
-	 * @brief Takes care of the setup of the pssm shadow camera. Owned by this instance.
-	 */
-	ShadowCameraSetup* mShadowCameraSetup;
 
 };
 

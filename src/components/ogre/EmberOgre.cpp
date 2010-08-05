@@ -538,11 +538,13 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	mWindow->removeAllViewports();
 	mWorld = new World(*view, *mWindow, *this);
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
+	mShaderManager->registerSceneManager(&mWorld->getSceneManager());
 	EventWorldCreated.emit(*mWorld);
 }
 
 void EmberOgre::EntityFactory_BeingDeleted()
 {
+	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
 	delete mWorld;
 	mWorld = 0;
 	mWindow->removeAllViewports();
