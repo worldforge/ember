@@ -1,0 +1,28 @@
+$#include "components/ogre/Scene.h"
+
+
+namespace EmberOgre
+{
+
+class Scene
+{
+public:
+	/**
+	 * @brief Accessor for the scene manager which handles the world.
+	 * @returns The scene manager for the world.
+	 */
+	Ogre::SceneManager& getSceneManager();
+
+	/**
+	 * @brief Gets the main camera of the scene.
+	 *
+	 * Each scene has one main camera used to render it. There can of course be many more cameras.
+	 * @returns The main camera.
+	 */
+	Ogre::Camera& getMainCamera() const;
+
+};
+
+}
+
+#endif /* SCENE_H_ */
