@@ -50,7 +50,7 @@ public:
 	 * @brief Accessor for the scene manager which handles the world.
 	 * @returns The scene manager for the world.
 	 */
-	Ogre::SceneManager& getSceneManager();
+	Ogre::SceneManager& getSceneManager() const;
 
 	/**
 	 * @brief Registers an entity with a named technique.

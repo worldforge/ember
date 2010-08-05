@@ -53,7 +53,7 @@ Scene::~Scene()
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
 
-Ogre::SceneManager& Scene::getSceneManager()
+Ogre::SceneManager& Scene::getSceneManager() const
 {
 	return *mSceneManager;
 }

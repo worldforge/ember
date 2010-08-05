@@ -1,6 +1,5 @@
 $#include "components/ogre/Scene.h"
 
-
 namespace EmberOgre
 {
 
@@ -11,7 +10,7 @@ public:
 	 * @brief Accessor for the scene manager which handles the world.
 	 * @returns The scene manager for the world.
 	 */
-	Ogre::SceneManager& getSceneManager();
+	Ogre::SceneManager& getSceneManager() const;
 
 	/**
 	 * @brief Gets the main camera of the scene.
@@ -24,5 +23,3 @@ public:
 };
 
 }
-
-#endif /* SCENE_H_ */
