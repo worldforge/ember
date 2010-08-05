@@ -99,7 +99,7 @@ $pfile "TerrainLayerDefinitionManager.pkg"
 
 //$pfile "LuaConnector.pkg"
 $pfile "World.pkg"
-
+$pfile "Scene.pkg"
 
 
 namespace EmberOgre {
