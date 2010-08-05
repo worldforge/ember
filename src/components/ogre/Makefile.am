@@ -14,6 +14,8 @@ libEmberOgre_a_SOURCES = \
 	authoring/PolygonPointUserObject.cpp authoring/PolygonRenderer.cpp authoring/XMLEntityRecipeSerializer.cpp authoring/SnapToMovement.cpp \
 	authoring/AuthoringHandler.cpp authoring/AuthoringManager.cpp authoring/AuthoringVisualization.cpp authoring/AuthoringVisualizationCollisionDetector.cpp \
 	authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RawTypeInfoRepository.cpp authoring/AtlasObjectDecoder.cpp \
+	authoring/SimpleEntityVisualization.cpp \
+\
 	camera/MainCamera.cpp camera/CameraMountBase.cpp camera/FirstPersonCameraMount.cpp camera/Recorder.cpp camera/ThirdPersonCameraMount.cpp \
 	environment/CaelumEnvironment.cpp environment/CaelumSky.cpp environment/CaelumSun.cpp \
 	environment/EmberEntityLoader.cpp environment/Environment.cpp environment/Foliage.cpp environment/FoliageBase.cpp environment/FoliageLayer.cpp \
@@ -100,6 +102,7 @@ noinst_HEADERS = \
 	authoring/PolygonPointUserObject.h authoring/PolygonRenderer.h authoring/XMLEntityRecipeSerializer.h authoring/SnapToMovement.h \
 	authoring/AuthoringHandler.h authoring/AuthoringManager.h authoring/AuthoringVisualization.h authoring/AuthoringVisualizationCollisionDetector.h \
 	authoring/AuthoringVisualizationMover.h authoring/AuthoringMoverConnector.h authoring/RawTypeInfoRepository.h authoring/AtlasObjectDecoder.h \
+	authoring/SimpleEntityVisualization.h \
 \
 	camera/MainCamera.h camera/CameraMountBase.h camera/FirstPersonCameraMount.h camera/Recorder.h camera/ThirdPersonCameraMount.h camera/ICameraMount.h \
 \

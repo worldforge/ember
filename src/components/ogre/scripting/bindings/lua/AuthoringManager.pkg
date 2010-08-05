@@ -43,6 +43,10 @@ public:
 	 * @brief Hides authoring visualizations for entities.
 	 */
 	void hideAuthoringVisualization();
+	
+	void displaySimpleEntityVisualization(EmberOgre::EmberEntity& entity);
+
+	void hideSimpleEntityVisualization(EmberOgre::EmberEntity& entity);
 
 	void startMovement(EmberOgre::EmberEntity& entity, EmberOgre::Authoring::EntityMover& mover);
 

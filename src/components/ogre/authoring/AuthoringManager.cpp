@@ -19,16 +19,22 @@
 #include "AuthoringManager.h"
 #include "AuthoringHandler.h"
 #include "RawTypeInfoRepository.h"
+#include "SimpleEntityVisualization.h"
 #include "components/ogre/World.h"
+#include "components/ogre/Scene.h"
+#include "components/ogre/EmberEntity.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
+#include <OgreSceneManager.h>
 #include <Eris/Avatar.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
 #include <Eris/View.h>
 #include <Eris/Entity.h>
 #include <Eris/Connection.h>
+#include <sigc++/bind.h>
+#include <sigc++/connection.h>
 
 namespace EmberOgre
 {
@@ -45,6 +51,12 @@ AuthoringManager::AuthoringManager(World& world) :
 
 AuthoringManager::~AuthoringManager()
 {
+	for (SimpleEntityVisualizationStore::iterator I = mSimpleVisualizations.begin(); I != mSimpleVisualizations.end(); ++I) {
+		SimpleEntityVisualization* vis = I->second.first;
+		sigc::connection& conn = I->second.second;
+		delete vis;
+		conn.disconnect();
+	}
 	delete mRawTypeInfoRepository;
 	delete mHandler;
 }
@@ -60,6 +72,45 @@ void AuthoringManager::hideAuthoringVisualization()
 {
 	delete mHandler;
 	mHandler = 0;
+}
+
+void AuthoringManager::displaySimpleEntityVisualization(EmberEntity& entity)
+{
+	if (!mSimpleVisualizations.count(&entity)) {
+		Ogre::SceneNode* node = mWorld.getScene().getSceneManager().getRootSceneNode()->createChildSceneNode();
+		SimpleEntityVisualization* vis(0);
+		try {
+			vis = new SimpleEntityVisualization(entity, node);
+		} catch (const std::exception& ex) {
+			//just delete the node and return
+			node->getCreator()->destroySceneNode(node);
+			return;
+		}
+		sigc::connection conn = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &AuthoringManager::simpleEntityVisualizationBeingDeleted), &entity));
+		mSimpleVisualizations.insert(SimpleEntityVisualizationStore::value_type(&entity, std::make_pair(vis, conn)));
+	}
+
+}
+
+void AuthoringManager::hideSimpleEntityVisualization(EmberEntity& entity)
+{
+	SimpleEntityVisualizationStore::iterator I = mSimpleVisualizations.find(&entity);
+	if (I != mSimpleVisualizations.end()) {
+		SimpleEntityVisualization* vis = I->second.first;
+		sigc::connection& conn = I->second.second;
+		delete vis;
+		conn.disconnect();
+		mSimpleVisualizations.erase(I);
+	}
+}
+
+bool AuthoringManager::hasSimpleEntityVisualization(const EmberEntity& entity) const
+{
+	return mSimpleVisualizations.count(&entity) != 0;
+}
+
+void AuthoringManager::simpleEntityVisualizationBeingDeleted(EmberEntity* entity) {
+	hideSimpleEntityVisualization(*entity);
 }
 
 void AuthoringManager::runCommand(const std::string &command, const std::string &args)

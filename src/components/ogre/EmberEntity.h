@@ -121,10 +121,6 @@ public:
 	 */
 	static const std::string MODE_PROJECTILE;
 
-	/**
-	 The material used for showing the eris bbox.
-	 */
-	static const std::string BboxMaterialName;
 
 	/**
 	 * @brief Ctor.
@@ -329,12 +325,6 @@ protected:
 	bool mIsInitialized;
 
 	/**
-	 * @brief For debugging purposes. This holds a bounding box of how the entity appears in the eris/atlas world.
-	 * This is often different from the Ogre bounding box.
-	 */
-	Ogre::OOBBWireBoundingBox* mErisEntityBoundingBox;
-
-	/**
 	 @brief Sometimes when talking to an entity, the server will provide suggested responses. These are stored here.
 	 */
 	std::vector<std::string> mSuggestedResponses;
@@ -381,10 +371,6 @@ protected:
 	 */
 	IEntityControlDelegate* mAttachmentControlDelegate;
 
-	/**
-	 *    @copydoc Eris::Entity::onMoved()
-	 */
-	virtual void onMoved();
 	/**
 	 *    @copydoc Eris::Entity::onTalk()
 	 */
@@ -481,14 +467,12 @@ protected:
 	/**
 	 * @brief Shows the eris/atlas bounding box.
 	 * This is mainly useful for debugging or authoring.
-	 * @see mErisEntityBoundingBox
 	 * @param show If true, the bounding box will be shown. If false, it will be hidden.
 	 */
 	void showErisBoundingBox(bool show);
 
 	/**
 	 * @brief Returns whether the eris/atlas bounding box is shown.
-	 * @see mErisEntityBoundingBox
 	 * @return True if the eris bounding box is shown.
 	 */
 	bool getShowErisBoundingBox() const;

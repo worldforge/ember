@@ -23,6 +23,7 @@
 
 #include "EmberEntityFactory.h"
 #include "GUIManager.h"
+#include "World.h"
 #include "terrain/TerrainArea.h"
 #include "terrain/TerrainMod.h"
 #include "terrain/TerrainParser.h"
@@ -37,6 +38,8 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/MultiLineListFormatter.h"
 #include "services/EmberServices.h"
+#include "authoring/AuthoringManager.h"
+
 
 #include <OgreWireBoundingBox.h>
 #include <OgreMaterialManager.h>
@@ -52,24 +55,6 @@
 
 using namespace Ogre;
 
-namespace Ogre
-{
-
-/**
- This is just like a WireBoundBox but not aligned to the axes, hence it will correctly line up according to it's orientation.
- */
-class OOBBWireBoundingBox: public WireBoundingBox
-{
-public:
-
-	void getWorldTransforms(Matrix4* xform) const
-	{
-		SimpleRenderable::getWorldTransforms(xform);
-	}
-};
-
-}
-;
 
 namespace EmberOgre
 {
@@ -78,10 +63,8 @@ const std::string EmberEntity::MODE_FLOATING("floating");
 const std::string EmberEntity::MODE_FIXED("fixed");
 const std::string EmberEntity::MODE_PROJECTILE("projectile");
 
-const std::string EmberEntity::BboxMaterialName("/global/authoring/bbox");
-
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
-	Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mErisEntityBoundingBox(0), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
+	Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
 	/// we need a model mapping
 	createEntityMapping(scene);
@@ -93,11 +76,6 @@ EmberEntity::~EmberEntity()
 {
 	delete mAttachment;
 	delete mGraphicalRepresentation;
-
-	if (mErisEntityBoundingBox) {
-		mErisEntityBoundingBox->getParentSceneNode()->getCreator()->destroySceneNode(mErisEntityBoundingBox->getParentSceneNode()->getName());
-	}
-	OGRE_DELETE mErisEntityBoundingBox;
 	delete mEntityMapping;
 }
 
@@ -180,19 +158,6 @@ void EmberEntity::createEntityMapping(Scene& scene)
 Ember::EntityMapping::EntityMapping* EmberEntity::getMapping() const
 {
 	return mEntityMapping;
-}
-
-void EmberEntity::onMoved()
-{
-	if (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible()) {
-		if (getPosition().isValid()) {
-			mErisEntityBoundingBox->getParentNode()->setPosition(Convert::toOgre(getPosition()));
-		}
-		if (getOrientation().isValid()) {
-			mErisEntityBoundingBox->getParentNode()->setOrientation(Convert::toOgre(getOrientation()));
-		}
-	}
-	Eris::Entity::onMoved();
 }
 
 void EmberEntity::adjustPosition()
@@ -470,52 +435,11 @@ bool EmberEntity::getVisualize(const std::string& visualization) const
 
 void EmberEntity::showErisBoundingBox(bool show)
 {
-	///if there's no bounding box, create one now
-	///allowing for some lazy loading
-	if (!mErisEntityBoundingBox) {
-		mErisEntityBoundingBox = OGRE_NEW Ogre::OOBBWireBoundingBox();
-		try {
-			mErisEntityBoundingBox->setMaterial(BboxMaterialName);
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when setting Ogre material for bounding box.");
-			OGRE_DELETE mErisEntityBoundingBox;
-			mErisEntityBoundingBox = 0;
-			return;
-		}
-		Ogre::SceneNode* boundingBoxNode(0);
-		try {
-			return; //TODO: move this to the AuthoringManager so that we can remove the need for EmberOgre::getSingleton
-			//boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when creating Ogre node for eris bounding box.");
-			OGRE_DELETE mErisEntityBoundingBox;
-			mErisEntityBoundingBox = 0;
-			return;
-		}
-		try {
-			boundingBoxNode->attachObject(mErisEntityBoundingBox);
-			///if there's no bounding box defined for this entity, show one that is 0.2 meters across in all direction
-			if (hasBBox()) {
-				mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
-			} else {
-				mErisEntityBoundingBox->setupBoundingBox(Ogre::AxisAlignedBox(-0.1, -0.1, -0.1, 0.1, 0.1, 0.1));
-			}
-
-			if (getPredictedPos().isValid()) {
-				boundingBoxNode->setPosition(Convert::toOgre(getPredictedPos()));
-			}
-			if (getOrientation().isValid()) {
-				boundingBoxNode->setOrientation(Convert::toOgre(getOrientation()));
-			}
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Error when setting up eris bounding box.");
-			OGRE_DELETE mErisEntityBoundingBox;
-			mErisEntityBoundingBox = 0;
-			return;
-		}
+	if (show) {
+		EmberOgre::getSingleton().getWorld()->getAuthoringManager().displaySimpleEntityVisualization(*this);
+	} else {
+		EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideSimpleEntityVisualization(*this);
 	}
-	mErisEntityBoundingBox->setVisible(show);
-
 }
 
 void EmberEntity::onBboxChanged()
@@ -523,14 +447,11 @@ void EmberEntity::onBboxChanged()
 	if (mAttachment) {
 		mAttachment->updateScale();
 	}
-	if (mErisEntityBoundingBox) {
-		mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(getBBox()));
-	}
 }
 
 bool EmberEntity::getShowErisBoundingBox() const
 {
-	return (mErisEntityBoundingBox && mErisEntityBoundingBox->isVisible());
+	return EmberOgre::getSingleton().getWorld()->getAuthoringManager().hasSimpleEntityVisualization(*this);
 }
 
 EmberEntity* EmberEntity::getEmberLocation() const

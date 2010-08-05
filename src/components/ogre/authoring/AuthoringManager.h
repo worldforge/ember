@@ -22,6 +22,12 @@
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include "services/config/ConfigListenerContainer.h"
+#include <map>
+
+namespace sigc
+{
+class connection;
+}
 
 namespace varconf
 {
@@ -54,6 +60,7 @@ namespace Authoring
 class AuthoringHandler;
 class EntityMover;
 class RawTypeInfoRepository;
+class SimpleEntityVisualization;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -76,6 +83,7 @@ public:
 
 	/**
 	 * @brief Displays authoring visualizations for entities.
+	 * These are visualizations of each entity in the world, which is helpful when the user wants to perform authoring.
 	 */
 	void displayAuthoringVisualization();
 
@@ -83,6 +91,26 @@ public:
 	 * @brief Hides authoring visualizations for entities.
 	 */
 	void hideAuthoringVisualization();
+
+	/**
+	 * @brief Shows a simple entity visualization of the entity's bounding box.
+	 * @param entity The entity to visualize.
+	 */
+	void displaySimpleEntityVisualization(EmberEntity& entity);
+
+	/**
+	 * @brief Hides a previously shown simple entity visualization of the entity's bounding box.
+	 * It's safe to call this for an entity which hasn't previously been visualized.
+	 * @param entity The entity to hide the visualization for.
+	 */
+	void hideSimpleEntityVisualization(EmberEntity& entity);
+
+	/**
+	 * @brief Checks whether a simple entity visualization of the entity's bounding box is active for the supplied entity.
+	 * @param entity The entity to check visualization for.
+	 * @returns True if the entity is being visualized.
+	 */
+	bool hasSimpleEntityVisualization(const EmberEntity& entity) const;
 
 	/**
 	 * @copydoc ConsoleObject::runCommand
@@ -113,6 +141,12 @@ public:
 protected:
 
 	/**
+	 * @brief Store for simple visualizations of entities.
+	 * The sigc::connection is used for the Eris::Entity::BeingDeleted listening, which we want to remove when we're deleting the visualization.
+	 */
+	typedef std::map<const EmberEntity*, std::pair<SimpleEntityVisualization*, sigc::connection> > SimpleEntityVisualizationStore;
+
+	/**
 	 * @brief The world to which this manager belongs.
 	 */
 	World& mWorld;
@@ -129,6 +163,11 @@ protected:
 	RawTypeInfoRepository* mRawTypeInfoRepository;
 
 	/**
+	 * @brief Keeps track of all simple visualizations of entities.
+	 */
+	SimpleEntityVisualizationStore mSimpleVisualizations;
+
+	/**
 	 * Determines whether visualizations should be shown or not.
 	 * @param section
 	 * @param key
@@ -137,6 +176,13 @@ protected:
 	void config_AuthoringVisualizations(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	void gotAvatarCharacter(Eris::Entity* entity);
+
+	/**
+	 * @brief Listen to an entity for which there exists a simple visualization and remove the visualization.
+	 * @param entity The entity being deleted.
+	 */
+	void simpleEntityVisualizationBeingDeleted(EmberEntity* entity);
+
 };
 }
 }
