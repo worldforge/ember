@@ -3,31 +3,31 @@ A simple widget for showing picking info. It will show both ogre and worldforge 
 ]]--
 
 
-PickingInfo = {connectors={}, infoBox=nil}
+PickingInfo = {}
 
 
-function PickingInfo.buildWidget()
+function PickingInfo:buildWidget(world)
 
-	PickingInfo.widget = guiManager:createWidget()
+	self.widget = guiManager:createWidget()
 	
- 	connect(PickingInfo.connectors, emberOgre:getWorld():getEntityPickListener().EventPickedEntity, "PickingInfo.pickedEntity")
+ 	connect(self.connectors, world:getEntityPickListener().EventPickedEntity, self.pickedEntity, self)
     
-	PickingInfo.widget:loadMainSheet("PickingInfo.layout", "PickingInfo/")
+	self.widget:loadMainSheet("PickingInfo.layout", "PickingInfo/")
 
 	
-	PickingInfo.infoBox = PickingInfo.widget:getWindow("InfoBox")
-	PickingInfo.widget:registerConsoleVisibilityToggleCommand("pickingInfo")
-	PickingInfo.widget:enableCloseButton()
-	PickingInfo.widget:hide()
+	self.infoBox = self.widget:getWindow("InfoBox")
+	self.widget:registerConsoleVisibilityToggleCommand("pickingInfo")
+	self.widget:enableCloseButton()
+	self.widget:hide()
 
 end
 
 
 --called when an entity has been picked
-function PickingInfo.pickedEntity(result, args)
+function PickingInfo:pickedEntity(result, args)
 	--only catch single clicks
 	if args.pickType == EmberOgre.MPT_CLICK then
-		if PickingInfo.widget:getMainWindow():isVisible() then
+		if self.widget:getMainWindow():isVisible() then
 			if result:size() > 0 then
 			
 				local firstPickResult = result[0]
@@ -41,12 +41,27 @@ WF pos:
 Ogre pos:
   x: %.2f y: %.2f z: %.2f
 Distance: %.2f]], firstPickResult.entity:getName(), firstPickResult.entity:getId(), firstPickResult.entity:getType():getName(), ogrePos.x, -ogrePos.z, ogrePos.y, ogrePos.x, ogrePos.y, ogrePos.z, firstPickResult.distance)
-				PickingInfo.infoBox:setText(infoString)
+				self.infoBox:setText(infoString)
 			end
 		end
 	end
 end
 
+function PickingInfo:shutdown()
+	disconnectAll(self.connectors)
+	guiManager:destroyWidget(self.widget)
+end
 
-connect(connectors, emberOgre.EventWorldCreated, PickingInfo.buildWidget)
+connect(connectors, emberOgre.EventWorldCreated, function(world) 
+	pickingInfo = {connectors={}, infoBox=nil}
+	setmetatable(pickingInfo, {__index = PickingInfo})
+
+	pickingInfo:buildWidget(world)
+	connect(pickingInfo.connectors, emberOgre.EventWorldDestroyed, function()
+			pickingInfo:shutdown()
+			pickingInfo = nil
+		end
+	)	
+end
+)
 

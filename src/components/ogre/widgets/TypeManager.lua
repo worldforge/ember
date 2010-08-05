@@ -121,7 +121,7 @@ TypeManager.createdAvatarConnector = EmberOgre.LuaConnector:new_local(emberOgre.
 		setmetatable(typeManager, {__index = TypeManager})
 		
 		typeManager:buildWidget()
-		connect(typeManager.connectors, emberServices:getServerService().DestroyedAccount, function()
+		connect(typeManager.connectors, emberOgre.EventWorldDestroyed, function()
 				typeManager:shutdown()
 				typeManager = nil
 			end
