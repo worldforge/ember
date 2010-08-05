@@ -49,13 +49,11 @@ namespace EmberOgre
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals) :
-	mView(view), mRenderWindow(renderWindow), mSignals(signals), mViewport(0), mScene(new Scene()), mAvatar(0), mMovementController(0), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mMainCamera(0), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager))
+	mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, Ember::Input::getSingleton(), mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager))
 {
-	mViewport = renderWindow.addViewport(&mScene->getMainCamera());
 	///set the background colour to black
 	mViewport->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 	mScene->getMainCamera().setAspectRatio(Ogre::Real(mViewport->getActualWidth()) / Ogre::Real(mViewport->getActualHeight()));
-	mMainCamera = new Camera::MainCamera(getSceneManager(), mRenderWindow, Ember::Input::getSingleton(), mScene->getMainCamera());
 
 	signals.EventMotionManagerCreated.emit(*mMotionManager);
 	Ogre::Root::getSingleton().addFrameListener(mMotionManager);

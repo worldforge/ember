@@ -181,14 +181,14 @@ protected:
 	EmberOgreSignals& mSignals;
 
 	/**
-	 * @brief The main viewport, attached to the main RenderWindow.
-	 */
-	Ogre::Viewport* mViewport;
-
-	/**
 	 * @brief The scene instance, which handles the Ogre::SceneManager.
 	 */
 	Scene* mScene;
+
+	/**
+	 * @brief The main viewport, attached to the main RenderWindow.
+	 */
+	Ogre::Viewport* mViewport;
 
 	/**
 	 * @brief The user avatar
@@ -199,6 +199,11 @@ protected:
 	 * @brief When connected to a world, handles the avatar and patches mouse and keyboard movement events on the avatar.
 	 */
 	MovementController* mMovementController;
+
+	/**
+	 * @brief The main camera, which handles input to be shown in the main viewpoint.
+	 */
+	Camera::MainCamera* mMainCamera;
 
 	/**
 	 * @brief Responsible for allowing movement of entities in the world by the user.
@@ -214,11 +219,6 @@ protected:
 	 * @brief Responsible for updating motions and animations of entities.
 	 */
 	MotionManager* mMotionManager;
-
-	/**
-	 * @brief The main camera, which handles input to be shown in the main viewpoint.
-	 */
-	Camera::MainCamera* mMainCamera;
 
 	/**
 	 * @brief The main motion handler for the avatar camera.
