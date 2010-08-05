@@ -118,16 +118,12 @@ loadScript("IndirectRenderingChecker.lua")
 loadScript("EntityEditor.lua")
 loadScript("EntityBrowser.lua")
 loadScript("Status.lua")
-
 loadScript("Environment.lua")
 loadScript("AssetsManager.lua")
 loadScript("Inventory.lua")
 loadScript("PickingInfo.lua")
-
-
+loadScript("Inspect.lua")
 loadScript("Compass.lua")
-
 loadScript("EntityCreator.lua")
 loadScript("ServerLogger.lua")
-
 loadScript("TypeManager.lua")
