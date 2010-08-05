@@ -53,7 +53,6 @@
 						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 						<Property Name='UnifiedSize' Value='{{0,200},{1,-25}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="MouseDoubleClick" Function="EntityEditor.ChildList_MouseDoubleClick" />
 					</Window>
 					<Window Type='EmberLook/Editbox' Name='FilterChildren'>
 						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}'/>
@@ -77,13 +76,11 @@
 						<Property Name='UnifiedPosition' Value='{{0,0},{0,100}}'/>
 						<Property Name='UnifiedSize' Value='{{1,0},{0,20}}'/>
 						<Property Name='Text' Value='Show Ogre bbox'/>
-						<Event Name="CheckStateChanged" Function="EntityEditor.ShowOgreBbox_CheckStateChanged" />
 					</Window>
 					<Window Type='EmberLook/Checkbox' Name='ShowErisBbox'>
 						<Property Name='UnifiedPosition' Value='{{0,0},{0,120}}'/>
 						<Property Name='UnifiedSize' Value='{{1,0},{0,20}}'/>
 						<Property Name='Text' Value='Show Eris bbox'/>
-						<Event Name="CheckStateChanged" Function="EntityEditor.ShowErisBbox_CheckStateChanged" />
 					</Window>
 					<!-- Window Type='DefaultGUISheet' Name='ModelPanelStackable'>
 						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
@@ -107,7 +104,6 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="EntityEditor.RefreshAtlas_Clicked" />
 					</Window>
 				</Window>
 			</Window>
@@ -116,28 +112,24 @@
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Submit'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="Clicked" Function="EntityEditor.Submit_Clicked" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='DeleteButton'>
 				<Property Name='UnifiedPosition' Value='{{0,80},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Delete'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="Clicked" Function="EntityEditor.DeleteButton_Clicked" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='ExportButton'>
 				<Property Name='UnifiedPosition' Value='{{0,160},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Export'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="Clicked" Function="EntityEditor.ExportButton_Clicked" />
 			</Window>
 			<Window Type='EmberLook/Button' Name='RefreshButton'>
 				<Property Name='UnifiedPosition' Value='{{0,240},{1.0,-20}}'/>
 				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 				<Property Name='Text' Value='Refresh'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Event Name="Clicked" Function="EntityEditor.RefreshButton_Clicked" />
 			</Window>
 		</Window>
 	</Window>
