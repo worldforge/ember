@@ -19,6 +19,7 @@
 #include "AuthoringManager.h"
 #include "AuthoringHandler.h"
 #include "RawTypeInfoRepository.h"
+#include "components/ogre/World.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
@@ -34,8 +35,8 @@ namespace EmberOgre
 
 namespace Authoring
 {
-AuthoringManager::AuthoringManager(Eris::View& view) :
-	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mView(view), mHandler(0), mRawTypeInfoRepository(0)
+AuthoringManager::AuthoringManager(World& world) :
+	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mWorld(world), mHandler(0), mRawTypeInfoRepository(0)
 {
 	registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
 	mRawTypeInfoRepository = new RawTypeInfoRepository(*Ember::EmberServices::getSingleton().getServerService());
@@ -51,7 +52,7 @@ AuthoringManager::~AuthoringManager()
 void AuthoringManager::displayAuthoringVisualization()
 {
 	if (!mHandler) {
-		mHandler = new AuthoringHandler(mView);
+		mHandler = new AuthoringHandler(mWorld);
 	}
 }
 
@@ -84,7 +85,7 @@ void AuthoringManager::config_AuthoringVisualizations(const std::string& section
 void AuthoringManager::gotAvatarCharacter(Eris::Entity* entity)
 {
 	if (entity) {
-		if (entity->getType()->isA(mView.getAvatar()->getConnection()->getTypeService()->getTypeByName("creator"))) {
+		if (entity->getType()->isA(mWorld.getView().getAvatar()->getConnection()->getTypeService()->getTypeByName("creator"))) {
 			mRawTypeInfoRepository = new RawTypeInfoRepository(*Ember::EmberServices::getSingleton().getServerService());
 		}
 	}

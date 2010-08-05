@@ -484,7 +484,8 @@ void EmberEntity::showErisBoundingBox(bool show)
 		}
 		Ogre::SceneNode* boundingBoxNode(0);
 		try {
-			boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
+			return; //TODO: move this to the AuthoringManager so that we can remove the need for EmberOgre::getSingleton
+			//boundingBoxNode = EmberOgre::getSingleton().getWorldSceneNode()->createChildSceneNode();
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when creating Ogre node for eris bounding box.");
 			OGRE_DELETE mErisEntityBoundingBox;

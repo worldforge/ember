@@ -19,12 +19,14 @@
 #include "AuthoringHandler.h"
 #include "AuthoringVisualization.h"
 #include "AuthoringVisualizationMover.h"
-#include "components/ogre/EmberOgre.h"
+#include "components/ogre/World.h"
+#include "components/ogre/Scene.h"
 #include "components/ogre/EmberEntity.h"
 #include "framework/LoggingInstance.h"
 #include <Eris/View.h>
 #include <Eris/Entity.h>
 #include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
 #include <sigc++/bind.h>
 
 namespace EmberOgre
@@ -53,12 +55,12 @@ AuthoringVisualization& AuthoringMoveInstance::getVisualization()
 	return mVisualization;
 }
 
-AuthoringHandler::AuthoringHandler(Eris::View& view) :
-	mMoveInstance(0)
+AuthoringHandler::AuthoringHandler(World& world) :
+	mMoveInstance(0), mWorld(world)
 {
-	view.EntitySeen.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntitySeen));
-	view.EntityCreated.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityCreated));
-	createVisualizationsForExistingEntities(view);
+	world.getView().EntitySeen.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntitySeen));
+	world.getView().EntityCreated.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityCreated));
+	createVisualizationsForExistingEntities(world.getView());
 }
 
 AuthoringHandler::~AuthoringHandler()
@@ -96,10 +98,10 @@ void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 				parentNode = parentVis->getSceneNode();
 			} else {
 				S_LOG_WARNING("Could not find parent visualization for entity.");
-				parentNode = EmberOgre::getSingleton().getRootSceneNode();
+				parentNode = mWorld.getScene().getSceneManager().getRootSceneNode();
 			}
 		} else {
-			parentNode = EmberOgre::getSingleton().getRootSceneNode();
+			parentNode = mWorld.getScene().getSceneManager().getRootSceneNode();
 		}
 
 		Ogre::SceneNode* sceneNode = parentNode->createChildSceneNode();
@@ -142,7 +144,7 @@ void AuthoringHandler::view_EntityLocationChanged(Eris::Entity* newLocation, Emb
 			if (parentI != mVisualizations.end()) {
 				parentNode = parentI->second->getSceneNode();
 			} else {
-				parentNode = EmberOgre::getSingleton().getRootSceneNode();
+				parentNode = mWorld.getScene().getSceneManager().getRootSceneNode();
 				S_LOG_WARNING("Could not find new parent for entity, it will be attached to the root node.");
 			}
 			parentNode->addChild(I->second->getSceneNode());

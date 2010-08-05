@@ -154,16 +154,6 @@ public:
 	 */
 	void initializeEmberServices(const std::string& prefix, const std::string& homeDir);
 
-
-	/**
-	 * @brief Gets the main scene manager.
-	 *
-	 * There will be many different scene managers created by Ember, but this one is the main one which represents the world.
-	 * @return The main scene manager.
-	 */
-	Ogre::SceneManager* getSceneManager() const;
-
-
 	/**
 	 * @brief Gets the Ogre root object.
 	 *
@@ -206,19 +196,6 @@ public:
 	 */
 	//	sigc::signal<void, Jesus*> EventCreatedJesus;
 
-	/**
-	 * @brief Returns the scenenode of the world entity.
-	 *
-	 * Throws en exception if no such node has been created yet.
-	 * @return
-	 */
-	Ogre::SceneNode* getWorldSceneNode() const;
-
-	/**
-	 * @brief Returns the root scene node, to which all other nodes are attached.
-	 * @return The Ogre root scene node.
-	 */
-	Ogre::SceneNode* getRootSceneNode() const;
 
 	/**
 	 * @brief Renders one frame.

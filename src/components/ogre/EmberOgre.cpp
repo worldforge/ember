@@ -556,36 +556,11 @@ void EmberOgre::Server_GotConnection(Eris::Connection* connection)
 {
 }
 
-Ogre::SceneManager* EmberOgre::getSceneManager() const
-{
-	return mSceneMgr;
-}
-
 Ogre::Root* EmberOgre::getOgreRoot() const
 {
 	assert(mRoot);
 	return mRoot;
 }
-
-Ogre::SceneNode * EmberOgre::getWorldSceneNode() const
-{
-	//	if (mEmberEntityFactory && mEmberEntityFactory->getWorld()) {
-	//		return mEmberEntityFactory->getWorld()->getSceneNode();
-	//	} else {
-	return mSceneMgr->getRootSceneNode();
-	//	}
-	/*	Ogre::SceneNode* node = mSceneMgr->getSceneNode("0");
-	 //TODO: implement better exception handling
-	 if (node == 0)
-	 throw Exception();
-	 return node;*/
-}
-
-Ogre::SceneNode* EmberOgre::getRootSceneNode() const
-{
-	return mSceneMgr->getRootSceneNode();
-}
-
 
 ShaderManager* EmberOgre::getShaderManager() const
 {

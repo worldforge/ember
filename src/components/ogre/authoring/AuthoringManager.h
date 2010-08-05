@@ -42,6 +42,7 @@ class ConfigListenerContainer;
 namespace EmberOgre
 {
 class EmberEntity;
+class World;
 
 /**
  * @brief Namespace for authoring classes and activities.
@@ -64,9 +65,9 @@ class AuthoringManager: public Ember::ConsoleObject, Ember::ConfigListenerContai
 public:
 	/**
 	 * @brief Ctor.
-	 * @param view The view of the world which should be authored.
+	 * @param world The world which should be authored.
 	 */
-	AuthoringManager(Eris::View& view);
+	AuthoringManager(World& world);
 
 	/**
 	 * @brief Dtor.
@@ -112,9 +113,9 @@ public:
 protected:
 
 	/**
-	 * @brief The view to which this manager belongs.
+	 * @brief The world to which this manager belongs.
 	 */
-	Eris::View& mView;
+	World& mWorld;
 
 	/**
 	 * @brief The handler, which will take care of the actual handling of visualizations.

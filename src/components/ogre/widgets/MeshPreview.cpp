@@ -91,21 +91,21 @@ size_t MeshPreviewHandler::createInstance(const std::string& meshName)
 
 void MeshPreviewHandler::removeInstance(size_t index)
 {
-	if (index > mInstances.size() - 1) {
-		return;
-	}
-	EventRemoveInstance.emit(index);
-	MeshPreviewMeshInstance instance = getInstance(index);
-	Ogre::Entity* entity = instance.getEntity();
-	Ogre::SceneNode* node = entity->getParentSceneNode();
-	node->detachObject(entity->getName());
-	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(node->getName());
-	EmberOgre::getSingleton().getSceneManager()->destroyEntity(entity);
-	InstanceStore::iterator I = mInstances.begin();
-	for (size_t i = 0; i < index; ++i) {
-		++I;
-	}
-	mInstances.erase(I);
+//	if (index > mInstances.size() - 1) {
+//		return;
+//	}
+//	EventRemoveInstance.emit(index);
+//	MeshPreviewMeshInstance instance = getInstance(index);
+//	Ogre::Entity* entity = instance.getEntity();
+//	Ogre::SceneNode* node = entity->getParentSceneNode();
+//	node->detachObject(entity->getName());
+//	EmberOgre::getSingleton().getSceneManager()->destroySceneNode(node->getName());
+//	EmberOgre::getSingleton().getSceneManager()->destroyEntity(entity);
+//	InstanceStore::iterator I = mInstances.begin();
+//	for (size_t i = 0; i < index; ++i) {
+//		++I;
+//	}
+//	mInstances.erase(I);
 
 
 }

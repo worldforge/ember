@@ -32,6 +32,7 @@ class Entity;
 namespace EmberOgre
 {
 class EmberEntity;
+class World;
 
 namespace Authoring
 {
@@ -71,9 +72,9 @@ class AuthoringHandler: public virtual sigc::trackable, public IEntityVisitor
 public:
 	/**
 	 * @brief Ctor.
-	 * @param view The view for which this handler should create visualizations.
+	 * @param view The world for which this handler should create visualizations.
 	 */
-	AuthoringHandler(Eris::View& view);
+	AuthoringHandler(World& world);
 
 	/**
 	 * @brief Dtor.
@@ -114,6 +115,11 @@ protected:
 	 * @brief If an entity is moved client side, this instance will make sure that the visualization is synced with the movement.
 	 */
 	AuthoringMoveInstance* mMoveInstance;
+
+	/**
+	 * @brief The world for which we should create visualizations.
+	 */
+	World& mWorld;
 
 	/**
 	 * @brief When an entity first is seen we'll create a visualization for it.
