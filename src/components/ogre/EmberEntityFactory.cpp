@@ -25,8 +25,7 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/Avatar.h"
-#include "components/ogre/authoring/AuthoringManager.h"
-#include "components/ogre/authoring/AuthoringMoverConnector.h"
+
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
@@ -65,8 +64,8 @@ using namespace Ember::EntityMapping;
 namespace EmberOgre
 {
 
-EmberEntityFactory::EmberEntityFactory(Eris::View& view, Authoring::EntityMoveManager& entityMoveManager, Scene& scene) :
-	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene), mTerrainType(0), mWorldEntity(0), mAuthoringManager(new Authoring::AuthoringManager(view)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, entityMoveManager))
+EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene) :
+	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene), mTerrainType(0), mWorldEntity(0)
 {
 	mTerrainType = mTypeService.getTypeByName("world");
 }
@@ -74,8 +73,6 @@ EmberEntityFactory::EmberEntityFactory(Eris::View& view, Authoring::EntityMoveMa
 EmberEntityFactory::~EmberEntityFactory()
 {
 	EventBeingDeleted();
-	delete mAuthoringMoverConnector;
-	delete mAuthoringManager;
 }
 
 /// create whatever entity the client desires
@@ -164,11 +161,6 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 	}
 }
 
-Authoring::AuthoringManager& EmberEntityFactory::getAuthoringManager() const
-{
-	//This can never be null.
-	return *mAuthoringManager;
-}
 
 }
 

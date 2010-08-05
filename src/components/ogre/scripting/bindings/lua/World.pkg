@@ -72,6 +72,11 @@ public:
 	 */
 	EmberOgre::EntityWorldPickListener& getEntityPickListener() const;
 
+	/**
+	 * @brief Accessor for the authoring manager.
+	 * @return The authoring manager.
+	 */
+	EmberOgre::Authoring::AuthoringManager& getAuthoringManager() const;
 
 };
 

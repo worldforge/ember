@@ -83,7 +83,7 @@ function TypeManager:printType()
 	
 	if typeInfo ~= nil then
 	
-		local rawTypeData = emberOgre:getWorld():getEntityFactory():getAuthoringManager():getRawTypeInfoRepository():getRawTypeData(typeInfo:getName())
+		local rawTypeData = self.world:getAuthoringManager():getRawTypeInfoRepository():getRawTypeData(typeInfo:getName())
 	
 		if rawTypeData:isValid() then
 		
@@ -116,8 +116,8 @@ function TypeManager:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-TypeManager.createdAvatarConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedEmberEntityFactory):connect(function(factory)
-		typeManager = {connectors={}, codecClass=Atlas.Codecs.XML}
+TypeManager.createdAvatarConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventWorldCreated):connect(function(world)
+		typeManager = {connectors={}, codecClass=Atlas.Codecs.XML, world=world}
 		setmetatable(typeManager, {__index = TypeManager})
 		
 		typeManager:buildWidget()

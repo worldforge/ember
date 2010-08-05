@@ -38,6 +38,8 @@ class MainCamera;
 
 namespace Authoring
 {
+class AuthoringManager;
+class AuthoringMoverConnector;
 class EntityMoveManager;
 }
 
@@ -154,6 +156,12 @@ public:
 	 */
 	EntityWorldPickListener& getEntityPickListener() const;
 
+	/**
+	 * @brief Accessor for the authoring manager.
+	 * @return The authoring manager.
+	 */
+	Authoring::AuthoringManager& getAuthoringManager() const;
+
 protected:
 
 	/**
@@ -221,6 +229,17 @@ protected:
 	 * @brief The entity world pick listener instance, which handles picking of entities in the world.
 	 */
 	EntityWorldPickListener* mEntityWorldPickListener;
+
+	/**
+	 * @brief The authoring manager, used for displaying authoring markers.
+	 */
+	Authoring::AuthoringManager* mAuthoringManager;
+
+	/**
+	 * @brief Connects the authoring manager to the entity mover manager, so that the authoring info is updated as entities are moved.
+	 */
+	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
+
 
 	/**
 	 * @brief Sent from the view when an avatar entity has been created.

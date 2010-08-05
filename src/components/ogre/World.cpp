@@ -29,6 +29,8 @@
 #include "EmberEntity.h"
 #include "EmberOgreSignals.h"
 #include "components/ogre/AvatarCameraMotionHandler.h"
+#include "components/ogre/authoring/AuthoringManager.h"
+#include "components/ogre/authoring/AuthoringMoverConnector.h"
 
 #include "camera/MainCamera.h"
 #include "camera/ThirdPersonCameraMount.h"
@@ -47,7 +49,7 @@ namespace EmberOgre
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals) :
-	mView(view), mRenderWindow(renderWindow), mSignals(signals), mViewport(0), mScene(new Scene()), mAvatar(0), mMovementController(0), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mMoveManager, *mScene)), mMotionManager(new MotionManager()), mMainCamera(0), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0)
+	mView(view), mRenderWindow(renderWindow), mSignals(signals), mViewport(0), mScene(new Scene()), mAvatar(0), mMovementController(0), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mMainCamera(0), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager))
 {
 	mViewport = renderWindow.addViewport(&mScene->getMainCamera());
 	///set the background colour to black
@@ -71,6 +73,9 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 
 World::~World()
 {
+	delete mAuthoringMoverConnector;
+	delete mAuthoringManager;
+
 	delete mMainCamera;
 	delete mMoveManager;
 
@@ -136,6 +141,12 @@ EntityWorldPickListener& World::getEntityPickListener() const
 	return *mEntityWorldPickListener;
 }
 
+
+Authoring::AuthoringManager& World::getAuthoringManager() const
+{
+	//This can never be null.
+	return *mAuthoringManager;
+}
 
 void World::View_gotAvatarCharacter(Eris::Entity* entity)
 {

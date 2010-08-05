@@ -47,13 +47,6 @@ class ViewEmberEntity;
 class WorldEmberEntity;
 class Scene;
 
-namespace Authoring
-{
-class AuthoringManager;
-class AuthoringMoverConnector;
-class EntityMoveManager;
-}
-
 /**
  * @brief Creates the EmberEntities required.
  *
@@ -71,7 +64,7 @@ public:
 	 *
 	 * This should be instantiated by EmberOgre or similar high level object. Note that Eris upon shutdown will delete all registered factories, so don't delete an instance of this yourself.
 	 */
-	EmberEntityFactory(Eris::View& view, Authoring::EntityMoveManager& entityMoveManager, Scene& scene);
+	EmberEntityFactory(Eris::View& view, Scene& scene);
 	virtual ~EmberEntityFactory();
 
 	/**
@@ -119,12 +112,6 @@ public:
 	void dumpAttributesOfEntity(const std::string& entityId) const;
 
 	/**
-	 * @brief Accessor for the authoring manager.
-	 * @return The authoring manager.
-	 */
-	Authoring::AuthoringManager& getAuthoringManager() const;
-
-	/**
 	 * @brief Emitted when the factory is being deleted.
 	 */
 	sigc::signal<void> EventBeingDeleted;
@@ -152,16 +139,6 @@ protected:
 	 * @brief The world entity, which is also the base entity of the view.
 	 */
 	WorldEmberEntity *mWorldEntity;
-
-	/**
-	 * @brief The authoring manager, used for displaying authoring markers.
-	 */
-	Authoring::AuthoringManager* mAuthoringManager;
-
-	/**
-	 * @brief Connects the authoring manager to the entity mover manager, so that the authoring info is updated as entities are moved.
-	 */
-	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
 
 };
 
