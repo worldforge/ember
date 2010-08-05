@@ -292,14 +292,14 @@ function EntityPicker:buttonMoveto_Click(args)
 end
 
 function EntityPicker:buttonTeleportto_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 		emberOgre:getWorld():getMovementController():teleportTo(self.position, entity)
 	end)
 	self:removeMenu()
 end
 
 function EntityPicker:buttonTouch_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 		emberServices:getServerService():touch(entity)
 		guiManager:EmitEntityAction("touch", entity)
 	end)
@@ -308,7 +308,7 @@ function EntityPicker:buttonTouch_Click(args)
 end
 
 function EntityPicker:buttonTake_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 		emberServices:getServerService():take(entity)
 		guiManager:EmitEntityAction("take", entity)
 	end)
@@ -316,28 +316,28 @@ function EntityPicker:buttonTake_Click(args)
 end
 
 function EntityPicker:buttonGive_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 		guiManager:EmitEntityAction("give", entity)
 	end)
 	self:removeMenu()
 end
 
 function EntityPicker:buttonInspect_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 		guiManager:EmitEntityAction("inspect", entity)
 	end)
 	self:removeMenu()
 end
 
 function EntityPicker:buttonMove_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 		guiManager:EmitEntityAction("move", entity)
 	end)
 	self:removeMenu()
 end
 
 function EntityPicker:buttonUse_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 	--	emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(tolua.cast(self.position, "Ogre::Vector<3>")))
 		emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(self.position))
 		guiManager:EmitEntityAction("use", entity)
@@ -346,14 +346,14 @@ function EntityPicker:buttonUse_Click(args)
 end
 
 function EntityPicker:editButton_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 		guiManager:EmitEntityAction("edit", entity)
 	end)
 	self:removeMenu()
 end
 
 function EntityPicker:attackButton_Click(args)
-	self.doWithPickedEntity(function (entity)
+	self:doWithPickedEntity(function (entity)
 		emberServices:getServerService():attack(entity)
 		guiManager:EmitEntityAction("attack", entity)
 	end)
