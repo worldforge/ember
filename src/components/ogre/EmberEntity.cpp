@@ -114,7 +114,6 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	if (!hasBBox()) {
 		onBboxChanged();
 	}
-	EventInitComplete.emit();
 }
 
 bool EmberEntity::createDependentObject(const std::string& attributeName)
