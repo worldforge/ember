@@ -547,6 +547,7 @@ void EmberOgre::EntityFactory_BeingDeleted()
 	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
 	delete mWorld;
 	mWorld = 0;
+	EventWorldDestroyed.emit();
 	mWindow->removeAllViewports();
 	mWindow->addViewport(mOgreMainCamera);
 }
