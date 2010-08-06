@@ -77,18 +77,8 @@ public:
 
 protected:
 
-	/**
-	 flag for showing when the widget is ready to be shown
-	 */
-	bool mIsReady;
-
 	CEGUI::Tree* mTypeTree;
 	CEGUI::Editbox* mName;
-
-	/**
-	 The main connection to the server.
-	 */
-	Eris::Connection* mConn;
 
 	/**
 	 A preview renderer for creating new models.
@@ -108,6 +98,8 @@ protected:
 
 	void createPreviewTexture();
 	void updatePreview();
+
+	Eris::Connection* getConnection() const;
 
 };
 }

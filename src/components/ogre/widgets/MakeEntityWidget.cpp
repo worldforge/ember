@@ -66,11 +66,8 @@ namespace Gui
 {
 
 MakeEntityWidget::MakeEntityWidget() :
-	Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mIsReady(false), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
+	Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
 {
-
-	Ember::ConsoleBackend::getSingletonPtr()->registerCommand("testarea", this);
-
 }
 
 MakeEntityWidget::~MakeEntityWidget()
@@ -95,9 +92,6 @@ void MakeEntityWidget::buildWidget()
 	BIND_CEGUI_EVENT(mTypeTree, CEGUI::Tree::EventSelectionChanged,MakeEntityWidget::typeTree_ItemSelectionChanged );
 	BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked,MakeEntityWidget::createButton_Click );
 
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &MakeEntityWidget::connectedToServer));
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &MakeEntityWidget::gotAvatar));
-
 	createPreviewTexture();
 
 	registerConsoleVisibilityToggleCommand("entitycreator");
@@ -107,34 +101,19 @@ void MakeEntityWidget::buildWidget()
 
 void MakeEntityWidget::show()
 {
-	if (mIsReady) {
-		if (mMainWindow) {
-			if (!mTypeTreeAdapter) {
-				mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*mConn->getTypeService(), *mTypeTree);
-				mTypeTreeAdapter->initialize("game_entity");
-			}
-			Widget::show();
+	if (mMainWindow) {
+		if (!mTypeTreeAdapter) {
+			mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*getConnection()->getTypeService(), *mTypeTree);
+			mTypeTreeAdapter->initialize("game_entity");
 		}
-		S_LOG_INFO("Showing entity creator window.");
-	} else {
-		S_LOG_FAILURE("Can't show entity creator window before we have taken an avatar.");
+		Widget::show();
 	}
-}
-
-void MakeEntityWidget::gotAvatar(Eris::Avatar* avatar)
-{
-	mIsReady = true;
-}
-
-void MakeEntityWidget::connectedToServer(Eris::Connection* conn)
-{
-	mConn = conn;
 }
 
 void MakeEntityWidget::runCommand(const std::string &command, const std::string &args)
 {
 	if (CreateEntity == command || Make == command) {
-		Eris::TypeService* typeService = mConn->getTypeService();
+		Eris::TypeService* typeService = getConnection()->getTypeService();
 		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);
 		if (typeinfo) {
 			createEntityOfType(typeinfo);
@@ -197,7 +176,7 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	c->setFrom(avatar.getId());
 	///if the avatar is a "creator", i.e. and admin, we will set the TO property
 	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (avatar.getType()->isA(mConn->getTypeService()->getTypeByName("creator"))) {
+	if (avatar.getType()->isA(getConnection()->getTypeService()->getTypeByName("creator"))) {
 		c->setTo(avatar.getId());
 	}
 
@@ -222,12 +201,18 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	msg["orientation"] = orientation.toAtlas();
 
 	c->setArgsAsList(Atlas::Message::ListType(1, msg));
-	mConn->send(c);
+	getConnection()->send(c);
 	std::stringstream ss;
 	ss << pos;
 	S_LOG_INFO("Try to create entity of type " << typeinfo->getName() << " at position " << ss.str() );
 
 }
+
+Eris::Connection* MakeEntityWidget::getConnection() const
+{
+	return Ember::EmberServices::getSingleton().getServerService()->getConnection();
+}
+
 }
 
 }
