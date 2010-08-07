@@ -23,15 +23,9 @@
 #ifndef EMBEROGRELUACONSOLEOBJECT_H
 #define EMBEROGRELUACONSOLEOBJECT_H
 #include "framework/ConsoleObject.h"
+#include "Connectors.h"
 
 namespace EmberOgre {
-
-namespace LuaConnectors
-{
-	class ConnectorBase;
-//	template<> void ConnectorBase::callLuaMethod(const std::string& t0, const std::string& t1, LuaConnectors::Empty t2, LuaConnectors::Empty t3);
-}
-
 
 /**
 @author Erik Hjortsberg
@@ -54,7 +48,7 @@ public:
 private:
 	std::string mCommand;
 	std::string mLuaMethod;
-//	EmberOgre::LuaConnectors::ConnectorBase* mConnector;
+	LuaConnectors::TemplatedConnectorBase<LuaConnectors::StringValueAdapter, LuaConnectors::StringValueAdapter>* mConnector;
 	const Ember::ConsoleCommandWrapper mCommandWrapper;
 };
 

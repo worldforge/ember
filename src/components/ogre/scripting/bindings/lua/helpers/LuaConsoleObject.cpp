@@ -25,30 +25,27 @@
 #endif
 
 #include "LuaConsoleObject.h"
+#include "Connectors_impl.h"
 #include "framework/ConsoleBackend.h"
-#include "LuaConnector.h"
 
 namespace EmberOgre {
 
 LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description):
 mCommand(command), mLuaMethod(luaMethod), mCommandWrapper(command, this, description)
 {
-	LuaTypeStore typenames;
-	typenames.push_back("string");
-	typenames.push_back("string");
-//	mConnector = new LuaConnectors::ConnectorBase(typenames);
-//	mConnector->connect(luaMethod);
+	mConnector = new LuaConnectors::TemplatedConnectorBase<LuaConnectors::StringValueAdapter, LuaConnectors::StringValueAdapter>(LuaConnectors::StringValueAdapter(), LuaConnectors::StringValueAdapter());
+	mConnector->connect(luaMethod);
 }
 
 
 LuaConsoleObject::~LuaConsoleObject()
 {
-//	delete mConnector;
+	delete mConnector;
 }
 
 void LuaConsoleObject::runCommand(const std::string &command, const std::string &args)
 {
-//	mConnector->callLuaMethod<void, const std::string &, const std::string &, EmberOgre::LuaConnectors::Empty, EmberOgre::LuaConnectors::Empty>(command, args, EmberOgre::LuaConnectors::Empty(), EmberOgre::LuaConnectors::Empty());
+	mConnector->callLuaMethod<const std::string &, const std::string &>(command, args);
 }
 
 }
