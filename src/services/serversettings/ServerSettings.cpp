@@ -61,7 +61,7 @@ void ServerSettings::writeToDisk()
 {
 	std::string filePath = getFullConfigFilePath();
 
-	mConfig->writeToFile(filePath, varconf::GLOBAL);
+	mConfig->writeToFile(filePath); //calling this without any scope arguments makes it write all settings in all scopes
 }
 
 void ServerSettings::readFromDisk()
