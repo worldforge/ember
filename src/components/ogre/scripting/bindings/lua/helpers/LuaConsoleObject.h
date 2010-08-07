@@ -54,7 +54,7 @@ public:
 private:
 	std::string mCommand;
 	std::string mLuaMethod;
-	EmberOgre::LuaConnectors::ConnectorBase* mConnector;
+//	EmberOgre::LuaConnectors::ConnectorBase* mConnector;
 	const Ember::ConsoleCommandWrapper mCommandWrapper;
 };
 

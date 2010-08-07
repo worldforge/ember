@@ -85,7 +85,7 @@ class EntityIcon;
 
 namespace LuaConnectors
 {
-class ConnectorBase_;
+class ConnectorBase;
 class Empty
 {
 public:
@@ -94,142 +94,6 @@ public:
 	}
 };
 
-class ConnectorBase: public sigc::trackable
-{
-public:
-	ConnectorBase();
-	ConnectorBase(const LuaTypeStore& luaTypeNames);
-	virtual ~ConnectorBase();
-
-	/**
-	 * Connects to a specified lua method.
-	 * @param luaMethod The fully qualified name of the method.
-	 */
-	void connect(const std::string & luaMethod);
-
-	/**
-	 * Connects to a specified lua method.
-	 * @param luaMethod The lua method
-	 */
-	void connect(int luaMethod);
-
-	/**
-	 Disconnects from the signal.
-	 */
-	void disconnect();
-
-	/**
-	 * @brief Sets a "self" index, which is a table which will be prepended as an argument to the call into Lua.
-	 *
-	 * @param selfIndex Index of a lua table.
-	 */
-	void setSelfIndex(int selfIndex);
-
-	template<typename Treturn, typename T0, typename T1, typename T2, typename T3> Treturn callLuaMethod(T0 t0, T1 t1, T2 t2, T3 t3);
-
-protected:
-
-	/**
-	 The lua method to call.
-	 */
-	std::string mLuaMethod;
-
-	/**
-	 A vector of the lua type names of the arguments, in order called.
-	 */
-	std::vector<std::string> mLuaTypeNames;
-
-	/**
-	 pushes the lua method onto the stack
-	 */
-	void pushNamedFunction(lua_State* state);
-
-	/**
-	 After the lua method has been bound, we don't need to do any more lookups and can instead just use the function index, which is stored in this variable.
-	 */
-	int mLuaFunctionIndex;
-
-	/**
-	 The connection.
-	 */
-	sigc::connection mConnection;
-
-	/**
-	 * @brief An optional "self" index, which is a table which will be prepended to any lua call.
-	 *
-	 * This is useful for providing object oriented features to Lua.
-	 */
-	int mLuaSelfIndex;
-
-	template<typename Treturn> Treturn returnValueFromLua(lua_State* state);
-	/*			void returnValueFromLua(lua_State* state, bool& returnValueHolder);
-	 void returnValueFromLua(lua_State* state);*/
-
-};
-
-
-template<typename Treturn>
-class ConnectorZero: public ConnectorBase
-{
-public:
-	ConnectorZero(sigc::signal<Treturn>& signal);
-	// 			ConnectorZero(SigC::Signal0<Treturn>& signal);
-
-private:
-	sigc::signal<Treturn> mSignal;
-	// 			SigC::Signal0<Treturn> mSignal_old;
-	Treturn signal_recieve();
-};
-
-template<typename Treturn, typename T0>
-class ConnectorOne: public ConnectorBase
-{
-public:
-	ConnectorOne(sigc::signal<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames);
-	// 			ConnectorOne(SigC::Signal1<Treturn, T0>& signal, const LuaTypeStore& luaTypeNames);
-
-private:
-	sigc::signal<Treturn, T0> mSignal;
-	// 			SigC::Signal1<Treturn, T0> mSignal_old;
-	Treturn signal_recieve(T0 t0);
-
-};
-
-template<typename Treturn, typename T0, typename T1>
-class ConnectorTwo: public ConnectorBase
-{
-public:
-	ConnectorTwo(sigc::signal<Treturn, T0, T1>& signal, const LuaTypeStore& luaTypeNames);
-
-private:
-	sigc::signal<Treturn, T0, T1> mSignal;
-	Treturn signal_recieve(T0 t0, T1 t1);
-
-};
-
-template<typename Treturn, typename T0, typename T1, typename T2>
-class ConnectorThree: public ConnectorBase
-{
-public:
-	ConnectorThree(sigc::signal<Treturn, T0, T1, T2>& signal, const LuaTypeStore& luaTypeNames);
-
-private:
-	sigc::signal<Treturn, T0, T1, T2> mSignal;
-	Treturn signal_recieve(T0 t0, T1 t1, T2 t2);
-
-};
-
-template<typename Treturn, typename T0, typename T1, typename T2, typename T3>
-class ConnectorFour: public ConnectorBase
-{
-public:
-	ConnectorFour(sigc::signal<Treturn, T0, T1, T2, T3>& signal, const LuaTypeStore& luaTypeNames);
-
-private:
-	sigc::signal<Treturn, T0, T1, T2, T3> mSignal;
-	Treturn signal_recieve(T0 t0, T1 t1, T2 t2, T3 t3);
-
-};
 }
 
 /**
@@ -269,35 +133,6 @@ public:
 	static lua_State* getState();
 
 	static lua_State* sState;
-
-	template<typename T> static void pushValue(T theValue, const std::string& luaTypename);
-	static void pushValue(const std::string& theValue, const std::string& luaTypename);
-	static void pushValue(const float& theValue, const std::string& luaTypename);
-	static void pushValue(const int& theValue, const std::string& luaTypename);
-	static void pushValue(const unsigned int& theValue, const std::string& luaTypename);
-	static void pushValue(const long& theValue, const std::string& luaTypename);
-	static void pushValue(const unsigned long& theValue, const std::string& luaTypename);
-
-	static void pushValue(const Eris::ServerInfo& theValue, const std::string& luaTypename);
-	static void pushValue(const EntityPickResult& theValue, const std::string& luaTypename);
-	static void pushValue(const MousePickerArgs& theValue, const std::string& luaTypename);
-	static void pushValue(LuaConnectors::Empty theValue, const std::string& luaTypename);
-	static void pushValue(const Ember::Input::MouseButton& theValue, const std::string& luaTypename);
-	static void pushValue(const Ember::Input::InputMode& theValue, const std::string& luaTypename);
-	static void pushValue(const std::set<std::string>& theValue, const std::string& luaTypename);
-	static void pushValue(const Atlas::Message::Element& theValue, const std::string& luaTypename);
-	static void pushValue(const MovementControllerMode::Mode& theValue, const std::string& luaTypename);
-	static void pushValue(const Terrain::TerrainPage& theValue, const std::string& luaTypename);
-	static void pushValue(const EmberEntity& theValue, const std::string& luaTypename);
-	static void pushValue(const Atlas::Objects::Root& theValue, const std::string& luaTypename);
-	static void pushValue(const std::vector<EntityPickResult>& theValue, const std::string& luaTypename);
-	static void pushValue(const Authoring::EntityMover& theValue, const std::string& luaTypename);
-	static void pushValue(const Terrain::TerrainEditorOverlay& theValue, const std::string& luaTypename);
-	static void pushValue(const Terrain::TerrainManager& theValue, const std::string& luaTypename);
-	static void pushValue(const World& theValue, const std::string& luaTypename);
-	static void pushValue(const EmberEntityFactory& theValue, const std::string& luaTypename);
-
-	template<typename T> static void pushUserTypeValue(T& theValue, const std::string& luaTypename);
 
 	LuaConnector(sigc::signal<void>& signal);
 	LuaConnector(sigc::signal<void, const std::string&, EmberEntity*>& signal);
@@ -373,8 +208,6 @@ private:
 	 */
 	LuaConnectors::ConnectorBase* mConnector;
 
-	LuaConnectors::ConnectorBase_* mConnector_
-	;
 	/**
 	 * @brief Checks that the signal submitted isn't null. If so, mConnector will be set to null and no connection will occur.
 	 *

@@ -36,14 +36,14 @@ mCommand(command), mLuaMethod(luaMethod), mCommandWrapper(command, this, descrip
 	LuaTypeStore typenames;
 	typenames.push_back("string");
 	typenames.push_back("string");
-	mConnector = new LuaConnectors::ConnectorBase(typenames);
-	mConnector->connect(luaMethod);
+//	mConnector = new LuaConnectors::ConnectorBase(typenames);
+//	mConnector->connect(luaMethod);
 }
 
 
 LuaConsoleObject::~LuaConsoleObject()
 {
-	delete mConnector;
+//	delete mConnector;
 }
 
 void LuaConsoleObject::runCommand(const std::string &command, const std::string &args)
