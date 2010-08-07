@@ -48,7 +48,7 @@ LuaConsoleObject::~LuaConsoleObject()
 
 void LuaConsoleObject::runCommand(const std::string &command, const std::string &args)
 {
-	mConnector->callLuaMethod<void, const std::string &, const std::string &, EmberOgre::LuaConnectors::Empty, EmberOgre::LuaConnectors::Empty>(command, args, EmberOgre::LuaConnectors::Empty(), EmberOgre::LuaConnectors::Empty());
+//	mConnector->callLuaMethod<void, const std::string &, const std::string &, EmberOgre::LuaConnectors::Empty, EmberOgre::LuaConnectors::Empty>(command, args, EmberOgre::LuaConnectors::Empty(), EmberOgre::LuaConnectors::Empty());
 }
 
 }

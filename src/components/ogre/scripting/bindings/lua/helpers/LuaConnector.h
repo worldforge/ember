@@ -85,7 +85,7 @@ class EntityIcon;
 
 namespace LuaConnectors
 {
-
+class ConnectorBase_;
 class Empty
 {
 public:
@@ -166,6 +166,7 @@ protected:
 	 void returnValueFromLua(lua_State* state);*/
 
 };
+
 
 template<typename Treturn>
 class ConnectorZero: public ConnectorBase
@@ -372,6 +373,8 @@ private:
 	 */
 	LuaConnectors::ConnectorBase* mConnector;
 
+	LuaConnectors::ConnectorBase_* mConnector_
+	;
 	/**
 	 * @brief Checks that the signal submitted isn't null. If so, mConnector will be set to null and no connection will occur.
 	 *
@@ -379,6 +382,12 @@ private:
 	 * @return True if the supplied signal isn't null.
 	 */
 	bool checkSignalExistence(void* signal);
+
+	template <typename TSignal, typename TAdapter0>
+	void createConnector(TSignal& signal, const TAdapter0& adapter);
+
+	template <typename TSignal, typename TAdapter0, typename TAdapter1>
+	void createConnector(TSignal& signal, const TAdapter0& adapter0, const TAdapter1& adapter1);
 
 };
 
