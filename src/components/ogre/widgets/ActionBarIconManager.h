@@ -93,9 +93,9 @@ public:
 	 */
 	void destroyIcon(ActionBarIcon* icon);
 
-	const std::string& getSavedIcon(const std::string& name) const;
+	const std::string getSavedValue(const std::string& name) const;
 
-	void saveIcon(const std::string& key, const std::string& value);
+	void saveValue(const std::string& key, const std::string& value);
 
 	/**
 	 * @brief Emitted when a drag action of an entity icon has started.

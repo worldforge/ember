@@ -136,6 +136,20 @@ function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
 	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeave", actionBarIconWrapper.mouseLeaves)
 end
 
+function ActionBar:saveAttr()
+	self.actionBarIconManager:saveValue(self.name, "exists")
+	self.actionBarIconManager:saveValue(self.name .. "xpos", self.widget:getMainWindow():getXPosition().d_scale)
+	self.actionBarIconManager:saveValue(self.name .. "ypos", self.widget:getMainWindow():getYPosition().d_scale)
+end
+
+function ActionBar:loadSavedAttributes()
+	debugObject(self.actionBarIconManager:getSavedValue(self.name))
+	if self.actionBarIconManager:getSavedValue(self.name) ~= "null" then
+		debugObject(self.actionBarIconManager:getSavedValue(self.name .. "xpos"))
+		debugObject(self.actionBarIconManager:getSavedValue(self.name .. "ypos"))
+	end
+end
+
 --Build the action bar widget.
 --@param widgetName Unique widget name passed by AcionBarCreator.
 function ActionBar:buildCEGUIWidget(widgetName)
@@ -143,6 +157,7 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	if widgetName == nil then
 		widgetName = "ActionBar/"
 	end
+	self.name = widgetName
 	self.widget:loadMainSheet("ActionBar.layout", widgetName)
 	self.iconContainer = self.widget:getWindow("IconContainer")
 	
@@ -205,6 +220,7 @@ function ActionBar.new(rotation, defActionList)
 				layout = rotation, --Vertical or horizontal action bar
 				defaultActionList = defActionList,
 				hotkeys = {},
+				name = "",
 				slots = {}};
 				
 	setmetatable(actionbar,{__index=ActionBar})
@@ -235,16 +251,14 @@ end
 --Initialization of the action bar, we build the widget here.
 function ActionBar:init(widgetName)	
 	self.actionBarIconManager = guiManager:getActionBarIconManager()
-	
-	self.actionBarIconManager:saveIcon("actionbaricon_1", "foobar")
-	debugObject(self.actionBarIconManager:getSavedIcon("actionbaricon_1"))
 		
 	self:buildCEGUIWidget(widgetName)
 end
 
 function ActionBar:shutdown()
 
-	
+	self:saveAttr()
+
 	--Delete all of the action bar slots.
 	for k,v in pairs(self.slots) do
 		self.actionBarIconManager:destroySlot(v.slot)

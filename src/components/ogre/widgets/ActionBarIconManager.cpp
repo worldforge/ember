@@ -108,7 +108,7 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned
 	return 0;
 }
 
-const std::string& ActionBarIconManager::getSavedIcon(const std::string& key) const
+const std::string ActionBarIconManager::getSavedValue(const std::string& key) const
 {
 	Eris::ServerInfo sInfo;
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
@@ -120,9 +120,10 @@ const std::string& ActionBarIconManager::getSavedIcon(const std::string& key) co
 	if (serverSettings->findItem(serverCredentials, key)) {
 		return static_cast<std::string>(serverSettings->getItem(serverCredentials, key));
 	}
+	return "null";
 }
 
-void ActionBarIconManager::saveIcon(const std::string& key, const std::string& value)
+void ActionBarIconManager::saveValue(const std::string& key, const std::string& value)
 {
 	Eris::ServerInfo sInfo;
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);

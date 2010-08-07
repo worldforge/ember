@@ -42,9 +42,9 @@ public:
 	EmberOgre::Gui::ActionBarIcon* createIcon(EmberOgre::Gui::Icons::Icon* icon, unsigned int pixelSize = 64);
 	void destroyIcon(EmberOgre::Gui::ActionBarIcon* icon);
 
-	const std::string& getSavedIcon(const std::string& name) const;
+	const std::string getSavedValue(const std::string& name) const;
 
-	void saveIcon(const std::string& key, const std::string& value);
+	void saveValue(const std::string& key, const std::string& value);
 	
 	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStart;
 	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStop;
