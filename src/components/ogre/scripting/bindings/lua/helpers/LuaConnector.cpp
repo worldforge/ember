@@ -173,11 +173,6 @@ protected:
 	std::string mLuaMethod;
 
 	/**
-	 pushes the lua method onto the stack
-	 */
-	void pushNamedFunction(lua_State* state);
-
-	/**
 	 After the lua method has been bound, we don't need to do any more lookups and can instead just use the function index, which is stored in this variable.
 	 */
 	int mLuaFunctionIndex;
@@ -194,6 +189,14 @@ protected:
 	 */
 	int mLuaSelfIndex;
 
+	/**
+	 pushes the lua method onto the stack
+	 */
+	void pushNamedFunction(lua_State* state);
+
+	int resolveLuaFunction(lua_State* state);
+
+	void callFunction(lua_State* state, int numberOfArguments, int top);
 };
 
 template <typename TAdapter0 = EmptyValueAdapter, typename TAdapter1 = EmptyValueAdapter>
@@ -261,6 +264,51 @@ TemplatedConnectorBase<TAdapter0, TAdapter1>::TemplatedConnectorBase(const TAdap
 {
 }
 
+int ConnectorBase::resolveLuaFunction(lua_State* state)
+{
+	if (mLuaFunctionIndex == LUA_NOREF || Ember::EmberServices::getSingleton().getScriptingService()->getAlwaysLookup()) {
+		pushNamedFunction(state);
+		mLuaFunctionIndex = luaL_ref(state, LUA_REGISTRYINDEX);
+	}
+
+	///get the lua function
+	lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
+
+	//Check if there's a "self" table specified. If so, prepend that as the first argument and increase the number of arguments counter.
+	if (mLuaSelfIndex != LUA_NOREF) {
+		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaSelfIndex);
+		return 1;
+	}
+	return 0;
+}
+
+void ConnectorBase::callFunction(lua_State* state, int numberOfArguments, int top)
+{
+
+	///push our error handling method before calling the code
+	int error_index = lua_gettop(state) - numberOfArguments;
+#if LUA51
+	lua_pushcfunction(state, Ember::Lua::LuaHelper::luaErrorHandler);
+#else
+	lua_pushliteral(state, "_TRACEBACK");
+	lua_rawget(state, LUA_GLOBALSINDEX); /* get traceback function */
+#endif
+	lua_insert(state, error_index);/* put it under chunk and args */
+
+	luaPop pop(state, 1); // pops error handler on exit
+
+	/// call it
+	int error = lua_pcall(state, numberOfArguments, LUA_MULTRET, error_index);
+
+	/// handle errors
+	if (error) {
+		const std::string& msg = lua_tostring(state,-1);
+		lua_settop(state, top);
+		// 			lua_pop(state,numberOfArguments);
+		throw Ember::Exception(msg);
+	}
+}
+
 template <typename TAdapter0, typename TAdapter1> template <typename Tvalue_type0, typename Tvalue_type1>
 void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_type0& t0, const Tvalue_type1& t1)
 {
@@ -268,20 +316,7 @@ void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_ty
 	lua_State* state = EmberOgre::LuaConnector::getState();
 	int top = lua_gettop(state);
 	try {
-
-		if (mLuaFunctionIndex == LUA_NOREF || Ember::EmberServices::getSingleton().getScriptingService()->getAlwaysLookup()) {
-			pushNamedFunction(state);
-			mLuaFunctionIndex = luaL_ref(state, LUA_REGISTRYINDEX);
-		}
-
-		///get the lua function
-		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
-
-		//Check if there's a "self" table specified. If so, prepend that as the first argument and increase the number of arguments counter.
-		if (mLuaSelfIndex != LUA_NOREF) {
-			lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaSelfIndex);
-			numberOfArguments++;
-		}
+		numberOfArguments += resolveLuaFunction(state);
 
 		if (mAdapter0.pushValue(t0)) {
 			numberOfArguments++;
@@ -290,36 +325,11 @@ void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_ty
 			numberOfArguments++;
 		}
 
-		///push our error handling method before calling the code
-		int error_index = lua_gettop(state) - numberOfArguments;
-#if LUA51
-		lua_pushcfunction(state, Ember::Lua::LuaHelper::luaErrorHandler);
-#else
-		lua_pushliteral(state, "_TRACEBACK");
-		lua_rawget(state, LUA_GLOBALSINDEX); /* get traceback function */
-#endif
-		lua_insert(state, error_index);/* put it under chunk and args */
-
-		luaPop pop(state, 1); // pops error handler on exit
-
-		/// call it
-		int error = lua_pcall(state, numberOfArguments, LUA_MULTRET, error_index);
-
-		/// handle errors
-		if (error) {
-			const std::string& msg = lua_tostring(state,-1);
-			lua_settop(state, top);
-			// 			lua_pop(state,numberOfArguments);
-			throw Ember::Exception(msg);
-		}
-
+		callFunction(state, numberOfArguments, top);
 		//		Treturn& returnValue(0);
 		//return (Treturn)returnValueFromLua(state);
 		//return returnValue;
 
-	} catch (const CEGUI::String& str) {
-		lua_settop(state, top);
-		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler: " << mLuaMethod<<".\n" << str.c_str());
 	} catch (const std::exception& ex) {
 		lua_settop(state, top);
 		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler '" << mLuaMethod << "'." << ex);
@@ -336,78 +346,80 @@ void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_ty
 
 
 
-
+template <typename TReturn = void>
 class ConnectorZero: public TemplatedConnectorBase<EmptyValueAdapter, EmptyValueAdapter>
 {
 public:
-	ConnectorZero(sigc::signal<void>& signal);
+	ConnectorZero(sigc::signal<TReturn>& signal);
 
 private:
-	sigc::signal<void> mSignal;
+	sigc::signal<TReturn> mSignal;
 
 	void signal_recieve();
 };
 
-template <typename TAdapter0, typename T0 = typename TAdapter0::value_type >
+template <typename TReturn, typename TAdapter0, typename T0 = typename TAdapter0::value_type >
 class ConnectorOne: public TemplatedConnectorBase<TAdapter0, EmptyValueAdapter>
 {
 public:
-	ConnectorOne(sigc::signal<void, T0>& signal, const TAdapter0& adapter0);
+	ConnectorOne(sigc::signal<TReturn, T0>& signal, const TAdapter0& adapter0);
 
 private:
-	sigc::signal<void, T0> mSignal;
+	sigc::signal<TReturn, T0> mSignal;
 
-	void signal_recieve(const T0& t0);
+	TReturn signal_recieve(const T0& t0);
 };
 
-template <typename TAdapter0, typename TAdapter1, typename T0 = typename TAdapter0::value_type, typename T1 = typename TAdapter1::value_type >
+template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0 = typename TAdapter0::value_type, typename T1 = typename TAdapter1::value_type >
 class ConnectorTwo: public TemplatedConnectorBase<TAdapter0, TAdapter1>
 {
 public:
-	ConnectorTwo(sigc::signal<void, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1);
+	ConnectorTwo(sigc::signal<TReturn, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1);
 
 private:
-	sigc::signal<void, T0, T1> mSignal;
+	sigc::signal<TReturn, T0, T1> mSignal;
 
-	void signal_recieve(T0 t0, T1 t1);
+	TReturn signal_recieve(T0 t0, T1 t1);
 };
 
 
 
-ConnectorZero::ConnectorZero(sigc::signal<void>& signal) :
+template <typename TReturn>
+ConnectorZero<TReturn>::ConnectorZero(sigc::signal<TReturn>& signal) :
 		TemplatedConnectorBase<>::TemplatedConnectorBase(EmptyValueAdapter(), EmptyValueAdapter()), mSignal(signal)
 {
 	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorZero::signal_recieve));
 }
 
-template <typename TAdapter0, typename T0>
-ConnectorOne<TAdapter0, T0>::ConnectorOne(sigc::signal<void, T0>& signal, const TAdapter0& adapter0) :
+template <typename TReturn, typename TAdapter0, typename T0>
+ConnectorOne<TReturn, TAdapter0, T0>::ConnectorOne(sigc::signal<TReturn, T0>& signal, const TAdapter0& adapter0) :
 	TemplatedConnectorBase<TAdapter0>::TemplatedConnectorBase(adapter0, EmptyValueAdapter()), mSignal(signal)
 {
 	ConnectorBase::mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorOne::signal_recieve));
 }
 
-template <typename TAdapter0, typename TAdapter1, typename T0, typename T1>
-ConnectorTwo<TAdapter0, TAdapter1, T0, T1>::ConnectorTwo(sigc::signal<void, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1) :
+template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0, typename T1>
+ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::ConnectorTwo(sigc::signal<TReturn, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1) :
 	TemplatedConnectorBase<TAdapter0, TAdapter1>::TemplatedConnectorBase(adapter0, adapter1), mSignal(signal)
 {
 	ConnectorBase::mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorTwo::signal_recieve));
 }
 
-void ConnectorZero::signal_recieve()
+template <typename TReturn>
+void ConnectorZero<TReturn>::signal_recieve()
 {
-	callLuaMethod(Empty(), Empty());
+	return callLuaMethod(Empty(), Empty());
 }
 
 
-template <typename TAdapter0, typename T0>
-void ConnectorOne<TAdapter0, T0>::signal_recieve(const T0& t0)
+template <typename TReturn, typename TAdapter0, typename T0>
+TReturn ConnectorOne<TReturn, TAdapter0, T0>::signal_recieve(const T0& t0)
 {
 	callLuaMethod(t0, Empty());
 }
 
-template <typename TAdapter0, typename TAdapter1, typename T0, typename T1>
-void ConnectorTwo<TAdapter0, TAdapter1, T0, T1>::signal_recieve(T0 t0, T1 t1)
+template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0, typename T1>
+TReturn ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::signal_recieve(T0 t0, T1 t1)
 {
 	callLuaMethod(t0, t1);
 }
@@ -498,7 +510,7 @@ template <typename TSignal, typename TAdapter0>
 void LuaConnector::createConnector(TSignal& signal, const TAdapter0& adapter)
 {
 	if (checkSignalExistence(&signal)) {
-		mConnector = new LuaConnectors::ConnectorOne<TAdapter0, typename TAdapter0::value_type>(signal, adapter);
+		mConnector = new LuaConnectors::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, adapter);
 	} else {
 		mConnector = 0;
 	}
@@ -508,7 +520,7 @@ template <typename TSignal, typename TAdapter0, typename TAdapter1>
 void LuaConnector::createConnector(TSignal& signal, const TAdapter0& adapter0, const TAdapter1& adapter1)
 {
 	if (checkSignalExistence(&signal)) {
-		mConnector = new LuaConnectors::ConnectorTwo<TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, adapter0, adapter1);
+		mConnector = new LuaConnectors::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, adapter0, adapter1);
 	} else {
 		mConnector = 0;
 	}
@@ -517,7 +529,7 @@ void LuaConnector::createConnector(TSignal& signal, const TAdapter0& adapter0, c
 LuaConnector::LuaConnector(sigc::signal<void>& signal)
 {
 	if (checkSignalExistence(&signal)) {
-		mConnector = new LuaConnectors::ConnectorZero(signal);
+		mConnector = new LuaConnectors::ConnectorZero<void>(signal);
 	}
 }
 
@@ -596,12 +608,7 @@ LuaConnector::LuaConnector(sigc::signal<void, const std::string&>& signal)
 
 LuaConnector::LuaConnector(sigc::signal<bool, const std::string&>& signal)
 {
-	mConnector = 0;
-//	if (checkSignalExistence(&signal)) {
-//		LuaTypeStore luaTypes;
-//		luaTypes.push_back("string");
-//		mConnector = new LuaConnectors::ConnectorOne<bool, const std::string&>(signal, luaTypes);
-//	}
+	createConnector(signal, LuaConnectors::StringValueAdapter());
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal)
