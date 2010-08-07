@@ -18,8 +18,8 @@
 
 
 #include "Connectors.h"
-#include "components/lua/LuaHelper.h"
-#include "components/lua/luaobject.h"
+#include "LuaHelper.h"
+#include "luaobject.h"
 #include "services/EmberServices.h"
 #include "services/scripting/ScriptingService.h"
 #include "framework/LoggingInstance.h"
@@ -27,10 +27,10 @@
 
 #include <tolua++.h>
 
-namespace EmberOgre
+namespace Ember
 {
 
-namespace LuaConnectors
+namespace Lua
 {
 
 ConnectorBase::ConnectorBase() :

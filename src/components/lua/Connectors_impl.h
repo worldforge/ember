@@ -19,8 +19,8 @@
 #ifndef EMBEROGRE_LUACONNECTORS_CONNECTORS_IMPL_H_
 #define EMBEROGRE_LUACONNECTORS_CONNECTORS_IMPL_H_
 
-#include "components/lua/LuaHelper.h"
-#include "components/lua/luaobject.h"
+#include "LuaHelper.h"
+#include "luaobject.h"
 #include "framework/LoggingInstance.h"
 
 
@@ -28,10 +28,10 @@
 #include <string>
 #include <sigc++/connection.h>
 
-namespace EmberOgre
+namespace Ember
 {
 
-namespace LuaConnectors
+namespace Lua
 {
 
 

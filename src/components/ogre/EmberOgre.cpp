@@ -112,7 +112,7 @@
 
 #include "OgreResourceProvider.h"
 #include "components/lua/LuaScriptingProvider.h"
-#include "components/ogre/scripting/bindings/lua/helpers/LuaConnector.h"
+#include "components/lua/Connectors.h"
 
 #include <Eris/Connection.h>
 #include <Eris/View.h>
@@ -597,7 +597,7 @@ void EmberOgre::Application_ServicesInitialized()
 	Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 	if (provider != 0) {
 		Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*> (provider);
-		LuaConnector::setState(luaScriptProvider->getLuaState());
+		Ember::Lua::ConnectorBase::setState(luaScriptProvider->getLuaState());
 	}
 
 }

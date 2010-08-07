@@ -35,6 +35,7 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <tolua++.h>
 
+
 namespace Atlas
 {
 namespace Message
@@ -52,6 +53,14 @@ class View;
 class ServerInfo;
 class Task;
 class Avatar;
+}
+
+namespace Ember
+{
+namespace Lua
+{
+class ConnectorBase;
+}
 }
 
 namespace EmberOgre
@@ -84,10 +93,7 @@ class EntityIcon;
 }
 //template<> void ConnectorBase::callLuaMethod(std::string t0, std::string t1, Empty t2, Empty t3);
 
-namespace LuaConnectors
-{
-class ConnectorBase;
-}
+
 
 /**
  @author Erik Hjortsberg
@@ -113,13 +119,6 @@ class ConnectorBase;
 class LuaConnector
 {
 public:
-
-	/**
-	 * @brief Sets the common lua state.
-	 *
-	 * @param state The common lua state.
-	 */
-	static void setState(lua_State* state);
 
 	/**
 	 * @brief Gets the common lua state.
@@ -200,7 +199,7 @@ private:
 	/**
 	 * @brief The internal connector which will handle the actual lua binding.
 	 */
-	LuaConnectors::ConnectorBase* mConnector;
+	Ember::Lua::ConnectorBase* mConnector;
 
 	/**
 	 * @brief Checks that the signal submitted isn't null. If so, mConnector will be set to null and no connection will occur.

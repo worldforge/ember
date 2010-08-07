@@ -24,10 +24,10 @@
 
 struct lua_State;
 
-namespace EmberOgre
+namespace Ember
 {
 
-namespace LuaConnectors
+namespace Lua
 {
 
 /**

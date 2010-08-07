@@ -25,7 +25,7 @@
 #endif
 
 #include "LuaConsoleObject.h"
-#include "Connectors_impl.h"
+#include "components/lua/Connectors_impl.h"
 #include "framework/ConsoleBackend.h"
 
 namespace EmberOgre {
@@ -33,7 +33,7 @@ namespace EmberOgre {
 LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description):
 mCommand(command), mLuaMethod(luaMethod), mCommandWrapper(command, this, description)
 {
-	mConnector = new LuaConnectors::TemplatedConnectorBase<LuaConnectors::StringValueAdapter, LuaConnectors::StringValueAdapter>(LuaConnectors::StringValueAdapter(), LuaConnectors::StringValueAdapter());
+	mConnector = new Ember::Lua::TemplatedConnectorBase<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter>(Ember::Lua::StringValueAdapter(), Ember::Lua::StringValueAdapter());
 	mConnector->connect(luaMethod);
 }
 

@@ -26,8 +26,8 @@
 
 #include "LuaConnector.h"
 
-#include "Connectors.h"
-#include "Connectors_impl.h"
+#include "components/lua/Connectors.h"
+#include "components/lua/Connectors_impl.h"
 
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/EntityWorldPickListener.h"
@@ -42,14 +42,9 @@ LuaConnector::~LuaConnector()
 	delete mConnector;
 }
 
-void LuaConnector::setState(lua_State* state)
-{
-	LuaConnectors::ConnectorBase::setState(state);
-}
-
 lua_State* LuaConnector::getState()
 {
-	return LuaConnectors::ConnectorBase::getState();
+	return Ember::Lua::ConnectorBase::getState();
 }
 
 LuaConnector* LuaConnector::connect(const std::string& luaMethod, lua_Object selfIndex)
@@ -119,7 +114,7 @@ template <typename TSignal, typename TAdapter0>
 void LuaConnector::createConnector(TSignal& signal, const TAdapter0& adapter)
 {
 	if (checkSignalExistence(&signal)) {
-		mConnector = new LuaConnectors::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, adapter);
+		mConnector = new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, adapter);
 	} else {
 		mConnector = 0;
 	}
@@ -129,7 +124,7 @@ template <typename TSignal, typename TAdapter0, typename TAdapter1>
 void LuaConnector::createConnector(TSignal& signal, const TAdapter0& adapter0, const TAdapter1& adapter1)
 {
 	if (checkSignalExistence(&signal)) {
-		mConnector = new LuaConnectors::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, adapter0, adapter1);
+		mConnector = new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, adapter0, adapter1);
 	} else {
 		mConnector = 0;
 	}
@@ -138,162 +133,162 @@ void LuaConnector::createConnector(TSignal& signal, const TAdapter0& adapter0, c
 LuaConnector::LuaConnector(sigc::signal<void>& signal)
 {
 	if (checkSignalExistence(&signal)) {
-		mConnector = new LuaConnectors::ConnectorZero<void>(signal);
+		mConnector = new Ember::Lua::ConnectorZero<void>(signal);
 	}
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&, EmberEntity*>& signal)
 {
-	createConnector(signal, LuaConnectors::StringValueAdapter(), LuaConnectors::PtrValueAdapter<EmberEntity>("EmberOgre::EmberEntity"));
+	createConnector(signal, Ember::Lua::StringValueAdapter(), Ember::Lua::PtrValueAdapter<EmberEntity>("EmberOgre::EmberEntity"));
 }
 
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Connection*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<Eris::Connection>("Eris::Connection"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<Eris::Connection>("Eris::Connection"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const Eris::ServerInfo&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<const Eris::ServerInfo>("Eris::ServerInfo"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<const Eris::ServerInfo>("Eris::ServerInfo"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, float>& signal)
 {
-	createConnector(signal, LuaConnectors::NumberValueAdapter<float>());
+	createConnector(signal, Ember::Lua::NumberValueAdapter<float>());
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const EntityPickResult&, const MousePickerArgs&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<const EntityPickResult>("EmberOgre::EntityPickResult"), LuaConnectors::RefValueAdapter<const MousePickerArgs>("EmberOgre::MousePickerArgs"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<const EntityPickResult>("EmberOgre::EntityPickResult"), Ember::Lua::RefValueAdapter<const MousePickerArgs>("EmberOgre::MousePickerArgs"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::vector<EmberOgre::EntityPickResult>&, const MousePickerArgs&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<const std::vector<EmberOgre::EntityPickResult> >("std::vector<EmberOgre::EntityPickResult>"), LuaConnectors::RefValueAdapter<const MousePickerArgs>("EmberOgre::MousePickerArgs"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<const std::vector<EmberOgre::EntityPickResult> >("std::vector<EmberOgre::EntityPickResult>"), Ember::Lua::RefValueAdapter<const MousePickerArgs>("EmberOgre::MousePickerArgs"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const MousePickerArgs&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<const MousePickerArgs>("EmberOgre::MousePickerArgs"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<const MousePickerArgs>("EmberOgre::MousePickerArgs"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Input::MouseButton, Input::InputMode>& signal)
 {
-	createConnector(signal, LuaConnectors::NumberValueAdapter<Input::MouseButton>(), LuaConnectors::NumberValueAdapter<Input::InputMode>());
+	createConnector(signal, Ember::Lua::NumberValueAdapter<Input::MouseButton>(), Ember::Lua::NumberValueAdapter<Input::InputMode>());
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Input::InputMode>& signal)
 {
-	createConnector(signal, LuaConnectors::NumberValueAdapter<Input::InputMode>());
+	createConnector(signal, Ember::Lua::NumberValueAdapter<Input::InputMode>());
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, EmberEntityFactory&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<EmberEntityFactory>("EmberOgre::EmberEntityFactory"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<EmberEntityFactory>("EmberOgre::EmberEntityFactory"));
 }
 LuaConnector::LuaConnector(sigc::signal<void, Jesus*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<Jesus>("EmberOgre::Jesus"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<Jesus>("EmberOgre::Jesus"));
 }
 LuaConnector::LuaConnector(sigc::signal<void, EmberEntity*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<EmberEntity>("EmberOgre::EmberEntity"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<EmberEntity>("EmberOgre::EmberEntity"));
 }
 LuaConnector::LuaConnector(sigc::signal<void, EmberEntity&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<EmberEntity>("EmberOgre::EmberEntity"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<EmberEntity>("EmberOgre::EmberEntity"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, EmberEntity&, EmberOgre::Authoring::EntityMover&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<EmberEntity>("EmberOgre::EmberEntity"), LuaConnectors::RefValueAdapter<EmberOgre::Authoring::EntityMover>("EmberOgre::Authoring::EntityMover"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<EmberEntity>("EmberOgre::EmberEntity"), Ember::Lua::RefValueAdapter<EmberOgre::Authoring::EntityMover>("EmberOgre::Authoring::EntityMover"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&>& signal)
 {
-	createConnector(signal, LuaConnectors::StringValueAdapter());
+	createConnector(signal, Ember::Lua::StringValueAdapter());
 }
 
 LuaConnector::LuaConnector(sigc::signal<bool, const std::string&>& signal)
 {
-	createConnector(signal, LuaConnectors::StringValueAdapter());
+	createConnector(signal, Ember::Lua::StringValueAdapter());
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::string&, const std::string&>& signal)
 {
-	createConnector(signal, LuaConnectors::StringValueAdapter(), LuaConnectors::StringValueAdapter());
+	createConnector(signal, Ember::Lua::StringValueAdapter(), Ember::Lua::StringValueAdapter());
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Terrain::BasePointUserObject*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<Terrain::BasePointUserObject>("EmberOgre::Terrain::BasePointUserObject"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<Terrain::BasePointUserObject>("EmberOgre::Terrain::BasePointUserObject"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Terrain::TerrainEditAction*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<Terrain::TerrainEditAction>("EmberOgre::Terrain::TerrainEditAction"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<Terrain::TerrainEditAction>("EmberOgre::Terrain::TerrainEditAction"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Terrain::TerrainEditorOverlay&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<Terrain::TerrainEditorOverlay>("EmberOgre::Terrain::TerrainEditorOverlay"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<Terrain::TerrainEditorOverlay>("EmberOgre::Terrain::TerrainEditorOverlay"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Terrain::TerrainManager&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<Terrain::TerrainManager>("EmberOgre::Terrain::TerrainManager"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<Terrain::TerrainManager>("EmberOgre::Terrain::TerrainManager"));
 }
 
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Task*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<Eris::Task>("Eris::Task"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<Eris::Task>("Eris::Task"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const std::set<std::string>&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<const std::set<std::string>&>("std::set<std::string>"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<const std::set<std::string>&>("std::set<std::string>"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<EmberOgre::Gui::EntityIcon>("EmberOgre::Gui::EntityIcon"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<EmberOgre::Gui::EntityIcon>("EmberOgre::Gui::EntityIcon"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Message::Element&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<const Atlas::Message::Element>("Atlas::Message::Element"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<const Atlas::Message::Element>("Atlas::Message::Element"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::MovementControllerMode::Mode>& signal)
 {
-	createConnector(signal, LuaConnectors::NumberValueAdapter<EmberOgre::MovementControllerMode::Mode>());
+	createConnector(signal, Ember::Lua::NumberValueAdapter<EmberOgre::MovementControllerMode::Mode>());
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, EmberOgre::Terrain::TerrainPage&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<EmberOgre::Terrain::TerrainPage>("EmberOgre::Terrain::TerrainPage"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<EmberOgre::Terrain::TerrainPage>("EmberOgre::Terrain::TerrainPage"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, const Atlas::Objects::Root&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<const Atlas::Objects::Root>("Atlas::Objects::Root"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<const Atlas::Objects::Root>("Atlas::Objects::Root"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::Avatar*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<Eris::Avatar>("Eris::Avatar"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<Eris::Avatar>("Eris::Avatar"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, Eris::View*>& signal)
 {
-	createConnector(signal, LuaConnectors::PtrValueAdapter<Eris::View>("Eris::View"));
+	createConnector(signal, Ember::Lua::PtrValueAdapter<Eris::View>("Eris::View"));
 }
 
 LuaConnector::LuaConnector(sigc::signal<void, World&>& signal)
 {
-	createConnector(signal, LuaConnectors::RefValueAdapter<World>("EmberOgre::World"));
+	createConnector(signal, Ember::Lua::RefValueAdapter<World>("EmberOgre::World"));
 }
 
 
