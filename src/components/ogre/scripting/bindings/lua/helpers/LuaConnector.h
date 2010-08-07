@@ -20,19 +20,20 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRELUACONNECTORS_H
-#define EMBEROGRELUACONNECTORS_H
+#ifndef EMBEROGRE_LUACONNECTOR_H
+#define EMBEROGRE_LUACONNECTOR_H
 
 #include "services/input/Input.h"
 #include "components/ogre/MovementController.h"
+#include "components/lua/luaobject.h"
 
-#include <tolua++.h>
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 #include <string>
 #include <vector>
 #include <Atlas/Objects/ObjectsFwd.h>
+#include <tolua++.h>
 
 namespace Atlas
 {
@@ -86,14 +87,6 @@ class EntityIcon;
 namespace LuaConnectors
 {
 class ConnectorBase;
-class Empty
-{
-public:
-	Empty()
-	{
-	}
-};
-
 }
 
 /**
@@ -103,13 +96,16 @@ public:
 
  To use them in lua, use code like this:
  <code>
- --connect the lua method "lua_foo" to the event "EventFoo" of the object "emitter" and keeps a reference to the adapter in the variable "fooConnector"
- local emitter = EmberOgre.Emitter:new()
- fooConnector = EmberOgre.LuaConnector:new_local(emitter.EventFoo):connect("lua_foo")
 
  function lua_foo()
  --do something here
  end
+
+ --connect the lua method "lua_foo" to the event "EventFoo" of the object "emitter" and keeps a reference to the adapter in the variable "fooConnector"
+ local emitter = EmberOgre.Emitter:new()
+ fooConnector = EmberOgre.LuaConnector:new_local(emitter.EventFoo):connect(lua_foo)
+
+
 
  </code>
 
@@ -131,8 +127,6 @@ public:
 	 * @return The common lua state.
 	 */
 	static lua_State* getState();
-
-	static lua_State* sState;
 
 	LuaConnector(sigc::signal<void>& signal);
 	LuaConnector(sigc::signal<void, const std::string&, EmberEntity*>& signal);
@@ -216,9 +210,21 @@ private:
 	 */
 	bool checkSignalExistence(void* signal);
 
+
+	/**
+	 * @brief Creates a new connector instance.
+	 * @param signal The signal.
+	 * @param adapter The first adapter.
+	 */
 	template <typename TSignal, typename TAdapter0>
 	void createConnector(TSignal& signal, const TAdapter0& adapter);
 
+	/**
+	 * @brief Creates a new connector instance.
+	 * @param signal The signal.
+	 * @param adapter0 The first adapter.
+	 * @param adapter1 The second adapter.
+	 */
 	template <typename TSignal, typename TAdapter0, typename TAdapter1>
 	void createConnector(TSignal& signal, const TAdapter0& adapter0, const TAdapter1& adapter1);
 
