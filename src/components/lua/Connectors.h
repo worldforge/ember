@@ -222,6 +222,16 @@ public:
 	 */
 	static lua_State* getState();
 
+	/**
+	 * @brief Returns a value from the lua state.
+	 * The type of value is specified in the template type.
+	 * We'll use a simple function for this, rather than a system with adapter such as we use for pushing values onto Lua.
+	 * The main reason is that in pretty much all cases void is returned by the signals we listen to, and so far the only other value returned is bool.
+	 * @returns A value extracted from the lua environment.
+	 */
+	template<typename Treturn>
+	static Treturn returnValueFromLua();
+
 protected:
 
 	/**
@@ -273,6 +283,9 @@ protected:
 	 * @param numberOfArguments The number of arguments on the stack.
 	 */
 	void callFunction(lua_State* state, int numberOfArguments);
+
+
+
 };
 
 /**

@@ -95,12 +95,10 @@ void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_ty
 }
 
 
-
-
-
-
-
-
+template <>
+inline void ConnectorBase::returnValueFromLua()
+{
+}
 
 
 template <typename TReturn>
@@ -128,6 +126,7 @@ template <typename TReturn>
 TReturn ConnectorZero<TReturn>::signal_receive()
 {
 	callLuaMethod(Empty(), Empty());
+	return returnValueFromLua<TReturn>();
 }
 
 
@@ -135,19 +134,15 @@ template <typename TReturn, typename TAdapter0, typename T0>
 TReturn ConnectorOne<TReturn, TAdapter0, T0>::signal_receive(const T0& t0)
 {
 	callLuaMethod(t0, Empty());
+	return ConnectorBase::returnValueFromLua<TReturn>();
 }
 
 template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0, typename T1>
 TReturn ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::signal_receive(const T0& t0, const T1& t1)
 {
 	callLuaMethod(t0, t1);
+	return ConnectorBase::returnValueFromLua<TReturn>();
 }
-//template<typename Treturn>
-//Treturn ConnectorBase::returnValueFromLua(lua_State* state)
-//{
-//	return static_cast<Treturn> (lua_touserdata(state, -1));
-//}
-
 
 }
 }

@@ -124,6 +124,17 @@ void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 	}
 }
 
+
+template <>
+bool ConnectorBase::returnValueFromLua()
+{
+	lua_State* state(Ember::Lua::ConnectorBase::getState());
+	bool vale = lua_isboolean(state, -1) ? lua_toboolean(state, -1 ) : true;
+	lua_pop(state, 1);
+	return vale;
+}
+
+
 bool StringValueAdapter::pushValue(lua_State* state, StringValueAdapter::value_type value)
 {
 	tolua_pushstring(state, value.c_str());
