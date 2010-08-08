@@ -270,8 +270,6 @@ IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const
 }
 void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
-	Eris::Entity::onLocationChanged(oldLocation);
-
 	///Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
 
@@ -292,6 +290,9 @@ void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 			S_LOG_WARNING("Problem when setting attachment for entity." << ex);
 		}
 	}
+
+	Eris::Entity::onLocationChanged(oldLocation);
+
 }
 
 void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
