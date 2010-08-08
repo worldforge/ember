@@ -43,6 +43,7 @@ SceneNodeProvider::~SceneNodeProvider()
 			mNode->detachObject(mAttachedObject);
 		}
 	}
+	mNode->removeAllChildren();
 	//If the visibility was changed for the node, we usually detach it from the parent node. Therefore we need to first check whether there's any parent set.
 	if (mNode->getParent()) {
 		mParentNode.removeAndDestroyChild(mNode->getName());
