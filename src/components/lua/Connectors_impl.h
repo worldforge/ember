@@ -138,7 +138,7 @@ TReturn ConnectorOne<TReturn, TAdapter0, T0>::signal_recieve(const T0& t0)
 }
 
 template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0, typename T1>
-TReturn ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::signal_recieve(T0 t0, T1 t1)
+TReturn ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::signal_recieve(const T0& t0, const T1& t1)
 {
 	callLuaMethod(t0, t1);
 }

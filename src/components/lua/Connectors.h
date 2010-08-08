@@ -402,7 +402,7 @@ private:
 	 * @param t0 The first argument.
 	 * @param t1 The second argument.
 	 */
-	TReturn signal_recieve(T0 t0, T1 t1);
+	TReturn signal_recieve(const T0& t0, const T1& t1);
 
 };
 //template<typename Treturn>
