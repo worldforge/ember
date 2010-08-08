@@ -48,6 +48,7 @@ ThirdPersonCameraMount::~ThirdPersonCameraMount()
 
 void ThirdPersonCameraMount::attachToNode(Ogre::Node* sceneNode)
 {
+	//If we're asked to reconnect to the scene node we're already connected to we should bail now.
 	if (sceneNode == mCameraRootNode->getParentSceneNode()) {
 		return;
 	}
@@ -55,8 +56,11 @@ void ThirdPersonCameraMount::attachToNode(Ogre::Node* sceneNode)
 		//first detach from our current node
 		mCameraRootNode->getParentSceneNode()->removeChild(mCameraRootNode);
 	}
+	//If a null pointer was submitted we should attach to the root scene node of the scene manager
 	if (sceneNode) {
 		sceneNode->addChild(mCameraRootNode);
+	} else {
+		mCameraRootNode->getCreator()->getRootSceneNode()->addChild(mCameraRootNode);
 	}
 }
 
