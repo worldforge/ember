@@ -38,7 +38,7 @@ namespace Authoring
 class PolygonPoint;
 
 /**
- @brief A listener interface which will recieve updates when the movement of the point changes.
+ @brief A listener interface which will receive updates when the movement of the point changes.
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
 class IMovementListener
@@ -152,7 +152,7 @@ private:
 	void switchToDeleteMode();
 
 	/**
-	 * @brief An optional listener which will recieve movement updates.
+	 * @brief An optional listener which will receive movement updates.
 	 */
 	IMovementListener* mListener;
 

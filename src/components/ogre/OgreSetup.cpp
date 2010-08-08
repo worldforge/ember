@@ -451,7 +451,7 @@ bool OgreSetup::configure(void)
 		}
 #endif
 
-		///we need to set the window to be active and visible by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never recieve since we'll use SDL).
+		///we need to set the window to be active and visible by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never receive since we'll use SDL).
 		///see OgreGLXWindow.cpp
 		mRenderWindow->setActive(true);
 		mRenderWindow->setAutoUpdated(true);

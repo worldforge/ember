@@ -376,7 +376,7 @@ protected:
 	World* mWorld;
 
 	/**
-	 * @brief Sent from the server service when we've recieved a Eris::View instance from the server.
+	 * @brief Sent from the server service when we've received a Eris::View instance from the server.
 	 *
 	 * @param world
 	 */

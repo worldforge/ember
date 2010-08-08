@@ -40,7 +40,7 @@ public:
     /**
      * Constructor.
      * @param command The console command. There are mainly two different kinds of command: normal commands and "toggle" commands. The latter are identified by always starting with "+", such as "+move_forward". If a "toggle" command is used, an "inverse command" will automatically be generated, accessable through getInverseCommand(). This is meant to be used to act as an inverse of the main command.
-     * @param object The object instance. This will recieve notifications when the command (and if available the inverse command) is used.
+     * @param object The object instance. This will receive notifications when the command (and if available the inverse command) is used.
      * @param description Description of the command, to be presented to the end user.
      * @param suppressLogging If true, logging of the registration and deregistration will be suppressed. This is useful if you have a command which you'll add and remove often.
     */
@@ -59,7 +59,7 @@ public:
 
     /**
      * @brief Gets the inverse command, i.e. the command used to invert the action of the command.
-     * This is only relevant when dealing with commands prefixed with "+", i.e. commands that will require a similiar command prefixed by "-" to stop what they're doing. An example of this is the "+move_forward" command which will move the avatar forward until a "-move_forward" command is recieved.
+     * This is only relevant when dealing with commands prefixed with "+", i.e. commands that will require a similiar command prefixed by "-" to stop what they're doing. An example of this is the "+move_forward" command which will move the avatar forward until a "-move_forward" command is received.
      * This is most often used in conjunction with the InputCommandMapper class, but it can of course be used by other mechanisms as well.
      *
      * Note that an inverse command is automatically generated whenever a "+" command is used.

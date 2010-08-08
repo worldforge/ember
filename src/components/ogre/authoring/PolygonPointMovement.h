@@ -48,7 +48,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param point The point that should be moved.
-	 * @param movementListener An optional listener which will recieve movement updates.
+	 * @param movementListener An optional listener which will receive movement updates.
 	 * @param camera The main camera used in the world.
 	 */
 	PolygonPointMovement(PolygonPoint& point, IMovementListener* movementListener, const Camera::MainCamera& camera);

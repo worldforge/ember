@@ -137,7 +137,7 @@ class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBack
     /**
      * @brief Registers a command with the console
      * @param command The command to register.
-     * @param object The object which will recieve updated when the console command is activated.
+     * @param object The object which will receive updated when the console command is activated.
      * @param description A description of the command and what it does.
      */
     void registerCommand(const std::string &command, ConsoleObject *object, const std::string& description = "", bool suppressLogging = false);

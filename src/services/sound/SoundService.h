@@ -132,7 +132,7 @@ public:
 	 * @brief Creates a new SoundInstance.
 	 * Every time you want to play a sound you must create a SoundInstance and use that to play it. The only way to (normally) create such an instance is through this method. The sound service will keep track of all SoundInstance instances that are created, and will call SoundInstance::update() each frame, granted that SoundService::cycle() is called.
 	 * Ownership of the SoundInstance is held by the sound service, and as soon as you're finished with it you should immediately return it to the sound service through destroyInstance(). Under normal operations it's expected that there will only be a few SoundInstances in play at once.
-	 * @note If the sound system is disabled this will always return null, so make sure to check what you recieve when calling this.
+	 * @note If the sound system is disabled this will always return null, so make sure to check what you receive when calling this.
 	 * @return A new SoundInstance instance, or null if no instance could be created or the sound system is disabled. Before you can play it, through SoundInstance::play(), you must bind it to a SoundSample.
 	 */
 	SoundInstance* createInstance();

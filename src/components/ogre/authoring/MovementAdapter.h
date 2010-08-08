@@ -57,7 +57,7 @@ public:
 
 	/**
 	 * @brief Forces an update.
-	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
+	 * This could be called to force a position update, even if no input has been received (for example a mouse movement).
 	 */
 	virtual void update()
 	{
@@ -115,7 +115,7 @@ public:
 
 	/**
 	 * @brief Forces an update.
-	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
+	 * This could be called to force a position update, even if no input has been received (for example a mouse movement).
 	 */
 	virtual void update();
 
@@ -135,7 +135,7 @@ protected:
 
  @brief Provides an adapter for moving objects in the world.
 
- When activates, an instance of this will recieve input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into movement of any object movements, as defined in the bridge to which this is attached.
+ When activates, an instance of this will receive input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into movement of any object movements, as defined in the bridge to which this is attached.
  */
 class MovementAdapter: public Ember::IInputAdapter
 {
@@ -171,7 +171,7 @@ public:
 
 	/**
 	 * @brief Forces an update.
-	 * This could be called to force a position update, even if no input has been recieved (for example a mouse movement).
+	 * This could be called to force a position update, even if no input has been received (for example a mouse movement).
 	 */
 	virtual void update();
 

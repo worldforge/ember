@@ -174,7 +174,7 @@ public:
 
 	/**
 	 * @brief Sets whether eris should be polled each frame. Defaults to true.
-	 * Normally Eris is polled each frame. A "poll" means that Eris is asked to send and recieve any data from the server and act on it.
+	 * Normally Eris is polled each frame. A "poll" means that Eris is asked to send and receive any data from the server and act on it.
 	 * @param doPoll True if polling should occur each frame.
 	 */
 	void setErisPolling(bool doPoll);

@@ -61,7 +61,7 @@ public:
 	/**
 	 * @brief Adds a movable to the movement list.
 	 * @param movable The movable instance to add to the movable list.
-	 * That means that until removeMovable is called for the specific movable it will recieve calls to updateMotion each frame.
+	 * That means that until removeMovable is called for the specific movable it will receive calls to updateMotion each frame.
 	 * It's safe to add the same movable multiple times.
 	 */
 	void addMovable(IMovable* movable);

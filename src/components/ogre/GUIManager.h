@@ -120,7 +120,7 @@ public:
 	void removeWidget(Gui::Widget* widget);
 
 	/**
-	 *    Adds a new widget to the system. This means it will recieve FrameStarted events.
+	 *    Adds a new widget to the system. This means it will receive FrameStarted events.
 	 * @param widget
 	 */
 	void addWidget(Gui::Widget* widget);
@@ -161,7 +161,7 @@ public:
 
 	/**
 	 *    true if keyboard input should make the avatar move
-	 *    this happens when wither 1) we're not in gui mode 2) the background sheet has the input control (thus, when something else, like an edit box has input control, that edit box will recieve key strokes
+	 *    this happens when wither 1) we're not in gui mode 2) the background sheet has the input control (thus, when something else, like an edit box has input control, that edit box will receive key strokes
 	 * @return
 	 */
 	const bool isInMovementKeysMode() const;

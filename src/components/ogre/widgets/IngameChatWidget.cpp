@@ -503,7 +503,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			responseText->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990");
 
 			responseText->setInheritsAlpha(true);
-			///we need to disable and deactivate it so it won't recieve any input (input should go to the button instead)
+			///we need to disable and deactivate it so it won't receive any input (input should go to the button instead)
 			responseText->deactivate();
 			responseText->disable();
 

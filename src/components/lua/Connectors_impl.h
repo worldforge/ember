@@ -107,38 +107,38 @@ template <typename TReturn>
 ConnectorZero<TReturn>::ConnectorZero(sigc::signal<TReturn>& signal) :
 		TemplatedConnectorBase<>::TemplatedConnectorBase(EmptyValueAdapter(), EmptyValueAdapter()), mSignal(signal)
 {
-	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorZero::signal_recieve));
+	mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorZero::signal_receive));
 }
 
 template <typename TReturn, typename TAdapter0, typename T0>
 ConnectorOne<TReturn, TAdapter0, T0>::ConnectorOne(sigc::signal<TReturn, T0>& signal, const TAdapter0& adapter0) :
 	TemplatedConnectorBase<TAdapter0>::TemplatedConnectorBase(adapter0, EmptyValueAdapter()), mSignal(signal)
 {
-	ConnectorBase::mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorOne::signal_recieve));
+	ConnectorBase::mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorOne::signal_receive));
 }
 
 template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0, typename T1>
 ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::ConnectorTwo(sigc::signal<TReturn, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1) :
 	TemplatedConnectorBase<TAdapter0, TAdapter1>::TemplatedConnectorBase(adapter0, adapter1), mSignal(signal)
 {
-	ConnectorBase::mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorTwo::signal_recieve));
+	ConnectorBase::mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorTwo::signal_receive));
 }
 
 template <typename TReturn>
-void ConnectorZero<TReturn>::signal_recieve()
+TReturn ConnectorZero<TReturn>::signal_receive()
 {
-	return callLuaMethod(Empty(), Empty());
+	callLuaMethod(Empty(), Empty());
 }
 
 
 template <typename TReturn, typename TAdapter0, typename T0>
-TReturn ConnectorOne<TReturn, TAdapter0, T0>::signal_recieve(const T0& t0)
+TReturn ConnectorOne<TReturn, TAdapter0, T0>::signal_receive(const T0& t0)
 {
 	callLuaMethod(t0, Empty());
 }
 
 template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0, typename T1>
-TReturn ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::signal_recieve(const T0& t0, const T1& t1)
+TReturn ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::signal_receive(const T0& t0, const T1& t1)
 {
 	callLuaMethod(t0, t1);
 }

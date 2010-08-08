@@ -26,7 +26,7 @@ namespace Ember
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Listens for objects sent and recieved through a Connection.
+ * @brief Listens for objects sent and received through a Connection.
  */
 class IConnectionListener
 {

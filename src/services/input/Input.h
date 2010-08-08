@@ -176,7 +176,7 @@ public:
    virtual ~Input();
 	
 	/**
-	 * @brief Initializes the input object. Call this before you want to recieve input.
+	 * @brief Initializes the input object. Call this before you want to receive input.
 	 * @param width The width of the window, in pixels.
 	 * @param heigh The height of the window, in pixels.
 	 */

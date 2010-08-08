@@ -12,7 +12,7 @@ local Debug = {}
 local debugWidget = guiManager:createWidget()
 
 
-function Debug_recieveLog(level, line)
+function Debug_receiveLog(level, line)
 	Debug.logTextBox:setText(line .. "\n" + Debug.logTextBox:getText())
 end
 
@@ -86,7 +86,7 @@ void DebugWidget::buildWidget()
 	BIND_CEGUI_EVENT(mLoglevelDroplist, CEGUI::Combobox::EventListSelectionAccepted, DebugWidget::loglevel_SelectionChanged);
 	
 	
-	Eris::Logged.connect(sigc::mem_fun(*this, &DebugWidget::recieveLog));
+	Eris::Logged.connect(sigc::mem_fun(*this, &DebugWidget::receiveLog));
 	
 
 }

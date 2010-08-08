@@ -190,7 +190,7 @@ protected:
 	
 	/**
 	Whenever the adapter is updating the gui this must be set to true first, and then back to false after the update has been done.
-	The reason is that we listen for changes to the gui elements and update the internally held element as we recieve element changed events. However, these events will both be triggered when the gui is updated by the user and when we update the gui from the code. This can lead to a never ending loop, where a gui update will trigger a value update which will trigger a gui update and so on.
+	The reason is that we listen for changes to the gui elements and update the internally held element as we receive element changed events. However, these events will both be triggered when the gui is updated by the user and when we update the gui from the code. This can lead to a never ending loop, where a gui update will trigger a value update which will trigger a gui update and so on.
 	By setting and then checking for this value we can however make sure to not enter such a loop.
 	All methods that listen to gui update events must first check that this isn't true before they can assume that the gui has been changed and that the internal value should be updated.
 	*/
