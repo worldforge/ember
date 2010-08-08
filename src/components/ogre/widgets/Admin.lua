@@ -54,9 +54,6 @@ function Admin:ModelEditor_Click(args)
 end
 
 function Admin:TerrainEditor_Click(args)
-	if TerrainEditor == nil then
-		loadScript("TerrainEditor.lua")
-	end
 	console:runCommand("/show_terrainEditor")
 	return true
 end

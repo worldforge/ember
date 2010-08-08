@@ -4,6 +4,7 @@
 		<Property Name='TitlebarEnabled' Value='True'/>
 		<Property Name='UnifiedPosition' Value='{{1,-200},{0,0}}'/>
 		<Property Name='UnifiedSize' Value='{{0,200},{0,200}}'/>
+		<Property Name='Visible' Value='false'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-4},{1,0}}'/>
