@@ -317,6 +317,7 @@ public:
 private:
 	typedef std::map<std::string, BasePointUserObject*> BasePointUserObjectStore;
 	typedef std::set<BasePointUserObject*> BasePointUserObjectSet;
+	typedef std::vector<Ogre::Entity*> EntityStore;
 
 	TerrainEditor& mEditor;
 	Ogre::SceneManager& mSceneManager;
@@ -334,6 +335,12 @@ private:
 	typedef std::list<TerrainEditAction> ActionStore;
 	ActionStore mActions;
 	ActionStore mUndoneActions;
+
+	/**
+	 * @brief A store of all created entities.
+	 * The entities here will all be destroyed when this instance is destroyed.
+	 */
+	EntityStore mEntities;
 
 	void createOverlay(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints, Ogre::SceneNode& worldSceneNode);
 

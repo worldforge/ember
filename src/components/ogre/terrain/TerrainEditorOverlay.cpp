@@ -162,13 +162,18 @@ const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 
 }
 TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint> >& basePoints) :
-	mEditor(editor), mSceneManager(sceneManager), mManager(manager), mCamera(camera), mPickListener(*this), mCurrentUserObject(0), mOverlayNode(0)
+	mEditor(editor), mSceneManager(sceneManager), mManager(manager), mCamera(camera), mOverlayNode(0), mPickListener(*this), mCurrentUserObject(0)
 {
 	createOverlay(basePoints, worldSceneNode);
 }
 
 TerrainEditorOverlay::~TerrainEditorOverlay()
 {
+	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
+		Ogre::Entity* entity = *I;
+		entity->detachFromParent();
+		mSceneManager.destroyEntity(entity);
+	}
 	//TODO: also delete user objects
 	if (mOverlayNode) {
 		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*> (mOverlayNode->getParent());
@@ -210,6 +215,8 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 				S_LOG_FAILURE("Unexpected error when creating base point marker entity.");
 				continue;
 			}
+
+			mEntities.push_back(entity);
 
 			const Mercator::BasePoint& basepoint(J->second);
 			Ogre::SceneNode* basepointNode = mOverlayNode->createChildSceneNode();
