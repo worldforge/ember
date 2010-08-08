@@ -322,6 +322,8 @@ void Avatar::movedInWorld()
 
 void Avatar::avatar_LocationChanged(Eris::Entity* entity)
 {
+	mCameraMount->attachToNode(getAvatarSceneNode());
+
 	///if we've changed location, we need to update the orientation. This is done on the next onMoved event, which is why we must honour the updated values on next onMoved event, even though we might be moving.
 	mHasChangedLocation = true;
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
