@@ -41,9 +41,9 @@ HeightMapBufferProvider::~HeightMapBufferProvider()
 	}
 }
 
-void HeightMapBufferProvider::checkin(HeightMapBuffer* heightMapBuffer)
+void HeightMapBufferProvider::checkin(HeightMapBuffer& heightMapBuffer)
 {
-	Buffer<float>* buffer = heightMapBuffer->getBuffer();
+	Buffer<float>* buffer = heightMapBuffer.getBuffer();
 	mPrimitiveBuffers.push_back(buffer);
 }
 
@@ -70,7 +70,9 @@ void HeightMapBufferProvider::maintainPool()
 
 	if (mPrimitiveBuffers.size() >= mDesiredBuffers + mDesiredBuffersTolerance) {
 		while (mPrimitiveBuffers.size() > mDesiredBuffers) {
+			Buffer<float>* buffer = mPrimitiveBuffers.back();
 			mPrimitiveBuffers.pop_back();
+			delete buffer;
 		}
 	}
 }

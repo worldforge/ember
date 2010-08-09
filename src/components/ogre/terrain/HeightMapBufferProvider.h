@@ -90,8 +90,9 @@ private:
 	/**
 	 * @brief Returns a previous checked out height map buffer instance.
 	 * This will return the Buffer instance to the pool.
+	 * @param heightMapBuffer The height buffer to return to the pool.
 	 */
-	void checkin(HeightMapBuffer* heightMapBuffer);
+	void checkin(HeightMapBuffer& heightMapBuffer);
 
 	/**
 	 * @brief Makes sure that the pool contains the desired amount of buffers.

@@ -33,7 +33,7 @@ HeightMapBuffer::HeightMapBuffer(HeightMapBufferProvider& provider, BufferType* 
 
 HeightMapBuffer::~HeightMapBuffer()
 {
-	mProvider.checkin(this);
+	mProvider.checkin(*this);
 }
 
 HeightMapBuffer::BufferType* HeightMapBuffer::getBuffer()
