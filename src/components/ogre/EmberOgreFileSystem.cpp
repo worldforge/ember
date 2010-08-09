@@ -369,8 +369,7 @@ namespace EmberOgre {
         // Use filesystem to determine size
         // (quicker than streaming to the end and back)
         struct stat tagStat;
-		int ret = stat(full_path.c_str(), &tagStat);
-        assert(ret == 0 && "Problem getting file size" );
+		stat(full_path.c_str(), &tagStat);
 
         // Always open in binary mode
         std::ifstream *origStream = OGRE_NEW_T(std::ifstream, MEMCATEGORY_GENERAL)();

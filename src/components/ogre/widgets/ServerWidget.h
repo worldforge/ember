@@ -73,7 +73,24 @@ protected:
 	typedef std::multimap<std::string, std::string> CharacterAndSpawnsStore;
 
 	Eris::Account* mAccount;
+
+	/**
+	A preview renderer for creating new characters
+	*/
+	ModelRenderer* mModelPreviewRenderer;
+
+	NewCharacter mNewChar;
+
 	CEGUI::Listbox* mCharacterList;
+	CEGUI::PushButton* mCreateChar;
+	CEGUI::PushButton* mUseCreator;
+	CEGUI::Editbox* mNewCharName;
+	CEGUI::MultiLineEditbox* mNewCharDescription;
+	CEGUI::Combobox* mTypesList;
+	CEGUI::RadioButton* mGenderRadioButton;
+
+
+	CharacterAndSpawnsStore mCharacterAndSpawns;
 
 	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
@@ -115,15 +132,6 @@ protected:
 	bool passwordBox_TextChanged(const CEGUI::EventArgs& args);
 	void gotAllCharacters(Eris::Account* account);
 	
-	NewCharacter mNewChar;
-	
-	CEGUI::PushButton* mCreateChar;
-	CEGUI::PushButton* mUseCreator;
-	CEGUI::Editbox* mNewCharName;
-	CEGUI::MultiLineEditbox* mNewCharDescription;
-	CEGUI::Combobox* mTypesList;
-	CEGUI::RadioButton* mGenderRadioButton;
-	
 	bool TypesList_SelectionChanged(const CEGUI::EventArgs& args);
 	bool Gender_SelectionChanged(const CEGUI::EventArgs& args);
 	bool Name_TextChanged(const CEGUI::EventArgs& args);
@@ -137,11 +145,6 @@ protected:
 	 * @param account 
 	 */
 	void fillAllowedCharacterTypes(Eris::Account* account);
-	
-	/**
-	A preview renderer for creating new characters
-	*/
-	ModelRenderer* mModelPreviewRenderer;
 	
 	/**
 	 *    Set up the preview renderer.
@@ -166,8 +169,6 @@ protected:
 	 * @brief Shows an alert explaining to the user that the server doesn't have any available characters and thus isn't correctly setup.
 	 */
 	void showNoCharactersAlert();
-
-	CharacterAndSpawnsStore mCharacterAndSpawns;
 
 };
 };

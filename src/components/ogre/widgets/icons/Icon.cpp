@@ -35,7 +35,7 @@ namespace Gui {
 namespace Icons {
 
 Icon::Icon(const std::string& key, IconImageStoreEntry* imageStoreEntry)
-: mImageStoreEntry(imageStoreEntry), mKey(key)
+: mKey(key), mImageStoreEntry(imageStoreEntry)
 {
 }
 

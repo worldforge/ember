@@ -76,7 +76,7 @@ void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr tex
 		///blit the whole image to the hardware buffer
 		Ogre::PixelBox sourceBox(image.getPixelBox());
 		//blit for each mipmap
-		for (int i = 0; i <= texture->getNumMipmaps(); ++i) {
+		for (unsigned int i = 0; i <= texture->getNumMipmaps(); ++i) {
 			Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
 			hardwareBuffer->blitFromMemory(sourceBox);
 		}

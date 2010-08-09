@@ -34,7 +34,7 @@ namespace EmberOgre
 namespace Terrain
 {
 
-SegmentManager::SegmentManager(Mercator::Terrain& terrain, int desiredSegmentBuffer) :
+SegmentManager::SegmentManager(Mercator::Terrain& terrain, unsigned int desiredSegmentBuffer) :
 	mTerrain(terrain), mDesiredSegmentBuffer(desiredSegmentBuffer)
 {
 

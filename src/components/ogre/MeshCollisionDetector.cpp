@@ -73,7 +73,7 @@ void MeshCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult& resul
 	// check all of the objects most of the time, but the worst case scenario is that
 	// we need to test every triangle of every object.
 	Ogre::Real closest_distance = -1.0f;
-	Ogre::Vector3 closest_result;
+	Ogre::Vector3 closest_result = Ogre::Vector3::ZERO;
 	const Model::Model::SubModelSet& submodels = mModel->getSubmodels();
 	for (Model::Model::SubModelSet::const_iterator I = submodels.begin(); I != submodels.end(); ++I)
 	{

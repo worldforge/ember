@@ -135,7 +135,7 @@ void TerrainPageGeometry::updateOgreHeightData(float* heightData)
 void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Segment& segment, int startX, int startY)
 {
 	int segmentWidth = segment.getSize();
-	size_t i, j;
+	int i, j;
 	int pageWidth = mPage.getPageSize();
 	size_t ogreDataSize = pageWidth * pageWidth;
 

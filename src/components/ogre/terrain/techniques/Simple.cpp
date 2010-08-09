@@ -53,6 +53,7 @@ Simple::Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& 
 
 bool Simple::prepareMaterial()
 {
+	return true;
 }
 
 bool Simple::compileMaterial(Ogre::MaterialPtr material)
@@ -118,7 +119,7 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 	///blit the whole image to the hardware buffer
 	Ogre::PixelBox sourceBox(ogreImage.getPixelBox());
 	//blit for each mipmap
-	for (int i = 0; i <= texture->getNumMipmaps(); ++i) {
+	for (unsigned int i = 0; i <= texture->getNumMipmaps(); ++i) {
 		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
 		hardwareBuffer->blitFromMemory(sourceBox);
 	}

@@ -27,7 +27,7 @@ namespace Terrain
 {
 
 TerrainAreaRemoveTask::TerrainAreaRemoveTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, AreaMap& areas, const std::string& entityId) :
-	mShader(shader), mAreas(areas), mEntityId(entityId), TerrainAreaTaskBase(terrain, area, markForUpdateSlot)
+	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mShader(shader), mAreas(areas), mEntityId(entityId)
 {
 
 }

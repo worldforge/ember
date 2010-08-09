@@ -71,7 +71,7 @@ public:
 	 * @param terrain The main Mercator terrain instance from which segments will be obtained.
 	 * @param desiredSegmentBuffer The amount of segments we want to keep around, not collected. Often the segments closest to the avatar are most often used and updated, and it's a good idea to keep a number of these around without releasing their data.
 	 */
-	SegmentManager(Mercator::Terrain& terrain, int desiredSegmentBuffer);
+	SegmentManager(Mercator::Terrain& terrain, unsigned int desiredSegmentBuffer);
 
 	/**
 	 * @brief Dtor.
@@ -129,7 +129,7 @@ protected:
 	/**
 	 * @brief The number of desired segments to keep around as a buffer.
 	 */
-	int mDesiredSegmentBuffer;
+	unsigned int mDesiredSegmentBuffer;
 
 	/**
 	 * @brief A store of Segment instances.

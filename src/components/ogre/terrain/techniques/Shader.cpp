@@ -33,7 +33,7 @@ namespace Techniques
 {
 
 Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
-	mIncludeShadows(includeShadows), Base::Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow)
+	Base::Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows)
 {
 }
 
@@ -81,6 +81,7 @@ bool Shader::prepareMaterial()
 	}
 	//We don't need the geometry any more, so we'll release it as soon as we can.
 	mGeometry.reset();
+	return true;
 }
 
 bool Shader::compileMaterial(Ogre::MaterialPtr material)

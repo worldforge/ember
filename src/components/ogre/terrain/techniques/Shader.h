@@ -53,13 +53,14 @@ public:
 protected:
 	typedef std::vector<ShaderPass*> PassStore;
 
-	virtual ShaderPass* addPass();
-	PassStore mPasses;
-
 	/**
 	 * @brief Sets whether shadows should be used.
 	 */
 	bool mIncludeShadows;
+
+	PassStore mPasses;
+
+	virtual ShaderPass* addPass();
 
 	void addBaseLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
 	void addLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);

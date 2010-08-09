@@ -74,7 +74,7 @@ TerrainPageSurfaceLayer* TerrainPageSurface::updateLayer(TerrainPageGeometry& ge
 		//		I->second->updateCoverageImage(geometry);
 		return I->second;
 	}
-
+	return 0;
 }
 
 const TerrainPosition& TerrainPageSurface::getWFPosition() const

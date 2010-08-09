@@ -26,7 +26,7 @@ namespace Terrain {
 
 
 PlantAreaQuery::PlantAreaQuery(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<float> area, Ogre::Vector2 center)
-: mLayerDef(layerDef), mPlantType(plantType), mArea(area), mCenter(center)
+: mLayerDef(layerDef), mPlantType(plantType), mCenter(center), mArea(area)
 {
 }
 

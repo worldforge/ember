@@ -42,6 +42,7 @@ ServerSettings::~ServerSettings()
 Service::Status ServerSettings::start()
 {
 	readFromDisk();
+	return Service::OK;
 }
 
 void ServerSettings::stop(int code)

@@ -125,7 +125,7 @@ LayerStore& ShaderPass::getLayers()
 
 bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
 {
-	for (int i = 0; i < mShadowLayers; ++i) {
+	for (unsigned int i = 0; i < mShadowLayers; ++i) {
 		S_LOG_VERBOSE("Adding shadow layer.");
 		Ogre::TextureUnitState * textureUnitState = pass.createTextureUnitState();
 

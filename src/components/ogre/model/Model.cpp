@@ -146,8 +146,6 @@ bool Model::createFromDefn()
 {
 	Ember::TimedLog timedLog("Model::createFromDefn");
 	// create instance of model from definition
-	Ogre::SceneManager* sceneManager = _getManager();
-	assert(sceneManager);
 	mScale = mMasterModel->mScale;
 	mRotation = mMasterModel->mRotation;
 

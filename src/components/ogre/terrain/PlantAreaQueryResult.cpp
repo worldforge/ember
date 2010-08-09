@@ -92,7 +92,6 @@ void PlantAreaQueryResult::getShadowColourAtWorldPosition(const Ogre::Vector2& p
 		Ogre::Vector2 localPos = position - Ogre::Vector2(mQuery->getArea().left, mQuery->getArea().bottom);
 		if (localPos.x >= 0 && localPos.x < mQuery->getArea().width() && localPos.y >= 0 && localPos.y < mQuery->getArea().height()) {
 			unsigned char val = mShadow->getData()[static_cast<size_t> ((localPos.y * mShadow->getResolution()) + localPos.x)];
-			Ogre::uint8* aVal((Ogre::uint8*)&colour);
 			colour.r = colour.g = colour.b = val;
 			colour.a = 1.0f;
 			return;

@@ -56,14 +56,14 @@ public:
 protected:
 
 	/**
-	 * @brief The terrain area.
-	 */
-	Mercator::Area* mArea;
-
-	/**
 	 * @brief The terrain.
 	 */
 	Mercator::Terrain& mTerrain;
+
+	/**
+	 * @brief The terrain area.
+	 */
+	Mercator::Area* mArea;
 
 	ShaderUpdateSlotType mShaderUpdateSlot;
 
