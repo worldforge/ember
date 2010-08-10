@@ -137,16 +137,20 @@ function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
 end
 
 function ActionBar:saveAttr()
-	self.actionBarIconManager:saveValue(self.name, "exists")
-	self.actionBarIconManager:saveValue(self.name .. "xpos", self.widget:getMainWindow():getXPosition().d_scale)
-	self.actionBarIconManager:saveValue(self.name .. "ypos", self.widget:getMainWindow():getYPosition().d_scale)
+	self.actionBarIconManager:saveValue(self.name, self.name)
+	
+	self.actionBarIconManager:saveValue(self.name .. "xposoffset", self.widget:getMainWindow():getXPosition():asAbsolute(1.0))
+	self.actionBarIconManager:saveValue(self.name .. "yposoffset", self.widget:getMainWindow():getYPosition():asAbsolute(1.0))
 end
 
 function ActionBar:loadSavedAttributes()
 	debugObject(self.actionBarIconManager:getSavedValue(self.name))
 	if self.actionBarIconManager:getSavedValue(self.name) ~= "null" then
-		debugObject(self.actionBarIconManager:getSavedValue(self.name .. "xpos"))
-		debugObject(self.actionBarIconManager:getSavedValue(self.name .. "ypos"))
+		--Get lua to see the value as a string it can convert to int using tonumber.
+		local xoffset = "".. self.actionBarIconManager:getSavedValue(self.name .. "xposoffset") ..""
+		local yoffset = "".. self.actionBarIconManager:getSavedValue(self.name .. "yposoffset") ..""
+		
+		self.widget:getMainWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(1, tonumber(xoffset)), CEGUI.UDim(1, tonumber(yoffset))))
 	end
 end
 
@@ -253,6 +257,7 @@ function ActionBar:init(widgetName)
 	self.actionBarIconManager = guiManager:getActionBarIconManager()
 		
 	self:buildCEGUIWidget(widgetName)
+	self:loadSavedAttributes()
 end
 
 function ActionBar:shutdown()

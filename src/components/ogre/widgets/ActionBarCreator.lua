@@ -61,8 +61,6 @@ function ActionBarCreator:createActionBar(layout)
 	local actionBar = EmberOgre.Gui.ColouredListItem:new(name)
 	self.actionBarListbox:addItem(actionBar)
 	
-	a1:loadSavedAttributes()
-	
 	return a1
 end
 
