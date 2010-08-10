@@ -94,17 +94,23 @@ void ServerSettings::setItem(const ServerSettingsCredentials & credentials, cons
 
 bool ServerSettings::findItem(const ServerSettingsCredentials & credentials, const std::string & key) const
 {
-	return mConfig->findItem(getSectionForServerCredentials(credentials), key);
+	std::string cleanKey(key);
+	mConfig->clean(cleanKey);
+	return mConfig->findItem(getSectionForServerCredentials(credentials), cleanKey);
 }
 
 varconf::Variable ServerSettings::getItem(const ServerSettingsCredentials & credentials, const std::string & key) const
 {
-	return mConfig->getItem(getSectionForServerCredentials(credentials), key);
+	std::string cleanKey(key);
+	mConfig->clean(cleanKey);
+	return mConfig->getItem(getSectionForServerCredentials(credentials), cleanKey);
 }
 
 bool ServerSettings::eraseItem(const ServerSettingsCredentials & credentials, const std::string & key)
 {
-	return mConfig->erase(getSectionForServerCredentials(credentials), key);
+	std::string cleanKey(key);
+	mConfig->clean(cleanKey);
+	return mConfig->erase(getSectionForServerCredentials(credentials), cleanKey);
 }
 
 const varconf::sec_map & ServerSettings::getServerSettings(const ServerSettingsCredentials & credentials)
