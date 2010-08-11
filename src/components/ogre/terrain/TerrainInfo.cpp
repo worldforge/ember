@@ -34,9 +34,13 @@ namespace Terrain {
 
 
 TerrainInfo::TerrainInfo(int pageIndicesSize)
-:  mXminBasePoint(0), mXmaxBasePoint(0), mYminBasePoint(0), mYmaxBasePoint(0),
+:  mXminBasePoint(-1), mXmaxBasePoint(1), mYminBasePoint(-1), mYmaxBasePoint(1),
 	 mXminBasePointAdjusted(0), mXmaxBasePointAdjusted(0), mYminBasePointAdjusted(0), mYmaxBasePointAdjusted(0), mPageIndicesSize(pageIndicesSize)
 {
+	adjustBasePointPositionDown(mXminBasePointAdjusted, mXminBasePoint);
+	adjustBasePointPositionUp(mXmaxBasePointAdjusted, mXmaxBasePoint);
+	adjustBasePointPositionDown(mYminBasePointAdjusted, mYminBasePoint);
+	adjustBasePointPositionUp(mYmaxBasePointAdjusted, mYmaxBasePoint);
 	recalculateSize();
 }
 
