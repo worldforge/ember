@@ -358,10 +358,10 @@ void ServerService::gotAvatarSuccess(Eris::Avatar* avatar)
 
 void ServerService::gotAvatarDeactivated(Eris::Avatar* avatar)
 {
-	mView = 0;
 	DestroyedView.emit();
-	mAvatar = 0;
 	DestroyedAvatar.emit();
+	mView = 0;
+	mAvatar = 0;
 }
 
 void ServerService::logoutComplete(bool clean)
