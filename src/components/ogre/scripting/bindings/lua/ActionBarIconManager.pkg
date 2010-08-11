@@ -45,6 +45,8 @@ public:
 	const std::string getSavedValue(const std::string& name) const;
 
 	void saveValue(const std::string& key, const std::string& value);
+
+	void eraseValue(const std::string& key);
 	
 	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStart;
 	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStop;

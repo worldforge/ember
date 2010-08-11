@@ -160,7 +160,7 @@ ActionBarCreator.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local
 			setmetatable(actionbarCreator, {__index = ActionBarCreator})
 			actionbarCreator:buildCEGUIWidget()
 			actionbarCreator:init()
-			connect(actionbarCreator.connectors, avatarEntity.BeingDeleted, function()
+			connect(actionbarCreator.connectors, emberServices:getServerService().DestroyedAvatar, function()
 					actionbarCreator:shutdown()
 					actionbarCreator = nil
 				end

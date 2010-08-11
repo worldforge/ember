@@ -39,6 +39,7 @@
 
 #include <Eris/ServerInfo.h>
 #include <Eris/Connection.h>
+#include <Eris/Avatar.h>
 
 namespace EmberOgre {
 
@@ -113,12 +114,14 @@ const std::string ActionBarIconManager::getSavedValue(const std::string& key) co
 	Eris::ServerInfo sInfo;
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
 	std::string sname = sInfo.getHostname();
+	std::string accountIdKey = Ember::EmberServices::getSingleton().getServerService()->getAvatar()->getId();
+	accountIdKey.append(key);
 
 	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
 	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
 
-	if (serverSettings->findItem(serverCredentials, key)) {
-		return static_cast<std::string>(serverSettings->getItem(serverCredentials, key));
+	if (serverSettings->findItem(serverCredentials, accountIdKey)) {
+		return static_cast<std::string>(serverSettings->getItem(serverCredentials, accountIdKey));
 	}
 	return "null";
 }
@@ -128,12 +131,30 @@ void ActionBarIconManager::saveValue(const std::string& key, const std::string& 
 	Eris::ServerInfo sInfo;
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
 	std::string sname = sInfo.getHostname();
+	std::string accountIdKey = Ember::EmberServices::getSingleton().getServerService()->getAvatar()->getId();
+	accountIdKey.append(key);
 
 	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
 	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
 
-	serverSettings->setItem(serverCredentials, key, value);
+	serverSettings->setItem(serverCredentials, accountIdKey, value);
 	serverSettings->writeToDisk();
+}
+
+void ActionBarIconManager::eraseValue(const std::string& key)
+{
+	Eris::ServerInfo sInfo;
+	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
+	std::string sname = sInfo.getHostname();
+	std::string accountIdKey = Ember::EmberServices::getSingleton().getServerService()->getAvatar()->getId();
+	accountIdKey.append(key);
+
+	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
+
+	if (serverSettings->findItem(serverCredentials, accountIdKey)) {
+		serverSettings->eraseItem(serverCredentials, accountIdKey);
+	}
 }
 
 void ActionBarIconManager::destroyIcon(ActionBarIcon* icon)

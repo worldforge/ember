@@ -82,11 +82,14 @@ function ActionBar:createActionBarIconFromEntity(entity)
 		--We use the name to set the tooltip text
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 		local actionBarIconWrapper = {actionBarIcon = nil,
-										defaultAction = nil}
+										defaultAction = nil,
+										entityid = nil}
 		self:createActionBarIcon(actionBarIconWrapper, icon)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
 		--Our command object for the default action is the entity.
 		actionBarIconWrapper.defaultAction:initFromEntityIcon(entity)
+		actionBarIconWrapper.entityid = entity:getId()
+		
 		
 		self.icons[entity:getId()] = actionBarIconWrapper
 		connect(self.connectors, emberOgre:getWorld():getAvatar().EventRemovedEntityFromInventory, self.RemovedEntityFromInventory, self)

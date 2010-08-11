@@ -97,6 +97,7 @@ public:
 
 	void saveValue(const std::string& key, const std::string& value);
 
+	void eraseValue(const std::string& key);
 	/**
 	 * @brief Emitted when a drag action of an entity icon has started.
 	 */
