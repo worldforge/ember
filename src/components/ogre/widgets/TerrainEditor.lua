@@ -102,6 +102,8 @@ function TerrainEditor:buildWidget(terrainManager)
 			self.widget:getWindow("UndoButton"):subscribeEvent("Clicked", self.UndoButton_Click, self)
 			self.widget:getWindow("RedoButton"):subscribeEvent("Clicked", self.RedoButton_Click, self)
 			
+			self.widget:getWindow("Radius"):subscribeEvent("ValueChanged", self.Radius_ValueChanged, self)
+			
 			self.widget:getMainWindow():subscribeEvent("Hidden", self.MainWindow_Hidden, self)
 			
 			self.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", self.SendToServerButton_Click, self)
