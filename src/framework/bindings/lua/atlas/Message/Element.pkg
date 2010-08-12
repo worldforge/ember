@@ -202,12 +202,12 @@ class ListType {
 
 	const Atlas::Message::Element& operator[](int index) const;
 	Atlas::Message::Element& operator[](int index);
-	void push_back(Atlas::Message::Element val);
-	void push_back(int val);
-	void push_back(bool val);
-	void push_back(double val);
-	void push_back(const char* val);
 	void push_back(const std::string& val);
+	void push_back(const char* val);
+	void push_back(double val);
+	void push_back(bool val);
+	void push_back(int val);
+	void push_back(Atlas::Message::Element val);
 
 	ListType();
 	~ListType();
