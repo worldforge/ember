@@ -30,6 +30,9 @@ namespace Ember
 namespace Lua
 {
 
+template <typename T>
+const char* resolveLuaTypename();
+
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Marker class for empty values.
@@ -76,7 +79,8 @@ public:
 	 */
 	RefValueAdapter(const std::string& luaTypeName) : ValueAdapterBase::ValueAdapterBase(luaTypeName)
 	{}
-
+	RefValueAdapter() : ValueAdapterBase::ValueAdapterBase(resolveLuaTypename<T>())
+	{}
 	/**
 	 * @brief Tries to push a value onto the lua stack.
 	 * @param state The lua state.
@@ -105,6 +109,8 @@ public:
 	PtrValueAdapter(const std::string& luaTypeName) : ValueAdapterBase::ValueAdapterBase(luaTypeName)
 	{}
 
+	PtrValueAdapter() : ValueAdapterBase::ValueAdapterBase(resolveLuaTypename<T>())
+	{}
 	/**
 	 * @brief Tries to push a value onto the lua stack.
 	 * @param state The lua state.
@@ -149,6 +155,25 @@ public:
 	 * @returns True if a value was pushed onto the stack.
 	 */
 	bool pushValue(lua_State* state, value_type value);
+
+};
+
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief A value adapter for booleans.
+ */
+class BooleanValueAdapter
+{
+public:
+	typedef bool& value_type;
+
+	/**
+	 * @brief Tries to push a value onto the lua stack.
+	 * @param state The lua state.
+	 * @param value The value to push.
+	 * @returns True if a value was pushed onto the stack.
+	 */
+	bool pushValue(lua_State* state, const bool& value);
 
 };
 

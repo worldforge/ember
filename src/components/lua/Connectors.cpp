@@ -27,6 +27,10 @@
 
 #include <tolua++.h>
 
+namespace EmberOgre {
+class EmberEntity;
+}
+
 namespace Ember
 {
 
@@ -141,6 +145,11 @@ bool StringValueAdapter::pushValue(lua_State* state, StringValueAdapter::value_t
 	return true;
 }
 
+bool BooleanValueAdapter::pushValue(lua_State* state, const bool& value)
+{
+	tolua_pushboolean(state, value);
+	return true;
+}
 
 bool EmptyValueAdapter::pushValue(lua_State* state, const Empty& value)
 {
