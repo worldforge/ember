@@ -5,14 +5,18 @@
         <submodels>
             <submodel mesh="3d_objects/items/weapons/models/swords/sword_A01.mesh">
                 <parts>
-                    <part name="main" show="true">
-                    </part>
+                    <part name="main" show="true" />
                 </parts>
             </submodel>
         </submodels>
         <actions />
         <attachpoints />
-        <views />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="0.793511" y="0.490275" z="-0.360514" degrees="85.640686" />
+            </view>
+        </views>
         <lights />
     </model>
 </models>
