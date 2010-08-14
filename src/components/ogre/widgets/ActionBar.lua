@@ -139,6 +139,7 @@ function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
 	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeave", actionBarIconWrapper.mouseLeaves)
 end
 
+--Saves action bar properties such as position and icons.
 function ActionBar:saveAttr()
 	self.actionBarIconManager:saveValue(self.name, self.name)
 	
@@ -146,6 +147,8 @@ function ActionBar:saveAttr()
 	self.actionBarIconManager:saveValue(self.name .. "yposoffset", self.widget:getMainWindow():getYPosition():asAbsolute(1.0))
 end
 
+--Loads saved properties for the action bar. 
+--We call this at the initialization of the action bar.
 function ActionBar:loadSavedAttributes()
 	debugObject(self.actionBarIconManager:getSavedValue(self.name))
 	if self.actionBarIconManager:getSavedValue(self.name) ~= "null" then
@@ -265,6 +268,7 @@ end
 
 function ActionBar:shutdown()
 
+	--Save action bar properties
 	self:saveAttr()
 
 	--Delete all of the action bar slots.

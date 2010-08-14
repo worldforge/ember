@@ -34,6 +34,8 @@ namespace Gui
 /**
 	@brief
 	@author Tiberiu Paunescu <tpa12@sfu.ca>
+	The ActionBarInput class is used to capture keyboard input based on the key passed to the constructor. Each instance of the class is created from the lua ActionBar object,
+	and captures one key.
 */
 class ActionBarInput : public Ember::ConsoleObject
 {

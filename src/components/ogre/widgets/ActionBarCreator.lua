@@ -6,6 +6,7 @@ ActionBarCreator = {}
 
 loadScript("DefaultEntityActions.lua")
 
+--Build the action bar creator widget.
 function ActionBarCreator:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("ActionBarCreator.layout", "ActionBarCreator/")
@@ -146,6 +147,7 @@ function ActionBarCreator:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
+--Creates a starting action bar for the user, and adds keyboard hooks.
 function ActionBarCreator:init()
 	--Create an inital actionbar for the user.
 	self:createActionBar("Horiz"):defaultKeyMapping()

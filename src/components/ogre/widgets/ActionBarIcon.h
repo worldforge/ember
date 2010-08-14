@@ -167,9 +167,32 @@ public:
 	 */
 	bool dragContainer_DragStopped(const CEGUI::EventArgs& args);
 
+	/**
+	 * @brief Handler for CEGUI drag enter event.
+	 * @param args Event args.
+	 */
 	virtual bool handleDragEnter(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+
+	/**
+	 * @brief Handler for CEGUI drag enter event.
+	 * @param args Event args.
+	 */
 	virtual bool handleDragLeave(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+
+	/**
+	 * @brief Handler for dropping an existing action bar icon onto this icon.
+	 * @param args Event args.
+	 * @param icon The action bar icon.
+	 * @note Event is passed to the slot the icon belongs to.
+	 */
 	virtual bool handleDragActionBarIconDropped(const CEGUI::EventArgs& args, ActionBarIcon* icon);
+
+	/**
+	 * @brief Handler for dropping an existing entity icon onto this icon.
+	 * @param args Event args.
+	 * @param icon The entity icon.
+	 * @note Event is passed to the slot the icon belongs to.
+	 */
 	virtual bool handleDragEntityIconDropped(const CEGUI::EventArgs& args, EntityIcon* icon);
 
 	void icon_Updated();
