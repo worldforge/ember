@@ -87,7 +87,7 @@ function ActionBar:createActionBarIconFromEntity(entity)
 		self:createActionBarIcon(actionBarIconWrapper, icon)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
 		--Our command object for the default action is the entity.
-		actionBarIconWrapper.defaultAction:initFromEntityIcon(entity)
+		actionBarIconWrapper.defaultAction:initFromEntityIcon(entity:getId())
 		actionBarIconWrapper.entityid = entity:getId()
 		
 		

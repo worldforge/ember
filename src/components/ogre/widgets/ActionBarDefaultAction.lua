@@ -8,7 +8,7 @@ ActionBarDefaultAction = {}
 function ActionBarDefaultAction:wieldableCommandObject()
 	if self.mCommandObject ~= nil then
 		self.wearFunction = self.mDefaultActionList:getDefaultWearableFunction()
-		self:wearFunction(self.mCommandObject)
+		emberOgre:doWithEntity(self.mCommandObject,function(entity) self:wearFunction(entity) end)
 	end
 end
 
@@ -16,13 +16,13 @@ end
 function ActionBarDefaultAction:edibleCommandObject()
 	if self.mCommandObject ~= nil then
 		self.eatFunction = self.mDefaultActionList:getDefaultBioMassFunction()
-		self:eatFunction(self.mCommandObject)
+		emberOgre:doWithEntity(self.mCommandObject,function(entity) self:eatFunction(entity) end)
 	end
 end
 
 --Based on the entity, we attempt to figure out what action to take
 function ActionBarDefaultAction:setEntityDefaultFunction()
-	if self.mCommandObject:hasAttr("biomass") then
+	if emberOgre:getWorld():getEmberEntity(self.mCommandObject):hasAttr("biomass") then
 		self.mDefaultFunction = self.edibleCommandObject
 	else
 		self.mDefaultFunction = self.wieldableCommandObject
@@ -35,9 +35,11 @@ function ActionBarDefaultAction:executeAction()
 end
 
 --We intialize the default action setting the command object to the entity, and attempt to pick the best action to take on it.
-function ActionBarDefaultAction:initFromEntityIcon(entity)
-	self.mCommandObject = entity
-	self:setEntityDefaultFunction()
+function ActionBarDefaultAction:initFromEntityIcon(entityId)
+	if entityId ~= nil then
+		self.mCommandObject = entityId
+		self:setEntityDefaultFunction()
+	end
 end
 
 --Create a new action bar action.
