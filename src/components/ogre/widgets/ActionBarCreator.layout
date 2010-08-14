@@ -2,7 +2,7 @@
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
 		<Property Name='UnifiedSize' Value='{{0.00,360.0},{0.00,240.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{1.00,-300.0},{1.00,-520.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{1.00,-360.0},{1.00,-520.0}}'/>
 		<Property Name='Text' Value='ActionBar Editor'/>
 		<Window Type='DefaultGUISheet' Name='LeftPanel'>
 			<Property Name='UnifiedSize' Value='{{0.40,0.0},{1.00,0.0}}'/>

@@ -10,6 +10,7 @@ loadScript("DefaultEntityActions.lua")
 function ActionBarCreator:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("ActionBarCreator.layout", "ActionBarCreator/")
+	self.widget:registerConsoleVisibilityToggleCommand("abarCreate")
 	
 	self.createHButton = CEGUI.toPushButton(self.widget:getWindow("Create_Horiz"))
 	self.createHButton:subscribeEvent("Clicked", self.CreateHoriz_Click, self)
@@ -36,7 +37,7 @@ function ActionBarCreator:buildCEGUIWidget()
 	--We only want the use to select one action bar at a time.
 	self.actionBarListbox:setMultiselectEnabled(false)
 	
-	self.widget:show()
+	self.widget:hide()
 end
 
 --Create a new action bar.
