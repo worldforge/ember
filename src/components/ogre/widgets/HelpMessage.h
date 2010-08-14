@@ -1,5 +1,5 @@
 //
-// C++ Interface: TutorialMessage
+// C++ Interface: HelpMessage
 //
 // Description:
 //
@@ -35,7 +35,7 @@ namespace Gui
 /**
 @author Tiberiu Paunescu <tpa12@sfu.ca>
 
-@brief Class that holds tutorial / help messages.
+@brief Class that holds help messages.
 
 Currently, it only holds plain text messages but future implementations will contain more information regarding the text.
 
@@ -65,6 +65,10 @@ public:
 	 */
 	const std::string& getHelp() const;
 
+	/**
+	 * @brief Returns the optional id of the message.
+	 * @return The id.
+	 */
 	const std::string& getId() const;
 
 	/**
@@ -79,13 +83,24 @@ public:
 	bool hasId() const;
 
 private:
-
 	/**
-	 * @brief Stores the plain text mesasge.
+	 * @brief Stores the various tags for the message.
 	 */
 	std::list<std::string> mTags;
+
+	/**
+	 * @brief Stores the plain text message.
+	 */
 	std::string mMessage;
-	std::string mCaption;
+
+	/**
+	 * @brief Stores the title of the message.
+	 */
+	std::string mTitle;
+
+	/**
+	 * @brief Stores the optional id.
+	 */
 	std::string mId;
 };
 }
