@@ -30,6 +30,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include "services/wfut/WfutService.h"
 #include <OgreOverlay.h>
 #include <OgreOverlayElement.h>
+#include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
 #include <OgreRenderWindow.h>
 
@@ -51,9 +52,9 @@ namespace Gui {
 	added to a resource group called 'Bootstrap' - this provides the basic
 	resources required for the progress bar and will be loaded automatically.
 */
-	LoadingBar::LoadingBar() :
+	LoadingBar::LoadingBar(Ogre::RenderWindow& window) :
 	mProgress(0) ,
-	mWindow(0),
+	mWindow(window),
 	mLoadOverlay(0),
 	mProgressBarScriptSize(0),
 	mLoadingBarElement(0),
@@ -62,7 +63,36 @@ namespace Gui {
 	mVersionElement(0)
 	{}
 
-	LoadingBar::~LoadingBar(){}
+	LoadingBar::~LoadingBar(){
+		try {
+			if (mLoadOverlay) {
+				Overlay::Overlay2DElementsIterator topIterator = mLoadOverlay->get2DElementsIterator();
+				while (topIterator.hasMoreElements()) {
+					OverlayContainer* container = topIterator.getNext();
+					deleteOverlayContainerContents(*container);
+					OverlayManager::getSingleton().destroyOverlayElement(container);
+				}
+				OverlayManager::getSingleton().destroy(mLoadOverlay);
+			}
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when destroying loading bar overlay." << ex);
+		}
+	}
+
+	void LoadingBar::deleteOverlayContainerContents(Ogre::OverlayContainer& container) const
+	{
+		{
+			OverlayContainer::ChildContainerIterator I = container.getChildContainerIterator();
+			while (I.hasMoreElements()) {
+				deleteOverlayContainerContents(*I.getNext());
+			}
+		}
+		OverlayContainer::ChildIterator I = container.getChildIterator();
+		while (I.hasMoreElements()) {
+			OverlayManager::getSingleton().destroyOverlayElement(I.getNext());
+		}
+	}
+
 
 	/** Show the loading bar and start listening.
 	@param window The window to update
@@ -72,9 +102,8 @@ namespace Gui {
 		up by initialisation (ie script parsing etc). Defaults to 0.7 since
 		script parsing can often take the majority of the time.
 	*/
-	void LoadingBar::start(RenderWindow* window)
+	void LoadingBar::start()
 	{
-		mWindow = window;
 		// We need to pre-initialise the 'Bootstrap' group so we can use
 		// the basic contents in the loading screen
 		ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
@@ -185,7 +214,7 @@ namespace Gui {
 				//There's a bug in Ogre 1.7.1 (at least) which makes the text of some elements not appear. By asking it to update the positions it seems to work.
 				mVersionElement->_positionsOutOfDate();
 
-				mWindow->update();
+				mWindow.update();
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when updating render for loading bar." << ex);
 			}

@@ -85,7 +85,6 @@
 
 #include "ShaderManager.h"
 
-
 //#include "jesus/Jesus.h"
 //#include "jesus/XMLJesusSerializer.h"
 
@@ -318,84 +317,87 @@ bool EmberOgre::setup()
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
 	mGeneralCommandMapper->bindToInput(Ember::Input::getSingleton());
 
-	///we need a nice loading bar to show the user how far the setup has progressed
-	Gui::LoadingBar loadingBar;
+	{
+		///we need a nice loading bar to show the user how far the setup has progressed
+		Gui::LoadingBar loadingBar(*mWindow);
 
-	Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
-	loadingBar.addSection(&wfutSection);
-	Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
+		Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
+		loadingBar.addSection(&wfutSection);
+		Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
 
-	Gui::LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
-	loadingBar.addSection(&resourceGroupSection);
-	unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; ///remove bootstrap since that's already loaded
-	Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), 0.7);
+		Gui::LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
+		loadingBar.addSection(&resourceGroupSection);
+		unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; ///remove bootstrap since that's already loaded
+		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), 0.7);
 
-	loadingBar.start(mWindow);
-	loadingBar.setVersionText(std::string("Version ") + VERSION);
+		loadingBar.start();
+		loadingBar.setVersionText(std::string("Version ") + VERSION);
 
-	/// Turn off rendering of everything except overlays
-	mSceneMgr->clearSpecialCaseRenderQueues();
-	mSceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
-	mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
+		/// Turn off rendering of everything except overlays
+		mSceneMgr->clearSpecialCaseRenderQueues();
+		mSceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
+		mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
 
-	if (useWfut) {
-		S_LOG_INFO("Updating media.");
-		MediaUpdater updater;
-		updater.performUpdate();
+		if (useWfut) {
+			S_LOG_INFO("Updating media.");
+			MediaUpdater updater;
+			updater.performUpdate();
+		}
+
+		///create the collision manager
+		//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
+		//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
+
+		mResourceLoader->loadGui();
+		mResourceLoader->loadGeneral();
+
+		/// Create shader manager
+		mShaderManager = new ShaderManager;
+
+		///should media be preloaded?
+		if (preloadMedia) {
+			S_LOG_INFO( "Begin preload.");
+			mResourceLoader->preloadMedia();
+
+			S_LOG_INFO( "End preload.");
+		}
+		try {
+			mGUIManager = new GUIManager(mWindow);
+			EventGUIManagerCreated.emit(*mGUIManager);
+		} catch (...) {
+			///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+			throw Ember::Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
+		}
+
+		if (chdir(configSrv->getHomeDirectory().c_str())) {
+			S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
+		}
+
+		mConsoleObjectImpl = new ConsoleObjectImpl();
+
+		try {
+			mGUIManager->initialize();
+			EventGUIManagerInitialized.emit(*mGUIManager);
+		} catch (...) {
+			///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+			throw Ember::Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
+		}
+
+		///this should be in a separate class, a separate plugin even
+		///disable for now, since it's not used
+		//setupJesus();
+
+		/// Back to full rendering
+		mSceneMgr->clearSpecialCaseRenderQueues();
+		mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
+
+		mMaterialEditor = new Authoring::MaterialEditor();
+
+		mModelRepresentationManager = new Model::ModelRepresentationManager();
+
+		loadingBar.finish();
 	}
-
-	///create the collision manager
-	//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
-	//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
-
-	mResourceLoader->loadGui();
-	mResourceLoader->loadGeneral();
-
-	/// Create shader manager
-	mShaderManager = new ShaderManager;
-
-	///should media be preloaded?
-	if (preloadMedia) {
-		S_LOG_INFO( "Begin preload.");
-		mResourceLoader->preloadMedia();
-
-		S_LOG_INFO( "End preload.");
-	}
-	try {
-		mGUIManager = new GUIManager(mWindow);
-		EventGUIManagerCreated.emit(*mGUIManager);
-	} catch (...) {
-		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-		throw Ember::Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
-	}
-
-	if (chdir(configSrv->getHomeDirectory().c_str())) {
-		S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
-	}
-
-	mConsoleObjectImpl = new ConsoleObjectImpl();
-
-	try {
-		mGUIManager->initialize();
-		EventGUIManagerInitialized.emit(*mGUIManager);
-	} catch (...) {
-		///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
-		throw Ember::Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
-	}
-
-	///this should be in a separate class, a separate plugin even
-	///disable for now, since it's not used
-	//setupJesus();
-
-	/// Back to full rendering
-	mSceneMgr->clearSpecialCaseRenderQueues();
-	mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
-
-	mMaterialEditor = new Authoring::MaterialEditor();
-
-	mModelRepresentationManager = new Model::ModelRepresentationManager();
-
-	loadingBar.finish();
+	mResourceLoader->unloadUnusedResources();
 
 	return true;
 }

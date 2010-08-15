@@ -132,7 +132,7 @@ protected:
 	float mProgress;
 	Ogre::Real mProgressBarMaxSize, mProgressBarMaxLeft;
 
-	Ogre::RenderWindow* mWindow;
+	Ogre::RenderWindow& mWindow;
 	Ogre::Overlay* mLoadOverlay;
 	Ogre::Real mProgressBarScriptSize;
 	Ogre::OverlayElement* mLoadingBarElement;
@@ -150,22 +150,21 @@ protected:
 	void updateRender();
 
 public:
-	LoadingBar();
+	/**
+	 * @brief Ctor.
+	 * @param window The window to update
+	 */
+	LoadingBar(Ogre::RenderWindow& window);
 	virtual ~LoadingBar();
 
-	/** Show the loading bar and start listening.
-	@param window The window to update
-	@param numGroupsInit The number of groups you're going to be initialising
-	@param numGroupsLoad The number of groups you're going to be loading
-	@param initProportion The proportion of the progress which will be taken
-		up by initialisation (ie script parsing etc). Defaults to 0.7 since
-		script parsing can often take the majority of the time.
-	*/
-	virtual void start(Ogre::RenderWindow* window);
+	/**
+	 * @brief Show the loading bar and start listening.
+	 */
+	virtual void start();
 
 	/** Hide the loading bar and stop listening.
 	*/
-	virtual void finish(void);
+	virtual void finish();
 
 	void addSection(LoadingBarSection* section);
 
@@ -175,6 +174,12 @@ public:
 	void setDescription(const std::string& description);
 	void setCaption(const std::string& caption);
 	void setVersionText(const std::string& versionText);
+
+	/**
+	 * @brief Deletes the content of the overlay container.
+	 * @param container The container for which we want to delete the contents.
+	 */
+	void deleteOverlayContainerContents(Ogre::OverlayContainer& container) const;
 
 
 };
