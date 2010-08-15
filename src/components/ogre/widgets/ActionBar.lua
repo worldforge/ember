@@ -83,6 +83,7 @@ function ActionBar:createActionBarIconFromEntity(entity)
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 		local actionBarIconWrapper = {actionBarIcon = nil,
 										defaultAction = nil,
+										type = "entity",
 										entityid = nil}
 		self:createActionBarIcon(actionBarIconWrapper, icon)
 		actionBarIconWrapper.actionBarIcon:setTooltipText(name)
@@ -145,6 +146,21 @@ function ActionBar:saveAttr()
 	
 	self.actionBarIconManager:saveValue(self.name .. "xposoffset", self.widget:getMainWindow():getXPosition():asAbsolute(1.0))
 	self.actionBarIconManager:saveValue(self.name .. "yposoffset", self.widget:getMainWindow():getYPosition():asAbsolute(1.0))
+	
+	for k,v in pairs(self.slots) do
+		local aBarIcon = v.slot:getActionBarIcon()
+		if aBarIcon ~= nil then
+			for k2,v2 in pairs(self.icons) do
+				if aBarIcon == v2.actionBarIcon then
+					self.actionBarIconManager:saveValue(self.name..k, v2.type)
+					self.actionBarIconManager:saveValue(self.name..k.."id", v2.entityid)
+				end
+			end
+		else
+			self.actionBarIconManager:eraseValue(self.name..k)
+			self.actionBarIconManager:eraseValue(self.name..k.."id")
+		end
+	end
 end
 
 --Loads saved properties for the action bar. 
@@ -158,6 +174,31 @@ function ActionBar:loadSavedAttributes()
 		
 		self.widget:getMainWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(1, tonumber(xoffset)), CEGUI.UDim(1, tonumber(yoffset))))
 	end
+	
+	local entityCandidates = {}
+	for k,v in pairs(self.slots) do
+		local type = self.actionBarIconManager:getSavedValue(self.name..k)
+		local id = self.actionBarIconManager:getSavedValue(self.name..k.."id")
+		if type == "entity" then
+			entityCandidates[id] = v.slot
+		end
+	end
+	
+	entityCandidates.AddedEntityToInventory = function(entity)
+		local id = entity:getId()
+		debugObject(id)
+		if entityCandidates[id] ~= nil then
+			debugObject("found a saved item")
+			local newIconWrapper = self:createActionBarIconFromEntity(entity)
+			debugObject("created icon")
+			entityCandidates[id]:addActionBarIcon(newIconWrapper.actionBarIcon)
+			debugObject("added icon")
+			entityCandidates[id] = nil
+		end
+	end
+	
+	entityCandidates.AddedEntityToInventory_connector = EmberOgre.LuaConnector:new_local(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(entityCandidates.AddedEntityToInventory)
+	
 end
 
 --Build the action bar widget.
