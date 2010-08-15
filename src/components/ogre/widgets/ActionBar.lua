@@ -175,29 +175,37 @@ function ActionBar:loadSavedAttributes()
 		self.widget:getMainWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(1, tonumber(xoffset)), CEGUI.UDim(1, tonumber(yoffset))))
 	end
 	
-	local entityCandidates = {}
 	for k,v in pairs(self.slots) do
 		local type = self.actionBarIconManager:getSavedValue(self.name..k)
 		local id = self.actionBarIconManager:getSavedValue(self.name..k.."id")
 		if type == "entity" then
-			entityCandidates[id] = v.slot
+			self.entityCandidates[id] = v.slot
+			--Keep track of the size, because lua doesn't have a function for getting the size of dictionaries
+			--without looping through all elements.
+			self.entityCandidates.size = self.entityCandidates.size + 1
 		end
 	end
 	
-	entityCandidates.AddedEntityToInventory = function(entity)
+	self.entityCandidates.AddedEntityToInventory = function(entity)
 		local id = entity:getId()
-		debugObject(id)
-		if entityCandidates[id] ~= nil then
-			debugObject("found a saved item")
+		if self.entityCandidates[id] ~= nil then
 			local newIconWrapper = self:createActionBarIconFromEntity(entity)
-			debugObject("created icon")
-			entityCandidates[id]:addActionBarIcon(newIconWrapper.actionBarIcon)
-			debugObject("added icon")
-			entityCandidates[id] = nil
+			self.entityCandidates[id]:addActionBarIcon(newIconWrapper.actionBarIcon)
+			self.entityCandidates[id] = nil
+			self.entityCandidates.size = self.entityCandidates.size - 1
+		end
+		if self.entityCandidates.size == 0 then
+			self.entityCandidates.AddedEntityToInventory_connector:disconnect()
 		end
 	end
 	
-	entityCandidates.AddedEntityToInventory_connector = EmberOgre.LuaConnector:new_local(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(entityCandidates.AddedEntityToInventory)
+	self.timer = Eris.Timeout:new_local(10000)
+	self.timer.disconnect = function()
+		self.entityCandidates.AddedEntityToInventory_connector:disconnect()
+	end
+	
+	self.timer.disconnect_connector = EmberOgre.LuaConnector:new_local(self.timer.Expired):connect(self.timer.disconnect)
+	self.entityCandidates.AddedEntityToInventory_connector = EmberOgre.LuaConnector:new_local(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(self.entityCandidates.AddedEntityToInventory)
 	
 end
 
@@ -272,6 +280,8 @@ function ActionBar.new(rotation, defActionList)
 				defaultActionList = defActionList,
 				hotkeys = {},
 				name = "",
+				entityCandidates = {size = 0},
+				timer = nil,
 				slots = {}};
 				
 	setmetatable(actionbar,{__index=ActionBar})

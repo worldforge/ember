@@ -9,7 +9,7 @@ noinst_LIBRARIES = liblua_Eris.a
 liblua_Eris_a_SOURCES = Eris.cxx
 
 CLEANFILES = Eris.cxx
-TOLUA_PKGS = Account.pkg Avatar.pkg Connection.pkg Entity.pkg Eris.pkg Metaserver.pkg ServerInfo.pkg Task.pkg TypeInfo.pkg Types.pkg TypeService.pkg View.pkg
+TOLUA_PKGS = Account.pkg Avatar.pkg Connection.pkg Entity.pkg Eris.pkg Metaserver.pkg ServerInfo.pkg Task.pkg Timeout.pkg TypeInfo.pkg Types.pkg TypeService.pkg View.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 Eris.cxx: $(TOLUA_PKGS)
 noinst_HEADERS = required.h
