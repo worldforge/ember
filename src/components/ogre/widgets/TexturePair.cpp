@@ -28,7 +28,7 @@ namespace EmberOgre
 namespace Gui
 {
 
-TexturePair::TexturePair(Ogre::TexturePtr ogreTexture, const CEGUI::Image* textureImage, CEGUI::Imageset* textureImageset) :
+TexturePair::TexturePair(const Ogre::TexturePtr& ogreTexture, const CEGUI::Image* textureImage, CEGUI::Imageset* textureImageset) :
 	mOgreTexture(ogreTexture), mTextureImage(textureImage), mTextureImageset(textureImageset)
 {
 }

@@ -38,7 +38,7 @@ namespace Gui
 class TexturePair
 {
 public:
-	TexturePair(Ogre::TexturePtr mOgreTexture, const CEGUI::Image* mTextureImage, CEGUI::Imageset* mTextureImageset);
+	TexturePair(const Ogre::TexturePtr& mOgreTexture, const CEGUI::Image* mTextureImage, CEGUI::Imageset* mTextureImageset);
 	TexturePair();
 
 	Ogre::TexturePtr getOgreTexture() const;
