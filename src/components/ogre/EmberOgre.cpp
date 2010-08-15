@@ -537,6 +537,8 @@ void EmberOgre::preloadMedia(void)
 
 void EmberOgre::Server_GotView(Eris::View* view)
 {
+	//Right before we enter into the world we try to unload any unused resources.
+	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
 	mWorld = new World(*view, *mWindow, *this);
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
@@ -552,10 +554,9 @@ void EmberOgre::EntityFactory_BeingDeleted()
 	EventWorldDestroyed.emit();
 	mWindow->removeAllViewports();
 	mWindow->addViewport(mOgreMainCamera);
-}
+	//After we've exited the world we try to unload any unused resources.
+	mResourceLoader->unloadUnusedResources();
 
-void EmberOgre::Server_GotConnection(Eris::Connection* connection)
-{
 }
 
 Ogre::Root* EmberOgre::getOgreRoot() const
@@ -587,7 +588,6 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 
 void EmberOgre::Application_ServicesInitialized()
 {
-	Ember::EmberServices::getSingleton().getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotConnection));
 	Ember::EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 
 	mScriptingResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));

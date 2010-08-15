@@ -388,13 +388,6 @@ protected:
 	void EntityFactory_BeingDeleted();
 
 	/**
-	 * @brief Sent from the server when we've successfully connected.
-	 *
-	 * @param connection
-	 */
-	void Server_GotConnection(Eris::Connection* connection);
-
-	/**
 	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
 	 */
 	//	void setupJesus();
