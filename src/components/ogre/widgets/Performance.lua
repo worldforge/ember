@@ -37,9 +37,12 @@ function Performance.framestarted(timeSinceLastFrame)
 		if app:getMainView() ~= nil then
 			statString = statString .. "\nSightqueue: " .. app:getMainView():lookQueueSize()
 		end
-		local motionInfo = EmberOgre.MotionManager:getSingleton():getInfo()
-		statString = statString .. "\nAnimated: " .. motionInfo.AnimatedEntities
-		statString = statString .. "\nMoving: " .. motionInfo.MovingEntities
+		local motionManager = EmberOgre.MotionManager:getSingleton()
+		if motionManager then
+			local motionInfo = EmberOgre.MotionManager:getSingleton():getInfo()
+			statString = statString .. "\nAnimated: " .. motionInfo.AnimatedEntities
+			statString = statString .. "\nMoving: " .. motionInfo.MovingEntities
+		end
 		--ss << "Time in eris: " << getAverageErisTime() * 100 << "% \n"
 		
 		if Performance.terrainManager ~= nil then
