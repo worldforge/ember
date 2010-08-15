@@ -29,16 +29,12 @@ namespace Gui
 {
 
 TexturePair::TexturePair(Ogre::TexturePtr ogreTexture, const CEGUI::Image* textureImage, CEGUI::Imageset* textureImageset) :
-	mOgreTexture(ogreTexture)
-	// , mOgreCEGUITexture(ogreCEGUITexture)
-			, mTextureImage(textureImage), mTextureImageset(textureImageset)
+	mOgreTexture(ogreTexture), mTextureImage(textureImage), mTextureImageset(textureImageset)
 {
 }
 
 TexturePair::TexturePair() :
-	mOgreTexture(0)
-	// , mOgreCEGUITexture(0)
-			, mTextureImage(0), mTextureImageset(0)
+	mOgreTexture(0), mTextureImage(0), mTextureImageset(0)
 {
 }
 
@@ -46,11 +42,6 @@ Ogre::TexturePtr TexturePair::getOgreTexture() const
 {
 	return mOgreTexture;
 }
-
-// CEGUI::Texture* TexturePair::getOgreCEGUITexture() const
-// {
-// 	return OgreCEGUITexture;
-// }
 
 const CEGUI::Image* TexturePair::getTextureImage() const
 {

@@ -42,7 +42,6 @@ public:
 	TexturePair();
 
 	Ogre::TexturePtr getOgreTexture() const;
-// 	CEGUI::Texture* getOgreCEGUITexture() const;
 	const CEGUI::Image* getTextureImage() const;
 	CEGUI::Imageset* getTextureImageset() const;
 
@@ -50,7 +49,6 @@ public:
 
 protected:
 	Ogre::TexturePtr mOgreTexture;
-// 	CEGUI::Texture* mOgreCEGUITexture;
 	const CEGUI::Image* mTextureImage;
 	CEGUI::Imageset* mTextureImageset;
 };
