@@ -31,6 +31,8 @@
 #include <OgreLight.h>
 #include <OgreRoot.h>
 #include <OgreEntity.h>
+#include <OgreResourceGroupManager.h>
+#include <OgreResourceManager.h>
 #include <sstream>
 
 #ifdef HAVE_OPENGL
@@ -127,6 +129,37 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 			}
 		}
 
+	}
+
+	outputStream << "Resource Managers:" << std::endl;
+	Ogre::ResourceGroupManager::ResourceManagerIterator I = Ogre::ResourceGroupManager::getSingleton().getResourceManagerIterator();
+	while (I.hasMoreElements()) {
+		std::string name = I.peekNextKey();
+		Ogre::ResourceManager* manager = I.getNext();
+		outputStream << " Resource Manager: " << name << std::endl;
+		if (manager->getMemoryBudget() == std::numeric_limits<size_t>::max()) {
+			outputStream << "  Memory budget: not set" << std::endl;
+		} else {
+			outputStream << "  Memory budget: " << manager->getMemoryBudget() << std::endl;
+		}
+		outputStream << "  Memory usage:  " << manager->getMemoryUsage() << std::endl;
+
+		Ogre::ResourceManager::ResourceMapIterator resourceI = manager->getResourceIterator();
+		if (resourceI.hasMoreElements()) {
+			outputStream << "  Resources: " << std::endl;
+			int resourceCount = 0;
+			int loadedResourceCount = 0;
+			while (resourceI.hasMoreElements()) {
+				Ogre::ResourcePtr resource = resourceI.getNext();
+				if (resource->isLoaded()) {
+					outputStream << "   " << resource->getName() << " ( " << resource->getSize() << " )" << std::endl;
+					loadedResourceCount++;
+				}
+				resourceCount++;
+			}
+			outputStream << "  Total number of resources: " << resourceCount << std::endl;
+			outputStream << "  Number of loaded resources: " << loadedResourceCount << std::endl;
+		}
 	}
 
 	outputStream << std::flush;
