@@ -101,13 +101,18 @@ unsigned int OgreResourceLoader::numberOfSections()
 void OgreResourceLoader::runCommand(const std::string &command, const std::string &args)
 {
 	if (UnloadUnusedResources == command) {
-		Ember::TimedLog l("Unload unused resources.");
-		Ogre::ResourceGroupManager& resourceGroupManager(Ogre::ResourceGroupManager::getSingleton());
+		unloadUnusedResources();
+	}
+}
 
-		Ogre::StringVector resourceGroups = resourceGroupManager.getResourceGroups();
-		for (Ogre::StringVector::const_iterator I = resourceGroups.begin(); I != resourceGroups.end(); ++I) {
-			resourceGroupManager.unloadUnreferencedResourcesInGroup(*I, false);
-		}
+void OgreResourceLoader::unloadUnusedResources()
+{
+	Ember::TimedLog l("Unload unused resources.");
+	Ogre::ResourceGroupManager& resourceGroupManager(Ogre::ResourceGroupManager::getSingleton());
+
+	Ogre::StringVector resourceGroups = resourceGroupManager.getResourceGroups();
+	for (Ogre::StringVector::const_iterator I = resourceGroups.begin(); I != resourceGroups.end(); ++I) {
+		resourceGroupManager.unloadUnreferencedResourcesInGroup(*I, false);
 	}
 }
 

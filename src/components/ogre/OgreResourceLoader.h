@@ -75,6 +75,12 @@ public:
 	const ResourceLocationsMap& getResourceLocations() const;
 
 	/**
+	 * @brief Tells Ogre to unload all unused resources, thus freeing up memory.
+	 * @note Calling this might stall the engine a little.
+	 */
+	void unloadUnusedResources();
+
+	/**
 	 * @copydoc ConsoleObject::runCommand
 	 */
 	virtual void runCommand(const std::string &command, const std::string &args);
