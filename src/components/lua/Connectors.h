@@ -30,6 +30,22 @@ namespace Ember
 namespace Lua
 {
 
+/**
+ * @brief Resolves the lua name of the templated type.
+ * This is used to get the Lua type name of C++ types. Any C++ type wrapped by a subclass of ValueAdapterBase needs to have a corresponding implementation defined.
+ *
+ * For example, if you use an instance of RefValueAdapter<Ember::Foo> you need to have this piece of code compiled:
+ * <code>
+ * namespace Ember {
+ * namespace Lua {
+ * template <>
+ * const char* resolveLuaTypename<Ember::Foo>() {
+ * 	return "Ember::Foo";
+ * }
+ * }
+ * }
+ * </code>
+ */
 template <typename T>
 const char* resolveLuaTypename();
 
@@ -79,7 +95,11 @@ public:
 	 */
 	RefValueAdapter(const std::string& luaTypeName) : ValueAdapterBase::ValueAdapterBase(luaTypeName)
 	{}
-	RefValueAdapter() : ValueAdapterBase::ValueAdapterBase(resolveLuaTypename<T>())
+
+	/**
+	 * @brief Ctor.
+	 */
+	RefValueAdapter() : ValueAdapterBase::ValueAdapterBase(resolveLuaTypename<const T>())
 	{}
 	/**
 	 * @brief Tries to push a value onto the lua stack.
@@ -109,7 +129,10 @@ public:
 	PtrValueAdapter(const std::string& luaTypeName) : ValueAdapterBase::ValueAdapterBase(luaTypeName)
 	{}
 
-	PtrValueAdapter() : ValueAdapterBase::ValueAdapterBase(resolveLuaTypename<T>())
+	/**
+	 * @brief Ctor.
+	 */
+	PtrValueAdapter() : ValueAdapterBase::ValueAdapterBase(resolveLuaTypename<const T>())
 	{}
 	/**
 	 * @brief Tries to push a value onto the lua stack.

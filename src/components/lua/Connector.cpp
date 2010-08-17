@@ -121,6 +121,22 @@ Connector::Connector(Ember::Lua::ConnectorBase* connector)
 	mConnector = connector;
 }
 
+Connector::Connector(const Connector& connector)
+: mConnector(connector.mConnector)
+{
+	connector.mConnector = 0;
+}
+
+
+Connector Connector::createConnector(sigc::signal<void>* signal)
+{
+	return Connector(*signal);
+}
+
+Connector Connector::createConnector(sigc::signal<void>& signal)
+{
+	return Connector(signal);
+}
 
 }
 

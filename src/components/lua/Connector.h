@@ -76,6 +76,37 @@ public:
 	 */
 	static lua_State* getState();
 
+	Connector(const Connector& connector);
+
+	/**
+	 * @brief Ctor.
+	 * @param signal The signal to connect to.
+	 */
+	Connector(sigc::signal<void>& signal);
+
+	/**
+	 * @brief Ctor.
+	 * @param signal The signal to connect to.
+	 */
+	template <typename TAdapter0, typename TSignal>
+	Connector(TSignal& signal);
+
+	template <typename TAdapter0, typename TSignal>
+	Connector(TSignal& signal, TAdapter0& adapter0);
+
+	/**
+	 * @brief Ctor.
+	 * @param signal The signal to connect to.
+	 */
+	template <typename TAdapter0, typename TAdapter1, typename TSignal>
+	Connector(TSignal& signal);
+	template <typename TAdapter0, typename TAdapter1, typename TSignal>
+	Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1);
+
+	/**
+	 * @brief Dtor.
+	 * The internal connector will be deleted, which will disconnect any connection.
+	 */
 	~Connector();
 
 	/**
@@ -110,32 +141,65 @@ public:
 	 */
 	Connector* setSelf(int selfIndex);
 
-	static Connector* createLuaConnector(sigc::signal<void>* signal);
-	static Connector* createLuaConnector(sigc::signal<void>& signal);
-
-	template <typename TAdapter0, typename TSignal>
-	static Connector* createLuaConnector(TSignal* signal);
-	template <typename TAdapter0, typename TSignal>
-	static Connector* createLuaConnector(TSignal& signal);
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	static Connector createConnector(sigc::signal<void>* signal);
 
 	/**
-	 * @brief Creates a new connector instance.
-	 * @param signal The signal.
-	 * @param adapter0 The first adapter.
-	 * @param adapter1 The second adapter.
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
 	 */
-	template <typename TSignal, typename TAdapter0, typename TAdapter1>
-	static Connector* createLuaConnector(TSignal& signal);
+	static Connector createConnector(sigc::signal<void>& signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	template <typename TAdapter0, typename TSignal>
+	static Connector createConnector(TSignal* signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	template <typename TAdapter0, typename TSignal>
+	static Connector createConnector(TSignal& signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	template <typename TAdapter0, typename TAdapter1, typename TSignal>
+	static Connector createConnector(TSignal* signal);
+
+	/**
+	 * @brief Creates a new connector.
+	 * @param signal The signal to connect to.
+	 * @returns A new connector instance.
+	 */
+	template <typename TAdapter0, typename TAdapter1, typename TSignal>
+	static Connector createConnector(TSignal& signal);
 
 private:
 
 	/**
 	 * @brief The internal connector which will handle the actual lua binding.
+	 * @note This is mutable so that it can be set to null when the copy constructor is invoked.
 	 */
-	Ember::Lua::ConnectorBase* mConnector;
+	mutable Ember::Lua::ConnectorBase* mConnector;
 
+	/**
+	 * @brief Ctor.
+	 * @param connector The underlying connector instance.
+	 */
 	Connector(Ember::Lua::ConnectorBase* connector);
-	Connector(sigc::signal<void>& signal);
 
 
 	/**
@@ -148,39 +212,86 @@ private:
 
 };
 
-
-inline Connector* Connector::createLuaConnector(sigc::signal<void>* signal)
+template <typename TAdapter0, typename TSignal>
+class ConnectorOne_ : public Connector
 {
-	return new Connector(*signal);
-}
+public:
+	ConnectorOne_(TSignal& signal)
+	: Connector::Connector(signal, TAdapter0())
+	{
 
-inline Connector* Connector::createLuaConnector(sigc::signal<void>& signal)
+	}
+};
+
+template <typename TAdapter0, typename TAdapter1, typename TSignal>
+class ConnectorTwo_ : public Connector
 {
-	return new Connector(signal);
+public:
+	ConnectorTwo_(TSignal& signal)
+	: Connector::Connector(signal, TAdapter0(), TAdapter1())
+	{
+
+	}
+};
+
+template <typename TSignal, typename TAdapter0, typename TAdapter1 = EmptyValueAdapter>
+class Connector_ : public Connector
+{
+public:
+	Connector_(TSignal& signal)
+	: Connector::Connector(signal, TAdapter0(), TAdapter1())
+	{
+
+	}
+};
+
+template <typename TAdapter0, typename TSignal>
+Connector::Connector(TSignal& signal)
+: mConnector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, TAdapter0()))
+{
 }
 
 template <typename TAdapter0, typename TSignal>
-Connector* Connector::createLuaConnector(TSignal* signal)
+Connector::Connector(TSignal& signal, TAdapter0& adapter0)
+: mConnector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, adapter0))
 {
-	return new Connector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(*signal, TAdapter0()));
+}
+
+template <typename TAdapter0, typename TAdapter1, typename TSignal>
+Connector::Connector(TSignal& signal)
+: mConnector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, TAdapter0(), TAdapter1()))
+{
+}
+
+template <typename TAdapter0, typename TAdapter1, typename TSignal>
+Connector::Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1)
+: mConnector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, adapter0, adapter1))
+{
+}
+
+
+template <typename TAdapter0, typename TSignal>
+Connector Connector::createConnector(TSignal* signal)
+{
+	return Connector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(*signal, TAdapter0()));
 }
 
 template <typename TAdapter0, typename TSignal>
-Connector* Connector::createLuaConnector(TSignal& signal)
+Connector Connector::createConnector(TSignal& signal)
 {
-	return new Connector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, TAdapter0()));
+	return Connector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, TAdapter0()));
 }
 
-/**
- * @brief Creates a new connector instance.
- * @param signal The signal.
- * @param adapter0 The first adapter.
- * @param adapter1 The second adapter.
- */
-template <typename TSignal, typename TAdapter0, typename TAdapter1>
-Connector* Connector::createLuaConnector(TSignal& signal)
+template <typename TAdapter0, typename TAdapter1, typename TSignal>
+Connector Connector::createConnector(TSignal* signal)
 {
-	return new Connector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, TAdapter0(), TAdapter1()));
+	return Connector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(*signal, TAdapter0(), TAdapter1()));
+}
+
+template <typename TAdapter0, typename TAdapter1, typename TSignal>
+Connector Connector::createConnector(TSignal& signal)
+{
+	return Connector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, TAdapter0(), TAdapter1()));
 }
 
 }
