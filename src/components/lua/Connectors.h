@@ -57,50 +57,14 @@ struct Empty{};
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Base class for value adapters which are mapped to a lua user type, and therefore needs to have the name of this type carried with them.
- */
-class ValueAdapterBase
-{
-public:
-
-	/**
-	 * @brief Ctor.
-	 * @param luaTypeName The lua name of the enveloped type. For example "Ember::Foo".
-	 */
-	ValueAdapterBase(const std::string& luaTypeName)
-	: mLuaTypeName(luaTypeName)
-	{}
-
-protected:
-
-	/**
-	 * @brief The lua name of the enveloped type.
-	 */
-	const std::string mLuaTypeName;
-};
-
-/**
- * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A value adapter for reference types.
  */
 template <typename T>
-class RefValueAdapter : public ValueAdapterBase
+class RefValueAdapter
 {
 public:
 	typedef T &value_type;
 
-	/**
-	 * @brief Ctor.
-	 * @param luaTypeName The lua name of the enveloped type. For example "Ember::Foo".
-	 */
-	RefValueAdapter(const std::string& luaTypeName) : ValueAdapterBase::ValueAdapterBase(luaTypeName)
-	{}
-
-	/**
-	 * @brief Ctor.
-	 */
-	RefValueAdapter() : ValueAdapterBase::ValueAdapterBase(resolveLuaTypename<const T>())
-	{}
 	/**
 	 * @brief Tries to push a value onto the lua stack.
 	 * @param state The lua state.
@@ -117,23 +81,11 @@ public:
  * @brief A value adapter for pointer types.
  */
 template <typename T>
-class PtrValueAdapter : public ValueAdapterBase
+class PtrValueAdapter
 {
 public:
 	typedef T *value_type;
 
-	/**
-	 * @brief Ctor.
-	 * @param luaTypeName The lua name of the enveloped type. For example "Ember::Foo".
-	 */
-	PtrValueAdapter(const std::string& luaTypeName) : ValueAdapterBase::ValueAdapterBase(luaTypeName)
-	{}
-
-	/**
-	 * @brief Ctor.
-	 */
-	PtrValueAdapter() : ValueAdapterBase::ValueAdapterBase(resolveLuaTypename<const T>())
-	{}
 	/**
 	 * @brief Tries to push a value onto the lua stack.
 	 * @param state The lua state.

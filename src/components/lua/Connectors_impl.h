@@ -38,14 +38,14 @@ namespace Lua
 template <typename T>
 bool RefValueAdapter<T>::pushValue(lua_State* state, const T& value)
 {
-	tolua_pushusertype(state, (void*)&value, mLuaTypeName.c_str());
+	tolua_pushusertype(state, (void*)&value, resolveLuaTypename<const T>());
 	return true;
 }
 
 template <typename T>
 bool PtrValueAdapter<T>::pushValue(lua_State* state, const T* value)
 {
-	tolua_pushusertype(state, (void*)value, mLuaTypeName.c_str());
+	tolua_pushusertype(state, (void*)value, resolveLuaTypename<const T>());
 	return true;
 }
 
