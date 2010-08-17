@@ -1,0 +1,33 @@
+$#include "bindings/lua/TypeResolving.h"
+
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector @ createConnector(sigc::signal<void>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::StringValueAdapter, Ember::Lua::PtrValueAdapter<EmberOgre::EmberEntity> > @ createConnector(sigc::signal<void, const std::string&, EmberOgre::EmberEntity*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Eris::Connection> > @ createConnector(sigc::signal<void, Eris::Connection*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const Eris::ServerInfo> > @ createConnector(sigc::signal<void, const Eris::ServerInfo&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::NumberValueAdapter<float> > @ createConnector(sigc::signal<void, float>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const EmberOgre::EntityPickResult>, Ember::Lua::RefValueAdapter<const EmberOgre::MousePickerArgs> > @ createConnector(sigc::signal<void, const EmberOgre::EntityPickResult&, const EmberOgre::MousePickerArgs&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const std::vector<EmberOgre::EntityPickResult> >, Ember::Lua::RefValueAdapter<const EmberOgre::MousePickerArgs> > @ createConnector(sigc::signal<void, const std::vector<EmberOgre::EntityPickResult>&, const EmberOgre::MousePickerArgs&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const EmberOgre::MousePickerArgs> > @ createConnector(sigc::signal<void, const EmberOgre::MousePickerArgs&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::NumberValueAdapter<Ember::Input::MouseButton>, Ember::Lua::NumberValueAdapter<Ember::Input::InputMode> > @ createConnector(sigc::signal<void, Ember::Input::MouseButton, Ember::Input::InputMode>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::NumberValueAdapter<Ember::Input::InputMode> > @ createConnector(sigc::signal<void, Ember::Input::InputMode>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::EmberEntityFactory> > @ createConnector(sigc::signal<void, EmberOgre::EmberEntityFactory&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<EmberOgre::EmberEntity> > @ createConnector(sigc::signal<void, EmberOgre::EmberEntity*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::EmberEntity> > @ createConnector(sigc::signal<void, EmberOgre::EmberEntity&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::EmberEntity> , Ember::Lua::RefValueAdapter<EmberOgre::Authoring::EntityMover> > @ createConnector(sigc::signal<void, EmberOgre::EmberEntity&, EmberOgre::Authoring::EntityMover&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::StringValueAdapter> @ createConnector(sigc::signal<void, const std::string&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::StringValueAdapter> @ createConnector(sigc::signal<bool, const std::string&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter> @ createConnector(sigc::signal<void, const std::string&, const std::string&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<EmberOgre::Terrain::BasePointUserObject> > @ createConnector(sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<EmberOgre::Terrain::TerrainEditAction> > @ createConnector(sigc::signal<void, EmberOgre::Terrain::TerrainEditAction*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::Terrain::TerrainEditorOverlay> > @ createConnector(sigc::signal<void, EmberOgre::Terrain::TerrainEditorOverlay&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::Terrain::TerrainManager> > @ createConnector(sigc::signal<void, EmberOgre::Terrain::TerrainManager&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Eris::Task> > @ createConnector(sigc::signal<void, Eris::Task*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const std::set<std::string> > > @ createConnector(sigc::signal<void, const std::set<std::string>&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<EmberOgre::Gui::EntityIcon> > @ createConnector(sigc::signal<void, EmberOgre::Gui::EntityIcon*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const Atlas::Message::Element> > @ createConnector(sigc::signal<void, const Atlas::Message::Element&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::NumberValueAdapter<EmberOgre::MovementControllerMode::Mode> > @ createConnector(sigc::signal<void, EmberOgre::MovementControllerMode::Mode>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::Terrain::TerrainPage> > @ createConnector(sigc::signal<void, EmberOgre::Terrain::TerrainPage&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const Atlas::Objects::Root> > @ createConnector(sigc::signal<void, const Atlas::Objects::Root&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Eris::Avatar> > @ createConnector(sigc::signal<void, Eris::Avatar*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Eris::View> > @ createConnector(sigc::signal<void, Eris::View*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::World> > @ createConnector(sigc::signal<void, EmberOgre::World&>&);

@@ -71,6 +71,7 @@ TOLUA_API int tolua_AtlasAdapters_open(lua_State* tolua_S);
 TOLUA_API int tolua_Atlas_open(lua_State* tolua_S);
 TOLUA_API int tolua_Varconf_open(lua_State* tolua_S);
 TOLUA_API int tolua_Lua_open(lua_State* tolua_S);
+TOLUA_API int tolua_ConnectorDefinitions_open(lua_State* tolua_S);
 
 #include <iostream>
 #include <sstream>
@@ -351,6 +352,7 @@ void Application::initializeServices()
 	tolua_AtlasAdapters_open(luaProvider->getLuaState());
 	tolua_Atlas_open(luaProvider->getLuaState());
 	tolua_Varconf_open(luaProvider->getLuaState());
+	tolua_ConnectorDefinitions_open(luaProvider->getLuaState());
 	Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(luaProvider);
 
 	EventServicesInitialized.emit();

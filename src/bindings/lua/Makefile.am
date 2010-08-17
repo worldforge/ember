@@ -5,13 +5,13 @@ SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 
 INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
-noinst_LIBRARIES = liblua_Helpers.a
-liblua_Helpers_a_SOURCES = Helpers.cxx OgreUtils.cpp
+noinst_LIBRARIES = liblua_ConnectorDefinitions.a
+liblua_ConnectorDefinitions_a_SOURCES = ConnectorDefinitions.cxx TypeResolving.cpp
 
-TOLUA_PKGS = Helpers.pkg OgreUtils.pkg
+TOLUA_PKGS = ConnectorDefinitions.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
-Helpers.cxx: $(TOLUA_PKGS)
+ConnectorDefinitions.cxx: $(TOLUA_PKGS)
 
-noinst_HEADERS = required.h OgreUtils.h
+noinst_HEADERS = TypeResolving.h
 
 bindings: clean all

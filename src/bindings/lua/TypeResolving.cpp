@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 
-#include "LuaConnector.h"
+#include "TypeResolving.h"
 #include "components/lua/Connectors.h"
 
 #include "components/ogre/MousePicker.h"
@@ -36,6 +36,10 @@ namespace Ember
 
 namespace Lua
 {
+
+/**
+ * For every type you want to move between C++ and Lua through either an Ember::Lua::RefValueAdapter or an Ember::Lua::PtrValueAdapter you must provide a suitable method here.
+ */
 
 template <>
 const char* resolveLuaTypename<const EmberOgre::EmberEntity>(){return "EmberOgre::EmberEntity";}

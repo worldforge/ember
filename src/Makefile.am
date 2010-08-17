@@ -1,1 +1,1 @@
-SUBDIRS = extensions services framework components main
+SUBDIRS = bindings extensions services framework components main

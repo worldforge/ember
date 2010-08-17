@@ -20,8 +20,9 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRELUACONNECTORS_H
-#define EMBEROGRELUACONNECTORS_H
+#ifndef TYPERESOLVING_H
+#define TYPERESOLVING_H
+#include "components/lua/Connector.h"
 
 #include "services/input/Input.h"
 #include "components/ogre/MovementController.h"

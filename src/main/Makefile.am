@@ -11,6 +11,7 @@ ember_bin_SOURCES += win32/OgreWin32Resources.rc win32/ember.ico
 endif
 
 ember_bin_LDADD = \
+	$(top_builddir)/src/bindings/lua/liblua_ConnectorDefinitions.a \
 	$(top_builddir)/src/components/lua/bindings/lua/liblua_Lua.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/ogre/liblua_Ogre.a \
