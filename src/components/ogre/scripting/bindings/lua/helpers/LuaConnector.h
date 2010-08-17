@@ -109,7 +109,7 @@ class EntityIcon;
 
  --connect the lua method "lua_foo" to the event "EventFoo" of the object "emitter" and keeps a reference to the adapter in the variable "fooConnector"
  local emitter = EmberOgre.Emitter:new()
- fooConnector = EmberOgre.LuaConnector:new_local(emitter.EventFoo):connect(lua_foo)
+ fooConnector = createConnector(emitter.EventFoo):connect(lua_foo)
 
 
 
