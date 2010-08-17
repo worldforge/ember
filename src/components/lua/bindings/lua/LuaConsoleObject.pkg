@@ -1,4 +1,7 @@
-namespace EmberOgre {
+$#include "components/lua/LuaConsoleObject.h"
+
+namespace Ember {
+namespace Lua {
 
 class LuaConsoleObject 
 {
@@ -8,4 +11,5 @@ class LuaConsoleObject
     ~LuaConsoleObject();
 
 };
+}
 }

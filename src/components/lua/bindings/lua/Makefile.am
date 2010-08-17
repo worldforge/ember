@@ -5,13 +5,11 @@ SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 
 INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
-noinst_LIBRARIES = liblua_Helpers.a
-liblua_Helpers_a_SOURCES = Helpers.cxx LuaConnector.cpp OgreUtils.cpp
+noinst_LIBRARIES = liblua_Lua.a
+liblua_Lua_a_SOURCES = Lua.cxx
 
-TOLUA_PKGS = Helpers.pkg LuaConnector.pkg OgreUtils.pkg
+TOLUA_PKGS = Lua.pkg LuaConsoleObject.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
-Helpers.cxx: $(TOLUA_PKGS)
-
-noinst_HEADERS = required.h LuaConnector.h OgreUtils.h
+Lua.cxx: $(TOLUA_PKGS)
 
 bindings: clean all

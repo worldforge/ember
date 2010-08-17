@@ -40,7 +40,7 @@ function Chat.buildWidget()
 	connect(Chat.connectors, emberOgre.EventCreatedAvatarEntity, "Chat.createdAvatarEmberEntity")
 	connect(Chat.connectors, console.GotMessage, "Chat.consoleGotMessage")
 	
-	Chat.consoleObject = EmberOgre.LuaConsoleObject:new_local("console_focus", "Chat.console_focus")
+	Chat.consoleObject = Ember.Lua.LuaConsoleObject:new_local("console_focus", "Chat.console_focus")
 	
 
 end

@@ -70,6 +70,7 @@ TOLUA_API int tolua_Application_open(lua_State* tolua_S);
 TOLUA_API int tolua_AtlasAdapters_open(lua_State* tolua_S);
 TOLUA_API int tolua_Atlas_open(lua_State* tolua_S);
 TOLUA_API int tolua_Varconf_open(lua_State* tolua_S);
+TOLUA_API int tolua_Lua_open(lua_State* tolua_S);
 
 #include <iostream>
 #include <sstream>
@@ -339,6 +340,7 @@ void Application::initializeServices()
 	///register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	Lua::LuaScriptingProvider* luaProvider = new Lua::LuaScriptingProvider();
 
+	tolua_Lua_open(luaProvider->getLuaState());
 	tolua_Framework_open(luaProvider->getLuaState());
 	tolua_EmberOgre_open(luaProvider->getLuaState());
 	tolua_Eris_open(luaProvider->getLuaState());

@@ -25,10 +25,11 @@
 #endif
 
 #include "LuaConsoleObject.h"
-#include "components/lua/Connectors_impl.h"
+#include "Connectors_impl.h"
 #include "framework/ConsoleBackend.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace Lua {
 
 LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description):
 mCommand(command), mLuaMethod(luaMethod), mCommandWrapper(command, this, description)
@@ -48,4 +49,5 @@ void LuaConsoleObject::runCommand(const std::string &command, const std::string 
 	mConnector->callLuaMethod<const std::string &, const std::string &>(command, args);
 }
 
+}
 }

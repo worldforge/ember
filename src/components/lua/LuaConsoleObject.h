@@ -25,7 +25,8 @@
 #include "framework/ConsoleObject.h"
 #include "components/lua/Connectors.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace Lua {
 
 /**
 @author Erik Hjortsberg
@@ -52,6 +53,7 @@ private:
 	const Ember::ConsoleCommandWrapper mCommandWrapper;
 };
 
+}
 }
 
 #endif
