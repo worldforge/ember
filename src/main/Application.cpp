@@ -32,6 +32,7 @@
 
 #include <Eris/View.h>
 #include <Eris/PollDefault.h>
+#include <Eris/DeleteLater.h>
 
 #include "services/EmberServices.h"
 #include "services/logging/LoggingService.h"
@@ -386,6 +387,9 @@ void Application::start()
 	}
 
 	mainLoop();
+
+	//When shutting down make sure to delete all pending objects from Eris. This is mainly because we want to be able to track memory leaks.
+	Eris::execDeleteLaters();
 }
 
 bool Application::shouldQuit()
