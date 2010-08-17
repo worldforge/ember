@@ -295,4 +295,55 @@ LuaConnector::LuaConnector(sigc::signal<void, World&>& signal)
 
 
 }
-;
+
+
+namespace Ember
+{
+
+namespace Lua
+{
+
+template <>
+const char* resolveLuaTypename<const EmberOgre::EmberEntity>(){return "EmberOgre::EmberEntity";}
+template <>
+const char* resolveLuaTypename<const Ogre::Camera>(){return "Ogre::Camera";}
+template <>
+const char* resolveLuaTypename<const Eris::Connection>(){return "Eris::Connection";}
+template <>
+const char* resolveLuaTypename<const Eris::ServerInfo>(){return "Eris::ServerInfo";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::EntityPickResult>(){return "EmberOgre::EntityPickResult";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::MousePickerArgs>(){return "EmberOgre::MousePickerArgs";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::EmberEntityFactory>(){return "EmberOgre::EmberEntityFactory";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::Authoring::EntityMover>(){return "EmberOgre::Authoring::EntityMover";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::Terrain::BasePointUserObject>(){return "EmberOgre::Terrain::BasePointUserObject";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainEditAction>(){return "EmberOgre::Terrain::TerrainEditAction";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainEditorOverlay>(){return "EmberOgre::Terrain::TerrainEditorOverlay";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainManager>(){return "EmberOgre::Terrain::TerrainManager";}
+template <>
+const char* resolveLuaTypename<const Eris::Task>(){return "Eris::Task";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::Gui::EntityIcon>(){return "EmberOgre::Gui::EntityIcon";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainPage>(){return "EmberOgre::Terrain::TerrainPage";}
+template <>
+const char* resolveLuaTypename<const Eris::Avatar>(){return "Eris::Avatar";}
+template <>
+const char* resolveLuaTypename<const Eris::View>(){return "Eris::View";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::World>(){return "EmberOgre::World";}
+template <>
+const char* resolveLuaTypename<const std::vector<EmberOgre::EntityPickResult> >(){return "std::vector<EmberOgre::EntityPickResult>";}
+template <>
+const char* resolveLuaTypename<const std::set<std::string> >(){return "std::set<std::string>";}
+
+}
+}
+
