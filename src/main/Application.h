@@ -99,7 +99,7 @@ initializeServices();
 start();
 
 */
-class Application : public ConsoleObject, public Ember::Singleton<Application>
+class Application : public ConsoleObject, public Ember::Singleton<Application>, public sigc::trackable
 {
 public:
 	typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
