@@ -1,0 +1,43 @@
+$#include "components/lua/Connector.h"
+
+namespace Ember {
+namespace Lua {
+class Connector {
+
+	/**
+	 * @brief Connects to the lua method.
+	 *
+	 * @param luaMethod The lua method.
+	 * @param selfIndex An optional lua table index to be used as a "self" parameter.
+	 *
+	 * @return This instance.
+	 */
+	Connector* connect(lua_Object luaMethod, lua_Object selfIndex = LUA_NOREF);
+	
+	/**
+	 * @brief Connects to the named lua method.
+	 *
+	 * @param luaMethod The fully qualified name of the method.
+	 * @param selfIndex An optional lua table index to be used as a "self" parameter.
+	 *
+	 * @return This instance.
+	 */
+	Connector* connect(const std::string& luaMethod, lua_Object selfIndex = LUA_NOREF);
+
+		
+	/**
+	Disconnects from the signal.
+	*/
+	void disconnect();
+	
+	/**
+	 * @brief Sets a "self" reference which will be prepended to any lua call.
+	 *
+	 * @param selfIndex The lua index of the self reference.
+	 */
+	Connector* setSelf(lua_Object selfIndex);
+}
+}
+}
+
+

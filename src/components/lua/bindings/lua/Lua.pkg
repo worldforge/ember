@@ -1,2 +1,3 @@
 $pfile "LuaConsoleObject.pkg"
+$pfile "Connector.pkg"
 

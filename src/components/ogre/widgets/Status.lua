@@ -47,8 +47,8 @@ function StatusInstance:setEntity(entity)
 	if entity == nil then
 		self.widget:hide()
 	else
-		self.connectors.changedConnector = Ember.Lua.Connector:createConnector(entity.Changed):connect(self.entity_Changed, self)
-		self.connectors.deleteConnector = Ember.Lua.Connector:createConnector(entity.BeingDeleted):connect(self.entity_BeingDeleted, self)
+		self.connectors.changedConnector = createConnector(entity.Changed):connect(self.entity_Changed, self)
+		self.connectors.deleteConnector = createConnector(entity.BeingDeleted):connect(self.entity_BeingDeleted, self)
 
 		if entity:getName() == "" then
 			self.nameWindow:setText(entity:getType():getName())
@@ -143,7 +143,7 @@ function Status:shutdown()
 	self.avatarStatus:shutdown()
 end
 
-Status.createdAvatarEntityConnector = Ember.Lua.Connector:createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
+Status.createdAvatarEntityConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
 		status = {connectors={} }
 		setmetatable(status, {__index = Status})
 		status:buildWidget(avatarEntity)

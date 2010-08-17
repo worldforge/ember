@@ -47,8 +47,8 @@ debugWidget:loadMainSheet("Debug.layout", "Debug/")
 chatWidget:registerConsoleVisibilityToggleCommand("debug")
 chatWidget:enableCloseButton();
 
-Ember.Lua.Connector:createConnector(guiManager.AppendIGChatLine):connect("Chat_appendIGChatLine")
-Ember.Lua.Connector:createConnector(guiManager.AppendOOGChatLine):connect("Chat_appendIGChatLine")
+createConnector(guiManager.AppendIGChatLine):connect("Chat_appendIGChatLine")
+createConnector(guiManager.AppendOOGChatLine):connect("Chat_appendIGChatLine")
 
 
 

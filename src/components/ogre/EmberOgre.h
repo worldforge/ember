@@ -414,6 +414,11 @@ protected:
 	 */
 	void Application_ServicesInitialized();
 
+	/**
+	 * @brief Clears the dirty passes lists in Ogre.
+	 * @note You need to call this each frame due to problematic behaviour in how Ogre handles multiple scene managers. See http://www.ogre3d.org/mantis/view.php?id=130
+	 */
+	void clearDirtyPassLists();
 
 
 };

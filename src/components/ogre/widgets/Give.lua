@@ -83,7 +83,7 @@ function Give:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-Give.startConnector = Ember.Lua.Connector:createConnector(emberOgre.EventCreatedAvatarEntity):connect(function()
+Give.startConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function()
 		local give = {connectors={}, listbox = nil, targetEntityId = nil, listboxMap = {}}
 		setmetatable(give, {__index = Give})
 		give:buildWidget(emberOgre:getWorld():getAvatar())

@@ -207,6 +207,7 @@ bool EmberOgre::renderOneFrame()
 			mRoot->clearEventTimes();
 		}
 		try {
+			clearDirtyPassLists();
 			mRoot->renderOneFrame();
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);
@@ -215,6 +216,22 @@ bool EmberOgre::renderOneFrame()
 	} else {
 		mIsInPausedMode = true;
 		return false;
+	}
+}
+
+void EmberOgre::clearDirtyPassLists()
+{
+	if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
+		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
+
+		while (scenesIter.hasMoreElements()) {
+			Ogre::SceneManager* pScene = scenesIter.getNext();
+			pScene->getRenderQueue()->clear();
+		}
+
+		// Now trigger the pending pass updates
+		Ogre::Pass::processPendingPassUpdates();
+
 	}
 }
 

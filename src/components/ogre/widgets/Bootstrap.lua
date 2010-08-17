@@ -70,7 +70,7 @@ end
 
 --creates a connection between the supplied event and a function, stores the connection object in the supplied table and returns it
 function connect(connectorTable, event, functionName, selfRef)
-	local connector = Ember.Lua.Connector:createConnector(event):connect(functionName, selfRef)
+	local connector = createConnector(event):connect(functionName, selfRef)
 	if connectorTable ~= nil then
 		table.insert(connectorTable, connector)
 	end
