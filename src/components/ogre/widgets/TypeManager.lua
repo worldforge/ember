@@ -116,7 +116,7 @@ function TypeManager:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-TypeManager.createdWorldConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventWorldCreated):connect(function(world)
+TypeManager.createdWorldConnector = Ember.Lua.Connector:createConnector(emberOgre.EventWorldCreated):connect(function(world)
 		typeManager = {connectors={}, codecClass=Atlas.Codecs.XML, world=world}
 		setmetatable(typeManager, {__index = TypeManager})
 		

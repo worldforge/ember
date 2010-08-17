@@ -16,7 +16,7 @@ function EntityPicker:buildWidget(world)
 
 	local entityPickListener = world:getEntityPickListener()
  	connect(self.connectors, entityPickListener.EventPickedEntity, self.pickedEntity, self)
- 	--EmberOgre.LuaConnector:new(mousePicker.EventPickedNothing):connect(self.pickedNothing, self)
+ 	--Ember.Lua.Connector:createConnector(mousePicker.EventPickedNothing):connect(self.pickedNothing, self)
     
 	self.widget:loadMainSheet("EntityPicker.layout", "EntityPicker/")
 	

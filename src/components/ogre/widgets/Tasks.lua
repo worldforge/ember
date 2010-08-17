@@ -42,11 +42,11 @@ function Tasks.SetCurrentTask(task)
 	Tasks.currentTask = task
 	Tasks.nameWindow:setText("Task name: " .. task:name())
 	--set up bindings
-	Tasks.progressAdapter = EmberOgre.LuaConnector:new_local(task.Progressed)
+	Tasks.progressAdapter = Ember.Lua.Connector:createConnector(task.Progressed)
 	Tasks.progressAdapter:connect("Tasks.Progressed")
-	Tasks.cancelledAdapter = EmberOgre.LuaConnector:new_local(task.Cancelled)
+	Tasks.cancelledAdapter = Ember.Lua.Connector:createConnector(task.Cancelled)
 	Tasks.cancelledAdapter:connect("Tasks.Cancelled")
-	Tasks.completedAdapter = EmberOgre.LuaConnector:new_local(task.Completed)
+	Tasks.completedAdapter = Ember.Lua.Connector:createConnector(task.Completed)
 	Tasks.completedAdapter:connect("Tasks.Completed")
 	Tasks.widget:show()
 end
@@ -87,7 +87,7 @@ function Tasks.buildWidget()
 
 	connect(Tasks.connectors, emberOgre.EventCreatedAvatarEntity, "Tasks.createdAvatarEmberEntity")
 
---	EmberOgre.LuaConnector:new(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
+--	Ember.Lua.Connector:createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 
 
 	Tasks.widget:registerConsoleVisibilityToggleCommand("tasks")

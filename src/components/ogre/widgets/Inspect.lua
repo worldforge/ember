@@ -8,7 +8,7 @@ Inspect = {}
 
 
 --Show the inspect widget when the world has been entered
-Inspect.createdWorldConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventWorldCreated):connect(function(world)
+Inspect.createdWorldConnector = Ember.Lua.Connector:createConnector(emberOgre.EventWorldCreated):connect(function(world)
 		local inspectWidget = guiManager:createWidget("InspectWidget")
 		local connectors = {}
 		

@@ -166,7 +166,7 @@ function Admin:shutdown()
 end
 
 --listen for when we've gotten an avatar entity, and see if we're admin
-Admin.createdAvatarConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(
+Admin.createdAvatarConnector = Ember.Lua.Connector:createConnector(emberOgre.EventCreatedAvatarEntity):connect(
 	function(avatarEntity)
 		--only show the admin menu if we're logged in as an admin
 		if emberOgre:getWorld():getAvatar():isAdmin() then

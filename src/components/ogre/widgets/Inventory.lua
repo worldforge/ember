@@ -67,7 +67,7 @@ function Inventory:addSlot()
 			oldSlot:notifyIconDraggedOff(entityIcon)
 		end
 	end
-	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventIconDropped):connect(slotWrapper.entityIconDropped)
+	slotWrapper.entityIconDropped_connector = Ember.Lua.Connector:createConnector(slot.EventIconDropped):connect(slotWrapper.entityIconDropped)
 	
 	return slotWrapper
 end
@@ -272,7 +272,7 @@ function Inventory:createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 			dollSlot.slot:addEntityIcon(entityIcon)
 		end
 	end
-	dollSlot.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(dollSlot.slot.EventIconDropped):connect(dollSlot.droppedHandler)
+	dollSlot.entityIconDropped_connector = Ember.Lua.Connector:createConnector(dollSlot.slot.EventIconDropped):connect(dollSlot.droppedHandler)
 	dollSlot.observer = Ember.AttributeObserver:new_local(avatarEntity, dollSlot.attributePath, ".")
 	dollSlot.attributeChanged = function(element)
 		if element:isString() then
@@ -312,12 +312,12 @@ function Inventory:createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 			end
 		end
 	end
-	dollSlot.attributeChanged_connector = EmberOgre.LuaConnector:new_local(dollSlot.observer.EventChanged):connect(dollSlot.attributeChanged)
+	dollSlot.attributeChanged_connector = Ember.Lua.Connector:createConnector(dollSlot.observer.EventChanged):connect(dollSlot.attributeChanged)
 	
 	dollSlot.iconDraggedOff = function(entityIcon)
 		--do unwield stuff
 	end
-	dollSlot.iconDraggedOff_connector = EmberOgre.LuaConnector:new_local(dollSlot.slot.EventIconDraggedOff):connect(dollSlot.iconDraggedOff)
+	dollSlot.iconDraggedOff_connector = Ember.Lua.Connector:createConnector(dollSlot.slot.EventIconDraggedOff):connect(dollSlot.iconDraggedOff)
 	
 	dollSlot.observer:forceEvaluation()
 	
@@ -410,8 +410,8 @@ function Inventory:createDollSlot(attributePath, containerWindow, tooltipText, w
 		dollSlot.container:setProperty("FrameEnabled", "true")
 	end
 	
-	dollSlot.entityIconDragStart_connector = EmberOgre.LuaConnector:new_local(self.entityIconManager.EventIconDragStart):connect(dollSlot.entityIconDragStart)
-	dollSlot.entityIconDragStop_connector = EmberOgre.LuaConnector:new_local(self.entityIconManager.EventIconDragStop):connect(dollSlot.entityIconDragStop)
+	dollSlot.entityIconDragStart_connector = Ember.Lua.Connector:createConnector(self.entityIconManager.EventIconDragStart):connect(dollSlot.entityIconDragStart)
+	dollSlot.entityIconDragStop_connector = Ember.Lua.Connector:createConnector(self.entityIconManager.EventIconDragStop):connect(dollSlot.entityIconDragStop)
 
 	dollSlot.shutdown = function()
 		self.entityIconManager:destroySlot(dollSlot.slot)
@@ -448,7 +448,7 @@ function Inventory:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-Inventory.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
+Inventory.createdAvatarEntityConnector = Ember.Lua.Connector:createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
 		if emberOgre:getWorld():getAvatar():isAdmin() == false then
 			inventory = {connectors={},
 				iconsize = 32,

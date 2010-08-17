@@ -48,9 +48,9 @@ function ServerLogger.LoggingEnabled_CheckStateChanged(args)
 	if checkBox ~= nil then
 		ServerLogger.cleanup()
 		if checkBox:isSelected() then
-			ServerLogger.sendingConnection = EmberOgre.LuaConnector:new_local(emberServices:getServerService().EventSendingObject)
+			ServerLogger.sendingConnection = Ember.Lua.Connector:createConnector(emberServices:getServerService().EventSendingObject)
 			ServerLogger.sendingConnection:connect(ServerLogger.server_SendingObject)
-			ServerLogger.receivedConnection = EmberOgre.LuaConnector:new_local(emberServices:getServerService().EventReceivedObject)
+			ServerLogger.receivedConnection = Ember.Lua.Connector:createConnector(emberServices:getServerService().EventReceivedObject)
 			ServerLogger.receivedConnection:connect(ServerLogger.server_ReceivedObject)
 		end
 	end

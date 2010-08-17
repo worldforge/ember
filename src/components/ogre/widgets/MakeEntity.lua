@@ -8,7 +8,7 @@ MakeEntity = {}
 
 
 --Show the make entity widget when the world has been entered
-MakeEntity.createdWorldConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventWorldCreated):connect(function(world)
+MakeEntity.createdWorldConnector = Ember.Lua.Connector:createConnector(emberOgre.EventWorldCreated):connect(function(world)
 		local makeEntityWidget = guiManager:createWidget("MakeEntityWidget")
 		local connectors = {}
 		connect(connectors, emberOgre.EventWorldDestroyed, function()

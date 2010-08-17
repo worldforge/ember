@@ -45,8 +45,8 @@ function Environment:shutdown()
 end
 
 --Wait with creating the widget until we've got a world entity (as that entity holds the environment instance)
-Environment.gotViewConnection = EmberOgre.LuaConnector:new_local(emberServices:getServerService().GotView):connect(function(view)
-		Environment.viewConnection = EmberOgre.LuaConnector:new_local(view.TopLevelEntityChanged):connect(function() 
+Environment.gotViewConnection = Ember.Lua.Connector:createConnector(emberServices:getServerService().GotView):connect(function(view)
+		Environment.viewConnection = Ember.Lua.Connector:createConnector(view.TopLevelEntityChanged):connect(function() 
 				local entityFactory = emberOgre:getWorld():getEntityFactory()
 				if entityFactory ~= nil then
 					local worldEntity = entityFactory:getWorld()

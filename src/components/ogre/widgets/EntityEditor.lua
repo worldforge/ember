@@ -214,7 +214,7 @@ EntityEditor = {
 				wrapper.moveButtonPressed = function()
 					guiManager:EmitEntityAction("move", self.instance.entity)
 				end
-				wrapper.moveButtonPressedListener = EmberOgre.LuaConnector:new_local(wrapper.adapter.EventMoveClicked):connect(wrapper.moveButtonPressed)
+				wrapper.moveButtonPressedListener = Ember.Lua.Connector:createConnector(wrapper.adapter.EventMoveClicked):connect(wrapper.moveButtonPressed)
 				return wrapper
 			end
 		},
@@ -545,14 +545,14 @@ function EntityEditor:editEntity(entity)
 	self.instance.entity:setVisualize("OgreBBox", false)
 	self.instance.entity:setVisualize("ErisBBox", true)
 	
-	self.instance.deleteListener = EmberOgre.LuaConnector:new_local(entity.BeingDeleted):connect(self.Entity_BeingDeleted, self)
+	self.instance.deleteListener = Ember.Lua.Connector:createConnector(entity.BeingDeleted):connect(self.Entity_BeingDeleted, self)
 	
 	
 	self:refreshChildren(entity)
 	self:refreshModelInfo(entity)
 	
 	
-	self.instance.entityChangeConnection = EmberOgre.LuaConnector:new_local(entity.Changed):connect(self.Entity_Changed, self)
+	self.instance.entityChangeConnection = Ember.Lua.Connector:createConnector(entity.Changed):connect(self.Entity_Changed, self)
 	self.instance.outercontainer = guiManager:createWindow("DefaultGUISheet")
 	local adapter = self.factory:createMapAdapter(self.instance.outercontainer, self.instance.entity:getId(), self.instance.entity)
 	self.instance.rootMapAdapter = adapter
@@ -943,7 +943,7 @@ function EntityEditor:shutdown()
 end
 
 
-EntityEditor.createdWorldConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventWorldCreated):connect(function(world)
+EntityEditor.createdWorldConnector = Ember.Lua.Connector:createConnector(emberOgre.EventWorldCreated):connect(function(world)
 		entityEditor = {connectors={},
 			instance = {
 				stackableContainers = {},
