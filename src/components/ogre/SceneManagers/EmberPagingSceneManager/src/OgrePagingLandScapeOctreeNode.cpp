@@ -74,8 +74,6 @@ namespace Ogre
     PagingLandScapeOctreeNode::~PagingLandScapeOctreeNode()
 	{
 		removeAllChildren();
-		if (mParent)
-			mParent->removeChild(this); 
 		assert (!mParent);
         delete mOcclusionBoundingBox;
     }
