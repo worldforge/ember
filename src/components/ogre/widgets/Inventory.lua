@@ -265,8 +265,9 @@ function Inventory:createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 		if dollSlot.isValidDrop(entityIcon) then
 			emberServices:getServerService():wield(entityIcon:getEntity(), dollSlot.wearRestriction)
 			local icon = dollSlot.slot:getEntityIcon()
-			if icon ~= null then
-				local slot = self:getFreeSlot()
+			if icon ~= nil then
+				local slotWrapper = self:getFreeSlot()
+				local slot = slotWrapper.slot
 				slot:addEntityIcon(icon)
 			end
 			dollSlot.slot:addEntityIcon(entityIcon)
