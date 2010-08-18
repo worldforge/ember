@@ -10,7 +10,7 @@ loadScript("DefaultEntityActions.lua")
 function ActionBarCreator:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("ActionBarCreator.layout", "ActionBarCreator/")
-	self.widget:registerConsoleVisibilityToggleCommand("abarCreate")
+	self.widget:registerConsoleVisibilityToggleCommand("actionBarCreator")
 	
 	self.createHButton = CEGUI.toPushButton(self.widget:getWindow("Create_Horiz"))
 	self.createHButton:subscribeEvent("Clicked", self.CreateHoriz_Click, self)
