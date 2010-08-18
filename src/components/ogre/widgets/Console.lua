@@ -6,18 +6,37 @@
 Console = {
 connectors={}, 
 widget = guiManager:createWidget(), 
-gameTextWindow = nil,
-systemTextWindow = nil,
+gameTab = {unviewedCount = 0},
+systemTab = {unviewedCount = 0},
 consoleAdapter = nil,
 consoleInputWindow = nil
 }
 
 --Set up the widget.
 function Console.buildWidget()
+	Console.tabs = {Console.gameTab, Console.systemTab}
+	
 	Console.widget:loadMainSheet("Console.layout", "Console/")
 	
-	Console.gameTextWindow = CEGUI.toMultiLineEditbox(Console.widget:getWindow("GameTextBox"))
-	Console.systemTextWindow = CEGUI.toMultiLineEditbox(Console.widget:getWindow("SystemTextBox"))
+	Console.gameTab.textWindow = CEGUI.toMultiLineEditbox(Console.widget:getWindow("GameTextBox"))
+	Console.gameTab.tabWindow = CEGUI.toMultiLineEditbox(Console.widget:getWindow("GamePanel"))
+	Console.gameTab.prefix = Console.gameTab.tabWindow:getText()
+	
+	Console.systemTab.textWindow = CEGUI.toMultiLineEditbox(Console.widget:getWindow("SystemTextBox"))
+	Console.systemTab.tabWindow = CEGUI.toMultiLineEditbox(Console.widget:getWindow("SystemPanel"))
+	Console.systemTab.prefix = Console.systemTab.tabWindow:getText()
+
+	--When a tab has been selected and shown, the unread indicator should be reset	
+	local tabControl = CEGUI.toTabControl(Console.widget:getWindow("MainTabControl"))
+	Console.widget:getWindow("MainTabControl"):subscribeEvent("TabSelectionChanged", function(args)
+			local selectedTab = Console.tabs[tabControl:getSelectedTabIndex() + 1] --Lua uses 1 as the first index
+			selectedTab.tabWindow:setText(selectedTab.prefix)
+			selectedTab.unviewedCount = 0
+			return true	
+		end
+	)
+	
+	
 	Console.consoleInputWindow = CEGUI.toEditbox(Console.widget:getWindow("InputBox"))
 	
 	--this will bring console functionality to the editbox (such as history, tab completion etc.)
@@ -58,9 +77,9 @@ end
 --adds messages to the top of the textbox
 function Console.appendOOGChatLine(line, entity)
 	if entity ~= nil then
-		Console.appendLine("{" .. entity:getName() .. "}" .. line, Console.gameTextWindow)
+		Console.appendLine("{" .. entity:getName() .. "}" .. line, Console.gameTab)
 	else 
-		Console.appendLine(line, Console.gameTextWindow)
+		Console.appendLine(line, Console.gameTab)
 	end
 end
 
@@ -68,26 +87,31 @@ end
 --adds messages to the top of the textbox
 function Console.appendIGChatLine(line, entity)
 	if entity ~= nil then
-		Console.appendLine("<" .. entity:getName() .. ">" .. line, Console.gameTextWindow)
+		Console.appendLine("<" .. entity:getName() .. ">" .. line, Console.gameTab)
 	else
-		Console.appendLine(line, Console.gameTextWindow)
+		Console.appendLine(line, Console.gameTab)
 	end
 end
 
 function Console.appendAvatarImaginary(line)
-	Console.appendLine(line, Console.gameTextWindow)
+	Console.appendLine(line, Console.gameTab)
 end
 
-function Console.appendLine(line, window)
+function Console.appendLine(line, tab)
+	local window = tab.textWindow
 --	chatString = "<" .. entity:getName() .. ">" .. line .. "\n" .. chatString
 	window:setText(window:getText() .. line)
 	--make sure that the newly added line is shown
 	window:setCaratIndex(string.len(window:getText()))
-	window:ensureCaratIsVisible() 
+	window:ensureCaratIsVisible()
+	if not window:isVisible() then
+		tab.unviewedCount = tab.unviewedCount + 1
+		tab.tabWindow:setText(tab.prefix .. "(" .. tab.unviewedCount .. ")")
+	end 
 end
 
 function Console.consoleGotMessage(message)
-	Console.appendLine(message, Console.systemTextWindow)
+	Console.appendLine(message, Console.systemTab)
 	return true
 end
 
