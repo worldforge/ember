@@ -58,7 +58,10 @@
  * @section ScriptBindings Script bindings
  *
  * For various tasks, such as UI interaction and entity creation, a scripting language is used. While the ScriptingService allows for any scripting language to be used we have settled on the <a href="http://www.lua.org">Lua</a> language. We use the <a href="http://www.codenix.com/~tolua/">tolua++ tool</a> for generating the bindings needed.
- * These bindings are not kept in one central location, but instead are spread out throughout the codebase. They can be found under the "bindings/lua" directories. When creating a new binding, or altering an existing one a developer needs to edit the *.pkg files found in these directories. Once that is done the bindings needs to be recreated using the tolua++ tool. For this we provide scripts in the "scripts" directory. If you are unsure of how to use them, execute the "update_all_lua_bindings.sh" script.
+ * These bindings are not kept in one central location, but instead are spread out throughout the codebase. They can be found under the "bindings/lua" directories. When creating a new binding, or altering an existing one a developer needs to edit the *.pkg files found in these directories.
+ *
+ * Throughout Ember we use sigc++ for signal binding and passing. In order to expose these signals to Lua we've designed a mechanism using "connectors". The main bulk of the code for that can be found in src/components/lua. When you extend the bindings with new signals, you need to define these signals so that the connector system properly recognizes them. In order to do this you must alter the code in "src/bindings/lua".
+ * When implementing a new sigc++-to-lua binding you sometimes need to define a method which can translate between a C++ type to a Lua class name. Do this by extending the src/bindings/TypeResolving.cpp. Note that all of the types, even for those only defined in subcomponents, are defined in this one place. The main reason is to better fit with how tolua++ handles function overriding.
  *
  * @section CodingGuidelines Coding guidelines
  *
