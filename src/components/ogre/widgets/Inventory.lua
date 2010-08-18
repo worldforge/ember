@@ -248,7 +248,7 @@ function Inventory:buildWidget(avatarEntity)
 			end
 		end
 	end
-	self.DragDrop_DraggedOver_connector = EmberOgre.LuaConnector:new_local(self.DragDrop.EventIconEntered):connect(self.DragDrop_DraggedOver)
+	self.DragDrop_DraggedOver_connector = createConnector(self.DragDrop.EventIconEntered):connect(self.DragDrop_DraggedOver)
 	
 	--User has dragged an entityIcon over the world, and onto another window
 	self.DragDrop_DragLeaves = function(entityIcon)
@@ -259,7 +259,7 @@ function Inventory:buildWidget(avatarEntity)
 			end
 		end
 	end
-	self.DragDrop_DragLeaves_connector = EmberOgre.LuaConnector:new_local(self.DragDrop.EventIconLeaves):connect(self.DragDrop_DragLeaves)
+	self.DragDrop_DragLeaves_connector = createConnector(self.DragDrop.EventIconLeaves):connect(self.DragDrop_DragLeaves)
 	
 	--Responds when preview model has been released on the world
 	self.DragDrop_Finalize = function(emberEntity)
@@ -268,7 +268,7 @@ function Inventory:buildWidget(avatarEntity)
 			emberServices:getServerService():drop(emberEntity, offset)
 		end
 	end
-	self.DragDrop_Finalized_connector = EmberOgre.LuaConnector:new_local(self.helper.EventEntityFinalized):connect(self.DragDrop_Finalize)
+	self.DragDrop_Finalized_connector = createConnector(self.helper.EventEntityFinalized):connect(self.DragDrop_Finalize)
 	
 	
 	self.menu.container:setVisible(true)

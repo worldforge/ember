@@ -18,8 +18,8 @@ function QuickHelp.buildWidget()
 	quickhelp.timeToFade = 5
 	quickhelp.timeBlurbShown = 0
 	
-	quickhelp.updateText_connector = EmberOgre.LuaConnector:new_local(quickhelp.helper.EventUpdateText):connect(quickhelp.updateText, quickhelp)
-	quickhelp.toggleVisibility_connector = EmberOgre.LuaConnector:new_local(EmberOgre.Gui.QuickHelp:getSingleton().EventToggleWidgetVisibility):connect(quickhelp.toggleVisibility, quickhelp)
+	quickhelp.updateText_connector = createConnector(quickhelp.helper.EventUpdateText):connect(quickhelp.updateText, quickhelp)
+	quickhelp.toggleVisibility_connector = createConnector(EmberOgre.Gui.QuickHelp:getSingleton().EventToggleWidgetVisibility):connect(quickhelp.toggleVisibility, quickhelp)
 	quickhelp:buildCEGUIWidget()
 end
 
@@ -70,7 +70,7 @@ end
 function QuickHelp:updateText(text)
 	if not self.hidden then
 		if not self.widget:isVisible() then
-			self.updateAlpha_connector = EmberOgre.LuaConnector:new(self.widget.EventFrameStarted):connect(self.frameStarted, self)
+			self.updateAlpha_connector = createConnector(self.widget.EventFrameStarted):connect(self.frameStarted, self)
 		end
 		self.widget:show()
 		self.widget:getMainWindow():setAlpha(1.0)

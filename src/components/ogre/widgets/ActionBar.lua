@@ -70,8 +70,8 @@ function ActionBar:addSlot()
 		end
 	end
 	
-	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventActionBarIconDropped):connect(slotWrapper.actionBarIconDropped)
-	slotWrapper.entityIconDropped_connector = EmberOgre.LuaConnector:new_local(slot.EventEntityIconDropped):connect(slotWrapper.entityIconDropped)
+	slotWrapper.entityIconDropped_connector = createConnector(slot.EventActionBarIconDropped):connect(slotWrapper.actionBarIconDropped)
+	slotWrapper.entityIconDropped_connector = createConnector(slot.EventEntityIconDropped):connect(slotWrapper.entityIconDropped)
 	return slotWrapper
 end
 
@@ -204,8 +204,8 @@ function ActionBar:loadSavedAttributes()
 		self.entityCandidates.AddedEntityToInventory_connector:disconnect()
 	end
 	
-	self.timer.disconnect_connector = EmberOgre.LuaConnector:new_local(self.timer.Expired):connect(self.timer.disconnect)
-	self.entityCandidates.AddedEntityToInventory_connector = EmberOgre.LuaConnector:new_local(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(self.entityCandidates.AddedEntityToInventory)
+	self.timer.disconnect_connector = createConnector(self.timer.Expired):connect(self.timer.disconnect)
+	self.entityCandidates.AddedEntityToInventory_connector = createConnector(emberOgre:getWorld():getAvatar().EventAddedEntityToInventory):connect(self.entityCandidates.AddedEntityToInventory)
 	
 end
 
@@ -244,7 +244,7 @@ function ActionBar:buildCEGUIWidget(widgetName)
 			self:removeExistingIcon(actionBarIcon:getSlot())
 		end
 	end
-	self.worldDragDrop_Dropped_connector = EmberOgre.LuaConnector:new_local(self.worldDragDrop.EventActionBarIconDropped):connect(self.worldDragDrop_Dropped)
+	self.worldDragDrop_Dropped_connector = createConnector(self.worldDragDrop.EventActionBarIconDropped):connect(self.worldDragDrop_Dropped)
 	
 	--Create our slots in the ActionBar.
 	for i = 1,self.maxSlots do

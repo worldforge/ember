@@ -155,7 +155,7 @@ function ActionBarCreator:init()
 end
 
 --The widget should load when the player has logged in the game.
-ActionBarCreator.createdAvatarEntityConnector = EmberOgre.LuaConnector:new_local(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
+ActionBarCreator.createdAvatarEntityConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
 		if emberOgre:getWorld():getAvatar():isAdmin() == false then
 			actionbarCreator = {connectors={},
 				actionbars = {},
