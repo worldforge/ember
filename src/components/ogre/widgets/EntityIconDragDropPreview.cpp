@@ -59,7 +59,7 @@ namespace Gui
 
 
 EntityIconDragDropPreview::EntityIconDragDropPreview() :
-		mModelPreviewWorker(0), mIconEntity(0)
+		mIconEntity(0), mModelPreviewWorker(0)
 {
 }
 
@@ -107,7 +107,7 @@ WFMath::Vector<3> EntityIconDragDropPreview::getDropOffset()
 	return mDropOffset;
 }
 
-ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mModel(0), mEntity(0), mEntityNode(0), mModelMount(0), mMovement(0)
+ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mEntity(0), mEntityNode(0), mModel(0), mModelMount(0), mMovement(0)
 {
 	mOrientation.identity();
 
