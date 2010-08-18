@@ -226,7 +226,10 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	self.dragBar:setWantsMultiClickEvents(false)
 	
 	if self.layout == "Horiz" then
-		self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,slotSize),CEGUI.UDim(0.0,self.iconSize))) 
+		self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,slotSize),CEGUI.UDim(0.0,self.iconSize)))
+		--Place it at the bottom of the screen 
+		self.widget:getMainWindow():setYPosition(CEGUI.UDim(1.0, -self.iconSize))
+		self.widget:getMainWindow():setXPosition(CEGUI.UDim(0.5, -(slotSize / 2.0)))
 	else
 		self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,self.iconSize),CEGUI.UDim(0.0,slotSize+20)))
 		--Drag bar needs to be resized to the top for vertical action bars.
