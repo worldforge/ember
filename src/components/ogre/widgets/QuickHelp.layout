@@ -1,49 +1,49 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.00,200.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{1.00,-300.0},{1.00,-520.0}}'/>
+		<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.00,150.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{1.00,-300.0},{1.00,-470.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Help'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='PageNumber'>
-				<Property Name='UnifiedPosition' Value='{{0.90,0},{0.01,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0.08,0},{0.06,00}}'/>
+				<Property Name='UnifiedPosition' Value='{{1,-20},{0,2}}'/>
+				<Property Name='UnifiedSize' Value='{{0,20},{0,20}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Text' Value='0/0' />
 				<Property Name='FrameEnabled' Value='false' />
 				<Property Name='BackgroundEnabled' Value='false' />
 			</Window>
 			<Window Type='EmberLook/StaticText' Name='Timer'>
-				<Property Name='UnifiedPosition' Value='{{0.02,0},{0.01,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0.5,0},{0.06,00}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,2},{0,2}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-25},{0,20}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Text' Value='' />
 				<Property Name='FrameEnabled' Value='false' />
 				<Property Name='BackgroundEnabled' Value='false' />
 			</Window>
 			<Window Type='EmberLook/MultiLineEditbox' Name='HelpTextBox'>
-				<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.74,0.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.08,0.0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-10},{1,-50}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,5},{0,25}}'/>
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='ReadOnly' Value='true'/>
-				<Property Name ='HorzFormatting' Value='WordWrapLeftAligned'/>
+				<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Previous'>
-				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.14,0.00}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.84,0.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,2},{1,-22}}'/>
 				<Property Name='Text' Value='Previous'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Next'>
-				<Property Name='UnifiedSize' Value='{{0.2,0.0},{0.14,0.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.78,0.0},{0.84,0.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
+				<Property Name='UnifiedPosition' Value='{{1,-52},{1,-22}}'/>
 				<Property Name='Text' Value='Next'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Hide'>
-				<Property Name='UnifiedSize' Value='{{0.34,0.0},{0.14,0.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.33,0.0},{0.84,0.0}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{0,20}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.5,-50},{1,-22}}'/>
 				<Property Name='Tooltip' Value='If checked, the help system will be disabled'/>
 				<Property Name='Text' Value="Don't Show Help"/>
 			</Window>
