@@ -79,6 +79,11 @@ bool Simple::compileMaterial(Ogre::MaterialPtr material)
 	if (mTerrainPageShadow) {
 		addShadow(technique, mTerrainPageShadow, material);
 	}
+	material->load();
+	if (material->getNumSupportedTechniques() == 0) {
+		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());
+		return false;
+	}
 	return true;
 }
 

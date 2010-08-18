@@ -207,7 +207,8 @@ bool EmberOgre::renderOneFrame()
 			mRoot->clearEventTimes();
 		}
 		try {
-			clearDirtyPassLists();
+			//No need to do this each frame
+			//clearDirtyPassLists();
 			mRoot->renderOneFrame();
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);
