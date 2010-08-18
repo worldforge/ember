@@ -63,7 +63,7 @@ public:
 	/**
 	 * @brief Called when position iterator changes.
 	 */
-	sigc::signal <void,const std::string&> EventUpdateText;
+	sigc::signal <void,const HelpMessage&> EventUpdateText;
 
 	const int getSize() const;
 

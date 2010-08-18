@@ -56,7 +56,7 @@ void QuickHelpCursor::getLatestTutorial(std::list<HelpMessage>::const_iterator p
 
 void QuickHelpCursor::updateMessage()
 {
-	EventUpdateText.emit((*mCurrentPosition).getHelp());
+	EventUpdateText.emit(*mCurrentPosition);
 }
 
 void QuickHelpCursor::nextMessage()

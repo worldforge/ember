@@ -78,6 +78,7 @@ namespace Gui
 {
 class EntityIcon;
 class ActionBarIcon;
+class HelpMessage;
 }
 
 }

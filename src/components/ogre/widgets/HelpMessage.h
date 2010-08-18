@@ -78,6 +78,12 @@ public:
 	const std::string getTags() const;
 
 	/**
+	 * @brief Returns the message title.
+	 * @returns The message title.
+	 */
+	const std::string& getTitle() const;
+
+	/**
 	 * @brief Checks if the message contains an optional id.
 	 */
 	bool hasId() const;

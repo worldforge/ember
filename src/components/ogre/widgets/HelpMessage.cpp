@@ -55,6 +55,12 @@ const std::string& HelpMessage::getId() const
 	return mId;
 }
 
+const std::string& HelpMessage::getTitle() const
+{
+	return mTitle;
+}
+
+
 bool HelpMessage::hasId() const
 {
 	return mId.size() != 0;

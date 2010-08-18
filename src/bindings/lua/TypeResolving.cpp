@@ -72,6 +72,8 @@ const char* resolveLuaTypename<const EmberOgre::Gui::EntityIcon>(){return "Ember
 template <>
 const char* resolveLuaTypename<const EmberOgre::Gui::ActionBarIcon>(){return "EmberOgre::Gui::ActionBarIcon";}
 template <>
+const char* resolveLuaTypename<const EmberOgre::Gui::HelpMessage>(){return "EmberOgre::Gui::HelpMessage";}
+template <>
 const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainPage>(){return "EmberOgre::Terrain::TerrainPage";}
 template <>
 const char* resolveLuaTypename<const Eris::Avatar>(){return "Eris::Avatar";}

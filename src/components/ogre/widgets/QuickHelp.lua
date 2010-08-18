@@ -70,7 +70,7 @@ function QuickHelp:toggleVisibility()
 	self.widget:show()
 end
 
-function QuickHelp:updateText(text)
+function QuickHelp:updateText(helpMessage)
 	if not self.hidden then
 		if not self.widget:isVisible() then
 			if self.updateAlpha_connector then
@@ -82,7 +82,8 @@ function QuickHelp:updateText(text)
 		self.widget:show()
 		self.widget:getMainWindow():setAlpha(1.0)
 	end
-	self.textWindow:setText(text)
+	self.textWindow:setText(helpMessage:getHelp())
+	self.widget:getMainWindow():setText("Help - " .. helpMessage:getTitle())
 	self.messagePosition:setText(self.helper:getCursorLocation() .. "/" .. self.helper:getSize())
 	self:updateButtons()
 end
