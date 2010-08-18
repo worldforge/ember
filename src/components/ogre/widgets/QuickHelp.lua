@@ -48,16 +48,18 @@ function QuickHelp:frameStarted(timeSinceLastUpdate)
 	if self.widget:isActive() then 
 		self.timer:setText("")
 		self:disableAlphaConnector()
-	end
-	self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
-	self.timer:setText("Hiding in " .. math.floor(math.max(self.timeToShowBlurb-self.timeBlurbShown, 0)) .. " seconds.")
-	if self.timeBlurbShown > self.timeToShowBlurb then
-		self.widget:getMainWindow():setAlpha(1.0 - ((self.timeBlurbShown-self.timeToShowBlurb) / self.timeToFade ))
-		if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
-			self.timer:setText("")
-			self.timeBlurbShown = 0
-			self.widget:hide()
-			self:disableAlphaConnector()
+		self.widget:getMainWindow():setAlpha(1.0)
+	else
+		self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
+		self.timer:setText("Hiding in " .. math.floor(math.max(self.timeToShowBlurb-self.timeBlurbShown, 0)) .. " seconds.")
+		if self.timeBlurbShown > self.timeToShowBlurb then
+			self.widget:getMainWindow():setAlpha(1.0 - ((self.timeBlurbShown-self.timeToShowBlurb) / self.timeToFade ))
+			if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
+				self.timer:setText("")
+				self.timeBlurbShown = 0
+				self.widget:hide()
+				self:disableAlphaConnector()
+			end
 		end
 	end
 end
@@ -71,7 +73,11 @@ end
 function QuickHelp:updateText(text)
 	if not self.hidden then
 		if not self.widget:isVisible() then
+			if self.updateAlpha_connector then
+				self.updateAlpha_connector:disconnect()
+			end
 			self.updateAlpha_connector = createConnector(self.widget.EventFrameStarted):connect(self.frameStarted, self)
+			self.timeBlurbShown = 0
 		end
 		self.widget:show()
 		self.widget:getMainWindow():setAlpha(1.0)
