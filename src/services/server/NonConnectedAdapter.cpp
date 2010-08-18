@@ -62,7 +62,7 @@ void NonConnectedAdapter::take(Eris::Entity* entity)
 
 }
 
-void NonConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset)
+void NonConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation)
 {
 
 }

@@ -44,7 +44,7 @@ public:
 	virtual void say(const std::string &message);
 	virtual void touch(Eris::Entity* entity);
 	virtual void emote(const std::string& emote) {}
-	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset);
+	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation);
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>(0, 0, 0));
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);
 	virtual void wield(Eris::Entity* entity, const std::string& outfitSlot);

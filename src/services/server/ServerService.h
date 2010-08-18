@@ -172,11 +172,12 @@ public:
 	 * @param entity
 	 */
 	void emote(const std::string& emote);
-	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>::ZERO());
+	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>::ZERO(), const WFMath::Quaternion& orientation = WFMath::Quaternion());
 	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>::ZERO());
-	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);
+	void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
 	void wield(Eris::Entity* entity, const std::string& outfitSlot = "");
 	void take(Eris::Entity* entity);
+
 	/**
 	 * @brief Uses the currently wielded entity on the supplied entity.
 	 * @param entity The entity on which the currently wielded entity will be used.

@@ -34,7 +34,7 @@ class ServerService
 	 * @param entity 
 	 */
 	void emote(const std::string& emote);
-	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>(0,0,0));
+	void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset = WFMath::Vector<3>(0,0,0), const WFMath::Quaternion& orientation = WFMath::Quaternion());
 	void place(Eris::Entity* entity, Eris::Entity* target);
 	void wield(Eris::Entity* entity, const std::string& outfitSlot = "");
 	void take(Eris::Entity* entity);

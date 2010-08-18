@@ -590,9 +590,9 @@ void ServerService::take(Eris::Entity* entity)
 	mServerAdapter->take(entity);
 }
 
-void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset)
+void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation)
 {
-	mServerAdapter->drop(entity, offset);
+	mServerAdapter->drop(entity, offset, orientation);
 }
 
 void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)

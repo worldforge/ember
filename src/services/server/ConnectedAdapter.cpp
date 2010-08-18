@@ -114,10 +114,10 @@ void ConnectedAdapter::take(Eris::Entity* entity)
 	}
 }
 
-void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset)
+void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation)
 {
 	try {
-		mAvatar.drop(entity, offset);
+		mAvatar.drop(entity, offset, orientation);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on dropping." << ex);
 	}
