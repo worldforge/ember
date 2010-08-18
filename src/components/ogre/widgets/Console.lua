@@ -1,9 +1,9 @@
 ----------------------------------------------------
---A simple chat widget. It currently only shows chat output, input is handled by the console (is this wise?).
+--A simple chat widget. It currently only shows chat output, input is handled by the console adapter.
 ----------------------------------------------------
 
 
-Chat = {
+Console = {
 connectors={}, 
 widget = guiManager:createWidget(), 
 gameTextWindow = nil,
@@ -13,82 +13,72 @@ consoleInputWindow = nil
 }
 
 --Set up the widget.
-function Chat.buildWidget()
-	Chat.widget:loadMainSheet("Console.layout", "Chat/")
+function Console.buildWidget()
+	Console.widget:loadMainSheet("Console.layout", "Console/")
 	
-	Chat.gameTextWindow = CEGUI.toMultiLineEditbox(Chat.widget:getWindow("GameTextBox"))
-	Chat.systemTextWindow = CEGUI.toMultiLineEditbox(Chat.widget:getWindow("SystemTextBox"))
-	Chat.consoleInputWindow = CEGUI.toEditbox(Chat.widget:getWindow("InputBox"))
+	Console.gameTextWindow = CEGUI.toMultiLineEditbox(Console.widget:getWindow("GameTextBox"))
+	Console.systemTextWindow = CEGUI.toMultiLineEditbox(Console.widget:getWindow("SystemTextBox"))
+	Console.consoleInputWindow = CEGUI.toEditbox(Console.widget:getWindow("InputBox"))
 	
 	--this will bring console functionality to the editbox (such as history, tab completion etc.)
-	Chat.consoleAdapter = EmberOgre.Gui.ConsoleAdapter:new_local(Chat.consoleInputWindow);
+	Console.consoleAdapter = EmberOgre.Gui.ConsoleAdapter:new_local(Console.consoleInputWindow);
 	
 	
-	connect(Chat.connectors, guiManager.AppendIGChatLine, "Chat.appendIGChatLine")
-	connect(Chat.connectors, guiManager.AppendOOGChatLine, "Chat.appendIGChatLine")
-	connect(Chat.connectors, guiManager.AppendAvatarImaginary, "Chat.appendAvatarImaginary")
-	connect(Chat.connectors, Chat.consoleAdapter.EventCommandExecuted, "Chat.consoleAdapter_CommandExecuted")
+	connect(Console.connectors, guiManager.AppendIGChatLine, "Console.appendIGChatLine")
+	connect(Console.connectors, guiManager.AppendOOGChatLine, "Console.appendIGChatLine")
+	connect(Console.connectors, guiManager.AppendAvatarImaginary, "Console.appendAvatarImaginary")
+	connect(Console.connectors, Console.consoleAdapter.EventCommandExecuted, "Console.consoleAdapter_CommandExecuted")
 	
 	
 	
-	--let's hide it to begin with
---	Chat.widget:hide()
-	Chat.widget:show()
-	--and show if when the avatar has been created (though this disallows out of game chat)
-	connect(Chat.connectors, emberOgre.EventCreatedAvatarEntity, "Chat.createdAvatarEmberEntity")
-	connect(Chat.connectors, console.GotMessage, "Chat.consoleGotMessage")
+	Console.widget:show()
+	connect(Console.connectors, console.GotMessage, "Console.consoleGotMessage")
 	
-	Chat.consoleObject = Ember.Lua.LuaConsoleObject:new_local("console_focus", "Chat.console_focus")
+	Console.consoleObject = Ember.Lua.LuaConsoleObject:new_local("console_focus", "Console.console_focus")
 	
 
 end
 
-function Chat.consoleAdapter_CommandExecuted(command)
+function Console.consoleAdapter_CommandExecuted(command)
 	--if the user presses enter with nothing entered, toggle to movement mode. This will allow for easy switching between chat and movement
 	if command == "" then
 		--remove focus from the console
-		Chat.widget:getMainWindow():deactivate()
+		Console.widget:getMainWindow():deactivate()
 		Ember.Input:getSingleton():setInputMode(Ember.Input.IM_MOVEMENT)
 	end
 end
 
-function Chat.console_focus()
-	Chat.consoleInputWindow:activate()
+function Console.console_focus()
+	Console.consoleInputWindow:activate()
 	--switch to gui mode, so that this command can be called even when the user is in movement mode
 	Ember.Input:getSingleton():setInputMode(Ember.Input.IM_GUI)
 end
 
-function Chat.createdAvatarEmberEntity(avatarEntity)
-	--show the chat window upon creation of the avatarEntity
-	--this should perhaps happen before, to allow for Out Of Game chat?
-	Chat.widget:show()
-end
-
 --handler for Out Of Game chat event
 --adds messages to the top of the textbox
-function Chat.appendOOGChatLine(line, entity)
+function Console.appendOOGChatLine(line, entity)
 	if entity ~= nil then
-		Chat.appendLine("{" .. entity:getName() .. "}" .. line, Chat.gameTextWindow)
+		Console.appendLine("{" .. entity:getName() .. "}" .. line, Console.gameTextWindow)
 	else 
-		Chat.appendLine(line, Chat.gameTextWindow)
+		Console.appendLine(line, Console.gameTextWindow)
 	end
 end
 
 --handler for In Game chat events
 --adds messages to the top of the textbox
-function Chat.appendIGChatLine(line, entity)
+function Console.appendIGChatLine(line, entity)
 	if entity ~= nil then
-		Chat.appendLine("<" .. entity:getName() .. ">" .. line, Chat.gameTextWindow)
+		Console.appendLine("<" .. entity:getName() .. ">" .. line, Console.gameTextWindow)
 	else
-		Chat.appendLine(line, Chat.gameTextWindow)
+		Console.appendLine(line, Console.gameTextWindow)
 	end
 end
 
-function Chat.appendAvatarImaginary(line)
-	Chat.appendLine(line, Chat.gameTextWindow)
+function Console.appendAvatarImaginary(line)
+	Console.appendLine(line, Console.gameTextWindow)
 end
 
-function Chat.appendLine(line, window)
+function Console.appendLine(line, window)
 --	chatString = "<" .. entity:getName() .. ">" .. line .. "\n" .. chatString
 	window:setText(window:getText() .. line)
 	--make sure that the newly added line is shown
@@ -96,9 +86,9 @@ function Chat.appendLine(line, window)
 	window:ensureCaratIsVisible() 
 end
 
-function Chat.consoleGotMessage(message)
-	Chat.appendLine(message, Chat.systemTextWindow)
+function Console.consoleGotMessage(message)
+	Console.appendLine(message, Console.systemTextWindow)
 	return true
 end
 
-Chat.buildWidget()
+Console.buildWidget()
