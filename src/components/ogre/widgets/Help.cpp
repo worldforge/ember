@@ -25,22 +25,15 @@
 #endif
 
 #include "Help.h"
-#include "Widget.h"
+#include "QuickHelp.h"
 #include "../GUIManager.h"
-#include <CEGUIImagesetManager.h>
-#include <CEGUIImageset.h>
 #include "framework/ConsoleBackend.h"
-#include <elements/CEGUIFrameWindow.h>
-#include <elements/CEGUIGUISheet.h>
-
 #include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"
 
-#include "../EmberEntity.h"
 #include "../EmberOgre.h"
 
-#include <CEGUIWindowManager.h>
-#include <CEGUIExceptions.h>
+#include <CEGUIWindow.h>
 
 using namespace CEGUI;
 namespace EmberOgre {
@@ -49,10 +42,6 @@ namespace Gui {
 
 Help::Help()
  : HelpCommand("help", this, "Display the help.")
- , mTimeUntilShowBlurb(30)
- , mTimeBlurbShown(0)
- , mTimeToShowBlurb(10)
- , mBlurb(0)
 {
 
 }
@@ -73,7 +62,7 @@ void Help::buildWidget()
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 
 	if (configSrv->itemExists("general", "startuphelp") && ((bool)configSrv->getValue("general", "startuphelp"))) {
-		mMainWindow->setVisible(true);
+		show();
 	}
 
 	//connect to the creation of the avatar, since we want to show a help blurb about the movement
@@ -85,19 +74,11 @@ void Help::buildWidget()
 
 void Help::show()
 {
+	Widget::show();
 	if (mMainWindow) {
-		mMainWindow->setVisible(true);
 		mMainWindow->moveToFront();
 	}
 }
-
-void Help::hide()
-{
-	if (mMainWindow) {
-		mMainWindow->setVisible(false);
-	}
-}
-
 
 void Help::runCommand(const std::string &command, const std::string &args)
 {
@@ -112,47 +93,8 @@ void Help::runCommand(const std::string &command, const std::string &args)
 
 void Help::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 {
-	///Show a small helpful blurb about the gui system
-	if (!mBlurb) {
-		try {
-			mBlurb = static_cast<CEGUI::GUISheet*>(mWindowManager->createWindow(getDefaultScheme() + "/StaticText", (CEGUI::utf8*)"Help/Blurb"));
-			mBlurb->setSize(UVector2(UDim(0.3f, 0), UDim(0.1f, 0)));
-			mBlurb->setPosition(UVector2(UDim(0.35f, 0), UDim(0.3f, 0)));
-// 			mBlurb->setFrameEnabled(false);
-		//	mBlurb->setInheritAlpha(true);
-			//mEntityName->setBackgroundEnabled(false);
-			mBlurb->setProperty("HorzFormatting", "WordWrapLeftAligned");
-			mBlurb->setText("Click right mouse button to switch between MOVEMENT and INPUT MODE.");
-
-
-			getMainSheet()->addChildWindow(mBlurb);
-			mBlurb->setVisible(false);
-			mTimeBlurbShown = 0;
-		} catch (const CEGUI::Exception& ex) {
-			S_LOG_FAILURE("Error when creating help blurb. Message:\n" << ex.getMessage().c_str());
-		}
-	}
-
+	QuickHelp::getSingleton().updateText(HelpMessage("UI modes", "Click right mouse button to switch between MOVEMENT and INPUT MODE.", "input", "ui_modes"));
 }
 
-void Help::frameStarted(const Ogre::FrameEvent& evt)
-{
-	if (mBlurb) {
-		if (!mBlurb->isVisible()) {
-			mTimeUntilShowBlurb -= evt.timeSinceLastFrame;
-			if (mTimeUntilShowBlurb < 0) {
-				mBlurb->setVisible(true);
-			}
-		} else {
-			mTimeBlurbShown += evt.timeSinceLastFrame;
-			mBlurb->setAlpha(1.0f - (mTimeBlurbShown / mTimeToShowBlurb));
-
-			if (mTimeBlurbShown > mTimeToShowBlurb) {
-				mWindowManager->destroyWindow(mBlurb);
-				mBlurb = 0;
-			}
-		}
-	}
-}
 }
 };
