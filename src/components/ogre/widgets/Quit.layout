@@ -17,7 +17,7 @@
 		<Window Type='EmberLook/Button' Name='ShutdownButton'>
 			<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.5,-80.0},{0,30.0}}'/>
-			<Property Name='Text' Value='Shutdown'/>
+			<Property Name='Text' Value='Quit'/>
 			<Property Name='InheritsAlpha' Value='True'/>
 		</Window>
 		<Window Type='EmberLook/Button' Name='LogoutButton'>
