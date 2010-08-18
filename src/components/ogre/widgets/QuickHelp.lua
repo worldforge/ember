@@ -39,6 +39,7 @@ function QuickHelp:buildCEGUIWidget()
 	self.widget:getWindow("Hide"):subscribeEvent("Clicked", "QuickHelp.Hide_Click", self)
 	self.widget:getWindow("Next"):subscribeEvent("Clicked", "QuickHelp.Next_Click", self)
 	self.widget:getWindow("Previous"):subscribeEvent("Clicked", "QuickHelp.Back_Click", self)
+	self:updateButtons()
 	
 	self.widget:hide()
 end
@@ -76,7 +77,8 @@ function QuickHelp:updateText(text)
 		self.widget:getMainWindow():setAlpha(1.0)
 	end
 	self.textWindow:setText(text)
-	self.messagePosition:setText(quickhelp.helper:getCursorLocation() .. "/" .. quickhelp.helper:getSize())
+	self.messagePosition:setText(self.helper:getCursorLocation() .. "/" .. self.helper:getSize())
+	self:updateButtons()
 end
 
 function QuickHelp:disableAlphaConnector()
@@ -95,6 +97,11 @@ end
 function QuickHelp:Hide_Click(args)
 	self.hidden = true
 	self.widget:hide()
+end
+
+function QuickHelp:updateButtons()
+	self.widget:getWindow("Next"):setEnabled(self.helper:getCursorLocation() < self.helper:getSize())
+	self.widget:getWindow("Previous"):setEnabled(self.helper:getCursorLocation() > 1)
 end
 
 QuickHelp.buildWidget()
