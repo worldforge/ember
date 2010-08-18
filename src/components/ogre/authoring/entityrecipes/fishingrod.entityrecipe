@@ -1,0 +1,8 @@
+<entityrecipes>
+  <entityrecipe name="fishingrod">
+    <description>
+      A fishing rod, used for catching fish.
+    </description>
+    <entity type="fishingrod" />
+  </entityrecipe>
+</entityrecipes>

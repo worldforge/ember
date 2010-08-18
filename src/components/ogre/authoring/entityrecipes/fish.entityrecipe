@@ -1,0 +1,26 @@
+<entityrecipes>
+  <entityrecipe name="bass">
+    <description>
+      A bass, a medium fish.
+    </description>
+    <entity type="bass" />
+  </entityrecipe>
+  <entityrecipe name="bluegill">
+    <description>
+      A bluegill, a small fish.
+    </description>
+    <entity type="bluegill" />
+  </entityrecipe>
+  <entityrecipe name="pickerel">
+    <description>
+      A pickerela, a medium fish.
+    </description>
+    <entity type="pickerel"/>
+  </entityrecipe>
+  <entityrecipe name="tuna">
+    <description>
+      A tuna, a large fish.
+    </description>
+    <entity type="tuna" />
+  </entityrecipe>
+</entityrecipes>

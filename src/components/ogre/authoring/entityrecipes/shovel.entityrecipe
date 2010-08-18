@@ -1,0 +1,8 @@
+<entityrecipes>
+  <entityrecipe name="shovel">
+    <description>
+      A shovel, used for digging in the ground.
+    </description>
+    <entity type="shovel" />
+  </entityrecipe>
+</entityrecipes>

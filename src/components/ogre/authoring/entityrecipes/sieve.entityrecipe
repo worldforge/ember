@@ -1,0 +1,8 @@
+<entityrecipes>
+  <entityrecipe name="sieve">
+    <description>
+      A sieve, used for filtering dirt.
+    </description>
+    <entity type="sieve" />
+  </entityrecipe>
+</entityrecipes>
