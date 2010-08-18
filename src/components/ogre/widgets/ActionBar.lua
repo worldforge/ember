@@ -12,7 +12,6 @@ loadScript("ActionBarDefaultAction.lua")
 function ActionBar:removeExistingIcon(slot)
 	--If an icon exists in that slot, then delete and replace.
 	if slot:getActionBarIcon() ~= nil then
-		debugObject("Attempting to remove an existing icon.")
 		slot:getActionBarIcon():setSlot(nil)
 		slot:notifyIconDraggedOff(slot:getActionBarIcon())
 		self.actionBarIconManager:destroyIcon(actionBarIcon)
@@ -51,7 +50,6 @@ function ActionBar:addSlot()
 	--Handle an entity icon dropped on the action bar slot
 	--We create a new action bar icon based on the entity icon
 	slotWrapper.entityIconDropped = function(entityIcon)
-		debugObject("Got an entity icon drop.")
 		--If we have an existing icon in the slot, we remove it.
 		self:removeExistingIcon(slotWrapper.slot)
 
@@ -167,7 +165,6 @@ end
 --Loads saved properties for the action bar. 
 --We call this at the initialization of the action bar.
 function ActionBar:loadSavedAttributes()
-	debugObject(self.actionBarIconManager:getSavedValue(self.name))
 	if self.actionBarIconManager:getSavedValue(self.name) ~= "null" then
 		--Get lua to see the value as a string it can convert to int using tonumber.
 		local xoffset = "".. self.actionBarIconManager:getSavedValue(self.name .. "xposoffset") ..""
