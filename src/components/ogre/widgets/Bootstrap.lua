@@ -103,7 +103,7 @@ loadScript("Math.lua")
 --If you want another window to also load at start up, add it to the list here.
 
 loadScript("MainIconBar.lua")
-loadScript("Chat.lua")
+loadScript("Console.lua")
 loadScript("Server.lua")
 loadScript("ServerBrowser.lua")
 loadScript("Performance.lua")

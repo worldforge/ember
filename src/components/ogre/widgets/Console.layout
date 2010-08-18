@@ -4,7 +4,7 @@
 		<Property Name='UnifiedSize' Value='{{0.300000,0.0},{0.0,250.0}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-300.0}}'/>
 		<Property Name='Alpha' Value='0.4'/>
-		<Property Name='Text' Value='Chat output'/>
+		<Property Name='Text' Value='Console output'/>
 		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>

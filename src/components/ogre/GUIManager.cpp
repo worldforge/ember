@@ -306,16 +306,6 @@ void GUIManager::initialize()
 		mDebugText->setPosition(CEGUI::UVector2(UDim(0.0f, 0), UDim(1.0f, -25)));
 		mDebugText->setSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0, 25)));
 
-		/*		mDebugText->setFrameEnabled(false);
-		 mDebugText->setBackgroundEnabled(false);*/
-		//stxt->setHorizontalFormatting(StaticText::WordWrapCentred);
-
-
-		//the console and quit widgets are not lua scripts, and should be loaded explicit
-		// 		mConsoleWidget = static_cast<ConsoleWidget*>(createWidget("ConsoleWidget"));
-		// 		if (!mConsoleWidget) {
-		// 			throw Ember::Exception("Could not create console widget.");
-		// 		}
 		createWidget("Quit");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets." << e);
