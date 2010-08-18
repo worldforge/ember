@@ -18,8 +18,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef AVATAR_H
-#define AVATAR_H
+#ifndef EMBEROGRE_AVATAR_H
+#define EMBEROGRE_AVATAR_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "services/config/ConfigListenerContainer.h"
@@ -208,16 +208,6 @@ protected:
 	 * @brief Keep a list of the last transmitted movements, so that when we receive a movement update from the server, we can ignore it if it's something we know we sent ourselves.
 	 */
 	TimedMovementStateList mLastTransmittedMovements;
-
-	/**
-	 * @brief Keep a temporary list of entities that needs to be added to the inventory.
-	 */
-	std::set<Eris::Entity*> mEntitiesToBeAddedToInventory;
-
-	/**
-	 * @brief Keep a temporary list of entities that needs to be removed from the inventory.
-	 */
-	std::set<Eris::Entity*> mEntitiesToBeRemovedFromInventory;
 
 	/**
 	 * @brief A third person camera mount, tracking the avatar entity.

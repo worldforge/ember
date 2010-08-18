@@ -148,31 +148,6 @@ void Avatar::setMinIntervalOfRotationChanges(Ogre::Real milliseconds)
 
 void Avatar::application_AfterInputProcessing(float timeSinceLastEvent)
 {
-	if (mEntitiesToBeAddedToInventory.size() > 0) {
-		std::set<Eris::Entity*>::iterator I = mEntitiesToBeAddedToInventory.begin();
-		std::set<Eris::Entity*>::iterator I_end = mEntitiesToBeAddedToInventory.end();
-
-		for (; I != I_end; ++I) {
-			EmberEntity* emberEntity = static_cast<EmberEntity*> (*I);
-			EventAddedEntityToInventory.emit(emberEntity);
-		}
-
-		mEntitiesToBeAddedToInventory.clear();
-	}
-
-	/*	if (mEntitiesToBeRemovedFromInventory.size() > 0) {
-	 std::set<Eris::Entity*>::iterator J = mEntitiesToBeRemovedFromInventory.begin();
-	 std::set<Eris::Entity*>::iterator J_end = mEntitiesToBeRemovedFromInventory.end();
-
-	 for (; J != J_end; ++J) {
-	 EmberEntity* emberEntity = dynamic_cast<EmberEntity*>(*J);
-	 if (emberEntity)
-	 EventRemovedEntityFromInventory.emit(emberEntity);
-	 }
-
-	 mEntitiesToBeRemovedFromInventory.clear();
-	 }*/
-
 	attemptMove();
 }
 
@@ -356,7 +331,7 @@ void Avatar::avatar_Moved()
 
 void Avatar::entity_ChildAdded(Eris::Entity* childEntity)
 {
-	mEntitiesToBeAddedToInventory.insert(childEntity);
+	EventAddedEntityToInventory.emit(static_cast<EmberEntity*> (childEntity));
 }
 
 void Avatar::entity_ChildRemoved(Eris::Entity* childEntity)
