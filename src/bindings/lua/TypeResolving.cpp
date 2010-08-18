@@ -81,7 +81,10 @@ template <>
 const char* resolveLuaTypename<const std::vector<EmberOgre::EntityPickResult> >(){return "std::vector<EmberOgre::EntityPickResult>";}
 template <>
 const char* resolveLuaTypename<const std::set<std::string> >(){return "std::set<std::string>";}
-
+template <>
+const char* resolveLuaTypename<const Atlas::Message::Element >(){return "Atlas::Message::Element";}
+template <>
+const char* resolveLuaTypename<const Atlas::Objects::Root >(){return "Atlas::Object::Root";}
 }
 }
 
