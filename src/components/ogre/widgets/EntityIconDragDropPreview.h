@@ -99,9 +99,13 @@ public:
 	 * @brief Returns the offset between the preview model and the avatar.
 	 * @return Vector of the offset between the preview model and the avatar.
 	 */
-	WFMath::Vector<3> getDropOffset();
+	WFMath::Vector<3> getDropOffset() const;
 
-
+	/**
+	 * @brief Returns the orientation of the preview model.
+	 * @return The orientation of the preview model.
+	 */
+	WFMath::Quaternion getDropOrientation() const;
 
 	/**
 	 * @brief Emitted when we finalize our intended action
@@ -118,6 +122,11 @@ private:
 	 * @brief The location of the preview model to the avatar
 	 */
 	WFMath::Vector<3> mDropOffset;
+
+	/**
+	 * @brief The orientation of the preview model.
+	 */
+	WFMath::Quaternion mDropOrientation;
 
 	/**
 	 * @brief Manages the detached entity / preview model used
@@ -149,8 +158,15 @@ public:
 
 	/**
 	 * @brief Get the current position of the world
+	 * @returns The current position in the world.
 	 */
-	const WFMath::Point<3> getPosition();
+	const WFMath::Point<3> getPosition() const;
+
+	/**
+	 * @brief Gets the current orientation.
+	 * @returns The current orientation.
+	 */
+	const WFMath::Quaternion getOrientation() const;
 
 	sigc::signal<void> EventFinalizeCreation;
 	sigc::signal<void> EventCleanupCreation;

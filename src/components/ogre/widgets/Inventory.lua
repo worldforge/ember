@@ -265,7 +265,8 @@ function Inventory:buildWidget(avatarEntity)
 	self.DragDrop_Finalize = function(emberEntity)
 		if emberEntity ~= nil then
 			local offset = self.helper:getDropOffset()
-			emberServices:getServerService():drop(emberEntity, offset)
+			local orientation = self.helper:getDropOrientation()
+			emberServices:getServerService():drop(emberEntity, offset, orientation)
 		end
 	end
 	self.DragDrop_Finalized_connector = createConnector(self.helper.EventEntityFinalized):connect(self.DragDrop_Finalize)

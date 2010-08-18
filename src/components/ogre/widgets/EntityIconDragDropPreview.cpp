@@ -98,13 +98,19 @@ void EntityIconDragDropPreview::cleanupCreation()
 void EntityIconDragDropPreview::finalizeCreation()
 {
 	mDropOffset = mModelPreviewWorker->getPosition() - EmberOgre::getSingleton().getWorld()->getAvatar()->getClientSideAvatarPosition();
+	mDropOrientation = mModelPreviewWorker->getOrientation();
 	EventEntityFinalized.emit(mIconEntity);
 	cleanupCreation();
 }
 
-WFMath::Vector<3> EntityIconDragDropPreview::getDropOffset()
+WFMath::Vector<3> EntityIconDragDropPreview::getDropOffset() const
 {
 	return mDropOffset;
+}
+
+WFMath::Quaternion EntityIconDragDropPreview::getDropOrientation() const
+{
+	return mDropOrientation;
 }
 
 ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mEntity(0), mEntityNode(0), mModel(0), mModelMount(0), mMovement(0)
@@ -113,16 +119,9 @@ ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mEntity(0), mEnti
 
 	Eris::TypeInfo* erisType = entity->getType();
 
-	EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
-
-	WFMath::Vector<3> offset(2, 0, 0);
-	mPos = (avatar.getPosition().isValid() ? avatar.getPosition() : WFMath::Point<3>::ZERO()) + (avatar.getOrientation().isValid() ? offset.rotate(avatar.getOrientation()) : WFMath::Vector<3>::ZERO());
+	mPos = WFMath::Point<3>::ZERO();
 
 	mEntityMessage = entity->getInstanceAttributes();
-	//mEntityMessage["loc"] = avatar.getLocation()->getId();
-	//mEntityMessage["name"] = erisType->getName();
-	//mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
-
 
 	// Temporary entity
 	mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
@@ -197,9 +196,14 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 	mEntityNode->setOrientation(Convert::toOgre(mOrientation));
 }
 
-const WFMath::Point<3> ModelPreviewWorker::getPosition()
+const WFMath::Point<3> ModelPreviewWorker::getPosition() const
 {
 	return Convert::toWF<WFMath::Point<3> >(mEntityNode->getPosition());
+}
+
+const WFMath::Quaternion ModelPreviewWorker::getOrientation() const
+{
+	return Convert::toWF(mEntityNode->getOrientation());
 }
 
 void ModelPreviewWorker::showModelPart(const std::string& partName)

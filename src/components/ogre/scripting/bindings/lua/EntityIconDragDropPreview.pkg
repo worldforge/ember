@@ -32,7 +32,19 @@ public:
 	EntityIconDragDropPreview();
 	void createPreview(EntityIcon* icon);
 	void cleanupCreation();
-	WFMath::Vector<3> getDropOffset();
+	
+	/**
+	 * @brief Returns the offset between the preview model and the avatar.
+	 * @return Vector of the offset between the preview model and the avatar.
+	 */
+	WFMath::Vector<3> getDropOffset() const;
+
+	/**
+	 * @brief Returns the orientation of the preview model.
+	 * @return The orientation of the preview model.
+	 */
+	WFMath::Quaternion getDropOrientation() const;
+	
 	sigc::signal<void, EmberEntity*> EventEntityFinalized;
 };
 
