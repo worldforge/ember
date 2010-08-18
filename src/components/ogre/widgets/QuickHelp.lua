@@ -81,7 +81,7 @@ end
 
 function QuickHelp:disableAlphaConnector()
 	self.updateAlpha_connector:disconnect()
-	self.updateAlpha_connector:delete()
+	self.updateAlpha_connector = nil
 end
 
 function QuickHelp:Next_Click(args)
