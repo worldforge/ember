@@ -95,15 +95,18 @@ end
 
 function QuickHelp:Next_Click(args)
 	self.helper:nextMessage()
+	return true
 end
 
 function QuickHelp:Back_Click(args)
 	self.helper:previousMessage()
+	return true
 end
 
 function QuickHelp:Hide_Click(args)
 	self.hidden = true
 	self.widget:hide()
+	return true
 end
 
 function QuickHelp:updateButtons()
