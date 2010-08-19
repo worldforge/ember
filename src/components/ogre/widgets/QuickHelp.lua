@@ -6,6 +6,7 @@ function QuickHelp.buildWidget()
 		timeToShowBlurb = 4,
 		timeToFade = 5,
 		timeBlurbShown = 0,
+		timeBlurbLastUpdate = -1,
 		hidden = false,
 		updateText_connector = nil,
 		updateAlpha_connector = nil
@@ -47,7 +48,12 @@ function QuickHelp:frameStarted(timeSinceLastUpdate)
 		self.widget:getMainWindow():setAlpha(1.0)
 	else
 		self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
-		self.timer:setText("Hiding in " .. math.floor(math.max(self.timeToShowBlurb-self.timeBlurbShown, 0)) .. " seconds.")
+		local timeLeft = math.floor(math.max(self.timeToShowBlurb-self.timeBlurbShown, 0))
+		--only update the text when it has changed
+		if self.timeBlurbLastUpdate ~= timeLeft then
+			self.timer:setText("Hiding in " .. timeLeft .. " seconds.")
+			self.timeBlurbLastUpdate = timeLeft
+		end
 		if self.timeBlurbShown > self.timeToShowBlurb then
 			self.widget:getMainWindow():setAlpha(1.0 - ((self.timeBlurbShown-self.timeToShowBlurb) / self.timeToFade ))
 			if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
@@ -80,6 +86,7 @@ function QuickHelp:updateText(helpMessage)
 			local words = 0
 			for word in string.gfind(text, "[^%s]+") do words=words+1 end
 			self.timeToShowBlurb = math.max(words / 2.0, 4) --a normal human reads about 250 words per minute, which is ~4 words per second. We'll go for two words per second as the user might not concentrate on the help message at first. Show it no lesser than four seconds 
+			self.timeBlurbLastUpdate = -1
 		end
 		self.widget:show()
 		self.widget:getMainWindow():setAlpha(1.0)
