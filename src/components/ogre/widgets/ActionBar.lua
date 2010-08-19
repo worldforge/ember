@@ -309,6 +309,19 @@ function ActionBar:keyMapping(key, slotNum)
  	input.slotNum = slotNum
 	self.hotkeys[key] = input
 	
+	local slotWrapper = self.slots[slotNum]
+	if slotWrapper then
+		local numWindow = self.widget:createWindow("EmberLook/StaticText")
+		numWindow:setProperty("FrameEnabled", "false");
+	 	numWindow:setProperty("BackgroundEnabled", "false");
+		numWindow:setProperty("VertFormatting", "TopAligned");
+		numWindow:setText(key)
+		numWindow:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 1), CEGUI.UDim(0, 1)))
+		numWindow:setHeight(CEGUI.UDim(0, 20))
+		numWindow:setMousePassThroughEnabled(true)
+		slotWrapper.slot:getWindow():addChildWindow(numWindow)
+	end
+	
 	connect(self.connectors, input.key.EventGotHotkeyInput, self.gotInput, self)
 end
 
