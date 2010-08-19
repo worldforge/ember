@@ -34,8 +34,8 @@ namespace Gui
 
 QuickHelpCursor::QuickHelpCursor() : mQuickHelp(Gui::QuickHelp::getSingleton())
 {
-	mQuickHelp.EventTutorialAdded.connect(sigc::mem_fun(*this, &QuickHelpCursor::getLatestTutorial));
-	mQuickHelp.EventTutorialLocationChanged.connect(sigc::mem_fun(*this, &QuickHelpCursor::setCursorLocation));
+	mQuickHelp.EventHelpMessageAdded.connect(sigc::mem_fun(*this, &QuickHelpCursor::getLatestHelpMessage));
+	mQuickHelp.EventHelpMessageLocationChanged.connect(sigc::mem_fun(*this, &QuickHelpCursor::setCursorLocation));
 
 	mCurrentPosition = mQuickHelp.getEnd();
 	mCurrentPosition--;
@@ -48,7 +48,7 @@ QuickHelpCursor::~QuickHelpCursor()
 
 }
 
-void QuickHelpCursor::getLatestTutorial(std::list<HelpMessage>::const_iterator position)
+void QuickHelpCursor::getLatestHelpMessage(std::list<HelpMessage>::const_iterator position)
 {
 	mCurrentPosition = position;
 	updateMessage();

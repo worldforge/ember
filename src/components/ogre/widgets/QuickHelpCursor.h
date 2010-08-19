@@ -80,7 +80,7 @@ private:
 	/**
 	 * @brief Catches new messages emitted from QuickHelp.
 	 */
-	void getLatestTutorial(std::list<HelpMessage>::const_iterator position);
+	void getLatestHelpMessage(std::list<HelpMessage>::const_iterator position);
 
 	/**
 	 * @brief Holds the position of the current message displayed in the widget.

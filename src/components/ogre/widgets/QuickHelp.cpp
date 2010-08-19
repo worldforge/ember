@@ -54,7 +54,7 @@ const std::list<HelpMessage>::const_iterator QuickHelp::getBeginning() const
 const std::list<HelpMessage>::const_iterator QuickHelp::insertAtEnd(const HelpMessage& message)
 {
 	mTutorialText.push_back(message);
-	EventTutorialLocationChanged.emit(getSize());
+	EventHelpMessageLocationChanged.emit(getSize());
 	return --(mTutorialText.end());
 }
 
@@ -73,7 +73,7 @@ const std::list<HelpMessage>::const_iterator QuickHelp::messagePosition(const He
 
 		if (list_iterator->getId() == message.getId())
 		{
-			EventTutorialLocationChanged.emit(location);
+			EventHelpMessageLocationChanged.emit(location);
 			return list_iterator;
 		}
 		location++;
@@ -88,7 +88,7 @@ void QuickHelp::updateText(const HelpMessage& message)
 	if (mTutorialText.size() == MAXTUTORIALS)
 		mTutorialText.pop_front();
 
-	EventTutorialAdded.emit(messagePosition(message));
+	EventHelpMessageAdded.emit(messagePosition(message));
 }
 
 const int QuickHelp::getSize() const
