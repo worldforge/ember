@@ -79,7 +79,7 @@ function QuickHelp:updateText(helpMessage)
 			--Adapt the time the help widget is shown to how many words there are in the text
 			local words = 0
 			for word in string.gfind(text, "[^%s]+") do words=words+1 end
-			self.timeToShowBlurb = math.max(words / 2.0, 4) --a normal human reads about 250 words per minute, which is ~4 words per second. We'll go for 3 words per second. Show it no lesser than four seconds 
+			self.timeToShowBlurb = math.max(words / 2.0, 4) --a normal human reads about 250 words per minute, which is ~4 words per second. We'll go for two words per second as the user might not concentrate on the help message at first. Show it no lesser than four seconds 
 		end
 		self.widget:show()
 		self.widget:getMainWindow():setAlpha(1.0)
