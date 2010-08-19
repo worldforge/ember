@@ -41,6 +41,7 @@ function ActionBar:addSlot()
 	--We want to present an outline of the slot to the user.
 	slot:getWindow():setProperty("FrameEnabled", "true")
 	slot:getWindow():setProperty("BackgroundEnabled", "true")
+	slot:getWindow():setTooltipText("Drag and drop an entity from your inventory to attach it to this action bar slot.")
 	self.iconContainer:addChildWindow(slot:getWindow())
 	
 	local slotWrapper = {slot = slot}
