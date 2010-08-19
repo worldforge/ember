@@ -99,12 +99,14 @@ end
 --Capture user clicks of the delete button.
 function ActionBarCreator:Delete_Click()
 	self:deleteActionBar()
+	return true
 end
 
 --Capture user clicks of the create vertical action bar button.
 function ActionBarCreator:CreateVert_Click()
 	local type = "Vert"
 	self:createActionBar(type)
+	return true
 end
 
 function ActionBarCreator:WieldComboBox_Change()
@@ -117,6 +119,7 @@ function ActionBarCreator:WieldComboBox_Change()
 			self.defaultActionList:setDefaultWearableFunction(self.defaultActionList.eat)
 		end
 	end
+	return true
 end
 
 function ActionBarCreator:EdibleComboBox_Change()
@@ -129,12 +132,14 @@ function ActionBarCreator:EdibleComboBox_Change()
 			self.defaultActionList:setDefaultBioMassFunction(self.defaultActionList.eat)
 		end
 	end
+	return true
 end
 
 --Capture user clicks of the create horizontal action bar button.
 function ActionBarCreator:CreateHoriz_Click()
 	local type = "Horiz"
 	self:createActionBar(type)
+	return true
 end
 
 --Cleanup the widget.
