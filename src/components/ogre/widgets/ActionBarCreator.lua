@@ -62,6 +62,8 @@ function ActionBarCreator:createActionBar(layout)
 	--Add to the Listbox presented in the ActionBarCreator widget.
 	local actionBar = EmberOgre.Gui.ColouredListItem:new(name)
 	self.actionBarListbox:addItem(actionBar)
+
+	self.actionbarCount = self.actionbarCount+1
 	
 	return a1
 end
@@ -164,7 +166,8 @@ ActionBarCreator.createdAvatarEntityConnector = createConnector(emberOgre.EventC
 		if emberOgre:getWorld():getAvatar():isAdmin() == false then
 			actionbarCreator = {connectors={},
 				actionbars = {},
-				defaultActionList = DefaultEntityActions.new()}
+				defaultActionList = DefaultEntityActions.new(),
+				actionbarCount = 0}
 			setmetatable(actionbarCreator, {__index = ActionBarCreator})
 			actionbarCreator:buildCEGUIWidget()
 			actionbarCreator:init()
