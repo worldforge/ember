@@ -39,6 +39,7 @@ namespace OgreView {
 namespace Gui {
 
 EntityIconDragDropTarget::EntityIconDragDropTarget(CEGUI::Window* container)
+: mActive(true)
 {
 	container->subscribeEvent(CEGUI::Window::EventDragDropItemEnters, CEGUI::Event::Subscriber(& EntityIconDragDropTarget::dragContainer_DragEnter, this));
 	container->subscribeEvent(CEGUI::Window::EventDragDropItemLeaves, CEGUI::Event::Subscriber(& EntityIconDragDropTarget::dragContainer_DragLeave, this));
@@ -54,7 +55,7 @@ EntityIconDragDropTarget::~EntityIconDragDropTarget()
 bool EntityIconDragDropTarget::dragContainer_DragEnter(const CEGUI::EventArgs& args)
 {
 	EntityIcon* entityIcon = parseIcon(args);
-	if (entityIcon) {
+	if (entityIcon && mActive) {
 		return handleDragEnter(args, entityIcon);
 	}
 	return true;
@@ -63,7 +64,7 @@ bool EntityIconDragDropTarget::dragContainer_DragEnter(const CEGUI::EventArgs& a
 bool EntityIconDragDropTarget::dragContainer_DragLeave(const CEGUI::EventArgs& args)
 {
 	EntityIcon* entityIcon = parseIcon(args);
-	if (entityIcon) {
+	if (entityIcon && mActive) {
 		return handleDragLeave(args, entityIcon);
 	}
 	return true;
@@ -72,13 +73,16 @@ bool EntityIconDragDropTarget::dragContainer_DragLeave(const CEGUI::EventArgs& a
 bool EntityIconDragDropTarget::dragContainer_DragDropped(const CEGUI::EventArgs& args)
 {
 	EntityIcon* entityIcon = parseIcon(args);
-	if (entityIcon) {
+	if (entityIcon && mActive) {
 		return handleDragDropped(args, entityIcon);
 	}
 	return true;
 }
 
-
+void EntityIconDragDropTarget::setActive(bool active)
+{
+	mActive = active;
+}
 
 bool EntityIconDragDropTarget::handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon)
 {

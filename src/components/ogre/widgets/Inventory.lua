@@ -273,6 +273,9 @@ function Inventory:buildWidget(avatarEntity)
 	self.DragDrop_Finalized_connector = createConnector(self.helper.EventEntityFinalized):connect(self.DragDrop_Finalize)
 	
 	
+	--Set up listeners so that when something is moved in the world it can be dropped on the inventory
+	connect(self.connectors, emberOgre:getWorld():getMoveManager().EventStartMoving, self.moveManager_StartMoving, self)
+	
 	self.menu.container:setVisible(true)
 	
 	
@@ -457,6 +460,46 @@ function Inventory:createDollSlot(attributePath, containerWindow, tooltipText, w
 	end
 
 	return dollSlot
+end
+
+function Inventory:moveManager_StartMoving(entity, mover)
+	--When the user is moving something we should start to listen for the mouse entering the inventory widget, and if so activate the ability to drop the thing that is being moved here.
+	local overlay = self.widget:createWindow("DefaultGUISheet")
+	self.widget:getMainWindow():addChildWindow(overlay)
+	overlay:subscribeEvent("MouseEnter", function(args)
+			local icon = guiManager:getIconManager():getIcon(self.iconsize, entity)
+			
+			if icon then
+				self.DragDrop:setActive(false)
+				local entityIcon = self.entityIconManager:createIcon(icon, entity, self.iconsize)	
+				self.widget:getMainWindow():addChildWindow(entityIcon:getDragContainer())
+				entityIcon:getDragContainer():pickUp(true)
+			end
+			overlay:subscribeEvent("MouseLeave", function(args)
+					debugObject("Mouse leaves")
+					self.entityIconManager:destroyIcon(icon)
+					self.widget:getMainWindow():removeChildWindow(overlay)
+					return true
+				end
+			)
+			--self.widget:getMainWindow():removeChildWindow(overlay)
+			
+			return true
+		end
+	)
+	local finishedConnector
+	local cancelledConnector
+	local function endMovement()
+		finishedConnector:disconnect()
+		finishedConnector = nil
+		cancelledConnector:disconnect()
+		cancelledConnector = nil
+		windowManager:destroyWindow(overlay)
+	end
+	
+	finishedConnector = createConnector(emberOgre:getWorld():getMoveManager().EventFinishedMoving):connect(endMovement)
+	cancelledConnector = createConnector(emberOgre:getWorld():getMoveManager().EventCancelledMoving):connect(endMovement)
+	
 end
 
 function Inventory:shutdown()

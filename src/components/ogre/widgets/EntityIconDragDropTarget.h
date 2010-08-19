@@ -63,6 +63,8 @@ public:
 	 */
 	virtual ~EntityIconDragDropTarget();
 
+	void setActive(bool active);
+
 	/**
 	 * @brief Emitted when an entity icon is dragged over the window.
 	 */
@@ -102,6 +104,8 @@ protected:
 	virtual bool handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* icon);
 
 private:
+
+	bool mActive;
 
 	/**
 	 * @brief Listener for CEGUI event.

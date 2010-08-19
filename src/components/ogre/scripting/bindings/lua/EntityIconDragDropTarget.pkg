@@ -37,6 +37,9 @@ public:
 	sigc::signal<void, EntityIcon*> EventIconEntered;
 	sigc::signal<void, EntityIcon*> EventIconLeaves;
 	sigc::signal<void, EntityIcon*> EventIconDropped;
+	
+	void setActive(bool active);
+	
 
 };
 
