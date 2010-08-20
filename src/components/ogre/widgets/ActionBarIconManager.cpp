@@ -113,11 +113,10 @@ const std::string ActionBarIconManager::getSavedValue(const std::string& key) co
 {
 	Eris::ServerInfo sInfo;
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
-	std::string sname = sInfo.getHostname();
 	std::string accountIdKey = Ember::EmberServices::getSingleton().getServerService()->getAvatar()->getId();
 	accountIdKey.append(key);
 
-	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+	Ember::Services::ServerSettingsCredentials serverCredentials(sInfo);
 	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
 
 	if (serverSettings->findItem(serverCredentials, accountIdKey)) {
@@ -130,11 +129,10 @@ void ActionBarIconManager::saveValue(const std::string& key, const std::string& 
 {
 	Eris::ServerInfo sInfo;
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
-	std::string sname = sInfo.getHostname();
 	std::string accountIdKey = Ember::EmberServices::getSingleton().getServerService()->getAvatar()->getId();
 	accountIdKey.append(key);
 
-	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+	Ember::Services::ServerSettingsCredentials serverCredentials(sInfo);
 	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
 
 	serverSettings->setItem(serverCredentials, accountIdKey, value);
@@ -145,11 +143,10 @@ void ActionBarIconManager::eraseValue(const std::string& key)
 {
 	Eris::ServerInfo sInfo;
 	Ember::EmberServices::getSingleton().getServerService()->getConnection()->getServerInfo(sInfo);
-	std::string sname = sInfo.getHostname();
 	std::string accountIdKey = Ember::EmberServices::getSingleton().getServerService()->getAvatar()->getId();
 	accountIdKey.append(key);
 
-	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+	Ember::Services::ServerSettingsCredentials serverCredentials(sInfo);
 	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
 
 	if (serverSettings->findItem(serverCredentials, accountIdKey)) {

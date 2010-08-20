@@ -23,6 +23,7 @@
 #include "services/config/ConfigService.h"
 #include <varconf/varconf.h>
 #include <fstream>
+#include <sstream>
 
 namespace Ember
 {
@@ -53,7 +54,9 @@ void ServerSettings::stop(int code)
 std::string ServerSettings::getSectionForServerCredentials(const ServerSettingsCredentials & credentials) const
 {
 	//This should be expanded to a more complex way of assuring that the section returned is correct for the server credentials.
-	std::string sectionName = "hostname_" + credentials.getHostName();
+	std::stringstream ss;
+	ss << "hostname_" << credentials.getHostName() << "_servername_" << credentials.getServerName();
+	std::string sectionName(ss.str());
 	mConfig->clean(sectionName);
 	return sectionName;
 }

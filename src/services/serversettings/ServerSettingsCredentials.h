@@ -21,6 +21,10 @@
 
 #include <string>
 
+namespace Eris {
+class ServerInfo;
+}
+
 namespace Ember {
 
 namespace Services {
@@ -39,9 +43,17 @@ public:
 	/**
 	 * @brief Ctor.
 	 *
-	 * @param serverName The host name of the server
+	 * @param hostName The host name of the server
+	 * @param serverName The name of the server instance.
 	 */
-	ServerSettingsCredentials(const std::string& hostName);
+	ServerSettingsCredentials(const std::string& hostName, const std::string& serverName);
+
+	/**
+	 * @brief Ctor.
+	 *
+	 * @param serverInfo A server info object from Eris from which the needed data will be extracted.
+	 */
+	ServerSettingsCredentials(const Eris::ServerInfo& serverInfo);
 
 	/**
 	 * @brief Gets the host name of the server.
@@ -50,12 +62,24 @@ public:
 	 */
 	const std::string& getHostName() const;
 
+	/**
+	 * @brief Gets the name of the server instance.
+	 *
+	 * @returns The name of the server instance.
+	 */
+	const std::string& getServerName() const;
+
 private:
 
 	/**
 	 * @brief The host name of the server.
 	 */
 	std::string mHostName;
+
+	/**
+	 * @brief The name of the server instance.
+	 */
+	std::string mServerName;
 };
 
 }

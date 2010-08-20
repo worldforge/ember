@@ -241,9 +241,8 @@ bool ServerWidget::fetchCredentials(Eris::Connection* connection, std::string& u
 
 	Eris::ServerInfo sInfo;
 	connection->getServerInfo(sInfo);
-	std::string sname = sInfo.getHostname();
 
-	Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+	Ember::Services::ServerSettingsCredentials serverCredentials(sInfo);
 	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
 	if (serverSettings->findItem(serverCredentials, "username")) {
 		user = static_cast<std::string>(serverSettings->getItem(serverCredentials, "username"));
@@ -281,8 +280,7 @@ bool ServerWidget::saveCredentials()
 		// fetch info from widgets
 		CEGUI::String name = nameBox->getText();
 		CEGUI::String password = passwordBox->getText();
-		std::string sname = sInfo.getHostname();
-		Ember::Services::ServerSettingsCredentials serverCredentials(sname);
+		Ember::Services::ServerSettingsCredentials serverCredentials(sInfo);
 		Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
 		serverSettings->setItem(serverCredentials, "username", name.c_str());
 		serverSettings->setItem(serverCredentials, "password", password.c_str());

@@ -16,22 +16,34 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-
 #include "ServerSettingsCredentials.h"
+
+#include <Eris/ServerInfo.h>
+
 namespace Ember
 {
 
 namespace Services
 {
 
-ServerSettingsCredentials::ServerSettingsCredentials(const std::string& hostName) :
-	mHostName(hostName)
+ServerSettingsCredentials::ServerSettingsCredentials(const std::string& hostName, const std::string& serverName) :
+	mHostName(hostName), mServerName(serverName)
+{
+}
+
+ServerSettingsCredentials::ServerSettingsCredentials(const Eris::ServerInfo& serverInfo) :
+	mHostName(serverInfo.getHostname()), mServerName(serverInfo.getServername())
 {
 }
 
 const std::string& ServerSettingsCredentials::getHostName() const
 {
 	return mHostName;
+}
+
+const std::string& ServerSettingsCredentials::getServerName() const
+{
+	return mServerName;
 }
 }
 }
