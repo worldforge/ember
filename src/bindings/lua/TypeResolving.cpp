@@ -88,7 +88,7 @@ const char* resolveLuaTypename<const std::set<std::string> >(){return "std::set<
 template <>
 const char* resolveLuaTypename<const Atlas::Message::Element >(){return "Atlas::Message::Element";}
 template <>
-const char* resolveLuaTypename<const Atlas::Objects::Root >(){return "Atlas::Object::Root";}
+const char* resolveLuaTypename<const Atlas::Objects::Root >(){return "Atlas::Objects::Root";}
 }
 }
 
