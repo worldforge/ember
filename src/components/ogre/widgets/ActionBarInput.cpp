@@ -28,7 +28,7 @@ namespace EmberOgre
 namespace Gui
 {
 
-ActionBarInput::ActionBarInput(const std::string& actionBarKey) : ActionBarButton("actionbar_" + actionBarKey, this, "Hotkey for ActionBar key: " + actionBarKey + "."), mHotkey(actionBarKey)
+ActionBarInput::ActionBarInput(const std::string& actionBarKey) : mHotkey(actionBarKey), ActionBarButton("actionbar_" + actionBarKey, this, "Hotkey for ActionBar key: " + actionBarKey + ".")
 {
 }
 
