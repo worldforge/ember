@@ -3,32 +3,41 @@ StatusInstance = {}
 
 function StatusInstance:updateStatus()
 	if self.entity:hasAttr("status") then
-		local statusElement = self.entity:valueOfAttr("status")
-		local status = 0
-		if statusElement:isFloat() then
-			status = statusElement:asFloat()
-		end
-		self.healthBar:setProgress(status)
-		self.healthBar:setTooltipText("Health: " .. status * 100 .. "/100")
+		self:status_Changed(self.entity:valueOfAttr("status"))
 	end
 	if self.entity:hasAttr("stamina") then
-		local element = self.entity:valueOfAttr("stamina")
-		local value = 0
-		if element:isFloat() then
-			value = element:asFloat()
-		end
-		self.staminaBar:setProgress(value)
-		self.staminaBar:setTooltipText("Stamina: " .. value * 100 .. "/100")
+		self:stamina_Changed(self.entity:valueOfAttr("stamina"))
 	end
 	if self.entity:hasAttr("strength") then
-		local element = self.entity:valueOfAttr("strength")
-		local value = 0
-		if element:isFloat() then
-			value = element:asFloat()
-		end
-		self.strengthBar:setProgress(value)
-		self.strengthBar:setTooltipText("Strength: " .. value * 100 .. "/100")
+		self:strength_Changed(self.entity:valueOfAttr("strength"))
 	end
+end
+
+function StatusInstance:status_Changed(element)
+	local status = 0
+	if element:isFloat() then
+		status = element:asFloat()
+	end
+	self.healthBar:setProgress(status)
+	self.healthBar:setTooltipText("Health: " .. status * 100 .. "/100")
+end
+
+function StatusInstance:stamina_Changed(element)
+	local value = 0
+	if element:isFloat() then
+		value = element:asFloat()
+	end
+	self.staminaBar:setProgress(value)
+	self.staminaBar:setTooltipText("Stamina: " .. value * 100 .. "/100")
+end
+
+function StatusInstance:strength_Changed(element)
+	local value = 0
+	if element:isFloat() then
+		value = element:asFloat()
+	end
+	self.strengthBar:setProgress(value)
+	self.strengthBar:setTooltipText("Strength: " .. value * 100 .. "/100")
 end
 
 function StatusInstance:setEntity(entity)
@@ -42,12 +51,20 @@ function StatusInstance:setEntity(entity)
 			self.connectors.deleteConnector:disconnect()
 		end
 	end
-	self.connectors = {}
 
 	if entity == nil then
 		self.widget:hide()
 	else
-		self.connectors.changedConnector = createConnector(entity.Changed):connect(self.entity_Changed, self)
+		self.observers = {}
+		self.observers.status = Ember.AttributeObserver(entity, "status")
+		connect(self.connectors, self.observers.status.EventChanged, self.status_Changed, self)
+		
+		self.observers.stamina = Ember.AttributeObserver(entity, "stamina")
+		connect(self.connectors, self.observers.stamina.EventChanged, self.stamina_Changed, self)
+
+		self.observers.strength = Ember.AttributeObserver(entity, "strength")
+		connect(self.connectors, self.observers.strength.EventChanged, self.strength_Changed, self)
+
 		self.connectors.deleteConnector = createConnector(entity.BeingDeleted):connect(self.entity_BeingDeleted, self)
 
 		if entity:getName() == "" then
@@ -70,23 +87,12 @@ function StatusInstance:setEntity(entity)
 	end
 end
 
-function StatusInstance:entity_Changed(keys)
-	self:updateStatus()
-end
-
 function StatusInstance:entity_BeingDeleted()
 	self:setEntity(nil)
 end
 
 function StatusInstance:shutdown()
-	if self.connectors ~= nil then
-		if self.connectors.changedConnector ~= nil then
-			self.connectors.changedConnector:disconnect()
-		end
-		if self.connectors.deleteConnector ~= nil then
-			self.connectors.deleteConnector:disconnect()
-		end
-	end
+	disconnectAll(self.connectors)
 	
 	deleteSafe(self.renderer)
 	if self.widget ~= nil then
@@ -95,7 +101,7 @@ function StatusInstance:shutdown()
 end
 
 function Status:createStatusInstance(name)
-	local statusInstance = {}
+	local statusInstance = {connectors={}}
 	setmetatable(statusInstance, {__index = StatusInstance})
 	statusInstance.widget = guiManager:createWidget()
 	statusInstance.widget:loadMainSheet("Status.layout", "Status_" .. name .. "/")
