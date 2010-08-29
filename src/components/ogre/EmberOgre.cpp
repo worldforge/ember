@@ -59,6 +59,7 @@
 #include "services/scripting/ScriptingService.h"
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/LoggingInstance.h"
+#include "framework/IScriptingProvider.h"
 
 #include "terrain/TerrainLayerDefinitionManager.h"
 
@@ -570,6 +571,14 @@ void EmberOgre::EntityFactory_BeingDeleted()
 	EventWorldDestroyed.emit();
 	mWindow->removeAllViewports();
 	mWindow->addViewport(mOgreMainCamera);
+
+	//This is an excellent place to force garbage collection of all scripting environments.
+	Ember::ScriptingService* scriptingService = Ember::EmberServices::getSingleton().getScriptingService();
+	const std::vector<std::string> providerNames = scriptingService->getProviderNames();
+	for (std::vector<std::string>::const_iterator I = providerNames.begin(); I != providerNames.end(); ++I) {
+		scriptingService->getProviderFor(*I)->forceGC();
+	}
+
 	//After we've exited the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 
