@@ -53,6 +53,7 @@
 #include "framework/Time.h"
 
 #include "components/lua/LuaScriptingProvider.h"
+#include "components/lua/Connectors.h"
 
 #include "components/ogre/EmberOgre.h"
 
@@ -353,7 +354,8 @@ void Application::initializeServices()
 	tolua_Atlas_open(luaProvider->getLuaState());
 	tolua_Varconf_open(luaProvider->getLuaState());
 	tolua_ConnectorDefinitions_open(luaProvider->getLuaState());
-	Ember::EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(luaProvider);
+	EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(luaProvider);
+	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 
 	EventServicesInitialized.emit();
 }

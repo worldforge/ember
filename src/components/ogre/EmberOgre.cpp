@@ -110,8 +110,6 @@
 #include "services/input/Input.h"
 
 #include "OgreResourceProvider.h"
-#include "components/lua/LuaScriptingProvider.h"
-#include "components/lua/Connectors.h"
 
 #include <Eris/Connection.h>
 #include <Eris/View.h>
@@ -613,12 +611,6 @@ void EmberOgre::Application_ServicesInitialized()
 
 	mSoundResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("General"));
 	Ember::EmberServices::getSingleton().getSoundService()->setResourceProvider(mSoundResourceProvider.get());
-
-	Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
-	if (provider != 0) {
-		Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*> (provider);
-		Ember::Lua::ConnectorBase::setState(luaScriptProvider->getLuaState());
-	}
 
 }
 
