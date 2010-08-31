@@ -147,13 +147,6 @@ public:
 	 */
 	void initialize();
 
-
-	/**
-	 * @brief Sets a text to be shown somewhere on the screen, used for debugging purposes.
-	 * @param text The text to show.
-	 */
-	void setDebugText(const std::string& text);
-
 	/**
 	 *    true if we're in GUI mode, which means that input events will be sent to the CEGUI system instead of the "world"
 	 * @return
@@ -174,25 +167,11 @@ public:
 	 */
 	MousePicker* getMousePicker();
 
-
 	/**
 	 *    accessor for the Input instance object
 	 * @return
 	 */
 	Ember::Input& getInput() const;
-
-	/**
-	 *    Pushes a new mouse picker onto the stack, "pushing down" the current mouse picker.
-	 * @param mousePicker
-	 */
-// 	void pushMousePicker(MousePicker* mousePicker);
-
-	/**
-	 *    Pops the current mouse picker from the stack and returns the next in line.
-	 *    It's not possible to empty the stack. If there's only one picker left, no popping will be done, and the last picker will be returned.
-	 * @return
-	 */
-// 	MousePicker* popMousePicker();
 
 	CEGUI::OgreRenderer* getGuiRenderer() const;
 
@@ -293,7 +272,6 @@ protected:
 
 	CEGUI::Window* mSheet;
 	CEGUI::WindowManager* mWindowManager;
-	CEGUI::GUISheet* mDebugText;
 
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;

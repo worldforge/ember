@@ -159,7 +159,7 @@ protected:
 };
 
 GUIManager::GUIManager(Ogre::RenderWindow* window) :
-	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mDebugText(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -300,12 +300,6 @@ void GUIManager::initialize()
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
 	chdir(configSrv->getEmberDataDirectory().c_str());
 	try {
-		mDebugText = (CEGUI::GUISheet*)mWindowManager->createWindow("DefaultGUISheet", (CEGUI::utf8*)"DebugText");
-		mSheet->addChildWindow(mDebugText);
-		mDebugText->setMaxSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0, 25)));
-		mDebugText->setPosition(CEGUI::UVector2(UDim(0.0f, 0), UDim(1.0f, -25)));
-		mDebugText->setSize(CEGUI::UVector2(UDim(1.0f, 0), UDim(0, 25)));
-
 		createWidget("Quit");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("GUIManager - error when initializing widgets." << e);
@@ -422,13 +416,6 @@ void GUIManager::destroyWidget(Widget* widget)
 	}
 	removeWidget(widget);
 	delete widget;
-}
-
-void GUIManager::setDebugText(const std::string& text)
-{
-	if (mDebugText) {
-		mDebugText->setText(text);
-	}
 }
 
 Input& GUIManager::getInput() const

@@ -22,9 +22,6 @@ class GUIManager
 	void EmitEntityAction(const std::string& action, EmberOgre::EmberEntity* entity);
 
 	CEGUI::Window* getMainSheet();
-	
-	
-	void setDebugText(const std::string& text);
 
 	const bool isInGUIMode() const;
 	
