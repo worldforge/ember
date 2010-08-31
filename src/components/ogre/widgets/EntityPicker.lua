@@ -90,14 +90,35 @@ function EntityPicker:showMenu(position)
 		self.buttons.edit:setVisible(false)
 		self.buttons.teleportto:setVisible(false)
 	end
+
+	self.stackableContainer:repositionWindows()
 	
 	local localPosition = CEGUI.Vector2:new_local(position.x, position.y)
 	
 	localPosition.x = localPosition.x - self.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
 	localPosition.y = localPosition.y - 10.0
+	
+	--Make sure the menu is fully contained within the main window
+	if localPosition.x < 0 then
+		localPosition.x = 0
+	end
+	if localPosition.y < 0 then
+		localPosition.y = 0
+	end
+	local width = self.widget:getMainWindow():getWidth():asAbsolute(0)
+	local height = self.stackableContainer:getAbsoluteHeight() + self.entityName:getHeight():asAbsolute(0)
+
+	local mainWindowSize = root:getPixelSize()
+	if localPosition.x + width > mainWindowSize.width then
+		localPosition.x = mainWindowSize.width - width
+	end
+	if localPosition.y + height > mainWindowSize.height then
+		localPosition.y = mainWindowSize.height - height
+	end
+	
+	
 	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,localPosition.x), CEGUI.UDim(0,localPosition.y))
 	self.widget:getMainWindow():setPosition(uPosition )
-	self.stackableContainer:repositionWindows()
 end
 
 function EntityPicker:previousButton_MouseEnters(args)
