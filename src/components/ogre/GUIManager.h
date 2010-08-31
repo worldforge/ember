@@ -57,6 +57,7 @@ class MousePicker;
 class GUICEGUIAdapter;
 class MovementController;
 class ColouredRenderedStringParser;
+class World;
 
 namespace Gui {
 class QuickHelp;
@@ -65,6 +66,7 @@ class EntityIconManager;
 class ActionBarIconManager;
 class ActiveWidgetHandler;
 class CEGUILogger;
+class EntityTooltip;
 namespace Icons {
 class IconManager;
 }
@@ -259,6 +261,17 @@ public:
 	 */
 	Gui::ActionBarIconManager* getActionBarIconManager();
 
+
+	/**
+	 * @brief Accessor for the entity tooltip instance, if such an instance has been created.
+	 *
+	 * @note The entity tooltip instance will only be available while a World instance is present in the system.
+	 *
+	 * @returns The entity tooltip instance if such exists, else null.
+	 */
+	Gui::EntityTooltip* getEntityTooltip() const;
+
+
 protected:
 
 	/**
@@ -300,6 +313,10 @@ protected:
 	 */
 	void EmberOgre_CreatedAvatarEntity(EmberEntity& entity);
 
+	void EmberOgre_WorldCreated(World& world);
+
+	void EmberOgre_WorldDestroyed();
+
 // 	InputMode mPreviousInputMode;
 	void pressedKey(const SDL_keysym& key, Ember::Input::InputMode inputMode);
 
@@ -338,6 +355,11 @@ protected:
 	 * @brief Responsible for the help system
 	 */
 	Gui::QuickHelp* mQuickHelp;
+
+	/**
+	 * @brief The entity tooltip instance, created when a World has been created, and destroyed along with it.
+	 */
+	Gui::EntityTooltip* mEntityTooltip;
 };
 
 inline MousePicker* GUIManager::getMousePicker() { return  mMousePickers.top(); }

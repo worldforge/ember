@@ -88,5 +88,8 @@ class GUIManager
 	EmberOgre::Gui::EntityIconManager* getEntityIconManager();
 
 	EmberOgre::Gui::ActionBarIconManager* getActionBarIconManager();
+	
+	EmberOgre::Gui::EntityTooltip* getEntityTooltip() const;
+	
 };
 }

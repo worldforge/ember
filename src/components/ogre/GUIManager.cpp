@@ -21,9 +21,36 @@
 #include "config.h"
 #endif
 #include "GUIManager.h"
+#include "EmberOgre.h"
+#include "EmberEntity.h"
+#include "GUICEGUIAdapter.h"
+#include "MousePicker.h"
+
+#include "widgets/EntityTooltip.h"
+#include "widgets/Widget.h"
+#include "widgets/QuickHelp.h"
+#include "widgets/WidgetDefinitions.h"
+#include "widgets/icons/IconManager.h"
+#include "widgets/EntityIconManager.h"
+#include "widgets/ActionBarIconManager.h"
+
+#include "camera/MainCamera.h"
+#include "gui/ActiveWidgetHandler.h"
+#include "gui/CEGUILogger.h"
+
+#include "components/lua/LuaScriptingProvider.h"
+
+#include "services/input/Input.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/scripting/ScriptingService.h"
+
+#include "framework/IScriptingProvider.h"
+
+#include <OgreRenderWindow.h>
+#include <OgreViewport.h>
+#include <OgreTextureManager.h>
+#include <OgreRoot.h>
 
 #include <CEGUIWindowManager.h>
 #include <CEGUISchemeManager.h>
@@ -38,36 +65,8 @@
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUIMultiLineEditbox.h>
 #include <elements/CEGUIEditbox.h>
+#include <elements/CEGUITooltip.h>
 
-#include "widgets/Widget.h"
-#include "MousePicker.h"
-#include "widgets/QuickHelp.h"
-
-#include "components/ogre/camera/MainCamera.h"
-#include "EmberOgre.h"
-#include "services/input/Input.h"
-#include "gui/ActiveWidgetHandler.h"
-#include "gui/CEGUILogger.h"
-
-#include "widgets/WidgetDefinitions.h"
-
-#include "EmberEntity.h"
-
-#include "framework/IScriptingProvider.h"
-
-#include "components/lua/LuaScriptingProvider.h"
-
-#include "GUICEGUIAdapter.h"
-
-#include "widgets/icons/IconManager.h"
-#include "widgets/EntityIconManager.h"
-#include "widgets/ActionBarIconManager.h"
-
-#include "services/input/Input.h"
-#include <OgreRenderWindow.h>
-#include <OgreViewport.h>
-#include <OgreTextureManager.h>
-#include <OgreRoot.h>
 
 #ifdef __WIN32__
 #include <windows.h>
@@ -159,7 +158,7 @@ protected:
 };
 
 GUIManager::GUIManager(Ogre::RenderWindow* window) :
-	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -208,6 +207,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser);
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 
+		EntityTooltip::registerFactory();
+
 		try {
 			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), "MouseArrow");
 		} catch (const CEGUI::Exception& ex) {
@@ -243,6 +244,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 
 		///connect to the creation of the avatar, since we want to switch to movement mode when that happens
 		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
+		EmberOgre::getSingleton().EventWorldCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldCreated));
+		EmberOgre::getSingleton().EventWorldDestroyed.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldDestroyed));
 
 		mActiveWidgetHandler = new Gui::ActiveWidgetHandler(*this);
 
@@ -623,23 +626,27 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 	}
 }
 
-// void GUIManager::pushMousePicker( MousePicker * mousePicker )
-// {
-// 	mMousePickers.push(mousePicker);
-// }
-
-// MousePicker * GUIManager::popMousePicker()
-// {
-// 	///only pop if there's more than one registered picker
-// 	if (mMousePickers.size() > 1)
-// 		mMousePickers.pop();
-// 	return mMousePickers.top();
-// }
-
 void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 {
 	///switch to movement mode, since it appears most people don't know how to change from gui mode
 	getInput().setInputMode(Input::IM_MOVEMENT);
+}
+
+void GUIManager::EmberOgre_WorldCreated(World& world)
+{
+	mEntityTooltip = new EntityTooltip(world, *static_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")), *mIconManager);
+}
+
+void GUIManager::EmberOgre_WorldDestroyed()
+{
+	mWindowManager->destroyWindow(&mEntityTooltip->getTooltipWindow());
+	delete mEntityTooltip;
+	mEntityTooltip = 0;
+}
+
+Gui::EntityTooltip* GUIManager::getEntityTooltip() const
+{
+	return mEntityTooltip;
 }
 
 const std::string& GUIManager::getLayoutDir() const
