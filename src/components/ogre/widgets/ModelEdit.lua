@@ -556,8 +556,7 @@ function ModelEdit.updateModelContentList()
 		
 		local treeItem = EmberOgre.Gui.ColouredTreeItem:new(name, table.getn(ModelEdit.modelContentsItems)) 
 		treeItem:toggleIsOpen()
-		--We need to use a CEGUI.String instead of a regular string as the CEGUI lua bindings for the TreeItem specifically use "String" rather than "string" (which should probably be considered a bug).
-		treeItem:setTooltipText(CEGUI.String("Mesh '" .. name .. "'"))
+		treeItem:setTooltipText("Mesh '" .. name .. "'")
 		ModelEdit.modelcontentstree:addItem(treeItem)
 		
 		--add all parts
@@ -581,7 +580,7 @@ function ModelEdit.updateModelContentList()
 				
 				local treeItem2 = EmberOgre.Gui.ColouredTreeItem:new(name .. partVisible, table.getn(ModelEdit.modelContentsItems))
 				treeItem2:toggleIsOpen()
-				treeItem2:setTooltipText(CEGUI.String("Part '" .. name .. "'"))
+				treeItem2:setTooltipText("Part '" .. name .. "'")
 				treeItem:addItem(treeItem2)
 			
 				if part ~= nil then
@@ -600,7 +599,7 @@ function ModelEdit.updateModelContentList()
 						
 						local treeItem3 = EmberOgre.Gui.ColouredTreeItem:new(submeshname, table.getn(ModelEdit.modelContentsItems))
 						treeItem3:toggleIsOpen()
-						treeItem3:setTooltipText(CEGUI.String("Submesh '" .. submeshname .. "'"))
+						treeItem3:setTooltipText("Submesh '" .. submeshname .. "'")
 						treeItem2:addItem(treeItem3)
 					end
 				end
