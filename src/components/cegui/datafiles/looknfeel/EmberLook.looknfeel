@@ -292,6 +292,7 @@
         </StateImagery>
     </WidgetLook>
 
+
     <!--
     ***************************************************
         EmberLook/Checkbox
@@ -650,7 +651,6 @@
                 <Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
                 <Dim type="BottomEdge" ><UnifiedDim scale="1" type="BottomEdge" /></Dim>
             </Area>
-            <Property name="ClippedByParent" value="false" />
         </Child>
         <Child  type="EmberLook/IconButton" nameSuffix="__auto_button__">
             <Area>
@@ -1466,6 +1466,7 @@
 		<PropertyDefinition name="SelectionBrush" initialValue="set:EmberLook image:Background" redrawOnWrite="true" />
 		<PropertyDefinition name="SelectionColour" initialValue="FF3030FF" redrawOnWrite="true" />
 		<Property name="Selectable" value="True" />
+        <Property name="MouseInputPropagationEnabled" value="True" />
 		<NamedArea name="ContentSize">
 			<Area>
 				<Dim type="LeftEdge" >
@@ -1903,6 +1904,7 @@
     <WidgetLook name="EmberLook/ListHeaderSegment">
         <Property name="SizingCursorImage" value="set:EmberLook image:MouseEsWeCursor" />
         <Property name="MovingCursorImage" value="set:EmberLook image:MouseMoveCursor" />
+        <Property name="MouseInputPropagationEnabled" value="True" />
         <ImagerySection name="segment">
             <ImageryComponent>
                 <Area>
@@ -1943,7 +1945,7 @@
                     <Dim type="Width" ><ImageDim imageset="EmberLook" image="SmallUpArrow" dimension="Width" /></Dim>
                     <Dim type="Height" ><ImageDim imageset="EmberLook" image="SmallUpArrow" dimension="Height" /></Dim>
                 </Area>
-                <Image imageset="EmberLook" image="SmallUpArrow" />
+                <Image imageset="EmberLook" image="SmallDownArrow" />
             </ImageryComponent>
         </ImagerySection>
         <ImagerySection name="descend_icon">
@@ -1954,7 +1956,7 @@
                     <Dim type="Width" ><ImageDim imageset="EmberLook" image="SmallDownArrow" dimension="Width" /></Dim>
                     <Dim type="Height" ><ImageDim imageset="EmberLook" image="SmallDownArrow" dimension="Height" /></Dim>
                 </Area>
-                <Image imageset="EmberLook" image="SmallDownArrow" />
+                <Image imageset="EmberLook" image="SmallUpArrow" />
             </ImageryComponent>
         </ImagerySection>
         <ImagerySection name="label">
@@ -2062,6 +2064,7 @@
     -->
     <WidgetLook name="EmberLook/ListHeader">
         <Property name="SegmentWidgetType" value="EmberLook/ListHeaderSegment" />
+        <Property name="MouseInputPropagationEnabled" value="True" />
         <StateImagery name="Enabled" />
         <StateImagery name="Disabled" />
     </WidgetLook>
@@ -2606,6 +2609,8 @@
             </Layer>
         </StateImagery>
     </WidgetLook>
+
+
     <!--
     ***************************************************
         EmberLook/RadioButton
@@ -2781,6 +2786,7 @@
     <WidgetLook name="EmberLook/VerticalScrollbarThumb">
         <Property name="VertFree" value="True" />
         <Property name="UnifiedMinSize" value="{{0,0},{0,16}}" />
+        <Property name="MouseInputPropagationEnabled" value="True" />
         <ImagerySection name="normal">
             <FrameComponent>
                 <Area>
@@ -3068,6 +3074,7 @@
     <WidgetLook name="EmberLook/HorizontalScrollbarThumb">
         <Property name="HorzFree" value="True" />
         <Property name="UnifiedMinSize" value="{{0,16},{0,0}}" />
+        <Property name="MouseInputPropagationEnabled" value="True" />
         <ImagerySection name="normal">
             <FrameComponent>
                 <Area>
@@ -3347,6 +3354,7 @@
     -->
     <WidgetLook name="EmberLook/SliderThumb">
         <Property name="HorzFree" value="True" />
+        <Property name="MouseInputPropagationEnabled" value="True" />
         <ImagerySection name="normal">
             <ImageryComponent>
                 <Area>
@@ -3404,6 +3412,7 @@
     ***************************************************
     -->
     <WidgetLook name="EmberLook/Slider">
+        <Property name="HorizontalSlider" value="True" />
         <Property name="MouseButtonDownAutoRepeat" value="True" />
         <Property name="WantsMultiClickEvents" value="False" />
         <NamedArea name="ThumbTrackArea">
@@ -3673,7 +3682,7 @@
                 <Image type="TopEdge" imageset="EmberLook" image="StaticFrameTop" />
                 <Image type="RightEdge" imageset="EmberLook" image="StaticFrameRight" />
                 <Image type="BottomEdge" imageset="EmberLook" image="StaticFrameBottom" />
-                <!-- ColourRectProperty name="FrameColours" / -->
+                <ColourRectProperty name="FrameColours" />
             </FrameComponent>
         </ImagerySection>
         <ImagerySection name="background">
@@ -4268,7 +4277,7 @@
         <PropertyDefinition name="EnableTop" initialValue="0" redrawOnWrite="true" layoutOnWrite="true" />
         <PropertyDefinition name="EnableBottom" initialValue="0" redrawOnWrite="true" layoutOnWrite="true" />
 		<PropertyDefinition name="BackgroundColours" initialValue="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" redrawOnWrite="true" />
-		<ImagerySection name="normal">
+        <ImagerySection name="normal">
             <FrameComponent>
                 <Area>
                     <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
