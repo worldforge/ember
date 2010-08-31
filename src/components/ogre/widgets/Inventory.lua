@@ -108,7 +108,8 @@ function Inventory:createIcon(entity)
 		local name = entity:getType():getName() .. " (" .. entity:getId() .. " : " .. entity:getName() .. ")"
 		local entityIconWrapper = {}
 		entityIconWrapper.entityIcon = self.entityIconManager:createIcon(icon, entity, self.iconsize)
-		entityIconWrapper.entityIcon:setTooltipText(name)
+		entityIconWrapper.entityIcon:getImage():setTooltip(guiManager:getEntityTooltip():getTooltipWindow())
+		entityIconWrapper.entityIcon:getImage():setTooltipText(entity:getId())
 		entityIconWrapper.entity = entity
 		entityIconWrapper.mouseEnters = function(args)
 			entityIconWrapper.entityIcon:getImage():setProperty("FrameEnabled", "true")
@@ -281,10 +282,12 @@ function Inventory:buildWidget(avatarEntity)
 	self.widget:registerConsoleVisibilityToggleCommand("inventory")
 	self.avatarEntity = avatarEntity
 	self:setupDoll(avatarEntity)
+--[[
 	connect(self.connectors, avatarEntity.Changed, function(self, keys)
 			self:updateDoll()
 		end
 	, self)
+	]]--
 	self.widget:show()
 -- 	connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, self.input_MouseButtonReleased, self)
 --	guiManager:getMainSheet():addChildWindow(self.menu.container)
