@@ -7,7 +7,7 @@
 		<Property Name='Text' Value='Help'/>
 		<Property Name='Visible' Value='false'/>
 		<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
-			<Property Name='UnifiedSize' Value='{{0.0,780.0},{0.0,560.0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,-20.0},{1,-40.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,30.0}}'/>
 			<Property Name='Text'>Welcome to ember. This help window can be accessed anytime either by clicking on the help icon down to the left, or by entering the command '/help' in the console (F12 will expand the console).
 
