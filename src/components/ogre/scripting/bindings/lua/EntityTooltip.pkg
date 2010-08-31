@@ -1,0 +1,14 @@
+$#include "components/ogre/widgets/EntityTooltip.h"
+
+namespace EmberOgre {
+namespace Gui {
+
+class EntityTooltip
+{
+public:
+	CEGUI::Tooltip& getTooltipWindow() const;
+
+};
+
+}
+}

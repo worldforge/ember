@@ -50,6 +50,7 @@ $pfile "EntityIconDragDropPreview.pkg"
 
 $pfile "QuickHelpCursor.pkg"
 $pfile "ActionBar.pkg"
+$pfile "EntityTooltip.pkg"
 
 $pfile "ActionBarIconSlot.pkg"
 $pfile "ActionBarIcon.pkg"
