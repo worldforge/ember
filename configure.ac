@@ -195,6 +195,22 @@ AC_MSG_RESULT([
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
+case "x$target_os" in
+  *bsd* | *linux* )
+	PKG_CHECK_MODULES([X11], x11,
+		[
+			CXXFLAGS="$CXXFLAGS $X11_CFLAGS"
+			LIBS="$LIBS $X11_LIBS"
+		],
+		[
+			AC_MSG_ERROR([Couldn't find X11 development files.
+			$X11_PKG_ERRORS])
+		])
+  break;
+  ;;
+esac
+
+	
 CEGUI_VERSION=0.7.2
 PKG_CHECK_MODULES(CEGUI, CEGUI >= $CEGUI_VERSION,
 	[
