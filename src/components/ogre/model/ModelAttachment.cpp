@@ -118,7 +118,12 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		INodeProvider* nodeProvider(0);
 		if (attachPoint != "") {
 			if (mModelRepresentation.getModel().isLoaded()) {
-				nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, modelRepresentation ? &modelRepresentation->getModel() : 0);
+				try {
+					nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, modelRepresentation ? &modelRepresentation->getModel() : 0);
+				} catch (const std::exception& ex) {
+					S_LOG_WARNING("Failed to attach to attach point '"<< attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getName() << "'.");
+					return new HiddenAttachment(entity, getAttachedEntity());
+				}
 			} else {
 				//If the model isn't loaded yet we can't attach yet. Instead we'll return a null attachment and wait until the model is reloaded, at which point reattachEntities() is called.
 				return 0;
