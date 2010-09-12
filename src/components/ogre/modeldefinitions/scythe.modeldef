@@ -5,13 +5,18 @@
         <submodels>
             <submodel mesh="3d_objects/items/tools/models/scythe/scythe.mesh">
                 <parts>
-                    <part name="main" show="true">
-                    </part>
+                    <part name="main" show="true" />
                 </parts>
             </submodel>
         </submodels>
         <actions />
         <attachpoints />
-        <views />
+        <views>
+            <view name="icon">
+                <distance>0</distance>
+                <rotation x="-0.725113" y="0.596371" z="0.344315" degrees="77.051384" />
+            </view>
+        </views>
+        <lights />
     </model>
 </models>
