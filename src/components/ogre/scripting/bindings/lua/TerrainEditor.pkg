@@ -109,6 +109,10 @@ public:
 
 	sigc::signal<void, EmberOgre::Terrain::TerrainEditorOverlay&> EventOverlayCreated;
 
+	/**
+	 * @brief Emitted when the overlay instance has been destroyed.
+	 */
+	sigc::signal<void> EventOverlayDestroyed;
 
 
 	float getRadius() const;

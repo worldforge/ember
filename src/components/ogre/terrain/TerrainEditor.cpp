@@ -37,13 +37,13 @@ namespace Terrain
 {
 
 TerrainEditor::TerrainEditor(TerrainManager& manager, Camera::MainCamera& camera) :
-	mManager(manager), mCamera(camera), mOverlay(0), mVisible(false), mMovementRadiusInMeters(0), mFalloff(0)
+	mManager(manager), mCamera(camera), mOverlay(0), mMovementRadiusInMeters(0), mFalloff(0)
 {
 }
 
 TerrainEditor::~TerrainEditor()
 {
-
+	delete mOverlay;
 }
 
 void TerrainEditor::showOverlay()
@@ -51,18 +51,21 @@ void TerrainEditor::showOverlay()
 	if (!mOverlay) {
 		sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >&> slot = sigc::mem_fun(*this, &TerrainEditor::basepointsRecieved);
 		mManager.getBasePoints(slot);
+	} else {
+		mOverlay->setVisible(true);
 	}
 }
 
 void TerrainEditor::hideOverlay()
 {
-	delete mOverlay;
-	mOverlay = 0;
+	if (mOverlay) {
+		mOverlay->setVisible(false);
+	}
 }
 
 bool TerrainEditor::isOverlayShown() const
 {
-	return mOverlay != 0;
+	return mOverlay != 0 && mOverlay->getVisible();
 }
 
 float TerrainEditor::getRadius() const
@@ -87,7 +90,10 @@ void TerrainEditor::setFalloff(float falloff)
 
 void TerrainEditor::basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints)
 {
-	delete mOverlay;
+	if (mOverlay) {
+		delete mOverlay;
+		EventOverlayDestroyed.emit();
+	}
 	mOverlay = new TerrainEditorOverlay(*this, mManager.getScene().getSceneManager(), *mManager.getScene().getSceneManager().getRootSceneNode(), mManager, mCamera, basePoints);
 	EventOverlayCreated(*mOverlay);
 }

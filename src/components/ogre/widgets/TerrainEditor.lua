@@ -18,19 +18,25 @@ function TerrainEditor:selectedBasePointUpdatedPosition(userObject)
 end
 
 function TerrainEditor:HeightSpinner_ValueChanged(args)
-	if self.currentObject ~= nil then
-		local translation = self.heightSpinner:getCurrentValue() - self.currentObject:getHeight()
-		self.currentObject:translate(translation)
-		self.overlay:createAction(true)
+	if self.overlay then
+		if self.currentObject then
+			local translation = self.heightSpinner:getCurrentValue() - self.currentObject:getHeight()
+			self.currentObject:translate(translation)
+			self.overlay:createAction(true)
+		end
 	end
 end
 
 function TerrainEditor:UndoButton_Click(args)
-	self.overlay:undoLastAction()
+	if self.overlay then
+		self.overlay:undoLastAction()
+	end
 end
 
 function TerrainEditor:RedoButton_Click(args)
-	self.overlay:redoAction()
+	if self.overlay then
+		self.overlay:redoAction()
+	end
 end
 
 function TerrainEditor:ShowOverlayButton_Click(args)
@@ -57,7 +63,9 @@ function TerrainEditor:ShowOverlay()
 end
 
 function TerrainEditor:SendToServerButton_Click(args)
-	self.overlay:sendChangesToServer()
+	if self.overlay then
+		self.overlay:sendChangesToServer()
+	end
 end
 
 function TerrainEditor:MainWindow_Hidden(args)
@@ -75,6 +83,10 @@ function TerrainEditor:overlayCreated(overlay)
 
 end
 
+function TerrainEditor:overlayDestroyed()
+	self.overlay = nil
+end
+
 function TerrainEditor:buildWidget(terrainManager)
 	local mainCamera = emberOgre:getWorld():getMainCamera()
 	if mainCamera ~= nil then
@@ -89,6 +101,7 @@ function TerrainEditor:buildWidget(terrainManager)
 		
 			self.editor = EmberOgre.Terrain.TerrainEditor:new(terrainManager, mainCamera)
 			connect(self.connectors, self.editor.EventOverlayCreated, self.overlayCreated, self)
+			connect(self.connectors, self.editor.EventOverlayDestroyed, self.overlayDestroyed, self)
 			self.editor:showOverlay()
 			
 			
@@ -124,12 +137,12 @@ function TerrainEditor:shutdown()
 end
 
 connect(connectors, emberOgre.EventTerrainManagerCreated, function(terrainManager)
-	terrainEditor = {connectors={}}
+	terrainEditor = {connectors={}, overlay=nil}
 	setmetatable(terrainEditor, {__index = TerrainEditor})
 	
 	terrainEditor:buildWidget(terrainManager)
 	
-	connect(terrainEditor.connectors, emberOgre.EventWorldDestroyed, function()
+	connect(terrainEditor.connectors, emberOgre.EventTerrainManagerDestroyed, function()
 			terrainEditor:shutdown()
 			terrainEditor = nil
 		end

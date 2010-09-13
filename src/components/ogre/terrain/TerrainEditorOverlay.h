@@ -286,6 +286,16 @@ public:
 	 */
 	bool redoAction();
 
+	/**
+	 * @brief Sets the visibility of the overlay.
+	 */
+	void setVisible(bool visible);
+
+	/**
+	 * @brief Gets whether the overlay is visible.
+	 */
+	bool getVisible() const;
+
     /**
     * Emitted when a base point has been picked by the mouse.
     * @param The UserObject of the picked base point.
@@ -321,6 +331,7 @@ private:
 
 	TerrainEditor& mEditor;
 	Ogre::SceneManager& mSceneManager;
+	Ogre::SceneNode& mWorldSceneNode;
 	TerrainManager& mManager;
 	Camera::MainCamera& mCamera;
 

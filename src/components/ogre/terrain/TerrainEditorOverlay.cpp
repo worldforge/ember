@@ -162,7 +162,7 @@ const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 
 }
 TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint> >& basePoints) :
-	mEditor(editor), mSceneManager(sceneManager), mManager(manager), mCamera(camera), mOverlayNode(0), mPickListener(*this), mCurrentUserObject(0)
+	mEditor(editor), mSceneManager(sceneManager), mWorldSceneNode(worldSceneNode), mManager(manager), mCamera(camera), mOverlayNode(0), mPickListener(*this), mCurrentUserObject(0)
 {
 	createOverlay(basePoints, worldSceneNode);
 }
@@ -438,6 +438,28 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 	}
 
 }
+
+void TerrainEditorOverlay::setVisible(bool visible)
+{
+	if (mOverlayNode) {
+		if (visible) {
+			if (!mOverlayNode->getParentSceneNode()) {
+				mWorldSceneNode.addChild(mOverlayNode);
+			}
+		} else {
+			if (mOverlayNode->getParentSceneNode()) {
+				mOverlayNode->getParentSceneNode()->removeChild(mOverlayNode);
+			}
+		}
+	}
+}
+
+bool TerrainEditorOverlay::getVisible() const
+{
+	return mOverlayNode != 0 && mOverlayNode->isInSceneGraph();
+}
+
+
 
 bool TerrainEditorOverlay::undoLastAction()
 {
