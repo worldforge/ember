@@ -83,14 +83,9 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 	///make a copy of the original bbox
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
 
-	///We can only apply any meaninful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similiar, and no entities
+	///We can only apply any meaningful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similar, and no entities
 	Ogre::Vector3 defaultSize = defaultOgreBoundingBox.getSize();
 	if (!defaultOgreBoundingBox.isNull() && (defaultSize.x != 0.0f && defaultSize.y != 0.0f && defaultSize.z != 0.0f)) {
-		///apply any transformations required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
-		Ogre::Matrix4 localTransform;
-		localTransform.makeTransform(getNode().getPosition(), getNode().getScale(), getNode().getOrientation());
-		defaultOgreBoundingBox.transform(localTransform);
-	// 	defaultOgreBoundingBox.transform(Ogre::Matrix4(getNode().getOrientation()));
 
 		defaultSize = defaultOgreBoundingBox.getSize();
 
@@ -108,8 +103,6 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 			const Ogre::Vector3& ogreMax(ogreBbox.getMaximum());
 			const Ogre::Vector3& ogreMin(ogreBbox.getMinimum());
-	/*		const WFMath::Point<3>& wfMax(wfBbox.highCorner());
-			const WFMath::Point<3>& wfMin(wfBbox.lowCorner());*/
 
 			Ogre::Real scaleX;
 			Ogre::Real scaleY;
