@@ -391,9 +391,10 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 			}
 
 		} else {
+			unsigned int i = 0;
 			for (std::vector<std::string>::const_iterator I = characters.begin(); I != characters.end(); ++I) {
 
-				CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, 0, 0);
+				CEGUI::ListboxItem* item = new Gui::ColouredListItem(*I, i++, 0);
 				mTypesList->addItem(item);
 			}
 		}
