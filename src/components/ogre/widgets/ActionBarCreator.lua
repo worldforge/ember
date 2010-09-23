@@ -53,7 +53,7 @@ function ActionBarCreator:createActionBar(layout)
 	local name = "ActionBar"..i
 	
 	--Create the new Actionbar.
-	a1 = ActionBar.new(layout, self.defaultActionList)
+	a1 = ActionBar.new(layout, self.defaultActionList, self.erisAvatar)
 	a1:init(name)
 	
 	--Insert into our dictionary.
@@ -167,11 +167,12 @@ ActionBarCreator.createdAvatarEntityConnector = createConnector(emberOgre.EventC
 			actionbarCreator = {connectors={},
 				actionbars = {},
 				defaultActionList = DefaultEntityActions.new(),
-				actionbarCount = 0}
+				actionbarCount = 0,
+				erisAvatar = emberServices:getServerService():getAvatar()}
 			setmetatable(actionbarCreator, {__index = ActionBarCreator})
 			actionbarCreator:buildCEGUIWidget()
 			actionbarCreator:init()
-			connect(actionbarCreator.connectors, emberServices:getServerService().DestroyedAvatar, function()
+			connect(actionbarCreator.connectors, avatarEntity.BeingDeleted, function()
 					actionbarCreator:shutdown()
 					actionbarCreator = nil
 				end

@@ -141,23 +141,23 @@ end
 
 --Saves action bar properties such as position and icons.
 function ActionBar:saveAttr()
-	self.actionBarIconManager:saveValue(self.name, self.name)
+	self.actionBarIconManager:saveValue(self.avatarId, self.name, self.name)
 	
-	self.actionBarIconManager:saveValue(self.name .. "xposoffset", self.widget:getMainWindow():getXPosition():asAbsolute(1.0))
-	self.actionBarIconManager:saveValue(self.name .. "yposoffset", self.widget:getMainWindow():getYPosition():asAbsolute(1.0))
+	self.actionBarIconManager:saveValue(self.avatarId, self.name .. "xposoffset", self.widget:getMainWindow():getXPosition():asAbsolute(1.0))
+	self.actionBarIconManager:saveValue(self.avatarId, self.name .. "yposoffset", self.widget:getMainWindow():getYPosition():asAbsolute(1.0))
 	
 	for k,v in pairs(self.slots) do
 		local aBarIcon = v.slot:getActionBarIcon()
 		if aBarIcon ~= nil then
 			for k2,v2 in pairs(self.icons) do
 				if aBarIcon == v2.actionBarIcon then
-					self.actionBarIconManager:saveValue(self.name..k, v2.type)
-					self.actionBarIconManager:saveValue(self.name..k.."id", v2.entityid)
+					self.actionBarIconManager:saveValue(self.avatarId, self.name..k, v2.type)
+					self.actionBarIconManager:saveValue(self.avatarId, self.name..k.."id", v2.entityid)
 				end
 			end
 		else
-			self.actionBarIconManager:eraseValue(self.name..k)
-			self.actionBarIconManager:eraseValue(self.name..k.."id")
+			self.actionBarIconManager:eraseValue(self.avatarId, self.name..k)
+			self.actionBarIconManager:eraseValue(self.avatarId, self.name..k.."id")
 		end
 	end
 end
@@ -165,17 +165,17 @@ end
 --Loads saved properties for the action bar. 
 --We call this at the initialization of the action bar.
 function ActionBar:loadSavedAttributes()
-	if self.actionBarIconManager:getSavedValue(self.name) ~= "null" then
+	if self.actionBarIconManager:getSavedValue(self.avatarId, self.name) ~= "null" then
 		--Get lua to see the value as a string it can convert to int using tonumber.
-		local xoffset = "".. self.actionBarIconManager:getSavedValue(self.name .. "xposoffset") ..""
-		local yoffset = "".. self.actionBarIconManager:getSavedValue(self.name .. "yposoffset") ..""
+		local xoffset = "".. self.actionBarIconManager:getSavedValue(self.avatarId, self.name .. "xposoffset") ..""
+		local yoffset = "".. self.actionBarIconManager:getSavedValue(self.avatarId, self.name .. "yposoffset") ..""
 		
 		self.widget:getMainWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(1, tonumber(xoffset)), CEGUI.UDim(1, tonumber(yoffset))))
 	end
 	
 	for k,v in pairs(self.slots) do
-		local type = self.actionBarIconManager:getSavedValue(self.name..k)
-		local id = self.actionBarIconManager:getSavedValue(self.name..k.."id")
+		local type = self.actionBarIconManager:getSavedValue(self.avatarId, self.name..k)
+		local id = self.actionBarIconManager:getSavedValue(self.avatarId, self.name..k.."id")
 		if type == "entity" then
 			self.entityCandidates[id] = v.slot
 			--Keep track of the size, because lua doesn't have a function for getting the size of dictionaries
@@ -267,7 +267,7 @@ end
 
 --Create a new action bar.
 --@param rotation The rotation of the action bar, either horizontal or veritcal.
-function ActionBar.new(rotation, defActionList)
+function ActionBar.new(rotation, defActionList, erisAvatar)
 	local actionbar = {   iconSize = 50,
 				maxSlots = 5,
 				iconcounter = 0,
@@ -284,6 +284,9 @@ function ActionBar.new(rotation, defActionList)
 				entityCandidates = {size = 0},
 				timer = nil,
 				slots = {}};
+	serverInfo = Eris.ServerInfo()
+	erisAvatar:getConnection():getServerInfo(serverInfo)
+	actionbar.avatarId = EmberOgre.Gui.ActionBarIconManager.AvatarIdType(serverInfo, erisAvatar:getId())
 				
 	setmetatable(actionbar,{__index=ActionBar})
 	return actionbar

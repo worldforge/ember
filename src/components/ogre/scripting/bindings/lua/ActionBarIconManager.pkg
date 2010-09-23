@@ -22,6 +22,7 @@
 //
 
 $#include "components/ogre/widgets/ActionBarIconManager.h"
+$#include <Eris/ServerInfo.h>
 
 namespace EmberOgre {
 
@@ -35,6 +36,10 @@ namespace Gui {
 class ActionBarIconManager
 {
 public:
+	class AvatarIdType
+	{
+		AvatarIdType(Eris::ServerInfo& serverInfo, std::string& avatarId);
+	};
 	
 	EmberOgre::Gui::ActionBarIconSlot* createSlot(unsigned int pixelSize = 64);
 	void destroySlot(EmberOgre::Gui::ActionBarIconSlot* slot);
@@ -42,11 +47,11 @@ public:
 	EmberOgre::Gui::ActionBarIcon* createIcon(EmberOgre::Gui::Icons::Icon* icon, unsigned int pixelSize = 64);
 	void destroyIcon(EmberOgre::Gui::ActionBarIcon* icon);
 
-	const std::string getSavedValue(const std::string& name) const;
+	const std::string getSavedValue(const EmberOgre::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& name) const;
 
-	void saveValue(const std::string& key, const std::string& value);
+	void saveValue(const EmberOgre::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& key, const std::string& value);
 
-	void eraseValue(const std::string& key);
+	void eraseValue(const EmberOgre::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& key);
 	
 	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStart;
 	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStop;

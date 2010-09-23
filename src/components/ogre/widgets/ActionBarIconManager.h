@@ -27,6 +27,10 @@
 #include <string>
 #include <vector>
 
+namespace Eris {
+class ServerInfo;
+}
+
 namespace EmberOgre {
 class EmberEntity;
 class GUIManager;
@@ -51,6 +55,13 @@ You normally don't create instances of neither ActionBarIconSlot nor ActionBarIc
 class ActionBarIconManager
 {
 public:
+
+	/**
+	 * @brief A type which encompasses both a server info instance as well as an avatar id.
+	 *
+	 * An instance of this is used for saving avatar bound data.
+	 */
+	typedef std::pair<Eris::ServerInfo, std::string> AvatarIdType;
 
 	/**
 	 * @brief Ctor.
@@ -93,11 +104,33 @@ public:
 	 */
 	void destroyIcon(ActionBarIcon* icon);
 
-	const std::string getSavedValue(const std::string& name) const;
+	/**
+	 * @brief Gets a saved value from the server settings, specific for the supplied avatar.
+	 *
+	 * @param avatarId The id of the avatar.
+	 * @param name The name of the key for the value to get.
+	 *
+	 * @returns The saved value.
+	 */
+	const std::string getSavedValue(const AvatarIdType& avatarId, const std::string& name) const;
 
-	void saveValue(const std::string& key, const std::string& value);
+	/**
+	 * @brief Saves a value specific for the supplied avatar.
+	 *
+	 * @param avatarId The id of the avatar.
+	 * @param name The name of the key for the value to save.
+	 * @param value The value to save.
+	 */
+	void saveValue(const AvatarIdType& avatarId, const std::string& key, const std::string& value);
 
-	void eraseValue(const std::string& key);
+	/**
+	 * @brief Erases a value specific for the supplied avatar.
+	 *
+	 * @param avatarId The id of the avatar.
+	 * @param name The name of the key for the value to erase.
+	 */
+	void eraseValue(const AvatarIdType& avatarId, const std::string& key);
+
 	/**
 	 * @brief Emitted when a drag action of an entity icon has started.
 	 */
