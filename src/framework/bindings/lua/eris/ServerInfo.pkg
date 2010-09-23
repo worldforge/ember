@@ -12,6 +12,8 @@ class ServerInfo
         TIMEOUT ///< server query timed out
     } Status;
     
+    ServerInfo();
+    
 	// bookmark / favourites functionality 	
 
 // accessors

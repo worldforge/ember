@@ -5,6 +5,8 @@ class Connection {
 
     TypeService* getTypeService() const;
     
+    void getServerInfo(Eris::ServerInfo&) const;
+    
     sigc::signal<void> GotServerInfo;
         
     /// sent on successful negotiation of a game server connection
