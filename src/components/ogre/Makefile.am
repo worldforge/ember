@@ -144,7 +144,8 @@ noinst_HEADERS = \
 	terrain/HeightMapFlatSegment.h terrain/IHeightMapSegment.h terrain/Segment.h terrain/SegmentHolder.h terrain/SegmentReference.h \
 	terrain/SegmentManager.h terrain/PlantInstance.h terrain/foliage/PlantPopulator.h terrain/foliage/ClusterPopulator.h terrain/foliage/Vegetation.h \
 \
-	widgets/ActionBarInput.cpp widgets/ActionBarIcon.cpp widgets/ActionBarIconSlot.cpp widgets/ActionBarIconDragDropTarget.cpp widgets/ActionBarIconManager.cpp widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
+	widgets/ActionBarInput.h widgets/ActionBarIcon.h widgets/ActionBarIconSlot.h widgets/ActionBarIconDragDropTarget.h widgets/ActionBarIconManager.h \
+	widgets/AssetsManager.h widgets/ColouredListItem.h widgets/Compass.h widgets/ConsoleAdapter.h \
 	widgets/EntityCEGUITexture.h widgets/EntityCreator.h widgets/EntityCreatorActionCreator.h \
 	widgets/EntityCreatorHideModelAction.h widgets/EntityCreatorModelAction.h widgets/EntityCreatorMovement.h \
 	widgets/EntityCreatorMovementBridge.h widgets/EntityCreatorPartAction.h widgets/EntityEditor.h widgets/EntityIcon.h \
