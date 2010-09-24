@@ -31,15 +31,16 @@
 #include <wfmath/axisbox.h>
 #include <Ogre.h>
 
-namespace EmberOgre {
+namespace EmberOgre
+{
 
-namespace Model {
+namespace Model
+{
 
-ModelMount::ModelMount(EmberOgre::Model::Model& model, INodeProvider* nodeProvider)
-: mModel(model), mNodeProvider(nodeProvider)
+ModelMount::ModelMount(EmberOgre::Model::Model& model, INodeProvider* nodeProvider) :
+	mModel(model), mNodeProvider(nodeProvider)
 {
 }
-
 
 ModelMount::~ModelMount()
 {
@@ -53,14 +54,13 @@ void ModelMount::rescale(const WFMath::AxisBox<3>* wfBbox)
 	scaleNode(wfBbox);
 }
 
-
 void ModelMount::reset()
 {
 	getNodeProvider()->setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
 	getNode().setScale(Ogre::Vector3::UNIT_SCALE);
 	///rotate node to fit with WF space
 	///perhaps this is something to put in the model spec instead?
-	getNode().rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
+	getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
 	getNode().rotate(getModel().getRotation());
 	///translate the scale node according to the translate defined in the model
 	getNode().translate(getModel().getDefinition()->getTranslate());
@@ -70,7 +70,6 @@ Ogre::Node& ModelMount::getNode() const
 {
 	return mNodeProvider->getNode();
 }
-
 
 void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 {
@@ -86,6 +85,12 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 	///We can only apply any meaningful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similar, and no entities
 	Ogre::Vector3 defaultSize = defaultOgreBoundingBox.getSize();
 	if (!defaultOgreBoundingBox.isNull() && (defaultSize.x != 0.0f && defaultSize.y != 0.0f && defaultSize.z != 0.0f)) {
+
+		///apply any transformations required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
+		Ogre::Matrix4 localTransform;
+		localTransform.makeTransform(getModel().getDefinition()->getTranslate(), Ogre::Vector3::UNIT_SCALE, getModel().getDefinition()->getRotation());
+		defaultOgreBoundingBox.transform(localTransform);
+		// 	defaultOgreBoundingBox.transform(Ogre::Matrix4(getNode().getOrientation()));
 
 		defaultSize = defaultOgreBoundingBox.getSize();
 
@@ -130,7 +135,6 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 					scaleX = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
 			}
 
-
 			getNode().setScale(scaleX, scaleY, scaleZ);
 
 		} else if (!getModel().getScale()) {
@@ -161,7 +165,6 @@ INodeProvider* ModelMount::getNodeProvider() const
 {
 	return mNodeProvider;
 }
-
 
 }
 
