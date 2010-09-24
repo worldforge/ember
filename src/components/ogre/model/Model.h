@@ -359,7 +359,7 @@ protected:
 	/**
 	 modeldef this was copied from
 	 */
-	ModelDefnPtr mMasterModel;
+	ModelDefnPtr mDefinition;
 
 	/**
 	 a set of all submodels belonging to the model
@@ -405,7 +405,7 @@ protected:
 
 inline ModelDefnPtr Model::getDefinition() const
 {
-	return mMasterModel;
+	return mDefinition;
 }
 
 // // const Model::SubModelPartStoreMap& Model::getSubmodelParts() const

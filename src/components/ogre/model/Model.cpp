@@ -64,8 +64,8 @@ Model::~Model()
 	resetSubmodels();
 	resetParticles();
 	resetLights();
-	if (!mMasterModel.isNull()) {
-		mMasterModel->removeModelInstance(this);
+	if (!mDefinition.isNull()) {
+		mDefinition->removeModelInstance(this);
 	}
 	if (mBackgroundLoader) {
 		ModelDefinitionManager::getSingleton().removeBackgroundLoader(mBackgroundLoader);
@@ -106,24 +106,24 @@ void Model::reload()
 
 bool Model::create(const std::string& modelType)
 {
-	if (!mMasterModel.isNull() && mMasterModel->isValid()) {
-		S_LOG_WARNING("Trying to call create('" + modelType + "') on a Model instance that already have been created as a '" + mMasterModel->getName() + "'.");
+	if (!mDefinition.isNull() && mDefinition->isValid()) {
+		S_LOG_WARNING("Trying to call create('" + modelType + "') on a Model instance that already have been created as a '" + mDefinition->getName() + "'.");
 		return false;
 	}
 
 	static const Ogre::String groupName("ModelDefinitions");
 	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
 	try {
-		mMasterModel = ModelDefinitionManager::instance().load(modelType, groupName);
+		mDefinition = ModelDefinitionManager::instance().load(modelType, groupName);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << "." << ex);
 		return false;
 	}
-	if (false && !mMasterModel->isValid()) {
+	if (false && !mDefinition->isValid()) {
 		S_LOG_FAILURE("Model of type " << modelType << " from group " << groupName << " is not valid.");
 		return false;
 	} else {
-		mMasterModel->addModelInstance(this);
+		mDefinition->addModelInstance(this);
 		return true;
 		/*		bool success =  createFromDefn();
 		 if (!success) {
@@ -146,8 +146,8 @@ bool Model::createFromDefn()
 {
 	Ember::TimedLog timedLog("Model::createFromDefn");
 	// create instance of model from definition
-	mScale = mMasterModel->mScale;
-	mRotation = mMasterModel->mRotation;
+	mScale = mDefinition->mScale;
+	mRotation = mDefinition->mRotation;
 
 #if OGRE_THREAD_SUPPORT
 	if (!mBackgroundLoader) {
@@ -160,7 +160,7 @@ bool Model::createFromDefn()
 	}
 	else {
 		ModelDefinitionManager::getSingleton().addBackgroundLoader(mBackgroundLoader);
-		setRenderingDistance(mMasterModel->getRenderingDistance());
+		setRenderingDistance(mDefinition->getRenderingDistance());
 		return true;
 	}
 #else
@@ -174,18 +174,18 @@ bool Model::createActualModel()
 	Ogre::SceneManager* sceneManager = _getManager();
 	std::vector<std::string> showPartVector;
 
-	for (SubModelDefinitionsStore::const_iterator I_subModels = mMasterModel->getSubModelDefinitions().begin(); I_subModels != mMasterModel->getSubModelDefinitions().end(); ++I_subModels) {
+	for (SubModelDefinitionsStore::const_iterator I_subModels = mDefinition->getSubModelDefinitions().begin(); I_subModels != mDefinition->getSubModelDefinitions().end(); ++I_subModels) {
 		std::string entityName = mName + "/" + (*I_subModels)->getMeshName();
 		try {
 
 			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels)->getMeshName());
 			timedLog.report("Created entity.");
 			if (entity->getMesh().isNull()) {
-				S_LOG_FAILURE("Could not load mesh " << (*I_subModels)->getMeshName() << " which belongs to model " << mMasterModel->getName() << ".");
+				S_LOG_FAILURE("Could not load mesh " << (*I_subModels)->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
 			}
 
-			if (mMasterModel->getRenderingDistance()) {
-				entity->setRenderingDistance(mMasterModel->getRenderingDistance());
+			if (mDefinition->getRenderingDistance()) {
+				entity->setRenderingDistance(mDefinition->getRenderingDistance());
 			}
 
 			SubModel* submodel = new SubModel(*entity);
@@ -207,7 +207,7 @@ bool Model::createActualModel()
 								if (entity->getNumSubEntities() > (*I_subEntities)->getSubEntityIndex()) {
 									subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
 								} else {
-									S_LOG_WARNING("Model definition " << mMasterModel->getName() << " has a reference to entity with index " << (*I_subEntities)->getSubEntityIndex() << " which is out of bounds.");
+									S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << (*I_subEntities)->getSubEntityIndex() << " which is out of bounds.");
 								}
 							}
 							if (subEntity) {
@@ -220,7 +220,7 @@ bool Model::createActualModel()
 								S_LOG_WARNING("Could not add subentity.");
 							}
 						} catch (const std::exception& ex) {
-							S_LOG_WARNING("Error when getting sub entities for model '" << mMasterModel->getName() << "'." << ex);
+							S_LOG_WARNING("Error when getting sub entities for model '" << mDefinition->getName() << "'." << ex);
 						}
 					}
 				} else {
@@ -251,7 +251,7 @@ bool Model::createActualModel()
 		}
 	}
 
-	setRenderingDistance(mMasterModel->getRenderingDistance());
+	setRenderingDistance(mDefinition->getRenderingDistance());
 
 	createActions();
 	timedLog.report("Created actions.");
@@ -272,8 +272,8 @@ bool Model::createActualModel()
 void Model::createActions()
 {
 
-	ActionDefinitionsStore::const_iterator I_actions_end = mMasterModel->getActionDefinitions().end();
-	for (ActionDefinitionsStore::const_iterator I_actions = mMasterModel->getActionDefinitions().begin(); I_actions != I_actions_end; ++I_actions) {
+	ActionDefinitionsStore::const_iterator I_actions_end = mDefinition->getActionDefinitions().end();
+	for (ActionDefinitionsStore::const_iterator I_actions = mDefinition->getActionDefinitions().begin(); I_actions != I_actions_end; ++I_actions) {
 		//std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
 		Action action;
 		action.setName((*I_actions)->getName());
@@ -311,8 +311,8 @@ void Model::createActions()
 
 void Model::createParticles()
 {
-	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys_end = mMasterModel->mParticleSystems.end();
-	for (std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys = mMasterModel->mParticleSystems.begin(); I_particlesys != I_particlesys_end; ++I_particlesys) {
+	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys_end = mDefinition->mParticleSystems.end();
+	for (std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys = mDefinition->mParticleSystems.begin(); I_particlesys != I_particlesys_end; ++I_particlesys) {
 		//first try to create the ogre particle system
 		std::string name(mName + "/particle" + I_particlesys->Script);
 		Ogre::ParticleSystem* ogreParticleSystem;
@@ -337,9 +337,9 @@ void Model::createParticles()
 
 void Model::createLights()
 {
-	ModelDefinition::LightSet::const_iterator I_lights_end = mMasterModel->mLights.end();
+	ModelDefinition::LightSet::const_iterator I_lights_end = mDefinition->mLights.end();
 	int j = 0;
-	for (ModelDefinition::LightSet::const_iterator I_lights = mMasterModel->mLights.begin(); I_lights != I_lights_end; ++I_lights) {
+	for (ModelDefinition::LightSet::const_iterator I_lights = mDefinition->mLights.begin(); I_lights != I_lights_end; ++I_lights) {
 		//first try to create the ogre lights
 		//std::string name(mName + "/light");
 		std::stringstream name;
@@ -533,7 +533,7 @@ const Ogre::Quaternion& Model::getRotation() const
 
 const ModelDefinition::UseScaleOf Model::getUseScaleOf() const
 {
-	return mMasterModel->getUseScaleOf();
+	return mDefinition->getUseScaleOf();
 }
 
 Action* Model::getAction(const std::string& name)
@@ -592,7 +592,7 @@ void Model::resetLights()
 
 Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
-	for (AttachPointDefinitionStore::iterator I = mMasterModel->mAttachPoints.begin(); I != mMasterModel->mAttachPoints.end(); ++I) {
+	for (AttachPointDefinitionStore::iterator I = mDefinition->mAttachPoints.begin(); I != mDefinition->mAttachPoints.end(); ++I) {
 		if (I->Name == attachPointName) {
 			const std::string& boneName = I->BoneName;
 			///use the rotation in the attach point def
@@ -614,7 +614,7 @@ Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &a
 
 bool Model::hasAttachPoint(const std::string& attachPoint) const
 {
-	for (AttachPointDefinitionStore::iterator I = mMasterModel->mAttachPoints.begin(); I != mMasterModel->mAttachPoints.end(); ++I) {
+	for (AttachPointDefinitionStore::iterator I = mDefinition->mAttachPoints.begin(); I != mDefinition->mAttachPoints.end(); ++I) {
 		if (I->Name == attachPoint) {
 			return true;
 		}
