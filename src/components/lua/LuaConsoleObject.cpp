@@ -46,7 +46,7 @@ LuaConsoleObject::~LuaConsoleObject()
 
 void LuaConsoleObject::runCommand(const std::string &command, const std::string &args)
 {
-	mConnector->callLuaMethod<const std::string &, const std::string &>(command, args);
+	mConnector->callLuaMethod<std::string, std::string>(command, args);
 }
 
 }
