@@ -383,7 +383,7 @@ private:
 	 * @brief Called when the signal is emitted.
 	 * @param t0 The first argument.
 	 */
-	TReturn signal_receive(const T0& t0);
+	TReturn signal_receive(const T0 t0);
 };
 
 /**
@@ -415,7 +415,7 @@ private:
 	 * @param t0 The first argument.
 	 * @param t1 The second argument.
 	 */
-	TReturn signal_receive(const T0& t0, const T1& t1);
+	TReturn signal_receive(const T0 t0, const T1 t1);
 
 };
 //template<typename Treturn>
