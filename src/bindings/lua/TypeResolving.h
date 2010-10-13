@@ -59,6 +59,7 @@ struct MousePickerArgs;
 class EmberEntityFactory;
 class Jesus;
 class World;
+class MotionManager;
 namespace Terrain
 {
 class BasePointUserObject;

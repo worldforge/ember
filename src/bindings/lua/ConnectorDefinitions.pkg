@@ -33,3 +33,4 @@ static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Eris::View> > @ createConnector(sigc::signal<void, Eris::View*>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::World> > @ createConnector(sigc::signal<void, EmberOgre::World&>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<const EmberOgre::Gui::HelpMessage> > @ createConnector(sigc::signal<void, const EmberOgre::Gui::HelpMessage&>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::RefValueAdapter<EmberOgre::MotionManager> > @ createConnector(sigc::signal<void, EmberOgre::MotionManager&>&);

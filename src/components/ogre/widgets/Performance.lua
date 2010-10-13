@@ -12,7 +12,10 @@ function Performance.buildWidget()
 --	EmberOgre::getSingleton().EventStartErisPoll.connect(sigc::mem_fun(*this, &Performance::startErisPolling));
 --	EmberOgre::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &Performance::endErisPolling));
 
-	connect(Performance.connectors, emberOgre.EventTerrainManagerCreated, "Performance.terrainManagerCreated")
+	connect(Performance.connectors, emberOgre.EventTerrainManagerCreated, Performance.terrainManagerCreated)
+	connect(Performance.connectors, emberOgre.EventMotionManagerCreated, Performance.motionManagerCreated)
+	connect(Performance.connectors, emberOgre.EventTerrainManagerDestroyed, Performance.terrainManagerDestroyed)
+	connect(Performance.connectors, emberOgre.EventMotionManagerDestroyed, Performance.motionManagerDestroyed)
 	
 	
 	
@@ -26,6 +29,18 @@ function Performance.terrainManagerCreated(terrainManager)
 	Performance.terrainManager = terrainManager
 end
 
+function Performance.motionManagerCreated(motionManager)
+	Performance.motionManager = motionManager
+end
+
+function Performance.terrainManagerDestroyed()
+	Performance.terrainManager = nil
+end
+
+function Performance.motionManagerDestroyed()
+	Performance.motionManager = nil
+end
+
 function Performance.framestarted(timeSinceLastFrame)
 	if (Performance.widget:getMainWindow():isVisible()) then
 		local statString
@@ -37,9 +52,8 @@ function Performance.framestarted(timeSinceLastFrame)
 		if app:getMainView() ~= nil then
 			statString = statString .. "\nSightqueue: " .. app:getMainView():lookQueueSize()
 		end
-		local motionManager = EmberOgre.MotionManager:getSingleton()
-		if motionManager then
-			local motionInfo = EmberOgre.MotionManager:getSingleton():getInfo()
+		if Performance.motionManager then
+			local motionInfo = Performance.motionManager:getInfo()
 			statString = statString .. "\nAnimated: " .. motionInfo.AnimatedEntities
 			statString = statString .. "\nMoving: " .. motionInfo.MovingEntities
 		end
@@ -55,5 +69,5 @@ function Performance.framestarted(timeSinceLastFrame)
 end
 
 Performance.buildWidget()
-connect(Performance.connectors, guiManager.EventFrameStarted, "Performance.framestarted")
+connect(Performance.connectors, guiManager.EventFrameStarted, Performance.framestarted)
 

@@ -80,6 +80,11 @@ public:
 	sigc::signal<void> EventTerrainManagerDestroyed;
 
 	/**
+	 * @brief Emitted after the MotionManager has been destroyed.
+	 */
+	sigc::signal<void> EventMotionManagerDestroyed;
+
+	/**
 	 * @brief Emitted after the MovementController has been created.
 	 */
 	sigc::signal<void> EventMovementControllerCreated;

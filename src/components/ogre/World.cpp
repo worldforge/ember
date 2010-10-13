@@ -85,6 +85,7 @@ World::~World()
 
 	Ogre::Root::getSingleton().removeFrameListener(mMotionManager);
 	delete mMotionManager;
+	mSignals.EventMotionManagerDestroyed();
 
 	delete mScene;
 }
