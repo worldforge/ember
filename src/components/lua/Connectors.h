@@ -169,7 +169,7 @@ public:
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Base class for connectors which mainly tie sigc signals to lua method calls.
  */
-class ConnectorBase: public sigc::trackable
+class ConnectorBase
 {
 public:
 
