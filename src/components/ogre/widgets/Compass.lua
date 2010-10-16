@@ -63,15 +63,15 @@ function Compass:initialize()
 end
 
 function Compass:CreatedAvatarEntity(avatarEntity)
-	connect(self.connectors, guiManager.EventFrameStarted, self.framestarted, self)
+	connect(self.connectors, self.widget.EventFrameStarted, self.framestarted, self)
 end
 
 function Compass:shutdown()
+	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 	deleteSafe(self.helper)
 	deleteSafe(self.helperImpl)
 	deleteSafe(self.anchor)
-	disconnectAll(self.connectors)
 end
 
 function Compass:buildWidget(terrainManager)
