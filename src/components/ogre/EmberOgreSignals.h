@@ -65,6 +65,16 @@ public:
 	sigc::signal<void, GUIManager&> EventGUIManagerInitialized;
 
 	/**
+	 * @brief Emitted before the GUIManager is destroyed.
+	 */
+	sigc::signal<void> EventGUIManagerBeingDestroyed;
+
+	/**
+	 * @brief Emitted after the GUIManager has been destroyed.
+	 */
+	sigc::signal<void> EventGUIManagerDestroyed;
+
+	/**
 	 * @brief Emitted after the Motion has been created.
 	 */
 	sigc::signal<void, MotionManager&> EventMotionManagerCreated;

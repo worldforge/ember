@@ -91,6 +91,8 @@ template <>
 const char* resolveLuaTypename<const Atlas::Objects::Root>(){return "Atlas::Objects::Root";}
 template <>
 const char* resolveLuaTypename<const EmberOgre::MotionManager>(){return "EmberOgre::MotionManager";}
+template <>
+const char* resolveLuaTypename<const EmberOgre::GUIManager>(){return "EmberOgre::GUIManager";}
 }
 }
 

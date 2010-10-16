@@ -163,7 +163,9 @@ EmberOgre::~EmberOgre()
 
 	Ember::EmberServices::getSingleton().getScriptingService()->setResourceProvider(0);
 
+	EventGUIManagerBeingDestroyed();
 	delete mGUIManager;
+	EventGUIManagerDestroyed();
 
 	delete mEntityRecipeManager;
 	delete mTerrainLayerManager;

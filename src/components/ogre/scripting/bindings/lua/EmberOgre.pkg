@@ -126,6 +126,16 @@ class EmberOgre
 		
 	sigc::signal<void, EmberOgre::GUIManager&> EventGUIManagerCreated;
 	sigc::signal<void, EmberOgre::GUIManager&> EventGUIManagerInitialized;
+
+	/**
+	 * @brief Emitted before the GUIManager is destroyed.
+	 */
+	sigc::signal<void> EventGUIManagerBeingDestroyed;
+
+	/**
+	 * @brief Emitted after the GUIManager has been destroyed.
+	 */
+	sigc::signal<void> EventGUIManagerDestroyed;
 	
 	sigc::signal<void, EmberOgre::MotionManager&> EventMotionManagerCreated;
 	

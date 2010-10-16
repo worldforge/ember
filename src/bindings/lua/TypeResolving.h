@@ -60,6 +60,7 @@ class EmberEntityFactory;
 class Jesus;
 class World;
 class MotionManager;
+class GUIManager;
 namespace Terrain
 {
 class BasePointUserObject;
