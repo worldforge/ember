@@ -117,8 +117,8 @@ Connector::Connector(sigc::signal<void>& signal)
 }
 
 Connector::Connector(Ember::Lua::ConnectorBase* connector)
+: mConnector(connector)
 {
-	mConnector = connector;
 }
 
 Connector::Connector(const Connector& connector)
