@@ -18,6 +18,7 @@ function Performance.buildWidget()
 	connect(Performance.connectors, emberOgre.EventMotionManagerDestroyed, Performance.motionManagerDestroyed)
 	
 	
+	connect(Performance.connectors, Performance.widget.EventFrameStarted, Performance.framestarted)
 	
 	
 	Performance.widget:registerConsoleVisibilityToggleCommand("performance")
@@ -69,5 +70,4 @@ function Performance.framestarted(timeSinceLastFrame)
 end
 
 Performance.buildWidget()
-connect(Performance.connectors, guiManager.EventFrameStarted, Performance.framestarted)
 
