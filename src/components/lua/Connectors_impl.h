@@ -79,9 +79,6 @@ void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_ty
 		}
 
 		callFunction(state, numberOfArguments);
-		//		Treturn& returnValue(0);
-		//return (Treturn)returnValueFromLua(state);
-		//return returnValue;
 
 	} catch (const std::exception& ex) {
 		lua_settop(state, top);
@@ -90,8 +87,6 @@ void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_ty
 		lua_settop(state, top);
 		S_LOG_FAILURE("Unspecified error when executing: " << mLuaMethod );
 	}
-	/*	void* test(0);
-	 return (Treturn)*test;*/
 }
 
 
@@ -102,21 +97,21 @@ inline void ConnectorBase::returnValueFromLua()
 
 
 template <typename TReturn>
-ConnectorZero<TReturn>::ConnectorZero(sigc::signal<TReturn>& signal) :
+ConnectorZero<TReturn>::ConnectorZero(const sigc::signal<TReturn>& signal) :
 		TemplatedConnectorBase<>::TemplatedConnectorBase(EmptyValueAdapter(), EmptyValueAdapter()), mSignal(signal)
 {
 	this->mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorZero::signal_receive));
 }
 
 template <typename TReturn, typename TAdapter0, typename T0>
-ConnectorOne<TReturn, TAdapter0, T0>::ConnectorOne(sigc::signal<TReturn, T0>& signal, const TAdapter0& adapter0) :
+ConnectorOne<TReturn, TAdapter0, T0>::ConnectorOne(const sigc::signal<TReturn, T0>& signal, const TAdapter0& adapter0) :
 	TemplatedConnectorBase<TAdapter0>::TemplatedConnectorBase(adapter0, EmptyValueAdapter()), mSignal(signal)
 {
 	this->mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorOne::signal_receive));
 }
 
 template <typename TReturn, typename TAdapter0, typename TAdapter1, typename T0, typename T1>
-ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::ConnectorTwo(sigc::signal<TReturn, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1) :
+ConnectorTwo<TReturn, TAdapter0, TAdapter1, T0, T1>::ConnectorTwo(const sigc::signal<TReturn, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1) :
 	TemplatedConnectorBase<TAdapter0, TAdapter1>::TemplatedConnectorBase(adapter0, adapter1), mSignal(signal)
 {
 	this->mConnection = mSignal.connect(sigc::mem_fun(*this, &ConnectorTwo::signal_receive));

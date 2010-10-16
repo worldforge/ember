@@ -341,7 +341,7 @@ public:
 	 * @brief Ctor.
 	 * @param signal The signal which should be listened to.
 	 */
-	ConnectorZero(sigc::signal<TReturn>& signal);
+	ConnectorZero(const sigc::signal<TReturn>& signal);
 
 private:
 
@@ -370,7 +370,7 @@ public:
 	 * @param signal The signal which should be listened to.
 	 * @param adapter0 The first adapter to use.
 	 */
-	ConnectorOne(sigc::signal<TReturn, T0>& signal, const TAdapter0& adapter0);
+	ConnectorOne(const sigc::signal<TReturn, T0>& signal, const TAdapter0& adapter0);
 
 private:
 
@@ -401,7 +401,7 @@ public:
 	 * @param adapter0 The first adapter to use.
 	 * @param adapter1 The second adapter to use.
 	 */
-	ConnectorTwo(sigc::signal<TReturn, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1);
+	ConnectorTwo(const sigc::signal<TReturn, T0, T1>& signal, const TAdapter0& adapter0, const TAdapter1& adapter1);
 
 private:
 
