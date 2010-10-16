@@ -25,7 +25,7 @@
 namespace Ember
 {
 
-class DirectAttributeObserver : public sigc::trackable
+class DirectAttributeObserver : public virtual sigc::trackable
 {
 public:
 

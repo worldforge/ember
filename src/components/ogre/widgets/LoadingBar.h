@@ -57,7 +57,7 @@ private:
 	bool mActive;
 };
 
-class WfutLoadingBarSection : public sigc::trackable
+class WfutLoadingBarSection : public virtual sigc::trackable
 {
 public:
 	WfutLoadingBarSection(LoadingBarSection& section);

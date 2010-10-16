@@ -46,7 +46,7 @@ namespace Observers {
 	Observes changes to a specific attribute and automatically pass changes on the Match that the observer is attached to.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class AttributeObserver : public sigc::trackable
+class AttributeObserver : public virtual sigc::trackable
 {
 public:
 

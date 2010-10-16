@@ -82,7 +82,7 @@ Controls the avatar. All avatar movement is handled by an instance of this class
 */
 class MovementController
 : public Ogre::FrameListener,
-public sigc::trackable,
+public virtual sigc::trackable,
 public Ember::ConsoleObject,
 public IMovementProvider
 {

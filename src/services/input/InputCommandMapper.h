@@ -40,7 +40,7 @@ namespace Ember {
 
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class InputCommandMapper : public sigc::trackable
+class InputCommandMapper : public virtual sigc::trackable
 {
 public:
 	typedef std::multimap<std::string, std::string> KeyCommandStore;

@@ -36,7 +36,7 @@ namespace Authoring
 /**
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class MaterialEditor: public sigc::trackable, public Ember::ConsoleObject
+class MaterialEditor: public virtual sigc::trackable, public Ember::ConsoleObject
 {
 public:
 	MaterialEditor();

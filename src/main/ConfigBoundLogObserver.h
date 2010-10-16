@@ -31,7 +31,7 @@ namespace Ember {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class ConfigBoundLogObserver : public Ember::StreamLogObserver, public sigc::trackable
+class ConfigBoundLogObserver : public Ember::StreamLogObserver, public virtual sigc::trackable
 {
 public:
     ConfigBoundLogObserver(std::ostream &out);

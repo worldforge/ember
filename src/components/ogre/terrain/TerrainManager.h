@@ -93,7 +93,7 @@ class Vegetation;
  *
  * It works closely with EmberTerrainPageSource.
  */
-class TerrainManager : public Ogre::FrameListener, public sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
+class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
 {
 public:
 

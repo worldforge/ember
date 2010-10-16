@@ -53,7 +53,7 @@ class Scene;
  * Basically this attaches to Eris and creates Entites on demand.
  * @see Eris::Factory
  */
-class EmberEntityFactory: public Eris::Factory, public sigc::trackable, public Ember::ConsoleObject
+class EmberEntityFactory: public Eris::Factory, public virtual sigc::trackable, public Ember::ConsoleObject
 {
 public:
 

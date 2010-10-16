@@ -47,7 +47,7 @@ namespace Mapping {
 class EmberEntityMappingManager :
 public Ogre::ResourceManager,
 public Ember::Singleton<EmberEntityMappingManager>,
-public sigc::trackable
+public virtual sigc::trackable
 {
 public:
 	EmberEntityMappingManager();

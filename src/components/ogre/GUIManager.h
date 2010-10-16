@@ -84,7 +84,7 @@ class IconManager;
 class GUIManager :
 public Ember::Singleton<GUIManager>,
 Ogre::FrameListener,
-public sigc::trackable,
+public virtual sigc::trackable,
 public Ember::ConsoleObject
 {
 public:

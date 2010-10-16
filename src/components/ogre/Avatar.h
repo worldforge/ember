@@ -75,7 +75,7 @@ public:
  * In general it receives instructions from mainly an instance of MovementController to attempt to move or rotate the avatar.
  * This class is also responsible for making sure that the client local representation of the avatar is kept up to date with the server side representation. This can involve some client side prediction with regards to movement.
  */
-class Avatar: public sigc::trackable, public Ember::ConfigListenerContainer, public Ember::ConsoleObject
+class Avatar: public virtual sigc::trackable, public Ember::ConfigListenerContainer, public Ember::ConsoleObject
 {
 	friend class MovementController;
 

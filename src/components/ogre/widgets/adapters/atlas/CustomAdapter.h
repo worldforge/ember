@@ -37,7 +37,7 @@ namespace Atlas {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class CustomAdapter : public AdapterBase, public sigc::trackable
+class CustomAdapter : public AdapterBase, public virtual sigc::trackable
 {
 public:
     CustomAdapter(const ::Atlas::Message::Element& element);

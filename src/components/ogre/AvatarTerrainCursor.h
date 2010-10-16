@@ -44,7 +44,7 @@ namespace EmberOgre {
 	 * @author Sean Ryan <sean@evercrack.com>
 	 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	 */
-	class AvatarTerrainCursor : public sigc::trackable, Ember::ConfigListenerContainer
+	class AvatarTerrainCursor : public virtual sigc::trackable, Ember::ConfigListenerContainer
 	{
 	public:
 		friend class AvatarCamera;

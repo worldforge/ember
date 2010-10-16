@@ -42,7 +42,7 @@ namespace Observers {
 	Observes for the creation of a specific entity in the world and automatically trigger the Match the observer is attached to when that entity is created.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class EntityCreationObserver : public sigc::trackable
+class EntityCreationObserver : public virtual sigc::trackable
 {
 public:
 

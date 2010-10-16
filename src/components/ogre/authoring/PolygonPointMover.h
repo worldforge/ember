@@ -63,7 +63,7 @@ public:
 
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class PolygonPointMover: public IMovementBridge, public sigc::trackable
+class PolygonPointMover: public IMovementBridge, public virtual sigc::trackable
 {
 public:
 

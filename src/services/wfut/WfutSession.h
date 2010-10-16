@@ -31,7 +31,7 @@ namespace Ember {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class WfutSession : public sigc::trackable
+class WfutSession : public virtual sigc::trackable
 {
 public:
     WfutSession(sigc::slot<void, const std::string&, const std::string&>& downloadCompleteSlot 

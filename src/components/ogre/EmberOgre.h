@@ -131,7 +131,7 @@ class World;
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  */
-class EmberOgre: public Ember::Singleton<EmberOgre>, public sigc::trackable, public EmberOgreSignals
+class EmberOgre: public Ember::Singleton<EmberOgre>, public virtual sigc::trackable, public EmberOgreSignals
 {
 public:
 

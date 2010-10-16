@@ -108,7 +108,7 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 	/**
 	Holds the actual chat window and keeps track of fading, catching clicks etc.
 	*/
-	class Label : public sigc::trackable
+	class Label : public virtual sigc::trackable
 	{
 		public:
 			/**
@@ -181,7 +181,7 @@ class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
 			IngameChatWidget& mIngameChatWidget;
 	};
 
-	class ChatText : public sigc::trackable
+	class ChatText : public virtual sigc::trackable
 	{
 		public:
 			ChatText(CEGUI::Window* window, const std::string& prefix);

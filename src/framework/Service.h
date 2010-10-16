@@ -40,7 +40,7 @@ namespace Ember {
  * @see OtherSubsystem::AnOtherRelatedClass
  * NOTE: Add other related classes here, doxygen will create links to them.
  */
-class Service : public sigc::trackable
+class Service : public virtual sigc::trackable
 {
     //======================================================================
     // Public Constants

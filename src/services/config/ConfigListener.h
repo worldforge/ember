@@ -42,7 +42,7 @@ namespace Ember
 
  You cannot create instances of this class directly, instead your consumer class must inherit from ConfigListenerContainer and call the registerConfigListener in order to create and register instances.
  */
-class ConfigListener: public sigc::trackable
+class ConfigListener: public virtual sigc::trackable
 {
 public:
 	friend class ConfigListenerContainer;
