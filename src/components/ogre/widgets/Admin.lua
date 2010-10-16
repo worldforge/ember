@@ -120,10 +120,10 @@ Add an icon to the icon bar and build a popup menu which will be shown when the 
 ]]--
 function Admin:buildWidget()
 
-	if MainIconBar.addIcon ~= nil then
+	if MainIconBar.addExternalIcon ~= nil then
 		--we'll use the "spell" icon from the "iconset_mason" for now until we get a better icon
 		local foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_mason", "spell")
-		self.adminIcon = MainIconBar.addIcon("admin", foreground, "Click here to access the admin menu.")
+		self.adminIcon = MainIconBar.addExternalIcon("admin", foreground, "Click here to access the admin menu.")
 		self.adminIcon:getButton():subscribeEvent("MouseClick", self.admin_MouseClick, self)
 	
 		self.popup = CEGUI.toPopupMenu(windowManager:createWindow("EmberLook/PopupMenu"))
