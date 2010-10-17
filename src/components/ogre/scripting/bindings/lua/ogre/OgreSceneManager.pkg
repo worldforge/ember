@@ -1,0 +1,71 @@
+/*-------------------------------------------------------------------------
+This source file is a part of OGRE
+(Object-oriented Graphics Rendering Engine)
+
+For the latest info, see http://www.ogre3d.org/
+
+Copyright (c) 2000-2009 Torus Knot Software Ltd
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE
+
+You may alternatively use this source under the terms of a specific version of
+the OGRE Unrestricted License provided you have obtained such a license from
+Torus Knot Software Ltd.
+-------------------------------------------------------------------------*/
+
+$#include <OgreSceneManager.h>
+
+namespace Ogre {
+
+	class SceneManager
+    {
+    public:
+        /** Gets the SceneNode at the root of the scene hierarchy.
+            @remarks
+                The entire scene is held as a hierarchy of nodes, which
+                allows things like relative transforms, general changes in
+                rendering state etc (See the SceneNode class for more info).
+                In this basic SceneManager class, the application using
+                Ogre is free to structure this hierarchy however it likes,
+                since it has no real significance apart from making transforms
+                relative to each node (more specialised subclasses will
+                provide utility methods for building specific node structures
+                e.g. loading a BSP tree).
+            @par
+                However, in all cases there is only ever one root node of
+                the hierarchy, and this method returns a pointer to it.
+        */
+        virtual Ogre::SceneNode* getRootSceneNode();
+
+        /** Retrieves a named SceneNode from the scene graph.
+        @remarks
+            If you chose to name a SceneNode as you created it, or if you
+            happened to make a note of the generated name, you can look it
+            up wherever it is in the scene graph using this method.
+			@note Throws an exception if the named instance does not exist
+        */
+        virtual Ogre::SceneNode* getSceneNode(const std::string& name) const;
+
+		/** Returns whether a scene node with the given name exists.
+		*/
+		virtual bool hasSceneNode(const std::string& name) const;
+
+ 
+	};
+
+} 
