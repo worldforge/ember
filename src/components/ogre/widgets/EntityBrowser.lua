@@ -1,23 +1,17 @@
 --Allows the editing of entities
 
-EntityBrowser = {connectors={}}
---EntityBrowser.connectors = {}
-EntityBrowser.listbox = nil
+EntityBrowser = {}
 
-EntityBrowser.sceneNodes = {}
-EntityBrowser.sceneNodes.listbox = nil
-EntityBrowser.sceneNodes.selectedSceneNode = nil
-
-function EntityBrowser.Refresh_Clicked(args)
-	EntityBrowser.refresh()
+function EntityBrowser:Refresh_Clicked(args)
+	self:refresh()
 end
 
-function EntityBrowser.RefreshSceneNodes_Clicked(args)
-	EntityBrowser.refreshSceneNodes();
+function EntityBrowser:RefreshSceneNodes_Clicked(args)
+	self:refreshSceneNodes();
 end
 
-function EntityBrowser.EntityList_SelectionChanged(args)
-	local item = EntityBrowser.listbox:getFirstSelectedItem()
+function EntityBrowser:EntityList_SelectionChanged(args)
+	local item = self.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local entityId = item:getID()
 		local entity = emberOgre:getWorld():getEmberEntity(entityId);
@@ -33,43 +27,48 @@ function EntityBrowser.EntityList_SelectionChanged(args)
 	
 end
 
-function EntityBrowser.SceneNodesList_SelectionChanged(args)
-	local item = EntityBrowser.sceneNodes.listbox:getFirstSelectedItem()
+function EntityBrowser:SceneNodesList_SelectionChanged(args)
+	local item = self.sceneNodes.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		--we've stored the sceneNode in the user data (we should perhaps store the key instead, and then do a look up, in case the scene node has been removed in the interim)
 		local sceneNode = item:getUserData()
 		sceneNode = tolua.cast(sceneNode, "Ogre::Node")
-		EntityBrowser.sceneNodes.selectedSceneNode = sceneNode
-		EntityBrowser.updateSceneNodeInfo(sceneNode)
+		self.sceneNodes.selectedSceneNode = sceneNode
+		self:updateSceneNodeInfo(sceneNode)
 --		local positionInfo = "x: " .. sceneNode:getPosition().x .. " y: " .. sceneNode:getPosition().y .. " z: " .. sceneNode:getPosition().z
---		EntityBrowser.sceneNodes.nodeInfo:setText(positionInfo);
+--		self.sceneNodes.nodeInfo:setText(positionInfo);
 	end
 end
 
-function EntityBrowser.updateSceneNodeInfo(sceneNode)
-	EntityBrowser.sceneNodes.positionAdapter:updateGui(sceneNode:getPosition())
-	EntityBrowser.sceneNodes.rotationAdapter:updateGui(sceneNode:getOrientation())
-	EntityBrowser.sceneNodes.scaleAdapter:updateGui(sceneNode:getScale())
+function EntityBrowser:updateSceneNodeInfo(sceneNode)
+	self.sceneNodes.positionAdapter:updateGui(sceneNode:getPosition())
+	self.sceneNodes.rotationAdapter:updateGui(sceneNode:getOrientation())
+	self.sceneNodes.scaleAdapter:updateGui(sceneNode:getScale())
 end
 
-function EntityBrowser.sceneNodes_positionAdapter_changed()
-	EntityBrowser.sceneNodes.selectedSceneNode:setPosition(EntityBrowser.sceneNodes.positionAdapter:getValue())
+function EntityBrowser:sceneNodes_positionAdapter_changed()
+	self.sceneNodes.selectedSceneNode:setPosition(self.sceneNodes.positionAdapter:getValue())
 end
 
-function EntityBrowser.sceneNodes_rotationAdapter_changed()
-	EntityBrowser.sceneNodes.selectedSceneNode:setOrientation(EntityBrowser.sceneNodes.rotationAdapter:getValue())
+function EntityBrowser:sceneNodes_rotationAdapter_changed()
+	self.sceneNodes.selectedSceneNode:setOrientation(self.sceneNodes.rotationAdapter:getValue())
 end
 
-function EntityBrowser.sceneNodes_scaleAdapter_changed()
-	EntityBrowser.sceneNodes.selectedSceneNode:setScale(EntityBrowser.sceneNodes.scaleAdapter:getValue())
+function EntityBrowser:sceneNodes_scaleAdapter_changed()
+	self.sceneNodes.selectedSceneNode:setScale(self.sceneNodes.scaleAdapter:getValue())
 end
 
-function EntityBrowser.refreshSceneNodes()
-	EntityBrowser.sceneNodes.listholder:resetList()
-	EntityBrowser.addSceneNode(emberOgre:getRootSceneNode(), 0)
+function EntityBrowser:refreshSceneNodes()
+	local world = emberOgre:getWorld()
+	
+	if world then
+		local rootNode = world:getSceneManager():getRootSceneNode()
+		self.sceneNodes.listholder:resetList()
+		self:addSceneNode(rootNode, 0)
+	end
 end
 
-function EntityBrowser.addSceneNode(sceneNode, level)
+function EntityBrowser:addSceneNode(sceneNode, level)
 --	if entity ~= nil then
 		local label = ""
 		for i = 0, level  do
@@ -78,27 +77,27 @@ function EntityBrowser.addSceneNode(sceneNode, level)
 		label = label .. sceneNode:getName()
 		
 		local item = EmberOgre.Gui.ColouredListItem:new(label, 0, sceneNode)
-		EntityBrowser.sceneNodes.listholder:addItem(item)
+		self.sceneNodes.listholder:addItem(item)
 	
 	
 		local numContained = sceneNode:numChildren()
 		for i = 0, numContained - 1 do
 			local chilNode = sceneNode:getChildByIndex(i)
-			EntityBrowser.addSceneNode(chilNode, level + 1)
+			self:addSceneNode(chilNode, level + 1)
 		end 
 --	end
 end
 
 
-function EntityBrowser.refresh()
-	EntityBrowser.listholder:resetList()
+function EntityBrowser:refresh()
+	self.listholder:resetList()
 	local world = emberOgre:getWorld()
 	if world ~= nil then
-		EntityBrowser.addEntity(world:getEntityFactory():getWorld(), 0)
+		self:addEntity(world:getEntityFactory():getWorld(), 0)
 	end
 end
 
-function EntityBrowser.addEntity(entity, level)
+function EntityBrowser:addEntity(entity, level)
 	if entity ~= nil then
 		local label = ""
 		for i = 0, level  do
@@ -107,69 +106,92 @@ function EntityBrowser.addEntity(entity, level)
 		label = label .. entity:getName() .. " (" .. entity:getType():getName() .. ")"
 		
 		local item = EmberOgre.Gui.ColouredListItem:new(label, entity:getId(), entity)
-		EntityBrowser.listholder:addItem(item)
+		self.listholder:addItem(item)
 	
 	
 		local numContained = entity:numContained()
 		for i = 0, numContained - 1 do
 			local childEntity = entity:getContained(i)
-			EntityBrowser.addEntity(childEntity, level + 1)
+			self:addEntity(childEntity, level + 1)
 		end 
 	end
 end
 
-function EntityBrowser.buildWidget()
+function EntityBrowser:buildWidget()
 
-	EntityBrowser.widget = guiManager:createWidget()
-	EntityBrowser.widget:loadMainSheet("EntityBrowser.layout", "EntityBrowser/")
+	self.widget = guiManager:createWidget()
+	self.widget:loadMainSheet("EntityBrowser.layout", "EntityBrowser/")
 	
 	--the eris part
-	EntityBrowser.listbox = CEGUI.toListbox(EntityBrowser.widget:getWindow("EntityList"))
-	EntityBrowser.listbox:subscribeEvent("ItemSelectionChanged", "EntityBrowser.EntityList_SelectionChanged")
+	self.listbox = CEGUI.toListbox(self.widget:getWindow("EntityList"))
+	self.listbox:subscribeEvent("ItemSelectionChanged", self.EntityList_SelectionChanged, self)
 	
-	EntityBrowser.filter = CEGUI.toEditbox(EntityBrowser.widget:getWindow("FilterEntities"))
-	EntityBrowser.listholder = EmberOgre.Gui.ListHolder:new_local(EntityBrowser.listbox, EntityBrowser.filter)
-	EntityBrowser.widget:getWindow("Refresh"):subscribeEvent("Clicked", "EntityBrowser.Refresh_Clicked")
+	self.filter = CEGUI.toEditbox(self.widget:getWindow("FilterEntities"))
+	self.listholder = EmberOgre.Gui.ListHolder:new(self.listbox, self.filter)
+	self.widget:getWindow("Refresh"):subscribeEvent("Clicked", self.Refresh_Clicked, self)
 
 	
 	--the ogre scene nodes part
-	EntityBrowser.sceneNodes.listbox = CEGUI.toListbox(EntityBrowser.widget:getWindow("SceneNodesList"))
-	EntityBrowser.sceneNodes.listbox:subscribeEvent("ItemSelectionChanged", "EntityBrowser.SceneNodesList_SelectionChanged")
-	EntityBrowser.sceneNodes.nodeInfo = EntityBrowser.widget:getWindow("SceneNodeInfo")
-	EntityBrowser.sceneNodes.filter = CEGUI.toEditbox(EntityBrowser.widget:getWindow("FilterSceneNodes"))
-	EntityBrowser.sceneNodes.listholder = EmberOgre.Gui.ListHolder:new_local(EntityBrowser.sceneNodes.listbox, EntityBrowser.sceneNodes.filter)
-	EntityBrowser.widget:getWindow("RefreshSceneNodes"):subscribeEvent("Clicked", "EntityBrowser.RefreshSceneNodes_Clicked")
+	self.sceneNodes.listbox = CEGUI.toListbox(self.widget:getWindow("SceneNodesList"))
+	self.sceneNodes.listbox:subscribeEvent("ItemSelectionChanged", self.SceneNodesList_SelectionChanged, self)
+	self.sceneNodes.nodeInfo = self.widget:getWindow("SceneNodeInfo")
+	self.sceneNodes.filter = CEGUI.toEditbox(self.widget:getWindow("FilterSceneNodes"))
+	self.sceneNodes.listholder = EmberOgre.Gui.ListHolder:new(self.sceneNodes.listbox, self.sceneNodes.filter)
+	self.widget:getWindow("RefreshSceneNodes"):subscribeEvent("Clicked", self.RefreshSceneNodes_Clicked, self)
 
 
-	EntityBrowser.widget:registerConsoleVisibilityToggleCommand("entityBrowser")
-	EntityBrowser.widget:enableCloseButton()
+	self.widget:registerConsoleVisibilityToggleCommand("entityBrowser")
+	self.widget:enableCloseButton()
 
-	local xW = EntityBrowser.widget:getWindow("SceneNodeInfo/Position/X")
-	local yW = EntityBrowser.widget:getWindow("SceneNodeInfo/Position/Y")
-	local zW = EntityBrowser.widget:getWindow("SceneNodeInfo/Position/Z")
-	EntityBrowser.sceneNodes.positionAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW, yW ,zW)
-	connect(EntityBrowser.connectors, EntityBrowser.sceneNodes.positionAdapter.EventValueChanged, "EntityBrowser.sceneNodes_positionAdapter_changed")
+	local xW = self.widget:getWindow("SceneNodeInfo/Position/X")
+	local yW = self.widget:getWindow("SceneNodeInfo/Position/Y")
+	local zW = self.widget:getWindow("SceneNodeInfo/Position/Z")
+	self.sceneNodes.positionAdapter = EmberOgre.Gui.Vector3Adapter:new(xW, yW ,zW)
+	connect(self.connectors, self.sceneNodes.positionAdapter.EventValueChanged, self.sceneNodes_positionAdapter_changed, self)
 	
-	local xW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/X")
-	local yW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/Y")
-	local zW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/Z")
-	local degreeW = EntityBrowser.widget:getWindow("SceneNodeInfo/Orientation/Scalar")
-	EntityBrowser.sceneNodes.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new_local(degreeW, xW, yW ,zW)
-	connect(EntityBrowser.connectors, EntityBrowser.sceneNodes.rotationAdapter.EventValueChanged, "EntityBrowser.sceneNodes_rotationAdapter_changed")
+	local xW = self.widget:getWindow("SceneNodeInfo/Orientation/X")
+	local yW = self.widget:getWindow("SceneNodeInfo/Orientation/Y")
+	local zW = self.widget:getWindow("SceneNodeInfo/Orientation/Z")
+	local degreeW = self.widget:getWindow("SceneNodeInfo/Orientation/Scalar")
+	self.sceneNodes.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new(degreeW, xW, yW ,zW)
+	connect(self.connectors, self.sceneNodes.rotationAdapter.EventValueChanged, self.sceneNodes_rotationAdapter_changed, self)
 
-	local xW = EntityBrowser.widget:getWindow("SceneNodeInfo/Scale/X")
-	local yW = EntityBrowser.widget:getWindow("SceneNodeInfo/Scale/Y")
-	local zW = EntityBrowser.widget:getWindow("SceneNodeInfo/Scale/Z")
-	EntityBrowser.sceneNodes.scaleAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW, yW ,zW)
-	connect(EntityBrowser.connectors, EntityBrowser.sceneNodes.scaleAdapter.EventValueChanged, "EntityBrowser.sceneNodes_scaleAdapter_changed")
+	local xW = self.widget:getWindow("SceneNodeInfo/Scale/X")
+	local yW = self.widget:getWindow("SceneNodeInfo/Scale/Y")
+	local zW = self.widget:getWindow("SceneNodeInfo/Scale/Z")
+	self.sceneNodes.scaleAdapter = EmberOgre.Gui.Vector3Adapter:new(xW, yW ,zW)
+	connect(self.connectors, self.sceneNodes.scaleAdapter.EventValueChanged, self.sceneNodes_scaleAdapter_changed, self)
 	
-	local sizeW = EntityBrowser.widget:getWindow("SceneNodeInfo/Scale/SizeText")
+	local sizeW = self.widget:getWindow("SceneNodeInfo/Scale/SizeText")
 	
 	--force a refresh the first time the window is shown
-	connect(EntityBrowser.connectors, EntityBrowser.widget.EventFirstTimeShown, EntityBrowser.refresh)
+	connect(self.connectors, self.widget.EventFirstTimeShown, self.refresh, self)
 
 
 end
 
+function EntityBrowser:shutdown()
+	deleteSafe(self.sceneNodes.scaleAdapter)
+	deleteSafe(self.sceneNodes.rotationAdapter)
+	deleteSafe(self.sceneNodes.positionAdapter)
+	deleteSafe(self.sceneNodes.listholder)
+	deleteSafe(self.listholder)
 
-EntityBrowser.buildWidget()
+	disconnectAll(self.connectors)
+	guiManager:destroyWidget(self.widget)
+end
+
+
+connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
+	local entityBrowser = {connectors = {}, listbox = nil, sceneNodes = {listbox = nil, selectedSceneNode = nil} }
+	setmetatable(entityBrowser, {__index = EntityBrowser})
+	
+	entityBrowser:buildWidget()
+
+	connect(entityBrowser.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
+		entityBrowser:shutdown()
+		entityBrowser = nil
+	end)
+end)
+
+
