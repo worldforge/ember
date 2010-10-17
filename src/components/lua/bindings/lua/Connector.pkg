@@ -4,6 +4,8 @@ namespace Ember {
 namespace Lua {
 class Connector {
 
+	virtual ~Connector();
+	
 	/**
 	 * @brief Connects to the lua method.
 	 *
