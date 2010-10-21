@@ -29,20 +29,17 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.TexturesRefresh_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Button' Name='TexturesReload'>
 						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Reload'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.TexturesReload_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='TexturesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
 						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="ItemSelectionChanged" Function="AssetsManager.TexturesList_ItemSelectionChanged" />
 					</Window>
 					<Window Type='EmberLook/StaticText' Name='TextureInfo'>
 						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
@@ -72,20 +69,17 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.MaterialsRefresh_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Button' Name='MaterialsReload'>
 						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Reload'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.MaterialsReload_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='MaterialsList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
 						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="ItemSelectionChanged" Function="AssetsManager.MaterialsList_ItemSelectionChanged" />
 					</Window>
 					<Window Type='EmberLook/StaticText' Name='MaterialsInfo'>
 						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
@@ -115,13 +109,11 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.MeshesRefresh_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='MeshesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
 						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="ItemSelectionChanged" Function="AssetsManager.MeshesList_ItemSelectionChanged" />
 					</Window>
 					<Window Type='EmberLook/StaticText' Name='MeshInfo'>
 						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
@@ -145,13 +137,11 @@
 									<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
 									<Property Name='UnifiedSize' Value='{{0,200},{1,-40}}'/>
 									<Property Name='InheritsAlpha' Value='True'/>
-									<Event Name="ItemSelectionChanged" Function="AssetsManager.SubMeshesList_ItemSelectionChanged" />
 								</Window>
 								<Window Type='EmberLook/Listbox' Name='SubMeshMaterialsList'>
 									<Property Name='UnifiedPosition' Value='{{0,210},{0,5}}'/>
 									<Property Name='UnifiedSize' Value='{{0,200},{1,-45}}'/>
 									<Property Name='InheritsAlpha' Value='True'/>
-									<Event Name="ItemSelectionChanged" Function="AssetsManager.SubMeshMaterialsList_ItemSelectionChanged" />
 								</Window>
 								<Window Type='EmberLook/Editbox' Name='SubMeshMaterialsFilter'>
 									<Property Name='UnifiedPosition' Value='{{0,210},{1,-35}}'/>
@@ -174,7 +164,6 @@
 									<Property Name='Text' Value='Save'/>
 									<Property Name='InheritsAlpha' Value='True'/>
 									<Property Name='Tooltip' Value='Save the mesh to disk' />
-									<Event Name="Clicked" Function="AssetsManager.MeshInfoSaveButton_Clicked" />
 								</Window>
 							</Window>
 							<Window Type='EmberLook/Button' Name='MeshInfoEditShowButton'>
@@ -183,7 +172,6 @@
 								<Property Name='Text' Value='Edit'/>
 								<Property Name='InheritsAlpha' Value='True'/>
 								<Property Name='AlwaysOnTop' Value='true'/>
-								<Event Name="Clicked" Function="AssetsManager.MeshInfoEditShowButton_Clicked" />
 							</Window>
 						</Window>
 					</Window>
@@ -198,18 +186,16 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
-					<Window Type='EmberLook/Button' Name='RefreshImages'>
+					<Window Type='EmberLook/Button' Name='ImagesRefresh'>
 						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.RefreshImages_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='ImagesList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
 						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="ItemSelectionChanged" Function="AssetsManager.ImagesList_ItemSelectionChanged" />
 					</Window>
 					<Window Type='EmberLook/StaticText' Name='ImagesInfo'>
 						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
@@ -239,20 +225,17 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.RefreshShaders_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Button' Name='ShadersReload'>
 						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Reload'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.ShadersReload_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='ShadersList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
 						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="ItemSelectionChanged" Function="AssetsManager.ShadersList_ItemSelectionChanged" />
 					</Window>
 					<Window Type='EmberLook/StaticText' Name='ShadersInfo'>
 						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
@@ -282,13 +265,11 @@
 						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
 						<Property Name='Text' Value='Refresh'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="Clicked" Function="AssetsManager.RefreshWindows_Clicked" />
 					</Window>
 					<Window Type='EmberLook/Listbox' Name='WindowsList'>
 						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
 						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Event Name="ItemSelectionChanged" Function="AssetsManager.WindowsList_ItemSelectionChanged" />
 					</Window>
 					<Window Type='EmberLook/StaticText' Name='WindowInfo'>
 						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
@@ -303,7 +284,6 @@
 							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 							<Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
 							<Property Name='Text' Value='Visible'/>
-							<Event Name="CheckStateChanged" Function="AssetsManager.WindowsList_CheckStateChanged" />
 						</Window>
 						<Window Type='EmberLook/StaticText' Name='WindowInfo/Text'>
 							<Property Name='UnifiedPosition' Value='{{0,0},{0,25}}'/>
