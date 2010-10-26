@@ -327,7 +327,7 @@ function AssetsManager:buildWidget()
 		--the texture part
 		self.textures.controls.listbox = CEGUI.toListbox(self.widget:getWindow("TexturesList"))
 		self.textures.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterTextures"))
-		self.textures.listholder = EmberOgre.Gui.ListHolder:new_local(self.textures.controls.listbox, self.textures.controls.filter)
+		self.textures.listholder = EmberOgre.Gui.ListHolder:new(self.textures.controls.listbox, self.textures.controls.filter)
 		self.textures.controls.textureView = self.widget:getWindow("TextureInfo/Image")
 		self.textures.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.textures.listholder, Ogre.TextureManager:getSingleton())
 		self.textures.refresh = function(self)
@@ -341,7 +341,7 @@ function AssetsManager:buildWidget()
 		--the materials part
 		self.materials.controls.listbox = CEGUI.toListbox(self.widget:getWindow("MaterialsList"))
 		self.materials.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterMaterials"))
-		self.materials.listholder = EmberOgre.Gui.ListHolder:new_local(self.materials.controls.listbox, self.materials.controls.filter)
+		self.materials.listholder = EmberOgre.Gui.ListHolder:new(self.materials.controls.listbox, self.materials.controls.filter)
 		self.materials.controls.textWidget = self.widget:getWindow("MaterialInfo/Text")
 		self.materials.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.materials.listholder, Ogre.MaterialManager:getSingleton())
 		self.materials.refresh = function(self)
@@ -355,7 +355,7 @@ function AssetsManager:buildWidget()
 		--the images part
 		self.images.controls.listbox = CEGUI.toListbox(self.widget:getWindow("ImagesList"))
 		self.images.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterImages"))
-		self.images.listholder = EmberOgre.Gui.ListHolder:new_local(self.images.controls.listbox, self.images.controls.filter)
+		self.images.listholder = EmberOgre.Gui.ListHolder:new(self.images.controls.listbox, self.images.controls.filter)
 		self.images.controls.textureView = self.widget:getWindow("ImagesInfo/Image")
 		self.images.refresh = function(self)
 			self.images.listholder:resetList()
@@ -381,13 +381,13 @@ function AssetsManager:buildWidget()
 		--the windows part
 		self.windows.controls.listbox = CEGUI.toListbox(self.widget:getWindow("WindowsList"))
 		self.windows.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterWindows"))
-		self.windows.listholder = EmberOgre.Gui.ListHolder:new_local(self.windows.controls.listbox, self.windows.controls.filter)
+		self.windows.listholder = EmberOgre.Gui.ListHolder:new(self.windows.controls.listbox, self.windows.controls.filter)
 		self.windows.controls.visibleCheckbox = CEGUI.toCheckbox(self.widget:getWindow("WindowInfo/Visible"))
 		self.windows.controls.infoText = self.widget:getWindow("WindowInfo/Text")
 		self.windows.refresh = function(self)
 			self.windows.listholder:resetList()
 			
-			self.windows.addWindow(CEGUI.System:getSingleton():getGUISheet(), 0)
+			self.windows.addWindow(self, CEGUI.System:getSingleton():getGUISheet(), 0)
 		end
 
 		self.windows.addWindow = function(self, window, depth)		
@@ -402,7 +402,7 @@ function AssetsManager:buildWidget()
 				if window:getChildCount() > 0 then
 					for i = 0, window:getChildCount() - 1 do
 						local childWindow = window:getChildAtIdx(i)
-						self.windows.addWindow(childWindow, depth + 1)
+						self.windows.addWindow(self, childWindow, depth + 1)
 					end
 				end
 			end
@@ -420,10 +420,10 @@ function AssetsManager:buildWidget()
 		self.meshes.controls.materialFilter = CEGUI.toEditbox(self.widget:getWindow("SubMeshMaterialsFilter"))
 		self.meshes.controls.skeletonPath = CEGUI.toEditbox(self.widget:getWindow("MeshSkeletonPath"))
 		self.meshes.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterMeshes"))
-		self.meshes.listholder = EmberOgre.Gui.ListHolder:new_local(self.meshes.controls.listbox, self.meshes.controls.filter)
+		self.meshes.listholder = EmberOgre.Gui.ListHolder:new(self.meshes.controls.listbox, self.meshes.controls.filter)
 		self.meshes.controls.textureView = self.widget:getWindow("MeshInfo/Preview")
-		self.meshes.renderer = EmberOgre.Gui.OgreEntityRenderer:new_local(self.meshes.controls.textureView)
-		self.meshes.materialListholder = EmberOgre.Gui.ListHolder:new_local(self.meshes.controls.materialListbox, self.meshes.controls.materialFilter)
+		self.meshes.renderer = EmberOgre.Gui.OgreEntityRenderer:new(self.meshes.controls.textureView)
+		self.meshes.materialListholder = EmberOgre.Gui.ListHolder:new(self.meshes.controls.materialListbox, self.meshes.controls.materialFilter)
 		self.meshes.refresh = function(self)
 			self.meshes.listholder:resetList()
 		
@@ -446,7 +446,7 @@ function AssetsManager:buildWidget()
 		--the shaders part
 		self.shaders.controls.listbox = CEGUI.toListbox(self.widget:getWindow("ShadersList"))
 		self.shaders.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterShaders"))
-		self.shaders.listholder = EmberOgre.Gui.ListHolder:new_local(self.shaders.controls.listbox, self.shaders.controls.filter)
+		self.shaders.listholder = EmberOgre.Gui.ListHolder:new(self.shaders.controls.listbox, self.shaders.controls.filter)
 		self.shaders.controls.textWidget = self.widget:getWindow("ShadersInfo/Text")
 		self.shaders.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.shaders.listholder, Ogre.HighLevelGpuProgramManager:getSingleton())
 		self.shaders.refresh = function(self)
@@ -458,7 +458,7 @@ function AssetsManager:buildWidget()
 	
 	
 	
-		self.helper = EmberOgre.Gui.AssetsManager:new_local()
+		self.helper = EmberOgre.Gui.AssetsManager:new()
 	
 		self.widget:enableCloseButton()
 	end
@@ -483,6 +483,15 @@ end
 
 function AssetsManager:shutdown()
 	disconnectAll(self.connectors)
+	deleteSafe(self.helper)
+	deleteSafe(self.shaders.listholder)
+	deleteSafe(self.meshes.materialListholder)
+	deleteSafe(self.meshes.renderer)
+	deleteSafe(self.meshes.listholder)
+	deleteSafe(self.windows.listholder)
+	deleteSafe(self.images.listholder)
+	deleteSafe(self.materials.listholder)
+	deleteSafe(self.textures.listholder)
 	guiManager:destroyWidget(self.widget)
 end
 
