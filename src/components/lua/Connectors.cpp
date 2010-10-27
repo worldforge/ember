@@ -45,6 +45,8 @@ ConnectorBase::ConnectorBase() :
 ConnectorBase::~ConnectorBase()
 {
 	mConnection.disconnect();
+	luaL_unref(getState(), LUA_REGISTRYINDEX, mLuaFunctionIndex);
+	luaL_unref(getState(), LUA_REGISTRYINDEX, mLuaSelfIndex);
 }
 
 void ConnectorBase::disconnect()
@@ -87,6 +89,10 @@ lua_State* ConnectorBase::getState()
 int ConnectorBase::resolveLuaFunction(lua_State* state)
 {
 	if (mLuaFunctionIndex == LUA_NOREF || Ember::EmberServices::getSingleton().getScriptingService()->getAlwaysLookup()) {
+		//If we've already resolved the function we should release the reference before getting a new one.
+		if (mLuaFunctionIndex != LUA_NOREF) {
+			luaL_unref(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
+		}
 		pushNamedFunction(state);
 		mLuaFunctionIndex = luaL_ref(state, LUA_REGISTRYINDEX);
 	}
