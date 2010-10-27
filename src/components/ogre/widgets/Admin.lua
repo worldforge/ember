@@ -158,7 +158,7 @@ function Admin:shutdown()
 		self.popup = nil
 	end
 	if self.adminIcon ~= nil then
-		MainIconBar.removeIcon(self.adminIcon)
+		MainIconBar.removeExternalIcon(self.adminIcon)
 		self.adminIcon:delete()
 		self.adminIcon = nil
 	end
@@ -170,7 +170,7 @@ Admin.createdAvatarConnector = createConnector(emberOgre.EventCreatedAvatarEntit
 	function(avatarEntity)
 		--only show the admin menu if we're logged in as an admin
 		if emberOgre:getWorld():getAvatar():isAdmin() then
-			admin = {connectors={}, adminIcon=nil}
+			local admin = {connectors={}, adminIcon=nil}
 			setmetatable(admin, {__index = Admin})
 			
 			admin:buildWidget()

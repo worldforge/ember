@@ -18,6 +18,12 @@ function MainIconBar.addExternalIcon(iconName, foregroundImage, tooltipText)
 	return nil
 end
 
+function MainIconBar.removeExternalIcon(icon)
+	if MainIconBar.singletonInstance then
+		return MainIconBar.singletonInstance:removeIcon(icon)
+	end
+end
+
 --[[creates a new icon and adds it to the iconbar, using the default background and border images
 @param iconName The name of the icon.
 @param foregroundImage The CEGUI::Image to use as foreground image.
