@@ -139,7 +139,7 @@ public:
 	 *
 	 * @param selfIndex The lua index of the self reference.
 	 */
-	Connector* setSelf(int selfIndex);
+	Connector* setSelf(lua_Object selfIndex);
 
 	/**
 	 * @brief Creates a new connector.

@@ -83,7 +83,7 @@ void Connector::disconnect()
 	}
 }
 
-Connector* Connector::setSelf(int selfIndex)
+Connector* Connector::setSelf(lua_Object selfIndex)
 {
 	if (mConnector) {
 		if (selfIndex != LUA_NOREF) {
