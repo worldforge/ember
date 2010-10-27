@@ -28,25 +28,57 @@
 #include "Connectors_impl.h"
 #include "framework/ConsoleBackend.h"
 
-namespace Ember {
-namespace Lua {
+namespace Ember
+{
+namespace Lua
+{
 
-LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description):
-mCommand(command), mLuaMethod(luaMethod), mCommandWrapper(command, this, description)
+LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description) :
+	mCommandWrapper(command, this, description)
 {
 	mConnector = new Ember::Lua::TemplatedConnectorBase<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter>(Ember::Lua::StringValueAdapter(), Ember::Lua::StringValueAdapter());
 	mConnector->connect(luaMethod);
 }
 
+LuaConsoleObject::LuaConsoleObject(const std::string& command, lua_Object luaMethod, const std::string& description) :
+	mCommandWrapper(command, this, description)
+{
+	mConnector = new Ember::Lua::TemplatedConnectorBase<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter>(Ember::Lua::StringValueAdapter(), Ember::Lua::StringValueAdapter());
+	///we need to get the correct lua function
+	lua_State* state = Ember::Lua::ConnectorBase::getState();
+	int luaType = lua_type(state, -1);
+	int index = luaL_ref(state, LUA_REGISTRYINDEX);
+	if (luaType == LUA_TFUNCTION) {
+		mConnector->connect(index);
+	} else {
+		S_LOG_WARNING("No valid lua function sent as argument to LuaConsoleObject::LuaConsoleObject");
+	}
+}
 
 LuaConsoleObject::~LuaConsoleObject()
 {
 	delete mConnector;
 }
 
-void LuaConsoleObject::runCommand(const std::string &command, const std::string &args)
+void LuaConsoleObject::runCommand(const std::string& command, const std::string& args)
 {
-	mConnector->callLuaMethod<std::string, std::string>(command, args);
+	mConnector->callLuaMethod<std::string, std::string> (command, args);
+}
+
+LuaConsoleObject* LuaConsoleObject::setSelf(lua_Object selfIndex)
+{
+	if (mConnector) {
+		if (selfIndex != LUA_NOREF) {
+			///we need to get the correct lua table
+			lua_State* state = Ember::Lua::ConnectorBase::getState();
+			int luaType = lua_type(state, -1);
+			int index = luaL_ref(state, LUA_REGISTRYINDEX);
+			if (luaType == LUA_TTABLE) {
+				mConnector->setSelfIndex(index);
+			}
+		}
+	}
+	return this;
 }
 
 }

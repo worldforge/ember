@@ -7,9 +7,17 @@ class LuaConsoleObject
 {
     LuaConsoleObject(const std::string& command, const std::string& luaMethod);
     LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description);
+	LuaConsoleObject(const std::string& command, lua_Object luaMethod);
+	LuaConsoleObject(const std::string& command, lua_Object luaMethod, const std::string& description);
 
     ~LuaConsoleObject();
 
+	/**
+	 * @brief Sets a "self" reference which will be prepended to any lua call.
+	 *
+	 * @param selfIndex The lua index of the self reference.
+	 */
+	LuaConsoleObject* setSelf(lua_Object selfIndex);
 };
 }
 }

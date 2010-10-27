@@ -25,31 +25,71 @@
 #include "framework/ConsoleObject.h"
 #include "components/lua/Connectors.h"
 
+#include <tolua++.h>
+
 namespace Ember {
 namespace Lua {
 
 /**
-@author Erik Hjortsberg
-*/
+ * @author Erik Hjortsberg
+ *
+ * @brief A console object which can easily be created in Lua, and will perform call back into Lua when activated.
+ *
+ * Use an instance of this whenever you want to register console commands from Lua.
+ *
+ */
 class LuaConsoleObject : public Ember::ConsoleObject
 {
 public:
     
+	/**
+	 * @brief Ctor.
+	 * @param command The console command to register.
+	 * @param luaMethod A lua method to call when the command is executed.
+	 * @param description An optional description of the console command.
+	 */
     LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description = "");
 
+    /**
+	 * @brief Ctor.
+	 * @param command The console command to register.
+	 * @param luaMethod A lua method to call when the command is executed.
+	 * @param description An optional description of the console command.
+	 */
+    LuaConsoleObject(const std::string& command, lua_Object luaMethod, const std::string& description = "");
+
+    /**
+     * @brief Dtor.
+     */
     ~LuaConsoleObject();
 
 
 	/**
-	 *    Reimplements the ConsoleObject::runCommand method
+	 * @brief Reimplements the ConsoleObject::runCommand method.
 	 * @param command 
 	 * @param args 
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
+
+	/**
+	 * @brief Sets a "self" reference which will be prepended to any lua call.
+	 *
+	 * @param selfIndex The lua index of the self reference.
+	 */
+	LuaConsoleObject* setSelf(lua_Object selfIndex);
+
 private:
-	std::string mCommand;
-	std::string mLuaMethod;
+
+	/**
+	 * @brief The connector which points to a Lua function.
+	 *
+	 * This is called when the command is executed.
+	 */
 	Ember::Lua::TemplatedConnectorBase<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter>* mConnector;
+
+	/**
+	 * @brief The console command registered.
+	 */
 	const Ember::ConsoleCommandWrapper mCommandWrapper;
 };
 
