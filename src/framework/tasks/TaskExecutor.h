@@ -45,6 +45,11 @@ class TaskExecutor
 public:
 
 	/**
+	 * @brief Dtor.
+	 */
+	virtual ~TaskExecutor();
+
+	/**
 	 * @brief Sets whether the executor is active or not.
 	 * @param active Whether the executor should be active or not.
 	 */
@@ -78,11 +83,6 @@ protected:
 	 * @param taskQueue The queue to which this executor belongs.
 	 */
 	TaskExecutor(TaskQueue& taskQueue);
-
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~TaskExecutor();
 
 	/**
 	 * @brief Main loop method.
