@@ -26,7 +26,6 @@
 					<Property Name='UnifiedSize' Value='{{0.00,20.0},{0.00,20.0}}'/>
 					<Property Name='UnifiedPosition' Value='{{1.00,-155.0},{1.00,-20.0}}'/>
 					<Property Name='Tooltip' Value='Toggle the display of the axes.'/>
-					<Event Name="CheckStateChanged" Function="ModelEdit.Image_ShowAxes_CheckStateChanged" />
 				</Window>
 				<Window Type='DefaultGUISheet' Name='Image_Orientation'>
 					<Property Name='UnifiedSize' Value='{{0.00,130.0},{0.00,75.0}}'/>
@@ -195,7 +194,6 @@
 					<Property Name='Text' Value='Export Atlas'/>
 					<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
 					<Property Name='UnifiedPosition' Value='{{0.0,100.0},{1.0,-30.0}}'/>
-					<Event Name="Clicked" Function="ModelEdit.ExportAsAtlasTypeButton_Clicked" />
 				</Window>
 				<Window Type='EmberLook/Checkbox' Name='ModelShowContent'>
 					<Property Name='Text' Value='Show content'/>
@@ -316,7 +314,6 @@
 					<Property Name='Text' Value='Icon from preview'/>
 					<Property Name='UnifiedPosition' Value='{{1,-125},{1,-60}}'/>
 					<Property Name='UnifiedSize' Value='{{0,120},{0,25}}'/>
-					<Event Name="Clicked" Function="ModelEdit.GetIconFromPreviewButton_Clicked" />
 				</Window>
 			</Window>
 			<Window Type='DefaultWindow' Name='SubModelInfo'>
