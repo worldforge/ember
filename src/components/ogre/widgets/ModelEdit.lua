@@ -895,7 +895,8 @@ function ModelEdit:fillScaleTypesList()
 end
 
 function ModelEdit:shutdown()
-	
+	disconnectAll(self.connectors)
+	guiManager:destroyWidget(self.widget)
 end
 
 connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)

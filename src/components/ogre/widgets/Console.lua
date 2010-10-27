@@ -111,6 +111,8 @@ end
 
 function Console:shutdown()
 	deleteSafe(self.consoleObject)
+	disconnectAll(self.connectors)
+	guiManager:destroyWidget(self.widget)
 end
 
 
