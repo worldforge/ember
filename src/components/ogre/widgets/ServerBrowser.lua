@@ -136,10 +136,6 @@ function ServerBrowser:manualServerNameTextbox_TextAcceptedEvent(args)
 	return true
 end
 
-function hideOldServers_CheckStateChanged(args)
-	return true
-end
-
 function ServerBrowser:ServerList_DoubleClick(args)
 	self:connectWithColumnList()
 	return true
