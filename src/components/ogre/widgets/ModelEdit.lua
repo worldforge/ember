@@ -96,7 +96,7 @@ function ModelEdit:getSubMeshName(mesh, index)
 end
 
 function ModelEdit:loadModelDefinition(definitionName)
-	modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
+	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	self.definitionPtr = modelDefMgr:getByName(definitionName)
 	self.definition = self.definitionPtr:get()
 	self:showPreview(definitionName)
@@ -459,7 +459,7 @@ end
 function ModelEdit:NewModelOk_Clicked(args)
 	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
 	local name = self.widget:getWindow("NewModelName"):getText()
-	def = modelDefMgr:create(name, "ModelDefinitions"):get()
+	local def = modelDefMgr:create(name, "ModelDefinitions"):get()
 	def:setValid(true)
 	
 	--after adding the definition, update the model list
@@ -728,26 +728,26 @@ function ModelEdit:buildWidget()
 		self.models:subscribeEvent("ItemSelectionChanged", self.models_SelectionChanged, self)
 		self.modelsfilter = self.widget:getWindow("FilterModels")
 		self.modelsfilter = CEGUI.toEditbox(self.modelsfilter)
-		self.modelslistholder = EmberOgre.Gui.ListHolder:new_local(self.models, self.modelsfilter)
-		self.modelsAdapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.modelslistholder, EmberOgre.Model.ModelDefinitionManager:getSingleton())
+		self.modelslistholder = EmberOgre.Gui.ListHolder:new(self.models, self.modelsfilter)
+		self.modelsAdapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new(self.modelslistholder, EmberOgre.Model.ModelDefinitionManager:getSingleton())
 		
 		local xW = self.widget:getWindow("ModelTranslate_x")
 		local yW = self.widget:getWindow("ModelTranslate_y")
 		local zW = self.widget:getWindow("ModelTranslate_z")
-		self.translateAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW,yW ,zW)
+		self.translateAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
 		connect(self.connectors, self.translateAdapter.EventValueChanged, self.translateAdapter_update, self)
 		
 		local xW = self.widget:getWindow("ModelContainedOffset_x")
 		local yW = self.widget:getWindow("ModelContainedOffset_y")
 		local zW = self.widget:getWindow("ModelContainedOffset_z")
-		self.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new_local(xW,yW ,zW)
+		self.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
 		connect(self.connectors, self.containedOffsetAdapter.EventValueChanged, self.containedOffsetAdapter_update, self)
 	
 		local xW = self.widget:getWindow("ModelRotation_x")
 		local yW = self.widget:getWindow("ModelRotation_y")
 		local zW = self.widget:getWindow("ModelRotation_z")
 		local degreeW = self.widget:getWindow("ModelRotation_degrees")
-		self.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new_local(degreeW, xW,yW ,zW)
+		self.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new(degreeW, xW,yW ,zW)
 		connect(self.connectors, self.rotationAdapter.EventValueChanged, self.rotationAdapter_update, self)
 	
 	
@@ -769,7 +769,7 @@ function ModelEdit:buildWidget()
 		self.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", self.modelinfoMeshlist_SelectionChanged, self)
 		
 		self.contentparts.modelInfo.meshlistfilter =  CEGUI.toEditbox(self.widget:getWindow("MeshListFilter"))
-		self.contentparts.modelInfo.meshlistlistholder = EmberOgre.Gui.ListHolder:new_local(self.contentparts.modelInfo.meshlist, self.contentparts.modelInfo.meshlistfilter)
+		self.contentparts.modelInfo.meshlistlistholder = EmberOgre.Gui.ListHolder:new(self.contentparts.modelInfo.meshlist, self.contentparts.modelInfo.meshlistfilter)
 		
 		
 		self.contentparts.submeshInfo.materiallist = self.widget:getWindow("Materials")
@@ -777,8 +777,8 @@ function ModelEdit:buildWidget()
 		self.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", self.submeshinfomaterials_SelectionChanged, self)
 		self.contentparts.submeshInfo.filter = self.widget:getWindow("FilterMaterials")
 		self.contentparts.submeshInfo.filter = CEGUI.toEditbox(self.contentparts.submeshInfo.filter)
-		self.contentparts.submeshInfo.listholder = EmberOgre.Gui.ListHolder:new_local(self.contentparts.submeshInfo.materiallist, self.contentparts.submeshInfo.filter)
-		self.contentparts.submeshInfo.listadapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.contentparts.submeshInfo.listholder, Ogre.MaterialManager:getSingleton())
+		self.contentparts.submeshInfo.listholder = EmberOgre.Gui.ListHolder:new(self.contentparts.submeshInfo.materiallist, self.contentparts.submeshInfo.filter)
+		self.contentparts.submeshInfo.listadapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new(self.contentparts.submeshInfo.listholder, Ogre.MaterialManager:getSingleton())
 		
 		self.contentparts.submeshInfo.removeSubMeshButton = self.widget:getWindow("RemoveSubMeshButton")
 		self.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("Clicked", self.submeshinforemovesubmesh_Clicked, self)
@@ -831,17 +831,17 @@ function ModelEdit:buildWidget()
 			
 		
 			
-		self.renderer = EmberOgre.Gui.ModelRenderer:new_local(self.renderImage)
+		self.renderer = EmberOgre.Gui.ModelRenderer:new(self.renderImage)
 		self.renderer:showAxis();
 		self.renderer:setCameraPositionMode(EmberOgre.SimpleRenderContext.CPM_WORLDCENTER)
 		
 		local subMeshPreviewImage = self.widget:getWindow("SubMeshPreviewImage")
 		--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
-		self.subMeshPartRenderer = EmberOgre.Gui.OgreEntityRenderer:new_local(subMeshPreviewImage)
+		self.subMeshPartRenderer = EmberOgre.Gui.OgreEntityRenderer:new(subMeshPreviewImage)
 		
 		local meshPreviewImage = self.widget:getWindow("MeshPreviewImage")
 		--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
-		self.submeshRenderer = EmberOgre.Gui.OgreEntityRenderer:new_local(meshPreviewImage)
+		self.submeshRenderer = EmberOgre.Gui.OgreEntityRenderer:new(meshPreviewImage)
 		
 		--self.contentparts.modelInfo.renderer = EmberOgre.Gui.ModelRenderer:new_local(self.contentparts.modelInfo.renderImage)
 		
@@ -895,6 +895,24 @@ function ModelEdit:fillScaleTypesList()
 end
 
 function ModelEdit:shutdown()
+	self.definitionPtr = nil
+	deleteSafe(self.submeshRenderer)
+	deleteSafe(self.renderer)
+	deleteSafe(self.subMeshPartRenderer)
+	if self.contentparts then
+		if self.contentparts.submeshInfo then
+			deleteSafe(self.contentparts.submeshInfo.listadapter)
+			deleteSafe(self.contentparts.submeshInfo.listholder)
+		end
+		if self.contentparts.modelInfo then
+			deleteSafe(self.contentparts.modelInfo.meshlistlistholder)
+		end
+	end
+	deleteSafe(self.rotationAdapter)
+	deleteSafe(self.containedOffsetAdapter)
+	deleteSafe(self.translateAdapter)
+	deleteSafe(self.modelsAdapter)
+	deleteSafe(self.modelslistholder)
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 end
