@@ -114,10 +114,17 @@ public:
 	Returns whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
 	*/
 	bool getAlwaysLookup() const;
+
 	/**
 	Sets whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.
 	*/
 	void setAlwaysLookup(bool alwaysLookup);
+
+	/**
+	 * @brief Forces garbage collection for all scripting providers.
+	 */
+	void forceGCForAllProviders();
+
 private:
 
 	/**

@@ -44,7 +44,7 @@ ScriptingService::ScriptingService()
 ScriptingService::~ScriptingService()
 {
 	stop(0);
-	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I)
+	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 	{
 		delete I->second;
 	}
@@ -53,7 +53,7 @@ ScriptingService::~ScriptingService()
 void ScriptingService::stop(int code)
 {
 	Service::stop(code);
-	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I)
+	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 	{
 		I->second->stop();
 	}
@@ -74,7 +74,7 @@ void ScriptingService::loadScript(const std::string& script)
 			return;
 		}
 
-		for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I)
+		for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 		{
 			//check if the provider will load the script
 			if (I->second->willLoadScript(script)) {
@@ -97,7 +97,7 @@ void ScriptingService::loadScript(const std::string& script)
 
 void ScriptingService::executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext)
 {
-	ProviderStore::iterator I = mProviders.find(scriptType);
+	ProviderStore::const_iterator I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
 	} else {
@@ -115,7 +115,7 @@ void ScriptingService::executeCode(const std::string& scriptCode, const std::str
 
 void ScriptingService::callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext)
 {
-	ProviderStore::iterator I = mProviders.find(scriptType);
+	ProviderStore::const_iterator I = mProviders.find(scriptType);
 	if (I == mProviders.end()) {
 		S_LOG_FAILURE("There is no scripting provider with the name \"" << scriptType << "\"");
 	} else {
@@ -155,12 +155,20 @@ void ScriptingService::scriptError(const std::string& error)
 
 IScriptingProvider* ScriptingService::getProviderFor(const std::string &providerName)
 {
-	ProviderStore::iterator I = mProviders.find(providerName);
+	ProviderStore::const_iterator I = mProviders.find(providerName);
 	if (I != mProviders.end())
 	{
 		return I->second;
 	}
 	return 0;
+}
+
+void ScriptingService::forceGCForAllProviders()
+{
+	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
+	{
+		I->second->forceGC();
+	}
 }
 
 void ScriptingService::runCommand(const std::string &command, const std::string &args)
@@ -180,7 +188,7 @@ void ScriptingService::runCommand(const std::string &command, const std::string 
 std::vector<std::string> ScriptingService::getProviderNames()
 {
 	std::vector<std::string> names;
-	for(ProviderStore::iterator I = mProviders.begin(); I != mProviders.end(); ++I)
+	for(ProviderStore::const_iterator I = mProviders.begin(); I != mProviders.end(); ++I)
 	{
 		names.push_back(I->second->getName());
 	}
