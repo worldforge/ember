@@ -171,6 +171,10 @@ EmberOgre::~EmberOgre()
 	delete mTerrainLayerManager;
 	delete mEntityMappingManager;
 
+	EventOgreBeingDestroyed();
+	//Right before we destroy Ogre we want to force a garbage collection of all scripting providers. The main reason is that if there are any instances of SharedPtr in the scripting environments we want to collect them now.
+	Ember::EmberServices::getSingleton().getScriptingService()->forceGCForAllProviders();
+
 	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
 	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
 	///by deleting the model manager we'll assure that
@@ -185,6 +189,7 @@ EmberOgre::~EmberOgre()
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
 		mOgreSetup.reset();
+		EventOgreDestroyed();
 	}
 
 	///Ogre is destroyed already, so we can't deregister this: we'll just destroy it

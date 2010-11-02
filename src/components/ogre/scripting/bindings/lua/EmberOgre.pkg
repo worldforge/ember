@@ -137,6 +137,17 @@ class EmberOgre
 	 */
 	sigc::signal<void> EventGUIManagerDestroyed;
 	
+
+	/**
+	 * @brief Emitted before the Ogre system is destroyed.
+	 */
+	sigc::signal<void> EventOgreBeingDestroyed;
+
+	/**
+	 * @brief Emitted after the Ogre system has been destroyed.
+	 */
+	sigc::signal<void> EventOgreDestroyed;
+		
 	sigc::signal<void, EmberOgre::MotionManager&> EventMotionManagerCreated;
 	
 	
