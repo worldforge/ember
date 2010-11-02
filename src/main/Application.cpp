@@ -161,9 +161,6 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 Application::~Application()
 {
 	EmberServices::getSingleton().getServerService()->stop(0);
-	///this will not destroy the scripting environments, since there are other components, such as windows in the gui, that depend on the scripting environment being available at destruction time
-	EmberServices::getSingleton().getScriptingService()->stop(0);
-	// 	mOgreView->shutdownGui();
 	delete mOgreView;
 	delete mServices;
 	S_LOG_INFO("Ember shut down normally.");
