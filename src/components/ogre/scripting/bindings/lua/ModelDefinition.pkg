@@ -194,6 +194,7 @@ class ModelDefinition : public Ogre::Resource {
 
 class ModelDefnPtr
 {
+	virtual ~ModelDefnPtr();
 	EmberOgre::Model::ModelDefinition* get();
 };
 

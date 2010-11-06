@@ -521,6 +521,7 @@ namespace Ogre {
     */
     class MeshPtr
     {
+		virtual ~MeshPtr();
     	Ogre::Mesh* get();
     	Ogre::Mesh* get() const;
 		bool isNull();

@@ -508,6 +508,7 @@ namespace Ogre {
 	*/
 	class MaterialPtr
 	{
+		virtual ~MaterialPtr();
 		Ogre::Material* get();
 		bool isNull();
 	};

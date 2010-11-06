@@ -29,6 +29,7 @@ public:
 class EntityRecipePtr
 {
 public:
+	virtual ~EntityRecipePtr();
 	EntityRecipe* get();
 };
 

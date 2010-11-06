@@ -90,6 +90,7 @@ namespace Ogre {
     class HighLevelGpuProgramPtr
     {
     public:
+    	virtual ~HighLevelGpuProgramPtr();
 		Ogre::HighLevelGpuProgram* get();
 		bool isNull();
 

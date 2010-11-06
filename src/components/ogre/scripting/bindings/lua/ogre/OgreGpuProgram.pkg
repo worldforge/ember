@@ -239,6 +239,7 @@ namespace Ogre {
 	class GpuProgramPtr
 	{
 	public:
+		virtual ~GpuProgramPtr();
 		Ogre::GpuProgram* get();
 		bool isNull();
 	};

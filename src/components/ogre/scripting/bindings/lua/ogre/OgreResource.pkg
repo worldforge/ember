@@ -135,6 +135,7 @@ namespace Ogre {
     class ResourcePtr
     {
     public:
+		virtual ~ResourcePtr();
 		Ogre::Resource* get();
 		bool isNull();
 

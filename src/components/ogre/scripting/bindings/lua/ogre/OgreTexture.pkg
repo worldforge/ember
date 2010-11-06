@@ -312,6 +312,7 @@ namespace Ogre {
     class TexturePtr
     {
     public:
+		virtual ~TexturePtr();
 		Ogre::Texture* get();
 		bool isNull();
 
