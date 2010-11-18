@@ -58,12 +58,12 @@ function MainIconBar:buildWidget()
 	--start with the close icon
 	foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "close2")
 	helpIconBase = self:addIcon("close2", foreground, "Click here to exit Ember.")
-	helpIconBase:getButton():subscribeEvent("Clicked", "self.close_Clicked")
+	helpIconBase:getButton():subscribeEvent("Clicked", self.close_Clicked, self)
 	
 	--then the help icon
 	foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_standard", "question")
 	helpIconBase = self:addIcon("help", foreground, "Click here to access the help.")
-	helpIconBase:getButton():subscribeEvent("Clicked", "self.help_Clicked")
+	helpIconBase:getButton():subscribeEvent("Clicked", self.help_Clicked, self)
 	
 	--and the the movement icon
 	
