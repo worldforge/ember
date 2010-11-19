@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.6.0, erik.hjortsberg@gmail.com)
+AC_INIT(Ember, 0.6.1, erik.hjortsberg@gmail.com)
 
 AC_CONFIG_SRCDIR(src)
 
