@@ -1,5 +1,5 @@
 INCLUDES = -I$(top_srcdir)/src
-SUBDIRS = src media
+SUBDIRS = src media test
 
 bin_SCRIPTS = ember
 dist_bin_SCRIPTS = ember

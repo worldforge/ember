@@ -7,7 +7,7 @@ AC_CONFIG_SRCDIR(src)
 AC_CANONICAL_SYSTEM
 
 #AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 check-news])
-AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2])
+AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests])
 AM_CONFIG_HEADER(src/config.h)
 
 #AC_LIBTOOL_DLOPEN
@@ -413,33 +413,35 @@ Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions
 
 # Cppunit check
  
-#AC_ARG_ENABLE(cppunit,[  --enable-cppunit     enables cppunit tests [default=yes]],
-#[ 
-#   if test x$enableval = xno; then 
-#		ac_use_cppunit="no"	
-#   else 
-#		ac_use_cppunit="yes"
-#   fi
-#], [ac_use_cppunit="yes"])
+AC_ARG_ENABLE(cppunit,[  --enable-cppunit     enables cppunit tests [default=yes]],
+[ 
+   if test x$enableval = xno; then 
+		ac_use_cppunit="no"	
+   else 
+		ac_use_cppunit="yes"
+   fi
+], [ac_use_cppunit="yes"])
 
-#found_cppunit=no
+found_cppunit=no
 
-#if test "$ac_use_cppunit" = "yes"; then
-#AM_PATH_CPPUNIT(1.8.0, [
-#  AC_MSG_RESULT([
-#*** Found CppUnit
-#*** Setting up make check to run tests...])
-#	CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
-#	LIBS="$LIBS $CPPUNIT_LIBS"
-#], 
-#  AC_MSG_RESULT([
-#
-#*** Unable to find a recent enough CppUnit
-#*** Will not run unit testing!!
-#*** 
-#*** To get CppUnit see http://cppunit.sourceforge.net
-#]))
-#fi
+if test "$ac_use_cppunit" = "yes"; then
+	AM_PATH_CPPUNIT(1.8.0, [
+	  AC_MSG_RESULT([
+		*** Found CppUnit
+		*** Setting up make check to run tests...])
+			CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
+			LIBS="$LIBS $CPPUNIT_LIBS"
+			found_cppunit=yes
+		], 
+	  AC_MSG_RESULT([
+		*** Unable to find a recent enough CppUnit
+		*** Will not run unit testing!!
+		*** 
+		*** To get CppUnit see http://cppunit.sourceforge.net
+		]))
+fi
+
+AM_CONDITIONAL(USE_CPPUNIT, [test x$found_cppunit = xyes])
 
 
 # debugging option
@@ -557,6 +559,7 @@ AC_CONFIG_FILES([Makefile
 		 src/components/cegui/Makefile
 		 media/Makefile
 		 media/packs/Makefile
+		 test/Makefile
 ])
 
 AC_OUTPUT
