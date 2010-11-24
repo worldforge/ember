@@ -295,7 +295,7 @@ bool EmberOgre::setup()
 	}
 
 	///Create the model definition manager
-	mModelDefinitionManager = new Model::ModelDefinitionManager();
+	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv->getHomeDirectory() + "/user-media/modeldefinitions/");
 
 	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
 

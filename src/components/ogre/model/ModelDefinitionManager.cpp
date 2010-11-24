@@ -42,7 +42,7 @@ namespace EmberOgre
 {
 namespace Model {
 
-ModelDefinitionManager::ModelDefinitionManager() : mShowModels(true), mModelFactory(0)
+ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirectory) : mShowModels(true), mModelFactory(0), mExportDirectory(exportDirectory)
 {
 	mLoadOrder = 300.0f;
 	mResourceType = "ModelDefinition";
@@ -107,7 +107,7 @@ void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogr
 void ModelDefinitionManager::exportScript(ModelDefnPtr definition)
 {
 	XMLModelDefinitionSerializer serializer;
-	serializer.exportScript(definition, definition->getName() + ".modeldef");
+	serializer.exportScript(definition, mExportDirectory, definition->getName() + ".modeldef");
 }
 
 Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)

@@ -45,7 +45,7 @@ public :
 	void importModelDefinition(Ogre::DataStreamPtr& stream, ModelDefinition* pmModelDef);
 	void parseScript(ModelDefinitionManager& modelDefManager, Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 	
-	void exportScript(ModelDefinitionPtr modelDef, const std::string& filename);
+	void exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename);
 
 private:
 

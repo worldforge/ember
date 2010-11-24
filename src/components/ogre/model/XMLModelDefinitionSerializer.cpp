@@ -33,8 +33,6 @@
 
 #include "ModelDefinitionManager.h"
 
-#include "services/EmberServices.h"
-#include "services/config/ConfigService.h"
 #include <OgreStringConverter.h>
 #include <limits>
 
@@ -743,7 +741,7 @@ void  XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXm
 
 
 
-void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& filename)
+void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename)
 {
 	if (filename == "") {
 		return;
@@ -753,30 +751,10 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 
 	try
 	{
-		//make sure the directory exists
-		std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media";
 
-		if (!oslink::directory(dir).isExisting()) {
-			S_LOG_INFO("Creating directory " << dir);
-#ifdef __WIN32__
-			mkdir(dir.c_str());
-#else
-			mkdir(dir.c_str(), S_IRWXU);
-#endif
-		}
-
-
-
-
-		dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/user-media/modeldefinitions/";
-
-		if (!oslink::directory(dir).isExisting()) {
-			S_LOG_INFO("Creating directory " << dir);
-#ifdef __WIN32__
-			mkdir(dir.c_str());
-#else
-			mkdir(dir.c_str(), S_IRWXU);
-#endif
+		if (!oslink::directory(directory).isExisting()) {
+			S_LOG_INFO("Creating directory " << directory);
+			oslink::directory::mkdir(directory.c_str());
 		}
 
 		TiXmlElement elem("models");
@@ -872,8 +850,8 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		elem.InsertEndChild(modelElem);
 
 		xmlDoc.InsertEndChild(elem);
-		xmlDoc.SaveFile((dir + filename).c_str());
-		S_LOG_INFO("Saved file " << (dir + filename));
+		xmlDoc.SaveFile((directory + filename).c_str());
+		S_LOG_INFO("Saved file " << (directory + filename));
 	}
 	catch (...)
 	{

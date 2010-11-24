@@ -52,8 +52,10 @@ class ModelDefinitionManager: public Ogre::ResourceManager, public Ember::Single
 public:
 	/**
 	 * @brief Ctor.
+	 *
+	 * @param exportDirectory The path to the export directory, where exported models will be stored.
 	 */
-	ModelDefinitionManager();
+	ModelDefinitionManager(const std::string& exportDirectory);
     
 	/**
 	 * @brief Dtor.
@@ -69,7 +71,7 @@ public:
 	 * @param stream The stream containing the script definition.
 	 * @param groupName
 	 */
-	virtual void parseScript (Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+	virtual void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 	
 	/**
 	 * @brief Exports a modeldefinition to a file.
@@ -146,6 +148,10 @@ protected:
 	 */
 	BackgroundLoaderStore mBackgroundLoaders;
 
+	/**
+	 * @brief The path to the export directory.
+	 */
+	const std::string mExportDirectory;
 };
 
 }
