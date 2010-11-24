@@ -65,7 +65,7 @@ void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr& st
 {
 }
 
-void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
+void XMLModelDefinitionSerializer::parseScript(ModelDefinitionManager& modelDefManager, Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
 {
 	TiXmlDocument xmlDoc;
 	XMLHelper xmlHelper;
@@ -88,7 +88,7 @@ void XMLModelDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 			}
 
 			try {
-				ModelDefinitionPtr modelDef = ModelDefinitionManager::getSingleton().create(name, groupName);
+				ModelDefinitionPtr modelDef = modelDefManager.create(name, groupName);
 				if (!modelDef.isNull()) {
 					readModel(modelDef, smElem);
 					modelDef->setValid(true);

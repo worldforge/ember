@@ -25,18 +25,17 @@
 #ifndef __XMLModelDefinitionSerializer__
 #define __XMLModelDefinitionSerializer__
 
-// Includes
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
 #include "ModelDefinition.h"
 #include "framework/tinyxml/tinyxml.h"
 
-// Namespaces
 namespace EmberOgre { 
 namespace Model {
 
-// Classes
+class ModelDefinitionManager;
+
 class XMLModelDefinitionSerializer
 {
 public :
@@ -44,13 +43,11 @@ public :
 	virtual ~XMLModelDefinitionSerializer();
 
 	void importModelDefinition(Ogre::DataStreamPtr& stream, ModelDefinition* pmModelDef);
-	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+	void parseScript(ModelDefinitionManager& modelDefManager, Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 	
 	void exportScript(ModelDefinitionPtr modelDef, const std::string& filename);
 
 private:
-	//TiXmlDocument* _XMLDoc;
-	//ModelDefinition* _pModelDef;
 
 	void readModel(ModelDefinitionPtr modelDef, TiXmlElement* modelNode);
 	void readSubModels(ModelDefinitionPtr modelDef, TiXmlElement* mSubModelNode);

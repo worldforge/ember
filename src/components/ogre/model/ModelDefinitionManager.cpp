@@ -101,7 +101,7 @@ const Ogre::NameValuePairList* createParams)
 void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName)
 {
     XMLModelDefinitionSerializer serializer;
-	serializer.parseScript(stream, groupName);
+	serializer.parseScript(*this, stream, groupName);
 }
 
 void ModelDefinitionManager::exportScript(ModelDefnPtr definition)
