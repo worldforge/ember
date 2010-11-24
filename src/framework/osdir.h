@@ -47,6 +47,7 @@ namespace oslink
 
 #include <sys/types.h>
 #include <dirent.h>
+#include <sys/stat.h>
 
 namespace oslink
 {
@@ -90,6 +91,31 @@ namespace oslink
 						willfail = true;
 					return prev;
 				}
+
+			/**
+			 * @brief Creates a new directory recursively.
+			 * @param path The full directory path.
+			 */
+			static void mkdir(const char *path)
+			{
+			        char opath[256];
+			        char *p;
+			        size_t len;
+
+			        strncpy(opath, path, sizeof(opath));
+			        len = strlen(opath);
+			        if(opath[len - 1] == '/')
+			                opath[len - 1] = '\0';
+			        for(p = opath; *p; p++)
+			                if(*p == '/') {
+			                        *p = '\0';
+			                        if(access(opath, F_OK))
+			                                ::mkdir(opath, S_IRWXU);
+			                        *p = '/';
+			                }
+			        if(access(opath, F_OK))         /* if path is not terminated with / */
+			                ::mkdir(opath, S_IRWXU);
+			}
 		private:
 			DIR* handle;
 			bool willfail;
@@ -154,7 +180,27 @@ namespace oslink
 						current = entry.cFileName;
 					return current; 
 				}
-		private:
+			static void mkdir(const char *path)
+			{
+			        char opath[256];
+			        char *p;
+			        size_t len;
+
+			        strncpy(opath, path, sizeof(opath));
+			        len = strlen(opath);
+			        if(opath[len - 1] == '/')
+			                opath[len - 1] = '\0';
+			        for(p = opath; *p; p++)
+			                if(*p == '/') {
+			                        *p = '\0';
+			                        if(access(opath, F_OK))
+			                                mkdir(opath);
+			                        *p = '/';
+			                }
+			        if(access(opath, F_OK))         /* if path is not terminated with / */
+			                mkdir(opath);
+			}
+			private:
 			HANDLE	handle;
 			bool	willfail;
 			std::string current;
