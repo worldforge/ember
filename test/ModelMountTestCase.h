@@ -8,5 +8,7 @@ namespace Ember {
 
 	public:
 		void testModelMountScaling();
+
+
 	};
 }
