@@ -25,6 +25,8 @@
 #include "framework/LoggingInstance.h"
 #include "framework/Time.h"
 
+#include <cassert>
+
 namespace Ember
 {
 
