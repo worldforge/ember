@@ -43,7 +43,9 @@ namespace Eris
 class Entity;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Model
@@ -328,6 +330,8 @@ protected:
 inline bool Avatar::isAdmin() const
 {
 	return mIsAdmin;
+}
+
 }
 
 }

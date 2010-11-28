@@ -32,7 +32,8 @@
 
 #include "services/config/ConfigService.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -139,4 +140,5 @@ bool HydraxWater::frameStarted(const Ogre::FrameEvent& event)
 
 }
 
+}
 }

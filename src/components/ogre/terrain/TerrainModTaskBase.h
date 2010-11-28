@@ -31,7 +31,9 @@ class TerrainMod;
 }
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -78,6 +80,8 @@ protected:
 	std::vector<WFMath::AxisBox<2> > mUpdatedAreas;
 
 };
+
+}
 
 }
 

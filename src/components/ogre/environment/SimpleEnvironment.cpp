@@ -30,7 +30,8 @@
 #include "components/ogre/Convert.h"
 #include <OgreSceneManager.h>
 #include <OgreLight.h>
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -146,4 +147,5 @@ void SimpleEnvironment::setWorldPosition(float longitudeDegrees, float latitudeD
 
 }
 
+}
 }

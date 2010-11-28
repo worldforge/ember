@@ -22,7 +22,9 @@
 #include <OgreMovableObject.h>
 #include <OgreSceneManager.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 SceneNodeProvider::SceneNodeProvider(Ogre::SceneNode& parentNode, Ogre::MovableObject* object) :
@@ -97,4 +99,5 @@ void SceneNodeProvider::setPositionAndOrientation(const Ogre::Vector3& position,
 	mNode->setOrientation(orientation);
 }
 
+}
 }

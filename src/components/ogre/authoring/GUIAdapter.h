@@ -28,14 +28,16 @@
 #include <Atlas/Message/Element.h>
 #include <CEGUIWindow.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
 /**
  * @brief GUI adapters wrapper.
  *
- * This class is used to wrap adapters that are instantiated with EmberOgre::Gui::Adapters::Atlas::AdapterFactory.
+ * This class is used to wrap adapters that are instantiated with Ember::OgreView::Gui::Adapters::Atlas::AdapterFactory.
  * It allows to &ldquo;create&rdquo; adapter without window and later attach it to window.
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
@@ -149,7 +151,7 @@ protected:
 	/**
 	 * Adapter container.
 	 */
-	::EmberOgre::Gui::Adapters::Atlas::AdapterBase* mAdapter;
+	::Ember::OgreView::Gui::Adapters::Atlas::AdapterBase* mAdapter;
 
 	/**
 	 * Adapter value.
@@ -180,6 +182,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif

@@ -41,13 +41,15 @@
 #include <OgreResourceGroupManager.h>
 #include <fstream>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 OgreResourceLoader::OgreResourceLoader() :
 		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."), mLoadRecursive(false)
 {
-	mFileSystemArchiveFactory = new ::EmberOgre::FileSystemArchiveFactory();
+	mFileSystemArchiveFactory = new ::Ember::OgreView::FileSystemArchiveFactory();
 	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory);
 }
 
@@ -322,4 +324,5 @@ const OgreResourceLoader::ResourceLocationsMap& OgreResourceLoader::getResourceL
 }
 
 
+}
 }

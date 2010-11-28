@@ -22,7 +22,9 @@
 #include <wfmath/point.h>
 #include "components/ogre/Types.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -69,6 +71,8 @@ class TerrainDefPoint
 };
 
 }
+}
+
 }
 
 #endif /* TERRAINDEFPOINT_H_ */

@@ -44,7 +44,9 @@
 #endif
 #endif
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 long long int OgreInfo::sResourceCounter(1);
@@ -165,4 +167,5 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 	outputStream << std::flush;
 }
 
+}
 }

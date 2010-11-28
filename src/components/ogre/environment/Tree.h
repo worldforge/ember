@@ -26,7 +26,8 @@
 /**
 @author Erik Hjortsberg
 */
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -40,6 +41,8 @@ public:
 	void makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type);
 
 };
+
+}
 
 }
 

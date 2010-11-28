@@ -29,7 +29,9 @@ class Vector3;
 class Quaternion;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -82,6 +84,8 @@ public:
 	 */
 	virtual void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation) = 0;
 };
+}
+
 }
 
 #endif /* INODEPROVIDER_H_ */

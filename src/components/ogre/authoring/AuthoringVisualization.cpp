@@ -32,7 +32,9 @@
 
 #include <boost/smart_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -116,5 +118,6 @@ void AuthoringVisualization::removeGraphicalRepresentation()
 	mSceneNode = 0;
 }
 
+}
 }
 }

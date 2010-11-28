@@ -23,7 +23,9 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Camera
 {
@@ -110,5 +112,6 @@ Ogre::Degree FirstPersonCameraMount::yaw(float relativeMovement)
 	return degrees;
 }
 
+}
 }
 }

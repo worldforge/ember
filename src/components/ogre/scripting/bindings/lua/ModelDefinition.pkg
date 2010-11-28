@@ -1,11 +1,12 @@
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
-typedef std::vector<EmberOgre::Model::SubModelDefinition*> SubModelDefinitionsStore;
-typedef std::vector<EmberOgre::Model::PartDefinition*> PartDefinitionsStore;
-typedef std::vector<EmberOgre::Model::SubEntityDefinition*> SubEntityDefinitionsStore;
-typedef std::vector<EmberOgre::Model::AttachPointDefinition> AttachPointDefinitionStore;
-typedef std::map<std::string, EmberOgre::Model::ViewDefinition*> ViewDefinitionStore;
+typedef std::vector<Ember::OgreView::Model::SubModelDefinition*> SubModelDefinitionsStore;
+typedef std::vector<Ember::OgreView::Model::PartDefinition*> PartDefinitionsStore;
+typedef std::vector<Ember::OgreView::Model::SubEntityDefinition*> SubEntityDefinitionsStore;
+typedef std::vector<Ember::OgreView::Model::AttachPointDefinition> AttachPointDefinitionStore;
+typedef std::map<std::string, Ember::OgreView::Model::ViewDefinition*> ViewDefinitionStore;
 
 
 /**
@@ -45,7 +46,7 @@ class SubEntityDefinition
 
 	 std::string& getMaterialName() ;
 	void setMaterialName( std::string& materialName);
-	EmberOgre::Model::PartDefinition& getPartDefinition();
+	Ember::OgreView::Model::PartDefinition& getPartDefinition();
 
 };	
 
@@ -58,11 +59,11 @@ class PartDefinition
 	void setShow(bool show);
 	bool getShow() ;
 	
-	EmberOgre::Model::SubEntityDefinition* createSubEntityDefinition( std::string& subEntityName);
-	EmberOgre::Model::SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
-	std::vector<EmberOgre::Model::SubEntityDefinition*> getSubEntityDefinitions();
-	void removeSubEntityDefinition(EmberOgre::Model::SubEntityDefinition* def);
-	EmberOgre::Model::SubModelDefinition& getSubModelDefinition();
+	Ember::OgreView::Model::SubEntityDefinition* createSubEntityDefinition( std::string& subEntityName);
+	Ember::OgreView::Model::SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
+	std::vector<Ember::OgreView::Model::SubEntityDefinition*> getSubEntityDefinitions();
+	void removeSubEntityDefinition(Ember::OgreView::Model::SubEntityDefinition* def);
+	Ember::OgreView::Model::SubModelDefinition& getSubModelDefinition();
 	
 };
 
@@ -72,10 +73,10 @@ class SubModelDefinition
 	
 	 std::string& getMeshName() ;
 	
-	EmberOgre::Model::PartDefinition* createPartDefinition( std::string& partname);
-	std::vector<EmberOgre::Model::PartDefinition*> getPartDefinitions();
-	void removePartDefinition(EmberOgre::Model::PartDefinition* def);
-	EmberOgre::Model::ModelDefinition& getModelDefinition();
+	Ember::OgreView::Model::PartDefinition* createPartDefinition( std::string& partname);
+	std::vector<Ember::OgreView::Model::PartDefinition*> getPartDefinitions();
+	void removePartDefinition(Ember::OgreView::Model::PartDefinition* def);
+	Ember::OgreView::Model::ModelDefinition& getModelDefinition();
 };
 
 
@@ -121,8 +122,8 @@ class ModelDefinition : public Ogre::Resource {
 	 Defaults to "ALL"
 	 * @return 
 	 */
-	inline  EmberOgre::Model::ModelDefinition::UseScaleOf getUseScaleOf();
-	inline void setUseScaleOf( EmberOgre::Model::ModelDefinition::UseScaleOf useScale);
+	inline  Ember::OgreView::Model::ModelDefinition::UseScaleOf getUseScaleOf();
+	inline void setUseScaleOf( Ember::OgreView::Model::ModelDefinition::UseScaleOf useScale);
 	
 	/**
 	 *    Gets an optional translation vector which should be applied to derived Models.
@@ -155,15 +156,15 @@ class ModelDefinition : public Ogre::Resource {
 	const Ogre::Quaternion& getRotation() const;
 	void setRotation(const Ogre::Quaternion rotation);
 	
-	EmberOgre::Model::SubModelDefinition* createSubModelDefinition(std::string& meshname);
-	std::vector<EmberOgre::Model::SubModelDefinition*>& getSubModelDefinitions();
-	void removeSubModelDefinition(EmberOgre::Model::SubModelDefinition* def);
+	Ember::OgreView::Model::SubModelDefinition* createSubModelDefinition(std::string& meshname);
+	std::vector<Ember::OgreView::Model::SubModelDefinition*>& getSubModelDefinitions();
+	void removeSubModelDefinition(Ember::OgreView::Model::SubModelDefinition* def);
 	
-	EmberOgre::Model::ActionDefinition* createActionDefinition(std::string& actionname);
-	std::vector<EmberOgre::Model::ActionDefinition*>& getActionDefinitions();
-	void removeActionDefinition(EmberOgre::Model::ActionDefinition* def);
+	Ember::OgreView::Model::ActionDefinition* createActionDefinition(std::string& actionname);
+	std::vector<Ember::OgreView::Model::ActionDefinition*>& getActionDefinitions();
+	void removeActionDefinition(Ember::OgreView::Model::ActionDefinition* def);
 	
-	const std::vector<EmberOgre::Model::AttachPointDefinition>& getAttachPointsDefinitions();
+	const std::vector<Ember::OgreView::Model::AttachPointDefinition>& getAttachPointsDefinitions();
 
 	/**
 	Creates and returns a new ViewDefinition with the supplied name.
@@ -195,11 +196,11 @@ class ModelDefinition : public Ogre::Resource {
 class ModelDefnPtr
 {
 	virtual ~ModelDefnPtr();
-	EmberOgre::Model::ModelDefinition* get();
+	Ember::OgreView::Model::ModelDefinition* get();
 };
 
-typedef EmberOgre::Model::ModelDefnPtr ModelDefinitionPtr;
+typedef Ember::OgreView::Model::ModelDefnPtr ModelDefinitionPtr;
 
-};
 }
-#endif
+}
+}

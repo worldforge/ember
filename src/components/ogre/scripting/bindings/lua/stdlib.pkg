@@ -1,7 +1,7 @@
 namespace std {
 class vector {
 
-        TEMPLATE_BIND(T, std::string, EmberOgre::Model::SubModelDefinition*, EmberOgre::Model::PartDefinition*, EmberOgre::Model::SubEntityDefinition*, Eris::Task*, EmberOgre::EntityPickResult)
+        TEMPLATE_BIND(T, std::string, Ember::OgreView::Model::SubModelDefinition*, Ember::OgreView::Model::PartDefinition*, Ember::OgreView::Model::SubEntityDefinition*, Eris::Task*, Ember::OgreView::EntityPickResult)
 
         void clear();
         int size() const;
@@ -31,7 +31,7 @@ class set {
 
 // class map {
 // 
-//         TEMPLATE_BIND(T T1, std::string EmberOgre::Model::SubModelPart*)
+//         TEMPLATE_BIND(T T1, std::string Ember::OgreView::Model::SubModelPart*)
 // 
 //         void clear();
 //         int size() const;
@@ -46,7 +46,7 @@ class set {
 
 // class map {
 // 
-//         TEMPLATE_BIND(K V, std::string EmberOgre::Model::SubModelPart*)
+//         TEMPLATE_BIND(K V, std::string Ember::OgreView::Model::SubModelPart*)
 // 
 //         V get_element(K key);
 //         void set_element(K key, V value);

@@ -21,7 +21,9 @@
 
 #include <sigc++/trackable.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 
@@ -48,6 +50,7 @@ private:
 	void moveManager_CancelledMoving();
 };
 
+}
 }
 }
 #endif /* AUTHORINGMOVERCONNECTOR_H_ */

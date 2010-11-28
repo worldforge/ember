@@ -27,7 +27,8 @@ class Surface;
 class Segment;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 class TerrainLayerDefinition;
@@ -65,6 +66,8 @@ inline int TerrainShader::getTerrainIndex() const
 
 
 }
+}
+
 }
 
 #endif // TERRAINSHADER_H

@@ -29,7 +29,9 @@ class View;
 class Entity;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 class World;
@@ -157,6 +159,8 @@ protected:
 	 */
 	void createVisualizationsForExistingEntities(Eris::View& view);
 };
+
+}
 
 }
 

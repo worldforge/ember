@@ -19,7 +19,9 @@
 #include "Segment.h"
 #include <Mercator/Segment.h>
 #include <sstream>
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -57,4 +59,5 @@ std::string Segment::getKey() const
 }
 }
 
+}
 }

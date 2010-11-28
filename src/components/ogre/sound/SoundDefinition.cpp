@@ -21,8 +21,9 @@
 #include "SoundDefinition.h"
 #include <string>
 
-using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 
@@ -48,5 +49,4 @@ float SoundDefinition::getVolume() const
 	return mVolume;
 }
 }
-
-
+}

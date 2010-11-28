@@ -38,8 +38,10 @@
 
 using namespace Forests;
 using namespace Ogre;
-using namespace EmberOgre::Terrain;
-namespace EmberOgre
+using namespace Ember::OgreView::Terrain;
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -139,4 +141,5 @@ Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 
 }
 
+}
 }

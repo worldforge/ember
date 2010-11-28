@@ -22,10 +22,12 @@
 
 #include "QuickHelp.h"
 
-template<> EmberOgre::Gui::QuickHelp* Ember::Singleton<EmberOgre::Gui::QuickHelp>::ms_Singleton = 0;
+template<> Ember::OgreView::Gui::QuickHelp* Ember::Singleton<Ember::OgreView::Gui::QuickHelp>::ms_Singleton = 0;
 
 using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -101,5 +103,6 @@ void QuickHelp::showWidget() const
 	EventToggleWidgetVisibility.emit();
 }
 
+}
 }
 }

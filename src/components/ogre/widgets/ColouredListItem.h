@@ -26,7 +26,8 @@
 #include <elements/CEGUIListboxTextItem.h> 
 #include <elements/CEGUITreeItem.h> 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -83,6 +84,8 @@ private:
 	void setColours();
 };
 
+
+}
 
 }
 

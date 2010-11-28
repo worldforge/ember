@@ -122,7 +122,7 @@ function Admin:buildWidget()
 
 	if MainIconBar.addExternalIcon ~= nil then
 		--we'll use the "spell" icon from the "iconset_mason" for now until we get a better icon
-		local foreground = EmberOgre.Gui.IconBase:loadImageFromImageset("iconset_mason", "spell")
+		local foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_mason", "spell")
 		self.adminIcon = MainIconBar.addExternalIcon("admin", foreground, "Click here to access the admin menu.")
 		self.adminIcon:getButton():subscribeEvent("MouseClick", self.admin_MouseClick, self)
 	

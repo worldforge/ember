@@ -37,7 +37,9 @@
 #include <OgreRoot.h>
 #include <OgreTextureManager.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain
 {
@@ -176,4 +178,5 @@ void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry)
 
 }
 
+}
 }

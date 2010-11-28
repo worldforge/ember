@@ -72,7 +72,9 @@
 
 
 using namespace CEGUI;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -624,7 +626,5 @@ bool NewCharacter::isValid() const
 }
 
 }
-;
 }
-;
-
+}

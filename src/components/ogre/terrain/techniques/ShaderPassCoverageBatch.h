@@ -24,7 +24,9 @@
 #include <vector>
 #include <OgreTexture.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -76,6 +78,8 @@ protected:
 	void addCoverage(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel);
 
 };
+
+}
 
 }
 

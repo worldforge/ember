@@ -27,7 +27,8 @@
 #include "AnimationSet.h"
 #include <OgreAnimationState.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 
@@ -153,5 +154,6 @@ void Animation::setEnabled(bool state)
 // 	return true;
 // }
 
+}
 }
 }

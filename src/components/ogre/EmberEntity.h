@@ -45,7 +45,9 @@ class EntityMapping;
 }
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class Scene;
@@ -168,7 +170,7 @@ public:
 	 * @brief Gets the location (i.e. parent entity) as cast to an EmberEntity.
 	 * This behaves just like getLocation, but will always return an instance of EmberEntity. We can do this since we're guaranteed to only ever deal with instances of EmberEntity in the world, thanks to the EmberEntityFactory class.
 	 * @see Eris::Entity::getLocation
-	 * @see EmberOgre::EmberEntityFactory
+	 * @see Ember::OgreView::EmberEntityFactory
 	 * @return The location of this entity, i.e. the parent entity. If there's no parent entity available, null will be returned (i.e. if the entity is in limbo, or if it's the topmost entity).
 	 */
 	EmberEntity* getEmberLocation() const;
@@ -409,7 +411,7 @@ protected:
 	/**
 	 * @brief Adds a terrain area to the entity.
 	 * Areas are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain area.
-	 * @see EmberOgre::WorldEmberEntity::addArea()
+	 * @see Ember::OgreView::WorldEmberEntity::addArea()
 	 * @param area The area which has been added.
 	 */
 	virtual void addArea(Terrain::TerrainArea& area);
@@ -417,7 +419,7 @@ protected:
 	/**
 	 * @brief Adds a terrain mod to the entity.
 	 * Mods are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain mod.
-	 * @see EmberOgre::WorldEmberEntity::addTerrainMod()
+	 * @see Ember::OgreView::WorldEmberEntity::addTerrainMod()
 	 * @param mod The mod which has been added.
 	 */
 	virtual void addTerrainMod(Terrain::TerrainMod* mod);
@@ -481,6 +483,8 @@ inline bool EmberEntity::isInitialized() const
 inline EmberEntity::PositioningMode EmberEntity::getPositioningMode() const
 {
 	return mPositioningMode;
+}
+
 }
 
 }

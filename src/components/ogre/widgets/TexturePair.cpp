@@ -22,7 +22,9 @@
 
 #include "TexturePair.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -60,4 +62,5 @@ bool TexturePair::hasData()
 
 }
 
+}
 }

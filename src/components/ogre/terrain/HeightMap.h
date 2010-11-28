@@ -28,7 +28,9 @@ namespace WFMath
 	template<int> class Vector;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -133,6 +135,8 @@ private:
 	 */
 	boost::shared_ptr<IHeightMapSegment> getSegment(int xIndex, int yIndex) const;
 };
+
+}
 
 }
 

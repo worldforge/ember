@@ -28,7 +28,8 @@
 #include "OgrePagingLandScapeSceneManager.h"
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberPagingSceneManager;
 
 namespace Terrain {
@@ -58,7 +59,7 @@ public:
 	typedef std::pair<unsigned int, unsigned int> OgreIndex;
 	virtual IPageData* getPageData(const OgreIndex& index) = 0;
 	virtual int getPageIndexSize() const = 0;
-	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, ::EmberOgre::Terrain::ITerrainPageBridge* bridge) = 0;
+	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, ::Ember::OgreView::Terrain::ITerrainPageBridge* bridge) = 0;
 	virtual void removeBridge(const OgreIndex& ogreIndexPosition) = 0;
 };
 
@@ -106,7 +107,7 @@ public:
 protected:
 
 	/* 
-	 * @see EmberOgre::EmberTerrainSceneManager::getPageOffset()
+	 * @see Ember::OgreView::EmberTerrainSceneManager::getPageOffset()
 	 */
 	Ogre::ushort mPageOffset;
 	
@@ -126,6 +127,8 @@ protected:
 
 private:
 };
+
+}
 
 }
 

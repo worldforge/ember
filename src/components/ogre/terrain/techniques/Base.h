@@ -23,7 +23,9 @@
 #include "components/ogre/terrain/TerrainPageSurfaceCompiler.h"
 #include <boost/shared_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -49,6 +51,8 @@ protected:
 	const TerrainPage& mPage;
 
 };
+
+}
 
 }
 

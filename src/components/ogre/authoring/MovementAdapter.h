@@ -24,10 +24,12 @@
 #define EMBEROGREMovementADAPTER_H
 
 #include "../EmberOgrePrerequisites.h"
-#include "services//input/IInputAdapter.h"
+#include "services/input/IInputAdapter.h"
 #include <OgreFrameListener.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Camera {
 class MainCamera;
@@ -213,6 +215,8 @@ protected:
 	MovementAdapterWorkerBase* mWorker;
 
 };
+
+}
 
 }
 

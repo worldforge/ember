@@ -16,7 +16,7 @@ windowManager = CEGUI.WindowManager:getSingleton()
 root = guiSystem:getGUISheet()
 
 --This is the main ember object. You can usually use any of it's many get*() methods to access other parts of the system.
-emberOgre = EmberOgre.EmberOgre:getSingleton()
+emberOgre = Ember.OgreView.EmberOgre:getSingleton()
 
 --Tries to find the selected entity, and if found performs a function on it. If it's not found, and optional function can be performed with the entity id as argument.
 --This allows you to safely perform actions on an entity which might have disappeared from the scene.
@@ -39,7 +39,7 @@ end
 
 --The GUIManager handles higher level gui actions. It doesn't know anything about the lua or CEGUI world, but has some useful events, for example EventFrameStarted which is emitted every frame.
 --Also, when you create a new widget you have to use the createWidget() method.
-guiManager = EmberOgre.GUIManager:getSingleton()
+guiManager = Ember.OgreView.GUIManager:getSingleton()
 
 --All of Ember's services can be accessed from here.
 emberServices = Ember.EmberServices:getSingleton()

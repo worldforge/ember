@@ -23,7 +23,9 @@
 #include <OgreNode.h>
 #include <OgreTagPoint.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -129,5 +131,6 @@ Ogre::Quaternion ModelBoneProvider::getDerivedOrientation() const
 	return mOrientation;
 }
 
+}
 }
 }

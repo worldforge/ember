@@ -23,7 +23,8 @@
 #ifndef WIDGETDEFINITIONS_H
 #define WIDGETDEFINITIONS_H
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 class Widget;
@@ -45,6 +46,8 @@ public:
 
 };
 }
+}
+
 }
 
 #endif

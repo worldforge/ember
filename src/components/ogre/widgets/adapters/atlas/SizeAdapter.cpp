@@ -28,7 +28,9 @@
 #include <wfmath/axisbox.h>
 #include <wfmath/atlasconv.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -198,4 +200,5 @@ bool SizeAdapter::_hasChanges()
 
 }
 
+}
 }

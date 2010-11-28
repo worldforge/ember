@@ -38,7 +38,8 @@ class Connection;
 class TypeInfo;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 class Model;
@@ -387,7 +388,7 @@ protected:
 	ModelPreviewWorker& mModelPreviewWorker;
 };
 
-class ModelPreviewWorkerMovementBridge : public ::EmberOgre::Authoring::EntityMoverBase
+class ModelPreviewWorkerMovementBridge : public ::Ember::OgreView::Authoring::EntityMoverBase
 {
 public:
 
@@ -414,6 +415,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif

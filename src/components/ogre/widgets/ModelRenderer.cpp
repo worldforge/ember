@@ -41,7 +41,9 @@
 // #include "../GUIManager.h"
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -154,6 +156,7 @@ void ModelRenderer::model_Reloaded()
 Ogre::MovableObject* ModelRenderer::getMovableObject()
 {
 	return mModel;
+}
 }
 }
 }

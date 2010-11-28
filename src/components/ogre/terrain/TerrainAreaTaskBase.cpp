@@ -17,7 +17,9 @@
  */
 
 #include "TerrainAreaTaskBase.h"
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -30,6 +32,7 @@ TerrainAreaTaskBase::TerrainAreaTaskBase(Mercator::Terrain& terrain, Mercator::A
 
 TerrainAreaTaskBase::~TerrainAreaTaskBase()
 {
+}
 }
 }
 }

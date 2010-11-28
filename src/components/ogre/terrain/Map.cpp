@@ -31,7 +31,8 @@
 #include <OgreViewport.h>
 #include <OgreHardwarePixelBuffer.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -391,4 +392,5 @@ RenderingInstance::~RenderingInstance()
 
 }
 
+}
 }

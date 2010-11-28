@@ -27,7 +27,8 @@
 #include <memory>
 #include "../ListBinder.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 
@@ -144,6 +145,8 @@ protected:
 	virtual void fillElementFromGui();
 	virtual bool _hasChanges();
 };
+
+}
 
 }
 

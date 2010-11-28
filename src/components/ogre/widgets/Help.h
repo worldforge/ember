@@ -26,7 +26,8 @@
 #include "Widget.h"
 #include "framework/ConsoleObject.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class GUIManager;
 class EmberEntity;
 namespace Gui {
@@ -51,13 +52,14 @@ protected:
 	void show();
 
 	/**
-	 *    hooked to EmberOgre::EventCreatedAvatarEntity, show a help blurb about the movement mode
+	 *    hooked to Ember::OgreView::EventCreatedAvatarEntity, show a help blurb about the movement mode
 	 * @param entity
 	 */
 	void EmberOgre_CreatedAvatarEntity(EmberEntity& entity);
 
 };
-};
-};
+}
+}
+}
 
 #endif

@@ -20,7 +20,9 @@
 
 #include "Buffer.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -70,4 +72,5 @@ unsigned int Image::getResolution() const
 
 }
 
+}
 }

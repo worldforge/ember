@@ -11,7 +11,9 @@
 #include "components/ogre/terrain/Types.h"
 #include <map>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -42,6 +44,8 @@ protected:
 
 	PopulatorStore mPopulators;
 };
+
+}
 
 }
 

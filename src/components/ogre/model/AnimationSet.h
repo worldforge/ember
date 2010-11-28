@@ -28,7 +28,8 @@
 
 // #include "ModelDefinition.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 struct AnimationPart
@@ -125,6 +126,8 @@ inline int Animation::getIterations() const
 }
 
 }
+}
+
 }
 
 #endif

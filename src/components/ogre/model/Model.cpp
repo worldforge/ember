@@ -46,7 +46,9 @@
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -1093,5 +1095,6 @@ void ModelFactory::destroyInstance(Ogre::MovableObject* obj)
 	delete obj;
 }
 
+}
 }
 }

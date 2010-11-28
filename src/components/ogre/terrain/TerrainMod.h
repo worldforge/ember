@@ -41,7 +41,9 @@ namespace Eris
 	class TerrainMod;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -123,6 +125,7 @@ protected:
 };
 
 }
-};
+}
+}
 
 #endif

@@ -23,7 +23,8 @@
 
 #include "../OgreIncludes.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 class TerrainManager;
@@ -175,5 +176,6 @@ public:
 	virtual std::string getDebugInfo() = 0;
 
 };
+}
 }
 }

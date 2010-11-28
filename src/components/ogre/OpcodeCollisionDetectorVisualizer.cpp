@@ -32,9 +32,10 @@
 #include "OpcodeCollisionDetector.h"
 #include <OgreRoot.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
-template<> EmberOgre::OpcodeCollisionDetectorVisualizer* Ember::Singleton<EmberOgre::OpcodeCollisionDetectorVisualizer>::ms_Singleton = 0;
+template<> Ember::OgreView::OpcodeCollisionDetectorVisualizer* Ember::Singleton<Ember::OgreView::OpcodeCollisionDetectorVisualizer>::ms_Singleton = 0;
 
 OpcodeCollisionDetectorVisualizer::OpcodeCollisionDetectorVisualizer()
 {
@@ -109,4 +110,5 @@ void OpcodeCollisionDetectorVisualizerInstance::visualize(OgreOpcode::Details::O
 }
 
 
+}
 }

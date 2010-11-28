@@ -30,7 +30,9 @@
 #include <OgreMovableObject.h>
 #include <OgreSceneQuery.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -72,4 +74,5 @@ void PolygonPointPickListener::endPickingContext(const MousePickerArgs& mousePic
 
 }
 
+}
 }

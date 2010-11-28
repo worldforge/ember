@@ -26,7 +26,8 @@ namespace WFMath
 	template<int> class Vector;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 /**
@@ -59,6 +60,8 @@ public:
 	virtual void getHeightAndNormal(float x, float y, float& height, WFMath::Vector<3>& normal) const = 0;
 };
 }
+}
+
 }
 
 #endif /* EMBEROGRETERRAINIHEIGHTMAPSEGMENT_H_ */

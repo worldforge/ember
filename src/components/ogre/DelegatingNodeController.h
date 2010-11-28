@@ -21,7 +21,9 @@
 
 #include "components/ogre/NodeController.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class IEntityControlDelegate;
@@ -60,6 +62,8 @@ private:
 	virtual void updatePosition();
 
 };
+
+}
 
 }
 

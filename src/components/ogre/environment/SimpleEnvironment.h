@@ -33,7 +33,8 @@ class RenderWindow;
 class Camera;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -119,6 +120,8 @@ protected:
 	IWater* mWater;
 
 };
+
+}
 
 }
 

@@ -29,7 +29,8 @@
 #include "IWorldPickListener.h"
 #include "EmberOgrePrerequisites.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 /**
@@ -64,6 +65,8 @@ public:
 protected:
 
 };
+
+}
 
 }
 

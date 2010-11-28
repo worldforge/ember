@@ -1,25 +1,26 @@
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class GUIManager 
 {
 	//from Singleton
 	static GUIManager& getSingleton( void );
 
-	sigc::signal<void, const std::string&, EmberOgre::EmberEntity*> AppendIGChatLine;
-	sigc::signal<void, const std::string&, EmberOgre::EmberEntity*> AppendOOGChatLine;
+	sigc::signal<void, const std::string&, Ember::OgreView::EmberEntity*> AppendIGChatLine;
+	sigc::signal<void, const std::string&, Ember::OgreView::EmberEntity*> AppendOOGChatLine;
 	sigc::signal<void, const std::string&> AppendAvatarImaginary;
 	
-	sigc::signal<void, const std::string&, EmberOgre::EmberEntity*> EventEntityAction;
+	sigc::signal<void, const std::string&, Ember::OgreView::EmberEntity*> EventEntityAction;
 	
 	sigc::signal<void, float> EventFrameStarted;
 	
 
 	
-	void removeWidget(EmberOgre::Gui::Widget* widget);
-	void addWidget(EmberOgre::Gui::Widget* widget);
+	void removeWidget(Ember::OgreView::Gui::Widget* widget);
+	void addWidget(Ember::OgreView::Gui::Widget* widget);
 
-	void EmitEntityAction(const std::string& action, EmberOgre::EmberEntity* entity);
+	void EmitEntityAction(const std::string& action, Ember::OgreView::EmberEntity* entity);
 
 	CEGUI::Window* getMainSheet();
 
@@ -51,7 +52,7 @@ class GUIManager
 	 *    Creates a new Widget
 	 * @return 
 	 */
-	EmberOgre::Gui::Widget* createWidget();
+	Ember::OgreView::Gui::Widget* createWidget();
 	
 	/**
 	 *    creates a widget 
@@ -59,13 +60,13 @@ class GUIManager
 	 * @param name the type of widget to create
 	 * @return 
 	 */
-	EmberOgre::Gui::Widget* createWidget(const std::string& name);
+	Ember::OgreView::Gui::Widget* createWidget(const std::string& name);
 
 	/**
 	* Destroys a widget previously created by createWidget
 	* @param widget The widget to destroy.
 	*/
-	void destroyWidget(EmberOgre::Gui::Widget* widget);
+	void destroyWidget(Ember::OgreView::Gui::Widget* widget);
 	
 	/**
 	 *    Gets the name of the default scheme used (such as "EmberLook" or "WindowsLook")
@@ -73,23 +74,24 @@ class GUIManager
 	 */
 	const std::string& getDefaultScheme() const;
 
-	//EmberOgre::EntityWorldPickListener* getEntityPickListener() const;
+	//Ember::OgreView::EntityWorldPickListener* getEntityPickListener() const;
 
 	/**
 	 *    Accessor for the IconManager which handles low level icons.
 	 * @return The main IconManager
 	 */
-	EmberOgre::Gui::Icons::IconManager* getIconManager();
+	Ember::OgreView::Gui::Icons::IconManager* getIconManager();
 	
 	/**
 	 *    Accessor for the EntityIconManager, which handles entity icons and slots.
 	 * @return The main EntityIconManager
 	 */
-	EmberOgre::Gui::EntityIconManager* getEntityIconManager();
+	Ember::OgreView::Gui::EntityIconManager* getEntityIconManager();
 
-	EmberOgre::Gui::ActionBarIconManager* getActionBarIconManager();
+	Ember::OgreView::Gui::ActionBarIconManager* getActionBarIconManager();
 	
-	EmberOgre::Gui::EntityTooltip* getEntityTooltip() const;
+	Ember::OgreView::Gui::EntityTooltip* getEntityTooltip() const;
 	
 };
+}
 }

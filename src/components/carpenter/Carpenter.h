@@ -176,7 +176,7 @@ public:
 protected:
 	BuildingBlockSpecDefinition mDefinition;
 	BlockSpec* mBlockSpec;
-	//EmberOgre::Model* mModel;
+	//Ember::OgreView::Model* mModel;
 };
 
 	inline const BuildingBlockSpecDefinition& BuildingBlockSpec::getDefinition() const { return mDefinition; }

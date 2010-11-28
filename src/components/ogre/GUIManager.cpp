@@ -73,13 +73,15 @@
 #include <direct.h>
 #endif
 
-template<> EmberOgre::GUIManager* Ember::Singleton<EmberOgre::GUIManager>::ms_Singleton = 0;
+template<> Ember::OgreView::GUIManager* Ember::Singleton<Ember::OgreView::GUIManager>::ms_Singleton = 0;
 
 using namespace CEGUI;
-using namespace EmberOgre::Gui;
+using namespace Ember::OgreView::Gui;
 using namespace Ember;
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 unsigned long GUIManager::msAutoGenId(0);
@@ -675,5 +677,6 @@ Gui::ActionBarIconManager* GUIManager::getActionBarIconManager()
 	return mActionBarIconManager;
 }
 
+}
 }
 

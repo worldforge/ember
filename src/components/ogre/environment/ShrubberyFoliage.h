@@ -30,7 +30,8 @@ class PagedGeometry;
 }
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain
 {
@@ -61,6 +62,8 @@ protected:
 	FoliageLoader* mLoader;
 
 };
+}
+
 }
 
 }

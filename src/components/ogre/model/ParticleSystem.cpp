@@ -30,7 +30,8 @@
 #include <OgreParticleSystem.h>
 #include <OgreSceneManager.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 Ogre::ParticleSystem* ParticleSystem::getOgreParticleSystem()
@@ -85,5 +86,6 @@ const Ogre::Vector3& ParticleSystem::getDirection() const
 
 
 
+}
 }
 }

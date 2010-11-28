@@ -27,7 +27,8 @@
 #include <vector>
 #include <OgreTexture.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -63,6 +64,8 @@ protected:
 	IconImageStoreEntry* getImageStoreEntry();
 
 };
+
+}
 
 }
 

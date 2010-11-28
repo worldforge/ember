@@ -26,7 +26,8 @@
 
 #include "TerrainLayerDefinition.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -163,6 +164,7 @@ void TerrainFoliageDefinition::setRenderTechnique(const std::string& theValue)
 	mRenderTechnique = theValue;
 }
 
+}
 }
 }
 

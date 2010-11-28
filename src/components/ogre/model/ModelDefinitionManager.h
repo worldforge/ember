@@ -32,7 +32,8 @@
 #include <OgreResourceManager.h>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 class ModelFactory;
@@ -155,6 +156,7 @@ protected:
 };
 
 }
-};
+}
+}
 
 #endif

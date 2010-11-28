@@ -41,7 +41,8 @@ namespace WFMath
 	template<int> class AxisBox;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 	namespace Terrain {
 
@@ -121,6 +122,8 @@ namespace EmberOgre {
 
 		typedef std::map<const Mercator::Shader*, const TerrainShader*> ShaderStore;
 	}
+}
+
 }
 
 #endif /* EMBEROGRETERRAINTYPES_H_ */

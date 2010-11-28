@@ -31,7 +31,9 @@
 #include <OgreSceneManager.h>
 
 using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain
 {
@@ -98,5 +100,6 @@ void TerrainEditor::basepointsRecieved(std::map<int, std::map<int, Mercator::Bas
 	EventOverlayCreated(*mOverlay);
 }
 
+}
 }
 }

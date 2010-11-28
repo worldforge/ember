@@ -24,7 +24,9 @@
 #include <Eris/TerrainMod.h>
 #include <wfmath/axisbox.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -60,4 +62,5 @@ void TerrainModAddTask::executeTaskInMainThread()
 }
 }
 
+}
 }

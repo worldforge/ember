@@ -34,7 +34,8 @@ namespace Ember {
 class ConsoleBackend;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -67,6 +68,8 @@ protected:
 	bool mReturnKeyDown;
 
 };
+
+}
 
 }
 

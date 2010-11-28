@@ -30,7 +30,8 @@
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -121,4 +122,5 @@ void XMLLayerDefinitionSerializer::parseScript(Ogre::DataStreamPtr& stream, cons
 }
 }
 
+}
 }

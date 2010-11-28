@@ -32,7 +32,9 @@ namespace Mercator {
 namespace WFMath {
 	template <int> class AxisBox;
 }
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -70,6 +72,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif /* EMBEROGRETERRAINTERRAINAREATASKBASE_H_ */

@@ -21,7 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 /**
@@ -30,7 +31,7 @@ Renders a single Model to a CEGUI texture. Useful for stuff like inventory or pr
 
 @author Erik Hjortsberg
 */
-class ModelRenderer : public EmberOgre::Gui::MovableObjectRenderer
+class ModelRenderer : public Ember::OgreView::Gui::MovableObjectRenderer
 {
 public:
 
@@ -66,5 +67,6 @@ public:
 	 */
 	void repositionSceneNode();
 };
+}
 }
 }

@@ -31,7 +31,8 @@ using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -151,4 +152,5 @@ bool MapAdapter::hasAdapter(const std::string& attr) const
 
 }
 
+}
 }

@@ -39,7 +39,9 @@ class TypeInfo;
 class Avatar;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -141,6 +143,8 @@ protected:
 	WorldEmberEntity *mWorldEntity;
 
 };
+
+}
 
 }
 

@@ -26,7 +26,8 @@
 #include "../EmberOgrePrerequisites.h"
 #include <OgreUserDefinedObject.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class ModelBlock;
 class AttachPointNode;
@@ -53,6 +54,8 @@ AttachPointNode* mPointNode;
 
 inline ModelBlock* JesusPickerObject::getModelBlock() const { return mModelBlock; }
 inline AttachPointNode* JesusPickerObject::getPointNode() const { return mPointNode; }
+
+}
 
 }
 

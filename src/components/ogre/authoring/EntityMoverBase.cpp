@@ -31,7 +31,9 @@
 #include <Eris/Entity.h>
 #include <OgreSceneNode.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -177,5 +179,6 @@ void EntityMoverBase::snapListener_SnappingChanged(bool snapTo){
 }
 
 
+}
 }
 }

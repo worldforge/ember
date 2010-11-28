@@ -37,7 +37,8 @@ namespace CEGUI
 class Window;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -93,6 +94,8 @@ protected:
 	
 
 };
+
+}
 
 }
 

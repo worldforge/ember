@@ -34,7 +34,8 @@
 #include "components/entitymapping/Cases/CaseBase.h"
 
 using namespace Ember::EntityMapping;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -68,4 +69,5 @@ void EntityCreatorActionCreator::createActions(Ember::EntityMapping::EntityMappi
 
 }
 
+}
 }

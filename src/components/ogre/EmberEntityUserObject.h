@@ -35,9 +35,11 @@ namespace Ogre
 {
 class Entity;
 }
-;
 
-namespace EmberOgre
+
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Model
@@ -109,6 +111,6 @@ inline ICollisionDetector* EmberEntityUserObject::getCollisionDetector() const
 }
 
 }
-;
+}
 
 #endif

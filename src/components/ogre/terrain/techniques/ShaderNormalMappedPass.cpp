@@ -31,7 +31,9 @@
 #include <OgreTextureUnitState.h>
 #include <OgreGpuProgram.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -142,4 +144,5 @@ bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const s
 
 }
 
+}
 }

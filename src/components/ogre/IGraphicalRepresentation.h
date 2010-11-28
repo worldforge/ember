@@ -22,7 +22,9 @@
 #include "IVisualizable.h"
 #include <string>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -54,6 +56,8 @@ public:
 	virtual const std::string& getType() const = 0;
 
 };
+}
+
 }
 
 #endif /* IGRAPHICALREPRESENTATION_H_ */

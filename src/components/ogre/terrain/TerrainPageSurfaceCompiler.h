@@ -29,7 +29,8 @@
 #include <map>
 #include <OgreMaterial.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 class TerrainPageSurfaceLayer;
@@ -75,6 +76,8 @@ private:
 };
 
 }
+}
+
 }
 
 #endif

@@ -38,8 +38,10 @@
 
 #include <Ogre.h>
 
-using namespace EmberOgre::Terrain;
-namespace EmberOgre
+using namespace Ember::OgreView::Terrain;
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -95,4 +97,5 @@ void FoliageLoader::plantQueryExecuted(const Terrain::PlantAreaQueryResult& quer
 
 }
 
+}
 }

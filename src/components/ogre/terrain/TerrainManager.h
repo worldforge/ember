@@ -52,7 +52,8 @@ namespace Tasks {
 }
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntity;
 class ShaderManager;
 class ILightning;
@@ -588,6 +589,7 @@ inline unsigned int TerrainManager::getFoliageBatchSize() const
 	return mFoliageBatchSize;
 }
 
+}
 }
 }
 

@@ -1,7 +1,9 @@
 #ifndef EMBEROGRE_GUIGENERICICONUSERDATA_H
 #define EMBEROGRE_GUIGENERICICONUSERDATA_H
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -40,6 +42,8 @@ IconType& GenericIconUserData<IconType>::getIcon() const
 }
 
 }
+}
+
 }
 
 #endif

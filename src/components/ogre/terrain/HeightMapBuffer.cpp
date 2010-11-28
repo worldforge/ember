@@ -20,7 +20,9 @@
 #include "HeightMapBufferProvider.h"
 #include "Buffer.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -48,4 +50,5 @@ unsigned int HeightMapBuffer::getResolution() const
 
 }
 
+}
 }

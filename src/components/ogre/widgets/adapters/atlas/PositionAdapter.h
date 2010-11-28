@@ -25,7 +25,8 @@
 
 #include "AdapterBase.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -67,6 +68,8 @@ protected:
 	virtual bool _hasChanges();
 
 };
+
+}
 
 }
 

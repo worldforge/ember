@@ -36,7 +36,8 @@
 
 #include "model/Model.h"
 #include "model/SubModel.h"
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 OpcodeCollisionDetector::OpcodeCollisionDetector(Model::Model* model) : mModel(model), mVisualizer(0)
 {
@@ -146,4 +147,5 @@ bool OpcodeCollisionDetector::getVisualize() const
 }
 
 
+}
 }

@@ -22,7 +22,8 @@ $#include "components/ogre/widgets/Compass.h"
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 namespace Gui {
@@ -36,11 +37,11 @@ Helper class for the compass widget.
 class Compass
 {
 public:
-    Compass(EmberOgre::Gui::ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager);
+    Compass(Ember::OgreView::Gui::ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager);
 
     ~Compass();
     
-    EmberOgre::Terrain::Map& getMap();
+    Ember::OgreView::Terrain::Map& getMap();
     
     void reposition(float x, float y);
     void rotate(const Ogre::Degree& degree);
@@ -121,7 +122,7 @@ class CompassCameraAnchor
 {
 public:
 
-	CompassCameraAnchor(EmberOgre::Gui::Compass& compass, Ogre::Camera* camera);
+	CompassCameraAnchor(Ember::OgreView::Gui::Compass& compass, Ogre::Camera* camera);
 	
 	virtual ~CompassCameraAnchor();
 
@@ -132,7 +133,7 @@ class CompassSceneNodeAnchor
 {
 public:
 
-	CompassSceneNodeAnchor(EmberOgre::Gui::Compass& compass, Ogre::SceneNode* sceneNode);
+	CompassSceneNodeAnchor(Ember::OgreView::Gui::Compass& compass, Ogre::SceneNode* sceneNode);
 	
 	virtual ~CompassSceneNodeAnchor();
 
@@ -154,7 +155,7 @@ public:
 	 * @param compass The compass to which we want to attach the anchor.
 	 * @param camera The Ogre::Camera instance which we want the anchor to follow. When the camera moves the compass will move.
 	 */
-	CompassThirdPersonCameraAnchor(EmberOgre::Gui::Compass& compass, Ogre::Camera* camera, Ogre::SceneNode* node);
+	CompassThirdPersonCameraAnchor(Ember::OgreView::Gui::Compass& compass, Ogre::Camera* camera, Ogre::SceneNode* node);
 	
 	/**
 	 * @brief Dtor.
@@ -164,6 +165,5 @@ public:
 };
 
 }
-
 }
-
+}

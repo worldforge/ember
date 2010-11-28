@@ -5,14 +5,14 @@ function EntityCreator:fillRecipesList()
 	local list = self.recipesList
 	list:resetList()
 
-	local recipeMgr = EmberOgre.Authoring.EntityRecipeManager:getSingleton()
+	local recipeMgr = Ember.OgreView.Authoring.EntityRecipeManager:getSingleton()
 	local I = recipeMgr:getResourceIterator()
 	while I:hasMoreElements() do
 		local recipePtr = I:getNext()
-		recipePtr = tolua.cast(recipePtr, "EmberOgre::Authoring::EntityRecipePtr")
+		recipePtr = tolua.cast(recipePtr, "Ember::OgreView::Authoring::EntityRecipePtr")
 		local recipe = recipePtr:get()
 		local name = recipe:getName()
-		local item = EmberOgre.Gui.ColouredListItem:new(name)
+		local item = Ember.OgreView.Gui.ColouredListItem:new(name)
 		list:addItem(item)
 	end
 end
@@ -26,9 +26,9 @@ function EntityCreator:RecipesList_SelectionChanged(args)
 	local item = self.recipesList:getFirstSelectedItem()
 	if item ~= nil then
 		local name = item:getText()
-		local recipeMgr = EmberOgre.Authoring.EntityRecipeManager:getSingleton()
+		local recipeMgr = Ember.OgreView.Authoring.EntityRecipeManager:getSingleton()
 		local recipePtr = recipeMgr:getByName(name)
-		recipePtr = tolua.cast(recipePtr, "EmberOgre::Authoring::EntityRecipePtr")
+		recipePtr = tolua.cast(recipePtr, "Ember::OgreView::Authoring::EntityRecipePtr")
 		self.recipe = recipePtr:get()
 		--We just set the recipe here and wait for the EventTypeInfoLoaded event, which will call the showRecipe function when the recipe is ready
 		self.helper:setRecipe(self.recipe)
@@ -147,16 +147,16 @@ function EntityCreator.buildWidget(world)
 	local setup = function()
 		-- Initializing helper classes
 		debugObject(avatar)
-		entityCreator.helper = EmberOgre.Gui.EntityCreator:new(world)
+		entityCreator.helper = Ember.OgreView.Gui.EntityCreator:new(world)
 
 		connect(entityCreator.connectors, entityCreator.helper.EventTypeInfoLoaded, entityCreator.showRecipe, entityCreator)
 		entityCreator.helper.mWidget = entityCreator.widget
-		entityCreator.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
+		entityCreator.factory = Ember.OgreView.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
 	
 		-- Creating container for storing adapters
 		entityCreator.recipeDescription = entityCreator.widget:getWindow("RecipeDescription")
 		entityCreator.container = entityCreator.widget:getWindow("AdaptersContainer")
-		entityCreator.stackableContainer = EmberOgre.Gui.StackableContainer(entityCreator.container)
+		entityCreator.stackableContainer = Ember.OgreView.Gui.StackableContainer(entityCreator.container)
 	
 		-- Filling list of recipes
 		entityCreator.recipesList = CEGUI.toListbox(entityCreator.widget:getWindow("RecipesList"))

@@ -26,7 +26,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <string>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 class ParticleSystem;
@@ -53,4 +54,6 @@ inline const std::string& ParticleSystemBinding::getEmitterVal() const {return m
 inline const std::string& ParticleSystemBinding::getVariableName() const {return mVariableName;}
 }
 }
+}
+
 #endif

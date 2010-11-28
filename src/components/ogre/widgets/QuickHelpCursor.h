@@ -27,7 +27,8 @@
 #include <sigc++/signal.h>
 #include <string>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -92,6 +93,8 @@ private:
 	int mCursorLocation;
 
 };
+
+}
 
 }
 

@@ -28,7 +28,9 @@
 
 #include "framework/LoggingInstance.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Environment
 {
@@ -61,6 +63,7 @@ void OceanAction::activate(Ember::EntityMapping::ChangeContext& context)
 void OceanAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	mEntity.setGraphicalRepresentation(0);
+}
 }
 }
 }

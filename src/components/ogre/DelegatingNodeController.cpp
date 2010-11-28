@@ -24,7 +24,8 @@
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 DelegatingNodeController::DelegatingNodeController(NodeAttachment& attachment, IEntityControlDelegate& attachmentControlDelegate)
 : NodeController::NodeController(attachment), mAttachmentControlDelegate(attachmentControlDelegate)
@@ -46,4 +47,5 @@ IEntityControlDelegate* DelegatingNodeController::getControlDelegate() const
 	return &mAttachmentControlDelegate;
 }
 
+}
 }

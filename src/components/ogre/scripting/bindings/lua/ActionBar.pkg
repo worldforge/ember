@@ -1,6 +1,8 @@
 $#include "components/ogre/widgets/ActionBarInput.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -12,5 +14,6 @@ public:
 	sigc::signal<void, const std::string&> EventGotHotkeyInput;
 };
 
+}
 }
 }

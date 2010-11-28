@@ -24,9 +24,9 @@
 #include "QuickHelp.h"
 #include "HelpMessage.h"
 
-using namespace EmberOgre;
-
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -100,4 +100,5 @@ void QuickHelpCursor::setCursorLocation(const int cursorLocation)
 
 }
 
+}
 }

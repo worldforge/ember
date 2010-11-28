@@ -22,7 +22,9 @@
 #include "components/ogre/terrain/TerrainPage.h"
 #include "Convert.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 TerrainPageData::TerrainPageData(Terrain::TerrainPage* page) :
 	mPage(page)
@@ -76,4 +78,5 @@ TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& o
 	return TerrainIndex(ogreIndexPosition.first - mManager.getTerrainInfo().getPageOffsetY(), -(ogreIndexPosition.second - mManager.getTerrainInfo().getPageOffsetX()));
 }
 
+}
 }

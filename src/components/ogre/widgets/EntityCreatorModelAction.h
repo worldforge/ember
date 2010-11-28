@@ -27,7 +27,8 @@
 #include "components/entitymapping/Actions/Action.h"
 #include <string>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -53,6 +54,8 @@ protected:
 	EntityCreator& mEntityCreator;
 	std::string mModelName;
 };
+
+}
 
 }
 

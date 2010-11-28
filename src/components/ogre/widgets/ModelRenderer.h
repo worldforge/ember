@@ -33,7 +33,9 @@ class GUISheet;
 
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Model
@@ -113,6 +115,8 @@ protected:
 
 };
 }
+}
+
 }
 
 #endif

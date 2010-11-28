@@ -445,6 +445,6 @@ protected:
 	bool mMovementModeEnabled;
 };
 
-};
+}
 
 #endif

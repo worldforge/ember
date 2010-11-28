@@ -29,7 +29,9 @@ class TagPoint;
 class MovableObject;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -181,6 +183,8 @@ private:
 };
 
 }
+}
+
 }
 
 #endif /* MODELBONEPROVIDER_H_ */

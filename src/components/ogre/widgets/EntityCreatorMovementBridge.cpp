@@ -30,14 +30,16 @@
 #include <OgreSceneNode.h>
 #include "../Convert.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
 {
 
 EntityCreatorMovementBridge::EntityCreatorMovementBridge(EntityCreator& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-	::EmberOgre::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mCreator(creator)
+	::Ember::OgreView::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mCreator(creator)
 {
 }
 
@@ -56,4 +58,5 @@ void EntityCreatorMovementBridge::cancelMovement()
 
 }
 
+}
 }

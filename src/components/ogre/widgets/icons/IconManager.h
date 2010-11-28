@@ -31,7 +31,8 @@ namespace Eris
 	class TypeInfo;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 	class EmberEntity;
 
@@ -64,6 +65,8 @@ protected:
 	
 
 };
+
+}
 
 }
 

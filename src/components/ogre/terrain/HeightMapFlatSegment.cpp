@@ -19,7 +19,9 @@
 #include "HeightMapFlatSegment.h"
 #include "wfmath/vector.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -49,4 +51,5 @@ void HeightMapFlatSegment::getHeightAndNormal(float x, float y, float& height, W
 
 }
 
+}
 }

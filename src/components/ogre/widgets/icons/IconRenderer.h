@@ -29,7 +29,8 @@
 #include <queue>
 #include <OgreFrameListener.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class SimpleRenderContext;
 
@@ -249,6 +250,8 @@ protected:
 	 */
 	void renderDelayed(Model::Model* model, Icon* icon);
 };
+
+}
 
 }
 

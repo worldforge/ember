@@ -30,7 +30,9 @@
 #include "components/ogre/EntityObserverBase.h"
 #include "framework/ConsoleObject.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -130,6 +132,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif

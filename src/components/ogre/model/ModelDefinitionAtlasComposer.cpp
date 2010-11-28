@@ -57,7 +57,9 @@
 #endif
 
 using namespace Atlas::Message;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Model
@@ -147,4 +149,5 @@ void ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string
 
 }
 
+}
 }

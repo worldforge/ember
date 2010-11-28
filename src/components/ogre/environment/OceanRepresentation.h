@@ -22,7 +22,9 @@
 #include "components/ogre/IGraphicalRepresentation.h"
 #include <sigc++/trackable.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -98,6 +100,8 @@ private:
 
 };
 }
+}
+
 }
 
 #endif /* OCEANREPRESENTATION_H_ */

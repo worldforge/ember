@@ -36,7 +36,9 @@
 #include "services/server/ServerService.h"
 #include <OgreSceneNode.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -106,4 +108,5 @@ const WFMath::Vector<3>& EntityMoverControlDelegate::getVelocity() const
 
 }
 
+}
 }

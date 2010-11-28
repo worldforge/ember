@@ -24,7 +24,9 @@ namespace WFMath
 template<int> class Vector;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -48,6 +50,8 @@ public:
 	 */
 	virtual WFMath::Vector<3> getMovementForCurrentFrame() const = 0;
 };
+
+}
 
 }
 

@@ -28,7 +28,8 @@
 #include <vector>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -113,6 +114,8 @@ protected:
 	std::string mPopulationTechnique;
 	std::string mRenderTechnique;
 };
+
+}
 
 }
 

@@ -22,7 +22,9 @@
 #include "components/ogre/ICollisionDetector.h"
 #include "components/ogre/OgreIncludes.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -65,6 +67,7 @@ public:
 private:
 	Ogre::Entity& mEntity;
 };
+}
 }
 }
 #endif /* AUTHORINGVISUALIZATIONCOLLISIONDETECTOR_H_ */

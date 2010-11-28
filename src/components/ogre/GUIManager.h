@@ -50,7 +50,8 @@ class IScriptingProvider;
 class Input;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 class MousePicker;
@@ -308,7 +309,7 @@ protected:
 	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
 
 	/**
-	 *    hooked to EmberOgre::EventCreatedAvatarEntity, switches the input mode to movement mode
+	 *    hooked to Ember::OgreView::EventCreatedAvatarEntity, switches the input mode to movement mode
 	 * @param entity
 	 */
 	void EmberOgre_CreatedAvatarEntity(EmberEntity& entity);
@@ -366,6 +367,6 @@ inline MousePicker* GUIManager::getMousePicker() { return  mMousePickers.top(); 
 inline CEGUI::OgreRenderer* GUIManager::getGuiRenderer() const {return mGuiRenderer;}
 
 }
-
+}
 
 #endif

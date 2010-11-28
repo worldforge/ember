@@ -23,7 +23,8 @@
 
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 /**
@@ -139,4 +140,4 @@ class EntityCEGUITexture{
 
 }
 
-#endif
+}

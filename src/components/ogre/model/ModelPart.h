@@ -27,7 +27,8 @@
 #include <string>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 
@@ -105,6 +106,8 @@ protected:
 	 */
 	std::string mGroupName;
 };
+
+}
 
 }
 

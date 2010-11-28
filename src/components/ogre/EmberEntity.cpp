@@ -56,7 +56,9 @@
 using namespace Ogre;
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 const std::string EmberEntity::MODE_FLOATING("floating");
@@ -151,7 +153,7 @@ void EmberEntity::createEntityMapping(Scene& scene)
 	delete mEntityMapping;
 	///the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*this, scene);
-	mEntityMapping = ::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*this, &creator, getView());
+	mEntityMapping = ::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*this, &creator, getView());
 }
 
 Ember::EntityMapping::EntityMapping* EmberEntity::getMapping() const
@@ -588,4 +590,5 @@ void EmberEntity::accept(IEntityVisitor& visitor)
 	}
 }
 
+}
 }

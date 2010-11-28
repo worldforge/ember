@@ -36,7 +36,8 @@
 
 #include <sigc++/signal.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 : mChatLogger(0)
@@ -96,4 +97,5 @@ AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)
 
 
 
+}
 }

@@ -63,7 +63,9 @@
 #include <wfmath/axisbox.h>
 
 using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -371,5 +373,6 @@ void EntityCreator::typeService_BoundType(Eris::TypeInfo* typeInfo)
 	}
 }
 
+}
 }
 }

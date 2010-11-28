@@ -23,7 +23,9 @@
 
 #include <sigc++/trackable.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class NodeAttachment;
@@ -66,6 +68,8 @@ protected:
 	virtual void updatePosition();
 
 };
+
+}
 
 }
 

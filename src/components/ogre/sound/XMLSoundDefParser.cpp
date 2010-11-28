@@ -26,8 +26,11 @@
 #include "SoundDefinitionManager.h"
 #include "components/ogre/XMLHelper.h"
 
-using namespace Ember;
-namespace EmberOgre { 
+
+namespace Ember
+{
+namespace OgreView
+{
 
 XMLSoundDefParser::XMLSoundDefParser(SoundDefinitionManager& manager)
 : mManager(manager)
@@ -118,4 +121,5 @@ void XMLSoundDefParser::readBuffer(SoundGroupDefinition* grp, TiXmlElement* objN
 
 }
 
+}
 }

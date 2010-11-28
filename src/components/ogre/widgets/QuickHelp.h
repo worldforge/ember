@@ -31,7 +31,8 @@
 #include <sigc++/signal.h>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -41,7 +42,7 @@ const short unsigned int MAXTUTORIALS = 5;
 
 @brief Interface for managing help messages
 
-This class is a singleton, and accessbile using EmberOgre::Gui::QuickHelp.getSingleton().
+This class is a singleton, and accessbile using Ember::OgreView::Gui::QuickHelp.getSingleton().
 Help messages are held in a list structure, and are added using the updateText function.
 When a message is added, an event is emitted containing an iterator to the position in the list where the message is located.
 
@@ -126,6 +127,6 @@ private:
 
 }
 }
-
+}
 
 #endif

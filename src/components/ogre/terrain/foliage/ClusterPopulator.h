@@ -15,7 +15,9 @@ namespace WFMath
 	template<int> class Ball;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -66,6 +68,8 @@ protected:
 	float mFalloff;
 	unsigned char mThreshold;
 };
+
+}
 
 }
 

@@ -28,7 +28,9 @@ namespace Ogre
 class ManualObject;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -79,6 +81,8 @@ protected:
 	 */
 	static unsigned int sCounter;
 };
+
+}
 
 }
 

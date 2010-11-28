@@ -28,7 +28,8 @@
 #include <wfmath/quaternion.h>
 #include <wfmath/atlasconv.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -121,4 +122,5 @@ bool OrientationAdapter::_hasChanges()
 
 }
 
+}
 }

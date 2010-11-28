@@ -51,7 +51,8 @@
 
 #include "framework/osdir.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 XMLModelDefinitionSerializer::XMLModelDefinitionSerializer()
@@ -1061,4 +1062,5 @@ void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr mode
 	}
 }
 } //end namespace
+}
 }

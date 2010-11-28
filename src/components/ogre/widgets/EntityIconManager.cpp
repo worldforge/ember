@@ -31,7 +31,8 @@
 #include "EntityIcon.h"
 #include "EntityIconSlot.h"
 #include "icons/Icon.h"
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -121,4 +122,5 @@ void EntityIconManager::destroySlot(EntityIconSlot* slot)
 
 }
 
+}
 }

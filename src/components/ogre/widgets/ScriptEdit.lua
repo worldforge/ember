@@ -45,7 +45,7 @@ function ScriptEdit.buildWidget()
 	--add all scriptproviders
 	for val = 0, providerNames:size() - 1 do
 		local name = providerNames[val]
-		local item = EmberOgre.Gui.ColouredListItem:new(name, val)
+		local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
 		ScriptEdit.scriptList:addItem(item)
 		--select the first item from start
 		if val == 0 then

@@ -37,7 +37,9 @@ namespace Ember {
 class AttributeObserver;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class IGraphicalRepresentation;
@@ -156,6 +158,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif /* MODELATTACHMENT_H_ */

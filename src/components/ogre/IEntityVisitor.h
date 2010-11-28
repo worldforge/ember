@@ -19,7 +19,9 @@
 #ifndef IENTITYVISITOR_H_
 #define IENTITYVISITOR_H_
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -42,6 +44,8 @@ public:
 	 */
 	virtual void visit(EmberEntity& entity) = 0;
 };
+
+}
 
 }
 

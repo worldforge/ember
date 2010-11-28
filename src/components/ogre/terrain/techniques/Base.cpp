@@ -19,7 +19,9 @@
 #include "Base.h"
 #include "components/ogre/terrain/TerrainPageGeometry.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -41,4 +43,5 @@ Base::~Base()
 
 }
 
+}
 }

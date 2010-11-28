@@ -32,7 +32,8 @@
 #include "OgrePagingLandScapeRenderableManager.h"
 #include "OgrePagingLandScapeTileManager.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 	Ogre::PagingLandScapeOptions* EmberPagingSceneManagerAdapter::getOptions()
 	{
@@ -209,4 +210,5 @@ namespace EmberOgre {
 	}
 
 
+}
 }

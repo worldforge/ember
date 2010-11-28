@@ -29,7 +29,9 @@
 #include <sstream>
 #include <memory>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -54,6 +56,7 @@ std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::s
 	encoder.streamObjectsMessage(obj);
 	ss << std::flush;
 	return ss.str();
+}
 }
 }
 }

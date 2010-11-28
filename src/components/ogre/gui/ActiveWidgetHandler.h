@@ -24,7 +24,8 @@
 #define EMBEROGRE_GUIACTIVEWIDGETHANDLER_H
 #include "services/input/Input.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class GUIManager;
 
 namespace Gui {
@@ -35,7 +36,7 @@ namespace Gui {
 */
 class ActiveWidgetHandler{
 public:
-    ActiveWidgetHandler(::EmberOgre::GUIManager& guiManager);
+    ActiveWidgetHandler(::Ember::OgreView::GUIManager& guiManager);
 
     ~ActiveWidgetHandler();
 
@@ -55,8 +56,10 @@ protected:
 	/**
 	A reference to the gui manager.
 	*/
-	::EmberOgre::GUIManager& mGuiManager;
+	::Ember::OgreView::GUIManager& mGuiManager;
 };
+
+}
 
 }
 

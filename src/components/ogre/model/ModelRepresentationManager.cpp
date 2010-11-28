@@ -24,9 +24,10 @@
 #include "components/ogre/IGraphicalRepresentation.h"
 
 
-template<> EmberOgre::Model::ModelRepresentationManager* Ember::Singleton<EmberOgre::Model::ModelRepresentationManager>::ms_Singleton = 0;
+template<> Ember::OgreView::Model::ModelRepresentationManager* Ember::Singleton<Ember::OgreView::Model::ModelRepresentationManager>::ms_Singleton = 0;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 
@@ -58,5 +59,6 @@ ModelRepresentation* ModelRepresentationManager::getRepresentationForEntity(Embe
 	return 0;
 }
 
+}
 }
 }

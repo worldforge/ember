@@ -25,11 +25,12 @@
 
 #include "Widget.h"
 #include "WidgetPool.h"
-#include <Eris/Entity.h>
 #include "services/config/ConfigListenerContainer.h"
+#include <Eris/Entity.h>
 #include <OgreMovableObject.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Camera
 {
@@ -295,6 +296,8 @@ inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() { retur
 
 
 }
+}
+
 }
 
 #endif

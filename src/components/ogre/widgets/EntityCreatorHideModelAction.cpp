@@ -28,7 +28,8 @@
 
 #include "EntityCreator.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -52,4 +53,5 @@ void EntityCreatorHideModelAction::deactivate(Ember::EntityMapping::ChangeContex
 
 }
 
+}
 }

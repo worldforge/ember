@@ -1,4 +1,5 @@
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 	
 class Avatar 
@@ -18,8 +19,8 @@ class Avatar
 	 */
 	void setMinIntervalOfRotationChanges(Ogre::Real milliseconds);
 
-	sigc::signal<void, EmberOgre::EmberEntity* > EventAddedEntityToInventory;
-	sigc::signal<void, EmberOgre::EmberEntity* > EventRemovedEntityFromInventory;
+	sigc::signal<void, Ember::OgreView::EmberEntity* > EventAddedEntityToInventory;
+	sigc::signal<void, Ember::OgreView::EmberEntity* > EventRemovedEntityFromInventory;
 	
 	/**
 	True if the current user have admin rights, i.e. is a "creator".
@@ -41,4 +42,5 @@ class Avatar
 	WFMath::Quaternion getClientSideAvatarOrientation() const;
 
 };
+}
 }

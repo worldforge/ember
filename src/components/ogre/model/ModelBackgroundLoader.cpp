@@ -34,7 +34,9 @@
 #include <OgreMeshManager.h>
 #include <OgreResourceGroupManager.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Model
@@ -264,4 +266,5 @@ ModelBackgroundLoaderListener* ModelBackgroundLoader::createListener()
 
 }
 
+}
 }

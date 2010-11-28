@@ -28,7 +28,9 @@
 #include <OgreQuaternion.h>
 #include <OgreRay.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Camera
 {
@@ -136,6 +138,8 @@ protected:
 	void _setCameraDistance(Ogre::Real distance);
 };
 }
+}
+
 }
 
 #endif /* THIRDPERSONCAMERAMOUNT_H_ */

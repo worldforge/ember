@@ -41,7 +41,8 @@
 #include "pagedgeometry/include/BatchPage.h"
 #include "pagedgeometry/include/GrassLoader.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -170,4 +171,5 @@ void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
 
 }
 
+}
 }

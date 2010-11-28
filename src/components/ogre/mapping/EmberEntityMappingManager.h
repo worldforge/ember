@@ -31,7 +31,8 @@
 #include "components/entitymapping/EntityMappingManager.h"
 #include "XMLEntityMappingDefinitionSerializer.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
  * @brief Namespace for the EmberOgre specific integration with the Entity Mapping framework.
@@ -95,6 +96,8 @@ inline Ember::EntityMapping::EntityMappingManager& EmberEntityMappingManager::ge
 }
 
 }
+}
+
 }
 
 #endif

@@ -19,7 +19,9 @@
 #ifndef IANIMATED_H_
 #define IANIMATED_H_
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -48,6 +50,8 @@ public:
 	 */
 	virtual void updateAnimation(float timeSlice) = 0;
 };
+
+}
 
 }
 

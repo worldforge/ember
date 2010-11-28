@@ -18,7 +18,8 @@
 
 $#include "components/ogre/model/ModelRepresentation.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 
@@ -102,4 +103,4 @@ public:
 
 }
 }
-
+}

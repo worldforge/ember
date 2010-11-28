@@ -23,7 +23,9 @@
 #include <OgreAny.h>
 #include <boost/smart_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -78,6 +80,7 @@ void OceanRepresentation::updateWaterPosition()
 	}
 }
 
+}
 }
 }
 

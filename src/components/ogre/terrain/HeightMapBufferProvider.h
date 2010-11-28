@@ -21,7 +21,9 @@
 
 #include <vector>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -99,6 +101,8 @@ private:
 	 */
 	void maintainPool();
 };
+
+}
 
 }
 

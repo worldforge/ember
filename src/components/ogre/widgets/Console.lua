@@ -33,7 +33,7 @@ function Console:buildWidget()
 	self.consoleInputWindow = CEGUI.toEditbox(self.widget:getWindow("InputBox"))
 	
 	--this will bring console functionality to the editbox (such as history, tab completion etc.)
-	self.consoleAdapter = EmberOgre.Gui.ConsoleAdapter:new_local(self.consoleInputWindow);
+	self.consoleAdapter = Ember.OgreView.Gui.ConsoleAdapter:new_local(self.consoleInputWindow);
 	
 	
 	connect(self.connectors, guiManager.AppendIGChatLine, self.appendIGChatLine, self)

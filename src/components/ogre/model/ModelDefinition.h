@@ -34,7 +34,8 @@
 #include <map>
 #include <vector>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 
@@ -648,6 +649,7 @@ inline int AnimationDefinition::getIterations() const
 	return mIterations;
 }
 
+}
 }
 }
 #endif

@@ -24,7 +24,9 @@
 
 #include <sigc++/signal.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 NodeController::NodeController(NodeAttachment& attachment) :
@@ -77,4 +79,5 @@ IEntityControlDelegate* NodeController::getControlDelegate() const
 	return 0;
 }
 
+}
 }

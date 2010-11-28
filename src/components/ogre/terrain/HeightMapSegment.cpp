@@ -24,7 +24,9 @@
 #include <cmath>
 #include <cassert>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -101,4 +103,5 @@ void HeightMapSegment::getHeightAndNormal(float x, float y, float& h, WFMath::Ve
 
 }
 
+}
 }

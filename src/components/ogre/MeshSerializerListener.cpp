@@ -26,7 +26,8 @@
 
 #include "MeshSerializerListener.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 MeshSerializerListener::MeshSerializerListener()
 {
@@ -77,4 +78,5 @@ void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String 
 }
 
 
+}
 }

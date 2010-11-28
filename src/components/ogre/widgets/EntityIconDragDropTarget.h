@@ -31,7 +31,8 @@ namespace CEGUI
 	class EventArgs;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -128,6 +129,8 @@ private:
 	EntityIcon* parseIcon(const CEGUI::EventArgs& args);
 
 };
+
+}
 
 }
 

@@ -27,7 +27,8 @@
 #include "Environment.h"
 #include <OgrePlane.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -88,6 +89,8 @@ protected:
 	Ogre::Entity* mWaterEntity;
 
 };
+
+}
 
 }
 

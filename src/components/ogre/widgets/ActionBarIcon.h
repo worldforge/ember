@@ -38,7 +38,8 @@ class Window;
 class EventArgs;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntity;
 namespace Gui {
 
@@ -246,6 +247,8 @@ protected:
 	ActionBarIconSlot* mCurrentSlot;
 
 };
+
+}
 
 }
 

@@ -1,5 +1,6 @@
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 /**
 @author Erik Hjortsberg
@@ -11,12 +12,12 @@ public:
 	static ModelDefinitionManager& getSingleton();
 	
 	
-//	const EmberOgre::Model::ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
+//	const Ember::OgreView::Model::ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
 
-	void exportScript(EmberOgre::Model::ModelDefnPtr definition);
+	void exportScript(Ember::OgreView::Model::ModelDefnPtr definition);
 
-    EmberOgre::Model::ModelDefnPtr create(const std::string& name, const std::string& group);
-	EmberOgre::Model::ModelDefnPtr getByName(const std::string& name);
+    Ember::OgreView::Model::ModelDefnPtr create(const std::string& name, const std::string& group);
+	Ember::OgreView::Model::ModelDefnPtr getByName(const std::string& name);
 
 	
 	/**
@@ -40,5 +41,6 @@ public:
 
 
 }
-};
+}
+}
 

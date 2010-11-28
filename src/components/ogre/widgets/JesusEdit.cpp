@@ -54,7 +54,8 @@
 #include "EntityCEGUITexture.h"
 #include "../SimpleRenderContext.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 
@@ -807,5 +808,6 @@ bool JesusEdit::File_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
+}
 }
 }

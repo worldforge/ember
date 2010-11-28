@@ -1,10 +1,11 @@
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class TerrainPosition
 {
 	bool isValid() const;
-	EmberOgre::TerrainPosition& setToOrigin();
+	Ember::OgreView::TerrainPosition& setToOrigin();
 	
   /// access the first component of a point
   float x() const;
@@ -113,6 +114,5 @@ static WFMath::Quaternion toWF(const Ogre::Quaternion& aq);
 //static WFMath::AxisBox<2> toWF(const Ogre::TRect<Ogre::Real>& bounds);
 
 };
-
 }
-
+}

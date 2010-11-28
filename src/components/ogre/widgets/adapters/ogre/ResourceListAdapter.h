@@ -20,7 +20,9 @@
 #define RESOURCELISTADAPTER_H_
 
 #include "components/ogre/OgreIncludes.h"
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -79,6 +81,8 @@ private:
 }
 }
 }
+}
+
 }
 
 #endif /* RESOURCELISTADAPTER_H_ */

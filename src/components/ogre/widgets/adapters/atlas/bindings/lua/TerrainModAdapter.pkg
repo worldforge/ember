@@ -22,7 +22,8 @@
 //
 $#include "../../TerrainModAdapter.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 namespace Gui {
@@ -48,6 +49,8 @@ public:
 	virtual void updateGui(const ::Atlas::Message::Element& element);
 
 };
+
+}
 
 }
 

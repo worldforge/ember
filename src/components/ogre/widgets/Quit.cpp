@@ -25,7 +25,6 @@
 #endif
 
 #include "Quit.h"
-// #include "../EmberOgre.h"
 #include "main/Application.h"
 #include <elements/CEGUIPushButton.h>
 
@@ -34,7 +33,8 @@
 #include "services/input/Input.h"
 #include "services/server/ServerService.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 Quit::Quit() : SoftQuit("softquit", this, "Display a quit confirmation window.")
@@ -126,4 +126,5 @@ void Quit::runCommand(const std::string &command, const std::string &args)
 
 }
 }
-};
+}
+}

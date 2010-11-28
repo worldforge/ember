@@ -29,7 +29,9 @@
 #include <OgreSceneManager.h>
 #include <sigc++/bind.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -185,4 +187,5 @@ void AuthoringHandler::stopMovement()
 
 }
 
+}
 }

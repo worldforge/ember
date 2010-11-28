@@ -11,11 +11,11 @@ function TypeManager:buildWidget()
 	
 		self.codecTypeCombobox = CEGUI.toCombobox(self.widget:getWindow("CodecType"))
 		
-		local item = EmberOgre.Gui.ColouredListItem:new("XML", 0)
+		local item = Ember.OgreView.Gui.ColouredListItem:new("XML", 0)
 		self.codecTypeCombobox:addItem(item)
-		item = EmberOgre.Gui.ColouredListItem:new("Bach", 1)
+		item = Ember.OgreView.Gui.ColouredListItem:new("Bach", 1)
 		self.codecTypeCombobox:addItem(item)
-		item = EmberOgre.Gui.ColouredListItem:new("Packed", 2)
+		item = Ember.OgreView.Gui.ColouredListItem:new("Packed", 2)
 		self.codecTypeCombobox:addItem(item)
 		self.codecTypeCombobox:setItemSelectState(0, true)
 		self.codecTypeCombobox:setSingleClickEnabled(true)
@@ -24,7 +24,7 @@ function TypeManager:buildWidget()
 		
 		self.typeInfoText = CEGUI.toMultiLineEditbox(self.widget:getWindow("TypeInfoText"))
 	
-		self.typeAdapter = EmberOgre.Gui.Adapters.Eris.TypeTreeAdapter:new_local(emberServices:getServerService():getConnection():getTypeService(), self.typeTree)
+		self.typeAdapter = Ember.OgreView.Gui.Adapters.Eris.TypeTreeAdapter:new_local(emberServices:getServerService():getConnection():getTypeService(), self.typeTree)
 		self.typeAdapter:initialize("root")
 		
 		self.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", self.SendToServerButton_Clicked, self)
@@ -55,7 +55,7 @@ end
 
 function TypeManager:sendTypeToServer()
 	local outstream = std.stringstream:new_local(self.typeInfoText:getText())
-	local decoder = EmberOgre.Authoring.AtlasObjectDecoder:new_local()
+	local decoder = Ember.OgreView.Authoring.AtlasObjectDecoder:new_local()
 
 	local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
 	codec:poll(true)

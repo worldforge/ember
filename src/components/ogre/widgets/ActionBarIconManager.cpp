@@ -38,7 +38,8 @@
 
 #include <Eris/ServerInfo.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -169,4 +170,5 @@ void ActionBarIconManager::destroySlot(ActionBarIconSlot* slot)
 
 }
 
+}
 }

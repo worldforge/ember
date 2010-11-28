@@ -29,7 +29,9 @@
 #include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
 #include <stdlib.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -51,7 +53,7 @@ const std::string& GUIAdapter::getType() const
 
 void GUIAdapter::attach(CEGUI::Window* window)
 {
-	EmberOgre::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
+	Ember::OgreView::Gui::Adapters::Atlas::AdapterFactory factory("EntityCreator");
 	mAdapter = factory.createAdapterByType(mType, window, "adapterPrefix", mElement);
 	mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &GUIAdapter::valueChanged));
 	for (SuggestionsStore::iterator I = mSuggestions.begin(); I != mSuggestions.end(); I++) {
@@ -158,4 +160,5 @@ void GUIAdapter::valueChanged()
 }
 }
 
+}
 }

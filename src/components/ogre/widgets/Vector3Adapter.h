@@ -33,7 +33,8 @@ namespace CEGUI
 
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -78,6 +79,8 @@ protected:
 	bool mSelfUpdate;
 
 };
+
+}
 
 }
 

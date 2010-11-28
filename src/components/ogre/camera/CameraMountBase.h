@@ -28,7 +28,9 @@ template<int> class Vector;
 class Quaternion;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class ICameraMotionHandler;
 
@@ -70,6 +72,7 @@ protected:
 };
 
 
+}
 }
 }
 

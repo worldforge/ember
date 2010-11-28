@@ -31,7 +31,9 @@
 #include <vector>
 #include <OgreVector3.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -107,6 +109,8 @@ protected:
 	Scene& mScene;
 
 };
+
+}
 
 }
 

@@ -29,7 +29,8 @@
 #include <OgreQuaternion.h>
 #include <OgreMath.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 XMLHelper::XMLHelper()
 {
@@ -117,4 +118,5 @@ void XMLHelper::fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion q
 	elem.SetDoubleAttribute("degrees", degrees.valueDegrees());
 }
 
+}
 }

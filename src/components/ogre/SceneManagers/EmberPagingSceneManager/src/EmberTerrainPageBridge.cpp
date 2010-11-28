@@ -29,7 +29,9 @@
 #include "EmberPagingLandScapeData2D_HeightField.h"
 #include "terrain/TerrainPageGeometry.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 EmberTerrainPageBridge::EmberTerrainPageBridge(Ogre::PagingLandScapeData2DManager& data2dManager, const boost::shared_array<float>& heightData, UnsignedIndexType index) :
@@ -61,4 +63,5 @@ EmberPagingLandScapeData2D_HeightField* EmberTerrainPageBridge::getData2D()
 	return static_cast<EmberPagingLandScapeData2D_HeightField*> (mData2dManager.getData2D(mIndex.first, mIndex.second, false));
 }
 
+}
 }

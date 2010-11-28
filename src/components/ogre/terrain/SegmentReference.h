@@ -19,7 +19,9 @@
 #ifndef EMBEROGRE_TERRAIN_SEGMENTREFERENCE_H_
 #define EMBEROGRE_TERRAIN_SEGMENTREFERENCE_H_
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -61,6 +63,8 @@ protected:
 	 */
 	SegmentReference(SegmentHolder& segmentHolder);
 };
+
+}
 
 }
 

@@ -64,7 +64,8 @@
 #endif
 
 using namespace Ember;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Camera
 {
@@ -427,4 +428,5 @@ ICameraMount* MainCamera::attachToMount(ICameraMount* newCameraMount)
 
 }
 
+}
 }

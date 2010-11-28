@@ -25,7 +25,8 @@
 
 #include "Widget.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 /**
@@ -60,7 +61,8 @@ protected:
 	void softquit();
 
 };
-};
-};
+}
+}
+}
 
 #endif

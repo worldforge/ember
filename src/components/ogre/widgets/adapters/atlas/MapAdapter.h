@@ -31,7 +31,8 @@ namespace CEGUI {
 	class Window;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -90,6 +91,8 @@ protected:
 	virtual ::Atlas::Message::Element _getChangedElement();
 
 };
+
+}
 
 }
 

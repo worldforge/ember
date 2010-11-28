@@ -31,7 +31,8 @@ namespace Ogre
 class MemoryDataStream;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -54,6 +55,8 @@ private:
 	Ogre::TRect<float> mArea;
 };
 }
+}
+
 }
 
 #endif /* PLANTAREAQUERY_H_ */

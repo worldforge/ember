@@ -26,7 +26,8 @@
 
 #include "StaticAdapter.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -74,4 +75,5 @@ bool StaticAdapter::_hasChanges()
 
 }
 
+}
 }

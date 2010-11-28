@@ -30,7 +30,8 @@
 #include "framework/LoggingInstance.h"
 #include "components/ogre/GUIManager.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -229,4 +230,5 @@ Ogre::Image& IconImageStore::getImage()
 
 }
 
+}
 }

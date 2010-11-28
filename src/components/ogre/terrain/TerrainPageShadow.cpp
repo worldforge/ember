@@ -35,7 +35,8 @@
 #include <OgreImage.h>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 
@@ -151,5 +152,6 @@ void TerrainPageShadow::getShadowColourAt(const Ogre::Vector2& position, Ogre::C
 }
 
 
+}
 }
 }

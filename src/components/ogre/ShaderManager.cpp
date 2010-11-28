@@ -42,7 +42,8 @@
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
  * @brief A shader setup instance which envelops a scene manager and handles the shadow camera setup for that manager.
@@ -280,4 +281,5 @@ void ShaderManager::setNoShadows()
 	}
 }
 
+}
 }

@@ -50,7 +50,8 @@ class Carpenter;
 };
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 TYPEDEF_STL_MAP(const std::string, Ogre::ColourValue, AttachPointColourValueMap);
 
@@ -280,6 +281,7 @@ inline Jesus* Construction::getJesus() const { return mJesus; }
 inline Carpenter::BluePrint* Construction::getBluePrint() const { return mBlueprint; }
 
 
-};
+}
+}
 
 #endif

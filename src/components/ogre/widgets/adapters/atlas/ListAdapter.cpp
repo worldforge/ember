@@ -30,7 +30,8 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -132,4 +133,5 @@ void ListAdapter::removeAdapters()
 
 }
 
+}
 }

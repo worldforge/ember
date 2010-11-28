@@ -24,7 +24,8 @@
 $#include "components/ogre/widgets/AssetsManager.h"
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -115,6 +116,5 @@ public:
 };
 
 }
-
 }
-
+}

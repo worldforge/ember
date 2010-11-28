@@ -30,7 +30,8 @@
 #include "components/ogre/model/ModelRepresentationManager.h"
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 EmberEntityPartAction::EmberEntityPartAction(EmberEntity& entity, const std::string& partName)
@@ -61,4 +62,5 @@ void EmberEntityPartAction::deactivate(Ember::EntityMapping::ChangeContext& cont
 	}
 }
 
+}
 }

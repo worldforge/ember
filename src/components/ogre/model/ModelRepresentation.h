@@ -35,7 +35,9 @@ namespace Eris
 class Entity;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 class SoundEntity;
@@ -134,7 +136,7 @@ public:
 	virtual ~ModelRepresentation();
 
 	/**
-	 * @copydoc EmberOgre::IGraphicalRepresentation::getType()
+	 * @copydoc Ember::OgreView::IGraphicalRepresentation::getType()
 	 */
 	virtual const std::string& getType() const;
 
@@ -345,6 +347,7 @@ protected:
 	void reactivatePartActions();
 };
 
+}
 }
 }
 #endif /* MODELREPRESENTATION_H_ */

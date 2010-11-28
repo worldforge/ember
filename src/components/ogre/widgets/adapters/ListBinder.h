@@ -34,7 +34,8 @@
 
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -208,6 +209,8 @@ T* ListBinder<T, WidgetT>::select(const std::string& key)
 	return 0;
 }
 
+
+}
 
 }
 

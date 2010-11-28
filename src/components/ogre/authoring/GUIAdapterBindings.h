@@ -23,7 +23,9 @@
 #include "framework/tinyxml/tinyxml.h"
 #include <Atlas/Message/Element.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -95,6 +97,7 @@ protected:
 	TiXmlNode* mElement;
 };
 
+}
 }
 }
 #endif

@@ -35,7 +35,9 @@
 using namespace WFMath;
 using namespace Ember;
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -279,4 +281,5 @@ void MovementAdapter::update()
 
 }
 
+}
 }

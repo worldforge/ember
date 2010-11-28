@@ -1,4 +1,5 @@
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntityFactory 
 {
 
@@ -8,4 +9,5 @@ class EmberEntityFactory
 
 
 };
+}
 }

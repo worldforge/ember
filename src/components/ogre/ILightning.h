@@ -28,7 +28,8 @@ namespace Ogre {
 	class ColourValue;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
  * @brief Provider of main light (like a sun or moon) lightning information.
@@ -52,6 +53,8 @@ public:
 	virtual Ogre::ColourValue getAmbientLightColour() const = 0;
 
 };
+}
+
 }
 
 #endif /* EMBEROGREILIGHTNING_H_ */

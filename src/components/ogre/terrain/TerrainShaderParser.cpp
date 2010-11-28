@@ -32,7 +32,9 @@
 #include <Mercator/ShaderFactory.h>
 
 #include <Atlas/Message/Element.h>
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -129,4 +131,5 @@ void TerrainShaderParser::createDefaultShaders()
 
 }
 
+}
 }

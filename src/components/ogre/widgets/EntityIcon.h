@@ -37,7 +37,8 @@ class Window;
 class EventArgs;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntity;
 namespace Gui {
 
@@ -231,6 +232,8 @@ protected:
 	void icon_Updated();
 
 };
+
+}
 
 }
 

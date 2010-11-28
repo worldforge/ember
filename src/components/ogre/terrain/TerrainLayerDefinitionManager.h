@@ -25,10 +25,11 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 
-#include <OgreResourceManager.h>
 #include "framework/Singleton.h"
+#include <OgreResourceManager.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -64,6 +65,8 @@ protected:
     const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, 
     const Ogre::NameValuePairList* createParams);
 };
+
+}
 
 }
 

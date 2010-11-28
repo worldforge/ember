@@ -1,7 +1,8 @@
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 struct EntityPickResult
 {
-	EmberOgre::EmberEntity* entity;
+	Ember::OgreView::EmberEntity* entity;
 	Ogre::Vector3 position;
 	Ogre::Real distance;
 };
@@ -21,11 +22,11 @@ class MousePicker
 
 
 
-	sigc::signal<void, const EmberOgre::EntityPickResult&, const EmberOgre::MousePickerArgs&> EventPickedEntity;
-	sigc::signal<void, const EmberOgre::MousePickerArgs&> EventPickedNothing;
+	sigc::signal<void, const Ember::OgreView::EntityPickResult&, const Ember::OgreView::MousePickerArgs&> EventPickedEntity;
+	sigc::signal<void, const Ember::OgreView::MousePickerArgs&> EventPickedNothing;
 	
-	inline EmberOgre::EmberEntity* getLastPickedEntity();
+	inline Ember::OgreView::EmberEntity* getLastPickedEntity();
 
 };
 }
-
+}

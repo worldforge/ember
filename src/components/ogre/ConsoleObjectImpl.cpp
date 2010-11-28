@@ -35,9 +35,10 @@
 #include "main/Application.h"
 // #include <SDL.h>
 
-template<> EmberOgre::ConsoleObjectImpl* Ember::Singleton<EmberOgre::ConsoleObjectImpl>::ms_Singleton = 0;
+template<> Ember::OgreView::ConsoleObjectImpl* Ember::Singleton<Ember::OgreView::ConsoleObjectImpl>::ms_Singleton = 0;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 ConsoleObjectImpl::ConsoleObjectImpl(void)
@@ -54,5 +55,6 @@ void ConsoleObjectImpl::runCommand(const std::string &command, const std::string
 
 }
 
+}
 }
 

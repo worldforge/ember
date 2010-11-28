@@ -22,7 +22,9 @@
 #include "components/entitymapping/ChangeContext.h"
 #include "components/entitymapping/IVisitor.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -48,6 +50,7 @@ private:
 
 };
 
+}
 }
 }
 #endif /* MODELPARTREACTIVATORVISITOR_H_ */

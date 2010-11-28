@@ -26,7 +26,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreColourValue.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -68,6 +69,8 @@ protected:
 
 	const Ogre::Vector3& getLightPosition() const;
 };
+
+}
 
 }
 

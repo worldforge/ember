@@ -23,7 +23,8 @@
 #ifndef EMBEROGREMEDIAUPDATER_H
 #define EMBEROGREMEDIAUPDATER_H
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -39,6 +40,8 @@ public:
     
 
 };
+
+}
 
 }
 

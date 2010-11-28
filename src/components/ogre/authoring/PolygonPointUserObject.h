@@ -25,7 +25,9 @@
 
 #include <sigc++/signal.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -82,6 +84,8 @@ private:
 	PolygonPoint& mPoint;
 
 };
+
+}
 
 }
 

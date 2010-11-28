@@ -19,7 +19,9 @@
 #ifndef IMOVABLE_H_
 #define IMOVABLE_H_
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -47,6 +49,8 @@ public:
 	 */
 	virtual void updateMotion(float timeSlice) = 0;
 };
+
+}
 
 }
 

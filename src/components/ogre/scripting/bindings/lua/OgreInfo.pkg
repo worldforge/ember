@@ -21,7 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -45,6 +46,5 @@ public:
     static std::string createUniqueResourceName(const std::string& resourceName);
 
 };
-
 }
-
+}

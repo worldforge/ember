@@ -99,7 +99,7 @@ function TerrainEditor:buildWidget(terrainManager)
 			self.radiusSlider = self.widget:getWindow("Radius")
 			self.radiusSlider = CEGUI.toSlider(self.radiusSlider)
 		
-			self.editor = EmberOgre.Terrain.TerrainEditor:new(terrainManager, mainCamera)
+			self.editor = Ember.OgreView.Terrain.TerrainEditor:new(terrainManager, mainCamera)
 			connect(self.connectors, self.editor.EventOverlayCreated, self.overlayCreated, self)
 			connect(self.connectors, self.editor.EventOverlayDestroyed, self.overlayDestroyed, self)
 			self.editor:showOverlay()

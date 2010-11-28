@@ -27,7 +27,9 @@
 #include <OgreTextureUnitState.h>
 #include <OgrePass.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -111,4 +113,5 @@ void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr textur
 
 }
 
+}
 }

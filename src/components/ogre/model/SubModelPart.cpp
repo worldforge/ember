@@ -32,7 +32,9 @@
 #include <OgreSubEntity.h>
 #include <OgreSubMesh.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -95,5 +97,6 @@ const SubModelPart::SubModelPartEntityStore& SubModelPart::getSubentities() cons
 	return mSubEntities;
 }
 
+}
 }
 }

@@ -26,7 +26,8 @@
 #include "services/config/ConfigListenerContainer.h"
 #include <OgreShadowCameraSetupPSSM.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 @brief This takes care of the setup of the pssm shadow camera.
@@ -124,6 +125,8 @@ private:
 
 
 };
+
+}
 
 }
 

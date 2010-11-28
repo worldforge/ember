@@ -13,10 +13,10 @@ function QuickHelp.buildWidget()
 		}
 	setmetatable(quickhelp, {__index = QuickHelp})
 		
-	quickhelp.helper = EmberOgre.Gui.QuickHelpCursor:new_local()
+	quickhelp.helper = Ember.OgreView.Gui.QuickHelpCursor:new_local()
 	
 	quickhelp.updateText_connector = createConnector(quickhelp.helper.EventUpdateText):connect(quickhelp.updateText, quickhelp)
-	quickhelp.toggleVisibility_connector = createConnector(EmberOgre.Gui.QuickHelp:getSingleton().EventToggleWidgetVisibility):connect(quickhelp.toggleVisibility, quickhelp)
+	quickhelp.toggleVisibility_connector = createConnector(Ember.OgreView.Gui.QuickHelp:getSingleton().EventToggleWidgetVisibility):connect(quickhelp.toggleVisibility, quickhelp)
 	quickhelp:buildCEGUIWidget()
 end
 

@@ -35,7 +35,8 @@ Torus Knot Software Ltd.
 #include <OgreArchive.h>
 #include <OgreArchiveFactory.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
     /** Specialisation of the Archive class to allow reading of files from
         filesystem folders / directories.
@@ -108,12 +109,14 @@ namespace EmberOgre {
         /// @copydoc FactoryObj::createInstance
         Ogre::Archive *createInstance( const Ogre::String& name )
         {
-            return new EmberOgre::FileSystemArchive(name, "EmberFileSystem");
+            return new Ember::OgreView::FileSystemArchive(name, "EmberFileSystem");
         }
         /// @copydoc FactoryObj::destroyInstance
         void destroyInstance( Ogre::Archive* arch) { delete arch; }
     };
 
+
+}
 
 }
 

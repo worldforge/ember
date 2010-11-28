@@ -26,7 +26,9 @@ template<int> class Vector;
 class Quaternion;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -65,6 +67,8 @@ public:
 	 */
 	virtual const WFMath::Vector<3>& getVelocity() const = 0;
 };
+
+}
 
 }
 

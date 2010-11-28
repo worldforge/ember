@@ -24,14 +24,15 @@
 #ifndef EMBEROGREAVATARLOGGER_H
 #define EMBEROGREAVATARLOGGER_H
 
+#include "framework/ConsoleObject.h"
 #include <sigc++/trackable.h>
 #include <fstream>
 #include <string>
 #include <memory>
-#include "framework/ConsoleObject.h"
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class Avatar;
 class EmberEntity;
@@ -92,6 +93,8 @@ protected:
 	std::auto_ptr<AvatarLogger> mLogger;
 
 };
+}
+
 }
 
 #endif

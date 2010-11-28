@@ -170,25 +170,25 @@ function ServerBrowser:addRow(sInfo)
 	local rowNumber = self.serverList:getRowCount()
 	self.serverList:addRow()
 	
-	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getServername())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getServername())
 	self.serverList:setItem(item, 0, rowNumber)
 	
-	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getPing())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getPing())
 	self.serverList:setItem(item, 1, rowNumber)
 	
-	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getNumClients())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getNumClients())
 	self.serverList:setItem(item, 2 ,rowNumber)
 	
-	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getRuleset())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getRuleset())
 	self.serverList:setItem(item, 3, rowNumber)
 	
-	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getServer())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getServer())
 	self.serverList:setItem(item, 4, rowNumber)
 	
-	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getVersion())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getVersion())
 	self.serverList:setItem(item, 5, rowNumber)
 	
-	local item = EmberOgre.Gui.ColouredListItem:new(sInfo:getHostname())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getHostname())
 	self.serverList:setItem(item, 6, rowNumber)
 end
 

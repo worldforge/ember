@@ -38,7 +38,8 @@ class OgreRenderer;
 
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 TYPEDEF_STL_MAP(SDLKey, CEGUI::Key::Scan, SDLKeyMap);
 
@@ -82,6 +83,8 @@ private:
 	const CEGUI::String* mSelectedText;
 	size_t mSelectionStart, mSelectionEnd;
 };
+
+}
 
 }
 

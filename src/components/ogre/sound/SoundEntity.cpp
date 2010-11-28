@@ -34,7 +34,9 @@
 
 #include "framework/LoggingInstance.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 	SoundEntity::SoundEntity(EmberEntity& parentEntity)
 	: mParentEntity(parentEntity), mCurrentMovementAction(0)
@@ -153,5 +155,5 @@ namespace EmberOgre
 //		}
 	}
 
-} // namespace Ember
-
+}
+}

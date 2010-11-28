@@ -17,7 +17,8 @@
 */
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 class TerrainShader;
@@ -75,26 +76,24 @@ public:
 	 *
 	 * This often signals that a page is to be loaded and rendered.
 	 */
-	sigc::signal<void, EmberOgre::Terrain::TerrainPage&> EventTerrainPageGeometryUpdated;
+	sigc::signal<void, Ember::OgreView::Terrain::TerrainPage&> EventTerrainPageGeometryUpdated;
 	
 	/**
 	 * @brief Gets the adapter used to bind this manager to a scene manager.
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
-	EmberOgre::Terrain::ISceneManagerAdapter* getAdapter() const;
+	Ember::OgreView::Terrain::ISceneManagerAdapter* getAdapter() const;
 	
 	/**
 	 * @brief Accessor for the Scene instance to which this terrain manager is attached to.
 	 *
 	 * @returns The Scene instance used by the manager.
 	 */
-	EmberOgre::Scene& getScene() const;
+	Ember::OgreView::Scene& getScene() const;
 	
 	
 };
 
 }
 }
-
-
-#endif // TerrainManager_H
+}

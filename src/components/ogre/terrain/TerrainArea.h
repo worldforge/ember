@@ -31,7 +31,8 @@ namespace Mercator
     class Area;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 
@@ -161,6 +162,7 @@ inline void TerrainArea::setArea(Mercator::Area* area)
 }
 
 }
-};
+}
+}
 
 #endif

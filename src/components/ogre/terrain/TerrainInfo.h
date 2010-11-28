@@ -33,7 +33,8 @@ namespace Mercator
 class BasePoint;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 /**
@@ -92,6 +93,8 @@ private:
 
 };
 }
+}
+
 }
 
 #endif

@@ -28,7 +28,8 @@
 #include "NumberAdapter.h"
 #include "../../ColouredListItem.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -99,4 +100,5 @@ void NumberAdapter::addSuggestion(const std::string& suggestedValue)
 
 }
 
+}
 }

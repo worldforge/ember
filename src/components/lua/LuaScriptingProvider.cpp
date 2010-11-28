@@ -128,7 +128,7 @@ void LuaScriptingProvider::createState()
 	}
 
 
-// 	lua_pushcfunction(mLuaState, ::EmberOgre::Scripting::LuaHelper::luaErrorHandler);
+// 	lua_pushcfunction(mLuaState, ::Ember::OgreView::Scripting::LuaHelper::luaErrorHandler);
 // 	mErrorHandlingFunctionIndex = luaL_ref(mLuaState, LUA_REGISTRYINDEX);
 
 
@@ -331,42 +331,6 @@ void LuaScriptingProvider::forceGC()
 	lua_setgcthreshold(mLuaState,0);
 #endif
 }
-
-
-
-
-// int32_t LuaScriptInterface::callFunction(uint32_t nParams)
-// {
-// 	int32_t result = LUA_NO_ERROR;
-//
-// 	int size0 = lua_gettop(m_luaState);
-//
-// 	int error_index = lua_gettop(m_luaState) - nParams;
-// 	lua_pushcfunction(m_luaState, luaErrorHandler);
-// 	lua_insert(m_luaState, error_index);
-//
-// 	if(lua_pcall(m_luaState, nParams, 1, error_index) != 0){
-// 		LuaScriptInterface::reportError(NULL, std::string(LuaScriptInterface::popString(m_luaState)));
-// 		result = LUA_ERROR;
-// 	} else {
-// 		result = (int32_t)LuaScriptInterface::popNumber(m_luaState);
-// 	}
-// 	lua_remove(m_luaState, error_index);
-//
-// 	if((lua_gettop(m_luaState) + (int)nParams  + 1) != size0){
-// 		LuaScriptInterface::reportError(NULL, "Stack size changed!");
-// 	}
-//
-// 	return result;
-// }
-
-
-
-// CEGUI::ScriptModule& LuaScriptingProvider::getScriptModule()
-// {
-// 	return mLuaScriptModule;
-// }
-
 
 }
 

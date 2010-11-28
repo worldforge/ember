@@ -22,7 +22,9 @@
 
 #include "Shader.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -43,6 +45,8 @@ protected:
 	virtual ShaderPass* addPass();
 
 };
+
+}
 
 }
 

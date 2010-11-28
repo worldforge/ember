@@ -45,7 +45,9 @@
 #include <OgreViewport.h>
 #include <OgreRoot.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals) :
@@ -181,4 +183,5 @@ void World::avatarEntity_BeingDeleted()
 	mAvatar = 0;
 }
 
+}
 }

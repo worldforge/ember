@@ -19,7 +19,9 @@ namespace Ogre {
 class Vector2;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -73,6 +75,8 @@ protected:
 	unsigned int mPlantIndex;
 
 };
+
+}
 
 }
 

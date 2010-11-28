@@ -45,7 +45,9 @@
 #include "../terrain/TerrainManager.h"
 #include "../terrain/ISceneManagerAdapter.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -156,5 +158,6 @@ void Forest::worldSizeChanged()
 
 }
 
+}
 }
 

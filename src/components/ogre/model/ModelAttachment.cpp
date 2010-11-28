@@ -42,7 +42,9 @@
 
 #include <OgreVector3.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -299,5 +301,6 @@ void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath
 	mModelRepresentation.setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
 }
 
+}
 }
 }

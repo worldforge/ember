@@ -1,6 +1,7 @@
 $#include "components/ogre/authoring/EntityRecipeManager.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Authoring {
 
 /**
@@ -34,5 +35,6 @@ public:
 	virtual void parseScript (Ogre::DataStreamPtr &stream, const Ogre::String &groupName);
 };
 
+}
 }
 }

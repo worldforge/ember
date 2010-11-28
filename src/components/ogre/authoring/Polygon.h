@@ -31,7 +31,9 @@ namespace Ogre
 class SceneNode;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -195,6 +197,8 @@ protected:
 	PolygonRenderer mRenderer;
 
 };
+
+}
 
 }
 

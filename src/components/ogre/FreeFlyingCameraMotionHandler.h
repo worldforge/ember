@@ -22,7 +22,8 @@
 
 #include "components/ogre/OgreIncludes.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -45,6 +46,8 @@ private:
 	Ogre::SceneNode& mFreeFlyingNode;
 	float mSpeed;
 };
+
+}
 
 }
 

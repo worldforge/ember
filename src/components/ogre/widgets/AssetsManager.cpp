@@ -44,7 +44,9 @@
 // #include <OgreBitwise.h>
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -187,4 +189,5 @@ bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)
 
 }
 
+}
 }

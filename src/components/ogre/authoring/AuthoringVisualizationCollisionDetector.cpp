@@ -22,7 +22,9 @@
 #include <OgreRay.h>
 #include <OgreVector3.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -65,6 +67,7 @@ void AuthoringVisualizationCollisionDetector::testCollision(Ogre::Ray& ray, Coll
 		// raycast failed
 		result.collided = false;
 	}
+}
 }
 }
 }

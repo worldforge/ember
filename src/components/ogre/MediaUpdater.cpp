@@ -29,7 +29,8 @@
 #include "services/config/ConfigService.h"
 #include "services/wfut/WfutService.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 MediaUpdater::MediaUpdater()
 {
@@ -60,4 +61,5 @@ void MediaUpdater::performUpdate()
 }
 
 
+}
 }

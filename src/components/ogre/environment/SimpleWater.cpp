@@ -34,7 +34,9 @@
 #include <OgreMeshManager.h>
 #include <OgreEntity.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -125,4 +127,5 @@ float SimpleWater::getLevel() const
 
 }
 
+}
 }

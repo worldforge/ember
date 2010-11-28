@@ -23,7 +23,8 @@
 #ifndef EMBEROGREACTION_H
 #define EMBEROGREACTION_H
 #include "AnimationSet.h"
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 /**
@@ -45,7 +46,7 @@ protected:
 inline AnimationSet& Action::getAnimations() { return mAnimations; }
 inline void Action::setName(const std::string& name) { mName = name; }
 inline const std::string& Action::getName() { return mName; }
-
+}
 }
 }
 #endif

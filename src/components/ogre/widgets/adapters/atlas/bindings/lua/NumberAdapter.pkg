@@ -23,7 +23,8 @@
 
 $#include "../../NumberAdapter.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -42,6 +43,8 @@ public:
     virtual ~NumberAdapter();
 
 };
+
+}
 
 }
 

@@ -38,7 +38,9 @@
 #include <memory>
 #include <boost/shared_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -188,4 +190,5 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 
 }
 
+}
 }

@@ -29,7 +29,8 @@ the basic resources required for the progress bar and will be loaded automatical
 
 #include <OgreResourceGroupManager.h>
 #include <OgreTimer.h>
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 class LoadingBar;
@@ -184,6 +185,8 @@ public:
 
 };
 }
+}
+
 }
 
 #endif

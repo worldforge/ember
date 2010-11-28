@@ -32,7 +32,9 @@ class SceneNode;
 class Entity;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class MovementAdapter;
 
@@ -141,6 +143,8 @@ protected:
 	 */
 	Ogre::Entity* mEntity;
 };
+
+}
 
 }
 

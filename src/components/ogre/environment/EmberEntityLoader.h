@@ -30,7 +30,8 @@
 //This will speed up the process of getting trees, but will add overhead to adding or removing.
 #define EMBERENTITYLOADER_USEBATCH 0
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 class ModelRepresentation;
@@ -183,6 +184,8 @@ protected:
 	 */
 	EntityMap* getStoreForEntity(EmberEntity * entity);
 };
+
+}
 
 }
 

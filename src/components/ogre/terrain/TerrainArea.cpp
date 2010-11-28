@@ -30,7 +30,9 @@
 #include "../EmberEntity.h"
 #include <Mercator/Area.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain
 {
@@ -139,5 +141,6 @@ const std::string& TerrainArea::getEntityId() const
 	return mEntity.getId();
 }
 
+}
 }
 }

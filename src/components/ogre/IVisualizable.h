@@ -21,7 +21,9 @@
 
 #include <string>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -56,6 +58,8 @@ public:
 	 */
 	virtual bool getVisualize(const std::string& visualization) const = 0;
 };
+}
+
 }
 
 #endif /* IVISUALIZABLE_H_ */

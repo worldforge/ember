@@ -21,7 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -38,19 +39,19 @@ public:
 	 * @return true if successful, else false
 	 */
 	
-	bool addEntityIcon(EmberOgre::Gui::EntityIcon* icon);
+	bool addEntityIcon(Ember::OgreView::Gui::EntityIcon* icon);
 	
 	/**
 	 *    Removes and returns the contained EntityIcon. If none is contained, nothing will happen.
 	 * @return The contained EntityIcon or null if none contained.
 	 */
-	EmberOgre::Gui::EntityIcon* removeEntityIcon();
+	Ember::OgreView::Gui::EntityIcon* removeEntityIcon();
 	
 	/**
 	 *    Gets the contained EntityIcon
 	 * @return 
 	 */
-	EmberOgre::Gui::EntityIcon* getEntityIcon();
+	Ember::OgreView::Gui::EntityIcon* getEntityIcon();
 		
 	
 	CEGUI::Window* getWindow();
@@ -58,15 +59,15 @@ public:
 	/**
 	Call this from the gui code whenever an icon is dragged away from the slot.
 	*/
-	void notifyIconDraggedOff(EmberOgre::Gui::EntityIcon* entityIcon);
+	void notifyIconDraggedOff(Ember::OgreView::Gui::EntityIcon* entityIcon);
 	
 	/**
 	Emitted when an icon has been dragged away from the slot as a result of an user action.
 	*/
-	sigc::signal<void, EmberOgre::Gui::EntityIcon*> EventIconDraggedOff;
+	sigc::signal<void, Ember::OgreView::Gui::EntityIcon*> EventIconDraggedOff;
 
 };
 
 }
-
+}
 }

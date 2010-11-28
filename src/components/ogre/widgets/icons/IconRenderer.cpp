@@ -40,7 +40,9 @@
 #include <sigc++/bind.h>
 #include <sigc++/signal.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -309,4 +311,5 @@ void DelayedIconRendererWorker::finalizeRendering(DelayedIconRendererEntry& entr
 
 }
 
+}
 }

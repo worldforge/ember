@@ -6,7 +6,7 @@
 IndirectRenderingChecker = {}
 
 
-if EmberOgre.OgreInfo:isIndirect() then
+if Ember.OgreView.OgreInfo:isIndirect() then
 	IndirectRenderingChecker.widget = guiManager:createWidget()
 	IndirectRenderingChecker.widget:loadMainSheet("IndirectRenderingChecker.layout", "IndirectRenderingChecker/")
 	IndirectRenderingChecker.widget:show()

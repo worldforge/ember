@@ -23,7 +23,8 @@
 
 $#include "components/ogre/widgets/ActionBarIcon.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -34,15 +35,15 @@ public:
 	
 	CEGUI::Window* getImage();
 	CEGUI::DragContainer* getDragContainer();
-	EmberOgre::Gui::Icons::Icon* getIcon();
-	void setSlot(EmberOgre::Gui::ActionBarIconSlot* slot);
-	EmberOgre::Gui::ActionBarIconSlot* getSlot();
+	Ember::OgreView::Gui::Icons::Icon* getIcon();
+	void setSlot(Ember::OgreView::Gui::ActionBarIconSlot* slot);
+	Ember::OgreView::Gui::ActionBarIconSlot* getSlot();
 	void setTooltipText(const std::string& text);
-	bool operator==(const EmberOgre::Gui::ActionBarIcon& value);
+	bool operator==(const Ember::OgreView::Gui::ActionBarIcon& value);
 	virtual void defaultAction();
 	
 };
 
 }
-
+}
 }

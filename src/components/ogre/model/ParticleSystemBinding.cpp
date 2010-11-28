@@ -29,7 +29,8 @@
 #include <OgreParticleEmitter.h>
 #include <OgreParticleSystem.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 ParticleSystemBinding::ParticleSystemBinding(ParticleSystem* parentSystem, const std::string& emitterVal, const std::string& variableName) :
@@ -70,5 +71,6 @@ void ParticleSystemBinding::scaleValue(Ogre::Real scaler)
 	}
 }
 
+}
 }
 }

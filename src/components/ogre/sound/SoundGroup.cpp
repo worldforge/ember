@@ -37,8 +37,9 @@
 #include "services/sound/SoundSample.h"
 #include "SoundDefinition.h"
 
-using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup)
@@ -172,5 +173,5 @@ void SoundGroupBinding::update()
 	}
 	
 
-} // namespace Ember
-
+}
+}

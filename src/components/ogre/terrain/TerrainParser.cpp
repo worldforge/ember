@@ -28,7 +28,9 @@
 
 #include <Atlas/Message/Element.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -97,4 +99,5 @@ TerrainDefPointStore TerrainParser::parseTerrain(const Atlas::Message::Element& 
 
 }
 
+}
 }

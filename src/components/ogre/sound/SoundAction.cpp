@@ -40,7 +40,9 @@
 
 using namespace Ember;
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 	SoundAction::SoundAction(SoundEntity& soundEntity)
 	: mSoundEntity(soundEntity), mGroup(0), mInstance(0), mIsLooping(false)
@@ -145,5 +147,6 @@ namespace EmberOgre
 		mIsLooping = isLooping;
 	}
 
+}
 }
 

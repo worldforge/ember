@@ -41,9 +41,10 @@
 #include <CEGUIRect.h>
 
 
-using namespace EmberOgre::Terrain;
+using namespace Ember::OgreView::Terrain;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -498,4 +499,5 @@ CompassThirdPersonCameraAnchor::~CompassThirdPersonCameraAnchor()
 
 }
 
+}
 }

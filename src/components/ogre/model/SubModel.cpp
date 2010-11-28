@@ -29,7 +29,8 @@
 #include <OgreEntity.h>
 #include <OgreSubEntity.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 SubModel::SubModel(Ogre::Entity& entity) :
@@ -111,5 +112,6 @@ bool SubModel::removeEntity(Ogre::Entity* entity)
 }
 */
 
+}
 }
 }

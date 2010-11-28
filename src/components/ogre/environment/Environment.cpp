@@ -32,7 +32,8 @@
 #include <OgreStringConverter.h>
 #include <OgreColourValue.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -139,4 +140,5 @@ void Environment::setWorldPosition(float longitudeDegrees, float latitudeDegrees
 
 }
 
+}
 }

@@ -26,7 +26,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreDataStream.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -47,6 +48,8 @@ protected:
 	TerrainLayerDefinitionManager& mManager;
 
 };
+
+}
 
 }
 

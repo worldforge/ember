@@ -30,6 +30,19 @@
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
 
+#include "../EmberOgre.h"
+#include "../World.h"
+#include "../Avatar.h"
+
+#include "components/ogre/model/ModelRepresentationManager.h"
+#include "components/ogre/model/ModelRepresentation.h"
+#include "components/ogre/model/Model.h"
+#include "components/ogre/camera/MainCamera.h"
+
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
+#include "services/config/ConfigService.h"
+
 #include <CEGUIWindowManager.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIFont.h>
@@ -43,26 +56,15 @@
 #include <Eris/Connection.h>
 #include <Eris/Avatar.h>
 
-#include "../EmberOgre.h"
-#include "../World.h"
-#include "../Avatar.h"
-
-#include "../EmberEntity.h"
-#include "components/ogre/model/ModelRepresentationManager.h"
-#include "components/ogre/model/ModelRepresentation.h"
-#include "../model/Model.h"
-#include "components/ogre/camera/MainCamera.h"
-
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
-#include "services/config/ConfigService.h"
 #include <sigc++/slot.h>
 
 #include <OgreCamera.h>
 #include <OgreNode.h>
 
 using namespace CEGUI;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -360,7 +362,7 @@ void IngameChatWidget::Label::setModelRepresentation(Model::ModelRepresentation*
 	try {
 		updateEntityName();
 	} catch (const Exception& ex) {
-		S_LOG_FAILURE("Could not get widget EntityName. Exception: " << ex.getMessage().c_str());
+		S_LOG_FAILURE("Could not get widget EntityName." << ex);
 	}
 }
 
@@ -575,6 +577,7 @@ IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsi
 }
 
 }
-;
+
 }
-;
+
+}

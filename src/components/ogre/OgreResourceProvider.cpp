@@ -28,7 +28,8 @@
 #include "framework/Exception.h"
 #include <OgreResourceGroupManager.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 OgreResourceWrapper::OgreResourceWrapper(Ogre::DataStreamPtr dataStream)
 {
@@ -95,4 +96,5 @@ Ember::ResourceWrapper OgreResourceProvider::getResource(const std::string& name
 
 
 
+}
 }

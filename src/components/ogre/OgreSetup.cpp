@@ -78,7 +78,9 @@ extern "C"
 sighandler_t oldSignals[NSIG];
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 OgreSetup::OgreSetup() :
@@ -838,6 +840,7 @@ bool OgreSetup::configure(void)
 			SDL_WM_SetIcon(mIconSurface, 0);
 		}
 
+
 #endif
 
 		setStandardValues();
@@ -961,4 +964,5 @@ int OgreSetup::isExtensionSupported(const char *extension)
 	return 0;
 }
 
+}
 }

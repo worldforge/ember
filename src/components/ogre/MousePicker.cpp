@@ -32,7 +32,8 @@
 
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 MousePicker::~MousePicker()
 {
@@ -48,4 +49,5 @@ void MousePicker::doMousePicking(const Ogre::Real x, const Ogre::Real y,const Mo
 
 }
 
-};
+}
+}

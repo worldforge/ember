@@ -32,7 +32,9 @@ template<int> class AxisBox;
 }
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -98,6 +100,8 @@ private:
 	sigc::signal<void, const TerrainShader*, const AreaStore& >& mSignal;
 
 };
+
+}
 
 }
 

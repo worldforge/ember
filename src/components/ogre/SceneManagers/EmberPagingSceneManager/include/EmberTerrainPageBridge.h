@@ -32,7 +32,8 @@ namespace Ogre
 class PagingLandScapeData2DManager;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberPagingLandScapeData2D_HeightField;
 
@@ -40,7 +41,7 @@ class EmberPagingLandScapeData2D_HeightField;
 	Acts as a bridge between an instance of TerrainPage and EmberPagingLandScapeData2D_HeightField, making sure that the former is correctly updated when the terrain changes.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class EmberTerrainPageBridge : public ::EmberOgre::Terrain::ITerrainPageBridge
+class EmberTerrainPageBridge : public ::Ember::OgreView::Terrain::ITerrainPageBridge
 {
 public:
 	typedef std::pair<unsigned int, unsigned int> UnsignedIndexType;
@@ -64,6 +65,8 @@ protected:
 
 	EmberPagingLandScapeData2D_HeightField* getData2D();
 };
+
+}
 
 }
 

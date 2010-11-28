@@ -22,7 +22,9 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/RootOperation.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -68,5 +70,6 @@ void RawTypeInfoRepository::parseAndSaveTypeData(const Atlas::Objects::Root& raw
 	mRawTypeData[rawType->getId()] = rawType;
 }
 
+}
 }
 }

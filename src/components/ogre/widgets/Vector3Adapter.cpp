@@ -31,7 +31,8 @@
 #include <OgreStringConverter.h>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -117,4 +118,5 @@ bool Vector3Adapter::window_TextChanged(const CEGUI::EventArgs& e)
 
 }
 
+}
 }

@@ -51,7 +51,9 @@
 #include <sigc++/bind.h>
 #include <boost/smart_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -605,4 +607,5 @@ bool TerrainEditorOverlay::getBasePoint(const std::map<int, std::map<int, Mercat
 
 }
 
+}
 }

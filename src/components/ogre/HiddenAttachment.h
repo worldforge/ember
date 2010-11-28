@@ -21,7 +21,9 @@
 
 #include "components/ogre/AttachmentBase.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class IGraphicalRepresentation;
@@ -48,5 +50,6 @@ private:
 
 };
 
+}
 }
 #endif /* HIDDENATTACHMENT_H_ */

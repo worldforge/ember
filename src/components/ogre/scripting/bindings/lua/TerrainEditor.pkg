@@ -27,7 +27,8 @@ $#include "components/ogre/terrain/TerrainEditor.h"
 
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 
@@ -39,7 +40,7 @@ public:
 	
 	Ogre::SceneNode* getBasePointMarkerNode() const;
 	
-	const EmberOgre::TerrainPosition& getPosition() const;
+	const Ember::OgreView::TerrainPosition& getPosition() const;
 	
 	/**
 	 *    Gets the current height of the base point.
@@ -66,7 +67,7 @@ class TerrainEditAction
 {
 public:
 
-typedef std::vector<EmberOgre::Terrain::TerrainEditBasePointMovement> MovementStore;
+typedef std::vector<Ember::OgreView::Terrain::TerrainEditBasePointMovement> MovementStore;
 const MovementStore& getMovements() const;
 MovementStore& getMovements();
 
@@ -77,7 +78,7 @@ class TerrainEditBasePointMovement
 {
 
 float getVerticalMovement() const;
-const EmberOgre::TerrainPosition& getPosition() const;
+const Ember::OgreView::TerrainPosition& getPosition() const;
 
 };
 
@@ -87,7 +88,7 @@ const EmberOgre::TerrainPosition& getPosition() const;
 class TerrainEditor
 {
 public:
-    TerrainEditor(EmberOgre::Terrain::TerrainManager& manager, EmberOgre::Camera::MainCamera& camera);
+    TerrainEditor(Ember::OgreView::Terrain::TerrainManager& manager, Ember::OgreView::Camera::MainCamera& camera);
 
     ~TerrainEditor();
 
@@ -107,7 +108,7 @@ public:
 	bool isOverlayShown() const;
 
 
-	sigc::signal<void, EmberOgre::Terrain::TerrainEditorOverlay&> EventOverlayCreated;
+	sigc::signal<void, Ember::OgreView::Terrain::TerrainEditorOverlay&> EventOverlayCreated;
 
 	/**
 	 * @brief Emitted when the overlay instance has been destroyed.
@@ -135,13 +136,13 @@ class TerrainEditorOverlay
 	 * @param the action to commit
 	 * @return
 	 */
-    void commitAction(const EmberOgre::Terrain::TerrainEditAction& action);
+    void commitAction(const Ember::OgreView::Terrain::TerrainEditAction& action);
 
 	/**
 	 *    returns the currently selected base point user object, if any
 	 * @return
 	 */
-	EmberOgre::Terrain::BasePointUserObject* getCurrentBasePointUserObject() const;
+	Ember::OgreView::Terrain::BasePointUserObject* getCurrentBasePointUserObject() const;
 
     /**
      * Sends all changes to the server.
@@ -170,22 +171,22 @@ class TerrainEditorOverlay
     * Emitted when a base point has been picked by the mouse.
     * @param The UserObject of the picked base point.
     */
-    sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*> EventPickedBasePoint;
+    sigc::signal<void, Ember::OgreView::Terrain::BasePointUserObject*> EventPickedBasePoint;
 
     /**
     * Emitted when an TerrainEditAction has been created.
     * @param The newly created TerrainEditAction
     */
-    sigc::signal<void, const EmberOgre::Terrain::TerrainEditAction*> EventActionCreated;
+    sigc::signal<void, const Ember::OgreView::Terrain::TerrainEditAction*> EventActionCreated;
 
 	/**
 	Emitted when the position of the selected base point has been updated
 	*/
-	sigc::signal<void, EmberOgre::Terrain::BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
+	sigc::signal<void, Ember::OgreView::Terrain::BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
 
 };
 
 }
 }
 
-#endif
+}

@@ -36,7 +36,8 @@
 #include <CEGUIWindow.h>
 
 using namespace CEGUI;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 
@@ -97,4 +98,5 @@ void Help::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 }
 
 }
-};
+}
+}

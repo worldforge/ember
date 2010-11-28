@@ -26,8 +26,10 @@
 
 #include "Action.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 
+}
 }

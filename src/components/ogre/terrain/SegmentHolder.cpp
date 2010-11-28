@@ -23,7 +23,9 @@
 
 #include <cassert>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -76,4 +78,5 @@ Segment& SegmentHolder::getSegment()
 
 }
 
+}
 }

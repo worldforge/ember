@@ -26,7 +26,8 @@
 
 #include "EmberEntityHideModelAction.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 EmberEntityHideModelAction::EmberEntityHideModelAction(EmberEntity& entity)
 : mEntity(entity)
@@ -48,4 +49,5 @@ void EmberEntityHideModelAction::deactivate(Ember::EntityMapping::ChangeContext&
 // 	mEntity.setModel("");
 }
 
+}
 }

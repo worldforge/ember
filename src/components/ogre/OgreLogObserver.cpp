@@ -30,7 +30,8 @@
 
 
 using namespace Ogre;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 
@@ -69,4 +70,5 @@ void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml,
 
 
 
+}
 }

@@ -38,7 +38,9 @@
 #include <Atlas/Message/Element.h>
 
 #include <vector>
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -163,5 +165,6 @@ EmberEntity* EntityTooltip::getActiveEntity()
 	return 0;
 }
 
+}
 }
 }

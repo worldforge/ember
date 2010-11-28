@@ -53,7 +53,9 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Shader.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain
 {
@@ -176,5 +178,6 @@ TerrainPageSurfaceLayer* TerrainPage::updateShaderTexture(const TerrainShader* s
 }
 
 
+}
 }
 }

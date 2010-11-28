@@ -35,7 +35,8 @@ class Image;
 class Texture;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -113,6 +114,8 @@ private:
 
 
 };
+
+}
 
 }
 

@@ -24,12 +24,13 @@
 #include "config.h"
 #endif
 #include "EmberEntityUserObject.h"
-//#include "ogreopcode/include/OgreCollisionObject.h"
 #include "EmberEntity.h"
 #include "ICollisionDetector.h"
 #include "model/Model.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 EmberEntityUserObject::EmberEntityUserObject(EmberEntity& emberEntity, ICollisionDetector* collisionDetector) :
@@ -56,4 +57,4 @@ EmberEntity& EmberEntityUserObject::getEmberEntity() const
 }
 
 }
-;
+}

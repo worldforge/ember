@@ -31,7 +31,8 @@ namespace CEGUI {
 	class Image;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -101,6 +102,8 @@ private:
 	IconImageStoreEntry* mImageStoreEntry;
 
 };
+
+}
 
 }
 

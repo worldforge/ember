@@ -43,7 +43,9 @@ public:
 }
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -108,5 +110,6 @@ void SimpleEntityVisualization::updatePositionAndOrientation()
 	}
 }
 
+}
 }
 }

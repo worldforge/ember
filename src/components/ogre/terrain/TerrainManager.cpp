@@ -102,7 +102,9 @@
 #include <boost/shared_ptr.hpp>
 
 using namespace Ogre;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain
 {
@@ -661,5 +663,6 @@ void TerrainManager::application_EndErisPoll(float)
 	mTaskQueue->pollProcessedTasks(10L);
 }
 
+}
 }
 }

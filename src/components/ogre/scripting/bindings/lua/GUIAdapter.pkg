@@ -1,6 +1,7 @@
 $#include "components/ogre/authoring/GUIAdapter.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Authoring {
 class GUIAdapter
 {
@@ -27,5 +28,6 @@ public:
 	
 	void addSuggestion(const std::string& value, const std::string& text);
 };
+}
 }
 }

@@ -30,7 +30,8 @@
 #include <elements/CEGUIEditbox.h>
 #include <elements/CEGUIMultiLineEditbox.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreRenderer *renderer):
 mGuiSystem(system)
@@ -314,4 +315,5 @@ bool GUICEGUIAdapter::injectKeyUp(const SDLKey& key)
 
 
 
+}
 }

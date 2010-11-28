@@ -29,7 +29,9 @@
 
 #include "framework/ConsoleObject.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -56,6 +58,8 @@ public:
 };
 
 }
+}
+
 }
 
 #endif

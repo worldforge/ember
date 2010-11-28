@@ -26,7 +26,9 @@
 
 #include "framework/tasks/TaskExecutionContext.h"
 #include <boost/shared_ptr.hpp>
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -90,4 +92,5 @@ void GeometryUpdateTask::executeTaskInMainThread()
 }
 }
 
+}
 }

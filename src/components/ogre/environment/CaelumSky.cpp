@@ -28,7 +28,9 @@
 #include "caelum/include/Caelum.h"
 #include "framework/Tokeniser.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -105,4 +107,5 @@ bool CaelumSky::frameEnded(const Ogre::FrameEvent & event)
 
 }
 
+}
 }

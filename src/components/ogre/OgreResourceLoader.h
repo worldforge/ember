@@ -28,7 +28,8 @@
 #include "framework/ConsoleObject.h"
 #include <OgreConfigFile.h>
 #include <map>
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class FileSystemArchiveFactory;
 
@@ -101,7 +102,7 @@ protected:
 
 	std::vector<std::string> mLoadedSections;
 
-	::EmberOgre::FileSystemArchiveFactory* mFileSystemArchiveFactory;
+	::Ember::OgreView::FileSystemArchiveFactory* mFileSystemArchiveFactory;
 
 	/**
 	 * @brief A map of all resource locations.
@@ -119,6 +120,8 @@ protected:
 	void loadAllUnloadedSections();
 
 };
+
+}
 
 }
 

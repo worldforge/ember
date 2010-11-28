@@ -21,7 +21,9 @@
 
 #include <sigc++/trackable.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -41,6 +43,8 @@ private:
 	void mover_Moved();
 };
 }
+}
+
 }
 
 #endif /* AUTHORINGVISUALIZATIONMOVER_H_ */

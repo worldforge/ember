@@ -23,7 +23,8 @@
 #ifndef EMBEROGREITERRAINPAGEBRIDGE_H
 #define EMBEROGREITERRAINPAGEBRIDGE_H
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 class TerrainPage;
@@ -108,6 +109,7 @@ inline TerrainPage* ITerrainPageBridge::getTerrainPage() const
 }
 
 
+}
 }
 }
 #endif

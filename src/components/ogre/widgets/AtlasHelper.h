@@ -22,7 +22,9 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <string>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -45,6 +47,7 @@ public:
 	static std::string serialize(const Atlas::Objects::Root& obj, const std::string& codecType = "bach");
 };
 
+}
 }
 }
 #endif /* ATLASHELPER_H_ */

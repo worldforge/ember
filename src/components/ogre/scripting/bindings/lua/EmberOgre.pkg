@@ -1,6 +1,5 @@
 $#include "required.h"
 
-
 //$pfile "Carpenter.pkg"
 
 
@@ -111,21 +110,21 @@ $pfile "TerrainLayerDefinitionManager.pkg"
 $pfile "World.pkg"
 $pfile "Scene.pkg"
 
-
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberOgre 
 {
 	static EmberOgre& getSingleton( void );
 
-	EmberOgre::World* getWorld() const;
+	Ember::OgreView::World* getWorld() const;
 	
 	Ogre::RenderWindow* getRenderWindow() const;
 	
-	sigc::signal<void, EmberOgre::EmberEntityFactory&> EventCreatedEmberEntityFactory;
-	sigc::signal<void, EmberOgre::EmberEntity&> EventCreatedAvatarEntity;
+	sigc::signal<void, Ember::OgreView::EmberEntityFactory&> EventCreatedEmberEntityFactory;
+	sigc::signal<void, Ember::OgreView::EmberEntity&> EventCreatedAvatarEntity;
 		
-	sigc::signal<void, EmberOgre::GUIManager&> EventGUIManagerCreated;
-	sigc::signal<void, EmberOgre::GUIManager&> EventGUIManagerInitialized;
+	sigc::signal<void, Ember::OgreView::GUIManager&> EventGUIManagerCreated;
+	sigc::signal<void, Ember::OgreView::GUIManager&> EventGUIManagerInitialized;
 
 	/**
 	 * @brief Emitted before the GUIManager is destroyed.
@@ -148,10 +147,10 @@ class EmberOgre
 	 */
 	sigc::signal<void> EventOgreDestroyed;
 		
-	sigc::signal<void, EmberOgre::MotionManager&> EventMotionManagerCreated;
+	sigc::signal<void, Ember::OgreView::MotionManager&> EventMotionManagerCreated;
 	
 	
-	sigc::signal<void, EmberOgre::Terrain::TerrainManager&> EventTerrainManagerCreated;
+	sigc::signal<void, Ember::OgreView::Terrain::TerrainManager&> EventTerrainManagerCreated;
 
 	/**
 	 * @brief Emitted after the TerrainManager has been destroyed.
@@ -174,12 +173,12 @@ class EmberOgre
 	/**
 	 * @brief Emitted after a World instance has been created.
 	 */
-	sigc::signal<void, EmberOgre::World&> EventWorldCreated;
+	sigc::signal<void, Ember::OgreView::World&> EventWorldCreated;
 
 	/**
 	 * @brief Emitted after a World instance has been destroyed.
 	 */
 	sigc::signal<void> EventWorldDestroyed;
 };
-
+}
 }

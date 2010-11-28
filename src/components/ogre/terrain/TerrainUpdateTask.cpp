@@ -29,7 +29,9 @@
 #include <OgreAxisAlignedBox.h>
 #include <sstream>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -116,4 +118,5 @@ void TerrainUpdateTask::initializeTerrain()
 
 }
 
+}
 }

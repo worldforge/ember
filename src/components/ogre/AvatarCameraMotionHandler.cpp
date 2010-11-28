@@ -19,7 +19,8 @@
 #include "AvatarCameraMotionHandler.h"
 #include "components/ogre/Avatar.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 AvatarCameraMotionHandler::AvatarCameraMotionHandler(Avatar& avatar)
 : mAvatar(avatar)
@@ -37,4 +38,5 @@ void AvatarCameraMotionHandler::move(const WFMath::Quaternion& orientation, cons
 }
 
 
+}
 }

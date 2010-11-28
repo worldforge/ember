@@ -26,7 +26,9 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "Environment.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -91,6 +93,8 @@ protected:
 	Ogre::Entity* mWaterEntity;
 
 };
+
+}
 
 }
 

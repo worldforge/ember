@@ -37,7 +37,8 @@
 #include <OgreSceneManager.h>
 #include <OgreSceneQuery.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 	AvatarTerrainCursor::AvatarTerrainCursor(Ogre::Camera& camera)
 	: mLastUpdated(0)
@@ -137,5 +138,6 @@ namespace EmberOgre {
 		}
 	}
 
+}
 }
 

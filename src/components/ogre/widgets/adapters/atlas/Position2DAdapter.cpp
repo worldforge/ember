@@ -28,7 +28,8 @@
 #include <wfmath/vector.h>
 #include <wfmath/atlasconv.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -100,4 +101,5 @@ bool Position2DAdapter::_hasChanges()
 
 }
 
+}
 }

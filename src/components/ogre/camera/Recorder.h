@@ -20,7 +20,9 @@
 #define RECORDER_H_
 #include <OgreFrameListener.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Camera
 {
@@ -40,6 +42,7 @@ private:
 	float mAccruedTime;
 	float mFramesPerSecond;
 };
+}
 }
 }
 #endif /* RECORDER_H_ */

@@ -28,7 +28,8 @@
 #include <Atlas/Message/Element.h>
 #include <sstream>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntity;
 class GUIManager;
 namespace Gui {
@@ -141,7 +142,8 @@ class IAttributeTextHandler
 public:
 	void handle(const Eris::Entity::AttrMap& attrMap);
 };
-};
-};
+}
+}
+}
 
 #endif

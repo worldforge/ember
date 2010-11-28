@@ -43,7 +43,9 @@
 
 #include <OgreTextureManager.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -144,7 +146,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 		return mIconStore.getIcon(key);
 	} else {
 		IconActionCreator actionCreator(*entity);
-		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &actionCreator, Ember::Application::getSingleton().getMainView()));
+		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &actionCreator, Ember::Application::getSingleton().getMainView()));
 		std::string modelName;
 		if (modelMapping.get()) {
 			modelMapping->initialize();
@@ -211,7 +213,7 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 void IconManager::render(Icon& icon, EmberEntity& entity)
 {
 	IconActionCreator actionCreator(entity);
-	std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator, Ember::Application::getSingleton().getMainView()));
+	std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator, Ember::Application::getSingleton().getMainView()));
 	std::string modelName;
 	if (modelMapping.get()) {
 		modelMapping->initialize();
@@ -235,7 +237,7 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
 		if (typeService) {
 			DummyEntity dummyEntity("-1", &erisType, typeService);
 			IconActionCreator actionCreator(dummyEntity);
-			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::EmberOgre::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, &actionCreator, Ember::Application::getSingleton().getMainView()));
+			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, &actionCreator, Ember::Application::getSingleton().getMainView()));
 			std::string modelName;
 			if (modelMapping.get()) {
 				modelMapping->initialize();
@@ -264,4 +266,5 @@ void IconManager::render(Icon& icon, const std::string& modelName)
 
 }
 
+}
 }

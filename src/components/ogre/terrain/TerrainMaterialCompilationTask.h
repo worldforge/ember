@@ -23,7 +23,9 @@
 #include "Types.h"
 #include <vector>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -85,6 +87,8 @@ private:
 
 
 };
+
+}
 
 }
 

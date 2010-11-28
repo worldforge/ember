@@ -22,7 +22,9 @@
 #include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 #include "Types.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -69,6 +71,8 @@ protected:
 	TerrainIndex convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition);
 
 };
+
+}
 
 }
 

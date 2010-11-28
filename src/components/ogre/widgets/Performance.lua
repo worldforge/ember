@@ -9,8 +9,8 @@ function Performance.buildWidget()
 	local window = Performance.widget:getWindow("TextBox")
 	Performance.mainText = CEGUI.toMultiLineEditbox(window)
 	
---	EmberOgre::getSingleton().EventStartErisPoll.connect(sigc::mem_fun(*this, &Performance::startErisPolling));
---	EmberOgre::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &Performance::endErisPolling));
+--	Ember::OgreView::getSingleton().EventStartErisPoll.connect(sigc::mem_fun(*this, &Performance::startErisPolling));
+--	Ember::OgreView::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &Performance::endErisPolling));
 
 	connect(Performance.connectors, emberOgre.EventTerrainManagerCreated, Performance.terrainManagerCreated)
 	connect(Performance.connectors, emberOgre.EventMotionManagerCreated, Performance.motionManagerCreated)

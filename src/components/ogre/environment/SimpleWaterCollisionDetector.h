@@ -20,7 +20,9 @@
 #define SIMPLEWATERCOLLISIONDETECTOR_H_
 
 #include "components/ogre/ICollisionDetector.h"
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -66,6 +68,8 @@ private:
 	SimpleWater& mSimpleWater;
 };
 }
+}
+
 }
 
 #endif /* SIMPLEWATERCOLLISIONDETECTOR_H_ */

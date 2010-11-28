@@ -20,7 +20,9 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Area.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -54,4 +56,5 @@ void TerrainAreaRemoveTask::executeTaskInMainThread()
 
 }
 
+}
 }

@@ -33,7 +33,8 @@
 
 using namespace Ember::EntityMapping;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 EmberEntityActionCreator::EmberEntityActionCreator(EmberEntity& entity, Scene& scene)
 : mEntity(entity), mScene(scene)
@@ -45,7 +46,7 @@ EmberEntityActionCreator::~EmberEntityActionCreator()
 {
 }
 
-void EmberEntityActionCreator::createActions(EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition)
+void EmberEntityActionCreator::createActions(Ember::EntityMapping::EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition)
 {
 	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
@@ -66,4 +67,5 @@ void EmberEntityActionCreator::createActions(EntityMapping& modelMapping, Cases:
 
 }
 
+}
 }

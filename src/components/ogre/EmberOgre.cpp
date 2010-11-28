@@ -117,10 +117,12 @@
 
 #include <OgreSceneManager.h>
 
-template<> EmberOgre::EmberOgre* Ember::Singleton<EmberOgre::EmberOgre>::ms_Singleton = 0;
+template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
 
 using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 void assureConfigFile(const std::string& filename, const std::string& originalConfigFileDir)
@@ -640,4 +642,5 @@ const std::multimap<std::string, std::string>& EmberOgre::getResourceLocations()
 	return mResourceLoader->getResourceLocations();
 }
 
+}
 }

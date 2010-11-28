@@ -27,7 +27,9 @@ template<int> class Vector;
 class Quaternion;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class ICameraMotionHandler;
 
@@ -110,6 +112,7 @@ public:
 	virtual void setMotionHandler(ICameraMotionHandler* handler) = 0;
 
 };
+}
 }
 }
 #endif /* ICAMERAMOUNT_H_ */

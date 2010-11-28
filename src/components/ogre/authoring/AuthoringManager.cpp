@@ -36,7 +36,9 @@
 #include <sigc++/bind.h>
 #include <sigc++/connection.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -162,5 +164,6 @@ RawTypeInfoRepository* AuthoringManager::getRawTypeInfoRepository() const
 }
 
 
+}
 }
 }

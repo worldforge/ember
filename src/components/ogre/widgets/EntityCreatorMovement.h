@@ -26,7 +26,9 @@
 #include "EntityCreatorMovementBridge.h"
 #include "components/ogre/authoring/MovementAdapter.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -60,6 +62,8 @@ protected:
 	 */
 	Authoring::MovementAdapter mMoveAdapter;
 };
+
+}
 
 }
 

@@ -23,7 +23,9 @@
 #include <map>
 #include <string>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 class ISceneRenderingTechnique;
@@ -102,6 +104,8 @@ protected:
 	RenderingTechniqueStore mTechniques;
 
 };
+
+}
 
 }
 

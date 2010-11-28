@@ -26,7 +26,9 @@
 #include <OgreVector2.h>
 #include <OgreColourValue.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -73,6 +75,8 @@ private:
 	Ogre::uint32 mDefaultShadowColourLong;
 
 };
+
+}
 
 }
 

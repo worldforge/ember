@@ -26,7 +26,9 @@
 #include "components/entitymapping/Actions/Action.h"
 #include <string>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -56,6 +58,8 @@ protected:
 
 
 };
+
+}
 
 }
 

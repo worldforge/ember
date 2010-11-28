@@ -26,7 +26,9 @@
 
 #include "EntityCreatorMovement.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -49,4 +51,5 @@ EntityCreatorMovement::~EntityCreatorMovement()
 
 }
 
+}
 }

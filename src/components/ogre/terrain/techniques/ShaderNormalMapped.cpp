@@ -23,7 +23,9 @@
 #include <OgrePass.h>
 #include <OgreTechnique.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -49,4 +51,5 @@ ShaderPass* ShaderNormalMapped::addPass()
 
 }
 
+}
 }

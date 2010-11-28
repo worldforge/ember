@@ -50,7 +50,9 @@ class Task;
 class Avatar;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -83,6 +85,7 @@ class ActionBarIcon;
 class HelpMessage;
 }
 
+}
 }
 
 #endif

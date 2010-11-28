@@ -25,7 +25,8 @@
 
 #include "components/entitymapping/IActionCreator.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -46,6 +47,8 @@ public:
 protected:
 	EntityCreator& mEntityCreator;
 };
+
+}
 
 }
 

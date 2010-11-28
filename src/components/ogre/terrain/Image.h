@@ -21,7 +21,9 @@
 
 #include "Buffer.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -57,6 +59,8 @@ protected:
 
 	ImageBuffer* mBuffer;
 };
+
+}
 
 }
 

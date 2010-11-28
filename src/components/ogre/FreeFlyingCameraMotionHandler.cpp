@@ -21,7 +21,8 @@
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 #include <OgreSceneNode.h>
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 FreeFlyingCameraMotionHandler::FreeFlyingCameraMotionHandler(Ogre::SceneNode& freeFlyingNode)
 : mFreeFlyingNode(freeFlyingNode), mSpeed(50)
@@ -47,4 +48,5 @@ void FreeFlyingCameraMotionHandler::setSpeed(float speed)
 	mSpeed = speed;
 }
 
+}
 }

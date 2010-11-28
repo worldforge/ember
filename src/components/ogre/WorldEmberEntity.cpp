@@ -51,7 +51,9 @@
 
 #include <OgreSceneManager.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
@@ -266,4 +268,5 @@ void DelayedFoliageInitializer::timout_Expired()
 	}
 }
 
+}
 }

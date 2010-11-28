@@ -24,7 +24,9 @@
 #include <Atlas/Objects/Decoder.h>
 #include <sigc++/signal.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -68,6 +70,8 @@ private:
      */
     Atlas::Objects::Root mLastObject;
 };
+
+}
 
 }
 

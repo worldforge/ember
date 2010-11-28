@@ -29,7 +29,9 @@
 #include "framework/tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -87,6 +89,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif

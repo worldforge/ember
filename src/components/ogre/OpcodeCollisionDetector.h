@@ -34,7 +34,8 @@ namespace OgreOpcode
 	}
 };
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class OpcodeCollisionDetector;
 class OpcodeCollisionDetectorVisualizerInstance;
@@ -73,6 +74,8 @@ private:
 	Model::Model* mModel;
 	OpcodeCollisionDetectorVisualizerInstance* mVisualizer;
 };
+}
+
 }
 
 #endif

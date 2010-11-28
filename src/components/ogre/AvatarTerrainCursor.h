@@ -31,7 +31,8 @@
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 	/**
 	 * @brief Provides an easy way to get the terrain position currently under the cursor.
@@ -137,6 +138,7 @@ namespace EmberOgre {
 	};
 
 
-} /* namespace EmberOgre */
+}
+}
 
 #endif /*AVATARTERRAINCURSOR_H_*/

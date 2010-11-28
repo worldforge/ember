@@ -36,7 +36,9 @@
 #include "components/entitymapping/IVisitor.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -139,4 +141,5 @@ void EmberEntityModelAction::ChangeContext_ContextComplete()
 	}
 }
 
+}
 }

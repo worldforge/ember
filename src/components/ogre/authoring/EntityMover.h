@@ -29,7 +29,9 @@
 
 #include <wfmath/point.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class NodeAttachment;
 
@@ -89,6 +91,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif

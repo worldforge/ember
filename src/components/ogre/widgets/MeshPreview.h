@@ -27,7 +27,8 @@
 
 #include <sigc++/signal.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 typedef std::vector<Ogre::Entity*> EntityStore;
@@ -242,6 +243,8 @@ private:
 
 };
 }
+}
+
 }
 
 #endif

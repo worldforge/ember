@@ -34,7 +34,9 @@ namespace WFMath
 template<int> class Point;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -62,6 +64,8 @@ public:
 	TerrainDefPointStore parseTerrain(const Atlas::Message::Element& terrain, const WFMath::Point<3>& offset) const;
 
 };
+
+}
 
 }
 

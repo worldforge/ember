@@ -61,7 +61,7 @@ function EntityPicker:buildWidget(world)
 	self:addButton("UseButton4")
 	self:addButton("UseButton5")
 		
-	self.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(self.menuWindow)
+	self.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.menuWindow)
 	self.stackableContainer:setInnerContainerWindow(self.menuWindow)
 	connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, self.input_MouseButtonReleased, self)
 
@@ -157,7 +157,7 @@ end
 --called when an entity has been picked
 function EntityPicker:pickedEntity(results, args)
 
-	if args.pickType == EmberOgre.MPT_CLICK then
+	if args.pickType == Ember.OgreView.MPT_CLICK then
 		self.pickedPoint = CEGUI.Vector2:new_local(args.windowX, args.windowY)
 	
 		self.pickedEntities = {}
@@ -266,7 +266,7 @@ function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation)
 	buttonWrapper.clickedHandler = function()
 		local entity = emberOgre:getWorld():getEmberEntity(entityId)
 		if entity ~= nil then
-			emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(self.position), operation)
+			emberServices:getServerService():use(entity, Ember.OgreView.Convert:toWF_Point3(self.position), operation)
 			guiManager:EmitEntityAction("use", entity)
 		end
 		self:removeMenu()
@@ -359,8 +359,8 @@ end
 
 function EntityPicker:buttonUse_Click(args)
 	self:doWithPickedEntity(function (entity)
-	--	emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(tolua.cast(self.position, "Ogre::Vector<3>")))
-		emberServices:getServerService():use(entity, EmberOgre.Convert:toWF_Point3(self.position))
+	--	emberServices:getServerService():use(entity, Ember.OgreView.Convert:toWF_Point3(tolua.cast(self.position, "Ogre::Vector<3>")))
+		emberServices:getServerService():use(entity, Ember.OgreView.Convert:toWF_Point3(self.position))
 		guiManager:EmitEntityAction("use", entity)
 	end)
 	self:removeMenu()

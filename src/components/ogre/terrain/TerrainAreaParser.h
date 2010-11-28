@@ -26,7 +26,8 @@
 #include <Atlas/Message/Element.h>
 #include <wfmath/polygon.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -53,6 +54,8 @@ bool parseArea(const Atlas::Message::MapType& areaData, WFMath::Polygon<2>& poly
 const Atlas::Message::Element createElement(const WFMath::Polygon<2>& poly, int layer);
 
 };
+
+}
 
 }
 

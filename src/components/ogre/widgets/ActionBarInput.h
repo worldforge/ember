@@ -27,7 +27,9 @@
 #include <string>
 #include <sigc++/signal.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -66,6 +68,6 @@ private:
 };
 }
 }
-
+}
 
 #endif

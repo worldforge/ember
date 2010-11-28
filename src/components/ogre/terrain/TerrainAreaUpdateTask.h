@@ -23,7 +23,9 @@
 #include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -64,6 +66,7 @@ private:
 
 };
 
+}
 }
 }
 #endif /* EMBEROGRETERRAINTERRAINAREAUPDATETASK_H_ */

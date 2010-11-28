@@ -35,7 +35,8 @@
 #include <OgreSceneManager.h>
 #include <OgreRoot.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -171,4 +172,5 @@ void Sun::setAmbientLight(const Ogre::ColourValue& colour) {
 
 }
 
+}
 }

@@ -1,6 +1,7 @@
 $#include "components/ogre/widgets/EntityTooltip.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 class EntityTooltip
@@ -10,5 +11,6 @@ public:
 
 };
 
+}
 }
 }

@@ -40,7 +40,9 @@ namespace Eris
 class Entity;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 namespace Authoring
@@ -219,6 +221,8 @@ protected:
 
 };
 }
+}
+
 }
 
 #endif /* ENTITYMOVERBASE_H_ */

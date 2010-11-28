@@ -38,7 +38,8 @@
 #include <OgreBitwise.h>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 
@@ -97,5 +98,6 @@ SimpleRenderContext* EntityCEGUITexture::getRenderContext()
 
 
 
+}
 }
 }

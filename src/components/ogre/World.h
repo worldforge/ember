@@ -29,7 +29,8 @@ class Connection;
 class Entity;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Camera
 {
@@ -264,6 +265,7 @@ inline Authoring::EntityMoveManager& World::getMoveManager() const
 	return *mMoveManager;
 }
 
-
 }
+}
+
 #endif /* EMBEROGRE_WORLD_H_ */

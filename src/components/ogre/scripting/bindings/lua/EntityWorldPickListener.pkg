@@ -23,7 +23,8 @@
 
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 /**
@@ -31,7 +32,7 @@ namespace EmberOgre {
  */
 struct EntityPickResult
 {
-	EmberOgre::EmberEntity* entity;
+	Ember::OgreView::EmberEntity* entity;
 	Ogre::Vector3 position;
 	float distance;
 };
@@ -43,10 +44,8 @@ struct EntityPickResult
 class EntityWorldPickListener
 {
 
-	sigc::signal<void, const std::vector<EmberOgre::EntityPickResult>&, const EmberOgre::MousePickerArgs&> EventPickedEntity;
+	sigc::signal<void, const std::vector<Ember::OgreView::EntityPickResult>&, const Ember::OgreView::MousePickerArgs&> EventPickedEntity;
 	
 };
-
 }
-
-
+}

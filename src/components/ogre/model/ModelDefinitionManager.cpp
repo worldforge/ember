@@ -37,8 +37,10 @@
 #include <OgreSceneManagerEnumerator.h>
 
 
-template<> EmberOgre::Model::ModelDefinitionManager* Ember::Singleton<EmberOgre::Model::ModelDefinitionManager>::ms_Singleton = 0;
-namespace EmberOgre
+template<> Ember::OgreView::Model::ModelDefinitionManager* Ember::Singleton<Ember::OgreView::Model::ModelDefinitionManager>::ms_Singleton = 0;
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model {
 
@@ -167,5 +169,6 @@ void ModelDefinitionManager::pollBackgroundLoaders()
 }
 
 
+}
 }
 }

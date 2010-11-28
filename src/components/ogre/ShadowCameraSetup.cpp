@@ -30,7 +30,8 @@
 #include <OgreRoot.h>
 #include <OgreRenderSystem.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr)
 : mSceneMgr(sceneMgr)
@@ -163,4 +164,5 @@ void ShadowCameraSetup::Config_ShadowFarDistance(const std::string& section, con
 	}
 }
 
+}
 }

@@ -46,7 +46,8 @@ namespace Ogre
 	class TerrainOptions;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 class TerrainShader;
 class TerrainManager;
@@ -205,6 +206,8 @@ inline int TerrainPage::getAlphaTextureSize() const
 
 }
 }
+}
+
 }
 
 #endif

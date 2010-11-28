@@ -21,7 +21,9 @@
 #define EMBEROGRETERRAINWFIMAGE_H_
 
 #include "Image.h"
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -35,6 +37,8 @@ public:
 	void blit(const OgreImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0);
 	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0);
 };
+
+}
 
 }
 

@@ -26,7 +26,8 @@
 #include <sigc++/signal.h>
 #include <vector>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntity;
 class GUIManager;
 namespace Gui {
@@ -132,6 +133,8 @@ protected:
 	 */
 	int mSlotsCounter;
 };
+
+}
 
 }
 

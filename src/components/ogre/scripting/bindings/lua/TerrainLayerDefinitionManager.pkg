@@ -1,5 +1,6 @@
 $#include "components/ogre/terrain/TerrainLayerDefinitionManager.h"
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -12,13 +13,13 @@ class TerrainLayerDefinitionManager : public Ogre::ResourceManager
 	
 		class const_iterator {
 			public:
-				EmberOgre::Terrain::TerrainLayerDefinition* __operator_ptr @ get();
-				EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& __operator_pp @ next();
-// 				bool operator==(const EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& value);
+				Ember::OgreView::Terrain::TerrainLayerDefinition* __operator_ptr @ get();
+				Ember::OgreView::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& __operator_pp @ next();
+// 				bool operator==(const Ember::OgreView::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator& value);
 		};
 	public:
-		EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator begin() const;
-		EmberOgre::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
+		Ember::OgreView::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator begin() const;
+		Ember::OgreView::Terrain::TerrainLayerDefinitionManager::DefinitionStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
 		int size() const;
 	};
 	static TerrainLayerDefinitionManager& getSingleton();
@@ -43,7 +44,7 @@ class TerrainLayerDefinitionManager : public Ogre::ResourceManager
 }
 
 }
-
+}
 
 
 $[

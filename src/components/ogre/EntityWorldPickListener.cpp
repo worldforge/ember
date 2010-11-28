@@ -43,7 +43,9 @@
 
 #include <boost/shared_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener, Ogre::SceneManager& sceneManager) :
@@ -199,4 +201,5 @@ void EntityWorldPickListener::runCommand(const std::string &command, const std::
 	}
 }
 
+}
 }

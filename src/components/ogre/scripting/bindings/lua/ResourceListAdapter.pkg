@@ -18,7 +18,9 @@
 
 $#include "components/ogre/widgets/adapters/ogre/ResourceListAdapter.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -47,7 +49,7 @@ public:
 	 * @param listHolder The list holder instance to bind to. The ownership will be transferred to this instance.
 	 * @param resourceManager The resource manager to get resources from.
 	 */
-	ResourceListAdapter(EmberOgre::Gui::ListHolder* listHolder, Ogre::ResourceManager* resourceManager);
+	ResourceListAdapter(Ember::OgreView::Gui::ListHolder* listHolder, Ogre::ResourceManager* resourceManager);
 
 	/**
 	 * @brief Dtor.
@@ -65,4 +67,4 @@ public:
 }
 }
 
-#endif /* RESOURCELISTADAPTER_H_ */
+}

@@ -26,7 +26,9 @@
 #include <string>
 #include <list>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -110,6 +112,8 @@ private:
 	std::string mId;
 };
 }
+}
+
 }
 
 #endif

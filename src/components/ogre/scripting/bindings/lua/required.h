@@ -69,9 +69,3 @@
 #include "components/ogre/widgets/EntityIcon.h"
 #include "components/ogre/widgets/EntityIconManager.h"
 #include "components/ogre/widgets/EntityIconDragDropTarget.h"
-
-
-//#include "components/ogre/scripting/LuaConnector.h"
-//#include "LuaConnector.h"
-
-// Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &AvatarCamera::ConfigService_EventChangedConfigItem));

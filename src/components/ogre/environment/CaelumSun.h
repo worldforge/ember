@@ -36,7 +36,8 @@ namespace varconf
 class Variable;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 
@@ -91,6 +92,8 @@ private:
 
 	bool parse(varconf::Variable& variable, Ogre::ColourValue& colour);
 };
+
+}
 
 }
 

@@ -36,7 +36,9 @@
 
 using namespace Ogre;
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager* pageMgr) :
@@ -162,4 +164,5 @@ void EmberPagingLandScapeData2D_HeightField::eventTerrainPageLoaded()
 	}
 }
 
+}
 }

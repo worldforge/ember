@@ -25,9 +25,9 @@
 #include <iterator>
 #include <boost/algorithm/string.hpp>
 
-using namespace EmberOgre;
-
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -74,6 +74,7 @@ const std::string HelpMessage::getTags() const
 	return tags;
 }
 
+}
 }
 }
 

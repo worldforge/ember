@@ -1,6 +1,7 @@
 $#include "components/ogre/terrain/TerrainLayerDefinition.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -68,4 +69,4 @@ public:
 
 }
 
-#endif
+}

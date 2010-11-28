@@ -24,7 +24,9 @@
 #include <vector>
 #include <string>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -81,6 +83,8 @@ protected:
 
 	unsigned int mShadowLayers;
 };
+}
+
 }
 
 }

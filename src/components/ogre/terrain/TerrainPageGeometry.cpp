@@ -47,7 +47,9 @@
 #define I_ROUND(_x) ((int)(_x))
 #endif
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain
 {
@@ -226,6 +228,7 @@ bool TerrainPageGeometry::getNormal(const TerrainPosition& localPosition, WFMath
 	} else {
 		return false;
 	}
+}
 }
 }
 }

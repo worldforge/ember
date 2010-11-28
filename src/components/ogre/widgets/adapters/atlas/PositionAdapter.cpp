@@ -32,7 +32,8 @@ namespace CEGUI {
 class PushButton;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -124,4 +125,5 @@ bool PositionAdapter::_hasChanges()
 
 }
 
+}
 }

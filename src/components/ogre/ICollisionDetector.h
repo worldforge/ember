@@ -22,7 +22,9 @@
 #ifndef ICOLLISIONDETECTOR_H_
 #define ICOLLISIONDETECTOR_H_
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -100,6 +102,8 @@ public:
 	virtual bool getVisualize() const = 0;
 
 };
+}
+
 }
 
 #endif /* ICOLLISIONDETECTOR_H_ */

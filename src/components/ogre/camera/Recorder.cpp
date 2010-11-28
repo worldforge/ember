@@ -23,7 +23,9 @@
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Camera
 {
@@ -79,6 +81,7 @@ bool Recorder::frameStarted(const Ogre::FrameEvent& event)
 	return true;
 }
 
+}
 }
 }
 

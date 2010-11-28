@@ -150,7 +150,7 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.innercontainer = guiManager:createWindow("DefaultGUISheet")
 	self.menu.innercontainer:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
 	self.menu.innercontainer:setClippedByParent(false)
-	self.menu.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(self.menu.innercontainer)
+	self.menu.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.menu.innercontainer)
 	self.menu.stackableContainer:setInnerContainerWindow(self.menu.innercontainer)
 	self.menu.container:addChildWindow(self.menu.innercontainer)
 	self.menu.innercontainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 10), CEGUI.UDim(1, -self.iconsize)))
@@ -237,9 +237,9 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.useButton)
 	
-	self.helper = EmberOgre.Gui.EntityIconDragDropPreview()
+	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview()
 	--User has dragged an entityIcon from the inventory to the world
-	self.DragDrop = EmberOgre.Gui.EntityIconDragDropTarget(root)
+	self.DragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget(root)
 	self.DragDrop_DraggedOver = function(entityIcon)
 		if entityIcon ~= nil then
 			if entityIcon:getImage() ~= nil then
@@ -371,10 +371,10 @@ end
 
 function Inventory:setupDoll(avatarEntity)
 	self.doll = {}
-	local model = EmberOgre.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
+	local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
 	if model ~= nil then
 		self.doll.image = self.widget:getWindow("DollImage")
-		self.doll.renderer = EmberOgre.Gui.ModelRenderer:new(self.doll.image)
+		self.doll.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.doll.image)
 		self.doll.renderer:setActive(false)
 		self.doll.renderer:setIsInputCatchingAllowed(false)
 		

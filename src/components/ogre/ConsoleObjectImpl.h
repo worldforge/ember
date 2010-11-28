@@ -23,7 +23,8 @@
 #include "framework/ConsoleObject.h"
 #include "framework/Singleton.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 @brief The Ogre specific implementation of Ember::ConsoleObject.
@@ -47,6 +48,8 @@ class ConsoleObjectImpl: public Ember::ConsoleObject, public Ember::Singleton<Co
 
 
 };
+
+}
 
 }
 

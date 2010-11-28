@@ -22,7 +22,8 @@
 //
 $#include "../../AreaAdapter.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -30,7 +31,7 @@ namespace Adapters {
 
 namespace Atlas {
 
-// class EntityAreaPolygonPositionProvider: public ::EmberOgre::Manipulation::IPolygonPositionProvider
+// class EntityAreaPolygonPositionProvider: public ::Ember::OgreView::Manipulation::IPolygonPositionProvider
 // {
 // public:
 // 
@@ -86,6 +87,5 @@ public:
 }
 
 }
-
 }
-
+}

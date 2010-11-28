@@ -28,7 +28,9 @@
 
 #include <boost/thread/locks.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -134,4 +136,5 @@ void SegmentManager::unmarkHolder(SegmentHolder* holder)
 
 }
 
+}
 }

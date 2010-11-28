@@ -34,7 +34,8 @@ namespace Caelum
 	class BaseSkyLight;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -125,6 +126,8 @@ protected:
 	Caelum::CaelumSystem *mCaelumSystem;
 	
 };
+
+}
 
 }
 

@@ -22,7 +22,8 @@
 //
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Authoring {
 class EntityMover;
@@ -58,7 +59,5 @@ public:
 };
 
 }
-
 }
-
-
+}

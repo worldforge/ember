@@ -44,7 +44,9 @@
 
 using namespace CEGUI;
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -448,4 +450,5 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 
 }
 
+}
 }

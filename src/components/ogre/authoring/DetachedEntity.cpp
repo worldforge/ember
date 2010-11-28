@@ -18,7 +18,9 @@
 
 #include "DetachedEntity.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -85,5 +87,6 @@ Eris::Entity* DetachedEntity::getEntity(const std::string& id)
 
 
 
+}
 }
 }

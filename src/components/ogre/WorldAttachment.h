@@ -26,7 +26,8 @@ namespace Ogre {
 class SceneNode;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain
 {
@@ -83,5 +84,6 @@ protected:
 
 };
 
+}
 }
 #endif /* WORLDATTACHMENT_H_ */

@@ -19,7 +19,9 @@
 #ifndef ISCENERENDERINGTECHNIQUE_H_
 #define ISCENERENDERINGTECHNIQUE_H_
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 
@@ -45,5 +47,6 @@ public:
 	virtual void registerEntity(EmberEntity& entity) = 0;
 };
 
+}
 }
 #endif /* ISCENERENDERINGTECHNIQUE_H_ */

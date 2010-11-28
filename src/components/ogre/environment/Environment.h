@@ -28,7 +28,8 @@
 #include "framework/ConsoleObject.h"
 #include <sigc++/signal.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class ICollisionDetector;
 namespace Terrain
 {
@@ -232,6 +233,8 @@ inline IWater* Environment::getWater()
 inline Forest* Environment::getForest()
 {
 	return mForest;
+}
+
 }
 
 }

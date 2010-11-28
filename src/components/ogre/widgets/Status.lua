@@ -74,7 +74,7 @@ function StatusInstance:setEntity(entity)
 		end
 		self:updateStatus()
 		
-		local model = EmberOgre.Model.ModelRepresentationManager:getSingleton():getModelForEntity(entity)
+		local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(entity)
 		if model ~= nil then
 			self.renderer:showModel(model:getDefinition():get():getName())
 			self.renderer:setCameraDistance(0.75)
@@ -112,7 +112,7 @@ function Status:createStatusInstance(name)
 	statusInstance.strengthBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("StrengthBar"))
 	
 	statusInstance.renderImage = statusInstance.widget:getWindow("RenderImage")
-	statusInstance.renderer = EmberOgre.Gui.ModelRenderer:new(statusInstance.renderImage)
+	statusInstance.renderer = Ember.OgreView.Gui.ModelRenderer:new(statusInstance.renderImage)
 	statusInstance.renderer:setActive(false)
 	statusInstance.renderer:setIsInputCatchingAllowed(false)
 	

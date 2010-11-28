@@ -31,7 +31,9 @@
 
 #include <string.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -92,4 +94,5 @@ void HeightMapUpdateTask::injectHeightMapSegmentsIntoHeightMap()
 
 }
 
+}
 }

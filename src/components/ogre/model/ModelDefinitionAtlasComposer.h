@@ -25,7 +25,8 @@
 
 #include <Atlas/Message/Element.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 
@@ -45,6 +46,8 @@ public:
     void composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
 
 };
+
+}
 
 }
 

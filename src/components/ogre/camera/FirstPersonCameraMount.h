@@ -21,7 +21,9 @@
 
 #include "CameraMountBase.h"
 #include <OgreMath.h>
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Camera
 {
@@ -105,6 +107,8 @@ private:
 };
 
 }
+}
+
 }
 
 #endif /* FIRSTPERSONCAMERAMOUNT_H_ */

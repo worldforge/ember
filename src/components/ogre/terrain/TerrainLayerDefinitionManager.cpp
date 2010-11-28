@@ -27,11 +27,12 @@
 #include "TerrainLayerDefinitionManager.h"
 #include "TerrainLayerDefinition.h"
 #include "XMLLayerDefinitionSerializer.h"
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
-template<> EmberOgre::Terrain::TerrainLayerDefinitionManager* Ember::Singleton<EmberOgre::Terrain::TerrainLayerDefinitionManager>::ms_Singleton = 0;
+template<> Ember::OgreView::Terrain::TerrainLayerDefinitionManager* Ember::Singleton<Ember::OgreView::Terrain::TerrainLayerDefinitionManager>::ms_Singleton = 0;
 
 TerrainLayerDefinitionManager::TerrainLayerDefinitionManager()
 {
@@ -101,4 +102,5 @@ TerrainLayerDefinition* TerrainLayerDefinitionManager::getDefinitionForShader(co
 
 }
 
+}
 }

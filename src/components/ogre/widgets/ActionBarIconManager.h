@@ -31,7 +31,8 @@ namespace Eris {
 class ServerInfo;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntity;
 class GUIManager;
 namespace Gui {
@@ -170,6 +171,8 @@ protected:
 	 */
 	int mSlotsCounter;
 };
+
+}
 
 }
 

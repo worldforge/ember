@@ -22,7 +22,9 @@
 
 #include "Image.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -39,6 +41,8 @@ public:
 	void blit(const WFImage& imageToBlit, unsigned int destinationChannel, int widthOffset = 0, int heightOffset = 0);
 
 };
+
+}
 
 }
 

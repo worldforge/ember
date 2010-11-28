@@ -31,7 +31,8 @@
 
 using namespace CEGUI;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -115,4 +116,5 @@ float IconBar::getAbsoluteWidth()
 
 }
 
+}
 }

@@ -40,7 +40,8 @@
 #include "framework/ConsoleBackend.h"
 
 using namespace CEGUI;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 	const std::string Widget::DEFAULT_TAB_GROUP("default");
@@ -384,5 +385,6 @@ namespace Gui {
 // 	}
 
 
+}
 }
 }

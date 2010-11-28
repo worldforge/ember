@@ -27,7 +27,9 @@ namespace Ogre
 class Node;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class INodeProvider;
@@ -136,5 +138,6 @@ protected:
 
 };
 
+}
 }
 #endif /* EMBEROGRENodeAttachment_H_ */

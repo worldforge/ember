@@ -25,7 +25,8 @@
 #include <OgreFrameListener.h>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 class IAnimated;
@@ -149,6 +150,7 @@ inline const MotionManager::MotionManagerInfo& MotionManager::getInfo() const
 }
 
 
+}
 }
 
 

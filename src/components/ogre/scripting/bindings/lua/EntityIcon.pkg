@@ -21,7 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -32,15 +33,15 @@ public:
 	
 	CEGUI::Window* getImage();
 	CEGUI::DragContainer* getDragContainer();
-	EmberOgre::Gui::Icons::Icon* getIcon();
-	void setSlot(EmberOgre::Gui::EntityIconSlot* slot);
-	EmberOgre::Gui::EntityIconSlot* getSlot();
+	Ember::OgreView::Gui::Icons::Icon* getIcon();
+	void setSlot(Ember::OgreView::Gui::EntityIconSlot* slot);
+	Ember::OgreView::Gui::EntityIconSlot* getSlot();
 	void setTooltipText(const std::string& text);
-	EmberOgre::EmberEntity* getEntity();
-	bool operator==(const EmberOgre::Gui::EntityIcon& value);
+	Ember::OgreView::EmberEntity* getEntity();
+	bool operator==(const Ember::OgreView::Gui::EntityIcon& value);
 	
 };
 
 }
-
+}
 }

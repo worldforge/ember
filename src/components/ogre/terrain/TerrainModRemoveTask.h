@@ -21,7 +21,9 @@
 
 #include "TerrainModTaskBase.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -47,6 +49,8 @@ public:
 private:
 
 };
+
+}
 
 }
 

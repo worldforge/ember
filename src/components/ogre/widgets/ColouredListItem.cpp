@@ -27,7 +27,8 @@
 #include "ColouredListItem.h"
 #include "framework/LoggingInstance.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -146,4 +147,5 @@ CEGUI::TreeItem* ColouredTreeItem::create(const CEGUI::String& text, unsigned in
 
 }
 
+}
 }

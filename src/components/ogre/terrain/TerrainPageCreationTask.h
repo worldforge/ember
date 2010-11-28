@@ -25,7 +25,9 @@
 #include <wfmath/vector.h>
 #include <boost/shared_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -59,6 +61,8 @@ private:
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;
 };
+
+}
 
 }
 

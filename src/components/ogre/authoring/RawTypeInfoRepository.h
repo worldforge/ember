@@ -31,7 +31,9 @@ class ServerService;
 
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -57,6 +59,8 @@ private:
 };
 
 }
+}
+
 }
 
 #endif /* RAWTYPEINFOREPOSITORY_H_ */

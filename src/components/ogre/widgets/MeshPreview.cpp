@@ -47,7 +47,8 @@
 #include <OgreCamera.h>
 #include <OgreEntity.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 
@@ -446,4 +447,5 @@ bool MeshPreview::createdMeshes_EventSelectionChanged(const CEGUI::EventArgs& ar
 }
 }
 
+}
 }

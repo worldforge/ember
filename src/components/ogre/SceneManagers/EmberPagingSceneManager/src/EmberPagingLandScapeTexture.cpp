@@ -26,7 +26,9 @@
 #include "OgrePagingLandScapeTextureManager.h"
 #include <memory>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 EmberPagingLandScapeTexture::EmberPagingLandScapeTexture(Ogre::PagingLandScapeTextureManager* pageMgr) :
@@ -68,4 +70,5 @@ void EmberPagingLandScapeTexture::_unloadMaterial()
 	S_LOG_VERBOSE("Unloading terrain material.");
 }
 
+}
 }

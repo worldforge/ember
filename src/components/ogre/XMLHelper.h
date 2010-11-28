@@ -27,7 +27,8 @@
 #include "framework/tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 @brief A simple helper class for loading tinyxml documents through the ogre resource system.
@@ -86,6 +87,8 @@ public:
 	static void fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion);
 
 };
+
+}
 
 }
 

@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 		{
 			/// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
-			//EmberOgre::EmberOgre app;
+			//Ember::OgreView::EmberOgre app;
 
 			std::cout << "Starting Ember version " << VERSION << std::endl;
 

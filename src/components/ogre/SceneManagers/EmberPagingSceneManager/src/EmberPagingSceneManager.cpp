@@ -33,7 +33,8 @@
 
 using namespace Ogre;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
     const Ogre::String EmberPagingSceneManagerFactory::FACTORY_TYPE_NAME = "EmberPagingSceneManager";
     //-----------------------------------------------------------------------
@@ -231,5 +232,6 @@ namespace EmberOgre {
 		}
     }
 	
+}
 }
 

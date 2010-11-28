@@ -29,7 +29,9 @@ template<int> class Point;
 template<int> class Vector;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class IGraphicalRepresentation;
@@ -121,6 +123,8 @@ public:
 	virtual IEntityControlDelegate* getControlDelegate() const = 0;
 
 };
+
+}
 
 }
 

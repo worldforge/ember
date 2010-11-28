@@ -1,6 +1,7 @@
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class WorldEmberEntity : public EmberEntity {
 
@@ -8,13 +9,13 @@ class WorldEmberEntity : public EmberEntity {
 	 *    Gets the main Environment object of the world.
 	 * @return An environment object, or null if none has been created yet.
 	 */
-	EmberOgre::Environment::Environment* getEnvironment() const;
+	Ember::OgreView::Environment::Environment* getEnvironment() const;
 	
 	/**
 	 *    Gets the main Foliage object of the world. Note that the initialization of the foliage might be delayed.
 	 * @return A foliage object, or null if none created.
 	 */
-	EmberOgre::Environment::Foliage* getFoliage() const;
+	Ember::OgreView::Environment::Foliage* getFoliage() const;
 	
 	/**
 	 * @brief Accessor for the terrain manager.
@@ -35,4 +36,5 @@ class WorldEmberEntity : public EmberEntity {
 
 
 };
+}
 }

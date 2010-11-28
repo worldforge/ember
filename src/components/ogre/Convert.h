@@ -95,7 +95,8 @@ Description:	Point, Vector and Quaternion converter
 
 #include <cassert>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -267,6 +268,8 @@ inline WFMath::AxisBox<3> Convert::toWF(const Ogre::AxisAlignedBox& axisBox){
 
 inline WFMath::AxisBox<2> Convert::toWF(const Ogre::TRect<Ogre::Real>& bounds){
 	return WFMath::AxisBox<2>(WFMath::Point<2>(bounds.left, -bounds.top), WFMath::Point<2>(bounds.right, -bounds.bottom));
+}
+
 }
 
 }

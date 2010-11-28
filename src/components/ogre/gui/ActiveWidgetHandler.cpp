@@ -30,11 +30,12 @@
 #include <CEGUI.h>
 
 using namespace Ember;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
-ActiveWidgetHandler::ActiveWidgetHandler(::EmberOgre::GUIManager& guiManager)
+ActiveWidgetHandler::ActiveWidgetHandler(::Ember::OgreView::GUIManager& guiManager)
 : mLastMode(Ember::Input::IM_GUI), mGuiManager(guiManager)
 {
 
@@ -86,4 +87,5 @@ void ActiveWidgetHandler::Input_InputModeChanged(Ember::Input::InputMode mode)
 
 }
 
+}
 }

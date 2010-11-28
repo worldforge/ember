@@ -20,7 +20,9 @@
 #include "OgreImage.h"
 #include "WFImage.h"
 #include <cassert>
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -86,4 +88,5 @@ void OgreImage::blit(const OgreImage& imageToBlit, unsigned int destinationChann
 
 }
 
+}
 }

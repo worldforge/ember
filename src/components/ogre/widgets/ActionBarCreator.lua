@@ -60,7 +60,7 @@ function ActionBarCreator:createActionBar(layout)
 	self.actionbars[name] = a1
 	
 	--Add to the Listbox presented in the ActionBarCreator widget.
-	local actionBar = EmberOgre.Gui.ColouredListItem:new(name)
+	local actionBar = Ember.OgreView.Gui.ColouredListItem:new(name)
 	self.actionBarListbox:addItem(actionBar)
 
 	self.actionbarCount = self.actionbarCount+1
@@ -82,17 +82,17 @@ function ActionBarCreator:deleteActionBar()
 		self.actionBarListbox:removeItem(selectedItem)
 	else
 		--No action bar has been selected, we update the help widget and present it to the user.
-		local message = EmberOgre.Gui.HelpMessage:new_local("ActionBarCreator", "Select an ActionBar to remove from the list first.", "action bar creator", "actionBarCreatorMessage")
-		EmberOgre.Gui.QuickHelp:getSingleton():updateText(message)
+		local message = Ember.OgreView.Gui.HelpMessage:new_local("ActionBarCreator", "Select an ActionBar to remove from the list first.", "action bar creator", "actionBarCreatorMessage")
+		Ember.OgreView.Gui.QuickHelp:getSingleton():updateText(message)
 	end
 	
 	self.actionbarCount = self.actionbarCount-1
 end
 
 function ActionBarCreator:populateCombobox(combobox)
-	local item = EmberOgre.Gui.ColouredListItem:new("Wield", 0)
+	local item = Ember.OgreView.Gui.ColouredListItem:new("Wield", 0)
 	combobox:addItem(item)
-	item = EmberOgre.Gui.ColouredListItem:new("Eat", 1)
+	item = Ember.OgreView.Gui.ColouredListItem:new("Eat", 1)
 	combobox:addItem(item)
 	combobox:setItemSelectState(0, true)
 	combobox:setSingleClickEnabled(true)

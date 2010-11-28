@@ -35,7 +35,8 @@
 
 #include <wfmath/polygon.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -152,4 +153,5 @@ void AreaAdapter::clearAreaSuggestions()
 
 }
 
+}
 }

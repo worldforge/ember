@@ -56,7 +56,7 @@ function Compass:TerrainPageGeometryUpdated(page)
 end
 
 function Compass:initialize()
-	self.anchor = EmberOgre.Gui.CompassCameraAnchor:new(self.helper, emberOgre:getWorld():getMainCamera():getCamera())
+	self.anchor = Ember.OgreView.Gui.CompassCameraAnchor:new(self.helper, emberOgre:getWorld():getMainCamera():getCamera())
 	if self.widget ~= nil then
 		self.widget:show()
 	end
@@ -76,9 +76,9 @@ end
 
 function Compass:buildWidget(terrainManager)
 
-	self.helperImpl = EmberOgre.Gui.RenderedCompassImpl:new()
+	self.helperImpl = Ember.OgreView.Gui.RenderedCompassImpl:new()
 
-	self.helper = EmberOgre.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager())
+	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager())
 	self.map = self.helper:getMap()
 	
 	self:buildCEGUIWidget()
@@ -98,7 +98,7 @@ function Compass:buildCEGUIWidget()
 	self.renderImage = self.widget:getWindow("RenderImage")
 	self.pointerImage = self.widget:getWindow("Pointer")
 	
-	local assetManager = EmberOgre.Gui.AssetsManager:new_local()
+	local assetManager = Ember.OgreView.Gui.AssetsManager:new_local()
 	
 	--set up the main background image
 	if self.helperImpl:getTexture():isNull() == false then

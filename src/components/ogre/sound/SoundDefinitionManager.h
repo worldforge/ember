@@ -30,7 +30,8 @@
 #include "framework/Singleton.h"
 #include <memory>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class SoundGroupDefinition;
 class XMLSoundDefParser;
@@ -76,6 +77,8 @@ protected:
 	*/
 	SoundGroupDefinitionStore mSoundGroupDefinitions;
 };
+
+}
 
 }
 

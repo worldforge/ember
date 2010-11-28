@@ -31,7 +31,9 @@
 
 #include <sstream>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -263,5 +265,6 @@ void XMLEntityRecipeSerializer::readScript(EntityRecipePtr entRecipe, TiXmlEleme
 	}
 }
 
+}
 }
 }

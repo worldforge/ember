@@ -46,7 +46,8 @@
 #include <OgreMemoryAllocatorConfig.h>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 

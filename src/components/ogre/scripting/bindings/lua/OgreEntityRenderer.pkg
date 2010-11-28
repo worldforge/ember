@@ -21,7 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 /**
@@ -29,7 +30,7 @@ Renders a single Ogre::Entity to a EntityCEGUITexture.
 
 @author Erik Hjortsberg
 */
-class OgreEntityRenderer : public EmberOgre::MovableObjectRenderer
+class OgreEntityRenderer : public Ember::OgreView::MovableObjectRenderer
 {
 public:
     OgreEntityRenderer(CEGUI::Window* image);
@@ -52,5 +53,4 @@ public:
 };
 }
 }
-
-
+}

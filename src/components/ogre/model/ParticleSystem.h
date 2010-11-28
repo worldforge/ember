@@ -27,7 +27,8 @@
 #include <OgreVector3.h>
 #include <vector>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 class ParticleSystemBinding;
@@ -80,6 +81,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif

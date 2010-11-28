@@ -21,7 +21,9 @@
 #include "PlantInstance.h"
 #include "Buffer.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -109,4 +111,5 @@ void PlantAreaQueryResult::setDefaultShadowColour(const Ogre::ColourValue& colou
 
 }
 
+}
 }

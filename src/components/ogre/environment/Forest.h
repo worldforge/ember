@@ -37,7 +37,8 @@ namespace Ogre
 	class Entity;
 	class Vector3;
 }
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain
 {
@@ -91,6 +92,8 @@ protected:
 	void worldSizeChanged();
 
 };
+
+}
 
 }
 

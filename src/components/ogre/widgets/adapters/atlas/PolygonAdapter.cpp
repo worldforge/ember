@@ -39,7 +39,9 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -60,7 +62,7 @@ float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>
 {
 	return mEntity.getHeight(localPosition);
 //	///TODO: refactor into a better structure, so that we don't have to know about the terrain
-//	const ::EmberOgre::Terrain::TerrainManager* terrain = EmberOgre::getSingleton().getTerrainManager();
+//	const ::Ember::OgreView::Terrain::TerrainManager* terrain = EmberOgre::getSingleton().getTerrainManager();
 //	if (terrain) {
 //		Ogre::Vector3 parentPos = Convert::toOgre(mEntity.getViewPosition());
 //		Ogre::Vector3 localPos(localPosition.x(), 0, -localPosition.y());
@@ -134,13 +136,13 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 
 			Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 			if (entitySceneNode) {
-				mPolygon = new ::EmberOgre::Authoring::Polygon(entitySceneNode, mPositionProvider);
+				mPolygon = new ::Ember::OgreView::Authoring::Polygon(entitySceneNode, mPositionProvider);
 
 				if (areaElem.isMap()) {
 					try {
 						WFMath::Polygon<2> poly(areaElem);
 						mPolygon->loadFromShape(poly);
-						mPickListener = new ::EmberOgre::Authoring::PolygonPointPickListener(*mPolygon);
+						mPickListener = new ::Ember::OgreView::Authoring::PolygonPointPickListener(*mPolygon);
 						mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
 						EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
 					} catch (const WFMath::_AtlasBadParse& ex) {
@@ -177,7 +179,7 @@ void PolygonAdapter::createNewPolygon()
 	mPolygon = 0;
 	Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 	if (entitySceneNode) {
-		mPolygon = new ::EmberOgre::Authoring::Polygon(entitySceneNode, mPositionProvider);
+		mPolygon = new ::Ember::OgreView::Authoring::Polygon(entitySceneNode, mPositionProvider);
 		WFMath::Polygon<2> poly;
 		poly.addCorner(0, WFMath::Point<2>(-1, -1));
 		poly.addCorner(1, WFMath::Point<2>(-1, 1));
@@ -185,7 +187,7 @@ void PolygonAdapter::createNewPolygon()
 		poly.addCorner(3, WFMath::Point<2>(1, -1));
 
 		mPolygon->loadFromShape(poly);
-		mPickListener = new ::EmberOgre::Authoring::PolygonPointPickListener(*mPolygon);
+		mPickListener = new ::Ember::OgreView::Authoring::PolygonPointPickListener(*mPolygon);
 		mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
 		EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
 	}
@@ -240,4 +242,5 @@ const WFMath::Polygon<2> PolygonAdapter::getShape() const
 
 }
 
+}
 }

@@ -33,7 +33,8 @@ namespace CEGUI
 	class Editbox;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 /**
@@ -113,6 +114,8 @@ protected:
 
 };
 }
+}
+
 }
 
 #endif

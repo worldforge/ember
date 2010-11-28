@@ -21,7 +21,9 @@
 
 #include <sigc++/signal.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain {
@@ -135,6 +137,8 @@ public:
 	sigc::signal<void> EventWorldDestroyed;
 
 };
+}
+
 }
 
 #endif /* EMBEROGRE_EMBEROGRESIGNALS_H_ */

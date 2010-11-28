@@ -30,7 +30,8 @@
 
 using namespace Ember;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 SoundGroupDefinition::SoundGroupDefinition()
 {
@@ -57,4 +58,5 @@ const SoundGroupDefinition::SoundDefinitionStore& SoundGroupDefinition::getSound
 }
 
 
+}
 }

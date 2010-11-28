@@ -30,7 +30,8 @@
 #include <CEGUIWindowManager.h>
 
 using namespace CEGUI;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -136,4 +137,5 @@ bool EntityIcon::handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* ico
 }
 }
 
+}
 }

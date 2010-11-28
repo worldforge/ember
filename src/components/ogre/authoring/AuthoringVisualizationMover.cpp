@@ -20,7 +20,9 @@
 #include "AuthoringVisualization.h"
 #include "EntityMover.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -42,6 +44,7 @@ AuthoringVisualizationMover::~AuthoringVisualizationMover()
 void AuthoringVisualizationMover::mover_Moved()
 {
 	mVisualization.updatePositionAndOrientation();
+}
 }
 }
 }

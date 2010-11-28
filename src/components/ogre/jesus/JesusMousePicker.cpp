@@ -29,7 +29,8 @@
 #include "JesusPickerObject.h"
 #include "../AvatarCamera.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 JesusMousePicker::JesusMousePicker()
  : MousePicker()
@@ -81,4 +82,5 @@ void JesusMousePicker::initializePickingContext()
 {
 }
 
+}
 }

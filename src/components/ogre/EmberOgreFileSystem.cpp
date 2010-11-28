@@ -49,7 +49,8 @@ Torus Knot Software Ltd.
 #include "framework/LoggingInstance.h"
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /* Our simplified data entry structure */
 struct _finddata_t
@@ -63,6 +64,7 @@ long _findfirst(const char *pattern, struct _finddata_t *data);
 int _findnext(long id, struct _finddata_t *data);
 int _findclose(long id);
 
+}
 }
 #define _A_NORMAL 0x00  /* Normalfile-Noread/writerestrictions */
 #define _A_RDONLY 0x01  /* Read only file */
@@ -82,7 +84,8 @@ int _findclose(long id);
 #endif
 
 using namespace Ogre;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 #if OGRE_PLATFORM != OGRE_PLATFORM_WIN32
 
@@ -207,6 +210,8 @@ int _findclose(long id)
     return ret;
 }
 
+}
+
 #endif
 }
 
@@ -232,7 +237,8 @@ int _findclose(long id)
         else
             return base + '/' + name;
     }
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
     //-----------------------------------------------------------------------
     FileSystemArchive::FileSystemArchive(const String& name, const String& archType )
         : Archive(name, archType)
@@ -472,4 +478,5 @@ namespace EmberOgre {
         return name;
     }
 
+}
 }

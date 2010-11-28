@@ -31,7 +31,8 @@ namespace CEGUI {
 	class PushButton;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntity;
 
 namespace Gui {
@@ -124,6 +125,8 @@ protected:
 	virtual void fillElementFromGui();
 	virtual bool _hasChanges();
 };
+
+}
 
 }
 

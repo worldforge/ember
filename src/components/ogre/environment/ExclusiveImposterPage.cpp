@@ -19,7 +19,9 @@
 
 #include "ExclusiveImposterPage.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -57,4 +59,5 @@ void ExclusiveImposterPage::removeEntities()
 
 }
 
+}
 }

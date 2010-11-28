@@ -20,7 +20,9 @@
 
 #include "components/ogre/EmberEntity.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -56,6 +58,7 @@ const std::string& ModelFitting::getMountPoint() const
 const std::string& ModelFitting::getChildEntityId() const
 {
 	return mChildEntityId;
+}
 }
 }
 }

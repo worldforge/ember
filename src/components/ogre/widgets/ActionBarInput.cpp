@@ -23,7 +23,9 @@
 #include "ActionBarInput.h"
 
 using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -42,5 +44,6 @@ ActionBarInput::~ActionBarInput()
 {
 }
 
+}
 }
 }

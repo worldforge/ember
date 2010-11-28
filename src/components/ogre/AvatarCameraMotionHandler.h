@@ -21,7 +21,8 @@
 
 #include "ICameraMotionHandler.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class Avatar;
 
 class AvatarCameraMotionHandler : public ICameraMotionHandler
@@ -34,6 +35,8 @@ public:
 private:
 	Avatar& mAvatar;
 };
+
+}
 
 }
 

@@ -25,7 +25,8 @@
 
 #include <string>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 
@@ -67,6 +68,8 @@ private:
 	static long long int sResourceCounter;
 
 };
+
+}
 
 }
 

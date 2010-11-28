@@ -21,7 +21,9 @@
 
 #include "components/ogre/ISceneRenderingTechnique.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment {
@@ -60,6 +62,8 @@ protected:
 
 };
 
+
+}
 
 }
 

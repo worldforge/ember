@@ -21,7 +21,9 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/IGraphicalRepresentation.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 AttachmentBase::AttachmentBase(EmberEntity& parentEntity, EmberEntity& childEntity) :
@@ -92,4 +94,5 @@ bool AttachmentBase::getVisualize(const std::string& visualization) const
 	return false;
 }
 
+}
 }

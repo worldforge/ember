@@ -25,7 +25,9 @@ template<int> class Vector;
 class Quaternion;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -59,5 +61,6 @@ public:
 };
 
 }
-;
+}
+
 #endif /* ICAMERAMOTIONHANDLER_H_ */

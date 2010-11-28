@@ -27,7 +27,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/terrain/TerrainPage.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -57,6 +58,8 @@ protected:
 
 
 };
+
+}
 
 }
 

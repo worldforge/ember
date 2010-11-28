@@ -22,7 +22,9 @@
 #include "services/sound/SoundGeneral.h"
 #include <string>
 
-namespace EmberOgre 
+namespace Ember
+{
+namespace OgreView
 {
 /**
  * @brief Represent each buffer described inside specific sound groups.
@@ -76,8 +78,7 @@ protected:
 
 };
 
-
+}
 }
 
 #endif
-

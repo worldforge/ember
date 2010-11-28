@@ -21,13 +21,15 @@
 #define MODEL_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include <OgreEntity.h>
 #include "ModelDefinition.h"
 #include "ParticleSystem.h"
+#include <OgreEntity.h>
 #include <sigc++/signal.h>
 #include <memory>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -438,6 +440,7 @@ public:
 
 };
 
+}
 }
 }
 #endif // MODEL_H

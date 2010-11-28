@@ -28,7 +28,9 @@
 #include "../EmberEntity.h"
 #include "EntityMoveManager.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -79,5 +81,6 @@ void EntityMoveAdjuster::EntityMoveManager_StartMoving(EmberEntity& entity, Enti
 	mActiveEntity = &entity;
 }
 
+}
 }
 }

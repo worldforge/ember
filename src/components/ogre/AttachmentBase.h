@@ -31,7 +31,9 @@ namespace Ogre
 class SceneNode;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class IGraphicalRepresentation;
@@ -85,6 +87,8 @@ protected:
 	EmberEntity& mChildEntity;
 
 };
+}
+
 }
 
 #endif /* ATTACHMENTBASE_H_ */

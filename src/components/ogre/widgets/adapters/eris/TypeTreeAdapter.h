@@ -35,7 +35,9 @@ class Tree;
 class TreeItem;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -116,6 +118,8 @@ private:
 }
 }
 }
+}
+
 }
 
 #endif /* TYPETREEADAPTER_H_ */

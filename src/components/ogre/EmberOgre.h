@@ -44,11 +44,6 @@ class Carpenter;
 class BluePrint;
 }
 
-namespace Ember
-{
-class StreamLogObserver;
-class InputCommandMapper;
-}
 
 namespace OgreOpcode
 {
@@ -62,7 +57,11 @@ class CollisionManager;
  * @note While a more natural name for this namespace would be Ember::Ogre, such a naming would be to cumbersome as it would clash with the Ogre namespace.
  *
  */
-namespace EmberOgre
+namespace Ember
+{
+class StreamLogObserver;
+class InputCommandMapper;
+namespace OgreView
 {
 
 namespace Terrain
@@ -125,7 +124,7 @@ class World;
 
  It's a singleton so you can access it through
  @code
- EmberOgre::EmberOgre::getSingleton()
+ Ember::OgreView::Ember::OgreView::getSingleton()
  @endcode
 
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -426,6 +425,8 @@ protected:
 inline Ogre::RenderWindow* EmberOgre::getRenderWindow() const
 {
 	return mWindow;
+}
+
 }
 
 }

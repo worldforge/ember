@@ -19,7 +19,9 @@ $#include "components/ogre/authoring/AuthoringManager.h"
 
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -44,11 +46,11 @@ public:
 	 */
 	void hideAuthoringVisualization();
 	
-	void displaySimpleEntityVisualization(EmberOgre::EmberEntity& entity);
+	void displaySimpleEntityVisualization(Ember::OgreView::EmberEntity& entity);
 
-	void hideSimpleEntityVisualization(EmberOgre::EmberEntity& entity);
+	void hideSimpleEntityVisualization(Ember::OgreView::EmberEntity& entity);
 
-	void startMovement(EmberOgre::EmberEntity& entity, EmberOgre::Authoring::EntityMover& mover);
+	void startMovement(Ember::OgreView::EmberEntity& entity, Ember::OgreView::Authoring::EntityMover& mover);
 
 	void stopMovement();
 
@@ -57,7 +59,7 @@ public:
 	 * This is only available if the user is logged in as an admin entity.
 	 * @return A pointer to a raw type info repository, or null if the user isn't an admin entity.
 	 */
-	EmberOgre::Authoring::RawTypeInfoRepository* getRawTypeInfoRepository() const;
+	Ember::OgreView::Authoring::RawTypeInfoRepository* getRawTypeInfoRepository() const;
 
 	/**
 	 * @brief Command for displaying authoring visualizations.
@@ -70,5 +72,6 @@ public:
 	const Ember::ConsoleCommandWrapper HideAuthoringVisualizations;
 
 };
+}
 }
 }

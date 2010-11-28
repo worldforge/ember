@@ -40,7 +40,8 @@
 #include <OgreTextureManager.h>
 #include <OgreTexture.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 SimpleRenderContextResourceLoader::SimpleRenderContextResourceLoader(SimpleRenderContext& renderContext)
 : mRenderContext(renderContext)
@@ -360,4 +361,5 @@ Ogre::Light* SimpleRenderContext::getLight()
 }
 
 
+}
 }

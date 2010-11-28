@@ -34,7 +34,8 @@
 
 using namespace CEGUI;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -137,4 +138,5 @@ const boost::any* ActionBarIconDragDropTarget::getUserData(const CEGUI::EventArg
 
 }
 
+}
 }

@@ -24,11 +24,9 @@
 #include "services/sound/SoundInstance.h"
 namespace Ember
 {
-	class SoundInstance;
-	class SoundInstance;
-}
-
-namespace EmberOgre
+class SoundInstance;
+class SoundInstance;
+namespace OgreView
 {
 class SoundGroup;
 class SoundEntity;
@@ -120,6 +118,8 @@ protected:
 
 
 };
+}
+
 }
 
 #endif

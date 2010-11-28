@@ -39,7 +39,9 @@ namespace Mercator {
 	class BasePoint;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -400,6 +402,8 @@ private:
     void commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse);
 
 };
+
+}
 
 }
 

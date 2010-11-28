@@ -30,7 +30,8 @@
 #include <CEGUIWindow.h>
 #include <OgreStringConverter.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -110,4 +111,5 @@ void QuaternionAdapter::vectorAdapter_ValueChanged()
 
 }
 
+}
 }

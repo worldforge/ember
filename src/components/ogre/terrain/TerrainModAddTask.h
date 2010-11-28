@@ -21,7 +21,9 @@
 #include "TerrainModTaskBase.h"
 #include <Mercator/TerrainMod.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -48,6 +50,8 @@ private:
 	 */
 	Mercator::TerrainMod* mOriginalTerrainMod;
 };
+
+}
 
 }
 

@@ -34,7 +34,8 @@ namespace Ogre {
 }
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 class SubModel;
@@ -77,6 +78,7 @@ protected:
 	SubModelPartEntityStore mSubEntities;
 };
 
+}
 }
 }
 #endif // SUBMODELPART_H

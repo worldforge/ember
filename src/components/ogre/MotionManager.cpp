@@ -26,8 +26,9 @@
 #include "IAnimated.h"
 
 
-template<> EmberOgre::MotionManager* Ember::Singleton<EmberOgre::MotionManager>::ms_Singleton = 0;
-namespace EmberOgre {
+template<> Ember::OgreView::MotionManager* Ember::Singleton<Ember::OgreView::MotionManager>::ms_Singleton = 0;
+namespace Ember {
+namespace OgreView {
 
 
 MotionManager::MotionManager()
@@ -92,4 +93,5 @@ void MotionManager::removeAnimated(const std::string& id)
 	mInfo.AnimatedEntities = mAnimatedEntities.size();
 }
 
+}
 }

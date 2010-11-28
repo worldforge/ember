@@ -8,7 +8,7 @@
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
 
-using namespace EmberOgre;
+using namespace Ember::OgreView;
 using namespace WFMath;
 
 namespace Ember
@@ -25,7 +25,7 @@ public:
 	TestModel() :
 		Model::Model("testmodel")
 	{
-		mDefinition = ::EmberOgre::Model::ModelDefnPtr(new ::EmberOgre::Model::ModelDefinition(0, "modeldef", 1, ""));
+		mDefinition = ::Ember::OgreView::Model::ModelDefnPtr(new ::Ember::OgreView::Model::ModelDefinition(0, "modeldef", 1, ""));
 		mDefinition->setTranslate(Ogre::Vector3::ZERO);
 	}
 

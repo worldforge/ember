@@ -26,7 +26,8 @@
 #include "EmberEntityUserObject.h"
 #include "ICollisionDetector.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 	Uses a brute force approach to checking for intersection by iterating through all vertices to see which intersects the ray.
@@ -60,6 +61,8 @@ protected:
                                 const Ogre::Quaternion &orient,
                                 const Ogre::Vector3 &scale);
 };
+
+}
 
 }
 

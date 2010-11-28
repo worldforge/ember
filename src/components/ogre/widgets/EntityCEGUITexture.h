@@ -33,7 +33,8 @@ namespace CEGUI
 	class Texture;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class SimpleRenderContext;
 
@@ -103,6 +104,8 @@ private:
 
 
 }
+}
+
 }
 
 #endif

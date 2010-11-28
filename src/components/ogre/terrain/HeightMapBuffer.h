@@ -19,7 +19,9 @@
 #ifndef HEIGHTMAPBUFFER_H_
 #define HEIGHTMAPBUFFER_H_
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -83,6 +85,8 @@ private:
 	HeightMapBuffer(HeightMapBufferProvider& provider, BufferType* buffer);
 
 };
+
+}
 
 }
 

@@ -28,7 +28,8 @@
 
 #include "components/entitymapping/Actions/Action.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 	@brief Hides the current graphical representation when activated.
@@ -48,6 +49,8 @@ protected:
 	EmberEntity& mEntity;
 
 };
+
+}
 
 }
 

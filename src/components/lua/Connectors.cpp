@@ -27,10 +27,6 @@
 
 #include <tolua++.h>
 
-namespace EmberOgre {
-class EmberEntity;
-}
-
 namespace Ember
 {
 

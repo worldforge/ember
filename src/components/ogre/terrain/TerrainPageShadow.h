@@ -34,7 +34,8 @@ namespace Ogre {
 	class Vector2;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 class TerrainPage;
@@ -87,6 +88,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif

@@ -29,7 +29,8 @@
 //#include "components/ogre/EmberOgrePrerequisites.h"
 using namespace Ember::EntityMapping;
 using namespace Ember::EntityMapping::Definitions;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Mapping {
 
@@ -246,4 +247,5 @@ void XMLEntityMappingDefinitionSerializer::parseActionElement(EntityMappingDefin
 }
 }
 
+}
 }

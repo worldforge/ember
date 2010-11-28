@@ -28,7 +28,8 @@
 
 #include "SubModelPart.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 
@@ -81,4 +82,5 @@ void ModelPart::addSubModelPart(SubModelPart* part)
 
 }
 
+}
 }

@@ -27,7 +27,8 @@
 #include "../MousePicker.h"
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class ModelBlock;
 class AttachPointNode;
@@ -62,6 +63,8 @@ protected:
 
 
 };
+}
+
 }
 
 #endif

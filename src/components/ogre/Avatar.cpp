@@ -59,7 +59,9 @@
 
 #include <wfmath/stream.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene) :
@@ -406,5 +408,6 @@ WFMath::Vector<3> Avatar::getClientSideAvatarVelocity() const
 //	}
 }
 
+}
 }
 

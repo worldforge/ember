@@ -21,7 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -58,10 +59,10 @@ class Environment
 {
 
    
-	inline EmberOgre::Environment::ISun* getSun();
-	inline EmberOgre::Environment::ISky* getSky();
-	inline EmberOgre::Environment::IFog* getFog();
-	inline EmberOgre::Environment::IWater* getWater();
+	inline Ember::OgreView::Environment::ISun* getSun();
+	inline Ember::OgreView::Environment::ISky* getSky();
+	inline Ember::OgreView::Environment::IFog* getFog();
+	inline Ember::OgreView::Environment::IWater* getWater();
     
     
     void setTime(int hour, int minute, int second = 0);
@@ -86,7 +87,5 @@ class Environment
 
 
 }
-
 }
-
-
+}

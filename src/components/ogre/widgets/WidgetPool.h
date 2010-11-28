@@ -28,7 +28,8 @@
 #include <stack>
 #include <algorithm>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -133,6 +134,8 @@ std::stack<T*>& WidgetPool<T>::getUnusedWidgets()
 {
 	return mUnusedWidgets;
 }
+}
+
 }
 
 }

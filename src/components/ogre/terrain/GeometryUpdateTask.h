@@ -24,7 +24,9 @@
 #include "Types.h"
 #include <set>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -55,6 +57,8 @@ private:
 	std::set<TerrainPage*> mPages;
 
 };
+
+}
 
 }
 

@@ -36,7 +36,9 @@
 
 #include "services/time/TimeService.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -255,4 +257,5 @@ void CaelumEnvironment::runCommand(const std::string &command, const std::string
 
 }
 
+}
 }

@@ -35,7 +35,8 @@ the basic resources required for the progress bar and will be loaded automatical
 #include <OgreRenderWindow.h>
 
 using namespace Ogre;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 /** Defines an example loading progress bar which you can use during
@@ -113,7 +114,7 @@ namespace Gui {
 			mLoadOverlay = (Overlay*)omgr.getByName("EmberCore/LoadOverlay");
 			if (!mLoadOverlay)
 			{
-			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND,
+			OGRE_EXCEPT(::Ogre::Exception::ERR_ITEM_NOT_FOUND,
 				"Cannot find loading overlay", "LoadingBar::start");
 			}
 			mLoadOverlay->show();
@@ -428,6 +429,7 @@ namespace Gui {
 		mNumberOfFilesToUpdate = numberOfFilesToUpdate;
 	}
 
+}
 }
 }
 

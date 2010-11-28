@@ -30,9 +30,11 @@
 #include "framework/tinyxml/tinyxml.h"
 #include "components/ogre/XMLHelper.h"
 
-template<> EmberOgre::Authoring::EntityRecipeManager* Ember::Singleton<EmberOgre::Authoring::EntityRecipeManager>::ms_Singleton = 0;
+template<> Ember::OgreView::Authoring::EntityRecipeManager* Ember::Singleton<Ember::OgreView::Authoring::EntityRecipeManager>::ms_Singleton = 0;
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -76,5 +78,6 @@ Ogre::Resource* EntityRecipeManager::createImpl(const Ogre::String& name, Ogre::
 	return new EntityRecipe(this, name, handle, group, isManual, loader);
 }
 
+}
 }
 }

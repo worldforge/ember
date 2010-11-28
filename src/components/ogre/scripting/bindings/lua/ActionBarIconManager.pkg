@@ -24,7 +24,8 @@
 $#include "components/ogre/widgets/ActionBarIconManager.h"
 $#include <Eris/ServerInfo.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 namespace Gui {
@@ -41,23 +42,23 @@ public:
 		AvatarIdType(Eris::ServerInfo& serverInfo, std::string& avatarId);
 	};
 	
-	EmberOgre::Gui::ActionBarIconSlot* createSlot(unsigned int pixelSize = 64);
-	void destroySlot(EmberOgre::Gui::ActionBarIconSlot* slot);
+	Ember::OgreView::Gui::ActionBarIconSlot* createSlot(unsigned int pixelSize = 64);
+	void destroySlot(Ember::OgreView::Gui::ActionBarIconSlot* slot);
 	
-	EmberOgre::Gui::ActionBarIcon* createIcon(EmberOgre::Gui::Icons::Icon* icon, unsigned int pixelSize = 64);
-	void destroyIcon(EmberOgre::Gui::ActionBarIcon* icon);
+	Ember::OgreView::Gui::ActionBarIcon* createIcon(Ember::OgreView::Gui::Icons::Icon* icon, unsigned int pixelSize = 64);
+	void destroyIcon(Ember::OgreView::Gui::ActionBarIcon* icon);
 
-	const std::string getSavedValue(const EmberOgre::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& name) const;
+	const std::string getSavedValue(const Ember::OgreView::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& name) const;
 
-	void saveValue(const EmberOgre::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& key, const std::string& value);
+	void saveValue(const Ember::OgreView::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& key, const std::string& value);
 
-	void eraseValue(const EmberOgre::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& key);
+	void eraseValue(const Ember::OgreView::Gui::ActionBarIconManager::AvatarIdType& avatarId, const std::string& key);
 	
-	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStart;
-	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDragStop;
+	sigc::signal<void, Ember::OgreView::Gui::ActionBarIcon*> EventIconDragStart;
+	sigc::signal<void, Ember::OgreView::Gui::ActionBarIcon*> EventIconDragStop;
 
 };
 
 }
-
+}
 }

@@ -33,7 +33,9 @@ namespace Mercator
 	class Segment;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -101,6 +103,8 @@ private:
 
 
 };
+
+}
 
 }
 

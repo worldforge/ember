@@ -31,7 +31,8 @@ namespace Forests {
 class PagedGeometry;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain
 {
@@ -68,6 +69,8 @@ protected:
 	float mMaxWidth;
 
 };
+
+}
 
 }
 

@@ -31,7 +31,8 @@ class PagingLandScapeOptions;
 class SceneManager;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberPagingSceneManager;
 
@@ -79,5 +80,6 @@ private:
 
 };
 
+}
 
 }

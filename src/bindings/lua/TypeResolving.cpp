@@ -42,7 +42,7 @@ namespace Lua
  */
 
 template <>
-const char* resolveLuaTypename<const EmberOgre::EmberEntity>(){return "EmberOgre::EmberEntity";}
+const char* resolveLuaTypename<const Ember::OgreView::EmberEntity>(){return "Ember::OgreView::EmberEntity";}
 template <>
 const char* resolveLuaTypename<const Ogre::Camera>(){return "Ogre::Camera";}
 template <>
@@ -50,39 +50,39 @@ const char* resolveLuaTypename<const Eris::Connection>(){return "Eris::Connectio
 template <>
 const char* resolveLuaTypename<const Eris::ServerInfo>(){return "Eris::ServerInfo";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::EntityPickResult>(){return "EmberOgre::EntityPickResult";}
+const char* resolveLuaTypename<const Ember::OgreView::EntityPickResult>(){return "Ember::OgreView::EntityPickResult";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::MousePickerArgs>(){return "EmberOgre::MousePickerArgs";}
+const char* resolveLuaTypename<const Ember::OgreView::MousePickerArgs>(){return "Ember::OgreView::MousePickerArgs";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::EmberEntityFactory>(){return "EmberOgre::EmberEntityFactory";}
+const char* resolveLuaTypename<const Ember::OgreView::EmberEntityFactory>(){return "Ember::OgreView::EmberEntityFactory";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Authoring::EntityMover>(){return "EmberOgre::Authoring::EntityMover";}
+const char* resolveLuaTypename<const Ember::OgreView::Authoring::EntityMover>(){return "Ember::OgreView::Authoring::EntityMover";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Terrain::BasePointUserObject>(){return "EmberOgre::Terrain::BasePointUserObject";}
+const char* resolveLuaTypename<const Ember::OgreView::Terrain::BasePointUserObject>(){return "Ember::OgreView::Terrain::BasePointUserObject";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainEditAction>(){return "EmberOgre::Terrain::TerrainEditAction";}
+const char* resolveLuaTypename<const Ember::OgreView::Terrain::TerrainEditAction>(){return "Ember::OgreView::Terrain::TerrainEditAction";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainEditorOverlay>(){return "EmberOgre::Terrain::TerrainEditorOverlay";}
+const char* resolveLuaTypename<const Ember::OgreView::Terrain::TerrainEditorOverlay>(){return "Ember::OgreView::Terrain::TerrainEditorOverlay";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainManager>(){return "EmberOgre::Terrain::TerrainManager";}
+const char* resolveLuaTypename<const Ember::OgreView::Terrain::TerrainManager>(){return "Ember::OgreView::Terrain::TerrainManager";}
 template <>
 const char* resolveLuaTypename<const Eris::Task>(){return "Eris::Task";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Gui::EntityIcon>(){return "EmberOgre::Gui::EntityIcon";}
+const char* resolveLuaTypename<const Ember::OgreView::Gui::EntityIcon>(){return "Ember::OgreView::Gui::EntityIcon";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Gui::ActionBarIcon>(){return "EmberOgre::Gui::ActionBarIcon";}
+const char* resolveLuaTypename<const Ember::OgreView::Gui::ActionBarIcon>(){return "Ember::OgreView::Gui::ActionBarIcon";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Gui::HelpMessage>(){return "EmberOgre::Gui::HelpMessage";}
+const char* resolveLuaTypename<const Ember::OgreView::Gui::HelpMessage>(){return "Ember::OgreView::Gui::HelpMessage";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::Terrain::TerrainPage>(){return "EmberOgre::Terrain::TerrainPage";}
+const char* resolveLuaTypename<const Ember::OgreView::Terrain::TerrainPage>(){return "Ember::OgreView::Terrain::TerrainPage";}
 template <>
 const char* resolveLuaTypename<const Eris::Avatar>(){return "Eris::Avatar";}
 template <>
 const char* resolveLuaTypename<const Eris::View>(){return "Eris::View";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::World>(){return "EmberOgre::World";}
+const char* resolveLuaTypename<const Ember::OgreView::World>(){return "Ember::OgreView::World";}
 template <>
-const char* resolveLuaTypename<const std::vector<EmberOgre::EntityPickResult> >(){return "std::vector<EmberOgre::EntityPickResult>";}
+const char* resolveLuaTypename<const std::vector<Ember::OgreView::EntityPickResult> >(){return "std::vector<Ember::OgreView::EntityPickResult>";}
 template <>
 const char* resolveLuaTypename<const std::set<std::string> >(){return "std::set<std::string>";}
 template <>
@@ -90,9 +90,9 @@ const char* resolveLuaTypename<const Atlas::Message::Element>(){return "Atlas::M
 template <>
 const char* resolveLuaTypename<const Atlas::Objects::Root>(){return "Atlas::Objects::Root";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::MotionManager>(){return "EmberOgre::MotionManager";}
+const char* resolveLuaTypename<const Ember::OgreView::MotionManager>(){return "Ember::OgreView::MotionManager";}
 template <>
-const char* resolveLuaTypename<const EmberOgre::GUIManager>(){return "EmberOgre::GUIManager";}
+const char* resolveLuaTypename<const Ember::OgreView::GUIManager>(){return "Ember::OgreView::GUIManager";}
 }
 }
 

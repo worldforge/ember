@@ -33,7 +33,8 @@ namespace WFMath
 template<int> class Point;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
  * @brief A 2d position in the world.
@@ -45,5 +46,6 @@ typedef WFMath::Point<2> TerrainPosition;
  */
 typedef std::pair<int, int> TerrainIndex;
 
+}
 }
 #endif //EMBEROGRETYPES_H

@@ -19,7 +19,9 @@
 #include "AtlasObjectDecoder.h"
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -48,4 +50,5 @@ void AtlasObjectDecoder::objectArrived(const Atlas::Objects::Root& obj)
 
 }
 
+}
 }

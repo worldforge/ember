@@ -1,5 +1,6 @@
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Camera {
 class MainCamera
 {
@@ -56,5 +57,6 @@ public:
 
 
 };
+}
 }
 }

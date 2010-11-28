@@ -30,7 +30,8 @@
 #include "../OgreIncludes.h"
 #include "Tree.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -94,4 +95,5 @@ void Tree::makeMesh(Ogre::String meshName, Ogre::TParameters::TreeType type)
 
 }
 
+}
 }

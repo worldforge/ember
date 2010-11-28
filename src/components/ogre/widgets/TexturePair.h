@@ -29,7 +29,9 @@ class Image;
 class Texture;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -52,6 +54,8 @@ protected:
 	const CEGUI::Image* mTextureImage;
 	CEGUI::Imageset* mTextureImageset;
 };
+
+}
 
 }
 

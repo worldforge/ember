@@ -25,7 +25,8 @@
 
 #include <OgreMeshSerializer.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 @brief Allows the usage of relative skeleton names.
@@ -42,6 +43,8 @@ public:
 	virtual void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name);
 	virtual void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name);
 };
+
+}
 
 }
 

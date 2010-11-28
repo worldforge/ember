@@ -26,7 +26,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <CEGUI.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 /**
@@ -67,6 +68,8 @@ protected:
 	CEGUI::PushButton* mButton;
 };
 }
+}
+
 }
 
 #endif

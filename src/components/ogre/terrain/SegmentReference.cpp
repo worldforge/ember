@@ -18,7 +18,9 @@
 #include "SegmentReference.h"
 #include "SegmentHolder.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -42,4 +44,5 @@ Segment& SegmentReference::getSegment()
 
 }
 
+}
 }

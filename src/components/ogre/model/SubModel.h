@@ -22,7 +22,8 @@
 
 #include <map>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 class Model;
@@ -51,6 +52,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif // SUBMODEL_H

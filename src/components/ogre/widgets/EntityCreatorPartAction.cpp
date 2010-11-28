@@ -27,7 +27,8 @@
 #include "EntityCreatorPartAction.h"
 #include "EntityCreator.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -55,4 +56,5 @@ void EntityCreatorPartAction::deactivate(Ember::EntityMapping::ChangeContext& co
 
 }
 
+}
 }

@@ -61,7 +61,9 @@
 #include <dirent.h>
 #endif
 using namespace Ember::EntityMapping;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene) :
@@ -162,5 +164,6 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 }
 
 
+}
 }
 

@@ -28,7 +28,8 @@ class EventArgs;
 class Window;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class EmberEntity;
 class World;
 namespace Gui {
@@ -153,6 +154,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif /* ENTITYTOOLTIP_H_ */

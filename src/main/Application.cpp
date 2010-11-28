@@ -170,7 +170,7 @@ Application::~Application()
 
 void Application::registerComponents()
 {
-	mOgreView = new EmberOgre::EmberOgre();
+	mOgreView = new Ember::OgreView::EmberOgre();
 }
 
 void Application::mainLoopStep(long minMillisecondsPerFrame)

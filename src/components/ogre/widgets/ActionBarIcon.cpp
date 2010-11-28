@@ -27,7 +27,8 @@
 #include <CEGUIWindowManager.h>
 
 using namespace CEGUI;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -142,5 +143,6 @@ bool ActionBarIcon::handleDragEntityIconDropped(const CEGUI::EventArgs& args, En
 	return true;
 }
 
+}
 }
 }

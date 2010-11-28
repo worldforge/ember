@@ -34,7 +34,8 @@ namespace Eris
 class Entity;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 
@@ -280,6 +281,8 @@ protected:
 inline const std::string& AdapterFactory::getCurrentPrefix() const
 {
 	return mCurrentPrefix;
+}
+
 }
 
 }

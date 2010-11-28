@@ -21,7 +21,8 @@
 
 #include "framework/Singleton.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 
@@ -42,6 +43,8 @@ public:
 };
 
 }
+}
+
 }
 
 #endif /* MODELMANAGER_H_ */

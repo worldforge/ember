@@ -24,7 +24,8 @@
 #include <map>
 #include <vector>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -33,7 +34,7 @@ namespace Gui {
 */
 class EntityEditor{
 public:
-    EntityEditor(Eris::Entity* entity, EmberOgre::Gui::Adapters::Atlas::MapAdapter* rootAdapter);
+    EntityEditor(Eris::Entity* entity, Ember::OgreView::Gui::Adapters::Atlas::MapAdapter* rootAdapter);
 
     virtual ~EntityEditor();
     
@@ -50,7 +51,5 @@ public:
 };
 
 }
-
 }
-
-
+}

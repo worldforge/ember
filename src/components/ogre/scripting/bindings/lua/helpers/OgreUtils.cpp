@@ -27,7 +27,8 @@
 #include "OgreUtils.h"
 #include <OgreMesh.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
  * Returns the name of the submesh at the specified index.
@@ -49,4 +50,5 @@ const std::string& OgreUtils::getSubMeshName(Ogre::Mesh* mesh, unsigned int subM
 }
 
 
+}
 }

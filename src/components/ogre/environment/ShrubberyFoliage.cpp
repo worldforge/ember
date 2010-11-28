@@ -42,7 +42,8 @@
 #include "pagedgeometry/include/BatchPage.h"
 #include "pagedgeometry/include/TreeLoader3D.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -101,4 +102,5 @@ void ShrubberyFoliage::frameStarted(const Ogre::FrameEvent & evt)
 
 }
 
+}
 }

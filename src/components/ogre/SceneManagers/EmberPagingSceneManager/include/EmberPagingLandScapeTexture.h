@@ -28,7 +28,9 @@
 #include "OgrePagingLandScapePrerequisites.h"
 #include "OgrePagingLandScapeTexture.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -56,5 +58,6 @@ protected:
 	virtual void _unloadMaterial();
 };
 	
+}
 }
 #endif

@@ -36,7 +36,8 @@ namespace CEGUI
 	class EventArgs;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -154,6 +155,8 @@ private:
 	const boost::any* getUserData(const CEGUI::EventArgs& args) const;
 
 };
+
+}
 
 }
 

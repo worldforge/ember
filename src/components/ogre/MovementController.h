@@ -34,7 +34,8 @@
 #include <sigc++/trackable.h>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Camera {
 class FirstPersonCameraMount;
@@ -212,6 +213,8 @@ protected:
 };
 
 
+
+}
 
 }
 

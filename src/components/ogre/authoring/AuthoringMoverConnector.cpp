@@ -19,7 +19,9 @@
 #include "AuthoringMoverConnector.h"
 #include "AuthoringManager.h"
 #include "EntityMoveManager.h"
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -50,5 +52,6 @@ void AuthoringMoverConnector::moveManager_CancelledMoving()
 	mAuthoringManager.stopMovement();
 }
 
+}
 }
 }

@@ -51,12 +51,12 @@ function ModelEdit:fillMaterialList()
 end
 
 function ModelEdit:fillMeshList()
-	local manager = EmberOgre.Model.ModelDefinitionManager:getSingleton()
+	local manager = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 	local meshes = manager:getAllMeshes()
 	
 	for i = 0, meshes:size() - 1 do
 		local name = meshes[i]
-		local item = EmberOgre.Gui.ColouredListItem:new(name, i)
+		local item = Ember.OgreView.Gui.ColouredListItem:new(name, i)
 		self.contentparts.modelInfo.meshlistlistholder:addItem(item)
 --		self.contentparts.modelInfo.meshlist:addItem(item)
 		
@@ -81,14 +81,14 @@ function ModelEdit:fillSubMeshList(part)
 	local i = 0
 	while i < numberOfSubmeshes do
 		local submeshname = self:getSubMeshName(mesh, i)
-		local item = EmberOgre.Gui.ColouredListItem:new(submeshname, i)
+		local item = Ember.OgreView.Gui.ColouredListItem:new(submeshname, i)
 		list:addItem(item)
 		i = i + 1
 	end	
 end
 
 function ModelEdit:getSubMeshName(mesh, index)
-	local submeshname = EmberOgre.OgreUtils:getSubMeshName(mesh, index)
+	local submeshname = Ember.OgreView.OgreUtils:getSubMeshName(mesh, index)
 	if submeshname == "" then
 		submeshname = "(index: " .. index .. ")"
 	end
@@ -96,7 +96,7 @@ function ModelEdit:getSubMeshName(mesh, index)
 end
 
 function ModelEdit:loadModelDefinition(definitionName)
-	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
+	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 	self.definitionPtr = modelDefMgr:getByName(definitionName)
 	self.definition = self.definitionPtr:get()
 	self:showPreview(definitionName)
@@ -114,7 +114,7 @@ function ModelEdit:updateSubmodelsList()
 	local submodels = self.definition:getSubModelDefinitions()
 	for val = 0, submodels:size() - 1 do
 		local name = submodels[val]:getMeshName()
-		local item = EmberOgre.Gui.ColouredListItem:new(name, val)
+		local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
 		self.submodels:addItem(item)
 	end	
 end
@@ -126,7 +126,7 @@ function ModelEdit:updatePartsList(submodel)
 		local parts = submodel:getPartDefinitions()
 		for val = 0, parts:size() - 1 do
 			local name = parts[val]:getName()
-			local item = EmberOgre.Gui.ColouredListItem:new(name, val)
+			local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
 			self.parts:addItem(item)
 		end
 	end
@@ -144,7 +144,7 @@ function ModelEdit:updateSubentitiesList(part)
 			if name == "" then
 				name = subentities[val]:getSubEntityIndex()
 			end
-			local item = EmberOgre.Gui.ColouredListItem:new(name, val)
+			local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
 			self.subentities:addItem(item)
 		end
 	end
@@ -339,7 +339,7 @@ function ModelEdit:ReloadModelListButton_Clicked(args)
 end
 
 function ModelEdit:SaveModelButton_Clicked(args)
-	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
+	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 	modelDefMgr:exportScript(self.definitionPtr)	
 	inspectObject(self.definition:getName())
 
@@ -348,7 +348,7 @@ end
 function ModelEdit:ExportAsAtlasTypeButton_Clicked(args)
 	local model = self.renderer:getModel()
 	if model ~= nil then
-		local composer = EmberOgre.Model.ModelDefinitionAtlasComposer:new_local()
+		local composer = Ember.OgreView.Model.ModelDefinitionAtlasComposer:new_local()
 		composer:composeToFile(model, self.definition:getName(), "thing", self.definition:getScale())
 	end	
 end
@@ -457,7 +457,7 @@ function ModelEdit:NewModelCancel_Clicked(args)
 end
 
 function ModelEdit:NewModelOk_Clicked(args)
-	local modelDefMgr = EmberOgre.Model.ModelDefinitionManager:getSingleton()
+	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 	local name = self.widget:getWindow("NewModelName"):getText()
 	local def = modelDefMgr:create(name, "ModelDefinitions"):get()
 	def:setValid(true)
@@ -552,7 +552,7 @@ function ModelEdit:updateModelContentList()
 		modelcontentItem.submodel = submodel
 		self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
 		
-		local treeItem = EmberOgre.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
+		local treeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
 		treeItem:toggleIsOpen()
 		treeItem:setTooltipText("Mesh '" .. name .. "'")
 		self.modelcontentstree:addItem(treeItem)
@@ -576,7 +576,7 @@ function ModelEdit:updateModelContentList()
 				
 				self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
 				
-				local treeItem2 = EmberOgre.Gui.ColouredTreeItem:new(name .. partVisible, table.getn(self.modelContentsItems))
+				local treeItem2 = Ember.OgreView.Gui.ColouredTreeItem:new(name .. partVisible, table.getn(self.modelContentsItems))
 				treeItem2:toggleIsOpen()
 				treeItem2:setTooltipText("Part '" .. name .. "'")
 				treeItem:addItem(treeItem2)
@@ -595,7 +595,7 @@ function ModelEdit:updateModelContentList()
 						modelcontentItem.subentity = subentity
 						self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
 						
-						local treeItem3 = EmberOgre.Gui.ColouredTreeItem:new(submeshname, table.getn(self.modelContentsItems))
+						local treeItem3 = Ember.OgreView.Gui.ColouredTreeItem:new(submeshname, table.getn(self.modelContentsItems))
 						treeItem3:toggleIsOpen()
 						treeItem3:setTooltipText("Submesh '" .. submeshname .. "'")
 						treeItem2:addItem(treeItem3)
@@ -728,26 +728,26 @@ function ModelEdit:buildWidget()
 		self.models:subscribeEvent("ItemSelectionChanged", self.models_SelectionChanged, self)
 		self.modelsfilter = self.widget:getWindow("FilterModels")
 		self.modelsfilter = CEGUI.toEditbox(self.modelsfilter)
-		self.modelslistholder = EmberOgre.Gui.ListHolder:new(self.models, self.modelsfilter)
-		self.modelsAdapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new(self.modelslistholder, EmberOgre.Model.ModelDefinitionManager:getSingleton())
+		self.modelslistholder = Ember.OgreView.Gui.ListHolder:new(self.models, self.modelsfilter)
+		self.modelsAdapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new(self.modelslistholder, Ember.OgreView.Model.ModelDefinitionManager:getSingleton())
 		
 		local xW = self.widget:getWindow("ModelTranslate_x")
 		local yW = self.widget:getWindow("ModelTranslate_y")
 		local zW = self.widget:getWindow("ModelTranslate_z")
-		self.translateAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
+		self.translateAdapter = Ember.OgreView.Gui.Vector3Adapter:new(xW,yW ,zW)
 		connect(self.connectors, self.translateAdapter.EventValueChanged, self.translateAdapter_update, self)
 		
 		local xW = self.widget:getWindow("ModelContainedOffset_x")
 		local yW = self.widget:getWindow("ModelContainedOffset_y")
 		local zW = self.widget:getWindow("ModelContainedOffset_z")
-		self.containedOffsetAdapter = EmberOgre.Gui.Vector3Adapter:new(xW,yW ,zW)
+		self.containedOffsetAdapter = Ember.OgreView.Gui.Vector3Adapter:new(xW,yW ,zW)
 		connect(self.connectors, self.containedOffsetAdapter.EventValueChanged, self.containedOffsetAdapter_update, self)
 	
 		local xW = self.widget:getWindow("ModelRotation_x")
 		local yW = self.widget:getWindow("ModelRotation_y")
 		local zW = self.widget:getWindow("ModelRotation_z")
 		local degreeW = self.widget:getWindow("ModelRotation_degrees")
-		self.rotationAdapter = EmberOgre.Gui.QuaternionAdapter:new(degreeW, xW,yW ,zW)
+		self.rotationAdapter = Ember.OgreView.Gui.QuaternionAdapter:new(degreeW, xW,yW ,zW)
 		connect(self.connectors, self.rotationAdapter.EventValueChanged, self.rotationAdapter_update, self)
 	
 	
@@ -769,7 +769,7 @@ function ModelEdit:buildWidget()
 		self.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", self.modelinfoMeshlist_SelectionChanged, self)
 		
 		self.contentparts.modelInfo.meshlistfilter =  CEGUI.toEditbox(self.widget:getWindow("MeshListFilter"))
-		self.contentparts.modelInfo.meshlistlistholder = EmberOgre.Gui.ListHolder:new(self.contentparts.modelInfo.meshlist, self.contentparts.modelInfo.meshlistfilter)
+		self.contentparts.modelInfo.meshlistlistholder = Ember.OgreView.Gui.ListHolder:new(self.contentparts.modelInfo.meshlist, self.contentparts.modelInfo.meshlistfilter)
 		
 		
 		self.contentparts.submeshInfo.materiallist = self.widget:getWindow("Materials")
@@ -777,8 +777,8 @@ function ModelEdit:buildWidget()
 		self.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", self.submeshinfomaterials_SelectionChanged, self)
 		self.contentparts.submeshInfo.filter = self.widget:getWindow("FilterMaterials")
 		self.contentparts.submeshInfo.filter = CEGUI.toEditbox(self.contentparts.submeshInfo.filter)
-		self.contentparts.submeshInfo.listholder = EmberOgre.Gui.ListHolder:new(self.contentparts.submeshInfo.materiallist, self.contentparts.submeshInfo.filter)
-		self.contentparts.submeshInfo.listadapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new(self.contentparts.submeshInfo.listholder, Ogre.MaterialManager:getSingleton())
+		self.contentparts.submeshInfo.listholder = Ember.OgreView.Gui.ListHolder:new(self.contentparts.submeshInfo.materiallist, self.contentparts.submeshInfo.filter)
+		self.contentparts.submeshInfo.listadapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new(self.contentparts.submeshInfo.listholder, Ogre.MaterialManager:getSingleton())
 		
 		self.contentparts.submeshInfo.removeSubMeshButton = self.widget:getWindow("RemoveSubMeshButton")
 		self.contentparts.submeshInfo.removeSubMeshButton:subscribeEvent("Clicked", self.submeshinforemovesubmesh_Clicked, self)
@@ -831,19 +831,19 @@ function ModelEdit:buildWidget()
 			
 		
 			
-		self.renderer = EmberOgre.Gui.ModelRenderer:new(self.renderImage)
+		self.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.renderImage)
 		self.renderer:showAxis();
-		self.renderer:setCameraPositionMode(EmberOgre.SimpleRenderContext.CPM_WORLDCENTER)
+		self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
 		
 		local subMeshPreviewImage = self.widget:getWindow("SubMeshPreviewImage")
 		--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
-		self.subMeshPartRenderer = EmberOgre.Gui.OgreEntityRenderer:new(subMeshPreviewImage)
+		self.subMeshPartRenderer = Ember.OgreView.Gui.OgreEntityRenderer:new(subMeshPreviewImage)
 		
 		local meshPreviewImage = self.widget:getWindow("MeshPreviewImage")
 		--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
-		self.submeshRenderer = EmberOgre.Gui.OgreEntityRenderer:new(meshPreviewImage)
+		self.submeshRenderer = Ember.OgreView.Gui.OgreEntityRenderer:new(meshPreviewImage)
 		
-		--self.contentparts.modelInfo.renderer = EmberOgre.Gui.ModelRenderer:new_local(self.contentparts.modelInfo.renderImage)
+		--self.contentparts.modelInfo.renderer = Ember.OgreView.Gui.ModelRenderer:new_local(self.contentparts.modelInfo.renderImage)
 		
 		self.zoomSlider  = self.widget:getWindow("Zoom")
 		self.zoomSlider = CEGUI.toSlider(self.zoomSlider)
@@ -879,15 +879,15 @@ function ModelEdit:fillScaleTypesList()
 	self.scaleTypes  = self.widget:getWindow("ModelUseScaleOf")
 	self.scaleTypes = CEGUI.toCombobox( self.scaleTypes)
 	
-	local item = EmberOgre.Gui.ColouredListItem:new("all", 0)
+	local item = Ember.OgreView.Gui.ColouredListItem:new("all", 0)
 	self.scaleTypes:addItem(item)
-	local item = EmberOgre.Gui.ColouredListItem:new("none", 1)
+	local item = Ember.OgreView.Gui.ColouredListItem:new("none", 1)
 	self.scaleTypes:addItem(item)
-	local item = EmberOgre.Gui.ColouredListItem:new("width", 2)
+	local item = Ember.OgreView.Gui.ColouredListItem:new("width", 2)
 	self.scaleTypes:addItem(item)
-	local item = EmberOgre.Gui.ColouredListItem:new("depth", 3)
+	local item = Ember.OgreView.Gui.ColouredListItem:new("depth", 3)
 	self.scaleTypes:addItem(item)
-	local item = EmberOgre.Gui.ColouredListItem:new("height", 4)
+	local item = Ember.OgreView.Gui.ColouredListItem:new("height", 4)
 	self.scaleTypes:addItem(item)
 	
 	self.scaleTypes:subscribeEvent("ListSelectionChanged", self.ModelUseScaleOf_SelectionChanged, self)

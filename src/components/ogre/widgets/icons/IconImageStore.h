@@ -40,7 +40,8 @@ namespace Ogre {
 	class Image;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -143,6 +144,8 @@ private:
 	IconImageStoreEntryStack mUnclaimedIconImages;
 
 };
+
+}
 
 }
 

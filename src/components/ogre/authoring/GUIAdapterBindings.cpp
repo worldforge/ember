@@ -29,7 +29,9 @@
 #include <sstream>
 #include <stdexcept>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -154,4 +156,5 @@ TiXmlNode* GUIAdapterBindings::convertAtlasToXml(Atlas::Message::Element& val)
 
 }
 
+}
 }

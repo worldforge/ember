@@ -34,7 +34,8 @@ namespace Ogre
 class Rectangle2D;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain
 {
@@ -529,6 +530,8 @@ protected:
 };
 
 
+
+}
 
 }
 

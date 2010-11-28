@@ -26,7 +26,9 @@
 #include "EmberOgrePrerequisites.h"
 #include "components/entitymapping/Actions/Action.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -61,6 +63,8 @@ protected:
 	 */
 	bool mIsActive;
 };
+
+}
 
 }
 

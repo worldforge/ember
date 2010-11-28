@@ -21,7 +21,9 @@
 
 #include "pagedgeometry/include/ImpostorPage.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -61,6 +63,8 @@ protected:
 	 */
 	EntityStore mEntities;
 };
+
+}
 
 }
 

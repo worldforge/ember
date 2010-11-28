@@ -25,7 +25,9 @@
 #include <wfmath/quaternion.h>
 #include <wfmath/vector.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class Avatar;
@@ -47,6 +49,8 @@ private:
 	mutable WFMath::Quaternion mOrientation;
 	mutable WFMath::Vector<3> mVelocity;
 };
+
+}
 
 }
 

@@ -26,7 +26,9 @@
 #include <sigc++/slot.h>
 #include <boost/shared_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -56,6 +58,8 @@ private:
 
 	PlantAreaQueryResult mQueryResult;
 };
+
+}
 
 }
 

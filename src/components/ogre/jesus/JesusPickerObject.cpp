@@ -28,7 +28,8 @@
 #include "Jesus.h"
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 const Ogre::String JesusPickerObject::s_TypeName = "JesusPickerObject";
 
@@ -48,4 +49,5 @@ const Ogre::String & JesusPickerObject::getTypeName (void) const
 }
 
 
+}
 }

@@ -22,7 +22,8 @@
 //
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 /**
@@ -199,17 +200,17 @@ public:
 	 *    Gets the current camera positioning mode. The default is CPM_OBJECTCENTER which centers the camera on the current displayed object.
 	 * @return 
 	 */
-	EmberOgre::SimpleRenderContext::CameraPositioningMode getCameraPositionMode() const;
+	Ember::OgreView::SimpleRenderContext::CameraPositioningMode getCameraPositionMode() const;
     
 	/**
 	 *    Sets the camera positioning mode. This determines how the camera behaves.
 	 * @param mode 
 	 */
-	void setCameraPositionMode(EmberOgre::SimpleRenderContext::CameraPositioningMode mode);
+	void setCameraPositionMode(Ember::OgreView::SimpleRenderContext::CameraPositioningMode mode);
 	
 };
 
 
 }
 
-#endif
+}

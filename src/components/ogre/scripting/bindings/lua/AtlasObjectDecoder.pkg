@@ -19,7 +19,9 @@ $#include "components/ogre/authoring/AtlasObjectDecoder.h"
 
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -41,4 +43,4 @@ public:
 
 }
 
-#endif /* ATLASOBJECTDECODER_H_ */
+}

@@ -23,13 +23,14 @@
 #ifndef EMBEROGRE_MANIPULATIONPOLYGONPOINTMOVER_H
 #define EMBEROGRE_MANIPULATIONPOLYGONPOINTMOVER_H
 
-// #include "../EmberOgrePrerequisites.h"
 #include "IMovementBridge.h"
 #include "services/input/Input.h"
 #include <wfmath/point.h>
 #include <sigc++/trackable.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -157,6 +158,8 @@ private:
 	IMovementListener* mListener;
 
 };
+
+}
 
 }
 

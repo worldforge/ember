@@ -25,7 +25,9 @@
 #include <map>
 #include <Atlas/Objects/Operation.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class SoundAction;
 class EmberEntity;
@@ -123,6 +125,8 @@ protected:
 	 */
 	void createActions();
 };
+}
+
 }
 
 #endif

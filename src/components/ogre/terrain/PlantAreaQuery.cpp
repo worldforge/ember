@@ -20,7 +20,8 @@
 #include "TerrainLayerDefinition.h"
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain {
 
@@ -52,4 +53,5 @@ const Ogre::Vector2& PlantAreaQuery::getCenter() const
 
 }
 
+}
 }

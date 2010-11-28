@@ -1,8 +1,10 @@
 #include "Widget.h"
 #include "IngameEventsWidget.h"
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 IngameEventsWidget::~IngameEventsWidget()
 {}
 
+}
 }

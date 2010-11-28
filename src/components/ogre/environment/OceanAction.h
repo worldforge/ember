@@ -21,7 +21,9 @@
 
 #include "components/entitymapping/Actions/Action.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 namespace Environment
@@ -62,6 +64,8 @@ private:
 	EmberEntity& mEntity;
 };
 }
+}
+
 }
 
 #endif /* OCEANACTION_H_ */

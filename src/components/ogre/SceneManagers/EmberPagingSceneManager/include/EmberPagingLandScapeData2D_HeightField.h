@@ -28,7 +28,9 @@
 #include "OgrePagingLandScapeData2D.h"
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain {
 	class TerrainPage;
@@ -37,7 +39,7 @@ namespace Terrain {
 class EmberTerrainPageBridge;
 
 /**
-* @brief A specialized class for loading 2D Data from Mercator, through an EmberOgre::TerrainPage class.
+* @brief A specialized class for loading 2D Data from Mercator, through an Ember::OgreView::TerrainPage class.
 
 Ember has its own system for generating the terrain. This class takes care of interfacing with Ember to fetch and update the heightfield.
 The PagingLandscape SceneManager comes with a whole set of different heightfield loading classes by default. However, we'll never use any of them and instead always use this in all instances.
@@ -71,6 +73,7 @@ The PagingLandscape SceneManager comes with a whole set of different heightfield
 			virtual void _unload();
 	};
 
+}
 }
 
 

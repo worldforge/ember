@@ -23,7 +23,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -184,6 +186,8 @@ template<typename DataType>
 unsigned int Buffer<DataType>::getResolution() const
 {
 	return mResolution;
+}
+
 }
 
 }

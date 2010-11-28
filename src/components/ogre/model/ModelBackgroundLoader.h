@@ -27,7 +27,9 @@
 
 #include <OgreResourceBackgroundQueue.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Model
@@ -233,6 +235,8 @@ protected:
 	virtual void operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result, ModelBackgroundLoaderListener* listener);
 
 };
+
+}
 
 }
 

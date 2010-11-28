@@ -23,7 +23,9 @@
 #include "Types.h"
 #include <wfmath/vector.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -47,6 +49,8 @@ private:
 	const PageVector mPages;
 	const WFMath::Vector<3> mLightDirection;
 };
+
+}
 
 }
 

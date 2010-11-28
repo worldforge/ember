@@ -54,7 +54,8 @@ class Carpenter;
 
 };
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 	class Model;
@@ -226,7 +227,7 @@ protected:
 	
 	
 	/**
-	 *    method bound to EmberOgre::EventCreatedJesus
+	 *    method bound to Ember::OgreView::EventCreatedJesus
 	 *    
 	 * @param jesus 
 	 */
@@ -422,6 +423,8 @@ inline Construction* JesusEdit::getConstruction() const {return mCurrentConstruc
 // 	const Carpenter::AttachPoint* mAttachPoint;
 // };
 }
+}
+
 }
 
 #endif

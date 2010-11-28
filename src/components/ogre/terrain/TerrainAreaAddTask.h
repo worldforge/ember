@@ -22,7 +22,9 @@
 #include "TerrainAreaTaskBase.h"
 #include "Types.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -51,6 +53,8 @@ private:
 	AreaMap& mAreas;
 	const std::string mEntityId;
 };
+
+}
 
 }
 

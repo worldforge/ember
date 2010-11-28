@@ -73,9 +73,12 @@ namespace Eris
 	class View;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 	class EmberOgre;
+}
 }
 
 /**
@@ -234,7 +237,7 @@ private:
 	/**
 	 * @brief The main Ogre graphical view.
 	 */
-	EmberOgre::EmberOgre* mOgreView;
+	Ember::OgreView::EmberOgre* mOgreView;
 
 	/**
 	 * @brief If set to true, Ember should quit before next loop step.

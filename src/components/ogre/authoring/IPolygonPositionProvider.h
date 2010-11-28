@@ -23,7 +23,9 @@
 #ifndef EMBEROGRE_MANIPULATIONIPOLYGONPOSITIONPROVIDER_H
 #define EMBEROGRE_MANIPULATIONIPOLYGONPOSITIONPROVIDER_H
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -46,6 +48,8 @@ public:
 	virtual float getHeightForPosition(const WFMath::Point<2>& localPosition) = 0;
 
 };
+
+}
 
 }
 

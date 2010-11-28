@@ -47,7 +47,9 @@ extern "C"
 //#include <lua.hpp>
 #include <tolua++.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -334,5 +336,6 @@ void EntityRecipe::valueChanged()
  S_LOG_VERBOSE("Returned element type is " << returnObj.getType());
  }
  */
+}
 }
 }

@@ -3,13 +3,12 @@
 
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include <elements/CEGUIListboxTextItem.h> 
+#include "framework/ConsoleObject.h"
 
+#include <elements/CEGUIListboxTextItem.h> 
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
-
-#include "framework/ConsoleObject.h"
 
 namespace CEGUI
 {
@@ -26,7 +25,8 @@ namespace CEGUI
 
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 Utility define for binding CEGUI elements to methods. 
@@ -88,7 +88,7 @@ public Ember::ConsoleObject
 {
 public:
 
-	friend class ::EmberOgre::GUIManager;
+	friend class ::Ember::OgreView::GUIManager;
 	friend class WidgetLoader;
 	
 	static const std::string DEFAULT_TAB_GROUP;
@@ -383,6 +383,6 @@ public:
 
 }
 
-
+}
 
 #endif // WIDGET_H

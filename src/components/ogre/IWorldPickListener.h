@@ -31,7 +31,9 @@ class RaySceneQueryResultEntry;
 class Ray;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -118,6 +120,8 @@ public:
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) = 0;
 
 };
+
+}
 
 }
 

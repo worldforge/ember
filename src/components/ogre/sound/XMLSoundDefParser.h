@@ -23,7 +23,8 @@
 #include "framework/tinyxml/tinyxml.h"
 #include <OgreDataStream.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 class SoundGroupDefinition;
 class SoundDefinitionManager;
 
@@ -43,7 +44,7 @@ private:
 };
 
 }
-
+}
 
 #endif
 

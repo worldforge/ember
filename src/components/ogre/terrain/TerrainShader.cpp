@@ -28,7 +28,8 @@
 #include <Mercator/Shader.h>
 #include <Mercator/Segment.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 TerrainShader::TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const TerrainLayerDefinition& layerDef, Mercator::Shader* shader)
@@ -68,5 +69,6 @@ Mercator::Surface* TerrainShader::getSurfaceForSegment(Mercator::Segment& segmen
 	return surface;
 }
 
+}
 }
 }

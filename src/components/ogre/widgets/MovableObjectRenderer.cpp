@@ -45,7 +45,8 @@
 #include <OgreRenderTargetListener.h>
 
 using namespace Ember;
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 /**
@@ -335,5 +336,6 @@ void MovableObjectRenderer::setCameraPositionMode(SimpleRenderContext::CameraPos
 	mTexture->getRenderContext()->setCameraPositionMode(mode);
 }
 
+}
 }
 }

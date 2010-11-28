@@ -23,7 +23,9 @@
 #include <OgreRay.h>
 #include <OgreVector3.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -70,6 +72,7 @@ void SimpleWaterCollisionDetector::testCollision(Ogre::Ray& ray, CollisionResult
 		// raycast failed
 		result.collided = false;
 	}
+}
 }
 }
 }

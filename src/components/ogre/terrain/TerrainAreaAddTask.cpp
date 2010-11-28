@@ -23,7 +23,9 @@
 #include "Mercator/Area.h"
 #include "Mercator/Terrain.h"
 #include "Mercator/AreaShader.h"
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -72,4 +74,5 @@ void TerrainAreaAddTask::executeTaskInMainThread()
 
 }
 
+}
 }

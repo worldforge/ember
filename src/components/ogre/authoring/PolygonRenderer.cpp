@@ -31,7 +31,9 @@
 
 #include <Ogre.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -82,4 +84,5 @@ void PolygonRenderer::update()
 
 }
 
+}
 }

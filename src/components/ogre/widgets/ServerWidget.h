@@ -35,7 +35,8 @@
 #include <map>
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 class GUIManager;
@@ -171,7 +172,8 @@ protected:
 	void showNoCharactersAlert();
 
 };
-};
-};
+}
+}
+}
 
 #endif

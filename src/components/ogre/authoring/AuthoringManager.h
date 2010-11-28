@@ -45,7 +45,9 @@ namespace Ember
 class ConfigListenerContainer;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 class World;
@@ -185,6 +187,8 @@ protected:
 
 };
 }
+}
+
 }
 
 #endif /* AUTHORINGMANAGER_H_ */

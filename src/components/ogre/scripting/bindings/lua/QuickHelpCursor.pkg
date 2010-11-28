@@ -2,7 +2,8 @@ $#include "components/ogre/widgets/HelpMessage.h"
 $#include "components/ogre/widgets/QuickHelp.h"
 $#include "components/ogre/widgets/QuickHelpCursor.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -40,7 +41,7 @@ class QuickHelp
 {
 public:
 	static QuickHelp& getSingleton( void );
-	void updateText(const EmberOgre::Gui::HelpMessage& message);
+	void updateText(const Ember::OgreView::Gui::HelpMessage& message);
 	void showWidget() const;
 	sigc::signal <void> EventToggleWidgetVisibility;
 };
@@ -54,9 +55,9 @@ public:
 	const int getSize() const;
 	const int getCursorLocation() const;
 
-	sigc::signal <void,const EmberOgre::Gui::HelpMessage&> EventUpdateText;
+	sigc::signal <void,const Ember::OgreView::Gui::HelpMessage&> EventUpdateText;
 };
 
 }
 }
-
+}

@@ -60,7 +60,9 @@
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUITree.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Gui
 {
@@ -216,4 +218,4 @@ Eris::Connection* MakeEntityWidget::getConnection() const
 }
 
 }
-;
+}

@@ -21,7 +21,9 @@
 
 #include <string>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 
@@ -88,6 +90,7 @@ protected:
 	std::string mMountPoint;
 	std::string mChildEntityId;
 };
+}
 }
 }
 #endif /* ModelFitting_H_ */

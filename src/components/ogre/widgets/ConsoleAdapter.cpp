@@ -28,7 +28,8 @@
 #include "framework/ConsoleBackend.h"
 #include <elements/CEGUIEditbox.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -245,4 +246,5 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 
 }
 
+}
 }

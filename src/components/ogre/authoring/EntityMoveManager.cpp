@@ -36,7 +36,9 @@
 #include "../EmberEntity.h"
 #include "components/ogre/NodeAttachment.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -115,4 +117,5 @@ World& EntityMoveManager::getWorld() const
 
 }
 
+}
 }

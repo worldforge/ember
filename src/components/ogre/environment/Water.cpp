@@ -42,7 +42,8 @@
 
 using namespace Ogre;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -263,4 +264,5 @@ Water::~Water()
 
 }
 
+}
 }

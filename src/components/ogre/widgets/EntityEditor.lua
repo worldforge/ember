@@ -61,7 +61,7 @@ EntityEditor = {
 				for index,value in pairs(self.prototypes) do
 					if value.shouldAddSuggestion ~= nil then
 						if value.shouldAddSuggestion(outerElement) then
-							local item = EmberOgre.Gui.ColouredListItem:new(index)
+							local item = Ember.OgreView.Gui.ColouredListItem:new(index)
 							wrapper.nameEditbox:addItem(item)
 						end
 					end
@@ -276,7 +276,7 @@ EntityEditor = {
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementType"))
 				
-				local item = EmberOgre.Gui.ColouredListItem:new("Point", 0)
+				local item = Ember.OgreView.Gui.ColouredListItem:new("Point", 0)
 				wrapper.typeCombobox:addItem(item)
 				wrapper.typeCombobox:setHeight(CEGUI.UDim(0, 100))
 				--combobox:setProperty("ReadOnly", "true")
@@ -369,7 +369,7 @@ EntityEditor = {
 				wrapper.adapter:addAreaSuggestion(0, "none")
 				
 				--fill the area adapter with suggested areas, which we get from the terrain layer definitions
-				local layerDefinitions = EmberOgre.Terrain.TerrainLayerDefinitionManager:getSingleton():getDefinitions()
+				local layerDefinitions = Ember.OgreView.Terrain.TerrainLayerDefinitionManager:getSingleton():getDefinitions()
 				for index,value in layerDefinitions:ipairs() do
 					if value:getAreaId() ~= 0 then
 						local name = value:getName()
@@ -489,7 +489,7 @@ function editEntity(id)
 end
 
 function EntityEditor:createStackableContainer(container)
-	local stackableContainer = EmberOgre.Gui.StackableContainer:new_local(container)
+	local stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(container)
 	stackableContainer:setInnerContainerWindow(container)
 	self.instance.stackableContainers[container:getName()] = stackableContainer
 	return stackableContainer
@@ -556,7 +556,7 @@ function EntityEditor:editEntity(entity)
 	self.instance.outercontainer = guiManager:createWindow("DefaultGUISheet")
 	local adapter = self.factory:createMapAdapter(self.instance.outercontainer, self.instance.entity:getId(), self.instance.entity)
 	self.instance.rootMapAdapter = adapter
-	self.instance.helper = EmberOgre.Gui.EntityEditor:new(entity, self.instance.rootMapAdapter)
+	self.instance.helper = Ember.OgreView.Gui.EntityEditor:new(entity, self.instance.rootMapAdapter)
 	self.attributesContainer:addChildWindow(self.instance.outercontainer)
 	
 	local attributeNames = self.instance.rootMapAdapter:getAttributeNames()
@@ -744,7 +744,7 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 		if possibleProto.adapter ~= nil then
 			local itemIndex = table.maxn(newAdapters) + 1
 			
-			local item = EmberOgre.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
+			local item = Ember.OgreView.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
 			table.insert(newAdapters, possibleProto.adapter)
 			combobox:addItem(item)
 		end
@@ -754,7 +754,7 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 		for index,value in pairs(self.defaultPrototypes) do
 			local itemIndex = table.maxn(newAdapters) + 1
 			console:pushMessage(itemIndex)
-			local item = EmberOgre.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
+			local item = Ember.OgreView.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
 			table.insert(newAdapters, value.adapter)
 			combobox:addItem(item)
 		end
@@ -865,7 +865,7 @@ function EntityEditor:refreshChildren(entity)
 			local childEntity = entity:getContained(i)
 			local label = childEntity:getName()
 			
-			local item = EmberOgre.Gui.ColouredListItem:new(label, childEntity:getId(), childEntity)
+			local item = Ember.OgreView.Gui.ColouredListItem:new(label, childEntity:getId(), childEntity)
 			self.childListholder:addItem(item)
 		end
 	end
@@ -894,7 +894,7 @@ end
 
 function EntityEditor:buildWidget()
 
-	self.factory = EmberOgre.Gui.Adapters.Atlas.AdapterFactory:new("EntityEditor")
+	self.factory = Ember.OgreView.Gui.Adapters.Atlas.AdapterFactory:new("EntityEditor")
 	
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("EntityEditor.layout", "EntityEditor/")
@@ -906,10 +906,10 @@ function EntityEditor:buildWidget()
 	--EntityBrowser.childlistbox:subscribeEvent("ItemSelectionChanged", "EntityBrowser.EntityList_SelectionChanged")
 	
 	self.childlistFilter = CEGUI.toEditbox(self.widget:getWindow("FilterChildren"))
-	self.childListholder = EmberOgre.Gui.ListHolder:new(self.childlistbox, self.childlistFilter)
+	self.childListholder = Ember.OgreView.Gui.ListHolder:new(self.childlistbox, self.childlistFilter)
 	
 --[[	self.modelTab.stackableWindow = self.widget:getWindow("ModelPanelStackable")
-	self.modelTab.stackableContainer = EmberOgre.Gui.StackableContainer:new_local(self.modelTab.stackableWindow)
+	self.modelTab.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.modelTab.stackableWindow)
 	self.modelTab.stackableContainer:setInnerContainerWindow(self.modelTab.stackableWindow)]]
 	self.modelTab.showOgreBbox = CEGUI.toCheckbox(self.widget:getWindow("ShowOgreBbox"))
 	self.modelTab.showErisBbox = CEGUI.toCheckbox(self.widget:getWindow("ShowErisBbox"))
@@ -928,7 +928,7 @@ function EntityEditor:buildWidget()
 	self.widget:getWindow("ExportButton"):subscribeEvent("Clicked", self.ExportButton_Clicked, self)
 	self.widget:getWindow("RefreshButton"):subscribeEvent("Clicked", self.RefreshButton_Clicked, self)
 	
-	--self.attributeStackableContainer = EmberOgre.Gui.StackableContainer:new_local(self.attributesContainer)
+	--self.attributeStackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.attributesContainer)
 	self.widget:registerConsoleVisibilityToggleCommand("entityEditor")
 	self.widget:enableCloseButton()
 	self.widget:hide()

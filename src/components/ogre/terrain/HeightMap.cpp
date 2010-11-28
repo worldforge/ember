@@ -38,7 +38,9 @@
 #define F_ABS(_x) (::fabs(_x))
 #endif
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -113,4 +115,5 @@ boost::shared_ptr<IHeightMapSegment> HeightMap::getSegment(int xIndex, int yInde
 
 }
 
+}
 }

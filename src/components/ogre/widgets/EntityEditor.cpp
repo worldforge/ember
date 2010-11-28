@@ -45,7 +45,8 @@
 
 using namespace Atlas::Message;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -118,4 +119,5 @@ Atlas::Message::Element EntityEditor::createPosition2dElement()
 
 }
 
+}
 }

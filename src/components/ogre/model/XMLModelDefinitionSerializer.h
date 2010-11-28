@@ -31,7 +31,8 @@
 #include "ModelDefinition.h"
 #include "framework/tinyxml/tinyxml.h"
 
-namespace EmberOgre { 
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 class ModelDefinitionManager;
@@ -79,6 +80,7 @@ private:
 
 };
 
+}
 }
 }
 #endif

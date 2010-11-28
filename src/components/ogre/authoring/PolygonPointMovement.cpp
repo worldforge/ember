@@ -27,7 +27,9 @@
 #include "PolygonPointMovement.h"
 #include "PolygonPoint.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -48,4 +50,5 @@ PolygonPointMovement::~PolygonPointMovement()
 
 }
 
+}
 }

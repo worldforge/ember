@@ -33,6 +33,10 @@
 
 
 #include "../EmberOgre.h"
+#include "services/EmberServices.h"
+#include "services/server/ServerService.h"
+#include "framework/Tokeniser.h"
+#include "framework/ConsoleBackend.h"
 
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h>
@@ -45,12 +49,10 @@
 #include <Atlas/Codecs/Bach.h>
 #include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Objects/Encoder.h>
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
-#include "framework/Tokeniser.h"
-#include "framework/ConsoleBackend.h"
 
-namespace EmberOgre {
+
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 
@@ -463,7 +465,6 @@ void AttributeTextBuilder::parseMap(const std::string& key, const Atlas::Message
 }
 
 
-
-
 }
-};
+}
+}

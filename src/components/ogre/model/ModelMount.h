@@ -37,7 +37,9 @@ class Node;
 class MovableObject;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class INodeProvider;
@@ -61,7 +63,7 @@ public:
 	 * @param model The model which we need a mount for.
 	 * @param nodeProvider Provides an instance of a subclass of Ogre::Node to which the Model can be attached.
 	 */
-	ModelMount(::EmberOgre::Model::Model& model, INodeProvider* nodeProvider);
+	ModelMount(::Ember::OgreView::Model::Model& model, INodeProvider* nodeProvider);
 
 	/**
 	 * @brief Dtor.
@@ -73,7 +75,7 @@ public:
 	 * @brief Gets the Model instance to which this mount is attached.
 	 * @return The model instance.
 	 */
-	::EmberOgre::Model::Model& getModel() const;
+	::Ember::OgreView::Model::Model& getModel() const;
 
 	/**
 	 * @brief Rescales the model according to the bounding box.
@@ -96,7 +98,7 @@ protected:
 	/**
 	 *@brief The Model which this mount is attached to.
 	 */
-	::EmberOgre::Model::Model& mModel;
+	::Ember::OgreView::Model::Model& mModel;
 
 	/**
 	 * @brief The node provider used by the mount.
@@ -119,9 +121,11 @@ protected:
 
 };
 
-inline ::EmberOgre::Model::Model& ModelMount::getModel() const
+inline ::Ember::OgreView::Model::Model& ModelMount::getModel() const
 {
 	return mModel;
+}
+
 }
 
 }

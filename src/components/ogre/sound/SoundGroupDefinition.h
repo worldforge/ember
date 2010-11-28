@@ -27,7 +27,9 @@
 #include <map>
 #include <list>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class SoundDefinition;
 
@@ -59,6 +61,8 @@ private:
 	 */
 	SoundDefinitionStore mSamples;
 };
+
+}
 
 }
 

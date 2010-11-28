@@ -39,7 +39,9 @@ class TypeInfo;
 class TypeService;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class World;
@@ -138,7 +140,7 @@ public:
 	/**
 	 * Entity creator widget. Set from Lua, so it is public.
 	 */
-	::EmberOgre::Gui::Widget* mWidget;
+	::Ember::OgreView::Gui::Widget* mWidget;
 
 	/**
 	 * @brief Emitted when all needed type info for the current recipe is loaded.
@@ -269,6 +271,8 @@ protected:
 
 	Ogre::Entity* mAxisMarker;
 };
+
+}
 
 }
 

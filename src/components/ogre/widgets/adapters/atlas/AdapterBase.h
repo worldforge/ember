@@ -32,7 +32,8 @@
 // }
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -253,6 +254,8 @@ inline std::string toString(float number)
 	std::stringstream ss;
 	ss << number;
 	return ss.str();
+}
+
 }
 
 }

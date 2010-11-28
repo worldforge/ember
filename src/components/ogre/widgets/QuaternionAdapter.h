@@ -34,7 +34,8 @@ namespace CEGUI
 }
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -90,6 +91,8 @@ private:
 	void vectorAdapter_ValueChanged();
 
 };
+}
+
 }
 
 }

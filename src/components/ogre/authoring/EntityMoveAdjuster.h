@@ -26,7 +26,9 @@
 #include <Eris/Timeout.h>
 #include <vector>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 class EmberEntity;
 namespace Authoring
@@ -130,6 +132,7 @@ private:
 	EntityMoveManager* mManager;
 };
 
+}
 }
 }
 #endif

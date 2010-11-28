@@ -31,7 +31,8 @@
 #include <map>
 #include <sigc++/signal.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class ShadowCameraSetup;
 class ShaderSetupInstance;
@@ -172,6 +173,8 @@ private:
 	void Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 };
+
+}
 
 }
 

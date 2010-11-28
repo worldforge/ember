@@ -21,7 +21,9 @@
 #include "components/ogre/OgreIncludes.h"
 #include <sigc++/trackable.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class IEntityControlDelegate;
@@ -102,6 +104,7 @@ protected:
 	void removeGraphicalRepresentation();
 };
 
+}
 }
 }
 #endif /* AUTHORINGVISUALIZATION_H_ */

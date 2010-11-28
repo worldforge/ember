@@ -36,7 +36,9 @@
 #include <wfmath/vector.h>
 #include <wfmath/point.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 WorldAttachment::WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainManager& TerrainManager) :
@@ -119,5 +121,6 @@ bool WorldAttachment::getVisualize(const std::string& visualization) const
 	return false;
 }
 
+}
 }
 

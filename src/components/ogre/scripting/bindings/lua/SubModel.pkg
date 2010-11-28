@@ -18,7 +18,8 @@
 
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 
 class SubModel{
@@ -40,5 +41,4 @@ class SubModel{
 
 }
 }
-
-
+}

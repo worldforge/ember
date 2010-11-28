@@ -22,7 +22,8 @@
 //
 $#include "../../AdapterFactory.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 
@@ -91,7 +92,7 @@ public:
 	 * @param entity An optional entity to which the adapter is connected. This isn't always needed (since an entity instance is not always available)
 	 * @return A new adapter instance, or null if there either was an error when creating one, or none could be found for the specified type.
 	 */
-	AdapterBase* createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element, EmberOgre::EmberEntity* entity = 0);
+	AdapterBase* createAdapterByType(std::string type, CEGUI::Window* container, const std::string& adapterPrefix, const Atlas::Message::Element& element, Ember::OgreView::EmberEntity* entity = 0);
 	
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
 
@@ -104,6 +105,5 @@ public:
 }
 
 }
-
 }
-
+}

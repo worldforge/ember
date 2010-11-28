@@ -29,7 +29,8 @@ class SoundInstance;
 class SoundSource;
 class BaseSoundSample;
 }
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class SoundGroup;
 class SoundDefinition;
@@ -140,6 +141,8 @@ protected:
 // 	float getTime();
 
 };
+}
+
 }
 
 #endif

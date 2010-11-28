@@ -1,5 +1,6 @@
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 @author Erik Hjortsberg
@@ -13,5 +14,5 @@ public:
     std::vector<std::string> getAllMaterialNames();
 
 };
-
+}
 }

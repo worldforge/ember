@@ -19,7 +19,9 @@ $#include "components/ogre/authoring/RawTypeInfoRepository.h"
  */
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -35,4 +37,5 @@ public:
 }
 }
 
-#endif /* RAWTYPEINFOREPOSITORY_H_ */
+}
+

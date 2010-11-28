@@ -26,7 +26,9 @@ namespace Eris
 class Entity;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 /**
@@ -82,6 +84,8 @@ private:
 
 
 };
+
+}
 
 }
 

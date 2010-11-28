@@ -36,7 +36,8 @@
 
 using namespace Ogre;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -237,4 +238,5 @@ void LensFlare::setHaloColour(ColourValue color)
 
 }
 
+}
 }

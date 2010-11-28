@@ -25,7 +25,9 @@
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Camera
 {
@@ -75,5 +77,6 @@ void CameraMountBase::setMotionHandler(ICameraMotionHandler* handler)
 	mMotionHandler = handler;
 }
 
+}
 }
 }

@@ -26,7 +26,9 @@
 #include "../IWorldPickListener.h"
 #include <sigc++/signal.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -75,6 +77,8 @@ private:
 	 */
 	PolygonPointUserObject* mPickedUserObject;
 };
+
+}
 
 }
 

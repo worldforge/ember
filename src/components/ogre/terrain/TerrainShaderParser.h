@@ -28,7 +28,9 @@ class Element;
 }
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -73,6 +75,8 @@ private:
 	 */
 	TerrainManager& mTerrainManager;
 };
+
+}
 
 }
 

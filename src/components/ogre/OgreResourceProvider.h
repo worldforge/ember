@@ -27,7 +27,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreDataStream.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 class OgreResourceWrapper : public Ember::IResourceWrapper
@@ -60,6 +61,8 @@ private:
 	std::string mGroupName;
 
 };
+
+}
 
 }
 

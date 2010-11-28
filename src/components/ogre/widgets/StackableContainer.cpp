@@ -28,7 +28,8 @@
 
 using namespace CEGUI;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -206,4 +207,5 @@ void StackableContainer::disconnect()
 
 }
 
+}
 }

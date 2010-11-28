@@ -34,7 +34,8 @@ class BasePoint;
 
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 namespace Camera
@@ -151,6 +152,7 @@ private:
 	void basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints);
 };
 
+}
 }
 }
 #endif

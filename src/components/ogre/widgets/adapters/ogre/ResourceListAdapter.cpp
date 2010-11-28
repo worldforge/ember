@@ -28,7 +28,9 @@
 #include <OgreResourceManager.h>
 #include <OgreResource.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -66,6 +68,7 @@ void ResourceListAdapter::update()
 	}
 }
 
+}
 }
 }
 }

@@ -179,7 +179,7 @@ function AssetsManager:showMesh(meshName)
 end
 
 function AssetsManager:getSubMeshName(mesh, index)
-	local submeshname = EmberOgre.OgreUtils:getSubMeshName(mesh, index)
+	local submeshname = Ember.OgreView.OgreUtils:getSubMeshName(mesh, index)
 	if submeshname == "" then
 		submeshname = "(index: " .. index .. ")"
 	end
@@ -196,7 +196,7 @@ function AssetsManager:fillSubMeshList(meshPtr)
 	local i = 0
 	while i < numberOfSubmeshes do
 		local submeshname = self:getSubMeshName(mesh, i)
-		local item = EmberOgre.Gui.ColouredListItem:new(submeshname, i)
+		local item = Ember.OgreView.Gui.ColouredListItem:new(submeshname, i)
 		list:addItem(item)
 		i = i + 1
 	end	
@@ -205,7 +205,7 @@ end
 function AssetsManager:selectMaterial(submesh)
 
 	if self.meshes.materialListadapter == nil then
-		self.meshes.materialListadapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.meshes.materialListholder, Ogre.MaterialManager:getSingleton())
+		self.meshes.materialListadapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.meshes.materialListholder, Ogre.MaterialManager:getSingleton())
 		self.meshes.materialListadapter:update()
 	end
 
@@ -303,7 +303,7 @@ function AssetsManager:addEntity(entity, level)
 		end	
 		label = label .. entity:getName() .. " (" .. entity:getType():getName() .. ")"
 		
-		local item = EmberOgre.Gui.ColouredListItem:new(label, entity:getId(), entity)
+		local item = Ember.OgreView.Gui.ColouredListItem:new(label, entity:getId(), entity)
 		self.listholder:addItem(item)
 	
 	
@@ -327,9 +327,9 @@ function AssetsManager:buildWidget()
 		--the texture part
 		self.textures.controls.listbox = CEGUI.toListbox(self.widget:getWindow("TexturesList"))
 		self.textures.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterTextures"))
-		self.textures.listholder = EmberOgre.Gui.ListHolder:new(self.textures.controls.listbox, self.textures.controls.filter)
+		self.textures.listholder = Ember.OgreView.Gui.ListHolder:new(self.textures.controls.listbox, self.textures.controls.filter)
 		self.textures.controls.textureView = self.widget:getWindow("TextureInfo/Image")
-		self.textures.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.textures.listholder, Ogre.TextureManager:getSingleton())
+		self.textures.adapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.textures.listholder, Ogre.TextureManager:getSingleton())
 		self.textures.refresh = function(self)
 			self.textures.adapter:update()
 		end
@@ -341,9 +341,9 @@ function AssetsManager:buildWidget()
 		--the materials part
 		self.materials.controls.listbox = CEGUI.toListbox(self.widget:getWindow("MaterialsList"))
 		self.materials.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterMaterials"))
-		self.materials.listholder = EmberOgre.Gui.ListHolder:new(self.materials.controls.listbox, self.materials.controls.filter)
+		self.materials.listholder = Ember.OgreView.Gui.ListHolder:new(self.materials.controls.listbox, self.materials.controls.filter)
 		self.materials.controls.textWidget = self.widget:getWindow("MaterialInfo/Text")
-		self.materials.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.materials.listholder, Ogre.MaterialManager:getSingleton())
+		self.materials.adapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.materials.listholder, Ogre.MaterialManager:getSingleton())
 		self.materials.refresh = function(self)
 			self.materials.adapter:update()
 		end
@@ -355,7 +355,7 @@ function AssetsManager:buildWidget()
 		--the images part
 		self.images.controls.listbox = CEGUI.toListbox(self.widget:getWindow("ImagesList"))
 		self.images.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterImages"))
-		self.images.listholder = EmberOgre.Gui.ListHolder:new(self.images.controls.listbox, self.images.controls.filter)
+		self.images.listholder = Ember.OgreView.Gui.ListHolder:new(self.images.controls.listbox, self.images.controls.filter)
 		self.images.controls.textureView = self.widget:getWindow("ImagesInfo/Image")
 		self.images.refresh = function(self)
 			self.images.listholder:resetList()
@@ -366,7 +366,7 @@ function AssetsManager:buildWidget()
 				local J = value:getIterator()
 				while J:isAtEnd() == false do
 					local name = J:key();
-					local item = EmberOgre.Gui.ColouredListItem:new(name, 0, J:value())
+					local item = Ember.OgreView.Gui.ColouredListItem:new(name, 0, J:value())
 					self.images.listholder:addItem(item)
 					J:next();
 				end
@@ -381,7 +381,7 @@ function AssetsManager:buildWidget()
 		--the windows part
 		self.windows.controls.listbox = CEGUI.toListbox(self.widget:getWindow("WindowsList"))
 		self.windows.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterWindows"))
-		self.windows.listholder = EmberOgre.Gui.ListHolder:new(self.windows.controls.listbox, self.windows.controls.filter)
+		self.windows.listholder = Ember.OgreView.Gui.ListHolder:new(self.windows.controls.listbox, self.windows.controls.filter)
 		self.windows.controls.visibleCheckbox = CEGUI.toCheckbox(self.widget:getWindow("WindowInfo/Visible"))
 		self.windows.controls.infoText = self.widget:getWindow("WindowInfo/Text")
 		self.windows.refresh = function(self)
@@ -397,7 +397,7 @@ function AssetsManager:buildWidget()
 					label = label .. "-"
 				end	
 				label = label .. window:getName()
-				local item = EmberOgre.Gui.ColouredListItem:new(label, window:getID(), window)
+				local item = Ember.OgreView.Gui.ColouredListItem:new(label, window:getID(), window)
 				self.windows.listholder:addItem(item)
 				if window:getChildCount() > 0 then
 					for i = 0, window:getChildCount() - 1 do
@@ -420,19 +420,19 @@ function AssetsManager:buildWidget()
 		self.meshes.controls.materialFilter = CEGUI.toEditbox(self.widget:getWindow("SubMeshMaterialsFilter"))
 		self.meshes.controls.skeletonPath = CEGUI.toEditbox(self.widget:getWindow("MeshSkeletonPath"))
 		self.meshes.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterMeshes"))
-		self.meshes.listholder = EmberOgre.Gui.ListHolder:new(self.meshes.controls.listbox, self.meshes.controls.filter)
+		self.meshes.listholder = Ember.OgreView.Gui.ListHolder:new(self.meshes.controls.listbox, self.meshes.controls.filter)
 		self.meshes.controls.textureView = self.widget:getWindow("MeshInfo/Preview")
-		self.meshes.renderer = EmberOgre.Gui.OgreEntityRenderer:new(self.meshes.controls.textureView)
-		self.meshes.materialListholder = EmberOgre.Gui.ListHolder:new(self.meshes.controls.materialListbox, self.meshes.controls.materialFilter)
+		self.meshes.renderer = Ember.OgreView.Gui.OgreEntityRenderer:new(self.meshes.controls.textureView)
+		self.meshes.materialListholder = Ember.OgreView.Gui.ListHolder:new(self.meshes.controls.materialListbox, self.meshes.controls.materialFilter)
 		self.meshes.refresh = function(self)
 			self.meshes.listholder:resetList()
 		
-			local manager = EmberOgre.Model.ModelDefinitionManager:getSingleton()
+			local manager = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 			local meshes = manager:getAllMeshes()
 			
 			for i = 0, meshes:size() - 1 do
 				local name = meshes[i]
-				local item = EmberOgre.Gui.ColouredListItem:new(name, i)
+				local item = Ember.OgreView.Gui.ColouredListItem:new(name, i)
 				self.meshes.listholder:addItem(item)
 			end	
 		end
@@ -446,9 +446,9 @@ function AssetsManager:buildWidget()
 		--the shaders part
 		self.shaders.controls.listbox = CEGUI.toListbox(self.widget:getWindow("ShadersList"))
 		self.shaders.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterShaders"))
-		self.shaders.listholder = EmberOgre.Gui.ListHolder:new(self.shaders.controls.listbox, self.shaders.controls.filter)
+		self.shaders.listholder = Ember.OgreView.Gui.ListHolder:new(self.shaders.controls.listbox, self.shaders.controls.filter)
 		self.shaders.controls.textWidget = self.widget:getWindow("ShadersInfo/Text")
-		self.shaders.adapter = EmberOgre.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.shaders.listholder, Ogre.HighLevelGpuProgramManager:getSingleton())
+		self.shaders.adapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.shaders.listholder, Ogre.HighLevelGpuProgramManager:getSingleton())
 		self.shaders.refresh = function(self)
 			self.shaders.adapter:update()
 		end
@@ -458,7 +458,7 @@ function AssetsManager:buildWidget()
 	
 	
 	
-		self.helper = EmberOgre.Gui.AssetsManager:new()
+		self.helper = Ember.OgreView.Gui.AssetsManager:new()
 	
 		self.widget:enableCloseButton()
 	end

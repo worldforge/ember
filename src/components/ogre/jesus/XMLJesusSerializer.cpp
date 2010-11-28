@@ -38,7 +38,8 @@
 #include <direct.h>
 #endif
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 XMLJesusSerializer::XMLJesusSerializer(Jesus* jesus)
 : mJesus(jesus)

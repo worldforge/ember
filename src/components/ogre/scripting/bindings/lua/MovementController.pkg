@@ -1,4 +1,5 @@
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 The movement mode of the avatar, run or walk.
@@ -32,11 +33,11 @@ class MovementController
 	 * @param point 
 	 * @param locationEntity 
 	 */
-	void teleportTo(const Ogre::Vector3& point, EmberOgre::EmberEntity* locationEntity);
+	void teleportTo(const Ogre::Vector3& point, Ember::OgreView::EmberEntity* locationEntity);
 	
 	MovementControllerMode::Mode getMode() const;
 	
 
 };
-
+}
 }

@@ -33,7 +33,8 @@ namespace Carpenter
 	class BlockSpec;
 };
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class Jesus;
 /**

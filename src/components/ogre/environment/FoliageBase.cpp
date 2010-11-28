@@ -26,8 +26,6 @@
 
 #include "FoliageBase.h"
 
-#include "framework/LoggingInstance.h"
-
 #include "../Convert.h"
 #include "../terrain/TerrainArea.h"
 #include "../terrain/TerrainShader.h"
@@ -39,11 +37,13 @@
 #include "../terrain/TerrainLayerDefinitionManager.h"
 
 #include "pagedgeometry/include/PagedGeometry.h"
+#include "framework/LoggingInstance.h"
 #include <wfmath/point.h>
 
-using namespace EmberOgre::Terrain;
+using namespace Ember::OgreView::Terrain;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -108,7 +108,7 @@ void FoliageBase::TerrainManager_EventShaderCreated(const Terrain::TerrainShader
 	}
 }
 
-void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::EmberOgre::Terrain::TerrainPage* >& pages)
+void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::Ember::OgreView::Terrain::TerrainPage* >& pages)
 {
 	if (mPagedGeometry) {
 		for (std::vector<WFMath::AxisBox<2> >::const_iterator I = areas.begin(); I != areas.end(); ++I) {
@@ -142,4 +142,5 @@ float getTerrainHeight(float x, float z, void* userData)
 
 }
 
+}
 }

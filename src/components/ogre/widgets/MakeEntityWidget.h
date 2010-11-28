@@ -38,7 +38,9 @@ class Connection;
 class Avatar;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -103,8 +105,8 @@ protected:
 
 };
 }
-;
+
 }
-;
+}
 
 #endif

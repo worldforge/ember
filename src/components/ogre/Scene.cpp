@@ -28,7 +28,9 @@
 
 #include <OgreRoot.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 Scene::Scene() :
@@ -90,4 +92,5 @@ Ogre::Camera& Scene::getMainCamera() const
 }
 
 
+}
 }

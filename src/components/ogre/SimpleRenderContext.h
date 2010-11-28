@@ -28,7 +28,8 @@
 #include <OgreColourValue.h>
 #include <OgreTexture.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class SimpleRenderContext;
 
@@ -327,6 +328,8 @@ inline Ogre::Real SimpleRenderContext::getDefaultCameraDistance() const
 inline Ogre::SceneManager* SimpleRenderContext::getSceneManager() const
 {
 	return mSceneManager;
+}
+
 }
 
 }

@@ -32,7 +32,8 @@
 #include "SubModel.h"
 #include "SubModelPart.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Model {
 
@@ -198,7 +199,7 @@ void ModelDefinition::reloadAllInstances()
 	for (ModelInstanceStore::iterator I = mModelInstances.begin(); I != mModelInstances.end(); ++I) {
 		I->second->reload();
 	}
-//	std::for_each(mModelInstances.begin(), mModelInstances.end(), std::mem_fun(&EmberOgre::Model::Model::reload));
+//	std::for_each(mModelInstances.begin(), mModelInstances.end(), std::mem_fun(&Ember::OgreView::Model::Model::reload));
 }
 
 	
@@ -597,5 +598,6 @@ ModelDefnPtr& ModelDefnPtr::operator=(const Ogre::ResourcePtr& r)
 //     }
 
 
+}
 }
 }

@@ -34,7 +34,9 @@
 
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
@@ -156,4 +158,5 @@ bool NodeAttachment::getVisualize(const std::string& visualization) const
 	return AttachmentBase::getVisualize(visualization) || providerResult;
 }
 
+}
 }

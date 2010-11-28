@@ -38,7 +38,9 @@ namespace Eris
 class TypeService;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -262,6 +264,7 @@ public:
 	}
 };
 
+}
 }
 }
 #endif

@@ -38,10 +38,12 @@
 
 #include <OgreRoot.h>
 
-template<> EmberOgre::Environment::Foliage* Ember::Singleton<EmberOgre::Environment::Foliage>::ms_Singleton = 0;
-using namespace EmberOgre::Terrain;
+template<> Ember::OgreView::Environment::Foliage* Ember::Singleton<Ember::OgreView::Environment::Foliage>::ms_Singleton = 0;
+using namespace Ember::OgreView::Terrain;
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -119,6 +121,7 @@ bool Foliage::frameStarted(const Ogre::FrameEvent& evt)
 	}
 
 	return true;
+}
 }
 }
 }

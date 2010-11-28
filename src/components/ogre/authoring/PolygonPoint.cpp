@@ -41,7 +41,9 @@
 #include <OgreSceneManager.h>
 #include <OgreAny.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -174,4 +176,5 @@ bool PolygonPoint::getVisible() const
 
 }
 
+}
 }

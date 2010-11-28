@@ -22,7 +22,8 @@
 //
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 namespace Gui {
@@ -35,17 +36,17 @@ class EntityIconManager
 {
 public:
 	
-	EmberOgre::Gui::EntityIconSlot* createSlot(unsigned int pixelSize = 64);
-	void destroySlot(EmberOgre::Gui::EntityIconSlot* slot);
+	Ember::OgreView::Gui::EntityIconSlot* createSlot(unsigned int pixelSize = 64);
+	void destroySlot(Ember::OgreView::Gui::EntityIconSlot* slot);
 	
-	EmberOgre::Gui::EntityIcon* createIcon(EmberOgre::Gui::Icons::Icon* icon,  EmberOgre::EmberEntity* entity, unsigned int pixelSize = 64);
-	void destroyIcon(EmberOgre::Gui::EntityIcon* icon);
+	Ember::OgreView::Gui::EntityIcon* createIcon(Ember::OgreView::Gui::Icons::Icon* icon,  Ember::OgreView::EmberEntity* entity, unsigned int pixelSize = 64);
+	void destroyIcon(Ember::OgreView::Gui::EntityIcon* icon);
 	
-	sigc::signal<void, EmberOgre::Gui::EntityIcon*> EventIconDragStart;
-	sigc::signal<void, EmberOgre::Gui::EntityIcon*> EventIconDragStop;
+	sigc::signal<void, Ember::OgreView::Gui::EntityIcon*> EventIconDragStart;
+	sigc::signal<void, Ember::OgreView::Gui::EntityIcon*> EventIconDragStop;
 
 };
 
 }
-
+}
 }

@@ -29,7 +29,9 @@ class Timeout;
 class View;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberPagingSceneManager;
@@ -270,6 +272,8 @@ protected:
 	void timout_Expired();
 
 };
+
+}
 
 }
 

@@ -28,7 +28,8 @@
 
 #include "framework/LoggingInstance.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -138,4 +139,5 @@ void AdapterBase::disconnectAllGuiEventConnections()
 
 }
 
+}
 }

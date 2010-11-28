@@ -2,7 +2,7 @@
 
 #include "components/ogre/Convert.h"
 
-using namespace EmberOgre;
+using namespace Ember::OgreView;
 using namespace WFMath;
 
 namespace Ember

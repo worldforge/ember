@@ -34,7 +34,9 @@
 #include "../EmberOgre.h"
 #include "framework/LoggingInstance.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -187,4 +189,5 @@ bool Polygon::removePoint(PolygonPoint& point)
 
 }
 
+}
 }

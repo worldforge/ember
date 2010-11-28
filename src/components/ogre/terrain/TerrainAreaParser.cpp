@@ -30,7 +30,9 @@
 #include <Mercator/Area.h>
 #include <wfmath/atlasconv.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -72,4 +74,5 @@ const Atlas::Message::Element TerrainAreaParser::createElement(const WFMath::Pol
 
 }
 
+}
 }

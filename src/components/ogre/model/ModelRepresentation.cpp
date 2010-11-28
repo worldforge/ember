@@ -54,7 +54,9 @@
 
 #include <boost/smart_ptr.hpp>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -67,7 +69,7 @@ const char * const ModelRepresentation::ACTION_WALK("__movement_walk");
 const char * const ModelRepresentation::ACTION_SWIM("__movement_swim");
 const char * const ModelRepresentation::ACTION_FLOAT("__movement_float");
 
-ModelRepresentation::ModelRepresentation(::EmberOgre::EmberEntity& entity, Model& model, Scene& scene) :
+ModelRepresentation::ModelRepresentation(::Ember::OgreView::EmberEntity& entity, Model& model, Scene& scene) :
 	mEntity(entity), mModel(model), mScene(scene), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
 {
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
@@ -115,7 +117,7 @@ const std::string& ModelRepresentation::getTypeNameForClass()
 	return sTypeName;
 }
 
-::EmberOgre::EmberEntity & ModelRepresentation::getEntity() const
+::Ember::OgreView::EmberEntity & ModelRepresentation::getEntity() const
 {
 	return mEntity;
 }
@@ -443,5 +445,6 @@ void ModelRepresentation::reactivatePartActions()
 	mEntity.getMapping()->getRootEntityMatch().accept(visitor);
 }
 
+}
 }
 }

@@ -36,7 +36,9 @@
 #include <OgreTextureManager.h>
 #include <OgreHardwarePixelBuffer.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -263,4 +265,5 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 
 }
 
+}
 }

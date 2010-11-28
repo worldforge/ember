@@ -25,7 +25,9 @@
 #include "model/ModelRepresentationManager.h"
 #include "model/ModelRepresentation.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 ForestRenderingTechnique::ForestRenderingTechnique(Environment::Forest& forest) :
@@ -46,4 +48,5 @@ void ForestRenderingTechnique::registerEntity(EmberEntity& entity)
 	}
 }
 
+}
 }

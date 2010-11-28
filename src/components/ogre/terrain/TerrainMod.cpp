@@ -29,7 +29,9 @@
 #include <Eris/TerrainMod.h>
 #include "../EmberEntity.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain
 {
@@ -77,4 +79,5 @@ Mercator::TerrainMod* TerrainMod::getMercatorMod() const
 }
 
 } // close Namespace Terrain
-} // close Namespace EmberOgre
+} // close Namespace OgreView
+} // close Namespace Ember

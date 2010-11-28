@@ -31,7 +31,8 @@ namespace Hydrax
 class Hydrax;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Environment {
 
@@ -86,6 +87,8 @@ protected:
 
 
 };
+
+}
 
 }
 

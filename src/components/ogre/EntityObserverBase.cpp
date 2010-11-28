@@ -19,7 +19,9 @@
 #include "EntityObserverBase.h"
 #include <Eris/Entity.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 EntityObserverBase::EntityObserverBase(Eris::Entity& entity, bool deleteOurselvesWhenDone) :
@@ -47,5 +49,6 @@ void EntityObserverBase::cleanup()
 void EntityObserverBase::deleteOurselves()
 {
 	delete this;
+}
 }
 }

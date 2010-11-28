@@ -37,7 +37,9 @@ class Element;
 }
 
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -114,6 +116,8 @@ protected:
 };
 
 }
+}
+
 }
 
 #endif /* SIMPLEENTITYVISUALIZATION_H_ */

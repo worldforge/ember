@@ -48,7 +48,9 @@
 #include "components/entitymapping/Cases/CaseBase.h"
 
 using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -338,7 +340,7 @@ void ModelPreviewWorkerActionCreator::createActions(EntityMapping::EntityMapping
 }
 
 ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-	::EmberOgre::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker)
+	::Ember::OgreView::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker)
 {
 }
 
@@ -370,5 +372,6 @@ ModelPreviewWorkerMovement::~ModelPreviewWorkerMovement()
 	mMoveAdapter.detach();
 }
 
+}
 }
 }

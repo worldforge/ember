@@ -1,4 +1,5 @@
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 
 class Jesus{
@@ -22,7 +23,7 @@ class Jesus{
 	 * @param modelName 
 	 * @return A Model instance or 0
 	 */
-	EmberOgre::Model::Model* createModelForBlockType(const std::string& blockType,  const std::string& modelName);
+	Ember::OgreView::Model::Model* createModelForBlockType(const std::string& blockType,  const std::string& modelName);
 	
 	
 	/**
@@ -91,7 +92,7 @@ class AttachPointNode
 class ModelBlock
 {
 
-	ModelBlock(Ogre::SceneNode* baseNode, const Carpenter::BuildingBlock* buildingBlock,  EmberOgre::Model::Model* model, Construction* construction);
+	ModelBlock(Ogre::SceneNode* baseNode, const Carpenter::BuildingBlock* buildingBlock,  Ember::OgreView::Model::Model* model, Construction* construction);
 	~ModelBlock();
 //	void selectAttachPointNode(AttachPointNode* selectedNode);
 	
@@ -103,7 +104,7 @@ class ModelBlock
 	
 	std::vector<AttachPointNode*> getAttachPointNodes() const;
 	
-	const EmberOgre::Model::Model* getModel() const;
+	const Ember::OgreView::Model::Model* getModel() const;
 	const Ogre::SceneNode* getNode() const;
 
 };
@@ -142,5 +143,5 @@ class Construction
 	
 
 };
-
+}
 }

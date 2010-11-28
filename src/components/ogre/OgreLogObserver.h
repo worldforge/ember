@@ -27,7 +27,8 @@
 #include "framework/StreamLogObserver.h"
 #include <OgreLog.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 /**
 @author Erik Hjortsberg
@@ -50,6 +51,8 @@ class OgreLogObserver: public Ogre::LogListener
 
 
 };
+
+}
 
 }
 

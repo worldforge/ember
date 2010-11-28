@@ -1,4 +1,5 @@
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class IAnimated
 {
@@ -21,7 +22,8 @@ class MotionManager  {
 	 *    Gets info about the MotionManager.
 	 * @return 
 	 */
-	inline const EmberOgre::MotionManager::MotionManagerInfo& getInfo() const;
+	inline const Ember::OgreView::MotionManager::MotionManagerInfo& getInfo() const;
 	
 };
+}
 }

@@ -1,10 +1,11 @@
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Model {
 class Model
 {
 //	typedef std::map<std::string, Action> ActionStore;
 
-//	typedef std::set<EmberOgre::SubModel*> SubModelSet;
+//	typedef std::set<Ember::OgreView::SubModel*> SubModelSet;
 //	typedef std::set<std::string> StringSet;
 //	typedef std::map<std::string, StringSet > SubModelPartMapping;
 //	typedef std::map<std::string, SubModelPart*> SubModelPartMap;
@@ -19,10 +20,10 @@ class Model
 	
 	virtual ~Model();
 
-	bool addSubmodel(EmberOgre::Model::SubModel* submodel);
- 	bool removeSubmodel(EmberOgre::Model::SubModel* submodel);
+	bool addSubmodel(Ember::OgreView::Model::SubModel* submodel);
+ 	bool removeSubmodel(Ember::OgreView::Model::SubModel* submodel);
  	
-	EmberOgre::Model::Action* getAction(const std::string& name);	
+	Ember::OgreView::Model::Action* getAction(const std::string& name);	
 	
 
 	/**
@@ -50,7 +51,7 @@ class Model
 	 * height of the tree to determine how much it should be scaled, since the 
 	 * bounding box supplied by eris doesn't take the branches into account
 	 */
-	const EmberOgre::Model::ModelDefinition::UseScaleOf getUseScaleOf() const;
+	const Ember::OgreView::Model::ModelDefinition::UseScaleOf getUseScaleOf() const;
 	
 
         /** Overridden from MovableObject */
@@ -62,7 +63,7 @@ class Model
 	 *    returns a pointer to the defintion of the Model
 	 * @return 
 	 */
-	EmberOgre::Model::ModelDefnPtr getDefinition() const;
+	Ember::OgreView::Model::ModelDefnPtr getDefinition() const;
 	
 	
 	bool hasAttachPoint(const std::string& attachPoint) const; 
@@ -73,10 +74,10 @@ class Model
 	
 	bool hasParticles() const;
 
-	//EmberOgre::Model::SubModel* getSubModel(const std::string& name);
-	EmberOgre::Model::SubModel* getSubModel(unsigned int index);
-	//std::set<EmberOgre::Model::SubModel*> getSubmodels() const;
-//	std::map<std::string, EmberOgre::Model::SubModelPart*> getSubmodelParts() const;
+	//Ember::OgreView::Model::SubModel* getSubModel(const std::string& name);
+	Ember::OgreView::Model::SubModel* getSubModel(unsigned int index);
+	//std::set<Ember::OgreView::Model::SubModel*> getSubmodels() const;
+//	std::map<std::string, Ember::OgreView::Model::SubModelPart*> getSubmodelParts() const;
 
 	/**
 	 *    If set to true, Ogre will display each bone in the skeleton with an axis overlay. Defaults to false.
@@ -93,5 +94,5 @@ class Model
 };
 
 }
-
+}
 }

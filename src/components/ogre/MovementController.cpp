@@ -46,7 +46,9 @@
 
 using namespace Ogre;
 using namespace Ember;
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 MovementControllerInputListener::MovementControllerInputListener(MovementController& controller) :
@@ -286,5 +288,6 @@ void MovementController::createDecal(Ogre::Vector3 position)
 	}
 }
 
+}
 }
 

@@ -26,7 +26,9 @@
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <boost/shared_ptr.hpp>
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -97,4 +99,5 @@ void TerrainMaterialCompilationTask::updateSceneManagersAfterMaterialsChange()
 
 }
 
+}
 }

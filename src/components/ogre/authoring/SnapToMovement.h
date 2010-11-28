@@ -38,7 +38,9 @@ namespace Eris
 class Entity;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 class EmberEntity;
@@ -115,6 +117,8 @@ protected:
 	std::vector<Ogre::SceneNode*> mDebugNodes;
 
 };
+
+}
 
 }
 

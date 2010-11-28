@@ -26,7 +26,9 @@
 #include "../EmberOgrePrerequisites.h"
 #include <wfmath/quaternion.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Authoring
@@ -106,4 +108,6 @@ public:
 
 }
 }
+}
+
 #endif

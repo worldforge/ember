@@ -20,7 +20,9 @@
 #include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -38,4 +40,5 @@ TerrainModTaskBase::~TerrainModTaskBase()
 
 }
 
+}
 }

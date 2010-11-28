@@ -35,7 +35,9 @@
 #include <OgreException.h>
 #include <OgreMaterialManager.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Authoring
 {
@@ -106,5 +108,6 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 	}
 }
 
+}
 }
 }

@@ -33,7 +33,9 @@
 #include <OgreRenderSystem.h>
 #include <OgreShadowCameraSetupPSSM.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -294,4 +296,5 @@ unsigned int ShaderPass::getCoveragePixelWidth() const
 
 }
 
+}
 }

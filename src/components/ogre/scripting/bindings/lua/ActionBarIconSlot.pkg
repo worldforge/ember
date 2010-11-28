@@ -23,7 +23,8 @@
 
 $#include "components/ogre/widgets/ActionBarIconSlot.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Gui {
 
@@ -40,19 +41,19 @@ public:
 	 * @return true if successful, else false
 	 */
 	
-	bool addActionBarIcon(EmberOgre::Gui::ActionBarIcon* icon);
+	bool addActionBarIcon(Ember::OgreView::Gui::ActionBarIcon* icon);
 	
 	/**
 	 *    Removes and returns the contained EntityIcon. If none is contained, nothing will happen.
 	 * @return The contained EntityIcon or null if none contained.
 	 */
-	EmberOgre::Gui::ActionBarIcon* removeActionBarIcon();
+	Ember::OgreView::Gui::ActionBarIcon* removeActionBarIcon();
 	
 	/**
 	 *    Gets the contained EntityIcon
 	 * @return 
 	 */
-	EmberOgre::Gui::ActionBarIcon* getActionBarIcon();
+	Ember::OgreView::Gui::ActionBarIcon* getActionBarIcon();
 		
 	
 	CEGUI::Window* getWindow();
@@ -60,15 +61,15 @@ public:
 	/**
 	Call this from the gui code whenever an icon is dragged away from the slot.
 	*/
-	void notifyIconDraggedOff(EmberOgre::Gui::ActionBarIcon* entityIcon);
+	void notifyIconDraggedOff(Ember::OgreView::Gui::ActionBarIcon* entityIcon);
 	
 	/**
 	Emitted when an icon has been dragged away from the slot as a result of an user action.
 	*/
-	sigc::signal<void, EmberOgre::Gui::ActionBarIcon*> EventIconDraggedOff;
+	sigc::signal<void, Ember::OgreView::Gui::ActionBarIcon*> EventIconDraggedOff;
 
 };
 
 }
-
+}
 }

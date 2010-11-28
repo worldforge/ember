@@ -4,7 +4,8 @@ namespace Mercator
 }
 
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 class TerrainArea{
     TerrainArea(EmberEntity& entity);
@@ -14,5 +15,6 @@ class TerrainArea{
 	inline void setArea(Mercator::Area* area) { mArea = area; }
 
 };
+}
 }
 }

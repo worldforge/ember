@@ -35,7 +35,9 @@ class Segment;
 class Terrain;
 }
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -156,6 +158,8 @@ protected:
 
 
 };
+
+}
 
 }
 

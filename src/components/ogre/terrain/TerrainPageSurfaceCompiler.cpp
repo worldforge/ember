@@ -38,7 +38,9 @@
 #include "services/config/ConfigService.h"
 #include <Ogre.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Terrain
 {
@@ -138,5 +140,6 @@ void TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material)
 	mTechnique->compileMaterial(material);
 }
 
+}
 }
 }

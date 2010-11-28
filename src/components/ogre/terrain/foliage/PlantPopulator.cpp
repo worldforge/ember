@@ -9,7 +9,9 @@
 #include <wfmath/randgen.h>
 #include <OgreVector2.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -54,4 +56,5 @@ void Scaler::scale(WFMath::MTRand& rnd, const WFMath::Point<2>& pos, Ogre::Vecto
 
 }
 
+}
 }

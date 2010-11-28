@@ -22,7 +22,9 @@
 #include "components/entitymapping/Cases/CaseBase.h"
 #include "components/ogre/EmberEntityPartAction.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Model
 {
@@ -47,5 +49,6 @@ void ModelPartReactivatorVisitor::visit(Ember::EntityMapping::Cases::CaseBase& c
 
 }
 
+}
 }
 }

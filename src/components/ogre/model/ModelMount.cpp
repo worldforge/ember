@@ -31,13 +31,15 @@
 #include <wfmath/axisbox.h>
 #include <Ogre.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Model
 {
 
-ModelMount::ModelMount(EmberOgre::Model::Model& model, INodeProvider* nodeProvider) :
+ModelMount::ModelMount(Ember::OgreView::Model::Model& model, INodeProvider* nodeProvider) :
 	mModel(model), mNodeProvider(nodeProvider)
 {
 }
@@ -168,4 +170,5 @@ INodeProvider* ModelMount::getNodeProvider() const
 
 }
 
+}
 }

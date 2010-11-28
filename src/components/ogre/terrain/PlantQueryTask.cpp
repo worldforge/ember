@@ -21,7 +21,9 @@
 #include "foliage/PlantPopulator.h"
 #include "components/ogre/Convert.h"
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -50,4 +52,5 @@ void PlantQueryTask::executeTaskInMainThread()
 }
 }
 
+}
 }

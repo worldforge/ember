@@ -32,7 +32,8 @@
 
 struct SDL_Surface;
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberPagingSceneManager;
 class EmberPagingSceneManagerFactory;
@@ -166,6 +167,8 @@ inline Ogre::Root* OgreSetup::getRoot() const
 inline Ogre::RenderWindow* OgreSetup::getRenderWindow() const
 {
 	return mRenderWindow;
+}
+
 }
 
 }

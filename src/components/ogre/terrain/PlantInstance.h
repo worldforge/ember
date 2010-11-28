@@ -23,7 +23,9 @@
 #include <OgreVector3.h>
 #include <OgreVector2.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Terrain
@@ -106,6 +108,6 @@ public:
 };
 
 }
-
+}
 }
 #endif /* EMBEROGRE_TERRAIN_PLANTINSTANCE_H_ */

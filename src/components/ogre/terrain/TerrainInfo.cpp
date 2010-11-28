@@ -29,7 +29,8 @@
 #include <cmath>
 #include <algorithm>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Terrain {
 
 
@@ -140,5 +141,6 @@ void TerrainInfo::setPageIndicesSize(int size)
 	mPageIndicesSize = size;
 }
 
+}
 }
 }

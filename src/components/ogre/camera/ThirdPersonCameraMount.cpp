@@ -24,7 +24,9 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 namespace Camera
 {
@@ -173,6 +175,7 @@ void ThirdPersonCameraMount::runCommand(const std::string &command, const std::s
 			setCameraDistance(fDistance);
 		}
 	}
+}
 }
 }
 }

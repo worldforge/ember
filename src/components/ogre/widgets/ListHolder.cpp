@@ -34,7 +34,8 @@
 
 #include <algorithm>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 namespace Gui {
 
 ListHolder::ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox)
@@ -169,5 +170,6 @@ void ListHolder::resetList()
 	mItems.clear();
 }
 
+}
 }
 }

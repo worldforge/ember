@@ -32,7 +32,8 @@ class Entity;
 class SceneManager;
 }
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 namespace Terrain
 {
@@ -71,6 +72,8 @@ protected:
 	void plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult);
 
 };
+
+}
 
 }
 

@@ -28,10 +28,11 @@
 
 #include "components/ogre/OgreIncludes.h"
 
+#include "services/input/Input.h"
 #include "framework/ConsoleObject.h"
+
 #include <sigc++/trackable.h>
 
-#include "services/input/Input.h"
 #include <stack>
 #include <memory>
 
@@ -50,9 +51,8 @@ namespace Ember
 struct MouseMotion;
 class InputCommandMapper;
 class Input;
-}
 
-namespace EmberOgre {
+namespace OgreView {
 class Avatar;
 class EmberEntity;
 struct EntityPickResult;
@@ -231,6 +231,8 @@ private:
 	void Input_MouseMoved(const Ember::MouseMotion& motion, Ember::Input::InputMode mode);
 
 };
+
+}
 
 }
 

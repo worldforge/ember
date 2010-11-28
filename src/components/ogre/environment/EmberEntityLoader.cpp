@@ -38,7 +38,9 @@
 
 #include <sigc++/bind.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Environment
@@ -149,6 +151,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 		mEntities.erase(I);
 	}
 
+
 #endif
 
 	WFMath::Point<3> pos = entity->getViewPosition();
@@ -253,5 +256,6 @@ void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberEntity*
 
 }
 
+}
 }
 

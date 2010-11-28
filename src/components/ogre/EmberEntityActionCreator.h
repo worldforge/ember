@@ -29,7 +29,8 @@
 #include "components/entitymapping/EntityMappingManager.h"
 #include "components/entitymapping/IActionCreator.h"
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 class EmberEntity;
 class Scene;
@@ -38,19 +39,21 @@ class Scene;
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Creates actions specific to the EmberOgre environment.
  */
-class EmberEntityActionCreator : public Ember::EntityMapping::IActionCreator
+class EmberEntityActionCreator : public EntityMapping::IActionCreator
 {
 public:
     EmberEntityActionCreator(EmberEntity& entity, Scene& scene);
 
     ~EmberEntityActionCreator();
-	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
+	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EmberEntity& mEntity;
 	Scene& mScene;
 
 
 };
+
+}
 
 }
 

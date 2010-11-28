@@ -36,7 +36,8 @@
 #include <OgreRay.h>
 #include <OgreSubMesh.h>
 
-namespace EmberOgre {
+namespace Ember {
+namespace OgreView {
 
 MeshCollisionDetector::MeshCollisionDetector(Model::Model* model)
 :mModel(model)
@@ -268,4 +269,5 @@ void MeshCollisionDetector::getMeshInformation(const Ogre::MeshPtr mesh,
 	}
 }
 
+}
 }

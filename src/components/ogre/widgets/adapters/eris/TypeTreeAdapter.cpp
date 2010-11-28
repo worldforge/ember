@@ -27,7 +27,9 @@
 #include <elements/CEGUITree.h>
 #include <elements/CEGUITreeItem.h>
 
-namespace EmberOgre
+namespace Ember
+{
+namespace OgreView
 {
 
 namespace Gui
@@ -139,6 +141,7 @@ void TypeTreeAdapter::boundAType(::Eris::TypeInfo* typeInfo)
 	return 0;
 }
 
+}
 }
 }
 }

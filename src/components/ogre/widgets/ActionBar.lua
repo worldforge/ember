@@ -237,7 +237,7 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	end
 	self.widget:show()
 	
-	self.worldDragDrop = EmberOgre.Gui.ActionBarIconDragDropTarget(root)
+	self.worldDragDrop = Ember.OgreView.Gui.ActionBarIconDragDropTarget(root)
 	
 	--Dragging an icon from the action bar to the world, and releasing it, should cause that icon to be destroyed.
 	self.worldDragDrop_Dropped = function(actionBarIcon)
@@ -286,7 +286,7 @@ function ActionBar.new(rotation, defActionList, erisAvatar)
 				slots = {}};
 	serverInfo = Eris.ServerInfo()
 	erisAvatar:getConnection():getServerInfo(serverInfo)
-	actionbar.avatarId = EmberOgre.Gui.ActionBarIconManager.AvatarIdType(serverInfo, erisAvatar:getId())
+	actionbar.avatarId = Ember.OgreView.Gui.ActionBarIconManager.AvatarIdType(serverInfo, erisAvatar:getId())
 				
 	setmetatable(actionbar,{__index=ActionBar})
 	return actionbar
@@ -306,7 +306,7 @@ end
 --@param slotNum The slot number executed by the key press.
 function ActionBar:keyMapping(key, slotNum)
 	local input = {}
- 	input.key = EmberOgre.Gui.ActionBarInput:new(key)
+ 	input.key = Ember.OgreView.Gui.ActionBarInput:new(key)
  	input.slotNum = slotNum
 	self.hotkeys[key] = input
 	
