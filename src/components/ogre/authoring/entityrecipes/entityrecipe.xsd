@@ -28,7 +28,7 @@
 								</xsd:annotation>
 								<xsd:complexType>
 									<xsd:sequence>
-										<xsd:element name="atlas" type="semiatlas" minOccurs="1" maxOccurs="1"/>
+										<xsd:element name="atlas" type="semiatlas" minOccurs="0" maxOccurs="1"/>
 									</xsd:sequence>
 									<xsd:attribute name="type" type="xsd:string" use="required">
 										<xsd:annotation>
