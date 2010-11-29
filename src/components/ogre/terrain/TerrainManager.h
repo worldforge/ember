@@ -289,51 +289,6 @@ public:
 	int getPageIndexSize() const;
 
 	/**
-	 * @brief Emitted when the size of the world has changed.
-	 */
-	sigc::signal<void> EventWorldSizeChanged;
-
-	/**
-	 * @brief Emitted when a layer is updated.
-	 *
-	 * The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
-	 */
-	sigc::signal<void, const TerrainShader*, const AreaStore& > EventLayerUpdated;
-
-	/**
-	 * @brief Emitted when a new shader is created.
-	 *
-	 * The shader paremeter is the newly created shader.
-	 */
-	sigc::signal<void, const TerrainShader*> EventShaderCreated;
-
-	/**
-	 * @brief Emitted before the terrain geometry is changed.
-	 *
-	 * When the terrain geometry is about to be changed this signal is emitted.
-	 * The first parameter is the areas which are affected by the change.
-	 * The second parameter is the pages that will be updated.
-	 */
-	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
-
-	/**
-	 * @brief Emitted after the terrain geometry has changed.
-	 *
-	 * When the terrain geometry has been changed this signal is emitted.
-	 * The first parameter is the areas which are affected by the change.
-	 * The second parameter is the pages that were updated.
-	 */
-	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventAfterTerrainUpdate;
-
-	/**
-	 * @brief Emitted when a terrain page has had its geometry updated.
-	 *
-	 * This often signals that a page is to be loaded and rendered.
-	 * @warning You must not do any rendering directly in the methods listening for this event, since that can lead to strange behaviour in the scene manager. The reason is that this event is emitted while already in the rendering loop, and entering the render loop again at that point will lead to some very inconsistent states.
-	 */
-	sigc::signal<void, TerrainPage&> EventTerrainPageGeometryUpdated;
-
-	/**
 	 * @brief Whether the foliage should be shown or not.
 	 *
 	 * @note If the GPU doesn't support the required shaders, this will return false even though it's set in the config.
@@ -417,6 +372,51 @@ public:
 	 * @return The segment manager.
 	 */
 	SegmentManager& getSegmentManager();
+
+	/**
+	 * @brief Emitted when the size of the world has changed.
+	 */
+	sigc::signal<void> EventWorldSizeChanged;
+
+	/**
+	 * @brief Emitted when a layer is updated.
+	 *
+	 * The vector parameter is either null if the update can't be constrained to any areas, or an vector of areas if it can.
+	 */
+	sigc::signal<void, const TerrainShader*, const AreaStore& > EventLayerUpdated;
+
+	/**
+	 * @brief Emitted when a new shader is created.
+	 *
+	 * The shader paremeter is the newly created shader.
+	 */
+	sigc::signal<void, const TerrainShader*> EventShaderCreated;
+
+	/**
+	 * @brief Emitted before the terrain geometry is changed.
+	 *
+	 * When the terrain geometry is about to be changed this signal is emitted.
+	 * The first parameter is the areas which are affected by the change.
+	 * The second parameter is the pages that will be updated.
+	 */
+	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
+
+	/**
+	 * @brief Emitted after the terrain geometry has changed.
+	 *
+	 * When the terrain geometry has been changed this signal is emitted.
+	 * The first parameter is the areas which are affected by the change.
+	 * The second parameter is the pages that were updated.
+	 */
+	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventAfterTerrainUpdate;
+
+	/**
+	 * @brief Emitted when a terrain page has had its geometry updated.
+	 *
+	 * This often signals that a page is to be loaded and rendered.
+	 * @warning You must not do any rendering directly in the methods listening for this event, since that can lead to strange behaviour in the scene manager. The reason is that this event is emitted while already in the rendering loop, and entering the render loop again at that point will lead to some very inconsistent states.
+	 */
+	sigc::signal<void, TerrainPage&> EventTerrainPageGeometryUpdated;
 
 protected:
 
