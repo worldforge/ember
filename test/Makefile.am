@@ -12,7 +12,7 @@ TestOgreView_LDADD = $(top_builddir)/src/components/ogre/libEmberOgre.a \
 	$(top_builddir)/src/framework/libFramework.a
 	
 TestTasks_SOURCES = TestTasks.cpp
-TestTasks_CXXFLAGS = $(CPPUNIT_CFLAGS)
+TestTasks_CXXFLAGS = $(CPPUNIT_CFLAGS) -DLOG_TASKS
 TestTasks_LDFLAGS = $(CPPUNIT_LIBS)
 TestTasks_LDADD = $(top_builddir)/src/framework/tasks/libTasks.a \
 	$(top_builddir)/src/framework/libFramework.a

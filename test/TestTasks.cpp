@@ -6,6 +6,11 @@
 
 #include "framework/tasks/TaskQueue.h"
 #include "framework/tasks/ITask.h"
+#include "framework/tasks/ITaskExecutionListener.h"
+#include "framework/Exception.h"
+
+#include <boost/thread.hpp>
+#include <boost/date_time.hpp>
 
 namespace Ember
 {
@@ -16,14 +21,19 @@ public:
 
 	int& mCounter;
 
-	CounterTask(int& counter) :
-		mCounter(counter)
+	int mSleep;
+
+	CounterTask(int& counter, int sleep = 0) :
+		mCounter(counter), mSleep(sleep)
 	{
 		mCounter += 2;
 	}
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 	{
+		if (mSleep) {
+			boost::this_thread::sleep(boost::posix_time::milliseconds(mSleep));
+		}
 		mCounter--;
 	}
 
@@ -39,16 +49,57 @@ public:
 	virtual std::string getName() const {
 		return "CounterTask";
 	}
+};
 
+class CounterTaskBackgroundException: public CounterTask {
+public:
+	CounterTaskBackgroundException(int& counter) : CounterTask(counter) {
+	}
+
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
+	{
+		throw Ember::Exception();
+	}
+};
+
+class SimpleListener : public Tasks::ITaskExecutionListener {
+public:
+
+	bool started;
+	bool ended;
+	bool error;
+
+	SimpleListener() : started(false), ended(false), error(false) {
+
+	}
+
+	virtual void executionStarted()
+	{
+		started = true;
+	}
+
+	virtual void executionEnded()
+	{
+		ended = true;
+	}
+
+	virtual void executionError(const Ember::Exception& exception)
+	{
+		error = true;
+	}
 };
 
 class TaskTestCase: public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE( TaskTestCase);
-	CPPUNIT_TEST( testSimpleTaskRun);
-	CPPUNIT_TEST( testSimpleTaskRunTwoExecs);
-	CPPUNIT_TEST( testSimpleTaskRunTwoTasks);
-	CPPUNIT_TEST( testSimpleTaskRunTwoTasksTwoExecs);
+	CPPUNIT_TEST_SUITE(TaskTestCase);
+	CPPUNIT_TEST(testSimpleTaskRun);
+	CPPUNIT_TEST(testSimpleTaskRunAndPoll);
+	CPPUNIT_TEST(testSimpleTaskRunTwoExecs);
+	CPPUNIT_TEST(testSimpleTaskRunTwoTasks);
+	CPPUNIT_TEST(testSimpleTaskRunTwoTasksTwoExecs);
+	CPPUNIT_TEST(testListener);
+	CPPUNIT_TEST(testBackgroundException);
+
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -60,6 +111,20 @@ public:
 			taskQueue.enqueueTask(new CounterTask(counter));
 		}
 		CPPUNIT_ASSERT(counter == 0);
+	}
+
+	void testSimpleTaskRunAndPoll()
+	{
+		int counter = 0;
+		{
+			Tasks::TaskQueue taskQueue(1);
+			taskQueue.enqueueTask(new CounterTask(counter));
+			//200 ms should be enough... This isn't deterministic though.
+			boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+			taskQueue.pollProcessedTasks(100000);
+			CPPUNIT_ASSERT(counter == 0);
+		}
+
 	}
 
 	void testSimpleTaskRunTwoExecs()
@@ -77,7 +142,7 @@ public:
 		int counter = 0;
 		{
 			Tasks::TaskQueue taskQueue(1);
-			taskQueue.enqueueTask(new CounterTask(counter));
+			taskQueue.enqueueTask(new CounterTask(counter, 200));
 			taskQueue.enqueueTask(new CounterTask(counter));
 		}
 		CPPUNIT_ASSERT(counter == 0);
@@ -88,10 +153,35 @@ public:
 		int counter = 0;
 		{
 			Tasks::TaskQueue taskQueue(2);
-			taskQueue.enqueueTask(new CounterTask(counter));
+			taskQueue.enqueueTask(new CounterTask(counter, 200));
 			taskQueue.enqueueTask(new CounterTask(counter));
 		}
 		CPPUNIT_ASSERT(counter == 0);
+	}
+
+	void testListener()
+	{
+		SimpleListener listener;
+		int counter = 0;
+		{
+			Tasks::TaskQueue taskQueue(1);
+			taskQueue.enqueueTask(new CounterTask(counter), &listener);
+		}
+		CPPUNIT_ASSERT(counter == 0);
+		CPPUNIT_ASSERT(listener.started);
+		CPPUNIT_ASSERT(listener.ended);
+	}
+
+	void testBackgroundException()
+	{
+		SimpleListener listener;
+		int counter = 0;
+		{
+			Tasks::TaskQueue taskQueue(1);
+			taskQueue.enqueueTask(new CounterTaskBackgroundException(counter), &listener);
+		}
+		CPPUNIT_ASSERT(counter == 1);
+		CPPUNIT_ASSERT(listener.error);
 	}
 };
 
