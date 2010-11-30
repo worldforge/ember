@@ -423,7 +423,13 @@ bool OgreSetup::configure(void)
 		Ogre::vector<Ogre::String>::type tokens = Ogre::StringUtil::split(dsp, ".");
 
 		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
-		s += ":" + tokens[1] + ":";
+		if (tokens.size() > 1) {
+			s += ":" + tokens[1] + ":";
+		} else {
+			//If there's only one token, fall back to "0". Not entirely sure how robust this is though
+			s += ":0:";
+			S_LOG_WARNING("Could not find second part of display string, defaulting to '0'.");
+		}
 		s += Ogre::StringConverter::toString((long)info.info.x11.window);
 		misc["parentWindowHandle"] = s;
 
