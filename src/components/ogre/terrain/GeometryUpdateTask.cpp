@@ -86,7 +86,6 @@ void GeometryUpdateTask::executeTaskInMainThread()
 		(*I)->signalGeometryChanged();
 	}
 
-	mManager.updateEntityPositions(mPages);
 	mManager.EventAfterTerrainUpdate(mAreas, mPages);
 
 }

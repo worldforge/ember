@@ -64,16 +64,12 @@
 
 #include "../Convert.h"
 #include "../EmberOgre.h"
-#include "../EmberEntity.h"
 #include "../ShaderManager.h"
-#include "../WorldEmberEntity.h"
 #include "../ILightning.h"
 #include "../Scene.h"
 
 #include "main/Application.h"
 
-#include <Eris/Entity.h>
-#include <Eris/View.h>
 #include <Eris/TerrainMod.h>
 
 #include <Mercator/Area.h>
@@ -175,8 +171,8 @@ public:
 
 };
 
-TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, WorldEmberEntity& worldEntity) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mSceneManagerAdapter(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mWorldEntity(worldEntity)
+TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene) :
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mSceneManagerAdapter(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene)
 {
 	mSceneManagerAdapter = adapter;
 
@@ -399,7 +395,6 @@ void TerrainManager::addPage(TerrainPage* page)
 	//Since the height data for the page probably wasn't correctly set up before the page was created, we should adjust the positions for the entities that are placed on the page.
 	std::set<TerrainPage*> pagesToUpdate;
 	pagesToUpdate.insert(page);
-	updateEntityPositions(pagesToUpdate);
 }
 
 int TerrainManager::getPageIndexSize() const
@@ -587,20 +582,6 @@ void TerrainManager::reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas
 		}
 		geometryToUpdate.push_back(BridgeBoundGeometryPtrVector::value_type(TerrainPageGeometryPtr(new TerrainPageGeometry(*page, *mSegmentManager, getDefaultHeight())), bridgePtr));
 		mTaskQueue->enqueueTask(new GeometryUpdateTask(geometryToUpdate, areas, *this, mShaderMap, *mHeightMapBufferProvider, *mHeightMap));
-	}
-}
-
-void TerrainManager::updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate)
-{
-	updateEntityPosition(&mWorldEntity, pagesToUpdate);
-}
-
-void TerrainManager::updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate)
-{
-	entity->adjustPosition();
-	for (unsigned int i = 0; i < entity->numContained(); ++i) {
-		EmberEntity* containedEntity = static_cast<EmberEntity*> (entity->getContained(i));
-		updateEntityPosition(containedEntity, pagesToUpdate);
 	}
 }
 

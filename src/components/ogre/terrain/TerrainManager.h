@@ -17,8 +17,8 @@
 */
 
 
-#ifndef TerrainManager_H
-#define TerrainManager_H
+#ifndef EMBER_OGREVIEW_TERRAINMANAGER_H
+#define EMBER_OGREVIEW_TERRAINMANAGER_H
 
 #include "Types.h"
 #include "framework/ConsoleObject.h"
@@ -50,15 +50,11 @@ namespace Ember {
 namespace Tasks {
 	class TaskQueue;
 }
-}
 
-namespace Ember {
 namespace OgreView {
-class EmberEntity;
 class ShaderManager;
 class ILightning;
 class Scene;
-class WorldEmberEntity;
 
 /**
  * @brief Namespace for all terrain related classes and activities.
@@ -105,7 +101,7 @@ public:
 	 * @param scene The world scene.
 	 * @param worldEntity The world entity.
 	 */
-	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, WorldEmberEntity& worldEntity);
+	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene);
 
 	/**
 	 * @brief Dtor.
@@ -267,21 +263,6 @@ public:
 	 */
 	const Ember::ConsoleCommandWrapper UpdateShadows;
 
-
-	/**
-	 * @brief Gets the shadow colour at the supplied position.
-	 * @param position The position in the world.
-	 * @param colour The shadow colour will be put into this value.
-	 */
-//	void getShadowColourAt(const Ogre::Vector2& position, Ogre::uint32& colour) const;
-
-	/**
-	 * @brief Gets the shadow colour at the supplied position.
-	 * @param position The position in the world.
-	 * @param colour The shadow colour will be put into this value.
-	 */
-//	void getShadowColourAt(const Ogre::Vector2& position, Ogre::ColourValue& colour) const;
-
 	/**
 	 * @brief Gets the size of one page as indices.
 	 * @return The size of one page as indices.
@@ -318,15 +299,6 @@ public:
 	 * @param positions A vector of terrain areas, in world space. The terrain found at these areas will be reloaded.
 	 */
 	void reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas);
-
-
-	/**
-	 * @brief Updates the positions of all entities contained on the supplied pages.
-	 *
-	 * This should be called whenever the geometry of a page has changed, so that the entities which sits on it are adjusted correctly.
-	 * @param pagesToUpdate The pages which needs to have the contained entities' positions updated.
-	 */
-	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
 
 	/**
 	 * @brief Gets all currently defined basepoints asynchronously.
@@ -449,6 +421,9 @@ protected:
 
 	TerrainPagestore mTerrainPages;
 
+	/**
+	 * @brief The main Mercator terrain instance, which holds all of the Mercator terrain structures.
+	 */
 	Mercator::Terrain* mTerrain;
 
 	float mHeightMax, mHeightMin;
@@ -506,9 +481,10 @@ protected:
 
 	PageBridgeStore mPageBridges;
 
+	/**
+	 * @brief The scene in which the terrain manager operates.
+	 */
 	Scene& mScene;
-
-	WorldEmberEntity& mWorldEntity;
 
 	/**
 	 * @brief Marks a shader for update, to be updated on the next batch, normally a frameEnded event.
@@ -520,8 +496,6 @@ protected:
 	void markShaderForUpdate(const TerrainShader* shader, const WFMath::AxisBox<2>& affectedArea);
 
 	void loadTerrainOptions();
-
-	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
 	/**
 	 * @brief Iterates through all TerrainPages and shows or hides the foliage.
@@ -576,6 +550,9 @@ protected:
 	void buildHeightmap();
 
 
+	/**
+	 * @brief Called at the end of an Eris poll cycle.
+	 */
 	void application_EndErisPoll(float);
 
 };
@@ -594,4 +571,4 @@ inline unsigned int TerrainManager::getFoliageBatchSize() const
 }
 
 
-#endif // TerrainManager_H
+#endif // EMBER_OGREVIEW_TERRAINMANAGER_H

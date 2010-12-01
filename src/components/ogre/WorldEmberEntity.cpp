@@ -57,7 +57,7 @@ namespace OgreView
 {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
-	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), scene, *this)), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
+	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), scene)), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
 {
 	mSceneManager.registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
@@ -69,6 +69,7 @@ WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Er
 		throw Ember::Exception("Could not create world node.");
 	}
 	EmberOgre::getSingleton().EventTerrainManagerCreated.emit(*mTerrainManager);
+	mTerrainManager->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrainManager_AfterTerrainUpdate));
 }
 
 WorldEmberEntity::~WorldEmberEntity()
@@ -193,6 +194,20 @@ void WorldEmberEntity::terrain_WorldSizeChanged()
 	///wait a little with initializing the foliage
 	if (mFoliage) {
 		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
+	}
+}
+
+void WorldEmberEntity::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages)
+{
+	updateEntityPosition(this, areas);
+}
+
+void WorldEmberEntity::updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2> >& areas)
+{
+	entity->adjustPosition();
+	for (unsigned int i = 0; i < entity->numContained(); ++i) {
+		EmberEntity* containedEntity = static_cast<EmberEntity*> (entity->getContained(i));
+		updateEntityPosition(containedEntity, areas);
 	}
 }
 

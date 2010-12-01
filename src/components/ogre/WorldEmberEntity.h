@@ -47,6 +47,7 @@ namespace Terrain
 class TerrainManager;
 class TerrainArea;
 class TerrainParser;
+class TerrainPage;
 }
 class DelayedFoliageInitializer;
 class TerrainPageDataProvider;
@@ -172,6 +173,21 @@ protected:
 	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	void terrain_WorldSizeChanged();
+
+	/**
+	 * @brief Listens to a signal from the terrain manager that the terrain has changed, and updates entity positions.
+	 *
+	 * @param areas The areas affected.
+	 * @param pages The pages affected.
+	 */
+	void terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages);
+
+	/**
+	 * @brief Updates the position of the entity, and all of the child entities.
+	 *
+	 * @param areas The areas which define the terrain which has been updated.
+	 */
+	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2> >& areas);
 
 	/**
 	 * @brief The terrain manager, owned by this instance.
