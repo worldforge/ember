@@ -99,7 +99,7 @@ namespace Ogre
 
         /** Things that need to be allocated once 
         */
-        void InitScene(void);
+        virtual void InitScene(void);
 
 	    /** Empties the entire scene, including all SceneNodes, Cameras, Entities and Lights etc.
 	    */

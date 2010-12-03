@@ -24,8 +24,6 @@
 #include "ISceneRenderingTechnique.h"
 #include "framework/LoggingInstance.h"
 
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-
 #include <OgreRoot.h>
 
 namespace Ember
@@ -38,8 +36,10 @@ Scene::Scene() :
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManagerInstance");
 
-	///We need to call init scene since a lot of components used by the scene manager are thus created
-	static_cast<EmberPagingSceneManager*> (mSceneManager)->InitScene();
+	///We need to call init scene since a lot of components used by the scene manager are thus created.
+	//Calling "setWorldGeometry" will trigger a call to InitScene
+	Ogre::DataStreamPtr emptyDataStream;
+	mSceneManager->setWorldGeometry(emptyDataStream);
 
 	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
 	mMainCamera = mSceneManager->createCamera("MainCamera");
