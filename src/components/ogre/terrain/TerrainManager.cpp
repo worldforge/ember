@@ -63,12 +63,9 @@
 #include "services/config/ConfigService.h"
 
 #include "../Convert.h"
-#include "../EmberOgre.h"
 #include "../ShaderManager.h"
 #include "../ILightning.h"
 #include "../Scene.h"
-
-#include "main/Application.h"
 
 #include <Eris/TerrainMod.h>
 
@@ -171,7 +168,7 @@ public:
 
 };
 
-TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene) :
+TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, float>& erisEndPollSignal) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mTerrainInfo(new TerrainInfo(adapter->getPageSize())), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mIsFoliageShown(false), mHeightMap(0), mHeightMapBufferProvider(0), mSceneManagerAdapter(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene)
 {
 	mSceneManagerAdapter = adapter;
@@ -188,9 +185,9 @@ TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene) :
 
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
 
-	EmberOgre::getSingleton().getShaderManager()->EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), EmberOgre::getSingleton().getShaderManager()));
+	shaderManager.EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), &shaderManager));
 
-	Ember::Application::getSingleton().EventEndErisPoll.connect(sigc::mem_fun(*this, &TerrainManager::application_EndErisPoll));
+	erisEndPollSignal.connect(sigc::mem_fun(*this, &TerrainManager::application_EndErisPoll));
 }
 
 TerrainManager::~TerrainManager()

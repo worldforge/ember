@@ -99,9 +99,10 @@ public:
 	 *
 	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain manager will take ownership of the adapter and will destroy it upon it's destruction.
 	 * @param scene The world scene.
-	 * @param worldEntity The world entity.
+	 * @param shaderManager The shader manager.
+	 * @param erisEndPollSignal A signal emitted when one Eris polling cycle has ended.
 	 */
-	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene);
+	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, float>& erisEndPollSignal);
 
 	/**
 	 * @brief Dtor.
