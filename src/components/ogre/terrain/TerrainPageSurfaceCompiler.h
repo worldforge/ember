@@ -37,6 +37,7 @@ class TerrainPageSurfaceLayer;
 class TerrainPageShadow;
 class TerrainPage;
 class TerrainPageGeometry;
+class ICompilerTechniqueProvider;
 
 class TerrainPageSurfaceCompilerTechnique
 {
@@ -62,7 +63,13 @@ private:
 */
 class TerrainPageSurfaceCompiler{
 public:
-    TerrainPageSurfaceCompiler();
+
+	/**
+	 * @brief Ctor.
+	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
+	 *
+	 */
+    TerrainPageSurfaceCompiler(ICompilerTechniqueProvider& compilerTechniqueProvider);
 
     virtual ~TerrainPageSurfaceCompiler();
 
@@ -70,6 +77,7 @@ public:
 
 private:
 
+    ICompilerTechniqueProvider& mCompilerTechniqueProvider;
     TerrainPageSurfaceCompilerTechnique* selectTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const;
 //	void fallback(const TerrainPageGeometry& geometry, Ogre::MaterialPtr material, std::map<int, const TerrainPageSurfaceLayer*>& terrainPageSurfaces, TerrainPageShadow* terrainPageShadow, const TerrainPage& page);
 

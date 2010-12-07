@@ -43,6 +43,7 @@
 #include "../model/Model.h"
 #include "../terrain/TerrainInfo.h"
 #include "../terrain/TerrainManager.h"
+#include "../terrain/TerrainHandler.h"
 #include "../terrain/ISceneManagerAdapter.h"
 
 namespace Ember
@@ -57,7 +58,7 @@ Forest::Forest(Terrain::TerrainManager& terrainManager) :
 	mTerrainManager(terrainManager), mTrees(0), mTreeLoader(0), mEntityLoader(0), mMaxRange(500)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
-	mTerrainManager.EventWorldSizeChanged.connect(sigc::mem_fun(*this, &Forest::worldSizeChanged));
+	mTerrainManager.getHandler().EventWorldSizeChanged.connect(sigc::mem_fun(*this, &Forest::worldSizeChanged));
 }
 
 Forest::~Forest()

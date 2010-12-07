@@ -19,10 +19,7 @@
 #include "ShaderPass.h"
 #include "ShaderPassCoverageBatch.h"
 
-#include "components/ogre/terrain/TerrainPage.h"
-#include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
-#include "components/ogre/Scene.h"
 #include "framework/LoggingInstance.h"
 
 #include <OgreTexture.h>
@@ -48,7 +45,7 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 {
 	///we need an unique name for our alpha texture
 	std::stringstream combinedCoverageTextureNameSS;
-	combinedCoverageTextureNameSS << "terrain_" << mPage.getWFPosition().x() << "_" << mPage.getWFPosition().y() << "_combinedCoverage_" << passIndex << "_" << batchIndex;
+	combinedCoverageTextureNameSS << "terrain_" << mPosition.x() << "_" << mPosition.y() << "_combinedCoverage_" << passIndex << "_" << batchIndex;
 	const Ogre::String combinedCoverageName(combinedCoverageTextureNameSS.str());
 	Ogre::TexturePtr combinedCoverageTexture;
 	if (Ogre::Root::getSingletonPtr()->getTextureManager()->resourceExists(combinedCoverageName)) {
@@ -56,13 +53,13 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 		combinedCoverageTexture = static_cast<Ogre::TexturePtr> (Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(combinedCoverageName));
 	} else {
 		S_LOG_VERBOSE("Creating new texture " << combinedCoverageName);
-		combinedCoverageTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mPage.getAlphaTextureSize(), mPage.getAlphaTextureSize(), 1, Ogre::PF_B8G8R8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+		combinedCoverageTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, 1, Ogre::PF_B8G8R8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
 	}
 	return combinedCoverageTexture;
 }
 
-ShaderPass::ShaderPass(const TerrainPage& page) :
-	mBaseLayer(0), mPage(page), mShadowLayers(0)
+ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position) :
+	mBaseLayer(0), mSceneManager(sceneManager), mCoveragePixelWidth(coveragePixelWidth), mPosition(position), mShadowLayers(0)
 {
 	for (int i = 0; i < 16; i++) {
 		mScales[i] = 0.0;
@@ -192,7 +189,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
 
 		if (useShadows) {
-			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*> (mPage.getManager().getScene().getSceneManager().getShadowCameraSetup().get());
+			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*> (mSceneManager.getShadowCameraSetup().get());
 			if (pssmSetup) {
 				Ogre::Vector4 splitPoints;
 				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
@@ -220,7 +217,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 
 	///add vertex shader for fog
 	std::string lightningVpProgram;
-	if (mPage.getManager().getScene().getSceneManager().getFogMode() == Ogre::FOG_EXP2) {
+	if (mSceneManager.getFogMode() == Ogre::FOG_EXP2) {
 		if (useShadows) {
 			lightningVpProgram = "Lighting/ShadowVp";
 		} else {
@@ -289,7 +286,7 @@ void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow)
 
 unsigned int ShaderPass::getCoveragePixelWidth() const
 {
-	return mPage.getAlphaTextureSize();
+	return mCoveragePixelWidth;
 }
 
 }

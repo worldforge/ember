@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2009 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,39 +16,55 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef TERRAINMODADDTASK_H_
-#define TERRAINMODADDTASK_H_
-#include "TerrainModTaskBase.h"
-#include <Mercator/TerrainMod.h>
+
+$#include "components/ogre/terrain/TerrainHandler.h"
 
 namespace Ember
 {
+
 namespace OgreView
 {
+
 
 namespace Terrain
 {
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief Task for adding a new terrain mod.
+ * @brief Handles the underlying Mercator terrain.
+ *
+ * This class is responsible for handling the underlying Mercator terrain, performing updates and alterations.
+ * It's not bound to Ogre.
  */
-class TerrainModAddTask: public TerrainModTaskBase
+class TerrainHandler 
 {
 public:
-	TerrainModAddTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
-	virtual ~TerrainModAddTask();
-
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
-
-	virtual void executeTaskInMainThread();
-
-private:
-
+	
 	/**
-	 * @brief Stores the applied mod, which will be a copy of the existing mod.
+	 * @brief Gets the max boundaries of the terrain.
+	 * @return 
 	 */
-	Mercator::TerrainMod* mOriginalTerrainMod;
+	const WFMath::Point<2> getMax() const;
+	
+	/**
+	 *    @brief Gets the min boundaries of the terrain.
+	 * @return 
+	 */
+	const WFMath::Point<2> getMin() const;
+	
+	/**
+	 * @brief Gets the size of one terrain segment.
+	 *	(note that this is different from Mercator segments, which always are of size 64)
+	 * @return 
+	 */
+	int getPageMetersSize();
+	
+	
+	/**
+	 * @brief Regenerates all terrain shadow maps.
+	 */
+	void updateShadows();
+
 };
 
 }
@@ -57,4 +73,3 @@ private:
 
 }
 
-#endif /* TERRAINMODADDTASK_H_ */

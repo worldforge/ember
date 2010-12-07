@@ -42,7 +42,7 @@ class IHeightMapSegment;
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Keeps data about the height map of the terrain.
  * This class is safe for threading, in contrast to the Mercator::Terrain class which primarily provides height map features.
- * The whole reason for this class existing is basically Mercator not being thread safe. We want to be able to update the Mercator terrain in a background thread, but at the same time be able to provide real time height checking functionality for other subsystmes in Ember which are running in the main thread.
+ * The whole reason for this class existing is basically Mercator not being thread safe. We want to be able to update the Mercator terrain in a background thread, but at the same time be able to provide real time height checking functionality for other subsystems in Ember which are running in the main thread.
  */
 class HeightMap
 {

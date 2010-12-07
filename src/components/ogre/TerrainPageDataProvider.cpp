@@ -17,7 +17,7 @@
  */
 
 #include "TerrainPageDataProvider.h"
-#include "components/ogre/terrain/TerrainManager.h"
+#include "components/ogre/terrain/TerrainHandler.h"
 #include "components/ogre/terrain/TerrainInfo.h"
 #include "components/ogre/terrain/TerrainPage.h"
 #include "Convert.h"
@@ -43,8 +43,8 @@ Ogre::MaterialPtr TerrainPageData::getMaterial()
 	return Ogre::MaterialPtr();
 }
 
-TerrainPageDataProvider::TerrainPageDataProvider(Terrain::TerrainManager& manager) :
-	mManager(manager)
+TerrainPageDataProvider::TerrainPageDataProvider(Terrain::TerrainHandler& handler) :
+	mHandler(handler)
 {
 
 }
@@ -55,27 +55,27 @@ TerrainPageDataProvider::~TerrainPageDataProvider()
 
 IPageData* TerrainPageDataProvider::getPageData(const OgreIndex& ogreIndexPosition)
 {
-	return new TerrainPageData(mManager.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition)));
+	return new TerrainPageData(mHandler.getTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition)));
 }
 
 int TerrainPageDataProvider::getPageIndexSize() const
 {
-	return mManager.getPageIndexSize();
+	return mHandler.getPageIndexSize();
 }
 void TerrainPageDataProvider::setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, Terrain::ITerrainPageBridge* bridge)
 {
-	mManager.setUpTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition), bridge);
+	mHandler.setUpTerrainPageAtIndex(convertToWFTerrainIndex(ogreIndexPosition), bridge);
 }
 
 void TerrainPageDataProvider::removeBridge(const OgreIndex& ogreIndexPosition)
 {
-	mManager.removeBridge(convertToWFTerrainIndex(ogreIndexPosition));
+	mHandler.removeBridge(convertToWFTerrainIndex(ogreIndexPosition));
 }
 
 TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition)
 {
 	///TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
-	return TerrainIndex(ogreIndexPosition.first - mManager.getTerrainInfo().getPageOffsetY(), -(ogreIndexPosition.second - mManager.getTerrainInfo().getPageOffsetX()));
+	return TerrainIndex(ogreIndexPosition.first - mHandler.getTerrainInfo().getPageOffsetY(), -(ogreIndexPosition.second - mHandler.getTerrainInfo().getPageOffsetX()));
 }
 
 }

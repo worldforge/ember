@@ -33,7 +33,7 @@ namespace OgreView
 namespace Terrain
 {
 
-class TerrainManager;
+class TerrainHandler;
 class TerrainPage;
 class ITerrainPageBridge;
 
@@ -43,7 +43,7 @@ class HeightMap;
 class TerrainPageCreationTask : public Ember::Tasks::TemplateNamedTask<TerrainPageCreationTask>
 {
 public:
-	TerrainPageCreationTask(TerrainManager& TerrainManager, const TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
+	TerrainPageCreationTask(TerrainHandler& handler, const TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
 	virtual ~TerrainPageCreationTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -51,7 +51,7 @@ public:
 	virtual void executeTaskInMainThread();
 
 private:
-	TerrainManager& mTerrainManager;
+	TerrainHandler& mTerrainHandler;
 
 	TerrainPage* mPage;
 	TerrainIndex mIndex;

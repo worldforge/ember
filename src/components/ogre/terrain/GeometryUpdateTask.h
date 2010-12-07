@@ -32,14 +32,14 @@ namespace OgreView
 namespace Terrain
 {
 class TerrainPage;
-class TerrainManager;
+class TerrainHandler;
 class HeightMapBufferProvider;
 class HeightMap;
 
 class GeometryUpdateTask : public Ember::Tasks::TemplateNamedTask<GeometryUpdateTask>
 {
 public:
-	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2> >& areas, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
+	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2> >& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
 	virtual ~GeometryUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -50,7 +50,7 @@ private:
 
 	BridgeBoundGeometryPtrVector mGeometry;
 	const std::vector<WFMath::AxisBox<2> > mAreas;
-	TerrainManager& mManager;
+	TerrainHandler& mHandler;
 	ShaderStore mShaders;
 	HeightMapBufferProvider& mHeightMapBufferProvider;
 	HeightMap& mHeightMap;

@@ -50,11 +50,11 @@ namespace Ember {
 namespace OgreView {
 namespace Terrain {
 class TerrainShader;
-class TerrainManager;
 class TerrainPageSurface;
 class TerrainPage;
 class TerrainPageSurfaceLayer;
 class TerrainPageGeometry;
+class ICompilerTechniqueProvider;
 
 /**
 
@@ -75,9 +75,10 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param index The page index in WF space.
-	 * @param manager The terrain manager.
+	 * @param pageSize The size of one side of a page.
+	 * @param compilerTechniqueProvider A provider for terrain surface compiler techniques.
 	 */
-	TerrainPage(const TerrainIndex& index, TerrainManager& manager);
+	TerrainPage(const TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
 
 	/**
 	 * @brief Dtor.
@@ -135,8 +136,6 @@ public:
 
 	int getPageSize() const;
 
-	void signalGeometryChanged();
-
 	/**
 	 * @brief The size in pixels of one side of the AlphaTexture. This is in sizes of 64.
 	 * @return
@@ -163,23 +162,17 @@ public:
 	 */
 	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
-	/**
-	 * @brief Accessor for the terrain manager.
-	 * @returns The terrain manager.
-	 */
-	TerrainManager& getManager() const;
-
 private:
-
-	/**
-	 * @brief The main terrain manager, which acts as a hub for all terrain functionality.
-	 */
-	TerrainManager& mManager;
 
 	/**
 	 * @brief Page index.
 	 */
 	TerrainIndex mIndex;
+
+	/**
+	 * @brief The size of one side of the page.
+	 */
+	int mPageSize;
 
 	/**
 	 * @brief Internal position

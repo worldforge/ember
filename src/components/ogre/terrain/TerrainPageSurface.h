@@ -48,6 +48,7 @@ class TerrainPageShadow;
 class TerrainPageGeometry;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceCompilationInstance;
+class ICompilerTechniqueProvider;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -55,20 +56,29 @@ class TerrainPageSurfaceCompilationInstance;
 class TerrainPageSurface{
 public:
 	typedef std::map<int, TerrainPageSurfaceLayer*> TerrainPageSurfaceLayerStore;
-    TerrainPageSurface(const TerrainPage& terrainPage);
+	/**
+	 * @brief Ctor.
+	 *
+	 * @param terrainPage The terrain page to which this surface belongs.
+	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
+	 */
+    TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider);
 
+    /**
+     * @brief Dtor.
+     */
     virtual ~TerrainPageSurface();
 
     unsigned int getPixelWidth() const;
 
 	/**
-	 *    The position of the page in Worldforge space
+	 * @brief The position of the page in Worldforge space
 	 * @return
 	 */
 	const TerrainPosition& getWFPosition() const;
 
 	/**
-	 *    The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
+	 * @brief The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
 	 * @return
 	 */
 	int getNumberOfSegmentsPerAxis() const;
@@ -94,6 +104,7 @@ protected:
 	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
 	std::auto_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
+
 };
 
 }

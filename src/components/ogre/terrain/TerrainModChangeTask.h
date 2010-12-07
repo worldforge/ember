@@ -37,7 +37,7 @@ namespace Terrain
 class TerrainModChangeTask: public TerrainModTaskBase
 {
 public:
-	TerrainModChangeTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod);
+	TerrainModChangeTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod);
 	virtual ~TerrainModChangeTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);

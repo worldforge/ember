@@ -19,6 +19,7 @@
 
 #include "ShaderNormalMapped.h"
 #include "ShaderNormalMappedPass.h"
+#include "components/ogre/terrain/TerrainPage.h"
 
 #include <OgrePass.h>
 #include <OgreTechnique.h>
@@ -34,14 +35,14 @@ namespace Terrain
 namespace Techniques
 {
 
-ShaderNormalMapped::ShaderNormalMapped(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
-	Shader::Shader(includeShadows, geometry, terrainPageSurfaces, terrainPageShadow)
+ShaderNormalMapped::ShaderNormalMapped(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager) :
+	Shader::Shader(includeShadows, geometry, terrainPageSurfaces, terrainPageShadow, sceneManager)
 {
 }
 
 ShaderPass* ShaderNormalMapped::addPass()
 {
-	ShaderPass* shaderPass = new ShaderNormalMappedPass(mPage);
+	ShaderPass* shaderPass = new ShaderNormalMappedPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition());
 	mPasses.push_back(shaderPass);
 	return shaderPass;
 }

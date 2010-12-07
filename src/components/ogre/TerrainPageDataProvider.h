@@ -29,7 +29,7 @@ namespace OgreView
 
 namespace Terrain
 {
-class TerrainManager;
+class TerrainHandler;
 class TerrainPage;
 class ITerrainPageBridge;
 }
@@ -54,7 +54,7 @@ private:
 class TerrainPageDataProvider : public IPageDataProvider
 {
 public:
-	TerrainPageDataProvider(Terrain::TerrainManager& manager);
+	TerrainPageDataProvider(Terrain::TerrainHandler& hander);
 	virtual ~TerrainPageDataProvider();
 
 	virtual IPageData* getPageData(const OgreIndex& ogreIndexPosition);
@@ -63,7 +63,7 @@ public:
 	virtual void removeBridge(const OgreIndex& ogreIndexPosition);
 
 protected:
-	Terrain::TerrainManager& mManager;
+	Terrain::TerrainHandler& mHandler;
 
 	/**
 	 * @brief Converts the ogre index position to wf local index.

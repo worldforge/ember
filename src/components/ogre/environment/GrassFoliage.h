@@ -56,7 +56,7 @@ public:
 	virtual ~GrassFoliage();
 	
 	virtual void initialize();
-	virtual void frameStarted(const Ogre::FrameEvent & evt);
+	virtual void frameStarted();
 
 protected:
 	

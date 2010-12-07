@@ -38,6 +38,8 @@
 
 #include <OgreRoot.h>
 
+#include <wfmath/point.h>
+
 template<> Ember::OgreView::Environment::Foliage* Ember::Singleton<Ember::OgreView::Environment::Foliage>::ms_Singleton = 0;
 using namespace Ember::OgreView::Terrain;
 
@@ -117,7 +119,7 @@ void Foliage::reloadAtPosition(const WFMath::Point<2>& worldPosition)
 bool Foliage::frameStarted(const Ogre::FrameEvent& evt)
 {
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
-		(*I)->frameStarted(evt);
+		(*I)->frameStarted();
 	}
 
 	return true;

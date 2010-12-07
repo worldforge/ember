@@ -18,7 +18,7 @@
 
 #include "TerrainPageCreationTask.h"
 
-#include "TerrainManager.h"
+#include "TerrainHandler.h"
 #include "TerrainPage.h"
 #include "TerrainShader.h"
 #include "TerrainPageGeometry.h"
@@ -36,8 +36,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainPageCreationTask::TerrainPageCreationTask(TerrainManager& terrainManager, const TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection) :
-	mTerrainManager(terrainManager), mPage(0), mIndex(index), mBridge(bridge), mMainLightDirection(mainLightDirection), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler, const TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection) :
+	mTerrainHandler(handler), mPage(0), mIndex(index), mBridge(bridge), mMainLightDirection(mainLightDirection), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -48,22 +48,22 @@ TerrainPageCreationTask::~TerrainPageCreationTask()
 
 void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	mPage = new TerrainPage(mIndex, mTerrainManager);
+	mPage = new TerrainPage(mIndex, mTerrainHandler.getPageIndexSize(), mTerrainHandler.getCompilerTechniqueProvider());
 	mBridge->bindToTerrainPage(mPage);
 
 	//add the base shaders, this should probably be refactored into a server side thing in the future
-	const std::list<TerrainShader*>& baseShaders = mTerrainManager.getBaseShaders();
+	const std::list<TerrainShader*>& baseShaders = mTerrainHandler.getBaseShaders();
 	for (std::list<TerrainShader*>::const_iterator I = baseShaders.begin(); I != baseShaders.end(); ++I) {
 		mPage->addShader(*I);
 	}
 
-	TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*mPage, mTerrainManager.getSegmentManager(), mTerrainManager.getDefaultHeight()));
+	TerrainPageGeometryPtr geometryInstance(new TerrainPageGeometry(*mPage, mTerrainHandler.getSegmentManager(), mTerrainHandler.getDefaultHeight()));
 	BridgeBoundGeometryPtrVector geometry;
 	geometry.push_back(BridgeBoundGeometryPtrVector::value_type(geometryInstance, mBridge));
 	std::vector<WFMath::AxisBox<2> > areas;
 	areas.push_back(mPage->getWorldExtent());
 	//	positions.push_back(mPage->getWFPosition());
-	context.executeTask(new GeometryUpdateTask(geometry, areas, mTerrainManager, mTerrainManager.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
+	context.executeTask(new GeometryUpdateTask(geometry, areas, mTerrainHandler, mTerrainHandler.getAllShaders(), mHeightMapBufferProvider, mHeightMap));
 
 }
 
@@ -71,7 +71,7 @@ void TerrainPageCreationTask::executeTaskInMainThread()
 {
 	if (mPage) {
 
-		mTerrainManager.addPage(mPage);
+		mTerrainHandler.addPage(mPage);
 
 		if (mBridge.get()) {
 			mBridge->terrainPageReady();

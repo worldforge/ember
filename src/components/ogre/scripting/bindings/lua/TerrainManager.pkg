@@ -41,30 +41,14 @@ class ISceneManagerAdapter;
 class TerrainManager 
 {
 public:
-	/**
-	 * @brief Gets the max boundaries of the terrain.
-	 * @return 
-	 */
-	const WFMath::Point<2> getMax() const;
-	
-	/**
-	 *    @brief Gets the min boundaries of the terrain.
-	 * @return 
-	 */
-	const WFMath::Point<2> getMin() const;
-	
-	/**
-	 *   @brief Gets the size of one terrain segment.
-	 *	(note that this is different from Mercator segments, which always are of size 64)
-	 * @return 
-	 */
-	int getPageMetersSize();
-	
 
 	/**
-	 * @brief Regenerates all terrain shadow maps.
+	 * @brief Gets the terrain handler.
+	 *
+	 * The terrain handler keeps track of the underlying Mercator terrain.
+	 * @return The terrain handler.
 	 */
-	void updateShadows();
+	Ember::OgreView::Terrain::TerrainHandler& getHandler();
 	
 	/**
 	 * @brief Console command for updating all terrain shadow maps.

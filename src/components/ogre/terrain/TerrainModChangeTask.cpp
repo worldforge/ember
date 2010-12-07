@@ -17,7 +17,7 @@
  */
 
 #include "TerrainModChangeTask.h"
-#include "TerrainManager.h"
+#include "TerrainHandler.h"
 #include "TerrainMod.h"
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
@@ -33,8 +33,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod) :
-	TerrainModTaskBase::TerrainModTaskBase(terrain, existingMod, entityId, manager, terrainMods), mNewTerrainMod(terrainMod.clone())
+TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod) :
+	TerrainModTaskBase::TerrainModTaskBase(terrain, existingMod, entityId, handler, terrainMods), mNewTerrainMod(terrainMod.clone())
 {
 
 }
@@ -66,7 +66,7 @@ void TerrainModChangeTask::executeTaskInMainThread()
 	if (mManagerLocalTerrainMod) {
 		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
 	}
-	mManager.reloadTerrain(mUpdatedAreas);
+	mHandler.reloadTerrain(mUpdatedAreas);
 }
 }
 

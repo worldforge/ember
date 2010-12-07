@@ -17,7 +17,7 @@
  */
 
 #include "TerrainUpdateTask.h"
-#include "TerrainManager.h"
+#include "TerrainHandler.h"
 #include "TerrainDefPoint.h"
 #include "TerrainInfo.h"
 #include "ISceneManagerAdapter.h"
@@ -37,8 +37,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainUpdateTask::TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainManager& terrainManager, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager) :
-	mTerrain(terrain), mTerrainPoints(terrainPoints), mTerrainManager(terrainManager), mTerrainInfo(terrainInfo), mHasTerrainInfo(hasTerrainInfo), mSegmentManager(segmentManager)
+TerrainUpdateTask::TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainHandler& handler, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager) :
+	mTerrain(terrain), mTerrainPoints(terrainPoints), mTerrainHandler(handler), mTerrainInfo(terrainInfo), mHasTerrainInfo(hasTerrainInfo), mSegmentManager(segmentManager)
 {
 
 }
@@ -73,48 +73,18 @@ void TerrainUpdateTask::executeTaskInMainThread()
 	for (UpdateBasePointStore::const_iterator I = mUpdatedBasePoints.begin(); I != mUpdatedBasePoints.end(); ++I) {
 		mTerrainInfo.setBasePoint(I->first, I->second);
 	}
-	mTerrainManager.EventWorldSizeChanged.emit();
+	mTerrainHandler.EventWorldSizeChanged.emit();
 
 	if (!mHasTerrainInfo) {
-		initializeTerrain();
 		mHasTerrainInfo = true;
 	} else {
 		if (!mUpdatedPositions.empty()) {
 			///if it's an update, we need to reload all pages and adjust all entity positions
-			mTerrainManager.reloadTerrain(mUpdatedPositions);
+			mTerrainHandler.reloadTerrain(mUpdatedPositions);
 		}
 	}
 }
 
-void TerrainUpdateTask::initializeTerrain()
-{
-	ISceneManagerAdapter* adapter = mTerrainManager.getAdapter();
-	if (adapter) {
-		adapter->setWorldPagesDimensions(mTerrainInfo.getTotalNumberOfPagesY(), mTerrainInfo.getTotalNumberOfPagesX(), mTerrainInfo.getPageOffsetY(), mTerrainInfo.getPageOffsetX());
-
-		adapter->loadScene();
-		const WFMath::AxisBox<2>& worldSize = mTerrainInfo.getWorldSizeInIndices();
-		//		float heightMin = std::numeric_limits<float>::min();
-		//		float heightMax = std::numeric_limits<float>::max();
-		//		if (heightMax < heightMin) {
-		float heightMin = -100;
-		float heightMax = 100;
-		//		}
-		Ogre::AxisAlignedBox worldBox(worldSize.lowCorner().x(), heightMin, -worldSize.highCorner().y(), worldSize.highCorner().x(), heightMax, -worldSize.lowCorner().y());
-
-		std::stringstream ss;
-		ss << worldBox;
-		S_LOG_INFO("New size of the world: " << ss.str());
-
-		adapter->resize(worldBox, 16);
-
-		S_LOG_INFO("Pages: X: " << mTerrainInfo.getTotalNumberOfPagesX() << " Y: " << mTerrainInfo.getTotalNumberOfPagesY() << " Total: " << mTerrainInfo.getTotalNumberOfPagesX() * mTerrainInfo.getTotalNumberOfPagesY());
-		S_LOG_INFO("Page offset: X" << mTerrainInfo.getPageOffsetX() << " Y: " << mTerrainInfo.getPageOffsetY());
-
-		///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
-		adapter->loadFirstPage();
-	}
-}
 
 }
 

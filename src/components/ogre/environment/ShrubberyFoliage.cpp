@@ -82,7 +82,7 @@ void ShrubberyFoliage::initialize()
  	mPagedGeometry->setPageLoader(mLoader);
 }
 
-void ShrubberyFoliage::frameStarted(const Ogre::FrameEvent & evt)
+void ShrubberyFoliage::frameStarted()
 {
 	if (mPagedGeometry) {
 		try {

@@ -30,6 +30,7 @@
 
 #include "terrain/TerrainParser.h"
 #include "terrain/TerrainManager.h"
+#include "terrain/TerrainHandler.h"
 #include "terrain/TerrainShaderParser.h"
 #include "terrain/TerrainDefPoint.h"
 #include "environment/Foliage.h"
@@ -59,7 +60,7 @@ namespace OgreView
 {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
-	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), scene, *EmberOgre::getSingleton().getShaderManager(), Ember::Application::getSingleton().EventEndErisPoll)), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(*mTerrainManager)), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
+	EmberEntity(id, ty, vw, scene), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), scene, *EmberOgre::getSingleton().getShaderManager(), Ember::Application::getSingleton().EventEndErisPoll)), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(mTerrainManager->getHandler())), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
 {
 	mSceneManager.registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
@@ -71,7 +72,7 @@ WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Er
 		throw Ember::Exception("Could not create world node.");
 	}
 	EmberOgre::getSingleton().EventTerrainManagerCreated.emit(*mTerrainManager);
-	mTerrainManager->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrainManager_AfterTerrainUpdate));
+	mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrainManager_AfterTerrainUpdate));
 }
 
 WorldEmberEntity::~WorldEmberEntity()
@@ -152,8 +153,8 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 	if (!mHasBeenInitialized) {
 		mEnvironment->initialize();
 		if (mTerrainManager) {
-			mTerrainAfterUpdateConnection = mTerrainManager->EventWorldSizeChanged.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrain_WorldSizeChanged));
-			mTerrainManager->setLightning(mEnvironment->getSun());
+			mTerrainAfterUpdateConnection = mTerrainManager->getHandler().EventWorldSizeChanged.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrain_WorldSizeChanged));
+			mTerrainManager->getHandler().setLightning(mEnvironment->getSun());
 			bool hasValidShaders = false;
 			Terrain::TerrainShaderParser terrainShaderParser(*mTerrainManager);
 			if (hasAttr("terrain")) {
@@ -167,7 +168,7 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 						hasValidShaders = true;
 					}
 				}
-				mTerrainManager->updateTerrain(terrainParser.parseTerrain(terrainElement, getPosition().isValid() ? getPosition() : WFMath::Point<3>::ZERO()));
+				mTerrainManager->getHandler().updateTerrain(terrainParser.parseTerrain(terrainElement, getPosition().isValid() ? getPosition() : WFMath::Point<3>::ZERO()));
 				if (!hasValidShaders) {
 					terrainShaderParser.createDefaultShaders();
 					hasValidShaders = true;
@@ -220,12 +221,12 @@ void WorldEmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 
 void WorldEmberEntity::addArea(Terrain::TerrainArea& area)
 {
-	mTerrainManager->addArea(area);
+	mTerrainManager->getHandler().addArea(area);
 }
 
 void WorldEmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
 {
-	mTerrainManager->addTerrainMod(mod);
+	mTerrainManager->getHandler().addTerrainMod(mod);
 }
 
 float WorldEmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
@@ -241,7 +242,7 @@ float WorldEmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 
 void WorldEmberEntity::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints)
 {
-	mTerrainManager->updateTerrain(terrainDefinitionPoints);
+	mTerrainManager->getHandler().updateTerrain(terrainDefinitionPoints);
 }
 
 Environment::Environment* WorldEmberEntity::getEnvironment() const

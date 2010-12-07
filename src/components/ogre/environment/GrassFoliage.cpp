@@ -153,7 +153,7 @@ void GrassFoliage::initialize()
 
 }
 
-void GrassFoliage::frameStarted(const Ogre::FrameEvent & evt)
+void GrassFoliage::frameStarted()
 {
 	if (mPagedGeometry) {
 		try {

@@ -36,14 +36,14 @@ namespace OgreView
 namespace Terrain
 {
 
-class TerrainManager;
+class TerrainHandler;
 class TerrainInfo;
 class SegmentManager;
 
 class TerrainUpdateTask : public Ember::Tasks::TemplateNamedTask<TerrainUpdateTask>
 {
 public:
-	TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainManager& terrainManager, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager);
+	TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainHandler& handler, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager);
 	virtual ~TerrainUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -56,16 +56,13 @@ private:
 
 	Mercator::Terrain& mTerrain;
 	const TerrainDefPointStore mTerrainPoints;
-	TerrainManager& mTerrainManager;
+	TerrainHandler& mTerrainHandler;
 	TerrainInfo& mTerrainInfo;
 	bool& mHasTerrainInfo;
 	SegmentManager& mSegmentManager;
 
 	std::vector<TerrainPosition> mUpdatedPositions;
 	UpdateBasePointStore mUpdatedBasePoints;
-
-	void initializeTerrain();
-
 };
 
 }

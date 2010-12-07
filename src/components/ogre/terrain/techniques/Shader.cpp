@@ -19,6 +19,7 @@
 #include "Shader.h"
 #include "ShaderPass.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
+#include "components/ogre/terrain/TerrainPage.h"
 #include <OgrePass.h>
 #include <OgreTechnique.h>
 
@@ -34,8 +35,8 @@ namespace Terrain
 namespace Techniques
 {
 
-Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
-	Base::Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows)
+Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager) :
+	Base::Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager)
 {
 }
 
@@ -140,7 +141,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 ShaderPass* Shader::addPass()
 {
-	ShaderPass* shaderPass(new ShaderPass(mPage));
+	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition()));
 	mPasses.push_back(shaderPass);
 	return shaderPass;
 }

@@ -46,7 +46,7 @@ public:
      * @brief Ctor.
      * @param includeShadows If true, shadows will be used.
      */
-	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
+	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager);
     virtual ~Shader();
 
     virtual bool prepareMaterial();
@@ -60,6 +60,14 @@ protected:
 	 */
 	bool mIncludeShadows;
 
+	/**
+	 * @brief The scene manager in which the material will be used.
+	 */
+	Ogre::SceneManager& mSceneManager;
+
+	/**
+	 * @brief A collection of passes for the material.
+	 */
 	PassStore mPasses;
 
 	virtual ShaderPass* addPass();

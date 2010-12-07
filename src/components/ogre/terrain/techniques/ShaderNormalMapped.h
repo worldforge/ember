@@ -40,7 +40,7 @@ public:
 	 * @brief Ctor.
 	 * @param includeShadows If true, shadows will be used.
 	 */
-	ShaderNormalMapped(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
+	ShaderNormalMapped(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager);
 protected:
 	virtual ShaderPass* addPass();
 

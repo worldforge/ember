@@ -40,7 +40,7 @@ class ShaderPassCoverageBatch;
 class ShaderNormalMappedPass : public ShaderPass
 {
 public:
-	ShaderNormalMappedPass(const TerrainPage& page);
+	ShaderNormalMappedPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position);
 	virtual ~ShaderNormalMappedPass() {}
 
 // 	virtual void addLayer(TerrainPageSurfaceLayer* layer);

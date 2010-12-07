@@ -29,7 +29,7 @@ namespace OgreView
 
 namespace Terrain
 {
-class TerrainManager;
+class TerrainHandler;
 class TerrainLayerDefinitionManager;
 
 /**
@@ -39,7 +39,7 @@ class TerrainLayerDefinitionManager;
 class TerrainAreaAddTask: public TerrainAreaTaskBase
 {
 public:
-	TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, AreaMap& areas, const std::string& entityId);
+	TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, AreaMap& areas, const std::string& entityId);
 	virtual ~TerrainAreaAddTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
@@ -47,7 +47,7 @@ public:
 	virtual void executeTaskInMainThread();
 private:
 
-	TerrainManager& mTerrainManager;
+	TerrainHandler& mTerrainHandler;
 	TerrainLayerDefinitionManager& mTerrainLayerDefinitionManager;
 	AreaShaderstore& mAreaShaders;
 	AreaMap& mAreas;

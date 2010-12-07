@@ -17,7 +17,7 @@
  */
 
 #include "TerrainAreaAddTask.h"
-#include "TerrainManager.h"
+#include "TerrainHandler.h"
 #include "TerrainLayerDefinitionManager.h"
 
 #include "Mercator/Area.h"
@@ -31,8 +31,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainManager& TerrainManager, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, AreaMap& areas, const std::string& entityId) :
-	TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mTerrainManager(TerrainManager), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), mAreas(areas), mEntityId(entityId)
+TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, AreaMap& areas, const std::string& entityId) :
+	TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mTerrainHandler(terrainHandler), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), mAreas(areas), mEntityId(entityId)
 {
 }
 
@@ -60,7 +60,7 @@ void TerrainAreaAddTask::executeTaskInMainThread()
 			///try to get the materialdefinition for this kind of area
 			const TerrainLayerDefinition* layerDef = mTerrainLayerDefinitionManager.getDefinitionForArea(mArea->getLayer());
 			if (layerDef) {
-				TerrainShader* shader = mTerrainManager.createShader(layerDef, new Mercator::AreaShader(mArea->getLayer()));
+				TerrainShader* shader = mTerrainHandler.createShader(layerDef, new Mercator::AreaShader(mArea->getLayer()));
 				mAreaShaders[mArea->getLayer()] = shader;
 			}
 		}

@@ -28,6 +28,8 @@
 
 #include "../Convert.h"
 #include "../terrain/TerrainArea.h"
+#include "../terrain/TerrainManager.h"
+#include "../terrain/TerrainHandler.h"
 #include "../terrain/TerrainShader.h"
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainPageSurfaceLayer.h"
@@ -54,9 +56,9 @@ FoliageBase::FoliageBase(Terrain::TerrainManager& terrainManager, const Terrain:
 {
 	initializeDependentLayers();
 
-	mTerrainManager.EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_LayerUpdated));
-	mTerrainManager.EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_EventShaderCreated));
-	mTerrainManager.EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainManager_AfterTerrainUpdate));
+	mTerrainManager.getHandler().EventLayerUpdated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_LayerUpdated));
+	mTerrainManager.getHandler().EventShaderCreated.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_EventShaderCreated));
+	mTerrainManager.getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &FoliageBase::TerrainHandler_AfterTerrainUpdate));
 
 }
 
@@ -78,7 +80,7 @@ void FoliageBase::initializeDependentLayers()
 	}
 }
 
-void FoliageBase::TerrainManager_LayerUpdated(const Terrain::TerrainShader* shader, const AreaStore& areas)
+void FoliageBase::TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const AreaStore& areas)
 {
 	if (mPagedGeometry) {
 		///check if the layer update affects this layer, either if it's the actual layer, or one of the dependent layers
@@ -99,16 +101,16 @@ void FoliageBase::TerrainManager_LayerUpdated(const Terrain::TerrainShader* shad
 	}
 }
 
-void FoliageBase::TerrainManager_EventShaderCreated(const Terrain::TerrainShader* shader)
+void FoliageBase::TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader)
 {
 	///we'll assume that all shaders that are created after this foliage has been created will affect it, so we'll add it to the dependent layers and reload the geometry
-	mDependentDefinitions.push_back(&shader->getLayerDefinition());
+	mDependentDefinitions.push_back(&shader.getLayerDefinition());
 	if (mPagedGeometry) {
 		mPagedGeometry->reloadGeometry();
 	}
 }
 
-void FoliageBase::TerrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::Ember::OgreView::Terrain::TerrainPage* >& pages)
+void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::Ember::OgreView::Terrain::TerrainPage* >& pages)
 {
 	if (mPagedGeometry) {
 		for (std::vector<WFMath::AxisBox<2> >::const_iterator I = areas.begin(); I != areas.end(); ++I) {

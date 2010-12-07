@@ -42,8 +42,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage) :
-	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler())
+TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider) :
+	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider))
 {
 	///create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");

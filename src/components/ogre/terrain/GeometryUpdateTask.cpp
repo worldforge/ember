@@ -18,7 +18,7 @@
 
 #include "GeometryUpdateTask.h"
 #include "TerrainPage.h"
-#include "TerrainManager.h"
+#include "TerrainHandler.h"
 #include "TerrainShaderUpdateTask.h"
 #include "TerrainPageGeometry.h"
 #include "HeightMapUpdateTask.h"
@@ -34,8 +34,8 @@ namespace OgreView
 namespace Terrain
 {
 
-GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages, const std::vector<WFMath::AxisBox<2> >& areas, TerrainManager& manager, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
-	mGeometry(pages), mAreas(areas), mManager(manager), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
+GeometryUpdateTask::GeometryUpdateTask(const BridgeBoundGeometryPtrVector& pages, const std::vector<WFMath::AxisBox<2> >& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap) :
+	mGeometry(pages), mAreas(areas), mHandler(handler), mShaders(shaders), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 
 }
@@ -59,7 +59,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
 		for (ShaderStore::const_iterator J = mShaders.begin(); J != mShaders.end(); ++J) {
-			context.executeTask(new TerrainShaderUpdateTask(geometries, J->second, mAreas, mManager.EventLayerUpdated));
+			context.executeTask(new TerrainShaderUpdateTask(geometries, J->second, mAreas, mHandler.EventLayerUpdated));
 		}
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
@@ -82,11 +82,11 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 
 void GeometryUpdateTask::executeTaskInMainThread()
 {
-	for (std::set<TerrainPage*>::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-		(*I)->signalGeometryChanged();
-	}
+//	for (std::set<TerrainPage*>::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
+//		(*I)->signalGeometryChanged();
+//	}
 
-	mManager.EventAfterTerrainUpdate(mAreas, mPages);
+	mHandler.EventAfterTerrainUpdate(mAreas, mPages);
 
 }
 }

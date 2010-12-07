@@ -38,7 +38,7 @@ namespace OgreView
 
 namespace Terrain
 {
-class TerrainManager;
+class TerrainHandler;
 class TerrainMod;
 
 /**
@@ -48,7 +48,7 @@ class TerrainMod;
 class TerrainModTaskBase: public Ember::Tasks::TemplateNamedTask<TerrainModTaskBase>
 {
 public:
-	TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods);
+	TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
 	virtual ~TerrainModTaskBase();
 
 protected:
@@ -70,7 +70,7 @@ protected:
 	/**
 	 * @brief The terrain manager.
 	 */
-	TerrainManager& mManager;
+	TerrainHandler& mHandler;
 
 	/**
 	 * @brief A shared store of terrain mods.

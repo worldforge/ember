@@ -21,6 +21,7 @@
 #define EMBEROGRETERRAINTECHNIQUESSHADERPASS_H_
 
 #include "components/ogre/OgreIncludes.h"
+#include <wfmath/point.h>
 #include <vector>
 #include <string>
 
@@ -47,7 +48,7 @@ class ShaderPass
 {
 public:
 friend class ShaderPassCoverageBatch;
-	ShaderPass(const TerrainPage& page);
+	ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position);
 	virtual ~ShaderPass();
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -74,12 +75,15 @@ protected:
 	virtual ShaderPassCoverageBatch* createNewBatch();
 
 	unsigned int getCoveragePixelWidth() const;
-	float mScales[16];
 	Ogre::TexturePtr getCombinedCoverageTexture(size_t passIndex, size_t batchIndex) const;
+
+	float mScales[16];
 	CoverageBatchStore mCoverageBatches;
 	LayerStore mLayers;
 	const TerrainPageSurfaceLayer* mBaseLayer;
-	const TerrainPage& mPage;
+	Ogre::SceneManager& mSceneManager;
+	int mCoveragePixelWidth;
+	WFMath::Point<2> mPosition;
 
 	unsigned int mShadowLayers;
 };

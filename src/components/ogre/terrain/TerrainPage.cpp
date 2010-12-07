@@ -35,7 +35,6 @@
 #include "../EmberOgre.h"
 #include "../Convert.h"
 
-#include "TerrainManager.h"
 #include "TerrainInfo.h"
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
@@ -60,8 +59,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainPage::TerrainPage(const TerrainIndex& index, TerrainManager& manager) :
-	mManager(manager), mIndex(index), mPosition(index.first, index.second), mTerrainSurface(new TerrainPageSurface(*this)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1)))
+TerrainPage::TerrainPage(const TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
+	mIndex(index), mPageSize(pageSize), mPosition(index.first, index.second), mTerrainSurface(new TerrainPageSurface(*this, compilerTechniqueProvider)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1)))
 {
 
 	S_LOG_VERBOSE("Creating TerrainPage at position " << index.first << ":" << index.second);
@@ -71,10 +70,9 @@ TerrainPage::~TerrainPage()
 {
 }
 
-
 int TerrainPage::getPageSize() const
 {
-	return mManager.getPageIndexSize();
+	return mPageSize;
 }
 
 int TerrainPage::getVerticeCount() const
@@ -85,19 +83,6 @@ int TerrainPage::getVerticeCount() const
 int TerrainPage::getNumberOfSegmentsPerAxis() const
 {
 	return (getPageSize() - 1) / 64;
-}
-
-void TerrainPage::signalGeometryChanged()
-{
-	Ogre::Vector2 targetPage = Convert::toOgre<Ogre::Vector2>(mPosition);
-
-	///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
-	Ogre::Vector2 adjustedOgrePos(targetPage.x + mManager.getTerrainInfo().getPageOffsetY(), targetPage.y + mManager.getTerrainInfo().getPageOffsetX());
-
-	S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-	mManager.getAdapter()->reloadPage(static_cast<unsigned int> (adjustedOgrePos.x), static_cast<unsigned int> (adjustedOgrePos.y));
-	mManager.EventTerrainPageGeometryUpdated.emit(*this);
-
 }
 
 const TerrainPosition& TerrainPage::getWFPosition() const
@@ -137,12 +122,6 @@ const TerrainPageSurface* TerrainPage::getSurface() const
 {
 	return mTerrainSurface.get();
 }
-
-TerrainManager& TerrainPage::getManager() const
-{
-	return mManager;
-}
-
 
 TerrainPageSurfaceLayer* TerrainPage::addShader(const TerrainShader* shader)
 {

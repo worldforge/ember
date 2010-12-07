@@ -19,10 +19,7 @@
 
 #include "ShaderNormalMappedPass.h"
 #include "ShaderNormalMappedPassCoverageBatch.h"
-#include "components/ogre/terrain/TerrainPage.h"
-#include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
-#include "components/ogre/Scene.h"
 #include "framework/LoggingInstance.h"
 
 #include <OgreRoot.h>
@@ -42,8 +39,8 @@ namespace Terrain
 namespace Techniques
 {
 
-ShaderNormalMappedPass::ShaderNormalMappedPass(const TerrainPage& page) :
-	ShaderPass(page)
+ShaderNormalMappedPass::ShaderNormalMappedPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position) :
+	ShaderPass(sceneManager, coveragePixelWidth, position)
 {
 }
 
@@ -118,7 +115,7 @@ bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const s
 	}
 
 	///add vertex shader for fog
-	if (mPage.getManager().getScene().getSceneManager().getFogMode() == Ogre::FOG_EXP2) {
+	if (mSceneManager.getFogMode() == Ogre::FOG_EXP2) {
 		pass.setVertexProgram("splatting_vertex_normalmapped_exp2");
 	} else {
 		pass.setVertexProgram("splatting_vertex_normalmapped");

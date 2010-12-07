@@ -20,6 +20,7 @@
 
 #include "TerrainEditor.h"
 #include "TerrainManager.h"
+#include "TerrainHandler.h"
 #include "TerrainDefPoint.h"
 #include "ISceneManagerAdapter.h"
 #include "components/ogre/EmberOgre.h"
@@ -532,7 +533,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 		for (int i = -65; i < 66; i += 64) {
 			for (int j = -65; j < 66; j += 64) {
 				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
-				page = mManager.getTerrainPageAtPosition(position);
+				page = mManager.getHandler().getTerrainPageAtPosition(position);
 				if (page) {
 					pagesToUpdate.insert(page);
 				}
@@ -547,7 +548,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 
 	}
 
-	mManager.updateTerrain(pointStore);
+	mManager.getHandler().updateTerrain(pointStore);
 
 	///reload all shader textures of the affected pages
 	// 	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {

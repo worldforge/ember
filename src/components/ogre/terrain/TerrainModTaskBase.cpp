@@ -28,8 +28,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainModTaskBase::TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainManager& manager, TerrainModMap& terrainMods) :
-	mTerrain(terrain), mManagerLocalTerrainMod(managerLocalTerrainMod), mEntityId(entityId), mManager(manager), mTerrainMods(terrainMods)
+TerrainModTaskBase::TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods) :
+	mTerrain(terrain), mManagerLocalTerrainMod(managerLocalTerrainMod), mEntityId(entityId), mHandler(handler), mTerrainMods(terrainMods)
 {
 
 }

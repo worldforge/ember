@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_ENVIRONMENTFOLIAGEBASE_H
 #define EMBEROGRE_ENVIRONMENTFOLIAGEBASE_H
 
-#include "../terrain/TerrainManager.h"
+#include "components/ogre/terrain/Types.h"
 
 #include <sigc++/trackable.h>
 
@@ -45,6 +45,7 @@ namespace Terrain
 	class TerrainLayerDefinition;
 	class TerrainPage;
 	class TerrainShader;
+	class TerrainManager;
 }
 
 namespace Environment {
@@ -84,7 +85,7 @@ public:
 
 	virtual void initialize() = 0;
 
-	virtual void frameStarted(const Ogre::FrameEvent & evt) = 0;
+	virtual void frameStarted() = 0;
 
 protected:
 
@@ -97,9 +98,9 @@ protected:
 	TerrainLayerDefinitionStore mDependentDefinitions;
 	
 	void initializeDependentLayers();
-	void TerrainManager_LayerUpdated(const Terrain::TerrainShader* shader, const ::Ember::OgreView::Terrain::AreaStore& areas);
-	void TerrainManager_EventShaderCreated(const Terrain::TerrainShader* shader);
-	void TerrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::Ember::OgreView::Terrain::TerrainPage* >& pages);
+	void TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const ::Ember::OgreView::Terrain::AreaStore& areas);
+	void TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader);
+	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::Ember::OgreView::Terrain::TerrainPage* >& pages);
 
 };
 

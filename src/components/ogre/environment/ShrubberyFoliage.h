@@ -54,7 +54,7 @@ public:
 	ShrubberyFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition);
 	virtual ~ShrubberyFoliage();
 	
-	virtual void frameStarted(const Ogre::FrameEvent & evt);
+	virtual void frameStarted();
 	
 	virtual void initialize();
 
