@@ -8,6 +8,7 @@
 #include "components/ogre/terrain/TerrainHandler.h"
 #include "components/ogre/terrain/Types.h"
 #include "components/ogre/terrain/TerrainDefPoint.h"
+#include "components/ogre/terrain/TerrainInfo.h"
 
 #include "framework/Exception.h"
 #include "main/Application.h"
@@ -106,22 +107,47 @@ class TerrainTestCase: public CppUnit::TestFixture
 
 CPPUNIT_TEST_SUITE_END();
 
+protected:
+
+	bool createBaseTerrain(TerrainHandler& terrainHandler, bool waitUntilCompleted = false)
+	{
+		WorldSizeChangedListener worldSizeChangedListener(terrainHandler.EventWorldSizeChanged);
+
+		TerrainDefPointStore terrainDefPoints;
+		terrainDefPoints.push_back(TerrainDefPoint(0, 0, 0));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, -100));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 100));
+		terrainDefPoints.push_back(TerrainDefPoint(1, 1, -50));
+		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 50));
+
+		terrainHandler.updateTerrain(terrainDefPoints);
+		WFMath::TimeStamp startTime = WFMath::TimeStamp::now();
+		if (waitUntilCompleted) {
+			do {
+				terrainHandler.pollTasks();
+			} while (((WFMath::TimeStamp::now() - startTime).milliseconds() < 50000) && !worldSizeChangedListener.isCompleted());
+			return worldSizeChangedListener.isCompleted();
+		}
+
+		return true;
+	}
+
 public:
 	void testCreateTerrain()
 	{
 
 		Ogre::Root root;
 
-		sigc::signal<void, float> signal;
 		DummyCompilerTechniqueProvider compilerTechniqueProvider;
 		Terrain::TerrainHandler terrainHandler(513, compilerTechniqueProvider);
 		WorldSizeChangedListener worldSizeChangedListener(terrainHandler.EventWorldSizeChanged);
 
 		TerrainDefPointStore terrainDefPoints;
-		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, -1));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 1));
-		terrainDefPoints.push_back(TerrainDefPoint(1, 1, -1));
-		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 1));
+		terrainDefPoints.push_back(TerrainDefPoint(0, 0, 0));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, -100));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 100));
+		terrainDefPoints.push_back(TerrainDefPoint(1, 1, -50));
+		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 50));
 
 		terrainHandler.updateTerrain(terrainDefPoints);
 
@@ -132,6 +158,42 @@ public:
 		} while (((WFMath::TimeStamp::now() - startTime).milliseconds() < 5000) && !worldSizeChangedListener.isCompleted());
 
 		CPPUNIT_ASSERT(worldSizeChangedListener.isCompleted());
+		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesX() == 2);
+		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesY() == 2);
+		float height = 0;
+		terrainHandler.getHeight(TerrainPosition(0, 0), height);
+		CPPUNIT_ASSERT(height == 0);
+
+	}
+
+	void testAlterTerrain()
+	{
+
+		Ogre::Root root;
+
+		DummyCompilerTechniqueProvider compilerTechniqueProvider;
+		Terrain::TerrainHandler terrainHandler(513, compilerTechniqueProvider);
+		CPPUNIT_ASSERT(createBaseTerrain(terrainHandler, true));
+
+		WorldSizeChangedListener worldSizeChangedListener(terrainHandler.EventWorldSizeChanged);
+
+		TerrainDefPointStore terrainDefPoints;
+		terrainDefPoints.push_back(TerrainDefPoint(0, 0, -200));
+
+		terrainHandler.updateTerrain(terrainDefPoints);
+
+		WFMath::TimeStamp startTime = WFMath::TimeStamp::now();
+
+		do {
+			terrainHandler.pollTasks();
+		} while (((WFMath::TimeStamp::now() - startTime).milliseconds() < 5000) && !worldSizeChangedListener.isCompleted());
+
+		CPPUNIT_ASSERT(worldSizeChangedListener.isCompleted());
+		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesX() == 2);
+		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesY() == 2);
+		float height = 0;
+		terrainHandler.getHeight(TerrainPosition(0, 0), height);
+		CPPUNIT_ASSERT(height == -200);
 	}
 
 };
