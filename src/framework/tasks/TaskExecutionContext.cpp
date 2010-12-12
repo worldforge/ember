@@ -40,11 +40,11 @@ const TaskExecutor& TaskExecutionContext::getExecutor() const
 	return mExecutor;
 }
 
-void TaskExecutionContext::executeTask(ITask* task)
+void TaskExecutionContext::executeTask(ITask* task, ITaskExecutionListener* listener)
 {
-	TaskUnit* taskUnit = mTaskUnit.addSubtask(task);
+	TaskUnit* taskUnit = mTaskUnit.addSubtask(task, listener);
 	TaskExecutionContext subtaskContext(mExecutor, *taskUnit);
-	task->executeTaskInBackgroundThread(subtaskContext);
+	taskUnit->executeInBackgroundThread(subtaskContext);
 }
 
 void TaskExecutionContext::executeTasks(std::vector<ITask*> tasks)

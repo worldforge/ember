@@ -29,6 +29,7 @@ namespace Tasks
 class TaskExecutor;
 class ITask;
 class TaskUnit;
+class ITaskExecutionListener;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -54,8 +55,9 @@ public:
 	 * After the subtask has been executed in the background thread, the task framework will make sure that it is executed in the main thread before the main task is executed.
 	 * @note This should only be called from a background thread, i.e. while the task is being executed. Under normal circumstances this shouldn't be a problem however as an instance of this class is only available when a task is being executed in a background thread.
 	 * @param task A task which will be executed.
+	 * @param listener An optional listener. This won't be owned by the unit.
 	 */
-	void executeTask(ITask* task);
+	void executeTask(ITask* task, ITaskExecutionListener* listener = 0);
 
 	/**
 	 * @brief Executes a series of subtasks.

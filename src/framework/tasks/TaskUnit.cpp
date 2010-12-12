@@ -49,9 +49,9 @@ TaskUnit::~TaskUnit()
 	delete mTask;
 }
 
-TaskUnit* TaskUnit::addSubtask(ITask* task)
+TaskUnit* TaskUnit::addSubtask(ITask* task, ITaskExecutionListener* listener)
 {
-	TaskUnit* taskUnit = new TaskUnit(task, 0);
+	TaskUnit* taskUnit = new TaskUnit(task, listener);
 	mSubtasks.push_back(taskUnit);
 	return taskUnit;
 }

@@ -66,9 +66,10 @@ public:
 	 * The effect of this is primarily that the subtask will be executed in the main thread before the main task is.
 	 * Ownership is also transferred to this instance (or actually the TaskUnit instance which will be created).
 	 * @param task The sub task.
+	 * @param listener An optional listener. This won't be owned by the unit.
 	 * @returns The new task unit instance which envelopes the subtask.
 	 */
-	TaskUnit* addSubtask(ITask* task);
+	TaskUnit* addSubtask(ITask* task, ITaskExecutionListener* listener = 0);
 
 	/**
 	 * @brief Gets all subtasks.
