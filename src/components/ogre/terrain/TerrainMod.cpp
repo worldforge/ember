@@ -27,7 +27,7 @@
 
 #include "TerrainMod.h"
 #include <Eris/TerrainMod.h>
-#include "../EmberEntity.h"
+#include <Eris/Entity.h>
 
 namespace Ember
 {
@@ -36,7 +36,7 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainMod::TerrainMod(EmberEntity* entity) :
+TerrainMod::TerrainMod(Eris::Entity* entity) :
 	mInnerMod(new Eris::TerrainMod(entity))
 {
 	mInnerMod->ModChanged.connect(sigc::mem_fun(*this, &TerrainMod::terrainMod_ModChanged));

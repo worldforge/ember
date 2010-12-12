@@ -28,7 +28,7 @@
 #define EMBEROGRETERRAINMOD_H
 
 #include <sigc++/signal.h>
-#include <Eris/Entity.h>
+#include <string>
 
 namespace Mercator
 {
@@ -39,6 +39,7 @@ namespace Mercator
 namespace Eris 
 {
 	class TerrainMod;
+	class Entity;
 }
 
 namespace Ember
@@ -63,7 +64,7 @@ public:
 	 * @brief Ctor.
 	 * @param entity The entity to which this mod belongs.
 	 */
-	TerrainMod(EmberEntity* entity);
+	TerrainMod(Eris::Entity* entity);
 
 	/**
 	 * @brief Dtor.
