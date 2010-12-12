@@ -9,6 +9,8 @@
 #include "framework/tasks/ITaskExecutionListener.h"
 #include "framework/Exception.h"
 
+#include <wfmath/timestamp.h>
+
 #include <boost/thread.hpp>
 #include <boost/date_time.hpp>
 
@@ -51,6 +53,41 @@ public:
 	}
 };
 
+struct TimeHolder {
+public:
+	WFMath::TimeStamp time;
+
+};
+
+class TimeTask: public Tasks::ITask
+{
+public:
+
+	TimeHolder& timeHolder;
+
+	TimeTask(TimeHolder& timeHolder)
+	: timeHolder(timeHolder)
+	{
+	}
+
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
+	{
+	}
+
+	/**
+	 * @brief Executes the task in the main thread, after executeTaskInBackgroundThread() has been called.
+	 * Since this will happen in the main thread you shouldn't do any time consuming things here, since it will lock up the rendering.
+	 */
+	virtual void executeTaskInMainThread()
+	{
+		timeHolder.time = WFMath::TimeStamp::now();
+	}
+
+	virtual std::string getName() const {
+		return "TimeTask";
+	}
+};
+
 class CounterTaskBackgroundException: public CounterTask {
 public:
 	CounterTaskBackgroundException(int& counter) : CounterTask(counter) {
@@ -68,6 +105,9 @@ public:
 	bool started;
 	bool ended;
 	bool error;
+	WFMath::TimeStamp startedTime;
+	WFMath::TimeStamp endedTime;
+	WFMath::TimeStamp errorTime;
 
 	SimpleListener() : started(false), ended(false), error(false) {
 
@@ -75,16 +115,19 @@ public:
 
 	virtual void executionStarted()
 	{
+		startedTime = WFMath::TimeStamp::now();
 		started = true;
 	}
 
 	virtual void executionEnded()
 	{
+		endedTime = WFMath::TimeStamp::now();
 		ended = true;
 	}
 
 	virtual void executionError(const Ember::Exception& exception)
 	{
+		errorTime = WFMath::TimeStamp::now();
 		error = true;
 	}
 };
@@ -99,6 +142,7 @@ class TaskTestCase: public CppUnit::TestFixture
 	CPPUNIT_TEST(testSimpleTaskRunTwoTasksTwoExecs);
 	CPPUNIT_TEST(testListener);
 	CPPUNIT_TEST(testBackgroundException);
+	CPPUNIT_TEST(testTaskOrder);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -183,6 +227,29 @@ public:
 		CPPUNIT_ASSERT(counter == 1);
 		CPPUNIT_ASSERT(listener.error);
 	}
+
+	void testTaskOrder()
+	{
+		SimpleListener listener1;
+		SimpleListener listener2;
+		SimpleListener listener3;
+		TimeHolder time1;
+		TimeHolder time2;
+		TimeHolder time3;
+		{
+			Tasks::TaskQueue taskQueue(1);
+			taskQueue.enqueueTask(new TimeTask(time1), &listener1);
+			taskQueue.enqueueTask(new TimeTask(time2), &listener2);
+			taskQueue.enqueueTask(new TimeTask(time3), &listener3);
+		}
+		CPPUNIT_ASSERT(listener1.startedTime < listener2.startedTime);
+		CPPUNIT_ASSERT(listener2.startedTime < listener3.startedTime);
+		CPPUNIT_ASSERT(listener1.endedTime < listener2.endedTime);
+		CPPUNIT_ASSERT(listener2.endedTime < listener3.endedTime);
+		CPPUNIT_ASSERT(time1.time < time2.time);
+		CPPUNIT_ASSERT(time2.time < time3.time);
+	}
+
 };
 
 }
