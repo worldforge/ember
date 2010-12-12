@@ -5,6 +5,7 @@
 #include <cppunit/TestResult.h>
 
 #include "components/ogre/terrain/ICompilerTechniqueProvider.h"
+#include "components/ogre/terrain/ITerrainPageBridge.h"
 #include "components/ogre/terrain/TerrainHandler.h"
 #include "components/ogre/terrain/Types.h"
 #include "components/ogre/terrain/TerrainDefPoint.h"
@@ -17,6 +18,8 @@
 
 #include <Ogre.h>
 #include <sigc++/signal.h>
+#include <sigc++/trackable.h>
+
 #include <boost/thread/condition_variable.hpp>
 
 using namespace Ember::OgreView;
@@ -41,46 +44,95 @@ public:
 
 };
 
+class DummyTerrainBridge: public ITerrainPageBridge
+{
+public:
+
+	bool pageReady;
+
+	DummyTerrainBridge() :
+		pageReady(false)
+	{
+	}
+
+	/**
+	 *    @brief Updates the Ogre mesh after changes to the underlying heightdata.
+	 *
+	 * Call this when the heightdata has changed and you want the Ogre representation to be updated to reflect this.
+	 */
+	virtual void updateTerrain(TerrainPageGeometry& geometry)
+	{
+	}
+
+	/**
+	 *    @brief Notifies class in the ogre side about the page being ready (after being created or so).
+	 */
+	virtual void terrainPageReady()
+	{
+		pageReady = true;
+	}
+
+};
+
+class Timer
+{
+public:
+
+	WFMath::TimeStamp startTime;
+
+	Timer() :
+		startTime(WFMath::TimeStamp::now())
+	{
+
+	}
+
+	bool hasElapsed(long milliseconds)
+	{
+		return (WFMath::TimeStamp::now() - startTime).milliseconds() > milliseconds;
+	}
+
+};
+
 /**
  * @brief Base class for listening to events. After the event is triggered isCompleted() will return true.
  *
  * For background events, call waitForCompletion(...).
  */
-class CompleteEventListener
+class CompleteEventListener: public virtual sigc::trackable
 {
 protected:
 	boost::condition_variable mCondition;
 	boost::mutex mMutex;
-	bool mCompleted;
+	int mCompletedCount;
 
 	void handleEvent()
 	{
 		{
 			boost::lock_guard<boost::mutex> lock(mMutex);
-			mCompleted = true;
+			mCompletedCount++;
 		}
 		mCondition.notify_all();
 	}
 
 public:
 	CompleteEventListener() :
-		mCompleted(false)
+		mCompletedCount(0)
 	{
 	}
 
-	bool waitForCompletion(long milliseconds)
+	int waitForCompletion(long milliseconds)
 	{
 		boost::unique_lock<boost::mutex> lock(mMutex);
-		if (mCompleted) {
+		if (mCompletedCount) {
 			return true;
 		}
 		mCondition.timed_wait(lock, boost::posix_time::milliseconds(milliseconds));
-		return mCompleted;
+		return mCompletedCount;
 	}
 
-	bool isCompleted()
+	int getCompletedCount()
 	{
-		return mCompleted;
+		return mCompletedCount;
 	}
 };
 
@@ -100,10 +152,27 @@ public:
 	}
 };
 
+class AfterTerrainUpdateListener: public CompleteEventListener
+{
+protected:
+
+	void eventListener(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<TerrainPage*>& pages)
+	{
+		handleEvent();
+	}
+
+public:
+	AfterTerrainUpdateListener(sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&>& event)
+	{
+		event.connect(sigc::mem_fun(*this, &AfterTerrainUpdateListener::eventListener));
+	}
+};
+
 class TerrainTestCase: public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( TerrainTestCase);
 	CPPUNIT_TEST( testCreateTerrain);
+	CPPUNIT_TEST( testAlterTerrain);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -114,19 +183,23 @@ protected:
 		WorldSizeChangedListener worldSizeChangedListener(terrainHandler.EventWorldSizeChanged);
 
 		TerrainDefPointStore terrainDefPoints;
-		terrainDefPoints.push_back(TerrainDefPoint(0, 0, 0));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, -100));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 100));
-		terrainDefPoints.push_back(TerrainDefPoint(1, 1, -50));
-		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 50));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 0, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(0, -1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(0, 0, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(0, 1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(1, 0, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(1, 1, 25));
 
 		terrainHandler.updateTerrain(terrainDefPoints);
 		WFMath::TimeStamp startTime = WFMath::TimeStamp::now();
 		if (waitUntilCompleted) {
 			do {
 				terrainHandler.pollTasks();
-			} while (((WFMath::TimeStamp::now() - startTime).milliseconds() < 50000) && !worldSizeChangedListener.isCompleted());
-			return worldSizeChangedListener.isCompleted();
+			} while (((WFMath::TimeStamp::now() - startTime).milliseconds() < 50000) && !worldSizeChangedListener.getCompletedCount());
+			return worldSizeChangedListener.getCompletedCount() > 0;
 		}
 
 		return true;
@@ -143,26 +216,68 @@ public:
 		WorldSizeChangedListener worldSizeChangedListener(terrainHandler.EventWorldSizeChanged);
 
 		TerrainDefPointStore terrainDefPoints;
-		terrainDefPoints.push_back(TerrainDefPoint(0, 0, 0));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, -100));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 100));
-		terrainDefPoints.push_back(TerrainDefPoint(1, 1, -50));
-		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 50));
-
+		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 0, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(0, -1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(0, 0, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(0, 1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(1, 0, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(1, 1, 25));
 		terrainHandler.updateTerrain(terrainDefPoints);
 
-		WFMath::TimeStamp startTime = WFMath::TimeStamp::now();
+		{
+			Timer timer;
+			do {
+				terrainHandler.pollTasks();
+			} while (!timer.hasElapsed(5000) && ((!worldSizeChangedListener.getCompletedCount())));
+		}
 
-		do {
-			terrainHandler.pollTasks();
-		} while (((WFMath::TimeStamp::now() - startTime).milliseconds() < 5000) && !worldSizeChangedListener.isCompleted());
+		CPPUNIT_ASSERT(worldSizeChangedListener.getCompletedCount());
 
-		CPPUNIT_ASSERT(worldSizeChangedListener.isCompleted());
+		DummyTerrainBridge* bridge1 = new DummyTerrainBridge();
+		DummyTerrainBridge* bridge2 = new DummyTerrainBridge();
+		DummyTerrainBridge* bridge3 = new DummyTerrainBridge();
+		DummyTerrainBridge* bridge4 = new DummyTerrainBridge();
+
+		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(0, 0), bridge1);
+		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(0, 1), bridge2);
+		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(-1, 0), bridge3);
+		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(-1, 1), bridge4);
+
+		{
+			Timer timer;
+			do {
+				terrainHandler.pollTasks();
+			} while ((!timer.hasElapsed(5000)) && (!bridge1->pageReady || !bridge2->pageReady || !bridge3->pageReady || !bridge4->pageReady));
+		}
+		CPPUNIT_ASSERT(bridge1->pageReady);
+		CPPUNIT_ASSERT(bridge2->pageReady);
+		CPPUNIT_ASSERT(bridge3->pageReady);
+		CPPUNIT_ASSERT(bridge4->pageReady);
+
+		AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);
+		std::vector<TerrainPosition> positions;
+		positions.push_back(TerrainPosition(-32, -32));
+		positions.push_back(TerrainPosition(-32, 32));
+		positions.push_back(TerrainPosition(32, 32));
+		positions.push_back(TerrainPosition(32, -32));
+
+		terrainHandler.reloadTerrain(positions);
+
+		{
+			Timer timer;
+			do {
+				terrainHandler.pollTasks();
+			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
+		}
+		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
 		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesX() == 2);
 		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesY() == 2);
 		float height = 0;
-		terrainHandler.getHeight(TerrainPosition(0, 0), height);
-		CPPUNIT_ASSERT(height == 0);
+		CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(-1, -1), height));
+		CPPUNIT_ASSERT(height == 25);
 
 	}
 
@@ -175,24 +290,65 @@ public:
 		Terrain::TerrainHandler terrainHandler(513, compilerTechniqueProvider);
 		CPPUNIT_ASSERT(createBaseTerrain(terrainHandler, true));
 
-		WorldSizeChangedListener worldSizeChangedListener(terrainHandler.EventWorldSizeChanged);
+		DummyTerrainBridge* bridge1 = new DummyTerrainBridge();
+		DummyTerrainBridge* bridge2 = new DummyTerrainBridge();
+		DummyTerrainBridge* bridge3 = new DummyTerrainBridge();
+		DummyTerrainBridge* bridge4 = new DummyTerrainBridge();
+
+		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(0, 0), bridge1);
+		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(0, 1), bridge2);
+		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(-1, 0), bridge3);
+		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(-1, 1), bridge4);
+
+		{
+			Timer timer;
+			do {
+				terrainHandler.pollTasks();
+			} while ((!timer.hasElapsed(5000)) && ((!bridge1->pageReady || !bridge2->pageReady || !bridge3->pageReady || !bridge4->pageReady)));
+		}
+		CPPUNIT_ASSERT(bridge1->pageReady);
+		CPPUNIT_ASSERT(bridge2->pageReady);
+		CPPUNIT_ASSERT(bridge3->pageReady);
+		CPPUNIT_ASSERT(bridge4->pageReady);
+
+		AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);
+		std::vector<TerrainPosition> positions;
+		positions.push_back(TerrainPosition(-32, -32));
+		positions.push_back(TerrainPosition(-32, 32));
+		positions.push_back(TerrainPosition(32, 32));
+		positions.push_back(TerrainPosition(32, -32));
+
+		terrainHandler.reloadTerrain(positions);
+
+		{
+			Timer timer;
+			do {
+				terrainHandler.pollTasks();
+			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
+		}
+		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
 
 		TerrainDefPointStore terrainDefPoints;
+		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, -200));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 0, -200));
+		terrainDefPoints.push_back(TerrainDefPoint(0, -1, -200));
 		terrainDefPoints.push_back(TerrainDefPoint(0, 0, -200));
 
 		terrainHandler.updateTerrain(terrainDefPoints);
 
-		WFMath::TimeStamp startTime = WFMath::TimeStamp::now();
+		AfterTerrainUpdateListener afterTerrainUpdateListener2(terrainHandler.EventAfterTerrainUpdate);
 
-		do {
-			terrainHandler.pollTasks();
-		} while (((WFMath::TimeStamp::now() - startTime).milliseconds() < 5000) && !worldSizeChangedListener.isCompleted());
-
-		CPPUNIT_ASSERT(worldSizeChangedListener.isCompleted());
+		{
+			Timer timer;
+			do {
+				terrainHandler.pollTasks();
+			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener2.getCompletedCount() < 4);
+		}
+		CPPUNIT_ASSERT(afterTerrainUpdateListener2.getCompletedCount() == 4);
 		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesX() == 2);
 		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesY() == 2);
 		float height = 0;
-		terrainHandler.getHeight(TerrainPosition(0, 0), height);
+		CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(-32, -32), height));
 		CPPUNIT_ASSERT(height == -200);
 	}
 
