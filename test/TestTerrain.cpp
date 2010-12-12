@@ -168,74 +168,42 @@ public:
 	}
 };
 
-class TerrainTestCase: public CppUnit::TestFixture
+class TerrainSetup
 {
-	CPPUNIT_TEST_SUITE( TerrainTestCase);
-	CPPUNIT_TEST( testCreateTerrain);
-	CPPUNIT_TEST( testAlterTerrain);
+public:
+	DummyCompilerTechniqueProvider compilerTechniqueProvider;
+	Terrain::TerrainHandler terrainHandler;
 
-CPPUNIT_TEST_SUITE_END();
-
-protected:
-
-	bool createBaseTerrain(TerrainHandler& terrainHandler, bool waitUntilCompleted = false)
+	TerrainSetup() :
+		terrainHandler(513, compilerTechniqueProvider)
 	{
-		WorldSizeChangedListener worldSizeChangedListener(terrainHandler.EventWorldSizeChanged);
-
-		TerrainDefPointStore terrainDefPoints;
-		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, 0, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(0, -1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(0, 0, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(0, 1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(1, 0, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(1, 1, 25));
-
-		terrainHandler.updateTerrain(terrainDefPoints);
-		WFMath::TimeStamp startTime = WFMath::TimeStamp::now();
-		if (waitUntilCompleted) {
-			do {
-				terrainHandler.pollTasks();
-			} while (((WFMath::TimeStamp::now() - startTime).milliseconds() < 50000) && !worldSizeChangedListener.getCompletedCount());
-			return worldSizeChangedListener.getCompletedCount() > 0;
-		}
-
-		return true;
 	}
 
-public:
-	void testCreateTerrain()
+	bool createBaseTerrain(float height)
 	{
-
-		Ogre::Root root;
-
-		DummyCompilerTechniqueProvider compilerTechniqueProvider;
-		Terrain::TerrainHandler terrainHandler(513, compilerTechniqueProvider);
 		WorldSizeChangedListener worldSizeChangedListener(terrainHandler.EventWorldSizeChanged);
 
 		TerrainDefPointStore terrainDefPoints;
-		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, 0, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(0, -1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(0, 0, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(0, 1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(1, -1, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(1, 0, 25));
-		terrainDefPoints.push_back(TerrainDefPoint(1, 1, 25));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, height));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 0, height));
+		terrainDefPoints.push_back(TerrainDefPoint(-1, 1, height));
+		terrainDefPoints.push_back(TerrainDefPoint(0, -1, height));
+		terrainDefPoints.push_back(TerrainDefPoint(0, 0, height));
+		terrainDefPoints.push_back(TerrainDefPoint(0, 1, height));
+		terrainDefPoints.push_back(TerrainDefPoint(1, -1, height));
+		terrainDefPoints.push_back(TerrainDefPoint(1, 0, height));
+		terrainDefPoints.push_back(TerrainDefPoint(1, 1, height));
+
 		terrainHandler.updateTerrain(terrainDefPoints);
+		Timer timer;
+		do {
+			terrainHandler.pollTasks();
+		} while (!timer.hasElapsed(5000) && !worldSizeChangedListener.getCompletedCount());
+		return worldSizeChangedListener.getCompletedCount() > 0;
+	}
 
-		{
-			Timer timer;
-			do {
-				terrainHandler.pollTasks();
-			} while (!timer.hasElapsed(5000) && ((!worldSizeChangedListener.getCompletedCount())));
-		}
-
-		CPPUNIT_ASSERT(worldSizeChangedListener.getCompletedCount());
-
+	bool createPages()
+	{
 		DummyTerrainBridge* bridge1 = new DummyTerrainBridge();
 		DummyTerrainBridge* bridge2 = new DummyTerrainBridge();
 		DummyTerrainBridge* bridge3 = new DummyTerrainBridge();
@@ -256,7 +224,11 @@ public:
 		CPPUNIT_ASSERT(bridge2->pageReady);
 		CPPUNIT_ASSERT(bridge3->pageReady);
 		CPPUNIT_ASSERT(bridge4->pageReady);
+		return true;
+	}
 
+	bool reloadTerrain()
+	{
 		AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);
 		std::vector<TerrainPosition> positions;
 		positions.push_back(TerrainPosition(-32, -32));
@@ -273,11 +245,39 @@ public:
 			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 		}
 		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
-		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesX() == 2);
-		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesY() == 2);
+		return true;
+	}
+};
+
+class TerrainTestCase: public CppUnit::TestFixture
+{
+	CPPUNIT_TEST_SUITE( TerrainTestCase);
+	CPPUNIT_TEST( testCreateTerrain);
+	CPPUNIT_TEST( testAlterTerrain);
+
+CPPUNIT_TEST_SUITE_END();
+
+protected:
+
+public:
+	void testCreateTerrain()
+	{
+
+		Ogre::Root root;
+
+		TerrainSetup terrainSetup;
+
+		float terrainHeight = 25.0f;
+
+		CPPUNIT_ASSERT(terrainSetup.createBaseTerrain(terrainHeight));
+		CPPUNIT_ASSERT(terrainSetup.createPages());
+		CPPUNIT_ASSERT(terrainSetup.reloadTerrain());
+
+		CPPUNIT_ASSERT(terrainSetup.terrainHandler.getTerrainInfo().getTotalNumberOfPagesX() == 2);
+		CPPUNIT_ASSERT(terrainSetup.terrainHandler.getTerrainInfo().getTotalNumberOfPagesY() == 2);
 		float height = 0;
-		CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(-1, -1), height));
-		CPPUNIT_ASSERT(height == 25);
+		CPPUNIT_ASSERT(terrainSetup.terrainHandler.getHeight(TerrainPosition(-1, -1), height));
+		CPPUNIT_ASSERT(height == terrainHeight);
 
 	}
 
@@ -285,48 +285,12 @@ public:
 	{
 
 		Ogre::Root root;
+		TerrainSetup terrainSetup;
 
-		DummyCompilerTechniqueProvider compilerTechniqueProvider;
-		Terrain::TerrainHandler terrainHandler(513, compilerTechniqueProvider);
-		CPPUNIT_ASSERT(createBaseTerrain(terrainHandler, true));
-
-		DummyTerrainBridge* bridge1 = new DummyTerrainBridge();
-		DummyTerrainBridge* bridge2 = new DummyTerrainBridge();
-		DummyTerrainBridge* bridge3 = new DummyTerrainBridge();
-		DummyTerrainBridge* bridge4 = new DummyTerrainBridge();
-
-		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(0, 0), bridge1);
-		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(0, 1), bridge2);
-		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(-1, 0), bridge3);
-		terrainHandler.setUpTerrainPageAtIndex(TerrainIndex(-1, 1), bridge4);
-
-		{
-			Timer timer;
-			do {
-				terrainHandler.pollTasks();
-			} while ((!timer.hasElapsed(5000)) && ((!bridge1->pageReady || !bridge2->pageReady || !bridge3->pageReady || !bridge4->pageReady)));
-		}
-		CPPUNIT_ASSERT(bridge1->pageReady);
-		CPPUNIT_ASSERT(bridge2->pageReady);
-		CPPUNIT_ASSERT(bridge3->pageReady);
-		CPPUNIT_ASSERT(bridge4->pageReady);
-
-		AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);
-		std::vector<TerrainPosition> positions;
-		positions.push_back(TerrainPosition(-32, -32));
-		positions.push_back(TerrainPosition(-32, 32));
-		positions.push_back(TerrainPosition(32, 32));
-		positions.push_back(TerrainPosition(32, -32));
-
-		terrainHandler.reloadTerrain(positions);
-
-		{
-			Timer timer;
-			do {
-				terrainHandler.pollTasks();
-			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
-		}
-		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
+		Terrain::TerrainHandler& terrainHandler = terrainSetup.terrainHandler;
+		CPPUNIT_ASSERT(terrainSetup.createBaseTerrain(25));
+		CPPUNIT_ASSERT(terrainSetup.createPages());
+		CPPUNIT_ASSERT(terrainSetup.reloadTerrain());
 
 		TerrainDefPointStore terrainDefPoints;
 		terrainDefPoints.push_back(TerrainDefPoint(-1, -1, -200));
@@ -336,15 +300,15 @@ public:
 
 		terrainHandler.updateTerrain(terrainDefPoints);
 
-		AfterTerrainUpdateListener afterTerrainUpdateListener2(terrainHandler.EventAfterTerrainUpdate);
+		AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);
 
 		{
 			Timer timer;
 			do {
 				terrainHandler.pollTasks();
-			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener2.getCompletedCount() < 4);
+			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 		}
-		CPPUNIT_ASSERT(afterTerrainUpdateListener2.getCompletedCount() == 4);
+		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
 		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesX() == 2);
 		CPPUNIT_ASSERT(terrainHandler.getTerrainInfo().getTotalNumberOfPagesY() == 2);
 		float height = 0;
