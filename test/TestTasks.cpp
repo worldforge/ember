@@ -7,6 +7,7 @@
 #include "framework/tasks/TaskQueue.h"
 #include "framework/tasks/ITask.h"
 #include "framework/tasks/ITaskExecutionListener.h"
+#include "framework/tasks/TaskExecutionContext.h"
 #include "framework/Exception.h"
 
 #include <wfmath/timestamp.h>
@@ -64,22 +65,29 @@ class TimeTask: public Tasks::ITask
 public:
 
 	TimeHolder& timeHolder;
+	ITask* subtask;
+	Tasks::ITaskExecutionListener* listener;
 
-	TimeTask(TimeHolder& timeHolder)
-	: timeHolder(timeHolder)
+	TimeTask(TimeHolder& timeHolder, ITask* subtask = 0, Tasks::ITaskExecutionListener* listener = 0)
+	: timeHolder(timeHolder), subtask(subtask), listener(listener)
 	{
 	}
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 	{
+		if (subtask) {
+			//sleep a little so that we get different times on the tasks
+			boost::this_thread::sleep(boost::posix_time::milliseconds(5));
+			context.executeTask(subtask,listener);
+		}
+		//sleep a little so that we get different times on the tasks
+		boost::this_thread::sleep(boost::posix_time::milliseconds(5));
 	}
 
-	/**
-	 * @brief Executes the task in the main thread, after executeTaskInBackgroundThread() has been called.
-	 * Since this will happen in the main thread you shouldn't do any time consuming things here, since it will lock up the rendering.
-	 */
 	virtual void executeTaskInMainThread()
 	{
+		//sleep a little so that we get different times on the tasks
+		boost::this_thread::sleep(boost::posix_time::milliseconds(5));
 		timeHolder.time = WFMath::TimeStamp::now();
 	}
 
@@ -143,6 +151,7 @@ class TaskTestCase: public CppUnit::TestFixture
 	CPPUNIT_TEST(testListener);
 	CPPUNIT_TEST(testBackgroundException);
 	CPPUNIT_TEST(testTaskOrder);
+	CPPUNIT_TEST(testSubTaskOrder);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -249,6 +258,31 @@ public:
 		CPPUNIT_ASSERT(time1.time < time2.time);
 		CPPUNIT_ASSERT(time2.time < time3.time);
 	}
+
+	void testSubTaskOrder()
+	{
+		SimpleListener listener1;
+		SimpleListener listener2;
+		SimpleListener listener3;
+		TimeHolder time1;
+		TimeHolder time2;
+		TimeHolder time3;
+		{
+			Tasks::TaskQueue taskQueue(1);
+			taskQueue.enqueueTask(new TimeTask(time1, new TimeTask(time2), &listener2), &listener1);
+			taskQueue.enqueueTask(new TimeTask(time3), &listener3);
+		}
+		//task 1 should start before task 2
+		CPPUNIT_ASSERT(listener1.startedTime < listener2.startedTime);
+		CPPUNIT_ASSERT(listener2.startedTime < listener3.startedTime);
+		//However, task 2 should end before task 1
+		CPPUNIT_ASSERT(listener2.endedTime < listener1.endedTime);
+		CPPUNIT_ASSERT(listener1.endedTime < listener3.endedTime);
+		//And task 2 should be run in the main thread before task 1
+		CPPUNIT_ASSERT(time2.time < time1.time);
+		CPPUNIT_ASSERT(time1.time < time3.time);
+	}
+
 
 };
 
