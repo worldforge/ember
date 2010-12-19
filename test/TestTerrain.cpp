@@ -10,11 +10,17 @@
 #include "components/ogre/terrain/Types.h"
 #include "components/ogre/terrain/TerrainDefPoint.h"
 #include "components/ogre/terrain/TerrainInfo.h"
+#include "components/ogre/terrain/TerrainMod.h"
 
 #include "framework/Exception.h"
 #include "main/Application.h"
 
+#include <Eris/Entity.h>
+
+#include <Atlas/Message/Element.h>
+
 #include <wfmath/timestamp.h>
+#include <wfmath/atlasconv.h>
 
 #include <Ogre.h>
 #include <sigc++/signal.h>
@@ -70,6 +76,59 @@ public:
 	virtual void terrainPageReady()
 	{
 		pageReady = true;
+	}
+
+};
+
+class DummyEntity: public Eris::Entity
+{
+public:
+	DummyEntity() :
+		Eris::Entity("0", 0)
+	{
+	}
+
+	Eris::TypeService* getTypeService() const
+	{
+		return 0;
+	}
+
+	void removeFromMovementPrediction()
+	{
+	}
+
+	void addToMovementPredition()
+	{
+	}
+
+	Eris::Entity* getEntity(const std::string& id)
+	{
+		return 0;
+	}
+
+	void setAttr(const std::string &p, const Atlas::Message::Element &v)
+	{
+		Eris::Entity::setAttr(p, v);
+	}
+
+	void setFromMessage(const Atlas::Message::MapType& attrs)
+	{
+		beginUpdate();
+
+		Atlas::Message::MapType::const_iterator A;
+
+		for (A = attrs.begin(); A != attrs.end(); ++A) {
+			if (A->first == "loc" || A->first == "id" || A->first == "contains")
+				continue;
+
+			Eris::Entity::AttrMap::iterator I = m_attrs.find(A->first);
+			if ((I != m_attrs.end()) && (I->second == A->second))
+				continue;
+
+			setAttr(A->first, A->second);
+		}
+
+		endUpdate();
 	}
 
 };
@@ -254,6 +313,7 @@ class TerrainTestCase: public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( TerrainTestCase);
 	CPPUNIT_TEST( testCreateTerrain);
 	CPPUNIT_TEST( testAlterTerrain);
+	CPPUNIT_TEST( testApplyMod);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -314,6 +374,47 @@ public:
 		float height = 0;
 		CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(-32, -32), height));
 		CPPUNIT_ASSERT(height == -200);
+	}
+
+	void testApplyMod()
+	{
+
+		Ogre::Root root;
+
+		TerrainSetup terrainSetup;
+		Terrain::TerrainHandler& terrainHandler = terrainSetup.terrainHandler;
+		DummyEntity entity;
+
+		float terrainHeight = 25.0f;
+
+		CPPUNIT_ASSERT(terrainSetup.createBaseTerrain(terrainHeight));
+		CPPUNIT_ASSERT(terrainSetup.createPages());
+		CPPUNIT_ASSERT(terrainSetup.reloadTerrain());
+
+		Atlas::Message::ListType polygon;
+
+		polygon.push_back(WFMath::Point<2>(-10, -10).toAtlas());
+		polygon.push_back(WFMath::Point<2>(-10, 10).toAtlas());
+		polygon.push_back(WFMath::Point<2>(10, -10).toAtlas());
+		polygon.push_back(WFMath::Point<2>(10, 10).toAtlas());
+
+		Atlas::Message::MapType shape;
+		shape["points"] = polygon;
+		shape["type"] = "polygon";
+
+		Atlas::Message::MapType mod;
+		mod["shape"] = shape;
+		mod["type"] = "levelmod";
+		mod["heightoffset"] = 2.0f;
+
+		entity.setAttr("terrainmod", mod);
+
+		OgreView::Terrain::TerrainMod terrainMod(&entity);
+		CPPUNIT_ASSERT(terrainMod.init());
+		terrainHandler.addTerrainMod(&terrainMod);
+
+		entity.shutdown();
+
 	}
 
 };
