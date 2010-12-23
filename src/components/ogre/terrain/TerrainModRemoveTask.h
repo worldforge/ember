@@ -39,7 +39,7 @@ class TerrainMod;
 class TerrainModRemoveTask: public TerrainModTaskBase
 {
 public:
-	TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* mManagerLocalTerrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
+	TerrainModRemoveTask(Mercator::Terrain& terrain, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
 	virtual ~TerrainModRemoveTask();
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);

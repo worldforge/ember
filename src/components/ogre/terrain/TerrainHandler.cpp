@@ -61,7 +61,6 @@
 #include "framework/tasks/TemplateNamedTask.h"
 #include "framework/tasks/TaskExecutionContext.h"
 
-
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
@@ -80,7 +79,6 @@ namespace OgreView
 
 namespace Terrain
 {
-
 
 class BasePointRetrieveTask: public Ember::Tasks::TemplateNamedTask<BasePointRetrieveTask>
 {
@@ -148,8 +146,8 @@ public:
 
 };
 
-TerrainHandler::TerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider)
-: mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mHeightMap(0), mHeightMapBufferProvider(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0)
+TerrainHandler::TerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
+	mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mHeightMap(0), mHeightMapBufferProvider(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0)
 {
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
@@ -184,7 +182,6 @@ TerrainHandler::~TerrainHandler()
 	assert(!mTerrainMods.size());
 
 }
-
 
 void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback)
 {
@@ -322,7 +319,6 @@ TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& wor
 
 	return getTerrainPageAtIndex(TerrainIndex(xIndex, yIndex));
 }
-
 
 void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge)
 {
@@ -463,25 +459,12 @@ void TerrainHandler::addTerrainMod(TerrainMod* terrainMod)
 
 void TerrainHandler::TerrainMod_Changed(TerrainMod* terrainMod)
 {
-	Mercator::TerrainMod* existingMod(0);
-	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getEntityId());
-	if (I != mTerrainMods.end()) {
-		existingMod = I->second;
-		mTerrainMods.erase(I);
-		mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getEntityId(), *this, mTerrainMods, existingMod));
-	} else {
-		S_LOG_WARNING("Got a change signal for a terrain mod which isn't registered with the terrain manager. This shouldn't happen.");
-	}
+	mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getEntityId(), *this, mTerrainMods));
 }
 
 void TerrainHandler::TerrainMod_Deleted(TerrainMod* terrainMod)
 {
-	TerrainModMap::iterator I = mTerrainMods.find(terrainMod->getEntityId());
-	if (I != mTerrainMods.end()) {
-		Mercator::TerrainMod* existingMod = I->second;
-		mTerrainMods.erase(I);
-		mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, existingMod, terrainMod->getEntityId(), *this, mTerrainMods));
-	}
+	mTaskQueue->enqueueTask(new TerrainModRemoveTask(*mTerrain, terrainMod->getEntityId(), *this, mTerrainMods));
 }
 
 void TerrainHandler::addArea(TerrainArea& terrainArea)

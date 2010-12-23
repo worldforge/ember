@@ -19,6 +19,9 @@
 #include "TerrainModChangeTask.h"
 #include "TerrainHandler.h"
 #include "TerrainMod.h"
+
+#include "framework/LoggingInstance.h"
+
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
 #include <Eris/TerrainMod.h>
@@ -33,8 +36,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods, Mercator::TerrainMod* existingMod) :
-	TerrainModTaskBase::TerrainModTaskBase(terrain, existingMod, entityId, handler, terrainMods), mNewTerrainMod(terrainMod.clone())
+TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods) :
+	TerrainModTaskBase::TerrainModTaskBase(terrain, 0, entityId, handler, terrainMods), mNewTerrainMod(terrainMod.clone())
 {
 
 }
@@ -46,26 +49,27 @@ TerrainModChangeTask::~TerrainModChangeTask()
 
 void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	if (mManagerLocalTerrainMod) {
+	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
+	if (I != mTerrainMods.end()) {
+		mManagerLocalTerrainMod = I->second;
+		mTerrainMods.erase(I);
 		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
 		// Use the pointer returned from addMod() to remove it
 		mTerrain.removeMod(mManagerLocalTerrainMod);
 		delete mManagerLocalTerrainMod;
-	}
 
-	mManagerLocalTerrainMod = mTerrain.addMod(*mNewTerrainMod);
-	if (mManagerLocalTerrainMod) {
-		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
+		mManagerLocalTerrainMod = mTerrain.addMod(*mNewTerrainMod);
+		if (mManagerLocalTerrainMod) {
+			mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
+			mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
+		}
+	} else {
+		S_LOG_WARNING("Got a change signal for a terrain mod which isn't registered with the terrain handler. This shouldn't happen.");
 	}
-
 }
 
 void TerrainModChangeTask::executeTaskInMainThread()
 {
-
-	if (mManagerLocalTerrainMod) {
-		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
-	}
 	mHandler.reloadTerrain(mUpdatedAreas);
 }
 }

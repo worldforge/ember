@@ -19,6 +19,9 @@
 #include "TerrainModRemoveTask.h"
 #include "TerrainHandler.h"
 #include "TerrainMod.h"
+
+#include "framework/LoggingInstance.h"
+
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
 #include <Eris/TerrainMod.h>
@@ -33,8 +36,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods) :
-		TerrainModTaskBase::TerrainModTaskBase(terrain, managerLocalTerrainMod, entityId, handler, terrainMods)
+TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods) :
+		TerrainModTaskBase::TerrainModTaskBase(terrain, 0, entityId, handler, terrainMods)
 {
 
 }
@@ -45,17 +48,23 @@ TerrainModRemoveTask::~TerrainModRemoveTask()
 
 void TerrainModRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	if (mManagerLocalTerrainMod) {
+	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
+	if (I != mTerrainMods.end()) {
+		mManagerLocalTerrainMod = I->second;
+		mTerrainMods.erase(I);
+
 		mTerrain.removeMod(mManagerLocalTerrainMod);
 		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
 		delete mManagerLocalTerrainMod;
+
+	} else {
+		S_LOG_WARNING("Got a delete signal for a terrain mod which isn't registered with the terrain handler. This shouldn't happen.");
 	}
 }
 
 void TerrainModRemoveTask::executeTaskInMainThread()
 {
 	if (mUpdatedAreas.size()) {
-
 		mHandler.reloadTerrain(mUpdatedAreas);
 	}
 }

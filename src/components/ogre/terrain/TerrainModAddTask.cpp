@@ -49,16 +49,14 @@ void TerrainModAddTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutio
 	mManagerLocalTerrainMod = mTerrain.addMod(*mOriginalTerrainMod);
 	if (mManagerLocalTerrainMod) {
 		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
+		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
 	}
 
 }
 
 void TerrainModAddTask::executeTaskInMainThread()
 {
-	if (mManagerLocalTerrainMod) {
-		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
-		mHandler.reloadTerrain(mUpdatedAreas);
-	}
+	mHandler.reloadTerrain(mUpdatedAreas);
 }
 }
 
