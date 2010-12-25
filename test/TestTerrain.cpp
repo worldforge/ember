@@ -19,6 +19,8 @@
 
 #include <Atlas/Message/Element.h>
 
+#include <Mercator/Terrain.h>
+
 #include <wfmath/timestamp.h>
 #include <wfmath/atlasconv.h>
 
@@ -133,6 +135,21 @@ public:
 
 };
 
+class EntityHolder
+{
+public:
+	Eris::Entity& entity;
+	EntityHolder(Eris::Entity& entity) :
+		entity(entity)
+	{
+
+	}
+	~EntityHolder()
+	{
+		entity.shutdown();
+	}
+};
+
 class Timer
 {
 public:
@@ -167,7 +184,7 @@ protected:
 	void handleEvent()
 	{
 		{
-			boost::lock_guard<boost::mutex> lock(mMutex);
+			boost::lock_guard < boost::mutex > lock(mMutex);
 			mCompletedCount++;
 		}
 		mCondition.notify_all();
@@ -181,7 +198,7 @@ public:
 
 	int waitForCompletion(long milliseconds)
 	{
-		boost::unique_lock<boost::mutex> lock(mMutex);
+		boost::unique_lock < boost::mutex > lock(mMutex);
 		if (mCompletedCount) {
 			return true;
 		}
@@ -227,11 +244,27 @@ public:
 	}
 };
 
+class TestTerrainHandler: public Terrain::TerrainHandler
+{
+public:
+
+	TestTerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
+		Terrain::TerrainHandler(pageIndexSize, compilerTechniqueProvider)
+	{
+
+	}
+
+	Mercator::Terrain* getTerrain()
+	{
+		return mTerrain;
+	}
+};
+
 class TerrainSetup
 {
 public:
 	DummyCompilerTechniqueProvider compilerTechniqueProvider;
-	Terrain::TerrainHandler terrainHandler;
+	TestTerrainHandler terrainHandler;
 
 	TerrainSetup() :
 		terrainHandler(513, compilerTechniqueProvider)
@@ -314,6 +347,7 @@ class TerrainTestCase: public CppUnit::TestFixture
 	CPPUNIT_TEST( testCreateTerrain);
 	CPPUNIT_TEST( testAlterTerrain);
 	CPPUNIT_TEST( testApplyMod);
+	CPPUNIT_TEST( testUpdateMod);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -384,6 +418,8 @@ public:
 		TerrainSetup terrainSetup;
 		Terrain::TerrainHandler& terrainHandler = terrainSetup.terrainHandler;
 		DummyEntity entity;
+		EntityHolder entityHolder(entity);
+		entity.setAttr("pos", WFMath::Point<3>::ZERO().toAtlas());
 
 		float terrainHeight = 25.0f;
 
@@ -395,8 +431,8 @@ public:
 
 		polygon.push_back(WFMath::Point<2>(-10, -10).toAtlas());
 		polygon.push_back(WFMath::Point<2>(-10, 10).toAtlas());
-		polygon.push_back(WFMath::Point<2>(10, -10).toAtlas());
 		polygon.push_back(WFMath::Point<2>(10, 10).toAtlas());
+		polygon.push_back(WFMath::Point<2>(10, -10).toAtlas());
 
 		Atlas::Message::MapType shape;
 		shape["points"] = polygon;
@@ -409,11 +445,88 @@ public:
 
 		entity.setAttr("terrainmod", mod);
 
-		OgreView::Terrain::TerrainMod terrainMod(&entity);
-		CPPUNIT_ASSERT(terrainMod.init());
-		terrainHandler.addTerrainMod(&terrainMod);
+		OgreView::Terrain::TerrainMod* terrainMod = new Terrain::TerrainMod(&entity);
+		CPPUNIT_ASSERT(terrainMod->init());
+		terrainHandler.addTerrainMod(terrainMod);
 
-		entity.shutdown();
+	}
+
+	void testUpdateMod()
+	{
+
+		Ogre::Root root;
+
+		TerrainSetup terrainSetup;
+		TestTerrainHandler& terrainHandler = terrainSetup.terrainHandler;
+		DummyEntity entity;
+		EntityHolder entityHolder(entity);
+
+		entity.setAttr("pos", WFMath::Point<3>::ZERO().toAtlas());
+
+		float terrainHeight = 25.0f;
+
+		CPPUNIT_ASSERT(terrainSetup.createBaseTerrain(terrainHeight));
+		CPPUNIT_ASSERT(terrainSetup.createPages());
+		CPPUNIT_ASSERT(terrainSetup.reloadTerrain());
+
+		Atlas::Message::ListType polygon;
+
+		polygon.push_back(WFMath::Point<2>(-10, -10).toAtlas());
+		polygon.push_back(WFMath::Point<2>(-10, 10).toAtlas());
+		polygon.push_back(WFMath::Point<2>(10, 10).toAtlas());
+		polygon.push_back(WFMath::Point<2>(10, -10).toAtlas());
+
+		Atlas::Message::MapType shape;
+		shape["points"] = polygon;
+		shape["type"] = "polygon";
+
+		Atlas::Message::MapType mod;
+		mod["shape"] = shape;
+		mod["type"] = "levelmod";
+		mod["heightoffset"] = 2.0f;
+
+		entity.setAttr("terrainmod", mod);
+
+		OgreView::Terrain::TerrainMod* terrainMod = new Terrain::TerrainMod(&entity);
+		CPPUNIT_ASSERT(terrainMod->init());
+
+		{
+			AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);
+
+			//The shape should affect all four pages.
+			terrainHandler.addTerrainMod(terrainMod);
+
+			{
+				Timer timer;
+				do {
+					terrainHandler.pollTasks();
+				} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
+			}
+			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
+
+			float height = terrainHandler.getTerrain()->get(0, 0);
+			//			CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(0, 0), height));
+			CPPUNIT_ASSERT(height == 2.0f);
+		}
+
+		mod["heightoffset"] = 20.0f;
+		//Setting the attribute should trigger a mod change
+		entity.setAttr("terrainmod", mod);
+
+		{
+			AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);
+
+			{
+				Timer timer;
+				do {
+					terrainHandler.pollTasks();
+				} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
+			}
+			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
+			float height = terrainHandler.getTerrain()->get(0, 0);
+//			CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(-5, -5), height));
+			CPPUNIT_ASSERT(height == 20.0f);
+		}
 
 	}
 
