@@ -454,12 +454,12 @@ void TerrainHandler::addTerrainMod(TerrainMod* terrainMod)
 	/// Listen for deletion of the modifier
 	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainMod_Deleted), terrainMod));
 
-	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getEntityId(), *this, mTerrainMods));
+	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));
 }
 
 void TerrainHandler::TerrainMod_Changed(TerrainMod* terrainMod)
 {
-	mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod->getMercatorMod(), terrainMod->getEntityId(), *this, mTerrainMods));
+	mTaskQueue->enqueueTask(new TerrainModChangeTask(*mTerrain, *terrainMod, *this, mTerrainMods));
 }
 
 void TerrainHandler::TerrainMod_Deleted(TerrainMod* terrainMod)

@@ -456,8 +456,8 @@ public:
 
 		entity.setAttr("terrainmod", mod);
 
-		OgreView::Terrain::TerrainMod* terrainMod = new Terrain::TerrainMod(&entity);
-		CPPUNIT_ASSERT(terrainMod->init());
+		OgreView::Terrain::TerrainMod* terrainMod = new Terrain::TerrainMod(entity);
+		terrainMod->init();
 		terrainHandler.addTerrainMod(terrainMod);
 
 	}
@@ -498,8 +498,8 @@ public:
 
 		entity.setAttr("terrainmod", mod);
 
-		OgreView::Terrain::TerrainMod* terrainMod = new Terrain::TerrainMod(&entity);
-		CPPUNIT_ASSERT(terrainMod->init());
+		OgreView::Terrain::TerrainMod* terrainMod = new Terrain::TerrainMod(entity);
+		terrainMod->init();
 
 		{
 			AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);

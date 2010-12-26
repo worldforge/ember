@@ -28,6 +28,7 @@
 #include "TerrainMod.h"
 #include <Eris/TerrainMod.h>
 #include <Eris/Entity.h>
+#include <Atlas/Message/Element.h>
 
 namespace Ember
 {
@@ -36,48 +37,73 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainMod::TerrainMod(Eris::Entity* entity) :
-	mInnerMod(new Eris::TerrainMod(entity))
+TerrainMod::TerrainMod(Eris::Entity& entity) :
+	mEntity(entity)
 {
-	mInnerMod->ModChanged.connect(sigc::mem_fun(*this, &TerrainMod::terrainMod_ModChanged));
-	mInnerMod->ModDeleted.connect(sigc::mem_fun(*this, &TerrainMod::terrainMod_ModDeleted));
 }
 
 TerrainMod::~TerrainMod()
 {
-	delete mInnerMod;
 }
 
-bool TerrainMod::init()
+void TerrainMod::init()
 {
-	return mInnerMod->init();
-}
-
-Eris::TerrainMod* TerrainMod::getErisMod() const
-{
-	return mInnerMod;
+	observeEntity();
 }
 
 const std::string& TerrainMod::getEntityId() const
 {
-	return mInnerMod->getEntity()->getId();
+	return mEntity.getId();
 }
 
-void TerrainMod::terrainMod_ModChanged()
+void TerrainMod::attributeChanged(const Atlas::Message::Element& attributeValue)
 {
-	EventModChanged.emit();
+	onModChanged();
 }
 
-void TerrainMod::terrainMod_ModDeleted()
+void TerrainMod::entity_Moved()
+{
+	onModChanged();
+}
+
+void TerrainMod::entity_Deleted()
+{
+	onModDeleted();
+}
+
+void TerrainMod::observeEntity()
+{
+	mAttrChangedSlot.disconnect();
+	mAttrChangedSlot = sigc::mem_fun(*this, &TerrainMod::attributeChanged);
+	mEntity.observe("terrainmod", mAttrChangedSlot);
+	mEntity.Moved.connect(sigc::mem_fun(*this, &TerrainMod::entity_Moved));
+	mEntity.BeingDeleted.connect(sigc::mem_fun(*this, &TerrainMod::entity_Deleted));
+}
+
+Eris::Entity& TerrainMod::getEntity() const
+{
+	return mEntity;
+}
+
+void TerrainMod::onModDeleted()
 {
 	EventModDeleted.emit();
 }
 
-Mercator::TerrainMod* TerrainMod::getMercatorMod() const
+void TerrainMod::onModChanged()
 {
-	return mInnerMod->getMod();
+	EventModChanged.emit();
 }
 
-} // close Namespace Terrain
-} // close Namespace OgreView
-} // close Namespace Ember
+const Atlas::Message::Element& TerrainMod::getAtlasData() const
+{
+	if (mEntity.hasAttr("terrainmod")) {
+		return mEntity.valueOfAttr("terrainmod");
+	}
+	static Atlas::Message::Element none;
+	return none;
+}
+
+}
+}
+}

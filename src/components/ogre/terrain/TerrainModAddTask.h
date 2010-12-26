@@ -20,6 +20,7 @@
 #define TERRAINMODADDTASK_H_
 #include "TerrainModTaskBase.h"
 #include <Mercator/TerrainMod.h>
+#include <Atlas/Message/Element.h>
 
 namespace Ember
 {
@@ -36,8 +37,7 @@ namespace Terrain
 class TerrainModAddTask: public TerrainModTaskBase
 {
 public:
-	TerrainModAddTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
-	virtual ~TerrainModAddTask();
+	TerrainModAddTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler, TerrainModMap& terrainMods);
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
 
@@ -45,10 +45,10 @@ public:
 
 private:
 
-	/**
-	 * @brief Stores the applied mod, which will be a copy of the existing mod.
-	 */
-	Mercator::TerrainMod* mOriginalTerrainMod;
+	const Atlas::Message::Element mModData;
+	const WFMath::Point<3> mPosition;
+	const WFMath::Quaternion& mOrientation;
+
 };
 
 }

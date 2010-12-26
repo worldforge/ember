@@ -36,6 +36,10 @@ namespace Mercator {
 	class TerrainMod;
 }
 
+namespace Eris {
+	class InnerTerrainMod;
+}
+
 namespace WFMath
 {
 	template<int> class AxisBox;
@@ -116,7 +120,7 @@ namespace OgreView {
 
 		typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 
-		typedef std::multimap<const std::string, Mercator::TerrainMod*> TerrainModMap;
+		typedef std::multimap<const std::string, Eris::InnerTerrainMod*> TerrainModMap;
 
 		typedef std::map<const std::string, Mercator::Area*> AreaMap;
 

@@ -27,19 +27,20 @@
 #ifndef EMBEROGRETERRAINMOD_H
 #define EMBEROGRETERRAINMOD_H
 
+#include <Eris/Entity.h>
 #include <sigc++/signal.h>
 #include <string>
+
+namespace Atlas
+{
+namespace Message {
+	class Element;
+}
+}
 
 namespace Mercator
 {
 	class TerrainMod;
-	class CraterTerrainMod;
-}
-
-namespace Eris 
-{
-	class TerrainMod;
-	class Entity;
 }
 
 namespace Ember
@@ -54,8 +55,10 @@ namespace Terrain {
 /**
 @author Tamas Bates
 @author Erik Hjortsberg
-@brief Wrapper class that envelopes an Eris::TerrainMod.
-The heavy lifting occurs in Eris::TerrainMod, but this class allows some additional features to be added if so needed.
+@brief Connects an Eris::Entity to a Mercator terrain mod.
+
+Note that however the parsing and application of the terrain mod doesn't occur here. Instead it's handled by the TerrainMod*Task classes, which allows it to occur in a background thread.
+This class only keeps track of the entity, and emit signals when the entity data has changed so that the terrain mod needs to be recalculated or removed.
 */
 class TerrainMod
 {
@@ -64,37 +67,35 @@ public:
 	 * @brief Ctor.
 	 * @param entity The entity to which this mod belongs.
 	 */
-	TerrainMod(Eris::Entity* entity);
+	TerrainMod(Eris::Entity& entity);
 
 	/**
 	 * @brief Dtor.
 	 */
 	~TerrainMod();
 	
-	/**
-	 * @brief Sets up the observation of the entity, and parses the mod info, creating the initial mod instance.
-	 * @return True if the atlas data was conformant and successfully parsed.
-	 */
-	bool init();
 
-	/**
-	 *    @brief Used to retrieve a pointer to this modifier
-	 * @returns a pointer to this modifier
-	 */
-	Eris::TerrainMod* getErisMod() const;
+    /**
+     * @brief Sets up the observation of the entity.
+     */
+    virtual void init();
 
-
-	/**
-	 * @brief Gets the Mercator terrain mod, held by the Eris terrain mod.
-	 * @return The Mercator terrain mod instance.
-	 */
-	Mercator::TerrainMod* getMercatorMod() const;
-
-	/**
-	 * @brief Gets the id of the entity to which this mod belongs.
+    /**
+	 * @brief Gets the id of the entity which is observed.
 	 * @returns The id of the entity to which this mod belongs.
 	 */
 	const std::string& getEntityId() const;
+
+    /**
+    * @brief Accessor for the entity which is observed.
+    * @return The entity observed by this instance.
+    */
+    Eris::Entity& getEntity() const;
+
+    /**
+     * @brief Gets the atlas data which defines the terrain mod.
+     */
+    const Atlas::Message::Element& getAtlasData() const;
 
 	/**
 	 * Emitted whenever the modifier is changed or moved.
@@ -106,23 +107,53 @@ public:
 	 *Should be caught by TerrainManager to remove this mod from the terrain.
 	 */
 	sigc::signal<void> EventModDeleted;
-	
+
 protected:
 
-	/**
-	 * @brief Listen for the mod changed event and pass it on.
-	 */
-	void terrainMod_ModChanged();
+    /**
+    @brief The observed entity, containing terrain mod data.
+    */
+    Eris::Entity& mEntity;
+
+    /**
+    * @brief Slot used to listen for changes to attributes in the Entity to which this mod belongs to.
+    */
+    Eris::Entity::AttrChangedSlot mAttrChangedSlot;
+
+
+    /**
+    * @brief Called before the ModChanged signal is emitted.
+    */
+    virtual void onModChanged();
+
+    /**
+    * @brief Called before the ModDeleted signal is emitted.
+    */
+    virtual void onModDeleted();
+
+    /**
+    * @brief Called whenever a modifier is changed and handles the update
+    * @param attributeValue The new Atlas data for the terrain mod
+    */
+    void attributeChanged(const Atlas::Message::Element& attributeValue);
+
+    /**
+    *    @brief Called whenever a modifier is moved and handles the update
+    */
+    void entity_Moved();
+
+    /**
+    Called whenever the entity holding a modifier is deleted and handles
+    removing the mod from the terrain
+    */
+    void entity_Deleted();
+
+    /**
+    * @brief Sets up the previous three handler functions to be called when a change
+    * is made to the entity holding the modifier.
+    */
+    virtual void observeEntity();
 	
-	/**
-	 * @brief Listen for the mod deleted event and pass it on.
-	 */
-	void terrainMod_ModDeleted();
-	
-	/**
-	 * @brief The actual Eris::TerrainMod implementation responsible for the parsing and updating of the mod.
-	 */
-	Eris::TerrainMod* mInnerMod;
 };
 
 }

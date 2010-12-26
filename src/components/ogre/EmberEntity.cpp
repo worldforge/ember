@@ -136,14 +136,10 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 	///if the area attribute has changed, and we _don't_ have any mTerrainMod instance, try to create one such.
 	///if we do have an mTerrainMod instance, all updates will be taken care of by that instead and we can ignore this
 	if (attributeName == "terrainmod" && !mTerrainMod.get()) {
-		mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(this));
-		if (mTerrainMod->init()) {
-			addTerrainMod(mTerrainMod.get());
-			return true;
-		} else {
-			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create a mod
-			mTerrainMod.reset();
-		}
+		mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(*this));
+		mTerrainMod->init();
+		addTerrainMod(mTerrainMod.get());
+		return true;
 	}
 	return false;
 }

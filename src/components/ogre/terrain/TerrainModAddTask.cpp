@@ -32,26 +32,24 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods) :
-	TerrainModTaskBase::TerrainModTaskBase(terrain, 0, entityId, handler, terrainMods), mOriginalTerrainMod(terrainMod.clone())
+TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler, TerrainModMap& terrainMods) :
+	TerrainModTaskBase::TerrainModTaskBase(terrain, terrainMod.getEntityId(), handler, terrainMods), mModData(terrainMod.getAtlasData()), mPosition(terrainMod.getEntity().getPredictedPos()), mOrientation(terrainMod.getEntity().getOrientation())
 {
 
-}
-
-TerrainModAddTask::~TerrainModAddTask()
-{
-	delete mOriginalTerrainMod;
 }
 
 void TerrainModAddTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	/// We need to save this pointer to use when the modifier is changed or deleted
-	mManagerLocalTerrainMod = mTerrain.addMod(*mOriginalTerrainMod);
-	if (mManagerLocalTerrainMod) {
-		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
-		mTerrainMods.insert(TerrainModMap::value_type(mEntityId, mManagerLocalTerrainMod));
+	Eris::InnerTerrainMod* terrainMod = new Eris::InnerTerrainMod();
+	if (mModData.isMap()) {
+		Atlas::Message::MapType mapData = mModData.asMap();
+		bool success = terrainMod->parseData(mPosition, mOrientation, mapData);
+		if (success) {
+			mTerrain.addMod(terrainMod->getModifier());
+			mUpdatedAreas.push_back(terrainMod->getModifier()->bbox());
+		}
 	}
-
+	mTerrainMods.insert(TerrainModMap::value_type(mEntityId, terrainMod));
 }
 
 void TerrainModAddTask::executeTaskInMainThread()

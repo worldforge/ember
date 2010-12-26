@@ -21,6 +21,7 @@
 
 #include "TerrainModTaskBase.h"
 #include <Mercator/TerrainMod.h>
+#include <Atlas/Message/Element.h>
 
 namespace Ember
 {
@@ -37,8 +38,7 @@ namespace Terrain
 class TerrainModChangeTask: public TerrainModTaskBase
 {
 public:
-	TerrainModChangeTask(Mercator::Terrain& terrain, const Mercator::TerrainMod& terrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
-	virtual ~TerrainModChangeTask();
+	TerrainModChangeTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler, TerrainModMap& terrainMods);
 
 	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
 
@@ -46,7 +46,9 @@ public:
 
 private:
 
-	Mercator::TerrainMod* mNewTerrainMod;
+	const Atlas::Message::Element mModData;
+	const WFMath::Point<3> mPosition;
+	const WFMath::Quaternion& mOrientation;
 
 };
 

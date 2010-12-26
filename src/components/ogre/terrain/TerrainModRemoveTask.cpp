@@ -37,12 +37,7 @@ namespace Terrain
 {
 
 TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods) :
-		TerrainModTaskBase::TerrainModTaskBase(terrain, 0, entityId, handler, terrainMods)
-{
-
-}
-
-TerrainModRemoveTask::~TerrainModRemoveTask()
+	TerrainModTaskBase::TerrainModTaskBase(terrain, entityId, handler, terrainMods)
 {
 }
 
@@ -50,12 +45,14 @@ void TerrainModRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecu
 {
 	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
 	if (I != mTerrainMods.end()) {
-		mManagerLocalTerrainMod = I->second;
+		Eris::InnerTerrainMod* terrainMod = I->second;
 		mTerrainMods.erase(I);
 
-		mTerrain.removeMod(mManagerLocalTerrainMod);
-		mUpdatedAreas.push_back(mManagerLocalTerrainMod->bbox());
-		delete mManagerLocalTerrainMod;
+		if (terrainMod->getModifier()) {
+			mTerrain.removeMod(terrainMod->getModifier());
+			mUpdatedAreas.push_back(terrainMod->getModifier()->bbox());
+		}
+		delete terrainMod;
 
 	} else {
 		S_LOG_WARNING("Got a delete signal for a terrain mod which isn't registered with the terrain handler. This shouldn't happen.");

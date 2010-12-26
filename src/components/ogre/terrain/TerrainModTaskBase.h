@@ -48,7 +48,7 @@ class TerrainMod;
 class TerrainModTaskBase: public Ember::Tasks::TemplateNamedTask<TerrainModTaskBase>
 {
 public:
-	TerrainModTaskBase(Mercator::Terrain& terrain, Mercator::TerrainMod* managerLocalTerrainMod, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
+	TerrainModTaskBase(Mercator::Terrain& terrain, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);
 	virtual ~TerrainModTaskBase();
 
 protected:
@@ -56,11 +56,6 @@ protected:
 	 * @brief The terrain.
 	 */
 	Mercator::Terrain& mTerrain;
-
-	/**
-	 * @brief A terrain mod.
-	 */
-	Mercator::TerrainMod* mManagerLocalTerrainMod;
 
 	/**
 	 * @brief The entity to which the mod belongs to.
@@ -77,6 +72,9 @@ protected:
 	 */
 	TerrainModMap& mTerrainMods;
 
+	/**
+	 * @brief A list of updates areas. Any geometry in these areas will need to be recalculated.
+	 */
 	std::vector<WFMath::AxisBox<2> > mUpdatedAreas;
 
 };
