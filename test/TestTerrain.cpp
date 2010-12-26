@@ -258,6 +258,15 @@ public:
 	{
 		return mTerrain;
 	}
+
+	/**
+	 * Asserts the height, using an integer.
+	 * This is because of the floats being used, we can't be 100% certain that a piece of terrain should be exactly the specified height.
+	 */
+	void assertTerrainHeight(float x, float y, int height)
+	{
+		CPPUNIT_ASSERT((int)(mTerrain->get(x, y)) == height);
+	}
 };
 
 class TerrainSetup
@@ -504,9 +513,14 @@ public:
 			}
 			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
 
-			float height = terrainHandler.getTerrain()->get(0, 0);
-			//			CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(0, 0), height));
-			CPPUNIT_ASSERT(height == 2.0f);
+			terrainHandler.assertTerrainHeight(-5, -5, 2.0f);
+			terrainHandler.assertTerrainHeight(-5, 5, 2.0f);
+			terrainHandler.assertTerrainHeight(5, 5, 2.0f);
+			terrainHandler.assertTerrainHeight(5, -5, 2.0f);
+
+			//			float height = terrainHandler.getTerrain()->get(0, 0);
+			//			//			CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(0, 0), height));
+			//			CPPUNIT_ASSERT(height == 2.0f);
 		}
 
 		mod["heightoffset"] = 20.0f;
@@ -523,11 +537,33 @@ public:
 				} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 			}
 			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
-			float height = terrainHandler.getTerrain()->get(0, 0);
-//			CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(-5, -5), height));
-			CPPUNIT_ASSERT(height == 20.0f);
+			terrainHandler.assertTerrainHeight(-5, -5, 20.0f);
+			terrainHandler.assertTerrainHeight(-5, 5, 20.0f);
+			terrainHandler.assertTerrainHeight(5, 5, 20.0f);
+			terrainHandler.assertTerrainHeight(5, -5, 20.0f);
+			//			float height = terrainHandler.getTerrain()->get(0, 0);
+			////			CPPUNIT_ASSERT(terrainHandler.getHeight(TerrainPosition(-5, -5), height));
+			//			CPPUNIT_ASSERT(height == 20.0f);
 		}
 
+		//Move the mod out of the way
+		entity.setAttr("pos", WFMath::Point<3>(40, 40, 0).toAtlas());
+
+		{
+			AfterTerrainUpdateListener afterTerrainUpdateListener(terrainHandler.EventAfterTerrainUpdate);
+
+			{
+				Timer timer;
+				do {
+					terrainHandler.pollTasks();
+				} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
+			}
+			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
+			terrainHandler.assertTerrainHeight(-5, -5, 25);
+			terrainHandler.assertTerrainHeight(-5, 5, 25);
+			terrainHandler.assertTerrainHeight(5, 5, 25);
+			terrainHandler.assertTerrainHeight(5, -5, 25);
+		}
 	}
 
 };
