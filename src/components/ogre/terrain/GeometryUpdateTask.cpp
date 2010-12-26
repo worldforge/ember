@@ -82,10 +82,6 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecuti
 
 void GeometryUpdateTask::executeTaskInMainThread()
 {
-//	for (std::set<TerrainPage*>::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
-//		(*I)->signalGeometryChanged();
-//	}
-
 	mHandler.EventAfterTerrainUpdate(mAreas, mPages);
 
 }

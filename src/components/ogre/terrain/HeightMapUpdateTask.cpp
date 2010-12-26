@@ -66,7 +66,8 @@ void HeightMapUpdateTask::createHeightMapSegments()
 		if (segment) {
 			IHeightMapSegment* heightMapSegment = 0;
 			Mercator::Matrix<2, 2, Mercator::BasePoint>& basePoints(segment->getControlPoints());
-			if ((basePoints[0].height() == basePoints[1].height()) && (basePoints[1].height() == basePoints[2].height()) && (basePoints[2].height() == basePoints[3].height())) {
+			//If all of the base points are on the same level, and there are no mods, we know that the segment is completely flat, and we can save some memory by using a HeightMapFlatSegment instance.
+			if ((basePoints[0].height() == basePoints[1].height()) && (basePoints[1].height() == basePoints[2].height()) && (basePoints[2].height() == basePoints[3].height()) && (segment->getMods().size() == 0)) {
 				heightMapSegment = new HeightMapFlatSegment(basePoints[0].height());
 			} else {
 				HeightMapBuffer* buffer = mProvider.checkout();
