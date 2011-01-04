@@ -161,7 +161,7 @@ void ServerService::take(Eris::Entity* entity)
 
 void ServerService::drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation)
 {
-	getAdapter().drop(entity, offset);
+	getAdapter().drop(entity, offset, orientation);
 }
 
 void ServerService::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
