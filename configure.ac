@@ -290,12 +290,12 @@ AC_CHECK_LIB([CEGUItoluapp], [main],
     [
 	    if test "$cegui_toluapp" = "true"; then
 	        LIBS="-lCEGUItoluapp $LIBS"
-	        AC_MSG_NOTICE([Using CEGUI provided tolua++ implementation. Make sure that you're also using the CEGUI provided tolua++ generator (see --with-tolua++)])
+	        AC_MSG_NOTICE([Using CEGUI provided tolua++ implementation. Make sure that you're also using the CEGUI provided tolua++ generator (see --with-toluaxx)])
 	    else
 	    	AC_MSG_ERROR([A CEGUI provided tolua++ implementation was found. By default this is not allowed. The reason is that CEGUI normally doesn't build the tolua++ generator needed by Ember, and there's a risk then that Ember will use a tolua++ generator installed by the system together with the tolua++ library provided by CEGUI. This will in most cases lead to strange compilation errors.
 	    		You have two options:
 	    			1) Make sure that there's a tolua++ (http://www.codenix.com/~tolua/) development package installed on the system, and recompile CEGUI so that it recognizes and uses this (make sure to uninstall CEGUI first).
-	    			2) If you're certain that you've told CEGUI to also compile the tolua++ code generator and want to have Ember use the CEGUI provided tolua++ implementation, use the --enable-cegui-toluapp to disable this check. Use --with-tolua++ to make sure that the CEGUI provided tolua++ generator is used.])
+	    			2) If you're certain that you've told CEGUI to also compile the tolua++ code generator and want to have Ember use the CEGUI provided tolua++ implementation, use the --enable-cegui-toluapp to disable this check. Use --with-toluaxx to make sure that the CEGUI provided tolua++ generator is used.])
 	    fi
     ],
     [
