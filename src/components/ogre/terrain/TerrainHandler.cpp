@@ -147,7 +147,7 @@ public:
 };
 
 TerrainHandler::TerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-	mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mHeightMap(0), mHeightMapBufferProvider(0), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mSegmentManager(0)
+	mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
 {
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
