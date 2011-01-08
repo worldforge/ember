@@ -60,7 +60,7 @@ public:
 
 // Iterator over GUIAdaptersStore
 $[
-function EmberOgre.Authoring.GUIAdaptersStore:pairs()
+function Ember.OgreView.Authoring.GUIAdaptersStore:pairs()
   local I = self:begin()
   local Iend = self:theEnd()
   return function()
