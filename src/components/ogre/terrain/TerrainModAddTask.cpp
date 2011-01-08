@@ -21,7 +21,7 @@
 #include "TerrainMod.h"
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
-#include <Eris/TerrainMod.h>
+#include <Eris/TerrainModTranslator.h>
 #include <wfmath/axisbox.h>
 
 namespace Ember
@@ -40,7 +40,7 @@ TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, const TerrainMo
 
 void TerrainModAddTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
 {
-	Eris::InnerTerrainMod* terrainMod = new Eris::InnerTerrainMod();
+	Eris::TerrainModTranslator* terrainMod = new Eris::TerrainModTranslator();
 	if (mModData.isMap()) {
 		Atlas::Message::MapType mapData = mModData.asMap();
 		bool success = terrainMod->parseData(mPosition, mOrientation, mapData);

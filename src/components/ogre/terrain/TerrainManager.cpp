@@ -44,8 +44,6 @@
 #include "../Scene.h"
 #include "../Convert.h"
 
-#include <Eris/TerrainMod.h>
-
 #include <sigc++/object_slot.h>
 
 

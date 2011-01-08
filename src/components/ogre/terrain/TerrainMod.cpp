@@ -26,7 +26,7 @@
 #endif
 
 #include "TerrainMod.h"
-#include <Eris/TerrainMod.h>
+#include <Eris/TerrainModTranslator.h>
 #include <Eris/Entity.h>
 #include <Atlas/Message/Element.h>
 

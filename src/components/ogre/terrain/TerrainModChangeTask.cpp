@@ -24,7 +24,7 @@
 
 #include <Mercator/TerrainMod.h>
 #include <Mercator/Terrain.h>
-#include <Eris/TerrainMod.h>
+#include <Eris/TerrainModTranslator.h>
 #include <Eris/Entity.h>
 #include <wfmath/axisbox.h>
 
@@ -46,7 +46,7 @@ void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecu
 {
 	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
 	if (I != mTerrainMods.end()) {
-		Eris::InnerTerrainMod* terrainMod = I->second;
+		Eris::TerrainModTranslator* terrainMod = I->second;
 		Mercator::TerrainMod* oldMercTerrainMod = terrainMod->getModifier();
 		if (mModData.isMap()) {
 			Atlas::Message::MapType mapData = mModData.asMap();
