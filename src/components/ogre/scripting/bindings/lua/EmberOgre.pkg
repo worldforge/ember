@@ -35,7 +35,7 @@ $pfile "ColouredListItem.pkg"
 $pfile "AssetsManager.pkg"
 $pfile "AtlasHelper.pkg"
 $pfile "Compass.pkg"
-$pfile "MakeEntityWidget.pkg"
+$pfile "EntityCreatorTypeHelper.pkg"
 
 $pfile "TypeTreeAdapter.pkg"
 $pfile "ResourceListAdapter.pkg"

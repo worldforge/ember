@@ -40,10 +40,6 @@ class WidgetDefinitions{
 public:
     WidgetDefinitions();
 
-    ~WidgetDefinitions();
-
-
-
 };
 }
 }

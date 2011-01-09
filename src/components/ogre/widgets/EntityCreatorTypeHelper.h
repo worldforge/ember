@@ -1,5 +1,5 @@
 //
-// C++ Interface: MakeEntityWidget
+// C++ Interface: EntityCreatorTypeHelper
 //
 // Description:
 //
@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_MAKEENTITYWIDGET_H
-#define EMBEROGRE_MAKEENTITYWIDGET_H
+#ifndef EMBEROGRE_EntityCreatorTypeHelper_H
+#define EMBEROGRE_EntityCreatorTypeHelper_H
 
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
@@ -61,18 +61,17 @@ class TypeTreeAdapter;
 
 class ModelRenderer;
 /**
- @author Erik Hjortsberg
- A simple entity creator widget. All entity types are shown in a tree, allowing us to select one and instantiate it in the world.
- The tree is populated when the widget is shown, and after that it's updated every time a new type is discovered.
-
- This simplified entity creator will be supplemented by the more advanced one as part of GSoC 2008.
+ * @author Erik Hjortsberg
+ *
+ * A helper class for creating simple entities directly from entity types.
+ * The helper binds to a tree widget, which will be filled with entity types.
  */
-class MakeEntityWidget : public Ember::ConsoleObject
+class EntityCreatorTypeHelper : public Ember::ConsoleObject
 {
 public:
 
-	MakeEntityWidget(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
-	virtual ~MakeEntityWidget();
+	EntityCreatorTypeHelper(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
+	virtual ~EntityCreatorTypeHelper();
 
 	const Ember::ConsoleCommandWrapper CreateEntity;
 	const Ember::ConsoleCommandWrapper Make;

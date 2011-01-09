@@ -1,5 +1,5 @@
 //
-// C++ Implementation: MakeEntityWidget
+// C++ Implementation: EntityCreatorTypeHelper
 //
 // Description:
 //
@@ -24,7 +24,7 @@
 #include "config.h"
 #endif
 
-#include "MakeEntityWidget.h"
+#include "EntityCreatorTypeHelper.h"
 #include "ColouredListItem.h"
 #include "ModelRenderer.h"
 #include "adapters/eris/TypeTreeAdapter.h"
@@ -67,26 +67,26 @@ namespace OgreView
 namespace Gui
 {
 
-MakeEntityWidget::MakeEntityWidget(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
+EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
 	CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mAvatarEntity(avatarEntity), mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
 {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
 
-MakeEntityWidget::~MakeEntityWidget()
+EntityCreatorTypeHelper::~EntityCreatorTypeHelper()
 {
 	delete mModelPreviewRenderer;
 	delete mTypeTreeAdapter;
 }
 
-void MakeEntityWidget::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview)
+void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview)
 {
 
 	typeTree.setItemTooltipsEnabled(true);
 	typeTree.setSortingEnabled(true);
 
-	typeTree.subscribeEvent(CEGUI::Tree::EventSelectionChanged, CEGUI::Event::Subscriber(&MakeEntityWidget::typeTree_ItemSelectionChanged, this));
-	pushButton.subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&MakeEntityWidget::createButton_Click, this));
+	typeTree.subscribeEvent(CEGUI::Tree::EventSelectionChanged, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::typeTree_ItemSelectionChanged, this));
+	pushButton.subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
 
 	mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*mConnection.getTypeService(), typeTree);
 	mTypeTreeAdapter->initialize("game_entity");
@@ -95,7 +95,7 @@ void MakeEntityWidget::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pus
 
 }
 
-void MakeEntityWidget::runCommand(const std::string &command, const std::string &args)
+void EntityCreatorTypeHelper::runCommand(const std::string &command, const std::string &args)
 {
 	if (CreateEntity == command || Make == command) {
 		Eris::TypeService* typeService = mConnection.getTypeService();
@@ -107,7 +107,7 @@ void MakeEntityWidget::runCommand(const std::string &command, const std::string 
 
 }
 
-void MakeEntityWidget::updatePreview()
+void EntityCreatorTypeHelper::updatePreview()
 {
 	if (mModelPreviewRenderer && mTypeTreeAdapter) {
 		Eris::TypeInfo* typeInfo = mTypeTreeAdapter->getSelectedTypeInfo();
@@ -123,13 +123,13 @@ void MakeEntityWidget::updatePreview()
 	}
 }
 
-bool MakeEntityWidget::typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args)
+bool EntityCreatorTypeHelper::typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args)
 {
 	updatePreview();
 	return true;
 }
 
-bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
+bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args)
 {
 	if (mTypeTreeAdapter) {
 
@@ -141,7 +141,7 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
-void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
+void EntityCreatorTypeHelper::createEntityOfType(Eris::TypeInfo* typeinfo)
 {
 	Atlas::Objects::Operation::Create c;
 	c->setFrom(mAvatarEntity.getId());

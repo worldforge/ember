@@ -1,0 +1,30 @@
+$#include "components/ogre/widgets/EntityCreatorTypeHelper.h"
+
+namespace Ember
+{
+namespace OgreView
+{
+
+namespace Gui
+{
+
+
+/**
+ * @author Erik Hjortsberg
+ *
+ * A helper class for creating simple entities directly from entity types.
+ * The helper binds to a tree widget, which will be filled with entity types.
+ */
+class EntityCreatorTypeHelper 
+{
+public:
+
+	EntityCreatorTypeHelper(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
+	virtual ~EntityCreatorTypeHelper();
+};
+}
+
+}
+}
+
+#endif
