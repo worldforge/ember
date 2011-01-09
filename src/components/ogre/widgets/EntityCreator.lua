@@ -132,6 +132,9 @@ end
 function EntityCreator:shutdown()
 	guiManager:destroyWidget(self.widget)
 	deleteSafe(self.helper)
+	if entityCreator.typesCreator then
+		deleteSafe(entityCreator.typesCreator.helper)
+	end
 	disconnectAll(self.connectors)
 end
 
@@ -168,9 +171,16 @@ function EntityCreator.buildWidget(world)
 		entityCreator.createButton:setEnabled(false)
 
 		entityCreator.widget:getWindow("RandomizeOrientation"):subscribeEvent("CheckStateChanged", EntityCreator.RandomizeOrientation_CheckStateChanged, entityCreator) 
-	
-		-- Finalizing
 		entityCreator.widget:enableCloseButton()
+	
+		local typesTree = CEGUI.toTree(entityCreator.widget:getWindow("Types/TypeList", true))
+		local typesName = CEGUI.toEditbox(entityCreator.widget:getWindow("Types/Name", true))
+		local typesCreateButton = CEGUI.toPushButton(entityCreator.widget:getWindow("Types/CreateButton", true))
+		local typesPreviewImage = entityCreator.widget:getWindow("Types/ModelPreviewImage", true)
+		entityCreator.typesCreator = {}
+
+		entityCreator.typesCreator.helper = Ember.OgreView.Gui.MakeEntityWidget:new(world:getAvatar():getEmberEntity(), world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage)		
+		
 	end
 	connect(entityCreator.connectors, entityCreator.widget.EventFirstTimeShown, setup)
 	entityCreator.widget:registerConsoleVisibilityToggleCommand("advEntityCreator")

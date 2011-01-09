@@ -6,50 +6,90 @@
 		<Property Name='UnifiedSize' Value='{{0,400},{0,200}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity Creator'/>
-		<Window Type='DefaultGUISheet' Name='InnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0,4},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/Listbox' Name='RecipesList'>
+		<Window Type='EmberLook/TabControl' Name='CharacterTabControl'>
+			<Property Name='UnifiedPosition' Value='{{0.0,0},{0,0}}'/>
+			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+			<Property Name='InheritsAlpha' Value='false'/>
+			<Property Name='Visible' Value='true'/>
+			<Window Type='DefaultGUISheet' Name='TabRecipes'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{0,100},{1,-27}}'/>
-				<Property Name='Sort' Value='true'/>
-			</Window>
-			<Window Type='EmberLook/Button' Name='Create'>
-				<Property Name='UnifiedPosition' Value='{{0,0},{1,-25}}'/>
-				<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
-				<Property Name='Text' Value='Create'/>
+				<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
-			<Window Type='DefaultGUISheet' Name='CreateSection'>
-				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
-				<Property Name='Visible' Value='false'/>
-				<Window Type='EmberLook/StaticText' Name='RecipeDescription'>
+				<Property Name='Text' Value='Recipes'/>
+				<Window Type='EmberLook/Listbox' Name='RecipesList'>
 					<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-					<Property Name='UnifiedSize' Value='{{1,0},{0,50}}'/>
+					<Property Name='UnifiedSize' Value='{{0,100},{1,-27}}'/>
+					<Property Name='Sort' Value='true'/>
+				</Window>
+				<Window Type='EmberLook/Button' Name='Create'>
+					<Property Name='UnifiedPosition' Value='{{0,0},{1,-25}}'/>
+					<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
+					<Property Name='Text' Value='Create'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+				</Window>
+				<Window Type='DefaultGUISheet' Name='CreateSection'>
+					<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+					<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
+					<Property Name='Visible' Value='false'/>
+					<Window Type='EmberLook/StaticText' Name='RecipeDescription'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+						<Property Name='UnifiedSize' Value='{{1,0},{0,50}}'/>
+						<Property Name='FrameEnabled' Value='false' />
+						<Property Name='BackgroundEnabled' Value='false' />
+					</Window>
+					<Window Type='EmberLook/Checkbox' Name='RandomizeOrientation'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{0,50}}'/>
+						<Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
+						<Property Name='Selected' Value='True'/>
+						<Property Name='Tooltip' Value='If checked, will randomize the orientation of all new entities.'/>
+						<Property Name='Text' Value='Random orientation'/>
+					</Window>
+					<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{0,75}}'/>
+						<Property Name='UnifiedSize' Value='{{1,0},{1,-75}}'/>
+					</Window>
+				</Window>
+				<Window Type='EmberLook/StaticText' Name='WaitForTypeInfo'>
+					<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
+					<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
+					<Property Name='Visible' Value='false'/>
 					<Property Name='FrameEnabled' Value='false' />
 					<Property Name='BackgroundEnabled' Value='false' />
-				</Window>
-				<Window Type='EmberLook/Checkbox' Name='RandomizeOrientation'>
-					<Property Name='UnifiedPosition' Value='{{0,0},{0,50}}'/>
-					<Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
-					<Property Name='Selected' Value='True'/>
-					<Property Name='Tooltip' Value='If checked, will randomize the orientation of all new entities.'/>
-					<Property Name='Text' Value='Random orientation'/>
-				</Window>
-				<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
-					<Property Name='UnifiedPosition' Value='{{0,0},{0,75}}'/>
-					<Property Name='UnifiedSize' Value='{{1,0},{1,-75}}'/>
+					<Property Name='Text' Value='Waiting for type info from the server...' />
 				</Window>
 			</Window>
-			<Window Type='EmberLook/StaticText' Name='WaitForTypeInfo'>
-				<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
-				<Property Name='Visible' Value='false'/>
-				<Property Name='FrameEnabled' Value='false' />
-				<Property Name='BackgroundEnabled' Value='false' />
-				<Property Name='Text' Value='Waiting for type info from the server...' />
+			<Window Type='DefaultGUISheet' Name='TabTypes'>
+				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+				<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Text' Value='Types'/>
+				<Window Type='EmberLook/Tree' Name='Types/TypeList'>
+					<Property Name='UnifiedSize' Value='{{0,150},{1.00,-30}}'/>
+					<Property Name='InheritsAlpha' Value='false'/>
+				</Window>
+				<Window Type='EmberLook/StaticImage' Name='Types/ModelPreviewImage'>
+					<Property Name='UnifiedPosition' Value='{{0,155},{0,0}}'/>
+					<Property Name='UnifiedSize' Value='{{1.00,155.00},{1.00,-65}}'/>
+				</Window>
+				<Window Type='EmberLook/StaticText' Name='Types/NameText'>
+					<Property Name='UnifiedSize' Value='{{0,70},{0.00,25.0}}'/>
+					<Property Name='UnifiedPosition' Value='{{0,155},{1.00,-60}}'/>
+					<Property Name='Text' Value='Name:'/>
+					<Property Name='InheritsAlpha' Value='False'/>
+					<Property Name='FrameEnabled' Value='False'/>
+					<Property Name='BackgroundEnabled' Value='False'/>
+				</Window>
+				<Window Type='EmberLook/Editbox' Name='Types/Name'>
+					<Property Name='UnifiedSize' Value='{{0,75.0},{0,25.0}}'/>
+					<Property Name='UnifiedPosition' Value='{{0,230},{1.00,-60}}'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+				</Window>
+				<Window Type='EmberLook/Button' Name='Types/CreateButton'>
+					<Property Name='UnifiedSize' Value='{{0,75.0},{0,25.0}}'/>
+					<Property Name='UnifiedPosition' Value='{{0,0},{1.00,-25.0}}'/>
+					<Property Name='Text' Value='Create'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+				</Window>				
 			</Window>
 		</Window>
 	</Window>
