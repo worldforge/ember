@@ -136,20 +136,15 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 
 			Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 			if (entitySceneNode) {
-				mPolygon = new ::Ember::OgreView::Authoring::Polygon(entitySceneNode, mPositionProvider);
-
 				if (areaElem.isMap()) {
 					try {
 						WFMath::Polygon<2> poly(areaElem);
-						mPolygon->loadFromShape(poly);
-						mPickListener = new ::Ember::OgreView::Authoring::PolygonPointPickListener(*mPolygon);
-						mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
-						EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
+						createNewPolygon(&poly);
 					} catch (const WFMath::_AtlasBadParse& ex) {
-						createNewPolygon();
+						createNewPolygon(0);
 					}
 				} else {
-					createNewPolygon();
+					createNewPolygon(0);
 				}
 
 			}
@@ -173,7 +168,7 @@ void PolygonAdapter::toggleDisplayOfPolygon()
 	}
 }
 
-void PolygonAdapter::createNewPolygon()
+void PolygonAdapter::createNewPolygon(WFMath::Polygon<2>* existingPoly)
 {
 	delete mPolygon;
 	mPolygon = 0;
@@ -181,15 +176,21 @@ void PolygonAdapter::createNewPolygon()
 	if (entitySceneNode) {
 		mPolygon = new ::Ember::OgreView::Authoring::Polygon(entitySceneNode, mPositionProvider);
 		WFMath::Polygon<2> poly;
-		poly.addCorner(0, WFMath::Point<2>(-1, -1));
-		poly.addCorner(1, WFMath::Point<2>(-1, 1));
-		poly.addCorner(2, WFMath::Point<2>(1, 1));
-		poly.addCorner(3, WFMath::Point<2>(1, -1));
+		if (existingPoly) {
+			poly = *existingPoly;
+		} else {
+			poly.addCorner(0, WFMath::Point<2>(-1, -1));
+			poly.addCorner(1, WFMath::Point<2>(-1, 1));
+			poly.addCorner(2, WFMath::Point<2>(1, 1));
+			poly.addCorner(3, WFMath::Point<2>(1, -1));
+		}
 
 		mPolygon->loadFromShape(poly);
-		mPickListener = new ::Ember::OgreView::Authoring::PolygonPointPickListener(*mPolygon);
-		mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
-		EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
+		if (!mPickListener) {
+			mPickListener = new ::Ember::OgreView::Authoring::PolygonPointPickListener(*mPolygon);
+			mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
+			EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
+		}
 	}
 
 }

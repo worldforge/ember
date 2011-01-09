@@ -120,8 +120,9 @@ public:
 
 	/**
 	 * @brief Creates a new polygon.
+	 * @param existingPoly An optional existing poly definition to use as base. If null, a default shape will be used.
 	 */
-	void createNewPolygon();
+	void createNewPolygon(WFMath::Polygon<2>* existingPoly = 0);
 
 	/**
 	 * @brief When movement has ended, remove the movement instance.
