@@ -92,7 +92,7 @@ PolygonPoint::~PolygonPoint()
 			mPolygon.getBaseNode()->removeAndDestroyChild(mNode->getName());
 		}
 		if (mEntity) {
-			mEntity->_getCreator()->destroyInstance(mEntity);
+			mPolygon.getBaseNode()->getCreator()->destroyEntity(mEntity);
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when deleting polygon point." << ex);
