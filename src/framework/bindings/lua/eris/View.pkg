@@ -11,7 +11,7 @@ namespace Eris
  */
 class View 
 {
-//    Avatar* getAvatar() const;
+    Eris::Avatar* getAvatar() const;
 
     /**
     Retrieve the current look queue size, for debugging / statistics purposes.
