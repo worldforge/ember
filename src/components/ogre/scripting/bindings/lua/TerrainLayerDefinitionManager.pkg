@@ -48,7 +48,7 @@ class TerrainLayerDefinitionManager : public Ogre::ResourceManager
 
 
 $[
-function EmberOgre.Terrain.TerrainLayerDefinitionManager.DefinitionStore:ipairs()
+function Ember.OgreView.Terrain.TerrainLayerDefinitionManager.DefinitionStore:ipairs()
 	local I = self:begin()
 	local Iend = self:theEnd()
 	local index = -1;
