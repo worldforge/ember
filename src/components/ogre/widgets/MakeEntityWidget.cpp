@@ -67,9 +67,10 @@ namespace OgreView
 namespace Gui
 {
 
-MakeEntityWidget::MakeEntityWidget() :
-	Widget(), CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
+MakeEntityWidget::MakeEntityWidget(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
+	CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mAvatarEntity(avatarEntity), mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
 {
+	buildWidget(typeTree, pushButton, modelPreview);
 }
 
 MakeEntityWidget::~MakeEntityWidget()
@@ -78,50 +79,30 @@ MakeEntityWidget::~MakeEntityWidget()
 	delete mTypeTreeAdapter;
 }
 
-void MakeEntityWidget::buildWidget()
+void MakeEntityWidget::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview)
 {
 
-	loadMainSheet("MakeEntityWidget.layout", "MakeEntity/");
+	typeTree.setItemTooltipsEnabled(true);
+	typeTree.setSortingEnabled(true);
 
-	mTypeTree = static_cast<CEGUI::Tree*> (getWindow("TypeList"));
-	mTypeTree->setItemTooltipsEnabled(true);
-	mTypeTree->setSortingEnabled(true);
+	typeTree.subscribeEvent(CEGUI::Tree::EventSelectionChanged, CEGUI::Event::Subscriber(&MakeEntityWidget::typeTree_ItemSelectionChanged, this));
+	pushButton.subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&MakeEntityWidget::createButton_Click, this));
 
-	mName = static_cast<CEGUI::Editbox*> (getWindow("Name"));
+	mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*mConnection.getTypeService(), typeTree);
+	mTypeTreeAdapter->initialize("game_entity");
 
-	CEGUI::PushButton* button = static_cast<CEGUI::PushButton*> (getWindow("CreateButton"));
+	mModelPreviewRenderer = new ModelRenderer(&modelPreview);
 
-	BIND_CEGUI_EVENT(mTypeTree, CEGUI::Tree::EventSelectionChanged,MakeEntityWidget::typeTree_ItemSelectionChanged );
-	BIND_CEGUI_EVENT(button, CEGUI::PushButton::EventClicked,MakeEntityWidget::createButton_Click );
-
-	createPreviewTexture();
-
-	registerConsoleVisibilityToggleCommand("entitycreator");
-	enableCloseButton();
-
-}
-
-void MakeEntityWidget::show()
-{
-	if (mMainWindow) {
-		if (!mTypeTreeAdapter) {
-			mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*getConnection()->getTypeService(), *mTypeTree);
-			mTypeTreeAdapter->initialize("game_entity");
-		}
-		Widget::show();
-	}
 }
 
 void MakeEntityWidget::runCommand(const std::string &command, const std::string &args)
 {
 	if (CreateEntity == command || Make == command) {
-		Eris::TypeService* typeService = getConnection()->getTypeService();
+		Eris::TypeService* typeService = mConnection.getTypeService();
 		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);
 		if (typeinfo) {
 			createEntityOfType(typeinfo);
 		}
-	} else {
-		Widget::runCommand(command, args);
 	}
 
 }
@@ -160,42 +141,30 @@ bool MakeEntityWidget::createButton_Click(const CEGUI::EventArgs& args)
 	return true;
 }
 
-void MakeEntityWidget::createPreviewTexture()
-{
-	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*> (getWindow("ModelPreviewImage"));
-	if (!imageWidget) {
-		S_LOG_FAILURE("Could not find ModelPreviewImage, aborting creation of preview texture.");
-	} else {
-		mModelPreviewRenderer = new ModelRenderer(imageWidget);
-	}
-
-}
-
 void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 {
 	Atlas::Objects::Operation::Create c;
-	EmberEntity& avatar = EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity();
-	c->setFrom(avatar.getId());
+	c->setFrom(mAvatarEntity.getId());
 	///if the avatar is a "creator", i.e. and admin, we will set the TO property
 	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (avatar.getType()->isA(getConnection()->getTypeService()->getTypeByName("creator"))) {
-		c->setTo(avatar.getId());
+	if (mAvatarEntity.getType()->isA(mConnection.getTypeService()->getTypeByName("creator"))) {
+		c->setTo(mAvatarEntity.getId());
 	}
 
 	Atlas::Message::MapType msg;
-	msg["loc"] = avatar.getLocation()->getId();
+	msg["loc"] = mAvatarEntity.getLocation()->getId();
 
 	Ogre::Vector3 o_vector(2, 0, 0);
-	Ogre::Vector3 o_pos = Convert::toOgre(avatar.getPredictedPos()) + (Convert::toOgre(avatar.getOrientation()) * o_vector); //TODO: remove conversions
+	Ogre::Vector3 o_pos = Convert::toOgre(mAvatarEntity.getPredictedPos()) + (Convert::toOgre(mAvatarEntity.getOrientation()) * o_vector); //TODO: remove conversions
 
 	// 	WFMath::Vector<3> vector(0,2,0);
 	// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
 	WFMath::Point<3> pos = Convert::toWF<WFMath::Point<3> >(o_pos);
-	WFMath::Quaternion orientation = avatar.getOrientation();
+	WFMath::Quaternion orientation = mAvatarEntity.getOrientation();
 
 	msg["pos"] = pos.toAtlas();
-	if (mName->getText().length() > 0) {
-		msg["name"] = mName->getText().c_str();
+	if (mName.getText().length() > 0) {
+		msg["name"] = mName.getText().c_str();
 	} else {
 		msg["name"] = typeinfo->getName();
 	}
@@ -203,16 +172,11 @@ void MakeEntityWidget::createEntityOfType(Eris::TypeInfo* typeinfo)
 	msg["orientation"] = orientation.toAtlas();
 
 	c->setArgsAsList(Atlas::Message::ListType(1, msg));
-	getConnection()->send(c);
+	mConnection.send(c);
 	std::stringstream ss;
 	ss << pos;
 	S_LOG_INFO("Try to create entity of type " << typeinfo->getName() << " at position " << ss.str() );
 
-}
-
-Eris::Connection* MakeEntityWidget::getConnection() const
-{
-	return Ember::EmberServices::getSingleton().getServerService()->getConnection();
 }
 
 }

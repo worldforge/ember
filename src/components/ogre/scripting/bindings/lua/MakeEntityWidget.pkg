@@ -1,0 +1,31 @@
+$#include "components/ogre/widgets/MakeEntityWidget.h"
+
+namespace Ember
+{
+namespace OgreView
+{
+
+namespace Gui
+{
+
+
+/**
+ @author Erik Hjortsberg
+ A simple entity creator widget. All entity types are shown in a tree, allowing us to select one and instantiate it in the world.
+ The tree is populated when the widget is shown, and after that it's updated every time a new type is discovered.
+
+ This simplified entity creator will be supplemented by the more advanced one as part of GSoC 2008.
+ */
+class MakeEntityWidget 
+{
+public:
+
+	MakeEntityWidget(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
+	virtual ~MakeEntityWidget();
+};
+}
+
+}
+}
+
+#endif

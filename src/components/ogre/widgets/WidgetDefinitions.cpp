@@ -49,7 +49,7 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidgetFactory("Widget", &WidgetLoader::createWidgetInstance<Widget>);
 	WidgetLoader::registerWidgetFactory("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
 	WidgetLoader::registerWidgetFactory("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
-	WidgetLoader::registerWidgetFactory("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
+//	WidgetLoader::registerWidgetFactory("MakeEntityWidget", &WidgetLoader::createWidgetInstance<MakeEntityWidget>);
 	WidgetLoader::registerWidgetFactory("IngameChatWidget", &WidgetLoader::createWidgetInstance<Gui::IngameChatWidget>);
 //	WidgetLoader::registerWidgetFactory("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
 	WidgetLoader::registerWidgetFactory("Help", &WidgetLoader::createWidgetInstance<Help>);

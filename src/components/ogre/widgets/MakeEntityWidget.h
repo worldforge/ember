@@ -23,19 +23,24 @@
 #ifndef EMBEROGRE_MAKEENTITYWIDGET_H
 #define EMBEROGRE_MAKEENTITYWIDGET_H
 
-#include "Widget.h"
+#include "framework/ConsoleCommandWrapper.h"
+#include "framework/ConsoleObject.h"
 
 namespace CEGUI
 {
 class Tree;
 class TreeItem;
+class Editbox;
+class PushButton;
+class Window;
+class EventArgs;
 }
 
 namespace Eris
 {
 class TypeInfo;
 class Connection;
-class Avatar;
+class Entity;
 }
 
 namespace Ember
@@ -62,15 +67,12 @@ class ModelRenderer;
 
  This simplified entity creator will be supplemented by the more advanced one as part of GSoC 2008.
  */
-class MakeEntityWidget: public Widget
+class MakeEntityWidget : public Ember::ConsoleObject
 {
 public:
 
-	MakeEntityWidget();
+	MakeEntityWidget(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 	virtual ~MakeEntityWidget();
-	virtual void buildWidget();
-
-	virtual void show();
 
 	const Ember::ConsoleCommandWrapper CreateEntity;
 	const Ember::ConsoleCommandWrapper Make;
@@ -79,8 +81,11 @@ public:
 
 protected:
 
-	CEGUI::Tree* mTypeTree;
-	CEGUI::Editbox* mName;
+	Eris::Entity& mAvatarEntity;
+	Eris::Connection& mConnection;
+
+
+	CEGUI::Editbox& mName;
 
 	/**
 	 A preview renderer for creating new models.
@@ -89,20 +94,15 @@ protected:
 
 	Adapters::Eris::TypeTreeAdapter* mTypeTreeAdapter;
 
-	void gotAvatar(Eris::Avatar* avatar);
-	void connectedToServer(Eris::Connection* conn);
-	void boundAType(Eris::TypeInfo* typeInfo);
+
+	void buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 
 	bool createButton_Click(const CEGUI::EventArgs& args);
 	bool typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args);
 
 	void createEntityOfType(Eris::TypeInfo* typeinfo);
 
-	void createPreviewTexture();
 	void updatePreview();
-
-	Eris::Connection* getConnection() const;
-
 };
 }
 
