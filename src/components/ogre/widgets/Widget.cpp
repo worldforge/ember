@@ -30,6 +30,7 @@
 #include "../GUIManager.h"
 #include "services/input/Input.h"
 #include "../EmberOgre.h"
+#include "framework/Exception.h"
 
 #include <CEGUIWindow.h>
 #include <CEGUIExceptions.h>
@@ -120,7 +121,7 @@ namespace Gui {
 		EventFirstTimeShown.emit();
 	}
 
-	CEGUI::Window* Widget::getWindow(const std::string& windowName)
+	CEGUI::Window* Widget::getWindow(const std::string& windowName, bool throwIfNotFound)
 	{
 		try {
 			assert(mWindowManager && "You must call init() before you can call any other methods.");
@@ -136,6 +137,9 @@ namespace Gui {
 			return window;
 		} catch (const CEGUI::Exception&) {
 			S_LOG_WARNING("The window " << windowName << " doesn't exist.");
+			if (throwIfNotFound) {
+				throw Ember::Exception("The window '" + windowName + "' could not be found.");
+			}
 			return 0;
 		}
 
