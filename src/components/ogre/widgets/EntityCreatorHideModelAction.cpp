@@ -26,15 +26,15 @@
 
 #include "EntityCreatorHideModelAction.h"
 
-#include "EntityCreator.h"
+#include "EntityCreatorCreationInstance.h"
 
 namespace Ember {
 namespace OgreView {
 
 namespace Gui {
 
-EntityCreatorHideModelAction::EntityCreatorHideModelAction(EntityCreator& entityCreator)
-		: mEntityCreator(entityCreator)
+EntityCreatorHideModelAction::EntityCreatorHideModelAction(EntityCreatorCreationInstance& creationInstance)
+		: mCreationInstance(creationInstance)
 {
 }
 
@@ -44,7 +44,7 @@ EntityCreatorHideModelAction::~EntityCreatorHideModelAction()
 
 void EntityCreatorHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
-	mEntityCreator.setModel("");
+	mCreationInstance.setModel("");
 }
 
 void EntityCreatorHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)

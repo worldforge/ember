@@ -25,6 +25,7 @@
 #endif
 
 #include "EntityCreatorMovement.h"
+#include "EntityCreatorMovementBridge.h"
 
 namespace Ember
 {
@@ -34,12 +35,12 @@ namespace OgreView
 namespace Gui
 {
 
-EntityCreatorMovement::EntityCreatorMovement(EntityCreator& entityCreator, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
+EntityCreatorMovement::EntityCreatorMovement(EntityCreatorCreationInstance& creationInstance, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
 : mMoveAdapter(camera)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
-	EntityCreatorMovementBridge* bridge = new EntityCreatorMovementBridge(entityCreator, entity, node);
+	EntityCreatorMovementBridge* bridge = new EntityCreatorMovementBridge(creationInstance, entity, node);
 	mMoveAdapter.attachToBridge(bridge);
 	mMoveAdapter.update();
 }

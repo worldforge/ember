@@ -31,7 +31,7 @@ namespace OgreView {
 
 namespace Gui {
 
-class EntityCreator;
+class EntityCreatorCreationInstance;
 
 /**
  * Shows or hides specific model in entity creator preview.
@@ -39,7 +39,7 @@ class EntityCreator;
 class EntityCreatorHideModelAction : public Ember::EntityMapping::Actions::Action
 {
 public:
-	EntityCreatorHideModelAction(EntityCreator& entityCreator);
+	EntityCreatorHideModelAction(EntityCreatorCreationInstance& creationInstance);
 	virtual ~EntityCreatorHideModelAction();
 	/**
 	 * Hides model. Called by model mapping framework.
@@ -50,7 +50,7 @@ public:
 	 */
 	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 protected:
-	EntityCreator& mEntityCreator;
+	EntityCreatorCreationInstance& mCreationInstance;
 };
 
 }

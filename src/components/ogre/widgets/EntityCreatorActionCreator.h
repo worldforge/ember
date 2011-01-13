@@ -30,7 +30,7 @@ namespace OgreView {
 
 namespace Gui {
 
-class EntityCreator;
+class EntityCreatorCreationInstance;
 
 /**
  * @brief Creating entity creator specific actions with model mapping framework.
@@ -41,11 +41,11 @@ class EntityCreator;
 class EntityCreatorActionCreator : public Ember::EntityMapping::IActionCreator
 {
 public:
-	EntityCreatorActionCreator(EntityCreator& entityCreator);
+	EntityCreatorActionCreator(EntityCreatorCreationInstance& creationInstance);
 	~EntityCreatorActionCreator();
 	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
-	EntityCreator& mEntityCreator;
+	EntityCreatorCreationInstance& mCreationInstance;
 };
 
 }

@@ -23,14 +23,13 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
-#include "components/ogre/authoring/EntityRecipe.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/widgets/Widget.h"
-#include <wfmath/point.h>
-#include <wfmath/quaternion.h>
 #include <CEGUIWindow.h>
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
+#include <sigc++/trackable.h>
+#include <sigc++/slot.h>
 #include <OgreFrameListener.h>
 
 namespace Eris
@@ -49,6 +48,7 @@ class World;
 namespace Authoring
 {
 class DetachedEntity;
+class EntityRecipe;
 }
 namespace Model
 {
@@ -59,6 +59,7 @@ namespace Gui
 
 class EntityCreatorInputAdapter;
 class EntityCreatorMovement;
+class EntityCreatorCreationInstance;
 
 /**
  * @brief Helper class for Entity Creator.
@@ -67,9 +68,10 @@ class EntityCreatorMovement;
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class EntityCreator
+class EntityCreator : public virtual sigc::trackable
 {
 public:
+
 	/**
 	 * Constructor.
 	 */
@@ -108,34 +110,9 @@ public:
 	void stopCreation();
 
 	/**
-	 * Composes entity
-	 */
-	void createEntity();
-
-	/**
 	 * Sends composed entity to server
 	 */
 	void finalizeCreation();
-
-	/**
-	 * Cleanup after creation of entity or cancel creation.
-	 */
-	void cleanupCreation();
-
-	/**
-	 * Sets preview model name
-	 */
-	void setModel(const std::string& modelName);
-
-	/**
-	 * Shows preview model part
-	 */
-	void showModelPart(const std::string& partName);
-
-	/**
-	 * Hide preview model part
-	 */
-	void hideModelPart(const std::string& partName);
 
 	/**
 	 * Entity creator widget. Set from Lua, so it is public.
@@ -153,58 +130,37 @@ public:
 	void loadAllTypes();
 
 protected:
-	/**
-	 * Sets preview node properties basing on model. Code from EmberPhysicalEntity.
-	 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-	 */
-	void initFromModel();
 
-	/**
-	 * Applies correct scaling basing on model definition. Code from EmberPhysicalEntity.
-	 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-	 */
-	void scaleNode();
-
-	/**
-	 * @brief Called when the model is reloaded, which also happens if background loading is enabled and the model has been loaded in the background.
-	 */
-	void model_Reloaded();
-
-
-	Model::Model* getModel();
-	bool hasBBox();
-	const WFMath::AxisBox<3> & getBBox();
 
 	/**
 	 * @brief The main world.
 	 */
 	World& mWorld;
 
+	/**
+	 * @brief The main type service.
+	 */
 	Eris::TypeService& mTypeService;
 
 	/**
-	 * Stores, are we in create mode.
-	 */
-	bool mCreateMode;
-
-	/**
-	 * Pointer to recipe that is currently selected in widget.
+	 * @brief The currently selected recipe.
 	 */
 	Authoring::EntityRecipe* mRecipe;
 
 	/**
-	 * Connection to EntityRecipe::adapterValueChanged signal, when in create mode.
+	 * @brief A creation instance, which represents a preview of the entity, before it's created on the server.
 	 */
-	sigc::connection mRecipeConnection;
+	EntityCreatorCreationInstance* mCreationInstance;
 
 	/**
-	 * @brief Handler of EntityRecipe::adapterValueChanged signal.
-	 *
-	 * Called on EntityRecipe::adapterValueChanged signal and should update preview with new adapter values.
-	 *
-	 * TODO Unfortunately, this signal is never called. Need to find what happens with it in adapters class.
+	 * @brief If set to true, all new entities will have their orientation randomized around the vertical axis.
 	 */
-	void adapterValueChanged();
+	bool mRandomizeOrientation;
+
+	/**
+	 * @brief A slot used for listening for changes to the recipe's adapter values.
+	 */
+	sigc::slot<void> mAdapterValueChangedSlot;
 
 	/**
 	 * @brief Checks whether the type info for the current recipe is fully bound.
@@ -220,56 +176,34 @@ protected:
 	void typeService_BoundType(Eris::TypeInfo* typeInfo);
 
 	/**
-	 * Current position of preview in the world.
+	 * @brief Listens for requests from the creationInstance to abort creation.
 	 */
-	WFMath::Point<3> mPos;
+	void creationInstance_AbortRequested();
 
 	/**
-	 * Current orientation of preview in the world.
+	 * @brief Listens for requests from the creationInstance to finalize creation.
 	 */
-	WFMath::Quaternion mOrientation;
+	void creationInstance_FinalizeRequested();
 
 	/**
-	 * Detached entity that is used in process of creating preview.
+	 * @brief Handler of EntityRecipe::adapterValueChanged signal.
+	 *
+	 * Called on EntityRecipe::adapterValueChanged signal and should update preview with new adapter values.
+	 *
+	 * TODO Unfortunately, this signal is never called. Need to find what happens with it in adapters class.
 	 */
-	Authoring::DetachedEntity* mEntity;
+	void adapterValueChanged();
 
 	/**
-	 * Preview scene node.
+	 * @brief Creates a new EntityCreatorCreationInstance.
+	 *
+	 * Note that any existing such instance will first be destroyed.
 	 */
-	Ogre::SceneNode* mEntityNode;
-
-	Model::ModelMount* mModelMount;
-
-	/**
-	 * Preview model.
-	 */
-	Model::Model* mModel;
-
-	/**
-	 * Message that is composed from recipe entity spec with placeholders substitued with adapters values.
-	 */
-	Atlas::Message::MapType mEntityMessage;
-
-	/**
-	 * Parameters for blurb timing.
-	 */
-	Ogre::Real mTimeUntilShowBlurb, mTimeBlurbShown, mTimeToShowBlurb;
-
-	/**
-	 @brief If set to true, all new entities will have their orientation randomized around the vertical axis.
-	 */
-	bool mRandomizeOrientation;
-
-	/**
-	 * @brief The connection for the TypeInfo bound signal, used for making sure that the UI doesn't proceed until the type info has been correctly bound.
-	 */
-	// 	sigc::connection mTypeInfoBoundConnection;
-
-	EntityCreatorMovement* mMovement;
+	void createNewCreationInstance();
 
 
-	Ogre::Entity* mAxisMarker;
+
+
 };
 
 }

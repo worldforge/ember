@@ -32,7 +32,7 @@ namespace OgreView {
 
 namespace Gui {
 
-class EntityCreator;
+class EntityCreatorCreationInstance;
 
 /**
  * @brief Shows or hides specific model part in entity creator preview.
@@ -40,7 +40,7 @@ class EntityCreator;
 class EntityCreatorPartAction : public Ember::EntityMapping::Actions::Action
 {
 public:
-	EntityCreatorPartAction(EntityCreator& entityCreator, std::string partName);
+	EntityCreatorPartAction(EntityCreatorCreationInstance& creationInstance, std::string partName);
 	~EntityCreatorPartAction();
 	/**
 	 * Shows specific model part. Called by model mapping framework.
@@ -51,7 +51,7 @@ public:
 	 */
 	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
 protected:
-	EntityCreator& mEntityCreator;
+	EntityCreatorCreationInstance& mCreationInstance;
 	std::string mPartName;
 };
 

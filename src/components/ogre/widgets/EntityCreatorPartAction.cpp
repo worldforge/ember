@@ -25,15 +25,16 @@
 #endif
 
 #include "EntityCreatorPartAction.h"
-#include "EntityCreator.h"
+#include "EntityCreatorCreationInstance.h"
+#include "framework/LoggingInstance.h"
 
 namespace Ember {
 namespace OgreView {
 
 namespace Gui {
 
-EntityCreatorPartAction::EntityCreatorPartAction(EntityCreator& entityCreator, std::string partName)
-		: mEntityCreator(entityCreator), mPartName(partName)
+EntityCreatorPartAction::EntityCreatorPartAction(EntityCreatorCreationInstance& creationInstance, std::string partName)
+		: mCreationInstance(creationInstance), mPartName(partName)
 {
 }
 
@@ -44,13 +45,13 @@ EntityCreatorPartAction::~EntityCreatorPartAction()
 void EntityCreatorPartAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator part " << mPartName);
-	mEntityCreator.showModelPart(mPartName);
+	mCreationInstance.showModelPart(mPartName);
 }
 
 void EntityCreatorPartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator part " << mPartName);
-	mEntityCreator.hideModelPart(mPartName);
+	mCreationInstance.hideModelPart(mPartName);
 }
 
 

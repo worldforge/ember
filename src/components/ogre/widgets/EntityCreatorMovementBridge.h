@@ -44,7 +44,7 @@ class DetachedEntity;
 namespace Gui
 {
 
-class EntityCreator;
+class EntityCreatorCreationInstance;
 
 /**
  @brief A movement bridge which knows how to move a DetachedEntity instance, which is a temporary preview entity used by the EntityCreator.
@@ -59,7 +59,7 @@ public:
 	 * @param entity The entity which should be moved.
 	 * @param node The node to which the entity belongs.
 	 */
-	EntityCreatorMovementBridge(EntityCreator& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	EntityCreatorMovementBridge(EntityCreatorCreationInstance& creationInstance, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
 
 	/**
 	 * @brief Dtor.
@@ -74,7 +74,7 @@ private:
 	/**
 	 * @brief The entity creator which owns the entity.
 	 */
-	EntityCreator& mCreator;
+	EntityCreatorCreationInstance& mCreationInstance;
 
 };
 

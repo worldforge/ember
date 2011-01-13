@@ -25,7 +25,7 @@
 #endif
 
 #include "EntityCreatorMovementBridge.h"
-#include "EntityCreator.h"
+#include "EntityCreatorCreationInstance.h"
 #include "components/ogre/authoring/DetachedEntity.h"
 #include <OgreSceneNode.h>
 #include "../Convert.h"
@@ -38,8 +38,8 @@ namespace OgreView
 namespace Gui
 {
 
-EntityCreatorMovementBridge::EntityCreatorMovementBridge(EntityCreator& creator, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-	::Ember::OgreView::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mCreator(creator)
+EntityCreatorMovementBridge::EntityCreatorMovementBridge(EntityCreatorCreationInstance& creationInstance, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
+	::Ember::OgreView::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mCreationInstance(creationInstance)
 {
 }
 
@@ -49,11 +49,11 @@ EntityCreatorMovementBridge::~EntityCreatorMovementBridge()
 
 void EntityCreatorMovementBridge::finalizeMovement()
 {
-	mCreator.finalizeCreation();
+	mCreationInstance.EventFinalizeRequested();
 }
 void EntityCreatorMovementBridge::cancelMovement()
 {
-	mCreator.stopCreation();
+	mCreationInstance.EventAbortRequested();
 }
 
 }

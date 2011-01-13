@@ -23,16 +23,19 @@
 #ifndef EMBEROGRE_GUIENTITYCREATORMOVEMENT_H
 #define EMBEROGRE_GUIENTITYCREATORMOVEMENT_H
 
-#include "EntityCreatorMovementBridge.h"
 #include "components/ogre/authoring/MovementAdapter.h"
 
 namespace Ember
 {
 namespace OgreView
 {
-
+namespace Authoring
+{
+class DetachedEntity;
+}
 namespace Gui
 {
+class EntityCreatorCreationInstance;
 
 /**
  @brief A movement of a DetachedEntity, beloging to the EntityCreator.
@@ -48,7 +51,7 @@ public:
 	 * @param entity The entity which should be moved.
 	 * @param node The node to which the entity belongs.
 	 */
-	EntityCreatorMovement(EntityCreator& entityCreator, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
+	EntityCreatorMovement(EntityCreatorCreationInstance& creationInstance, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node);
 
 	/**
 	 * @brief Dtor.

@@ -26,15 +26,16 @@
 
 #include "EntityCreatorModelAction.h"
 
-#include "EntityCreator.h"
+#include "EntityCreatorCreationInstance.h"
+#include "framework/LoggingInstance.h"
 
 namespace Ember {
 namespace OgreView {
 
 namespace Gui {
 
-EntityCreatorModelAction::EntityCreatorModelAction(EntityCreator& entityCreator, std::string modelName)
-		: mEntityCreator(entityCreator), mModelName(modelName)
+EntityCreatorModelAction::EntityCreatorModelAction(EntityCreatorCreationInstance& creationInstance, std::string modelName)
+		: mCreationInstance(creationInstance), mModelName(modelName)
 {
 }
 
@@ -45,13 +46,13 @@ EntityCreatorModelAction::~EntityCreatorModelAction()
 void EntityCreatorModelAction::activate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator model " << mModelName);
-	mEntityCreator.setModel(mModelName);
+	mCreationInstance.setModel(mModelName);
 }
 
 void EntityCreatorModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator model " << mModelName);
-	mEntityCreator.setModel("");
+	mCreationInstance.setModel("");
 }
 
 }

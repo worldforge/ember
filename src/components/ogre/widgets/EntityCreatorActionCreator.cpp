@@ -25,7 +25,7 @@
 #endif
 
 #include "EntityCreatorActionCreator.h"
-#include "EntityCreator.h"
+#include "EntityCreatorCreationInstance.h"
 
 #include "EntityCreatorPartAction.h"
 #include "EntityCreatorModelAction.h"
@@ -39,8 +39,8 @@ namespace OgreView {
 
 namespace Gui {
 
-EntityCreatorActionCreator::EntityCreatorActionCreator(EntityCreator& entityCreator)
-		: mEntityCreator(entityCreator)
+EntityCreatorActionCreator::EntityCreatorActionCreator(EntityCreatorCreationInstance& creationInstance)
+		: mCreationInstance(creationInstance)
 {
 }
 
@@ -53,13 +53,13 @@ void EntityCreatorActionCreator::createActions(Ember::EntityMapping::EntityMappi
 	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 		if (J->getType() == "display-part") {
-			EntityCreatorPartAction* action = new EntityCreatorPartAction(mEntityCreator, J->getValue());
+			EntityCreatorPartAction* action = new EntityCreatorPartAction(mCreationInstance, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "display-model") {
-			EntityCreatorModelAction* action = new EntityCreatorModelAction(mEntityCreator, J->getValue());
+			EntityCreatorModelAction* action = new EntityCreatorModelAction(mCreationInstance, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "hide-model") {
-			EntityCreatorHideModelAction* action = new EntityCreatorHideModelAction(mEntityCreator);
+			EntityCreatorHideModelAction* action = new EntityCreatorHideModelAction(mCreationInstance);
 			aCase->addAction(action);
 		}
 	}
