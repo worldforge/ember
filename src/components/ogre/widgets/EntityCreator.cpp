@@ -29,9 +29,6 @@
 
 #include "components/ogre/World.h"
 
-//#include "../GUIManager.h"
-//#include "components/ogre/widgets/adapters/atlas/AdapterFactory.h"
-
 #include "QuickHelp.h"
 
 #include "components/ogre/authoring/EntityRecipe.h"
@@ -43,7 +40,6 @@
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 
-//#include <CEGUIWindow.h>
 #include <wfmath/axisbox.h>
 
 using namespace Ember;
@@ -95,7 +91,7 @@ void EntityCreator::startCreation()
 		return;
 	}
 
-	mWidget->getMainWindow()->setAlpha(0.6);
+	EventCreationStarted();
 
 	createNewCreationInstance();
 
@@ -118,7 +114,7 @@ void EntityCreator::stopCreation()
 	delete mCreationInstance;
 	mCreationInstance = 0;
 
-	mWidget->getMainWindow()->setAlpha(1.0);
+	EventCreationEnded();
 }
 
 void EntityCreator::finalizeCreation()

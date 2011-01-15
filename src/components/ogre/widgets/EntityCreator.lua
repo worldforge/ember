@@ -151,9 +151,18 @@ function EntityCreator.buildWidget(world)
 		-- Initializing helper classes
 		debugObject(avatar)
 		entityCreator.helper = Ember.OgreView.Gui.EntityCreator:new(world)
+		
+		connect(entityCreator.connectors, entityCreator.helper.EventCreationStarted, function()
+				entityCreator.widget:getMainWindow():setAlpha(0.6)
+			end
+		)
+		
+		connect(entityCreator.connectors, entityCreator.helper.EventCreationEnded, function()
+				entityCreator.widget:getMainWindow():setAlpha(1)
+			end
+		)
 
 		connect(entityCreator.connectors, entityCreator.helper.EventTypeInfoLoaded, entityCreator.showRecipe, entityCreator)
-		entityCreator.helper.mWidget = entityCreator.widget
 		entityCreator.factory = Ember.OgreView.Gui.Adapters.Atlas.AdapterFactory("EntityCreator")
 	
 		-- Creating container for storing adapters

@@ -23,14 +23,10 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
-#include "components/ogre/model/Model.h"
-#include "components/ogre/widgets/Widget.h"
-#include <CEGUIWindow.h>
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
 #include <sigc++/slot.h>
-#include <OgreFrameListener.h>
 
 namespace Eris
 {
@@ -115,14 +111,19 @@ public:
 	void finalizeCreation();
 
 	/**
-	 * Entity creator widget. Set from Lua, so it is public.
-	 */
-	::Ember::OgreView::Gui::Widget* mWidget;
-
-	/**
 	 * @brief Emitted when all needed type info for the current recipe is loaded.
 	 */
 	sigc::signal<void> EventTypeInfoLoaded;
+
+	/**
+	 * @brief Emitted when creation has started.
+	 */
+	sigc::signal<void> EventCreationStarted;
+
+	/**
+	 * @brief Emitted when creation has ended.
+	 */
+	sigc::signal<void> EventCreationEnded;
 
 	/**
 	 * @brief Makes sure that all types are loaded. This is needed for the type lookup we need to do in the recipes in order to get the default values.
