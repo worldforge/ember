@@ -72,6 +72,12 @@ Eris::TypeService* DetachedEntity::getTypeService() const
 	return mTypeService;
 }
 
+void DetachedEntity::doInit(const Atlas::Objects::Entity::RootEntity& rootEntity)
+{
+	init(rootEntity, true);
+}
+
+
 void DetachedEntity::removeFromMovementPrediction()
 {
 }

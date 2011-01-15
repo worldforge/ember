@@ -46,14 +46,19 @@ public:
 	virtual ~DetachedEntity();
 
 	/**
-	 * Sets entity attributes from Atlas message.
+	 * @brief Sets entity attributes from Atlas message.
 	 */
 	void setFromMessage(const Atlas::Message::MapType& attrs);
 
 	/**
-	 * Exposes setAttr to public.
+	 * @brief Exposes setAttr to public.
 	 */
 	void setAttr(const std::string &p, const Atlas::Message::Element &v);
+
+	/**
+	 * @brief Performs initialization of the entity.
+	 */
+	void doInit(const Atlas::Objects::Entity::RootEntity& rootEntity);
 
 protected:
 

@@ -52,6 +52,8 @@
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 
+#include <Atlas/Objects/RootEntity.h>
+
 #include <OgreSceneManager.h>
 #include <sigc++/slot.h>
 //#include <OgreRoot.h>
@@ -130,6 +132,8 @@ void EntityCreatorCreationInstance::createEntity()
 
 	// Temporary entity
 	mEntity = new Authoring::DetachedEntity("-1", erisType, &mTypeService);
+	Atlas::Objects::Entity::RootEntity rootEntity;
+	mEntity->doInit(rootEntity);
 	mEntity->setFromMessage(mEntityMessage);
 
 	// Creating scene node
