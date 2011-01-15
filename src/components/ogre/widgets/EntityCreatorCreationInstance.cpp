@@ -24,6 +24,7 @@
 
 #include "EntityCreatorMovement.h"
 #include "EntityCreatorActionCreator.h"
+#include "AtlasHelper.h"
 
 #include "components/ogre/Avatar.h"
 #include "components/ogre/EmberEntity.h"
@@ -66,7 +67,7 @@ namespace Gui
 {
 
 EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService, Authoring::EntityRecipe& recipe, bool randomizeOrientation, sigc::slot<void>& adapterValueChangedSlot) :
-mWorld(world), mTypeService(typeService), mRecipe(recipe), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0), mRandomizeOrientation(randomizeOrientation)
+	mWorld(world), mTypeService(typeService), mRecipe(recipe), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0), mRandomizeOrientation(randomizeOrientation)
 {
 	mConnection = mRecipe.EventValueChanged.connect(adapterValueChangedSlot);
 
@@ -183,6 +184,7 @@ void EntityCreatorCreationInstance::finalizeCreation()
 	std::stringstream ss;
 	ss << mPos;
 	S_LOG_INFO("Trying to create entity at position " << ss.str());
+	S_LOG_VERBOSE("Sending entity data to server: " << AtlasHelper::serialize(c, "xml"));
 
 }
 
