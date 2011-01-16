@@ -93,6 +93,10 @@ template <>
 const char* resolveLuaTypename<const Ember::OgreView::MotionManager>(){return "Ember::OgreView::MotionManager";}
 template <>
 const char* resolveLuaTypename<const Ember::OgreView::GUIManager>(){return "Ember::OgreView::GUIManager";}
+template <>
+const char* resolveLuaTypename<const Eris::TypeInfo>(){return "Eris::TypeInfo";}
+
+
 }
 }
 

@@ -48,6 +48,7 @@ class View;
 class ServerInfo;
 class Task;
 class Avatar;
+class TypeInfo;
 }
 
 namespace Ember
