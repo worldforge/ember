@@ -42,6 +42,13 @@ function EntityCreator:Create_Click(args)
 	self.helper:toggleCreateMode()
 end
 
+function EntityCreator:createFromType(name, type)
+	self.typesCreator.recipe = Ember.OgreView.Authoring.EntityRecipe:new_local(name, type:getName())
+	self.recipe = self.typesCreator.recipe
+	self.helper:setRecipe(self.typesCreator.recipe)
+	self.helper:toggleCreateMode()
+end
+
 -- Handles toggling the randomizing of the orientation on and off
 function EntityCreator:RandomizeOrientation_CheckStateChanged(args)
 	local checkbox = self.widget:getWindow("RandomizeOrientation")
@@ -188,7 +195,8 @@ function EntityCreator.buildWidget(world)
 		local typesPreviewImage = entityCreator.widget:getWindow("Types/ModelPreviewImage", true)
 		entityCreator.typesCreator = {}
 
-		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getAvatar():getEmberEntity(), world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage)		
+		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getAvatar():getEmberEntity(), world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage)
+		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
 		
 	end
 	connect(entityCreator.connectors, entityCreator.widget.EventFirstTimeShown, setup)
