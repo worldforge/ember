@@ -65,6 +65,8 @@ public:
 	 */
 	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
 
+	EntityRecipe(const std::string& name, const std::string& entityType);
+
 	/**
 	 * Destructor.
 	 */

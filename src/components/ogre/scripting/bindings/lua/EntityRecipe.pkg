@@ -11,14 +11,9 @@ class EntityRecipe : public Ogre::Resource {
 public:
 	EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+	EntityRecipe(const std::string& name, const std::string& entityType);
 	virtual ~EntityRecipe();
- 	void loadImpl(void);
- 	void unloadImpl(void);
-	size_t calculateSize(void) const;
-//	GUIAdapter* createGUIAdapter(const std::string& name, const std::string& type, const std::string& tooltip);
-//	GUIAdapter* getGUIAdapter(const std::string& name);
 	const GUIAdaptersStore& getGUIAdapters();
-//	GUIAdapterBindings* createGUIAdapterBindings(const std::string& name);
 	void setAuthor(const std::string& author);
 	const std::string& getAuthor() const;
 	void setDescription(const std::string& description);

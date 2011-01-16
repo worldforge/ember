@@ -54,12 +54,19 @@ namespace OgreView
 namespace Authoring
 {
 EntityRecipe::EntityRecipe(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader) :
-	Resource(creator, name, handle, group, isManual, loader), mAuthor(), mDescription(), mEntitySpec(0), mEntityType()
+	Resource(creator, name, handle, group, isManual, loader), mEntitySpec(0)
 {
 	if (createParamDictionary("EntityRecipe")) {
 		// no custom params
 	}
 }
+
+EntityRecipe::EntityRecipe(const std::string& name, const std::string& entityType) :
+	mEntitySpec(0), mEntityType(entityType)
+{
+	mName = name;
+}
+
 
 EntityRecipe::~EntityRecipe()
 {
@@ -129,11 +136,13 @@ GUIAdapterBindings* EntityRecipe::createGUIAdapterBindings(const std::string& na
 void EntityRecipe::associateBindings()
 {
 	S_LOG_VERBOSE("Associating bindings.");
-	// Iterate over all entity spec XML nodes
-	EntityRecipe::SpecIterator iter(this);
-	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
-	if (elem) {
-		elem->Accept(&iter);
+	if (mEntitySpec) {
+		// Iterate over all entity spec XML nodes
+		EntityRecipe::SpecIterator iter(this);
+		TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
+		if (elem) {
+			elem->Accept(&iter);
+		}
 	}
 }
 
@@ -251,39 +260,45 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	 encoder.streamMessageElement(message);
 	 formatter.streamEnd();
 	 */
-	// Print entity into string
-	TiXmlPrinter printer;
-	printer.SetStreamPrinting();
-	mEntitySpec->Accept(&printer);
+	if (mEntitySpec) {
+		// Print entity into string
+		TiXmlPrinter printer;
+		printer.SetStreamPrinting();
+		mEntitySpec->Accept(&printer);
 
-	S_LOG_VERBOSE("Composed entity: " << printer.Str());
+		S_LOG_VERBOSE("Composed entity: " << printer.Str());
 
-	std::stringstream strStream(printer.CStr(), std::ios::in);
+		std::stringstream strStream(printer.CStr(), std::ios::in);
 
-	// Create objects
-	Atlas::Message::QueuedDecoder decoder;
-	Atlas::Codecs::XML codec(strStream, decoder);
+		// Create objects
+		Atlas::Message::QueuedDecoder decoder;
+		Atlas::Codecs::XML codec(strStream, decoder);
 
-	// Read whole stream into decoder queue
-	while (!strStream.eof()) {
-		codec.poll();
-	}
+		// Read whole stream into decoder queue
+		while (!strStream.eof()) {
+			codec.poll();
+		}
 
-	// Read decoder queue
-	while (decoder.queueSize() > 0) {
-		Atlas::Message::MapType m = decoder.popMessage();
-		Eris::TypeInfo* erisType = typeService.getTypeByName(getEntityType());
-		if (erisType) {
-			const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
-			for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
-				if (m.find(I->first) == m.end()) {
-					m.insert(Atlas::Message::MapType::value_type(I->first, I->second));
+		// Read decoder queue
+		while (decoder.queueSize() > 0) {
+			Atlas::Message::MapType m = decoder.popMessage();
+			Eris::TypeInfo* erisType = typeService.getTypeByName(getEntityType());
+			if (erisType) {
+				const Atlas::Message::MapType& defaultAttributes = erisType->getAttributes();
+				for (Atlas::Message::MapType::const_iterator I = defaultAttributes.begin(); I != defaultAttributes.end(); ++I) {
+					if (m.find(I->first) == m.end()) {
+						m.insert(Atlas::Message::MapType::value_type(I->first, I->second));
+					}
 				}
 			}
+			return m;
 		}
-		return m;
+	} else {
+		Atlas::Message::MapType msg;
+		msg["parents"] = Atlas::Message::ListType(1, mEntityType);
+		msg["name"] = getName();
+		return msg;
 	}
-
 	S_LOG_WARNING("No entity composed");
 	return Atlas::Message::MapType();
 }
