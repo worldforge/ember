@@ -40,7 +40,6 @@
 #include "services/EmberServices.h"
 #include "authoring/AuthoringManager.h"
 
-
 #include <OgreWireBoundingBox.h>
 #include <OgreMaterialManager.h>
 #include <OgreSceneNode.h>
@@ -54,7 +53,6 @@
 #include <Atlas/Message/QueuedDecoder.h>
 
 using namespace Ogre;
-
 
 namespace Ember
 {
@@ -83,14 +81,14 @@ EmberEntity::~EmberEntity()
 
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	Eris::Entity::init(ge, fromCreateOp);
-
-	///calling this will result in a call to setModel(...)
+	//Calling this will result in the graphical represention being correctly set up.
+	//It's important that we call initialize before call Eris::Entity::init, since else we get strange results.
 	mEntityMapping->initialize();
+
+	Eris::Entity::init(ge, fromCreateOp);
 
 	// Setup Sounds
 	//	setSounds();
-
 
 
 	// set the Ogre node position and orientation based on Atlas data
