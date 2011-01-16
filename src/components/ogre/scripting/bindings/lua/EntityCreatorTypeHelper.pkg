@@ -21,6 +21,11 @@ public:
 
 	EntityCreatorTypeHelper(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 	virtual ~EntityCreatorTypeHelper();
+	
+	/**
+	 * @brief Emitted when an entity should be created from a type.
+	 */
+	sigc::signal<void, const std::string&, Eris::TypeInfo&> EventCreateFromType;
 };
 }
 

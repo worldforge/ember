@@ -135,7 +135,17 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args)
 
 		Eris::TypeInfo* typeInfo = mTypeTreeAdapter->getSelectedTypeInfo();
 		if (typeInfo) {
-			createEntityOfType(typeInfo);
+			try {
+				std::string name;
+				if (mName.getText().length() > 0) {
+					name = mName.getText().c_str();
+				} else {
+					name = typeInfo->getName();
+				}
+				EventCreateFromType(name, *typeInfo);
+			} catch (const std::exception& ex) {
+				S_LOG_WARNING("Error when trying to create entity from type." << ex);
+			}
 		}
 	}
 	return true;

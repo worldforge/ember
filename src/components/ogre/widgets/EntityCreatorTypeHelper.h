@@ -25,6 +25,7 @@
 
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
+#include <sigc++/signal.h>
 
 namespace CEGUI
 {
@@ -77,6 +78,11 @@ public:
 	const Ember::ConsoleCommandWrapper Make;
 
 	virtual void runCommand(const std::string &command, const std::string &args);
+
+	/**
+	 * @brief Emitted when an entity should be created from a type.
+	 */
+	sigc::signal<void, const std::string&, Eris::TypeInfo&> EventCreateFromType;
 
 protected:
 
