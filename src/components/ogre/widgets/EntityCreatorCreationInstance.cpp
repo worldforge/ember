@@ -120,15 +120,7 @@ void EntityCreatorCreationInstance::createEntity()
 
 	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 
-	/*
-	 if (mName->getText().length() > 0) {
-	 msg["name"] = mName->getText().c_str();
-	 } else {
-	 msg["name"] = typeinfo->getName();
-	 }
-	 */
 	mEntityMessage["loc"] = avatar.getLocation()->getId();
-	mEntityMessage["name"] = erisType->getName();
 	mEntityMessage["parents"] = Atlas::Message::ListType(1, erisType->getName());
 
 	// Temporary entity
