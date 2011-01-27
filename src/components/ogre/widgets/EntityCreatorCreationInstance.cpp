@@ -31,6 +31,7 @@
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/World.h"
 #include "components/ogre/Convert.h"
+#include "components/ogre/OgreInfo.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinitionManager.h"
@@ -87,6 +88,7 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 	//	delete mEntityNode;
 
 	mWorld.getSceneManager().destroyMovableObject(mModel);
+	mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
 
 	// Deleting temporary entity
 	mEntity->shutdown();
@@ -134,7 +136,7 @@ void EntityCreatorCreationInstance::createEntity()
 
 	if (!mAxisMarker) {
 		try {
-			mAxisMarker = mEntityNode->getCreator()->createEntity("EntityCreator_axisMarker", "axes.mesh");
+			mAxisMarker = mEntityNode->getCreator()->createEntity(OgreInfo::createUniqueResourceName("EntityCreator_axisMarker"), "axes.mesh");
 			mEntityNode->attachObject(mAxisMarker);
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when loading axes mesh." << ex);
