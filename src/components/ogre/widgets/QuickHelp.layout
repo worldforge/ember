@@ -28,8 +28,8 @@
 				<Property Name='UnifiedPosition' Value='{{0,5},{0,25}}'/>
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='ReadOnly' Value='true'/>
-				<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+				<Property Name='ReadOnly' Value='True'/>
+				<Property Name='WordWrap' Value='True'/>
 			</Window>
 			<Window Type='EmberLook/Button' Name='Previous'>
 				<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
