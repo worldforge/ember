@@ -205,7 +205,7 @@ namespace OgreView {
 		std::stringstream ss;
 
 		Ogre::PagingLandScapeRenderableManager* renderableManager(mSceneManager.getRenderableManager());
-		ss << "Renderables: " << renderableManager->numRenderables() << "\nFree: " << renderableManager->numFree() << "\nLoading: " << renderableManager->numLoading() << "\nVisible: " << renderableManager->numVisibles() << "\nTiles: " << mSceneManager.getTileManager()->numTiles() << "\nFree tiles: " << mSceneManager.getTileManager()->numFree();
+		ss << "Renderables: " << renderableManager->numRenderables() << "\n Free: " << renderableManager->numFree() << "\n Loading: " << renderableManager->numLoading() << "\n Visible: " << renderableManager->numVisibles() << "\nTiles: " << mSceneManager.getTileManager()->numTiles() << "\n Free: " << mSceneManager.getTileManager()->numFree() << "\nPages loaded: " << mSceneManager.getPageManager()->getLoadedPageSize() << "\n Unloaded: " << mSceneManager.getPageManager()->getUnloadedPagesSize();
 		return ss.str();
 	}
 
