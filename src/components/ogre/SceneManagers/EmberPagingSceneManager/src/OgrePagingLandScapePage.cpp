@@ -533,6 +533,10 @@ namespace Ogre
 		if (mPageState == STATE_LOADED)	{
 			touch();
 
+			if (!mVisible) {
+				show(true);
+			}
+
 			for (size_t i = 0; i < mTiles.size(); ++i) {
 				for (size_t j = 0; j < mTiles[i].size(); ++j) {
 					mTiles[i][j]->_Notify(pos, cam);
