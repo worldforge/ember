@@ -37,9 +37,9 @@ Helper class for the compass widget.
 class Compass
 {
 public:
-    Compass(Ember::OgreView::Gui::ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager);
+    Compass(Ember::OgreView::Gui::ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ISceneManagerAdapter& sceneManagerAdapter);
 
-    ~Compass();
+    virtual ~Compass();
     
     Ember::OgreView::Terrain::Map& getMap();
     

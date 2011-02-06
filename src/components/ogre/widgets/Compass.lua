@@ -78,7 +78,7 @@ function Compass:buildWidget(terrainManager)
 
 	self.helperImpl = Ember.OgreView.Gui.RenderedCompassImpl:new()
 
-	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager())
+	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager(), terrainManager:getAdapter())
 	self.map = self.helper:getMap()
 	
 	self:buildCEGUIWidget()

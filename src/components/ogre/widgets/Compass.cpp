@@ -31,6 +31,9 @@
 #include "../EmberOgre.h"
 #include "../Avatar.h"
 #include "../terrain/Map.h"
+#include "../terrain/ISceneManagerAdapter.h"
+#include "../terrain/ITerrainObserver.h"
+
 
 #include "framework/LoggingInstance.h"
 
@@ -48,18 +51,22 @@ namespace OgreView {
 
 namespace Gui {
 
-Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager)
-: mMap(new Map(sceneManager)), mCompassImpl(compassImpl)
+Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ISceneManagerAdapter& sceneManagerAdapter)
+: mMap(new Map(sceneManager)), mCompassImpl(compassImpl), mSceneManagerAdapter(sceneManagerAdapter), mTerrainObserver(sceneManagerAdapter.createObserver())
 {
 	mMap->initialize();
 	if (compassImpl) {
 		compassImpl->setCompass(this);
 	}
+	updateTerrainObserver();
+	mMap->getView().EventBoundsChanged.connect(sigc::mem_fun(*this, &Compass::mapView_BoundsChanged));
+	mTerrainObserver->EventAreaShown.connect(sigc::mem_fun(*this, &Compass::terrainObserver_AreaShown));
 }
 
 
 Compass::~Compass()
 {
+	mSceneManagerAdapter.destroyObserver(mTerrainObserver);
 }
 
 Terrain::Map& Compass::getMap()
@@ -92,6 +99,22 @@ void Compass::refresh()
 	if (mCompassImpl) {
 		mCompassImpl->refresh();
 	}
+}
+
+void Compass::terrainObserver_AreaShown()
+{
+	mMap->render();
+	refresh();
+}
+
+void Compass::mapView_BoundsChanged()
+{
+	updateTerrainObserver();
+}
+
+void Compass::updateTerrainObserver()
+{
+	mTerrainObserver->observeArea(mMap->getView().getFullBounds());
 }
 
 

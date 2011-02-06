@@ -41,12 +41,15 @@ namespace Terrain
 {
 class Map;
 class MapView;
+class ISceneManagerAdapter;
+class ITerrainObserver;
 }
 
 namespace Gui {
 
 
 class ICompassImpl;
+
 /**
 @brief Helper class for the compass widget.
 
@@ -55,7 +58,7 @@ class ICompassImpl;
 class Compass
 {
 public:
-    Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager);
+    Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ISceneManagerAdapter& sceneManagerAdapter);
 
     virtual ~Compass();
 
@@ -70,7 +73,6 @@ public:
      */
     void refresh();
 
-
 protected:
 
 	/**
@@ -83,6 +85,33 @@ protected:
 	 * @brief The compass implementation, responsible for the actual transformation of the map texture info something which can be presented in the gui.
 	 */
 	ICompassImpl* mCompassImpl;
+
+	/**
+	 * @brief A scene manager adapter, from which we'll obtain a terrain observer.
+	 */
+	Terrain::ISceneManagerAdapter& mSceneManagerAdapter;
+
+	/**
+	 * @brief A terrain observer, which observes when parts of the terrain is shown.
+	 * @see terrainObserver_AreaShown
+	 */
+	Terrain::ITerrainObserver* mTerrainObserver;
+
+	/**
+	 * @brief When new parts of the terrain becomes visible, we need to rerender the map.
+	 */
+	void terrainObserver_AreaShown();
+
+	/**
+	 * @brief When the bounds of the map changes, we need to update our terrain observer.
+	 */
+	void mapView_BoundsChanged();
+
+	/**
+	 * @brief Updates the terrain observer with the bounds currently used by the map.
+	 */
+	void updateTerrainObserver();
+
 };
 
 class ICompassImpl
