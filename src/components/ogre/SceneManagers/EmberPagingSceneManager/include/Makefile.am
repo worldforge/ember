@@ -57,7 +57,8 @@ EmberPagingLandScapeData2D_HeightField.h \
 EmberPagingLandScapeTexture.h \
 EmberPagingSceneManager.h \
 EmberPagingSceneManagerAdapter.h \
-EmberTerrainPageBridge.h
+EmberTerrainPageBridge.h \
+EmberPagingTerrainObserver.h
 
 
 #			OgrePagingLandScapeData2D_Spline.h \
