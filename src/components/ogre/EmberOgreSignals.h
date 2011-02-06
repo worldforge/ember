@@ -97,6 +97,11 @@ public:
 	sigc::signal<void, Terrain::TerrainManager&> EventTerrainManagerCreated;
 
 	/**
+	 * @brief Emitted right before the TerrainManager is destroyed.
+	 */
+	sigc::signal<void> EventTerrainManagerBeingDestroyed;
+
+	/**
 	 * @brief Emitted after the TerrainManager has been destroyed.
 	 */
 	sigc::signal<void> EventTerrainManagerDestroyed;

@@ -138,7 +138,7 @@ connect(connectors, emberOgre.EventTerrainManagerCreated, function(terrainManage
 	setmetatable(compass, {__index = Compass})
 	
 	compass:buildWidget(terrainManager)
-	connect(compass.connectors, emberOgre.EventTerrainManagerDestroyed, function()
+	connect(compass.connectors, emberOgre.EventTerrainManagerBeingDestroyed, function()
 		compass:shutdown()
 		compass = nil
 	end)

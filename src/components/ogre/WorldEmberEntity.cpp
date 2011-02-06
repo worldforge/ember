@@ -83,6 +83,9 @@ WorldEmberEntity::~WorldEmberEntity()
 	delete mPageDataProvider;
 	delete mFoliage;
 	delete mEnvironment;
+	if (mTerrainManager) {
+		EmberOgre::getSingleton().EventTerrainManagerBeingDestroyed.emit();
+	}
 	delete mTerrainManager;
 	if (mTerrainManager) {
 		EmberOgre::getSingleton().EventTerrainManagerDestroyed.emit();
