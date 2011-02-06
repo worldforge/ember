@@ -124,13 +124,15 @@ LayerStore& ShaderPass::getLayers()
 
 bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
 {
-	for (unsigned int i = 0; i < mShadowLayers; ++i) {
-		S_LOG_VERBOSE("Adding shadow layer.");
-		Ogre::TextureUnitState * textureUnitState = pass.createTextureUnitState();
+	if (useShadows) {
+		for (unsigned int i = 0; i < mShadowLayers; ++i) {
+			S_LOG_VERBOSE("Adding shadow layer.");
+			Ogre::TextureUnitState * textureUnitState = pass.createTextureUnitState();
 
-		textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
-		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
-		textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
+			textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
+			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
+			textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
+		}
 	}
 
 	///should we use a base pass?

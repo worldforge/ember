@@ -65,6 +65,9 @@ bool ShaderNormalMappedPass::hasRoomForLayer(const TerrainPageSurfaceLayer* laye
 
 bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
 {
+	if (shaderSuffix == "/Simple") {
+		return ShaderPass::finalize(pass, useShadows, shaderSuffix);
+	}
 	//TODO: add shadow here
 
 	///should we use a base pass?
