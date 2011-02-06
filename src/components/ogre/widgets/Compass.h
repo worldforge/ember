@@ -49,6 +49,49 @@ namespace Gui {
 
 
 class ICompassImpl;
+class Compass;
+
+/**
+ * @brief Performs delayed compass rendering, at the end of a frame.
+ */
+class DelayedCompassRenderer : public Ogre::FrameListener
+{
+public:
+
+	/**
+	 * @brief Ctor.
+	 * @param compass The compass instance which will be updated.
+	 */
+	DelayedCompassRenderer(Compass& compass);
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~DelayedCompassRenderer();
+
+	/**
+	 * Methods from Ogre::FrameListener
+	 */
+	bool frameStarted(const Ogre::FrameEvent& event);
+
+	/**
+	 * @brief Queues a new rendering.
+	 */
+	void queueRendering();
+
+protected:
+
+	/**
+	 * @brief The compass instance which should be updated.
+	 */
+	Compass& mCompass;
+
+	/**
+	 * @brief If true, the next frame should be rendered.
+	 */
+	bool mRenderNextFrame;
+
+};
 
 /**
 @brief Helper class for the compass widget.
@@ -73,6 +116,11 @@ public:
      */
     void refresh();
 
+    /**
+     * @brief Queues a refresh next frame.
+     */
+    void queueRefresh();
+
 protected:
 
 	/**
@@ -96,6 +144,8 @@ protected:
 	 * @see terrainObserver_AreaShown
 	 */
 	Terrain::ITerrainObserver* mTerrainObserver;
+
+	DelayedCompassRenderer mDelayedRenderer;
 
 	/**
 	 * @brief When new parts of the terrain becomes visible, we need to rerender the map.
