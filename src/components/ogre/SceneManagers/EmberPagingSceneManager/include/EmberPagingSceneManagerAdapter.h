@@ -24,6 +24,9 @@
 #include "../../../EmberOgrePrerequisites.h"
 
 #include "../../../terrain/ISceneManagerAdapter.h"
+#include "OgrePagingLandScapeCallBackEvent.h"
+
+#include <map>
 
 namespace Ogre
 {
@@ -34,7 +37,12 @@ class SceneManager;
 namespace Ember {
 namespace OgreView {
 
+namespace Terrain {
+class ITerrainObserver;
+}
+
 class EmberPagingSceneManager;
+class EmberPagingTerrainObserver;
 
 /**
 An adapter specific for the PagingLandscapeSceneManager.
@@ -47,6 +55,7 @@ public:
 
 	EmberPagingSceneManagerAdapter(EmberPagingSceneManager& scenemanager);
 	
+	virtual ~EmberPagingSceneManagerAdapter();
 	
 	virtual int getPageSize();
 	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z);
@@ -73,10 +82,32 @@ public:
 
 	virtual std::string getDebugInfo();
 
+	/**
+	 * @brief Creates a new terrain observer.
+	 * @return A new terrain observer.
+	 */
+	virtual Terrain::ITerrainObserver* createObserver();
+
+	/**
+	 * @brief Destroys a terrain observer.
+	 * @param observer A terrain observer.
+	 */
+	virtual void destroyObserver(Terrain::ITerrainObserver* observer);
 
 private:
+
+	typedef std::map<EmberPagingTerrainObserver*, Ogre::PagingLandscapeDelegate*> TerrainObserverStore;
+
 	EmberPagingSceneManager& mSceneManager;
+
+	/**
+	 * @brief The terrain observers handled by this instance.
+	 */
+	TerrainObserverStore mTerrainObservers;
+
 	Ogre::PagingLandScapeOptions* getOptions();
+
+
 
 };
 
