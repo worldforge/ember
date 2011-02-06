@@ -156,7 +156,7 @@ bool MapView::reposition(const Ogre::Vector2& pos)
 	int halfViewSizeMeters((mMap.getResolutionMeters() * mViewSize)/ 2);
 	///check if we need to reposition the camera
 	if (pos.x - halfViewSizeMeters < mFullBounds.left || pos.x + halfViewSizeMeters > mFullBounds.right
-		|| pos.y - halfViewSizeMeters < mFullBounds.top || pos.y + halfViewSizeMeters > mFullBounds.bottom) {
+		|| pos.y - halfViewSizeMeters < mFullBounds.bottom || pos.y + halfViewSizeMeters > mFullBounds.top) {
 		mMapCamera.reposition(pos);
 		mMapCamera.render();
 
@@ -165,12 +165,12 @@ bool MapView::reposition(const Ogre::Vector2& pos)
 		return true;
 	}
 	mRelativeViewPosition.x = (pos.x - mFullBounds.left) / static_cast<float>(mMap.getResolutionMeters());
-	mRelativeViewPosition.y = (pos.y - mFullBounds.top) / static_cast<float>(mMap.getResolutionMeters());
+	mRelativeViewPosition.y = (pos.y - mFullBounds.bottom) / static_cast<float>(mMap.getResolutionMeters());
 	float halfViewSize = mViewSize / 2;
 	mVisibleRelativeBounds.left = mRelativeViewPosition.x - halfViewSize;
 	mVisibleRelativeBounds.right= mRelativeViewPosition.x + halfViewSize;
-	mVisibleRelativeBounds.top = mRelativeViewPosition.y - halfViewSize;
-	mVisibleRelativeBounds.bottom= mRelativeViewPosition.y + halfViewSize;
+	mVisibleRelativeBounds.bottom = mRelativeViewPosition.y - halfViewSize;
+	mVisibleRelativeBounds.top = mRelativeViewPosition.y + halfViewSize;
 	return false;
 
 }
@@ -185,22 +185,29 @@ const Ogre::Vector2& MapView::getRelativeViewPosition() const
 	return mRelativeViewPosition;
 }
 
+const Ogre::TRect<int>& MapView::getFullBounds() const
+{
+	return mFullBounds;
+}
+
+
 void MapView::recalculateBounds()
 {
 	Ogre::Vector2 pos(mMapCamera.getPosition());
 	mFullBounds.left = static_cast<int>(pos.x - (mMap.getResolutionMeters() / 2));
 	mFullBounds.right = static_cast<int>(pos.x + (mMap.getResolutionMeters() / 2));
-	mFullBounds.top = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
-	mFullBounds.bottom = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
+	mFullBounds.bottom = static_cast<int>(pos.y - (mMap.getResolutionMeters() / 2));
+	mFullBounds.top = static_cast<int>(pos.y + (mMap.getResolutionMeters() / 2));
 
 
 
 	mVisibleRelativeBounds.left = 0.5f - (mViewSize / 2);
 	mVisibleRelativeBounds.right= 0.5f + (mViewSize / 2);
-	mVisibleRelativeBounds.top = 0.5f - mViewSize / 2;
-	mVisibleRelativeBounds.bottom= 0.5f + (mViewSize / 2);
+	mVisibleRelativeBounds.bottom = 0.5f - mViewSize / 2;
+	mVisibleRelativeBounds.top = 0.5f + (mViewSize / 2);
 	mRelativeViewPosition.x = 0.5f;
 	mRelativeViewPosition.y = 0.5f;
+	EventBoundsChanged();
 }
 
 

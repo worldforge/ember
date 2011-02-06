@@ -31,6 +31,8 @@
 #include <OgreTexture.h>
 #include <OgreSceneManager.h>
 
+#include <sigc++/signal.h>
+
 namespace Ember {
 namespace OgreView {
 
@@ -92,7 +94,8 @@ protected:
 Use an instance of this during your rendering to make sure that the lightning is correctly set up, and then reset afterwards.
 
 @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/class MapCameraLightningInstance {
+*/
+class MapCameraLightningInstance {
 public:
 	/**
 	 * @brief Ctor.
@@ -179,8 +182,22 @@ public:
 	 */
 	bool reposition(const Ogre::Vector2& pos);
 
+	/**
+	 * @brief Gets the relative bounds of the subview within the complete map.
+	 * The bounds are expressed as 0..1.
+	 */
 	const Ogre::TRect<float>& getRelativeViewBounds() const;
+
+	/**
+	 * @brief Gets the relative center position of the subview within the complete map.
+	 * The position is expressed as 0..1.
+	 */
 	const Ogre::Vector2& getRelativeViewPosition() const;
+
+	/**
+	 * @brief Gets the full bounds of the map being rendered, in world units.
+	 */
+	const Ogre::TRect<int>& getFullBounds() const;
 
 	/**
 	 * @brief Recalculates the bounds. Call this whenever you've altered the scaling or repositioned the camera.
@@ -188,24 +205,51 @@ public:
 	 */
 	void recalculateBounds();
 
+	/**
+	 * @brief Emitted when the bounds changes.
+	 */
+	sigc::signal<void> EventBoundsChanged;
+
 protected:
 
 
+	/**
+	 * @brief The full bounds of the map being rendered, in world units.
+	 */
 	Ogre::TRect<int> mFullBounds;
+
+	/**
+	 * @brief The relative bounds of the subview which is currently being rendered.
+	 */
 	Ogre::TRect<float> mVisibleRelativeBounds;
+
+	/**
+	 * @brief The relative position of the subview which is currently being rendered.
+	 */
 	Ogre::Vector2 mRelativeViewPosition;
 
+	/**
+	 * @brief The map being rendered.
+	 */
 	Map& mMap;
+
+	/**
+	 * @brief The camera used to render the map.
+	 */
 	MapCamera& mMapCamera;
 
+	/**
+	 * @brief In relative terms, how much of the total map should be used to render the visible subview.
+	 * Expressed as [0..1], where 1 denotes the full rendered map.
+	 */
 	float mViewSize;
 
 };
 
 /**
-	An overhead map of the terrain, rendered into a texture.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ * @brief An overhead map of the terrain, rendered into a texture.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class Map{
 public:
     Map(Ogre::SceneManager& sceneManager);
