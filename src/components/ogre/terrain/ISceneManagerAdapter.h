@@ -28,6 +28,7 @@ namespace OgreView {
 namespace Terrain {
 
 class TerrainManager;
+class ITerrainObserver;
 
 /**
 Acts as a bridge between the Mercator terrain system and the Ogre terrain rendering engine. We don't want to directly interface with the terrain rendering system since we want to have the ability to replace or alter that, thus we use an instance of this whenever we need to interact directly to it.
@@ -174,6 +175,18 @@ public:
 	 * @return A short debug information string about the current situation of the scene manager.
 	 */
 	virtual std::string getDebugInfo() = 0;
+
+	/**
+	 * @brief Creates a new terrain observer.
+	 * @return A new terrain observer.
+	 */
+	virtual ITerrainObserver* createObserver() = 0;
+
+	/**
+	 * @brief Destroys a terrain observer.
+	 * @param observer A terrain observer.
+	 */
+	virtual void destroyObserver(ITerrainObserver* observer) = 0;
 
 };
 }

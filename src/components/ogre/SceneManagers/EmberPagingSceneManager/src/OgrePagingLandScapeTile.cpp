@@ -308,12 +308,21 @@ void PagingLandScapeTile::_Notify(const Vector3 &pos, const PagingLandScapeCamer
 			if (!mLoaded) {
 				load(); 
 
+				assert (mRenderable);
+				mRenderable->setVisible (true);
+
 				// now visible 
 				mParent->getSceneManager()->getListenerManager ()->fireTileShow
 					(mInfo->mPageX, mInfo->mPageZ, mInfo->mTileX,  mInfo->mTileZ, mWorldBounds);
+			} else {
+				assert (mRenderable);
+				mRenderable->setVisible (true);
+
+				if (wasvisible != mVisible) {
+					mParent->getSceneManager()->getListenerManager ()->fireTileShow
+						(mInfo->mPageX, mInfo->mPageZ, mInfo->mTileX,  mInfo->mTileZ, mWorldBounds);
+				}
 			}
-			assert (mRenderable);
-			mRenderable->setVisible (true);   
 
 		} else {
 			// now hidden

@@ -239,6 +239,21 @@ $OGRE_PKG_ERRORS
 Please goto http://www.ogre3d.org to get the latest, or check config.log to
 see why the tests failed, and fix it.])
 	])
+	
+#Check that Ogre is built with FreeImage support. If not, no images can be loaded. Ogre can also be built with DevIL, but that's not thread safe, and will lead to crashes.
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <OgreConfig.h>
+]],
+[[
+#if OGRE_NO_FREEIMAGE == 0
+// OGRE is built with FreeImage
+#else
+# OGRE is not built with FreeImage
+#endif
+]])],
+[], [AC_MSG_ERROR([[You must build Ogre with FreeImage support. You cannot use DevIL, as that's not thread safe.]])])
+	
+	
 
 # Check for CEGUI-OGRE adapter
 PKG_CHECK_MODULES(CEGUIOGRE, [CEGUI-OGRE >= $CEGUI_VERSION],

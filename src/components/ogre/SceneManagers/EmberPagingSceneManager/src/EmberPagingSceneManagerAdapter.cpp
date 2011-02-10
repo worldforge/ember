@@ -24,6 +24,7 @@
 #include "EmberPagingSceneManagerAdapter.h"
 
 #include "EmberPagingSceneManager.h"
+#include "EmberPagingTerrainObserver.h"
 #include "OgrePagingLandScapeOptions.h"
 #include "OgrePagingLandScapePageManager.h"
 #include "OgrePagingLandScapePage.h"
@@ -31,6 +32,7 @@
 #include "OgreMemoryAllocatorConfig.h"
 #include "OgrePagingLandScapeRenderableManager.h"
 #include "OgrePagingLandScapeTileManager.h"
+#include "OgrePagingLandScapeListenerManager.h"
 
 namespace Ember {
 namespace OgreView {
@@ -43,6 +45,14 @@ namespace OgreView {
 	EmberPagingSceneManagerAdapter::EmberPagingSceneManagerAdapter(EmberPagingSceneManager& scenemanager) : mSceneManager(scenemanager)
 	{
 	}
+
+	EmberPagingSceneManagerAdapter::~EmberPagingSceneManagerAdapter()
+	{
+		if (mTerrainObservers.size()) {
+			S_LOG_WARNING("All terrain observers weren't deregistered from the EmberPagingSceneManagerAdapter. This will lead to memory leaks.");
+		}
+	}
+
 
 	int EmberPagingSceneManagerAdapter::getPageSize()
 	{
@@ -209,6 +219,29 @@ namespace OgreView {
 		return ss.str();
 	}
 
+
+	Terrain::ITerrainObserver* EmberPagingSceneManagerAdapter::createObserver()
+	{
+		EmberPagingTerrainObserver* observer = new EmberPagingTerrainObserver();
+		Ogre::PagingLandscapeDelegate* delegate = new Ogre::PagingLandscapeDelegate(observer, &EmberPagingTerrainObserver::tileShow);
+		mSceneManager.getListenerManager()->addShowTileListener(delegate);
+		mTerrainObservers.insert(TerrainObserverStore::value_type(observer, delegate));
+		return observer;
+	}
+
+	void EmberPagingSceneManagerAdapter::destroyObserver(Terrain::ITerrainObserver* observer)
+	{
+		EmberPagingTerrainObserver* observerImpl = static_cast<EmberPagingTerrainObserver*>(observer);
+		TerrainObserverStore::iterator I = mTerrainObservers.find(observerImpl);
+		if (I != mTerrainObservers.end()) {
+			mTerrainObservers.erase(I);
+			delete observerImpl;
+			Ogre::PagingLandscapeDelegate* delegate = I->second;
+			mSceneManager.getListenerManager()->removeShowTileListener(delegate);
+			delete delegate;
+		}
+
+	}
 
 }
 }

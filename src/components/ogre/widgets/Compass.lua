@@ -78,7 +78,7 @@ function Compass:buildWidget(terrainManager)
 
 	self.helperImpl = Ember.OgreView.Gui.RenderedCompassImpl:new()
 
-	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager())
+	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager(), terrainManager:getAdapter())
 	self.map = self.helper:getMap()
 	
 	self:buildCEGUIWidget()
@@ -138,7 +138,7 @@ connect(connectors, emberOgre.EventTerrainManagerCreated, function(terrainManage
 	setmetatable(compass, {__index = Compass})
 	
 	compass:buildWidget(terrainManager)
-	connect(compass.connectors, emberOgre.EventTerrainManagerDestroyed, function()
+	connect(compass.connectors, emberOgre.EventTerrainManagerBeingDestroyed, function()
 		compass:shutdown()
 		compass = nil
 	end)

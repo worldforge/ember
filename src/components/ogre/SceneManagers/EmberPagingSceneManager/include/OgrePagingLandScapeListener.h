@@ -3,7 +3,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright © 2000-2004 The OGRE Team
+Copyright ï¿½ 2000-2004 The OGRE Team
 Also see acknowledgements in Readme.html
  
 This program is free software; you can redistribute it and/or modify it under
@@ -31,7 +31,7 @@ namespace Ogre
 	 *
 	 * \todo mafm: not really used by anyone
 	 */
-	class _OgrePagingLandScapeExport PagingLandScapeListener
+	class PagingLandScapeListener
 	{
 
         public:
