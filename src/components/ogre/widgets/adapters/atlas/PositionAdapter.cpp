@@ -28,6 +28,8 @@
 #include <wfmath/vector.h>
 #include <wfmath/atlasconv.h>
 
+#include <cstdlib>
+
 namespace CEGUI {
 class PushButton;
 }

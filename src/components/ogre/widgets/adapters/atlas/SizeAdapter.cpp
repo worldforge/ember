@@ -28,6 +28,8 @@
 #include <wfmath/axisbox.h>
 #include <wfmath/atlasconv.h>
 
+#include <cstdlib>
+
 namespace Ember
 {
 namespace OgreView
