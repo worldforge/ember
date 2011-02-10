@@ -31,6 +31,7 @@
 #include "framework/LoggingInstance.h"
 
 #include <wfmath/rotbox.h>
+#include <wfmath/ball.h>
 #include <Eris/Entity.h>
 
 #include <OgreSceneManager.h>

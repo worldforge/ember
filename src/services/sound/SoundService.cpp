@@ -40,6 +40,7 @@
 #include <AL/alut.h>
 #endif
 
+#include <cassert>
 
 namespace Ember
 {

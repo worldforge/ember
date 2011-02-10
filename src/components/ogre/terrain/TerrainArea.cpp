@@ -30,6 +30,8 @@
 #include "../EmberEntity.h"
 #include <Mercator/Area.h>
 
+#include <cmath>
+
 namespace Ember
 {
 namespace OgreView

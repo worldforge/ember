@@ -26,6 +26,8 @@
 #include "PolygonRenderer.h"
 #include <wfmath/polygon.h>
 
+#include <list>
+
 namespace Ogre
 {
 class SceneNode;
