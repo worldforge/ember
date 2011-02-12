@@ -1,5 +1,5 @@
 <models>
-    <model name="wooden_fence" usescaleof="width" showcontained="true" icon="">
+    <model name="wooden_fence" usescaleof="height" showcontained="true" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
         <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
@@ -26,5 +26,6 @@
                 <rotation x="0.000000" y="1.000000" z="0.000000" degrees="90.000008" />
             </view>
         </views>
+        <lights />
     </model>
 </models>
