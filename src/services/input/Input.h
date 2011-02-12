@@ -25,13 +25,17 @@
 
 #include <sigc++/slot.h>
 #include <sigc++/signal.h>
-#include <SDL_events.h>
+#include <SDL_keysym.h>
 #include "framework/ConsoleObject.h"
 #include "framework/Singleton.h"
 
 #include <set>
 #include <list>
 #include <map>
+#include <stdint.h>
+
+struct SDL_KeyboardEvent;
+struct SDL_keysym;
 
 namespace Ember {
 

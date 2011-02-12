@@ -31,6 +31,7 @@
 
 #include "../Convert.h"
 #include <OgreSceneNode.h>
+#include <SDL_keyboard.h>
 
 namespace Ember
 {

@@ -28,6 +28,7 @@
 #endif
 
 #include <string>
+#include <string.h>
 
 #if defined(OSLINK_OSDIR_NOTSUPPORTED)
 

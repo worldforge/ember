@@ -38,6 +38,8 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
 
+#include <SDL_keyboard.h>
+
 template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
 
 namespace Ember

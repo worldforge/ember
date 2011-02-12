@@ -58,6 +58,8 @@
 #include <OgreRay.h>
 #include <OgreVector3.h>
 
+#include <SDL_video.h>
+
 #ifdef __WIN32__
 #include <windows.h>
 #include <direct.h>
