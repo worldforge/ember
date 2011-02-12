@@ -140,8 +140,8 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 	}
 }
 
-EmberOgre::EmberOgre() :
-	mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
+EmberOgre::EmberOgre(Input& input) :
+	mInput(input), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
 	//mJesus(0),
 			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 			//mCollisionManager(0),
@@ -206,9 +206,8 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::renderOneFrame()
 {
-	Ember::Input& input(Ember::Input::getSingleton());
 	mModelDefinitionManager->pollBackgroundLoaders();
-	if (input.isApplicationVisible()) {
+	if (mInput.isApplicationVisible()) {
 		///If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
 			mIsInPausedMode = false;
@@ -337,11 +336,11 @@ bool EmberOgre::setup()
 	unsigned int height, width, depth;
 	int top, left;
 	mWindow->getMetrics(width, height, depth, left, top);
-	Ember::Input::getSingleton().initialize(width, height);
+	mInput.initialize(width, height);
 
 	///bind general commands
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
-	mGeneralCommandMapper->bindToInput(Ember::Input::getSingleton());
+	mGeneralCommandMapper->bindToInput(mInput);
 
 	{
 		///we need a nice loading bar to show the user how far the setup has progressed
@@ -566,7 +565,7 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
-	mWorld = new World(*view, *mWindow, *this);
+	mWorld = new World(*view, *mWindow, *this, mInput);
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
 	mShaderManager->registerSceneManager(&mWorld->getSceneManager());
 	EventWorldCreated.emit(*mWorld);

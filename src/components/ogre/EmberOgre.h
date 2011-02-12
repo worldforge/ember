@@ -61,6 +61,7 @@ namespace Ember
 {
 class StreamLogObserver;
 class InputCommandMapper;
+class Input;
 namespace OgreView
 {
 
@@ -136,8 +137,9 @@ public:
 
 	/**
 	 * @brief Ctor.
+	 * @param input The main input.
 	 */
-	EmberOgre();
+	EmberOgre(Input& input);
 
 	/**
 	 * @brief Dtor.
@@ -222,6 +224,12 @@ public:
 	const std::multimap<std::string, std::string>& getResourceLocations() const;
 
 protected:
+
+
+	/**
+	 * @brief The main input.
+	 */
+	Input& mInput;
 
 	/**
 	 * @brief Utility object for setting up and tearing down ogre

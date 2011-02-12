@@ -170,7 +170,7 @@ Application::~Application()
 
 void Application::registerComponents()
 {
-	mOgreView = new Ember::OgreView::EmberOgre();
+	mOgreView = new Ember::OgreView::EmberOgre(Ember::Input::getSingleton());
 }
 
 void Application::mainLoopStep(long minMillisecondsPerFrame)

@@ -30,6 +30,7 @@ class Entity;
 }
 
 namespace Ember {
+class Input;
 namespace OgreView {
 
 namespace Camera
@@ -70,9 +71,10 @@ public:
 	 * @brief Ctor.
 	 * @param view The View instance which represents the world.
 	 * @param renderWindow The main render window used to the render the world.
-	 * @signals An EmberOgre signals instance, used for emitting signals for external components to listen to.
+	 * @param signals An EmberOgre signals instance, used for emitting signals for external components to listen to.
+	 * @param input The main input instance.
 	 */
-	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals);
+	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input);
 
 	/**
 	 * @brief Dtor.
