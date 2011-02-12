@@ -25,7 +25,6 @@
 #endif
 
 #include "FoliageLoader.h"
-#include "../terrain/TerrainLayerDefinition.h"
 
 #include "../Convert.h"
 #include "../terrain/PlantAreaQuery.h"

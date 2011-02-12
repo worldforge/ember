@@ -31,7 +31,6 @@
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainHandler.h"
 #include "../terrain/TerrainShader.h"
-#include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainPageSurfaceLayer.h"
 #include "../terrain/TerrainPageSurface.h"
 #include "../terrain/TerrainPage.h"

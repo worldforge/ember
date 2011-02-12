@@ -22,20 +22,20 @@
 #endif
 
 #include "SoundGroup.h"
+#include "SoundDefinition.h"
 
 #include "framework/LoggingInstance.h"
-#include "services/sound/SoundService.h"
 
-// Need to find a cross platform solution
-// to this
-#include <sys/time.h>
 
 #include "services/EmberServices.h"
 #include "services/sound/SoundService.h"
 #include "services/sound/SoundInstance.h"
 #include "services/sound/SoundSource.h"
 #include "services/sound/SoundSample.h"
-#include "SoundDefinition.h"
+
+// Need to find a cross platform solution
+// to this
+#include <sys/time.h>
 
 namespace Ember
 {

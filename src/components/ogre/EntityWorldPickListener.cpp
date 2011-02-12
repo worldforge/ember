@@ -33,7 +33,6 @@
 #include "WorldEmberEntity.h"
 
 #include "MousePicker.h"
-#include "Scene.h"
 
 #include "model/Model.h"
 
