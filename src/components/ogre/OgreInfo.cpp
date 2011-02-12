@@ -133,6 +133,7 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 
 	}
 
+	size_t resourceMemoryUsage = 0;
 	outputStream << "Resource Managers:" << std::endl;
 	Ogre::ResourceGroupManager::ResourceManagerIterator I = Ogre::ResourceGroupManager::getSingleton().getResourceManagerIterator();
 	while (I.hasMoreElements()) {
@@ -142,9 +143,10 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 		if (manager->getMemoryBudget() == std::numeric_limits<size_t>::max()) {
 			outputStream << "  Memory budget: not set" << std::endl;
 		} else {
-			outputStream << "  Memory budget: " << manager->getMemoryBudget() << std::endl;
+			outputStream << "  Memory budget: " << manager->getMemoryBudget() << " bytes" << std::endl;
 		}
-		outputStream << "  Memory usage:  " << manager->getMemoryUsage() << std::endl;
+		outputStream << "  Memory usage:  " << manager->getMemoryUsage() << " bytes" << std::endl;
+		resourceMemoryUsage += manager->getMemoryUsage();
 
 		Ogre::ResourceManager::ResourceMapIterator resourceI = manager->getResourceIterator();
 		if (resourceI.hasMoreElements()) {
@@ -154,7 +156,8 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 			while (resourceI.hasMoreElements()) {
 				Ogre::ResourcePtr resource = resourceI.getNext();
 				if (resource->isLoaded()) {
-					outputStream << "   " << resource->getName() << " ( " << resource->getSize() << " )" << std::endl;
+					std::string reloadable = resource->isReloadable() ? " reloadable" : "";
+					outputStream << "   " << resource->getName() << " ( " << resource->getSize() << " bytes)" << reloadable << std::endl;
 					loadedResourceCount++;
 				}
 				resourceCount++;
@@ -163,6 +166,8 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 			outputStream << "  Number of loaded resources: " << loadedResourceCount << std::endl;
 		}
 	}
+
+	outputStream << "Total memory usage for all resource manager: " << resourceMemoryUsage << " bytes" << std::endl;
 
 	outputStream << std::flush;
 }
