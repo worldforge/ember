@@ -137,9 +137,8 @@ public:
 
 	/**
 	 * @brief Ctor.
-	 * @param input The main input.
 	 */
-	EmberOgre(Input& input);
+	EmberOgre();
 
 	/**
 	 * @brief Dtor.
@@ -206,9 +205,10 @@ public:
 
 	/**
 	 * @brief Sets up the application - returns false if the user chooses to abandon configuration.
-	 * @return
+	 * @param input The main input.
+	 * @return True if setup was successful.
 	 */
-	bool setup();
+	bool setup(Input& input);
 
 	/**
 	 * @brief Shuts down the gui.
@@ -229,7 +229,7 @@ protected:
 	/**
 	 * @brief The main input.
 	 */
-	Input& mInput;
+	Input* mInput;
 
 	/**
 	 * @brief Utility object for setting up and tearing down ogre

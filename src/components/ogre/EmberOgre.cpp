@@ -140,8 +140,8 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 	}
 }
 
-EmberOgre::EmberOgre(Input& input) :
-	mInput(input), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
+EmberOgre::EmberOgre() :
+	mInput(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
 	//mJesus(0),
 			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 			//mCollisionManager(0),
@@ -207,7 +207,7 @@ EmberOgre::~EmberOgre()
 bool EmberOgre::renderOneFrame()
 {
 	mModelDefinitionManager->pollBackgroundLoaders();
-	if (mInput.isApplicationVisible()) {
+	if (mInput->isApplicationVisible()) {
 		///If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
 			mIsInPausedMode = false;
@@ -251,7 +251,7 @@ void EmberOgre::shutdownGui()
 
 // These internal methods package up the stages in the startup process
 /** Sets up the application - returns false if the user chooses to abandon configuration. */
-bool EmberOgre::setup()
+bool EmberOgre::setup(Input& input)
 {
 	if (mRoot) {
 		throw Ember::Exception("EmberOgre::setup has already been called.");
@@ -273,6 +273,8 @@ bool EmberOgre::setup()
 #else
 	S_LOG_INFO("Compiled against Ogre with unknown threading support.");
 #endif
+
+	mInput = &input;
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
 
@@ -336,11 +338,11 @@ bool EmberOgre::setup()
 	unsigned int height, width, depth;
 	int top, left;
 	mWindow->getMetrics(width, height, depth, left, top);
-	mInput.initialize(width, height);
+	mInput->initialize(width, height);
 
 	///bind general commands
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
-	mGeneralCommandMapper->bindToInput(mInput);
+	mGeneralCommandMapper->bindToInput(*mInput);
 
 	{
 		///we need a nice loading bar to show the user how far the setup has progressed
@@ -565,7 +567,7 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
-	mWorld = new World(*view, *mWindow, *this, mInput);
+	mWorld = new World(*view, *mWindow, *this, *mInput);
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
 	mShaderManager->registerSceneManager(&mWorld->getSceneManager());
 	EventWorldCreated.emit(*mWorld);

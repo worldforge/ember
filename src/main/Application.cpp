@@ -170,7 +170,7 @@ Application::~Application()
 
 void Application::registerComponents()
 {
-	mOgreView = new Ember::OgreView::EmberOgre(Ember::Input::getSingleton());
+	mOgreView = new Ember::OgreView::EmberOgre();
 }
 
 void Application::mainLoopStep(long minMillisecondsPerFrame)
@@ -375,7 +375,7 @@ Eris::View* Application::getMainView()
 void Application::start()
 {
 	try {
-		if (!mOgreView->setup()) {
+		if (!mOgreView->setup(Ember::Input::getSingleton())) {
 			///The setup was cancelled, return.
 			return;
 		}
