@@ -303,7 +303,6 @@ GUIManager::~GUIManager()
 void GUIManager::initialize()
 {
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-	chdir(configSrv->getEmberDataDirectory().c_str());
 	try {
 		createWidget("Quit");
 	} catch (const std::exception& e) {
