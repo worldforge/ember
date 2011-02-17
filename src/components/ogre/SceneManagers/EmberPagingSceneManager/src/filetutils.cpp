@@ -88,7 +88,9 @@ char * ChangeToDir (const char *Dirname)
         MKDIR (Dirname);
         }
     char *oldDirname = GetCurrDir ();
-    CHDIR(Dirname);
+    if (CHDIR(Dirname)) {
+        return oldDirname;
+    }
     return oldDirname;
 }
 
