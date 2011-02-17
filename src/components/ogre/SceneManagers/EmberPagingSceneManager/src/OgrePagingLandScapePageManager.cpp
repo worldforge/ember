@@ -456,18 +456,21 @@ namespace Ogre
 		SceneManager::CameraIterator camIt = mSceneManager->getCameraIterator();
 		while (camIt.hasMoreElements())	{
 			const Camera* currentCamera = camIt.getNext();
-			const Vector3 pos(currentCamera->getDerivedPosition().x, 
-					  127.0f, 
-					  currentCamera->getDerivedPosition().z);
+			const Vector3& cameraPos = currentCamera->getDerivedPosition();
+			if (!cameraPos.isNaN()) {
+				const Vector3 pos(cameraPos.x, 127.0f, cameraPos.z);
 
-			if (!mPageLoadQueue.empty()) {
-				// We Load nearest page in non-empty queue
-				PagingLandScapePage* p = mPageLoadQueue.find_nearest(pos);
-				assert (p && !p->isLoaded ());
-				assert (p->isInLoadQueue());
-				p->load();
+				if (!mPageLoadQueue.empty()) {
+					// We Load nearest page in non-empty queue
+					PagingLandScapePage* p = mPageLoadQueue.find_nearest(pos);
+					if (p) {
+						assert (p && !p->isLoaded ());
+						assert (p->isInLoadQueue());
+						p->load();
+					}
 
-				// rest of processing after eventPageLoaded received 
+					// rest of processing after eventPageLoaded received
+				}
 			}
 		}
 	}
