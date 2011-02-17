@@ -60,6 +60,7 @@
 #include "framework/ConsoleObject.h" //TODO: this will be included in a different class
 #include "framework/LoggingInstance.h"
 #include "framework/IScriptingProvider.h"
+#include "framework/Time.h"
 
 #include "terrain/TerrainLayerDefinitionManager.h"
 
@@ -206,7 +207,6 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::renderOneFrame()
 {
-	mModelDefinitionManager->pollBackgroundLoaders();
 	if (mInput->isApplicationVisible()) {
 		///If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
@@ -220,6 +220,11 @@ bool EmberOgre::renderOneFrame()
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);
 		}
+
+		//To keep up a nice framerate we'll only allow four milliseconds for assets loading frame.
+		long maxLoadingTimeMillis = Time::currentTimeMillis() + 4;
+		mModelDefinitionManager->pollBackgroundLoaders(maxLoadingTimeMillis);
+
 		return true;
 	} else {
 		mIsInPausedMode = true;

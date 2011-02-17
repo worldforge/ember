@@ -156,7 +156,7 @@ bool Model::createFromDefn()
 		mBackgroundLoader = new ModelBackgroundLoader(*this);
 	}
 
-	if (mBackgroundLoader->poll()) {
+	if (mBackgroundLoader->poll(0)) {
 		timedLog.report("Initial poll.");
 		return createActualModel();
 	}

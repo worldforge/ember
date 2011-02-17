@@ -27,6 +27,7 @@
 #include "ModelBackgroundLoader.h"
 #include "Model.h"
 #include "framework/LoggingInstance.h"
+#include "framework/Time.h"
 
 #include <OgreResourceBackgroundQueue.h>
 #include <OgreSubMesh.h>
@@ -72,7 +73,7 @@ ModelBackgroundLoader::~ModelBackgroundLoader()
 	}
 }
 
-bool ModelBackgroundLoader::poll()
+bool ModelBackgroundLoader::poll(long maxTimeMilliseconds)
 {
 #if OGRE_THREAD_SUPPORT
 	if (mState == LS_UNINITIALIZED) {
@@ -92,11 +93,11 @@ bool ModelBackgroundLoader::poll()
 			}
 		}
 		mState = LS_MESH_PREPARING;
-		return poll();
+		return poll(maxTimeMilliseconds);
 	} else if (mState == LS_MESH_PREPARING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MESH_PREPARED;
-			return poll();
+			return poll(maxTimeMilliseconds);
 		}
 	} else if (mState == LS_MESH_PREPARED) {
 		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) {
@@ -110,6 +111,9 @@ bool ModelBackgroundLoader::poll()
 						addTicket(ticket);
 					}
 #else
+					if (!isThereTimeLeft(maxTimeMilliseconds)) {
+						return false;
+					}
 					try {
 						meshPtr->load();
 					} catch (const std::exception& ex) {
@@ -121,11 +125,11 @@ bool ModelBackgroundLoader::poll()
 			}
 		}
 		mState = LS_MESH_LOADING;
-		return poll();
+		return poll(maxTimeMilliseconds);
 	} else if (mState == LS_MESH_LOADING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MESH_LOADED;
-			return poll();
+			return poll(maxTimeMilliseconds);
 		}
 	} else if (mState == LS_MESH_LOADED) {
 
@@ -162,11 +166,11 @@ bool ModelBackgroundLoader::poll()
 		}
 
 		mState = LS_MATERIAL_PREPARING;
-		return poll();
+		return poll(maxTimeMilliseconds);
 	} else if (mState == LS_MATERIAL_PREPARING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_MATERIAL_PREPARED;
-			return poll();
+			return poll(maxTimeMilliseconds);
 		}
 	} else if (mState == LS_MATERIAL_PREPARED) {
 		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) {
@@ -176,6 +180,9 @@ bool ModelBackgroundLoader::poll()
 				Ogre::SubMesh* submesh(subMeshI.getNext());
 				Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
 				if (!materialPtr.isNull() && !materialPtr->isLoaded()) {
+					if (!isThereTimeLeft(maxTimeMilliseconds)) {
+						return false;
+					}
 
 #if OGRE_THREAD_SUPPORT == 1
 					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().load(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
@@ -186,6 +193,7 @@ bool ModelBackgroundLoader::poll()
 #else
 					materialPtr->load();
 #endif
+
 				}
 			}
 #if OGRE_THREAD_SUPPORT == 1
@@ -206,7 +214,7 @@ bool ModelBackgroundLoader::poll()
 		}
 
 		mState = LS_MATERIAL_LOADING;
-		return poll();
+		return poll(maxTimeMilliseconds);
 	} else if (mState == LS_MATERIAL_LOADING) {
 		if (areAllTicketsProcessed()) {
 			mState = LS_DONE;
@@ -233,7 +241,7 @@ void ModelBackgroundLoader::operationCompleted(Ogre::BackgroundProcessTicket tic
 	TicketStore::iterator I = std::find(mTickets.begin(), mTickets.end(), ticket);
 	if (I != mTickets.end()) {
 		mTickets.erase(I);
-		poll();
+		//		poll();
 	}
 }
 
@@ -263,6 +271,12 @@ ModelBackgroundLoaderListener* ModelBackgroundLoader::createListener()
 	mListeners.push_back(listener);
 	return listener;
 }
+
+bool ModelBackgroundLoader::isThereTimeLeft(long maxTimeMilliseconds)
+{
+	return Time::currentTimeMillis() <= maxTimeMilliseconds;
+}
+
 
 }
 

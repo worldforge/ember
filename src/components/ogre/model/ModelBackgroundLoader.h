@@ -82,7 +82,7 @@ private:
 	virtual ~ModelBackgroundLoaderListener()
 	{
 	}
-	;
+
 };
 
 /**
@@ -171,9 +171,10 @@ public:
 	/**
 	 * @brief Polls the loading state (which might occur in a background thread).
 	 * If the loading state has progressed it will be updated.
+	 * @param maxTimeMilliseconds The max time allowed, presented as a future date, in unix time milliseconds.
 	 * @return True if the loading is complete.
 	 */
-	bool poll();
+	bool poll(long maxTimeMilliseconds);
 
 	/**
 	 * @brief Gets the current loading state.
@@ -233,6 +234,14 @@ protected:
 	 * Note that this call will happen in the main thread.
 	 */
 	virtual void operationCompleted(Ogre::BackgroundProcessTicket ticket, const Ogre::BackgroundProcessResult& result, ModelBackgroundLoaderListener* listener);
+
+	/**
+	 * @brief Checks if there's time left for performing actions in the main thread.
+	 *
+	 * @param maxTimeMilliseconds The max time allowed, presented as a future date, in unix time milliseconds.
+	 * @return True if there's time left.
+	 */
+	bool isThereTimeLeft(long maxTimeMilliseconds);
 
 };
 
