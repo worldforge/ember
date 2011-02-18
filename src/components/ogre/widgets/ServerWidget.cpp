@@ -273,7 +273,7 @@ bool ServerWidget::saveCredentials()
 		passwordBox = getWindow("LoginPanel/PasswordEdit");
 		saveBox = static_cast<CEGUI::Checkbox*> (getWindow("LoginPanel/SavePassCheck"));
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when getting windows from CEGUI: " << ex.getMessage().c_str());
+		S_LOG_FAILURE("Error when getting windows from CEGUI." << ex);
 		return false;
 	}
 

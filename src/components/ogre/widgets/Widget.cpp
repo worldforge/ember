@@ -90,8 +90,6 @@ namespace Gui {
 		std::string finalFileName(mGuiManager->getLayoutDir() + filename);
 		try {
 			mMainWindow = mWindowManager->loadWindowLayout(finalFileName, prefix);
-		} catch (const CEGUI::Exception& ex) {
-			S_LOG_FAILURE("Error when loading from " << filename << ".\nMessage: " <<  ex.getMessage().c_str());
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when loading from " << filename << "." << ex);
 		} catch (...) {

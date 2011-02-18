@@ -214,7 +214,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 		try {
 			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), "MouseArrow");
 		} catch (const CEGUI::Exception& ex) {
-			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available. Message: " << ex.getMessage().c_str());
+			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available." << ex);
 			throw Ember::Exception(ex.getMessage().c_str());
 		}
 
@@ -377,9 +377,6 @@ CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std
 	try {
 		CEGUI::Window* window = mWindowManager->createWindow(windowType, windowName);
 		return window;
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << ".\n" << ex.getMessage().c_str());
-		return 0;
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << "." << ex);
 		return 0;
@@ -450,7 +447,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	try {
 		CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
 	// 	if (mPreviousInputMode == IM_GUI) {
 	// 		if (!mInput->getInputMode()) {
@@ -474,7 +471,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 		try {
 			aWidget->frameStarted(evt);
 		} catch (const CEGUI::Exception& ex) {
-			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+			S_LOG_WARNING("Error in CEGUI." << ex);
 		}
 	}
 

@@ -82,11 +82,8 @@ TAdapter* AdapterFactory::createAdapter(CEGUI::Window* container, const std::str
 
 	try {
 		return loadWindowIntoAdapter<TAdapter> (container, adapterPrefix, element, entity);
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when creating adapter. " << ex.getMessage().c_str());
-		return 0;
 	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when loading adapter. " << ex);
+		S_LOG_FAILURE("Error when loading adapter." << ex);
 		return 0;
 	}
 }
@@ -435,9 +432,6 @@ CEGUI::Window* AdapterFactory::loadLayoutIntoContainer(CEGUI::Window* container,
 			S_LOG_FAILURE("Failed to create a new window from the layout in " << finalFileName << ".");
 			return 0;
 		}
-	} catch (const CEGUI::Exception& ex) {
-		S_LOG_FAILURE("Error when loading" << layoutfile <<": " << ex.getMessage().c_str());
-		return 0;
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when loading " << layoutfile <<"." << ex);
 		return 0;
