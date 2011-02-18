@@ -132,7 +132,7 @@ function AssetsManager:SubMeshesList_ItemSelectionChanged(args)
 	if item ~= nil then
 		local submeshIndex = item:getID()
 		
-		local mesh = self.meshes.current.meshPtr:get()
+		local mesh = self.meshes.current.meshPtr.get()
 		self.meshes.current.submesh = mesh:getSubMesh(submeshIndex)
 		
 		self:selectMaterial(self.meshes.current.submesh)
@@ -146,7 +146,7 @@ function AssetsManager:SubMeshMaterialsList_ItemSelectionChanged(args)
 		local item = list:getFirstSelectedItem()
 		if item ~= nil then
 			self.meshes.current.submesh:setMaterialName(item:getText())
-			self.meshes.renderer:showEntity(self.meshes.current.meshPtr:get():getName())
+			self.meshes.renderer:showEntity(self.meshes.current.meshPtr.get():getName())
 		end
 	end
 	return true
@@ -154,7 +154,7 @@ end
 
 function AssetsManager:MeshInfoSaveButton_Clicked(args)
 	if self.meshes.current ~= nil and self.meshes.current.meshPtr ~= nil then
-		local mesh = self.meshes.current.meshPtr:get()
+		local mesh = self.meshes.current.meshPtr.get()
 		mesh:setSkeletonName(self.meshes.controls.skeletonPath:getText())
 		--Make sure that a path is specified for the mesh 
 --		if mesh:getOrigin() ~= "" then
@@ -171,9 +171,12 @@ function AssetsManager:showMesh(meshName)
 	local manager = Ogre.MeshManager:getSingleton()
 	local meshPtr = manager:getByName(meshName)
 	self.meshes.current = {}
-	self.meshes.current.meshPtr = meshPtr
+	self.meshes.current.meshPtr = {}
+	self.meshes.current.meshPtr.get = function()
+		return manager:getByName(meshName):get()
+	end
 
-	self:fillSubMeshList(self.meshes.current.meshPtr)
+	self:fillSubMeshList(meshPtr)
 	local mesh = meshPtr:get()
 	self.meshes.controls.skeletonPath:setText(mesh:getSkeletonName())
 end
