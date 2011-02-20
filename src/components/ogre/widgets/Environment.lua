@@ -21,6 +21,14 @@ function Environment:FogDistance_ValueChanged(args)
 	return true
 end
 
+function Environment:TimeMultiplier_ValueChanged(args)
+	local multiplier = self.timeMultiplierSpinner:getCurrentValue()
+	
+	self.environment:setTimeMultiplier(multiplier)
+	return true
+end
+
+
 function Environment:buildWidget(environmentObject)
 
 	self.environment = environmentObject
@@ -33,6 +41,12 @@ function Environment:buildWidget(environmentObject)
 	
 	self.fogDensitySlider = CEGUI.toSlider(self.widget:getWindow("FogDistance"))
 	self.fogDensitySlider:subscribeEvent("ValueChanged", self.FogDistance_ValueChanged, self) 
+	
+	self.timeMultiplierSpinner = CEGUI.toSpinner(self.widget:getWindow("TimeMultiplier"))
+--	self.timeMultiplierSpinner:setCurrentValue(self.environment:getTimeMultiplier())
+	self.timeMultiplierSpinner:setCurrentValue(1)
+	self.timeMultiplierSpinner:subscribeEvent("ValueChanged", self.TimeMultiplier_ValueChanged, self) 
+	
 	
 	self.widget:registerConsoleVisibilityToggleCommand("environment")
 	self.widget:enableCloseButton()

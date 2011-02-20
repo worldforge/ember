@@ -125,6 +125,17 @@ void Environment::setTime(int seconds)
 	mProvider->setTime(seconds);
 }
 
+void Environment::setTimeMultiplier(float multiplier)
+{
+	mProvider->setTimeMultiplier(multiplier);
+}
+
+float Environment::getTimeMultiplier() const
+{
+	return mProvider->getTimeMultiplier();
+}
+
+
 void Environment::setAmbientLight(const Ogre::ColourValue& colour) {
 	if (getSun()) {
 		getSun()->setAmbientLight(colour);

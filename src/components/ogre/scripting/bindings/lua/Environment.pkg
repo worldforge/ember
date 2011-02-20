@@ -68,7 +68,18 @@ class Environment
     void setTime(int hour, int minute, int second = 0);
 	void setTime(int seconds);
     
-    
+  	/**
+	 * @brief Sets the time multiplier, i.e. how much the time of the environment will progress per real time second.
+	 * @param multiplier The time multiplier.
+	 */
+	void setTimeMultiplier(float multiplier);
+
+	/**
+	 * @brief Gets the time multiplier, i.e. how much the time of the environment will progress per real time second.
+	 * @return The time multiplier.
+	 */
+	float getTimeMultiplier() const;
+		  
 	/**
 	 *    changes the ambient light
 	 * @param colour 

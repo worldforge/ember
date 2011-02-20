@@ -80,7 +80,7 @@ void CaelumEnvironment::createEnvironment()
 		setupCaelum(Ogre::Root::getSingletonPtr(), mSceneMgr, mWindow, mCamera);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not load caelum." << ex);
-		throw ;
+		throw;
 	}
 	try {
 		setupWater();
@@ -147,9 +147,9 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 		}
 	}
 
-	mCaelumSystem->setManageSceneFog (true);
+	mCaelumSystem->setManageSceneFog(true);
 	mCaelumSystem->setManageAmbientLight(true);
-	mCaelumSystem->setGlobalFogDensityMultiplier (0.005);
+	mCaelumSystem->setGlobalFogDensityMultiplier(0.005);
 	mCaelumSystem->setMinimumAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
 
 	mCaelumSystem->setEnsureSingleShadowSource(true); ///we want to use only one shadow caster source, for now at least
@@ -162,7 +162,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	window->addListener(mCaelumSystem);
 
 	/// Set time acceleration to fit with real world time
-	mCaelumSystem->getUniversalClock()->setTimeScale (1);
+	mCaelumSystem->getUniversalClock()->setTimeScale(1);
 
 	int year, month, day, hour, minute, second;
 	bool usingServerTime = Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, hour, minute, second);
@@ -170,7 +170,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	if (!usingServerTime) {
 		S_LOG_WARNING("Could not get server time, using local time for environment.");
 	} else {
-		mCaelumSystem->getUniversalClock ()->setGregorianDateTime (year, month, day, hour, minute, second);
+		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
 	}
 
 	///little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
@@ -215,22 +215,37 @@ IWater* CaelumEnvironment::getWater()
 
 void CaelumEnvironment::setTime(int hour, int minute, int second)
 {
-	if (mCaelumSystem && mCaelumSystem->getUniversalClock ()) {
+	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		int year, month, day, _hour, _minute, _second;
 		Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 
-		mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, hour, minute, second);
+		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
 	}
 }
 
 void CaelumEnvironment::setTime(int seconds)
 {
-	if (mCaelumSystem && mCaelumSystem->getUniversalClock ()) {
+	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		int year, month, day, _hour, _minute, _second;
 		Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 
-		mCaelumSystem->getUniversalClock ()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, 0, 0, seconds);
 	}
+}
+
+void CaelumEnvironment::setTimeMultiplier(float multiplier)
+{
+	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
+		mCaelumSystem->getUniversalClock()->setTimeScale(multiplier);
+	}
+}
+
+float CaelumEnvironment::getTimeMultiplier() const
+{
+	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
+		return mCaelumSystem->getUniversalClock()->getTimeScale();
+	}
+	return 0;
 }
 
 void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
@@ -249,8 +264,8 @@ void CaelumEnvironment::runCommand(const std::string &command, const std::string
 		std::string hourString = tokeniser.nextToken();
 		std::string minuteString = tokeniser.nextToken();
 
-		int hour = ::Ogre::StringConverter::parseInt( hourString);
-		int minute = ::Ogre::StringConverter::parseInt( minuteString);
+		int hour = ::Ogre::StringConverter::parseInt(hourString);
+		int minute = ::Ogre::StringConverter::parseInt(minuteString);
 		setTime(hour, minute);
 	}
 }

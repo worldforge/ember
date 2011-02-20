@@ -126,8 +126,31 @@ public:
 	virtual IFog* getFog() = 0;
 	virtual IWater* getWater() = 0;
 
-    virtual void setTime(int hour, int minute, int second = 0) = 0;
+	/**
+	 * @brief Sets the current time.
+	 * @param hour The hour.
+	 * @param minute The minute.
+	 * @param second The second.
+	 */
+	virtual void setTime(int hour, int minute, int second = 0) = 0;
+
+    /**
+     * @brief Sets the current time.
+     * @param seconds Seconds since midnight.
+     */
 	virtual void setTime(int seconds) = 0;
+
+	/**
+	 * @brief Sets the time multiplier, i.e. how much the time of the environment will progress per real time second.
+	 * @param multiplier The time multiplier.
+	 */
+	virtual void setTimeMultiplier(float multiplier) = 0;
+
+	/**
+	 * @brief Gets the time multiplier, i.e. how much the time of the environment will progress per real time second.
+	 * @return The time multiplier.
+	 */
+	virtual float getTimeMultiplier() const = 0;
 
 	/**
 	 * @brief Sets the position of the world.
@@ -179,8 +202,31 @@ public:
 	Forest* getForest();
 
 
+	/**
+	 * @brief Sets the current time.
+	 * @param hour The hour.
+	 * @param minute The minute.
+	 * @param second The second.
+	 */
     void setTime(int hour, int minute, int second = 0);
+
+    /**
+     * @brief Sets the current time.
+     * @param seconds Seconds since midnight.
+     */
 	void setTime(int seconds);
+
+	/**
+	 * @brief Sets the time multiplier, i.e. how much the time of the environment will progress per real time second.
+	 * @param multiplier The time multiplier.
+	 */
+	void setTimeMultiplier(float multiplier);
+
+	/**
+	 * @brief Gets the time multiplier, i.e. how much the time of the environment will progress per real time second.
+	 * @return The time multiplier.
+	 */
+	float getTimeMultiplier() const;
 
     void initialize();
 

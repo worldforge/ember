@@ -139,6 +139,15 @@ void SimpleEnvironment::setTime(int seconds)
 {
 }
 
+void SimpleEnvironment::setTimeMultiplier(float multiplier)
+{
+}
+
+float SimpleEnvironment::getTimeMultiplier() const
+{
+	return 0;
+}
+
 void SimpleEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
 {
 }

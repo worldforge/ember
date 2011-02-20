@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{0,300.0},{0,180.0}}'/>
+		<Property Name='UnifiedSize' Value='{{0,300.0},{0,200.0}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.4,0.0},{0.35,0.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Environment'/>
@@ -32,6 +32,21 @@
 			<Window Type='EmberLook/Slider' Name='FogDistance'>
 				<Property Name='UnifiedSize' Value='{{1.0,-20.0},{0.0,15.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,90.0}}'/>
+			</Window>
+			<Window Type='EmberLook/StaticText' Name='TimeMultiplierText'>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,25.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0,0},{0,120}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='Text' Value='Time multiplier'/>
+				<Property Name='BackgroundEnabled' Value='False'/>
+				<Property Name='FrameEnabled' Value='False'/>
+			</Window>
+			<Window Type='EmberLook/Spinner' Name='TimeMultiplier'>
+				<Property Name='UnifiedSize' Value='{{0,100.0},{0.0,25.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,150.0}}'/>
+				<Property Name='InheritsAlpha' Value='false'/>
+				<Property Name='StepSize' Value='0.1'/>
+				<Property Name='TextInputMode' Value='FloatingPoint' />
 			</Window>
 		</Window>
 	</Window>

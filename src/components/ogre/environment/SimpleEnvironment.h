@@ -102,6 +102,10 @@ public:
     virtual void setTime(int hour, int minute, int second = 0);
 	virtual void setTime(int seconds);
 	
+	virtual void setTimeMultiplier(float multiplier);
+
+	virtual float getTimeMultiplier() const;
+
 	/**
 	 * @brief Sets the position of the world.
 	 * @param longitudeDegrees The longitude, as degrees.
