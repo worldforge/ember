@@ -161,6 +161,7 @@ namespace Ogre {
     class ProgressiveMesh;
     class Profile;
 	class Profiler;
+	class PSSMShadowCameraSetup;
     class Quaternion;
 	class Radian;
     class Ray;

@@ -24,19 +24,21 @@
 #define EMBEROGRESHADOWCAMERASETUP_H
 
 #include "services/config/ConfigListenerContainer.h"
-#include <OgreShadowCameraSetupPSSM.h>
+#include "OgreIncludes.h"
+#include <OgreShadowCameraSetup.h>
 
 namespace Ember {
 namespace OgreView {
 
 /**
-@brief This takes care of the setup of the pssm shadow camera.
-
-Apart from setting up the camera it also listens for changes to the varconf settings dealing with the shadows and update the shadow settings accordingly.
-
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class ShadowCameraSetup : Ember::ConfigListenerContainer
+ *
+ * @brief This takes care of the setup of the pssm shadow camera.
+ *
+ * Apart from setting up the camera it also listens for changes to the varconf settings dealing with the shadows and update the shadow settings accordingly.
+ *
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class ShadowCameraSetup : ConfigListenerContainer
 {
 public:
     /**

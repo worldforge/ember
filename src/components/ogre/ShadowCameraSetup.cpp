@@ -29,6 +29,7 @@
 #include "framework/LoggingInstance.h"
 #include <OgreRoot.h>
 #include <OgreRenderSystem.h>
+#include <OgreShadowCameraSetupPSSM.h>
 
 namespace Ember {
 namespace OgreView {
@@ -103,8 +104,8 @@ void ShadowCameraSetup::Config_ShadowSplitPoints(const std::string& section, con
 {
 	try {
 		if (variable.is_string()) {
-			Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = mPssmSetup->getSplitPoints();;
-			Ember::Tokeniser tokeniser(variable);
+			Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = mPssmSetup->getSplitPoints();
+			Tokeniser tokeniser(variable);
 			splitPointList[0] = atof(tokeniser.nextToken().c_str());
 			splitPointList[1] = atof(tokeniser.nextToken().c_str());
 			splitPointList[2] = atof(tokeniser.nextToken().c_str());
@@ -131,7 +132,7 @@ void ShadowCameraSetup::Config_ShadowOptimalAdjustFactors(const std::string& sec
 {
 	try {
 		if (variable.is_string()) {
-			Ember::Tokeniser tokeniser(variable);
+			Tokeniser tokeniser(variable);
 			mPssmSetup->setOptimalAdjustFactor(0, atof(tokeniser.nextToken().c_str()));
 			mPssmSetup->setOptimalAdjustFactor(1, atof(tokeniser.nextToken().c_str()));
 			mPssmSetup->setOptimalAdjustFactor(2, atof(tokeniser.nextToken().c_str()));
