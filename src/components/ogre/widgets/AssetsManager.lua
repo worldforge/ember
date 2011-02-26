@@ -14,11 +14,14 @@ end
 
 --Reloads the currently selected resource in the supplied listbox
 function AssetsManager:reloadResourceFromList(listbox, manager)
-	local item = listbox:getFirstSelectedItem()
-	if item ~= nil then
-		local name = item:getText()
-		self:reloadResource(manager, name)
-	end
+	local item 
+	repeat
+		item = listbox:getNextSelected(item)
+		if item ~= nil then
+			local name = item:getText()
+			self:reloadResource(manager, name)
+		end
+	until item == nil
 end
 
 
