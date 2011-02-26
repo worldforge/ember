@@ -45,6 +45,7 @@
 
 #include "framework/ConsoleBackend.h"
 #include "framework/osdir.h"
+#include "framework/Tokeniser.h"
 
 
 #include <OgreRoot.h>
@@ -87,18 +88,6 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 	mCameraOrientationChangedThisFrame(false),
 	mMovementProvider(0)
 {
-	mCamera.setNearClipDistance(0.5);
-
-	///set the far clip distance high to make sure that the sky is completely shown
-	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
-	{
-/*		//NOTE: this won't currently work with the sky
-		mCamera.setFarClipDistance(0);*/
-
-		mCamera.setFarClipDistance(10000);
-	} else {
-		mCamera.setFarClipDistance(10000);
-	}
 
 	createRayQueries(sceneManager);
 
@@ -106,6 +95,8 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	input.EventMouseMoved.connect(sigc::mem_fun(*this, &MainCamera::Input_MouseMoved));
+
+	registerConfigListenerWithDefaults("graphics", "clipdistances", sigc::mem_fun(*this, &MainCamera::Config_ClipDistances), "0.5 1000");
 
 }
 
@@ -128,6 +119,29 @@ AvatarTerrainCursor& MainCamera::getTerrainCursor() const
 {
 	return *mAvatarTerrainCursor.get();
 }
+
+void MainCamera::Config_ClipDistances(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	Tokeniser tokeniser(variable);
+	float nearDistance = atof(tokeniser.nextToken().c_str());
+	float farDistance = atof(tokeniser.nextToken().c_str());
+
+	S_LOG_INFO("Setting main camera clip distances to near: " << nearDistance << " far: " << farDistance);
+
+	mCamera.setNearClipDistance(nearDistance);
+
+	///set the far clip distance high to make sure that the sky is completely shown
+	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
+	{
+/*		//NOTE: this won't currently work with the sky
+		mCamera.setFarClipDistance(0);*/
+
+		mCamera.setFarClipDistance(farDistance);
+	} else {
+		mCamera.setFarClipDistance(farDistance);
+	}
+}
+
 
 const Ogre::Quaternion& MainCamera::getOrientation(bool onlyHorizontal) const {
 	if (!onlyHorizontal) {
@@ -260,7 +274,7 @@ bool MainCamera::frameStarted(const Ogre::FrameEvent& event)
 	return true;
 }
 
-void MainCamera::Input_MouseMoved(const Ember::MouseMotion& motion, Ember::Input::InputMode mode)
+void MainCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode)
 {
 	if (mCameraMount) {
 		if (mode == Input::IM_MOVEMENT) {
@@ -361,7 +375,7 @@ const std::string MainCamera::_takeScreenshot()
 	}
 	filename << sec << ".jpg";
 
-	const std::string dir = Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/screenshots/";
+	const std::string dir = EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/screenshots/";
 	try {
 		//make sure the directory exists
 
@@ -376,7 +390,7 @@ const std::string MainCamera::_takeScreenshot()
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating directory for screenshots." << ex);
-		throw Ember::Exception("Error when saving screenshot.");
+		throw Exception("Error when saving screenshot.");
 	}
 
 	try {
@@ -384,7 +398,7 @@ const std::string MainCamera::_takeScreenshot()
 		mWindow.writeContentsToFile(dir + filename.str());
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not write screenshot to disc." << ex);
-		throw Ember::Exception("Error when saving screenshot.");
+		throw Exception("Error when saving screenshot.");
 	}
 	return dir + filename.str();
 }
@@ -393,12 +407,12 @@ void MainCamera::takeScreenshot()
 {
 	try {
 		const std::string& result = _takeScreenshot();
-		S_LOG_INFO(result);
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Wrote image: " + result);
+		S_LOG_INFO("Screenshot saved at: " << result);
+		ConsoleBackend::getSingletonPtr()->pushMessage("Wrote image: " + result);
 	} catch (const std::exception& ex) {
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Error when saving screenshot: ") + ex.what());
+		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Error when saving screenshot: ") + ex.what());
 	} catch (...) {
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.");
+		ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.");
 	}
 }
 

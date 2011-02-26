@@ -29,6 +29,7 @@
 #include "components/ogre/OgreIncludes.h"
 
 #include "services/input/Input.h"
+#include "services/config/ConfigListenerContainer.h"
 #include "framework/ConsoleObject.h"
 
 #include <sigc++/trackable.h>
@@ -70,10 +71,10 @@ namespace Camera
 class ICameraMount;
 class Recorder;
 
-class MainCamera : public Ogre::FrameListener, public Ember::ConsoleObject, public virtual sigc::trackable
+class MainCamera : public Ogre::FrameListener, public ConsoleObject, ConfigListenerContainer, public virtual sigc::trackable
 {
 public:
-	MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Ember::Input& input, Ogre::Camera& camera);
+	MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera);
 	virtual ~MainCamera();
 
 	/**
@@ -153,10 +154,10 @@ public:
 	void removeWorldPickListener(IWorldPickListener* worldPickListener);
 
 
-	const Ember::ConsoleCommandWrapper ToggleRendermode;
-	const Ember::ConsoleCommandWrapper ToggleFullscreen;
-	const Ember::ConsoleCommandWrapper Screenshot;
-	const Ember::ConsoleCommandWrapper Record;
+	const ConsoleCommandWrapper ToggleRendermode;
+	const ConsoleCommandWrapper ToggleFullscreen;
+	const ConsoleCommandWrapper Screenshot;
+	const ConsoleCommandWrapper Record;
 
 	/**
 		Toggles between wireframe and solid render mode.
@@ -210,10 +211,13 @@ private:
 
 	IMovementProvider* mMovementProvider;
 
-
-	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-
-	void updateValuesFromConfig();
+	/**
+	 * @brief Sets the near and far clip distances of the camera.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void Config_ClipDistances(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * @brief Call this whenever you've moved any node which will make the derived position or orientation of the camera change.
@@ -222,13 +226,22 @@ private:
 	void markCameraNodeAsDirty();
 
 	/**
-	Creates the rays needed for mouse picking and camera adjustment.
-	*/
+	 * @brief Creates the rays needed for mouse picking and camera adjustment.
+	 */
 	void createRayQueries(Ogre::SceneManager& sceneManager);
 
+	/**
+	 * @brief Takes and saves a screenshot to disk.
+	 * @return The file name of the new screenshot.
+	 */
 	const std::string _takeScreenshot();
 
-	void Input_MouseMoved(const Ember::MouseMotion& motion, Ember::Input::InputMode mode);
+	/**
+	 * @brief Called when the mouse has moved.
+	 * @param motion The mouse motion.
+	 * @param mode The current input mode.
+	 */
+	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
 
 };
 
