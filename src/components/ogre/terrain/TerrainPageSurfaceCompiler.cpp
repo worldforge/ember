@@ -65,14 +65,14 @@ TerrainPageSurfaceCompilationInstance::~TerrainPageSurfaceCompilationInstance()
 	delete mTechnique;
 }
 
-void TerrainPageSurfaceCompilationInstance::prepare()
+bool TerrainPageSurfaceCompilationInstance::prepare()
 {
-	mTechnique->prepareMaterial();
+	return mTechnique->prepareMaterial();
 }
 
-void TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material)
+bool TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material)
 {
-	mTechnique->compileMaterial(material);
+	return mTechnique->compileMaterial(material);
 }
 
 }

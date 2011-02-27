@@ -34,14 +34,42 @@ namespace Terrain
 namespace Techniques
 {
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief Abstract base class for terrain techniques.
+ */
 class Base : public TerrainPageSurfaceCompilerTechnique
 {
 public:
+    /**
+     * @brief Ctor.
+     * @param geometry The geometry to operate on.
+     * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
+     * @param terrainPageShadow An optional shadow.
+     */
 	Base(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~Base();
+
 protected:
+
+	/**
+	 * @brief The geometry to operate on.
+	 */
 	TerrainPageGeometryPtr mGeometry;
+
+	/**
+	 * @brief The surfaces to generate a rendering technique for.
+	 */
 	const SurfaceLayerStore mTerrainPageSurfaces;
+
+	/**
+	 * @brief An optional shadow.
+	 */
 	const TerrainPageShadow* mTerrainPageShadow;
 
 	/**

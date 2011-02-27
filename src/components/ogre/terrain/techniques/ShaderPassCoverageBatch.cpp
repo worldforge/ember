@@ -69,7 +69,7 @@ std::vector<const TerrainPageSurfaceLayer*>& ShaderPassCoverageBatch::getLayers(
 void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr texture)
 {
 	if (std::find(mSyncedTextures.begin(), mSyncedTextures.end(), texture->getName()) == mSyncedTextures.end()) {
-		Ember::TimedLog log("ShaderPassCoverageBatch::assignCombinedCoverageTexture");
+		TimedLog log("ShaderPassCoverageBatch::assignCombinedCoverageTexture");
 		Ogre::Image image;
 
 		image.loadDynamicImage(mCombinedCoverageImage.getData(), mCombinedCoverageImage.getResolution(), mCombinedCoverageImage.getResolution(), 1, Ogre::PF_B8G8R8A8);

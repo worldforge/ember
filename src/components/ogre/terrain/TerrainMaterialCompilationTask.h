@@ -38,7 +38,7 @@ class TerrainPage;
  * @brief Recompiles the material for a terrain page.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class TerrainMaterialCompilationTask : public Ember::Tasks::TemplateNamedTask<TerrainMaterialCompilationTask>
+class TerrainMaterialCompilationTask : public Tasks::TemplateNamedTask<TerrainMaterialCompilationTask>
 {
 public:
 
@@ -59,7 +59,7 @@ public:
 	 */
 	virtual ~TerrainMaterialCompilationTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 private:

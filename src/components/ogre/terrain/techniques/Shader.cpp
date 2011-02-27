@@ -78,7 +78,7 @@ bool Shader::prepareMaterial()
 					}
 				}
 			} else {
-				///TODO: handle new pass
+				//TODO: handle new pass
 			}
 		}
 	}
@@ -92,7 +92,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	material->removeAllTechniques();
 	Ogre::Technique* technique = material->createTechnique();
 
-	///The normal, shadowed, shaders have clones with the suffix "/NoShadows" which will skip the shadows.
+	//The normal, shadowed, shaders have clones with the suffix "/NoShadows" which will skip the shadows.
 	std::string materialSuffix = "";
 	if (!mIncludeShadows) {
 		materialSuffix = "/NoShadows";
@@ -105,7 +105,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 		}
 	}
 
-	///Now also add a "Low" technique, for use in the compass etc.
+	//Now also add a "Low" technique, for use in the compass etc.
 	technique = material->createTechnique();
 	technique->setSchemeName("Low");
 
@@ -127,7 +127,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	 textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
 	 */
 
-	///we need to load it before we can see how many techniques are supported
+	//we need to load it before we can see how many techniques are supported
 	material->load();
 	if (material->getNumSupportedTechniques() == 0) {
 		S_LOG_WARNING("The material '" << material->getName() << "' has no supported techniques. The reason for this is: \n" << material->getUnsupportedTechniquesExplanation());

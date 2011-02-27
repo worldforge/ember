@@ -48,13 +48,14 @@ TerrainMaterialCompilationTask::~TerrainMaterialCompilationTask()
 {
 }
 
-void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainMaterialCompilationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {
 		(*J)->repopulate();
 		TerrainPageSurfaceCompilationInstance* compilationInstance = (*J)->getPage().getSurface()->createSurfaceCompilationInstance(*J);
-		compilationInstance->prepare();
-		mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &(*J)->getPage()));
+		if (compilationInstance->prepare()) {
+			mMaterialRecompilations.push_back(std::pair<TerrainPageSurfaceCompilationInstance*, TerrainPage*>(compilationInstance, &(*J)->getPage()));
+		}
 	}
 	//Release Segment references as soon as we can
 	mGeometry.clear();
@@ -73,6 +74,7 @@ void TerrainMaterialCompilationTask::executeTaskInMainThread()
 
 void TerrainMaterialCompilationTask::updateSceneManagersAfterMaterialsChange()
 {
+	//We need to do this to prevent stale hashes in Ogre, which will lead to crashes during rendering.
 	if (Ogre::Pass::getDirtyHashList().size() != 0 || Ogre::Pass::getPassGraveyard().size() != 0) {
 		Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();
 

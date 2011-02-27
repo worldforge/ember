@@ -37,16 +37,30 @@ namespace Techniques
 class ShaderPass;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief A shader based technique.
+ *
+ * This technique will use shaders for drawing the terrain. The coverage for the different layers will be combined into one combined texture, where each channel represents one layer.
+ *
 */
 class Shader : public Base
 {
 public:
+
     /**
      * @brief Ctor.
      * @param includeShadows If true, shadows will be used.
+     * @param geometry The geometry to operate on.
+     * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
+     * @param terrainPageShadow An optional shadow.
+     * @param sceneManager The scene manager which will hold the terrain.
      */
 	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager);
+
+	/**
+	 * @brief Dtor.
+	 */
     virtual ~Shader();
 
     virtual bool prepareMaterial();
@@ -72,9 +86,23 @@ protected:
 
 	virtual ShaderPass* addPass();
 
+	/**
+	 * @brief Adds the first layer.
+	 * @param pass The pass which is used to draw this layer.
+	 * @param layer The layer definition.
+	 */
 	void addBaseLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
+
+	/**
+	 * @brief Adds a layer, apart from the first layer.
+	 * @param pass The pass which is used to draw this layer.
+	 * @param layer The layer definition.
+	 */
 	void addLayer(Ogre::Pass* pass, TerrainPageSurfaceLayer* layer);
 
+	/**
+	 * @brief Resets the technique, removing all passes.
+	 */
 	void reset();
 
 };
