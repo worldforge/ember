@@ -45,14 +45,18 @@ public:
 
 	/**
 	 * @brief Ctor.
+	 * @param cameraSettings Shared camera settings.
 	 * @param sceneManager A scene manager, needed for creating new node instances.
 	 */
-	ThirdPersonCameraMount(Ogre::SceneManager& sceneManager);
+	ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager);
 
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~ThirdPersonCameraMount();
 
 	/**
-	 * emitted when the distance between the camera and the  has changed
+	 * @brief Emitted when the distance between the camera and the  has changed.
 	 * @param Ogre::Real the new distance
 	 */
 	sigc::signal<void, Ogre::Real> EventChangedCameraDistance;
@@ -63,6 +67,9 @@ public:
 	 */
 	void setCameraDistance(Ogre::Real distance);
 
+	/**
+	 * Console command for setting the distance of the camera from the node it's observing.
+	 */
 	const Ember::ConsoleCommandWrapper SetCameraDistance;
 
 	/**
@@ -102,9 +109,6 @@ protected:
 	Ogre::SceneNode* mCameraRootNode;
 	Ogre::SceneNode* mCameraPitchNode;
 	Ogre::SceneNode* mCameraNode;
-
-	Ogre::Degree mDegreeOfPitchPerSecond;
-	Ogre::Degree mDegreeOfYawPerSecond;
 
 	Ogre::Vector3 mLastPosition;
 	Ogre::Real mWantedCameraDistance;

@@ -37,12 +37,13 @@ class ICameraMotionHandler;
 namespace Camera
 {
 class MainCamera;
+class CameraSettings;
 
 class CameraMountBase : public ICameraMount
 {
 public:
 
-	CameraMountBase();
+	CameraMountBase(const CameraSettings& cameraSettings);
 	virtual ~CameraMountBase();
 
 	/**
@@ -69,6 +70,7 @@ public:
 protected:
 	Ogre::Camera* mCamera;
 	ICameraMotionHandler* mMotionHandler;
+	const CameraSettings& mCameraSettings;
 };
 
 

@@ -64,8 +64,8 @@ namespace Ember
 namespace OgreView
 {
 
-Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene) :
-	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(scene.getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(0), mIsMovingServerOnly(false), mScene(scene)
+Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings) :
+	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(0), mIsMovingServerOnly(false), mScene(scene)
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 

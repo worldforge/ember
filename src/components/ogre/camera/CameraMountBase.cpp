@@ -32,8 +32,8 @@ namespace OgreView
 namespace Camera
 {
 
-CameraMountBase::CameraMountBase()
-: mCamera(0), mMotionHandler(0)
+CameraMountBase::CameraMountBase(const CameraSettings& cameraSettings)
+: mCamera(0), mMotionHandler(0), mCameraSettings(cameraSettings)
 {
 
 }

@@ -22,6 +22,7 @@
 
 #include "ICameraMount.h"
 #include "Recorder.h"
+#include "CameraSettings.h"
 
 #include "components/ogre/AvatarTerrainCursor.h"
 
@@ -86,7 +87,8 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 	mCameraRaySceneQuery(0),
 	mAvatarTerrainCursor(new AvatarTerrainCursor(camera)),
 	mCameraOrientationChangedThisFrame(false),
-	mMovementProvider(0)
+	mMovementProvider(0),
+	mCameraSettings(new CameraSettings)
 {
 
 	createRayQueries(sceneManager);
@@ -103,6 +105,7 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 MainCamera::~MainCamera()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
+	delete mCameraSettings;
 }
 
 Ogre::Camera& MainCamera::getCamera()
@@ -118,6 +121,11 @@ Ogre::Camera& MainCamera::getCamera() const
 AvatarTerrainCursor& MainCamera::getTerrainCursor() const
 {
 	return *mAvatarTerrainCursor.get();
+}
+
+const CameraSettings& MainCamera::getCameraSettings() const
+{
+	return *mCameraSettings;
 }
 
 void MainCamera::Config_ClipDistances(const std::string& section, const std::string& key, varconf::Variable& variable)

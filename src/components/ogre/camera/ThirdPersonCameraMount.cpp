@@ -17,6 +17,7 @@
  */
 
 #include "ThirdPersonCameraMount.h"
+#include "CameraSettings.h"
 #include "components/ogre/OgreInfo.h"
 #include "framework/Tokeniser.h"
 #include "services/EmberServices.h"
@@ -31,8 +32,8 @@ namespace OgreView
 namespace Camera
 {
 
-ThirdPersonCameraMount::ThirdPersonCameraMount(Ogre::SceneManager& sceneManager) :
-	SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mDegreeOfPitchPerSecond(50), mDegreeOfYawPerSecond(50), mWantedCameraDistance(10), mCurrentCameraDistance(0), mAdjustTerrainRaySceneQuery(0), mCameraRaySceneQuery(0), mIsAdjustedToTerrain(true), mInvertCamera(false)
+ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager) :
+	CameraMountBase::CameraMountBase(cameraSettings), SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mWantedCameraDistance(10), mCurrentCameraDistance(0), mAdjustTerrainRaySceneQuery(0), mCameraRaySceneQuery(0), mIsAdjustedToTerrain(true), mInvertCamera(false)
 {
 	createNodesForCamera(sceneManager);
 	createRayQueries(sceneManager);
@@ -68,7 +69,7 @@ void ThirdPersonCameraMount::attachToNode(Ogre::Node* sceneNode)
 
 Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 {
-	Ogre::Degree degrees(mDegreeOfPitchPerSecond * relativeMovement);
+	Ogre::Degree degrees(mCameraSettings.getDegreesPerMouseUnit() * relativeMovement);
 
 	if (mInvertCamera) {
 		degrees -= degrees * 2;
@@ -97,7 +98,7 @@ Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 
 Ogre::Degree ThirdPersonCameraMount::yaw(float relativeMovement)
 {
-	Ogre::Degree degrees(mDegreeOfYawPerSecond * relativeMovement);
+	Ogre::Degree degrees(mCameraSettings.getDegreesPerMouseUnit() * relativeMovement);
 
 	if (degrees.valueDegrees()) {
 		mCameraRootNode->yaw(degrees);

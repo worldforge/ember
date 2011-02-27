@@ -154,7 +154,7 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 	if (entity) {
 		EmberEntity& emberEntity = static_cast<EmberEntity&> (*entity);
 		//Set up the third person avatar camera and switch to it.
-		mAvatar = new Avatar(emberEntity, *mScene);
+		mAvatar = new Avatar(emberEntity, *mScene, mMainCamera->getCameraSettings());
 		mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
 		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
 		mMovementController = new MovementController(*mAvatar, *mMainCamera);

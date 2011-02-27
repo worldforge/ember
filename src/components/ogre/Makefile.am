@@ -17,6 +17,7 @@ libEmberOgre_a_SOURCES = \
 	authoring/SimpleEntityVisualization.cpp \
 \
 	camera/MainCamera.cpp camera/CameraMountBase.cpp camera/FirstPersonCameraMount.cpp camera/Recorder.cpp camera/ThirdPersonCameraMount.cpp \
+	camera/CameraSettings.cpp \
 	environment/CaelumEnvironment.cpp environment/CaelumSky.cpp environment/CaelumSun.cpp \
 	environment/EmberEntityLoader.cpp environment/Environment.cpp environment/Foliage.cpp environment/FoliageBase.cpp environment/FoliageLayer.cpp \
 	environment/FoliageLoader.cpp environment/Forest.cpp environment/GrassFoliage.cpp environment/LensFlare.cpp \
@@ -107,6 +108,7 @@ noinst_HEADERS = \
 	authoring/SimpleEntityVisualization.h \
 \
 	camera/MainCamera.h camera/CameraMountBase.h camera/FirstPersonCameraMount.h camera/Recorder.h camera/ThirdPersonCameraMount.h camera/ICameraMount.h \
+	camera/CameraSettings.h \
 \
 	environment/CaelumEnvironment.h environment/CaelumSky.h environment/CaelumSun.h \
 	environment/EmberEntityLoader.h environment/Environment.h environment/Foliage.h environment/FoliageBase.h environment/FoliageLayer.h environment/FoliageLoader.h \

@@ -18,6 +18,8 @@
 
 #include "FirstPersonCameraMount.h"
 
+#include "CameraSettings.h"
+
 #include "components/ogre/OgreInfo.h"
 
 #include <OgreSceneManager.h>
@@ -30,8 +32,8 @@ namespace OgreView
 namespace Camera
 {
 
-FirstPersonCameraMount::FirstPersonCameraMount(Ogre::SceneManager& sceneManager) :
-	mDegreeOfPitchPerSecond(50), mDegreeOfYawPerSecond(50), mCameraNode(0), mInvertCamera(false)
+FirstPersonCameraMount::FirstPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager) :
+	CameraMountBase::CameraMountBase(cameraSettings), mCameraNode(0), mInvertCamera(false)
 {
 	mCameraNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("FirstPersonCameraNode"));
 }
@@ -72,7 +74,7 @@ void FirstPersonCameraMount::detachFromCamera()
 
 Ogre::Degree FirstPersonCameraMount::pitch(float relativeMovement)
 {
-	Ogre::Degree degrees(mDegreeOfPitchPerSecond * relativeMovement);
+	Ogre::Degree degrees(mCameraSettings.getDegreesPerMouseUnit() * relativeMovement);
 
 	if (mInvertCamera) {
 		degrees -= degrees * 2;
@@ -100,7 +102,7 @@ Ogre::Degree FirstPersonCameraMount::pitch(float relativeMovement)
 
 Ogre::Degree FirstPersonCameraMount::yaw(float relativeMovement)
 {
-	Ogre::Degree degrees(mDegreeOfYawPerSecond * relativeMovement);
+	Ogre::Degree degrees(mCameraSettings.getDegreesPerMouseUnit() * relativeMovement);
 
 	if (degrees.valueDegrees()) {
 		//Yaw in relation to the world to prevent the camera being tilted when it's yawed along with being pitched

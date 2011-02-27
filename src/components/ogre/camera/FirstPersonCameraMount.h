@@ -41,7 +41,7 @@ public:
 	 * @brief Ctor.
 	 * @param sceneManager The main scene manager.
 	 */
-	FirstPersonCameraMount(Ogre::SceneManager& sceneManager);
+	FirstPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Dtor.
@@ -78,16 +78,6 @@ public:
 	virtual void detachFromCamera();
 
 private:
-
-	/**
-	 * @brief The amount of degrees to pitch per second.
-	 */
-	Ogre::Degree mDegreeOfPitchPerSecond;
-
-	/**
-	 * @brief The amount of degrees to yaw per second.
-	 */
-	Ogre::Degree mDegreeOfYawPerSecond;
 
 	/**
 	 * @brief The main camera node.

@@ -55,6 +55,7 @@ class Model;
 namespace Camera
 {
 class ThirdPersonCameraMount;
+class CameraSettings;
 }
 
 class EmberEntity;
@@ -87,8 +88,9 @@ public:
 	 * @brief Ctor.
 	 * @param erisAvatarEntity The entity which represents the avatar.
 	 * @param scene The scene in which the entities are shown.
+	 * @param cameraSettings Camera settings.
 	 */
-	Avatar(EmberEntity& erisAvatarEntity, Scene& scene);
+	Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings);
 
 	/**
 	 * @brief Dtor.

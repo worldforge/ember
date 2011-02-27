@@ -96,7 +96,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 				mFreeFlyingNode->translate(Ogre::Vector3(0, 3, 0)); //put it a little on top of the avatar node
 			}
 			mFreeFlyingMotionHandler = std::auto_ptr<FreeFlyingCameraMotionHandler>(new FreeFlyingCameraMotionHandler(*mFreeFlyingNode));
-			mCameraMount = std::auto_ptr<Camera::FirstPersonCameraMount>(new Camera::FirstPersonCameraMount(mAvatar.getScene().getSceneManager()));
+			mCameraMount = std::auto_ptr<Camera::FirstPersonCameraMount>(new Camera::FirstPersonCameraMount(mCamera.getCameraSettings(), mAvatar.getScene().getSceneManager()));
 			mCameraMount->setMotionHandler(mFreeFlyingMotionHandler.get());
 			mCameraMount->attachToNode(mFreeFlyingNode);
 		} else {

@@ -70,6 +70,7 @@ namespace Camera
 {
 class ICameraMount;
 class Recorder;
+class CameraSettings;
 
 class MainCamera : public Ogre::FrameListener, public ConsoleObject, ConfigListenerContainer, public virtual sigc::trackable
 {
@@ -185,6 +186,12 @@ public:
 	 */
 	AvatarTerrainCursor& getTerrainCursor() const;
 
+	/**
+	 * Accessor for the shared camera settings.
+	 * @return The shared camera settings.
+	 */
+	const CameraSettings& getCameraSettings() const;
+
 private:
 	typedef std::deque<IWorldPickListener*> WorldPickListenersStore;
 	typedef std::vector<std::string> CompositorNameStore;
@@ -210,6 +217,11 @@ private:
 	bool mCameraOrientationChangedThisFrame;
 
 	IMovementProvider* mMovementProvider;
+
+	/**
+	 * @brief The shared camera settings, which is used by the various mounts.
+	 */
+	CameraSettings* mCameraSettings;
 
 	/**
 	 * @brief Sets the near and far clip distances of the camera.
