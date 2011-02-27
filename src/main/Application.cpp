@@ -149,10 +149,10 @@ public:
 	}
 };
 
-template<> Ember::Application *Ember::Singleton<Ember::Application>::ms_Singleton = 0;
+template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-	mOgreView(0), mShouldQuit(false), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mPollEris(true), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+	mOgreView(0), mShouldQuit(false), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mPollEris(true), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mLastTimeMainLoopStepEnded(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 
 {
 
@@ -170,44 +170,49 @@ Application::~Application()
 
 void Application::registerComponents()
 {
-	mOgreView = new Ember::OgreView::EmberOgre();
+	mOgreView = new OgreView::EmberOgre();
 }
 
 void Application::mainLoopStep(long minMillisecondsPerFrame)
 {
-	Ember::Input& input(Ember::Input::getSingleton());
+	Input& input(Input::getSingleton());
 	long currentTimeMillis(0);
 	try {
-		//If we should cap the fps so that each frame should take a minimum amount of time,
-		//we need to see if we should sleep a little.
-		if (minMillisecondsPerFrame > 0) {
-			currentTimeMillis = Ember::Time::currentTimeMillis();
-			long millisecondSinceLastFrame = currentTimeMillis - mLastTimeInputProcessingEnd;
-			if (millisecondSinceLastFrame < minMillisecondsPerFrame) {
-				input.sleep(minMillisecondsPerFrame - millisecondSinceLastFrame);
-			}
-		}
+
 		if (mPollEris) {
-			currentTimeMillis = Ember::Time::currentTimeMillis();
+			currentTimeMillis = Time::currentTimeMillis();
 			EventStartErisPoll.emit((currentTimeMillis - mLastTimeErisPollStart) / 1000.0f);
 			mLastTimeErisPollStart = currentTimeMillis;
 			Eris::PollDefault::poll(1);
 			if (mWorldView)
 				mWorldView->update();
-			currentTimeMillis = Ember::Time::currentTimeMillis();
+			currentTimeMillis = Time::currentTimeMillis();
 			EventEndErisPoll.emit((currentTimeMillis - mLastTimeErisPollEnd) / 1000.0f);
 			mLastTimeErisPollEnd = currentTimeMillis;
 		}
-		currentTimeMillis = Ember::Time::currentTimeMillis();
+
+		currentTimeMillis = Time::currentTimeMillis();
 		EventBeforeInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingStart) / 1000.0f);
 		mLastTimeInputProcessingStart = currentTimeMillis;
 		input.processInput();
 
-		currentTimeMillis = Ember::Time::currentTimeMillis();
+		currentTimeMillis = Time::currentTimeMillis();
 		EventAfterInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingEnd) / 1000.0f);
 		mLastTimeInputProcessingEnd = currentTimeMillis;
+
 		mOgreView->renderOneFrame();
 		EmberServices::getSingleton().getSoundService()->cycle();
+
+		//If we should cap the fps so that each frame should take a minimum amount of time,
+		//we need to see if we should sleep a little.
+		if (minMillisecondsPerFrame > 0) {
+			currentTimeMillis = Time::currentTimeMillis();
+			long millisecondSinceLastFrame = currentTimeMillis - mLastTimeMainLoopStepEnded;
+			if (millisecondSinceLastFrame < minMillisecondsPerFrame) {
+				input.sleep(minMillisecondsPerFrame - millisecondSinceLastFrame);
+			}
+		}
+		mLastTimeMainLoopStepEnded = Time::currentTimeMillis();
 	} catch (const std::exception& ex) {
 		S_LOG_CRITICAL("Got exception, shutting down." << ex);
 		throw ;
@@ -224,11 +229,12 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 
 void Application::mainLoop()
 {
-	long currentTimeMillis = Ember::Time::currentTimeMillis();
+	long currentTimeMillis = Time::currentTimeMillis();
 	mLastTimeErisPollStart = currentTimeMillis;
 	mLastTimeErisPollEnd = currentTimeMillis;
 	mLastTimeInputProcessingStart = currentTimeMillis;
 	mLastTimeInputProcessingEnd = currentTimeMillis;
+	mLastTimeMainLoopStepEnded = 0;
 	DesiredFpsListener desiredFpsListener;
 	while(mShouldQuit == false)
 	{
@@ -264,10 +270,10 @@ void Application::initializeServices()
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
 
 	mLogObserver = new ConfigBoundLogObserver(*configService, *mLogOutStream);
-	Ember::Log::addObserver(mLogObserver);
+	Log::addObserver(mLogObserver);
 
 	///default to INFO, though this can be changed by the config file
-	mLogObserver->setFilter(Ember::Log::INFO);
+	mLogObserver->setFilter(Log::INFO);
 
 	/// Change working directory
 	const std::string& dirName = configService->getHomeDirectory();
@@ -376,7 +382,7 @@ Eris::View* Application::getMainView()
 void Application::start()
 {
 	try {
-		if (!mOgreView->setup(Ember::Input::getSingleton())) {
+		if (!mOgreView->setup(Input::getSingleton())) {
 			///The setup was cancelled, return.
 			return;
 		}

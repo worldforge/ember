@@ -107,7 +107,7 @@ class LogObserver;
  *
  * start();
  */
-class Application : public ConsoleObject, public Ember::Singleton<Application>, public virtual sigc::trackable
+class Application : public ConsoleObject, public Singleton<Application>, public virtual sigc::trackable
 {
 public:
 	typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
@@ -245,7 +245,7 @@ private:
 	/**
 	 * @brief The main Ogre graphical view.
 	 */
-	Ember::OgreView::EmberOgre* mOgreView;
+	OgreView::EmberOgre* mOgreView;
 
 	/**
 	 * @brief If set to true, Ember should quit before next loop step.
@@ -310,6 +310,12 @@ private:
 	long mLastTimeInputProcessingEnd;
 
 	/**
+	 * @brief Keeps track of the last time the main loop step completed.
+	 * Value is in milliseconds.
+	 */
+	long mLastTimeMainLoopStepEnded;
+
+	/**
 	 * @brief We listen to the GotView event to be able to store a reference to the View instance.
 	 * @see mWorldView
 	 * @param view The world view.
@@ -340,12 +346,12 @@ private:
 	/**
 	 * @brief The "quit" command will quit the application, bypassing any confirmation dialog.
 	 */
-	const Ember::ConsoleCommandWrapper Quit;
+	const ConsoleCommandWrapper Quit;
 
 	/**
 	 * @brief Toggles the polling of data from eris. Normally Eris is polled each frame, but this can be turned off (mainly for debug reasons).
 	 */
-	const Ember::ConsoleCommandWrapper ToggleErisPolling;
+	const ConsoleCommandWrapper ToggleErisPolling;
 };
 }
 
