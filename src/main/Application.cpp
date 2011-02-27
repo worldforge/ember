@@ -183,7 +183,7 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 			currentTimeMillis = Time::currentTimeMillis();
 			EventStartErisPoll.emit((currentTimeMillis - mLastTimeErisPollStart) / 1000.0f);
 			mLastTimeErisPollStart = currentTimeMillis;
-			Eris::PollDefault::poll(1);
+			Eris::PollDefault::poll(0);
 			if (mWorldView)
 				mWorldView->update();
 			currentTimeMillis = Time::currentTimeMillis();
