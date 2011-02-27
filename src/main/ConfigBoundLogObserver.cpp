@@ -31,26 +31,22 @@
 
 namespace Ember {
 
-ConfigBoundLogObserver::ConfigBoundLogObserver(std::ostream &out) 
-: Ember::StreamLogObserver(out)
+ConfigBoundLogObserver::ConfigBoundLogObserver(ConfigService& configService, std::ostream &out)
+: Ember::StreamLogObserver(out), mConfigService(configService)
 {
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(sigc::mem_fun(*this, &ConfigBoundLogObserver::ConfigService_EventChangedConfigItem));
+	configService.EventChangedConfigItem.connect(sigc::mem_fun(*this, &ConfigBoundLogObserver::ConfigService_EventChangedConfigItem));
 
 }
-
 
 
 ConfigBoundLogObserver::~ConfigBoundLogObserver()
 {
 }
 
-/**
-* Updates from the config. The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical
-*/
 void ConfigBoundLogObserver::updateFromConfig()
 {
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("general", "logginglevel")) {
-		std::string loggingLevel = static_cast<std::string>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("general", "logginglevel"));
+	if (mConfigService.itemExists("general", "logginglevel")) {
+		std::string loggingLevel = static_cast<std::string>(mConfigService.getValue("general", "logginglevel"));
 		Ember::Log::MessageImportance importance(Ember::Log::INFO);
 		if (loggingLevel == "verbose") {
 			importance = Ember::Log::VERBOSE;
@@ -67,12 +63,6 @@ void ConfigBoundLogObserver::updateFromConfig()
 	}
 }
 
-
-/**
-	*          React on changes to the config.
-	* @param section 
-	* @param key 
-	*/
 void ConfigBoundLogObserver::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
 {
 	if (section == "general") {

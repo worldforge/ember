@@ -73,42 +73,51 @@ namespace Eris
 	class View;
 }
 
-namespace Ember
-{
-namespace OgreView
-{
-	class EmberOgre;
-}
-}
 
 /**
  * @brief The main namespace for Ember.
  *
- * @note The Ogre component is placed under the EmberOgre namespace to prevent clashes with Ogre (rather than Ember::Ogre).
  */
 namespace Ember
 {
+
+/**
+ * @brief All Ogre specific functionality is contained under this namespace. It currenly also houses all CEGUI related functionality too.
+ *
+ */
+namespace OgreView
+{
+	class EmberOgre;
+}
+
 class EmberServices;
 class LogObserver;
 
 /**
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-
-@brief The main application class. There will only be one instance of this in the system, and this holds all other objects in the system. Ember is created and destroyed with this instance.
-
-After creating it, be sure to call these methods in order:
-
-registerComponents();
-prepareComponents();
-initializeServices();
-
-start();
-
-*/
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief The main application class. There will only be one instance of this in the system, and this holds all other objects in the system. Ember is created and destroyed with this instance.
+ *
+ *
+ * After creating it, be sure to call these methods in order:
+ *
+ * registerComponents();
+ * prepareComponents();
+ * initializeServices();
+ *
+ * start();
+ */
 class Application : public ConsoleObject, public Ember::Singleton<Application>, public virtual sigc::trackable
 {
 public:
 	typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
+
+	/**
+	 * @brief Ctor.
+	 * @param prefix The prefix, i.e. the path in the filesystem where the main application is installed.
+	 * @param homeDir The path to the Ember home directory. On an UNIX system this would normally be "~/.ember".
+	 * @param configSettings Command line configuration settings.
+	 */
 	Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
 
 	/**
@@ -172,7 +181,6 @@ public:
 	 */
 	void quit();
 
-
 	/**
 	 * @brief Callback for running Console Commands
 	 */
@@ -186,7 +194,7 @@ public:
 	void setErisPolling(bool doPoll);
 
 	/**
-	 *  @brief Gets whether eris should be polled each frame.
+	 * @brief Gets whether eris should be polled each frame.
 	 * @return True if polling occurs each frame.
 	 */
 	bool getErisPolling() const;
@@ -277,9 +285,28 @@ private:
 	 */
 	bool mPollEris;
 
+	/**
+	 * @brief Keeps track of the last time an Eris poll started.
+	 * Value is in milliseconds.
+	 */
 	long mLastTimeErisPollStart;
+
+	/**
+	 * @brief Keeps track of the last time an Eris poll ended.
+	 * Value is in milliseconds.
+	 */
 	long mLastTimeErisPollEnd;
+
+	/**
+	 * @brief Keeps track of the last time input processing started.
+	 * Value is in milliseconds.
+	 */
 	long mLastTimeInputProcessingStart;
+
+	/**
+	 * @brief Keeps track of the last time input processing ended.
+	 * Value is in milliseconds.
+	 */
 	long mLastTimeInputProcessingEnd;
 
 	/**
@@ -289,6 +316,9 @@ private:
 	 */
 	void Server_GotView(Eris::View* view);
 
+	/**
+	 * @brief We listen to the DestroyedView event so that we can remove our View reference.
+	 */
 	void Server_DestroyedView();
 
 	/**

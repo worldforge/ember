@@ -246,30 +246,31 @@ void Application::initializeServices()
 
 	mServices = new EmberServices();
 	/// Initialize the Configuration Service
-	EmberServices::getSingleton().getConfigService()->start();
+	ConfigService* configService = EmberServices::getSingleton().getConfigService();
+	configService->start();
 	if (mPrefix != "") {
-		EmberServices::getSingleton().getConfigService()->setPrefix(mPrefix);
+		configService->setPrefix(mPrefix);
 	}
 	if (mHomeDir != "") {
-		EmberServices::getSingleton().getConfigService()->setHomeDirectory(mHomeDir);
+		configService->setHomeDirectory(mHomeDir);
 		std::cout << "Setting home directory to " << mHomeDir << std::endl;
 	}
 
 	///output all logging to ember.log
-	std::string filename(EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ember.log");
+	std::string filename(configService->getHomeDirectory() + "/ember.log");
 	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
 
 	///write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
 
-	mLogObserver = new ConfigBoundLogObserver(*mLogOutStream);
+	mLogObserver = new ConfigBoundLogObserver(*configService, *mLogOutStream);
 	Ember::Log::addObserver(mLogObserver);
 
 	///default to INFO, though this can be changed by the config file
 	mLogObserver->setFilter(Ember::Log::INFO);
 
 	/// Change working directory
-	const std::string& dirName = EmberServices::getSingleton().getConfigService()->getHomeDirectory();
+	const std::string& dirName = configService->getHomeDirectory();
 	oslink::directory osdir(dirName);
 
 	if (!osdir) {
@@ -280,26 +281,26 @@ void Application::initializeServices()
 #endif
 	}
 
-	int result = chdir(EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str());
+	int result = chdir(configService->getHomeDirectory().c_str());
 	if (result) {
-		S_LOG_WARNING("Could not change directory to '"<< EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str() <<"'.");
+		S_LOG_WARNING("Could not change directory to '"<< configService->getHomeDirectory().c_str() <<"'.");
 	}
 
-	// 	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
+	// 	const std::string& sharePath(configService->getSharedConfigDirectory());
 
 	///make sure that there are files
 	///assureConfigFile("ember.conf", sharePath);
 
 	///load the config file. Note that this will load the shared config file, and then the user config file if available (~/.ember/ember.conf)
-	EmberServices::getSingleton().getConfigService()->loadSavedConfig("ember.conf");
+	configService->loadSavedConfig("ember.conf");
 	///after loading the config from file, override with command time settings
 	for (ConfigMap::iterator I = mConfigSettings.begin(); I != mConfigSettings.end(); ++I) {
 		for (std::map<std::string, std::string>::iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			EmberServices::getSingleton().getConfigService()->setValue(I->first, J->first, J->second);
+			configService->setValue(I->first, J->first, J->second);
 		}
 	}
 
-	S_LOG_INFO("Using media from " << EmberServices::getSingleton().getConfigService()->getEmberMediaDirectory());
+	S_LOG_INFO("Using media from " << configService->getEmberMediaDirectory());
 
 	/// Initialize the Sound Service
 	S_LOG_INFO("Initializing sound service");

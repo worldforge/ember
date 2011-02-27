@@ -1,4 +1,4 @@
-//
+
 // C++ Interface: ConfigBoundLogObserver
 //
 // Description: 
@@ -28,31 +28,47 @@
 
 namespace Ember {
 
+class ConfigService;
+
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class ConfigBoundLogObserver : public Ember::StreamLogObserver, public virtual sigc::trackable
+class ConfigBoundLogObserver : public StreamLogObserver, public virtual sigc::trackable
 {
 public:
-    ConfigBoundLogObserver(std::ostream &out);
+	/**
+	 * @brief Ctor.
+	 *
+	 * @param configService The config service to bind to.
+	 * @param out The stream log messages will be written to.
+	 */
+    ConfigBoundLogObserver(ConfigService& configService, std::ostream &out);
 
+    /**
+     * @brief Dtor.
+     */
     ~ConfigBoundLogObserver();
 
 protected:
+
+    /**
+     * @brief The config service.
+     */
+    ConfigService& mConfigService;
 	
 	/**
-		* Updates from the config. The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical
-		*/
+	* @brief Updates from the config.
+	*
+	* The relevant section is "general" and the key "logginglevel". It can have the values of verbose|info|warning|failure|critical
+	*/
 	void updateFromConfig();
 	
-	
 	/**
-		*          React on changes to the config.
-		* @param section 
-		* @param key 
-		*/
+	* @brief React on changes to the config.
+	* @param section
+	* @param key
+	*/
 	void ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key);
-
 
 };
 
