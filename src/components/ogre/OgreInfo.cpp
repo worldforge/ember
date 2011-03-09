@@ -128,6 +128,7 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 				outputStream << "  Camera " << camera->getName() << "(" << (camera->isInScene() ? "in scene" : "not in scene") << ")" << std::endl;
 				outputStream << "  Pos: " << camera->getDerivedPosition() << std::endl;
 				outputStream << "  Direction: " << camera->getDerivedDirection() << std::endl;
+				outputStream << "  Clip distances: " << camera->getNearClipDistance() << " - " << camera->getFarClipDistance() << std::endl;
 			}
 		}
 
