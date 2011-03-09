@@ -256,9 +256,29 @@ bool OgreSetup::configure(void)
 		suppressConfig = static_cast<bool> (configService->getValue("ogre", "suppressconfigdialog"));
 	}
 	if (suppressConfig) {
-		success = mRoot->restoreConfig();
+		try {
+			success = mRoot->restoreConfig();
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
+			unlink((Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ogre.cfg").c_str());
+			try {
+				success = mRoot->showConfigDialog();
+			} catch (const std::exception& ex) {
+				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
+			}
+		}
 	} else {
-		success = mRoot->showConfigDialog();
+		try {
+			success = mRoot->showConfigDialog();
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
+			unlink((Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ogre.cfg").c_str());
+			try {
+				success = mRoot->showConfigDialog();
+			} catch (const std::exception& ex) {
+				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
+			}
+		}
 	}
 
 	if (success) {
