@@ -3,6 +3,7 @@ INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 if USE_CPPUNIT
 TESTS = TestOgreView TestTasks TestTerrain
 check_PROGRAMS = $(TESTS)
+CLEANFILES = Ogre.log
 
 TestOgreView_SOURCES = TestOgreView.cpp ConvertTestCase.cpp ModelMountTestCase.cpp
 TestOgreView_CXXFLAGS = $(CPPUNIT_CFLAGS)
