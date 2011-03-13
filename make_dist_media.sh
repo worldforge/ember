@@ -2,7 +2,7 @@
 
 #automates the creation of the needed media
 #usage: ./make_dist_media.sh <media svn directory> <local directory> <image pixel max with/height>
-#example: ./make_dist_media.sh media-dev 256
+#example: ./make_dist_media.sh media-svn-dir media-dev 256
 #note that the script must be run in the ember source root dir
 
 current=${PWD}
