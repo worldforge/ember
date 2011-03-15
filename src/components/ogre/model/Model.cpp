@@ -1024,9 +1024,20 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 		}
 	}
 
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+	ParticleSystemSet::iterator particleSystemsI_end = mParticleSystems.end();
+	for (ParticleSystemSet::iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
 		(*I)->getOgreParticleSystem()->_notifyAttached(parent, isTagPoint);
+		try {
+			//Try to trigger a load of any image resources used by affectors.
+			//The reason we want to do this now is that otherwise it will happen during rendering. An exception will then be thrown
+			//which will bubble all the way up to the main loop, thus aborting all frames.
+			(*I)->getOgreParticleSystem()->_update(0);
+		} catch (const Ogre::Exception& ex) {
+			//An exception occurred when forcing an update of the particle system. Remove it.
+			S_LOG_FAILURE("Error when loading particle system " << (*I)->getOgreParticleSystem()->getName() << ". Removing it.");
+			delete *I;
+			I = mParticleSystems.erase(I);
+		}
 	}
 
 	LightSet::const_iterator lightsI_end = mLights.end();
