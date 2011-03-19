@@ -80,7 +80,8 @@ bool SimpleWater::initialize()
 
 		mWaterEntity = mSceneMgr.createEntity("water", "SimpleWaterPlane");
 		mWaterEntity->setMaterialName("/global/environment/water/ocean");
-		mWaterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_6);
+		//Render the water very late on, so that any transparent entity which is half submerged is already rendered.
+		mWaterEntity->setRenderQueueGroup(Ogre::RENDER_QUEUE_8);
 		mWaterEntity->setCastShadows(false);
 		mWaterEntity->setQueryFlags(MousePicker::CM_NATURE);
 
