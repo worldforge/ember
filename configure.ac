@@ -422,8 +422,8 @@ PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
 WF_CHECK_THREADING
 
 # Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.16 \
- varconf-1.0 >= 0.6.5 mercator-0.3 >= 0.3.0 atlascpp-0.6 >= 0.6.0 wfmath-0.3 >= 0.3.9 libwfut-0.2 >= 0.2.0],
+PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.17 \
+ varconf-1.0 >= 0.6.5 mercator-0.3 >= 0.3.0 atlascpp-0.6 >= 0.6.2 wfmath-0.3 >= 0.3.11 libwfut-0.2 >= 0.2.2],
 	[
 		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
 		LIBS="$LIBS $WF_LIBS"
