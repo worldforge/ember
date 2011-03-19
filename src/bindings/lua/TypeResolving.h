@@ -31,6 +31,8 @@
 #include <vector>
 #include <Atlas/Objects/ObjectsFwd.h>
 
+#include <Eris/BaseConnection.h>
+
 namespace Atlas
 {
 namespace Message
