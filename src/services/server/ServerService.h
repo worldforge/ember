@@ -250,6 +250,11 @@ public:
 	 */
 	sigc::signal<void, const Atlas::Objects::Root&> EventReceivedObject;
 
+	/**
+	 * @brief Emitted when the current connection status changes.
+	 */
+	sigc::signal<void, Eris::BaseConnection::Status> EventStatusChanged;
+
 private:
 
 	/**

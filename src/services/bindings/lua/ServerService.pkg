@@ -106,9 +106,11 @@ class ServerService
 	 * @brief Emitted when an object has been received.
 	 */
 	sigc::signal<void, const Atlas::Objects::Root&> EventReceivedObject;
+	/**
 
-    //----------------------------------------------------------------------
-    // Callbacks from Eris
+	 * @brief Emitted when the current connection status changes.
+	 */
+	sigc::signal<void, Eris::BaseConnection::Status> EventStatusChanged;
 
 };
 }

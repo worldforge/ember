@@ -288,7 +288,8 @@ void ServerService::disconnected()
 
 void ServerService::statusChanged(Eris::BaseConnection::Status status)
 {
-	S_LOG_INFO("Status Changed to: "<<status);
+	EventStatusChanged.emit(status);
+	S_LOG_INFO("Status Changed to: " << status);
 }
 
 void ServerService::timeout(Eris::BaseConnection::Status status)
