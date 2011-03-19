@@ -125,10 +125,12 @@ bool ServerService::connect(const std::string& host, short port)
 	myHost = host;
 	myPort = port;
 	try {
+		//Make sure to disconnect first before trying to connect again.
+		disconnect();
 		// Create new instance of mConn the constructor sets the
 		// singleton instance up.  Do _not_ use Connection::Instance()
 		// this does not create a new connection.
-		// We are connected without debuging enabled thus the false
+		// We are connected without debugging enabled thus the false
 		mConn = new Connection(std::string("Ember ") + VERSION, myHost, port, false, new ServerServiceConnectionListener(*this));
 
 		// Bind signals
@@ -138,7 +140,7 @@ bool ServerService::connect(const std::string& host, short port)
 		mConn->Disconnecting.connect(sigc::mem_fun(*this, &ServerService::disconnecting));
 		mConn->StatusChanged.connect(sigc::mem_fun(*this, &ServerService::statusChanged));
 		//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
-		// If the connection fails here an errnumber is returned
+		// If the connection fails here an error number is returned
 		int errorno = mConn->connect();
 		if (errorno) {
 			return false;
