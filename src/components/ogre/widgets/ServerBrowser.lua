@@ -52,6 +52,10 @@ function ServerBrowser:buildWidget()
 	local serverService = emberServices:getServerService()
 	connect(self.connectors, serverService.GotConnection, self.Server_GotConnection, self)
 	
+	connect(self.connectors, serverService.EventStatusChanged, self.Server_StatusChanged, self)
+
+	self.widget:getWindow("CancelConnection"):subscribeEvent("Clicked", self.CancelConnection_Click, self)
+	
 	self:connectToMetaServer()
 	self.widget:show()
 	self.widget:getMainWindow():activate()
@@ -120,9 +124,32 @@ function ServerBrowser:Server_GotConnection(connection)
 		end)
 end
 
+function ServerBrowser:Server_StatusChanged(status)
+	local text = ""
+	local showOverlay = true
+	if status == Eris.BaseConnection.INVALID_STATUS then
+		text = "Looking for server."
+	elseif status == Eris.BaseConnection.NEGOTIATE then
+		text = "Negotiating with server."
+	elseif status == Eris.BaseConnection.CONNECTING then
+		text = "Connecting to server."
+	else
+		text = "Connected to server"
+		showOverlay = false
+	end
+	self.widget:getWindow("ConnectionOverlayStatus"):setText(text)
+	self.widget:getWindow("ConnectionOverlay"):setVisible(showOverlay)
+	
+end
+
+function ServerBrowser:CancelConnection_Click(args)
+	Ember.EmberServices:getSingleton():getServerService():disconnect()
+	return true
+end
+
 function ServerBrowser:Refresh_Click(args)
 	self.serverList:resetList()
-	Ember.EmberServices:getSingleton():getMetaserverService():getMetaserver():refresh()
+	emberServices:getMetaserverService():getMetaServer():refresh()
 	return true
 end
 
