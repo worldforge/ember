@@ -44,6 +44,13 @@ do
   grep -IE --no-filename "^[^/].*set_texture_alias NormalHeightMap "  ${filename} | sed -e 's/set_texture_alias NormalHeightMap //g' >> ${common_textures_list}
   grep -IE --no-filename "^[^/].*set_texture_alias SpecularMap "  ${filename}| sed -e 's/set_texture_alias SpecularMap //g' >> ${common_textures_list}
 done
+
+#Parse all particle scripts and look for image references
+for filename in `find ${original_media} -name *.particle  -not -wholename "*resources/ogre/caelum/core*" -not -wholename "*resources/ogre/core/*"`
+do
+  grep -IE --no-filename "image\s*.*" ${filename} | sed -e 's/image\s*//g' >> ${common_textures_list}
+done
+
 grep -orIE --no-filename "icon=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
 grep -orIE --no-filename "diffusetexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/diffusetexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
 grep -orIE --no-filename "normalmaptexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/normalmaptexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
