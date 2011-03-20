@@ -45,8 +45,8 @@ void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExec
 void TerrainAreaUpdateTask::executeTaskInMainThread()
 {
 	if (mShader) {
-		///mark the shader for update
-		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+		//mark the shader for update
+		//we'll not update immediately, we try to batch many area updates and then only update once per frame
 		mShaderUpdateSlot(mShader, mArea->bbox());
 
 		//Also mark the old shape, in case it resided on a different page.

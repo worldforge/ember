@@ -93,7 +93,7 @@ void EntityMappingManager::addDefinition(EntityMappingDefinition* definition)
 {
 	std::pair<EntityMappingDefinitionStore::iterator, bool> result = mDefinitions.insert(EntityMappingDefinitionStore::value_type(definition->getName(), definition));
 
-	///If it was already added, delete the definition now.
+	//If it was already added, delete the definition now.
 	if (!result.second) {
 		delete definition;
 	} else {

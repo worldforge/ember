@@ -279,7 +279,7 @@ String BatchedGeometry::getFormatString(SubEntity *ent)
 
 void BatchedGeometry::build()
 {
-	///Make sure the batch hasn't already been built
+	//Make sure the batch hasn't already been built
 	if (built)
 		OGRE_EXCEPT(Exception::ERR_DUPLICATE_ITEM, "Invalid call to build() - geometry is already batched (call clear() first)", "BatchedGeometry::GeomBatch::build()");
 

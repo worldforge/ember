@@ -611,11 +611,11 @@ namespace Ogre
         init ();
 		setDefault ();
 
-		///By Ember start
+		//By Ember start
 	    // Set up the options For a Map
 	    mConfig = new ConfigFile();
 	    mConfig->load (stream);
-		///By Ember end
+		//By Ember end
 
 
 	    // Set up the dimensions For a Map
@@ -642,7 +642,7 @@ namespace Ogre
         NumPages = static_cast<unsigned int> (static_cast <Real> (world_height * world_width));
         const unsigned int totalNumTiles = NumPages * (NumTiles*NumTiles) + 1;
     	    
-		///EMBER: added for ember, since we never want the scale to be different from the page size
+		//EMBER: added for ember, since we never want the scale to be different from the page size
         scale.x = scale.y = scale.z = PageSize - 1;
 // 	    setReal (scale.x, "ScaleX");
 //         setReal (scale.y, "ScaleY");
@@ -695,7 +695,7 @@ namespace Ogre
         if (!setString (TerrainName, "TerrainName"))
             TerrainName = LandScape_filename;    
 
-		///By Ember start, we don't need this for Ember
+		//By Ember start, we don't need this for Ember
         #if 0
         //add Resources Group to Ogre if needed.
 		StringVector mResourceFilesystem =  mConfig->getMultiSetting("FileSystem");
@@ -748,7 +748,7 @@ namespace Ogre
             }
         }
 		#endif
-		///By Ember end
+		//By Ember end
 
         if (!setString (LandScape_filename, "HeightMapFileName"))
             setString (LandScape_filename, "LandScapeFileName");
@@ -1627,7 +1627,7 @@ namespace Ogre
 	{
 		if (!mTileInfoCache.empty())
 		{
-			///don't do thses things when run in Ember
+			//don't do thses things when run in Ember
 			//assert (mCurrentMap != "");
 			//saveMapInfo();
 			std::for_each(mTileInfoCache.begin (),

@@ -69,7 +69,7 @@ const WFMath::Point<3>& PolygonPointMover::getPosition() const
 void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
 {
 	if (position.isValid()) {
-		///We need to offset into local space.
+		//We need to offset into local space.
 		Ogre::Vector3 posOffset = Ogre::Vector3::ZERO;
 		if (getActivePoint()->getNode()->getParent()) {
 			posOffset = getActivePoint()->getNode()->getParent()->_getDerivedPosition();
@@ -78,7 +78,7 @@ void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
 		newPos = getActivePoint()->getNode()->getParent()->_getDerivedOrientation().Inverse() * newPos;
 
 		WFMath::Vector<3> translation = Convert::toWF<WFMath::Vector<3> >(newPos - getActivePoint()->getNode()->getPosition());
-		///adjust it so that it moves according to the ground for example
+		//adjust it so that it moves according to the ground for example
 		getActivePoint()->translate(WFMath::Vector<2>(translation.x(), translation.y()));
 	}
 }
@@ -90,7 +90,7 @@ void PolygonPointMover::move(const WFMath::Vector<3>& directionVector)
 }
 void PolygonPointMover::setRotation(int axis, WFMath::CoordType angle)
 {
-	///not implemented yet
+	//not implemented yet
 }
 
 void PolygonPointMover::yaw(WFMath::CoordType angle)
@@ -151,7 +151,7 @@ void PolygonPointMover::switchToNewPointMode()
 {
 	if (!mDeleted) {
 		if (!mNewPoint) {
-			///Get the two nearest points and position the new point to the one's that's closest
+			//Get the two nearest points and position the new point to the one's that's closest
 			PolygonPoint* point1 = mPoint.getPolygon().getPointAfter(mPoint);
 			PolygonPoint* point2 = mPoint.getPolygon().getPointBefore(mPoint);
 			if (point1 && point2) {

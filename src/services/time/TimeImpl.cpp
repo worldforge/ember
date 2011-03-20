@@ -48,7 +48,7 @@ TimeImpl::~TimeImpl()
 
 void TimeImpl::initialize()
 {
-	///we either already have the avatar, or we need to wait until it's been created
+	//we either already have the avatar, or we need to wait until it's been created
 	Eris::Avatar* avatar(0);
 	if ((avatar = EmberServices::getSingleton().getServerService()->getAvatar())) {
 		createCalendar(avatar);
@@ -59,7 +59,7 @@ void TimeImpl::initialize()
 
 bool TimeImpl::getServerTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
-	///try to get the server time, and if not possible fall back to the local time
+	//try to get the server time, and if not possible fall back to the local time
 	if (mCalendar.get()) {
 		Eris::DateTime dt = mCalendar->now();
 		if (dt.valid()) {

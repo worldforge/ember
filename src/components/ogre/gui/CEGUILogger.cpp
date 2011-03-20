@@ -44,7 +44,7 @@ CEGUILogger::~CEGUILogger()
 
 void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level)
 {
-	///just reroute to the Ember logging service
+	//just reroute to the Ember logging service
 	static std::string ogre("(CEGUI) ");
 	if (d_level >= level) {
 		switch (level) {

@@ -53,7 +53,7 @@ namespace OgreView
 		for (ActionStore::iterator I = mMovementActions.begin(); I != mMovementActions.end(); ++I) {
 			delete I->second;
 		}
-		///Note that we shouldn't delete the mCurrentMovementAction since that's a pointer to an object held in the mMovementActions store.
+		//Note that we shouldn't delete the mCurrentMovementAction since that's a pointer to an object held in the mMovementActions store.
 	}
 
 	WFMath::Point<3> SoundEntity::getPosition() const
@@ -145,7 +145,7 @@ namespace OgreView
 //					mActions.insert(ActionStore::value_type((*I)->getName(), newAction));
 //				}
 //				break; //for now we'll only allow one group per action
-///*				if (newGroup)
+//*				if (newGroup)
 //				{
 //					newGroup->setPlayOrder(sound->playOrder);
 //					S_LOG_INFO("Sound Group " + sound->groupName

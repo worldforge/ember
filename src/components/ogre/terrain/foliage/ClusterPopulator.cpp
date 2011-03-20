@@ -145,7 +145,7 @@ void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, Plan
 
 	float height = 0;
 	WFMath::Vector<3> normal;
-	///place one cluster
+	//place one cluster
 	for (unsigned int j = 0; j < instancesInEachCluster; ++j) {
 		float theta = rng.rand(WFMath::Pi * 2);
 		float length = rng.rand(mMaxClusterRadius);

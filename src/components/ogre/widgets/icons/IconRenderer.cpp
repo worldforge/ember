@@ -103,7 +103,7 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 		node->detachAllObjects();
 		node->attachObject(model);
 
-		///check for a defined "icon" view and use that if available, else just reposition the camera
+		//check for a defined "icon" view and use that if available, else just reposition the camera
 		const Model::ViewDefinitionStore::const_iterator I = model->getDefinition()->getViewDefinitions().find("icon");
 		if (I != model->getDefinition()->getViewDefinitions().end()) {
 			mRenderContext->resetCameraOrientation();
@@ -123,8 +123,8 @@ void IconRenderer::performRendering(Model::Model* model, Icon* icon)
 
 		// 		mRenderContext->setCameraDistance(0.75);
 
-		///the problem with PBuffer and Copy might be that we need to wait a little before we try to blit, since it's not guaranteed that the content will be correctly rendered (since the render ops are queued to the GPU)
-		///thus we need to create some kind of frame listener callback mechanism
+		//the problem with PBuffer and Copy might be that we need to wait a little before we try to blit, since it's not guaranteed that the content will be correctly rendered (since the render ops are queued to the GPU)
+		//thus we need to create some kind of frame listener callback mechanism
 		if (mRenderContext->getViewport()) {
 			try {
 				mRenderContext->getViewport()->update();
@@ -184,7 +184,7 @@ void IconRenderer::blitRenderToIcon(Icon* icon)
 // 	if (modelName != "") {
 // 		mModel = Model::Model::createModel(mTexture->getRenderContext()->getSceneManager(), modelName);
 // // 		mModel->create(modelName);
-// 		///override the rendering distance from the model; we want to always show it in the preview
+// 		//override the rendering distance from the model; we want to always show it in the preview
 // 		mModel->setRenderingDistance(0);
 // 		setModel(mModel);
 // 		mTexture->getRenderContext()->setActive(true);
@@ -220,7 +220,7 @@ DirectRendererWorker::~DirectRendererWorker()
 
 void DirectRendererWorker::render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry)
 {
-	///set the viewport to render into the icon texture
+	//set the viewport to render into the icon texture
 	mRenderer.getRenderContext()->setTexture(imageStoreEntry->getTexture());
 	Ogre::TRect<float> iconBox(imageStoreEntry->getRelativeBox());
 	mRenderer.getRenderContext()->getViewport()->setDimensions(iconBox.left, iconBox.top, iconBox.right - iconBox.left, iconBox.bottom - iconBox.top);
@@ -252,15 +252,15 @@ Icon* DelayedIconRendererEntry::getIcon()
 
 void DelayedIconRendererEntry::frameStarted()
 {
-	///on the first frame we'll do the rendering, and then do the blitting on the second frame
+	//on the first frame we'll do the rendering, and then do the blitting on the second frame
 	if (mFrames == 0) {
-		///do render
+		//do render
 		mRenderer.performRendering(*this);
 		mFrames++;
 	} else {
-		///do blit
+		//do blit
 		mRenderer.finalizeRendering(*this);
-		///we can't do anything here, since the call to finalizeRendering will delete this instance
+		//we can't do anything here, since the call to finalizeRendering will delete this instance
 	}
 
 }

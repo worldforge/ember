@@ -95,12 +95,12 @@ namespace OgreView
 			if (!mInstance) {
 				mInstance = EmberServices::getSingleton().getSoundService()->createInstance();
 				if (!mInstance) {
-					///The sound system seems to be disabled (could be for a valid reason) so just return without any fuss.
+					//The sound system seems to be disabled (could be for a valid reason) so just return without any fuss.
 					return;
 				}
 				mInstance->setMotionProvider(this);
 				mInstance->setIsLooping(mIsLooping);
-				///If the sound is set not to loop, we need to listen for when it's done playing and remove the instance once it's done (to save on sound resources).
+				//If the sound is set not to loop, we need to listen for when it's done playing and remove the instance once it's done (to save on sound resources).
 				if (!mIsLooping) {
 					mInstance->EventPlayComplete.connect(sigc::mem_fun(*this, &SoundAction::SoundInstance_PlayComplete));
 				}

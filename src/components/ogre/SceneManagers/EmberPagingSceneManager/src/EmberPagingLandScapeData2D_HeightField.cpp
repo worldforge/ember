@@ -44,8 +44,8 @@ namespace OgreView
 EmberPagingLandScapeData2D_HeightField::EmberPagingLandScapeData2D_HeightField(Ogre::PagingLandScapeData2DManager* pageMgr) :
 	Ogre::PagingLandScapeData2D(pageMgr)
 {
-	///set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
-	///in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
+	//set it to something, so it doesn't default to a crazy number (like 5.79555e+022) since that will break stuff later on
+	//in regards to calculating the distance to the tile (especially in PagingLandScapeTile::_Notify)
 	mMaxheight = 1;
 }
 
@@ -84,7 +84,7 @@ EmberPagingLandScapeData2D_HeightField::~EmberPagingLandScapeData2D_HeightField(
 
 void EmberPagingLandScapeData2D_HeightField::setMaxHeight(float maxHeight)
 {
-	///make sure it's not 0
+	//make sure it's not 0
 	mMaxheight = std::max<float>(maxHeight, 1.0f);
 	mMax = static_cast<unsigned int> (mSize * maxHeight);
 }
@@ -113,7 +113,7 @@ Ogre::Vector3 EmberPagingLandScapeData2D_HeightField::getNormal(const Ogre::Real
 {
 
 	return PagingLandScapeData2D::getNormal(localPageX, localPageZ);
-	//	///Use the bridge for quicker lookup.
+	//	//Use the bridge for quicker lookup.
 	//	if (mBridge) {
 	//		const Terrain::TerrainPage* terrainPage(mBridge->getTerrainPage());
 	//		if (terrainPage) {
@@ -148,7 +148,7 @@ void EmberPagingLandScapeData2D_HeightField::_unload()
 
 Ogre::Real EmberPagingLandScapeData2D_HeightField::getMaxAbsoluteHeight() const
 {
-	///return a totally arbitrary high enough value
+	//return a totally arbitrary high enough value
 	return 250.0f;
 	//return mMaxheight;
 }

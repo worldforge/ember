@@ -220,7 +220,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 			I->second->setValue(returnObj);
 		}
 	}
-	///Inject all default attributes that aren't yet added.
+	//Inject all default attributes that aren't yet added.
 	// 	TiXmlElement *elem = mEntitySpec->FirstChildElement("atlas");
 	// 	if (elem)
 	// 	{
@@ -240,8 +240,8 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	// 				}
 	//
 	// 				if (!hasAttribute) {
-	// 					///The attribute isn't present, we'll inject it
-	// 					///This a bit contrived, since we'll now first convert the atlas into xml and inject it into the TiXmlElement (which will convert the xml strings into TiXml structures). And then later on we'll parse the xml again and create the final atlas data from it. However, the main reason for doing it this way is that in the future we would want to have nested child elements, which could be repeated. And in those cases we'll want to work directly with xml.
+	// 					//The attribute isn't present, we'll inject it
+	// 					//This a bit contrived, since we'll now first convert the atlas into xml and inject it into the TiXmlElement (which will convert the xml strings into TiXml structures). And then later on we'll parse the xml again and create the final atlas data from it. However, the main reason for doing it this way is that in the future we would want to have nested child elements, which could be repeated. And in those cases we'll want to work directly with xml.
 	// 				}
 	// 			}
 	// 		}

@@ -278,7 +278,7 @@ void TerrainHandler::pollTasks()
 		for (PageVector::const_iterator I = mPages.begin(); I != mPages.end(); ++I) {
 			geometry.push_back(TerrainPageGeometryPtr(new TerrainPageGeometry(**I, *mSegmentManager, getDefaultHeight())));
 		}
-		///use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
+		//use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
 		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
 			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, EventLayerUpdated), 0);
 		}
@@ -449,9 +449,9 @@ SegmentManager& TerrainHandler::getSegmentManager()
 
 void TerrainHandler::addTerrainMod(TerrainMod* terrainMod)
 {
-	/// Listen for changes to the modifier
+	// Listen for changes to the modifier
 	terrainMod->EventModChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainMod_Changed), terrainMod));
-	/// Listen for deletion of the modifier
+	// Listen for deletion of the modifier
 	terrainMod->EventModDeleted.connect(sigc::bind(sigc::mem_fun(*this, &TerrainHandler::TerrainMod_Deleted), terrainMod));
 
 	mTaskQueue->enqueueTask(new TerrainModAddTask(*mTerrain, *terrainMod, *this, mTerrainMods));

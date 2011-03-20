@@ -186,7 +186,7 @@ TerrainEditorOverlay::~TerrainEditorOverlay()
 			mOverlayNode->getCreator()->destroySceneNode(mOverlayNode->getName());
 		}
 	}
-	///It's safe to do this even if the pick listener hasn't been added yet.
+	//It's safe to do this even if the pick listener hasn't been added yet.
 	mCamera.removeWorldPickListener(&mPickListener);
 }
 
@@ -205,7 +205,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			Ogre::Entity* entity(0);
 			try {
 				entity = mSceneManager.createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
-				///start out with a normal material
+				//start out with a normal material
 				entity->setMaterialName("/global/authoring/point");
 				entity->setRenderingDistance(300);
 				entity->setQueryFlags(MousePicker::CM_UNDEFINED);
@@ -232,14 +232,14 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 			BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode);
 			entity->setUserAny(Ogre::Any(BasePointUserObject::SharedPtr(userObject)));
 
-			///store the base point user object
+			//store the base point user object
 			std::stringstream ss_;
 			ss_ << x << "_" << y;
 			mBasePointUserObjects[ss_.str()] = userObject;
 		}
 	}
 
-	///register the pick listener
+	//register the pick listener
 	mCamera.pushWorldPickListener(&mPickListener);
 
 }
@@ -272,7 +272,7 @@ void TerrainEditorOverlay::pickedBasePoint(BasePointUserObject* userObject)
 bool TerrainEditorOverlay::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
 {
 	float multiplier(15.0f);
-	///hard coded to allow the shift button to increase the speed
+	//hard coded to allow the shift button to increase the speed
 	if (Ember::Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Ember::Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
 		multiplier *= 5;
 	}
@@ -280,7 +280,7 @@ bool TerrainEditorOverlay::injectMouseMove(const Ember::MouseMotion& motion, boo
 	float translation(motion.yRelativeMovement * multiplier);
 	mCurrentUserObject->translate(translation);
 
-	///should we also translate secondary objects?
+	//should we also translate secondary objects?
 	if (mEditor.getRadius() > 1.0f) {
 		// 		float squaredMovementRadius = mMovementRadiusInMeters * mMovementRadiusInMeters;
 		for (BasePointUserObjectStore::iterator I = mBasePointUserObjects.begin(); I != mBasePointUserObjects.end(); ++I) {
@@ -297,7 +297,7 @@ bool TerrainEditorOverlay::injectMouseMove(const Ember::MouseMotion& motion, boo
 
 	EventSelectedBasePointUpdatedPosition.emit(mCurrentUserObject);
 
-	///we don't want to move the cursor
+	//we don't want to move the cursor
 	freezeMouse = true;
 	return false;
 }
@@ -339,7 +339,7 @@ void TerrainEditorOverlay::releaseInput()
 {
 	Ember::Input::getSingleton().removeAdapter(this);
 
-	///react on the movement
+	//react on the movement
 	createAction(true);
 
 }
@@ -347,9 +347,9 @@ void TerrainEditorOverlay::releaseInput()
 void TerrainEditorOverlay::createAction(bool alsoCommit)
 {
 	if (mCurrentUserObject) {
-		///lets get how much it moved
+		//lets get how much it moved
 		float distance = mCurrentUserObject->getBasePointMarkerNode()->getPosition().y - mCurrentUserObject->getBasePoint().height();
-		///only register an action if it has been moved
+		//only register an action if it has been moved
 		if (distance != 0) {
 			TerrainEditBasePointMovement movement(distance, mCurrentUserObject->getPosition());
 			TerrainEditAction action;
@@ -365,7 +365,7 @@ void TerrainEditorOverlay::createAction(bool alsoCommit)
 
 			mActions.push_back(action);
 
-			///when a new action is created the undo list must be emptied
+			//when a new action is created the undo list must be emptied
 			mUndoneActions.clear();
 
 			EventActionCreated(&action);
@@ -427,14 +427,14 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 		Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
 
-		///also reset the marking for the base points
+		//also reset the marking for the base points
 		for (std::map<std::string, TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
 			BasePointUserObject* userObject = getUserObject(I->second);
 			if (userObject) {
 				userObject->resetMarking();
 			}
 		}
-		///clear all actions
+		//clear all actions
 		mActions.clear();
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not send terrain to server." << ex);
@@ -468,11 +468,11 @@ bool TerrainEditorOverlay::undoLastAction()
 {
 	if (mActions.size() > 0) {
 		TerrainEditAction action = mActions.back();
-		///remove the last action from the list of active actions
+		//remove the last action from the list of active actions
 		mActions.pop_back();
-		///add the action to the list of undone actions
+		//add the action to the list of undone actions
 		mUndoneActions.push_front(action);
-		///actually undo the action
+		//actually undo the action
 		commitAction(action, true);
 		return true;
 	}
@@ -507,7 +507,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 		int basepointX = static_cast<int> (I->getPosition().x());
 		int basepointY = static_cast<int> (I->getPosition().y());
 		getBasePoint(basePoints, basepointX, basepointY, bp);
-		///check if we should do a reverse action (which is done when an action is undone)
+		//check if we should do a reverse action (which is done when an action is undone)
 		bp.height() = bp.height() + (reverse ? -I->getVerticalMovement() : I->getVerticalMovement());
 		//EmberOgre::getSingleton().getTerrainManager()->getTerrain().setBasePoint(basepointX, basepointY, bp);
 
@@ -529,7 +529,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 
 		TerrainPosition worldPosition(I->getPosition().x() * 64, I->getPosition().y() * 64);
 		TerrainPage* page;
-		///make sure we sample pages from all four points around the base point, in case the base point is on a page border
+		//make sure we sample pages from all four points around the base point, in case the base point is on a page border
 		for (int i = -65; i < 66; i += 64) {
 			for (int j = -65; j < 66; j += 64) {
 				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
@@ -540,7 +540,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 			}
 		}
 
-		///make sure the marker node is updated
+		//make sure the marker node is updated
 		BasePointUserObject* userObject = getUserObject(I->getPosition());
 		if (userObject) {
 			userObject->setBasePoint(bp);
@@ -550,7 +550,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 
 	mManager.getHandler().updateTerrain(pointStore);
 
-	///reload all shader textures of the affected pages
+	//reload all shader textures of the affected pages
 	// 	for (std::set<TerrainPage*>::iterator I = pagesToUpdate.begin(); I != pagesToUpdate.end(); ++I) {
 	// 		(*I)->update();
 	// 		(*I)->updateAllShaderTextures();
@@ -558,7 +558,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 
 
 	// 	std::set<Ogre::PagingLandScapeData2D*> dataStore;
-	// 	///reload all affected tiles
+	// 	//reload all affected tiles
 	// 	for (std::set<Ogre::PagingLandScapeTile*>::iterator I = tilesToUpdate.begin(); I != tilesToUpdate.end(); ++I) {
 	// //		(*I)->updateTerrain();
 	//
@@ -573,7 +573,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 	//
 	// 	}
 	//
-	// 	///also update the data
+	// 	//also update the data
 	// 	for (std::set<Ogre::PagingLandScapeData2D*>::iterator I = dataStore.begin(); I != dataStore.end(); ++I) {
 	// 		uint x, z;
 	// 		(*I)->getCoordinates(x, z);
@@ -582,7 +582,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 	// 	Ogre::Vector2 targetPage (X, Z);
 	// 	sceneMgr->setOption("PageUpdate", &targetPage);
 
-	///TODO: this shouldn't be necessary
+	//TODO: this shouldn't be necessary
 	//sceneMgr->getPageManager()->load();
 	// 	TerrainManager->getAdapter()->reloadAllPages();
 

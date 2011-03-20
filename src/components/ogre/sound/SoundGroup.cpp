@@ -48,7 +48,7 @@ SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup
 	const SoundGroup::SampleStore& samples = mSoundGroup.getSamples();
 	ALuint buffers[samples.size()];
 	int i = 0;
-	///get the buffers and bind the source to them
+	//get the buffers and bind the source to them
 	for (SoundGroup::SampleStore::const_iterator I = samples.begin(); I != samples.end(); ++I) 
 	{
 		BaseSoundSample::BufferStore sampleBuffers = (*I)->getBuffers();
@@ -66,7 +66,7 @@ SoundGroupBinding::~SoundGroupBinding()
 
 void SoundGroupBinding::update()
 {
-	///TODO: add support for streaming sounds
+	//TODO: add support for streaming sounds
 }
 
 

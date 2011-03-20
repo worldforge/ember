@@ -476,7 +476,7 @@ namespace Ogre
 		for (size_t i = 0; i < mTiles.size(); ++i) {
 			for (size_t j = 0; j < mTiles[i].size(); ++j) {
 				PagingLandScapeTile* tile = mTiles[i][j];
-				/// we need to adjust the deformation rectangle for the whole tile/renderable so to force a recalculation of the bounding box and the LOD calculation
+				// we need to adjust the deformation rectangle for the whole tile/renderable so to force a recalculation of the bounding box and the LOD calculation
 				if (tile->getRenderable()) {
 					tile->getRenderable()->adjustDeformationRectangle(0, 0);
 					tile->getRenderable()->adjustDeformationRectangle(size, size);

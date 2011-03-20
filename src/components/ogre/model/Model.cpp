@@ -101,7 +101,7 @@ void Model::reload()
 	 resetParticles();	*/
 	reset();
 	createFromDefn();
-	///if we are attached, we have to nofify the new entities, else they won't appear in the scene
+	//if we are attached, we have to nofify the new entities, else they won't appear in the scene
 	_notifyAttached(mParentNode, mParentIsTagPoint);
 
 	Reloaded.emit();
@@ -202,11 +202,11 @@ bool Model::createActualModel()
 					for (SubEntityDefinitionsStore::const_iterator I_subEntities = (*I_parts)->getSubEntityDefinitions().begin(); I_subEntities != (*I_parts)->getSubEntityDefinitions().end(); ++I_subEntities) {
 						try {
 							Ogre::SubEntity* subEntity(0);
-							///try with a submodelname first
+							//try with a submodelname first
 							if ((*I_subEntities)->getSubEntityName() != "") {
 								subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityName());
 							} else {
-								///no name specified, use the index instead
+								//no name specified, use the index instead
 								if (entity->getNumSubEntities() > (*I_subEntities)->getSubEntityIndex()) {
 									subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
 								} else {
@@ -397,7 +397,7 @@ LightSet& Model::getLights()
 
 bool Model::addSubmodel(SubModel* submodel)
 {
-	///if the submodel has a skeleton, check if it should be shared with existing models
+	//if the submodel has a skeleton, check if it should be shared with existing models
 	if (submodel->getEntity()->getSkeleton()) {
 		if (mSkeletonOwnerEntity != 0) {
 			submodel->getEntity()->shareSkeletonInstanceWith(mSkeletonOwnerEntity);
@@ -437,7 +437,7 @@ void Model::showPart(const std::string& partName, bool hideOtherParts)
 		ModelPart& modelPart = I->second;
 		if (hideOtherParts) {
 			const std::string& groupName = modelPart.getGroupName();
-			///make sure that all other parts in the same group are hidden
+			//make sure that all other parts in the same group are hidden
 			PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupName);
 			if (partBucketI != mGroupsToPartMap.end()) {
 				for (std::vector<std::string>::iterator I = partBucketI->second.begin(); I != partBucketI->second.end(); ++I) {
@@ -461,7 +461,7 @@ void Model::hidePart(const std::string& partName, bool dontChangeVisibility)
 		if (!dontChangeVisibility) {
 			modelPart.setVisible(false);
 			const std::string& groupName = modelPart.getGroupName();
-			///if some part that was hidden before now should be visible
+			//if some part that was hidden before now should be visible
 			PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupName);
 			if (partBucketI != mGroupsToPartMap.end()) {
 				for (std::vector<std::string>::iterator J = partBucketI->second.begin(); J != partBucketI->second.end(); ++J) {
@@ -579,7 +579,7 @@ void Model::resetLights()
 	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
 		Ogre::Light* light = I->light;
 		if (light) {
-			///Try first with the manager to which the light belongs to. If none is found, try to see if we belong to a maneger. And if that's not true either, just delete it.
+			//Try first with the manager to which the light belongs to. If none is found, try to see if we belong to a maneger. And if that's not true either, just delete it.
 			if (light->_getManager()) {
 				light->_getManager()->destroyLight(light);
 			} else if (_getManager()) {
@@ -598,7 +598,7 @@ Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &a
 	for (AttachPointDefinitionStore::iterator I = mDefinition->mAttachPoints.begin(); I != mDefinition->mAttachPoints.end(); ++I) {
 		if (I->Name == attachPointName) {
 			const std::string& boneName = I->BoneName;
-			///use the rotation in the attach point def
+			//use the rotation in the attach point def
 			Ogre::TagPoint* tagPoint = attachObjectToBone(boneName, pMovable, offsetOrientation * I->Rotation, offsetPosition, scale);
 			if (!mAttachPoints.get()) {
 				mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(new AttachPointWrapperStore());
@@ -782,7 +782,7 @@ void Model::setUserAny(const Ogre::Any &anything)
 	}
 }
 
-/// Overridden - see MovableObject.
+// Overridden - see MovableObject.
 void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 {
 	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
@@ -856,7 +856,7 @@ Ogre::Real Model::getBoundingRadius() const
  */
 void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
-	///check with both the model visibility setting and with the general model setting to see whether the model should be shown
+	//check with both the model visibility setting and with the general model setting to see whether the model should be shown
 	if (isVisible()) {
 		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
 		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
@@ -870,7 +870,7 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 			Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
 			Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
 			for (; child_itr != child_itr_end; child_itr++) {
-				///make sure to do _update here, else attached entities won't be updated if no animation is playing
+				//make sure to do _update here, else attached entities won't be updated if no animation is playing
 				child_itr->second->getParentNode()->_update(true, true);
 				if (child_itr->second->isVisible())
 					child_itr->second->_updateRenderQueue(queue);
@@ -1065,7 +1065,7 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 
 bool Model::isVisible(void) const
 {
-	///check with both the model visibility setting and with the general model setting to see whether the model should be shown
+	//check with both the model visibility setting and with the general model setting to see whether the model should be shown
 	return Ogre::MovableObject::isVisible() && ModelDefinitionManager::getSingleton().getShowModels();
 }
 

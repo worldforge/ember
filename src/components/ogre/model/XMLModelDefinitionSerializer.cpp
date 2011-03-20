@@ -112,7 +112,7 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 		modelDef->mScale=Ogre::StringConverter::parseReal(tmp);
 
 /*	//rotation
-	///TODO: change this into a better system, perhaps using quaternions, instead of like now just rotating around the y-axis
+	//TODO: change this into a better system, perhaps using quaternions, instead of like now just rotating around the y-axis
 	tmp =  modelNode->Attribute("rotation");
 	if (tmp)
 		modelDef->mRotation = Ogre::StringConverter::parseReal(tmp);*/

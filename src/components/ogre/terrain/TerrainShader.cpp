@@ -45,7 +45,7 @@ TerrainShader::TerrainShader(Mercator::Terrain& terrain, int terrainIndex, const
 TerrainShader::~TerrainShader()
 {
 	delete mShader;
-	///not available yet
+	//not available yet
 	//mTerrain->removeShader(mShader)
 }
 

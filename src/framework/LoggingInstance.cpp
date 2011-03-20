@@ -58,7 +58,7 @@ LoggingInstance::LoggingInstance(const std::string & file)
 
 LoggingInstance::~LoggingInstance()
 {
-	///If we haven't sent to the service yet, do it now.
+	//If we haven't sent to the service yet, do it now.
 	if (mMessage != "") {
 		Log::sendMessage (mMessage, mFile, mLine, mImportance);
 	}

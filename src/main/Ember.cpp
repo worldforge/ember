@@ -196,11 +196,11 @@ int main(int argc, char **argv)
 
 #endif
 
-	///put the application object in its own scope so it gets destroyed before we signal all clear
+	//put the application object in its own scope so it gets destroyed before we signal all clear
 	{
 		try
 		{
-			/// Create application object
+			// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
 			//Ember::OgreView::EmberOgre app;
 
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
 
 			app.registerComponents();
 
-			/// Initialize all Ember services needed for this application
+			// Initialize all Ember services needed for this application
 			app.prepareComponents();
 			app.initializeServices();
 

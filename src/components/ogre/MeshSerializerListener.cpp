@@ -45,7 +45,7 @@ void MeshSerializerListener::processMaterialName(Ogre::Mesh *mesh, Ogre::String 
 
 void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name)
 {
-	///If the skeleton path starts with ".." it's a relative path and we need to use the path of the current mesh to create a new skeleton path
+	//If the skeleton path starts with ".." it's a relative path and we need to use the path of the current mesh to create a new skeleton path
 	if (Ogre::StringUtil::startsWith(*name, "../") || Ogre::StringUtil::startsWith(*name, "./")) {
 		std::string meshPath = mesh->getName();
 		std::string path;
@@ -55,7 +55,7 @@ void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String 
 		Ogre::vector<std::string>::type skeletonPathSegments = Ogre::StringUtil::split(*name, "/");
 		Ogre::vector<std::string>::type pathSegments = Ogre::StringUtil::split(path, "/");
 		
-		///For every ".." part in the skeleton path, walk upwards in the directory hierarcy
+		//For every ".." part in the skeleton path, walk upwards in the directory hierarcy
 		while (*skeletonPathSegments.begin() == ".." || *skeletonPathSegments.begin() == ".") {
 			if (*skeletonPathSegments.begin() == "..") {
 				pathSegments.pop_back();

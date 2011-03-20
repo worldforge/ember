@@ -128,14 +128,14 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 {
 	mCeguiTexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
 	
-	///we need a imageset in order to create GUI elements from the ceguiTexture
+	//we need a imageset in order to create GUI elements from the ceguiTexture
 	mImageset = &CEGUI::ImagesetManager::getSingleton().create(mImagesetName, *mCeguiTexture);
 	
-	///we'll assume that height and width are the same
+	//we'll assume that height and width are the same
 	mImageSize = texPtr->getWidth();
 	mIconSize = mImageSize;
 	
-	///this will only create one entry
+	//this will only create one entry
 	createEntries();
 }
 
@@ -151,11 +151,11 @@ IconImageStore::~IconImageStore()
 void IconImageStore::createImageset()
 {
 
-	///reset the image
+	//reset the image
 	memset(mImageDataStream->getPtr(), '\0', mImageDataStream->size());
 	mImage.loadDynamicImage(mImageDataStream->getPtr(), mImageSize, mImageSize, 1, Ogre::PF_A8R8G8B8);
 
-	///no mipmaps to avoid problems when updating dynamically, also we don't really need it since this is a gui element which will be shown in the same resolution almost all of the time
+	//no mipmaps to avoid problems when updating dynamically, also we don't really need it since this is a gui element which will be shown in the same resolution almost all of the time
 	mTexPtr = Ogre::TextureManager::getSingleton().loadImage(mImagesetName, "Gui", mImage, Ogre::TEX_TYPE_2D, 0);
 	if (mTexPtr.isNull()) {
 		S_LOG_WARNING("Could not create a texture.");
@@ -166,7 +166,7 @@ void IconImageStore::createImageset()
 	
 	mCeguiTexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
 	
-	///we need a imageset in order to create GUI elements from the ceguiTexture
+	//we need a imageset in order to create GUI elements from the ceguiTexture
 	//S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");
 	mImageset = &CEGUI::ImagesetManager::getSingleton().create(mImagesetName, *mCeguiTexture);
 	

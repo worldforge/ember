@@ -65,13 +65,13 @@ void Map::setupCamera()
 
 void Map::createTexture()
 {
-	///don't use alpha for our map texture
+	//don't use alpha for our map texture
 	mTexture = Ogre::TextureManager::getSingleton().createManual("TerrainMap", "Gui", Ogre::TEX_TYPE_2D, mTexturePixelSize, mTexturePixelSize, 0, Ogre::PF_R8G8B8,Ogre::TU_RENDERTARGET);
 	mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 	mRenderTexture->removeAllViewports();
 
 	mRenderTexture->setAutoUpdated(false);
-	///initially deactivate it until setActive(true) is called
+	//initially deactivate it until setActive(true) is called
 // 	mRenderTexture->setActive(false);
 
 }
@@ -144,7 +144,7 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 , mMapCamera(mapCamera)
 , mViewSize(0.5)
 {
-	///set it to invalid values so we'll force an update when it's repositioned
+	//set it to invalid values so we'll force an update when it's repositioned
 	mFullBounds.left = 1;
 	mFullBounds.right = -1;
 	mFullBounds.top = 1;
@@ -154,7 +154,7 @@ MapView::MapView(Map& map, MapCamera& mapCamera)
 bool MapView::reposition(const Ogre::Vector2& pos)
 {
 	int halfViewSizeMeters((mMap.getResolutionMeters() * mViewSize)/ 2);
-	///check if we need to reposition the camera
+	//check if we need to reposition the camera
 	if (pos.x - halfViewSizeMeters < mFullBounds.left || pos.x + halfViewSizeMeters > mFullBounds.right
 		|| pos.y - halfViewSizeMeters < mFullBounds.bottom || pos.y + halfViewSizeMeters > mFullBounds.top) {
 		mMapCamera.reposition(pos);
@@ -219,9 +219,9 @@ MapCamera::MapCamera(Map& map, Ogre::SceneManager& manager)
 {
 	mCamera = manager.createCamera("TerrainMapCamera");
 	mCamera->setPosition(Ogre::Vector3(0, 0, 0));
-	///look down
+	//look down
 	mCamera->pitch(Ogre::Degree(-90));
-	///we want really low LOD on this camera
+	//we want really low LOD on this camera
 	mCamera->setLodBias(0.0001f);
 
 	setDistance(mDistance);
@@ -245,12 +245,12 @@ void MapCamera::setRenderTarget(Ogre::RenderTarget* renderTarget)
 {
 	mViewport = renderTarget->addViewport(mCamera);
 	mViewport->setBackgroundColour(Ogre::ColourValue::White);
-	///don't show the CEGUI
+	//don't show the CEGUI
 	mViewport->setOverlaysEnabled(false);
 	mViewport->setShadowsEnabled(false);
 	mViewport->setSkiesEnabled(false);
     mViewport->setClearEveryFrame(true);
-    mViewport->setMaterialScheme("Low"); ///This will disable shadows etc.
+    mViewport->setMaterialScheme("Low"); //This will disable shadows etc.
 
     mViewport->setVisibilityMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 }
@@ -287,7 +287,7 @@ void MapCamera::render()
 	mCamera->setOrthoWindow(mMap.getResolutionMeters(), mMap.getResolutionMeters());
 	mCamera->setAspectRatio(1.0);
 	{
-		///use a RAII rendering instance so that we're sure to reset all settings of the scene manager that we change, even if something goes wrong here
+		//use a RAII rendering instance so that we're sure to reset all settings of the scene manager that we change, even if something goes wrong here
 		Ogre::SceneManager* manager(mCamera->getSceneManager());
 		RenderingInstance instance(manager);
 		MapCameraLightningInstance lightningInstance(mLightning);

@@ -184,7 +184,7 @@ IngameChatWidget::MovableObjectListener::~MovableObjectListener()
 void IngameChatWidget::MovableObjectListener::setObserving(bool isObserving)
 {
 	if (isObserving) {
-		///TODO: make sure that this doesn't interfere with other listeners
+		//TODO: make sure that this doesn't interfere with other listeners
 		mModelRepresentation.getModel().setListener(this);
 	} else {
 		mModelRepresentation.getModel().setListener(0);
@@ -252,16 +252,16 @@ void IngameChatWidget::EntityObserver::entity_attributeChanged(const Atlas::Mess
 
 void IngameChatWidget::EntityObserver::updateLabel(const Ogre::Camera * camera)
 {
-	///only update when being rendered by the main camera
+	//only update when being rendered by the main camera
 	if (camera == &mChatWidget.mCamera->getCamera()) {
 		// 	const Ogre::Vector3& entityWorldCoords = mEntity->getDerivedPosition();
 		//	Ogre::Vector3 entityWorldCoords = mEntity->getWorldBoundingBox(true).getCenter();
 		//	Ogre::Vector3 entityWorldCoords = window->getEntity()->getSceneNode()->_getWorldAABB().getCenter();
 		// 	const Ogre::Vector3& cameraCoords = camera->getDerivedPosition();
-		///getWorldPosition is faster than getting the center of the boundingbox...
+		//getWorldPosition is faster than getting the center of the boundingbox...
 		Ogre::Vector3 diff = mModelRepresentation.getModel().getParentNode()->_getDerivedPosition() - camera->getDerivedPosition();
 
-		///remove the window if it's either too far away
+		//remove the window if it's either too far away
 		if (diff.length() > mChatWidget.mDistanceShown) {
 			// 		mLabel->setActive(false);
 		} else {
@@ -311,13 +311,13 @@ void IngameChatWidget::Label::markForRender()
 
 void IngameChatWidget::Label::placeWindowOnEntity()
 {
-	///make sure that the window stays on the entity
+	//make sure that the window stays on the entity
 	Ogre::Vector2 screenCoords;
 
 	bool result = false;
 	Ogre::Vector3 entityWorldCoords = mModelRepresentation->getWorldBoundingSphere().getCenter();
 	entityWorldCoords.y = mModelRepresentation->getWorldBoundingBox().getMaximum().y;
-	///check what the new position is in screen coords
+	//check what the new position is in screen coords
 	result = mContainerWidget.mCamera->worldToScreen(entityWorldCoords, screenCoords);
 
 	if (result) {
@@ -370,7 +370,7 @@ void IngameChatWidget::Label::updateEntityName()
 {
 	std::string entityName(getEntity()->getName());
 	//	Window* nameWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "EntityName"));
-	///if the entity is controlled by a player, mark that
+	//if the entity is controlled by a player, mark that
 	if (getEntity()->hasAttr("external")) {
 		const Atlas::Message::Element& externalAttr = getEntity()->valueOfAttr("external");
 		if (externalAttr.isNum() && externalAttr.asNum() == 1) {
@@ -423,11 +423,11 @@ IngameChatWidget::LabelCreator::LabelCreator(IngameChatWidget& ingameChatWidget)
 
 IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned int currentPoolSize)
 {
-	///there is no chat window for this entity, let's create one
+	//there is no chat window for this entity, let's create one
 	std::stringstream ss;
 	ss << "Label/" << currentPoolSize << "/";
 	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "Label.layout", ss.str());
-	///We don't want the labels to prevent the user from picking entities in the world.
+	//We don't want the labels to prevent the user from picking entities in the world.
 	window->setMousePassThroughEnabled(true);
 	window->setRiseOnClickEnabled(false);
 
@@ -505,14 +505,14 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			responseText->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990");
 
 			responseText->setInheritsAlpha(true);
-			///we need to disable and deactivate it so it won't receive any input (input should go to the button instead)
+			//we need to disable and deactivate it so it won't receive any input (input should go to the button instead)
 			responseText->deactivate();
 			responseText->disable();
 
 			responseTextButton->setSize(UVector2(UDim(1.0f, 0), UDim(heightSize, 0.0f)));
 			responseTextButton->setPosition(UVector2(UDim(0.0f, 0), UDim(i * heightSize, 0.0f)));
 			responseTextButton->setInheritsAlpha(true);
-			///hide the button
+			//hide the button
 			//responseTextButton->setAlpha(0.0f);
 			responseTextButton->addChildWindow(responseText);
 			responseTextButton->setTooltipText(*I);
@@ -533,7 +533,7 @@ bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& ar
 {
 	const MouseEventArgs *mouseArgs = static_cast<const MouseEventArgs*> (&args);
 	if (mouseArgs) {
-		///each button contains a static text window, which is the one containg the actual text
+		//each button contains a static text window, which is the one containg the actual text
 		const String text = mouseArgs->window->getChild(0)->getText();
 		Ember::EmberServices::getSingletonPtr()->getServerService()->say(std::string(text.c_str()));
 		clearResponses();
@@ -567,7 +567,7 @@ void IngameChatWidget::ChatText::attachToLabel(Label* label)
 
 IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize)
 {
-	///there is no chat window for this entity, let's create one
+	//there is no chat window for this entity, let's create one
 	std::stringstream ss;
 	ss << "ChatText/" << currentPoolSize << "/";
 	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidget.layout", ss.str());

@@ -77,7 +77,7 @@ EmberEntityFactory::~EmberEntityFactory()
 	EventBeingDeleted();
 }
 
-/// create whatever entity the client desires
+// create whatever entity the client desires
 Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w)
 {
 
@@ -119,7 +119,7 @@ void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) con
 {
 	EmberEntity* entity = static_cast<EmberEntity*>(mView.getEntity(entityId));
 	if (entity) {
-		///make sure the directory exists
+		//make sure the directory exists
 		std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/entityexport/");
 
 		if (!oslink::directory(dir).isExisting()) {

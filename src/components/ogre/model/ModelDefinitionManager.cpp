@@ -56,7 +56,7 @@ ModelDefinitionManager::ModelDefinitionManager(const std::string& exportDirector
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 
 
-	///register factories
+	//register factories
 	mModelFactory = new ModelFactory();
 	Ogre::Root::getSingleton().addMovableObjectFactory(mModelFactory);
 
@@ -68,8 +68,8 @@ ModelDefinitionManager::~ModelDefinitionManager()
 {
 	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
-	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
-	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
+	//we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
+	//this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
 	Ogre::SceneManagerEnumerator::SceneManagerIterator sceneManagerIterator =  Ogre::SceneManagerEnumerator::getSingleton().getSceneManagerIterator();
 	while (sceneManagerIterator.hasMoreElements()) {
 		sceneManagerIterator.getNext()->destroyAllMovableObjectsByType(Model::sMovableType);
@@ -94,7 +94,7 @@ const Ogre::NameValuePairList* createParams)
 	{
 		return Ogre::ResourceManager::create(name, group, isManual, loader, createParams);
 	}
-	///Report this. We count on this happening a lot (user media overriding shared media for example), so we will not consider it a failure.
+	//Report this. We count on this happening a lot (user media overriding shared media for example), so we will not consider it a failure.
 	S_LOG_INFO("ModelDefinition with name " << name << " already exists.");
 	return Ogre::ResourcePtr();
 

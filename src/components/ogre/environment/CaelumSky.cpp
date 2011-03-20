@@ -39,7 +39,7 @@ namespace Environment
 CaelumSky::CaelumSky(CaelumEnvironment& environment) :
 	CaelumEnvironmentComponent(environment)
 {
-	/// Setup cloud options.
+	// Setup cloud options.
 	if (mCaelumSystem->getCloudSystem()) {
 		Caelum::CloudSystem* cloudSystem = mCaelumSystem->getCloudSystem();
 		Caelum::FlatCloudLayer* cloudLayer = cloudSystem->createLayerAtHeight(1500);

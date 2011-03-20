@@ -93,7 +93,7 @@ int ConnectorBase::resolveLuaFunction(lua_State* state)
 		mLuaFunctionIndex = luaL_ref(state, LUA_REGISTRYINDEX);
 	}
 
-	///get the lua function
+	//get the lua function
 	lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
 
 	//Check if there's a "self" table specified. If so, prepend that as the first argument and increase the number of arguments counter.
@@ -107,7 +107,7 @@ int ConnectorBase::resolveLuaFunction(lua_State* state)
 void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 {
 
-	///push our error handling method before calling the code
+	//push our error handling method before calling the code
 	int error_index = lua_gettop(state) - numberOfArguments;
 #if LUA51
 	lua_pushcfunction(state, Ember::Lua::LuaHelper::luaErrorHandler);
@@ -119,10 +119,10 @@ void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 
 	luaPop pop(state, 1); // pops error handler on exit
 
-	/// call it
+	// call it
 	int error = lua_pcall(state, numberOfArguments, LUA_MULTRET, error_index);
 
-	/// handle errors
+	// handle errors
 	if (error) {
 		const std::string& msg = lua_tostring(state,-1);
 		// 			lua_pop(state,numberOfArguments);

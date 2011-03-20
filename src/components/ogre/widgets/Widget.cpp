@@ -100,12 +100,12 @@ namespace Gui {
 			getMainSheet()->addChildWindow(mMainWindow);
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventActivated, Widget::MainWindow_Activated);
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
-			///we want to catch all click events, so we'll listen for the mouse button down event
+			//we want to catch all click events, so we'll listen for the mouse button down event
 			BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventMouseButtonDown, Widget::MainWindow_MouseButtonDown);
 			if (mMainWindow->isVisible()) {
 				onEventFirstTimeShown();
 			} else {
-				///Set it up to listen for the first time the window is shown.
+				//Set it up to listen for the first time the window is shown.
 				BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventShown, Widget::MainWindow_Shown);
 			}
 
@@ -213,7 +213,7 @@ namespace Gui {
 
 	void  Widget::show()
 	{
-		///removing and attaching the window is probably more efficient when it's hidden (i.e. it won't get any events at all and so on)
+		//removing and attaching the window is probably more efficient when it's hidden (i.e. it won't get any events at all and so on)
 		if (mMainWindow) {
 			getMainSheet()->addChildWindow(mMainWindow);
 			mMainWindow->setVisible(true);
@@ -222,7 +222,7 @@ namespace Gui {
 
 	void  Widget::hide()
 	{
-		///see comment in show()
+		//see comment in show()
 		if (mMainWindow) {
 			getMainSheet()->removeChildWindow(mMainWindow);
 			mMainWindow->setVisible(false);
@@ -266,7 +266,7 @@ namespace Gui {
 
 	bool Widget::MainWindow_MouseButtonDown(const CEGUI::EventArgs& args)
 	{
-		///we'll return true here to prevent the event from propagating to other windows
+		//we'll return true here to prevent the event from propagating to other windows
 		return true;
 	}
 
@@ -318,21 +318,21 @@ namespace Gui {
 		const CEGUI::KeyEventArgs& keyEventArgs = static_cast<const CEGUI::KeyEventArgs&>(args);
 		if (keyEventArgs.scancode == CEGUI::Key::Tab)
 		{
-			///find the window in the list of tabbable windows
+			//find the window in the list of tabbable windows
 			CEGUI::Window* activeWindow = mMainWindow->getActiveChild();
 			if (activeWindow) {
 //				WindowMap::iterator I = std::find(mTabOrder.begin(), mTabOrder.end(), activeWindow);
 				WindowMap::iterator I = mTabOrder.find(activeWindow);
 				if (I != mTabOrder.end()) {
 					I->second->activate();
-					///we don't want to process the event any more, in case something else will try to interpret the tab event to also change the focus
+					//we don't want to process the event any more, in case something else will try to interpret the tab event to also change the focus
 					Ember::Input::getSingleton().suppressFurtherHandlingOfCurrentEvent();
 					return true;
 				}
 			}
 		} else if (keyEventArgs.scancode == CEGUI::Key::Return)
 		{
-			///iterate through all enter buttons, and if anyone is visible, activate it
+			//iterate through all enter buttons, and if anyone is visible, activate it
 			for (WindowStore::iterator I = mEnterButtons.begin(); I != mEnterButtons.end(); ++I) {
 				if ((*I)->isVisible()) {
 					CEGUI::Window* window = *I;

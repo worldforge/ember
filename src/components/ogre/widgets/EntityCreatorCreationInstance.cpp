@@ -166,8 +166,8 @@ void EntityCreatorCreationInstance::finalizeCreation()
 	Atlas::Objects::Operation::Create c;
 	EmberEntity& avatar = mWorld.getAvatar()->getEmberEntity();
 	c->setFrom(avatar.getId());
-	///if the avatar is a "creator", i.e. and admin, we will set the TO property
-	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
+	//if the avatar is a "creator", i.e. and admin, we will set the TO property
+	//this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
 	if (avatar.getType()->isA(mTypeService.getTypeByName("creator"))) {
 		c->setTo(avatar.getId());
 	}
@@ -188,7 +188,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 		if (mModel->getDefinition()->getName() == modelName) {
 			return;
 		} else {
-			///Reset the model mount to start with.
+			//Reset the model mount to start with.
 			delete mModelMount;
 			mModelMount = 0;
 			mModel->_getManager()->destroyMovableObject(mModel);
@@ -197,10 +197,10 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 	mModel = Model::Model::createModel(mWorld.getSceneManager(), modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &EntityCreatorCreationInstance::model_Reloaded));
 
-	///if the model definition isn't valid, use a placeholder
+	//if the model definition isn't valid, use a placeholder
 	if (!mModel->getDefinition()->isValid()) {
 		S_LOG_FAILURE("Could not find " << modelName << ", using placeholder.");
-		///add a placeholder model
+		//add a placeholder model
 		Model::ModelDefnPtr modelDef = mModel->getDefinition();
 		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
 		modelDef->setValid(true);

@@ -112,9 +112,9 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 			}
 		}
 
-		///Check for autoentitymapping elements, which allow for a quick mapping between a entity type and a model.
-		///format: <autoentitymapping name="oak">
-		///or: <autoentitymapping name="oak" modelname="oak_1">
+		//Check for autoentitymapping elements, which allow for a quick mapping between a entity type and a model.
+		//format: <autoentitymapping name="oak">
+		//or: <autoentitymapping name="oak" modelname="oak_1">
 		for (TiXmlElement* smElem = rootElem->FirstChildElement("autoentitymapping");
 				smElem != 0; smElem = smElem->NextSiblingElement("autoentitymapping"))
 		{
@@ -134,7 +134,7 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					ActionDefinition actionDef;
 					actionDef.setType("display-model");
 
-					///check if a model name is set
+					//check if a model name is set
 					const char* tmpModelName = smElem->Attribute("modelname");
 					if (tmpModelName) {
 						actionDef.setValue(std::string(tmpModelName));
@@ -213,7 +213,7 @@ void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinit
 				parseActionElement(definition, actionDef, childElement);
 				caseDef.getActions().push_back(actionDef);
 			} else if (std::string(childElement->Value()) == std::string("caseparam")){
-				///it's a case parameter
+				//it's a case parameter
 				if (const char* attributeValue = childElement->Attribute("type")) {
 					if (TiXmlNode* textNode =  childElement->FirstChild()) {
 						std::string type(attributeValue);
@@ -222,7 +222,7 @@ void XMLEntityMappingDefinitionSerializer::parseCaseElement(EntityMappingDefinit
 					}
 				}
 			} else {
-				///we'll assume it's a match
+				//we'll assume it's a match
 				MatchDefinition matchDef;
 				parseMatchElement(definition, matchDef, childElement);
 				caseDef.getMatches().push_back(matchDef);

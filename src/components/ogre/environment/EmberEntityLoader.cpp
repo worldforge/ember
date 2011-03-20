@@ -53,7 +53,7 @@ EmberEntityLoader::EmberEntityLoader(::Forests::PagedGeometry &geom, unsigned in
 
 EmberEntityLoader::~EmberEntityLoader()
 {
-	///When shutting down, make sure to delete all connections.
+	//When shutting down, make sure to delete all connections.
 #if EMBERENTITYLOADER_USEBATCH
 	for (EntityStore::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
 		for (EntityColumn::iterator J = I->second.begin(); J != I->second.end(); ++J) {
@@ -108,7 +108,7 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresen
 	entities[entity.getId()] = instance;
 
 	if (isValidPos) {
-		///Rebuild geometry if necessary
+		//Rebuild geometry if necessary
 		mGeom.reloadGeometryPage(position);
 	}
 
@@ -156,7 +156,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 
 	WFMath::Point<3> pos = entity->getViewPosition();
 	if (pos.isValid()) {
-		///Rebuild geometry if necessary.
+		//Rebuild geometry if necessary.
 		mGeom.reloadGeometryPage(Convert::toOgre(pos));
 	}
 }
@@ -249,7 +249,7 @@ void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberEntity*
 {
 	WFMath::Point<3> viewPos = entity->getViewPosition();
 	if (viewPos.isValid()) {
-		///When the visibility changes, we only need to reload the page the entity is on.
+		//When the visibility changes, we only need to reload the page the entity is on.
 		mGeom.reloadGeometryPage(Convert::toOgre(viewPos));
 	}
 }

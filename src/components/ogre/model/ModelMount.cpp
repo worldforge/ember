@@ -51,7 +51,7 @@ ModelMount::~ModelMount()
 
 void ModelMount::rescale(const WFMath::AxisBox<3>* wfBbox)
 {
-	///It's important that we reset everything before we call scaleNode
+	//It's important that we reset everything before we call scaleNode
 	reset();
 	scaleNode(wfBbox);
 }
@@ -60,11 +60,11 @@ void ModelMount::reset()
 {
 	getNodeProvider()->setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
 	getNode().setScale(Ogre::Vector3::UNIT_SCALE);
-	///rotate node to fit with WF space
-	///perhaps this is something to put in the model spec instead?
+	//rotate node to fit with WF space
+	//perhaps this is something to put in the model spec instead?
 	getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
 	getNode().rotate(getModel().getRotation());
-	///translate the scale node according to the translate defined in the model
+	//translate the scale node according to the translate defined in the model
 	getNode().translate(getModel().getDefinition()->getTranslate());
 }
 
@@ -75,20 +75,20 @@ Ogre::Node& ModelMount::getNode() const
 
 void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 {
-	///it's important that reset() has been called before this method is called
+	//it's important that reset() has been called before this method is called
 
 	if (!mModel.isLoaded()) {
 		return;
 	}
 
-	///make a copy of the original bbox
+	//make a copy of the original bbox
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
 
-	///We can only apply any meaningful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similar, and no entities
+	//We can only apply any meaningful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similar, and no entities
 	Ogre::Vector3 defaultSize = defaultOgreBoundingBox.getSize();
 	if (!defaultOgreBoundingBox.isNull() && (defaultSize.x != 0.0f && defaultSize.y != 0.0f && defaultSize.z != 0.0f)) {
 
-		///apply any transformations required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
+		//apply any transformations required first so the bounding box we use as reference represents the way to mesh is adjusted through rotations set in the model definition
 		Ogre::Matrix4 localTransform;
 		localTransform.makeTransform(getModel().getDefinition()->getTranslate(), Ogre::Vector3::UNIT_SCALE, getModel().getDefinition()->getRotation());
 		defaultOgreBoundingBox.transform(localTransform);
@@ -96,15 +96,15 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 		defaultSize = defaultOgreBoundingBox.getSize();
 
-		///Depending on whether the entity has a bounding box or not we'll use different scaling methods. Most entities should have bounding boxes, but not all.
+		//Depending on whether the entity has a bounding box or not we'll use different scaling methods. Most entities should have bounding boxes, but not all.
 		if (wfBbox && wfBbox->isValid()) {
 
-			///The entity has a bounding box. We'll now check the "usescaleof" setting.
-			///It it's either of "height", "width" or "depth" we'll scale the model uniformly so that the specified dimension matches up exactly between the bounding box of the Model and the bounding box of the entity.
-			///If it's "none" we won't apply any scaling.
-			///And if it's "all" we'll scale the Model so that it matches all dimensions of the entity's bounding box. This will in almost all cases however distort the Model so it's undesirable.
+			//The entity has a bounding box. We'll now check the "usescaleof" setting.
+			//It it's either of "height", "width" or "depth" we'll scale the model uniformly so that the specified dimension matches up exactly between the bounding box of the Model and the bounding box of the entity.
+			//If it's "none" we won't apply any scaling.
+			//And if it's "all" we'll scale the Model so that it matches all dimensions of the entity's bounding box. This will in almost all cases however distort the Model so it's undesirable.
 
-			///Note that after the Model has been scaled using the bounding box, it can still be scaled additionally through the "scale" setting in the ModelDefinition.
+			//Note that after the Model has been scaled using the bounding box, it can still be scaled additionally through the "scale" setting in the ModelDefinition.
 
 			Ogre::AxisAlignedBox ogreBbox(Convert::toOgre(*wfBbox));
 
@@ -131,7 +131,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 				case ModelDefinition::MODEL_ALL:
 				default:
-					///HACK: for some reason we have to switch x and z here. I'm not completely sure why, but it works. It hints at a problem elsewhere though
+					//HACK: for some reason we have to switch x and z here. I'm not completely sure why, but it works. It hints at a problem elsewhere though
 					scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
 					scaleY = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
 					scaleX = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
@@ -140,8 +140,8 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 			getNode().setScale(scaleX, scaleY, scaleZ);
 
 		} else if (!getModel().getScale()) {
-			///If there's no bbox, and no scaling in the model (i.e. not even "1") we'll set the size of the model to a hardcoded small value (0.25 meters in each dimension).
-			///This is of course a last resort; all good models that can belong to entities without bounding boxes should have a scale set
+			//If there's no bbox, and no scaling in the model (i.e. not even "1") we'll set the size of the model to a hardcoded small value (0.25 meters in each dimension).
+			//This is of course a last resort; all good models that can belong to entities without bounding boxes should have a scale set
 
 			S_LOG_WARNING("Could not find any scale set in the model '" << getModel().getName() << "' of type '" << getModel().getDefinition()->getName() << "'. We'll thus default to scaling the mesh so it's 0.25 meters in each dimension.");
 
@@ -151,10 +151,10 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 			getNode().setScale(scaleX, scaleY, scaleZ);
 		}
 
-		///Lastly, check if we also should scale the model. This scaling is applied after the Model has been scaled to fit with the bounding box.
+		//Lastly, check if we also should scale the model. This scaling is applied after the Model has been scaled to fit with the bounding box.
 		if (getModel().getScale()) {
 			if (getModel().getScale() != 1) {
-				///only scale if it's not 1
+				//only scale if it's not 1
 				getNode().scale(getModel().getScale(), getModel().getScale(), getModel().getScale());
 			}
 		}

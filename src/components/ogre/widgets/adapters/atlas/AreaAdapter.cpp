@@ -109,7 +109,7 @@ void AreaAdapter::createNewPolygon()
 
 void AreaAdapter::fillElementFromGui()
 {
-	///Start by using the shape element from the polygon adapter
+	//Start by using the shape element from the polygon adapter
 	mEditedElement = mPolygonAdapter->getChangedElement();
 	CEGUI::ListboxItem* item = mLayerWindow->getSelectedItem();
 	if (item) {

@@ -145,7 +145,7 @@ mGuiSystem(system)
 	mKeyMap[SDLK_LALT] = CEGUI::Key::LeftAlt;
 
 
-	///set up the capturing of text selected event for the copy-and-paste functionality
+	//set up the capturing of text selected event for the copy-and-paste functionality
 
 //window->subscribeEvent(event, CEGUI::Event::Subscriber(&method, this));
 
@@ -262,13 +262,13 @@ bool GUICEGUIAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& but
 bool GUICEGUIAdapter::injectChar(char character)
 {
 	try {
-		///cegui can't handle tabs, so we have to convert it to a couple of spaces
+		//cegui can't handle tabs, so we have to convert it to a couple of spaces
 		if (character == '\t') {
 			mGuiSystem->injectChar(' ');
 			mGuiSystem->injectChar(' ');
 			mGuiSystem->injectChar(' ');
 			mGuiSystem->injectChar(' ');
-		///can't handle CR either really, insert a line break (0x0a) instead
+		//can't handle CR either really, insert a line break (0x0a) instead
 		} else if (character == '\r') {
  			//mGuiSystem->injectChar(0x0a);
  			mGuiSystem->injectKeyDown(CEGUI::Key::Return);

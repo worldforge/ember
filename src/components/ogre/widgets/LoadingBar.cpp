@@ -143,11 +143,11 @@ namespace Gui {
 	void LoadingBar::finish(void)
 	{
 		if (mLoadOverlay) {
-			/// hide loading screen
+			// hide loading screen
 			mLoadOverlay->hide();
 		}
 
-		///we won't be needing the bootstrap resources for some while, so unload them
+		//we won't be needing the bootstrap resources for some while, so unload them
 // 		ResourceGroupManager::getSingleton().unloadResourceGroup("Bootstrap");
 
 	}
@@ -177,7 +177,7 @@ namespace Gui {
 	void LoadingBar::setProgress(float progress)
 	{
 		if (mLoadingBarElement) {
-			///make the black blocking block a little bit smaller and move it to the right
+			//make the black blocking block a little bit smaller and move it to the right
 			mLoadingBarElement->setWidth(mProgressBarMaxSize * (1 - progress));
 			mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));
 			updateRender();
@@ -300,11 +300,11 @@ namespace Gui {
 		ResourceGroupManager::getSingleton().removeResourceGroupListener(this);
 	}
 
-	/// ResourceGroupListener callbacks
+	// ResourceGroupListener callbacks
 	void ResourceGroupLoadingBarSection::resourceGroupScriptingStarted(const String& groupName, size_t scriptCount)
 	{
 		if (mNumGroupsInit == 0) {
-			return; ///avoid divide-by-zero
+			return; //avoid divide-by-zero
 		}
 		if (mNumGroupsLoad != 0) {
 			mProgressBarInc = mInitProportion / mNumGroupsInit;
@@ -313,7 +313,7 @@ namespace Gui {
 		}
 
 		if (scriptCount == 0) {
-			///no scripts will be loaded, so we'll have to conclude this group here and now
+			//no scripts will be loaded, so we'll have to conclude this group here and now
 			mSection.tick(mProgressBarInc);
 		}
 
@@ -326,13 +326,13 @@ namespace Gui {
 	}
 	void ResourceGroupLoadingBarSection::scriptParseEnded(const Ogre::String& scriptName, bool skipped)
 	{
-		///make the black blocking block a little bit smaller and move it to the right
+		//make the black blocking block a little bit smaller and move it to the right
 		mSection.tick(mProgressBarInc);
 	}
 	void ResourceGroupLoadingBarSection::resourceGroupLoadStarted(const String& groupName, size_t resourceCount)
 	{
 		if (mNumGroupsLoad == 0) {
-			return; ///avoid divide-by-zero
+			return; //avoid divide-by-zero
 		}
 		if (mNumGroupsInit) {
 			mProgressBarInc = (1.0-mInitProportion) /
@@ -342,7 +342,7 @@ namespace Gui {
 		}
 
 		if (resourceCount == 0) {
-			///no resources will be loaded, so we'll have to conclude this group here and now
+			//no resources will be loaded, so we'll have to conclude this group here and now
 			mSection.tick(mProgressBarInc);
 		}
 

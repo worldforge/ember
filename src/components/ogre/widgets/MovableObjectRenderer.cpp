@@ -77,7 +77,7 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 	int height = static_cast<int>(image->getPixelSize().d_height);
 	if (width != 0 && height != 0) {
 		mTexture = new EntityCEGUITexture(image->getName().c_str(), width, height);
-		///most models are rotated away from the camera, so as a convenience we'll rotate the node
+		//most models are rotated away from the camera, so as a convenience we'll rotate the node
 		//mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
 
 		mImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(mTexture->getImage()));
@@ -86,7 +86,7 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseWheel, MovableObjectRenderer::image_MouseWheel);
 
 
-		/// Register this as a frame listener
+		// Register this as a frame listener
 		Ogre::Root::getSingleton().addFrameListener(this);
 		mWindowUpdater = new CEGUIWindowUpdater(*mImage);
 		mTexture->getRenderContext()->getRenderTexture()->addListener(mWindowUpdater);
@@ -107,21 +107,21 @@ MovableObjectRenderer::~MovableObjectRenderer()
 
 	delete mTexture;
 	delete mWindowUpdater;
-	/// Register this as a frame listener
+	// Register this as a frame listener
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
 }
 
 bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
-	///rotate the modelnode
+	//rotate the modelnode
 	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
 		mTexture->getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
 	} else {
 		mTexture->getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
 		mTexture->getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
 	}
-	///we don't want to move the cursor
+	//we don't want to move the cursor
 	freezeMouse = true;
 	return false;
 }
@@ -256,7 +256,7 @@ bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 	if (mouseArgs.button == CEGUI::LeftButton) {
-		///only catch input if it's allowed
+		//only catch input if it's allowed
 		if (getIsInputCatchingAllowed()) {
 			catchInput();
 		}
@@ -267,7 +267,7 @@ bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)
 bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 {
 //	S_LOG_VERBOSE(mImage->getName().c_str() << " visible: " << (mActive && mImage->isVisible()));
-	///if the window isn't shown, don't update the render texture
+	//if the window isn't shown, don't update the render texture
 	mTexture->getRenderContext()->setActive(mActive && mImage->isVisible());
 	if (mActive && mImage->isVisible()) {
 		updateRender();

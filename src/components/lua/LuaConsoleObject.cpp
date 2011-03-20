@@ -44,7 +44,7 @@ LuaConsoleObject::LuaConsoleObject(const std::string& command, lua_Object luaMet
 	mCommandWrapper(command, this, description)
 {
 	mConnector = new Ember::Lua::TemplatedConnectorBase<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter>(Ember::Lua::StringValueAdapter(), Ember::Lua::StringValueAdapter());
-	///we need to get the correct lua function
+	//we need to get the correct lua function
 	lua_State* state = Ember::Lua::ConnectorBase::getState();
 	int luaType = lua_type(state, -1);
 	int index = luaL_ref(state, LUA_REGISTRYINDEX);
@@ -69,7 +69,7 @@ LuaConsoleObject* LuaConsoleObject::setSelf(lua_Object selfIndex)
 {
 	if (mConnector) {
 		if (selfIndex != LUA_NOREF) {
-			///we need to get the correct lua table
+			//we need to get the correct lua table
 			lua_State* state = Ember::Lua::ConnectorBase::getState();
 			int luaType = lua_type(state, -1);
 			int index = luaL_ref(state, LUA_REGISTRYINDEX);

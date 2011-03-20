@@ -75,7 +75,7 @@ ModelRepresentation::ModelRepresentation(::Ember::OgreView::EmberEntity& entity,
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
 
-	///listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
+	//listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	mModel.Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
 	mModel.Resetting.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Resetting));
 
@@ -89,7 +89,7 @@ ModelRepresentation::ModelRepresentation(::Ember::OgreView::EmberEntity& entity,
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
 	}
 
-	///start out with the default movement mode
+	//start out with the default movement mode
 	onMovementModeChanged(ModelRepresentation::MM_DEFAULT);
 
 }
@@ -101,8 +101,8 @@ ModelRepresentation::~ModelRepresentation()
 //	delete mModel.getUserObject();
 	mModel._getManager()->destroyMovableObject(&mModel);
 
-	///make sure it's not in the MotionManager
-	///TODO: keep a marker in the entity so we don't need to call this for all entities
+	//make sure it's not in the MotionManager
+	//TODO: keep a marker in the entity so we don't need to call this for all entities
 	MotionManager::getSingleton().removeAnimated(mEntity.getId());
 
 }
@@ -137,7 +137,7 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
 			mModel.hidePart(partName);
 		}
 
-		///if we already have set up a collision object we must reload it
+		//if we already have set up a collision object we must reload it
 		if (!mModel.getUserAny().isEmpty()) {
 			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr> (mModel.getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
@@ -187,7 +187,7 @@ void ModelRepresentation::setSounds()
 
 void ModelRepresentation::setClientVisible(bool visible)
 {
-	///It appears that lights aren't disabled even when they're detached from the node tree (which will happen if the visibity is disabled as the lights are attached to the scale node), so we need to disable them ourselves.
+	//It appears that lights aren't disabled even when they're detached from the node tree (which will happen if the visibity is disabled as the lights are attached to the scale node), so we need to disable them ourselves.
 	for (LightSet::iterator I = mModel.getLights().begin(); I != mModel.getLights().end(); ++I) {
 		I->light->setVisible(visible);
 	}
@@ -197,7 +197,7 @@ void ModelRepresentation::initFromModel()
 {
 	connectEntities();
 
-	///see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
+	//see if we should use a rendering technique different from the default one (which is just using the Model::Model instance)
 	const RenderingDefinition* renderingDef = mModel.getDefinition()->getRenderingDefinition();
 	if (renderingDef && renderingDef->getScheme() != "" && mModel.isLoaded()) {
 		mScene.registerEntityWithTechnique(mEntity, renderingDef->getScheme());
@@ -220,7 +220,7 @@ void ModelRepresentation::connectEntities()
 //	if (getModel().getUserObject()) {
 //		delete getModel().getUserObject();
 //	}
-	///we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
+	//we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
 	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
 	EmberEntityUserObject* userObject = new EmberEntityUserObject(getEntity(), collisionDetector);
@@ -232,7 +232,7 @@ void ModelRepresentation::model_Reloaded()
 {
 	initFromModel();
 	reactivatePartActions();
-	///Retrigger a movement change so that animations can be stopped and started now that the model has changed.
+	//Retrigger a movement change so that animations can be stopped and started now that the model has changed.
 	onMovementModeChanged(getMovementMode());
 }
 
@@ -258,8 +258,8 @@ void ModelRepresentation::entity_Changed(const Eris::StringSet& attributeIds)
 void ModelRepresentation::attrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
 
-	///check if the changed attribute should affect any particle systems
-	///TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
+	//check if the changed attribute should affect any particle systems
+	//TODO: refactor this into a system where the Model instead keeps track of whether any particle systems are in use and if so attaches listeners.
 	if (mModel.hasParticles()) {
 		const ParticleSystemBindingsPtrSet& bindings = mModel.getAllParticleSystemBindings();
 		for (ParticleSystemBindingsPtrSet::const_iterator I = bindings.begin(); I != bindings.end(); ++I) {
@@ -286,20 +286,20 @@ void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
 		actionName = ACTION_STAND;
 	}
 
-	/// Lets inform the sound entity of our movement change.
-	///TODO: should this really be here, and not in the sound entity? this places a binding from this class to the sound entity which perhaps could be avoided
+	// Lets inform the sound entity of our movement change.
+	//TODO: should this really be here, and not in the sound entity? this places a binding from this class to the sound entity which perhaps could be avoided
 	if (mSoundEntity) {
 		mSoundEntity->playMovementSound(actionName);
 	}
 
 	if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
 
-		///first disable the current action
+		//first disable the current action
 		if (mCurrentMovementAction) {
 			mCurrentMovementAction->getAnimations().reset();
 		}
 
-		///also abort any current active action in favour of the movement action; this needs to be replaced with a better system where we can blend different animations together
+		//also abort any current active action in favour of the movement action; this needs to be replaced with a better system where we can blend different animations together
 		if (mActiveAction) {
 			mActiveAction->getAnimations().reset();
 			mActiveAction = 0;
@@ -365,7 +365,7 @@ void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
 	} else {
 		if (mCurrentMovementAction) {
 			bool continuePlay = false;
-			///Check if we're walking backward. This is a bit of a hack (we should preferrably have a separate animation for backwards walking.
+			//Check if we're walking backward. This is a bit of a hack (we should preferrably have a separate animation for backwards walking.
 			if (getMovementMode() == MM_WALKING_BACKWARDS) {
 				mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
 			} else {
@@ -400,7 +400,7 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 
 		Action* newAction = mModel.getAction(name);
 
-		///If there's no action found, try to see if we have a "default action" defined to play instead.
+		//If there's no action found, try to see if we have a "default action" defined to play instead.
 		if (!newAction) {
 			newAction = mModel.getAction("default_action");
 		}

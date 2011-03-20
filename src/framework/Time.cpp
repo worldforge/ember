@@ -42,7 +42,7 @@ namespace Ember
 
 void Time::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
-	/// Set some time parameters
+	// Set some time parameters
 	time_t t = time(&t);
 	struct tm *t2 = localtime(&t);
 	year = t2->tm_year;

@@ -160,11 +160,11 @@ protected:
 };
 
 GUIManager::GUIManager(Ogre::RenderWindow* window) :
-	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) ///by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
-	///we need this here just to force the linker to also link in the WidgetDefinitions
+	//we need this here just to force the linker to also link in the WidgetDefinitions
 	WidgetDefinitions w;
 
 	try {
@@ -178,7 +178,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 			S_LOG_WARNING("Failed to change to the data directory. Gui loading might fail.");
 		}
 
-		///The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
+		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
 		mGuiRenderer = &CEGUI::OgreRenderer::create(*window);
 		CEGUI::ResourceProvider& resourceProvider = mGuiRenderer->createOgreResourceProvider();
 		resourceProvider.setDefaultResourceGroup("Gui");
@@ -191,7 +191,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
 			if (luaScriptProvider->getErrorHandlingFunctionName().size() != 0) {
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
-				mLuaScriptModule->executeString(""); ///We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
+				mLuaScriptModule->executeString(""); //We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
 			}
 			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
@@ -228,7 +228,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseDoubleClick, GUIManager::mSheet_MouseDoubleClick);
 
-		///set a default tool tip
+		//set a default tool tip
 		CEGUI::System::getSingleton().setDefaultTooltip(getDefaultScheme() + "/Tooltip");
 
 		S_LOG_INFO("CEGUI system set up");
@@ -238,13 +238,13 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		getInput().setInputMode(Input::IM_GUI);
 
-		///add adapter for CEGUI, this will route input event to the gui
+		//add adapter for CEGUI, this will route input event to the gui
 		mCEGUIAdapter = new GUICEGUIAdapter(mGuiSystem, mGuiRenderer);
 		getInput().addAdapter(mCEGUIAdapter);
 
 		mGuiCommandMapper.bindToInput(getInput());
 
-		///connect to the creation of the avatar, since we want to switch to movement mode when that happens
+		//connect to the creation of the avatar, since we want to switch to movement mode when that happens
 		EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_CreatedAvatarEntity));
 		EmberOgre::getSingleton().EventWorldCreated.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldCreated));
 		EmberOgre::getSingleton().EventWorldDestroyed.connect(sigc::mem_fun(*this, &GUIManager::EmberOgre_WorldDestroyed));
@@ -280,7 +280,7 @@ GUIManager::~GUIManager()
 
 	CEGUI::System::destroy();
 
-	///note that we normally would delete the mCEGUILogger here, but we don't have to since mGuiSystem will do that in it's desctructor, even though it doesn't own the logger
+	//note that we normally would delete the mCEGUILogger here, but we don't have to since mGuiSystem will do that in it's desctructor, even though it doesn't own the logger
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCEGUIAdapter;
 
@@ -332,9 +332,9 @@ void GUIManager::initialize()
 	widgetsToLoad.push_back("Help");
 	widgetsToLoad.push_back("MeshPreview");
 
-	///this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
+	//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 	try {
-		///load the bootstrap script which will load all other scripts
+		//load the bootstrap script which will load all other scripts
 		Ember::EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script." << e);
@@ -626,7 +626,7 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 
 void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 {
-	///switch to movement mode, since it appears most people don't know how to change from gui mode
+	//switch to movement mode, since it appears most people don't know how to change from gui mode
 	getInput().setInputMode(Input::IM_MOVEMENT);
 }
 

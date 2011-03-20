@@ -47,8 +47,8 @@ bool XMLHelper::Load(TiXmlDocument& xmlDoc, Ogre::DataStreamPtr stream)
 
 	if ( length )
 	{
-		/// If we have a file, assume it is all one big XML file, and read it in.
-		/// The document parser may decide the document ends sooner than the entire file, however.
+		// If we have a file, assume it is all one big XML file, and read it in.
+		// The document parser may decide the document ends sooner than the entire file, however.
 		std::string data(stream->getAsString());
 
 		xmlDoc.Parse( data.c_str());
@@ -96,7 +96,7 @@ Ogre::Quaternion XMLHelper::fillQuaternionFromElement(TiXmlElement* elem)
 {
 	Ogre::Vector3 vector = fillVector3FromElement(elem);
 	Ogre::Degree degrees;
-	///first check if degrees is specified, but also allow for radians to be specified
+	//first check if degrees is specified, but also allow for radians to be specified
 	if (elem->Attribute("degrees")) {
 		degrees = atof(elem->Attribute("degrees"));
 	} else if (elem->Attribute("radians")) {
@@ -110,7 +110,7 @@ Ogre::Quaternion XMLHelper::fillQuaternionFromElement(TiXmlElement* elem)
 
 void XMLHelper::fillElementFromQuaternion(TiXmlElement& elem, Ogre::Quaternion quaternion)
 {
-	///split the quaternion into an axis and a degree (our format allows us to store the angle element as a radian too, but I prefer degrees)
+	//split the quaternion into an axis and a degree (our format allows us to store the angle element as a radian too, but I prefer degrees)
 	Ogre::Degree degrees;
 	Ogre::Vector3 axis;
 	quaternion.ToAngleAxis( degrees, axis);

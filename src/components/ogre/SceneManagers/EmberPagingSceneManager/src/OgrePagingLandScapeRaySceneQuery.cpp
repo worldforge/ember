@@ -38,10 +38,10 @@ namespace Ogre
 // Supplied by Praetor. Thanks a lot. ]:)
 void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener) 
 { 
-	///Ember start
-	///Make sure that there really is some world geometry first
+	//Ember start
+	//Make sure that there really is some world geometry first
     if ((static_cast<PagingLandScapeSceneManager*>(mParentSceneMgr)->mWorldGeomIsSetup) && (getQueryTypeMask() & SceneManager::WORLD_GEOMETRY_TYPE_MASK))
-	///Ember end
+	//Ember end
 	{
 		mWorldFrag.fragmentType = SceneQuery::WFT_SINGLE_INTERSECTION;
 
@@ -75,9 +75,9 @@ void PagingLandScapeRaySceneQuery::execute(RaySceneQueryListener* listener)
 					&mWorldFrag.singleIntersection))
 			{
                 listener->queryResult(&mWorldFrag, (mWorldFrag.singleIntersection - origin).length());
-                ///Ember start
+                //Ember start
                 PagingLandScapeOctreeRaySceneQuery::execute(listener);
-                ///Ember end
+                //Ember end
                 return;
 			}
 		}

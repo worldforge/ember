@@ -58,9 +58,9 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 		float animationLength = animation->getLengthOfOneIteration();
 		Ogre::Real calculatedTime = timeSlice * mSpeed;
 		if (animationLength == 0) {
-			///Ogre will throw an assert exception if an animtion with zero length is activated
+			//Ogre will throw an assert exception if an animtion with zero length is activated
 		} else {
-			///see if we've done enough iterations to either advance to the next animation, or the mark this animation as done
+			//see if we've done enough iterations to either advance to the next animation, or the mark this animation as done
 			if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * animation->getIterations()) {
 				animation->setEnabled(false);
 				mAccumulatedTime = 0;
@@ -112,7 +112,7 @@ void Animation::addTime(Ogre::Real timeSlice)
 {
 	AnimationPartSet::iterator I = mAnimationParts.begin();
 	for (; I != mAnimationParts.end(); ++I) {
-		///we'll get an assert error if we try to add time to an animation with zero length
+		//we'll get an assert error if we try to add time to an animation with zero length
 		if (I->state->getLength() != 0) {
 			I->state->addTime(timeSlice);
 		}
@@ -123,7 +123,7 @@ void Animation::setTime(Ogre::Real time)
 {
 	AnimationPartSet::iterator I = mAnimationParts.begin();
 	for (; I != mAnimationParts.end(); ++I) {
-		///we'll get an assert error if we try to add time to an animation with zero length
+		//we'll get an assert error if we try to add time to an animation with zero length
 		if (I->state->getLength() != 0) {
 			I->state->setTimePosition(time);
 		}
@@ -134,7 +134,7 @@ void Animation::setEnabled(bool state)
 {
 	AnimationPartSet::iterator I = mAnimationParts.begin();
 	for (; I != mAnimationParts.end(); ++I) {
-		///we'll get an assert error if we try to enable an animation with zero length
+		//we'll get an assert error if we try to enable an animation with zero length
 		if (I->state->getLength() != 0) {
 			if (I->state->getEnabled() != state) {
 				I->state->setEnabled(state);

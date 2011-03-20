@@ -76,7 +76,7 @@ void EntityMoveManager::GuiManager_EntityAction(const std::string& action, Ember
 
 void EntityMoveManager::startMove(EmberEntity& entity)
 {
-	///disallow moving of the root entity
+	//disallow moving of the root entity
 	if (entity.getLocation()) {
 		//Only provide movement for entities which have a node attachment.
 		NodeAttachment* attachment = dynamic_cast<NodeAttachment*> (entity.getAttachment());

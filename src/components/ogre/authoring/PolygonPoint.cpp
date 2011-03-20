@@ -66,7 +66,7 @@ PolygonPoint::PolygonPoint(Polygon& polygon, const WFMath::Point<2>& localPositi
 
 	try {
 		mEntity = mNode->getCreator()->createEntity(ss.str(), "3d_objects/primitives/models/sphere.mesh");
-		///start out with a normal material
+		//start out with a normal material
 		mEntity->setMaterialName("/global/authoring/point");
 		mEntity->setRenderingDistance(300);
 		mEntity->setQueryFlags(MousePicker::CM_UNDEFINED);

@@ -64,12 +64,12 @@ const CEGUI::Image* EntityCEGUITexture::getImage() const
 
 void EntityCEGUITexture::createImage(const std::string& imageSetName)
 {
-	///create a CEGUI texture from our Ogre texture
+	//create a CEGUI texture from our Ogre texture
 	S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
 	Ogre::TexturePtr texturePtr(mRenderContext->getTexture());
 	mCeguiTexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
 
-	///we need a imageset in order to create GUI elements from the ceguiTexture
+	//we need a imageset in order to create GUI elements from the ceguiTexture
 	S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");
 	mImageSet = &CEGUI::ImagesetManager::getSingleton().create(imageSetName + "_EntityCEGUITextureImageset", *mCeguiTexture);
 
@@ -80,11 +80,11 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 		height = texturePtr->getHeight();
 	}
 
-	///we only want one element: the whole texture
-	///the width and height of the texture differs from the supplied width of this instance since it will have been adjusted to a power-of-two size
+	//we only want one element: the whole texture
+	//the width and height of the texture differs from the supplied width of this instance since it will have been adjusted to a power-of-two size
 	mImageSet->defineImage("full_image", CEGUI::Rect(0, 0, width, height), CEGUI::Point(0,0));
 
-	///assign our image element to the StaticImage widget
+	//assign our image element to the StaticImage widget
 	mImage = &mImageSet->getImage("full_image");
 
 }

@@ -103,10 +103,10 @@ void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& conte
 		mEntity.setGraphicalRepresentation(0);
 		model = Model::Model::createModel(mScene.getSceneManager(), mModelName, mEntity.getId());
 
-		///if the model definition isn't valid, use a placeholder
+		//if the model definition isn't valid, use a placeholder
 		if (!model->getDefinition()->isValid()) {
 			S_LOG_FAILURE( "Could not find " << mModelName << ", using placeholder.");
-			///add a placeholder model
+			//add a placeholder model
 			Model::ModelDefnPtr modelDef = model->getDefinition();
 			modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
 			modelDef->setValid(true);

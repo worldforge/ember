@@ -124,7 +124,7 @@ void ConnectedAdapter::drop(Eris::Entity* entity, const WFMath::Vector<3>& offse
 }
 void ConnectedAdapter::place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos)
 {
-	///use the existing orientation
+	//use the existing orientation
 	place(entity, target, pos, entity->getOrientation());
 }
 

@@ -46,10 +46,10 @@ void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page,
 	int pageSizeInVertices = page.getPageSize();
 	int pageSizeInMeters = pageSizeInVertices - 1;
 
-	///since Ogre uses a different coord system than WF, we have to do some conversions here
+	//since Ogre uses a different coord system than WF, we have to do some conversions here
 // 	TerrainPosition origPosition(page.getWFPosition());
 	TerrainPosition origPosition(0, pageSizeInMeters - 1);
-	///start in one of the corners...
+	//start in one of the corners...
 /*	origPosition[0] = (page.getWFPosition()[0] * (pageSizeInMeters));
 	origPosition[1] = (page.getWFPosition()[1] * (pageSizeInMeters));*/
 
@@ -75,7 +75,7 @@ void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page,
 // 					*data = 255;
 // 				}
 
-				/// if the dotProduct is > 0, the face is looking away from the sun
+				// if the dotProduct is > 0, the face is looking away from the sun
 				*data = static_cast<unsigned char>((1.0f - ((dotProduct + 1.0f) * 0.5f)) * 255);
 
 

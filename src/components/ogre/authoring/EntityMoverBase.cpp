@@ -106,7 +106,7 @@ void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 			finalPosition = finalPosition.shift(adjustment);
 		}
 
-		///We need to offset into local space.
+		//We need to offset into local space.
 		Ogre::Vector3 posOffset = Ogre::Vector3::ZERO;
 		if (mNode->getParent()) {
 			posOffset = mNode->getParent()->_getDerivedPosition();
@@ -126,7 +126,7 @@ void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
 }
 void EntityMoverBase::setRotation(int axis, WFMath::CoordType angle)
 {
-	///not implemented yet
+	//not implemented yet
 }
 
 void EntityMoverBase::yaw(WFMath::CoordType angle)
@@ -138,7 +138,7 @@ void EntityMoverBase::yaw(WFMath::CoordType angle)
 void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 {
 	if (rotation.isValid()) {
-		///We need to offset into local space.
+		//We need to offset into local space.
 		Ogre::Quaternion rotOffset = Ogre::Quaternion::IDENTITY;
 		if (mNode->getParent()) {
 			rotOffset = mNode->getParent()->_getDerivedOrientation();

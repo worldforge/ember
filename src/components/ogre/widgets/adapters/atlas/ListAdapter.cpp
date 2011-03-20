@@ -116,7 +116,7 @@ void ListAdapter::removeAdapters()
 
 ::Atlas::Message::Element ListAdapter::_getChangedElement()
 {
-	///if one adapter has changes, we have to send all
+	//if one adapter has changes, we have to send all
 	::Atlas::Message::ListType attributes;
 	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
 		Adapters::Atlas::AdapterBase* adapter = I->Adapter;

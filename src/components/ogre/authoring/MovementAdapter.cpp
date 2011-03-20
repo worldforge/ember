@@ -69,14 +69,14 @@ MovementAdapterWorkerDiscrete::MovementAdapterWorkerDiscrete(MovementAdapter& ad
 
 bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
 {
-	///this will move the entity instead of the mouse
+	//this will move the entity instead of the mouse
 
 	Vector<3> direction;
 	direction.zero();
 	direction.x() = -motion.xRelativeMovement;
 	direction.y() = motion.yRelativeMovement;
 	direction = direction * mMovementSpeed;
-	///hard coded to allow the shift button to increase the speed
+	//hard coded to allow the shift button to increase the speed
 	// 	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
 	// 		direction = direction * 5;
 	// 	}
@@ -91,12 +91,12 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& mo
 
 	orientation = adjustedOrientation;
 
-	///move it relative to the camera
+	//move it relative to the camera
 	direction = direction.rotate(orientation);
 
 	getBridge()->move(direction);//move the entity a fixed distance for each mouse movement.
 
-	///we don't want to move the cursor
+	//we don't want to move the cursor
 	freezeMouse = true;
 
 	return false;
@@ -106,7 +106,7 @@ bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& mo
 MovementAdapterWorkerTerrainCursor::MovementAdapterWorkerTerrainCursor(MovementAdapter& adapter) :
 	MovementAdapterWorkerBase(adapter)
 {
-	/// Register this as a frame listener
+	// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 
@@ -141,7 +141,7 @@ MovementAdapter::MovementAdapter(const Camera::MainCamera& camera) :
 
 MovementAdapter::~MovementAdapter()
 {
-	//detach(); ///A call to this will delete both the bridge and the adapter.
+	//detach(); //A call to this will delete both the bridge and the adapter.
 }
 
 void MovementAdapter::finalizeMovement()
@@ -218,7 +218,7 @@ bool MovementAdapter::injectChar(char character)
 bool MovementAdapter::injectKeyDown(const SDLKey& key)
 {
 	if (mWorker) {
-		///by pressing and holding shift we'll allow the user to position it with more precision. We do this by switching the worker instances.
+		//by pressing and holding shift we'll allow the user to position it with more precision. We do this by switching the worker instances.
 		if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) {
 			delete mWorker;
 			mWorker = new MovementAdapterWorkerDiscrete(*this);
@@ -268,7 +268,7 @@ void MovementAdapter::removeAdapter()
 void MovementAdapter::addAdapter()
 {
 	Input::getSingleton().addAdapter(this);
-	///default to the terrain cursor positioning mode
+	//default to the terrain cursor positioning mode
 	mWorker = new MovementAdapterWorkerTerrainCursor(*this);
 }
 

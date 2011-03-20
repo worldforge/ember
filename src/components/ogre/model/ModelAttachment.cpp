@@ -68,8 +68,8 @@ ModelAttachment::ModelAttachment(ModelAttachment& source, NodeAttachment& newPar
 
 ModelAttachment::~ModelAttachment()
 {
-	///When the modelmount is deleted the scale node will also be destroyed.
-	///Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
+	//When the modelmount is deleted the scale node will also be destroyed.
+	//Note that there's no need to destroy the light nodes since they are attached to the scale node, which is deleted (along with its children) when the model mount is destroyed.
 	delete mModelMount;
 
 	for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {
@@ -145,7 +145,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 
 void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachment, const WFMath::Point<3>& localPosition, WFMath::Vector<3>& offset)
 {
-	///if the model has an offset specified, use that, else just send to the base class
+	//if the model has an offset specified, use that, else just send to the base class
 	const Ogre::Vector3& modelOffset(mModelRepresentation.getModel().getDefinition()->getContentOffset());
 	if (modelOffset != Ogre::Vector3::ZERO) {
 		offset = Convert::toWF<WFMath::Vector<3> >(modelOffset);

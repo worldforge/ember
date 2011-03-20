@@ -77,7 +77,7 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 						if (passIndexString != "") {
 							int passIndex = Ogre::StringConverter::parseInt(passIndexString);
 							Ogre::Pass* pass = technique->getPass(passIndex);
-							///is texture unit specified
+							//is texture unit specified
 							if (tokens.size() == 6) {
 								std::string textureUnitIndexString = tokens[3];
 								std::string property = tokens[4];

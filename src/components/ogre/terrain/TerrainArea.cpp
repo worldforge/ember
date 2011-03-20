@@ -88,13 +88,13 @@ bool TerrainArea::parseArea()
 		if (!mArea) {
 			mArea = new Mercator::Area(layer, false);
 		} else {
-			///A bit of an ugly hack here since the Mercator system doesn't support changing the layer. We need to swap the old area for a new one if the layer has changed.
+			//A bit of an ugly hack here since the Mercator system doesn't support changing the layer. We need to swap the old area for a new one if the layer has changed.
 			if (mArea->getLayer() != layer) {
 				mOldArea = mArea;
 				mArea = new Mercator::Area(layer, false);
 			}
 		}
-		/// transform polygon into terrain coords
+		// transform polygon into terrain coords
 		WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(mEntity.getOrientation());
 		double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
 

@@ -71,7 +71,7 @@ void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel
 			if (tempPtr >= getData() && tempPtr < dataEnd) {
 				*(tempPtr) = *(sourcePtr + j);
 			}
-			///advance the number of channels
+			//advance the number of channels
 			tempPtr += getChannels();
 		}
 		tempPtr -= ogreImageWidth;

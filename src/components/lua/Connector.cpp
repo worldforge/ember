@@ -64,7 +64,7 @@ Connector* Connector::connect(lua_Object luaMethod, lua_Object selfIndex)
 		S_LOG_WARNING("Tried to connect lua method to a non existent signal.");
 	} else {
 		setSelf(selfIndex);
-		///we need to get the correct lua function
+		//we need to get the correct lua function
 		int luaType = lua_type(getState(), -1);
 		if (luaType == LUA_TFUNCTION) {
 			int index = luaL_ref(getState(), LUA_REGISTRYINDEX);
@@ -87,7 +87,7 @@ Connector* Connector::setSelf(lua_Object selfIndex)
 {
 	if (mConnector) {
 		if (selfIndex != LUA_NOREF) {
-			///we need to get the correct lua table
+			//we need to get the correct lua table
 			int luaType = lua_type(getState(), -1);
 			int index = luaL_ref(getState(), LUA_REGISTRYINDEX);
 			if (luaType == LUA_TTABLE) {

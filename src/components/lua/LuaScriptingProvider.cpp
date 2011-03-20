@@ -66,7 +66,7 @@ LuaScriptingProvider::~LuaScriptingProvider()
 void LuaScriptingProvider::stop()
 {
 	try {
-		///we want to clear up the lua environment without destroying it (lua_close destroys it)
+		//we want to clear up the lua environment without destroying it (lua_close destroys it)
 		std::string shutdownScript("for key,value in pairs(_G) do if key ~= \"_G\" and key ~= \"pairs\" then _G[key] = nil end end");
 		{
 			executeScript(shutdownScript, 0);
@@ -186,7 +186,7 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 			}
 		}
 
-		///push our error handling method before calling the code
+		//push our error handling method before calling the code
 		int error_index = lua_gettop(mLuaState);
 		lua_pushcfunction(mLuaState, LuaHelper::luaErrorHandler);
 		lua_insert(mLuaState, error_index);
@@ -195,7 +195,7 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 //         int error_index = lua_gettop(mLuaState);
 
 
-		/// load code into lua and call it
+		// load code into lua and call it
 		int error, nresults;
 		int level = lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
@@ -248,7 +248,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 		int top = lua_gettop(mLuaState);
 		LuaHelper::pushNamedFunction(mLuaState, functionName.c_str());		// st: args func
 
-		///push our error handling method before calling the code
+		//push our error handling method before calling the code
 		int error_index = top + 1; //lua_gettop(mLuaState);
 		#if LUA_VERSION_NUM >= 501
 		lua_pushcfunction(mLuaState, LuaHelper::luaErrorHandler);   // st: args func err_h
@@ -264,7 +264,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 		lua_insert(mLuaState, top - narg + 1);									// st: func args err_h
 		lua_insert(mLuaState, top - narg + 1);									// st: err_h func args
 		error_index = top - narg + 1;
-		/// load code into lua and call it
+		// load code into lua and call it
 		int error, nresults;
 		int level = lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them

@@ -90,7 +90,7 @@ ServerWidget::ServerWidget() :
 ServerWidget::~ServerWidget()
 {
 	if (mCharacterList) {
-		///we'll store the id of the characters as string pointers in the ListBox, so we need to delete them ourselves when we cleanup
+		//we'll store the id of the characters as string pointers in the ListBox, so we need to delete them ourselves when we cleanup
 		for (unsigned int i = 0; i < mCharacterList->getItemCount(); ++i) {
 			delete static_cast<std::string*> (mCharacterList->getListboxItemFromIndex(i)->getUserData());
 		}
@@ -454,7 +454,7 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
 {
-	///create a new admin character
+	//create a new admin character
 	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter("The Creator", "female", "creator", "Almighty", "");
 	return true;
 }
@@ -497,8 +497,8 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 
 		if (mModelPreviewRenderer) {
 
-			///we need to get the model mapping definition for this type
-			///once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
+			//we need to get the model mapping definition for this type
+			//once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
 			Eris::TypeService* typeService = mAccount->getConnection()->getTypeService();
 			Eris::TypeInfo* erisType = typeService->getTypeByName(mNewChar.type);
 			if (erisType) {
@@ -510,10 +510,10 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 						if (firstCase.getActions().begin() != firstCase.getActions().end()) {
 							const Ember::EntityMapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
 							if (firstAction.getType() == "display-model") {
-								///update the model preview window
+								//update the model preview window
 								mModelPreviewRenderer->showModel(firstAction.getValue());
 								//mModelPreviewRenderer->showFull();
-								///we want to zoom in a little
+								//we want to zoom in a little
 								mModelPreviewRenderer->setCameraDistance(0.7);
 							}
 						}

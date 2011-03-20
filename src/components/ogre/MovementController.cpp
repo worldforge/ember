@@ -199,7 +199,7 @@ bool MovementController::frameStarted(const Ogre::FrameEvent& event)
 {
 
 	if (mDecalObject) {
-		///hide the decal when we're close to it
+		//hide the decal when we're close to it
 		if (mDecalNode->_getDerivedPosition().distance(mAvatar.getAvatarSceneNode()->_getDerivedPosition()) < 1) {
 			mDecalNode->setVisible(false);
 		}
@@ -221,7 +221,7 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 
 	//TODO: reapply the terrain lookup without using the terrain manager directly
 	//	if (mDecalNode) {
-	//		///make sure it's at the correct height, since the visibility of it is determined by the bounding box
+	//		//make sure it's at the correct height, since the visibility of it is determined by the bounding box
 	//		Ogre::Real height = EmberOgre::getSingleton().getTerrainManager()->getAdapter()->getHeightAt(point.x, point.z);
 	//		mDecalNode->setPosition(Ogre::Vector3(point.x, height, point.z));
 	//		mDecalNode->setVisible(true);
@@ -275,7 +275,7 @@ void MovementController::createDecal(Ogre::Vector3 position)
 
 		// Add MeshDecal to Scene
 		mDecalNode = sceneManager.createSceneNode("MovementControllerMoveToDecalNode");
-		///the decal code is a little shaky and relies on us setting the position of the node before we add the moveable object
+		//the decal code is a little shaky and relies on us setting the position of the node before we add the moveable object
 		sceneManager.getRootSceneNode()->addChild(mDecalNode);
 		mDecalNode->setPosition(position);
 		mDecalNode->attachObject(mDecalObject);

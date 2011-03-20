@@ -118,7 +118,7 @@ void Compass::rotate(const Ogre::Degree& degree)
 	}
 }
 
-///Note: duplicate method to make it easier for scripts interacting with the code
+//Note: duplicate method to make it easier for scripts interacting with the code
 void Compass::rotate(const Ogre::Radian& radian)
 {
 	rotate(Ogre::Degree(radian));
@@ -191,7 +191,7 @@ void CEGUICompassImpl::reposition(float x, float y)
 
 void CEGUICompassImpl::rotate(const Ogre::Degree& degree)
 {
-	///we can't rotate CEGUI windows so we won't do anything
+	//we can't rotate CEGUI windows so we won't do anything
 }
 
 void CEGUICompassImpl::refresh()
@@ -279,7 +279,7 @@ RenderedCompassImpl::RenderedCompassImpl(std::string compassMaterialName, std::s
 
 RenderedCompassImpl::~RenderedCompassImpl()
 {
-	///We should probably not do this ourselves, since it will corrupt the material.
+	//We should probably not do this ourselves, since it will corrupt the material.
 	// 	if (!mTexture.isNull()) {
 	// 		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
 	// 	}
@@ -315,7 +315,7 @@ void RenderedCompassImpl::reposition(float x, float y)
 void RenderedCompassImpl::rotate(const Ogre::Degree& degree)
 {
 	mPointer.rotate(degree);
-	///We won't rotate the image.
+	//We won't rotate the image.
 	// 	return;
 }
 
@@ -333,7 +333,7 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 			Ogre::Pass* pass(0);
 			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
 				if ((mCompassMaterialMapTUS = pass->getTextureUnitState("Background"))) {
-					///Make sure that the compass material is using the map texture for the base rendering
+					//Make sure that the compass material is using the map texture for the base rendering
 					mCompassMaterialMapTUS->setTextureName(mMap->getTexture()->getName());
 
 					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompass", "Gui", Ogre::TEX_TYPE_2D, 128, 128, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
@@ -353,21 +353,21 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 					mMapRectangle = OGRE_NEW Ogre::Rectangle2D(true);
 					mMapRectangle->setMaterial(mMaterialName);
 
-					///We need to maximise the rendered texture to cover the whole screen
+					//We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
 					Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5 * mViewport->getActualWidth());
 					Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5 * mViewport->getActualHeight());
 					mMapRectangle->setCorners(-1 + hOffset, 1 - vOffset, 1 + hOffset, -1 - vOffset);
 
-					///Since a Rectangle2D instance is a moveable object it won't be rendered unless it's in the frustrum. If we set the axis aligned box to be "infinite" it will always be rendered.
+					//Since a Rectangle2D instance is a moveable object it won't be rendered unless it's in the frustrum. If we set the axis aligned box to be "infinite" it will always be rendered.
 					Ogre::AxisAlignedBox aabInf;
 					aabInf.setInfinite();
 					mMapRectangle->setBoundingBox(aabInf);
 
-					///We can't attach something to the root node, so we'll attach it to a newly created node. We won't keep a reference to this node since it will be destroyed along with the scene manager when we ourselves are destroyed.
+					//We can't attach something to the root node, so we'll attach it to a newly created node. We won't keep a reference to this node since it will be destroyed along with the scene manager when we ourselves are destroyed.
 					mSceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(mMapRectangle);
 
-					///Return early since everything is good.
+					//Return early since everything is good.
 					return;
 				}
 			}
@@ -400,8 +400,8 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
 				if ((mPointerTUS = pass->getTextureUnitState("Pointer"))) {
 
-					///Since we need to rotate the arrow we'll make the image twice as big (32px) as the width of the arrow (16px), else it will be truncated when it's turned 45 degrees.
-					///The material used must those use a 0.5 scale so that the compass arrow is half the size.
+					//Since we need to rotate the arrow we'll make the image twice as big (32px) as the width of the arrow (16px), else it will be truncated when it's turned 45 degrees.
+					//The material used must those use a 0.5 scale so that the compass arrow is half the size.
 					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompassPointer", "Gui", Ogre::TEX_TYPE_2D, 32, 32, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
 					mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 					mRenderTexture->removeAllViewports();
@@ -419,21 +419,21 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 					mPointerRectangle = OGRE_NEW Ogre::Rectangle2D(true);
 					mPointerRectangle->setMaterial(materialName);
 
-					///We need to maximise the rendered texture to cover the whole screen
+					//We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
 					Ogre::Real hOffset = rs->getHorizontalTexelOffset() / (0.5 * 32);
 					Ogre::Real vOffset = rs->getVerticalTexelOffset() / (0.5 * 32);
 					mPointerRectangle->setCorners(-1 + hOffset, 1 - vOffset, 1 + hOffset, -1 - vOffset);
 
-					///Since a Rectangle2D instance is a moveable object it won't be rendered unless it's in the frustrum. If we set the axis aligned box to be "infinite" it will always be rendered.
+					//Since a Rectangle2D instance is a moveable object it won't be rendered unless it's in the frustrum. If we set the axis aligned box to be "infinite" it will always be rendered.
 					Ogre::AxisAlignedBox aabInf;
 					aabInf.setInfinite();
 					mPointerRectangle->setBoundingBox(aabInf);
 
-					///We can't attach something to the root node, so we'll attach it to a newly created node. We won't keep a reference to this node since it will be destroyed along with the scene manager when we ourselves are destroyed.
+					//We can't attach something to the root node, so we'll attach it to a newly created node. We won't keep a reference to this node since it will be destroyed along with the scene manager when we ourselves are destroyed.
 					mSceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(mPointerRectangle);
 
-					///Return early since everything is good.
+					//Return early since everything is good.
 					return;
 				}
 			}
@@ -444,7 +444,7 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 
 RenderedCompassPointer::~RenderedCompassPointer()
 {
-	///We should probably not do this ourselves, since it will corrupt the material.
+	//We should probably not do this ourselves, since it will corrupt the material.
 	// 	if (!mTexture.isNull()) {
 	// 		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
 	// 	}
@@ -461,7 +461,7 @@ RenderedCompassPointer::~RenderedCompassPointer()
 void RenderedCompassPointer::rotate(const Ogre::Degree& degree)
 {
 	if (mPointerTUS && mPreviousRotation != degree) {
-		///The pointer image is pointing to the upper left corner, so we need to adjust it by 45 degrees to have it point directly upwards
+		//The pointer image is pointing to the upper left corner, so we need to adjust it by 45 degrees to have it point directly upwards
 		mPointerTUS->setTextureRotate(-degree - Ogre::Degree(45));
 
 		mRenderTexture->update();
@@ -477,7 +477,7 @@ Ogre::TexturePtr RenderedCompassPointer::getTexture() const
 CompassAnchor::CompassAnchor(Compass& compass, const Ogre::Vector3& position, const Ogre::Quaternion& orientation) :
 	mCompass(compass), mPreviousX(0), mPreviousZ(0), mPosition(position), mOrientation(orientation)
 {
-	/// Register this as a frame listener
+	// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
 

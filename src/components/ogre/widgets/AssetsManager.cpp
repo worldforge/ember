@@ -102,18 +102,18 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 	if (CEGUI::ImagesetManager::getSingleton().isDefined(imageSetName)) {
 		textureImageset = &CEGUI::ImagesetManager::getSingleton().get(imageSetName);
 	} else {
-		///create a CEGUI texture from our Ogre texture
+		//create a CEGUI texture from our Ogre texture
 		S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
 		CEGUI::Texture* ogreCEGUITexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
 
-		///we need a imageset in order to create GUI elements from the ceguiTexture
+		//we need a imageset in order to create GUI elements from the ceguiTexture
 		S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName);
 		textureImageset = &CEGUI::ImagesetManager::getSingleton().create(imageSetName, *ogreCEGUITexture);
 
-		///we only want one element: the whole texture
+		//we only want one element: the whole texture
 		textureImageset->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0, 0));
 	}
-	///assign our image element to the StaticImage widget
+	//assign our image element to the StaticImage widget
 	const CEGUI::Image* textureImage = &textureImageset->getImage("full_image");
 
 	return TexturePair(texturePtr, textureImage, textureImageset);

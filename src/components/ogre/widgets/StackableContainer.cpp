@@ -91,11 +91,11 @@ void StackableContainer::repositionWindows()
 		float maxHeight(0);
 		float maxWidth(0);
 		
-		///iterate over all child window and rearrange them
+		//iterate over all child window and rearrange them
 		size_t childCount = mInnerContainerWindow->getChildCount();
 		for(size_t i = 0; i < childCount; ++i) {
 			CEGUI::Window* childWindow = mInnerContainerWindow->getChildAtIdx(i);
-			///only use those windows that are visible
+			//only use those windows that are visible
 			if (childWindow->isVisible()) {
 				float absHeight = childWindow->getHeight().asAbsolute(1);
 				float absWidth = childWindow->getWidth().asAbsolute(1);
@@ -167,7 +167,7 @@ bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 	if (!mInnerContainerWindow) {
 		setInnerContainerWindow(windowEventArg.window->getParent());
 	} else {
-		///if we've called setInnerContainerWindow we would already have connected the new child window
+		//if we've called setInnerContainerWindow we would already have connected the new child window
 		mChildConnections.insert(ConnectorStore::value_type(windowEventArg.window, windowEventArg.window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this))));
 	}
 	repositionWindows();

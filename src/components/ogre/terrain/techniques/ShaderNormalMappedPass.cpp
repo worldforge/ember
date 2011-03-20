@@ -70,11 +70,11 @@ bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const s
 	}
 	//TODO: add shadow here
 
-	///should we use a base pass?
+	//should we use a base pass?
 	if (mBaseLayer) {
 		Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " and normal map texture "<< mBaseLayer->getNormalTextureName() <<" (" << numberOfTextureUnitsOnCard << " texture units supported)");
-		///add the first layer of the terrain, no alpha or anything
+		//add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState * diffuseTextureUnitState = pass.createTextureUnitState();
 		diffuseTextureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
 		diffuseTextureUnitState->setTextureCoordSet(0);
@@ -86,7 +86,7 @@ bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const s
 	}
 
 	int i = 0;
-	///add our coverage textures first
+	//add our coverage textures first
 	for (CoverageBatchStore::const_iterator I = mCoverageBatches.begin(); I != mCoverageBatches.end(); ++I) {
 		ShaderPassCoverageBatch* batch = *I;
 		batch->finalize(pass, getCombinedCoverageTexture(pass.getIndex(), i++));
@@ -99,7 +99,7 @@ bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const s
 	pass.setLightingEnabled(false);
 	// 	pass.setFog(true, Ogre::FOG_NONE);
 
-	///add fragment shader for splatting
+	//add fragment shader for splatting
 	pass.setFragmentProgram("splatting_fragment_normalmapped_dynamic");
 	// 	pass.setFragmentProgram(fragmentProgramName);
 	try {
@@ -110,14 +110,14 @@ bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const s
 		float theValues[4] = { 0.04, -0.02, 1, 0 };
 		fpParams->setNamedConstant("scaleBias", theValues, 4); //4*4=16
 		fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //4*4=16
-		///set how much the texture should tile
+		//set how much the texture should tile
 		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
 
-	///add vertex shader for fog
+	//add vertex shader for fog
 	if (mSceneManager.getFogMode() == Ogre::FOG_EXP2) {
 		pass.setVertexProgram("splatting_vertex_normalmapped_exp2");
 	} else {

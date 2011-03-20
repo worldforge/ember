@@ -64,7 +64,7 @@ SimpleWater::~SimpleWater()
 
 bool SimpleWater::isSupported() const
 {
-	///This should always be supported.
+	//This should always be supported.
 	return true;
 }
 

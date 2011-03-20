@@ -55,7 +55,7 @@ void CaseBase::addAction(Actions::Action* action) {
 
 void CaseBase::evaluateChanges(ChangeContext& changeContext)
 {
-	///if we're true to the root, but not yet active, add ourself to the activation queue. If the opposite, i.e. we're no longer true to the root but active, we need to be deactivated.
+	//if we're true to the root, but not yet active, add ourself to the activation queue. If the opposite, i.e. we're no longer true to the root but active, we need to be deactivated.
 	if (getIsTrueToRoot()) {
 		if (!getIsActive()) {
 			changeContext.addCaseToActivate(this);
@@ -65,7 +65,7 @@ void CaseBase::evaluateChanges(ChangeContext& changeContext)
 			changeContext.addCaseToDeactivate(this);
 		}
 	}
-	///recursively iterate over the child matches
+	//recursively iterate over the child matches
 	MatchBaseStore::iterator I = mMatches.begin();
 	for ( ; I != mMatches.end(); ++I) {
 		(*I)->evaluateChanges(changeContext);

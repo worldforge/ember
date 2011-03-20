@@ -76,7 +76,7 @@ void TerrainInfo::adjustBasePointPositionUp(WFMath::CoordType& basePointPosition
 	int mercatorSegmentsPerOgrePage = mPageIndicesSize / 64;
 	int remainder = static_cast<int>(newBasePointPosition) % mercatorSegmentsPerOgrePage;
 	if (remainder != 0) {
-		///adjust the position
+		//adjust the position
 		basePointPositionAdjusted = newBasePointPosition + (mercatorSegmentsPerOgrePage - remainder);
 	}
 }
@@ -86,7 +86,7 @@ void TerrainInfo::adjustBasePointPositionDown(WFMath::CoordType& basePointPositi
 	int mercatorSegmentsPerOgrePage = mPageIndicesSize / 64;
 	int remainder = std::abs(static_cast<int>(newBasePointPosition) % mercatorSegmentsPerOgrePage);
 	if (remainder != 0) {
-		///adjust the position
+		//adjust the position
 		basePointPositionAdjusted = newBasePointPosition - (mercatorSegmentsPerOgrePage - remainder);
 	}
 }

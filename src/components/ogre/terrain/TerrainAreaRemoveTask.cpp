@@ -46,8 +46,8 @@ void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExec
 void TerrainAreaRemoveTask::executeTaskInMainThread()
 {
 	if (mShader) {
-		///mark the shader for update
-		///we'll not update immediately, we try to batch many area updates and then only update once per frame
+		//mark the shader for update
+		//we'll not update immediately, we try to batch many area updates and then only update once per frame
 		mShaderUpdateSlot(mShader, mArea->bbox());
 	}
 	mAreas.erase(mEntityId);

@@ -84,13 +84,13 @@ SimpleRenderContext::~SimpleRenderContext()
 	if (mCamera) {
 		mSceneManager->destroyCamera(mCamera);
 	}
-	///we need to do this before the scene manager is destroyed since the destructor for Model relies on the scenemanager existing (and thus can be called in the scene manager's destructor)
+	//we need to do this before the scene manager is destroyed since the destructor for Model relies on the scenemanager existing (and thus can be called in the scene manager's destructor)
 	if (mRootNode) {
 		mRootNode->removeAndDestroyAllChildren();
-		///the root scene node cannot be removed (evar!!)
+		//the root scene node cannot be removed (evar!!)
 // 		mSceneManager->destroySceneNode(mSceneManager->getRootSceneNode()->getName());
 	}
-	///we must make sure that all models are destroyed before the entities are destroyed, else we'll get segfaults in the Model destructor as it tries to access already deleted entities
+	//we must make sure that all models are destroyed before the entities are destroyed, else we'll get segfaults in the Model destructor as it tries to access already deleted entities
 	mSceneManager->destroyAllMovableObjectsByType(Model::Model::sMovableType);
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
 }
@@ -99,7 +99,7 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 {
 	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, prefix + "_sceneManager");
-	///One might wonder why we're not setting the fog to FOG_NONE. The reason is that it seems that due to a bug in either Ogre or OpenGL when doing that, none of the other fog values would be set. Since we use shaders and in the shaders look for the alpha value of the fog colour to determine whether fog is enabled or not, we need to make sure that the fog colour indeed is set.
+	//One might wonder why we're not setting the fog to FOG_NONE. The reason is that it seems that due to a bug in either Ogre or OpenGL when doing that, none of the other fog values would be set. Since we use shaders and in the shaders look for the alpha value of the fog colour to determine whether fog is enabled or not, we need to make sure that the fog colour indeed is set.
 	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f);
 // 	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
 
@@ -108,7 +108,7 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 
 	mEntityNode = mRootNode->createChildSceneNode();
 
-	///make the cameranode a child of the main entity node
+	//make the cameranode a child of the main entity node
 	mCameraNode = mRootNode->createChildSceneNode();
 
 	mCameraPitchNode = mCameraNode->createChildSceneNode();
@@ -259,11 +259,11 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 	S_LOG_VERBOSE("Setting aspect ratio of camera to " << aspectRatio);
 	mCamera->setAspectRatio(aspectRatio);
 
-	///the width and height needs to be multipes of 2
+	//the width and height needs to be multipes of 2
 	mWidth = Ogre::Bitwise::firstPO2From(mWidth);
 	mHeight = Ogre::Bitwise::firstPO2From(mHeight);
 
-	///first, create a RenderTexture to which the Ogre renderer should render the image
+	//first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (prefix + "_SimpleRenderContextRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
 	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET, &mResourceLoader);
 	if (texture.isNull()) {
@@ -285,20 +285,20 @@ void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
 		mRenderTexture->removeAllViewports();
 
 		mRenderTexture->setAutoUpdated(false);
-		///initially deactivate it until setActive(true) is called
+		//initially deactivate it until setActive(true) is called
 		mRenderTexture->setActive(false);
 
 		S_LOG_VERBOSE("Adding camera.");
 		mViewPort = mRenderTexture->addViewport(mCamera);
 		mViewPort->setOverlaysEnabled(false);
 		mViewPort->setShadowsEnabled(false);
-		///make sure the camera renders into this new texture
-		///this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
+		//make sure the camera renders into this new texture
+		//this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
 		mViewPort->setBackgroundColour(mBackgroundColour);
 	//	mViewPort->setBackgroundColour(Ogre::ColourValue::ZERO);
-		///don't show the CEGUI
+		//don't show the CEGUI
 		mViewPort->setOverlaysEnabled(false);
-		///the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
+		//the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
 	}
 }
 
@@ -332,11 +332,11 @@ void SimpleRenderContext::setBackgroundColour(float red, float green, float blue
 
 void SimpleRenderContext::showFull(const Ogre::MovableObject* object)
 {
-	///only do this if there's an active object
+	//only do this if there's an active object
 	if (object) {
 		mEntityNode->_update(true, true);
 		Ogre::Real distance = object->getBoundingRadius() / Ogre::Math::Tan(mCamera->getFOVy() / 2);
-		///we can't have a distance of 0
+		//we can't have a distance of 0
 		if (distance == 0) {
 			distance = 1;
 		}

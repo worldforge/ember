@@ -112,10 +112,10 @@ void EntityCreatorTypeHelper::updatePreview()
 	if (mModelPreviewRenderer && mTypeTreeAdapter) {
 		Eris::TypeInfo* typeInfo = mTypeTreeAdapter->getSelectedTypeInfo();
 		if (typeInfo) {
-			///update the model preview window
+			//update the model preview window
 			mModelPreviewRenderer->showModel(typeInfo->getName());
 			//mModelPreviewRenderer->showFull();
-			///we want to zoom in a little
+			//we want to zoom in a little
 			mModelPreviewRenderer->setCameraDistance(0.7);
 		} else {
 			mModelPreviewRenderer->showModel("");
@@ -155,8 +155,8 @@ void EntityCreatorTypeHelper::createEntityOfType(Eris::TypeInfo* typeinfo)
 {
 	Atlas::Objects::Operation::Create c;
 	c->setFrom(mAvatarEntity.getId());
-	///if the avatar is a "creator", i.e. and admin, we will set the TO property
-	///this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
+	//if the avatar is a "creator", i.e. and admin, we will set the TO property
+	//this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
 	if (mAvatarEntity.getType()->isA(mConnection.getTypeService()->getTypeByName("creator"))) {
 		c->setTo(mAvatarEntity.getId());
 	}

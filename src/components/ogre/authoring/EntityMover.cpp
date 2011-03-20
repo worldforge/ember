@@ -61,7 +61,7 @@ const IEntityControlDelegate& EntityMover::getControlDelegate() const
 void EntityMover::finalizeMovement()
 {
 	if (mEntity.getLocation()) {
-		///send to server
+		//send to server
 		Ember::EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
 	}
 	mNodeAttachment.updatePosition();

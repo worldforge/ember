@@ -49,7 +49,7 @@ OgreLogObserver::~OgreLogObserver()
 void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml, bool maskDebug, const String &logName )
 {
 	static std::string ogre("(Ogre) ");
-	///if there's a problem setting material name, log as verbose as these messages are quite common and not necessarily errors since the Model format in many cases overrides the material defined in the mesh
+	//if there's a problem setting material name, log as verbose as these messages are quite common and not necessarily errors since the Model format in many cases overrides the material defined in the mesh
 	if (Ogre::StringUtil::startsWith(message, "Can't assign material", false)) {
 		lml = Ogre::LML_TRIVIAL;
 	}

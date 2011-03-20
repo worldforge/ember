@@ -83,7 +83,7 @@ void SoundSource::setVelocity(const WFMath::Vector<3>& vel)
 
 void SoundSource::setOrientation(const WFMath::Quaternion& orientation)
 {
-	///TODO: implement this
+	//TODO: implement this
 }
 
 

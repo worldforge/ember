@@ -97,7 +97,7 @@ void CaelumEnvironment::setupWater()
 
 	//mWater = new Water(mCamera, mSceneMgr);
 	//	mWater = new HydraxWater(mCamera, *mSceneMgr);
-	///NOTE: we default to simple water for now since there are a couple of performance problems with hydrax
+	//NOTE: we default to simple water for now since there are a couple of performance problems with hydrax
 	mWater = new SimpleWater(mCamera, *mSceneMgr);
 	if (mWater->isSupported()) {
 		mWater->initialize();
@@ -152,16 +152,16 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	mCaelumSystem->setGlobalFogDensityMultiplier(0.005);
 	mCaelumSystem->setMinimumAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2, 1.0));
 
-	mCaelumSystem->setEnsureSingleShadowSource(true); ///we want to use only one shadow caster source, for now at least
-	mCaelumSystem->setEnsureSingleLightSource(true); ///We want to only use the brightest light source only, even if another is closer. This is to make sure the main light is taken from the sun instead of the moon (which will result in a dark landscape).
+	mCaelumSystem->setEnsureSingleShadowSource(true); //we want to use only one shadow caster source, for now at least
+	mCaelumSystem->setEnsureSingleLightSource(true); //We want to only use the brightest light source only, even if another is closer. This is to make sure the main light is taken from the sun instead of the moon (which will result in a dark landscape).
 
 	mSky = new CaelumSky(*this);
 
-	/// Register all to the render window
+	// Register all to the render window
 	mCaelumSystem->attachViewport(window->getViewport(0));
 	window->addListener(mCaelumSystem);
 
-	/// Set time acceleration to fit with real world time
+	// Set time acceleration to fit with real world time
 	mCaelumSystem->getUniversalClock()->setTimeScale(1);
 
 	int year, month, day, hour, minute, second;
@@ -173,7 +173,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
 	}
 
-	///little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
+	//little hack here. We of course want to use the server time, but currently when you log in when it's dark, you won't see much, so in order to show the world in it's full glory we'll try to set the time to day time
 	/*
 	 if (hour < 6) {
 	 hour = 6;
@@ -182,7 +182,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	 }
 	 */
 
-	///advance it one second to force it to do initial updating, since other subsystems such as the terrain rendering depends on the sun postions etc.
+	//advance it one second to force it to do initial updating, since other subsystems such as the terrain rendering depends on the sun postions etc.
 	Ogre::FrameEvent ev;
 	ev.timeSinceLastEvent = 1;
 	ev.timeSinceLastFrame = 1;

@@ -182,7 +182,7 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 		TerrainPage* page = *I;
 		Ogre::Vector2 targetPage = Convert::toOgre<Ogre::Vector2>(page->getWFPosition());
 
-		///note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
+		//note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
 		Ogre::Vector2 adjustedOgrePos(targetPage.x + mHandler->getTerrainInfo().getPageOffsetY(), targetPage.y + mHandler->getTerrainInfo().getPageOffsetX());
 
 		S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
@@ -237,7 +237,7 @@ void TerrainManager::initializeTerrain()
 		S_LOG_INFO("Pages: X: " << terrainInfo.getTotalNumberOfPagesX() << " Y: " << terrainInfo.getTotalNumberOfPagesY() << " Total: " << terrainInfo.getTotalNumberOfPagesX() * terrainInfo.getTotalNumberOfPagesY());
 		S_LOG_INFO("Page offset: X" << terrainInfo.getPageOffsetX() << " Y: " << terrainInfo.getPageOffsetY());
 
-		///load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
+		//load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
 		adapter->loadFirstPage();
 	}
 }

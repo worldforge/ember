@@ -99,7 +99,7 @@ void IconBar::repositionIcons()
 	}
 	accumulatedWidth -= mIconPadding;
 	mWindow->setSize(UVector2(UDim(0, accumulatedWidth), UDim(0,maxHeight)));
-	///We need to call this to guarantee that cegui correctly renders any newly added icons.
+	//We need to call this to guarantee that cegui correctly renders any newly added icons.
 	mWindow->notifyScreenAreaChanged();
 }
 

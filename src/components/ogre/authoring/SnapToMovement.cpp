@@ -54,7 +54,7 @@ SnapToMovement::SnapToMovement(Eris::Entity& entity, Ogre::Node& node, float sna
 		for (int i = 0; i < 30; ++i) {
 			Ogre::SceneNode* node = mSceneManager.getRootSceneNode()->createChildSceneNode();
 			Ogre::Entity* sphereEntity = mSceneManager.createEntity(node->getName() + "_entity", "3d_objects/primitives/models/sphere.mesh");
-			///start out with a normal material
+			//start out with a normal material
 			sphereEntity->setMaterialName("/global/authoring/point");
 			sphereEntity->setRenderingDistance(300);
 			// 		entity.setQueryFlags(MousePicker::CM_UNDEFINED);
@@ -115,8 +115,8 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 		}
 	}
 
-	///First find all entities which are close enough
-	///Then try to do a snap movement based on the points of the eris bounding boxes. I.e. we only provide support for snapping one corner of a bounding box to another corner (for now).
+	//First find all entities which are close enough
+	//Then try to do a snap movement based on the points of the eris bounding boxes. I.e. we only provide support for snapping one corner of a bounding box to another corner (for now).
 	WFMath::Ball<3> boundingSphere = mEntity.getBBox().boundingSphere();
 	Ogre::Sphere sphere(mNode._getDerivedPosition(), boundingSphere.radius() * 2);
 	Ogre::SphereSceneQuery* query = mSceneManager.createSphereQuery(sphere);
@@ -127,7 +127,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(movable->getUserAny()).get();
 			EmberEntity& entity = anUserObject->getEmberEntity();
 			if (&entity != &mEntity && entity.hasBBox()) {
-				///Ok, we have an entity which is close to our entity. Now check if any of the points of the bounding box is close.
+				//Ok, we have an entity which is close to our entity. Now check if any of the points of the bounding box is close.
 				WFMath::AxisBox<3> bbox = entity.getBBox();
 				if (bbox.isValid()) {
 					WFMath::RotBox<3> rotbox;

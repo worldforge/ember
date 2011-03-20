@@ -278,7 +278,7 @@ namespace OgreView {
 			base_dir.erase (base_dir.length () - 1);
 		}
 
-		///if there's a file with the name "norecurse" we shouldn't recurse further
+		//if there's a file with the name "norecurse" we shouldn't recurse further
 		std::ifstream norecurseFile((base_dir + "/norecurse").c_str());
 		if (!norecurseFile.fail()) {
 			return;
@@ -390,7 +390,7 @@ namespace OgreView {
                 "FileSystemArchive::open");
         }
 
-        /// Construct return stream, tell it to delete on destroy
+        // Construct return stream, tell it to delete on destroy
         FileStreamDataStream* stream = OGRE_NEW FileStreamDataStream(filename,
             origStream, tagStat.st_size, true);
         return DataStreamPtr(stream);

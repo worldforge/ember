@@ -92,7 +92,7 @@ void SimpleEntityVisualization::entity_BboxChanged(const Atlas::Message::Element
 
 void SimpleEntityVisualization::updateBbox()
 {
-	///if there's no bounding box defined for this entity, show one that is 0.2 meters across in all direction
+	//if there's no bounding box defined for this entity, show one that is 0.2 meters across in all direction
 	if (mEntity.hasBBox() && mEntity.getBBox().isValid()) {
 		mErisEntityBoundingBox->setupBoundingBox(Convert::toOgre(mEntity.getBBox()));
 	} else {

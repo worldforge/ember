@@ -54,7 +54,7 @@ long long int OgreInfo::sResourceCounter(1);
 bool OgreInfo::isIndirect()
 {
 #ifdef WIN32
-	///TODO: add checks for win32 too
+	//TODO: add checks for win32 too
 	return false;
 #else
 #ifdef HAVE_OPENGL

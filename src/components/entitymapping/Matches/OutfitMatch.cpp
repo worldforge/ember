@@ -48,7 +48,7 @@ void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute, bool t
 		Atlas::Message::MapType::const_iterator I = tmap.find(mOutfitName);
 		if (I != tmap.end() && I->second.isString()) {
 			entity = mView->getEntity(I->second.asString());
-			///the entity might not be available yet, so we need to create an observer for it
+			//the entity might not be available yet, so we need to create an observer for it
 			if (!entity) {
 				if (mEntityObserver.get()) {
 					mEntityObserver->observeCreation(mView, I->second.asString());
@@ -67,7 +67,7 @@ void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute, bool t
 
 void OutfitMatch::setEntity(Eris::Entity* entity)
 {
-	///observe the attribute by the use of an AttributeObserver
+	//observe the attribute by the use of an AttributeObserver
 	mAttributeObserver->observeEntity(entity);
 }
 

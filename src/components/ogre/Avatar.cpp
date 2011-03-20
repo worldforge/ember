@@ -79,7 +79,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 	mCurrentMovementState.orientation = WFMath::Quaternion().identity();
 	mCurrentMovementState.position = erisAvatarEntity.getPredictedPos();
 
-	///check if the user is of type "creator" and thus an admin
+	//check if the user is of type "creator" and thus an admin
 	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
 	if (mErisAvatarEntity.getType()->isA(typeService->getTypeByName("creator"))) {
 		mIsAdmin = true;
@@ -184,8 +184,8 @@ void Avatar::moveClientSide(const WFMath::Quaternion& orientation, const WFMath:
 void Avatar::attemptMove()
 {
 
-	///first we'll register the current state in newMovementState and compare to mCurrentMovementState
-	///that way we'll only send stuff to the server if our movement changes
+	//first we'll register the current state in newMovementState and compare to mCurrentMovementState
+	//that way we'll only send stuff to the server if our movement changes
 	AvatarMovementState newMovementState;
 	newMovementState.orientation = mClientSideAvatarOrientation;
 	newMovementState.movement = mCurrentMovement;
@@ -221,7 +221,7 @@ void Avatar::attemptMove()
 		ss << "Sending move op to server, direction: " << newMovementState.movement << ", orientation: " << newMovementState.orientation << ", speed: " << sqrt(newMovementState.movement.sqrMag()) << ".";
 		S_LOG_VERBOSE(ss.str());
 
-		///Save the ten latest orientations sent to the server, so we can later when we receive an update from the server we can recognize that it's our own updates and ignore them.
+		//Save the ten latest orientations sent to the server, so we can later when we receive an update from the server we can recognize that it's our own updates and ignore them.
 		long currentTime = Ember::Time::currentTimeMillis();
 		mLastTransmittedMovements.push_back(TimedMovementStateList::value_type(currentTime, newMovementState));
 		if (mLastTransmittedMovements.size() > 10) {
@@ -273,14 +273,14 @@ Scene& Avatar::getScene() const
 
 void Avatar::movedInWorld()
 {
-	///only snap the avatar to the postition and orientation sent from the server if we're not moving or if we're not recently changed location
-	///The main reason when moving is that we don't want to have the avatar snapping back in the case of lag
-	///However, if we've just recently changed location, we need to also update the orientation to work with the new location.
+	//only snap the avatar to the postition and orientation sent from the server if we're not moving or if we're not recently changed location
+	//The main reason when moving is that we don't want to have the avatar snapping back in the case of lag
+	//However, if we've just recently changed location, we need to also update the orientation to work with the new location.
 	//	if (!mCurrentMovementState.isMoving || mHasChangedLocation)
 	//	{
 	//		const WFMath::Quaternion& orient = mErisAvatarEntity->getOrientation();
 	//		bool isOwnRotation = false;
-	//		///Check if the new orientation is one that we sent ourself, and if so ignore it
+	//		//Check if the new orientation is one that we sent ourself, and if so ignore it
 	//		for (std::list<WFMath::Quaternion>::const_iterator I = mLastOrientations.begin(); I != mLastOrientations.end(); ++I) {
 	//			if (orient == *I) {
 	//				isOwnRotation = true;
@@ -291,7 +291,7 @@ void Avatar::movedInWorld()
 	//			mAvatarNode->setOrientation(Convert::toOgre(orient));
 	//		}
 	//		mAvatarNode->setPosition(Convert::toOgre(mErisAvatarEntity->getPosition()));
-	//		///we must set this, else ember will think that we've rotated the avatar ourselves and try to send an update to the server
+	//		//we must set this, else ember will think that we've rotated the avatar ourselves and try to send an update to the server
 	//		mMovementStateAtLastServerMessage.orientation = mAvatarNode->getOrientation();
 	//		mHasChangedLocation = false;
 	//	}
@@ -301,7 +301,7 @@ void Avatar::avatar_LocationChanged(Eris::Entity* entity)
 {
 	mCameraMount->attachToNode(getAvatarSceneNode());
 
-	///if we've changed location, we need to update the orientation. This is done on the next onMoved event, which is why we must honour the updated values on next onMoved event, even though we might be moving.
+	//if we've changed location, we need to update the orientation. This is done on the next onMoved event, which is why we must honour the updated values on next onMoved event, even though we might be moving.
 	mHasChangedLocation = true;
 	mClientSideAvatarOrientation = mErisAvatarEntity.getOrientation();
 	mClientSideAvatarPosition = mErisAvatarEntity.getPredictedPos();

@@ -66,7 +66,7 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskEx
 		}
 		if (shouldUpdate) {
 			for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
-				///repopulate the layer
+				//repopulate the layer
 				page.updateShaderTexture(*I, *geometry, true);
 			}
 			updatedPages.push_back(geometry);

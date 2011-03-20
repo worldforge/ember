@@ -93,7 +93,7 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 
 	createRayQueries(sceneManager);
 
-	/// Register this as a frame listener
+	// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	input.EventMouseMoved.connect(sigc::mem_fun(*this, &MainCamera::Input_MouseMoved));
@@ -138,7 +138,7 @@ void MainCamera::Config_ClipDistances(const std::string& section, const std::str
 
 	mCamera.setNearClipDistance(nearDistance);
 
-	///set the far clip distance high to make sure that the sky is completely shown
+	//set the far clip distance high to make sure that the sky is completely shown
 	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
 	{
 /*		//NOTE: this won't currently work with the sky
@@ -171,7 +171,7 @@ const Ogre::Vector3& MainCamera::getPosition() const
 void MainCamera::markCameraNodeAsDirty()
 {
 	if (mCamera.getParentNode()) {
-		///We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
+		//We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
 		mCamera.getParentNode()->needUpdate(true);
 	}
 }
@@ -183,14 +183,14 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 	// get the terrain vector for mouse coords when a pick event happens
  	//mAvatarTerrainCursor->getTerrainCursorPosition();
 
-	/// Start a new ray query
+	// Start a new ray query
 	Ogre::Ray cameraRay = getCamera().getCameraToViewportRay( mouseX, mouseY );
 
 	mCameraRaySceneQuery->setRay(cameraRay);
 	mCameraRaySceneQuery->execute();
 
 
-	///now check the entity picking
+	//now check the entity picking
 	Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
 	bool continuePicking = true;
 

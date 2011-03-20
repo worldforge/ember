@@ -75,7 +75,7 @@ Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 		degrees -= degrees * 2;
 	}
 
-	///prevent the camera from being turned upside down
+	//prevent the camera from being turned upside down
 	const Ogre::Quaternion& orientation(mCameraPitchNode->getOrientation());
 	Ogre::Degree pitch(orientation.getPitch());
 	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
@@ -88,7 +88,7 @@ Ogre::Degree ThirdPersonCameraMount::pitch(float relativeMovement)
 	if (degrees.valueDegrees()) {
 		mCameraPitchNode->pitch(degrees);
 
-		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+		//We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
 		mCameraPitchNode->_update(true, false);
 	}
 
@@ -103,7 +103,7 @@ Ogre::Degree ThirdPersonCameraMount::yaw(float relativeMovement)
 	if (degrees.valueDegrees()) {
 		mCameraRootNode->yaw(degrees);
 
-		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+		//We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
 		mCameraRootNode->_update(true, false);
 	}
 	return degrees;
@@ -137,7 +137,7 @@ void ThirdPersonCameraMount::_setCameraDistance(Ogre::Real distance)
 	Ogre::Vector3 pos(0, 0, distance);
 	mCameraNode->setPosition(pos);
 	if (mCamera && mCamera->getParentNode()) {
-		///We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
+		//We need to mark the parent node of the camera as dirty. The update of the derived orientation and position of the node should normally occur when the scene tree is traversed, but in some instances we need to access the derived position or orientataion of the camera before the traversal occurs, and if we don't mark the node as dirty it won't be updated
 		mCamera->getParentNode()->needUpdate(true);
 	}
 	EventChangedCameraDistance.emit(distance);
@@ -147,7 +147,7 @@ void ThirdPersonCameraMount::createRayQueries(Ogre::SceneManager& sceneManager)
 {
 	// attempt to create a query to get back terrain coords
 	mAdjustTerrainRaySceneQuery = sceneManager.createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-	///only test for terrain
+	//only test for terrain
 	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 	mAdjustTerrainRaySceneQuery->setSortByDistance(true);
 	mAdjustTerrainRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);

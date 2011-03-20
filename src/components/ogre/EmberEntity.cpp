@@ -66,7 +66,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
 	Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
-	/// we need a model mapping
+	// we need a model mapping
 	createEntityMapping(scene);
 
 	assert( mEntityMapping);
@@ -100,8 +100,8 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 
 	mIsInitialized = true;
 
-	///Delay the checking and creation of area and terrainmod, since if we do it in onAttrChanged before the entity is properly initialized we'll get problems with multiple reparsings, as well as problems with placing the areas or terrainmod before the entity has been moved to it's proper place.
-	///Another way of doing this would be by attaching listeners, but that require more memory. It might be in the end that that's a better approach, depending on how much memory is needed, contrasted with the extra cycles spent here for every entity.
+	//Delay the checking and creation of area and terrainmod, since if we do it in onAttrChanged before the entity is properly initialized we'll get problems with multiple reparsings, as well as problems with placing the areas or terrainmod before the entity has been moved to it's proper place.
+	//Another way of doing this would be by attaching listeners, but that require more memory. It might be in the end that that's a better approach, depending on how much memory is needed, contrasted with the extra cycles spent here for every entity.
 	if (hasAttr("area")) {
 		createDependentObject("area");
 	}
@@ -118,21 +118,21 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 
 bool EmberEntity::createDependentObject(const std::string& attributeName)
 {
-	///if the area attribute has changed, and we _don't_ have any mTerrainArea instance, try to create one such.
-	///if we do have an mTerrainArea instance, all updates will be taken care of by that instead and we can ignore this
+	//if the area attribute has changed, and we _don't_ have any mTerrainArea instance, try to create one such.
+	//if we do have an mTerrainArea instance, all updates will be taken care of by that instead and we can ignore this
 	if (attributeName == "area" && !mTerrainArea.get()) {
 		mTerrainArea = std::auto_ptr<Terrain::TerrainArea>(new Terrain::TerrainArea(*this));
 		if (mTerrainArea->init()) {
 			addArea(*mTerrainArea.get());
 			return true;
 		} else {
-			///if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create an area
+			//if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create an area
 			mTerrainArea.reset();
 		}
 	}
 
-	///if the area attribute has changed, and we _don't_ have any mTerrainMod instance, try to create one such.
-	///if we do have an mTerrainMod instance, all updates will be taken care of by that instead and we can ignore this
+	//if the area attribute has changed, and we _don't_ have any mTerrainMod instance, try to create one such.
+	//if we do have an mTerrainMod instance, all updates will be taken care of by that instead and we can ignore this
 	if (attributeName == "terrainmod" && !mTerrainMod.get()) {
 		mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(*this));
 		mTerrainMod->init();
@@ -145,7 +145,7 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 void EmberEntity::createEntityMapping(Scene& scene)
 {
 	delete mEntityMapping;
-	///the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
+	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*this, scene);
 	mEntityMapping = ::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*this, &creator, getView());
 }
@@ -164,8 +164,8 @@ void EmberEntity::adjustPosition()
 
 float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 {
-	///A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
-	///Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferably the terrain).
+	//A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
+	//Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferably the terrain).
 	if (getEmberLocation()) {
 
 		WFMath::Point<2> adjustedLocalPosition(getPredictedPos().x(), getPredictedPos().y());
@@ -198,7 +198,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 		return;
 	}
 
-	///some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
+	//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 	mSuggestedResponses.clear();
 	if (talk->hasAttr("responses")) {
 		if (talk->getAttr("responses").isList()) {
@@ -222,20 +222,20 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	message.append(msg);
 	S_LOG_VERBOSE("Entity says: [" << message << "]\n");
 
-	/// Make the message appear in the chat box
+	// Make the message appear in the chat box
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 
-	/// Make a sound in OpenAL -- mafm: call doesn't exist
+	// Make a sound in OpenAL -- mafm: call doesn't exist
 	//	Ember::EmberServices::getSingleton().getSoundService()->playTalk(msg,
 	//		getPosition(),getOrientation());
 
-	/// Call the method of the base class (since we've overloaded it)
+	// Call the method of the base class (since we've overloaded it)
 	Eris::Entity::onTalk(talkArgs);
 }
 
 void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation & op)
 {
-	///We'll just catch the call and write something to both the log and the console, and then pass it on.
+	//We'll just catch the call and write something to both the log and the console, and then pass it on.
 	const std::list<std::string> &p = op->getParents();
 	std::list<std::string>::const_iterator I = p.begin();
 
@@ -266,7 +266,7 @@ IEntityControlDelegate* EmberEntity::getAttachmentControlDelegate() const
 }
 void EmberEntity::onLocationChanged(Eris::Entity *oldLocation)
 {
-	///Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
+	//Get the new location. We use getEmberLocation() since we always know that all entities are of type EmberEntity.
 	EmberEntity* newLocationEntity = getEmberLocation();
 
 	if (newLocationEntity && newLocationEntity->getAttachment()) {
@@ -335,8 +335,8 @@ bool EmberEntity::hasSuggestedResponses() const
 
 void EmberEntity::addArea(Terrain::TerrainArea& area)
 {
-	///A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
-	///Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
+	//A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
+	//Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
 	if (getEmberLocation()) {
 		getEmberLocation()->addArea(area);
 	}
@@ -344,7 +344,7 @@ void EmberEntity::addArea(Terrain::TerrainArea& area)
 
 void EmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
 {
-	///Same as addArea: pass it on to the parent until it gets to someone who knows how to handle this
+	//Same as addArea: pass it on to the parent until it gets to someone who knows how to handle this
 	if (getEmberLocation()) {
 		getEmberLocation()->addTerrainMod(mod);
 	}
@@ -365,16 +365,16 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
-	} else ///check for terrain updates
+	} else //check for terrain updates
 	if (str == "terrain") {
 		Terrain::TerrainParser terrainParser;
 		updateTerrain(terrainParser.parseTerrain(v, getPredictedPos()));
 	}
 
-	///call this before checking for areas and terrainmods, since those instances created to handle that (TerrainMod and TerrainArea) will listen to the AttrChanged event, which would then be emitted after those have been created, causing duplicate regeneration from the same data
+	//call this before checking for areas and terrainmods, since those instances created to handle that (TerrainMod and TerrainArea) will listen to the AttrChanged event, which would then be emitted after those have been created, causing duplicate regeneration from the same data
 	Entity::onAttrChanged(str, v);
 
-	///Only to this if the entity has been propely initialized, to avoid using incomplete entity data (for example an entity which haven't yet been moved to it's proper place, as well as avoiding duplicate parsing of the same data.
+	//Only to this if the entity has been propely initialized, to avoid using incomplete entity data (for example an entity which haven't yet been moved to it's proper place, as well as avoiding duplicate parsing of the same data.
 	if (mIsInitialized) {
 		createDependentObject(str);
 	}
@@ -462,7 +462,7 @@ EmberEntity* EmberEntity::getEmberContained(unsigned int index) const
 
 std::vector<std::string> EmberEntity::getActions()
 {
-	///get the actions from Eris and return them a simple vector of strings
+	//get the actions from Eris and return them a simple vector of strings
 	std::vector<std::string> actions;
 
 	if (hasAttr("actions")) {
@@ -484,7 +484,7 @@ std::vector<std::string> EmberEntity::getActions()
 
 std::vector<std::string> EmberEntity::getDefaultUseOperators()
 {
-	///get the use operations from Eris and return them a simple vector of strings
+	//get the use operations from Eris and return them a simple vector of strings
 	std::vector<std::string> operators;
 
 	Eris::TypeInfoArray types = getUseOperations();

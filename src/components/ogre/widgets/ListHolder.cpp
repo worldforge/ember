@@ -73,7 +73,7 @@ void ListHolder::addItem(CEGUI::ListboxItem* item)
 
 void ListHolder::insertItem(CEGUI::ListboxItem* item, const CEGUI::ListboxItem* position)
 {
-	///not yet supported
+	//not yet supported
 	throw Ember::Exception("insertItem is not yet supported.");
 /*	ListItemStore::iterator pos = std::find(mItems.begin(), mItems.end(), position);
 	mItems.insert(pos, item);*/
@@ -104,7 +104,7 @@ bool ListHolder::isItemAllowed(CEGUI::ListboxItem* item)
 
 void ListHolder::updateItems()
 {
-	///Note that this will only work when the items in the list are of class ColouredListItem, since that class doesn't render any disabled items
+	//Note that this will only work when the items in the list are of class ColouredListItem, since that class doesn't render any disabled items
 	if (mListbox) {
 		for(ListItemStore::iterator I = mItems.begin(); I != mItems.end(); ++I)
 		{
@@ -115,16 +115,16 @@ void ListHolder::updateItems()
 }
 
 
-///we can't do the decorator pattern, since the ContentChanged event gives to little information
-///One approach would be if it was possible to hide a ListItem, then we could just keep all items in the Listbox
-///But it's not, so we would have to have an internal "correct" list, and a filtered one in the Listbox.
-///And then removing and inserting wouldn't work, because you can't remove an item from the Listbox if it's not there.
+//we can't do the decorator pattern, since the ContentChanged event gives to little information
+//One approach would be if it was possible to hide a ListItem, then we could just keep all items in the Listbox
+//But it's not, so we would have to have an internal "correct" list, and a filtered one in the Listbox.
+//And then removing and inserting wouldn't work, because you can't remove an item from the Listbox if it's not there.
 // bool ListHolder::listbox_ListContentsChanged(const CEGUI::EventArgs& args)
 // {
 // 	CEGUI::ListboxItem* item = 0;
-// 	///first we need to find which item changed
+// 	//first we need to find which item changed
 // 	if (mListbox->getItemCount() == 0 mShownItems.size()) {
-// 		///something has been removed
+// 		//something has been removed
 //
 // 		int i = 0;
 // 		for(ListItemStore::iterator I = mShownItems.begin(); I != mShownItems.end(); ++I,++i)
@@ -139,7 +139,7 @@ void ListHolder::updateItems()
 // 		}
 // 	} else {
 // 		int i = 0;
-// 		///insert is not supported, so lets just get the last item
+// 		//insert is not supported, so lets just get the last item
 // 		for(ListItemStore::iterator I = mShownItems.begin(); I != mShownItems.end(); ++I,++i)
 // 		{
 // 			if (*I != mListbox->getListboxItemFromIndex(i)) {

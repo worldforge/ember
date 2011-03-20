@@ -93,7 +93,7 @@ namespace Ember {
         
         myOut << " " << message;
         
-        ///only write file and line number if we're in verbose mode (to make the log a little smaller in most cases
+        //only write file and line number if we're in verbose mode (to make the log a little smaller in most cases
 /*        if (getFilter() == Ember::Log::VERBOSE) {
         	myOut << " [File: " << file << ", Line #:" <<  line << "]";
         }*/

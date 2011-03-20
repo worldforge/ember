@@ -60,7 +60,7 @@ void TerrainUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutio
 		}
 		bp.height() = I->getHeight();
 
-		/// FIXME Sort out roughness and falloff, and generally verify this code is the same as that in Terrain layer
+		// FIXME Sort out roughness and falloff, and generally verify this code is the same as that in Terrain layer
 		mTerrain.setBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp);
 		mUpdatedBasePoints.push_back(UpdateBasePointStore::value_type(I->getPosition(), bp));
 		mUpdatedPositions.push_back(TerrainPosition(I->getPosition().x() * terrainRes, I->getPosition().y() * terrainRes));
@@ -79,7 +79,7 @@ void TerrainUpdateTask::executeTaskInMainThread()
 		mHasTerrainInfo = true;
 	} else {
 		if (!mUpdatedPositions.empty()) {
-			///if it's an update, we need to reload all pages and adjust all entity positions
+			//if it's an update, we need to reload all pages and adjust all entity positions
 			mTerrainHandler.reloadTerrain(mUpdatedPositions);
 		}
 	}

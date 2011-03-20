@@ -79,14 +79,14 @@ namespace OgreView {
 		bool shouldRecalculate = false;
 		bool updated = false;
 
-		///first check if the mouse has moved even one pixel, and if so force an update
+		//first check if the mouse has moved even one pixel, and if so force an update
 		const Ember::MousePosition& mousePosition(Ember::Input::getSingleton().getMousePosition());
 		if (mousePosition.xPixelPosition != mLastMouseX || mousePosition.yPixelPosition != mLastMouseY) {
 			shouldRecalculate = true;
 		} else {
-			///the mouse hasn't moved, perhaps the camera has?
+			//the mouse hasn't moved, perhaps the camera has?
 			if (mLastCameraPosition != mCamera.getDerivedPosition() || mLastCameraOrientation != mCamera.getDerivedOrientation()) {
-				///ok, the camera has moved, but has enough time elapsed since our last update to warrant a new update?
+				//ok, the camera has moved, but has enough time elapsed since our last update to warrant a new update?
 				long now = Ember::Time::currentTimeMillis();
 				long delta = now - mLastUpdated;
 
@@ -106,7 +106,7 @@ namespace OgreView {
 			mLastCameraPosition = mCamera.getDerivedPosition();
 			mLastCameraOrientation = mCamera.getDerivedOrientation();
 
-			/// Start a new ray query
+			// Start a new ray query
 			Ogre::Ray cameraRay(mCamera.getCameraToViewportRay(mousePosition.xRelativePosition, mousePosition.yRelativePosition));
 			mTerrainCursorRayQuery->setRay(cameraRay);
 			mTerrainCursorRayQuery->execute();

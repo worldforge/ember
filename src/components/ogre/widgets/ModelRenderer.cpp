@@ -82,12 +82,12 @@ void ModelRenderer::repositionSceneNode()
 		Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 		if (node) {
 			node->setOrientation(Ogre::Quaternion::IDENTITY);
-			///rotate node to fit with WF space
-			///perhaps this is something to put in the model spec instead?
+			//rotate node to fit with WF space
+			//perhaps this is something to put in the model spec instead?
 			// 			node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 			node->rotate(mModel->getRotation());
 
-			///translate the scale node according to the translate defined in the model
+			//translate the scale node according to the translate defined in the model
 			node->setPosition(Ogre::Vector3::ZERO);
 			node->translate(mModel->getDefinition()->getTranslate());
 
@@ -136,7 +136,7 @@ void ModelRenderer::showModel(const std::string& modelName)
 	if (modelName != "") {
 		mModel = Model::Model::createModel(*mTexture->getRenderContext()->getSceneManager(), modelName);
 		if (mModel) {
-			///override the rendering distance from the model; we want to always show it in the preview
+			//override the rendering distance from the model; we want to always show it in the preview
 			mModel->setRenderingDistance(0);
 			setModel(mModel);
 

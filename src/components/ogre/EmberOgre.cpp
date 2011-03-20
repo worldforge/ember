@@ -133,7 +133,7 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 	if (ret == -1) {
 		ret = stat((originalConfigFileDir + filename).c_str(), &tagStat);
 		if (ret == 0) {
-			///copy conf file from shared
+			//copy conf file from shared
 			std::ifstream instream((originalConfigFileDir + filename).c_str());
 			std::ofstream outstream(filename.c_str());
 			outstream << instream.rdbuf();
@@ -178,9 +178,9 @@ EmberOgre::~EmberOgre()
 	//Right before we destroy Ogre we want to force a garbage collection of all scripting providers. The main reason is that if there are any instances of SharedPtr in the scripting environments we want to collect them now.
 	Ember::EmberServices::getSingleton().getScriptingService()->forceGCForAllProviders();
 
-	///we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
-	///this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
-	///by deleting the model manager we'll assure that
+	//we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
+	//this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
+	//by deleting the model manager we'll assure that
 	delete mModelDefinitionManager;
 
 	// 	if (mWindow) {
@@ -195,11 +195,11 @@ EmberOgre::~EmberOgre()
 		EventOgreDestroyed();
 	}
 
-	///Ogre is destroyed already, so we can't deregister this: we'll just destroy it
+	//Ogre is destroyed already, so we can't deregister this: we'll just destroy it
 	delete mLogObserver;
 	OGRE_DELETE mOgreLogManager;
 
-	///delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
+	//delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
 
 	delete mConsoleObjectImpl;
@@ -208,7 +208,7 @@ EmberOgre::~EmberOgre()
 bool EmberOgre::renderOneFrame()
 {
 	if (mInput->isApplicationVisible()) {
-		///If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
+		//If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
 			mIsInPausedMode = false;
 			mRoot->clearEventTimes();
@@ -285,24 +285,24 @@ bool EmberOgre::setup(Input& input)
 
 	checkForConfigFiles();
 
-	///Create a setup object through which we will start up Ogre.
+	//Create a setup object through which we will start up Ogre.
 	mOgreSetup = std::auto_ptr<OgreSetup>(new OgreSetup);
 
 	mLogObserver = new OgreLogObserver();
 
-	///if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
+	//if we do this we will override the automatic creation of a LogManager and can thus route all logging from ogre to the ember log
 	mOgreLogManager = OGRE_NEW Ogre::LogManager();
 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
 	Ogre::LogManager::getSingleton().getDefaultLog()->addListener(mLogObserver);
 
-	///We need a root object.
+	//We need a root object.
 	mRoot = mOgreSetup->createOgreSystem();
 
 	if (!mRoot) {
 		throw Ember::Exception("There was a problem setting up the Ogre environment, aborting.");
 	}
 
-	///Create the model definition manager
+	//Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv->getHomeDirectory() + "/user-media/modeldefinitions/");
 
 	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
@@ -314,11 +314,11 @@ bool EmberOgre::setup(Input& input)
 
 	mEntityRecipeManager = new Authoring::EntityRecipeManager();
 
-	///Create a resource loader which loads all the resources we need.
+	//Create a resource loader which loads all the resources we need.
 	mResourceLoader = new OgreResourceLoader();
 	mResourceLoader->initialize();
 
-	///check if we should preload the media
+	//check if we should preload the media
 	bool preloadMedia = configSrv->itemExists("media", "preloadmedia") && (bool)configSrv->getValue("media", "preloadmedia");
 	bool useWfut = configSrv->itemExists("wfut", "enabled") && (bool)configSrv->getValue("wfut", "enabled");
 
@@ -327,30 +327,30 @@ bool EmberOgre::setup(Input& input)
 		return false;
 	mWindow = mOgreSetup->getRenderWindow();
 
-	///start with the bootstrap resources, after those are loaded we can show the LoadingBar
+	//start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	mResourceLoader->loadBootstrap();
 
 	mSceneMgr = mOgreSetup->chooseSceneManager();
 
-	///create the main camera, we will of course have a couple of different cameras, but this will be the main one
+	//create the main camera, we will of course have a couple of different cameras, but this will be the main one
 	mOgreMainCamera = mSceneMgr->createCamera("MainCamera");
 	Ogre::Viewport* viewPort = mWindow->addViewport(mOgreMainCamera);
-	///set the background colour to black
+	//set the background colour to black
 	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 	mOgreMainCamera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
 
-	///The input object must know the resoluton of the screen
+	//The input object must know the resoluton of the screen
 	unsigned int height, width, depth;
 	int top, left;
 	mWindow->getMetrics(width, height, depth, left, top);
 	mInput->initialize(width, height);
 
-	///bind general commands
+	//bind general commands
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
 	mGeneralCommandMapper->bindToInput(*mInput);
 
 	{
-		///we need a nice loading bar to show the user how far the setup has progressed
+		//we need a nice loading bar to show the user how far the setup has progressed
 		Gui::LoadingBar loadingBar(*mWindow);
 
 		Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
@@ -359,13 +359,13 @@ bool EmberOgre::setup(Input& input)
 
 		Gui::LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
 		loadingBar.addSection(&resourceGroupSection);
-		unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; ///remove bootstrap since that's already loaded
+		unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; //remove bootstrap since that's already loaded
 		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), 0.7);
 
 		loadingBar.start();
 		loadingBar.setVersionText(std::string("Version ") + VERSION);
 
-		/// Turn off rendering of everything except overlays
+		// Turn off rendering of everything except overlays
 		mSceneMgr->clearSpecialCaseRenderQueues();
 		mSceneMgr->addSpecialCaseRenderQueue(Ogre::RENDER_QUEUE_OVERLAY);
 		mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_INCLUDE);
@@ -376,17 +376,17 @@ bool EmberOgre::setup(Input& input)
 			updater.performUpdate();
 		}
 
-		///create the collision manager
+		//create the collision manager
 		//	mCollisionManager = new OgreOpcode::CollisionManager(mSceneMgr);
 		//	mCollisionDetectorVisualizer = new OpcodeCollisionDetectorVisualizer();
 
 		mResourceLoader->loadGui();
 		mResourceLoader->loadGeneral();
 
-		/// Create shader manager
+		// Create shader manager
 		mShaderManager = new ShaderManager;
 
-		///should media be preloaded?
+		//should media be preloaded?
 		if (preloadMedia) {
 			S_LOG_INFO( "Begin preload.");
 			mResourceLoader->preloadMedia();
@@ -397,7 +397,7 @@ bool EmberOgre::setup(Input& input)
 			mGUIManager = new GUIManager(mWindow);
 			EventGUIManagerCreated.emit(*mGUIManager);
 		} catch (...) {
-			///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
 			throw Ember::Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
 		}
 
@@ -411,15 +411,15 @@ bool EmberOgre::setup(Input& input)
 			mGUIManager->initialize();
 			EventGUIManagerInitialized.emit(*mGUIManager);
 		} catch (...) {
-			///we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
+			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
 			throw Ember::Exception("Could not initialize gui, aborting. Make sure that all media got downloaded and installed correctly.");
 		}
 
-		///this should be in a separate class, a separate plugin even
-		///disable for now, since it's not used
+		//this should be in a separate class, a separate plugin even
+		//disable for now, since it's not used
 		//setupJesus();
 
-		/// Back to full rendering
+		// Back to full rendering
 		mSceneMgr->clearSpecialCaseRenderQueues();
 		mSceneMgr->setSpecialCaseRenderQueueMode(Ogre::SceneManager::SCRQM_EXCLUDE);
 
@@ -448,7 +448,7 @@ void EmberOgre::checkForConfigFiles()
 
 	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
 
-	///make sure that there are files
+	//make sure that there are files
 	assureConfigFile("ogre.cfg", sharePath);
 }
 

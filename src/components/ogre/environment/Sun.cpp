@@ -61,7 +61,7 @@ SetSunPosition("setsunposition", this, "Set the position of the sun.")
 	mLensFlare.setNode(mSunNode );
 	mLensFlare.initialize();
 
-///disable for now
+//disable for now
 // 	try {
 // 		Ogre::ParticleSystem* sunParticle = sceneMgr->createParticleSystem("Sun", "Space/Sun");
 // 		mSunNode->attachObject(sunParticle);

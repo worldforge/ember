@@ -67,7 +67,7 @@ namespace OgreView {
 
 	void EmberPagingSceneManagerAdapter::setWorldPagesDimensions(int numberOfPagesWidth, int numberOfPagesHeight, int widthOffsetInPages, int heightOffsetInPages)
 	{
-		///we don't want to shift the terrain half a page, so we have to make sure that the we have an even amount of pages
+		//we don't want to shift the terrain half a page, so we have to make sure that the we have an even amount of pages
 		if ((numberOfPagesWidth % 2) != 0) {
 			numberOfPagesWidth++;
 		}
@@ -76,14 +76,14 @@ namespace OgreView {
 		}
 
 		Ogre::PagingLandScapeOptions* options(getOptions());
-		///in order position (0,0) to be aligned to the centre of the terrain we must offset the position of the terrain a bit
+		//in order position (0,0) to be aligned to the centre of the terrain we must offset the position of the terrain a bit
 		options->position.x = ((numberOfPagesHeight * 0.5f) - heightOffsetInPages) * options->PageSize;
 		options->position.z = ((numberOfPagesWidth * 0.5f) - widthOffsetInPages) * options->PageSize;
 
 		options->world_height = numberOfPagesHeight;
 		options->world_width = numberOfPagesWidth;
 
-		///update the options
+		//update the options
 		options->NumPages = options->world_height * options->world_width;
 		options->maxUnScaledZ = options->world_height * (options->PageSize - 1) * 0.5f;
 		options->maxUnScaledX = options->world_width  * (options->PageSize - 1) * 0.5f;
@@ -130,7 +130,7 @@ namespace OgreView {
 			return;
 		}
 
-		///this will envelope the file stream pointer and delete it when it's destroyed itself
+		//this will envelope the file stream pointer and delete it when it's destroyed itself
 		Ogre::FileStreamDataStream* stream = OGRE_NEW Ogre::FileStreamDataStream(filePath, filestream, theStat.st_size, true);
 		Ogre::DataStreamPtr dataPtr(stream);
 

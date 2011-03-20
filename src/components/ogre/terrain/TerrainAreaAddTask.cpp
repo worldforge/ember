@@ -57,7 +57,7 @@ void TerrainAreaAddTask::executeTaskInMainThread()
 	if (mArea->getLayer() != 0) {
 		if (!mAreaShaders.count(mArea->getLayer())) {
 			S_LOG_VERBOSE("Shader does not exists, creating new.");
-			///try to get the materialdefinition for this kind of area
+			//try to get the materialdefinition for this kind of area
 			const TerrainLayerDefinition* layerDef = mTerrainLayerDefinitionManager.getDefinitionForArea(mArea->getLayer());
 			if (layerDef) {
 				TerrainShader* shader = mTerrainHandler.createShader(layerDef, new Mercator::AreaShader(mArea->getLayer()));
@@ -65,8 +65,8 @@ void TerrainAreaAddTask::executeTaskInMainThread()
 			}
 		}
 		if (mAreaShaders.count(mArea->getLayer())) {
-			///mark the shader for update
-			///we'll not update immediately, we try to batch many area updates and then only update once per frame
+			//mark the shader for update
+			//we'll not update immediately, we try to batch many area updates and then only update once per frame
 			mShaderUpdateSlot(mAreaShaders[mArea->getLayer()], mArea->bbox());
 		}
 	}

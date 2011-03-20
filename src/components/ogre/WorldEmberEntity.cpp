@@ -109,7 +109,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 
 	mScene.addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
 
-	///we will wait with creating the terrain and initializing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
+	//we will wait with creating the terrain and initializing the environment until we've got a onVisibilityChanged call, since the Eris::Calendar functionality depends on the world entity object to be fully constructed and initialized to work. By waiting until onVisibilityChanged is called we guarantee that the Calendar will get the correct server time
 
 }
 
@@ -117,7 +117,7 @@ void WorldEmberEntity::Config_Foliage(const std::string& section, const std::str
 {
 	if (variable.is_bool() && static_cast<bool>(variable)) {
 		if (!mFoliage) {
-			///create the foliage
+			//create the foliage
 			mFoliage = new Environment::Foliage(*mTerrainManager);
 			EventFoliageCreated.emit();
 			if (!mHasBeenInitialized) {
@@ -152,7 +152,7 @@ void WorldEmberEntity::onMoved()
 
 void WorldEmberEntity::onVisibilityChanged(bool vis)
 {
-	///we do our initialization of the terrain and environment here instead of at onInit since that way we can guarantee that Eris::Calendar will work as it should (which is used to get the correct server time)
+	//we do our initialization of the terrain and environment here instead of at onInit since that way we can guarantee that Eris::Calendar will work as it should (which is used to get the correct server time)
 	if (!mHasBeenInitialized) {
 		mEnvironment->initialize();
 		if (mTerrainManager) {
@@ -185,7 +185,7 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 
 		}
 
-		///TODO: Parse world location data when it's available
+		//TODO: Parse world location data when it's available
 		mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
 
 		mHasBeenInitialized = true;
@@ -197,7 +197,7 @@ void WorldEmberEntity::onVisibilityChanged(bool vis)
 void WorldEmberEntity::terrain_WorldSizeChanged()
 {
 	mTerrainAfterUpdateConnection.disconnect();
-	///wait a little with initializing the foliage
+	//wait a little with initializing the foliage
 	if (mFoliage) {
 		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
 	}
@@ -266,10 +266,10 @@ Terrain::TerrainManager& WorldEmberEntity::getTerrainManager()
 DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
 	mFoliage(foliage), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
 {
-	///don't load the foliage directly, instead wait some seconds for all terrain areas to load
-	///the main reason is that new terrain areas will invalidate the foliage causing a reload
-	///by delaying the foliage we can thus in most cases avoid those reloads
-	///wait three seconds
+	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
+	//the main reason is that new terrain areas will invalidate the foliage causing a reload
+	//by delaying the foliage we can thus in most cases avoid those reloads
+	//wait three seconds
 	mTimeout->Expired.connect(sigc::mem_fun(this, &DelayedFoliageInitializer::timout_Expired));
 
 }
@@ -280,7 +280,7 @@ DelayedFoliageInitializer::~DelayedFoliageInitializer()
 
 void DelayedFoliageInitializer::timout_Expired()
 {
-	///load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
+	//load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
 	if (mView.lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
 		mFoliage.initialize();
 	} else {

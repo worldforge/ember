@@ -67,7 +67,7 @@ bool Simple::compileMaterial(Ogre::MaterialPtr material)
 		if (I == mTerrainPageSurfaces.begin()) {
 			Ogre::Pass* pass = technique->createPass();
 			pass->setLightingEnabled(false);
-			///add the first layer of the terrain, no alpha or anything
+			//add the first layer of the terrain, no alpha or anything
 			Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
 			textureUnitState->setTextureScale(1.0f / surfaceLayer->getScale(), 1.0f / surfaceLayer->getScale());
 			textureUnitState->setTextureName(surfaceLayer->getDiffuseTextureName());
@@ -108,7 +108,7 @@ void Simple::addShadow(Ogre::Technique* technique, const TerrainPageShadow* terr
 
 Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const TerrainPageShadow* terrainPageShadow)
 {
-	///we need an unique name for our alpha texture
+	//we need an unique name for our alpha texture
 	std::stringstream shadowTextureNameSS;
 	shadowTextureNameSS << material->getName() << "_shadow";
 	const Ogre::String shadowTextureName(shadowTextureNameSS.str());
@@ -123,7 +123,7 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 
 	texture->loadImage(ogreImage);
 
-	///blit the whole image to the hardware buffer
+	//blit the whole image to the hardware buffer
 	Ogre::PixelBox sourceBox(ogreImage.getPixelBox());
 	//blit for each mipmap
 	for (unsigned int i = 0; i <= texture->getNumMipmaps(); ++i) {
@@ -191,11 +191,11 @@ Ogre::TexturePtr Simple::updateShadowTexture(Ogre::MaterialPtr material, const T
 //
 Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre::Technique* technique, const TerrainPageSurfaceLayer* layer)
 {
-	///check if we instead can reuse the existing pass
+	//check if we instead can reuse the existing pass
 	// 	if (technique->getNumPasses() != 0) {
 	// 		Ogre::Pass* pass = technique->getPass(technique->getNumPasses() - 1);
 	// 		if (4 - pass->getNumTextureUnitStates() >= 2) {
-	// 			///there's more than two texture units available, use those instead of creating a new pass
+	// 			//there's more than two texture units available, use those instead of creating a new pass
 	// 			S_LOG_VERBOSE("Reusing existing pass. ("<< pass->getNumTextureUnitStates() << " of "<< mNumberOfTextureUnitsOnCard << " texture unit used)");
 	// 			addTextureUnitsToPass(pass, splatTextureName);
 	// 			return pass;
@@ -219,22 +219,22 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 		coverageTexture->loadImage(image);
 
 		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(coverageTexture->getBuffer());
-		///blit the whole image to the hardware buffer
+		//blit the whole image to the hardware buffer
 		Ogre::PixelBox sourceBox(image.getPixelBox());
 		hardwareBuffer->blitFromMemory(sourceBox);
 	} else {
 		coverageTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->loadImage(splatTextureName, "General", image, Ogre::TEX_TYPE_2D, 0);
 	}
 
-	///we need to create the image, update it and then destroy it again (to keep the memory usage down)
+	//we need to create the image, update it and then destroy it again (to keep the memory usage down)
 	//	if (layer->getCoverageTextureName() == "") {
-	//		///no texture yet; let's create one
+	//		//no texture yet; let's create one
 	//		layer->createCoverageImage();
 	//		layer->updateCoverageImage(geometry);
 	//		layer->createTexture();
 	//	} else {
-	//		///a texture exists, so we just need to update the image
-	//		layer->updateCoverageImage(geometry); ///calling this will also update the texture since the method will blit the image onto it
+	//		//a texture exists, so we just need to update the image
+	//		layer->updateCoverageImage(geometry); //calling this will also update the texture since the method will blit the image onto it
 	//	}
 
 	Ogre::Pass* pass = technique->createPass();

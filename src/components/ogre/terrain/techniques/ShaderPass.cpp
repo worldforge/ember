@@ -43,7 +43,7 @@ namespace Techniques
 
 Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t batchIndex) const
 {
-	///we need an unique name for our alpha texture
+	//we need an unique name for our alpha texture
 	std::stringstream combinedCoverageTextureNameSS;
 	combinedCoverageTextureNameSS << "terrain_" << mPosition.x() << "_" << mPosition.y() << "_combinedCoverage_" << passIndex << "_" << batchIndex;
 	const Ogre::String combinedCoverageName(combinedCoverageTextureNameSS.str());
@@ -135,11 +135,11 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		}
 	}
 
-	///should we use a base pass?
+	//should we use a base pass?
 	if (mBaseLayer) {
 		Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " (" << numberOfTextureUnitsOnCard << " texture units supported)");
-		///add the first layer of the terrain, no alpha or anything
+		//add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState * textureUnitState = pass.createTextureUnitState();
 		textureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
 		textureUnitState->setTextureCoordSet(0);
@@ -147,13 +147,13 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	}
 
 	int i = 0;
-	///add our coverage textures first
+	//add our coverage textures first
 	for (CoverageBatchStore::const_iterator I = mCoverageBatches.begin(); I != mCoverageBatches.end(); ++I) {
 		ShaderPassCoverageBatch* batch = *I;
 		batch->finalize(pass, getCombinedCoverageTexture(pass.getIndex(), i++));
 	}
 
-	///we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
+	//we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
 	std::stringstream ss;
 	ss << "SplattingFp/" << mLayers.size() << shaderSuffix;
 
@@ -166,7 +166,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	// 	pass.setFog(true, Ogre::FOG_NONE);
 
 
-	///add fragment shader for splatting
+	//add fragment shader for splatting
 	// 	pass.setFragmentProgram("splatting_fragment_dynamic");
 	try {
 		S_LOG_VERBOSE("Using fragment program " << fragmentProgramName << " for terrain page.");
@@ -184,9 +184,9 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		fpParams->setIgnoreMissingParams(true);
 		/*
 		 fpParams->setNamedAutoConstant("iFogColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
-		 fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); ///this will only apply to the splatting_fragment_dynamic material
+		 fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //this will only apply to the splatting_fragment_dynamic material
 		 */
-		///set how much the texture should tile
+		//set how much the texture should tile
 		//fpParams->setNamedConstant("scales", mScales, 3); //4*4=16
 		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
 
@@ -217,7 +217,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		return false;
 	}
 
-	///add vertex shader for fog
+	//add vertex shader for fog
 	std::string lightningVpProgram;
 	if (mSceneManager.getFogMode() == Ogre::FOG_EXP2) {
 		if (useShadows) {

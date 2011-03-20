@@ -80,7 +80,7 @@ Ogre::Degree FirstPersonCameraMount::pitch(float relativeMovement)
 		degrees -= degrees * 2;
 	}
 
-	///prevent the camera from being turned upside down
+	//prevent the camera from being turned upside down
 	const Ogre::Quaternion& orientation(mCameraNode->getOrientation());
 	Ogre::Degree pitch(orientation.getPitch());
 	if ((pitch.valueDegrees() + degrees.valueDegrees()) > 0) {
@@ -92,7 +92,7 @@ Ogre::Degree FirstPersonCameraMount::pitch(float relativeMovement)
 	if (degrees.valueDegrees()) {
 		mCameraNode->pitch(degrees);
 
-		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+		//We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
 		mCameraNode->_update(true, false);
 	}
 
@@ -108,7 +108,7 @@ Ogre::Degree FirstPersonCameraMount::yaw(float relativeMovement)
 		//Yaw in relation to the world to prevent the camera being tilted when it's yawed along with being pitched
 		mCameraNode->yaw(degrees, Ogre::Node::TS_WORLD);
 
-		///We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
+		//We need to manually update the node here to make sure that the derived orientation and position of the camera is updated.
 		mCameraNode->_update(true, false);
 	}
 	return degrees;

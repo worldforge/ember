@@ -152,7 +152,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 			modelMapping->initialize();
 			modelName = actionCreator.getModelName();
 		}
-		///if there's no model defined for this use the placeholder model
+		//if there's no model defined for this use the placeholder model
 		if (modelName == "") {
 			modelName = "placeholder";
 		}
@@ -166,7 +166,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 				try {
 					if (Ogre::TextureManager::getSingleton().resourceExists(iconPath)) {
 						texPtr = static_cast<Ogre::TexturePtr> (Ogre::TextureManager::getSingleton().getByName(iconPath));
-						///try to load it to make sure that's it a working image
+						//try to load it to make sure that's it a working image
 						texPtr->load();
 					}
 					if (texPtr.isNull()) {
@@ -184,7 +184,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 		}
 		Icon* icon = mIconStore.createIcon(key);
 		if (icon) {
-			///update the model preview window
+			//update the model preview window
 			// 				Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
 			render(*icon, modelName);
 			// 				mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);
@@ -219,7 +219,7 @@ void IconManager::render(Icon& icon, EmberEntity& entity)
 		modelMapping->initialize();
 		modelName = actionCreator.getModelName();
 	}
-	///if there's no model defined for this use the placeholder model
+	//if there's no model defined for this use the placeholder model
 	if (modelName == "") {
 		modelName = "placeholder";
 	}
@@ -229,8 +229,8 @@ void IconManager::render(Icon& icon, EmberEntity& entity)
 
 void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
 {
-	///we need to get the model mapping definition for this type
-	///once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
+	//we need to get the model mapping definition for this type
+	//once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
 	Eris::Connection* conn = Ember::EmberServices::getSingleton().getServerService()->getConnection();
 	if (conn) {
 		Eris::TypeService* typeService = conn->getTypeService();
@@ -243,11 +243,11 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
 				modelMapping->initialize();
 				modelName = actionCreator.getModelName();
 			}
-			///if there's no model defined for this use the placeholder model
+			//if there's no model defined for this use the placeholder model
 			if (modelName == "") {
 				modelName = "placeholder";
 			}
-			///update the model preview window
+			//update the model preview window
 			// 					Model::Model* model = Model::Model::createModel(mIconRenderer.getRenderContext()->getSceneManager(), modelName);
 			render(icon, modelName);
 			// 					mIconRenderer.getRenderContext()->getSceneManager()->destroyMovableObject(model);

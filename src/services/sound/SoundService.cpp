@@ -117,7 +117,7 @@ void SoundService::stop(int code)
 	}
 	mBaseSamples.clear();
 	
-///this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
+//this hangs, perhaps because we don't clean up properly after us, so we'll deactivate it for now
 // 	if (isEnabled()) {
 // 		#ifndef __WIN32__
 // 			alutExit();
@@ -192,7 +192,7 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 	alListener3f(AL_POSITION, pos.x(), pos.y(), pos.z());
 	SoundGeneral::checkAlError("Setting the listener position.");
 
-	///Set the direction of the listener.
+	//Set the direction of the listener.
 
 	ALfloat aluVectors[6];
 	aluVectors[0] = direction.x();
@@ -209,8 +209,8 @@ void SoundService::updateListenerPosition(const WFMath::Point<3>& pos, const WFM
 void SoundService::cycle()
 {
 	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ) {
-		///We do the iteration this way to allow for instances to be removed inside the iteration.
-		///A typical example would be a sound instance that has played to its completion and thus should be destroyed. The signal for this is emitted as a result of calling SoundInstance::update().
+		//We do the iteration this way to allow for instances to be removed inside the iteration.
+		//A typical example would be a sound instance that has played to its completion and thus should be destroyed. The signal for this is emitted as a result of calling SoundInstance::update().
 		SoundInstance* instance(*I);
 		++I;
 		instance->update();

@@ -41,7 +41,7 @@ namespace Techniques
 ShaderPassCoverageBatch::ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize) :
 	mShaderPass(shaderPass), mCombinedCoverageImage(new Image::ImageBuffer(imageSize, 4))
 {
-	///reset the coverage image
+	//reset the coverage image
 	mCombinedCoverageImage.reset();
 }
 
@@ -75,7 +75,7 @@ void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr tex
 		image.loadDynamicImage(mCombinedCoverageImage.getData(), mCombinedCoverageImage.getResolution(), mCombinedCoverageImage.getResolution(), 1, Ogre::PF_B8G8R8A8);
 		texture->loadImage(image);
 		log.report("image loaded");
-		///blit the whole image to the hardware buffer
+		//blit the whole image to the hardware buffer
 		Ogre::PixelBox sourceBox(image.getPixelBox());
 		//blit for each mipmap
 		for (unsigned int i = 0; i <= texture->getNumMipmaps(); ++i) {
@@ -88,7 +88,7 @@ void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr tex
 
 void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture)
 {
-	///add our coverage textures first
+	//add our coverage textures first
 	assignCombinedCoverageTexture(texture);
 	Ogre::TextureUnitState * coverageTUS = pass.createTextureUnitState();
 	coverageTUS->setTextureScale(1, 1);
@@ -98,9 +98,9 @@ void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr textur
 
 	for (LayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		const TerrainPageSurfaceLayer* layer(*I);
-		///add the layer textures
+		//add the layer textures
 		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
-		///add the first layer of the terrain, no alpha or anything
+		//add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState * diffuseTUS = pass.createTextureUnitState();
 		//textureUnitState->setTextureScale(0.025, 0.025);
 		diffuseTUS->setTextureName(layer->getDiffuseTextureName());

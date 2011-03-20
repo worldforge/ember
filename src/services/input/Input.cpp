@@ -90,7 +90,7 @@ void Input::initialize(int width, int height)
 	SDL_EnableUNICODE(1);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
-	///must initialize the clipboard support
+	//must initialize the clipboard support
 #ifndef WITHOUT_SCRAP
 	if (init_scrap() < 0) {
 		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());

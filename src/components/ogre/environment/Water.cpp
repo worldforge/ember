@@ -146,7 +146,7 @@ Water::Water(Ogre::Camera &camera, Ogre::SceneManager& sceneMgr) : mCamera(camer
 
 bool Water::isSupported() const
 {
-	/// Check prerequisites first
+	// Check prerequisites first
 	const RenderSystemCapabilities* caps = Root::getSingleton().getRenderSystem()->getCapabilities();
 	if (!caps->hasCapability(RSC_VERTEX_PROGRAM) || !(caps->hasCapability(RSC_FRAGMENT_PROGRAM)))
 	{

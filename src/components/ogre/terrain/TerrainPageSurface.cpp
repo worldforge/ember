@@ -45,7 +45,7 @@ namespace Terrain
 TerrainPageSurface::TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider) :
 	mTerrainPage(terrainPage), mSurfaceCompiler(new TerrainPageSurfaceCompiler(compilerTechniqueProvider))
 {
-	///create a name for out material
+	//create a name for out material
 	// 	S_LOG_INFO("Creating a material for the terrain.");
 	std::stringstream materialNameSS;
 	materialNameSS << "EmberTerrain_Segment";

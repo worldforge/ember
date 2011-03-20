@@ -44,7 +44,7 @@ namespace OgreView
 WorldAttachment::WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainManager& TerrainManager) :
 	mWorldEntity(worldEntity), mWorldNode(worldNode), mTerrainManager(TerrainManager)
 {
-	///set the position to always 0, 0, 0
+	//set the position to always 0, 0, 0
 	mWorldNode.setPosition(Ogre::Vector3(0, 0, 0));
 }
 

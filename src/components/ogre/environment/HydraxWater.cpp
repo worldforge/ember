@@ -52,7 +52,7 @@ HydraxWater::~HydraxWater()
 
 bool HydraxWater::isSupported() const
 {
-	///TODO: check that it's supported
+	//TODO: check that it's supported
 	return true;
 }
 
@@ -103,7 +103,7 @@ bool HydraxWater::initialize()
 //			return false;
 //		}
 //
-//		///this will envelope the file stream pointer and delete it when it's destroyed itself
+//		//this will envelope the file stream pointer and delete it when it's destroyed itself
 //		Ogre::FileStreamDataStream* stream = OGRE_NEW Ogre::FileStreamDataStream(configFilename, filestream, theStat.st_size, true);
 //		Ogre::DataStreamPtr dataPtr(stream);
 //

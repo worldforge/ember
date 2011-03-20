@@ -67,7 +67,7 @@ void XMLEntityRecipeSerializer::parseScript(Ogre::DataStreamPtr& stream, const O
 			EntityRecipePtr entRecipe = EntityRecipeManager::getSingleton().create(name, groupName);
 			if (!entRecipe.isNull()) {
 				readRecipe(entRecipe, smElem);
-				///removed this in the trunk /ehj
+				//removed this in the trunk /ehj
 				// 				entRecipe->doTest();
 			}
 		} catch (const std::exception& ex) {

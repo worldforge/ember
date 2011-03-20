@@ -82,7 +82,7 @@ public:
 		delete mShadowCameraSetup;
 		mShadowCameraSetup = 0;
 		mSceneManager.setShadowTechnique(Ogre::SHADOWTYPE_NONE);
-		///This will make any other camera setup delete itself (unless held by another shared pointer).
+		//This will make any other camera setup delete itself (unless held by another shared pointer).
 		mSceneManager.setShadowCameraSetup(Ogre::ShadowCameraSetupPtr());
 	}
 };

@@ -3,7 +3,7 @@
 This source file is part of Hydrax.
 Visit ---
 
-Copyright (C) 2008 Xavier Verguín González <xavierverguin@hotmail.com>
+Copyright (C) 2008 Xavier Verguï¿½n Gonzï¿½lez <xavierverguin@hotmail.com>
                                            <xavyiy@gmail.com>
 
 This program is free software; you can redistribute it and/or modify it under
@@ -1932,7 +1932,7 @@ namespace Hydrax
 			break;
 		}
 		
-		///After we've changed the material, we must flush all scene managers. If we don't do this, we'll run into assertion issues when using multiple scene managers (there's no problem if only one scene manager is used).
+		//After we've changed the material, we must flush all scene managers. If we don't do this, we'll run into assertion issues when using multiple scene managers (there's no problem if only one scene manager is used).
 		if(Ogre::Pass::getDirtyHashList().size()!=0 || Ogre::Pass::getPassGraveyard().size()!=0)
 		{
 			Ogre::SceneManagerEnumerator::SceneManagerIterator scenesIter = Ogre::Root::getSingleton().getSceneManagerIterator();

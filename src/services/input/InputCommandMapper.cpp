@@ -55,7 +55,7 @@ InputCommandMapper::~InputCommandMapper()
 void InputCommandMapper::readFromConfigSection(const std::string& sectionName)
 {
 
-	///get the mappings from the config service
+	//get the mappings from the config service
 	const Ember::ConfigService::SectionMap& section = Ember::EmberServices::getSingleton().getConfigService()->getSection(sectionName);
 
 	for (Ember::ConfigService::SectionMap::const_iterator I = section.begin(); I != section.end(); ++I) {
@@ -67,7 +67,7 @@ void InputCommandMapper::readFromConfigSection(const std::string& sectionName)
 void InputCommandMapper::Input_EventKeyPressed(const SDL_keysym& key, Input::InputMode inputMode)
 {
 	if (mEnabled && isActiveForInputMode(inputMode)) {
-		///check if we have any key with a matching command
+		//check if we have any key with a matching command
 		KeyMapStore::const_iterator keyI = mKeymap.find(key.sym);
 		if (keyI != mKeymap.end()) {
 			std::pair<KeyCommandStore::iterator, KeyCommandStore::iterator> commandsI = mKeyCommands.equal_range(keyI->second);
@@ -86,8 +86,8 @@ void InputCommandMapper::Input_EventKeyPressed(const SDL_keysym& key, Input::Inp
 void InputCommandMapper::Input_EventKeyReleased(const SDL_keysym& key, Input::InputMode inputMode)
 {
 	if (mEnabled && isActiveForInputMode(inputMode)) {
-		///check if we have any key with a matching command
-		///only check for commands that start with a "+"
+		//check if we have any key with a matching command
+		//only check for commands that start with a "+"
 		KeyMapStore::const_iterator keyI = mKeymap.find(key.sym);
 		if (keyI != mKeymap.end()) {
 			std::pair<KeyCommandStore::iterator, KeyCommandStore::iterator> commandsI = mKeyCommands.equal_range(keyI->second);
@@ -96,7 +96,7 @@ void InputCommandMapper::Input_EventKeyReleased(const SDL_keysym& key, Input::In
 				if (command != "") {
 					if (command[0] == '+') {
 						Ember::ConsoleBackend& myBackend = Ember::ConsoleBackend::getSingleton();
-						///remove the "+" and replace it with "-"
+						//remove the "+" and replace it with "-"
 						myBackend.runCommand("-" + std::string(command).erase(0, 1), false);
 					}
 				}
@@ -115,7 +115,7 @@ void InputCommandMapper::bindToInput(Input& input)
 
 bool InputCommandMapper::isActiveForInputMode(Input::InputMode mode) const
 {
-	///if there's no restriction, return true
+	//if there's no restriction, return true
 	if (mInputModesRestriction.size() == 0) {
 		return true;
 	} else {
@@ -156,7 +156,7 @@ void InputCommandMapper::unbindCommand(const std::string& key, const std::string
 //			return J->second;
 //		}
 //	}
-//	///if we don't find anything, return an empty string
+//	//if we don't find anything, return an empty string
 //	static std::string empty("");
 //	return empty;
 //}
@@ -190,7 +190,7 @@ void InputCommandMapper::unbindCommand(const std::string& key, const std::string
 // }
 
 void InputCommandMapper::initKeyMap() {
-  /// Assign keys to textual representation
+  // Assign keys to textual representation
   mKeymap[SDLK_BACKSPACE] = "backspace";
   mKeymap[SDLK_TAB] = "tab";
   mKeymap[SDLK_CLEAR] = "clear";

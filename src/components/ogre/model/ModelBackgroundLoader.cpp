@@ -77,7 +77,7 @@ bool ModelBackgroundLoader::poll(long maxTimeMilliseconds)
 {
 #if OGRE_THREAD_SUPPORT
 	if (mState == LS_UNINITIALIZED) {
-		///Start to load the meshes
+		//Start to load the meshes
 		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) {
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr> (Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
 			if (meshPtr.isNull() || !meshPtr->isPrepared()) {

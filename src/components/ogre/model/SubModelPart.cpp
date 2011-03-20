@@ -77,7 +77,7 @@ void SubModelPart::show()
 		if (I->Definition && I->Definition->getMaterialName() != "") {
 			I->SubEntity->setMaterialName(I->Definition->getMaterialName());
 		} else {
-			///if no material name is set in the ModelDefinition, use the default one from the mesh
+			//if no material name is set in the ModelDefinition, use the default one from the mesh
 			I->SubEntity->setMaterialName(I->SubEntity->getSubMesh()->getMaterialName());
 		}
 

@@ -125,7 +125,7 @@ void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Mod
 void ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale)
 {
 	if (model) {
-		///make sure the directory exists
+		//make sure the directory exists
 		std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/typeexport/");
 
 		if (!oslink::directory(dir).isExisting()) {

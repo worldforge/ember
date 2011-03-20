@@ -168,7 +168,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 		if (mModel->getDefinition()->getName() == modelName) {
 			return;
 		} else {
-			///Reset the model mount to start with.
+			//Reset the model mount to start with.
 			delete mModelMount;
 			mModelMount = 0;
 			EmberOgre::getSingleton().getWorld()->getSceneManager().destroyMovableObject(mModel);
@@ -177,10 +177,10 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 	mModel = Model::Model::createModel(EmberOgre::getSingleton().getWorld()->getSceneManager(), modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
 
-	///if the model definition isn't valid, use a placeholder
+	//if the model definition isn't valid, use a placeholder
 	if (!mModel->getDefinition()->isValid()) {
 		S_LOG_FAILURE( "Could not find " << modelName << ", using placeholder.");
-		///add a placeholder model
+		//add a placeholder model
 		Model::ModelDefnPtr modelDef = mModel->getDefinition();
 		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
 		modelDef->setValid(true);

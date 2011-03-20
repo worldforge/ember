@@ -77,14 +77,14 @@ const std::string &systemPath
 {
 	
 	S_LOG_VERBOSE("Channel name: " << channelName);
-	/// This is the base path for all files that will be downloaded
+	// This is the base path for all files that will be downloaded
 	const std::string local_root = localPath + "/" + channelName + "/";
 	
 	std::string channel(channelName);
 	std::string channel_file = "wfut.xml";
 	std::string tmpfile = "tempwfut.xml";
 	
-	/// Look for mLocal mWfutClient file.
+	// Look for mLocal mWfutClient file.
 	mLocalWfut = std::string(localPath  + "/" + channelName + "/" + channel_file);
 	S_LOG_VERBOSE("Local wfut: " << mLocalWfut);
 	if (fileExists(mLocalWfut)) {
@@ -93,7 +93,7 @@ const std::string &systemPath
 		}
 	}
 	
-	/// Look for tmpwfut file. If it exists, update the mLocal files list.
+	// Look for tmpwfut file. If it exists, update the mLocal files list.
 	const std::string tmp_wfut = localPath  + "/" + tmpfile;
 	S_LOG_VERBOSE("Tmp wfut: " << tmp_wfut);
 	
@@ -111,7 +111,7 @@ const std::string &systemPath
 	}
 	
 	
-	/// Look for a mSystem mWfutClient file
+	// Look for a mSystem mWfutClient file
 	if (!systemPath.empty()) {
 		const std::string system_wfut = systemPath + "/" + channel + "/" + channel_file; 
 		S_LOG_VERBOSE("System wfut: " << system_wfut);
@@ -123,8 +123,8 @@ const std::string &systemPath
 		}
 	}
 	
-	/// By now we should have a proper channel name. If not, then there is nothing 
-	/// we can do to find the mServer mUpdates.
+	// By now we should have a proper channel name. If not, then there is nothing 
+	// we can do to find the mServer mUpdates.
 	if (channel.empty() || channel == ".") {
 		S_LOG_WARNING("Unable to determine channel name.");
 		return;
@@ -143,8 +143,8 @@ const std::string &systemPath
 	
 	S_LOG_INFO("Updating Channel: " << channel);
 	
-	/// Now we have loaded all our data files, lets find out what we really need
-	/// to download
+	// Now we have loaded all our data files, lets find out what we really need
+	// to download
 	if (mWfutClient.calculateUpdates(mServer, mSystem, mLocal, mUpdates, local_root)) {
 		S_LOG_WARNING("Error determining file to update.");
 		return;
@@ -152,10 +152,10 @@ const std::string &systemPath
 	
 	mUpdatesCalculatedSlot(mUpdates.getFiles().size());
 	
-	/// Make sure the mLocal file has the correct channel name
+	// Make sure the mLocal file has the correct channel name
 	mLocal.setName(mServer.getName());
 	
-	/// Queue the list of files to download
+	// Queue the list of files to download
 	mWfutClient.updateChannel(mUpdates, serverRoot + "/" + channel, local_root);
 	
 }
@@ -164,7 +164,7 @@ int WfutSession::poll()
 {
 	int result = mWfutClient.poll();
 	if (!result) {
-		/// Save the completed download list
+		// Save the completed download list
 		mWfutClient.saveLocalList(mServer, mLocalWfut);
 	}
 	return result;

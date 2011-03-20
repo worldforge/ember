@@ -53,7 +53,7 @@ EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorld
 	mDebugNode = sceneManager.getRootSceneNode()->createChildSceneNode();
 	try {
 		Ogre::Entity* mEntity = sceneManager.createEntity("pickerDebugObject", "3d_objects/primitives/models/sphere.mesh");
-		///start out with a normal material
+		//start out with a normal material
 		mEntity->setMaterialName("BasePointMarkerMaterial");
 		mEntity->setRenderingDistance(300);
 		mEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
@@ -110,8 +110,8 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 {
 
 	if (entry.worldFragment) {
-		///this is terrain
-		///a position of -1, -1, -1 is not valid terrain
+		//this is terrain
+		//a position of -1, -1, -1 is not valid terrain
 		Ogre::SceneQuery::WorldFragment* wf = entry.worldFragment;
 		static Ogre::Vector3 invalidPos(-1, -1, -1);
 		if (wf->singleIntersection != invalidPos) {
@@ -148,7 +148,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 		Ogre::MovableObject* pickedMovable = entry.movable;
 		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(EmberEntityUserObject::SharedPtr)) {
 			EmberEntityUserObject* anUserObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(pickedMovable->getUserAny()).get();
-			///refit the opcode mesh to adjust for changes in the mesh (for example animations)
+			//refit the opcode mesh to adjust for changes in the mesh (for example animations)
 			anUserObject->refit();
 
 			ICollisionDetector* collisionDetector = anUserObject->getCollisionDetector();
@@ -166,7 +166,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 					if (mFurthestPickingDistance == 0) {
 						//If the current collision is transparent, also check for entities which are further away.
 						if (!collisionResult.isTransparent) {
-							///test all objects that fall into this distance
+							//test all objects that fall into this distance
 							mFurthestPickingDistance = (pickedMovable->getParentNode()->_getDerivedPosition() - cameraRay.getOrigin()).length() + pickedMovable->getBoundingRadius();
 						}
 						mResult.push_back(result);

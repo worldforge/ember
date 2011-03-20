@@ -34,13 +34,13 @@ namespace Lua {
 
 int LuaHelper::luaErrorHandler(lua_State *L) {
 #if LUA_VERSION_NUM >= 501
-	///see if we have the debug library loaded
+	//see if we have the debug library loaded
 	lua_getfield(L, LUA_GLOBALSINDEX, "debug");
 	if (!lua_istable(L, -1)) {
 		lua_pop(L, 1);
 		return 1;
 	}
-	///if so, call the traceback method
+	//if so, call the traceback method
 	lua_getfield(L, -1, "traceback");
 	if (!lua_isfunction(L, -1)) {
 		lua_pop(L, 2);

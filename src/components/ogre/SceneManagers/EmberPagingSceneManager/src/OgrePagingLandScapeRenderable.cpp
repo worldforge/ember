@@ -90,10 +90,10 @@ namespace Ogre
         mIsRectModified (false),
         mRect (0, 0, 0, 0, 0, 1),
         mForcedMaxLod (false)
-        ///Ember added start
+        //Ember added start
         , mNeedReload(false)
         , mIsFrameListener(false)
-        ///Ember added stop
+        //Ember added stop
 
     {
 	    // No shadow projection
@@ -488,13 +488,13 @@ namespace Ogre
 		mVisible = false;
 		mChangedRenderLevel = false;
 		mIndex = 0;
-		///ember addition start
+		//ember addition start
 		if (getParentSceneNode()) {
-			///we need to update the bounding box of the scene node, but we can't do it here since this method might be called from within a traversal of the node tree, and that will cause segfaults, so we need to delay it until the next FrameStarted round
+			//we need to update the bounding box of the scene node, but we can't do it here since this method might be called from within a traversal of the node tree, and that will cause segfaults, so we need to delay it until the next FrameStarted round
 			Ogre::Root::getSingleton().addFrameListener(this);
 			mIsFrameListener = true;
 		}
-		///ember addition end
+		//ember addition end
         return true;
     }
 
@@ -651,7 +651,7 @@ namespace Ogre
 						mLastNextLevel = nextLevel;
 					}
 				}
-				//// If we change LOD update self and neighbor
+				/// If we change LOD update self and neighbor
 				if (oldRenderLevel != mRenderLevel || mIndex == 0)
 				{
 					update ();
@@ -1288,11 +1288,11 @@ namespace Ogre
 		return  mParent->getOptions ()->TileSize * mParent->getOptions ()->TileSize  ;
 	} 
 	
-	///ember addition start
+	//ember addition start
 	bool PagingLandScapeRenderable::frameStarted(const Ogre::FrameEvent& event)
 	{
-		///update the parent scene node and then remove ourselves as framelisteners
-		///this is needed because we can't update the scene node from within load() since that happens during a node traversal and it will cause strange behaviour
+		//update the parent scene node and then remove ourselves as framelisteners
+		//this is needed because we can't update the scene node from within load() since that happens during a node traversal and it will cause strange behaviour
 		if (getParentSceneNode()) {
 			getParentSceneNode()->_updateBounds();
 		}
@@ -1300,7 +1300,7 @@ namespace Ogre
 		mIsFrameListener = false;
 		return true;
 	}
-	///ember addition end
+	//ember addition end
 	
 	void PagingLandScapeRenderable::visitRenderables(Renderable::Visitor* visitor, bool debugRenderables)
 	{

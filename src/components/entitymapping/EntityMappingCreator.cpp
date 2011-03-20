@@ -97,7 +97,7 @@ EntityMapping* EntityMappingCreator::createMapping() {
 	mModelMap = new EntityMapping(mEntity);
 	addEntityTypeCases(&mModelMap->getRootEntityMatch(), mDefinition.getRoot());
 
-	///since we already have the entity, we can perform a check right away
+	//since we already have the entity, we can perform a check right away
 	mModelMap->getRootEntityMatch().setEntity(&mEntity);
 // 	mModelMap->getRootEntityMatch().testEntity(mEntity);
 	return mModelMap;
@@ -167,7 +167,7 @@ Cases::AttributeComparers::AttributeComparerWrapper* EntityMappingCreator::getAt
 	const std::string& matchType = matchDefinition.getProperties()["type"];
 
 	if ((matchType == "") || (matchType == "string")) {
-		///default is string comparison
+		//default is string comparison
 		if (const CaseDefinition::ParameterEntry* param = findCaseParameter(caseDefinition.getCaseParameters(), "equals")) {
 			return new AttributeComparers::StringComparerWrapper(new AttributeComparers::StringComparer(param->second));
 		} else {
@@ -199,7 +199,7 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 		return new AttributeComparers::NumericEqualsComparer(atof(param->second.c_str()));
 	}
 
-	///If both a min and max value is set, it's a range comparer
+	//If both a min and max value is set, it's a range comparer
 	AttributeComparers::NumericComparer *mMin(0), *mMax(0);
 	if ((param = findCaseParameter(caseDefinition.getCaseParameters(), "lesser"))) {
 		mMin = new AttributeComparers::NumericLesserComparer(atof(param->second.c_str()));
@@ -213,7 +213,7 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 		mMax = new AttributeComparers::NumericEqualsOrGreaterComparer(atof(param->second.c_str()));
 	}
 
-	///check if we have both min and max set, and if so we should use a range comparer
+	//check if we have both min and max set, and if so we should use a range comparer
 	if (mMin && mMax) {
 		return new AttributeComparers::NumericRangeComparer(mMin, mMax);
 	} else if (!mMax && mMin) {
@@ -221,7 +221,7 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 	} else if (mMax && !mMin) {
 		return mMax;
 	}
-	///invalid, could not find anything to compare against
+	//invalid, could not find anything to compare against
 	return 0;
 }
 
@@ -263,7 +263,7 @@ void EntityMappingCreator::addAttributeMatch(CaseBase* aCase, MatchDefinition& m
 
 	std::string internalAttributeName("");
 	const std::string& matchType = matchDefinition.getProperties()["type"];
-	///TODO: make this check better
+	//TODO: make this check better
 	if (matchType == "function") {
 		if (attributeName == "height") {
 			internalAttributeName = "bbox";
@@ -288,7 +288,7 @@ void EntityMappingCreator::addEntityTypeMatch(CaseBase* aCase, MatchDefinition& 
 	aCase->addMatch( match);
 	addEntityTypeCases(match, matchDefinition);
 
-	///since we already have the entity, we can perform a check right away
+	//since we already have the entity, we can perform a check right away
 // 	match->testEntity(mEntity);
 }
 
@@ -302,7 +302,7 @@ void EntityMappingCreator::addOutfitMatch(CaseBase* aCase, MatchDefinition& matc
 		addOutfitCases(match, matchDefinition);
 
 
-		///observe the attribute by the use of an AttributeObserver
+		//observe the attribute by the use of an AttributeObserver
 		AttributeObserver* observer= new AttributeObserver(match, "outfit");
 		match->setAttributeObserver(observer);
 

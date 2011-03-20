@@ -132,7 +132,7 @@ void EntityCreator::checkTypeInfoBound()
 {
 	if (mRecipe) {
 		const std::string& typeName = mRecipe->getEntityType();
-		///Calling getTypeByName will also send a request for type info to the server if no type info exists yet
+		//Calling getTypeByName will also send a request for type info to the server if no type info exists yet
 		Eris::TypeInfo* typeInfo = mTypeService.getTypeByName(typeName);
 		if (typeInfo) {
 			if (typeInfo->isBound()) {

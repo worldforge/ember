@@ -154,7 +154,7 @@ void ActionBarIconManager::destroyIcon(ActionBarIcon* icon)
 	ActionBarIconStore::iterator I = std::find(mIcons.begin(), mIcons.end(), icon);
 	if (I != mIcons.end()) {
 		mIcons.erase(I);
-		///TODO: make sure to delete the cegui elements
+		//TODO: make sure to delete the cegui elements
 		delete icon;
 	}
 }

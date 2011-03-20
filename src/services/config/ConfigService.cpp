@@ -180,7 +180,7 @@ namespace Ember
 		mConfig->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
 		registerConsoleCommands();
 		setRunning ( true );
-		///can't do this since we must be the first thing initialized
+		//can't do this since we must be the first thing initialized
 		//LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
 		return Service::OK;
 	}
@@ -312,7 +312,7 @@ namespace Ember
 
 	const std::string& ConfigService::getHomeDirectory() const
 	{
-		///check if the home directory is set, and if so use the setting. If else, fall back to the default path.
+		//check if the home directory is set, and if so use the setting. If else, fall back to the default path.
 		if ( mHomeDir != "" )
 		{
 			return mHomeDir;
@@ -405,7 +405,7 @@ namespace Ember
 	const std::string& ConfigService::getEmberMediaDirectory() const
 	{
 		static std::string path;
-		///look for a media channel key in the config, and if found use that, else use the version of ember as a standard path
+		//look for a media channel key in the config, and if found use that, else use the version of ember as a standard path
 		if ( hasItem ( "wfut", "channel" ) )
 		{
 			path = getEmberDataDirectory() + "/" + static_cast<std::string> ( getValue ( "wfut", "channel" ) ) + "/";

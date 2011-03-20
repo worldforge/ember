@@ -45,7 +45,7 @@ SoundInstance::~SoundInstance()
 void SoundInstance::bind(SoundBinding* binding)
 {
 	if (mBinding) {
-		///TODO: handle calling this when there's already a binder
+		//TODO: handle calling this when there's already a binder
 	}
 	mBinding = binding;
 

@@ -44,7 +44,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 {
 	assert(&avatarEntity);
 
-	///Put log files in a "logs" subdirectory of the home directory.
+	//Put log files in a "logs" subdirectory of the home directory.
 	const std::string dir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/logs/";
 	try {
 		//make sure the directory exists
@@ -58,7 +58,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 			mkdir(dir.c_str(), S_IRWXU);
 #endif
 		}
-		///perform setup of the stream
+		//perform setup of the stream
 		std::stringstream logFileSS;
 		logFileSS << dir << "/" << avatarEntity.getName() << "_chatlog.log";
 		mChatLogger = std::auto_ptr<std::ofstream>(new std::ofstream(logFileSS.str().c_str(), std::ios::app));
@@ -68,7 +68,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		*mChatLogger << "Chat Logging Initialized at " <<  Ember::Time::getLocalTimeStr() << std::endl;
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
 
-		///wait with connecting until everything has been properly set up
+		//wait with connecting until everything has been properly set up
 		GUIManager::getSingleton().AppendIGChatLine.connect(sigc::mem_fun(*this, &AvatarLogger::GUIManager_AppendIGChatLine));
 
 	} catch (const std::exception& ex) {
@@ -91,7 +91,7 @@ void AvatarLogger::GUIManager_AppendIGChatLine(const std::string& message, Ember
 
 AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)
 {
-	///we either already have an entity, or we need to wait until it's creeated
+	//we either already have an entity, or we need to wait until it's creeated
 	mLogger = std::auto_ptr<AvatarLogger>(new AvatarLogger(avatar.getEmberEntity()));
 }
 

@@ -60,7 +60,7 @@
 #include <OgreMeshManager.h>
 #include <OgreAnimation.h>
 
-///SDL_GL_SWAP_CONTROL is only available for sdl version 1.2.10 and later.
+//SDL_GL_SWAP_CONTROL is only available for sdl version 1.2.10 and later.
 #if ! SDL_VERSION_ATLEAST(1, 2, 10)
 #define SDL_GL_SWAP_CONTROL 16
 #endif
@@ -130,7 +130,7 @@ void OgreSetup::shutdown()
 		SDL_FreeSurface(mIconSurface);
 		mIconSurface = 0;
 	}
-	///we should clean up after us, but the surface seems to be destroyed when the render window is destroyed, so this won't be needed
+	//we should clean up after us, but the surface seems to be destroyed when the render window is destroyed, so this won't be needed
 	// 	if (mMainVideoSurface) {
 	// 		SDL_FreeSurface(mMainVideoSurface);
 	// 		mMainVideoSurface = 0;
@@ -147,39 +147,39 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	std::string pluginExtension = ".so";
 	mRoot = new Ogre::Root("", "ogre.cfg", "");
 
-	///we will try to load the plugins from series of different location, with the hope of getting at least one right
+	//we will try to load the plugins from series of different location, with the hope of getting at least one right
 	std::vector<std::string> pluginLocations;
 
 	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
 	if (configSrv->itemExists("ogre", "plugins")) {
 		std::string plugins(configSrv->getValue("ogre", "plugins"));
-		///if it's defined in the config, use that location first
+		//if it's defined in the config, use that location first
 		if (configSrv->itemExists("ogre", "plugindir")) {
 			std::string pluginDir(configSrv->getValue("ogre", "plugindir"));
 			pluginLocations.push_back(pluginDir);
 		}
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 		pluginExtension = ".dll";
-		pluginLocations.push_back("."); ///on windows we'll bundle the dll files in the same directory as the executable
+		pluginLocations.push_back("."); //on windows we'll bundle the dll files in the same directory as the executable
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 		pluginExtension = ".so";
 
 #ifdef ENABLE_BINRELOC
-		///binreloc might be used
+		//binreloc might be used
 		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
 		std::string libDir(br_libdir);
 		free(br_libdir);
 		pluginLocations.push_back(libDir + "/ember/OGRE");
 #endif
 #ifdef OGRE_PLUGINDIR
-		///also try with the plugindir defined for Ogre
+		//also try with the plugindir defined for Ogre
 		pluginLocations.push_back(OGRE_PLUGINDIR);
 #endif
-		///enter the usual locations if Ogre is installed system wide, with local installations taking precedence
+		//enter the usual locations if Ogre is installed system wide, with local installations taking precedence
 		pluginLocations.push_back("/usr/local/lib/OGRE");
 		pluginLocations.push_back("/usr/lib/OGRE");
 #elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-		/// On Mac, plugins are found in Resources in the Main (Application) bundle, then in the Ogre framework bundle
+		// On Mac, plugins are found in Resources in the Main (Application) bundle, then in the Ogre framework bundle
 		pluginExtension = "";
 		pluginLocations.push_back("");
 #endif
@@ -281,19 +281,19 @@ bool OgreSetup::configure(void)
 
 	if (success) {
 #if __WIN32__
-		///this will only apply on DirectX
-		///it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
+		//this will only apply on DirectX
+		//it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
 		try {
 			mRoot->getRenderSystem()->setConfigOption("Floating-point mode", "Consistent");
 
 		} catch (const std::exception&)
 		{
-			///we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
+			//we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
 		}
 
 		mRenderWindow = mRoot->initialise(true, "Ember");
 
-		///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
+		//do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
 		_fpreset();
 		_controlfp(_PC_64, _MCW_PC);
 		_controlfp(_RC_NEAR , _MCW_RC);
@@ -346,13 +346,13 @@ bool OgreSetup::configure(void)
 		GetWindowRect(pInfo.window, &r);
 		SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-		///do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
+		//do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
 		_fpreset();
 		_controlfp(_PC_64, _MCW_PC);
 		_controlfp(_RC_NEAR , _MCW_RC);
 #else
 
-		/// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not
+		// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not
 		unsigned int height = 768, width = 1024;
 		bool fullscreen;
 
@@ -360,7 +360,7 @@ bool OgreSetup::configure(void)
 
 		SDL_Init( SDL_INIT_VIDEO);
 
-		///this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
+		//this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
 		atexit( SDL_Quit);
 		oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
 		oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
@@ -394,7 +394,7 @@ bool OgreSetup::configure(void)
 		// 	if (enableDoubleBuffering) {
 		// 		if (!useAltSwapControl)
 		// 		{
-		// 			/// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
+		// 			// SDL_GL_SWAP_CONTROL was requested. Check that it is now set.
 		// 			int value;
 		// 			if (!SDL_GL_GetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, &value))
 		// 			{
@@ -408,7 +408,7 @@ bool OgreSetup::configure(void)
 		//
 		// 		if (useAltSwapControl)
 		// 		{
-		// 			/// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
+		// 			// Try another way to get vertical sync working. Use glXSwapIntervalSGI.
 		// 			bool hasSwapControl = isExtensionSupported("GLX_SGI_swap_control");
 		//
 		// 			if (hasSwapControl)
@@ -453,7 +453,7 @@ bool OgreSetup::configure(void)
 
 		// 	misc["currentGLContext"] = Ogre::String("True");
 
-		/// initialise root, without creating a window
+		// initialise root, without creating a window
 		mRoot->initialise(false);
 
 		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
@@ -477,19 +477,19 @@ bool OgreSetup::configure(void)
 		}
 #endif
 
-		///we need to set the window to be active and visible by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never receive since we'll use SDL).
-		///see OgreGLXWindow.cpp
+		//we need to set the window to be active and visible by ourselves, since GLX by default sets it to false, but then activates it upon receiving some X event (which it will never receive since we'll use SDL).
+		//see OgreGLXWindow.cpp
 		mRenderWindow->setActive(true);
 		mRenderWindow->setAutoUpdated(true);
 		mRenderWindow->setVisible(true);
 
 		// 	if (enableDoubleBuffering) {
-		// 		///We need to swap the frame buffers each frame.
+		// 		//We need to swap the frame buffers each frame.
 		// 		mRoot->addFrameListener(this);
 		// 	}
 
 
-		///set the icon of the window
+		//set the icon of the window
 		Uint32 rmask, gmask, bmask, amask;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -858,7 +858,7 @@ bool OgreSetup::configure(void)
 			"I@6IC<MLHUXT`ebqus\200\201\200wxu__[`a\\\203\201\177\232\224\221\213\204"
 			"\201sjig]\\\\SO", };
 
-		///We'll use the emberIcon struct
+		//We'll use the emberIcon struct
 		mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64 * 3, rmask, gmask, bmask, 0);
 		if (mIconSurface) {
 			SDL_WM_SetIcon(mIconSurface, 0);
@@ -869,10 +869,10 @@ bool OgreSetup::configure(void)
 
 		setStandardValues();
 
-		/// Create new scene manager factory
+		// Create new scene manager factory
 		mSceneManagerFactory = new EmberPagingSceneManagerFactory();
 
-		/// Register our factory
+		// Register our factory
 		Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
 
 		return true;
@@ -883,16 +883,16 @@ bool OgreSetup::configure(void)
 
 void OgreSetup::setStandardValues()
 {
-	/// Set default mipmap level (NB some APIs ignore this)
+	// Set default mipmap level (NB some APIs ignore this)
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-	/// Set default animation mode
+	// Set default animation mode
 	Ogre::Animation::setDefaultInterpolationMode(Ogre::Animation::IM_SPLINE);
 
-	///remove padding for bounding boxes
+	//remove padding for bounding boxes
 	Ogre::MeshManager::getSingletonPtr()->setBoundsPaddingFactor(0);
 
-	///all new movable objects shall by default be unpickable; it's up to the objects themselves to make themselves pickable
+	//all new movable objects shall by default be unpickable; it's up to the objects themselves to make themselves pickable
 	Ogre::MovableObject::setDefaultQueryFlags(0);
 }
 
@@ -916,7 +916,7 @@ void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int&
 		}
 	}
 
-	///now on to whether we should use fullscreen
+	//now on to whether we should use fullscreen
 	opt = config.find("Full Screen");
 	if (opt != config.end()) {
 		fullscreen = (opt->second.currentValue == "Yes");
@@ -931,7 +931,7 @@ bool OgreSetup::frameEnded(const Ogre::FrameEvent & evt)
 	return true;
 }
 
-///Taken from sage.
+//Taken from sage.
 int OgreSetup::isExtensionSupported(const char *extension)
 {
 #ifndef WIN32
@@ -939,7 +939,7 @@ int OgreSetup::isExtensionSupported(const char *extension)
 	SDL_VERSION(&wmInfo.version);
 	SDL_GetWMInfo(&wmInfo);
 
-	///gfxdisplay is only available in SDL 1.2.12 or later
+	//gfxdisplay is only available in SDL 1.2.12 or later
 #if SDL_VERSION_ATLEAST(1, 2, 12)
 	::Display *display = wmInfo.info.x11.gfxdisplay;
 #else
