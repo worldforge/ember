@@ -30,6 +30,7 @@ Torus Knot Software Ltd.
 
 #include <OgreStableHeaders.h>
 #include "EmberOgreFileSystem.h"
+#include "framework/LoggingInstance.h"
 #include <OgreFileSystem.h>
 #include <OgreLogManager.h>
 #include <OgreException.h>
@@ -46,7 +47,6 @@ Torus Knot Software Ltd.
 #include <fnmatch.h>
 
 
-#include "framework/LoggingInstance.h"
 
 
 namespace Ember {
@@ -72,15 +72,18 @@ int _findclose(long id);
 #define _A_SYSTEM 0x04  /* System file */
 #define _A_SUBDIR 0x10  /* Subdirectory */
 #define _A_ARCH   0x20  /* Archive file */
-#   define MAX_PATH MAXPATHLEN
+#define MAX_PATH MAXPATHLEN
+
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#   include <windows.h>
-#   include <direct.h>
-#   include <io.h>
+
+#include <windows.h>
+#include <direct.h>
+#include <io.h>
 #include <stdio.h>
 #include <ctype.h>
+
 #endif
 
 using namespace Ogre;
@@ -210,9 +213,10 @@ int _findclose(long id)
     return ret;
 }
 
-}
 
 #endif
+}
+
 }
 
     //-----------------------------------------------------------------------
