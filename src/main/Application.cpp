@@ -215,13 +215,11 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 		mLastTimeMainLoopStepEnded = Time::currentTimeMillis();
 	} catch (const std::exception& ex) {
 		S_LOG_CRITICAL("Got exception, shutting down." << ex);
-		throw ;
-	} catch (const std::string& ex)
-	{
+		throw;
+	} catch (const std::string& ex) {
 		S_LOG_CRITICAL("Got exception, shutting down. " << ex);
 		throw;
-	} catch (...)
-	{
+	} catch (...) {
 		S_LOG_CRITICAL("Got unknown exception.");
 		throw;
 	}
@@ -236,8 +234,7 @@ void Application::mainLoop()
 	mLastTimeInputProcessingEnd = currentTimeMillis;
 	mLastTimeMainLoopStepEnded = 0;
 	DesiredFpsListener desiredFpsListener;
-	while(mShouldQuit == false)
-	{
+	while (mShouldQuit == false) {
 		mainLoopStep(desiredFpsListener.getMillisecondsPerFrame());
 	}
 }
@@ -247,11 +244,11 @@ void Application::prepareComponents()
 }
 void Application::initializeServices()
 {
-	/// Initialize Ember services
+	// Initialize Ember services
 	std::cout << "Initializing Ember services" << std::endl;
 
 	mServices = new EmberServices();
-	/// Initialize the Configuration Service
+	// Initialize the Configuration Service
 	ConfigService* configService = EmberServices::getSingleton().getConfigService();
 	configService->start();
 	if (mPrefix != "") {
@@ -262,20 +259,20 @@ void Application::initializeServices()
 		std::cout << "Setting home directory to " << mHomeDir << std::endl;
 	}
 
-	///output all logging to ember.log
+	//output all logging to ember.log
 	std::string filename(configService->getHomeDirectory() + "/ember.log");
 	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
 
-	///write to the log the version number
+	//write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
 
 	mLogObserver = new ConfigBoundLogObserver(*configService, *mLogOutStream);
 	Log::addObserver(mLogObserver);
 
-	///default to INFO, though this can be changed by the config file
+	//default to INFO, though this can be changed by the config file
 	mLogObserver->setFilter(Log::INFO);
 
-	/// Change working directory
+	// Change working directory
 	const std::string& dirName = configService->getHomeDirectory();
 	oslink::directory osdir(dirName);
 
@@ -292,38 +289,44 @@ void Application::initializeServices()
 		S_LOG_WARNING("Could not change directory to '"<< configService->getHomeDirectory().c_str() <<"'.");
 	}
 
-	// 	const std::string& sharePath(configService->getSharedConfigDirectory());
-
-	///make sure that there are files
-	///assureConfigFile("ember.conf", sharePath);
-
-	///load the config file. Note that this will load the shared config file, and then the user config file if available (~/.ember/ember.conf)
+	//load the config file. Note that this will load the shared config file, and then the user config file if available (~/.ember/ember.conf)
 	configService->loadSavedConfig("ember.conf");
-	///after loading the config from file, override with command time settings
+	//after loading the config from file, override with command time settings
 	for (ConfigMap::iterator I = mConfigSettings.begin(); I != mConfigSettings.end(); ++I) {
 		for (std::map<std::string, std::string>::iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			configService->setValue(I->first, J->first, J->second);
 		}
 	}
 
+	//Check if there's a user specific ember.conf file. If not, create an empty template one.
+	std::string userConfigFilePath = configService->getHomeDirectory() + "/ember.conf";
+	struct stat tagStat;
+	int ret = stat(userConfigFilePath.c_str(), &tagStat);
+	if (ret == -1) {
+		//Create empty template file.
+		std::ofstream outstream(userConfigFilePath.c_str());
+		outstream << "#This is a user specific settings file. Settings here override those found in the application installed ember.conf file." << std::endl << std::flush;
+		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath << "'.");
+	}
+
 	S_LOG_INFO("Using media from " << configService->getEmberMediaDirectory());
 
-	/// Initialize the Sound Service
+	// Initialize the Sound Service
 	S_LOG_INFO("Initializing sound service");
 	EmberServices::getSingleton().getSoundService()->start();
 
-	/// Initialize and start the Metaserver Service.
+	// Initialize and start the Metaserver Service.
 	S_LOG_INFO("Initializing metaserver service");
 
 	EmberServices::getSingleton().getMetaserverService()->start();
-	///hoho, we get linking errors if we don't do some calls to the service
+	//hoho, we get linking errors if we don't do some calls to the service
 	EmberServices::getSingleton().getMetaserverService()->getMetaServer();
 
-	/// Initialize the Server Service
+	// Initialize the Server Service
 	S_LOG_INFO("Initializing server service");
 	EmberServices::getSingleton().getServerService()->start();
 
-	/// The time service depends on the server service, so we have to intialize it in this order
+	// The time service depends on the server service, so we have to intialize it in this order
 	S_LOG_INFO("Initializing time service");
 	EmberServices::getSingleton().getTimeService()->start();
 
@@ -339,11 +342,10 @@ void Application::initializeServices()
 	S_LOG_INFO("Initializing server settings service");
 	EmberServices::getSingleton().getServerSettingsService()->start();
 
+	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
+	EmberServices::getSingleton().getServerService()->DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
 
-    EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
-    EmberServices::getSingleton().getServerService()->DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
-
-	///register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
+	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	Lua::LuaScriptingProvider* luaProvider = new Lua::LuaScriptingProvider();
 
 	tolua_Lua_open(luaProvider->getLuaState());
@@ -351,7 +353,7 @@ void Application::initializeServices()
 	tolua_EmberOgre_open(luaProvider->getLuaState());
 	tolua_Eris_open(luaProvider->getLuaState());
 	tolua_EmberServices_open(luaProvider->getLuaState());
-	tolua_Helpers_open (luaProvider->getLuaState());
+	tolua_Helpers_open(luaProvider->getLuaState());
 	tolua_Ogre_open(luaProvider->getLuaState());
 	tolua_Application_open(luaProvider->getLuaState());
 	tolua_AtlasAdapters_open(luaProvider->getLuaState());
@@ -371,7 +373,7 @@ void Application::Server_GotView(Eris::View* view)
 
 void Application::Server_DestroyedView()
 {
-    mWorldView = 0;
+	mWorldView = 0;
 }
 
 Eris::View* Application::getMainView()
@@ -383,7 +385,7 @@ void Application::start()
 {
 	try {
 		if (!mOgreView->setup(Input::getSingleton())) {
-			///The setup was cancelled, return.
+			//The setup was cancelled, return.
 			return;
 		}
 	} catch (const std::exception& ex) {
@@ -411,9 +413,9 @@ void Application::requestQuit()
 {
 	bool handled = false;
 	EventRequestQuit.emit(handled);
-	///check it was handled (for example if the gui wants to show a confirmation window)
+	//check it was handled (for example if the gui wants to show a confirmation window)
 	if (!handled) {
-		///it's not handled, quit now
+		//it's not handled, quit now
 		quit();
 	}
 
@@ -425,7 +427,7 @@ void Application::quit()
 
 void Application::runCommand(const std::string& command, const std::string& args)
 {
-	if(command == Quit.getCommand()) {
+	if (command == Quit.getCommand()) {
 		quit();
 	} else if (ToggleErisPolling == command) {
 		setErisPolling(!getErisPolling());
