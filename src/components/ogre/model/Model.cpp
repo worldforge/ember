@@ -45,6 +45,7 @@
 #include <OgreSubEntity.h>
 #include <OgreParticleSystem.h>
 #include <OgreParticleEmitter.h>
+#include <OgreMaterialManager.h>
 
 namespace Ember
 {
@@ -1032,6 +1033,21 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 			//The reason we want to do this now is that otherwise it will happen during rendering. An exception will then be thrown
 			//which will bubble all the way up to the main loop, thus aborting all frames.
 			(*I)->getOgreParticleSystem()->_update(0);
+
+			//Check if the material used is transparent. If so, assign it a later render queue.
+			//This is done to make transparent particle systems play better with the foliage and the water.
+			//The foliage would be rendered at an earlier render queue (RENDER_QUEUE_6 normally) and the water at RENDER_QUEUE_8.
+			//This of course means that there's still an issue when the camera is below the water
+			//(as the water, being rendered first, will prevent the particles from being rendered). That will need to be solved.
+			std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve((*I)->getOgreParticleSystem()->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+			Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr>(result.first);
+			if (!materialPtr.isNull()) {
+				if (materialPtr->isTransparent()) {
+					(*I)->getOgreParticleSystem()->setRenderQueueGroup(Ogre::RENDER_QUEUE_9);
+				}
+			}
+
+
 		} catch (const Ogre::Exception& ex) {
 			//An exception occurred when forcing an update of the particle system. Remove it.
 			S_LOG_FAILURE("Error when loading particle system " << (*I)->getOgreParticleSystem()->getName() << ". Removing it.");
