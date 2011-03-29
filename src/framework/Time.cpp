@@ -82,24 +82,22 @@ std::string Time::getLocalTimeStr()
  * Almost precision time acquisition
  * NOTE: there is no reliable way to get time in milliseconds reliably cross platform
  */
-long Time::currentTimeMillis(void)
+long long Time::currentTimeMillis(void)
 {
-	long ttime;
+	long long ttime;
 
 #ifdef __WIN32__
 	// ttime set to milliseconds *since midnight*
-	ttime = (long)GetTickCount();
+	ttime = (unsigned long)GetTickCount();
 #else
 	// tv_usec is microseconds
 	// tv_sec  is seconds
 	// ttime is set to epoc milliseconds
 	struct timeval detail_time;
 	gettimeofday(&detail_time, NULL);
-	ttime = (long)((detail_time.tv_usec / 1000) + (detail_time.tv_sec * 1000));
+	ttime = (detail_time.tv_usec / 1000) + (detail_time.tv_sec * (long long)1000);
 #endif
 	return ttime;
 }
 }
-
-#include "Time.h"
 

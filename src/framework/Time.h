@@ -55,7 +55,7 @@ public:
 	 *
 	 * @return The current local time in milliseconds.
 	 */
-	static long currentTimeMillis(void);
+	static long long currentTimeMillis(void);
 
 };
 
