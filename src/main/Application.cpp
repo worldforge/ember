@@ -140,7 +140,7 @@ public:
 	}
 
 	/**
-	 * @brief Accessor for the minimum lenght (in milliseconds) that each frame should take in order for the desired fps to be kept.
+	 * @brief Accessor for the minimum length (in milliseconds) that each frame should take in order for the desired fps to be kept.
 	 * If 0 no capping will occur.
 	 */
 	long getMillisecondsPerFrame() const
@@ -176,7 +176,7 @@ void Application::registerComponents()
 void Application::mainLoopStep(long minMillisecondsPerFrame)
 {
 	Input& input(Input::getSingleton());
-	long currentTimeMillis(0);
+	long long currentTimeMillis(0);
 	try {
 
 		if (mPollEris) {

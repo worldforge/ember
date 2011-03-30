@@ -289,31 +289,31 @@ private:
 	 * @brief Keeps track of the last time an Eris poll started.
 	 * Value is in milliseconds.
 	 */
-	long mLastTimeErisPollStart;
+	long long mLastTimeErisPollStart;
 
 	/**
 	 * @brief Keeps track of the last time an Eris poll ended.
 	 * Value is in milliseconds.
 	 */
-	long mLastTimeErisPollEnd;
+	long long mLastTimeErisPollEnd;
 
 	/**
 	 * @brief Keeps track of the last time input processing started.
 	 * Value is in milliseconds.
 	 */
-	long mLastTimeInputProcessingStart;
+	long long mLastTimeInputProcessingStart;
 
 	/**
 	 * @brief Keeps track of the last time input processing ended.
 	 * Value is in milliseconds.
 	 */
-	long mLastTimeInputProcessingEnd;
+	long long mLastTimeInputProcessingEnd;
 
 	/**
 	 * @brief Keeps track of the last time the main loop step completed.
 	 * Value is in milliseconds.
 	 */
-	long mLastTimeMainLoopStepEnded;
+	long long mLastTimeMainLoopStepEnded;
 
 	/**
 	 * @brief We listen to the GotView event to be able to store a reference to the View instance.
