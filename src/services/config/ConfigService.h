@@ -62,6 +62,11 @@ namespace Ember
 			*/
 			std::string mHomeDir;
 
+			/**
+			 * @brief The prefix, i.e. the root directory where Ember is installed.
+			 */
+			std::string mPrefix;
+
 			void registerConsoleCommands();
 			void deregisterConsoleCommands();
 
@@ -263,6 +268,12 @@ namespace Ember
 			 * @param prefix
 			 */
 			void setPrefix ( const std::string& prefix );
+
+			/**
+			 * @brief Gets the prefix, i.e. the root directory where Ember is installed.
+			 * @return The prefix, i.e. the root directory where Ember is installed.
+			 */
+			const std::string& getPrefix() const;
 
 			/**
 			 *    Sets the home directory, i.e. where all configuration and media is stored. If this is not set, a default directory will be user (~/.ember on *NIX systems)

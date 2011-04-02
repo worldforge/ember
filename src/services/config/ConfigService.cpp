@@ -134,9 +134,16 @@ namespace Ember
 
 	void ConfigService::setPrefix ( const std::string& prefix )
 	{
+		mPrefix = prefix;
 		mSharedDataDir = prefix + "/share/ember/";
 		mEtcDir = prefix + "/etc/ember/";
 	}
+
+	const std::string& ConfigService::getPrefix() const
+	{
+		return mPrefix;
+	}
+
 
 	void ConfigService::setHomeDirectory ( const std::string& path )
 	{
