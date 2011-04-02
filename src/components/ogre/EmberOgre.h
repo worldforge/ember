@@ -54,7 +54,7 @@ class CollisionManager;
  * @brief Namespace for all classes and functions which interact with Ogre to present the world to the user.
  *
  * In reality that means that this is the single largest namespace in Ember, and as a result of that is further divided into sub-namespaces.
- * @note While a more natural name for this namespace would be Ember::Ogre, such a naming would be to cumbersome as it would clash with the Ogre namespace.
+ * @note While a more natural name for this namespace would be Ogre, such a naming would be to cumbersome as it would clash with the Ogre namespace.
  *
  */
 namespace Ember
@@ -125,13 +125,13 @@ class World;
 
  It's a singleton so you can access it through
  @code
- Ember::OgreView::Ember::OgreView::getSingleton()
+ OgreView::OgreView::getSingleton()
  @endcode
 
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
  */
-class EmberOgre: public Ember::Singleton<EmberOgre>, public virtual sigc::trackable, public EmberOgreSignals
+class EmberOgre: public Singleton<EmberOgre>, public virtual sigc::trackable, public EmberOgreSignals
 {
 public:
 
@@ -261,7 +261,7 @@ protected:
 	/**
 	 * @brief An InputCommandMapper that will handle all general input events.
 	 */
-	std::auto_ptr<Ember::InputCommandMapper> mGeneralCommandMapper;
+	std::auto_ptr<InputCommandMapper> mGeneralCommandMapper;
 
 	/**
 	 * @brief Responsible for handling sound loading

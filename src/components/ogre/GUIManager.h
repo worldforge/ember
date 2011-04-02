@@ -48,9 +48,8 @@ class Window;
 namespace Ember {
 class IScriptingProvider;
 class Input;
-}
+class ConfigService;
 
-namespace Ember {
 namespace OgreView {
 
 class EmberEntity;
@@ -83,10 +82,10 @@ class IconManager;
 
  */
 class GUIManager :
-public Ember::Singleton<GUIManager>,
+public Singleton<GUIManager>,
 Ogre::FrameListener,
 public virtual sigc::trackable,
-public Ember::ConsoleObject
+public ConsoleObject
 {
 public:
 
@@ -96,7 +95,16 @@ public:
 	static const std::string TOGGLEINPUTMODE;
 
 
-	GUIManager(Ogre::RenderWindow* window);
+	/**
+	 * @brief Ctor.
+	 * @param window The main window which will house the GUI. Normally the RenderWindow which makes up the complete application.
+	 * @param configService The config service.
+	 */
+	GUIManager(Ogre::RenderWindow* window, ConfigService& configService);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~GUIManager();
 
 	sigc::signal<void, const std::string&, EmberEntity*> AppendIGChatLine;
@@ -174,7 +182,7 @@ public:
 	 *    accessor for the Input instance object
 	 * @return
 	 */
-	Ember::Input& getInput() const;
+	Input& getInput() const;
 
 	CEGUI::OgreRenderer* getGuiRenderer() const;
 
@@ -231,17 +239,17 @@ public:
 	/**
 	Command for toggling between the input modes.
 	*/
-	const Ember::ConsoleCommandWrapper ToggleInputMode;
+	const ConsoleCommandWrapper ToggleInputMode;
 
 	/**
 	Command for reloading the gui.
 	*/
-	const Ember::ConsoleCommandWrapper ReloadGui;
+	const ConsoleCommandWrapper ReloadGui;
 
 	/**
 	 * Command for Hiding/Showing the gui
 	 */
-	const Ember::ConsoleCommandWrapper ToggleGui;
+	const ConsoleCommandWrapper ToggleGui;
 
 
 	/**
@@ -280,7 +288,12 @@ protected:
 	*/
 	static unsigned long msAutoGenId;
 
-	Ember::InputCommandMapper mGuiCommandMapper;
+	/**
+	 * @brief The config service.
+	 */
+	ConfigService& mConfigService;
+
+	InputCommandMapper mGuiCommandMapper;
 
 	MousePicker* mPicker;
 
@@ -309,7 +322,7 @@ protected:
 	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
 
 	/**
-	 *    hooked to Ember::OgreView::EventCreatedAvatarEntity, switches the input mode to movement mode
+	 *    hooked to OgreView::EventCreatedAvatarEntity, switches the input mode to movement mode
 	 * @param entity
 	 */
 	void EmberOgre_CreatedAvatarEntity(EmberEntity& entity);
@@ -319,7 +332,7 @@ protected:
 	void EmberOgre_WorldDestroyed();
 
 // 	InputMode mPreviousInputMode;
-	void pressedKey(const SDL_keysym& key, Ember::Input::InputMode inputMode);
+	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);
 
 	/**
 	Adapter for CEGUI which will send input events to CEGUI

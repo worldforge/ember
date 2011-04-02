@@ -159,9 +159,10 @@ protected:
 	}
 };
 
-GUIManager::GUIManager(Ogre::RenderWindow* window) :
-	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService) :
+	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
+	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
 	//we need this here just to force the linker to also link in the WidgetDefinitions
@@ -173,9 +174,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 		mDefaultScheme = "EmberLook";
 		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
 
-		Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
-		if (chdir(configSrv->getEmberDataDirectory().c_str())) {
-			S_LOG_WARNING("Failed to change to the data directory. Gui loading might fail.");
+		//We need to set the current directory to the prefix before trying to load CEGUI.
+		//The reason for this is that CEGUI loads a lot of dynamic modules, and in some build configuration
+		//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
+		if (chdir(configSrv->getPrefix().c_str())) {
+			S_LOG_WARNING("Failed to change to the prefix directory. Gui loading might fail.");
 		}
 
 		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
@@ -185,7 +188,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 
 		CEGUI::ImageCodec& imageCodec = CEGUI::OgreRenderer::createOgreImageCodec();
 
-		Ember::IScriptingProvider* provider = Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
+		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
 			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
@@ -195,14 +198,14 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 			}
 			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
-			Ember::EmberServices::getSingleton().getScriptingService()->EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
+			EmberServices::getSingleton().getScriptingService()->EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
 			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, 0, "cegui/datafiles/configs/cegui.config");
 		}
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
 			// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
-			throw Ember::Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
+			throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
 
 		mRenderedStringParser = new ColouredRenderedStringParser();
@@ -214,8 +217,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 		try {
 			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), "MouseArrow");
 		} catch (const CEGUI::Exception& ex) {
-			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available." << ex);
-			throw Ember::Exception(ex.getMessage().c_str());
+			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available. Message: " << ex.getMessage().c_str());
+			throw Exception(ex.getMessage().c_str());
 		}
 
 		mSheet = mWindowManager->createWindow((CEGUI::utf8*)"DefaultGUISheet", (CEGUI::utf8*)"root_wnd");
@@ -257,8 +260,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window) :
 
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("GUIManager - error when creating gui." << ex);
-		throw Ember::Exception(ex.getMessage().c_str());
+		throw Exception(ex.getMessage().c_str());
+	}
 
+	if (chdir(configSrv->getEmberDataDirectory().c_str())) {
+		S_LOG_WARNING("Failed to change to the data directory.");
 	}
 
 }
@@ -302,6 +308,8 @@ GUIManager::~GUIManager()
 
 void GUIManager::initialize()
 {
+	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
+	chdir(configSrv->getEmberDataDirectory().c_str());
 	try {
 		createWidget("Quit");
 	} catch (const std::exception& e) {
@@ -334,7 +342,7 @@ void GUIManager::initialize()
 	//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 	try {
 		//load the bootstrap script which will load all other scripts
-		Ember::EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
+		EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script." << e);
 	}
@@ -376,6 +384,9 @@ CEGUI::Window* GUIManager::createWindow(const std::string& windowType, const std
 	try {
 		CEGUI::Window* window = mWindowManager->createWindow(windowType, windowName);
 		return window;
+	} catch (const CEGUI::Exception& ex) {
+		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << ".\n" << ex.getMessage().c_str());
+		return 0;
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating new window of type " << windowType << " with name " << windowName << "." << ex);
 		return 0;
@@ -446,7 +457,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	try {
 		CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI." << ex);
+		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 	}
 	// 	if (mPreviousInputMode == IM_GUI) {
 	// 		if (!mInput->getInputMode()) {
@@ -470,7 +481,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 		try {
 			aWidget->frameStarted(evt);
 		} catch (const CEGUI::Exception& ex) {
-			S_LOG_WARNING("Error in CEGUI." << ex);
+			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
 		}
 	}
 
