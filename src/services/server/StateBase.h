@@ -142,6 +142,11 @@ inline StateBase<TChildState>::~StateBase()
 	delete mChildState;
 }
 
+template<>
+inline StateBase<void>::~StateBase()
+{
+}
+
 template<typename TChildState>
 inline void StateBase<TChildState>::destroyChildState()
 {
@@ -152,6 +157,12 @@ inline void StateBase<TChildState>::destroyChildState()
 template<>
 inline void StateBase<void>::destroyChildState()
 {
+}
+
+template<>
+inline void StateBase<void>::setChildState(void* childState)
+{
+	mChildState = childState;
 }
 
 template<typename TChildState>
