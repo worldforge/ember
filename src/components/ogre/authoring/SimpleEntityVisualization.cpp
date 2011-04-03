@@ -20,6 +20,9 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/Convert.h"
 
+#include "framework/Exception.h"
+#include "framework/LoggingInstance.h"
+
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreWireBoundingBox.h>
@@ -42,7 +45,6 @@ public:
 
 }
 
-
 namespace Ember
 {
 namespace OgreView
@@ -54,8 +56,8 @@ namespace Authoring
  */
 static const std::string BboxMaterialName("/global/authoring/bbox");
 
-SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode)
-: mEntity(entity), mSceneNode(sceneNode), mErisEntityBoundingBox(OGRE_NEW Ogre::OOBBWireBoundingBox()), mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged)))
+SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::SceneNode* sceneNode) :
+	mEntity(entity), mSceneNode(sceneNode), mErisEntityBoundingBox(OGRE_NEW Ogre::OOBBWireBoundingBox()), mBboxConnection(entity.observe("bbox", sigc::mem_fun(*this, &SimpleEntityVisualization::entity_BboxChanged)))
 {
 	try {
 		mErisEntityBoundingBox->setMaterial(BboxMaterialName);
@@ -63,7 +65,7 @@ SimpleEntityVisualization::SimpleEntityVisualization(EmberEntity& entity, Ogre::
 		S_LOG_FAILURE("Error when setting Ogre material for bounding box.");
 		OGRE_DELETE mErisEntityBoundingBox;
 		mErisEntityBoundingBox = 0;
-		throw Ember::Exception("Error when setting Ogre material for bounding box.");
+		throw Exception("Error when setting Ogre material for bounding box.");
 	}
 	mSceneNode->attachObject(mErisEntityBoundingBox);
 	mErisEntityBoundingBox->setVisible(true);

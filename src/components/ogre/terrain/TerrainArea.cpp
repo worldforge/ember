@@ -28,6 +28,9 @@
 #include "TerrainAreaParser.h"
 
 #include "../EmberEntity.h"
+
+#include "framework/LoggingInstance.h"
+
 #include <Mercator/Area.h>
 
 #include <cmath>

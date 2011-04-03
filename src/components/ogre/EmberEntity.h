@@ -19,7 +19,6 @@
 #ifndef EMBEROGRE_EMBERENTITY_H
 #define EMBEROGRE_EMBERENTITY_H
 
-#include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/IVisualizable.h"
 
 #include <Atlas/Objects/Entity.h>

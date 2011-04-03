@@ -40,11 +40,6 @@
 #include "services/EmberServices.h"
 #include "authoring/AuthoringManager.h"
 
-#include <OgreWireBoundingBox.h>
-#include <OgreMaterialManager.h>
-#include <OgreSceneNode.h>
-#include <OgreSceneManager.h>
-
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
 #include <Atlas/Objects/Decoder.h>
