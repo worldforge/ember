@@ -113,8 +113,6 @@ class OpcodeCollisionDetectorVisualizer;
 
 class ShaderManager;
 
-class ConsoleObjectImpl;
-
 class World;
 
 /**
@@ -361,11 +359,6 @@ protected:
 	 * @brief The Ogre main camera. This is in most cases handled by mMainCamera.
 	 */
 	Ogre::Camera* mOgreMainCamera;
-
-	/**
-	 * @brief The main console object.
-	 */
-	ConsoleObjectImpl* mConsoleObjectImpl;
 
 	/**
 	 * @brief Gets the main Eris View instance, which is the main inteface to the world.

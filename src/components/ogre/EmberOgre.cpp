@@ -66,7 +66,6 @@
 
 #include "sound/SoundDefinitionManager.h"
 
-#include "ConsoleObjectImpl.h"
 #include "GUIManager.h"
 
 #include "environment/meshtree/TParameters.h"
@@ -147,7 +146,7 @@ EmberOgre::EmberOgre() :
 			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 			//mCollisionManager(0),
 			//mCollisionDetectorVisualizer(0),
-			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mConsoleObjectImpl(0), mWorld(0)
+			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -202,7 +201,6 @@ EmberOgre::~EmberOgre()
 	//delete this first after Ogre has been shut down, since it then deletes the EmberOgreFileSystemFactory instance, and that can only be done once Ogre is shutdown
 	delete mResourceLoader;
 
-	delete mConsoleObjectImpl;
 }
 
 bool EmberOgre::renderOneFrame()
@@ -404,8 +402,6 @@ bool EmberOgre::setup(Input& input)
 		if (chdir(configSrv->getHomeDirectory().c_str())) {
 			S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
 		}
-
-		mConsoleObjectImpl = new ConsoleObjectImpl();
 
 		try {
 			mGUIManager->initialize();

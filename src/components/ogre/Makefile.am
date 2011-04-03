@@ -79,7 +79,7 @@ libEmberOgre_a_SOURCES = \
 \
 	Avatar.cpp \
 	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
-	ConsoleObjectImpl.cpp EmberEntity.cpp EmberEntityActionCreator.cpp \
+	EmberEntity.cpp EmberEntityActionCreator.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
 	EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp \
 	EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
@@ -169,7 +169,7 @@ noinst_HEADERS = \
 	widgets/EntityCreatorCreationInstance.h \
 \
 	Avatar.h MovementController.h \
-	AvatarLogger.h AvatarTerrainCursor.h ConsoleObjectImpl.h \
+	AvatarLogger.h AvatarTerrainCursor.h \
 	EmberEntity.h EmberEntityActionCreator.h EmberEntityFactory.h \
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \
 	EmberEntityUserObject.h EmberOgre.h EmberOgreFileSystem.h EmberOgrePrerequisites.h \
