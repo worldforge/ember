@@ -21,18 +21,38 @@
 
 #include "ICameraMotionHandler.h"
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 class Avatar;
 
-class AvatarCameraMotionHandler : public ICameraMotionHandler
+/**
+ * @brief A camera motion handler which directs camera motions to the Avatar, making the Avatar entity move.
+ *
+ * By using this the user will have control of the Avatar, and any movement will be translated into entity movement.
+ */
+class AvatarCameraMotionHandler: public ICameraMotionHandler
 {
 public:
+
+	/**
+	 * Ctor.
+	 * @param avatar The avatar which will be moved as the camera moves.
+	 */
 	AvatarCameraMotionHandler(Avatar& avatar);
+
+	/**
+	 * Dtor.
+	 */
 	virtual ~AvatarCameraMotionHandler();
 
 	virtual void move(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice);
 private:
+
+	/**
+	 * @brief The avatar which will be moved as the camera moves.
+	 */
 	Avatar& mAvatar;
 };
 

@@ -20,7 +20,6 @@
 #define AVATARATTACHMENTCONTROLLER_H_
 
 #include "components/ogre/IEntityControlDelegate.h"
-#include <string>
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
 #include <wfmath/vector.h>
@@ -32,10 +31,25 @@ namespace OgreView
 
 class Avatar;
 
-class AvatarAttachmentController : public IEntityControlDelegate
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ * @brief Delegates control of an entity to the Avatar class.
+ *
+ * This allows an ingame entity (typically the one representing the user) to be controlled by the client.
+ */
+class AvatarAttachmentController: public IEntityControlDelegate
 {
 public:
+
+	/**
+	 * @brief Ctor.
+	 * @param avatar The avatar instance which will control the Entity.
+	 */
 	AvatarAttachmentController(Avatar& avatar);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~AvatarAttachmentController();
 
 	virtual const WFMath::Point<3>& getPosition() const;
@@ -44,9 +58,30 @@ public:
 
 private:
 
+	/**
+	 * @brief The avatar, through which position, orientation and velocity is obtained.
+	 */
 	Avatar& mAvatar;
+
+	/**
+	 * @brief The position, as provided by the Avatar.
+	 *
+	 * This is mutable to allow for the conversion from non-reference values from the Avatar to reference values expected by the IEntityControlDelegate interface.
+	 */
 	mutable WFMath::Point<3> mPosition;
+
+	/**
+	 * @brief The orientation, as provided by the Avatar.
+	 *
+	 * This is mutable to allow for the conversion from non-reference values from the Avatar to reference values expected by the IEntityControlDelegate interface.
+	 */
 	mutable WFMath::Quaternion mOrientation;
+
+	/**
+	 * @brief The velocity, as provided by the Avatar.
+	 *
+	 * This is mutable to allow for the conversion from non-reference values from the Avatar to reference values expected by the IEntityControlDelegate interface.
+	 */
 	mutable WFMath::Vector<3> mVelocity;
 };
 
