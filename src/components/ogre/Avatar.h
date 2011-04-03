@@ -78,7 +78,7 @@ public:
  * In general it receives instructions from mainly an instance of MovementController to attempt to move or rotate the avatar.
  * This class is also responsible for making sure that the client local representation of the avatar is kept up to date with the server side representation. This can involve some client side prediction with regards to movement.
  */
-class Avatar: public virtual sigc::trackable, public Ember::ConfigListenerContainer, public Ember::ConsoleObject
+class Avatar: public virtual sigc::trackable, public ConfigListenerContainer, public ConsoleObject
 {
 	friend class MovementController;
 
@@ -141,6 +141,16 @@ public:
 	 */
 	bool isAdmin() const;
 
+	/**
+	 * @brief Called when the avatar has moved client side.
+	 *
+	 * I.e. when the avatar representation on the client has moved.
+	 * This movement will be sent to the server, but depending on network time etc. there might be a slight difference in client side and server side position.
+	 *
+	 * @param orientation The client side orientation.
+	 * @param movement The movement, as a normalized vector.
+	 * @param timeslice The duration for this movement, in seconds. The actual distance moved will thus be calculated using the movement, along with the max speed and the timeslice.
+	 */
 	void moveClientSide(const WFMath::Quaternion& orientation, const WFMath::Vector<3>& movement, float timeslice);
 
 	/**
@@ -178,7 +188,7 @@ public:
 	/**
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
 	 */
-	const Ember::ConsoleCommandWrapper SetAttachedOrientation;
+	const ConsoleCommandWrapper SetAttachedOrientation;
 
 protected:
 
@@ -201,6 +211,10 @@ protected:
 	 */
 	float mMaxSpeed;
 
+	/**
+	 * @brief An attachment controller which controls an ingame entity, representing the avatar.
+	 * This is the main way the ingame representation is tied to the avatar.
+	 */
 	AvatarAttachmentController* mAvatarAttachmentController;
 
 	/**
@@ -209,7 +223,8 @@ protected:
 	AvatarMovementState mCurrentMovementState;
 
 	/**
-	 * @brief Keep a list of the last transmitted movements, so that when we receive a movement update from the server, we can ignore it if it's something we know we sent ourselves.
+	 * @brief Keep a list of the last transmitted movements.
+	 * So that when we receive a movement update from the server, we can ignore it if it's something we know we sent ourselves.
 	 */
 	TimedMovementStateList mLastTransmittedMovements;
 

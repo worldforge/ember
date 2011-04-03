@@ -69,7 +69,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
-	Ember::Application::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
+	Application::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
 
 	registerConfigListener("general", "logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
 	registerConfigListener("general", "avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));
@@ -80,10 +80,10 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 	mCurrentMovementState.position = erisAvatarEntity.getPredictedPos();
 
 	//check if the user is of type "creator" and thus an admin
-	Eris::TypeService* typeService = Ember::EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
+	Eris::TypeService* typeService = EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
 	if (mErisAvatarEntity.getType()->isA(typeService->getTypeByName("creator"))) {
 		mIsAdmin = true;
-		 Ember::EmberServices::getSingleton().getServerService()->getAvatar()->setIsAdmin(true);
+		 EmberServices::getSingleton().getServerService()->getAvatar()->setIsAdmin(true);
 	} else {
 		mIsAdmin = false;
 	}
@@ -110,7 +110,7 @@ Avatar::~Avatar()
 void Avatar::runCommand(const std::string &command, const std::string &args)
 {
 	if (SetAttachedOrientation == command) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string attachPointName = tokeniser.nextToken();
 		if (attachPointName != "") {
@@ -222,12 +222,12 @@ void Avatar::attemptMove()
 		S_LOG_VERBOSE(ss.str());
 
 		//Save the ten latest orientations sent to the server, so we can later when we receive an update from the server we can recognize that it's our own updates and ignore them.
-		long currentTime = Ember::Time::currentTimeMillis();
+		long currentTime = Time::currentTimeMillis();
 		mLastTransmittedMovements.push_back(TimedMovementStateList::value_type(currentTime, newMovementState));
 		if (mLastTransmittedMovements.size() > 10) {
 			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
 		}
-		Ember::EmberServices::getSingletonPtr()->getServerService()->moveInDirection(newMovementState.movement, newMovementState.orientation);
+		EmberServices::getSingletonPtr()->getServerService()->moveInDirection(newMovementState.movement, newMovementState.orientation);
 
 	}
 
@@ -249,7 +249,7 @@ bool Avatar::isOkayToSendRotationMovementChangeToServer()
 	if (!mLastTransmittedMovements.size()) {
 		return true;
 	}
-	long currentTime = Ember::Time::currentTimeMillis();
+	long currentTime = Time::currentTimeMillis();
 	if ((currentTime - mLastTransmittedMovements.rbegin()->first) > mMinIntervalOfRotationChanges) {
 		return true;
 	}
@@ -369,7 +369,7 @@ WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 //	//	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
 //	//		bool clientSideMovement = false;
 //	//		if (mLastTransmittedMovements.size()) {
-//	//			long currentTime = Ember::EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+//	//			long currentTime = EmberServices::getSingleton().getTimeService()->currentTimeMillis();
 //	//			if ((currentTime - mLastTransmittedMovements.rbegin()->first) < 1000) {
 //	//				clientSideMovement = true;
 //	//			}
