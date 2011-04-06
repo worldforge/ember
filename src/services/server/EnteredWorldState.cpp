@@ -52,6 +52,7 @@ EnteredWorldState::EnteredWorldState(IState& parentState, Eris::Avatar& avatar, 
 	StateBase<void>::StateBase(parentState), Say("say", this, "Say something."), Emote("me", this, "Emotes something."), Delete("delete", this, "Deletes an entity."), AdminTell("admin_tell", this, "Uses admin mode to directly tell a NPC something. Usage: /admin_tell <entityid> <key> <value>"), mAvatar(avatar), mAccount(account), mAdapter(account, avatar)
 {
 	mAccount.AvatarDeactivated.connect(sigc::mem_fun(*this, &EnteredWorldState::gotAvatarDeactivated));
+	avatar.TransferRequested.connect(sigc::mem_fun(*this, &EnteredWorldState::avatar_transferRequest));
 	getSignals().GotAvatar.emit(&mAvatar);
 	getSignals().GotView.emit(&getView());
 
@@ -73,7 +74,6 @@ bool EnteredWorldState::logout()
 	mAvatar.deactivate();
 	return true;
 }
-
 
 void EnteredWorldState::runCommand(const std::string &command, const std::string &args)
 {
@@ -126,6 +126,11 @@ void EnteredWorldState::runCommand(const std::string &command, const std::string
 	}
 }
 
+void EnteredWorldState::avatar_transferRequest(const Eris::TransferInfo& transferInfo)
+{
+	transfer(transferInfo);
+	//	setChildState(new TeleportRequestedState(*this, transferInfo));
+}
 
 IServerAdapter& EnteredWorldState::getServerAdapter()
 {
