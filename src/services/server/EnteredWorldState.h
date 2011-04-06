@@ -40,17 +40,18 @@ class Account;
 class View;
 class Connection;
 class Entity;
+class TransferInfo;
 }
 
 namespace Ember
 {
 
-class AccountAvailableState;
+class TeleportRequestedState;
 
 /**
  * @brief State for when the user has entered into the world. For most cases this is the desired state.
  */
-class EnteredWorldState: public StateBase<void>, public ConsoleObject
+class EnteredWorldState: public virtual StateBase<void>, public ConsoleObject
 {
 public:
 	EnteredWorldState(IState& parentState, Eris::Avatar& avatar, Eris::Account& account);
@@ -80,6 +81,8 @@ private:
 	Eris::Account& mAccount;
 
 	ConnectedAdapter mAdapter;
+
+	void avatar_transferRequest(const Eris::TransferInfo& transferInfo);
 
 	void gotAvatarDeactivated(Eris::Avatar* avatar);
 

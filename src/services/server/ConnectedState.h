@@ -39,7 +39,7 @@ class AccountAvailableState;
  *
  * This is a very transient state, as the next state, AccountAvailableState, is loaded immediately.
  */
-class ConnectedState: public StateBase<AccountAvailableState>, public ConsoleObject
+class ConnectedState: public virtual StateBase<AccountAvailableState>, public ConsoleObject
 {
 public:
 	ConnectedState(IState& parentState, Eris::Connection& connection);

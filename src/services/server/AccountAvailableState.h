@@ -33,7 +33,7 @@ class LoggedInState;
  *
  * The user can either create a new account, or login using an existing one.
  */
-class AccountAvailableState: public StateBase<LoggedInState> , public ConsoleObject
+class AccountAvailableState: public virtual StateBase<LoggedInState> , public ConsoleObject
 {
 public:
 	AccountAvailableState(IState& parentState, Eris::Connection& connection);

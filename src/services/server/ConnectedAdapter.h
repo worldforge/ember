@@ -40,7 +40,7 @@ namespace Ember
  *
  * @brief A server adapter used when the user is connected and have an entity in the world.
  */
-class ConnectedAdapter: public IServerAdapter
+class ConnectedAdapter: public virtual IServerAdapter
 {
 public:
     ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar);

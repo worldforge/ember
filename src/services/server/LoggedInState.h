@@ -39,7 +39,7 @@ class EnteredWorldState;
 /**
  * @brief State for when the user is logged in to a server account, but has yet not taken a character in the world.
  */
-class LoggedInState: public StateBase<EnteredWorldState> , public ConsoleObject
+class LoggedInState: public virtual StateBase<EnteredWorldState> , public ConsoleObject
 {
 public:
 	LoggedInState(IState& parentState, Eris::Account& account);
