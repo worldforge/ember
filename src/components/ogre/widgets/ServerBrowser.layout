@@ -11,13 +11,14 @@
 			<Property Name='UnifiedSize' Value='{{1.0,-2.0},{1.0,-35.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='SelectionMode' Value='RowSingle'/>
-			<Property Name='ColumnHeader' Value='text:Server Name width:{0.30, 0} id:0'/>
-			<Property Name='ColumnHeader' Value='text:Ping width:{0.1, 0} id:1'/>
-			<Property Name='ColumnHeader' Value='text:Clients width:{0.1, 0} id:2'/>
-			<Property Name='ColumnHeader' Value='text:Ruleset width:{0.1, 0} id:3'/>
-			<Property Name='ColumnHeader' Value='text:Server type width:{0.15, 0} id:4'/>
-			<Property Name='ColumnHeader' Value='text:Version width:{0.1, 0} id:5'/>
-			<Property Name='ColumnHeader' Value='text:Address width:{0.15, 0} id:6'/>
+			<Property Name='ColumnHeader' Value='text:Account width:{0.15, 0} id:0'/>
+			<Property Name='ColumnHeader' Value='text:Server Name width:{0.30, 0} id:1'/>
+			<Property Name='ColumnHeader' Value='text:Ping width:{0.1, 0} id:2'/>
+			<Property Name='ColumnHeader' Value='text:Clients width:{0.1, 0} id:3'/>
+			<Property Name='ColumnHeader' Value='text:Ruleset width:{0.1, 0} id:4'/>
+			<Property Name='ColumnHeader' Value='text:Server type width:{0.15, 0} id:5'/>
+			<Property Name='ColumnHeader' Value='text:Version width:{0.1, 0} id:6'/>
+			<Property Name='ColumnHeader' Value='text:Address width:{0.15, 0} id:7'/>
 		</Window>
 		<Window Type='EmberLook/StaticText' Name='ManualServerNameText'>
 			<Property Name='UnifiedSize' Value='{{0.0,95.0},{0.0,25.0}}'/>
