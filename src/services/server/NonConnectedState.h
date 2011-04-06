@@ -23,6 +23,9 @@
 #include "NonConnectedAdapter.h"
 #include "framework/ConsoleObject.h"
 
+#include <sigc++/connection.h>
+#include <sigc++/trackable.h>
+
 namespace Ember
 {
 
@@ -31,7 +34,7 @@ class ConnectingState;
 /**
  * @brief State for when no connection yet has been made.
  */
-class NonConnectedState: public virtual IState, public ConsoleObject
+class NonConnectedState: public virtual sigc::trackable, public IState, public ConsoleObject
 {
 public:
 	NonConnectedState(ServerServiceSignals& signals);
@@ -68,6 +71,21 @@ private:
 	ConnectingState* mChildState;
 
 	NonConnectedAdapter mAdapter;
+
+	/**
+	 * @brief Track the GotFailure connection, so to sever it when aborting and thus avoiding infinite loops.
+	 */
+	sigc::connection mFailureConnection;
+
+	/**
+	 * @brief Track the Disconnected connection, so to sever it when aborting and thus avoiding infinite loops.
+	 */
+	sigc::connection mDisconnectedConnection;
+
+	void gotFailure(const std::string& msg);
+
+	void disconnected();
+
 };
 
 }

@@ -41,7 +41,6 @@ LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
 	mAccount.AvatarSuccess.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarSuccess));
 	mAccount.GotCharacterInfo.connect(sigc::mem_fun(*this, &LoggedInState::gotCharacterInfo));
 	mAccount.GotAllCharacters.connect(sigc::mem_fun(*this, &LoggedInState::gotAllCharacters));
-	mAccount.LogoutComplete.connect(sigc::mem_fun(*this, &LoggedInState::logoutComplete));
 
 }
 
@@ -117,16 +116,16 @@ void LoggedInState::gotAllCharacters()
 void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar)
 {
 	setChildState(new EnteredWorldState(*this, *avatar, mAccount));
+	mAccount.AvatarDeactivated.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarDeactivated));
 	//	delete mServerAdapter;
 	//	mServerAdapter = new ConnectedAdapter(*mAccount, *mAvatar, *mConn);
 
 }
 
-void LoggedInState::logoutComplete(bool clean)
+
+void LoggedInState::gotAvatarDeactivated(Eris::Avatar* avatar)
 {
-	S_LOG_INFO("Logout Complete cleanness=" << clean);
-	ConsoleBackend::getSingleton().pushMessage("Logged out from server");
-	getParentState().destroyChildState();
+	destroyChildState();
 }
 
 void LoggedInState::runCommand(const std::string &command, const std::string &args)

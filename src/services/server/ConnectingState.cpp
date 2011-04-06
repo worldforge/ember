@@ -30,18 +30,16 @@
 
 #include <Eris/Connection.h>
 #include <Eris/Exceptions.h>
-#include <iostream>
-#include <sstream>
 
 namespace Ember
 {
 ConnectingState::ConnectingState(IState& parentState, const std::string& host, short port) :
-	StateBase<ConnectedState>::StateBase(parentState), mConnection(std::string("Ember ") + VERSION, host, port, false, new ServerServiceConnectionListener(getSignals()))
+	StateBase<ConnectedState>::StateBase(parentState), mConnection(std::string("Ember ") + VERSION, host, port, false, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false)
 {
 	// Bind signals
-	mFailureConnection = mConnection.Failure.connect(sigc::mem_fun(*this, &ConnectingState::gotFailure));
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
 	mConnection.StatusChanged.connect(sigc::mem_fun(*this, &ConnectingState::statusChanged));
+	mConnection.Disconnected.connect(sigc::mem_fun(*this, &ConnectingState::disconnected));
 	//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 
 
@@ -49,44 +47,29 @@ ConnectingState::ConnectingState(IState& parentState, const std::string& host, s
 
 ConnectingState::~ConnectingState()
 {
+	if (mHasSignalledDisconnected) {
+		//If we get a failure there's a great risk that the Disconnected signal isn't emitted. We'll therefore do it ourselves.
+		mConnection.Disconnected.emit();
+	}
 }
 
-void ConnectingState::destroyChildState()
-{
-	StateBase<ConnectedState>::destroyChildState();
-	getParentState().destroyChildState();
-}
-
-void ConnectingState::connect()
+bool ConnectingState::connect()
 {
 	try {
 		// If the connection fails here an errnumber is returned
 		int errorno = mConnection.connect();
 		if (errorno) {
-			getParentState().destroyChildState();
+			return false;
 		}
 	} catch (const Eris::BaseException& except) {
 		S_LOG_WARNING("Got error on connect:" << except._msg);
-		getParentState().destroyChildState();
+		return false;
 	} catch (...) {
 		S_LOG_WARNING("Got unknown error on connect.");
-		getParentState().destroyChildState();
+		return false;
 	}
-}
-
-void ConnectingState::gotFailure(const std::string & msg)
-{
-	//Make sure to sever the connection, so that we don't end up in an infinite loop if something goes wrong when shutting down.
-	mFailureConnection.disconnect();
-
-	std::ostringstream temp;
-
-	temp << "Got Server error: " << msg;
-	S_LOG_WARNING(temp.str());
-
-	ConsoleBackend::getSingleton().pushMessage(temp.str());
-	mConnection.disconnect();
-	destroyChildState();
+	mHasSignalledDisconnected = false;
+	return true;
 }
 
 void ConnectingState::connected()
@@ -107,6 +90,16 @@ void ConnectingState::statusChanged(Eris::BaseConnection::Status status)
 {
 	getSignals().EventStatusChanged.emit(status);
 	S_LOG_INFO("Status Changed to: " << status);
+}
+
+void ConnectingState::disconnected()
+{
+	mHasSignalledDisconnected = true;
+}
+
+Eris::Connection& ConnectingState::getConnection()
+{
+	return mConnection;
 }
 
 }

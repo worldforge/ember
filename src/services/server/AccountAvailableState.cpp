@@ -38,6 +38,7 @@ AccountAvailableState::AccountAvailableState(IState& parentState, Eris::Connecti
 {
 	mAccount.LoginFailure.connect(sigc::mem_fun(*this, &AccountAvailableState::loginFailure));
 	mAccount.LoginSuccess.connect(sigc::mem_fun(*this, &AccountAvailableState::loginSuccess));
+	mAccount.LogoutComplete.connect(sigc::mem_fun(*this, &AccountAvailableState::logoutComplete));
 	getSignals().GotAccount.emit(&mAccount);
 
 }
@@ -64,6 +65,13 @@ void AccountAvailableState::loginSuccess()
 	ConsoleBackend::getSingleton().pushMessage("Login Successful");
 	setChildState(new LoggedInState(*this, mAccount));
 	getSignals().LoginSuccess.emit(&mAccount);
+}
+
+void AccountAvailableState::logoutComplete(bool clean)
+{
+	S_LOG_INFO("Logout Complete cleanness=" << clean);
+	ConsoleBackend::getSingleton().pushMessage("Logged out from server");
+	destroyChildState();
 }
 
 void AccountAvailableState::runCommand(const std::string &command, const std::string &args)

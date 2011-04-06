@@ -84,8 +84,6 @@ private:
 
 	void avatar_transferRequest(const Eris::TransferInfo& transferInfo);
 
-	void gotAvatarDeactivated(Eris::Avatar* avatar);
-
 	Eris::Connection& getConnection() const;
 
 	Eris::View& getView() const;

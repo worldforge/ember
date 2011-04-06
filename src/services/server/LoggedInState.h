@@ -67,11 +67,12 @@ private:
 
 	void gotAvatarSuccess(Eris::Avatar* avatar);
 
+	void gotAvatarDeactivated(Eris::Avatar* avatar);
+
 	void gotCharacterInfo(const Atlas::Objects::Entity::RootEntity& characterInfo);
 
 	void gotAllCharacters();
 
-	void logoutComplete(bool clean);
 
 };
 

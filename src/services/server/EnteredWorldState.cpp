@@ -51,7 +51,6 @@ namespace Ember
 EnteredWorldState::EnteredWorldState(IState& parentState, Eris::Avatar& avatar, Eris::Account& account) :
 	StateBase<void>::StateBase(parentState), Say("say", this, "Say something."), Emote("me", this, "Emotes something."), Delete("delete", this, "Deletes an entity."), AdminTell("admin_tell", this, "Uses admin mode to directly tell a NPC something. Usage: /admin_tell <entityid> <key> <value>"), mAvatar(avatar), mAccount(account), mAdapter(account, avatar)
 {
-	mAccount.AvatarDeactivated.connect(sigc::mem_fun(*this, &EnteredWorldState::gotAvatarDeactivated));
 	avatar.TransferRequested.connect(sigc::mem_fun(*this, &EnteredWorldState::avatar_transferRequest));
 	getSignals().GotAvatar.emit(&mAvatar);
 	getSignals().GotView.emit(&getView());
@@ -62,11 +61,6 @@ EnteredWorldState::~EnteredWorldState()
 {
 	getSignals().DestroyedView.emit();
 	getSignals().DestroyedAvatar.emit();
-}
-
-void EnteredWorldState::gotAvatarDeactivated(Eris::Avatar* avatar)
-{
-	getParentState().destroyChildState();
 }
 
 bool EnteredWorldState::logout()

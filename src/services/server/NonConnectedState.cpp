@@ -25,10 +25,13 @@
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/LoggingInstance.h"
 
 #include <Eris/TransferInfo.h>
 
 #include <algorithm>
+#include <iostream>
+#include <sstream>
 
 namespace Ember
 {
@@ -44,6 +47,9 @@ NonConnectedState::~NonConnectedState()
 
 void NonConnectedState::destroyChildState()
 {
+	//Make sure to sever the connection, so that we don't end up in an infinite loop if something goes wrong when shutting down.
+	mFailureConnection.disconnect();
+	mDisconnectedConnection.disconnect();
 	delete mChildState;
 	mChildState = 0;
 }
@@ -65,9 +71,37 @@ bool NonConnectedState::connect(const std::string& host, short port)
 {
 	destroyChildState();
 	mChildState = new ConnectingState(*this, host, port);
-	mChildState->connect();
+	if (!mChildState->connect()) {
+		destroyChildState();
+	} else {
+		mFailureConnection.disconnect();
+		mFailureConnection = mChildState->getConnection().Failure.connect(sigc::mem_fun(*this, &NonConnectedState::gotFailure));
+		mDisconnectedConnection.disconnect();
+		mDisconnectedConnection = mChildState->getConnection().Disconnected.connect(sigc::mem_fun(*this, &NonConnectedState::disconnected));
+	}
 
 	return mChildState != 0;
+}
+
+void NonConnectedState::disconnected()
+{
+	S_LOG_INFO("Disconnected");
+
+	ConsoleBackend::getSingleton().pushMessage("Disconnected from server.");
+
+	destroyChildState();
+}
+
+void NonConnectedState::gotFailure(const std::string & msg)
+{
+	std::ostringstream temp;
+
+	temp << "Got Server error: " << msg;
+	S_LOG_WARNING(temp.str());
+
+	ConsoleBackend::getSingleton().pushMessage(temp.str());
+
+	destroyChildState();
 }
 
 void NonConnectedState::runCommand(const std::string &command, const std::string &args)

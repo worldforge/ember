@@ -22,8 +22,6 @@
 #include "StateBase.h"
 
 #include "Connection.h"
-#include <sigc++/trackable.h>
-#include <sigc++/connection.h>
 
 namespace Ember
 {
@@ -39,9 +37,9 @@ public:
 	ConnectingState(IState& parentState, const std::string& host, short port);
 	virtual ~ConnectingState();
 
-	virtual void destroyChildState();
+	bool connect();
 
-	void connect();
+	Eris::Connection& getConnection();
 
 private:
 
@@ -50,16 +48,14 @@ private:
 	 */
 	Connection mConnection;
 
-	/**
-	 * @brief Track the GotFailure connection, so to sever it when aborting and thus avoiding infinite loops.
-	 */
-	sigc::connection mFailureConnection;
-
-	void gotFailure(const std::string& msg);
+	bool mHasSignalledDisconnected;
 
 	void connected();
 
+	void disconnected();
+
 	void statusChanged(Eris::BaseConnection::Status status);
+
 };
 
 }

@@ -34,7 +34,6 @@ namespace Ember
 ConnectedState::ConnectedState(IState& parentState, Eris::Connection& connection) :
 	StateBase<AccountAvailableState>::StateBase(parentState), DisConnect("disconnect", this, "Disconnect from the server."), mConnection(connection)
 {
-	mConnection.Disconnected.connect(sigc::mem_fun(*this, &ConnectedState::disconnected));
 	mConnection.Disconnecting.connect(sigc::mem_fun(*this, &ConnectedState::disconnecting));
 	setChildState(new AccountAvailableState(*this, connection));
 }
@@ -59,15 +58,6 @@ bool ConnectedState::disconnecting()
 	S_LOG_INFO("Disconnecting");
 	destroyChildState();
 	return true;
-}
-
-void ConnectedState::disconnected()
-{
-	S_LOG_INFO("Disconnected");
-
-	ConsoleBackend::getSingleton().pushMessage("Disconnected from server.");
-
-	getParentState().destroyChildState();
 }
 
 void ConnectedState::runCommand(const std::string &command, const std::string &args)

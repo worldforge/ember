@@ -72,6 +72,9 @@ private:
 	 * @brief Callback for login success.
 	 */
 	void loginSuccess();
+
+	void logoutComplete(bool clean);
+
 };
 
 }

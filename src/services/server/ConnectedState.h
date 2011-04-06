@@ -60,7 +60,6 @@ private:
 
 	bool disconnecting();
 
-	void disconnected();
 
 };
 
