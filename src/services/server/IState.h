@@ -21,6 +21,10 @@
 
 #include <string>
 
+namespace Eris {
+class TransferInfo;
+}
+
 namespace Ember {
 
 class ServerServiceSignals;
@@ -86,6 +90,12 @@ public:
 	 * @param spawnName The name of the spawn area to spawn in. This should have been sent from the server earlier. Make sure that the type specified is available for the spawn point. If an empty string is specified the earlier spawn mechanism on the server will be used, which isn't guaranteed to always work.
 	 */
 	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName) = 0;
+
+	/**
+	 * @brief Transfers the user to another server, to claim a character on it.
+	 * @param transferInfo Information needed about the transfer.
+	 */
+	virtual void transfer(const Eris::TransferInfo& transferInfo) = 0;
 
 	/**
 	 * @brief Gets the server adapter.

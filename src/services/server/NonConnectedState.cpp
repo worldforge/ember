@@ -26,6 +26,8 @@
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 
+#include <Eris/TransferInfo.h>
+
 #include <algorithm>
 
 namespace Ember
@@ -110,6 +112,11 @@ void NonConnectedState::takeCharacter(const std::string &id)
 bool NonConnectedState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName)
 {
 	return false;
+}
+
+void NonConnectedState::transfer(const Eris::TransferInfo& transferInfo)
+{
+
 }
 
 }

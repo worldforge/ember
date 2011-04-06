@@ -31,7 +31,7 @@ class ConnectingState;
 /**
  * @brief State for when no connection yet has been made.
  */
-class NonConnectedState: public IState, public ConsoleObject
+class NonConnectedState: public virtual IState, public ConsoleObject
 {
 public:
 	NonConnectedState(ServerServiceSignals& signals);
@@ -50,6 +50,8 @@ public:
 	virtual void takeCharacter(const std::string &id);
 
 	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
+
+	virtual void transfer(const Eris::TransferInfo& transferInfo);
 
 	virtual IServerAdapter& getServerAdapter();
 

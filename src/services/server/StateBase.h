@@ -49,6 +49,8 @@ public:
 
 	virtual IServerAdapter& getServerAdapter();
 
+	virtual void transfer(const Eris::TransferInfo& transferInfo);
+
 protected:
 
 	IState& getParentState() const;
@@ -123,6 +125,12 @@ inline bool StateBaseCore::createCharacter(const std::string& name, const std::s
 {
 	return mParentState.createCharacter(name, sex, type, description, spawnName);
 }
+
+inline void StateBaseCore::transfer(const Eris::TransferInfo& transferInfo)
+{
+	mParentState.transfer(transferInfo);
+}
+
 
 inline IServerAdapter& StateBaseCore::getServerAdapter()
 {
