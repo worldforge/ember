@@ -229,11 +229,14 @@ function ServerBrowser:getSavedAccount(sInfo)
 	-- We are always expecting a string ... even if it's empty.
 	local serverService = emberServices:getServerSettingsService()
 	local serverSettingCredentials = Ember.Services.ServerSettingsCredentials:new(sInfo:getHostname(), sInfo:getServername())
-
 	local savedUser = serverService:getItem(serverSettingCredentials,"username" )
-	
-	return savedUser:as_string()
+	local retFav = ""
 
+	if savedUser ~= "" then
+		retFav = "***"
+	end
+
+	return retFav
 end
 
 function ServerBrowser:MetaServer_ReceivedServerInfo(sInfo)
