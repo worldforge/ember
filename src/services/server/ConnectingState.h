@@ -23,6 +23,7 @@
 
 #include "Connection.h"
 #include <sigc++/trackable.h>
+#include <sigc++/connection.h>
 
 namespace Ember
 {
@@ -32,7 +33,7 @@ class ConnectedState;
 /**
  * @brief State for when a connection to a server is in progress.
  */
-class ConnectingState: public StateBase<ConnectedState>
+class ConnectingState: public virtual StateBase<ConnectedState>
 {
 public:
 	ConnectingState(IState& parentState, const std::string& host, short port);
@@ -48,6 +49,11 @@ private:
 	 * @brief Holds our connection to the server
 	 */
 	Connection mConnection;
+
+	/**
+	 * @brief Track the GotFailure connection, so to sever it when aborting and thus avoiding infinite loops.
+	 */
+	sigc::connection mFailureConnection;
 
 	void gotFailure(const std::string& msg);
 

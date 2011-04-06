@@ -39,7 +39,7 @@ ConnectingState::ConnectingState(IState& parentState, const std::string& host, s
 	StateBase<ConnectedState>::StateBase(parentState), mConnection(std::string("Ember ") + VERSION, host, port, false, new ServerServiceConnectionListener(getSignals()))
 {
 	// Bind signals
-	mConnection.Failure.connect(sigc::mem_fun(*this, &ConnectingState::gotFailure));
+	mFailureConnection = mConnection.Failure.connect(sigc::mem_fun(*this, &ConnectingState::gotFailure));
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
 	mConnection.StatusChanged.connect(sigc::mem_fun(*this, &ConnectingState::statusChanged));
 	//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
@@ -76,13 +76,17 @@ void ConnectingState::connect()
 
 void ConnectingState::gotFailure(const std::string & msg)
 {
+	//Make sure to sever the connection, so that we don't end up in an infinite loop if something goes wrong when shutting down.
+	mFailureConnection.disconnect();
+
 	std::ostringstream temp;
 
 	temp << "Got Server error: " << msg;
 	S_LOG_WARNING(temp.str());
 
 	ConsoleBackend::getSingleton().pushMessage(temp.str());
-
+	mConnection.disconnect();
+	destroyChildState();
 }
 
 void ConnectingState::connected()
