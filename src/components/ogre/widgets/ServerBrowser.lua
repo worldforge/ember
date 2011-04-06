@@ -83,7 +83,7 @@ function ServerBrowser:connectWithColumnList()
 		local selectedRowIndex = self.serverList:getItemRowIndex(self.serverList:getFirstSelectedItem())
 	
 		if selectedRowIndex ~= -1 then
-			local selectedItem = self.serverList:getItemAtGridReference(CEGUI.MCLGridRef:new_local(selectedRowIndex, 6))
+			local selectedItem = self.serverList:getItemAtGridReference(CEGUI.MCLGridRef:new_local(selectedRowIndex, 7))
 			if selectedItem ~= nil then
 				serverName = selectedItem:getText()
 			end
@@ -196,27 +196,46 @@ function ServerBrowser:addRow(sInfo)
 
 	local rowNumber = self.serverList:getRowCount()
 	self.serverList:addRow()
-	
+
+	local item = Ember.OgreView.Gui.ColouredListItem:new(self:getSavedAccount(sInfo))
+	self.serverList:setItem(item, 0, rowNumber);	
+
 	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getServername())
-	self.serverList:setItem(item, 0, rowNumber)
-	
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getPing())
 	self.serverList:setItem(item, 1, rowNumber)
 	
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getPing())
+	self.serverList:setItem(item, 2, rowNumber)
+	
 	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getNumClients())
-	self.serverList:setItem(item, 2 ,rowNumber)
+	self.serverList:setItem(item, 3,rowNumber)
 	
 	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getRuleset())
-	self.serverList:setItem(item, 3, rowNumber)
-	
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getServer())
 	self.serverList:setItem(item, 4, rowNumber)
 	
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getVersion())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getServer())
 	self.serverList:setItem(item, 5, rowNumber)
 	
-	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getHostname())
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getVersion())
 	self.serverList:setItem(item, 6, rowNumber)
+	
+	local item = Ember.OgreView.Gui.ColouredListItem:new(sInfo:getHostname())
+	self.serverList:setItem(item, 7, rowNumber)
+end
+
+function ServerBrowser:getSavedAccount(sInfo)
+
+	-- Essentially we try and fetch the 'hostname_<host>_servername_<server>' section
+	-- get the 'username' key.  If this has a value, there is saved credentials
+	-- We are always expecting a string ... even if it's empty.
+	local serverService = emberServices:getServerSettingsService()
+	local serverSettingCredentials = Ember.Services.ServerSettingsCredentials:new(sInfo:getHostname(), sInfo:getServername())
+	local savedUser = serverService:getItem(serverSettingCredentials,"username")
+	local retFav = savedUser:as_string()
+	if retFav ~= "" then
+		retFav = "  ***" -- because centering text is seems impossible
+	end
+
+	return retFav
 end
 
 function ServerBrowser:MetaServer_ReceivedServerInfo(sInfo)
