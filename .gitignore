@@ -59,7 +59,7 @@ src/stamp-h1
 .settings
 .cdtconfig*
 *.orig
-media*
+media-
 *.log
 *.mp4
 *.kdevelop
