@@ -70,6 +70,12 @@ LoggingInstance & LoggingInstance::operator<< (const std::string & stringToAdd)
 	return *this;
 }
 
+LoggingInstance& LoggingInstance::operator<< (const char* stringToAdd)
+{
+	mMessage += stringToAdd;
+	return *this;
+}
+
 LoggingInstance & LoggingInstance::operator<< (const unsigned int uintToAdd)
 {
 	std::stringstream ss;
@@ -120,6 +126,23 @@ LoggingInstance & LoggingInstance::operator<< (const unsigned long ulongToAdd)
 	mMessage += ss.str();
 	return *this;
 }
+
+LoggingInstance& LoggingInstance::operator<< (const long long longLongToAdd)
+{
+	std::stringstream ss;
+	ss << longLongToAdd;
+	mMessage += ss.str();
+	return *this;
+}
+
+LoggingInstance& LoggingInstance::operator<< (const unsigned long long ulongLongToAdd)
+{
+	std::stringstream ss;
+	ss << ulongLongToAdd;
+	mMessage += ss.str();
+	return *this;
+}
+
 
 
 void LoggingInstance::operator<< (const Log::EndMessageEnum endMessage)

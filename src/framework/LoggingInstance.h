@@ -53,6 +53,8 @@ public:
 
 	LoggingInstance& operator<< (const std::string & stringToAdd);
 
+	LoggingInstance& operator<< (const char* stringToAdd);
+
 	LoggingInstance& operator<< (const int intToAdd);
 
 	LoggingInstance& operator<< (const unsigned int uintToAdd);
@@ -60,6 +62,10 @@ public:
 	LoggingInstance& operator<< (const long longToAdd);
 
 	LoggingInstance& operator<< (const unsigned long ulongToAdd);
+
+	LoggingInstance& operator<< (const long long longLongToAdd);
+
+	LoggingInstance& operator<< (const unsigned long long ulongLongToAdd);
 
 	LoggingInstance& operator<< (const Log::HexNumber & intHexToAdd);
 
