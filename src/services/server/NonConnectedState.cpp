@@ -150,7 +150,9 @@ bool NonConnectedState::createCharacter(const std::string& name, const std::stri
 
 void NonConnectedState::transfer(const Eris::TransferInfo& transferInfo)
 {
-
+	//Start by disconnecting from current server, and reconnecting to new server.
+	destroyChildState();
+	connect(transferInfo.getHost(), transferInfo.getPort());
 }
 
 }
