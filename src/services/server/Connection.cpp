@@ -23,7 +23,7 @@
 namespace Ember
 {
 Connection::Connection(const std::string &cnm, const std::string& host, short port, bool debug, IConnectionListener* listener) :
-	Eris::Connection::Connection(cnm, host, port, debug), mListener(listener)
+	Eris::Connection(cnm, host, port, debug), mListener(listener)
 {
 
 }
