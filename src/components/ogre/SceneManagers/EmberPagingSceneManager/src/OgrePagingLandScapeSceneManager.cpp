@@ -390,26 +390,6 @@ namespace Ogre
         // Call the default
 	    PagingLandScapeOctreeSceneManager::_updateSceneGraph(cam);            
     }
-    //-----------------------------------------------------------------------
-//    void PagingLandScapeSceneManager::_renderVisibleObjects(void)
-//    {
-//	    SceneManager::_renderVisibleObjects();
-//    }
-
-    //-----------------------------------------------------------------------
-//    void PagingLandScapeSceneManager::_findVisibleObjects (Camera * cam, bool onlyShadowCasters)
-//    {
-//	    PagingLandScapeOctreeSceneManager::_findVisibleObjects(cam, onlyShadowCasters);
-//    }
-    
-
-    //----------------------------------------------------------------------------
-//    IntersectionSceneQuery* PagingLandScapeSceneManager::createIntersectionQuery(unsigned long mask)
-//    {
-//	    PagingLandScapeIntersectionSceneQuery* q = new PagingLandScapeIntersectionSceneQuery(this);
-//	    q->setQueryMask(mask);
-//	    return q;
-//    }
 
 	AxisAlignedBoxSceneQuery* PagingLandScapeSceneManager::createAABBQuery( const AxisAlignedBox& box, 
 																			unsigned long mask )

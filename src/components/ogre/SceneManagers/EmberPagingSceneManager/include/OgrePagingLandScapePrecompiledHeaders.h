@@ -64,7 +64,6 @@ email                : tuan.kuranes@free.fr
 #include "OgrePagingLandScapeCamera.h"
 
 #include "OgrePagingLandScapeRaySceneQuery.h"
-#include "OgrePagingLandScapeIntersectionSceneQuery.h"
 #include "OgrePagingLandScapeAxisAlignedBoxSceneQuery.h"
 
 // Horizon Culling 
