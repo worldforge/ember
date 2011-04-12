@@ -23,6 +23,8 @@
 #include "EnteredWorldState.h"
 #include "ServerServiceSignals.h"
 
+#include "services/config/ConfigService.h"
+
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
@@ -44,6 +46,8 @@
 #include <wfmath/quaternion.h>
 
 #include <sstream>
+#include <iostream>
+#include <fstream>
 
 namespace Ember
 {
@@ -122,8 +126,23 @@ void EnteredWorldState::runCommand(const std::string &command, const std::string
 
 void EnteredWorldState::avatar_transferRequest(const Eris::TransferInfo& transferInfo)
 {
+	TransferInfoStringSerializer serializer;
+	std::string teleportFilePath(EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/teleports");
+	std::ifstream teleportsFile(teleportFilePath.c_str());
+	TransferInfoStringSerializer::TransferInfoStore transferObjects;
+	if (teleportsFile.good()) {
+		serializer.deserialize(transferObjects, teleportsFile);
+	}
+	teleportsFile.close();
+	transferObjects.push_back(transferInfo);
+
+	std::ofstream teleportsOutputFile(teleportFilePath.c_str());
+	if (teleportsOutputFile.good()) {
+		serializer.serialize(transferObjects, teleportsOutputFile);
+	}
+	teleportsOutputFile.close();
+
 	transfer(transferInfo);
-	//	setChildState(new TeleportRequestedState(*this, transferInfo));
 }
 
 IServerAdapter& EnteredWorldState::getServerAdapter()
