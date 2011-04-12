@@ -22,15 +22,13 @@
 
 #ifdef __APPLE__
 #include <OpenAL/al.h>
+#elif defined(_MSC_VER)
+#include <al.h>
 #else
 #include <AL/al.h>
 #endif
 
-#ifdef _MSC_VER
-#include <ALUT/alut.h>
-#else
 #include <AL/alut.h>
-#endif
 
 
 

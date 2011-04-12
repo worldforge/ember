@@ -29,7 +29,9 @@
 
 #include <list>
 #include <map>
-
+#ifdef _MSC_VER
+#include <alc.h>
+#endif
 namespace Ember {
 
 class IResourceProvider;

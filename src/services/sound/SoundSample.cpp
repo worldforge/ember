@@ -26,11 +26,8 @@
 
 #include "SoundSource.h"
 
-#ifndef _MSC_VER
+
 #include <AL/alut.h>
-#else
-#include <ALUT/alut.h>
-#endif
 
 
 namespace Ember
