@@ -23,6 +23,9 @@
 #ifndef EMBERINPUT_H
 #define EMBERINPUT_H
 
+#ifdef HAVE_CONFIG_H
+	#include "config.h"
+#endif
 
 #include "framework/ConsoleObject.h"
 #include "framework/Singleton.h"
@@ -34,7 +37,11 @@
 #include <set>
 #include <list>
 #include <map>
-#include <stdint.h>
+#ifdef HAVE_STDINT_H
+	#include <stdint.h>
+#else
+	typedef unsigned int uint32_t;
+#endif
 
 struct SDL_KeyboardEvent;
 struct SDL_keysym;
