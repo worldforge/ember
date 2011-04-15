@@ -22,6 +22,7 @@
 
 #include "EnteredWorldState.h"
 #include "ServerServiceSignals.h"
+#include "TransferInfoStringSerializer.h"
 
 #include "services/config/ConfigService.h"
 

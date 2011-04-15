@@ -23,12 +23,21 @@
 #include "AccountAvailableState.h"
 #include "LoggedInState.h"
 #include "ServerServiceSignals.h"
+#include "TransferInfoStringSerializer.h"
+
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
+#include "framework/LoggingInstance.h"
+
+#include "services/config/ConfigService.h"
+
+#include <Eris/Connection.h>
+#include <Eris/TransferInfo.h>
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 namespace Ember
 {
@@ -40,12 +49,32 @@ AccountAvailableState::AccountAvailableState(IState& parentState, Eris::Connecti
 	mAccount.LoginSuccess.connect(sigc::mem_fun(*this, &AccountAvailableState::loginSuccess));
 	mAccount.LogoutComplete.connect(sigc::mem_fun(*this, &AccountAvailableState::logoutComplete));
 	getSignals().GotAccount.emit(&mAccount);
-
+	checkTransfer();
 }
 
 AccountAvailableState::~AccountAvailableState()
 {
 	getSignals().DestroyedAccount.emit();
+}
+
+void AccountAvailableState::checkTransfer()
+{
+	TransferInfoStringSerializer serializer;
+	std::string teleportFilePath(EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/teleports");
+	std::ifstream teleportsFile(teleportFilePath.c_str());
+	TransferInfoStringSerializer::TransferInfoStore transferObjects;
+	if (teleportsFile.good()) {
+		serializer.deserialize(transferObjects, teleportsFile);
+	}
+	teleportsFile.close();
+
+	for (TransferInfoStringSerializer::TransferInfoStore::const_iterator I = transferObjects.begin(); I != transferObjects.end(); ++I) {
+		const Eris::TransferInfo& transferInfo(*I);
+		if (transferInfo.getHost() == mAccount.getConnection()->getHost() && transferInfo.getPort() == mAccount.getConnection()->getPort()) {
+
+		}
+	}
+
 }
 
 void AccountAvailableState::loginFailure(const std::string& msg)
