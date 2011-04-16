@@ -22,7 +22,9 @@
 #include "services/config/ConfigService.h"
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
-
+#ifdef _WIN32
+#include "main/win32/platform_windows.h"
+#endif
 namespace Ember
 {
 namespace OgreView
@@ -58,11 +60,7 @@ bool Recorder::frameStarted(const Ogre::FrameEvent& event)
 			int ret;
 			ret = stat( dir.c_str(), &tagStat );
 			if (ret == -1) {
-			#ifdef __WIN32__
-				mkdir(dir.c_str());
-			#else
 				mkdir(dir.c_str(), S_IRWXU);
-			#endif
 			}
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when creating directory for screenshots." << ex);

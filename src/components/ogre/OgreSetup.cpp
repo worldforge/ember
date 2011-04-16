@@ -40,21 +40,21 @@
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 
-#ifdef WIN32
-#include <float.h>
-#ifdef _MSVC_VER
+#ifdef _MSC_VER
 #include <SDL.h>
 #include <SDL_syswm.h>
 #else
 #include <SDL/SDL.h>
 #include <SDL/SDL_syswm.h>
 #endif
+
+#ifdef _WIN32
+#include "main/win32/platform_windows.h"
 #else
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
 #include "framework/binreloc.h"
 #include <GL/glx.h>
 #endif
+
 // #include "image/OgreILCodecs.h"
 
 #include <OgreRenderWindow.h>

@@ -16,16 +16,8 @@
 
 #include "Application.h"
 
-#ifdef WIN32
-#include <tchar.h>
-#define snprintf _snprintf
-#include <io.h> // for _access, Win32 version of stat()
-#include <direct.h> // for _mkdir
-//	#include <sys/stat.h>
-
-#include <iostream>
-#include <fstream>
-#include <ostream>
+#ifdef _WIN32
+#include "main/win32/platform_windows.h"
 #else
 #include <dirent.h>
 #endif
@@ -77,9 +69,7 @@ TOLUA_API int tolua_ConnectorDefinitions_open(lua_State* tolua_S);
 
 #include <iostream>
 #include <sstream>
-#ifndef WIN32
 #include <stdio.h>
-#endif
 
 #include "framework/osdir.h"
 #include <sys/stat.h>
@@ -283,11 +273,7 @@ void Application::initializeServices()
 	oslink::directory osdir(dirName);
 
 	if (!osdir) {
-#ifdef WIN32
-		mkdir(dirName.c_str());
-#else
 		mkdir(dirName.c_str(), S_IRWXU);
-#endif
 	}
 
 	int result = chdir(configService.getHomeDirectory().c_str());

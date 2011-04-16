@@ -62,9 +62,8 @@
 
 #include <SDL_video.h>
 
-#ifdef __WIN32__
-#include <windows.h>
-#include <direct.h>
+#ifdef _WIN32
+#include "main/win32/platform_windows.h"
 #endif
 
 using namespace Ember;
@@ -394,11 +393,7 @@ const std::string MainCamera::_takeScreenshot()
 		oslink::directory osdir(dir);
 
 		if (!osdir.isExisting()) {
-#ifdef __WIN32__
-			mkdir(dir.c_str());
-#else
 			mkdir(dir.c_str(), S_IRWXU);
-#endif
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating directory for screenshots." << ex);

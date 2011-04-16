@@ -42,16 +42,8 @@
 #include <wfmath/axisbox.h>
 #include <wfmath/atlasconv.h>
 
-#ifdef WIN32
-#include <tchar.h>
-#define snprintf _snprintf
-#include <io.h> // for _access, Win32 version of stat()
-#include <direct.h> // for _mkdir
-//	#include <sys/stat.h>
-
-#include <iostream>
-#include <fstream>
-#include <ostream>
+#ifdef _WIN32
+#include "main/win32/platform_windows.h"
 #else
 #include <dirent.h>
 #endif
@@ -123,11 +115,7 @@ std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std:
 
 			if (!oslink::directory(dir).isExisting()) {
 				S_LOG_INFO("Creating directory " << dir);
-#ifdef __WIN32__
-			mkdir(dir.c_str());
-#else
-			mkdir(dir.c_str(), S_IRWXU);
-#endif
+				oslink::directory::mkdir(dir.c_str());
 			}
 
 			const std::string fileName(dir + typeName + ".atlas");

@@ -26,7 +26,9 @@
 #else
 #define OSLINK_OSDIR_NOTSUPPORTED
 #endif
-
+#ifdef _WIN32
+#include "main/win32/platform_windows.h"
+#endif
 #include <string>
 #include <string.h>
 
@@ -126,9 +128,6 @@ namespace oslink
 
 #elif defined(OSLINK_OSDIR_WINDOWS)
 
-#include <windows.h>
-#include <winbase.h>
-
 namespace oslink
 {
 	class directory
@@ -195,11 +194,11 @@ namespace oslink
 			                if(*p == '/') {
 			                        *p = '\0';
 			                        if(access(opath, F_OK))
-			                                mkdir(opath);
+			                                _mkdir(opath);
 			                        *p = '/';
 			                }
 			        if(access(opath, F_OK))         /* if path is not terminated with / */
-			                mkdir(opath);
+			                _mkdir(opath);
 			}
 			private:
 			HANDLE	handle;

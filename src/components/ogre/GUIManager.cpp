@@ -67,9 +67,8 @@
 #include <elements/CEGUITooltip.h>
 
 
-#ifdef __WIN32__
-#include <windows.h>
-#include <direct.h>
+#ifdef _WIN32
+#include "main/win32/platform_windows.h"
 #endif
 
 template<> Ember::OgreView::GUIManager* Ember::Singleton<Ember::OgreView::GUIManager>::ms_Singleton = 0;

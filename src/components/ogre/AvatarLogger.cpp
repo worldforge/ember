@@ -30,6 +30,9 @@
 #include "GUIManager.h"
 #include "services/config/ConfigService.h"
 #include "framework/Time.h"
+#ifdef _WIN32
+#include "main/win32/platform_windows.h"
+#endif
 
 
 #include "framework/osdir.h"
@@ -52,11 +55,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		oslink::directory osdir(dir);
 
 		if (!osdir.isExisting()) {
-#ifdef __WIN32__
-			mkdir(dir.c_str());
-#else
 			mkdir(dir.c_str(), S_IRWXU);
-#endif
 		}
 		//perform setup of the stream
 		std::stringstream logFileSS;
