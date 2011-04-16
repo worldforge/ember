@@ -29,11 +29,7 @@ email                : tuan.kuranes@free.fr
 #include "OgrePagingLandScapeOctree.h"
 #include "OgrePagingLandScapeOctreeCamera.h"
 
-#include "OgrePagingLandScapeOctreeAxisAlignedBoxSceneQuery.h"
-#include "OgrePagingLandScapeOctreeIntersectionSceneQuery.h"
-#include "OgrePagingLandScapeOctreePlaneBoundedVolumeListSceneQuery.h"
 #include "OgrePagingLandScapeOctreeRaySceneQuery.h"
-#include "OgrePagingLandScapeOctreeSphereSceneQuery.h"
 
 //hardware occlusion management
 
@@ -43,17 +39,9 @@ email                : tuan.kuranes@free.fr
 #include "OgrePagingLandScapeOcclusionSorter.h"
 
 #include "OgrePagingLandScapeOcclusionTraversal.h"
-#include "OgrePagingLandScapeOcclusionCameraTraversal.h"
-#include "OgrePagingLandScapeOcclusionDebugTraversal.h"
-
-#include "OgrePagingLandScapeOcclusionCHCTraversal.h"
-#include "OgrePagingLandScapeOcclusionSWTraversal.h"
-#include "OgrePagingLandScapeOcclusionVFTraversal.h"
-
 
 #include "OgrePagingLandScapeOcclusion.h"
 #include "OgrePagingLandScapeOcclusionElement.h"
-#include "OgrePagingLandScapeOcclusionVisibilityData.h"
 
 
 // -------------------------------------------------------
@@ -64,7 +52,6 @@ email                : tuan.kuranes@free.fr
 #include "OgrePagingLandScapeCamera.h"
 
 #include "OgrePagingLandScapeRaySceneQuery.h"
-#include "OgrePagingLandScapeAxisAlignedBoxSceneQuery.h"
 
 // Horizon Culling 
 #include "OgrePagingLandScapeHorizon.h"
@@ -85,8 +72,6 @@ email                : tuan.kuranes@free.fr
 
 // IndexBuffer Caching to share it across tiles and LOD
 #include "OgrePagingLandScapeIndexBuffer.h"
-// Texture coordinates buffer cache to share it across pages
-#include "OgrePagingLandScapeTextureCoordinatesManager.h"
 
 // Renderable that constitutes tiles
 #include "OgrePagingLandScapeRenderable.h"
@@ -96,23 +81,11 @@ email                : tuan.kuranes@free.fr
 // Terrain Data Source management
 #include "OgrePagingLandScapeData2D.h"
 
-#include "OgrePagingLandScapeData2D_HeightField.h"
-#include "OgrePagingLandScapeData2D_HeightFieldTC.h"
-#include "OgrePagingLandScapeData2D_HeightFieldN.h"
-#include "OgrePagingLandScapeData2D_HeightFieldNTC.h"
-
-#include "OgrePagingLandScapeData2D_HeightFieldRaw.h"
-#include "OgrePagingLandScapeData2D_HeightFieldRawTC.h"
-
-#include "OgrePagingLandScapeData2D_Spline.h"
-
 #include "OgrePagingLandScapeData2DManager.h"
 
 
 // Terrain Texture Source management
 #include "OgrePagingLandScapeTexture.h"
-#include "OgrePagingLandScapeTexture_Splatting.h"
-#include "OgrePagingLandScapeTexture_BaseTexture.h"
 
 #include "OgrePagingLandScapeTextureManager.h"
 

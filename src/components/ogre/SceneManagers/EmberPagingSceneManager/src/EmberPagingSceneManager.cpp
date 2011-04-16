@@ -21,6 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#include "OgrePagingLandScapePrecompiledHeaders.h"
+
 #include "EmberPagingSceneManager.h"
 #include "EmberOgrePrerequisites.h"
 
