@@ -33,9 +33,11 @@
 #include "services/sound/SoundSource.h"
 #include "services/sound/SoundSample.h"
 
+#ifndef _MSC_VER
 // Need to find a cross platform solution
 // to this
 #include <sys/time.h>
+#endif
 
 namespace Ember
 {
@@ -46,16 +48,17 @@ SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup
 : SoundBinding(source), mSoundGroup(soundGroup)
 {
 	const SoundGroup::SampleStore& samples = mSoundGroup.getSamples();
-	ALuint buffers[samples.size()];
+	std::auto_ptr<ALuint> buffers(new ALuint[samples.size()]);
+	ALuint* pbuffers = buffers.get();
 	int i = 0;
 	//get the buffers and bind the source to them
 	for (SoundGroup::SampleStore::const_iterator I = samples.begin(); I != samples.end(); ++I) 
 	{
 		BaseSoundSample::BufferStore sampleBuffers = (*I)->getBuffers();
-		buffers[i] = *(sampleBuffers.begin());
+		pbuffers[i] = *(sampleBuffers.begin());
 		++i;
 	}
-	alSourceQueueBuffers(source.getALSource(), i, buffers);
+	alSourceQueueBuffers(source.getALSource(), i, pbuffers);
 // 	alSourcei(source.getALSource(), AL_BUFFER, sample.getBuffer());
 
 }
