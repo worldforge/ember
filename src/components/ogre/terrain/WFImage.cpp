@@ -29,7 +29,7 @@ namespace Terrain
 {
 
 WFImage::WFImage(Image::ImageBuffer* buffer) :
-	Image::Image(buffer)
+	Image(buffer)
 {
 
 }

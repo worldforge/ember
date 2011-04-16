@@ -28,7 +28,7 @@ namespace OgreView
 namespace Terrain
 {
 TerrainAreaUpdateTask::TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, const WFMath::AxisBox<2>& oldShape) :
-	TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mShader(shader), mOldShape(oldShape)
+	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mShader(shader), mOldShape(oldShape)
 {
 
 }

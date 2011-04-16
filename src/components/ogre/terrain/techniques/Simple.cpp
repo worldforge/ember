@@ -48,7 +48,7 @@ namespace Techniques
 {
 
 Simple::Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) :
-	Base::Base(geometry, terrainPageSurfaces, terrainPageShadow)
+	Base(geometry, terrainPageSurfaces, terrainPageShadow)
 {
 
 }

@@ -29,7 +29,7 @@ namespace Terrain
 {
 
 OgreImage::OgreImage(Image::ImageBuffer* buffer) :
-	Image::Image(buffer)
+	Image(buffer)
 {
 
 }

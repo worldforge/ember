@@ -25,7 +25,7 @@ namespace OgreView
 {
 
 HiddenAttachment::HiddenAttachment(EmberEntity& parentEntity, EmberEntity& childEntity)
-: AttachmentBase::AttachmentBase(parentEntity, childEntity)
+: AttachmentBase(parentEntity, childEntity)
 {
 }
 

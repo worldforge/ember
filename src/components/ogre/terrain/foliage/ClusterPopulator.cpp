@@ -34,7 +34,7 @@ namespace Foliage
 {
 
 ClusterPopulator::ClusterPopulator(unsigned int layerIndex, IScaler* scaler, unsigned int plantIndex) :
-	PlantPopulator::PlantPopulator(layerIndex, scaler, plantIndex), mThreshold(0)
+	PlantPopulator(layerIndex, scaler, plantIndex), mThreshold(0)
 {
 }
 

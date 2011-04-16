@@ -36,7 +36,7 @@ namespace Techniques
 {
 
 ShaderNormalMapped::ShaderNormalMapped(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager) :
-	Shader::Shader(includeShadows, geometry, terrainPageSurfaces, terrainPageShadow, sceneManager)
+	Shader(includeShadows, geometry, terrainPageSurfaces, terrainPageShadow, sceneManager)
 {
 }
 

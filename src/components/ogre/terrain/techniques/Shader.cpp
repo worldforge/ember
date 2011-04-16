@@ -36,7 +36,7 @@ namespace Techniques
 {
 
 Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager) :
-	Base::Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager)
+	Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager)
 {
 }
 

@@ -34,7 +34,7 @@ namespace Camera
 {
 
 ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager) :
-		CameraMountBase::CameraMountBase(cameraSettings), SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mSceneManager(sceneManager), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mWantedCameraDistance(10), mCurrentCameraDistance(0), mAdjustTerrainRaySceneQuery(0), mIsAdjustedToTerrain(true), mConfigListenerContainer(new ConfigListenerContainer())
+	CameraMountBase(cameraSettings), SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mSceneManager(sceneManager), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mWantedCameraDistance(10), mCurrentCameraDistance(0), mAdjustTerrainRaySceneQuery(0), mIsAdjustedToTerrain(true), mConfigListenerContainer(new ConfigListenerContainer())
 {
 	createNodesForCamera(sceneManager);
 	createRayQueries(sceneManager);

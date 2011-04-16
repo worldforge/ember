@@ -50,7 +50,7 @@ namespace Model
 {
 
 ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider) :
-	NodeAttachment::NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0)
+	NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0)
 {
 	mModelMount = new ModelMount(mModelRepresentation.getModel(), nodeProvider->createChildProvider(&mModelRepresentation.getModel()));
 	mModelMount->reset();
@@ -59,7 +59,7 @@ ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation&
 }
 
 ModelAttachment::ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment) :
-	NodeAttachment::NodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
+	NodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
 {
 	source.mModelMount = 0;
 	updateScale();

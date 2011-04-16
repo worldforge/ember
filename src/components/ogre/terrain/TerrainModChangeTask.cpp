@@ -37,7 +37,7 @@ namespace Terrain
 {
 
 TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, const TerrainMod& terrainMod, TerrainHandler& handler, TerrainModMap& terrainMods) :
-		TerrainModTaskBase::TerrainModTaskBase(terrain, terrainMod.getEntityId(), handler, terrainMods), mModData(terrainMod.getAtlasData()), mPosition(terrainMod.getEntity().getPredictedPos()), mOrientation(terrainMod.getEntity().getOrientation())
+		TerrainModTaskBase(terrain, terrainMod.getEntityId(), handler, terrainMods), mModData(terrainMod.getAtlasData()), mPosition(terrainMod.getEntity().getPredictedPos()), mOrientation(terrainMod.getEntity().getOrientation())
 {
 
 }

@@ -40,7 +40,7 @@ namespace OgreView
 {
 
 NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
-	AttachmentBase::AttachmentBase(parentEntity, childEntity), mNode(0), mNodeProvider(nodeProvider), mAttachmentController(0)
+	AttachmentBase(parentEntity, childEntity), mNode(0), mNodeProvider(nodeProvider), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	mNode = &mNodeProvider->getNode();
@@ -48,7 +48,7 @@ NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEnti
 }
 
 NodeAttachment::NodeAttachment(NodeAttachment& source, NodeAttachment& newParentAttachment) :
-	AttachmentBase::AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mNode(source.mNode), mAttachmentController(0)
+	AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mNode(source.mNode), mAttachmentController(0)
 {
 	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	source.mNode = 0;

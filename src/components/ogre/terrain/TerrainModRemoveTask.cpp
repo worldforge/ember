@@ -37,7 +37,7 @@ namespace Terrain
 {
 
 TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods) :
-	TerrainModTaskBase::TerrainModTaskBase(terrain, entityId, handler, terrainMods)
+	TerrainModTaskBase(terrain, entityId, handler, terrainMods)
 {
 }
 

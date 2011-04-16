@@ -28,7 +28,7 @@ namespace Ember {
 namespace OgreView {
 
 DelegatingNodeController::DelegatingNodeController(NodeAttachment& attachment, IEntityControlDelegate& attachmentControlDelegate)
-: NodeController::NodeController(attachment), mAttachmentControlDelegate(attachmentControlDelegate)
+: NodeController(attachment), mAttachmentControlDelegate(attachmentControlDelegate)
 {
 
 }

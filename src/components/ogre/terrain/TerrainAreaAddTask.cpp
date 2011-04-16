@@ -32,7 +32,7 @@ namespace Terrain
 {
 
 TerrainAreaAddTask::TerrainAreaAddTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, TerrainHandler& terrainHandler, TerrainLayerDefinitionManager& terrainLayerDefinitionManager, AreaShaderstore& areaShaders, AreaMap& areas, const std::string& entityId) :
-	TerrainAreaTaskBase::TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mTerrainHandler(terrainHandler), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), mAreas(areas), mEntityId(entityId)
+	TerrainAreaTaskBase(terrain, area, markForUpdateSlot), mTerrainHandler(terrainHandler), mTerrainLayerDefinitionManager(terrainLayerDefinitionManager), mAreaShaders(areaShaders), mAreas(areas), mEntityId(entityId)
 {
 }
 
