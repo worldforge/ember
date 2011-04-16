@@ -389,7 +389,7 @@ namespace OgreView {
         if (origStream->fail())
         {
             OGRE_DELETE_T(origStream, basic_ifstream, MEMCATEGORY_GENERAL);
-            OGRE_EXCEPT(Exception::ERR_FILE_NOT_FOUND,
+			OGRE_EXCEPT(Ogre::Exception::ERR_FILE_NOT_FOUND,
                 "Cannot open file: " + filename,
                 "FileSystemArchive::open");
         }
