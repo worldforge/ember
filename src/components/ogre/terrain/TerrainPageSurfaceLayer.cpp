@@ -161,8 +161,8 @@ void TerrainPageSurfaceLayer::populate(const TerrainPageGeometry& geometry)
 			segment->populate();
 		}
 
-		Mercator::Segment::Surfacestore::iterator I(segment->getSurfaces().find(mSurfaceIndex));
-		if (I == segment->getSurfaces().end()) {
+		Mercator::Segment::Surfacestore::iterator I2(segment->getSurfaces().find(mSurfaceIndex));
+		if (I2 == segment->getSurfaces().end()) {
 			//the segment doesn't contain this surface yet, lets add it
 			if (mShader.checkIntersect(*segment)) {
 				S_LOG_VERBOSE("Adding new surface with id " << mSurfaceIndex << " to segment at x: " << segment->getXRef() << " y: " << segment->getYRef());
