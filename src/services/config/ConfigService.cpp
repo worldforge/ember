@@ -37,7 +37,7 @@
 
 //we need this for the PathRemoveFileSpec(...) method
 #include <shlwapi.h>
-
+#include <Shlobj.h>
 #endif
 
 // #include <iostream>
@@ -403,28 +403,22 @@ namespace Ember
 		}
 		else
 		{
-			//taken from Sear
 #ifdef __WIN32__
 			static std::string finalPath;
-			static std::string fallbackPath ( "." );
 			if ( !finalPath.empty() )
 			{
 				return finalPath;
 			}
-			std::string path ( getenv ( "APPDATA" ) );
-			if ( path.empty() )
-			{
-				const char *homedrive = getenv ( "HOMEDRIVE" );
-				const char *homepath = getenv ( "HOMEPATH" );
 
-				if ( !homedrive || !homepath )
-				{
-					std::cerr << "unable to determine homedir in Win32, using ." << std::endl;
-					return fallbackPath;
-				}
-				path = std::string ( homedrive ) + std::string ( homepath );
+			//special folders in windows:
+			//http://msdn.microsoft.com/en-us/library/bb762494%28v=vs.85%29.aspx
+			char path[MAX_PATH];
+			if(SHGetSpecialFolderPath(NULL, path, CSIDL_MYDOCUMENTS, TRUE) == TRUE){
+				finalPath = path;
+			}else{
+				finalPath = ".";
 			}
-			finalPath = path + "\\Ember\\";
+			finalPath += "\\Ember\\";
 			return finalPath;
 #elif __APPLE__
 			static std::string path ( getAppSupportDirPath() + "/Ember/" );
