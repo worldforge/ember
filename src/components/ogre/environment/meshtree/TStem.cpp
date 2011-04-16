@@ -18,6 +18,10 @@
 
 */
 
+#ifdef _MSC_VER
+#define lrintf (int)
+#endif
+
 namespace Ogre {
 
 inline int Round(const Real fValue)
@@ -27,7 +31,6 @@ inline int Round(const Real fValue)
 
 inline int Trunc(const Real fValue)
 {
-// return fValue<0 ? fValue+1.0 : fValue;
   return lrintf(fValue);
 }
 
