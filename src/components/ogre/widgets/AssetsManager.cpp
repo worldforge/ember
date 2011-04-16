@@ -25,8 +25,13 @@
 #endif
 
 #include "AssetsManager.h"
+#ifdef _MSC_VER
+#include <RendererModules/Ogre/CEGUIOgreRenderer.h>
+#include <RendererModules/Ogre/CEGUIOgreTexture.h>
+#else
 #include <CEGUI/RendererModules/Ogre/CEGUIOgreRenderer.h>
 #include <CEGUI/RendererModules/Ogre/CEGUIOgreTexture.h>
+#endif
 #include <OgreMaterialSerializer.h>
 #include "../EmberOgrePrerequisites.h"
 
