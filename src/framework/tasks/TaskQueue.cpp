@@ -99,9 +99,9 @@ void TaskQueue::addProcessedTask(TaskUnit* taskUnit)
 	mProcessedTaskUnits.push(taskUnit);
 }
 
-void TaskQueue::pollProcessedTasks(long maxAllowedTimeMilliseconds)
+void TaskQueue::pollProcessedTasks(long long maxAllowedTimeMilliseconds)
 {
-	long startTime = Time::currentTimeMillis();
+	long long startTime = Time::currentTimeMillis();
 	TaskUnitQueue processedCopy;
 	{
 		boost::mutex::scoped_lock l(mProcessedQueueMutex);

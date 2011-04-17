@@ -73,7 +73,7 @@ ModelBackgroundLoader::~ModelBackgroundLoader()
 	}
 }
 
-bool ModelBackgroundLoader::poll(long maxTimeMilliseconds)
+bool ModelBackgroundLoader::poll(long long maxTimeMilliseconds)
 {
 #if OGRE_THREAD_SUPPORT
 	if (mState == LS_UNINITIALIZED) {
@@ -272,7 +272,7 @@ ModelBackgroundLoaderListener* ModelBackgroundLoader::createListener()
 	return listener;
 }
 
-bool ModelBackgroundLoader::isThereTimeLeft(long maxTimeMilliseconds)
+bool ModelBackgroundLoader::isThereTimeLeft(long long maxTimeMilliseconds)
 {
 	return Time::currentTimeMillis() <= maxTimeMilliseconds;
 }

@@ -154,7 +154,7 @@ void ModelDefinitionManager::removeBackgroundLoader(ModelBackgroundLoader* loade
 }
 
 
-void ModelDefinitionManager::pollBackgroundLoaders(long maxLoadingTimeMillis)
+void ModelDefinitionManager::pollBackgroundLoaders(long long maxLoadingTimeMillis)
 {
 	for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();)
 	{

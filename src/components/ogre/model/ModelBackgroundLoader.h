@@ -174,7 +174,7 @@ public:
 	 * @param maxTimeMilliseconds The max time allowed, presented as a future date, in unix time milliseconds.
 	 * @return True if the loading is complete.
 	 */
-	bool poll(long maxTimeMilliseconds);
+	bool poll(long long maxTimeMilliseconds);
 
 	/**
 	 * @brief Gets the current loading state.
@@ -241,7 +241,7 @@ protected:
 	 * @param maxTimeMilliseconds The max time allowed, presented as a future date, in unix time milliseconds.
 	 * @return True if there's time left.
 	 */
-	bool isThereTimeLeft(long maxTimeMilliseconds);
+	bool isThereTimeLeft(long long maxTimeMilliseconds);
 
 };
 

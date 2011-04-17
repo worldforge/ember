@@ -220,7 +220,7 @@ bool EmberOgre::renderOneFrame()
 		}
 
 		//To keep up a nice framerate we'll only allow four milliseconds for assets loading frame.
-		long maxLoadingTimeMillis = Time::currentTimeMillis() + 4;
+		long long maxLoadingTimeMillis = Time::currentTimeMillis() + 4;
 		mModelDefinitionManager->pollBackgroundLoaders(maxLoadingTimeMillis);
 
 		return true;

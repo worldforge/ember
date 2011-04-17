@@ -87,8 +87,8 @@ namespace OgreView {
 			//the mouse hasn't moved, perhaps the camera has?
 			if (mLastCameraPosition != mCamera.getDerivedPosition() || mLastCameraOrientation != mCamera.getDerivedOrientation()) {
 				//ok, the camera has moved, but has enough time elapsed since our last update to warrant a new update?
-				long now = Ember::Time::currentTimeMillis();
-				long delta = now - mLastUpdated;
+				long long now = Ember::Time::currentTimeMillis();
+				long long delta = now - mLastUpdated;
 
 				// if enough time has lapsed, we'll update, otherwise we return the last known position
 				if( delta >  mUpdatePositionThreshold )

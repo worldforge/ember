@@ -66,12 +66,12 @@ private:
 	/**
 	 * @brief The start of the logging, in milliseconds.
 	 */
-	long mStartMilliseconds;
+	long long mStartMilliseconds;
 
 	/**
 	 * @brief If report() has been called, record the last time of that.
 	 */
-	long mLastReportMilliseconds;
+	long long mLastReportMilliseconds;
 };
 
 }
