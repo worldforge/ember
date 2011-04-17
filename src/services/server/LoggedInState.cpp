@@ -23,6 +23,9 @@
 #include "LoggedInState.h"
 #include "ServerServiceSignals.h"
 #include "EnteredWorldState.h"
+#include "TransferInfoStringSerializer.h"
+
+#include "services/config/ConfigService.h"
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
@@ -33,10 +36,13 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
+#include <iostream>
+#include <fstream>
+
 namespace Ember
 {
 LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
-	StateBase<EnteredWorldState>::StateBase(parentState), Logout("logout", this, "Logout from the connected server."), CreateChar("add", this, "Create a character on the server."), TakeChar("take", this, "Take control of one of your characters."), ListChars("list", this, "List you available characters on the server."), mAccount(account)
+	StateBase<EnteredWorldState>::StateBase(parentState), Logout("logout", this, "Logout from the connected server."), CreateChar("add", this, "Create a character on the server."), TakeChar("take", this, "Take control of one of your characters."), ListChars("list", this, "List you available characters on the server."), mAccount(account), mTransferInfo(0)
 {
 	mAccount.AvatarSuccess.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarSuccess));
 	mAccount.GotCharacterInfo.connect(sigc::mem_fun(*this, &LoggedInState::gotCharacterInfo));
@@ -46,6 +52,7 @@ LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
 
 LoggedInState::~LoggedInState()
 {
+	delete mTransferInfo;
 }
 
 void LoggedInState::takeCharacter(const std::string &id)
@@ -115,11 +122,40 @@ void LoggedInState::gotAllCharacters()
 
 void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar)
 {
+	avatar->TransferRequested.connect(sigc::mem_fun(*this, &LoggedInState::avatar_transferRequest));
+
 	setChildState(new EnteredWorldState(*this, *avatar, mAccount));
 	mAccount.AvatarDeactivated.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarDeactivated));
 	//	delete mServerAdapter;
 	//	mServerAdapter = new ConnectedAdapter(*mAccount, *mAvatar, *mConn);
 
+}
+
+void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInfo)
+{
+	TransferInfoStringSerializer serializer;
+	std::string teleportFilePath(EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/teleports");
+	std::ifstream teleportsFile(teleportFilePath.c_str());
+	TransferInfoStringSerializer::TransferInfoStore transferObjects;
+	if (teleportsFile.good()) {
+		serializer.deserialize(transferObjects, teleportsFile);
+	}
+	teleportsFile.close();
+	transferObjects.push_back(transferInfo);
+
+	std::ofstream teleportsOutputFile(teleportFilePath.c_str());
+	if (teleportsOutputFile.good()) {
+		serializer.serialize(transferObjects, teleportsOutputFile);
+	}
+	teleportsOutputFile.close();
+
+	mTransferInfo = new Eris::TransferInfo(transferInfo);
+//	transfer(transferInfo);
+}
+
+const Eris::TransferInfo* LoggedInState::getTransferInfo() const
+{
+	return mTransferInfo;
 }
 
 

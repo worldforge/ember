@@ -82,7 +82,6 @@ private:
 
 	ConnectedAdapter mAdapter;
 
-	void avatar_transferRequest(const Eris::TransferInfo& transferInfo);
 
 	Eris::Connection& getConnection() const;
 

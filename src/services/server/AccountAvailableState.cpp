@@ -100,6 +100,10 @@ void AccountAvailableState::logoutComplete(bool clean)
 {
 	S_LOG_INFO("Logout Complete cleanness=" << clean);
 	ConsoleBackend::getSingleton().pushMessage("Logged out from server");
+	if (getChildState() && getChildState()->getTransferInfo()) {
+		Eris::TransferInfo transferInfo(*getChildState()->getTransferInfo());
+		transfer(transferInfo);
+	}
 	destroyChildState();
 }
 
