@@ -46,7 +46,7 @@ class ModelDefinition;
 class SubEntityDefinition;
 
 class ActionDefinition;
-struct SoundDefinition;
+class SoundDefinition;
 class AnimationDefinition;
 struct AnimationPartDefinition;
 struct AttachPointDefinition;
