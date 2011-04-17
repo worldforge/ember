@@ -92,7 +92,7 @@ public:
 /**
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class IconActionCreator: public Ember::EntityMapping::IActionCreator
+class IconActionCreator: public EntityMapping::IActionCreator
 {
 public:
 
@@ -105,10 +105,10 @@ public:
 	{
 	}
 
-	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition)
+	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 	{
-		Ember::EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
-		for (Ember::EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
+		EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
+		for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
 			if (J->getType() == "display-model") {
 				mModelName = J->getValue();
 			}
@@ -146,7 +146,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 		return mIconStore.getIcon(key);
 	} else {
 		IconActionCreator actionCreator(*entity);
-		std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &actionCreator, Ember::Application::getSingleton().getMainView()));
+		std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &actionCreator, Application::getSingleton().getMainView()));
 		std::string modelName;
 		if (modelMapping.get()) {
 			modelMapping->initialize();
@@ -213,7 +213,7 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 void IconManager::render(Icon& icon, EmberEntity& entity)
 {
 	IconActionCreator actionCreator(entity);
-	std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator, Ember::Application::getSingleton().getMainView()));
+	std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator, Application::getSingleton().getMainView()));
 	std::string modelName;
 	if (modelMapping.get()) {
 		modelMapping->initialize();
@@ -231,13 +231,13 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
 {
 	//we need to get the model mapping definition for this type
 	//once we have that, we will check for the first action of the first case of the first match (since that's guaranteed to be a show-model action
-	Eris::Connection* conn = Ember::EmberServices::getSingleton().getServerService()->getConnection();
+	Eris::Connection* conn = EmberServices::getSingleton().getServerService()->getConnection();
 	if (conn) {
 		Eris::TypeService* typeService = conn->getTypeService();
 		if (typeService) {
 			DummyEntity dummyEntity("-1", &erisType, typeService);
 			IconActionCreator actionCreator(dummyEntity);
-			std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, &actionCreator, Ember::Application::getSingleton().getMainView()));
+			std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, &actionCreator, Application::getSingleton().getMainView()));
 			std::string modelName;
 			if (modelMapping.get()) {
 				modelMapping->initialize();

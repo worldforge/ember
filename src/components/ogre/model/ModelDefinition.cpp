@@ -199,7 +199,7 @@ void ModelDefinition::reloadAllInstances()
 	for (ModelInstanceStore::iterator I = mModelInstances.begin(); I != mModelInstances.end(); ++I) {
 		I->second->reload();
 	}
-//	std::for_each(mModelInstances.begin(), mModelInstances.end(), std::mem_fun(&Ember::OgreView::Model::Model::reload));
+//	std::for_each(mModelInstances.begin(), mModelInstances.end(), std::mem_fun(&OgreView::Model::Model::reload));
 }
 
 	

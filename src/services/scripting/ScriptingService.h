@@ -57,7 +57,7 @@ public:
     /**
     Console command for loading scripts.
     */
-	const Ember::ConsoleCommandWrapper LoadScript;
+	const ConsoleCommandWrapper LoadScript;
 	
 	/**
 	 *    Registers a new scripting provider.
@@ -78,7 +78,7 @@ public:
 	 */
 	void executeCode(const std::string& scriptCode, const std::string& scriptType, IScriptingCallContext* callContext = 0);
 
-	void callFunction(const std::string& functionName, int narg, const std::string& scriptType, Ember::IScriptingCallContext* callContext = 0);
+	void callFunction(const std::string& functionName, int narg, const std::string& scriptType, IScriptingCallContext* callContext = 0);
 
 	/**
 	 *    The EventScriptError signal will be emitted when there is an error in a script.
@@ -108,7 +108,7 @@ public:
 	
 	IResourceProvider* getResourceProvider();
 	
-	void setResourceProvider(Ember::IResourceProvider* resourceProvider);
+	void setResourceProvider(IResourceProvider* resourceProvider);
 	
 	/**
 	Returns whether all scripting methods should be looked up at every call. Setting this to true will decrease performance, but allow for dynamic updating of script methods.

@@ -31,7 +31,7 @@
 namespace Ember {
 namespace OgreView {
 
-template<> Ember::OgreView::SoundDefinitionManager* Ember::Singleton<Ember::OgreView::SoundDefinitionManager>::ms_Singleton = 0;
+template<> OgreView::SoundDefinitionManager* Singleton<OgreView::SoundDefinitionManager>::ms_Singleton = 0;
 
 SoundDefinitionManager::SoundDefinitionManager()
 : mSoundParser(new XMLSoundDefParser(*this))

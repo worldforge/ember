@@ -63,7 +63,7 @@ public:
 	 * @param model The model which we need a mount for.
 	 * @param nodeProvider Provides an instance of a subclass of Ogre::Node to which the Model can be attached.
 	 */
-	ModelMount(::Ember::OgreView::Model::Model& model, INodeProvider* nodeProvider);
+	ModelMount(Model& model, INodeProvider* nodeProvider);
 
 	/**
 	 * @brief Dtor.
@@ -75,7 +75,7 @@ public:
 	 * @brief Gets the Model instance to which this mount is attached.
 	 * @return The model instance.
 	 */
-	::Ember::OgreView::Model::Model& getModel() const;
+	Model& getModel() const;
 
 	/**
 	 * @brief Rescales the model according to the bounding box.
@@ -98,7 +98,7 @@ protected:
 	/**
 	 *@brief The Model which this mount is attached to.
 	 */
-	::Ember::OgreView::Model::Model& mModel;
+	Model& mModel;
 
 	/**
 	 * @brief The node provider used by the mount.
@@ -121,7 +121,7 @@ protected:
 
 };
 
-inline ::Ember::OgreView::Model::Model& ModelMount::getModel() const
+inline Model& ModelMount::getModel() const
 {
 	return mModel;
 }

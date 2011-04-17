@@ -45,10 +45,10 @@ namespace OgreView
  * @brief Reactivates any model action which has previously been activated.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class ModelReactivatorVisitor: public Ember::EntityMapping::IVisitor
+class ModelReactivatorVisitor: public EntityMapping::IVisitor
 {
 private:
-	Ember::EntityMapping::ChangeContext mChangeContext;
+	EntityMapping::ChangeContext mChangeContext;
 	EmberEntityModelAction* mAction;
 public:
 
@@ -65,7 +65,7 @@ public:
 		}
 	}
 
-	void visit(Ember::EntityMapping::Actions::Action& action)
+	void visit(EntityMapping::Actions::Action& action)
 	{
 		EmberEntityModelAction* modelAction = dynamic_cast<EmberEntityModelAction*> (&action);
 		if (modelAction) {
@@ -75,12 +75,12 @@ public:
 		}
 	}
 
-	void visit(Ember::EntityMapping::Matches::MatchBase& match)
+	void visit(EntityMapping::Matches::MatchBase& match)
 	{
 
 	}
 
-	void visit(Ember::EntityMapping::Cases::CaseBase& caseBase)
+	void visit(EntityMapping::Cases::CaseBase& caseBase)
 	{
 
 	}
@@ -96,7 +96,7 @@ EmberEntityModelAction::~EmberEntityModelAction()
 {
 }
 
-void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	Model::Model* model = Model::ModelRepresentationManager::getSingleton().getModelForEntity(mEntity);
 	if (!model || model->getDefinition()->getName() != mModelName) {
@@ -123,7 +123,7 @@ void EmberEntityModelAction::activate(Ember::EntityMapping::ChangeContext& conte
 	//	S_LOG_VERBOSE("Showing model " << mModelName);
 }
 
-void EmberEntityModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void EmberEntityModelAction::deactivate(EntityMapping::ChangeContext& context)
 {
 	mEntity.setGraphicalRepresentation(0);
 	//As we've now deactivated our model action, removing the graphical representation, we should after the change context is complete also check if there are any other model actions which should be reactivated

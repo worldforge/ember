@@ -80,7 +80,7 @@ namespace OgreView
 namespace Terrain
 {
 
-class BasePointRetrieveTask: public Ember::Tasks::TemplateNamedTask<BasePointRetrieveTask>
+class BasePointRetrieveTask: public Tasks::TemplateNamedTask<BasePointRetrieveTask>
 {
 
 private:
@@ -93,7 +93,7 @@ public:
 		mTerrain(terrain), mAsyncCallback(asyncCallback)
 	{
 	}
-	void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 	{
 		mPoints = mTerrain.getPoints();
 	}
@@ -105,7 +105,7 @@ public:
 
 };
 
-class TerrainPageReloadTask: public Ember::Tasks::TemplateNamedTask<TerrainPageReloadTask>
+class TerrainPageReloadTask: public Tasks::TemplateNamedTask<TerrainPageReloadTask>
 {
 private:
 	TerrainHandler& mHandler;
@@ -120,7 +120,7 @@ public:
 	{
 	}
 
-	void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 	{
 		mGeometry->repopulate();
 		std::vector<const TerrainShader*> shaders;
@@ -147,7 +147,7 @@ public:
 };
 
 TerrainHandler::TerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
-	mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Ember::Tasks::TaskQueue(1)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
+	mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
 {
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
@@ -375,7 +375,7 @@ void TerrainHandler::updateShadows()
 {
 	//	if (mLightning) {
 	//		WFMath::Vector<3> sunDirection = mLightning->getMainLightDirection();
-	//		mTaskQueue->enqueueTask(new Ember::Tasks::SerialTask(new ShadowUpdateTask(mPages, sunDirection), new TerrainMaterialCompilationTask(mPages)));
+	//		mTaskQueue->enqueueTask(new Tasks::SerialTask(new ShadowUpdateTask(mPages, sunDirection), new TerrainMaterialCompilationTask(mPages)));
 	//	} else {
 	//		S_LOG_WARNING("Tried to update shadows without having any ILightning instance set.");
 	//	}

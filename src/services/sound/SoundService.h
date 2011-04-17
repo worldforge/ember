@@ -157,7 +157,7 @@ public:
 	 * It's through the resource provider that all sound data is loaded, so this must be called in order to have a properly functioning service.
 	 * @param resourceProvider A pointer to the resource provider to use. Ownership will not be transferred to this service.
 	 */
-	void setResourceProvider(Ember::IResourceProvider* resourceProvider);
+	void setResourceProvider(IResourceProvider* resourceProvider);
 	
 	/**
 	 * @brief Returns true if the sound system is enabled.

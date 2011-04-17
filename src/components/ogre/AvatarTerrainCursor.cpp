@@ -80,14 +80,14 @@ namespace OgreView {
 		bool updated = false;
 
 		//first check if the mouse has moved even one pixel, and if so force an update
-		const Ember::MousePosition& mousePosition(Ember::Input::getSingleton().getMousePosition());
+		const MousePosition& mousePosition(Input::getSingleton().getMousePosition());
 		if (mousePosition.xPixelPosition != mLastMouseX || mousePosition.yPixelPosition != mLastMouseY) {
 			shouldRecalculate = true;
 		} else {
 			//the mouse hasn't moved, perhaps the camera has?
 			if (mLastCameraPosition != mCamera.getDerivedPosition() || mLastCameraOrientation != mCamera.getDerivedOrientation()) {
 				//ok, the camera has moved, but has enough time elapsed since our last update to warrant a new update?
-				long long now = Ember::Time::currentTimeMillis();
+				long long now = Time::currentTimeMillis();
 				long long delta = now - mLastUpdated;
 
 				// if enough time has lapsed, we'll update, otherwise we return the last known position
@@ -100,7 +100,7 @@ namespace OgreView {
 		if(shouldRecalculate)
 		{
 			// mark update time
-			mLastUpdated = Ember::Time::currentTimeMillis();
+			mLastUpdated = Time::currentTimeMillis();
 			mLastMouseX = mousePosition.xPixelPosition;
 			mLastMouseY = mousePosition.yPixelPosition;
 			mLastCameraPosition = mCamera.getDerivedPosition();

@@ -40,13 +40,13 @@ class TerrainHandler;
 class TerrainInfo;
 class SegmentManager;
 
-class TerrainUpdateTask : public Ember::Tasks::TemplateNamedTask<TerrainUpdateTask>
+class TerrainUpdateTask : public Tasks::TemplateNamedTask<TerrainUpdateTask>
 {
 public:
 	TerrainUpdateTask(Mercator::Terrain& terrain, const TerrainDefPointStore& terrainPoints, TerrainHandler& handler, TerrainInfo& terrainInfo, bool& hasTerrainInfo, SegmentManager& segmentManager);
 	virtual ~TerrainUpdateTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 

@@ -64,7 +64,7 @@ private:
  * While entities normally get moved as a result of data sent from the server, we also want to allow the user to move entities independently.
  * The two main situations for this is either when the user is rearranging entities in the world, or when the user is a world author and needs to change the world.
  */
-class EntityMoveManager: public Ember::ConsoleObject, public virtual sigc::trackable
+class EntityMoveManager: public ConsoleObject, public virtual sigc::trackable
 {
 public:
 	EntityMoveManager(World& world);
@@ -72,7 +72,7 @@ public:
 	/**
 	 * @brief Console command for starting the movement operation.
 	 */
-	const Ember::ConsoleCommandWrapper Move;
+	const ConsoleCommandWrapper Move;
 
 	/**
 	 * @brief Starts moving of an entity.

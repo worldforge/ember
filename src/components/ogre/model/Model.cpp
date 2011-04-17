@@ -147,7 +147,7 @@ void Model::_notifyManager(Ogre::SceneManager* man)
 
 bool Model::createFromDefn()
 {
-	Ember::TimedLog timedLog("Model::createFromDefn");
+	TimedLog timedLog("Model::createFromDefn");
 	// create instance of model from definition
 	mScale = mDefinition->mScale;
 	mRotation = mDefinition->mRotation;
@@ -173,7 +173,7 @@ bool Model::createFromDefn()
 
 bool Model::createActualModel()
 {
-	Ember::TimedLog timedLog("Model::createActualModel");
+	TimedLog timedLog("Model::createActualModel");
 	Ogre::SceneManager* sceneManager = _getManager();
 	std::vector<std::string> showPartVector;
 

@@ -297,19 +297,19 @@ private:
 	 */
 	bool mConnected;
 
-	const Ember::ConsoleCommandWrapper Connect;
-	//const Ember::ConsoleCommandWrapper ReConnect;
-	const Ember::ConsoleCommandWrapper DisConnect;
-	const Ember::ConsoleCommandWrapper CreateAcc;
-	const Ember::ConsoleCommandWrapper Login;
-	const Ember::ConsoleCommandWrapper Logout;
-	const Ember::ConsoleCommandWrapper CreateChar;
-	const Ember::ConsoleCommandWrapper TakeChar;
-	const Ember::ConsoleCommandWrapper ListChars;
-	const Ember::ConsoleCommandWrapper Say;
-	const Ember::ConsoleCommandWrapper Emote;
-	const Ember::ConsoleCommandWrapper Delete;
-	const Ember::ConsoleCommandWrapper AdminTell;
+	const ConsoleCommandWrapper Connect;
+	//const ConsoleCommandWrapper ReConnect;
+	const ConsoleCommandWrapper DisConnect;
+	const ConsoleCommandWrapper CreateAcc;
+	const ConsoleCommandWrapper Login;
+	const ConsoleCommandWrapper Logout;
+	const ConsoleCommandWrapper CreateChar;
+	const ConsoleCommandWrapper TakeChar;
+	const ConsoleCommandWrapper ListChars;
+	const ConsoleCommandWrapper Say;
+	const ConsoleCommandWrapper Emote;
+	const ConsoleCommandWrapper Delete;
+	const ConsoleCommandWrapper AdminTell;
 
 	/**
 	 * @brief The adapter which holds the actual implementation of any server communication.

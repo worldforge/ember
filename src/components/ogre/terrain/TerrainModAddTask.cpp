@@ -38,7 +38,7 @@ TerrainModAddTask::TerrainModAddTask(Mercator::Terrain& terrain, const TerrainMo
 
 }
 
-void TerrainModAddTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainModAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	Eris::TerrainModTranslator* terrainMod = new Eris::TerrainModTranslator();
 	if (mModData.isMap()) {

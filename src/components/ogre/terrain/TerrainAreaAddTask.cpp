@@ -40,7 +40,7 @@ TerrainAreaAddTask::~TerrainAreaAddTask()
 {
 }
 
-void TerrainAreaAddTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainAreaAddTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	//   _fpreset();
 	//_controlfp(_PC_64, _MCW_PC);

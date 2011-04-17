@@ -431,7 +431,7 @@ protected:
 	/**
 	 * @brief The task queue we'll use for all background terrain updates.
 	 */
-	Ember::Tasks::TaskQueue* mTaskQueue;
+	Tasks::TaskQueue* mTaskQueue;
 
 	/**
 	 * @brief Provides lightning information for the terrain.

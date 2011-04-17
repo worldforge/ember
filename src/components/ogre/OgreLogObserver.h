@@ -33,8 +33,8 @@ namespace OgreView {
 /**
 @author Erik Hjortsberg
 A log observer which writes to the Ogre log system.
-This is a combined Ogre::LogListener and a Ember::StreamLogObserver.
-The Ember::StreamLogObserver part does the main work, while the Ogre::LogListener implementation allow us to receive ogre log events.
+This is a combined Ogre::LogListener and a StreamLogObserver.
+The StreamLogObserver part does the main work, while the Ogre::LogListener implementation allow us to receive ogre log events.
 */
 class OgreLogObserver: public Ogre::LogListener
 {

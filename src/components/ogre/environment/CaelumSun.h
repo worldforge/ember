@@ -46,7 +46,7 @@ namespace Environment {
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class CaelumSun :  public CaelumEnvironmentComponent, public ISun, public Ember::ConfigListenerContainer
+class CaelumSun :  public CaelumEnvironmentComponent, public ISun, public ConfigListenerContainer
 {
 public:
     CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun);

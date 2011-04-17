@@ -201,14 +201,14 @@ namespace Ember
 
 	void ConfigService::deregisterConsoleCommands()
 	{
-		Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand ( SETVALUE );
-		Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand ( GETVALUE );
+		ConsoleBackend::getSingletonPtr()->deregisterCommand ( SETVALUE );
+		ConsoleBackend::getSingletonPtr()->deregisterCommand ( GETVALUE );
 	}
 
 	void ConfigService::registerConsoleCommands()
 	{
-		Ember::ConsoleBackend::getSingletonPtr()->registerCommand ( SETVALUE, this, "Sets a value in the configuration. Usage: set_value <section> <key> <value>" );
-		Ember::ConsoleBackend::getSingletonPtr()->registerCommand ( GETVALUE, this, "Gets a value from the configuration. Usage: get_value <section> <key>" );
+		ConsoleBackend::getSingletonPtr()->registerCommand ( SETVALUE, this, "Sets a value in the configuration. Usage: set_value <section> <key> <value>" );
+		ConsoleBackend::getSingletonPtr()->registerCommand ( GETVALUE, this, "Gets a value from the configuration. Usage: get_value <section> <key>" );
 	}
 
 	bool ConfigService::itemExists(const std::string& section, const std::string& key) const
@@ -263,7 +263,7 @@ namespace Ember
 	{
 		if ( command == SETVALUE )
 		{
-			Ember::Tokeniser tokeniser;
+			Tokeniser tokeniser;
 			tokeniser.initTokens ( args );
 			std::string section ( tokeniser.nextToken() );
 			std::string key ( tokeniser.nextToken() );
@@ -271,36 +271,36 @@ namespace Ember
 
 			if ( section == "" || key == "" || value == "" )
 			{
-				Ember::ConsoleBackend::getSingletonPtr()->pushMessage ( "Usage: set_value <section> <key> <value>" );
+				ConsoleBackend::getSingletonPtr()->pushMessage ( "Usage: set_value <section> <key> <value>" );
 			}
 			else
 			{
 				setValue ( section, key, value );
-				Ember::ConsoleBackend::getSingletonPtr()->pushMessage ( "New value set, section: " +  section + " key: " + key + " value: " + value );
+				ConsoleBackend::getSingletonPtr()->pushMessage ( "New value set, section: " +  section + " key: " + key + " value: " + value );
 			}
 
 		}
 		else if ( command == GETVALUE )
 		{
-			Ember::Tokeniser tokeniser;
+			Tokeniser tokeniser;
 			tokeniser.initTokens ( args );
 			std::string section ( tokeniser.nextToken() );
 			std::string key ( tokeniser.nextToken() );
 
 			if ( section == "" || key == "" )
 			{
-				Ember::ConsoleBackend::getSingletonPtr()->pushMessage ( "Usage: get_value <section> <key>" );
+				ConsoleBackend::getSingletonPtr()->pushMessage ( "Usage: get_value <section> <key>" );
 			}
 			else
 			{
 				if ( !hasItem ( section, key ) )
 				{
-					Ember::ConsoleBackend::getSingletonPtr()->pushMessage ( "No such value." );
+					ConsoleBackend::getSingletonPtr()->pushMessage ( "No such value." );
 				}
 				else
 				{
 					varconf::Variable value = getValue ( section, key );
-					Ember::ConsoleBackend::getSingletonPtr()->pushMessage ( std::string ( "Value: " ) + static_cast<std::string> ( value ) );
+					ConsoleBackend::getSingletonPtr()->pushMessage ( std::string ( "Value: " ) + static_cast<std::string> ( value ) );
 				}
 			}
 		}

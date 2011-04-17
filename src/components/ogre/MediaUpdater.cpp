@@ -43,8 +43,8 @@ MediaUpdater::~MediaUpdater()
 
 void MediaUpdater::performUpdate()
 {
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
-	Ember::WfutService* wfutSrv= Ember::EmberServices::getSingleton().getWfutService();
+	ConfigService* configSrv = EmberServices::getSingleton().getConfigService();
+	WfutService* wfutSrv= EmberServices::getSingleton().getWfutService();
 	
 	if (configSrv->itemExists("wfut", "server")) {
 		std::string server(configSrv->getValue("wfut", "server"));

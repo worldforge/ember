@@ -196,7 +196,7 @@ protected:
 inline const Carpenter::AttachPoint* AttachPointNode::getAttachPoint() const { return mAttachPoint;}
 
 /**
- * @brief A mapping between a Carpenter::BuildingBlock and an Ember::Model.
+ * @brief A mapping between a Carpenter::BuildingBlock and an Model.
  */
 class ModelBlock
 {

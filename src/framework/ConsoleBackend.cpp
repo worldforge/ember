@@ -32,12 +32,13 @@
 
 #include <sstream>
 
+template<> Ember::ConsoleBackend* Ember::Singleton<Ember::ConsoleBackend>::ms_Singleton = 0;
+
 namespace Ember {
 
 // List of ConsoleBackend's console commands
 const char * const ConsoleBackend::LIST_CONSOLE_COMMANDS = "list_commands";
 const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
-template<> Ember::ConsoleBackend* Ember::Singleton<Ember::ConsoleBackend>::ms_Singleton = 0;
 
 
 ConsoleBackend::ConsoleBackend(void) :

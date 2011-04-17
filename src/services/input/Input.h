@@ -133,7 +133,7 @@ You can listen to input updates either by listening directly to the events, or b
 
 This class also provides some methods useful for standard windowing and event system integration, such as isApplicationVisible().
 */
-class Input : public Ember::ConsoleObject, public Ember::Singleton<Input>
+class Input : public ConsoleObject, public Singleton<Input>
 {
 friend class InputCommandMapper;
 

@@ -247,7 +247,7 @@ private:
 /**
  * @brief Shows or hides specific model part in entity creator preview.
  */
-class ModelPreviewWorkerPartAction : public Ember::EntityMapping::Actions::Action
+class ModelPreviewWorkerPartAction : public EntityMapping::Actions::Action
 {
 public:
 	/**
@@ -265,12 +265,12 @@ public:
 	/**
 	 * @brief Shows specific model part. Called by model mapping framework.
 	 */
-	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	virtual void activate(EntityMapping::ChangeContext& context);
 
 	/**
 	 * @brief Hides specific model part. Called by model mapping framework.
 	 */
-	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+	virtual void deactivate(EntityMapping::ChangeContext& context);
 protected:
 
 	/**
@@ -287,7 +287,7 @@ protected:
 /**
  * @brief Hides specific model in entity creator preview.
  */
-class ModelPreviewWorkerHideModelAction : public Ember::EntityMapping::Actions::Action
+class ModelPreviewWorkerHideModelAction : public EntityMapping::Actions::Action
 {
 public:
 	/**
@@ -304,12 +304,12 @@ public:
 	/**
 	 * @brief Hides model. Called by model mapping framework.
 	 */
-	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	virtual void activate(EntityMapping::ChangeContext& context);
 
 	/**
 	 * @brief Does nothing. Called by model mapping framework.
 	 */
-	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+	virtual void deactivate(EntityMapping::ChangeContext& context);
 protected:
 
 	/**
@@ -321,7 +321,7 @@ protected:
 /**
  * @brief Shows the specific model in entity creator preview.
  */
-class ModelPreviewWorkerModelAction : public Ember::EntityMapping::Actions::Action
+class ModelPreviewWorkerModelAction : public EntityMapping::Actions::Action
 {
 public:
 	/**
@@ -339,12 +339,12 @@ public:
 	/**
 	 * @brief Shows specific model. Called by model mapping framework.
 	 */
-	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	virtual void activate(EntityMapping::ChangeContext& context);
 
 	/**
 	 * @brief Hides model. Called by model mapping framework.
 	 */
-	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+	virtual void deactivate(EntityMapping::ChangeContext& context);
 protected:
 	/**
 	 * @brief The preview model class that holds the model
@@ -360,7 +360,7 @@ protected:
 	/**
 	 * @brief Class that controls the visibility of the preview model
 	 */
-class ModelPreviewWorkerActionCreator  : public Ember::EntityMapping::IActionCreator {
+class ModelPreviewWorkerActionCreator  : public EntityMapping::IActionCreator {
 public:
 	/**
 	 * @brief Constructor
@@ -379,7 +379,7 @@ public:
 	 * @param aCase
 	 * @param caseDefinition
 	 */
-	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
+	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 
 	/**
@@ -388,7 +388,7 @@ protected:
 	ModelPreviewWorker& mModelPreviewWorker;
 };
 
-class ModelPreviewWorkerMovementBridge : public ::Ember::OgreView::Authoring::EntityMoverBase
+class ModelPreviewWorkerMovementBridge : public Authoring::EntityMoverBase
 {
 public:
 

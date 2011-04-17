@@ -44,7 +44,7 @@ GeometryUpdateTask::~GeometryUpdateTask()
 {
 }
 
-void GeometryUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	std::vector<Mercator::Segment*> segments;
 

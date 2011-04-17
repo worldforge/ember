@@ -42,7 +42,7 @@ public:
 	virtual void buildWidget();
 	virtual void runCommand(const std::string &command, const std::string &args);
 
-	const Ember::ConsoleCommandWrapper SoftQuit;
+	const ConsoleCommandWrapper SoftQuit;
 	
 	
 	/**

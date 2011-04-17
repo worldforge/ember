@@ -44,7 +44,7 @@ EmberEntityPartAction::~EmberEntityPartAction()
 {
 }
 
-void EmberEntityPartAction::activate(Ember::EntityMapping::ChangeContext& context)
+void EmberEntityPartAction::activate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing part " << mPartName);
 	Model::ModelRepresentation* representation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mEntity);
@@ -53,7 +53,7 @@ void EmberEntityPartAction::activate(Ember::EntityMapping::ChangeContext& contex
 	}
 }
 
-void EmberEntityPartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void EmberEntityPartAction::deactivate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding part " << mPartName);
 	Model::ModelRepresentation* representation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(mEntity);

@@ -74,7 +74,7 @@ void ListHolder::addItem(CEGUI::ListboxItem* item)
 void ListHolder::insertItem(CEGUI::ListboxItem* item, const CEGUI::ListboxItem* position)
 {
 	//not yet supported
-	throw Ember::Exception("insertItem is not yet supported.");
+	throw Exception("insertItem is not yet supported.");
 /*	ListItemStore::iterator pos = std::find(mItems.begin(), mItems.end(), position);
 	mItems.insert(pos, item);*/
 

@@ -45,14 +45,14 @@ public:
 	virtual void buildWidget();
 	virtual void runCommand(const std::string &command, const std::string &args);
 
-	const Ember::ConsoleCommandWrapper HelpCommand;
+	const ConsoleCommandWrapper HelpCommand;
 
 protected:
 
 	void show();
 
 	/**
-	 *    hooked to Ember::OgreView::EventCreatedAvatarEntity, show a help blurb about the movement mode
+	 *    hooked to OgreView::EventCreatedAvatarEntity, show a help blurb about the movement mode
 	 * @param entity
 	 */
 	void EmberOgre_CreatedAvatarEntity(EmberEntity& entity);

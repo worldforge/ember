@@ -98,7 +98,7 @@ void OgreSetup::runCommand(const std::string& command, const std::string& args)
 		std::stringstream ss;
 		OgreInfo::diagnose(ss);
 		S_LOG_INFO(ss.str());
-		Ember::ConsoleBackend::getSingleton().pushMessage("Ogre diagnosis information has been written to the log.");
+		ConsoleBackend::getSingleton().pushMessage("Ogre diagnosis information has been written to the log.");
 	}
 }
 
@@ -142,7 +142,7 @@ void OgreSetup::shutdown()
 
 Ogre::Root* OgreSetup::createOgreSystem()
 {
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
+	ConfigService* configSrv = EmberServices::getSingleton().getConfigService();
 
 	//We need to set the current directory to the prefix before trying to load Ogre.
 	//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
@@ -189,7 +189,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		pluginExtension = "";
 		pluginLocations.push_back("");
 #endif
-		Ember::Tokeniser tokeniser(plugins, ",");
+		Tokeniser tokeniser(plugins, ",");
 		std::string token = tokeniser.nextToken();
 		while (token != "") {
 			for (std::vector<std::string>::iterator I = pluginLocations.begin(); I != pluginLocations.end(); ++I) {
@@ -260,7 +260,7 @@ bool OgreSetup::configure(void)
 {
 	bool suppressConfig = false;
 	bool success = false;
-	Ember::ConfigService* configService(Ember::EmberServices::getSingleton().getConfigService());
+	ConfigService* configService(EmberServices::getSingleton().getConfigService());
 	if (configService->itemExists("ogre", "suppressconfigdialog")) {
 		suppressConfig = static_cast<bool> (configService->getValue("ogre", "suppressconfigdialog"));
 	}
@@ -269,7 +269,7 @@ bool OgreSetup::configure(void)
 			success = mRoot->restoreConfig();
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
-			unlink((Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ogre.cfg").c_str());
+			unlink((EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ogre.cfg").c_str());
 			try {
 				success = mRoot->showConfigDialog();
 			} catch (const std::exception& ex) {
@@ -281,7 +281,7 @@ bool OgreSetup::configure(void)
 			success = mRoot->showConfigDialog();
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
-			unlink((Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ogre.cfg").c_str());
+			unlink((EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ogre.cfg").c_str());
 			try {
 				success = mRoot->showConfigDialog();
 			} catch (const std::exception& ex) {

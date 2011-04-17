@@ -94,7 +94,7 @@ void Sun::runCommand(const std::string &command, const std::string &args)
 {
 	if(SetSunPosition == command)
 	{
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string x = tokeniser.nextToken();
 		std::string y = tokeniser.nextToken();
@@ -108,7 +108,7 @@ void Sun::runCommand(const std::string &command, const std::string &args)
 		}
 	} else if (SetSunColour == command)
 	{
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string r = tokeniser.nextToken();
 		std::string b = tokeniser.nextToken();
@@ -123,7 +123,7 @@ void Sun::runCommand(const std::string &command, const std::string &args)
 
 	} else if (SetAmbientLight == command)
 	{
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string r = tokeniser.nextToken();
 		std::string b = tokeniser.nextToken();

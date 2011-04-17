@@ -38,12 +38,12 @@ class EntityCreatorCreationInstance;
  * Implementation of IActionCreator interface to use with model mapping framework.
  * Creates entity creator specific actions. Used for showing entity preview.
  */
-class EntityCreatorActionCreator : public Ember::EntityMapping::IActionCreator
+class EntityCreatorActionCreator : public EntityMapping::IActionCreator
 {
 public:
 	EntityCreatorActionCreator(EntityCreatorCreationInstance& creationInstance);
 	~EntityCreatorActionCreator();
-	virtual void createActions(Ember::EntityMapping::EntityMapping& modelMapping, Ember::EntityMapping::Cases::CaseBase* aCase, Ember::EntityMapping::Definitions::CaseDefinition& caseDefinition);
+	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EntityCreatorCreationInstance& mCreationInstance;
 };

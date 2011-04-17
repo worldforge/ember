@@ -58,7 +58,7 @@ If the npc has a list of suggested responses these will be shown in a list of cl
 
 @author Erik Hjortsberg
 */
-class IngameChatWidget : public Widget, public Ember::ConfigListenerContainer {
+class IngameChatWidget : public Widget, public ConfigListenerContainer {
 
 
 

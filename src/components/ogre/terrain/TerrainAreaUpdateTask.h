@@ -51,7 +51,7 @@ public:
 	TerrainAreaUpdateTask(Mercator::Terrain& terrain, Mercator::Area* area, ShaderUpdateSlotType markForUpdateSlot, const TerrainShader* shader, const WFMath::AxisBox<2>& oldShape);
 	virtual ~TerrainAreaUpdateTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 

@@ -47,7 +47,7 @@ AuthoringManager::AuthoringManager(World& world) :
 	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mWorld(world), mHandler(0), mRawTypeInfoRepository(0)
 {
 	registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
-	mRawTypeInfoRepository = new RawTypeInfoRepository(*Ember::EmberServices::getSingleton().getServerService());
+	mRawTypeInfoRepository = new RawTypeInfoRepository(*EmberServices::getSingleton().getServerService());
 //	view.getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &AuthoringManager::gotAvatarCharacter));
 }
 
@@ -118,9 +118,9 @@ void AuthoringManager::simpleEntityVisualizationBeingDeleted(EmberEntity* entity
 void AuthoringManager::runCommand(const std::string &command, const std::string &args)
 {
 	if (DisplayAuthoringVisualizations == command) {
-		Ember::EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", true);
+		EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", true);
 	} else if (HideAuthoringVisualizations == command) {
-		Ember::EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", false);
+		EmberServices::getSingleton().getConfigService()->setValue("authoring", "visualizations", false);
 	}
 }
 
@@ -139,7 +139,7 @@ void AuthoringManager::gotAvatarCharacter(Eris::Entity* entity)
 {
 	if (entity) {
 		if (entity->getType()->isA(mWorld.getView().getAvatar()->getConnection()->getTypeService()->getTypeByName("creator"))) {
-			mRawTypeInfoRepository = new RawTypeInfoRepository(*Ember::EmberServices::getSingleton().getServerService());
+			mRawTypeInfoRepository = new RawTypeInfoRepository(*EmberServices::getSingleton().getServerService());
 		}
 	}
 }

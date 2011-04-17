@@ -84,7 +84,7 @@ When creating a new Widget class, make sure you also add it to WidgetDefinitions
 */
 class Widget : 
 public virtual sigc::trackable,
-public Ember::ConsoleObject
+public ConsoleObject
 {
 public:
 

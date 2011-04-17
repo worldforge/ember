@@ -80,7 +80,7 @@ Inspect("inspect", this, "Inspect an entity."),
 mCurrentEntity(0), mChangedThisFrame(false)
 {
 
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
+	EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
 }
 InspectWidget::~InspectWidget()
 {
@@ -137,7 +137,7 @@ void InspectWidget::runCommand(const std::string &command, const std::string &ar
 	if(Inspect == command)
 	{
 		//the first argument must be a valid entity id
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string entityId = tokeniser.nextToken();
 		if (entityId != "") {
@@ -146,7 +146,7 @@ void InspectWidget::runCommand(const std::string &command, const std::string &ar
 				startInspecting(entity);
 			}
 		} else {
-			Ember::ConsoleBackend::getSingletonPtr()->pushMessage("You must specifify a valid entity id to inspect.");
+			ConsoleBackend::getSingletonPtr()->pushMessage("You must specifify a valid entity id to inspect.");
 		}
 
 	} else {

@@ -134,7 +134,7 @@ ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mEntity(0), mEnti
 
 	// Making model from temporary entity
 	ModelPreviewWorkerActionCreator actionCreator(*this);
-	std::auto_ptr<Ember::EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
+	std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, &actionCreator, 0));
 	if (modelMapping.get()) {
 		modelMapping->initialize();
 	}
@@ -260,13 +260,13 @@ ModelPreviewWorkerPartAction::~ModelPreviewWorkerPartAction()
 {
 }
 
-void ModelPreviewWorkerPartAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerPartAction::activate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator part " << mPartName);
 	mModelPreviewWorker.showModelPart(mPartName);
 }
 
-void ModelPreviewWorkerPartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerPartAction::deactivate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator part " << mPartName);
 	mModelPreviewWorker.hideModelPart(mPartName);
@@ -282,13 +282,13 @@ ModelPreviewWorkerModelAction::~ModelPreviewWorkerModelAction()
 {
 }
 
-void ModelPreviewWorkerModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator model " << mModelName);
 	mModelPreviewWorker.setModel(mModelName);
 }
 
-void ModelPreviewWorkerModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerModelAction::deactivate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator model " << mModelName);
 	mModelPreviewWorker.setModel("");
@@ -303,12 +303,12 @@ ModelPreviewWorkerHideModelAction::~ModelPreviewWorkerHideModelAction()
 {
 }
 
-void ModelPreviewWorkerHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerHideModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	mModelPreviewWorker.setModel("");
 }
 
-void ModelPreviewWorkerHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void ModelPreviewWorkerHideModelAction::deactivate(EntityMapping::ChangeContext& context)
 {
 }
 
@@ -340,7 +340,7 @@ void ModelPreviewWorkerActionCreator::createActions(EntityMapping::EntityMapping
 }
 
 ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-	::Ember::OgreView::Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker)
+Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker)
 {
 }
 

@@ -37,7 +37,7 @@ TerrainAreaUpdateTask::~TerrainAreaUpdateTask()
 {
 }
 
-void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainAreaUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	mTerrain.updateArea(mArea);
 }

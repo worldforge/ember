@@ -45,7 +45,7 @@ namespace OgreView {
 	 * @author Sean Ryan <sean@evercrack.com>
 	 * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 	 */
-	class AvatarTerrainCursor : public virtual sigc::trackable, Ember::ConfigListenerContainer
+	class AvatarTerrainCursor : public virtual sigc::trackable, ConfigListenerContainer
 	{
 	public:
 		friend class AvatarCamera;

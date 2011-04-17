@@ -67,15 +67,15 @@ class ModelRenderer;
  * A helper class for creating simple entities directly from entity types.
  * The helper binds to a tree widget, which will be filled with entity types.
  */
-class EntityCreatorTypeHelper : public Ember::ConsoleObject
+class EntityCreatorTypeHelper : public ConsoleObject
 {
 public:
 
 	EntityCreatorTypeHelper(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 	virtual ~EntityCreatorTypeHelper();
 
-	const Ember::ConsoleCommandWrapper CreateEntity;
-	const Ember::ConsoleCommandWrapper Make;
+	const ConsoleCommandWrapper CreateEntity;
+	const ConsoleCommandWrapper Make;
 
 	virtual void runCommand(const std::string &command, const std::string &args);
 

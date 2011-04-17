@@ -123,7 +123,7 @@ void MeshPreviewHandler::updateAnimation(Ogre::Real elapsedTime)
 MeshPreviewMeshInstance& MeshPreviewHandler::getInstance(size_t position)
 {
 	if (mInstances.size() < position) {
-		throw Ember::Exception("Not that many instances in the store.");
+		throw Exception("Not that many instances in the store.");
 	}
 	return mInstances[position];
 }
@@ -309,7 +309,7 @@ bool MeshPreview::playAnimation_Clicked(const CEGUI::EventArgs& args)
 			instance.toggleAnimation(animationName);
 		}
 		fillAnimationList(instance);
-	} catch (const Ember::Exception&) {
+	} catch (const Exception&) {
 		return true;
 	}
 	return true;
@@ -321,7 +321,7 @@ bool MeshPreview::resetAnimation_Clicked(const CEGUI::EventArgs& args)
 		MeshPreviewMeshInstance& instance = getActiveInstance();
 		instance.resetAnimations();
 		fillAnimationList(instance);
-	} catch (const Ember::Exception&) {
+	} catch (const Exception&) {
 		return true;
 	}
 
@@ -341,7 +341,7 @@ void MeshPreview::createdNewEntity(size_t index)
 		CEGUI::ListboxItem* item = new Gui::ColouredListItem(name, index);
 		mCreatedMeshes->addItem(item);
 
-	} catch (const Ember::Exception&)
+	} catch (const Exception&)
 	{
 		return;
 	}
@@ -385,7 +385,7 @@ void MeshPreview::fillAnimationList(MeshPreviewMeshInstance& instance )
 void MeshPreview::runCommand(const std::string &command, const std::string &args)
 {
 	if (CreateMesh == command) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string meshName = tokeniser.nextToken();
 		if (meshName != "") {
@@ -416,7 +416,7 @@ Ogre::SceneNode* MeshPreview::getActiveSceneNode()
 		try {
 			const MeshPreviewMeshInstance instance = mHandler.getInstance(index);
 			return instance.getSceneNode();
-		} catch (const Ember::Exception&) {
+		} catch (const Exception&) {
 			return 0;
 		}
 	}
@@ -432,7 +432,7 @@ MeshPreviewMeshInstance& MeshPreview::getActiveInstance()
 
 		return mHandler.getInstance(index);
 	}
-	throw Ember::Exception("No selected item.");
+	throw Exception("No selected item.");
 }
 
 bool MeshPreview::createdMeshes_EventSelectionChanged(const CEGUI::EventArgs& args)
@@ -440,7 +440,7 @@ bool MeshPreview::createdMeshes_EventSelectionChanged(const CEGUI::EventArgs& ar
 	try {
 		MeshPreviewMeshInstance& instance = getActiveInstance();
 		fillAnimationList(instance);
-	} catch (const Ember::Exception&) {
+	} catch (const Exception&) {
 	}
 	return true;
 

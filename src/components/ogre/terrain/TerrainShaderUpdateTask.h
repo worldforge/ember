@@ -49,7 +49,7 @@ class TerrainPageSurfaceCompilationInstance;
  * This will also recompile the terrain page material once the surface has been updated.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class TerrainShaderUpdateTask : public Ember::Tasks::TemplateNamedTask<TerrainShaderUpdateTask>
+class TerrainShaderUpdateTask : public Tasks::TemplateNamedTask<TerrainShaderUpdateTask>
 {
 public:
 
@@ -73,7 +73,7 @@ public:
 
 	virtual ~TerrainShaderUpdateTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 

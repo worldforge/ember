@@ -142,10 +142,10 @@ void EmberEntity::createEntityMapping(Scene& scene)
 	delete mEntityMapping;
 	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*this, scene);
-	mEntityMapping = ::Ember::OgreView::Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*this, &creator, getView());
+	mEntityMapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*this, &creator, getView());
 }
 
-Ember::EntityMapping::EntityMapping* EmberEntity::getMapping() const
+EntityMapping::EntityMapping* EmberEntity::getMapping() const
 {
 	return mEntityMapping;
 }
@@ -221,7 +221,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
 
 	// Make a sound in OpenAL -- mafm: call doesn't exist
-	//	Ember::EmberServices::getSingleton().getSoundService()->playTalk(msg,
+	//	EmberServices::getSingleton().getSoundService()->playTalk(msg,
 	//		getPosition(),getOrientation());
 
 	// Call the method of the base class (since we've overloaded it)
@@ -239,7 +239,7 @@ void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation &
 		const std::string& name = *I;
 		std::string message = getName() + " emits a " + name + ".";
 
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
+		ConsoleBackend::getSingletonPtr()->pushMessage(message);
 
 		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << name);
 	}
@@ -296,7 +296,7 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 		const std::string& name = *I;
 		std::string message = getName() + " performs a " + name + ".";
 
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
+		ConsoleBackend::getSingletonPtr()->pushMessage(message);
 
 		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
 	}
@@ -309,7 +309,7 @@ void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 	if (act->copyAttr("description", attr) && attr.isString()) {
 		std::string message = getName() + " " + attr.asString() + ".";
 
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(message);
+		ConsoleBackend::getSingletonPtr()->pushMessage(message);
 
 		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << attr.String());
 	}
@@ -498,7 +498,7 @@ void EmberEntity::dumpAttributes(std::iostream& outstream, std::ostream& logOuts
 	Atlas::Message::QueuedDecoder decoder;
 
 	Atlas::Codecs::XML codec(outstream, decoder);
-	Ember::MultiLineListFormatter formatter(outstream, codec);
+	MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
 	encoder.streamMessageElement(getAttributes());

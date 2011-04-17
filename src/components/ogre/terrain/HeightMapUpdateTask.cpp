@@ -49,7 +49,7 @@ HeightMapUpdateTask::~HeightMapUpdateTask()
 {
 }
 
-void HeightMapUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void HeightMapUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	createHeightMapSegments();
 }

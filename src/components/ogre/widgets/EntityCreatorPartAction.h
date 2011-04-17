@@ -37,7 +37,7 @@ class EntityCreatorCreationInstance;
 /**
  * @brief Shows or hides specific model part in entity creator preview.
  */
-class EntityCreatorPartAction : public Ember::EntityMapping::Actions::Action
+class EntityCreatorPartAction : public EntityMapping::Actions::Action
 {
 public:
 	EntityCreatorPartAction(EntityCreatorCreationInstance& creationInstance, std::string partName);
@@ -45,11 +45,11 @@ public:
 	/**
 	 * Shows specific model part. Called by model mapping framework.
 	 */
-	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	virtual void activate(EntityMapping::ChangeContext& context);
 	/**
 	 * Hides specific model part. Called by model mapping framework.
 	 */
-	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+	virtual void deactivate(EntityMapping::ChangeContext& context);
 protected:
 	EntityCreatorCreationInstance& mCreationInstance;
 	std::string mPartName;

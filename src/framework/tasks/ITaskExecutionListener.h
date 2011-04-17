@@ -56,7 +56,7 @@ public:
 	 * @brief Called when an error occurred during execution.
 	 * @param exception Describes the error.
 	 */
-	virtual void executionError(const Ember::Exception& exception) = 0;
+	virtual void executionError(const Exception& exception) = 0;
 };
 
 }

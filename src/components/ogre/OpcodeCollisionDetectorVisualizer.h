@@ -47,7 +47,7 @@ class OpcodeCollisionDetectorVisualizerInstance;
 Helps with visualizing the collision objects. Create and register instances of OpcodeCollisionDetectorVisualizerInstance to visualize entities.
 @see OpcodeCollisionDetectorVisualizerInstance
 */
-class OpcodeCollisionDetectorVisualizer : public Ember::Singleton<OpcodeCollisionDetectorVisualizer>, public Ogre::FrameListener
+class OpcodeCollisionDetectorVisualizer : public Singleton<OpcodeCollisionDetectorVisualizer>, public Ogre::FrameListener
 {
 public:
 	friend class OpcodeCollisionDetectorVisualizerInstance;

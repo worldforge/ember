@@ -55,13 +55,13 @@ void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml,
 	}
 	switch (lml) {
 		case Ogre::LML_TRIVIAL:
-			Ember::Log::slog("Ogre", Ember::Log::VERBOSE) << ogre << message << Ember::Log::END_MESSAGE;
+			Log::slog("Ogre", Log::VERBOSE) << ogre << message << Log::END_MESSAGE;
 			break;
 		case Ogre::LML_NORMAL:
-			Ember::Log::slog("Ogre", Ember::Log::INFO) << ogre << message << Ember::Log::END_MESSAGE;
+			Log::slog("Ogre", Log::INFO) << ogre << message << Log::END_MESSAGE;
 			break;
 		case Ogre::LML_CRITICAL:
-			Ember::Log::slog("Ogre", Ember::Log::FAILURE) << ogre << message << Ember::Log::END_MESSAGE;
+			Log::slog("Ogre", Log::FAILURE) << ogre << message << Log::END_MESSAGE;
 			break;
 
 	}

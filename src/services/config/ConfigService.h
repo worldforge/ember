@@ -44,7 +44,7 @@ namespace Ember
 	* @see Ember::Service
 	* @see varconf
 	*/
-	class ConfigService: public Service, public Ember::ConsoleObject
+	class ConfigService: public Service, public ConsoleObject
 	{
 		private:
 			//----------------------------------------------------------------------

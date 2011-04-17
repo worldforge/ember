@@ -165,7 +165,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	mCaelumSystem->getUniversalClock()->setTimeScale(1);
 
 	int year, month, day, hour, minute, second;
-	bool usingServerTime = Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, hour, minute, second);
+	bool usingServerTime = EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, hour, minute, second);
 
 	if (!usingServerTime) {
 		S_LOG_WARNING("Could not get server time, using local time for environment.");
@@ -217,7 +217,7 @@ void CaelumEnvironment::setTime(int hour, int minute, int second)
 {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		int year, month, day, _hour, _minute, _second;
-		Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
+		EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 
 		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
 	}
@@ -227,7 +227,7 @@ void CaelumEnvironment::setTime(int seconds)
 {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
 		int year, month, day, _hour, _minute, _second;
-		Ember::EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
+		EmberServices::getSingleton().getTimeService()->getServerTime(year, month, day, _hour, _minute, _second);
 
 		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, 0, 0, seconds);
 	}
@@ -259,7 +259,7 @@ void CaelumEnvironment::setWorldPosition(float longitudeDegrees, float latitudeD
 void CaelumEnvironment::runCommand(const std::string &command, const std::string &args)
 {
 	if (SetCaelumTime == command) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string hourString = tokeniser.nextToken();
 		std::string minuteString = tokeniser.nextToken();

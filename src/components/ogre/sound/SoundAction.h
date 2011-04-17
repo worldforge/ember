@@ -33,7 +33,7 @@ class SoundEntity;
 /**
  * @brief Responsible for handling actions (defined in modeldef). It contain references for sound groups defined within the action.
  */
-class SoundAction : public Ember::ISoundMotionProvider
+class SoundAction : public ISoundMotionProvider
 {
 public:
 	SoundAction(SoundEntity& soundEntity);
@@ -74,9 +74,9 @@ public:
 	 * If no sound is currently playing this will be null. Note that the SoundInstance returned here could be deleted at any time, so don't store any reference to it.
 	 * @return The sound instance, or null if no sound is being played.
 	 */
-	Ember::SoundInstance* getInstance() const;
+	SoundInstance* getInstance() const;
 
-	virtual void update(Ember::SoundSource& soundSource);
+	virtual void update(SoundSource& soundSource);
 	
 	/**
 	 * @brief Sets whether this sound should loop or not.
@@ -101,12 +101,12 @@ protected:
 	 * @brief The sound instance which will be used to play this action.
 	 * This is owned by this class, but only available when the sound is actually playing. As soon as the sound stops playing this will be set to null (and the instance deleted).
 	 */
-	Ember::SoundInstance* mInstance;
+	SoundInstance* mInstance;
 	
 	/**
 	 * @brief Set to true if the sounds created by this actions should loop.
 	 * Most actions should not loop, but movement actions should. The default is false.
-	 * Note that if a sound is set to not loop, we must listen for the Ember::SoundInstance::EventPlayComplete so that we can remove the sound instance the momement it's done playing.
+	 * Note that if a sound is set to not loop, we must listen for the SoundInstance::EventPlayComplete so that we can remove the sound instance the momement it's done playing.
 	 */
 	bool mIsLooping;
 	

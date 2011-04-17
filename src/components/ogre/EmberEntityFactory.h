@@ -55,7 +55,7 @@ class Scene;
  * Basically this attaches to Eris and creates Entites on demand.
  * @see Eris::Factory
  */
-class EmberEntityFactory: public Eris::Factory, public virtual sigc::trackable, public Ember::ConsoleObject
+class EmberEntityFactory: public Eris::Factory, public virtual sigc::trackable, public ConsoleObject
 {
 public:
 
@@ -99,12 +99,12 @@ public:
 	/**
 	 Command for setting whether models should be shown or not.
 	 */
-	const Ember::ConsoleCommandWrapper ShowModels;
+	const ConsoleCommandWrapper ShowModels;
 
 	/**
 	 Dumps the attributes of a supplied entity to the std::out.
 	 */
-	const Ember::ConsoleCommandWrapper DumpAttributes;
+	const ConsoleCommandWrapper DumpAttributes;
 
 	/**
 	 *    Dumps the attributes of the entity with the supplied id to the std::out.

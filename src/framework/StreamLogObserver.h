@@ -47,7 +47,7 @@ namespace Ember {
  * @see Log::Observer
  */
 
-class StreamLogObserver : public Ember::LogObserver
+class StreamLogObserver : public LogObserver
 {
 
     //======================================================================
@@ -93,7 +93,7 @@ class StreamLogObserver : public Ember::LogObserver
      * Prints out the message provided with file, line and datestamp to myOut;
      */
     virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                  const Ember::Log::MessageImportance & importance, const time_t & timeStamp);
+                                  const Log::MessageImportance & importance, const time_t & timeStamp);
 
     //----------------------------------------------------------------------
     // Disable Assignment operator

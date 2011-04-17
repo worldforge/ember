@@ -64,7 +64,7 @@ public:
 	
 	/**
 	 *    gets the MeshPreviewMeshInstance at the specified position
-	 *    If there is no instance at the position, an Ember::Exception will be thrown.
+	 *    If there is no instance at the position, an Exception will be thrown.
 	 * @param position 
 	 * @return 
 	 */
@@ -190,7 +190,7 @@ public:
 	
 	virtual void buildWidget();
 	
-	const Ember::ConsoleCommandWrapper CreateMesh;
+	const ConsoleCommandWrapper CreateMesh;
 		
 	virtual void runCommand(const std::string &command, const std::string &args);
 	

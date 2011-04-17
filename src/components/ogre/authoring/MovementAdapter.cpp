@@ -67,7 +67,7 @@ MovementAdapterWorkerDiscrete::MovementAdapterWorkerDiscrete(MovementAdapter& ad
 {
 }
 
-bool MovementAdapterWorkerDiscrete::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
+bool MovementAdapterWorkerDiscrete::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	//this will move the entity instead of the mouse
 
@@ -164,7 +164,7 @@ void MovementAdapter::cancelMovement()
 	delete bridge;
 }
 
-bool MovementAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
+bool MovementAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	if (mWorker) {
 		return mWorker->injectMouseMove(motion, freezeMouse);
@@ -172,7 +172,7 @@ bool MovementAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& fr
 	return true;
 }
 
-bool MovementAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& button)
+bool MovementAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft) {
 		finalizeMovement();
@@ -186,7 +186,7 @@ bool MovementAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& butto
 	return false;
 }
 
-bool MovementAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& button)
+bool MovementAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 {
 	if (button == Input::MouseButtonLeft) {
 	} else if (button == Input::MouseButtonRight) {

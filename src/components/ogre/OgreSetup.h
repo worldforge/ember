@@ -45,7 +45,7 @@ class MeshSerializerListener;
 	Instead of creating the Ogre root object and the main render window directly, use this to guarantee that everything is set up correctly.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class OgreSetup : public Ogre::FrameListener, public Ember::ConsoleObject
+class OgreSetup : public Ogre::FrameListener, public ConsoleObject
 {
 public:
 	OgreSetup();
@@ -100,7 +100,7 @@ public:
 	/**
 	 * @brief Command for simple diagnosis of Ogre.
 	 */
-	Ember::ConsoleCommandWrapper DiagnoseOgre;
+	ConsoleCommandWrapper DiagnoseOgre;
 
 private:
 

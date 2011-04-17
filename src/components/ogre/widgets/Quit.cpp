@@ -51,7 +51,7 @@ void Quit::buildWidget()
 	
 	loadMainSheet("Quit.layout", "Quit/");
 	
-	Ember::Application::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
+	Application::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
 	
 	CEGUI::PushButton* shutdownButton = static_cast<CEGUI::PushButton*>(getWindow("ShutdownButton"));
 	CEGUI::PushButton* logoutButton = static_cast<CEGUI::PushButton*>(getWindow("LogoutButton"));
@@ -69,14 +69,14 @@ void Quit::buildWidget()
 
 bool Quit::Shutdown_Click(const CEGUI::EventArgs& args)
 {
-	Ember::Application::getSingleton().quit();
+	Application::getSingleton().quit();
 	mMainWindow->setVisible(false);
 	return true;
 }
 
 bool Quit::Logout_Click(const CEGUI::EventArgs& args)
 {
-	Ember::EmberServices::getSingleton().getServerService()->logout();
+	EmberServices::getSingleton().getServerService()->logout();
 	mMainWindow->setVisible(false);
 	return true;
 }
@@ -93,7 +93,7 @@ void Quit::EmberOgre_RequestQuit(bool& handled)
 	handled = true;
 	//if the window system twice requests a quit, do it
 	if (mMainWindow->isVisible()) {
-		Ember::Application::getSingleton().quit();
+		Application::getSingleton().quit();
 	} else {
 		softquit();
 	}
@@ -105,7 +105,7 @@ void Quit::softquit()
 	mMainWindow->moveToFront();
 	mMainWindow->setVisible(true);
 	
-	Ember::Input::getSingleton().setInputMode(Ember::Input::IM_GUI);
+	Input::getSingleton().setInputMode(Input::IM_GUI);
 	//mMainWindow->setModalState(true);
 }
 

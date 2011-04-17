@@ -86,7 +86,7 @@ MovementController::MovementController(Avatar& avatar, Camera::MainCamera& camer
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	mMovementCommandMapper.bindToInput(Input::getSingleton());
-	Ember::Input::getSingleton().setMovementModeEnabled(true);
+	Input::getSingleton().setMovementModeEnabled(true);
 
 	try {
 		mFreeFlyingNode = mAvatar.getScene().getSceneManager().getRootSceneNode()->createChildSceneNode(OgreInfo::createUniqueResourceName("FreeFlyingCameraNode"));
@@ -175,7 +175,7 @@ void MovementController::runCommand(const std::string &command, const std::strin
 		 mAvatarCamera->yaw(Ogre::Degree(15));*/
 		//	} else if (MoveCameraTo == command) {
 		//		if (!mIsAttached) {
-		//			Ember::Tokeniser tokeniser;
+		//			Tokeniser tokeniser;
 		//			tokeniser.initTokens(args);
 		//			std::string x = tokeniser.nextToken();
 		//			std::string y = tokeniser.nextToken();
@@ -230,7 +230,7 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3> >(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
-	Ember::EmberServices::getSingletonPtr()->getServerService()->moveToPoint(atlasPos);
+	EmberServices::getSingletonPtr()->getServerService()->moveToPoint(atlasPos);
 }
 
 void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity)
@@ -238,7 +238,7 @@ void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* loc
 	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3> >(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
-	Ember::EmberServices::getSingletonPtr()->getServerService()->place(&mAvatar.getEmberEntity(), locationEntity, atlasPos);
+	EmberServices::getSingletonPtr()->getServerService()->place(&mAvatar.getEmberEntity(), locationEntity, atlasPos);
 }
 
 WFMath::Vector<3> MovementController::getMovementForCurrentFrame() const

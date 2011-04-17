@@ -36,16 +36,16 @@ namespace Lua
 LuaConsoleObject::LuaConsoleObject(const std::string& command, const std::string& luaMethod, const std::string& description) :
 	mCommandWrapper(command, this, description)
 {
-	mConnector = new Ember::Lua::TemplatedConnectorBase<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter>(Ember::Lua::StringValueAdapter(), Ember::Lua::StringValueAdapter());
+	mConnector = new TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>(StringValueAdapter(), StringValueAdapter());
 	mConnector->connect(luaMethod);
 }
 
 LuaConsoleObject::LuaConsoleObject(const std::string& command, lua_Object luaMethod, const std::string& description) :
 	mCommandWrapper(command, this, description)
 {
-	mConnector = new Ember::Lua::TemplatedConnectorBase<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter>(Ember::Lua::StringValueAdapter(), Ember::Lua::StringValueAdapter());
+	mConnector = new TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>(StringValueAdapter(), StringValueAdapter());
 	//we need to get the correct lua function
-	lua_State* state = Ember::Lua::ConnectorBase::getState();
+	lua_State* state = ConnectorBase::getState();
 	int luaType = lua_type(state, -1);
 	int index = luaL_ref(state, LUA_REGISTRYINDEX);
 	if (luaType == LUA_TFUNCTION) {
@@ -70,7 +70,7 @@ LuaConsoleObject* LuaConsoleObject::setSelf(lua_Object selfIndex)
 	if (mConnector) {
 		if (selfIndex != LUA_NOREF) {
 			//we need to get the correct lua table
-			lua_State* state = Ember::Lua::ConnectorBase::getState();
+			lua_State* state = ConnectorBase::getState();
 			int luaType = lua_type(state, -1);
 			int index = luaL_ref(state, LUA_REGISTRYINDEX);
 			if (luaType == LUA_TTABLE) {

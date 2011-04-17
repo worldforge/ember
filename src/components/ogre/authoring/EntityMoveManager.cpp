@@ -94,7 +94,7 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 {
 	if (Move == command) {
 		//the first argument must be a valid entity id
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string entityId = tokeniser.nextToken();
 		if (entityId != "") {
@@ -103,7 +103,7 @@ void EntityMoveManager::runCommand(const std::string &command, const std::string
 				startMove(*entity);
 			}
 		} else {
-			Ember::ConsoleBackend::getSingletonPtr()->pushMessage("You must specify a valid entity id to move.");
+			ConsoleBackend::getSingletonPtr()->pushMessage("You must specify a valid entity id to move.");
 		}
 
 	}

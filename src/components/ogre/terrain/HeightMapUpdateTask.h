@@ -49,7 +49,7 @@ class IHeightMapSegment;
  * @brief Builds new HeightMapSegments in the background and then inserts these into the HeightMap.
  * This is the main task for making sure that the HeightMap is kept up to date with changes to the Mercator terrain.
  */
-class HeightMapUpdateTask : public Ember::Tasks::TemplateNamedTask<HeightMapUpdateTask>
+class HeightMapUpdateTask : public Tasks::TemplateNamedTask<HeightMapUpdateTask>
 {
 public:
 	typedef std::vector<Mercator::Segment*> SegmentStore;
@@ -63,7 +63,7 @@ public:
 	HeightMapUpdateTask(HeightMapBufferProvider& provider, HeightMap& heightMap, const SegmentStore& segments);
 	virtual ~HeightMapUpdateTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 

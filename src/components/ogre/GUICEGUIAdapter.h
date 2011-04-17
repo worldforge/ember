@@ -48,7 +48,7 @@ TYPEDEF_STL_MAP(SDLKey, CEGUI::Key::Scan, SDLKeyMap);
  *
  * @brief Provides an adapter between the input system and CEGUI.
  */
-class GUICEGUIAdapter : public Ember::IInputAdapter {
+class GUICEGUIAdapter : public IInputAdapter {
 public:
 
     /**
@@ -61,9 +61,9 @@ public:
 
     ~GUICEGUIAdapter();
 	
-	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Ember::Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Ember::Input::MouseButton& button);
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
 	virtual bool injectChar(char character);
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);

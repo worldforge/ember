@@ -214,7 +214,7 @@ void ModelAttachment::setupFittings()
 {
 	const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
 	for (AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
-		Ember::AttributeObserver* observer = new Ember::AttributeObserver(mChildEntity, I->Name, ".");
+		AttributeObserver* observer = new AttributeObserver(mChildEntity, I->Name, ".");
 		observer->EventChanged.connect(sigc::bind(sigc::mem_fun(*this, &ModelAttachment::entity_AttrChanged), I->Name));
 		mFittingsObservers.push_back(observer);
 		observer->forceEvaluation();

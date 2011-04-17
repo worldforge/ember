@@ -68,7 +68,7 @@ class EmberEntity;
 
  @author Erik Hjortsberg <erik@worldforge.org>
  */
-class WorldEmberEntity: public EmberEntity, public Ember::ConfigListenerContainer
+class WorldEmberEntity: public EmberEntity, public ConfigListenerContainer
 {
 public:
 

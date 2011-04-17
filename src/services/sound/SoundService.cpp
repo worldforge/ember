@@ -67,8 +67,8 @@ Service::Status SoundService::start()
 {
 	S_LOG_INFO("Sound Service starting");
 	
-	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("audio", "enabled")
-	    && static_cast<bool>(Ember::EmberServices::getSingleton().getConfigService()->getValue("audio", "enabled")) == false) {
+	if (EmberServices::getSingleton().getConfigService()->hasItem("audio", "enabled")
+	    && static_cast<bool>(EmberServices::getSingleton().getConfigService()->getValue("audio", "enabled")) == false) {
 		S_LOG_INFO("Sound disabled.");
 	} else {
 	
@@ -266,12 +266,12 @@ bool SoundService::destroyInstance(SoundInstance* instance)
 	return false;
 }
 	
-Ember::IResourceProvider* SoundService::getResourceProvider()
+IResourceProvider* SoundService::getResourceProvider()
 {
 	return mResourceProvider;
 }
 	
-void SoundService::setResourceProvider(Ember::IResourceProvider* resourceProvider)
+void SoundService::setResourceProvider(IResourceProvider* resourceProvider)
 {
 	mResourceProvider = resourceProvider;
 }	

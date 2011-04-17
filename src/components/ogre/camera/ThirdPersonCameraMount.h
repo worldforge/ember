@@ -39,7 +39,7 @@ namespace Camera
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A third person camera mount, where the camera is circling a node. This node is then in most cases attached to an entity.
  */
-class ThirdPersonCameraMount: public CameraMountBase, public Ember::ConsoleObject
+class ThirdPersonCameraMount: public CameraMountBase, public ConsoleObject
 {
 public:
 
@@ -70,7 +70,7 @@ public:
 	/**
 	 * Console command for setting the distance of the camera from the node it's observing.
 	 */
-	const Ember::ConsoleCommandWrapper SetCameraDistance;
+	const ConsoleCommandWrapper SetCameraDistance;
 
 	/**
 	 * sets the node to which the camera is attached

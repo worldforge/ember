@@ -96,8 +96,8 @@ void Input::initialize(int width, int height)
 		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
 	}
 #endif // WITHOUT_SCRAP
-	Ember::ConsoleBackend::getSingletonPtr()->registerCommand(BINDCOMMAND, this);
-	Ember::ConsoleBackend::getSingletonPtr()->registerCommand(UNBINDCOMMAND, this);
+	ConsoleBackend::getSingletonPtr()->registerCommand(BINDCOMMAND, this);
+	ConsoleBackend::getSingletonPtr()->registerCommand(UNBINDCOMMAND, this);
 
 	setGeometry(width, height);
 
@@ -112,7 +112,7 @@ void Input::setGeometry(int width, int height)
 void Input::runCommand(const std::string &command, const std::string &args)
 {
 	if (command == BINDCOMMAND) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string state("general");
 		std::string key = tokeniser.nextToken();
@@ -129,7 +129,7 @@ void Input::runCommand(const std::string &command, const std::string &args)
 			}
 		}
 	} else if (command == UNBINDCOMMAND) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string state("general");
 		std::string key(tokeniser.nextToken());
@@ -261,7 +261,7 @@ void Input::pollEvents(float secondsSinceLast)
 			keyChanged(event.key);
 			break;
 		case SDL_QUIT:
-			Ember::Application::getSingleton().requestQuit();
+			Application::getSingleton().requestQuit();
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:

@@ -98,7 +98,7 @@ public:
 
 protected:
 
-	typedef std::vector<Ember::AttributeObserver*> AttributeObserverStore;
+	typedef std::vector<AttributeObserver*> AttributeObserverStore;
 
 	/**
 	 * @brief The Model representation which this attachment is connected to.

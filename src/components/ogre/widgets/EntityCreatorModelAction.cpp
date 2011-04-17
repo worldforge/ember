@@ -43,13 +43,13 @@ EntityCreatorModelAction::~EntityCreatorModelAction()
 {
 }
 
-void EntityCreatorModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void EntityCreatorModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator model " << mModelName);
 	mCreationInstance.setModel(mModelName);
 }
 
-void EntityCreatorModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void EntityCreatorModelAction::deactivate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator model " << mModelName);
 	mCreationInstance.setModel("");

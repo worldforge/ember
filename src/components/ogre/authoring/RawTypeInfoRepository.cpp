@@ -29,7 +29,7 @@ namespace OgreView
 namespace Authoring
 {
 
-RawTypeInfoRepository::RawTypeInfoRepository(Ember::ServerService& serverService)
+RawTypeInfoRepository::RawTypeInfoRepository(ServerService& serverService)
 {
 	setupConnections(serverService);
 }
@@ -47,7 +47,7 @@ Atlas::Objects::Root RawTypeInfoRepository::getRawTypeData(const std::string& ty
 	return Atlas::Objects::Root();
 }
 
-void RawTypeInfoRepository::setupConnections(Ember::ServerService& serverService)
+void RawTypeInfoRepository::setupConnections(ServerService& serverService)
 {
 	serverService.EventReceivedObject.connect(sigc::mem_fun(*this, &RawTypeInfoRepository::server_ReceivedObject));
 }

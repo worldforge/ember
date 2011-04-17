@@ -56,7 +56,7 @@ public:
     
 protected:
 	CEGUI::Editbox* mInputBox;
-	Ember::ConsoleBackend* mBackend;
+	ConsoleBackend* mBackend;
 
 	bool consoleInputBox_KeyUp(const CEGUI::EventArgs& args);
 	bool consoleInputBox_KeyDown(const CEGUI::EventArgs& args);

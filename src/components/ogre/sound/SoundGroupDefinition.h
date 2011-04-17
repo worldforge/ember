@@ -47,7 +47,7 @@ public:
 	/**
 	* Insert a sound sample into this group definition
 	*/
-	void insertSample(const std::string& name, Ember::SoundGeneral::SoundSampleType type, float volume);
+	void insertSample(const std::string& name, SoundGeneral::SoundSampleType type, float volume);
 
 	/**
 	 * @brief Accessor for the sound definitions store.

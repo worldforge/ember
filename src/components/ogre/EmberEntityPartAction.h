@@ -37,14 +37,14 @@ class EmberEntity;
  * @brief Show a certain part of a Model.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class EmberEntityPartAction: public Ember::EntityMapping::Actions::Action
+class EmberEntityPartAction: public EntityMapping::Actions::Action
 {
 public:
 	EmberEntityPartAction(EmberEntity& entity, const std::string& partName);
 	~EmberEntityPartAction();
 
-	virtual void activate(Ember::EntityMapping::ChangeContext& context);
-	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+	virtual void activate(EntityMapping::ChangeContext& context);
+	virtual void deactivate(EntityMapping::ChangeContext& context);
 
 protected:
 

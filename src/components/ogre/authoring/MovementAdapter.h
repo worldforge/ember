@@ -52,7 +52,7 @@ public:
 	MovementAdapterWorkerBase(MovementAdapter& adapter);
 	virtual ~MovementAdapterWorkerBase();
 
-	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 	{
 		return true;
 	}
@@ -92,7 +92,7 @@ class MovementAdapterWorkerDiscrete: public MovementAdapterWorkerBase
 public:
 	MovementAdapterWorkerDiscrete(MovementAdapter& adapter);
 
-	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
 
 protected:
 
@@ -139,7 +139,7 @@ protected:
 
  When activates, an instance of this will receive input events and pass these on to the currently selected instance of MovementAdapterWorkerBase which in turn will translate those input operations into movement of any object movements, as defined in the bridge to which this is attached.
  */
-class MovementAdapter: public Ember::IInputAdapter
+class MovementAdapter: public IInputAdapter
 {
 	friend class MovementAdapterWorkerBase;
 public:
@@ -151,9 +151,9 @@ public:
 	MovementAdapter(const Camera::MainCamera& camera);
 	virtual ~MovementAdapter();
 
-	virtual bool injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Ember::Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Ember::Input::MouseButton& button);
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
 	virtual bool injectChar(char character);
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);

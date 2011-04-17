@@ -48,7 +48,7 @@ IconBase::IconBase(const std::string& name, const Image* background, const Image
 //	mContainer->setBackgroundEnabled(false);
 //	mContainer->setBackgroundColours(colour(1,1,1,0));
 
-	mButton = static_cast<PushButton*>(WindowManager::getSingleton().createWindow(Ember::OgreView::GUIManager::getSingleton().getDefaultScheme() + "/BorderIconButton", "icons/" + name + "/button"));
+	mButton = static_cast<PushButton*>(WindowManager::getSingleton().createWindow(OgreView::GUIManager::getSingleton().getDefaultScheme() + "/BorderIconButton", "icons/" + name + "/button"));
 	mButton->setSize(UVector2(UDim(1, 0), UDim(1, 0)));
 	mButton->setPosition(UVector2(UDim(0, 0), UDim(0, 0)));
 	mButton->setVisible(true);

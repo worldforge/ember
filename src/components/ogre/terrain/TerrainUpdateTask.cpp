@@ -47,7 +47,7 @@ TerrainUpdateTask::~TerrainUpdateTask()
 {
 }
 
-void TerrainUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	int terrainRes = mTerrain.getResolution();
 	for (TerrainDefPointStore::const_iterator I = mTerrainPoints.begin(); I != mTerrainPoints.end(); ++I) {

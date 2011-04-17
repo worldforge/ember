@@ -54,7 +54,7 @@ EmberEntityMappingManager::EmberEntityMappingManager() : mEntityMappingManager()
 
 	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
 
-	Ember::EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberEntityMappingManager::ServerService_GotConnection));
+	EmberServices::getSingletonPtr()->getServerService()->GotConnection.connect(sigc::mem_fun(*this, &EmberEntityMappingManager::ServerService_GotConnection));
 
 
 }

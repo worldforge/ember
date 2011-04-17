@@ -37,7 +37,7 @@ namespace Authoring
 /**
  * @brief GUI adapters wrapper.
  *
- * This class is used to wrap adapters that are instantiated with Ember::OgreView::Gui::Adapters::Atlas::AdapterFactory.
+ * This class is used to wrap adapters that are instantiated with OgreView::Gui::Adapters::Atlas::AdapterFactory.
  * It allows to &ldquo;create&rdquo; adapter without window and later attach it to window.
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
@@ -151,7 +151,7 @@ protected:
 	/**
 	 * Adapter container.
 	 */
-	::Ember::OgreView::Gui::Adapters::Atlas::AdapterBase* mAdapter;
+	Gui::Adapters::Atlas::AdapterBase* mAdapter;
 
 	/**
 	 * Adapter value.

@@ -92,7 +92,7 @@ class Vegetation;
  *
  * It works closely with EmberTerrainPageSource.
  */
-class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackable, public Ember::ConsoleObject, public Ember::ConfigListenerContainer
+class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackable, public ConsoleObject, public ConfigListenerContainer
 {
 public:
 
@@ -120,7 +120,7 @@ public:
 	virtual bool frameEnded(const Ogre::FrameEvent & evt);
 
 	/**
-	 * @copydoc Ember::ConsoleObject::runCommand
+	 * @copydoc ConsoleObject::runCommand
 	 */
 	virtual	void runCommand(const std::string& command, const std::string& args);
 
@@ -148,7 +148,7 @@ public:
 	/**
 	 * @brief Console command for updating all terrain shadow maps.
 	 */
-	const Ember::ConsoleCommandWrapper UpdateShadows;
+	const ConsoleCommandWrapper UpdateShadows;
 
 	/**
 	 * @brief Whether the foliage should be shown or not.

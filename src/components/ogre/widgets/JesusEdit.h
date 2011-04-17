@@ -227,7 +227,7 @@ protected:
 	
 	
 	/**
-	 *    method bound to Ember::OgreView::EventCreatedJesus
+	 *    method bound to OgreView::EventCreatedJesus
 	 *    
 	 * @param jesus 
 	 */

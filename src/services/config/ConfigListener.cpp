@@ -35,7 +35,7 @@ ConfigListener::ConfigListener(const std::string& section, const std::string& ke
 	mSection(section), mKey(key), mSlot(slot)
 {
 	mInternalSlot = sigc::mem_fun(*this, &ConfigListener::ConfigService_EventChangedConfigItem);
-	Ember::EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(mInternalSlot);
+	EmberServices::getSingletonPtr()->getConfigService()->EventChangedConfigItem.connect(mInternalSlot);
 }
 
 ConfigListener::~ConfigListener()
@@ -48,16 +48,16 @@ void ConfigListener::ConfigService_EventChangedConfigItem(const std::string& sec
 {
 	if (section == mSection && key == mKey)
 	{
-		varconf::Variable variable = Ember::EmberServices::getSingleton().getConfigService()->getValue(section, key);
+		varconf::Variable variable = EmberServices::getSingleton().getConfigService()->getValue(section, key);
 		mSlot(section, key, variable);
 	}
 }
 
 bool ConfigListener::evaluate()
 {
-	if (Ember::EmberServices::getSingleton().getConfigService()->itemExists(mSection, mKey))
+	if (EmberServices::getSingleton().getConfigService()->itemExists(mSection, mKey))
 	{
-		varconf::Variable variable = Ember::EmberServices::getSingleton().getConfigService()->getValue(mSection, mKey);
+		varconf::Variable variable = EmberServices::getSingleton().getConfigService()->getValue(mSection, mKey);
 		mSlot(mSection, mKey, variable);
 		return true;
 	}

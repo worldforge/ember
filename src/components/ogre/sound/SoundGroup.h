@@ -42,7 +42,7 @@ class SoundDefinition;
 What makes this differ a little from normal sound binding is that the sound group is made up of many different sounds. If all sounds are static there's no problem, as the sound buffers then can be queued as they are. If however any sample is streaming it becomes a little more complex, since we then must update the buffers etc. as long as we're playing the streaming sample.
 */
 class SoundGroupBinding
-: public Ember::SoundBinding
+: public SoundBinding
 {
 public:
 	/**
@@ -50,7 +50,7 @@ public:
 	 * @param source The sound source to which we should bind ourselves.
 	 * @param soundGroup The soundgroup which we should bind to the source.
 	 */
-	SoundGroupBinding(Ember::SoundSource& source, SoundGroup& soundGroup);
+	SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup);
 	/**
 	 * @brief Dtor.
 	 */
@@ -80,7 +80,7 @@ public:
 		PLAY_INVERSE,
 		PLAY_RANDOM
 	};
-	typedef std::list<Ember::BaseSoundSample*> SampleStore;
+	typedef std::list<BaseSoundSample*> SampleStore;
 	
 	SoundGroup();
 	~SoundGroup();
@@ -99,7 +99,7 @@ public:
 	*/
 	void setPlayOrder(const unsigned int playO);
 	
-	bool bindToInstance(Ember::SoundInstance* instance);
+	bool bindToInstance(SoundInstance* instance);
 	
 	const SampleStore& getSamples() const;
 protected:

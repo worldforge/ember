@@ -38,7 +38,7 @@ namespace Environment {
 */
 class CaelumSky
 : CaelumEnvironmentComponent
-,public IFog,public ISky, Ember::ConfigListenerContainer
+,public IFog,public ISky, ConfigListenerContainer
 {
 public:
     CaelumSky(CaelumEnvironment& environment);

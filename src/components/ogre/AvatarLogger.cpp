@@ -45,7 +45,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 	assert(&avatarEntity);
 
 	//Put log files in a "logs" subdirectory of the home directory.
-	const std::string dir = Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/logs/";
+	const std::string dir = EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/logs/";
 	try {
 		//make sure the directory exists
 
@@ -65,7 +65,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
 
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
-		*mChatLogger << "Chat Logging Initialized at " <<  Ember::Time::getLocalTimeStr() << std::endl;
+		*mChatLogger << "Chat Logging Initialized at " <<  Time::getLocalTimeStr() << std::endl;
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
 
 		//wait with connecting until everything has been properly set up
@@ -80,13 +80,13 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 AvatarLogger::~AvatarLogger()
 {
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
-	*mChatLogger << "Chat Logging Ended at " <<  Ember::Time::getLocalTimeStr() << std::endl;
+	*mChatLogger << "Chat Logging Ended at " <<  Time::getLocalTimeStr() << std::endl;
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
 }
 
 void AvatarLogger::GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity)
 {
-	*mChatLogger << "[" << Ember::Time::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << message << std::endl;
+	*mChatLogger << "[" << Time::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << message << std::endl;
 }
 
 AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)

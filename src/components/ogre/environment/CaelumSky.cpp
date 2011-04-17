@@ -71,7 +71,7 @@ void CaelumSky::Config_CloudSpeed(const std::string& section, const std::string&
 {
 	if (variable.is_string() && mCaelumSystem->getCloudSystem()) {
 		Ogre::Vector2 vector;
-		Ember::Tokeniser tokeniser(variable);
+		Tokeniser tokeniser(variable);
 		vector.x = atof(tokeniser.nextToken().c_str());
 		vector.y = atof(tokeniser.nextToken().c_str());
 		mCaelumSystem->getCloudSystem()->getLayer(0)->setCloudSpeed(vector);

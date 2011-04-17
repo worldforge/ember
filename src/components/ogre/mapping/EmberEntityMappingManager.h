@@ -47,7 +47,7 @@ namespace Mapping {
 */
 class EmberEntityMappingManager :
 public Ogre::ResourceManager,
-public Ember::Singleton<EmberEntityMappingManager>,
+public Singleton<EmberEntityMappingManager>,
 public virtual sigc::trackable
 {
 public:
@@ -58,7 +58,7 @@ public:
 	/**
 	Accessor for the main EntityMappingManager instance.
 	*/
-	Ember::EntityMapping::EntityMappingManager& getManager();
+	EntityMapping::EntityMappingManager& getManager();
 
 	/**
 	Method called by Ogre. Will parse the script supplied in the stream object.
@@ -69,7 +69,7 @@ protected:
 	/**
 	Internal instance of the EntityMappingManager.
 	*/
-	Ember::EntityMapping::EntityMappingManager mEntityMappingManager;
+	EntityMapping::EntityMappingManager mEntityMappingManager;
 
 	/**
 	Serializer for xml.
@@ -90,7 +90,7 @@ protected:
 
 };
 
-inline Ember::EntityMapping::EntityMappingManager& EmberEntityMappingManager::getManager()
+inline EntityMapping::EntityMappingManager& EmberEntityMappingManager::getManager()
 {
 	return mEntityMappingManager;
 }

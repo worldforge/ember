@@ -57,7 +57,7 @@ class SnapToMovement;
  *
  * @note You should preferable keep just one static instance of this available.
  */
-class SnapListener : public Ember::ConsoleObject{
+class SnapListener : public ConsoleObject{
 public:
 
 	/**
@@ -81,7 +81,7 @@ public:
 	/**
 	 * @brief Allows toggling of the snap to functionality through the +snaptomovement command.
 	 */
-	const Ember::ConsoleCommandWrapper SnapTo;
+	const ConsoleCommandWrapper SnapTo;
 
 	/**
 	 * @brief Emitted when snapping changes.

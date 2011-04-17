@@ -137,13 +137,13 @@ void ShaderManager::init()
 	// No scheme is supported, something wrong with graphics
 	if (!supported) {
 		S_LOG_FAILURE("No schemes is supported");
-		throw Ember::Exception("No schemes is supported, something wrong with graphics");
+		throw Exception("No schemes is supported, something wrong with graphics");
 	}
 
 	// Don't start in experimental level
 	mGraphicsLevel = (mBestGraphicsLevel < LEVEL_EXPERIMENTAL) ? mBestGraphicsLevel : LEVEL_HIGH;
 
-	GraphicsLevel configLevel = getLevelByName(std::string(Ember::EmberServices::getSingleton().getConfigService()->getValue("graphics", "level")));
+	GraphicsLevel configLevel = getLevelByName(std::string(EmberServices::getSingleton().getConfigService()->getValue("graphics", "level")));
 	if (configLevel <= mBestGraphicsLevel) {
 		mGraphicsLevel = configLevel;
 	}
@@ -186,10 +186,10 @@ ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel()
 void ShaderManager::runCommand(const std::string &command, const std::string &args)
 {
 	if (SetLevel == command) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string levelString = tokeniser.nextToken();
-		Ember::EmberServices::getSingleton().getConfigService()->setValue("graphics", "level", levelString);
+		EmberServices::getSingleton().getConfigService()->setValue("graphics", "level", levelString);
 	}
 }
 

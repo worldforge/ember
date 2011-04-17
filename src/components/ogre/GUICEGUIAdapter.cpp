@@ -189,7 +189,7 @@ bool GUICEGUIAdapter::Editbox_selectionChangedHandler(const CEGUI::EventArgs& ar
 }
 
 
-bool GUICEGUIAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
+bool GUICEGUIAdapter::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	try {
 		mGuiSystem->injectMousePosition(motion.xPosition, motion.yPosition);
@@ -199,14 +199,14 @@ bool GUICEGUIAdapter::injectMouseMove(const Ember::MouseMotion& motion, bool& fr
 	return true;
 }
 
-bool GUICEGUIAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& button)
+bool GUICEGUIAdapter::injectMouseButtonUp(const Input::MouseButton& button)
 {
 	CEGUI::MouseButton ceguiButton;
-	if (button == Ember::Input::MouseButtonLeft) {
+	if (button == Input::MouseButtonLeft) {
 		ceguiButton = CEGUI::LeftButton;
-	} else if(button == Ember::Input::MouseButtonRight) {
+	} else if(button == Input::MouseButtonRight) {
 		ceguiButton = CEGUI::RightButton;
-	} else if(button == Ember::Input::MouseButtonMiddle) {
+	} else if(button == Input::MouseButtonMiddle) {
 		ceguiButton = CEGUI::MiddleButton;
 	} else {
 		return true;
@@ -223,23 +223,23 @@ bool GUICEGUIAdapter::injectMouseButtonUp(const Ember::Input::MouseButton& butto
 	return true;
 }
 
-bool GUICEGUIAdapter::injectMouseButtonDown(const Ember::Input::MouseButton& button)
+bool GUICEGUIAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 {
 	CEGUI::MouseButton ceguiButton(CEGUI::LeftButton);
-	if (button == Ember::Input::MouseButtonLeft) {
+	if (button == Input::MouseButtonLeft) {
 		ceguiButton = CEGUI::LeftButton;
-	} else if(button == Ember::Input::MouseButtonRight) {
+	} else if(button == Input::MouseButtonRight) {
 		ceguiButton = CEGUI::RightButton;
-	} else if(button == Ember::Input::MouseButtonMiddle) {
+	} else if(button == Input::MouseButtonMiddle) {
 		ceguiButton = CEGUI::MiddleButton;
-	} else if(button == Ember::Input::MouseWheelDown) {
+	} else if(button == Input::MouseWheelDown) {
 		try {
 			mGuiSystem->injectMouseWheelChange(-1.0);
 		} catch (const CEGUI::Exception& ex) {
 			S_LOG_WARNING("Error in CEGUI." << ex);
 		}
 		return false;
-	} else if(button == Ember::Input::MouseWheelUp) {
+	} else if(button == Input::MouseWheelUp) {
 		try {
 			mGuiSystem->injectMouseWheelChange(1.0);
 		} catch (const CEGUI::Exception& ex) {

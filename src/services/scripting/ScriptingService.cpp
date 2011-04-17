@@ -67,7 +67,7 @@ Service::Status ScriptingService::start()
 void ScriptingService::loadScript(const std::string& script)
 {
 	if (mResourceProvider) {
-		Ember::ResourceWrapper resWrapper = mResourceProvider->getResource(script);
+		ResourceWrapper resWrapper = mResourceProvider->getResource(script);
 		if (!resWrapper.hasData()) {
 			scriptError("Unable to find script file " + script + ".");
 			S_LOG_FAILURE("Unable to find script file " + script + ".");
@@ -174,7 +174,7 @@ void ScriptingService::forceGCForAllProviders()
 void ScriptingService::runCommand(const std::string &command, const std::string &args)
 {
     if (LoadScript == command){
- 		Ember::Tokeniser tokeniser;
+ 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string script = tokeniser.nextToken();
 		if (script != "") {
@@ -196,12 +196,12 @@ std::vector<std::string> ScriptingService::getProviderNames()
 
 }
 
-Ember::IResourceProvider* ScriptingService::getResourceProvider()
+IResourceProvider* ScriptingService::getResourceProvider()
 {
 	return mResourceProvider;
 }
 
-void ScriptingService::setResourceProvider(Ember::IResourceProvider* resourceProvider)
+void ScriptingService::setResourceProvider(IResourceProvider* resourceProvider)
 {
 	mResourceProvider = resourceProvider;
 }

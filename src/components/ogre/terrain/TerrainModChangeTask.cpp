@@ -42,7 +42,7 @@ TerrainModChangeTask::TerrainModChangeTask(Mercator::Terrain& terrain, const Ter
 
 }
 
-void TerrainModChangeTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainModChangeTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
 	if (I != mTerrainMods.end()) {

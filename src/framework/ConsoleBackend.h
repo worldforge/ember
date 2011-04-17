@@ -51,7 +51,7 @@ namespace Ember {
  *
  */
 
-class ConsoleBackend : public ConsoleObject, public Ember::Singleton<ConsoleBackend>
+class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
 {
     public:
 

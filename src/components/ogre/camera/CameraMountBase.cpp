@@ -45,13 +45,13 @@ CameraMountBase::~CameraMountBase()
 
 const Ogre::Degree& CameraMountBase::getPitch() const
 {
-	throw Ember::Exception("Not implemented yet.");
+	throw Exception("Not implemented yet.");
 // 	return degreePitch;
 }
 
 const Ogre::Degree& CameraMountBase::getYaw() const
 {
-	throw Ember::Exception("Not implemented yet.");
+	throw Exception("Not implemented yet.");
 // 	return degreeYaw;
 }
 

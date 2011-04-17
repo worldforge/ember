@@ -42,7 +42,7 @@ namespace Environment {
 @author Erik Hjortsberg
 */
 class Sun :
-public Ember::ConsoleObject
+public ConsoleObject
 , public Ogre::FrameListener
 {
 public:
@@ -72,9 +72,9 @@ public:
 	*/
 	sigc::signal<void, Sun*, Ogre::ColourValue> EventUpdatedAmbientLight;
 
-	const Ember::ConsoleCommandWrapper SetSunPosition;
-	const Ember::ConsoleCommandWrapper SetSunColour;
-	const Ember::ConsoleCommandWrapper SetAmbientLight;
+	const ConsoleCommandWrapper SetSunPosition;
+	const ConsoleCommandWrapper SetSunColour;
+	const ConsoleCommandWrapper SetAmbientLight;
 
 
 	/**

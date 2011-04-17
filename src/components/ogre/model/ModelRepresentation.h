@@ -136,7 +136,7 @@ public:
 	virtual ~ModelRepresentation();
 
 	/**
-	 * @copydoc Ember::OgreView::IGraphicalRepresentation::getType()
+	 * @copydoc OgreView::IGraphicalRepresentation::getType()
 	 */
 	virtual const std::string& getType() const;
 

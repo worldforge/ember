@@ -77,7 +77,7 @@ Service::Status MetaserverService::start()
 	setStatus(Service::OK);
 	setRunning(true);
 
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
 
 	std::string metaserverHostname;
 	if (configSrv->itemExists("metaserver", "server")) {
@@ -172,8 +172,8 @@ void MetaserverService::runCommand(const std::string &command, const std::string
 
 int MetaserverService::compareVersions(const std::string& firstVersion, const std::string& secondVersion)
 {
-	std::vector<std::string> firstVersionStrings = Ember::Tokeniser::split(firstVersion, ".");
-	std::vector<std::string> secondVersionStrings = Ember::Tokeniser::split(secondVersion, ".");
+	std::vector<std::string> firstVersionStrings = Tokeniser::split(firstVersion, ".");
+	std::vector<std::string> secondVersionStrings = Tokeniser::split(secondVersion, ".");
 
 	std::vector<std::string>::const_iterator firstI = firstVersionStrings.begin();
 	std::vector<std::string>::const_iterator secondI = secondVersionStrings.begin();

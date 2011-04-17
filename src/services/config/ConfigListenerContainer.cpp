@@ -34,7 +34,7 @@ namespace Ember
 
 ConfigListenerContainer::~ConfigListenerContainer()
 {
-	for (std::vector<Ember::ConfigListener*>::iterator I = mConfigListeners.begin(); I != mConfigListeners.end(); ++I)
+	for (std::vector<ConfigListener*>::iterator I = mConfigListeners.begin(); I != mConfigListeners.end(); ++I)
 	{
 		delete *I;
 	}

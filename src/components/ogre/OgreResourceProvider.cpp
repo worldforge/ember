@@ -70,18 +70,18 @@ OgreResourceProvider::~OgreResourceProvider()
 {
 }
 
-Ember::ResourceWrapper OgreResourceProvider::getResource(const std::string& name)
+ResourceWrapper OgreResourceProvider::getResource(const std::string& name)
 {
 	Ogre::DataStreamPtr input =
 		Ogre::ResourceGroupManager::getSingleton().openResource(name, mGroupName);
 
 	if (input.isNull())
 	{
-		throw Ember::Exception("Unable to open resource file '" + name + "' in resource group '" + name + "'.");
+		throw Exception("Unable to open resource file '" + name + "' in resource group '" + name + "'.");
 	}
 	OgreResourceWrapper* wrapper = new OgreResourceWrapper(input);
 	input->close();
-	return Ember::ResourceWrapper(wrapper, name);
+	return ResourceWrapper(wrapper, name);
 
 // 	Ogre::String buf = input->getAsString();
 // 	const size_t memBuffSize = buf.length();

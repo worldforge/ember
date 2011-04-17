@@ -62,7 +62,7 @@ void ConnectorBase::connect(int luaMethod)
 
 void ConnectorBase::pushNamedFunction(lua_State* state)
 {
-	Ember::Lua::LuaHelper::pushNamedFunction(state, mLuaMethod);
+	LuaHelper::pushNamedFunction(state, mLuaMethod);
 }
 
 void ConnectorBase::setSelfIndex(int selfIndex)
@@ -84,7 +84,7 @@ lua_State* ConnectorBase::getState()
 
 int ConnectorBase::resolveLuaFunction(lua_State* state)
 {
-	if (mLuaFunctionIndex == LUA_NOREF || Ember::EmberServices::getSingleton().getScriptingService()->getAlwaysLookup()) {
+	if (mLuaFunctionIndex == LUA_NOREF || EmberServices::getSingleton().getScriptingService()->getAlwaysLookup()) {
 		//If we've already resolved the function we should release the reference before getting a new one.
 		if (mLuaFunctionIndex != LUA_NOREF) {
 			luaL_unref(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
@@ -110,7 +110,7 @@ void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 	//push our error handling method before calling the code
 	int error_index = lua_gettop(state) - numberOfArguments;
 #if LUA51
-	lua_pushcfunction(state, Ember::Lua::LuaHelper::luaErrorHandler);
+	lua_pushcfunction(state, LuaHelper::luaErrorHandler);
 #else
 	lua_pushliteral(state, "_TRACEBACK");
 	lua_rawget(state, LUA_GLOBALSINDEX); /* get traceback function */
@@ -126,7 +126,7 @@ void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 	if (error) {
 		const std::string& msg = lua_tostring(state,-1);
 		// 			lua_pop(state,numberOfArguments);
-		throw Ember::Exception(msg);
+		throw Exception(msg);
 	}
 }
 
@@ -134,7 +134,7 @@ void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 template <>
 bool ConnectorBase::returnValueFromLua()
 {
-	lua_State* state(Ember::Lua::ConnectorBase::getState());
+	lua_State* state(ConnectorBase::getState());
 	bool vale = lua_isboolean(state, -1) ? lua_toboolean(state, -1 ) : true;
 	lua_pop(state, 1);
 	return vale;

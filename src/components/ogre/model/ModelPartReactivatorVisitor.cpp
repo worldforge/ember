@@ -29,7 +29,7 @@ namespace OgreView
 namespace Model
 {
 
-void ModelPartReactivatorVisitor::visit(Ember::EntityMapping::Actions::Action& action)
+void ModelPartReactivatorVisitor::visit(EntityMapping::Actions::Action& action)
 {
 	EmberEntityPartAction* partAction = dynamic_cast<EmberEntityPartAction*> (&action);
 	if (partAction) {
@@ -39,12 +39,12 @@ void ModelPartReactivatorVisitor::visit(Ember::EntityMapping::Actions::Action& a
 	}
 }
 
-void ModelPartReactivatorVisitor::visit(Ember::EntityMapping::Matches::MatchBase& match)
+void ModelPartReactivatorVisitor::visit(EntityMapping::Matches::MatchBase& match)
 {
 
 }
 
-void ModelPartReactivatorVisitor::visit(Ember::EntityMapping::Cases::CaseBase& caseBase)
+void ModelPartReactivatorVisitor::visit(EntityMapping::Cases::CaseBase& caseBase)
 {
 
 }

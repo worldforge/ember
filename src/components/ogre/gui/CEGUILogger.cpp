@@ -49,19 +49,19 @@ void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel lev
 	if (d_level >= level) {
 		switch (level) {
 			case CEGUI::Insane:
-				Ember::Log::slog("CEGUI", Ember::Log::VERBOSE) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::VERBOSE) << ogre << message.c_str() << Log::END_MESSAGE;
 				break;
 			case CEGUI::Informative:
-				Ember::Log::slog("CEGUI", Ember::Log::VERBOSE) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::VERBOSE) << ogre << message.c_str() << Log::END_MESSAGE;
 				break;
 			case CEGUI::Standard:
-				Ember::Log::slog("CEGUI", Ember::Log::INFO) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::INFO) << ogre << message.c_str() << Log::END_MESSAGE;
 				break;
 			case CEGUI::Warnings:
-				Ember::Log::slog("CEGUI", Ember::Log::WARNING) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::WARNING) << ogre << message.c_str() << Log::END_MESSAGE;
 				break;
 			case CEGUI::Errors:
-				Ember::Log::slog("CEGUI", Ember::Log::FAILURE) << ogre << message.c_str() << Ember::Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::FAILURE) << ogre << message.c_str() << Log::END_MESSAGE;
 				break;
 		}
 	}

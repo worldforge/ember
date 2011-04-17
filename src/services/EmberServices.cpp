@@ -37,10 +37,8 @@
 #include "serversettings/ServerSettings.h"
 
 
-namespace Ember{
-
-
 template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Singleton = 0;
+namespace Ember{
 
 
 	EmberServices::~EmberServices()
@@ -99,17 +97,17 @@ template<> Ember::EmberServices* Ember::Singleton<Ember::EmberServices>::ms_Sing
 		return mScriptingService->getService();
 	}
   
-	Ember::WfutService* EmberServices::getWfutService()
+	WfutService* EmberServices::getWfutService()
 	{
 		return mWfutService->getService();
 	}
   
-	Ember::Services::Time* EmberServices::getTimeService()
+	Services::Time* EmberServices::getTimeService()
 	{
 		return mTimeService->getService();
 	}
 	
-	Ember::Services::ServerSettings* EmberServices::getServerSettingsService() {
+	Services::ServerSettings* EmberServices::getServerSettingsService() {
 		return mServerSettingsService->getService();
 	}
 

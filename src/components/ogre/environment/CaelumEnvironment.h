@@ -45,7 +45,7 @@ class CaelumSun;
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class CaelumEnvironment : public IEnvironmentProvider, public Ember::ConsoleObject
+class CaelumEnvironment : public IEnvironmentProvider, public ConsoleObject
 {
 public:
     CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
@@ -61,7 +61,7 @@ public:
 	
 	Caelum::CaelumSystem* getCaelumSystem() const;
 
-	const Ember::ConsoleCommandWrapper SetCaelumTime;
+	const ConsoleCommandWrapper SetCaelumTime;
     
     virtual void setTime(int hour, int minute, int second = 0);
 	virtual void setTime(int seconds);

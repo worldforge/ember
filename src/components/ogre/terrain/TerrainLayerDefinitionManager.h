@@ -37,7 +37,7 @@ class TerrainLayerDefinition;
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class TerrainLayerDefinitionManager : public Ogre::ResourceManager, public Ember::Singleton<TerrainLayerDefinitionManager>
+class TerrainLayerDefinitionManager : public Ogre::ResourceManager, public Singleton<TerrainLayerDefinitionManager>
 {
 public:
 	typedef std::vector<TerrainLayerDefinition*> DefinitionStore;

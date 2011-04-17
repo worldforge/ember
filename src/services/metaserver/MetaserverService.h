@@ -53,9 +53,9 @@ class MetaserverService: public Service,
 //     Eris::ServerList serverlist;
 //     bool listed;
 //     //StringProvider * myStateDMP;
-	const Ember::ConsoleCommandWrapper MetaRefresh;
-	const Ember::ConsoleCommandWrapper MetaAbort;
-// 	const Ember::ConsoleCommandWrapper MetaList;
+	const ConsoleCommandWrapper MetaRefresh;
+	const ConsoleCommandWrapper MetaAbort;
+// 	const ConsoleCommandWrapper MetaList;
 
 
 		

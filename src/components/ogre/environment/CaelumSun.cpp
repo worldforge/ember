@@ -119,7 +119,7 @@ void CaelumSun::Config_SunSpecularMultiplier(const std::string& section, const s
 bool CaelumSun::parse(varconf::Variable& variable, Ogre::ColourValue& colour)
 {
 	if (variable.is_string()) {
-		Ember::Tokeniser tokeniser(variable);
+		Tokeniser tokeniser(variable);
 		colour.r = atof(tokeniser.nextToken().c_str());
 		colour.g = atof(tokeniser.nextToken().c_str());
 		colour.b = atof(tokeniser.nextToken().c_str());

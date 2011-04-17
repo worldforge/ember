@@ -39,12 +39,12 @@ EmberEntityHideModelAction::~EmberEntityHideModelAction()
 {
 }
 
-void EmberEntityHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void EmberEntityHideModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	mEntity.setGraphicalRepresentation(0);
 }
 
-void EmberEntityHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void EmberEntityHideModelAction::deactivate(EntityMapping::ChangeContext& context)
 {
 // 	mEntity.setModel("");
 }

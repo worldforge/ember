@@ -269,11 +269,11 @@ void TerrainEditorOverlay::pickedBasePoint(BasePointUserObject* userObject)
 	EventPickedBasePoint.emit(userObject);
 }
 
-bool TerrainEditorOverlay::injectMouseMove(const Ember::MouseMotion& motion, bool& freezeMouse)
+bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	float multiplier(15.0f);
 	//hard coded to allow the shift button to increase the speed
-	if (Ember::Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Ember::Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
 		multiplier *= 5;
 	}
 	assert(mCurrentUserObject);
@@ -302,15 +302,15 @@ bool TerrainEditorOverlay::injectMouseMove(const Ember::MouseMotion& motion, boo
 	return false;
 }
 
-bool TerrainEditorOverlay::injectMouseButtonUp(const Ember::Input::MouseButton& button)
+bool TerrainEditorOverlay::injectMouseButtonUp(const Input::MouseButton& button)
 {
-	if (button == Ember::Input::MouseButtonLeft) {
+	if (button == Input::MouseButtonLeft) {
 		releaseInput();
 	}
 	return true;
 }
 
-bool TerrainEditorOverlay::injectMouseButtonDown(const Ember::Input::MouseButton& button)
+bool TerrainEditorOverlay::injectMouseButtonDown(const Input::MouseButton& button)
 {
 	return true;
 }
@@ -332,12 +332,12 @@ bool TerrainEditorOverlay::injectKeyUp(const SDLKey& key)
 
 void TerrainEditorOverlay::catchInput()
 {
-	Ember::Input::getSingleton().addAdapter(this);
+	Input::getSingleton().addAdapter(this);
 }
 
 void TerrainEditorOverlay::releaseInput()
 {
-	Ember::Input::getSingleton().removeAdapter(this);
+	Input::getSingleton().removeAdapter(this);
 
 	//react on the movement
 	createAction(true);
@@ -424,7 +424,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 		s->setArgsAsList(sargsList);
 		s->setFrom(EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity().getId());
 
-		Ember::EmberServices::getSingleton().getServerService()->getConnection()->send(s);
+		EmberServices::getSingleton().getServerService()->getConnection()->send(s);
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
 
 		//also reset the marking for the base points

@@ -69,7 +69,7 @@ class SimpleEntityVisualization;
  * @brief Manages authoring, mainly visualizations of entities for authoring purposes.
  * The actual visualizations is handled by an instance of AuthoringHandler, which is held by this class.
  */
-class AuthoringManager: public Ember::ConsoleObject, Ember::ConfigListenerContainer
+class AuthoringManager: public ConsoleObject, ConfigListenerContainer
 {
 public:
 	/**
@@ -133,12 +133,12 @@ public:
 	/**
 	 * @brief Command for displaying authoring visualizations.
 	 */
-	const Ember::ConsoleCommandWrapper DisplayAuthoringVisualizations;
+	const ConsoleCommandWrapper DisplayAuthoringVisualizations;
 
 	/**
 	 * @brief Command for hiding authoring visualizations.
 	 */
-	const Ember::ConsoleCommandWrapper HideAuthoringVisualizations;
+	const ConsoleCommandWrapper HideAuthoringVisualizations;
 
 protected:
 

@@ -46,7 +46,7 @@ TerrainPageCreationTask::~TerrainPageCreationTask()
 {
 }
 
-void TerrainPageCreationTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainPageCreationTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	mPage = new TerrainPage(mIndex, mTerrainHandler.getPageIndexSize(), mTerrainHandler.getCompilerTechniqueProvider());
 	mBridge->bindToTerrainPage(mPage);

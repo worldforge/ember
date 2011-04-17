@@ -40,13 +40,13 @@ class ITerrainPageBridge;
 class HeightMapBufferProvider;
 class HeightMap;
 
-class TerrainPageCreationTask : public Ember::Tasks::TemplateNamedTask<TerrainPageCreationTask>
+class TerrainPageCreationTask : public Tasks::TemplateNamedTask<TerrainPageCreationTask>
 {
 public:
 	TerrainPageCreationTask(TerrainHandler& handler, const TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
 	virtual ~TerrainPageCreationTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 

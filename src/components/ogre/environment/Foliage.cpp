@@ -101,7 +101,7 @@ void Foliage::initialize()
 void Foliage::runCommand(const std::string &command, const std::string &args)
 {
 	if (ReloadFoliage == command) {
-		Ember::Tokeniser tokeniser(args);
+		Tokeniser tokeniser(args);
 		std::string xString = tokeniser.nextToken();
 		std::string yString = tokeniser.nextToken();
 

@@ -251,7 +251,7 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 {
 
 	if (mWidth == 0 || mHeight == 0) {
-		throw Ember::Exception("Height and width of the image can't be 0.");
+		throw Exception("Height and width of the image can't be 0.");
 	}
 
 	Ogre::Real aspectRatio = static_cast<float>(mWidth) / static_cast<float>(mHeight);

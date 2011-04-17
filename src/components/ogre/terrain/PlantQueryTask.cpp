@@ -39,7 +39,7 @@ PlantQueryTask::~PlantQueryTask()
 {
 }
 
-void PlantQueryTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void PlantQueryTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	mPlantPopulator.populate(mQueryResult, mSegmentRef);
 	//Release Segment references as soon as we can

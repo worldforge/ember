@@ -30,18 +30,18 @@ namespace Ember
 TimedLog::TimedLog(const std::string& logName) :
 	mLogName(logName), mStartMilliseconds(0), mLastReportMilliseconds(0)
 {
-	mStartMilliseconds = Ember::Time::currentTimeMillis();
+	mStartMilliseconds = Time::currentTimeMillis();
 }
 
 TimedLog::~TimedLog()
 {
-	long long currentTime = Ember::Time::currentTimeMillis();
+	long long currentTime = Time::currentTimeMillis();
 	S_LOG_VERBOSE("Ended task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds.");
 }
 
 void TimedLog::report()
 {
-	long long currentTime = Ember::Time::currentTimeMillis();
+	long long currentTime = Time::currentTimeMillis();
 	if (mLastReportMilliseconds) {
 		S_LOG_VERBOSE("Reported on task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds, "<< currentTime - mLastReportMilliseconds <<" since last reported time.");
 	} else {
@@ -51,7 +51,7 @@ void TimedLog::report()
 }
 void TimedLog::report(const std::string& reportName)
 {
-	long long currentTime = Ember::Time::currentTimeMillis();
+	long long currentTime = Time::currentTimeMillis();
 	if (mLastReportMilliseconds) {
 		S_LOG_VERBOSE("Reported '" << reportName << "' on task '" << mLogName << "' after " << currentTime - mStartMilliseconds << " milliseconds, "<< currentTime - mLastReportMilliseconds <<" since last reported time.");
 	} else {

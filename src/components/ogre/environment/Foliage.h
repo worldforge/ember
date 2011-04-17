@@ -56,7 +56,7 @@ class FoliageBase;
 /**
 @author Erik Hjortsberg
 */
-class Foliage : public Ember::Singleton<Foliage>, public Ogre::FrameListener, public Ember::ConsoleObject
+class Foliage : public Singleton<Foliage>, public Ogre::FrameListener, public ConsoleObject
 {
 
 public:
@@ -79,7 +79,7 @@ public:
 	 */
 	virtual void runCommand(const std::string &command, const std::string &args);
 
-	const Ember::ConsoleCommandWrapper ReloadFoliage;
+	const ConsoleCommandWrapper ReloadFoliage;
 
 
 protected:

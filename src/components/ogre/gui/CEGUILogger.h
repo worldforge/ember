@@ -38,7 +38,7 @@ namespace Gui {
 	@note When CEGUI::System is destroyed, it will automatically delete the system wide Logger instance, even though it didn't create it in the first place. That means that when you use this class, make sure to use a pointer (no auto_ptr, no regular, stack object allocation), and don't try to delete it yourself.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class CEGUILogger : public CEGUI::Logger, Ember::ConfigListenerContainer
+class CEGUILogger : public CEGUI::Logger, ConfigListenerContainer
 {
 public:
     CEGUILogger();

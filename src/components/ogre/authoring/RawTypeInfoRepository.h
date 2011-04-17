@@ -41,7 +41,7 @@ namespace Authoring
 class RawTypeInfoRepository: public virtual sigc::trackable
 {
 public:
-	RawTypeInfoRepository(Ember::ServerService& serverService);
+	RawTypeInfoRepository(ServerService& serverService);
 	virtual ~RawTypeInfoRepository();
 
 	Atlas::Objects::Root getRawTypeData(const std::string& typeName) const;
@@ -51,7 +51,7 @@ private:
 
 	RawTypeDataStore mRawTypeData;
 
-	void setupConnections(Ember::ServerService& serverService);
+	void setupConnections(ServerService& serverService);
 
 	void server_ReceivedObject(const Atlas::Objects::Root& message);
 

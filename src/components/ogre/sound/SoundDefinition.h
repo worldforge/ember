@@ -41,7 +41,7 @@ public:
 	* @param playLocal Defines if the sound is 2D or 3D
 	* @param volume The sample volume to be played
 	*/
-	void setup(const std::string& filename, Ember::SoundGeneral::SoundSampleType type, float volume);
+	void setup(const std::string& filename, SoundGeneral::SoundSampleType type, float volume);
 
 	/**
 	* Return filename
@@ -51,7 +51,7 @@ public:
 	/**
 	* Return the format
 	*/
-	Ember::SoundGeneral::SoundSampleType getFormat() const;
+	SoundGeneral::SoundSampleType getFormat() const;
 
 	/**
 	* Return the sound Volume
@@ -68,7 +68,7 @@ protected:
 	/**
 	* Defines the sound Format (WAV/OGG/PCM)
 	*/
-	Ember::SoundGeneral::SoundSampleType mSampleType;
+	SoundGeneral::SoundSampleType mSampleType;
 
 	/**
 	* The volume the sound is going to be played with

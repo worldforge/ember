@@ -55,7 +55,7 @@ void MaterialEditor::runCommand(const std::string &command, const std::string &a
 
 	if (AlterMaterial == command) {
 		try {
-			Ember::Tokeniser tokeniser;
+			Tokeniser tokeniser;
 			tokeniser.initTokens(args);
 
 			std::vector<std::string> tokens;

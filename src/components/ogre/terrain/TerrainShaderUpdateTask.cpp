@@ -51,7 +51,7 @@ TerrainShaderUpdateTask::~TerrainShaderUpdateTask()
 {
 }
 
-void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	GeometryPtrVector updatedPages;
 	for (GeometryPtrVector::const_iterator J = mGeometry.begin(); J != mGeometry.end(); ++J) {

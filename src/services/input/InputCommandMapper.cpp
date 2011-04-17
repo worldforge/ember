@@ -56,9 +56,9 @@ void InputCommandMapper::readFromConfigSection(const std::string& sectionName)
 {
 
 	//get the mappings from the config service
-	const Ember::ConfigService::SectionMap& section = Ember::EmberServices::getSingleton().getConfigService()->getSection(sectionName);
+	const ConfigService::SectionMap& section = EmberServices::getSingleton().getConfigService()->getSection(sectionName);
 
-	for (Ember::ConfigService::SectionMap::const_iterator I = section.begin(); I != section.end(); ++I) {
+	for (ConfigService::SectionMap::const_iterator I = section.begin(); I != section.end(); ++I) {
 		bindCommand(std::string(I->first), std::string(I->second));
 	}
 
@@ -74,7 +74,7 @@ void InputCommandMapper::Input_EventKeyPressed(const SDL_keysym& key, Input::Inp
 			for (KeyCommandStore::iterator I = commandsI.first; I != commandsI.second; ++I) {
 				const std::string& command(I->second);
 				if (command != "") {
-					Ember::ConsoleBackend& myBackend = Ember::ConsoleBackend::getSingleton();
+					ConsoleBackend& myBackend = ConsoleBackend::getSingleton();
 					myBackend.runCommand(command, false);
 				}
 			}
@@ -95,7 +95,7 @@ void InputCommandMapper::Input_EventKeyReleased(const SDL_keysym& key, Input::In
 				const std::string& command(I->second);
 				if (command != "") {
 					if (command[0] == '+') {
-						Ember::ConsoleBackend& myBackend = Ember::ConsoleBackend::getSingleton();
+						ConsoleBackend& myBackend = ConsoleBackend::getSingleton();
 						//remove the "+" and replace it with "-"
 						myBackend.runCommand("-" + std::string(command).erase(0, 1), false);
 					}

@@ -86,8 +86,8 @@ void LuaScriptingProvider::initialize()
 void LuaScriptingProvider::createState()
 {
 	bool loadDebugLib = true;
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("lua", "debug")) {
-		loadDebugLib = static_cast<bool>(Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("lua", "debug"));
+	if (EmberServices::getSingletonPtr()->getConfigService()->itemExists("lua", "debug")) {
+		loadDebugLib = static_cast<bool>(EmberServices::getSingletonPtr()->getConfigService()->getValue("lua", "debug"));
 	}
 	if (loadDebugLib) {
 		mErrorHandlingFunctionName = "debug.traceback";
@@ -128,7 +128,7 @@ void LuaScriptingProvider::createState()
 	}
 
 
-// 	lua_pushcfunction(mLuaState, ::Ember::OgreView::Scripting::LuaHelper::luaErrorHandler);
+// 	lua_pushcfunction(mLuaState, ::OgreView::Scripting::LuaHelper::luaErrorHandler);
 // 	mErrorHandlingFunctionIndex = luaL_ref(mLuaState, LUA_REGISTRYINDEX);
 
 
@@ -151,17 +151,17 @@ lua_State* LuaScriptingProvider::getLuaState()
 
 
 
-void LuaScriptingProvider::loadScript(Ember::ResourceWrapper& resWrapper)
+void LuaScriptingProvider::loadScript(ResourceWrapper& resWrapper)
 {
 	executeScriptImpl(std::string(resWrapper.getDataPtr(), resWrapper.getSize()), 0, resWrapper.getName());
 }
 
-void LuaScriptingProvider::executeScript(const std::string& scriptCode, Ember::IScriptingCallContext* callContext)
+void LuaScriptingProvider::executeScript(const std::string& scriptCode, IScriptingCallContext* callContext)
 {
 	executeScriptImpl(scriptCode, static_cast<LuaScriptingCallContext*>(callContext), "");
 }
 
-void LuaScriptingProvider::callFunction(const std::string& functionName, int narg, Ember::IScriptingCallContext* callContext)
+void LuaScriptingProvider::callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext)
 {
 	callFunctionImpl(functionName, narg, static_cast<LuaScriptingCallContext*>(callContext));
 }
@@ -178,11 +178,11 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 			lua_settop(mLuaState,top);
 			if (!scriptName.empty())
 			{
-				throw Ember::Exception("Unable to load Lua script file: '"+scriptName+"'\n\n"+errMsg+"\n");
+				throw Exception("Unable to load Lua script file: '"+scriptName+"'\n\n"+errMsg+"\n");
 			}
 			else
 			{
-				throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
+				throw Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
 			}
 		}
 
@@ -216,11 +216,11 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 			lua_settop(mLuaState,top);
 			if (!scriptName.empty())
 			{
-				throw Ember::Exception("Unable to load Lua script file: '"+scriptName+"'\n\n"+errMsg+"\n");
+				throw Exception("Unable to load Lua script file: '"+scriptName+"'\n\n"+errMsg+"\n");
 			}
 			else
 			{
-				throw Ember::Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
+				throw Exception("Unable to load Lua script: '" + scriptCode + "'\n\n"+errMsg+"\n");
 			}
 		}
 
@@ -237,7 +237,7 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 	} catch (const std::exception& ex) {
 		throw;
 	} catch (...) {
-		throw Ember::Exception("Unknown error when executing lua script.");
+		throw Exception("Unknown error when executing lua script.");
 	}
 }
 
@@ -285,7 +285,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 		{
 			std::string errMsg(lua_tostring(mLuaState,-1));
 			//lua_settop(mLuaState,top);
-			throw Ember::Exception("Unable to call Lua function '"+functionName+"'\n\n"+errMsg+"\n");
+			throw Exception("Unable to call Lua function '"+functionName+"'\n\n"+errMsg+"\n");
 		}
 
 		if (luaCallContext)
@@ -301,7 +301,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 	} catch (const std::exception& ex) {
 		throw;
 	} catch (...) {
-		throw Ember::Exception("Unknown error when calling lua.");
+		throw Exception("Unknown error when calling lua.");
 	}
 }
 
@@ -317,7 +317,7 @@ const std::string& LuaScriptingProvider::getName() const
 	return name;
 }
 
-void LuaScriptingProvider::_registerWithService(Ember::ScriptingService* service)
+void LuaScriptingProvider::_registerWithService(ScriptingService* service)
 {
 	mService = service;
 }

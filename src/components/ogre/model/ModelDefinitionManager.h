@@ -48,7 +48,7 @@ class ModelBackgroundLoader;
  *
  * @author Erik Hjortsberg
  */
-class ModelDefinitionManager: public Ogre::ResourceManager, public Ember::Singleton<ModelDefinitionManager>
+class ModelDefinitionManager: public Ogre::ResourceManager, public Singleton<ModelDefinitionManager>
 {
 public:
 	/**

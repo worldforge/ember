@@ -36,13 +36,13 @@ class TerrainHandler;
 class HeightMapBufferProvider;
 class HeightMap;
 
-class GeometryUpdateTask : public Ember::Tasks::TemplateNamedTask<GeometryUpdateTask>
+class GeometryUpdateTask : public Tasks::TemplateNamedTask<GeometryUpdateTask>
 {
 public:
 	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2> >& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
 	virtual ~GeometryUpdateTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 

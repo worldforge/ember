@@ -58,7 +58,7 @@ Environment::~Environment()
 void Environment::runCommand(const std::string &command, const std::string &args)
 {
 // 	if (SetTime == command) {
-// 		Ember::Tokeniser tokeniser;
+// 		Tokeniser tokeniser;
 // 		tokeniser.initTokens(args);
 // 		std::string hourString = tokeniser.nextToken();
 // 		std::string minuteString = tokeniser.nextToken();
@@ -70,7 +70,7 @@ void Environment::runCommand(const std::string &command, const std::string &args
 // 	} else
 	if (SetFogDensity == command) {
 		if (getFog()) {
-			Ember::Tokeniser tokeniser;
+			Tokeniser tokeniser;
 			tokeniser.initTokens(args);
 			std::string densityString = tokeniser.nextToken();
 
@@ -80,7 +80,7 @@ void Environment::runCommand(const std::string &command, const std::string &args
 
 	} else if (SetAmbientLight == command)
 	{
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string r = tokeniser.nextToken();
 		std::string b = tokeniser.nextToken();

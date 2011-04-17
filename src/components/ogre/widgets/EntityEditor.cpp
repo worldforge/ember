@@ -81,7 +81,7 @@ void EntityEditor::submitChanges()
 				formatter.streamEnd();
 				S_LOG_VERBOSE("Sending attribute update to server:\n" << ss.str());	
 				
-				Ember::EmberServices::getSingleton().getServerService()->setAttributes(mEntity, attributes);		
+				EmberServices::getSingleton().getServerService()->setAttributes(mEntity, attributes);		
 			}
 		}
 	}

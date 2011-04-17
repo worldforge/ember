@@ -38,7 +38,7 @@ namespace Authoring
 /**
  * Resource manager for entity recipes.
  */
-class EntityRecipeManager: public Ogre::ResourceManager, public Ember::Singleton<EntityRecipeManager>
+class EntityRecipeManager: public Ogre::ResourceManager, public Singleton<EntityRecipeManager>
 {
 public:
 	/**

@@ -46,7 +46,7 @@ class ShaderSetupInstance;
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class ShaderManager : public Ember::ConsoleObject, public Ember::ConfigListenerContainer
+class ShaderManager : public ConsoleObject, public ConfigListenerContainer
 {
 public:
 	/**
@@ -102,7 +102,7 @@ public:
 	/**
 	 * Sets graphics level at runtime
 	 */
-	const Ember::ConsoleCommandWrapper SetLevel;
+	const ConsoleCommandWrapper SetLevel;
 
 	/**
 	 * Returns level id by its name

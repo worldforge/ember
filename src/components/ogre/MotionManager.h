@@ -37,7 +37,7 @@ class IMovable;
  *
  * The main task of the manager is to keep track of all movables and animatables, i.e. implementations of IMovable and IAnimated, and make sure that these are asked to update their movement or animation when needed (usually each frame).
  */
-class MotionManager : public Ogre::FrameListener, public Ember::Singleton<MotionManager> {
+class MotionManager : public Ogre::FrameListener, public Singleton<MotionManager> {
 public:
 
 	/**

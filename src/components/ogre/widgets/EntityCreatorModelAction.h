@@ -37,7 +37,7 @@ class EntityCreatorCreationInstance;
 /**
  * @brief Shows or hides specific model in entity creator preview.
  */
-class EntityCreatorModelAction : public Ember::EntityMapping::Actions::Action
+class EntityCreatorModelAction : public EntityMapping::Actions::Action
 {
 public:
 	EntityCreatorModelAction(EntityCreatorCreationInstance& creationInstance, std::string modelName);
@@ -45,11 +45,11 @@ public:
 	/**
 	 * Shows specific model. Called by model mapping framework.
 	 */
-	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	virtual void activate(EntityMapping::ChangeContext& context);
 	/**
 	 * Hides model. Called by model mapping framework.
 	 */
-	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+	virtual void deactivate(EntityMapping::ChangeContext& context);
 protected:
 	EntityCreatorCreationInstance& mCreationInstance;
 	std::string mModelName;

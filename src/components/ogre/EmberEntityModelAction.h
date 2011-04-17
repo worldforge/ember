@@ -38,14 +38,14 @@ class Scene;
  * @brief Show a certain Model.
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class EmberEntityModelAction: public Ember::EntityMapping::Actions::Action
+class EmberEntityModelAction: public EntityMapping::Actions::Action
 {
 public:
 	EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene);
 	~EmberEntityModelAction();
 
-	virtual void activate(Ember::EntityMapping::ChangeContext& context);
-	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+	virtual void activate(EntityMapping::ChangeContext& context);
+	virtual void deactivate(EntityMapping::ChangeContext& context);
 
 protected:
 	EmberEntity& mEntity;

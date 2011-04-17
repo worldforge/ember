@@ -38,7 +38,7 @@ TerrainAreaRemoveTask::~TerrainAreaRemoveTask()
 {
 }
 
-void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainAreaRemoveTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	mTerrain.removeArea(mArea);
 }

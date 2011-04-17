@@ -114,7 +114,7 @@ void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Mod
 	//std::fstream file;
 
 	Atlas::Codecs::XML codec(outstream, decoder);
-	Ember::MultiLineListFormatter formatter(outstream, codec);
+	MultiLineListFormatter formatter(outstream, codec);
 	Atlas::Message::Encoder encoder(formatter);
 	formatter.streamBegin();
 	encoder.streamMessageElement(compose(model, typeName, parentTypeName, scale));
@@ -126,7 +126,7 @@ void ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string
 {
 	if (model) {
 		//make sure the directory exists
-		std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/typeexport/");
+		std::string dir(EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/typeexport/");
 
 		if (!oslink::directory(dir).isExisting()) {
 			S_LOG_INFO("Creating directory " << dir);
@@ -142,7 +142,7 @@ void ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string
 
 		S_LOG_INFO("Creating atlas type " << fileName);
 		composeToStream(exportFile, model, typeName, parentTypeName, scale);
-		// 		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Creating atlas type ") + fileName);
+		// 		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Creating atlas type ") + fileName);
 	}
 
 }

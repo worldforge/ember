@@ -120,7 +120,7 @@ void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) con
 	EmberEntity* entity = static_cast<EmberEntity*>(mView.getEntity(entityId));
 	if (entity) {
 		//make sure the directory exists
-		std::string dir(Ember::EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/entityexport/");
+		std::string dir(EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/entityexport/");
 
 		if (!oslink::directory(dir).isExisting()) {
 			S_LOG_INFO("Creating directory " << dir);
@@ -136,14 +136,14 @@ void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) con
 
 		S_LOG_INFO("Dumping attributes to " << fileName);
 		entity->dumpAttributes(exportFile, std::cout);
-		Ember::ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Dumped attributes to ") + fileName);
+		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Dumped attributes to ") + fileName);
 	}
 }
 
 void EmberEntityFactory::runCommand(const std::string &command, const std::string &args)
 {
 	if (command == ShowModels.getCommand()) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string value = tokeniser.nextToken();
 		if (value == "true") {
@@ -154,7 +154,7 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 			Model::ModelDefinitionManager::getSingleton().setShowModels(false);
 		}
 	} else if (DumpAttributes == command) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string value = tokeniser.nextToken();
 		if (value == "") {

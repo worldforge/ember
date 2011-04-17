@@ -72,7 +72,7 @@ bool TimeImpl::getServerTime(int& year, int& month, int& day, int& hour, int& mi
 			return true;
 		}
 	}
-	Ember::Time::getLocalTime(year, month, day, hour, minute, second);
+	::Ember::Time::getLocalTime(year, month, day, hour, minute, second);
 	return false;
 }
 

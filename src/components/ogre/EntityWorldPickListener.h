@@ -74,7 +74,7 @@ private:
  *
  * An instance of this is used to allow for picking of entities and terrain in the world.
  */
-class EntityWorldPickListener: public IWorldPickListener, public Ember::ConsoleObject
+class EntityWorldPickListener: public IWorldPickListener, public ConsoleObject
 {
 public:
 	EntityWorldPickListener(EmberEntityFactory& entityFactory, Scene& scene);
@@ -89,7 +89,7 @@ public:
 
 	sigc::signal<void, const std::vector<EntityPickResult>&, const MousePickerArgs&> EventPickedEntity;
 
-	const Ember::ConsoleCommandWrapper VisualizePicking;
+	const ConsoleCommandWrapper VisualizePicking;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method

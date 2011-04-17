@@ -41,7 +41,7 @@ TerrainModRemoveTask::TerrainModRemoveTask(Mercator::Terrain& terrain, const std
 {
 }
 
-void TerrainModRemoveTask::executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context)
+void TerrainModRemoveTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	TerrainModMap::iterator I = mTerrainMods.find(mEntityId);
 	if (I != mTerrainMods.end()) {

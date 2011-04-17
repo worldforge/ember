@@ -193,13 +193,13 @@ private:
 	 * @brief The internal connector which will handle the actual lua binding.
 	 * @note This is mutable so that it can be set to null when the copy constructor is invoked.
 	 */
-	mutable Ember::Lua::ConnectorBase* mConnector;
+	mutable ConnectorBase* mConnector;
 
 	/**
 	 * @brief Ctor.
 	 * @param connector The underlying connector instance.
 	 */
-	Connector(Ember::Lua::ConnectorBase* connector);
+	Connector(ConnectorBase* connector);
 
 
 	/**
@@ -247,25 +247,25 @@ public:
 
 template <typename TAdapter0, typename TSignal>
 Connector::Connector(TSignal& signal)
-: mConnector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, TAdapter0()))
+: mConnector(new ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, TAdapter0()))
 {
 }
 
 template <typename TAdapter0, typename TSignal>
 Connector::Connector(TSignal& signal, TAdapter0& adapter0)
-: mConnector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, adapter0))
+: mConnector(new ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, adapter0))
 {
 }
 
 template <typename TAdapter0, typename TAdapter1, typename TSignal>
 Connector::Connector(TSignal& signal)
-: mConnector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, TAdapter0(), TAdapter1()))
+: mConnector(new ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, TAdapter0(), TAdapter1()))
 {
 }
 
 template <typename TAdapter0, typename TAdapter1, typename TSignal>
 Connector::Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1)
-: mConnector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, adapter0, adapter1))
+: mConnector(new ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, adapter0, adapter1))
 {
 }
 
@@ -273,25 +273,25 @@ Connector::Connector(TSignal& signal, TAdapter0& adapter0, TAdapter1& adapter1)
 template <typename TAdapter0, typename TSignal>
 Connector Connector::createConnector(TSignal* signal)
 {
-	return Connector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(*signal, TAdapter0()));
+	return Connector(new ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(*signal, TAdapter0()));
 }
 
 template <typename TAdapter0, typename TSignal>
 Connector Connector::createConnector(TSignal& signal)
 {
-	return Connector(new Ember::Lua::ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, TAdapter0()));
+	return Connector(new ConnectorOne<typename TSignal::result_type, TAdapter0, typename TAdapter0::value_type>(signal, TAdapter0()));
 }
 
 template <typename TAdapter0, typename TAdapter1, typename TSignal>
 Connector Connector::createConnector(TSignal* signal)
 {
-	return Connector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(*signal, TAdapter0(), TAdapter1()));
+	return Connector(new ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(*signal, TAdapter0(), TAdapter1()));
 }
 
 template <typename TAdapter0, typename TAdapter1, typename TSignal>
 Connector Connector::createConnector(TSignal& signal)
 {
-	return Connector(new Ember::Lua::ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, TAdapter0(), TAdapter1()));
+	return Connector(new ConnectorTwo<typename TSignal::result_type, TAdapter0, TAdapter1, typename TAdapter0::value_type, typename TAdapter1::value_type>(signal, TAdapter0(), TAdapter1()));
 }
 
 }

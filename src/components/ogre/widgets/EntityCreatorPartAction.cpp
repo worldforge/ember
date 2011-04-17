@@ -42,13 +42,13 @@ EntityCreatorPartAction::~EntityCreatorPartAction()
 {
 }
 
-void EntityCreatorPartAction::activate(Ember::EntityMapping::ChangeContext& context)
+void EntityCreatorPartAction::activate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Showing creator part " << mPartName);
 	mCreationInstance.showModelPart(mPartName);
 }
 
-void EntityCreatorPartAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void EntityCreatorPartAction::deactivate(EntityMapping::ChangeContext& context)
 {
 	S_LOG_VERBOSE("Hiding creator part " << mPartName);
 	mCreationInstance.hideModelPart(mPartName);

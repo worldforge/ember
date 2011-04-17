@@ -32,7 +32,7 @@
 namespace Ember {
 
 ConfigBoundLogObserver::ConfigBoundLogObserver(ConfigService& configService, std::ostream &out)
-: Ember::StreamLogObserver(out), mConfigService(configService)
+: StreamLogObserver(out), mConfigService(configService)
 {
 	configService.EventChangedConfigItem.connect(sigc::mem_fun(*this, &ConfigBoundLogObserver::ConfigService_EventChangedConfigItem));
 
@@ -47,17 +47,17 @@ void ConfigBoundLogObserver::updateFromConfig()
 {
 	if (mConfigService.itemExists("general", "logginglevel")) {
 		std::string loggingLevel = static_cast<std::string>(mConfigService.getValue("general", "logginglevel"));
-		Ember::Log::MessageImportance importance(Ember::Log::INFO);
+		Log::MessageImportance importance(Log::INFO);
 		if (loggingLevel == "verbose") {
-			importance = Ember::Log::VERBOSE;
+			importance = Log::VERBOSE;
 		} else if (loggingLevel == "info") {
-			importance = Ember::Log::INFO;
+			importance = Log::INFO;
 		} else if (loggingLevel == "warning") {
-			importance = Ember::Log::WARNING;
+			importance = Log::WARNING;
 		} else if (loggingLevel == "failure") {
-			importance = Ember::Log::FAILURE;
+			importance = Log::FAILURE;
 		} else if (loggingLevel == "critical") {
-			importance = Ember::Log::CRITICAL;
+			importance = Log::CRITICAL;
 		}
 		setFilter(importance);
 	}

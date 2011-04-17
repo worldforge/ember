@@ -161,7 +161,7 @@ private:
  *
  * @author Hans Häggström
  */
-class EmberServices : public Ember::Singleton<EmberServices>
+class EmberServices : public Singleton<EmberServices>
 {
 public:
 	
@@ -175,60 +175,60 @@ public:
 	/**
 	* Returns an instance of the TestService.
 	*/
-	Ember::TestService *getTestService();
+	TestService *getTestService();
 	
 	
 	/**
 	* Returns an instance of the LoggingService
 	*/
-	Ember::LoggingService *getLoggingService();
+	LoggingService *getLoggingService();
 	
 	/**
 	* Returns an instance of the ConfigService
 	*/
-	Ember::ConfigService *getConfigService();
+	ConfigService *getConfigService();
 	
 	/**
 	* Returns an instance of the InputService
 	*/
-	Ember::InputService *getInputService();
+	InputService *getInputService();
 	
 	/**
 	* Returns an instance of the MetaserverService
 	*/
-	Ember::MetaserverService *getMetaserverService();
+	MetaserverService *getMetaserverService();
 	
 	/**
 	* Returns an instance of the ServerService
 	*/
-	Ember::ServerService *getServerService();
+	ServerService *getServerService();
 	
 	/**
 	* Returns an instance of the SoundService
 	*/
-	Ember::SoundService *getSoundService();
+	SoundService *getSoundService();
 	
 	/**
 	* Returns an instance of the ScriptingService
 	*/
-	Ember::ScriptingService *getScriptingService();
+	ScriptingService *getScriptingService();
 	
 	/**
 	* Returns an instance of the wfut service
 	*/
-	Ember::WfutService *getWfutService();
+	WfutService *getWfutService();
 	
 	/**
 	* Returns an instance of the time service
 	*/
-	Ember::Services::Time* getTimeService();
+	Services::Time* getTimeService();
 	
 	/**
 	 * @brief Returns the server settings service.
 	 *
 	 * @returns The server settings service.
 	 */
-	Ember::Services::ServerSettings* getServerSettingsService();
+	Services::ServerSettings* getServerSettingsService();
 
 	//----------------------------------------------------------------------
 	// Setters

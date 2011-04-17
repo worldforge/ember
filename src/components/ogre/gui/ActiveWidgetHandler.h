@@ -36,12 +36,12 @@ namespace Gui {
 */
 class ActiveWidgetHandler{
 public:
-    ActiveWidgetHandler(::Ember::OgreView::GUIManager& guiManager);
+    ActiveWidgetHandler(GUIManager& guiManager);
 
     ~ActiveWidgetHandler();
 
 protected:
-	void Input_InputModeChanged(Ember::Input::InputMode mode);
+	void Input_InputModeChanged(Input::InputMode mode);
 
 	/**
 	The name of the window which last had input when we switched to movement mode. This is a string and not a pointer since the window might have been destroyed in between. One other possibility is to keep a pointer ref and listen for the Destroyed event.
@@ -51,12 +51,12 @@ protected:
 	/**
 	The last mode we were in.
 	*/
-	Ember::Input::InputMode mLastMode;
+	Input::InputMode mLastMode;
 	
 	/**
 	A reference to the gui manager.
 	*/
-	::Ember::OgreView::GUIManager& mGuiManager;
+	GUIManager& mGuiManager;
 };
 
 }

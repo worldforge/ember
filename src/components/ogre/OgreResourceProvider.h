@@ -31,7 +31,7 @@ namespace Ember {
 namespace OgreView {
 
 
-class OgreResourceWrapper : public Ember::IResourceWrapper
+class OgreResourceWrapper : public IResourceWrapper
 {
 public:
 	OgreResourceWrapper(Ogre::DataStreamPtr dataStream);
@@ -49,14 +49,14 @@ private:
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class OgreResourceProvider : public Ember::IResourceProvider
+class OgreResourceProvider : public IResourceProvider
 {
 public:
     OgreResourceProvider(const std::string& groupName);
 
     virtual ~OgreResourceProvider();
 
-	virtual Ember::ResourceWrapper getResource(const std::string& name);
+	virtual ResourceWrapper getResource(const std::string& name);
 private:
 	std::string mGroupName;
 

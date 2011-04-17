@@ -109,7 +109,7 @@ namespace OgreView {
         /// @copydoc FactoryObj::createInstance
         Ogre::Archive *createInstance( const Ogre::String& name )
         {
-            return new Ember::OgreView::FileSystemArchive(name, "EmberFileSystem");
+            return new OgreView::FileSystemArchive(name, "EmberFileSystem");
         }
         /// @copydoc FactoryObj::destroyInstance
         void destroyInstance( Ogre::Archive* arch) { delete arch; }

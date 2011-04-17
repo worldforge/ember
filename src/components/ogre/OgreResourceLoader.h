@@ -51,7 +51,7 @@ The value in brackets following the type of location (for example "EmberFileSyst
  "shared" means that Ember will look for the media in PREFIX/shared/ember/media/shared only. This is media that is static and shared by all users on the system, and which won't be updated through wfut.
 If a directory contains a file named "norecurse" (it can be empty) Ember won't recurse further into it
 */
-class OgreResourceLoader : public Ember::ConsoleObject {
+class OgreResourceLoader : public ConsoleObject {
 public:
 	typedef std::multimap<std::string, std::string> ResourceLocationsMap;
 
@@ -89,7 +89,7 @@ public:
 	/**
 	 * @brief Allows setting of the right hand attachment's orientation. This is mainly for debugging purposes and should removed once we get a better editor in place.
 	 */
-	const Ember::ConsoleCommandWrapper UnloadUnusedResources;
+	const ConsoleCommandWrapper UnloadUnusedResources;
 
 protected:
 	bool mLoadRecursive;
@@ -102,7 +102,7 @@ protected:
 
 	std::vector<std::string> mLoadedSections;
 
-	::Ember::OgreView::FileSystemArchiveFactory* mFileSystemArchiveFactory;
+FileSystemArchiveFactory* mFileSystemArchiveFactory;
 
 	/**
 	 * @brief A map of all resource locations.

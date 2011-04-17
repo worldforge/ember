@@ -49,7 +49,7 @@ namespace OgreView
 OgreResourceLoader::OgreResourceLoader() :
 		UnloadUnusedResources("unloadunusedresources", this, "Unloads any unused resources."), mLoadRecursive(false)
 {
-	mFileSystemArchiveFactory = new ::Ember::OgreView::FileSystemArchiveFactory();
+	mFileSystemArchiveFactory = new FileSystemArchiveFactory();
 	Ogre::ArchiveManager::getSingleton().addArchiveFactory(mFileSystemArchiveFactory);
 }
 
@@ -60,7 +60,7 @@ OgreResourceLoader::~OgreResourceLoader()
 
 void OgreResourceLoader::initialize()
 {
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingletonPtr()->getConfigService();
+	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
 
 	//check from the config if we should load media recursively
 	//this is needed for most authoring, since it allows us to find all meshes before they are loaded
@@ -68,13 +68,13 @@ void OgreResourceLoader::initialize()
 		mLoadRecursive = (bool)configSrv->getValue("media", "loadmediarecursive");
 	}
 
-	if (Ember::EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "extraresourcelocations")) {
-		varconf::Variable resourceConfigFilesVar = Ember::EmberServices::getSingletonPtr()->getConfigService()->getValue("media", "extraresourcelocations");
+	if (EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "extraresourcelocations")) {
+		varconf::Variable resourceConfigFilesVar = EmberServices::getSingletonPtr()->getConfigService()->getValue("media", "extraresourcelocations");
 		std::string resourceConfigFiles = resourceConfigFilesVar.as_string();
-		Ember::Tokeniser configFilesTokeniser(resourceConfigFiles, ";");
+		Tokeniser configFilesTokeniser(resourceConfigFiles, ";");
 		while (configFilesTokeniser.hasRemainingTokens()) {
 			std::string rawPath = configFilesTokeniser.nextToken();
-			Ember::Tokeniser pathTokeniser(rawPath, "|");
+			Tokeniser pathTokeniser(rawPath, "|");
 			std::string group = pathTokeniser.nextToken();
 			std::string path = pathTokeniser.nextToken();
 			if (group != "" && path != "") {
@@ -84,7 +84,7 @@ void OgreResourceLoader::initialize()
 	}
 
 	//load the resource file
-	const std::string configPath(Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/resources.cfg");
+	const std::string configPath(EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/resources.cfg");
 	S_LOG_VERBOSE("Loading resources definitions from " << configPath);
 	mConfigFile.load(configPath);
 }
@@ -109,7 +109,7 @@ void OgreResourceLoader::runCommand(const std::string &command, const std::strin
 
 void OgreResourceLoader::unloadUnusedResources()
 {
-	Ember::TimedLog l("Unload unused resources.");
+	TimedLog l("Unload unused resources.");
 	Ogre::ResourceGroupManager& resourceGroupManager(Ogre::ResourceGroupManager::getSingleton());
 
 	Ogre::StringVector resourceGroups = resourceGroupManager.getResourceGroups();
@@ -121,7 +121,7 @@ void OgreResourceLoader::unloadUnusedResources()
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
-	static const std::string& sharedMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
+	static const std::string& sharedMediaPath = EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
 
 	bool foundDir = false;
 	std::string finalPath(sharedMediaPath + path);
@@ -143,8 +143,8 @@ bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 
 bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
-	static const std::string& userMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
-	static const std::string& emberMediaPath = Ember::EmberServices::getSingletonPtr()->getConfigService()->getEmberMediaDirectory();
+	static const std::string& userMediaPath = EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
+	static const std::string& emberMediaPath = EmberServices::getSingletonPtr()->getConfigService()->getEmberMediaDirectory();
 
 	bool foundDir = false;
 	std::string finalPath(userMediaPath + path);

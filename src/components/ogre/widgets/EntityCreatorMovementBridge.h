@@ -50,7 +50,7 @@ class EntityCreatorCreationInstance;
  @brief A movement bridge which knows how to move a DetachedEntity instance, which is a temporary preview entity used by the EntityCreator.
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class EntityCreatorMovementBridge: public ::Ember::OgreView::Authoring::EntityMoverBase
+class EntityCreatorMovementBridge: public Authoring::EntityMoverBase
 {
 public:
 	/**

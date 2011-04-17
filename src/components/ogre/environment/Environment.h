@@ -170,7 +170,7 @@ public:
  *
  * Note that the actual instances used are provided by an instance of IEnvironmentProvider.
  */
-class Environment : public Ember::ConsoleObject
+class Environment : public ConsoleObject
 {
 public:
 
@@ -191,9 +191,9 @@ public:
 	 */
 	virtual	void runCommand(const std::string &command, const std::string &args);
 
- 	const Ember::ConsoleCommandWrapper SetTime;
-	const Ember::ConsoleCommandWrapper SetFogDensity;
-	const Ember::ConsoleCommandWrapper SetAmbientLight;
+ 	const ConsoleCommandWrapper SetTime;
+	const ConsoleCommandWrapper SetFogDensity;
+	const ConsoleCommandWrapper SetAmbientLight;
 
 	ISun* getSun();
 	ISky* getSky();

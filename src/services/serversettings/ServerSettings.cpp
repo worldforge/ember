@@ -124,11 +124,11 @@ const varconf::sec_map & ServerSettings::getServerSettings(const ServerSettingsC
 std::string ServerSettings::getFullConfigFilePath() const
 {
 	// fetch the configuration file
-	if (Ember::EmberServices::getSingleton().getConfigService()->hasItem("general", "serversettings")) {
-		return Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/" + static_cast<std::string> (Ember::EmberServices::getSingleton().getConfigService()->getValue("general", "serversettings"));
+	if (EmberServices::getSingleton().getConfigService()->hasItem("general", "serversettings")) {
+		return EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/" + static_cast<std::string> (EmberServices::getSingleton().getConfigService()->getValue("general", "serversettings"));
 	} else {
 		// default fallback value
-		return Ember::EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/serversettings.conf";
+		return EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/serversettings.conf";
 	}
 }
 }

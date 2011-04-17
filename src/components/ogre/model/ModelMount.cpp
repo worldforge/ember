@@ -39,7 +39,7 @@ namespace OgreView
 namespace Model
 {
 
-ModelMount::ModelMount(Ember::OgreView::Model::Model& model, INodeProvider* nodeProvider) :
+ModelMount::ModelMount(Model& model, INodeProvider* nodeProvider) :
 	mModel(model), mNodeProvider(nodeProvider)
 {
 }

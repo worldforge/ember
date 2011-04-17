@@ -62,7 +62,7 @@ float EntityPolygonPositionProvider::getHeightForPosition(const WFMath::Point<2>
 {
 	return mEntity.getHeight(localPosition);
 //	//TODO: refactor into a better structure, so that we don't have to know about the terrain
-//	const ::Ember::OgreView::Terrain::TerrainManager* terrain = EmberOgre::getSingleton().getTerrainManager();
+//	const Terrain::TerrainManager* terrain = EmberOgre::getSingleton().getTerrainManager();
 //	if (terrain) {
 //		Ogre::Vector3 parentPos = Convert::toOgre(mEntity.getViewPosition());
 //		Ogre::Vector3 localPos(localPosition.x(), 0, -localPosition.y());
@@ -174,7 +174,7 @@ void PolygonAdapter::createNewPolygon(WFMath::Polygon<2>* existingPoly)
 	mPolygon = 0;
 	Ogre::SceneNode* entitySceneNode = getEntitySceneNode();
 	if (entitySceneNode) {
-		mPolygon = new ::Ember::OgreView::Authoring::Polygon(entitySceneNode, mPositionProvider);
+		mPolygon = new Authoring::Polygon(entitySceneNode, mPositionProvider);
 		WFMath::Polygon<2> poly;
 		if (existingPoly) {
 			poly = *existingPoly;
@@ -187,7 +187,7 @@ void PolygonAdapter::createNewPolygon(WFMath::Polygon<2>* existingPoly)
 
 		mPolygon->loadFromShape(poly);
 		if (!mPickListener) {
-			mPickListener = new ::Ember::OgreView::Authoring::PolygonPointPickListener(*mPolygon);
+			mPickListener = new Authoring::PolygonPointPickListener(*mPolygon);
 			mPickListener->EventPickedPoint.connect(sigc::mem_fun(*this, &PolygonAdapter::pickListener_PickedPoint));
 			EmberOgre::getSingleton().getWorld()->getMainCamera().pushWorldPickListener(mPickListener);
 		}

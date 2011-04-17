@@ -44,7 +44,7 @@ Connector::~Connector()
 
 lua_State* Connector::getState()
 {
-	return Ember::Lua::ConnectorBase::getState();
+	return ConnectorBase::getState();
 }
 
 Connector* Connector::connect(const std::string& luaMethod, lua_Object selfIndex)
@@ -112,11 +112,11 @@ bool Connector::checkSignalExistence(void* signal)
 Connector::Connector(sigc::signal<void>& signal)
 {
 	if (checkSignalExistence(&signal)) {
-		mConnector = new Ember::Lua::ConnectorZero<void>(signal);
+		mConnector = new ConnectorZero<void>(signal);
 	}
 }
 
-Connector::Connector(Ember::Lua::ConnectorBase* connector)
+Connector::Connector(ConnectorBase* connector)
 : mConnector(connector)
 {
 }

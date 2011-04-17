@@ -46,7 +46,7 @@ EmberEntityActionCreator::~EmberEntityActionCreator()
 {
 }
 
-void EmberEntityActionCreator::createActions(Ember::EntityMapping::EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition)
+void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& modelMapping, Cases::CaseBase* aCase, Definitions::CaseDefinition& caseDefinition)
 {
 	Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 	for (Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {

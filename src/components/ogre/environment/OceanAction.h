@@ -35,7 +35,7 @@ namespace Environment
  *
  * @brief Creates an OceanRepresentation and binds it to an entity.
  */
-class OceanAction: public Ember::EntityMapping::Actions::Action
+class OceanAction: public EntityMapping::Actions::Action
 {
 public:
 	/**
@@ -50,14 +50,14 @@ public:
 	virtual ~OceanAction();
 
 	/**
-	 * @copydoc Ember::EntityMapping::Actions::Action::activate()
+	 * @copydoc EntityMapping::Actions::Action::activate()
 	 */
-	virtual void activate(Ember::EntityMapping::ChangeContext& context);
+	virtual void activate(EntityMapping::ChangeContext& context);
 
 	/**
-	 * @copydoc Ember::EntityMapping::Actions::Action::deactivate()
+	 * @copydoc EntityMapping::Actions::Action::deactivate()
 	 */
-	virtual void deactivate(Ember::EntityMapping::ChangeContext& context);
+	virtual void deactivate(EntityMapping::ChangeContext& context);
 
 private:
 

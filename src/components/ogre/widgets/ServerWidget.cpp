@@ -140,11 +140,11 @@ void ServerWidget::buildWidget()
 		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/Disconnect")), CEGUI::PushButton::EventClicked, ServerWidget::Disconnect_Click);
 
 
-		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
-		Ember::EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
-		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
-		Ember::EmberServices::getSingletonPtr()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
-		Ember::EmberServices::getSingletonPtr()->getServerService()->LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
+		EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
+		EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
+		EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
+		EmberServices::getSingletonPtr()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
+		EmberServices::getSingletonPtr()->getServerService()->LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
 
 		addTabbableWindow(getWindow("LoginPanel/NameEdit"));
 		addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
@@ -164,7 +164,7 @@ void ServerWidget::buildWidget()
 
 		createPreviewTexture();
 
-		setConnection(Ember::EmberServices::getSingleton().getServerService()->getConnection());
+		setConnection(EmberServices::getSingleton().getServerService()->getConnection());
 	}
 
 }
@@ -235,8 +235,8 @@ bool ServerWidget::fetchCredentials(Eris::Connection* connection, std::string& u
 	Eris::ServerInfo sInfo;
 	connection->getServerInfo(sInfo);
 
-	Ember::Services::ServerSettingsCredentials serverCredentials(sInfo);
-	Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
+	Services::ServerSettingsCredentials serverCredentials(sInfo);
+	Services::ServerSettings* serverSettings = EmberServices::getSingleton().getServerSettingsService();
 	if (serverSettings->findItem(serverCredentials, "username")) {
 		user = static_cast<std::string>(serverSettings->getItem(serverCredentials, "username"));
 	}
@@ -273,8 +273,8 @@ bool ServerWidget::saveCredentials()
 		// fetch info from widgets
 		CEGUI::String name = nameBox->getText();
 		CEGUI::String password = passwordBox->getText();
-		Ember::Services::ServerSettingsCredentials serverCredentials(sInfo);
-		Ember::Services::ServerSettings* serverSettings = Ember::EmberServices::getSingleton().getServerSettingsService();
+		Services::ServerSettingsCredentials serverCredentials(sInfo);
+		Services::ServerSettings* serverSettings = EmberServices::getSingleton().getServerSettingsService();
 		serverSettings->setItem(serverCredentials, "username", name.c_str());
 		serverSettings->setItem(serverCredentials, "password", password.c_str());
 		serverSettings->writeToDisk();
@@ -439,7 +439,7 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 
 		std::string id = mCharacterModel[mCharacterList->getItemIndex(item)];
 
-		Ember::EmberServices::getSingletonPtr()->getServerService()->takeCharacter(id);
+		EmberServices::getSingletonPtr()->getServerService()->takeCharacter(id);
 	}
 	return true;
 }
@@ -447,25 +447,25 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
 {
 	//create a new admin character
-	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter("The Creator", "female", "creator", "Almighty", "");
+	EmberServices::getSingletonPtr()->getServerService()->createCharacter("The Creator", "female", "creator", "Almighty", "");
 	return true;
 }
 
 bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
 {
-	Ember::EmberServices::getSingletonPtr()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
+	EmberServices::getSingletonPtr()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
 	return true;
 }
 
 bool ServerWidget::LogoutButton_Click(const CEGUI::EventArgs& args)
 {
-	Ember::EmberServices::getSingletonPtr()->getServerService()->logout();
+	EmberServices::getSingletonPtr()->getServerService()->logout();
 	return true;
 }
 
 bool ServerWidget::Disconnect_Click(const CEGUI::EventArgs& args)
 {
-	Ember::EmberServices::getSingleton().getServerService()->disconnect();
+	EmberServices::getSingleton().getServerService()->disconnect();
 	return true;
 }
 
@@ -494,13 +494,13 @@ bool ServerWidget::TypesList_SelectionChanged(const CEGUI::EventArgs& args)
 			Eris::TypeService* typeService = mAccount->getConnection()->getTypeService();
 			Eris::TypeInfo* erisType = typeService->getTypeByName(mNewChar.type);
 			if (erisType) {
-				const Ember::EntityMapping::Definitions::EntityMappingDefinition* definition = Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
+				const EntityMapping::Definitions::EntityMappingDefinition* definition = Mapping::EmberEntityMappingManager::getSingleton().getManager().getDefinitionForType(erisType);
 				if (definition) {
-					Ember::EntityMapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
+					EntityMapping::Definitions::MatchDefinition::CaseStore::const_iterator first = definition->getRoot().getCases().begin();
 					if (first != definition->getRoot().getCases().end()) {
-						const Ember::EntityMapping::Definitions::CaseDefinition& firstCase = *first;
+						const EntityMapping::Definitions::CaseDefinition& firstCase = *first;
 						if (firstCase.getActions().begin() != firstCase.getActions().end()) {
-							const Ember::EntityMapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
+							const EntityMapping::Definitions::ActionDefinition& firstAction = *firstCase.getActions().begin();
 							if (firstAction.getType() == "display-model") {
 								//update the model preview window
 								mModelPreviewRenderer->showModel(firstAction.getValue());

@@ -38,7 +38,7 @@ namespace Lua {
  * Use an instance of this whenever you want to register console commands from Lua.
  *
  */
-class LuaConsoleObject : public Ember::ConsoleObject
+class LuaConsoleObject : public ConsoleObject
 {
 public:
     
@@ -85,12 +85,12 @@ private:
 	 *
 	 * This is called when the command is executed.
 	 */
-	Ember::Lua::TemplatedConnectorBase<Ember::Lua::StringValueAdapter, Ember::Lua::StringValueAdapter>* mConnector;
+	TemplatedConnectorBase<StringValueAdapter, StringValueAdapter>* mConnector;
 
 	/**
 	 * @brief The console command registered.
 	 */
-	const Ember::ConsoleCommandWrapper mCommandWrapper;
+	const ConsoleCommandWrapper mCommandWrapper;
 };
 
 }

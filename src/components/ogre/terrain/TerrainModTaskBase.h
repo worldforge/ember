@@ -45,7 +45,7 @@ class TerrainMod;
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Common base class for terrain mod related tasks.
  */
-class TerrainModTaskBase: public Ember::Tasks::TemplateNamedTask<TerrainModTaskBase>
+class TerrainModTaskBase: public Tasks::TemplateNamedTask<TerrainModTaskBase>
 {
 public:
 	TerrainModTaskBase(Mercator::Terrain& terrain, const std::string& entityId, TerrainHandler& handler, TerrainModMap& terrainMods);

@@ -35,7 +35,7 @@
 namespace Ember {
 namespace OgreView {
 
-template<> Ember::OgreView::OpcodeCollisionDetectorVisualizer* Ember::Singleton<Ember::OgreView::OpcodeCollisionDetectorVisualizer>::ms_Singleton = 0;
+template<> OgreView::OpcodeCollisionDetectorVisualizer* Singleton<OgreView::OpcodeCollisionDetectorVisualizer>::ms_Singleton = 0;
 
 OpcodeCollisionDetectorVisualizer::OpcodeCollisionDetectorVisualizer()
 {

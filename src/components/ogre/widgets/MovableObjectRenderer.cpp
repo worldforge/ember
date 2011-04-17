@@ -91,7 +91,7 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 		mWindowUpdater = new CEGUIWindowUpdater(*mImage);
 		mTexture->getRenderContext()->getRenderTexture()->addListener(mWindowUpdater);
 	} else {
-		throw Ember::Exception("Image dimension cannot be 0.");
+		throw Exception("Image dimension cannot be 0.");
 	}
 }
 

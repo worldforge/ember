@@ -84,7 +84,7 @@ void LuaHelper::pushNamedFunction(lua_State* state, const std::string luaMethod)
         if (!lua_istable(state,-1))
         {
 //             lua_settop(state,top);
-            throw Ember::Exception("Unable to get the Lua event handler: '"+luaMethod+"' as first part is not a table");
+            throw Exception("Unable to get the Lua event handler: '"+luaMethod+"' as first part is not a table");
         }
 
         // if there is more than two parts, we have more tables to go through
@@ -103,7 +103,7 @@ void LuaHelper::pushNamedFunction(lua_State* state, const std::string luaMethod)
 //                     lua_settop(L,top);
 					std::stringstream ss;
 					ss <<(vi+1);
-                    throw  Ember::Exception("Unable to get the Lua event handler: '"+luaMethod+"' as part #"+ss.str()+" ("+parts[vi]+") is not a table");
+                    throw  Exception("Unable to get the Lua event handler: '"+luaMethod+"' as part #"+ss.str()+" ("+parts[vi]+") is not a table");
                 }
                 // get rid of the last table and move on
                 lua_remove(state,-2);
@@ -125,7 +125,7 @@ void LuaHelper::pushNamedFunction(lua_State* state, const std::string luaMethod)
     // is it a function
 	if ( !lua_isfunction(state,-1) )
 	{
-		throw Ember::Exception( "\"" + luaMethod + "\" does not represent a Lua function" );
+		throw Exception( "\"" + luaMethod + "\" does not represent a Lua function" );
 	}
 }
 

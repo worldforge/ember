@@ -42,12 +42,12 @@ EntityCreatorHideModelAction::~EntityCreatorHideModelAction()
 {
 }
 
-void EntityCreatorHideModelAction::activate(Ember::EntityMapping::ChangeContext& context)
+void EntityCreatorHideModelAction::activate(EntityMapping::ChangeContext& context)
 {
 	mCreationInstance.setModel("");
 }
 
-void EntityCreatorHideModelAction::deactivate(Ember::EntityMapping::ChangeContext& context)
+void EntityCreatorHideModelAction::deactivate(EntityMapping::ChangeContext& context)
 {
 }
 

@@ -62,7 +62,7 @@ namespace Atlas
  The height will be adjusted for the terrain.
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class EntityPolygonPositionProvider: public ::Ember::OgreView::Authoring::IPolygonPositionProvider
+class EntityPolygonPositionProvider: public Authoring::IPolygonPositionProvider
 {
 public:
 
@@ -92,7 +92,7 @@ protected:
  This allows the editing of polygons through graphical drag and drop operations.
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class PolygonAdapter: public AdapterBase, public ::Ember::OgreView::Authoring::IMovementListener
+class PolygonAdapter: public AdapterBase, public Authoring::IMovementListener
 {
 public:
 	/**

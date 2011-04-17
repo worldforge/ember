@@ -32,7 +32,7 @@ namespace OgreView {
 
 namespace Terrain {
 
-template<> Ember::OgreView::Terrain::TerrainLayerDefinitionManager* Ember::Singleton<Ember::OgreView::Terrain::TerrainLayerDefinitionManager>::ms_Singleton = 0;
+template<> OgreView::Terrain::TerrainLayerDefinitionManager* Singleton<OgreView::Terrain::TerrainLayerDefinitionManager>::ms_Singleton = 0;
 
 TerrainLayerDefinitionManager::TerrainLayerDefinitionManager()
 {

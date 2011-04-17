@@ -41,13 +41,13 @@ namespace Foliage {
 class PlantPopulator;
 }
 
-class PlantQueryTask : public Ember::Tasks::TemplateNamedTask<PlantQueryTask>
+class PlantQueryTask : public Tasks::TemplateNamedTask<PlantQueryTask>
 {
 public:
 	PlantQueryTask(const SegmentRefPtr& segmentRef, Foliage::PlantPopulator& plantPopulator, const PlantAreaQuery& query, const Ogre::ColourValue& defaultShadowColour, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback);
 	virtual ~PlantQueryTask();
 
-	virtual void executeTaskInBackgroundThread(Ember::Tasks::TaskExecutionContext& context);
+	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
 
 	virtual void executeTaskInMainThread();
 

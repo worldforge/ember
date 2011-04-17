@@ -107,7 +107,7 @@ public:
 protected:
 
 	/* 
-	 * @see Ember::OgreView::EmberTerrainSceneManager::getPageOffset()
+	 * @see OgreView::EmberTerrainSceneManager::getPageOffset()
 	 */
 	Ogre::ushort mPageOffset;
 	

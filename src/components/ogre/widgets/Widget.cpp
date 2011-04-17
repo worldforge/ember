@@ -61,8 +61,8 @@ namespace Gui {
 	Widget::~Widget()
 	{
 		if (mCommandSuffix != "") {
-			Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand("show_" + mCommandSuffix);
-			Ember::ConsoleBackend::getSingletonPtr()->deregisterCommand("hide_" + mCommandSuffix);
+			ConsoleBackend::getSingletonPtr()->deregisterCommand("show_" + mCommandSuffix);
+			ConsoleBackend::getSingletonPtr()->deregisterCommand("hide_" + mCommandSuffix);
 		}
 		if (mMainWindow) {
 			CEGUI::WindowManager::getSingleton().destroyWindow(mMainWindow);
@@ -136,7 +136,7 @@ namespace Gui {
 		} catch (const CEGUI::Exception&) {
 			S_LOG_WARNING("The window " << windowName << " doesn't exist.");
 			if (throwIfNotFound) {
-				throw Ember::Exception("The window '" + windowName + "' could not be found.");
+				throw Exception("The window '" + windowName + "' could not be found.");
 			}
 			return 0;
 		}
@@ -194,8 +194,8 @@ namespace Gui {
 	void Widget::registerConsoleVisibilityToggleCommand(const std::string & commandSuffix)
 	{
 		mCommandSuffix = commandSuffix;
-		Ember::ConsoleBackend::getSingletonPtr()->registerCommand("show_" + commandSuffix, this, std::string("Shows the ") + mCommandSuffix + " window.");
-		Ember::ConsoleBackend::getSingletonPtr()->registerCommand("hide_" + commandSuffix, this, std::string("Hides the ") + mCommandSuffix + " window.");
+		ConsoleBackend::getSingletonPtr()->registerCommand("show_" + commandSuffix, this, std::string("Shows the ") + mCommandSuffix + " window.");
+		ConsoleBackend::getSingletonPtr()->registerCommand("hide_" + commandSuffix, this, std::string("Hides the ") + mCommandSuffix + " window.");
 
 	}
 
@@ -326,7 +326,7 @@ namespace Gui {
 				if (I != mTabOrder.end()) {
 					I->second->activate();
 					//we don't want to process the event any more, in case something else will try to interpret the tab event to also change the focus
-					Ember::Input::getSingleton().suppressFurtherHandlingOfCurrentEvent();
+					Input::getSingleton().suppressFurtherHandlingOfCurrentEvent();
 					return true;
 				}
 			}

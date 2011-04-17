@@ -46,7 +46,7 @@ This acts as a bridge between Ember and the Lua scripting environment. Opon crea
 If you want to inspect the return values from calls to lua scripts, pass a pointer to LuaScriptingCallContext to the executeScript methods.
 @author Erik Hjortsberg
 */
-class LuaScriptingProvider : public Ember::IScriptingProvider
+class LuaScriptingProvider : public IScriptingProvider
 {
 public:
     LuaScriptingProvider();
@@ -57,7 +57,7 @@ public:
 	 * @brief Loads the script from the wrapper.
 	 * @param resourceWrapper A resource wrapper pointing to a valid resource which can be loaded. This should contain a text file with the script contents.
 	 */
-	virtual void loadScript(Ember::ResourceWrapper& resWrapper);
+	virtual void loadScript(ResourceWrapper& resWrapper);
 
 	/**
 	 * @brief Executes the supplied string directly into the scripting environment.
@@ -65,9 +65,9 @@ public:
 	 * @param scriptCode The code to excute.
 	 * @param callContext An optional pointer to a scripting call context. This will be populated with return values and other info. If you don't have any need for such info, leave this empty.
 	 */
-	virtual void executeScript(const std::string& scriptCode, Ember::IScriptingCallContext* callContext);
+	virtual void executeScript(const std::string& scriptCode, IScriptingCallContext* callContext);
 
-	virtual void callFunction(const std::string& functionName, int narg, Ember::IScriptingCallContext* callContext);
+	virtual void callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext);
 
 	/**
 	 *   @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
@@ -86,7 +86,7 @@ public:
 	 *   @brief Register with  a service to allow for callbacks etc.
 	 * @param service The service to register with.
 	 */
-	virtual void _registerWithService(Ember::ScriptingService* service);
+	virtual void _registerWithService(ScriptingService* service);
 
 	/**
 	 *   @brief Forces a full garbage collection.
@@ -148,7 +148,7 @@ private:
 	/**
 	The main scripting service instance.
 	*/
-	Ember::ScriptingService* mService;
+	ScriptingService* mService;
 
 	/**
 	The main lua state. This is the sole entry into the lua virtual machine.

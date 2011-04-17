@@ -38,7 +38,7 @@ namespace Techniques
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief A compiler technique provider which uses the base techniques found in the Ember::OgreView::Terrain::Techniques namespace.
+ * @brief A compiler technique provider which uses the base techniques found in the OgreView::Terrain::Techniques namespace.
  */
 class CompilerTechniqueProvider : public ICompilerTechniqueProvider
 {

@@ -73,8 +73,8 @@ public:
 
 protected:
 
-	void input_MouseButtonPressed(Ember::Input::MouseButton button, Ember::Input::InputMode mode);
-	void input_MouseButtonReleased(Ember::Input::MouseButton button, Ember::Input::InputMode mode);
+	void input_MouseButtonPressed(Input::MouseButton button, Input::InputMode mode);
+	void input_MouseButtonReleased(Input::MouseButton button, Input::InputMode mode);
 	MovementController& mController;
 };
 
@@ -84,7 +84,7 @@ Controls the avatar. All avatar movement is handled by an instance of this class
 class MovementController
 : public Ogre::FrameListener,
 public virtual sigc::trackable,
-public Ember::ConsoleObject,
+public ConsoleObject,
 public IMovementProvider
 {
 public:
@@ -116,26 +116,26 @@ public:
 	 */
 //	const MovementControllerMovement& getCurrentMovement() const;
 
-	const Ember::ConsoleCommandWrapper RunToggle;
-	const Ember::ConsoleCommandWrapper ToggleCameraAttached;
+	const ConsoleCommandWrapper RunToggle;
+	const ConsoleCommandWrapper ToggleCameraAttached;
 
-	const Ember::ConsoleCommandWrapper MovementMoveForward;
-	const Ember::ConsoleCommandWrapper MovementMoveBackward;
-	const Ember::ConsoleCommandWrapper MovementMoveDownwards;
-	const Ember::ConsoleCommandWrapper MovementMoveUpwards;
-	const Ember::ConsoleCommandWrapper MovementStrafeLeft;
-	const Ember::ConsoleCommandWrapper MovementStrafeRight;
-/*	const Ember::ConsoleCommandWrapper MovementRotateLeft;
-	const Ember::ConsoleCommandWrapper MovementRotateRight;*/
+	const ConsoleCommandWrapper MovementMoveForward;
+	const ConsoleCommandWrapper MovementMoveBackward;
+	const ConsoleCommandWrapper MovementMoveDownwards;
+	const ConsoleCommandWrapper MovementMoveUpwards;
+	const ConsoleCommandWrapper MovementStrafeLeft;
+	const ConsoleCommandWrapper MovementStrafeRight;
+/*	const ConsoleCommandWrapper MovementRotateLeft;
+	const ConsoleCommandWrapper MovementRotateRight;*/
 
 
-//	const Ember::ConsoleCommandWrapper MoveCameraTo;
+//	const ConsoleCommandWrapper MoveCameraTo;
 
 	/**
 	 * @brief Repositions the free flying camera on the avatar.
 	 * This command is useful when you want to find the avatar when in free flying mode, or if you're moving the avatar through teleporting and want the camera to follow.
 	 */
-	const Ember::ConsoleCommandWrapper CameraOnAvatar;
+	const ConsoleCommandWrapper CameraOnAvatar;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
@@ -172,7 +172,7 @@ protected:
 	 */
 	Camera::MainCamera& mCamera;
 
-	Ember::InputCommandMapper mMovementCommandMapper;
+	InputCommandMapper mMovementCommandMapper;
 
 	/**
 	True if we're in running mode.

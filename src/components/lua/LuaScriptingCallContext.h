@@ -36,7 +36,7 @@ namespace Lua {
  * Whenever you want to be able to inspect return values from calling lua scripts, you should use an instance of this class and submit it when calling executeCode(...).
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class LuaScriptingCallContext : public Ember::IScriptingCallContext
+class LuaScriptingCallContext : public IScriptingCallContext
 {
 friend class LuaScriptingProvider;
 public:

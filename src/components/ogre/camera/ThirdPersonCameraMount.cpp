@@ -168,7 +168,7 @@ void ThirdPersonCameraMount::detachFromCamera()
 void ThirdPersonCameraMount::runCommand(const std::string &command, const std::string &args)
 {
 	if (SetCameraDistance == command) {
-		Ember::Tokeniser tokeniser;
+		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string distance = tokeniser.nextToken();
 		if (distance != "") {

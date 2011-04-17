@@ -31,7 +31,7 @@ namespace Model {
 class Model;
 class ModelRepresentation;
 
-class ModelRepresentationManager : public Ember::Singleton<ModelRepresentationManager>
+class ModelRepresentationManager : public Singleton<ModelRepresentationManager>
 {
 public:
 	ModelRepresentationManager();

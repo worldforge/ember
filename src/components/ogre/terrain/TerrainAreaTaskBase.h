@@ -47,7 +47,7 @@ class TerrainShader;
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief Common base class for terrain area related tasks.
  */
-class TerrainAreaTaskBase: public Ember::Tasks::TemplateNamedTask<TerrainAreaTaskBase>
+class TerrainAreaTaskBase: public Tasks::TemplateNamedTask<TerrainAreaTaskBase>
 {
 public:
 	typedef sigc::slot<void, const TerrainShader*, const WFMath::AxisBox<2>&> ShaderUpdateSlotType;

@@ -37,16 +37,16 @@ namespace Model
  * This is done by visiting all the actions of the mapping and reactivating those part actions which already are active.
  *
  */
-class ModelPartReactivatorVisitor: public Ember::EntityMapping::IVisitor
+class ModelPartReactivatorVisitor: public EntityMapping::IVisitor
 {
 public:
-	virtual void visit(Ember::EntityMapping::Actions::Action& action);
+	virtual void visit(EntityMapping::Actions::Action& action);
 
-	virtual void visit(Ember::EntityMapping::Matches::MatchBase& match);
+	virtual void visit(EntityMapping::Matches::MatchBase& match);
 
-	virtual void visit(Ember::EntityMapping::Cases::CaseBase& caseBase);
+	virtual void visit(EntityMapping::Cases::CaseBase& caseBase);
 private:
-	Ember::EntityMapping::ChangeContext mChangeContext;
+	EntityMapping::ChangeContext mChangeContext;
 
 };
 

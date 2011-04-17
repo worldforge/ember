@@ -179,7 +179,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	S_LOG_VERBOSE("Creating entity.");
 
 	// Loading script code
-	Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
+	EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
 
 	// Walking through adapter bindings
 	for (BindingsStore::iterator I = mBindings.begin(); I != mBindings.end(); ++I) {
@@ -198,9 +198,9 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 				S_LOG_WARNING("Should be only one adapter without calling function.");
 			}
 		} else {
-			Ember::Lua::LuaScriptingCallContext callContext;
+			Lua::LuaScriptingCallContext callContext;
 
-			lua_State* L = static_cast<Ember::Lua::LuaScriptingProvider*> (Ember::EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider"))->getLuaState();
+			lua_State* L = static_cast<Lua::LuaScriptingProvider*> (EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider"))->getLuaState();
 
 			// Pushing function params
 			std::vector<std::string>& adapters = I->second->getAdapters();
@@ -211,7 +211,7 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 			}
 
 			// Calling test function
-			Ember::EmberServices::getSingleton().getScriptingService()->callFunction(func, adapters.size(), "LuaScriptingProvider", &callContext);
+			EmberServices::getSingleton().getScriptingService()->callFunction(func, adapters.size(), "LuaScriptingProvider", &callContext);
 
 			LuaRef returnValue(callContext.getReturnValue());
 
@@ -336,10 +336,10 @@ void EntityRecipe::valueChanged()
  LuaScriptingCallContext callContext;
 
  // Loading code
- Ember::EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
+ EmberServices::getSingleton().getScriptingService()->executeCode(mScript, "LuaScriptingProvider");
 
  // Calling test function
- Ember::EmberServices::getSingleton().getScriptingService()->callFunction("fTest", 0, "LuaScriptingProvider", &callContext);
+ EmberServices::getSingleton().getScriptingService()->callFunction("fTest", 0, "LuaScriptingProvider", &callContext);
 
  LuaRef returnValue( callContext.getReturnValue() );
 

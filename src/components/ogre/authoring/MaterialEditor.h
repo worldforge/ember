@@ -38,7 +38,7 @@ namespace Authoring
 /**
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class MaterialEditor: public virtual sigc::trackable, public Ember::ConsoleObject
+class MaterialEditor: public virtual sigc::trackable, public ConsoleObject
 {
 public:
 	MaterialEditor();
@@ -53,7 +53,7 @@ public:
 	 */
 	virtual void runCommand(const std::string &command, const std::string &args);
 
-	const Ember::ConsoleCommandWrapper AlterMaterial;
+	const ConsoleCommandWrapper AlterMaterial;
 
 };
 

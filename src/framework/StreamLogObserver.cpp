@@ -57,7 +57,7 @@ namespace Ember {
      * Prints out the message provided with file, line and datestamp to myOut;
      */
     void StreamLogObserver::onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                                 const Ember::Log::MessageImportance & importance, const time_t & timeStamp)
+                                                 const Log::MessageImportance & importance, const time_t & timeStamp)
     {
         tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
         
@@ -70,19 +70,19 @@ namespace Ember {
         myOut.width(2);			
         myOut << ctm->tm_sec << "] ";			
 
-        if(importance == Ember::Log::CRITICAL)
+        if(importance == Log::CRITICAL)
 		{
 			myOut << "CRITICAL";
 		}
-        else  if(importance == Ember::Log::FAILURE)
+        else  if(importance == Log::FAILURE)
 		{
 			myOut << "FAILURE";
 		} 
-        else if(importance == Ember::Log::WARNING)
+        else if(importance == Log::WARNING)
 		{
 			myOut << "WARNING";
 		}
-        else if(importance == Ember::Log::INFO)
+        else if(importance == Log::INFO)
 		{
 			myOut << "INFO";
 		}
@@ -94,7 +94,7 @@ namespace Ember {
         myOut << " " << message;
         
         //only write file and line number if we're in verbose mode (to make the log a little smaller in most cases
-/*        if (getFilter() == Ember::Log::VERBOSE) {
+/*        if (getFilter() == Log::VERBOSE) {
         	myOut << " [File: " << file << ", Line #:" <<  line << "]";
         }*/
         myOut << std::endl;

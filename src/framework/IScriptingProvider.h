@@ -86,9 +86,9 @@ public:
 	 * @param scriptCode The code to excute.
 	 * @param callContext An optional pointer to a scripting call context. This will be populated with return values and other info. If you don't have any need for such info, leave this empty.
 	 */
-	virtual void executeScript(const std::string& scriptCode, Ember::IScriptingCallContext* callContext) = 0;
+	virtual void executeScript(const std::string& scriptCode, IScriptingCallContext* callContext) = 0;
 	
-	virtual void callFunction(const std::string& functionName, int narg, Ember::IScriptingCallContext* callContext) = 0;
+	virtual void callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext) = 0;
 	
 	/**
 	 *   @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.

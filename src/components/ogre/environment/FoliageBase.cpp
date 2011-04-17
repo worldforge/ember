@@ -109,7 +109,7 @@ void FoliageBase::TerrainHandler_EventShaderCreated(const Terrain::TerrainShader
 	}
 }
 
-void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set< ::Ember::OgreView::Terrain::TerrainPage* >& pages)
+void FoliageBase::TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage* >& pages)
 {
 	if (mPagedGeometry) {
 		for (std::vector<WFMath::AxisBox<2> >::const_iterator I = areas.begin(); I != areas.end(); ++I) {

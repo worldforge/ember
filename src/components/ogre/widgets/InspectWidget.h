@@ -47,7 +47,7 @@ public:
 	void buildWidget();
 	virtual void frameStarted(const Ogre::FrameEvent & evt);
 
-	const Ember::ConsoleCommandWrapper Inspect;
+	const ConsoleCommandWrapper Inspect;
 
 
 	/**
