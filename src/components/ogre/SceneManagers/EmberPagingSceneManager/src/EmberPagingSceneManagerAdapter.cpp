@@ -236,9 +236,9 @@ namespace OgreView {
 		EmberPagingTerrainObserver* observerImpl = static_cast<EmberPagingTerrainObserver*>(observer);
 		TerrainObserverStore::iterator I = mTerrainObservers.find(observerImpl);
 		if (I != mTerrainObservers.end()) {
+			Ogre::PagingLandscapeDelegate* delegate = I->second;
 			mTerrainObservers.erase(I);
 			delete observerImpl;
-			Ogre::PagingLandscapeDelegate* delegate = I->second;
 			mSceneManager.getListenerManager()->removeShowTileListener(delegate);
 			delete delegate;
 		}
