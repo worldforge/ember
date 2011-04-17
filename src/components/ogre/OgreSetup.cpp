@@ -142,15 +142,21 @@ void OgreSetup::shutdown()
 
 Ogre::Root* OgreSetup::createOgreSystem()
 {
+	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
 
-	// 	const std::string& sharePath(Ember::EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
+	//We need to set the current directory to the prefix before trying to load Ogre.
+	//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
+	//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
+	if (chdir(configSrv->getPrefix().c_str())) {
+		S_LOG_WARNING("Failed to change to the prefix directory. Ogre loading might fail.");
+	}
+
 	std::string pluginExtension = ".so";
 	mRoot = new Ogre::Root("", "ogre.cfg", "");
 
 	//we will try to load the plugins from series of different location, with the hope of getting at least one right
 	std::vector<std::string> pluginLocations;
 
-	Ember::ConfigService* configSrv = Ember::EmberServices::getSingleton().getConfigService();
 	if (configSrv->itemExists("ogre", "plugins")) {
 		std::string plugins(configSrv->getValue("ogre", "plugins"));
 		//if it's defined in the config, use that location first
@@ -223,6 +229,11 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	mMeshSerializerListener = new MeshSerializerListener();
 
 	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
+
+	if (chdir(configSrv->getEmberDataDirectory().c_str())) {
+		S_LOG_WARNING("Failed to change to the data directory.");
+	}
+
 	return mRoot;
 }
 
