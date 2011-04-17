@@ -188,10 +188,11 @@ void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attribut
 
 		ModelFittingStore::iterator I = mFittings.find(fittingName);
 		if (I != mFittings.end()) {
+			EmberEntity* entity = I->second->getChild();
 			mFittings.erase(I);
 			//Check if we should detach the existing fitting
-			if (I->second->getChild() && I->second->getChild()->getId() != newFittingEntityId) {
-				detachFitting(*I->second->getChild());
+			if (entity && entity->getId() != newFittingEntityId) {
+				detachFitting(*entity);
 			}
 		}
 		if (newFittingEntityId != "") {
