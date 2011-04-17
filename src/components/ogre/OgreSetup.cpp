@@ -169,7 +169,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		char* br_libdir = br_find_lib_dir(br_strcat(PREFIX, "/lib"));
 		std::string libDir(br_libdir);
 		free(br_libdir);
-		pluginLocations.push_back(libDir + "/ember/OGRE");
+		pluginLocations.push_back(libDir + "/OGRE");
 #endif
 #ifdef OGRE_PLUGINDIR
 		//also try with the plugindir defined for Ogre
