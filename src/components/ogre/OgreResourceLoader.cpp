@@ -175,11 +175,8 @@ void OgreResourceLoader::loadGui()
 
 void OgreResourceLoader::loadGeneral()
 {
-	loadSection("General");
-	loadSection("ModelDefinitions");
-	loadSection("SoundDefinitions");
-
-	loadAllUnloadedSections();
+	//After loading Bootstrap and Gui, this will load all remaining resources.
+	loadAllResources();
 
 	//out of pure interest we'll print out how many modeldefinitions we've loaded
 	Ogre::ResourceManager::ResourceMapIterator I = Model::ModelDefinitionManager::getSingleton().getResourceIterator();
@@ -277,7 +274,7 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 	}
 }
 
-void OgreResourceLoader::loadAllUnloadedSections()
+void OgreResourceLoader::loadAllResources()
 {
 	S_LOG_VERBOSE("Now loading all unloaded sections.");
 	Ogre::ConfigFile::SectionIterator I = mConfigFile.getSectionIterator();

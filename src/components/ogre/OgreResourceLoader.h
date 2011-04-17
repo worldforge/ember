@@ -117,7 +117,7 @@ protected:
 
 	bool isExistingDir(const std::string& path) const;
 
-	void loadAllUnloadedSections();
+	void loadAllResources();
 
 	/**
 	 * @brief Adds a resource directory to the Ogre resource system.
