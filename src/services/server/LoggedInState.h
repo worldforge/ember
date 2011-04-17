@@ -29,12 +29,12 @@ namespace Eris
 {
 class Account;
 class Avatar;
-class TransferInfo;
 }
 
 namespace Ember
 {
 
+class TransferEvent;
 class EnteredWorldState;
 
 /**
@@ -54,8 +54,6 @@ public:
 
 	virtual bool logout();
 
-	const Eris::TransferInfo* getTransferInfo() const;
-
 	const Ember::ConsoleCommandWrapper Logout;
 	const Ember::ConsoleCommandWrapper CreateChar;
 	const Ember::ConsoleCommandWrapper TakeChar;
@@ -68,7 +66,7 @@ private:
 	 */
 	Eris::Account& mAccount;
 
-	Eris::TransferInfo* mTransferInfo;
+	TransferEvent* mTransferEvent;
 
 	void gotAvatarSuccess(Eris::Avatar* avatar);
 
@@ -80,6 +78,7 @@ private:
 
 	void avatar_transferRequest(const Eris::TransferInfo& transferInfo);
 
+	void checkTransfer();
 };
 
 }

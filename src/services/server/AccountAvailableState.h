@@ -75,9 +75,6 @@ private:
 
 	void logoutComplete(bool clean);
 
-	void checkTransfer();
-
-
 };
 
 }

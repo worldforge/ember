@@ -24,6 +24,7 @@
 #include "ServerServiceSignals.h"
 #include "EnteredWorldState.h"
 #include "TransferInfoStringSerializer.h"
+#include "TransferEvent.h"
 
 #include "services/config/ConfigService.h"
 
@@ -33,6 +34,7 @@
 
 #include <Eris/Account.h>
 #include <Eris/Avatar.h>
+#include <Eris/Connection.h>
 
 #include <Atlas/Objects/RootEntity.h>
 
@@ -42,17 +44,38 @@
 namespace Ember
 {
 LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
-	StateBase<EnteredWorldState>::StateBase(parentState), Logout("logout", this, "Logout from the connected server."), CreateChar("add", this, "Create a character on the server."), TakeChar("take", this, "Take control of one of your characters."), ListChars("list", this, "List you available characters on the server."), mAccount(account), mTransferInfo(0)
+	StateBase<EnteredWorldState>::StateBase(parentState), Logout("logout", this, "Logout from the connected server."), CreateChar("add", this, "Create a character on the server."), TakeChar("take", this, "Take control of one of your characters."), ListChars("list", this, "List you available characters on the server."), mAccount(account), mTransferEvent(0)
 {
 	mAccount.AvatarSuccess.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarSuccess));
 	mAccount.GotCharacterInfo.connect(sigc::mem_fun(*this, &LoggedInState::gotCharacterInfo));
 	mAccount.GotAllCharacters.connect(sigc::mem_fun(*this, &LoggedInState::gotAllCharacters));
+	checkTransfer();
 
 }
 
 LoggedInState::~LoggedInState()
 {
-	delete mTransferInfo;
+	delete mTransferEvent;
+}
+
+void LoggedInState::checkTransfer()
+{
+	TransferInfoStringSerializer serializer;
+	std::string teleportFilePath(EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/teleports");
+	std::ifstream teleportsFile(teleportFilePath.c_str());
+	TransferInfoStringSerializer::TransferInfoStore transferObjects;
+	if (teleportsFile.good()) {
+		serializer.deserialize(transferObjects, teleportsFile);
+	}
+	teleportsFile.close();
+
+	for (TransferInfoStringSerializer::TransferInfoStore::const_iterator I = transferObjects.begin(); I != transferObjects.end(); ++I) {
+		const Eris::TransferInfo& transferInfo(*I);
+		if (transferInfo.getHost() == mAccount.getConnection()->getHost() && transferInfo.getPort() == mAccount.getConnection()->getPort()) {
+			mAccount.takeTransferredCharacter(transferInfo.getPossessEntityId(), transferInfo.getPossessKey());
+		}
+	}
+
 }
 
 void LoggedInState::takeCharacter(const std::string &id)
@@ -95,8 +118,6 @@ bool LoggedInState::logout()
 	return mAccount.logout() == Eris::NO_ERR;
 }
 
-
-
 void LoggedInState::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
 {
 	S_LOG_INFO("Got Character Info");
@@ -126,9 +147,6 @@ void LoggedInState::gotAvatarSuccess(Eris::Avatar* avatar)
 
 	setChildState(new EnteredWorldState(*this, *avatar, mAccount));
 	mAccount.AvatarDeactivated.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarDeactivated));
-	//	delete mServerAdapter;
-	//	mServerAdapter = new ConnectedAdapter(*mAccount, *mAvatar, *mConn);
-
 }
 
 void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInfo)
@@ -149,15 +167,9 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	}
 	teleportsOutputFile.close();
 
-	mTransferInfo = new Eris::TransferInfo(transferInfo);
-//	transfer(transferInfo);
+	mTransferEvent = new TransferEvent(*this, transferInfo);
+	Eris::TimedEventService::instance()->registerEvent(mTransferEvent);
 }
-
-const Eris::TransferInfo* LoggedInState::getTransferInfo() const
-{
-	return mTransferInfo;
-}
-
 
 void LoggedInState::gotAvatarDeactivated(Eris::Avatar* avatar)
 {
