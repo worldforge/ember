@@ -43,7 +43,7 @@ namespace Mapping {
 */
 class XMLEntityMappingDefinitionSerializer{
 public:
-    XMLEntityMappingDefinitionSerializer(Ember::EntityMapping::EntityMappingManager& modelMappingManager);
+    XMLEntityMappingDefinitionSerializer(EntityMapping::EntityMappingManager& modelMappingManager);
 
     ~XMLEntityMappingDefinitionSerializer();
 
@@ -53,11 +53,11 @@ public:
     */
     void parseScript(TiXmlDocument& xmlDocument);
 protected:
-	void parseMatchElement(Ember::EntityMapping::Definitions::EntityMappingDefinition& definition, Ember::EntityMapping::Definitions::MatchDefinition& matchDef, TiXmlElement* element);
-	void parseCaseElement(Ember::EntityMapping::Definitions::EntityMappingDefinition& definition, Ember::EntityMapping::Definitions::CaseDefinition& caseDef, TiXmlElement* element);
-	void parseActionElement(Ember::EntityMapping::Definitions::EntityMappingDefinition& definition, Ember::EntityMapping::Definitions::ActionDefinition& actionDef, TiXmlElement* element);
+	void parseMatchElement(EntityMapping::Definitions::EntityMappingDefinition& definition, EntityMapping::Definitions::MatchDefinition& matchDef, TiXmlElement* element);
+	void parseCaseElement(EntityMapping::Definitions::EntityMappingDefinition& definition, EntityMapping::Definitions::CaseDefinition& caseDef, TiXmlElement* element);
+	void parseActionElement(EntityMapping::Definitions::EntityMappingDefinition& definition, EntityMapping::Definitions::ActionDefinition& actionDef, TiXmlElement* element);
 
-	Ember::EntityMapping::EntityMappingManager& mEntityMappingManager;
+	EntityMapping::EntityMappingManager& mEntityMappingManager;
 
 
 };

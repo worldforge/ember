@@ -60,17 +60,20 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 			if (!tmp) {
 				continue;
 			} else {
+				EntityMappingDefinition* definition(0);
 				try {
 					const std::string name(tmp);
-					EntityMappingDefinition* definition = new EntityMappingDefinition();
+					definition = new EntityMappingDefinition();
 					definition->setName(name);
 					TiXmlElement* matchElement = smElem->FirstChildElement();
 					parseMatchElement(*definition, definition->getRoot(), matchElement);
 					mEntityMappingManager.addDefinition(definition);
 				} catch (const std::exception& ex) {
 					S_LOG_FAILURE("Error when reading model mapping with name '" << tmp << "'." << ex);
+					delete definition;
 				} catch (...) {
 					S_LOG_FAILURE("Error when reading model mapping with name '" << tmp << "'.");
+					delete definition;
 				}
 			}
 
@@ -99,7 +102,7 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					caseDef.getActions().push_back(actionDef);
 					definition->getRoot().getCases().push_back(caseDef);
 
-				} catch (std::exception ex) {
+				} catch (const std::exception& ex) {
 					delete definition;
 					//S_LOG_FAILURE(ex.what());
 				} catch (...) {
@@ -145,7 +148,7 @@ void XMLEntityMappingDefinitionSerializer::parseScript(TiXmlDocument& xmlDocumen
 					caseDef.getActions().push_back(actionDef);
 					definition->getRoot().getCases().push_back(caseDef);
 
-				} catch (std::exception ex) {
+				} catch (const std::exception& ex) {
 					delete definition;
 					//S_LOG_FAILURE(ex.what());
 				} catch (...) {
