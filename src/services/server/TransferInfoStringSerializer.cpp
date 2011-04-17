@@ -42,16 +42,16 @@ bool TransferInfoStringSerializer::serialize(const std::vector<Eris::TransferInf
 {
 	for (TransferInfoStore::const_iterator I = infoObjects.begin(); I != infoObjects.end(); ++I) {
 		const Eris::TransferInfo& transferInfo = *I;
-		ostream << transferInfo.getHost() << "," << transferInfo.getPort() << "," << transferInfo.getPossessEntityId() << "," << transferInfo.getPossessKey() << ";";
+		ostream << transferInfo.getHost() << "," << transferInfo.getPort() << "," << transferInfo.getPossessKey() << "," << transferInfo.getPossessEntityId() << ";";
 	}
 	return true;
 }
 
 bool TransferInfoStringSerializer::deserialize(std::vector<Eris::TransferInfo>& infoObjects, std::istream& istream)
 {
-	std::stringstream ss;
-	ss << istream;
-	Tokeniser tokeniser(ss.str(), ";");
+	std::string fileContent;
+	istream >> fileContent;
+	Tokeniser tokeniser(fileContent, ";");
 	while (tokeniser.hasRemainingTokens()) {
 		std::string token = tokeniser.nextToken();
 		if (token.size()) {
