@@ -88,7 +88,6 @@ InspectWidget::~InspectWidget()
 
 void InspectWidget::Server_GotView(Eris::View* view)
 {
-//	view->EntityDeleted.connect(sigc::mem_fun(*this, &InspectWidget::View_EntityDeleted));
 }
 
 void InspectWidget::entity_BeingDeleted()
@@ -201,8 +200,6 @@ void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
 
 void InspectWidget::showEntityInfo(EmberEntity* entity)
 {
-
-	//TODO: restructure this so it won't be done all over each frame, instead cache the values and only update upon changes to the entity
 	Eris::Entity* parent = entity->getLocation();
 	std::stringstream ss;
 	ss.precision(4);
@@ -235,50 +232,11 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 		ss << "Boundingbox: " << entity->getBBox() << "\n";
 	}
 
-/*	std::set<std::string> parents = entity->getInherits();
-
-	ss << "Inherits:\n";
-	std::set<std::string>::iterator I = parents.begin();
-	std::set<std::string>::iterator I_end = parents.end();
-
-	for (; I != I_end; ++I) {
-		ss << "    " << *I;
-	}*/
-
 	ss << "Type: " << entity->getType()->getName() << "\n";
 
 	ss << "Attributes:\n";
 
 	ss << mAttributesString;
-
-//  	const Eris::Entity::AttrMap& attributes = entity->getAttributes();
-//  	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
-// 		if (I->second.isString()) {
-// 			ss  << I->first << ": " << I->second.asString() << "\n";
-// 		} else if (I->second.isNum()) {
-// 			ss  << I->first << ": " << I->second.asNum() << "\n";
-// 		} else if (I->second.isMap()) {
-// 			ss << I->first << " (map with "<< I->second.asMap().size() << " entries):\n";
-// 		} else if (I->second.isList()) {
-// 			ss << I->first << " (list with "<< I->second.asList().size() << " entries):\n";
-// 		}
-//  	}
-
-
-// 	Decoder bridge;
-// 	Atlas::Codecs::Bach codec(ss, bridge);
-// 	Atlas::Objects::ObjectsEncoder enc(codec);
-//
-// 	const Eris::Entity::AttrMap attributes = entity->getAttributes();
-// 	for(Eris::Entity::AttrMap::const_iterator I = attributes.begin(); I != attributes.end(); ++I) {
-// 		codec.streamBegin();
-//
-// 		I->second.sendContents(bridge);
-// 		//enc.streamObjectsMessage(I->second);
-// 		codec.streamEnd();
-// 	}
-
-
 
 	mInfo->setText(ss.str());
 	mChangedThisFrame = false;
