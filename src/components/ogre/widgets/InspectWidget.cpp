@@ -77,7 +77,7 @@ class Decoder : public Atlas::Message::DecoderBase {
 
 InspectWidget::InspectWidget() :
 Inspect("inspect", this, "Inspect an entity."),
-mCurrentEntity(0)
+mCurrentEntity(0), mChangedThisFrame(false)
 {
 
 	Ember::EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
@@ -174,9 +174,12 @@ void InspectWidget::startInspecting(EmberEntity* entity)
 {
 	disconnectFromEntity();
 
+	mChangedThisFrame = true;
+
 	show();
 
 	mCurrentEntity = entity;
+	updateAttributeString();
 	showEntityInfo(entity);
 
 	mChangedConnection = entity->Changed.connect(sigc::mem_fun(*this, &InspectWidget::entity_Changed));
@@ -184,7 +187,6 @@ void InspectWidget::startInspecting(EmberEntity* entity)
 	mChildRemovedConnection = entity->ChildRemoved.connect(sigc::mem_fun(*this, &InspectWidget::entity_ChildRemoved));
 	mBeingDeletedConnection = entity->BeingDeleted.connect(sigc::mem_fun(*this, &InspectWidget::entity_BeingDeleted));
 
-	updateAttributeString();
 
 	fillChildrenList();
 
@@ -192,7 +194,7 @@ void InspectWidget::startInspecting(EmberEntity* entity)
 
 void InspectWidget::frameStarted(const Ogre::FrameEvent & evt)
 {
-	if (mMainWindow->isVisible() && mCurrentEntity) {
+	if (mMainWindow->isVisible() && mCurrentEntity && mChangedThisFrame) {
 		showEntityInfo(mCurrentEntity);
 	}
 }
@@ -279,7 +281,7 @@ void InspectWidget::showEntityInfo(EmberEntity* entity)
 
 
 	mInfo->setText(ss.str());
-
+	mChangedThisFrame = false;
 
 }
 
@@ -324,6 +326,7 @@ void InspectWidget::entity_ChildRemoved(Eris::Entity* entity)
 void InspectWidget::entity_Changed(const Eris::StringSet& attributes)
 {
 	updateAttributeString();
+	mChangedThisFrame = true;
 }
 
 

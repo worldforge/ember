@@ -92,8 +92,6 @@ protected:
 	void Server_GotView(Eris::View* view);
 	void entity_BeingDeleted();
 
-	std::string mAttributeString;
-
 	void updateAttributeString();
 
 	void entity_Changed(const Eris::StringSet& attributes);
@@ -104,6 +102,11 @@ protected:
 	sigc::connection mChildAddedConnection;
 	sigc::connection mChildRemovedConnection;
 	sigc::connection mBeingDeletedConnection;
+
+	/**
+	 * @brief True if the entity has changed this frame, and the info should therefore be updated.
+	 */
+	bool mChangedThisFrame;
 
 };
 

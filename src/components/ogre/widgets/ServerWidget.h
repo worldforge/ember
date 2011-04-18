@@ -95,7 +95,7 @@ protected:
 	CharacterAndSpawnsStore mCharacterAndSpawns;
 
 	/**
-	 * Keeps track of the character ids of the characters in the mCharacterList listbox.
+	 * @brief Keeps track of the character ids of the characters in the mCharacterList listbox.
 	 */
 	std::vector<std::string> mCharacterModel;
 
