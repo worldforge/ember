@@ -22,6 +22,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "SkyDome.h"
 #include "CaelumExceptions.h"
 #include "InternalUtilities.h"
+#include <OgreMeshManager.h>
 
 namespace Caelum
 {
@@ -45,8 +46,8 @@ namespace Caelum
         sceneMgr->getRenderQueue()->getQueueGroup(CAELUM_RENDER_QUEUE_SKYDOME)->setShadowsEnabled(false);
 
         // Generate dome entity.
-        InternalUtilities::generateSphericDome (SPHERIC_DOME_NAME, 32, InternalUtilities::DT_SKY_DOME);
-        mEntity.reset(sceneMgr->createEntity ("Caelum/SkyDome/Entity" + uniqueSuffix, SPHERIC_DOME_NAME));
+        InternalUtilities::generateSphericDome (SPHERIC_DOME_NAME + uniqueSuffix, 32, InternalUtilities::DT_SKY_DOME);
+        mEntity.reset(sceneMgr->createEntity ("Caelum/SkyDome/Entity" + uniqueSuffix, SPHERIC_DOME_NAME + uniqueSuffix));
         mEntity->setMaterialName (mMaterial->getName());
         mEntity->setRenderQueueGroup (CAELUM_RENDER_QUEUE_SKYDOME);
         mEntity->setCastShadows (false);
@@ -56,6 +57,10 @@ namespace Caelum
     }
 
     SkyDome::~SkyDome () {
+        String uniqueSuffix = "/" + InternalUtilities::pointerToString(this);
+        if (Ogre::MeshManager::getSingleton().resourceExists(SPHERIC_DOME_NAME + uniqueSuffix)) {
+        	Ogre::MeshManager::getSingleton().remove(SPHERIC_DOME_NAME + uniqueSuffix);
+        }
     }
 
     void SkyDome::notifyCameraChanged (Ogre::Camera *cam) {
