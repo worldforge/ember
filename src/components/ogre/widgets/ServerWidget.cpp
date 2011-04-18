@@ -79,9 +79,6 @@ namespace OgreView
 namespace Gui
 {
 
-/*template<> WidgetLoader WidgetLoaderHolder<ServerWidget>::loader("ServerWidget", &createWidgetInstance);*/
-//WidgetLoader Widget::loader("ServerWidget", &createWidgetInstance<ServerWidget>);
-
 ServerWidget::ServerWidget() :
 	mAccount(0), mModelPreviewRenderer(0), mCharacterList(0), mCreateChar(0), mUseCreator(0), mNewCharName(0), mNewCharDescription(0), mTypesList(0), mGenderRadioButton(0)
 {
@@ -89,12 +86,6 @@ ServerWidget::ServerWidget() :
 
 ServerWidget::~ServerWidget()
 {
-	if (mCharacterList) {
-		//we'll store the id of the characters as string pointers in the ListBox, so we need to delete them ourselves when we cleanup
-		for (unsigned int i = 0; i < mCharacterList->getItemCount(); ++i) {
-			delete static_cast<std::string*> (mCharacterList->getListboxItemFromIndex(i)->getUserData());
-		}
-	}
 	delete mModelPreviewRenderer;
 }
 
@@ -405,6 +396,8 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 
 void ServerWidget::gotAllCharacters(Eris::Account* account)
 {
+	mCharacterList->resetList();
+	mCharacterModel.clear();
 	Eris::CharacterMap cm = account->getCharacters();
 	Eris::CharacterMap::iterator I = cm.begin();
 	Eris::CharacterMap::iterator I_end = cm.end();
@@ -430,11 +423,10 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 					itemText += nameElement.asString();
 				}
 			}
-			//TODO: prevent this from leaking memory. Granted, it isn't much, but it would be better if we didn't leak
 			Gui::ColouredListItem* item = new Gui::ColouredListItem(itemText);
-			std::string* id = new std::string(entity->getId());
-			item->setUserData(id);
+
 			mCharacterList->addItem(item);
+			mCharacterModel.push_back(entity->getId());
 		}
 	}
 
@@ -445,9 +437,9 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 	CEGUI::ListboxItem* item = mCharacterList->getFirstSelectedItem();
 	if (item) {
 
-		std::string* id = static_cast<std::string*> (item->getUserData());
+		std::string id = mCharacterModel[mCharacterList->getItemIndex(item)];
 
-		Ember::EmberServices::getSingletonPtr()->getServerService()->takeCharacter(*id);
+		Ember::EmberServices::getSingletonPtr()->getServerService()->takeCharacter(id);
 	}
 	return true;
 }
@@ -596,10 +588,14 @@ void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 
 void ServerWidget::avatar_Deactivated(bool clean)
 {
+	mCharacterList->resetList();
+	mCharacterModel.clear();
+	mAccount->refreshCharacterInfo();
 	show();
 	mMainWindow->moveToFront();
 	getWindow("LoginPanel")->setVisible(false);
 	getWindow("LoggedInPanel")->setVisible(true);
+
 }
 
 void ServerWidget::createPreviewTexture()

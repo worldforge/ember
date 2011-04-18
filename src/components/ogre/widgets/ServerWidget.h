@@ -33,6 +33,7 @@
 
 #include "Widget.h"
 #include <map>
+#include <vector>
 
 
 namespace Ember {
@@ -92,6 +93,11 @@ protected:
 
 
 	CharacterAndSpawnsStore mCharacterAndSpawns;
+
+	/**
+	 * Keeps track of the character ids of the characters in the mCharacterList listbox.
+	 */
+	std::vector<std::string> mCharacterModel;
 
 	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
