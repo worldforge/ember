@@ -71,7 +71,7 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
 		for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
 			const PlantInstance& plantInstance(*I);
-//			Ogre::Vector3 pos(plantInstance.position.x, plantInstance.position.y, plantInstance.position.z);
+			//			Ogre::Vector3 pos(plantInstance.position.x, plantInstance.position.y, plantInstance.position.z);
 			//			pos2D.x = pos.x;
 			//			pos2D.y = pos.z;
 			// 			TerrainManager->getShadowColourAt(pos2D, colour);
@@ -89,7 +89,14 @@ void FoliageLoader::loadPage(::Forests::PageInfo &page)
 void FoliageLoader::plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult)
 {
 	mLatestPlantsResult = &queryResult;
-	mPagedGeometry.reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().getCenter().x, 0, queryResult.getQuery().getCenter().y), true);
+	//Be sure to catch errors so that we always reset the mLatestPlantsResult field when done.
+	try {
+		mPagedGeometry.reloadGeometryPage(Ogre::Vector3(queryResult.getQuery().getCenter().x, 0, queryResult.getQuery().getCenter().y), true);
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when reloading geometry." << ex);
+	} catch (...) {
+		S_LOG_FAILURE("Unknown error when reloading geometry.");
+	}
 	mLatestPlantsResult = 0;
 
 }
