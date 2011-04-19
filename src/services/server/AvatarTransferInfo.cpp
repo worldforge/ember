@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2011 Erik Hjortsberg
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,29 +16,31 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBER_TRANSFERINFOSTRINGSERIALIZER_H_
-#define EMBER_TRANSFERINFOSTRINGSERIALIZER_H_
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-
-
-#include <vector>
-#include <iostream>
-
+#include "AvatarTransferInfo.h"
 namespace Ember
 {
-class AvatarTransferInfo;
-class TransferInfoStringSerializer
+AvatarTransferInfo::AvatarTransferInfo(const std::string& avatarName, const WFMath::TimeStamp timestamp, const Eris::TransferInfo& transferInfo) :
+	mAvatarName(avatarName), mTimestamp(timestamp), mTranferInfo(transferInfo)
 {
-public:
-	typedef std::vector<AvatarTransferInfo> TransferInfoStore;
-	TransferInfoStringSerializer();
-	virtual ~TransferInfoStringSerializer();
-
-	bool serialize(const TransferInfoStore& infoObjects, std::ostream& ostream);
-
-	bool deserialize(TransferInfoStore& infoObjects, std::istream& istream);
-};
-
 }
 
-#endif /* TRANSFERINFOSTRINGSERIALIZER_H_ */
+const std::string& AvatarTransferInfo::getAvatarName() const
+{
+	return mAvatarName;
+}
+
+const WFMath::TimeStamp& AvatarTransferInfo::getTimestamp() const
+{
+	return mTimestamp;
+}
+
+const Eris::TransferInfo& AvatarTransferInfo::getTransferInfo() const
+{
+	return mTransferInfo;
+}
+
+}

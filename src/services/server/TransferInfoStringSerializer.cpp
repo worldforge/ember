@@ -21,6 +21,7 @@
 #endif
 
 #include "TransferInfoStringSerializer.h"
+#include "AvatarTransferInfo.h"
 
 #include "framework/Tokeniser.h"
 #include <Eris/TransferInfo.h>
@@ -38,7 +39,7 @@ TransferInfoStringSerializer::~TransferInfoStringSerializer()
 {
 }
 
-bool TransferInfoStringSerializer::serialize(const std::vector<Eris::TransferInfo>& infoObjects, std::ostream& ostream)
+bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObjects, std::ostream& ostream)
 {
 	for (TransferInfoStore::const_iterator I = infoObjects.begin(); I != infoObjects.end(); ++I) {
 		const Eris::TransferInfo& transferInfo = *I;
@@ -47,7 +48,7 @@ bool TransferInfoStringSerializer::serialize(const std::vector<Eris::TransferInf
 	return true;
 }
 
-bool TransferInfoStringSerializer::deserialize(std::vector<Eris::TransferInfo>& infoObjects, std::istream& istream)
+bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, std::istream& istream)
 {
 	std::string fileContent;
 	istream >> fileContent;
