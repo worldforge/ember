@@ -76,7 +76,7 @@ private:
 
 	void gotAllCharacters();
 
-	void avatar_transferRequest(const Eris::TransferInfo& transferInfo);
+	void avatar_transferRequest(const Eris::TransferInfo& transferInfo, const Eris::Avatar* avatar);
 
 	void checkTransfer();
 };

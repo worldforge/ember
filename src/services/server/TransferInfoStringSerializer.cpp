@@ -24,7 +24,16 @@
 #include "AvatarTransferInfo.h"
 
 #include "framework/Tokeniser.h"
+#include "framework/LoggingInstance.h"
 #include <Eris/TransferInfo.h>
+
+#include <Atlas/Message/Element.h>
+#include <Atlas/Message/MEncoder.h>
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Codecs/Bach.h>
+#include <Atlas/Codecs/XML.h>
+#include <Atlas/Formatter.h>
+
 #include <sstream>
 #include <string>
 #include <stdlib.h>
@@ -39,29 +48,77 @@ TransferInfoStringSerializer::~TransferInfoStringSerializer()
 {
 }
 
-bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObjects, std::ostream& ostream)
+bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObjects, std::iostream& ostream)
 {
+	Atlas::Message::ListType infos;
 	for (TransferInfoStore::const_iterator I = infoObjects.begin(); I != infoObjects.end(); ++I) {
-		const Eris::TransferInfo& transferInfo = *I;
-		ostream << transferInfo.getHost() << "," << transferInfo.getPort() << "," << transferInfo.getPossessKey() << "," << transferInfo.getPossessEntityId() << ";";
+		const AvatarTransferInfo& transferInfo = *I;
+		Atlas::Message::MapType info;
+		info["host"] = transferInfo.getTransferInfo().getHost();
+		info["port"] = transferInfo.getTransferInfo().getPort();
+		info["key"] = transferInfo.getTransferInfo().getPossessKey();
+		info["entityid"] = transferInfo.getTransferInfo().getPossessEntityId();
+		info["avatarname"] = transferInfo.getAvatarName();
+		info["timestamp"] = (transferInfo.getTimestamp() - WFMath::TimeStamp::epochStart()).milliseconds();
+		infos.push_back(info);
 	}
+
+	Atlas::Message::QueuedDecoder decoder;
+	Atlas::Codecs::Bach codec(ostream, decoder);
+
+	Atlas::Message::Encoder encoder(codec);
+
+	Atlas::Message::MapType map;
+	map["teleports"] = infos;
+	Atlas::Formatter formatter(ostream, codec);
+	formatter.streamBegin();
+	encoder.streamMessageElement(map);
+	formatter.streamEnd();
+
 	return true;
 }
 
-bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, std::istream& istream)
+bool TransferInfoStringSerializer::deserialize(TransferInfoStore& infoObjects, std::iostream& istream)
 {
-	std::string fileContent;
-	istream >> fileContent;
-	Tokeniser tokeniser(fileContent, ";");
-	while (tokeniser.hasRemainingTokens()) {
-		std::string token = tokeniser.nextToken();
-		if (token.size()) {
-			std::vector<std::string> data = Tokeniser::split(token, ",");
-			if (data.size() == 4) {
-				infoObjects.push_back(Eris::TransferInfo(data[0], atoi(data[1].c_str()), data[2], data[3]));
+	try {
+		Atlas::Message::QueuedDecoder decoder;
+
+		istream.seekg(0);
+		Atlas::Codecs::Bach codec(istream, decoder);
+		// Read whole stream into decoder queue
+		while (!istream.eof()) {
+			codec.poll();
+		}
+
+		// Read decoder queue
+		if (decoder.queueSize() > 0) {
+
+			Atlas::Message::MapType map = decoder.popMessage();
+			Atlas::Message::MapType::const_iterator I = map.find("teleports");
+			if (I != map.end()) {
+				if (I->second.isList()) {
+					Atlas::Message::ListType infos = I->second.asList();
+					for (Atlas::Message::ListType::const_iterator J = infos.begin(); J != infos.end(); ++J) {
+						Atlas::Message::Element infoElement = *J;
+						if (infoElement.isMap()) {
+							Atlas::Message::MapType info = infoElement.asMap();
+							const std::string& host = info["host"].asString();
+							int port = info["port"].asInt();
+							const std::string& key = info["key"].asString();
+							const std::string& entityId = info["entityid"].asString();
+							const std::string& avatarName = info["avatarname"].asString();
+							long timestamp = info["timestamp"].asInt();
+							infoObjects.push_back(AvatarTransferInfo(avatarName, WFMath::TimeStamp::epochStart() + WFMath::TimeDiff(timestamp), Eris::TransferInfo(host, port, key, entityId)));
+						}
+					}
+				}
 			}
 		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Couldn't deserialize transfer info objects." << ex);
+		return false;
 	}
+	S_LOG_VERBOSE("Read " << infoObjects.size() << " transfer info objects from storage.");
 	return true;
 }
 

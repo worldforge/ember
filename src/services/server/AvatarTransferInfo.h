@@ -64,17 +64,17 @@ private:
 	/**
 	 * @brief The name of the avatar.
 	 */
-	const std::string mAvatarName;
+	std::string mAvatarName;
 
 	/**
 	 * @brief A time stamp for when the transfer info was created.
 	 */
-	const WFMath::TimeStamp mTimestamp;
+	WFMath::TimeStamp mTimestamp;
 
 	/**
 	 * @brief The transfer info instance.
 	 */
-	const Eris::TransferInfo mTransferInfo;
+	Eris::TransferInfo mTransferInfo;
 };
 }
 #endif /* AVATARTRANSFERINFO_H_ */

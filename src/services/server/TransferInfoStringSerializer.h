@@ -34,9 +34,9 @@ public:
 	TransferInfoStringSerializer();
 	virtual ~TransferInfoStringSerializer();
 
-	bool serialize(const TransferInfoStore& infoObjects, std::ostream& ostream);
+	bool serialize(const TransferInfoStore& infoObjects, std::iostream& ostream);
 
-	bool deserialize(TransferInfoStore& infoObjects, std::istream& istream);
+	bool deserialize(TransferInfoStore& infoObjects, std::iostream& istream);
 };
 
 }
