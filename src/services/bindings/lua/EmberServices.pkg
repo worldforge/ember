@@ -23,6 +23,9 @@ $pfile "InputService.pkg";
 $pfile "IInputAdapter.pkg";
 $pfile "ServerSettings.pkg";
 $pfile "ServerSettingsCredentials.pkg";
+
+$pfile "AvatarTransferInfo.pkg";
+
 //  class SoundService;
 
 namespace Ember {
