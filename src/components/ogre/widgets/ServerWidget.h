@@ -37,6 +37,7 @@
 
 
 namespace Ember {
+class AvatarTransferInfo;
 namespace OgreView {
 
 
@@ -94,6 +95,8 @@ protected:
 
 	CharacterAndSpawnsStore mCharacterAndSpawns;
 
+	AvatarTransferInfo* mAvatarTransferInfo;
+
 	/**
 	 * @brief Keeps track of the character ids of the characters in the mCharacterList listbox.
 	 */
@@ -112,6 +115,10 @@ protected:
 	bool OkButton_Click(const CEGUI::EventArgs& args);
 	bool Disconnect_Click(const CEGUI::EventArgs& args);
 	
+	bool TeleportYes_Click(const CEGUI::EventArgs& args);
+	bool TeleportNo_Click(const CEGUI::EventArgs& args);
+
+
 	bool fetchCredentials(Eris::Connection* connection, std::string& user, std::string& pass);
 	bool saveCredentials(void);
 	void loginSuccess(Eris::Account* account);
@@ -177,6 +184,7 @@ protected:
 	 */
 	void showNoCharactersAlert();
 
+	void server_TransferInfoAvailable(const std::vector<AvatarTransferInfo>& transferInfos);
 };
 }
 }

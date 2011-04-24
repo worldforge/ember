@@ -39,6 +39,7 @@
 #include "components/ogre/GUIManager.h"
 
 #include "services/server/ServerService.h"
+#include "services/server/AvatarTransferInfo.h"
 #include "services/config/ConfigService.h"
 #include "services/serversettings/ServerSettings.h"
 #include "services/serversettings/ServerSettingsCredentials.h"
@@ -69,8 +70,6 @@
 
 #include <sigc++/bind.h>
 
-
-
 using namespace CEGUI;
 namespace Ember
 {
@@ -80,13 +79,14 @@ namespace Gui
 {
 
 ServerWidget::ServerWidget() :
-	mAccount(0), mModelPreviewRenderer(0), mCharacterList(0), mCreateChar(0), mUseCreator(0), mNewCharName(0), mNewCharDescription(0), mTypesList(0), mGenderRadioButton(0)
+	mAccount(0), mModelPreviewRenderer(0), mCharacterList(0), mCreateChar(0), mUseCreator(0), mNewCharName(0), mNewCharDescription(0), mTypesList(0), mGenderRadioButton(0), mAvatarTransferInfo(0)
 {
 }
 
 ServerWidget::~ServerWidget()
 {
 	delete mModelPreviewRenderer;
+	delete mAvatarTransferInfo;
 }
 
 void ServerWidget::buildWidget()
@@ -128,7 +128,8 @@ void ServerWidget::buildWidget()
 		BIND_CEGUI_EVENT(mGenderRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
 		BIND_CEGUI_EVENT(femaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
 
-
+		BIND_CEGUI_EVENT(getWindow("TeleportInfo/Yes"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportYes_Click);
+		BIND_CEGUI_EVENT(getWindow("TeleportInfo/No"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportNo_Click);
 
 		updateNewCharacter();
 
@@ -145,6 +146,7 @@ void ServerWidget::buildWidget()
 		EmberServices::getSingleton().getServerService().GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
 		EmberServices::getSingleton().getServerService().GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
 		EmberServices::getSingleton().getServerService().LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
+		EmberServices::getSingleton().getServerService().TransferInfoAvailable.connect(sigc::mem_fun(*this, &ServerWidget::server_TransferInfoAvailable));
 
 		addTabbableWindow(getWindow("LoginPanel/NameEdit"));
 		addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
@@ -184,6 +186,15 @@ void ServerWidget::setConnection(Eris::Connection* connection)
 void ServerWidget::connection_Disconnected()
 {
 	mGuiManager->destroyWidget(this);
+}
+
+void ServerWidget::server_TransferInfoAvailable(const std::vector<AvatarTransferInfo>& transferInfos)
+{
+	if (transferInfos.size() > 0) {
+		CEGUI::Window* teleportInfo = getWindow("TeleportInfo", true);
+		teleportInfo->setVisible(true);
+		mAvatarTransferInfo = new AvatarTransferInfo(transferInfos[0]);
+	}
 }
 
 void ServerWidget::createdAccount(Eris::Account* account)
@@ -577,6 +588,21 @@ bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args)
 	if (alert) {
 		alert->setVisible(false);
 	}
+	return true;
+}
+
+bool ServerWidget::TeleportYes_Click(const CEGUI::EventArgs& args)
+{
+	getWindow("TeleportInfo", true)->setVisible(false);
+	if (mAvatarTransferInfo) {
+		EmberServices::getSingleton().getServerService()->takeTransferredCharacter(mAvatarTransferInfo->getTransferInfo());
+	}
+	return true;
+}
+
+bool ServerWidget::TeleportNo_Click(const CEGUI::EventArgs& args)
+{
+	getWindow("TeleportInfo", true)->setVisible(false);
 	return true;
 }
 
