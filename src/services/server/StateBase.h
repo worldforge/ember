@@ -45,11 +45,14 @@ public:
 
 	virtual void takeCharacter(const std::string &id);
 
+	virtual void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
+
 	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
 
 	virtual IServerAdapter& getServerAdapter();
 
 	virtual void transfer(const Eris::TransferInfo& transferInfo);
+
 
 protected:
 
@@ -119,6 +122,11 @@ inline bool StateBaseCore::logout()
 inline void StateBaseCore::takeCharacter(const std::string &id)
 {
 	mParentState.takeCharacter(id);
+}
+
+inline void StateBaseCore::takeTransferredCharacter(const Eris::TransferInfo& transferInfo)
+{
+	mParentState.takeTransferredCharacter(transferInfo);
 }
 
 inline bool StateBaseCore::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName)

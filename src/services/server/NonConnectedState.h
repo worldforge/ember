@@ -52,6 +52,8 @@ public:
 
 	virtual void takeCharacter(const std::string &id);
 
+	virtual void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
+
 	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
 
 	virtual void transfer(const Eris::TransferInfo& transferInfo);

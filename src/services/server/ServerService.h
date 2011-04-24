@@ -41,6 +41,7 @@ class View;
 class Lobby;
 class Account;
 class Entity;
+class TransferInfo;
 }
 
 namespace Ember
@@ -86,6 +87,12 @@ public:
 	void reconnect();
 
 	void disconnect();
+
+	/**
+	 * @brief Takes a transferred character.
+	 * @param transferInfo Information needed about the transfer.
+	 */
+	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
 
 	/**
 	 * @brief Logs out the user.

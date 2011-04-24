@@ -32,10 +32,7 @@ namespace Ember
 {
 
 ServerService::ServerService() :
-	mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0),
-	//	ReConnect("reconnect", this, "Reconnect to the server"),
-			//			 mServerAdapter(new NonConnectedAdapter()),
-			mNonConnectedState(new NonConnectedState(*this))
+	mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this))
 {
 	setName("Server Service");
 	setDescription("Service for Server session");
@@ -122,6 +119,11 @@ void ServerService::disconnect()
 bool ServerService::logout()
 {
 	return mNonConnectedState->getTopState().logout();
+}
+
+void ServerService::takeTransferredCharacter(const Eris::TransferInfo& transferInfo)
+{
+	mNonConnectedState->getTopState().takeTransferredCharacter(transferInfo);
 }
 
 void ServerService::takeCharacter(const std::string &id)

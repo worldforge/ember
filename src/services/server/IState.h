@@ -82,6 +82,12 @@ public:
 	virtual void takeCharacter(const std::string &id) = 0;
 
 	/**
+	 * @brief Takes a transferred character.
+	 * @param transferInfo Information needed about the transfer.
+	 */
+	virtual void takeTransferredCharacter(const Eris::TransferInfo& transferInfo) = 0;
+
+	 /**
 	 * @brief Creates a new character on the server.
 	 * @param name The name of the new character.
 	 * @param sex The sex. In most cases either "male" or "female".
