@@ -75,14 +75,27 @@ void LoggedInState::checkTransfer()
 	}
 	teleportsFile.close();
 
+	std::vector<AvatarTransferInfo> matchingTransferInfos;
+
 	for (TransferInfoStringSerializer::TransferInfoStore::const_iterator I = transferObjects.begin(); I != transferObjects.end(); ++I) {
 		const AvatarTransferInfo& avatarTransferInfo(*I);
 		const Eris::TransferInfo& transferInfo(avatarTransferInfo.getTransferInfo());
 		if (transferInfo.getHost() == mAccount.getConnection()->getHost() && transferInfo.getPort() == mAccount.getConnection()->getPort()) {
-			mAccount.takeTransferredCharacter(transferInfo.getPossessEntityId(), transferInfo.getPossessKey());
+			matchingTransferInfos.push_back(avatarTransferInfo);
+			//			mAccount.takeTransferredCharacter(transferInfo.getPossessEntityId(), transferInfo.getPossessKey());
 		}
 	}
 
+	if (matchingTransferInfos.size() > 0) {
+		getSignals().TransferInfoAvailable(matchingTransferInfos);
+	}
+
+}
+
+void LoggedInState::takeTransferredCharacter(const Eris::TransferInfo& transferInfo)
+{
+	S_LOG_INFO("Trying to take transferred character with id " << transferInfo.getPossessEntityId() << ".");
+	mAccount.takeTransferredCharacter(transferInfo.getPossessEntityId(), transferInfo.getPossessKey());
 }
 
 void LoggedInState::takeCharacter(const std::string &id)

@@ -24,6 +24,7 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Eris/BaseConnection.h>
 #include <string>
+#include <vector>
 
 namespace Eris
 {
@@ -36,6 +37,7 @@ class Account;
 
 namespace Ember
 {
+class AvatarTransferInfo;
 class ServerServiceSignals {
 public:
 
@@ -79,6 +81,11 @@ public:
 	 * @brief Emitted when the current connection status changes.
 	 */
 	sigc::signal<void, Eris::BaseConnection::Status> EventStatusChanged;
+
+	/**
+	 * @brief Emitted when there are transfer info objects available for the connected server.
+	 */
+	sigc::signal<void, const std::vector<AvatarTransferInfo>&> TransferInfoAvailable;
 
 };
 }

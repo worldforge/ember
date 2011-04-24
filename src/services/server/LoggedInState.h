@@ -48,6 +48,8 @@ public:
 
 	void runCommand(const std::string &, const std::string &);
 
+	void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
+
 	void takeCharacter(const std::string &id);
 
 	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
