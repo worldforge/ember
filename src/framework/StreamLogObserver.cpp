@@ -106,10 +106,12 @@ static WFMath::TimeStamp startTime(WFMath::TimeStamp::now());
         
         myOut << " " << message;
         
-        //only write file and line number if we're in verbose mode (to make the log a little smaller in most cases
-/*        if (getFilter() == Log::VERBOSE) {
-        	myOut << " [File: " << file << ", Line #:" <<  line << "]";
-        }*/
+        #ifdef EMBER_LOG_SHOW_ORIGIN
+            if(line != -1){
+                myOut << " [" << file << "(" <<  line << ")]";
+            }
+        #endif
+
         myOut << std::endl;
 
     }
