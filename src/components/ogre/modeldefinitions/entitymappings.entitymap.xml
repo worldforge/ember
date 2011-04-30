@@ -1016,6 +1016,7 @@
 	<autoentitymapping name="bear" />
 	<autoentitymapping name="donkey" />
 	<autoentitymapping name="duck" />
+	<autoentitymapping name="flying_bird" />
 	<autoentitymapping name="flower" modelname="camelia" />
 	<autoentitymapping name="stone" modelname="boulder" />
 
