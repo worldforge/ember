@@ -1013,6 +1013,7 @@
 	<autoentitymapping name="fence_gate" modelname="wooden_gate" />
 	
 	<!-- NEW CHANGES -->
+	<autoentitymapping name="bear" />
 	<autoentitymapping name="flower" modelname="camelia" />
 	<autoentitymapping name="stone" modelname="boulder" />
 
