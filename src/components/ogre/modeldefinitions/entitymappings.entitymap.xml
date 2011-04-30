@@ -1043,6 +1043,7 @@
 	</entitymapping>	
 
 	<autoentitymapping name="twobyfour" />
+	<autoentitymapping name="tent" />
 
 	<entitymapping name="theodolite">
 		<entitymatch>
