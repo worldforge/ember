@@ -1045,6 +1045,7 @@
 	<autoentitymapping name="twobyfour" />
 	<autoentitymapping name="tent" />
 	<autoentitymapping name="hook" modelname="fishing_hook" />
+	<autoentitymapping name="lure" modelname="fishing_lure" />
 
 	<entitymapping name="theodolite">
 		<entitymatch>
