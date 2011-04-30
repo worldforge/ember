@@ -1057,6 +1057,7 @@
 		</entitymatch>
 	</entitymapping>
 
+	<autoentitymapping name="statue" modelname="cg_statue"/>
 
 	<entitymapping name="theodolite">
 		<entitymatch>
