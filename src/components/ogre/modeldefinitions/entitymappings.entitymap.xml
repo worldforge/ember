@@ -1042,6 +1042,8 @@
 		</entitymatch>
 	</entitymapping>	
 
+	<autoentitymapping name="twobyfour" />
+
 	<entitymapping name="theodolite">
 		<entitymatch>
 			<case>
