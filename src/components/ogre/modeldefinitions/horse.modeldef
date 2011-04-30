@@ -1,26 +1,54 @@
 <models>
-    <model name="horse" usescaleof="height" showcontained="true" icon="">
-        <translate x="0.000000" y="1.500000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+    <model name="horse" usescaleof="height" showcontained="false" icon="">
+        <translate x="0.000000" y="0.000000" z="0.000000" />
+        <rotation x="-0.000000" y="-0.000000" z="-0.000000" degrees="0.000000" />
         <submodels>
-            <submodel mesh="3d_skeletons/creatures/quadruped_v2/models/horse/Horse.mesh">
+            <submodel mesh="3d_objects/creatures/horse/horse.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
                             <subentity index="0" />
-                            <subentity index="3" />
-                        </subentities>
-                    </part>
-                    <part name="saddle" show="true">
-                        <subentities>
                             <subentity index="1" />
-                            <subentity index="2" />
                         </subentities>
-                    </part>
+                    </part>                    
                 </parts>
             </submodel>
         </submodels>
-        <actions />
+        <actions>
+            <action name="__movement_walk" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Walk" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+			<action name="__movement_run" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Gallop" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="__movement_idle" speed="1.000000">
+                <animations>
+                    <animation iterations="2">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+					<animation iterations="1">
+                        <animationpart name="EatLow" weight="1.000000" />
+                    </animation>
+					<animation iterations="1">
+                        <animationpart name="TailFlick" weight="1.000000" />
+                    </animation>
+					<animation iterations="3">
+                        <animationpart name="Stand" weight="1.000000" />
+                    </animation>
+					<animation iterations="1">
+                        <animationpart name="TailFlick" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
         <attachpoints />
         <views />
         <lights />
