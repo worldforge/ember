@@ -1058,6 +1058,7 @@
 	</entitymapping>
 
 	<autoentitymapping name="statue" modelname="cg_statue"/>
+	<autoentitymapping name="pedestal" modelname="cg_pedestal"/>
 
 	<entitymapping name="theodolite">
 		<entitymatch>
