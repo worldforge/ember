@@ -1047,6 +1047,17 @@
 	<autoentitymapping name="hook" modelname="fishing_hook" />
 	<autoentitymapping name="lure" modelname="fishing_lure" />
 
+	<entitymapping name="farmers_cap">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">farmers_cap</caseparam>
+				<caseparam type="equals">hat</caseparam>
+				<action type="display-model">farmers_cap</action>
+			</case>
+		</entitymatch>
+	</entitymapping>
+
+
 	<entitymapping name="theodolite">
 		<entitymatch>
 			<case>
