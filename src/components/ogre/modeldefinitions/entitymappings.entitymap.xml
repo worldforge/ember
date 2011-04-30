@@ -1021,6 +1021,27 @@
 	<autoentitymapping name="flower" modelname="camelia" />
 	<autoentitymapping name="stone" modelname="boulder" />
 
+	<!-- NEW CONTENT -->	
+		<entitymapping name="board">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">board</caseparam>
+				<action type="display-model">board</action>
+				<action type="display-part">long</action>
+				<attributematch attribute="style" >
+					<case>
+						<caseparam type="equals">long</caseparam>
+						<action type="display-part">long</action>
+					</case>
+					<case>
+						<caseparam type="equals">short</caseparam>
+						<action type="display-part">short</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</entitymapping>	
+
 	<entitymapping name="theodolite">
 		<entitymatch>
 			<case>
