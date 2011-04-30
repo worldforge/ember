@@ -183,7 +183,7 @@
 <!-- furniture-->
 	<autoentitymapping name="chair" />
 	<autoentitymapping name="door" />
-	<autoentitymapping name="longtable" />
+	<autoentitymapping name="long_table" modelname="longtable" />
 	<autoentitymapping name="shelf_table" />
 	<autoentitymapping name="simple_shelf" />
 	<autoentitymapping name="stool" />
@@ -1004,6 +1004,7 @@
 	
 	<autoentitymapping name="crate" />
 	<autoentitymapping name="open_crate" />
+	<autoentitymapping name="crate_lid" />
 	<autoentitymapping name="crate_open" modelname="open_crate" />
 	
 	
@@ -1011,6 +1012,10 @@
 	<autoentitymapping name="fence_section" modelname="wooden_fence" />
 	<autoentitymapping name="fence_gate" modelname="wooden_gate" />
 	
+	<!-- NEW CHANGES -->
+	<autoentitymapping name="flower" modelname="camelia" />
+	<autoentitymapping name="stone" modelname="boulder" />
+
 	<entitymapping name="theodolite">
 		<entitymatch>
 			<case>
