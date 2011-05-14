@@ -207,7 +207,7 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 		//we need to see if we should sleep a little.
 		if (minMillisecondsPerFrame > 0) {
 			currentTimeMillis = Time::currentTimeMillis();
-			long millisecondSinceLastFrame = currentTimeMillis - mLastTimeMainLoopStepEnded;
+			long long millisecondSinceLastFrame = currentTimeMillis - mLastTimeMainLoopStepEnded;
 			if (millisecondSinceLastFrame < minMillisecondsPerFrame) {
 				input.sleep(minMillisecondsPerFrame - millisecondSinceLastFrame);
 			}
