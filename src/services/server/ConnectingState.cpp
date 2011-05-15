@@ -47,7 +47,7 @@ ConnectingState::ConnectingState(IState& parentState, const std::string& host, s
 
 ConnectingState::~ConnectingState()
 {
-	if (mHasSignalledDisconnected) {
+	if (!mHasSignalledDisconnected) {
 		//If we get a failure there's a great risk that the Disconnected signal isn't emitted. We'll therefore do it ourselves.
 		mConnection.Disconnected.emit();
 	}
