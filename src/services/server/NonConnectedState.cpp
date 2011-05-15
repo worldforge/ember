@@ -22,7 +22,6 @@
 
 #include "NonConnectedState.h"
 #include "ConnectingState.h"
-#include "DestroyChildStateEvent.h"
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
@@ -32,7 +31,6 @@
 
 #include <algorithm>
 #include <iostream>
-#include <sstream>
 
 namespace Ember
 {
@@ -44,18 +42,14 @@ NonConnectedState::NonConnectedState(ServerServiceSignals& signals) :
 
 NonConnectedState::~NonConnectedState()
 {
-	delete mDeleteChildState;
 }
 
 void NonConnectedState::destroyChildState()
 {
 	//Make sure to sever the connection, so that we don't end up in an infinite loop if something goes wrong when shutting down.
-	mFailureConnection.disconnect();
 	mDisconnectedConnection.disconnect();
 	delete mChildState;
 	mChildState = 0;
-	delete mDeleteChildState;
-	mDeleteChildState = 0;
 }
 
 ServerServiceSignals& NonConnectedState::getSignals() const
@@ -78,8 +72,6 @@ bool NonConnectedState::connect(const std::string& host, short port)
 	if (!mChildState->connect()) {
 		destroyChildState();
 	} else {
-		mFailureConnection.disconnect();
-		mFailureConnection = mChildState->getConnection().Failure.connect(sigc::mem_fun(*this, &NonConnectedState::gotFailure));
 		mDisconnectedConnection.disconnect();
 		mDisconnectedConnection = mChildState->getConnection().Disconnected.connect(sigc::mem_fun(*this, &NonConnectedState::disconnected));
 	}
@@ -94,23 +86,6 @@ void NonConnectedState::disconnected()
 	ConsoleBackend::getSingleton().pushMessage("Disconnected from server.");
 
 	destroyChildState();
-}
-
-void NonConnectedState::gotFailure(const std::string & msg)
-{
-	std::ostringstream temp;
-
-	temp << "Got Server error: " << msg;
-	S_LOG_WARNING(temp.str());
-
-	ConsoleBackend::getSingleton().pushMessage(temp.str());
-
-	//Don't destroy the child state here, since the connection will then be destroyed
-	//(and the connection code which triggered this callback will do some stuff once this callback is done, hence we can't delete that)
-	if (!mDeleteChildState && mChildState) {
-		mDeleteChildState = new DestroyChildStateEvent(*this);
-		Eris::TimedEventService::instance()->registerEvent(mDeleteChildState);
-	}
 }
 
 void NonConnectedState::runCommand(const std::string &command, const std::string &args)

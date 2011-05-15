@@ -24,6 +24,7 @@
 #include "ConnectedState.h"
 #include "ServerServiceSignals.h"
 #include "ServerServiceConnectionListener.h"
+#include "DestroyChildStateEvent.h"
 
 #include "framework/LoggingInstance.h"
 #include "framework/ConsoleBackend.h"
@@ -31,15 +32,18 @@
 #include <Eris/Connection.h>
 #include <Eris/Exceptions.h>
 
+#include <sstream>
+
 namespace Ember
 {
 ConnectingState::ConnectingState(IState& parentState, const std::string& host, short port) :
-	StateBase<ConnectedState>::StateBase(parentState), mConnection(std::string("Ember ") + VERSION, host, port, false, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false)
+	StateBase<ConnectedState>::StateBase(parentState), mConnection(std::string("Ember ") + VERSION, host, port, false, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false), mDeleteChildState(0)
 {
 	// Bind signals
 	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
 	mConnection.StatusChanged.connect(sigc::mem_fun(*this, &ConnectingState::statusChanged));
 	mConnection.Disconnected.connect(sigc::mem_fun(*this, &ConnectingState::disconnected));
+	mConnection.Failure.connect(sigc::mem_fun(*this, &ConnectingState::gotFailure));
 	//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 
 
@@ -51,6 +55,7 @@ ConnectingState::~ConnectingState()
 		//If we get a failure there's a great risk that the Disconnected signal isn't emitted. We'll therefore do it ourselves.
 		mConnection.Disconnected.emit();
 	}
+	delete mDeleteChildState;
 }
 
 bool ConnectingState::connect()
@@ -100,6 +105,23 @@ void ConnectingState::disconnected()
 Eris::Connection& ConnectingState::getConnection()
 {
 	return mConnection;
+}
+
+void ConnectingState::gotFailure(const std::string & msg)
+{
+	std::ostringstream temp;
+
+	temp << "Got Server error: " << msg;
+	S_LOG_WARNING(temp.str());
+
+	ConsoleBackend::getSingleton().pushMessage(temp.str());
+
+	//Don't destroy ourselves here, since the connection will then be destroyed
+	//(and the connection code which triggered this callback will do some stuff once this callback is done, hence we can't delete that)
+	if (!mDeleteChildState) {
+		mDeleteChildState = new DestroyChildStateEvent(getParentState());
+		Eris::TimedEventService::instance()->registerEvent(mDeleteChildState);
+	}
 }
 
 }

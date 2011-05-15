@@ -27,6 +27,7 @@ namespace Ember
 {
 
 class ConnectedState;
+class DestroyChildStateEvent;
 
 /**
  * @brief State for when a connection to a server is in progress.
@@ -48,13 +49,26 @@ private:
 	 */
 	Connection mConnection;
 
+	/**
+	 * @brief Keeps track of whether the Disconnected of the Eris Connection has been signalled.
+	 *
+	 * Since that won't happen if we disconnect because of a failure we need to do that ourselves when shutting down.
+	 */
 	bool mHasSignalledDisconnected;
+
+	/**
+	 * @brief Used for delayed deletion of the child state of the parent state.
+	 */
+	DestroyChildStateEvent* mDeleteChildState;
+
 
 	void connected();
 
 	void disconnected();
 
 	void statusChanged(Eris::BaseConnection::Status status);
+
+	void gotFailure(const std::string& msg);
 
 };
 

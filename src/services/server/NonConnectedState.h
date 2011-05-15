@@ -34,7 +34,6 @@ namespace Ember
 {
 
 class ConnectingState;
-class DestroyChildStateEvent;
 
 /**
  * @brief State for when no connection yet has been made.
@@ -80,21 +79,9 @@ private:
 	NonConnectedAdapter mAdapter;
 
 	/**
-	 * @brief Track the GotFailure connection, so to sever it when aborting and thus avoiding infinite loops.
-	 */
-	sigc::connection mFailureConnection;
-
-	/**
 	 * @brief Track the Disconnected connection, so to sever it when aborting and thus avoiding infinite loops.
 	 */
 	sigc::connection mDisconnectedConnection;
-
-	/**
-	 * @brief Used for delayed deletion of the child state.
-	 */
-	DestroyChildStateEvent* mDeleteChildState;
-
-	void gotFailure(const std::string& msg);
 
 	void disconnected();
 
