@@ -47,11 +47,6 @@ public:
 	 */
 	TransferEvent(IState& state, const Eris::TransferInfo& transferInfo);
 
-	/**
-	 * Dtor.
-	 */
-	virtual ~TransferEvent();
-
     virtual void expired();
 
     virtual const WFMath::TimeStamp& due() const;

@@ -31,10 +31,6 @@ TransferEvent::TransferEvent(IState& state, const Eris::TransferInfo& transferIn
 
 }
 
-TransferEvent::~TransferEvent()
-{
-}
-
 void TransferEvent::expired()
 {
 	mState.transfer(mTransferInfo);
