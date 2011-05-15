@@ -166,8 +166,10 @@ inline StateBase<void>::~StateBase()
 template<typename TChildState>
 inline void StateBase<TChildState>::destroyChildState()
 {
-	delete mChildState;
+	//Guard to allow this method to be called multiple times within the same stack.
+	TChildState* childState = mChildState;
 	mChildState = 0;
+	delete childState;
 }
 
 template<>
