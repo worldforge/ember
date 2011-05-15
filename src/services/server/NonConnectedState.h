@@ -23,6 +23,10 @@
 #include "NonConnectedAdapter.h"
 #include "framework/ConsoleObject.h"
 
+
+#include <Eris/TimedEventService.h>
+
+
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
 
@@ -30,6 +34,7 @@ namespace Ember
 {
 
 class ConnectingState;
+class DestroyChildStateEvent;
 
 /**
  * @brief State for when no connection yet has been made.
@@ -83,6 +88,11 @@ private:
 	 * @brief Track the Disconnected connection, so to sever it when aborting and thus avoiding infinite loops.
 	 */
 	sigc::connection mDisconnectedConnection;
+
+	/**
+	 * @brief Used for delayed deletion of the child state.
+	 */
+	DestroyChildStateEvent* mDeleteChildState;
 
 	void gotFailure(const std::string& msg);
 

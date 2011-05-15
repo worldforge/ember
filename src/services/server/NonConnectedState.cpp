@@ -22,6 +22,7 @@
 
 #include "NonConnectedState.h"
 #include "ConnectingState.h"
+#include "DestroyChildStateEvent.h"
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
@@ -43,6 +44,7 @@ NonConnectedState::NonConnectedState(ServerServiceSignals& signals) :
 
 NonConnectedState::~NonConnectedState()
 {
+	delete mDeleteChildState;
 }
 
 void NonConnectedState::destroyChildState()
@@ -101,7 +103,12 @@ void NonConnectedState::gotFailure(const std::string & msg)
 
 	ConsoleBackend::getSingleton().pushMessage(temp.str());
 
-	destroyChildState();
+	//Don't destroy the child state here, since the connection will then be destroyed
+	//(and the connection code which triggered this callback will do some stuff once this callback is done, hence we can't delete that)
+	if (!mDeleteChildState && mChildState) {
+		mDeleteChildState = new DestroyChildStateEvent(*this);
+		Eris::TimedEventService::instance()->registerEvent(mDeleteChildState);
+	}
 }
 
 void NonConnectedState::runCommand(const std::string &command, const std::string &args)
