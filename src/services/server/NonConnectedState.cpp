@@ -54,6 +54,8 @@ void NonConnectedState::destroyChildState()
 	mDisconnectedConnection.disconnect();
 	delete mChildState;
 	mChildState = 0;
+	delete mDeleteChildState;
+	mDeleteChildState = 0;
 }
 
 ServerServiceSignals& NonConnectedState::getSignals() const
