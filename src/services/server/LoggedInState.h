@@ -36,6 +36,7 @@ namespace Ember
 
 class TransferEvent;
 class EnteredWorldState;
+class AvatarTransferInfo;
 
 /**
  * @brief State for when the user is logged in to a server account, but has yet not taken a character in the world.
@@ -63,12 +64,24 @@ public:
 
 private:
 
+	typedef std::vector<AvatarTransferInfo> AvatarTransferInfoStore;
+
 	/**
 	 * @brief Holds the account object we are connected with.
 	 */
 	Eris::Account& mAccount;
 
+	/**
+	 * @brief Handles any transfer operation.
+	 *
+	 * This needs to occur separate since it's required that it's implemented through Eris Timeout events.
+	 */
 	TransferEvent* mTransferEvent;
+
+	/**
+	 * @brief Any optional transfer infos attached to this server.
+	 */
+	AvatarTransferInfoStore mTransferInfos;
 
 	void gotAvatarSuccess(Eris::Avatar* avatar);
 
@@ -78,9 +91,29 @@ private:
 
 	void gotAllCharacters();
 
+	/**
+	 * @brief Listen to server transfer requests and write the transfer info data to persistent storage.
+	 * @param transferInfo The transfer info data.
+	 * @param avatar The current avatar.
+	 */
 	void avatar_transferRequest(const Eris::TransferInfo& transferInfo, const Eris::Avatar* avatar);
 
+	/**
+	 * @brief Checks if there are any transfer info instances available for this server.
+	 *
+	 * This is done by deserializing all transfer infos from the persistent storage (currently a file)
+	 * and checking if any of them refer to the server which we're connected to.
+	 *
+	 * If so, the ServerServiceSignals::TransferInfoAvailable signal will be emitted.
+	 */
 	void checkTransfer();
+
+	/**
+	 * @brief Removes the supplied transfer info from the persistent storage.
+	 * @param transferInfo The transfer info which should be removed.
+	 */
+	void removeTransferInfo(const AvatarTransferInfo& transferInfo);
+
 };
 
 }

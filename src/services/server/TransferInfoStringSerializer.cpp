@@ -40,14 +40,6 @@
 namespace Ember
 {
 
-TransferInfoStringSerializer::TransferInfoStringSerializer()
-{
-}
-
-TransferInfoStringSerializer::~TransferInfoStringSerializer()
-{
-}
-
 bool TransferInfoStringSerializer::serialize(const TransferInfoStore& infoObjects, std::iostream& ostream)
 {
 	Atlas::Message::ListType infos;

@@ -27,15 +27,30 @@
 namespace Ember
 {
 class AvatarTransferInfo;
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief Handles serialization of server transfer info objects.
+ */
 class TransferInfoStringSerializer
 {
 public:
 	typedef std::vector<AvatarTransferInfo> TransferInfoStore;
-	TransferInfoStringSerializer();
-	virtual ~TransferInfoStringSerializer();
 
+	/**
+	 * @brief Serializes transfer info objects to an output stream.
+	 * @param infoObjects The objects to serialize.
+	 * @param ostream A stream to which the serialized objects should be written. This needs to be valid.
+	 * @return True if the serialization was successful.
+	 */
 	bool serialize(const TransferInfoStore& infoObjects, std::iostream& ostream);
 
+	/**
+	 * @brief Deserializes an input stream into transfer info objects.
+	 * @param infoObjects A list to fill with transfer info objects.
+	 * @param ostream A valid input stream of serialized transfer info data.
+	 * @return True if the deserialization was successful.
+	 */
 	bool deserialize(TransferInfoStore& infoObjects, std::iostream& istream);
 };
 
