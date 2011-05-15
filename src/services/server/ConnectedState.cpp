@@ -35,6 +35,7 @@ ConnectedState::ConnectedState(IState& parentState, Eris::Connection& connection
 	StateBase<AccountAvailableState>::StateBase(parentState), DisConnect("disconnect", this, "Disconnect from the server."), mConnection(connection)
 {
 	mConnection.Disconnecting.connect(sigc::mem_fun(*this, &ConnectedState::disconnecting));
+	mConnection.Failure.connect(sigc::mem_fun(*this, &ConnectedState::gotFailure));
 	setChildState(new AccountAvailableState(*this, connection));
 }
 
@@ -64,6 +65,15 @@ void ConnectedState::runCommand(const std::string &command, const std::string &a
 {
 	if (DisConnect == command) {
 		disconnect();
+	}
+}
+
+void ConnectedState::gotFailure(const std::string & msg)
+{
+	//If we got a failure we should release the account directly.
+	//The handling of deleting the connection and so on is handled by the NonConnectedState.
+	if (getChildState()) {
+		destroyChildState();
 	}
 }
 

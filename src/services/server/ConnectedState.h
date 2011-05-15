@@ -60,6 +60,7 @@ private:
 
 	bool disconnecting();
 
+	void gotFailure(const std::string & msg);
 
 };
 
