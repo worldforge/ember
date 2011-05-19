@@ -1,0 +1,69 @@
+<models>
+		<model name="rabbit" usescaleof="height" showcontained="false" >
+		<submodels>
+			<submodel mesh="3d_objects/creatures/rabbit/RabbitHi.mesh" >
+			<parts>
+				<part name="main" show="true" />
+			</parts>
+			</submodel>
+		</submodels>
+		<actions>
+			<action name="__movement_walk">
+				<animations>
+					<animation iterations="1">
+						<animationpart name="Run" weight="1" />
+					</animation>
+					<animation iterations="2">
+						<animationpart name="Run2" weight="1.2" />
+					</animation>
+				</animations>
+			</action>
+
+            <action name="__movement_idle" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="SitUp" weight="1" />
+                    </animation>
+                    <animation iterations="2">
+                        <animationpart name="LookAround" weight="1" />
+                    </animation>
+                    <animation iterations="4">
+                        <animationpart name="Eat" weight="1" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="LookAround" weight="1" />
+                    </animation>
+                    <animation iterations="2">
+                        <animationpart name="Scratch" weight="1" />
+                    </animation>
+                    <animation iterations="2">
+                        <animationpart name="Eat2" weight="1" />
+                    </animation>
+                    <animation iterations="3">
+                        <animationpart name="LookAround" weight="1" />
+                    </animation>
+                    <animation iterations="1">
+                        <animationpart name="SitUp" weight="1" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="drink" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Eat2" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="sit" speed="1.000000">
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Sit" weight="1.000000" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
+        <attachpoints />
+        <views />
+        <lights />
+    </model>
+</models>

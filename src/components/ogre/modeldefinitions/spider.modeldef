@@ -1,13 +1,18 @@
 <models>
     <model name="spider" usescaleof="width" showcontained="false" icon="">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
         <submodels>
-            <submodel mesh="3d_objects/creatures/spider/spider.mesh">
+            <submodel mesh="3d_objects/creatures/spider/Spider.mesh">
                 <parts>
-                    <part name="main" show="true">
+                    <part name="body/emerald" group="main" show="true">
                         <subentities>
-                            <subentity index="0" />
+                            <subentity index="0" material="/global/creatures/spider/emerald" />
+                        </subentities>
+                    </part>
+                    <part name="body/carrion" group="main" show="false">
+                        <subentities>
+                            <subentity index="0" material="/global/creatures/spider/carrion" />
                         </subentities>
                     </part>
                 </parts>
@@ -17,34 +22,33 @@
             <action name="__movement_walk" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk" weight="1.000000" />
+                        <animationpart name="Walk" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
             <action name="__movement_swim" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk" weight="1.000000" />
+                        <animationpart name="Walk" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
             <action name="__movement_run" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="run" weight="1.000000" />
+                        <animationpart name="Run" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
             <action name="attack" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="strike" weight="1.000000" />
+                        <animationpart name="Strike" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
         </actions>
         <attachpoints />
         <views />
-        <lights />
     </model>
 </models>

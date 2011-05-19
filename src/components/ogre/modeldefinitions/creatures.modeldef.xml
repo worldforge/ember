@@ -57,33 +57,6 @@
 			</action>
 		</actions>
 	</model>	
-		
-	<model name="rabbit" usescaleof="height" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_skeletons/creatures/quadruped_v2/models/bunny/RabbitHi.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Run" weight="1" />
-					</animation>
-				</animations>
-			</action>
-			<action name="__movement_idle">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="SitUp" weight="1" />
-						<animationpart name="LookAround" weight="1" />
-					</animation>
-				</animations>
-			</action>
-		</actions>
-	</model>	
 	
 	<model name="wolf" usescaleof="height" showcontained="false" >
 		<submodels>
