@@ -1,7 +1,7 @@
 <models>
-    <model name="bass_lm" usescaleof="depth" showcontained="true" icon="3d_skeletons/creatures/tubular/textures/bass_lm/I.png">
+    <model name="bass_lm" usescaleof="none" showcontained="true" icon="3d_skeletons/creatures/tubular/textures/bass_lm/I.png">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation x="0.000000" y="0.000000" z="0.000000" degrees="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/creatures/bass_lm/bass.mesh">
                 <parts>
