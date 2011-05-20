@@ -46,6 +46,7 @@
 			</case>
 		</entitymatch>
 	</entitymapping>	
+	<autoentitymapping name="flower" modelname="camelia" />
 	
 	
 	<entitymapping name="boulder">
@@ -74,6 +75,7 @@
 			</case>
 		</entitymatch>
 	</entitymapping>	
+	<autoentitymapping name="stone" modelname="boulder" />
 	<!-- We want the model "boulder" to be used for the entity "boulder". However, there are four different boulder meshes, which the model defines as four different parts. Depending on attribute "style" a different part will be shown. We assume that "style" is one of "a", "b", "c" or "d". Since the parts in the model are defined to belong to the same group (not shown in this file), only one part will be shown at the same time. -->
 <!--	<entitymapping name="boulder">
 		<entitymatch>
@@ -136,6 +138,26 @@
 	</entitymapping>
 				
 	<autoentitymapping name="lumber" />
+	<entitymapping name="board">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">board</caseparam>
+				<action type="display-model">board</action>
+				<action type="display-part">long</action>
+				<attributematch attribute="style" >
+					<case>
+						<caseparam type="equals">long</caseparam>
+						<action type="display-part">long</action>
+					</case>
+					<case>
+						<caseparam type="equals">short</caseparam>
+						<action type="display-part">short</action>
+					</case>
+				</attributematch>
+			</case>
+		</entitymatch>
+	</entitymapping>	
+	<autoentitymapping name="twobyfour" />
 	
 	<entitymapping name="mushroom">
 		<entitymatch>
@@ -189,6 +211,7 @@
 	<autoentitymapping name="stool" />
 	<autoentitymapping name="bed" />
 	<autoentitymapping name="table" modelname="simple_table" />
+	<autoentitymapping name="chest" />
 	
 <!-- items -->
 	<autoentitymapping name="barrel" />
@@ -325,6 +348,15 @@
 	</entitymapping>
 
 	<autoentitymapping name="boots" />
+	<entitymapping name="farmers_cap">
+		<entitymatch>
+			<case>
+				<caseparam type="equals">farmers_cap</caseparam>
+				<caseparam type="equals">hat</caseparam>
+				<action type="display-model">farmers_cap</action>
+			</case>
+		</entitymatch>
+	</entitymapping>
 	<autoentitymapping name="wood" />
 
 <!-- outdoor structures -->
@@ -387,6 +419,7 @@
 			</case>
 		</entitymatch>
 	</entitymapping>	
+	<autoentitymapping name="tent" />
 	<autoentitymapping name="jetty" />
 	<entitymapping name="campfire">
 		<entitymatch>
@@ -428,6 +461,8 @@
 			</case>
 		</entitymatch>
 	</entitymapping>	
+	<autoentitymapping name="statue" modelname="cg_statue"/>
+	<autoentitymapping name="pedestal" modelname="cg_pedestal"/>
 
 
 	
@@ -544,6 +579,8 @@
 	<autoentitymapping name="scythe" />
 	<autoentitymapping name="bucksaw" />
 	<autoentitymapping name="fishingrod" modelname="fishing_rod" />
+	<autoentitymapping name="hook" modelname="fishing_hook" />
+	<autoentitymapping name="lure" modelname="fishing_lure" />
 	<autoentitymapping name="sieve" />
 	<entitymapping name="tinderbox">
 		<entitymatch>
@@ -929,6 +966,10 @@
 	<autoentitymapping name="cow" />
 	<autoentitymapping name="rabbit" />
 	<autoentitymapping name="wolf" />
+	<autoentitymapping name="bear" />
+	<autoentitymapping name="donkey" />
+	<autoentitymapping name="duck" />
+	<autoentitymapping name="flying_bird" />
 	<entitymapping name="skeleton">
 		<entitymatch>
 			<case>
@@ -1011,54 +1052,6 @@
 	<autoentitymapping name="fence_pole" />
 	<autoentitymapping name="fence_section" modelname="wooden_fence" />
 	<autoentitymapping name="fence_gate" modelname="wooden_gate" />
-	
-	<!-- NEW CHANGES -->
-	<autoentitymapping name="bear" />
-	<autoentitymapping name="donkey" />
-	<autoentitymapping name="duck" />
-	<autoentitymapping name="flying_bird" />
-	<autoentitymapping name="chest" />
-	<autoentitymapping name="flower" modelname="camelia" />
-	<autoentitymapping name="stone" modelname="boulder" />
-
-	<!-- NEW CONTENT -->	
-		<entitymapping name="board">
-		<entitymatch>
-			<case>
-				<caseparam type="equals">board</caseparam>
-				<action type="display-model">board</action>
-				<action type="display-part">long</action>
-				<attributematch attribute="style" >
-					<case>
-						<caseparam type="equals">long</caseparam>
-						<action type="display-part">long</action>
-					</case>
-					<case>
-						<caseparam type="equals">short</caseparam>
-						<action type="display-part">short</action>
-					</case>
-				</attributematch>
-			</case>
-		</entitymatch>
-	</entitymapping>	
-
-	<autoentitymapping name="twobyfour" />
-	<autoentitymapping name="tent" />
-	<autoentitymapping name="hook" modelname="fishing_hook" />
-	<autoentitymapping name="lure" modelname="fishing_lure" />
-
-	<entitymapping name="farmers_cap">
-		<entitymatch>
-			<case>
-				<caseparam type="equals">farmers_cap</caseparam>
-				<caseparam type="equals">hat</caseparam>
-				<action type="display-model">farmers_cap</action>
-			</case>
-		</entitymatch>
-	</entitymapping>
-
-	<autoentitymapping name="statue" modelname="cg_statue"/>
-	<autoentitymapping name="pedestal" modelname="cg_pedestal"/>
 
 	<entitymapping name="theodolite">
 		<entitymatch>
