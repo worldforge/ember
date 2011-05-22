@@ -520,6 +520,7 @@ AC_MSG_RESULT([
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile
+		 src/platform/Makefile
 		 src/main/Makefile
 		 src/main/bindings/Makefile
 		 src/main/bindings/lua/Makefile

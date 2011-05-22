@@ -31,7 +31,7 @@
 #include "services/config/ConfigService.h"
 #include "framework/Time.h"
 #ifdef _WIN32
-#include "main/win32/platform_windows.h"
+#include "platform/platform_windows.h"
 #endif
 
 

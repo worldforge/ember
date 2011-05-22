@@ -2,7 +2,7 @@
 #ifndef PLATFORM_WINDOWS_H
 #define PLATFORM_WINDOWS_H
 
-//These will speed up windows.h, by excluding rarely used funtions.
+//These will speed up windows.h, by excluding rarely used functions.
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 

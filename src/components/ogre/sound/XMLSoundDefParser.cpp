@@ -26,7 +26,7 @@
 #include "SoundDefinitionManager.h"
 #include "components/ogre/XMLHelper.h"
 #ifdef _WIN32
-#include "main/win32/platform_windows.h"
+#include "platform/platform_windows.h"
 #endif
 
 namespace Ember
