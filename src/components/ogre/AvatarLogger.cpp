@@ -55,7 +55,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		oslink::directory osdir(dir);
 
 		if (!osdir.isExisting()) {
-			mkdir(dir.c_str(), S_IRWXU);
+			oslink::directory::mkdir(dir.c_str());
 		}
 		//perform setup of the stream
 		std::stringstream logFileSS;

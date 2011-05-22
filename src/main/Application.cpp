@@ -273,7 +273,7 @@ void Application::initializeServices()
 	oslink::directory osdir(dirName);
 
 	if (!osdir) {
-		mkdir(dirName.c_str(), S_IRWXU);
+		oslink::directory::mkdir(dirName.c_str());
 	}
 
 	int result = chdir(configService.getHomeDirectory().c_str());

@@ -393,7 +393,7 @@ const std::string MainCamera::_takeScreenshot()
 		oslink::directory osdir(dir);
 
 		if (!osdir.isExisting()) {
-			mkdir(dir.c_str(), S_IRWXU);
+			oslink::directory::mkdir(dir.c_str());
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating directory for screenshots." << ex);
