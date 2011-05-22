@@ -4,4 +4,4 @@
 #usage: ./refresh-amber-media-dev.sh <media svn directory> 
 
 sh make_dist_media.sh $1 ${PWD}/media-dev 256
-rsync -uavz --password-file rsyncpasswd  media-dev/media/* amber::media-dev-update
+rsync -uavz --password-file rsyncpasswd  media-dev/media/* amber.worldforge.org::media-dev-update
