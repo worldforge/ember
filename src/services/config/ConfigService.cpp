@@ -38,6 +38,12 @@
 //we need this for the PathRemoveFileSpec(...) method
 #include <shlwapi.h>
 #include <Shlobj.h>
+#ifdef _MSC_VER
+#define WIN_HOME_CSIDL CSIDL_MYDOCUMENTS
+#else
+//The CSIDL_MYDOCUMENTS symbol isn't available for msys, so we'll use the next best thing.
+#define WIN_HOME_CSIDL CSIDL_PERSONAL
+#endif
 #endif
 
 // #include <iostream>
@@ -413,7 +419,7 @@ namespace Ember
 			//special folders in windows:
 			//http://msdn.microsoft.com/en-us/library/bb762494%28v=vs.85%29.aspx
 			char path[MAX_PATH];
-			if(SHGetSpecialFolderPath(NULL, path, CSIDL_MYDOCUMENTS, TRUE) == TRUE){
+			if(SHGetSpecialFolderPath(NULL, path, WIN_HOME_CSIDL, TRUE) == TRUE){
 				finalPath = path;
 			}else{
 				finalPath = ".";
