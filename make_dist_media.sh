@@ -35,9 +35,19 @@ program_dir=${script_dir}/programs
 mkdir -p ${shared_common_dir}
 cd ${shared_dir}
 
+#First build up a list of directories from which we shouldn't copy anything (in the form of arguments to the "find" command).
+find_exclude_args=''
+for filename in `find ${original_media} -name norecurse`
+do
+  directory=`dirname $filename`
+  find_exclude_args="${find_exclude_args} -not -wholename '${directory}*'"
+  echo "Excluding ${directory}"
+done
+
+
 #try to get the textures needed
 #don't include materials in the ogre or ogre core
-for filename in `find ${original_media} -name *.material  -not -wholename "*resources/ogre/caelum/core*" -not -wholename "*resources/ogre/core/*"`
+for filename in `find ${original_media} -name *.material  ${find_exclude_args}`
 do
   grep -IE --no-filename "^[^/].*texture "  ${filename} | sed -e 's/texture //g' >> ${common_textures_list}
   grep -IE --no-filename "^[^/].*set_texture_alias DiffuseMap "  ${filename} | sed -e 's/set_texture_alias DiffuseMap //g' >> ${common_textures_list}
@@ -46,7 +56,7 @@ do
 done
 
 #Parse all particle scripts and look for image references
-for filename in `find ${original_media} -name *.particle  -not -wholename "*resources/ogre/caelum/core*" -not -wholename "*resources/ogre/core/*"`
+for filename in `find ${original_media} -name *.particle  ${find_exclude_args}`
 do
   grep -IE --no-filename "image\s*.*" ${filename} | sed -e 's/image\s*//g' >> ${common_textures_list}
 done
@@ -101,8 +111,8 @@ cd ${original_media} ; tar cf - `cat ${common_meshes_list} ` | ( cd ${shared_com
 
 echo "Copying skeletons"
 #just copy all skeletons, since the method involving meshmagick can't resolve the correct file name when using relative skeleton names
-cd ${original_media}/3d_objects ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_common_dir}/3d_objects; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${original_media}/3d_skeletons ; tar cf - `find -L . -iname \*.skeleton` | ( cd ${shared_common_dir}/3d_skeletons; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/3d_objects ; tar cf - `find -L . -iname \*.skeleton ${find_exclude_args}` | ( cd ${shared_common_dir}/3d_objects; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${original_media}/3d_skeletons ; tar cf - `find -L . -iname \*.skeleton ${find_exclude_args}` | ( cd ${shared_common_dir}/3d_skeletons; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 # #use meshmagick to figure out the needed skeletons
 # for filename in `find ${shared_dir}/common -name "*.mesh"`
@@ -148,7 +158,7 @@ cp -a ${original_media}/themes/ember/gui/fonts/* ${shared_dir}/common/themes/emb
 echo "Copying materials"
 
 cd ${original_media}
-for filename in `find . -iname \*.cg -o -iname \*.glsl -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle`
+for filename in `find . -iname \*.cg -o -iname \*.glsl -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle ${find_exclude_args}`
 do
 	origfile="${original_media}/${filename#.\/}"
 	newfile="${shared_common_dir}/${filename#.\/}"
@@ -167,8 +177,8 @@ done
 shared_ogre_dir=${shared_common_dir}/resources/ogre
 #Note: we'll keep this for now, until we have a nicer way of copying all the textures that's needed
 mkdir -p ${shared_ogre_dir}/textures
-cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.png` | ( cd ${shared_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
-cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.jpg` | ( cd ${shared_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.png ${find_exclude_args}` | ( cd ${shared_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
+cd ${ogre_dir}/textures ; tar cf - `find . -iname \*.jpg ${find_exclude_args}` | ( cd ${shared_ogre_dir}/textures; tar --keep-newer-files -xvf -) 2>  /dev/null
 
 
 echo "Copying core files"
