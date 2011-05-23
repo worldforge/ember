@@ -174,11 +174,13 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService)
 		mDefaultScheme = "EmberLook";
 		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
 
-		//We need to set the current directory to the prefix before trying to load CEGUI.
-		//The reason for this is that CEGUI loads a lot of dynamic modules, and in some build configuration
-		//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
-		if (chdir(configSrv.getPrefix().c_str())) {
-			S_LOG_WARNING("Failed to change to the prefix directory '" << configSrv.getPrefix() << "'. Gui loading might fail.");
+		if (configSrv.getPrefix() != "") {
+			//We need to set the current directory to the prefix before trying to load CEGUI.
+			//The reason for this is that CEGUI loads a lot of dynamic modules, and in some build configuration
+			//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
+			if (chdir(configSrv.getPrefix().c_str())) {
+				S_LOG_WARNING("Failed to change to the prefix directory '" << configSrv.getPrefix() << "'. Gui loading might fail.");
+			}
 		}
 
 		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.

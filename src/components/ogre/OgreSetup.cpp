@@ -144,11 +144,13 @@ Ogre::Root* OgreSetup::createOgreSystem()
 {
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
-	//We need to set the current directory to the prefix before trying to load Ogre.
-	//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
-	//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
-	if (chdir(configSrv.getPrefix().c_str())) {
-		S_LOG_WARNING("Failed to change to the prefix directory '" << configSrv.getPrefix() << "'. Ogre loading might fail.");
+	if (configSrv.getPrefix() != "") {
+		//We need to set the current directory to the prefix before trying to load Ogre.
+		//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
+		//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
+		if (chdir(configSrv.getPrefix().c_str())) {
+			S_LOG_WARNING("Failed to change to the prefix directory '" << configSrv.getPrefix() << "'. Ogre loading might fail.");
+		}
 	}
 
 	std::string pluginExtension = ".so";
