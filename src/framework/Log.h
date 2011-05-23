@@ -87,8 +87,13 @@ class LogObserver;
 *
 *
 * @author Tim Enderling
-*/class Log
+*/
+
+class StdOutLogObserver;
+
+class Log
 {
+	friend class StdOutLogObserver;
 private:
 
 	/**
@@ -220,9 +225,26 @@ public:
 	typedef std::list<LogObserver*> ObserverList;
 
 	/**
-	list of observers
-	*/
+	 * @brief A list of observers.
+	 *
+	 * If no external observers has been added, the log will automatically make sure that an instance of StdOutLogObserver always is in it.
+	 * This special observer will be removed once an external observer is added, and re-added if all external observers later are removed.
+	 */
 	static ObserverList sObserverList;
+
+	/**
+	 * @brief The number of external observers added.
+	 *
+	 * This allows us to keep track of when it's suitable to add the sStdOutLogObserver instance to the sObserverList.
+	 */
+	static int sNumberOfExternalObservers;
+
+	/**
+	 * @brief A default observer which writes to std::cout.
+	 *
+	 * If no external observers are added to sObserverList this will automatically be used.
+	 */
+	static StdOutLogObserver sStdOutLogObserver;
 
 };
 
