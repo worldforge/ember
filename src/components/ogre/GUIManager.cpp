@@ -162,7 +162,7 @@ protected:
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService) :
 	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
-	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
 	//we need this here just to force the linker to also link in the WidgetDefinitions
@@ -177,7 +177,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService)
 		//We need to set the current directory to the prefix before trying to load CEGUI.
 		//The reason for this is that CEGUI loads a lot of dynamic modules, and in some build configuration
 		//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
-		if (chdir(configSrv->getPrefix().c_str())) {
+		if (chdir(configSrv.getPrefix().c_str())) {
 			S_LOG_WARNING("Failed to change to the prefix directory. Gui loading might fail.");
 		}
 
@@ -188,7 +188,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService)
 
 		CEGUI::ImageCodec& imageCodec = CEGUI::OgreRenderer::createOgreImageCodec();
 
-		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService()->getProviderFor("LuaScriptingProvider");
+		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
 			Lua::LuaScriptingProvider* luaScriptProvider = static_cast<Lua::LuaScriptingProvider*>(provider);
 			mLuaScriptModule = &LuaScriptModule::create(luaScriptProvider->getLuaState());
@@ -198,7 +198,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService)
 			}
 			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
-			EmberServices::getSingleton().getScriptingService()->EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
+			EmberServices::getSingleton().getScriptingService().EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
 			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, 0, "cegui/datafiles/configs/cegui.config");
 		}
@@ -263,7 +263,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService)
 		throw Exception(ex.getMessage().c_str());
 	}
 
-	if (chdir(configSrv->getEmberDataDirectory().c_str())) {
+	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory.");
 	}
 
@@ -308,8 +308,8 @@ GUIManager::~GUIManager()
 
 void GUIManager::initialize()
 {
-	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
-	chdir(configSrv->getEmberDataDirectory().c_str());
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	chdir(configSrv.getEmberDataDirectory().c_str());
 	try {
 		createWidget("Quit");
 	} catch (const std::exception& e) {
@@ -342,7 +342,7 @@ void GUIManager::initialize()
 	//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 	try {
 		//load the bootstrap script which will load all other scripts
-		EmberServices::getSingleton().getScriptingService()->loadScript("lua/Bootstrap.lua");
+		EmberServices::getSingleton().getScriptingService().loadScript("lua/Bootstrap.lua");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script." << e);
 	}

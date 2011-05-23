@@ -383,12 +383,12 @@ namespace Gui {
 	WfutLoadingBarSection::WfutLoadingBarSection(LoadingBarSection& section)
 	: mSection(section), mNumberOfFilesToUpdate(0), mDownloadedSoFar(0)
 	{
-		WfutService* wfutSrv = EmberServices::getSingleton().getWfutService();
-		wfutSrv->DownloadComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadComplete));
-		wfutSrv->DownloadFailed.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadFailed));
-		wfutSrv->AllDownloadsComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_AllDownloadsComplete));
-		wfutSrv->DownloadingServerList.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadingServerList));
-		wfutSrv->UpdatesCalculated.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_UpdatesCalculated));
+		WfutService& wfutSrv = EmberServices::getSingleton().getWfutService();
+		wfutSrv.DownloadComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadComplete));
+		wfutSrv.DownloadFailed.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadFailed));
+		wfutSrv.AllDownloadsComplete.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_AllDownloadsComplete));
+		wfutSrv.DownloadingServerList.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_DownloadingServerList));
+		wfutSrv.UpdatesCalculated.connect(sigc::mem_fun(*this, &WfutLoadingBarSection::wfutService_UpdatesCalculated));
 	}
 	WfutLoadingBarSection::~WfutLoadingBarSection()
 	{}

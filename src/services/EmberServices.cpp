@@ -23,11 +23,9 @@
 
 #include "EmberServices.h"
 
-//#include "test/TestService.h"
 #include "logging/LoggingService.h"
 #include "config/ConfigService.h"
 #include "input/InputService.h"
-//#include "gui/GuiService.h"
 #include "sound/SoundService.h"
 #include "metaserver/MetaserverService.h"
 #include "server/ServerService.h"
@@ -45,53 +43,53 @@ namespace Ember{
 	{
 	}
 
-	LoggingService* EmberServices::getLoggingService()
+	LoggingService& EmberServices::getLoggingService()
 	{
-		return mLoggingService.get();
+		return *mLoggingService;
 	}
 
-	ConfigService* EmberServices::getConfigService()
+	ConfigService& EmberServices::getConfigService()
 	{
-		return mConfigService.get();
+		return *mConfigService;
 	}
 
-	InputService* EmberServices::getInputService()
+	InputService& EmberServices::getInputService()
 	{
-		return mInputService.get();
+		return *mInputService;
 	}
 
-	MetaserverService* EmberServices::getMetaserverService()
+	MetaserverService& EmberServices::getMetaserverService()
 	{
-		return mMetaserverService.get();
+		return *mMetaserverService;
 	}
   
-	ServerService* EmberServices::getServerService()
+	ServerService& EmberServices::getServerService()
 	{
-		return mServerService.get();
+		return *mServerService;
 	}
 
-	SoundService* EmberServices::getSoundService()
+	SoundService& EmberServices::getSoundService()
 	{
-		return mSoundService.get();
+		return *mSoundService;
 	}
 
-	ScriptingService* EmberServices::getScriptingService()
+	ScriptingService& EmberServices::getScriptingService()
 	{
-		return mScriptingService.get();
+		return *mScriptingService;
 	}
   
-	WfutService* EmberServices::getWfutService()
+	WfutService& EmberServices::getWfutService()
 	{
-		return mWfutService.get();
+		return *mWfutService;
 	}
   
-	Services::Time* EmberServices::getTimeService()
+	Services::Time& EmberServices::getTimeService()
 	{
-		return mTimeService.get();
+		return *mTimeService;
 	}
 	
-	Services::ServerSettings* EmberServices::getServerSettingsService() {
-		return mServerSettingsService.get();
+	Services::ServerSettings& EmberServices::getServerSettingsService() {
+		return *mServerSettingsService;
 	}
 
 	EmberServices::EmberServices()

@@ -113,7 +113,7 @@ void TerrainManager::loadTerrainOptions()
 
 	getAdapter()->setResourceGroupName("General");
 
-	getAdapter()->loadOptions(EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "terrain.cfg");
+	getAdapter()->loadOptions(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "terrain.cfg");
 
 	getAdapter()->setCamera(&getScene().getMainCamera());
 

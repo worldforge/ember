@@ -67,8 +67,8 @@ Service::Status SoundService::start()
 {
 	S_LOG_INFO("Sound Service starting");
 	
-	if (EmberServices::getSingleton().getConfigService()->hasItem("audio", "enabled")
-	    && static_cast<bool>(EmberServices::getSingleton().getConfigService()->getValue("audio", "enabled")) == false) {
+	if (EmberServices::getSingleton().getConfigService().hasItem("audio", "enabled")
+	    && static_cast<bool>(EmberServices::getSingleton().getConfigService().getValue("audio", "enabled")) == false) {
 		S_LOG_INFO("Sound disabled.");
 	} else {
 	

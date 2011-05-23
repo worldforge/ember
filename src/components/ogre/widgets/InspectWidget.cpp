@@ -80,7 +80,7 @@ Inspect("inspect", this, "Inspect an entity."),
 mCurrentEntity(0), mChangedThisFrame(false)
 {
 
-	EmberServices::getSingletonPtr()->getServerService()->GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
+	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
 }
 InspectWidget::~InspectWidget()
 {

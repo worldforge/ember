@@ -45,7 +45,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 	assert(&avatarEntity);
 
 	//Put log files in a "logs" subdirectory of the home directory.
-	const std::string dir = EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/logs/";
+	const std::string dir = EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/logs/";
 	try {
 		//make sure the directory exists
 

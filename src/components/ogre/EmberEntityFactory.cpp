@@ -120,7 +120,7 @@ void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) con
 	EmberEntity* entity = static_cast<EmberEntity*>(mView.getEntity(entityId));
 	if (entity) {
 		//make sure the directory exists
-		std::string dir(EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/entityexport/");
+		std::string dir(EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/entityexport/");
 
 		if (!oslink::directory(dir).isExisting()) {
 			S_LOG_INFO("Creating directory " << dir);

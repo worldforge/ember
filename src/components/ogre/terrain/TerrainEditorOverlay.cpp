@@ -424,7 +424,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 		s->setArgsAsList(sargsList);
 		s->setFrom(EmberOgre::getSingleton().getWorld()->getAvatar()->getEmberEntity().getId());
 
-		EmberServices::getSingleton().getServerService()->getConnection()->send(s);
+		EmberServices::getSingleton().getServerService().getConnection()->send(s);
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
 
 		//also reset the marking for the base points

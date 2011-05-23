@@ -429,16 +429,16 @@ void XMLJesusSerializer::saveBlueprintToFile(Carpenter::BluePrint* blueprint, co
 	try
 	{
 		//make sure the directory exists
-		std::string dir = EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/carpenter/blueprints";
+		std::string dir = EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/carpenter/blueprints";
 		
 		oslink::directory osdir(dir);
 
 		if (!osdir) {
 #ifdef __WIN32__
-			mkdir((EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "carpenter").c_str());
+			mkdir((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "carpenter").c_str());
 			mkdir(dir.c_str());
 #else 
-			mkdir((EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "carpenter").c_str(), S_IRWXU);
+			mkdir((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "carpenter").c_str(), S_IRWXU);
 			mkdir(dir.c_str(), S_IRWXU);
 #endif
 		}

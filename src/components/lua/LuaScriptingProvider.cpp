@@ -86,8 +86,8 @@ void LuaScriptingProvider::initialize()
 void LuaScriptingProvider::createState()
 {
 	bool loadDebugLib = true;
-	if (EmberServices::getSingletonPtr()->getConfigService()->itemExists("lua", "debug")) {
-		loadDebugLib = static_cast<bool>(EmberServices::getSingletonPtr()->getConfigService()->getValue("lua", "debug"));
+	if (EmberServices::getSingleton().getConfigService().itemExists("lua", "debug")) {
+		loadDebugLib = static_cast<bool>(EmberServices::getSingleton().getConfigService().getValue("lua", "debug"));
 	}
 	if (loadDebugLib) {
 		mErrorHandlingFunctionName = "debug.traceback";

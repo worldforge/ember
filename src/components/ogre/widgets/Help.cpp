@@ -60,9 +60,9 @@ void Help::buildWidget()
 
 	enableCloseButton();
 
-	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
-	if (configSrv->itemExists("general", "startuphelp") && ((bool)configSrv->getValue("general", "startuphelp"))) {
+	if (configSrv.itemExists("general", "startuphelp") && ((bool)configSrv.getValue("general", "startuphelp"))) {
 		show();
 	}
 

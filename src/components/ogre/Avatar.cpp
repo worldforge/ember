@@ -80,10 +80,10 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 	mCurrentMovementState.position = erisAvatarEntity.getPredictedPos();
 
 	//check if the user is of type "creator" and thus an admin
-	Eris::TypeService* typeService = EmberServices::getSingleton().getServerService()->getConnection()->getTypeService();
+	Eris::TypeService* typeService = EmberServices::getSingleton().getServerService().getConnection()->getTypeService();
 	if (mErisAvatarEntity.getType()->isA(typeService->getTypeByName("creator"))) {
 		mIsAdmin = true;
-		 EmberServices::getSingleton().getServerService()->getAvatar()->setIsAdmin(true);
+		 EmberServices::getSingleton().getServerService().getAvatar()->setIsAdmin(true);
 	} else {
 		mIsAdmin = false;
 	}
@@ -227,7 +227,7 @@ void Avatar::attemptMove()
 		if (mLastTransmittedMovements.size() > 10) {
 			mLastTransmittedMovements.erase(mLastTransmittedMovements.begin());
 		}
-		EmberServices::getSingletonPtr()->getServerService()->moveInDirection(newMovementState.movement, newMovementState.orientation);
+		EmberServices::getSingleton().getServerService().moveInDirection(newMovementState.movement, newMovementState.orientation);
 
 	}
 
@@ -369,7 +369,7 @@ WFMath::Point<3> Avatar::getClientSideAvatarPosition() const
 //	//	if (mCurrentMovement == WFMath::Vector<3>::ZERO() && mErisAvatarEntity.isMoving()) {
 //	//		bool clientSideMovement = false;
 //	//		if (mLastTransmittedMovements.size()) {
-//	//			long long currentTime = EmberServices::getSingleton().getTimeService()->currentTimeMillis();
+//	//			long long currentTime = EmberServices::getSingleton().getTimeService().currentTimeMillis();
 //	//			if ((currentTime - mLastTransmittedMovements.rbegin()->first) < 1000) {
 //	//				clientSideMovement = true;
 //	//			}

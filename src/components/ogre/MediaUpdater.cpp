@@ -43,16 +43,16 @@ MediaUpdater::~MediaUpdater()
 
 void MediaUpdater::performUpdate()
 {
-	ConfigService* configSrv = EmberServices::getSingleton().getConfigService();
-	WfutService* wfutSrv= EmberServices::getSingleton().getWfutService();
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	WfutService& wfutSrv= EmberServices::getSingleton().getWfutService();
 	
-	if (configSrv->itemExists("wfut", "server")) {
-		std::string server(configSrv->getValue("wfut", "server"));
-		if (configSrv->itemExists("wfut", "channel")) {
-			std::string channel(configSrv->getValue("wfut", "channel"));
+	if (configSrv.itemExists("wfut", "server")) {
+		std::string server(configSrv.getValue("wfut", "server"));
+		if (configSrv.itemExists("wfut", "channel")) {
+			std::string channel(configSrv.getValue("wfut", "channel"));
 			
-			wfutSrv->startUpdate(server, channel, configSrv->getHomeDirectory() , "");
-			while (wfutSrv->poll()) {
+			wfutSrv.startUpdate(server, channel, configSrv.getHomeDirectory() , "");
+			while (wfutSrv.poll()) {
 			}
 			
 		}

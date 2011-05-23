@@ -76,7 +76,7 @@ bool Quit::Shutdown_Click(const CEGUI::EventArgs& args)
 
 bool Quit::Logout_Click(const CEGUI::EventArgs& args)
 {
-	EmberServices::getSingleton().getServerService()->logout();
+	EmberServices::getSingleton().getServerService().logout();
 	mMainWindow->setVisible(false);
 	return true;
 }

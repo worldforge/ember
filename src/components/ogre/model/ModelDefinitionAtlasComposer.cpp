@@ -126,7 +126,7 @@ void ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string
 {
 	if (model) {
 		//make sure the directory exists
-		std::string dir(EmberServices::getSingletonPtr()->getConfigService()->getHomeDirectory() + "/typeexport/");
+		std::string dir(EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/typeexport/");
 
 		if (!oslink::directory(dir).isExisting()) {
 			S_LOG_INFO("Creating directory " << dir);

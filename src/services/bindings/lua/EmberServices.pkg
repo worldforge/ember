@@ -36,36 +36,36 @@ class EmberServices
     /**
      * Returns an instance of the LoggingService
      */
-    Ember::LoggingService *getLoggingService();
+    Ember::LoggingService& getLoggingService();
 
     /**
      * Returns an instance of the ConfigService
      */
-    Ember::ConfigService *getConfigService();
+    Ember::ConfigService& getConfigService();
 
     /**
      * Returns an instance of the MetaserverService
      */
-     Ember::MetaserverService *getMetaserverService();
+     Ember::MetaserverService& getMetaserverService();
 
     /**
      * Returns an instance of the ServerService
      */
-    Ember::ServerService *getServerService();
+    Ember::ServerService& getServerService();
 
     /**
      * Returns an instance of the SoundService
      */
-//    Ember::SoundService *getSoundService();
+//    Ember::SoundService& getSoundService();
     
-    Ember::ScriptingService *getScriptingService();
+    Ember::ScriptingService& getScriptingService();
     
 	/**
 	 * @brief Returns the server settings service.
 	 *
 	 * @returns The server settings service.
 	 */
-	Ember::Services::ServerSettings* getServerSettingsService();
+	Ember::Services::ServerSettings& getServerSettingsService();
 
 
 };

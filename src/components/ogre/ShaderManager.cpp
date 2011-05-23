@@ -143,7 +143,7 @@ void ShaderManager::init()
 	// Don't start in experimental level
 	mGraphicsLevel = (mBestGraphicsLevel < LEVEL_EXPERIMENTAL) ? mBestGraphicsLevel : LEVEL_HIGH;
 
-	GraphicsLevel configLevel = getLevelByName(std::string(EmberServices::getSingleton().getConfigService()->getValue("graphics", "level")));
+	GraphicsLevel configLevel = getLevelByName(std::string(EmberServices::getSingleton().getConfigService().getValue("graphics", "level")));
 	if (configLevel <= mBestGraphicsLevel) {
 		mGraphicsLevel = configLevel;
 	}
@@ -189,7 +189,7 @@ void ShaderManager::runCommand(const std::string &command, const std::string &ar
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string levelString = tokeniser.nextToken();
-		EmberServices::getSingleton().getConfigService()->setValue("graphics", "level", levelString);
+		EmberServices::getSingleton().getConfigService().setValue("graphics", "level", levelString);
 	}
 }
 

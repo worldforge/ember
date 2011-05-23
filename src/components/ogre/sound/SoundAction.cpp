@@ -52,7 +52,7 @@ namespace OgreView
 	SoundAction::~SoundAction()
 	{
 		if (mInstance) {
-			EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance);
+			EmberServices::getSingleton().getSoundService().destroyInstance(mInstance);
 		}
 	}
 
@@ -93,7 +93,7 @@ namespace OgreView
 	{
 		if (mGroup) {
 			if (!mInstance) {
-				mInstance = EmberServices::getSingleton().getSoundService()->createInstance();
+				mInstance = EmberServices::getSingleton().getSoundService().createInstance();
 				if (!mInstance) {
 					//The sound system seems to be disabled (could be for a valid reason) so just return without any fuss.
 					return;
@@ -114,7 +114,7 @@ namespace OgreView
 	void SoundAction::stop()
 	{
 		if (mInstance) {
-			EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance);
+			EmberServices::getSingleton().getSoundService().destroyInstance(mInstance);
 			mInstance = 0;
 		}
 	}
@@ -123,7 +123,7 @@ namespace OgreView
 	void SoundAction::SoundInstance_PlayComplete()
 	{
 		if (mInstance) {
-			if (EmberServices::getSingleton().getSoundService()->destroyInstance(mInstance)) {
+			if (EmberServices::getSingleton().getSoundService().destroyInstance(mInstance)) {
 				mInstance = 0;
 			}
 		} else {

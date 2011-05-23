@@ -60,16 +60,16 @@ OgreResourceLoader::~OgreResourceLoader()
 
 void OgreResourceLoader::initialize()
 {
-	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
 	//check from the config if we should load media recursively
 	//this is needed for most authoring, since it allows us to find all meshes before they are loaded
-	if (configSrv->itemExists("media", "loadmediarecursive")) {
-		mLoadRecursive = (bool)configSrv->getValue("media", "loadmediarecursive");
+	if (configSrv.itemExists("media", "loadmediarecursive")) {
+		mLoadRecursive = (bool)configSrv.getValue("media", "loadmediarecursive");
 	}
 
-	if (EmberServices::getSingletonPtr()->getConfigService()->itemExists("media", "extraresourcelocations")) {
-		varconf::Variable resourceConfigFilesVar = EmberServices::getSingletonPtr()->getConfigService()->getValue("media", "extraresourcelocations");
+	if (EmberServices::getSingleton().getConfigService().itemExists("media", "extraresourcelocations")) {
+		varconf::Variable resourceConfigFilesVar = EmberServices::getSingleton().getConfigService().getValue("media", "extraresourcelocations");
 		std::string resourceConfigFiles = resourceConfigFilesVar.as_string();
 		Tokeniser configFilesTokeniser(resourceConfigFiles, ";");
 		while (configFilesTokeniser.hasRemainingTokens()) {
@@ -84,7 +84,7 @@ void OgreResourceLoader::initialize()
 	}
 
 	//load the resource file
-	const std::string configPath(EmberServices::getSingletonPtr()->getConfigService()->getSharedConfigDirectory() + "/resources.cfg");
+	const std::string configPath(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "/resources.cfg");
 	S_LOG_VERBOSE("Loading resources definitions from " << configPath);
 	mConfigFile.load(configPath);
 }
@@ -121,7 +121,7 @@ void OgreResourceLoader::unloadUnusedResources()
 
 bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
-	static const std::string& sharedMediaPath = EmberServices::getSingletonPtr()->getConfigService()->getSharedMediaDirectory();
+	static const std::string& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedMediaDirectory();
 
 	bool foundDir = false;
 	std::string finalPath(sharedMediaPath + path);
@@ -143,8 +143,8 @@ bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 
 bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
 {
-	static const std::string& userMediaPath = EmberServices::getSingletonPtr()->getConfigService()->getUserMediaDirectory();
-	static const std::string& emberMediaPath = EmberServices::getSingletonPtr()->getConfigService()->getEmberMediaDirectory();
+	static const std::string& userMediaPath = EmberServices::getSingleton().getConfigService().getUserMediaDirectory();
+	static const std::string& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
 	bool foundDir = false;
 	std::string finalPath(userMediaPath + path);

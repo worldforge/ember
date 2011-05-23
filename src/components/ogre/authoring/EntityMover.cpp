@@ -62,7 +62,7 @@ void EntityMover::finalizeMovement()
 {
 	if (mEntity.getLocation()) {
 		//send to server
-		EmberServices::getSingleton().getServerService()->place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
+		EmberServices::getSingleton().getServerService().place(&mEntity, mEntity.getLocation(), getPosition(), getOrientation());
 	}
 	mNodeAttachment.updatePosition();
 	cleanup();

@@ -54,8 +54,8 @@ CompilerTechniqueProvider::CompilerTechniqueProvider(ShaderManager& shaderManage
 TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
 {
 	std::string preferredTech("");
-	if (EmberServices::getSingletonPtr()->getConfigService()->itemExists("terrain", "preferredtechnique")) {
-		preferredTech = static_cast<std::string> (EmberServices::getSingletonPtr()->getConfigService()->getValue("terrain", "preferredtechnique"));
+	if (EmberServices::getSingleton().getConfigService().itemExists("terrain", "preferredtechnique")) {
+		preferredTech = static_cast<std::string> (EmberServices::getSingleton().getConfigService().getValue("terrain", "preferredtechnique"));
 	}
 
 	bool shaderSupport = false;

@@ -114,10 +114,10 @@ const std::string ActionBarIconManager::getSavedValue(const AvatarIdType& avatar
 	accountIdKey.append(key);
 
 	Services::ServerSettingsCredentials serverCredentials(sInfo);
-	Services::ServerSettings* serverSettings = EmberServices::getSingleton().getServerSettingsService();
+	Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
 
-	if (serverSettings->findItem(serverCredentials, accountIdKey)) {
-		return static_cast<std::string>(serverSettings->getItem(serverCredentials, accountIdKey));
+	if (serverSettings.findItem(serverCredentials, accountIdKey)) {
+		return static_cast<std::string>(serverSettings.getItem(serverCredentials, accountIdKey));
 	}
 	return "null";
 }
@@ -129,10 +129,10 @@ void ActionBarIconManager::saveValue(const AvatarIdType& avatarId, const std::st
 	accountIdKey.append(key);
 
 	Services::ServerSettingsCredentials serverCredentials(sInfo);
-	Services::ServerSettings* serverSettings = EmberServices::getSingleton().getServerSettingsService();
+	Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
 
-	serverSettings->setItem(serverCredentials, accountIdKey, value);
-	serverSettings->writeToDisk();
+	serverSettings.setItem(serverCredentials, accountIdKey, value);
+	serverSettings.writeToDisk();
 }
 
 void ActionBarIconManager::eraseValue(const AvatarIdType& avatarId, const std::string& key)
@@ -142,10 +142,10 @@ void ActionBarIconManager::eraseValue(const AvatarIdType& avatarId, const std::s
 	accountIdKey.append(key);
 
 	Services::ServerSettingsCredentials serverCredentials(sInfo);
-	Services::ServerSettings* serverSettings = EmberServices::getSingleton().getServerSettingsService();
+	Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
 
-	if (serverSettings->findItem(serverCredentials, accountIdKey)) {
-		serverSettings->eraseItem(serverCredentials, accountIdKey);
+	if (serverSettings.findItem(serverCredentials, accountIdKey)) {
+		serverSettings.eraseItem(serverCredentials, accountIdKey);
 	}
 }
 

@@ -140,11 +140,11 @@ void ServerWidget::buildWidget()
 		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/Disconnect")), CEGUI::PushButton::EventClicked, ServerWidget::Disconnect_Click);
 
 
-		EmberServices::getSingletonPtr()->getServerService()->GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
-		EmberServices::getSingletonPtr()->getServerService()->LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
-		EmberServices::getSingletonPtr()->getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
-		EmberServices::getSingletonPtr()->getServerService()->GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
-		EmberServices::getSingletonPtr()->getServerService()->LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
+		EmberServices::getSingleton().getServerService().GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
+		EmberServices::getSingleton().getServerService().LoginSuccess.connect(sigc::mem_fun(*this, &ServerWidget::loginSuccess));
+		EmberServices::getSingleton().getServerService().GotAvatar.connect(sigc::mem_fun(*this, &ServerWidget::gotAvatar));
+		EmberServices::getSingleton().getServerService().GotAllCharacters.connect(sigc::mem_fun(*this, &ServerWidget::gotAllCharacters));
+		EmberServices::getSingleton().getServerService().LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
 
 		addTabbableWindow(getWindow("LoginPanel/NameEdit"));
 		addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
@@ -164,7 +164,7 @@ void ServerWidget::buildWidget()
 
 		createPreviewTexture();
 
-		setConnection(EmberServices::getSingleton().getServerService()->getConnection());
+		setConnection(EmberServices::getSingleton().getServerService().getConnection());
 	}
 
 }
@@ -236,12 +236,12 @@ bool ServerWidget::fetchCredentials(Eris::Connection* connection, std::string& u
 	connection->getServerInfo(sInfo);
 
 	Services::ServerSettingsCredentials serverCredentials(sInfo);
-	Services::ServerSettings* serverSettings = EmberServices::getSingleton().getServerSettingsService();
-	if (serverSettings->findItem(serverCredentials, "username")) {
-		user = static_cast<std::string>(serverSettings->getItem(serverCredentials, "username"));
+	Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
+	if (serverSettings.findItem(serverCredentials, "username")) {
+		user = static_cast<std::string>(serverSettings.getItem(serverCredentials, "username"));
 	}
-	if (serverSettings->findItem(serverCredentials, "password")) {
-		pass = static_cast<std::string>(serverSettings->getItem(serverCredentials, "password"));
+	if (serverSettings.findItem(serverCredentials, "password")) {
+		pass = static_cast<std::string>(serverSettings.getItem(serverCredentials, "password"));
 	}
 	return pass != "" && user != "";
 }
@@ -274,10 +274,10 @@ bool ServerWidget::saveCredentials()
 		CEGUI::String name = nameBox->getText();
 		CEGUI::String password = passwordBox->getText();
 		Services::ServerSettingsCredentials serverCredentials(sInfo);
-		Services::ServerSettings* serverSettings = EmberServices::getSingleton().getServerSettingsService();
-		serverSettings->setItem(serverCredentials, "username", name.c_str());
-		serverSettings->setItem(serverCredentials, "password", password.c_str());
-		serverSettings->writeToDisk();
+		Services::ServerSettings& serverSettings = EmberServices::getSingleton().getServerSettingsService();
+		serverSettings.setItem(serverCredentials, "username", name.c_str());
+		serverSettings.setItem(serverCredentials, "password", password.c_str());
+		serverSettings.writeToDisk();
 		return true;
 	}
 	return false;
@@ -439,7 +439,7 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 
 		std::string id = mCharacterModel[mCharacterList->getItemIndex(item)];
 
-		EmberServices::getSingletonPtr()->getServerService()->takeCharacter(id);
+		EmberServices::getSingleton().getServerService().takeCharacter(id);
 	}
 	return true;
 }
@@ -447,25 +447,25 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
 {
 	//create a new admin character
-	EmberServices::getSingletonPtr()->getServerService()->createCharacter("The Creator", "female", "creator", "Almighty", "");
+	EmberServices::getSingleton().getServerService().createCharacter("The Creator", "female", "creator", "Almighty", "");
 	return true;
 }
 
 bool ServerWidget::CreateChar_Click(const CEGUI::EventArgs& args)
 {
-	EmberServices::getSingletonPtr()->getServerService()->createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
+	EmberServices::getSingleton().getServerService().createCharacter(mNewChar.name, mNewChar.gender, mNewChar.type, mNewChar.description, mNewChar.spawnPoint);
 	return true;
 }
 
 bool ServerWidget::LogoutButton_Click(const CEGUI::EventArgs& args)
 {
-	EmberServices::getSingletonPtr()->getServerService()->logout();
+	EmberServices::getSingleton().getServerService().logout();
 	return true;
 }
 
 bool ServerWidget::Disconnect_Click(const CEGUI::EventArgs& args)
 {
-	EmberServices::getSingleton().getServerService()->disconnect();
+	EmberServices::getSingleton().getServerService().disconnect();
 	return true;
 }
 

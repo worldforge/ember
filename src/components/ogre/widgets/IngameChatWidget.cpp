@@ -535,7 +535,7 @@ bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& ar
 	if (mouseArgs) {
 		//each button contains a static text window, which is the one containg the actual text
 		const String text = mouseArgs->window->getChild(0)->getText();
-		EmberServices::getSingletonPtr()->getServerService()->say(std::string(text.c_str()));
+		EmberServices::getSingleton().getServerService().say(std::string(text.c_str()));
 		clearResponses();
 	}
 	return true;

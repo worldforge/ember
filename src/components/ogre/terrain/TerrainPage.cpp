@@ -103,9 +103,9 @@ const Ogre::MaterialPtr TerrainPage::getMaterial() const
 
 unsigned int TerrainPage::getAlphaMapScale() const
 {
-	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
-	if (configSrv->itemExists("terrain", "scalealphamap")) {
-		int value = (int)configSrv->getValue("terrain", "scalealphamap");
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	if (configSrv.itemExists("terrain", "scalealphamap")) {
+		int value = (int)configSrv.getValue("terrain", "scalealphamap");
 		//make sure it can't go below 1
 		return std::max<int>(1, value);
 	} else {

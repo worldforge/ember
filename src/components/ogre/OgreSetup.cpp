@@ -142,12 +142,12 @@ void OgreSetup::shutdown()
 
 Ogre::Root* OgreSetup::createOgreSystem()
 {
-	ConfigService* configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
 	//We need to set the current directory to the prefix before trying to load Ogre.
 	//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
 	//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
-	if (chdir(configSrv->getPrefix().c_str())) {
+	if (chdir(configSrv.getPrefix().c_str())) {
 		S_LOG_WARNING("Failed to change to the prefix directory. Ogre loading might fail.");
 	}
 
@@ -157,11 +157,11 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	//we will try to load the plugins from series of different location, with the hope of getting at least one right
 	std::vector<std::string> pluginLocations;
 
-	if (configSrv->itemExists("ogre", "plugins")) {
-		std::string plugins(configSrv->getValue("ogre", "plugins"));
+	if (configSrv.itemExists("ogre", "plugins")) {
+		std::string plugins(configSrv.getValue("ogre", "plugins"));
 		//if it's defined in the config, use that location first
-		if (configSrv->itemExists("ogre", "plugindir")) {
-			std::string pluginDir(configSrv->getValue("ogre", "plugindir"));
+		if (configSrv.itemExists("ogre", "plugindir")) {
+			std::string pluginDir(configSrv.getValue("ogre", "plugindir"));
 			pluginLocations.push_back(pluginDir);
 		}
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -230,7 +230,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 
 	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
 
-	if (chdir(configSrv->getEmberDataDirectory().c_str())) {
+	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory.");
 	}
 
@@ -260,16 +260,16 @@ bool OgreSetup::configure(void)
 {
 	bool suppressConfig = false;
 	bool success = false;
-	ConfigService* configService(EmberServices::getSingleton().getConfigService());
-	if (configService->itemExists("ogre", "suppressconfigdialog")) {
-		suppressConfig = static_cast<bool> (configService->getValue("ogre", "suppressconfigdialog"));
+	ConfigService& configService(EmberServices::getSingleton().getConfigService());
+	if (configService.itemExists("ogre", "suppressconfigdialog")) {
+		suppressConfig = static_cast<bool> (configService.getValue("ogre", "suppressconfigdialog"));
 	}
 	if (suppressConfig) {
 		try {
 			success = mRoot->restoreConfig();
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
-			unlink((EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ogre.cfg").c_str());
+			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
 			try {
 				success = mRoot->showConfigDialog();
 			} catch (const std::exception& ex) {
@@ -281,7 +281,7 @@ bool OgreSetup::configure(void)
 			success = mRoot->showConfigDialog();
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
-			unlink((EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "/ogre.cfg").c_str());
+			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
 			try {
 				success = mRoot->showConfigDialog();
 			} catch (const std::exception& ex) {
@@ -381,8 +381,8 @@ bool OgreSetup::configure(void)
 		int flags = 0;
 
 		// 	bool enableDoubleBuffering = false;
-		// 	if (configService->itemExists("ogre", "doublebuffered")) {
-		// 		enableDoubleBuffering = static_cast<bool>(configService->getValue("ogre", "doublebuffered"));
+		// 	if (configService.itemExists("ogre", "doublebuffered")) {
+		// 		enableDoubleBuffering = static_cast<bool>(configService.getValue("ogre", "doublebuffered"));
 		// 		if (enableDoubleBuffering) {
 		// 			S_LOG_INFO("Using double buffering.");
 		// 		}

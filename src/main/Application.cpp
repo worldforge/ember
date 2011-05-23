@@ -160,7 +160,7 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 
 Application::~Application()
 {
-	EmberServices::getSingleton().getServerService()->stop(0);
+	EmberServices::getSingleton().getServerService().stop(0);
 	delete mOgreView;
 	delete mServices;
 	S_LOG_INFO("Ember shut down normally.");
@@ -201,7 +201,7 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 		mLastTimeInputProcessingEnd = currentTimeMillis;
 
 		mOgreView->renderOneFrame();
-		EmberServices::getSingleton().getSoundService()->cycle();
+		EmberServices::getSingleton().getSoundService().cycle();
 
 		//If we should cap the fps so that each frame should take a minimum amount of time,
 		//we need to see if we should sleep a little.
@@ -249,31 +249,31 @@ void Application::initializeServices()
 
 	mServices = new EmberServices();
 	// Initialize the Configuration Service
-	ConfigService* configService = EmberServices::getSingleton().getConfigService();
-	configService->start();
+	ConfigService& configService = EmberServices::getSingleton().getConfigService();
+	configService.start();
 	if (mPrefix != "") {
-		configService->setPrefix(mPrefix);
+		configService.setPrefix(mPrefix);
 	}
 	if (mHomeDir != "") {
-		configService->setHomeDirectory(mHomeDir);
+		configService.setHomeDirectory(mHomeDir);
 		std::cout << "Setting home directory to " << mHomeDir << std::endl;
 	}
 
 	//output all logging to ember.log
-	std::string filename(configService->getHomeDirectory() + "/ember.log");
+	std::string filename(configService.getHomeDirectory() + "/ember.log");
 	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
 
 	//write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
 
-	mLogObserver = new ConfigBoundLogObserver(*configService, *mLogOutStream);
+	mLogObserver = new ConfigBoundLogObserver(configService, *mLogOutStream);
 	Log::addObserver(mLogObserver);
 
 	//default to INFO, though this can be changed by the config file
 	mLogObserver->setFilter(Log::INFO);
 
 	// Change working directory
-	const std::string& dirName = configService->getHomeDirectory();
+	const std::string& dirName = configService.getHomeDirectory();
 	oslink::directory osdir(dirName);
 
 	if (!osdir) {
@@ -284,22 +284,22 @@ void Application::initializeServices()
 #endif
 	}
 
-	int result = chdir(configService->getHomeDirectory().c_str());
+	int result = chdir(configService.getHomeDirectory().c_str());
 	if (result) {
-		S_LOG_WARNING("Could not change directory to '"<< configService->getHomeDirectory().c_str() <<"'.");
+		S_LOG_WARNING("Could not change directory to '"<< configService.getHomeDirectory().c_str() <<"'.");
 	}
 
 	//load the config file. Note that this will load the shared config file, and then the user config file if available (~/.ember/ember.conf)
-	configService->loadSavedConfig("ember.conf");
+	configService.loadSavedConfig("ember.conf");
 	//after loading the config from file, override with command time settings
 	for (ConfigMap::iterator I = mConfigSettings.begin(); I != mConfigSettings.end(); ++I) {
 		for (std::map<std::string, std::string>::iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			configService->setValue(I->first, J->first, J->second);
+			configService.setValue(I->first, J->first, J->second);
 		}
 	}
 
 	//Check if there's a user specific ember.conf file. If not, create an empty template one.
-	std::string userConfigFilePath = configService->getHomeDirectory() + "/ember.conf";
+	std::string userConfigFilePath = configService.getHomeDirectory() + "/ember.conf";
 	struct stat tagStat;
 	int ret = stat(userConfigFilePath.c_str(), &tagStat);
 	if (ret == -1) {
@@ -309,41 +309,41 @@ void Application::initializeServices()
 		S_LOG_INFO("Created empty user specific settings file at '" << userConfigFilePath << "'.");
 	}
 
-	S_LOG_INFO("Using media from " << configService->getEmberMediaDirectory());
+	S_LOG_INFO("Using media from " << configService.getEmberMediaDirectory());
 
 	// Initialize the Sound Service
 	S_LOG_INFO("Initializing sound service");
-	EmberServices::getSingleton().getSoundService()->start();
+	EmberServices::getSingleton().getSoundService().start();
 
 	// Initialize and start the Metaserver Service.
 	S_LOG_INFO("Initializing metaserver service");
 
-	EmberServices::getSingleton().getMetaserverService()->start();
+	EmberServices::getSingleton().getMetaserverService().start();
 	//hoho, we get linking errors if we don't do some calls to the service
-	EmberServices::getSingleton().getMetaserverService()->getMetaServer();
+	EmberServices::getSingleton().getMetaserverService().getMetaServer();
 
 	// Initialize the Server Service
 	S_LOG_INFO("Initializing server service");
-	EmberServices::getSingleton().getServerService()->start();
+	EmberServices::getSingleton().getServerService().start();
 
 	// The time service depends on the server service, so we have to intialize it in this order
 	S_LOG_INFO("Initializing time service");
-	EmberServices::getSingleton().getTimeService()->start();
+	EmberServices::getSingleton().getTimeService().start();
 
 	S_LOG_INFO("Initializing input service");
-	EmberServices::getSingleton().getInputService()->start();
+	EmberServices::getSingleton().getInputService().start();
 
 	S_LOG_INFO("Initializing scripting service");
-	EmberServices::getSingleton().getScriptingService()->start();
+	EmberServices::getSingleton().getScriptingService().start();
 
 	S_LOG_INFO("Initializing wfut service");
-	EmberServices::getSingleton().getWfutService()->start();
+	EmberServices::getSingleton().getWfutService().start();
 
 	S_LOG_INFO("Initializing server settings service");
-	EmberServices::getSingleton().getServerSettingsService()->start();
+	EmberServices::getSingleton().getServerSettingsService().start();
 
-	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
-	EmberServices::getSingleton().getServerService()->DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
+	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
+	EmberServices::getSingleton().getServerService().DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	Lua::LuaScriptingProvider* luaProvider = new Lua::LuaScriptingProvider();
@@ -360,7 +360,7 @@ void Application::initializeServices()
 	tolua_Atlas_open(luaProvider->getLuaState());
 	tolua_Varconf_open(luaProvider->getLuaState());
 	tolua_ConnectorDefinitions_open(luaProvider->getLuaState());
-	EmberServices::getSingleton().getScriptingService()->registerScriptingProvider(luaProvider);
+	EmberServices::getSingleton().getScriptingService().registerScriptingProvider(luaProvider);
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 
 	EventServicesInitialized.emit();

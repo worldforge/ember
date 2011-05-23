@@ -77,11 +77,11 @@ Service::Status MetaserverService::start()
 	setStatus(Service::OK);
 	setRunning(true);
 
-	ConfigService* configSrv = EmberServices::getSingletonPtr()->getConfigService();
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
 	std::string metaserverHostname;
-	if (configSrv->itemExists("metaserver", "server")) {
-		metaserverHostname = std::string(configSrv->getValue("metaserver", "server"));
+	if (configSrv.itemExists("metaserver", "server")) {
+		metaserverHostname = std::string(configSrv.getValue("metaserver", "server"));
 	} else {
 		metaserverHostname = "metaserver.worldforge.org";
 	}

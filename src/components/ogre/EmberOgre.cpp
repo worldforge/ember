@@ -160,10 +160,10 @@ EmberOgre::~EmberOgre()
 	delete mMaterialEditor;
 	//	delete mJesus;
 
-	EmberServices::getSingleton().getSoundService()->setResourceProvider(0);
+	EmberServices::getSingleton().getSoundService().setResourceProvider(0);
 	delete mSoundManager;
 
-	EmberServices::getSingleton().getScriptingService()->setResourceProvider(0);
+	EmberServices::getSingleton().getScriptingService().setResourceProvider(0);
 
 	EventGUIManagerBeingDestroyed();
 	delete mGUIManager;
@@ -175,7 +175,7 @@ EmberOgre::~EmberOgre()
 
 	EventOgreBeingDestroyed();
 	//Right before we destroy Ogre we want to force a garbage collection of all scripting providers. The main reason is that if there are any instances of SharedPtr in the scripting environments we want to collect them now.
-	EmberServices::getSingleton().getScriptingService()->forceGCForAllProviders();
+	EmberServices::getSingleton().getScriptingService().forceGCForAllProviders();
 
 	//we need to make sure that all Models are destroyed before Ogre begins destroying other movable objects (such as Entities)
 	//this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
@@ -279,7 +279,7 @@ bool EmberOgre::setup(Input& input)
 
 	mInput = &input;
 
-	ConfigService* configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
 	checkForConfigFiles();
 
@@ -301,7 +301,7 @@ bool EmberOgre::setup(Input& input)
 	}
 
 	//Create the model definition manager
-	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv->getHomeDirectory() + "/user-media/modeldefinitions/");
+	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv.getHomeDirectory() + "/user-media/modeldefinitions/");
 
 	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
 
@@ -317,8 +317,8 @@ bool EmberOgre::setup(Input& input)
 	mResourceLoader->initialize();
 
 	//check if we should preload the media
-	bool preloadMedia = configSrv->itemExists("media", "preloadmedia") && (bool)configSrv->getValue("media", "preloadmedia");
-	bool useWfut = configSrv->itemExists("wfut", "enabled") && (bool)configSrv->getValue("wfut", "enabled");
+	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool)configSrv.getValue("media", "preloadmedia");
+	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool)configSrv.getValue("wfut", "enabled");
 
 	bool carryOn = mOgreSetup->configure();
 	if (!carryOn)
@@ -392,15 +392,15 @@ bool EmberOgre::setup(Input& input)
 			S_LOG_INFO( "End preload.");
 		}
 		try {
-			mGUIManager = new GUIManager(mWindow, *configSrv);
+			mGUIManager = new GUIManager(mWindow, configSrv);
 			EventGUIManagerCreated.emit(*mGUIManager);
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
 			throw Exception("Could not load gui, aborting. Make sure that all media got downloaded and installed correctly.");
 		}
 
-		if (chdir(configSrv->getHomeDirectory().c_str())) {
-			S_LOG_WARNING("Failed to change directory to '"<< configSrv->getHomeDirectory() << "'");
+		if (chdir(configSrv.getHomeDirectory().c_str())) {
+			S_LOG_WARNING("Failed to change directory to '"<< configSrv.getHomeDirectory() << "'");
 		}
 
 		try {
@@ -437,12 +437,12 @@ World* EmberOgre::getWorld() const
 
 void EmberOgre::checkForConfigFiles()
 {
-	if (chdir(EmberServices::getSingleton().getConfigService()->getHomeDirectory().c_str())) {
-		S_LOG_WARNING("Failed to change directory to '"<< EmberServices::getSingleton().getConfigService()->getHomeDirectory() << "', will not copy config files.");
+	if (chdir(EmberServices::getSingleton().getConfigService().getHomeDirectory().c_str())) {
+		S_LOG_WARNING("Failed to change directory to '"<< EmberServices::getSingleton().getConfigService().getHomeDirectory() << "', will not copy config files.");
 		return;
 	}
 
-	const std::string& sharePath(EmberServices::getSingleton().getConfigService()->getSharedConfigDirectory());
+	const std::string& sharePath(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory());
 
 	//make sure that there are files
 	assureConfigFile("ogre.cfg", sharePath);
@@ -452,13 +452,13 @@ void EmberOgre::preloadMedia(void)
 {
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	ConfigService* configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 
 	std::vector<std::string> shaderTextures;
 
-	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "rock")));
-	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "sand")));
-	shaderTextures.push_back(std::string(configSrv->getValue("shadertextures", "grass")));
+	shaderTextures.push_back(std::string(configSrv.getValue("shadertextures", "rock")));
+	shaderTextures.push_back(std::string(configSrv.getValue("shadertextures", "sand")));
+	shaderTextures.push_back(std::string(configSrv.getValue("shadertextures", "grass")));
 
 	for (std::vector<std::string>::iterator I = shaderTextures.begin(); I != shaderTextures.end(); ++I) {
 		try {
@@ -469,7 +469,7 @@ void EmberOgre::preloadMedia(void)
 	}
 
 	//only autogenerate trees if we're not using the pregenerated ones
-	if (configSrv->itemExists("tree", "usedynamictrees") && ((bool)configSrv->getValue("tree", "usedynamictrees"))) {
+	if (configSrv.itemExists("tree", "usedynamictrees") && ((bool)configSrv.getValue("tree", "usedynamictrees"))) {
 		Environment::Tree tree;
 		tree.makeMesh("GeneratedTrees/European_Larch", Ogre::TParameters::European_Larch);
 		tree.makeMesh("GeneratedTrees/Fir", Ogre::TParameters::Fir);
@@ -481,13 +481,13 @@ void EmberOgre::preloadMedia(void)
 //{
 //@note Disabled for now since it's not really used. Perhaps we should put this into a more dynamically loadable structure?
 
-//	const std::string datadir = EmberServices::getSingleton().getConfigService()->getSharedDataDirectory();
+//	const std::string datadir = EmberServices::getSingleton().getConfigService().getSharedDataDirectory();
 //
 //	Carpenter::Carpenter* carpenter = new Carpenter::Carpenter();
 //	mJesus = new Jesus(carpenter);
 //	XMLJesusSerializer serializer(mJesus);
 //
-//	std::string dir(EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/blockspec");
+//	std::string dir(EmberServices::getSingleton().getConfigService().getSharedDataDirectory() + "carpenter/blockspec");
 //
 //	std::string filename;
 //
@@ -502,7 +502,7 @@ void EmberOgre::preloadMedia(void)
 //		}
 //	}
 //	//load all buildingblockspecs
-//	dir = EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/modelblockspecs";
+//	dir = EmberServices::getSingleton().getConfigService().getSharedDataDirectory() + "carpenter/modelblockspecs";
 //		{
 //		oslink::directory osdir(dir);
 //		while (osdir) {
@@ -512,7 +512,7 @@ void EmberOgre::preloadMedia(void)
 //		}
 //	}
 //	//load all modelmappings
-//	dir = EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "jesus/modelmappings";
+//	dir = EmberServices::getSingleton().getConfigService().getSharedDataDirectory() + "jesus/modelmappings";
 //	{
 //		oslink::directory osdir(dir);
 //		while (osdir) {
@@ -523,7 +523,7 @@ void EmberOgre::preloadMedia(void)
 //	}
 //
 //	//load all global blueprints
-//	dir = EmberServices::getSingleton().getConfigService()->getSharedDataDirectory() + "carpenter/blueprints";
+//	dir = EmberServices::getSingleton().getConfigService().getSharedDataDirectory() + "carpenter/blueprints";
 //	{
 //		oslink::directory osdir(dir);
 //		while (osdir) {
@@ -541,7 +541,7 @@ void EmberOgre::preloadMedia(void)
 //		}
 //	}
 //	//load all local blueprints
-//	dir = EmberServices::getSingleton().getConfigService()->getHomeDirectory() + "carpenter/blueprints";
+//	dir = EmberServices::getSingleton().getConfigService().getHomeDirectory() + "carpenter/blueprints";
 //	{
 //		oslink::directory osdir(dir);
 //		while (osdir) {
@@ -584,10 +584,10 @@ void EmberOgre::EntityFactory_BeingDeleted()
 	mWindow->addViewport(mOgreMainCamera);
 
 	//This is an excellent place to force garbage collection of all scripting environments.
-	ScriptingService* scriptingService = EmberServices::getSingleton().getScriptingService();
-	const std::vector<std::string> providerNames = scriptingService->getProviderNames();
+	ScriptingService& scriptingService = EmberServices::getSingleton().getScriptingService();
+	const std::vector<std::string> providerNames = scriptingService.getProviderNames();
 	for (std::vector<std::string>::const_iterator I = providerNames.begin(); I != providerNames.end(); ++I) {
-		scriptingService->getProviderFor(*I)->forceGC();
+		scriptingService.getProviderFor(*I)->forceGC();
 	}
 
 	//After we've exited the world we try to unload any unused resources.
@@ -624,13 +624,13 @@ void EmberOgre::initializeEmberServices(const std::string& prefix, const std::st
 
 void EmberOgre::Application_ServicesInitialized()
 {
-	EmberServices::getSingleton().getServerService()->GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
+	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 
 	mScriptingResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));
-	EmberServices::getSingleton().getScriptingService()->setResourceProvider(mScriptingResourceProvider.get());
+	EmberServices::getSingleton().getScriptingService().setResourceProvider(mScriptingResourceProvider.get());
 
 	mSoundResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("General"));
-	EmberServices::getSingleton().getSoundService()->setResourceProvider(mSoundResourceProvider.get());
+	EmberServices::getSingleton().getSoundService().setResourceProvider(mSoundResourceProvider.get());
 
 }
 

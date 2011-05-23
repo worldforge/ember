@@ -50,10 +50,10 @@ void TimeImpl::initialize()
 {
 	//we either already have the avatar, or we need to wait until it's been created
 	Eris::Avatar* avatar(0);
-	if ((avatar = EmberServices::getSingleton().getServerService()->getAvatar())) {
+	if ((avatar = EmberServices::getSingleton().getServerService().getAvatar())) {
 		createCalendar(avatar);
 	} else {
-		EmberServices::getSingleton().getServerService()->GotAvatar.connect(sigc::mem_fun(*this, &TimeImpl::Server_GotAvatar));
+		EmberServices::getSingleton().getServerService().GotAvatar.connect(sigc::mem_fun(*this, &TimeImpl::Server_GotAvatar));
 	}
 }
 

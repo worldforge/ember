@@ -33,7 +33,6 @@ class InputService;
 class MetaserverService;
 class ServerService;
 class SoundService;
-class TestService;
 class ScriptingService;
 class WfutService;
 namespace Services
@@ -41,7 +40,6 @@ namespace Services
 class Time;
 class ServerSettings;
 }
-
 
 /**
  * This is a singleton class that is used to access instances of all the
@@ -66,69 +64,85 @@ class EmberServices: public Singleton<EmberServices>
 {
 public:
 
+	/**
+	 * @brief Ctor.
+	 */
 	EmberServices();
 
 	/**
-	 * Deletes a EmberServices instance.
+	 * @brief Dtor.
 	 */
 	virtual ~EmberServices();
 
 	/**
-	 * Returns an instance of the TestService.
+	 * @brief Returns an instance of the LoggingService
+	 *
+	 * @return The logging service.
 	 */
-	TestService *getTestService();
+	LoggingService& getLoggingService();
 
 	/**
-	 * Returns an instance of the LoggingService
+	 * @brief Returns an instance of the ConfigService.
+	 *
+	 * @return The config service.
 	 */
-	LoggingService *getLoggingService();
+	ConfigService& getConfigService();
 
 	/**
-	 * Returns an instance of the ConfigService
+	 * @brief Returns an instance of the InputService
+	 *
+	 * @return The input service.
 	 */
-	ConfigService *getConfigService();
+	InputService& getInputService();
 
 	/**
-	 * Returns an instance of the InputService
+	 * @brief Returns an instance of the MetaserverService.
+	 *
+	 * @return The meta server service.
 	 */
-	InputService *getInputService();
+	MetaserverService& getMetaserverService();
 
 	/**
-	 * Returns an instance of the MetaserverService
+	 * @brief Returns an instance of the ServerService
+	 *
+	 * @return The server service.
 	 */
-	MetaserverService *getMetaserverService();
+	ServerService& getServerService();
 
 	/**
-	 * Returns an instance of the ServerService
+	 * @brief Returns an instance of the SoundService
+	 *
+	 * @return The sound service.
 	 */
-	ServerService *getServerService();
+	SoundService& getSoundService();
 
 	/**
-	 * Returns an instance of the SoundService
+	 * @brief Returns an instance of the ScriptingService
+	 *
+	 * @return The scripting service.
 	 */
-	SoundService *getSoundService();
+	ScriptingService& getScriptingService();
 
 	/**
-	 * Returns an instance of the ScriptingService
+	 * @brief Returns an instance of the update service
+	 *
+	 * @return The update service.
 	 */
-	ScriptingService *getScriptingService();
+	WfutService& getWfutService();
 
 	/**
-	 * Returns an instance of the wfut service
+	 * @brief Returns an instance of the time service
+	 *
+	 * @return The time service.
 	 */
-	WfutService *getWfutService();
-
-	/**
-	 * Returns an instance of the time service
-	 */
-	Services::Time* getTimeService();
+	Services::Time& getTimeService();
 
 	/**
 	 * @brief Returns the server settings service.
 	 *
-	 * @returns The server settings service.
+	 * @return The server settings service.
 	 */
-	Services::ServerSettings* getServerSettingsService();
+	Services::ServerSettings& getServerSettingsService();
 
 	//----------------------------------------------------------------------
 	// Setters

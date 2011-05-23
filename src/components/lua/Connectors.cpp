@@ -84,7 +84,7 @@ lua_State* ConnectorBase::getState()
 
 int ConnectorBase::resolveLuaFunction(lua_State* state)
 {
-	if (mLuaFunctionIndex == LUA_NOREF || EmberServices::getSingleton().getScriptingService()->getAlwaysLookup()) {
+	if (mLuaFunctionIndex == LUA_NOREF || EmberServices::getSingleton().getScriptingService().getAlwaysLookup()) {
 		//If we've already resolved the function we should release the reference before getting a new one.
 		if (mLuaFunctionIndex != LUA_NOREF) {
 			luaL_unref(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
