@@ -148,7 +148,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	//The reason for this is that Ogre loads a lot of dynamic modules, and in some build configuration
 	//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
 	if (chdir(configSrv.getPrefix().c_str())) {
-		S_LOG_WARNING("Failed to change to the prefix directory. Ogre loading might fail.");
+		S_LOG_WARNING("Failed to change to the prefix directory '" << configSrv.getPrefix() << "'. Ogre loading might fail.");
 	}
 
 	std::string pluginExtension = ".so";
@@ -231,7 +231,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
 
 	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
-		S_LOG_WARNING("Failed to change to the data directory.");
+		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory() << "'.");
 	}
 
 	return mRoot;
