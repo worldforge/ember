@@ -5,6 +5,15 @@
 #example: ./make_dist_media.sh media-svn-dir media-dev 256
 #note that the script must be run in the ember source root dir
 
+if [ $# -ne 3 ]
+then
+  echo "This script will automatically scan the media source repo and create a repository suitable for distributions."
+  echo "This process mainly involves copying only those assets which are used by Ember, and resizing textures."
+  echo "Usage: `basename $0` <media svn directory> <local directory> <image pixel max with/height>"
+  exit -1
+fi
+
+
 current=${PWD}
 original_media=`readlink -m $1`
 media_dir=`readlink -m $2`
