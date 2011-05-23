@@ -44,6 +44,7 @@ WfutService::WfutService()
 	mUpdatesCalculatedSlot = sigc::mem_fun(this, &WfutService::wfutSession_UpdatesCalculated);
 	
 	mSession = std::auto_ptr<WfutSession>(new WfutSession(mDownloadCompleteSlot, mDownloadFailureSlot, mServerListDownloadingSlot, mUpdatesCalculatedSlot));
+	setName("Update Service");
 }
 
 
@@ -54,6 +55,7 @@ WfutService::~WfutService()
 Service::Status WfutService::start()
 {
 	mSession->init();
+	setRunning(true);
 	return Service::OK;
 }
 

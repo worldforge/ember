@@ -38,6 +38,7 @@ namespace Ember {
 ScriptingService::ScriptingService()
 : LoadScript("loadscript", this, "Loads a script."), mResourceProvider(0), mAlwaysLookup(false)
 {
+	setName("Scripting Service");
 }
 
 
@@ -61,6 +62,7 @@ void ScriptingService::stop(int code)
 
 Service::Status ScriptingService::start()
 {
+	setRunning(true);
 	return Service::OK;
 }
 

@@ -34,6 +34,7 @@ namespace Services
 ServerSettings::ServerSettings() :
 	mConfig(new varconf::Config())
 {
+	setName("Server settings Service");
 }
 
 ServerSettings::~ServerSettings()
@@ -43,11 +44,13 @@ ServerSettings::~ServerSettings()
 Service::Status ServerSettings::start()
 {
 	readFromDisk();
+	setRunning(true);
 	return Service::OK;
 }
 
 void ServerSettings::stop(int code)
 {
+	Service::stop(code);
 	writeToDisk();
 }
 

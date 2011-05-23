@@ -35,6 +35,7 @@ namespace Services {
 Time::Time()
 : mImpl(new TimeImpl())
 {
+	setName("Time Service");
 }
 
 
@@ -45,11 +46,13 @@ Time::~Time()
 Service::Status Time::start()
 {
 	mImpl->initialize();
+	setRunning(true);
 	return Service::OK;
 }
 
 void Time::stop(int code)
 {
+	Service::stop(code);
 }
 
 bool Time::getServerTime(int& year, int& month, int& day, int& hour, int& minute, int& second)

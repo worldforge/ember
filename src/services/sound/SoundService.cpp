@@ -100,6 +100,7 @@ Service::Status SoundService::start()
 		}
 	}
 	
+	setRunning(true);
 	return Service::OK;
 }
 
