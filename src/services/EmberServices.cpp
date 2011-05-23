@@ -45,82 +45,65 @@ namespace Ember{
 	{
 	}
 
-
-//   TestService* EmberServices::getTestService()
-//   {
-//     // TODO
-//     return NULL;
-//   }
-
 	LoggingService* EmberServices::getLoggingService()
 	{
-		return mLoggingService->getService();
+		return mLoggingService.get();
 	}
 
 	ConfigService* EmberServices::getConfigService()
 	{
-		return mConfigService->getService();
+		return mConfigService.get();
 	}
 
 	InputService* EmberServices::getInputService()
 	{
-		return mInputService->getService();
+		return mInputService.get();
 	}
 
-
-/*
-  GuiService* EmberServices::getGuiService()
-  {
-    if (myGuiService == NULL)
-      myGuiService = new Ember::GuiService();
-    
-    return myGuiService;
-  }
-*/
 	MetaserverService* EmberServices::getMetaserverService()
 	{
-		return mMetaserverService->getService();
+		return mMetaserverService.get();
 	}
   
 	ServerService* EmberServices::getServerService()
 	{
-		return mServerService->getService();
+		return mServerService.get();
 	}
 
 	SoundService* EmberServices::getSoundService()
 	{
-		return mSoundService->getService();
+		return mSoundService.get();
 	}
 
 	ScriptingService* EmberServices::getScriptingService()
 	{
-		return mScriptingService->getService();
+		return mScriptingService.get();
 	}
   
 	WfutService* EmberServices::getWfutService()
 	{
-		return mWfutService->getService();
+		return mWfutService.get();
 	}
   
 	Services::Time* EmberServices::getTimeService()
 	{
-		return mTimeService->getService();
+		return mTimeService.get();
 	}
 	
 	Services::ServerSettings* EmberServices::getServerSettingsService() {
-		return mServerSettingsService->getService();
+		return mServerSettingsService.get();
 	}
 
 	EmberServices::EmberServices()
-	: mScriptingService(std::auto_ptr<ServiceContainer<ScriptingService> >(new ServiceContainer<ScriptingService>()) )
-	, mSoundService(std::auto_ptr<ServiceContainer<SoundService> >(new ServiceContainer<SoundService>()) )
-	, mServerService(std::auto_ptr<ServiceContainer<ServerService> >(new ServiceContainer<ServerService>()) )
-	, mMetaserverService(std::auto_ptr<ServiceContainer<MetaserverService> >(new ServiceContainer<MetaserverService>()) )
-	, mInputService(std::auto_ptr<ServiceContainer<InputService> >(new ServiceContainer<InputService>()) )
-	, mWfutService(std::auto_ptr<ServiceContainer<WfutService> >(new ServiceContainer<WfutService>()) )
-	, mConfigService(std::auto_ptr<ServiceContainer<ConfigService> >(new ServiceContainer<ConfigService>()) )
-	, mTimeService(std::auto_ptr<ServiceContainer<Services::Time> >(new ServiceContainer<Services::Time>()) )
-	, mServerSettingsService(std::auto_ptr<ServiceContainer<Services::ServerSettings> >(new ServiceContainer<Services::ServerSettings>()) )
+	: mScriptingService(new ScriptingService())
+	, mSoundService(new SoundService())
+	, mServerService(new ServerService())
+	, mMetaserverService(new MetaserverService())
+	, mInputService(new InputService())
+	, mWfutService(new WfutService())
+	, mConfigService(new ConfigService())
+	, mTimeService(new Services::Time())
+	, mServerSettingsService(new Services::ServerSettings())
 	{
 	}
 

@@ -1,21 +1,21 @@
 /*
-    Copyright (C) 2002  Hans Häggström
-    Copyright (C) 2005	Erik Hjortsberg
+ Copyright (C) 2002  Hans Häggström
+ Copyright (C) 2005	Erik Hjortsberg
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifndef EMBER_EMBERSERVICES_H
 #define EMBER_EMBERSERVICES_H
@@ -23,123 +23,24 @@
 #include "framework/Singleton.h"
 #include <memory>
 
-
-namespace Ember {
-
-	// some forward declarations before we start
-	class LoggingService;
-	class ConfigService;
-	class InputService;
-	class MetaserverService;
-	class ServerService;
-	class SoundService;
-	class TestService;
-	class ScriptingService;
-	class WfutService;
-	namespace Services {
-		class Time;
-		class ServerSettings;
-	}
-
-
-template <typename T>
-class UninitializedInnerServiceContainer;
-
-template <typename T>
-class IInnerServiceContainer
+namespace Ember
 {
-public:
-	virtual ~IInnerServiceContainer() {}
-	virtual T* getService() = 0;
-	virtual bool hasService() = 0;
 
-};
-
-/**
-A simple container for a service. Upon the first call to getService(), a new instance will be created.
-The main reason for doing it this way is to remove an extra null check every time a service is accessed.
-*/
-template <typename T>
-class ServiceContainer
+// some forward declarations before we start
+class LoggingService;
+class ConfigService;
+class InputService;
+class MetaserverService;
+class ServerService;
+class SoundService;
+class TestService;
+class ScriptingService;
+class WfutService;
+namespace Services
 {
-public:
-	ServiceContainer()
-	: mInnerContainer(new UninitializedInnerServiceContainer<T>(this))
-	{
-	}
-
-	T* getService()
-	{
-		return mInnerContainer->getService();
-	}
-	
-	void setInnerContainer(IInnerServiceContainer<T>* newContainer)
-	{
-		mInnerContainer = std::auto_ptr<IInnerServiceContainer<T> >(newContainer);
-	}
-	
-	bool hasService()
-	{
-		return mInnerContainer->hasService();
-	} 
-
-private:
-	std::auto_ptr<IInnerServiceContainer<T> > mInnerContainer;
-};
-
-
-template <typename T>
-class InitializedInnerServiceContainer : public IInnerServiceContainer<T>
-{
-public:
-	InitializedInnerServiceContainer()
-	: mService(new T)
-	{
-	}
-	
-	virtual ~InitializedInnerServiceContainer() 
-	{
-		mService->stop(0);
-	}
-	
-	virtual T* getService()
-	{
-		return mService.get();
-	}
-	
-	virtual bool hasService()
-	{
-		return true;
-	}
-	
-private:
-	std::auto_ptr<T> mService;
-};
-
-template <typename T>
-class UninitializedInnerServiceContainer : public IInnerServiceContainer<T>
-{
-public:
-	UninitializedInnerServiceContainer(ServiceContainer<T>* container): mContainer(container)
-	{
-	}
-
-	virtual T* getService()
-	{
-		///since the call to setInnerContainer will result in this current object actually getting deleted, we have to save the reference of the container on the stack, else we'll get segfaults if the memory holding mContainer is claimed by something else
-		ServiceContainer<T>* tempContainer = mContainer;
-		tempContainer->setInnerContainer(new InitializedInnerServiceContainer<T>());
-		return tempContainer->getService();
-	}
-	
-	virtual bool hasService()
-	{
-		return false;
-	} 
-private:
-	ServiceContainer<T>* mContainer;
-};
-
+class Time;
+class ServerSettings;
+}
 
 
 /**
@@ -161,68 +62,67 @@ private:
  *
  * @author Hans Häggström
  */
-class EmberServices : public Singleton<EmberServices>
+class EmberServices: public Singleton<EmberServices>
 {
 public:
-	
+
 	EmberServices();
-	
+
 	/**
-	* Deletes a EmberServices instance.
-	*/
+	 * Deletes a EmberServices instance.
+	 */
 	virtual ~EmberServices();
-	
+
 	/**
-	* Returns an instance of the TestService.
-	*/
+	 * Returns an instance of the TestService.
+	 */
 	TestService *getTestService();
-	
-	
+
 	/**
-	* Returns an instance of the LoggingService
-	*/
+	 * Returns an instance of the LoggingService
+	 */
 	LoggingService *getLoggingService();
-	
+
 	/**
-	* Returns an instance of the ConfigService
-	*/
+	 * Returns an instance of the ConfigService
+	 */
 	ConfigService *getConfigService();
-	
+
 	/**
-	* Returns an instance of the InputService
-	*/
+	 * Returns an instance of the InputService
+	 */
 	InputService *getInputService();
-	
+
 	/**
-	* Returns an instance of the MetaserverService
-	*/
+	 * Returns an instance of the MetaserverService
+	 */
 	MetaserverService *getMetaserverService();
-	
+
 	/**
-	* Returns an instance of the ServerService
-	*/
+	 * Returns an instance of the ServerService
+	 */
 	ServerService *getServerService();
-	
+
 	/**
-	* Returns an instance of the SoundService
-	*/
+	 * Returns an instance of the SoundService
+	 */
 	SoundService *getSoundService();
-	
+
 	/**
-	* Returns an instance of the ScriptingService
-	*/
+	 * Returns an instance of the ScriptingService
+	 */
 	ScriptingService *getScriptingService();
-	
+
 	/**
-	* Returns an instance of the wfut service
-	*/
+	 * Returns an instance of the wfut service
+	 */
 	WfutService *getWfutService();
-	
+
 	/**
-	* Returns an instance of the time service
-	*/
+	 * Returns an instance of the time service
+	 */
 	Services::Time* getTimeService();
-	
+
 	/**
 	 * @brief Returns the server settings service.
 	 *
@@ -232,42 +132,39 @@ public:
 
 	//----------------------------------------------------------------------
 	// Setters
-	
+
 	//======================================================================
 	// Disabled constructors and operators
 	//======================================================================
-	private:
-	
-	
-	
+private:
+
 	/**
-	* Copy constructor not provided.
-	*/
-	EmberServices( const EmberServices &source )
+	 * Copy constructor not provided.
+	 */
+	EmberServices(const EmberServices &source)
 	{
 	}
 
-
 	/**
-	* Assignment operator not provided.
-	*/
-	EmberServices &operator= ( const EmberServices &source )
+	 * Assignment operator not provided.
+	 */
+	EmberServices &operator=(const EmberServices &source)
 	{
 		return *this;
 	}
 
 private:
-	
-    std::auto_ptr<ServiceContainer<LoggingService> > mLoggingService;
-	std::auto_ptr<ServiceContainer<ScriptingService> > mScriptingService;
-	std::auto_ptr<ServiceContainer<SoundService> > mSoundService;
-	std::auto_ptr<ServiceContainer<ServerService> > mServerService;
-	std::auto_ptr<ServiceContainer<MetaserverService> > mMetaserverService;
-	std::auto_ptr<ServiceContainer<InputService> > mInputService;
-	std::auto_ptr<ServiceContainer<WfutService> > mWfutService;
-	std::auto_ptr<ServiceContainer<ConfigService> > mConfigService;
-	std::auto_ptr<ServiceContainer<Services::Time> > mTimeService;
-	std::auto_ptr<ServiceContainer<Services::ServerSettings> > mServerSettingsService;
+
+	std::auto_ptr<LoggingService> mLoggingService;
+	std::auto_ptr<ScriptingService> mScriptingService;
+	std::auto_ptr<SoundService> mSoundService;
+	std::auto_ptr<ServerService> mServerService;
+	std::auto_ptr<MetaserverService> mMetaserverService;
+	std::auto_ptr<InputService> mInputService;
+	std::auto_ptr<WfutService> mWfutService;
+	std::auto_ptr<ConfigService> mConfigService;
+	std::auto_ptr<Services::Time> mTimeService;
+	std::auto_ptr<Services::ServerSettings> mServerSettingsService;
 
 };
 }
