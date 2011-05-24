@@ -118,8 +118,9 @@ public:
 	 *
 	 * -VERBOSE messages are for maximum level of verboseness and are emitted frequently with details of Ember's internal state.
 	 * -INFO messages are intended to be read only to look for reasons of errors.
-	 * -WARNING messages appear whenever something could get critical in some case.
-	 * -CRITICAL messages should be read always and contain fatal errors.
+	 * -WARNING messages appear whenever something wasn't as expected, but the process should be able to continue anyway without the user being too much affected.
+	 * -FAILURE messages appear when something failed, and the failure resulted in some process not being able to complete with a noticable result to the user. After a failure there's always a risk that the application will end up in an invalid state.
+	 * -CRITICAL messages should be read always and contain fatal errors. These error are guaranteed to break the application, and it should in most cases exit afterwards.
 	 */
 	enum MessageImportance
 	{
