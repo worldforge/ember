@@ -129,7 +129,16 @@ void NodeAttachment::setPosition(const WFMath::Point<3>& position, const WFMath:
 			//If the entity is floating, the z position should be 0.
 			adjustedOffset.z() = -position.z();
 		} else if (mParentEntity.getAttachment()) {
-			mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
+			//If it's swimming, the position should be either floating (z==0) or above ground.
+			if (getAttachedEntity().getPositioningMode() == EmberEntity::PM_SWIMMING) {
+				if (position.z() > 0) {
+					adjustedOffset.z() = -position.z();
+				} else {
+					mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
+				}
+			} else {
+				mParentEntity.getAttachment()->getOffsetForContainedNode(*this, position, adjustedOffset);
+			}
 		}
 	}
 	mNodeProvider->setPositionAndOrientation(Convert::toOgre(position + adjustedOffset), Convert::toOgre(orientation));

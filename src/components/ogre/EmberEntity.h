@@ -104,7 +104,12 @@ public:
 		/**
 		 * @brief Fixed in the world. This means that the position of the entity won't be adjusted (i.e. not affected by gravity etc.).
 		 */
-		PM_FIXED = 3
+		PM_FIXED = 3,
+
+		/**
+		 * @brief Swimming. The vertical position is adjusted to be above ground, but below the surface.
+		 */
+		PM_SWIMMING = 4
 	};
 
 	/**
@@ -122,6 +127,10 @@ public:
 	 */
 	static const std::string MODE_PROJECTILE;
 
+	/**
+	 * @brief The name of the "swimming" positioning mode.
+	 */
+	static const std::string MODE_SWIMMING;
 
 	/**
 	 * @brief Ctor.

@@ -57,6 +57,8 @@ namespace OgreView
 const std::string EmberEntity::MODE_FLOATING("floating");
 const std::string EmberEntity::MODE_FIXED("fixed");
 const std::string EmberEntity::MODE_PROJECTILE("projectile");
+const std::string EmberEntity::MODE_SWIMMING("swimming");
+
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
 	Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
@@ -388,6 +390,8 @@ void EmberEntity::parsePositioningModeChange(const Atlas::Message::Element& v)
 		newMode = PM_FIXED;
 	} else if (mode == MODE_PROJECTILE) {
 		newMode = PM_PROJECTILE;
+	} else if (mode == MODE_SWIMMING) {
+		newMode = PM_SWIMMING;
 	} else {
 		newMode = PM_DEFAULT;
 	}
