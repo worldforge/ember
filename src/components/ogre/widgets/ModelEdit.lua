@@ -352,7 +352,10 @@ function ModelEdit:ExportAsAtlasTypeButton_Clicked(args)
 	local model = self.renderer:getModel()
 	if model ~= nil then
 		local composer = Ember.OgreView.Model.ModelDefinitionAtlasComposer:new_local()
-		composer:composeToFile(model, self.definition:getName(), "thing", self.definition:getScale())
+		local exportPath = composer:composeToFile(model, self.definition:getName(), "thing", self.definition:getScale())
+		if exportPath ~= "" then
+			console:pushMessage("Atlas exported to " .. exportPath)
+		end	
 	end	
 end
 

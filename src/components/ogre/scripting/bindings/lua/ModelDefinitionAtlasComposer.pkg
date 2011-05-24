@@ -40,7 +40,7 @@ public:
     
     Atlas::Message::MapType compose(Ember::OgreView::Model::Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
     void composeToStream(std::iostream& outstream, Ember::OgreView::Model::Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
-    void composeToFile(Ember::OgreView::Model::Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
+    std::string composeToFile(Ember::OgreView::Model::Model* model, const std::string& typeName, const std::string& parentTypeName, float scale);
 
 };
 

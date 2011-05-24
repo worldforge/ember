@@ -65,14 +65,6 @@ namespace OgreView
 namespace Model
 {
 
-ModelDefinitionAtlasComposer::ModelDefinitionAtlasComposer()
-{
-}
-
-ModelDefinitionAtlasComposer::~ModelDefinitionAtlasComposer()
-{
-}
-
 Atlas::Message::MapType ModelDefinitionAtlasComposer::compose(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale)
 {
 	MapType mainMap;
@@ -122,28 +114,34 @@ void ModelDefinitionAtlasComposer::composeToStream(std::iostream& outstream, Mod
 	formatter.streamEnd();
 }
 
-void ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale)
+std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std::string& typeName, const std::string& parentTypeName, float scale)
 {
 	if (model) {
-		//make sure the directory exists
-		std::string dir(EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/typeexport/");
+		try {
+			//make sure the directory exists
+			std::string dir(EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/typeexport/");
 
-		if (!oslink::directory(dir).isExisting()) {
-			S_LOG_INFO("Creating directory " << dir);
+			if (!oslink::directory(dir).isExisting()) {
+				S_LOG_INFO("Creating directory " << dir);
 #ifdef __WIN32__
 			mkdir(dir.c_str());
 #else
 			mkdir(dir.c_str(), S_IRWXU);
 #endif
+			}
+
+			const std::string fileName(dir + typeName + ".atlas");
+			std::fstream exportFile(fileName.c_str(), std::fstream::out);
+
+			S_LOG_INFO("Creating atlas type " << fileName);
+			composeToStream(exportFile, model, typeName, parentTypeName, scale);
+			// 		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Creating atlas type ") + fileName);
+			return fileName;
+		} catch (const std::exception& e) {
+			S_LOG_WARNING("Error when exporting Model to Atlas data." << e);
 		}
-
-		const std::string fileName(dir + typeName + ".atlas");
-		std::fstream exportFile(fileName.c_str(), std::fstream::out);
-
-		S_LOG_INFO("Creating atlas type " << fileName);
-		composeToStream(exportFile, model, typeName, parentTypeName, scale);
-		// 		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Creating atlas type ") + fileName);
 	}
+	return "";
 
 }
 
