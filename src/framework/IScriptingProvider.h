@@ -88,29 +88,35 @@ public:
 	 */
 	virtual void executeScript(const std::string& scriptCode, IScriptingCallContext* callContext) = 0;
 	
+	/**
+	 * @brief Calls a function in the scripting environment.
+	 * @param functionName The fully qualified name of the function.
+	 * @param narg The number of arguments. The actual arguments should already have been pushed onto the scripting environment (depending on implementation).
+	 * @param callContext An optional pointer to a scripting call context. This will be populated with return values and other info. If you don't have any need for such info, leave this empty.
+	 */
 	virtual void callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext) = 0;
 	
 	/**
-	 *   @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
+	 * @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
 	 * @param scriptName The name of the script.
 	 * @return True if the script can be loaded, else false.
 	 */
 	virtual bool willLoadScript(const std::string& scriptName) = 0;
 	
 	/**
-	 *   @brief Gets the unique name of the scripting provider.
+	 * @brief Gets the unique name of the scripting provider.
 	 * @return The name of the scripting provider.
 	 */
 	virtual const std::string& getName() const = 0;
 	
 	/**
-	 *   @brief Register with  a service to allow for callbacks etc.
+	 * @brief Register with  a service to allow for callbacks etc.
 	 * @param service The service to register with.
 	 */
 	virtual void _registerWithService(ScriptingService* service) = 0;
 	
 	/**
-	 *   @brief Forces a full garbage collection.
+	 * @brief Forces a full garbage collection.
 	 */
 	virtual void forceGC() = 0;
 

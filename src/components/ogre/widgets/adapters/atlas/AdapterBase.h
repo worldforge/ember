@@ -152,7 +152,7 @@ public:
 	bool hasChanges();
 	
 	/**
-	 *   @brief Returns the changed element, and an empty Element if the original element has been deleted.
+	 * @brief Returns the changed element, and an empty Element if the original element has been deleted.
 	 * @return 
 	 */
 	::Atlas::Message::Element getChangedElement();

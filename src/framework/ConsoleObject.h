@@ -50,13 +50,9 @@ namespace Ember {
  */ 
 class ConsoleObject {
 public:
-  /**
-   * Default constructor
-   */ 	
-  ConsoleObject() {}
 
   /**
-   * Default destructor
+   * Dtor.
    */ 
   virtual ~ConsoleObject() {}
 

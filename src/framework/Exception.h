@@ -100,7 +100,7 @@ public:
 	void setError(const std::string& error);
 
 	/**
-	*   @brief Gets a descriptive string of the exception.
+	* @brief Gets a descriptive string of the exception.
 	* @see getError()
 	* @return A description of the error.
 	*/

@@ -70,26 +70,26 @@ public:
 	virtual void callFunction(const std::string& functionName, int narg, IScriptingCallContext* callContext);
 
 	/**
-	 *   @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
+	 * @brief Returns true if the provider will load the supplied script name. This is in most cases decided from the filename suffix.
 	 * @param scriptName The name of the script.
 	 * @return True if the script can be loaded, else false.
 	 */
 	virtual bool willLoadScript(const std::string& scriptName);
 
 	/**
-	 *   @brief Gets the unique name of the scripting provider.
+	 * @brief Gets the unique name of the scripting provider.
 	 * @return The name of the scripting provider.
 	 */
 	virtual const std::string& getName() const;
 
 	/**
-	 *   @brief Register with  a service to allow for callbacks etc.
+	 * @brief Register with  a service to allow for callbacks etc.
 	 * @param service The service to register with.
 	 */
 	virtual void _registerWithService(ScriptingService* service);
 
 	/**
-	 *   @brief Forces a full garbage collection.
+	 * @brief Forces a full garbage collection.
 	 */
 	virtual void forceGC();
 

@@ -25,6 +25,16 @@
 namespace Ember
 {
 
+/**
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief Allows the observation of an element which isn't necessarily a top level attribute.
+ *
+ * This acts as a thin wrapper around the Eris::Entity::observe() method, allowing observation of top level attributes.
+ * If you need to observe a nested attribute, you should instead use the DeppAttributeObserver.
+ *
+ * Note that this class most often isn't used directly; instead an instance of AttributeObserver is used.
+ */
 class DirectAttributeObserver : public virtual sigc::trackable
 {
 public:
@@ -36,8 +46,11 @@ public:
 	 * @param attributeName The name of the attribute to watch.
 	 */
 	DirectAttributeObserver(Eris::Entity& entity, sigc::signal<void, const Atlas::Message::Element&>& eventChanged, const std::string& attributeName);
+
 	/**
-	 *    Dtor.
+	 * @brief Dtor.
+	 *
+	 * The connection used for observing will be severed upon destruction.
 	 */
 	~DirectAttributeObserver();
 
