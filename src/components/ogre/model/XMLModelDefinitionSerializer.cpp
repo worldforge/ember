@@ -742,10 +742,10 @@ void  XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXm
 
 
 
-void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename)
+bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename)
 {
 	if (filename == "") {
-		return;
+		return false;
 	}
 
 	TiXmlDocument xmlDoc;
@@ -853,10 +853,12 @@ void XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		xmlDoc.InsertEndChild(elem);
 		xmlDoc.SaveFile((directory + filename).c_str());
 		S_LOG_INFO("Saved file " << (directory + filename));
+		return true;
 	}
 	catch (...)
 	{
 		S_LOG_FAILURE("An error occurred saving the modeldefinition for "<< modelDef->getName() << "." );
+		return false;
 	}
 
 

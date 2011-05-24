@@ -106,10 +106,15 @@ void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogr
 	serializer.parseScript(*this, stream, groupName);
 }
 
-void ModelDefinitionManager::exportScript(ModelDefnPtr definition)
+std::string ModelDefinitionManager::exportScript(ModelDefnPtr definition)
 {
 	XMLModelDefinitionSerializer serializer;
-	serializer.exportScript(definition, mExportDirectory, definition->getName() + ".modeldef");
+	bool success = serializer.exportScript(definition, mExportDirectory, definition->getName() + ".modeldef");
+	if (success) {
+		return mExportDirectory + definition->getName() + ".modeldef";
+	} else {
+		return "";
+	}
 }
 
 Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)

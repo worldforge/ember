@@ -14,7 +14,7 @@ public:
 	
 //	const Ember::OgreView::Model::ModelDefinition::AreaDefinition* getAreaDefinition(int layer) const;
 
-	void exportScript(Ember::OgreView::Model::ModelDefnPtr definition);
+	std::string exportScript(Ember::OgreView::Model::ModelDefnPtr definition);
 
     Ember::OgreView::Model::ModelDefnPtr create(const std::string& name, const std::string& group);
 	Ember::OgreView::Model::ModelDefnPtr getByName(const std::string& name);

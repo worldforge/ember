@@ -340,7 +340,10 @@ end
 
 function ModelEdit:SaveModelButton_Clicked(args)
 	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
-	modelDefMgr:exportScript(self.definitionPtr)	
+	local exportPath = modelDefMgr:exportScript(self.definitionPtr)
+	if exportPath ~= "" then
+		console:pushMessage("Model exported to " .. exportPath)
+	end	
 	inspectObject(self.definition:getName())
 
 end

@@ -46,7 +46,14 @@ public :
 	void importModelDefinition(Ogre::DataStreamPtr& stream, ModelDefinition* pmModelDef);
 	void parseScript(ModelDefinitionManager& modelDefManager, Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 	
-	void exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename);
+	/**
+	 * @brief Exports the model definition to a file.
+	 * @param modelDef The model definition to export.
+	 * @param directory The script directory.
+	 * @param filename The name of the file to which the script will be written.
+	 * @return True if the script was successfully written.
+	 */
+	bool exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename);
 
 private:
 
