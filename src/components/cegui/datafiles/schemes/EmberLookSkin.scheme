@@ -59,5 +59,7 @@
 	<FalagardMapping WindowType="EmberLook/BorderIconButton"      TargetType="CEGUI/PushButton"  Renderer="Falagard/Button"       LookNFeel="EmberLook/BorderIconButton" />
 	<FalagardMapping WindowType="EmberLook/Tree" TargetType="CEGUI/Tree"   Renderer="Falagard/Tree"   LookNFeel="EmberLook/Tree" />
 	<FalagardMapping WindowType="EmberLook/EntityTooltip" TargetType="Ember/EntityTooltip"   Renderer="Falagard/Tooltip"   LookNFeel="EmberLook/Tooltip" />
-	
+
+	<FalagardMapping WindowType="EmberLook/InventoryFrameWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/InventoryFrameWindow" />
+	<FalagardMapping WindowType="EmberLook/ConsoleWindow" TargetType="DefaultWindow" Renderer="Falagard/Default" LookNFeel="EmberLook/ConsoleWindow" />
 </GUIScheme>

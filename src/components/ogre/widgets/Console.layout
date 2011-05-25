@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='DefaultGUISheet' Name='MainWindow'>
+	<Window Type='EmberLook/ConsoleWindow' Name='MainWindow'>
 		<Property Name='UnifiedSize' Value='{{0.300000,0.0},{0.0,250.0}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-300.0}}'/>
 		<Property Name='Alpha' Value='0.4'/>
