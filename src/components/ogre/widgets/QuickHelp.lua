@@ -45,7 +45,10 @@ function QuickHelp:frameStarted(timeSinceLastUpdate)
 	if self.widget:isActive() then 
 		self.timer:setText("")
 		self:disableAlphaConnector()
-		self.widget:getMainWindow():setAlpha(1.0)
+		self.frameWindow:setAlpha(1.0)
+		
+		-- we haven't yet sent the "HideRequest" event to the CEGUI widget
+		self.hideRequestSent = false
 	else
 		self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
 		local timeLeft = math.floor(math.max(self.timeToShowBlurb-self.timeBlurbShown, 0))
@@ -55,7 +58,14 @@ function QuickHelp:frameStarted(timeSinceLastUpdate)
 			self.timeBlurbLastUpdate = timeLeft
 		end
 		if self.timeBlurbShown > self.timeToShowBlurb then
-			self.widget:getMainWindow():setAlpha(1.0 - ((self.timeBlurbShown-self.timeToShowBlurb) / self.timeToFade ))
+			if not self.hideRequestSent then
+				-- make sure we store that we already sent the event, otherwise a never ending event firing starts
+				self.hideRequestSent = true
+				-- by firing this event, we allow looknfeel of the QuickHelp window to act accordingly
+				-- (at the time of writing this, it fades the FrameWindow out over 5 seconds)
+				self.frameWindow:fireEvent("HideRequest", CEGUI.WindowEventArgs:new(self.frameWindow))
+			end
+			
 			if self.timeBlurbShown > (self.timeToShowBlurb+self.timeToFade) then
 				self.timer:setText("")
 				self.timeBlurbShown = 0
@@ -68,8 +78,8 @@ end
 
 function QuickHelp:toggleVisibility()
 	self.hidden = false
-	self.widget:getMainWindow():setAlpha(1.0)
 	self.widget:show()
+	self.frameWindow:setAlpha(1.0)
 end
 
 function QuickHelp:updateText(helpMessage)
@@ -88,8 +98,9 @@ function QuickHelp:updateText(helpMessage)
 			self.timeToShowBlurb = math.max(words / 2.0, 4) --a normal human reads about 250 words per minute, which is ~4 words per second. We'll go for two words per second as the user might not concentrate on the help message at first. Show it no lesser than four seconds 
 			self.timeBlurbLastUpdate = -1
 		end
+		
 		self.widget:show()
-		self.widget:getMainWindow():setAlpha(1.0)
+		self.frameWindow:setAlpha(1.0)
 	end
 	self.textWindow:setText(text)
 	self.widget:getMainWindow():setText("Help - " .. helpMessage:getTitle())
