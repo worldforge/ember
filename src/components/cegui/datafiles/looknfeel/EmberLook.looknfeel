@@ -5394,6 +5394,10 @@
 			</Affector>
 			
 			<Subscription event="HideRequest" action="Start" />
+			
+			<!-- stop the fade out in case users changes his/her mind -->
+			<Subscription event="Activated" action="Stop" />
+			<Subscription event="Shown" action="Stop" />
 		</AnimationDefinition>
 	</WidgetLook>
 </Falagard>
