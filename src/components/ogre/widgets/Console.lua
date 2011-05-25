@@ -101,7 +101,10 @@ function Console:appendLine(line, tab)
 	if not window:isVisible() then
 		tab.unviewedCount = tab.unviewedCount + 1
 		tab.tabWindow:setText(tab.prefix .. "(" .. tab.unviewedCount .. ")")
-	end 
+	end
+	
+	-- user might want to pay attention to the console, as text was appended in one of the tabs
+	self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new(self.mainWindow))
 end
 
 function Console:consoleGotMessage(message)
