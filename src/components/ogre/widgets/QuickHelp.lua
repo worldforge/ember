@@ -56,9 +56,13 @@ function QuickHelp:show()
 end
 
 function QuickHelp:showWithTransition()
-	self:show()
+	-- make sure no other transitions are running
+	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new(self.frameWindow))
 	
 	self.showTransitionStarted = true
+	self.hideTransitionStarted = false
+
+	self.widget:show()
 	self.frameWindow:fireEvent("StartShowTransition", CEGUI.WindowEventArgs:new(self.frameWindow))
 end
 
@@ -75,16 +79,26 @@ function QuickHelp:hide()
 end
 
 function QuickHelp:hideWithTransition()
+	-- make sure no other transitions are running
+	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new(self.frameWindow))
+	
+	self.showTransitionStarted = false
 	-- make sure we store that we already sent the event, otherwise a never ending event firing starts
 	self.hideTransitionStarted = true
+	
 	-- by firing this event, we allow looknfeel of the QuickHelp window to act accordingly
 	-- (at the time of writing this, it fades the FrameWindow out over 5 seconds)
 	self.frameWindow:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new(self.frameWindow))
 end
 
 function QuickHelp:hideWithSlowTransition()
+	-- make sure no other transitions are running
+	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new(self.frameWindow))
+	
+	self.showTransitionStarted = false
 	-- make sure we store that we already sent the event, otherwise a never ending event firing starts
 	self.hideTransitionStarted = true
+	
 	-- by firing this event, we allow looknfeel of the QuickHelp window to act accordingly
 	-- (at the time of writing this, it fades the FrameWindow out over 5 seconds)
 	self.frameWindow:fireEvent("StartSlowHideTransition", CEGUI.WindowEventArgs:new(self.frameWindow))
@@ -94,9 +108,13 @@ function QuickHelp:frameStarted(timeSinceLastUpdate)
 	if self.widget:isActive() then 
 		self.timer:setText("")
 		self:disableAlphaConnector()
+		self.timeBlurbShown = 0
 		
 		-- ensure the widget is shown at this point no matter what
-		self:show()
+		if not self.widget:isVisible() then
+			self:showWithTransition()
+		end
+		
 	else
 		self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
 		local timeLeft = math.floor(math.max(self.timeToShowBlurb-self.timeBlurbShown, 0))
@@ -111,18 +129,13 @@ function QuickHelp:frameStarted(timeSinceLastUpdate)
 			if not self.hideTransitionStarted then
 				self:hideWithSlowTransition()
 			end
-			
-			if self.timeBlurbShown > (self.timeToShowBlurb + self.timeToFade) then
-				-- ensure that it's hidden no matter what at this point
-				self:hide()
-			end
 		end
 	end
 end
 
 function QuickHelp:toggleVisibility()
 	self.hidden = false
-	self.widget:show()
+	self.widget:showWithTransition()
 end
 
 function QuickHelp:updateText(helpMessage)
@@ -137,17 +150,13 @@ function QuickHelp:updateText(helpMessage)
 		self.timeBlurbLastUpdate = -1
 		self.timeBlurbShown = 0
 		
-		if not self.widget:isVisible() then
-			if self.updateAlpha_connector then
-				self.updateAlpha_connector:disconnect()
-			end
-			self.updateAlpha_connector = createConnector(self.widget.EventFrameStarted):connect(self.frameStarted, self)
-			
-			self:showWithTransition()
+		if self.updateAlpha_connector then
+			self.updateAlpha_connector:disconnect()
 		end
-		if self.hideTransitionStarted then
-			self:showWithTransition()
-		end
+		self.updateAlpha_connector = createConnector(self.widget.EventFrameStarted):connect(self.frameStarted, self)
+		
+		-- even if the widget is already visible at this point, this won't harm things
+		self:showWithTransition()
 	end
 	
 	self.textWindow:setText(text)

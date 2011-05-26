@@ -5400,6 +5400,9 @@
 				<KeyFrame position="0.0" sourceProperty="UnifiedPosition" />
 				<KeyFrame position="0.4" value="{{1.00,-300.0},{1.00,-470.0}}" progression="quadratic decelerating" />
 			</Affector>
+			<Affector property="Visible" interpolator="bool">
+				<KeyFrame position="0.0" value="true" />
+			</Affector>
 			
 			<Subscription event="StartShowTransition" action="Start" />
 			
@@ -5415,6 +5418,10 @@
 				<KeyFrame position="0.0" sourceProperty="UnifiedPosition" />
 				<KeyFrame position="0.4" value="{{1.00,0.0},{1.00,-470.0}}" progression="quadratic accelerating" />
 			</Affector>
+			<Affector property="Visible" interpolator="bool">
+				<KeyFrame position="0.0" sourceProperty="Visible" />
+				<KeyFrame position="0.4" value="false" progression="discrete" />
+			</Affector>
 			
 			<Subscription event="StartHideTransition" action="Start" />
 			
@@ -5425,6 +5432,10 @@
 			<Affector property="Alpha" interpolator="float">
 				<KeyFrame position="0.0" sourceProperty="Alpha" />
 				<KeyFrame position="5.0" value="0.0" progression="linear" />
+			</Affector>
+			<Affector property="Visible" interpolator="bool">
+				<KeyFrame position="0.0" sourceProperty="Visible" />
+				<KeyFrame position="5.0" value="false" progression="discrete" />
 			</Affector>
 			
 			<Subscription event="StartSlowHideTransition" action="Start" />
