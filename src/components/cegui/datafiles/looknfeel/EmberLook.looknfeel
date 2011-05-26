@@ -4972,7 +4972,7 @@
 		<Property name="NESWSizingCursorImage" value="set:EmberLook image:MouseNeSwCursor" />
 		<Property name="UnifiedMinSize" value="{{0.1,0},{0.1,0}}" />
 		<Property name="AutoRenderingSurface" value="True" />
-		<Property Name='Alpha' Value='0.6'/>
+		<Property name="Alpha" value="0.6" />
 		
 		<NamedArea name="ClientWithTitleWithFrame">
 			<Area>
