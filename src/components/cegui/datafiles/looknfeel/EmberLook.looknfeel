@@ -5391,17 +5391,46 @@
 			</Layer>
 		</StateImagery>
 		
-		<AnimationDefinition name="FadeOut" duration="5.0" replayMode="once">
+		<AnimationDefinition name="ShowTransition" duration="0.4" replayMode="once">
+			<Affector property="Alpha" interpolator="float">
+				<KeyFrame position="0.0" sourceProperty="Alpha" />
+				<KeyFrame position="0.4" value="1.0" progression="linear" />
+			</Affector>
+			<Affector property="UnifiedPosition" interpolator="UVector2">
+				<KeyFrame position="0.0" sourceProperty="UnifiedPosition" />
+				<KeyFrame position="0.4" value="{{1.00,-300.0},{1.00,-470.0}}" progression="quadratic decelerating" />
+			</Affector>
+			
+			<Subscription event="StartShowTransition" action="Start" />
+			
+			<!-- stop the transition in case user changes his/her mind -->
+			<Subscription event="InterruptTransitions" action="Pause" />
+		</AnimationDefinition>
+		<AnimationDefinition name="HideTransition" duration="0.4" replayMode="once">
+			<Affector property="Alpha" interpolator="float">
+				<KeyFrame position="0.0" sourceProperty="Alpha" />
+				<KeyFrame position="0.4" value="0.0" progression="linear" />
+			</Affector>
+			<Affector property="UnifiedPosition" interpolator="UVector2">
+				<KeyFrame position="0.0" sourceProperty="UnifiedPosition" />
+				<KeyFrame position="0.4" value="{{1.00,0.0},{1.00,-470.0}}" progression="quadratic accelerating" />
+			</Affector>
+			
+			<Subscription event="StartHideTransition" action="Start" />
+			
+			<!-- stop the transition in case user changes his/her mind -->
+			<Subscription event="InterruptTransitions" action="Pause" />
+		</AnimationDefinition>
+		<AnimationDefinition name="SlowHideTransition" duration="5.0" replayMode="once">
 			<Affector property="Alpha" interpolator="float">
 				<KeyFrame position="0.0" sourceProperty="Alpha" />
 				<KeyFrame position="5.0" value="0.0" progression="linear" />
 			</Affector>
 			
-			<Subscription event="HideRequest" action="Start" />
+			<Subscription event="StartSlowHideTransition" action="Start" />
 			
-			<!-- stop the fade out in case users changes his/her mind -->
-			<Subscription event="Activated" action="Stop" />
-			<Subscription event="Shown" action="Stop" />
+			<!-- stop the transition in case user changes his/her mind -->
+			<Subscription event="InterruptTransitions" action="Pause" />
 		</AnimationDefinition>
 	</WidgetLook>
 </Falagard>
