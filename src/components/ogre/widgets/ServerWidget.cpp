@@ -595,7 +595,7 @@ bool ServerWidget::TeleportYes_Click(const CEGUI::EventArgs& args)
 {
 	getWindow("TeleportInfo", true)->setVisible(false);
 	if (mAvatarTransferInfo) {
-		EmberServices::getSingleton().getServerService()->takeTransferredCharacter(mAvatarTransferInfo->getTransferInfo());
+		EmberServices::getSingleton().getServerService().takeTransferredCharacter(mAvatarTransferInfo->getTransferInfo());
 	}
 	return true;
 }

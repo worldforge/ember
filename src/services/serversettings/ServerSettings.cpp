@@ -128,7 +128,7 @@ std::string ServerSettings::getFullConfigFilePath() const
 {
 	ConfigService& cfgService = EmberServices::getSingleton().getConfigService();
 	// fetch the configuration file
-	if (cfgService->hasItem("general", "serversettings")) {
+	if (cfgService.hasItem("general", "serversettings")) {
 		return cfgService.getHomeDirectory() + "/" + static_cast<std::string>(cfgService.getValue("general", "serversettings"));
 	} else {
 		// default fallback value
