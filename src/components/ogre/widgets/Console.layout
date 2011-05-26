@@ -18,11 +18,13 @@
 					<Property Name='Text' Value='Game'/>
 					<Property Name='InheritsAlpha' Value='true'/>
 					<Property Name='Visible' Value='true'/>
-					<Window Type='EmberLook/MultiLineEditbox' Name='GameTextBox'>
+					<Window Type='EmberLook/StaticText' Name='GameTextBox'>
 						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='ReadOnly' Value='true'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzScrollbar' Value='True'/>
+						<Property Name='VertScrollbar' Value='True'/>
 					</Window>
 				</Window>
 				<Window Type='DefaultGUISheet' Name='SystemPanel'>
@@ -30,11 +32,13 @@
 					<Property Name='Text' Value='System'/>
 					<Property Name='InheritsAlpha' Value='true'/>
 					<Property Name='Visible' Value='false'/>
-					<Window Type='EmberLook/MultiLineEditbox' Name='SystemTextBox'>
+					<Window Type='EmberLook/StaticText' Name='SystemTextBox'>
 						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='ReadOnly' Value='true'/>
+						<Property Name='VertFormatting' Value='TopAligned'/>
+						<Property Name='HorzScrollbar' Value='True'/>
+						<Property Name='VertScrollbar' Value='True'/>
 					</Window>
 				</Window>
 			</Window>

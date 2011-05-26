@@ -3943,6 +3943,8 @@
     <WidgetLook name="EmberLook/StaticText">
         <PropertyDefinition name="FrameColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" />
         <PropertyDefinition name="BackgroundColours" initialValue="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" redrawOnWrite="true" />
+		<PropertyLinkDefinition name="VertScrollPosition" widget="__auto_vscrollbar__" targetProperty="ScrollPosition" />
+		
         <Property name="BackgroundEnabled" value="True" />
 		<Property name="BackgroundColours" value="tl:FFe2d5c0 tr:FFe2d5c0 bl:FFe2d5c0 br:FFe2d5c0" />
         <Property name="FrameEnabled" value="True" />

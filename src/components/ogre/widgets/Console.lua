@@ -11,12 +11,12 @@ function Console:buildWidget()
 	
 	self.widget:loadMainSheet("Console.layout", "Console/")
 	
-	self.gameTab.textWindow = CEGUI.toMultiLineEditbox(self.widget:getWindow("GameTextBox"))
-	self.gameTab.tabWindow = CEGUI.toMultiLineEditbox(self.widget:getWindow("GamePanel"))
+	self.gameTab.textWindow = self.widget:getWindow("GameTextBox")
+	self.gameTab.tabWindow = self.widget:getWindow("GamePanel")
 	self.gameTab.prefix = self.gameTab.tabWindow:getText()
 	
-	self.systemTab.textWindow = CEGUI.toMultiLineEditbox(self.widget:getWindow("SystemTextBox"))
-	self.systemTab.tabWindow = CEGUI.toMultiLineEditbox(self.widget:getWindow("SystemPanel"))
+	self.systemTab.textWindow = self.widget:getWindow("SystemTextBox")
+	self.systemTab.tabWindow = self.widget:getWindow("SystemPanel")
 	self.systemTab.prefix = self.systemTab.tabWindow:getText()
 
 	--When a tab has been selected and shown, the unread indicator should be reset	
@@ -94,10 +94,10 @@ end
 function Console:appendLine(line, tab)
 	local window = tab.textWindow
 --	chatString = "<" .. entity:getName() .. ">" .. line .. "\n" .. chatString
-	window:setText(window:getText() .. line)
+	window:setText(window:getText() .. "\n" .. line)
 	--make sure that the newly added line is shown
-	window:setCaratIndex(string.len(window:getText()))
-	window:ensureCaratIsVisible()
+	window:setProperty("VertScrollPosition", window:getProperty("VertExtent"))
+	
 	if not window:isVisible() then
 		tab.unviewedCount = tab.unviewedCount + 1
 		tab.tabWindow:setText(tab.prefix .. "(" .. tab.unviewedCount .. ")")
