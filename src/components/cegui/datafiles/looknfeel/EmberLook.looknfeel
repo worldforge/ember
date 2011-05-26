@@ -4972,6 +4972,8 @@
 		<Property name="NESWSizingCursorImage" value="set:EmberLook image:MouseNeSwCursor" />
 		<Property name="UnifiedMinSize" value="{{0.1,0},{0.1,0}}" />
 		<Property name="AutoRenderingSurface" value="True" />
+		<Property Name='Alpha' Value='0.6'/>
+		
 		<NamedArea name="ClientWithTitleWithFrame">
 			<Area>
 				<Dim type="LeftEdge">
@@ -5142,7 +5144,7 @@
 		<AnimationDefinition name="MouseOffFadeOut" duration="0.2" replayMode="once">
 			<Affector property="Alpha" interpolator="float">
 				<KeyFrame position="0.0" value="1.0" />
-				<KeyFrame position="0.2" value="0.4" progression="quadratic decelerating" />
+				<KeyFrame position="0.2" value="0.6" progression="quadratic decelerating" />
 			</Affector>
 			
 			<Subscription event="MouseLeavesArea" action="Start" />
@@ -5151,7 +5153,7 @@
 		</AnimationDefinition>
 		<AnimationDefinition name="MouseOverFadeIn" duration="0.2" replayMode="once">
 			<Affector property="Alpha" interpolator="float">
-				<KeyFrame position="0.0" value="0.4" />
+				<KeyFrame position="0.0" value="0.6" />
 				<KeyFrame position="0.2" value="1.0" progression="quadratic accelerating" />
 			</Affector>
 			
