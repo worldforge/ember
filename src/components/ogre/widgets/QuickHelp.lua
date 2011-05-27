@@ -4,7 +4,6 @@ function QuickHelp.buildWidget()
 	quickhelp = {
 		helper = nil,
 		timeToShowBlurb = 4,
-		timeToFade = 5,
 		timeBlurbShown = 0,
 		timeBlurbLastUpdate = -1,
 		showTransitionStarted = false,
