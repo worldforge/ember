@@ -135,6 +135,11 @@ end
 function Inventory:buildWidget(avatarEntity)
 	
 	self.widget = guiManager:createWidget()
+	
+	--inventory has transitions, if we don't set this to false, every time it gets activated a 
+	--visible "alpha pop" would happen and then the transition would continue
+	self.widget:setIsActiveWindowOpaque(false)
+	
 	self.widget:loadMainSheet("Inventory.layout", "Inventory/")
 	
 	self.entityIconManager = guiManager:getEntityIconManager()

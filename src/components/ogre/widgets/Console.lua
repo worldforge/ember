@@ -9,6 +9,10 @@ Console = {}
 function Console:buildWidget()
 	self.tabs = {self.gameTab, self.systemTab}
 	
+	--console has transitions, if we don't set this to false, every time it gets activated a 
+	--visible "alpha pop" would happen and then the transition would continue
+	self.widget:setIsActiveWindowOpaque(false)
+	
 	self.widget:loadMainSheet("Console.layout", "Console/")
 	
 	self.gameTab.textWindow = self.widget:getWindow("GameTextBox")
