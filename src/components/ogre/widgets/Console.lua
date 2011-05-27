@@ -18,10 +18,14 @@ function Console:buildWidget()
 	self.gameTab.textWindow = self.widget:getWindow("GameTextBox")
 	self.gameTab.tabWindow = self.widget:getWindow("GamePanel")
 	self.gameTab.prefix = self.gameTab.tabWindow:getText()
+	self.gameTab.maxLines = 100
+	self.gameTab.lines = 0
 	
 	self.systemTab.textWindow = self.widget:getWindow("SystemTextBox")
 	self.systemTab.tabWindow = self.widget:getWindow("SystemPanel")
 	self.systemTab.prefix = self.systemTab.tabWindow:getText()
+	self.systemTab.maxLines = 100
+	self.systemTab.lines = 0
 
 	--When a tab has been selected and shown, the unread indicator should be reset	
 	local tabControl = CEGUI.toTabControl(self.widget:getWindow("MainTabControl"))
@@ -52,8 +56,6 @@ function Console:buildWidget()
 	
 	self.consoleObject = Ember.Lua.LuaConsoleObject:new("console_focus", self.console_focus)
 	self.consoleObject:setSelf(self)
-	
-
 end
 
 function Console:consoleAdapter_CommandExecuted(command)
@@ -97,8 +99,20 @@ end
 
 function Console:appendLine(line, tab)
 	local window = tab.textWindow
---	chatString = "<" .. entity:getName() .. ">" .. line .. "\n" .. chatString
-	window:setText(window:getText() .. "\n" .. line)
+	
+	local newText = window:getText() .. "\n" .. line
+	tab.lines = tab.lines + 1
+
+	--while is used to be extra safe
+	while tab.lines >= tab.maxLines do
+		local firstLineEnd = newText:find("\n")
+
+		--basically strips the first line out
+		newText = newText:sub(firstLineEnd + 1)
+		tab.lines = tab.lines - 1
+	end
+	
+	window:setText(newText)
 	--make sure that the newly added line is shown
 	window:setProperty("VertScrollPosition", window:getProperty("VertExtent"))
 	
