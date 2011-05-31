@@ -26,11 +26,6 @@
 
 #include <Eris/ViewEntity.h>
 
-namespace Ogre
-{
-class OOBBWireBoundingBox;
-}
-
 namespace Eris
 {
 class View;
