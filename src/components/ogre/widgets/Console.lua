@@ -79,38 +79,55 @@ function Console:console_focus()
 	Ember.Input:getSingleton():setInputMode(Ember.Input.IM_GUI)
 end
 
+--Determines the correct colour index for given entityName
 function Console:getColourIndexForEntityName(entityName)
+	--We have the following strategy:
+	--1) once we assing a colour to an entity, we keep it
+	--2) if we run out of colours, we always assign the least used ones first
+	
 	local ret = 1
 	
 	if self.chatEntityColours[entityName] ~= nil then
+		--this entity already has had a colour assigned, use it
 		ret = self.chatEntityColours[entityName]
 	
 	else
+		--lets find a colour that's the least used one
 		local min = self.chatTotalColourUsage[1]
 		ret = 1
 		local i = 1
 		
+		--we start from index 2 because we have already set min to the first colour
 		for i = 2, 8 do
+			--if this particular colour is less used, use it instead
 			if self.chatTotalColourUsage[i] < min then
 				min = self.chatTotalColourUsage[i]
 				ret = i
 			end
 		end
 		
+		--assign the colour to given entity
 		self.chatEntityColours[entityName] = ret
 	end
 	
+	--we increase the use count of this colour
+	--NOTE: use counts are decreased when lines are purged from the history, see notifyLinePurged
 	self.chatTotalColourUsage[ret] = self.chatTotalColourUsage[ret] + 1
 	return ret
 end
 
+--Convenience function that returns the exact colour to use for an entity name
+--Returned format is the CEGUI AARRGGBB format, FF000000 is black
 function Console:getColourForEntityName(entityName)
 	local index = self:getColourIndexForEntityName(entityName)
 	
 	return self.widget:getMainWindow():getProperty("ChatEntityColour" .. index)
 end
 
+--Called when a line gets purged from the message history, be it game or system tab
 function Console:notifyLinePurged(line, tab)
+	--FIXME: This is work in progress!
+	
 	--%b means balanced strings, opening and closing characters are <, { and >, } respectively
 	local entityName = line:find("%b[<{][>}]")
 	
