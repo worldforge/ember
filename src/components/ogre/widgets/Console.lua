@@ -2,7 +2,6 @@
 --A simple chat widget. It currently only shows chat output, input is handled by the console adapter.
 ----------------------------------------------------
 
-
 Console = {}
 
 --Set up the widget.
@@ -14,6 +13,13 @@ function Console:buildWidget()
 	self.widget:setIsActiveWindowOpaque(false)
 	
 	self.widget:loadMainSheet("Console.layout", "Console/")
+	
+	self.chatEntityColors = {}
+	self.chatEntityOccurences = {}
+	self.chatTotalColorUsage = {}
+	for i = 1, 8 do
+		self.chatTotalColorUsage[i] = 0
+	end
 	
 	self.gameTab.textWindow = self.widget:getWindow("GameTextBox")
 	self.gameTab.tabWindow = self.widget:getWindow("GamePanel")
@@ -73,6 +79,48 @@ function Console:console_focus()
 	Ember.Input:getSingleton():setInputMode(Ember.Input.IM_GUI)
 end
 
+function Console:getColorIndexForEntityName(entityName)
+	local ret = 1
+	
+	if self.chatEntityColors[entityName] ~= nil then
+		ret = self.chatEntityColors[entityName]
+	
+	else
+		local min = self.chatTotalColorUsage[1]
+		ret = 1
+		local i = 1
+		
+		for i = 2, 8 do
+			if self.chatTotalColorUsage[i] < min then
+				min = self.chatTotalColorUsage[i]
+				ret = i
+			end
+		end
+		
+		self.chatEntityColors[entityName] = ret
+	end
+	
+	self.chatTotalColorUsage[ret] = self.chatTotalColorUsage[ret] + 1
+	log.info("chatTotalColorUsage " .. self.chatTotalColorUsage[ret])
+	log.info("ret: " .. ret)
+	return ret
+end
+
+function Console:getColorForEntityName(entityName)
+	local index = self:getColorIndexForEntityName(entityName)
+	
+	return self.widget:getMainWindow():getProperty("ChatEntityColor" .. index)
+end
+
+function Console:notifyLinePurged(line, tab)
+	--%b means balanced strings, opening and closing characters are <, { and >, } respectively
+	--local entityName = line:find("%b[<{][>}]")
+	
+	--if entityName ~= nil then
+	--	log.info("entityName: " .. entityName)
+	--end
+end
+
 --handler for Out Of Game chat event
 --adds messages to the top of the textbox
 function Console:appendOOGChatLine(line, entity)
@@ -86,10 +134,15 @@ end
 --handler for In Game chat events
 --adds messages to the top of the textbox
 function Console:appendIGChatLine(line, entity)
+	messageColor = self.widget:getMainWindow():getProperty("ChatMessageColor")
+	
 	if entity ~= nil then
-		self:appendLine("<" .. entity:getName() .. ">" .. line, self.gameTab)
+		color = self:getColorForEntityName(entity:getName())
+		
+		--CEGUI is british and uses colour instead of color, so this is intentional!
+		self:appendLine("[colour='" .. color .. "']<" .. entity:getName() .. ">[colour='" .. messageColor .. "']" .. line, self.gameTab)
 	else
-		self:appendLine(line, self.gameTab)
+		self:appendLine("[colour='" .. messageColor .. "']" .. line, self.gameTab)
 	end
 end
 
@@ -106,10 +159,13 @@ function Console:appendLine(line, tab)
 	--while is used to be extra safe
 	while tab.lines >= tab.maxLines do
 		local firstLineEnd = newText:find("\n")
+		local purgedLine = newText:sub(1, firstLineEnd + 1)
 
 		--basically strips the first line out
 		newText = newText:sub(firstLineEnd + 1)
 		tab.lines = tab.lines - 1
+		
+		self:notifyLinePurged(purgedLine, tab)
 	end
 	
 	window:setText(newText)
