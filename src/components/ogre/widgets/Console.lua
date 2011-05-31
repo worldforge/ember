@@ -14,11 +14,11 @@ function Console:buildWidget()
 	
 	self.widget:loadMainSheet("Console.layout", "Console/")
 	
-	self.chatEntityColors = {}
+	self.chatEntityColours = {}
 	self.chatEntityOccurences = {}
-	self.chatTotalColorUsage = {}
+	self.chatTotalColourUsage = {}
 	for i = 1, 8 do
-		self.chatTotalColorUsage[i] = 0
+		self.chatTotalColourUsage[i] = 0
 	end
 	
 	self.gameTab.textWindow = self.widget:getWindow("GameTextBox")
@@ -79,44 +79,44 @@ function Console:console_focus()
 	Ember.Input:getSingleton():setInputMode(Ember.Input.IM_GUI)
 end
 
-function Console:getColorIndexForEntityName(entityName)
+function Console:getColourIndexForEntityName(entityName)
 	local ret = 1
 	
-	if self.chatEntityColors[entityName] ~= nil then
-		ret = self.chatEntityColors[entityName]
+	if self.chatEntityColours[entityName] ~= nil then
+		ret = self.chatEntityColours[entityName]
 	
 	else
-		local min = self.chatTotalColorUsage[1]
+		local min = self.chatTotalColourUsage[1]
 		ret = 1
 		local i = 1
 		
 		for i = 2, 8 do
-			if self.chatTotalColorUsage[i] < min then
-				min = self.chatTotalColorUsage[i]
+			if self.chatTotalColourUsage[i] < min then
+				min = self.chatTotalColourUsage[i]
 				ret = i
 			end
 		end
 		
-		self.chatEntityColors[entityName] = ret
+		self.chatEntityColours[entityName] = ret
 	end
 	
-	self.chatTotalColorUsage[ret] = self.chatTotalColorUsage[ret] + 1
+	self.chatTotalColourUsage[ret] = self.chatTotalColourUsage[ret] + 1
 	return ret
 end
 
-function Console:getColorForEntityName(entityName)
-	local index = self:getColorIndexForEntityName(entityName)
+function Console:getColourForEntityName(entityName)
+	local index = self:getColourIndexForEntityName(entityName)
 	
-	return self.widget:getMainWindow():getProperty("ChatEntityColor" .. index)
+	return self.widget:getMainWindow():getProperty("ChatEntityColour" .. index)
 end
 
 function Console:notifyLinePurged(line, tab)
 	--%b means balanced strings, opening and closing characters are <, { and >, } respectively
-	--local entityName = line:find("%b[<{][>}]")
+	local entityName = line:find("%b[<{][>}]")
 	
-	--if entityName ~= nil then
-	--	log.info("entityName: " .. entityName)
-	--end
+	if entityName ~= nil then
+		log.info("entityName: " .. entityName)
+	end
 end
 
 --CEGUI uses [tag=something] as a formatting syntax, we have to make sure special character [ gets escaped out
@@ -129,7 +129,7 @@ end
 --adds messages to the top of the textbox
 function Console:appendOOGChatLine(line, entity)
 	if entity ~= nil then
-		self:appendLine("{" .. self:escapeForCEGUI(entity:getName()) .. "}" .. self:escapeForCEGUI(line), self.gameTab)
+		self:appendLine("{" .. self:escapeForCEGUI(entity:getName()) .. "} " .. self:escapeForCEGUI(line), self.gameTab)
 	else 
 		self:appendLine(self:escapeForCEGUI(line), self.gameTab)
 	end
@@ -138,15 +138,14 @@ end
 --handler for In Game chat events
 --adds messages to the top of the textbox
 function Console:appendIGChatLine(line, entity)
-	messageColor = self.widget:getMainWindow():getProperty("ChatMessageColor")
+	messageColour = self.widget:getMainWindow():getProperty("ChatMessageColour")
 	
 	if entity ~= nil then
-		color = self:getColorForEntityName(entity:getName())
+		entityNameColour = self:getColourForEntityName(entity:getName())
 		
-		--CEGUI is british and uses colour instead of color, so this is intentional!
-		self:appendLine("[colour='" .. color .. "']<" .. self:escapeForCEGUI(entity:getName()) .. ">[colour='" .. messageColor .. "']" .. self:escapeForCEGUI(line), self.gameTab)
+		self:appendLine("[colour='" .. entityNameColour .. "']<" .. self:escapeForCEGUI(entity:getName()) .. "> [colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
 	else
-		self:appendLine("[colour='" .. messageColor .. "']" .. self:escapeForCEGUI(line), self.gameTab)
+		self:appendLine("[colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
 	end
 end
 
