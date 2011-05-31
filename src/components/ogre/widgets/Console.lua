@@ -121,13 +121,19 @@ function Console:notifyLinePurged(line, tab)
 	--end
 end
 
+--CEGUI uses [tag=something] as a formatting syntax, we have to make sure special character [ gets escaped out
+function Console:escapeForCEGUI(message)
+	--Only the starting [ character needs to be escaped for CEGUI, escaping ] will cause CEGUI to show \]
+	return string.gsub(message, "%[", "\\%[")
+end
+
 --handler for Out Of Game chat event
 --adds messages to the top of the textbox
 function Console:appendOOGChatLine(line, entity)
 	if entity ~= nil then
-		self:appendLine("{" .. entity:getName() .. "}" .. line, self.gameTab)
+		self:appendLine("{" .. self:escapeForCEGUI(entity:getName()) .. "}" .. self:escapeForCEGUI(line), self.gameTab)
 	else 
-		self:appendLine(line, self.gameTab)
+		self:appendLine(self:escapeForCEGUI(line), self.gameTab)
 	end
 end
 
@@ -140,9 +146,9 @@ function Console:appendIGChatLine(line, entity)
 		color = self:getColorForEntityName(entity:getName())
 		
 		--CEGUI is british and uses colour instead of color, so this is intentional!
-		self:appendLine("[colour='" .. color .. "']<" .. entity:getName() .. ">[colour='" .. messageColor .. "']" .. line, self.gameTab)
+		self:appendLine("[colour='" .. color .. "']<" .. self:escapeForCEGUI(entity:getName()) .. ">[colour='" .. messageColor .. "']" .. self:escapeForCEGUI(line), self.gameTab)
 	else
-		self:appendLine("[colour='" .. messageColor .. "']" .. line, self.gameTab)
+		self:appendLine("[colour='" .. messageColor .. "']" .. self:escapeForCEGUI(line), self.gameTab)
 	end
 end
 
@@ -182,7 +188,7 @@ function Console:appendLine(line, tab)
 end
 
 function Console:consoleGotMessage(message)
-	self:appendLine(message, self.systemTab)
+	self:appendLine(self:escapeForCEGUI(message), self.systemTab)
 	return true
 end
 
