@@ -101,8 +101,6 @@ function Console:getColorIndexForEntityName(entityName)
 	end
 	
 	self.chatTotalColorUsage[ret] = self.chatTotalColorUsage[ret] + 1
-	log.info("chatTotalColorUsage " .. self.chatTotalColorUsage[ret])
-	log.info("ret: " .. ret)
 	return ret
 end
 
