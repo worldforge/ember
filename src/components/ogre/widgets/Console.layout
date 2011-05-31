@@ -22,8 +22,9 @@
 						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzScrollbar' Value='True'/>
+						<Property Name='HorzScrollbar' Value='False'/>
 						<Property Name='VertScrollbar' Value='True'/>
 					</Window>
 				</Window>
@@ -36,8 +37,9 @@
 						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 						<Property Name='Text' Value=''/>
 						<Property Name='InheritsAlpha' Value='True'/>
+						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzScrollbar' Value='True'/>
+						<Property Name='HorzScrollbar' Value='False'/>
 						<Property Name='VertScrollbar' Value='True'/>
 					</Window>
 				</Window>
