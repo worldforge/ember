@@ -120,8 +120,12 @@ end
 --Convenience function that returns the exact colour to use for an entity name
 --Returned format is the CEGUI AARRGGBB format, FF000000 is black
 function Console:getColourForEntityName(entityName)
+	if entityName == emberOgre:getWorld():getAvatar():getEmberEntity():getName() then
+		--if it's the current player speaking, we always use the same colour for that
+		return self.widget:getMainWindow():getProperty("ChatEntityColourSelf")
+	end
+
 	local index = self:getColourIndexForEntityName(entityName)
-	
 	return self.widget:getMainWindow():getProperty("ChatEntityColour" .. index)
 end
 

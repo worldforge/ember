@@ -5172,13 +5172,14 @@
 		<PropertyDefinition name="ChatMessageColour"  initialValue="FF000000" />
 		<PropertyDefinition name="ChatMessageContainingSelfColour" initialValue="FFFF0000" />
 		
-		<PropertyDefinition name="ChatEntityColour1" initialValue="FF009E0F" />
-		<PropertyDefinition name="ChatEntityColour2" initialValue="FF005B99" />
-		<PropertyDefinition name="ChatEntityColour3" initialValue="FF60542B" />
-		<PropertyDefinition name="ChatEntityColour4" initialValue="FFE8112D" />
-		<PropertyDefinition name="ChatEntityColour5" initialValue="FF3F2893" />
-		<PropertyDefinition name="ChatEntityColour6" initialValue="FFA3057F" />
-		<PropertyDefinition name="ChatEntityColour7" initialValue="FF005B99" />
+		<PropertyDefinition name="ChatEntityColourSelf" initialValue="FF009E0F" />
+		<PropertyDefinition name="ChatEntityColour1" initialValue="FF005B99" />
+		<PropertyDefinition name="ChatEntityColour2" initialValue="FF60542B" />
+		<PropertyDefinition name="ChatEntityColour3" initialValue="FFE8112D" />
+		<PropertyDefinition name="ChatEntityColour4" initialValue="FF3F2893" />
+		<PropertyDefinition name="ChatEntityColour5" initialValue="FFA3057F" />
+		<PropertyDefinition name="ChatEntityColour6" initialValue="FF005B99" />
+		<PropertyDefinition name="ChatEntityColour7" initialValue="FF000000" />
 		<PropertyDefinition name="ChatEntityColour8" initialValue="FFD81C3F" /> <!-- too similar to Color4! -->
 		
 		<StateImagery name="Enabled">
