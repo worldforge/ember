@@ -119,13 +119,21 @@ end
 --Convenience function that returns the exact colour to use for an entity name
 --Returned format is the CEGUI AARRGGBB format, FF000000 is black
 function Console:getColourForEntityName(entityName)
+	local propertyName = ""
+	
 	if entityName == emberOgre:getWorld():getAvatar():getEmberEntity():getName() then
 		--if it's the current player speaking, we always use the same colour for that
-		return self.widget:getMainWindow():getProperty("ChatEntityColourSelf")
+		propertyName = "ChatEntityColourSelf"
+	else
+		--it's another player speaking, ask for the colour
+		propertyName = "ChatEntityColour" .. self:getColourIndexForEntityName(entityName)
 	end
-
-	local index = self:getColourIndexForEntityName(entityName)
-	return self.widget:getMainWindow():getProperty("ChatEntityColour" .. index)
+	
+	if not self.widget:getMainWindow():isPropertyPresent(propertyName) then
+		return "FF000000" --reasonable fallback
+	end
+	
+	return self.widget:getMainWindow():getProperty(propertyName)
 end
 
 --Called when a line gets purged from the message history, be it game or system tab
