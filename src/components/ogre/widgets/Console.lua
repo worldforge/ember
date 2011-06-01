@@ -163,12 +163,23 @@ function Console:escapeForCEGUI(message)
 	return string.gsub(message, "%[", "\\%[")
 end
 
-function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSymbol)
-	local messageColour = self.widget:getMainWindow():getProperty("ChatMessageColour")
+function Console:getColourForMessage(line)
+	local propertyName = "ChatMessageColour"
+	
 	if line:find(emberOgre:getWorld():getAvatar():getEmberEntity():getName()) ~= nil then
 		--if the message contains users name, lets make it stand out
-		messageColour = self.widget:getMainWindow():getProperty("ChatMessageContainingSelfColour")
+		propertyName = "ChatMessageContainingSelfColour"
 	end
+	
+	if not self.widget:getMainWindow():isPropertyPresent(propertyName) then
+		return "FF000000" --reasonable fallback
+	end
+	
+	return self.widget:getMainWindow():getProperty(propertyName)
+end
+
+function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSymbol)
+	local messageColour = self:getColourForMessage(line)
 	
 	if entity ~= nil then
 		entityNameColour = self:getColourForEntityName(entity:getName())
