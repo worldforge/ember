@@ -16,7 +16,6 @@ function Console:buildWidget()
 	
 	--these are used for coloured chat messages
 	self.chatEntityColours = {}
-	self.chatEntityOccurences = {}
 	self.chatTotalColourUsage = {}
 	for i = 1, 8 do
 		self.chatTotalColourUsage[i] = 0
@@ -131,13 +130,22 @@ end
 
 --Called when a line gets purged from the message history, be it game or system tab
 function Console:notifyLinePurged(line, tab)
-	--FIXME: This is work in progress!
-	
-	--%b means balanced strings, opening and closing characters are <, { and >, } respectively
-	local entityName = line:find("%b[<{][>}]")
-	
-	if entityName ~= nil then
-		log.info("entityName: " .. entityName)
+	if (tab == self.gameTab) then
+		--Lua makes minimal matches so typing > or } into the chat message won't screw this up
+		--FIXME: typing > or } into the character name will though
+		local entityName = line:match("[<{](.*)[>}]")
+		if (entityName ~= nil) and (entityName ~= emberOgre:getWorld():getAvatar():getEmberEntity():getName()) then
+			local colourIndex = self.chatEntityColours[entityName]
+			if colourIndex ~= nil then
+				self.chatTotalColourUsage[colourIndex] = self.chatTotalColourUsage[colourIndex] - 1
+			end
+		end
+		
+		--FIXME: we have decreased the total colour use count but chatEntityColours will endlessly grow with new
+		--       and new entities
+		--
+		--       I haven't devised a strategy for this yet, purging it when entity use count drops to 0 doesn't
+		--       sound right but maybe is the best in this case, especially if max message count is high
 	end
 end
 
