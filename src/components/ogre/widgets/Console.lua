@@ -14,6 +14,7 @@ function Console:buildWidget()
 	
 	self.widget:loadMainSheet("Console.layout", "Console/")
 	
+	--these are used for coloured chat messages
 	self.chatEntityColours = {}
 	self.chatEntityOccurences = {}
 	self.chatTotalColourUsage = {}
@@ -142,34 +143,40 @@ function Console:escapeForCEGUI(message)
 	return string.gsub(message, "%[", "\\%[")
 end
 
+function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSymbol)
+	local messageColour = self.widget:getMainWindow():getProperty("ChatMessageColour")
+	if line:find(emberOgre:getWorld():getAvatar():getEmberEntity():getName()) ~= nil then
+		--if the message contains users name, lets make it stand out
+		messageColour = self.widget:getMainWindow():getProperty("ChatMessageContainingSelfColour")
+	end
+	
+	if entity ~= nil then
+		entityNameColour = self:getColourForEntityName(entity:getName())
+	
+		self:appendLine("[colour='" .. entityNameColour .. "']" .. self:escapeForCEGUI(entityStartSymbol .. entity:getName() .. entityEndSymbol) .. " [colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
+	else
+		self:appendLine("[colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
+	end
+end
+
 --handler for Out Of Game chat event
 --adds messages to the top of the textbox
 function Console:appendOOGChatLine(line, entity)
-	if entity ~= nil then
-		self:appendLine("{" .. self:escapeForCEGUI(entity:getName()) .. "} " .. self:escapeForCEGUI(line), self.gameTab)
-	else 
-		self:appendLine(self:escapeForCEGUI(line), self.gameTab)
-	end
+	self:appendChatMessage(line, entity, "{", "}")
 end
 
 --handler for In Game chat events
 --adds messages to the top of the textbox
 function Console:appendIGChatLine(line, entity)
-	messageColour = self.widget:getMainWindow():getProperty("ChatMessageColour")
-	
-	if entity ~= nil then
-		entityNameColour = self:getColourForEntityName(entity:getName())
-		
-		self:appendLine("[colour='" .. entityNameColour .. "']<" .. self:escapeForCEGUI(entity:getName()) .. "> [colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
-	else
-		self:appendLine("[colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
-	end
+	self:appendChatMessage(line, entity, "<", ">")
 end
 
 function Console:appendAvatarImaginary(line)
 	self:appendLine(line, self.gameTab)
 end
 
+--Appends raw, preformatted, CEGUI string to given tab window
+--This function does no escaping, you have to take care of that yourself!
 function Console:appendLine(line, tab)
 	local window = tab.textWindow
 	
