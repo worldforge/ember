@@ -347,12 +347,12 @@ namespace Ember
 
 			if ( section == "" || key == "" || value == "" )
 			{
-				ConsoleBackend::getSingleton().pushMessage ( "Usage: set_value <section> <key> <value>" );
+				ConsoleBackend::getSingleton().pushMessage ( "Usage: set_value <section> <key> <value>", "help" );
 			}
 			else
 			{
 				setValue ( section, key, value );
-				ConsoleBackend::getSingleton().pushMessage ( "New value set, section: " +  section + " key: " + key + " value: " + value );
+				ConsoleBackend::getSingleton().pushMessage ( "New value set, section: " +  section + " key: " + key + " value: " + value, "info" );
 			}
 
 		}
@@ -365,22 +365,21 @@ namespace Ember
 
 			if ( section == "" || key == "" )
 			{
-				ConsoleBackend::getSingleton().pushMessage ( "Usage: get_value <section> <key>" );
+				ConsoleBackend::getSingleton().pushMessage ( "Usage: get_value <section> <key>", "help" );
 			}
 			else
 			{
 				if ( !hasItem ( section, key ) )
 				{
-					ConsoleBackend::getSingleton().pushMessage ( "No such value." );
+					ConsoleBackend::getSingleton().pushMessage ( "No such value.", "error" );
 				}
 				else
 				{
 					varconf::Variable value = getValue ( section, key );
-					ConsoleBackend::getSingleton().pushMessage ( std::string ( "Value: " ) + static_cast<std::string> ( value ) );
+					ConsoleBackend::getSingleton().pushMessage ( std::string ( "Value: " ) + static_cast<std::string> ( value ), "info" );
 				}
 			}
 		}
-
 	}
 
 	void ConfigService::updatedConfig (const std::string& section, const std::string& key)

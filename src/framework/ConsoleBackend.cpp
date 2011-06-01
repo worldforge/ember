@@ -75,9 +75,9 @@ CommandHistory& ConsoleBackend::getHistory()
 }
 
 
-void ConsoleBackend::pushMessage(const std::string &message) {
+void ConsoleBackend::pushMessage(const std::string &message, const std::string& tag) {
 	//only save message if onGotMessage returns true
-	if (!onGotMessage(message)) {
+	if (!onGotMessage(message, tag)) {
 	// If we have reached our message limit, remove the oldest message
 		if (mConsoleMessages.size() >= MAX_MESSAGES)
 		mConsoleMessages.erase(mConsoleMessages.begin());
@@ -85,9 +85,9 @@ void ConsoleBackend::pushMessage(const std::string &message) {
 	}
 }
 
-bool ConsoleBackend::onGotMessage(const std::string &message)
+bool ConsoleBackend::onGotMessage(const std::string &message, const std::string& tag)
 {
-	return GotMessage.emit(message);
+	return GotMessage.emit(message, tag);
 }
 
 

@@ -239,8 +239,24 @@ function Console:appendLine(line, tab)
 	self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new(self.mainWindow))
 end
 
-function Console:consoleGotMessage(message)
-	self:appendLine(self:escapeForCEGUI(message), self.systemTab)
+function Console:getMessageColourForTag(tag)
+	-- FIXME: We should query all colours from the looknfeel!
+	
+	if tag == "info" then
+		return "FF666666"
+	elseif tag == "error" then
+		return "FFFF0000"
+	elseif tag == "warning" then
+		return "FFFFFF00"
+	elseif tag == "help" then
+		return "FF0000FF"
+	else
+		return "FF000000"
+	end
+end
+
+function Console:consoleGotMessage(message, tag)
+	self:appendLine("[colour='" .. self:getMessageColourForTag(tag) .. "']" .. self:escapeForCEGUI(message), self.systemTab)
 	return true
 end
 

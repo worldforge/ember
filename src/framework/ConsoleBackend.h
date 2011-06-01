@@ -129,8 +129,9 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
     /**
      * @brief Add a message to the console message queue.
      * @param message The message.
+	 * @param tag "Category" of the message, for example "warning", "error", "info", "help", etc...
      */
-    void pushMessage(const std::string &message);
+    void pushMessage(const std::string &message, const std::string& tag = "");
 
 
     /**
@@ -149,14 +150,14 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
      * This event is raised every time a message is pushed to the console.
      * If true is returned, the message won't be saved in myConsoleMessages
      */
-    sigc::signal<bool, const std::string&> GotMessage;
+    sigc::signal<bool, const std::string&, const std::string&> GotMessage;
 
     //======================================================================
     // Protected Methods
     //======================================================================
     protected:
 
-    virtual bool onGotMessage(const std::string &message);
+    virtual bool onGotMessage(const std::string &message, const std::string& tag);
 
     private:
 
