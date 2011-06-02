@@ -69,7 +69,7 @@
 				</Window>
 				<Window Type='EmberLook/StaticImage' Name='Types/ModelPreviewImage'>
 					<Property Name='UnifiedPosition' Value='{{0,155},{0,0}}'/>
-					<Property Name='UnifiedSize' Value='{{1.00,155.00},{1.00,-65}}'/>
+					<Property Name='UnifiedSize' Value='{{1.00,-155.00},{1.00,-65}}'/>
 				</Window>
 				<Window Type='EmberLook/StaticText' Name='Types/NameText'>
 					<Property Name='UnifiedSize' Value='{{0,70},{0.00,25.0}}'/>
