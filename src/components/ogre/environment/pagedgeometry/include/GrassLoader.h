@@ -330,6 +330,25 @@ public:
 	*/
 	void setLightingEnabled(bool enabled);
 
+	/** \brief Whether vertex colours are enabled on this layer.
+	 *
+	 * If you're using a shader to provide dynamic lightning you probably want to disable vertex colours.
+	*/
+	virtual bool isColoursEnabled() const;
+
+	/** \brief Whether normals are enabled on this layer.
+	*/
+	virtual bool isNormalsEnabled() const;
+
+	/** \brief Whether tangents are enabled on this layer.
+	 *
+	*/
+	virtual bool isTangentsEnabled() const;
+
+	/** \brief Whether shadow casting should be enabled for the mesh generated.
+	*/
+	virtual bool isCastShadowsEnabled() const;
+
 	/** \brief Sets how far grass should sway back and forth
 
 	\note Since this is measured in world units, you may have to adjust this depending on
@@ -809,7 +828,7 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 				//Add the mesh to PagedGeometry
 				Entity *entity = geom->getCamera()->getSceneManager()->createEntity(getUniqueID(), mesh->getName());
 				entity->setRenderQueueGroup(renderQueue);
-				entity->setCastShadows(false);
+				entity->setCastShadows(layer->isCastShadowsEnabled());
 				addEntity(entity, page.centerPoint, Quaternion::IDENTITY, Vector3::UNIT_SCALE);
 
 				//Store the mesh pointer
@@ -860,12 +879,20 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *
 
 	VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
 	size_t offset = 0;
+	bool colours = layer->isColoursEnabled();
+	bool normals = layer->isNormalsEnabled();
 	dcl->addElement(0, offset, VET_FLOAT3, VES_POSITION);
 	offset += VertexElement::getTypeSize(VET_FLOAT3);
-	dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
-	offset += VertexElement::getTypeSize(VET_COLOUR);
+	if (colours) {
+		dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
+		offset += VertexElement::getTypeSize(VET_COLOUR);
+	}
 	dcl->addElement(0, offset, VET_FLOAT2, VES_TEXTURE_COORDINATES);
 	offset += VertexElement::getTypeSize(VET_FLOAT2);
+	if (normals) {
+		dcl->addElement(0, offset, VET_FLOAT4, VES_NORMAL);
+		offset += VertexElement::getTypeSize(VET_FLOAT4);
+	}
 
 	//Populate a new vertex buffer with grass
 	HardwareVertexBufferSharedPtr vbuf = HardwareBufferManager::getSingleton()
@@ -875,6 +902,7 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *
 	//Calculate size variance
 	float rndWidth = layer->maxWidth - layer->minWidth;
 	float rndHeight = layer->maxHeight - layer->minHeight;
+	Vector3 normal(0.0f, 1.0f, 0.0f); //We'll use a normal pointing straight up, to best simulate grass and sunlight.
 
 	float minY = Math::POS_INFINITY, maxY = Math::NEG_INFINITY;
 	float *posPtr = grassPositions;	//Position array "iterator"
@@ -885,8 +913,11 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *
 		float z = *posPtr++;
 
 		//Get the color at the grass position
-		Ogre::uint32 color(layer->getColorAt(x, z));
+		Ogre::uint32 color(0);
 
+		if (colours) {
+			color = layer->getColorAt(x, z);
+		}
 		//Calculate size
 		float rnd = *posPtr++;	//The same rnd value is used for width and height to maintain aspect ratio
 		float halfScaleX = (layer->minWidth + rndWidth * rnd) * 0.5f;
@@ -917,22 +948,43 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *
 			y2 = 0;
 		}
 
+
 		//Add vertices
 		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1 + scaleY); *pReal++ = (z1 - page.centerPoint.z);	//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 0; *pReal++ = 0;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2 + scaleY); *pReal++ = (z2 - page.centerPoint.z);	//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 1; *pReal++ = 0;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1); *pReal++ = (z1 - page.centerPoint.z);			//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 0; *pReal++ = 1;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2); *pReal++ = (z2 - page.centerPoint.z);			//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 1; *pReal++ = 1;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		//Update bounds
 		if (y1 < minY) minY = y1;
@@ -981,6 +1033,10 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_QUAD(PageInfo &page, TGrassLayer *
 	//Apply grass material to mesh
 	subMesh->setMaterialName(layer->material->getName());
 
+	if (layer->isTangentsEnabled()) {
+		mesh->buildTangentVectors();
+	}
+
 	//Return the mesh
 	return mesh.getPointer();
 }
@@ -1017,12 +1073,20 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 
 	VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
 	size_t offset = 0;
+	bool colours = layer->isColoursEnabled();
+	bool normals = layer->isNormalsEnabled();
 	dcl->addElement(0, offset, VET_FLOAT3, VES_POSITION);
 	offset += VertexElement::getTypeSize(VET_FLOAT3);
-	dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
-	offset += VertexElement::getTypeSize(VET_COLOUR);
+	if (colours) {
+		dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
+		offset += VertexElement::getTypeSize(VET_COLOUR);
+	}
 	dcl->addElement(0, offset, VET_FLOAT2, VES_TEXTURE_COORDINATES);
 	offset += VertexElement::getTypeSize(VET_FLOAT2);
+	if (normals) {
+		dcl->addElement(0, offset, VET_FLOAT4, VES_NORMAL);
+		offset += VertexElement::getTypeSize(VET_FLOAT4);
+	}
 
 	//Populate a new vertex buffer with grass
 	HardwareVertexBufferSharedPtr vbuf = HardwareBufferManager::getSingleton()
@@ -1035,14 +1099,19 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 
 	float minY = Math::POS_INFINITY, maxY = Math::NEG_INFINITY;
 	float *posPtr = grassPositions;	//Position array "iterator"
+	Vector3 normal(0.0f, 1.0f, 0.0f); //We'll use a normal pointing straight up, to best simulate grass and sunlight.
 	for (uint16 i = 0; i < grassCount; ++i)
 	{
 		//Get the x and z positions from the position array
 		float x = *posPtr++;
 		float z = *posPtr++;
 
-		//Get the color at the grass position
-		Ogre::uint32 color(layer->getColorAt(x, z));
+		Ogre::uint32 color(0);
+
+		if (colours) {
+			//Get the color at the grass position
+			color = layer->getColorAt(x, z);
+		}
 
 		//Calculate size
 		float rnd = *posPtr++;	//The same rnd value is used for width and height to maintain aspect ratio
@@ -1076,20 +1145,40 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 
 		//Add vertices
 		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1 + scaleY); *pReal++ = (z1 - page.centerPoint.z);	//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 0; *pReal++ = 0;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2 + scaleY); *pReal++ = (z2 - page.centerPoint.z);	//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 1; *pReal++ = 0;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x1 - page.centerPoint.x); *pReal++ = (y1); *pReal++ = (z1 - page.centerPoint.z);			//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 0; *pReal++ = 1;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x2 - page.centerPoint.x); *pReal++ = (y2); *pReal++ = (z2 - page.centerPoint.z);			//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 1; *pReal++ = 1;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		//Update bounds
 		if (y1 < minY) minY = y1;
@@ -1119,20 +1208,40 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 
 		//Add vertices
 		*pReal++ = (x3 - page.centerPoint.x); *pReal++ = (y3 + scaleY); *pReal++ = (z3 - page.centerPoint.z);	//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 0; *pReal++ = 0;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x4 - page.centerPoint.x); *pReal++ = (y4 + scaleY); *pReal++ = (z4 - page.centerPoint.z);	//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 1; *pReal++ = 0;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x3 - page.centerPoint.x); *pReal++ = (y3); *pReal++ = (z3 - page.centerPoint.z);			//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 0; *pReal++ = 1;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		*pReal++ = (x4 - page.centerPoint.x); *pReal++ = (y4); *pReal++ = (z4 - page.centerPoint.z);			//pos
-		*((uint32*)pReal++) = color;							//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = 1; *pReal++ = 1;								//uv
+		if (normals) {
+			*pReal++ = normal.x; *pReal++ = normal.y; *pReal++ = normal.z; *pReal++ = 0.0f;
+		}
 
 		//Update bounds
 		if (y3 < minY) minY = y1;
@@ -1182,6 +1291,10 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 	//Apply grass material to mesh
 	subMesh->setMaterialName(layer->material->getName());
 
+	if (layer->isTangentsEnabled()) {
+		mesh->buildTangentVectors();
+	}
+
 	//Return the mesh
 	return mesh.getPointer();
 }
@@ -1218,12 +1331,15 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer
 
 	VertexDeclaration* dcl = subMesh->vertexData->vertexDeclaration;
 	size_t offset = 0;
+	bool colours = layer->isColoursEnabled();
 	dcl->addElement(0, offset, VET_FLOAT3, VES_POSITION);
 	offset += VertexElement::getTypeSize(VET_FLOAT3);
 	dcl->addElement(0, offset, VET_FLOAT4, VES_NORMAL);
 	offset += VertexElement::getTypeSize(VET_FLOAT4);
-	dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
-	offset += VertexElement::getTypeSize(VET_COLOUR);
+	if (colours) {
+		dcl->addElement(0, offset, VET_COLOUR, VES_DIFFUSE);
+		offset += VertexElement::getTypeSize(VET_COLOUR);
+	}
 	dcl->addElement(0, offset, VET_FLOAT2, VES_TEXTURE_COORDINATES);
 	offset += VertexElement::getTypeSize(VET_FLOAT2);
 
@@ -1255,8 +1371,12 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer
 		float x1 = (x - page.centerPoint.x);
 		float z1 = (z - page.centerPoint.z);
 
-		//Get the color at the grass position
-		Ogre::uint32 color(layer->getColorAt(x, z));
+		Ogre::uint32 color(0);
+
+		if (colours) {
+			//Get the color at the grass position
+			color = layer->getColorAt(x, z);
+		}
 
 		//Calculate size
 		float rnd = *posPtr++;	//The same rnd value is used for width and height to maintain aspect ratio
@@ -1276,22 +1396,30 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_SPRITE(PageInfo &page, TGrassLayer
 		//Add vertices
 		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
 		*pReal++ = -halfXScale; *pReal++ = scaleY; *pReal++ = 0; *pReal++ = 0;	//normal (used to store relative corner positions)
-		*((uint32*)pReal++) = color;								//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = uvLeft; *pReal++ = 0;							//uv
 
 		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
 		*pReal++ = +halfXScale; *pReal++ = scaleY; *pReal++ = 0; *pReal++ = 0;	//normal (used to store relative corner positions)
-		*((uint32*)pReal++) = color;								//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = uvRight; *pReal++ = 0;							//uv
 
 		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
 		*pReal++ = -halfXScale; *pReal++ = 0.0f; *pReal++ = 0; *pReal++ = 0;		//normal (used to store relative corner positions)
-		*((uint32*)pReal++) = color;								//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = uvLeft; *pReal++ = 1;							//uv
 
 		*pReal++ = x1; *pReal++ = y; *pReal++ = z1;					//center position
 		*pReal++ = +halfXScale; *pReal++ = 0.0f; *pReal++ = 0; *pReal++ = 0;		//normal (used to store relative corner positions)
-		*((uint32*)pReal++) = color;								//color
+		if (colours) {
+			*((uint32*)pReal++) = color;							//color
+		}
 		*pReal++ = uvRight; *pReal++ = 1;							//uv
 
 		//Update bounds

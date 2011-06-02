@@ -149,6 +149,27 @@ void GrassLayerBase::setLightingEnabled(bool enabled)
 	lighting = enabled;
 }
 
+bool GrassLayerBase::isColoursEnabled() const
+{
+	return true;
+}
+
+bool GrassLayerBase::isNormalsEnabled() const
+{
+	return false;
+}
+
+bool GrassLayerBase::isTangentsEnabled() const
+{
+	return false;
+}
+
+bool GrassLayerBase::isCastShadowsEnabled() const
+{
+	return false;
+}
+
+
 void GrassLayer::setDensityMap(const String &mapFile, MapChannel channel)
 {
 	if (densityMap){
@@ -772,7 +793,7 @@ void GrassPage::addEntity(Entity *entity, const Vector3 &position, const Quatern
 	node->setPosition(position);
 	nodeList.push_back(node);
 
-	entity->setCastShadows(false);
+//	entity->setCastShadows(false);
 	if(hasQueryFlag())
 		entity->setQueryFlags(getQueryFlag());
 	entity->setRenderQueueGroup(entity->getRenderQueueGroup());
