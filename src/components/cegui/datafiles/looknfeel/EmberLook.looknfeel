@@ -5245,6 +5245,13 @@
 		<Property name="NESWSizingCursorImage" value="set:EmberLook image:MouseNeSwCursor" />
 		<Property name="UnifiedMinSize" value="{{0.1,0},{0.1,0}}" />
 		<Property name="AutoRenderingSurface" value="True" />
+		
+		<!--
+		This property is used to store previous quick help's position so that when it's shown again it
+		slides back to the proper position
+		-->
+		<PropertyDefinition name="OldUnifiedPosition" initialValue="{{0, 0}, {0, 0}}" />
+		
 		<NamedArea name="ClientWithTitleWithFrame">
 			<Area>
 				<Dim type="LeftEdge">
@@ -5419,7 +5426,8 @@
 			</Affector>
 			<Affector property="UnifiedPosition" interpolator="UVector2">
 				<KeyFrame position="0.0" sourceProperty="UnifiedPosition" />
-				<KeyFrame position="0.4" value="{{1.00,-300.0},{1.00,-470.0}}" progression="quadratic decelerating" />
+				<!-- OldUnifiedPosition stores the old UnifiedPosition that was there at the time we have hidden the QuickHelp window -->
+				<KeyFrame position="0.4" sourceProperty="OldUnifiedPosition" progression="quadratic decelerating" />
 			</Affector>
 			<Affector property="Visible" interpolator="bool">
 				<KeyFrame position="0.0" value="true" />
@@ -5439,6 +5447,10 @@
 				<KeyFrame position="0.0" sourceProperty="UnifiedPosition" />
 				<KeyFrame position="0.4" value="{{1.00,0.0},{1.00,-470.0}}" progression="quadratic accelerating" />
 			</Affector>
+			<Affector property="OldUnifiedPosition" interpolator="String">
+				<!-- writes UnifiedPosition into OldUnifiedPosition -->
+				<KeyFrame position="0.0" sourceProperty="UnifiedPosition" progression="discrete" />
+			</Affector>
 			<Affector property="Visible" interpolator="bool">
 				<KeyFrame position="0.0" sourceProperty="Visible" />
 				<KeyFrame position="0.4" value="false" progression="discrete" />
@@ -5457,6 +5469,10 @@
 			<Affector property="Visible" interpolator="bool">
 				<KeyFrame position="0.0" sourceProperty="Visible" />
 				<KeyFrame position="5.0" value="false" progression="discrete" />
+			</Affector>
+			<Affector property="OldUnifiedPosition" interpolator="String">
+				<!-- writes UnifiedPosition into OldUnifiedPosition -->
+				<KeyFrame position="0.0" sourceProperty="UnifiedPosition" progression="discrete" />
 			</Affector>
 			
 			<Subscription event="StartSlowHideTransition" action="Start" />
