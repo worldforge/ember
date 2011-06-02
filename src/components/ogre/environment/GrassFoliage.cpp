@@ -92,6 +92,8 @@ void GrassFoliage::initialize()
 	mPagedGeometry->setBounds(ogreBounds);
 
 	mPagedGeometry->addDetailLevel<Forests::GrassPage>(96);
+	//We'll provide our own shaders for the grass materials.
+	mPagedGeometry->setShadersEnabled(false);
 
 	//Create a GrassLoader object
 	mGrassLoader = new ::Forests::GrassLoader<FoliageLayer>(mPagedGeometry);
