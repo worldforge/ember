@@ -83,7 +83,7 @@ void NonConnectedState::disconnected()
 {
 	S_LOG_INFO("Disconnected");
 
-	ConsoleBackend::getSingleton().pushMessage("Disconnected from server.");
+	ConsoleBackend::getSingleton().pushMessage("Disconnected from server.", "important");
 
 	destroyChildState();
 }
@@ -99,7 +99,7 @@ void NonConnectedState::runCommand(const std::string &command, const std::string
 		std::string port = tokeniser.remainingTokens();
 		std::string msg;
 		msg = "Connecting to: [" + server + "]";
-		ConsoleBackend::getSingleton().pushMessage(msg);
+		ConsoleBackend::getSingleton().pushMessage(msg, "info");
 		if (port == "")
 			connect(server);
 		else

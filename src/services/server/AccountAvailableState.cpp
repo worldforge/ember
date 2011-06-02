@@ -58,14 +58,14 @@ void AccountAvailableState::loginFailure(const std::string& msg)
 	temp << "Login Failure:" << msg;
 	S_LOG_WARNING(temp.str());
 
-	ConsoleBackend::getSingleton().pushMessage(temp.str());
+	ConsoleBackend::getSingleton().pushMessage(temp.str(), "error");
 	getSignals().LoginFailure.emit(&mAccount, msg);
 }
 
 void AccountAvailableState::loginSuccess()
 {
 	S_LOG_INFO("Login Success.");
-	ConsoleBackend::getSingleton().pushMessage("Login Successful");
+	ConsoleBackend::getSingleton().pushMessage("Login Successful", "important");
 	setChildState(new LoggedInState(*this, mAccount));
 	getSignals().LoginSuccess.emit(&mAccount);
 }
@@ -73,7 +73,7 @@ void AccountAvailableState::loginSuccess()
 void AccountAvailableState::logoutComplete(bool clean)
 {
 	S_LOG_INFO("Logout Complete cleanness=" << clean);
-	ConsoleBackend::getSingleton().pushMessage("Logged out from server");
+	ConsoleBackend::getSingleton().pushMessage("Logged out from server", "important");
 
 	destroyChildState();
 }
@@ -113,7 +113,7 @@ void AccountAvailableState::runCommand(const std::string &command, const std::st
 
 		std::string msg;
 		msg = "Login: [" + userid + "," + password + "]";
-		ConsoleBackend::getSingleton().pushMessage(msg);
+		ConsoleBackend::getSingleton().pushMessage(msg, "info");
 	}
 }
 }

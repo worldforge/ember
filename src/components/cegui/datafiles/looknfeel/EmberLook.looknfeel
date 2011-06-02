@@ -5187,8 +5187,9 @@
 		<PropertyDefinition name="ConsoleMessageColourUnknown" initialValue="FF000000" />
 		<PropertyDefinition name="ConsoleMessageColourWarning" initialValue="FFFFFF00" />
 		<PropertyDefinition name="ConsoleMessageColourError" initialValue="FFFF0000" />
-		<PropertyDefinition name="ConsoleMessageColourInfo" initialValue="FF0000FF" />
-		<PropertyDefinition name="ConsoleMessageColourHelp" initialValue="FF00FF00" />
+		<PropertyDefinition name="ConsoleMessageColourInfo" initialValue="FF555555" />
+		<PropertyDefinition name="ConsoleMessageColourHelp" initialValue="FF009E0F" />
+		<PropertyDefinition name="ConsoleMessageColourImportant" initialValue="FF0000FF" />
 		
 		<StateImagery name="Enabled">
 		</StateImagery>

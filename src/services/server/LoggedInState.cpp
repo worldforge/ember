@@ -105,10 +105,10 @@ void LoggedInState::takeCharacter(const std::string &id)
 
 bool LoggedInState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName)
 {
-	ConsoleBackend::getSingleton().pushMessage("Creating char...");
+	ConsoleBackend::getSingleton().pushMessage("Creating char...", "important");
 	std::string msg;
 	msg = "Creating character: Name: [" + name + "], Sex: [" + sex + "], Type: [" + type + "], Desc: [" + description + "]";
-	ConsoleBackend::getSingleton().pushMessage(msg);
+	ConsoleBackend::getSingleton().pushMessage(msg, "info");
 
 	S_LOG_INFO("Creating character.");
 	Atlas::Objects::Entity::RootEntity character;
@@ -141,7 +141,7 @@ bool LoggedInState::logout()
 void LoggedInState::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
 {
 	S_LOG_INFO("Got Character Info");
-	ConsoleBackend::getSingleton().pushMessage("Got character info");
+	ConsoleBackend::getSingleton().pushMessage("Got character info", "info");
 
 	getSignals().GotCharacterInfo.emit(info);
 }
@@ -149,13 +149,13 @@ void LoggedInState::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & 
 void LoggedInState::gotAllCharacters()
 {
 	S_LOG_INFO("Got All Characters");
-	ConsoleBackend::getSingleton().pushMessage("Got all characters");
+	ConsoleBackend::getSingleton().pushMessage("Got all characters", "info");
 	Eris::CharacterMap cm = mAccount.getCharacters();
 	Eris::CharacterMap::iterator i;
 	for (i = cm.begin(); i != cm.end(); i++) {
 		std::string msg;
 		msg = "Character ID: [" + (*i).first + "].";
-		ConsoleBackend::getSingleton().pushMessage(msg);
+		ConsoleBackend::getSingleton().pushMessage(msg, "info");
 	}
 	getSignals().GotAllCharacters.emit(&mAccount);
 
@@ -247,7 +247,7 @@ void LoggedInState::gotAvatarDeactivated(Eris::Avatar* avatar)
 void LoggedInState::runCommand(const std::string &command, const std::string &args)
 {
 	if (Logout == command) {
-		ConsoleBackend::getSingleton().pushMessage("Logging out...");
+		ConsoleBackend::getSingleton().pushMessage("Logging out...", "important");
 		mAccount.logout();
 
 		// Create Character command

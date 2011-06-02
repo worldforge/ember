@@ -298,7 +298,7 @@ void ConnectedAdapter::say(const std::string &message)
 
 		std::string msg;
 		msg = "Saying: [" + message + "]. ";
-		ConsoleBackend::getSingletonPtr()->pushMessage(msg);
+		ConsoleBackend::getSingletonPtr()->pushMessage(msg, "info");
 		S_LOG_VERBOSE( msg);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on say." << ex);

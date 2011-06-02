@@ -98,14 +98,14 @@ namespace Ember {
 #if 0 // not new sstream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str(), "info");
   }
 
   void OOGChat::loggedIn( const Atlas::Objects::Entity::Player& player)
   {
     // Xmp's Notes
     // Erm dunno what this function is for eris's doxygen doesn't explain
-    ConsoleBackend::getSingletonPtr()->pushMessage("Logged In eris msg received");
+    ConsoleBackend::getSingletonPtr()->pushMessage("Logged In eris msg received", "important");
   }
 
   void OOGChat::runCommand(const std::string &command, const std::string &args)
@@ -140,7 +140,7 @@ namespace Ember {
 #if 0 //not new stream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str(), "info");
   }
 
   void OOGChat::talk(Eris::Room *room, Eris::Person* person, const std::string& msg)
@@ -150,7 +150,7 @@ namespace Ember {
     temp << "["<< room->getName()<<"] "<<person->getName()<<" says: "<<msg;
     S_LOG_VERBOSE(temp.str());
     temp<<std::ends;
-    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str(), "info");
   }
 
   void OOGChat::emote(Eris::Room *room, Eris::Person* person, const std::string& msg)
@@ -162,7 +162,7 @@ namespace Ember {
 #if 0 // not new sstream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str(), "info");
   }
 
   void OOGChat::appearance(Eris::Room *room,  Eris::Person* person)
@@ -174,7 +174,7 @@ namespace Ember {
 #if 0 // not new sstream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str(), "info");
   }
 
   void OOGChat::disappearance(Eris::Room* room,  Eris::Person* person)
@@ -186,7 +186,7 @@ namespace Ember {
 #if 0 // if not new sstream
     temp<<std::ends;
 #endif
-    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str());
+    ConsoleBackend::getSingletonPtr()->pushMessage(temp.str(), "info");
   }
 
   void OOGChat::changed(const Eris::StringSet& sset, Eris::Room *room)

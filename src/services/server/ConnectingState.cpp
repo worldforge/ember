@@ -88,7 +88,7 @@ void ConnectingState::connected()
 	//     mOOGChat = new OOGChat(mAccount);
 
 
-	ConsoleBackend::getSingleton().pushMessage("Connected to Server");
+	ConsoleBackend::getSingleton().pushMessage("Connected to Server", "important");
 }
 
 void ConnectingState::statusChanged(Eris::BaseConnection::Status status)
@@ -114,7 +114,7 @@ void ConnectingState::gotFailure(const std::string & msg)
 	temp << "Got Server error: " << msg;
 	S_LOG_WARNING(temp.str());
 
-	ConsoleBackend::getSingleton().pushMessage(temp.str());
+	ConsoleBackend::getSingleton().pushMessage(temp.str(), "error");
 
 	//Don't destroy ourselves here, since the connection will then be destroyed
 	//(and the connection code which triggered this callback will do some stuff once this callback is done, hence we can't delete that)

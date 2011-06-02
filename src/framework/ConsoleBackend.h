@@ -129,7 +129,7 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
     /**
      * @brief Add a message to the console message queue.
      * @param message The message.
-	 * @param tag "Category" of the message, for example "warning", "error", "info", "help", etc...
+	 * @param tag "Category" of the message, for example "warning", "error", "info", "help", "important", etc...
      */
     void pushMessage(const std::string &message, const std::string& tag = "");
 
