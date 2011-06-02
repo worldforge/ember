@@ -5169,6 +5169,7 @@
 	***************************************************
 	-->
 	<WidgetLook name="EmberLook/ConsoleWindow">
+		<!-- Game/Chat tab -->
 		<PropertyDefinition name="ChatMessageColour"  initialValue="FF000000" />
 		<PropertyDefinition name="ChatMessageContainingSelfColour" initialValue="FFFF0000" />
 		
@@ -5181,6 +5182,13 @@
 		<PropertyDefinition name="ChatEntityColour6" initialValue="FF005B99" />
 		<PropertyDefinition name="ChatEntityColour7" initialValue="FF000000" />
 		<PropertyDefinition name="ChatEntityColour8" initialValue="FFD81C3F" /> <!-- too similar to Color4! -->
+		
+		<!-- System tab -->
+		<PropertyDefinition name="ConsoleMessageColourUnknown" initialValue="FF000000" />
+		<PropertyDefinition name="ConsoleMessageColourWarning" initialValue="FFFFFF00" />
+		<PropertyDefinition name="ConsoleMessageColourError" initialValue="FFFF0000" />
+		<PropertyDefinition name="ConsoleMessageColourInfo" initialValue="FF0000FF" />
+		<PropertyDefinition name="ConsoleMessageColourHelp" initialValue="FF00FF00" />
 		
 		<StateImagery name="Enabled">
 		</StateImagery>

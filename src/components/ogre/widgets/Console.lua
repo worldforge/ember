@@ -163,7 +163,7 @@ function Console:escapeForCEGUI(message)
 	return string.gsub(message, "%[", "\\%[")
 end
 
-function Console:getColourForMessage(line)
+function Console:getChatMessageColour(line)
 	local propertyName = "ChatMessageColour"
 	
 	if line:find(emberOgre:getWorld():getAvatar():getEmberEntity():getName()) ~= nil then
@@ -179,7 +179,7 @@ function Console:getColourForMessage(line)
 end
 
 function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSymbol)
-	local messageColour = self:getColourForMessage(line)
+	local messageColour = self:getChatMessageColour(line)
 	
 	if entity ~= nil then
 		entityNameColour = self:getColourForEntityName(entity:getName())
@@ -191,13 +191,13 @@ function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSym
 end
 
 --handler for Out Of Game chat event
---adds messages to the top of the textbox
+--appends given text to the bottom of the Chat/Game tab
 function Console:appendOOGChatLine(line, entity)
 	self:appendChatMessage(line, entity, "{", "}")
 end
 
 --handler for In Game chat events
---adds messages to the top of the textbox
+--appends given text to the bottom of the Chat/Game tab
 function Console:appendIGChatLine(line, entity)
 	self:appendChatMessage(line, entity, "<", ">")
 end
@@ -206,7 +206,7 @@ function Console:appendAvatarImaginary(line)
 	self:appendLine(line, self.gameTab)
 end
 
---Appends raw, preformatted, CEGUI string to given tab window
+--Appends raw, preformatted CEGUI string to given tab window
 --This function does no escaping, you have to take care of that yourself!
 function Console:appendLine(line, tab)
 	local window = tab.textWindow
@@ -239,24 +239,29 @@ function Console:appendLine(line, tab)
 	self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new(self.mainWindow))
 end
 
-function Console:getMessageColourForTag(tag)
-	-- FIXME: We should query all colours from the looknfeel!
-	
-	if tag == "info" then
-		return "FF666666"
-	elseif tag == "error" then
-		return "FFFF0000"
-	elseif tag == "warning" then
-		return "FFFFFF00"
-	elseif tag == "help" then
-		return "FF0000FF"
-	else
-		return "FF000000"
+--Retrieves suitable AARRGGBB colour for console messages based on their tag
+--tag can be empty (""), or for example "error", "warning", "help", etc...
+function Console:getConsoleMessageColourForTag(tag)
+	if tag == "" then
+		tag = "unknown"
 	end
+
+	--makes the first letter uppercase so it meshes well with the CamelCase property convention that's
+	--used in the looknfeels/layouts
+	local propertyName = "ConsoleMessageColour" .. tag:sub(1, 1):upper() .. tag:sub(2)
+	
+	if not self.widget:getMainWindow():isPropertyPresent(propertyName) then
+		return "FF000000" --reasonable fallback
+	end
+	
+	return self.widget:getMainWindow():getProperty(propertyName)
 end
 
+--Called from C++ using signals
+--message is the message string
+--tag can be "" or "error", "warning" or such
 function Console:consoleGotMessage(message, tag)
-	self:appendLine("[colour='" .. self:getMessageColourForTag(tag) .. "']" .. self:escapeForCEGUI(message), self.systemTab)
+	self:appendLine("[colour='" .. self:getConsoleMessageColourForTag(tag) .. "']" .. self:escapeForCEGUI(message), self.systemTab)
 	return true
 end
 
