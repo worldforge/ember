@@ -195,6 +195,20 @@ AC_MSG_RESULT([
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
+
+CEGUI_VERSION=0.7.2
+PKG_CHECK_MODULES(CEGUI, CEGUI >= $CEGUI_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
+		LIBS="$LIBS $CEGUI_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find CEGUI or tests failed:
+$CEGUI_PKG_ERRORS
+Please go to http://crayzedsgui.sourceforge.net to get the latest, or check
+config.log to see why the tests failed, and fix it.])
+	])
+	
 case "x$target_os" in
   *bsd* | *linux* )
 	PKG_CHECK_MODULES([X11], x11,
@@ -209,20 +223,6 @@ case "x$target_os" in
   break;
   ;;
 esac
-
-	
-CEGUI_VERSION=0.7.2
-PKG_CHECK_MODULES(CEGUI, CEGUI >= $CEGUI_VERSION,
-	[
-		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
-		LIBS="$LIBS $CEGUI_LIBS"
-	],
-	[
-		AC_MSG_ERROR([Couldn't find CEGUI or tests failed:
-$CEGUI_PKG_ERRORS
-Please go to http://crayzedsgui.sourceforge.net to get the latest, or check
-config.log to see why the tests failed, and fix it.])
-	])
 
 # Check for OGRE
 OGRE_VERSION=1.7.0
