@@ -89,7 +89,15 @@ function MainIconBar:buildWidget()
 	connect(self.connectors, emberOgre.EventMovementControllerDestroyed, function()
 			self.movementModeIcon:getContainer():setVisible(false)
 		end)
-		
+	
+	--and inventory toggle icon
+	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "question") --FIXME: Wrong icon for now!
+	self.inventoryIcon = self:addIcon("inventory", foreground, "Toggles visibility of the inventory")
+	--start out with the inventory icon hidden, only show it when the user has an avatar
+	self.inventoryIcon:getContainer():setVisible(false)
+	
+	self.inventoryIcon:getButton():subscribeEvent("Clicked", self.inventory_Clicked, self)
+	
 	MainIconBar.singletonInstance = self
 end
 
@@ -110,6 +118,12 @@ end
 --toggle input mode when the input mode button is clicked
 function MainIconBar:movement_Clicked(args)
 	Ember.Input:getSingleton():toggleInputMode()
+	return true
+end
+
+--toggle inventory window when clicked
+function MainIconBar:inventory_Clicked(args)
+	console:runCommand("/show_inventory") --FIXME: We should toggle, not just show!
 	return true
 end
 
@@ -150,7 +164,7 @@ function MainIconBar:checkMovementMode()
 	end
 end
 
---Only show the movement icon when we've actually connected to a server; it makes no sense before that
+--Only show the movement and inventory icons when we've actually connected to a server; it makes no sense before that
 function MainIconBar:EmberOgre_movementControllerCreated()
 	self.movementModeIcon:getContainer():setVisible(true)
 	connect(self.connectors, emberOgre:getWorld():getMovementController().EventMovementModeChanged, 
@@ -159,6 +173,8 @@ function MainIconBar:EmberOgre_movementControllerCreated()
 				self:checkMovementMode()
 			end
 		end)
+		
+	self.inventoryIcon:getContainer():setVisible(true)
 end
 
 function MainIconBar:shutdown()
