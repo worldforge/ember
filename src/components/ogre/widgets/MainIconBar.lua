@@ -123,7 +123,7 @@ end
 
 --toggle inventory window when clicked
 function MainIconBar:inventory_Clicked(args)
-	console:runCommand("/show_inventory") --FIXME: We should toggle, not just show!
+	console:runCommand("/toggleVisibility_inventory")
 	return true
 end
 
