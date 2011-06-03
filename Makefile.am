@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src
 SUBDIRS = src media test
-
+ACLOCAL_AMFLAGS = -I m4
 bin_SCRIPTS = ember
 dist_bin_SCRIPTS = ember
 

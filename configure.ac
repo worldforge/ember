@@ -1,6 +1,8 @@
 ## Process this file with autoconf to produce a configure script.
 AC_INIT(Ember, 0.6.2, erik.hjortsberg@gmail.com)
 
+AC_CONFIG_MACRO_DIR([m4])
+
 AC_CONFIG_SRCDIR(src)
 
 # Detect the canonical host and target build environment.
