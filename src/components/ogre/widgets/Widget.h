@@ -136,6 +136,11 @@ public:
 	virtual void hide();
 	
 	/**
+	 *    If the widget is hidden, it gets shown. If it is visible, it gets hidden.
+	 */
+	virtual void toggleVisibility();
+	
+	/**
 	 * @brief Checks if the window is visible using CEGUI isVisible.
 	 * @return Visibility status of window.
 	 */

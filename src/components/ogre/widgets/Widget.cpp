@@ -196,7 +196,7 @@ namespace Gui {
 		mCommandSuffix = commandSuffix;
 		ConsoleBackend::getSingletonPtr()->registerCommand("show_" + commandSuffix, this, std::string("Shows the ") + mCommandSuffix + " window.");
 		ConsoleBackend::getSingletonPtr()->registerCommand("hide_" + commandSuffix, this, std::string("Hides the ") + mCommandSuffix + " window.");
-
+		ConsoleBackend::getSingletonPtr()->registerCommand("toggleVisibility_" + commandSuffix, this, std::string("Toggles visibility of the ") + mCommandSuffix + " window.");
 	}
 
 	void Widget::runCommand(const std::string &command, const std::string &args)
@@ -208,6 +208,10 @@ namespace Gui {
 		else if(command == "hide_" + mCommandSuffix)
 		{
 			hide();
+		}
+		else if(command == "toggleVisibility_" + mCommandSuffix)
+		{
+			toggleVisibility();
 		}
 	}
 
@@ -226,6 +230,18 @@ namespace Gui {
 		if (mMainWindow) {
 			getMainSheet()->removeChildWindow(mMainWindow);
 			mMainWindow->setVisible(false);
+		}
+	}
+	
+	void  Widget::toggleVisibility()
+	{
+		if (!isVisible())
+		{
+			show();
+		}
+		else
+		{
+			hide();
 		}
 	}
 
