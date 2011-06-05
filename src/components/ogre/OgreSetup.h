@@ -24,9 +24,10 @@
 #define EMBEROGREOGRESETUP_H
 
 #include "EmberOgrePrerequisites.h"
+#include "OgreIncludes.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
-#include "OgreIncludes.h"
+#include "services/config/ConfigListenerContainer.h"
 #include <OgreConfigOptionMap.h>
 #include <OgreFrameListener.h>
 
@@ -45,12 +46,12 @@ class MeshSerializerListener;
 	Instead of creating the Ogre root object and the main render window directly, use this to guarantee that everything is set up correctly.
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class OgreSetup : public Ogre::FrameListener, public ConsoleObject
+class OgreSetup : public Ogre::FrameListener, public ConsoleObject, public ConfigListenerContainer
 {
 public:
 	OgreSetup();
 
-	~OgreSetup();
+	virtual ~OgreSetup();
 
 	/**
 	* Creates the Ogre base system.
@@ -114,6 +115,25 @@ private:
 	 */
 	Ogre::RenderWindow* mRenderWindow;
 
+	/**
+	The icon shown in the top of the window.
+	*/
+	SDL_Surface* mIconSurface;
+
+	/**
+	We'll use our own scene manager factory.
+	*/
+	EmberPagingSceneManagerFactory* mSceneManagerFactory;
+
+	/**
+	The main video surface. Since we use SDL for input we need SDL to handle it too.
+	*/
+	SDL_Surface* mMainVideoSurface;
+
+	/**
+	* @brief Provides the ability to use relative paths for skeletons in meshes.
+	*/
+	MeshSerializerListener* mMeshSerializerListener;
 
 	/**
 	 * @brief Attempts to parse out the user selected geometry options for Ogre.
@@ -136,27 +156,13 @@ private:
 	 */
 	int isExtensionSupported(const char *extension);
 
-
 	/**
-	The icon shown in the top of the window.
-	*/
-	SDL_Surface* mIconSurface;
-
-	/**
-	We'll use our own scene manager factory.
-	*/
-	EmberPagingSceneManagerFactory* mSceneManagerFactory;
-
-	/**
-	The main video surface. Since we use SDL for input we need SDL to handle it too.
-	*/
-	SDL_Surface* mMainVideoSurface;
-
-	/**
-	* @brief Provides the ability to use relative paths for skeletons in meshes.
-	*/
-	MeshSerializerListener* mMeshSerializerListener;
-
+	 * @brief Bind the ability for Ember to catch the mouse to the input:catchmouse key.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable);
 };
 
 inline Ogre::Root* OgreSetup::getRoot() const

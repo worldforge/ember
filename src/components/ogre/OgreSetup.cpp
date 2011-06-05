@@ -69,8 +69,6 @@
 typedef void (*sighandler_t)(int);
 #endif
 
-
-
 extern "C"
 {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
@@ -135,6 +133,9 @@ void OgreSetup::shutdown()
 	// 		SDL_FreeSurface(mMainVideoSurface);
 	// 		mMainVideoSurface = 0;
 	// 	}
+
+	//Release the mouse for safety's sake.
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	S_LOG_INFO("Shutting down SDL.");
 	SDL_Quit();
 	S_LOG_INFO("SDL shut down.");
@@ -245,6 +246,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 extern "C" void shutdownHandler(int sig)
 {
 	std::cerr << "Crashed with signal " << sig << ", will try to shut down SDL gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl;
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	SDL_Quit();
 
 	if (oldSignals[sig] != SIG_DFL && oldSignals[sig] != SIG_IGN) {
@@ -371,10 +373,10 @@ bool OgreSetup::configure(void)
 
 		parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
 
-		SDL_Init( SDL_INIT_VIDEO);
+		SDL_Init(SDL_INIT_VIDEO);
 
 		//this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
-		atexit( SDL_Quit);
+		atexit(SDL_Quit);
 		oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
 		oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
 		oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
@@ -877,7 +879,6 @@ bool OgreSetup::configure(void)
 			SDL_WM_SetIcon(mIconSurface, 0);
 		}
 
-
 #endif
 
 		setStandardValues();
@@ -888,6 +889,7 @@ bool OgreSetup::configure(void)
 		// Register our factory
 		Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
 
+		registerConfigListenerWithDefaults("input", "catchmouse", sigc::mem_fun(*this, &OgreSetup::Config_CatchMouse), true);
 		return true;
 	} else {
 		return false;
@@ -999,6 +1001,20 @@ int OgreSetup::isExtensionSupported(const char *extension)
 	}
 #endif
 	return 0;
+}
+
+void OgreSetup::Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	try {
+		if (variable.is_bool()) {
+			bool enabled = static_cast<bool> (variable);
+			S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
+
+			SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when changing mouse grabbing." << ex);
+	}
 }
 
 }
