@@ -94,6 +94,7 @@ void ShadowCameraSetup::Config_ShadowTextureSize(const std::string& section, con
 {
 	try {
 		if (variable.is_int()) {
+			S_LOG_VERBOSE("Setting shadow texture size: " << static_cast<int>(variable));
 			mSceneMgr.setShadowTextureSize(static_cast<int>(variable));
 		}
 	} catch (const std::exception& ex) {
@@ -110,7 +111,7 @@ void ShadowCameraSetup::Config_ShadowSplitPoints(const std::string& section, con
 			splitPointList[1] = atof(tokeniser.nextToken().c_str());
 			splitPointList[2] = atof(tokeniser.nextToken().c_str());
 			splitPointList[3] = atof(tokeniser.nextToken().c_str());
-			S_LOG_VERBOSE("Setting split points: " << splitPointList[0] << " " << splitPointList[1] << " " << splitPointList[2] << " " << splitPointList[3]);
+			S_LOG_VERBOSE("Setting shadow split points: " << splitPointList[0] << " " << splitPointList[1] << " " << splitPointList[2] << " " << splitPointList[3]);
 			mPssmSetup->setSplitPoints(splitPointList);
 		}
 	} catch (const std::exception& ex) {
@@ -121,6 +122,7 @@ void ShadowCameraSetup::Config_ShadowSplitPadding(const std::string& section, co
 {
 	try {
 		if (variable.is_double()) {
+			S_LOG_VERBOSE("Setting shadow split padding: " << static_cast<double>(variable));
 			mPssmSetup->setSplitPadding(static_cast<double>(variable));
 		}
 	} catch (const std::exception& ex) {
@@ -132,6 +134,7 @@ void ShadowCameraSetup::Config_ShadowOptimalAdjustFactors(const std::string& sec
 {
 	try {
 		if (variable.is_string()) {
+			S_LOG_VERBOSE("Setting shadow optimal adjust factor: " << static_cast<std::string>(variable));
 			Tokeniser tokeniser(variable);
 			mPssmSetup->setOptimalAdjustFactor(0, atof(tokeniser.nextToken().c_str()));
 			mPssmSetup->setOptimalAdjustFactor(1, atof(tokeniser.nextToken().c_str()));
@@ -146,6 +149,7 @@ void ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion(const std::string&
 {
 	try {
 		if (variable.is_bool()) {
+			S_LOG_VERBOSE("Setting shadow use aggressive focus region: " << static_cast<bool>(variable));
 			mPssmSetup->setUseAggressiveFocusRegion(static_cast<bool>(variable));
 		}
 	} catch (const std::exception& ex) {
@@ -156,7 +160,7 @@ void ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion(const std::string&
 void ShadowCameraSetup::Config_ShadowFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	try {
-		if (variable.is_bool()) {
+		if (variable.is_double()) {
 			S_LOG_VERBOSE("Setting shadow far distance: " << static_cast<double>(variable));
 			mSceneMgr.setShadowFarDistance(static_cast<double>(variable));
 		}
