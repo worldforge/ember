@@ -67,8 +67,8 @@ namespace OgreView
 namespace Gui
 {
 
-EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
-	CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mAvatarEntity(avatarEntity), mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
+EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
+	mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
 {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
@@ -92,18 +92,6 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	mTypeTreeAdapter->initialize("game_entity");
 
 	mModelPreviewRenderer = new ModelRenderer(&modelPreview);
-
-}
-
-void EntityCreatorTypeHelper::runCommand(const std::string &command, const std::string &args)
-{
-	if (CreateEntity == command || Make == command) {
-		Eris::TypeService* typeService = mConnection.getTypeService();
-		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);
-		if (typeinfo) {
-			createEntityOfType(typeinfo);
-		}
-	}
 
 }
 
@@ -149,44 +137,6 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args)
 		}
 	}
 	return true;
-}
-
-void EntityCreatorTypeHelper::createEntityOfType(Eris::TypeInfo* typeinfo)
-{
-	Atlas::Objects::Operation::Create c;
-	c->setFrom(mAvatarEntity.getId());
-	//if the avatar is a "creator", i.e. and admin, we will set the TO property
-	//this will bypass all of the server's filtering, allowing us to create any entity and have it have a working mind too
-	if (mAvatarEntity.getType()->isA(mConnection.getTypeService()->getTypeByName("creator"))) {
-		c->setTo(mAvatarEntity.getId());
-	}
-
-	Atlas::Message::MapType msg;
-	msg["loc"] = mAvatarEntity.getLocation()->getId();
-
-	Ogre::Vector3 o_vector(2, 0, 0);
-	Ogre::Vector3 o_pos = Convert::toOgre(mAvatarEntity.getPredictedPos()) + (Convert::toOgre(mAvatarEntity.getOrientation()) * o_vector); //TODO: remove conversions
-
-	// 	WFMath::Vector<3> vector(0,2,0);
-	// 	WFMath::Point<3> pos = avatar->getPosition() + (avatar->getOrientation() * vector);
-	WFMath::Point<3> pos = Convert::toWF<WFMath::Point<3> >(o_pos);
-	WFMath::Quaternion orientation = mAvatarEntity.getOrientation();
-
-	msg["pos"] = pos.toAtlas();
-	if (mName.getText().length() > 0) {
-		msg["name"] = mName.getText().c_str();
-	} else {
-		msg["name"] = typeinfo->getName();
-	}
-	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
-	msg["orientation"] = orientation.toAtlas();
-
-	c->setArgsAsList(Atlas::Message::ListType(1, msg));
-	mConnection.send(c);
-	std::stringstream ss;
-	ss << pos;
-	S_LOG_INFO("Try to create entity of type " << typeinfo->getName() << " at position " << ss.str() );
-
 }
 
 }

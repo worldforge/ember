@@ -195,7 +195,7 @@ function EntityCreator.buildWidget(world)
 		local typesPreviewImage = entityCreator.widget:getWindow("Types/ModelPreviewImage", true)
 		entityCreator.typesCreator = {}
 
-		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getAvatar():getEmberEntity(), world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage)
+		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage)
 		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
 		
 	end

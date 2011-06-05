@@ -38,6 +38,8 @@
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/ModelRepresentationManager.h"
 
+#include "components/ogre/authoring/EntityMaker.h"
+
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "services/input/Input.h"
@@ -65,7 +67,7 @@ namespace OgreView
 {
 
 Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings) :
-	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(0), mIsMovingServerOnly(false), mScene(scene)
+	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(0), mIsMovingServerOnly(false), mScene(scene), mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
@@ -105,6 +107,7 @@ Avatar::~Avatar()
 {
 	mErisAvatarEntity.setAttachmentControlDelegate(0);
 	delete mAvatarAttachmentController;
+	delete mEntityMaker;
 }
 
 void Avatar::runCommand(const std::string &command, const std::string &args)

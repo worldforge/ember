@@ -57,6 +57,9 @@ namespace Camera
 class ThirdPersonCameraMount;
 class CameraSettings;
 }
+namespace Authoring {
+class EntityMaker;
+}
 
 class EmberEntity;
 class AvatarLogger;
@@ -279,7 +282,18 @@ protected:
 	 */
 	bool mIsMovingServerOnly;
 
+	/**
+	 * @brief The scene to which the avatar belongs.
+	 */
 	Scene& mScene;
+
+	/**
+	 * @brief An instance of this makes sure that entities can be created with the "/make" or "/createentity" command.
+	 *
+	 * Note that we'll create an instance of this even if the avatar isn't an admin character. This is to make it easier to do development.
+	 * For future versions we might want to only create this instance if the avatar as an admin.
+	 */
+	Authoring::EntityMaker* mEntityMaker;
 
 	/**
 	 * @brief This method will determine if it's ok to send a small movement change, such as a small deviation direction during an already begun movement to the server.

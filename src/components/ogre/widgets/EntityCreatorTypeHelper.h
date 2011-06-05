@@ -67,17 +67,12 @@ class ModelRenderer;
  * A helper class for creating simple entities directly from entity types.
  * The helper binds to a tree widget, which will be filled with entity types.
  */
-class EntityCreatorTypeHelper : public ConsoleObject
+class EntityCreatorTypeHelper
 {
 public:
 
-	EntityCreatorTypeHelper(Eris::Entity& avatarEntity, Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
+	EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 	virtual ~EntityCreatorTypeHelper();
-
-	const ConsoleCommandWrapper CreateEntity;
-	const ConsoleCommandWrapper Make;
-
-	virtual void runCommand(const std::string &command, const std::string &args);
 
 	/**
 	 * @brief Emitted when an entity should be created from a type.
@@ -86,7 +81,6 @@ public:
 
 protected:
 
-	Eris::Entity& mAvatarEntity;
 	Eris::Connection& mConnection;
 
 
@@ -104,8 +98,6 @@ protected:
 
 	bool createButton_Click(const CEGUI::EventArgs& args);
 	bool typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args);
-
-	void createEntityOfType(Eris::TypeInfo* typeinfo);
 
 	void updatePreview();
 };
