@@ -139,6 +139,60 @@ Ogre::uint32 FoliageLayer::getColorAt(float x, float z)
 	return geom->getSceneManager()->getAmbientLight().getAsARGB();
 }
 
+
+bool FoliageLayer::isColoursEnabled() const
+{
+	Ogre::Technique* tech = material->getBestTechnique();
+	if (tech) {
+		const std::string& name = tech->getName();
+		if (Ogre::StringUtil::endsWith(name, "High", false)) {
+			return false;
+		} else if (Ogre::StringUtil::endsWith(name, "Medium", false)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	return true;
+}
+
+bool FoliageLayer::isNormalsEnabled() const
+{
+	Ogre::Technique* tech = material->getBestTechnique();
+	if (tech) {
+		const std::string& name = tech->getName();
+		if (Ogre::StringUtil::endsWith(name, "High", false)) {
+			return true;
+		} else if (Ogre::StringUtil::endsWith(name, "Medium", false)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	return false;
+}
+
+bool FoliageLayer::isTangentsEnabled() const
+{
+	Ogre::Technique* tech = material->getBestTechnique();
+	if (tech) {
+		const std::string& name = tech->getName();
+		if (Ogre::StringUtil::endsWith(name, "High", false)) {
+			return true;
+		} else if (Ogre::StringUtil::endsWith(name, "Medium", false)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	return false;
+}
+
+bool FoliageLayer::isCastShadowsEnabled() const
+{
+	return false;
+}
+
 }
 
 }

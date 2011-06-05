@@ -71,6 +71,14 @@ public:
 	
 	void configure(Terrain::TerrainManager* terrainManager, const Terrain::TerrainLayerDefinition* terrainLayerDefinition, const Terrain::TerrainFoliageDefinition* foliageDefinition);
 	
+	virtual bool isColoursEnabled() const;
+
+	virtual bool isNormalsEnabled() const;
+
+	virtual bool isTangentsEnabled() const;
+
+	virtual bool isCastShadowsEnabled() const;
+
 protected: 
 	friend class Forests::GrassLoader<FoliageLayer>;
 

@@ -770,6 +770,17 @@ void GrassLayerBase::_updateShaders()
 			//Apply the new material
 			material = tmpMat;
 		}
+
+		Ogre::Technique* tech = material->getBestTechnique();
+		if (tech && tech->getNumPasses()) {
+			Ogre::Pass* pass = tech->getPass(0);
+			if (pass->hasVertexProgram()) {
+				Ogre::GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
+				if (!params.isNull()) {
+					params->setIgnoreMissingParams(true);
+				}
+			}
+		}
 	}
 }
 

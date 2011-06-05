@@ -764,18 +764,21 @@ void GrassLoader<TGrassLayer>::frameUpdate()
 
 		Ogre::Technique* tech = layer->material->getBestTechnique();
 		if (tech && tech->getNumPasses()) {
-			Ogre::GpuProgramParametersSharedPtr params = tech->getPass(0)->getVertexProgramParameters();
-			if (!params.isNull() && layer->animate){
-				//Increment animation frame
-				layer->waveCount += ellapsed * (layer->animSpeed * Ogre::Math::PI);
-				if (layer->waveCount > Ogre::Math::PI*2) layer->waveCount -= Ogre::Math::PI*2;
+			Ogre::Pass* pass = tech->getPass(0);
+			if (pass->hasVertexProgram()) {
+				Ogre::GpuProgramParametersSharedPtr params = pass->getVertexProgramParameters();
+				if (!params.isNull() && layer->animate){
+					//Increment animation frame
+					layer->waveCount += ellapsed * (layer->animSpeed * Ogre::Math::PI);
+					if (layer->waveCount > Ogre::Math::PI*2) layer->waveCount -= Ogre::Math::PI*2;
 
-				//Set vertex shader parameters
-				params->setNamedConstant("time", layer->waveCount);
-				params->setNamedConstant("frequency", layer->animFreq);
+					//Set vertex shader parameters
+					params->setNamedConstant("time", layer->waveCount);
+					params->setNamedConstant("frequency", layer->animFreq);
 
-				Ogre::Vector3 direction = windDir * layer->animMag;
-				params->setNamedConstant("direction", Ogre::Vector4(direction.x, direction.y, direction.z, 0));
+					Ogre::Vector3 direction = windDir * layer->animMag;
+					params->setNamedConstant("direction", Ogre::Vector4(direction.x, direction.y, direction.z, 0));
+				}
 			}
 		}
 	}
@@ -788,6 +791,7 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 	typename std::list<TGrassLayer*>::iterator it;
 	for (it = layerList.begin(); it != layerList.end(); ++it){
 		TGrassLayer *layer = *it;
+		layer->material->prepare();
 
 		// Continue to the next layer if the current page is outside of the layers map boundaries.
 		if(layer->mapBounds.right < page.bounds.left || layer->mapBounds.left > page.bounds.right ||
