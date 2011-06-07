@@ -97,7 +97,7 @@ void OgreSetup::runCommand(const std::string& command, const std::string& args)
 		std::stringstream ss;
 		OgreInfo::diagnose(ss);
 		S_LOG_INFO(ss.str());
-		ConsoleBackend::getSingleton().pushMessage("Ogre diagnosis information has been written to the log.");
+		ConsoleBackend::getSingleton().pushMessage("Ogre diagnosis information has been written to the log.", "info");
 	}
 }
 

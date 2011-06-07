@@ -135,7 +135,7 @@ std::string ModelDefinitionAtlasComposer::composeToFile(Model* model, const std:
 
 			S_LOG_INFO("Creating atlas type " << fileName);
 			composeToStream(exportFile, model, typeName, parentTypeName, scale);
-			// 		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Creating atlas type ") + fileName);
+			// 		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Creating atlas type ") + fileName, "info");
 			return fileName;
 		} catch (const std::exception& e) {
 			S_LOG_WARNING("Error when exporting Model to Atlas data." << e);

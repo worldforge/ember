@@ -65,7 +65,7 @@ end
 
 --simple debug method, prints the string representation of the object to the console
 function debugObject(object)
-	console:pushMessage(tostring(object))
+	console:pushMessage(tostring(object), "info")
 end
 
 --creates a connection between the supplied event and a function, stores the connection object in the supplied table and returns it

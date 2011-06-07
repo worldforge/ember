@@ -168,7 +168,7 @@ void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 		}
 	else { // Else print error message
 		S_LOG_WARNING("Unknown command:" << command);
-		pushMessage(std::string("Unknown command ") + command);
+		pushMessage(std::string("Unknown command ") + command, "error");
 	}
 }
 

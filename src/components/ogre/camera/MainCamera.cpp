@@ -416,11 +416,11 @@ void MainCamera::takeScreenshot()
 	try {
 		const std::string& result = _takeScreenshot();
 		S_LOG_INFO("Screenshot saved at: " << result);
-		ConsoleBackend::getSingletonPtr()->pushMessage("Wrote image: " + result);
+		ConsoleBackend::getSingletonPtr()->pushMessage("Wrote image: " + result, "info");
 	} catch (const std::exception& ex) {
-		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Error when saving screenshot: ") + ex.what());
+		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Error when saving screenshot: ") + ex.what(), "error");
 	} catch (...) {
-		ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.");
+		ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.", "error");
 	}
 }
 

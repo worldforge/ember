@@ -342,7 +342,7 @@ function ModelEdit:SaveModelButton_Clicked(args)
 	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 	local exportPath = modelDefMgr:exportScript(self.definitionPtr)
 	if exportPath ~= "" then
-		console:pushMessage("Model exported to " .. exportPath)
+		console:pushMessage("Model exported to " .. exportPath, "info")
 	end	
 	inspectObject(self.definition:getName())
 
@@ -354,7 +354,7 @@ function ModelEdit:ExportAsAtlasTypeButton_Clicked(args)
 		local composer = Ember.OgreView.Model.ModelDefinitionAtlasComposer:new_local()
 		local exportPath = composer:composeToFile(model, self.definition:getName(), "thing", self.definition:getScale())
 		if exportPath ~= "" then
-			console:pushMessage("Atlas exported to " .. exportPath)
+			console:pushMessage("Atlas exported to " .. exportPath, "info")
 		end	
 	end	
 end

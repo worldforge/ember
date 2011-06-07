@@ -241,7 +241,7 @@ void EmberEntity::onSoundAction(const Atlas::Objects::Operation::RootOperation &
 		const std::string& name = *I;
 		std::string message = getName() + " emits a " + name + ".";
 
-		ConsoleBackend::getSingletonPtr()->pushMessage(message);
+		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
 
 		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") sound action: " << name);
 	}
@@ -298,7 +298,7 @@ void EmberEntity::onAction(const Atlas::Objects::Operation::RootOperation& act)
 		const std::string& name = *I;
 		std::string message = getName() + " performs a " + name + ".";
 
-		ConsoleBackend::getSingletonPtr()->pushMessage(message);
+		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
 
 		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") action: " << name);
 	}
@@ -311,7 +311,7 @@ void EmberEntity::onImaginary(const Atlas::Objects::Root& act)
 	if (act->copyAttr("description", attr) && attr.isString()) {
 		std::string message = getName() + " " + attr.asString() + ".";
 
-		ConsoleBackend::getSingletonPtr()->pushMessage(message);
+		ConsoleBackend::getSingletonPtr()->pushMessage(message, "info");
 
 		S_LOG_VERBOSE("Entity: " << this->getId() << " (" << this->getName() << ") imaginary: " << attr.String());
 	}

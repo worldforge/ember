@@ -136,7 +136,7 @@ void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) con
 
 		S_LOG_INFO("Dumping attributes to " << fileName);
 		entity->dumpAttributes(exportFile, std::cout);
-		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Dumped attributes to ") + fileName);
+		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Dumped attributes to ") + fileName, "info");
 	}
 }
 
