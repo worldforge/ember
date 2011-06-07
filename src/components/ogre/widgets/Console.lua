@@ -269,6 +269,12 @@ end
 --tag can be "" or "error", "warning" or such
 function Console:consoleGotMessage(message, tag)
 	self:appendLine("[colour='" .. self:getConsoleMessageColourForTag(tag) .. "']" .. self:escapeForCEGUI(message), self.systemTab)
+	
+	if tag == "error" or tag == "important" then
+		--user might want to pay attention to the console, either error or an important message was appended
+		self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new(self.mainWindow))
+	end
+	
 	return true
 end
 
