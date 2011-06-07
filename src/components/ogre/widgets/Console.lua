@@ -163,10 +163,15 @@ function Console:escapeForCEGUI(message)
 	return string.gsub(message, "%[", "\\%[")
 end
 
+--Checks whether given line contains name of the player that is currently playing
+function Console:chatMessageContainsPlayerName(line)
+	return line:find(emberOgre:getWorld():getAvatar():getEmberEntity():getName()) ~= nil
+end
+
 function Console:getChatMessageColour(line)
 	local propertyName = "ChatMessageColour"
 	
-	if line:find(emberOgre:getWorld():getAvatar():getEmberEntity():getName()) ~= nil then
+	if self:chatMessageContainsPlayerName(line) then
 		--if the message contains users name, lets make it stand out
 		propertyName = "ChatMessageContainingSelfColour"
 	end
@@ -187,6 +192,11 @@ function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSym
 		self:appendLine("[colour='" .. entityNameColour .. "']" .. self:escapeForCEGUI(entityStartSymbol .. entity:getName() .. entityEndSymbol) .. " [colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
 	else
 		self:appendLine("[colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
+	end
+	
+	if self:chatMessageContainsPlayerName(line) then
+		--user might want to pay attention to the console, another player mentioned his/her name!
+		self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new(self.mainWindow))
 	end
 end
 
@@ -234,9 +244,6 @@ function Console:appendLine(line, tab)
 		tab.unviewedCount = tab.unviewedCount + 1
 		tab.tabWindow:setText(tab.prefix .. "(" .. tab.unviewedCount .. ")")
 	end
-	
-	-- user might want to pay attention to the console, as text was appended in one of the tabs
-	self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new(self.mainWindow))
 end
 
 --Retrieves suitable AARRGGBB colour for console messages based on their tag
