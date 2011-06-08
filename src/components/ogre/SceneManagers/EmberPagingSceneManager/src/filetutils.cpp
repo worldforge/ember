@@ -19,8 +19,10 @@
 #   include <windows.h>
 #   include <direct.h>
 #   include <io.h>
-
-#   define S_ISDIR(mode) (mode&S_IFDIR)
+#   ifndef S_ISDIR
+        //newer mingw has this defined in sys/stat.h
+#      define S_ISDIR(mode) (mode&S_IFDIR)
+#   endif
 #   define STRUCT_STAT  struct _stat
 #   define CHDIR        _chdir
 #   define GETCWD       _getcwd
