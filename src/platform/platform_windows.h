@@ -5,16 +5,17 @@
 //These will speed up windows.h, by excluding rarely used functions.
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
-
+#define _WIN32_IE 0x0500
 #include <windows.h>
 #include <tchar.h>
 #include <io.h>
 #include <direct.h>
+#include <stdio.h> //_snprintf
+#include <string.h> //_stricmp
 
 #define putenv _putenv
 #define unlink _unlink
 #define chdir _chdir
-#define mkdir(path,mode) _mkdir(path)
 #define snprintf _snprintf
 #define stricmp _stricmp
 #define access _access

@@ -31,9 +31,8 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/Tokeniser.h"
 
-#ifdef __WIN32__
-#define WIN32_LEAN_AND_MEAN 1
-#include <Windows.h>
+#ifdef _WIN32
+#include "platform/platform_windows.h"
 
 //we need this for the PathRemoveFileSpec(...) method
 #include <shlwapi.h>

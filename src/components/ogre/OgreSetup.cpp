@@ -40,19 +40,20 @@
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 
+#ifdef _WIN32
+#include <float.h>
+#include "platform/platform_windows.h"
+#else
+#include "framework/binreloc.h"
+#include <GL/glx.h>
+#endif
+
 #ifdef _MSC_VER
 #include <SDL.h>
 #include <SDL_syswm.h>
 #else
 #include <SDL/SDL.h>
 #include <SDL/SDL_syswm.h>
-#endif
-
-#ifdef _WIN32
-#include "platform/platform_windows.h"
-#else
-#include "framework/binreloc.h"
-#include <GL/glx.h>
 #endif
 
 // #include "image/OgreILCodecs.h"
