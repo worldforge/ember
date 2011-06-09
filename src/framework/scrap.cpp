@@ -19,6 +19,10 @@
 #define PUBLIC
 #define PRIVATE	static
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* Determine what type of clipboard we are using */
 #if defined(__unix__) && !defined(__QNXNTO__)
     #define X11_SCRAP
@@ -350,7 +354,7 @@ put_scrap(int type, int srclen, char *src)
       Lock_Display();
       convert_data(type, dst, src, srclen);
       XChangeProperty(SDL_Display, DefaultRootWindow(SDL_Display),
-        XA_CUT_BUFFER0, format, 8, PropModeReplace, dst, dstlen);
+        XA_CUT_BUFFER0, format, 8, PropModeReplace, (unsigned char*)dst, dstlen);
       free(dst);
       if ( lost_scrap() )
         XSetSelectionOwner(SDL_Display, XA_PRIMARY, SDL_Window, CurrentTime);
@@ -640,5 +644,9 @@ PRIVATE int clipboard_filter(const SDL_Event *event)
   return(1);
 }
 #endif /* X11_SCRAP */
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif // WITHOUT_SCRAP

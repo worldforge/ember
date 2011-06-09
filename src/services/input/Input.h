@@ -339,7 +339,7 @@ public:
 
 	/**
 	 * @brief Writes the supplied text to the system clipboard.
-	 * This works on all platform, by using the scrap.c code found in framework.
+	 * This works on all platform, by using the scrap.cpp code found in framework.
 	 * @param text The text to write.
 	 */
 	void writeToClipboard(const std::string& text);
