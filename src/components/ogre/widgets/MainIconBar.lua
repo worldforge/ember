@@ -91,7 +91,7 @@ function MainIconBar:buildWidget()
 		end)
 	
 	--and inventory toggle icon
-	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "question") --FIXME: Wrong icon for now!
+	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "inventory")
 	self.inventoryIcon = self:addIcon("inventory", foreground, "Toggles visibility of the inventory")
 	--start out with the inventory icon hidden, only show it when the user has an avatar
 	self.inventoryIcon:getContainer():setVisible(false)
