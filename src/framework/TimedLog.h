@@ -36,8 +36,9 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param logName The name of the log.
+	 * @param reportStart Whether to also log the start of the task.
 	 */
-	TimedLog(const std::string& logName);
+	TimedLog(const std::string& logName, bool reportStart = false);
 
 	/**
 	 * @brief Dtor.

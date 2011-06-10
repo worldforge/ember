@@ -27,10 +27,13 @@
 namespace Ember
 {
 #ifdef ENABLE_TIMED_LOG
-TimedLog::TimedLog(const std::string& logName) :
+TimedLog::TimedLog(const std::string& logName, bool reportStart) :
 	mLogName(logName), mStartMilliseconds(0), mLastReportMilliseconds(0)
 {
 	mStartMilliseconds = Time::currentTimeMillis();
+	if (reportStart) {
+		S_LOG_VERBOSE("Started task '" << mLogName << "'.");
+	}
 }
 
 TimedLog::~TimedLog()
@@ -60,7 +63,7 @@ void TimedLog::report(const std::string& reportName)
 	mLastReportMilliseconds = currentTime;
 }
 #else
-TimedLog::TimedLog(const std::string& logName)
+TimedLog::TimedLog(const std::string& logName, bool reportStart)
 {
 }
 
