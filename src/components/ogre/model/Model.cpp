@@ -35,6 +35,8 @@
 #include "ModelDefinition.h"
 #include "ModelBackgroundLoader.h"
 
+
+#include "framework/TimeFrame.h"
 #include "framework/TimedLog.h"
 
 #include <OgreTagPoint.h>
@@ -157,7 +159,7 @@ bool Model::createFromDefn()
 		mBackgroundLoader = new ModelBackgroundLoader(*this);
 	}
 
-	if (mBackgroundLoader->poll(0)) {
+	if (mBackgroundLoader->poll(TimeFrame(0))) {
 		timedLog.report("Initial poll.");
 		return createActualModel();
 	}

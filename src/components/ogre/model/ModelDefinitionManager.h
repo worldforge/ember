@@ -33,6 +33,7 @@
 
 
 namespace Ember {
+class TimeFrame;
 namespace OgreView {
 namespace Model {
 
@@ -122,9 +123,9 @@ public:
 	 * @brief Polls all of the background loaders.
 	 * Call this each frame.
 	 * All of the background loaders will have their poll() method called. If the background loader has finished loading it will be removed from the store of loaders and the model will be reloaded.
-	 * @param maxTimeMilliseconds The max time allowed, presented as a future date, in unix time milliseconds.
+	 * @param timeFrame A time frame which can be used to query if there's any time left in the frame to perform actions.
 	 */
-	void pollBackgroundLoaders(long long maxTimeMilliseconds);
+	void pollBackgroundLoaders(const TimeFrame& timeFrame);
 	
 protected:
 

@@ -29,6 +29,7 @@
 
 namespace Ember
 {
+class TimeFrame;
 namespace OgreView
 {
 
@@ -171,10 +172,10 @@ public:
 	/**
 	 * @brief Polls the loading state (which might occur in a background thread).
 	 * If the loading state has progressed it will be updated.
-	 * @param maxTimeMilliseconds The max time allowed, presented as a future date, in unix time milliseconds.
+	 * @param timeFrame A time frame which can be used to query if there's any time left in the frame to perform actions.
 	 * @return True if the loading is complete.
 	 */
-	bool poll(long long maxTimeMilliseconds);
+	bool poll(const TimeFrame& timeFrame);
 
 	/**
 	 * @brief Gets the current loading state.

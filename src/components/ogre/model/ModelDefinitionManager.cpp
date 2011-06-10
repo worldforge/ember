@@ -33,6 +33,10 @@
 
 #include "XMLModelDefinitionSerializer.h"
 
+#include "framework/TimeFrame.h"
+#include "framework/TimedLog.h"
+#include "framework/Time.h"
+
 #include <OgreRoot.h>
 #include <OgreSceneManagerEnumerator.h>
 
@@ -159,16 +163,23 @@ void ModelDefinitionManager::removeBackgroundLoader(ModelBackgroundLoader* loade
 }
 
 
-void ModelDefinitionManager::pollBackgroundLoaders(long long maxLoadingTimeMillis)
+void ModelDefinitionManager::pollBackgroundLoaders(const TimeFrame& timeFrame)
 {
-	for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();)
-	{
-		BackgroundLoaderStore::iterator I_copy = I;
-		ModelBackgroundLoader* loader(*I);
-		++I;
-		if (loader->poll(maxLoadingTimeMillis)) {
-			mBackgroundLoaders.erase(I_copy);
-			loader->reloadModel();
+	if (mBackgroundLoaders.size()) {
+		TimedLog timedLog("ModelDefinitionManager::pollBackgroundLoaders", true);
+		for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();)
+		{
+			BackgroundLoaderStore::iterator I_copy = I;
+			ModelBackgroundLoader* loader(*I);
+			++I;
+			if (loader->poll(timeFrame)) {
+				mBackgroundLoaders.erase(I_copy);
+				loader->reloadModel();
+				timedLog.report();
+			}
+			if (!timeFrame.isTimeLeft()) {
+				break;
+			}
 		}
 	}
 }

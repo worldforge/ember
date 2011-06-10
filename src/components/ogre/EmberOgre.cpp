@@ -61,6 +61,7 @@
 #include "framework/LoggingInstance.h"
 #include "framework/IScriptingProvider.h"
 #include "framework/Time.h"
+#include "framework/TimeFrame.h"
 
 #include "terrain/TerrainLayerDefinitionManager.h"
 
@@ -220,8 +221,8 @@ bool EmberOgre::renderOneFrame()
 		}
 
 		//To keep up a nice framerate we'll only allow four milliseconds for assets loading frame.
-		long long maxLoadingTimeMillis = Time::currentTimeMillis() + 4;
-		mModelDefinitionManager->pollBackgroundLoaders(maxLoadingTimeMillis);
+		TimeFrame timeFrame(4);
+		mModelDefinitionManager->pollBackgroundLoaders(timeFrame);
 
 		return true;
 	} else {
