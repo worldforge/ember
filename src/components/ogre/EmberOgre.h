@@ -59,7 +59,6 @@ class CollisionManager;
  */
 namespace Ember
 {
-class StreamLogObserver;
 class InputCommandMapper;
 class Input;
 namespace OgreView

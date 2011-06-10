@@ -49,7 +49,6 @@
 #include "services/serversettings/ServerSettings.h"
 
 #include "framework/ConsoleBackend.h"
-#include "framework/StreamLogObserver.h"
 #include "framework/Time.h"
 
 #include "components/lua/LuaScriptingProvider.h"

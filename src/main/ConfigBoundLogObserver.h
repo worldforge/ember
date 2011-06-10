@@ -31,8 +31,11 @@ namespace Ember {
 class ConfigService;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ *
+ * @brief A logging observer which is bound to the configuration and changes behaviour in reaction to changed configuration values.
+ *
+ */
 class ConfigBoundLogObserver : public StreamLogObserver, public virtual sigc::trackable
 {
 public:

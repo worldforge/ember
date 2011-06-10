@@ -61,12 +61,18 @@ void ConfigBoundLogObserver::updateFromConfig()
 		}
 		setFilter(importance);
 	}
+	if (mConfigService.itemExists("general", "loggingdetailed")) {
+		varconf::Variable detailed = mConfigService.getValue("general", "loggingdetailed");
+		if (detailed.is_bool()) {
+			setDetailed(static_cast<bool>(detailed));
+		}
+	}
 }
 
 void ConfigBoundLogObserver::ConfigService_EventChangedConfigItem(const std::string& section, const std::string& key)
 {
 	if (section == "general") {
-		if (key == "logginglevel") {
+		if (key == "logginglevel" || key == "loggingdetailed") {
 			updateFromConfig();
 		}
 	}

@@ -34,7 +34,7 @@ static WFMath::TimeStamp startTime(WFMath::TimeStamp::now());
      * Creates a new StreamLogObserver using default values.
      */
     StreamLogObserver::StreamLogObserver(std::ostream &out) 
-        : myOut(out), mStart(WFMath::TimeStamp::now())
+        : myOut(out), mDetailed(false), mStart(WFMath::TimeStamp::now())
     {
     }
 

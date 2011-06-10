@@ -23,8 +23,6 @@
 #ifndef EMBEROGREOGRELOGOBSERVER_H
 #define EMBEROGREOGRELOGOBSERVER_H
 
-#include "EmberOgrePrerequisites.h"
-#include "framework/StreamLogObserver.h"
 #include <OgreLog.h>
 
 namespace Ember {
