@@ -362,7 +362,7 @@ void Model::createLights()
 			ogreLight->setDiffuseColour(I_lights->diffuseColour);
 			ogreLight->setSpecularColour(I_lights->specularColour);
 			ogreLight->setAttenuation(I_lights->range, I_lights->constant, I_lights->linear, I_lights->quadratic);
-
+			ogreLight->setPosition(I_lights->position);
 			//ogreLight->setDiffuseColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
 			//ogreLight->setSpecularColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
 			//ogreLight->setAttenuation(100,1,0,0);
