@@ -24,6 +24,7 @@
 #include "LogObserver.h"
 
 // Included custom library headers
+#include <wfmath/timestamp.h>
 
 // Included system headers
 #include <iostream>
@@ -55,7 +56,24 @@ class StreamLogObserver : public LogObserver
     //======================================================================/
     private:
 
+		/**
+		 * @brief The output stream to which the log will be written.
+		 */
         std::ostream &myOut;
+
+        /**
+         * @brief If true, the output will be detailed.
+         *
+         * Meaning that it will contain millisecond precision as well as the thread id.
+         */
+        bool mDetailed;
+
+        /**
+         * @brief Record the start time.
+         *
+         * To be used when in detailed mode.
+         */
+        WFMath::TimeStamp mStart;
 
     //======================================================================
     // Public Methods
@@ -94,6 +112,14 @@ class StreamLogObserver : public LogObserver
      */
     virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
                                   const Log::MessageImportance & importance, const time_t & timeStamp);
+
+    /**
+     * @brief Sets whether the log output should be detailed or not.
+     *
+     * If detailed is enabled, millisecond timestamp as well as thread id will be included.
+     * @param enabled True if enabled.
+     */
+    void setDetailed(bool enabled);
 
     //----------------------------------------------------------------------
     // Disable Assignment operator

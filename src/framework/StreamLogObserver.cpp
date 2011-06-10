@@ -22,13 +22,19 @@
 
 #include "StreamLogObserver.h"
 #include <ctime>
+#include <boost/thread/thread.hpp>
 
 namespace Ember {
+
+/**
+ * Record the start of the
+ */
+static WFMath::TimeStamp startTime(WFMath::TimeStamp::now());
     /**
      * Creates a new StreamLogObserver using default values.
      */
     StreamLogObserver::StreamLogObserver(std::ostream &out) 
-        : myOut(out)
+        : myOut(out), mStart(WFMath::TimeStamp::now())
     {
     }
 
@@ -59,16 +65,23 @@ namespace Ember {
     void StreamLogObserver::onNewMessage(const std::string & message, const std::string & file, const int & line, 
                                                  const Log::MessageImportance & importance, const time_t & timeStamp)
     {
-        tm * ctm = localtime(&timeStamp); //currentLocalTime was too long, sorry
+        tm ctm;
+        localtime_r(&timeStamp, &ctm); //currentLocalTime was too long, sorry
         
         myOut.fill('0');
         myOut << "[";
         myOut.width(2);
-        myOut << ctm->tm_hour << ":";
+        myOut << ctm.tm_hour << ":";
         myOut.width(2);
-        myOut <<  ctm->tm_min << ":";
+        myOut <<  ctm.tm_min << ":";
         myOut.width(2);			
-        myOut << ctm->tm_sec << "] ";			
+        myOut << ctm.tm_sec;
+        if (mDetailed) {
+        	myOut << "(";
+			myOut.width(7);
+			myOut << ((WFMath::TimeStamp::now() - mStart).milliseconds()) << ":"<<  boost::this_thread::get_id() <<")";
+        }
+        myOut << "] ";
 
         if(importance == Log::CRITICAL)
 		{
@@ -100,4 +113,10 @@ namespace Ember {
         myOut << std::endl;
 
     }
+
+    void StreamLogObserver::setDetailed(bool enabled)
+    {
+    	mDetailed = enabled;
+    }
+
 }; //end namespace Ember
