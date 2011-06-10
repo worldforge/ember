@@ -6,6 +6,7 @@
 		<Property Name='SizingEnabled' Value='false'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Server browser'/>
+		<Property Name='CloseButtonEnabled' Value='False'/>
 		<Window Type='EmberLook/MultiColumnList' Name='ServerList'>
 			<Property Name='UnifiedPosition' Value='{{0.0,1},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1.0,-2.0},{1.0,-35.0}}'/>
