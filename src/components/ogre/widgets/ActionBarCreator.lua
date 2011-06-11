@@ -168,7 +168,7 @@ ActionBarCreator.createdAvatarEntityConnector = createConnector(emberOgre.EventC
 				actionbars = {},
 				defaultActionList = DefaultEntityActions.new(),
 				actionbarCount = 0,
-				erisAvatar = emberServices:getServerService():getAvatar()}
+				erisAvatar = emberOgre:getWorld():getView():getAvatar()}
 			setmetatable(actionbarCreator, {__index = ActionBarCreator})
 			actionbarCreator:buildCEGUIWidget()
 			actionbarCreator:init()
