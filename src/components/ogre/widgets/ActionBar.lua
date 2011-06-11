@@ -143,8 +143,7 @@ end
 function ActionBar:saveAttr()
 	self.actionBarIconManager:saveValue(self.avatarId, self.name, self.name)
 	
-	self.actionBarIconManager:saveValue(self.avatarId, self.name .. "xposoffset", self.widget:getMainWindow():getXPosition():asAbsolute(1.0))
-	self.actionBarIconManager:saveValue(self.avatarId, self.name .. "yposoffset", self.widget:getMainWindow():getYPosition():asAbsolute(1.0))
+	self.actionBarIconManager:saveValue(self.avatarId, self.name .. "position", CEGUI.PropertyHelper:uvector2ToString(self.widget:getMainWindow():getPosition()))
 	
 	for k,v in pairs(self.slots) do
 		local aBarIcon = v.slot:getActionBarIcon()
@@ -166,11 +165,11 @@ end
 --We call this at the initialization of the action bar.
 function ActionBar:loadSavedAttributes()
 	if self.actionBarIconManager:getSavedValue(self.avatarId, self.name) ~= "null" then
-		--Get lua to see the value as a string it can convert to int using tonumber.
-		local xoffset = "".. self.actionBarIconManager:getSavedValue(self.avatarId, self.name .. "xposoffset") ..""
-		local yoffset = "".. self.actionBarIconManager:getSavedValue(self.avatarId, self.name .. "yposoffset") ..""
+		local position = "".. self.actionBarIconManager:getSavedValue(self.avatarId, self.name .. "position") ..""
 		
-		self.widget:getMainWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(1, tonumber(xoffset)), CEGUI.UDim(1, tonumber(yoffset))))
+		if position ~= "" then
+			self.widget:getMainWindow():setPosition(CEGUI.PropertyHelper:stringToUVector2(position))
+		end
 	end
 	
 	for k,v in pairs(self.slots) do
