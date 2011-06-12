@@ -57,7 +57,7 @@ datadir=${prefix}/share/ember
 media_user_dir=${datadir}/media/user
 
 LD_LIBRARY=$prefix/lib:$LD_LIBRARY
-LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY
 export LD_LIBRARY_PATH
 
