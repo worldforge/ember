@@ -242,7 +242,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 typedef std::map<std::string, Label*> LabelMap;
 typedef std::vector<Label*> LabelStore;
 typedef std::stack<Label*> LabelStack;
-typedef std::vector<EntityObserver*> EntityObserverStore;
+typedef std::map<Eris::Entity*, EntityObserver*> EntityObserverStore;
 typedef std::vector<Eris::TypeInfo*> TypeInfoStore;
 friend class IngameChatWidget::EntityObserver;
 public:
@@ -253,7 +253,7 @@ public:
 
 	void removeWidget(const std::string& windowName);
 
-	void removeEntityObserver(EntityObserver* observer);
+	void removeEntityObserver(Eris::Entity* entity);
 
 	WidgetPool<Label>& getLabelPool();
 	WidgetPool<ChatText>& getChatTextPool();
@@ -292,6 +292,13 @@ protected:
 	 * @param entity A newly created or seen entity.
 	 */
 	void entityArrivedFromServer(EmberEntity& entity);
+
+	/**
+	 * @brief Called when the "message" attribute of an entity changes.
+	 * @param attributeValue The new value.
+	 * @param modelRepresentation A model representation which is bound to the entity which changed.
+	 */
+	void entityMessageUpdated(const Atlas::Message::Element& attributeValue, Model::ModelRepresentation* modelRepresentation);
 
 
 	EntityObserverStore mEntityObservers;

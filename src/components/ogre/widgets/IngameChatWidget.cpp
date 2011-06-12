@@ -57,6 +57,7 @@
 #include <Eris/Avatar.h>
 
 #include <sigc++/slot.h>
+#include <sigc++/bind.h>
 
 #include <OgreCamera.h>
 #include <OgreNode.h>
@@ -135,28 +136,43 @@ void IngameChatWidget::View_EntityCreated(Eris::Entity* entity)
 
 void IngameChatWidget::entityArrivedFromServer(EmberEntity& entity)
 {
-	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
-	if (modelRepresentation) {
-		for (TypeInfoStore::iterator I = mLabelTypes.begin(); I != mLabelTypes.end(); ++I) {
-			if (entity.getType()->isA(*I)) {
-				if (mAvatarEntityId != entity.getId()) {
+	if (mAvatarEntityId != entity.getId()) {
+		//Either create an observer if the entity belongs to any of the types which should have labels, or if it contains a message.
+		Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
+		if (modelRepresentation) {
+			for (TypeInfoStore::iterator I = mLabelTypes.begin(); I != mLabelTypes.end(); ++I) {
+				if (entity.getType()->isA(*I)) {
 					EntityObserver* observer = new EntityObserver(*this, *modelRepresentation);
-					mEntityObservers.push_back(observer);
+					mEntityObservers.insert(EntityObserverStore::value_type(&entity, observer));
+					return;
 				}
-				break;
+			}
+			if (entity.hasAttr("message")) {
+				EntityObserver* observer = new EntityObserver(*this, *modelRepresentation);
+				mEntityObservers.insert(EntityObserverStore::value_type(&entity, observer));
+			} else {
+				//If no message, create a listener for any future message.
+				entity.observe("message", sigc::bind(sigc::mem_fun(*this, &IngameChatWidget::entityMessageUpdated), modelRepresentation));
 			}
 		}
+
+	}
+}
+
+void IngameChatWidget::entityMessageUpdated(const Atlas::Message::Element& attributeValue, Model::ModelRepresentation* modelRepresentation)
+{
+	//Check if there's no observer, and create one if so.
+	EntityObserverStore::const_iterator I = mEntityObservers.find(&modelRepresentation->getEntity());
+	if (I == mEntityObservers.end()) {
+		EntityObserver* observer = new EntityObserver(*this, *modelRepresentation);
+		mEntityObservers.insert(EntityObserverStore::value_type(&modelRepresentation->getEntity(), observer));
 	}
 }
 
 
-void IngameChatWidget::removeEntityObserver(EntityObserver* observer)
+void IngameChatWidget::removeEntityObserver(Eris::Entity* entity)
 {
-	EntityObserverStore::iterator I = std::find(mEntityObservers.begin(), mEntityObservers.end(), observer);
-	if (I != mEntityObservers.end()) {
-		mEntityObservers.erase(I);
-	}
-	delete observer;
+	mEntityObservers.erase(entity);
 }
 
 WidgetPool<IngameChatWidget::Label>& IngameChatWidget::getLabelPool()
@@ -220,6 +236,7 @@ IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, M
 	mExternalSlot = sigc::mem_fun(*this, &IngameChatWidget::EntityObserver::entity_attributeChanged);
 	entity.observe("external", mExternalSlot);
 	entity.observe("name", mExternalSlot);
+	entity.observe("message", mExternalSlot);
 	entity_VisibilityChanged(entity.isVisible());
 }
 
@@ -239,7 +256,8 @@ void IngameChatWidget::EntityObserver::entity_VisibilityChanged(bool visible)
 
 void IngameChatWidget::EntityObserver::entity_BeingDeleted()
 {
-	mChatWidget.removeEntityObserver(this);
+	mChatWidget.removeEntityObserver(&mModelRepresentation.getEntity());
+	delete this;
 }
 
 void IngameChatWidget::EntityObserver::entity_Say(const Atlas::Objects::Root& talk)
@@ -387,16 +405,25 @@ void IngameChatWidget::Label::reset()
 
 void IngameChatWidget::Label::updateEntityName()
 {
-	std::string entityName(getEntity()->getName());
-	//	Window* nameWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "EntityName"));
-	//if the entity is controlled by a player, mark that
-	if (getEntity()->hasAttr("external")) {
-		const Atlas::Message::Element& externalAttr = getEntity()->valueOfAttr("external");
-		if (externalAttr.isNum() && externalAttr.asNum() == 1) {
-			entityName = "!" + getEntity()->getName() + "!";
+	//If there's a message, show that. Else show the name.
+	if (getEntity()->hasAttr("message")) {
+		const Atlas::Message::Element& messageElement = getEntity()->valueOfAttr("message");
+		if (messageElement.isString()) {
+			mWindow->setText(messageElement.asString());
 		}
+	} else {
+
+		std::string entityName(getEntity()->getName());
+		//	Window* nameWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "EntityName"));
+		//if the entity is controlled by a player, mark that
+		if (getEntity()->hasAttr("external")) {
+			const Atlas::Message::Element& externalAttr = getEntity()->valueOfAttr("external");
+			if (externalAttr.isNum() && externalAttr.asNum() == 1) {
+				entityName = "!" + getEntity()->getName() + "!";
+			}
+		}
+		mWindow->setText(entityName);
 	}
-	mWindow->setText(entityName);
 }
 
 EmberEntity * IngameChatWidget::Label::getEntity()
