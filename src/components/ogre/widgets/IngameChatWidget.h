@@ -156,6 +156,13 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			 */
 			void removeChatText();
 
+			/**
+			 * @brief Resets the label.
+			 *
+			 * This involves removing any chat texts.
+			 */
+			void reset();
+
 		protected:
 
 			CEGUI::Window* mWindow;
@@ -246,36 +253,59 @@ public:
 
 	void removeWidget(const std::string& windowName);
 
-// 	Label* getLabel();
-// 	void returnLabel(Label* label);
-
 	void removeEntityObserver(EntityObserver* observer);
 
 	WidgetPool<Label>& getLabelPool();
 	WidgetPool<ChatText>& getChatTextPool();
 
-	float getTimeShown() {return mTimeShown;}
+	float getTimeShown();
 
 	CEGUI::Window* getLabelSheet();
 
 protected:
 
+	/**
+	 * @brief Listen to the Eris::View::EntitySeen event.
+	 * @param entity The seen entity.
+	 */
 	void View_EntitySeen(Eris::Entity* entity);
+
+	/**
+	 * @brief Listen to the Eris::View::EntityCreated event.
+	 * @param entity The created entity.
+	 */
+	void View_EntityCreated(Eris::Entity* entity);
+
+	/**
+	 * @brief Listen to the world created event, and attach listeners.
+	 * @param world The new world.
+	 */
 	void EmberOgre_WorldCreated(World& world);
 
 	void Config_TimeShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 	void Config_DistanceShown(const std::string& section, const std::string& key, varconf::Variable& variable);
 
+	/**
+	 * @brief Called whenever an entity has arrived from the server.
+	 *
+	 * Either through being seen or being created. This will inspect the entity and set up any observers if needed.
+	 * @param entity A newly created or seen entity.
+	 */
+	void entityArrivedFromServer(EmberEntity& entity);
 
 
 	EntityObserverStore mEntityObservers;
 
 	TypeInfoStore mLabelTypes;
 
-	//the length in seconds a window should be shown after it has been activated
+	/**
+	 * @brief The length in seconds a window should be shown after it has been activated.
+	 */
 	float mTimeShown;
 
-	//how far away, in meters, the window should be visible
+	/**
+	 * @brief How far away, in meters, the window should be visible.
+	 */
 	float mDistanceShown;
 
 	LabelCreator mLabelCreator;
@@ -292,7 +322,13 @@ protected:
 
 };
 
-inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() { return mElapsedTimeSinceLastUpdate;}
+inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() {
+	return mElapsedTimeSinceLastUpdate;
+}
+
+inline float IngameChatWidget::getTimeShown() {
+	return mTimeShown;
+}
 
 
 }

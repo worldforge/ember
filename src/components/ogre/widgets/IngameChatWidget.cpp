@@ -118,17 +118,28 @@ void IngameChatWidget::EmberOgre_WorldCreated(World& world)
 	mLabelTypes.push_back(typeService->getTypeByName("character"));
 
 	world.getView().EntitySeen.connect(sigc::mem_fun(*this, &IngameChatWidget::View_EntitySeen));
+	world.getView().EntityCreated.connect(sigc::mem_fun(*this, &IngameChatWidget::View_EntityCreated));
+
 	mAvatarEntityId = world.getView().getAvatar()->getId();
 }
 
 void IngameChatWidget::View_EntitySeen(Eris::Entity* entity)
 {
-	EmberEntity* emberEntity = static_cast<EmberEntity*> (entity);
-	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(*emberEntity);
+	entityArrivedFromServer(static_cast<EmberEntity&> (*entity));
+}
+
+void IngameChatWidget::View_EntityCreated(Eris::Entity* entity)
+{
+	entityArrivedFromServer(static_cast<EmberEntity&> (*entity));
+}
+
+void IngameChatWidget::entityArrivedFromServer(EmberEntity& entity)
+{
+	Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity);
 	if (modelRepresentation) {
 		for (TypeInfoStore::iterator I = mLabelTypes.begin(); I != mLabelTypes.end(); ++I) {
-			if (entity->getType()->isA(*I)) {
-				if (mAvatarEntityId != entity->getId()) {
+			if (entity.getType()->isA(*I)) {
+				if (mAvatarEntityId != entity.getId()) {
 					EntityObserver* observer = new EntityObserver(*this, *modelRepresentation);
 					mEntityObservers.push_back(observer);
 				}
@@ -137,6 +148,7 @@ void IngameChatWidget::View_EntitySeen(Eris::Entity* entity)
 		}
 	}
 }
+
 
 void IngameChatWidget::removeEntityObserver(EntityObserver* observer)
 {
@@ -208,6 +220,7 @@ IngameChatWidget::EntityObserver::EntityObserver(IngameChatWidget& chatWidget, M
 	mExternalSlot = sigc::mem_fun(*this, &IngameChatWidget::EntityObserver::entity_attributeChanged);
 	entity.observe("external", mExternalSlot);
 	entity.observe("name", mExternalSlot);
+	entity_VisibilityChanged(entity.isVisible());
 }
 
 IngameChatWidget::EntityObserver::~EntityObserver()
@@ -359,11 +372,17 @@ void IngameChatWidget::Label::removeChatText()
 void IngameChatWidget::Label::setModelRepresentation(Model::ModelRepresentation* modelRepresentation)
 {
 	mModelRepresentation = modelRepresentation;
+	reset();
 	try {
 		updateEntityName();
 	} catch (const Exception& ex) {
 		S_LOG_FAILURE("Could not get widget EntityName." << ex);
 	}
+}
+
+void IngameChatWidget::Label::reset()
+{
+	removeChatText();
 }
 
 void IngameChatWidget::Label::updateEntityName()
@@ -555,6 +574,8 @@ void IngameChatWidget::ChatText::clearResponses()
 
 void IngameChatWidget::ChatText::attachToLabel(Label* label)
 {
+	clearResponses();
+	mTextWidget->setText("");
 	mLabel = label;
 	if (label) {
 		mLabel->getWindow()->addChildWindow(mWindow);
