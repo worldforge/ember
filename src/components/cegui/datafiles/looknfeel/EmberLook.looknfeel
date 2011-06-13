@@ -4820,7 +4820,9 @@
                     <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
                     <Dim type="TopEdge" ><AbsoluteDim value="0" /></Dim>
                     <Dim type="RightEdge" ><UnifiedDim scale="1.0" type="RightEdge" /></Dim>
-                    <Dim type="BottomEdge" ><UnifiedDim scale="1.0" type="BottomEdge" /></Dim>
+					<Dim type="BottomEdge" >
+                        <UnifiedDim scale="1.0" type="BottomEdge" />
+                    </Dim>
                 </Area>
                 <ImageProperty name="BorderHoverImage" />
                 <VertFormat type="CentreAligned" />
@@ -5238,6 +5240,12 @@
 	<WidgetLook name="EmberLook/QuickHelpFrameWindow">
 		<!-- Martin Preisler: This is a prime candidate for WidgetLook inheriting that was added in CEGUI 0.8 -->
 		
+		<!--
+		This property is used to store previous quick help's position so that when it's shown again it
+		slides back to the proper position
+		-->
+		<PropertyDefinition name="OldUnifiedPosition" initialValue="{{0, 0}, {0, 0}}" />
+		
 		<PropertyLinkDefinition name="CaptionColour" widget="__auto_titlebar__" targetProperty="CaptionColour" initialValue="FF000000" />
 		<PropertyLinkDefinition name="TitlebarFont" widget="__auto_titlebar__" targetProperty="Font" />
 		<Property name="NSSizingCursorImage" value="set:EmberLook image:MouseNoSoCursor" />
@@ -5246,12 +5254,6 @@
 		<Property name="NESWSizingCursorImage" value="set:EmberLook image:MouseNeSwCursor" />
 		<Property name="UnifiedMinSize" value="{{0.1,0},{0.1,0}}" />
 		<Property name="AutoRenderingSurface" value="True" />
-		
-		<!--
-		This property is used to store previous quick help's position so that when it's shown again it
-		slides back to the proper position
-		-->
-		<PropertyDefinition name="OldUnifiedPosition" initialValue="{{0, 0}, {0, 0}}" />
 		
 		<NamedArea name="ClientWithTitleWithFrame">
 			<Area>
