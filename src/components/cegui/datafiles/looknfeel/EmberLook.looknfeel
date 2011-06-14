@@ -5486,7 +5486,7 @@
 	</WidgetLook>
 	<!--
 	***************************************************
-	EmberLook/Button
+	EmberLook/IngameChatResponseButton
 	***************************************************
 	-->
 	<WidgetLook name="EmberLook/IngameChatResponseButton">
@@ -5776,6 +5776,83 @@
 				<Section section="disabled">
 					<Colours topLeft="FFDFDFDF" topRight="FFDFDFDF" bottomLeft="FFDFDFDF" bottomRight="FFDFDFDF" />
 				</Section>
+				<Section section="label">
+					<ColourRectProperty name="DisabledTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+	</WidgetLook>
+	<!--
+	***************************************************
+	EmberLook/IngameChatTextButton
+	***************************************************
+	-->
+	<WidgetLook name="EmberLook/IngameChatTextButton">
+		<PropertyDefinition name="NormalTextColour" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990" redrawOnWrite="true" />
+		<PropertyDefinition name="HoverTextColour" initialValue="tl:FFffc990 tr:FFffc990 bl:FFffc990 br:FFffc990" redrawOnWrite="true" />
+		<PropertyDefinition name="PushedTextColour" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990" redrawOnWrite="true" />
+		<PropertyDefinition name="DisabledTextColour" initialValue="FF888888" redrawOnWrite="true" />
+		<Property name="Font" value="DejaVuSans-Bold-8" />
+		
+		<ImagerySection name="label">
+			<TextComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="5" />
+					</Dim>
+					<Dim type="TopEdge">
+						<AbsoluteDim value="5" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<AbsoluteDim value="5" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<AbsoluteDim value="5" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+				</Area>
+				<VertFormat type="TopAligned" />
+				<HorzFormat type="WordWrapLeftAligned" />
+			</TextComponent>
+		</ImagerySection>
+		
+		<StateImagery name="Normal">
+			<Layer>
+				<Section section="label">
+					<ColourRectProperty name="NormalTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+		<StateImagery name="Hover">
+			<Layer>
+				<Section section="label">
+					<ColourRectProperty name="HoverTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+		<StateImagery name="Pushed">
+			<Layer>
+				<Section section="label">
+					<ColourRectProperty name="PushedTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+		<StateImagery name="PushedOff">
+			<Layer>
+				<Section section="label">
+					<ColourRectProperty name="HoverTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+		<StateImagery name="Disabled">
+			<Layer>
 				<Section section="label">
 					<ColourRectProperty name="DisabledTextColour" />
 				</Section>
