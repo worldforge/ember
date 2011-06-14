@@ -504,55 +504,34 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 
 		//for each response, create a button
 		const std::vector<std::string>& responses = mLabel->getEntity()->getSuggestedResponses();
-		std::vector<std::string>::const_iterator I = responses.begin();
-		std::vector<std::string>::const_iterator I_end = responses.end();
-		int i = 0;
-		std::stringstream ss;
 
 		float heightSize = 1.0f;
 		if (responses.size() > 0) {
 			heightSize = 1.0f / responses.size();
 		}
 
+		std::vector<std::string>::const_iterator I = responses.begin();
+		std::vector<std::string>::const_iterator I_end = responses.end();
+		int i = 0;
+		std::stringstream ss;
+		
 		for (; I != I_end; ++I) {
 			std::stringstream ss_;
 			ss_ << i;
-			PushButton* responseTextButton = static_cast<PushButton*> (WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/Button", mPrefix + "Response/" + ss_.str()));
-			GUISheet* responseText = static_cast<GUISheet*> (WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/StaticText", mPrefix + "ResponseText/" + ss_.str()));
+			PushButton* responseTextButton = static_cast<PushButton*> (WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/IngameChatResponseButton", mPrefix + "Response/" + ss_.str()));
 
 			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click );
-			responseText->setText(*I);
-			responseText->setSize(UVector2(UDim(0.8f, 0), UDim(0.9f, 0)));
-			responseText->setPosition(UVector2(UDim(0.1f, 0), UDim(0.05f, 0)));
-			responseText->setProperty("HorzFormatting", "WordWrapLeftAligned");
-			responseText->setProperty("FrameEnabled", "false");
-			responseText->setProperty("BackgroundEnabled", "false");
-			responseText->setProperty("Font", "DejaVuSans-Bold-8");
-			responseText->setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990");
-
-			responseText->setInheritsAlpha(true);
-			//we need to disable and deactivate it so it won't receive any input (input should go to the button instead)
-			responseText->deactivate();
-			responseText->disable();
 
 			responseTextButton->setSize(UVector2(UDim(1.0f, 0), UDim(heightSize, 0.0f)));
 			responseTextButton->setPosition(UVector2(UDim(0.0f, 0), UDim(i * heightSize, 0.0f)));
 			responseTextButton->setInheritsAlpha(true);
-			//hide the button
-			//responseTextButton->setAlpha(0.0f);
-			responseTextButton->addChildWindow(responseText);
-			responseTextButton->setTooltipText(*I);
+			responseTextButton->setText(*I);
 			mResponseWidget->addChildWindow(responseTextButton);
 			mResponseTextWidgets.push_back(responseTextButton);
 
 			++i;
-
-			// 			ss << *I << "\n";
 		}
-		//responseWidget->setText(ss.str());
-
 	}
-
 }
 
 bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& args)
@@ -560,7 +539,7 @@ bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& ar
 	const MouseEventArgs *mouseArgs = static_cast<const MouseEventArgs*> (&args);
 	if (mouseArgs) {
 		//each button contains a static text window, which is the one containg the actual text
-		const String text = mouseArgs->window->getChild(0)->getText();
+		const String text = mouseArgs->window->getText();
 		EmberServices::getSingleton().getServerService().say(std::string(text.c_str()));
 		clearResponses();
 	}

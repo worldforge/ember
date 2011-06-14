@@ -5484,4 +5484,302 @@
 			<Subscription event="InterruptTransitions" action="Pause" />
 		</AnimationDefinition>
 	</WidgetLook>
+	<!--
+	***************************************************
+	EmberLook/Button
+	***************************************************
+	-->
+	<WidgetLook name="EmberLook/IngameChatResponseButton">
+		<PropertyDefinition name="NormalTextColour" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990" redrawOnWrite="true" />
+		<PropertyDefinition name="HoverTextColour" initialValue="tl:FFffc990 tr:FFffc990 bl:FFffc990 br:FFffc990" redrawOnWrite="true" />
+		<PropertyDefinition name="PushedTextColour" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990" redrawOnWrite="true" />
+		<PropertyDefinition name="DisabledTextColour" initialValue="FF888888" redrawOnWrite="true" />
+		<Property name="Font" value="DejaVuSans-Bold-8" />
+		
+		<ImagerySection name="label">
+			<TextComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="5" />
+					</Dim>
+					<Dim type="TopEdge">
+						<AbsoluteDim value="5" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<AbsoluteDim value="5" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<AbsoluteDim value="5" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+				</Area>
+				<VertFormat type="CentreAligned" />
+				<HorzFormat type="WordWrapLeftAligned" />
+			</TextComponent>
+		</ImagerySection>
+		<ImagerySection name="normal">
+			<FrameComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="TopEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge" />
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge" />
+					</Dim>
+				</Area>
+				<Image type="TopLeftCorner" imageset="EmberLook" image="ButtonNormalTopLeft" />
+				<Image type="TopRightCorner" imageset="EmberLook" image="ButtonNormalTopRight" />
+				<Image type="BottomLeftCorner" imageset="EmberLook" image="ButtonNormalBottomLeft" />
+				<Image type="BottomRightCorner" imageset="EmberLook" image="ButtonNormalBottomRight" />
+				<Image type="LeftEdge" imageset="EmberLook" image="ButtonNormalLeft" />
+				<Image type="TopEdge" imageset="EmberLook" image="ButtonNormalTop" />
+				<Image type="RightEdge" imageset="EmberLook" image="ButtonNormalRight" />
+				<Image type="BottomEdge" imageset="EmberLook" image="ButtonNormalBottom" />
+			</FrameComponent>
+			<ImageryComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<ImageDim imageset="EmberLook" image="ButtonNormalLeft" dimension="Width" />
+					</Dim>
+					<Dim type="TopEdge">
+						<ImageDim imageset="EmberLook" image="ButtonNormalTop" dimension="Height" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="ButtonNormalRight" dimension="Width" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="ButtonNormalBottom" dimension="Height" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+				</Area>
+				<Image imageset="EmberLook" image="Background" />
+				<Colours topLeft="ffa13011" topRight="ffa13011" bottomLeft="ffdc623e" bottomRight="ffdc623e" />
+				<VertFormat type="Stretched" />
+				<HorzFormat type="Stretched" />
+			</ImageryComponent>
+		</ImagerySection>
+		<ImagerySection name="hover">
+			<FrameComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="TopEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge" />
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge" />
+					</Dim>
+				</Area>
+				<Image type="TopLeftCorner" imageset="EmberLook" image="ButtonHoverTopLeft" />
+				<Image type="TopRightCorner" imageset="EmberLook" image="ButtonHoverTopRight" />
+				<Image type="BottomLeftCorner" imageset="EmberLook" image="ButtonHoverBottomLeft" />
+				<Image type="BottomRightCorner" imageset="EmberLook" image="ButtonHoverBottomRight" />
+				<Image type="LeftEdge" imageset="EmberLook" image="ButtonHoverLeft" />
+				<Image type="TopEdge" imageset="EmberLook" image="ButtonHoverTop" />
+				<Image type="RightEdge" imageset="EmberLook" image="ButtonHoverRight" />
+				<Image type="BottomEdge" imageset="EmberLook" image="ButtonHoverBottom" />
+			</FrameComponent>
+			<ImageryComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<ImageDim imageset="EmberLook" image="ButtonHoverLeft" dimension="Width" />
+					</Dim>
+					<Dim type="TopEdge">
+						<ImageDim imageset="EmberLook" image="ButtonHoverTop" dimension="Height" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="ButtonHoverRight" dimension="Width" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="ButtonHoverBottom" dimension="Height" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+				</Area>
+				<Image imageset="EmberLook" image="Background" />
+				<Colours topLeft="ffa13011" topRight="ffa13011" bottomLeft="ffdc623e" bottomRight="ffdc623e" />
+				<VertFormat type="Stretched" />
+				<HorzFormat type="Stretched" />
+			</ImageryComponent>
+		</ImagerySection>
+		<ImagerySection name="pushed">
+			<FrameComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="TopEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge" />
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge" />
+					</Dim>
+				</Area>
+				<Image type="TopLeftCorner" imageset="EmberLook" image="ButtonPushedTopLeft" />
+				<Image type="TopRightCorner" imageset="EmberLook" image="ButtonPushedTopRight" />
+				<Image type="BottomLeftCorner" imageset="EmberLook" image="ButtonPushedBottomLeft" />
+				<Image type="BottomRightCorner" imageset="EmberLook" image="ButtonPushedBottomRight" />
+				<Image type="LeftEdge" imageset="EmberLook" image="ButtonPushedLeft" />
+				<Image type="TopEdge" imageset="EmberLook" image="ButtonPushedTop" />
+				<Image type="RightEdge" imageset="EmberLook" image="ButtonPushedRight" />
+				<Image type="BottomEdge" imageset="EmberLook" image="ButtonPushedBottom" />
+			</FrameComponent>
+			<ImageryComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<ImageDim imageset="EmberLook" image="ButtonPushedLeft" dimension="Width" />
+					</Dim>
+					<Dim type="TopEdge">
+						<ImageDim imageset="EmberLook" image="ButtonPushedTop" dimension="Height" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="ButtonPushedRight" dimension="Width" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="ButtonPushedBottom" dimension="Height" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+				</Area>
+				<Image imageset="EmberLook" image="Background" />
+				<Colours topLeft="ffdc623e" topRight="ffdc623e" bottomLeft="ffa13011" bottomRight="ffa13011" />
+				<VertFormat type="Stretched" />
+				<HorzFormat type="Stretched" />
+			</ImageryComponent>
+		</ImagerySection>
+		<ImagerySection name="disabled">
+			<FrameComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="TopEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge" />
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge" />
+					</Dim>
+				</Area>
+				<Image type="TopLeftCorner" imageset="EmberLook" image="ButtonNormalTopLeft" />
+				<Image type="TopRightCorner" imageset="EmberLook" image="ButtonNormalTopRight" />
+				<Image type="BottomLeftCorner" imageset="EmberLook" image="ButtonNormalBottomLeft" />
+				<Image type="BottomRightCorner" imageset="EmberLook" image="ButtonNormalBottomRight" />
+				<Image type="LeftEdge" imageset="EmberLook" image="ButtonNormalLeft" />
+				<Image type="TopEdge" imageset="EmberLook" image="ButtonNormalTop" />
+				<Image type="RightEdge" imageset="EmberLook" image="ButtonNormalRight" />
+				<Image type="BottomEdge" imageset="EmberLook" image="ButtonNormalBottom" />
+			</FrameComponent>
+			<ImageryComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<ImageDim imageset="EmberLook" image="ButtonNormalLeft" dimension="Width" />
+					</Dim>
+					<Dim type="TopEdge">
+						<ImageDim imageset="EmberLook" image="ButtonNormalTop" dimension="Height" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="ButtonNormalRight" dimension="Width" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="ButtonNormalBottom" dimension="Height" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+				</Area>
+				<Image imageset="EmberLook" image="Background" />
+				<VertFormat type="Stretched" />
+				<HorzFormat type="Stretched" />
+			</ImageryComponent>
+		</ImagerySection>
+		<StateImagery name="Normal">
+			<Layer>
+				<Section section="normal" />
+				<Section section="label">
+					<ColourRectProperty name="NormalTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+		<StateImagery name="Hover">
+			<Layer>
+				<Section section="hover" />
+				<Section section="label">
+					<ColourRectProperty name="HoverTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+		<StateImagery name="Pushed">
+			<Layer>
+				<Section section="pushed" />
+				<Section section="label">
+					<ColourRectProperty name="PushedTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+		<StateImagery name="PushedOff">
+			<Layer>
+				<Section section="hover" />
+				<Section section="label">
+					<ColourRectProperty name="HoverTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+		<StateImagery name="Disabled">
+			<Layer>
+				<Section section="disabled">
+					<Colours topLeft="FFDFDFDF" topRight="FFDFDFDF" bottomLeft="FFDFDFDF" bottomRight="FFDFDFDF" />
+				</Section>
+				<Section section="label">
+					<ColourRectProperty name="DisabledTextColour" />
+				</Section>
+			</Layer>
+		</StateImagery>
+	</WidgetLook>
 </Falagard>
