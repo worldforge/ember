@@ -183,10 +183,11 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 	{
 		public:
 			LabelCreator(IngameChatWidget& ingameChatWidget);
-			virtual ~LabelCreator() {}
+			virtual ~LabelCreator();
 			virtual IngameChatWidget::Label* createWidget(unsigned int currentPoolSize);
 		protected:
 			IngameChatWidget& mIngameChatWidget;
+			CEGUI::Window* mLayout;
 	};
 
 	class ChatText : public virtual sigc::trackable

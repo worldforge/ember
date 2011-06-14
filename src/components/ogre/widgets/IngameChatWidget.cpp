@@ -436,16 +436,23 @@ void IngameChatWidget::Label::updateText(const std::string & line)
 }
 
 IngameChatWidget::LabelCreator::LabelCreator(IngameChatWidget& ingameChatWidget) :
-	mIngameChatWidget(ingameChatWidget)
+	mIngameChatWidget(ingameChatWidget),
+	mLayout(WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "Label.layout"))
 {
+}
+
+IngameChatWidget::LabelCreator::~LabelCreator()
+{
+	WindowManager::getSingleton().destroyWindow(mLayout);
 }
 
 IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned int currentPoolSize)
 {
-	//there is no chat window for this entity, let's create one
+	//there is no chat window for this entity, let's create one from the loaded layout (by cloning)
 	std::stringstream ss;
 	ss << "Label/" << currentPoolSize << "/";
-	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "Label.layout", ss.str());
+	//clones the entire layout hierarchy (even though it's just one window for now)
+	Window* window = mLayout->clone(ss.str() + "EntityName", true);
 	//We don't want the labels to prevent the user from picking entities in the world.
 	window->setMousePassThroughEnabled(true);
 	window->setRiseOnClickEnabled(false);
