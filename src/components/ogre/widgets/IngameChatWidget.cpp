@@ -462,10 +462,13 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 }
 
 IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& prefix) :
-	mLabel(0), mWindow(window), mTextWidget(0), mResponseWidget(0), mElapsedTimeSinceLastUpdate(0.0f), mPrefix(prefix)
+	mLabel(0),
+	mWindow(window),
+	mTextWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Text")),
+	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/ResponseList")),
+	mElapsedTimeSinceLastUpdate(0.0f),
+	mPrefix(prefix)
 {
-	mTextWidget = WindowManager::getSingleton().getWindow(prefix + "Text");
-	mResponseWidget = WindowManager::getSingleton().getWindow(prefix + "ResponseList");
 }
 
 bool IngameChatWidget::ChatText::frameStarted(const Ogre::FrameEvent & event)
@@ -492,14 +495,10 @@ void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice)
 
 void IngameChatWidget::ChatText::updateText(const std::string & line)
 {
-	// 	GUISheet* textWidget = static_cast<GUISheet*>(mWindow->getChild(mPrefix + "Text"));
 	mTextWidget->setText(line);
 	mElapsedTimeSinceLastUpdate = 0;
 
 	if (mLabel->getEntity()->hasSuggestedResponses()) {
-		// 		Window* responseWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "ResponseList"));
-
-
 		clearResponses();
 
 		//for each response, create a button
@@ -572,12 +571,23 @@ void IngameChatWidget::ChatText::attachToLabel(Label* label)
 	}
 }
 
+IngameChatWidget::ChatTextCreator::ChatTextCreator(IngameChatWidget& ingameChatWidget):
+	mIngameChatWidget(ingameChatWidget),
+	mLayout(WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidget.layout"))
+{
+}
+
+IngameChatWidget::ChatTextCreator::~ChatTextCreator()
+{
+	WindowManager::getSingleton().destroyWindow(mLayout);
+}
+
 IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize)
 {
-	//there is no chat window for this entity, let's create one
+	//there is no chat window for this entity, let's create one by cloning the existing layout
 	std::stringstream ss;
 	ss << "ChatText/" << currentPoolSize << "/";
-	Window* window = WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidget.layout", ss.str());
+	Window* window = mLayout->clone(ss.str() + "MainWindow");
 
 	ChatText* widget = new ChatText(window, ss.str());
 	return widget;

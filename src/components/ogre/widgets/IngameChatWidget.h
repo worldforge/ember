@@ -233,11 +233,12 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 	class ChatTextCreator : public WidgetPool<IngameChatWidget::ChatText>::WidgetCreator
 	{
 		public:
-			ChatTextCreator(IngameChatWidget& ingameChatWidget) : mIngameChatWidget(ingameChatWidget) {}
-			virtual ~ChatTextCreator() {}
+			ChatTextCreator(IngameChatWidget& ingameChatWidget);
+			virtual ~ChatTextCreator();
 			virtual IngameChatWidget::ChatText* createWidget(unsigned int currentPoolSize);
 		protected:
 			IngameChatWidget& mIngameChatWidget;
+			CEGUI::Window* mLayout;
 	};
 
 typedef std::map<std::string, Label*> LabelMap;

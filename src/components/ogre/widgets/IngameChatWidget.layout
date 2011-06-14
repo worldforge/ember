@@ -6,7 +6,7 @@
 		<Property Name='ClippedByParent' Value='false'/>
 		<Property Name='MousePassThroughEnabled' Value='true' />
 		<!-- Property Name='Alpha' Value='0.6'/ -->
-		<Window Type='EmberLook/StaticText' Name='Text'>
+		<Window Type='EmberLook/StaticText' Name='MainWindow/Text'>
 			<Property Name='UnifiedSize' Value='{{0.4,0.0},{0.85,0.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.15,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
@@ -18,7 +18,7 @@
 			<Property Name='TextColours' Value='tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990'/>
 			<Property Name='MousePassThroughEnabled' Value='true' />
 		</Window>
-		<Window Type='DefaultGUISheet' Name='ResponseList'>
+		<Window Type='DefaultGUISheet' Name='MainWindow/ResponseList'>
 			<Property Name='UnifiedSize' Value='{{0.4,0.0},{0.85,0.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.6,0.0},{0.15,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
