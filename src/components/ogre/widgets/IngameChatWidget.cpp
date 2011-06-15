@@ -482,6 +482,13 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 	BIND_CEGUI_EVENT(mDetachedWindow, FrameWindow::EventCloseClicked, IngameChatWidget::ChatText::buttonDetachedClose_Click );
 }
 
+IngameChatWidget::ChatText::~ChatText()
+{
+	WindowManager::getSingleton().destroyWindow(mWindow);
+	WindowManager::getSingleton().destroyWindow(mAttachedWindow);
+	WindowManager::getSingleton().destroyWindow(mDetachedWindow);
+}
+
 bool IngameChatWidget::ChatText::frameStarted(const Ogre::FrameEvent & event)
 {
 	increaseElapsedTime(event.timeSinceLastFrame);

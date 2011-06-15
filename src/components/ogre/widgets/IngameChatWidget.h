@@ -194,7 +194,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 	{
 		public:
 			ChatText(CEGUI::Window* window, const std::string& prefix);
-			virtual ~ChatText() {}
+			virtual ~ChatText();
 
 			void updateText( const std::string & line);
 
