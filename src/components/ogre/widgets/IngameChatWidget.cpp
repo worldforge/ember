@@ -565,6 +565,9 @@ bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& ar
 
 bool IngameChatWidget::ChatText::buttonAttachedText_Click(const CEGUI::EventArgs& args)
 {
+	const Rect rect = mAttachedWindow->getUnclippedOuterRect();
+	mDetachedWindow->setPosition(UVector2(UDim(0, rect.d_left), UDim(0, rect.d_top)));
+	
 	mAttachedWindow->setVisible(false);
 	mDetachedWindow->setVisible(true);
 	
