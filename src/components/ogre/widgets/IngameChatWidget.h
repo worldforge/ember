@@ -167,7 +167,6 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 
 			CEGUI::Window* mWindow;
 			Model::ModelRepresentation* mModelRepresentation;
-			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			CEGUI::WindowManager* mWindowManager;
 			IngameChatWidget& mContainerWidget;
 
@@ -175,8 +174,6 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			const std::string mPrefix;
 			bool mRenderNextFrame;
 			ChatText* mChatText;
-// 			CEGUI::Window* mNameWidget;
-
 	};
 
 	class LabelCreator : public WidgetPool<IngameChatWidget::Label>::WidgetCreator
@@ -220,7 +217,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			
 			CEGUI::Window* mAttachedWindow;
 			CEGUI::Window* mAttachedTextWidget;
-			CEGUI::Window* mAttachedResponseWidget;
+			CEGUI::Window* mResponseWidget;
 			
 			CEGUI::Window* mDetachedWindow;
 			

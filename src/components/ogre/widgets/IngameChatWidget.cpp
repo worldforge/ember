@@ -467,7 +467,7 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 	mWindow(window),
 	mAttachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached")),
 	mAttachedTextWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/Text")),
-	mAttachedResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseList")),
+	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseList")),
 	mDetachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached")),
 	mElapsedTimeSinceLastUpdate(0.0f),
 	mPrefix(prefix)
@@ -543,7 +543,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			responseTextButton->setPosition(UVector2(UDim(0.0f, 0), UDim(i * heightSize, 0.0f)));
 			responseTextButton->setInheritsAlpha(true);
 			responseTextButton->setText(*I);
-			mAttachedResponseWidget->addChildWindow(responseTextButton);
+			mResponseWidget->addChildWindow(responseTextButton);
 			mResponseTextWidgets.push_back(responseTextButton);
 
 			++i;
