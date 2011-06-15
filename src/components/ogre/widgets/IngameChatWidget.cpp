@@ -50,6 +50,7 @@
 #include <elements/CEGUIListboxTextItem.h>
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
+#include <elements/CEGUIFrameWindow.h>
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
@@ -464,11 +465,21 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& prefix) :
 	mLabel(0),
 	mWindow(window),
-	mTextWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Text")),
-	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/ResponseList")),
+	mAttachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached")),
+	mAttachedTextWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/Text")),
+	mAttachedResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseList")),
+	mDetachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached")),
 	mElapsedTimeSinceLastUpdate(0.0f),
 	mPrefix(prefix)
 {
+	mWindow->removeChildWindow(mAttachedWindow);
+	mWindow->removeChildWindow(mDetachedWindow);
+	
+	mDetachedWindow->setVisible(false);
+	GUIManager::getSingleton().getMainSheet()->addChildWindow(mDetachedWindow);
+	
+	BIND_CEGUI_EVENT(mAttachedTextWidget, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click );
+	BIND_CEGUI_EVENT(mDetachedWindow, FrameWindow::EventCloseClicked, IngameChatWidget::ChatText::buttonDetachedClose_Click );
 }
 
 bool IngameChatWidget::ChatText::frameStarted(const Ogre::FrameEvent & event)
@@ -495,7 +506,7 @@ void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice)
 
 void IngameChatWidget::ChatText::updateText(const std::string & line)
 {
-	mTextWidget->setText(line);
+	mAttachedTextWidget->setText(line);
 	mElapsedTimeSinceLastUpdate = 0;
 
 	if (mLabel->getEntity()->hasSuggestedResponses()) {
@@ -525,7 +536,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			responseTextButton->setPosition(UVector2(UDim(0.0f, 0), UDim(i * heightSize, 0.0f)));
 			responseTextButton->setInheritsAlpha(true);
 			responseTextButton->setText(*I);
-			mResponseWidget->addChildWindow(responseTextButton);
+			mAttachedResponseWidget->addChildWindow(responseTextButton);
 			mResponseTextWidgets.push_back(responseTextButton);
 
 			++i;
@@ -545,6 +556,22 @@ bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& ar
 	return true;
 }
 
+bool IngameChatWidget::ChatText::buttonAttachedText_Click(const CEGUI::EventArgs& args)
+{
+	mAttachedWindow->setVisible(false);
+	mDetachedWindow->setVisible(true);
+	
+	return true;
+}
+
+bool IngameChatWidget::ChatText::buttonDetachedClose_Click(const CEGUI::EventArgs& args)
+{
+	mAttachedWindow->setVisible(true);
+	mDetachedWindow->setVisible(false);
+	
+	return true;
+}
+
 void IngameChatWidget::ChatText::clearResponses()
 {
 	//remove all existing response windows
@@ -560,13 +587,13 @@ void IngameChatWidget::ChatText::clearResponses()
 void IngameChatWidget::ChatText::attachToLabel(Label* label)
 {
 	clearResponses();
-	mTextWidget->setText("");
+	mAttachedTextWidget->setText("");
 	mLabel = label;
 	if (label) {
-		mLabel->getWindow()->addChildWindow(mWindow);
+		mLabel->getWindow()->addChildWindow(mAttachedWindow);
 	} else {
-		if (mWindow->getParent()) {
-			mWindow->getParent()->removeChildWindow(mWindow);
+		if (mAttachedWindow->getParent()) {
+			mAttachedWindow->getParent()->removeChildWindow(mAttachedWindow);
 		}
 	}
 }

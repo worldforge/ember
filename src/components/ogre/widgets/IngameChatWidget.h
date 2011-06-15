@@ -214,15 +214,23 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 
 		protected:
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
+			
 			Label* mLabel;
 			CEGUI::Window* mWindow;
-			CEGUI::Window* mTextWidget;
-			CEGUI::Window* mResponseWidget;
+			
+			CEGUI::Window* mAttachedWindow;
+			CEGUI::Window* mAttachedTextWidget;
+			CEGUI::Window* mAttachedResponseWidget;
+			
+			CEGUI::Window* mDetachedWindow;
+			
 			float mElapsedTimeSinceLastUpdate;
 			std::string mPrefix;
 
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
-
+			bool buttonAttachedText_Click(const CEGUI::EventArgs& args);
+			bool buttonDetachedClose_Click(const CEGUI::EventArgs& args);
+			
 			/**
 			 * @brief Removes all response buttons.
 			 */
