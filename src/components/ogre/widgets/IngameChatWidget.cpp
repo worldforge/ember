@@ -467,8 +467,12 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 	mWindow(window),
 	mAttachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached")),
 	mAttachedTextWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/Text")),
-	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseList")),
+	mAttachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer")),
+
 	mDetachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached")),
+	mDetachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ResponseContainer")),
+
+	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer/ResponseList")),
 	mElapsedTimeSinceLastUpdate(0.0f),
 	mPrefix(prefix)
 {
@@ -567,6 +571,8 @@ bool IngameChatWidget::ChatText::buttonAttachedText_Click(const CEGUI::EventArgs
 {
 	const Rect rect = mAttachedWindow->getUnclippedOuterRect();
 	mDetachedWindow->setPosition(UVector2(UDim(0, rect.d_left), UDim(0, rect.d_top)));
+	mAttachedResponseContainer->removeChildWindow(mResponseWidget);
+	mDetachedResponseContainer->addChildWindow(mResponseWidget);
 	
 	mAttachedWindow->setVisible(false);
 	mDetachedWindow->setVisible(true);
@@ -576,6 +582,9 @@ bool IngameChatWidget::ChatText::buttonAttachedText_Click(const CEGUI::EventArgs
 
 bool IngameChatWidget::ChatText::buttonDetachedClose_Click(const CEGUI::EventArgs& args)
 {
+	mDetachedResponseContainer->removeChildWindow(mResponseWidget);
+	mAttachedResponseContainer->addChildWindow(mResponseWidget);
+	
 	mAttachedWindow->setVisible(true);
 	mDetachedWindow->setVisible(false);
 	

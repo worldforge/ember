@@ -16,11 +16,16 @@
 				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.15,0.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
 			</Window>
-			<Window Type='DefaultWindow' Name='MainWindow/Attached/ResponseList'>
+			<Window Type='DefaultWindow' Name='MainWindow/Attached/ResponseContainer'>
 				<Property Name='UnifiedSize' Value='{{0.4,0.0},{0.85,0.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.6,0.0},{0.15,0.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
-				<Property Name='MousePassThroughEnabled' Value='true' />
+				<Property Name='MousePassThroughEnabled' Value='true'/>
+				
+				<Window Type='DefaultWindow' Name='MainWindow/Attached/ResponseContainer/ResponseList'>
+					<Property Name='InheritsAlpha' Value='true'/>
+					<Property Name='MousePassThroughEnabled' Value='true'/>
+				</Window>
 			</Window>
 		</Window>
 		
@@ -28,7 +33,13 @@
 			<Property Name='UnifiedSize' Value='{{0,200},{0,350}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='Visible' Value='false' />
+			
+			<Window Type='DefaultWindow' Name='MainWindow/Detached/ResponseContainer'>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.4,0.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.6,0.0}}'/>
+				<Property Name='InheritsAlpha' Value='true'/>
+				<Property Name='MousePassThroughEnabled' Value='true'/>
+			</Window>
 		</Window>
 	</Window>
 </GUILayout>

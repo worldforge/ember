@@ -217,9 +217,12 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			
 			CEGUI::Window* mAttachedWindow;
 			CEGUI::Window* mAttachedTextWidget;
-			CEGUI::Window* mResponseWidget;
+			CEGUI::Window* mAttachedResponseContainer;
 			
 			CEGUI::Window* mDetachedWindow;
+			CEGUI::Window* mDetachedResponseContainer;
+			
+			CEGUI::Window* mResponseWidget;
 			
 			float mElapsedTimeSinceLastUpdate;
 			std::string mPrefix;
