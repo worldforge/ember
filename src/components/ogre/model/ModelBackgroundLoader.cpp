@@ -148,7 +148,7 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 						Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
 						if (materialPtr.isNull() || !materialPtr->isPrepared()) {
 //							S_LOG_VERBOSE("Preparing material " << materialPtr->getName());
-							Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(), materialPtr->getName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
+							Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(),submesh->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
 							if (ticket) {
 								addTicket(ticket);
 							}
