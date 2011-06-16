@@ -470,6 +470,7 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 	mAttachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer")),
 
 	mDetachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached")),
+	mDetachedChatHistory(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ChatHistory")),
 	mDetachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ResponseContainer")),
 
 	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer/ResponseList")),
@@ -518,6 +519,7 @@ void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice)
 void IngameChatWidget::ChatText::updateText(const std::string & line)
 {
 	mAttachedTextWidget->setText(line);
+	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n-\n" + line);
 	mElapsedTimeSinceLastUpdate = 0;
 
 	if (mLabel->getEntity()->hasSuggestedResponses()) {
@@ -606,7 +608,10 @@ void IngameChatWidget::ChatText::clearResponses()
 void IngameChatWidget::ChatText::attachToLabel(Label* label)
 {
 	clearResponses();
+	
 	mAttachedTextWidget->setText("");
+	mDetachedChatHistory->setText("");
+	
 	mLabel = label;
 	if (label) {
 		mDetachedWindow->setText("Dialog with " + label->getEntity()->getName());

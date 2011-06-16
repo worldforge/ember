@@ -40,6 +40,10 @@
 				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Property Name='MousePassThroughEnabled' Value='true'/>
+				<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+				<Property Name='VertFormatting' Value='TopAligned'/>
+				<Property Name='HorzScrollbar' Value='False'/>
+				<Property Name='VertScrollbar' Value='True'/>
 			</Window>
 			<Window Type='DefaultWindow' Name='MainWindow/Detached/ResponseContainer'>
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.4,-25}}'/>

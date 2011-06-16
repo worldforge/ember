@@ -220,6 +220,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			CEGUI::Window* mAttachedResponseContainer;
 			
 			CEGUI::Window* mDetachedWindow;
+			CEGUI::Window* mDetachedChatHistory;
 			CEGUI::Window* mDetachedResponseContainer;
 			
 			CEGUI::Window* mResponseWidget;
