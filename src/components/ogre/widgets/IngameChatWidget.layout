@@ -33,6 +33,7 @@
 			<Property Name='UnifiedSize' Value='{{0,200},{0,350}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
+			<Property Name='Text' Value='Dialog with XX'/>
 			
 			<Window Type='EmberLook/StaticText' Name='MainWindow/Detached/ChatHistory'>
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.6}}'/>

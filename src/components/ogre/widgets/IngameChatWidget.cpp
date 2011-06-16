@@ -609,6 +609,7 @@ void IngameChatWidget::ChatText::attachToLabel(Label* label)
 	mAttachedTextWidget->setText("");
 	mLabel = label;
 	if (label) {
+		mDetachedWindow->setText("Dialog with " + label->getEntity()->getName());
 		mLabel->getWindow()->addChildWindow(mAttachedWindow);
 	} else {
 		if (mAttachedWindow->getParent()) {
