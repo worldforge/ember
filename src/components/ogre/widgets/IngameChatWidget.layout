@@ -30,7 +30,7 @@
 		</Window>
 		
 		<Window Type="EmberLook/FrameWindow" Name='MainWindow/Detached'>
-			<Property Name='UnifiedSize' Value='{{0,200},{0,350}}'/>
+			<Property Name='UnifiedSize' Value='{{0,300},{0,450}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='Text' Value='Dialog with XX'/>

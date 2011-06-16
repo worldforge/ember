@@ -519,7 +519,7 @@ void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice)
 void IngameChatWidget::ChatText::updateText(const std::string & line)
 {
 	mAttachedTextWidget->setText(line);
-	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n-\n" + line);
+	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF000000']" + line);
 	mElapsedTimeSinceLastUpdate = 0;
 
 	if (mLabel->getEntity()->hasSuggestedResponses()) {
