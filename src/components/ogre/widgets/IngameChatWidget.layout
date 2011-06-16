@@ -34,6 +34,12 @@
 			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			
+			<Window Type='EmberLook/StaticText' Name='MainWindow/Detached/ChatHistory'>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.6}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
+				<Property Name='InheritsAlpha' Value='true'/>
+				<Property Name='MousePassThroughEnabled' Value='true'/>
+			</Window>
 			<Window Type='DefaultWindow' Name='MainWindow/Detached/ResponseContainer'>
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.4,-25}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.6,0.0}}'/>
