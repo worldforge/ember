@@ -519,7 +519,7 @@ void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice)
 void IngameChatWidget::ChatText::updateText(const std::string & line)
 {
 	mAttachedTextWidget->setText(line);
-	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF000000']" + line);
+	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF000000']< " + line);
 	mElapsedTimeSinceLastUpdate = 0;
 
 	if (mLabel->getEntity()->hasSuggestedResponses()) {
@@ -564,6 +564,7 @@ bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& ar
 		//each button contains a static text window, which is the one containg the actual text
 		const String text = mouseArgs->window->getText();
 		EmberServices::getSingleton().getServerService().say(std::string(text.c_str()));
+		mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']> " + text);
 		clearResponses();
 	}
 	return true;
