@@ -591,6 +591,9 @@ bool IngameChatWidget::ChatText::buttonAttachedText_Click(const EventArgs& args)
 	mAttachedWindow->setVisible(false);
 	mDetachedWindow->setVisible(true);
 	
+	// reset the fade timer
+	mElapsedTimeSinceLastUpdate = 0;
+	
 	return true;
 }
 
