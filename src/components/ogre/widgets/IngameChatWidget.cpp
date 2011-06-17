@@ -504,16 +504,16 @@ bool IngameChatWidget::ChatText::frameStarted(const Ogre::FrameEvent & event)
 	increaseElapsedTime(event.timeSinceLastFrame);
 	//unless timeShown is 0 windows will fade over time
 	float timeShown = mLabel->getIngameChatWidget().getTimeShown();
-	if (timeShown != 0) {
+	if (timeShown > 0) {
 		//make the windows fade over time
 		mAttachedWindow->setAlpha(1 - (getElapsedTimeSinceLastUpdate() / timeShown));
-		if (getElapsedTimeSinceLastUpdate() >= timeShown) {
+		// if detached window is not visible, user is not interested in the history, so we may "nuke" it.
+		// note: when history is visible and user closes it, we immediately return false here.
+		if (!mDetachedWindow->isVisible() && getElapsedTimeSinceLastUpdate() >= timeShown) {
 			return false;
-			//windowsToRemove.push_back(I->first);
 		}
 	}
 	return true;
-
 }
 
 void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice)
