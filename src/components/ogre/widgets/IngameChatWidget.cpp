@@ -420,6 +420,11 @@ void IngameChatWidget::Label::setActive(bool active)
 	}
 }
 
+bool IngameChatWidget::Label::getActive() const
+{
+	return mActive;
+}
+
 Window * IngameChatWidget::Label::getWindow()
 {
 	return mWindow;
