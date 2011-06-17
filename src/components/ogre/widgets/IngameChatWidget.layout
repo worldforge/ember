@@ -10,6 +10,7 @@
 			<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.0,115.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{-0.25,0},{0,0}}'/>
 			<Property Name='ClippedByParent' Value='false' />
+			<Property Name='MousePassThroughEnabled' Value='true'/>
 			
 			<Window Type='EmberLook/IngameChatTextButton' Name='MainWindow/Attached/Text'>
 				<Property Name='UnifiedSize' Value='{{0.4,0.0},{0.85,0.0}}'/>
@@ -39,7 +40,6 @@
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.6}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
-				<Property Name='MousePassThroughEnabled' Value='true'/>
 				<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 				<Property Name='VertFormatting' Value='TopAligned'/>
 				<Property Name='HorzScrollbar' Value='False'/>
@@ -49,7 +49,6 @@
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.4,-25}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.6,0.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
-				<Property Name='MousePassThroughEnabled' Value='true'/>
 			</Window>
 			<Window Type='EmberLook/Editbox' Name='MainWindow/Detached/Editbox'>
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,25}}'/>
