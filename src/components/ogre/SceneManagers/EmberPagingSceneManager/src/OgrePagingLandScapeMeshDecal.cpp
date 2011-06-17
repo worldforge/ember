@@ -537,7 +537,7 @@ bool PagingLandScapeMeshDecal::queryResult(SceneQuery::WorldFragment* fragment)
 			subExtent.renderLevel_ = result->data_.subExtents_.renderLevel_;
 			// TODO:  Optimize!  We wouldn't need an intermediate array at all
 			// if the scene query gave us all the sub-section extents up front
-			// so we could allocate the correct size fo the vertex buffer.  It's
+			// so we could allocate the correct size of the vertex buffer.  It's
 			// a bit tricky in the scene query, so leaving it this way for now.
 			// Another option could be to overallocate the vertex buffer assuming
 			// that each sub-section was the full tile size, but that's also
@@ -546,7 +546,7 @@ bool PagingLandScapeMeshDecal::queryResult(SceneQuery::WorldFragment* fragment)
 			
 			//compare with earlier result and see if any LOD has changed
 			if (!mDirty) {
-				if (mOldSubExtents.size() >= offset) {
+				if (mOldSubExtents.size() > offset) {
 					SubExtent& oldSubExtent = mOldSubExtents[offset];
 					if (oldSubExtent.renderLevel_ != subExtent.renderLevel_) {
 						mDirty = true;
