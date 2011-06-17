@@ -501,7 +501,7 @@ bool IngameChatWidget::ChatText::frameStarted(const Ogre::FrameEvent & event)
 	float timeShown = mLabel->getIngameChatWidget().getTimeShown();
 	if (timeShown != 0) {
 		//make the windows fade over time
-		mWindow->setAlpha(1 - (getElapsedTimeSinceLastUpdate() / timeShown));
+		mAttachedWindow->setAlpha(1 - (getElapsedTimeSinceLastUpdate() / timeShown));
 		if (getElapsedTimeSinceLastUpdate() >= timeShown) {
 			return false;
 			//windowsToRemove.push_back(I->first);
