@@ -50,21 +50,21 @@ namespace Gui {
 
 
 /**
-
 Shows chat bubbles over npc's heads when they say something.
 The bubbles will disappear after a while (actually fade out) or when the player moves away. This can be set in the config file.
 
 If the npc has a list of suggested responses these will be shown in a list of clickable buttons to the right.
 
+Also allows switching the chat modes between attached to the entity (the text is projected according to the entity's 3D position
+and detached mode where the chat window is detached and you can move it around (in this mode chat history and further options are shown)
+
 @author Erik Hjortsberg
 */
-class IngameChatWidget : public Widget, public ConfigListenerContainer {
-
-
-
-
+class IngameChatWidget : public Widget, public ConfigListenerContainer
+{
 	class EntityObserver;
 	class Label;
+
 	class MovableObjectListener : public Ogre::MovableObject::Listener
 	{
 		public:
@@ -106,24 +106,31 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 	};
 
 	class ChatText;
+	
 	/**
-	Holds the actual chat window and keeps track of fading, catching clicks etc.
-	*/
+	 * @brief Holds the actual chat window and keeps track of fading, catching clicks etc.
+	 * 
+	 * The chat text is contained in the mChatText member variable.
+	 */
 	class Label : public virtual sigc::trackable
 	{
 		public:
 			/**
-
-			*/
+			 * @brief Ctor
+			 */
 			Label(CEGUI::Window* window, CEGUI::WindowManager* windowManager, IngameChatWidget& containerWidget, const std::string& prefix);
 
+			/**
+			 * @brief Dtor
+			 */
 			virtual ~Label();
 
 			/**
-
-			*/
+			 * @brief Called when Entity says a new message
+			 * 
+			 * @param line the new message (this will show up next to the entity and in chat history)
+			 */
 			void updateText(const std::string& line);
-
 
 			/**
 			 * @brief Gets the entity the window belongs to
@@ -137,14 +144,23 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			void markForRender();
 
 			CEGUI::Window* getWindow();
+			
 			/**
-			call this each frame to update the window
-			*/
+			 * @brief Called each frame to update the window
+			 * 
+			 * This mostly takes care of fading and wiping the history if the entity hasn't seen any
+			 * activity for prolonged periods of time (this is configurable)
+			 */
 			void frameStarted( const Ogre::FrameEvent & event );
 
 			/**
-			positions the window on top of the entity
-			*/
+			 * @brief Positions the window on top of the entity
+			 * 
+			 * Does 3D -> 2D projection and places the 2D CEGUI window so that it appears to be on top
+			 * of the entity.
+			 * 
+			 * @see IngameChatWidget::Label::getEntity()
+			 */
 			void placeWindowOnEntity();
 
 			IngameChatWidget& getIngameChatWidget() { return mContainerWidget;}
@@ -164,7 +180,6 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			void reset();
 
 		protected:
-
 			CEGUI::Window* mWindow;
 			Model::ModelRepresentation* mModelRepresentation;
 			CEGUI::WindowManager* mWindowManager;
@@ -182,29 +197,38 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			LabelCreator(IngameChatWidget& ingameChatWidget);
 			virtual ~LabelCreator();
 			virtual IngameChatWidget::Label* createWidget(unsigned int currentPoolSize);
+			
 		protected:
 			IngameChatWidget& mIngameChatWidget;
 			CEGUI::Window* mLayout;
 	};
 
+	/**
+	 * @brief Responsible for displaying chat messages and chat related interaction
+	 */
 	class ChatText : public virtual sigc::trackable
 	{
 		public:
 			ChatText(CEGUI::Window* window, const std::string& prefix);
 			virtual ~ChatText();
 
-			void updateText( const std::string & line);
+			/**
+			 * @brief Called when the entity says something new
+			 * 
+			 * This adds given message to chat history and displays it next to the entity (if in attached mode)
+			 */
+			void updateText(const std::string& line);
 
 			/**
-			call this each frame to update the window
-			*/
+			 * @brief Called each frame to update the window
+			 */
 			bool frameStarted( const Ogre::FrameEvent & event );
 
 			float getElapsedTimeSinceLastUpdate();
 
 			/**
-			increases the elapsed time with the supplied amount
-			*/
+			 * @brief Increases the elapsed time with the supplied amount
+			 */
 			void increaseElapsedTime(float timeSlice);
 
 			void attachToLabel(Label* label);
@@ -246,7 +270,6 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			 */
 			void clearResponses();
 	};
-
 
 	class ChatTextCreator : public WidgetPool<IngameChatWidget::ChatText>::WidgetCreator
 	{
