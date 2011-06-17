@@ -477,6 +477,7 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 	mDetachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached")),
 	mDetachedChatHistory(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ChatHistory")),
 	mDetachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ResponseContainer")),
+	mDetachedEditbox(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/Editbox")),
 
 	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer/ResponseList")),
 	mElapsedTimeSinceLastUpdate(0.0f),
@@ -490,6 +491,7 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 	
 	BIND_CEGUI_EVENT(mAttachedTextWidget, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click );
 	BIND_CEGUI_EVENT(mDetachedWindow, FrameWindow::EventCloseClicked, IngameChatWidget::ChatText::buttonDetachedClose_Click );
+	BIND_CEGUI_EVENT(mDetachedEditbox, Window::EventKeyDown, IngameChatWidget::ChatText::editboxDetachedKey_Event );
 }
 
 IngameChatWidget::ChatText::~ChatText()
@@ -562,20 +564,24 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 	}
 }
 
-bool IngameChatWidget::ChatText::buttonResponse_Click(const CEGUI::EventArgs& args)
+void IngameChatWidget::ChatText::respondWithMessage(const std::string& message)
+{
+	EmberServices::getSingleton().getServerService().say(message);
+	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']> " + message);
+	clearResponses();
+}
+
+bool IngameChatWidget::ChatText::buttonResponse_Click(const EventArgs& args)
 {
 	const MouseEventArgs *mouseArgs = static_cast<const MouseEventArgs*> (&args);
 	if (mouseArgs) {
 		//each button contains a static text window, which is the one containg the actual text
-		const String text = mouseArgs->window->getText();
-		EmberServices::getSingleton().getServerService().say(std::string(text.c_str()));
-		mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']> " + text);
-		clearResponses();
+		respondWithMessage(mouseArgs->window->getText().c_str());
 	}
 	return true;
 }
 
-bool IngameChatWidget::ChatText::buttonAttachedText_Click(const CEGUI::EventArgs& args)
+bool IngameChatWidget::ChatText::buttonAttachedText_Click(const EventArgs& args)
 {
 	const Rect rect = mAttachedWindow->getUnclippedOuterRect();
 	mDetachedWindow->setPosition(UVector2(UDim(0, rect.d_left), UDim(0, rect.d_top)));
@@ -588,7 +594,7 @@ bool IngameChatWidget::ChatText::buttonAttachedText_Click(const CEGUI::EventArgs
 	return true;
 }
 
-bool IngameChatWidget::ChatText::buttonDetachedClose_Click(const CEGUI::EventArgs& args)
+bool IngameChatWidget::ChatText::buttonDetachedClose_Click(const EventArgs& args)
 {
 	mDetachedResponseContainer->removeChildWindow(mResponseWidget);
 	mAttachedResponseContainer->addChildWindow(mResponseWidget);
@@ -597,6 +603,24 @@ bool IngameChatWidget::ChatText::buttonDetachedClose_Click(const CEGUI::EventArg
 	mDetachedWindow->setVisible(false);
 	
 	return true;
+}
+
+bool IngameChatWidget::ChatText::editboxDetachedKey_Event(const EventArgs& args)
+{
+	const KeyEventArgs& kargs = static_cast<const KeyEventArgs&>(args);
+	
+	if (kargs.scancode == Key::Return)
+	{
+		respondWithMessage(mDetachedEditbox->getText().c_str());
+		// clear the editbox (this message has been sent by now)
+		mDetachedEditbox->setText("");
+		
+		return true;
+	}
+	
+	// unless the key was a Enter/Return key, we have to tell CEGUI we haven't
+	// handled it! otherwise backspace et al stop working
+	return false;
 }
 
 void IngameChatWidget::ChatText::clearResponses()

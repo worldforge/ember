@@ -222,15 +222,24 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer {
 			CEGUI::Window* mDetachedWindow;
 			CEGUI::Window* mDetachedChatHistory;
 			CEGUI::Window* mDetachedResponseContainer;
+			CEGUI::Window* mDetachedEditbox;
 			
 			CEGUI::Window* mResponseWidget;
 			
 			float mElapsedTimeSinceLastUpdate;
 			std::string mPrefix;
 
+			/**
+			 * @brief respond to the entity with given message
+			 * 
+			 * This method clears all suggested responses and adds this message to the chat history
+			 */
+			void respondWithMessage(const std::string& message);
+			
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
 			bool buttonAttachedText_Click(const CEGUI::EventArgs& args);
 			bool buttonDetachedClose_Click(const CEGUI::EventArgs& args);
+			bool editboxDetachedKey_Event(const CEGUI::EventArgs& args);
 			
 			/**
 			 * @brief Removes all response buttons.
