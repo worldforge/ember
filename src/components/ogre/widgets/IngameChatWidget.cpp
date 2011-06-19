@@ -468,9 +468,8 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 	return label;
 }
 
-IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& prefix) :
+IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
 	mLabel(0),
-	mWindow(window),
 	mAttachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached")),
 	mAttachedTextWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/Text")),
 	mAttachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer")),
@@ -484,9 +483,6 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 	mElapsedTimeSinceLastUpdate(0.0f),
 	mPrefix(prefix)
 {
-	mWindow->removeChildWindow(mAttachedWindow);
-	mWindow->removeChildWindow(mDetachedWindow);
-	
 	mDetachedWindow->setVisible(false);
 	GUIManager::getSingleton().getMainSheet()->addChildWindow(mDetachedWindow);
 	
@@ -497,7 +493,6 @@ IngameChatWidget::ChatText::ChatText(CEGUI::Window* window, const std::string& p
 
 IngameChatWidget::ChatText::~ChatText()
 {
-	WindowManager::getSingleton().destroyWindow(mWindow);
 	WindowManager::getSingleton().destroyWindow(mAttachedWindow);
 	WindowManager::getSingleton().destroyWindow(mDetachedWindow);
 }
@@ -659,13 +654,15 @@ void IngameChatWidget::ChatText::attachToLabel(Label* label)
 
 IngameChatWidget::ChatTextCreator::ChatTextCreator(IngameChatWidget& ingameChatWidget):
 	mIngameChatWidget(ingameChatWidget),
-	mLayout(WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidget.layout"))
+	mAttachedLayout(WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidgetAttached.layout")),
+	mDetachedLayout(WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidgetDetached.layout"))
 {
 }
 
 IngameChatWidget::ChatTextCreator::~ChatTextCreator()
 {
-	WindowManager::getSingleton().destroyWindow(mLayout);
+	WindowManager::getSingleton().destroyWindow(mAttachedLayout);
+	WindowManager::getSingleton().destroyWindow(mDetachedLayout);
 }
 
 IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize)
@@ -673,9 +670,10 @@ IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsi
 	//there is no chat window for this entity, let's create one by cloning the existing layout
 	std::stringstream ss;
 	ss << "ChatText/" << currentPoolSize << "/";
-	Window* window = mLayout->clone(ss.str() + "MainWindow");
-
-	ChatText* widget = new ChatText(window, ss.str());
+	mAttachedLayout->clone(ss.str() + "MainWindow/Attached");
+	mDetachedLayout->clone(ss.str() + "MainWindow/Detached");
+	
+	ChatText* widget = new ChatText(ss.str());
 	return widget;
 }
 

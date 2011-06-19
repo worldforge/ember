@@ -211,7 +211,16 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 	class ChatText : public virtual sigc::trackable
 	{
 		public:
-			ChatText(CEGUI::Window* window, const std::string& prefix);
+			/**
+			 * @brief Ctor
+			 * 
+			 * @param prefix string prefix of the CEGUI windows for this chat text
+			 */
+			ChatText(const std::string& prefix);
+			
+			/**
+			 * @brief Dtor
+			 */ 
 			virtual ~ChatText();
 
 			/**
@@ -239,7 +248,6 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			
 			Label* mLabel;
-			CEGUI::Window* mWindow;
 			
 			CEGUI::Window* mAttachedWindow;
 			CEGUI::Window* mAttachedTextWidget;
@@ -279,9 +287,11 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			ChatTextCreator(IngameChatWidget& ingameChatWidget);
 			virtual ~ChatTextCreator();
 			virtual IngameChatWidget::ChatText* createWidget(unsigned int currentPoolSize);
+			
 		protected:
 			IngameChatWidget& mIngameChatWidget;
-			CEGUI::Window* mLayout;
+			CEGUI::Window* mAttachedLayout;
+			CEGUI::Window* mDetachedLayout;
 	};
 
 typedef std::map<std::string, Label*> LabelMap;

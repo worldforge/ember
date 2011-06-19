@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type="DefaultWindow" Name='MainWindow/Attached'>
+		<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.0,115.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{-0.25,0},{0,0}}'/>
+		<Property Name='ClippedByParent' Value='false' />
+		<Property Name='MousePassThroughEnabled' Value='true'/>
+		
+		<Window Type='EmberLook/IngameChatTextButton' Name='MainWindow/Attached/Text'>
+			<Property Name='UnifiedSize' Value='{{0.4,0.0},{0.85,0.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.15,0.0}}'/>
+			<Property Name='InheritsAlpha' Value='true'/>
+		</Window>
+		<Window Type='DefaultWindow' Name='MainWindow/Attached/ResponseContainer'>
+			<Property Name='UnifiedSize' Value='{{0.4,0.0},{0.85,0.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.6,0.0},{0.15,0.0}}'/>
+			<Property Name='InheritsAlpha' Value='true'/>
+			<Property Name='MousePassThroughEnabled' Value='true'/>
+			
+			<Window Type='DefaultWindow' Name='MainWindow/Attached/ResponseContainer/ResponseList'>
+				<Property Name='InheritsAlpha' Value='true'/>
+				<Property Name='MousePassThroughEnabled' Value='true'/>
+			</Window>
+		</Window>
+	</Window>
+</GUILayout>

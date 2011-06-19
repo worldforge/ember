@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type="EmberLook/IngameChatDetachedWindow" Name='MainWindow/Detached'>
+		<Property Name='UnifiedSize' Value='{{0,300},{0,450}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
+		<Property Name='InheritsAlpha' Value='true'/>
+		<Property Name='Text' Value='Dialog with XX'/>
+		
+		<Window Type='EmberLook/StaticText' Name='MainWindow/Detached/ChatHistory'>
+			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.6}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
+			<Property Name='InheritsAlpha' Value='true'/>
+			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+			<Property Name='VertFormatting' Value='TopAligned'/>
+			<Property Name='HorzScrollbar' Value='False'/>
+			<Property Name='VertScrollbar' Value='True'/>
+		</Window>
+		<Window Type='DefaultWindow' Name='MainWindow/Detached/ResponseContainer'>
+			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.4,-25}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.6,0.0}}'/>
+			<Property Name='InheritsAlpha' Value='true'/>
+			
+			<!-- response list is declared in IngameChatWidgetAttached.layout -->
+		</Window>
+		<Window Type='EmberLook/Editbox' Name='MainWindow/Detached/Editbox'>
+			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,25}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-25.0}}'/>
+		</Window>
+	</Window>
+</GUILayout>
