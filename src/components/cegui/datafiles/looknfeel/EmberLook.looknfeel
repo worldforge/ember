@@ -6252,5 +6252,19 @@
 				<Section section="notitle_noframe_client_area" />
 			</Layer>
 		</StateImagery>
+		
+		<AnimationDefinition name="ShowTransition" duration="0.2" replayMode="once">
+			<Affector property="Alpha" interpolator="float">
+				<KeyFrame position="0.0" value="0.0" />
+				<KeyFrame position="0.2" value="0.8" progression="quadratic accelerating" />
+			</Affector>
+			<Affector property="UnifiedHeight" interpolator="UDim">
+				<KeyFrame position="0.0" value="{0,0}" />
+				<KeyFrame position="0.2" sourceProperty="UnifiedHeight" progression="quadratic decelerating" />
+			</Affector>
+			
+			<Subscription event="Shown" action="Start" />
+			<Subscription event="Hidden" action="Pause" />
+		</AnimationDefinition>
 	</WidgetLook>
 </Falagard>
