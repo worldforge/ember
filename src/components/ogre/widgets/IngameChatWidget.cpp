@@ -389,7 +389,7 @@ void IngameChatWidget::Label::reset()
 void IngameChatWidget::Label::updateEntityName()
 {
 	std::string entityName(getEntity()->getName());
-	//	Window* nameWidget = static_cast<Window*>(mWindow->getChild(mPrefix + "EntityName"));
+	
 	//if the entity is controlled by a player, mark that
 	if (getEntity()->hasAttr("external")) {
 		const Atlas::Message::Element& externalAttr = getEntity()->valueOfAttr("external");
@@ -397,6 +397,7 @@ void IngameChatWidget::Label::updateEntityName()
 			entityName = "!" + getEntity()->getName() + "!";
 		}
 	}
+	// mWindow is the label itself (a StaticText)
 	mWindow->setText(entityName);
 }
 
@@ -407,17 +408,17 @@ EmberEntity * IngameChatWidget::Label::getEntity()
 
 void IngameChatWidget::Label::setActive(bool active)
 {
-	if (active) {
-		if (!mActive) {
-			mContainerWidget.getLabelSheet()->addChildWindow(mWindow);
-			mActive = active;
-		}
-	} else {
-		if (mActive) {
-			mContainerWidget.getLabelSheet()->removeChildWindow(mWindow);
-			mActive = active;
-		}
+	if (mActive == active) {
+		return;
 	}
+	
+	if (active) {
+		mContainerWidget.getLabelSheet()->addChildWindow(mWindow);
+	} else {
+		mContainerWidget.getLabelSheet()->removeChildWindow(mWindow);
+	}
+	
+	mActive = active;
 }
 
 bool IngameChatWidget::Label::getActive() const

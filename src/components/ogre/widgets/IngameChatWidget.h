@@ -50,16 +50,17 @@ namespace Gui {
 
 
 /**
-Shows chat bubbles over npc's heads when they say something.
-The bubbles will disappear after a while (actually fade out) or when the player moves away. This can be set in the config file.
-
-If the npc has a list of suggested responses these will be shown in a list of clickable buttons to the right.
-
-Also allows switching the chat modes between attached to the entity (the text is projected according to the entity's 3D position
-and detached mode where the chat window is detached and you can move it around (in this mode chat history and further options are shown)
-
-@author Erik Hjortsberg
-*/
+ * @brief Shows chat bubbles over npc's heads when they say something.
+ * 
+ * The bubbles will disappear after a while (actually fade out) or when the player moves away. This can be set in the config file.
+ * 
+ * If the npc has a list of suggested responses these will be shown in a list of clickable buttons to the right.
+ * 
+ * Also allows switching the chat modes between attached to the entity (the text is projected according to the entity's 3D position
+ * and detached mode where the chat window is detached and you can move it around (in this mode chat history and further options are shown)
+ * 
+ * @author Erik Hjortsberg
+ */
 class IngameChatWidget : public Widget, public ConfigListenerContainer
 {
 	class EntityObserver;
@@ -186,6 +187,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			IngameChatWidget& mContainerWidget;
 
 			bool mActive;
+			/// CEGUI window name prefix
 			const std::string mPrefix;
 			bool mRenderNextFrame;
 			ChatText* mChatText;
@@ -288,6 +290,7 @@ typedef std::stack<Label*> LabelStack;
 typedef std::vector<EntityObserver*> EntityObserverStore;
 typedef std::vector<Eris::TypeInfo*> TypeInfoStore;
 friend class IngameChatWidget::EntityObserver;
+
 public:
 	IngameChatWidget();
     virtual ~IngameChatWidget();
@@ -357,12 +360,13 @@ protected:
 	ChatTextCreator mChatTextCreator;
 	WidgetPool<ChatText> mChatTextPool;
 
+	/// this sheet contains all labels of the entities
 	CEGUI::Window* mLabelSheet;
 
 	std::string mAvatarEntityId;
 
+	/// camera used for 3D -> 2D projection (placing labels and chat texts on top of Entities)
 	Camera::MainCamera* mCamera;
-
 };
 
 inline float IngameChatWidget::ChatText::getElapsedTimeSinceLastUpdate() {
