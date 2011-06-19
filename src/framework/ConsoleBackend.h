@@ -28,7 +28,6 @@
 #include <sigc++/signal.h>
 
 // Included system headers
-#include <deque>
 #include <list>
 #include <map>
 #include <set>
@@ -37,6 +36,8 @@
 #include "framework/Singleton.h"
 
 namespace Ember {
+
+class CommandHistory;
 
 /**
  * @brief Backend for the console. This act very much like a message hub, receiving incoming console commands and then dispatching these to the registered listener.
@@ -93,43 +94,13 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
      */
     const std::list<std::string>& getConsoleMessages() const;
 
-
-	/**
-	 * @brief Gets the current position within the history.
-	 * When traversing the history we need to keep track of where in the history we are.
-	 * @return
-	 */
-	size_t getHistoryPosition() const;
-
 	const std::set< std::string > & getPrefixes(const std::string & prefix) const;
 
 	/**
-	 * @brief Get the current history string.
-	 * The history position 0 is managed in the ConsoleWidget.
-	 **/
-	const std::string & getHistoryString();
-
-	/**
-	 * @brief Changes a command in the history.
-	 * @param stHistoryIndex The index of the command to change.
-	 * @param sCommand The new command.
+	 * @brief Gets the command history.
+	 * @return The command history.
 	 */
-	void changeHistory(size_t stHistoryIndex, const std::string & sCommand);
-
-
-    //----------------------------------------------------------------------
-    // Setters
-
-	/**
-	 * Moves the history iterator backwards (in time).
-	 **/
-	void moveBackwards(void);
-
-	/**
-	 * Moves the history iterator forwards (in time).
-	 **/
-	void moveForwards(void);
-
+	CommandHistory& getHistory();
 
     //----------------------------------------------------------------------
     // Other public methods
@@ -197,10 +168,10 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
 
 	typedef std::map<std::string, ConsoleObjectEntry> ConsoleObjectEntryStore;
 
-    static const unsigned int MAX_MESSAGES;
-
     // List of ConsoleBackend's console commands
     static const char * const LIST_CONSOLE_COMMANDS;
+
+	static const unsigned int MAX_MESSAGES;
 
 
     /**
@@ -213,15 +184,6 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
      */
     std::list< std::string > mConsoleMessages;
 
-	/**
-	 * Message history.
-	 **/
-	std::deque< std::string > mHistory;
-
-	/**
-	 * History iterator.
-	 **/
-	size_t mHistoryPosition;
 
     /**
      * @brief Prefix map for commands.
@@ -238,18 +200,17 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
      **/
     std::map< std::string, std::set< std::string > > mPrefixes;
 
+    /**
+     * @brief The command history, allowing simple browsing of the command history.
+     */
+    CommandHistory* mCommandHistory;
+
 };
 
 inline const std::list<std::string>& ConsoleBackend::getConsoleMessages() const
 {
 	return mConsoleMessages;
 }
-
-inline size_t ConsoleBackend::getHistoryPosition() const
-{
-	return mHistoryPosition;
-}
-
 
 }
 

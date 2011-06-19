@@ -26,6 +26,7 @@
 
 #include "ConsoleAdapter.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/CommandHistory.h"
 #include <elements/CEGUIEditbox.h>
 
 namespace Ember {
@@ -68,7 +69,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 	{
 		case CEGUI::Key::ArrowUp:
 		{
-			if(mBackend->getHistoryPosition() == 0)
+			if(mBackend->getHistory().getHistoryPosition() == 0)
 			{
 				mCommandLine = mInputBox->getText().c_str();
 			}
@@ -76,29 +77,29 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 			{
 				// we are not at the command line but in the history
 				// => write back the editing
-				mBackend->changeHistory(mBackend->getHistoryPosition(), mInputBox->getText().c_str());
+				mBackend->getHistory().changeHistory(mBackend->getHistory().getHistoryPosition(), mInputBox->getText().c_str());
 			}
-			mBackend->moveBackwards();
-			if(mBackend->getHistoryPosition() != 0)
+			mBackend->getHistory().moveBackwards();
+			if(mBackend->getHistory().getHistoryPosition() != 0)
 			{
-				mInputBox->setText(mBackend->getHistoryString());
+				mInputBox->setText(mBackend->getHistory().getHistoryString());
 			}
 			
 			return true;
 		}
 		case CEGUI::Key::ArrowDown:
 		{
-			if(mBackend->getHistoryPosition() > 0)
+			if(mBackend->getHistory().getHistoryPosition() > 0)
 			{
-				mBackend->changeHistory(mBackend->getHistoryPosition(), mInputBox->getText().c_str());
-				mBackend->moveForwards();
-				if(mBackend->getHistoryPosition() == 0)
+				mBackend->getHistory().changeHistory(mBackend->getHistory().getHistoryPosition(), mInputBox->getText().c_str());
+				mBackend->getHistory().moveForwards();
+				if(mBackend->getHistory().getHistoryPosition() == 0)
 				{
 					mInputBox->setText(mCommandLine);
 				}
 				else
 				{
-					mInputBox->setText(mBackend->getHistoryString());
+					mInputBox->setText(mBackend->getHistory().getHistoryString());
 				}
 			}
 			

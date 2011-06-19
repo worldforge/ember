@@ -29,6 +29,7 @@
 #include "ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
 #include "Tokeniser.h"
+#include "CommandHistory.h"
 
 #include <sstream>
 
@@ -42,7 +43,7 @@ const unsigned int ConsoleBackend::MAX_MESSAGES = 7;
 
 
 ConsoleBackend::ConsoleBackend(void) :
-mHistoryPosition(0)
+mCommandHistory(new CommandHistory())
 {
 	// Register console commands
 	registerCommand(LIST_CONSOLE_COMMANDS, this);
@@ -65,37 +66,12 @@ ConsoleBackend& ConsoleBackend::operator=(const ConsoleBackend &source)
 
 ConsoleBackend::~ConsoleBackend()
 {
-	// TODO: Free any allocated resources here.
+	delete mCommandHistory;
 }
 
-void ConsoleBackend::moveBackwards(void)
+CommandHistory& ConsoleBackend::getHistory()
 {
-	if(mHistoryPosition < mHistory.size())
-	{
-		mHistoryPosition++;
-	}
-}
-
-void ConsoleBackend::moveForwards(void)
-{
-	if(mHistoryPosition > 0)
-	{
-		mHistoryPosition--;
-	}
-}
-
-const std::string& ConsoleBackend::getHistoryString()
-{
-	static std::string sEmpty("");
-
-	if(mHistoryPosition == 0)
-	{
-		return sEmpty;
-	}
-	else
-	{
-		return mHistory[mHistoryPosition - 1];
-	}
+	return *mCommandHistory;
 }
 
 
@@ -184,8 +160,7 @@ void ConsoleBackend::runCommand(const std::string &command, bool addToHistory)
 	// pushMessage(command_string);
 
 		if (addToHistory) {
-			mHistory.push_front(command);
-			mHistoryPosition = 0;
+			mCommandHistory->addToHistory(command);
 		}
 	// If object exists, run the command
 		if (I != mRegisteredCommands.end() && I->second.Object != 0) {
@@ -226,14 +201,6 @@ const std::set< std::string > & ConsoleBackend::getPrefixes(const std::string & 
 	}
 
 	return empty;
-}
-
-void ConsoleBackend::changeHistory(size_t stHistoryIndex, const std::string & sCommand)
-{
-	if(stHistoryIndex < mHistory.size())
-	{
-		mHistory[stHistoryIndex - 1] = sCommand;
-	}
 }
 
 } // namespace Ember
