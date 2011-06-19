@@ -123,22 +123,7 @@ bool OgreResourceLoader::addSharedMedia(const std::string& path, const std::stri
 {
 	static const std::string& sharedMediaPath = EmberServices::getSingleton().getConfigService().getSharedMediaDirectory();
 
-	bool foundDir = false;
-	std::string finalPath(sharedMediaPath + path);
-
-	S_LOG_INFO("Looking for " << finalPath);
-	if (isExistingDir(finalPath)) {
-		S_LOG_INFO("Adding dir " << finalPath);
-		try {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
-			foundDir = true;
-			mResourceLocations.insert(std::make_pair(section, finalPath));
-		} catch (const std::exception& ex) {
-			S_LOG_FAILURE("Couldn't load " << sharedMediaPath << path << "." << ex);
-		}
-	}
-
-	return foundDir;
+	return addResourceDirectory(sharedMediaPath + path, type, section, recursive, true);
 }
 
 bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string& type, const std::string& section, bool recursive)
@@ -147,34 +132,33 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 	static const std::string& emberMediaPath = EmberServices::getSingleton().getConfigService().getEmberMediaDirectory();
 
 	bool foundDir = false;
-	std::string finalPath(userMediaPath + path);
-
-	S_LOG_VERBOSE("Looking for " << finalPath);
-	if (isExistingDir(finalPath)) {
-		S_LOG_VERBOSE("Adding dir " << finalPath);
-		try {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
-			foundDir = true;
-			mResourceLocations.insert(std::make_pair(section, finalPath));
-		} catch (const std::exception&) {
-			//don't report anything
-		}
-	}
 
 	//try with ember-media
-	finalPath = emberMediaPath + path;
-	S_LOG_VERBOSE("Looking for " << finalPath);
-	if (isExistingDir(finalPath)) {
-		S_LOG_VERBOSE("Adding dir " << finalPath);
+	foundDir = addResourceDirectory(userMediaPath + path, type, section, recursive, true);
+
+	return addResourceDirectory(emberMediaPath + path, type, section, recursive, false) || foundDir;
+}
+
+bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure)
+{
+	bool foundDir = false;
+
+	if (isExistingDir(path)) {
+		S_LOG_VERBOSE("Adding dir " << path);
 		try {
-			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(finalPath, type, section, recursive);
+			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, type, section, recursive);
 			foundDir = true;
-			mResourceLocations.insert(std::make_pair(section, finalPath));
+			mResourceLocations.insert(std::make_pair(section, path));
 		} catch (const std::exception&) {
-			S_LOG_FAILURE("Couldn't load " << emberMediaPath << path << ". Continuing as if nothing happened.");
+			if (reportFailure) {
+				S_LOG_FAILURE("Couldn't load " << path << ". Continuing as if nothing happened.");
+			}
+		}
+	} else {
+		if (reportFailure) {
+			S_LOG_VERBOSE("Couldn't find resource directory " << path);
 		}
 	}
-	return foundDir;
 }
 
 void OgreResourceLoader::loadBootstrap()
@@ -232,12 +216,7 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		ResourceLocationsMap::const_iterator extraI = mExtraResourceLocations.lower_bound(sectionName);
 		ResourceLocationsMap::const_iterator extraIend = mExtraResourceLocations.upper_bound(sectionName);
 		while (extraI != extraIend) {
-			S_LOG_VERBOSE("Adding dir " << extraI->second);
-			try {
-				Ogre::ResourceGroupManager::getSingleton().addResourceLocation(extraI->second, "EmberFileSystem", sectionName, mLoadRecursive);
-			} catch (const Ogre::Exception&) {
-				S_LOG_FAILURE("Couldn't load " + extraI->second + ". Continuing as if nothing happened.");
-			}
+			addResourceDirectory(extraI->second, "EmberFileSystem", sectionName, mLoadRecursive, false);
 			extraI++;
 		}
 
@@ -263,6 +242,9 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		}
 
 		//We've now filled the vectors, start by adding all the user media.
+		//Note that the Ogre resource system isn't totally consistent. For scripts, newer definitions will override older ones.
+		//However, for mesh and texture resources the opposite it true.
+		//Since we're more often are dealing with scripts when altering model definitions etc. we'll opt for allowing scripts to be overridden.
 		for (std::vector<std::pair<std::string, std::string> >::iterator I = userPlaces.begin(); I != userPlaces.end(); ++I) {
 			mediaAdded |= addUserMedia(I->second, I->first, sectionName, mLoadRecursive);
 		}
