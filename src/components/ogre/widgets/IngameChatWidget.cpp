@@ -553,10 +553,9 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 
 			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click );
 
-			// FIXME: 50px height for now
-			responseTextButton->setSize(UVector2(UDim(1.0f, 0), UDim(0.0f, 50.0f)));
 			responseTextButton->setInheritsAlpha(true);
 			responseTextButton->setText(*I);
+			responseTextButton->setTooltipText(*I);
 			mResponseWidget->addChildWindow(responseTextButton);
 			mResponseTextWidgets.push_back(responseTextButton);
 

@@ -5495,6 +5495,7 @@
 		<PropertyDefinition name="PushedTextColour" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990" redrawOnWrite="true" />
 		<PropertyDefinition name="DisabledTextColour" initialValue="FF888888" redrawOnWrite="true" />
 		<Property name="Font" value="DejaVuSans-Bold-8" />
+		<Property name="UnifiedSize" value="{{1, 0}, {0, 35}}" />
 		
 		<ImagerySection name="label">
 			<TextComponent>
@@ -5520,7 +5521,7 @@
 						</UnifiedDim>
 					</Dim>
 				</Area>
-				<VertFormat type="CentreAligned" />
+				<VertFormat type="TopAligned" />
 				<HorzFormat type="WordWrapLeftAligned" />
 			</TextComponent>
 		</ImagerySection>
