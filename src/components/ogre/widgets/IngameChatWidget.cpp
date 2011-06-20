@@ -626,24 +626,33 @@ bool IngameChatWidget::ChatText::editboxDetachedKey_Event(const EventArgs& args)
 	
 	if (kargs.scancode == Key::Return)
 	{
-		respondWithMessage(mDetachedEditbox->getText().c_str());
-		// clear the editbox (this message has been sent by now)
-		mDetachedEditbox->setText("");
+		// do not say empty messages
+		if (mDetachedEditbox->getText().length() > 0)
+		{
+			respondWithMessage(mDetachedEditbox->getText().c_str());
+			// clear the editbox (this message has been sent by now)
+			mDetachedEditbox->setText("");
+		}
 		
+		// but always eat the return key presses
 		return true;
 	}
 	else if (kargs.scancode == Key::ArrowUp)
 	{
 		mCommandHistory->moveBackwards();
 		mDetachedEditbox->setText(mCommandHistory->getHistoryString());
+		
+		return true;
 	}
 	else if (kargs.scancode == Key::ArrowDown)
 	{
 		mCommandHistory->moveForwards();
 		mDetachedEditbox->setText(mCommandHistory->getHistoryString());
+		
+		return true;
 	}
 	
-	// unless the key was a Enter/Return key, we have to tell CEGUI we haven't
+	// unless the key was a Enter/Return key, ArrowUp or ArrowDownwe have to tell CEGUI we haven't
 	// handled it! otherwise backspace et al stop working
 	return false;
 }
