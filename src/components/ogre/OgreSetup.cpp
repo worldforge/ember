@@ -40,6 +40,10 @@
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 
+#ifdef BUILD_WEBEMBER
+#include "extensions/webember/WebEmberManager.h"
+#endif
+
 #ifdef _WIN32
 #include <float.h>
 #include "platform/platform_windows.h"
@@ -297,7 +301,7 @@ bool OgreSetup::configure(void)
 	}
 
 	if (success) {
-#if __WIN32__
+#if _WIN32
 		//this will only apply on DirectX
 		//it will force DirectX _not_ to set the FPU to single precision mode (since this will mess with mercator amongst others)
 		try {
@@ -308,7 +312,21 @@ bool OgreSetup::configure(void)
 			//we don't know what kind of render system is used, so we'll just swallow the error since it doesn't affect anything else than DirectX
 		}
 
-		mRenderWindow = mRoot->initialise(true, "Ember");
+#ifndef BUILD_WEBEMBER
+			mRoot->initialise(true, "Ember");
+#else // BUILD_WEBEMBER
+			mRoot->initialise(false, "Ember");
+
+			Ogre::NameValuePairList options;
+
+			//set the owner window as the plugin frame
+			options["parentWindowHandle"]=WebEmberManager::getSingleton().getWindowHandle();
+			
+			//put it in the top left corner
+			options["top"]="0";
+			options["left"]="0";
+			mRenderWindow = mRoot->createRenderWindow("Ember",800,600,false,&options);
+#endif // BUILD_WEBEMBER
 
 		//do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
 		_fpreset();

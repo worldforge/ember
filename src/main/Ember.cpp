@@ -26,12 +26,12 @@
 #include "Application.h"
 #include "framework/Tokeniser.h"
 
-#ifdef WIN32
-#include <tchar.h>
-#define snprintf _snprintf
-#include <io.h> // for _access, Win32 version of stat()
-#include <direct.h> // for _mkdir
-//	#include <sys/stat.h>
+#ifdef BUILD_WEBEMBER
+#include "extensions/webember/WebEmberManager.h"
+#endif
+
+#ifdef _WIN32
+#include "platform/platform_windows.h"
 
 #include <iostream>
 #include <fstream>
@@ -200,6 +200,9 @@ int main(int argc, char **argv)
 	{
 		try
 		{
+#ifdef BUILD_WEBEMBER
+			prefix = Ember::WebEmberManager::getSingleton().getPrefix();
+#endif
 			// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
 			//Ember::OgreView::EmberOgre app;
