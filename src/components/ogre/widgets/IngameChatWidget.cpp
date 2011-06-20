@@ -38,6 +38,7 @@
 #include "components/ogre/model/ModelRepresentation.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/camera/MainCamera.h"
+#include "framework/CommandHistory.h"
 
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
@@ -481,6 +482,9 @@ IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
 	mDetachedEditbox(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/Editbox")),
 
 	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer/ResponseList")),
+	
+	mCommandHistory(new CommandHistory()),
+	
 	mElapsedTimeSinceLastUpdate(0.0f),
 	mPrefix(prefix)
 {
@@ -494,6 +498,8 @@ IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
 
 IngameChatWidget::ChatText::~ChatText()
 {
+	delete mCommandHistory;
+	
 	WindowManager::getSingleton().destroyWindow(mAttachedWindow);
 	WindowManager::getSingleton().destroyWindow(mDetachedWindow);
 }
@@ -566,6 +572,8 @@ void IngameChatWidget::ChatText::respondWithMessage(const std::string& message)
 	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']> " + message);
 	mDetachedChatHistory->setProperty("VertScrollPosition", mDetachedChatHistory->getProperty("VertExtent"));
 	
+	mCommandHistory->addToHistory(message);
+	
 	clearResponses();
 }
 
@@ -623,6 +631,16 @@ bool IngameChatWidget::ChatText::editboxDetachedKey_Event(const EventArgs& args)
 		mDetachedEditbox->setText("");
 		
 		return true;
+	}
+	else if (kargs.scancode == Key::ArrowUp)
+	{
+		mCommandHistory->moveBackwards();
+		mDetachedEditbox->setText(mCommandHistory->getHistoryString());
+	}
+	else if (kargs.scancode == Key::ArrowDown)
+	{
+		mCommandHistory->moveForwards();
+		mDetachedEditbox->setText(mCommandHistory->getHistoryString());
 	}
 	
 	// unless the key was a Enter/Return key, we have to tell CEGUI we haven't

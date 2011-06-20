@@ -30,6 +30,9 @@
 #include <OgreMovableObject.h>
 
 namespace Ember {
+
+class CommandHistory;
+
 namespace OgreView {
 
 namespace Camera
@@ -259,6 +262,8 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			CEGUI::Window* mDetachedEditbox;
 			
 			CEGUI::Window* mResponseWidget;
+			
+			CommandHistory* mCommandHistory;
 			
 			float mElapsedTimeSinceLastUpdate;
 			std::string mPrefix;
