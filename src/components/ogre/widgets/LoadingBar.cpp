@@ -33,6 +33,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include <OgreOverlayContainer.h>
 #include <OgreOverlayManager.h>
 #include <OgreRenderWindow.h>
+#include <OgreWindowEventUtilities.h>
 
 using namespace Ogre;
 namespace Ember {
@@ -216,6 +217,7 @@ namespace Gui {
 				mVersionElement->_positionsOutOfDate();
 
 				mWindow.update();
+				Ogre::WindowEventUtilities::messagePump();
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when updating render for loading bar." << ex);
 			}
