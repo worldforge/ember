@@ -15,7 +15,7 @@
 			<Property Name='HorzScrollbar' Value='False'/>
 			<Property Name='VertScrollbar' Value='True'/>
 		</Window>
-		<Window Type='DefaultWindow' Name='MainWindow/Detached/ResponseContainer'>
+		<Window Type='EmberLook/ScrollablePane' Name='MainWindow/Detached/ResponseContainer'>
 			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.4,-25}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.6,0.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>

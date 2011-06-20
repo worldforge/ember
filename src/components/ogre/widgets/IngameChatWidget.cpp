@@ -51,6 +51,7 @@
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUIFrameWindow.h>
+#include <elements/CEGUILayoutContainer.h>
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
@@ -534,11 +535,6 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 		//for each response, create a button
 		const std::vector<std::string>& responses = mLabel->getEntity()->getSuggestedResponses();
 
-		float heightSize = 1.0f;
-		if (responses.size() > 0) {
-			heightSize = 1.0f / responses.size();
-		}
-
 		std::vector<std::string>::const_iterator I = responses.begin();
 		std::vector<std::string>::const_iterator I_end = responses.end();
 		int i = 0;
@@ -551,8 +547,8 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 
 			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click );
 
-			responseTextButton->setSize(UVector2(UDim(1.0f, 0), UDim(heightSize, 0.0f)));
-			responseTextButton->setPosition(UVector2(UDim(0.0f, 0), UDim(i * heightSize, 0.0f)));
+			// FIXME: 50px height for now
+			responseTextButton->setSize(UVector2(UDim(1.0f, 0), UDim(0.0f, 50.0f)));
 			responseTextButton->setInheritsAlpha(true);
 			responseTextButton->setText(*I);
 			mResponseWidget->addChildWindow(responseTextButton);
@@ -593,6 +589,9 @@ bool IngameChatWidget::ChatText::buttonAttachedText_Click(const EventArgs& args)
 	mAttachedWindow->setVisible(false);
 	mDetachedWindow->setVisible(true);
 	
+	// workaround, see http://www.cegui.org.uk/mantis/view.php?id=464
+	static_cast<LayoutContainer*>(mResponseWidget)->markNeedsLayouting();
+	
 	// reset the fade timer
 	mElapsedTimeSinceLastUpdate = 0;
 	
@@ -606,6 +605,9 @@ bool IngameChatWidget::ChatText::buttonDetachedClose_Click(const EventArgs& args
 	
 	mAttachedWindow->setVisible(true);
 	mDetachedWindow->setVisible(false);
+	
+	// workaround, see http://www.cegui.org.uk/mantis/view.php?id=464
+	static_cast<LayoutContainer*>(mResponseWidget)->markNeedsLayouting();
 	
 	return true;
 }

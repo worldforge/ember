@@ -17,7 +17,7 @@
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='MousePassThroughEnabled' Value='true'/>
 			
-			<Window Type='DefaultWindow' Name='MainWindow/Attached/ResponseContainer/ResponseList'>
+			<Window Type='VerticalLayoutContainer' Name='MainWindow/Attached/ResponseContainer/ResponseList'>
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Property Name='MousePassThroughEnabled' Value='true'/>
 			</Window>
