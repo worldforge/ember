@@ -522,7 +522,10 @@ void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice)
 void IngameChatWidget::ChatText::updateText(const std::string & line)
 {
 	mAttachedTextWidget->setText(line);
+	
 	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF000000']< " + line);
+	mDetachedChatHistory->setProperty("VertScrollPosition", mDetachedChatHistory->getProperty("VertExtent"));
+	
 	mElapsedTimeSinceLastUpdate = 0;
 
 	if (mLabel->getEntity()->hasSuggestedResponses()) {
@@ -563,7 +566,10 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 void IngameChatWidget::ChatText::respondWithMessage(const std::string& message)
 {
 	EmberServices::getSingleton().getServerService().say(message);
+	
 	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']> " + message);
+	mDetachedChatHistory->setProperty("VertScrollPosition", mDetachedChatHistory->getProperty("VertExtent"));
+	
 	clearResponses();
 }
 

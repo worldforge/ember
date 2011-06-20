@@ -262,7 +262,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			
 			float mElapsedTimeSinceLastUpdate;
 			std::string mPrefix;
-
+			
 			/**
 			 * @brief respond to the entity with given message
 			 * 
