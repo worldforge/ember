@@ -335,6 +335,7 @@ void GUIManager::initialize()
 
 	std::vector<std::string> widgetsToLoad;
 	widgetsToLoad.push_back("IngameChatWidget");
+	widgetsToLoad.push_back("IngameTradeWidget");
 	//	widgetsToLoad.push_back("JesusEdit");
 	widgetsToLoad.push_back("Help");
 	widgetsToLoad.push_back("MeshPreview");

@@ -6,9 +6,14 @@
 		<Property Name='InheritsAlpha' Value='true'/>
 		<Property Name='Text' Value='Dialog with XX'/>
 		
+		<Window Type='EmberLook/Button' Name='MainWindow/Detached/TradeButton'>
+			<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0,-75.0},{0.0,0.0}}'/>
+			<Property Name='Text' Value='Trade'/>
+		</Window>
 		<Window Type='EmberLook/StaticText' Name='MainWindow/Detached/ChatHistory'>
-			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.6}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.6,-25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,25.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 			<Property Name='VertFormatting' Value='TopAligned'/>

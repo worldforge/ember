@@ -480,6 +480,7 @@ IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
 	mDetachedChatHistory(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ChatHistory")),
 	mDetachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ResponseContainer")),
 	mDetachedEditbox(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/Editbox")),
+	mDetachedTradeButton(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/TradeButton")),
 
 	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer/ResponseList")),
 	
@@ -494,6 +495,7 @@ IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
 	BIND_CEGUI_EVENT(mAttachedTextWidget, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click );
 	BIND_CEGUI_EVENT(mDetachedWindow, FrameWindow::EventCloseClicked, IngameChatWidget::ChatText::buttonDetachedClose_Click );
 	BIND_CEGUI_EVENT(mDetachedEditbox, Window::EventKeyDown, IngameChatWidget::ChatText::editboxDetachedKey_Event );
+	BIND_CEGUI_EVENT(mDetachedTradeButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonDetachedTrade_Click );
 }
 
 IngameChatWidget::ChatText::~ChatText()
@@ -654,6 +656,13 @@ bool IngameChatWidget::ChatText::editboxDetachedKey_Event(const EventArgs& args)
 	// unless the key was a Enter/Return key, ArrowUp or ArrowDownwe have to tell CEGUI we haven't
 	// handled it! otherwise backspace et al stop working
 	return false;
+}
+
+bool IngameChatWidget::ChatText::buttonDetachedTrade_Click(const EventArgs& args)
+{
+	GUIManager::getSingleton().EmitEntityAction("Trade", mLabel->getEntity());
+	
+	return true;
 }
 
 void IngameChatWidget::ChatText::clearResponses()

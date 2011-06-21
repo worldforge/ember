@@ -260,6 +260,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			CEGUI::Window* mDetachedChatHistory;
 			CEGUI::Window* mDetachedResponseContainer;
 			CEGUI::Window* mDetachedEditbox;
+			CEGUI::Window* mDetachedTradeButton;
 			
 			CEGUI::Window* mResponseWidget;
 			
@@ -279,6 +280,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			bool buttonAttachedText_Click(const CEGUI::EventArgs& args);
 			bool buttonDetachedClose_Click(const CEGUI::EventArgs& args);
 			bool editboxDetachedKey_Event(const CEGUI::EventArgs& args);
+			bool buttonDetachedTrade_Click(const CEGUI::EventArgs& args);
 			
 			/**
 			 * @brief Removes all response buttons.
