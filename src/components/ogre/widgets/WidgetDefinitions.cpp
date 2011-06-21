@@ -30,7 +30,6 @@
 #include "ServerWidget.h"
 #include "InspectWidget.h"
 #include "IngameChatWidget.h"
-#include "IngameTradeWidget.h"
 //#include "JesusEdit.h"
 #include "Help.h"
 #include "Quit.h"
@@ -50,7 +49,6 @@ WidgetDefinitions::WidgetDefinitions()
 	WidgetLoader::registerWidgetFactory("ServerWidget", &WidgetLoader::createWidgetInstance<ServerWidget>);
 	WidgetLoader::registerWidgetFactory("InspectWidget", &WidgetLoader::createWidgetInstance<InspectWidget>);
 	WidgetLoader::registerWidgetFactory("IngameChatWidget", &WidgetLoader::createWidgetInstance<Gui::IngameChatWidget>);
-	WidgetLoader::registerWidgetFactory("IngameTradeWidget", &WidgetLoader::createWidgetInstance<Gui::IngameTradeWidget>);
 //	WidgetLoader::registerWidgetFactory("JesusEdit", &WidgetLoader::createWidgetInstance<JesusEdit>);
 	WidgetLoader::registerWidgetFactory("Help", &WidgetLoader::createWidgetInstance<Help>);
 	WidgetLoader::registerWidgetFactory("Quit", &WidgetLoader::createWidgetInstance<Quit>);
