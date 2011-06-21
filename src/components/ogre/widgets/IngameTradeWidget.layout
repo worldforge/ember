@@ -5,6 +5,12 @@
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 		<Property Name='HorizontalAlignment' Value='Centre'/>
 		<Property Name='VerticalAlignment' Value='Centre'/>
-		<Property Name='Text' Value='Trade Window' />
+		<Property Name='Text' Value='Trade Window'/>
+		
+		<Window Type="EmberLook/StaticText" Name="MainWindow/Label">
+			<Property Name='UnifiedSize' Value='{{1.00,0.0},{0.0,50.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+			<Property Name='Text' Value='Trading dialog with {Name}'/>
+		</Window>
 	</Window>
 </GUILayout>

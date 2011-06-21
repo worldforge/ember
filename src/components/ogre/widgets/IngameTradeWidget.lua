@@ -6,11 +6,14 @@ function TradeWindow.create(entity)
 	setmetatable(ret, TradeWindow)
 	
 	ret.widget = guiManager:createWidget()
-	ret.widget:loadMainSheet("IngameTradeWidget.layout", "IngameTradeWidget/TradeWindow")
+	ret.widget:loadMainSheet("IngameTradeWidget.layout", "IngameTradeWidget/TradeWindow/")
 	
 	ret.widget:hide()
 	
 	ret.window = ret.widget:getWindow("MainWindow")
+	ret.label = ret.widget:getWindow("MainWindow/Label")
+	-- doesn't work for mysterious reasons
+	--ret.label:setText("Trading dialog with '" + entity:getName() + "'.")
 	
 	ret:setTargetEntity(entity)
 
@@ -31,7 +34,6 @@ function TradeWindow:setTargetEntity(entity)
 end
 
 function TradeWindow:EventCloseClicked(args)
-	self.widget:hide()
 	guiManager:destroyWidget(self.widget)
 end
 
