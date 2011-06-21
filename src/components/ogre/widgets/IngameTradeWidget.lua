@@ -10,8 +10,11 @@ function TradeWindow.create(entity)
 	
 	ret.widget:hide()
 	
-	ret:setTargetEntity(entity)
+	ret.window = ret.widget:getWindow("MainWindow")
 	
+	ret:setTargetEntity(entity)
+
+	ret.window:subscribeEvent("CloseClicked", "TradeWindow.EventCloseClicked", ret)
 	return ret
 end
 
@@ -25,6 +28,11 @@ function TradeWindow:setTargetEntity(entity)
 	else
 		self.widget:hide()
 	end
+end
+
+function TradeWindow:EventCloseClicked(args)
+	self.widget:hide()
+	guiManager:destroyWidget(self.widget)
 end
 
 IngameTradeWidget = {}
@@ -49,7 +57,6 @@ end
 function IngameTradeWidget:GUIManager_EventEntityAction(action, entity)
 	if (action == "Trade") then
 		local wnd = TradeWindow:create(entity)
-		wnd.setTargetEntity(entity)
 	end
 end
 
