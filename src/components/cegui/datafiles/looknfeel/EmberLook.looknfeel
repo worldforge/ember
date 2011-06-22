@@ -5204,9 +5204,9 @@
 				<KeyFrame position="0.2" value="0.4" progression="quadratic decelerating" />
 			</Affector>
 			
-			<Subscription event="MouseLeavesArea" action="Start" />
-			<!-- this avoids multiple mouse over / mouse off animations from running --> 
-			<Subscription event="MouseEntersArea" action="Pause" />
+			<Subscription event="Deactivated" action="Start" />
+			<!-- this avoids multiple animations from running on the same window --> 
+			<Subscription event="Activated" action="Pause" />
 		</AnimationDefinition>
 		<AnimationDefinition name="MouseOverFadeIn" duration="0.2" replayMode="once">
 			<Affector property="Alpha" interpolator="float">
@@ -5214,9 +5214,9 @@
 				<KeyFrame position="0.2" value="1.0" progression="quadratic accelerating" />
 			</Affector>
 			
-			<Subscription event="MouseEntersArea" action="Start" />
-			<!-- this avoids multiple mouse over / mouse off animations from running --> 
-			<Subscription event="MouseLeavesArea" action="Pause" />
+			<Subscription event="Activated" action="Start" />
+			<!-- this avoids multiple animations from running on the same window --> 
+			<Subscription event="Deactivated" action="Pause" />
 		</AnimationDefinition>
 		
 		<AnimationDefinition name="RequestAttention" duration="0.4" replayMode="once">
