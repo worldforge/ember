@@ -496,6 +496,9 @@ IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
 	BIND_CEGUI_EVENT(mDetachedWindow, FrameWindow::EventCloseClicked, IngameChatWidget::ChatText::buttonDetachedClose_Click );
 	BIND_CEGUI_EVENT(mDetachedEditbox, Window::EventKeyDown, IngameChatWidget::ChatText::editboxDetachedKey_Event );
 	BIND_CEGUI_EVENT(mDetachedTradeButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonDetachedTrade_Click );
+	
+	// workaround, see: http://www.cegui.org.uk/mantis/view.php?id=464
+	BIND_CEGUI_EVENT(mDetachedWindow, Window::EventSized, IngameChatWidget::ChatText::detachedSized_Event );
 }
 
 IngameChatWidget::ChatText::~ChatText()
@@ -691,6 +694,14 @@ bool IngameChatWidget::ChatText::buttonDetachedTrade_Click(const EventArgs& args
 	
 	// also switch to attached mode to avoid having a superfluous window opened
 	switchToAttachedMode();
+	
+	return true;
+}
+
+bool IngameChatWidget::ChatText::detachedSized_Event(const EventArgs& args)
+{
+	// workaround, see http://www.cegui.org.uk/mantis/view.php?id=464
+	static_cast<LayoutContainer*>(mResponseWidget)->markNeedsLayouting();
 	
 	return true;
 }

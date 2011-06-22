@@ -291,6 +291,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			bool buttonDetachedClose_Click(const CEGUI::EventArgs& args);
 			bool editboxDetachedKey_Event(const CEGUI::EventArgs& args);
 			bool buttonDetachedTrade_Click(const CEGUI::EventArgs& args);
+			bool detachedSized_Event(const CEGUI::EventArgs& args);
 			
 			/**
 			 * @brief Removes all response buttons.
