@@ -131,5 +131,5 @@ loadScript("EntityCreator.lua")
 loadScript("ServerLogger.lua")
 loadScript("TypeManager.lua")
 loadScript("TerrainEditor.lua")
-loadScript("IngameTradeWidget.lua")
+loadScript("IngameMerchantWidget.lua")
 

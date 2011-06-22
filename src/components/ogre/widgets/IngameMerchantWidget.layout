@@ -10,7 +10,12 @@
 		<Window Type="EmberLook/StaticText" Name="MainWindow/Label">
 			<Property Name='UnifiedSize' Value='{{1.00,0.0},{0.0,50.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='Text' Value='Trading dialog with {Name}'/>
+			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+			<Property Name='Text' Value='Below are goods available from this merchant, you can click them to buy or drag your own items from your inventory here to attempt to sell them.'/>
+		</Window>
+		<Window Type="EmberLook/ScrollablePane" Name="MainWindow/AvailableGoods">
+			<Property Name='UnifiedSize' Value='{{1.00,0.0},{1.0,-50.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0,0},{0,50}}'/>
 		</Window>
 	</Window>
 </GUILayout>

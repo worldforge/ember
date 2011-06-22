@@ -660,7 +660,9 @@ bool IngameChatWidget::ChatText::editboxDetachedKey_Event(const EventArgs& args)
 
 bool IngameChatWidget::ChatText::buttonDetachedTrade_Click(const EventArgs& args)
 {
-	GUIManager::getSingleton().EmitEntityAction("Trade", mLabel->getEntity());
+	// FIXME: We should query if the entity is an NPC with merchanting capabilities
+	//        if it is not, a normal trade window should pop instead of the merchant window
+	GUIManager::getSingleton().EmitEntityAction("Merchant", mLabel->getEntity());
 	
 	return true;
 }
