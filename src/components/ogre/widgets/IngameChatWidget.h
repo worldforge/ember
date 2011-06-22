@@ -276,6 +276,16 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			 */
 			void respondWithMessage(const std::string& message);
 			
+			/**
+			 * @brief switches from detached to attached mode
+			 */
+			void switchToAttachedMode();
+			
+			/**
+			 * @brief switches from attached to detached mode
+			 */
+			void switchToDetachedMode();
+			
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
 			bool buttonAttachedText_Click(const CEGUI::EventArgs& args);
 			bool buttonDetachedClose_Click(const CEGUI::EventArgs& args);

@@ -2,7 +2,7 @@ MerchantWindow = {}
 MerchantWindow.__index = MerchantWindow
 
 function MerchantWindow.create(entity)
-	local ret = {}
+	local ret = {connectors = {} }
 	setmetatable(ret, MerchantWindow)
 	
 	ret.widget = guiManager:createWidget()
@@ -15,11 +15,12 @@ function MerchantWindow.create(entity)
 	
 	ret:setTargetEntity(entity)
 
-	ret.window:subscribeEvent("CloseClicked", "MerchantWindow.EventCloseClicked", ret)
+	ret.window:subscribeEvent("CloseClicked", "MerchantWindow.handleCloseClicked", ret)
 	return ret
 end
 
 function MerchantWindow:shutdown()
+	disconnectAll(self.connectors)
 	windowManager:destroyWindow(self.window)
 end
 
@@ -27,12 +28,26 @@ function MerchantWindow:setTargetEntity(entity)
 	if (entity ~= nil) then
 		self.window:setText("Trading dialog with '" .. entity:getName() .. "'.")
 		self.widget:show()
+		connect(self.connectors, entity.Say, MerchantWindow.handleEntitySay, self)
+		--console:runCommand("/say " .. entity:getName() .. ": list me price")
+		console:runCommand("/say list me price")
 	else
 		self.widget:hide()
 	end
 end
 
-function MerchantWindow:EventCloseClicked(args)
+function MerchantWindow:handleEntitySay(root)
+	--we are only listening to our target entity so whatever gets here is indeed the target entity speaking
+	
+-- 	if not root:hasAttr("say") then
+-- 		return
+-- 	end
+-- 	
+-- 	local message = root:getAttr("say"):asString()
+-- 	log.info(message)
+end
+
+function MerchantWindow:handleCloseClicked(args)
 	guiManager:destroyWidget(self.widget)
 end
 

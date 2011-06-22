@@ -578,18 +578,35 @@ void IngameChatWidget::ChatText::respondWithMessage(const std::string& message)
 	clearResponses();
 }
 
-bool IngameChatWidget::ChatText::buttonResponse_Click(const EventArgs& args)
+void IngameChatWidget::ChatText::switchToAttachedMode()
 {
-	const MouseEventArgs *mouseArgs = static_cast<const MouseEventArgs*> (&args);
-	if (mouseArgs) {
-		//each button contains a static text window, which is the one containg the actual text
-		respondWithMessage(mouseArgs->window->getText().c_str());
+	// be robust, if we are in detached mode, do nothing
+	if (mAttachedWindow->isVisible())
+	{
+		return;
 	}
-	return true;
+	
+	mDetachedResponseContainer->removeChildWindow(mResponseWidget);
+	mAttachedResponseContainer->addChildWindow(mResponseWidget);
+	
+	mAttachedWindow->setVisible(true);
+	mDetachedWindow->setVisible(false);
+	
+	// workaround, see http://www.cegui.org.uk/mantis/view.php?id=464
+	static_cast<LayoutContainer*>(mResponseWidget)->markNeedsLayouting();
+	
+	// reset the fade timer
+	mElapsedTimeSinceLastUpdate = 0;
 }
 
-bool IngameChatWidget::ChatText::buttonAttachedText_Click(const EventArgs& args)
+void IngameChatWidget::ChatText::switchToDetachedMode()
 {
+	// be robust, if we are in detached mode, do nothing
+	if (mDetachedWindow->isVisible())
+	{
+		return;
+	}
+	
 	const Rect rect = mAttachedWindow->getUnclippedOuterRect();
 	mDetachedWindow->setPosition(UVector2(UDim(0, rect.d_left), UDim(0, rect.d_top)));
 	mAttachedResponseContainer->removeChildWindow(mResponseWidget);
@@ -603,20 +620,28 @@ bool IngameChatWidget::ChatText::buttonAttachedText_Click(const EventArgs& args)
 	
 	// reset the fade timer
 	mElapsedTimeSinceLastUpdate = 0;
+}
+
+bool IngameChatWidget::ChatText::buttonResponse_Click(const EventArgs& args)
+{
+	const MouseEventArgs *mouseArgs = static_cast<const MouseEventArgs*> (&args);
+	if (mouseArgs) {
+		//each button contains a static text window, which is the one containg the actual text
+		respondWithMessage(mouseArgs->window->getText().c_str());
+	}
+	return true;
+}
+
+bool IngameChatWidget::ChatText::buttonAttachedText_Click(const EventArgs& args)
+{
+	switchToDetachedMode();
 	
 	return true;
 }
 
 bool IngameChatWidget::ChatText::buttonDetachedClose_Click(const EventArgs& args)
 {
-	mDetachedResponseContainer->removeChildWindow(mResponseWidget);
-	mAttachedResponseContainer->addChildWindow(mResponseWidget);
-	
-	mAttachedWindow->setVisible(true);
-	mDetachedWindow->setVisible(false);
-	
-	// workaround, see http://www.cegui.org.uk/mantis/view.php?id=464
-	static_cast<LayoutContainer*>(mResponseWidget)->markNeedsLayouting();
+	switchToAttachedMode();
 	
 	return true;
 }
@@ -663,6 +688,9 @@ bool IngameChatWidget::ChatText::buttonDetachedTrade_Click(const EventArgs& args
 	// FIXME: We should query if the entity is an NPC with merchanting capabilities
 	//        if it is not, a normal trade window should pop instead of the merchant window
 	GUIManager::getSingleton().EmitEntityAction("Merchant", mLabel->getEntity());
+	
+	// also switch to attached mode to avoid having a superfluous window opened
+	switchToAttachedMode();
 	
 	return true;
 }
