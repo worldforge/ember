@@ -650,7 +650,7 @@ bool IngameChatWidget::ChatText::editboxDetachedKey_Event(const EventArgs& args)
 {
 	const KeyEventArgs& kargs = static_cast<const KeyEventArgs&>(args);
 	
-	if (kargs.scancode == Key::Return)
+	if (kargs.scancode == Key::Return || kargs.scancode == Key::NumpadEnter)
 	{
 		// do not say empty messages
 		if (mDetachedEditbox->getText().length() > 0)
