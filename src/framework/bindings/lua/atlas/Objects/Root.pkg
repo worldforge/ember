@@ -54,7 +54,8 @@ class RootData
     /// Retrieve the "name" attribute.
     inline const std::string& getName() const;
 
-
+    const Atlas::Message::Element getAttr(const std::string& name);
+    bool hasAttr(const std::string& name) const;
 };
 
 

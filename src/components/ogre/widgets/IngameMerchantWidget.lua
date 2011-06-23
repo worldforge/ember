@@ -38,13 +38,14 @@ end
 
 function MerchantWindow:handleEntitySay(root)
 	--we are only listening to our target entity so whatever gets here is indeed the target entity speaking
+	local rootObject = root:get()
 	
--- 	if not root:hasAttr("say") then
--- 		return
--- 	end
--- 	
--- 	local message = root:getAttr("say"):asString()
--- 	log.info(message)
+	if not rootObject:hasAttr("say") then
+		return
+	end
+	
+	local message = rootObject:getAttr("say"):asString()
+	--message now contains what our target entity said
 end
 
 function MerchantWindow:handleCloseClicked(args)
