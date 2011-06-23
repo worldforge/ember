@@ -21,6 +21,14 @@
 				<Property Name='InheritsAlpha' Value='true'/>
 				<Property Name='MousePassThroughEnabled' Value='true'/>
 			</Window>
+			
+			<Window Type='EmberLook/Button' Name='MainWindow/Attached/ResponseContainer/EllipsisButton'>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0, 20.0}}'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-20.0}}'/>
+				<Property Name='AlwaysOnTop' Value='true'/>
+				<Property Name='Text' Value='...'/>
+				<Property Name='Visible' Value='false'/>
+			</Window>
 		</Window>
 	</Window>
 </GUILayout>

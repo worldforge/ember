@@ -255,6 +255,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			CEGUI::Window* mAttachedWindow;
 			CEGUI::Window* mAttachedTextWidget;
 			CEGUI::Window* mAttachedResponseContainer;
+			CEGUI::Window* mAttachedEllipsisButton;
 			
 			CEGUI::Window* mDetachedWindow;
 			CEGUI::Window* mDetachedChatHistory;

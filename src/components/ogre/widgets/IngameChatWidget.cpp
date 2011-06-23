@@ -475,7 +475,8 @@ IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
 	mAttachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached")),
 	mAttachedTextWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/Text")),
 	mAttachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer")),
-
+	mAttachedEllipsisButton(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer/EllipsisButton")),
+	
 	mDetachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached")),
 	mDetachedChatHistory(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ChatHistory")),
 	mDetachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ResponseContainer")),
@@ -493,6 +494,9 @@ IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
 	GUIManager::getSingleton().getMainSheet()->addChildWindow(mDetachedWindow);
 	
 	BIND_CEGUI_EVENT(mAttachedTextWidget, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click );
+	// clicking the ellipsis button should do exactly the same as clicking the attached text
+	BIND_CEGUI_EVENT(mAttachedEllipsisButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click );
+	
 	BIND_CEGUI_EVENT(mDetachedWindow, FrameWindow::EventCloseClicked, IngameChatWidget::ChatText::buttonDetachedClose_Click );
 	BIND_CEGUI_EVENT(mDetachedEditbox, Window::EventKeyDown, IngameChatWidget::ChatText::editboxDetachedKey_Event );
 	BIND_CEGUI_EVENT(mDetachedTradeButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonDetachedTrade_Click );
@@ -566,6 +570,13 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 
 			++i;
 		}
+		
+		// FIXME: Query the threshold from the looknfeel
+		mAttachedEllipsisButton->setVisible(i >= 3);
+	}
+	else
+	{
+		mAttachedEllipsisButton->setVisible(false);
 	}
 }
 
