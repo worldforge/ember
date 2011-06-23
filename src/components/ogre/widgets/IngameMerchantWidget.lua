@@ -36,6 +36,9 @@ function MerchantWindow:setTargetEntity(entity)
 	end
 end
 
+function MerchantWindow::addItemForSale(item, price, quantityAvailable)
+end
+
 function MerchantWindow:handleEntitySay(root)
 	--we are only listening to our target entity so whatever gets here is indeed the target entity speaking
 	local rootObject = root:get()
@@ -44,8 +47,18 @@ function MerchantWindow:handleEntitySay(root)
 		return
 	end
 	
-	local message = rootObject:getAttr("say"):asString()
 	--message now contains what our target entity said
+	local message = rootObject:getAttr("say"):asString()
+	
+	if string.find(message, "The price of [%a]+ is [%d]+") ~= nil then
+		local item = ""
+		local price = 0
+		local quantityAvailable = -1
+		
+		_, _, item, price = string.find(message, "The price of ([%a]+) is ([%d]+)")
+		
+		self:addItemForSale(item, price, quantityAvailable)
+	end
 end
 
 function MerchantWindow:handleCloseClicked(args)
