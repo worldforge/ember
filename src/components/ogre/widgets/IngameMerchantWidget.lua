@@ -12,6 +12,7 @@ function MerchantWindow.create(entity)
 	
 	ret.window = ret.widget:getWindow("MainWindow")
 	ret.label = ret.widget:getWindow("MainWindow/Label")
+	ret.goods = CEGUI.toMultiColumnList(ret.widget:getWindow("MainWindow/AvailableGoods"))
 	
 	ret:setTargetEntity(entity)
 
@@ -36,7 +37,22 @@ function MerchantWindow:setTargetEntity(entity)
 	end
 end
 
-function MerchantWindow:addItemForSale(item, price, quantityAvailable)
+function MerchantWindow:addItemForSale(itemName, price, quantityAvailable)
+	local rowNumber = self.goods:getRowCount()
+	self.goods:addRow()
+
+	local item = Ember.OgreView.Gui.ColouredListItem:new(itemName)
+	self.goods:setItem(item, 0, rowNumber);	
+
+	local item = Ember.OgreView.Gui.ColouredListItem:new(price)
+	self.goods:setItem(item, 1, rowNumber)
+
+	if quantityAvailable < 0 then
+		quantityAvailable = "inf"
+	end
+	
+	local item = Ember.OgreView.Gui.ColouredListItem:new(quantityAvailable)
+	self.goods:setItem(item, 2, rowNumber)
 end
 
 function MerchantWindow:handleEntitySay(root)
