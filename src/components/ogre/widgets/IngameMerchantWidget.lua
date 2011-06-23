@@ -15,7 +15,7 @@ function MerchantWindow.create(entity)
 	
 	ret:setTargetEntity(entity)
 
-	ret.window:subscribeEvent("CloseClicked", "MerchantWindow.handleCloseClicked", ret)
+	ret.window:subscribeEvent("CloseClicked", MerchantWindow.handleCloseClicked, ret)
 	return ret
 end
 
@@ -36,7 +36,7 @@ function MerchantWindow:setTargetEntity(entity)
 	end
 end
 
-function MerchantWindow::addItemForSale(item, price, quantityAvailable)
+function MerchantWindow:addItemForSale(item, price, quantityAvailable)
 end
 
 function MerchantWindow:handleEntitySay(root)
