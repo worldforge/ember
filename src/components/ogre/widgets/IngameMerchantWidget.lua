@@ -1,3 +1,26 @@
+MerchantTradeConfirmationDialog = {}
+MerchantTradeConfirmationDialog.__index = MerchantTradeConfirmationDialog
+
+function MerchantTradeConfirmationDialog.create(itemName, itemPrice, merchantEntity, uniqueIndex)
+	local ret = {connectors = {} }
+	setmetatable(ret, MerchantTradeConfirmationDialog)
+	
+	ret.widget = guiManager:createWidget()
+	ret.widget:loadMainSheet("IngameMerchantTradeConfirmationDialog.layout", "IngameMerchantWidget/TradeConfirmationDialog/" .. uniqueIndex .. "/")
+	ret.uniqueIndex = uniqueIndex
+	
+	ret.window = ret.widget:getWindow("MainWindow")
+	ret.label = ret.widget:getWindow("MainWindow/Label")
+	ret.label:setText("Are you sure you want to buy '" .. itemName .. "' from '" .. merchantEntity:getName() .. "' for " .. itemPrice .. " coins?")
+	
+	ret.window:subscribeEvent("CloseClicked", MerchantTradeConfirmationDialog.handleCloseClicked, ret)
+	return ret
+end
+
+function MerchantTradeConfirmationDialog:handleCloseClicked(args)
+	return true
+end
+
 MerchantWindow = {}
 MerchantWindow.__index = MerchantWindow
 
@@ -6,6 +29,7 @@ function MerchantWindow.create(entity, uniqueIndex)
 	setmetatable(ret, MerchantWindow)
 	
 	ret.widget = guiManager:createWidget()
+	ret.uniqueIndex = uniqueIndex
 	ret.widget:loadMainSheet("IngameMerchantWidget.layout", "IngameMerchantWidget/" .. uniqueIndex .. "MerchantWindow/")
 	
 	ret.widget:hide()
@@ -35,6 +59,7 @@ function MerchantWindow:setTargetEntity(entity)
 		connect(self.connectors, entity.Say, MerchantWindow.handleEntitySay, self)
 		--console:runCommand("/say " .. entity:getName() .. ": list me price")
 		console:runCommand("/say list me price")
+		self.merchantEntity = entity
 	else
 		self.widget:hide()
 	end
@@ -86,16 +111,25 @@ function MerchantWindow:handleGoodsDoubleClicked(args)
 	if selection ~= nil then
 		local selectedRowIndex = self.goods:getItemRowIndex(selection)
 		local itemName = ""
+		local itemPrice = 0
 		
 		if selectedRowIndex ~= -1 then
 			local selectedItemName = self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(selectedRowIndex, 0))
 			if selectedItemName ~= nil then
 				itemName = selectedItemName:getText()
 			end
+			
+			local selectedItemPrice = self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(selectedRowIndex, 1))
+			if selectedItemPrice ~= nil then
+				itemPrice = selectedItemPrice:getText()
+			end
 		end
 		
-		if itemName ~= "" then
+		if itemName ~= "" and itemPrice ~= 0 then
 			console:runCommand("/say I would like to buy " .. itemName)
+			MerchantTradeConfirmationDialog.create(itemName, itemPrice, self.merchantEntity, ingameMerchantWidget.confirmationDialogIndex)
+			
+			ingameMerchantWidget.confirmationDialogIndex = ingameMerchantWidget.confirmationDialogIndex + 1
 		end
 	end
 end
@@ -112,7 +146,10 @@ function IngameMerchantWidget.create()
 	setmetatable(ret, IngameMerchantWidget)
 	
 	ret:buildWidget()
+	
 	ret.tradeWindowIndex = 0
+	ret.confirmationDialogIndex = 0
+	
 	return ret
 end
 
@@ -132,4 +169,4 @@ function IngameMerchantWidget:handleEntityAction(action, entity)
 	end
 end
 
-IngameMerchantWidget.create()
+ingameMerchantWidget = IngameMerchantWidget.create()
