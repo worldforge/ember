@@ -1,12 +1,12 @@
 MerchantWindow = {}
 MerchantWindow.__index = MerchantWindow
 
-function MerchantWindow.create(entity)
+function MerchantWindow.create(entity, uniqueIndex)
 	local ret = {connectors = {} }
 	setmetatable(ret, MerchantWindow)
 	
 	ret.widget = guiManager:createWidget()
-	ret.widget:loadMainSheet("IngameMerchantWidget.layout", "IngameMerchantWidget/MerchantWindow/")
+	ret.widget:loadMainSheet("IngameMerchantWidget.layout", "IngameMerchantWidget/" .. uniqueIndex .. "MerchantWindow/")
 	
 	ret.widget:hide()
 	
@@ -27,6 +27,8 @@ function MerchantWindow:shutdown()
 end
 
 function MerchantWindow:setTargetEntity(entity)
+	disconnectAll(self.connectors)
+	
 	if (entity ~= nil) then
 		self.window:setText("Trading dialog with '" .. entity:getName() .. "'.")
 		self.widget:show()
@@ -110,6 +112,7 @@ function IngameMerchantWidget.create()
 	setmetatable(ret, IngameMerchantWidget)
 	
 	ret:buildWidget()
+	ret.tradeWindowIndex = 0
 	return ret
 end
 
@@ -123,7 +126,9 @@ end
 
 function IngameMerchantWidget:handleEntityAction(action, entity)
 	if (action == "Merchant") then
-		local wnd = MerchantWindow.create(entity)
+		local wnd = MerchantWindow.create(entity, self.tradeWindowIndex)
+		
+		self.tradeWindowIndex = self.tradeWindowIndex + 1
 	end
 end
 
