@@ -1,6 +1,8 @@
 MerchantTradeConfirmationDialog = {}
 MerchantTradeConfirmationDialog.__index = MerchantTradeConfirmationDialog
 
+merchantTradeConfirmationDialogs = {}
+
 function MerchantTradeConfirmationDialog.create(itemName, itemPrice, merchantEntity, uniqueIndex)
 	local ret = {connectors = {} }
 	setmetatable(ret, MerchantTradeConfirmationDialog)
@@ -23,6 +25,7 @@ end
 
 MerchantWindow = {}
 MerchantWindow.__index = MerchantWindow
+merchantWindows = {}
 
 function MerchantWindow.create(entity, uniqueIndex)
 	local ret = {connectors = {} }
@@ -30,7 +33,7 @@ function MerchantWindow.create(entity, uniqueIndex)
 	
 	ret.widget = guiManager:createWidget()
 	ret.uniqueIndex = uniqueIndex
-	ret.widget:loadMainSheet("IngameMerchantWidget.layout", "IngameMerchantWidget/" .. uniqueIndex .. "MerchantWindow/")
+	ret.widget:loadMainSheet("IngameMerchantWidget.layout", "IngameMerchantWidget/MerchantWindow/" .. uniqueIndex .. "/")
 	
 	ret.widget:hide()
 	
@@ -127,7 +130,8 @@ function MerchantWindow:handleGoodsDoubleClicked(args)
 		
 		if itemName ~= "" and itemPrice ~= 0 then
 			console:runCommand("/say I would like to buy " .. itemName)
-			MerchantTradeConfirmationDialog.create(itemName, itemPrice, self.merchantEntity, ingameMerchantWidget.confirmationDialogIndex)
+			
+			merchantTradeConfirmationDialogs[ingameMerchantWidget.confirmationDialogIndex] = MerchantTradeConfirmationDialog.create(itemName, itemPrice, self.merchantEntity, ingameMerchantWidget.confirmationDialogIndex)
 			
 			ingameMerchantWidget.confirmationDialogIndex = ingameMerchantWidget.confirmationDialogIndex + 1
 		end
@@ -136,6 +140,8 @@ end
 
 function MerchantWindow:handleCloseClicked(args)
 	guiManager:destroyWidget(self.widget)
+	
+	merchantWindows[self.uniqueIndex] = nil
 end
 
 IngameMerchantWidget = {}
@@ -163,7 +169,7 @@ end
 
 function IngameMerchantWidget:handleEntityAction(action, entity)
 	if (action == "Merchant") then
-		local wnd = MerchantWindow.create(entity, self.tradeWindowIndex)
+		merchantWindows[self.tradeWindowIndex] = MerchantWindow.create(entity, self.tradeWindowIndex)
 		
 		self.tradeWindowIndex = self.tradeWindowIndex + 1
 	end
