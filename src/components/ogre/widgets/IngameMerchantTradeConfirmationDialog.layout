@@ -13,13 +13,13 @@
 			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 			<Property Name='Text' Value='Are you sure you want to buy XY for XY?'/>
 		</Window>
-		<Window Type="EmberLook/Button" Name="MainWindow/Confirm">
+		<Window Type="EmberLook/Button" Name="MainWindow/ConfirmButton">
 			<Property Name='UnifiedSize' Value='{{0.5,-5.0},{0.0,30.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-30.0}}'/>
 			
 			<Property Name='Text' Value='Confirm'/>
 		</Window>
-		<Window Type="EmberLook/Button" Name="MainWindow/Cancel">
+		<Window Type="EmberLook/Button" Name="MainWindow/CancelButton">
 			<Property Name='UnifiedSize' Value='{{0.5,-5.0},{0.0,30.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.5,5.0},{1.0,-30.0}}'/>
 			

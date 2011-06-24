@@ -15,12 +15,35 @@ function MerchantTradeConfirmationDialog.create(itemName, itemPrice, merchantEnt
 	ret.label = ret.widget:getWindow("MainWindow/Label")
 	ret.label:setText("Are you sure you want to buy '" .. itemName .. "' from '" .. merchantEntity:getName() .. "' for " .. itemPrice .. " coins?")
 	
+	ret.confirmButton = ret.widget:getWindow("MainWindow/ConfirmButton")
+	ret.confirmButton:subscribeEvent("Clicked", MerchantTradeConfirmationDialog.handleConfirmClicked, ret)
+	ret.cancelButton = ret.widget:getWindow("MainWindow/CancelButton")
+	ret.cancelButton:subscribeEvent("Clicked", MerchantTradeConfirmationDialog.handleCancelClicked, ret)
+	
 	ret.window:subscribeEvent("CloseClicked", MerchantTradeConfirmationDialog.handleCloseClicked, ret)
 	return ret
 end
 
-function MerchantTradeConfirmationDialog:handleCloseClicked(args)
+function MerchantTradeConfirmationDialog:closeDialog()
+	guiManager:destroyWidget(self.widget)
+	
+	merchantTradeConfirmationDialogs[self.uniqueIndex] = nil
+end
+
+function MerchantTradeConfirmationDialog:handleConfirmClicked(args)
+	--FIXME: Give itemPrice coins to the merchant
+	
+	self:closeDialog()
 	return true
+end
+
+function MerchantTradeConfirmationDialog:handleCancelClicked(args)
+	self:closeDialog()
+	return true
+end
+
+function MerchantTradeConfirmationDialog:handleCloseClicked(args)
+	return self:handleCancelClicked(args)
 end
 
 MerchantWindow = {}
