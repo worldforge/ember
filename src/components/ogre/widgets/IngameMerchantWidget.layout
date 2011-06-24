@@ -19,7 +19,7 @@
 			
 			<Property Name='ColumnHeader' Value='text:Item width:{0.6, 0} id:0'/>
 			<Property Name='ColumnHeader' Value='text:Price width:{0.2, 0} id:1'/>
-			<Property Name='ColumnHeader' Value='text:In stock width:{0.2, 0} id:2'/>
+			<Property Name='ColumnHeader' Value='text:In stock width:{0.2, -1} id:2'/>
 		</Window>
 	</Window>
 </GUILayout>

@@ -13,6 +13,7 @@ function MerchantWindow.create(entity)
 	ret.window = ret.widget:getWindow("MainWindow")
 	ret.label = ret.widget:getWindow("MainWindow/Label")
 	ret.goods = CEGUI.toMultiColumnList(ret.widget:getWindow("MainWindow/AvailableGoods"))
+	ret.goods:subscribeEvent("MouseDoubleClick", MerchantWindow.handleGoodsDoubleClicked, ret)
 	
 	ret:setTargetEntity(entity)
 
@@ -74,6 +75,26 @@ function MerchantWindow:handleEntitySay(root)
 		_, _, item, price = string.find(message, "The price of ([%a]+) is ([%d]+)")
 		
 		self:addItemForSale(item, price, quantityAvailable)
+	end
+end
+
+function MerchantWindow:handleGoodsDoubleClicked(args)
+	local selection = self.goods:getFirstSelectedItem()
+	
+	if selection ~= nil then
+		local selectedRowIndex = self.goods:getItemRowIndex(selection)
+		local itemName = ""
+		
+		if selectedRowIndex ~= -1 then
+			local selectedItemName = self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(selectedRowIndex, 0))
+			if selectedItemName ~= nil then
+				itemName = selectedItemName:getText()
+			end
+		end
+		
+		if itemName ~= "" then
+			console:runCommand("/say I would like to buy " .. itemName)
+		end
 	end
 end
 
