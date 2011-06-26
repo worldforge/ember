@@ -429,7 +429,7 @@ public:
 	ModelFactory()
 	{
 	}
-	~ModelFactory()
+	virtual ~ModelFactory()
 	{
 	}
 

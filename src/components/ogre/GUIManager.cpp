@@ -560,7 +560,7 @@ const bool GUIManager::isInGUIMode() const
 
 void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 {
-	if ((key.mod & KMOD_CTRL || key.mod & KMOD_LCTRL || key.mod & KMOD_RCTRL) && (key.sym == SDLK_c || key.sym == SDLK_x)) {
+	if (((key.mod & KMOD_CTRL) || (key.mod & KMOD_LCTRL) || (key.mod & KMOD_RCTRL)) && ((key.sym == SDLK_c) || (key.sym == SDLK_x))) {
 
 		bool cut = (key.sym == SDLK_x);
 		CEGUI::Window* active = mSheet->getActiveChild();

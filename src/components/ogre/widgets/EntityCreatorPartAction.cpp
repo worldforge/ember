@@ -33,7 +33,7 @@ namespace OgreView {
 
 namespace Gui {
 
-EntityCreatorPartAction::EntityCreatorPartAction(EntityCreatorCreationInstance& creationInstance, std::string partName)
+EntityCreatorPartAction::EntityCreatorPartAction(EntityCreatorCreationInstance& creationInstance, const std::string& partName)
 		: mCreationInstance(creationInstance), mPartName(partName)
 {
 }

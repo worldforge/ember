@@ -123,7 +123,7 @@ public:
 	/**
 	* @brief At destruction pretty much all game objects will be destroyed.
 	*/
-	~Application();
+	virtual ~Application();
 
 	/**
 	* @brief Performs one step of the main loop.

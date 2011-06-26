@@ -51,7 +51,7 @@ class DummyPage: public GeometryPage
 
 public:
 	void init(PagedGeometry *geom);
-	~DummyPage();
+	virtual ~DummyPage();
 
 	void setRegion(Ogre::Real left, Ogre::Real top, Ogre::Real right, Ogre::Real bottom) {}
 	void addEntity(Ogre::Entity *ent, const Ogre::Vector3 &position, const Ogre::Quaternion &rotation, const Ogre::Vector3 &scale, const Ogre::ColourValue &color) {}

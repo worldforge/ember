@@ -40,8 +40,8 @@ class EntityCreatorCreationInstance;
 class EntityCreatorModelAction : public EntityMapping::Actions::Action
 {
 public:
-	EntityCreatorModelAction(EntityCreatorCreationInstance& creationInstance, std::string modelName);
-	~EntityCreatorModelAction();
+	EntityCreatorModelAction(EntityCreatorCreationInstance& creationInstance, const std::string& modelName);
+	virtual ~EntityCreatorModelAction();
 	/**
 	 * Shows specific model. Called by model mapping framework.
 	 */
@@ -52,7 +52,7 @@ public:
 	virtual void deactivate(EntityMapping::ChangeContext& context);
 protected:
 	EntityCreatorCreationInstance& mCreationInstance;
-	std::string mModelName;
+	const std::string mModelName;
 };
 
 }

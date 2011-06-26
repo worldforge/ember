@@ -167,7 +167,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~ModelBackgroundLoader();
+	virtual ~ModelBackgroundLoader();
 
 	/**
 	 * @brief Polls the loading state (which might occur in a background thread).

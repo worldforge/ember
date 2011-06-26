@@ -41,7 +41,7 @@ public:
 	static const std::string s_TypeName;
     JesusPickerObject(ModelBlock* modelBlock, AttachPointNode* pointNode);
 
-    ~JesusPickerObject();
+    virtual ~JesusPickerObject();
 
 	ModelBlock* getModelBlock() const;
 	AttachPointNode* getPointNode() const;

@@ -41,8 +41,8 @@ class Scene;
 class EmberEntityModelAction: public EntityMapping::Actions::Action
 {
 public:
-	EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene);
-	~EmberEntityModelAction();
+	EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene);
+	virtual ~EmberEntityModelAction();
 
 	virtual void activate(EntityMapping::ChangeContext& context);
 	virtual void deactivate(EntityMapping::ChangeContext& context);

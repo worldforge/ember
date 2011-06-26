@@ -149,6 +149,7 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, type, section, recursive);
 			foundDir = true;
 			mResourceLocations.insert(std::make_pair(section, path));
+			return true;
 		} catch (const std::exception&) {
 			if (reportFailure) {
 				S_LOG_FAILURE("Couldn't load " << path << ". Continuing as if nothing happened.");
@@ -159,6 +160,7 @@ bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std
 			S_LOG_VERBOSE("Couldn't find resource directory " << path);
 		}
 	}
+	return false;
 }
 
 void OgreResourceLoader::loadBootstrap()

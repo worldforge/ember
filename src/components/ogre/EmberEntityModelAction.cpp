@@ -58,7 +58,7 @@ public:
 
 	}
 
-	~ModelReactivatorVisitor()
+	virtual ~ModelReactivatorVisitor()
 	{
 		if (mAction) {
 			mAction->activate(mChangeContext);
@@ -87,7 +87,7 @@ public:
 
 };
 
-EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, std::string modelName, Scene& scene) :
+EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene) :
 	mEntity(entity), mModelName(modelName), mScene(scene)
 {
 }

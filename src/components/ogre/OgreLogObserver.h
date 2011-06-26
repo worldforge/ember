@@ -41,7 +41,7 @@ class OgreLogObserver: public Ogre::LogListener
 		* Creates a new OgreLogObserver using default values.
 		*/
 		OgreLogObserver();
-		~OgreLogObserver();
+		virtual ~OgreLogObserver();
 		virtual void messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName );
 
 	protected:

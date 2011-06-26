@@ -59,7 +59,7 @@ public:
      */
     GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreRenderer *renderer);
 
-    ~GUICEGUIAdapter();
+    virtual ~GUICEGUIAdapter();
 	
 	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);

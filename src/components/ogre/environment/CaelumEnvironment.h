@@ -50,7 +50,7 @@ class CaelumEnvironment : public IEnvironmentProvider, public ConsoleObject
 public:
     CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 
-    ~CaelumEnvironment();
+    virtual ~CaelumEnvironment();
 
 	virtual void createEnvironment();
 

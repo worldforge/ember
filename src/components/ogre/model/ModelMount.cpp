@@ -135,6 +135,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 					scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
 					scaleY = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
 					scaleX = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
+					break;
 			}
 
 			getNode().setScale(scaleX, scaleY, scaleZ);

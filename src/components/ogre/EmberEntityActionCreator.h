@@ -44,7 +44,7 @@ class EmberEntityActionCreator : public EntityMapping::IActionCreator
 public:
     EmberEntityActionCreator(EmberEntity& entity, Scene& scene);
 
-    ~EmberEntityActionCreator();
+    virtual ~EmberEntityActionCreator();
 	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EmberEntity& mEntity;

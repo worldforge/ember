@@ -53,7 +53,7 @@ public virtual sigc::trackable
 public:
 	EmberEntityMappingManager();
 
-	~EmberEntityMappingManager();
+	virtual ~EmberEntityMappingManager();
 
 	/**
 	Accessor for the main EntityMappingManager instance.

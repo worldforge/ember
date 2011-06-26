@@ -34,7 +34,7 @@ namespace OgreView {
 
 namespace Gui {
 
-EntityCreatorModelAction::EntityCreatorModelAction(EntityCreatorCreationInstance& creationInstance, std::string modelName)
+EntityCreatorModelAction::EntityCreatorModelAction(EntityCreatorCreationInstance& creationInstance, const std::string& modelName)
 		: mCreationInstance(creationInstance), mModelName(modelName)
 {
 }

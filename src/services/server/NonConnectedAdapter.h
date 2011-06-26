@@ -35,7 +35,7 @@ class NonConnectedAdapter : public IServerAdapter
 public:
     NonConnectedAdapter();
 
-    ~NonConnectedAdapter();
+    virtual ~NonConnectedAdapter();
 
 	virtual void moveToPoint(const WFMath::Point<3>& dest);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);

@@ -62,7 +62,7 @@ class Forest : public Ogre::FrameListener, public virtual sigc::trackable
 public:
     Forest(Terrain::TerrainManager& terrainManager);
 
-    ~Forest();
+    virtual ~Forest();
 
     void initialize();
 

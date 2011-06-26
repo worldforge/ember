@@ -41,7 +41,7 @@ class EmberEntityPartAction: public EntityMapping::Actions::Action
 {
 public:
 	EmberEntityPartAction(EmberEntity& entity, const std::string& partName);
-	~EmberEntityPartAction();
+	virtual ~EmberEntityPartAction();
 
 	virtual void activate(EntityMapping::ChangeContext& context);
 	virtual void deactivate(EntityMapping::ChangeContext& context);
@@ -56,7 +56,7 @@ protected:
 	/**
 	 * @brief The name of the part to show.
 	 */
-	std::string mPartName;
+	const std::string mPartName;
 
 	/**
 	 * @brief Whether the part is active or not.

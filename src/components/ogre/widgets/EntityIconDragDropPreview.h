@@ -260,7 +260,7 @@ public:
 	/**
 	 * @brief Desctructor
 	 */
-	~ModelPreviewWorkerPartAction();
+	virtual ~ModelPreviewWorkerPartAction();
 
 	/**
 	 * @brief Shows specific model part. Called by model mapping framework.
@@ -334,7 +334,7 @@ public:
 	/**
 	 * @brief Destructor
 	 */
-	~ModelPreviewWorkerModelAction();
+	virtual ~ModelPreviewWorkerModelAction();
 
 	/**
 	 * @brief Shows specific model. Called by model mapping framework.
@@ -371,7 +371,7 @@ public:
 	/**
 	 * @brief Destructor
 	 */
-	~ModelPreviewWorkerActionCreator();
+	virtual ~ModelPreviewWorkerActionCreator();
 
 	/**
 	 * @brief Creates the actions we can perform on the model

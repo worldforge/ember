@@ -79,7 +79,7 @@ class EntityWorldPickListener: public IWorldPickListener, public ConsoleObject
 public:
 	EntityWorldPickListener(EmberEntityFactory& entityFactory, Scene& scene);
 
-	~EntityWorldPickListener();
+	virtual ~EntityWorldPickListener();
 
 	virtual void initializePickingContext();
 

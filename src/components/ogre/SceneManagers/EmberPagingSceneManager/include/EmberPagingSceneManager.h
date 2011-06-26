@@ -71,7 +71,7 @@ public:
      	void initMetaData(void) const;
      public:
      	EmberPagingSceneManagerFactory() {}
-     	~EmberPagingSceneManagerFactory() {}
+     	virtual ~EmberPagingSceneManagerFactory() {}
      	/// Factory type name
        	static const Ogre::String FACTORY_TYPE_NAME;
      	Ogre::SceneManager* createInstance(const Ogre::String& instanceName);

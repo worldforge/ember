@@ -51,7 +51,7 @@ class CaelumSun :  public CaelumEnvironmentComponent, public ISun, public Config
 public:
     CaelumSun(CaelumEnvironment& environment, Caelum::BaseSkyLight* sun);
 
-    ~CaelumSun();
+    virtual ~CaelumSun();
 
 	virtual void setAmbientLight(const Ogre::ColourValue& colour);
 

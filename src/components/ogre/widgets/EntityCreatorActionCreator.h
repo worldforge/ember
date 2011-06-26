@@ -42,7 +42,7 @@ class EntityCreatorActionCreator : public EntityMapping::IActionCreator
 {
 public:
 	EntityCreatorActionCreator(EntityCreatorCreationInstance& creationInstance);
-	~EntityCreatorActionCreator();
+	virtual ~EntityCreatorActionCreator();
 	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition);
 protected:
 	EntityCreatorCreationInstance& mCreationInstance;

@@ -45,8 +45,6 @@ namespace OgreView
 namespace Gui
 {
 
-static const CEGUI::String WidgetTypeName;
-
 EmberEntityTooltipWidget::EmberEntityTooltipWidget(const CEGUI::String& type, const CEGUI::String& name) :
 	CEGUI::Tooltip(type, name)
 {

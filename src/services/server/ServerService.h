@@ -74,7 +74,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~ServerService();
+	virtual ~ServerService();
 
 	bool isConnected() const;
 

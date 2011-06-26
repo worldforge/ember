@@ -61,6 +61,7 @@ void ErisLogReciever::Eris_Logged (Eris::LogLevel level, const std::string & msg
 	case Eris::LOG_VERBOSE:
 	default:
 		importance = Log::VERBOSE;
+		break;
 	}
 	
 	Log::sendMessage(msg, "ERIS", 0, importance);

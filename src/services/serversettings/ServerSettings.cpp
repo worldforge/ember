@@ -85,7 +85,7 @@ void ServerSettings::readFromDisk()
 		try {
 			// make sure it is well formed
 			mConfig->parseStream(file, varconf::GLOBAL);
-		} catch (varconf::ParseError ex) {
+		} catch (varconf::ParseError& ex) {
 			S_LOG_FAILURE("Error loading server settings file: " << ex);
 			return;
 		}

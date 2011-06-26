@@ -62,7 +62,7 @@ namespace OgreView {
 
     public:
         FileSystemArchive(const Ogre::String& name, const Ogre::String& archType );
-        ~FileSystemArchive();
+        virtual ~FileSystemArchive();
 
         /// @copydoc Archive::isCaseSensitive
         bool isCaseSensitive(void) const;

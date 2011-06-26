@@ -239,10 +239,9 @@ namespace Ember
 			{
 				mConfig->parseStream ( file, varconf::USER );
 			}
-			catch ( varconf::ParseError p )
+			catch ( varconf::ParseError& p )
 			{
-				std::string p_str ( p );
-				S_LOG_FAILURE ( "Error loading user config file: " << p_str );
+				S_LOG_FAILURE ( "Error loading user config file: " << p );
 				return false;
 			}
 		}

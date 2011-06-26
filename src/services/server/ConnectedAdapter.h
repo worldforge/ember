@@ -45,7 +45,7 @@ class ConnectedAdapter: public virtual IServerAdapter
 public:
     ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar);
 
-	~ConnectedAdapter();
+    virtual ~ConnectedAdapter();
 
 	virtual void moveToPoint(const WFMath::Point<3>& dest);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);

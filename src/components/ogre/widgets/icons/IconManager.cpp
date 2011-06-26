@@ -101,7 +101,7 @@ public:
 	{
 	}
 
-	~IconActionCreator()
+	virtual ~IconActionCreator()
 	{
 	}
 
