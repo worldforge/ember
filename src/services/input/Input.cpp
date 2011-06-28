@@ -49,7 +49,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-	mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false)
+		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false)
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -163,8 +163,7 @@ void Input::setMovementModeEnabled(bool value)
 void Input::writeToClipboard(const std::string& text)
 {
 #ifndef WITHOUT_SCRAP
-	char basicString[text.length() + 1];
-	strcpy(basicString, text.c_str());
+	char basicString[text.length() + 1];strcpy(basicString, text.c_str());
 	put_scrap(T('T','E','X','T'), text.length(), basicString);
 #endif // WITHOUT_SCRAP
 }
@@ -389,6 +388,10 @@ void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 		if (keyEvent.type == SDL_KEYDOWN) {
 			pasteFromClipboard();
 		}
+	} else if ((keyEvent.keysym.mod & KMOD_LALT) && (keyEvent.keysym.sym == SDLK_TAB)) {
+		if (keyEvent.type == SDL_KEYDOWN) {
+			EventAltTab.emit();
+		}
 	} else {
 		if (keyEvent.type == SDL_KEYDOWN) {
 			mKeysPressed.insert(keyEvent.keysym.sym);
@@ -494,7 +497,6 @@ void Input::sleep(unsigned int milliseconds)
 {
 	SDL_Delay(milliseconds);
 }
-
 
 }
 ;

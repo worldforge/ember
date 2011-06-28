@@ -240,6 +240,12 @@ public:
 	sigc::signal<void, bool> EventWindowActive;
 
 	/**
+	 * @brief Emitted when the user has pressed Alt-Tab and thus want to switch window.
+	 * If the application is in mouse grab mode we should probably release it.
+	 */
+	sigc::signal<void> EventAltTab;
+
+	/**
 	 * @brief Returns true if the supplied key is down 
 	 * @param  key The key to check for.
 	 * @return True if the key is down

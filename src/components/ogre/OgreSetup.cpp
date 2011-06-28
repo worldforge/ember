@@ -35,6 +35,7 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/input/Input.h"
 
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
@@ -881,6 +882,8 @@ bool OgreSetup::configure(void)
 
 #endif
 
+		Input::getSingleton().EventAltTab.connect(sigc::mem_fun(*this, &OgreSetup::Input_AltTab));
+
 		setStandardValues();
 
 		// Create new scene manager factory
@@ -937,6 +940,11 @@ void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int&
 		fullscreen = (opt->second.currentValue == "Yes");
 	}
 
+}
+
+void OgreSetup::Input_AltTab()
+{
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 
 bool OgreSetup::frameEnded(const Ogre::FrameEvent & evt)

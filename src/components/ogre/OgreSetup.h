@@ -163,6 +163,12 @@ private:
 	 * @param variable
 	 */
 	void Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
+	 * @brief Listen to alt+tab and release the mouse if grabbed.
+	 */
+	void Input_AltTab();
+
 };
 
 inline Ogre::Root* OgreSetup::getRoot() const
