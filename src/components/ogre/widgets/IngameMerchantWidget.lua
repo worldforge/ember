@@ -41,8 +41,7 @@ function MerchantTradeConfirmationDialog:getAmountOfCoins()
 	if numContained ~= 0 then
 		for i = 0, numContained - 1 do
 			local containedEntity = avatar:getContained(i)
-			log.info("contained entity name: " .. containedEntity:getType():getName())
-			
+
 			if containedEntity:getType():getName() == "coin" then
 				money = money + 1
 			end
@@ -50,7 +49,6 @@ function MerchantTradeConfirmationDialog:getAmountOfCoins()
 		end
 	end
 	
-	log.info("money: " .. money)
 	return money
 end
 
@@ -93,9 +91,12 @@ function MerchantTradeConfirmationDialog:giveCoins()
 end
 
 function MerchantTradeConfirmationDialog:handleConfirmClicked(args)
-	self:giveCoins()
+	if self:giveCoins() then
+		self:closeDialog()
+	else
+		self.label:setText("You don't have enough coins to proceed.")
+	end
 	
-	self:closeDialog()
 	return true
 end
 
