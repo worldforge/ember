@@ -198,7 +198,7 @@ function MerchantWindow:addItemForSale(itemName, price, quantityAvailable)
 		self.goods:setItem(item, 2, rowNumber)
 	else
 		self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(rowNumber, 1)):setText(price)
-		self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(rowNumber, 1)):setText(quantityAvailable)
+		self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(rowNumber, 2)):setText(quantityAvailable)
 	end
 end
 
