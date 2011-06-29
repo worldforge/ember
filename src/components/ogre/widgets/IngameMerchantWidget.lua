@@ -34,18 +34,17 @@ function MerchantTradeConfirmationDialog:closeDialog()
 end
 
 function MerchantTradeConfirmationDialog:getAmountOfCoins()
-	local avatar = emberOgre:getWorld():getAvatar():getEmberEntity()
+	local avatarEntity = emberOgre:getWorld():getAvatar():getEmberEntity()
 	local money = 0
 	
-	local numContained = avatar:numContained()
+	local numContained = avatarEntity:numContained()
 	if numContained ~= 0 then
 		for i = 0, numContained - 1 do
-			local containedEntity = avatar:getContained(i)
+			local containedEntity = avatarEntity:getContained(i)
 
 			if containedEntity:getType():getName() == "coin" then
 				money = money + 1
 			end
-			
 		end
 	end
 	
@@ -61,13 +60,13 @@ function MerchantTradeConfirmationDialog:giveCoins()
 		return false
 	end
 	
-	local avatar = emberOgre:getWorld():getAvatar():getEmberEntity()
+	local avatarEntity = emberOgre:getWorld():getAvatar():getEmberEntity()
 	local given = 0
 	
-	local numContained = avatar:numContained()
+	local numContained = avatarEntity:numContained()
 	if numContained ~= 0 then
 		for i = 0, numContained - 1 do
-			local containedEntity = avatar:getContained(i)
+			local containedEntity = avatarEntity:getContained(i)
 			
 			if containedEntity:getType():getName() == "coin" then
 				emberOgre:doWithEntity(self.merchantEntity:getId(), function (targetMerchantEntity) 
