@@ -24,11 +24,15 @@ function MerchantTradeConfirmationDialog.create(itemName, itemPrice, merchantEnt
 	ret.cancelButton:subscribeEvent("Clicked", MerchantTradeConfirmationDialog.handleCancelClicked, ret)
 	
 	ret.window:subscribeEvent("CloseClicked", MerchantTradeConfirmationDialog.handleCloseClicked, ret)
+	
+	ret.widget:show()
+	
 	return ret
 end
 
 function MerchantTradeConfirmationDialog:closeDialog()
 	guiManager:destroyWidget(self.widget)
+	self.widget = nil
 	
 	merchantTradeConfirmationDialogs[self.uniqueIndex] = nil
 end
@@ -158,21 +162,42 @@ function MerchantWindow:setTargetEntity(entity)
 end
 
 function MerchantWindow:addItemForSale(itemName, price, quantityAvailable)
-	local rowNumber = self.goods:getRowCount()
-	self.goods:addRow()
-
-	local item = Ember.OgreView.Gui.ColouredListItem:new(itemName)
-	self.goods:setItem(item, 0, rowNumber);	
-
-	local item = Ember.OgreView.Gui.ColouredListItem:new(price)
-	self.goods:setItem(item, 1, rowNumber)
-
 	if quantityAvailable < 0 then
 		quantityAvailable = "inf"
 	end
 	
-	local item = Ember.OgreView.Gui.ColouredListItem:new(quantityAvailable)
-	self.goods:setItem(item, 2, rowNumber)
+	local existing = false
+	local rowCount = self.goods:getRowCount()
+	--we assume we will have to create a new row, in other case we set this to the row
+	--index of the preexisting row with our item
+	local rowNumber = rowCount
+	
+	for i=0,rowCount-1 do
+		if self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(i, 0)):getText() == itemName then
+			existing = true
+			rowNumber = i
+			
+			break
+		end
+	end
+	
+	if not existing then
+		self.goods:addRow()
+		
+		local item
+		
+		item = Ember.OgreView.Gui.ColouredListItem:new(itemName)
+		self.goods:setItem(item, 0, rowNumber);	
+
+		item = Ember.OgreView.Gui.ColouredListItem:new(price)
+		self.goods:setItem(item, 1, rowNumber)
+	
+		item = Ember.OgreView.Gui.ColouredListItem:new(quantityAvailable)
+		self.goods:setItem(item, 2, rowNumber)
+	else
+		self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(rowNumber, 1)):setText(price)
+		self.goods:getItemAtGridReference(CEGUI.MCLGridRef:new_local(rowNumber, 1)):setText(quantityAvailable)
+	end
 end
 
 function MerchantWindow:handleEntitySay(root)
