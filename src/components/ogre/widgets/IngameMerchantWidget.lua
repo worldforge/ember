@@ -143,7 +143,9 @@ end
 
 function MerchantWindow:shutdown()
 	disconnectAll(self.connectors)
-	windowManager:destroyWindow(self.window)
+	guiManager:destroyWidget(self.widget)
+	
+	merchantWindows[self.uniqueIndex] = nil
 end
 
 function MerchantWindow:setTargetEntity(entity)
@@ -253,9 +255,7 @@ function MerchantWindow:handleGoodsDoubleClicked(args)
 end
 
 function MerchantWindow:handleCloseClicked(args)
-	guiManager:destroyWidget(self.widget)
-	
-	merchantWindows[self.uniqueIndex] = nil
+	self:shutdown()
 end
 
 IngameMerchantWidget = {}
