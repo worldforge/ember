@@ -33,6 +33,7 @@ function MerchantTradeConfirmationDialog:closeDialog()
 	merchantTradeConfirmationDialogs[self.uniqueIndex] = nil
 end
 
+--This method retrieves amount of coins current player has
 function MerchantTradeConfirmationDialog:getAmountOfCoins()
 	local avatarEntity = emberOgre:getWorld():getAvatar():getEmberEntity()
 	local money = 0
@@ -51,10 +52,13 @@ function MerchantTradeConfirmationDialog:getAmountOfCoins()
 	return money
 end
 
+--Returns true if current player can afford the item this confirmation dialog was spawned for
 function MerchantTradeConfirmationDialog:checkCoins()
 	return self:getAmountOfCoins() >= self.itemPrice
 end
 
+--Gives the needed amount of coins to the merchant, merchant should give the player the desired item
+--(The one this confirmation dialog was spawned for)
 function MerchantTradeConfirmationDialog:giveCoins()
 	if not self:checkCoins() then
 		return false
