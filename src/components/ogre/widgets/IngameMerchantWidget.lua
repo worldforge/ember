@@ -7,6 +7,9 @@ function MerchantTradeConfirmationDialog.create(itemName, itemPrice, merchantEnt
 	local ret = {connectors = {} }
 	setmetatable(ret, MerchantTradeConfirmationDialog)
 	
+	ret.itemPrice = tonumber(itemPrice)
+	ret.merchantEntity = merchantEntity
+	
 	ret.widget = guiManager:createWidget()
 	ret.widget:loadMainSheet("IngameMerchantTradeConfirmationDialog.layout", "IngameMerchantWidget/TradeConfirmationDialog/" .. uniqueIndex .. "/")
 	ret.uniqueIndex = uniqueIndex
@@ -30,8 +33,67 @@ function MerchantTradeConfirmationDialog:closeDialog()
 	merchantTradeConfirmationDialogs[self.uniqueIndex] = nil
 end
 
+function MerchantTradeConfirmationDialog:getAmountOfCoins()
+	local avatar = emberOgre:getWorld():getAvatar():getEmberEntity()
+	local money = 0
+	
+	local numContained = avatar:numContained()
+	if numContained ~= 0 then
+		for i = 0, numContained - 1 do
+			local containedEntity = avatar:getContained(i)
+			log.info("contained entity name: " .. containedEntity:getType():getName())
+			
+			if containedEntity:getType():getName() == "coin" then
+				money = money + 1
+			end
+			
+		end
+	end
+	
+	log.info("money: " .. money)
+	return money
+end
+
+function MerchantTradeConfirmationDialog:checkCoins()
+	return self:getAmountOfCoins() >= self.itemPrice
+end
+
+function MerchantTradeConfirmationDialog:giveCoins()
+	if not self:checkCoins() then
+		return false
+	end
+	
+	local avatar = emberOgre:getWorld():getAvatar():getEmberEntity()
+	local given = 0
+	
+	local numContained = avatar:numContained()
+	if numContained ~= 0 then
+		for i = 0, numContained - 1 do
+			local containedEntity = avatar:getContained(i)
+			
+			if containedEntity:getType():getName() == "coin" then
+				emberOgre:doWithEntity(self.merchantEntity:getId(), function (targetMerchantEntity) 
+					emberServices:getServerService():place(containedEntity, targetMerchantEntity)
+				end)
+			
+				given = given + 1
+			end
+			
+			if given >= self.itemPrice then
+				break
+			end
+		end
+	end
+	
+	if given >= self.itemPrice then
+		return true
+	else
+		return false
+	end
+end
+
 function MerchantTradeConfirmationDialog:handleConfirmClicked(args)
-	--FIXME: Give itemPrice coins to the merchant
+	self:giveCoins()
 	
 	self:closeDialog()
 	return true
