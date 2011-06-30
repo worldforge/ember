@@ -33,6 +33,9 @@ namespace Ember
 	/**
 	 * @brief WebEmbers main platform independent class.
 	 */
+#if !defined(_WIN32) && defined(BUILD_WEBEMBER)
+	__attribute__((visibility("default")))
+#endif
 	class WebEmberManager: public Singleton<WebEmberManager>
 	{
 	public:

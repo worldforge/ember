@@ -74,6 +74,7 @@ namespace Ember
 
 	std::string WebEmberManager::getPrefix()
 	{
+#ifdef _WIN32
 		// To find the resources, we need to set the prefix.
 		// we need to assume that WebEmber.dll is in the PREFIX/bin/WebEmber.dll
 		char buffer[MAX_PATH];
@@ -89,6 +90,9 @@ namespace Ember
 		}
 		buffer[pos2] = 0;
 		return buffer;
+#else
+		return "";
+#endif
 	}
 	
 	void WebEmberManager::sendMessage(std::string msg)
