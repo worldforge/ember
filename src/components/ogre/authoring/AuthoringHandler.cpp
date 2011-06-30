@@ -125,8 +125,8 @@ void AuthoringHandler::view_EntityDeleted(Eris::Entity* entity)
 				stopMovement();
 			}
 		}
-		mVisualizations.erase(I);
 		delete I->second;
+		mVisualizations.erase(I);
 	} else {
 		S_LOG_WARNING("Got delete signal for entity which doesn't has an authoring visualization. This should not happen.");
 	}
