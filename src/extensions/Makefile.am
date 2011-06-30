@@ -1,3 +1,4 @@
+SUBDIRS = webember
 
 METASOURCES = AUTO
 

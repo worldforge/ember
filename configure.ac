@@ -93,6 +93,21 @@ AC_ARG_ENABLE(static_build,
 )
 AM_CONDITIONAL(BUILD_STATIC, test x"$link_static" = xtrue)
 
+AC_ARG_ENABLE(webember,
+  [AS_HELP_STRING([--enable-webember],[enable building of webember (default=no)])],
+  [
+    if test "$enableval" = "yes"; then
+      webember_enabled="true"
+      CXXFLAGS="$CXXFLAGS -DBUILD_WEBEMBER -fvisibility=hidden"
+    else
+      webember_enabled="false"
+    fi
+  ],[
+    webember_enabled="false"
+  ]
+)
+AM_CONDITIONAL(BUILD_WEBEMBER, test x"$webember_enabled" = xtrue)
+
 AC_MSG_RESULT([
 
 		**************************************
@@ -590,6 +605,7 @@ AC_CONFIG_FILES([Makefile
 		 media/Makefile
 		 media/packs/Makefile
 		 test/Makefile
+		 src/extensions/webember/Makefile
 ])
 
 AC_OUTPUT

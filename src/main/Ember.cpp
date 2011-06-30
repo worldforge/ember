@@ -200,7 +200,7 @@ int main(int argc, char **argv)
 	{
 		try
 		{
-#ifdef BUILD_WEBEMBER
+#if defined(BUILD_WEBEMBER) && defined(_WIN32)
 			prefix = Ember::WebEmberManager::getSingleton().getPrefix();
 #endif
 			// Create application object

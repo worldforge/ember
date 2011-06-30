@@ -1,1 +1,1 @@
-SUBDIRS = platform bindings extensions services framework components main
+SUBDIRS = platform bindings services framework components main extensions
