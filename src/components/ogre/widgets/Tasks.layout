@@ -25,6 +25,21 @@
 				<Property Name='UnifiedPosition' Value='{{0.0,5},{0,42}}'/>
 				<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
 			</Window>
+			<Window Type='EmberLook/Button' Name='ExpandParametersButton'>
+				<Property Name='Text' Value='Attach entities'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,60},{0,42}}'/>
+				<Property Name='UnifiedSize' Value='{{0,100},{0,20}}'/>
+			</Window>
+			<Window Type='EmberLook/StaticText' Name='ParametersDropArea'>
+				<Property Name='Text' Value='Drag any drop items from your inventory or the world to attach them to the task.'/>
+				<Property Name='UnifiedPosition' Value='{{0.0,5},{0,85}}'/>
+				<Property Name='UnifiedSize' Value='{{1,-10},{1,-85}}'/>
+				<Property Name='Visible' Value='false'/>
+				<Property Name='BackgroundEnabled' Value='True'/>
+				<Property Name='FrameEnabled' Value='True'/>
+				<Property Name='HorzFormatting' Value='WordWrapCentred'/>
+				<Property Name='VertFormatting' Value='VertCentred'/>
+			</Window>
 		</Window>
 	</Window>
 </GUILayout>

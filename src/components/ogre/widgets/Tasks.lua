@@ -1,4 +1,4 @@
-Tasks = {connectors={}}
+Tasks = {connectors={}, columns=9, iconSize=32, slotcounter=0, activeSlots={}}
 
 Tasks.currentTask = nil
 
@@ -35,7 +35,7 @@ function Tasks.ResetTask()
 	Tasks.completedAdapter = nil
 	Tasks.nameWindow:setText("Task name: ")
 	Tasks.widget:hide()
-
+	Tasks.removeActiveSlots()
 end
 
 function Tasks.SetCurrentTask(task)
@@ -70,6 +70,55 @@ end
 
 function Tasks.StopButtonClicked(args)
 	emberServices:getServerService():useStop()
+	return true
+end
+
+function Tasks.ExpandParametersButtonClicked(args)
+
+	Tasks.parametersDropArea:setVisible(not Tasks.parametersDropArea:isVisible())
+	if Tasks.parametersDropArea:isVisible() == false then
+		Tasks.widget:getMainWindow():setHeight(CEGUI.UDim:new_local(0, 90))
+	else
+		Tasks.widget:getMainWindow():setHeight(CEGUI.UDim:new_local(0, 200))
+	end
+	return true
+end
+
+function Tasks.iconDropped(entityIcon)
+
+	if Tasks.activeSlots[entityIcon:getEntity():getId()] then
+		return
+	end
+	local yPosition = math.floor(Tasks.slotcounter / Tasks.columns)
+	local xPosition = Tasks.slotcounter % Tasks.columns
+	
+	Tasks.slotcounter = Tasks.slotcounter + 1
+
+	local slot = guiManager:getEntityIconManager():createSlot(Tasks.iconSize)
+	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, Tasks.iconSize * xPosition), CEGUI.UDim(0, Tasks.iconSize * yPosition)))
+--	slot:getWindow():setAlpha(0.6)
+	slot:getWindow():setProperty("FrameEnabled", "false")
+	slot:getWindow():setProperty("BackgroundEnabled", "false")
+	
+	local icon = guiManager:getIconManager():getIcon(Tasks.iconSize, entityIcon:getEntity())
+	local newEntityIcon = guiManager:getEntityIconManager():createIcon(icon, entityIcon:getEntity(), Tasks.iconSize)
+	slot:addEntityIcon(newEntityIcon)
+	Tasks.parametersDropArea:addChildWindow(slot:getWindow())
+	local activeSlot = {
+		slot = slot,
+		icon = icon,
+		entityIcon = newEntityIcon
+	}
+	Tasks.activeSlots[entityIcon:getEntity():getId()] = activeSlot
+end
+
+function Tasks.removeActiveSlots()
+	for k,v in pairs(Tasks.activeSlots) do
+		guiManager:getEntityIconManager():destroySlot(v.slot)
+		guiManager:getEntityIconManager():destroyIcon(v.entityIcon)
+	end
+	Tasks.activeSlots = {}
+	Tasks.slotcounter = 0
 end
 
 function Tasks.buildWidget()
@@ -81,11 +130,17 @@ function Tasks.buildWidget()
 	Tasks.progressBar =  CEGUI.toProgressBar(Tasks.progressBar)
 	
 	Tasks.nameWindow = Tasks.widget:getWindow("NameText")
+	Tasks.parametersDropArea = Tasks.widget:getWindow("ParametersDropArea")
+	Tasks.iconDropTarget = Ember.OgreView.Gui.EntityIconDragDropTarget:new(Tasks.parametersDropArea)
+	connect(Tasks.connectors, Tasks.iconDropTarget.EventIconDropped, "Tasks.iconDropped")
+	
 
 	Tasks.widget:getWindow("StopButton"):subscribeEvent("Clicked", "Tasks.StopButtonClicked")
+	Tasks.widget:getWindow("ExpandParametersButton"):subscribeEvent("Clicked", "Tasks.ExpandParametersButtonClicked")
 
 
 	connect(Tasks.connectors, emberOgre.EventCreatedAvatarEntity, "Tasks.createdAvatarEmberEntity")
+	
 
 --	createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 
