@@ -26,6 +26,7 @@
 #include <map>
 #include <vector>
 #include <Atlas/Message/Element.h>
+#include "adapters/atlas/AdapterBase.h"
 
 namespace Eris
 {
@@ -46,18 +47,11 @@ namespace Adapters {
 
 namespace Atlas {
 
-class AdapterBase;
 class MapAdapter;
 
 }
 
 }
-
-struct AdapterWrapper
-{
-	Adapters::Atlas::AdapterBase* Adapter;
-	CEGUI::Window* ContainerWindow;
-};
 
 /**
 @brief Helper class for the entity editor widget.

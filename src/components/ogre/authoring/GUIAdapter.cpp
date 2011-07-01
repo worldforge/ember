@@ -87,7 +87,7 @@ Atlas::Message::Element GUIAdapter::getValue()
 		return Atlas::Message::Element();
 	}
 
-	Atlas::Message::Element& value = mAdapter->getValue();
+	const Atlas::Message::Element& value = mAdapter->getValue();
 	if (!(mAllowRandom && value.isString() && value.asString() == "Random")) {
 		// Not random. Get value that is correspondent to the entered text.
 		if (value.isString()) {

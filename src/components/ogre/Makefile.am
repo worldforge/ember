@@ -70,7 +70,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/StackableContainer.cpp widgets/Vector3Adapter.cpp widgets/Widget.cpp widgets/WidgetDefinitions.cpp widgets/WidgetPool.cpp widgets/AtlasHelper.cpp \
 	widgets/icons/Icon.cpp widgets/icons/IconImageStore.cpp widgets/icons/IconManager.cpp \
 	widgets/icons/IconRenderer.cpp widgets/icons/IconStore.cpp \
-	widgets/adapters/ListBinder.cpp widgets/adapters/atlas/AdapterBase.cpp widgets/adapters/atlas/AdapterFactory.cpp widgets/adapters/atlas/AreaAdapter.cpp \
+	widgets/adapters/ListBinder.cpp widgets/adapters/atlas/AdapterFactory.cpp widgets/adapters/atlas/AreaAdapter.cpp \
 	widgets/adapters/atlas/CustomAdapter.cpp widgets/adapters/atlas/ListAdapter.cpp widgets/adapters/atlas/MapAdapter.cpp widgets/adapters/atlas/NumberAdapter.cpp widgets/adapters/atlas/OrientationAdapter.cpp \
 	widgets/adapters/atlas/PolygonAdapter.cpp widgets/adapters/atlas/Position2DAdapter.cpp widgets/adapters/atlas/PositionAdapter.cpp widgets/adapters/atlas/SizeAdapter.cpp \
 	widgets/adapters/atlas/StaticAdapter.cpp widgets/adapters/atlas/StringAdapter.cpp widgets/adapters/atlas/TerrainModAdapter.cpp \

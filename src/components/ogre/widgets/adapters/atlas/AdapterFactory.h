@@ -22,7 +22,7 @@
 //
 #ifndef EMBEROGRE_GUI_ADAPTERS_ATLASADAPTERFACTORY_H
 #define EMBEROGRE_GUI_ADAPTERS_ATLASADAPTERFACTORY_H
-#include <Atlas/Message/Element.h>
+#include "AdapterBase.h"
 
 namespace CEGUI
 {
@@ -44,8 +44,6 @@ namespace Gui {
 namespace Adapters {
 
 namespace Atlas {
-
-class AdapterBase;
 
 class StringAdapter;
 class NumberAdapter;
