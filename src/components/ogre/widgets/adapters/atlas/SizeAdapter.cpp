@@ -69,7 +69,7 @@ SizeAdapter::SizeAdapter(const ::Atlas::Message::Element& element, CEGUI::Window
 		addGuiEventConnection(mScaler->subscribeEvent(CEGUI::Slider::EventValueChanged, CEGUI::Event::Subscriber(&SizeAdapter::slider_ValueChanged, this)));
 	}
 
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 }
 
 SizeAdapter::~SizeAdapter()
@@ -133,7 +133,7 @@ bool SizeAdapter::slider_ValueChanged(const CEGUI::EventArgs& e)
 	float value = mScaler->getCurrentValue();
 	WFMath::AxisBox<3> newBox;
 	try {
-		newBox.fromAtlas(mOriginalElement);
+		newBox.fromAtlas(mOriginalValue);
 	} catch (...) {
 		newBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, -0.5, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5));
 	}
@@ -175,7 +175,7 @@ void SizeAdapter::fillElementFromGui()
 		upperPoint.z() = atof(mUpperZWindow->getText().c_str());
 	}
 	axisBox.setCorners(lowerPoint, upperPoint);
-	mEditedElement = axisBox.toAtlas();
+	mEditedValue = axisBox.toAtlas();
 }
 
 bool SizeAdapter::_hasChanges()
@@ -189,7 +189,7 @@ bool SizeAdapter::_hasChanges()
 
 	try {
 		WFMath::AxisBox<3> originalBox;
-		originalBox.fromAtlas(mOriginalElement);
+		originalBox.fromAtlas(mOriginalValue);
 		return originalBox != newBox;
 	} catch (...) {
 		//We have an invalid original element, but a valid new element, so we'll consider ourselves changed

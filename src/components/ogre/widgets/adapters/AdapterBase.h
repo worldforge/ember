@@ -119,9 +119,9 @@ public:
 	* Creates a new adapter and intializes it with the supplied value.
 	* @param element The original value.
 	*/
-	AdapterBase(const TargetType& element):
-		mOriginalElement(element),
-		mEditedElement(element),
+	AdapterBase(const TargetType& value):
+		mOriginalValue(value),
+		mEditedValue(value),
 		mSelfUpdate(false),
 		mRemoved(false)
 	{}
@@ -156,7 +156,7 @@ public:
 	const TargetType& getValue()
 	{
 		fillElementFromGui();
-		return mEditedElement;
+		return mEditedValue;
 	}
 	
 	/**
@@ -167,7 +167,7 @@ public:
 	 */
 	const TargetType& getOriginalValue() const
 	{
-		return mOriginalElement;
+		return mOriginalValue;
 	}
 	
 	/**
@@ -218,7 +218,7 @@ public:
 	{
 		if (mRemoved)
 		{
-			return ::Atlas::Message::Element();
+			return TargetType();
 		}
 		
 		return _getChangedElement();
@@ -267,12 +267,12 @@ protected:
 	/**
 	The original value.
 	*/
-	const TargetType& mOriginalElement;
+	const TargetType& mOriginalValue;
 	
 	/**
 	The value as translated from the gui elements. If no gui changes has been made, this will be the same as mOriginalElement.
 	*/
-	TargetType mEditedElement;
+	TargetType mEditedValue;
 	
 	/**
 	Whenever the adapter is updating the gui this must be set to true first, and then back to false after the update has been done.

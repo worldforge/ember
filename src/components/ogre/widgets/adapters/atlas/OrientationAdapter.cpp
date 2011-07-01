@@ -56,7 +56,7 @@ OrientationAdapter::OrientationAdapter(const ::Atlas::Message::Element& element,
 	}
 
 	
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 }
 
 
@@ -108,12 +108,12 @@ void OrientationAdapter::fillElementFromGui()
 		scalar = atof(mScalarWindow->getText().c_str()); 
 	}
 	WFMath::Quaternion orientation(scalar, x, y, z);
-	mEditedElement = orientation.toAtlas();
+	mEditedValue = orientation.toAtlas();
 }
 
 bool OrientationAdapter::_hasChanges()
 {
-	WFMath::Quaternion originalOrientation(mOriginalElement);
+	WFMath::Quaternion originalOrientation(mOriginalValue);
 	WFMath::Quaternion newOrientation(getValue());
 	return originalOrientation != newOrientation;
 }

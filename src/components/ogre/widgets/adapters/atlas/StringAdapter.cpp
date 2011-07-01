@@ -43,7 +43,7 @@ StringAdapter::StringAdapter(const ::Atlas::Message::Element& element, CEGUI::Co
 	if (textWindow) {
 		addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&StringAdapter::window_TextChanged, this))); 
 	}
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 	mTextWindow->getPushButton()->setVisible(false);
 
 }
@@ -73,12 +73,12 @@ bool StringAdapter::window_TextChanged(const CEGUI::EventArgs& e)
 
 void StringAdapter::fillElementFromGui()
 {
-	mEditedElement = ::Atlas::Message::Element(mTextWindow->getText().c_str());
+	mEditedValue = ::Atlas::Message::Element(mTextWindow->getText().c_str());
 }
 
 bool StringAdapter::_hasChanges()
 {
-	return mOriginalElement.asString() != getValue().asString();
+	return mOriginalValue.asString() != getValue().asString();
 }
 
 void StringAdapter::addSuggestion(const std::string& suggestedValue)

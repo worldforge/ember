@@ -39,7 +39,7 @@ StaticAdapter::StaticAdapter(const ::Atlas::Message::Element& element, CEGUI::Wi
 : AdapterBase(element)
 , mTextWindow(textWindow)
 {
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 }
 
 

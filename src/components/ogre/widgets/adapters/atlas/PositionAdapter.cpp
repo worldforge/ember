@@ -60,7 +60,7 @@ PositionAdapter::PositionAdapter(const ::Atlas::Message::Element& element, CEGUI
 		addGuiEventConnection(moveButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&PositionAdapter::moveButton_Clicked, this))); 
 	}
 	
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 }
 
 
@@ -110,13 +110,13 @@ void PositionAdapter::fillElementFromGui()
 	if (mZWindow) {
 		vector.z() = atof(mZWindow->getText().c_str()); 
 	}
-	mEditedElement = vector.toAtlas();
+	mEditedValue = vector.toAtlas();
 }
 
 bool PositionAdapter::_hasChanges()
 {
 	WFMath::Vector<3> originalValue;
-	originalValue.fromAtlas(mOriginalElement);
+	originalValue.fromAtlas(mOriginalValue);
 	WFMath::Vector<3> newValue;
 	newValue.fromAtlas(getValue());
 	return originalValue != newValue;

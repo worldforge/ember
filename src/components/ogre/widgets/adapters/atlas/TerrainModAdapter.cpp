@@ -172,12 +172,12 @@ void TerrainModAdapter::fillElementFromGui()
 		mapElement["type"] = modType.first;
 	}
 	
-	mEditedElement = mapElement;
+	mEditedValue = mapElement;
 }
 
 bool TerrainModAdapter::_hasChanges()
 {
-	return mOriginalElement != getChangedElement();
+	return mOriginalValue != getChangedElement();
 }
 }
 

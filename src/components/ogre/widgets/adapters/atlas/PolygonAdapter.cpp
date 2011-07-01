@@ -88,7 +88,7 @@ PolygonAdapter::PolygonAdapter(const ::Atlas::Message::Element& element, CEGUI::
 		addGuiEventConnection(showButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&PolygonAdapter::showButton_Clicked, this)));
 	}
 
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 }
 
 PolygonAdapter::~PolygonAdapter()
@@ -198,13 +198,13 @@ void PolygonAdapter::createNewPolygon(WFMath::Polygon<2>* existingPoly)
 void PolygonAdapter::fillElementFromGui()
 {
 	if (mPolygon) {
-		mEditedElement = mPolygon->getShape().toAtlas();
+		mEditedValue = mPolygon->getShape().toAtlas();
 	}
 }
 
 bool PolygonAdapter::_hasChanges()
 {
-	return mOriginalElement != getChangedElement();
+	return mOriginalValue != getChangedElement();
 }
 
 void PolygonAdapter::pickListener_PickedPoint(Authoring::PolygonPoint& point)

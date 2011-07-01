@@ -48,7 +48,7 @@ Position2DAdapter::Position2DAdapter(const ::Atlas::Message::Element& element, C
 	if (mYWindow) {
 		addGuiEventConnection(mYWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&Position2DAdapter::window_TextChanged, this))); 
 	}
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 }
 
 
@@ -86,13 +86,13 @@ void Position2DAdapter::fillElementFromGui()
 	if (mYWindow) {
 		vector.y() = atof(mYWindow->getText().c_str()); 
 	}
-	mEditedElement = vector.toAtlas();
+	mEditedValue = vector.toAtlas();
 }
 
 bool Position2DAdapter::_hasChanges()
 {
 	WFMath::Vector<2> originalValue;
-	originalValue.fromAtlas(mOriginalElement);
+	originalValue.fromAtlas(mOriginalValue);
 	WFMath::Vector<2> newValue;
 	newValue.fromAtlas(getValue());
 	return originalValue != newValue;

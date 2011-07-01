@@ -62,7 +62,7 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 		addGuiEventConnection(mLayerWindow->subscribeEvent(CEGUI::Combobox::EventListSelectionChanged, CEGUI::Event::Subscriber(&AreaAdapter::layerWindow_ListSelectionChanged, this))); 
 	}
 	
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 }
 
 
@@ -110,24 +110,24 @@ void AreaAdapter::createNewPolygon()
 void AreaAdapter::fillElementFromGui()
 {
 	//Start by using the shape element from the polygon adapter
-	mEditedElement = mPolygonAdapter->getChangedElement();
+	mEditedValue = mPolygonAdapter->getChangedElement();
 	CEGUI::ListboxItem* item = mLayerWindow->getSelectedItem();
 	if (item) {
 		mLayer = item->getID();
 	}
 	if (mPolygonAdapter->hasShape()) {
 		Terrain::TerrainAreaParser parser;
-		mEditedElement = parser.createElement(mPolygonAdapter->getShape(), mLayer);
+		mEditedValue = parser.createElement(mPolygonAdapter->getShape(), mLayer);
 	} else {
-		if (mEditedElement.isMap() && mLayer) {
-			mEditedElement.asMap()["layer"] = mLayer;
+		if (mEditedValue.isMap() && mLayer) {
+			mEditedValue.asMap()["layer"] = mLayer;
 		}
 	}
 }
 
 bool AreaAdapter::_hasChanges()
 {
-	return mOriginalElement != getChangedElement();
+	return mOriginalValue != getChangedElement();
 }
 
 void AreaAdapter::addAreaSuggestion(int id, const std::string& name)

@@ -44,7 +44,7 @@ NumberAdapter::NumberAdapter(const ::Atlas::Message::Element& element, CEGUI::Co
 	if (textWindow) {
 		addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&NumberAdapter::window_TextChanged, this))); 
 	}
-	updateGui(mOriginalElement);
+	updateGui(mOriginalValue);
 	mTextWindow->getPushButton()->setVisible(false);
 
 }
@@ -76,16 +76,16 @@ bool NumberAdapter::window_TextChanged(const CEGUI::EventArgs& e)
 
 void NumberAdapter::fillElementFromGui()
 {
-	if (mOriginalElement.isInt()) {
-		mEditedElement = ::Atlas::Message::Element(atoi(mTextWindow->getText().c_str()));
+	if (mOriginalValue.isInt()) {
+		mEditedValue = ::Atlas::Message::Element(atoi(mTextWindow->getText().c_str()));
 	} else {
-		mEditedElement = ::Atlas::Message::Element(atof(mTextWindow->getText().c_str()));
+		mEditedValue = ::Atlas::Message::Element(atof(mTextWindow->getText().c_str()));
 	}
 }
 
 bool NumberAdapter::_hasChanges()
 {
-	return mOriginalElement.asNum() != getValue().asNum();
+	return mOriginalValue.asNum() != getValue().asNum();
 }
 
 void NumberAdapter::addSuggestion(const std::string& suggestedValue)
