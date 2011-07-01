@@ -109,7 +109,7 @@ private:
  * to the actual adapter implementation as well as code that acts on it to
  * perform the actual removal. The removal is not possible in all instances.
  */
-template<typename TargetType>
+template<typename ValueType>
 class AdapterBase
 {
 public:
@@ -119,7 +119,7 @@ public:
 	* Creates a new adapter and intializes it with the supplied value.
 	* @param element The original value.
 	*/
-	AdapterBase(const TargetType& value):
+	AdapterBase(const ValueType& value):
 		mOriginalValue(value),
 		mEditedValue(value),
 		mSelfUpdate(false),
@@ -139,7 +139,7 @@ public:
 	 * 
 	 * @param element The new value.
 	 */
-	void setValue(const TargetType& element)
+	void setValue(const ValueType& element)
 	{
 		updateGui(element);
 		EventValueChanged.emit();
@@ -153,7 +153,7 @@ public:
 	 * @see fillElementFromGui()
 	 * @return The current value.
 	 */
-	const TargetType& getValue()
+	const ValueType& getValue()
 	{
 		fillElementFromGui();
 		return mEditedValue;
@@ -165,7 +165,7 @@ public:
 	 * @see setValue()
 	 * @return The original value
 	 */
-	const TargetType& getOriginalValue() const
+	const ValueType& getOriginalValue() const
 	{
 		return mOriginalValue;
 	}
@@ -184,7 +184,7 @@ public:
 	 * @see setValue()
 	 * @param element The new value.
 	 */
-	virtual void updateGui(const TargetType& element) = 0;
+	virtual void updateGui(const ValueType& element) = 0;
 	
 	/**
 	 * @brief Returns true if the value has been changed through changes in the gui.
@@ -214,11 +214,11 @@ public:
 	 * 
 	 * @return 
 	 */
-	TargetType getChangedElement()
+	ValueType getChangedElement()
 	{
 		if (mRemoved)
 		{
-			return TargetType();
+			return ValueType();
 		}
 		
 		return _getChangedElement();
@@ -267,12 +267,12 @@ protected:
 	/**
 	The original value.
 	*/
-	const TargetType& mOriginalValue;
+	const ValueType& mOriginalValue;
 	
 	/**
 	The value as translated from the gui elements. If no gui changes has been made, this will be the same as mOriginalElement.
 	*/
-	TargetType mEditedValue;
+	ValueType mEditedValue;
 	
 	/**
 	Whenever the adapter is updating the gui this must be set to true first, and then back to false after the update has been done.
@@ -310,7 +310,7 @@ protected:
 	 * @see getValue()
 	 * @return The changed value.
 	 */
-	virtual TargetType _getChangedElement()
+	virtual ValueType _getChangedElement()
 	{
 		return getValue();
 	}
