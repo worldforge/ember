@@ -274,7 +274,8 @@ function Inventory:buildWidget(avatarEntity)
 	
 	
 	--Set up listeners so that when something is moved in the world it can be dropped on the inventory
-	connect(self.connectors, emberOgre:getWorld():getMoveManager().EventStartMoving, self.moveManager_StartMoving, self)
+	--Disabled for now since it's WIP
+	--connect(self.connectors, emberOgre:getWorld():getMoveManager().EventStartMoving, self.moveManager_StartMoving, self)
 	
 	self.menu.container:setVisible(true)
 	

@@ -181,7 +181,7 @@ function Tasks.buildWidget()
 
 
 	--Set up listeners so that when something is moved in the world it can be dropped on the inventory
-	connect(Tasks.connectors, emberOgre:getWorld():getMoveManager().EventStartMoving, Tasks.moveManager_StartMoving)
+	--connect(Tasks.connectors, emberOgre:getWorld():getMoveManager().EventStartMoving, Tasks.moveManager_StartMoving)
 
 --	createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 
