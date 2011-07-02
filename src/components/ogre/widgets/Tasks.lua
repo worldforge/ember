@@ -112,6 +112,47 @@ function Tasks.iconDropped(entityIcon)
 	Tasks.activeSlots[entityIcon:getEntity():getId()] = activeSlot
 end
 
+function Tasks.moveManager_StartMoving(entity, mover)
+	--When the user is moving something we should start to listen for the mouse entering the task widget, and if so activate the ability to drop the thing that is being moved here.
+	local overlay = Tasks.widget:createWindow("DefaultGUISheet")
+	Tasks.parametersDropArea:addChildWindow(overlay)
+	overlay:subscribeEvent("MouseEnter", function(args)
+			local icon = guiManager:getIconManager():getIcon(Tasks.iconSize, entity)
+			
+			if icon then
+--				self.DragDrop:setActive(false)
+				local entityIcon = guiManager:getEntityIconManager():createIcon(icon, entity, Tasks.iconSize)	
+				Tasks.parametersDropArea:addChildWindow(entityIcon:getDragContainer())
+				entityIcon:getDragContainer():pickUp(true)
+			end
+			overlay:subscribeEvent("MouseLeave", function(args)
+					debugObject("Mouse leaves")
+					guiManager:getEntityIconManager():destroyIcon(icon)
+					Tasks.parametersDropArea:removeChildWindow(overlay)
+					return true
+				end
+			)
+			--self.widget:getMainWindow():removeChildWindow(overlay)
+			
+			return true
+		end
+	)
+	local finishedConnector
+	local cancelledConnector
+	local function endMovement()
+		finishedConnector:disconnect()
+		finishedConnector = nil
+		cancelledConnector:disconnect()
+		cancelledConnector = nil
+		windowManager:destroyWindow(overlay)
+	end
+	
+	finishedConnector = createConnector(emberOgre:getWorld():getMoveManager().EventFinishedMoving):connect(endMovement)
+	cancelledConnector = createConnector(emberOgre:getWorld():getMoveManager().EventCancelledMoving):connect(endMovement)
+	
+end
+
+
 function Tasks.removeActiveSlots()
 	for k,v in pairs(Tasks.activeSlots) do
 		guiManager:getEntityIconManager():destroySlot(v.slot)
@@ -139,8 +180,8 @@ function Tasks.buildWidget()
 	Tasks.widget:getWindow("ExpandParametersButton"):subscribeEvent("Clicked", "Tasks.ExpandParametersButtonClicked")
 
 
-	connect(Tasks.connectors, emberOgre.EventCreatedAvatarEntity, "Tasks.createdAvatarEmberEntity")
-	
+	--Set up listeners so that when something is moved in the world it can be dropped on the inventory
+	connect(Tasks.connectors, emberOgre:getWorld():getMoveManager().EventStartMoving, Tasks.moveManager_StartMoving)
 
 --	createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 
@@ -151,5 +192,10 @@ function Tasks.buildWidget()
 
 end
 
-
-Tasks.buildWidget()
+Tasks.createdAvatarEntityConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
+		if not Tasks.widget then
+			Tasks.buildWidget()
+		end
+		Tasks.createdAvatarEmberEntity(avatarEntity)
+	end
+)
