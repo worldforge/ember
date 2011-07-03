@@ -82,6 +82,9 @@ void EntityMover::cleanup()
 }
 void EntityMover::newEntityPosition(const Ogre::Vector3& position)
 {
+	if (!mActive) {
+		return;
+	}
 	mNodeAttachment.updatePosition();
 }
 

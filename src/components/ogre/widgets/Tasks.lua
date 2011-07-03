@@ -120,6 +120,7 @@ function Tasks.moveManager_StartMoving(entity, mover)
 			local icon = guiManager:getIconManager():getIcon(Tasks.iconSize, entity)
 			
 			if icon then
+				mover:setIsActive(false)
 --				self.DragDrop:setActive(false)
 				local entityIcon = guiManager:getEntityIconManager():createIcon(icon, entity, Tasks.iconSize)	
 				Tasks.parametersDropArea:addChildWindow(entityIcon:getDragContainer())
@@ -129,6 +130,7 @@ function Tasks.moveManager_StartMoving(entity, mover)
 					debugObject("Mouse leaves")
 					guiManager:getEntityIconManager():destroyIcon(icon)
 					Tasks.parametersDropArea:removeChildWindow(overlay)
+					mover:setIsActive(true)
 					return true
 				end
 			)
@@ -181,7 +183,7 @@ function Tasks.buildWidget()
 
 
 	--Set up listeners so that when something is moved in the world it can be dropped on the inventory
-	--connect(Tasks.connectors, emberOgre:getWorld():getMoveManager().EventStartMoving, Tasks.moveManager_StartMoving)
+	connect(Tasks.connectors, emberOgre:getWorld():getMoveManager().EventStartMoving, Tasks.moveManager_StartMoving)
 
 --	createConnector(Tasks.widget:EventFrameStarted):connect("Tasks.frameStarted")
 

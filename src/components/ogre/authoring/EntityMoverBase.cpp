@@ -71,7 +71,7 @@ bool SnapListener::getSnappingEnabled() const {
 }
 
 EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::SceneManager& sceneManager) :
-	mEntity(entity), mNode(node), mSceneManager(sceneManager), mSnapping(0)
+	mEntity(entity), mNode(node), mSceneManager(sceneManager), mSnapping(0), mActive(true)
 {
 	SnapListener& snapListener = getSnapListener();
 	if (snapListener.getSnappingEnabled()) {
@@ -98,6 +98,9 @@ const WFMath::Point<3>& EntityMoverBase::getPosition() const
 
 void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 {
+	if (!mActive) {
+		return;
+	}
 	WFMath::Point<3> finalPosition(position);
 	if (position.isValid()) {
 		WFMath::Vector<3> adjustment;
@@ -118,6 +121,9 @@ void EntityMoverBase::setPosition(const WFMath::Point<3>& position)
 }
 void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
 {
+	if (!mActive) {
+		return;
+	}
 	if (directionVector.isValid()) {
 		mNode->translate(Convert::toOgre(directionVector));
 		newEntityPosition(mNode->getPosition());
@@ -126,17 +132,26 @@ void EntityMoverBase::move(const WFMath::Vector<3>& directionVector)
 }
 void EntityMoverBase::setRotation(int axis, WFMath::CoordType angle)
 {
+	if (!mActive) {
+		return;
+	}
 	//not implemented yet
 }
 
 void EntityMoverBase::yaw(WFMath::CoordType angle)
 {
+	if (!mActive) {
+		return;
+	}
 	mNode->yaw(Ogre::Degree(angle));
 	Moved.emit();
 }
 
 void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 {
+	if (!mActive) {
+		return;
+	}
 	if (rotation.isValid()) {
 		//We need to offset into local space.
 		Ogre::Quaternion rotOffset = Ogre::Quaternion::IDENTITY;
@@ -150,6 +165,9 @@ void EntityMoverBase::setOrientation(const WFMath::Quaternion& rotation)
 
 void EntityMoverBase::newEntityPosition(const Ogre::Vector3& position)
 {
+	if (!mActive) {
+		return;
+	}
 }
 
 
@@ -178,6 +196,15 @@ void EntityMoverBase::snapListener_SnappingChanged(bool snapTo){
 	setSnapToEnabled(snapTo);
 }
 
+void EntityMoverBase::setIsActive(bool active)
+{
+	mActive = active;
+}
+
+bool EntityMoverBase::getIsActive() const
+{
+	return mActive;
+}
 
 }
 }

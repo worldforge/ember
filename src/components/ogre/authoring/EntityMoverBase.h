@@ -149,6 +149,20 @@ public:
 	void setSnapToEnabled(bool snapTo);
 
 	/**
+	 * @brief Sets whether this bridge should be active.
+	 *
+	 * If not, movements will not be passed on.
+	 * @param active Whether to be active or not.
+	 */
+	void setIsActive(bool active);
+
+	/**
+	 * @brief Gets whether this bridge is active or not.
+	 * @return Whether movements will be passed on or not.
+	 */
+	bool getIsActive() const;
+
+	/**
 	 * Emitted when the entity is moved.
 	 */
 	sigc::signal<void> Moved;
@@ -169,6 +183,11 @@ protected:
 	 * @brief The scene manager in which to operate.
 	 */
 	Ogre::SceneManager& mSceneManager;
+
+	/**
+	 * @brief Whether the bridge is active, and thus passing movements on to the nodes. Defaults to true.
+	 */
+	bool mActive;
 
 	/**
 	 * @brief The current orientation.
