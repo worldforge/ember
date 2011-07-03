@@ -46,35 +46,6 @@ class EntityIconSlot;
 class EntityIcon;
 
 /**
-	@brief A very lightweight class which can be used as a "user data" instance in CEGUI.
-	CEGUI allows for "user data" to be attached to windows. The user data can be anything, and this class is used as a means to bind an EntityIcon to a CEGUI::Window. Whenever it's used it must be correctly casted (since the user data stored by CEGUI::Window is just a void pointer.
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class EntityIconUserData
-{
-friend class EntityIcon;
-public:
-	
-	/**
-	 * @brief Gets the entity icon instance to which this user data instance belongs.
-	 * @return The entity icon to which to which this user data belongs.
-	 */
-	EntityIcon& getEntityIcon() const;
-private:
-	/**
-	 * @brief Ctor.
-	 * @param entityIcon The entity icon to which to which this user data belongs.
-	 */
-	EntityIconUserData(EntityIcon& entityIcon);
-	
-	/**
-	@brief The entity icon to which to which this user data belongs.
-	*/
-	EntityIcon& mEntityIcon;
-};
-
-
-/**
 	@brief An entity icon, representing a specific entity.
 	An entity icon is a draggable element, which can be dragged and dropped onto different slots.
 	The most common slot on which it can be dragged and dropped would be an instance of EntityIconSlot. An entity icon doesn't necessarily have to be connected to a slot, but in most cases they are.

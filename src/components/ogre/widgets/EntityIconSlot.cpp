@@ -107,47 +107,6 @@ void EntityIconSlot::notifyIconDraggedOff(EntityIcon* entityIcon)
 	EventIconDraggedOff.emit(entityIcon);
 }
 
-
-// bool EntityIconSlot::handleDragEnter(const CEGUI::EventArgs& args, EntityIcon* icon)
-// {
-// 	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
-// 	DragContainer* container = ddea.dragDropItem;
-// 	if (container) {
-// 		EntityIconUserData* mUserData = static_cast<EntityIconUserData*>(container->getUserData());
-// 		if (mUserData) {
-// 			EventIconEntered.emit(&mUserData->getEntityIcon());
-// 		}
-// 	}
-// 	return true;
-// }
-// bool EntityIconSlot::handleDragLeave(const CEGUI::EventArgs& args, EntityIcon* icon)
-// {
-// 	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
-// 	DragContainer* container = ddea.dragDropItem;
-// 	if (container) {
-// 		EntityIconUserData* mUserData = static_cast<EntityIconUserData*>(container->getUserData());
-// 		if (mUserData) {
-// 			EventIconLeaves.emit(&mUserData->getEntityIcon());
-// 		}
-// 	}
-// 	return true;
-// }
-// bool EntityIconSlot::handleDragDropped(const CEGUI::EventArgs& args, EntityIcon* icon)
-// {
-// 	const DragDropEventArgs& ddea = static_cast<const DragDropEventArgs&>(args);
-// 	DragContainer* container = ddea.dragDropItem;
-// 	if (container) {
-// 		EntityIconUserData* mUserData = static_cast<EntityIconUserData*>(container->getUserData());
-// 		if (mUserData) {
-// 			EntityIcon& entityIcon = mUserData->getEntityIcon();
-// 			EventIconDropped.emit(&entityIcon);
-// // 			addEntityIcon(&entityIcon);
-// 		}
-// 	}
-// 	return true;
-// }
-
-
 }
 
 }
