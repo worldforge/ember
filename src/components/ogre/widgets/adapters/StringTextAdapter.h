@@ -25,6 +25,7 @@
 
 #include "AdapterBase.h"
 #include "ValueTypeHelper.h"
+#include <elements/CEGUICombobox.h>
 
 namespace Ember {
 namespace OgreView {
@@ -43,7 +44,11 @@ public:
 	/**
 	 * @brief Ctor
 	 */
-	StringTextAdapter(const ::Atlas::Message::Element& element, CEGUI::Window* textWindow)
+	StringTextAdapter(const ValueType& value, CEGUI::Window* textWindow):
+		AdapterBase(value),
+		mTextWindow(textWindow),
+		// if the window is a combobox, we offer some additional functionality (suggestions)
+		mCombobox(dynamic_cast<CEGUI::Combobox*>(textWindow))
 	{
 		if (mTextWindow)
 		{
@@ -51,6 +56,12 @@ public:
 		}
 		
 		updateGui(mOriginalValue);
+		
+		if (mCombobox)
+		{
+			// at this point no suggestions were added, so hide the combobox dropdown button
+			mCombobox->getPushButton()->setVisible(false);
+		}
 	}
 	
 	/**
@@ -69,9 +80,24 @@ public:
 			mTextWindow->setText(ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(element));
 		}
 	}
+	
+	/// @copydoc AdapterBase::addSuggestion
+	void addSuggestion(const std::string& suggestedValue)
+	{
+		if (mCombobox)
+		{
+			mCombobox->addItem(new ColouredListItem(suggestedValue));
+			
+			// when we add any suggestions (they can't be removed), we immediately show the dropdown button
+			// so that user can access the suggestions
+			mCombobox->getPushButton()->setVisible(true);
+		}
+	}
 
 protected:
 	CEGUI::Window* mTextWindow;
+	CEGUI::Combobox* mCombobox;
+	
 	bool window_TextChanged(const CEGUI::EventArgs& e);
 
 	/// @copydoc AdapterBase::fillElementFromGui
