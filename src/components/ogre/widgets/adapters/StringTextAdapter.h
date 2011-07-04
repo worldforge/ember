@@ -26,6 +26,7 @@
 #include "AdapterBase.h"
 #include "ValueTypeHelper.h"
 #include <elements/CEGUICombobox.h>
+#include "../ColouredListItem.h"
 
 namespace Ember {
 namespace OgreView {
