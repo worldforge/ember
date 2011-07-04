@@ -349,7 +349,6 @@ private:
 	 * @brief The internal list of gui event connections, used for automatic disconnection when the instance is destroyed.
 	 */
 	std::vector<CEGUI::Event::Connection> mGuiEventConnections;
-
 };
 
 /**
