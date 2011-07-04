@@ -19,8 +19,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUI_ADAPTERS_REPRESENTATIONBASE_H
-#define EMBEROGRE_GUI_ADAPTERS_REPRESENTATIONBASE_H
+#ifndef EMBEROGRE_GUI_REPRESENTATIONS_REPRESENTATIONBASE_H
+#define EMBEROGRE_GUI_REPRESENTATIONS_REPRESENTATIONBASE_H
 
 #include "framework/LoggingInstance.h"
 #include <CEGUIEvent.h>
