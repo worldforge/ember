@@ -24,6 +24,7 @@
 
 #include <sstream>
 #include <Atlas/Message/Element.h>
+#include <varconf/variable.h>
 
 namespace Ember {
 namespace OgreView {
@@ -33,9 +34,8 @@ namespace Gui {
 namespace Adapters {
 
 template<typename ValueType, typename TargetType>
-class ValueTypeHelper<ValueType>
+struct ValueTypeHelper
 {
-public:
 	static TargetType toTargetType(const ValueType& v)
 	{
 		// boost::lexical_cast inspired trick should serve as a nice default case
@@ -63,7 +63,7 @@ public:
 };
 
 template<>
-class ValueTypeHelper<::Atlas::Message::Element, std::string>
+struct ValueTypeHelper< ::Atlas::Message::Element, std::string>
 {
 	static std::string toTargetType(const ::Atlas::Message::Element& v)
 	{
@@ -78,7 +78,7 @@ class ValueTypeHelper<::Atlas::Message::Element, std::string>
 
 
 template<>
-class ValueTypeHelper<::varconf::Variable, std::string>
+struct ValueTypeHelper< ::varconf::Variable, std::string>
 {
 	static std::string toTargetType(const ::varconf::Variable& v)
 	{

@@ -26,6 +26,7 @@
 #include "AdapterBase.h"
 #include "ValueTypeHelper.h"
 #include <elements/CEGUICombobox.h>
+#include <elements/CEGUIPushButton.h>
 #include "../ColouredListItem.h"
 
 namespace Ember {
@@ -46,17 +47,17 @@ public:
 	 * @brief Ctor
 	 */
 	StringTextAdapter(const ValueType& value, CEGUI::Window* textWindow):
-		AdapterBase(value),
+		AdapterBase<ValueType>(value),
 		mTextWindow(textWindow),
 		// if the window is a combobox, we offer some additional functionality (suggestions)
 		mCombobox(dynamic_cast<CEGUI::Combobox*>(textWindow))
 	{
 		if (mTextWindow)
 		{
-			addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&StringTextAdapter::window_TextChanged, this))); 
+			this->addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&StringTextAdapter::window_TextChanged, this))); 
 		}
 		
-		updateGui(mOriginalValue);
+		updateGui(this->mOriginalValue);
 		
 		if (mCombobox)
 		{
@@ -74,7 +75,7 @@ public:
 	/// @copydoc AdapterBase::updateGui
 	virtual void updateGui(const ValueType& element)
 	{
-		AdapterSelfUpdateContext<ValueType> context(*this);
+		typename AdapterBase<ValueType>::SelfUpdateContext context(*this);
 		
 		if (mTextWindow)
 		{
@@ -99,12 +100,20 @@ protected:
 	CEGUI::Window* mTextWindow;
 	CEGUI::Combobox* mCombobox;
 	
-	bool window_TextChanged(const CEGUI::EventArgs& e);
+	bool window_TextChanged(const CEGUI::EventArgs& e)
+	{
+		if (!this->mSelfUpdate)
+		{
+			this->EventValueChanged.emit();
+		}
+		
+		return true;
+	}
 
 	/// @copydoc AdapterBase::fillElementFromGui
 	virtual void fillElementFromGui()
 	{
-		mEditedValue = ValueTypeHelper< ::Atlas::Message::Element, std::string>::fromTargetType(mTextWindow->getText().c_str());
+		this->mEditedValue = ValueTypeHelper< ::Atlas::Message::Element, std::string>::fromTargetType(mTextWindow->getText().c_str());
 	}
 	
 	/// @copydoc AdapterBase::_hasChanges
@@ -113,8 +122,8 @@ protected:
 		// FIXME: We could get rid of this conversion and comparison if the ValueType had operator==
 		//        Can we rely that the comparison operator will be defined in all our value types?
 		
-		return ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(mOriginalValue) !=
-		       ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(getValue());
+		return ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(this->mOriginalValue) !=
+		       ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(this->getValue());
 	}
 };
 

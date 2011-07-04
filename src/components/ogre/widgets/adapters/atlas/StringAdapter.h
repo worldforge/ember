@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUI_ADAPTERS_ATLASSTRINGADAPTER_H
 #define EMBEROGRE_GUI_ADAPTERS_ATLASSTRINGADAPTER_H
 
-#include "AdapterBase.h"
+#include "../StringTextAdapter.h"
 
 namespace Ember {
 namespace OgreView {
@@ -34,31 +34,7 @@ namespace Adapters {
 
 namespace Atlas {
 
-/**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class StringAdapter : public AdapterBase
-{
-public:
-	StringAdapter(const ::Atlas::Message::Element& element, CEGUI::Combobox* textWindow);
-	
-	virtual ~StringAdapter();
-	
-	/**
-	Updates the gui with new values.
-	*/
-	virtual void updateGui(const ::Atlas::Message::Element& element);
-    
-	virtual void addSuggestion(const std::string& suggestedValue);
-
-protected:
-	CEGUI::Combobox* mTextWindow;
-	bool window_TextChanged(const CEGUI::EventArgs& e);
-
-	virtual void fillElementFromGui();
-	virtual bool _hasChanges();
-
-};
+typedef ::Ember::OgreView::Gui::Adapters::StringTextAdapter< ::Atlas::Message::Element> StringAdapter;
 
 }
 

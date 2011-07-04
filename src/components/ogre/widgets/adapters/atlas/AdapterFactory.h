@@ -23,6 +23,7 @@
 #ifndef EMBEROGRE_GUI_ADAPTERS_ATLASADAPTERFACTORY_H
 #define EMBEROGRE_GUI_ADAPTERS_ATLASADAPTERFACTORY_H
 #include "AdapterBase.h"
+#include "StringAdapter.h"
 
 namespace CEGUI
 {
@@ -45,7 +46,6 @@ namespace Adapters {
 
 namespace Atlas {
 
-class StringAdapter;
 class NumberAdapter;
 class SizeAdapter;
 class MapAdapter;
