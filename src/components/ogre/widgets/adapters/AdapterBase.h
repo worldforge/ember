@@ -36,42 +36,6 @@ namespace Gui {
 namespace Adapters {
 
 /**
- * @brief Use an instance of this whenever you need to update the gui from the adapter.
- *
- * In order to prevent endless loops we need to set the mSelfUpdate variable to
- * true while we do the update. This will automate the setting of this, and the
- * unsetting when it's destroyed.
- * 
- * Code example (scope):
- * @code
- * {
- * 	AdapterSelfUpdateContext(*this);
- * 	Perform the update here
- * 	
- * 	The update context goes out of scope after the bracket
- * }
- * @endcode
-*/
-template<typename AdapterType>
-class AdapterSelfUpdateContext
-{
-public:
-	AdapterSelfUpdateContext(AdapterType& adapter):
-		mAdapter(adapter)
-	{
-		mAdapter._setSelfUpdate(true);
-	}
-	
-	~AdapterSelfUpdateContext()
-	{
-		mAdapter._setSelfUpdate(false);
-	}
-	
-private:
-	AdapterType& mAdapter;
-};
-
-/**
  * @brief Base class for all adapters.
  *
  * An adapter is a class which binds a series of gui elements to a 
@@ -114,11 +78,46 @@ class AdapterBase
 {
 public:
 	/**
-	* @brief Ctor
-	*
-	* Creates a new adapter and intializes it with the supplied value.
-	* @param element The original value.
-	*/
+	 * @brief Use an instance of this whenever you need to update the gui from the adapter.
+	 *
+	 * In order to prevent endless loops we need to set the mSelfUpdate variable to
+	 * true while we do the update. This will automate the setting of this, and the
+	 * unsetting when it's destroyed.
+	 * 
+	 * Code example (scope):
+	 * @code
+	 * {
+	 * 	Adapter::SelfUpdateContext context(*this);
+	 * 	Perform the update here
+	 * 	
+	 * 	The update context goes out of scope after the bracket
+	 * }
+	 * @endcode
+	 */
+	class SelfUpdateContext
+	{
+	public:
+		SelfUpdateContext(AdapterBase& adapter):
+			mAdapter(adapter)
+		{
+			mAdapter._setSelfUpdate(true);
+		}
+		
+		~SelfUpdateContext()
+		{
+			mAdapter._setSelfUpdate(false);
+		}
+		
+	private:
+		AdapterBase& mAdapter;
+	};
+	
+	/**
+	 * @brief Ctor
+	 *
+	 * Creates a new adapter and intializes it with the supplied value.
+	 * @param element The original value.
+	 */
 	AdapterBase(const ValueType& value):
 		mOriginalValue(value),
 		mEditedValue(value),
@@ -127,8 +126,8 @@ public:
 	{}
 
 	/**
-	* @brief Dtor
-	*/
+	 * @brief Dtor
+	 */
 	virtual ~AdapterBase()
 	{
 		disconnectAllGuiEventConnections();
