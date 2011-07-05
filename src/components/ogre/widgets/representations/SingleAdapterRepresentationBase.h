@@ -47,15 +47,12 @@ public:
 	 * @brief Ctor
 	 * 
 	 * @copydoc RepresentationBase::RepresentationBase
-	 * @param adapter the single adapter we want to use (this class takes ownership of it and will delete it!)
 	 */
-	SingleAdapterRepresentationBase(ValueType& value, AdapterBase<ValueType>* adapter):
+	SingleAdapterRepresentationBase(ValueType& value):
 		RepresentationBase<ValueType>(value),
 		
-		mAdapter(adapter)
-	{
-		mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &SingleAdapterRepresentationBase::adapterValueChanged));
-	}
+		mAdapter(0)
+	{}
 	
 	/**
 	 * @brief Dtor
@@ -67,6 +64,21 @@ public:
 	
 protected:
 	AdapterBase<ValueType>* mAdapter;
+	
+	/**
+	 * @brief sets the single adapter to use in this representation
+	 *  
+	 * @param adapter the single adapter we want to use (this class takes ownership of it and will delete it!)
+	 * @note You may only call this once in your inherited implementation (usually in the constructor)
+	 */
+	void setAdapter(AdapterBase<ValueType>* adapter)
+	{
+		assert(!mAdapter);
+		assert(adapter);
+		
+		mAdapter = adapter;
+		mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &SingleAdapterRepresentationBase::adapterValueChanged));
+	}
 	
 	void adapterValueChanged()
 	{
