@@ -47,6 +47,8 @@ class RepresentationBase
 public:
 	/**
 	 * @brief Ctor
+	 * 
+	 * @param value value we want to represent and edit (will be directly altered)
 	 */
 	RepresentationBase(ValueType& value):
 		mValue(value)
