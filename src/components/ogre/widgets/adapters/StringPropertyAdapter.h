@@ -20,14 +20,12 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUI_ADAPTERS_STRINGTEXTADAPTER_H
-#define EMBEROGRE_GUI_ADAPTERS_STRINGTEXTADAPTER_H
+#ifndef EMBEROGRE_GUI_ADAPTERS_STRINGPROPERTYADAPTER_H
+#define EMBEROGRE_GUI_ADAPTERS_STRINGPROPERTYADAPTER_H
 
 #include "AdapterBase.h"
 #include "ValueTypeHelper.h"
-#include <elements/CEGUICombobox.h>
-#include <elements/CEGUIPushButton.h>
-#include "../ColouredListItem.h"
+#include <CEGUIWindow.h>
 
 namespace Ember {
 namespace OgreView {
@@ -37,39 +35,33 @@ namespace Gui {
 namespace Adapters {
 
 /**
- * @brief bridges a string to a CEGUI widget by altering it's "Text" property
+ * @brief bridges a string to a CEGUI widget by altering its property of your choice
  */
 template<typename ValueType>
-class StringTextAdapter : public AdapterBase<ValueType>
+class StringPropertyAdapter : public AdapterBase<ValueType>
 {
 public:
 	/**
 	 * @brief Ctor
 	 */
-	StringTextAdapter(const ValueType& value, CEGUI::Window* textWindow):
+	StringPropertyAdapter(const ValueType& value, CEGUI::Window* widget, const CEGUI::String& propertyName, const CEGUI::String& eventChangedName):
 		AdapterBase<ValueType>(value),
-		mTextWindow(textWindow),
-		// if the window is a combobox, we offer some additional functionality (suggestions)
-		mCombobox(dynamic_cast<CEGUI::Combobox*>(textWindow))
+		
+		mWidget(widget),
+		mPropertyName(propertyName)
 	{
-		if (mTextWindow)
+		if (mWidget)
 		{
-			this->addGuiEventConnection(textWindow->subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&StringTextAdapter::window_TextChanged, this))); 
+			this->addGuiEventConnection(mWidget->subscribeEvent(eventChangedName, CEGUI::Event::Subscriber(&StringPropertyAdapter::widget_PropertyChanged, this))); 
 		}
 		
 		updateGui(this->mOriginalValue);
-		
-		if (mCombobox)
-		{
-			// at this point no suggestions were added, so hide the combobox dropdown button
-			mCombobox->getPushButton()->setVisible(false);
-		}
 	}
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~StringTextAdapter()
+	virtual ~StringPropertyAdapter()
 	{}
 	
 	/// @copydoc AdapterBase::updateGui
@@ -77,30 +69,17 @@ public:
 	{
 		typename AdapterBase<ValueType>::SelfUpdateContext context(*this);
 		
-		if (mTextWindow)
+		if (mWidget)
 		{
-			mTextWindow->setText(ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(element));
-		}
-	}
-	
-	/// @copydoc AdapterBase::addSuggestion
-	void addSuggestion(const std::string& suggestedValue)
-	{
-		if (mCombobox)
-		{
-			mCombobox->addItem(new ColouredListItem(suggestedValue));
-			
-			// when we add any suggestions (they can't be removed), we immediately show the dropdown button
-			// so that user can access the suggestions
-			mCombobox->getPushButton()->setVisible(true);
+			mWidget->setProperty(mPropertyName, ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(element));
 		}
 	}
 
 protected:
-	CEGUI::Window* mTextWindow;
-	CEGUI::Combobox* mCombobox;
+	CEGUI::Window* mWidget;
+	const CEGUI::String mPropertyName;
 	
-	bool window_TextChanged(const CEGUI::EventArgs& e)
+	bool widget_PropertyChanged(const CEGUI::EventArgs& e)
 	{
 		if (!this->mSelfUpdate)
 		{
@@ -113,7 +92,7 @@ protected:
 	/// @copydoc AdapterBase::fillElementFromGui
 	virtual void fillElementFromGui()
 	{
-		this->mEditedValue = ValueTypeHelper< ::Atlas::Message::Element, std::string>::fromTargetType(mTextWindow->getText().c_str());
+		this->mEditedValue = ValueTypeHelper< ::Atlas::Message::Element, std::string>::fromTargetType(mWidget->getProperty(mPropertyName).c_str());
 	}
 	
 	/// @copydoc AdapterBase::_hasChanges

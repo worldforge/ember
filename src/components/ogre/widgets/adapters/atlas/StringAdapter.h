@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUI_ADAPTERS_ATLASSTRINGADAPTER_H
 #define EMBEROGRE_GUI_ADAPTERS_ATLASSTRINGADAPTER_H
 
-#include "../StringTextAdapter.h"
+#include "../ComboboxAdapter.h"
 
 namespace Ember {
 namespace OgreView {
@@ -34,7 +34,7 @@ namespace Adapters {
 
 namespace Atlas {
 
-typedef ::Ember::OgreView::Gui::Adapters::StringTextAdapter< ::Atlas::Message::Element> StringAdapter;
+typedef ::Ember::OgreView::Gui::Adapters::ComboboxAdapter< ::Atlas::Message::Element> StringAdapter;
 
 }
 
