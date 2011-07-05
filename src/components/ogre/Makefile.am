@@ -74,7 +74,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/adapters/atlas/CustomAdapter.cpp widgets/adapters/atlas/ListAdapter.cpp widgets/adapters/atlas/MapAdapter.cpp widgets/adapters/atlas/NumberAdapter.cpp widgets/adapters/atlas/OrientationAdapter.cpp \
 	widgets/adapters/atlas/PolygonAdapter.cpp widgets/adapters/atlas/Position2DAdapter.cpp widgets/adapters/atlas/PositionAdapter.cpp widgets/adapters/atlas/SizeAdapter.cpp \
 	widgets/adapters/atlas/StaticAdapter.cpp widgets/adapters/atlas/TerrainModAdapter.cpp \
-	widgets/adapters/eris/TypeTreeAdapter.cpp widgets/adapters/ogre/ResourceListAdapter.cpp widgets/TexturePair.cpp widgets/EntityTooltip.cpp \
+	widgets/adapters/eris/TypeTreeAdapter.cpp widgets/adapters/ogre/ResourceListAdapter.cpp widgets/representations/LayoutHelper.cpp widgets/TexturePair.cpp widgets/EntityTooltip.cpp \
 	widgets/EntityCreatorCreationInstance.cpp \
 \
 	Avatar.cpp \
