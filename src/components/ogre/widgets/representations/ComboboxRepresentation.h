@@ -30,7 +30,7 @@ namespace OgreView {
 
 namespace Gui {
 
-namespace Adapters {
+namespace Representations {
 
 /**
  * @brief represents given value by a combobox (the underlying value should be a string)
@@ -53,7 +53,7 @@ public:
 	{
 		//mLayout = load from layout
 		
-		this->setAdapter(new ComboboxAdapter<ValueType>(value, mLayout);
+		this->setAdapter(new ComboboxAdapter<ValueType>(value, mLayout));
 	}
 	
 	/**

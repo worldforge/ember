@@ -32,7 +32,7 @@ namespace OgreView {
 
 namespace Gui {
 
-namespace Adapters {
+namespace Representations {
 
 /**
  * @brief a visual (CEGUI widget) representation of data (using adapters)
