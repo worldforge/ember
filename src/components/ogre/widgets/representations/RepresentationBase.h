@@ -48,17 +48,21 @@ public:
 	/**
 	 * @brief Ctor
 	 */
-	RepresentationBase();
+	RepresentationBase(ValueType& value):
+		mValue(value)
+	{}
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~RepresentationBase();
+	virtual ~RepresentationBase()
+	{}
 	
 	virtual CEGUI::Window* getGuiRoot() = 0;
 	
 protected:
-	AdapterBase<ValueType>* mAdapter;
+	/// this is the source and target value (original value that we change when the representation is edited)
+	ValueType& mValue;
 };
 
 }
