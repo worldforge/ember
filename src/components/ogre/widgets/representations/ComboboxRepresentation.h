@@ -23,7 +23,9 @@
 #define EMBEROGRE_GUI_REPRESENTATIONS_COMBOBOXREPRESENTATION_H
 
 #include "SingleAdapterRepresentationBase.h"
+#include "LayoutHelper.h"
 #include "../adapters/ComboboxAdapter.h"
+#include <CEGUI/CEGUIWindowManager.h>
 
 namespace Ember {
 namespace OgreView {
@@ -51,7 +53,7 @@ public:
 	ComboboxRepresentation(ValueType& value):
 		SingleAdapterRepresentationBase<ValueType>(value)
 	{
-		//mLayout = load from layout
+		mLayout = LayoutHelper::loadLayout("ComboboxRepresentation.layout", mPrefix);
 		
 		this->setAdapter(new ComboboxAdapter<ValueType>(value, mLayout));
 	}
@@ -61,11 +63,12 @@ public:
 	 */
 	virtual ~ComboboxRepresentation()
 	{
-		//destroy layout
+		CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
 	}
 	
 protected:
 	CEGUI::Window* mLayout;
+	CEGUI::String mPrefix;
 };
 
 }
