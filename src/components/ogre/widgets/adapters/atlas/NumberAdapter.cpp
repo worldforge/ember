@@ -56,7 +56,8 @@ NumberAdapter::~NumberAdapter()
 
 void NumberAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	AdapterSelfUpdateContext context(*this);
+	SelfUpdateContext context(*this);
+	
 	if (mTextWindow) {
 		std::stringstream ss;
 		ss << element.asNum();

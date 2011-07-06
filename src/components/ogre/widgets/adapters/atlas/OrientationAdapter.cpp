@@ -66,7 +66,8 @@ OrientationAdapter::~OrientationAdapter()
 
 void OrientationAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	AdapterSelfUpdateContext context(*this);
+	SelfUpdateContext context(*this);
+	
 	WFMath::Quaternion orientation(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {

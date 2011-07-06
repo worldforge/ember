@@ -58,7 +58,8 @@ Position2DAdapter::~Position2DAdapter()
 
 void Position2DAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	AdapterSelfUpdateContext context(*this);
+	SelfUpdateContext context(*this);
+	
 	WFMath::Vector<2> vector(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {

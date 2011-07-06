@@ -27,11 +27,6 @@
 #include <CEGUI.h>
 #include <Atlas/Message/Element.h>
 #include <sigc++/signal.h>
-// namespace CEGUI
-// {
-// 	class Window;
-// }
-
 
 namespace Ember {
 namespace OgreView {
@@ -43,7 +38,6 @@ namespace Adapters {
 namespace Atlas {
 
 typedef ::Ember::OgreView::Gui::Adapters::AdapterBase< ::Atlas::Message::Element> AdapterBase;
-typedef AdapterBase::SelfUpdateContext AdapterSelfUpdateContext;
 typedef ::Ember::OgreView::Gui::Adapters::AdapterWrapper<AdapterBase> AdapterWrapper;
 
 inline static std::string toString(float number)

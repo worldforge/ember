@@ -78,7 +78,8 @@ SizeAdapter::~SizeAdapter()
 
 void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	AdapterSelfUpdateContext context(*this);
+	SelfUpdateContext context(*this);
+	
 	WFMath::AxisBox<3> axisBox;
 	try {
 		axisBox.fromAtlas(element.asList());

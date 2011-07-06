@@ -49,7 +49,8 @@ StaticAdapter::~StaticAdapter()
 
 void StaticAdapter::updateGui(const ::Atlas::Message::Element& element)
 {
-	AdapterSelfUpdateContext context(*this);
+	SelfUpdateContext context(*this);
+	
 	if (mTextWindow) {
 		if (element.isString()) {
 			mTextWindow->setText(element.asString());
