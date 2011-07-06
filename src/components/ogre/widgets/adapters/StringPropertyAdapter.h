@@ -23,9 +23,7 @@
 #ifndef EMBEROGRE_GUI_ADAPTERS_STRINGPROPERTYADAPTER_H
 #define EMBEROGRE_GUI_ADAPTERS_STRINGPROPERTYADAPTER_H
 
-#include "AdapterBase.h"
-#include "ValueTypeHelper.h"
-#include <CEGUIWindow.h>
+#include "GenericPropertyAdapter.h"
 
 namespace Ember {
 namespace OgreView {
@@ -38,62 +36,21 @@ namespace Adapters {
  * @brief bridges a string to a CEGUI widget by altering its property of your choice
  */
 template<typename ValueType>
-class StringPropertyAdapter : public AdapterBase<ValueType>
+class StringPropertyAdapter : public GenericPropertyAdapter<ValueType, std::string>
 {
 public:
 	/**
 	 * @brief Ctor
 	 */
 	StringPropertyAdapter(const ValueType& value, CEGUI::Window* widget, const CEGUI::String& propertyName, const CEGUI::String& eventChangedName):
-		AdapterBase<ValueType>(value),
-		
-		mWidget(widget),
-		mPropertyName(propertyName)
-	{
-		if (mWidget)
-		{
-			this->addGuiEventConnection(mWidget->subscribeEvent(eventChangedName, CEGUI::Event::Subscriber(&StringPropertyAdapter::widget_PropertyChanged, this))); 
-		}
-		
-		updateGui(this->mOriginalValue);
-	}
+		GenericPropertyAdapter<ValueType, std::string>(value, widget, propertyName, eventChangedName)
+	{}
 	
 	/**
 	 * @brief Dtor
 	 */
 	virtual ~StringPropertyAdapter()
 	{}
-	
-	/// @copydoc AdapterBase::updateGui
-	virtual void updateGui(const ValueType& element)
-	{
-		typename AdapterBase<ValueType>::SelfUpdateContext context(*this);
-		
-		if (mWidget)
-		{
-			mWidget->setProperty(mPropertyName, ValueTypeHelper< ::Atlas::Message::Element, std::string>::convert(element));
-		}
-	}
-
-protected:
-	CEGUI::Window* mWidget;
-	const CEGUI::String mPropertyName;
-	
-	bool widget_PropertyChanged(const CEGUI::EventArgs& e)
-	{
-		if (!this->mSelfUpdate)
-		{
-			this->EventValueChanged.emit();
-		}
-		
-		return true;
-	}
-
-	/// @copydoc AdapterBase::fillElementFromGui
-	virtual void fillElementFromGui()
-	{
-		this->mEditedValue = ValueTypeHelper<std::string, ::Atlas::Message::Element>::convert(mWidget->getProperty(mPropertyName).c_str());
-	}
 };
 
 }
