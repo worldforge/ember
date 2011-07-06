@@ -299,7 +299,10 @@ protected:
 	 * For some adapters this will be really straight forward, just checking the mOriginalElement and the mEditedElement, but for some others such as list or maps this will be a little more complex.
 	 * @return True if a change has occurred.
 	 */
-	virtual bool _hasChanges() = 0;
+	virtual bool _hasChanges()
+	{
+		return this->mOriginalValue != this->getValue();
+	}
 	
 	/**
 	 * @brief Get's the changed element.

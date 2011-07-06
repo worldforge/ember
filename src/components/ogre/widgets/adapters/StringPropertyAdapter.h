@@ -94,16 +94,6 @@ protected:
 	{
 		this->mEditedValue = ValueTypeHelper<std::string, ::Atlas::Message::Element>::convert(mWidget->getProperty(mPropertyName).c_str());
 	}
-	
-	/// @copydoc AdapterBase::_hasChanges
-	virtual bool _hasChanges()
-	{
-		// FIXME: We could get rid of this conversion and comparison if the ValueType had operator==
-		//        Can we rely that the comparison operator will be defined in all our value types?
-		
-		return ValueTypeHelper< ::Atlas::Message::Element, std::string>::convert(this->mOriginalValue) !=
-		       ValueTypeHelper< ::Atlas::Message::Element, std::string>::convert(this->getValue());
-	}
 };
 
 }
