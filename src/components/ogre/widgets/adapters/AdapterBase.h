@@ -255,7 +255,7 @@ public:
 	}
 	
 	/**
-	 * @brief Internal method, use AdapterSelfUpdateContext instead where possible!
+	 * @brief Internal method, use SelfUpdateContext instead where possible!
 	 */
 	void _setSelfUpdate(bool selfUpdate)
 	{
