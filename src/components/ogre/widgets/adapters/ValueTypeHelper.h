@@ -19,8 +19,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUI_ADAPTERS_VALUETYPEHELPERS_H
-#define EMBEROGRE_GUI_ADAPTERS_VALUETYPEHELPERS_H
+#ifndef EMBEROGRE_GUI_ADAPTERS_VALUETYPEHELPER_H
+#define EMBEROGRE_GUI_ADAPTERS_VALUETYPEHELPER_H
 
 #include <sstream>
 #include <Atlas/Message/Element.h>
@@ -36,26 +36,13 @@ namespace Adapters {
 template<typename ValueType, typename TargetType>
 struct ValueTypeHelper
 {
-	static TargetType toTargetType(const ValueType& v)
+	static TargetType convert(const ValueType& v)
 	{
 		// boost::lexical_cast inspired trick should serve as a nice default case
 		
+		std::stringstream stream;
+		stream << v;
 		TargetType ret;
-		
-		std::stringstream stream;
-		stream << v;
-		stream >> ret;
-		
-		return ret;
-	}
-	
-	static ValueType fromTargetType(const TargetType& v)
-	{
-		// boost::lexical_cast inspired trick should serve as a nice default case
-		
-		std::stringstream stream;
-		stream << v;
-		ValueType ret;
 		stream >> ret;
 		
 		return ret;
@@ -65,27 +52,34 @@ struct ValueTypeHelper
 template<>
 struct ValueTypeHelper< ::Atlas::Message::Element, std::string>
 {
-	static std::string toTargetType(const ::Atlas::Message::Element& v)
+	static std::string convert(const ::Atlas::Message::Element& v)
 	{
 		return v.asString();
 	}
-	
-	static ::Atlas::Message::Element fromTargetType(const std::string& str)
+};
+
+template<>
+struct ValueTypeHelper<std::string, ::Atlas::Message::Element>
+{
+	static ::Atlas::Message::Element convert(const std::string& str)
 	{
 		return ::Atlas::Message::Element(str);
 	}
 };
 
-
 template<>
 struct ValueTypeHelper< ::varconf::Variable, std::string>
 {
-	static std::string toTargetType(const ::varconf::Variable& v)
+	static std::string convert(const ::varconf::Variable& v)
 	{
 		return v.as_string();
 	}
-	
-	static ::varconf::Variable fromTargetType(const std::string& str)
+};
+
+template<>
+struct ValueTypeHelper<std::string, ::varconf::Variable>
+{
+	static ::varconf::Variable convert(const std::string& str)
 	{
 		return ::varconf::Variable(str);
 	}

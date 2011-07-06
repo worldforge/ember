@@ -71,7 +71,7 @@ public:
 		
 		if (mWidget)
 		{
-			mWidget->setProperty(mPropertyName, ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(element));
+			mWidget->setProperty(mPropertyName, ValueTypeHelper< ::Atlas::Message::Element, std::string>::convert(element));
 		}
 	}
 
@@ -92,7 +92,7 @@ protected:
 	/// @copydoc AdapterBase::fillElementFromGui
 	virtual void fillElementFromGui()
 	{
-		this->mEditedValue = ValueTypeHelper< ::Atlas::Message::Element, std::string>::fromTargetType(mWidget->getProperty(mPropertyName).c_str());
+		this->mEditedValue = ValueTypeHelper<std::string, ::Atlas::Message::Element>::convert(mWidget->getProperty(mPropertyName).c_str());
 	}
 	
 	/// @copydoc AdapterBase::_hasChanges
@@ -101,8 +101,8 @@ protected:
 		// FIXME: We could get rid of this conversion and comparison if the ValueType had operator==
 		//        Can we rely that the comparison operator will be defined in all our value types?
 		
-		return ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(this->mOriginalValue) !=
-		       ValueTypeHelper< ::Atlas::Message::Element, std::string>::toTargetType(this->getValue());
+		return ValueTypeHelper< ::Atlas::Message::Element, std::string>::convert(this->mOriginalValue) !=
+		       ValueTypeHelper< ::Atlas::Message::Element, std::string>::convert(this->getValue());
 	}
 };
 

@@ -72,16 +72,16 @@ void OrientationAdapter::updateGui(const ::Atlas::Message::Element& element)
 	WFMath::Quaternion orientation(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
-		mXWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(orientation.vector().x())); 
+		mXWindow->setText(ValueTypeHelper<float, std::string>::convert(orientation.vector().x())); 
 	}
 	if (mYWindow) {
-		mYWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(orientation.vector().y())); 
+		mYWindow->setText(ValueTypeHelper<float, std::string>::convert(orientation.vector().y())); 
 	}
 	if (mZWindow) {
-		mZWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(orientation.vector().z())); 
+		mZWindow->setText(ValueTypeHelper<float, std::string>::convert(orientation.vector().z())); 
 	}
 	if (mScalarWindow) {
-		mScalarWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(orientation.scalar())); 
+		mScalarWindow->setText(ValueTypeHelper<float, std::string>::convert(orientation.scalar())); 
 	}
 
 }

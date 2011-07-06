@@ -88,22 +88,22 @@ void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 		axisBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, -0.5, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5));
 	}
 	if (mLowerXWindow) {
-		mLowerXWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.lowCorner().x()));
+		mLowerXWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().x()));
 	}
 	if (mLowerYWindow) {
-		mLowerYWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.lowCorner().y()));
+		mLowerYWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().y()));
 	}
 	if (mLowerZWindow) {
-		mLowerZWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.lowCorner().z()));
+		mLowerZWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.lowCorner().z()));
 	}
 	if (mUpperXWindow) {
-		mUpperXWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.highCorner().x()));
+		mUpperXWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().x()));
 	}
 	if (mUpperYWindow) {
-		mUpperYWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.highCorner().y()));
+		mUpperYWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().y()));
 	}
 	if (mUpperZWindow) {
-		mUpperZWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.highCorner().z()));
+		mUpperZWindow->setText(ValueTypeHelper<float, std::string>::convert(axisBox.highCorner().z()));
 	}
 
 	updateInfo();
