@@ -25,6 +25,7 @@
 #endif
 
 #include "SizeAdapter.h"
+#include "../ValueTypeHelper.h"
 #include <wfmath/axisbox.h>
 #include <wfmath/atlasconv.h>
 
@@ -87,22 +88,22 @@ void SizeAdapter::updateGui(const ::Atlas::Message::Element& element)
 		axisBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, -0.5, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5));
 	}
 	if (mLowerXWindow) {
-		mLowerXWindow->setText(toString(axisBox.lowCorner().x()));
+		mLowerXWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.lowCorner().x()));
 	}
 	if (mLowerYWindow) {
-		mLowerYWindow->setText(toString(axisBox.lowCorner().y()));
+		mLowerYWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.lowCorner().y()));
 	}
 	if (mLowerZWindow) {
-		mLowerZWindow->setText(toString(axisBox.lowCorner().z()));
+		mLowerZWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.lowCorner().z()));
 	}
 	if (mUpperXWindow) {
-		mUpperXWindow->setText(toString(axisBox.highCorner().x()));
+		mUpperXWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.highCorner().x()));
 	}
 	if (mUpperYWindow) {
-		mUpperYWindow->setText(toString(axisBox.highCorner().y()));
+		mUpperYWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.highCorner().y()));
 	}
 	if (mUpperZWindow) {
-		mUpperZWindow->setText(toString(axisBox.highCorner().z()));
+		mUpperZWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(axisBox.highCorner().z()));
 	}
 
 	updateInfo();

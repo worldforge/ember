@@ -25,6 +25,7 @@
 #endif
 
 #include "OrientationAdapter.h"
+#include "../ValueTypeHelper.h"
 #include <wfmath/quaternion.h>
 #include <wfmath/atlasconv.h>
 
@@ -71,16 +72,16 @@ void OrientationAdapter::updateGui(const ::Atlas::Message::Element& element)
 	WFMath::Quaternion orientation(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
-		mXWindow->setText(toString(orientation.vector().x())); 
+		mXWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(orientation.vector().x())); 
 	}
 	if (mYWindow) {
-		mYWindow->setText(toString(orientation.vector().y())); 
+		mYWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(orientation.vector().y())); 
 	}
 	if (mZWindow) {
-		mZWindow->setText(toString(orientation.vector().z())); 
+		mZWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(orientation.vector().z())); 
 	}
 	if (mScalarWindow) {
-		mScalarWindow->setText(toString(orientation.scalar())); 
+		mScalarWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(orientation.scalar())); 
 	}
 
 }

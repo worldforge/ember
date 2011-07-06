@@ -25,6 +25,7 @@
 #endif
 
 #include "Position2DAdapter.h"
+#include "../ValueTypeHelper.h"
 #include <wfmath/vector.h>
 #include <wfmath/atlasconv.h>
 
@@ -63,10 +64,10 @@ void Position2DAdapter::updateGui(const ::Atlas::Message::Element& element)
 	WFMath::Vector<2> vector(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
-		mXWindow->setText(toString(vector.x())); 
+		mXWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(vector.x())); 
 	}
 	if (mYWindow) {
-		mYWindow->setText(toString(vector.y())); 
+		mYWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(vector.y())); 
 	}
 }
 

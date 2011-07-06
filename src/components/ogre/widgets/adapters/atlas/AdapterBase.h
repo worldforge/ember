@@ -40,13 +40,6 @@ namespace Atlas {
 typedef ::Ember::OgreView::Gui::Adapters::AdapterBase< ::Atlas::Message::Element> AdapterBase;
 typedef ::Ember::OgreView::Gui::Adapters::AdapterWrapper<AdapterBase> AdapterWrapper;
 
-inline static std::string toString(float number)
-{
-	std::stringstream ss;
-	ss << number;
-	return ss.str();
-}
-
 }
 
 }

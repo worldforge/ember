@@ -25,6 +25,7 @@
 #endif
 
 #include "PositionAdapter.h"
+#include "../ValueTypeHelper.h"
 #include <wfmath/vector.h>
 #include <wfmath/atlasconv.h>
 
@@ -75,13 +76,13 @@ void PositionAdapter::updateGui(const ::Atlas::Message::Element& element)
 	WFMath::Vector<3> vector(element);
 // 	axisBox.fromAtlas(element.asList());
 	if (mXWindow) {
-		mXWindow->setText(toString(vector.x())); 
+		mXWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(vector.x())); 
 	}
 	if (mYWindow) {
-		mYWindow->setText(toString(vector.y())); 
+		mYWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(vector.y())); 
 	}
 	if (mZWindow) {
-		mZWindow->setText(toString(vector.z())); 
+		mZWindow->setText(ValueTypeHelper<float, std::string>::toTargetType(vector.z())); 
 	}
 }
 
