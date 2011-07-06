@@ -55,7 +55,7 @@ public:
 	{
 		mLayout = LayoutHelper::loadLayout("ComboboxRepresentation.layout", mPrefix);
 		
-		this->setAdapter(new ComboboxAdapter<ValueType>(value, mLayout));
+		this->setAdapter(new ComboboxAdapter<ValueType>(value, CEGUI::WindowManager::getWindow(mPrefix + "String"));
 	}
 	
 	/**

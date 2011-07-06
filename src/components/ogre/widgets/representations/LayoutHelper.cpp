@@ -44,7 +44,7 @@ CEGUI::Window* LayoutHelper::loadLayout(const std::string& layoutFile, CEGUI::St
 
 	std::string finalFileName(GUIManager::getSingleton().getLayoutDir() + layoutFile);
 	std::stringstream ss;
-	ss << "Representation" << ++mLastPrefixBase;
+	ss << "Representation" << ++mLastPrefixBase << "/";
 	prefix = ss.str();
 	
 	return windowManager.loadWindowLayout(finalFileName, prefix);
