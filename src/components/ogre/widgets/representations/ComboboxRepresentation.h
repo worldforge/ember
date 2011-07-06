@@ -66,6 +66,12 @@ public:
 		CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
 	}
 	
+	/// @copydoc RepresentationBase::getGuiRoot
+	virtual CEGUI::Window* getGuiRoot()
+	{
+		return mLayout;
+	}
+	
 protected:
 	CEGUI::Window* mLayout;
 	CEGUI::String mPrefix;
