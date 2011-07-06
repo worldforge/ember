@@ -49,6 +49,15 @@ struct ValueTypeHelper
 	}
 };
 
+template<typename T>
+struct ValueTypeHelper<T, T>
+{
+	static T convert(const T& v)
+	{
+		return v;
+	}
+};
+
 template<>
 struct ValueTypeHelper< ::Atlas::Message::Element, std::string>
 {
