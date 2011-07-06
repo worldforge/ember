@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUI_ADAPTERS_COMBOBOXADAPTER_H
 #define EMBEROGRE_GUI_ADAPTERS_COMBOBOXADAPTER_H
 
-#include "StringPropertyAdapter.h"
+#include "GenericPropertyAdapter.h"
 #include <elements/CEGUICombobox.h>
 #include "../ColouredListItem.h"
 
@@ -38,14 +38,14 @@ namespace Adapters {
  * @brief bridges a string to a CEGUI combobox (and combobox only!)
  */
 template<typename ValueType>
-class ComboboxAdapter : public StringPropertyAdapter<ValueType>
+class ComboboxAdapter : public GenericPropertyAdapter<ValueType, std::string>
 {
 public:
 	/**
 	 * @brief Ctor
 	 */
 	ComboboxAdapter(const ValueType& value, CEGUI::Window* widget):
-		StringPropertyAdapter<ValueType>(value, widget, "Text", CEGUI::Window::EventTextChanged),
+		GenericPropertyAdapter<ValueType, std::string>(value, widget, "Text", CEGUI::Window::EventTextChanged),
 		
 		mCombobox(dynamic_cast<CEGUI::Combobox*>(widget))
 	{
