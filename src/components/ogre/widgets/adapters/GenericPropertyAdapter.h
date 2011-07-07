@@ -41,59 +41,72 @@ public:
 	/**
 	 * @brief Ctor
 	 */
-	GenericPropertyAdapter(const ValueType& value, CEGUI::Window* widget, const CEGUI::String& propertyName, const CEGUI::String& eventChangedName):
-		AdapterBase<ValueType>(value),
-		
-		mWidget(widget),
-		mPropertyName(propertyName)
-	{
-		if (mWidget)
-		{
-			this->addGuiEventConnection(mWidget->subscribeEvent(eventChangedName, CEGUI::Event::Subscriber(&GenericPropertyAdapter::widget_PropertyChanged, this))); 
-		}
-		
-		updateGui(this->mOriginalValue);
-	}
+	GenericPropertyAdapter(const ValueType& value, CEGUI::Window* widget, const CEGUI::String& propertyName, const CEGUI::String& eventChangedName);
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~GenericPropertyAdapter()
-	{}
+	virtual ~GenericPropertyAdapter();
 	
-	/// @copydoc AdapterBase::updateGui
-	virtual void updateGui(const ValueType& element)
-	{
-		typename AdapterBase<ValueType>::SelfUpdateContext context(*this);
-		
-		if (mWidget)
-		{
-			mWidget->setProperty(mPropertyName, ValueTypeHelper<PropertyNativeType, std::string>::convert(
-				ValueTypeHelper<ValueType, PropertyNativeType>::convert(element)));
-		}
-	}
+	virtual void updateGui(const ValueType& element);
 
 protected:
 	CEGUI::Window* mWidget;
 	const CEGUI::String mPropertyName;
 	
-	bool widget_PropertyChanged(const CEGUI::EventArgs& e)
-	{
-		if (!this->mSelfUpdate)
-		{
-			this->EventValueChanged.emit();
-		}
-		
-		return true;
-	}
+	bool widget_PropertyChanged(const CEGUI::EventArgs& e);
 
-	/// @copydoc AdapterBase::fillElementFromGui
-	virtual void fillElementFromGui()
-	{
-		this->mEditedValue = ValueTypeHelper<PropertyNativeType, ValueType>::convert(
-			ValueTypeHelper<std::string, PropertyNativeType>::convert(mWidget->getProperty(mPropertyName).c_str()));
-	}
+	virtual void fillElementFromGui();
 };
+
+template<typename ValueType, typename PropertyNativeType>
+GenericPropertyAdapter<ValueType, PropertyNativeType>::GenericPropertyAdapter(const ValueType& value, CEGUI::Window* widget, const CEGUI::String& propertyName, const CEGUI::String& eventChangedName):
+	AdapterBase<ValueType>(value),
+	
+	mWidget(widget),
+	mPropertyName(propertyName)
+{
+	if (mWidget)
+	{
+		this->addGuiEventConnection(mWidget->subscribeEvent(eventChangedName, CEGUI::Event::Subscriber(&GenericPropertyAdapter::widget_PropertyChanged, this))); 
+	}
+	
+	updateGui(this->mOriginalValue);
+}
+
+template<typename ValueType, typename PropertyNativeType>
+GenericPropertyAdapter<ValueType, PropertyNativeType>::~GenericPropertyAdapter()
+{}
+
+template<typename ValueType, typename PropertyNativeType>
+void GenericPropertyAdapter<ValueType, PropertyNativeType>::updateGui(const ValueType& element)
+{
+	typename AdapterBase<ValueType>::SelfUpdateContext context(*this);
+	
+	if (mWidget)
+	{
+		mWidget->setProperty(mPropertyName, ValueTypeHelper<PropertyNativeType, std::string>::convert(
+			ValueTypeHelper<ValueType, PropertyNativeType>::convert(element)));
+	}
+}
+
+template<typename ValueType, typename PropertyNativeType>
+bool GenericPropertyAdapter<ValueType, PropertyNativeType>::widget_PropertyChanged(const CEGUI::EventArgs& e)
+{
+	if (!this->mSelfUpdate)
+	{
+		this->EventValueChanged.emit();
+	}
+	
+	return true;
+}
+
+template<typename ValueType, typename PropertyNativeType>
+void GenericPropertyAdapter<ValueType, PropertyNativeType>::fillElementFromGui()
+{
+	this->mEditedValue = ValueTypeHelper<PropertyNativeType, ValueType>::convert(
+		ValueTypeHelper<std::string, PropertyNativeType>::convert(mWidget->getProperty(mPropertyName).c_str()));
+}
 
 }
 
