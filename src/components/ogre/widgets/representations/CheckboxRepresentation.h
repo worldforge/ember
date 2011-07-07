@@ -47,31 +47,40 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	CheckboxRepresentation(ValueType& value):
-		SingleAdapterRepresentationBase<ValueType>(value)
-	{
-		mLayout = LayoutHelper::loadLayout("CheckboxRepresentation.layout", mPrefix);
-		
-		this->setAdapter(new GenericPropertyAdapter<ValueType, bool>(value, CEGUI::WindowManager::getWindow(mPrefix + "Checkbox"), "Selected", CEGUI::Checkbox::EventCheckStateChanged);
-	}
+	CheckboxRepresentation(ValueType& value);
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~CheckboxRepresentation()
-	{
-		CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
-	}
+	virtual ~CheckboxRepresentation();
 	
-	virtual CEGUI::Window* getGuiRoot()
-	{
-		return mLayout;
-	}
+	virtual CEGUI::Window* getGuiRoot();
 	
 protected:
 	CEGUI::Window* mLayout;
 	CEGUI::String mPrefix;
 };
+
+template<typename ValueType>
+CheckboxRepresentation<ValueType>::CheckboxRepresentation(ValueType& value):
+	SingleAdapterRepresentationBase<ValueType>(value)
+{
+	mLayout = LayoutHelper::loadLayout("CheckboxRepresentation.layout", mPrefix);
+	
+	this->setAdapter(new GenericPropertyAdapter<ValueType, bool>(value, CEGUI::WindowManager::getWindow(mPrefix + "Checkbox"), "Selected", CEGUI::Checkbox::EventCheckStateChanged);
+}
+
+template<typename ValueType>
+CheckboxRepresentation<ValueType>::~CheckboxRepresentation()
+{
+	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
+}
+
+template<typename ValueType>
+CEGUI::Window* CheckboxRepresentation<ValueType>::getGuiRoot()
+{
+	return mLayout;
+}
 
 }
 
