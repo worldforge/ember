@@ -50,15 +50,12 @@ public:
 	 * 
 	 * @param value value we want to represent and edit (will be directly altered)
 	 */
-	RepresentationBase(ValueType& value):
-		mValue(value)
-	{}
+	RepresentationBase(ValueType& value);
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~RepresentationBase()
-	{}
+	virtual ~RepresentationBase();
 	
 	virtual CEGUI::Window* getGuiRoot() = 0;
 	
@@ -66,6 +63,15 @@ protected:
 	/// this is the source and target value (original value that we change when the representation is edited)
 	ValueType& mValue;
 };
+
+template<typename ValueType>
+RepresentationBase::RepresentationBase(ValueType& value):
+	mValue(value)
+{}
+
+template<typename ValueType>
+RepresentationBase::~RepresentationBase()
+{}
 
 }
 
