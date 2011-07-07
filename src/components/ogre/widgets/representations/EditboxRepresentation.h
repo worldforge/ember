@@ -25,7 +25,7 @@
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
 #include "../adapters/ComboboxAdapter.h"
-#include <CEGUI/CEGUIWindowManager.h>
+#include <CEGUIWindowManager.h>
 
 namespace Ember {
 namespace OgreView {
