@@ -19,8 +19,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUI_REPRESENTATIONS_COMBOBOXREPRESENTATION_H
-#define EMBEROGRE_GUI_REPRESENTATIONS_COMBOBOXREPRESENTATION_H
+#ifndef EMBEROGRE_GUI_REPRESENTATIONS_EDITBOXREPRESENTATION_H
+#define EMBEROGRE_GUI_REPRESENTATIONS_EDITBOXREPRESENTATION_H
 
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
@@ -35,13 +35,12 @@ namespace Gui {
 namespace Representations {
 
 /**
- * @brief represents given value by a combobox (the underlying value should be a string)
+ * @brief represents given value by an editbox
  * 
- * The combobox allows user to select suggested values if any (taken care of by the ComboboxAdapter).
- * @see ComboboxAdapter
+ * @see GenericPropertyAdapter
  */
-template<typename ValueType, typename PropertyNativeType>
-class ComboboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
+template<typename ValueType>
+class EditboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
 {
 public:
 	/**
@@ -49,18 +48,18 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	ComboboxRepresentation(ValueType& value):
+	EditboxRepresentation(ValueType& value):
 		SingleAdapterRepresentationBase<ValueType>(value)
 	{
-		mLayout = LayoutHelper::loadLayout("ComboboxRepresentation.layout", mPrefix);
+		mLayout = LayoutHelper::loadLayout("EditboxRepresentation.layout", mPrefix);
 		
-		this->setAdapter(new ComboboxAdapter<ValueType, PropertyNativeType>(value, CEGUI::WindowManager::getWindow(mPrefix + "String"));
+		this->setAdapter(new ComboboxAdapter<ValueType>(value, CEGUI::WindowManager::getWindow(mPrefix + "String"));
 	}
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~ComboboxRepresentation()
+	virtual ~EditboxRepresentation()
 	{
 		CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
 	}

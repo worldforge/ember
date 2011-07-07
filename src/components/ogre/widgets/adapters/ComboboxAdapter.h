@@ -37,7 +37,7 @@ namespace Adapters {
 /**
  * @brief bridges a string to a CEGUI combobox (and combobox only!)
  */
-template<typename ValueType>
+template<typename ValueType, typename PropertyNativeType>
 class ComboboxAdapter : public GenericPropertyAdapter<ValueType, std::string>
 {
 public:
@@ -45,7 +45,7 @@ public:
 	 * @brief Ctor
 	 */
 	ComboboxAdapter(const ValueType& value, CEGUI::Window* widget):
-		GenericPropertyAdapter<ValueType, std::string>(value, widget, "Text", CEGUI::Window::EventTextChanged),
+		GenericPropertyAdapter<ValueType, PropertyNativeType>(value, widget, "Text", CEGUI::Window::EventTextChanged),
 		
 		mCombobox(dynamic_cast<CEGUI::Combobox*>(widget))
 	{
