@@ -44,43 +44,51 @@ public:
 	/**
 	 * @brief Ctor
 	 */
-	ComboboxAdapter(const ValueType& value, CEGUI::Window* widget):
-		GenericPropertyAdapter<ValueType, PropertyNativeType>(value, widget, "Text", CEGUI::Window::EventTextChanged),
-		
-		mCombobox(dynamic_cast<CEGUI::Combobox*>(widget))
-	{
-		// TODO: Do we want to assert that given widget is a combobox or just silently not provide the
-		//       functionality specific to the combobox?
-		
-		if (mCombobox)
-		{
-			// at this point no suggestions were added, so hide the combobox dropdown button
-			mCombobox->getPushButton()->setVisible(false);
-		}
-	}
+	ComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~ComboboxAdapter()
-	{}
+	virtual ~ComboboxAdapter();
 	
-	/// @copydoc AdapterBase::addSuggestion
-	void addSuggestion(const std::string& suggestedValue)
-	{
-		if (mCombobox)
-		{
-			mCombobox->addItem(new ColouredListItem(suggestedValue));
-			
-			// when we add any suggestions (they can't be removed), we immediately show the dropdown button
-			// so that user can access the suggestions
-			mCombobox->getPushButton()->setVisible(true);
-		}
-	}
+	void addSuggestion(const std::string& suggestedValue);
 
 protected:
 	CEGUI::Combobox* mCombobox;
 };
+
+template<typename ValueType, typename PropertyNativeType>
+ComboboxAdapter<ValueType, PropertyNativeType>::ComboboxAdapter(const ValueType& value, CEGUI::Window* widget):
+	GenericPropertyAdapter<ValueType, PropertyNativeType>(value, widget, "Text", CEGUI::Window::EventTextChanged),
+	
+	mCombobox(dynamic_cast<CEGUI::Combobox*>(widget))
+{
+	// TODO: Do we want to assert that given widget is a combobox or just silently not provide the
+	//       functionality specific to the combobox?
+	
+	if (mCombobox)
+	{
+		// at this point no suggestions were added, so hide the combobox dropdown button
+		mCombobox->getPushButton()->setVisible(false);
+	}
+}
+
+template<typename ValueType, typename PropertyNativeType>
+ComboboxAdapter<ValueType, PropertyNativeType>::~ComboboxAdapter()
+{}
+
+template<typename ValueType, typename PropertyNativeType>
+void ComboboxAdapter<ValueType, PropertyNativeType>::addSuggestion(const std::string& suggestedValue)
+{
+	if (mCombobox)
+	{
+		mCombobox->addItem(new ColouredListItem(suggestedValue));
+		
+		// when we add any suggestions (they can't be removed), we immediately show the dropdown button
+		// so that user can access the suggestions
+		mCombobox->getPushButton()->setVisible(true);
+	}
+}
 
 }
 
