@@ -24,7 +24,7 @@
 
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
-#include "../adapters/ComboboxAdapter.h"
+#include "../adapters/GenericPropertyAdapter.h"
 #include <CEGUIWindowManager.h>
 
 namespace Ember {
@@ -39,7 +39,7 @@ namespace Representations {
  * 
  * @see GenericPropertyAdapter
  */
-template<typename ValueType>
+template<typename ValueType, typename PropertyNativeType>
 class EditboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
 {
 public:
@@ -48,31 +48,40 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	EditboxRepresentation(ValueType& value):
-		SingleAdapterRepresentationBase<ValueType>(value)
-	{
-		mLayout = LayoutHelper::loadLayout("EditboxRepresentation.layout", mPrefix);
-		
-		this->setAdapter(new ComboboxAdapter<ValueType>(value, CEGUI::WindowManager::getWindow(mPrefix + "String"));
-	}
+	EditboxRepresentation(ValueType& value);
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~EditboxRepresentation()
-	{
-		CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
-	}
+	virtual ~EditboxRepresentation();
 	
-	virtual CEGUI::Window* getGuiRoot()
-	{
-		return mLayout;
-	}
+	virtual CEGUI::Window* getGuiRoot();
 	
 protected:
 	CEGUI::Window* mLayout;
 	CEGUI::String mPrefix;
 };
+
+template<typename ValueType, typename PropertyNativeType>
+EditboxRepresentation<ValueType, PropertyNativeType>::EditboxRepresentation(ValueType& value):
+	SingleAdapterRepresentationBase<ValueType>(value)
+{
+	mLayout = LayoutHelper::loadLayout("EditboxRepresentation.layout", mPrefix);
+	
+	this->setAdapter(new GenericPropertyAdapter<ValueType, PropertyNativeType>(value, CEGUI::WindowManager::getWindow(mPrefix + "String"), "Text", CEGUI::Window::EventTextChanged);
+}
+
+template<typename ValueType, typename PropertyNativeType>
+EditboxRepresentation<ValueType, PropertyNativeType>::~EditboxRepresentation()
+{
+	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
+}
+
+template<typename ValueType, typename PropertyNativeType>
+CEGUI::Window* EditboxRepresentation<ValueType, PropertyNativeType>::getGuiRoot()
+{
+	return mLayout;
+}
 
 }
 
