@@ -47,31 +47,40 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	SliderRepresentation(ValueType& value):
-		SingleAdapterRepresentationBase<ValueType>(value)
-	{
-		mLayout = LayoutHelper::loadLayout("SliderRepresentation.layout", mPrefix);
-		
-		this->setAdapter(new GenericPropertyAdapter<ValueType, float>(value, CEGUI::WindowManager::getWindow(mPrefix + "Slider"), "CurrentValue", CEGUI::Slider::EventValueChanged);
-	}
+	SliderRepresentation(ValueType& value);
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~SliderRepresentation()
-	{
-		CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
-	}
+	virtual ~SliderRepresentation();
 	
-	virtual CEGUI::Window* getGuiRoot()
-	{
-		return mLayout;
-	}
+	virtual CEGUI::Window* getGuiRoot();
 	
 protected:
 	CEGUI::Window* mLayout;
 	CEGUI::String mPrefix;
 };
+
+template<typename ValueType>
+SliderRepresentation::SliderRepresentation(ValueType& value):
+	SingleAdapterRepresentationBase<ValueType>(value)
+{
+	mLayout = LayoutHelper::loadLayout("SliderRepresentation.layout", mPrefix);
+	
+	this->setAdapter(new GenericPropertyAdapter<ValueType, float>(value, CEGUI::WindowManager::getWindow(mPrefix + "Slider"), "CurrentValue", CEGUI::Slider::EventValueChanged);
+}
+
+template<typename ValueType>
+SliderRepresentation::~SliderRepresentation()
+{
+	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
+}
+
+template<typename ValueType>
+CEGUI::Window* SliderRepresentation::getGuiRoot()
+{
+	return mLayout;
+}
 
 }
 
