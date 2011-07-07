@@ -48,19 +48,12 @@ public:
 	 * 
 	 * @copydoc RepresentationBase::RepresentationBase
 	 */
-	SingleAdapterRepresentationBase(ValueType& value):
-		RepresentationBase<ValueType>(value),
-		
-		mAdapter(0)
-	{}
+	SingleAdapterRepresentationBase(ValueType& value);
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~SingleAdapterRepresentationBase()
-	{
-		delete mAdapter;
-	}
+	virtual ~SingleAdapterRepresentationBase();
 	
 protected:
 	AdapterBase<ValueType>* mAdapter;
@@ -71,20 +64,39 @@ protected:
 	 * @param adapter the single adapter we want to use (this class takes ownership of it and will delete it!)
 	 * @note You may only call this once in your inherited implementation (usually in the constructor)
 	 */
-	void setAdapter(AdapterBase<ValueType>* adapter)
-	{
-		assert(!mAdapter);
-		assert(adapter);
-		
-		mAdapter = adapter;
-		mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &SingleAdapterRepresentationBase::adapterValueChanged));
-	}
+	void setAdapter(AdapterBase<ValueType>* adapter);
 	
-	void adapterValueChanged()
-	{
-		this->mValue = mAdapter->getValue();
-	}
+	void adapterValueChanged();
 };
+
+template<typename ValueType>
+SingleAdapterRepresentationBase::SingleAdapterRepresentationBase(ValueType& value):
+	RepresentationBase<ValueType>(value),
+
+	mAdapter(0)
+{}
+
+template<typename ValueType>
+SingleAdapterRepresentationBase::~SingleAdapterRepresentationBase()
+{
+	delete mAdapter;
+}
+
+template<typename ValueType>
+void SingleAdapterRepresentationBase::setAdapter(AdapterBase<ValueType>* adapter)
+{
+	assert(!mAdapter);
+	assert(adapter);
+	
+	mAdapter = adapter;
+	mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &SingleAdapterRepresentationBase::adapterValueChanged));
+}
+
+template<typename ValueType>
+void SingleAdapterRepresentationBase::adapterValueChanged()
+{
+	this->mValue = mAdapter->getValue();
+}
 
 }
 
