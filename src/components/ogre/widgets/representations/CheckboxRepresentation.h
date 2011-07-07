@@ -1,5 +1,5 @@
 //
-// C++ Interface: EditboxRepresentation
+// C++ Interface: CheckboxRepresentation
 //
 // Description: 
 //
@@ -19,13 +19,14 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRE_GUI_REPRESENTATIONS_EDITBOXREPRESENTATION_H
-#define EMBEROGRE_GUI_REPRESENTATIONS_EDITBOXREPRESENTATION_H
+#ifndef EMBEROGRE_GUI_REPRESENTATIONS_CHECKBOXREPRESENTATION_H
+#define EMBEROGRE_GUI_REPRESENTATIONS_CHECKBOXREPRESENTATION_H
 
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
 #include "../adapters/ComboboxAdapter.h"
-#include <CEGUI/CEGUIWindowManager.h>
+#include <CEGUIWindowManager.h>
+#include <elements/CEGUICheckbox.h>
 
 namespace Ember {
 namespace OgreView {
@@ -35,12 +36,10 @@ namespace Gui {
 namespace Representations {
 
 /**
- * @brief represents given value by an editbox
- * 
- * @see GenericPropertyAdapter
+ * @brief represents given value by a checkbox (the underlying value has to be bool!)
  */
 template<typename ValueType>
-class EditboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
+class CheckboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
 {
 public:
 	/**
@@ -48,18 +47,18 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	EditboxRepresentation(ValueType& value):
+	CheckboxRepresentation(ValueType& value):
 		SingleAdapterRepresentationBase<ValueType>(value)
 	{
-		mLayout = LayoutHelper::loadLayout("EditboxRepresentation.layout", mPrefix);
+		mLayout = LayoutHelper::loadLayout("CheckboxRepresentation.layout", mPrefix);
 		
-		this->setAdapter(new ComboboxAdapter<ValueType>(value, CEGUI::WindowManager::getWindow(mPrefix + "String"));
+		this->setAdapter(new GenericPropertyAdapter<ValueType, bool>(value, CEGUI::WindowManager::getWindow(mPrefix + "Checkbox"), "Selected", CEGUI::Checkbox::EventCheckStateChanged);
 	}
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~EditboxRepresentation()
+	virtual ~CheckboxRepresentation()
 	{
 		CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
 	}

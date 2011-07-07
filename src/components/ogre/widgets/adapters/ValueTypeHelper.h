@@ -59,6 +59,24 @@ struct ValueTypeHelper<T, T>
 };
 
 template<>
+struct ValueTypeHelper<std::string, bool>
+{
+	static bool convert(const std::string& v)
+	{
+		return v == "True" || v == "true" || v == "t";
+	}
+};
+
+template<>
+struct ValueTypeHelper<bool, std::string>
+{
+	static std::string convert(bool v)
+	{
+		return v ? "true" : "false";
+	}
+};
+
+template<>
 struct ValueTypeHelper< ::Atlas::Message::Element, std::string>
 {
 	static std::string convert(const ::Atlas::Message::Element& v)

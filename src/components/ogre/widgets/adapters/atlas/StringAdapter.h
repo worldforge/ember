@@ -34,7 +34,7 @@ namespace Adapters {
 
 namespace Atlas {
 
-typedef ::Ember::OgreView::Gui::Adapters::ComboboxAdapter< ::Atlas::Message::Element> StringAdapter;
+typedef ::Ember::OgreView::Gui::Adapters::ComboboxAdapter< ::Atlas::Message::Element, std::string> StringAdapter;
 
 }
 
