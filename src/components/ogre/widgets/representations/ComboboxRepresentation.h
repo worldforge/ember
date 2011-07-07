@@ -49,31 +49,40 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	ComboboxRepresentation(ValueType& value):
-		SingleAdapterRepresentationBase<ValueType>(value)
-	{
-		mLayout = LayoutHelper::loadLayout("ComboboxRepresentation.layout", mPrefix);
-		
-		this->setAdapter(new ComboboxAdapter<ValueType, PropertyNativeType>(value, CEGUI::WindowManager::getWindow(mPrefix + "String"));
-	}
+	ComboboxRepresentation(ValueType& value);
 	
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~ComboboxRepresentation()
-	{
-		CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
-	}
+	virtual ~ComboboxRepresentation();
 	
-	virtual CEGUI::Window* getGuiRoot()
-	{
-		return mLayout;
-	}
+	virtual CEGUI::Window* getGuiRoot();
 	
 protected:
 	CEGUI::Window* mLayout;
 	CEGUI::String mPrefix;
 };
+
+template<typename ValueType, typename PropertyNativeType>
+ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(ValueType& value):
+	SingleAdapterRepresentationBase<ValueType>(value)
+{
+	mLayout = LayoutHelper::loadLayout("ComboboxRepresentation.layout", mPrefix);
+	
+	this->setAdapter(new ComboboxAdapter<ValueType, PropertyNativeType>(value, CEGUI::WindowManager::getWindow(mPrefix + "String"));
+}
+
+template<typename ValueType, typename PropertyNativeType>
+ComboboxRepresentation<ValueType, PropertyNativeType>::~ComboboxRepresentation()
+{
+	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
+}
+
+template<typename ValueType, typename PropertyNativeType>
+CEGUI::Window* ComboboxRepresentation<ValueType, PropertyNativeType>::getGuiRoot()
+{
+	return mLayout;
+}
 
 }
 
