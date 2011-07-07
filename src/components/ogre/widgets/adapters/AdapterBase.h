@@ -97,16 +97,8 @@ public:
 	class SelfUpdateContext
 	{
 	public:
-		SelfUpdateContext(AdapterBase& adapter):
-			mAdapter(adapter)
-		{
-			mAdapter._setSelfUpdate(true);
-		}
-		
-		~SelfUpdateContext()
-		{
-			mAdapter._setSelfUpdate(false);
-		}
+		SelfUpdateContext(AdapterBase& adapter);
+		~SelfUpdateContext();
 		
 	private:
 		AdapterBase& mAdapter;
@@ -118,31 +110,19 @@ public:
 	 * Creates a new adapter and intializes it with the supplied value.
 	 * @param element The original value.
 	 */
-	AdapterBase(const ValueType& value):
-		mOriginalValue(value),
-		mEditedValue(value),
-		mSelfUpdate(false),
-		mRemoved(false)
-	{}
+	AdapterBase(const ValueType& value);
 
 	/**
 	 * @brief Dtor
 	 */
-	virtual ~AdapterBase()
-	{
-		disconnectAllGuiEventConnections();
-	}
+	virtual ~AdapterBase();
 	
 	/**
 	 * @brief Sets the value, thus also updating the gui.
 	 * 
 	 * @param element The new value.
 	 */
-	void setValue(const ValueType& element)
-	{
-		updateGui(element);
-		EventValueChanged.emit();
-	}
+	void setValue(const ValueType& element);
 
 	/**
 	 * @brief Gets the current value as expressed by the gui.
@@ -152,11 +132,7 @@ public:
 	 * @see fillElementFromGui()
 	 * @return The current value.
 	 */
-	const ValueType& getValue()
-	{
-		fillElementFromGui();
-		return mEditedValue;
-	}
+	const ValueType& getValue();
 	
 	/**
 	 * @brief Returns the original value, as set when the adapter was created or when setValue() was called.
@@ -164,10 +140,7 @@ public:
 	 * @see setValue()
 	 * @return The original value
 	 */
-	const ValueType& getOriginalValue() const
-	{
-		return mOriginalValue;
-	}
+	const ValueType& getOriginalValue() const;
 	
 	/**
 	 * @brief Emitted when the value has been changed from a gui update. You can access the new value through getValue().
@@ -190,48 +163,21 @@ public:
 	 *
 	 * @return True if the value has changed.
 	 */
-	bool hasChanges()
-	{
-		if (mRemoved)
-		{
-			return true;
-		}
-		
-		try
-		{
-			return _hasChanges();
-		}
-		catch (const std::exception& ex)
-		{
-			S_LOG_WARNING("Error when checking for changes." << ex);
-			return false;
-		}
-	}
+	bool hasChanges();
 	
 	/**
 	 * @brief Returns the changed element, and an empty Element if the original element has been deleted.
 	 * 
 	 * @return 
 	 */
-	ValueType getChangedElement()
-	{
-		if (mRemoved)
-		{
-			return ValueType();
-		}
-		
-		return _getChangedElement();
-	}
+	ValueType getChangedElement();
 	
 	/**
 	 * @brief Deletes the element.
 	 * 
 	 * This will mark the element as deleted. This might not result in any actual deletion though, depending on what context you use the adapter in. Different adapters will also behave a little different.
 	 */
-	void remove()
-	{
-		mRemoved = true;
-	}
+	void remove();
 	
 	/**
 	 * @brief True if value has been deleted.
@@ -239,28 +185,19 @@ public:
 	 * @see remove()
 	 * @return True if value has been deleted.
 	 */
-	bool isRemoved() const
-	{
-		return mRemoved;
-	}
+	bool isRemoved() const;
 	
 	/**
 	 * @brief Adds a suggested value.
 	 * How to present this is up to the various adapters, but most would probably show the suggestion in a combobox.
 	 * @param suggestedValue The suggested value, as expressed in a string.
 	 */
-	virtual void addSuggestion(const std::string& suggestedValue)
-	{
-		// default implementation doesn't support suggestions
-	}
+	virtual void addSuggestion(const std::string& suggestedValue);
 	
 	/**
 	 * @brief Internal method, use SelfUpdateContext instead where possible!
 	 */
-	void _setSelfUpdate(bool selfUpdate)
-	{
-		mSelfUpdate = selfUpdate;
-	}
+	void _setSelfUpdate(bool selfUpdate);
 	
 protected:
 	/**
@@ -299,10 +236,7 @@ protected:
 	 * For some adapters this will be really straight forward, just checking the mOriginalElement and the mEditedElement, but for some others such as list or maps this will be a little more complex.
 	 * @return True if a change has occurred.
 	 */
-	virtual bool _hasChanges()
-	{
-		return this->mOriginalValue != this->getValue();
-	}
+	virtual bool _hasChanges();
 	
 	/**
 	 * @brief Get's the changed element.
@@ -312,10 +246,7 @@ protected:
 	 * @see getValue()
 	 * @return The changed value.
 	 */
-	virtual ValueType _getChangedElement()
-	{
-		return getValue();
-	}
+	virtual ValueType _getChangedElement();
 	
 	/**
 	 * @brief Adds a CEGUI event connection to the internal list, which all are disconnected when this instance is detroyed.
@@ -326,25 +257,14 @@ protected:
 	 * @endcode
 	 * @param connection The event connection. 
 	 */
-	void addGuiEventConnection(CEGUI::Event::Connection connection)
-	{
-		mGuiEventConnections.push_back(connection);
-	}
+	void addGuiEventConnection(CEGUI::Event::Connection connection);
 	
 	/**
 	 * @brief Disconnects all cegui event connections that were registered through addGuiEventConnection().
 	 * 
 	 * This method is called automatically when an instance of this is deleted, so you don't need to call this yourself unless you want to force a disconnection.
 	 */
-	void disconnectAllGuiEventConnections()
-	{
-		for (std::vector<CEGUI::Event::Connection>::iterator I = mGuiEventConnections.begin(); I != mGuiEventConnections.end(); ++I)
-		{
-			(*I)->disconnect();
-		}
-		
-		mGuiEventConnections.clear();
-	}
+	void disconnectAllGuiEventConnections();
 	
 private:
 	/**
@@ -362,6 +282,136 @@ struct AdapterWrapper
 	AdapterType* Adapter;
 	CEGUI::Window* ContainerWindow;
 };
+
+template<typename ValueType>
+AdapterBase<ValueType>::SelfUpdateContext::SelfUpdateContext(AdapterBase& adapter):
+	mAdapter(adapter)
+{
+	mAdapter._setSelfUpdate(true);
+}
+
+template<typename ValueType>
+AdapterBase<ValueType>::SelfUpdateContext::~SelfUpdateContext()
+{
+	mAdapter._setSelfUpdate(false);
+}
+
+template<typename ValueType>
+AdapterBase<ValueType>::AdapterBase(const ValueType& value):
+	mOriginalValue(value),
+	mEditedValue(value),
+	mSelfUpdate(false),
+	mRemoved(false)
+{}
+
+template<typename ValueType>
+AdapterBase<ValueType>::~AdapterBase()
+{
+	disconnectAllGuiEventConnections();
+}
+
+template<typename ValueType>
+void AdapterBase<ValueType>::setValue(const ValueType& element)
+{
+	updateGui(element);
+	EventValueChanged.emit();
+}
+
+template<typename ValueType>
+const ValueType& AdapterBase<ValueType>::getValue()
+{
+	fillElementFromGui();
+	return mEditedValue;
+}
+
+template<typename ValueType>
+const ValueType& AdapterBase<ValueType>::getOriginalValue() const
+{
+	return mOriginalValue;
+}
+
+template<typename ValueType>
+bool AdapterBase<ValueType>::hasChanges()
+{
+	if (mRemoved)
+	{
+		return true;
+	}
+	
+	try
+	{
+		return _hasChanges();
+	}
+	catch (const std::exception& ex)
+	{
+		S_LOG_WARNING("Error when checking for changes." << ex);
+		return false;
+	}
+}
+
+template<typename ValueType>
+ValueType AdapterBase<ValueType>::getChangedElement()
+{
+	if (mRemoved)
+	{
+		return ValueType();
+	}
+	
+	return _getChangedElement();
+}
+
+template<typename ValueType>
+void AdapterBase<ValueType>::remove()
+{
+	mRemoved = true;
+}
+
+template<typename ValueType>
+bool AdapterBase<ValueType>::isRemoved() const
+{
+	return mRemoved;
+}
+
+template<typename ValueType>
+void AdapterBase<ValueType>::addSuggestion(const std::string& suggestedValue)
+{
+	// default implementation doesn't support suggestions
+}
+
+template<typename ValueType>
+void AdapterBase<ValueType>::_setSelfUpdate(bool selfUpdate)
+{
+	mSelfUpdate = selfUpdate;
+}
+
+template<typename ValueType>
+bool AdapterBase<ValueType>::_hasChanges()
+{
+	return this->mOriginalValue != this->getValue();
+}
+
+template<typename ValueType>
+ValueType AdapterBase<ValueType>::_getChangedElement()
+{
+	return getValue();
+}
+
+template<typename ValueType>
+void AdapterBase<ValueType>::addGuiEventConnection(CEGUI::Event::Connection connection)
+{
+	mGuiEventConnections.push_back(connection);
+}
+
+template<typename ValueType>
+void AdapterBase<ValueType>::disconnectAllGuiEventConnections()
+{
+	for (std::vector<CEGUI::Event::Connection>::iterator I = mGuiEventConnections.begin(); I != mGuiEventConnections.end(); ++I)
+	{
+		(*I)->disconnect();
+	}
+	
+	mGuiEventConnections.clear();
+}
 
 }
 
