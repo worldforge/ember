@@ -14,10 +14,15 @@
 				<Property Name='Text' Value=''/>
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
-			<Window Type='EmberLook/StaticImage' Name='DollImage'>
+			<Window Type='DefaultGUISheet' Name='DollImageFrame'>
 				<Property Name='UnifiedPosition' Value='{{0.0,128},{0,0}}'/>
 				<Property Name='UnifiedSize' Value='{{1,-128},{1.0,0}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
+				<Window Type='DefaultGUISheet' Name='DollImage'>
+					<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+					<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+					<Property Name='InheritsAlpha' Value='True'/>
+				</Window>
 				<Window Type='EmberLook/StaticImage' Name='Doll/RightHand'>
 					<Property Name='UnifiedPosition' Value='{{0.10,0},{0.45,0}}'/>
 					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>

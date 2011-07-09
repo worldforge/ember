@@ -43,7 +43,7 @@ namespace Gui
 
 class EntityCEGUITexture;
 class CEGUIWindowUpdater;
-
+class EntityCEGUIWindow;
 /**
  Class used for rendering a single Ogre::MovableObject to a EntityCEGUITexture
 
@@ -228,7 +228,10 @@ protected:
 	 */
 	bool image_MouseWheel(const CEGUI::EventArgs& args);
 
+	SimpleRenderContext* getRenderContext() const;
+
 	EntityCEGUITexture* mTexture;
+	EntityCEGUIWindow* mWindow;
 	/**
 	 If true, the input will be caught when the user clicks on the image, allowing for rotation of the model.
 	 */

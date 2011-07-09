@@ -61,13 +61,13 @@ ModelRenderer::~ModelRenderer()
 
 void ModelRenderer::setModel(Model::Model* model)
 {
-	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
+	Ogre::SceneNode* node = getRenderContext()->getSceneNode();
 
 	node->detachAllObjects();
 	if (model) {
 		node->attachObject(model);
 		repositionSceneNode();
-		mTexture->getRenderContext()->repositionCamera();
+		getRenderContext()->repositionCamera();
 		if (mAutoShowFull) {
 			mModelReloadedConnection = mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRenderer::model_Reloaded));
 			showFull();
@@ -79,7 +79,7 @@ void ModelRenderer::setModel(Model::Model* model)
 void ModelRenderer::repositionSceneNode()
 {
 	if (mModel) {
-		Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
+		Ogre::SceneNode* node = getRenderContext()->getSceneNode();
 		if (node) {
 			node->setOrientation(Ogre::Quaternion::IDENTITY);
 			//rotate node to fit with WF space
@@ -114,7 +114,7 @@ void ModelRenderer::delayedUpdateRender()
 		showFull();
 	}
 	repositionSceneNode();
-	mTexture->getRenderContext()->repositionCamera();
+	getRenderContext()->repositionCamera();
 	updateRender();
 	mModelDelayedUpdateConnection.disconnect();
 }
@@ -134,17 +134,17 @@ void ModelRenderer::showModel(const std::string& modelName)
 		//delete mModel;
 	}
 	if (modelName != "") {
-		mModel = Model::Model::createModel(*mTexture->getRenderContext()->getSceneManager(), modelName);
+		mModel = Model::Model::createModel(*getRenderContext()->getSceneManager(), modelName);
 		if (mModel) {
 			//override the rendering distance from the model; we want to always show it in the preview
 			mModel->setRenderingDistance(0);
 			setModel(mModel);
 
-			mTexture->getRenderContext()->setActive(true);
+			getRenderContext()->setActive(true);
 		}
 	} else {
 		setModel(0);
-		mTexture->getRenderContext()->setActive(false);
+		getRenderContext()->setActive(false);
 	}
 }
 

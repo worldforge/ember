@@ -19,62 +19,65 @@
 				<Property Name='UnifiedAreaRect' Value='{{0.236621,0.0},{0.058209,0.0},{0.442871,0.0},{0.458209,0.0}}'/>
 				<Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 			</Window>
-			<Window Type='EmberLook/StaticImage' Name='Image'>
+			<Window Type='EmberLook/StaticImage' Name='ImageFrame'>
 				<Property Name='UnifiedAreaRect' Value='{{0.466594,0.0},{0.017910,0.0},{0.963231,0.0},{0.458210,0.0}}'/>
 				<Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-				<Window Type='EmberLook/Checkbox' Name='Image_ShowAxes'>
-					<Property Name='UnifiedSize' Value='{{0.00,20.0},{0.00,20.0}}'/>
-					<Property Name='UnifiedPosition' Value='{{1.00,-155.0},{1.00,-20.0}}'/>
-					<Property Name='Tooltip' Value='Toggle the display of the axes.'/>
-				</Window>
-				<Window Type='DefaultGUISheet' Name='Image_Orientation'>
-					<Property Name='UnifiedSize' Value='{{0.00,130.0},{0.00,75.0}}'/>
-					<Property Name='UnifiedPosition' Value='{{1.00,-135.0},{1.00,-80.0}}'/>
-					<Property Name='InheritsAlpha' Value='True'/>
-					<Window Type='EmberLook/Button' Name='YawLeft'>
-						<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.00,0.0},{0.00,25.0}}'/>
-						<Property Name='Text' Value='Left'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+				<Window Type='DefaultGUISheet' Name='Image'>
+					<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+					<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+					<Window Type='EmberLook/Checkbox' Name='Image_ShowAxes'>
+						<Property Name='UnifiedSize' Value='{{0.00,20.0},{0.00,20.0}}'/>
+						<Property Name='UnifiedPosition' Value='{{1.00,-155.0},{1.00,-20.0}}'/>
+						<Property Name='Tooltip' Value='Toggle the display of the axes.'/>
 					</Window>
-					<Window Type='EmberLook/Button' Name='YawRight'>
-						<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.0,50.0},{0.00,25.0}}'/>
-						<Property Name='Text' Value='Right'/>
+					<Window Type='DefaultGUISheet' Name='Image_Orientation'>
+						<Property Name='UnifiedSize' Value='{{0.00,130.0},{0.00,75.0}}'/>
+						<Property Name='UnifiedPosition' Value='{{1.00,-135.0},{1.00,-80.0}}'/>
 						<Property Name='InheritsAlpha' Value='True'/>
+						<Window Type='EmberLook/Button' Name='YawLeft'>
+							<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
+							<Property Name='UnifiedPosition' Value='{{0.00,0.0},{0.00,25.0}}'/>
+							<Property Name='Text' Value='Left'/>
+							<Property Name='InheritsAlpha' Value='True'/>
+						</Window>
+						<Window Type='EmberLook/Button' Name='YawRight'>
+							<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
+							<Property Name='UnifiedPosition' Value='{{0.0,50.0},{0.00,25.0}}'/>
+							<Property Name='Text' Value='Right'/>
+							<Property Name='InheritsAlpha' Value='True'/>
+						</Window>
+						<Window Type='EmberLook/Button' Name='PitchUp'>
+							<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
+							<Property Name='UnifiedPosition' Value='{{0.0,25.0},{0.00,0.0}}'/>
+							<Property Name='Text' Value='Up'/>
+							<Property Name='InheritsAlpha' Value='True'/>
+						</Window>
+						<Window Type='EmberLook/Button' Name='PitchDown'>
+							<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
+							<Property Name='UnifiedPosition' Value='{{0.0,25.0},{0.00,50.0}}'/>
+							<Property Name='Text' Value='Down'/>
+							<Property Name='InheritsAlpha' Value='True'/>
+						</Window>
+						<Window Type='EmberLook/Button' Name='RollLeft'>
+							<Property Name='UnifiedSize' Value='{{0.00,50.0},{0.00,25.0}}'/>
+							<Property Name='UnifiedPosition' Value='{{0.0,75.0},{0.00,0.0}}'/>
+							<Property Name='Text' Value='Roll left'/>
+							<Property Name='InheritsAlpha' Value='True'/>
+						</Window>
+						<Window Type='EmberLook/Button' Name='RollRight'>
+							<Property Name='UnifiedSize' Value='{{0.00,50.0},{0.00,25.0}}'/>
+							<Property Name='UnifiedPosition' Value='{{0.0,75.0},{0.00,50.0}}'/>
+							<Property Name='Text' Value='Roll right'/>
+							<Property Name='InheritsAlpha' Value='True'/>
+						</Window>
+					
+						<Window Type='EmberLook/Button' Name='ResetOrientation'>
+							<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
+							<Property Name='UnifiedPosition' Value='{{0.0,90.0},{0.00,25.0}}'/>
+							<Property Name='Text' Value='Reset'/>
+							<Property Name='InheritsAlpha' Value='True'/>
+						</Window>
 					</Window>
-					<Window Type='EmberLook/Button' Name='PitchUp'>
-						<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.0,25.0},{0.00,0.0}}'/>
-						<Property Name='Text' Value='Up'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-					<Window Type='EmberLook/Button' Name='PitchDown'>
-						<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.0,25.0},{0.00,50.0}}'/>
-						<Property Name='Text' Value='Down'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-					<Window Type='EmberLook/Button' Name='RollLeft'>
-						<Property Name='UnifiedSize' Value='{{0.00,50.0},{0.00,25.0}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.0,75.0},{0.00,0.0}}'/>
-						<Property Name='Text' Value='Roll left'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-					<Window Type='EmberLook/Button' Name='RollRight'>
-						<Property Name='UnifiedSize' Value='{{0.00,50.0},{0.00,25.0}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.0,75.0},{0.00,50.0}}'/>
-						<Property Name='Text' Value='Roll right'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-				
-					<Window Type='EmberLook/Button' Name='ResetOrientation'>
-						<Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.0,90.0},{0.00,25.0}}'/>
-						<Property Name='Text' Value='Reset'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-				
 				</Window>
 			</Window>
 			<Window Type='EmberLook/VerticalSlider' Name='Zoom'>
@@ -176,9 +179,13 @@
 					<Property Name='UnifiedSize' Value='{{0,150},{0,25}}'/>
 				</Window>
 				
-			<Window Type='EmberLook/StaticImage' Name='MeshPreviewImage'>
+				<Window Type='EmberLook/StaticImage' Name='MeshPreviewImageFrame'>
 					<Property Name='UnifiedAreaRect' Value='{{0.463087,0.0},{0.201645,0.0},{0.656145,0.0},{0.855863,0.0}}'/>
 					<Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
+					<Window Type='DefaultGUISheet' Name='MeshPreviewImage'>
+						<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+					</Window>
 				</Window>
 				<!--				<Window Type="EmberLook/VerticalSlider" Name="MeshPreviewZoom" >
 					<Property Name="Tooltip" Value="Drag the VerticalSlider to zoom." />

@@ -75,7 +75,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/adapters/atlas/PolygonAdapter.cpp widgets/adapters/atlas/Position2DAdapter.cpp widgets/adapters/atlas/PositionAdapter.cpp widgets/adapters/atlas/SizeAdapter.cpp \
 	widgets/adapters/atlas/StaticAdapter.cpp widgets/adapters/atlas/StringAdapter.cpp widgets/adapters/atlas/TerrainModAdapter.cpp \
 	widgets/adapters/eris/TypeTreeAdapter.cpp widgets/adapters/ogre/ResourceListAdapter.cpp widgets/TexturePair.cpp widgets/EntityTooltip.cpp \
-	widgets/EntityCreatorCreationInstance.cpp \
+	widgets/EntityCreatorCreationInstance.cpp widgets/EntityCEGUIWindow.cpp \
 \
 	Avatar.cpp \
 	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
@@ -166,7 +166,7 @@ noinst_HEADERS = \
 	widgets/adapters/atlas/Position2DAdapter.h widgets/adapters/atlas/PositionAdapter.h widgets/adapters/atlas/SizeAdapter.h widgets/adapters/atlas/StaticAdapter.h widgets/adapters/atlas/StringAdapter.h \
 	widgets/adapters/atlas/TerrainModAdapter.h \
 	widgets/adapters/eris/TypeTreeAdapter.h widgets/adapters/ogre/ResourceListAdapter.h widgets/TexturePair.h widgets/EntityTooltip.h \
-	widgets/EntityCreatorCreationInstance.h \
+	widgets/EntityCreatorCreationInstance.h widgets/EntityCEGUIWindow.h \
 \
 	Avatar.h MovementController.h \
 	AvatarLogger.h AvatarTerrainCursor.h \

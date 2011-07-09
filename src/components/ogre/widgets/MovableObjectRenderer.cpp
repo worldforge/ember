@@ -27,6 +27,7 @@
 #include "MovableObjectRenderer.h"
 
 #include "EntityCEGUITexture.h"
+#include "EntityCEGUIWindow.h"
 #include "../SimpleRenderContext.h"
 
 #include <elements/CEGUIGUISheet.h>
@@ -45,9 +46,12 @@
 #include <OgreRenderTargetListener.h>
 
 using namespace Ember;
-namespace Ember {
-namespace OgreView {
-namespace Gui {
+namespace Ember
+{
+namespace OgreView
+{
+namespace Gui
+{
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -55,12 +59,13 @@ namespace Gui {
  *
  * This class shouldn't be needed though as with CEGUI 0.7 there's a way to make CEGUI directly use an Ogre render texture.
  */
-class CEGUIWindowUpdater : public Ogre::RenderTargetListener
+class CEGUIWindowUpdater: public Ogre::RenderTargetListener
 {
 protected:
 	CEGUI::Window& mWindow;
 public:
-	CEGUIWindowUpdater(CEGUI::Window& window) : mWindow(window)
+	CEGUIWindowUpdater(CEGUI::Window& window) :
+			mWindow(window)
 	{
 	}
 
@@ -70,41 +75,53 @@ public:
 	}
 };
 
-MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
-: mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
+MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image) :
+		mWindow(0), mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
 {
-	int width = static_cast<int>(image->getPixelSize().d_width);
-	int height = static_cast<int>(image->getPixelSize().d_height);
-	if (width != 0 && height != 0) {
-		mTexture = new EntityCEGUITexture(image->getName().c_str(), width, height);
-		//most models are rotated away from the camera, so as a convenience we'll rotate the node
-		//mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
-
-		mImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(mTexture->getImage()));
-		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
+	mWindow = new EntityCEGUIWindow(*image);
+	if (mWindow->getRenderContext()) {
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
 		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseWheel, MovableObjectRenderer::image_MouseWheel);
-
-
 		// Register this as a frame listener
 		Ogre::Root::getSingleton().addFrameListener(this);
-		mWindowUpdater = new CEGUIWindowUpdater(*mImage);
-		mTexture->getRenderContext()->getRenderTexture()->addListener(mWindowUpdater);
+		mWindow->update();
 	} else {
-		throw Exception("Image dimension cannot be 0.");
+		delete mWindow;
+		mWindow = 0;
+
+		int width = static_cast<int>(image->getPixelSize().d_width);
+		int height = static_cast<int>(image->getPixelSize().d_height);
+		if (width != 0 && height != 0) {
+			mTexture = new EntityCEGUITexture(image->getName().c_str(), width, height);
+			//most models are rotated away from the camera, so as a convenience we'll rotate the node
+			//mWindow->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
+
+			mImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(mTexture->getImage()));
+			//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
+			BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
+			BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseWheel, MovableObjectRenderer::image_MouseWheel);
+
+			mWindowUpdater = new CEGUIWindowUpdater(*mImage);
+			getRenderContext()->getRenderTexture()->addListener(mWindowUpdater);
+
+			// Register this as a frame listener
+			//Ogre::Root::getSingleton().addFrameListener(this);
+		} else {
+			throw Exception("Image dimension cannot be 0.");
+		}
 	}
 }
 
-
 MovableObjectRenderer::~MovableObjectRenderer()
 {
-	if (mImage) {
+	if (mTexture && mImage) {
 		mImage->setProperty("Image", "");
 	}
 	if (mTexture && mWindowUpdater) {
-		mTexture->getRenderContext()->getRenderTexture()->removeListener(mWindowUpdater);
+		getRenderContext()->getRenderTexture()->removeListener(mWindowUpdater);
 	}
 
+	delete mWindow;
 	delete mTexture;
 	delete mWindowUpdater;
 	// Register this as a frame listener
@@ -116,10 +133,10 @@ bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& fre
 {
 	//rotate the modelnode
 	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-		mTexture->getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+		getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
 	} else {
-		mTexture->getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-		mTexture->getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+		getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+		getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
 	}
 	//we don't want to move the cursor
 	freezeMouse = true;
@@ -128,29 +145,28 @@ bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& fre
 
 Ogre::Quaternion MovableObjectRenderer::getEntityRotation()
 {
-	return mTexture->getRenderContext()->getEntityRotation();
+	return getRenderContext()->getEntityRotation();
 }
 
 void MovableObjectRenderer::resetCameraOrientation()
 {
-	mTexture->getRenderContext()->resetCameraOrientation();
+	getRenderContext()->resetCameraOrientation();
 }
 
 void MovableObjectRenderer::pitch(Ogre::Degree degrees)
 {
-	mTexture->getRenderContext()->pitch(degrees);
+	getRenderContext()->pitch(degrees);
 }
 
 void MovableObjectRenderer::yaw(Ogre::Degree degrees)
 {
-	mTexture->getRenderContext()->yaw(degrees);
+	getRenderContext()->yaw(degrees);
 }
 
 void MovableObjectRenderer::roll(Ogre::Degree degrees)
 {
-	mTexture->getRenderContext()->roll(degrees);
+	getRenderContext()->roll(degrees);
 }
-
 
 bool MovableObjectRenderer::injectMouseButtonUp(const Input::MouseButton& button)
 {
@@ -203,27 +219,27 @@ void MovableObjectRenderer::setAutoShowFull(bool showFull)
 void MovableObjectRenderer::showFull()
 {
 //	if (mModel) {
-		mTexture->getRenderContext()->showFull(getMovableObject());
+	getRenderContext()->showFull(getMovableObject());
 //	}
 }
 
 void MovableObjectRenderer::setCameraDistance(float distance)
 {
 
-	mTexture->getRenderContext()->setCameraDistance(mTexture->getRenderContext()->getDefaultCameraDistance() * distance);
-/*	Ogre::Vector3 position = mTexture->getDefaultCameraPosition();
-	position.z *= distance;
-	mTexture->getCamera()->setPosition(position);*/
+	getRenderContext()->setCameraDistance(getRenderContext()->getDefaultCameraDistance() * distance);
+	/*	Ogre::Vector3 position = mWindow->getDefaultCameraPosition();
+	 position.z *= distance;
+	 mWindow->getCamera()->setPosition(position);*/
 }
 
 float MovableObjectRenderer::getCameraDistance()
 {
-	return  mTexture->getRenderContext()->getCameraDistance();
+	return getRenderContext()->getCameraDistance();
 }
 
 float MovableObjectRenderer::getAbsoluteCameraDistance()
 {
-	return  mTexture->getRenderContext()->getAbsoluteCameraDistance();
+	return getRenderContext()->getAbsoluteCameraDistance();
 }
 
 void MovableObjectRenderer::catchInput()
@@ -240,9 +256,9 @@ bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)
 {
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 
-	if (mTexture) {
+	if (mWindow) {
 		if (mouseArgs.wheelChange != 0.0f) {
-			float distance = mTexture->getRenderContext()->getCameraDistance();
+			float distance = getRenderContext()->getCameraDistance();
 			distance += (mouseArgs.wheelChange * 0.1);
 			setCameraDistance(distance);
 		}
@@ -250,7 +266,6 @@ bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)
 
 	return true;
 }
-
 
 bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)
 {
@@ -268,7 +283,7 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 {
 //	S_LOG_VERBOSE(mImage->getName().c_str() << " visible: " << (mActive && mImage->isVisible()));
 	//if the window isn't shown, don't update the render texture
-	mTexture->getRenderContext()->setActive(mActive && mImage->isVisible());
+	getRenderContext()->setActive(mActive && mImage->isVisible());
 	if (mActive && mImage->isVisible()) {
 		updateRender();
 	}
@@ -278,9 +293,13 @@ bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 void MovableObjectRenderer::updateRender()
 {
 	try {
-		if (mTexture->getRenderContext()->getRenderTexture()) {
-			mTexture->getRenderContext()->getRenderTexture()->update();
+//		if (getRenderContext()->getRenderTexture()) {
+//			getRenderContext()->getRenderTexture()->update();
+//		}
+		if (mWindow) {
+			mWindow->update();
 		}
+//		mImage->render();
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when updating render for MovableObjectRenderer." << ex);
 	}
@@ -288,23 +307,23 @@ void MovableObjectRenderer::updateRender()
 
 void MovableObjectRenderer::setBackgroundColour(const Ogre::ColourValue& colour)
 {
-	mTexture->getRenderContext()->setBackgroundColour(colour);
+	getRenderContext()->setBackgroundColour(colour);
 }
 
 void MovableObjectRenderer::setBackgroundColour(float red, float green, float blue, float alpha)
 {
-	mTexture->getRenderContext()->setBackgroundColour(red, green, blue, alpha);
+	getRenderContext()->setBackgroundColour(red, green, blue, alpha);
 }
 
 void MovableObjectRenderer::showAxis()
 {
 	if (!mAxesNode) {
-		mAxesNode = mTexture->getRenderContext()->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+		mAxesNode = getRenderContext()->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 	}
 	if (!mAxisEntity) {
 		std::string name(mImage->getName().c_str());
 		try {
-			mAxisEntity = mTexture->getRenderContext()->getSceneManager()->createEntity(name + "_axes", "axes.mesh");
+			mAxisEntity = getRenderContext()->getSceneManager()->createEntity(name + "_axes", "axes.mesh");
 			if (mAxisEntity) {
 				try {
 					mAxesNode->attachObject(mAxisEntity);
@@ -328,12 +347,23 @@ void MovableObjectRenderer::hideAxis()
 
 SimpleRenderContext::CameraPositioningMode MovableObjectRenderer::getCameraPositionMode() const
 {
-	return mTexture->getRenderContext()->getCameraPositionMode();
+	return getRenderContext()->getCameraPositionMode();
 }
 
 void MovableObjectRenderer::setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode)
 {
-	mTexture->getRenderContext()->setCameraPositionMode(mode);
+	getRenderContext()->setCameraPositionMode(mode);
+}
+
+SimpleRenderContext* MovableObjectRenderer::getRenderContext() const
+{
+	if (mWindow) {
+		return mWindow->getRenderContext();
+	}
+	if (mTexture) {
+		return mTexture->getRenderContext();
+	}
+	return 0;
 }
 
 }

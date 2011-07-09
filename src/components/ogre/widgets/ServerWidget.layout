@@ -212,7 +212,7 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 						<Property Name='Visible' Value='false'/>
 					</Window>
-					<Window Type='EmberLook/StaticImage' Name='CreateCharacterPanel/Image'>
+					<Window Type='DefaultGUISheet' Name='CreateCharacterPanel/Image'>
 						<Property Name='UnifiedSize' Value='{{0,150},{0,250}}'/>
 						<Property Name='UnifiedPosition' Value='{{0,210},{0,5}}'/>
 						<!--<Property Name='ImageColours' Value='tl:99999999 tr:99999999 bl:99999999 br:99999999'/>-->

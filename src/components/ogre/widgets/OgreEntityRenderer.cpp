@@ -25,7 +25,7 @@
 #endif
 
 #include "OgreEntityRenderer.h"
-#include "EntityCEGUITexture.h"
+#include "EntityCEGUIWindow.h"
 #include "../SimpleRenderContext.h"
 
 #include <OgreSceneNode.h>
@@ -34,14 +34,17 @@
 #include <CEGUIImage.h>
 #include <elements/CEGUIGUISheet.h>
 
-namespace Ember {
-namespace OgreView {
-namespace Gui {
+namespace Ember
+{
+namespace OgreView
+{
+namespace Gui
+{
 
-OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) : MovableObjectRenderer(image), mEntity(0)
+OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
+		MovableObjectRenderer(image), mEntity(0)
 {
 }
-
 
 OgreEntityRenderer::~OgreEntityRenderer()
 {
@@ -55,19 +58,18 @@ Ogre::Entity* OgreEntityRenderer::getEntity()
 void OgreEntityRenderer::showEntity(const std::string& mesh)
 {
 	if (mEntity) {
-		mTexture->getRenderContext()->getSceneNode()->getCreator()->destroyEntity(mEntity);
+		getRenderContext()->getSceneNode()->getCreator()->destroyEntity(mEntity);
 	}
-	std::string meshName(mTexture->getImage()->getName().c_str());
+	std::string meshName(mWindow->getWindow().getName().c_str());
 	meshName += "_entity";
 	try {
-		mEntity =  mTexture->getRenderContext()->getSceneNode()->getCreator()->createEntity(meshName , mesh);
+		mEntity = getRenderContext()->getSceneNode()->getCreator()->createEntity(meshName, mesh);
 		setEntity(mEntity);
-		mTexture->getRenderContext()->setActive(true);
+		getRenderContext()->setActive(true);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating entity." << ex);
 	}
 }
-
 
 Ogre::MovableObject* OgreEntityRenderer::getMovableObject()
 {
@@ -76,11 +78,11 @@ Ogre::MovableObject* OgreEntityRenderer::getMovableObject()
 
 void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 {
-	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
+	Ogre::SceneNode* node = getRenderContext()->getSceneNode();
 
 	node->detachAllObjects();
 	node->attachObject(entity);
-	mTexture->getRenderContext()->repositionCamera();
+	getRenderContext()->repositionCamera();
 	if (mAutoShowFull) {
 		showFull();
 	}
