@@ -38,10 +38,6 @@ namespace OgreView {
 
 class SimpleRenderContext;
 
-namespace Model {
-	class Model;
-}
-
 namespace Gui {
 
 /**
@@ -51,7 +47,6 @@ Useful class for rendering a single scene node to a CEGUI texture.
 
 */
 class EntityCEGUITexture
-//  : public RenderTargetListener
 {
 public:
     
