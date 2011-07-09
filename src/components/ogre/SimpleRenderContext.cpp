@@ -40,15 +40,17 @@
 #include <OgreTextureManager.h>
 #include <OgreTexture.h>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-SimpleRenderContextResourceLoader::SimpleRenderContextResourceLoader(SimpleRenderContext& renderContext)
-: mRenderContext(renderContext)
+SimpleRenderContextResourceLoader::SimpleRenderContextResourceLoader(SimpleRenderContext& renderContext) :
+		mRenderContext(renderContext)
 {
 }
 
-void SimpleRenderContextResourceLoader::loadResource (Ogre::Resource *resource)
+void SimpleRenderContextResourceLoader::loadResource(Ogre::Resource *resource)
 {
 	if (resource->getLoadingState() == Ogre::Resource::LOADSTATE_UNLOADED) {
 		try {
@@ -59,21 +61,26 @@ void SimpleRenderContextResourceLoader::loadResource (Ogre::Resource *resource)
 	}
 }
 
-
-SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, int height)
-: mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER), mTextureOwned(true)
+SimpleRenderContext::SimpleRenderContext(const std::string& prefix, int width, int height) :
+		mMainLight(0), mSceneManager(0), mWidth(width), mHeight(height), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER), mTextureOwned(true)
 {
 
 	setupScene(prefix);
 	createImage(prefix);
 }
 
-SimpleRenderContext::SimpleRenderContext(const std::string& prefix, Ogre::TexturePtr texture)
-: mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mTextureOwned(false)
+SimpleRenderContext::SimpleRenderContext(const std::string& prefix, Ogre::TexturePtr texture) :
+		mMainLight(0), mSceneManager(0), mWidth(texture->getWidth()), mHeight(texture->getHeight()), mRenderTexture(0), mCameraNode(0), mCameraPitchNode(0), mEntityNode(0), mRootNode(0), mCamera(0), mViewPort(0), mResourceLoader(*this), mBackgroundColour(Ogre::ColourValue::Black), mCameraPositionMode(CPM_OBJECTCENTER), mTextureOwned(false)
 {
 
 	setupScene(prefix);
 	setTexture(texture);
+
+	Ogre::Real aspectRatio = static_cast<float>(texture->getWidth()) / static_cast<float>(texture->getHeight());
+
+	S_LOG_VERBOSE("Setting aspect ratio of camera to " << aspectRatio);
+	mCamera->setAspectRatio(aspectRatio);
+
 }
 
 SimpleRenderContext::~SimpleRenderContext()
@@ -97,14 +104,13 @@ SimpleRenderContext::~SimpleRenderContext()
 
 void SimpleRenderContext::setupScene(const std::string& prefix)
 {
-	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix  << " with w:" << mWidth << " h:" << mHeight);
+	S_LOG_VERBOSE("Creating new SimpleRenderContext for prefix " << prefix << " with w:" << mWidth << " h:" << mHeight);
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, prefix + "_sceneManager");
 	//One might wonder why we're not setting the fog to FOG_NONE. The reason is that it seems that due to a bug in either Ogre or OpenGL when doing that, none of the other fog values would be set. Since we use shaders and in the shaders look for the alpha value of the fog colour to determine whether fog is enabled or not, we need to make sure that the fog colour indeed is set.
-	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f);
+	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0, 0, 0, 0), 0.0f, 0.0f, 0.0f);
 // 	mSceneManager->setFog(Ogre::FOG_NONE, Ogre::ColourValue(1,1,1,1), 0.0f, 10000000.0f, 100000001.0f);
 
 	mRootNode = mSceneManager->getRootSceneNode();
-
 
 	mEntityNode = mRootNode->createChildSceneNode();
 
@@ -117,11 +123,11 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 	//setVisible(false);
 	Ogre::ColourValue colour(0.5, 0.5, 0.5);
 	mMainLight = mSceneManager->createLight("MainLight");
-  	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
-	mMainLight->setDirection(Ogre::Vector3(-1,0,0));
-	mMainLight->setPowerScale (10);	// REALLY bright.
-	mMainLight->setDiffuseColour (colour);
-	mMainLight->setSpecularColour (colour);
+	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
+	mMainLight->setDirection(Ogre::Vector3(-1, 0, 0));
+	mMainLight->setPowerScale(10); // REALLY bright.
+	mMainLight->setDiffuseColour(colour);
+	mMainLight->setSpecularColour(colour);
 	mMainLight->setVisible(true);
 
 	mSceneManager->setAmbientLight(colour);
@@ -129,7 +135,6 @@ void SimpleRenderContext::setupScene(const std::string& prefix)
 
 	resetCameraOrientation();
 }
-
 
 Ogre::SceneNode* SimpleRenderContext::getSceneNode() const
 {
@@ -155,7 +160,7 @@ void SimpleRenderContext::repositionCamera()
 	if (mCameraPositionMode == CPM_OBJECTCENTER) {
 		if (!bbox.isInfinite() && !bbox.isNull()) {
 			Ogre::Vector3 center = bbox.getCenter();
-			Ogre::Vector3 localCenter =  center - mRootNode->getPosition();
+			Ogre::Vector3 localCenter = center - mRootNode->getPosition();
 			mCameraNode->setPosition(localCenter);
 		}
 	} else if (mCameraPositionMode == CPM_WORLDCENTER) {
@@ -184,7 +189,6 @@ void SimpleRenderContext::roll(Ogre::Degree degrees)
 	mCameraNode->roll(degrees);
 }
 
-
 float SimpleRenderContext::getCameraDistance() const
 {
 	if (mDefaultCameraDistance) {
@@ -204,7 +208,7 @@ void SimpleRenderContext::setCameraDistance(Ogre::Real distance)
 		}
 		mCamera->setFarClipDistance((Ogre::Math::Abs(distance) + mDefaultCameraDistance));
 	}
-	Ogre::Vector3 pos(0,0,distance);
+	Ogre::Vector3 pos(0, 0, distance);
 	mCamera->setPosition(pos);
 }
 
@@ -246,7 +250,6 @@ Ogre::Viewport* SimpleRenderContext::getViewport() const
 	return mViewPort;
 }
 
-
 void SimpleRenderContext::createImage(const std::string& prefix)
 {
 
@@ -265,7 +268,7 @@ void SimpleRenderContext::createImage(const std::string& prefix)
 
 	//first, create a RenderTexture to which the Ogre renderer should render the image
 	S_LOG_VERBOSE("Creating new rendertexture " << (prefix + "_SimpleRenderContextRenderTexture") << " with w:" << mWidth << " h:" << mHeight);
-	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8,Ogre::TU_RENDERTARGET, &mResourceLoader);
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual(prefix + "_SimpleRenderContextRenderTexture", "Gui", Ogre::TEX_TYPE_2D, mWidth, mHeight, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET, &mResourceLoader);
 	if (texture.isNull()) {
 		S_LOG_WARNING("Could not create a texture.");
 		return;
@@ -295,7 +298,7 @@ void SimpleRenderContext::setTexture(Ogre::TexturePtr texture)
 		//make sure the camera renders into this new texture
 		//this should preferrably be a transparent background, so that CEGUI could itself decide what to show behind it, but alas I couldn't get it to work, thus black
 		mViewPort->setBackgroundColour(mBackgroundColour);
-	//	mViewPort->setBackgroundColour(Ogre::ColourValue::ZERO);
+		//	mViewPort->setBackgroundColour(Ogre::ColourValue::ZERO);
 		//don't show the CEGUI
 		mViewPort->setOverlaysEnabled(false);
 		//the cegui renderer wants a TexturePtr (not a RenderTexturePtr), so we just ask the texturemanager for texture we just created (rttex)
@@ -328,8 +331,6 @@ void SimpleRenderContext::setBackgroundColour(float red, float green, float blue
 	}
 }
 
-
-
 void SimpleRenderContext::showFull(const Ogre::MovableObject* object)
 {
 	//only do this if there's an active object
@@ -359,7 +360,6 @@ Ogre::Light* SimpleRenderContext::getLight()
 {
 	return mMainLight;
 }
-
 
 }
 }
