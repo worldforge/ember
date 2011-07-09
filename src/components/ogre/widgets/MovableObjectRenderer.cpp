@@ -90,6 +90,9 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 		Ogre::Root::getSingleton().addFrameListener(this);
 		mWindowUpdater = new CEGUIWindowUpdater(*mImage);
 		mTexture->getRenderContext()->getRenderTexture()->addListener(mWindowUpdater);
+
+		//Render a blank scene to start with, else we'll get uninitialized buffer garbage shown.
+		mTexture->getRenderContext()->getRenderTexture()->update();
 	} else {
 		throw Exception("Image dimension cannot be 0.");
 	}
