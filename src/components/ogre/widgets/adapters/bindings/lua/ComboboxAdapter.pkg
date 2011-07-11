@@ -28,7 +28,7 @@ namespace OgreView {
 namespace Gui {
 
 namespace Adapters {
-
+/*
 class ComboboxAdapter : public GenericPropertyAdapter<ValueType, PropertyNativeType>
 {
 	TOLUA_TEMPLATE_BIND(ValueType PropertyNativeType, Atlas::Message::Element std::string)
@@ -37,7 +37,7 @@ public:
 	ComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
 	virtual ~ComboboxAdapter();
 };
-
+*/
 }
 
 }
