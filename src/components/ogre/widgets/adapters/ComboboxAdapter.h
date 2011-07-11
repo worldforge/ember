@@ -39,7 +39,7 @@ namespace Adapters {
  * @brief bridges a string to a CEGUI combobox (and combobox only!)
  */
 template<typename ValueType, typename PropertyNativeType>
-class ComboboxAdapter : public GenericPropertyAdapter<ValueType, std::string>
+class ComboboxAdapter : public GenericPropertyAdapter<ValueType, PropertyNativeType>
 {
 public:
 	/**
