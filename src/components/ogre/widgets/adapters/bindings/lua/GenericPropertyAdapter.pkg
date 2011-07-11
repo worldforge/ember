@@ -22,7 +22,6 @@
 //
 
 $#include "../../GenericPropertyAdapter.h"
-$#include <string>
 
 namespace Ember {
 namespace OgreView {
