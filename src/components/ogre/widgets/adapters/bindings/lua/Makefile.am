@@ -9,7 +9,7 @@ noinst_LIBRARIES = liblua_Adapters.a
 liblua_Adapters_a_SOURCES = Adapters.cxx
 
 CLEANFILES = Adapters.cxx
-TOLUA_PKGS = ComboboxAdapter.pkg GenericPropertyAdapter.pkg
+TOLUA_PKGS = AdapterBase.pkg Adapters.pkg ComboboxAdapter.pkg GenericPropertyAdapter.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 Adapters.cxx: $(TOLUA_PKGS)
 
