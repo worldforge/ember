@@ -1,1 +1,1 @@
-SUBDIRS = atlas
+SUBDIRS = atlas bindings

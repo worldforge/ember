@@ -1,5 +1,5 @@
 //
-// C++ Interface: StringAdapter
+// C++ Interface: ComboboxAdapter
 //
 // Description: 
 //
@@ -25,6 +25,7 @@
 
 #include "GenericPropertyAdapter.h"
 #include <elements/CEGUICombobox.h>
+#include <elements/CEGUIPushButton.h>
 #include "../ColouredListItem.h"
 
 namespace Ember {

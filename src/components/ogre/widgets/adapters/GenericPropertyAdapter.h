@@ -1,5 +1,5 @@
 //
-// C++ Interface: StringAdapter
+// C++ Interface: GenericPropertyAdapter
 //
 // Description: 
 //

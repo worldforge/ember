@@ -1,0 +1,140 @@
+//
+// C++ Interface: AdapterBase
+//
+// Description: 
+//
+// Author: Martin Preisler <preisler.m@gmail.com>, (C) 2011
+// based on Atlas adapters by Erik Hjortsberg <erik.hjortsberg@gmail.com>, (C) 2007
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
+//
+$#include "../../AdapterBase.h"
+$#include <string>
+
+namespace Ember {
+namespace OgreView {
+
+namespace Gui {
+
+namespace Adapters {
+
+class AdapterBase
+{
+	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
+
+public:
+	/**
+	 * @brief Ctor
+	 *
+	 * Creates a new adapter and intializes it with the supplied value.
+	 * @param element The original value.
+	 */
+	AdapterBase(const ValueType& value);
+
+	/**
+	 * @brief Dtor
+	 */
+	virtual ~AdapterBase();
+	
+	/**
+	 * @brief Sets the value, thus also updating the gui.
+	 * 
+	 * @param element The new value.
+	 */
+	void setValue(const ValueType& element);
+
+	/**
+	 * @brief Gets the current value as expressed by the gui.
+	 * 
+	 * If you've updated the value in the gui, for example by changing text in an editbox, this will return the text as expressed in an Element.
+	 * The actual translation from the gui to an Element will be carried out by fillElementFromGui().
+	 * @see fillElementFromGui()
+	 * @return The current value.
+	 */
+	const ValueType& getValue();
+	
+	/**
+	 * @brief Returns the original value, as set when the adapter was created or when setValue() was called.
+	 * 
+	 * @see setValue()
+	 * @return The original value
+	 */
+	const ValueType& getOriginalValue() const;
+	
+	/**
+	 * @brief Emitted when the value has been changed from a gui update. You can access the new value through getValue().
+	 * 
+	 * @see getValue()
+	 */
+	sigc::signal<void> EventValueChanged;
+	
+	/**
+	 * @brief Updates the gui with new values, without triggering EventValueChanged.
+	 * 
+	 * This is simialiar to setValue(), but won't trigger EventValueChanged. Use this when you want to update the gui, but not trigger any recursive update which might happen when you have other functions listening to EventValueChanged.
+	 * @see setValue()
+	 * @param element The new value.
+	 */
+	virtual void updateGui(const ValueType& element) = 0;
+	
+	/**
+	 * @brief Returns true if the value has been changed through changes in the gui.
+	 *
+	 * @return True if the value has changed.
+	 */
+	bool hasChanges();
+	
+	/**
+	 * @brief Returns the changed element, and an empty Element if the original element has been deleted.
+	 * 
+	 * @return 
+	 */
+	ValueType getChangedElement();
+	
+	/**
+	 * @brief Deletes the element.
+	 * 
+	 * This will mark the element as deleted. This might not result in any actual deletion though, depending on what context you use the adapter in. Different adapters will also behave a little different.
+	 */
+	void remove();
+	
+	/**
+	 * @brief True if value has been deleted.
+	 * 
+	 * @see remove()
+	 * @return True if value has been deleted.
+	 */
+	bool isRemoved() const;
+	
+	/**
+	 * @brief Adds a suggested value.
+	 * How to present this is up to the various adapters, but most would probably show the suggestion in a combobox.
+	 * @param suggestedValue The suggested value, as expressed in a string.
+	 */
+	virtual void addSuggestion(const std::string& suggestedValue);
+	
+	/**
+	 * @brief Internal method, use SelfUpdateContext instead where possible!
+	 */
+	void _setSelfUpdate(bool selfUpdate);
+};
+
+}
+
+}
+
+}
+
+}
