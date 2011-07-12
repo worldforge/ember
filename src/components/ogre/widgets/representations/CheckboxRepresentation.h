@@ -24,7 +24,7 @@
 
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
-#include "../adapters/ComboboxAdapter.h"
+#include "../adapters/GenericPropertyAdapter.h"
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUICheckbox.h>
 
@@ -67,7 +67,7 @@ CheckboxRepresentation<ValueType>::CheckboxRepresentation(ValueType& value):
 {
 	mLayout = LayoutHelper::loadLayout("CheckboxRepresentation.layout", mPrefix);
 	
-	this->setAdapter(new GenericPropertyAdapter<ValueType, bool>(value, CEGUI::WindowManager::getWindow(mPrefix + "Checkbox"), "Selected", CEGUI::Checkbox::EventCheckStateChanged);
+	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, bool>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Checkbox"), "Selected", CEGUI::Checkbox::EventCheckStateChanged));
 }
 
 template<typename ValueType>

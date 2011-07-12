@@ -65,12 +65,12 @@ protected:
 };
 
 template<typename ValueType>
-RepresentationBase::RepresentationBase(ValueType& value):
+RepresentationBase<ValueType>::RepresentationBase(ValueType& value):
 	mValue(value)
 {}
 
 template<typename ValueType>
-RepresentationBase::~RepresentationBase()
+RepresentationBase<ValueType>::~RepresentationBase()
 {}
 
 }

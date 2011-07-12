@@ -23,13 +23,14 @@
 #define EMBEROGRE_GUI_REPRESENTATIONS_SINGLEADAPTERREPRESENTATIONBASE_H
 
 #include "RepresentationBase.h"
+#include "../adapters/AdapterBase.h"
 
 namespace Ember {
 namespace OgreView {
 
 namespace Gui {
 
-namespace Adapters {
+namespace Representations {
 
 /**
  * @brief a representation using just one adapter
@@ -56,7 +57,7 @@ public:
 	virtual ~SingleAdapterRepresentationBase();
 	
 protected:
-	AdapterBase<ValueType>* mAdapter;
+	Adapters::AdapterBase<ValueType>* mAdapter;
 	
 	/**
 	 * @brief sets the single adapter to use in this representation
@@ -64,26 +65,26 @@ protected:
 	 * @param adapter the single adapter we want to use (this class takes ownership of it and will delete it!)
 	 * @note You may only call this once in your inherited implementation (usually in the constructor)
 	 */
-	void setAdapter(AdapterBase<ValueType>* adapter);
+	void setAdapter(Adapters::AdapterBase<ValueType>* adapter);
 	
 	void adapterValueChanged();
 };
 
 template<typename ValueType>
-SingleAdapterRepresentationBase::SingleAdapterRepresentationBase(ValueType& value):
+SingleAdapterRepresentationBase<ValueType>::SingleAdapterRepresentationBase(ValueType& value):
 	RepresentationBase<ValueType>(value),
 
 	mAdapter(0)
 {}
 
 template<typename ValueType>
-SingleAdapterRepresentationBase::~SingleAdapterRepresentationBase()
+SingleAdapterRepresentationBase<ValueType>::~SingleAdapterRepresentationBase()
 {
 	delete mAdapter;
 }
 
 template<typename ValueType>
-void SingleAdapterRepresentationBase::setAdapter(AdapterBase<ValueType>* adapter)
+void SingleAdapterRepresentationBase<ValueType>::setAdapter(Adapters::AdapterBase<ValueType>* adapter)
 {
 	assert(!mAdapter);
 	assert(adapter);
@@ -93,7 +94,7 @@ void SingleAdapterRepresentationBase::setAdapter(AdapterBase<ValueType>* adapter
 }
 
 template<typename ValueType>
-void SingleAdapterRepresentationBase::adapterValueChanged()
+void SingleAdapterRepresentationBase<ValueType>::adapterValueChanged()
 {
 	this->mValue = mAdapter->getValue();
 }

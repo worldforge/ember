@@ -24,7 +24,7 @@
 
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
-#include "../adapters/ComboboxAdapter.h"
+#include "../adapters/GenericPropertyAdapter.h"
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUISlider.h>
 
@@ -62,22 +62,22 @@ protected:
 };
 
 template<typename ValueType>
-SliderRepresentation::SliderRepresentation(ValueType& value):
+SliderRepresentation<ValueType>::SliderRepresentation(ValueType& value):
 	SingleAdapterRepresentationBase<ValueType>(value)
 {
 	mLayout = LayoutHelper::loadLayout("SliderRepresentation.layout", mPrefix);
 	
-	this->setAdapter(new GenericPropertyAdapter<ValueType, float>(value, CEGUI::WindowManager::getWindow(mPrefix + "Slider"), "CurrentValue", CEGUI::Slider::EventValueChanged);
+	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, float>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Slider"), "CurrentValue", CEGUI::Slider::EventValueChanged));
 }
 
 template<typename ValueType>
-SliderRepresentation::~SliderRepresentation()
+SliderRepresentation<ValueType>::~SliderRepresentation()
 {
 	CEGUI::WindowManager::getSingleton().destroyWindow(mLayout);
 }
 
 template<typename ValueType>
-CEGUI::Window* SliderRepresentation::getGuiRoot()
+CEGUI::Window* SliderRepresentation<ValueType>::getGuiRoot()
 {
 	return mLayout;
 }
