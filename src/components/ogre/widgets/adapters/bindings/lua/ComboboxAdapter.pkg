@@ -39,7 +39,7 @@ public:
 	virtual ~StringComboboxAdapter();
 };
 
-$renaming StringComboboxAdapter<Atlas::Message::Element> @ AtlasStringComboboxAdapter
+$renaming ^StringComboboxAdapter<Atlas::Message::Element> @ AtlasStringComboboxAdapter
 
 class IntComboboxAdapter : public AdapterBase<ValueType>
 {
@@ -50,7 +50,7 @@ public:
 	virtual ~IntComboboxAdapter();
 };
 
-$renaming IntComboboxAdapter<Atlas::Message::Element> @ AtlasIntComboboxAdapter
+$renaming ^IntComboboxAdapter<Atlas::Message::Element> @ AtlasIntComboboxAdapter
 
 class FloatComboboxAdapter : public AdapterBase<ValueType>
 {
@@ -61,7 +61,7 @@ public:
 	virtual ~FloatComboboxAdapter();
 };
 
-$renaming FloatComboboxAdapter<Atlas::Message::Element> @ AtlasFloatComboboxAdapter
+$renaming ^FloatComboboxAdapter<Atlas::Message::Element> @ AtlasFloatComboboxAdapter
 
 }
 

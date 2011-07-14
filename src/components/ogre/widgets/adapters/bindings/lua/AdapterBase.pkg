@@ -131,7 +131,7 @@ public:
 	void _setSelfUpdate(bool selfUpdate);
 };
 
-$renaming AdapterBase<Atlas::Message::Element> @ AtlasAdapterBase
+$renaming ^AdapterBase<Atlas::Message::Element> @ AtlasAdapterBase
 
 }
 

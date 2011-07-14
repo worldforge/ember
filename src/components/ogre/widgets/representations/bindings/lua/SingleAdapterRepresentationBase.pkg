@@ -43,8 +43,7 @@ public:
 	virtual void resetToOriginal() = 0;
 };
 
-// there is no need for this because it's already renamed as part of the RepresentationBase rename (it's a regex)
-//$renaming SingleAdapterRepresentationBase<Atlas::Message::Element> @ AtlasSingleAdapterRepresentationBase
+$renaming ^SingleAdapterRepresentationBase<Atlas::Message::Element> @ AtlasSingleAdapterRepresentationBase
 
 }
 

@@ -92,7 +92,7 @@ public:
 	virtual void addSuggestion(const std::string& suggestion) = 0;
 };
 
-$renaming RepresentationBase<Atlas::Message::Element> @ AtlasRepresentationBase
+$renaming ^RepresentationBase<Atlas::Message::Element> @ AtlasRepresentationBase
 
 }
 
