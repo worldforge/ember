@@ -15,10 +15,8 @@ namespace Gui {
 
 namespace Adapters {
 
-typedef std::string LuaString;
-	
 template <typename ValueType>
-class StringComboboxAdapter : public ComboboxAdapter<ValueType, LuaString>
+class StringComboboxAdapter : public ComboboxAdapter<ValueType, std::string>
 {
 public:
 	StringComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
@@ -26,7 +24,7 @@ public:
 };
 
 template <typename ValueType>
-inline StringComboboxAdapter<ValueType>::StringComboboxAdapter(const ValueType& value, CEGUI::Window* widget) : ComboboxAdapter<ValueType, LuaString>(value, widget)
+inline StringComboboxAdapter<ValueType>::StringComboboxAdapter(const ValueType& value, CEGUI::Window* widget) : ComboboxAdapter<ValueType, std::string>(value, widget)
 {}
 
 template <typename ValueType>
