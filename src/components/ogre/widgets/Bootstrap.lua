@@ -132,4 +132,4 @@ loadScript("ServerLogger.lua")
 loadScript("TypeManager.lua")
 loadScript("TerrainEditor.lua")
 loadScript("IngameMerchantWidget.lua")
-
+loadScript("Settings.lua")
