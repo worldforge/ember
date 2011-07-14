@@ -28,7 +28,7 @@ namespace OgreView {
 namespace Gui {
 
 namespace Representations {
-/*
+
 class SingleAdapterRepresentationBase : public RepresentationBase<ValueType>
 {
 	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
@@ -37,8 +37,15 @@ public:
 	SingleAdapterRepresentationBase(ValueType& value);
 
 	virtual ~SingleAdapterRepresentationBase();
+	
+	// we have to add at least one pure virtual method, otherwise tolua++ fails
+	// to recognize this as a virtual base class and will try to instantiate it!
+	virtual void resetToOriginal() = 0;
 };
-*/
+
+// there is no need for this because it's already renamed as part of the RepresentationBase rename (it's a regex)
+//$renaming SingleAdapterRepresentationBase<Atlas::Message::Element> @ AtlasSingleAdapterRepresentationBase
+
 }
 
 }
