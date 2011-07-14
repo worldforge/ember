@@ -6,7 +6,7 @@ SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
 noinst_LIBRARIES = liblua_Adapters.a
-liblua_Adapters_a_SOURCES = Adapters.cxx
+liblua_Adapters_a_SOURCES = Adapters.cxx LuaAdapters.h
 
 CLEANFILES = Adapters.cxx
 TOLUA_PKGS = AdapterBase.pkg Adapters.pkg ComboboxAdapter.pkg GenericPropertyAdapter.pkg

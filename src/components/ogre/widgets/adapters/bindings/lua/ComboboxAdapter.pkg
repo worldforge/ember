@@ -21,6 +21,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 $#include "../../ComboboxAdapter.h"
+$#include "LuaAdapters.h"
 
 namespace Ember {
 namespace OgreView {
@@ -28,16 +29,16 @@ namespace OgreView {
 namespace Gui {
 
 namespace Adapters {
-/*
-class ComboboxAdapter : public GenericPropertyAdapter<ValueType, PropertyNativeType>
+
+class StringComboboxAdapter : public AdapterBase<ValueType>
 {
-	TOLUA_TEMPLATE_BIND(ValueType PropertyNativeType, Atlas::Message::Element std::string)
+	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
 
 public:
-	ComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
-	virtual ~ComboboxAdapter();
+	StringComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
+	virtual ~StringComboboxAdapter();
 };
-*/
+
 }
 
 }
