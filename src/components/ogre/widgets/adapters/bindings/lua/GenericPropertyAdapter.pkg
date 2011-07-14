@@ -41,6 +41,8 @@ public:
 	virtual void updateGui(const ValueType& element);
 };
 
+$renaming GenericPropertyAdapter<Atlas::Message::Element,std::string> @ AtlasStringGenericPropertyAdapter
+
 }
 
 }
