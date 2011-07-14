@@ -56,6 +56,18 @@ public:
 	 */
 	virtual ~SingleAdapterRepresentationBase();
 	
+	virtual void resetToOriginal();
+	
+	virtual const ValueType& getEditedValue() const;
+	
+	virtual const ValueType& getOriginalValue() const;
+	
+	virtual bool hasChanges() const;
+	
+	virtual bool isRemoved() const;
+	
+	virtual void addSuggestion(const std::string& suggestion);
+	
 protected:
 	Adapters::AdapterBase<ValueType>* mAdapter;
 	
@@ -84,6 +96,42 @@ SingleAdapterRepresentationBase<ValueType>::~SingleAdapterRepresentationBase()
 }
 
 template<typename ValueType>
+void SingleAdapterRepresentationBase<ValueType>::resetToOriginal()
+{
+	mAdapter->setValue(getOriginalValue());
+}
+
+template<typename ValueType>
+const ValueType& SingleAdapterRepresentationBase<ValueType>::getEditedValue() const
+{
+	return mAdapter->getValue();
+}
+
+template<typename ValueType>
+const ValueType& SingleAdapterRepresentationBase<ValueType>::getOriginalValue() const
+{
+	return mAdapter->getOriginalValue();
+}
+
+template<typename ValueType>
+bool SingleAdapterRepresentationBase<ValueType>::hasChanges() const
+{
+	return mAdapter->hasChanges();
+}
+
+template<typename ValueType>
+bool SingleAdapterRepresentationBase<ValueType>::isRemoved() const
+{
+	return mAdapter->isRemoved();
+}
+
+template<typename ValueType>
+void SingleAdapterRepresentationBase<ValueType>::addSuggestion(const std::string& suggestion)
+{
+	mAdapter->addSuggestion(suggestion);
+}
+
+template<typename ValueType>
 void SingleAdapterRepresentationBase<ValueType>::setAdapter(Adapters::AdapterBase<ValueType>* adapter)
 {
 	assert(!mAdapter);
@@ -95,9 +143,7 @@ void SingleAdapterRepresentationBase<ValueType>::setAdapter(Adapters::AdapterBas
 
 template<typename ValueType>
 void SingleAdapterRepresentationBase<ValueType>::adapterValueChanged()
-{
-	this->mValue = mAdapter->getValue();
-}
+{}
 
 }
 
