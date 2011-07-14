@@ -39,6 +39,8 @@ public:
 	virtual ~StringComboboxAdapter();
 };
 
+$renaming StringComboboxAdapter<Atlas::Message::Element> @ AtlasStringComboboxAdapter
+
 class IntComboboxAdapter : public AdapterBase<ValueType>
 {
 	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
@@ -48,6 +50,8 @@ public:
 	virtual ~IntComboboxAdapter();
 };
 
+$renaming IntComboboxAdapter<Atlas::Message::Element> @ AtlasIntComboboxAdapter
+
 class FloatComboboxAdapter : public AdapterBase<ValueType>
 {
 	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
@@ -56,6 +60,8 @@ public:
 	FloatComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
 	virtual ~FloatComboboxAdapter();
 };
+
+$renaming FloatComboboxAdapter<Atlas::Message::Element> @ AtlasFloatComboboxAdapter
 
 }
 
