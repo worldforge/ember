@@ -41,6 +41,8 @@ public:
 	virtual CEGUI::Window* getGuiRoot();
 };
 
+$renaming ^EditboxRepresentation<Atlas::Message::Element,std::string> @ AtlasStringEditboxRepresentation
+
 }
 
 }
