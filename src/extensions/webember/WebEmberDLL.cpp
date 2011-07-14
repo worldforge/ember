@@ -21,76 +21,90 @@
  * @author Peter Szucs
  */
 
-#ifndef _WIN32
-#error This module can only be compiled on windows.
-#endif
-
-#ifndef BUILD_WEBEMBER
-#error This module is meant for webember only. If you want to build webember, you should set BUILD_WEBEMBER macro.
-#endif
-
 #include "WebEmberManager.h"
 
 #include "framework/LoggingInstance.h"
 
+#ifdef _WIN32
 #include "platform/platform_windows.h"
+#define WEBEMBER_EXPORT __declspec(dllexport) __stdcall
+#else
+#define WEBEMBER_EXPORT __attribute__((visibility("default")))
+#endif
 
 #include <sstream>
 
 using namespace Ember;
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
  * @brief Start WebEmber as a child window of a given HWND.
+ *
+ * This function will run ember and will only return, when ember quits.
+ *
  * @param hwnd The window handle of the owner.
  * @returns Returns the exit value of ember.
- * This function will run ember and will only return, when ember quits.
  */
-int __declspec(dllexport) __stdcall StartWebEmber(HWND hwnd)
+
+int WEBEMBER_EXPORT StartWebEmber(const char* windowHandle, const char* prefix)
 {
-	std::stringstream sstr;
-	sstr << reinterpret_cast<long>(hwnd);
-	try {
-		//WebEmberManager is platform independent, so hwnd needs to be a string.
-		return WebEmberManager::getSingleton().start(sstr.str());
-	} catch (const std::exception& ex) {
-		// do not let exception pass the DLL interface.
-		// The exception can have different implementation.
-		S_LOG_WARNING("Error: Ember shut down with exception. " << ex);
-	} catch (...) {
-		S_LOG_WARNING("Error: Ember shut down with exception.");
-	}
-	return 1;
+	return WebEmberManager::getSingleton().start(windowHandle, prefix);
 }
 
 /**
  * @brief Signals quit for WebEmber.
- * This function will return immediatelly and ember will shut down before drawing the next frame.
+ *
+ * This function will return immediately and ember will shut down before drawing the next frame.
  */
-void __declspec(dllexport) __stdcall QuitWebEmber()
+void WEBEMBER_EXPORT QuitWebEmber()
 {
 	WebEmberManager::getSingleton().quit();
 }
 
+
+#ifdef _WIN32
 /**
  * @brief DllMain is the entry point for DLLs.
+ *
  * Here you can do some initialization and uninitialization.
  * For more info, read: http://msdn.microsoft.com/en-us/library/ms682583%28v=vs.85%29.aspx
  */
-#ifdef __cplusplus
-extern "C"
-#endif
 BOOL APIENTRY DllMain(HINSTANCE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
 	switch(ul_reason_for_call) {
-	case DLL_PROCESS_ATTACH:
+		case DLL_PROCESS_ATTACH:
 		// DLL is loaded into the memory
-		// if you return here FALSE the DLL will note be loaded and linking fails.
+		// if you return here FALSE the DLL will not be loaded and linking fails.
 		new Ember::WebEmberManager(hModule);
 		break;
-	case DLL_PROCESS_DETACH:
+		case DLL_PROCESS_DETACH:
 		// DLL is unloaded from the memory
 		delete Ember::WebEmberManager::getSingletonPtr();
 		break;
 	}
 	return TRUE;
 }
+#else
+
+//Set library constructor and destructor functions.
+void __attribute__ ((constructor)) initWebEmber(void);
+void __attribute__ ((destructor)) deinitWebEmber(void);
+
+// Called when the library is loaded and before dlopen() returns
+void initWebEmber(void)
+{
+	new Ember::WebEmberManager;
+}
+
+// Called when the library is unloaded and before dlclose()
+void deinitWebEmber(void)
+{
+	delete Ember::WebEmberManager::getSingletonPtr();
+}
+
+#endif
+
+#ifdef __cplusplus
+}
+#endif

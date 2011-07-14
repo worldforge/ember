@@ -1,16 +1,12 @@
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-
-bin_PROGRAMS = ember.bin
-
-ember_bin_SOURCES = Application.cpp ConfigBoundLogObserver.cpp Ember.cpp
+embersources = $(top_srcdir)/src/main/Application.cpp $(top_srcdir)/src/main/ConfigBoundLogObserver.cpp
 
 if WIN32
-ember_bin_SOURCES += win32/OgreWin32Resources.rc win32/ember.ico
+embersources += $(top_srcdir)/src/main/win32/OgreWin32Resources.rc $(top_srcdir)/src/main/win32/ember.ico
 .rc.o:
 	$(WINDRES) -o $@ -i $<
 endif
 
-ember_bin_LDADD = \
+emberlibs = \
 	$(top_builddir)/src/bindings/lua/liblua_ConnectorDefinitions.a \
 	$(top_builddir)/src/components/lua/bindings/lua/liblua_Lua.a \
 	$(top_builddir)/src/components/ogre/scripting/bindings/lua/helpers/liblua_Helpers.a \
@@ -43,12 +39,18 @@ ember_bin_LDADD = \
 	$(top_builddir)/src/services/time/libTime.a \
 	$(top_builddir)/src/services/wfut/libWfut.a \
 	$(top_builddir)/src/services/serversettings/libServerSettings.a \
-	$(top_builddir)/src/extensions/libExtensions.a \
 	$(top_builddir)/src/framework/tasks/libTasks.a \
 	$(top_builddir)/src/framework/libFramework.a
-ember_bin_LDFLAGS = -Wl
 
-noinst_HEADERS = Application.h ConfigBoundLogObserver.h
+if !BUILD_WEBEMBER
 SUBDIRS = bindings
 
+INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+bin_PROGRAMS = ember.bin
+
+ember_bin_LDFLAGS = -Wl
+ember_bin_LDADD = $(emberlibs)
+ember_bin_SOURCES = $(embersources) $(top_srcdir)/src/main/Ember.cpp
+noinst_HEADERS = Application.h ConfigBoundLogObserver.h
+endif
 EXTRA_DIST=macosx/COPYING.SDL macosx/ReadMeDevLite.txt macosx/SDLMain.h macosx/SDLMain.m

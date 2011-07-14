@@ -30,80 +30,47 @@
 namespace Ember
 {
 
+/**
+ * @brief WebEmbers main platform independent class.
+ */
+class WebEmberManager: public Singleton<WebEmberManager>
+{
+public:
+
 	/**
-	 * @brief WebEmbers main platform independent class.
+	 * @brief Will start ember and save the hwnd.
 	 */
-#if !defined(_WIN32) && defined(BUILD_WEBEMBER)
-	__attribute__((visibility("default")))
-#endif
-	class WebEmberManager: public Singleton<WebEmberManager>
+	int start(const std::string& windowhandle, std::string prefix = "");
+
+	/**
+	 * @brief Will signal quit.
+	 *
+	 * For safe shutdowns, Ember will not quit immediatelly, but before the next frame.
+	 */
+	void quit();
+
+
+	/**
+	 * @brief Sends a low-level message to the plugin.
+	 *
+	 * Message will be processed in WebEmberMessageQueue.
+	 * Example: sendMessage("RUN alert('Javascript runs!')")
+	 */
+	void sendMessage(std::string msg);
+
+	/**
+	 * @brief Executes javascript code in the browser
+	 */
+	void runJavascript(std::string jscode)
 	{
-	public:
-#ifdef _WIN32
-		/**
-		 * @brief Ctor for Windows.
-		 * @param hModule The DLL module handle from DllMain entry-point.
-		 * This is needed to determine the location of the DLL
-		 */
-		WebEmberManager(HMODULE hModule) :
-			mModuleHandle(hModule)
-		{
-		}
-#endif
-
-		/**
-		 * @brief Will start ember and save the hwnd.
-		 */
-		int start(const std::string& windowhandle);
-
-		/**
-		 * @brief Will signal quit.
-		 * For safe shutdowns, Ember will not quit immediatelly, but before the next frame.
-		 */
-		void quit();
-
-		/**
-		 * @brief Allows to get the window handle as string.
-		 * This is needed by OgreSetup::configure().
-		 */
-		std::string getWindowHandle()
-		{
-			return mWindowHandle;
-		}
-
-		/**
-		 * @brief Returns the prefix needed to find resources.
-		 */
-		std::string getPrefix();
-
-		/**
-		 * @brief Sends a low-level message to the plugin.
-		 * Message will be processed in WebEmberMessageQueue.
-		 * Example: sendMessage("RUN alert('Javascript runs!')")
-		 */
-		void sendMessage(std::string msg);
-
-		/**
-		 * @brief Executes javascript code in the browser
-		 */
-		void runJavascript(std::string jscode)
-		{
-			sendMessage("RUN " + jscode);
-		}
-	private:
-		/**
-		 * @brief The window handle as a string.
-		 */
-		std::string mWindowHandle;
-
-#ifdef _WIN32
-		/**
-		 * @brief Handle of the DLL.
-		 * This is needed to determine the location of the DLL
-		 */
-		HANDLE mModuleHandle;
-#endif
-	};
+		sendMessage("RUN " + jscode);
+	}
+private:
+	/**
+	 * @brief The window handle as a string.
+	 */
+	std::string mWindowHandle;
+};
 
 }
 

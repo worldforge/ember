@@ -29,6 +29,7 @@ AC_PROG_CC
 #AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 dnl AM_PROG_LEX
+LT_INIT
 
 AC_PATH_PROG([XMLLINT], [xmllint], [true])
 
@@ -98,7 +99,6 @@ AC_ARG_ENABLE(webember,
   [
     if test "$enableval" = "yes"; then
       webember_enabled="true"
-      CXXFLAGS="$CXXFLAGS -DBUILD_WEBEMBER -fvisibility=hidden"
     else
       webember_enabled="false"
     fi

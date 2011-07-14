@@ -1,5 +1,10 @@
 INCLUDES = -I$(top_srcdir)/src
 SUBDIRS = src media test
+
+if BUILD_WEBEMBER
+AM_CPPFLAGS = -fvisibility=hidden -DBUILD_WEBEMBER
+endif
+
 ACLOCAL_AMFLAGS = -I m4
 bin_SCRIPTS = ember
 dist_bin_SCRIPTS = ember
