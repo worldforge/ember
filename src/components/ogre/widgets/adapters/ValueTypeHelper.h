@@ -113,6 +113,24 @@ struct ValueTypeHelper<bool, ::Atlas::Message::Element>
 };
 
 template<>
+struct ValueTypeHelper< ::Atlas::Message::Element, int>
+{
+	static int convert(const ::Atlas::Message::Element& v)
+	{
+		return v.asInt();
+	}
+};
+
+template<>
+struct ValueTypeHelper<int, ::Atlas::Message::Element>
+{
+	static ::Atlas::Message::Element convert(int i)
+	{
+		return ::Atlas::Message::Element(i);
+	}
+};
+
+template<>
 struct ValueTypeHelper< ::Atlas::Message::Element, float>
 {
 	static float convert(const ::Atlas::Message::Element& v)

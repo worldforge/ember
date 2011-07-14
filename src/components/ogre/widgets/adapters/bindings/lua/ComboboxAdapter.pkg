@@ -39,6 +39,24 @@ public:
 	virtual ~StringComboboxAdapter();
 };
 
+class IntComboboxAdapter : public AdapterBase<ValueType>
+{
+	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
+
+public:
+	IntComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
+	virtual ~IntComboboxAdapter();
+};
+
+class FloatComboboxAdapter : public AdapterBase<ValueType>
+{
+	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
+
+public:
+	FloatComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
+	virtual ~FloatComboboxAdapter();
+};
+
 }
 
 }

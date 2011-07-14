@@ -15,20 +15,25 @@ namespace Gui {
 
 namespace Adapters {
 
-template <typename ValueType>
-class StringComboboxAdapter : public ComboboxAdapter<ValueType, std::string>
-{
-public:
-	StringComboboxAdapter(const ValueType& value, CEGUI::Window* widget);
-	virtual ~StringComboboxAdapter();
-};
-
-template <typename ValueType>
-inline StringComboboxAdapter<ValueType>::StringComboboxAdapter(const ValueType& value, CEGUI::Window* widget) : ComboboxAdapter<ValueType, std::string>(value, widget)
+#define SPECIALISE_COMBOBOX_ADAPTER(prefix, type)\
+template <typename ValueType> \
+class prefix##ComboboxAdapter : public ComboboxAdapter<ValueType, type> \
+{ \
+public: \
+	prefix##ComboboxAdapter(const ValueType& value, CEGUI::Window* widget); \
+	virtual ~prefix##ComboboxAdapter(); \
+}; \
+template <typename ValueType> \
+inline prefix##ComboboxAdapter<ValueType>::prefix##ComboboxAdapter(const ValueType& value, CEGUI::Window* widget) : ComboboxAdapter<ValueType, type>(value, widget) \
+{} \
+\
+template <typename ValueType> \
+inline prefix##ComboboxAdapter<ValueType>::~prefix##ComboboxAdapter() \
 {}
 
-template <typename ValueType>
-inline StringComboboxAdapter<ValueType>::~StringComboboxAdapter() {}
+SPECIALISE_COMBOBOX_ADAPTER(String, std::string)
+SPECIALISE_COMBOBOX_ADAPTER(Int, int)
+SPECIALISE_COMBOBOX_ADAPTER(Float, float)
 
 }
 
