@@ -65,7 +65,7 @@ template<typename ValueType>
 CheckboxRepresentation<ValueType>::CheckboxRepresentation(const ValueType& value):
 	SingleAdapterRepresentationBase<ValueType>()
 {
-	mLayout = LayoutHelper::loadLayout("CheckboxRepresentation.layout", mPrefix);
+	mLayout = LayoutHelper::loadLayout("representations/CheckboxRepresentation.layout", mPrefix);
 	
 	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, bool>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Checkbox"), "Selected", CEGUI::Checkbox::EventCheckStateChanged));
 }

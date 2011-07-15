@@ -166,6 +166,25 @@ struct ValueTypeHelper<std::string, ::varconf::Variable>
 	}
 };
 
+template<>
+struct ValueTypeHelper< ::varconf::Variable, bool>
+{
+	static bool convert(const ::varconf::Variable& v)
+	{
+		// uses operator bool()
+		return v;
+	}
+};
+
+template<>
+struct ValueTypeHelper<bool, ::varconf::Variable>
+{
+	static ::varconf::Variable convert(bool b)
+	{
+		return ::varconf::Variable(b);
+	}
+};
+
 }
 
 }

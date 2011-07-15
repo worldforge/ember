@@ -16,17 +16,24 @@ function SettingsWidget:buildSettingsUi()
 	--This is a place where the settings contents are declared and (later) used to construct the GUI
 	--to manipulace them
 	
-	local settings =
+	local configService = emberServices:getConfigService()
+	local enabledVariable = configService:getValue("audio", "enabled")
+	
+	self.settings =
 	{
 		Audio =
 		{
+			Enabled = {
+				Ember.OgreView.Gui.Representations.VarconfCheckboxRepresentation:new(enabledVariable),
+				"Some help string"
+			}
 		},
 		Graphics =
 		{
 		}
 	}
 	
-	for category, representations in pairs(settings) do
+	for category, representations in pairs(self.settings) do
 		local wnd = self:buildUiFor(representations)
 		
 		wnd:setText(category)
@@ -36,7 +43,28 @@ end
 
 function SettingsWidget:buildUiFor(representations)
 	local ret = CEGUI.WindowManager:getSingleton():createWindow("DefaultWindow")
+	local vbox = CEGUI.WindowManager:getSingleton():createWindow("VerticalLayoutContainer")
 	
+	for name, data in pairs(representations) do
+		local representation = data[1]
+		local helpString = data[2]
+		
+		local hbox = CEGUI.WindowManager:getSingleton():createWindow("HorizontalLayoutContainer")
+		
+		local label = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
+		label:setText(name)
+		label:setProperty("UnifiedSize", "{{0.0, 100.0}, {0.0, 30.0}}")
+		label:setProperty("FrameEnabled", "False")
+		hbox:addChildWindow(label)
+		
+		local representationGuiRoot = representation:getGuiRoot()
+		representationGuiRoot:setProperty("UnifiedSize", "{{0.0, 100}, {0.0, 30.0}}")
+		hbox:addChildWindow(representationGuiRoot)
+		
+		vbox:addChildWindow(hbox)
+	end
+	
+	ret:addChildWindow(vbox)
 	return ret
 end
 
