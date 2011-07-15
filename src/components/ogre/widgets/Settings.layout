@@ -4,5 +4,10 @@
 		<Property Name='UnifiedSize' Value='{{0.0,600.0},{0.0,400.0}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
 		<Property Name='Text' Value='Settings'/>
+		
+		<Window Type='EmberLook/TabControl' Name='MainWindow/Tabs'>
+			<Property Name='UnifiedSize' Value='{{1.0, 0.0}, {1.0, -50.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0, 0.0}, {0.0, 0.0}}'/>
+		</Window>
 	</Window>
 </GUILayout>
