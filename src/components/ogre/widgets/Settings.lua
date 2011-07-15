@@ -55,10 +55,12 @@ function SettingsWidget:buildUiFor(representations)
 		label:setText(name)
 		label:setProperty("UnifiedSize", "{{0.0, 100.0}, {0.0, 30.0}}")
 		label:setProperty("FrameEnabled", "False")
+		label:setTooltipText(helpString)
 		hbox:addChildWindow(label)
 		
 		local representationGuiRoot = representation:getGuiRoot()
 		representationGuiRoot:setProperty("UnifiedSize", "{{0.0, 100}, {0.0, 30.0}}")
+		representationGuiRoot:setTooltipText(helpString)
 		hbox:addChildWindow(representationGuiRoot)
 		
 		vbox:addChildWindow(hbox)

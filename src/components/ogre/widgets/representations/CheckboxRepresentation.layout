@@ -6,7 +6,6 @@
 		<Window Type='EmberLook/Checkbox' Name='Checkbox'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-			<Property Name='Tooltip' Value='A string value.' />
 		</Window>
 	</Window>
 </GUILayout>
