@@ -6,8 +6,26 @@
 		<Property Name='Text' Value='Settings'/>
 		
 		<Window Type='EmberLook/TabControl' Name='MainWindow/Tabs'>
-			<Property Name='UnifiedSize' Value='{{1.0, 0.0}, {1.0, -50.0}}'/>
+			<Property Name='UnifiedSize' Value='{{1.0, 0.0}, {1.0, -35.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0, 0.0}, {0.0, 0.0}}'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='MainWindow/OKButton'>
+			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0, -240.0}, {1.0, -30.0}}'/>
+			
+			<Property Name='Text' Value='OK'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='MainWindow/ApplyButton'>
+			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0, -160.0}, {1.0, -30.0}}'/>
+			
+			<Property Name='Text' Value='Apply'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='MainWindow/CancelButton'>
+			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0, -80.0}, {1.0, -30.0}}'/>
+			
+			<Property Name='Text' Value='Cancel'/>
 		</Window>
 	</Window>
 </GUILayout>
