@@ -49,7 +49,7 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	ComboboxRepresentation(ValueType& value);
+	ComboboxRepresentation(const ValueType& value);
 	
 	/**
 	 * @brief Dtor
@@ -64,8 +64,8 @@ protected:
 };
 
 template<typename ValueType, typename PropertyNativeType>
-ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(ValueType& value):
-	SingleAdapterRepresentationBase<ValueType>(value)
+ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(const ValueType& value):
+	SingleAdapterRepresentationBase<ValueType>()
 {
 	mLayout = LayoutHelper::loadLayout("ComboboxRepresentation.layout", mPrefix);
 	

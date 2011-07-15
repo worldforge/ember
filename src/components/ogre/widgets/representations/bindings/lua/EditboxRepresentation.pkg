@@ -29,7 +29,7 @@ class EditboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
 	TOLUA_TEMPLATE_BIND(ValueType PropertyNativeType, Atlas::Message::Element std::string)
 
 public:
-	EditboxRepresentation(ValueType& value);
+	EditboxRepresentation(const ValueType& value);
 	
 	virtual ~EditboxRepresentation();
 	

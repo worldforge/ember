@@ -47,7 +47,7 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	CheckboxRepresentation(ValueType& value);
+	CheckboxRepresentation(const ValueType& value);
 	
 	/**
 	 * @brief Dtor
@@ -62,8 +62,8 @@ protected:
 };
 
 template<typename ValueType>
-CheckboxRepresentation<ValueType>::CheckboxRepresentation(ValueType& value):
-	SingleAdapterRepresentationBase<ValueType>(value)
+CheckboxRepresentation<ValueType>::CheckboxRepresentation(const ValueType& value):
+	SingleAdapterRepresentationBase<ValueType>()
 {
 	mLayout = LayoutHelper::loadLayout("CheckboxRepresentation.layout", mPrefix);
 	

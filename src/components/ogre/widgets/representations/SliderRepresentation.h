@@ -47,7 +47,7 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	SliderRepresentation(ValueType& value);
+	SliderRepresentation(const ValueType& value);
 	
 	/**
 	 * @brief Dtor
@@ -62,8 +62,8 @@ protected:
 };
 
 template<typename ValueType>
-SliderRepresentation<ValueType>::SliderRepresentation(ValueType& value):
-	SingleAdapterRepresentationBase<ValueType>(value)
+SliderRepresentation<ValueType>::SliderRepresentation(const ValueType& value):
+	SingleAdapterRepresentationBase<ValueType>()
 {
 	mLayout = LayoutHelper::loadLayout("SliderRepresentation.layout", mPrefix);
 	

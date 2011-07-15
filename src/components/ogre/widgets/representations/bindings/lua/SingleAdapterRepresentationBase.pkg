@@ -29,7 +29,7 @@ class SingleAdapterRepresentationBase : public RepresentationBase<ValueType>
 	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
 
 public:
-	SingleAdapterRepresentationBase(ValueType& value);
+	SingleAdapterRepresentationBase();
 
 	virtual ~SingleAdapterRepresentationBase();
 	

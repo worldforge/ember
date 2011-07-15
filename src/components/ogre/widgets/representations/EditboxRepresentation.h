@@ -48,7 +48,7 @@ public:
 	 * 
 	 * @param value Value this representation should represent
 	 */
-	EditboxRepresentation(ValueType& value);
+	EditboxRepresentation(const ValueType& value);
 	
 	/**
 	 * @brief Dtor
@@ -63,8 +63,8 @@ protected:
 };
 
 template<typename ValueType, typename PropertyNativeType>
-EditboxRepresentation<ValueType, PropertyNativeType>::EditboxRepresentation(ValueType& value):
-	SingleAdapterRepresentationBase<ValueType>(value)
+EditboxRepresentation<ValueType, PropertyNativeType>::EditboxRepresentation(const ValueType& value):
+	SingleAdapterRepresentationBase<ValueType>()
 {
 	mLayout = LayoutHelper::loadLayout("EditboxRepresentation.layout", mPrefix);
 	

@@ -49,7 +49,7 @@ public:
 	 * 
 	 * @copydoc RepresentationBase::RepresentationBase
 	 */
-	SingleAdapterRepresentationBase(ValueType& value);
+	SingleAdapterRepresentationBase();
 	
 	/**
 	 * @brief Dtor
@@ -83,9 +83,7 @@ protected:
 };
 
 template<typename ValueType>
-SingleAdapterRepresentationBase<ValueType>::SingleAdapterRepresentationBase(ValueType& value):
-	RepresentationBase<ValueType>(value),
-
+SingleAdapterRepresentationBase<ValueType>::SingleAdapterRepresentationBase():
 	mAdapter(0)
 {}
 

@@ -50,20 +50,12 @@ public:
 	 * 
 	 * @param value value we want to represent and edit (will be directly altered)
 	 */
-	RepresentationBase(ValueType& value);
+	RepresentationBase();
 	
 	/**
 	 * @brief Dtor
 	 */
 	virtual ~RepresentationBase();
-	
-	/**
-	 * @brief applies changes to the original value (changes the value you have passed)
-	 * 
-	 * This should be called when user pressed Apply/OK in the form to confirm the changes
-	 * @internal This is virtual so that you can override and react to the change (example: resolution change)
-	 */
-	virtual void applyChanges();
 	
 	/**
 	 * @brief gets rid of all the changes and sets the edited value to original value
@@ -109,27 +101,15 @@ public:
 	 * @copydoc AdapterBase::addSuggestion
 	 */
 	virtual void addSuggestion(const std::string& suggestion) = 0;
-	
-protected:
-	/// this is the source and target value (original value that we change when the representation is edited)
-	ValueType& mValue;
 };
 
 template<typename ValueType>
-RepresentationBase<ValueType>::RepresentationBase(ValueType& value):
-	mValue(value)
+RepresentationBase<ValueType>::RepresentationBase()
 {}
 
 template<typename ValueType>
 RepresentationBase<ValueType>::~RepresentationBase()
 {}
-
-template<typename ValueType>
-void RepresentationBase<ValueType>::applyChanges()
-{
-	mValue = getEditedValue();
-	// FIXME: AdapterBase should have it's mOriginalValue changed at this point!
-}
 
 }
 
