@@ -42,7 +42,10 @@ function SettingsWidget:buildSettingsUi()
 end
 
 function SettingsWidget:buildUiFor(representations)
-	local ret = CEGUI.WindowManager:getSingleton():createWindow("DefaultWindow")
+	local ret = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/ScrollablePane")
+	ret:setProperty("UnifiedPosition", "{{0.0, 0.0}, {0.0, 0.0}}")
+	ret:setProperty("UnifiedSize", "{{1.0, 0.0}, {1.0, 0.0}}")
+	
 	local vbox = CEGUI.WindowManager:getSingleton():createWindow("VerticalLayoutContainer")
 	
 	for name, data in pairs(representations) do
@@ -63,7 +66,7 @@ function SettingsWidget:buildUiFor(representations)
 		
 		local helpStringLabel = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 		helpStringLabel:setText(helpString)
-		helpStringLabel:setProperty("UnifiedSize", "{{0.4, 0.0}, {0.0, 30.0}}")
+		helpStringLabel:setProperty("UnifiedSize", "{{0.4, -1.0}, {0.0, 30.0}}")
 		helpStringLabel:setProperty("FrameEnabled", "False")
 		hbox:addChildWindow(helpStringLabel)
 		
