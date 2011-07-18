@@ -268,9 +268,10 @@ extern "C" void shutdownHandler(int sig)
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 bool OgreSetup::configure(void)
 {
-	bool suppressConfig = false;
 	bool success = false;
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
+#ifndef BUILD_WEBEMBER
+	bool suppressConfig = false;
 	if (configService.itemExists("ogre", "suppressconfigdialog")) {
 		suppressConfig = static_cast<bool> (configService.getValue("ogre", "suppressconfigdialog"));
 	}
@@ -299,7 +300,27 @@ bool OgreSetup::configure(void)
 			}
 		}
 	}
-
+#else
+	//In webember we will disable the config dialog.
+	//Also we will use fixed resolution and windowed mode.
+	try {
+		mRoot->restoreConfig();
+	} catch (const std::exception& ex) {
+		//this isn't a problem, we will set the needed functions manually.
+	}
+	success = true;
+#ifdef _WIN32
+	//on windows, the default renderer is directX, we will force OpenGL.
+	Ogre::RenderSystem* renderer = mRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
+	if(renderer != NULL) {
+		mRoot->setRenderSystem(renderer);
+	} else {
+		S_LOG_WARNING("OpenGL RenderSystem not found. Starting with default RenderSystem.");
+	}
+#endif // _WIN32
+	mRoot->getRenderSystem()->setConfigOption("Video Mode", "800 x 600");
+	mRoot->getRenderSystem()->setConfigOption("Full Screen", "no");
+#endif // BUILD_WEBEMBER
 	if (success) {
 #if _WIN32
 		//this will only apply on DirectX
@@ -313,26 +334,23 @@ bool OgreSetup::configure(void)
 		}
 
 #ifndef BUILD_WEBEMBER
-			mRoot->initialise(true, "Ember");
+		mRoot->initialise(true, "Ember");
 #else // BUILD_WEBEMBER
-			mRoot->initialise(false, "Ember");
+		mRoot->initialise(false, "Ember");
 
-			Ogre::NameValuePairList options;
+		Ogre::NameValuePairList options;
 
-			//set the owner window as the plugin frame
-			options["parentWindowHandle"]=WebEmberManager::getSingleton().getWindowHandle();
-			
+		if (configService->itemExists("ogre", "windowhandle")) {
+			//set the owner window
+			options["parentWindowHandle"]=configService->getValue("ogre", "windowhandle");
+
 			//put it in the top left corner
 			options["top"]="0";
 			options["left"]="0";
-			mRenderWindow = mRoot->createRenderWindow("Ember",800,600,false,&options);
+		}
+
+		mRenderWindow = mRoot->createRenderWindow("Ember",800,600,false,&options);
 #endif // BUILD_WEBEMBER
-
-		//do some FPU fiddling, since we need the correct settings for stuff like mercator (which uses fractals etc.) to work
-		_fpreset();
-		_controlfp(_PC_64, _MCW_PC);
-		_controlfp(_RC_NEAR , _MCW_RC);
-
 		// Allow SDL to use the window Ogre just created
 
 		// Old method: do not use this, because it only works
@@ -362,7 +380,7 @@ bool OgreSetup::configure(void)
 		// This is necessary to allow the window to move1
 		//  on WIN32 systems. Without this, the window resets
 		//  to the smallest possible size after moving.
-		SDL_SetVideoMode(mRenderWindow->getWidth(), mRenderWindow->getHeight(), 0, 0); // first 0: BitPerPixel,
+		SDL_SetVideoMode(mRenderWindow->getWidth(), mRenderWindow->getHeight(), 0, 0);// first 0: BitPerPixel,
 		// second 0: flags (fullscreen/...)
 		// neither are needed as Ogre sets these
 
@@ -392,16 +410,18 @@ bool OgreSetup::configure(void)
 		bool fullscreen;
 
 		parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
-
-		SDL_Init(SDL_INIT_VIDEO);
-
+		
+#ifndef BUILD_WEBEMBER
+		//In webember we already called SDL_Init on the plugin side with the main thread.
+		SDL_Init( SDL_INIT_VIDEO);
+#endif // !BUILD_WEBEMBER
 		//this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
 		atexit(SDL_Quit);
 		oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
 		oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
 		oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
 		oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
-
+#ifndef BUILD_WEBEMBER
 		int flags = 0;
 
 		// 	bool enableDoubleBuffering = false;
@@ -465,6 +485,7 @@ bool OgreSetup::configure(void)
 
 		SDL_WM_SetCaption("Ember", "ember");
 
+#endif // !BUILD_WEBEMBER
 		Ogre::NameValuePairList misc;
 
 		SDL_SysWMinfo info;
@@ -523,7 +544,7 @@ bool OgreSetup::configure(void)
 		// 		mRoot->addFrameListener(this);
 		// 	}
 
-
+#ifndef BUILD_WEBEMBER
 		//set the icon of the window
 		Uint32 rmask, gmask, bmask, amask;
 
@@ -899,7 +920,8 @@ bool OgreSetup::configure(void)
 			SDL_WM_SetIcon(mIconSurface, 0);
 		}
 
-#endif
+#endif // !BUILD_WEBEMBER
+#endif // !_WIN32
 
 		Input::getSingleton().EventAltTab.connect(sigc::mem_fun(*this, &OgreSetup::Input_AltTab));
 
@@ -996,21 +1018,21 @@ int OgreSetup::isExtensionSupported(const char *extension)
 	const char *extensionsChar;
 	extensionsChar = glXQueryExtensionsString(display, screen);
 	const GLubyte *extensions;
-	extensions = reinterpret_cast<const GLubyte*> (extensionsChar);
+	extensions = reinterpret_cast<const GLubyte*>(extensionsChar);
 
 	const GLubyte *start;
 	GLubyte *where, *terminator;
 
 	/* Extension names should not have spaces. */
 	where = (GLubyte *)strchr(extension, ' ');
-	if ((where != NULL) || *extension == '\0')
+	if ((where != NULL) || *extension == '\0') {
 		return 0;
-
+	}
 	//  if (extensions == NULL) extensions = (GLubyte*)glGetString(GL_EXTENSIONS);
 
-	if (extensions == NULL)
+	if (extensions == NULL) {
 		return 0;
-
+	}
 	/* It takes a bit of care to be fool-proof about parsing the
 	 OpenGL extensions string. Don't be fooled by sub-strings,
 	 etc. */
@@ -1032,3 +1054,4 @@ int OgreSetup::isExtensionSupported(const char *extension)
 
 }
 }
+
