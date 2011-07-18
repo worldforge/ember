@@ -34,6 +34,9 @@ public:
 	virtual ~ComboboxRepresentation();
 	
 	virtual CEGUI::Window* getGuiRoot();
+	
+	// FIXME: IMO this should be inherited from the base class but for some reason it isn't :-/
+	void addSuggestion(const std::string& suggestion);
 };
 
 $renaming ^ComboboxRepresentation<Atlas::Message::Element,std::string> @ AtlasStringComboboxRepresentation

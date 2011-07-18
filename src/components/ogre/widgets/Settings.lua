@@ -31,7 +31,9 @@ function SettingsWidget:buildSettingsUi()
 			{
 				"Output",
 				Representations.VarconfStringComboboxRepresentation:new((configService:getValue("audio", "output"))),
-				"Which sound output should be used"
+				"Which sound output should be used",
+				
+				{"output", "test1", "test2"}
 			},
 		},
 		Graphics =
@@ -39,7 +41,9 @@ function SettingsWidget:buildSettingsUi()
 			{
 				"Level",
 				Representations.VarconfStringComboboxRepresentation:new((configService:getValue("graphics", "level"))),
-				"General graphics level"
+				"General graphics level",
+				
+				{"low", "medium", "high"}
 			},
 			{
 				"Fresnel water",
@@ -73,6 +77,12 @@ function SettingsWidget:buildUiFor(representations)
 		local name = data[1]
 		local representation = data[2]
 		local helpString = data[3]
+		local suggestions = {}
+		
+		-- check if suggestions are appended
+		if table.getn(data) == 4 then
+			suggestions = data[4]
+		end
 		
 		local hbox = CEGUI.WindowManager:getSingleton():createWindow("HorizontalLayoutContainer")
 		
@@ -81,6 +91,10 @@ function SettingsWidget:buildUiFor(representations)
 		label:setProperty("UnifiedSize", "{{0.3, 0.0}, {0.0, 30.0}}")
 		label:setProperty("FrameEnabled", "False")
 		hbox:addChildWindow(label)
+		
+		for j, suggestion in ipairs(suggestions) do
+			representation:addSuggestion(suggestion)
+		end
 		
 		local representationGuiRoot = representation:getGuiRoot()
 		representationGuiRoot:setProperty("UnifiedSize", "{{0.3, 0}, {0.0, 30.0}}")
