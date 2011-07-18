@@ -106,7 +106,7 @@ function SettingsWidget:buildUiFor(contents)
 		
 		local label = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 		label:setText(data.label)
-		label:setProperty("UnifiedSize", "{{0.3, 0.0}, {0.0, 30.0}}")
+		label:setProperty("UnifiedSize", "{{0.2, 0.0}, {0.0, 30.0}}")
 		label:setProperty("FrameEnabled", "False")
 		hbox:addChildWindow(label)
 		
@@ -120,13 +120,14 @@ function SettingsWidget:buildUiFor(contents)
 		
 		local helpStringLabel = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 		helpStringLabel:setText(data.helpString)
-		helpStringLabel:setProperty("UnifiedSize", "{{0.4, -1.0}, {0.0, 30.0}}")
+		helpStringLabel:setProperty("UnifiedSize", "{{0.5, -1.0}, {0.0, 30.0}}")
 		helpStringLabel:setProperty("FrameEnabled", "False")
+		helpStringLabel:setProperty("HorzFormatting", "WordWrapLeftAligned")
 		hbox:addChildWindow(helpStringLabel)
 		
 		vbox:addChildWindow(hbox)
 	end
-	--]]
+	
 	ret:addChildWindow(vbox)
 	return ret
 end
