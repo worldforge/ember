@@ -62,6 +62,18 @@ function SettingsWidget:buildSettingsUi()
 					representation = Representations.VarconfCheckboxRepresentation:new((configService:getValue("graphics", "foliage"))),
 					helpString = "Render foliage over the terrain"
 				},
+				{
+					label = "Shadow texture size",
+					representation = Representations.VarconfIntComboboxRepresentation:new((configService:getValue("shadows", "texturesize"))),
+					helpString = "The bigger this number, the more accurate the shadows will be",
+					
+					suggestions = {"256", "512", "1024", "2048", "4096"}
+				},
+				{
+					label = "Shadow far distance",
+					representation = Representations.VarconfSliderRepresentation:new((configService:getValue("shadows", "fardistance")), 1000),
+					helpString = "If the shadows are to be further than this value, they won't be rendered"
+				},
 			},
 		},
 	}

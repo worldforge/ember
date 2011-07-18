@@ -26,10 +26,10 @@ namespace Representations {
 
 class SliderRepresentation : public SingleAdapterRepresentationBase<ValueType>
 {
-	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element)
+	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element, varconf::Variable)
 
 public:
-	SliderRepresentation(const ValueType& value);
+	SliderRepresentation(const ValueType& value, float max);
 	
 	virtual ~SliderRepresentation();
 	
@@ -37,6 +37,7 @@ public:
 };
 
 $renaming ^SliderRepresentation<Atlas::Message::Element> @ AtlasSliderRepresentation
+$renaming ^SliderRepresentation<varconf::Variable> @ VarconfSliderRepresentation
 
 }
 

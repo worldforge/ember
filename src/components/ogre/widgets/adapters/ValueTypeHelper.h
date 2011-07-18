@@ -185,6 +185,45 @@ struct ValueTypeHelper<bool, ::varconf::Variable>
 	}
 };
 
+template<>
+struct ValueTypeHelper< ::varconf::Variable, int>
+{
+	static int convert(const ::varconf::Variable& v)
+	{
+		// uses operator int()
+		return v;
+	}
+};
+
+template<>
+struct ValueTypeHelper<int, ::varconf::Variable>
+{
+	static ::varconf::Variable convert(int i)
+	{
+		return ::varconf::Variable(i);
+	}
+};
+
+
+template<>
+struct ValueTypeHelper< ::varconf::Variable, float>
+{
+	static int convert(const ::varconf::Variable& v)
+	{
+		// uses operator float()
+		return v;
+	}
+};
+
+template<>
+struct ValueTypeHelper<float, ::varconf::Variable>
+{
+	static ::varconf::Variable convert(float f)
+	{
+		return ::varconf::Variable(f);
+	}
+};
+
 }
 
 }

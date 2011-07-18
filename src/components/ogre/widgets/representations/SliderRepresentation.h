@@ -46,8 +46,9 @@ public:
 	 * @brief Ctor
 	 * 
 	 * @param value Value this representation should represent
+	 * @param max Maximum value representable by this slider
 	 */
-	SliderRepresentation(const ValueType& value);
+	SliderRepresentation(const ValueType& value, float max);
 	
 	/**
 	 * @brief Dtor
@@ -62,12 +63,15 @@ protected:
 };
 
 template<typename ValueType>
-SliderRepresentation<ValueType>::SliderRepresentation(const ValueType& value):
+SliderRepresentation<ValueType>::SliderRepresentation(const ValueType& value, float max):
 	SingleAdapterRepresentationBase<ValueType>()
 {
 	mLayout = LayoutHelper::loadLayout("representations/SliderRepresentation.layout", mPrefix);
 	
-	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, float>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Slider"), "CurrentValue", CEGUI::Slider::EventValueChanged));
+	CEGUI::Slider* slider = static_cast<CEGUI::Slider*>(CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Slider"));
+	slider->setMaxValue(max);
+	
+	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, float>(value, slider, "CurrentValue", CEGUI::Slider::EventValueChanged));
 }
 
 template<typename ValueType>
