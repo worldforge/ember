@@ -53,15 +53,19 @@ function SettingsWidget:buildUiFor(representations)
 		
 		local label = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 		label:setText(name)
-		label:setProperty("UnifiedSize", "{{0.0, 100.0}, {0.0, 30.0}}")
+		label:setProperty("UnifiedSize", "{{0.3, 0.0}, {0.0, 30.0}}")
 		label:setProperty("FrameEnabled", "False")
-		label:setTooltipText(helpString)
 		hbox:addChildWindow(label)
 		
 		local representationGuiRoot = representation:getGuiRoot()
-		representationGuiRoot:setProperty("UnifiedSize", "{{0.0, 100}, {0.0, 30.0}}")
-		representationGuiRoot:setTooltipText(helpString)
+		representationGuiRoot:setProperty("UnifiedSize", "{{0.3, 0}, {0.0, 30.0}}")
 		hbox:addChildWindow(representationGuiRoot)
+		
+		local helpStringLabel = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
+		helpStringLabel:setText(helpString)
+		helpStringLabel:setProperty("UnifiedSize", "{{0.4, 0.0}, {0.0, 30.0}}")
+		helpStringLabel:setProperty("FrameEnabled", "False")
+		hbox:addChildWindow(helpStringLabel)
 		
 		vbox:addChildWindow(hbox)
 	end
