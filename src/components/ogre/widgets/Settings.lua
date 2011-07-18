@@ -22,26 +22,8 @@ function SettingsWidget:buildSettingsUi()
 	self.settings =
 	{
 		{
-			label = "Audio",
-			
-			contents =
-			{
-				{
-					label = "Enabled",
-					representation = Representations.VarconfCheckboxRepresentation:new((configService:getValue("audio", "enabled"))),
-					helpString = "Controls whether sounds are played"
-				},
-				{
-					label = "Output",
-					representation = Representations.VarconfStringComboboxRepresentation:new((configService:getValue("audio", "output"))),
-					helpString = "Which sound output should be used",
-					
-					suggestions = {"output", "test1", "test2"}
-				},
-			},
-		},
-		{
 			label = "Graphics",
+			description = "Groups visual settings affecting rendering quality. Many of these can deteriorate performance quite a lot so be careful.",
 			
 			contents =
 			{
@@ -76,24 +58,48 @@ function SettingsWidget:buildSettingsUi()
 				},
 			},
 		},
+		{
+			label = "Audio",
+			description = "",
+			
+			contents =
+			{
+				{
+					label = "Enabled",
+					representation = Representations.VarconfCheckboxRepresentation:new((configService:getValue("audio", "enabled"))),
+					helpString = "Controls whether sounds are played"
+				},
+				{
+					label = "Output",
+					representation = Representations.VarconfStringComboboxRepresentation:new((configService:getValue("audio", "output"))),
+					helpString = "Which sound output should be used",
+					
+					suggestions = {"output", "test1", "test2"}
+				},
+			},
+		},
 	}
 	
-	for i, category in ipairs(self.settings) do
-		local wnd = self:buildUiFor(category.contents)
-		
-		wnd:setText(category.label)
+	for _, category in ipairs(self.settings) do
+		local wnd = self:buildUiFor(category)
 		self.tabs:addChildWindow(wnd)
 	end
 end
 
-function SettingsWidget:buildUiFor(contents)
+function SettingsWidget:buildUiFor(category)
 	local ret = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/ScrollablePane")
+	ret:setText(category.label)
 	ret:setProperty("UnifiedPosition", "{{0.0, 0.0}, {0.0, 0.0}}")
 	ret:setProperty("UnifiedSize", "{{1.0, 0.0}, {1.0, 0.0}}")
 	
 	local vbox = CEGUI.WindowManager:getSingleton():createWindow("VerticalLayoutContainer")
+	local description = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
+	description:setText(category.description)
+	description:setProperty("UnifiedSize", "{{1.0, -1.0}, {0.0, 50.0}}")
+	description:setProperty("HorzFormatting", "WordWrapLeftAligned")
+	vbox:addChildWindow(description)
 	
-	for _, data in ipairs(contents) do
+	for _, data in ipairs(category.contents) do
 		local representation = data.representation
 		local suggestions = data.suggestions
 		
