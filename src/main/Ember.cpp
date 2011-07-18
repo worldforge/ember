@@ -26,10 +26,6 @@
 #include "Application.h"
 #include "framework/Tokeniser.h"
 
-#ifdef BUILD_WEBEMBER
-#include "extensions/webember/WebEmberManager.h"
-#endif
-
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 
@@ -200,9 +196,6 @@ int main(int argc, char **argv)
 	{
 		try
 		{
-#if defined(BUILD_WEBEMBER) && defined(_WIN32)
-			prefix = Ember::WebEmberManager::getSingleton().getPrefix();
-#endif
 			// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
 			//Ember::OgreView::EmberOgre app;
