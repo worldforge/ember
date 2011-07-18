@@ -66,7 +66,7 @@ template<typename ValueType, typename PropertyNativeType>
 EditboxRepresentation<ValueType, PropertyNativeType>::EditboxRepresentation(const ValueType& value):
 	SingleAdapterRepresentationBase<ValueType>()
 {
-	mLayout = LayoutHelper::loadLayout("EditboxRepresentation.layout", mPrefix);
+	mLayout = LayoutHelper::loadLayout("representations/EditboxRepresentation.layout", mPrefix);
 	
 	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, PropertyNativeType>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "String"), "Text", CEGUI::Window::EventTextChanged));
 }

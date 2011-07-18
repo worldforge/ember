@@ -67,7 +67,7 @@ template<typename ValueType, typename PropertyNativeType>
 ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(const ValueType& value):
 	SingleAdapterRepresentationBase<ValueType>()
 {
-	mLayout = LayoutHelper::loadLayout("ComboboxRepresentation.layout", mPrefix);
+	mLayout = LayoutHelper::loadLayout("representations/ComboboxRepresentation.layout", mPrefix);
 	
 	this->setAdapter(new Adapters::ComboboxAdapter<ValueType, PropertyNativeType>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "String")));
 }

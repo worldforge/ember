@@ -65,7 +65,7 @@ template<typename ValueType>
 SliderRepresentation<ValueType>::SliderRepresentation(const ValueType& value):
 	SingleAdapterRepresentationBase<ValueType>()
 {
-	mLayout = LayoutHelper::loadLayout("SliderRepresentation.layout", mPrefix);
+	mLayout = LayoutHelper::loadLayout("representations/SliderRepresentation.layout", mPrefix);
 	
 	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, float>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Slider"), "CurrentValue", CEGUI::Slider::EventValueChanged));
 }

@@ -17,15 +17,18 @@ function SettingsWidget:buildSettingsUi()
 	--to manipulace them
 	
 	local configService = emberServices:getConfigService()
-	local enabledVariable = configService:getValue("audio", "enabled")
 	
 	self.settings =
 	{
 		Audio =
 		{
 			Enabled = {
-				Ember.OgreView.Gui.Representations.VarconfCheckboxRepresentation:new(enabledVariable),
-				"Some help string"
+				Ember.OgreView.Gui.Representations.VarconfCheckboxRepresentation:new((configService:getValue("audio", "enabled"))),
+				"Controls whether sounds are played"
+			},
+			Output = {
+				Ember.OgreView.Gui.Representations.VarconfStringComboboxRepresentation:new((configService:getValue("audio", "output"))),
+				"Which sound output should be used"
 			}
 		},
 		Graphics =
