@@ -17,23 +17,41 @@ function SettingsWidget:buildSettingsUi()
 	--to manipulace them
 	
 	local configService = emberServices:getConfigService()
+	local Representations = Ember.OgreView.Gui.Representations
 	
 	self.settings =
 	{
 		Audio =
 		{
-			Enabled = {
-				Ember.OgreView.Gui.Representations.VarconfCheckboxRepresentation:new((configService:getValue("audio", "enabled"))),
+			{
+				"Enabled",
+				Representations.VarconfCheckboxRepresentation:new((configService:getValue("audio", "enabled"))),
 				"Controls whether sounds are played"
 			},
-			Output = {
-				Ember.OgreView.Gui.Representations.VarconfStringComboboxRepresentation:new((configService:getValue("audio", "output"))),
+			{
+				"Output",
+				Representations.VarconfStringComboboxRepresentation:new((configService:getValue("audio", "output"))),
 				"Which sound output should be used"
-			}
+			},
 		},
 		Graphics =
 		{
-		}
+			{
+				"Level",
+				Representations.VarconfStringComboboxRepresentation:new((configService:getValue("graphics", "level"))),
+				"General graphics level"
+			},
+			{
+				"Fresnel water",
+				Representations.VarconfCheckboxRepresentation:new((configService:getValue("graphics", "fresnelwater"))),
+				"More realistic and performance demanding water"
+			},
+			{
+				"Foliage",
+				Representations.VarconfCheckboxRepresentation:new((configService:getValue("graphics", "foliage"))),
+				"Render foliage over the terrain"
+			},
+		},
 	}
 	
 	for category, representations in pairs(self.settings) do
@@ -51,9 +69,10 @@ function SettingsWidget:buildUiFor(representations)
 	
 	local vbox = CEGUI.WindowManager:getSingleton():createWindow("VerticalLayoutContainer")
 	
-	for name, data in pairs(representations) do
-		local representation = data[1]
-		local helpString = data[2]
+	for i, data in ipairs(representations) do
+		local name = data[1]
+		local representation = data[2]
+		local helpString = data[3]
 		
 		local hbox = CEGUI.WindowManager:getSingleton():createWindow("HorizontalLayoutContainer")
 		
