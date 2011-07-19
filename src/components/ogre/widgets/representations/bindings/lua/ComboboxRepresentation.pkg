@@ -37,6 +37,7 @@ public:
 	
 	// FIXME: IMO this should be inherited from the base class but for some reason it isn't :-/
 	void addSuggestion(const std::string& suggestion);
+	virtual const ValueType& getEditedValue() const;
 };
 
 $renaming ^ComboboxRepresentation<Atlas::Message::Element,std::string> @ AtlasStringComboboxRepresentation

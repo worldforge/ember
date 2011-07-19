@@ -7,6 +7,12 @@ function SettingsWidget:buildWidget()
 	self.window = self.widget:getWindow("MainWindow")
 	self.window:subscribeEvent("CloseClicked", self.CloseClicked, self)
 	
+	self.okButton = self.widget:getWindow("MainWindow/OKButton")
+	self.okButton:subscribeEvent("Clicked", self.OkClicked, self)
+	
+	self.applyButton = self.widget:getWindow("MainWindow/ApplyButton")
+	self.applyButton:subscribeEvent("Clicked", self.ApplyClicked, self)
+	
 	self.cancelButton = self.widget:getWindow("MainWindow/CancelButton")
 	self.cancelButton:subscribeEvent("Clicked", self.CloseClicked, self)
 	
@@ -163,13 +169,37 @@ function SettingsWidget:buildUiFor(category)
 		hbox:addChildWindow(helpStringLabel)
 		
 		vbox:addChildWindow(hbox)
+		
+		-- store the representation in data so that we can query it later (to get current value)
+		data.representation = representation
 	end
 	
 	ret:addChildWindow(vbox)
 	return ret
 end
 
+function SettingsWidget:applyAllValues()
+	local configService = emberServices:getConfigService()
+	
+	-- go through everything and apply the new values
+	for _, category in ipairs(self.settings) do
+		for _, data in ipairs(category.contents) do
+			configService:setValue(data.section, data.key, data.representation:getEditedValue())
+		end
+	end
+end
+
+function SettingsWidget:OkClicked(args)
+	self:applyAllValues()
+	self.widget:hide()
+end
+
+function SettingsWidget:ApplyClicked(args)
+	self:applyAllValues()
+end
+
 function SettingsWidget:CloseClicked(args)
+	-- FIXME: We should discard all values here
 	self.widget:hide()
 end
 

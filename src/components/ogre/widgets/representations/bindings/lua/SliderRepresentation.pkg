@@ -34,6 +34,7 @@ public:
 	virtual ~SliderRepresentation();
 	
 	virtual CEGUI::Window* getGuiRoot();
+	virtual const ValueType& getEditedValue() const;
 };
 
 $renaming ^SliderRepresentation<Atlas::Message::Element> @ AtlasSliderRepresentation
