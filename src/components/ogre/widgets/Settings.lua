@@ -19,7 +19,6 @@ function SettingsWidget:buildSettingsUi()
 	--This is a place where the settings contents are declared and (later) used to construct the GUI
 	--to manipulace them
 	
-	local configService = emberServices:getConfigService()
 	local Representations = Ember.OgreView.Gui.Representations
 	
 	self.settings =
@@ -32,32 +31,50 @@ function SettingsWidget:buildSettingsUi()
 			{
 				{
 					label = "Level",
-					representation = Representations.VarconfStringComboboxRepresentation:new((configService:getValue("graphics", "level"))),
 					helpString = "General graphics level",
 					
+					section = "graphics",
+					key = "level",
+					
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value) end,
 					suggestions = {"low", "medium", "high"}
 				},
 				{
 					label = "Fresnel water",
-					representation = Representations.VarconfCheckboxRepresentation:new((configService:getValue("graphics", "fresnelwater"))),
-					helpString = "More realistic and performance demanding water"
+					helpString = "More realistic and performance demanding water",
+					
+					section = "graphics",
+					key = "fresnelwater",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
 				{
 					label = "Foliage",
-					representation = Representations.VarconfCheckboxRepresentation:new((configService:getValue("graphics", "foliage"))),
-					helpString = "Render foliage over the terrain"
+					helpString = "Render foliage over the terrain",
+					
+					section = "graphics",
+					key = "foliage",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
 				{
 					label = "Shadow texture size",
-					representation = Representations.VarconfIntComboboxRepresentation:new((configService:getValue("shadows", "texturesize"))),
 					helpString = "The bigger this number, the more accurate the shadows will be",
 					
-					suggestions = {"256", "512", "1024", "2048", "4096"}
+					section = "shadows",
+					key = "texturesize",
+					
+					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new(value) end,
+					suggestions = {"256", "512", "1024", "2048", "4096"},
 				},
 				{
 					label = "Shadow far distance",
-					representation = Representations.VarconfSliderRepresentation:new((configService:getValue("shadows", "fardistance")), 1000),
-					helpString = "If the shadows are to be further than this value, they won't be rendered"
+					helpString = "If the shadows are to be further than this value, they won't be rendered",
+					
+					section = "shadows",
+					key = "fardistance",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 1000) end,
 				},
 			},
 		},
@@ -69,14 +86,21 @@ function SettingsWidget:buildSettingsUi()
 			{
 				{
 					label = "Enabled",
-					representation = Representations.VarconfCheckboxRepresentation:new((configService:getValue("audio", "enabled"))),
-					helpString = "Controls whether sounds are played"
+					helpString = "Controls whether sounds are played",
+					
+					section = "audio",
+					key = "enabled",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
 				{
 					label = "Output",
-					representation = Representations.VarconfStringComboboxRepresentation:new((configService:getValue("audio", "output"))),
 					helpString = "Which sound output should be used",
 					
+					section = "audio",
+					key = "output",
+					
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value) end,
 					suggestions = {"output", "test1", "test2"}
 				},
 			},
@@ -102,8 +126,12 @@ function SettingsWidget:buildUiFor(category)
 	description:setProperty("HorzFormatting", "WordWrapLeftAligned")
 	vbox:addChildWindow(description)
 	
+	local configService = emberServices:getConfigService()
+	
 	for _, data in ipairs(category.contents) do
-		local representation = data.representation
+		local value = configService:getValue(data.section, data.key)
+		
+		local representation = data.representationFactory(value)
 		local suggestions = data.suggestions
 		
 		-- if suggestions are omitted, make them "empty"
