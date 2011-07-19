@@ -25,8 +25,22 @@
  */
 
 $#include <varconf/variable.h>
- 
+
 namespace varconf {
+
+enum Scope
+{
+  GLOBAL,
+  USER,
+  INSTANCE
+};
+
+class VarBase
+{
+public:
+  const Scope scope() const;
+  void setScope(Scope s);
+};
 
 class Variable  {
 public:
@@ -35,7 +49,6 @@ public:
   Variable(const int i);
   Variable(const double d);
   Variable(const std::string& s);
-
 
   virtual ~Variable();
 
@@ -49,6 +62,8 @@ public:
   bool is_double() const;
   bool is_string() const;
   bool is_array() const;
+  
+  VarBase& elem() const;
 };
 
 } // namespace varconf
