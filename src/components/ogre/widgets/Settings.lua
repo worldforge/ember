@@ -7,6 +7,9 @@ function SettingsWidget:buildWidget()
 	self.window = self.widget:getWindow("MainWindow")
 	self.window:subscribeEvent("CloseClicked", self.CloseClicked, self)
 	
+	self.cancelButton = self.widget:getWindow("MainWindow/CancelButton")
+	self.cancelButton:subscribeEvent("Clicked", self.CloseClicked, self)
+	
 	self.tabs = self.widget:getWindow("MainWindow/Tabs")
 	
 	self:buildSettingsUi()
