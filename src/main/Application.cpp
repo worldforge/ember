@@ -162,6 +162,10 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 
 Application::~Application()
 {
+	// before shutting down, we write out the user config to user's ember home directory
+	ConfigService& configService = EmberServices::getSingleton().getConfigService();
+	configService.saveConfig(configService.getHomeDirectory() + "/ember.conf", varconf::USER);
+	
 	EmberServices::getSingleton().getServerService().stop(0);
 	delete mOgreView;
 	delete mServices;
