@@ -29,7 +29,7 @@ class ConfigService
      * @param Value to store.
      */
     void setValue(const std::string& section, const std::string& key, const varconf::Variable& value, varconf::Scope scope);
-	void setValue(const std::string& section, const std::string& key, const varconf::Variable& value);
+    void setValue(const std::string& section, const std::string& key, const varconf::Variable& value);
 
     //----------------------------------------------------------------------
     // Methods
@@ -69,8 +69,7 @@ class ConfigService
      *
      * @param Name of file to save to.
      */
-    bool saveConfig(const std::string& filename);
-	
+	bool saveConfig(const std::string& filename, int scopeMask = varconf::GLOBAL | varconf::USER | varconf::INSTANCE);
 	
 	/**
 	* returns the path to the home directory, where all configuration is stored

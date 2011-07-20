@@ -184,7 +184,7 @@ function SettingsWidget:applyAllValues()
 	-- go through everything and apply the new values
 	for _, category in ipairs(self.settings) do
 		for _, data in ipairs(category.contents) do
-			configService:setValue(data.section, data.key, data.representation:getEditedValue())
+			configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
 		end
 	end
 end

@@ -303,7 +303,7 @@ namespace Ember
 		return success;
 	}
 
-	bool ConfigService::saveConfig ( const std::string& filename )
+	bool ConfigService::saveConfig ( const std::string& filename, int scopeMask )
 	{
 		//Go through all user config values and save those (as they were defined in the original user config file).
 		//Also save any instance values that aren't present in the user config if they differ from the global value.

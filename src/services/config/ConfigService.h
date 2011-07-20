@@ -236,9 +236,10 @@ namespace Ember
 			/**
 			 * Saves config space to given file.
 			 *
-			 * @param Name of file to save to.
+			 * @param filename of file to save to.
+			 * @param scopeMask we will only write out variables which have their scope in this mask
 			 */
-			bool saveConfig ( const std::string& filename );
+			bool saveConfig ( const std::string& filename, int scopeMask = varconf::GLOBAL | varconf::USER | varconf::INSTANCE );
 
 
 			/**

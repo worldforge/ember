@@ -28,12 +28,10 @@ $#include <varconf/variable.h>
 
 namespace varconf {
 
-enum Scope
-{
-  GLOBAL,
-  USER,
-  INSTANCE
-};
+typedef enum { GLOBAL           = 0x1 << 0,
+               USER             = 0x1 << 1,
+               INSTANCE         = 0x1 << 2
+} Scope;
 
 class VarBase
 {
