@@ -28,7 +28,8 @@ class ConfigService
      * @param Key to store value in.
      * @param Value to store.
      */
-    void setValue(const std::string& section, const std::string& key, const varconf::Variable& value);
+    void setValue(const std::string& section, const std::string& key, const varconf::Variable& value, varconf::Scope scope);
+	void setValue(const std::string& section, const std::string& key, const varconf::Variable& value);
 
     //----------------------------------------------------------------------
     // Methods
