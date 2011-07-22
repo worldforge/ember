@@ -184,14 +184,25 @@ function SettingsWidget:buildUiFor(category)
 end
 
 function SettingsWidget:applyAllValues()
+	-- Applies all values
+	-- returns: true if the changes required restart of Ember, false otherwise
+	
 	local configService = emberServices:getConfigService()
+	local requiresRestart = false
 	
 	-- go through everything and apply the new values
 	for _, category in ipairs(self.settings) do
 		for _, data in ipairs(category.contents) do
-			configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
+			if configService:getValue(data.section, data.key) ~= data.representation:getEditedValue() then
+				configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
+				
+				-- if this value changed and a change requires restart, we have to tell the user
+				requiresRestart = requiresRestart or data.requiresRestart
+			end
 		end
 	end
+	
+	return requiresRestart
 end
 
 function SettingsWidget:OkClicked(args)
