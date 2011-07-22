@@ -213,7 +213,7 @@ function SettingsWidget:buildUiFor(category)
 	return ret
 end
 
-restartDialog = nil
+settingsRestartDialogInstance = nil
 
 function SettingsWidget:applyAllValues()
 	-- Applies all values
@@ -235,7 +235,7 @@ function SettingsWidget:applyAllValues()
 	end
 	
 	if requiresRestart then
-		restartDialog = SettingsRestartDialog:new()
+		settingsRestartDialogInstance = SettingsRestartDialog:new()
 	end
 	
 	return requiresRestart
