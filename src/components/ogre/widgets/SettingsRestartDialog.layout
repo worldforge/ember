@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.0,300.0},{0.0,200.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.5,-150.0},{0.5,-100.0}}'/>
+		<Property Name='Text' Value='Requires Ember restart!'/>
+		
+		<Window Type='EmberLook/StaticText' Name='MainWindow/Text'>
+			<Property Name='UnifiedSize' Value='{{1.0, 0.0}, {1.0, -35.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0, 0.0}, {0.0, 0.0}}'/>
+			
+			<Property Name='Text' Value='Changes made in the settings window requires a restart of the whole Ember client to fully apply. Please exit the client and start it again.'/>
+			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='MainWindow/OKButton'>
+			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0, -80.0}, {1.0, -30.0}}'/>
+			
+			<Property Name='Text' Value='OK'/>
+		</Window>
+	</Window>
+</GUILayout>

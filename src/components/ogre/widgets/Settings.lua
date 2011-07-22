@@ -1,3 +1,33 @@
+SettingsRestartDialog = {}
+
+function SettingsRestartDialog:new()
+	ret = {}
+	setmetatable(ret, {__index = SettingsRestartDialog})
+	
+	ret:buildWidget()
+	
+	return ret
+end
+
+function SettingsRestartDialog:buildWidget()
+	self.widget = guiManager:createWidget()
+	self.widget:loadMainSheet("SettingsRestartDialog.layout", "SettingsRestartDialog/")
+	
+	self.window = self.widget:getWindow("MainWindow")
+	self.window:subscribeEvent("CloseClicked", self.CloseClicked, self)
+	
+	self.okButton = self.widget:getWindow("MainWindow/OKButton")
+	self.okButton:subscribeEvent("Clicked", self.CloseClicked, self)
+	
+	-- make it a modal window to prevent user from missing the info
+	self.window:setModalState(true)
+end
+
+function SettingsRestartDialog:CloseClicked(agrs)
+	guiManager:destroyWidget(self.widget)
+	self.widget = nil
+end
+
 SettingsWidget = {}
 
 function SettingsWidget:buildWidget()
@@ -183,6 +213,8 @@ function SettingsWidget:buildUiFor(category)
 	return ret
 end
 
+restartDialog = nil
+
 function SettingsWidget:applyAllValues()
 	-- Applies all values
 	-- returns: true if the changes required restart of Ember, false otherwise
@@ -194,12 +226,16 @@ function SettingsWidget:applyAllValues()
 	for _, category in ipairs(self.settings) do
 		for _, data in ipairs(category.contents) do
 			if configService:getValue(data.section, data.key) ~= data.representation:getEditedValue() then
-				configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
+				--configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
 				
 				-- if this value changed and a change requires restart, we have to tell the user
 				requiresRestart = requiresRestart or data.requiresRestart
 			end
 		end
+	end
+	
+	if requiresRestart then
+		restartDialog = SettingsRestartDialog:new()
 	end
 	
 	return requiresRestart
