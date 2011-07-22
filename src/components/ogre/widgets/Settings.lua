@@ -43,7 +43,8 @@ function SettingsWidget:buildSettingsUi()
 					key = "level",
 					
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value) end,
-					suggestions = {"low", "medium", "high"}
+					suggestions = {"low", "medium", "high"},
+					requiresRestart = true,
 				},
 				{
 					label = "Fresnel water",
@@ -114,6 +115,10 @@ function SettingsWidget:buildSettingsUi()
 	}
 	
 	for _, category in ipairs(self.settings) do
+		if category.requiresRestart == nil then
+			category.requiresRestart = false
+		end
+		
 		local wnd = self:buildUiFor(category)
 		self.tabs:addChildWindow(wnd)
 	end
