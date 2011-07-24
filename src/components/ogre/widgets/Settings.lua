@@ -28,6 +28,36 @@ function SettingsRestartDialog:CloseClicked(agrs)
 	self.widget = nil
 end
 
+SettingsUnappliedChangesDialog = {}
+
+function SettingsUnappliedChangesDialog:new()
+	ret = {}
+	setmetatable(ret, {__index = SettingsUnappliedChangesDialog})
+	
+	ret:buildWidget()
+	
+	return ret
+end
+
+function SettingsUnappliedChangesDialog:buildWidget()
+	self.widget = guiManager:createWidget()
+	self.widget:loadMainSheet("SettingsUnappliedChangesDialog.layout", "SettingsUnappliedChangesDialog/")
+	
+	self.window = self.widget:getWindow("MainWindow")
+	self.window:subscribeEvent("CloseClicked", self.CloseClicked, self)
+	
+	self.okButton = self.widget:getWindow("MainWindow/OKButton")
+	self.okButton:subscribeEvent("Clicked", self.CloseClicked, self)
+	
+	-- make it a modal window to prevent user from missing the info
+	self.window:setModalState(true)
+end
+
+function SettingsUnappliedChangesDialog:CloseClicked(agrs)
+	guiManager:destroyWidget(self.widget)
+	self.widget = nil
+end
+
 SettingsWidget = {}
 
 function SettingsWidget:buildWidget()

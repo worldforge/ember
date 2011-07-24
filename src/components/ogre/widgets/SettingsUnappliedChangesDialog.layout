@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+		<Property Name='UnifiedSize' Value='{{0.0,300.0},{0.0,200.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.5,-150.0},{0.5,-100.0}}'/>
+		<Property Name='Text' Value='Unapplied changes!'/>
+		
+		<Window Type='EmberLook/StaticText' Name='MainWindow/Text'>
+			<Property Name='UnifiedSize' Value='{{1.0, 0.0}, {1.0, -35.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{0.0, 0.0}, {0.0, 0.0}}'/>
+			
+			<Property Name='Text' Value="There are changes in the current tab that weren't applied. Do you want to apply or discard them?"/>
+			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='MainWindow/ApplyButton'>
+			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0, -160.0}, {1.0, -30.0}}'/>
+			
+			<Property Name='Text' Value='Apply'/>
+		</Window>
+		<Window Type='EmberLook/Button' Name='MainWindow/DiscardButton'>
+			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
+			<Property Name='UnifiedPosition' Value='{{1.0, -80.0}, {1.0, -30.0}}'/>
+			
+			<Property Name='Text' Value='Discard'/>
+		</Window>
+	</Window>
+</GUILayout>
