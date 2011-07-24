@@ -40,7 +40,8 @@ emberlibs = \
 	$(top_builddir)/src/services/wfut/libWfut.a \
 	$(top_builddir)/src/services/serversettings/libServerSettings.a \
 	$(top_builddir)/src/framework/tasks/libTasks.a \
-	$(top_builddir)/src/framework/libFramework.a
+	$(top_builddir)/src/framework/libFramework.a \
+	${BOOST_THREAD_LIB}
 
 if !BUILD_WEBEMBER
 SUBDIRS = bindings
