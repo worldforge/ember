@@ -99,7 +99,7 @@ AC_ARG_ENABLE(webember,
   [
     if test "$enableval" = "yes"; then
       webember_enabled="true"
-      CXXFLAGS="$CXXFLAGS -DBUILD_WEBEMBER -fPIC"
+      CXXFLAGS="$CXXFLAGS -DBUILD_WEBEMBER"
     else
       webember_enabled="false"
     fi
