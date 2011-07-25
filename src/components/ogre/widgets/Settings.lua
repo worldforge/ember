@@ -44,18 +44,34 @@ function SettingsUnappliedChangesDialog:buildWidget()
 	self.widget:loadMainSheet("SettingsUnappliedChangesDialog.layout", "SettingsUnappliedChangesDialog/")
 	
 	self.window = self.widget:getWindow("MainWindow")
-	self.window:subscribeEvent("CloseClicked", self.CloseClicked, self)
 	
-	self.okButton = self.widget:getWindow("MainWindow/OKButton")
-	self.okButton:subscribeEvent("Clicked", self.CloseClicked, self)
+	self.applyButton = self.widget:getWindow("MainWindow/ApplyButton")
+	--self.applyButton:subscribeEvent("Clicked", self.ApplyClicked, self)
+	
+	self.discardButton = self.widget:getWindow("MainWindow/DiscardButton")
+	--self.discardButton:subscribeEvent("Clicked", self.DiscardClicked, self)
 	
 	-- make it a modal window to prevent user from missing the info
 	self.window:setModalState(true)
 end
 
-function SettingsUnappliedChangesDialog:CloseClicked(agrs)
+function SettingsUnappliedChangesDialog:destroy()
 	guiManager:destroyWidget(self.widget)
 	self.widget = nil
+end
+
+function SettingsUnappliedChangesDialog:ApplyClicked(agrs)
+	-- FIXME: Apply the changes
+	self:destroy()
+	
+	return true
+end
+
+function SettingsUnappliedChangesDialog:DiscardClicked(agrs)
+	-- FIXME: Discard the changes
+	self:destroy()
+	
+	return true
 end
 
 SettingsWidget = {}
@@ -245,6 +261,24 @@ end
 
 settingsRestartDialogInstance = nil
 
+function SettingsWidget:hasChanges()
+	-- Checks whether there are changed values in the settings
+	-- returns: true if there are changes
+	
+	local configService = emberServices:getConfigService()
+	
+	-- go through everything and apply the new values
+	for _, category in ipairs(self.settings) do
+		for _, data in ipairs(category.contents) do
+			if configService:getValue(data.section, data.key) ~= data.representation:getEditedValue() then
+				return true
+			end
+		end
+	end
+	
+	return false
+end
+
 function SettingsWidget:applyAllValues()
 	-- Applies all values
 	-- returns: true if the changes required restart of Ember, false otherwise
@@ -274,15 +308,27 @@ end
 function SettingsWidget:OkClicked(args)
 	self:applyAllValues()
 	self.widget:hide()
+	
+	return true
 end
 
 function SettingsWidget:ApplyClicked(args)
 	self:applyAllValues()
+	
+	return true
 end
 
+settingsUnappliedChangesDialogInstance = nil
+
 function SettingsWidget:CloseClicked(args)
-	-- FIXME: We should discard all values here
-	self.widget:hide()
+	if self:hasChanges() then
+		-- unapplied changes dialog takes care of discarding or applying the settings
+		settingsUnappliedChangesDialogInstance = SettingsUnappliedChangesDialog:new()
+	else
+		self.widget:hide()
+	end
+	
+	return true
 end
 
 settingsWidget = {connectors={}}
