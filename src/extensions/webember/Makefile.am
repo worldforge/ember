@@ -1,12 +1,17 @@
 
 if BUILD_WEBEMBER
 SUBDIRS = ../../main/bindings
-lib_LTLIBRARIES = libWebEmber-0.1.la
 include $(top_srcdir)/src/main/Makefile.am
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
-libWebEmber_0_1_la_SOURCES = WebEmberManager.cpp WebEmberDLL.cpp $(embersources)
-libWebEmber_0_1_la_LIBADD = $(emberlibs)
-libWebEmber_0_1_la_LDFLAGS = -version 0:1:0
+
+lib_LTLIBRARIES = libWebEmber.la
+
+libWebEmber_la_SOURCES = WebEmberManager.cpp WebEmberDLL.cpp $(embersources)
+libWebEmber_la_LIBADD = $(emberlibs)
+if(WIN32)
+libWebEmber_la_LDFLAGS = -lole32 -loleaut32 -no-undefined
+endif
+libWebEmber_la_LDFLAGS = -release 0.1 -version 0:1:0
 libWebEmberdir = $(includedir)
 
 
