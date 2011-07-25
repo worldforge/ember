@@ -17,7 +17,10 @@ AM_CONFIG_HEADER(src/config.h)
 AC_PREREQ(2.50)
 AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
 
-AC_DISABLE_SHARED
+#will disable verbose linking checks, which fail even if there is no problem.
+lt_cv_deplibs_check_method=pass_all
+LT_INIT
+
 
 # Checks for Programs
 AC_PROG_CXX
@@ -29,7 +32,7 @@ AC_PROG_CC
 #AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 dnl AM_PROG_LEX
-LT_INIT
+
 
 AC_PATH_PROG([XMLLINT], [xmllint], [true])
 
