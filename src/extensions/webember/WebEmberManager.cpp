@@ -58,22 +58,7 @@ int WebEmberManager::start(const std::string& windowHandle, std::string prefix)
 	configMap.insert(std::make_pair("ogre", ogremap));
 
 
-#ifdef _WIN32
-	// To find the resources, we need to set the prefix.
-	// we need to assume that WebEmber.dll is in the PREFIX/bin/WebEmber.dll
-	char buffer[MAX_PATH];
-	GetModuleFileNameA( (HMODULE)mModuleHandle, buffer, 512 );
-	int pos = 0;
-	int pos2 = 0;
-	//get prefix by removing "/bin/WebEmber.dll" from the end of the path.
-	for(int i=0; i < MAX_PATH && buffer[i]; i++) {
-		if(buffer[i] == '\\' || buffer[i] == '/') {
-			pos2 = pos;
-			pos = i;
-		}
-	}
-	buffer[pos2] = 0;
-#elif defined (ENABLE_BINRELOC)
+#if defined (ENABLE_BINRELOC)
 	if (prefix == "")
 	{
 		BrInitError error;
