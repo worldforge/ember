@@ -83,6 +83,8 @@ end
 SettingsWidget = {}
 
 function SettingsWidget:buildWidget()
+	self.connectors = {}
+	
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("Settings.layout", "Settings/")
 	
@@ -263,8 +265,11 @@ function SettingsWidget:buildUiFor(category)
 		
 		-- store the representation in data so that we can query it later (to get current value)
 		data.representation = representation
-		
-		connect(self.connectors, representation:getEventValueChangedSignal(), self.EventValueChanged, self)
+
+		-- we have to bind the arguments to the call which I accomplished with this atrocity, if there is other way to do it
+		-- I would appreciate knowing how :-)
+		local valueChangedCall = loadstring("settingsWidget:RepresentationValueChanged('" .. data.section .."', '" .. data.key .. "')")
+		connect(self.connectors, representation:getEventValueChangedSignal(), valueChangedCall)
 	end
 	
 	ret:addChildWindow(vbox)
@@ -360,8 +365,8 @@ function SettingsWidget:CloseClicked(args)
 	return true
 end
 
-function SettingsWidget:EventValueChanged()
-	--log.info("Test")
+function SettingsWidget:RepresentationValueChanged(section, key)
+	--log.info("Test: " .. key)
 end
 
 setmetatable(settingsWidget, {__index = SettingsWidget})
