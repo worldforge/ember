@@ -27,17 +27,19 @@
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
-#define WEBEMBER_EXPORT __declspec(dllexport) __stdcall
+#define WEBEMBER_EXPORT __declspec(dllexport)
 #else
 #define WEBEMBER_EXPORT __attribute__((visibility("default")))
 #endif
 
 #include <sstream>
 
+//wrap C++ functions with C interface: http://www.parashift.com/c++-faq-lite/mixing-c-and-cpp.html#faq-32.6
+extern "C" int WEBEMBER_EXPORT StartWebEmber(const char* windowHandle, const char* prefix);
+extern "C" void WEBEMBER_EXPORT QuitWebEmber();
+
 using namespace Ember;
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 /**
  * @brief Start WebEmber as a child window of a given HWND.
  *
@@ -64,6 +66,8 @@ void WEBEMBER_EXPORT QuitWebEmber()
 
 
 #ifdef _WIN32
+extern "C" BOOL APIENTRY DllMain(HINSTANCE hModule, DWORD ul_reason_for_call, LPVOID lpReserved);
+
 /**
  * @brief DllMain is the entry point for DLLs.
  *
@@ -73,12 +77,12 @@ void WEBEMBER_EXPORT QuitWebEmber()
 BOOL APIENTRY DllMain(HINSTANCE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
 	switch(ul_reason_for_call) {
-		case DLL_PROCESS_ATTACH:
+	case DLL_PROCESS_ATTACH:
 		// DLL is loaded into the memory
 		// if you return here FALSE the DLL will not be loaded and linking fails.
-		new Ember::WebEmberManager(hModule);
+		new Ember::WebEmberManager();
 		break;
-		case DLL_PROCESS_DETACH:
+	case DLL_PROCESS_DETACH:
 		// DLL is unloaded from the memory
 		delete Ember::WebEmberManager::getSingletonPtr();
 		break;
@@ -86,6 +90,9 @@ BOOL APIENTRY DllMain(HINSTANCE hModule, DWORD ul_reason_for_call, LPVOID lpRese
 	return TRUE;
 }
 #else
+
+extern "C" void initWebEmber(void);
+extern "C" void deinitWebEmber(void);
 
 //Set library constructor and destructor functions.
 void __attribute__ ((constructor)) initWebEmber(void);
@@ -103,8 +110,4 @@ void deinitWebEmber(void)
 	delete Ember::WebEmberManager::getSingletonPtr();
 }
 
-#endif
-
-#ifdef __cplusplus
-}
 #endif
