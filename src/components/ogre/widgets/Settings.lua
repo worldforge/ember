@@ -103,6 +103,10 @@ function SettingsWidget:buildWidget()
 	self:buildSettingsUi()
 end
 
+function SettingsWidget:destroy()
+	disconnectAll(self.connectors)
+end
+
 function SettingsWidget:buildSettingsUi()
 	--This is a place where the settings contents are declared and (later) used to construct the GUI
 	--to manipulace them
@@ -259,6 +263,8 @@ function SettingsWidget:buildUiFor(category)
 		
 		-- store the representation in data so that we can query it later (to get current value)
 		data.representation = representation
+		
+		connect(self.connectors, representation:getEventValueChangedSignal(), self.EventValueChanged, self)
 	end
 	
 	ret:addChildWindow(vbox)
@@ -352,6 +358,10 @@ function SettingsWidget:CloseClicked(args)
 	end
 	
 	return true
+end
+
+function SettingsWidget:EventValueChanged()
+	--log.info("Test")
 end
 
 setmetatable(settingsWidget, {__index = SettingsWidget})
