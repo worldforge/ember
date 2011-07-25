@@ -9,7 +9,7 @@
 			<Property Name='UnifiedSize' Value='{{1.0, 0.0}, {1.0, -35.0}}'/>
 			<Property Name='UnifiedPosition' Value='{{0.0, 0.0}, {0.0, 0.0}}'/>
 			
-			<Property Name='Text' Value="There are changes in the current tab that weren't applied. Do you want to apply or discard them?"/>
+			<Property Name='Text' Value="There are changes in the settings that weren't applied. Do you want to apply or discard them?"/>
 			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 		</Window>
 		<Window Type='EmberLook/Button' Name='MainWindow/ApplyButton'>
