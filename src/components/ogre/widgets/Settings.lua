@@ -63,16 +63,18 @@ function SettingsUnappliedChangesDialog:destroy()
 end
 
 function SettingsUnappliedChangesDialog:ApplyClicked(agrs)
-	-- FIXME: Apply the changes
 	self:destroy()
+
+	settingsWidget:applyAllValues()
 	settingsWidget:hide()
 	
 	return true
 end
 
 function SettingsUnappliedChangesDialog:DiscardClicked(agrs)
-	-- FIXME: Discard the changes
 	self:destroy()
+	
+	settingsWidget:discardAllValues()
 	settingsWidget:hide()
 	
 	return true
@@ -307,6 +309,19 @@ function SettingsWidget:applyAllValues()
 	end
 	
 	return requiresRestart
+end
+
+function SettingsWidget:discardAllValues()
+	-- Discards all edited values
+	
+	local configService = emberServices:getConfigService()
+	
+	-- go through everything and discard values
+	for _, category in ipairs(self.settings) do
+		for _, data in ipairs(category.contents) do
+			data.representation:resetToOriginal()
+		end
+	end
 end
 
 function SettingsWidget:hide()
