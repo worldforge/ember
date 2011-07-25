@@ -334,7 +334,7 @@ bool OgreSetup::configure(void)
 		}
 
 #ifndef BUILD_WEBEMBER
-		mRoot->initialise(true, "Ember");
+		mRenderWindow = mRoot->initialise(true, "Ember");
 #else // BUILD_WEBEMBER
 		mRoot->initialise(false, "Ember");
 
@@ -342,11 +342,12 @@ bool OgreSetup::configure(void)
 
 		if (configService->itemExists("ogre", "windowhandle")) {
 			//set the owner window
-			options["parentWindowHandle"]=configService->getValue("ogre", "windowhandle");
+			std::string windowhandle = configService->getValue("ogre", "windowhandle");
+			options["parentWindowHandle"] = windowhandle;
 
 			//put it in the top left corner
-			options["top"]="0";
-			options["left"]="0";
+			options["top"] = "0";
+			options["left"] = "0";
 		}
 
 		mRenderWindow = mRoot->createRenderWindow("Ember",800,600,false,&options);
