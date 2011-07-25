@@ -51,6 +51,13 @@ public:
 	virtual const ValueType& getEditedValue() const = 0;
 	
 	/**
+	 * @brief retrieves a signal user can connect to, emitted when the value is edited
+	 * 
+	 * @see AdapterBase::EventValueChanged
+	 */
+	virtual sigc::signal<void>& getEventValueChangedSignal() = 0;
+	
+	/**
 	 * @brief retrieves the original value (at the time of representation construction)
 	 * 
 	 * @copydoc AdapterBase::getOriginalValue
