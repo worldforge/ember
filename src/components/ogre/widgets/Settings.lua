@@ -1,3 +1,5 @@
+settingsWidget = {connectors={}}
+
 SettingsRestartDialog = {}
 
 function SettingsRestartDialog:new()
@@ -46,10 +48,10 @@ function SettingsUnappliedChangesDialog:buildWidget()
 	self.window = self.widget:getWindow("MainWindow")
 	
 	self.applyButton = self.widget:getWindow("MainWindow/ApplyButton")
-	--self.applyButton:subscribeEvent("Clicked", self.ApplyClicked, self)
+	self.applyButton:subscribeEvent("Clicked", self.ApplyClicked, self)
 	
 	self.discardButton = self.widget:getWindow("MainWindow/DiscardButton")
-	--self.discardButton:subscribeEvent("Clicked", self.DiscardClicked, self)
+	self.discardButton:subscribeEvent("Clicked", self.DiscardClicked, self)
 	
 	-- make it a modal window to prevent user from missing the info
 	self.window:setModalState(true)
@@ -63,6 +65,7 @@ end
 function SettingsUnappliedChangesDialog:ApplyClicked(agrs)
 	-- FIXME: Apply the changes
 	self:destroy()
+	settingsWidget:hide()
 	
 	return true
 end
@@ -70,6 +73,7 @@ end
 function SettingsUnappliedChangesDialog:DiscardClicked(agrs)
 	-- FIXME: Discard the changes
 	self:destroy()
+	settingsWidget:hide()
 	
 	return true
 end
@@ -305,9 +309,13 @@ function SettingsWidget:applyAllValues()
 	return requiresRestart
 end
 
+function SettingsWidget:hide()
+	self.widget:hide()
+end
+
 function SettingsWidget:OkClicked(args)
 	self:applyAllValues()
-	self.widget:hide()
+	self:hide()
 	
 	return true
 end
@@ -325,12 +333,11 @@ function SettingsWidget:CloseClicked(args)
 		-- unapplied changes dialog takes care of discarding or applying the settings
 		settingsUnappliedChangesDialogInstance = SettingsUnappliedChangesDialog:new()
 	else
-		self.widget:hide()
+		self:hide()
 	end
 	
 	return true
 end
 
-settingsWidget = {connectors={}}
 setmetatable(settingsWidget, {__index = SettingsWidget})
 settingsWidget:buildWidget()
