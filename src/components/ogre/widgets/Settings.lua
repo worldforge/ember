@@ -212,6 +212,18 @@ function SettingsWidget:buildSettingsUi()
 	end
 end
 
+function SettingsWidget:getDeclarationData(section, key)
+	for _, category in ipairs(self.settings) do
+		for _, data in ipairs(category.contents) do
+			if (data.section == section) and (data.key == key) then
+				return data
+			end
+		end
+	end
+	
+	return nil
+end
+
 function SettingsWidget:buildUiFor(category)
 	local ret = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/ScrollablePane")
 	ret:setText(category.label)
@@ -245,6 +257,7 @@ function SettingsWidget:buildUiFor(category)
 		label:setProperty("UnifiedSize", "{{0.2, 0.0}, {0.0, 30.0}}")
 		label:setProperty("FrameEnabled", "False")
 		hbox:addChildWindow(label)
+		data.labelWnd = label
 		
 		for _, suggestion in ipairs(suggestions) do
 			representation:addSuggestion(suggestion)
@@ -368,6 +381,13 @@ end
 function SettingsWidget:RepresentationValueChanged(section, key)
 	-- only enable the apply button if we have changes
 	self.applyButton:setEnabled(self:hasChanges())
+	
+	local data = self:getDeclarationData(section, key)
+	if data.representation:hasChanges() then
+		data.labelWnd:setText(data.label .. "*")
+	else
+		data.labelWnd:setText(data.label)
+	end
 	
 	log.info("Section '" .. section .. "'/key '" .. key .. "' changed")
 end

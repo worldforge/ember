@@ -39,6 +39,7 @@ public:
 	void addSuggestion(const std::string& suggestion);
 	virtual sigc::signal<void>& getEventValueChangedSignal();
 	virtual const ValueType& getEditedValue() const;
+	virtual bool hasChanges() const;
 };
 
 $renaming ^ComboboxRepresentation<Atlas::Message::Element,std::string> @ AtlasStringComboboxRepresentation

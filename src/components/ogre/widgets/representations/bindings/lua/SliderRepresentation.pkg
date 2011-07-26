@@ -36,6 +36,7 @@ public:
 	virtual CEGUI::Window* getGuiRoot();
 	virtual sigc::signal<void>& getEventValueChangedSignal();
 	virtual const ValueType& getEditedValue() const;
+	virtual bool hasChanges() const;
 };
 
 $renaming ^SliderRepresentation<Atlas::Message::Element> @ AtlasSliderRepresentation
