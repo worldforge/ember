@@ -366,7 +366,10 @@ function SettingsWidget:CloseClicked(args)
 end
 
 function SettingsWidget:RepresentationValueChanged(section, key)
-	--log.info("Test: " .. key)
+	-- only enable the apply button if we have changes
+	self.applyButton:setEnabled(self:hasChanges())
+	
+	log.info("Section '" .. section .. "'/key '" .. key .. "' changed")
 end
 
 setmetatable(settingsWidget, {__index = SettingsWidget})
