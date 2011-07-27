@@ -207,8 +207,10 @@ namespace Ember
 		return false;
 	}
 
-	void ConfigService::setValue ( const std::string& section, const std::string& key, const varconf::Variable& value, varconf::Scope scope)
+	void ConfigService::setValue ( const std::string& section, const std::string& key, const varconf::Variable& value, int iscope)
 	{
+		varconf::Scope scope = static_cast<varconf::Scope>(iscope);
+		
 		varconf::Config* config = mInstanceConfig;
 		if (scope == varconf::GLOBAL) {
 			config = mGlobalConfig;

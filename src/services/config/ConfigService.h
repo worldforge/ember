@@ -158,7 +158,7 @@ namespace Ember
 			 * @param Value to store.
 			 * @param scope The underlying configuration to save the value to. In almost all cases varconf::INSTANCE is appropriate.
 			 */
-			void setValue ( const std::string& section, const std::string& key, const varconf::Variable& value, varconf::Scope scope = varconf::INSTANCE );
+			void setValue ( const std::string& section, const std::string& key, const varconf::Variable& value, int scope = varconf::INSTANCE );
 
 			//----------------------------------------------------------------------
 			// Methods

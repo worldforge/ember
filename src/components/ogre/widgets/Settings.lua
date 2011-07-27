@@ -324,7 +324,7 @@ function SettingsWidget:applyAllValues()
 	for _, category in ipairs(self.settings) do
 		for _, data in ipairs(category.contents) do
 			if configService:getValue(data.section, data.key) ~= data.representation:getEditedValue() then
-				--configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
+				configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
 				
 				-- if this value changed and a change requires restart, we have to tell the user
 				requiresRestart = requiresRestart or data.requiresRestart
