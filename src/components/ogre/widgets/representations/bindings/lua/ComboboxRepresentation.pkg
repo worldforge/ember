@@ -39,6 +39,7 @@ public:
 	void addSuggestion(const std::string& suggestion);
 	virtual sigc::signal<void>& getEventValueChangedSignal();
 	virtual const ValueType& getEditedValue() const;
+	virtual void applyChanges();
 	virtual bool hasChanges() const;
 };
 

@@ -64,6 +64,8 @@ public:
 	
 	virtual const ValueType& getOriginalValue() const;
 	
+	virtual void applyChanges();
+	
 	virtual bool hasChanges() const;
 	
 	virtual bool isRemoved() const;
@@ -115,6 +117,12 @@ template<typename ValueType>
 const ValueType& SingleAdapterRepresentationBase<ValueType>::getOriginalValue() const
 {
 	return mAdapter->getOriginalValue();
+}
+
+template<typename ValueType>
+void SingleAdapterRepresentationBase<ValueType>::applyChanges()
+{
+	mAdapter->applyChanges();
 }
 
 template<typename ValueType>

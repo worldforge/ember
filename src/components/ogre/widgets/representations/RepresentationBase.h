@@ -89,6 +89,13 @@ public:
 	virtual const ValueType& getOriginalValue() const = 0;
 	
 	/**
+	 * @brief notifies the representation to apply it's changes (to the original value)
+	 * 
+	 * @copydoc AdapterBase::applyChanges
+	 */
+	virtual void applyChanges() = 0;
+	
+	/**
 	 * @brief checks whether this representation has changes
 	 * 
 	 * @copydoc AdapterBase::hasChanges

@@ -159,6 +159,14 @@ public:
 	virtual void updateGui(const ValueType& element) = 0;
 	
 	/**
+	 * @brief Propagates edited value to original value
+	 * 
+	 * You usually call this after you've used the edited value and applied it in an external system.
+	 * This will cause hasChanges() to return false
+	 */
+	void applyChanges();
+	
+	/**
 	 * @brief Returns true if the value has been changed through changes in the gui.
 	 *
 	 * @return True if the value has changed.
@@ -203,7 +211,7 @@ protected:
 	/**
 	The original value.
 	*/
-	const ValueType& mOriginalValue;
+	ValueType mOriginalValue;
 	
 	/**
 	The value as translated from the gui elements. If no gui changes has been made, this will be the same as mOriginalElement.
@@ -229,6 +237,13 @@ protected:
 	 * This is where you in your subclass have the logic where you parse the values in the gui elements into the element.
 	 */
 	virtual void fillElementFromGui() = 0;
+	
+	/**
+	 * @brief Implementation of the applyChanges method
+	 * 
+	 * This will usually just do mOriginalValue = mEditedValue;
+	 */
+	virtual void _applyChanges();
 	
 	/**
 	 * @brief Checks whether any change has occurred.
@@ -331,6 +346,15 @@ const ValueType& AdapterBase<ValueType>::getOriginalValue() const
 }
 
 template<typename ValueType>
+void AdapterBase<ValueType>::applyChanges()
+{
+	if (!mRemoved)
+	{
+		_applyChanges();
+	}
+}
+
+template<typename ValueType>
 bool AdapterBase<ValueType>::hasChanges()
 {
 	if (mRemoved)
@@ -382,6 +406,12 @@ template<typename ValueType>
 void AdapterBase<ValueType>::_setSelfUpdate(bool selfUpdate)
 {
 	mSelfUpdate = selfUpdate;
+}
+
+template<typename ValueType>
+void AdapterBase<ValueType>::_applyChanges()
+{
+	this->mOriginalValue = this->getValue();
 }
 
 template<typename ValueType>

@@ -326,11 +326,20 @@ function SettingsWidget:applyAllValues()
 			if configService:getValue(data.section, data.key) ~= data.representation:getEditedValue() then
 				configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
 				
+				-- notify the representation that we applied our changes and it should alter it's original value
+				data.representation:applyChanges()
+				
+				-- we call this to notify the representation that the varconf value has changed,
+				-- the representation can stop notifying that it has changes if applicable
+				self:RepresentationValueChanged(data.section, data.key)
+				
 				-- if this value changed and a change requires restart, we have to tell the user
 				requiresRestart = requiresRestart or data.requiresRestart
 			end
 		end
 	end
+	
+	self.applyButton:setEnabled(false)
 	
 	if requiresRestart then
 		settingsRestartDialogInstance = SettingsRestartDialog:new()
