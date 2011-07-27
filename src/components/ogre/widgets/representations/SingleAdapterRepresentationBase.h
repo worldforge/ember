@@ -80,8 +80,6 @@ protected:
 	 * @note You may only call this once in your inherited implementation (usually in the constructor)
 	 */
 	void setAdapter(Adapters::AdapterBase<ValueType>* adapter);
-	
-	void adapterValueChanged();
 };
 
 template<typename ValueType>
@@ -144,12 +142,7 @@ void SingleAdapterRepresentationBase<ValueType>::setAdapter(Adapters::AdapterBas
 	assert(adapter);
 	
 	mAdapter = adapter;
-	mAdapter->EventValueChanged.connect(sigc::mem_fun(*this, &SingleAdapterRepresentationBase::adapterValueChanged));
 }
-
-template<typename ValueType>
-void SingleAdapterRepresentationBase<ValueType>::adapterValueChanged()
-{}
 
 }
 
