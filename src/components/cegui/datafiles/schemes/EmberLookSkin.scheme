@@ -67,4 +67,6 @@
 	<FalagardMapping WindowType="EmberLook/IngameChatResponseButton" TargetType="CEGUI/PushButton" Renderer="Falagard/Button" LookNFeel="EmberLook/IngameChatResponseButton" />
 	<FalagardMapping WindowType="EmberLook/IngameChatTextButton" TargetType="CEGUI/PushButton" Renderer="Falagard/Button" LookNFeel="EmberLook/IngameChatTextButton" />
 	<FalagardMapping WindowType="EmberLook/IngameChatDetachedWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/IngameChatDetachedWindow" />
+
+	<FalagardMapping WindowType="EmberLook/DialogWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/DialogWindow" />
 </GUIScheme>

@@ -23,6 +23,8 @@ function SettingsRestartDialog:buildWidget()
 	
 	-- make it a modal window to prevent user from missing the info
 	self.window:setModalState(true)
+	-- we fire this to start the ShowTransition
+	self.window:fireEvent("Shown", CEGUI.WindowEventArgs:new(self.window))
 end
 
 function SettingsRestartDialog:CloseClicked(agrs)
@@ -55,6 +57,8 @@ function SettingsUnappliedChangesDialog:buildWidget()
 	
 	-- make it a modal window to prevent user from missing the info
 	self.window:setModalState(true)
+	-- we fire this to start the ShowTransition
+	self.window:fireEvent("Shown", CEGUI.WindowEventArgs:new(self.window))
 end
 
 function SettingsUnappliedChangesDialog:destroy()

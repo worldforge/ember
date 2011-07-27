@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+	<Window Type='EmberLook/DialogWindow' Name='MainWindow'>
 		<Property Name='UnifiedSize' Value='{{0.0,300.0},{0.0,200.0}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.5,-150.0},{0.5,-100.0}}'/>
 		<Property Name='Text' Value='Unapplied changes!'/>

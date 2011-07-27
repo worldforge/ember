@@ -6268,4 +6268,408 @@
 			<Subscription event="Hidden" action="Pause" />
 		</AnimationDefinition>
 	</WidgetLook>
+	
+	<!--
+	***************************************************
+	EmberLook/DialogWindow
+	***************************************************
+	-->
+	<WidgetLook name="EmberLook/DialogWindow">
+		<!-- Martin Preisler: This is a prime candidate for WidgetLook inheriting that was added in CEGUI 0.8 -->
+		
+		<PropertyLinkDefinition name="CaptionColour" widget="__auto_titlebar__" targetProperty="CaptionColour" initialValue="FF000000" />
+		<PropertyLinkDefinition name="TitlebarFont" widget="__auto_titlebar__" targetProperty="Font" />
+		<Property name="NSSizingCursorImage" value="set:EmberLook image:MouseNoSoCursor" />
+		<Property name="EWSizingCursorImage" value="set:EmberLook image:MouseEsWeCursor" />
+		<Property name="NWSESizingCursorImage" value="set:EmberLook image:MouseNwSeCursor" />
+		<Property name="NESWSizingCursorImage" value="set:EmberLook image:MouseNeSwCursor" />
+		<Property name="UnifiedMinSize" value="{{0.1,0},{0.1,0}}" />
+		<Property name="AutoRenderingSurface" value="True" />
+		<NamedArea name="ClientWithTitleWithFrame">
+			<Area>
+				<Dim type="LeftEdge">
+					<ImageDim imageset="EmberLook" image="WindowFrameLeft" dimension="Width" />
+				</Dim>
+				<Dim type="TopEdge">
+					<WidgetDim widget="__auto_titlebar__" dimension="BottomEdge" />
+				</Dim>
+				<Dim type="RightEdge">
+					<UnifiedDim scale="1" type="RightEdge">
+						<DimOperator op="Subtract">
+							<ImageDim imageset="EmberLook" image="WindowFrameRight" dimension="Width" />
+						</DimOperator>
+					</UnifiedDim>
+				</Dim>
+				<Dim type="BottomEdge">
+					<UnifiedDim scale="1" type="BottomEdge">
+						<DimOperator op="Subtract">
+							<ImageDim imageset="EmberLook" image="WindowFrameBottom" dimension="Height" />
+						</DimOperator>
+					</UnifiedDim>
+				</Dim>
+			</Area>
+		</NamedArea>
+		<NamedArea name="ClientWithTitleNoFrame">
+			<Area>
+				<Dim type="LeftEdge">
+					<AbsoluteDim value="0" />
+				</Dim>
+				<Dim type="TopEdge">
+					<WidgetDim widget="__auto_titlebar__" dimension="BottomEdge" />
+				</Dim>
+				<Dim type="RightEdge">
+					<UnifiedDim scale="1" type="RightEdge" />
+				</Dim>
+				<Dim type="BottomEdge">
+					<UnifiedDim scale="1" type="BottomEdge" />
+				</Dim>
+			</Area>
+		</NamedArea>
+		<NamedArea name="ClientNoTitleWithFrame">
+			<Area>
+				<Dim type="LeftEdge">
+					<ImageDim imageset="EmberLook" image="WindowFrameLeft" dimension="Width" />
+				</Dim>
+				<Dim type="TopEdge">
+					<ImageDim imageset="EmberLook" image="WindowFrameTop" dimension="Height" />
+				</Dim>
+				<Dim type="RightEdge">
+					<UnifiedDim scale="1" type="RightEdge">
+						<DimOperator op="Subtract">
+							<ImageDim imageset="EmberLook" image="WindowFrameRight" dimension="Width" />
+						</DimOperator>
+					</UnifiedDim>
+				</Dim>
+				<Dim type="BottomEdge">
+					<UnifiedDim scale="1" type="BottomEdge">
+						<DimOperator op="Subtract">
+							<ImageDim imageset="EmberLook" image="WindowFrameBottom" dimension="Height" />
+						</DimOperator>
+					</UnifiedDim>
+				</Dim>
+			</Area>
+		</NamedArea>
+		<NamedArea name="ClientNoTitleNoFrame">
+			<Area>
+				<Dim type="LeftEdge">
+					<AbsoluteDim value="0" />
+				</Dim>
+				<Dim type="TopEdge">
+					<AbsoluteDim value="0" />
+				</Dim>
+				<Dim type="RightEdge">
+					<UnifiedDim scale="1" type="RightEdge" />
+				</Dim>
+				<Dim type="BottomEdge">
+					<UnifiedDim scale="1" type="BottomEdge" />
+				</Dim>
+			</Area>
+		</NamedArea>
+		<Child type="EmberLook/Titlebar" nameSuffix="__auto_titlebar__">
+			<Area>
+				<Dim type="LeftEdge">
+					<AbsoluteDim value="0" />
+				</Dim>
+				<Dim type="TopEdge">
+					<AbsoluteDim value="0" />
+				</Dim>
+				<Dim type="RightEdge">
+					<UnifiedDim scale="1" type="RightEdge" />
+				</Dim>
+				<Dim type="Height">
+					<FontDim widget="__auto_titlebar__" type="LineSpacing">
+						<DimOperator op="Multiply">
+							<AbsoluteDim value="1.5" />
+						</DimOperator>
+					</FontDim>
+				</Dim>
+			</Area>
+			<Property name="AlwaysOnTop" value="False" />
+		</Child>
+		<Child type="EmberLook/SystemButton" nameSuffix="__auto_closebutton__">
+			<Area>
+				<Dim type="LeftEdge">
+					<UnifiedDim scale="1" type="LeftEdge">
+						<DimOperator op="Subtract">
+							<AbsoluteDim value="0.5">
+								<DimOperator op="Multiply">
+									<ImageDim imageset="EmberLook" image="CloseButtonNormal" dimension="Width">
+										<DimOperator op="Add">
+											<WidgetDim widget="__auto_titlebar__" dimension="Height" />
+										</DimOperator>
+									</ImageDim>
+								</DimOperator>
+							</AbsoluteDim>
+						</DimOperator>
+					</UnifiedDim>
+				</Dim>
+				<Dim type="TopEdge">
+					<WidgetDim widget="__auto_titlebar__" dimension="Height">
+						<DimOperator op="Subtract">
+							<AbsoluteDim value="0.5">
+								<DimOperator op="Multiply">
+									<WidgetDim widget="__auto_titlebar__" dimension="Height">
+										<DimOperator op="Add">
+											<ImageDim imageset="EmberLook" image="CloseButtonNormal" dimension="Height" />
+										</DimOperator>
+									</WidgetDim>
+								</DimOperator>
+							</AbsoluteDim>
+						</DimOperator>
+					</WidgetDim>
+				</Dim>
+				<Dim type="Width">
+					<ImageDim imageset="EmberLook" image="CloseButtonNormal" dimension="Width" />
+				</Dim>
+				<Dim type="Height">
+					<ImageDim imageset="EmberLook" image="CloseButtonNormal" dimension="Height" />
+				</Dim>
+			</Area>
+			<Property name="AlwaysOnTop" value="True" />
+			<Property name="NormalImage" value="set:EmberLook image:CloseButtonNormal" />
+			<Property name="HoverImage" value="set:EmberLook image:CloseButtonHover" />
+			<Property name="PushedImage" value="set:EmberLook image:CloseButtonPushed" />
+		</Child>
+		<ImagerySection name="withtitle_frame">
+			<FrameComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="TopEdge">
+						<WidgetDim widget="__auto_titlebar__" dimension="Height" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge" />
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge" />
+					</Dim>
+				</Area>
+				<Image type="BottomLeftCorner" imageset="EmberLook" image="WindowFrameBottomLeft" />
+				<Image type="BottomRightCorner" imageset="EmberLook" image="WindowFrameBottomRight" />
+				<Image type="LeftEdge" imageset="EmberLook" image="WindowFrameLeft" />
+				<Image type="RightEdge" imageset="EmberLook" image="WindowFrameRight" />
+				<Image type="BottomEdge" imageset="EmberLook" image="WindowFrameBottom" />
+			</FrameComponent>
+		</ImagerySection>
+		<ImagerySection name="notitle_frame">
+			<FrameComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="TopEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge" />
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge" />
+					</Dim>
+				</Area>
+				<Image type="TopLeftCorner" imageset="EmberLook" image="WindowFrameTopLeft" />
+				<Image type="TopRightCorner" imageset="EmberLook" image="WindowFrameTopRight" />
+				<Image type="BottomLeftCorner" imageset="EmberLook" image="WindowFrameBottomLeft" />
+				<Image type="BottomRightCorner" imageset="EmberLook" image="WindowFrameBottomRight" />
+				<Image type="LeftEdge" imageset="EmberLook" image="WindowFrameLeft" />
+				<Image type="TopEdge" imageset="EmberLook" image="WindowFrameTop" />
+				<Image type="RightEdge" imageset="EmberLook" image="WindowFrameRight" />
+				<Image type="BottomEdge" imageset="EmberLook" image="WindowFrameBottom" />
+			</FrameComponent>
+		</ImagerySection>
+		<ImagerySection name="withtitle_withframe_client_area">
+			<Colours topLeft="FFe2d5c0" topRight="FFe2d5c0" bottomLeft="FFe2d5c0" bottomRight="FFe2d5c0" />
+			<ImageryComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<ImageDim imageset="EmberLook" image="WindowFrameLeft" dimension="Width" />
+					</Dim>
+					<Dim type="TopEdge">
+						<WidgetDim widget="__auto_titlebar__" dimension="Height" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="WindowFrameRight" dimension="Width" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="WindowFrameBottom" dimension="Height" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+				</Area>
+				<Image imageset="EmberLook" image="Background" />
+				<VertFormat type="Stretched" />
+				<HorzFormat type="Stretched" />
+			</ImageryComponent>
+		</ImagerySection>
+		<ImagerySection name="notitle_withframe_client_area">
+			<Colours topLeft="FFffceb0" topRight="FFffceb0" bottomLeft="FFf5dfa7" bottomRight="FFf5dfa7" />
+			<ImageryComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<ImageDim imageset="EmberLook" image="WindowFrameLeft" dimension="Width" />
+					</Dim>
+					<Dim type="TopEdge">
+						<ImageDim imageset="EmberLook" image="WindowFrameTop" dimension="Height" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="WindowFrameRight" dimension="Width" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<ImageDim imageset="EmberLook" image="WindowFrameBottom" dimension="Height" />
+							</DimOperator>
+						</UnifiedDim>
+					</Dim>
+				</Area>
+				<Image imageset="EmberLook" image="Background" />
+				<VertFormat type="Stretched" />
+				<HorzFormat type="Stretched" />
+			</ImageryComponent>
+		</ImagerySection>
+		<ImagerySection name="withtitle_noframe_client_area">
+			<Colours topLeft="FFDFDFF5" topRight="FFDFEFF5" bottomLeft="FFF4F3F5" bottomRight="FFF0F0F5" />
+			<ImageryComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="TopEdge">
+						<WidgetDim widget="__auto_titlebar__" dimension="Height" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge" />
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge" />
+					</Dim>
+				</Area>
+				<Image imageset="EmberLook" image="Background" />
+				<VertFormat type="Stretched" />
+				<HorzFormat type="Stretched" />
+			</ImageryComponent>
+		</ImagerySection>
+		<ImagerySection name="notitle_noframe_client_area">
+			<Colours topLeft="FFDFDFF5" topRight="FFDFEFF5" bottomLeft="FFF4F3F5" bottomRight="FFF0F0F5" />
+			<ImageryComponent>
+				<Area>
+					<Dim type="LeftEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="TopEdge">
+						<AbsoluteDim value="0" />
+					</Dim>
+					<Dim type="RightEdge">
+						<UnifiedDim scale="1" type="RightEdge" />
+					</Dim>
+					<Dim type="BottomEdge">
+						<UnifiedDim scale="1" type="BottomEdge" />
+					</Dim>
+				</Area>
+				<Image imageset="EmberLook" image="Background" />
+				<VertFormat type="Stretched" />
+				<HorzFormat type="Stretched" />
+			</ImageryComponent>
+		</ImagerySection>
+		<StateImagery name="ActiveWithTitleWithFrame">
+			<Layer>
+				<Section section="withtitle_frame">
+					<Colours topLeft="FFFF562A" topRight="FFFF562A" bottomLeft="FFFF562A" bottomRight="FFFF562A" />
+				</Section>
+				<Section section="withtitle_withframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="InactiveWithTitleWithFrame">
+			<Layer>
+				<Section section="withtitle_frame">
+					<Colours topLeft="ffffe2cf" topRight="ffffe2cf" bottomLeft="ffffe2cf" bottomRight="ffffe2cf" />
+				</Section>
+				<Section section="withtitle_withframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="DisabledWithTitleWithFrame">
+			<Layer>
+				<Section section="withtitle_frame">
+					<Colours topLeft="ffffe2cf" topRight="ffffe2cf" bottomLeft="ffffe2cf" bottomRight="ffffe2cf" />
+				</Section>
+				<Section section="withtitle_withframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="ActiveWithTitleNoFrame">
+			<Layer>
+				<Section section="withtitle_noframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="InactiveWithTitleNoFrame">
+			<Layer>
+				<Section section="withtitle_noframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="DisabledWithTitleNoFrame">
+			<Layer>
+				<Section section="withtitle_noframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="ActiveNoTitleWithFrame">
+			<Layer>
+				<Section section="notitle_frame">
+					<Colours topLeft="FFFF562A" topRight="FFFF562A" bottomLeft="FFFF562A" bottomRight="FFFF562A" />
+				</Section>
+				<Section section="notitle_withframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="InactiveNoTitleWithFrame">
+			<Layer>
+				<Section section="notitle_frame">
+					<Colours topLeft="ffffe2cf" topRight="ffffe2cf" bottomLeft="ffffe2cf" bottomRight="ffffe2cf" />
+				</Section>
+				<Section section="notitle_withframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="DisabledNoTitleWithFrame">
+			<Layer>
+				<Section section="notitle_frame">
+					<Colours topLeft="ffffe2cf" topRight="ffffe2cf" bottomLeft="ffffe2cf" bottomRight="ffffe2cf" />
+				</Section>
+				<Section section="notitle_withframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="ActiveNoTitleNoFrame">
+			<Layer>
+				<Section section="notitle_noframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="InactiveNoTitleNoFrame">
+			<Layer>
+				<Section section="notitle_noframe_client_area" />
+			</Layer>
+		</StateImagery>
+		<StateImagery name="DisabledNoTitleNoFrame">
+			<Layer>
+				<Section section="notitle_noframe_client_area" />
+			</Layer>
+		</StateImagery>
+		
+		<AnimationDefinition name="ShowTransition" duration="0.2" replayMode="once">
+			<Affector property="Alpha" interpolator="float">
+				<KeyFrame position="0.0" value="0.0" />
+				<KeyFrame position="0.2" value="1.0" progression="quadratic accelerating" />
+			</Affector>
+			
+			<Subscription event="Shown" action="Start" />
+			<Subscription event="Hidden" action="Pause" />
+		</AnimationDefinition>
+	</WidgetLook>
 </Falagard>
