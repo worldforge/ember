@@ -301,7 +301,7 @@ function SettingsWidget:hasChanges()
 	
 	local configService = emberServices:getConfigService()
 	
-	-- go through everything and apply the new values
+	-- go through everything and check whether we have changes
 	for _, category in ipairs(self.settings) do
 		for _, data in ipairs(category.contents) do
 			if data.representation:hasChanges() then
