@@ -29,7 +29,7 @@ class SliderRepresentation : public SingleAdapterRepresentationBase<ValueType>
 	TOLUA_TEMPLATE_BIND(ValueType, Atlas::Message::Element, varconf::Variable)
 
 public:
-	SliderRepresentation(const ValueType& value, float max);
+	SliderRepresentation(const ValueType& value, float max, bool showValue = true);
 	
 	virtual ~SliderRepresentation();
 	
