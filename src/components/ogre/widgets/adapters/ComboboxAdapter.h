@@ -60,7 +60,7 @@ protected:
 
 template<typename ValueType, typename PropertyNativeType>
 ComboboxAdapter<ValueType, PropertyNativeType>::ComboboxAdapter(const ValueType& value, CEGUI::Window* widget):
-	GenericPropertyAdapter<ValueType, PropertyNativeType>(value, widget, "Text", CEGUI::Window::EventTextChanged),
+	GenericPropertyAdapter<ValueType, PropertyNativeType>(value, widget, "Text", CEGUI::Combobox::EventListSelectionAccepted),
 	
 	mCombobox(dynamic_cast<CEGUI::Combobox*>(widget))
 {
