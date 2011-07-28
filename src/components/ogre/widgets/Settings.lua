@@ -304,7 +304,7 @@ function SettingsWidget:hasChanges()
 	-- go through everything and apply the new values
 	for _, category in ipairs(self.settings) do
 		for _, data in ipairs(category.contents) do
-			if configService:getValue(data.section, data.key) ~= data.representation:getEditedValue() then
+			if data.representation:hasChanges() then
 				return true
 			end
 		end
@@ -323,7 +323,7 @@ function SettingsWidget:applyAllValues()
 	-- go through everything and apply the new values
 	for _, category in ipairs(self.settings) do
 		for _, data in ipairs(category.contents) do
-			if configService:getValue(data.section, data.key) ~= data.representation:getEditedValue() then
+			if data.representation:hasChanges() then
 				configService:setValue(data.section, data.key, data.representation:getEditedValue(), varconf.USER)
 				
 				-- notify the representation that we applied our changes and it should alter it's original value
@@ -401,8 +401,6 @@ function SettingsWidget:RepresentationValueChanged(section, key)
 	else
 		data.labelWnd:setText(data.label)
 	end
-	
-	log.info("Section '" .. section .. "'/key '" .. key .. "' changed")
 end
 
 setmetatable(settingsWidget, {__index = SettingsWidget})
