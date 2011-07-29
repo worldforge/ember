@@ -33,6 +33,7 @@ public:
 	
 	virtual ~EditboxRepresentation();
 	
+	virtual void resetToOriginal();
 	virtual CEGUI::Window* getGuiRoot();
 	virtual sigc::signal<void>& getEventValueChangedSignal();
 	virtual const ValueType& getEditedValue() const;

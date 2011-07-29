@@ -33,6 +33,7 @@ public:
 	
 	virtual ~ComboboxRepresentation();
 	
+	virtual void resetToOriginal();
 	virtual CEGUI::Window* getGuiRoot();
 	
 	// FIXME: IMO this should be inherited from the base class but for some reason it isn't :-/
