@@ -29,7 +29,7 @@ class ComboboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
 	TOLUA_TEMPLATE_BIND(ValueType PropertyNativeType, Atlas::Message::Element std::string, varconf::Variable std::string, varconf::Variable int)
 
 public:
-	ComboboxRepresentation(const ValueType& value);
+	ComboboxRepresentation(const ValueType& value, bool suggestionOnly = false);
 	
 	virtual ~ComboboxRepresentation();
 	

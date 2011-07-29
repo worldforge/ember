@@ -48,8 +48,9 @@ public:
 	 * @brief Ctor
 	 * 
 	 * @param value Value this representation should represent
+	 * @param suggestionOnly If true, user can't type in to the combobox but only choose one of the suggestions
 	 */
-	ComboboxRepresentation(const ValueType& value);
+	ComboboxRepresentation(const ValueType& value, bool suggestionOnly = false);
 	
 	/**
 	 * @brief Dtor
@@ -60,16 +61,19 @@ public:
 	
 protected:
 	CEGUI::Window* mLayout;
+	CEGUI::Combobox* mCombobox;
 	CEGUI::String mPrefix;
 };
 
 template<typename ValueType, typename PropertyNativeType>
-ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(const ValueType& value):
+ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(const ValueType& value, bool suggestionOnly):
 	SingleAdapterRepresentationBase<ValueType>()
 {
 	mLayout = LayoutHelper::loadLayout("representations/ComboboxRepresentation.layout", mPrefix);
+	mCombobox = static_cast<CEGUI::Combobox*>(CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "String"));
+	this->setAdapter(new Adapters::ComboboxAdapter<ValueType, PropertyNativeType>(value, mCombobox));
 	
-	this->setAdapter(new Adapters::ComboboxAdapter<ValueType, PropertyNativeType>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "String")));
+	mCombobox->setReadOnly(suggestionOnly);
 }
 
 template<typename ValueType, typename PropertyNativeType>

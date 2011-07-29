@@ -134,7 +134,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "graphics",
 					key = "level",
 					
-					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
 					suggestions = {"low", "medium", "high"},
 					requiresRestart = true,
 				},
@@ -199,7 +199,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "audio",
 					key = "output",
 					
-					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
 					suggestions = {"output", "test1", "test2"}
 				},
 			},
