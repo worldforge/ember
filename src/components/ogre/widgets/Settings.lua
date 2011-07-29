@@ -283,9 +283,10 @@ function SettingsWidget:buildUiFor(category)
 		-- store the representation in data so that we can query it later (to get current value)
 		data.representation = representation
 
-		-- we have to bind the arguments to the call which I accomplished with this atrocity, if there is other way to do it
-		-- I would appreciate knowing how :-)
-		local valueChangedCall = loadstring("settingsWidget:RepresentationValueChanged('" .. data.section .."', '" .. data.key .. "')")
+		local localData = data
+		local valueChangedCall = function()
+			settingsWidget:RepresentationValueChanged(localData)
+		end
 		connect(self.connectors, representation:getEventValueChangedSignal(), valueChangedCall)
 	end
 	
@@ -391,11 +392,10 @@ function SettingsWidget:CloseClicked(args)
 	return true
 end
 
-function SettingsWidget:RepresentationValueChanged(section, key)
+function SettingsWidget:RepresentationValueChanged(data)
 	-- only enable the apply button if we have changes
 	self.applyButton:setEnabled(self:hasChanges())
 	
-	local data = self:getDeclarationData(section, key)
 	if data.representation:hasChanges() then
 		data.labelWnd:setText(data.label .. "*")
 	else
