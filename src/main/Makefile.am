@@ -52,6 +52,10 @@ bin_PROGRAMS = ember.bin
 ember_bin_LDFLAGS = -Wl
 ember_bin_LDADD = $(emberlibs)
 ember_bin_SOURCES = $(embersources) $(top_srcdir)/src/main/Ember.cpp
+if OSX
+ember_bin_SOURCES += $(top_srcdir)/src/main/macosx/SDLMain.m
+endif
 noinst_HEADERS = Application.h ConfigBoundLogObserver.h
 endif
-EXTRA_DIST=macosx/COPYING.SDL macosx/ReadMeDevLite.txt macosx/SDLMain.h macosx/SDLMain.m
+
+EXTRA_DIST=macosx/COPYING.SDL macosx/ReadMeDevLite.txt macosx/SDLMain.h
