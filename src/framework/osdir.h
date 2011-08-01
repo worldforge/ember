@@ -19,34 +19,17 @@
 #ifndef OSLINK_OSDIR_HEADER_H_
 #define OSLINK_OSDIR_HEADER_H_
 
-#if defined(unix) || defined(__unix) || defined(__unix__)
-#define OSLINK_OSDIR_POSIX
-#elif defined(_WIN32)
-#define OSLINK_OSDIR_WINDOWS
-#else
-#define OSLINK_OSDIR_NOTSUPPORTED
-#endif
 #ifdef _WIN32
+#define OSLINK_OSDIR_WINDOWS
 #include "platform/platform_windows.h"
+#else
+#define OSLINK_OSDIR_POSIX
 #endif
+
 #include <string>
 #include <string.h>
 
-#if defined(OSLINK_OSDIR_NOTSUPPORTED)
-
-namespace oslink
-{
-	class directory
-	{
-		public:
-			directory(const std::string&)		{ }
-			operator void*() const				{ return (void*)0; }
-			std::string next()					{ return ""; }
-			bool isExisting()					{return false;}
-	};
-}
-
-#elif defined(OSLINK_OSDIR_POSIX)
+#if defined(OSLINK_OSDIR_POSIX)
 
 #include <sys/types.h>
 #include <dirent.h>
