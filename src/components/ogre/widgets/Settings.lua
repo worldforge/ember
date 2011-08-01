@@ -408,10 +408,6 @@ function SettingsWidget:RepresentationValueChanged(section, key)
 	else
 		data.labelWnd:setText(data.label)
 	end
-	
-	if data.onChangedCallback ~= nil then
-		data.onChangedCallback()
-	end
 end
 
 setmetatable(settingsWidget, {__index = SettingsWidget})
