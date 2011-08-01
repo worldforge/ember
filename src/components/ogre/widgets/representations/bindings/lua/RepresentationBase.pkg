@@ -34,16 +34,18 @@ public:
 	virtual ~RepresentationBase();
 	
 	/**
-	 * @brief gets rid of all the changes and sets the edited value to original value
-	 */
-	virtual void resetToOriginal() = 0;
-	
-	/**
 	 * @brief retrieves the GUI layout root
 	 * 
 	 * This is useful for adding the representation to your own GUI layouts
 	 */
 	virtual CEGUI::Window* getGuiRoot() = 0;
+	
+	/**
+	 * @brief programatically sets the edited value
+	 * 
+	 * This can be used for "revert to default" for example
+	 */
+	virtual void setEditedValue(const ValueType& v) = 0;
 	
 	/**
 	 * @brief retrieves the value user is editing

@@ -33,13 +33,14 @@ public:
 	
 	virtual ~ComboboxRepresentation();
 	
-	virtual void resetToOriginal();
 	virtual CEGUI::Window* getGuiRoot();
 	
 	// FIXME: IMO this should be inherited from the base class but for some reason it isn't :-/
 	void addSuggestion(const std::string& suggestion);
 	virtual sigc::signal<void>& getEventValueChangedSignal();
+	virtual void setEditedValue(const ValueType& v);
 	virtual const ValueType& getEditedValue() const;
+	virtual const ValueType& getOriginalValue() const;
 	virtual void applyChanges();
 	virtual bool hasChanges() const;
 };

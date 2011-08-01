@@ -56,7 +56,7 @@ public:
 	 */
 	virtual ~SingleAdapterRepresentationBase();
 	
-	virtual void resetToOriginal();
+	virtual void setEditedValue(const ValueType& v);
 	
 	virtual const ValueType& getEditedValue() const;
 	
@@ -96,9 +96,9 @@ SingleAdapterRepresentationBase<ValueType>::~SingleAdapterRepresentationBase()
 }
 
 template<typename ValueType>
-void SingleAdapterRepresentationBase<ValueType>::resetToOriginal()
+void SingleAdapterRepresentationBase<ValueType>::setEditedValue(const ValueType& v)
 {
-	mAdapter->setValue(getOriginalValue());
+	mAdapter->setValue(v);
 }
 
 template<typename ValueType>

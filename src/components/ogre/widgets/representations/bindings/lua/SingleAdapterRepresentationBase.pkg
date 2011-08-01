@@ -35,7 +35,7 @@ public:
 	
 	// we have to add at least one pure virtual method, otherwise tolua++ fails
 	// to recognize this as a virtual base class and will try to instantiate it!
-	virtual void resetToOriginal() = 0;
+	virtual CEGUI::Window* getGuiRoot() = 0;
 };
 
 $renaming ^SingleAdapterRepresentationBase<Atlas::Message::Element> @ AtlasSingleAdapterRepresentationBase

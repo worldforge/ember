@@ -362,7 +362,19 @@ function SettingsWidget:discardAllValues()
 	-- go through everything and discard values
 	for _, category in ipairs(self.settings) do
 		for _, data in ipairs(category.contents) do
-			data.representation:resetToOriginal()
+			data.representation:setEditedValue(data.representation:getOriginalValue())
+		end
+	end
+end
+
+function SettingsWidget:resetAllToDefault()
+	local configService = emberServices:getConfigService()
+	
+	-- goes through representations and for each it puts the default value to it
+	for _, category in ipairs(self.settings) do
+		for _, data in ipairs(category.contents) do
+			--local default = ...
+			--data.representation:setEditedValue(default)
 		end
 	end
 end
