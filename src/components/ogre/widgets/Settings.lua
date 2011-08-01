@@ -283,9 +283,11 @@ function SettingsWidget:buildUiFor(category)
 		-- store the representation in data so that we can query it later (to get current value)
 		data.representation = representation
 
-		local localData = data
+		local localSection = data.section
+		local localKey = data.key
+		
 		local valueChangedCall = function()
-			settingsWidget:RepresentationValueChanged(localData)
+			settingsWidget:RepresentationValueChanged(localSection, localKey)
 		end
 		connect(self.connectors, representation:getEventValueChangedSignal(), valueChangedCall)
 	end
@@ -392,7 +394,9 @@ function SettingsWidget:CloseClicked(args)
 	return true
 end
 
-function SettingsWidget:RepresentationValueChanged(data)
+function SettingsWidget:RepresentationValueChanged(section, key)
+	local data = self:getDeclarationData(section, key)
+	
 	-- only enable the apply button if we have changes
 	self.applyButton:setEnabled(self:hasChanges())
 	
@@ -400,6 +404,10 @@ function SettingsWidget:RepresentationValueChanged(data)
 		data.labelWnd:setText(data.label .. "*")
 	else
 		data.labelWnd:setText(data.label)
+	end
+	
+	if data.onChangedCallback ~= nil then
+		data.onChangedCallback()
 	end
 end
 
