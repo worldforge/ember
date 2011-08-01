@@ -147,19 +147,26 @@ AC_LANG_PUSH(C)
 #	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
 #	)
 
-case "x$target_os" in
-	*ming* )
-		LIBS="$LIBS -lshlwapi"
-		AC_CHECK_TOOL(WINDRES, windres)
-		AC_MSG_RESULT([Building for windows.])
-		WIN32=true
-		break;
-		;;
+case $build_os in
+  cygwin* | mingw* | cegcc*)
+	LIBS="$LIBS -lshlwapi"
+	AC_CHECK_TOOL(WINDRES, windres)
+	AC_MSG_RESULT([Building for windows.])
+	WIN32=true
+    ;;
+  darwin*)
+    AC_PROG_OBJC
+    AC_MSG_RESULT([Building for Mac OS X.])
+	OSX=true
+    ;;
 esac
 
-AM_CONDITIONAL(WIN32, [test x$WIN32 = xtrue])
-	
-	
+AM_CONDITIONAL([WIN32], [test x$WIN32 = xtrue])
+AM_CONDITIONAL([OSX], [test x$OSX = xtrue])
+
+
+
+
 AC_LANG_POP(C)
 
 # make sure binreloc funtionality is used
