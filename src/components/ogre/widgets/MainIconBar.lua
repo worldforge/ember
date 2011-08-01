@@ -90,12 +90,17 @@ function MainIconBar:buildWidget()
 			self.movementModeIcon:getContainer():setVisible(false)
 		end)
 	
+	--and settings toggle icon
+	--FIXME: This should be "settings" instead of walk! Fix when the icon gets into the imageset
+	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "walk")
+	self.settingsIcon = self:addIcon("settings", foreground, "Toggles visibility of the settings window")
+	self.settingsIcon:getButton():subscribeEvent("Clicked", self.settings_Clicked, self)
+	
 	--and inventory toggle icon
 	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "inventory")
 	self.inventoryIcon = self:addIcon("inventory", foreground, "Toggles visibility of the inventory")
 	--start out with the inventory icon hidden, only show it when the user has an avatar
 	self.inventoryIcon:getContainer():setVisible(false)
-	
 	self.inventoryIcon:getButton():subscribeEvent("Clicked", self.inventory_Clicked, self)
 	
 	MainIconBar.singletonInstance = self
@@ -124,6 +129,12 @@ end
 --toggle inventory window when clicked
 function MainIconBar:inventory_Clicked(args)
 	console:runCommand("/toggleVisibility_inventory")
+	return true
+end
+
+--toggle settings window when clicked
+function MainIconBar:settings_Clicked(args)
+	console:runCommand("/toggleVisibility_settings")
 	return true
 end
 

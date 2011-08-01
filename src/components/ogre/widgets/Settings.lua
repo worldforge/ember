@@ -107,6 +107,9 @@ function SettingsWidget:buildWidget()
 	self.tabs = self.widget:getWindow("MainWindow/Tabs")
 	
 	self:buildSettingsUi()
+	
+	self:hide()
+	self.widget:registerConsoleVisibilityToggleCommand("settings")
 end
 
 function SettingsWidget:destroy()
