@@ -95,7 +95,7 @@ AC_ARG_ENABLE(static_build,
     link_static="false"
   ]
 )
-AM_CONDITIONAL(BUILD_STATIC, test x"$link_static" = xtrue)
+AM_CONDITIONAL([BUILD_STATIC], [test x"$link_static" = xtrue])
 
 AC_ARG_ENABLE(webember,
   [AS_HELP_STRING([--enable-webember],[enable building of webember (default=no)])],
@@ -110,7 +110,7 @@ AC_ARG_ENABLE(webember,
     webember_enabled="false"
   ]
 )
-AM_CONDITIONAL(BUILD_WEBEMBER, test x"$webember_enabled" = xtrue)
+AM_CONDITIONAL([BUILD_WEBEMBER], [test x"$webember_enabled" = xtrue])
 
 AC_MSG_RESULT([
 
