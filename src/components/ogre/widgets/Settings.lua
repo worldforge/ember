@@ -138,8 +138,7 @@ function SettingsWidget:buildSettingsUi()
 					key = "level",
 					
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
-					suggestions = {"low", "medium", "high"},
-					requiresRestart = true,
+					suggestions = {"low", "medium", "high"}
 				},
 				{
 					label = "Fresnel water",
@@ -156,6 +155,15 @@ function SettingsWidget:buildSettingsUi()
 					
 					section = "graphics",
 					key = "foliage",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
+				{
+					label = "Double buffered",
+					helpString = "if set to true, the application will be double buffered, which means that everything is rendered into a separate backbuffer, which is then copied to the main screen buffer when appropriate. This will in some cases reduce tearing.",
+					
+					section = "graphics",
+					key = "doublebuffered",
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
@@ -178,11 +186,39 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 1000) end,
 				},
+				{
+					label = "Use aggressive focus region",
+					helpString = "Sets whether or not to use the more aggressive approach to deciding on the focus region or not.",
+					
+					section = "shadows",
+					key = "useaggressivefocusregion",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
+				{
+					label = "Preferred terrain technique",
+					helpString = "The preferred terrain technique. Available values are: ShaderNormalMapped, Shader, Base",
+					
+					section = "terrain",
+					key = "preferredtechnique",
+					
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value) end,
+					suggestions = {"ShaderNormalMapped", "Shader", "Base"},
+				},
+				{
+					label = "Desired FPS",
+					helpString = "FPS capping - used to prevent using more excessive resources.",
+					
+					section = "graphics",
+					key = "desiredfps",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 300) end,
+				},
 			},
 		},
 		{
 			label = "Audio",
-			description = "",
+			description = "All settings related to audio output of the Ember client.",
 			
 			contents =
 			{
@@ -204,6 +240,41 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
 					suggestions = {"output", "test1", "test2"}
+				},
+			},
+		},
+		{
+			label = "Input",
+			description = "",
+			
+			contents =
+			{
+				{
+					label = "Mouse sensitivity",
+					helpString = "For mouse look - in degrees per mouse unit",
+					
+					section = "input",
+					key = "degreespermouseunit",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 1000) end,
+				},
+				{
+					label = "Invert mouse look",
+					helpString = "If true, the pitch of the camera will be inverted. Useful for people that are used to flight simulators.",
+					
+					section = "input",
+					key = "invertcamera",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
+				{
+					label = "Catch mouse",
+					helpString = "If true, Ember will catch the mouse. This means that the mouse cursor won't be able to move beyond the Ember window.",
+					
+					section = "input",
+					key = "catchmouse",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
 			},
 		},
