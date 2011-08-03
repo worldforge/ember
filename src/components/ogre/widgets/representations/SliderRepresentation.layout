@@ -6,7 +6,6 @@
 		<Window Type='EmberLook/Slider' Name='Slider'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0.8,0},{1,0}}'/>
-			<Property Name='Tooltip' Value='A string value.' />
 		</Window>
 		<Window Type='EmberLook/StaticText' Name='Text'>
 			<Property Name='UnifiedPosition' Value='{{0.8,0},{0,0}}'/>
