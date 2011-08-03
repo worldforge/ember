@@ -158,15 +158,16 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
-				{
+				--FIXME: not effective for now
+				--[[{
 					label = "Double buffered",
-					helpString = "if set to true, the application will be double buffered, which means that everything is rendered into a separate backbuffer, which is then copied to the main screen buffer when appropriate. This will in some cases reduce tearing.",
+					helpString = "If set to true, the application will be double buffered, which means that everything is rendered into a separate backbuffer, which is then copied to the main screen buffer when appropriate. This will in some cases reduce tearing.",
 					
 					section = "graphics",
 					key = "doublebuffered",
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
-				},
+				},--]]
 				{
 					label = "Shadow texture size",
 					helpString = "The bigger this number, the more accurate the shadows will be",
@@ -207,12 +208,12 @@ function SettingsWidget:buildSettingsUi()
 				},
 				{
 					label = "Desired FPS",
-					helpString = "FPS capping - used to prevent using more excessive resources.",
+					helpString = "FPS capping - used to prevent using more excessive resources. 0 disables FPS cap.",
 					
 					section = "graphics",
 					key = "desiredfps",
 					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 300) end,
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 100) end,
 				},
 			},
 		},
@@ -251,12 +252,12 @@ function SettingsWidget:buildSettingsUi()
 			{
 				{
 					label = "Mouse sensitivity",
-					helpString = "For mouse look - in degrees per mouse unit",
+					helpString = "Affects mouse look only.",
 					
 					section = "input",
 					key = "degreespermouseunit",
 					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 1000) end,
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 400) end,
 				},
 				{
 					label = "Invert mouse look",
@@ -269,7 +270,7 @@ function SettingsWidget:buildSettingsUi()
 				},
 				{
 					label = "Catch mouse",
-					helpString = "If true, Ember will catch the mouse. This means that the mouse cursor won't be able to move beyond the Ember window.",
+					helpString = "If true, Ember will catch the mouse. This means that the mouse cursor won't be able to move beyond the Ember window. ALT+TAB releases the mouse.",
 					
 					section = "input",
 					key = "catchmouse",
