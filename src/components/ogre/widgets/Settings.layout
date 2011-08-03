@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,600.0},{0.0,400.0}}'/>
+		<Property Name='UnifiedSize' Value='{{0.0,400.0},{0.0,400.0}}'/>
 		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
 		<Property Name='Text' Value='Settings'/>
 		
