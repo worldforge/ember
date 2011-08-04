@@ -252,7 +252,7 @@ function SettingsWidget:buildSettingsUi()
 		},
 		{
 			label = "Input",
-			description = "",
+			description = "Groups various options regarding mouse and keyboard input devices.",
 			
 			contents =
 			{
@@ -282,6 +282,50 @@ function SettingsWidget:buildSettingsUi()
 					key = "catchmouse",
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
+			},
+		},
+		{
+			label = "Servers",
+			description = "Options regarding connecting to various servers",
+			
+			contents =
+			{
+				{
+					label = "Connect to meta server",
+					helpString = "Ember will connect to the meta server given below on startup.",
+					
+					section = "metaserver",
+					key = "enabled",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
+				{
+					label = "Metaserver",
+					helpString = "Which meta server should Ember connect to on startup",
+					
+					section = "metaserver",
+					key = "server",
+					
+					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new(value) end,
+				},
+				{
+					label = "Autoconnect",
+					helpString = "If specified, Ember will connect to this server at startup automatically",
+					
+					section = "metaserver",
+					key = "autoconnect",
+					
+					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new(value) end,
+				},
+				{
+					label = "Minimum server version",
+					helpString = "If set to something, the server browser will filter out all servers with versions lower than this. This is to prevent new users from connecting to old stale servers.",
+					
+					section = "metaserver",
+					key = "minimumversion",
+					
+					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new(value) end,
 				},
 			},
 		},

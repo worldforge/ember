@@ -26,7 +26,7 @@ namespace Representations {
 
 class EditboxRepresentation : public SingleAdapterRepresentationBase<ValueType>
 {
-	TOLUA_TEMPLATE_BIND(ValueType PropertyNativeType, Atlas::Message::Element std::string)
+	TOLUA_TEMPLATE_BIND(ValueType PropertyNativeType, Atlas::Message::Element std::string, varconf::Variable std::string)
 
 public:
 	EditboxRepresentation(const ValueType& value);
@@ -43,6 +43,7 @@ public:
 };
 
 $renaming ^EditboxRepresentation<Atlas::Message::Element,std::string> @ AtlasStringEditboxRepresentation
+$renaming ^EditboxRepresentation<varconf::Variable,std::string> @ VarconfStringEditboxRepresentation
 
 }
 

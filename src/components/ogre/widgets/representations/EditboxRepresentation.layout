@@ -5,7 +5,7 @@
 		<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
 		<Window Type='EmberLook/Editbox' Name='String'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,100},{0,100}}'/>
+			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
 		</Window>
 	</Window>
 </GUILayout>
