@@ -521,6 +521,9 @@ function SettingsWidget:EventChangedConfigItem(section, key)
 		data.representation:setEditedValue(value)
 		data.representation:applyChanges()
 	end
+	
+	-- sync up the changed status of the representation
+	self:RepresentationValueChanged(section, key)
 end
 
 setmetatable(settingsWidget, {__index = SettingsWidget})
