@@ -217,7 +217,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "shadows",
 					key = "texturesize",
 					
-					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new(value, true) end,
 					suggestions = {"256", "512", "1024", "2048", "4096"},
 				},
 				{
@@ -245,7 +245,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "terrain",
 					key = "preferredtechnique",
 					
-					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
 					suggestions = {"ShaderNormalMapped", "Shader", "Base"},
 				}
 			},
