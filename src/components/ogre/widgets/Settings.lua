@@ -131,6 +131,42 @@ function SettingsWidget:buildSettingsUi()
 	self.settings =
 	{
 		{
+			label = "General",
+			description = "Settings that don't fit into other category.",
+			
+			contents =
+			{
+				{
+					label = "Startup help",
+					helpString = "if true, the startup help window will be shown at startup",
+					
+					section = "general",
+					key = "startuphelp",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					requiresRestart = true,
+				},
+				{
+					label = "Log chat messages",
+					helpString = "If true, all chat message will be logged",
+					
+					section = "general",
+					key = "logchatmessages",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
+				{
+					label = "Desired FPS",
+					helpString = "FPS capping - used to prevent using more excessive resources. 0 disables FPS cap.",
+					
+					section = "general",
+					key = "desiredfps",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 100) end,
+				},
+			},
+		},
+		{
 			label = "Graphics",
 			description = "Groups visual settings affecting rendering quality. Many of these can deteriorate performance quite a lot so be careful.",
 			
@@ -211,16 +247,7 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value) end,
 					suggestions = {"ShaderNormalMapped", "Shader", "Base"},
-				},
-				{
-					label = "Desired FPS",
-					helpString = "FPS capping - used to prevent using more excessive resources. 0 disables FPS cap.",
-					
-					section = "graphics",
-					key = "desiredfps",
-					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 100) end,
-				},
+				}
 			},
 		},
 		{
@@ -246,7 +273,7 @@ function SettingsWidget:buildSettingsUi()
 					key = "output",
 					
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
-					suggestions = {"output", "test1", "test2"}
+					suggestions = {"surround"}
 				},
 			},
 		},
