@@ -110,6 +110,12 @@ function SettingsWidget:buildWidget()
 	
 	self:hide()
 	self.widget:registerConsoleVisibilityToggleCommand("settings")
+	
+	local configService = emberServices:getConfigService()
+	local valueChangedCall = function(section, key)
+		settingsWidget:EventChangedConfigItem(section, key)
+	end
+	connect(self.connectors, configService.EventChangedConfigItem, valueChangedCall)
 end
 
 function SettingsWidget:destroy()
@@ -493,6 +499,27 @@ function SettingsWidget:RepresentationValueChanged(section, key)
 		data.labelWnd:setText(data.label .. "*")
 	else
 		data.labelWnd:setText(data.label)
+	end
+end
+
+function SettingsWidget:EventChangedConfigItem(section, key)
+	local data = self:getDeclarationData(section, key)
+	-- if we don't have these data declared, return immediately
+	if data == nil then
+		return
+	end
+	
+	local configService = emberServices:getConfigService()
+	local value = configService:getValue(section, key)
+	
+	if data.representation:hasChanges() then
+		local oldEdited = data.representation:getEditedValue()
+		data.representation:setEditedValue(value)
+		data.representation:applyChanges()
+		data.representation:setEditedValue(oldEdited)
+	else
+		data.representation:setEditedValue(value)
+		data.representation:applyChanges()
 	end
 end
 
