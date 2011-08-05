@@ -442,6 +442,10 @@ bool OgreSetup::configure(void)
 		// 		useAltSwapControl = SDL_GL_SetAttribute((SDL_GLattr)SDL_GL_SWAP_CONTROL, 1) != 0;
 		// 	}
 
+#ifdef __APPLE__
+		flags |= SDL_OPENGL;
+#endif
+
 		if (fullscreen) {
 			flags |= SDL_FULLSCREEN;
 		}
@@ -512,7 +516,11 @@ bool OgreSetup::configure(void)
 		s += Ogre::StringConverter::toString((long)info.info.x11.window);
 		misc["parentWindowHandle"] = s;
 #else
-		misc["currentGLContext"] = Ogre::String("True");
+		// NOTE: if you get two windows(an Ogre window and an SDL window),
+		// then you don't have used ogre_cocoa_currentGLContext_support.patch before building ogre.
+		misc["currentGLContext"] = Ogre::String("true");
+		misc["macAPI"] = Ogre::String("cocoa");
+		
 #endif
 		// initialise root, without creating a window
 		mRoot->initialise(false);
