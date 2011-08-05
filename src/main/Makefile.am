@@ -1,3 +1,5 @@
+INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+
 embersources = $(top_srcdir)/src/main/Application.cpp $(top_srcdir)/src/main/ConfigBoundLogObserver.cpp
 
 if WIN32
@@ -44,18 +46,19 @@ emberlibs = \
 	${BOOST_THREAD_LIB}
 
 if !BUILD_WEBEMBER
-SUBDIRS = bindings
-
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 bin_PROGRAMS = ember.bin
 
 ember_bin_LDFLAGS = -Wl
 ember_bin_LDADD = $(emberlibs)
 ember_bin_SOURCES = $(embersources) $(top_srcdir)/src/main/Ember.cpp
+
 if OSX
 ember_bin_SOURCES += $(top_srcdir)/src/main/macosx/SDLMain.m
 endif
-noinst_HEADERS = Application.h ConfigBoundLogObserver.h
+
 endif
+
+noinst_HEADERS = Application.h ConfigBoundLogObserver.h
+
 
 EXTRA_DIST=macosx/COPYING.SDL macosx/ReadMeDevLite.txt macosx/SDLMain.h
