@@ -16,6 +16,7 @@ function Console:buildWidget()
 	
 	--these are used for coloured chat messages
 	self.chatEntityColours = {}
+	self.chatEntityOccurences = {}
 	self.chatTotalColourUsage = {}
 	for i = 1, 8 do
 		self.chatTotalColourUsage[i] = 0
@@ -113,6 +114,12 @@ function Console:getColourIndexForEntityName(entityName)
 	--we increase the use count of this colour
 	--NOTE: use counts are decreased when lines are purged from the history, see notifyLinePurged
 	self.chatTotalColourUsage[ret] = self.chatTotalColourUsage[ret] + 1
+	
+	if self.chatEntityOccurences[entityName] == nil then
+		self.chatEntityOccurences[entityName] = 0
+	end
+	self.chatEntityOccurences[entityName] = self.chatEntityOccurences[entityName] + 1
+	
 	return ret
 end
 
@@ -147,13 +154,20 @@ function Console:notifyLinePurged(line, tab)
 			if colourIndex ~= nil then
 				self.chatTotalColourUsage[colourIndex] = self.chatTotalColourUsage[colourIndex] - 1
 			end
+			
+			-- we have decreased the total colour use count but chatEntityColours will endlessly grow with new
+			-- and new entities
+			
+			-- we have to remedy this by purging the table from an entity if that entity doesn't occur in the chat history
+			self.chatEntityOccurences[entityName] = self.chatEntityOccurences[entityName] - 1
+			
+			if self.chatEntityOccurences[entityName] <= 0 then
+				-- the occurence has dropped to 0 so we want purge the entity from our
+				-- chat colour tables
+				self.chatEntityColours[entityName] = nil
+				self.chatEntityOccurences[entityName] = nil
+			end
 		end
-		
-		--FIXME: we have decreased the total colour use count but chatEntityColours will endlessly grow with new
-		--       and new entities
-		--
-		--       I haven't devised a strategy for this yet, purging it when entity use count drops to 0 doesn't
-		--       sound right but maybe is the best in this case, especially if max message count is high
 	end
 end
 
