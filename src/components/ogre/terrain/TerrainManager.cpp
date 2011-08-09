@@ -99,12 +99,11 @@ TerrainManager::~TerrainManager()
 
 	getAdapter()->reset();
 
-	delete mVegetation;
-
-
 	delete mSceneManagerAdapter;
 
 	delete mHandler;
+
+	delete mVegetation;
 	delete mCompilerTechniqueProvider;
 }
 
