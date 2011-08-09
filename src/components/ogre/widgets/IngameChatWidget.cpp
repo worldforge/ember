@@ -535,11 +535,34 @@ void IngameChatWidget::ChatText::increaseElapsedTime(float timeSlice)
 	mElapsedTimeSinceLastUpdate += timeSlice;
 }
 
+inline void inPlaceReplace(std::string& s, const std::string& sub, const std::string& replace)
+{
+	assert(!sub.empty());
+	size_t pos = 0;
+	while(true)
+	{
+		pos = s.find(sub, pos);
+		if (pos == s.npos)
+			break;
+		
+		s.replace(pos, sub.size(), replace);
+		pos += replace.size();
+	}
+}
+
+inline std::string escapeForCEGUI(const std::string& str)
+{
+	std::string ret = str;
+	inPlaceReplace(ret, "[", "\\[");
+	
+	return ret;
+}
+
 void IngameChatWidget::ChatText::updateText(const std::string & line)
 {
-	mAttachedTextWidget->setText(line);
+	mAttachedTextWidget->setText(escapeForCEGUI(line));
 	
-	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF000000']" + mLabel->getEntity()->getName() + ": " + line);
+	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF000000']" + escapeForCEGUI(mLabel->getEntity()->getName()) + ": " + escapeForCEGUI(line));
 	mDetachedChatHistory->setProperty("VertScrollPosition", mDetachedChatHistory->getProperty("VertExtent"));
 	
 	mElapsedTimeSinceLastUpdate = 0;
@@ -564,6 +587,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 
 			responseTextButton->setInheritsAlpha(true);
 			responseTextButton->setText(*I);
+			responseTextButton->setTextParsingEnabled(false);
 			responseTextButton->setTooltipText(*I);
 			mResponseWidget->addChildWindow(responseTextButton);
 			mResponseTextWidgets.push_back(responseTextButton);
