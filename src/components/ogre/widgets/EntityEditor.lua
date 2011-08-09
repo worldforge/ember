@@ -816,6 +816,40 @@ function EntityEditor:RefreshAtlas_Clicked(args)
 	
 end
 
+function EntityEditor:entitySayGoals(root)
+	local rootObject = root:get()
+	
+	if not rootObject:hasAttr("say") then
+		return
+	end
+	
+	--message now contains what our target entity said
+	local message = rootObject:getAttr("say"):asString()
+	
+	local goalname = nil
+	local goal = nil
+	
+	_, _, goalname, goal = string.find(message, "The goal of (%b()) is (.*)")
+	if goal ~= nil then
+		local item = Ember.OgreView.Gui.ColouredListItem:new(goal)
+		self.goallistbox:addItem(item)
+	end
+
+end
+
+function EntityEditor:RefreshGoals_Clicked(args)
+	self.goallistbox:resetList()
+	if self.instance ~= nil then
+		local entity = self.instance.entity
+		if entity ~= nil then
+			self.instance.entitySayGoalsConnector = createConnector(entity.Say):connect(self.entitySayGoals, self)
+			emberServices:getServerService():say("list me goal")
+		end
+	end
+	return true
+	
+end
+
 function EntityEditor:ExportButton_Clicked(args)
 	emberOgre:getWorld():getEntityFactory():dumpAttributesOfEntity(self.instance.entity:getId())
 	return true
@@ -908,6 +942,8 @@ function EntityEditor:buildWidget()
 	self.childlistFilter = CEGUI.toEditbox(self.widget:getWindow("FilterChildren"))
 	self.childListholder = Ember.OgreView.Gui.ListHolder:new(self.childlistbox, self.childlistFilter)
 	
+	self.goallistbox = CEGUI.toListbox(self.widget:getWindow("GoalList"))
+	
 --[[	self.modelTab.stackableWindow = self.widget:getWindow("ModelPanelStackable")
 	self.modelTab.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.modelTab.stackableWindow)
 	self.modelTab.stackableContainer:setInnerContainerWindow(self.modelTab.stackableWindow)]]
@@ -923,6 +959,7 @@ function EntityEditor:buildWidget()
 	self.widget:getWindow("ShowOgreBbox"):subscribeEvent("CheckStateChanged", self.ShowOgreBbox_CheckStateChanged, self)
 	self.widget:getWindow("ShowErisBbox"):subscribeEvent("CheckStateChanged", self.ShowErisBbox_CheckStateChanged, self)
 	self.widget:getWindow("RefreshAtlas"):subscribeEvent("Clicked", self.RefreshAtlas_Clicked, self)
+	self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
 	self.widget:getWindow("Submit"):subscribeEvent("Clicked", self.Submit_Clicked, self)
 	self.widget:getWindow("DeleteButton"):subscribeEvent("Clicked", self.DeleteButton_Clicked, self)
 	self.widget:getWindow("ExportButton"):subscribeEvent("Clicked", self.ExportButton_Clicked, self)

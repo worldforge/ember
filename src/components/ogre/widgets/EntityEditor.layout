@@ -43,6 +43,17 @@
 					<Property Name='Text' Value='Goals'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<!-- Property Name='Visible' Value='true'/ -->
+					<Window Type='EmberLook/Listbox' Name='GoalList'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+						<Property Name='UnifiedSize' Value='{{0,200},{1,-25}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>
+					<Window Type='EmberLook/Button' Name='RefreshGoals'>
+						<Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Refresh'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>					
 				</Window>
 				<Window Type='DefaultGUISheet' Name='ChildrenPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
