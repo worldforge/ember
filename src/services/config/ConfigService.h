@@ -84,7 +84,7 @@ namespace Ember
 			/**
 			 * @brief The global configuration store.
 			 *
-			 * This contains values read in from either the global config, or the command line.
+			 * This contains values read in from either the global config.
 			 */
 			varconf::Config* mGlobalConfig;
 
@@ -94,6 +94,13 @@ namespace Ember
 			 * This contains values read in from the user config file (for example ~/.ember/ember.conf).
 			 */
 			varconf::Config* mUserConfig;
+
+			/**
+			 * @brief The command line configuration store.
+			 *
+			 * This contains values read from the command line. These should not factor in when saving the configuration.
+			 */
+			varconf::Config* mCommandLineConfig;
 
 			/**
 			 * @brief The instance configuration store.
@@ -106,6 +113,7 @@ namespace Ember
 		protected:
 		public:
 			typedef std::map< std::string, varconf::Variable > SectionMap;
+			typedef std::map<std::string, std::map<std::string, std::string> > StringConfigMap;
 
 			static const std::string SETVALUE;
 			static const std::string GETVALUE;
@@ -221,8 +229,9 @@ namespace Ember
 			 * Loads config space from given file.
 			 *
 			 * @param Name of file to read from.
+			 * @param commandLineSettings Settings from the command line.
 			 */
-			bool loadSavedConfig ( const std::string& filename );
+			bool loadSavedConfig ( const std::string& filename, const StringConfigMap& commandLineSettings = StringConfigMap() );
 
 			/**
 			 * Saves config space to given file.

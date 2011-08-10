@@ -289,13 +289,7 @@ void Application::initializeServices()
 	}
 
 	//load the config file. Note that this will load the shared config file, and then the user config file if available (~/.ember/ember.conf)
-	configService.loadSavedConfig("ember.conf");
-	//after loading the config from file, override with command time settings
-	for (ConfigMap::iterator I = mConfigSettings.begin(); I != mConfigSettings.end(); ++I) {
-		for (std::map<std::string, std::string>::iterator J = I->second.begin(); J != I->second.end(); ++J) {
-			configService.setValue(I->first, J->first, J->second);
-		}
-	}
+	configService.loadSavedConfig("ember.conf", mConfigSettings);
 
 	//Check if there's a user specific ember.conf file. If not, create an empty template one.
 	std::string userConfigFilePath = configService.getHomeDirectory() + "/ember.conf";

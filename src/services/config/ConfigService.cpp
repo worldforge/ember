@@ -107,6 +107,7 @@ namespace Ember
 	, mHomeDir ( "" )
 	, mGlobalConfig(new varconf::Config())
 	, mUserConfig(new varconf::Config())
+	, mCommandLineConfig(new varconf::Config())
 	, mInstanceConfig(new varconf::Config())
 	{
 #ifdef __WIN32__
@@ -137,6 +138,7 @@ namespace Ember
 	{
 		delete mGlobalConfig;
 		delete mUserConfig;
+		delete mCommandLineConfig;
 		delete mInstanceConfig;
 	}
 
@@ -268,7 +270,7 @@ namespace Ember
 		return mGlobalConfig->erase ( section, key ) | mUserConfig->erase ( section, key ) | mInstanceConfig->erase ( section, key );
 	}
 
-	bool ConfigService::loadSavedConfig ( const std::string& filename )
+	bool ConfigService::loadSavedConfig ( const std::string& filename, const StringConfigMap& commandLineSettings )
 	{
 		S_LOG_INFO ( "Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << "." );
 		bool success = mGlobalConfig->readFromFile ( getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL );
@@ -284,7 +286,7 @@ namespace Ember
 			catch ( varconf::ParseError& p )
 			{
 				S_LOG_FAILURE ( "Error loading user config file: " << p );
-				return false;
+				success = false;
 			}
 		}
 		else
@@ -292,6 +294,12 @@ namespace Ember
 			S_LOG_INFO ( "Could not find any user config file." );
 		}
 
+		//after loading the config from file, override with command time settings
+		for (StringConfigMap::const_iterator I = commandLineSettings.begin(); I != commandLineSettings.end(); ++I) {
+			for (std::map<std::string, std::string>::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
+				mCommandLineConfig->setItem(I->first, J->first, J->second);
+			}
+		}
 		return success;
 	}
 
