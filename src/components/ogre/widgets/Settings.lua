@@ -156,6 +156,24 @@ function SettingsWidget:buildSettingsUi()
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
 				{
+					label = "Chat bubbles time shown",
+					helpString = "How long are chat messages shown (in seconds)",
+					
+					section = "ingamechatwidget",
+					key = "timeshown",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 60) end,
+				},
+				{
+					label = "Chat bubbles distance shown",
+					helpString = "How far do you have to go before chat messages disappear",
+					
+					section = "ingamechatwidget",
+					key = "distanceshown",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 100) end,
+				},
+				{
 					label = "Desired FPS",
 					helpString = "FPS capping - used to prevent using more excessive resources. 0 disables FPS cap.",
 					
@@ -353,6 +371,43 @@ function SettingsWidget:buildSettingsUi()
 					key = "minimumversion",
 					
 					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new(value) end,
+				},
+			},
+		},
+		{
+			label = "Developer",
+			description = "Only useful if you are troubleshooting or doing development.",
+			
+			contents =
+			{
+				{
+					label = "Logging level",
+					helpString = "",
+					
+					section = "general",
+					key = "logginglevel",
+					
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
+					suggestions = {"verbose", "info", "warning", "failure", "critical"}
+				},
+				{
+					label = "Logging detailed",
+					helpString = "",
+					
+					section = "general",
+					key = "loggingdetailed",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
+				{
+					label = "CEGUI Logging level",
+					helpString = "",
+					
+					section = "cegui",
+					key = "minimumlogginglevel",
+					
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
+					suggestions = {"insane", "informative", "standard", "warnings", "errors"}
 				},
 			},
 		},
