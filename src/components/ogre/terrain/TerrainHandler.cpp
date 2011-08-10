@@ -93,6 +93,10 @@ public:
 		mTerrain(terrain), mAsyncCallback(asyncCallback)
 	{
 	}
+	virtual ~BasePointRetrieveTask()
+	{
+	}
+
 	void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 	{
 		mPoints = mTerrain.getPoints();
@@ -117,6 +121,10 @@ private:
 public:
 	TerrainPageReloadTask(TerrainHandler& handler, ITerrainPageBridgePtr bridge, TerrainPageGeometryPtr geometry, const ShaderStore& shaders, const WFMath::AxisBox<2>& area) :
 		mHandler(handler), mBridge(bridge), mGeometry(geometry), mShaders(shaders), mArea(area)
+	{
+	}
+
+	virtual ~TerrainPageReloadTask()
 	{
 	}
 
