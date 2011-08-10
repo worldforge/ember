@@ -32,10 +32,12 @@ namespace Ember
 {
 
 	/**
-	* Ember Configuration Service.
+	* @brief Ember Configuration Service.
 	* Provides methods for accessing configuration information. This wraps around the Varconf system.
 	*
 	* If you want to provide functionality in your class for dynamically reacting to changes to the config you should use the ConfigLister classes instead of interfacing with this service directly.
+	*
+	* The service keeps three different config instances: global, user and instance. Instance settings takes precedence over user settings, which take precedence over global settings.
 	*
 	* @author Erik Hjortsberg (erik.hjortsberg@gmail.com)
 	* @author Miguel Guzman Miranda [Aglanor]
@@ -80,11 +82,25 @@ namespace Ember
 			void configError ( const char* error );
 			
 			/**
-			@brief The main configuration store.
-			
-			Even though varconf allows you to use a singleton we'll instead keep our own configuration store, so that we can properly discard of it when we're done.
-			*/
-			std::auto_ptr<varconf::Config> mConfig;
+			 * @brief The global configuration store.
+			 *
+			 * This contains values read in from either the global config, or the command line.
+			 */
+			varconf::Config* mGlobalConfig;
+
+			/**
+			 * @brief The user configuration store.
+			 *
+			 * This contains values read in from the user config file (for example ~/.ember/ember.conf).
+			 */
+			varconf::Config* mUserConfig;
+
+			/**
+			 * @brief The instance configuration store.
+			 *
+			 * This contains values altered at run time.
+			 */
+			varconf::Config* mInstanceConfig;
 
 
 		protected:
@@ -108,9 +124,7 @@ namespace Ember
 			 * Dtor for Ember::service::ConfigService.
 			 *
 			 */
-			~ConfigService()
-			{
-			}
+			virtual ~ConfigService();
 
 
 			//----------------------------------------------------------------------
@@ -134,8 +148,9 @@ namespace Ember
 			 * @param Section of config space to look in.
 			 * @param Key to store value in.
 			 * @param Value to store.
+			 * @param scope The underlying configuration to save the value to. In almost all cases varconf::INSTANCE is appropriate.
 			 */
-			void setValue ( const std::string& section, const std::string& key, const varconf::Variable& value );
+			void setValue ( const std::string& section, const std::string& key, const varconf::Variable& value, varconf::Scope scope = varconf::INSTANCE );
 
 			//----------------------------------------------------------------------
 			// Methods
@@ -200,7 +215,7 @@ namespace Ember
 			 * @param sectionName
 			 * @return
 			 */
-			const SectionMap& getSection ( const std::string& sectionName );
+			SectionMap getSection ( const std::string& sectionName );
 
 			/**
 			 * Loads config space from given file.

@@ -105,7 +105,9 @@ namespace Ember
 	, mSharedDataDir( "" )
 	, mEtcDir( "" )
 	, mHomeDir ( "" )
-	, mConfig(new varconf::Config())
+	, mGlobalConfig(new varconf::Config())
+	, mUserConfig(new varconf::Config())
+	, mInstanceConfig(new varconf::Config())
 	{
 #ifdef __WIN32__
 		char cwd[512];
@@ -131,6 +133,13 @@ namespace Ember
 		setStatusText ( "Configuration Service status OK." );
 	}
 
+	ConfigService::~ConfigService()
+	{
+		delete mGlobalConfig;
+		delete mUserConfig;
+		delete mInstanceConfig;
+	}
+
 
 	void ConfigService::setPrefix ( const std::string& prefix )
 	{
@@ -150,30 +159,61 @@ namespace Ember
 		mHomeDir = path;
 	}
 
-	const ConfigService::SectionMap& ConfigService::getSection ( const std::string& sectionName )
+	ConfigService::SectionMap ConfigService::getSection ( const std::string& sectionName )
 	{
-		return mConfig->getSection ( sectionName );
+		SectionMap combinedSection;
+
+		if (mInstanceConfig->findSection(sectionName)) {
+			const SectionMap& section = mInstanceConfig->getSection(sectionName);
+			combinedSection.insert(section.begin(), section.end());
+		}
+		if (mUserConfig->findSection(sectionName)) {
+			const SectionMap& section = mUserConfig->getSection(sectionName);
+			combinedSection.insert(section.begin(), section.end());
+		}
+		if (mGlobalConfig->findSection(sectionName)) {
+			const SectionMap& section = mGlobalConfig->getSection(sectionName);
+			combinedSection.insert(section.begin(), section.end());
+		}
+		return combinedSection;
 	}
 
 
 	varconf::Variable ConfigService::getValue ( const std::string& section, const std::string& key ) const
 	{
-		return mConfig->getItem ( section, key );
+		if (mInstanceConfig->findItem(section, key)) {
+			return mInstanceConfig->getItem(section, key);
+		}
+		if (mUserConfig->findItem(section, key)) {
+			return mUserConfig->getItem(section, key);
+		}
+		return mGlobalConfig->getItem(section, key);
 	}
 
 	bool ConfigService::getValue ( const std::string& section, const std::string& key, varconf::Variable& value ) const
 	{
-		if ( hasItem ( section, key ) )
-		{
-			value = getValue ( section, key );
+		if (mInstanceConfig->findItem(section, key)) {
+			value = mInstanceConfig->getItem(section, key);
+			return true;
+		} else if (mUserConfig->findItem(section, key)) {
+			value = mUserConfig->getItem(section, key);
+			return true;
+		} else if (mGlobalConfig->findItem(section, key)) {
+			value = mGlobalConfig->getItem(section, key);
 			return true;
 		}
 		return false;
 	}
 
-	void ConfigService::setValue ( const std::string& section, const std::string& key, const varconf::Variable& value )
+	void ConfigService::setValue ( const std::string& section, const std::string& key, const varconf::Variable& value, varconf::Scope scope)
 	{
-		mConfig->setItem ( section, key, value );
+		varconf::Config* config = mInstanceConfig;
+		if (scope == varconf::GLOBAL) {
+			config = mGlobalConfig;
+		} else if (scope == varconf::USER) {
+			config = mUserConfig;
+		}
+		config->setItem ( section, key, value );
 	}
 
 	bool ConfigService::isItemSet ( const std::string& section, const std::string& key, const std::string& value ) const
@@ -183,12 +223,14 @@ namespace Ember
 
 	Service::Status ConfigService::start()
 	{
-		mConfig->sige.connect ( sigc::mem_fun ( *this, &ConfigService::configError ) );
-		mConfig->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
+		mGlobalConfig->sige.connect ( sigc::mem_fun ( *this, &ConfigService::configError ) );
+		mGlobalConfig->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
+		mUserConfig->sige.connect ( sigc::mem_fun ( *this, &ConfigService::configError ) );
+		mUserConfig->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
+		mInstanceConfig->sige.connect ( sigc::mem_fun ( *this, &ConfigService::configError ) );
+		mInstanceConfig->sigv.connect ( sigc::mem_fun ( *this, &ConfigService::updatedConfig ) );
 		registerConsoleCommands();
 		setRunning ( true );
-		//can't do this since we must be the first thing initialized
-		//LoggingService::getInstance()->slog(__FILE__, __LINE__, LoggingService::INFO) << getName() << " initialized" << ENDM;
 		return Service::OK;
 	}
 
@@ -201,14 +243,14 @@ namespace Ember
 
 	void ConfigService::deregisterConsoleCommands()
 	{
-		ConsoleBackend::getSingletonPtr()->deregisterCommand ( SETVALUE );
-		ConsoleBackend::getSingletonPtr()->deregisterCommand ( GETVALUE );
+		ConsoleBackend::getSingleton().deregisterCommand ( SETVALUE );
+		ConsoleBackend::getSingleton().deregisterCommand ( GETVALUE );
 	}
 
 	void ConfigService::registerConsoleCommands()
 	{
-		ConsoleBackend::getSingletonPtr()->registerCommand ( SETVALUE, this, "Sets a value in the configuration. Usage: set_value <section> <key> <value>" );
-		ConsoleBackend::getSingletonPtr()->registerCommand ( GETVALUE, this, "Gets a value from the configuration. Usage: get_value <section> <key>" );
+		ConsoleBackend::getSingleton().registerCommand ( SETVALUE, this, "Sets a value in the configuration. Usage: set_value <section> <key> <value>" );
+		ConsoleBackend::getSingleton().registerCommand ( GETVALUE, this, "Gets a value from the configuration. Usage: get_value <section> <key>" );
 	}
 
 	bool ConfigService::itemExists(const std::string& section, const std::string& key) const
@@ -218,18 +260,18 @@ namespace Ember
 
 	bool ConfigService::hasItem ( const std::string& section, const std::string& key ) const
 	{
-		return mConfig->find ( section, key );
+		return mGlobalConfig->find ( section, key ) || mUserConfig->find ( section, key ) || mInstanceConfig->find ( section, key );
 	}
 
 	bool ConfigService::deleteItem ( const std::string& section, const std::string& key )
 	{
-		return mConfig->erase ( section, key );
+		return mGlobalConfig->erase ( section, key ) | mUserConfig->erase ( section, key ) | mInstanceConfig->erase ( section, key );
 	}
 
 	bool ConfigService::loadSavedConfig ( const std::string& filename )
 	{
 		S_LOG_INFO ( "Loading shared config file from " << getSharedConfigDirectory() + "/"+ filename << "." );
-		bool success = mConfig->readFromFile ( getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL );
+		bool success = mGlobalConfig->readFromFile ( getSharedConfigDirectory() + "/"+ filename, varconf::GLOBAL );
 		std::string userConfigPath ( getHomeDirectory() + "/" + filename );
 		std::ifstream file ( userConfigPath.c_str() );
 		if ( !file.fail() )
@@ -237,7 +279,7 @@ namespace Ember
 			S_LOG_INFO ( "Loading user config file from "<< getHomeDirectory() + "/" + filename <<"." );
 			try
 			{
-				mConfig->parseStream ( file, varconf::USER );
+				mUserConfig->parseStream ( file, varconf::USER );
 			}
 			catch ( varconf::ParseError& p )
 			{
@@ -255,7 +297,34 @@ namespace Ember
 
 	bool ConfigService::saveConfig ( const std::string& filename )
 	{
-		return mConfig->writeToFile ( filename );
+		//Go through all user config values and save those (as they were defined in the original user config file).
+		//Also save any instance values that aren't present in the user config if they differ from the global value.
+		varconf::Config exportConfig;
+
+		//First get the instance values (i.e. those values which have been changed at runtime).
+		//But only get those that differs from the global config.
+		const varconf::conf_map& instanceSections = mInstanceConfig->getSections();
+		for (varconf::conf_map::const_iterator I = instanceSections.begin(); I != instanceSections.end(); ++I) {
+			const varconf::sec_map& section = I->second;
+			for (varconf::sec_map::const_iterator J = section.begin(); J != section.end(); ++J) {
+				//only set the value if it differs from the global one
+				if (mGlobalConfig->getItem(I->first, J->first) != J->second) {
+					exportConfig.setItem(I->first, J->first, J->second, varconf::INSTANCE);
+				}
+			}
+		}
+
+		//Then also add all user settings, i.e. those that already had been set in the user config file (often ~/.ember/ember.conf).
+		const varconf::conf_map& userSections = mUserConfig->getSections();
+		for (varconf::conf_map::const_iterator I = userSections.begin(); I != userSections.end(); ++I) {
+			const varconf::sec_map& section = I->second;
+			for (varconf::sec_map::const_iterator J = section.begin(); J != section.end(); ++J) {
+				//We can't directly use the value, as it might have been updated in the instance config. We therefore needs to go through getValue
+				exportConfig.setItem(I->first, J->first, getValue(I->first, J->first), varconf::INSTANCE);
+			}
+		}
+
+		return exportConfig.writeToFile(filename);
 	}
 
 	void ConfigService::runCommand ( const std::string &command, const std::string &args )
@@ -270,12 +339,12 @@ namespace Ember
 
 			if ( section == "" || key == "" || value == "" )
 			{
-				ConsoleBackend::getSingletonPtr()->pushMessage ( "Usage: set_value <section> <key> <value>" );
+				ConsoleBackend::getSingleton().pushMessage ( "Usage: set_value <section> <key> <value>" );
 			}
 			else
 			{
 				setValue ( section, key, value );
-				ConsoleBackend::getSingletonPtr()->pushMessage ( "New value set, section: " +  section + " key: " + key + " value: " + value );
+				ConsoleBackend::getSingleton().pushMessage ( "New value set, section: " +  section + " key: " + key + " value: " + value );
 			}
 
 		}
@@ -288,18 +357,18 @@ namespace Ember
 
 			if ( section == "" || key == "" )
 			{
-				ConsoleBackend::getSingletonPtr()->pushMessage ( "Usage: get_value <section> <key>" );
+				ConsoleBackend::getSingleton().pushMessage ( "Usage: get_value <section> <key>" );
 			}
 			else
 			{
 				if ( !hasItem ( section, key ) )
 				{
-					ConsoleBackend::getSingletonPtr()->pushMessage ( "No such value." );
+					ConsoleBackend::getSingleton().pushMessage ( "No such value." );
 				}
 				else
 				{
 					varconf::Variable value = getValue ( section, key );
-					ConsoleBackend::getSingletonPtr()->pushMessage ( std::string ( "Value: " ) + static_cast<std::string> ( value ) );
+					ConsoleBackend::getSingleton().pushMessage ( std::string ( "Value: " ) + static_cast<std::string> ( value ) );
 				}
 			}
 		}
