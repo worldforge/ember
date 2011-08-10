@@ -26,6 +26,8 @@
 #endif
 
 #include "IngameChatWidget.h"
+#include "QuickHelp.h"
+#include "HelpMessage.h"
 
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
@@ -635,6 +637,9 @@ void IngameChatWidget::ChatText::switchToAttachedMode()
 	
 	// reset the fade timer
 	mElapsedTimeSinceLastUpdate = 0;
+	
+	QuickHelp::getSingleton().updateText(
+		HelpMessage("You have switched to attached chat mode", "The messages will appear next to the entities and will slowly fade away over time", "ingame chat widget", "ingameChatWidgetAttached"));
 }
 
 void IngameChatWidget::ChatText::switchToDetachedMode()
@@ -658,6 +663,9 @@ void IngameChatWidget::ChatText::switchToDetachedMode()
 	
 	// reset the fade timer
 	mElapsedTimeSinceLastUpdate = 0;
+	
+	QuickHelp::getSingleton().updateText(
+		HelpMessage("You have switched to detached chat mode", "This allows you to concentrate on dialog from this particular person/entity as well as drag the chat history wherever you please. To switch bach to attached mode, close the frame window with the dialog", "ingame chat widget", "ingameChatWidgetDetached"));
 }
 
 bool IngameChatWidget::ChatText::buttonResponse_Click(const EventArgs& args)
