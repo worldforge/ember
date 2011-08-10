@@ -49,4 +49,4 @@ docs:
 	@echo "documentation is in doc/."
 	
 dist-hook:
-	sh $(top_srcdir)/generate-ChangeLog.sh $(top_srcdir) $(distdir)
+	sh $(top_srcdir)/generate-ChangeLog.sh $(top_srcdir) $(distdir) f12012e7616c191a8926432faf866c8e43854062
