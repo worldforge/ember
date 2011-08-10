@@ -107,7 +107,8 @@ protected:
 
 	void Config_DesiredFps(const std::string& section, const std::string& key, varconf::Variable& variable)
 	{
-		if (variable.is_int()) {
+		//Check for double, but cast to int. That way we'll catch all numbers.
+		if (variable.is_double()) {
 			mDesiredFps = static_cast<int> (variable);
 			if (mDesiredFps != 0) {
 				mMillisecondsPerFrame = 1000L / mDesiredFps;
