@@ -33,7 +33,7 @@ namespace Camera
 {
 
 FirstPersonCameraMount::FirstPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager) :
-	CameraMountBase::CameraMountBase(cameraSettings), mCameraNode(0), mInvertCamera(false)
+	CameraMountBase::CameraMountBase(cameraSettings), mCameraNode(0)
 {
 	mCameraNode = sceneManager.createSceneNode(OgreInfo::createUniqueResourceName("FirstPersonCameraNode"));
 }
@@ -76,7 +76,7 @@ Ogre::Degree FirstPersonCameraMount::pitch(float relativeMovement)
 {
 	Ogre::Degree degrees(mCameraSettings.getDegreesPerMouseUnit() * relativeMovement);
 
-	if (mInvertCamera) {
+	if (mCameraSettings.getInvertCamera()) {
 		degrees -= degrees * 2;
 	}
 

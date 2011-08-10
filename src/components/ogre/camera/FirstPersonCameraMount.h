@@ -85,11 +85,6 @@ private:
 	Ogre::SceneNode* mCameraNode;
 
 	/**
-	 * @brief If true, the camera is inverted in the y axis.
-	 */
-	bool mInvertCamera;
-
-	/**
 	 * @brief Creates all nodes needed for the camera.
 	 */
 	void createNodesForCamera(Ogre::SceneManager& sceneManager);

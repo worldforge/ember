@@ -52,9 +52,17 @@ public:
 	/**
 	 * @brief Accessor for the number of degrees to move the camera per mouse unit.
 	 * One mouse unit represents one width or height of the screen, depending on the axis of movement.
-	 * @return
+	 * @return Number of degrees to move the camera per mouse unit.
 	 */
 	float getDegreesPerMouseUnit() const;
+
+
+	/**
+	 * @brief Accessor for whether the vertical movement of the camera should be inverted.
+	 * This is useful for people used to flight simulators.
+	 * @return True if the vertical movement of the camera should be inverted.
+	 */
+	float getInvertCamera() const;
 
 private:
 
@@ -64,6 +72,13 @@ private:
 	float mDegreesPerMouseUnit;
 
 	/**
+	 * @brief If true, the vertical movement of the camera will be inverted.
+	 *
+	 * This is useful for people used to flight simulators.
+	 */
+	bool mInvertCamera;
+
+	/**
 	 * @brief Sets the degrees per mouse unit.
 	 * @param section
 	 * @param key
@@ -71,12 +86,25 @@ private:
 	 */
 	void Config_DegreesPerMouseUnit(const std::string& section, const std::string& key, varconf::Variable& variable);
 
+	/**
+	 * @brief Sets whether the vertical axis of the camera should be inverted.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void Config_InvertCamera(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 };
 
 
 inline float CameraSettings::getDegreesPerMouseUnit() const
 {
 	return mDegreesPerMouseUnit;
+}
+
+inline float CameraSettings::getInvertCamera() const
+{
+	return mInvertCamera;
 }
 
 }

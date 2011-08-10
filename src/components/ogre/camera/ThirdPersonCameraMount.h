@@ -121,11 +121,6 @@ protected:
 	bool mIsAdjustedToTerrain;
 
 	/**
-	 * @brief If true, the camera is inverted in the y axis.
-	 */
-	bool mInvertCamera;
-
-	/**
 	 * @brief Creates the rays needed for mouse picking and camera adjustment.
 	 */
 	void createRayQueries(Ogre::SceneManager& sceneManager);
