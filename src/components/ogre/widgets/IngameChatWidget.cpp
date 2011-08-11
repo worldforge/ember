@@ -618,7 +618,7 @@ void IngameChatWidget::ChatText::respondWithMessage(const std::string& message)
 	clearResponses();
 }
 
-void IngameChatWidget::ChatText::switchToAttachedMode()
+void IngameChatWidget::ChatText::switchToAttachedMode(bool updateHelpMessage)
 {
 	// be robust, if we are in detached mode, do nothing
 	if (mAttachedWindow->isVisible())
@@ -638,8 +638,11 @@ void IngameChatWidget::ChatText::switchToAttachedMode()
 	// reset the fade timer
 	mElapsedTimeSinceLastUpdate = 0;
 	
-	QuickHelp::getSingleton().updateText(
-		HelpMessage("You have switched to attached chat mode", "The messages will appear next to the entities and will slowly fade away over time", "ingame chat widget", "ingameChatWidgetAttached"));
+	if (updateHelpMessage)
+	{
+		QuickHelp::getSingleton().updateText(
+			HelpMessage("You have switched to attached chat mode", "The messages will appear next to the entities and will slowly fade away over time", "ingame chat widget", "ingameChatWidgetAttached"));
+	}
 }
 
 void IngameChatWidget::ChatText::switchToDetachedMode()
@@ -736,7 +739,7 @@ bool IngameChatWidget::ChatText::buttonDetachedTrade_Click(const EventArgs& args
 	GUIManager::getSingleton().EmitEntityAction("Merchant", mLabel->getEntity());
 	
 	// also switch to attached mode to avoid having a superfluous window opened
-	switchToAttachedMode();
+	switchToAttachedMode(false);
 	
 	return true;
 }

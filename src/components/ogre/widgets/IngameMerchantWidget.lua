@@ -138,6 +138,10 @@ function MerchantWindow.create(entity, uniqueIndex)
 	ret:setTargetEntity(entity)
 
 	ret.window:subscribeEvent("CloseClicked", MerchantWindow.handleCloseClicked, ret)
+	
+	local message = Ember.OgreView.Gui.HelpMessage:new_local("Merchant Window", "You have opened a merchant window, browse the wares and double click to buy items of your choice.", "merchant window", "merchantWindow")
+	Ember.OgreView.Gui.QuickHelp:getSingleton():updateText(message)
+	
 	return ret
 end
 

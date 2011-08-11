@@ -280,7 +280,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			/**
 			 * @brief switches from detached to attached mode
 			 */
-			void switchToAttachedMode();
+			void switchToAttachedMode(bool updateHelpMessage = true);
 			
 			/**
 			 * @brief switches from attached to detached mode
