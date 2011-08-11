@@ -200,7 +200,8 @@ function SettingsWidget:buildSettingsUi()
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
 					suggestions = {"low", "medium", "high"}
 				},
-				{
+				--FIXME: Removed from Ember, not effective
+				--[[{
 					label = "Fresnel water",
 					helpString = "More realistic and performance demanding water",
 					
@@ -208,7 +209,7 @@ function SettingsWidget:buildSettingsUi()
 					key = "fresnelwater",
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
-				},
+				},--]]
 				{
 					label = "Foliage",
 					helpString = "Render foliage over the terrain",
