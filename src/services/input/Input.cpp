@@ -34,6 +34,8 @@
 #endif // WITHOUT_SCRAP
 #include "IInputAdapter.h"
 
+#include "services/config/ConfigListenerContainer.h"
+
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
@@ -49,7 +51,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false)
+		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer())
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -81,7 +83,7 @@ Input::Input() :
 
 Input::~Input()
 {
-
+	delete mConfigListenerContainer;
 }
 
 void Input::initialize(int width, int height)
@@ -181,6 +183,23 @@ void Input::deregisterCommandMapper(InputCommandMapper* mapper)
 bool Input::isApplicationVisible()
 {
 	return SDL_GetAppState() & SDL_APPACTIVE;
+}
+
+void Input::startInteraction()
+{
+	//SDL 1.3 allow for easy raising of the window. Alas we're using 1.2
+//#ifdef SDL_VIDEO_DRIVER_X11
+//	SDL_SysWMinfo info;
+//	SDL_VERSION(&info.version);
+//
+//	if (SDL_GetWMInfo(&info)) {
+//		SDL_Window* window = info.info.x11.window;
+//		if (window) {
+//			SDL_RaiseWindow(SDL_Window* window);
+//		}
+//	}
+//#endif
+	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "catchmouse", sigc::mem_fun(*this, &Input::Config_CatchMouse), true);
 }
 
 void Input::processInput()
@@ -496,6 +515,21 @@ const MousePosition& Input::getMousePosition() const
 void Input::sleep(unsigned int milliseconds)
 {
 	SDL_Delay(milliseconds);
+}
+
+
+void Input::Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	try {
+		if (variable.is_bool()) {
+			bool enabled = static_cast<bool> (variable);
+			S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
+
+			SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when changing mouse grabbing." << ex);
+	}
 }
 
 }

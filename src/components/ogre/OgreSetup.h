@@ -27,7 +27,6 @@
 #include "OgreIncludes.h"
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
-#include "services/config/ConfigListenerContainer.h"
 #include <OgreConfigOptionMap.h>
 #include <OgreFrameListener.h>
 
@@ -44,9 +43,10 @@ class MeshSerializerListener;
 	@brief A class used for setting up Ogre.
 
 	Instead of creating the Ogre root object and the main render window directly, use this to guarantee that everything is set up correctly.
+
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class OgreSetup : public Ogre::FrameListener, public ConsoleObject, public ConfigListenerContainer
+class OgreSetup : public Ogre::FrameListener, public ConsoleObject
 {
 public:
 	OgreSetup();
@@ -155,14 +155,6 @@ private:
 	 * @return True if the extension was found.
 	 */
 	int isExtensionSupported(const char *extension);
-
-	/**
-	 * @brief Bind the ability for Ember to catch the mouse to the input:catchmouse key.
-	 * @param section
-	 * @param key
-	 * @param variable
-	 */
-	void Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * @brief Listen to alt+tab and release the mouse if grabbed.

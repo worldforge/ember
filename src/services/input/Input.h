@@ -20,14 +20,16 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGREINPUT_H
-#define EMBEROGREINPUT_H
+#ifndef EMBERINPUT_H
+#define EMBERINPUT_H
+
+
+#include "framework/ConsoleObject.h"
+#include "framework/Singleton.h"
 
 #include <sigc++/slot.h>
 #include <sigc++/signal.h>
 #include <SDL_keysym.h>
-#include "framework/ConsoleObject.h"
-#include "framework/Singleton.h"
 
 #include <set>
 #include <list>
@@ -37,11 +39,16 @@
 struct SDL_KeyboardEvent;
 struct SDL_keysym;
 
+namespace varconf {
+class Variable;
+}
+
 namespace Ember
 {
 
 class IInputAdapter;
 class InputCommandMapper;
+class ConfigListenerContainer;
 
 typedef std::set<SDLKey> KeysSet;
 typedef std::list<IInputAdapter*> IInputAdapterStore;
@@ -179,6 +186,14 @@ public:
 	 * @param heigh The height of the window, in pixels.
 	 */
 	void initialize(int width, int height);
+
+
+	/**
+	 * @brief Call this when application setup has completed and the user should start interacting with the application.
+	 *
+	 * This will catch the mouse if that's enabled, amongst other things.
+	 */
+	void startInteraction();
 
 	/**
 	 * @brief Starts processing all input for a frame.
@@ -375,6 +390,14 @@ protected:
 	void keyReleased(const SDL_KeyboardEvent &keyEvent);
 
 	/**
+	 * @brief Bind the ability for Ember to catch the mouse to the input:catchmouse key.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
 	 @brief Keys which should not be injected as chars, ie. enter, backspace etc.
 	 */
 	KeysSet mNonCharKeys;
@@ -435,6 +458,11 @@ protected:
 	 * @brief Whether movement mode is enabled or not.
 	 */
 	bool mMovementModeEnabled;
+
+	/**
+	 * @brief Keeps track of configuration changes.
+	 */
+	ConfigListenerContainer* mConfigListenerContainer;
 };
 
 }

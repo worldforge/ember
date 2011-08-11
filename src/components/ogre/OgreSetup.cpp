@@ -892,7 +892,6 @@ bool OgreSetup::configure(void)
 		// Register our factory
 		Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
 
-		registerConfigListenerWithDefaults("input", "catchmouse", sigc::mem_fun(*this, &OgreSetup::Config_CatchMouse), true);
 		return true;
 	} else {
 		return false;
@@ -1011,19 +1010,6 @@ int OgreSetup::isExtensionSupported(const char *extension)
 	return 0;
 }
 
-void OgreSetup::Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable)
-{
-	try {
-		if (variable.is_bool()) {
-			bool enabled = static_cast<bool> (variable);
-			S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
-
-			SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
-		}
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Error when changing mouse grabbing." << ex);
-	}
-}
 
 }
 }

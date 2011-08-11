@@ -391,6 +391,7 @@ void Application::start()
 		S_LOG_CRITICAL("Unknown error when setting up Ogre.");
 		return;
 	}
+	Input::getSingleton().startInteraction();
 
 	mainLoop();
 

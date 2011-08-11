@@ -427,7 +427,6 @@ bool EmberOgre::setup(Input& input)
 		loadingBar.finish();
 	}
 	mResourceLoader->unloadUnusedResources();
-
 	return true;
 }
 
