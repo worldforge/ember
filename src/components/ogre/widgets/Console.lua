@@ -250,9 +250,21 @@ function Console:appendLine(line, tab)
 		self:notifyLinePurged(purgedLine, tab)
 	end
 	
+	-- check whether the scrollbar is at its end, this means it's scrolled all the way down
+	-- if it's not all the way down, we want to console to "stick"
+	local atEnd = false
+	-- the minus 1 is used as a measure against rounding errors and cases where the scroll position is very close but not right at the end
+	local maxScroll = tonumber(window:getProperty("VertScrollDocumentSize")) - tonumber(window:getProperty("VertScrollPageSize")) - 1
+	if (maxScroll <= 0) or (tonumber(window:getProperty("VertScrollPosition")) >= maxScroll) then
+		atEnd = true
+	end
+	
 	window:setText(newText)
-	--make sure that the newly added line is shown
-	window:setProperty("VertScrollPosition", window:getProperty("VertExtent"))
+	
+	if atEnd then
+		--make sure that the newly added line is shown since we were at the end before
+		window:setProperty("VertScrollPosition", window:getProperty("VertExtent"))
+	end
 	
 	if not window:isVisible() then
 		tab.unviewedCount = tab.unviewedCount + 1
