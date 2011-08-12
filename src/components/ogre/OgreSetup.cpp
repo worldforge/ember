@@ -151,7 +151,7 @@ void OgreSetup::shutdown()
 
 Ogre::Root* OgreSetup::createOgreSystem()
 {
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
+	ConfigService& configSrv(EmberServices::getSingleton().getConfigService());
 
 	if (configSrv.getPrefix() != "") {
 		//We need to set the current directory to the prefix before trying to load Ogre.
@@ -198,17 +198,17 @@ Ogre::Root* OgreSetup::createOgreSystem()
 #elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 		// On Mac, plugins are found in Resources in the Main (Application) bundle, then in the Ogre framework bundle
 		pluginExtension = "";
+		std::string pluginDir = configSrv->getSharedDataDirectory();
+		pluginLocations.push_back(pluginDir);
+		pluginDir += "/../Plugins";
+		pluginLocations.push_back(pluginDir);
 		pluginLocations.push_back("");
 #endif
 		Tokeniser tokeniser(plugins, ",");
 		std::string token = tokeniser.nextToken();
 		while (token != "") {
 			for (std::vector<std::string>::iterator I = pluginLocations.begin(); I != pluginLocations.end(); ++I) {
-#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE
 				std::string pluginPath((*I) + "/" + token + pluginExtension);
-#else
-				std::string pluginPath(token);
-#endif
 				bool success = false;
 				try {
 					S_LOG_INFO("Trying to load the plugin " << pluginPath);
@@ -216,11 +216,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 					success = true;
 					break;
 				} catch (...) {
-#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE
 					pluginPath = (*I) + "/" + token + "_d" + pluginExtension;
-#else
-					pluginPath = token + "_d";
-#endif
 					try {
 						mRoot->loadPlugin(pluginPath);
 						success = true;
@@ -413,18 +409,17 @@ bool OgreSetup::configure(void)
 		bool fullscreen;
 
 		parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
-		
-#ifndef BUILD_WEBEMBER
-		//In webember we already called SDL_Init on the plugin side with the main thread.
-		SDL_Init( SDL_INIT_VIDEO);
-#endif // !BUILD_WEBEMBER
+
 		//this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
 		atexit(SDL_Quit);
 		oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
 		oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
 		oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
 		oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
-#ifndef BUILD_WEBEMBER
+
+#if !defined(BUILD_WEBEMBER) || defined(__APPLE__)
+		//In webember we already called SDL_Init on the plugin side with the main thread.
+		SDL_Init( SDL_INIT_VIDEO);
 		int flags = 0;
 
 		// 	bool enableDoubleBuffering = false;
