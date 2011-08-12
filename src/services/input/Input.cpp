@@ -51,7 +51,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer())
+		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false)
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -218,8 +218,11 @@ void Input::pollMouse(float secondsSinceLast)
 
 	//has the mouse moved?
 	Uint8 appState = SDL_GetAppState();
-	//	S_LOG_INFO((appState & SDL_APPMOUSEFOCUS));
 	if (appState & SDL_APPMOUSEFOCUS) {
+		//Wait with grabbing the mouse until the app has input focus.
+		if (mMouseGrabbingRequested && (appState & SDL_APPINPUTFOCUS)) {
+			setMouseGrab(true);
+		}
 		if (mMousePosition.xPixelPosition != mouseX || mMousePosition.yPixelPosition != mouseY) {
 
 			//we'll calculate the mouse movement difference and send the values to those
@@ -523,14 +526,23 @@ void Input::Config_CatchMouse(const std::string& section, const std::string& key
 	try {
 		if (variable.is_bool()) {
 			bool enabled = static_cast<bool> (variable);
-			S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
-
-			SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
+			if (enabled) {
+				mMouseGrabbingRequested = true;
+			} else {
+				setMouseGrab(false);
+			}
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when changing mouse grabbing." << ex);
 	}
 }
 
+void Input::setMouseGrab(bool enabled) {
+	S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
+	SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
+	if (enabled) {
+		mMouseGrabbingRequested = false;
+	}
 }
-;
+}
+

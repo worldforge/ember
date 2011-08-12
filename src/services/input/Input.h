@@ -398,6 +398,12 @@ protected:
 	void Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
+	 * @brief Enabled or disables mouse grabbing.
+	 * @param enabled True if the mouse should be grabbed.
+	 */
+	void setMouseGrab(bool enabled);
+
+	/**
 	 @brief Keys which should not be injected as chars, ie. enter, backspace etc.
 	 */
 	KeysSet mNonCharKeys;
@@ -463,6 +469,14 @@ protected:
 	 * @brief Keeps track of configuration changes.
 	 */
 	ConfigListenerContainer* mConfigListenerContainer;
+
+	/**
+	 * @brief True if mouse grabbing has been requested.
+	 *
+	 * If this is true, the mouse will be grabbed next time the application has mouse focus.
+	 * The main reason for not grabbing the mouse directly is that the application window might not have focus, and grabbing it then will only confuse the user.
+	 */
+	bool mMouseGrabbingRequested;
 };
 
 }
