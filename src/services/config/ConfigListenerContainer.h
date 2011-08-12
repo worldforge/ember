@@ -49,8 +49,6 @@ public:
 
 	virtual ~ConfigListenerContainer();
 
-protected:
-
 	/**
 	 * @brief Registers a new listener. The listener instance will be owned by this class and automatically deleted when the destructor is called.
 	 * @param section The config section to listen to.
@@ -70,6 +68,7 @@ protected:
 	 * @return A pointer to the newly created listener instance.
 	 */
 	ConfigListener* registerConfigListenerWithDefaults(const std::string& section, const std::string& key, SettingChangedSlot slot, varconf::Variable defaultValue);
+
 
 private:
 	/**
