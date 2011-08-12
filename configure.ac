@@ -26,6 +26,7 @@ LT_INIT
 AC_PROG_CXX
 #AC_PROG_AWK
 AC_PROG_CC
+AC_PROG_OBJC
 #AC_PROG_CPP
 #AC_PROG_INSTALL
 #AC_PROG_LN_S
@@ -155,7 +156,6 @@ case $build_os in
 	WIN32=true
     ;;
   darwin*)
-    AC_PROG_OBJC
     AC_MSG_RESULT([Building for Mac OS X.])
 	OSX=true
     ;;
