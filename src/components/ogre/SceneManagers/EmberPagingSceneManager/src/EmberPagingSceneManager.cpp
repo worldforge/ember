@@ -110,8 +110,9 @@ namespace OgreView {
 		if (isShadowTechniqueTextureBased())
 		{
 			bool customMaterial = false;
-			Pass* retPass;	
-			if (!pass->getParent()->getShadowCasterMaterial().isNull())
+			Pass* retPass;
+			Ogre::MaterialPtr shadowCasterMaterial = pass->getParent()->getShadowCasterMaterial();
+			if (!shadowCasterMaterial.isNull() && shadowCasterMaterial->getBestTechnique())
 			{
 				customMaterial = true;
 				retPass = pass->getParent()->getShadowCasterMaterial()->getBestTechnique()->getPass(0);
@@ -119,24 +120,24 @@ namespace OgreView {
 					return pass;
 				}
 			}
-			else 
+			else
 			{
-				retPass = mShadowTextureCustomCasterPass ? 
+				retPass = mShadowTextureCustomCasterPass ?
 					mShadowTextureCustomCasterPass : mShadowCasterPlainBlackPass;
 			}
-	
-			
+
+
 			// Special case alpha-blended passes
-			if ((pass->getSourceBlendFactor() == SBF_SOURCE_ALPHA && 
-				pass->getDestBlendFactor() == SBF_ONE_MINUS_SOURCE_ALPHA) 
+			if ((pass->getSourceBlendFactor() == SBF_SOURCE_ALPHA &&
+				pass->getDestBlendFactor() == SBF_ONE_MINUS_SOURCE_ALPHA)
 				|| pass->getAlphaRejectFunction() != CMPF_ALWAYS_PASS)
 			{
 				// Alpha blended passes must retain their transparency
-				retPass->setAlphaRejectSettings(pass->getAlphaRejectFunction(), 
+				retPass->setAlphaRejectSettings(pass->getAlphaRejectFunction(),
 					pass->getAlphaRejectValue());
 				retPass->setSceneBlending(pass->getSourceBlendFactor(), pass->getDestBlendFactor());
 				retPass->getParent()->getParent()->setTransparencyCastsShadows(true);
-	
+
 				// So we allow the texture units, but override the colour functions
 				// Copy texture state, shift up one since 0 is shadow texture
 				unsigned short origPassTUCount = pass->getNumTextureUnitStates();
@@ -156,14 +157,14 @@ namespace OgreView {
 					// override colour function
 					tex->setColourOperationEx(LBX_SOURCE1, LBS_MANUAL, LBS_CURRENT,
 						isShadowTechniqueAdditive()? ColourValue::Black : mShadowColour);
-	
+
 				}
 				// Remove any extras
 				while (retPass->getNumTextureUnitStates() > origPassTUCount)
 				{
 					retPass->removeTextureUnitState(origPassTUCount);
 				}
-	
+
 			}
 			else
 			{
@@ -175,12 +176,12 @@ namespace OgreView {
 					retPass->removeTextureUnitState(0);
 				}
 			}
-	
+
 			// Propagate culling modes
 			retPass->setCullingMode(pass->getCullingMode());
 			retPass->setManualCullingMode(pass->getManualCullingMode());
-			
-	
+
+
 			// Does incoming pass have a custom shadow caster program?
 			if (!pass->getShadowCasterVertexProgramName().empty())
 			{
@@ -196,7 +197,7 @@ namespace OgreView {
 					pass->getShadowCasterVertexProgramParameters());
 				// Also have to hack the light autoparams, that is done later
 			}
-			else 
+			else
 			{
 				if (!customMaterial) {
 					if (retPass == mShadowTextureCustomCasterPass)
@@ -211,11 +212,11 @@ namespace OgreView {
 							{
 								mShadowTextureCustomCasterPass->setVertexProgramParameters(
 									mShadowTextureCustomCasterVPParams);
-		
+
 							}
-		
+
 						}
-		
+
 					}
 					else
 					{
