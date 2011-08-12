@@ -410,6 +410,24 @@ function SettingsWidget:buildSettingsUi()
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
 					suggestions = {"insane", "informative", "standard", "warnings", "errors"}
 				},
+				{
+					label = "Enable Lua debugging",
+					helpString = "",
+					
+					section = "lua",
+					key = "debug",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
+				{
+					label = "Use debug LOD colours for terrain",
+					helpString = "",
+					
+					section = "terrain",
+					key = "usedebuglodcolors",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
 			},
 		},
 	}
