@@ -1,5 +1,7 @@
 INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
+#WARNING: use only absolute path in this file, because its included from webember, which has different working directory!
+
 embersources = $(top_srcdir)/src/main/Application.cpp $(top_srcdir)/src/main/ConfigBoundLogObserver.cpp
 
 if WIN32
@@ -58,7 +60,7 @@ endif
 
 endif
 
-noinst_HEADERS = Application.h ConfigBoundLogObserver.h
+noinst_HEADERS = $(top_srcdir)/src/main/Application.h $(top_srcdir)/src/main/ConfigBoundLogObserver.h
 
 
-EXTRA_DIST=macosx/COPYING.SDL macosx/ReadMeDevLite.txt macosx/SDLMain.h
+EXTRA_DIST=$(top_srcdir)/src/main/macosx/COPYING.SDL $(top_srcdir)/src/main/macosx/ReadMeDevLite.txt $(top_srcdir)/src/main/macosx/SDLMain.h
