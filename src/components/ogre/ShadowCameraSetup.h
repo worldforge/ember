@@ -125,6 +125,13 @@ private:
 	 */
 	void Config_ShadowFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable);
 
+	/**
+	 * @brief Sets whether back faces should be rendered, as a boolean.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void Config_ShadowRenderBackfaces(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 };
 

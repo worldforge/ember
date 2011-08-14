@@ -44,6 +44,8 @@ ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr)
 	registerConfigListenerWithDefaults("shadows", "optimaladjustfactors", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowOptimalAdjustFactors), "1 1 1");
 	registerConfigListenerWithDefaults("shadows", "useaggressivefocusregion", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowUseAggressiveFocusRegion), true);
 	registerConfigListenerWithDefaults("shadows", "fardistance", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowFarDistance), 200.0);
+	registerConfigListenerWithDefaults("shadows", "renderbackfaces", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowRenderBackfaces), true);
+
 }
 
 
@@ -81,7 +83,6 @@ bool ShadowCameraSetup::setup()
 	//}
 
 	mSceneMgr.setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float/NoAlpha");
-	mSceneMgr.setShadowCasterRenderBackFaces(true);
 
 	mPssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 	mSharedCameraPtr = Ogre::ShadowCameraSetupPtr(mPssmSetup);
@@ -167,6 +168,19 @@ void ShadowCameraSetup::Config_ShadowFarDistance(const std::string& section, con
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when setting shadow far distance." << ex);
 	}
+}
+
+void ShadowCameraSetup::Config_ShadowRenderBackfaces(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	try {
+		if (variable.is_bool()) {
+			S_LOG_VERBOSE("Setting shadow render back faces: " << static_cast<bool>(variable));
+			mSceneMgr.setShadowCasterRenderBackFaces(static_cast<bool>(variable));
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Error when setting shadow render back faces." << ex);
+	}
+
 }
 
 }
