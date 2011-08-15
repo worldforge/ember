@@ -96,8 +96,8 @@ namespace Ogre
         //Ember added stop
 
     {
-	    // No shadow projection
-        //MovableObject::mCastShadows = false;
+	    // Set shadow casting
+        MovableObject::mCastShadows = renderableMgr->getOptions()->castShadows;
 
         // Default query flags to top bit so users can exclude it if they wish
         MovableObject::mQueryFlags = SceneManager::WORLD_GEOMETRY_TYPE_MASK;

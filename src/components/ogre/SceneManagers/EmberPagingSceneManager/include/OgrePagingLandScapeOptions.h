@@ -290,6 +290,12 @@ namespace Ogre
 			 */
 			float uninitializedHeight;
 
+			/**
+			 * @brief Whether the terrain should cast shadows or not.
+			 * This is off by default, as it's hard to get correct terrain shadows working without artifacts.
+			 */
+			bool castShadows;
+
         private:
 
             void loadcfg (const String &filename, ConfigFile& config);

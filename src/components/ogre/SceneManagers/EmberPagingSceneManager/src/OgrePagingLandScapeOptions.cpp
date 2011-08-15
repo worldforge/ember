@@ -181,6 +181,7 @@ namespace Ogre
 		queryResolutionFactor = 0.1f;
 
 		uninitializedHeight = std::numeric_limits<float>::min();
+		castShadows = false;
 #ifdef _MAPSPLITTER
 
         Blur = 0.0f;
