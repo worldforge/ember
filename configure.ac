@@ -98,21 +98,6 @@ AC_ARG_ENABLE(static_build,
 )
 AM_CONDITIONAL([BUILD_STATIC], [test x"$link_static" = xtrue])
 
-AC_ARG_ENABLE(webember,
-  [AS_HELP_STRING([--enable-webember],[enable building of webember (default=no)])],
-  [
-    if test "$enableval" = "yes"; then
-      webember_enabled="true"
-      CXXFLAGS="$CXXFLAGS -DBUILD_WEBEMBER"
-    else
-      webember_enabled="false"
-    fi
-  ],[
-    webember_enabled="false"
-  ]
-)
-AM_CONDITIONAL([BUILD_WEBEMBER], [test x"$webember_enabled" = xtrue])
-
 AC_MSG_RESULT([
 
 		**************************************
@@ -140,24 +125,18 @@ AC_MSG_RESULT([
 
 	])
 
-AC_LANG_PUSH(C)
-
-#disable this for now
-#AC_CHECK_LIB(openal,
-#	alutInit ,,
-#	     AC_MSG_ERROR([Unable to find OpenAL (Open Audio Layer)])
-#	)
-
+WIN32="false"
+OSX="false"
 case $build_os in
   cygwin* | mingw* | cegcc*)
 	LIBS="$LIBS -lshlwapi"
 	AC_CHECK_TOOL(WINDRES, windres)
 	AC_MSG_RESULT([Building for windows.])
-	WIN32=true
+	WIN32="true"
     ;;
   darwin*)
     AC_MSG_RESULT([Building for Mac OS X.])
-	OSX=true
+	OSX="true"
     ;;
 esac
 
@@ -165,9 +144,28 @@ AM_CONDITIONAL([WIN32], [test x$WIN32 = xtrue])
 AM_CONDITIONAL([OSX], [test x$OSX = xtrue])
 
 
+AC_ARG_ENABLE(webember,
+  [AS_HELP_STRING([--enable-webember], [enable building of webember (default=no)])],
+  [
+    if test "$enableval" = "yes"; then
+      webember_enabled="true"
+      CXXFLAGS="$CXXFLAGS -DBUILD_WEBEMBER"
+    else
+      webember_enabled="false"
+    fi
+  ],[
+    webember_enabled="false"
+  ]
+)
+
+AM_CONDITIONAL([BUILD_WEBEMBER], [test x"$webember_enabled" = xtrue])
+
+if test "$webember_enabled" = "true" -a "$WIN32" = "false" -a "$OSX" = "false"  ; then
+  # needed for some autotools versions. This is needed on POSIX ELF shared libraries only.
+  CXXFLAGS="$CXXFLAGS -fPIC"
+fi
 
 
-AC_LANG_POP(C)
 
 # make sure binreloc funtionality is used
 AM_BINRELOC
