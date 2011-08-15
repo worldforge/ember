@@ -2,7 +2,7 @@
 <GUILayout>
 	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
 		<Property Name='UnifiedSize' Value='{{0.0,400.0},{0.0,400.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
+		<Property Name='UnifiedPosition' Value='{{0.5,-200.0},{0.5,-200.0}}'/>
 		<Property Name='Text' Value='Settings'/>
 		
 		<Window Type='EmberLook/TabControl' Name='MainWindow/Tabs'>
