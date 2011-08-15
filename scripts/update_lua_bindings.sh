@@ -10,4 +10,10 @@ if [ x${TOLUAXX} = x ]; then
 fi
 ${TOLUAXX} -n $1 $2 > $3
 grep -q '** tolua internal error' $3 && cat $3 && exit 1
+if [ "$OSTYPE" != "${OSTYPE/darwin/}" ] ; then
+#On Mac OS X the -i option has a parameter.
 sed -i "" -e 's/const,/const /g' -e 's/tolua_outside//g' -e 's/tolua++\.h/components\/lua\/tolua++\.h/' $3
+else
+sed -i -e 's/const,/const /g' -e 's/tolua_outside//g' -e 's/tolua++\.h/components\/lua\/tolua++\.h/' $3
+fi
+
