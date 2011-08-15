@@ -48,54 +48,68 @@
 #include <CoreFoundation/CFBundle.h>
 #include <CoreServices/CoreServices.h>
 
+using namespace Ember;
+
 std::string getBundleResourceDirPath()
 {
-    /* the following code looks for the base package directly inside
-    the application bundle. This can be changed fairly easily by
-    fiddling with the code below. And yes, I know it's ugly and verbose.
-    */
-    CFBundleRef appBundle = CFBundleGetMainBundle();
-    CFURLRef resUrl = CFBundleCopyResourcesDirectoryURL(appBundle);
-    CFURLRef absResUrl = CFURLCopyAbsoluteURL(resUrl);
+	/* the following code looks for the base package directly inside
+	the application bundle. This can be changed fairly easily by
+	fiddling with the code below. And yes, I know it's ugly and verbose.
+	*/
+	std::string result;
+#ifdef BUILD_WEBEMBER
 
-    // now convert down to a path, and the a c-string
-    CFStringRef path = CFURLCopyFileSystemPath(absResUrl, kCFURLPOSIXPathStyle);
-    std::string result = CFStringGetCStringPtr(path, CFStringGetSystemEncoding());
+	const char* strBundleID = "com.WebEmberLib.WebEmber";
+	CFStringRef bundleID = CFStringCreateWithCString(kCFAllocatorDefault,strBundleID,kCFStringEncodingMacRoman);
+	CFBundleRef appBundle = CFBundleGetBundleWithIdentifier(bundleID);
+	CFRelease(bundleID);
+	if(!appBundle){
+		S_LOG_FAILURE("Bundle with identifier " << strBundleID << " not found!");
+	}else{
+#else
+		CFBundleRef appBundle = CFBundleGetMainBundle();
+#endif
+		CFURLRef resUrl = CFBundleCopyResourcesDirectoryURL(appBundle);
+		CFURLRef absResUrl = CFURLCopyAbsoluteURL(resUrl);
 
-    CFRelease(resUrl);
-    CFRelease(absResUrl);
-    CFRelease(path);
-    return result;
+		// now convert down to a path, and the a c-string
+		CFStringRef path = CFURLCopyFileSystemPath(absResUrl, kCFURLPOSIXPathStyle);
+		result = CFStringGetCStringPtr(path, CFStringGetSystemEncoding());
+
+		FRelease(resUrl);
+		CFRelease(absResUrl);
+		CFRelease(path);
+#ifdef BUILD_WEBEMBER
+	}
+#endif
+	return result;
 }
 
 std::string getAppSupportDirPath()
 {
-    FSRef fs;
-    OSErr err = FSFindFolder(kUserDomain, kApplicationSupportFolderType, true, &fs);
-    if (err != noErr) {
-        std::cerr << "error doing FindFolder" << std::endl;
-        return std::string();
-    }
+	FSRef fs;
+	OSErr err = FSFindFolder(kUserDomain, kApplicationSupportFolderType, true, &fs);
+	if (err != noErr) {
+		S_LOG_FAILURE("error doing FindFolder");
+		return std::string();
+	}
 
-    CFURLRef dirURL = CFURLCreateFromFSRef(kCFAllocatorSystemDefault, &fs);
-    char fsRepr[1024];
-    if (!CFURLGetFileSystemRepresentation(dirURL, true, (UInt8*) fsRepr, 1024)) {
-        std::cerr << "error invoking CFURLGetFileSystemRepresentation" << std::endl;
-        return std::string();
-    }
+	CFURLRef dirURL = CFURLCreateFromFSRef(kCFAllocatorSystemDefault, &fs);
+	char fsRepr[1024];
+	if (!CFURLGetFileSystemRepresentation(dirURL, true, (UInt8*) fsRepr, 1024)) {
+		std::cerr << "error invoking CFURLGetFileSystemRepresentation" << std::endl;
+		return std::string();
+	}
 
-    CFRelease(dirURL);
-    return fsRepr;
+	CFRelease(dirURL);
+	return fsRepr;
 }
 
 #endif
 
-
-using namespace std;
-
 namespace Ember
 {
-
+	
 	const std::string ConfigService::SETVALUE ( "set_value" );
 	const std::string ConfigService::GETVALUE ( "get_value" );
 
