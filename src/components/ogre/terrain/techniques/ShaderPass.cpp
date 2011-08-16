@@ -48,12 +48,13 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 	combinedCoverageTextureNameSS << "terrain_" << mPosition.x() << "_" << mPosition.y() << "_combinedCoverage_" << passIndex << "_" << batchIndex;
 	const Ogre::String combinedCoverageName(combinedCoverageTextureNameSS.str());
 	Ogre::TexturePtr combinedCoverageTexture;
-	if (Ogre::Root::getSingletonPtr()->getTextureManager()->resourceExists(combinedCoverageName)) {
+	Ogre::TextureManager* textureMgr = Ogre::Root::getSingletonPtr()->getTextureManager();
+	if (textureMgr->resourceExists(combinedCoverageName)) {
 		S_LOG_VERBOSE("Using already created texture " << combinedCoverageName);
-		combinedCoverageTexture = static_cast<Ogre::TexturePtr> (Ogre::Root::getSingletonPtr()->getTextureManager()->getByName(combinedCoverageName));
+		combinedCoverageTexture = static_cast<Ogre::TexturePtr> (textureMgr->getByName(combinedCoverageName));
 	} else {
 		S_LOG_VERBOSE("Creating new texture " << combinedCoverageName);
-		combinedCoverageTexture = Ogre::Root::getSingletonPtr()->getTextureManager()->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, 1, Ogre::PF_B8G8R8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+		combinedCoverageTexture = textureMgr->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, Ogre::TU_DYNAMIC_WRITE_ONLY|Ogre::TU_AUTOMIPMAP);
 	}
 	return combinedCoverageTexture;
 }
