@@ -329,6 +329,15 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
+				{
+					label = "Adjust camera to terrain",
+					helpString = "If true, the camera will be adjusted to the terrain so that it never dips below the surface",
+					
+					section = "input",
+					key = "adjusttoterrain",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
 			},
 		},
 		{
