@@ -98,6 +98,7 @@ function MerchantTradeConfirmationDialog:giveCoins()
 end
 
 function MerchantTradeConfirmationDialog:handleConfirmClicked(args)
+	-- if false is returned from giveCoins it can only mean that user doesn't have enough coins
 	if self:giveCoins() then
 		self:closeDialog()
 	else
@@ -118,6 +119,8 @@ end
 
 MerchantWindow = {}
 MerchantWindow.__index = MerchantWindow
+-- this is a table of references to "alive" merchant windows
+-- we keep this around to prevent Lua from garbage collecting the windows when they are active
 merchantWindows = {}
 
 function MerchantWindow.create(entity, uniqueIndex)
@@ -149,6 +152,7 @@ function MerchantWindow:shutdown()
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 	
+	-- setting the table entry to nil effectively removes it from the table
 	merchantWindows[self.uniqueIndex] = nil
 end
 
@@ -251,6 +255,7 @@ function MerchantWindow:handleGoodsDoubleClicked(args)
 		if itemName ~= "" and itemPrice ~= 0 then
 			console:runCommand("/say I would like to buy " .. itemName)
 			
+			-- the confirmation dialog itself will give the coins and finish the transaction
 			merchantTradeConfirmationDialogs[ingameMerchantWidget.confirmationDialogIndex] = MerchantTradeConfirmationDialog.create(itemName, itemPrice, self.merchantEntity, ingameMerchantWidget.confirmationDialogIndex)
 			
 			ingameMerchantWidget.confirmationDialogIndex = ingameMerchantWidget.confirmationDialogIndex + 1
