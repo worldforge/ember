@@ -350,7 +350,7 @@ MapCameraLightningInstance::MapCameraLightningInstance(MapCameraLightning& light
 : mLightning(lightning)
 {
 
-	Ogre::SceneManager::MovableObjectIterator iterator = lightning.getSceneManager().getMovableObjectIterator("Light");
+	Ogre::SceneManager::MovableObjectIterator iterator = lightning.getSceneManager().getMovableObjectIterator(Ogre::LightFactory::FACTORY_TYPE_NAME);
 
 	while (iterator.hasMoreElements()) {
 		Ogre::MovableObject* light = iterator.getNext();
@@ -368,7 +368,7 @@ MapCameraLightningInstance::MapCameraLightningInstance(MapCameraLightning& light
 
 MapCameraLightningInstance::~MapCameraLightningInstance()
 {
-	for (LightStore::iterator I = mVisibleLights.begin(); I != mVisibleLights.end(); ++I) {
+	for (LightStore::const_iterator I = mVisibleLights.begin(); I != mVisibleLights.end(); ++I) {
 		(*I)->setVisible(true);
 	}
 	mLightning.getLight()->setVisible(false);
