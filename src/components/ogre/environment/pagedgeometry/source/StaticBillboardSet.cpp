@@ -96,13 +96,13 @@ StaticBillboardSet::StaticBillboardSet(SceneManager *mgr, SceneNode *rootSceneNo
 					") \n"
 					"{ \n"
 					"	oColour = tex2D(diffuseTexture, iTexcoord.xy); \n"
-					"   oColour.xyz = lerp((iLightAmbient * oColour + oColour).xyz, iFogColour, iFog);\n"
+					"   oColour.xyz = lerp((iLightAmbient * oColour).xyz, iFogColour, iFog);\n"
 					"}";
 				} else {
 					fragmentProgSource = "uniform sampler2D diffuseMap;\n"
 					"void main()	{"
 					"	gl_FragColor = texture2D(diffuseMap, gl_TexCoord[0].st);"
-					"	gl_FragColor.rgb = mix(gl_Fog.color, (gl_LightModel.ambient * gl_FragColor + gl_FragColor), gl_FogFragCoord).rgb;"
+					"	gl_FragColor.rgb = mix(gl_Fog.color, (gl_LightModel.ambient * gl_FragColor), gl_FogFragCoord).rgb;"
 					"}";
 				}
 

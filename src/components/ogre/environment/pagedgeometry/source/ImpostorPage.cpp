@@ -522,6 +522,22 @@ void ImpostorTexture::renderTextures(bool force)
 	Real oldFogEnd = sceneMgr->getFogEnd();
 	sceneMgr->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0,0,0,0), 0.0f, 0.0f, 0.0f); //Ember change
 	
+	//We need to disable all lightning and render it full bright
+	Ogre::ColourValue oldAmbientColour = sceneMgr->getAmbientLight();
+	sceneMgr->setAmbientLight(ColourValue::White);
+
+	std::vector<Ogre::MovableObject*> lightStore;
+	Ogre::SceneManager::MovableObjectIterator lightIterator = sceneMgr->getMovableObjectIterator(Ogre::LightFactory::FACTORY_TYPE_NAME);
+	while (lightIterator.hasMoreElements()) {
+		Ogre::MovableObject* light = lightIterator.getNext();
+		if (light) {
+			if (light->getVisible()) {
+				lightStore.push_back(light);
+				light->setVisible(false);
+			}
+		}
+	}
+
 	// Get current status of the queue mode
 	Ogre::SceneManager::SpecialCaseRenderQueueMode OldSpecialCaseRenderQueueMode = sceneMgr->getSpecialCaseRenderQueueMode();
 	//Only render the entity
@@ -621,6 +637,12 @@ void ImpostorTexture::renderTextures(bool force)
 
 	//Re-enable fog
 	sceneMgr->setFog(oldFogMode, oldFogColor, oldFogDensity, oldFogStart, oldFogEnd);
+
+	//Re-enable both scene lightning and disabled individual lights
+	sceneMgr->setAmbientLight(oldAmbientColour);
+	for (std::vector<Ogre::MovableObject*>::const_iterator I = lightStore.begin(); I != lightStore.end(); ++I) {
+		(*I)->setVisible(true);
+	}
 
 	//Delete camera
 	renderTarget->removeViewport(0);
