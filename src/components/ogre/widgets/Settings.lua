@@ -128,6 +128,27 @@ function SettingsWidget:buildSettingsUi()
 	
 	local Representations = Ember.OgreView.Gui.Representations
 	
+	-- The declaration syntax described:
+	-- *********************************
+	--
+	-- self.settings is an ordered array of tables, each of these tables represents a settings tab
+	--
+	-- keys of each settings tab
+	-- label           - the text displayed in the tab's button
+	-- helpString      - the text displayed at the top in the tab (when it's activated)
+	--
+	-- contents        - each settings tab contains ordered set of entries in its "contents" key
+	
+	-- meaning of various entry keys:
+	-- label           - simply the text displayed to the left of the representation showing that particular settings entry
+	-- helpString      - text that appears as a tooltip when you hold your mouse over the line containing the settings entry
+	-- section and key - both varconf specific values, refer to varconf for a more detailed explanation
+	-- representationFactory - a lua function that will construct a representation using passed data
+	-- requiresRestart - if true user will be warned upon changing this that Ember should be restarted for the changes
+	--                 - to take effect (optional and defaults to false)
+	--
+	-- Quick troubleshooting tip: Make sure the representationFactory anonymous function RETURNS the created representation
+	--                            instance. I spent 15 minutes assuming it does and couldn't understand why it was being nil
 	self.settings =
 	{
 		{
@@ -384,6 +405,7 @@ function SettingsWidget:buildSettingsUi()
 				},
 			},
 		},
+		-- TODO: It might be good to hide this in client final builds but for now it was decided to always show it
 		{
 			label = "Developer",
 			description = "Only useful if you are troubleshooting or doing development.",
@@ -441,6 +463,7 @@ function SettingsWidget:buildSettingsUi()
 		},
 	}
 	
+	-- chew through settings declaration and construct UI for it
 	for _, category in ipairs(self.settings) do
 		if category.requiresRestart == nil then
 			category.requiresRestart = false
@@ -469,6 +492,9 @@ function SettingsWidget:buildUiFor(category)
 	ret:setProperty("UnifiedPosition", "{{0.0, 0.0}, {0.0, 0.0}}")
 	ret:setProperty("UnifiedSize", "{{1.0, 0.0}, {1.0, 0.0}}")
 	
+	-- you can think of the vertical layout container as a VBoxLayout in GTK or Vertical Layout in Qt4
+	-- it simply puts its elements as tightly packed as possible after each other vertically
+	-- in this case it represents category tab's list of entries
 	local vbox = CEGUI.WindowManager:getSingleton():createWindow("VerticalLayoutContainer")
 	local description = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 	description:setText(category.description)
@@ -489,6 +515,7 @@ function SettingsWidget:buildUiFor(category)
 			suggestions = {}
 		end
 		
+		-- and each line in the entry vertical list is a horizontal layout (serves as a wrapper in this case)
 		local hbox = CEGUI.WindowManager:getSingleton():createWindow("HorizontalLayoutContainer")
 		
 		local label = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
@@ -508,6 +535,8 @@ function SettingsWidget:buildUiFor(category)
 		
 		hbox:setTooltipText(data.helpString)
 		
+		-- This commented out portion of the code makes help string appear right to the representation
+		-- In the end I decided to show help strings as a tooltip to save space
 		--local helpStringLabel = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 		--helpStringLabel:setText(data.helpString)
 		--helpStringLabel:setProperty("UnifiedSize", "{{0.5, -1.0}, {0.0, 30.0}}")
@@ -533,6 +562,7 @@ function SettingsWidget:buildUiFor(category)
 	return ret
 end
 
+-- simply used to prevent the dialog from going "out of scope" and Lua to garbage collect it
 settingsRestartDialogInstance = nil
 
 function SettingsWidget:hasChanges()
@@ -630,6 +660,7 @@ function SettingsWidget:ApplyClicked(args)
 	return true
 end
 
+-- simply used to prevent the dialog from going "out of scope" and Lua to garbage collect it
 settingsUnappliedChangesDialogInstance = nil
 
 function SettingsWidget:CloseClicked(args)
@@ -649,6 +680,8 @@ function SettingsWidget:RepresentationValueChanged(section, key)
 	-- only enable the apply button if we have changes
 	self.applyButton:setEnabled(self:hasChanges())
 	
+	-- FIXME: For now I use an asterisk to show a settings entry has changes, this might be changed
+	--        to something more artistic in the future
 	if data.representation:hasChanges() then
 		data.labelWnd:setText(data.label .. "*")
 	else
@@ -665,6 +698,13 @@ function SettingsWidget:EventChangedConfigItem(section, key)
 	
 	local configService = emberServices:getConfigService()
 	local value = configService:getValue(section, key)
+	
+	-- If we had changes before the variable was externally changed we save them and reapply them
+	-- to prevent loosing them
+	
+	-- This is a compromise I came up with to the problem, it seems to me that if the entry doesn't have any changes in it
+	-- it doesn't make sense to preserve the old value but if user changes it and something else is changing it at the same
+	-- time it changes the original value but the edited value is preserved.
 	
 	if data.representation:hasChanges() then
 		local oldEdited = data.representation:getEditedValue()
