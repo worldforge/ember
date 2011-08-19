@@ -80,9 +80,15 @@ namespace Caelum
     }
 
     void BaseSkyLight::setLightDirection (const Ogre::Vector3 &dir) {
-        mDirection = dir;
+    	mDirection = dir;
         if (mMainLight != 0) {
-            mMainLight->setDirection (mNode->_getDerivedOrientation() * dir);
+        	//To prevent the light from shining from below the horizon (and thus producing strange, strange shadows) we'll clip the direction of the light so it never points upwards.
+        	float minAngle = 0;
+        	if (dir.y > minAngle) {
+        		mMainLight->setDirection (mNode->_getDerivedOrientation() * Ogre::Vector3(dir.x, minAngle, dir.z).normalisedCopy());
+        	} else {
+                mMainLight->setDirection (mNode->_getDerivedOrientation() * dir);
+        	}
         }
     }
 
