@@ -224,7 +224,7 @@ AC_DEFUN([AX_BOOST],
     AC_CANONICAL_BUILD
 	if test "x$want_boost" = "xyes"; then
         AC_REQUIRE([AC_PROG_CC])
-		boost_lib_version_req=ifelse([$1], ,1.31.0,$1)
+		boost_lib_version_req=ifelse([$1], ,1.35.0,$1)
 		boost_lib_version_req_shorten=`expr $boost_lib_version_req : '\([[0-9]]*\.[[0-9]]*\)'`
 		boost_lib_version_req_major=`expr $boost_lib_version_req : '\([[0-9]]*\)'`
 		boost_lib_version_req_minor=`expr $boost_lib_version_req : '[[0-9]]*\.\([[0-9]]*\)'`
