@@ -7,7 +7,7 @@ if test -d /usr/local/share/aclocal ; then
 fi
 aclocal $ACLOCAL_FLAGS
 
-if [[ $OSTYPE == *darwin* ]] ; then
+if [ "`echo $OSTYPE | grep darwin`" != "" ] ; then
 LIBTOOLIZE="glibtoolize"
 else
 LIBTOOLIZE="libtoolize"
