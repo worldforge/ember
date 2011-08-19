@@ -36,13 +36,13 @@ namespace Gui {
 namespace Adapters {
 
 /**
- * @brief Base class for all adapters.
+ * @brief Templated base class for all adapters.
  *
- * An adapter is a class which binds a series of gui elements to a 
- * Atlas::Message::Element. It acts like a bridge between the UI and the data
- * in an application.
+ * An adapter is a class which binds a series of gui elements to native data.
+ * It acts like a bridge between the UI and the data in an application.
+ * 
  * In MVC terms, the adapter is the controller, while the gui elements are the
- * view and the Atlas::Message::Element is the model.
+ * view and the native data type is the model.
  * 
  * The adapter can either be used in a read only state, where you only show the
  * data contained, or in a read-write state where you also allow the user to
