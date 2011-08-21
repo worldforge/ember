@@ -76,7 +76,7 @@ std::string getBundleResourceDirPath()
 		CFStringRef path = CFURLCopyFileSystemPath(absResUrl, kCFURLPOSIXPathStyle);
 		result = CFStringGetCStringPtr(path, CFStringGetSystemEncoding());
 
-		FRelease(resUrl);
+		CFRelease(resUrl);
 		CFRelease(absResUrl);
 		CFRelease(path);
 #ifdef BUILD_WEBEMBER
