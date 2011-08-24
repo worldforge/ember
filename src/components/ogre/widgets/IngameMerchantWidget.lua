@@ -1,12 +1,11 @@
 MerchantTradeConfirmationDialog = {}
 MerchantTradeConfirmationDialog.__index = MerchantTradeConfirmationDialog
 
-merchantTradeConfirmationDialogs = {}
-
-function MerchantTradeConfirmationDialog.create(itemName, itemPrice, merchantEntity, uniqueIndex)
+function MerchantTradeConfirmationDialog.create(itemName, itemPrice, merchantEntity, uniqueIndex, shutdownCallback)
 	local ret = {connectors = {} }
 	setmetatable(ret, MerchantTradeConfirmationDialog)
 	
+	ret.shutdownCallback = shutdownCallback
 	ret.itemPrice = tonumber(itemPrice)
 	ret.merchantEntity = merchantEntity
 	
@@ -33,8 +32,7 @@ end
 function MerchantTradeConfirmationDialog:closeDialog()
 	guiManager:destroyWidget(self.widget)
 	self.widget = nil
-	
-	merchantTradeConfirmationDialogs[self.uniqueIndex] = nil
+	self.shutdownCallback()
 end
 
 --This method retrieves amount of coins current player has
@@ -121,7 +119,7 @@ MerchantWindow = {}
 MerchantWindow.__index = MerchantWindow
 
 function MerchantWindow.create(entity, uniqueIndex, shutdownCallback, ingameMerchantWidget)
-	local ret = {connectors = {} }
+	local ret = {connectors = {}, merchantTradeConfirmationDialogs={} }
 	setmetatable(ret, MerchantWindow)
 	
 	ret.ingameMerchantWidget = ingameMerchantWidget
@@ -148,6 +146,13 @@ function MerchantWindow.create(entity, uniqueIndex, shutdownCallback, ingameMerc
 end
 
 function MerchantWindow:shutdown()
+	for key,value in pairs(self.merchantTradeConfirmationDialogs) do
+		if value ~= nil then
+			value:closeDialog()
+		end
+	end
+	self.merchantTradeConfirmationDialogs = {}
+	
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 	
@@ -252,9 +257,15 @@ function MerchantWindow:handleGoodsDoubleClicked(args)
 		
 		if itemName ~= "" and itemPrice ~= 0 then
 			console:runCommand("/say I would like to buy " .. itemName)
-			
+	
+			local windowIndex = self.ingameMerchantWidget.confirmationDialogIndex
+			local shutdownCallback = function()
+				-- setting the table entry to nil effectively removes it from the table
+				self.merchantTradeConfirmationDialogs[windowIndex] = nil
+			end
+
 			-- the confirmation dialog itself will give the coins and finish the transaction
-			merchantTradeConfirmationDialogs[self.ingameMerchantWidget.confirmationDialogIndex] = MerchantTradeConfirmationDialog.create(itemName, itemPrice, self.merchantEntity, self.ingameMerchantWidget.confirmationDialogIndex)
+			self.merchantTradeConfirmationDialogs[windowIndex] = MerchantTradeConfirmationDialog.create(itemName, itemPrice, self.merchantEntity, windowIndex, shutdownCallback)
 			
 			self.ingameMerchantWidget.confirmationDialogIndex = self.ingameMerchantWidget.confirmationDialogIndex + 1
 		end
