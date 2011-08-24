@@ -79,6 +79,7 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
 	Screenshot("screenshot", this, "Take a screenshot and write to disk."),
 	Record("+record", this, "Record to disk."),
+	mSceneManager(sceneManager),
 	mCamera(camera),
 	mCameraMount(0),
 	mRecorder(new Recorder()),
@@ -104,6 +105,9 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 
 MainCamera::~MainCamera()
 {
+	if (mCameraRaySceneQuery) {
+		mSceneManager.destroyQuery(mCameraRaySceneQuery);
+	}
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCameraSettings;
 }

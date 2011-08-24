@@ -106,6 +106,8 @@ public:
 
 protected:
 
+	Ogre::SceneManager& mSceneManager;
+
 	Ogre::SceneNode* mCameraRootNode;
 	Ogre::SceneNode* mCameraPitchNode;
 	Ogre::SceneNode* mCameraNode;
@@ -115,7 +117,6 @@ protected:
 	Ogre::Real mCurrentCameraDistance;
 
 	Ogre::RaySceneQuery* mAdjustTerrainRaySceneQuery;
-	Ogre::RaySceneQuery* mCameraRaySceneQuery;
 	Ogre::Ray mAdjustTerrainRay;
 
 	bool mIsAdjustedToTerrain;

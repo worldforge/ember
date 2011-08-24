@@ -196,6 +196,7 @@ private:
 	typedef std::deque<IWorldPickListener*> WorldPickListenersStore;
 	typedef std::vector<std::string> CompositorNameStore;
 
+	Ogre::SceneManager& mSceneManager;
 	Ogre::Camera& mCamera;
 	ICameraMount* mCameraMount;
 

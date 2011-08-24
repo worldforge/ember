@@ -33,7 +33,7 @@ namespace Camera
 {
 
 ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager) :
-	CameraMountBase::CameraMountBase(cameraSettings), SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mWantedCameraDistance(10), mCurrentCameraDistance(0), mAdjustTerrainRaySceneQuery(0), mCameraRaySceneQuery(0), mIsAdjustedToTerrain(true)
+	CameraMountBase::CameraMountBase(cameraSettings), SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mSceneManager(sceneManager), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mWantedCameraDistance(10), mCurrentCameraDistance(0), mAdjustTerrainRaySceneQuery(0), mIsAdjustedToTerrain(true)
 {
 	createNodesForCamera(sceneManager);
 	createRayQueries(sceneManager);
@@ -41,6 +41,10 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSetti
 
 ThirdPersonCameraMount::~ThirdPersonCameraMount()
 {
+	if (mAdjustTerrainRaySceneQuery) {
+		mSceneManager.destroyQuery(mAdjustTerrainRaySceneQuery);
+	}
+
 	if (mCameraRootNode) {
 		//This will handle the mCameraPitchNode and the mCameraNode too.
 		mCameraRootNode->removeAndDestroyAllChildren();
