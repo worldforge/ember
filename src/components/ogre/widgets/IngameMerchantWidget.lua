@@ -119,14 +119,13 @@ end
 
 MerchantWindow = {}
 MerchantWindow.__index = MerchantWindow
--- this is a table of references to "alive" merchant windows
--- we keep this around to prevent Lua from garbage collecting the windows when they are active
-merchantWindows = {}
 
-function MerchantWindow.create(entity, uniqueIndex)
+function MerchantWindow.create(entity, uniqueIndex, shutdownCallback, ingameMerchantWidget)
 	local ret = {connectors = {} }
 	setmetatable(ret, MerchantWindow)
 	
+	ret.ingameMerchantWidget = ingameMerchantWidget
+	ret.shutdownCallback = shutdownCallback
 	ret.widget = guiManager:createWidget()
 	ret.uniqueIndex = uniqueIndex
 	ret.widget:loadMainSheet("IngameMerchantWidget.layout", "IngameMerchantWidget/MerchantWindow/" .. uniqueIndex .. "/")
@@ -152,8 +151,7 @@ function MerchantWindow:shutdown()
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 	
-	-- setting the table entry to nil effectively removes it from the table
-	merchantWindows[self.uniqueIndex] = nil
+	self.shutdownCallback()
 end
 
 function MerchantWindow:setTargetEntity(entity)
@@ -256,9 +254,9 @@ function MerchantWindow:handleGoodsDoubleClicked(args)
 			console:runCommand("/say I would like to buy " .. itemName)
 			
 			-- the confirmation dialog itself will give the coins and finish the transaction
-			merchantTradeConfirmationDialogs[ingameMerchantWidget.confirmationDialogIndex] = MerchantTradeConfirmationDialog.create(itemName, itemPrice, self.merchantEntity, ingameMerchantWidget.confirmationDialogIndex)
+			merchantTradeConfirmationDialogs[self.ingameMerchantWidget.confirmationDialogIndex] = MerchantTradeConfirmationDialog.create(itemName, itemPrice, self.merchantEntity, self.ingameMerchantWidget.confirmationDialogIndex)
 			
-			ingameMerchantWidget.confirmationDialogIndex = ingameMerchantWidget.confirmationDialogIndex + 1
+			self.ingameMerchantWidget.confirmationDialogIndex = self.ingameMerchantWidget.confirmationDialogIndex + 1
 		end
 	end
 end
@@ -271,7 +269,10 @@ IngameMerchantWidget = {}
 IngameMerchantWidget.__index = IngameMerchantWidget
 
 function IngameMerchantWidget.create()
-	local ret = {}
+	local ret = {connectors={}}
+	-- this is a table of references to "alive" merchant windows
+	-- we keep this around to prevent Lua from garbage collecting the windows when they are active
+	ret.merchantWindows = {}
 	setmetatable(ret, IngameMerchantWidget)
 	
 	ret:buildWidget()
@@ -287,15 +288,34 @@ function IngameMerchantWidget:buildWidget()
 end
 
 function IngameMerchantWidget:shutdown()
+	for key,value in pairs(self.merchantWindows) do
+		value:shutdown()
+	end
+	self.merchantWindows = {}
 	disconnectAll(self.connectors)
 end
 
 function IngameMerchantWidget:handleEntityAction(action, entity)
 	if (action == "Merchant") then
-		merchantWindows[self.tradeWindowIndex] = MerchantWindow.create(entity, self.tradeWindowIndex)
+		local windowIndex = self.tradeWindowIndex
+		local shutdownCallback = function()
+			-- setting the table entry to nil effectively removes it from the table
+			self.merchantWindows[windowIndex] = nil
+		end
+		self.merchantWindows[windowIndex] = MerchantWindow.create(entity, windowIndex, shutdownCallback, self)
 		
 		self.tradeWindowIndex = self.tradeWindowIndex + 1
 	end
 end
 
-ingameMerchantWidget = IngameMerchantWidget.create()
+IngameMerchantWidget.startConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function()
+		local ingameMerchantWidget = IngameMerchantWidget.create()
+		
+		connect(ingameMerchantWidget.connectors, emberOgre.EventWorldDestroyed, function()
+			ingameMerchantWidget:shutdown()
+			ingameMerchantWidget = nil
+		end
+		)
+	end
+)
+
