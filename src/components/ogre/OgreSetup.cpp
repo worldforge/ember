@@ -180,6 +180,9 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		pluginLocations.push_back("."); //on windows we'll bundle the dll files in the same directory as the executable
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 		pluginExtension = ".so";
+		std::string pluginDir = configSrv->getPrefix();
+		pluginDir += "/lib/OGRE";
+		pluginLocations.push_back(pluginDir);
 
 #ifdef ENABLE_BINRELOC
 		//binreloc might be used
