@@ -37,6 +37,7 @@
 #include "camera/MainCamera.h"
 #include "gui/ActiveWidgetHandler.h"
 #include "gui/CEGUILogger.h"
+#include "gui/ColouredRenderedStringParser.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 
@@ -56,8 +57,6 @@
 #include <CEGUISchemeManager.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIFactoryModule.h>
-#include <CEGUIBasicRenderedStringParser.h>
-#include <CEGUIRenderedStringTextComponent.h>
 #include <ScriptingModules/LuaScriptModule/CEGUILua.h>
 #include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
@@ -86,78 +85,6 @@ namespace OgreView
 
 unsigned long GUIManager::msAutoGenId(0);
 
-/**
- * @brief Overrides colour modulation of CEGUI::RenderedStringTextComponent.
- * The default implementation of CEGUI::RenderedStringTextComponent will always use the mod_colours to modulate the final colour.
- * Since we use black text colours this means that all our colours will end up black (i.e. it will multiply by zero, which results in zero).
- * This class overrides this behaviour to always disable the mod_colours.
- */
-class RenderedColourStringTextComponent: public CEGUI::RenderedStringTextComponent
-{
-public:
-	RenderedColourStringTextComponent(const String& text, const String& font_name) :
-		CEGUI::RenderedStringTextComponent(text, font_name)
-	{
-	}
-
-	void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Vector2& position, const CEGUI::ColourRect* mod_colours, const CEGUI::Rect* clip_rect, const float vertical_space, const float space_extra) const
-	{
-		CEGUI::RenderedStringTextComponent::draw(buffer, position, 0, clip_rect, vertical_space, space_extra);
-	}
-
-	RenderedStringTextComponent* clone() const
-	{
-		return new RenderedColourStringTextComponent(*this);
-	}
-
-};
-
-/**
- * @brief Overrides the default behaviour of CEGUI::BasicRenderedStringParser to use colour modulation.
- * Since the CEGUI::RenderedStringTextComponent will use colour modulation and this will result in all colours being black if the modulation colour is black we need to use an instance of RenderedColourStringTextComponent whenever a colour different from the base colour is to be used.
- */
-class ColouredRenderedStringParser: public CEGUI::BasicRenderedStringParser
-{
-protected:
-	void appendRenderedText(CEGUI::RenderedString& rs, const CEGUI::String& text) const
-	{
-		size_t cpos = 0;
-		// split the given string into lines based upon the newline character
-		while (text.length() > cpos) {
-			// find next newline
-			const size_t nlpos = text.find('\n', cpos);
-			// calculate length of this substring
-			const size_t len = ((nlpos != String::npos) ? nlpos : text.length()) - cpos;
-
-			// construct new text component and append it.
-			if (len > 0) {
-				//If we're using colours different from those of the default colours we'll also use our own implementation which doesn't do modulation.
-				if (d_initialColours.d_bottom_left != d_colours.d_bottom_left || d_initialColours.d_top_left != d_colours.d_top_left || d_initialColours.d_top_right != d_colours.d_top_right || d_initialColours.d_bottom_right != d_colours.d_bottom_right) {
-					RenderedColourStringTextComponent rtc(text.substr(cpos, len), d_fontName);
-					rtc.setPadding(d_padding);
-					rtc.setColours(d_colours);
-					rtc.setVerticalFormatting(d_vertAlignment);
-					rtc.setAspectLock(d_aspectLock);
-					rs.appendComponent(rtc);
-				} else {
-					CEGUI::RenderedStringTextComponent rtc(text.substr(cpos, len), d_fontName);
-					rtc.setPadding(d_padding);
-					rtc.setColours(d_colours);
-					rtc.setVerticalFormatting(d_vertAlignment);
-					rtc.setAspectLock(d_aspectLock);
-					rs.appendComponent(rtc);
-				}
-			}
-
-			// break line if needed
-			if (nlpos != String::npos)
-				rs.appendLineBreak();
-
-			// advance current position.  +1 to skip the \n char
-			cpos += len + 1;
-		}
-	}
-};
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService) :
 	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
@@ -210,7 +137,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService)
 			throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
 
-		mRenderedStringParser = new ColouredRenderedStringParser();
+		mRenderedStringParser = new Gui::ColouredRenderedStringParser();
 		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser);
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 

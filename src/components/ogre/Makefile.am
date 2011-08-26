@@ -24,7 +24,7 @@ libEmberOgre_a_SOURCES = \
 	environment/ShrubberyFoliage.cpp environment/SimpleEnvironment.cpp environment/SimpleWater.cpp environment/Sun.cpp environment/Tree.cpp environment/Water.cpp \
 	environment/OceanRepresentation.cpp environment/OceanAction.cpp environment/SimpleWaterCollisionDetector.cpp \
 	environment/ExclusiveImposterPage.cpp \
-	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp \
+	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp gui/RenderedColourStringTextComponent.cpp gui/ColouredRenderedStringParser.cpp \
 \
 	mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp \
 \
@@ -116,7 +116,7 @@ noinst_HEADERS = \
 	environment/SimpleEnvironment.h environment/SimpleWater.h environment/Sun.h environment/Tree.h environment/Water.h environment/OceanRepresentation.h \
 	environment/OceanAction.h environment/SimpleWaterCollisionDetector.h environment/ExclusiveImposterPage.h \
 \
-	gui/ActiveWidgetHandler.h gui/CEGUILogger.h \
+	gui/ActiveWidgetHandler.h gui/CEGUILogger.h gui/RenderedColourStringTextComponent.h gui/ColouredRenderedStringParser.h \
 \
 	mapping/EmberEntityMappingManager.h mapping/XMLEntityMappingDefinitionSerializer.h \
 \

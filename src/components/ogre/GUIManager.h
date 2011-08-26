@@ -56,10 +56,10 @@ class EmberEntity;
 class MousePicker;
 class GUICEGUIAdapter;
 class MovementController;
-class ColouredRenderedStringParser;
 class World;
 
 namespace Gui {
+class ColouredRenderedStringParser;
 class QuickHelp;
 class Widget;
 class EntityIconManager;
@@ -363,7 +363,7 @@ protected:
 	 *
 	 * Owner by this instance.
 	 */
-	ColouredRenderedStringParser* mRenderedStringParser;
+	Gui::ColouredRenderedStringParser* mRenderedStringParser;
 
 	/*
 	 * @brief Responsible for the help system
