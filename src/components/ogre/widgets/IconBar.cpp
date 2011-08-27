@@ -31,17 +31,20 @@
 
 using namespace CEGUI;
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-namespace Gui {
+namespace Gui
+{
 
-IconBar::IconBar(const std::string& name)
-: mIconPadding(0)
+IconBar::IconBar(const std::string& name) :
+		mIconPadding(0)
 {
 	mWindow = WindowManager::getSingleton().createWindow("DefaultGUISheet", "iconbars/" + name);
-/*	mWindow->setProperty("BackgroundEnabled", "false");
-	mWindow->setProperty("FrameEnabled", "false");*/
+	/*	mWindow->setProperty("BackgroundEnabled", "false");
+	 mWindow->setProperty("FrameEnabled", "false");*/
 }
 
 IconBar::~IconBar()
@@ -51,7 +54,6 @@ IconBar::~IconBar()
 	}
 	CEGUI::WindowManager::getSingleton().destroyWindow(mWindow);
 }
-
 
 void IconBar::addIcon(IconBase* iconBase)
 {
@@ -80,25 +82,26 @@ void IconBar::setIconPadding(int iconPadding)
 	mIconPadding = iconPadding;
 }
 
-
 void IconBar::repositionIcons()
 {
 	float accumulatedWidth(0);
 	float maxHeight(0);
 
-	for(IconBaseStore::iterator I(mIconBases.begin()); I != mIconBases.end(); ++I) {
+	for (IconBaseStore::iterator I(mIconBases.begin()); I != mIconBases.end(); ++I) {
 		IconBase* icon = (*I);
-		const UVector2& size = icon->getContainer()->getSize();
-		float absHeight = size.d_y.asAbsolute(0);
-		float absWidth = size.d_x.asAbsolute(0);
-		maxHeight = std::max<float>(maxHeight, absHeight);
+		if (icon->getContainer() && icon->getContainer()->isVisible()) {
+			const UVector2& size = icon->getContainer()->getSize();
+			float absHeight = size.d_y.asAbsolute(0);
+			float absWidth = size.d_x.asAbsolute(0);
+			maxHeight = std::max<float>(maxHeight, absHeight);
 
-		icon->getContainer()->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0,0)));
+			icon->getContainer()->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0, 0)));
 
-		accumulatedWidth += absWidth + mIconPadding;
+			accumulatedWidth += absWidth + mIconPadding;
+		}
 	}
 	accumulatedWidth -= mIconPadding;
-	mWindow->setSize(UVector2(UDim(0, accumulatedWidth), UDim(0,maxHeight)));
+	mWindow->setSize(UVector2(UDim(0, accumulatedWidth), UDim(0, maxHeight)));
 	//We need to call this to guarantee that cegui correctly renders any newly added icons.
 	mWindow->notifyScreenAreaChanged();
 }
@@ -112,7 +115,6 @@ float IconBar::getAbsoluteWidth()
 {
 	return mWindow->getSize().d_x.asAbsolute(0);
 }
-
 
 }
 
