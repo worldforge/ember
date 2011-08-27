@@ -10,4 +10,5 @@
 	<Image Name="walk" XPos="96" YPos="48" Width="48" Height="48" />
 	<Image Name="run" XPos="144" YPos="48" Width="48" Height="48" />
 	<Image Name="abc" XPos="192" YPos="48" Width="48" Height="48" />
+	<Image Name="inventory" XPos="0" YPos="96" Width="48" Height="48" />
 </Imageset>
