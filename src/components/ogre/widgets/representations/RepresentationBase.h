@@ -45,12 +45,6 @@ template<typename ValueType>
 class RepresentationBase
 {
 public:
-	/**
-	 * @brief Ctor
-	 * 
-	 * @param value value we want to represent and edit (will be directly altered)
-	 */
-	RepresentationBase();
 	
 	/**
 	 * @brief Dtor
@@ -118,10 +112,6 @@ public:
 	 */
 	virtual void addSuggestion(const std::string& suggestion) = 0;
 };
-
-template<typename ValueType>
-RepresentationBase<ValueType>::RepresentationBase()
-{}
 
 template<typename ValueType>
 RepresentationBase<ValueType>::~RepresentationBase()
