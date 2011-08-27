@@ -28,24 +28,26 @@
 
 using namespace CEGUI;
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-namespace Gui {
+namespace Gui
+{
 
-StackableContainer::StackableContainer(CEGUI::Window* window)
-: mWindow(window), mInnerContainerWindow(0), mPadding(0), mFlowDirection(Vertical)
+StackableContainer::StackableContainer(CEGUI::Window* window) :
+		mWindow(window), mInnerContainerWindow(0), mPadding(0), mFlowDirection(Vertical)
 {
 	if (mWindow) {
 		mChildAddedConnection = mWindow->subscribeEvent(CEGUI::Window::EventChildAdded, CEGUI::Event::Subscriber(&StackableContainer::window_ChildAdded, this));
-	} 
+	}
 }
-
 
 StackableContainer::~StackableContainer()
 {
 	cleanup();
-	if (mWindowDestructionConnection.isValid()) {	
+	if (mWindowDestructionConnection.isValid()) {
 		mWindowDestructionConnection->disconnect();
 		mWindowDestructionConnection = CEGUI::Event::Connection();
 	}
@@ -57,11 +59,11 @@ void StackableContainer::cleanup()
 		I->second->disconnect();
 	}
 	mChildConnections.clear();
-	if (mChildRemovedConnection.isValid()) {	
+	if (mChildRemovedConnection.isValid()) {
 		mChildRemovedConnection->disconnect();
 		mChildRemovedConnection = CEGUI::Event::Connection();
 	}
-	if (mChildAddedConnection.isValid()) {	
+	if (mChildAddedConnection.isValid()) {
 		mChildAddedConnection->disconnect();
 		mChildAddedConnection = CEGUI::Event::Connection();
 	}
@@ -82,7 +84,6 @@ int StackableContainer::getPadding() const
 	return mPadding;
 }
 
-
 void StackableContainer::repositionWindows()
 {
 	if (mInnerContainerWindow) {
@@ -90,10 +91,10 @@ void StackableContainer::repositionWindows()
 		float accumulatedHeight(0);
 		float maxHeight(0);
 		float maxWidth(0);
-		
+
 		//iterate over all child window and rearrange them
 		size_t childCount = mInnerContainerWindow->getChildCount();
-		for(size_t i = 0; i < childCount; ++i) {
+		for (size_t i = 0; i < childCount; ++i) {
 			CEGUI::Window* childWindow = mInnerContainerWindow->getChildAtIdx(i);
 			//only use those windows that are visible
 			if (childWindow->isVisible()) {
@@ -101,11 +102,11 @@ void StackableContainer::repositionWindows()
 				float absWidth = childWindow->getWidth().asAbsolute(1);
 				if (mFlowDirection == Horizontal) {
 					maxHeight = std::max<float>(maxHeight, absHeight);
-					childWindow->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0,0)));
+					childWindow->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0, 0)));
 					accumulatedWidth += absWidth + mPadding;
 				} else {
-					maxWidth= std::max<float>(maxWidth, absWidth);
-					childWindow->setPosition(UVector2(UDim(0, 0), UDim(0,accumulatedHeight)));
+					maxWidth = std::max<float>(maxWidth, absWidth);
+					childWindow->setPosition(UVector2(UDim(0, 0), UDim(0, accumulatedHeight)));
 					accumulatedHeight += absHeight + mPadding;
 				}
 			}
@@ -118,7 +119,7 @@ void StackableContainer::repositionWindows()
 		} else {
 			accumulatedHeight -= mPadding;
 			if (mInnerContainerWindow->getHeight().asRelative(0) != 1) {
-				mInnerContainerWindow->setHeight(UDim(0,accumulatedHeight));
+				mInnerContainerWindow->setHeight(UDim(0, accumulatedHeight));
 			}
 		}
 		if (mInnerContainerWindow->getParent()) {
@@ -152,14 +153,15 @@ void StackableContainer::setInnerContainerWindow(CEGUI::Window* window)
 	mInnerContainerWindow = window;
 	mChildRemovedConnection = mInnerContainerWindow->subscribeEvent(CEGUI::Window::EventChildRemoved, CEGUI::Event::Subscriber(&StackableContainer::window_ChildRemoved, this));
 	mWindowDestructionConnection = mInnerContainerWindow->subscribeEvent(CEGUI::Window::EventDestructionStarted, CEGUI::Event::Subscriber(&StackableContainer::window_DestructionStarted, this));
-	
+
 	size_t childCount = mInnerContainerWindow->getChildCount();
- 	for(size_t i = 0; i < childCount; ++i) {
+	for (size_t i = 0; i < childCount; ++i) {
 		CEGUI::Window* childWindow = mInnerContainerWindow->getChildAtIdx(i);
 		mChildConnections.insert(ConnectorStore::value_type(childWindow, childWindow->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this))));
+		mChildConnections.insert(ConnectorStore::value_type(childWindow, childWindow->subscribeEvent(CEGUI::Window::EventShown, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this))));
+		mChildConnections.insert(ConnectorStore::value_type(childWindow, childWindow->subscribeEvent(CEGUI::Window::EventHidden, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this))));
 	}
 }
-
 
 bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 {
@@ -169,6 +171,8 @@ bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 	} else {
 		//if we've called setInnerContainerWindow we would already have connected the new child window
 		mChildConnections.insert(ConnectorStore::value_type(windowEventArg.window, windowEventArg.window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this))));
+		mChildConnections.insert(ConnectorStore::value_type(windowEventArg.window, windowEventArg.window->subscribeEvent(CEGUI::Window::EventShown, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this))));
+		mChildConnections.insert(ConnectorStore::value_type(windowEventArg.window, windowEventArg.window->subscribeEvent(CEGUI::Window::EventHidden, CEGUI::Event::Subscriber(&StackableContainer::childwindow_Sized, this))));
 	}
 	repositionWindows();
 	return true;
@@ -177,12 +181,13 @@ bool StackableContainer::window_ChildAdded(const CEGUI::EventArgs& e)
 bool StackableContainer::window_ChildRemoved(const CEGUI::EventArgs& e)
 {
 	const WindowEventArgs& windowEventArg = static_cast<const WindowEventArgs&>(e);
-	ConnectorStore::iterator I = mChildConnections.find(windowEventArg.window);
-	if (I != mChildConnections.end()) {
+	std::pair<ConnectorStore::iterator, ConnectorStore::iterator> ret = mChildConnections.equal_range(windowEventArg.window);
+
+	for (ConnectorStore::iterator I = ret.first; I != ret.second; ++I) {
 		I->second->disconnect();
 		mChildConnections.erase(I);
 	}
-	
+
 	repositionWindows();
 	return true;
 }
@@ -203,7 +208,6 @@ void StackableContainer::disconnect()
 {
 	cleanup();
 }
-
 
 }
 

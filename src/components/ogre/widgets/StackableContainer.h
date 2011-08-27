@@ -25,6 +25,7 @@
 
 #include <CEGUI.h>
 #include <list>
+#include <map>
 
 namespace CEGUI {
 class Window;
@@ -112,7 +113,7 @@ protected:
 	/**
 	Hold references to all event bindings, so we can properly clean them up.
 	*/
-	typedef std::map<CEGUI::Window*, CEGUI::Event::Connection> ConnectorStore;
+	typedef std::multimap<CEGUI::Window*, CEGUI::Event::Connection> ConnectorStore;
 	CEGUI::Event::Connection mChildRemovedConnection, mChildAddedConnection, mWindowDestructionConnection;
 	ConnectorStore mChildConnections;
 	
