@@ -40,7 +40,7 @@ public:
 	/**
 	 * @brief Will start ember and save the hwnd.
 	 */
-	int start(const std::string& windowhandle, std::string prefix = "");
+	int start(const std::string& windowhandle, const std::string& prefix = "");
 
 	/**
 	 * @brief Will signal quit.
@@ -56,12 +56,12 @@ public:
 	 * Message will be processed in WebEmberMessageQueue.
 	 * Example: sendMessage("RUN alert('Javascript runs!')")
 	 */
-	void sendMessage(std::string msg);
+	void sendMessage(const std::string& msg);
 
 	/**
 	 * @brief Executes javascript code in the browser
 	 */
-	void runJavascript(std::string jscode)
+	void runJavascript(const std::string& jscode)
 	{
 		sendMessage("RUN " + jscode);
 	}

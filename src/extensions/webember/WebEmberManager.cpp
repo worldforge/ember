@@ -43,7 +43,7 @@ template<> Ember::WebEmberManager *Ember::Singleton<Ember::WebEmberManager>::ms_
 namespace Ember
 {
 
-int WebEmberManager::start(const std::string& windowHandle, std::string prefix)
+int WebEmberManager::start(const std::string& windowHandle, const std::string& prefix)
 {
 	assert((windowHandle != "") && (windowHandle != "0") && (mWindowHandle == ""));
 	mWindowHandle = windowHandle;
@@ -130,7 +130,7 @@ void WebEmberManager::quit()
 	app->quit();
 }
 
-void WebEmberManager::sendMessage(std::string msg)
+void WebEmberManager::sendMessage(const std::string& msg)
 {
 	try {
 		boost::interprocess::message_queue mq(boost::interprocess::open_only, "WEBEMBER_PLUGIN");
