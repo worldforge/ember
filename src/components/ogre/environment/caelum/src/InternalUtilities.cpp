@@ -22,6 +22,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumExceptions.h"
 #include "InternalUtilities.h"
 #include "PrivatePtr.h"
+#include <cstddef>
 
 namespace Caelum
 {
