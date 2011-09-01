@@ -30,6 +30,7 @@
 #include "GUIManager.h"
 #include "services/config/ConfigService.h"
 #include "framework/Time.h"
+#include "domain/EntityTalk.h"
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #endif
@@ -83,9 +84,9 @@ AvatarLogger::~AvatarLogger()
 	*mChatLogger << "-------------------------------------------------------" << std::endl;
 }
 
-void AvatarLogger::GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity)
+void AvatarLogger::GUIManager_AppendIGChatLine(const Domain::EntityTalk& entityTalk, EmberEntity* entity)
 {
-	*mChatLogger << "[" << Time::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << message << std::endl;
+	*mChatLogger << "[" << Time::getLocalTimeStr() << "] <" <<  entity->getName() << "> says: " << entityTalk.getMessage() << std::endl;
 }
 
 AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)

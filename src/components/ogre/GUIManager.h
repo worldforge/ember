@@ -50,6 +50,9 @@ class IScriptingProvider;
 class Input;
 class ConfigService;
 
+namespace Domain {
+class EntityTalk;
+}
 namespace OgreView {
 
 class EmberEntity;
@@ -107,7 +110,7 @@ public:
 	 */
 	virtual ~GUIManager();
 
-	sigc::signal<void, const std::string&, EmberEntity*> AppendIGChatLine;
+	sigc::signal<void, const Domain::EntityTalk&, EmberEntity*> AppendIGChatLine;
 	sigc::signal<void, const std::string&, EmberEntity*> AppendOOGChatLine;
 	sigc::signal<void, const std::string&> AppendAvatarImaginary;
 

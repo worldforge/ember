@@ -39,13 +39,13 @@ EntityTalk::EntityTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 		const Atlas::Objects::Root& talk = args.front();
 
 		Atlas::Message::Element sayAttrib;
-		if (talk->copyAttr("say", sayAttrib) && sayAttrib.isString()) {
+		if (!talk->copyAttr("say", sayAttrib) && sayAttrib.isString()) {
 			mMessage = talk->getAttr("say").asString();
 		}
 
 		Atlas::Message::Element responseAttrib;
 		//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
-		if (talk->copyAttr("responses", responseAttrib) && responseAttrib.isList()) {
+		if (!talk->copyAttr("responses", responseAttrib) && responseAttrib.isList()) {
 			const Atlas::Message::ListType & responseList = responseAttrib.asList();
 			Atlas::Message::ListType::const_iterator I = responseList.begin();
 			for (; I != responseList.end(); ++I) {
@@ -57,7 +57,7 @@ EntityTalk::EntityTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 
 		Atlas::Message::Element addressAttrib;
 		//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
-		if (talk->copyAttr("address", addressAttrib) && addressAttrib.isList()) {
+		if (!talk->copyAttr("address", addressAttrib) && addressAttrib.isList()) {
 			const Atlas::Message::ListType & addressList = addressAttrib.asList();
 			Atlas::Message::ListType::const_iterator I = addressList.begin();
 			for (; I != addressList.end(); ++I) {

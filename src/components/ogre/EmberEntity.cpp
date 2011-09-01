@@ -37,6 +37,7 @@
 #include "mapping/EmberEntityMappingManager.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/MultiLineListFormatter.h"
+#include "domain/EntityTalk.h"
 #include "services/EmberServices.h"
 #include "authoring/AuthoringManager.h"
 
@@ -182,33 +183,10 @@ float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 
 void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
 {
-	const std::vector<Atlas::Objects::Root>& args = talkArgs->getArgs();
-	if (args.empty()) {
-		Eris::Entity::onTalk(talkArgs);
-		return;
-	}
-
-	const Atlas::Objects::Root& talk = args.front();
-
-	if (!talk->hasAttr("say")) {
-		Eris::Entity::onTalk(talkArgs);
-		return;
-	}
+	Domain::EntityTalk entityTalk(talkArgs);
 
 	//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
-	mSuggestedResponses.clear();
-	if (talk->hasAttr("responses")) {
-		if (talk->getAttr("responses").isList()) {
-			const Atlas::Message::ListType & responseList = talk->getAttr("responses").asList();
-			Atlas::Message::ListType::const_iterator I = responseList.begin();
-			for (; I != responseList.end(); ++I) {
-				mSuggestedResponses.push_back(I->asString());
-			}
-
-		}
-	}
-
-	const std::string& msg = talk->getAttr("say").asString();
+	mSuggestedResponses = entityTalk.getSuggestedResponses();
 
 	std::string message = "<";
 	message.append(getName());
@@ -216,11 +194,11 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	const std::string& type = getType()->getName(); // Eris type as a string
 	message.append(type);
 	message.append("> ");
-	message.append(msg);
+	message.append(entityTalk.getMessage());
 	S_LOG_VERBOSE("Entity says: [" << message << "]\n");
 
 	// Make the message appear in the chat box
-	GUIManager::getSingleton().AppendIGChatLine.emit(msg, this);
+	GUIManager::getSingleton().AppendIGChatLine.emit(entityTalk, this);
 
 	// Make a sound in OpenAL -- mafm: call doesn't exist
 	//	EmberServices::getSingleton().getSoundService().playTalk(msg,

@@ -32,6 +32,9 @@
 
 
 namespace Ember {
+namespace Domain {
+class EntityTalk;
+}
 namespace OgreView {
 
 class Avatar;
@@ -66,7 +69,7 @@ protected:
 	 * @param message
 	 * @param entity
 	 */
-	void GUIManager_AppendIGChatLine(const std::string& message, EmberEntity* entity);
+	void GUIManager_AppendIGChatLine(const Domain::EntityTalk& entityTalk, EmberEntity* entity);
 
 
 };

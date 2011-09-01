@@ -55,6 +55,10 @@ class TypeInfo;
 
 namespace Ember
 {
+namespace Domain
+{
+class EntityTalk;
+}
 namespace OgreView
 {
 
