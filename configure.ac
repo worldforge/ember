@@ -615,6 +615,9 @@ AC_CONFIG_FILES([Makefile
 		 media/packs/Makefile
 		 test/Makefile
 		 src/extensions/webember/Makefile
+		 src/domain/Makefile
+		 src/domain/bindings/Makefile
+		 src/domain/bindings/lua/Makefile
 ])
 
 AC_OUTPUT
