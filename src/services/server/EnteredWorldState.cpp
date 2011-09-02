@@ -81,9 +81,11 @@ void EnteredWorldState::runCommand(const std::string &command, const std::string
 			Eris::Entity* entity = getView().getEntity(*I);
 			if (entity) {
 				entities.push_back(entity);
+			} else {
+				S_LOG_WARNING("Tried to send message addressed to entity with id " << *I <<" which doesn't exist.");
 			}
 		}
-		std::string message = tokeniser.nextToken();
+		std::string message = tokeniser.remainingTokens();
 
 		mAdapter.sayTo(message, entities);
 	} else if (Emote == command) {
