@@ -46,7 +46,7 @@ namespace Ember
 {
 
 ConnectedAdapter::ConnectedAdapter(Eris::Account& account, Eris::Avatar& avatar) :
-	mAccount(account), mAvatar(avatar), mConnection(*avatar.getConnection())
+		mAccount(account), mAvatar(avatar), mConnection(*avatar.getConnection())
 {
 }
 
@@ -85,7 +85,6 @@ void ConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity)
 // {
 //
 // }
-
 
 void ConnectedAdapter::touch(Eris::Entity* entity)
 {
@@ -303,6 +302,39 @@ void ConnectedAdapter::say(const std::string &message)
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on say." << ex);
 	}
+}
+
+void ConnectedAdapter::sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities)
+{
+	try {
+
+		mAvatar.sayTo(message, entities);
+
+		std::string msg;
+		msg = "Saying to many entities: [" + message + "]. ";
+		ConsoleBackend::getSingletonPtr()->pushMessage(msg, "info");
+		S_LOG_VERBOSE(msg);
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Got error on say." << ex);
+	}
+}
+
+void ConnectedAdapter::sayTo(const std::string &message, const Eris::Entity& entity)
+{
+	try {
+		std::vector<const Eris::Entity*> entities;
+		entities.push_back(&entity);
+
+		mAvatar.sayTo(message, entities);
+
+		std::string msg;
+		msg = "Saying to " + entity.getName() + ": [" + message + "]. ";
+		ConsoleBackend::getSingletonPtr()->pushMessage(msg, "info");
+		S_LOG_VERBOSE(msg);
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Got error on say." << ex);
+	}
+
 }
 
 void ConnectedAdapter::adminTell(const std::string& entityId, const std::string& attribute, const std::string &value)

@@ -48,6 +48,26 @@ public:
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity) = 0;
 // 	virtual void teleportTo(const WFMath::Point<3>& dest) = 0;
 	virtual void say(const std::string &message) = 0;
+
+	/**
+	 * @brief Says something, addressed to a list of entities.
+	 *
+	 * Note that the message will be heard by everyone within earshot, even those not addressed.
+	 *
+	 * @param message The message.
+	 * @param entities A list of entities to which the message will be addressed.
+	 */
+	virtual void sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities) = 0;
+
+	/**
+	 * @brief Says something, addressed to an entity.
+	 *
+	 * Note that the message will be heard by everyone within earshot, even those not addressed.
+	 *
+	 * @param message The message.
+	 * @param entities The entity to which the message is addressed.
+	 */
+	virtual void sayTo(const std::string &message, const Eris::Entity& entity) = 0;
 	virtual void touch(Eris::Entity* entity) = 0;
 	virtual void emote(const std::string& emote) = 0;
 	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation) = 0;

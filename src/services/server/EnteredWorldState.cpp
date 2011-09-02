@@ -45,12 +45,11 @@
 
 #include <sstream>
 
-
 namespace Ember
 {
 
 EnteredWorldState::EnteredWorldState(IState& parentState, Eris::Avatar& avatar, Eris::Account& account) :
-	StateBase<void>::StateBase(parentState), Say("say", this, "Say something."), Emote("me", this, "Emotes something."), Delete("delete", this, "Deletes an entity."), AdminTell("admin_tell", this, "Uses admin mode to directly tell a NPC something. Usage: /admin_tell <entityid> <key> <value>"), mAvatar(avatar), mAccount(account), mAdapter(account, avatar)
+		StateBase<void>::StateBase(parentState), Say("say", this, "Say something."), SayTo("sayto", this, "Say something address to one or many entities. Format: '/sayto entityid,entityid,... message"), Emote("me", this, "Emotes something."), Delete("delete", this, "Deletes an entity."), AdminTell("admin_tell", this, "Uses admin mode to directly tell a NPC something. Usage: /admin_tell <entityid> <key> <value>"), mAvatar(avatar), mAccount(account), mAdapter(account, avatar)
 {
 	getSignals().GotAvatar.emit(&mAvatar);
 	getSignals().GotView.emit(&getView());
@@ -73,11 +72,24 @@ void EnteredWorldState::runCommand(const std::string &command, const std::string
 {
 	if (Say == command) {
 		mAdapter.say(args);
+	} else if (SayTo == command) {
+		Tokeniser tokeniser(args);
+		std::string entityIdsString = tokeniser.nextToken();
+		std::vector<std::string> entityIds = Tokeniser::split(entityIdsString, ",");
+		std::vector<const Eris::Entity*> entities;
+		for (std::vector<std::string>::const_iterator I = entityIds.begin(); I != entityIds.end(); ++I) {
+			Eris::Entity* entity = getView().getEntity(*I);
+			if (entity) {
+				entities.push_back(entity);
+			}
+		}
+		std::string message = tokeniser.nextToken();
+
+		mAdapter.sayTo(message, entities);
 	} else if (Emote == command) {
 		mAdapter.emote(args);
 	} else if (Delete == command) {
-		Tokeniser tokeniser = Tokeniser();
-		tokeniser.initTokens(args);
+		Tokeniser tokeniser(args);
 		std::string entityId = tokeniser.nextToken();
 		if (entityId != "") {
 			Eris::Entity* entity = getView().getEntity(entityId);
@@ -105,8 +117,7 @@ void EnteredWorldState::runCommand(const std::string &command, const std::string
 
 		 mConn->send(touch);*/
 	} else if (AdminTell == command) {
-		Tokeniser tokeniser = Tokeniser();
-		tokeniser.initTokens(args);
+		Tokeniser tokeniser(args);
 		std::string entityId = tokeniser.nextToken();
 		if (entityId != "") {
 			std::string key = tokeniser.nextToken();
@@ -119,8 +130,6 @@ void EnteredWorldState::runCommand(const std::string &command, const std::string
 		}
 	}
 }
-
-
 
 IServerAdapter& EnteredWorldState::getServerAdapter()
 {

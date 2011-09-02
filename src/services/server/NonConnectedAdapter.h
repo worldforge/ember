@@ -25,25 +25,28 @@
 
 #include "IServerAdapter.h"
 
-namespace Ember {
+namespace Ember
+{
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class NonConnectedAdapter : public IServerAdapter
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class NonConnectedAdapter: public IServerAdapter
 {
 public:
-    NonConnectedAdapter();
+	NonConnectedAdapter();
 
-    virtual ~NonConnectedAdapter();
+	virtual ~NonConnectedAdapter();
 
 	virtual void moveToPoint(const WFMath::Point<3>& dest);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
 	virtual void moveInDirection(const WFMath::Vector<3>& velocity);
 // 	virtual void teleportTo(const WFMath::Point<3>& dest) {}
 	virtual void say(const std::string &message);
+	virtual void sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities);
+	virtual void sayTo(const std::string &message, const Eris::Entity& entity);
 	virtual void touch(Eris::Entity* entity);
-	virtual void emote(const std::string& emote) {}
+	virtual void emote(const std::string& emote);
 	virtual void drop(Eris::Entity* entity, const WFMath::Vector<3>& offset, const WFMath::Quaternion& orientation);
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos = WFMath::Point<3>(0, 0, 0));
 	virtual void place(Eris::Entity* entity, Eris::Entity* target, const WFMath::Point<3>& pos, const WFMath::Quaternion& orient);

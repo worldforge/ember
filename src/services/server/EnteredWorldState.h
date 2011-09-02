@@ -64,6 +64,7 @@ public:
 	virtual bool logout();
 
 	const Ember::ConsoleCommandWrapper Say;
+	const Ember::ConsoleCommandWrapper SayTo;
 	const Ember::ConsoleCommandWrapper Emote;
 	const Ember::ConsoleCommandWrapper Delete;
 	const Ember::ConsoleCommandWrapper AdminTell;

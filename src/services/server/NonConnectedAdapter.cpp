@@ -26,33 +26,38 @@
 
 #include "NonConnectedAdapter.h"
 
-namespace Ember {
+namespace Ember
+{
 
 NonConnectedAdapter::NonConnectedAdapter()
 {
 }
 
-
 NonConnectedAdapter::~NonConnectedAdapter()
 {
 }
 
-void NonConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest) {
-
-
-}
-
-void NonConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation) {
+void NonConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest)
+{
 
 }
 
-
-void NonConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity) {
+void NonConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation)
+{
 
 }
 
+void NonConnectedAdapter::moveInDirection(const WFMath::Vector<3>& velocity)
+{
+
+}
 
 void NonConnectedAdapter::touch(Eris::Entity* entity)
+{
+
+}
+
+void NonConnectedAdapter::emote(const std::string& emote)
 {
 
 }
@@ -96,7 +101,6 @@ void NonConnectedAdapter::actuate(Eris::Entity* entity, const std::string& actio
 {
 }
 
-
 void NonConnectedAdapter::attack(Eris::Entity* entity)
 {
 
@@ -106,10 +110,17 @@ void NonConnectedAdapter::eat(Eris::Entity* entity)
 {
 }
 
-
 void NonConnectedAdapter::say(const std::string &message)
 {
 
+}
+
+void NonConnectedAdapter::sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities)
+{
+}
+
+void NonConnectedAdapter::sayTo(const std::string &message, const Eris::Entity& entity)
+{
 }
 
 void NonConnectedAdapter::deleteEntity(Eris::Entity* entity)
@@ -131,8 +142,5 @@ void NonConnectedAdapter::createTypeInfo(const Atlas::Objects::Root& typeInfo)
 void NonConnectedAdapter::setTypeInfo(const Atlas::Objects::Root& typeInfo)
 {
 }
-
-
-
 
 }
