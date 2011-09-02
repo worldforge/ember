@@ -385,7 +385,7 @@ bool EmberOgre::setup(Input& input)
 			S_LOG_INFO( "End preload.");
 		}
 		try {
-			mGUIManager = new GUIManager(mWindow, configSrv);
+			mGUIManager = new GUIManager(mWindow, configSrv, EmberServices::getSingleton().getServerService());
 			EventGUIManagerCreated.emit(*mGUIManager);
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)

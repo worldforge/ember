@@ -45,10 +45,17 @@ class LuaScriptModule;
 class Window;
 }
 
+namespace Eris {
+class View;
+class Entity;
+}
+
 namespace Ember {
 class IScriptingProvider;
 class Input;
 class ConfigService;
+
+class ServerServiceSignals;
 
 namespace Domain {
 class EntityTalk;
@@ -102,8 +109,9 @@ public:
 	 * @brief Ctor.
 	 * @param window The main window which will house the GUI. Normally the RenderWindow which makes up the complete application.
 	 * @param configService The config service.
+	 * @param serverSignals Server signals which signals when a new View has been created.
 	 */
-	GUIManager(Ogre::RenderWindow* window, ConfigService& configService);
+	GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals);
 
 	/**
 	 * @brief Dtor.
@@ -336,6 +344,32 @@ protected:
 
 // 	InputMode mPreviousInputMode;
 	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);
+
+	/**
+	 * @brief Called when a new View instance is created.
+	 *
+	 * We'll wire up the view_EntityCreated() method call here.
+	 *
+	 * @param view The new view instance.
+	 */
+	void server_GotView(Eris::View* view);
+
+	/**
+	 * @brief Called when a new Entity is created.
+	 *
+	 * We'll wire up the entity_Talk() method call here.
+	 *
+	 * @param entity The new entity.
+	 */
+	void view_EntityCreated(Eris::Entity* entity);
+
+	/**
+	 * @brief Called when an entity talks.
+	 * @param entityTalk The entity talk struct, containing all useful entity talk data.
+	 * @param entity The entity which spoke.
+	 */
+	void entity_Talk(const Domain::EntityTalk& entityTalk, EmberEntity* entity);
+
 
 	/**
 	Adapter for CEGUI which will send input events to CEGUI

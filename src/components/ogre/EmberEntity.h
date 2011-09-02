@@ -41,6 +41,9 @@ class EntityMapping;
 
 namespace Ember
 {
+namespace Domain {
+class EntityTalk;
+}
 namespace OgreView
 {
 
@@ -315,6 +318,8 @@ public:
 	 * @return The height at the location.
 	 */
 	virtual float getHeight(const WFMath::Point<2>& localPosition) const;
+
+	sigc::signal<void, const Domain::EntityTalk&> EventTalk;
 
 protected:
 

@@ -45,8 +45,11 @@
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/scripting/ScriptingService.h"
+#include "services/server/ServerServiceSignals.h"
 
 #include "framework/IScriptingProvider.h"
+
+#include <Eris/View.h>
 
 #include <OgreRenderWindow.h>
 #include <OgreViewport.h>
@@ -66,6 +69,7 @@
 #include <elements/CEGUIEditbox.h>
 #include <elements/CEGUITooltip.h>
 
+#include <sigc++/bind.h>
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
@@ -84,12 +88,12 @@ namespace OgreView
 
 unsigned long GUIManager::msAutoGenId(0);
 
-
-GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService) :
-	ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals) :
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
-	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
+
+	serverSignals.GotView.connect(sigc::mem_fun(*this, &GUIManager::server_GotView));
 
 	//we need this here just to force the linker to also link in the WidgetDefinitions
 	WidgetDefinitions w;
@@ -100,12 +104,12 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService)
 		mDefaultScheme = "EmberLook";
 		S_LOG_VERBOSE("Setting default scheme to "<< mDefaultScheme);
 
-		if (configSrv.getPrefix() != "") {
+		if (configService.getPrefix() != "") {
 			//We need to set the current directory to the prefix before trying to load CEGUI.
 			//The reason for this is that CEGUI loads a lot of dynamic modules, and in some build configuration
 			//(like AppImage) the lookup path for some of these are based on the installation directory of Ember.
-			if (chdir(configSrv.getPrefix().c_str())) {
-				S_LOG_WARNING("Failed to change to the prefix directory '" << configSrv.getPrefix() << "'. Gui loading might fail.");
+			if (chdir(configService.getPrefix().c_str())) {
+				S_LOG_WARNING("Failed to change to the prefix directory '" << configService.getPrefix() << "'. Gui loading might fail.");
 			}
 		}
 
@@ -191,8 +195,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService)
 		throw Exception(ex.getMessage().c_str());
 	}
 
-	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
-		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory() << "'.");
+	if (chdir(configService.getEmberDataDirectory().c_str())) {
+		S_LOG_WARNING("Failed to change to the data directory '" << configService.getEmberDataDirectory() << "'.");
 	}
 
 }
@@ -259,7 +263,7 @@ void GUIManager::initialize()
 		S_LOG_FAILURE("GUIManager - error when creating ActionBar icon manager." << e);
 	}
 
-	std::vector<std::string> widgetsToLoad;
+	std::vector < std::string > widgetsToLoad;
 	widgetsToLoad.push_back("IngameChatWidget");
 	//	widgetsToLoad.push_back("JesusEdit");
 	widgetsToLoad.push_back("Help");
@@ -282,6 +286,26 @@ void GUIManager::initialize()
 		}
 	}
 
+}
+
+void GUIManager::server_GotView(Eris::View* view)
+{
+	//The View has a shorter lifespan than ours, so we don't need to store references to the connections.
+	view->EntityCreated.connect(sigc::mem_fun(*this, &GUIManager::view_EntityCreated));
+	view->EntitySeen.connect(sigc::mem_fun(*this, &GUIManager::view_EntityCreated));
+}
+
+void GUIManager::view_EntityCreated(Eris::Entity* entity)
+{
+	//It's safe to cast to EmberEntity, since all entities in the system are guaranteed to be of this type.
+	EmberEntity* emberEntity = static_cast<EmberEntity*>(entity);
+	//The Entity has a shorter lifespan than ours, so we don't need to store references to the connections.
+	emberEntity->EventTalk.connect(sigc::bind(sigc::mem_fun(*this, &GUIManager::entity_Talk), emberEntity));
+}
+
+void GUIManager::entity_Talk(const Domain::EntityTalk& entityTalk, EmberEntity* entity)
+{
+	AppendIGChatLine.emit(entityTalk, entity);
 }
 
 void GUIManager::scriptingServiceStopping()
@@ -331,13 +355,13 @@ Widget* GUIManager::createWidget(const std::string& name)
 
 		widget = WidgetLoader::createWidget(name);
 		if (widget == 0) {
-			S_LOG_FAILURE( "Could not find widget with name " << name );
+			S_LOG_FAILURE( "Could not find widget with name " << name);
 			return 0;
 		}
 		widget->init(this);
 		widget->buildWidget();
 		addWidget(widget);
-		S_LOG_INFO( "Successfully loaded widget " << name );
+		S_LOG_INFO( "Successfully loaded widget " << name);
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE( "Error when loading widget " << name << "." << e);
 		return 0;
@@ -397,7 +421,6 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	// 		}
 	// 	}
 
-
 	//iterate over all widgets and send them a frameStarted event
 	WidgetStore::iterator I = mWidgets.begin();
 	WidgetStore::iterator I_end = mWidgets.end();
@@ -420,7 +443,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	if (isInGUIMode()) {
-		const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&> (args);
+		const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 		S_LOG_VERBOSE("Main sheet is capturing input");
 		CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
 		if (aWindow) {
@@ -446,7 +469,7 @@ bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 bool GUIManager::mSheet_MouseDoubleClick(const CEGUI::EventArgs& args)
 {
 
-	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&> (args);
+	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 	S_LOG_VERBOSE("Main sheet double click.");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
 	if (aWindow) {
@@ -497,7 +520,7 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 		const CEGUI::String& type = active->getType();
 
 		if (type.find("/MultiLineEditbox") != CEGUI::String::npos) {
-			CEGUI::MultiLineEditbox* edit = static_cast<CEGUI::MultiLineEditbox*> (active);
+			CEGUI::MultiLineEditbox* edit = static_cast<CEGUI::MultiLineEditbox*>(active);
 			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
 			CEGUI::String::size_type len = edit->getSelectionLength();
 			seltext = edit->getText().substr(beg, len).c_str();
@@ -511,7 +534,7 @@ void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 			}
 
 		} else if (type.find("/Editbox") != CEGUI::String::npos) {
-			CEGUI::Editbox* edit = static_cast<CEGUI::Editbox*> (active);
+			CEGUI::Editbox* edit = static_cast<CEGUI::Editbox*>(active);
 			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
 			CEGUI::String::size_type len = edit->getSelectionLength();
 			seltext = edit->getText().substr(beg, len).c_str();
@@ -534,7 +557,7 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 		getInput().toggleInputMode();
 	} else if (command == ToggleGui.getCommand()) {
 
-		S_LOG_VERBOSE("Toggle Gui Initiated -- " << getInput().getInputMode() );
+		S_LOG_VERBOSE("Toggle Gui Initiated -- " << getInput().getInputMode());
 
 		if (mWindow->getViewport(0)->getOverlaysEnabled()) {
 			// disable overlays so gui disappears

@@ -21,8 +21,6 @@
 #endif
 #include "EmberEntity.h"
 
-#include "EmberEntityFactory.h"
-#include "GUIManager.h"
 #include "World.h"
 #include "terrain/TerrainArea.h"
 #include "terrain/TerrainMod.h"
@@ -38,7 +36,6 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/MultiLineListFormatter.h"
 #include "domain/EntityTalk.h"
-#include "services/EmberServices.h"
 #include "authoring/AuthoringManager.h"
 
 #include <Eris/TypeInfo.h>
@@ -60,9 +57,8 @@ const std::string EmberEntity::MODE_FIXED("fixed");
 const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::MODE_SWIMMING("swimming");
 
-
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
-	Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
+		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
 	// we need a model mapping
 	createEntityMapping(scene);
@@ -88,13 +84,11 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	// Setup Sounds
 	//	setSounds();
 
-
 	// set the Ogre node position and orientation based on Atlas data
 	std::stringstream ss;
 	if (getPredictedPos().isValid()) {
 		ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
-	}
-	S_LOG_VERBOSE(ss.str());
+	}S_LOG_VERBOSE(ss.str());
 
 	mIsInitialized = true;
 
@@ -119,7 +113,7 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 	//if the area attribute has changed, and we _don't_ have any mTerrainArea instance, try to create one such.
 	//if we do have an mTerrainArea instance, all updates will be taken care of by that instead and we can ignore this
 	if (attributeName == "area" && !mTerrainArea.get()) {
-		mTerrainArea = std::auto_ptr<Terrain::TerrainArea>(new Terrain::TerrainArea(*this));
+		mTerrainArea = std::auto_ptr < Terrain::TerrainArea > (new Terrain::TerrainArea(*this));
 		if (mTerrainArea->init()) {
 			addArea(*mTerrainArea.get());
 			return true;
@@ -132,7 +126,7 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 	//if the area attribute has changed, and we _don't_ have any mTerrainMod instance, try to create one such.
 	//if we do have an mTerrainMod instance, all updates will be taken care of by that instead and we can ignore this
 	if (attributeName == "terrainmod" && !mTerrainMod.get()) {
-		mTerrainMod = std::auto_ptr<Terrain::TerrainMod>(new Terrain::TerrainMod(*this));
+		mTerrainMod = std::auto_ptr < Terrain::TerrainMod > (new Terrain::TerrainMod(*this));
 		mTerrainMod->init();
 		addTerrainMod(mTerrainMod.get());
 		return true;
@@ -197,8 +191,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	message.append(entityTalk.getMessage());
 	S_LOG_VERBOSE("Entity says: [" << message << "]\n");
 
-	// Make the message appear in the chat box
-	GUIManager::getSingleton().AppendIGChatLine.emit(entityTalk, this);
+	EventTalk.emit(entityTalk);
 
 	// Make a sound in OpenAL -- mafm: call doesn't exist
 	//	EmberServices::getSingleton().getSoundService().playTalk(msg,
@@ -429,18 +422,18 @@ bool EmberEntity::getShowErisBoundingBox() const
 
 EmberEntity* EmberEntity::getEmberLocation() const
 {
-	return static_cast<EmberEntity*> (getLocation());
+	return static_cast<EmberEntity*>(getLocation());
 }
 
 EmberEntity* EmberEntity::getEmberContained(unsigned int index) const
 {
-	return static_cast<EmberEntity*> (getContained(index));
+	return static_cast<EmberEntity*>(getContained(index));
 }
 
 std::vector<std::string> EmberEntity::getActions()
 {
 	//get the actions from Eris and return them a simple vector of strings
-	std::vector<std::string> actions;
+	std::vector < std::string > actions;
 
 	if (hasAttr("actions")) {
 		const Atlas::Message::Element& operations = valueOfAttr("actions");
@@ -462,7 +455,7 @@ std::vector<std::string> EmberEntity::getActions()
 std::vector<std::string> EmberEntity::getDefaultUseOperators()
 {
 	//get the use operations from Eris and return them a simple vector of strings
-	std::vector<std::string> operators;
+	std::vector < std::string > operators;
 
 	Eris::TypeInfoArray types = getUseOperations();
 
