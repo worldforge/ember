@@ -608,7 +608,8 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 
 void IngameChatWidget::ChatText::respondWithMessage(const std::string& message)
 {
-	EmberServices::getSingleton().getServerService().say(message);
+	EmberEntity* entity = mLabel->getEntity();
+	EmberServices::getSingleton().getServerService().sayTo(message, *entity);
 	
 	mDetachedChatHistory->setText(mDetachedChatHistory->getText() + "\n[colour='00000000']-\n[colour='FF0000FF']You: " + message);
 	mDetachedChatHistory->setProperty("VertScrollPosition", mDetachedChatHistory->getProperty("VertExtent"));

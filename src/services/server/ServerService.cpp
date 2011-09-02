@@ -211,6 +211,16 @@ void ServerService::say(const std::string &message)
 	getAdapter().say(message);
 }
 
+void ServerService::sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities)
+{
+	getAdapter().sayTo(message, entities);
+}
+
+void ServerService::sayTo(const std::string &message, const Eris::Entity& entity)
+{
+	getAdapter().sayTo(message, entity);
+}
+
 void ServerService::emote(const std::string &message)
 {
 	getAdapter().emote(message);

@@ -148,9 +148,30 @@ public:
 
 	/**
 	 * @brief Say something out loud.
-	 * @param message
+	 * @param message The message being said.
 	 */
 	void say(const std::string &message);
+
+	/**
+	 * @brief Says something, addressed to a list of entities.
+	 *
+	 * Note that the message will be heard by everyone within earshot, even those not addressed.
+	 *
+	 * @param message The message.
+	 * @param entities A list of entities to which the message will be addressed.
+	 */
+	void sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities);
+
+	/**
+	 * @brief Says something, addressed to an entity.
+	 *
+	 * Note that the message will be heard by everyone within earshot, even those not addressed.
+	 *
+	 * @param message The message.
+	 * @param entities The entity to which the message is addressed.
+	 */
+	void sayTo(const std::string &message, const Eris::Entity& entity);
+
 	/**
 	 * @brief Touch another entity.
 	 * @param entity
