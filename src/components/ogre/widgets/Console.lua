@@ -179,7 +179,15 @@ end
 
 --Checks whether given line contains name of the player that is currently playing
 function Console:chatMessageContainsPlayerName(line)
-	return line:find(emberOgre:getWorld():getAvatar():getEmberEntity():getName()) ~= nil
+	local world = emberOgre:getWorld()
+	if world then
+		local avatar = world:getAvatar()
+		if avatar then
+			local entity = avatar:getEmberEntity()
+			return line:find(entity:getName()) ~= nil
+		end
+	end
+	return false
 end
 
 function Console:getChatMessageColour(line)
