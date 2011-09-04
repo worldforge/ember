@@ -736,8 +736,8 @@ bool IngameChatWidget::ChatText::buttonDetachedTrade_Click(const EventArgs& args
 {
 	// FIXME: We should query if the entity is an NPC with merchanting capabilities
 	//        if it is not, a normal trade window should pop instead of the merchant window
-	GUIManager::getSingleton().EmitEntityAction("Merchant", mLabel->getEntity());
-	
+	GUIManager::getSingleton().EmitEntityAction("merchant", mLabel->getEntity());
+
 	// also switch to attached mode to avoid having a superfluous window opened
 	switchToAttachedMode(false);
 	

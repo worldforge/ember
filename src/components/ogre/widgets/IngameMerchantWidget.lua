@@ -307,7 +307,7 @@ function IngameMerchantWidget:shutdown()
 end
 
 function IngameMerchantWidget:handleEntityAction(action, entity)
-	if (action == "Merchant") then
+	if (action == "merchant") then
 		local windowIndex = self.tradeWindowIndex
 		local shutdownCallback = function()
 			-- setting the table entry to nil effectively removes it from the table
