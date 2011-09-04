@@ -132,11 +132,18 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 {
 	if (action == "talk") {
 		EntityObserverStore::const_iterator I = mEntityObservers.find(entity->getId());
+		EntityObserver* observer = 0;
 		if (I != mEntityObservers.end()) {
 			EntityObserver* observer = I->second;
-			if (observer) {
-				observer->showDetachedChat();
+		} else {
+			Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(*entity);
+			if (modelRepresentation) {
+				observer = new EntityObserver(*this, *modelRepresentation);
+				mEntityObservers.insert(std::make_pair(observer->getEntityId(), observer));
 			}
+		}
+		if (observer) {
+			observer->showDetachedChat();
 		}
 	}
 }
