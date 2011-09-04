@@ -134,7 +134,7 @@ void IngameChatWidget::GUIManager_EntityAction(const std::string& action, EmberE
 		EntityObserverStore::const_iterator I = mEntityObservers.find(entity->getId());
 		EntityObserver* observer = 0;
 		if (I != mEntityObservers.end()) {
-			EntityObserver* observer = I->second;
+			observer = I->second;
 		} else {
 			Model::ModelRepresentation* modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(*entity);
 			if (modelRepresentation) {
@@ -686,7 +686,22 @@ void IngameChatWidget::ChatText::switchToDetachedMode()
 	}
 
 	const Rect rect = mAttachedWindow->getUnclippedOuterRect();
-	mDetachedWindow->setPosition(UVector2(UDim(0, rect.d_left), UDim(0, rect.d_top)));
+	if (rect.d_left >= 0 && rect.d_top >= 0) {
+		mDetachedWindow->setPosition(UVector2(UDim(0, rect.d_left), UDim(0, rect.d_top)));
+	} else {
+		mDetachedWindow->setPosition(UVector2(UDim(0.5, -(mDetachedWindow->getWidth().asAbsolute(0) * 0.5)), UDim(0.5, 0)));
+	}
+	CEGUI::Size rootSize = CEGUI::System::getSingleton().getGUISheet()->getPixelSize();
+	float width = mDetachedWindow->getWidth().asAbsolute(0);
+	float height = mDetachedWindow->getHeight().asAbsolute(0);
+	if (mDetachedWindow->getXPosition().asAbsolute(0) + width > rootSize.d_width) {
+		mDetachedWindow->setXPosition(CEGUI::UDim(0, rootSize.d_width - width));
+	}
+	if (mDetachedWindow->getYPosition().asAbsolute(0) + height > rootSize.d_height) {
+		mDetachedWindow->setYPosition(CEGUI::UDim(0, rootSize.d_height - height));
+	}
+
+
 	mAttachedResponseContainer->removeChildWindow(mResponseWidget);
 	mDetachedResponseContainer->addChildWindow(mResponseWidget);
 
