@@ -481,6 +481,7 @@ IngameChatWidget::ChatText* IngameChatWidget::Label::getOrCreateChatText()
 
 void IngameChatWidget::Label::showDetachedChatText()
 {
+	placeWindowOnEntity();
 	getOrCreateChatText()->switchToDetachedMode();
 }
 
