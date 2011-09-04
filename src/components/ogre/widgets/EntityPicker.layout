@@ -27,6 +27,12 @@
 				<Property Name='InheritsAlpha' Value='True'/>
 				<Property Name='Tooltip' Value='Teleport to this point.'/>
 			</Window>
+			<Window Type='EmberLook/Button' Name='TalkButton'>
+				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
+				<Property Name='Text' Value='Talk'/>
+				<Property Name='InheritsAlpha' Value='True'/>
+				<Property Name='Tooltip' Value='Talk to the entity.'/>
+			</Window>
 			<Window Type='EmberLook/Button' Name='TouchButton'>
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0,20.0}}'/>
 				<Property Name='Text' Value='Touch'/>

@@ -91,6 +91,17 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			virtual ~EntityObserver();
 			void updateLabel(const Ogre::Camera * camera);
 
+			/**
+			 * @brief Gets the id of the observed entity.
+			 * @return The id of the observed entity.
+			 */
+			const std::string& getEntityId() const;
+
+			/**
+			 * @brief Shows the detached chat widget for the entity.
+			 */
+			void showDetachedChat();
+
 		protected:
 			IngameChatWidget& mChatWidget;
 			Model::ModelRepresentation& mModelRepresentation;
@@ -177,6 +188,11 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			void removeChatText();
 
 			/**
+			 * @brief Shows the detached chat text widget.
+			 */
+			void showDetachedChatText();
+
+			/**
 			 * @brief Resets the label.
 			 *
 			 * This involves removing any chat texts.
@@ -194,6 +210,12 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			const std::string mPrefix;
 			bool mRenderNextFrame;
 			ChatText* mChatText;
+
+			/**
+			 * @brief Gets the attached chat text instance, or create a new one if needed.
+			 * @return A chat text instance.
+			 */
+			ChatText* getOrCreateChatText();
 	};
 
 	class LabelCreator : public WidgetPool<IngameChatWidget::Label>::WidgetCreator
@@ -247,6 +269,16 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 
 			void attachToLabel(Label* label);
 
+			/**
+			 * @brief switches from detached to attached mode
+			 */
+			void switchToAttachedMode(bool updateHelpMessage = true);
+
+			/**
+			 * @brief switches from attached to detached mode
+			 */
+			void switchToDetachedMode();
+
 		protected:
 			std::vector<CEGUI::Window*> mResponseTextWidgets;
 			
@@ -276,17 +308,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			 * This method clears all suggested responses and adds this message to the chat history
 			 */
 			void respondWithMessage(const std::string& message);
-			
-			/**
-			 * @brief switches from detached to attached mode
-			 */
-			void switchToAttachedMode(bool updateHelpMessage = true);
-			
-			/**
-			 * @brief switches from attached to detached mode
-			 */
-			void switchToDetachedMode();
-			
+
 			bool buttonResponse_Click(const CEGUI::EventArgs& args);
 			bool buttonAttachedText_Click(const CEGUI::EventArgs& args);
 			bool buttonDetachedClose_Click(const CEGUI::EventArgs& args);
@@ -316,7 +338,7 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 typedef std::map<std::string, Label*> LabelMap;
 typedef std::vector<Label*> LabelStore;
 typedef std::stack<Label*> LabelStack;
-typedef std::vector<EntityObserver*> EntityObserverStore;
+typedef std::map<std::string, EntityObserver*> EntityObserverStore;
 typedef std::vector<Eris::TypeInfo*> TypeInfoStore;
 friend class IngameChatWidget::EntityObserver;
 
@@ -368,6 +390,12 @@ protected:
 	 */
 	void entityArrivedFromServer(EmberEntity& entity);
 
+	/**
+	 * @brief Listen to any "talk" entity action and respond by bringing up the detached chat widget for the entity.
+	 * @param action The action.
+	 * @param entity The entity it was performed on.
+	 */
+	void GUIManager_EntityAction(const std::string& action, EmberEntity* entity);
 
 	EntityObserverStore mEntityObservers;
 

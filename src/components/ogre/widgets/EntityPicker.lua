@@ -34,6 +34,8 @@ function EntityPicker:buildWidget(world)
 	self.buttons.moveto:subscribeEvent("MouseButtonUp", self.buttonMoveto_Click, self)
 	self.buttons.teleportto = self.widget:getWindow("TeleportToButton")
 	self.buttons.teleportto:subscribeEvent("MouseButtonUp", self.buttonTeleportto_Click, self)
+	self.buttons.talk = self.widget:getWindow("TalkButton")
+	self.buttons.talk:subscribeEvent("MouseButtonUp", self.buttonTalk_Click, self)
 	self.buttons.touch = self.widget:getWindow("TouchButton")
 	self.buttons.touch:subscribeEvent("MouseButtonUp", self.buttonTouch_Click, self)
 	self.buttons.take = self.widget:getWindow("TakeButton")
@@ -353,7 +355,13 @@ function EntityPicker:buttonTouch_Click(args)
 		emberServices:getServerService():touch(entity)
 		guiManager:EmitEntityAction("touch", entity)
 	end)
-	--print("Type: ", tolua.type(self.position))
+	self:removeMenu()
+end
+
+function EntityPicker:buttonTalk_Click(args)
+	self:doWithPickedEntity(function (entity)
+		guiManager:EmitEntityAction("talk", entity)
+	end)
 	self:removeMenu()
 end
 
