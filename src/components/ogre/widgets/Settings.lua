@@ -459,6 +459,15 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
 				},
+				{
+					label = "Show 'inspect' menu option",
+					helpString = "Turning this on will display the 'inspect' menu option for all entities, even when the user isn't logged in as ad admin character.",
+					
+					section = "authoring",
+					key = "showinspectforall",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+				},
 			},
 		},
 	}

@@ -11,6 +11,7 @@ EntityPicker = {}
 
 function EntityPicker:buildWidget(world)
 
+	self.world = world
 	self.widget = guiManager:createWidget()
 	self.selectorWidget = guiManager:createWidget()
 
@@ -65,6 +66,34 @@ function EntityPicker:buildWidget(world)
 	self.stackableContainer:setInnerContainerWindow(self.menuWindow)
 	connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, self.input_MouseButtonReleased, self)
 
+
+	--Check whether we should show the inspect button even for non admin types.
+	local configService = emberServices:getConfigService()
+	local evaluateShowInspect = function()
+		if world:getAvatar():isAdmin() then
+			self.buttons.inspect:setVisible(true)
+		else
+			local variable = configService:getValue("authoring", "showinspectforall")
+			if variable and variable:is_bool() then
+				local showInspectForAll = variable[".bool"](variable);
+				self.buttons.inspect:setVisible(showInspectForAll)
+			else
+				self.buttons.inspect:setVisible(false)
+			end
+		end
+	end
+	
+	evaluateShowInspect()
+
+	local valueChangedCall = function(section, key)
+		log.info(section .. " : " .. key)
+		if section == "authoring" and key == "showinspectforall" then
+			evaluateShowInspect()
+		end
+	end
+	connect(self.connectors, configService.EventChangedConfigItem, valueChangedCall)
+
+
 end
 
 function EntityPicker:addButton(buttonName)
@@ -82,8 +111,8 @@ end
 function EntityPicker:showMenu(position)
 	self.widget:show()
 	
-	--disble the edit and teleport buttons if we're not admin
-	if emberOgre:getWorld():getAvatar():isAdmin() then
+	--disable the edit and teleport buttons if we're not admin
+	if self.world:getAvatar():isAdmin() then
 		self.buttons.edit:setVisible(true)
 		self.buttons.teleportto:setVisible(true)
 	else
@@ -248,7 +277,7 @@ function EntityPicker:checkUse(entity)
 	end	
 	
 	--then fill up with operations that can be performed with the currently wielded entity
-	local wieldedEntity = emberOgre:getWorld():getAvatar():getEmberEntity():getAttachedEntity("right_hand_wield")
+	local wieldedEntity = self.world:getAvatar():getEmberEntity():getAttachedEntity("right_hand_wield")
 	if wieldedEntity then
 		local operatorList = wieldedEntity:getDefaultUseOperators();
 		if operatorList:size() > 0 then 
@@ -264,7 +293,7 @@ end
 
 function EntityPicker:addUse(buttonWrapper, entityId, wieldedEntity, operation)
 	buttonWrapper.clickedHandler = function()
-		local entity = emberOgre:getWorld():getEmberEntity(entityId)
+		local entity = self.world:getEmberEntity(entityId)
 		if entity ~= nil then
 			emberServices:getServerService():use(entity, Ember.OgreView.Convert:toWF_Point3(self.position), operation)
 			guiManager:EmitEntityAction("use", entity)
@@ -283,7 +312,7 @@ end
 
 function EntityPicker:addAction(buttonWrapper, entityId, action)
 	buttonWrapper.clickedHandler = function()
-		local entity = emberOgre:getWorld():getEmberEntity(entityId)
+		local entity = self.world:getEmberEntity(entityId)
 		if entity ~= nil then
 			emberServices:getServerService():actuate(entity, action)
 			guiManager:EmitEntityAction("actuate", entity)
@@ -308,13 +337,13 @@ function EntityPicker:doWithPickedEntity(aFunction)
 end
 
 function EntityPicker:buttonMoveto_Click(args)
-	emberOgre:getWorld():getMovementController():moveToPoint(self.position)
+	self.world:getMovementController():moveToPoint(self.position)
 	self:removeMenu()
 end
 
 function EntityPicker:buttonTeleportto_Click(args)
 	self:doWithPickedEntity(function (entity)
-		emberOgre:getWorld():getMovementController():teleportTo(self.position, entity)
+		self.world:getMovementController():teleportTo(self.position, entity)
 	end)
 	self:removeMenu()
 end
@@ -400,16 +429,18 @@ function EntityPicker:shutdown()
 end
 
 connect(connectors, emberOgre.EventWorldCreated, function(world)
-	entityPicker = {connectors={}, menuWindow = nil, entityName = nil, useButtons = {}, entityId = nil, position = nil, buttons = {}, currentPickedEntityIndex = 0}
-	setmetatable(entityPicker, {__index = EntityPicker})
-	
-	entityPicker:buildWidget(world)
-	connect(entityPicker.connectors, emberOgre.EventWorldDestroyed, function()
-			entityPicker:shutdown()
-			entityPicker = nil
-		end
+	createConnector(world.EventGotAvatar):connect(function()
+		entityPicker = {connectors={}, menuWindow = nil, entityName = nil, useButtons = {}, entityId = nil, position = nil, buttons = {}, currentPickedEntityIndex = 0}
+		setmetatable(entityPicker, {__index = EntityPicker})
+		
+		entityPicker:buildWidget(world)
+		connect(entityPicker.connectors, emberOgre.EventWorldDestroyed, function()
+				entityPicker:shutdown()
+				entityPicker = nil
+			end
+		)
+	end
 	)
-	
 end
 )
 
