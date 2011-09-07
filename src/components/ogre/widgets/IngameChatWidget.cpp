@@ -691,6 +691,8 @@ void IngameChatWidget::ChatText::switchToDetachedMode()
 	} else {
 		mDetachedWindow->setPosition(UVector2(UDim(0.5, -(mDetachedWindow->getWidth().asAbsolute(0) * 0.5)), UDim(0.5, 0)));
 	}
+
+	//Make sure the widget is contained within the main window.
 	CEGUI::Size rootSize = CEGUI::System::getSingleton().getGUISheet()->getPixelSize();
 	float width = mDetachedWindow->getWidth().asAbsolute(0);
 	float height = mDetachedWindow->getHeight().asAbsolute(0);

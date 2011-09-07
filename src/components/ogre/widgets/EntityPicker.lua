@@ -54,6 +54,12 @@ function EntityPicker:buildWidget(world)
 --[[	self.buttons.eat = self.widget:getWindow("EatButton")
 	self.buttons.eat:subscribeEvent("MouseButtonUp", self.eatButton_Click, self)]]
 	
+	--Collect a list of all the entity types which the user can normally talk to.
+	--Note that the user still can talk to other entities, it's just not as easy to address them.
+	self.talkingEntityTypes = {}
+	self.typeService = world:getView():getAvatar():getConnection():getTypeService()
+	local characterType = self.typeService:getTypeByName("character")
+	table.insert(self.talkingEntityTypes, characterType)
 	
 	
 	--get a couple of use buttons to allow for different use actions
@@ -110,7 +116,7 @@ function EntityPicker:addButton(buttonName)
 	
 end
 
-function EntityPicker:showMenu(position)
+function EntityPicker:showMenu(position, entity)
 	self.widget:show()
 	
 	--disable the edit and teleport buttons if we're not admin
@@ -121,6 +127,21 @@ function EntityPicker:showMenu(position)
 		self.buttons.edit:setVisible(false)
 		self.buttons.teleportto:setVisible(false)
 	end
+	
+	--only show "talk" button for entities which we can talk to
+	local isTalkable = false
+	for i,v in ipairs(self.talkingEntityTypes) do
+		if entity:getType():isA(v) then
+			isTalkable = true
+		end
+	end
+	if isTalkable then
+		self.buttons.talk:setVisible(true)
+	else
+		self.buttons.talk:setVisible(false)
+	end
+	
+	
 
 	self.stackableContainer:repositionWindows()
 	
