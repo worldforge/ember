@@ -20,6 +20,7 @@
 #define EMBEROGRE_WORLD_H_
 
 #include "OgreIncludes.h"
+#include <sigc++/signal.h>
 #include <string>
 
 namespace Eris
@@ -164,6 +165,11 @@ public:
 	 * @return The authoring manager.
 	 */
 	Authoring::AuthoringManager& getAuthoringManager() const;
+
+	/**
+	 * @brief Emitted when the world has received the avatar entity.
+	 */
+	sigc::signal<void> EventGotAvatar;
 
 protected:
 

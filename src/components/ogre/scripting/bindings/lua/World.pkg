@@ -79,6 +79,12 @@ public:
 	 */
 	Ember::OgreView::Authoring::AuthoringManager& getAuthoringManager() const;
 
+	/**
+	 * @brief Emitted when the world has received the avatar entity.
+	 */
+	sigc::signal<void> EventGotAvatar;
+
+
 };
 }
 }
