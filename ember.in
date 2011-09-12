@@ -1,68 +1,16 @@
 #!/bin/bash
 
+bindir="$( cd -P "$( dirname "$0" )" && pwd )"
+prefix="$( cd -P "$( dirname "$0" )/.." && pwd )"
+export LD_LIBRARY_PATH=$prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 
 
-# Function to find the real directory a program resides in.
-# Feb. 17, 2000 - Sam Lantinga, Loki Entertainment Software
-FindPath()
-{
-    fullpath="`echo $0 | grep /`"
-    if [ "$fullpath" = "" ]; then
-        oIFS="$IFS"
-        IFS=:
-        for path in $PATH
-        do if [ -x "$path/$0" ]; then
-               if [ "$path" = "" ]; then
-                   path="."
-               fi
-               fullpath="$path/$0"
-               break
-           fi
-        done
-        IFS="$oIFS"
-    fi
-    if [ "$fullpath" = "" ]; then
-        fullpath="$0"
-    fi
- 
-    # Is the sed/ls magic portable?
-    if [ -L "$fullpath" ]; then
-        #fullpath="`ls -l "$fullpath" | awk '{print $01}'`"
-        fullpath=`ls -l "$fullpath" |sed -e 's/.* -> //' |sed -e 's/\*//'`
-    fi
-    dirname $fullpath
-}
+homedata="$HOME/.ember"
 
-
-
-
-
-# Setup variables
-
-#get the dir where this script resides in
-path=`FindPath`
-test=${path[0]}
-#if [ "$fullpath" = "" ]; then
-if [ "$test" = "." ]; then
-	path=${PWD}
-fi
-prefix=${path}/..
 debugging=0
 
 echo "According to my calculations Ember should be installed in $prefix"
 
-exec_prefix=${prefix}
-bindir=${exec_prefix}/bin
-datadir=${prefix}/share/ember
-media_user_dir=${datadir}/media/user
-
-LD_LIBRARY=$prefix/lib:$LD_LIBRARY
-LD_LIBRARY_PATH=$prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-export LD_LIBRARY
-export LD_LIBRARY_PATH
-
-
-homedata=$HOME/.ember
 case "$1" in
 --home)
   shift
@@ -74,38 +22,15 @@ case "$1" in
   ;;
 esac
 
-media_dir="${homedata}/ember-media-@VERSION@"
+cd $bindir
 
-
-# Create dir if required 
-if [ ! -d $homedata ] ; then
-	echo "Creating $homedata to store all game data."
-	mkdir -p $homedata
+if [ $debugging == 1 ] ; then
+  # Execute real ember binary
+  echo "Starting Ember in debugger...."
+  gdb --batch -ex "run" -ex "backtrace" -ex "quit" \
+  --args $bindir/ember.bin --prefix $prefix --home $homedata "$@"
 else
-	#if an older version have been installed, move the ember.conf out of the way
-	if [ ! -e $homedata/latest_version ]; then
-		echo "Checking for old config files and moving them out of the way."
-		if [ -e $homedata/ember.conf ]; then
-			mv $homedata/ember.conf $homedata/ember.conf.old
-		fi
-		if [ -e $homedata/ogre.cfg ]; then
-			mv $homedata/ogre.cfg $homedata/ogre.cfg.old
-		fi
-		if [ -e $homedata/plugins.cfg ]; then
-			mv $homedata/plugins.cfg $homedata/plugins.cfg.old
-		fi
-	fi
-fi
-
-#Let's write the version number so that we can do some useful thing with it in the future. (Like remove old media dirs.)
-echo @VERSION@ > $homedata/latest_version
-
-if [ $debugging = 1 ] ; then
-	# Execute real ember binary
-	echo "Starting Ember in debugger...."
-	gdb --args $bindir/ember.bin --home $homedata "$@"
-else
-	# Execute real ember binary
-	echo "Starting Ember...."
-	$bindir/ember.bin --home $homedata "$@"
+  # Execute real ember binary
+  echo "Starting Ember...."
+  $bindir/ember.bin --prefix $prefix --home $homedata "$@"
 fi
