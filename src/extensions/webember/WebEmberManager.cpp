@@ -118,10 +118,12 @@ void WebEmberManager::quit()
 		try {
 			boost::this_thread::sleep(boost::posix_time::milliseconds(1));
 		} catch (...) {
+			S_LOG_WARNING("Ember shutdown failed with exception.");
 			// This can happen when the thread is interrupted or will be terminated.
 			return;
 		}
 		if (!(--timeout)) {
+			S_LOG_WARNING("Ember shutdown failed with timeout.");
 			// This would leak ember thread to call quit, but saves the browser from freeze.
 			// It should never happen.
 			return;
