@@ -167,7 +167,7 @@ function MerchantWindow:setTargetEntity(entity)
 		self.widget:show()
 		connect(self.connectors, entity.Say, MerchantWindow.handleEntitySay, self)
 		--console:runCommand("/say " .. entity:getName() .. ": list me price")
-		console:runCommand("/say list me price")
+		console:runCommand(string.format("/sayto %s list me price", entity:getId()))
 		self.merchantEntity = entity
 	else
 		self.widget:hide()
