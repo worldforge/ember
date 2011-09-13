@@ -5181,6 +5181,7 @@
 		<!-- Game/Chat tab -->
 		<PropertyDefinition name="ChatMessageColour"  initialValue="FF000000" />
 		<PropertyDefinition name="ChatMessageContainingSelfColour" initialValue="FFFF0000" />
+		<PropertyDefinition name="ChatMessageAddressedToOther" initialValue="FF808080" />
 		
 		<PropertyDefinition name="ChatEntityColourSelf" initialValue="FF009E0F" />
 		<PropertyDefinition name="ChatEntityColour1" initialValue="FF005B99" />

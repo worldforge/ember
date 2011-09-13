@@ -190,12 +190,33 @@ function Console:chatMessageContainsPlayerName(line)
 	return false
 end
 
-function Console:getChatMessageColour(line)
+function Console:getChatMessageColour(line, entityTalk)
 	local propertyName = "ChatMessageColour"
+	local addressedToUs = false
+	local addressedToOther = false
 	
-	if self:chatMessageContainsPlayerName(line) then
-		--if the message contains users name, lets make it stand out
+	--check if the player is addressed
+	if entityTalk ~= nil then
+		local world = emberOgre:getWorld()
+		if world then
+			local avatar = world:getAvatar()
+			if avatar then
+				local entity = avatar:getEmberEntity()
+				if entityTalk:isAddressedToEntity(entity:getId()) then
+					addressedToUs = true
+				end
+				if not entityTalk:isAddressedToNone() and not addressedToUs then
+					addressedToOther = true
+				end
+			end
+		end
+	end
+	if self:chatMessageContainsPlayerName(line) or addressedToUs then
+		--if the message contains users name, or it's addressed to the player, lets make it stand out
 		propertyName = "ChatMessageContainingSelfColour"
+	elseif addressedToOther then
+		--if the message is addressed to others, mark it 
+		propertyName = "ChatMessageAddressedToOther"
 	end
 	
 	if not self.widget:getMainWindow():isPropertyPresent(propertyName) then
@@ -205,8 +226,8 @@ function Console:getChatMessageColour(line)
 	return self.widget:getMainWindow():getProperty(propertyName)
 end
 
-function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSymbol)
-	local messageColour = self:getChatMessageColour(line)
+function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSymbol, entityTalk)
+	local messageColour = self:getChatMessageColour(line, entityTalk)
 	
 	if entity ~= nil then
 		entityNameColour = self:getColourForEntityName(entity:getName())
@@ -231,7 +252,7 @@ end
 --handler for In Game chat events
 --appends given text to the bottom of the Chat/Game tab
 function Console:appendIGChatLine(entityTalk, entity)
-	self:appendChatMessage(entityTalk:getMessage(), entity, "<", ">")
+	self:appendChatMessage(entityTalk:getMessage(), entity, "<", ">", entityTalk)
 end
 
 function Console:appendAvatarImaginary(line)
