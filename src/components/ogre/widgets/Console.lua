@@ -56,6 +56,11 @@ function Console:buildWidget()
 	connect(self.connectors, guiManager.AppendAvatarImaginary, self.appendAvatarImaginary, self)
 	connect(self.connectors, self.consoleAdapter.EventCommandExecuted, self.consoleAdapter_CommandExecuted, self)
 	
+	self.avatarEntity = nil
+	connect(self.connectors, emberOgre.EventCreatedAvatarEntity, function(avatarEntity) 
+		self.avatarEntity = avatarEntity
+		self.avatarEntityDeletionConnection = connect(nil, avatarEntity.BeingDeleted, function() self.avatarEntity = nil end)
+	end)
 	
 	
 	self.widget:show()
@@ -179,30 +184,25 @@ end
 
 --Checks whether given line contains name of the player that is currently playing
 function Console:chatMessageContainsPlayerName(line)
-	local world = emberOgre:getWorld()
-	if world then
-		local avatar = world:getAvatar()
-		if avatar then
-			local entity = avatar:getEmberEntity()
-			return line:find(entity:getName()) ~= nil
-		end
+	if self.avatarEntity then
+		return line:find(self.avatarEntity:getName()) ~= nil
 	end
 	return false
 end
 
-function Console:getChatMessageColour(line, entityTalk)
+function Console:getChatMessageColour(line, entity, entityTalk)
 	local propertyName = "ChatMessageColour"
 	local addressedToUs = false
 	local addressedToOther = false
 	
-	--check if the player is addressed
-	if entityTalk ~= nil then
-		local world = emberOgre:getWorld()
-		if world then
-			local avatar = world:getAvatar()
-			if avatar then
-				local entity = avatar:getEmberEntity()
-				if entityTalk:isAddressedToEntity(entity:getId()) then
+	--If it's something we've said ourselves, just use normal colour.
+	if self.avatarEntity and entity and self.avatarEntity:getId() == entity:getId() then
+		propertyName = "ChatMessageColour"
+	else
+		--check if the player is addressed
+		if entityTalk then
+			if self.avatarEntity then
+				if entityTalk:isAddressedToEntity(self.avatarEntity:getId()) then
 					addressedToUs = true
 				end
 				if not entityTalk:isAddressedToNone() and not addressedToUs then
@@ -210,13 +210,13 @@ function Console:getChatMessageColour(line, entityTalk)
 				end
 			end
 		end
-	end
-	if self:chatMessageContainsPlayerName(line) or addressedToUs then
-		--if the message contains users name, or it's addressed to the player, lets make it stand out
-		propertyName = "ChatMessageContainingSelfColour"
-	elseif addressedToOther then
-		--if the message is addressed to others, mark it 
-		propertyName = "ChatMessageAddressedToOther"
+		if self:chatMessageContainsPlayerName(line) or addressedToUs then
+			--if the message contains users name, or it's addressed to the player, lets make it stand out
+			propertyName = "ChatMessageContainingSelfColour"
+		elseif addressedToOther then
+			--if the message is addressed to others, mark it 
+			propertyName = "ChatMessageAddressedToOther"
+		end
 	end
 	
 	if not self.widget:getMainWindow():isPropertyPresent(propertyName) then
@@ -227,9 +227,9 @@ function Console:getChatMessageColour(line, entityTalk)
 end
 
 function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSymbol, entityTalk)
-	local messageColour = self:getChatMessageColour(line, entityTalk)
+	local messageColour = self:getChatMessageColour(line, entity, entityTalk)
 	
-	if entity ~= nil then
+	if entity then
 		entityNameColour = self:getColourForEntityName(entity:getName())
 	
 		self:appendLine("[colour='" .. entityNameColour .. "']" .. self:escapeForCEGUI(entityStartSymbol .. entity:getName() .. entityEndSymbol) .. " [colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
