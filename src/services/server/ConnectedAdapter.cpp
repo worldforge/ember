@@ -311,7 +311,13 @@ void ConnectedAdapter::sayTo(const std::string &message, const std::vector<const
 		mAvatar.sayTo(message, entities);
 
 		std::string msg;
-		msg = "Saying to many entities: [" + message + "]. ";
+		if (entities.size() > 1) {
+			msg = "Saying to many entities: [" + message + "]. ";
+		} else if (entities.size() == 1) {
+			msg = "Saying to entity " + entities[0]->getId() + ": [" + message + "]. ";
+		} else {
+			msg = "Saying to no entity: [" + message + "]. ";
+		}
 		ConsoleBackend::getSingletonPtr()->pushMessage(msg, "info");
 		S_LOG_VERBOSE(msg);
 	} catch (const std::exception& ex) {
