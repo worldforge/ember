@@ -38,7 +38,6 @@ ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSetti
 {
 	createNodesForCamera(sceneManager);
 	createRayQueries(sceneManager);
-	Ogre::Root::getSingleton().addFrameListener(this);
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "adjusttoterrain", sigc::mem_fun(*this, &ThirdPersonCameraMount::Config_AdjustToTerrain), true);
 }
 
@@ -163,12 +162,14 @@ void ThirdPersonCameraMount::createRayQueries(Ogre::SceneManager& sceneManager)
 void ThirdPersonCameraMount::attachToCamera(MainCamera& camera)
 {
 	CameraMountBase::attachToCamera(camera);
+	Ogre::Root::getSingleton().addFrameListener(this);
 	mCameraNode->attachObject(mCamera);
 }
 
 void ThirdPersonCameraMount::detachFromCamera()
 {
 	mCameraNode->detachObject(mCamera);
+	Ogre::Root::getSingleton().removeFrameListener(this);
 	CameraMountBase::detachFromCamera();
 }
 
@@ -226,7 +227,7 @@ bool ThirdPersonCameraMount::adjustForTerrain()
 
 bool ThirdPersonCameraMount::frameStarted(const Ogre::FrameEvent& event)
 {
-	if (mIsAdjustedToTerrain) {
+	if (mIsAdjustedToTerrain && mCamera) {
 		if (mCamera->getDerivedPosition() != mLastPosition) {
 			adjustForTerrain();
 			mLastPosition = mCamera->getDerivedPosition();

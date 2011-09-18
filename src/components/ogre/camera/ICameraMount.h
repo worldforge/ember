@@ -57,7 +57,7 @@ public:
 	virtual ~ICameraMount()
 	{
 	}
-	;
+
 
 	/**
 	 * @brief Pitches the camera the supplied degrees
