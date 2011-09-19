@@ -64,11 +64,6 @@ class Tokeniser
 	 * @param delimiters The delimiter to use for splitting up the tokens.
 	 */
 	Tokeniser(const std::string &tokens, const std::string &delimiters);
-
-	virtual ~Tokeniser ()
-	{
-	}
-
 	
 	/**
 	 * @brief Initializes the tokeniser with the supplied string.
