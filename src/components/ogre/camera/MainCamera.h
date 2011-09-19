@@ -1,27 +1,25 @@
 /*
-    Copyright (C) 2004  Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2004  Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
-
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 /*
  * An instance of this is a player controlled camera fastened to the Avatar.
  * It should be possible to subclass this in order to provide different behaviour
  */
-
 
 #ifndef AVATARCAMERA_H
 #define AVATARCAMERA_H
@@ -29,7 +27,6 @@
 #include "components/ogre/OgreIncludes.h"
 
 #include "services/input/Input.h"
-#include "services/config/ConfigListenerContainer.h"
 #include "framework/ConsoleObject.h"
 
 #include <sigc++/trackable.h>
@@ -37,9 +34,7 @@
 #include <stack>
 #include <memory>
 
-
 #include <OgreFrameListener.h>
-
 
 namespace WFMath
 {
@@ -52,8 +47,10 @@ namespace Ember
 struct MouseMotion;
 class InputCommandMapper;
 class Input;
+class ConfigListenerContainer;
 
-namespace OgreView {
+namespace OgreView
+{
 class Avatar;
 class EmberEntity;
 struct EntityPickResult;
@@ -72,10 +69,28 @@ class ICameraMount;
 class Recorder;
 class CameraSettings;
 
-class MainCamera : public Ogre::FrameListener, public ConsoleObject, ConfigListenerContainer, public virtual sigc::trackable
+/**
+ * @author Erik Ogenvik <erik@ogenvik.org>
+ * @brief The main camera in the system.
+ *
+ * While there can be many different cameras in the system, this represent the "main" one. It renders directly to the main Ogre::RenderWindow.
+ */
+class MainCamera: public Ogre::FrameListener, public ConsoleObject, public virtual sigc::trackable
 {
 public:
+
+	/**
+	 * Ctor.
+	 * @param sceneManager The scene manager to which the camera belongs.
+	 * @param window The main rendering window.
+	 * @param input The input instance.
+	 * @param camera The main camera.
+	 */
 	MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera);
+
+	/**
+	 * Dtor.
+	 */
 	virtual ~MainCamera();
 
 	/**
@@ -90,7 +105,6 @@ public:
 	 */
 	Ogre::Camera& getCamera() const;
 
-
 	/**
 	 * @brief Returns the current camera orientation in the world
 	 * @param onlyHorizontal
@@ -104,12 +118,10 @@ public:
 	 */
 	const Ogre::Vector3& getPosition() const;
 
-
 	/**
-	* @brief Emitted when the camera moves
-	*/
+	 * @brief Emitted when the camera moves
+	 */
 	sigc::signal<void, Ogre::Camera&> MovedCamera;
-
 
 	void pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& args);
 
@@ -131,7 +143,7 @@ public:
 	 * @param command
 	 * @param args
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 	/**
 	 * Methods from Ogre::FrameListener
@@ -145,7 +157,6 @@ public:
 	 */
 	void enableCompositor(const std::string& compositorName, bool enable);
 
-
 	/**
 	 *    Adds a new world pick listener to the queue of listeners.
 	 * @param worldPickListener
@@ -154,22 +165,20 @@ public:
 
 	void removeWorldPickListener(IWorldPickListener* worldPickListener);
 
-
 	const ConsoleCommandWrapper ToggleRendermode;
 	const ConsoleCommandWrapper ToggleFullscreen;
 	const ConsoleCommandWrapper Screenshot;
 	const ConsoleCommandWrapper Record;
 
 	/**
-		Toggles between wireframe and solid render mode.
-	*/
+	 Toggles between wireframe and solid render mode.
+	 */
 	void toggleRenderMode();
 
 	/**
 	 * takes a screen shot and writes it to disk
 	 */
 	void takeScreenshot();
-
 
 	/**
 	 * @brief Attaches the camera to a new mount, returning the previous mount, if any.
@@ -225,12 +234,25 @@ private:
 	CameraSettings* mCameraSettings;
 
 	/**
+	 * @brief Listens for config changes.
+	 */
+	ConfigListenerContainer* mConfigListenerContainer;
+
+	/**
 	 * @brief Sets the near and far clip distances of the camera.
 	 * @param section
 	 * @param key
 	 * @param variable
 	 */
 	void Config_ClipDistances(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
+	 * @brief Sets the compositors which are loaded.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void Config_Compositors(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * @brief Call this whenever you've moved any node which will make the derived position or orientation of the camera change.

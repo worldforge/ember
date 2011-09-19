@@ -1,20 +1,20 @@
 /*
-    Copyright (C) 2004  Erik Hjortsberg
+ Copyright (C) 2004  Erik Hjortsberg
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -32,8 +32,6 @@
 #include "components/ogre/IWorldPickListener.h"
 #include "components/ogre/MousePicker.h"
 
-
-
 //#include "services/time/TimeService.h"
 //#ifndef WIN32
 //#include "services/sound/SoundService.h"
@@ -41,13 +39,12 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/config/ConfigListenerContainer.h"
 #include "services/input/Input.h"
-
 
 #include "framework/ConsoleBackend.h"
 #include "framework/osdir.h"
 #include "framework/Tokeniser.h"
-
 
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
@@ -67,28 +64,16 @@
 #endif
 
 using namespace Ember;
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
 namespace Camera
 {
 
-MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera)
-:	ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),
-	ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."),
-	Screenshot("screenshot", this, "Take a screenshot and write to disk."),
-	Record("+record", this, "Record to disk."),
-	mSceneManager(sceneManager),
-	mCamera(camera),
-	mCameraMount(0),
-	mRecorder(new Recorder()),
-	mWindow(window),
-	mClosestPickingDistance(10000),
-	mCameraRaySceneQuery(0),
-	mAvatarTerrainCursor(new AvatarTerrainCursor(camera)),
-	mCameraOrientationChangedThisFrame(false),
-	mMovementProvider(0),
-	mCameraSettings(new CameraSettings)
+MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera) :
+		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."), ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."), Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk."), mSceneManager(sceneManager), mCamera(camera), mCameraMount(0), mRecorder(new Recorder()), mWindow(window), mClosestPickingDistance(10000), mCameraRaySceneQuery(0), mAvatarTerrainCursor(new AvatarTerrainCursor(camera)), mCameraOrientationChangedThisFrame(false), mMovementProvider(0), mCameraSettings(new CameraSettings), mConfigListenerContainer(new ConfigListenerContainer())
 {
 
 	createRayQueries(sceneManager);
@@ -98,7 +83,8 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 
 	input.EventMouseMoved.connect(sigc::mem_fun(*this, &MainCamera::Input_MouseMoved));
 
-	registerConfigListenerWithDefaults("graphics", "clipdistances", sigc::mem_fun(*this, &MainCamera::Config_ClipDistances), "0.5 1000");
+	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "clipdistances", sigc::mem_fun(*this, &MainCamera::Config_ClipDistances), "0.5 1000");
+	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "compositors", sigc::mem_fun(*this, &MainCamera::Config_Compositors), "");
 
 }
 
@@ -109,6 +95,7 @@ MainCamera::~MainCamera()
 	}
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCameraSettings;
+	delete mConfigListenerContainer;
 }
 
 Ogre::Camera& MainCamera::getCamera()
@@ -133,28 +120,49 @@ const CameraSettings& MainCamera::getCameraSettings() const
 
 void MainCamera::Config_ClipDistances(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
-	Tokeniser tokeniser(variable);
-	float nearDistance = atof(tokeniser.nextToken().c_str());
-	float farDistance = atof(tokeniser.nextToken().c_str());
+	if (variable.is_string()) {
+		Tokeniser tokeniser(variable);
+		float nearDistance = atof(tokeniser.nextToken().c_str());
+		float farDistance = atof(tokeniser.nextToken().c_str());
 
-	S_LOG_INFO("Setting main camera clip distances to near: " << nearDistance << " far: " << farDistance);
+		S_LOG_INFO("Setting main camera clip distances to near: " << nearDistance << " far: " << farDistance);
 
-	mCamera.setNearClipDistance(nearDistance);
+		mCamera.setNearClipDistance(nearDistance);
 
-	//set the far clip distance high to make sure that the sky is completely shown
-	if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
-	{
-/*		//NOTE: this won't currently work with the sky
-		mCamera.setFarClipDistance(0);*/
+		//set the far clip distance high to make sure that the sky is completely shown
+		if (Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE)) {
+			/*		//NOTE: this won't currently work with the sky
+			 mCamera.setFarClipDistance(0);*/
 
-		mCamera.setFarClipDistance(farDistance);
-	} else {
-		mCamera.setFarClipDistance(farDistance);
+			mCamera.setFarClipDistance(farDistance);
+		} else {
+			mCamera.setFarClipDistance(farDistance);
+		}
 	}
 }
 
+void MainCamera::Config_Compositors(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_string()) {
+		const std::vector<std::string> tokens = Tokeniser::split(variable.as_string(), ",");
 
-const Ogre::Quaternion& MainCamera::getOrientation(bool onlyHorizontal) const {
+		for (std::vector<std::string>::const_iterator I = tokens.begin(); I != tokens.end(); ++I) {
+			enableCompositor(*I, true);
+		}
+		std::vector<std::string> compositorsToDisable;
+		for (CompositorNameStore::const_iterator I = mLoadedCompositors.begin(); I != mLoadedCompositors.end(); ++I) {
+			if (std::find(tokens.begin(), tokens.end(), *I) == tokens.end()) {
+				compositorsToDisable.push_back(*I);
+			}
+		}
+		for (std::vector<std::string>::const_iterator I = compositorsToDisable.begin(); I != compositorsToDisable.end(); ++I) {
+			enableCompositor(*I, false);
+		}
+	}
+}
+
+const Ogre::Quaternion& MainCamera::getOrientation(bool onlyHorizontal) const
+{
 	if (!onlyHorizontal) {
 		return mCamera.getRealOrientation();
 	} else {
@@ -181,17 +189,16 @@ void MainCamera::markCameraNodeAsDirty()
 
 void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs)
 {
-	S_LOG_INFO("Trying to pick an entity at mouse coords: "  << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
+	S_LOG_INFO("Trying to pick an entity at mouse coords: " << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
 
 	// get the terrain vector for mouse coords when a pick event happens
- 	//mAvatarTerrainCursor->getTerrainCursorPosition();
+	//mAvatarTerrainCursor->getTerrainCursorPosition();
 
 	// Start a new ray query
-	Ogre::Ray cameraRay = getCamera().getCameraToViewportRay( mouseX, mouseY );
+	Ogre::Ray cameraRay = getCamera().getCameraToViewportRay(mouseX, mouseY);
 
 	mCameraRaySceneQuery->setRay(cameraRay);
 	mCameraRaySceneQuery->execute();
-
 
 	//now check the entity picking
 	Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
@@ -201,11 +208,10 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 		(*I)->initializePickingContext();
 	}
 
-
-	Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin( );
-	Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end( );
+	Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin();
+	Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end();
 	if (rayIterator != rayIterator_end) {
-		for ( ; rayIterator != rayIterator_end && continuePicking; rayIterator++ ) {
+		for (; rayIterator != rayIterator_end && continuePicking; rayIterator++) {
 			for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
 				(*I)->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
 				if (!continuePicking) {
@@ -234,30 +240,25 @@ void MainCamera::setMovementProvider(IMovementProvider* movementProvider)
 	mMovementProvider = movementProvider;
 }
 
-
 bool MainCamera::worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos)
 {
 	Ogre::Vector3 hcsPosition = mCamera.getProjectionMatrix() * (mCamera.getViewMatrix() * worldPos);
 
-	if ((hcsPosition.x < -1.0f) ||
-	(hcsPosition.x > 1.0f) ||
-	(hcsPosition.y < -1.0f) ||
-	(hcsPosition.y > 1.0f))
-	return false;
-
+	if ((hcsPosition.x < -1.0f) || (hcsPosition.x > 1.0f) || (hcsPosition.y < -1.0f) || (hcsPosition.y > 1.0f))
+		return false;
 
 	screenPos.x = (hcsPosition.x + 1) * 0.5;
 	screenPos.y = (-hcsPosition.y + 1) * 0.5;
 
-	return true;}
-
+	return true;
+}
 
 void MainCamera::runCommand(const std::string &command, const std::string &args)
 {
-	if(Screenshot == command) {
+	if (Screenshot == command) {
 		//just take a screen shot
 		takeScreenshot();
-	} else if (ToggleFullscreen == command){
+	} else if (ToggleFullscreen == command) {
 		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
 
 	} else if (ToggleRendermode == command) {
@@ -309,10 +310,16 @@ void MainCamera::Input_MouseMoved(const MouseMotion& motion, Input::InputMode mo
 
 void MainCamera::enableCompositor(const std::string& compositorName, bool enable)
 {
+	if (enable) {
+		S_LOG_INFO("Enabling compositor '" << compositorName<< "'.");
+	} else {
+		S_LOG_INFO("Disabling compositor '" << compositorName<< "'.");
+	}
 	if (std::find(mLoadedCompositors.begin(), mLoadedCompositors.end(), compositorName) == mLoadedCompositors.end()) {
 		Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), compositorName);
 	}
 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow.getViewport(0), compositorName, enable);
+	mLoadedCompositors.push_back(compositorName);
 }
 
 void MainCamera::pushWorldPickListener(IWorldPickListener* worldPickListener)
@@ -342,7 +349,6 @@ void MainCamera::toggleRenderMode()
 
 }
 
-
 const std::string MainCamera::_takeScreenshot()
 {
 	// retrieve current time
@@ -356,32 +362,27 @@ const std::string MainCamera::_takeScreenshot()
 	std::stringstream filename;
 	filename << "screenshot_" << ((*timeinfo).tm_year + 1900); // 1900 is year "0"
 	int month = ((*timeinfo).tm_mon + 1); // January is month "0"
-	if(month <= 9)
-	{
+	if (month <= 9) {
 		filename << "0";
 	}
 	filename << month;
 	int day = (*timeinfo).tm_mday;
-	if(day <= 9)
-	{
+	if (day <= 9) {
 		filename << "0";
 	}
 	filename << day << "_";
 	int hour = (*timeinfo).tm_hour;
-	if(hour <= 9)
-	{
+	if (hour <= 9) {
 		filename << "0";
 	}
 	filename << hour;
 	int min = (*timeinfo).tm_min;
-	if(min <= 9)
-	{
+	if (min <= 9) {
 		filename << "0";
 	}
 	filename << min;
 	int sec = (*timeinfo).tm_sec;
-	if(sec <= 9)
-	{
+	if (sec <= 9) {
 		filename << "0";
 	}
 	filename << sec << ".jpg";
@@ -432,7 +433,7 @@ void MainCamera::createRayQueries(Ogre::SceneManager& sceneManager)
 	queryMask |= MousePicker::CM_UNDEFINED;
 // 	queryMask |= Ogre::RSQ_FirstTerrain;
 
-	mCameraRaySceneQuery = sceneManager.createRayQuery( Ogre::Ray(), queryMask);
+	mCameraRaySceneQuery = sceneManager.createRayQuery(Ogre::Ray(), queryMask);
 	mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 	mCameraRaySceneQuery->setSortByDistance(true);
 }
