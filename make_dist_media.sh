@@ -143,6 +143,8 @@ cd ${original_media} ; tar cf - `cat ${common_sounds_list} ` | ( cd ${shared_com
 cd ${shared_dir}
 cp -a ${original_media}/LICENSING.txt .
 cp -a ${original_media}/COPYING.txt .
+mkdir -p ./resources/ogre/ogre_scripts
+cp -a ${original_media}/resources/ogre/ogre_scripts/COPYING ./resources/ogre/ogre_scripts/
 
 # echo "Copying sounds"
 # mkdir -p ${shared_dir}/sounds
@@ -167,7 +169,7 @@ cp -a ${original_media}/themes/ember/gui/fonts/* ${shared_dir}/common/themes/emb
 echo "Copying materials"
 
 cd ${original_media}
-for filename in `find . -iname \*.cg -o -iname \*.glsl -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle ${find_exclude_args}`
+for filename in `find . -iname \*.cg -o -iname \*.glsl -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle -o -iname \*.compositor ${find_exclude_args}`
 do
 	origfile="${original_media}/${filename#.\/}"
 	newfile="${shared_common_dir}/${filename#.\/}"
