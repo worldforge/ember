@@ -96,6 +96,7 @@ MainCamera::~MainCamera()
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCameraSettings;
 	delete mConfigListenerContainer;
+	Ogre::CompositorManager::getSingleton().removeCompositorChain(mWindow.getViewport(0));
 }
 
 Ogre::Camera& MainCamera::getCamera()
@@ -149,7 +150,7 @@ void MainCamera::Config_Compositors(const std::string& section, const std::strin
 		for (std::vector<std::string>::const_iterator I = tokens.begin(); I != tokens.end(); ++I) {
 			enableCompositor(*I, true);
 		}
-		std::vector<std::string> compositorsToDisable;
+		std::vector < std::string > compositorsToDisable;
 		for (CompositorNameStore::const_iterator I = mLoadedCompositors.begin(); I != mLoadedCompositors.end(); ++I) {
 			if (std::find(tokens.begin(), tokens.end(), *I) == tokens.end()) {
 				compositorsToDisable.push_back(*I);
