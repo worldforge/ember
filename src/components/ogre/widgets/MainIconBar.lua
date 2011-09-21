@@ -91,8 +91,7 @@ function MainIconBar:buildWidget()
 		end)
 	
 	--and settings toggle icon
-	--FIXME: This should be "settings" instead of spell! Fix when the icon gets into the imageset
-	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_mason", "spell")
+	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "settings")
 	self.settingsIcon = self:addIcon("settings", foreground, "Toggles visibility of the settings window")
 	self.settingsIcon:getButton():subscribeEvent("Clicked", self.settings_Clicked, self)
 	
