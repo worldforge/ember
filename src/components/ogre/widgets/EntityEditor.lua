@@ -843,7 +843,7 @@ function EntityEditor:RefreshGoals_Clicked(args)
 		local entity = self.instance.entity
 		if entity ~= nil then
 			self.instance.entitySayGoalsConnector = createConnector(entity.Say):connect(self.entitySayGoals, self)
-			emberServices:getServerService():say("list me goal")
+			emberServices:getServerService():sayTo("list me goal", entity)
 		end
 	end
 	return true
