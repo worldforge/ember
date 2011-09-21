@@ -25,6 +25,26 @@ class ServerService
 	void moveInDirection(const WFMath::Vector<3>& velocity, const WFMath::Quaternion& orientation);
 	void moveInDirection(const WFMath::Vector<3>& velocity);
 	void say(const std::string &message);
+	/**
+	 * @brief Says something, addressed to a list of entities.
+	 *
+	 * Note that the message will be heard by everyone within earshot, even those not addressed.
+	 *
+	 * @param message The message.
+	 * @param entities A list of entities to which the message will be addressed.
+	 */
+	void sayTo(const std::string &message, const std::vector<const Eris::Entity*>& entities);
+
+	/**
+	 * @brief Says something, addressed to an entity.
+	 *
+	 * Note that the message will be heard by everyone within earshot, even those not addressed.
+	 *
+	 * @param message The message.
+	 * @param entities The entity to which the message is addressed.
+	 */
+	void sayTo(const std::string &message, const Eris::Entity& entity);
+
 	void touch(Eris::Entity* entity);
 	/**
 	 *    Emotes something.
