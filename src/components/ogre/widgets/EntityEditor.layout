@@ -37,6 +37,17 @@
 					<Property Name='Text' Value='Knowledge'/>
 					<Property Name='InheritsAlpha' Value='false'/>
 					<!-- Property Name='Visible' Value='true'/ -->
+					<Window Type='EmberLook/Listbox' Name='KnowledgeList'>
+						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+						<Property Name='UnifiedSize' Value='{{0,400},{1,-75}}'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>
+					<Window Type='EmberLook/Button' Name='RefreshKnowledge'>
+						<Property Name='UnifiedPosition' Value='{{0,5},{1.0,-70}}'/>
+						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
+						<Property Name='Text' Value='Refresh'/>
+						<Property Name='InheritsAlpha' Value='True'/>
+					</Window>					
 				</Window>
 				<Window Type='DefaultGUISheet' Name='GoalsPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>

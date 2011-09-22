@@ -816,6 +816,44 @@ function EntityEditor:RefreshAtlas_Clicked(args)
 	
 end
 
+function EntityEditor:entitySayKnowledge(root)
+	local rootObject = root:get()
+	
+	if not rootObject:hasAttr("say") then
+		return
+	end
+	
+	--message now contains what our target entity said
+	local message = rootObject:getAttr("say"):asString()
+	
+	local predicate = nil
+	local thing = nil
+	local knowledge = nil
+	
+	_, _, predicate, thing, knowledge = string.find(message, "The (%a*) of (%a*) is (.*)")
+	if predicate then
+		local item = Ember.OgreView.Gui.ColouredListItem:new(predicate .. " : " .. thing .. " : ".. knowledge)
+		self.knowledgelistbox:addItem(item)
+	end
+
+end
+
+function EntityEditor:RefreshKnowledge_Clicked(args)
+	self.knowledgelistbox:resetList()
+	if self.instance then
+		local entity = self.instance.entity
+		if entity then
+			if self.instance.entitySayKnowledgeConnector then
+				self.instance.entitySayKnowledgeConnector:disconnect()
+			end
+			self.instance.entitySayKnowledgeConnector = createConnector(entity.Say):connect(self.entitySayKnowledge, self)
+			emberServices:getServerService():sayTo("list me all knowledge", entity)
+		end
+	end
+	return true
+end
+
+
 function EntityEditor:entitySayGoals(root)
 	local rootObject = root:get()
 	
@@ -830,7 +868,7 @@ function EntityEditor:entitySayGoals(root)
 	local goal = nil
 	
 	_, _, goalname, goal = string.find(message, "The goal of (%b()) is (.*)")
-	if goal ~= nil then
+	if goal then
 		local item = Ember.OgreView.Gui.ColouredListItem:new(goalname .. " : " .. goal)
 		self.goallistbox:addItem(item)
 	end
@@ -839,9 +877,12 @@ end
 
 function EntityEditor:RefreshGoals_Clicked(args)
 	self.goallistbox:resetList()
-	if self.instance ~= nil then
+	if self.instance then
 		local entity = self.instance.entity
-		if entity ~= nil then
+		if entity then
+			if self.instance.entitySayGoalsConnector then
+				self.instance.entitySayGoalsConnector:disconnect()
+			end
 			self.instance.entitySayGoalsConnector = createConnector(entity.Say):connect(self.entitySayGoals, self)
 			emberServices:getServerService():sayTo("list me goal", entity)
 		end
@@ -948,6 +989,8 @@ function EntityEditor:buildWidget()
 	self.childListholder = Ember.OgreView.Gui.ListHolder:new(self.childlistbox, self.childlistFilter)
 	
 	self.goallistbox = CEGUI.toListbox(self.widget:getWindow("GoalList"))
+
+	self.knowledgelistbox = CEGUI.toListbox(self.widget:getWindow("KnowledgeList"))
 	
 --[[	self.modelTab.stackableWindow = self.widget:getWindow("ModelPanelStackable")
 	self.modelTab.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.modelTab.stackableWindow)
@@ -964,6 +1007,7 @@ function EntityEditor:buildWidget()
 	self.widget:getWindow("ShowOgreBbox"):subscribeEvent("CheckStateChanged", self.ShowOgreBbox_CheckStateChanged, self)
 	self.widget:getWindow("ShowErisBbox"):subscribeEvent("CheckStateChanged", self.ShowErisBbox_CheckStateChanged, self)
 	self.widget:getWindow("RefreshAtlas"):subscribeEvent("Clicked", self.RefreshAtlas_Clicked, self)
+	self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 	self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
 	self.widget:getWindow("NewGoalAdd"):subscribeEvent("Clicked", self.NewGoal_Clicked, self)
 	self.widget:getWindow("Submit"):subscribeEvent("Clicked", self.Submit_Clicked, self)
