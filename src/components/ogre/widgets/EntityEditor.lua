@@ -831,7 +831,7 @@ function EntityEditor:entitySayGoals(root)
 	
 	_, _, goalname, goal = string.find(message, "The goal of (%b()) is (.*)")
 	if goal ~= nil then
-		local item = Ember.OgreView.Gui.ColouredListItem:new(goal)
+		local item = Ember.OgreView.Gui.ColouredListItem:new(goalname .. " : " .. goal)
 		self.goallistbox:addItem(item)
 	end
 
@@ -847,7 +847,12 @@ function EntityEditor:RefreshGoals_Clicked(args)
 		end
 	end
 	return true
-	
+end
+
+function EntityEditor:NewGoal_Clicked(args)
+	local goalVerb = self.widget:getWindow("NewGoalVerb")
+	local goalDef = self.widget:getWindow("NewGoalDefinition")
+	self.instance.helper:addGoal(goalVerb:getText(), goalDef:getText())
 end
 
 function EntityEditor:ExportButton_Clicked(args)
@@ -960,6 +965,7 @@ function EntityEditor:buildWidget()
 	self.widget:getWindow("ShowErisBbox"):subscribeEvent("CheckStateChanged", self.ShowErisBbox_CheckStateChanged, self)
 	self.widget:getWindow("RefreshAtlas"):subscribeEvent("Clicked", self.RefreshAtlas_Clicked, self)
 	self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
+	self.widget:getWindow("NewGoalAdd"):subscribeEvent("Clicked", self.NewGoal_Clicked, self)
 	self.widget:getWindow("Submit"):subscribeEvent("Clicked", self.Submit_Clicked, self)
 	self.widget:getWindow("DeleteButton"):subscribeEvent("Clicked", self.DeleteButton_Clicked, self)
 	self.widget:getWindow("ExportButton"):subscribeEvent("Clicked", self.ExportButton_Clicked, self)

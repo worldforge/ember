@@ -359,6 +359,7 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 		sound->setTo(entityId);
 		sound->setArgs1(talk);
 
+		S_LOG_INFO("Admin telling entity" << entityId << ": " << attribute << ": " << value);
 		mConnection.send(sound);
 
 	} catch (const std::exception& ex) {

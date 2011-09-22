@@ -41,20 +41,20 @@
 
 #include <Eris/Entity.h>
 
-
-
 using namespace Atlas::Message;
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-namespace Gui {
+namespace Gui
+{
 
-EntityEditor::EntityEditor(Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter)
-: mRootAdapter(rootAdapter), mEntity(entity)
+EntityEditor::EntityEditor(Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter) :
+		mRootAdapter(rootAdapter), mEntity(entity)
 {
 }
-
 
 EntityEditor::~EntityEditor()
 {
@@ -68,20 +68,20 @@ void EntityEditor::submitChanges()
 		if (rootElement.isMap()) {
 			std::map<std::string, ::Atlas::Message::Element> attributes(rootElement.asMap());
 			if (attributes.size()) {
-			
+
 				std::stringstream ss;
-			
+
 				Atlas::Message::QueuedDecoder decoder;
-			
+
 				Atlas::Codecs::XML codec(ss, decoder);
 				Atlas::Formatter formatter(ss, codec);
 				Atlas::Message::Encoder encoder(formatter);
 				formatter.streamBegin();
 				encoder.streamMessageElement(attributes);
 				formatter.streamEnd();
-				S_LOG_VERBOSE("Sending attribute update to server:\n" << ss.str());	
-				
-				EmberServices::getSingleton().getServerService().setAttributes(mEntity, attributes);		
+				S_LOG_VERBOSE("Sending attribute update to server:\n" << ss.str());
+
+				EmberServices::getSingleton().getServerService().setAttributes(mEntity, attributes);
 			}
 		}
 	}
@@ -116,6 +116,13 @@ Atlas::Message::Element EntityEditor::createPosition2dElement()
 	return Element(list);
 }
 
+void EntityEditor::addGoal(const std::string& verb, const std::string& definition)
+{
+	std::stringstream ss;
+	//TODO: we should probably have a better way to define the verbs
+	ss << "learn ('" << verb << "', '#" << verb << "_verb1') " << definition;
+	EmberServices::getSingleton().getServerService().adminTell(mEntity->getId(), "say", ss.str());
+}
 
 }
 

@@ -79,6 +79,14 @@ public:
 	Atlas::Message::Element createIntElement();
 	Atlas::Message::Element createFloatElement();
 	Atlas::Message::Element createPosition2dElement();
+
+	/**
+	 * @brief Adds a new goal.
+	 * @param verb The verb to associate with the goal.
+	 * @param definition The goal definition.
+	 */
+	void addGoal(const std::string& verb, const std::string& definition);
+
 protected:
 
 	Adapters::Atlas::MapAdapter* mRootAdapter;
