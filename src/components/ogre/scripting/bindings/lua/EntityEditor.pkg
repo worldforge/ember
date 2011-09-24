@@ -55,6 +55,14 @@ public:
 	 */
 	void addGoal(const std::string& verb, const std::string& definition);
 
+	/**
+	 * @brief Adds new knowledge
+	 * @param predicate The predicate of the knowledge.
+	 * @param subject The subject of the knowledge.
+	 * @param knowledge The knowledge.
+	 */
+	void addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge);
+
 };
 
 }

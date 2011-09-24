@@ -30,7 +30,7 @@
 
 namespace Eris
 {
-	class Entity;
+class Entity;
 }
 
 namespace CEGUI
@@ -38,14 +38,25 @@ namespace CEGUI
 class Window;
 }
 
-namespace Ember {
-namespace OgreView {
+namespace WFMath
+{
+template<int> ;
+class Point;
+}
 
-namespace Gui {
+namespace Ember
+{
+namespace OgreView
+{
 
-namespace Adapters {
+namespace Gui
+{
 
-namespace Atlas {
+namespace Adapters
+{
+
+namespace Atlas
+{
 
 class MapAdapter;
 
@@ -54,24 +65,25 @@ class MapAdapter;
 }
 
 /**
-@brief Helper class for the entity editor widget.
-The main logic of the entity editor is in the lua file. This class acts like a helper class, implementing C++ functionality that might be cumbersome to code in Lua.
-Normally an instance of this is created by the lua widget for each entity that's being edited.
+ @brief Helper class for the entity editor widget.
+ The main logic of the entity editor is in the lua file. This class acts like a helper class, implementing C++ functionality that might be cumbersome to code in Lua.
+ Normally an instance of this is created by the lua widget for each entity that's being edited.
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class EntityEditor {
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class EntityEditor
+{
 public:
-    /**
-     * @brief Ctor.
-     * @param entity The entity which should be edited.
-     * @param rootAdapter The root adapter for the attributes.
-     */
-    EntityEditor(Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter);
+	/**
+	 * @brief Ctor.
+	 * @param entity The entity which should be edited.
+	 * @param rootAdapter The root adapter for the attributes.
+	 */
+	EntityEditor(Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter);
 
-    virtual ~EntityEditor();
-    
-    void submitChanges();
+	virtual ~EntityEditor();
+
+	void submitChanges();
 
 	Atlas::Message::Element createMapElement();
 	Atlas::Message::Element createListElement();
@@ -87,13 +99,21 @@ public:
 	 */
 	void addGoal(const std::string& verb, const std::string& definition);
 
+	/**
+	 * @brief Adds new knowledge
+	 * @param predicate The predicate of the knowledge.
+	 * @param subject The subject of the knowledge.
+	 * @param knowledge The knowledge.
+	 */
+	void addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge);
+
+	void addMarker(const WFMath::Point<3>& point);
+
 protected:
 
 	Adapters::Atlas::MapAdapter* mRootAdapter;
 
 	Eris::Entity* mEntity;
-	
-	
 
 };
 

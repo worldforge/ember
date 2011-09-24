@@ -124,6 +124,19 @@ void EntityEditor::addGoal(const std::string& verb, const std::string& definitio
 	EmberServices::getSingleton().getServerService().adminTell(mEntity->getId(), "say", ss.str());
 }
 
+void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge)
+{
+	std::stringstream ss;
+	ss << "know " << subject << " " << predicate << " " << knowledge;
+	EmberServices::getSingleton().getServerService().adminTell(mEntity->getId(), "say", ss.str());
+}
+
+void EntityEditor::addMarker(const WFMath::Point<3>& point)
+{
+
+}
+
+
 }
 
 }
