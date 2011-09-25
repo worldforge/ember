@@ -556,7 +556,7 @@ function EntityEditor:editEntity(entity)
 	self.instance.outercontainer = guiManager:createWindow("DefaultGUISheet")
 	local adapter = self.factory:createMapAdapter(self.instance.outercontainer, self.instance.entity:getId(), self.instance.entity)
 	self.instance.rootMapAdapter = adapter
-	self.instance.helper = Ember.OgreView.Gui.EntityEditor:new(entity, self.instance.rootMapAdapter)
+	self.instance.helper = Ember.OgreView.Gui.EntityEditor:new(self.world, entity, self.instance.rootMapAdapter)
 	self.attributesContainer:addChildWindow(self.instance.outercontainer)
 	
 	local attributeNames = self.instance.rootMapAdapter:getAttributeNames()
@@ -577,6 +577,9 @@ function EntityEditor:editEntity(entity)
 	self:createStackableContainer(self.instance.outercontainer):repositionWindows()
 
 	self.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
+
+	self.knowledgelistbox:resetList()
+	self.goallistbox:resetList()
 	
 end
 
@@ -818,7 +821,12 @@ end
 
 function EntityEditor:handleKnowledgeSelected(modelItem)
 	if modelItem.predicate == "location" then
-		
+		_, _, x, y, z = string.find(modelItem.knowledge, "{%d*,%(([%d%-]*),([%d%-]*),([%d%-]*)%)}")
+	
+		local point = Ember.OgreView.Gui.EntityEditor:createPoint(tonumber(x), tonumber(y), tonumber(z))
+		self.instance.helper:addMarker(point)
+	else
+		self.instance.helper:removeMarker()
 	end
 end
 
@@ -836,18 +844,20 @@ function EntityEditor:entitySayKnowledge(root)
 	_, _, modelItem.predicate, modelItem.subject, modelItem.knowledge = string.find(message, "The (%a*) of (%a*) is (.*)")
 	if modelItem.predicate then
 
-		local item = windowManager:createWindow("EmberLook/ListboxItem")
+		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
 		item:setText(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.knowledge)
 		item:subscribeEvent("SelectionChanged", function(args)
-			local predicate = self.widget:getWindow("NewKnowledgePredicate")
-			local subject = self.widget:getWindow("NewKnowledgeSubject")
-			local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
-			
-			predicate:setText(modelItem.predicate)
-			subject:setText(modelItem.subject)
-			knowledge:setText(modelItem.knowledge)
-			
-			self:handleKnowledgeSelected(modelItem)
+			if item:isSelected() then
+				local predicate = self.widget:getWindow("NewKnowledgePredicate")
+				local subject = self.widget:getWindow("NewKnowledgeSubject")
+				local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
+				
+				predicate:setText(modelItem.predicate)
+				subject:setText(modelItem.subject)
+				knowledge:setText(modelItem.knowledge)
+				
+				self:handleKnowledgeSelected(modelItem)
+			end
 			
 			return true
 		end
@@ -918,16 +928,18 @@ function EntityEditor:entitySayGoals(root)
 	
 	_, _, modelItem.verb, modelItem.goal = string.find(message, "The goal of (%b()) is (.*)")
 	if modelItem.verb then
-		local item = windowManager:createWindow("EmberLook/ListboxItem")
+		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
 		item:setText(goalname .. " : " .. goal)
 		self.goallistbox:addItem(item)
 
 		item:subscribeEvent("SelectionChanged", function(args)
-			local goalVerb = self.widget:getWindow("NewGoalVerb")
-			local goalDef = self.widget:getWindow("NewGoalDefinition")
-			
-			goalVerb:setText(modelItem.verb)
-			goalDef:setText(modelItem.goal)
+			if item:isSelected() then
+				local goalVerb = self.widget:getWindow("NewGoalVerb")
+				local goalDef = self.widget:getWindow("NewGoalDefinition")
+				
+				goalVerb:setText(modelItem.verb)
+				goalDef:setText(modelItem.goal)
+			end
 			
 			return true
 		end
@@ -1112,7 +1124,8 @@ EntityEditor.createdWorldConnector = createConnector(emberOgre.EventWorldCreated
 			},
 			factory = nil,
 			attributesContainer = nil,
-			modelTab = {}
+			modelTab = {},
+			world = world
 		}
 		setmetatable(entityEditor, {__index = EntityEditor})
 		

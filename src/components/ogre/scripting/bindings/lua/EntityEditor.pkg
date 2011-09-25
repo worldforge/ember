@@ -34,7 +34,7 @@ namespace Gui {
 */
 class EntityEditor{
 public:
-    EntityEditor(Eris::Entity* entity, Ember::OgreView::Gui::Adapters::Atlas::MapAdapter* rootAdapter);
+    EntityEditor(Ember::OgreView::World& world, Eris::Entity* entity, Ember::OgreView::Gui::Adapters::Atlas::MapAdapter* rootAdapter);
 
     virtual ~EntityEditor();
     
@@ -62,6 +62,10 @@ public:
 	 * @param knowledge The knowledge.
 	 */
 	void addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge);
+
+	void addMarker(const WFMath::Point<3>& point);
+
+	static WFMath::Point<3> createPoint(float x, float y, float z);
 
 };
 

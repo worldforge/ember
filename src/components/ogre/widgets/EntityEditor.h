@@ -33,6 +33,12 @@ namespace Eris
 class Entity;
 }
 
+namespace Ogre {
+class SceneManager;
+class Entity;
+class SceneNode;
+}
+
 namespace CEGUI
 {
 class Window;
@@ -40,7 +46,7 @@ class Window;
 
 namespace WFMath
 {
-template<int> ;
+template<int>
 class Point;
 }
 
@@ -48,6 +54,7 @@ namespace Ember
 {
 namespace OgreView
 {
+class World;
 
 namespace Gui
 {
@@ -76,10 +83,11 @@ class EntityEditor
 public:
 	/**
 	 * @brief Ctor.
+	 * @param world A world.
 	 * @param entity The entity which should be edited.
 	 * @param rootAdapter The root adapter for the attributes.
 	 */
-	EntityEditor(Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter);
+	EntityEditor(World& world, Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter);
 
 	virtual ~EntityEditor();
 
@@ -109,11 +117,22 @@ public:
 
 	void addMarker(const WFMath::Point<3>& point);
 
+	void removeMarker();
+
+	static WFMath::Point<3> createPoint(float x, float y, float z);
+
 protected:
+
+	World& mWorld;
 
 	Adapters::Atlas::MapAdapter* mRootAdapter;
 
 	Eris::Entity* mEntity;
+
+	Ogre::Entity* mMarkerEntity;
+
+	Ogre::SceneNode* mMarkerNode;
+
 
 };
 
