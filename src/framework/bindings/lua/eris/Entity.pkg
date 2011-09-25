@@ -46,11 +46,11 @@ class Entity {
 
     WFMath::Quaternion getViewOrientation() const;
 	
-	const WFMath::Vector< 3 > & getVelocity(void) const;
+	const WFMath::Vector<3> & getVelocity(void) const;
 	
 	const WFMath::Quaternion & getOrientation(void) const;
 	
-	const WFMath::AxisBox< 3 > & getBBox(void) const;
+	const WFMath::AxisBox<3> & getBBox(void) const;
 
     bool hasBBox() const;
     
