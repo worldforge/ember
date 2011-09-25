@@ -27,6 +27,7 @@ namespace Eris
 {
 class Timeout;
 class View;
+class TypeInfo;
 }
 
 namespace Ember
