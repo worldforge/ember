@@ -89,14 +89,7 @@ T* WidgetPool<T>::checkoutWidget()
 		mUnusedWidgets.pop();
 	}
 	mUsedWidgets.push_back(widget);
-	return widget;class WidgetPool{
-public:
-    WidgetPool();
-
-    ~WidgetPool();
-
-};
-
+	return widget;
 }
 
 template <typename T>
