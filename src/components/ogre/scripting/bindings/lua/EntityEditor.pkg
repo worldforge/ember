@@ -64,6 +64,8 @@ public:
 	void addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge);
 
 	void addMarker(const WFMath::Point<3>& point);
+	
+	void removeMarker();
 
 	static WFMath::Point<3> createPoint(float x, float y, float z);
 
