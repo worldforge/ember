@@ -171,6 +171,7 @@ void EntityEditor::addMarker(const WFMath::Point<3>& point)
 				S_LOG_WARNING("Error when creating marker node." << ex);
 			}
 		}
+		mMarkerNode->setVisible(true);
 
 		//Check if we should adjust to the height of the world
 		WFMath::Point<3> adjustedPoint(point);
@@ -198,6 +199,8 @@ void EntityEditor::removeMarker()
 	if (mMarkerNode) {
 		mMarkerNode->setVisible(false);
 	}
+	delete mMarkerDirectionIndicator;
+	mMarkerDirectionIndicator = 0;
 }
 
 WFMath::Point<3> EntityEditor::createPoint(float x, float y, float z)
