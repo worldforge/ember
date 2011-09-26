@@ -148,7 +148,7 @@ inline IServerAdapter& StateBaseCore::getServerAdapter()
 
 template<typename TChildState>
 inline StateBase<TChildState>::StateBase(IState& parentState) :
-	StateBaseCore::StateBaseCore(parentState), mChildState(0)
+	StateBaseCore(parentState), mChildState(0)
 {
 }
 
