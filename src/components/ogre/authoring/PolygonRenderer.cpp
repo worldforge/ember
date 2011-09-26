@@ -48,7 +48,7 @@ PolygonRenderer::PolygonRenderer(Polygon& polygon) :
 	ss << "PolygonRenderer" << sCounter++;
 	mManualObject = polygon.getBaseNode()->getCreator()->createManualObject(ss.str());
 	mManualObject->setDynamic(true); //We'll be updating this a lot if the use alters the polygon
-	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE + 2); //We want to render the lines on top of everything, so that they aren't hidden by anything
+	mManualObject->setRenderQueueGroup(Ogre::RENDER_QUEUE_SKIES_LATE - 1); //We want to render the lines on top of everything, so that they aren't hidden by anything
 	mPolygon.getBaseNode()->attachObject(mManualObject);
 
 }
