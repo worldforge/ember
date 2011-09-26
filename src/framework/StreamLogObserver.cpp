@@ -23,7 +23,9 @@
 #include "StreamLogObserver.h"
 #include <ctime>
 #include <boost/thread/thread.hpp>
-
+#ifdef _MSC_VER
+#include <platform/platform_windows.h>
+#endif
 namespace Ember {
 
 /**
