@@ -32,6 +32,7 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberEntityFactory.h"
+#include "components/ogre/ShapeVisual.h"
 #include "components/ogre/terrain/TerrainManager.h"
 
 #include "adapters/atlas/AdapterBase.h"
@@ -46,6 +47,8 @@
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
+
+#include <wfmath/segment.h>
 
 #include <Eris/Entity.h>
 
@@ -64,7 +67,7 @@ namespace Gui
 {
 
 EntityEditor::EntityEditor(World& world, Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter) :
-		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarkerEntity(0), mMarkerNode(0)
+		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarkerEntity(0), mMarkerNode(0), mMarkerDirectionIndicator(0)
 {
 }
 
@@ -78,6 +81,8 @@ EntityEditor::~EntityEditor()
 	if (mMarkerNode) {
 		mMarkerNode->getCreator()->destroySceneNode(mMarkerNode);
 	}
+
+	delete mMarkerDirectionIndicator;
 }
 
 void EntityEditor::submitChanges()
@@ -152,33 +157,40 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 
 void EntityEditor::addMarker(const WFMath::Point<3>& point)
 {
-	if (!mMarkerNode) {
-		mMarkerNode = mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode();
-		try {
-			mMarkerEntity = mWorld.getSceneManager().createEntity("3d_objects/primitives/models/sphere.mesh");
-			//start out with a normal material
-			mMarkerEntity->setMaterialName("/global/authoring/point");
-			mMarkerEntity->setRenderingDistance(300);
-			mMarkerEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
-			mMarkerNode->attachObject(mMarkerEntity);
-		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when creating marker node." << ex);
+	if (point.isValid()) {
+		if (!mMarkerNode) {
+			mMarkerNode = mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode();
+			try {
+				mMarkerEntity = mWorld.getSceneManager().createEntity("3d_objects/primitives/models/sphere.mesh");
+				//start out with a normal material
+				mMarkerEntity->setMaterialName("/global/authoring/point");
+				mMarkerEntity->setRenderingDistance(300);
+				mMarkerEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
+				mMarkerNode->attachObject(mMarkerEntity);
+			} catch (const std::exception& ex) {
+				S_LOG_WARNING("Error when creating marker node." << ex);
+			}
 		}
-	}
 
+		//Check if we should adjust to the height of the world
+		WFMath::Point<3> adjustedPoint(point);
 
-	//Check if we should adjust to the height of the world
-	WFMath::Point<3> adjustedPoint(point);
-
-	float height = adjustedPoint.z();
-	if (mWorld.getEntityFactory().getWorld()) {
-		if (mWorld.getEntityFactory().getWorld()->getTerrainManager().getHeight(TerrainPosition(point.x(), point.y()), height)) {
-			adjustedPoint.z() = height;
+		float height = adjustedPoint.z();
+		if (mWorld.getEntityFactory().getWorld()) {
+			if (mWorld.getEntityFactory().getWorld()->getTerrainManager().getHeight(TerrainPosition(point.x(), point.y()), height)) {
+				adjustedPoint.z() = height;
+			}
 		}
+
+		mMarkerNode->setPosition(Convert::toOgre(adjustedPoint));
+
+		if (!mMarkerDirectionIndicator) {
+			mMarkerDirectionIndicator = new ShapeVisual(*mWorld.getSceneManager().getRootSceneNode(), false);
+		}
+		WFMath::Segment<3> shape(adjustedPoint, mEntity->getViewPosition() + WFMath::Vector<3>(mEntity->getBBox().getCenter()));
+		mMarkerDirectionIndicator->update(shape);
+
 	}
-
-	mMarkerNode->setPosition(Convert::toOgre(adjustedPoint));
-
 }
 
 void EntityEditor::removeMarker()
@@ -187,7 +199,6 @@ void EntityEditor::removeMarker()
 		mMarkerNode->setVisible(false);
 	}
 }
-
 
 WFMath::Point<3> EntityEditor::createPoint(float x, float y, float z)
 {

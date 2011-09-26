@@ -48,6 +48,8 @@ namespace WFMath
 {
 template<int>
 class Point;
+template<int>
+class Segment;
 }
 
 namespace Ember
@@ -55,6 +57,7 @@ namespace Ember
 namespace OgreView
 {
 class World;
+class ShapeVisual;
 
 namespace Gui
 {
@@ -132,6 +135,8 @@ protected:
 	Ogre::Entity* mMarkerEntity;
 
 	Ogre::SceneNode* mMarkerNode;
+
+	ShapeVisual* mMarkerDirectionIndicator;
 
 
 };
