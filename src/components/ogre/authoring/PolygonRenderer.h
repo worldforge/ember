@@ -56,7 +56,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~PolygonRenderer();
+	~PolygonRenderer();
 
 	/**
 	 * @brief Updates the graphical representation of the polygon.
