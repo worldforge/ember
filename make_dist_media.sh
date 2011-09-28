@@ -169,7 +169,7 @@ cp -a ${original_media}/themes/ember/gui/fonts/* ${shared_dir}/common/themes/emb
 echo "Copying materials"
 
 cd ${original_media}
-for filename in `find . -iname \*.cg -o -iname \*.glsl -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle -o -iname \*.compositor ${find_exclude_args}`
+for filename in `find . -iname \*.cg -o -iname \*.glsl -o -iname \*.hlsl -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle -o -iname \*.compositor ${find_exclude_args}`
 do
 	origfile="${original_media}/${filename#.\/}"
 	newfile="${shared_common_dir}/${filename#.\/}"
