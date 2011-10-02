@@ -56,6 +56,8 @@
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 
+#include <sigc++/trackable.h>
+
 using namespace Atlas::Message;
 
 namespace Ember
@@ -66,8 +68,128 @@ namespace OgreView
 namespace Gui
 {
 
-EntityEditor::EntityEditor(World& world, Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter) :
-		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarkerEntity(0), mMarkerNode(0), mMarkerDirectionIndicator(0)
+/**
+ * @author Erik Ogenvik
+ *
+ * @brief Provides a marker and a line from an entity to a point.
+ *
+ * This is useful for visualizing locations known by entities.
+ *
+ */
+class EntityEditor::EntityPointMarker: public sigc::trackable
+{
+protected:
+
+	/**
+	 * @brief The entity to which the marker is connected.
+	 */
+	Eris::Entity& mEntity;
+
+	/**
+	 * @brief The entity which represents the entity.
+	 *
+	 * This is a large blue ball.
+	 */
+	Ogre::Entity* mMarkerEntity;
+
+	/**
+	 * @brief The node to which the marker entity is attached.
+	 */
+	Ogre::SceneNode* mMarkerNode;
+
+	/**
+	 * @brief A line drawn from the entity to the marker.
+	 */
+	ShapeVisual* mMarkerDirectionIndicator;
+
+	/**
+	 * @brief Provides height data.
+	 */
+	const Terrain::TerrainManager& mTerrainManager;
+
+	/**
+	 * @brief The location we want marked.
+	 */
+	const WFMath::Point<3> mPoint;
+
+public:
+
+	/**
+	 * @brief Updates the marker, and any line drawn to it.
+	 */
+	void updateMarker()
+	{
+		//Check if we should adjust to the height of the world
+		WFMath::Point<3> adjustedPoint(mPoint);
+
+		float height = adjustedPoint.z();
+		if (mTerrainManager.getHeight(TerrainPosition(mPoint.x(), mPoint.y()), height)) {
+			adjustedPoint.z() = height;
+		}
+
+		mMarkerNode->setPosition(Convert::toOgre(adjustedPoint));
+
+		WFMath::Segment<3> shape(adjustedPoint, mEntity.getViewPosition() + WFMath::Vector<3>(mEntity.getBBox().getCenter()));
+		mMarkerDirectionIndicator->update(shape);
+
+	}
+
+	/**
+	 * @brief Called when the entity moves.
+	 */
+	void entityMoved()
+	{
+		updateMarker();
+	}
+
+	/**
+	 * @brief Ctor.
+	 * @param entity The entity which the marker is attached to.
+	 * @param sceneManager A scene manager used to create nodes and entities.
+	 * @param terrainManager Provides height data.
+	 * @param point The location which will be marked.
+	 */
+	EntityPointMarker(Eris::Entity& entity, Ogre::SceneManager& sceneManager, const Terrain::TerrainManager& terrainManager, const WFMath::Point<3>& point) :
+			mEntity(entity), mMarkerEntity(0), mMarkerNode(0), mMarkerDirectionIndicator(0), mTerrainManager(terrainManager), mPoint(point)
+	{
+		mMarkerNode = sceneManager.getRootSceneNode()->createChildSceneNode();
+		try {
+			mMarkerEntity = sceneManager.createEntity("3d_objects/primitives/models/sphere.mesh");
+			//start out with a normal material
+			mMarkerEntity->setMaterialName("/global/authoring/point");
+			mMarkerEntity->setRenderingDistance(300);
+			mMarkerEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
+			mMarkerNode->attachObject(mMarkerEntity);
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when creating marker node." << ex);
+			return;
+		}
+		mMarkerNode->setVisible(true);
+
+		mMarkerDirectionIndicator = new ShapeVisual(*sceneManager.getRootSceneNode(), false);
+
+		mEntity.Moved.connect(sigc::mem_fun(*this, &EntityPointMarker::entityMoved));
+	}
+
+	/**
+	 * @brief Dtor.
+	 */
+	~EntityPointMarker()
+	{
+		if (mMarkerEntity) {
+			mMarkerEntity->_getManager()->destroyEntity(mMarkerEntity);
+		}
+		if (mMarkerNode) {
+			mMarkerNode->getCreator()->destroySceneNode(mMarkerNode);
+		}
+
+		delete mMarkerDirectionIndicator;
+	}
+
+};
+
+EntityEditor::EntityEditor(World& world, Eris::Entity& entity, Adapters::Atlas::MapAdapter* rootAdapter) :
+		mWorld(world), mRootAdapter(rootAdapter), mEntity(entity), mMarker(0)
 {
 }
 
@@ -75,14 +197,7 @@ EntityEditor::~EntityEditor()
 {
 	delete mRootAdapter;
 
-	if (mMarkerEntity) {
-		mMarkerEntity->_getManager()->destroyEntity(mMarkerEntity);
-	}
-	if (mMarkerNode) {
-		mMarkerNode->getCreator()->destroySceneNode(mMarkerNode);
-	}
-
-	delete mMarkerDirectionIndicator;
+	delete mMarker;
 }
 
 void EntityEditor::submitChanges()
@@ -105,7 +220,7 @@ void EntityEditor::submitChanges()
 				formatter.streamEnd();
 				S_LOG_VERBOSE("Sending attribute update to server:\n" << ss.str());
 
-				EmberServices::getSingleton().getServerService().setAttributes(mEntity, attributes);
+				EmberServices::getSingleton().getServerService().setAttributes(&mEntity, attributes);
 			}
 		}
 	}
@@ -145,62 +260,32 @@ void EntityEditor::addGoal(const std::string& verb, const std::string& definitio
 	std::stringstream ss;
 	//TODO: we should probably have a better way to define the verbs
 	ss << "learn ('" << verb << "', '#" << verb << "_verb1') " << definition;
-	EmberServices::getSingleton().getServerService().adminTell(mEntity->getId(), "say", ss.str());
+	EmberServices::getSingleton().getServerService().adminTell(mEntity.getId(), "say", ss.str());
 }
 
 void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge)
 {
 	std::stringstream ss;
 	ss << "know " << subject << " " << predicate << " " << knowledge;
-	EmberServices::getSingleton().getServerService().adminTell(mEntity->getId(), "say", ss.str());
+	EmberServices::getSingleton().getServerService().adminTell(mEntity.getId(), "say", ss.str());
 }
 
 void EntityEditor::addMarker(const WFMath::Point<3>& point)
 {
 	if (point.isValid()) {
-		if (!mMarkerNode) {
-			mMarkerNode = mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode();
-			try {
-				mMarkerEntity = mWorld.getSceneManager().createEntity("3d_objects/primitives/models/sphere.mesh");
-				//start out with a normal material
-				mMarkerEntity->setMaterialName("/global/authoring/point");
-				mMarkerEntity->setRenderingDistance(300);
-				mMarkerEntity->setQueryFlags(MousePicker::CM_NONPICKABLE);
-				mMarkerNode->attachObject(mMarkerEntity);
-			} catch (const std::exception& ex) {
-				S_LOG_WARNING("Error when creating marker node." << ex);
-			}
-		}
-		mMarkerNode->setVisible(true);
 
-		//Check if we should adjust to the height of the world
-		WFMath::Point<3> adjustedPoint(point);
-
-		float height = adjustedPoint.z();
 		if (mWorld.getEntityFactory().getWorld()) {
-			if (mWorld.getEntityFactory().getWorld()->getTerrainManager().getHeight(TerrainPosition(point.x(), point.y()), height)) {
-				adjustedPoint.z() = height;
-			}
+			delete mMarker;
+			mMarker = new EntityPointMarker(mEntity, mWorld.getSceneManager(), mWorld.getEntityFactory().getWorld()->getTerrainManager(), point);
+			mMarker->updateMarker();
 		}
-
-		mMarkerNode->setPosition(Convert::toOgre(adjustedPoint));
-
-		if (!mMarkerDirectionIndicator) {
-			mMarkerDirectionIndicator = new ShapeVisual(*mWorld.getSceneManager().getRootSceneNode(), false);
-		}
-		WFMath::Segment<3> shape(adjustedPoint, mEntity->getViewPosition() + WFMath::Vector<3>(mEntity->getBBox().getCenter()));
-		mMarkerDirectionIndicator->update(shape);
-
 	}
 }
 
 void EntityEditor::removeMarker()
 {
-	if (mMarkerNode) {
-		mMarkerNode->setVisible(false);
-	}
-	delete mMarkerDirectionIndicator;
-	mMarkerDirectionIndicator = 0;
+	delete mMarker;
+	mMarker = 0;
 }
 
 WFMath::Point<3> EntityEditor::createPoint(float x, float y, float z)

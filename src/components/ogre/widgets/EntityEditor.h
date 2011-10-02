@@ -33,12 +33,6 @@ namespace Eris
 class Entity;
 }
 
-namespace Ogre {
-class SceneManager;
-class Entity;
-class SceneNode;
-}
-
 namespace CEGUI
 {
 class Window;
@@ -57,7 +51,6 @@ namespace Ember
 namespace OgreView
 {
 class World;
-class ShapeVisual;
 
 namespace Gui
 {
@@ -90,10 +83,18 @@ public:
 	 * @param entity The entity which should be edited.
 	 * @param rootAdapter The root adapter for the attributes.
 	 */
-	EntityEditor(World& world, Eris::Entity* entity, Adapters::Atlas::MapAdapter* rootAdapter);
+	EntityEditor(World& world, Eris::Entity& entity, Adapters::Atlas::MapAdapter* rootAdapter);
 
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~EntityEditor();
 
+	/**
+	 * @brief Submits any changes made to the entity to the server.
+	 *
+	 * Thus effectively updating the entity.
+	 */
 	void submitChanges();
 
 	Atlas::Message::Element createMapElement();
@@ -126,18 +127,29 @@ public:
 
 protected:
 
+	/**
+	 * @brief The world.
+	 */
 	World& mWorld;
 
+	/**
+	 * @brief The root adapter of all attribute adaapters.
+	 *
+	 * This will be owned by this instance and deleted at destruction.
+	 */
 	Adapters::Atlas::MapAdapter* mRootAdapter;
 
-	Eris::Entity* mEntity;
+	/**
+	 * @brief The entity which is being edited.
+	 */
+	Eris::Entity& mEntity;
 
-	Ogre::Entity* mMarkerEntity;
+	class EntityPointMarker;
 
-	Ogre::SceneNode* mMarkerNode;
-
-	ShapeVisual* mMarkerDirectionIndicator;
-
+	/**
+	 * @brief Holds a marker to a location.
+	 */
+	EntityPointMarker* mMarker;
 
 };
 

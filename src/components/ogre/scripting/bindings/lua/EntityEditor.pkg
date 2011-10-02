@@ -34,7 +34,7 @@ namespace Gui {
 */
 class EntityEditor{
 public:
-    EntityEditor(Ember::OgreView::World& world, Eris::Entity* entity, Ember::OgreView::Gui::Adapters::Atlas::MapAdapter* rootAdapter);
+    EntityEditor(Ember::OgreView::World& world, Eris::Entity& entity, Ember::OgreView::Gui::Adapters::Atlas::MapAdapter* rootAdapter);
 
     virtual ~EntityEditor();
     
