@@ -176,12 +176,6 @@ function Console:notifyLinePurged(line, tab)
 	end
 end
 
---CEGUI uses [tag=something] as a formatting syntax, we have to make sure special character [ gets escaped out
-function Console:escapeForCEGUI(message)
-	--Only the starting [ character needs to be escaped for CEGUI, escaping ] will cause CEGUI to show \]
-	return string.gsub(message, "%[", "\\%[")
-end
-
 --Checks whether given line contains name of the player that is currently playing
 function Console:chatMessageContainsPlayerName(line)
 	if self.avatarEntity then
@@ -232,9 +226,9 @@ function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSym
 	if entity then
 		entityNameColour = self:getColourForEntityName(entity:getName())
 	
-		self:appendLine("[colour='" .. entityNameColour .. "']" .. self:escapeForCEGUI(entityStartSymbol .. entity:getName() .. entityEndSymbol) .. " [colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
+		self:appendLine("[colour='" .. entityNameColour .. "']" .. escapeForCEGUI(entityStartSymbol .. entity:getName() .. entityEndSymbol) .. " [colour='" .. messageColour .. "']" .. escapeForCEGUI(line), self.gameTab)
 	else
-		self:appendLine("[colour='" .. messageColour .. "']" .. self:escapeForCEGUI(line), self.gameTab)
+		self:appendLine("[colour='" .. messageColour .. "']" .. escapeForCEGUI(line), self.gameTab)
 	end
 	
 	if self:chatMessageContainsPlayerName(line) then
@@ -323,7 +317,7 @@ end
 --message is the message string
 --tag can be "" or "error", "warning" or such
 function Console:consoleGotMessage(message, tag)
-	self:appendLine("[colour='" .. self:getConsoleMessageColourForTag(tag) .. "']" .. self:escapeForCEGUI(message), self.systemTab)
+	self:appendLine("[colour='" .. self:getConsoleMessageColourForTag(tag) .. "']" .. escapeForCEGUI(message), self.systemTab)
 	
 	if tag == "error" or tag == "important" then
 		--user might want to pay attention to the console, either error or an important message was appended
