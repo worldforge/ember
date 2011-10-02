@@ -20,8 +20,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-#ifndef EMBEROGRETYPES_H
-#define EMBEROGRETYPES_H
+#ifndef EMBER_DOMAIN_TYPES_H
+#define EMBER_DOMAIN_TYPES_H
 
 namespace std
 {
@@ -34,7 +34,7 @@ template<int> class Point;
 }
 
 namespace Ember {
-namespace OgreView {
+namespace Domain {
 
 /**
  * @brief A 2d position in the world.
@@ -48,4 +48,4 @@ typedef std::pair<int, int> TerrainIndex;
 
 }
 }
-#endif //EMBEROGRETYPES_H
+#endif //EMBER_DOMAIN_TYPES_H

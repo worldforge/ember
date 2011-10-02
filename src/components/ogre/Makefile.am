@@ -179,7 +179,7 @@ noinst_HEADERS = \
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	ShaderManager.h ShadowCameraSetup.h \
-	SimpleRenderContext.h Types.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h \
+	SimpleRenderContext.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h \
 	IEntityAttachment.h  WorldAttachment.h NodeAttachment.h IMovable.h IAnimated.h \
 	IEntityControlDelegate.h NodeController.h DelegatingNodeController.h \
 	AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h \

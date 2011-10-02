@@ -59,7 +59,7 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainPage::TerrainPage(const TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
+TerrainPage::TerrainPage(const Domain::TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
 	mIndex(index), mPageSize(pageSize), mPosition(index.first, index.second), mTerrainSurface(new TerrainPageSurface(*this, compilerTechniqueProvider)),  mExtent(WFMath::Point<2>(mPosition.x() * (getPageSize() - 1), (mPosition.y() - 1) * (getPageSize() - 1)), WFMath::Point<2>((mPosition.x() + 1) * (getPageSize() - 1), (mPosition.y()) * (getPageSize() - 1)))
 {
 
@@ -85,12 +85,12 @@ int TerrainPage::getNumberOfSegmentsPerAxis() const
 	return (getPageSize() - 1) / 64;
 }
 
-const TerrainPosition& TerrainPage::getWFPosition() const
+const Domain::TerrainPosition& TerrainPage::getWFPosition() const
 {
 	return mPosition;
 }
 
-const TerrainIndex& TerrainPage::getWFIndex() const
+const Domain::TerrainIndex& TerrainPage::getWFIndex() const
 {
 	return mIndex;
 }

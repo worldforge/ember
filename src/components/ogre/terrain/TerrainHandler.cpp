@@ -224,7 +224,7 @@ const ShaderStore& TerrainHandler::getAllShaders() const
 
 void TerrainHandler::addPage(TerrainPage* page)
 {
-	const TerrainPosition& pos = page->getWFPosition();
+	const Domain::TerrainPosition& pos = page->getWFPosition();
 	//TODO: check that the page doesn't already exist
 	mTerrainPages[pos.x()][pos.y()] = page;
 	mPages.push_back(page);
@@ -247,7 +247,7 @@ int TerrainHandler::getPageMetersSize() const
 void TerrainHandler::getPlantsForArea(Foliage::PlantPopulator& populator, PlantAreaQuery& query, sigc::slot<void, const PlantAreaQueryResult&> asyncCallback)
 {
 
-	TerrainPosition wfPos(Convert::toWF(query.getCenter()));
+	Domain::TerrainPosition wfPos(Convert::toWF(query.getCenter()));
 
 	int xIndex = static_cast<int> (floor(wfPos.x() / mTerrain->getResolution()));
 	int yIndex = static_cast<int> (floor(wfPos.y() / mTerrain->getResolution()));
@@ -267,7 +267,7 @@ ICompilerTechniqueProvider& TerrainHandler::getCompilerTechniqueProvider()
 	return mCompilerTechniqueProvider;
 }
 
-void TerrainHandler::removeBridge(const TerrainIndex& index)
+void TerrainHandler::removeBridge(const Domain::TerrainIndex& index)
 {
 	PageBridgeStore::iterator I = mPageBridges.find(index);
 	if (I != mPageBridges.end()) {
@@ -316,7 +316,7 @@ const TerrainInfo& TerrainHandler::getTerrainInfo() const
 	return *mTerrainInfo;
 }
 
-TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& worldPosition) const
+TerrainPage* TerrainHandler::getTerrainPageAtPosition(const Domain::TerrainPosition& worldPosition) const
 {
 
 	int xRemainder = static_cast<int> (getMin().x()) % (getPageMetersSize());
@@ -325,10 +325,10 @@ TerrainPage* TerrainHandler::getTerrainPageAtPosition(const TerrainPosition& wor
 	int xIndex = static_cast<int> (floor((worldPosition.x() + xRemainder) / (getPageMetersSize())));
 	int yIndex = static_cast<int> (ceil((worldPosition.y() + yRemainder) / (getPageMetersSize())));
 
-	return getTerrainPageAtIndex(TerrainIndex(xIndex, yIndex));
+	return getTerrainPageAtIndex(Domain::TerrainIndex(xIndex, yIndex));
 }
 
-void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrainPageBridge* bridge)
+void TerrainHandler::setUpTerrainPageAtIndex(const Domain::TerrainIndex& index, ITerrainPageBridge* bridge)
 {
 	//_fpreset();
 
@@ -354,7 +354,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const TerrainIndex& index, ITerrain
 	}
 }
 
-TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) const
+TerrainPage* TerrainHandler::getTerrainPageAtIndex(const Domain::TerrainIndex& index) const
 {
 
 	TerrainPagestore::const_iterator I = mTerrainPages.find(index.first);
@@ -367,7 +367,7 @@ TerrainPage* TerrainHandler::getTerrainPageAtIndex(const TerrainIndex& index) co
 	return 0;
 }
 
-bool TerrainHandler::getHeight(const TerrainPosition& point, float& height) const
+bool TerrainHandler::getHeight(const Domain::TerrainPosition& point, float& height) const
 {
 	WFMath::Vector<3> vector;
 
@@ -400,11 +400,11 @@ bool TerrainHandler::updateTerrain(const TerrainDefPointStore& terrainPoints)
 	return true;
 }
 
-void TerrainHandler::reloadTerrain(const std::vector<TerrainPosition>& positions)
+void TerrainHandler::reloadTerrain(const std::vector<Domain::TerrainPosition>& positions)
 {
 	std::vector<WFMath::AxisBox<2> > areas;
-	for (std::vector<TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
-		const TerrainPosition& worldPosition(*I);
+	for (std::vector<Domain::TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
+		const Domain::TerrainPosition& worldPosition(*I);
 		//Make an area which will cover the area affected by the basepoint
 		int res = mTerrain->getResolution();
 		areas.push_back(WFMath::AxisBox<2>(worldPosition - WFMath::Vector<2>(res, res), worldPosition + WFMath::Vector<2>(res, res)));
@@ -440,12 +440,12 @@ void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas
 	}
 }
 
-const TerrainPosition TerrainHandler::getMax() const
+const Domain::TerrainPosition TerrainHandler::getMax() const
 {
 	return mTerrainInfo->getWorldSizeInIndices().highCorner();
 }
 
-const TerrainPosition TerrainHandler::getMin() const
+const Domain::TerrainPosition TerrainHandler::getMin() const
 {
 	return mTerrainInfo->getWorldSizeInIndices().lowCorner();
 }

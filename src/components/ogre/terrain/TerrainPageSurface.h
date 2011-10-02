@@ -37,9 +37,12 @@ class Surface;
 class Segment;
 }
 
-namespace Ember {
-namespace OgreView {
-namespace Terrain {
+namespace Ember
+{
+namespace OgreView
+{
+namespace Terrain
+{
 
 class TerrainPageSurfaceLayer;
 class TerrainPage;
@@ -51,9 +54,10 @@ class TerrainPageSurfaceCompilationInstance;
 class ICompilerTechniqueProvider;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class TerrainPageSurface{
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class TerrainPageSurface
+{
 public:
 	typedef std::map<int, TerrainPageSurfaceLayer*> TerrainPageSurfaceLayerStore;
 	/**
@@ -62,20 +66,20 @@ public:
 	 * @param terrainPage The terrain page to which this surface belongs.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-    TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider);
+	TerrainPageSurface(const TerrainPage& terrainPage, ICompilerTechniqueProvider& compilerTechniqueProvider);
 
-    /**
-     * @brief Dtor.
-     */
-    virtual ~TerrainPageSurface();
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~TerrainPageSurface();
 
-    unsigned int getPixelWidth() const;
+	unsigned int getPixelWidth() const;
 
 	/**
 	 * @brief The position of the page in Worldforge space
 	 * @return
 	 */
-	const TerrainPosition& getWFPosition() const;
+	const Domain::TerrainPosition& getWFPosition() const;
 
 	/**
 	 * @brief The number of Mercator::Segments for each axis. I.e. the root of the total number of segments.
@@ -92,7 +96,6 @@ public:
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
 	 */
 	TerrainPageSurfaceCompilationInstance* createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const;
-
 
 	const TerrainPageSurfaceLayerStore& getLayers() const;
 

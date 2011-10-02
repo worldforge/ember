@@ -6,4 +6,4 @@ noinst_LIBRARIES = libDomain.a
 
 libDomain_a_SOURCES = EntityTalk.cpp
 
-noinst_HEADERS = EntityTalk.h
+noinst_HEADERS = EntityTalk.h Types.h IHeightProvider.h

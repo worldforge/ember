@@ -20,7 +20,7 @@
 #ifndef EMBER_OGREVIEW_TERRAINMANAGER_H
 #define EMBER_OGREVIEW_TERRAINMANAGER_H
 
-#include "Types.h"
+#include "domain/IHeightProvider.h"
 #include "framework/ConsoleObject.h"
 #include "services/config/ConfigListenerContainer.h"
 
@@ -92,7 +92,7 @@ class Vegetation;
  *
  * It works closely with EmberTerrainPageSource.
  */
-class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackable, public ConsoleObject, public ConfigListenerContainer
+class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackable, public ConsoleObject, public ConfigListenerContainer, public Ember::Domain::IHeightProvider
 {
 public:
 
@@ -167,7 +167,7 @@ public:
 	 * @param height The height, in world space, at the specified position.
 	 * @returns True if there was a valid, populated segment at the position (and therefore also a valid height).
 	 */
-	bool getHeight(const TerrainPosition& atPosition, float& height) const;
+	virtual bool getHeight(const Domain::TerrainPosition& atPosition, float& height) const;
 
 	/**
 	 * @brief Accessor for the main terrain info instance.

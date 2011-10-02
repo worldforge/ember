@@ -83,7 +83,7 @@ class BasePointUserObject
 public:
 	typedef boost::shared_ptr<BasePointUserObject> SharedPtr;
 
-	BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode);
+	BasePointUserObject(const Domain::TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode);
 
 
 	/**
@@ -113,7 +113,7 @@ public:
 
 	Ogre::SceneNode* getBasePointMarkerNode() const;
 
-	const TerrainPosition& getPosition() const;
+	const Domain::TerrainPosition& getPosition() const;
 
 	/**
 	 *    Updated the vertical position of the base point.
@@ -140,7 +140,7 @@ public:
 private:
 	Mercator::BasePoint mBasePoint;
 	Ogre::SceneNode* mBasePointMarkerNode;
-	const TerrainPosition mPosition;
+	const Domain::TerrainPosition mPosition;
 
 };
 
@@ -214,7 +214,7 @@ public:
  @param the vertical movement in meters
  @param the affected position
  */
-TerrainEditBasePointMovement(Ogre::Real verticalMovement, TerrainPosition position);
+TerrainEditBasePointMovement(Ogre::Real verticalMovement, Domain::TerrainPosition position);
 
 /**
  * Gets the vertical movement in meters.
@@ -224,11 +224,11 @@ Ogre::Real getVerticalMovement() const;
 /**
  * Gets the affected position.
  */
-const TerrainPosition& getPosition() const;
+const Domain::TerrainPosition& getPosition() const;
 
 private:
 Ogre::Real mVerticalMovement;
-TerrainPosition mPosition;
+Domain::TerrainPosition mPosition;
 };
 
 
@@ -274,7 +274,7 @@ public:
 	 * @param The position in the terrain to get the BasePointUserObject for.
 	 * @returns A valid BasePointUserObject or null if none found.
 	 */
-	BasePointUserObject* getUserObject(const TerrainPosition& terrainIndex);
+	BasePointUserObject* getUserObject(const Domain::TerrainPosition& terrainIndex);
 
 	/**
 	 *    Undoes the last action, if there are any.

@@ -60,7 +60,7 @@ namespace OgreView
 namespace Terrain
 {
 
-BasePointUserObject::BasePointUserObject(const TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) :
+BasePointUserObject::BasePointUserObject(const Domain::TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) :
 	mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition)
 {
 }
@@ -83,7 +83,7 @@ Ogre::SceneNode* BasePointUserObject::getBasePointMarkerNode() const
 	return mBasePointMarkerNode;
 }
 
-const TerrainPosition& BasePointUserObject::getPosition() const
+const Domain::TerrainPosition& BasePointUserObject::getPosition() const
 {
 	return mPosition;
 }
@@ -149,7 +149,7 @@ void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePicker
 	}
 }
 
-TerrainEditBasePointMovement::TerrainEditBasePointMovement(Ogre::Real verticalMovement, TerrainPosition position) :
+TerrainEditBasePointMovement::TerrainEditBasePointMovement(Ogre::Real verticalMovement, Domain::TerrainPosition position) :
 	mVerticalMovement(verticalMovement), mPosition(position)
 {
 }
@@ -159,7 +159,7 @@ Ogre::Real TerrainEditBasePointMovement::getVerticalMovement() const
 	return mVerticalMovement;
 }
 
-const TerrainPosition& TerrainEditBasePointMovement::getPosition() const
+const Domain::TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 {
 	return mPosition;
 
@@ -223,13 +223,13 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 
 			const Mercator::BasePoint& basepoint(J->second);
 			Ogre::SceneNode* basepointNode = mOverlayNode->createChildSceneNode();
-			TerrainPosition tPos(x * 64, y * 64);
+			Domain::TerrainPosition tPos(x * 64, y * 64);
 			Ogre::Vector3 ogrePos = Convert::toOgre<Ogre::Vector3>(tPos);
 			ogrePos.y = basepoint.height();
 			basepointNode->setPosition(ogrePos);
 			basepointNode->attachObject(entity);
 
-			BasePointUserObject* userObject = new BasePointUserObject(TerrainPosition(x, y), basepoint, basepointNode);
+			BasePointUserObject* userObject = new BasePointUserObject(Domain::TerrainPosition(x, y), basepoint, basepointNode);
 			entity->setUserAny(Ogre::Any(BasePointUserObject::SharedPtr(userObject)));
 
 			//store the base point user object
@@ -244,7 +244,7 @@ void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::B
 
 }
 
-BasePointUserObject* TerrainEditorOverlay::getUserObject(const TerrainPosition& terrainIndex)
+BasePointUserObject* TerrainEditorOverlay::getUserObject(const Domain::TerrainPosition& terrainIndex)
 {
 	std::stringstream ss;
 	ss << terrainIndex.x() << "_" << terrainIndex.y();
@@ -388,7 +388,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 {
 
 	try {
-		std::map<std::string, TerrainPosition> positions;
+		std::map<std::string, Domain::TerrainPosition> positions;
 		for (ActionStore::iterator I = mActions.begin(); I != mActions.end(); ++I) {
 			for (TerrainEditAction::MovementStore::const_iterator J = I->getMovements().begin(); J != I->getMovements().end(); ++J) {
 				std::stringstream key;
@@ -406,7 +406,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 
 		Atlas::Message::MapType & pointMap = (terrain["points"] = Atlas::Message::MapType()).asMap();
 
-		for (std::map<std::string, TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
+		for (std::map<std::string, Domain::TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
 
 			Mercator::BasePoint bp;
 			WFMath::CoordType basepointX = I->second.x();
@@ -428,7 +428,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 		S_LOG_INFO("Sent updated terrain to server (" << positions.size() << " base points updated).");
 
 		//also reset the marking for the base points
-		for (std::map<std::string, TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
+		for (std::map<std::string, Domain::TerrainPosition>::iterator I = positions.begin(); I != positions.end(); ++I) {
 			BasePointUserObject* userObject = getUserObject(I->second);
 			if (userObject) {
 				userObject->resetMarking();
@@ -527,12 +527,12 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 		// 			}
 		// 		}
 
-		TerrainPosition worldPosition(I->getPosition().x() * 64, I->getPosition().y() * 64);
+		Domain::TerrainPosition worldPosition(I->getPosition().x() * 64, I->getPosition().y() * 64);
 		TerrainPage* page;
 		//make sure we sample pages from all four points around the base point, in case the base point is on a page border
 		for (int i = -65; i < 66; i += 64) {
 			for (int j = -65; j < 66; j += 64) {
-				TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
+				Domain::TerrainPosition position(worldPosition.x() + i, worldPosition.y() + j);
 				page = mManager.getHandler().getTerrainPageAtPosition(position);
 				if (page) {
 					pagesToUpdate.insert(page);

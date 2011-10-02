@@ -43,7 +43,7 @@ struct PageSegment
 	/**
 	 * @brief The index of this segment within the page.
 	 */
-	TerrainPosition index;
+	Domain::TerrainPosition index;
 
 	/**
 	 * @brief A mercator segment instance.
@@ -100,7 +100,7 @@ public:
 	 * @param pos A Wordforge position in local space, i.e. > 0 && < [width in meters of the page]
 	 * @return A pointer to Mercator::Segment or null.
 	 */
-	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos) const;
+	Mercator::Segment* getSegmentAtLocalPosition(const Domain::TerrainPosition& pos) const;
 
 	/**
 	 * @brief Gets the segment positioned at the supplied position in local space and also translates the supplied position into a local position in the returned segment.
@@ -108,7 +108,7 @@ public:
 	 * @param localPositionInSegment The resulting position in the segment space.
 	 * @return A pointer to Mercator::Segment or null.
 	 */
-	Mercator::Segment* getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const;
+	Mercator::Segment* getSegmentAtLocalPosition(const Domain::TerrainPosition& pos, Domain::TerrainPosition& localPositionInSegment) const;
 
 	/**
 	 * @brief Gets the collection of segments which make up this geometry.
@@ -121,7 +121,7 @@ public:
 	 * @param normal The normal will be placed here.
 	 * @return True if a valid normal could be found at the specified position.
 	 */
-	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
+	bool getNormal(const Domain::TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
 	/**
 	 * @brief Repopulates the segments which make up the page.

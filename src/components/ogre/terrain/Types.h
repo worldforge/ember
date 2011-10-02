@@ -19,7 +19,7 @@
 #ifndef EMBEROGRETERRAINTYPES_H_
 #define EMBEROGRETERRAINTYPES_H_
 
-#include "components/ogre/Types.h"
+#include "domain/Types.h"
 
 #include <vector>
 #include <map>

@@ -134,9 +134,9 @@ void FoliageBase::reloadAtPosition(const WFMath::Point<2>& worldPosition)
 //there's no need for extra data other than the x/z coordinates.
 float getTerrainHeight(float x, float z, void* userData)
 {
-	TerrainManager* terrainManager = static_cast<TerrainManager*>(userData);
+	Domain::IHeightProvider* heightProvider = static_cast<Domain::IHeightProvider*>(userData);
 	float height = 0;
-	terrainManager->getHeight(TerrainPosition(x, -z), height);
+	heightProvider->getHeight(Domain::TerrainPosition(x, -z), height);
 	return height;
 }
 

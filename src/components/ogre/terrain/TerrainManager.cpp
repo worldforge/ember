@@ -117,7 +117,7 @@ void TerrainManager::loadTerrainOptions()
 
 }
 
-bool TerrainManager::getHeight(const TerrainPosition& atPosition, float& height) const
+bool TerrainManager::getHeight(const Domain::TerrainPosition& atPosition, float& height) const
 {
 	return mHandler->getHeight(atPosition, height);
 }

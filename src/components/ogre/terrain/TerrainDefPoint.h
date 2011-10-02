@@ -20,7 +20,7 @@
 #define TERRAINDEFPOINT_H_
 
 #include <wfmath/point.h>
-#include "components/ogre/Types.h"
+#include "domain/Types.h"
 
 namespace Ember
 {
@@ -49,7 +49,7 @@ class TerrainDefPoint
 	 * @brief Gets the position of the definition point, in world units.
 	 * @return The position of the point.
 	 */
-	const TerrainPosition& getPosition() const;
+	const Domain::TerrainPosition& getPosition() const;
 
 	/**
 	 * @brief Gets the height of the definition point, in world units.
@@ -62,7 +62,7 @@ class TerrainDefPoint
 	/**
 	The position of the point, in world units.
 	*/
-	TerrainPosition mPosition;
+	Domain::TerrainPosition mPosition;
 
 	/**
 	The height of the point, in world units.

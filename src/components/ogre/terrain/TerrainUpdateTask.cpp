@@ -63,7 +63,7 @@ void TerrainUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContex
 		// FIXME Sort out roughness and falloff, and generally verify this code is the same as that in Terrain layer
 		mTerrain.setBasePoint(static_cast<int> (I->getPosition().x()), static_cast<int> (I->getPosition().y()), bp);
 		mUpdatedBasePoints.push_back(UpdateBasePointStore::value_type(I->getPosition(), bp));
-		mUpdatedPositions.push_back(TerrainPosition(I->getPosition().x() * terrainRes, I->getPosition().y() * terrainRes));
+		mUpdatedPositions.push_back(Domain::TerrainPosition(I->getPosition().x() * terrainRes, I->getPosition().y() * terrainRes));
 	}
 	mSegmentManager.syncWithTerrain();
 }

@@ -20,7 +20,7 @@
 #define TERRAINPAGEDATAPROVIDER_H_
 
 #include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-#include "Types.h"
+#include "domain/Types.h"
 
 namespace Ember
 {
@@ -68,7 +68,7 @@ protected:
 	/**
 	 * @brief Converts the ogre index position to wf local index.
 	 */
-	TerrainIndex convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition);
+	Domain::TerrainIndex convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition);
 
 };
 

@@ -163,7 +163,7 @@ void TerrainPageGeometry::blitSegmentToOgre(float* ogreHeightData, Mercator::Seg
 	}
 }
 
-Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos) const
+Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const Domain::TerrainPosition& pos) const
 {
 	int ix = I_ROUND(floor(pos.x() / 64));
 	int iy = I_ROUND(floor(pos.y() / 64));
@@ -179,7 +179,7 @@ Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainP
 	return &J->second->getSegment().getMercatorSegment();
 }
 
-Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const TerrainPosition& pos, TerrainPosition& localPositionInSegment) const
+Mercator::Segment* TerrainPageGeometry::getSegmentAtLocalPosition(const Domain::TerrainPosition& pos, Domain::TerrainPosition& localPositionInSegment) const
 {
 	int ix = I_ROUND(floor(pos.x() / 64));
 	int iy = I_ROUND(floor(pos.y() / 64));
@@ -205,7 +205,7 @@ const SegmentVector TerrainPageGeometry::getValidSegments() const
 		for (SegmentRefColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 			Mercator::Segment& segment = J->second->getSegment().getMercatorSegment();
 			PageSegment pageSegment;
-			pageSegment.index = TerrainPosition(I->first, J->first);
+			pageSegment.index = Domain::TerrainPosition(I->first, J->first);
 			pageSegment.segment = &segment;
 
 			validSegments.push_back(pageSegment);
@@ -214,7 +214,7 @@ const SegmentVector TerrainPageGeometry::getValidSegments() const
 	return validSegments;
 }
 
-bool TerrainPageGeometry::getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
+bool TerrainPageGeometry::getNormal(const Domain::TerrainPosition& localPosition, WFMath::Vector<3>& normal) const
 {
 
 	const Mercator::Segment* segment(getSegmentAtLocalPosition(localPosition));

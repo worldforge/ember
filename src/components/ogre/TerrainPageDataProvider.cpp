@@ -72,10 +72,10 @@ void TerrainPageDataProvider::removeBridge(const OgreIndex& ogreIndexPosition)
 	mHandler.removeBridge(convertToWFTerrainIndex(ogreIndexPosition));
 }
 
-TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition)
+Domain::TerrainIndex TerrainPageDataProvider::convertToWFTerrainIndex(const OgreIndex& ogreIndexPosition)
 {
 	//TerrainInfo deals with WF space, so we need to flip the x and y offsets here (as it's in Ogre space)
-	return TerrainIndex(ogreIndexPosition.first - mHandler.getTerrainInfo().getPageOffsetY(), -(ogreIndexPosition.second - mHandler.getTerrainInfo().getPageOffsetX()));
+	return Domain::TerrainIndex(ogreIndexPosition.first - mHandler.getTerrainInfo().getPageOffsetY(), -(ogreIndexPosition.second - mHandler.getTerrainInfo().getPageOffsetX()));
 }
 
 }

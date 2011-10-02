@@ -19,7 +19,7 @@
 #ifndef TERRAINPAGECREATIONTASK_H_
 #define TERRAINPAGECREATIONTASK_H_
 
-#include "components/ogre/Types.h"
+#include "domain/Types.h"
 #include "framework/tasks/TemplateNamedTask.h"
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
@@ -43,7 +43,7 @@ class HeightMap;
 class TerrainPageCreationTask : public Tasks::TemplateNamedTask<TerrainPageCreationTask>
 {
 public:
-	TerrainPageCreationTask(TerrainHandler& handler, const TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
+	TerrainPageCreationTask(TerrainHandler& handler, const Domain::TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection);
 	virtual ~TerrainPageCreationTask();
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
@@ -54,7 +54,7 @@ private:
 	TerrainHandler& mTerrainHandler;
 
 	TerrainPage* mPage;
-	TerrainIndex mIndex;
+	Domain::TerrainIndex mIndex;
 	boost::shared_ptr<ITerrainPageBridge> mBridge;
 	WFMath::Vector<3> mMainLightDirection;
 

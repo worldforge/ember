@@ -24,31 +24,34 @@
 #define EMBEROGRETERRAINPAGE_H
 
 #include "../EmberOgrePrerequisites.h"
-#include "../Types.h"
+#include "domain/Types.h"
 
 #include <wfmath/point.h>
 #include <wfmath/axisbox.h>
 
 #include <vector>
 
-
-namespace WFMath {
-	template<int> class Vector;
+namespace WFMath
+{
+template<int> class Vector;
 }
 
-namespace Mercator {
-	class Segment;
+namespace Mercator
+{
+class Segment;
 }
-
 
 namespace Ogre
 {
-	class TerrainOptions;
+class TerrainOptions;
 }
 
-namespace Ember {
-namespace OgreView {
-namespace Terrain {
+namespace Ember
+{
+namespace OgreView
+{
+namespace Terrain
+{
 class TerrainShader;
 class TerrainPageSurface;
 class TerrainPage;
@@ -58,18 +61,19 @@ class ICompilerTechniqueProvider;
 
 /**
 
-@brief Represents one terrain page.
+ @brief Represents one terrain page.
 
-This is a bridge class between one Ogre terrain page instance and one or many Mercator::Segment. Since each Segment is 64x64 meters, but one Ogre page often is much larger, we need to combine many Segments for every single Ogre page.
-An instance of this is very light weight as it doesn't keep any geometry data around. Each time an action involving page geometry is to occur an instance of TerrainPageGeometry must therefore be created.
+ This is a bridge class between one Ogre terrain page instance and one or many Mercator::Segment. Since each Segment is 64x64 meters, but one Ogre page often is much larger, we need to combine many Segments for every single Ogre page.
+ An instance of this is very light weight as it doesn't keep any geometry data around. Each time an action involving page geometry is to occur an instance of TerrainPageGeometry must therefore be created.
 
-Instances of this is created by TerrainManager.
+ Instances of this is created by TerrainManager.
 
-@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class TerrainPage {
-friend class TerrainPageShadow;
-friend class ITerrainPageShadowTechnique;
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class TerrainPage
+{
+	friend class TerrainPageShadow;
+	friend class ITerrainPageShadowTechnique;
 public:
 
 	/**
@@ -78,7 +82,7 @@ public:
 	 * @param pageSize The size of one side of a page.
 	 * @param compilerTechniqueProvider A provider for terrain surface compiler techniques.
 	 */
-	TerrainPage(const TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
+	TerrainPage(const Domain::TerrainIndex& index, int pageSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
 
 	/**
 	 * @brief Dtor.
@@ -102,13 +106,13 @@ public:
 	 * @brief The index position of the page in Worldforge space.
 	 * @return The index position of the page.
 	 */
-	const TerrainPosition& getWFPosition() const;
+	const Domain::TerrainPosition& getWFPosition() const;
 
 	/**
 	 * @brief The index of the page in the Worldforge space.
 	 * @return The index of the page.
 	 */
-	const TerrainIndex& getWFIndex() const;
+	const Domain::TerrainIndex& getWFIndex() const;
 
 	/**
 	 * @brief The material used for the page.
@@ -160,14 +164,14 @@ public:
 	 * @param normal The normal will be placed here.
 	 * @return True if a valid normal could be found at the specified position.
 	 */
-	bool getNormal(const TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
+	bool getNormal(const Domain::TerrainPosition& localPosition, WFMath::Vector<3>& normal) const;
 
 private:
 
 	/**
 	 * @brief Page index.
 	 */
-	TerrainIndex mIndex;
+	Domain::TerrainIndex mIndex;
 
 	/**
 	 * @brief The size of one side of the page.
@@ -177,7 +181,7 @@ private:
 	/**
 	 * @brief Internal position
 	 */
-	TerrainPosition mPosition;
+	Domain::TerrainPosition mPosition;
 
 	std::auto_ptr<TerrainPageSurface> mTerrainSurface;
 
@@ -187,9 +191,9 @@ private:
 	const WFMath::AxisBox<2> mExtent;
 
 	/**
-	* @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
-	* This value is taken from the config file.
-	*/
+	 * @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
+	 * This value is taken from the config file.
+	 */
 	unsigned int getAlphaMapScale() const;
 };
 
