@@ -885,6 +885,12 @@ function EntityEditor:knowledgeRefresh()
 			end
 			self.instance.entitySayKnowledgeConnector = createConnector(entity.Say):connect(self.entitySayKnowledge, self)
 			emberServices:getServerService():sayTo("list me all knowledge", entity)
+
+			--Remove listener after five seconds			
+			self.instance.entitySayKnowledgeConnectorTimer = Eris.Timeout:new_local(5000)
+			self.instance.entitySayKnowledgeConnectorTimerConn = createConnector(self.instance.entitySayKnowledgeConnectorTimer.Expired):connect(function()
+				self.instance.entitySayKnowledgeConnector:disconnect()
+			end)
 		end
 	end
 end
@@ -963,6 +969,12 @@ function EntityEditor:goalsRefresh()
 			end
 			self.instance.entitySayGoalsConnector = createConnector(entity.Say):connect(self.entitySayGoals, self)
 			emberServices:getServerService():sayTo("list me goal", entity)
+
+			--Remove listener after five seconds			
+			self.instance.entitySayGoalsConnectorTimer = Eris.Timeout:new_local(5000)
+			self.instance.entitySayGoalsConnectorTimerConn = createConnector(self.instance.entitySayGoalsConnectorTimer.Expired):connect(function()
+				self.instance.entitySayGoalsConnector:disconnect()
+			end)
 		end
 	end
 end
