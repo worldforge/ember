@@ -17,8 +17,8 @@ EntityEditor = {
 					local name = attributeNames[i]
 					local childElement = wrapper.adapter:valueOfAttr(name)
 					local adapterWrapper = self:createAdapter(name, childElement)
-					if adapterWrapper ~= nil then
-						if adapterWrapper.adapter ~= nil then
+					if adapterWrapper then
+						if adapterWrapper.adapter then
 							self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 							wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
 						end
@@ -59,7 +59,7 @@ EntityEditor = {
 				wrapper.nameChanged = wrapper.nameEditbox:getEditbox():subscribeEvent("TextChanged", wrapper.nameChanged)
 				
 				for index,value in pairs(self.prototypes) do
-					if value.shouldAddSuggestion ~= nil then
+					if value.shouldAddSuggestion then
 						if value.shouldAddSuggestion(outerElement) then
 							local item = Ember.OgreView.Gui.ColouredListItem:new(index)
 							wrapper.nameEditbox:addItem(item)
@@ -80,13 +80,13 @@ EntityEditor = {
 				wrapper.buttonPressed = function(args)
 					local name = wrapper.nameEditbox:getText()
 					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
-					if newAdapter.createNewElement ~= nil then
+					if newAdapter.createNewElement then
 						local element = newAdapter.createNewElement(self)
 						local adapterWrapper = newAdapter.createAdapter(self, element, self:getPrototype(name, element))
 						
 						self.instance.addNewElement(self, element)
 						
-						if adapterWrapper ~= nil then
+						if adapterWrapper then
 							local newPrototype = {}
 							wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
 							self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
@@ -117,12 +117,12 @@ EntityEditor = {
 					local childElement = wrapper.adapter:valueOfAttr(i)
 					local childPrototype = self:getPrototype("", childElement)
 					--if the prototype for the list have it marked as nodelete, mark the childelements too
-					if prototype.readonly ~= nil then
+					if prototype.readonly then
 						childPrototype.readonly = true
 						childPrototype.nodelete = true
 					end
 					local adapterWrapper = self:createAdapterFromPrototype(childElement, childPrototype)
-					if adapterWrapper ~= nil then
+					if adapterWrapper then
 						self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 						wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 					end
@@ -151,14 +151,14 @@ EntityEditor = {
 				wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, "")
 				wrapper.buttonPressed = function(args)
 					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
-					if newAdapter.createNewElement ~= nil then
+					if newAdapter.createNewElement then
 						local element = newAdapter.createNewElement(self)
 						local adapterWrapper = newAdapter.createAdapter(self, element, self:getPrototype("", element))
 						
 						--store a reference to the element so it isn't garbage collected
 						self.instance.addNewElement(self, element)
 						
-						if adapterWrapper ~= nil then
+						if adapterWrapper then
 							wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 							local newPrototype = {}
 							self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
@@ -170,7 +170,7 @@ EntityEditor = {
 				wrapper.button:subscribeEvent("Clicked", wrapper.buttonPressed)
 			
 				wrapper.buttonEnableChecker = function(args)
-					if wrapper.typeCombobox:getSelectedItem() ~= nil then
+					if wrapper.typeCombobox:getSelectedItem() then
 						wrapper.button:setEnabled(true)
 					else
 						wrapper.button:setEnabled(false)
@@ -252,7 +252,7 @@ EntityEditor = {
 					local childElement = wrapper.adapter:valueOfAttr(i)
 					local childPrototype = self.adapters.position2d
 					local adapterWrapper = self:createAdapterFromPrototype(childElement, childPrototype)
-					if adapterWrapper ~= nil then
+					if adapterWrapper then
 						self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 						wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 					end
@@ -284,7 +284,7 @@ EntityEditor = {
 				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(self.factory:getCurrentPrefix().. "NewElementButton"))
 				wrapper.buttonPressed = function(args)
 					local newAdapter = newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
-					if newAdapter.createNewElement ~= nil then
+					if newAdapter.createNewElement then
 						local element = newAdapter.createNewElement(self)
 						local adapterWrapper = newAdapter.createAdapter(self, element, self:getPrototype("", element))
 						
@@ -298,7 +298,7 @@ EntityEditor = {
 						
 						self.instance.addNewElement(self, element)
 						
-						if adapterWrapper ~= nil then
+						if adapterWrapper then
 							local newPrototype = {}
 							wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 							self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
@@ -483,7 +483,7 @@ EntityEditor.defaultPrototypes =
 
 function editEntity(id)
 	local entity = emberOgre:getWorld():getEmberEntity(id)
-	if entity ~= nil then
+	if entity then
 		self:editEntity(entity)
 	end
 end
@@ -496,9 +496,9 @@ function EntityEditor:createStackableContainer(container)
 end
 
 function EntityEditor:clearEditing()
-	if self.instance ~= nil then
+	if self.instance then
 		
-		if self.instance.entity ~= nil then
+		if self.instance.entity then
 			--as we're not editing anymore, hide the bounding boxes
 			self.instance.entity:setVisualize("OgreBBox", false)
 			self.instance.entity:setVisualize("ErisBBox", false)
@@ -509,17 +509,20 @@ function EntityEditor:clearEditing()
 			value:disconnect()
 		end
 	
-		if self.instance.rootMapAdapter ~= nil then
+		if self.instance.rootMapAdapter then
 			self.instance.rootMapAdapter:removeAdapters()
 		end
-		if self.instance.outercontainer ~= nil then
+		if self.instance.outercontainer then
 			windowManager:destroyWindow(self.instance.outercontainer)
 		end
-		if self.instance.deleteListener ~= nil then
+		if self.instance.deleteListener then
 			self.instance.deleteListener:disconnect()
 		end
-		if self.instance.entityChangeConnection ~= nil then
+		if self.instance.entityChangeConnection then
 			self.instance.entityChangeConnection:disconnect()
+		end
+		if self.instance.helper then
+			self.instance.helper:removeMarker()
 		end
 		deleteSafe(self.instance.helper)
 		self.instance = nil
@@ -567,7 +570,7 @@ function EntityEditor:editEntity(entity)
 		--there's currently no way to delete from the root attributes, so we'll just disallow that
 		prototype.nodelete = true
 		local adapterWrapper = self:createAdapterFromPrototype(element, prototype)
-		if adapterWrapper ~= nil then
+		if adapterWrapper then
 			self.instance.rootMapAdapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
 			self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, self.instance.outercontainer, adapterWrapper.prototype)
 		end
@@ -590,10 +593,10 @@ end
 
 function EntityEditor:createAdapterFromPrototype(element, prototype)
 	local adapterWrapper = nil
-	if prototype.adapter ~= nil then
+	if prototype.adapter then
 		adapterWrapper = prototype.adapter.createAdapter(self, element, prototype)
-		if adapterWrapper ~= nil then
-			if prototype.suggestions ~= nil then
+		if adapterWrapper then
+			if prototype.suggestions then
 				for index,value in ipairs(prototype.suggestions) do
 					adapterWrapper.adapter:addSuggestion(value)
 				end
@@ -606,7 +609,7 @@ end
 
 function EntityEditor:getPrototype(attributeName, element)
 	local prototype = {}
-	if self.prototypes[attributeName] ~= nil then
+	if self.prototypes[attributeName] then
 		 prototype = self.prototypes[attributeName]
 	else
 		if element:isString() then
@@ -656,7 +659,7 @@ function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentConta
 	end
 	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 	
-	if deleteButton ~= nil then
+	if deleteButton then
 		outercontainer:addChildWindow(deleteButton)
 	end
 	outercontainer:addChildWindow(container)
@@ -743,8 +746,8 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 	local newAdapters = {}
 
 	local possibleProto = self.prototypes[elementName]
-	if possibleProto ~= nil then
-		if possibleProto.adapter ~= nil then
+	if possibleProto then
+		if possibleProto.adapter then
 			local itemIndex = table.maxn(newAdapters) + 1
 			
 			local item = Ember.OgreView.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
@@ -795,9 +798,9 @@ function EntityEditor:Submit_Clicked(args)
 end
 
 function EntityEditor:DeleteButton_Clicked(args)
-	if self.instance ~= nil then
+	if self.instance then
 		local entity = self.instance.entity
-		if entity ~= nil then
+		if entity then
 		-- 	self:clearEditing()
 			emberServices:getServerService():deleteEntity(entity)
 		end
@@ -806,9 +809,9 @@ function EntityEditor:DeleteButton_Clicked(args)
 end
 
 function EntityEditor:RefreshAtlas_Clicked(args)
-	if self.instance ~= nil then
+	if self.instance then
 		local entity = self.instance.entity
-		if entity ~= nil then
+		if entity then
 			local ss = std.stringstream:new_local()
 			local ss_log = std.stringstream:new_local()
 			entity:dumpAttributes(ss, ss_log.__std__ostream__)
@@ -849,7 +852,7 @@ function EntityEditor:entitySayKnowledge(root)
 	if modelItem.predicate then
 
 		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
-		item:setText(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.knowledge)
+		item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.knowledge))
 		item:subscribeEvent("SelectionChanged", function(args)
 			if item:isSelected() then
 				local predicate = self.widget:getWindow("NewKnowledgePredicate")
@@ -909,21 +912,6 @@ function EntityEditor:NewKnowledge_Clicked(args)
 	return true
 end
 
-function EntityEditor:KnowledgeList_SelectionChanged(args)
---[[	
-	local predicate = self.widget:getWindow("NewKnowledgePredicate")
-	local subject = self.widget:getWindow("NewKnowledgeSubject")
-	local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
-	
-	local item = self.knowledgelistbox:getFirstSelectedItem()
-	local modelItem = self.instance.knowledge.model[item:getID()]
-	predicate:setText(modelItem.predicate)
-	subject:setText(modelItem.subject)
-	knowledge:setText(modelItem.knowledge)
-	]]--
-	return true
-end
-
 function EntityEditor:entitySayGoals(root)
 	local rootObject = root:get()
 	
@@ -939,7 +927,7 @@ function EntityEditor:entitySayGoals(root)
 	_, _, modelItem.verb, modelItem.goal = string.find(message, "The goal of (%b()) is (.*)")
 	if modelItem.verb then
 		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
-		item:setText(goalname .. " : " .. goal)
+		item:setText(escapeForCEGUI(modelItem.verb .. " : " .. modelItem.goal))
 		self.goallistbox:addItem(item)
 
 		item:subscribeEvent("SelectionChanged", function(args)
@@ -947,7 +935,13 @@ function EntityEditor:entitySayGoals(root)
 				local goalVerb = self.widget:getWindow("NewGoalVerb")
 				local goalDef = self.widget:getWindow("NewGoalDefinition")
 				
-				goalVerb:setText(modelItem.verb)
+				local _, _, singleVerb = string.find(modelItem.verb, "'(%a*)'.*")
+				if singleVerb then
+					goalVerb:setText(singleVerb)
+				else
+					goalVerb:setText(modelItem.verb)
+				end
+				
 				goalDef:setText(modelItem.goal)
 			end
 			
@@ -997,21 +991,21 @@ function EntityEditor:ExportButton_Clicked(args)
 end
 
 function EntityEditor:RefreshButton_Clicked(args)
-	if self.instance.entity ~= nil then
+	if self.instance.entity then
 		self:editEntity(self.instance.entity)
 	end
 	return true
 end
 
 function EntityEditor:ShowOgreBbox_CheckStateChanged(args)
-	if self.instance.entity ~= nil then
+	if self.instance.entity then
 		self.instance.entity:setVisualize("OgreBBox", self.modelTab.showOgreBbox:isSelected())
 	end
 	return true
 end
 
 function EntityEditor:ShowErisBbox_CheckStateChanged(args)
-	if self.instance.entity ~= nil then
+	if self.instance.entity then
 		self.instance.entity:setVisualize("ErisBBox", self.modelTab.showErisBbox:isSelected())
 	end
 	return true
@@ -1086,7 +1080,6 @@ function EntityEditor:buildWidget()
 	self.goallistbox = CEGUI.toItemListbox(self.widget:getWindow("GoalList"))
 
 	self.knowledgelistbox = CEGUI.toItemListbox(self.widget:getWindow("KnowledgeList"))
-	self.knowledgelistbox:subscribeEvent("SelectionChanged", self.KnowledgeList_SelectionChanged, self)
 		
 --[[	self.modelTab.stackableWindow = self.widget:getWindow("ModelPanelStackable")
 	self.modelTab.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.modelTab.stackableWindow)

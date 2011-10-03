@@ -119,10 +119,28 @@ public:
 	 */
 	void addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge);
 
+	/**
+	 * @brief Adds a marker at the specified point.
+	 *
+	 * Also adds a line extending from the user to the point.
+	 * @param point A point in world space.
+	 */
 	void addMarker(const WFMath::Point<3>& point);
 
+	/**
+	 * @brief Removes a previously added marker.
+	 *
+	 * If no marker exists nothing will happen.
+	 */
 	void removeMarker();
 
+	/**
+	 * @brief Creates a new point from values.
+	 * @param x The x coord.
+	 * @param y The y coord.
+	 * @param z The z coord.
+	 * @return A point in space.
+	 */
 	static WFMath::Point<3> createPoint(float x, float y, float z);
 
 protected:
@@ -133,7 +151,7 @@ protected:
 	World& mWorld;
 
 	/**
-	 * @brief The root adapter of all attribute adaapters.
+	 * @brief The root adapter of all attribute adapters.
 	 *
 	 * This will be owned by this instance and deleted at destruction.
 	 */
