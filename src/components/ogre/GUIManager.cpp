@@ -89,7 +89,7 @@ namespace OgreView
 unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals) :
-		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -115,10 +115,10 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 
 		//The OgreCEGUIRenderer is the main interface between Ogre and CEGUI. Note that the third argument tells the renderer to render the gui after all of the regular render queues have been processed, thus making sure that the gui always is on top.
 		mGuiRenderer = &CEGUI::OgreRenderer::create(*window);
-		CEGUI::ResourceProvider& resourceProvider = mGuiRenderer->createOgreResourceProvider();
-		resourceProvider.setDefaultResourceGroup("Gui");
+		mOgreResourceProvider = &mGuiRenderer->createOgreResourceProvider();
+		mOgreResourceProvider->setDefaultResourceGroup("Gui");
 
-		CEGUI::ImageCodec& imageCodec = CEGUI::OgreRenderer::createOgreImageCodec();
+		mOgreImageCodec = &CEGUI::OgreRenderer::createOgreImageCodec();
 
 		IScriptingProvider* provider = EmberServices::getSingleton().getScriptingService().getProviderFor("LuaScriptingProvider");
 		if (provider != 0) {
@@ -128,11 +128,11 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 				mLuaScriptModule->setDefaultPCallErrorHandler(luaScriptProvider->getErrorHandlingFunctionName());
 				mLuaScriptModule->executeString(""); //We must call this to make CEGUI set up the error function internally. If we don't, CEGUI will never correctly set it up. The reason for this is that we never use the execute* methods in the CEGUI lua module later on, instead loading our scripts ourselves. And CEGUI is currently set up to require the execute* methods to be called in order for the error function to be registered.
 			}
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, 0, mOgreImageCodec, mLuaScriptModule, "cegui/datafiles/configs/cegui.config");
 
 			EmberServices::getSingleton().getScriptingService().EventStopping.connect(sigc::mem_fun(*this, &GUIManager::scriptingServiceStopping));
 		} else {
-			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, &resourceProvider, 0, &imageCodec, 0, "cegui/datafiles/configs/cegui.config");
+			mGuiSystem = &CEGUI::System::create(*mGuiRenderer, mOgreResourceProvider, 0, mOgreImageCodec, 0, "cegui/datafiles/configs/cegui.config");
 		}
 		CEGUI::SchemeManager::SchemeIterator schemeI(SchemeManager::getSingleton().getIterator());
 		if (schemeI.isAtEnd()) {
@@ -216,7 +216,15 @@ GUIManager::~GUIManager()
 	delete mActionBarIconManager;
 	delete mIconManager;
 
+
 	CEGUI::System::destroy();
+
+	if (mOgreResourceProvider) {
+		mGuiRenderer->destroyOgreResourceProvider(*mOgreResourceProvider);
+	}
+	if (mOgreImageCodec) {
+		mGuiRenderer->destroyOgreImageCodec(*mOgreImageCodec);
+	}
 
 	//note that we normally would delete the mCEGUILogger here, but we don't have to since mGuiSystem will do that in it's desctructor, even though it doesn't own the logger
 	Ogre::Root::getSingleton().removeFrameListener(this);

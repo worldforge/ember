@@ -158,6 +158,10 @@ Application::~Application()
 	configService.saveConfig(configService.getHomeDirectory() + "/ember.conf", varconf::USER);
 	
 	EmberServices::getSingleton().getServerService().stop(0);
+
+	//When shutting down make sure to delete all pending objects from Eris. This is mainly because we want to be able to track memory leaks.
+	Eris::execDeleteLaters();
+
 	delete mOgreView;
 	delete mServices;
 	S_LOG_INFO("Ember shut down normally.");
@@ -392,8 +396,6 @@ void Application::start()
 
 	mainLoop();
 
-	//When shutting down make sure to delete all pending objects from Eris. This is mainly because we want to be able to track memory leaks.
-	Eris::execDeleteLaters();
 }
 
 bool Application::shouldQuit()

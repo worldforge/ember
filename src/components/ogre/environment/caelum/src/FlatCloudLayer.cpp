@@ -29,6 +29,12 @@ namespace Caelum
             Ogre::SceneManager *sceneMgr,
 			Ogre::SceneNode *cloudRoot)
 	{
+
+        mMeshWidth = 0.0f;
+        mMeshHeight = 0.0f;
+        mMeshWidthSegments = 0;
+        mMeshHeightSegments = 0;
+
         Ogre::String uniqueSuffix = InternalUtilities::pointerToString(this);
 
 		// Clone material

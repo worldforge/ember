@@ -45,7 +45,7 @@ end
 
 -- Shows the QuickHelp widget immediately, no transitions
 function QuickHelp:show()
-	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new(self.frameWindow))
+	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new_local(self.frameWindow))
 	self.showTransitionStarted = false
 	self.hideTransitionStarted = false
 	
@@ -56,18 +56,18 @@ end
 
 function QuickHelp:showWithTransition()
 	-- make sure no other transitions are running
-	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new(self.frameWindow))
+	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new_local(self.frameWindow))
 	
 	self.showTransitionStarted = true
 	self.hideTransitionStarted = false
 
 	self.widget:show()
-	self.frameWindow:fireEvent("StartShowTransition", CEGUI.WindowEventArgs:new(self.frameWindow))
+	self.frameWindow:fireEvent("StartShowTransition", CEGUI.WindowEventArgs:new_local(self.frameWindow))
 end
 
 -- Hides the QuickHelp widget immediately, no transitions
 function QuickHelp:hide()
-	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new(self.frameWindow))
+	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new_local(self.frameWindow))
 	self.showTransitionStarted = false
 	self.hideTransitionStarted = false
 	
@@ -79,7 +79,7 @@ end
 
 function QuickHelp:hideWithTransition()
 	-- make sure no other transitions are running
-	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new(self.frameWindow))
+	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new_local(self.frameWindow))
 	
 	self.showTransitionStarted = false
 	-- make sure we store that we already sent the event, otherwise a never ending event firing starts
@@ -87,12 +87,12 @@ function QuickHelp:hideWithTransition()
 	
 	-- by firing this event, we allow looknfeel of the QuickHelp window to act accordingly
 	-- (at the time of writing this, it fades the FrameWindow out over 5 seconds)
-	self.frameWindow:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new(self.frameWindow))
+	self.frameWindow:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new_local(self.frameWindow))
 end
 
 function QuickHelp:hideWithSlowTransition()
 	-- make sure no other transitions are running
-	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new(self.frameWindow))
+	self.frameWindow:fireEvent("InterruptTransitions", CEGUI.WindowEventArgs:new_local(self.frameWindow))
 	
 	self.showTransitionStarted = false
 	-- make sure we store that we already sent the event, otherwise a never ending event firing starts
@@ -100,7 +100,7 @@ function QuickHelp:hideWithSlowTransition()
 	
 	-- by firing this event, we allow looknfeel of the QuickHelp window to act accordingly
 	-- (at the time of writing this, it fades the FrameWindow out over 5 seconds)
-	self.frameWindow:fireEvent("StartSlowHideTransition", CEGUI.WindowEventArgs:new(self.frameWindow))
+	self.frameWindow:fireEvent("StartSlowHideTransition", CEGUI.WindowEventArgs:new_local(self.frameWindow))
 end
 
 function QuickHelp:frameStarted(timeSinceLastUpdate)

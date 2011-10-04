@@ -24,7 +24,7 @@ function SettingsRestartDialog:buildWidget()
 	-- make it a modal window to prevent user from missing the info
 	self.window:setModalState(true)
 	-- we fire this to start the ShowTransition
-	self.window:fireEvent("Shown", CEGUI.WindowEventArgs:new(self.window))
+	self.window:fireEvent("Shown", CEGUI.WindowEventArgs:new_local(self.window))
 end
 
 function SettingsRestartDialog:CloseClicked(agrs)
@@ -58,7 +58,7 @@ function SettingsUnappliedChangesDialog:buildWidget()
 	-- make it a modal window to prevent user from missing the info
 	self.window:setModalState(true)
 	-- we fire this to start the ShowTransition
-	self.window:fireEvent("Shown", CEGUI.WindowEventArgs:new(self.window))
+	self.window:fireEvent("Shown", CEGUI.WindowEventArgs:new_local(self.window))
 end
 
 function SettingsUnappliedChangesDialog:destroy()
@@ -164,7 +164,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "general",
 					key = "startuphelp",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 					requiresRestart = true,
 				},
 				{
@@ -174,7 +174,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "general",
 					key = "logchatmessages",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Chat bubbles time shown",
@@ -183,7 +183,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "ingamechatwidget",
 					key = "timeshown",
 					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 60) end,
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 60) end,
 				},
 				{
 					label = "Chat bubbles distance shown",
@@ -192,7 +192,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "ingamechatwidget",
 					key = "distanceshown",
 					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 100) end,
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 100) end,
 				},
 				{
 					label = "Desired FPS",
@@ -201,7 +201,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "general",
 					key = "desiredfps",
 					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 100) end,
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 100) end,
 				},
 				{
 					label = "Suppress Ogre settings window",
@@ -210,7 +210,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "ogre",
 					key = "suppressconfigdialog",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 			},
 		},
@@ -227,7 +227,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "graphics",
 					key = "level",
 					
-					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
 					suggestions = {"low", "medium", "high"}
 				},
 				--FIXME: Removed from Ember, not effective
@@ -247,7 +247,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "graphics",
 					key = "foliage",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				--FIXME: not effective for now
 				--[[{
@@ -266,7 +266,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "shadows",
 					key = "texturesize",
 					
-					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new(value, true) end,
+					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new_local(value, true) end,
 					suggestions = {"256", "512", "1024", "2048", "4096"},
 				},
 				{
@@ -276,7 +276,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "shadows",
 					key = "fardistance",
 					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 1000) end,
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 1000) end,
 				},
 				{
 					label = "Use aggressive focus region",
@@ -285,7 +285,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "shadows",
 					key = "useaggressivefocusregion",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Preferred terrain technique",
@@ -294,7 +294,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "terrain",
 					key = "preferredtechnique",
 					
-					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
 					suggestions = {"ShaderNormalMapped", "Shader", "Base"},
 				}
 			},
@@ -312,7 +312,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "audio",
 					key = "enabled",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Output",
@@ -321,7 +321,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "audio",
 					key = "output",
 					
-					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
 					suggestions = {"surround"}
 				},
 			},
@@ -339,7 +339,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "input",
 					key = "degreespermouseunit",
 					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new(value, 400) end,
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 400) end,
 				},
 				{
 					label = "Invert mouse look",
@@ -348,7 +348,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "input",
 					key = "invertcamera",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Catch mouse",
@@ -357,7 +357,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "input",
 					key = "catchmouse",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Adjust camera to terrain",
@@ -366,7 +366,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "input",
 					key = "adjusttoterrain",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 			},
 		},
@@ -383,7 +383,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "metaserver",
 					key = "enabled",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Metaserver",
@@ -392,7 +392,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "metaserver",
 					key = "server",
 					
-					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Autoconnect",
@@ -401,7 +401,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "metaserver",
 					key = "autoconnect",
 					
-					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Minimum server version",
@@ -410,7 +410,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "metaserver",
 					key = "minimumversion",
 					
-					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfStringEditboxRepresentation:new_local(value) end,
 				},
 			},
 		},
@@ -428,7 +428,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "general",
 					key = "logginglevel",
 					
-					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
 					suggestions = {"verbose", "info", "warning", "failure", "critical"}
 				},
 				{
@@ -438,7 +438,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "general",
 					key = "loggingdetailed",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "CEGUI Logging level",
@@ -447,7 +447,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "cegui",
 					key = "minimumlogginglevel",
 					
-					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new(value, true) end,
+					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
 					suggestions = {"insane", "informative", "standard", "warnings", "errors"}
 				},
 				{
@@ -457,7 +457,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "lua",
 					key = "debug",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Use debug LOD colours for terrain",
@@ -466,7 +466,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "terrain",
 					key = "usedebuglodcolors",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 				{
 					label = "Show 'inspect' menu option",
@@ -475,7 +475,7 @@ function SettingsWidget:buildSettingsUi()
 					section = "authoring",
 					key = "showinspectforall",
 					
-					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new(value) end,
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
 			},
 		},

@@ -28,6 +28,8 @@
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUISlider.h>
 
+#include <sigc++/trackable.h>
+
 namespace Ember {
 namespace OgreView {
 
@@ -39,7 +41,7 @@ namespace Representations {
  * @brief represents given value by a slider (the underlying value has to be float!)
  */
 template<typename ValueType>
-class SliderRepresentation : public SingleAdapterRepresentationBase<ValueType>
+class SliderRepresentation : public SingleAdapterRepresentationBase<ValueType>, public sigc::trackable
 {
 public:
 	/**

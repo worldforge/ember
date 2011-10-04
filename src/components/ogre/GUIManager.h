@@ -43,6 +43,8 @@ namespace CEGUI
 class GUISheet;
 class LuaScriptModule;
 class Window;
+class OgreResourceProvider;
+class OgreImageCodec;
 }
 
 namespace Eris {
@@ -314,6 +316,8 @@ protected:
 	Ogre::RenderWindow* mWindow;
 	CEGUI::System* mGuiSystem;
 	CEGUI::OgreRenderer* mGuiRenderer;
+	CEGUI::OgreResourceProvider* mOgreResourceProvider;
+	CEGUI::OgreImageCodec* mOgreImageCodec;
 
 	std::string mDefaultScheme;
 

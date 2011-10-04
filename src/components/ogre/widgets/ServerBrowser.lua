@@ -228,7 +228,7 @@ function ServerBrowser:getSavedAccount(sInfo)
 	-- get the 'username' key.  If this has a value, there is saved credentials
 	-- We are always expecting a string ... even if it's empty.
 	local serverService = emberServices:getServerSettingsService()
-	local serverSettingCredentials = Ember.Services.ServerSettingsCredentials:new(sInfo:getHostname(), sInfo:getServername())
+	local serverSettingCredentials = Ember.Services.ServerSettingsCredentials:new_local(sInfo:getHostname(), sInfo:getServername())
 	local savedUser = serverService:getItem(serverSettingCredentials,"username")
 	local retFav = savedUser:as_string()
 	if retFav ~= "" then

@@ -239,7 +239,7 @@ function Console:appendChatMessage(line, entity, entityStartSymbol, entityEndSym
 	
 	if self:chatMessageContainsPlayerName(line) then
 		--user might want to pay attention to the console, another player mentioned his/her name!
-		self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new(self.mainWindow))
+		self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new_local(self.mainWindow))
 	end
 end
 
@@ -327,7 +327,7 @@ function Console:consoleGotMessage(message, tag)
 	
 	if tag == "error" or tag == "important" then
 		--user might want to pay attention to the console, either error or an important message was appended
-		self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new(self.mainWindow))
+		self.widget:getMainWindow():fireEvent("RequestAttention", CEGUI.WindowEventArgs:new_local(self.mainWindow))
 	end
 	
 	return true

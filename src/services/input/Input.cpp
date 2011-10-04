@@ -273,7 +273,7 @@ void Input::pollMouse(float secondsSinceLast)
 void Input::pollEvents(float secondsSinceLast)
 {
 	mTimeSinceLastRightMouseClick += secondsSinceLast;
-	SDL_Event event;
+	static SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		/* Look for a keypress */

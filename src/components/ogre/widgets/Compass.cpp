@@ -271,7 +271,7 @@ void OverlayCompassImpl::refresh()
 }
 
 RenderedCompassImpl::RenderedCompassImpl(std::string compassMaterialName, std::string pointerMaterialName) :
-	mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mMapRectangle(0), mPointer(pointerMaterialName), mMaterialName(compassMaterialName)
+	mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mX(0), mY(0), mMapRectangle(0), mPointer(pointerMaterialName), mMaterialName(compassMaterialName)
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassImpl_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0, 0, 0, 0), 0.0f, 0.0f, 0.0f);

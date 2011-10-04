@@ -77,6 +77,7 @@ World::~World()
 	delete mAuthoringManager;
 
 	delete mMainCamera;
+	delete mEntityWorldPickListener;
 	delete mMoveManager;
 
 	//The factory will be deleted by the mWorldView when that is deleted later on, so we shall not delete it here

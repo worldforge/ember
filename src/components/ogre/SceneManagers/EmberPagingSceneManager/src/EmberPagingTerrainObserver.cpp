@@ -38,6 +38,7 @@ namespace OgreView
 {
 
 EmberPagingTerrainObserver::EmberPagingTerrainObserver()
+: mObservedArea(0, 0, 0, 0)
 {
 }
 

@@ -41,7 +41,11 @@ namespace Caelum
     ):
         mOgreRoot (root),
         mSceneMgr (sceneMgr),
-        mCleanup (false)
+        mCleanup (false),
+        mAutoMoveCameraNode (true),
+        mAutoNotifyCameraChanged (true),
+        mAutoAttachViewportsToComponents (true),
+        mAutoViewportBackground (true)
     {
         LogManager::getSingleton().logMessage ("Caelum: Initialising Caelum system...");
         //LogManager::getSingleton().logMessage ("Caelum: CaelumSystem* at d" +

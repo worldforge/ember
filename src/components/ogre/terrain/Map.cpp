@@ -140,15 +140,13 @@ MapView& Map::getView()
 
 
 MapView::MapView(Map& map, MapCamera& mapCamera)
-: mMap(map)
+:
+//set it to invalid values so we'll force an update when it's repositioned
+mFullBounds(1, 1, -1, -1)
+, mMap(map)
 , mMapCamera(mapCamera)
 , mViewSize(0.5)
 {
-	//set it to invalid values so we'll force an update when it's repositioned
-	mFullBounds.left = 1;
-	mFullBounds.right = -1;
-	mFullBounds.top = 1;
-	mFullBounds.bottom = -1;
 }
 
 bool MapView::reposition(const Ogre::Vector2& pos)
