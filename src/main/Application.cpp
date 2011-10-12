@@ -42,6 +42,7 @@
 
 #include "framework/ConsoleBackend.h"
 #include "framework/Time.h"
+#include "framework/ShutdownException.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 #include "components/lua/Connectors.h"
@@ -386,6 +387,10 @@ void Application::start()
 	} catch (const std::exception& ex) {
 		std::cout << "Error when setting up Ogre: " << ex.what() << std::endl;
 		S_LOG_CRITICAL("Error when setting up Ogre." << ex);
+		return;
+	} catch (ShutdownException& ex2) {
+		std::cout << "ShutdownException caught: " << ex2.getReason() << std::endl;
+		S_LOG_WARNING("ShutdownException caught: " << ex2.getReason());
 		return;
 	} catch (...) {
 		std::cout << "Unknown error when setting up Ogre." << std::endl;

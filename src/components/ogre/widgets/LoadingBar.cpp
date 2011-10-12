@@ -28,6 +28,9 @@ the basic resources required for the progress bar and will be loaded automatical
 
 #include "services/EmberServices.h"
 #include "services/wfut/WfutService.h"
+#include "framework/ShutdownException.h"
+#include "main/Application.h"
+
 #include <OgreOverlay.h>
 #include <OgreOverlayElement.h>
 #include <OgreOverlayContainer.h>
@@ -154,8 +157,6 @@ namespace Gui {
 	}
 
 
-
-
 	void LoadingBar::addSection(LoadingBarSection* section)
 	{
 		mSections.push_back(section);
@@ -216,18 +217,18 @@ namespace Gui {
 				//There's a bug in Ogre 1.7.1 (at least) which makes the text of some elements not appear. By asking it to update the positions it seems to work.
 				mVersionElement->_positionsOutOfDate();
 
-				mWindow.update();
 				Ogre::WindowEventUtilities::messagePump();
+				if(Application::getSingleton().shouldQuit() || mWindow.isClosed()){
+					throw ShutdownException("Aborting startup");
+				}
+
+				mWindow.update();
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when updating render for loading bar." << ex);
 			}
 			mTimer.reset();
 		}
 	}
-
-
-
-
 
 	LoadingBarSection::LoadingBarSection(LoadingBar& loadingBar, float size, const std::string& name)
 	: mSize(size), mLoadingBar(loadingBar), mAccumulatedSize(0), mName(name), mActive(false)
@@ -264,27 +265,6 @@ namespace Gui {
 	{
 		mActive = false;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	ResourceGroupLoadingBarSection::ResourceGroupLoadingBarSection(LoadingBarSection& section,
@@ -434,4 +414,3 @@ namespace Gui {
 }
 }
 }
-
