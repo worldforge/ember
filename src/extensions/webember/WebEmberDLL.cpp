@@ -27,7 +27,7 @@
 
 #ifdef _WIN32
 #include "platform/platform_windows.h"
-#define WEBEMBER_EXPORT __declspec(dllexport)
+#define WEBEMBER_EXPORT __declspec(dllexport) __cdecl
 #elif __GNUC__ >= 4
 //On GCC4, you can set visibility to minimalize exported abi ABI. The library will be faster and smaller.
 //For more info, read: http://gcc.gnu.org/wiki/Visibility
