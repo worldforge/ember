@@ -1,9 +1,7 @@
-settingsWidget = {connectors={}}
-
 SettingsRestartDialog = {}
 
 function SettingsRestartDialog:new()
-	ret = {}
+	local ret = {}
 	setmetatable(ret, {__index = SettingsRestartDialog})
 	
 	ret:buildWidget()
@@ -28,17 +26,23 @@ function SettingsRestartDialog:buildWidget()
 end
 
 function SettingsRestartDialog:CloseClicked(agrs)
+	self:destroy()
+	return true
+end
+
+function SettingsRestartDialog:destroy()
 	guiManager:destroyWidget(self.widget)
 	self.widget = nil
 end
 
 SettingsUnappliedChangesDialog = {}
 
-function SettingsUnappliedChangesDialog:new()
-	ret = {}
+function SettingsUnappliedChangesDialog:new(settingsWidget)
+	local ret = {}
 	setmetatable(ret, {__index = SettingsUnappliedChangesDialog})
 	
 	ret:buildWidget()
+	ret.settingsWidget = settingsWidget
 	
 	return ret
 end
@@ -69,8 +73,8 @@ end
 function SettingsUnappliedChangesDialog:ApplyClicked(agrs)
 	self:destroy()
 
-	settingsWidget:applyAllValues()
-	settingsWidget:hide()
+	self.settingsWidget:applyAllValues()
+	self.settingsWidget:hide()
 	
 	return true
 end
@@ -78,8 +82,8 @@ end
 function SettingsUnappliedChangesDialog:DiscardClicked(agrs)
 	self:destroy()
 	
-	settingsWidget:discardAllValues()
-	settingsWidget:hide()
+	self.settingsWidget:discardAllValues()
+	self.settingsWidget:hide()
 	
 	return true
 end
@@ -87,7 +91,6 @@ end
 SettingsWidget = {}
 
 function SettingsWidget:buildWidget()
-	self.connectors = {}
 	
 	self.widget = guiManager:createWidget()
 	self.widget:loadMainSheet("Settings.layout", "Settings/")
@@ -113,13 +116,24 @@ function SettingsWidget:buildWidget()
 	
 	local configService = emberServices:getConfigService()
 	local valueChangedCall = function(section, key)
-		settingsWidget:EventChangedConfigItem(section, key)
+		self:EventChangedConfigItem(section, key)
 	end
 	connect(self.connectors, configService.EventChangedConfigItem, valueChangedCall)
 end
 
-function SettingsWidget:destroy()
+function SettingsWidget:shutdown()
+	if self.settingsRestartDialogInstance then
+		self.settingsRestartDialogInstance:destroy()
+		self.settingsRestartDialogInstance = nil
+	end
+	if self.settingsUnappliedChangesDialogInstance then
+		self.settingsUnappliedChangesDialogInstance:destroy()
+		self.settingsUnappliedChangesDialogInstance = nil
+	end
+
+	self.settings = nil
 	disconnectAll(self.connectors)
+	guiManager:destroyWidget(self.widget)
 end
 
 function SettingsWidget:buildSettingsUi()
@@ -571,7 +585,7 @@ function SettingsWidget:buildUiFor(category)
 		local localKey = data.key
 		
 		local valueChangedCall = function()
-			settingsWidget:RepresentationValueChanged(localSection, localKey)
+			self:RepresentationValueChanged(localSection, localKey)
 		end
 		connect(self.connectors, representation:getEventValueChangedSignal(), valueChangedCall)
 	end
@@ -579,9 +593,6 @@ function SettingsWidget:buildUiFor(category)
 	ret:addChildWindow(vbox)
 	return ret
 end
-
--- simply used to prevent the dialog from going "out of scope" and Lua to garbage collect it
-settingsRestartDialogInstance = nil
 
 function SettingsWidget:hasChanges()
 	-- Checks whether there are changed values in the settings
@@ -630,7 +641,7 @@ function SettingsWidget:applyAllValues()
 	self.applyButton:setEnabled(false)
 	
 	if requiresRestart then
-		settingsRestartDialogInstance = SettingsRestartDialog:new()
+		self.settingsRestartDialogInstance = SettingsRestartDialog:new()
 	end
 	
 	return requiresRestart
@@ -678,13 +689,10 @@ function SettingsWidget:ApplyClicked(args)
 	return true
 end
 
--- simply used to prevent the dialog from going "out of scope" and Lua to garbage collect it
-settingsUnappliedChangesDialogInstance = nil
-
 function SettingsWidget:CloseClicked(args)
 	if self:hasChanges() then
 		-- unapplied changes dialog takes care of discarding or applying the settings
-		settingsUnappliedChangesDialogInstance = SettingsUnappliedChangesDialog:new()
+		self.settingsUnappliedChangesDialogInstance = SettingsUnappliedChangesDialog:new(self)
 	else
 		self:hide()
 	end
@@ -738,5 +746,15 @@ function SettingsWidget:EventChangedConfigItem(section, key)
 	self:RepresentationValueChanged(section, key)
 end
 
-setmetatable(settingsWidget, {__index = SettingsWidget})
-settingsWidget:buildWidget()
+
+connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
+
+	local settingsWidget = {connectors={}}
+	setmetatable(settingsWidget, {__index = SettingsWidget})
+	settingsWidget:buildWidget()
+
+	connect(settingsWidget.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
+		settingsWidget:shutdown()
+		settingsWidget = nil
+	end)
+end)
