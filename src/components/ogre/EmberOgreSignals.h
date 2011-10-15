@@ -26,7 +26,8 @@ namespace Ember
 namespace OgreView
 {
 
-namespace Terrain {
+namespace Terrain
+{
 class TerrainManager;
 }
 
@@ -42,9 +43,12 @@ class World;
  *
  * These signals are emitted by the EmberOgre class. Since an instance of EmberOgre forms the base of the Ogre component of Ember, many of these signals are of use by subcomponents, both in their lifecycle as well as on frame render basis.
  */
-class EmberOgreSignals {
+class EmberOgreSignals
+{
 public:
-	virtual ~EmberOgreSignals(){}
+	virtual ~EmberOgreSignals()
+	{
+	}
 
 	/**
 	 * @brief Emitted when the Ember entity factory has been created.
@@ -68,6 +72,9 @@ public:
 
 	/**
 	 * @brief Emitted before the GUIManager is destroyed.
+	 *
+	 * Right after this has been emitted a garbage collection sweep of all scripting provider will occur.
+	 * This makes this signal a suitable one to listen to if you want to shut down your widgets.
 	 */
 	sigc::signal<void> EventGUIManagerBeingDestroyed;
 
