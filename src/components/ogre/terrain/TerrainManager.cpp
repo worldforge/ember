@@ -96,12 +96,11 @@ TerrainManager::~TerrainManager()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
+	delete mHandler;
 
 	getAdapter()->reset();
 
 	delete mSceneManagerAdapter;
-
-	delete mHandler;
 
 	delete mVegetation;
 	delete mCompilerTechniqueProvider;
