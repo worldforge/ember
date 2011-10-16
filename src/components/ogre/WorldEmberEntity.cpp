@@ -85,9 +85,7 @@ WorldEmberEntity::~WorldEmberEntity()
 	delete mEnvironment;
 	if (mTerrainManager) {
 		EmberOgre::getSingleton().EventTerrainManagerBeingDestroyed.emit();
-	}
-	delete mTerrainManager;
-	if (mTerrainManager) {
+		delete mTerrainManager;
 		EmberOgre::getSingleton().EventTerrainManagerDestroyed.emit();
 	}
 }
