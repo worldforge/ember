@@ -18,27 +18,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
-// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//#ifndef EMBEROGRE_GUIENTITYICONDRAGDROPPREVIEW_H
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 #include "EntityIconDragDropPreview.h"
 #include "components/ogre/World.h"
 
-#include "main/Application.h"
-#include "../EmberOgre.h"
 #include "../Avatar.h"
 #include "../Convert.h"
 
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 #include "QuickHelp.h"
 
 #include "EntityIcon.h"
-#include <Eris/TypeInfo.h>
-#include <Eris/Avatar.h>
 #include "components/ogre/EmberEntity.h"
 #include "../authoring/DetachedEntity.h"
-#include <Eris/Connection.h>
-#include <OgreSceneManager.h>
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelMount.h"
@@ -46,6 +38,11 @@
 
 #include "components/entitymapping/Definitions/CaseDefinition.h"
 #include "components/entitymapping/Cases/CaseBase.h"
+
+#include <Eris/TypeInfo.h>
+#include <Eris/Avatar.h>
+#include <Eris/Connection.h>
+#include <OgreSceneManager.h>
 
 using namespace Ember;
 namespace Ember
@@ -60,8 +57,8 @@ namespace Gui
 
 
 
-EntityIconDragDropPreview::EntityIconDragDropPreview() :
-		mIconEntity(0), mModelPreviewWorker(0)
+EntityIconDragDropPreview::EntityIconDragDropPreview(World& world) :
+		mWorld(world), mIconEntity(0), mModelPreviewWorker(0)
 {
 }
 
@@ -80,7 +77,7 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 			mIconEntity = icon->getEntity();
 			Gui::HelpMessage message("Entity Drag Preview", "Release the left mouse button to place the entity at the selected location. Press Escape to cancel." , "entity icon drag drop preview", "dragDropMessage");
 			Gui::QuickHelp::getSingleton().updateText(message);
-			mModelPreviewWorker = new ModelPreviewWorker(mIconEntity);
+			mModelPreviewWorker = new ModelPreviewWorker(mWorld, mIconEntity);
 			mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
 			mModelPreviewWorker->EventFinalizeCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::finalizeCreation));
 		}
@@ -99,7 +96,7 @@ void EntityIconDragDropPreview::cleanupCreation()
 
 void EntityIconDragDropPreview::finalizeCreation()
 {
-	mDropOffset = mModelPreviewWorker->getPosition() - EmberOgre::getSingleton().getWorld()->getAvatar()->getClientSideAvatarPosition();
+	mDropOffset = mModelPreviewWorker->getPosition() - mWorld.getAvatar()->getClientSideAvatarPosition();
 	mDropOrientation = mModelPreviewWorker->getOrientation();
 	EventEntityFinalized.emit(mIconEntity);
 	cleanupCreation();
@@ -115,7 +112,7 @@ WFMath::Quaternion EntityIconDragDropPreview::getDropOrientation() const
 	return mDropOrientation;
 }
 
-ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mEntity(0), mEntityNode(0), mModel(0), mModelMount(0), mMovement(0)
+ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) : mWorld(world), mEntity(0), mEntityNode(0), mModel(0), mModelMount(0), mMovement(0)
 {
 	mOrientation.identity();
 
@@ -126,11 +123,11 @@ ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mEntity(0), mEnti
 	mEntityMessage = entity->getInstanceAttributes();
 
 	// Temporary entity
-	mEntity = new Authoring::DetachedEntity("-1", erisType, EmberOgre::getSingleton().getWorld()->getView().getAvatar()->getConnection()->getTypeService());
+	mEntity = new Authoring::DetachedEntity("-1", erisType, entity->getView()->getAvatar()->getConnection()->getTypeService());
 	mEntity->setFromMessage(mEntityMessage);
 
 	// Creating scene node
-	mEntityNode = EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->createChildSceneNode();
+	mEntityNode = mWorld.getSceneManager().getRootSceneNode()->createChildSceneNode();
 
 	// Making model from temporary entity
 	ModelPreviewWorkerActionCreator actionCreator(*this);
@@ -140,7 +137,7 @@ ModelPreviewWorker::ModelPreviewWorker(Eris::Entity* entity) : mEntity(0), mEnti
 	}
 
 	// Registering move adapter to track mouse movements
-	mMovement = new ModelPreviewWorkerMovement(*this, EmberOgre::getSingleton().getWorld()->getMainCamera(), *mEntity, mEntityNode);
+	mMovement = new ModelPreviewWorkerMovement(*this, mWorld.getMainCamera(), *mEntity, mEntityNode);
 	//mMoveAdapter->addAdapter();
 }
 
@@ -152,10 +149,10 @@ ModelPreviewWorker::~ModelPreviewWorker()
 
 	mEntityNode->detachAllObjects();
 	mOrientation = Convert::toWF(mEntityNode->getOrientation());
-	EmberOgre::getSingleton().getWorld()->getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
+	mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
 	//	delete mEntityNode;
 
-	EmberOgre::getSingleton().getWorld()->getSceneManager().destroyMovableObject(mModel);
+	mWorld.getSceneManager().destroyMovableObject(mModel);
 
 	// Deleting temporary entity
 	mEntity->shutdown();
@@ -171,10 +168,10 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 			//Reset the model mount to start with.
 			delete mModelMount;
 			mModelMount = 0;
-			EmberOgre::getSingleton().getWorld()->getSceneManager().destroyMovableObject(mModel);
+			mWorld.getSceneManager().destroyMovableObject(mModel);
 		}
 	}
-	mModel = Model::Model::createModel(EmberOgre::getSingleton().getWorld()->getSceneManager(), modelName);
+	mModel = Model::Model::createModel(mWorld.getSceneManager(), modelName);
 	mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelPreviewWorker::model_Reloaded));
 
 	//if the model definition isn't valid, use a placeholder

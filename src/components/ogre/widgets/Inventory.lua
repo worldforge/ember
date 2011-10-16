@@ -242,7 +242,7 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.useButton)
 	
-	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview()
+	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview(emberOgre:getWorld())
 	--User has dragged an entityIcon from the inventory to the world
 	self.DragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget(root)
 	self.DragDrop_DraggedOver = function(entityIcon)

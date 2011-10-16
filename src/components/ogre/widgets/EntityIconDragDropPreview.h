@@ -23,7 +23,6 @@
 #ifndef EMBEROGRE_GUIENTITYICONDRAGDROPPREVIEW_H
 #define EMBEROGRE_GUIENTITYICONDRAGDROPPREVIEW_H
 
-#include "components/ogre/authoring/EntityRecipe.h"
 #include "components/entitymapping/IActionCreator.h"
 #include "components/ogre/authoring/MovementAdapter.h"
 #include "components/ogre/authoring/IMovementBridge.h"
@@ -31,8 +30,10 @@
 #include "components/entitymapping/Actions/Action.h"
 #include <wfmath/point.h>
 #include <wfmath/quaternion.h>
+#include <Atlas/Message/Element.h>
 
 namespace Eris {
+class ViewEntity;
 class Entity;
 class Connection;
 class TypeInfo;
@@ -40,6 +41,8 @@ class TypeInfo;
 
 namespace Ember {
 namespace OgreView {
+
+class World;
 
 namespace Model {
 class Model;
@@ -70,9 +73,9 @@ class EntityIconDragDropPreview {
 public:
 	/**
 	 * @brief Constructor
-	 * @param conn Connection between the server and the client.
+	 * @param world The world.
 	 */
-	EntityIconDragDropPreview();
+	EntityIconDragDropPreview(World& world);
 
 	/**
 	 * @brief Destructor
@@ -114,6 +117,12 @@ public:
 	sigc::signal<void, EmberEntity*> EventEntityFinalized;
 
 private:
+
+	/**
+	 * @brief The world.
+	 */
+	World& mWorld;
+
 	/**
 	 * @brief The entity we are generating a preview model for.
 	 */
@@ -139,7 +148,12 @@ private:
 class ModelPreviewWorker
 {
 public:
-	ModelPreviewWorker(Eris::Entity* entity);
+	/**
+	 * @brief Ctor.
+	 * @param world The world.
+	 * @param entity The entity being moved.
+	 */
+	ModelPreviewWorker(World& world, Eris::ViewEntity* entity);
 	~ModelPreviewWorker();
 	/**
 	 * @brief Sets model information based on the entity type.
@@ -201,6 +215,11 @@ protected:
 	const WFMath::AxisBox<3> & getBBox();
 
 private:
+
+	/**
+	 * @brief The world.
+	 */
+	World& mWorld;
 
 	/**
 	 * @brief Detached entity that is used in process of creating preview.

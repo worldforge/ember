@@ -30,7 +30,7 @@ namespace Gui {
 class EntityIconDragDropPreview
 {
 public:
-	EntityIconDragDropPreview();
+	EntityIconDragDropPreview(Ember::OgreView::World& world);
 	void createPreview(EntityIcon* icon);
 	void cleanupCreation();
 	
