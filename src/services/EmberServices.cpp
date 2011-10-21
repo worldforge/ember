@@ -94,6 +94,7 @@ namespace Ember{
 
 	EmberServices::EmberServices()
 	: mScriptingService(new ScriptingService())
+	, mLoggingService(new LoggingService())
 	, mSoundService(new SoundService())
 	, mServerService(new ServerService())
 	, mMetaserverService(new MetaserverService())
