@@ -201,7 +201,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 #elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 		// On Mac, plugins are found in Resources in the Main (Application) bundle, then in the Ogre framework bundle
 		pluginExtension = "";
-		std::string pluginDir = configSrv->getSharedDataDirectory();
+		std::string pluginDir = configSrv.getSharedDataDirectory();
 		pluginLocations.push_back(pluginDir);
 		pluginDir += "/../Plugins";
 		pluginLocations.push_back(pluginDir);
