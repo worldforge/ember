@@ -322,37 +322,39 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 	}
 	if (std::find(mLoadedCompositors.begin(), mLoadedCompositors.end(), compositorName) == mLoadedCompositors.end()) {
 		Ogre::CompositorInstance* compositor = Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), compositorName);
-		//There's a bug in Ogre which will causes a segfault during rendering if a compositor has an invalid shader.
-		//We therefore need to check for this here, and disable the shader if so is the case.
-		compositor->getCompositor()->load();
-		Ogre::CompositionTechnique::TargetPassIterator targetPassIter = compositor->getTechnique()->getTargetPassIterator();
-		bool hasErrors = false;
-		while (targetPassIter.hasMoreElements() && !hasErrors) {
-			Ogre::CompositionTargetPass::PassIterator compPassIter = targetPassIter.getNext()->getPassIterator();
-			while (compPassIter.hasMoreElements() && !hasErrors) {
-				Ogre::CompositionPass* compositorPass = compPassIter.getNext();
-				compositorPass->getMaterial()->load();
-				Ogre::Material::TechniqueIterator techIter = compositorPass->getMaterial()->getSupportedTechniqueIterator();
-				while (techIter.hasMoreElements() && !hasErrors) {
-					Ogre::Technique::PassIterator _passIter = techIter.getNext()->getPassIterator();
-					while (_passIter.hasMoreElements() && !hasErrors) {
-						Ogre::Pass* pass = _passIter.getNext();
-						if (pass->hasFragmentProgram()) {
-							if (pass->getFragmentProgram()->hasCompileError()) {
-								hasErrors = true;
-								break;
+		if (compositor) {
+			//There's a bug in Ogre which will causes a segfault during rendering if a compositor has an invalid shader.
+			//We therefore need to check for this here, and disable the shader if so is the case.
+			compositor->getCompositor()->load();
+			Ogre::CompositionTechnique::TargetPassIterator targetPassIter = compositor->getTechnique()->getTargetPassIterator();
+			bool hasErrors = false;
+			while (targetPassIter.hasMoreElements() && !hasErrors) {
+				Ogre::CompositionTargetPass::PassIterator compPassIter = targetPassIter.getNext()->getPassIterator();
+				while (compPassIter.hasMoreElements() && !hasErrors) {
+					Ogre::CompositionPass* compositorPass = compPassIter.getNext();
+					compositorPass->getMaterial()->load();
+					Ogre::Material::TechniqueIterator techIter = compositorPass->getMaterial()->getSupportedTechniqueIterator();
+					while (techIter.hasMoreElements() && !hasErrors) {
+						Ogre::Technique::PassIterator _passIter = techIter.getNext()->getPassIterator();
+						while (_passIter.hasMoreElements() && !hasErrors) {
+							Ogre::Pass* pass = _passIter.getNext();
+							if (pass->hasFragmentProgram()) {
+								if (pass->getFragmentProgram()->hasCompileError()) {
+									hasErrors = true;
+									break;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-		if (hasErrors) {
-			S_LOG_FAILURE("Compositor "<< compositorName <<" has errors and will be disabled.");
-			Ogre::CompositorManager::getSingleton().removeCompositor(mWindow.getViewport(0), compositorName);
-		} else {
-			compositor->setEnabled(true);
-			mLoadedCompositors.push_back(compositorName);
+			if (hasErrors) {
+				S_LOG_FAILURE("Compositor "<< compositorName <<" has errors and will be disabled.");
+				Ogre::CompositorManager::getSingleton().removeCompositor(mWindow.getViewport(0), compositorName);
+			} else {
+				compositor->setEnabled(true);
+				mLoadedCompositors.push_back(compositorName);
+			}
 		}
 	} else {
 		Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow.getViewport(0), compositorName, enable);
