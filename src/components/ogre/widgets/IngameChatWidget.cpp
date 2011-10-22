@@ -685,7 +685,7 @@ void IngameChatWidget::ChatText::switchToDetachedMode()
 		return;
 	}
 
-	const Rect rect = mAttachedWindow->getUnclippedOuterRect();
+	const CEGUI::Rect rect = mAttachedWindow->getUnclippedOuterRect();
 	if (rect.d_left >= 0 && rect.d_top >= 0) {
 		mDetachedWindow->setPosition(UVector2(UDim(0, rect.d_left), UDim(0, rect.d_top)));
 	} else {
