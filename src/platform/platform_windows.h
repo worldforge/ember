@@ -20,9 +20,6 @@
 #define stricmp _stricmp
 #define access _access
 
-//NOTE: localtime_s has different return value!
-#define localtime_r(a, b) localtime_s(b, a)
-
 //F_OK is not defined in MSVC, but used in osdir.h
 #define F_OK 0
 

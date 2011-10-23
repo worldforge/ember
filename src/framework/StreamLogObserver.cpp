@@ -23,9 +23,7 @@
 #include "StreamLogObserver.h"
 #include <ctime>
 #include <boost/thread/thread.hpp>
-#ifdef _MSC_VER
-#include <platform/platform_windows.h>
-#endif
+
 namespace Ember {
 
 /**
@@ -68,8 +66,12 @@ static WFMath::TimeStamp startTime(WFMath::TimeStamp::now());
                                                  const Log::MessageImportance & importance, const time_t & timeStamp)
     {
         tm ctm;
+#ifdef _WIN32
+        //win32 hasn't got localtime_r, but on win32 its thread-safe calling localtime on mingw32 and msvc.
+        ctm = *localtime(&timeStamp);
+#else
         localtime_r(&timeStamp, &ctm); //currentLocalTime was too long, sorry
-        
+#endif
         myOut.fill('0');
         myOut << "[";
         myOut.width(2);
