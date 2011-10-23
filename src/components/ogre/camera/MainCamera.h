@@ -27,7 +27,6 @@
 #include "components/ogre/OgreIncludes.h"
 
 #include "services/input/Input.h"
-#include "framework/ConsoleObject.h"
 
 #include <sigc++/trackable.h>
 
@@ -75,7 +74,7 @@ class CameraSettings;
  *
  * While there can be many different cameras in the system, this represent the "main" one. It renders directly to the main Ogre::RenderWindow.
  */
-class MainCamera: public Ogre::FrameListener, public ConsoleObject, public virtual sigc::trackable
+class MainCamera: public Ogre::FrameListener, public virtual sigc::trackable
 {
 public:
 
@@ -139,13 +138,6 @@ public:
 	bool worldToScreen(const Ogre::Vector3& worldPos, Ogre::Vector2& screenPos);
 
 	/**
-	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command
-	 * @param args
-	 */
-	virtual void runCommand(const std::string &command, const std::string &args);
-
-	/**
 	 * Methods from Ogre::FrameListener
 	 */
 	bool frameStarted(const Ogre::FrameEvent& event);
@@ -165,20 +157,6 @@ public:
 
 	void removeWorldPickListener(IWorldPickListener* worldPickListener);
 
-	const ConsoleCommandWrapper ToggleRendermode;
-	const ConsoleCommandWrapper ToggleFullscreen;
-	const ConsoleCommandWrapper Screenshot;
-	const ConsoleCommandWrapper Record;
-
-	/**
-	 Toggles between wireframe and solid render mode.
-	 */
-	void toggleRenderMode();
-
-	/**
-	 * takes a screen shot and writes it to disk
-	 */
-	void takeScreenshot();
 
 	/**
 	 * @brief Attaches the camera to a new mount, returning the previous mount, if any.
@@ -210,8 +188,6 @@ private:
 	ICameraMount* mCameraMount;
 
 	WorldPickListenersStore mPickListeners;
-
-	std::auto_ptr<Recorder> mRecorder;
 
 	CompositorNameStore mLoadedCompositors;
 
@@ -264,12 +240,6 @@ private:
 	 * @brief Creates the rays needed for mouse picking and camera adjustment.
 	 */
 	void createRayQueries(Ogre::SceneManager& sceneManager);
-
-	/**
-	 * @brief Takes and saves a screenshot to disk.
-	 * @return The file name of the new screenshot.
-	 */
-	const std::string _takeScreenshot();
 
 	/**
 	 * @brief Called when the mouse has moved.

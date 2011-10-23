@@ -95,6 +95,7 @@
 #include "sound/XMLSoundDefParser.h"
 
 #include "OgreSetup.h"
+#include "Screen.h"
 
 #include "authoring/MaterialEditor.h"
 #include "MediaUpdater.h"
@@ -134,12 +135,12 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-	mInput(0), mRoot(0), mSceneMgr(0), mWindow(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr<InputCommandMapper>(new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
-	//mJesus(0),
-			mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
-			//mCollisionManager(0),
-			//mCollisionDetectorVisualizer(0),
-			mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0)
+		mInput(0), mRoot(0), mSceneMgr(0), mWindow(0), mScreen(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr < InputCommandMapper > (new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
+		//mJesus(0),
+		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
+		//mCollisionManager(0),
+		//mCollisionDetectorVisualizer(0),
+		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -182,6 +183,8 @@ EmberOgre::~EmberOgre()
 	// 	}
 
 	delete mShaderManager;
+
+	delete mScreen;
 
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
@@ -332,7 +335,9 @@ bool EmberOgre::setup(Input& input)
 	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 	mOgreMainCamera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
 
-	//The input object must know the resoluton of the screen
+	mScreen = new Screen(*mWindow, *mOgreMainCamera);
+
+	//The input object must know the resolution of the screen
 	unsigned int height, width, depth;
 	int top, left;
 	mWindow->getMetrics(width, height, depth, left, top);
@@ -427,6 +432,11 @@ bool EmberOgre::setup(Input& input)
 World* EmberOgre::getWorld() const
 {
 	return mWorld;
+}
+
+Screen& EmberOgre::getScreen() const
+{
+	return *mScreen;
 }
 
 void EmberOgre::checkForConfigFiles()
@@ -610,7 +620,6 @@ ShaderManager* EmberOgre::getShaderManager() const
 // // 	return mPollEris;
 // // }
 
-
 void EmberOgre::initializeEmberServices(const std::string& prefix, const std::string& homeDir)
 {
 
@@ -628,7 +637,7 @@ void EmberOgre::Application_ServicesInitialized()
 
 }
 
-Eris::View* EmberOgre::getMainView()
+Eris::View* EmberOgre::getMainView() const
 {
 	return Application::getSingleton().getMainView();
 }

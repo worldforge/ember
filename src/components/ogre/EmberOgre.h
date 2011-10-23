@@ -114,6 +114,8 @@ class ShaderManager;
 
 class World;
 
+class Screen;
+
 /**
  @brief The main class of the Ogre rendering component. This functions as a hub for almost all subsystems used when rendering the world.
 
@@ -180,6 +182,13 @@ public:
 	 * @return The main render window.
 	 */
 	Ogre::RenderWindow* getRenderWindow() const;
+
+	/**
+	 * @brief Gets the main screen instance.
+	 *
+	 * @return The main screen instance.
+	 */
+	Screen& getScreen() const;
 
 	/**
 	 * @brief Gets the World instance, which represents a scene of a server supplied View instance.
@@ -249,6 +258,11 @@ protected:
 	 * There can be many more render targets in the system, but they will all reside within this render window (such as entity preview through CEGUI).
 	 */
 	Ogre::RenderWindow* mWindow;
+
+	/**
+	 * Handles the main rendering window.
+	 */
+	Screen* mScreen;
 
 	/**
 	 * @brief Utility object to configure shaders
@@ -365,7 +379,7 @@ protected:
 	 * The View can also be accessed through the Server service, but this can be used for convenience.
 	 * @return The main Eris View instance which represents the server world.
 	 */
-	Eris::View* getMainView();
+	Eris::View* getMainView() const;
 
 	/**
 	 * @brief The main World instance will be contained here, when the client is connected to a server and has received a View instance.

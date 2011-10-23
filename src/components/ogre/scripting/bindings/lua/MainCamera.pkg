@@ -44,16 +44,6 @@ public:
 	 */
 	void enableCompositor(const std::string& compositorName, bool enable);
 
-	/**
-		Toggles between wireframe and solid render mode.
-	*/
-	void toggleRenderMode();
-
-	/**
-	 * takes a screen shot and writes it to disk
-	 */
-	void takeScreenshot();
-
 
 
 };

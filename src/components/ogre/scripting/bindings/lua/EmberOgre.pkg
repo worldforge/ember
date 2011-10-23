@@ -4,6 +4,7 @@ $#include "required.h"
 
 
 $pfile "MainCamera.pkg"
+$pfile "Screen.pkg"
 $pfile "MovementController.pkg"
 $pfile "Avatar.pkg"
 $pfile "EmberEntityFactory.pkg"
@@ -119,6 +120,8 @@ class EmberOgre
 	static EmberOgre& getSingleton( void );
 
 	Ember::OgreView::World* getWorld() const;
+
+	Ember::OgreView::Screen& getScreen() const;
 	
 	Ogre::RenderWindow* getRenderWindow() const;
 	
