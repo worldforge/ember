@@ -341,9 +341,9 @@ bool OgreSetup::configure(void)
 
 		Ogre::NameValuePairList options;
 
-		if (configService->itemExists("ogre", "windowhandle")) {
+		if (configService.itemExists("ogre", "windowhandle")) {
 			//set the owner window
-			std::string windowhandle = configService->getValue("ogre", "windowhandle");
+			std::string windowhandle = configService.getValue("ogre", "windowhandle");
 			options["parentWindowHandle"] = windowhandle;
 
 			//put it in the top left corner
@@ -1065,4 +1065,3 @@ int OgreSetup::isExtensionSupported(const char *extension)
 
 }
 }
-
