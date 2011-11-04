@@ -119,12 +119,10 @@ void OgreSetup::shutdown()
 			mSceneManagerFactory = 0;
 		}
 
-		// 		if (mRenderWindow) {
-		// // 			mRoot->getRenderSystem()->destroyRenderWindow(mRenderWindow->getName());
-		// 			mRoot->detachRenderTarget(mRenderWindow);
-		// 			delete mRenderWindow;
-		// 			mRenderWindow = 0;
-		// 		}
+		 if (mRenderWindow) {
+		 	mRoot->detachRenderTarget(mRenderWindow);
+		 	mRenderWindow = 0;
+		 }
 	}
 	delete mRoot;
 	mRoot = 0;
