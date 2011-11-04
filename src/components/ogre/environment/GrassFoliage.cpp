@@ -98,7 +98,7 @@ void GrassFoliage::initialize()
 	//Create a GrassLoader object
 	mGrassLoader = new ::Forests::GrassLoader<FoliageLayer>(mPagedGeometry);
  	mPagedGeometry->setPageLoader(mGrassLoader);	//Assign the "treeLoader" to be used to load
-	mGrassLoader->setHeightFunction(&getTerrainHeight, &mTerrainManager);
+	mGrassLoader->setHeightFunction(&getTerrainHeight, static_cast<Domain::IHeightProvider*>(&mTerrainManager));
 
 	//Add some grass to the scene with GrassLoader::addLayer()
 	FoliageLayer *l = mGrassLoader->addLayer(mFoliageDefinition.getParameter("material"));
