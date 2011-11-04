@@ -190,6 +190,10 @@ namespace Ember
 			const SectionMap& section = mGlobalConfig->getSection(sectionName);
 			combinedSection.insert(section.begin(), section.end());
 		}
+		if (mCommandLineConfig->findSection(sectionName)) {
+			const SectionMap& section = mCommandLineConfig->getSection(sectionName);
+			combinedSection.insert(section.begin(), section.end());
+		}
 		return combinedSection;
 	}
 
@@ -202,7 +206,10 @@ namespace Ember
 		if (mUserConfig->findItem(section, key)) {
 			return mUserConfig->getItem(section, key);
 		}
-		return mGlobalConfig->getItem(section, key);
+		if (mGlobalConfig->findItem(section, key)) {
+			return mGlobalConfig->getItem(section, key);
+		}
+		return mCommandLineConfig->getItem(section, key);
 	}
 
 	bool ConfigService::getValue ( const std::string& section, const std::string& key, varconf::Variable& value ) const
@@ -215,6 +222,9 @@ namespace Ember
 			return true;
 		} else if (mGlobalConfig->findItem(section, key)) {
 			value = mGlobalConfig->getItem(section, key);
+			return true;
+		} else if (mCommandLineConfig->findItem(section, key)) {
+			value = mCommandLineConfig->getItem(section, key);
 			return true;
 		}
 		return false;
@@ -277,12 +287,12 @@ namespace Ember
 
 	bool ConfigService::hasItem ( const std::string& section, const std::string& key ) const
 	{
-		return mGlobalConfig->find ( section, key ) || mUserConfig->find ( section, key ) || mInstanceConfig->find ( section, key );
+		return mGlobalConfig->find ( section, key ) || mUserConfig->find ( section, key ) || mInstanceConfig->find ( section, key ) || mCommandLineConfig->find ( section, key );
 	}
 
 	bool ConfigService::deleteItem ( const std::string& section, const std::string& key )
 	{
-		return mGlobalConfig->erase ( section, key ) | mUserConfig->erase ( section, key ) | mInstanceConfig->erase ( section, key );
+		return mGlobalConfig->erase ( section, key ) | mUserConfig->erase ( section, key ) | mInstanceConfig->erase ( section, key ) | mCommandLineConfig->erase ( section, key );
 	}
 
 	bool ConfigService::loadSavedConfig ( const std::string& filename, const StringConfigMap& commandLineSettings )
