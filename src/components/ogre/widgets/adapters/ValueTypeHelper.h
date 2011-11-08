@@ -22,16 +22,21 @@
 #ifndef EMBEROGRE_GUI_ADAPTERS_VALUETYPEHELPER_H
 #define EMBEROGRE_GUI_ADAPTERS_VALUETYPEHELPER_H
 
-#include <sstream>
 #include <Atlas/Message/Element.h>
 #include <varconf/variable.h>
+#include <sstream>
+#include <iomanip>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-namespace Gui {
+namespace Gui
+{
 
-namespace Adapters {
+namespace Adapters
+{
 
 template<typename ValueType, typename TargetType>
 struct ValueTypeHelper
@@ -39,14 +44,47 @@ struct ValueTypeHelper
 	static TargetType convert(const ValueType& v)
 	{
 		// boost::lexical_cast inspired trick should serve as a nice default case
-		
+
 		std::stringstream stream;
 		stream << v;
 		TargetType ret;
 		stream >> ret;
-		
+
 		return ret;
 	}
+
+};
+
+/**
+ * @brief Helps with comparison of two different values.
+ *
+ * The main use of this is to allow specialization of comparisons for values where the default comparision methods might not be sufficient.
+ */
+template<typename ValueType>
+struct CompareHelper
+{
+	/**
+	 * Checks if two values are equal.
+	 * @param one
+	 * @param two
+	 * @return True if the two values are equal.
+	 */
+	static bool areEqual(const ValueType& one, const ValueType& two)
+	{
+		return one == two;
+	}
+
+};
+
+/**
+ * A specialized comparison helper which better can handle comparison of varconf::Variable instances.
+ *
+ * The main difference from the basic comparison is that this better can handle comparison of floating values.
+ */
+template<>
+struct CompareHelper<varconf::Variable>
+{
+	static bool areEqual(const varconf::Variable& one, const varconf::Variable& two);
 };
 
 template<typename T>
@@ -204,14 +242,12 @@ struct ValueTypeHelper<int, ::varconf::Variable>
 	}
 };
 
-
 template<>
 struct ValueTypeHelper< ::varconf::Variable, float>
 {
-	static int convert(const ::varconf::Variable& v)
+	static float convert(const ::varconf::Variable& v)
 	{
-		// uses operator float()
-		return v;
+		return static_cast<double>(v);
 	}
 };
 

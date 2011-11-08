@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUI_ADAPTERS_ADAPTERBASE_H
 
 #include "framework/LoggingInstance.h"
+#include "ValueTypeHelper.h"
 #include <CEGUIEvent.h>
 #include <Atlas/Message/Element.h>
 #include <sigc++/signal.h>
@@ -417,7 +418,7 @@ void AdapterBase<ValueType>::_applyChanges()
 template<typename ValueType>
 bool AdapterBase<ValueType>::_hasChanges()
 {
-	return this->mOriginalValue != this->getValue();
+	return !CompareHelper<ValueType>::areEqual(mOriginalValue, getValue());
 }
 
 template<typename ValueType>
