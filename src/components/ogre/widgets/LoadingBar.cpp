@@ -28,6 +28,7 @@ the basic resources required for the progress bar and will be loaded automatical
 
 #include "services/EmberServices.h"
 #include "services/wfut/WfutService.h"
+#include "services/input/Input.h"
 #include "framework/ShutdownException.h"
 #include "main/Application.h"
 
@@ -218,6 +219,7 @@ namespace Gui {
 				mVersionElement->_positionsOutOfDate();
 
 				Ogre::WindowEventUtilities::messagePump();
+				Input::getSingleton().processInput();
 				if(Application::getSingleton().shouldQuit() || mWindow.isClosed()){
 					throw ShutdownException("Aborting startup");
 				}
