@@ -182,16 +182,16 @@ namespace Ember
 			const SectionMap& section = mInstanceConfig->getSection(sectionName);
 			combinedSection.insert(section.begin(), section.end());
 		}
+		if (mCommandLineConfig->findSection(sectionName)) {
+			const SectionMap& section = mCommandLineConfig->getSection(sectionName);
+			combinedSection.insert(section.begin(), section.end());
+		}
 		if (mUserConfig->findSection(sectionName)) {
 			const SectionMap& section = mUserConfig->getSection(sectionName);
 			combinedSection.insert(section.begin(), section.end());
 		}
 		if (mGlobalConfig->findSection(sectionName)) {
 			const SectionMap& section = mGlobalConfig->getSection(sectionName);
-			combinedSection.insert(section.begin(), section.end());
-		}
-		if (mCommandLineConfig->findSection(sectionName)) {
-			const SectionMap& section = mCommandLineConfig->getSection(sectionName);
 			combinedSection.insert(section.begin(), section.end());
 		}
 		return combinedSection;
@@ -203,13 +203,13 @@ namespace Ember
 		if (mInstanceConfig->findItem(section, key)) {
 			return mInstanceConfig->getItem(section, key);
 		}
+		if (mCommandLineConfig->findItem(section, key)) {
+			return mCommandLineConfig->getItem(section, key);
+		}
 		if (mUserConfig->findItem(section, key)) {
 			return mUserConfig->getItem(section, key);
 		}
-		if (mGlobalConfig->findItem(section, key)) {
-			return mGlobalConfig->getItem(section, key);
-		}
-		return mCommandLineConfig->getItem(section, key);
+		return mGlobalConfig->getItem(section, key);
 	}
 
 	bool ConfigService::getValue ( const std::string& section, const std::string& key, varconf::Variable& value ) const
@@ -217,14 +217,14 @@ namespace Ember
 		if (mInstanceConfig->findItem(section, key)) {
 			value = mInstanceConfig->getItem(section, key);
 			return true;
+		} else if (mCommandLineConfig->findItem(section, key)) {
+			value = mCommandLineConfig->getItem(section, key);
+			return true;
 		} else if (mUserConfig->findItem(section, key)) {
 			value = mUserConfig->getItem(section, key);
 			return true;
 		} else if (mGlobalConfig->findItem(section, key)) {
 			value = mGlobalConfig->getItem(section, key);
-			return true;
-		} else if (mCommandLineConfig->findItem(section, key)) {
-			value = mCommandLineConfig->getItem(section, key);
 			return true;
 		}
 		return false;
