@@ -162,11 +162,14 @@ noinst_HEADERS = \
 	widgets/Vector3Adapter.h widgets/Widget.h widgets/WidgetDefinitions.h widgets/WidgetPool.h widgets/AtlasHelper.h \
 	widgets/icons/Icon.h widgets/icons/IconImageStore.h widgets/icons/IconManager.h widgets/icons/IconRenderer.h \
 	widgets/icons/IconStore.h \
-	widgets/adapters/ListBinder.h widgets/adapters/atlas/AdapterBase.h widgets/adapters/atlas/AdapterFactory.h widgets/adapters/atlas/AreaAdapter.h widgets/adapters/atlas/CustomAdapter.h \
+	widgets/adapters/ListBinder.h widgets/adapters/AdapterBase.h widgets/adapters/ComboboxAdapter.h widgets/adapters/GenericPropertyAdapter.h widgets/adapters/ValueTypeHelper.h \
+	widgets/adapters/atlas/AdapterBase.h widgets/adapters/atlas/AdapterFactory.h widgets/adapters/atlas/AreaAdapter.h widgets/adapters/atlas/CustomAdapter.h \
 	widgets/adapters/atlas/ListAdapter.h widgets/adapters/atlas/MapAdapter.h widgets/adapters/atlas/NumberAdapter.h widgets/adapters/atlas/OrientationAdapter.h widgets/adapters/atlas/PolygonAdapter.h \
 	widgets/adapters/atlas/Position2DAdapter.h widgets/adapters/atlas/PositionAdapter.h widgets/adapters/atlas/SizeAdapter.h widgets/adapters/atlas/StaticAdapter.h widgets/adapters/atlas/StringAdapter.h \
 	widgets/adapters/atlas/TerrainModAdapter.h \
 	widgets/adapters/eris/TypeTreeAdapter.h widgets/adapters/ogre/ResourceListAdapter.h widgets/TexturePair.h widgets/EntityTooltip.h \
+	widgets/representations/CheckboxRepresentation.h widgets/representations/EditboxRepresentation.h widgets/representations/RepresentationBase.h \
+	widgets/representations/SliderRepresentation.h widgets/representations/ComboboxRepresentation.h widgets/representations/LayoutHelper.h widgets/representations/SingleAdapterRepresentationBase.h \
 	widgets/EntityCreatorCreationInstance.h \
 \
 	Avatar.h MovementController.h \
