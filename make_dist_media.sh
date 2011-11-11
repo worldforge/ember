@@ -49,7 +49,7 @@ find_exclude_args=''
 for filename in `find ${original_media} -name norecurse`
 do
   directory=`dirname $filename`
-  find_exclude_args="${find_exclude_args} -not -wholename '${directory}*'"
+  find_exclude_args="${find_exclude_args} -not -wholename '${directory}/*'"
   echo "Excluding ${directory}"
 done
 
@@ -143,6 +143,7 @@ cd ${original_media} ; tar cf - `cat ${common_sounds_list} ` | ( cd ${shared_com
 cd ${shared_dir}
 cp -a ${original_media}/LICENSING.txt .
 cp -a ${original_media}/COPYING.txt .
+cd ${shared_common_dir}
 mkdir -p ./resources/ogre/ogre_scripts
 cp -a ${original_media}/resources/ogre/ogre_scripts/COPYING ./resources/ogre/ogre_scripts/
 
@@ -169,11 +170,12 @@ cp -a ${original_media}/themes/ember/gui/fonts/* ${shared_dir}/common/themes/emb
 echo "Copying materials"
 
 cd ${original_media}
-for filename in `find . -iname \*.cg -o -iname \*.glsl -o -iname \*.hlsl -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle -o -iname \*.compositor ${find_exclude_args}`
+for filename in `find ${original_media} \( ${find_exclude_args} \) \( -iname \*.cg -o -iname \*.glsl -o -iname \*.hlsl -o -iname \*.program -o -iname \*.asm -o -iname \*.ps -o -iname \*.material -o -iname \*.overlay -o -iname \*.particle -o -iname \*.compositor \)`
 do
+	filename=${filename#$original_media/}
 	origfile="${original_media}/${filename#.\/}"
 	newfile="${shared_common_dir}/${filename#.\/}"
-	#only copy if the original image is newer
+	#only copy if the original file is newer
 	if [ $origfile -nt $newfile ]
 	then
 		if [  ! -e `dirname $newfile` ]; then
@@ -196,6 +198,7 @@ echo "Copying core files"
 mkdir -p ${shared_dir}/core
 for filename in `cat ${srcdir}/media/core/EmberCore.files `
 do
+	echo "Copying core file ${original_media}/${filename}"
 	cp -uf ${original_media}/${filename} ${shared_dir}/core
 done
 
@@ -205,7 +208,7 @@ mkdir -p ${shared_dir}/common/resources/ogre/caelum
 cd ${original_media}/resources/ogre/caelum
 for filename in `find . ! -regex '.*/\..*' `
 do
-	echo $filename
+	echo "Copying Caelum file  /resources/ogre/caelum/$filename"
 	mkdir -p `dirname ${shared_common_dir}/resources/ogre/caelum/${filename}`
 	cp -uf ${filename} ${shared_common_dir}/resources/ogre/caelum/${filename}
 done
