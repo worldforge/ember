@@ -47,6 +47,7 @@ public:
 	const std::string& getName() const;
 	void tick(float tickSize);
 	void setCaption(const std::string& caption);
+	void setProgress(float progress);
 
 private:
 	void deactivate();
@@ -92,7 +93,7 @@ public:
 	void resourceGroupScriptingStarted(const Ogre::String & groupName, size_t scriptCount);
 	void scriptParseStarted(const Ogre::String & scriptName, bool& skipThisScript);
 	void scriptParseEnded(const Ogre::String& scriptName, bool skipped);
-	void resourceGroupScriptingEnded(const Ogre::String & groupName) {}
+	void resourceGroupScriptingEnded(const Ogre::String & groupName);
 	void resourceGroupLoadStarted(const Ogre::String & groupName, size_t resourceCount);
 	void resourceLoadStarted(const Ogre::ResourcePtr& resource);
 	void resourceLoadEnded(void);
@@ -106,6 +107,7 @@ private:
 	unsigned short mNumGroupsLoad;
 	LoadingBarSection& mSection;
 	Ogre::Real mProgressBarInc;
+	unsigned short mCompletedSections;
 
 };
 
@@ -143,13 +145,6 @@ protected:
 
 	Ogre::Timer mTimer;
 
-	/**
-	 * @brief Updates the render of the loading bar.
-	 *
-	 * Be sure to call this after each change, else nothing will be updated to the user.
-	 */
-	void updateRender();
-
 public:
 	/**
 	 * @brief Ctor.
@@ -182,6 +177,12 @@ public:
 	 */
 	void deleteOverlayContainerContents(Ogre::OverlayContainer& container) const;
 
+	/**
+	 * @brief Updates the render of the loading bar.
+	 *
+	 * Be sure to call this after each change, else nothing will be updated to the user.
+	 */
+	void updateRender(bool forceRender = false);
 
 };
 }

@@ -99,15 +99,6 @@ namespace Gui {
 		}
 	}
 
-
-	/** Show the loading bar and start listening.
-	@param window The window to update
-	@param numGroupsInit The number of groups you're going to be initialising
-	@param numGroupsLoad The number of groups you're going to be loading
-	@param initProportion The proportion of the progress which will be taken
-		up by initialisation (ie script parsing etc). Defaults to 0.7 since
-		script parsing can often take the majority of the time.
-	*/
 	void LoadingBar::start()
 	{
 		// We need to pre-initialise the 'Bootstrap' group so we can use
@@ -183,7 +174,7 @@ namespace Gui {
 			//make the black blocking block a little bit smaller and move it to the right
 			mLoadingBarElement->setWidth(mProgressBarMaxSize * (1 - progress));
 			mLoadingBarElement->setLeft(mProgressBarMaxLeft + (mProgressBarMaxSize * progress));
-			updateRender();
+			updateRender(progress == 1.0f ? true : false);
 		}
 		mProgress = progress;
 	}
@@ -197,7 +188,7 @@ namespace Gui {
 	{
 		if (mLoadingCommentElement) {
 			mLoadingCommentElement->setCaption(caption);
-			updateRender();
+			updateRender(true);
 		}
 	}
 
@@ -205,15 +196,15 @@ namespace Gui {
 	{
 		if (mVersionElement) {
 			mVersionElement->setCaption(versionText);
-			updateRender();
+			updateRender(true);
 		}
 	}
 
-	void LoadingBar::updateRender()
+	void LoadingBar::updateRender(bool forceRender)
 	{
 		static unsigned long oneFrame = 1000L / 60L;
 		unsigned long millisecondsSinceLastFrame = mTimer.getMilliseconds();
-		if (millisecondsSinceLastFrame > oneFrame) {
+		if (millisecondsSinceLastFrame > oneFrame || forceRender) {
 			try {
 				//There's a bug in Ogre 1.7.1 (at least) which makes the text of some elements not appear. By asking it to update the positions it seems to work.
 				mVersionElement->_positionsOutOfDate();
@@ -263,6 +254,15 @@ namespace Gui {
 		}
 	}
 
+	void LoadingBarSection::setProgress(float progress)
+	{
+		if (mAccumulatedSize < 1.0 && mAccumulatedSize < progress) {
+			mLoadingBar.increase(mSize * (mAccumulatedSize - progress));
+			mAccumulatedSize = progress;
+			mLoadingBar.updateRender(true);
+		}
+	}
+
 	void LoadingBarSection::deactivate()
 	{
 		mActive = false;
@@ -273,7 +273,7 @@ namespace Gui {
 		unsigned short numGroupsInit,
 		unsigned short numGroupsLoad,
 		Ogre::Real initProportion)
-	: mInitProportion(initProportion), mNumGroupsInit(numGroupsInit), mNumGroupsLoad(numGroupsLoad), mSection(section), mProgressBarInc(0)
+	: mInitProportion(initProportion), mNumGroupsInit(numGroupsInit), mNumGroupsLoad(numGroupsLoad), mSection(section), mProgressBarInc(0), mCompletedSections(0)
 	{
 		// self is listener
 		ResourceGroupManager::getSingleton().addResourceGroupListener(this);
@@ -304,6 +304,13 @@ namespace Gui {
 		mProgressBarInc /= (Real)scriptCount;
 		mSection.setCaption("Parsing scripts...");
 	}
+
+	void ResourceGroupLoadingBarSection::resourceGroupScriptingEnded(const Ogre::String & groupName)
+	{
+		mCompletedSections++;
+		mSection.setProgress(mCompletedSections / (mNumGroupsInit + mNumGroupsLoad));
+	}
+
 	void ResourceGroupLoadingBarSection::scriptParseStarted(const String& scriptName, bool& skipThisScript)
 	{
 		mSection.setCaption(scriptName);
@@ -347,6 +354,8 @@ namespace Gui {
 	}*/
 	void ResourceGroupLoadingBarSection::resourceGroupLoadEnded(const String& groupName)
 	{
+		mCompletedSections++;
+		mSection.setProgress(mCompletedSections / (mNumGroupsInit + mNumGroupsLoad));
 	}
 
 

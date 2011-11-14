@@ -352,13 +352,15 @@ bool EmberOgre::setup(Input& input)
 		Gui::LoadingBar loadingBar(*mWindow);
 
 		Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
-		loadingBar.addSection(&wfutSection);
+		if (useWfut) {
+			loadingBar.addSection(&wfutSection);
+		}
 		Gui::WfutLoadingBarSection wfutLoadingBarSection(wfutSection);
 
-		Gui::LoadingBarSection resourceGroupSection(loadingBar, 0.8, "Resource loading");
+		Gui::LoadingBarSection resourceGroupSection(loadingBar, useWfut ? 0.8 : 1.0, "Resource loading");
 		loadingBar.addSection(&resourceGroupSection);
 		unsigned int numberOfSections = mResourceLoader->numberOfSections() - 1; //remove bootstrap since that's already loaded
-		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), 0.7);
+		Gui::ResourceGroupLoadingBarSection resourceGroupSectionListener(resourceGroupSection, numberOfSections, (preloadMedia ? numberOfSections : 0), (preloadMedia ? 0.7 : 1.0));
 
 		loadingBar.start();
 		loadingBar.setVersionText(std::string("Version ") + VERSION);
