@@ -13,7 +13,7 @@ noinst_HEADERS = AttributeObserver.h ConsoleBackend.h ConsoleCommandWrapper.h Co
 	DeepAttributeObserver.h DirectAttributeObserver.h Exception.h IGameView.h IResourceProvider.h IScriptingProvider.h Log.h \
 	LogObserver.h LoggingInstance.h Service.h Singleton.h StreamLogObserver.h Tokeniser.h \
 	XMLCodec.h binreloc.h float_cast.h osdir.h scrap.h TimedLog.h Time.h MultiLineListFormatter.h TimeFrame.h \
-	CommandHistory.h
+	CommandHistory.h ShutdownException.h
 
 if !HAVE_LIBTINYXML
 libFramework_a_SOURCES += tinyxml/tinystr.cpp tinyxml/tinyxml.cpp tinyxml/tinyxmlerror.cpp \

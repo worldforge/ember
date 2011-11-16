@@ -32,6 +32,7 @@
 
 using namespace Ember::OgreView;
 using namespace Ember::OgreView::Terrain;
+using namespace Ember::Domain;
 
 namespace Ember
 {
