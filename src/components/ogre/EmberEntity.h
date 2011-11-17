@@ -47,8 +47,6 @@ class EntityTalk;
 namespace OgreView
 {
 
-class Scene;
-
 namespace Model
 {
 class Model;
@@ -136,9 +134,8 @@ public:
 	 * @param id The unique id of the entity.
 	 * @param ty The type info which specified the type for this entity.
 	 * @param vw The world view to which this entity belongs.
-	 * @param scene The scene to which this entity belongs.
 	 */
-	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene);
+	EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw);
 
 	/**
 	 * @brief Dtor.
@@ -146,10 +143,10 @@ public:
 	virtual ~EmberEntity();
 
 	/**
-	 * @brief Creates the model mapping for this entity. Call this once when initializing the entity.
-	 * @param scene The scene to which any created model should belong.
+	 * @brief Sets the model mapping for this entity. Call this once when initializing the entity.
+	 * @param mapping The mapping for this entity.
 	 */
-	void createEntityMapping(Scene& scene);
+	void setMapping(EntityMapping::EntityMapping* mapping);
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.

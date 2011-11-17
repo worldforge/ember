@@ -27,16 +27,15 @@
 #include "terrain/TerrainParser.h"
 #include "terrain/TerrainDefPoint.h"
 #include "Convert.h"
-#include "EmberEntityActionCreator.h"
 #include "IGraphicalRepresentation.h"
 #include "IEntityAttachment.h"
 #include "IEntityVisitor.h"
 #include "EmberOgre.h"
-#include "mapping/EmberEntityMappingManager.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/MultiLineListFormatter.h"
 #include "domain/EntityTalk.h"
 #include "authoring/AuthoringManager.h"
+#include "components/entitymapping/EntityMapping.h"
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -57,13 +56,9 @@ const std::string EmberEntity::MODE_FIXED("fixed");
 const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::MODE_SWIMMING("swimming");
 
-EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
+EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
 		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
-	// we need a model mapping
-	createEntityMapping(scene);
-
-	assert( mEntityMapping);
 }
 
 EmberEntity::~EmberEntity()
@@ -134,12 +129,10 @@ bool EmberEntity::createDependentObject(const std::string& attributeName)
 	return false;
 }
 
-void EmberEntity::createEntityMapping(Scene& scene)
+void EmberEntity::setMapping(EntityMapping::EntityMapping* mapping)
 {
 	delete mEntityMapping;
-	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
-	EmberEntityActionCreator creator(*this, scene);
-	mEntityMapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*this, &creator, getView());
+	mEntityMapping = mapping;
 }
 
 EntityMapping::EntityMapping* EmberEntity::getMapping() const

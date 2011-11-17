@@ -123,7 +123,7 @@ protected:
 	/**
 	 Creates a WorldEmberEntity instance.
 	 */
-	Eris::Entity* createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world);
+	EmberEntity* createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world);
 
 	Eris::View& mView;
 

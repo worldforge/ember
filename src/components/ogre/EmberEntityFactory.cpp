@@ -25,7 +25,7 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/Avatar.h"
-
+#include "components/ogre/EmberEntityActionCreator.h"
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
@@ -73,16 +73,17 @@ EmberEntityFactory::~EmberEntityFactory()
 Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w)
 {
 
-	Eris::Entity* emberEntity(0);
-
+	EmberEntity* entity(0);
 	if (type->isA(mTerrainType)) {
-		emberEntity = createWorld(ge, type, w);
+		entity = createWorld(ge, type, w);
 	} else {
-		emberEntity = new EmberEntity(ge->getId(), type, w, mScene);
+		entity = new EmberEntity(ge->getId(), type, w);
 	}
-
+	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
+	EmberEntityActionCreator creator(*entity, mScene);
+	entity->setMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &creator, &mView));
 	S_LOG_VERBOSE("Entity added to game view.");
-	return emberEntity;
+	return entity;
 }
 
 bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type)
@@ -90,7 +91,7 @@ bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Er
 	return true;
 }
 
-Eris::Entity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world)
+EmberEntity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world)
 {
 	assert(!mWorldEntity);
 	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, mScene);

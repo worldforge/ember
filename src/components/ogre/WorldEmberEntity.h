@@ -36,6 +36,7 @@ namespace OgreView
 {
 
 class EmberPagingSceneManager;
+class Scene;
 
 namespace Environment
 {
