@@ -8,6 +8,7 @@ INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@pre
 noinst_LIBRARIES = liblua_Helpers.a
 liblua_Helpers_a_SOURCES = Helpers.cxx OgreUtils.cpp
 
+CLEANFILES = Helpers.cxx
 TOLUA_PKGS = Helpers.pkg OgreUtils.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 Helpers.cxx: $(TOLUA_PKGS)

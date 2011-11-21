@@ -8,6 +8,7 @@ INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@pre
 noinst_LIBRARIES = liblua_ConnectorDefinitions.a
 liblua_ConnectorDefinitions_a_SOURCES = ConnectorDefinitions.cxx TypeResolving.cpp
 
+CLEANFILES = ConnectorDefinitions.cxx
 TOLUA_PKGS = ConnectorDefinitions.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 ConnectorDefinitions.cxx: $(TOLUA_PKGS)
