@@ -38,12 +38,13 @@ namespace Terrain
 {
 
 TerrainMod::TerrainMod(Eris::Entity& entity) :
-	mEntity(entity)
+		mEntity(entity)
 {
 }
 
 TerrainMod::~TerrainMod()
 {
+	onModDeleted();
 }
 
 void TerrainMod::init()
@@ -66,18 +67,12 @@ void TerrainMod::entity_Moved()
 	onModChanged();
 }
 
-void TerrainMod::entity_Deleted()
-{
-	onModDeleted();
-}
-
 void TerrainMod::observeEntity()
 {
 	mAttrChangedSlot.disconnect();
 	mAttrChangedSlot = sigc::mem_fun(*this, &TerrainMod::attributeChanged);
 	mEntity.observe("terrainmod", mAttrChangedSlot);
 	mEntity.Moved.connect(sigc::mem_fun(*this, &TerrainMod::entity_Moved));
-	mEntity.BeingDeleted.connect(sigc::mem_fun(*this, &TerrainMod::entity_Deleted));
 }
 
 Eris::Entity& TerrainMod::getEntity() const

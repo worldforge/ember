@@ -72,7 +72,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~TerrainMod();
+	virtual ~TerrainMod();
 	
 
     /**
@@ -141,12 +141,6 @@ protected:
     *    @brief Called whenever a modifier is moved and handles the update
     */
     void entity_Moved();
-
-    /**
-    Called whenever the entity holding a modifier is deleted and handles
-    removing the mod from the terrain
-    */
-    void entity_Deleted();
 
     /**
     * @brief Sets up the previous three handler functions to be called when a change

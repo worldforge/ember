@@ -87,16 +87,6 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 
 	mIsInitialized = true;
 
-	//Delay the checking and creation of area and terrainmod, since if we do it in onAttrChanged before the entity is properly initialized we'll get problems with multiple reparsings, as well as problems with placing the areas or terrainmod before the entity has been moved to it's proper place.
-	//Another way of doing this would be by attaching listeners, but that require more memory. It might be in the end that that's a better approach, depending on how much memory is needed, contrasted with the extra cycles spent here for every entity.
-	if (hasAttr("area")) {
-		createDependentObject("area");
-	}
-
-	if (hasAttr("terrainmod")) {
-		createDependentObject("terrainmod");
-	}
-
 	//If the entity had no bounding box, the onBboxChanged will never have been called, and we want to do that now instead.
 	if (!hasBBox()) {
 		onBboxChanged();
@@ -105,27 +95,6 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 
 bool EmberEntity::createDependentObject(const std::string& attributeName)
 {
-	//if the area attribute has changed, and we _don't_ have any mTerrainArea instance, try to create one such.
-	//if we do have an mTerrainArea instance, all updates will be taken care of by that instead and we can ignore this
-	if (attributeName == "area" && !mTerrainArea.get()) {
-		mTerrainArea = std::auto_ptr < Terrain::TerrainArea > (new Terrain::TerrainArea(*this));
-		if (mTerrainArea->init()) {
-			addArea(*mTerrainArea.get());
-			return true;
-		} else {
-			//if we couldn't properly initialize, delete the instance now, and then hopefully the next time the "area" attribute is changed we'll be able to properly create an area
-			mTerrainArea.reset();
-		}
-	}
-
-	//if the area attribute has changed, and we _don't_ have any mTerrainMod instance, try to create one such.
-	//if we do have an mTerrainMod instance, all updates will be taken care of by that instead and we can ignore this
-	if (attributeName == "terrainmod" && !mTerrainMod.get()) {
-		mTerrainMod = std::auto_ptr < Terrain::TerrainMod > (new Terrain::TerrainMod(*this));
-		mTerrainMod->init();
-		addTerrainMod(mTerrainMod.get());
-		return true;
-	}
 	return false;
 }
 

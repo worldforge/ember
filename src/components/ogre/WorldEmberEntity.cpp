@@ -43,6 +43,7 @@
 
 #include "framework/Exception.h"
 
+#include "TerrainEntityManager.h"
 #include "TerrainPageDataProvider.h"
 #include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 #include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
@@ -60,7 +61,7 @@ namespace OgreView
 {
 
 WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw, Scene& scene) :
-	EmberEntity(id, ty, vw), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), scene, *EmberOgre::getSingleton().getShaderManager(), Application::getSingleton().EventEndErisPoll)), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(mTerrainManager->getHandler())), mSceneManager(static_cast<EmberPagingSceneManager&> (scene.getSceneManager())), mScene(scene)
+		EmberEntity(id, ty, vw), mTerrainManager(new Terrain::TerrainManager(new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&>(scene.getSceneManager())), scene, *EmberOgre::getSingleton().getShaderManager(), Application::getSingleton().EventEndErisPoll)), mFoliage(0), mEnvironment(0), mFoliageInitializer(0), mHasBeenInitialized(false), mPageDataProvider(new TerrainPageDataProvider(mTerrainManager->getHandler())), mSceneManager(static_cast<EmberPagingSceneManager&>(scene.getSceneManager())), mScene(scene)
 {
 	mSceneManager.registerProvider(mPageDataProvider);
 	mWorldPosition.LatitudeDegrees = 0;
@@ -73,6 +74,8 @@ WorldEmberEntity::WorldEmberEntity(const std::string& id, Eris::TypeInfo* ty, Er
 	}
 	EmberOgre::getSingleton().EventTerrainManagerCreated.emit(*mTerrainManager);
 	mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrainManager_AfterTerrainUpdate));
+
+	new TerrainEntityManager(*vw, mTerrainManager->getHandler());
 }
 
 WorldEmberEntity::~WorldEmberEntity()
@@ -119,7 +122,7 @@ void WorldEmberEntity::Config_Foliage(const std::string& section, const std::str
 			mFoliage = new Environment::Foliage(*mTerrainManager);
 			EventFoliageCreated.emit();
 			if (!mHasBeenInitialized) {
-				mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
+				mFoliageInitializer = std::auto_ptr < DelayedFoliageInitializer > (new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
 			} else {
 				mFoliage->initialize();
 			}
@@ -197,7 +200,7 @@ void WorldEmberEntity::terrain_WorldSizeChanged()
 	mTerrainAfterUpdateConnection.disconnect();
 	//wait a little with initializing the foliage
 	if (mFoliage) {
-		mFoliageInitializer = std::auto_ptr<DelayedFoliageInitializer>(new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
+		mFoliageInitializer = std::auto_ptr < DelayedFoliageInitializer > (new DelayedFoliageInitializer(*mFoliage, *getView(), 1000, 15000));
 	}
 }
 
@@ -210,7 +213,7 @@ void WorldEmberEntity::updateEntityPosition(EmberEntity* entity, const std::vect
 {
 	entity->adjustPosition();
 	for (unsigned int i = 0; i < entity->numContained(); ++i) {
-		EmberEntity* containedEntity = static_cast<EmberEntity*> (entity->getContained(i));
+		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
 		updateEntityPosition(containedEntity, areas);
 	}
 }
@@ -262,7 +265,7 @@ Terrain::TerrainManager& WorldEmberEntity::getTerrainManager()
 }
 
 DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
-	mFoliage(foliage), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
+		mFoliage(foliage), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
 {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload
