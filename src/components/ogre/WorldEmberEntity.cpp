@@ -75,7 +75,7 @@ void WorldEmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool f
 	m_orientation = WFMath::Quaternion().identity();
 	m_acc = WFMath::Vector<3>::ZERO();
 
-	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &WorldEmberEntity::Config_Foliage));
+//	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &WorldEmberEntity::Config_Foliage));
 
 	EmberEntity::init(ge, fromCreateOp);
 

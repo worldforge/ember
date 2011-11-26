@@ -45,6 +45,8 @@
 #include "environment/CaelumEnvironment.h"
 #include "environment/SimpleEnvironment.h"
 
+#include "services/config/ConfigListenerContainer.h"
+
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 #include <Eris/Connection.h>
@@ -65,7 +67,7 @@ namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager))
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mConfigListenerContainer(new ConfigListenerContainer()), mFoliage(0), mFoliageInitializer(0)
 {
 
 	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, *EmberOgre::getSingleton().getShaderManager(), Application::getSingleton().EventEndErisPoll);
@@ -98,10 +100,14 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 	mEntityWorldPickListener = new EntityWorldPickListener(mView, *mScene);
 	mMainCamera->pushWorldPickListener(mEntityWorldPickListener);
 
+	mConfigListenerContainer->registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &World::Config_Foliage));
+
 }
 
 World::~World()
 {
+	delete mFoliageInitializer;
+	delete mConfigListenerContainer;
 	delete mTerrainEntityManager;
 	delete mTerrainManager;
 	delete mAuthoringMoverConnector;
@@ -251,6 +257,51 @@ void World::avatarEntity_BeingDeleted()
 	mAvatarCameraMotionHandler = 0;
 	delete mAvatar;
 	mAvatar = 0;
+}
+
+void World::Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_bool() && static_cast<bool>(variable)) {
+		if (!mFoliage) {
+			//create the foliage
+			mFoliage = new Environment::Foliage(*mTerrainManager);
+//			EventFoliageCreated.emit();
+			mFoliageInitializer = new DelayedFoliageInitializer(*mFoliage, mView, 1000, 15000);
+		}
+	} else {
+		delete mFoliage;
+		mFoliage = 0;
+		delete mFoliageInitializer;
+		mFoliageInitializer = 0;
+	}
+
+}
+
+DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
+		mFoliage(foliage), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
+{
+	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
+	//the main reason is that new terrain areas will invalidate the foliage causing a reload
+	//by delaying the foliage we can thus in most cases avoid those reloads
+	//wait three seconds
+	mTimeout->Expired.connect(sigc::mem_fun(this, &DelayedFoliageInitializer::timout_Expired));
+
+}
+
+DelayedFoliageInitializer::~DelayedFoliageInitializer()
+{
+	delete mTimeout;
+}
+
+void DelayedFoliageInitializer::timout_Expired()
+{
+	//load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
+	if (mView.lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
+		mFoliage.initialize();
+	} else {
+		mTotalElapsedTime += mIntervalMs;
+		mTimeout->reset(mIntervalMs);
+	}
 }
 
 }

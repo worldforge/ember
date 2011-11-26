@@ -37,11 +37,18 @@ namespace Eris
 class View;
 class Connection;
 class Entity;
+class Timeout;
+}
+
+namespace varconf
+{
+class Variable;
 }
 
 namespace Ember
 {
 class Input;
+class ConfigListenerContainer;
 namespace OgreView
 {
 
@@ -80,6 +87,7 @@ class ICameraMotionHandler;
 class IPageDataProvider;
 class EntityWorldPickListener;
 class TerrainEntityManager;
+class DelayedFoliageInitializer;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -309,10 +317,14 @@ protected:
 	 */
 	Environment::Foliage* mFoliage;
 
+	DelayedFoliageInitializer* mFoliageInitializer;
+
 	/**
 	 * @brief The main environment object. There should only be one in the system, and it's kept here.
 	 */
 	Environment::Environment* mEnvironment;
+
+	ConfigListenerContainer* mConfigListenerContainer;
 
 	void terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages);
 
@@ -332,6 +344,52 @@ protected:
 	void avatarEntity_BeingDeleted();
 
 	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2> >& areas);
+
+	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+};
+
+/**
+ @brief Allows for a delayed initialization of the foliage.
+
+ The initialization will occrur when either the sight queue is empty, or a certain time has elapsed.
+ The main reason for doing this is that whenever a new area is added to the world, the foliage is invalidated and reloaded.
+ As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.
+ By delaying the loading of the foliage we can avoid this.
+
+ @author Erik Hjortsberg <erik@worldforge.org>
+
+ */
+class DelayedFoliageInitializer
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param foliage The foliage object.
+	 * @param view The Eris::View object of the world. This will be used for querying about the size of the Sight queue.
+	 * @param intervalMs In milliseconds how often to check if the queue is empty or time has elapsed. Defaults to 1 second.
+	 * @param maxTimeMs In missiseconds the max time to wait until we initialize the foliage anyway.
+	 */
+	DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~DelayedFoliageInitializer();
+
+protected:
+	Environment::Foliage& mFoliage;
+	Eris::View& mView;
+	unsigned int mIntervalMs;
+	unsigned int mMaxTimeMs;
+
+	Eris::Timeout* mTimeout;
+	unsigned int mTotalElapsedTime;
+
+	/**
+	 * @brief Called when the time out has expired. We'll check for if either the set max time has elapsed, or if there's no more entities in the sight queue, and if so initialize the foliage. If not we'll just extend the waiting time.
+	 */
+	void timout_Expired();
 
 };
 
