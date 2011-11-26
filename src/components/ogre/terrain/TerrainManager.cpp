@@ -94,9 +94,9 @@ TerrainManager::~TerrainManager()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
-	delete mHandler;
+    getAdapter()->reset();
 
-	getAdapter()->reset();
+	delete mHandler;
 
 	delete mSceneManagerAdapter;
 

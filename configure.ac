@@ -547,8 +547,6 @@ AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 src/platform/Makefile
 		 src/main/Makefile
-		 src/main/bindings/Makefile
-		 src/main/bindings/lua/Makefile
 		 src/components/Makefile
 		 src/bindings/Makefile
 		 src/bindings/lua/Makefile

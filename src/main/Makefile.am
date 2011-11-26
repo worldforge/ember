@@ -19,7 +19,6 @@ emberlibs = \
 	$(top_builddir)/src/components/ogre/widgets/adapters/atlas/bindings/lua/liblua_AtlasAdapters.a \
 	$(top_builddir)/src/components/ogre/widgets/adapters/bindings/lua/liblua_Adapters.a \
 	$(top_builddir)/src/components/ogre/widgets/representations/bindings/lua/liblua_Representations.a \
-	$(top_builddir)/src/main/bindings/lua/liblua_Main.a \
 	$(top_builddir)/src/services/bindings/lua/liblua_EmberServices.a \
 	$(top_builddir)/src/framework/bindings/lua/atlas/liblua_Atlas.a \
 	$(top_builddir)/src/framework/bindings/lua/eris/liblua_Eris.a \
