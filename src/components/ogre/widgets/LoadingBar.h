@@ -30,6 +30,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include <OgreResourceGroupManager.h>
 #include <OgreTimer.h>
 namespace Ember {
+class MainLoopController;
 namespace OgreView {
 namespace Gui {
 
@@ -144,13 +145,15 @@ protected:
 	Ogre::OverlayElement* mVersionElement;
 
 	Ogre::Timer mTimer;
+	MainLoopController& mMainLoopController;
 
 public:
 	/**
 	 * @brief Ctor.
 	 * @param window The window to update
+	 * @param mainLoopController Allows the loading bar to see if the application should shut down.
 	 */
-	LoadingBar(Ogre::RenderWindow& window);
+	LoadingBar(Ogre::RenderWindow& window, MainLoopController& mainLoopController);
 	virtual ~LoadingBar();
 
 	/**

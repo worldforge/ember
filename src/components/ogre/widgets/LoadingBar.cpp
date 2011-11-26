@@ -30,7 +30,7 @@ the basic resources required for the progress bar and will be loaded automatical
 #include "services/wfut/WfutService.h"
 #include "services/input/Input.h"
 #include "framework/ShutdownException.h"
-#include "main/Application.h"
+#include "framework/MainLoopController.h"
 
 #include <OgreOverlay.h>
 #include <OgreOverlayElement.h>
@@ -58,7 +58,7 @@ namespace Gui {
 	added to a resource group called 'Bootstrap' - this provides the basic
 	resources required for the progress bar and will be loaded automatically.
 */
-	LoadingBar::LoadingBar(Ogre::RenderWindow& window) :
+	LoadingBar::LoadingBar(Ogre::RenderWindow& window, MainLoopController& mainLoopController) :
 	mProgress(0) ,
 	mWindow(window),
 	mLoadOverlay(0),
@@ -66,7 +66,8 @@ namespace Gui {
 	mLoadingBarElement(0),
 	mLoadingDescriptionElement(0),
 	mLoadingCommentElement(0),
-	mVersionElement(0)
+	mVersionElement(0),
+	mMainLoopController(mainLoopController)
 	{}
 
 	LoadingBar::~LoadingBar(){
@@ -211,7 +212,7 @@ namespace Gui {
 
 				Ogre::WindowEventUtilities::messagePump();
 				Input::getSingleton().processInput();
-				if(Application::getSingleton().shouldQuit() || mWindow.isClosed()){
+				if(mMainLoopController.shouldQuit() || mWindow.isClosed()){
 					throw ShutdownException("Aborting startup");
 				}
 

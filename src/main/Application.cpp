@@ -103,7 +103,7 @@ protected:
 	{
 		//Check for double, but cast to int. That way we'll catch all numbers.
 		if (variable.is_double()) {
-			mDesiredFps = static_cast<int> (variable);
+			mDesiredFps = static_cast<int>(variable);
 			if (mDesiredFps != 0) {
 				mMillisecondsPerFrame = 1000L / mDesiredFps;
 			} else {
@@ -119,7 +119,7 @@ public:
 	 * A listener will be set up listening for the general:desiredfps config setting.
 	 */
 	DesiredFpsListener() :
-		mDesiredFps(0), mMillisecondsPerFrame(0)
+			mDesiredFps(0), mMillisecondsPerFrame(0)
 	{
 		registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &DesiredFpsListener::Config_DesiredFps));
 	}
@@ -146,7 +146,7 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-	mOgreView(0), mShouldQuit(false), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mPollEris(true), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mLastTimeMainLoopStepEnded(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+		mOgreView(0), mShouldQuit(false), mMainLoopController(mShouldQuit), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mPollEris(true), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mLastTimeMainLoopStepEnded(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 
 {
 
@@ -157,7 +157,7 @@ Application::~Application()
 	// before shutting down, we write out the user config to user's ember home directory
 	ConfigService& configService = EmberServices::getSingleton().getConfigService();
 	configService.saveConfig(configService.getHomeDirectory() + "/ember.conf", varconf::USER);
-	
+
 	EmberServices::getSingleton().getServerService().stop(0);
 
 	//When shutting down make sure to delete all pending objects from Eris. This is mainly because we want to be able to track memory leaks.
@@ -263,7 +263,7 @@ void Application::initializeServices()
 
 	//output all logging to ember.log
 	std::string filename(configService.getHomeDirectory() + "/ember.log");
-	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
+	mLogOutStream = std::auto_ptr < std::ofstream > (new std::ofstream(filename.c_str()));
 
 	//write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
@@ -324,6 +324,7 @@ void Application::initializeServices()
 
 	S_LOG_INFO("Initializing input service");
 	EmberServices::getSingleton().getInputService().start();
+	EmberServices::getSingleton().getInputService().getInput().setMainLoopController(&mMainLoopController);
 
 	S_LOG_INFO("Initializing scripting service");
 	EmberServices::getSingleton().getScriptingService().start();
@@ -380,7 +381,7 @@ Eris::View* Application::getMainView()
 void Application::start()
 {
 	try {
-		if (!mOgreView->setup(Input::getSingleton())) {
+		if (!mOgreView->setup(Input::getSingleton(), mMainLoopController)) {
 			//The setup was cancelled, return.
 			return;
 		}
@@ -403,31 +404,10 @@ void Application::start()
 
 }
 
-bool Application::shouldQuit()
-{
-	return mShouldQuit;
-}
-
-void Application::requestQuit()
-{
-	bool handled = false;
-	EventRequestQuit.emit(handled);
-	//check it was handled (for example if the gui wants to show a confirmation window)
-	if (!handled) {
-		//it's not handled, quit now
-		quit();
-	}
-
-}
-void Application::quit()
-{
-	mShouldQuit = true;
-}
-
 void Application::runCommand(const std::string& command, const std::string& args)
 {
 	if (command == Quit.getCommand()) {
-		quit();
+		mShouldQuit = true;
 	} else if (ToggleErisPolling == command) {
 		setErisPolling(!getErisPolling());
 	}

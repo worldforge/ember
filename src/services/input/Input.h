@@ -56,6 +56,7 @@ namespace Ember
 class IInputAdapter;
 class InputCommandMapper;
 class ConfigListenerContainer;
+class MainLoopController;
 
 typedef std::set<SDLKey> KeysSet;
 typedef std::list<IInputAdapter*> IInputAdapterStore;
@@ -214,6 +215,13 @@ public:
 	 * @return True if the application is in normal shown mode, false if it's minimized.
 	 */
 	bool isApplicationVisible();
+
+	/**
+	 * @brief Sets the main loop controller.
+	 *
+	 * @param mainLoopController The main loop controller.
+	 */
+	void setMainLoopController(MainLoopController* mainLoopController);
 
 	/** @brief Emitted when a key has been pressed in movement mode.
 	 @param the key event
@@ -484,6 +492,13 @@ protected:
 	 * The main reason for not grabbing the mouse directly is that the application window might not have focus, and grabbing it then will only confuse the user.
 	 */
 	bool mMouseGrabbingRequested;
+
+	/**
+	 * @brief The main loop controller.
+	 *
+	 * This mainly allows us to request that the application is shut down.
+	 */
+	MainLoopController* mMainLoopController;
 };
 
 }

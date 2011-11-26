@@ -44,7 +44,6 @@ class Carpenter;
 class BluePrint;
 }
 
-
 namespace OgreOpcode
 {
 class CollisionManager;
@@ -61,6 +60,7 @@ namespace Ember
 {
 class InputCommandMapper;
 class Input;
+class MainLoopController;
 namespace OgreView
 {
 
@@ -83,7 +83,6 @@ class ModelDefinitionManager;
 class ModelRepresentationManager;
 }
 
-
 namespace Authoring
 {
 class EntityMoveManager;
@@ -93,7 +92,6 @@ class MaterialEditor;
 class EntityRecipeManager;
 
 }
-
 
 class GUIManager;
 
@@ -144,22 +142,12 @@ public:
 	 */
 	~EmberOgre();
 
-
-	/**
-	 * @brief Initialize all Ember services needed for this application
-	 *
-	 * @param  the prefix for the application, not appliable if running under win32
-	 * @param  the an alternative home directory. If the default should be used, send an empty string.
-	 */
-	void initializeEmberServices(const std::string& prefix, const std::string& homeDir);
-
 	/**
 	 * @brief Gets the Ogre root object.
 	 *
 	 * @return The Ogre root object, which acts as an entry point for most of Ogre.
 	 */
 	Ogre::Root* getOgreRoot() const;
-
 
 	/**
 	 * @brief Gets the shader manager, which handles setup of the graphic level and the shaders.
@@ -174,7 +162,6 @@ public:
 	 * @return The main Jesus instance.
 	 */
 	//	Jesus* getJesus() const;
-
 	/**
 	 * @brief Gets the main render window.
 	 *
@@ -201,8 +188,6 @@ public:
 	 * @brief Emitted when the Jesus subsystem has been created.
 	 */
 	//	sigc::signal<void, Jesus*> EventCreatedJesus;
-
-
 	/**
 	 * @brief Renders one frame.
 	 * @return True if rendering occurred.
@@ -212,9 +197,10 @@ public:
 	/**
 	 * @brief Sets up the application - returns false if the user chooses to abandon configuration.
 	 * @param input The main input.
+	 * @param mainLoopController The main loop instance.
 	 * @return True if setup was successful.
 	 */
-	bool setup(Input& input);
+	bool setup(Input& input, MainLoopController& mainLoopController);
 
 	/**
 	 * @brief Shuts down the gui.
@@ -230,7 +216,6 @@ public:
 	const std::multimap<std::string, std::string>& getResourceLocations() const;
 
 protected:
-
 
 	/**
 	 * @brief The main input.
@@ -304,14 +289,12 @@ protected:
 	 */
 	Authoring::EntityRecipeManager* mEntityRecipeManager;
 
-
 	/**
 	 * @brief Main entry point for the Jesus system (which is an Ember wrapper for the Carpenter lib)
 	 *
 	 * @note The Jesus and Carpenter system hasn't been touched in quite a while, and it's not certain that it will remain in Ember.
 	 */
 	//	Jesus* mJesus;
-
 	/**
 	 * @brief The main log observer used for all logging. This will send Ogre logging events on to the internal Ember logging framework.
 	 */
@@ -341,12 +324,10 @@ protected:
 	 * @brief The collision manager, responsible for handling collisions of the geometry in the world.
 	 */
 	//	OgreOpcode::CollisionManager* mCollisionManager;
-
 	/**
 	 * @brief Responsible for visualizing collisions.
 	 */
 	//	OpcodeCollisionDetectorVisualizer* mCollisionDetectorVisualizer;
-
 	/**
 	 * @brief Handles loading of resources.
 	 *
@@ -404,8 +385,6 @@ protected:
 	 * @brief Sets up Jesus. This inialized the mJesus member and loads all building blocks, blueprint and modelblocks etc.
 	 */
 	//	void setupJesus();
-
-
 	/**
 	 * @brief Preloads the media, thus avoiding frame rate drops ingame.
 	 *
@@ -432,7 +411,6 @@ protected:
 	 * @note You need to call this each frame due to problematic behaviour in how Ogre handles multiple scene managers. See http://www.ogre3d.org/mantis/view.php?id=130
 	 */
 	void clearDirtyPassLists();
-
 
 };
 

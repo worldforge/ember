@@ -39,6 +39,7 @@
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/LoggingInstance.h"
+#include "framework/MainLoopController.h"
 
 #include <SDL_keyboard.h>
 
@@ -51,7 +52,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false)
+		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMainLoopController(0)
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -165,7 +166,8 @@ void Input::setMovementModeEnabled(bool value)
 void Input::writeToClipboard(const std::string& text)
 {
 #ifndef WITHOUT_SCRAP
-	char basicString[text.length() + 1];strcpy(basicString, text.c_str());
+	char basicString[text.length() + 1];
+	strcpy(basicString, text.c_str());
 	put_scrap(T('T','E','X','T'), text.length(), basicString);
 #endif // WITHOUT_SCRAP
 }
@@ -282,7 +284,9 @@ void Input::pollEvents(float secondsSinceLast)
 			keyChanged(event.key);
 			break;
 		case SDL_QUIT:
-			Application::getSingleton().requestQuit();
+			if (mMainLoopController) {
+				mMainLoopController->requestQuit();
+			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
@@ -520,12 +524,16 @@ void Input::sleep(unsigned int milliseconds)
 	SDL_Delay(milliseconds);
 }
 
+void Input::setMainLoopController(MainLoopController* mainLoopController)
+{
+	mMainLoopController = mainLoopController;
+}
 
 void Input::Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	try {
 		if (variable.is_bool()) {
-			bool enabled = static_cast<bool> (variable);
+			bool enabled = static_cast<bool>(variable);
 			if (enabled) {
 				mMouseGrabbingRequested = true;
 			} else {
@@ -537,7 +545,8 @@ void Input::Config_CatchMouse(const std::string& section, const std::string& key
 	}
 }
 
-void Input::setMouseGrab(bool enabled) {
+void Input::setMouseGrab(bool enabled)
+{
 	S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
 	SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
 	if (enabled) {

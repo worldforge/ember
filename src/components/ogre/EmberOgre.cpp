@@ -250,9 +250,7 @@ void EmberOgre::shutdownGui()
 	mGUIManager = 0;
 }
 
-// These internal methods package up the stages in the startup process
-/** Sets up the application - returns false if the user chooses to abandon configuration. */
-bool EmberOgre::setup(Input& input)
+bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 {
 	if (mRoot) {
 		throw Exception("EmberOgre::setup has already been called.");
@@ -349,7 +347,7 @@ bool EmberOgre::setup(Input& input)
 
 	{
 		//we need a nice loading bar to show the user how far the setup has progressed
-		Gui::LoadingBar loadingBar(*mWindow);
+		Gui::LoadingBar loadingBar(*mWindow, mainLoopController);
 
 		Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
 		if (useWfut) {
@@ -610,21 +608,6 @@ Ogre::Root* EmberOgre::getOgreRoot() const
 ShaderManager* EmberOgre::getShaderManager() const
 {
 	return mShaderManager;
-}
-
-// // void EmberOgre::setErisPolling(bool doPoll)
-// // {
-// // 	mPollEris = doPoll;
-// // }
-// //
-// // bool EmberOgre::getErisPolling() const
-// // {
-// // 	return mPollEris;
-// // }
-
-void EmberOgre::initializeEmberServices(const std::string& prefix, const std::string& homeDir)
-{
-
 }
 
 void EmberOgre::Application_ServicesInitialized()

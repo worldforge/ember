@@ -20,10 +20,9 @@
 #include "services/EmberServices.h"
 #include "framework/ConsoleObject.h"
 #include "framework/ConsoleBackend.h"
-
+#include "framework/MainLoopController.h"
 
 #include <sigc++/signal.h>
-
 
 /**
  * @mainpage
@@ -70,9 +69,8 @@
 
 namespace Eris
 {
-	class View;
+class View;
 }
-
 
 /**
  * @brief The main namespace for Ember.
@@ -87,7 +85,7 @@ namespace Ember
  */
 namespace OgreView
 {
-	class EmberOgre;
+class EmberOgre;
 }
 
 class EmberServices;
@@ -107,7 +105,7 @@ class LogObserver;
  *
  * start();
  */
-class Application : public ConsoleObject, public Singleton<Application>, public virtual sigc::trackable
+class Application: public ConsoleObject, public Singleton<Application>, public virtual sigc::trackable
 {
 public:
 	typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
@@ -121,29 +119,22 @@ public:
 	Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings);
 
 	/**
-	* @brief At destruction pretty much all game objects will be destroyed.
-	*/
+	 * @brief At destruction pretty much all game objects will be destroyed.
+	 */
 	virtual ~Application();
 
 	/**
-	* @brief Performs one step of the main loop.
-	* You only need to call this each "frame" if you're not using mainLoop().
-	* @param minMillisecondsPerFrame If the fps is capped, this is the minimum milliseconds needed to spend on each frame.
-	*/
+	 * @brief Performs one step of the main loop.
+	 * You only need to call this each "frame" if you're not using mainLoop().
+	 * @param minMillisecondsPerFrame If the fps is capped, this is the minimum milliseconds needed to spend on each frame.
+	 */
 	void mainLoopStep(long minMillisecondsPerFrame);
 
 	/**
-	* @brief Enters the main loop.
-	* Will loop through the application until it exits. In most cases you want to call this for the main loop. However, if you want to handle all looping yourself you can call mainLoopStep() manually.
-	*/
+	 * @brief Enters the main loop.
+	 * Will loop through the application until it exits. In most cases you want to call this for the main loop. However, if you want to handle all looping yourself you can call mainLoopStep() manually.
+	 */
 	void mainLoop();
-
-	/**
-	* @brief Return true if application has received an "exit" command else false.
-	*
-	* @return true if "shouldquit" else false
-	*/
-	bool shouldQuit();
 
 	/**
 	 * @brief Registers all components with the system.
@@ -171,20 +162,14 @@ public:
 	void start();
 
 	/**
-	@brief Emitted when all services have been initialized.
-	*/
-	sigc::signal<void> EventServicesInitialized;
-
-	/**
-	 * @brief Causes the application to quit.
-	 * This will instantly shut down the application, in contrast to requestQuit which will try to show a confirmation dialog to the user.
+	 @brief Emitted when all services have been initialized.
 	 */
-	void quit();
+	sigc::signal<void> EventServicesInitialized;
 
 	/**
 	 * @brief Callback for running Console Commands
 	 */
-	void runCommand(const std::string& command,const std::string& args);
+	void runCommand(const std::string& command, const std::string& args);
 
 	/**
 	 * @brief Sets whether eris should be polled each frame. Defaults to true.
@@ -198,11 +183,6 @@ public:
 	 * @return True if polling occurs each frame.
 	 */
 	bool getErisPolling() const;
-
-	/**
-	 * @brief Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
-	 */
-	sigc::signal<void, bool&> EventRequestQuit;
 
 	/**
 	 * @brief Emitted before the eris polling is started.
@@ -229,19 +209,12 @@ public:
 	sigc::signal<void, float> EventAfterInputProcessing;
 
 	/**
-	 * @brief Call this to "soft quit" the app. This means that an signal will be emitted, which hopefully will be taken care of by some widget, which will show a confirmation window, asking the user if he/she wants to quit.
-	 * However, if there is no widget etc. handling the request, the application will instantly quit.
-	 */
-	void requestQuit();
-
-	/**
 	 * @brief Accessor for the main eris world view, if any.
 	 */
 	Eris::View* getMainView();
 
 private:
 
-//	IGameView mGraphicalComponent;
 	/**
 	 * @brief The main Ogre graphical view.
 	 */
@@ -252,6 +225,11 @@ private:
 	 * @see mainLoop()
 	 */
 	bool mShouldQuit;
+
+	/**
+	 * @brief The main loop controller instance, which mainly controls whether the application should quit or not.
+	 */
+	MainLoopController mMainLoopController;
 
 	/**
 	 * @brief The file system prefix to where Ember has been installed.

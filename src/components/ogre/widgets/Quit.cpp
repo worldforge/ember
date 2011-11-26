@@ -25,13 +25,16 @@
 #endif
 
 #include "Quit.h"
-#include "main/Application.h"
-#include <elements/CEGUIPushButton.h>
+
+#include "../GUIManager.h"
 
 #include "framework/ConsoleBackend.h"
-#include "../GUIManager.h"
+#include "framework/MainLoopController.h"
 #include "services/input/Input.h"
+#include "services/EmberServices.h"
 #include "services/server/ServerService.h"
+
+#include <elements/CEGUIPushButton.h>
 
 namespace Ember {
 namespace OgreView {
@@ -51,7 +54,7 @@ void Quit::buildWidget()
 	
 	loadMainSheet("Quit.layout", "Quit/");
 	
-	Application::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
+	MainLoopController::getSingleton().EventRequestQuit.connect(sigc::mem_fun(*this, &Quit::EmberOgre_RequestQuit));
 	
 	CEGUI::PushButton* shutdownButton = static_cast<CEGUI::PushButton*>(getWindow("ShutdownButton"));
 	CEGUI::PushButton* logoutButton = static_cast<CEGUI::PushButton*>(getWindow("LogoutButton"));
@@ -69,7 +72,7 @@ void Quit::buildWidget()
 
 bool Quit::Shutdown_Click(const CEGUI::EventArgs& args)
 {
-	Application::getSingleton().quit();
+	MainLoopController::getSingleton().quit();
 	mMainWindow->setVisible(false);
 	return true;
 }
@@ -93,7 +96,7 @@ void Quit::EmberOgre_RequestQuit(bool& handled)
 	handled = true;
 	//if the window system twice requests a quit, do it
 	if (mMainWindow->isVisible()) {
-		Application::getSingleton().quit();
+		MainLoopController::getSingleton().quit();
 	} else {
 		softquit();
 	}
