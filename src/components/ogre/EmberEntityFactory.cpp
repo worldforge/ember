@@ -23,7 +23,6 @@
 #include "EmberEntityFactory.h"
 
 #include "components/ogre/EmberEntity.h"
-#include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/Avatar.h"
 #include "components/ogre/EmberEntityActionCreator.h"
 
@@ -46,7 +45,6 @@
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 
-
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #else
@@ -59,9 +57,8 @@ namespace OgreView
 {
 
 EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene) :
-	ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene), mTerrainType(0), mWorldEntity(0)
+		ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene)
 {
-	mTerrainType = mTypeService.getTypeByName("world");
 }
 
 EmberEntityFactory::~EmberEntityFactory()
@@ -73,12 +70,7 @@ EmberEntityFactory::~EmberEntityFactory()
 Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type, Eris::View* w)
 {
 
-	EmberEntity* entity(0);
-//	if (type->isA(mTerrainType)) {
-//		entity = createWorld(ge, type, w);
-//	} else {
-		entity = new EmberEntity(ge->getId(), type, w);
-//	}
+	EmberEntity* entity = new EmberEntity(ge->getId(), type, w);
 	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*entity, mScene);
 	entity->setMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &creator, &mView));
@@ -89,18 +81,6 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type)
 {
 	return true;
-}
-
-EmberEntity* EmberEntityFactory::createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world)
-{
-	assert(!mWorldEntity);
-	mWorldEntity = new WorldEmberEntity(ge->getId(), type, world, mScene);
-	return mWorldEntity;
-}
-
-WorldEmberEntity* EmberEntityFactory::getWorld() const
-{
-	return mWorldEntity;
 }
 
 int EmberEntityFactory::priority()
@@ -151,7 +131,6 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 		}
 	}
 }
-
 
 }
 }

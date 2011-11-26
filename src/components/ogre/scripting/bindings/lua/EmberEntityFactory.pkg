@@ -3,8 +3,6 @@ namespace OgreView {
 class EmberEntityFactory 
 {
 
-	WorldEmberEntity* getWorld() const;
-	
 	void dumpAttributesOfEntity(const std::string& entityId) const;
 
 

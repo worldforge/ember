@@ -31,6 +31,11 @@
 #include <vector>
 #include <OgreVector3.h>
 
+namespace Eris
+{
+class View;
+}
+
 namespace Ember
 {
 namespace OgreView
@@ -77,7 +82,7 @@ private:
 class EntityWorldPickListener: public IWorldPickListener, public ConsoleObject
 {
 public:
-	EntityWorldPickListener(EmberEntityFactory& entityFactory, Scene& scene);
+	EntityWorldPickListener(Eris::View& view, Scene& scene);
 
 	virtual ~EntityWorldPickListener();
 
@@ -104,7 +109,7 @@ protected:
 
 	std::auto_ptr<EntityWorldPickListenerVisualizer> mVisualizer;
 
-	EmberEntityFactory& mEntityFactory;
+	Eris::View& mView;
 
 	Scene& mScene;
 

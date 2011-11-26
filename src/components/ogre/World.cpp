@@ -95,7 +95,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 
 	view.getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &World::View_gotAvatarCharacter));
 
-	mEntityWorldPickListener = new EntityWorldPickListener(*mEmberEntityFactory, *mScene);
+	mEntityWorldPickListener = new EntityWorldPickListener(mView, *mScene);
 	mMainCamera->pushWorldPickListener(mEntityWorldPickListener);
 
 }

@@ -59,8 +59,6 @@ class EmberEntityFactory: public Eris::Factory, public virtual sigc::trackable, 
 {
 public:
 
-	typedef std::set<std::string> StringSet;
-
 	/**
 	 * @brief Ctor.
 	 *
@@ -83,11 +81,6 @@ public:
 	 get first chance to process a received Atlas entity. The default implementation
 	 returns one. */
 	virtual int priority();
-
-	/**
-	 Returns the main world entity.
-	 */
-	WorldEmberEntity* getWorld() const;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
@@ -120,11 +113,6 @@ public:
 
 protected:
 
-	/**
-	 Creates a WorldEmberEntity instance.
-	 */
-	EmberEntity* createWorld(const Atlas::Objects::Entity::RootEntity & ge, Eris::TypeInfo* type, Eris::View *world);
-
 	Eris::View& mView;
 
 	Eris::TypeService& mTypeService;
@@ -133,14 +121,6 @@ protected:
 	 * @brief The scene which will handle the entities.
 	 */
 	Scene& mScene;
-
-
-	Eris::TypeInfo* mTerrainType;
-
-	/**
-	 * @brief The world entity, which is also the base entity of the view.
-	 */
-	WorldEmberEntity *mWorldEntity;
 
 };
 

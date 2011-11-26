@@ -26,7 +26,6 @@
 #include "EntityWorldPickListener.h"
 #include "ICollisionDetector.h"
 #include "EmberEntityUserObject.h"
-#include "EmberEntityFactory.h"
 #include "Scene.h"
 
 #include "EmberEntity.h"
@@ -42,13 +41,15 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <Eris/View.h>
+
 namespace Ember
 {
 namespace OgreView
 {
 
 EntityWorldPickListenerVisualizer::EntityWorldPickListenerVisualizer(EntityWorldPickListener& pickListener, Ogre::SceneManager& sceneManager) :
-	mEntity(0), mDebugNode(0)
+		mEntity(0), mDebugNode(0)
 {
 	mDebugNode = sceneManager.getRootSceneNode()->createChildSceneNode();
 	try {
@@ -80,8 +81,8 @@ void EntityWorldPickListenerVisualizer::picker_EventPickedEntity(const std::vect
 	mDebugNode->setPosition(result.begin()->position);
 }
 
-EntityWorldPickListener::EntityWorldPickListener(EmberEntityFactory& entityFactory, Scene& scene) :
-	VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mVisualizer(0), mEntityFactory(entityFactory), mScene(scene)
+EntityWorldPickListener::EntityWorldPickListener(Eris::View& view, Scene& scene) :
+		VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mVisualizer(0), mView(view), mScene(scene)
 {
 }
 
@@ -118,7 +119,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 
 			if (mFurthestPickingDistance == 0 || !mResult.size()) {
 				EntityPickResult result;
-				result.entity = mEntityFactory.getWorld();
+				result.entity = static_cast<EmberEntity*>(mView.getTopLevel());
 				result.position = wf->singleIntersection;
 				result.distance = entry.distance;
 				result.isTransparent = false;
@@ -131,7 +132,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 						mResult.pop_back();
 					}
 					EntityPickResult result;
-					result.entity = mEntityFactory.getWorld();
+					result.entity = static_cast<EmberEntity*>(mView.getTopLevel());
 					result.position = wf->singleIntersection;
 					result.distance = entry.distance;
 					result.isTransparent = false;
@@ -195,7 +196,7 @@ void EntityWorldPickListener::runCommand(const std::string &command, const std::
 		if (mVisualizer.get()) {
 			mVisualizer.reset();
 		} else {
-			mVisualizer = std::auto_ptr<EntityWorldPickListenerVisualizer>(new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
+			mVisualizer = std::auto_ptr < EntityWorldPickListenerVisualizer > (new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
 		}
 	}
 }
