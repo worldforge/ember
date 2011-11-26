@@ -30,8 +30,6 @@
 #include "components/ogre/Convert.h"
 #include "components/ogre/World.h"
 #include "components/ogre/EmberEntity.h"
-#include "components/ogre/WorldEmberEntity.h"
-#include "components/ogre/EmberEntityFactory.h"
 #include "components/ogre/ShapeVisual.h"
 #include "components/ogre/terrain/TerrainManager.h"
 
@@ -274,11 +272,9 @@ void EntityEditor::addMarker(const WFMath::Point<3>& point)
 {
 	if (point.isValid()) {
 
-		if (mWorld.getEntityFactory().getWorld()) {
-			delete mMarker;
-			mMarker = new EntityPointMarker(mEntity, mWorld.getSceneManager(), mWorld.getEntityFactory().getWorld()->getTerrainManager(), point);
-			mMarker->updateMarker();
-		}
+		delete mMarker;
+		mMarker = new EntityPointMarker(mEntity, mWorld.getSceneManager(), mWorld.getTerrainManager(), point);
+		mMarker->updateMarker();
 	}
 }
 

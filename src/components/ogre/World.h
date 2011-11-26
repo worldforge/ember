@@ -21,7 +21,16 @@
 
 #include "OgreIncludes.h"
 #include <sigc++/signal.h>
+#include <sigc++/trackable.h>
 #include <string>
+#include <vector>
+#include <set>
+
+namespace WFMath
+{
+template<int>
+class AxisBox;
+}
 
 namespace Eris
 {
@@ -30,9 +39,17 @@ class Connection;
 class Entity;
 }
 
-namespace Ember {
+namespace Ember
+{
 class Input;
-namespace OgreView {
+namespace OgreView
+{
+
+namespace Terrain
+{
+class TerrainManager;
+class TerrainPage;
+}
 
 namespace Camera
 {
@@ -46,6 +63,12 @@ class AuthoringMoverConnector;
 class EntityMoveManager;
 }
 
+namespace Environment
+{
+class Environment;
+class Foliage;
+}
+
 class Avatar;
 class MovementController;
 class EmberEntityFactory;
@@ -54,7 +77,9 @@ class Scene;
 class EmberOgreSignals;
 class EmberEntity;
 class ICameraMotionHandler;
+class IPageDataProvider;
 class EntityWorldPickListener;
+class TerrainEntityManager;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -64,7 +89,7 @@ class EntityWorldPickListener;
  * An instance of this is created when an Eris::View instance is available, and destroyed along with it. It's responsibility is to handle the Ogre scene (along with a main camera, movement controllers etc.).
  * It in many ways acts as a hub through which many other subsystems can access both the Ogre and the Eris state of the world.
  */
-class World
+class World: public sigc::trackable
 {
 public:
 
@@ -167,6 +192,24 @@ public:
 	Authoring::AuthoringManager& getAuthoringManager() const;
 
 	/**
+	 * @brief Gets the main Environment object of the world.
+	 * @return An environment object, or null if none has been created yet.
+	 */
+	Environment::Environment* getEnvironment() const;
+
+	/**
+	 * @brief Gets the main Foliage object of the world. Note that the initialization of the foliage might be delayed.
+	 * @return A foliage object, or null if none created.
+	 */
+	Environment::Foliage* getFoliage() const;
+
+	/**
+	 * @brief Accessor for the terrain manager.
+	 * @returns The terrain manager.
+	 */
+	Terrain::TerrainManager& getTerrainManager();
+
+	/**
 	 * @brief Emitted when the world has received the avatar entity.
 	 */
 	sigc::signal<void> EventGotAvatar;
@@ -249,6 +292,29 @@ protected:
 	 */
 	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
 
+	/**
+	 * @brief The terrain manager, owned by this instance.
+	 */
+	Terrain::TerrainManager* mTerrainManager;
+
+	TerrainEntityManager* mTerrainEntityManager;
+
+	/**
+	 * @brief The page data provider for the EmberPagingSceneManager.
+	 */
+	IPageDataProvider* mPageDataProvider;
+
+	/**
+	 * @brief The foliage system which provides different foliage functions.
+	 */
+	Environment::Foliage* mFoliage;
+
+	/**
+	 * @brief The main environment object. There should only be one in the system, and it's kept here.
+	 */
+	Environment::Environment* mEnvironment;
+
+	void terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages);
 
 	/**
 	 * @brief Sent from the view when an avatar entity has been created.
@@ -258,15 +324,16 @@ protected:
 	 */
 	void View_gotAvatarCharacter(Eris::Entity* entity);
 
-
 	/**
 	 * @brief Called when the avatar entity is being deleted.
 	 *
 	 * This means that we should clean up our avatar objects.
 	 */
 	void avatarEntity_BeingDeleted();
-};
 
+	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2> >& areas);
+
+};
 
 inline Authoring::EntityMoveManager& World::getMoveManager() const
 {

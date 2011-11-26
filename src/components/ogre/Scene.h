@@ -27,8 +27,13 @@ namespace Ember
 {
 namespace OgreView
 {
+namespace Terrain
+{
+class ISceneManagerAdapter;
+}
 class EmberEntity;
 class ISceneRenderingTechnique;
+class IPageDataProvider;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -37,6 +42,7 @@ class ISceneRenderingTechnique;
 class Scene
 {
 public:
+
 	/**
 	 * @brief Ctor.
 	 * @param sceneManager The scene manager which represents the world.
@@ -75,6 +81,10 @@ public:
 	 * @returns A pointer to the technique if one such is found, else a null pointer.
 	 */
 	ISceneRenderingTechnique* removeRenderingTechnique(const std::string& name);
+
+	void registerPageDataProvider(IPageDataProvider* pageDataProvider);
+
+	Terrain::ISceneManagerAdapter* createAdapter();
 
 	/**
 	 * @brief Gets the main camera of the scene.

@@ -21,12 +21,18 @@
 #endif
 
 #include "TerrainEntityManager.h"
-#include "terrain/TerrainManager.h"
+#include "WorldAttachment.h"
 #include "terrain/TerrainHandler.h"
 #include "terrain/TerrainMod.h"
 #include "terrain/TerrainArea.h"
 
+#include "terrain/TerrainParser.h"
+#include "terrain/TerrainShaderParser.h"
+#include "terrain/TerrainDefPoint.h"
+
 #include "EmberEntity.h"
+
+#include <OgreSceneManager.h>
 
 #include <Eris/View.h>
 
@@ -37,16 +43,70 @@ namespace Ember
 namespace OgreView
 {
 
-TerrainEntityManager::TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler) :
-		mTerrainHandler(terrainHandler)
+TerrainEntityManager::TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager) :
+		mView(view), mTerrainHandler(terrainHandler), mSceneManager(sceneManager)
 {
 	view.EntitySeen.connect(sigc::mem_fun(*this, &TerrainEntityManager::entitySeen));
 	view.EntityCreated.connect(sigc::mem_fun(*this, &TerrainEntityManager::entitySeen));
+	view.TopLevelEntityChanged.connect(sigc::mem_fun(*this, &TerrainEntityManager::topLevelEntityChanged));
 }
 
 TerrainEntityManager::~TerrainEntityManager()
 {
 }
+
+void TerrainEntityManager::topLevelEntityChanged()
+{
+	EmberEntity* entity = static_cast<EmberEntity*>(mView.getTopLevel());
+	entity->setAttachment(new WorldAttachment(*entity, mSceneManager.getRootSceneNode()->createChildSceneNode("entity_" + entity->getId()), mTerrainHandler));
+
+	initializeTerrain(entity);
+}
+
+void TerrainEntityManager::initializeTerrain(EmberEntity* entity)
+{
+
+//	mTerrainAfterUpdateConnection = mTerrainManager->getHandler().EventWorldSizeChanged.connect(sigc::mem_fun(*this, &WorldEmberEntity::terrain_WorldSizeChanged));
+	bool hasValidShaders = false;
+	Terrain::TerrainShaderParser terrainShaderParser(mTerrainHandler);
+	if (entity->hasAttr("terrain")) {
+		Terrain::TerrainParser terrainParser;
+		const Atlas::Message::Element& terrainElement = entity->valueOfAttr("terrain");
+		if (terrainElement.isMap()) {
+			const Atlas::Message::MapType& terrainMap(terrainElement.asMap());
+			if (terrainMap.count("surfaces")) {
+				const Atlas::Message::Element& surfaceElement(terrainMap.find("surfaces")->second);
+				terrainShaderParser.createShaders(surfaceElement);
+				hasValidShaders = true;
+			}
+		}
+		mTerrainHandler.updateTerrain(terrainParser.parseTerrain(terrainElement, entity->getPosition().isValid() ? entity->getPosition() : WFMath::Point<3>::ZERO()));
+
+		entity->setHeightProvider(&mTerrainHandler);
+	}
+
+	if (!hasValidShaders) {
+		terrainShaderParser.createDefaultShaders();
+	}
+
+	//TODO: Parse world location data when it's available
+//	mEnvironment->setWorldPosition(mWorldPosition.LongitudeDegrees, mWorldPosition.LatitudeDegrees);
+
+	mTopLevelTerrainConnection.disconnect();
+	mTopLevelTerrainConnection = entity->observe("terrain", sigc::bind(sigc::mem_fun(*this, &TerrainEntityManager::terrainChanged), entity));
+}
+
+void TerrainEntityManager::terrainChanged(const Atlas::Message::Element& value, EmberEntity* entity)
+{
+	Terrain::TerrainParser terrainParser;
+	updateTerrain(terrainParser.parseTerrain(value, entity->getPredictedPos()));
+}
+
+void TerrainEntityManager::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints)
+{
+	mTerrainHandler.updateTerrain(terrainDefinitionPoints);
+}
+
 void TerrainEntityManager::entitySeen(Eris::Entity* entity)
 {
 	registerEntity(static_cast<EmberEntity*>(entity));

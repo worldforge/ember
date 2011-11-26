@@ -16,7 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #include "World.h"
 
 #include "Avatar.h"
@@ -28,12 +27,23 @@
 #include "EntityWorldPickListener.h"
 #include "EmberEntity.h"
 #include "EmberOgreSignals.h"
+#include "ForestRenderingTechnique.h"
 #include "components/ogre/AvatarCameraMotionHandler.h"
 #include "components/ogre/authoring/AuthoringManager.h"
 #include "components/ogre/authoring/AuthoringMoverConnector.h"
 
+#include "TerrainEntityManager.h"
+#include "TerrainPageDataProvider.h"
+#include "terrain/TerrainManager.h"
+#include "terrain/TerrainHandler.h"
+
 #include "camera/MainCamera.h"
 #include "camera/ThirdPersonCameraMount.h"
+
+#include "environment/Foliage.h"
+#include "environment/Environment.h"
+#include "environment/CaelumEnvironment.h"
+#include "environment/SimpleEnvironment.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
@@ -45,14 +55,33 @@
 #include <OgreViewport.h>
 #include <OgreRoot.h>
 
+//TODO: remove this reference
+#include "EmberOgre.h"
+#include "main/Application.h"
+
 namespace Ember
 {
 namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input) :
-	mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager))
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager))
 {
+
+	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, *EmberOgre::getSingleton().getShaderManager(), Application::getSingleton().EventEndErisPoll);
+	EmberOgre::getSingleton().EventTerrainManagerCreated.emit(*mTerrainManager);
+	mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
+
+	mTerrainEntityManager = new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager());
+
+	mPageDataProvider = new TerrainPageDataProvider(mTerrainManager->getHandler());
+	mScene->registerPageDataProvider(mPageDataProvider);
+
+	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
+	mEnvironment->initialize();
+	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
+	mTerrainManager->getHandler().setLightning(mEnvironment->getSun());
+
 	//set the background colour to black
 	mViewport->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 	mScene->getMainCamera().setAspectRatio(Ogre::Real(mViewport->getActualWidth()) / Ogre::Real(mViewport->getActualHeight()));
@@ -73,6 +102,8 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 
 World::~World()
 {
+	delete mTerrainEntityManager;
+	delete mTerrainManager;
 	delete mAuthoringMoverConnector;
 	delete mAuthoringManager;
 
@@ -90,7 +121,13 @@ World::~World()
 	delete mMotionManager;
 	mSignals.EventMotionManagerDestroyed();
 
+	ISceneRenderingTechnique* technique = mScene->removeRenderingTechnique("forest");
+	delete technique;
+	delete mFoliage;
+	delete mEnvironment;
+
 	delete mScene;
+	delete mPageDataProvider;
 }
 
 Eris::View& World::getView() const
@@ -135,7 +172,7 @@ MovementController* World::getMovementController() const
 
 EmberEntity* World::getEmberEntity(const std::string & eid) const
 {
-	return static_cast<EmberEntity*> (mView.getEntity(eid));
+	return static_cast<EmberEntity*>(mView.getEntity(eid));
 }
 
 EntityWorldPickListener& World::getEntityPickListener() const
@@ -143,17 +180,48 @@ EntityWorldPickListener& World::getEntityPickListener() const
 	return *mEntityWorldPickListener;
 }
 
-
 Authoring::AuthoringManager& World::getAuthoringManager() const
 {
 	//This can never be null.
 	return *mAuthoringManager;
 }
 
+Terrain::TerrainManager& World::getTerrainManager()
+{
+	return *mTerrainManager;
+}
+
+Environment::Environment* World::getEnvironment() const
+{
+	return mEnvironment;
+}
+
+Environment::Foliage* World::getFoliage() const
+{
+	return mFoliage;
+}
+
+void World::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages)
+{
+	EmberEntity* emberEntity = static_cast<EmberEntity*>(mView.getTopLevel());
+	if (emberEntity) {
+		updateEntityPosition(emberEntity, areas);
+	}
+}
+
+void World::updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2> >& areas)
+{
+	entity->adjustPosition();
+	for (unsigned int i = 0; i < entity->numContained(); ++i) {
+		EmberEntity* containedEntity = static_cast<EmberEntity*>(entity->getContained(i));
+		updateEntityPosition(containedEntity, areas);
+	}
+}
+
 void World::View_gotAvatarCharacter(Eris::Entity* entity)
 {
 	if (entity) {
-		EmberEntity& emberEntity = static_cast<EmberEntity&> (*entity);
+		EmberEntity& emberEntity = static_cast<EmberEntity&>(*entity);
 		//Set up the third person avatar camera and switch to it.
 		mAvatar = new Avatar(emberEntity, *mScene, mMainCamera->getCameraSettings());
 		mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);

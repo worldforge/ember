@@ -41,8 +41,10 @@ class EntityMapping;
 
 namespace Ember
 {
-namespace Domain {
+namespace Domain
+{
 class EntityTalk;
+class IHeightProvider;
 }
 namespace OgreView
 {
@@ -308,13 +310,14 @@ public:
 	 */
 	EntityMapping::EntityMapping* getMapping() const;
 
-
 	/**
 	 * @brief Gets the height at the local position.
 	 * @param localPosition A position local to the entity.
 	 * @return The height at the location.
 	 */
 	virtual float getHeight(const WFMath::Point<2>& localPosition) const;
+
+	void setHeightProvider(Domain::IHeightProvider* heightProvider);
 
 	sigc::signal<void, const Domain::EntityTalk&> EventTalk;
 
@@ -331,17 +334,17 @@ protected:
 	 */
 	std::vector<std::string> mSuggestedResponses;
 
-	/**
-	 * @brief If there's a terrain area belonging to this entity, that's stored here.
-	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
-	 */
-	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
-
-	/**
-	 * @brief If a terrainmod belongs to this entity, it's stored here.
-	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
-	 */
-	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
+//	/**
+//	 * @brief If there's a terrain area belonging to this entity, that's stored here.
+//	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
+//	 */
+//	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
+//
+//	/**
+//	 * @brief If a terrainmod belongs to this entity, it's stored here.
+//	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
+//	 */
+//	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
 
 	/**
 	 * @brief The positioning mode the entity is in, like gravity affected, fixed or floating.
@@ -373,6 +376,8 @@ protected:
 	 */
 	IEntityControlDelegate* mAttachmentControlDelegate;
 
+	Domain::IHeightProvider* mHeightProvider;
+
 	/**
 	 *    @copydoc Eris::Entity::onTalk()
 	 */
@@ -399,8 +404,6 @@ protected:
 	 */
 	virtual void onAttrChanged(const std::string& str, const Atlas::Message::Element& v);
 
-
-
 	/**
 	 * @brief Called when the positioning mode of the entity changes.
 	 * Depending on the kind of positioning mode the entity needs to be adjusted in the world accordinly. For example, when the entity is gravity affected (the default) it should snap to the terrain, in contrast to when the mode is "fixed" where it wouldn't snap to the terrain.
@@ -413,38 +416,38 @@ protected:
 	 */
 	virtual void onBboxChanged();
 
-	/**
-	 * @brief Adds a terrain area to the entity.
-	 * Areas are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain area.
-	 * @see OgreView::WorldEmberEntity::addArea()
-	 * @param area The area which has been added.
-	 */
-	virtual void addArea(Terrain::TerrainArea& area);
+//	/**
+//	 * @brief Adds a terrain area to the entity.
+//	 * Areas are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain area.
+//	 * @see OgreView::WorldEmberEntity::addArea()
+//	 * @param area The area which has been added.
+//	 */
+//	virtual void addArea(Terrain::TerrainArea& area);
+//
+//	/**
+//	 * @brief Adds a terrain mod to the entity.
+//	 * Mods are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain mod.
+//	 * @see OgreView::WorldEmberEntity::addTerrainMod()
+//	 * @param mod The mod which has been added.
+//	 */
+//	virtual void addTerrainMod(Terrain::TerrainMod* mod);
+//
+//	/**
+//	 * @brief Updates the terrain with the specified terrain definition points.
+//	 * @param terrainDefinitionPoints The terrain definition points.
+//	 */
+//	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
 
-	/**
-	 * @brief Adds a terrain mod to the entity.
-	 * Mods are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain mod.
-	 * @see OgreView::WorldEmberEntity::addTerrainMod()
-	 * @param mod The mod which has been added.
-	 */
-	virtual void addTerrainMod(Terrain::TerrainMod* mod);
-
-	/**
-	 * @brief Updates the terrain with the specified terrain definition points.
-	 * @param terrainDefinitionPoints The terrain definition points.
-	 */
-	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
-
-	/**
-	 * @brief Checks if we should create any dependent objects, such as TerrainArea or TerrainMod.
-	 * Call this only when the entity has been propely initialized, since we then have all the correct data regarding positions, bounding boxes etc.
-	 * @see init()
-	 * @see onAttrChanged()
-	 * @param attributeName The attribute which we should try to create something for.
-	 * @return True if any dependent object was created.
-	 */
-	virtual bool createDependentObject(const std::string& attributeName);
-
+//	/**
+//	 * @brief Checks if we should create any dependent objects, such as TerrainArea or TerrainMod.
+//	 * Call this only when the entity has been propely initialized, since we then have all the correct data regarding positions, bounding boxes etc.
+//	 * @see init()
+//	 * @see onAttrChanged()
+//	 * @param attributeName The attribute which we should try to create something for.
+//	 * @return True if any dependent object was created.
+//	 */
+//	virtual bool createDependentObject(const std::string& attributeName);
+//
 	/**
 	 * @brief Called by eris just after the entity has been put into the world.
 	 * @param ge The root entity which contains all atlas data that define this entity.

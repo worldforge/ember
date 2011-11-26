@@ -36,7 +36,7 @@ namespace OgreView
 namespace Terrain
 {
 
-class TerrainManager;
+class TerrainHandler;
 
 /**
 
@@ -51,9 +51,9 @@ public:
 
 	/**
 	 * @brief Ctor.
-	 * @param terrainManager The terrain manager.
+	 * @param terrainHandler The terrain handler.
 	 */
-	TerrainShaderParser(Terrain::TerrainManager& terrainManager);
+	TerrainShaderParser(TerrainHandler& terrainHandler);
 
 	virtual ~TerrainShaderParser();
 
@@ -73,7 +73,7 @@ private:
 	/**
 	 * @brief The terrain generator instance used in the system.
 	 */
-	TerrainManager& mTerrainManager;
+	TerrainHandler& mTerrainHandler;
 };
 
 }

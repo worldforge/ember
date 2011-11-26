@@ -24,6 +24,9 @@
 #include "ISceneRenderingTechnique.h"
 #include "framework/LoggingInstance.h"
 
+#include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
+#include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManagerAdapter.h"
+
 #include <OgreRoot.h>
 
 namespace Ember
@@ -32,7 +35,7 @@ namespace OgreView
 {
 
 Scene::Scene() :
-	mSceneManager(0), mMainCamera(0)
+		mSceneManager(0), mMainCamera(0)
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR, "EmberPagingSceneManagerInstance");
 
@@ -86,11 +89,20 @@ ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& nam
 	return 0;
 }
 
+void Scene::registerPageDataProvider(IPageDataProvider* pageDataProvider)
+{
+	static_cast<EmberPagingSceneManager*>(mSceneManager)->registerProvider(pageDataProvider);
+}
+
+Terrain::ISceneManagerAdapter* Scene::createAdapter()
+{
+	return new EmberPagingSceneManagerAdapter(static_cast<EmberPagingSceneManager&>(*mSceneManager));
+}
+
 Ogre::Camera& Scene::getMainCamera() const
 {
 	return *mMainCamera;
 }
-
 
 }
 }

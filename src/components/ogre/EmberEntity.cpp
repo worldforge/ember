@@ -34,6 +34,7 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/MultiLineListFormatter.h"
 #include "domain/EntityTalk.h"
+#include "domain/IHeightProvider.h"
 #include "authoring/AuthoringManager.h"
 #include "components/entitymapping/EntityMapping.h"
 
@@ -57,7 +58,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::MODE_SWIMMING("swimming");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
-		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mTerrainArea(0), mTerrainMod(0), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
+		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0)
 {
 }
 
@@ -93,11 +94,6 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	}
 }
 
-bool EmberEntity::createDependentObject(const std::string& attributeName)
-{
-	return false;
-}
-
 void EmberEntity::setMapping(EntityMapping::EntityMapping* mapping)
 {
 	delete mEntityMapping;
@@ -116,8 +112,21 @@ void EmberEntity::adjustPosition()
 	}
 }
 
+void EmberEntity::setHeightProvider(Domain::IHeightProvider* heightProvider)
+{
+	mHeightProvider = heightProvider;
+}
+
 float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 {
+
+	if (mHeightProvider) {
+		float height = 0;
+		if (mHeightProvider->getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
+			return height;
+		}
+	}
+
 	//A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
 	//Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferably the terrain).
 	if (getEmberLocation()) {
@@ -263,29 +272,29 @@ bool EmberEntity::hasSuggestedResponses() const
 	return mSuggestedResponses.size() > 0;
 }
 
-void EmberEntity::addArea(Terrain::TerrainArea& area)
-{
-	//A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
-	//Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
-	if (getEmberLocation()) {
-		getEmberLocation()->addArea(area);
-	}
-}
-
-void EmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
-{
-	//Same as addArea: pass it on to the parent until it gets to someone who knows how to handle this
-	if (getEmberLocation()) {
-		getEmberLocation()->addTerrainMod(mod);
-	}
-}
-
-void EmberEntity::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints)
-{
-	if (getEmberLocation()) {
-		getEmberLocation()->updateTerrain(terrainDefinitionPoints);
-	}
-}
+//void EmberEntity::addArea(Terrain::TerrainArea& area)
+//{
+//	//A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
+//	//Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
+//	if (getEmberLocation()) {
+//		getEmberLocation()->addArea(area);
+//	}
+//}
+//
+//void EmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
+//{
+//	//Same as addArea: pass it on to the parent until it gets to someone who knows how to handle this
+//	if (getEmberLocation()) {
+//		getEmberLocation()->addTerrainMod(mod);
+//	}
+//}
+//
+//void EmberEntity::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints)
+//{
+//	if (getEmberLocation()) {
+//		getEmberLocation()->updateTerrain(terrainDefinitionPoints);
+//	}
+//}
 
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
@@ -295,19 +304,19 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
-	} else //check for terrain updates
-	if (str == "terrain") {
-		Terrain::TerrainParser terrainParser;
-		updateTerrain(terrainParser.parseTerrain(v, getPredictedPos()));
+//	} else //check for terrain updates
+//	if (str == "terrain") {
+//		Terrain::TerrainParser terrainParser;
+//		updateTerrain(terrainParser.parseTerrain(v, getPredictedPos()));
 	}
 
 	//call this before checking for areas and terrainmods, since those instances created to handle that (TerrainMod and TerrainArea) will listen to the AttrChanged event, which would then be emitted after those have been created, causing duplicate regeneration from the same data
 	Entity::onAttrChanged(str, v);
 
 	//Only to this if the entity has been propely initialized, to avoid using incomplete entity data (for example an entity which haven't yet been moved to it's proper place, as well as avoiding duplicate parsing of the same data.
-	if (mIsInitialized) {
-		createDependentObject(str);
-	}
+//	if (mIsInitialized) {
+//		createDependentObject(str);
+//	}
 
 }
 

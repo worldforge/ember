@@ -18,6 +18,8 @@
 
 #include "WorldAttachment.h"
 
+#include "domain/IHeightProvider.h"
+
 #include "components/ogre/IGraphicalRepresentation.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/IEntityAttachment.h"
@@ -41,16 +43,16 @@ namespace Ember
 namespace OgreView
 {
 
-WorldAttachment::WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainManager& TerrainManager) :
-	mWorldEntity(worldEntity), mWorldNode(worldNode), mTerrainManager(TerrainManager)
+WorldAttachment::WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Domain::IHeightProvider& heightProvider) :
+	mWorldEntity(worldEntity), mWorldNode(worldNode), mHeightProvider(heightProvider)
 {
 	//set the position to always 0, 0, 0
-	mWorldNode.setPosition(Ogre::Vector3(0, 0, 0));
+	mWorldNode->setPosition(Ogre::Vector3(0, 0, 0));
 }
 
 WorldAttachment::~WorldAttachment()
 {
-	mWorldNode.getCreator()->destroySceneNode(&mWorldNode);
+	mWorldNode->getCreator()->destroySceneNode(mWorldNode);
 }
 
 IGraphicalRepresentation* WorldAttachment::getGraphicalRepresentation() const
@@ -71,10 +73,10 @@ EmberEntity* WorldAttachment::getParentEntity() const
 IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 {
 	if (Model::ModelRepresentation * modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
-		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(mWorldNode));
+		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(*mWorldNode));
 	}
 	else {
-		return new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(mWorldNode));
+		return new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(*mWorldNode));
 	}
 }
 
@@ -91,7 +93,7 @@ void WorldAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 	assert(localPosition.isValid());
 	assert(offset.isValid());
 	float height = 0;
-	if (mTerrainManager.getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
+	if (mHeightProvider.getHeight(WFMath::Point<2>(localPosition.x(), localPosition.y()), height)) {
 		offset.z() = height - localPosition.z();
 	}
 }
@@ -109,14 +111,14 @@ IEntityControlDelegate* WorldAttachment::getControlDelegate() const
 void WorldAttachment::setVisualize(const std::string& visualization, bool visualize)
 {
 	if (visualization == "OgreBBox") {
-		mWorldNode.showBoundingBox(visualize);
+		mWorldNode->showBoundingBox(visualize);
 	}
 }
 
 bool WorldAttachment::getVisualize(const std::string& visualization) const
 {
 	if (visualization == "OgreBBox") {
-		return mWorldNode.getShowBoundingBox();
+		return mWorldNode->getShowBoundingBox();
 	}
 	return false;
 }

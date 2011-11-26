@@ -22,6 +22,12 @@
 #include <Atlas/Message/Element.h>
 
 #include <sigc++/trackable.h>
+#include <sigc++/connection.h>
+
+namespace Ogre
+{
+class SceneManager;
+}
 
 namespace Eris
 {
@@ -39,12 +45,13 @@ namespace Terrain
 class TerrainHandler;
 class TerrainMod;
 class TerrainArea;
+class TerrainDefPoint;
 }
 
 class TerrainEntityManager: public sigc::trackable
 {
 public:
-	TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler);
+	TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager);
 	virtual ~TerrainEntityManager();
 
 	void registerEntity(EmberEntity* entity);
@@ -54,10 +61,14 @@ private:
 	typedef std::map<EmberEntity*, Terrain::TerrainMod*> ModStore;
 	typedef std::map<EmberEntity*, Terrain::TerrainArea*> AreaStore;
 
+	Eris::View& mView;
 	Terrain::TerrainHandler& mTerrainHandler;
+	Ogre::SceneManager& mSceneManager;
 
 	ModStore mTerrainMods;
 	AreaStore mAreas;
+
+	sigc::connection mTopLevelTerrainConnection;
 
 	void entitySeen(Eris::Entity* entity);
 	void entityTerrainAttrChanged(const Atlas::Message::Element& value, EmberEntity* entity);
@@ -66,6 +77,12 @@ private:
 
 	void entityBeingDeletedTerrainMod(EmberEntity* entity);
 	void entityBeingDeletedArea(EmberEntity* entity);
+
+	void topLevelEntityChanged();
+	void initializeTerrain(EmberEntity* entity);
+	void terrainChanged(const Atlas::Message::Element& value, EmberEntity* entity);
+	void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
+
 };
 
 }

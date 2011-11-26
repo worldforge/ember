@@ -74,11 +74,11 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 {
 
 	EmberEntity* entity(0);
-	if (type->isA(mTerrainType)) {
-		entity = createWorld(ge, type, w);
-	} else {
+//	if (type->isA(mTerrainType)) {
+//		entity = createWorld(ge, type, w);
+//	} else {
 		entity = new EmberEntity(ge->getId(), type, w);
-	}
+//	}
 	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*entity, mScene);
 	entity->setMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &creator, &mView));

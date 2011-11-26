@@ -20,6 +20,7 @@
 #define TERRAINHANDLER_H_
 
 #include "Types.h"
+#include "domain/IHeightProvider.h"
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
@@ -78,7 +79,7 @@ class PlantPopulator;
  *
  * Most terrain handling functions are implemented as Tasks, which are performed on a Task queue. As much work as possible is done in background threads, and then synced with both Ogre and the Mercator representations in the main thread.
  */
-class TerrainHandler : public virtual sigc::trackable
+class TerrainHandler : public virtual sigc::trackable, public Ember::Domain::IHeightProvider
 {
 public:
 

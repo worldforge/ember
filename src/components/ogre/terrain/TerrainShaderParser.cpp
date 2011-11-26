@@ -18,7 +18,6 @@
 
 #include "TerrainShaderParser.h"
 
-#include "components/ogre/terrain/TerrainManager.h"
 #include "components/ogre/terrain/TerrainHandler.h"
 #include "components/ogre/terrain/TerrainShader.h"
 #include "components/ogre/terrain/TerrainLayerDefinition.h"
@@ -41,8 +40,8 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainShaderParser::TerrainShaderParser(TerrainManager& terrainManager) :
-	mTerrainManager(terrainManager)
+TerrainShaderParser::TerrainShaderParser(TerrainHandler& terrainHandler) :
+	mTerrainHandler(terrainHandler)
 {
 }
 
@@ -99,7 +98,7 @@ void TerrainShaderParser::createShaders(const Atlas::Message::Element& surfaces)
 									Mercator::Shader* shader = Mercator::ShaderFactories::instance().newShader(pattern, params);
 									if (shader) {
 										isValid = true;
-										mTerrainManager.getHandler().createShader(def, shader);
+										mTerrainHandler.createShader(def, shader);
 									}
 								}
 							}
@@ -119,14 +118,14 @@ void TerrainShaderParser::createDefaultShaders()
 	Terrain::TerrainLayerDefinitionManager& terrainManager = Terrain::TerrainLayerDefinitionManager::getSingleton();
 	Terrain::TerrainLayerDefinition* def(0);
 	if ((def = terrainManager.getDefinitionForShader("rock"))) {
-		mTerrainManager.getHandler().createShader(def, new Mercator::FillShader());
+		mTerrainHandler.createShader(def, new Mercator::FillShader());
 	}
 	if ((def = terrainManager.getDefinitionForShader("sand"))) {
-		mTerrainManager.getHandler().createShader(def, new Mercator::BandShader(-2.f, 1.5f));
+		mTerrainHandler.createShader(def, new Mercator::BandShader(-2.f, 1.5f));
 	}
 
 	if ((def = terrainManager.getDefinitionForShader("grass"))) {
-		mTerrainManager.getHandler().createShader(def, new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
+		mTerrainHandler.createShader(def, new Mercator::GrassShader(1.f, 80.f, .5f, 1.f));
 	}
 }
 

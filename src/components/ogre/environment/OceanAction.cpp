@@ -21,8 +21,6 @@
 #include "Environment.h"
 
 #include "components/ogre/EmberEntity.h"
-#include "components/ogre/EmberEntityFactory.h"
-#include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/World.h"
 
@@ -35,7 +33,7 @@ namespace OgreView
 namespace Environment
 {
 OceanAction::OceanAction(EmberEntity& entity) :
-	mEntity(entity)
+		mEntity(entity)
 {
 }
 
@@ -46,14 +44,12 @@ OceanAction::~OceanAction()
 void OceanAction::activate(EntityMapping::ChangeContext& context)
 {
 	if (EmberOgre::getSingleton().getWorld()) {
-		EmberEntityFactory& factory = EmberOgre::getSingleton().getWorld()->getEntityFactory();
-		if (WorldEmberEntity* world = factory.getWorld()) {
-			if (Environment * environment = world->getEnvironment()) {
-				if (IWater* water = environment->getWater()) {
-					OceanRepresentation* ocean = new OceanRepresentation(mEntity, *water);
-					mEntity.setGraphicalRepresentation(ocean);
-					return;
-				}
+		World* world = EmberOgre::getSingleton().getWorld();
+		if (Environment * environment = world->getEnvironment()) {
+			if (IWater* water = environment->getWater()) {
+				OceanRepresentation* ocean = new OceanRepresentation(mEntity, *water);
+				mEntity.setGraphicalRepresentation(ocean);
+				return;
 			}
 		}
 	}

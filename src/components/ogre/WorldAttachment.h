@@ -16,18 +16,24 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #ifndef WORLDATTACHMENT_H_
 #define WORLDATTACHMENT_H_
 
 #include "components/ogre/IEntityAttachment.h"
 
-namespace Ogre {
+namespace Ogre
+{
 class SceneNode;
 }
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace Domain
+{
+class IHeightProvider;
+}
+namespace OgreView
+{
 
 namespace Terrain
 {
@@ -38,11 +44,10 @@ class IGraphicalRepresentation;
 class WorldEmberEntity;
 class EmberEntity;
 
-
-class WorldAttachment : public IEntityAttachment
+class WorldAttachment: public IEntityAttachment
 {
 public:
-	WorldAttachment(WorldEmberEntity& worldEntity, Ogre::SceneNode& worldNode, Terrain::TerrainManager& TerrainManager);
+	WorldAttachment(EmberEntity& worldEntity, Ogre::SceneNode* worldNode, Domain::IHeightProvider& heightProvider);
 	virtual ~WorldAttachment();
 
 	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
@@ -78,9 +83,9 @@ public:
 	virtual bool getVisualize(const std::string& visualization) const;
 protected:
 
-	WorldEmberEntity& mWorldEntity;
-	Ogre::SceneNode& mWorldNode;
-	Terrain::TerrainManager& mTerrainManager;
+	EmberEntity& mWorldEntity;
+	Ogre::SceneNode* mWorldNode;
+	Domain::IHeightProvider& mHeightProvider;
 
 };
 

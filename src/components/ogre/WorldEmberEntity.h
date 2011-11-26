@@ -38,11 +38,6 @@ namespace OgreView
 class EmberPagingSceneManager;
 class Scene;
 
-namespace Environment
-{
-class Environment;
-class Foliage;
-}
 
 namespace Terrain
 {
@@ -52,7 +47,6 @@ class TerrainParser;
 class TerrainPage;
 }
 class DelayedFoliageInitializer;
-class TerrainPageDataProvider;
 
 class EmberEntity;
 
@@ -105,17 +99,17 @@ public:
 	 */
 	virtual ~WorldEmberEntity();
 
-	/**
-	 * @brief Gets the main Environment object of the world.
-	 * @return An environment object, or null if none has been created yet.
-	 */
-	Environment::Environment* getEnvironment() const;
-
-	/**
-	 * @brief Gets the main Foliage object of the world. Note that the initialization of the foliage might be delayed.
-	 * @return A foliage object, or null if none created.
-	 */
-	Environment::Foliage* getFoliage() const;
+//	/**
+//	 * @brief Gets the main Environment object of the world.
+//	 * @return An environment object, or null if none has been created yet.
+//	 */
+//	Environment::Environment* getEnvironment() const;
+//
+//	/**
+//	 * @brief Gets the main Foliage object of the world. Note that the initialization of the foliage might be delayed.
+//	 * @return A foliage object, or null if none created.
+//	 */
+//	Environment::Foliage* getFoliage() const;
 
 	/**
 	 * @brief Gets the position of the world, as expressed in degrees of longitude and latitude.
@@ -134,7 +128,7 @@ public:
 	 * @brief Accessor for the terrain manager.
 	 * @returns The terrain manager.
 	 */
-	Terrain::TerrainManager& getTerrainManager();
+//	Terrain::TerrainManager& getTerrainManager();
 
 
 	/**
@@ -170,7 +164,7 @@ protected:
 	 */
 	void addTerrainMod(Terrain::TerrainMod* mod);
 
-	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
+//	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
 
 	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
 
@@ -192,24 +186,9 @@ protected:
 	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2> >& areas);
 
 	/**
-	 * @brief The terrain manager, owned by this instance.
-	 */
-	Terrain::TerrainManager* mTerrainManager;
-
-	/**
-	 * @brief The foliage system which provides different foliage functions.
-	 */
-	Environment::Foliage* mFoliage;
-
-	/**
-	 * @brief The main environment object. There should only be one in the system, and it's kept here.
-	 */
-	Environment::Environment* mEnvironment;
-
-	/**
 	 * @brief Takes care of delaying the initialization of the foliage.
 	 */
-	std::auto_ptr<DelayedFoliageInitializer> mFoliageInitializer;
+//	std::auto_ptr<DelayedFoliageInitializer> mFoliageInitializer;
 
 	/**
 	 * @brief True if the world has been intialized.
@@ -223,14 +202,9 @@ protected:
 	WorldPosition mWorldPosition;
 
 	/**
-	 * @brief The page data provider for the EmberPagingSceneManager.
-	 */
-	TerrainPageDataProvider* mPageDataProvider;
-
-	/**
 	 * @brief The main scene manager.
 	 */
-	EmberPagingSceneManager& mSceneManager;
+//	EmberPagingSceneManager& mSceneManager;
 
 	/**
 	 * @brief The scene to which the entity belongs.
@@ -258,38 +232,38 @@ inline const WorldEmberEntity::WorldPosition& WorldEmberEntity::getWorldPosition
  @author Erik Hjortsberg <erik@worldforge.org>
 
  */
-class DelayedFoliageInitializer
-{
-public:
-	/**
-	 * @brief Ctor.
-	 * @param foliage The foliage object.
-	 * @param view The Eris::View object of the world. This will be used for querying about the size of the Sight queue.
-	 * @param intervalMs In milliseconds how often to check if the queue is empty or time has elapsed. Defaults to 1 second.
-	 * @param maxTimeMs In missiseconds the max time to wait until we initialize the foliage anyway.
-	 */
-	DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
-
-	/**
-	 * @brief Dtor.
-	 */
-	virtual ~DelayedFoliageInitializer();
-
-protected:
-	Environment::Foliage& mFoliage;
-	Eris::View& mView;
-	unsigned int mIntervalMs;
-	unsigned int mMaxTimeMs;
-
-	std::auto_ptr<Eris::Timeout> mTimeout;
-	unsigned int mTotalElapsedTime;
-
-	/**
-	 * @brief Called when the time out has expired. We'll check for if either the set max time has elapsed, or if there's no more entities in the sight queue, and if so initialize the foliage. If not we'll just extend the waiting time.
-	 */
-	void timout_Expired();
-
-};
+//class DelayedFoliageInitializer
+//{
+//public:
+//	/**
+//	 * @brief Ctor.
+//	 * @param foliage The foliage object.
+//	 * @param view The Eris::View object of the world. This will be used for querying about the size of the Sight queue.
+//	 * @param intervalMs In milliseconds how often to check if the queue is empty or time has elapsed. Defaults to 1 second.
+//	 * @param maxTimeMs In missiseconds the max time to wait until we initialize the foliage anyway.
+//	 */
+//	DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
+//
+//	/**
+//	 * @brief Dtor.
+//	 */
+//	virtual ~DelayedFoliageInitializer();
+//
+//protected:
+//	Environment::Foliage& mFoliage;
+//	Eris::View& mView;
+//	unsigned int mIntervalMs;
+//	unsigned int mMaxTimeMs;
+//
+//	std::auto_ptr<Eris::Timeout> mTimeout;
+//	unsigned int mTotalElapsedTime;
+//
+//	/**
+//	 * @brief Called when the time out has expired. We'll check for if either the set max time has elapsed, or if there's no more entities in the sight queue, and if so initialize the foliage. If not we'll just extend the waiting time.
+//	 */
+//	void timout_Expired();
+//
+//};
 
 }
 
