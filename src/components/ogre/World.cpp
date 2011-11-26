@@ -58,7 +58,6 @@
 #include <OgreRoot.h>
 
 //TODO: remove this reference
-#include "EmberOgre.h"
 #include "main/Application.h"
 
 namespace Ember
@@ -66,12 +65,12 @@ namespace Ember
 namespace OgreView
 {
 
-World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input) :
+World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager) :
 		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mConfigListenerContainer(new ConfigListenerContainer()), mFoliage(0), mFoliageInitializer(0)
 {
 
-	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, *EmberOgre::getSingleton().getShaderManager(), Application::getSingleton().EventEndErisPoll);
-	EmberOgre::getSingleton().EventTerrainManagerCreated.emit(*mTerrainManager);
+	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, Application::getSingleton().EventEndErisPoll);
+	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 	mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
 	mTerrainEntityManager = new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager());
@@ -80,7 +79,9 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 	mScene->registerPageDataProvider(mPageDataProvider);
 
 	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
+	EventEnvironmentCreated.emit();
 	mEnvironment->initialize();
+
 	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
 	mTerrainManager->getHandler().setLightning(mEnvironment->getSun());
 
@@ -265,7 +266,7 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 		if (!mFoliage) {
 			//create the foliage
 			mFoliage = new Environment::Foliage(*mTerrainManager);
-//			EventFoliageCreated.emit();
+			EventFoliageCreated.emit();
 			mFoliageInitializer = new DelayedFoliageInitializer(*mFoliage, mView, 1000, 15000);
 		}
 	} else {

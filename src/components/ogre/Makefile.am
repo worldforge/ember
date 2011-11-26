@@ -87,7 +87,7 @@ libEmberOgre_a_SOURCES = \
 	MotionManager.cpp MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
 	OgreResourceProvider.cpp OgreSetup.cpp NodeAttachment.cpp \
 	ShaderManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp \
-	WorldEmberEntity.cpp XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \
+	XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \
 	DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
 	AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp \
 	EntityObserverBase.cpp TerrainPageDataProvider.cpp Scene.cpp ForestRenderingTechnique.cpp World.cpp \
@@ -182,7 +182,7 @@ noinst_HEADERS = \
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
 	ShaderManager.h ShadowCameraSetup.h \
-	SimpleRenderContext.h WorldEmberEntity.h XMLHelper.h IGraphicalRepresentation.h \
+	SimpleRenderContext.h XMLHelper.h IGraphicalRepresentation.h \
 	IEntityAttachment.h  WorldAttachment.h NodeAttachment.h IMovable.h IAnimated.h \
 	IEntityControlDelegate.h NodeController.h DelegatingNodeController.h \
 	AvatarAttachmentController.h IMovementProvider.h ICameraMotionHandler.h HiddenAttachment.h \

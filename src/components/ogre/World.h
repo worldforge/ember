@@ -88,6 +88,7 @@ class IPageDataProvider;
 class EntityWorldPickListener;
 class TerrainEntityManager;
 class DelayedFoliageInitializer;
+class ShaderManager;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -107,8 +108,9 @@ public:
 	 * @param renderWindow The main render window used to the render the world.
 	 * @param signals An EmberOgre signals instance, used for emitting signals for external components to listen to.
 	 * @param input The main input instance.
+	 * @param shaderManager The main shader manager.
 	 */
-	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input);
+	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager);
 
 	/**
 	 * @brief Dtor.
@@ -221,6 +223,16 @@ public:
 	 * @brief Emitted when the world has received the avatar entity.
 	 */
 	sigc::signal<void> EventGotAvatar;
+
+	/**
+	 * @brief Emitted when the foliage has been created.
+	 */
+	sigc::signal<void> EventFoliageCreated;
+
+	/**
+	 * @brief Emitted when the environment has been created.
+	 */
+	sigc::signal<void> EventEnvironmentCreated;
 
 protected:
 

@@ -131,15 +131,6 @@ public:
 //	Terrain::TerrainManager& getTerrainManager();
 
 
-	/**
-	 * @brief Emitted when the foliage has been created.
-	 */
-	sigc::signal<void> EventFoliageCreated;
-
-	/**
-	 * @brief Emitted when the environment has been created.
-	 */
-	sigc::signal<void> EventEnvironmentCreated;
 
 protected:
 
