@@ -31,44 +31,7 @@ namespace Ember
         
         sigc::signal<void> EventServicesInitialized;
         
-        
-	   
-		
-	/**
-	 *    Sets whether eris should be polled each frame. Defaults to true.
-	 * @param doPoll 
-	 */
-	void setErisPolling(bool doPoll);
-
-	/**
-	 *    Gets whether eris should be polled each frame.
-	 * @return 
-	 */
-	bool getErisPolling() const;
-	
-	/**
-	 * @brief Emitted before the eris polling is started.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventStartErisPoll;
-
-	/**
-	 * @brief Emitted after the eris polling has finished.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventEndErisPoll;
-
-	/**
-	 * @brief Emitted before processing input. This event is emitted continously.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventBeforeInputProcessing;
-
-	/**
-	 * @brief Emitted after processing input. This event is emitted continously.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventAfterInputProcessing;
+       
 	
 	/**
 	 * Accessor for the main eris world view, if any.

@@ -46,8 +46,7 @@
 
 #include "framework/Tokeniser.h"
 #include "framework/Time.h"
-
-#include "main/Application.h"
+#include "framework/MainLoopController.h"
 
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
@@ -71,7 +70,7 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
-	Application::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
+	MainLoopController::getSingleton().EventAfterInputProcessing.connect(sigc::mem_fun(*this, &Avatar::application_AfterInputProcessing));
 
 	registerConfigListener("general", "logchatmessages", sigc::mem_fun(*this, &Avatar::Config_LogChatMessages));
 	registerConfigListener("general", "avatarrotationupdatefrequency", sigc::mem_fun(*this, &Avatar::Config_AvatarRotationUpdateFrequency));

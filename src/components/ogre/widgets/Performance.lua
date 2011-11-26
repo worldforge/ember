@@ -17,6 +17,9 @@ function Performance.buildWidget()
 	connect(Performance.connectors, emberOgre.EventTerrainManagerDestroyed, Performance.terrainManagerDestroyed)
 	connect(Performance.connectors, emberOgre.EventMotionManagerDestroyed, Performance.motionManagerDestroyed)
 	
+	connect(Performance.connectors, emberServices:getServerService().GotView, Performance.gotView)
+	connect(Performance.connectors, emberServices:getServerService().DestroyedView, Performance.destroyedView)
+	
 	
 	connect(Performance.connectors, Performance.widget.EventFrameStarted, Performance.framestarted)
 	
@@ -42,6 +45,14 @@ function Performance.motionManagerDestroyed()
 	Performance.motionManager = nil
 end
 
+function Performance.gotView(view)
+	Performance.view = view
+end
+
+function Performance.destroyedView()
+	Performance.view = nil
+end
+
 function Performance.framestarted(timeSinceLastFrame)
 	if (Performance.widget:getMainWindow():isVisible()) then
 		local statString
@@ -50,8 +61,8 @@ function Performance.framestarted(timeSinceLastFrame)
 		--statString = "Current FPS: " .. string.format("%i", stats.lastFPS)
 		statString = "FPS: " .. string.format("%i", stats.avgFPS)
 		statString = statString .. "\nTriangle count: " .. string.format("%i", stats.triangleCount)
-		if app:getMainView() ~= nil then
-			statString = statString .. "\nSightqueue: " .. app:getMainView():lookQueueSize()
+		if Performance.view then
+			statString = statString .. "\nSightqueue: " .. Performance.view:lookQueueSize()
 		end
 		if Performance.motionManager then
 			local motionInfo = Performance.motionManager:getInfo()

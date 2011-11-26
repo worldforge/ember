@@ -47,6 +47,8 @@
 
 #include "services/config/ConfigListenerContainer.h"
 
+#include "framework/MainLoopController.h"
+
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
 #include <Eris/Connection.h>
@@ -57,8 +59,6 @@
 #include <OgreViewport.h>
 #include <OgreRoot.h>
 
-//TODO: remove this reference
-#include "main/Application.h"
 
 namespace Ember
 {
@@ -69,7 +69,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mConfigListenerContainer(new ConfigListenerContainer()), mFoliage(0), mFoliageInitializer(0)
 {
 
-	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, Application::getSingleton().EventEndErisPoll);
+	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventEndErisPoll);
 	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 	mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 

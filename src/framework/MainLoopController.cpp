@@ -26,8 +26,8 @@ namespace Ember
 {
 template<> MainLoopController *Singleton<MainLoopController>::ms_Singleton = 0;
 
-MainLoopController::MainLoopController(bool& shouldQuit) :
-		mShouldQuit(shouldQuit)
+MainLoopController::MainLoopController(bool& shouldQuit, bool& pollEris) :
+		mShouldQuit(shouldQuit), mPollEris(pollEris)
 {
 }
 
@@ -51,4 +51,15 @@ void MainLoopController::quit()
 {
 	mShouldQuit = true;
 }
+
+void MainLoopController::setErisPolling(bool doPoll)
+{
+	mPollEris = doPoll;
+}
+
+bool MainLoopController::getErisPolling() const
+{
+	return mPollEris;
+}
+
 }

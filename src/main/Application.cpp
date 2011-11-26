@@ -146,7 +146,7 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mOgreView(0), mShouldQuit(false), mMainLoopController(mShouldQuit), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mPollEris(true), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mLastTimeMainLoopStepEnded(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+		mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mLastTimeMainLoopStepEnded(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 
 {
 
@@ -183,23 +183,23 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 
 		if (mPollEris) {
 			currentTimeMillis = Time::currentTimeMillis();
-			EventStartErisPoll.emit((currentTimeMillis - mLastTimeErisPollStart) / 1000.0f);
+			mMainLoopController.EventStartErisPoll.emit((currentTimeMillis - mLastTimeErisPollStart) / 1000.0f);
 			mLastTimeErisPollStart = currentTimeMillis;
 			Eris::PollDefault::poll(0);
 			if (mWorldView)
 				mWorldView->update();
 			currentTimeMillis = Time::currentTimeMillis();
-			EventEndErisPoll.emit((currentTimeMillis - mLastTimeErisPollEnd) / 1000.0f);
+			mMainLoopController.EventEndErisPoll.emit((currentTimeMillis - mLastTimeErisPollEnd) / 1000.0f);
 			mLastTimeErisPollEnd = currentTimeMillis;
 		}
 
 		currentTimeMillis = Time::currentTimeMillis();
-		EventBeforeInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingStart) / 1000.0f);
+		mMainLoopController.EventBeforeInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingStart) / 1000.0f);
 		mLastTimeInputProcessingStart = currentTimeMillis;
 		input.processInput();
 
 		currentTimeMillis = Time::currentTimeMillis();
-		EventAfterInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingEnd) / 1000.0f);
+		mMainLoopController.EventAfterInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingEnd) / 1000.0f);
 		mLastTimeInputProcessingEnd = currentTimeMillis;
 
 		mOgreView->renderOneFrame();
@@ -409,18 +409,8 @@ void Application::runCommand(const std::string& command, const std::string& args
 	if (command == Quit.getCommand()) {
 		mShouldQuit = true;
 	} else if (ToggleErisPolling == command) {
-		setErisPolling(!getErisPolling());
+		mPollEris = !mPollEris;
 	}
-}
-
-void Application::setErisPolling(bool doPoll)
-{
-	mPollEris = doPoll;
-}
-
-bool Application::getErisPolling() const
-{
-	return mPollEris;
 }
 
 }

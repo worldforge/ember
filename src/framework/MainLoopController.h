@@ -39,8 +39,9 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param shouldQuit A reference to a boolean which represents whether the application should quit.
+	 * @param pollEris Whether Eris should be polled each frame.
 	 */
-	MainLoopController(bool& shouldQuit);
+	MainLoopController(bool& shouldQuit, bool& pollEris);
 
 	/**
 	 * @brief Return true if application has received an "exit" command else false.
@@ -62,6 +63,43 @@ public:
 	void requestQuit();
 
 	/**
+	 * @brief Sets whether eris should be polled each frame. Defaults to true.
+	 * Normally Eris is polled each frame. A "poll" means that Eris is asked to send and receive any data from the server and act on it.
+	 * @param doPoll True if polling should occur each frame.
+	 */
+	void setErisPolling(bool doPoll);
+
+	/**
+	 * @brief Gets whether eris should be polled each frame.
+	 * @return True if polling occurs each frame.
+	 */
+	bool getErisPolling() const;
+
+	/**
+	 * @brief Emitted before the eris polling is started.
+	 * The parameter sent is the time slice since this event last was emitted.
+	 */
+	sigc::signal<void, float> EventStartErisPoll;
+
+	/**
+	 * @brief Emitted after the eris polling has finished.
+	 * The parameter sent is the time slice since this event last was emitted.
+	 */
+	sigc::signal<void, float> EventEndErisPoll;
+
+	/**
+	 * @brief Emitted before processing input. This event is emitted continously.
+	 * The parameter sent is the time slice since this event last was emitted.
+	 */
+	sigc::signal<void, float> EventBeforeInputProcessing;
+
+	/**
+	 * @brief Emitted after processing input. This event is emitted continously.
+	 * The parameter sent is the time slice since this event last was emitted.
+	 */
+	sigc::signal<void, float> EventAfterInputProcessing;
+
+	/**
 	 * @brief Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
 	 */
 	sigc::signal<void, bool&> EventRequestQuit;
@@ -72,6 +110,11 @@ private:
 	 * @brief Set this to true when the application should quit.
 	 */
 	bool& mShouldQuit;
+
+	/**
+	 * @brief Whether Eris should be polled each frame or not.
+	 */
+	bool& mPollEris;
 };
 
 }

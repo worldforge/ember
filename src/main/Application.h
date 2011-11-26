@@ -172,43 +172,6 @@ public:
 	void runCommand(const std::string& command, const std::string& args);
 
 	/**
-	 * @brief Sets whether eris should be polled each frame. Defaults to true.
-	 * Normally Eris is polled each frame. A "poll" means that Eris is asked to send and receive any data from the server and act on it.
-	 * @param doPoll True if polling should occur each frame.
-	 */
-	void setErisPolling(bool doPoll);
-
-	/**
-	 * @brief Gets whether eris should be polled each frame.
-	 * @return True if polling occurs each frame.
-	 */
-	bool getErisPolling() const;
-
-	/**
-	 * @brief Emitted before the eris polling is started.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventStartErisPoll;
-
-	/**
-	 * @brief Emitted after the eris polling has finished.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventEndErisPoll;
-
-	/**
-	 * @brief Emitted before processing input. This event is emitted continously.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventBeforeInputProcessing;
-
-	/**
-	 * @brief Emitted after processing input. This event is emitted continously.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventAfterInputProcessing;
-
-	/**
 	 * @brief Accessor for the main eris world view, if any.
 	 */
 	Eris::View* getMainView();
@@ -225,6 +188,11 @@ private:
 	 * @see mainLoop()
 	 */
 	bool mShouldQuit;
+
+	/**
+	 * @brief Controls whether eris should be polled at each frame update.
+	 */
+	bool mPollEris;
 
 	/**
 	 * @brief The main loop controller instance, which mainly controls whether the application should quit or not.
@@ -257,11 +225,6 @@ private:
 	 * @brief Once connected to a world, this will hold the main world view.
 	 */
 	Eris::View* mWorldView;
-
-	/**
-	 * @brief Controls whether eris should be polled at each frame update.
-	 */
-	bool mPollEris;
 
 	/**
 	 * @brief Keeps track of the last time an Eris poll started.
