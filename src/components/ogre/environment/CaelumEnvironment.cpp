@@ -32,9 +32,9 @@
 #include "SimpleWater.h"
 //#include "HydraxWater.h"
 #include "framework/Tokeniser.h"
+#include "framework/Time.h"
 //#include "Caelum/include/CaelumSystem.h"
-
-#include "services/time/TimeService.h"
+#include <Eris/Calendar.h>
 
 namespace Ember
 {
@@ -44,8 +44,8 @@ namespace OgreView
 namespace Environment
 {
 
-CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera) :
-	SetCaelumTime("set_caelumtime", this, "Sets the caelum time. parameters: <hour> <minute>"), mCaelumSystem(0), mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mSky(0), mSun(0), mWater(0)
+CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera, Eris::Calendar& calendar) :
+		SetCaelumTime("set_caelumtime", this, "Sets the caelum time. parameters: <hour> <minute>"), mCaelumSystem(0), mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mCalendar(calendar), mSky(0), mSun(0), mWater(0)
 
 //,mLensFlare(camera, sceneMgr)
 {
@@ -164,12 +164,13 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	// Set time acceleration to fit with real world time
 	mCaelumSystem->getUniversalClock()->setTimeScale(1);
 
-	int year, month, day, hour, minute, second;
-	bool usingServerTime = EmberServices::getSingleton().getTimeService().getServerTime(year, month, day, hour, minute, second);
-
-	if (!usingServerTime) {
-		S_LOG_WARNING("Could not get server time, using local time for environment.");
+	Eris::DateTime currentServerTime = mCalendar.now();
+	if (currentServerTime.valid()) {
+		mCaelumSystem->getUniversalClock()->setGregorianDateTime(currentServerTime.year(), currentServerTime.month(), currentServerTime.dayOfMonth(), currentServerTime.hours(), currentServerTime.minutes(), currentServerTime.seconds());
 	} else {
+		S_LOG_WARNING("Could not get server time, using local time for environment.");
+		int year, month, day, hour, minute, second;
+		Ember::Time::getLocalTime(year, month, day, hour, minute, second);
 		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
 	}
 
@@ -216,20 +217,28 @@ IWater* CaelumEnvironment::getWater()
 void CaelumEnvironment::setTime(int hour, int minute, int second)
 {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
-		int year, month, day, _hour, _minute, _second;
-		EmberServices::getSingleton().getTimeService().getServerTime(year, month, day, _hour, _minute, _second);
-
-		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
+		Eris::DateTime currentServerTime = mCalendar.now();
+		if (currentServerTime.valid()) {
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(currentServerTime.year(), currentServerTime.month(), currentServerTime.dayOfMonth(), hour, minute, second);
+		} else {
+			int year, month, day, _hour, _minute, _second;
+			Ember::Time::getLocalTime(year, month, day, _hour, _minute, _second);
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, hour, minute, second);
+		}
 	}
 }
 
 void CaelumEnvironment::setTime(int seconds)
 {
 	if (mCaelumSystem && mCaelumSystem->getUniversalClock()) {
-		int year, month, day, _hour, _minute, _second;
-		EmberServices::getSingleton().getTimeService().getServerTime(year, month, day, _hour, _minute, _second);
-
-		mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+		Eris::DateTime currentServerTime = mCalendar.now();
+		if (currentServerTime.valid()) {
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(currentServerTime.year(), currentServerTime.month(), currentServerTime.dayOfMonth(), 0, 0, seconds);
+		} else {
+			int year, month, day, hour, minute, _second;
+			Ember::Time::getLocalTime(year, month, day, hour, minute, _second);
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(year, month, day, 0, 0, seconds);
+		}
 	}
 }
 

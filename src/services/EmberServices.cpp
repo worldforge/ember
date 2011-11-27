@@ -31,7 +31,6 @@
 #include "server/ServerService.h"
 #include "scripting/ScriptingService.h"
 #include "wfut/WfutService.h"
-#include "time/TimeService.h"
 #include "serversettings/ServerSettings.h"
 
 
@@ -83,11 +82,6 @@ namespace Ember{
 		return *mWfutService;
 	}
   
-	Services::Time& EmberServices::getTimeService()
-	{
-		return *mTimeService;
-	}
-	
 	Services::ServerSettings& EmberServices::getServerSettingsService() {
 		return *mServerSettingsService;
 	}
@@ -101,7 +95,6 @@ namespace Ember{
 	, mInputService(new InputService())
 	, mWfutService(new WfutService())
 	, mConfigService(new ConfigService())
-	, mTimeService(new Services::Time())
 	, mServerSettingsService(new Services::ServerSettings())
 	{
 	}

@@ -51,7 +51,7 @@
 
 #include <Eris/Avatar.h>
 #include <Eris/View.h>
-#include <Eris/Connection.h>
+#include <Eris/Calendar.h>
 
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
@@ -59,15 +59,16 @@
 #include <OgreViewport.h>
 #include <OgreRoot.h>
 
-
 namespace Ember
 {
 namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mConfigListenerContainer(new ConfigListenerContainer()), mFoliage(0), mFoliageInitializer(0)
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mConfigListenerContainer(new ConfigListenerContainer()), mFoliage(0), mFoliageInitializer(0), mCalendar(new Eris::Calendar(view.getAvatar()))
 {
+
+
 
 	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventEndErisPoll);
 	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
@@ -78,7 +79,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 	mPageDataProvider = new TerrainPageDataProvider(mTerrainManager->getHandler());
 	mScene->registerPageDataProvider(mPageDataProvider);
 
-	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
+	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
 	EventEnvironmentCreated.emit();
 	mEnvironment->initialize();
 
@@ -135,6 +136,7 @@ World::~World()
 
 	delete mScene;
 	delete mPageDataProvider;
+	delete mCalendar;
 }
 
 Eris::View& World::getView() const
@@ -193,7 +195,7 @@ Authoring::AuthoringManager& World::getAuthoringManager() const
 	return *mAuthoringManager;
 }
 
-Terrain::TerrainManager& World::getTerrainManager()
+Terrain::TerrainManager& World::getTerrainManager() const
 {
 	return *mTerrainManager;
 }
@@ -206,6 +208,11 @@ Environment::Environment* World::getEnvironment() const
 Environment::Foliage* World::getFoliage() const
 {
 	return mFoliage;
+}
+
+Eris::Calendar& World::getCalendar() const
+{
+	return *mCalendar;
 }
 
 void World::terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages)

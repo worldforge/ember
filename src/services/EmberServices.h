@@ -37,7 +37,6 @@ class ScriptingService;
 class WfutService;
 namespace Services
 {
-class Time;
 class ServerSettings;
 }
 
@@ -131,13 +130,6 @@ public:
 	WfutService& getWfutService();
 
 	/**
-	 * @brief Returns an instance of the time service
-	 *
-	 * @return The time service.
-	 */
-	Services::Time& getTimeService();
-
-	/**
 	 * @brief Returns the server settings service.
 	 *
 	 * @return The server settings service.
@@ -177,7 +169,6 @@ private:
 	std::auto_ptr<InputService> mInputService;
 	std::auto_ptr<WfutService> mWfutService;
 	std::auto_ptr<ConfigService> mConfigService;
-	std::auto_ptr<Services::Time> mTimeService;
 	std::auto_ptr<Services::ServerSettings> mServerSettingsService;
 
 };

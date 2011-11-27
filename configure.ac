@@ -564,7 +564,6 @@ AC_CONFIG_FILES([Makefile
 		 src/services/server/Makefile
 		 src/services/scripting/Makefile
 		 src/services/sound/Makefile
-		 src/services/time/Makefile
 		 src/services/bindings/Makefile
 		 src/services/bindings/lua/Makefile
 		 src/services/wfut/Makefile

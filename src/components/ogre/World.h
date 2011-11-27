@@ -38,6 +38,7 @@ class View;
 class Connection;
 class Entity;
 class Timeout;
+class Calendar;
 }
 
 namespace varconf
@@ -217,7 +218,13 @@ public:
 	 * @brief Accessor for the terrain manager.
 	 * @returns The terrain manager.
 	 */
-	Terrain::TerrainManager& getTerrainManager();
+	Terrain::TerrainManager& getTerrainManager() const;
+
+	/**
+	 * @brief Accessor for the main server calendar.
+	 * @return The main server calendar.
+	 */
+	Eris::Calendar& getCalendar() const;
 
 	/**
 	 * @brief Emitted when the world has received the avatar entity.
@@ -329,6 +336,9 @@ protected:
 	 */
 	Environment::Foliage* mFoliage;
 
+	/**
+	 * @brief A foliage initializer which acts a bit delayed.
+	 */
 	DelayedFoliageInitializer* mFoliageInitializer;
 
 	/**
@@ -336,8 +346,21 @@ protected:
 	 */
 	Environment::Environment* mEnvironment;
 
+	/**
+	 * @brief Listens for configuration changes.
+	 */
 	ConfigListenerContainer* mConfigListenerContainer;
 
+	/**
+	 * @brief Represents the server calendar.
+	 */
+	Eris::Calendar* mCalendar;
+
+	/**
+	 * @brief Listens to updates to the terrain and makes sure that entities are adjusted.
+	 * @param areas The areas that were changed.
+	 * @param pages The pages that were changed.
+	 */
 	void terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages);
 
 	/**
@@ -355,8 +378,19 @@ protected:
 	 */
 	void avatarEntity_BeingDeleted();
 
+	/**
+	 * @brief Updates the position of the entity, and all it's children, as long as it's within the changed areas.
+	 * @param entity The entity to update.
+	 * @param areas The areas which have been updated.
+	 */
 	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2> >& areas);
 
+	/**
+	 * @brief Listen to changes the "graphics:foliage" config element, and create or destroy the foliage accordingly.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
 	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 };
@@ -364,7 +398,7 @@ protected:
 /**
  @brief Allows for a delayed initialization of the foliage.
 
- The initialization will occrur when either the sight queue is empty, or a certain time has elapsed.
+ The initialization will occur when either the sight queue is empty, or a certain time has elapsed.
  The main reason for doing this is that whenever a new area is added to the world, the foliage is invalidated and reloaded.
  As a result when the user first enters the world and is getting sent all the surrounding entities, there's a great chance that some of these entities will be areas. If the foliage then already has been initialized it will lead to the foliage being reloaded a couple of time.
  By delaying the loading of the foliage we can avoid this.

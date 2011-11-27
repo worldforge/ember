@@ -35,7 +35,6 @@
 #include "services/sound/SoundService.h"
 #include "services/scripting/ScriptingService.h"
 #include "services/wfut/WfutService.h"
-#include "services/time/TimeService.h"
 #include "services/input/InputService.h"
 #include "services/input/Input.h"
 #include "services/serversettings/ServerSettings.h"
@@ -316,10 +315,6 @@ void Application::initializeServices()
 	// Initialize the Server Service
 	S_LOG_INFO("Initializing server service");
 	EmberServices::getSingleton().getServerService().start();
-
-	// The time service depends on the server service, so we have to intialize it in this order
-	S_LOG_INFO("Initializing time service");
-	EmberServices::getSingleton().getTimeService().start();
 
 	S_LOG_INFO("Initializing input service");
 	EmberServices::getSingleton().getInputService().start();

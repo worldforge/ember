@@ -29,28 +29,36 @@
 
 namespace Caelum
 {
-	class CaelumSystem;
-	class SkyDome;
-	class BaseSkyLight;
+class CaelumSystem;
+class SkyDome;
+class BaseSkyLight;
 }
 
-namespace Ember {
-namespace OgreView {
+namespace Eris
+{
+class Calendar;
+}
 
-namespace Environment {
+namespace Ember
+{
+namespace OgreView
+{
+
+namespace Environment
+{
 
 class CaelumSky;
 class CaelumSun;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class CaelumEnvironment : public IEnvironmentProvider, public ConsoleObject
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class CaelumEnvironment: public IEnvironmentProvider, public ConsoleObject
 {
 public:
-    CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
+	CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera, Eris::Calendar& calendar);
 
-    virtual ~CaelumEnvironment();
+	virtual ~CaelumEnvironment();
 
 	virtual void createEnvironment();
 
@@ -58,12 +66,12 @@ public:
 	virtual ISky* getSky();
 	virtual IFog* getFog();
 	virtual IWater* getWater();
-	
+
 	Caelum::CaelumSystem* getCaelumSystem() const;
 
 	const ConsoleCommandWrapper SetCaelumTime;
-    
-    virtual void setTime(int hour, int minute, int second = 0);
+
+	virtual void setTime(int hour, int minute, int second = 0);
 	virtual void setTime(int seconds);
 
 	virtual void setTimeMultiplier(float multiplier);
@@ -76,18 +84,11 @@ public:
 	 * @param latitudeDegrees The latitude, as degrees.
 	 */
 	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
-	
-	/**
-	 *    Reimplements the ConsoleObject::runCommand method
-	 * @param command 
-	 * @param args 
-	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
 
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 private:
 
-	
 	/**
 	 *    Creates and initializes the Caelum system.
 	 * @param root 
@@ -96,39 +97,47 @@ private:
 	 * @param camera 
 	 */
 	void setupCaelum(Ogre::Root *root, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
-	
+
 	/**
 	 *    Creates a water plane.
 	 */
 	void setupWater();
-	
+
 	// Caelum system
 	Caelum::CaelumSystem *mCaelumSystem;
-	
+
 	Ogre::SceneManager *mSceneMgr;
 	Ogre::RenderWindow* mWindow;
 	Ogre::Camera& mCamera;
-	
+
+	/**
+	 * @brief Holds the main calendar instance for this world.
+	 */
+	Eris::Calendar& mCalendar;
+
 	CaelumSky* mSky;
 	CaelumSun* mSun;
 	IWater* mWater;
 
 };
-	
+
 inline Caelum::CaelumSystem* CaelumEnvironment::getCaelumSystem() const
 {
-	return	mCaelumSystem;
-}	
+	return mCaelumSystem;
+}
 
 class CaelumEnvironmentComponent
 {
 protected:
-	CaelumEnvironmentComponent(CaelumEnvironment& environment) : mEnvironment(environment), mCaelumSystem(environment.getCaelumSystem()) {}
+	CaelumEnvironmentComponent(CaelumEnvironment& environment) :
+			mEnvironment(environment), mCaelumSystem(environment.getCaelumSystem())
+	{
+	}
 	CaelumEnvironment& mEnvironment;
-	
+
 	/// Caelum system
 	Caelum::CaelumSystem *mCaelumSystem;
-	
+
 };
 
 }

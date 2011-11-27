@@ -58,23 +58,11 @@ function Environment:shutdown()
 	environment = nil
 end
 
---Wait with creating the widget until we've got a world entity (as that entity holds the environment instance)
-Environment.gotViewConnection = createConnector(emberServices:getServerService().GotView):connect(function(view)
-		Environment.viewConnection = createConnector(view.TopLevelEntityChanged):connect(function() 
-				local entityFactory = emberOgre:getWorld():getEntityFactory()
-				if entityFactory ~= nil then
-					local worldEntity = entityFactory:getWorld()
-					if worldEntity ~= nil then
-						local environmentObject = worldEntity:getEnvironment()
-						if environmentObject ~= nil then
-							environment = {connectors={}, timeSlider = nil}
-							setmetatable(environment, {__index = Environment})
-							connect(environment.connectors, worldEntity.BeingDeleted, Environment.shutdown, environment)
-							environment:buildWidget(environmentObject)
-						end
-					end
-				end
-			end
-		)
-	end
+Environment.gotViewConnection = createConnector(emberOgre.EventWorldCreated):connect(function(world)
+	local environmentObject = world:getEnvironment()
+	environment = {connectors={}, timeSlider = nil}
+	setmetatable(environment, {__index = Environment})
+	connect(environment.connectors, emberOgre.EventWorldDestroyed, Environment.shutdown, environment)
+	environment:buildWidget(environmentObject)
+end
 )
