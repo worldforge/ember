@@ -236,11 +236,6 @@ public:
 	 */
 	sigc::signal<void> EventFoliageCreated;
 
-	/**
-	 * @brief Emitted when the environment has been created.
-	 */
-	sigc::signal<void> EventEnvironmentCreated;
-
 protected:
 
 	/**
