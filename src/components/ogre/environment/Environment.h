@@ -23,143 +23,29 @@
 #ifndef EMBER_OGRE_ENVIRONMENTENVIRONMENT_H
 #define EMBER_OGRE_ENVIRONMENTENVIRONMENT_H
 
+#include "IEnvironmentProvider.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "components/ogre/ILightning.h"
 #include "framework/ConsoleObject.h"
 #include <sigc++/signal.h>
 
-namespace Ember {
-namespace OgreView {
-class ICollisionDetector;
+namespace Ember
+{
+namespace OgreView
+{
 namespace Terrain
 {
 class TerrainManager;
 }
 
 /**
- * @brief Namespace for environemnt related classes and activities.
+ * @brief Namespace for environment related classes and activities.
  * With "environment" we refer to things like the weather, the ocean, the foliage etc.
  */
-namespace Environment {
+namespace Environment
+{
 
 class Forest;
 
-class ISun : public ILightning
-{
-public:
-	virtual ~ISun() {}
-	virtual void setAmbientLight(const Ogre::ColourValue& colour) = 0;
-	virtual Ogre::Vector3 getSunDirection() const = 0;
-
-};
-
-class ISky
-{
-public:
-};
-
-class IFog
-{
-public:
-	virtual ~IFog() {}
-	virtual void setDensity(float density) = 0;
-	virtual float getDensity() const = 0;
-};
-
-
-/**
-@brief Interface for all water techniques. Call isSupported() first to see if the water can be created, and then initialize() to set it all up.
-@author Erik Hjortsberg <erik@worldforge.org>
-*/
-class IWater
-{
-public:
-	virtual ~IWater() {}
-
-	/**
-	 * @brief Performs checks to see whether this technique is supported on the current hardware.
-	 * @return True if the water technique is supported.
-	 */
-	virtual bool isSupported() const = 0;
-	/**
-	 * @brief Initializes the water. You must call this in order for the water to show up.
-	 * @return True if the water technique could be setup, else false.
-	 */
-	virtual bool initialize() = 0;
-
-	/**
-	 * @brief Sets the level of the water.
-	 * @param height The height of the water level, in world units.
-	 */
-	virtual void setLevel(float height) = 0;
-
-	/**
-	 * @brief Creates a collision detector for the water.
-	 * @return A collision detector for the water.
-	 */
-	virtual ICollisionDetector* createCollisionDetector() = 0;
-
-	/**
-	 * @brief Attaches a user object, if possible, to the water.
-	 * @param The user object to attach.
-	 * @note If the object could be attached, ownership is transferred to the water entity. If however it couldn't be attached, it's responsibility of the calling method to make sure that the object is destroyed.
-	 * @return True if the user object was successfully attached. This means that ownership transfers to the water instance.
-	 */
-	virtual bool setUserAny(const Ogre::Any &anything) = 0;
-};
-
-/**
- * @brief An interface for environment providers.
- *
- * An implementation of this is expected to be able to supply the instances which make up the environment.
- */
-class IEnvironmentProvider
-{
-public:
-
-	virtual ~IEnvironmentProvider() {}
-
-	virtual void createEnvironment() = 0;
-
-	virtual ISun* getSun() = 0;
-	virtual ISky* getSky() = 0;
-	virtual IFog* getFog() = 0;
-	virtual IWater* getWater() = 0;
-
-	/**
-	 * @brief Sets the current time.
-	 * @param hour The hour.
-	 * @param minute The minute.
-	 * @param second The second.
-	 */
-	virtual void setTime(int hour, int minute, int second = 0) = 0;
-
-    /**
-     * @brief Sets the current time.
-     * @param seconds Seconds since midnight.
-     */
-	virtual void setTime(int seconds) = 0;
-
-	/**
-	 * @brief Sets the time multiplier, i.e. how much the time of the environment will progress per real time second.
-	 * @param multiplier The time multiplier.
-	 */
-	virtual void setTimeMultiplier(float multiplier) = 0;
-
-	/**
-	 * @brief Gets the time multiplier, i.e. how much the time of the environment will progress per real time second.
-	 * @return The time multiplier.
-	 */
-	virtual float getTimeMultiplier() const = 0;
-
-	/**
-	 * @brief Sets the position of the world.
-	 * @param longitudeDegrees The longitude, as degrees.
-	 * @param latitudeDegrees The latitude, as degrees.
-	 */
-	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees) = 0;
-
-};
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -170,7 +56,7 @@ public:
  *
  * Note that the actual instances used are provided by an instance of IEnvironmentProvider.
  */
-class Environment : public ConsoleObject
+class Environment: public ConsoleObject
 {
 public:
 
@@ -180,18 +66,18 @@ public:
 	 * @param provider Main environment provider.
 	 * @param fallbackProvider A fallback provider which is used if the main provider for some reason fails to create the environment (if for instance the hardware doesn't support it).
 	 */
-    Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
+	Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
 
-    ~Environment();
+	~Environment();
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command
 	 * @param args
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	virtual void runCommand(const std::string &command, const std::string &args);
 
- 	const ConsoleCommandWrapper SetTime;
+	const ConsoleCommandWrapper SetTime;
 	const ConsoleCommandWrapper SetFogDensity;
 	const ConsoleCommandWrapper SetAmbientLight;
 
@@ -201,19 +87,18 @@ public:
 	IWater* getWater();
 	Forest* getForest();
 
-
 	/**
 	 * @brief Sets the current time.
 	 * @param hour The hour.
 	 * @param minute The minute.
 	 * @param second The second.
 	 */
-    void setTime(int hour, int minute, int second = 0);
+	void setTime(int hour, int minute, int second = 0);
 
-    /**
-     * @brief Sets the current time.
-     * @param seconds Seconds since midnight.
-     */
+	/**
+	 * @brief Sets the current time.
+	 * @param seconds Seconds since midnight.
+	 */
 	void setTime(int seconds);
 
 	/**
@@ -228,7 +113,7 @@ public:
 	 */
 	float getTimeMultiplier() const;
 
-    void initialize();
+	void initialize();
 
 	/**
 	 *    changes the ambient light
@@ -243,11 +128,10 @@ public:
 	 */
 	void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
 
-
-   	/**
-	* @brief Emitted when the world ambient light is changed.
-	* The first param is the new colour value of the ambient light.
-	*/
+	/**
+	 * @brief Emitted when the world ambient light is changed.
+	 * The first param is the new colour value of the ambient light.
+	 */
 	sigc::signal<void, const Ogre::ColourValue&> EventUpdatedAmbientLight;
 
 private:

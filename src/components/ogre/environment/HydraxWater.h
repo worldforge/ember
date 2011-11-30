@@ -24,7 +24,7 @@
 #define EMBEROGRE_ENVIRONMENTHYDRAXWATER_H
 
 #include <OgreFrameListener.h>
-#include "Environment.h"
+#include "IEnvironmentProvider.h"
 
 namespace Hydrax
 {

@@ -24,29 +24,24 @@
 #include "config.h"
 #endif
 
-
 #include "Environment.h"
-#include "framework/Tokeniser.h"
 #include "Forest.h"
-#include "SimpleEnvironment.h"
+#include "framework/Tokeniser.h"
 #include <OgreStringConverter.h>
 #include <OgreColourValue.h>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-namespace Environment {
+namespace Environment
+{
 
-Environment::Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider):
- SetTime("set_time",this, "Sets the time. parameters: <hour> <minute>")
-, SetFogDensity("set_fogdensity",this, "Sets the fog density.")
-, SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>")
-, mProvider(provider)
-, mFallbackProvider(fallbackProvider)
-, mForest(new Forest(terrainManager))
+Environment::Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider) :
+		SetTime("set_time", this, "Sets the time. parameters: <hour> <minute>"), SetFogDensity("set_fogdensity", this, "Sets the fog density."), SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>"), mProvider(provider), mFallbackProvider(fallbackProvider), mForest(new Forest(terrainManager))
 {
 }
-
 
 Environment::~Environment()
 {
@@ -75,11 +70,10 @@ void Environment::runCommand(const std::string &command, const std::string &args
 			std::string densityString = tokeniser.nextToken();
 
 			float density = ::Ogre::StringConverter::parseReal(densityString);
-			getFog()->setDensity( density);
+			getFog()->setDensity(density);
 		}
 
-	} else if (SetAmbientLight == command)
-	{
+	} else if (SetAmbientLight == command) {
 		Tokeniser tokeniser;
 		tokeniser.initTokens(args);
 		std::string r = tokeniser.nextToken();
@@ -89,7 +83,7 @@ void Environment::runCommand(const std::string &command, const std::string &args
 		if (r == "" || b == "" || g == "") {
 			return;
 		} else {
-			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r),Ogre::StringConverter::parseReal(b),Ogre::StringConverter::parseReal(g));
+			Ogre::ColourValue colour(Ogre::StringConverter::parseReal(r), Ogre::StringConverter::parseReal(b), Ogre::StringConverter::parseReal(g));
 			setAmbientLight(colour);
 		}
 
@@ -135,8 +129,8 @@ float Environment::getTimeMultiplier() const
 	return mProvider->getTimeMultiplier();
 }
 
-
-void Environment::setAmbientLight(const Ogre::ColourValue& colour) {
+void Environment::setAmbientLight(const Ogre::ColourValue& colour)
+{
 	if (getSun()) {
 		getSun()->setAmbientLight(colour);
 		EventUpdatedAmbientLight.emit(colour);
@@ -147,7 +141,6 @@ void Environment::setWorldPosition(float longitudeDegrees, float latitudeDegrees
 {
 	mProvider->setWorldPosition(longitudeDegrees, latitudeDegrees);
 }
-
 
 }
 

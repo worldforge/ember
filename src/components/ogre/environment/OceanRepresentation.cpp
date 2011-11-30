@@ -17,7 +17,7 @@
  */
 
 #include "OceanRepresentation.h"
-#include "Environment.h"
+#include "IEnvironmentProvider.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include <OgreAny.h>

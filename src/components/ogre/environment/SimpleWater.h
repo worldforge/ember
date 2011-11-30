@@ -24,7 +24,7 @@
 #define EMBEROGRE_ENVIRONMENTSIMPLEWATER_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "Environment.h"
+#include "IEnvironmentProvider.h"
 
 namespace Ember
 {

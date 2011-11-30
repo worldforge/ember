@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_ENVIRONMENTSIMPLEENVIRONMENT_H
 #define EMBEROGRE_ENVIRONMENTSIMPLEENVIRONMENT_H
 
-#include "Environment.h"
+#include "IEnvironmentProvider.h"
 
 
 namespace Ogre
@@ -31,6 +31,7 @@ namespace Ogre
 class SceneManager;
 class RenderWindow;
 class Camera;
+class Light;
 }
 
 namespace Ember {

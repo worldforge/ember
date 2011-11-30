@@ -24,7 +24,7 @@
 #define EMBEROGRE_ENVIRONMENTCAELUMENVIRONMENT_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include "Environment.h"
+#include "IEnvironmentProvider.h"
 #include "framework/ConsoleObject.h"
 
 namespace Caelum
