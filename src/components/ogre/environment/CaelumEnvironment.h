@@ -90,7 +90,7 @@ public:
 private:
 
 	/**
-	 *    Creates and initializes the Caelum system.
+	 * @brief Creates and initializes the Caelum system.
 	 * @param root 
 	 * @param sceneMgr 
 	 * @param window 
@@ -99,9 +99,14 @@ private:
 	void setupCaelum(Ogre::Root *root, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 
 	/**
-	 *    Creates a water plane.
+	 * @brief Creates a water plane.
 	 */
 	void setupWater();
+
+	/**
+	 * @brief Called when the calendar is updated.
+	 */
+	void Calendar_Updated();
 
 	// Caelum system
 	Caelum::CaelumSystem *mCaelumSystem;

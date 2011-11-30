@@ -59,6 +59,7 @@ CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderW
 	 mLensFlare.initialize();*/
 	//		mLensFlare.setVisible(false);
 	//Ogre::::Root::getSingleton().addFrameListener(this);
+	mCalendar.Updated.connect(sigc::mem_fun(*this, &CaelumEnvironment::Calendar_Updated));
 }
 
 CaelumEnvironment::~CaelumEnvironment()
@@ -90,6 +91,16 @@ void CaelumEnvironment::createEnvironment()
 		mWater = 0;
 	}
 
+}
+
+void CaelumEnvironment::Calendar_Updated()
+{
+	Eris::DateTime now = mCalendar.now();
+	if (now.valid()) {
+		if (mCaelumSystem) {
+			mCaelumSystem->getUniversalClock()->setGregorianDateTime(now.year(), now.month(), now.dayOfMonth(), now.hours(), now.minutes(), now.seconds());
+		}
+	}
 }
 
 void CaelumEnvironment::setupWater()
@@ -184,10 +195,7 @@ void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sc
 	 */
 
 	//advance it one second to force it to do initial updating, since other subsystems such as the terrain rendering depends on the sun postions etc.
-	Ogre::FrameEvent ev;
-	ev.timeSinceLastEvent = 1;
-	ev.timeSinceLastFrame = 1;
-	mCaelumSystem->updateSubcomponents(1000);
+	mCaelumSystem->updateSubcomponents(1);
 
 	//This will make caelum update itself automatically each frame
 	Ogre::Root::getSingleton().addFrameListener(mCaelumSystem);
