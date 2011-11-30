@@ -29,17 +29,14 @@
 #include "Scene.h"
 
 #include "EmberEntity.h"
-#include "WorldEmberEntity.h"
 
 #include "MousePicker.h"
-
-#include "model/Model.h"
 
 #include <OgreSceneQuery.h>
 #include <OgreRay.h>
 #include <OgreSceneManager.h>
-
-#include <boost/shared_ptr.hpp>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
 
 #include <Eris/View.h>
 

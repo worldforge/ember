@@ -36,7 +36,6 @@
 #include "components/ogre/MeshCollisionDetector.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityFactory.h"
-#include "components/ogre/WorldEmberEntity.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/MotionManager.h"
 #include "components/ogre/Scene.h"

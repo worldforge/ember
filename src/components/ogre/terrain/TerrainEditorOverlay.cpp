@@ -29,8 +29,6 @@
 #include "components/ogre/camera/MainCamera.h"
 #include "components/ogre/GUIManager.h"
 #include "components/ogre/EmberEntity.h"
-#include "components/ogre/WorldEmberEntity.h"
-#include "components/ogre/EmberEntityFactory.h"
 #include "components/ogre/MousePicker.h"
 #include "components/ogre/World.h"
 
@@ -50,7 +48,6 @@
 #include <OgreEntity.h>
 
 #include <sigc++/bind.h>
-#include <boost/smart_ptr.hpp>
 
 namespace Ember
 {
