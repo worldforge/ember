@@ -19,6 +19,8 @@ class View
     */
     unsigned int lookQueueSize() const;
     
+    Eris::Entity* getTopLevel() const;
+    
     /// emitted when the TLVE changes
     sigc::signal<void> TopLevelEntityChanged;    
 };

@@ -297,7 +297,7 @@ function AssetsManager:refresh()
 	self.listholder:resetList()
 	local world = emberOgre:getWorld()
 	if world then
-		self:addEntity(world:getEntityFactory():getWorld(), 0)
+		self:addEntity(world:getView():getTopLevel(), 0)
 	end
 end
 

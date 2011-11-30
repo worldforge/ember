@@ -92,8 +92,8 @@ end
 function EntityBrowser:refresh()
 	self.listholder:resetList()
 	local world = emberOgre:getWorld()
-	if world ~= nil then
-		self:addEntity(world:getEntityFactory():getWorld(), 0)
+	if world then
+		self:addEntity(world:getView():getTopLevel(), 0)
 	end
 end
 
