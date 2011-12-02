@@ -25,24 +25,21 @@ end
 
 --called when an entity has been picked
 function PickingInfo:pickedEntity(result, args)
-	--only catch single clicks
-	if args.pickType == Ember.OgreView.MPT_CLICK then
-		if self.widget:getMainWindow():isVisible() then
-			if result:size() > 0 then
-			
-				local firstPickResult = result[0]
-				--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
-				local ogrePos = Ogre.Vector3:new_local(firstPickResult.position)
-				--we should use a worldforge position, but we haven't yet added lua bindings for wfmath, so we'll just manually convert the ogre values
-		-- 		local wfPos = Ember.OgreView.Convert:toWF_Vector3(ogrePos)
-				local infoString = string.format([[Entity: %q (id: %q type: %q)
+	if self.widget:getMainWindow():isVisible() then
+		if result:size() > 0 then
+		
+			local firstPickResult = result[0]
+			--we must make a copy, else the vector object will be deleted by C++ and we'll end up with garbage
+			local ogrePos = Ogre.Vector3:new_local(firstPickResult.position)
+			--we should use a worldforge position, but we haven't yet added lua bindings for wfmath, so we'll just manually convert the ogre values
+	-- 		local wfPos = Ember.OgreView.Convert:toWF_Vector3(ogrePos)
+			local infoString = string.format([[Entity: %q (id: %q type: %q)
 WF pos:
   x: %.2f y: %.2f z: %.2f
 Ogre pos:
   x: %.2f y: %.2f z: %.2f
 Distance: %.2f]], firstPickResult.entity:getName(), firstPickResult.entity:getId(), firstPickResult.entity:getType():getName(), ogrePos.x, -ogrePos.z, ogrePos.y, ogrePos.x, ogrePos.y, ogrePos.z, firstPickResult.distance)
-				self.infoBox:setText(infoString)
-			end
+			self.infoBox:setText(infoString)
 		end
 	end
 end

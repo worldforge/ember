@@ -48,6 +48,7 @@
 #include "services/server/ServerServiceSignals.h"
 
 #include "framework/IScriptingProvider.h"
+#include "framework/Time.h"
 
 #include <Eris/View.h>
 
@@ -90,7 +91,7 @@ namespace OgreView
 unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals) :
-		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0) //by creating an instance here we'll indirectly tell CEGUI to use this one instead of trying to create one itself
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0), mClickThresholdMilliseconds(100), mMousePressedStart(0)
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -160,9 +161,13 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mSheet->moveToBack();
 		mSheet->setDistributesCapturedInputs(false);
 
-		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseButtonDown, GUIManager::mSheet_MouseButtonDown);
+		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventMouseButtonDown, GUIManager::mSheet_MouseButtonDown);
+		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventMouseButtonUp, GUIManager::mSheet_MouseButtonUp);
 		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventInputCaptureLost, GUIManager::mSheet_CaptureLost);
-		BIND_CEGUI_EVENT(mSheet, CEGUI::ButtonBase::EventMouseDoubleClick, GUIManager::mSheet_MouseDoubleClick);
+		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventMouseClick, GUIManager::mSheet_MouseClick);
+		BIND_CEGUI_EVENT(mSheet, CEGUI::Window::EventMouseDoubleClick, GUIManager::mSheet_MouseDoubleClick);
+
+		Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &GUIManager::input_MouseButtonReleased));
 
 		//set a default tool tip
 		CEGUI::System::getSingleton().setDefaultTooltip(getDefaultScheme() + "/Tooltip");
@@ -216,7 +221,6 @@ GUIManager::~GUIManager()
 	delete mEntityIconManager;
 	delete mActionBarIconManager;
 	delete mIconManager;
-
 
 	CEGUI::System::destroy();
 
@@ -421,20 +425,16 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 	try {
 		CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
 	} catch (const CEGUI::Exception& ex) {
-		S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
-	// 	if (mPreviousInputMode == IM_GUI) {
-	// 		if (!mInput->getInputMode()) {
-	// 			EventInputModeChanged.emit(IM_MOVEMENT);
-	// 			mPreviousInputMode = IM_MOVEMENT;
-	// 		}
-	// 	} else {
-	// 		if (mInput->isInGUIMode()) {
-	// 			EventInputModeChanged.emit(IM_GUI);
-	// 			mPreviousInputMode = IM_GUI;
-	// 		}
-	// 	}
-
+	if (isInGUIMode()) {
+		if (mMousePressedStart != 0) {
+			if ((Time::currentTimeMillis() - mMousePressedStart) > mClickThresholdMilliseconds) {
+				mMousePressedStart = 0;
+				sendWorldClick(MPT_PRESS, CEGUI::MouseCursor::getSingleton().getPosition());
+			}
+		}
+	}
 	//iterate over all widgets and send them a frameStarted event
 	WidgetStore::iterator I = mWidgets.begin();
 	WidgetStore::iterator I_end = mWidgets.end();
@@ -444,7 +444,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 		try {
 			aWidget->frameStarted(evt);
 		} catch (const CEGUI::Exception& ex) {
-			S_LOG_WARNING("Error in CEGUI: " << ex.getMessage().c_str());
+			S_LOG_WARNING("Error in CEGUI." << ex);
 		}
 	}
 
@@ -454,29 +454,56 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 }
 
+void GUIManager::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode inputMode)
+{
+	mMousePressedStart = 0;
+}
+
+void GUIManager::sendWorldClick(MousePickType pickType, const CEGUI::Vector2& pixelPosition)
+{
+	S_LOG_VERBOSE("Main sheet is capturing input");
+	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
+	if (aWindow) {
+		aWindow->releaseInput();
+		aWindow->deactivate();
+	}
+
+	if (mPicker) {
+		const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
+		MousePickerArgs pickerArgs;
+		pickerArgs.windowX = pixelPosition.d_x;
+		pickerArgs.windowY = pixelPosition.d_y;
+		pickerArgs.pickType = pickType;
+		mPicker->doMousePicking(position.d_x, position.d_y, pickerArgs);
+	}
+
+}
+
 bool GUIManager::mSheet_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	if (isInGUIMode()) {
-		const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
-		S_LOG_VERBOSE("Main sheet is capturing input");
-		CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
-		if (aWindow) {
-			aWindow->releaseInput();
-			aWindow->deactivate();
-		}
-		//mSheet->activate();
-		//mSheet->captureInput();
-
-		if (mPicker) {
-			const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
-			MousePickerArgs pickerArgs;
-			pickerArgs.windowX = mouseArgs.position.d_x;
-			pickerArgs.windowY = mouseArgs.position.d_y;
-			pickerArgs.pickType = MPT_CLICK;
-			mPicker->doMousePicking(position.d_x, position.d_y, pickerArgs);
-		}
+		mMousePressedStart = Time::currentTimeMillis();
 	}
 
+	return true;
+}
+
+bool GUIManager::mSheet_MouseButtonUp(const CEGUI::EventArgs& args)
+{
+	if (isInGUIMode()) {
+		if (mMousePressedStart != 0) {
+			if ((Time::currentTimeMillis() - mMousePressedStart) < mClickThresholdMilliseconds) {
+				mMousePressedStart = 0;
+				sendWorldClick(MPT_CLICK, static_cast<const CEGUI::MouseEventArgs&>(args).position);
+			}
+		}
+	}
+	return true;
+}
+
+bool GUIManager::mSheet_MouseClick(const CEGUI::EventArgs& args)
+{
+	S_LOG_VERBOSE("Main sheet click");
 	return true;
 }
 

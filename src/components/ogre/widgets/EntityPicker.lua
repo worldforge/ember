@@ -209,7 +209,7 @@ end
 --called when an entity has been picked
 function EntityPicker:pickedEntity(results, args)
 
-	if args.pickType == Ember.OgreView.MPT_CLICK then
+	if args.pickType == Ember.OgreView.MPT_PRESS then
 		self.pickedPoint = CEGUI.Vector2:new_local(args.windowX, args.windowY)
 	
 		self.pickedEntities = {}
@@ -236,6 +236,14 @@ function EntityPicker:pickedEntity(results, args)
 		end
 	
 		self:pickedOneEntity(self.pickedEntities[0])
+	elseif args.pickType == Ember.OgreView.MPT_CLICK then
+		if results:size() > 0 then
+			local entity = results[0].entity
+			if entity then
+				emberServices:getServerService():touch(entity)
+				guiManager:EmitEntityAction("touch", entity)
+			end
+		end
 	end
 end
 

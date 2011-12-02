@@ -41,10 +41,18 @@ namespace OgreView
  */
 enum MousePickType
 {
-	///Simple click
+	/**
+	 * Simple click.
+	 */
 	MPT_CLICK = 1,
-	///Double click
-	MPT_DOUBLECLICK = 2
+	/**
+	 * Double click
+	 */
+	MPT_DOUBLECLICK = 2,
+	/**
+	 * Press and hold.
+	 */
+	MPT_PRESS = 3
 
 };
 

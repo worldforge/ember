@@ -466,19 +466,21 @@ function ModelEdit:NewModelOk_Clicked(args)
 	local modelDefMgr = Ember.OgreView.Model.ModelDefinitionManager:getSingleton()
 	local name = self.widget:getWindow("NewModelName"):getText()
 	local def = modelDefMgr:create(name, "ModelDefinitions"):get()
-	def:setValid(true)
-	
-	--after adding the definition, update the model list
-	self:fillModellist()
-	local item = self.models:findItemWithText(name, self.models:getListboxItemFromIndex(0))
-	if item ~= nil then
-		item:setSelected(true)
-		self.models:ensureItemIsVisible(item)	
+	if def then
+		def:setValid(true)
+		
+		--after adding the definition, update the model list
+		self:fillModellist()
+		local item = self.models:findItemWithText(name, self.models:getListboxItemFromIndex(0))
+		if item ~= nil then
+			item:setSelected(true)
+			self.models:ensureItemIsVisible(item)	
+		end
+		self.widget:getWindow("NewModelWindow"):setVisible(false)
+		self:loadModelDefinition(item:getText())
+		self:reloadModel()
+		self:updateModelContentList()
 	end
-	self.widget:getWindow("NewModelWindow"):setVisible(false)
-	self:loadModelDefinition(item:getText())
-	self:reloadModel()
-	self:updateModelContentList()
 end
 
 
