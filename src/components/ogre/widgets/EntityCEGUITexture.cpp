@@ -28,6 +28,7 @@
 #include <CEGUIWindowManager.h>
 #include <CEGUIImagesetManager.h>
 #include <CEGUIImageset.h>
+#include <CEGUIRenderer.h>
 
 #include "../EmberOgre.h"
 #include "../GUIManager.h"
@@ -67,7 +68,7 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	//create a CEGUI texture from our Ogre texture
 	S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
 	Ogre::TexturePtr texturePtr(mRenderContext->getTexture());
-	mCeguiTexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
+	mCeguiTexture = &GUIManager::getSingleton().createTexture(texturePtr);
 
 	//we need a imageset in order to create GUI elements from the ceguiTexture
 	S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");

@@ -1,42 +1,36 @@
 /*
-    Copyright (C) 2004  Miguel Guzman (Aglanor)
-    Copyright (C) 2006  Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2004  Miguel Guzman (Aglanor)
+ Copyright (C) 2006  Erik Hjortsberg <erik.hjortsberg@gmail.com>
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifndef GUIMANAGER_H
 #define GUIMANAGER_H
 
-
 #include "EmberOgrePrerequisites.h"
-
-#include <CEGUIBase.h>
-#include <RendererModules/Ogre/CEGUIOgreRenderer.h>
-
-#include <sigc++/trackable.h>
-
+#include "IWorldPickListener.h"
+#include "services/input/InputCommandMapper.h"
 #include "framework/Singleton.h"
-
-#include <SDL.h>
-#include <stack>
-
 #include "framework/ConsoleObject.h"
 
-#include "services/input/InputCommandMapper.h"
 #include <OgreFrameListener.h>
+#include <CEGUIBase.h>
+#include <sigc++/trackable.h>
+#include <SDL.h>
+#include <stack>
 
 namespace CEGUI
 {
@@ -45,24 +39,32 @@ class LuaScriptModule;
 class Window;
 class OgreResourceProvider;
 class OgreImageCodec;
+class OgreRenderer;
+class Renderer;
+class Vector2;
+class Texture;
 }
 
-namespace Eris {
+namespace Eris
+{
 class View;
 class Entity;
 }
 
-namespace Ember {
+namespace Ember
+{
 class IScriptingProvider;
 class Input;
 class ConfigService;
 
 class ServerServiceSignals;
 
-namespace Domain {
+namespace Domain
+{
 class EntityTalk;
 }
-namespace OgreView {
+namespace OgreView
+{
 
 class EmberEntity;
 class MousePicker;
@@ -70,7 +72,8 @@ class GUICEGUIAdapter;
 class MovementController;
 class World;
 
-namespace Gui {
+namespace Gui
+{
 class ColouredRenderedStringParser;
 class QuickHelp;
 class Widget;
@@ -79,7 +82,8 @@ class ActionBarIconManager;
 class ActiveWidgetHandler;
 class CEGUILogger;
 class EntityTooltip;
-namespace Icons {
+namespace Icons
+{
 class IconManager;
 }
 }
@@ -93,11 +97,7 @@ class IconManager;
  The root window of the CEGUI system can be accessed by the @see getMainSheet method.
 
  */
-class GUIManager :
-public Singleton<GUIManager>,
-Ogre::FrameListener,
-public virtual sigc::trackable,
-public ConsoleObject
+class GUIManager: public Singleton<GUIManager>, Ogre::FrameListener, public virtual sigc::trackable, public ConsoleObject
 {
 public:
 
@@ -127,8 +127,8 @@ public:
 	sigc::signal<void, const std::string&, EmberEntity*> EventEntityAction;
 
 	/**
-	@brief Emitted every frame.
-	*/
+	 @brief Emitted every frame.
+	 */
 	sigc::signal<void, float> EventFrameStarted;
 
 	/**
@@ -164,7 +164,6 @@ public:
 	 */
 	CEGUI::Window* getMainSheet() const;
 
-
 	/**
 	 * @brief Initializes the gui system.
 	 * Be sure to call this before you use the gui system.
@@ -177,7 +176,6 @@ public:
 	 */
 	const bool isInGUIMode() const;
 
-
 	/**
 	 *    true if keyboard input should make the avatar move
 	 *    this happens when wither 1) we're not in gui mode 2) the background sheet has the input control (thus, when something else, like an edit box has input control, that edit box will receive key strokes
@@ -189,7 +187,7 @@ public:
 	 *    Gets the currently active MousePicker instance.
 	 * @return
 	 */
-	MousePicker* getMousePicker();
+	MousePicker* getMousePicker() const;
 
 	/**
 	 *    accessor for the Input instance object
@@ -197,15 +195,18 @@ public:
 	 */
 	Input& getInput() const;
 
-	CEGUI::OgreRenderer* getGuiRenderer() const;
+	/**
+	 * @brief Gets the GUI renderer instance.
+	 * @return The GUI renderer instance used by CEGUI.
+	 */
+	CEGUI::Renderer* getGuiRenderer() const;
 
 	/**
 	 *    Reimplements the ConsoleObject::runCommand method
 	 * @param command
 	 * @param args
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
-
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 	/**
 	 *    returns the path to the directory where all layouts are stored
@@ -214,13 +215,13 @@ public:
 	const std::string& getLayoutDir() const;
 
 	/**
-	Creates a new window of the supplied type, giving it an autogenerated, unique name.
-	*/
+	 Creates a new window of the supplied type, giving it an autogenerated, unique name.
+	 */
 	CEGUI::Window* createWindow(const std::string& windowType);
 
 	/**
-	Creates a new window of the supplied type with the supplied name.
-	*/
+	 Creates a new window of the supplied type with the supplied name.
+	 */
 	CEGUI::Window* createWindow(const std::string& windowType, const std::string& windowName);
 
 	/**
@@ -238,10 +239,17 @@ public:
 	Gui::Widget* createWidget(const std::string& name);
 
 	/**
-	* Destroys a widget previously created by createWidget
-	* @param widget The widget to destroy.
-	*/
+	 * Destroys a widget previously created by createWidget
+	 * @param widget The widget to destroy.
+	 */
 	void destroyWidget(Gui::Widget* widget);
+
+	/**
+	 * @brief Creates a new CEGUI texture from an existing Ogre texture.
+	 * @param ogreTexture An existing Ogre texture.
+	 * @return A new CEGUI texture.
+	 */
+	CEGUI::Texture& createTexture(Ogre::TexturePtr& ogreTexture);
 
 	/**
 	 *    Gets the name of the default scheme used (such as "EmberLook" or "WindowsLook")
@@ -250,13 +258,13 @@ public:
 	const std::string& getDefaultScheme() const;
 
 	/**
-	Command for toggling between the input modes.
-	*/
+	 Command for toggling between the input modes.
+	 */
 	const ConsoleCommandWrapper ToggleInputMode;
 
 	/**
-	Command for reloading the gui.
-	*/
+	 Command for reloading the gui.
+	 */
 	const ConsoleCommandWrapper ReloadGui;
 
 	/**
@@ -264,25 +272,23 @@ public:
 	 */
 	const ConsoleCommandWrapper ToggleGui;
 
-
 	/**
 	 *    Accessor for the IconManager which handles low level icons.
 	 * @return The main IconManager
 	 */
-	Gui::Icons::IconManager* getIconManager();
+	Gui::Icons::IconManager* getIconManager() const;
 
 	/**
 	 *    Accessor for the EntityIconManager, which handles entity icons and slots.
 	 * @return The main EntityIconManager
 	 */
-	Gui::EntityIconManager* getEntityIconManager();
+	Gui::EntityIconManager* getEntityIconManager() const;
 
 	/**
 	 *    Accessor for the ActionBarIconManager, which handles ActionBar icons and slots.
 	 * @return The main ActionBarIconManager
 	 */
-	Gui::ActionBarIconManager* getActionBarIconManager();
-
+	Gui::ActionBarIconManager* getActionBarIconManager() const;
 
 	/**
 	 * @brief Accessor for the entity tooltip instance, if such an instance has been created.
@@ -293,12 +299,11 @@ public:
 	 */
 	Gui::EntityTooltip* getEntityTooltip() const;
 
-
 protected:
 
 	/**
-	Counter for autonaming of windows.
-	*/
+	 Counter for autonaming of windows.
+	 */
 	static unsigned long msAutoGenId;
 
 	/**
@@ -346,7 +351,6 @@ protected:
 
 	void EmberOgre_WorldDestroyed();
 
-// 	InputMode mPreviousInputMode;
 	void pressedKey(const SDL_keysym& key, Input::InputMode inputMode);
 
 	/**
@@ -374,10 +378,9 @@ protected:
 	 */
 	void entity_Talk(const Domain::EntityTalk& entityTalk, EmberEntity* entity);
 
-
 	/**
-	Adapter for CEGUI which will send input events to CEGUI
-	*/
+	 Adapter for CEGUI which will send input events to CEGUI
+	 */
 	GUICEGUIAdapter* mCEGUIAdapter;
 
 	CEGUI::LuaScriptModule* mLuaScriptModule;
@@ -417,8 +420,10 @@ protected:
 	Gui::EntityTooltip* mEntityTooltip;
 };
 
-inline MousePicker* GUIManager::getMousePicker() { return  mMousePickers.top(); }
-inline CEGUI::OgreRenderer* GUIManager::getGuiRenderer() const {return mGuiRenderer;}
+inline MousePicker* GUIManager::getMousePicker() const
+{
+	return mMousePickers.top();
+}
 
 }
 }

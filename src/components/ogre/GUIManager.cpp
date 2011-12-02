@@ -63,6 +63,7 @@
 #include <ScriptingModules/LuaScriptModule/CEGUILua.h>
 #include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
+#include <RendererModules/Ogre/CEGUIOgreRenderer.h>
 #include <elements/CEGUIPushButton.h>
 #include <elements/CEGUIGUISheet.h>
 #include <elements/CEGUIMultiLineEditbox.h>
@@ -387,6 +388,11 @@ void GUIManager::destroyWidget(Widget* widget)
 	delete widget;
 }
 
+CEGUI::Texture& GUIManager::createTexture(Ogre::TexturePtr& ogreTexture)
+{
+	return mGuiRenderer->createTexture(ogreTexture);
+}
+
 Input& GUIManager::getInput() const
 {
 	return Input::getSingleton();
@@ -625,19 +631,24 @@ const std::string& GUIManager::getDefaultScheme() const
 	return mDefaultScheme;
 }
 
-Gui::Icons::IconManager* GUIManager::getIconManager()
+Gui::Icons::IconManager* GUIManager::getIconManager() const
 {
 	return mIconManager;
 }
 
-Gui::EntityIconManager* GUIManager::getEntityIconManager()
+Gui::EntityIconManager* GUIManager::getEntityIconManager() const
 {
 	return mEntityIconManager;
 }
 
-Gui::ActionBarIconManager* GUIManager::getActionBarIconManager()
+Gui::ActionBarIconManager* GUIManager::getActionBarIconManager() const
 {
 	return mActionBarIconManager;
+}
+
+CEGUI::Renderer* GUIManager::getGuiRenderer() const
+{
+	return mGuiRenderer;
 }
 
 }

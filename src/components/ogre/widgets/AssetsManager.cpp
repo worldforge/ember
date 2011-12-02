@@ -109,7 +109,7 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 	} else {
 		//create a CEGUI texture from our Ogre texture
 		S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
-		CEGUI::Texture* ogreCEGUITexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(texturePtr);
+		CEGUI::Texture* ogreCEGUITexture = &GUIManager::getSingleton().createTexture(texturePtr);
 
 		//we need a imageset in order to create GUI elements from the ceguiTexture
 		S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName);

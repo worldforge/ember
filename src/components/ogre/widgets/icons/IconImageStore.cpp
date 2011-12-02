@@ -126,7 +126,7 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 , mCeguiTexture(0)
 , mImageset(0)
 {
-	mCeguiTexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
+	mCeguiTexture = &GUIManager::getSingleton().createTexture(mTexPtr);
 	
 	//we need a imageset in order to create GUI elements from the ceguiTexture
 	mImageset = &CEGUI::ImagesetManager::getSingleton().create(mImagesetName, *mCeguiTexture);
@@ -164,7 +164,7 @@ void IconImageStore::createImageset()
 	
 
 	
-	mCeguiTexture = &GUIManager::getSingleton().getGuiRenderer()->createTexture(mTexPtr);
+	mCeguiTexture = &GUIManager::getSingleton().createTexture(mTexPtr);
 	
 	//we need a imageset in order to create GUI elements from the ceguiTexture
 	//S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");

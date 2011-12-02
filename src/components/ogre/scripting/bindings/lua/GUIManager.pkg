@@ -22,14 +22,14 @@ class GUIManager
 
 	void EmitEntityAction(const std::string& action, Ember::OgreView::EmberEntity* entity);
 
-	CEGUI::Window* getMainSheet();
+	CEGUI::Window* getMainSheet() const;
 
 	const bool isInGUIMode() const;
 	
 	
 	const bool isInMovementKeysMode() const;
 	
-	//inline MousePicker* getMousePicker();
+	//inline MousePicker* getMousePicker() const;
 	
 
 	//void pushMousePicker(MousePicker* mousePicker);
@@ -80,13 +80,13 @@ class GUIManager
 	 *    Accessor for the IconManager which handles low level icons.
 	 * @return The main IconManager
 	 */
-	Ember::OgreView::Gui::Icons::IconManager* getIconManager();
+	Ember::OgreView::Gui::Icons::IconManager* getIconManager() const;
 	
 	/**
 	 *    Accessor for the EntityIconManager, which handles entity icons and slots.
 	 * @return The main EntityIconManager
 	 */
-	Ember::OgreView::Gui::EntityIconManager* getEntityIconManager();
+	Ember::OgreView::Gui::EntityIconManager* getEntityIconManager() const;
 
 	Ember::OgreView::Gui::ActionBarIconManager* getActionBarIconManager();
 	
