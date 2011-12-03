@@ -20,7 +20,7 @@
 #include "config.h"
 #endif
 
-#include "CursorInactiveListener.h"
+#include "CursorWorldListener.h"
 
 #include "framework/Time.h"
 #include "framework/LoggingInstance.h"
@@ -36,26 +36,26 @@ namespace OgreView
 namespace Gui
 {
 
-CursorInactiveListener::CursorInactiveListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, MousePicker& mousePicker) :
+CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, MousePicker& mousePicker) :
 		mMainWindow(mainWindow), mMousePicker(mousePicker), mHoverEventSent(false), mCursorLingerStart(0), mClickThresholdMilliseconds(100), mMousePressedStart(0)
 {
-	mainLoopController.EventAfterInputProcessing.connect(sigc::mem_fun(*this, &CursorInactiveListener::afterEventProcessing));
-	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorInactiveListener::input_MouseButtonReleased));
+	mainLoopController.EventAfterInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
+	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorWorldListener::input_MouseButtonReleased));
 
-	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseEnters, CEGUI::Event::Subscriber(&CursorInactiveListener::windowMouseEnters, this));
-	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseLeaves, CEGUI::Event::Subscriber(&CursorInactiveListener::windowMouseLeaves, this));
+	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseEnters, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseEnters, this));
+	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseLeaves, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseLeaves, this));
 
-	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&CursorInactiveListener::windowMouseButtonDown, this));
-	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonUp, CEGUI::Event::Subscriber(&CursorInactiveListener::windowMouseButtonUp, this));
-	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseDoubleClick, CEGUI::Event::Subscriber(&CursorInactiveListener::windowMouseDoubleClick, this));
+	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseButtonDown, this));
+	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonUp, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseButtonUp, this));
+	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseDoubleClick, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseDoubleClick, this));
 
 }
 
-CursorInactiveListener::~CursorInactiveListener()
+CursorWorldListener::~CursorWorldListener()
 {
 }
 
-void CursorInactiveListener::afterEventProcessing(float timeslice)
+void CursorWorldListener::afterEventProcessing(float timeslice)
 {
 	if (!mHoverEventSent) {
 		mCursorLingerStart += timeslice * 1000;
@@ -75,15 +75,15 @@ void CursorInactiveListener::afterEventProcessing(float timeslice)
 	}
 }
 
-bool CursorInactiveListener::windowMouseEnters(const CEGUI::EventArgs& args)
+bool CursorWorldListener::windowMouseEnters(const CEGUI::EventArgs& args)
 {
 	S_LOG_VERBOSE("Mouse enters.");
-	mMouseMovesConnection = mMainWindow.subscribeEvent(CEGUI::Window::EventMouseMove, CEGUI::Event::Subscriber(&CursorInactiveListener::windowMouseMoves, this));
+	mMouseMovesConnection = mMainWindow.subscribeEvent(CEGUI::Window::EventMouseMove, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseMoves, this));
 	mHoverEventSent = false;
 	return true;
 }
 
-bool CursorInactiveListener::windowMouseLeaves(const CEGUI::EventArgs& args)
+bool CursorWorldListener::windowMouseLeaves(const CEGUI::EventArgs& args)
 {
 	S_LOG_VERBOSE("Mouse leaves.");
 	mMouseMovesConnection->disconnect();
@@ -91,14 +91,14 @@ bool CursorInactiveListener::windowMouseLeaves(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool CursorInactiveListener::windowMouseMoves(const CEGUI::EventArgs& args)
+bool CursorWorldListener::windowMouseMoves(const CEGUI::EventArgs& args)
 {
 	mCursorLingerStart = 0;
 	mHoverEventSent = false;
 	return true;
 }
 
-void CursorInactiveListener::sendHoverEvent()
+void CursorWorldListener::sendHoverEvent()
 {
 	const CEGUI::Vector2& pixelPosition = CEGUI::MouseCursor::getSingleton().getPosition();
 	const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
@@ -111,12 +111,12 @@ void CursorInactiveListener::sendHoverEvent()
 	mHoverEventSent = true;
 }
 
-void CursorInactiveListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode inputMode)
+void CursorWorldListener::input_MouseButtonReleased(Input::MouseButton button, Input::InputMode inputMode)
 {
 	mMousePressedStart = 0;
 }
 
-void CursorInactiveListener::sendWorldClick(MousePickType pickType, const CEGUI::Vector2& pixelPosition)
+void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Vector2& pixelPosition)
 {
 	S_LOG_VERBOSE("Main sheet is capturing input");
 	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
@@ -134,7 +134,7 @@ void CursorInactiveListener::sendWorldClick(MousePickType pickType, const CEGUI:
 
 }
 
-bool CursorInactiveListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
+bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
 {
 	if (isInGUIMode()) {
 		mMousePressedStart = Time::currentTimeMillis();
@@ -143,7 +143,7 @@ bool CursorInactiveListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool CursorInactiveListener::windowMouseButtonUp(const CEGUI::EventArgs& args)
+bool CursorWorldListener::windowMouseButtonUp(const CEGUI::EventArgs& args)
 {
 	if (isInGUIMode()) {
 		if (mMousePressedStart != 0) {
@@ -156,7 +156,7 @@ bool CursorInactiveListener::windowMouseButtonUp(const CEGUI::EventArgs& args)
 	return true;
 }
 
-bool CursorInactiveListener::windowMouseDoubleClick(const CEGUI::EventArgs& args)
+bool CursorWorldListener::windowMouseDoubleClick(const CEGUI::EventArgs& args)
 {
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
 	sendWorldClick(MPT_DOUBLECLICK, mouseArgs.position);
@@ -164,7 +164,7 @@ bool CursorInactiveListener::windowMouseDoubleClick(const CEGUI::EventArgs& args
 	return true;
 }
 
-const bool CursorInactiveListener::isInGUIMode() const
+const bool CursorWorldListener::isInGUIMode() const
 {
 	return Input::getSingleton().getInputMode() == Input::IM_GUI;
 }

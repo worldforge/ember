@@ -24,7 +24,7 @@ libEmberOgre_a_SOURCES = \
 	environment/ShrubberyFoliage.cpp environment/SimpleEnvironment.cpp environment/SimpleWater.cpp environment/Sun.cpp environment/Tree.cpp environment/Water.cpp \
 	environment/OceanRepresentation.cpp environment/OceanAction.cpp environment/SimpleWaterCollisionDetector.cpp \
 	environment/ExclusiveImposterPage.cpp \
-	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp gui/RenderedColourStringTextComponent.cpp gui/ColouredRenderedStringParser.cpp \
+	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp gui/RenderedColourStringTextComponent.cpp gui/ColouredRenderedStringParser.cpp gui/CursorWorldListener.cpp \
 \
 	mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp \
 \
@@ -75,7 +75,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/adapters/atlas/PolygonAdapter.cpp widgets/adapters/atlas/Position2DAdapter.cpp widgets/adapters/atlas/PositionAdapter.cpp widgets/adapters/atlas/SizeAdapter.cpp \
 	widgets/adapters/atlas/StaticAdapter.cpp widgets/adapters/atlas/TerrainModAdapter.cpp \
 	widgets/adapters/eris/TypeTreeAdapter.cpp widgets/adapters/ogre/ResourceListAdapter.cpp widgets/representations/LayoutHelper.cpp widgets/TexturePair.cpp widgets/EntityTooltip.cpp \
-	widgets/EntityCreatorCreationInstance.cpp widgets/adapters/ValueTypeHelper.cpp widgets/CursorInactiveListener.cpp \
+	widgets/EntityCreatorCreationInstance.cpp widgets/adapters/ValueTypeHelper.cpp \
 \
 	Avatar.cpp \
 	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
@@ -117,7 +117,7 @@ noinst_HEADERS = \
 	environment/SimpleEnvironment.h environment/SimpleWater.h environment/Sun.h environment/Tree.h environment/Water.h environment/OceanRepresentation.h \
 	environment/OceanAction.h environment/SimpleWaterCollisionDetector.h environment/ExclusiveImposterPage.h environment/IEnvironmentProvider.h \
 \
-	gui/ActiveWidgetHandler.h gui/CEGUILogger.h gui/RenderedColourStringTextComponent.h gui/ColouredRenderedStringParser.h \
+	gui/ActiveWidgetHandler.h gui/CEGUILogger.h gui/RenderedColourStringTextComponent.h gui/ColouredRenderedStringParser.h gui/CursorWorldListener.h \
 \
 	mapping/EmberEntityMappingManager.h mapping/XMLEntityMappingDefinitionSerializer.h \
 \
@@ -170,7 +170,7 @@ noinst_HEADERS = \
 	widgets/adapters/eris/TypeTreeAdapter.h widgets/adapters/ogre/ResourceListAdapter.h widgets/TexturePair.h widgets/EntityTooltip.h \
 	widgets/representations/CheckboxRepresentation.h widgets/representations/EditboxRepresentation.h widgets/representations/RepresentationBase.h \
 	widgets/representations/SliderRepresentation.h widgets/representations/ComboboxRepresentation.h widgets/representations/LayoutHelper.h widgets/representations/SingleAdapterRepresentationBase.h \
-	widgets/EntityCreatorCreationInstance.h widgets/CursorInactiveListener.h \
+	widgets/EntityCreatorCreationInstance.h \
 \
 	Avatar.h MovementController.h \
 	AvatarLogger.h AvatarTerrainCursor.h \

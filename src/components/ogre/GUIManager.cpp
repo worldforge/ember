@@ -33,12 +33,12 @@
 #include "widgets/icons/IconManager.h"
 #include "widgets/EntityIconManager.h"
 #include "widgets/ActionBarIconManager.h"
-#include "widgets/CursorInactiveListener.h"
 
 #include "camera/MainCamera.h"
 #include "gui/ActiveWidgetHandler.h"
 #include "gui/CEGUILogger.h"
 #include "gui/ColouredRenderedStringParser.h"
+#include "gui/CursorWorldListener.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 
@@ -92,7 +92,7 @@ namespace OgreView
 unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals) :
-		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0), mCursorInactiveListener(0)
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0), mCursorWorldListener(0)
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -215,7 +215,7 @@ GUIManager::~GUIManager()
 	delete mEntityIconManager;
 	delete mActionBarIconManager;
 	delete mIconManager;
-	delete mCursorInactiveListener;
+	delete mCursorWorldListener;
 
 	CEGUI::System::destroy();
 
@@ -294,7 +294,7 @@ void GUIManager::initialize(MainLoopController& mainLoopController)
 		}
 	}
 
-	mCursorInactiveListener = new Gui::CursorInactiveListener(mainLoopController, *mSheet, *mPicker);
+	mCursorWorldListener = new Gui::CursorWorldListener(mainLoopController, *mSheet, *mPicker);
 
 }
 

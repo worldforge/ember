@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CURSORINACTIVELISTENER_H_
-#define CURSORINACTIVELISTENER_H_
+#ifndef CURSORWORLDLISTENER_H_
+#define CURSORWORLDLISTENER_H_
 
 #include "components/ogre/IWorldPickListener.h"
 #include "services/input/Input.h"
@@ -45,11 +45,11 @@ namespace Gui
  *
  *
  */
-class CursorInactiveListener: public sigc::trackable
+class CursorWorldListener: public sigc::trackable
 {
 public:
-	CursorInactiveListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, MousePicker& mousePicker);
-	virtual ~CursorInactiveListener();
+	CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, MousePicker& mousePicker);
+	virtual ~CursorWorldListener();
 
 protected:
 

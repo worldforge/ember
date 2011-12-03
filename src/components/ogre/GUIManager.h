@@ -82,7 +82,7 @@ class ActionBarIconManager;
 class ActiveWidgetHandler;
 class CEGUILogger;
 class EntityTooltip;
-class CursorInactiveListener;
+class CursorWorldListener;
 namespace Icons
 {
 class IconManager;
@@ -326,7 +326,7 @@ protected:
 	 */
 	WidgetStore mWidgets;
 
-	Gui::CursorInactiveListener* mCursorInactiveListener;
+	Gui::CursorWorldListener* mCursorWorldListener;
 
 	/**
 	 *    hooked to OgreView::EventCreatedAvatarEntity, switches the input mode to movement mode
