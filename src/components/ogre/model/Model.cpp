@@ -119,7 +119,7 @@ bool Model::create(const std::string& modelType)
 	static const Ogre::String groupName("ModelDefinitions");
 	//Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
 	try {
-		mDefinition = ModelDefinitionManager::instance().load(modelType, groupName);
+		mDefinition = ModelDefinitionManager::getSingleton().load(modelType, groupName);
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Could not load model of type " << modelType << " from group " << groupName << "." << ex);
 		return false;

@@ -65,7 +65,8 @@ namespace Ember {
 		
 		~Singleton( void )
 		{  
-			assert( ms_Singleton );  ms_Singleton = 0;  
+			assert( ms_Singleton );
+			ms_Singleton = 0;
 		}
 		
 		/**
@@ -86,15 +87,6 @@ namespace Ember {
 		{ 
 			assert( ms_Singleton ); 
 			return ms_Singleton; 
-		}
-		
-		/**
-		 *       @brief Gets the singleton instance.
-		 * @return The singleton instance.
-		 */
-		static T& instance( void )
-		{
-			return getSingleton();
 		}
 		
 		/**
