@@ -3,6 +3,8 @@
 	<Font Name="DejaVuSans-14" Filename="cegui/datafiles/fonts/DejaVuSans-14.xml" />
 	<Font Name="DejaVuSans-10" Filename="cegui/datafiles/fonts/DejaVuSans-10.xml" />
 	<Font Name="DejaVuSans-8" Filename="cegui/datafiles/fonts/DejaVuSans-8.xml" />
+	<Font Name="DejaVuSans-7" Filename="cegui/datafiles/fonts/DejaVuSans-7.xml" />
+	<Font Name="DejaVuSans-6" Filename="cegui/datafiles/fonts/DejaVuSans-6.xml" />
 	<Font Name="DejaVuSans-Bold-10" Filename="cegui/datafiles/fonts/DejaVuSans-Bold-10.xml" />
 	<Font Name="DejaVuSans-Bold-8" Filename="cegui/datafiles/fonts/DejaVuSans-Bold-8.xml" />
 	<Imageset Name="EmberLook" Filename="cegui/datafiles/imagesets/EmberLook.imageset" />
@@ -69,4 +71,7 @@
 	<FalagardMapping WindowType="EmberLook/IngameChatDetachedWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/IngameChatDetachedWindow" />
 
 	<FalagardMapping WindowType="EmberLook/DialogWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/DialogWindow" />
+
+	<FalagardMapping WindowType="EmberLook/StaticFading"      TargetType="DefaultWindow" Renderer="Falagard/Static"      LookNFeel="EmberLook/StaticFading" />
+
 </GUIScheme>

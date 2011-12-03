@@ -6680,4 +6680,123 @@
 			<Subscription event="Hidden" action="Pause" />
 		</AnimationDefinition>
 	</WidgetLook>
+	
+	
+	<!--
+    ***************************************************
+        EmberLook/Static
+    ***************************************************
+    -->
+    <WidgetLook name="EmberLook/StaticFading">
+		<PropertyDefinition name="FrameColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" />
+        <PropertyDefinition name="BackgroundColours" initialValue="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" redrawOnWrite="true" />
+        <PropertyDefinition name="TextPadding" initialValue="0" redrawOnWrite="true" />
+        <PropertyDefinition name="HorzFormatting" initialValue="LeftAligned" redrawOnWrite="true" />
+        <PropertyDefinition name="VertFormatting" initialValue="CentreAligned" redrawOnWrite="true" />
+        <Property name="BackgroundEnabled" value="True" />
+        <Property name="FrameEnabled" value="True" />
+        <ImagerySection name="label">
+            <TextComponent>
+                <Area>
+                    <Dim type="LeftEdge">
+                        <PropertyDim name="TextPadding" />
+                    </Dim>
+                    <Dim type="TopEdge">
+                        <PropertyDim name="TextPadding" />
+                    </Dim>
+                    <Dim type="RightEdge">
+                        <UnifiedDim scale="1" type="RightEdge">
+							<DimOperator op="Subtract">
+								<PropertyDim name="TextPadding" />
+							</DimOperator>
+                        </UnifiedDim>
+                    </Dim>
+                    <Dim type="BottomEdge">
+                        <UnifiedDim scale="1" type="BottomEdge">
+							<DimOperator op="Subtract">
+								<PropertyDim name="TextPadding" />
+							</DimOperator>
+                        </UnifiedDim>
+                    </Dim>
+                </Area>
+                <Colours topLeft="FF000000" topRight="FF000000" bottomLeft="FF000000" bottomRight="FF000000" />
+                <VertFormatProperty name="VertFormatting" />
+                <HorzFormatProperty name="HorzFormatting" />
+            </TextComponent>
+        </ImagerySection>
+        <StateImagery name="Enabled">
+            <Layer>
+                <Section section="label" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="label" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="EnabledFrame">
+            <Layer>
+                <Section look="EmberLook/StaticShared" section="frame" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="DisabledFrame">
+            <Layer>
+                <Section look="EmberLook/StaticShared" section="frame" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="WithFrameEnabledBackground">
+            <Layer>
+                <Section look="EmberLook/StaticShared" section="background">
+					<ColourRectProperty name="BackgroundColours" />
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="WithFrameDisabledBackground">
+            <Layer>
+                <Section look="EmberLook/StaticShared" section="background">
+					<ColourRectProperty name="BackgroundColours" />
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="NoFrameEnabledBackground">
+            <Layer>
+                <Section look="EmberLook/StaticShared" section="background_noframe">
+					<ColourRectProperty name="BackgroundColours" />
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="NoFrameDisabledBackground">
+            <Layer>
+                <Section look="EmberLook/StaticShared" section="background_noframe">
+					<ColourRectProperty name="BackgroundColours" />
+                </Section>
+            </Layer>
+        </StateImagery>
+ 		<AnimationDefinition name="ShowTransition" duration="0.4" replayMode="once">
+			<Affector property="Alpha" interpolator="float">
+				<KeyFrame position="0.0" value="0.0" />
+				<KeyFrame position="0.2" value="0.8" progression="quadratic accelerating" />
+			</Affector>
+			
+			<Subscription event="Shown" action="Start" />
+			<Subscription event="Hidden" action="Pause" />
+		</AnimationDefinition>
+		<AnimationDefinition name="HideTransition" duration="0.4" replayMode="once">
+			<Affector property="Alpha" interpolator="float">
+				<KeyFrame position="0.0" sourceProperty="Alpha" />
+				<KeyFrame position="0.4" value="0.0" progression="linear" />
+			</Affector>
+
+			<Affector property="Visible" interpolator="bool">
+				<KeyFrame position="0.0" sourceProperty="Visible" />
+				<KeyFrame position="0.4" value="false" progression="discrete" />
+			</Affector>
+
+			
+			<Subscription event="StartHideTransition" action="Start" />
+			
+			<!-- stop the transition in case user changes his/her mind -->
+			<Subscription event="Shown" action="Pause" />
+		</AnimationDefinition>
+    </WidgetLook>	
 </Falagard>
