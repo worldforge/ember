@@ -185,12 +185,6 @@ public:
 	const bool isInMovementKeysMode() const;
 
 	/**
-	 *    Gets the currently active MousePicker instance.
-	 * @return
-	 */
-	MousePicker* getMousePicker() const;
-
-	/**
 	 *    accessor for the Input instance object
 	 * @return
 	 */
@@ -332,13 +326,7 @@ protected:
 	 */
 	WidgetStore mWidgets;
 
-	/**
-	 A stack of the mouse pickers used. This allows for a component to "push down" the current mouse picker in favor of its own
-	 */
-	std::stack<MousePicker*> mMousePickers;
-
 	Gui::CursorInactiveListener* mCursorInactiveListener;
-
 
 	/**
 	 *    hooked to OgreView::EventCreatedAvatarEntity, switches the input mode to movement mode
@@ -418,11 +406,6 @@ protected:
 	 */
 	Gui::EntityTooltip* mEntityTooltip;
 };
-
-inline MousePicker* GUIManager::getMousePicker() const
-{
-	return mMousePickers.top();
-}
 
 }
 }

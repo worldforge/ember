@@ -29,13 +29,6 @@ class GUIManager
 	
 	const bool isInMovementKeysMode() const;
 	
-	//inline MousePicker* getMousePicker() const;
-	
-
-	//void pushMousePicker(MousePicker* mousePicker);
-	
-//	MousePicker* popMousePicker();
-	
 //	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
 	
 	/**
