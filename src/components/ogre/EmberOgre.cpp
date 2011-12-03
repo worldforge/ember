@@ -404,7 +404,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		}
 
 		try {
-			mGUIManager->initialize();
+			mGUIManager->initialize(mainLoopController);
 			EventGUIManagerInitialized.emit(*mGUIManager);
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)

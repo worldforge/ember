@@ -58,6 +58,7 @@ class Input;
 class ConfigService;
 
 class ServerServiceSignals;
+class MainLoopController;
 
 namespace Domain
 {
@@ -82,6 +83,7 @@ class ActionBarIconManager;
 class ActiveWidgetHandler;
 class CEGUILogger;
 class EntityTooltip;
+class CursorInactiveListener;
 namespace Icons
 {
 class IconManager;
@@ -166,8 +168,9 @@ public:
 	/**
 	 * @brief Initializes the gui system.
 	 * Be sure to call this before you use the gui system.
+	 * @param mainLoopController The main loop controller for the system.
 	 */
-	void initialize();
+	void initialize(MainLoopController& mainLoopController);
 
 	/**
 	 *    true if we're in GUI mode, which means that input events will be sent to the CEGUI system instead of the "world"
@@ -348,6 +351,8 @@ protected:
 	 * This is used to determine whether a mouse "press" or "click" event should be emitted.
 	 */
 	long long mMousePressedStart;
+
+	Gui::CursorInactiveListener* mCursorInactiveListener;
 
 	/**
 	 * @brief Listens to the mouse button being released.

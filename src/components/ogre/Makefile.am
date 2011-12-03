@@ -75,7 +75,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/adapters/atlas/PolygonAdapter.cpp widgets/adapters/atlas/Position2DAdapter.cpp widgets/adapters/atlas/PositionAdapter.cpp widgets/adapters/atlas/SizeAdapter.cpp \
 	widgets/adapters/atlas/StaticAdapter.cpp widgets/adapters/atlas/TerrainModAdapter.cpp \
 	widgets/adapters/eris/TypeTreeAdapter.cpp widgets/adapters/ogre/ResourceListAdapter.cpp widgets/representations/LayoutHelper.cpp widgets/TexturePair.cpp widgets/EntityTooltip.cpp \
-	widgets/EntityCreatorCreationInstance.cpp widgets/adapters/ValueTypeHelper.cpp \
+	widgets/EntityCreatorCreationInstance.cpp widgets/adapters/ValueTypeHelper.cpp widgets/CursorInactiveListener.cpp \
 \
 	Avatar.cpp \
 	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
@@ -170,7 +170,7 @@ noinst_HEADERS = \
 	widgets/adapters/eris/TypeTreeAdapter.h widgets/adapters/ogre/ResourceListAdapter.h widgets/TexturePair.h widgets/EntityTooltip.h \
 	widgets/representations/CheckboxRepresentation.h widgets/representations/EditboxRepresentation.h widgets/representations/RepresentationBase.h \
 	widgets/representations/SliderRepresentation.h widgets/representations/ComboboxRepresentation.h widgets/representations/LayoutHelper.h widgets/representations/SingleAdapterRepresentationBase.h \
-	widgets/EntityCreatorCreationInstance.h \
+	widgets/EntityCreatorCreationInstance.h widgets/CursorInactiveListener.h \
 \
 	Avatar.h MovementController.h \
 	AvatarLogger.h AvatarTerrainCursor.h \
