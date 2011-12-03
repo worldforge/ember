@@ -52,7 +52,11 @@ enum MousePickType
 	/**
 	 * Press and hold.
 	 */
-	MPT_PRESS = 3
+	MPT_PRESS = 3,
+	/**
+	 * Hover over the world.
+	 */
+	MPT_HOVER = 4
 
 };
 
