@@ -21,7 +21,6 @@
 #define GUIMANAGER_H
 
 #include "EmberOgrePrerequisites.h"
-#include "IWorldPickListener.h"
 #include "services/input/InputCommandMapper.h"
 #include "framework/Singleton.h"
 #include "framework/ConsoleObject.h"
@@ -338,44 +337,8 @@ protected:
 	 */
 	std::stack<MousePicker*> mMousePickers;
 
-	/**
-	 * @brief The threshold, in milliseconds, for when releasing a pressed mouse button is considered a "click".
-	 *
-	 * If the mouse button is pressed longer than this, it's considered as a "press" event.
-	 */
-	unsigned int mClickThresholdMilliseconds;
-
-	/**
-	 * @brief Keeps track of when any mouse button press event started.
-	 *
-	 * This is used to determine whether a mouse "press" or "click" event should be emitted.
-	 */
-	long long mMousePressedStart;
-
 	Gui::CursorInactiveListener* mCursorInactiveListener;
 
-	/**
-	 * @brief Listens to the mouse button being released.
-	 * @param button
-	 * @param inputMode
-	 */
-	void input_MouseButtonReleased(Input::MouseButton button, Input::InputMode inputMode);
-
-	//events
-	bool mSheet_MouseButtonDown(const CEGUI::EventArgs& args);
-	bool mSheet_MouseButtonUp(const CEGUI::EventArgs& args);
-	bool mSheet_MouseClick(const CEGUI::EventArgs& args);
-	bool mSheet_MouseDoubleClick(const CEGUI::EventArgs& args);
-	bool mSheet_CaptureLost(const CEGUI::EventArgs& args);
-
-	/**
-	 * @brief Sends a world click event to any listeners.
-	 *
-	 * This is called when the user either has clicked in the world, or pressed and held the mouse button.
-	 * @param pickType The kind of picking type.
-	 * @param pixelPosition The position, in pixels, of the mouse cursor.
-	 */
-	void sendWorldClick(MousePickType pickType, const CEGUI::Vector2& pixelPosition);
 
 	/**
 	 *    hooked to OgreView::EventCreatedAvatarEntity, switches the input mode to movement mode
@@ -445,7 +408,7 @@ protected:
 	 */
 	Gui::ColouredRenderedStringParser* mRenderedStringParser;
 
-	/*
+	/**
 	 * @brief Responsible for the help system
 	 */
 	Gui::QuickHelp* mQuickHelp;
