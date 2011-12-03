@@ -97,6 +97,8 @@ template <>
 const char* resolveLuaTypename<const Eris::TypeInfo>(){return "Eris::TypeInfo";}
 template <>
 const char* resolveLuaTypename<const Ember::Domain::EntityTalk>(){return "Ember::Domain::EntityTalk";}
+template <>
+const char* resolveLuaTypename<const Ember::MouseMotion>(){return "Ember::MouseMotion";}
 
 
 }

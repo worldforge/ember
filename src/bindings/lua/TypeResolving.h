@@ -55,6 +55,7 @@ class TypeInfo;
 
 namespace Ember
 {
+struct MouseMotion;
 namespace Domain
 {
 class EntityTalk;
