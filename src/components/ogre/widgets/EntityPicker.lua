@@ -242,6 +242,15 @@ function EntityPicker:pickedEntity(results, args)
 			if entity then
 				emberServices:getServerService():touch(entity)
 				guiManager:EmitEntityAction("touch", entity)
+				local name
+				--if the entity has a name, use it, else use the type name
+				--perhaps we should prefix the type name with an "a" or "an"?
+				if entity:getName() ~= "" then
+					name = entity:getName()
+				else
+					name = entity:getType():getName()
+				end
+				guiManager:appendAvatarImaginary("You touch " .. name .. ".")
 			end
 		end
 	end
