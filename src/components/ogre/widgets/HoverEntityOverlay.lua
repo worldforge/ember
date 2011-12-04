@@ -44,7 +44,7 @@ function HoverEntityOverlay:pickedEntity(results, args)
 		
 		
 		localPosition.x = localPosition.x - self.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
-		localPosition.y = localPosition.y - self.widget:getMainWindow():getHeight():asAbsolute(0)
+		localPosition.y = localPosition.y - self.widget:getMainWindow():getHeight():asAbsolute(0) - 5
 		
 		--Make sure the menu is fully contained within the main window
 		if localPosition.x < 0 then
