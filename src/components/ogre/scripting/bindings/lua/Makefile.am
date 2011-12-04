@@ -22,6 +22,6 @@ TOLUA_PKGS = ActionBar.pkg ActionBarIcon.pkg ActionBarIconDragDropTarget.pkg Act
   TypeTreeAdapter.pkg Vector3Adapter.pkg Widget.pkg World.pkg Scene.pkg EntityTooltip.pkg TerrainHandler.pkg EntityCreatorTypeHelper.pkg Screen.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 EmberOgre.cxx: $(TOLUA_PKGS)
-noinst_HEADERS = required.h
+noinst_HEADERS = required.h GUIManager_helper.h
 
 bindings: clean all

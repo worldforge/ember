@@ -1,3 +1,5 @@
+$#include "GUIManager_helper.h"
+
 
 namespace Ember {
 namespace OgreView {
@@ -15,6 +17,7 @@ class GUIManager
 	
 	sigc::signal<void, float> EventFrameStarted;
 	
+	tolua_outside void _GUIManager_appendAvatarImaginary @ appendAvatarImaginary(const std::string& message);
 
 	
 	void removeWidget(Ember::OgreView::Gui::Widget* widget);
