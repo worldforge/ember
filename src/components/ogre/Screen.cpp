@@ -42,7 +42,7 @@ namespace OgreView
 {
 
 Screen::Screen(Ogre::RenderWindow& window, Ogre::Camera& camera) :
-		mWindow(window), mCamera(camera), mRecorder(new Camera::Recorder()), ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."), ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."), Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk.")
+		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."), ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."), Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk."), mWindow(window), mCamera(camera), mRecorder(new Camera::Recorder())
 {
 }
 

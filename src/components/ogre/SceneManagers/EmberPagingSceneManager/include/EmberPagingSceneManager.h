@@ -56,6 +56,7 @@ public:
 class IPageDataProvider
 {
 public:
+	virtual ~IPageDataProvider() {}
 	typedef std::pair<unsigned int, unsigned int> OgreIndex;
 	virtual IPageData* getPageData(const OgreIndex& index) = 0;
 	virtual int getPageIndexSize() const = 0;

@@ -498,13 +498,11 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 	AttachPointDefinitionStore & attachPoints = modelDef->mAttachPoints;
 
 	const char* tmp = 0;
-	bool nopartfound = true;
 
 	for (TiXmlElement* apElem = mAnimPartNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		AttachPointDefinition attachPointDef;
-		nopartfound = false;
 
 		// name
 		tmp =  apElem->Attribute("name");
@@ -536,13 +534,11 @@ void  XMLModelDefinitionSerializer::readParticleSystems(ModelDefinitionPtr model
 	ModelDefinition::ParticleSystemSet& particleSystems = modelDef->mParticleSystems;
 
 	const char* tmp = 0;
-	bool nopartfound = true;
 
 	for (TiXmlElement* apElem = mParticleSystemsNode->FirstChildElement();
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		ModelDefinition::ParticleSystemDefinition def;
-		nopartfound = false;
 
 		// name
 		tmp =  apElem->Attribute("script");

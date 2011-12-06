@@ -141,13 +141,10 @@ bool OgreResourceLoader::addUserMedia(const std::string& path, const std::string
 
 bool OgreResourceLoader::addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure)
 {
-	bool foundDir = false;
-
 	if (isExistingDir(path)) {
 		S_LOG_VERBOSE("Adding dir " << path);
 		try {
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, type, section, recursive);
-			foundDir = true;
 			mResourceLocations.insert(std::make_pair(section, path));
 			return true;
 		} catch (const std::exception&) {

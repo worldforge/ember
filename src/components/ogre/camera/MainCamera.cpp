@@ -188,8 +188,6 @@ void MainCamera::markCameraNodeAsDirty()
 
 void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs)
 {
-	S_LOG_INFO("Trying to pick an entity at mouse coords: " << Ogre::StringConverter::toString(mouseX) << ":" << Ogre::StringConverter::toString(mouseY) << ".");
-
 	// get the terrain vector for mouse coords when a pick event happens
 	//mAvatarTerrainCursor->getTerrainCursorPosition();
 

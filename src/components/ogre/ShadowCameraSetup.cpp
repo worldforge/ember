@@ -55,13 +55,13 @@ ShadowCameraSetup::~ShadowCameraSetup()
 
 bool ShadowCameraSetup::setup()
 {
-	// Need to detect D3D or GL for best depth shadowmapping
-	bool isOpenGL;
-	if (Ogre::Root::getSingleton().getRenderSystem()->getName().find("GL") != Ogre::String::npos) {
-		isOpenGL = true;
-	} else {
-		isOpenGL = false;
-	}
+//	// Need to detect D3D or GL for best depth shadowmapping
+//	bool isOpenGL;
+//	if (Ogre::Root::getSingleton().getRenderSystem()->getName().find("GL") != Ogre::String::npos) {
+//		isOpenGL = true;
+//	} else {
+//		isOpenGL = false;
+//	}
 
 	mSceneMgr.setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
 

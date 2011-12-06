@@ -33,11 +33,12 @@ namespace Ember
 {
 
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& attributeName)
+: mDirectAttributeObserver(new DirectAttributeObserver(entity, EventChanged, attributeName))
 {
-	mDirectAttributeObserver.reset(new DirectAttributeObserver(entity, EventChanged, attributeName));
 }
 
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::vector<std::string>& attributePath)
+: mDeepAttributeObserver(0)
 {
 	if (attributePath.size() > 1) {
 		mDeepAttributeObserver.reset(new DeepAttributeObserver(entity, EventChanged, attributePath));
@@ -47,6 +48,7 @@ AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::vector<std
 }
 
 AttributeObserver::AttributeObserver(Eris::Entity& entity, const std::string& attributePath, const std::string& delimitor)
+: mDeepAttributeObserver(0)
 {
 	std::vector<std::string> path = Tokeniser::split(attributePath, delimitor);
 	if (path.size() > 1) {

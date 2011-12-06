@@ -27,7 +27,7 @@ namespace Ember
 {
 
 Service::Service() :
-	myStatus(OK), myRunning(false)
+	myRunning(false), myStatus(OK)
 {
 }
 

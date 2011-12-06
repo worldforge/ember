@@ -196,13 +196,14 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 
 
 		// load code into lua and call it
-		int error, nresults;
+		int error;
+//		int nresults;
 		int level = lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
 		if (luaCallContext)
 		{
 			error = lua_pcall(mLuaState, 0, LUA_MULTRET, error_index);
-			nresults = lua_gettop(mLuaState) - level; // number of results
+//			nresults = lua_gettop(mLuaState) - level; // number of results
 		}
 		else
 		{
