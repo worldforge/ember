@@ -99,7 +99,7 @@ class ShaderManager;
  * An instance of this is created when an Eris::View instance is available, and destroyed along with it. It's responsibility is to handle the Ogre scene (along with a main camera, movement controllers etc.).
  * It in many ways acts as a hub through which many other subsystems can access both the Ogre and the Eris state of the world.
  */
-class World: public sigc::trackable
+class World: public virtual sigc::trackable
 {
 public:
 

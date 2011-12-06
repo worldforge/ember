@@ -48,7 +48,7 @@ class TerrainArea;
 class TerrainDefPoint;
 }
 
-class TerrainEntityManager: public sigc::trackable
+class TerrainEntityManager: public virtual sigc::trackable
 {
 public:
 	TerrainEntityManager(Eris::View& view, Terrain::TerrainHandler& terrainHandler, Ogre::SceneManager& sceneManager);

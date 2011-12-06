@@ -45,7 +45,7 @@ namespace Gui
  *
  *
  */
-class CursorWorldListener: public sigc::trackable
+class CursorWorldListener: public virtual sigc::trackable
 {
 public:
 	CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, MousePicker& mousePicker);

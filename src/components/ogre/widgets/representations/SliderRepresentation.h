@@ -41,7 +41,7 @@ namespace Representations {
  * @brief represents given value by a slider (the underlying value has to be float!)
  */
 template<typename ValueType>
-class SliderRepresentation : public SingleAdapterRepresentationBase<ValueType>, public sigc::trackable
+class SliderRepresentation : public SingleAdapterRepresentationBase<ValueType>, public virtual sigc::trackable
 {
 public:
 	/**

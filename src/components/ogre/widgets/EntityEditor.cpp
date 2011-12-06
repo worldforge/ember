@@ -74,7 +74,7 @@ namespace Gui
  * This is useful for visualizing locations known by entities.
  *
  */
-class EntityEditor::EntityPointMarker: public sigc::trackable
+class EntityEditor::EntityPointMarker: public virtual sigc::trackable
 {
 protected:
 
