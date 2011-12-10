@@ -209,7 +209,7 @@ end
 --called when an entity has been picked
 function EntityPicker:pickedEntity(results, args)
 
-	if args.pickType == Ember.OgreView.MPT_PRESS then
+	if args.pickType == Ember.OgreView.MPT_PRESSED then
 		self.pickedPoint = CEGUI.Vector2:new_local(args.windowX, args.windowY)
 	
 		self.pickedEntities = {}

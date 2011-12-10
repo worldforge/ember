@@ -72,7 +72,7 @@ void CursorWorldListener::afterEventProcessing(float timeslice)
 		if (mMousePressedStart != 0) {
 			if ((Time::currentTimeMillis() - mMousePressedStart) > mClickThresholdMilliseconds) {
 				mMousePressedStart = 0;
-				sendWorldClick(MPT_PRESS, CEGUI::MouseCursor::getSingleton().getPosition());
+				sendWorldClick(MPT_PRESSED, CEGUI::MouseCursor::getSingleton().getPosition());
 			}
 		}
 	}
@@ -121,12 +121,6 @@ void CursorWorldListener::input_MouseButtonReleased(Input::MouseButton button, I
 
 void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Vector2& pixelPosition)
 {
-	S_LOG_VERBOSE("Main sheet is capturing input");
-	CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
-	if (aWindow) {
-		aWindow->releaseInput();
-		aWindow->deactivate();
-	}
 
 	const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
 	MousePickerArgs pickerArgs;
@@ -140,7 +134,15 @@ void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Ve
 bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
 {
 	if (isInGUIMode()) {
+		S_LOG_VERBOSE("Main sheet is capturing input");
+		CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
+		if (aWindow) {
+			aWindow->releaseInput();
+			aWindow->deactivate();
+		}
+
 		mMousePressedStart = Time::currentTimeMillis();
+		sendWorldClick(MPT_PRESS, CEGUI::MouseCursor::getSingleton().getPosition());
 	}
 
 	return true;

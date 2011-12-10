@@ -42,21 +42,25 @@ namespace OgreView
 enum MousePickType
 {
 	/**
-	 * Simple click.
+	 * Simple click. This is when the mouse button is pressed and released within a short time (by default 200 ms).
 	 */
 	MPT_CLICK = 1,
 	/**
-	 * Double click
+	 * Double click. This is when two click events follow closely upon each others.
 	 */
 	MPT_DOUBLECLICK = 2,
 	/**
-	 * Press and hold.
+	 * Press and hold. This is sent after the threshold for a MPT_CLICK event has been reached.
 	 */
-	MPT_PRESS = 3,
+	MPT_PRESSED = 3,
 	/**
 	 * Hover over the world.
 	 */
-	MPT_HOVER = 4
+	MPT_HOVER = 4,
+	/**
+	 * Initial mouse button press.
+	 */
+	MPT_PRESS = 5
 
 };
 
