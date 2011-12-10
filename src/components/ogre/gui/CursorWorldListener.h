@@ -21,6 +21,7 @@
 
 #include "components/ogre/IWorldPickListener.h"
 #include "services/input/Input.h"
+#include "services/config/ConfigListenerContainer.h"
 
 #include <CEGUIEvent.h>
 #include <sigc++/trackable.h>
@@ -33,6 +34,7 @@ class Window;
 namespace Ember
 {
 class MainLoopController;
+class ConfigListenerContainer;
 
 namespace OgreView
 {
@@ -67,7 +69,7 @@ protected:
 	 *
 	 * If the mouse button is pressed longer than this, it's considered as a "press" event.
 	 */
-	unsigned int mClickThresholdMilliseconds;
+	int mClickThresholdMilliseconds;
 
 	/**
 	 * @brief Keeps track of when any mouse button press event started.
@@ -75,6 +77,11 @@ protected:
 	 * This is used to determine whether a mouse "press" or "click" event should be emitted.
 	 */
 	long long mMousePressedStart;
+
+	/**
+	 * @brief Listens for config changes.
+	 */
+	ConfigListenerContainer* mConfigListenerContainer;
 
 	void afterEventProcessing(float timeslice);
 
@@ -103,7 +110,20 @@ protected:
 	 */
 	void sendWorldClick(MousePickType pickType, const CEGUI::Vector2& pixelPosition);
 
+	/**
+	 * Checks if the GUI is in "click" mode.
+	 *
+	 * @return True if the GUI is in "click" mode.
+	 */
 	const bool isInGUIMode() const;
+
+	/**
+	 * @brief Sets the "click" time.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void Config_ClickThreshold(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 };
 

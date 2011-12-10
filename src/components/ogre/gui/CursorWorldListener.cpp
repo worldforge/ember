@@ -37,9 +37,9 @@ namespace Gui
 {
 
 CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, MousePicker& mousePicker) :
-		mMainWindow(mainWindow), mMousePicker(mousePicker), mHoverEventSent(false), mCursorLingerStart(0), mClickThresholdMilliseconds(100), mMousePressedStart(0)
+		mMainWindow(mainWindow), mMousePicker(mousePicker), mHoverEventSent(false), mCursorLingerStart(0), mClickThresholdMilliseconds(200), mMousePressedStart(0), mConfigListenerContainer(new ConfigListenerContainer())
 {
-	mainLoopController.EventAfterInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
+	mainLoopController.EventBeforeInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
 	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorWorldListener::input_MouseButtonReleased));
 
 	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseEnters, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseEnters, this));
@@ -49,10 +49,13 @@ CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController,
 	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonUp, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseButtonUp, this));
 	mMainWindow.subscribeEvent(CEGUI::Window::EventMouseDoubleClick, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseDoubleClick, this));
 
+	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "clickthreshold", sigc::mem_fun(*this, &CursorWorldListener::Config_ClickThreshold), 200);
+
 }
 
 CursorWorldListener::~CursorWorldListener()
 {
+	delete mConfigListenerContainer;
 }
 
 void CursorWorldListener::afterEventProcessing(float timeslice)
@@ -168,6 +171,14 @@ const bool CursorWorldListener::isInGUIMode() const
 {
 	return Input::getSingleton().getInputMode() == Input::IM_GUI;
 }
+
+void CursorWorldListener::Config_ClickThreshold(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_int()) {
+		mClickThresholdMilliseconds = static_cast<int>(variable);
+	}
+}
+
 }
 }
 }

@@ -99,7 +99,7 @@ void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePick
 	if (mResult.size()) {
 		std::stringstream ss;
 		ss << mResult.begin()->position;
-		S_LOG_VERBOSE("Picked entity: " << ss.str() << " distance: " << mResult.begin()->distance);
+		S_LOG_VERBOSE("Picked " << mResult.size() << " entities at " << ss.str() << " distance: " << mResult.begin()->distance << ". Type of pick: " << mousePickerArgs.pickType);
 		EventPickedEntity(mResult, mousePickerArgs);
 	}
 }
