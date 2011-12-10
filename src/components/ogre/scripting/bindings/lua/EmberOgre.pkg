@@ -185,6 +185,11 @@ class EmberOgre
 	sigc::signal<void, Ember::OgreView::World&> EventWorldCreated;
 
 	/**
+	 * @brief Emitted before a World instance has been destroyed.
+	 */
+	sigc::signal<void> EventWorldBeingDestroyed;
+
+	/**
 	 * @brief Emitted after a World instance has been destroyed.
 	 */
 	sigc::signal<void> EventWorldDestroyed;

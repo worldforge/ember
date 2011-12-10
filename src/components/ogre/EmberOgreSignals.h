@@ -144,6 +144,11 @@ public:
 	sigc::signal<void, World&> EventWorldCreated;
 
 	/**
+	 * @brief Emitted before a World instance has been destroyed.
+	 */
+	sigc::signal<void> EventWorldBeingDestroyed;
+
+	/**
 	 * @brief Emitted after a World instance has been destroyed.
 	 */
 	sigc::signal<void> EventWorldDestroyed;

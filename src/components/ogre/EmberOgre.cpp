@@ -581,6 +581,7 @@ void EmberOgre::Server_GotView(Eris::View* view)
 void EmberOgre::EntityFactory_BeingDeleted()
 {
 	mShaderManager->deregisterSceneManager(&mWorld->getSceneManager());
+	EventWorldBeingDestroyed.emit();
 	delete mWorld;
 	mWorld = 0;
 	EventWorldDestroyed.emit();
