@@ -87,8 +87,9 @@ function TerrainEditor:overlayDestroyed()
 	self.overlay = nil
 end
 
-function TerrainEditor:buildWidget(terrainManager)
-	local mainCamera = emberOgre:getWorld():getMainCamera()
+function TerrainEditor:buildWidget(world)
+	local terrainManager = world:getTerrainManager()
+	local mainCamera = world:getMainCamera()
 	if mainCamera ~= nil then
 		self.widget = guiManager:createWidget()
 		
@@ -136,13 +137,13 @@ function TerrainEditor:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-connect(connectors, emberOgre.EventTerrainManagerCreated, function(terrainManager)
+connect(connectors, emberOgre.EventWorldCreated, function(world)
 	terrainEditor = {connectors={}, overlay=nil}
 	setmetatable(terrainEditor, {__index = TerrainEditor})
 	
-	terrainEditor:buildWidget(terrainManager)
+	terrainEditor:buildWidget(world)
 	
-	connect(terrainEditor.connectors, emberOgre.EventTerrainManagerDestroyed, function()
+	connect(terrainEditor.connectors, emberOgre.EventWorldDestroyed, function()
 			terrainEditor:shutdown()
 			terrainEditor = nil
 		end
