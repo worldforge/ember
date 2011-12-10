@@ -49,7 +49,7 @@ PolygonPointPickListener::~PolygonPointPickListener()
 
 void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
 {
-	if (entry.movable) {
+	if (entry.movable && mousePickerArgs.pickType == MPT_PRESS) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
 		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(PolygonPointUserObject*)) {
 			//TODO: make sure that it's a point which belongs to our polygon
