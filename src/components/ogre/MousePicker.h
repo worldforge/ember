@@ -50,20 +50,6 @@ public:
 		CM_UNDEFINED = 1<<12,
 		CM_NONPICKABLE = 1<<13
 	};
-
-    virtual ~MousePicker();
-
-	/**
-	 *    Try to pick something at the specified coordinates
-	 * @param x 
-	 * @param y 
-	 * @param args 
-	 */
-	virtual void doMousePicking(const Ogre::Real x, const Ogre::Real y, const MousePickerArgs& args);
-
-	
-protected:
-
 };
 
 }

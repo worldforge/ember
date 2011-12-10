@@ -84,7 +84,7 @@ libEmberOgre_a_SOURCES = \
 	EmberEntityPartAction.cpp EmberEntityUserObject.cpp EmberOgre.cpp EmberOgreFileSystem.cpp \
 	EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp \
-	MotionManager.cpp MousePicker.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
+	MotionManager.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
 	OgreResourceProvider.cpp OgreSetup.cpp NodeAttachment.cpp \
 	ShaderManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp \
 	XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \

@@ -25,6 +25,7 @@
 
 #include <CEGUIEvent.h>
 #include <sigc++/trackable.h>
+#include <vector>
 
 namespace CEGUI
 {
@@ -38,7 +39,10 @@ class ConfigListenerContainer;
 
 namespace OgreView
 {
-class MousePicker;
+namespace Camera
+{
+class MainCamera;
+}
 namespace Gui
 {
 
@@ -50,13 +54,18 @@ namespace Gui
 class CursorWorldListener: public virtual sigc::trackable
 {
 public:
-	CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, MousePicker& mousePicker);
+	CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, Camera::MainCamera& mainCamera);
 	virtual ~CursorWorldListener();
 
 protected:
 
+	/**
+	 * @brief Stores CEGUI::Event::Connection instances.
+	 */
+	typedef std::vector<CEGUI::Event::Connection> ConnectionStore;
+
 	CEGUI::Window& mMainWindow;
-	MousePicker& mMousePicker;
+	Camera::MainCamera& mMainCamera;
 
 	bool mHoverEventSent;
 
@@ -82,6 +91,11 @@ protected:
 	 * @brief Listens for config changes.
 	 */
 	ConfigListenerContainer* mConfigListenerContainer;
+
+	/**
+	 * @brief CEGUI event connections. These will be disconnected when this instance is deleted.
+	 */
+	ConnectionStore mConnections;
 
 	void afterEventProcessing(float timeslice);
 

@@ -67,7 +67,6 @@ namespace OgreView
 {
 
 class EmberEntity;
-class MousePicker;
 class GUICEGUIAdapter;
 class MovementController;
 class World;
@@ -112,8 +111,9 @@ public:
 	 * @param window The main window which will house the GUI. Normally the RenderWindow which makes up the complete application.
 	 * @param configService The config service.
 	 * @param serverSignals Server signals which signals when a new View has been created.
+	 * @param mainLoopController The main loop controller for the system.
 	 */
-	GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals);
+	GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController);
 
 	/**
 	 * @brief Dtor.
@@ -167,9 +167,8 @@ public:
 	/**
 	 * @brief Initializes the gui system.
 	 * Be sure to call this before you use the gui system.
-	 * @param mainLoopController The main loop controller for the system.
 	 */
-	void initialize(MainLoopController& mainLoopController);
+	void initialize();
 
 	/**
 	 *    true if we're in GUI mode, which means that input events will be sent to the CEGUI system instead of the "world"
@@ -306,9 +305,9 @@ protected:
 	 */
 	ConfigService& mConfigService;
 
-	InputCommandMapper mGuiCommandMapper;
+	MainLoopController& mMainLoopController;
 
-	MousePicker* mPicker;
+	InputCommandMapper mGuiCommandMapper;
 
 	CEGUI::Window* mSheet;
 	CEGUI::WindowManager* mWindowManager;

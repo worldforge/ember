@@ -392,7 +392,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 			S_LOG_INFO( "End preload.");
 		}
 		try {
-			mGUIManager = new GUIManager(mWindow, configSrv, EmberServices::getSingleton().getServerService());
+			mGUIManager = new GUIManager(mWindow, configSrv, EmberServices::getSingleton().getServerService(), mainLoopController);
 			EventGUIManagerCreated.emit(*mGUIManager);
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)
@@ -404,7 +404,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		}
 
 		try {
-			mGUIManager->initialize(mainLoopController);
+			mGUIManager->initialize();
 			EventGUIManagerInitialized.emit(*mGUIManager);
 		} catch (...) {
 			//we failed at creating a gui, abort (since the user could be running in full screen mode and could have some trouble shutting down)

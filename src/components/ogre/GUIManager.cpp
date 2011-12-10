@@ -24,7 +24,7 @@
 #include "EmberOgre.h"
 #include "EmberEntity.h"
 #include "GUICEGUIAdapter.h"
-#include "MousePicker.h"
+#include "World.h"
 
 #include "widgets/EntityTooltip.h"
 #include "widgets/Widget.h"
@@ -91,8 +91,8 @@ namespace OgreView
 
 unsigned long GUIManager::msAutoGenId(0);
 
-GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals) :
-		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mGuiCommandMapper("gui", "key_bindings_gui"), mPicker(0), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0),mEntityTooltip(0)
+GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController) :
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0)
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -162,13 +162,10 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mSheet->moveToBack();
 		mSheet->setDistributesCapturedInputs(false);
 
-
 		//set a default tool tip
 		CEGUI::System::getSingleton().setDefaultTooltip(getDefaultScheme() + "/Tooltip");
 
 		S_LOG_INFO("CEGUI system set up");
-
-		mPicker = new MousePicker();
 
 		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
 		getInput().setInputMode(Input::IM_GUI);
@@ -230,7 +227,6 @@ GUIManager::~GUIManager()
 	Ogre::Root::getSingleton().removeFrameListener(this);
 	delete mCEGUIAdapter;
 
-	delete mPicker;
 	if (mGuiRenderer) {
 		CEGUI::OgreRenderer::destroy(*mGuiRenderer);
 	}
@@ -238,15 +234,13 @@ GUIManager::~GUIManager()
 		LuaScriptModule::destroy(*mLuaScriptModule);
 	}
 	delete mRenderedStringParser;
-	//delete mMousePicker;
-	//mMousePicker = 0;
 	delete mQuickHelp;
 
 	WidgetLoader::removeAllWidgetFactories();
 
 }
 
-void GUIManager::initialize(MainLoopController& mainLoopController)
+void GUIManager::initialize()
 {
 	try {
 		createWidget("Quit");
@@ -293,8 +287,6 @@ void GUIManager::initialize(MainLoopController& mainLoopController)
 			S_LOG_FAILURE("Error when initializing widget " << *I << "." << e);
 		}
 	}
-
-	mCursorWorldListener = new Gui::CursorWorldListener(mainLoopController, *mSheet, *mPicker);
 
 }
 
@@ -444,10 +436,6 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 }
 
-
-
-
-
 const bool GUIManager::isInMovementKeysMode() const
 {
 	return mSheet->isCapturedByThis() || !isInGUIMode();
@@ -543,6 +531,7 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 void GUIManager::EmberOgre_WorldCreated(World& world)
 {
 	mEntityTooltip = new EntityTooltip(world, *static_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")), *mIconManager);
+	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world.getMainCamera());
 }
 
 void GUIManager::EmberOgre_WorldDestroyed()
@@ -550,6 +539,8 @@ void GUIManager::EmberOgre_WorldDestroyed()
 	mWindowManager->destroyWindow(&mEntityTooltip->getTooltipWindow());
 	delete mEntityTooltip;
 	mEntityTooltip = 0;
+	delete mCursorWorldListener;
+	mCursorWorldListener = 0;
 }
 
 Gui::EntityTooltip* GUIManager::getEntityTooltip() const
