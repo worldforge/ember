@@ -106,14 +106,18 @@ void BasePointUserObject::setHeight(Ogre::Real height)
 void BasePointUserObject::updateMarking()
 {
 	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
-	if (mIsMoving) {
-		entity->setMaterialName("/global/authoring/point/moving");
-	} else {
-		if (mCanonicalHeight != getBasePointMarkerNode()->_getDerivedPosition().y) {
-			entity->setMaterialName("/global/authoring/point/moved");
+	try {
+		if (mIsMoving) {
+			entity->setMaterialName("/global/authoring/point/moving");
 		} else {
-			entity->setMaterialName("/global/authoring/point");
+			if (mCanonicalHeight != getBasePointMarkerNode()->_getDerivedPosition().y) {
+				entity->setMaterialName("/global/authoring/point/moved");
+			} else {
+				entity->setMaterialName("/global/authoring/point");
+			}
 		}
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Could not set new marker material. This is not fatal."<<ex);
 	}
 }
 
