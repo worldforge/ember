@@ -29,12 +29,6 @@
 #include "components/ogre/ICameraMotionHandler.h"
 #include "components/ogre/IMovementProvider.h"
 #include "components/ogre/IWorldPickListener.h"
-#include "components/ogre/MousePicker.h"
-
-//#include "services/time/TimeService.h"
-//#ifndef WIN32
-//#include "services/sound/SoundService.h"
-//#endif
 
 #include "services/config/ConfigListenerContainer.h"
 #include "services/input/Input.h"
@@ -365,14 +359,7 @@ void MainCamera::removeWorldPickListener(IWorldPickListener* worldPickListener)
 
 void MainCamera::createRayQueries(Ogre::SceneManager& sceneManager)
 {
-	unsigned long queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
-	queryMask |= MousePicker::CM_AVATAR;
-	queryMask |= MousePicker::CM_ENTITY;
-	queryMask |= MousePicker::CM_NATURE;
-	queryMask |= MousePicker::CM_UNDEFINED;
-// 	queryMask |= Ogre::RSQ_FirstTerrain;
-
-	mCameraRaySceneQuery = sceneManager.createRayQuery(Ogre::Ray(), queryMask);
+	mCameraRaySceneQuery = sceneManager.createRayQuery(Ogre::Ray(), 0);
 	mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 	mCameraRaySceneQuery->setSortByDistance(true);
 }
