@@ -60,7 +60,7 @@ public:
 
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
 
-	virtual void initializePickingContext();
+	virtual void initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs);
 
 	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
 

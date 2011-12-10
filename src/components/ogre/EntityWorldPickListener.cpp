@@ -87,8 +87,15 @@ EntityWorldPickListener::~EntityWorldPickListener()
 {
 }
 
-void EntityWorldPickListener::initializePickingContext()
+void EntityWorldPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
 {
+	willParticipate = true;
+
+	queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
+	queryMask |= MousePicker::CM_AVATAR;
+	queryMask |= MousePicker::CM_ENTITY;
+	queryMask |= MousePicker::CM_NATURE;
+
 	mClosestPickingDistance = 0;
 	mFurthestPickingDistance = 0;
 	mResult.clear();

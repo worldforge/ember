@@ -27,6 +27,7 @@
 #include "PolygonPointPickListener.h"
 #include "PolygonPointUserObject.h"
 #include "PolygonPoint.h"
+#include "components/ogre/MousePicker.h"
 #include <OgreMovableObject.h>
 #include <OgreSceneQuery.h>
 
@@ -39,7 +40,7 @@ namespace Authoring
 {
 
 PolygonPointPickListener::PolygonPointPickListener(Polygon& polygon) :
-	mPolygon(polygon), mPickedUserObject(0)
+		mPolygon(polygon), mPickedUserObject(0)
 {
 }
 
@@ -59,9 +60,14 @@ void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::Ra
 	}
 }
 
-void PolygonPointPickListener::initializePickingContext()
+void PolygonPointPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
 {
-	mPickedUserObject = 0;
+	if (pickArgs.pickType == MPT_PRESS) {
+		willParticipate = true;
+		queryMask = MousePicker::CM_UNDEFINED;
+		mPickedUserObject = 0;
+	}
+
 }
 
 void PolygonPointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)

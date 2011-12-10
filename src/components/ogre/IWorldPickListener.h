@@ -105,11 +105,19 @@ public:
 	}
 
 	/**
-	 @brief Called at the start of a picking context.
-	 This allows the pickers to be reset and to keep state for each picking.
+	 * @brief Called at the start of a picking context.
+	 * This allows the pickers to be reset and to keep state for each picking.
+	 * It also allows pick listeners to set query masks which will be used in the picking, as well as opt out of participation.
+	 * If no pick listeners will participate in a pick no query will be performed.
+	 *
+	 * @param willParticipate Should be set to true if the listener wants to participate in picking. That means that it will receive a endPickingContext() and processPickResult() call.
+	 * @param queryMask Any optional query masks that should be applied to the query.
+	 * @param pickArgs The base pick arguments.
 	 */
-	virtual void initializePickingContext()
+	virtual void initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
 	{
+		//Default is to participate.
+		willParticipate = true;
 	}
 
 	/**

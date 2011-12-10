@@ -146,9 +146,13 @@ void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySc
 	}
 }
 
-void BasePointPickListener::initializePickingContext()
+void BasePointPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
 {
-	mPickedUserObject = 0;
+	if (pickArgs.pickType == MPT_PRESS) {
+		willParticipate = true;
+		queryMask = MousePicker::CM_UNDEFINED;
+		mPickedUserObject = 0;
+	}
 }
 
 void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)

@@ -56,7 +56,6 @@
 #include <OgreRay.h>
 #include <OgreVector3.h>
 
-
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #endif
@@ -191,35 +190,47 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 	// get the terrain vector for mouse coords when a pick event happens
 	//mAvatarTerrainCursor->getTerrainCursorPosition();
 
-	// Start a new ray query
-	Ogre::Ray cameraRay = getCamera().getCameraToViewportRay(mouseX, mouseY);
-
-	mCameraRaySceneQuery->setRay(cameraRay);
-	mCameraRaySceneQuery->execute();
-
 	//now check the entity picking
 	Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
 	bool continuePicking = true;
+	unsigned int queryMask = 0;
 
+	WorldPickListenersStore participatingListeners;
 	for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
-		(*I)->initializePickingContext();
-	}
-
-	Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin();
-	Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end();
-	if (rayIterator != rayIterator_end) {
-		for (; rayIterator != rayIterator_end && continuePicking; rayIterator++) {
-			for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
-				(*I)->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
-				if (!continuePicking) {
-					break;
-				}
-			}
+		bool willParticipate = false;
+		unsigned int pickerQueryMask = 0;
+		(*I)->initializePickingContext(willParticipate, pickerQueryMask, mousePickerArgs);
+		if (willParticipate) {
+			queryMask |= pickerQueryMask;
+			participatingListeners.push_back(*I);
 		}
 	}
 
-	for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
-		(*I)->endPickingContext(mousePickerArgs);
+	//Only perform picking if there are any participating pick listeners.
+	if (participatingListeners.size() != 0) {
+		mCameraRaySceneQuery->setQueryMask(queryMask);
+		// Start a new ray query
+		Ogre::Ray cameraRay = getCamera().getCameraToViewportRay(mouseX, mouseY);
+
+		mCameraRaySceneQuery->setRay(cameraRay);
+		mCameraRaySceneQuery->execute();
+
+		Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin();
+		Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end();
+		if (rayIterator != rayIterator_end) {
+			for (; rayIterator != rayIterator_end && continuePicking; rayIterator++) {
+				for (WorldPickListenersStore::iterator I = participatingListeners.begin(); I != participatingListeners.end(); ++I) {
+					(*I)->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
+					if (!continuePicking) {
+						break;
+					}
+				}
+			}
+		}
+
+		for (WorldPickListenersStore::iterator I = participatingListeners.begin(); I != participatingListeners.end(); ++I) {
+			(*I)->endPickingContext(mousePickerArgs);
+		}
 	}
 }
 
