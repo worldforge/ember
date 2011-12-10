@@ -31,12 +31,14 @@
 
 namespace boost
 {
-template<typename> class shared_ptr;
+template<typename>
+class shared_ptr;
 }
 
-namespace Mercator {
-	class Terrain;
-	class BasePoint;
+namespace Mercator
+{
+class Terrain;
+class BasePoint;
 }
 
 namespace Ember
@@ -60,9 +62,9 @@ class TerrainEditorOverlay;
 class TerrainPage;
 
 /**
-Allows the user to pick base points.
-*/
-class BasePointPickListener : public IWorldPickListener
+ * @brief Allows the user to pick base points.
+ */
+class BasePointPickListener: public IWorldPickListener
 {
 public:
 	BasePointPickListener(TerrainEditorOverlay& overlay);
@@ -71,7 +73,6 @@ public:
 	virtual void initializePickingContext();
 
 	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
-
 
 private:
 	TerrainEditorOverlay& mOverlay;
@@ -84,7 +85,6 @@ public:
 	typedef boost::shared_ptr<BasePointUserObject> SharedPtr;
 
 	BasePointUserObject(const Domain::TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode);
-
 
 	/**
 	 *    Accesses the base point
@@ -104,15 +104,22 @@ public:
 	 */
 	float getHeight() const;
 
-
 	/**
 	 *    Sets a new height.
 	 * @param height
 	 */
 	void setHeight(Ogre::Real height);
 
+	/**
+	 * @brief Gets the scene node for the marker.
+	 * @return The scene node for the marker.
+	 */
 	Ogre::SceneNode* getBasePointMarkerNode() const;
 
+	/**
+	 * @brief Gets the terrain position of this base point.
+	 * @return The terrain position.
+	 */
 	const Domain::TerrainPosition& getPosition() const;
 
 	/**
@@ -122,26 +129,52 @@ public:
 	void translate(Ogre::Real verticalMovement);
 
 	/**
-	Emitted when the position of the base point has been updated
-	*/
+	 Emitted when the position of the base point has been updated
+	 */
 	sigc::signal<void> EventUpdatedPosition;
 
 	/**
-	 *    Marks the entity as "moved"
+	 * @brief Updates the marking to show the state.
 	 */
-	void markAsMoved();
+	void updateMarking();
 
 	/**
-	 *    Resets the marking of the entity to the normal material (instead of the "moved" marking)
+	 * @brief Mark as moving.
+	 * @param isMoving True if the marker is currently moving.
+	 */
+	void markAsMoving(bool isMoving);
+
+	/**
+	 * @brief Resets the marking, so that the current height is considered the canonical height.
 	 */
 	void resetMarking();
 
-
 private:
+
+	/**
+	 * @brief The base point this marker represents.
+	 */
 	Mercator::BasePoint mBasePoint;
+
+	/**
+	 * @brief The Ogre scene node used for representation.
+	 */
 	Ogre::SceneNode* mBasePointMarkerNode;
+
+	/**
+	 * @brief The terrain position of the marker.
+	 */
 	const Domain::TerrainPosition mPosition;
 
+	/**
+	 * @brief The canonical height, i.e. the height which corresponds to the current height on the server.
+	 */
+	float mCanonicalHeight;
+
+	/**
+	 * @brief True if this marker is currently being moved.
+	 */
+	bool mIsMoving;
 };
 
 // class TerrainEditorInputAdapter : public IInputAdapter
@@ -163,32 +196,32 @@ private:
 // };
 
 /**
-A single editing action. This can affect one or many base points, and can be reversed (uncommitted).
-*/
+ A single editing action. This can affect one or many base points, and can be reversed (uncommitted).
+ */
 class TerrainEditAction
 {
 public:
 
-typedef std::vector<TerrainEditBasePointMovement> MovementStore;
+	typedef std::vector<TerrainEditBasePointMovement> MovementStore;
 
-/**
- * Gets all movements contained by this action.
- * @return
- */
-const MovementStore& getMovements() const;
+	/**
+	 * Gets all movements contained by this action.
+	 * @return
+	 */
+	const MovementStore& getMovements() const;
 
-/**
- * Gets all movements contained by this action.
- * @return
- */
-MovementStore& getMovements();
+	/**
+	 * Gets all movements contained by this action.
+	 * @return
+	 */
+	MovementStore& getMovements();
 
 private:
 
-/**
- *Internal store of all movements contained by this action.
- */
-MovementStore mMovements;
+	/**
+	 *Internal store of all movements contained by this action.
+	 */
+	MovementStore mMovements;
 
 };
 
@@ -209,29 +242,27 @@ class TerrainEditBasePointMovement
 {
 public:
 
-/**
- *Default ctor.
- @param the vertical movement in meters
- @param the affected position
- */
-TerrainEditBasePointMovement(Ogre::Real verticalMovement, Domain::TerrainPosition position);
+	/**
+	 *Default ctor.
+	 @param the vertical movement in meters
+	 @param the affected position
+	 */
+	TerrainEditBasePointMovement(Ogre::Real verticalMovement, Domain::TerrainPosition position);
 
-/**
- * Gets the vertical movement in meters.
- */
-Ogre::Real getVerticalMovement() const;
+	/**
+	 * Gets the vertical movement in meters.
+	 */
+	Ogre::Real getVerticalMovement() const;
 
-/**
- * Gets the affected position.
- */
-const Domain::TerrainPosition& getPosition() const;
+	/**
+	 * Gets the affected position.
+	 */
+	const Domain::TerrainPosition& getPosition() const;
 
 private:
-Ogre::Real mVerticalMovement;
-Domain::TerrainPosition mPosition;
+	Ogre::Real mVerticalMovement;
+	Domain::TerrainPosition mPosition;
 };
-
-
 
 class TerrainEditorOverlay: public IInputAdapter, public virtual sigc::trackable
 {
@@ -242,7 +273,6 @@ public:
 
 	void pickedBasePoint(BasePointUserObject* userObject);
 
-
 	/**
 	 *    Performs the supplied action on the client terrain. Note that no updates are sent to the server at this point.
 	 *    Undo operations are carried out by calls to this method, with the second parameter set to true.
@@ -250,7 +280,7 @@ public:
 	 * @param if true, the action will be undone
 	 * @return
 	 */
-    void commitAction(const TerrainEditAction& action, bool reverse = false);
+	void commitAction(const TerrainEditAction& action, bool reverse = false);
 
 	/**
 	 *    returns the currently selected base point user object, if any
@@ -258,10 +288,10 @@ public:
 	 */
 	BasePointUserObject* getCurrentBasePointUserObject() const;
 
-    /**
-     * Sends all changes to the server.
-     */
-    void sendChangesToServer();
+	/**
+	 * Sends all changes to the server.
+	 */
+	void sendChangesToServer();
 
 	/**
 	 *    Creates a new action from the current movement. Will only create an action if actual movement has occurred.
@@ -298,28 +328,27 @@ public:
 	 */
 	bool getVisible() const;
 
-    /**
-    * Emitted when a base point has been picked by the mouse.
-    * @param The UserObject of the picked base point.
-    */
-    sigc::signal<void, BasePointUserObject*> EventPickedBasePoint;
-
-    /**
-    * Emitted when an TerrainEditAction has been created.
-    * @param The newly created TerrainEditAction
-    */
-    sigc::signal<void, const TerrainEditAction*> EventActionCreated;
+	/**
+	 * Emitted when a base point has been picked by the mouse.
+	 * @param The UserObject of the picked base point.
+	 */
+	sigc::signal<void, BasePointUserObject*> EventPickedBasePoint;
 
 	/**
-	Emitted when the position of the selected base point has been updated
-	*/
+	 * Emitted when an TerrainEditAction has been created.
+	 * @param The newly created TerrainEditAction
+	 */
+	sigc::signal<void, const TerrainEditAction*> EventActionCreated;
+
+	/**
+	 Emitted when the position of the selected base point has been updated
+	 */
 	sigc::signal<void, BasePointUserObject*> EventSelectedBasePointUpdatedPosition;
 
-
 	/**
-	---------Methods implemented from IInputAdapter
-	@see IInputAdapter
-	*/
+	 ---------Methods implemented from IInputAdapter
+	 @see IInputAdapter
+	 */
 	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
@@ -368,13 +397,13 @@ private:
 	void releaseInput();
 
 	/**
-	After a piece of terrain has been updated, the positions of the entities will need to be updated.
-	*/
+	 After a piece of terrain has been updated, the positions of the entities will need to be updated.
+	 */
 	void updateEntityPositions(const std::set<TerrainPage*>& pagesToUpdate);
 
 	/**
-	Updates the position of a single entity.
-	*/
+	 Updates the position of a single entity.
+	 */
 	void updateEntityPosition(EmberEntity* entity, const std::set<TerrainPage*>& pagesToUpdate);
 
 	/**
@@ -391,15 +420,15 @@ private:
 	 * @param z The basepoint data will be copied here if successful.
 	 * @returns True if a basepoint could be found at the index.
 	 */
-    bool getBasePoint(const BasePointStore& basePoints, int x, int y, Mercator::BasePoint& z) const;
+	bool getBasePoint(const BasePointStore& basePoints, int x, int y, Mercator::BasePoint& z) const;
 
-    /**
-     * @brief Callback for committing action with base points.
-     * @param basePoints The colleciton of base points.
-     * @param action The action to commit.
-     * @param reverse Whether the action should be reversed.
-     */
-    void commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse);
+	/**
+	 * @brief Callback for committing action with base points.
+	 * @param basePoints The colleciton of base points.
+	 * @param action The action to commit.
+	 * @param reverse Whether the action should be reversed.
+	 */
+	void commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse);
 
 };
 

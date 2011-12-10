@@ -58,11 +58,9 @@ namespace Terrain
 {
 
 BasePointUserObject::BasePointUserObject(const Domain::TerrainPosition terrainPosition, const Mercator::BasePoint& basePoint, Ogre::SceneNode* basePointMarkerNode) :
-	mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition)
+		mBasePoint(basePoint), mBasePointMarkerNode(basePointMarkerNode), mPosition(terrainPosition), mCanonicalHeight(mBasePoint.height()), mIsMoving(false)
 {
 }
-
-
 
 const Mercator::BasePoint& BasePointUserObject::getBasePoint() const
 {
@@ -93,7 +91,7 @@ float BasePointUserObject::getHeight() const
 void BasePointUserObject::translate(Ogre::Real verticalMovement)
 {
 	getBasePointMarkerNode()->translate(Ogre::Vector3(0, verticalMovement, 0));
-	markAsMoved();
+	updateMarking();
 	EventUpdatedPosition();
 }
 
@@ -101,24 +99,38 @@ void BasePointUserObject::setHeight(Ogre::Real height)
 {
 	const Ogre::Vector3& position = getBasePointMarkerNode()->getPosition();
 	getBasePointMarkerNode()->setPosition(position.x, height, position.z);
-	markAsMoved();
+	updateMarking();
 	EventUpdatedPosition();
 }
 
-void BasePointUserObject::markAsMoved()
+void BasePointUserObject::updateMarking()
 {
-	Ogre::Entity* entity = static_cast<Ogre::Entity*> (getBasePointMarkerNode()->getAttachedObject(0));
-	entity->setMaterialName("/global/authoring/point/moved");
+	Ogre::Entity* entity = static_cast<Ogre::Entity*>(getBasePointMarkerNode()->getAttachedObject(0));
+	if (mIsMoving) {
+		entity->setMaterialName("/global/authoring/point/moving");
+	} else {
+		if (mCanonicalHeight != getBasePointMarkerNode()->_getDerivedPosition().y) {
+			entity->setMaterialName("/global/authoring/point/moved");
+		} else {
+			entity->setMaterialName("/global/authoring/point");
+		}
+	}
 }
 
 void BasePointUserObject::resetMarking()
 {
-	Ogre::Entity* entity = static_cast<Ogre::Entity*> (getBasePointMarkerNode()->getAttachedObject(0));
-	entity->setMaterialName("/global/authoring/point");
+	mCanonicalHeight = mBasePoint.height();
+	updateMarking();
+}
+
+void BasePointUserObject::markAsMoving(bool isMoving)
+{
+	mIsMoving = isMoving;
+	updateMarking();
 }
 
 BasePointPickListener::BasePointPickListener(TerrainEditorOverlay& overlay) :
-	mOverlay(overlay), mPickedUserObject(0)
+		mOverlay(overlay), mPickedUserObject(0)
 {
 
 }
@@ -128,7 +140,7 @@ void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySc
 	if (entry.movable && mousePickerArgs.pickType == MPT_PRESS) {
 		Ogre::MovableObject* pickedMovable = entry.movable;
 		if (pickedMovable->isVisible() && pickedMovable->getUserAny().getType() == typeid(BasePointUserObject::SharedPtr)) {
-			mPickedUserObject = Ogre::any_cast<BasePointUserObject::SharedPtr> (pickedMovable->getUserAny()).get();
+			mPickedUserObject = Ogre::any_cast<BasePointUserObject::SharedPtr>(pickedMovable->getUserAny()).get();
 			continuePicking = false;
 		}
 	}
@@ -147,7 +159,7 @@ void BasePointPickListener::endPickingContext(const MousePickerArgs& mousePicker
 }
 
 TerrainEditBasePointMovement::TerrainEditBasePointMovement(Ogre::Real verticalMovement, Domain::TerrainPosition position) :
-	mVerticalMovement(verticalMovement), mPosition(position)
+		mVerticalMovement(verticalMovement), mPosition(position)
 {
 }
 
@@ -162,7 +174,7 @@ const Domain::TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 
 }
 TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint> >& basePoints) :
-	mEditor(editor), mSceneManager(sceneManager), mWorldSceneNode(worldSceneNode), mManager(manager), mCamera(camera), mOverlayNode(0), mPickListener(*this), mCurrentUserObject(0)
+		mEditor(editor), mSceneManager(sceneManager), mWorldSceneNode(worldSceneNode), mManager(manager), mCamera(camera), mOverlayNode(0), mPickListener(*this), mCurrentUserObject(0)
 {
 	createOverlay(basePoints, worldSceneNode);
 }
@@ -176,7 +188,7 @@ TerrainEditorOverlay::~TerrainEditorOverlay()
 	}
 	//TODO: also delete user objects
 	if (mOverlayNode) {
-		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*> (mOverlayNode->getParent());
+		Ogre::SceneNode* parent = static_cast<Ogre::SceneNode*>(mOverlayNode->getParent());
 		if (parent) {
 			parent->removeAndDestroyChild(mOverlayNode->getName());
 		} else {
@@ -263,6 +275,7 @@ void TerrainEditorOverlay::pickedBasePoint(BasePointUserObject* userObject)
 	assert(userObject);
 	mCurrentUserObject = userObject;
 	catchInput();
+	mCurrentUserObject->markAsMoving(true);
 	EventPickedBasePoint.emit(userObject);
 }
 
@@ -273,6 +286,7 @@ bool TerrainEditorOverlay::injectMouseMove(const MouseMotion& motion, bool& free
 	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
 		multiplier *= 5;
 	}
+
 	assert(mCurrentUserObject);
 	float translation(motion.yRelativeMovement * multiplier);
 	mCurrentUserObject->translate(translation);
@@ -344,6 +358,7 @@ void TerrainEditorOverlay::releaseInput()
 void TerrainEditorOverlay::createAction(bool alsoCommit)
 {
 	if (mCurrentUserObject) {
+		mCurrentUserObject->markAsMoving(false);
 		//lets get how much it moved
 		float distance = mCurrentUserObject->getBasePointMarkerNode()->getPosition().y - mCurrentUserObject->getBasePoint().height();
 		//only register an action if it has been moved
@@ -408,7 +423,7 @@ void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::
 			Mercator::BasePoint bp;
 			WFMath::CoordType basepointX = I->second.x();
 			WFMath::CoordType basepointY = I->second.y();
-			getBasePoint(basePoints, static_cast<int> (basepointX), static_cast<int> (basepointY), bp);
+			getBasePoint(basePoints, static_cast<int>(basepointX), static_cast<int>(basepointY), bp);
 
 			Atlas::Message::ListType & point = (pointMap[I->first] = Atlas::Message::ListType(3)).asList();
 			point[0] = (Atlas::Message::FloatType)(I->second.x());
@@ -459,8 +474,6 @@ bool TerrainEditorOverlay::getVisible() const
 	return mOverlayNode != 0 && mOverlayNode->isInSceneGraph();
 }
 
-
-
 bool TerrainEditorOverlay::undoLastAction()
 {
 	if (mActions.size() > 0) {
@@ -494,15 +507,16 @@ void TerrainEditorOverlay::commitAction(const TerrainEditAction& action, bool re
 	mManager.getBasePoints(slot);
 }
 
-void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse) {
+void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints, const TerrainEditAction action, bool reverse)
+{
 
 	TerrainDefPointStore pointStore;
 
 	std::set<TerrainPage*> pagesToUpdate;
 	for (TerrainEditAction::MovementStore::const_iterator I = action.getMovements().begin(); I != action.getMovements().end(); ++I) {
 		Mercator::BasePoint bp;
-		int basepointX = static_cast<int> (I->getPosition().x());
-		int basepointY = static_cast<int> (I->getPosition().y());
+		int basepointX = static_cast<int>(I->getPosition().x());
+		int basepointY = static_cast<int>(I->getPosition().y());
 		getBasePoint(basePoints, basepointX, basepointY, bp);
 		//check if we should do a reverse action (which is done when an action is undone)
 		bp.height() = bp.height() + (reverse ? -I->getVerticalMovement() : I->getVerticalMovement());
@@ -553,7 +567,6 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 	// 		(*I)->updateAllShaderTextures();
 	// 	}
 
-
 	// 	std::set<Ogre::PagingLandScapeData2D*> dataStore;
 	// 	//reload all affected tiles
 	// 	for (std::set<Ogre::PagingLandScapeTile*>::iterator I = tilesToUpdate.begin(); I != tilesToUpdate.end(); ++I) {
@@ -583,9 +596,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 	//sceneMgr->getPageManager()->load();
 	// 	TerrainManager->getAdapter()->reloadAllPages();
 
-
 	// 	updateEntityPositions(pagesToUpdate);
-
 
 }
 
