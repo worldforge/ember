@@ -55,6 +55,7 @@ end
 
 function Environment:shutdown()
 	guiManager:destroyWidget(self.widget)
+	disconnectAll(self.connectors)
 	environment = nil
 end
 
