@@ -62,11 +62,11 @@ namespace Model
 
 std::string ModelRepresentation::sTypeName("ModelRepresentation");
 
-const char * const ModelRepresentation::ACTION_STAND("__movement_idle");
-const char * const ModelRepresentation::ACTION_RUN("__movement_run");
-const char * const ModelRepresentation::ACTION_WALK("__movement_walk");
-const char * const ModelRepresentation::ACTION_SWIM("__movement_swim");
-const char * const ModelRepresentation::ACTION_FLOAT("__movement_float");
+const char * const ModelRepresentation::ACTION_STAND("idle");
+const char * const ModelRepresentation::ACTION_RUN("run");
+const char * const ModelRepresentation::ACTION_WALK("walk");
+const char * const ModelRepresentation::ACTION_SWIM("swim");
+const char * const ModelRepresentation::ACTION_FLOAT("float");
 
 ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene) :
 	mEntity(entity), mModel(model), mScene(scene), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
@@ -83,7 +83,7 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scen
 	initFromModel();
 
 	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similiar entities with synched animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */
-	Action* idleaction = mModel.getAction(ACTION_STAND);
+	Action* idleaction = mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	if (idleaction) {
 		idleaction->getAnimations().addTime(Ogre::Math::RangeRandom(0, 15));
 	}
@@ -303,7 +303,7 @@ void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
 			mActiveAction = 0;
 		}
 
-		Action* newAction = mModel.getAction(actionName);
+		Action* newAction = mModel.getAction(ActivationDefinition::MOVEMENT, actionName);
 		mCurrentMovementAction = newAction;
 		if (newAction) {
 			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
@@ -396,11 +396,11 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 			mSoundEntity->playAction(name);
 		}
 
-		Action* newAction = mModel.getAction(name);
+		Action* newAction = mModel.getAction(ActivationDefinition::ACTION, name);
 
 		//If there's no action found, try to see if we have a "default action" defined to play instead.
 		if (!newAction) {
-			newAction = mModel.getAction("default_action");
+			newAction = mModel.getAction(ActivationDefinition::ACTION, "default_action");
 		}
 
 		if (newAction) {

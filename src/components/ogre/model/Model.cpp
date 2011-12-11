@@ -550,6 +550,19 @@ Action* Model::getAction(const std::string& name)
 	return &(I->second);
 }
 
+Action* Model::getAction(const ActivationDefinition::Type type, const std::string& trigger)
+{
+	for (ActionDefinitionsStore::const_iterator I = mDefinition->mActions.begin(); I != mDefinition->mActions.end(); ++I) {
+		for (ActivationDefinitionStore::const_iterator J = (*I)->getActivationDefinitions().begin(); J !=  (*I)->getActivationDefinitions().end(); ++J) {
+			const ActivationDefinition* activationDefinition = *J;
+			if (type == activationDefinition->type && trigger == activationDefinition->trigger) {
+				return getAction((*I)->getName());
+			}
+		}
+	}
+	return 0;
+}
+
 void Model::resetSubmodels()
 {
 	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();

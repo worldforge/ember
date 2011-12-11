@@ -131,6 +131,14 @@ public:
 	 */
 	Action* getAction(const std::string& name);
 
+	/**
+	 * @brief Gets the action for the supplied type and trigger. If none could be found null is returned.
+	 * @param type The type of trigger.
+	 * @param trigger The actual trigger.
+	 * @return A pointer to an action, or null.
+	 */
+	Action* getAction(const ActivationDefinition::Type type, const std::string& trigger);
+
 	// 	ModelPart& getPart(const std::string& partName);
 
 	/**
