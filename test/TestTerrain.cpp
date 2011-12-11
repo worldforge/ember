@@ -13,7 +13,6 @@
 #include "components/ogre/terrain/TerrainMod.h"
 
 #include "framework/Exception.h"
-#include "main/Application.h"
 
 #include <Eris/Entity.h>
 
@@ -36,12 +35,6 @@ using namespace Ember::Domain;
 
 namespace Ember
 {
-
-template<> Application *Singleton<Application>::ms_Singleton = 0;
-
-void Application::requestQuit()
-{
-}
 
 class DummyCompilerTechniqueProvider: public ICompilerTechniqueProvider
 {
