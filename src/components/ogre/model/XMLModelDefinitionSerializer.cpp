@@ -385,6 +385,10 @@ void XMLModelDefinitionSerializer::readActions(ModelDefinitionPtr modelDef, TiXm
 			elem = animElem->FirstChildElement("sounds");
 			if (elem)
 				readSounds(elem, actionDef);
+
+			elem = animElem->FirstChildElement("activations");
+			if (elem)
+				readActivations(elem, actionDef);
 		}
 
 	}
@@ -424,7 +428,37 @@ void XMLModelDefinitionSerializer::readSounds(TiXmlElement* mAnimationsNode, Act
 			}
 
 			action->createSoundDefinition(groupName, playOrder);
-			S_LOG_VERBOSE( "  Add Sound: " + groupName);
+			S_LOG_VERBOSE( "  Add Sound: " << groupName);
+		}
+	}
+}
+
+void XMLModelDefinitionSerializer::readActivations(TiXmlElement* activationsNode, ActionDefinition* action)
+{
+	const char* tmp = 0;
+
+	for (TiXmlElement* activationElem = activationsNode->FirstChildElement();
+            activationElem != 0; activationElem = activationElem->NextSiblingElement())
+	{
+		tmp = activationElem->Attribute("type");
+		if (tmp)
+		{
+			std::string typeString(tmp);
+
+			ActivationDefinition::Type type;
+			if (typeString == "movement") {
+				type = ActivationDefinition::MOVEMENT;
+			} else if (typeString == "action") {
+				type = ActivationDefinition::ACTION;
+			} else if (typeString == "task") {
+				type = ActivationDefinition::TASK;
+			} else {
+				S_LOG_WARNING("No recognized activation type: " << typeString);
+				continue;
+			}
+			std::string trigger = activationElem->GetText();
+			action->createActivationDefinition(type, trigger);
+			S_LOG_VERBOSE( "  Add activation: " << typeString << " : " << trigger);
 		}
 	}
 }

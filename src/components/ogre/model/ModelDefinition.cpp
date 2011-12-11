@@ -488,7 +488,9 @@ ActionDefinition::~ActionDefinition()
 	for (SoundDefinitionsStore::iterator I = mSounds.begin(); I != mSounds.end(); ++I) {
 		delete *I;
 	}
-
+	for (ActivationDefinitionStore::iterator I = mActivations.begin(); I != mActivations.end(); ++I) {
+		delete *I;
+	}
 }
 
 AnimationDefinition* ActionDefinition::createAnimationDefinition(int iterations)
@@ -528,6 +530,27 @@ void ActionDefinition::removeSoundDefinition(SoundDefinition* def)
 {
 	ModelDefinition::removeDefinition(def, mSounds);
 }
+
+ActivationDefinition* ActionDefinition::createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger)
+{
+	ActivationDefinition* def = new ActivationDefinition();
+	def->type = type;
+	def->trigger = trigger;
+
+	mActivations.push_back(def);
+	return def;
+
+}
+const ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() const
+{
+	return mActivations;
+}
+
+void ActionDefinition::removeActivationDefinition(ActivationDefinition* def)
+{
+	ModelDefinition::removeDefinition(def, mActivations);
+}
+
 
 const std::string& ActionDefinition::getName() const
 {

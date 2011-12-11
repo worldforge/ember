@@ -69,6 +69,7 @@ private:
 	void readParticleSystemsBindings(ModelDefinition::ParticleSystemDefinition& def, TiXmlElement* mParticleSystemsNode);
 	void readViews(ModelDefinitionPtr modelDef, TiXmlElement* viewsNode);
 	void readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action);
+	void readActivations(TiXmlElement* activationsNode, ActionDefinition* action);
 	void readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode);
 
 

@@ -49,6 +49,7 @@ class ActionDefinition;
 class SoundDefinition;
 class AnimationDefinition;
 struct AnimationPartDefinition;
+struct ActivationDefinition;
 struct AttachPointDefinition;
 struct ViewDefinition;
 
@@ -62,6 +63,7 @@ typedef std::vector<AnimationPartDefinition*> AnimationPartDefinitionsStore;
 typedef std::vector<SoundDefinition*> SoundDefinitionsStore;
 typedef std::vector<ActionDefinition*> ActionDefinitionsStore;
 typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
+typedef std::vector<ActivationDefinition*> ActivationDefinitionStore;
 typedef std::map<std::string, ViewDefinition*> ViewDefinitionStore;
 typedef std::map<std::string, std::string> StringParamStore;
 
@@ -231,6 +233,46 @@ struct SoundDefinition
 	unsigned int playOrder;
 };
 
+/**
+ * @brief A definition for an action activation.
+ *
+ * This structure is used to determine when an action should be played.
+ */
+struct ActivationDefinition
+{
+	/**
+	 * @brief The type of activation.
+	 */
+	enum Type {
+		/**
+		 * @brief Activation through change of movement type.
+		 */
+		MOVEMENT,//!< MOVEMENT
+
+		/**
+		 * @brief Activation through an entity action.
+		 */
+		ACTION,  //!< ACTION
+
+		/**
+		 * @brief Activation through a task being carried out.
+		 */
+		TASK     //!< TASK
+	};
+
+	/**
+	 * @brief The type of the activation.
+	 */
+	Type type;
+
+	/**
+	 * @brief The trigger for the activation.
+	 *
+	 * The interpretion of this value is dependent on the type.
+	 */
+	std::string trigger;
+};
+
 class ActionDefinition
 {
 friend class ModelDefinition;
@@ -242,9 +284,12 @@ public:
 	void removeAnimationDefinition(AnimationDefinition* def);
 
 	SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
-
 	const SoundDefinitionsStore& getSoundDefinitions() const;
 	void removeSoundDefinition(SoundDefinition* def);
+
+	ActivationDefinition* createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger);
+	const ActivationDefinitionStore& getActivationDefinitions() const;
+	void removeActivationDefinition(ActivationDefinition* def);
 
 	const std::string& getName() const;
 	Ogre::Real getAnimationSpeed() const { return mAnimationSpeed; }
@@ -257,6 +302,7 @@ private:
 	std::string mName;
 	AnimationDefinitionsStore mAnimations;
 	SoundDefinitionsStore mSounds;
+	ActivationDefinitionStore mActivations;
 	Ogre::Real mAnimationSpeed;
 };
 
