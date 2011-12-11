@@ -12,6 +12,9 @@
         </submodels>
         <actions>
             <action name="close" speed="1.000000">
+                <activations>
+                    <activation type="action">close</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="chest_close" weight="1.000000" />
@@ -26,6 +29,9 @@
                 </animations>
             </action>
             <action name="open" speed="1.000000">
+                <activations>
+                    <activation type="action">open</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="chest_open" weight="1.000000" />

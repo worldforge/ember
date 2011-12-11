@@ -1,7 +1,7 @@
 <models>
-    <model name="kobold" usescaleof="height" showcontained="false" icon="">
+    <model icon="" name="kobold" showcontained="false" usescaleof="height">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-1.000000" y="0.000000" z="0.000000" degrees="360.000000" />
+        <rotation degrees="360.000000" x="-1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/creatures/goblin/goblin.mesh">
                 <parts>
@@ -25,6 +25,9 @@
         </submodels>
         <actions>
             <action name="__movement_idle" speed="1.000000">
+                <activations>
+                    <activation type="movement">idle</activation>
+                </activations>
                 <animations>
                     <animation>
                         <animationpart name="idleA" weight="1.000000" />
@@ -32,6 +35,9 @@
                 </animations>
             </action>
             <action name="__movement_walk" speed="1.000000">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="walk" weight="1.000000" />
@@ -39,6 +45,9 @@
                 </animations>
             </action>
             <action name="__movement_run" speed="1.000000">
+                <activations>
+                    <activation type="movement">run</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="run" weight="1.000000" />
@@ -46,6 +55,9 @@
                 </animations>
             </action>
             <action name="__movement_swim" speed="1.000000">
+                <activations>
+                    <activation type="movement">swim</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="walk" weight="1.000000" />
@@ -54,8 +66,8 @@
             </action>
         </actions>
         <attachpoints>
-            <attachpoint name="right_hand_wield" bone="hand.r">
-                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+            <attachpoint bone="hand.r" name="right_hand_wield">
+                <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
             </attachpoint>
         </attachpoints>
         <views />

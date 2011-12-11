@@ -1,92 +1,93 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <models>
-
-	<model name="fish" usescaleof="width" showcontained="false">
-		<submodels>
-			<submodel mesh="3d_skeletons/creatures/tubular/models/fish_01/fish_01.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-	</model>	
-
-	<model name="squirrel" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_skeletons/creatures/quadruped/models/squirrel/squirrel.mesh">
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Walk" weight="1" />
-					</animation>
-				</animations>
-			</action>
-		</actions> 
-	</model>
-	
-	
-
-	
-	
-	
-	
-	<model name="pig" usescaleof="height" showcontained="false">
-		<submodels>
-			<submodel mesh="3d_skeletons/quadrapeds/pig/pig.mesh" >
-				<parts>
-					<part name="main" show="true" />
-				</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_idle">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Walk" weight="1" />
-					</animation>
-				</animations>
-				<sounds>
-					<sound group="pig_snort" playOrder="random" />	
-				</sounds>
-			</action>
-		</actions>
-	</model>	
-	
-	<model name="wolf" usescaleof="height" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_skeletons/creatures/quadruped_v2/models/wolf/normal_wolf.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="walk" weight="1.0" />
-					</animation>
-				</animations>
-			</action>
-			<action name="__movement_idle">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="idle" weight="1.0" />
-					</animation>
-				</animations>
-			</action>
-		</actions>
-	</model>	
-	
-    <model name="skeleton" usescaleof="height" showcontained="false" icon="">
+    <model name="fish" showcontained="false" usescaleof="width">
+        <submodels>
+            <submodel mesh="3d_skeletons/creatures/tubular/models/fish_01/fish_01.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+    </model>
+    <model name="squirrel" showcontained="false">
+        <submodels>
+            <submodel mesh="3d_skeletons/creatures/quadruped/models/squirrel/squirrel.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="__movement_walk">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Walk" weight="1" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
+    </model>
+    <model name="pig" showcontained="false" usescaleof="height">
+        <submodels>
+            <submodel mesh="3d_skeletons/quadrapeds/pig/pig.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="__movement_idle">
+                <activations>
+                    <activation type="movement">idle</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Walk" weight="1" />
+                    </animation>
+                </animations>
+                <sounds>
+                    <sound group="pig_snort" playOrder="random" />
+                </sounds>
+            </action>
+        </actions>
+    </model>
+    <model name="wolf" showcontained="false" usescaleof="height">
+        <submodels>
+            <submodel mesh="3d_skeletons/creatures/quadruped_v2/models/wolf/normal_wolf.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="__movement_walk">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="walk" weight="1.0" />
+                    </animation>
+                </animations>
+            </action>
+            <action name="__movement_idle">
+                <activations>
+                    <activation type="movement">idle</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="idle" weight="1.0" />
+                    </animation>
+                </animations>
+            </action>
+        </actions>
+    </model>
+    <model icon="" name="skeleton" showcontained="false" usescaleof="height">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <rotation degrees="90.000000" x="-1.000000" y="-0.000000" z="-0.000000" />
         <submodels>
             <submodel mesh="3d_skeletons/bipeds/races/skeleton/skeleton.mesh">
                 <parts>
@@ -98,8 +99,11 @@
                 </parts>
             </submodel>
         </submodels>
-                <actions>
+        <actions>
             <action name="__movement_idle" speed="1.000000">
+                <activations>
+                    <activation type="movement">idle</activation>
+                </activations>
                 <animations>
                     <animation iterations="10">
                         <animationpart name="idle" weight="1.000000" />
@@ -116,6 +120,9 @@
                 </animations>
             </action>
             <action name="__movement_walk" speed="1.000000">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="walk" weight="1.000000" />
@@ -123,6 +130,9 @@
                 </animations>
             </action>
             <action name="__movement_run" speed="1.000000">
+                <activations>
+                    <activation type="movement">run</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="run" weight="1.000000" />
@@ -130,6 +140,9 @@
                 </animations>
             </action>
             <action name="__movement_swim" speed="1.000000">
+                <activations>
+                    <activation type="movement">swim</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="swim" weight="1.000000" />
@@ -137,6 +150,9 @@
                 </animations>
             </action>
             <action name="attack" speed="1.000000">
+                <activations>
+                    <activation type="action">attack</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="attack_punch" weight="1.000000" />
@@ -144,6 +160,9 @@
                 </animations>
             </action>
             <action name="punch" speed="1.000000">
+                <activations>
+                    <activation type="action">punch</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="attack_punch" weight="1.000000" />
@@ -151,6 +170,9 @@
                 </animations>
             </action>
             <action name="chop" speed="1.000000">
+                <activations>
+                    <activation type="action">chop</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="chop" weight="1.000000" />
@@ -158,6 +180,9 @@
                 </animations>
             </action>
             <action name="jump" speed="1.000000">
+                <activations>
+                    <activation type="action">jump</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="jump" weight="1.000000" />
@@ -166,17 +191,15 @@
             </action>
         </actions>
         <attachpoints>
-            <attachpoint name="right_hand_wield" bone="lower_hand.R">
-                <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+            <attachpoint bone="lower_hand.R" name="right_hand_wield">
+                <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
             </attachpoint>
         </attachpoints>
-		<views />
-    </model>	
-		
-	
-    <model name="arm" usescaleof="all" showcontained="true" icon="">
+        <views />
+    </model>
+    <model icon="" name="arm" showcontained="true" usescaleof="all">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="junkyard/models/skeleton/arm.mesh">
                 <parts>
@@ -192,9 +215,9 @@
         <attachpoints />
         <views />
     </model>
-    <model name="skull" usescaleof="width" showcontained="true" icon="">
+    <model icon="" name="skull" showcontained="true" usescaleof="width">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="junkyard/models/skeleton/skull.mesh">
                 <parts>
@@ -210,14 +233,16 @@
         <attachpoints />
         <views>
             <view name="icon">
-                <distance>36.0695</distance>
-                <rotation x="0.361903" y="-0.586539" z="0.724568" degrees="259.492584" />
+                <distance>
+                    36.0695
+                </distance>
+                <rotation degrees="259.492584" x="0.361903" y="-0.586539" z="0.724568" />
             </view>
         </views>
     </model>
-    <model name="shin" usescaleof="all" showcontained="true" icon="">
+    <model icon="" name="shin" showcontained="true" usescaleof="all">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="junkyard/models/skeleton/shin.mesh">
                 <parts>
@@ -233,9 +258,9 @@
         <attachpoints />
         <views />
     </model>
-    <model name="pelvis" usescaleof="all" showcontained="true" icon="">
+    <model icon="" name="pelvis" showcontained="true" usescaleof="all">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="junkyard/models/skeleton/pelvis.mesh">
                 <parts>
@@ -251,9 +276,9 @@
         <attachpoints />
         <views />
     </model>
-    <model name="ribcage" usescaleof="all" showcontained="true" icon="">
+    <model icon="" name="ribcage" showcontained="true" usescaleof="all">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="junkyard/models/skeleton/ribcage.mesh">
                 <parts>
@@ -269,9 +294,9 @@
         <attachpoints />
         <views />
     </model>
-    <model name="thigh" usescaleof="all" showcontained="true" icon="">
+    <model icon="" name="thigh" showcontained="true" usescaleof="all">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="junkyard/models/skeleton/thigh.mesh">
                 <parts>
@@ -286,5 +311,5 @@
         <actions />
         <attachpoints />
         <views />
-    </model>	
+    </model>
 </models>

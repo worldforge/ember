@@ -1,7 +1,7 @@
 <models>
-    <model name="dog" usescaleof="height" showcontained="false" icon="">
+    <model icon="" name="dog" showcontained="false" usescaleof="height">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/creatures/dog/dog.mesh">
                 <parts>
@@ -15,6 +15,9 @@
         </submodels>
         <actions>
             <action name="__movement_walk" speed="1.000000">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Walk" weight="1.000000" />

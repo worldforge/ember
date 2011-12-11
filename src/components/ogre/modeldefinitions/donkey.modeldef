@@ -1,7 +1,7 @@
 <models>
-    <model name="donkey" usescaleof="height" showcontained="false" icon="">
+    <model icon="" name="donkey" showcontained="false" usescaleof="height">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-0.000000" y="-0.000000" z="-0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="-0.000000" y="-0.000000" z="-0.000000" />
         <submodels>
             <submodel mesh="3d_objects/creatures/donkey/donkey.mesh">
                 <parts>
@@ -9,19 +9,25 @@
                         <subentities>
                             <subentity index="0" />
                         </subentities>
-                    </part>                    
+                    </part>
                 </parts>
             </submodel>
         </submodels>
         <actions>
             <action name="__movement_walk" speed="1.000000">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="walk" weight="1.000000" />
                     </animation>
                 </animations>
             </action>
-			<action name="__movement_run" speed="1.000000">
+            <action name="__movement_run" speed="1.000000">
+                <activations>
+                    <activation type="movement">run</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="run" weight="1.000000" />
@@ -29,6 +35,9 @@
                 </animations>
             </action>
             <action name="__movement_idle" speed="1.000000">
+                <activations>
+                    <activation type="movement">idle</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="ilde_a" weight="1.000000" />

@@ -1,25 +1,30 @@
 <models>
-		<model name="rabbit" usescaleof="height" showcontained="false" >
-		<submodels>
-			<submodel mesh="3d_objects/creatures/rabbit/RabbitHi.mesh" >
-			<parts>
-				<part name="main" show="true" />
-			</parts>
-			</submodel>
-		</submodels>
-		<actions>
-			<action name="__movement_walk">
-				<animations>
-					<animation iterations="1">
-						<animationpart name="Run" weight="1" />
-					</animation>
-					<animation iterations="2">
-						<animationpart name="Run2" weight="1.2" />
-					</animation>
-				</animations>
-			</action>
-
+    <model name="rabbit" showcontained="false" usescaleof="height">
+        <submodels>
+            <submodel mesh="3d_objects/creatures/rabbit/RabbitHi.mesh">
+                <parts>
+                    <part name="main" show="true" />
+                </parts>
+            </submodel>
+        </submodels>
+        <actions>
+            <action name="__movement_walk">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
+                <animations>
+                    <animation iterations="1">
+                        <animationpart name="Run" weight="1" />
+                    </animation>
+                    <animation iterations="2">
+                        <animationpart name="Run2" weight="1.2" />
+                    </animation>
+                </animations>
+            </action>
             <action name="__movement_idle" speed="1.000000">
+                <activations>
+                    <activation type="movement">idle</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="SitUp" weight="1" />
@@ -48,6 +53,9 @@
                 </animations>
             </action>
             <action name="drink" speed="1.000000">
+                <activations>
+                    <activation type="action">drink</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Eat2" weight="1.000000" />
@@ -55,6 +63,9 @@
                 </animations>
             </action>
             <action name="sit" speed="1.000000">
+                <activations>
+                    <activation type="action">sit</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Sit" weight="1.000000" />

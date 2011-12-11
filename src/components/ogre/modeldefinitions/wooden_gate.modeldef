@@ -1,7 +1,7 @@
 <models>
-    <model name="wooden_gate" usescaleof="height" showcontained="true" icon="">
+    <model icon="" name="wooden_gate" showcontained="true" usescaleof="height">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/structures/models/wooden_fence/wooden_gate.mesh">
                 <parts>
@@ -16,6 +16,9 @@
         </submodels>
         <actions>
             <action name="close" speed="1.000000">
+                <activations>
+                    <activation type="action">close</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Close" weight="1.000000" />
@@ -30,6 +33,9 @@
                 </animations>
             </action>
             <action name="open" speed="1.000000">
+                <activations>
+                    <activation type="action">open</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Open" weight="1.000000" />

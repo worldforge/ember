@@ -1,16 +1,16 @@
 <models>
-    <model name="spider" usescaleof="width" showcontained="false" icon="">
+    <model icon="" name="spider" showcontained="false" usescaleof="width">
         <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-1.000000" y="-0.000000" z="-0.000000" degrees="90.000000" />
+        <rotation degrees="90.000000" x="-1.000000" y="-0.000000" z="-0.000000" />
         <submodels>
             <submodel mesh="3d_objects/creatures/spider/Spider.mesh">
                 <parts>
-                    <part name="body/emerald" group="main" show="true">
+                    <part group="main" name="body/emerald" show="true">
                         <subentities>
                             <subentity index="0" material="/global/creatures/spider/emerald" />
                         </subentities>
                     </part>
-                    <part name="body/carrion" group="main" show="false">
+                    <part group="main" name="body/carrion" show="false">
                         <subentities>
                             <subentity index="0" material="/global/creatures/spider/carrion" />
                         </subentities>
@@ -20,6 +20,9 @@
         </submodels>
         <actions>
             <action name="__movement_walk" speed="1.000000">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Walk" weight="1.000000" />
@@ -27,6 +30,9 @@
                 </animations>
             </action>
             <action name="__movement_swim" speed="1.000000">
+                <activations>
+                    <activation type="movement">swim</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Walk" weight="1.000000" />
@@ -41,6 +47,9 @@
                 </animations>
             </action>
             <action name="attack" speed="1.000000">
+                <activations>
+                    <activation type="action">attack</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Strike" weight="1.000000" />

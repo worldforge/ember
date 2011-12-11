@@ -1,7 +1,7 @@
 <models>
-    <model name="chicken" usescaleof="height" showcontained="false" icon="">
+    <model icon="" name="chicken" showcontained="false" usescaleof="height">
         <translate x="0.000000" y="0.200000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
         <submodels>
             <submodel mesh="3d_objects/creatures/chicken/chicken.mesh">
                 <parts>
@@ -34,6 +34,9 @@
         </submodels>
         <actions>
             <action name="__movement_idle" speed="1.000000">
+                <activations>
+                    <activation type="movement">idle</activation>
+                </activations>
                 <animations>
                     <animation iterations="4">
                         <animationpart name="Stand" weight="1.000000" />
@@ -68,6 +71,9 @@
                 </animations>
             </action>
             <action name="__movement_walk" speed="1.000000">
+                <activations>
+                    <activation type="movement">walk</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Walk" weight="1.000000" />
@@ -75,6 +81,9 @@
                 </animations>
             </action>
             <action name="__movement_run" speed="1.000000">
+                <activations>
+                    <activation type="movement">run</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="Run" weight="1.000000" />
@@ -82,6 +91,9 @@
                 </animations>
             </action>
             <action name="drink" speed="1.000000">
+                <activations>
+                    <activation type="action">drink</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="@Drink" weight="1.000000" />
@@ -89,6 +101,9 @@
                 </animations>
             </action>
             <action name="crow" speed="1.000000">
+                <activations>
+                    <activation type="action">crow</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="@Crow" weight="1.000000" />
@@ -96,6 +111,9 @@
                 </animations>
             </action>
             <action name="sit" speed="1.000000">
+                <activations>
+                    <activation type="action">sit</activation>
+                </activations>
                 <animations>
                     <animation iterations="1">
                         <animationpart name="@Sit" weight="1.000000" />
