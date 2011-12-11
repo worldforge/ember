@@ -49,12 +49,33 @@ namespace Gui
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
+ * @brief Handles clicks on the world.
+ *
+ * Whenever the user clicks on the world (in contrast to interacting with the UI) this should be handled by this class.
+ * The actual handling of mouse press events will be handled by the MainCamera instance, which will delegate to IWorldPickListener instances.
+ * The behaviour is as follows:
+ * First a "press" event is emitted.
+ * If the user releases the mouse button within a threshold set by mClickThresholdMilliseconds it will be considered a "click" event, and one such will be emitted.
+ * If not, and the user keeps the mouse button pressed, it is considered a "pressed" event, to be emitted.
+ *
+ * In addition, if the mouse cursors linger too long, a "hover" event will be emitted.
  *
  */
 class CursorWorldListener: public virtual sigc::trackable
 {
 public:
+
+	/**
+	 * @brief Ctor.
+	 * @param mainLoopController The main loop controller.
+	 * @param mainWindow The main window which covers the whole world. When this is clicked events will be emitted.
+	 * @param mainCamera The main camera, through which all picking events will be emitted.
+	 */
 	CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, Camera::MainCamera& mainCamera);
+
+	/**
+	 * @brief Dtor.
+	 */
 	virtual ~CursorWorldListener();
 
 protected:
@@ -64,13 +85,35 @@ protected:
 	 */
 	typedef std::vector<CEGUI::Event::Connection> ConnectionStore;
 
+	/**
+	 * @brief The main window which covers the whole world. When this is clicked events will be emitted.
+	 */
 	CEGUI::Window& mMainWindow;
+
+	/**
+	 * @brief The main camera, through which all picking events will be emitted.
+	 */
 	Camera::MainCamera& mMainCamera;
 
+	/**
+	 * @brief If a "hover" event already has been sent this will be true.
+	 *
+	 * This is set to false whenever the mouse moves.
+	 */
 	bool mHoverEventSent;
 
+	/**
+	 * @brief The time stamp of when the cursor started lingering, i.e. not moving.
+	 *
+	 * This is used to determine when the cursor has lingered long enough for a "hover" event to be sent.
+	 */
 	long long mCursorLingerStart;
 
+	/**
+	 * @brief Keeps track of the connection for mouse movements.
+	 *
+	 * This should only be valid when the mouse is contained within the main window.
+	 */
 	CEGUI::Event::Connection mMouseMovesConnection;
 
 	/**
@@ -106,6 +149,11 @@ protected:
 	bool windowMouseButtonUp(const CEGUI::EventArgs& args);
 	bool windowMouseDoubleClick(const CEGUI::EventArgs& args);
 
+	/**
+	 * @brief Sends a hover event.
+	 *
+	 * Call this when the mouse has lingered long enough.
+	 */
 	void sendHoverEvent();
 
 	/**
