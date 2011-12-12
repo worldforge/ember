@@ -194,60 +194,90 @@ AC_MSG_RESULT([
 		**************************************
 
 	])
-#AC_CHECK_LIB(IL, ilInit,
-#	[
-#		CXXFLAGS="$CXXFLAGS $IL_CFLAGS"
-#		LIBS="$LIBS $IL_LIBS -lIL"
-#	]
-#,AC_MSG_ERROR([
-#****************************************************************
-#* You do not have DevIL installed.  This is required to build. *
-#* You may find it at http://openil.sourceforge.net/.           *
-#****************************************************************]))
-#AC_CHECK_LIB(ILU, iluFlipImage,
-#	[
-#		CXXFLAGS="$CXXFLAGS $ILU_CFLAGS"
-#		LIBS="$LIBS $ILU_LIBS -lILU"
-#	]
-#,AC_MSG_ERROR([
-#****************************************************************
-#* You do not have DevIL installed.  This is required to build. *
-#* You may find it at http://openil.sourceforge.net/.           *
-#****************************************************************]))
-
-#AC_DEFINE(LIBSIGC_DISABLE_DEPRECATED, 1, [Don't use deprecated sigc methods.])
 
 
 AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
 
 
-CEGUI_VERSION=0.7.2
-PKG_CHECK_MODULES(CEGUI, CEGUI >= $CEGUI_VERSION,
+
+# Check for OpenAL
+OPENAL_VERSION=0.0.8
+PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
 	[
-		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
-		LIBS="$LIBS $CEGUI_LIBS"
+		CXXFLAGS="$CXXFLAGS $OPENAL_CFLAGS"
+		LIBS="$LIBS $OPENAL_LIBS"
 	],
 	[
-		AC_MSG_ERROR([Couldn't find CEGUI or tests failed:
-$CEGUI_PKG_ERRORS
-Please go to http://crayzedsgui.sourceforge.net to get the latest, or check
-config.log to see why the tests failed, and fix it.])
+		AC_MSG_ERROR([Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
 	])
-	
-case "x$target_os" in
-  *bsd* | *linux* )
-	PKG_CHECK_MODULES([X11], x11,
-		[
-			CXXFLAGS="$CXXFLAGS $X11_CFLAGS"
-			LIBS="$LIBS $X11_LIBS"
-		],
-		[
-			AC_MSG_ERROR([Couldn't find X11 development files.
-			$X11_PKG_ERRORS])
-		])
-  break;
-  ;;
-esac
+
+#check for libogg 
+#OGG_VERSION=1.1.3
+#PKG_CHECK_MODULES(OGG, ogg >= $OGG_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
+#			LIBS="$LIBS $OGG_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find libogg or tests failed. Error: $OGG_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
+
+#check for vorbis 
+#VORBIS_VERSION=1.2.0
+#PKG_CHECK_MODULES(VORBIS, vorbis >= $VORBIS_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
+#			LIBS="$LIBS $VORBIS_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find libvorbis or tests failed. Error: $VORBIS_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
+
+#check for vorbisfile 
+#VORBISF_VERSION=1.2.0
+#PKG_CHECK_MODULES(VORBISF, vorbisfile >= $VORBISF_VERSION, 
+#		[
+#			CXXFLAGS="$CXXFLAGS $VORBISF_CFLAGS"
+#			LIBS="$LIBS $VORBISF_LIBS"
+#		],
+#		[
+#			AC_MSG_ERROR([Couldn't find vorbisfile tests failed. Error: $VORBISF_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
+#		])
+
+# Check for FreeALUT
+FREEALUT_VERSION=1.0.0
+PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $FREEALUT_CFLAGS"
+		LIBS="$LIBS $FREEALUT_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
+	])
+
+# check for sigc++ separately from the WF checks
+PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
+  [
+      CXXFLAGS="$CXXFLAGS $SIG_CFLAGS"
+      LIBS="$LIBS $SIG_LIBS"
+  ],
+  [
+      AC_MSG_ERROR([Couldn't find SIGC++2.0])
+  ])
+
+WF_CHECK_THREADING
+
+# Check for the WorldForge libs
+PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.20 \
+ varconf-1.0 >= 0.6.7 mercator-0.3 >= 0.3.0 atlascpp-0.6 >= 0.6.2 wfmath-0.3 >= 0.3.11 libwfut-0.2 >= 0.2.2],
+	[
+		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
+		LIBS="$LIBS $WF_LIBS"
+	],
+ AC_MSG_ERROR([Couldn't find some of the required WorldForge libraries: $WF_PKG_ERRORS
+Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions.])
+)
+
 
 # Check for OGRE
 OGRE_VERSION=1.7.0
@@ -277,7 +307,35 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #endif
 ]])],
 [], [AC_MSG_ERROR([[You must build Ogre with FreeImage support. You cannot use DevIL, as that's not thread safe.]])])
+
+
+CEGUI_VERSION=0.7.2
+PKG_CHECK_MODULES(CEGUI, CEGUI >= $CEGUI_VERSION,
+	[
+		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
+		LIBS="$LIBS $CEGUI_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find CEGUI or tests failed:
+$CEGUI_PKG_ERRORS
+Please go to http://crayzedsgui.sourceforge.net to get the latest, or check
+config.log to see why the tests failed, and fix it.])
+	])
 	
+case "x$target_os" in
+  *bsd* | *linux* )
+	PKG_CHECK_MODULES([X11], x11,
+		[
+			CXXFLAGS="$CXXFLAGS $X11_CFLAGS"
+			LIBS="$LIBS $X11_LIBS"
+		],
+		[
+			AC_MSG_ERROR([Couldn't find X11 development files.
+			$X11_PKG_ERRORS])
+		])
+  break;
+  ;;
+esac
 	
 
 # Check for CEGUI-OGRE adapter
@@ -369,95 +427,6 @@ AC_CHECK_LIB([CEGUILuaScriptModule], [main],
         AC_MSG_ERROR([Couldn't find Lua CEGUI module. Make sure that CEGUI compiled with Lua scripting support.])
     ]
 )
-
-
-
-# Check for OpenAL
-OPENAL_VERSION=0.0.8
-PKG_CHECK_MODULES(OPENAL, openal >= $OPENAL_VERSION,
-	[
-		CXXFLAGS="$CXXFLAGS $OPENAL_CFLAGS"
-		LIBS="$LIBS $OPENAL_LIBS"
-	],
-	[
-		AC_MSG_ERROR([Couldn't find OpenAL or tests failed. Error: $OPENAL_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
-	])
-
-#check for libogg 
-#OGG_VERSION=1.1.3
-#PKG_CHECK_MODULES(OGG, ogg >= $OGG_VERSION, 
-#		[
-#			CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
-#			LIBS="$LIBS $OGG_LIBS"
-#		],
-#		[
-#			AC_MSG_ERROR([Couldn't find libogg or tests failed. Error: $OGG_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-#		])
-
-#check for vorbis 
-#VORBIS_VERSION=1.2.0
-#PKG_CHECK_MODULES(VORBIS, vorbis >= $VORBIS_VERSION, 
-#		[
-#			CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
-#			LIBS="$LIBS $VORBIS_LIBS"
-#		],
-#		[
-#			AC_MSG_ERROR([Couldn't find libvorbis or tests failed. Error: $VORBIS_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-#		])
-
-#check for vorbisfile 
-#VORBISF_VERSION=1.2.0
-#PKG_CHECK_MODULES(VORBISF, vorbisfile >= $VORBISF_VERSION, 
-#		[
-#			CXXFLAGS="$CXXFLAGS $VORBISF_CFLAGS"
-#			LIBS="$LIBS $VORBISF_LIBS"
-#		],
-#		[
-#			AC_MSG_ERROR([Couldn't find vorbisfile tests failed. Error: $VORBISF_PKG_ERRORS. Please go to http://www.vorbis.com to get the latest, or check config.log to see why the tests failed, and fix it.])
-#		])
-
-# Check for FreeALUT
-FREEALUT_VERSION=1.0.0
-PKG_CHECK_MODULES(FREEALUT, freealut >= $FREEALUT_VERSION,
-	[
-		CXXFLAGS="$CXXFLAGS $FREEALUT_CFLAGS"
-		LIBS="$LIBS $FREEALUT_LIBS"
-	],
-	[
-		AC_MSG_ERROR([Couldn't find FreeALUT or tests failed. Error: $FREEALUT_PKG_ERRORS. Please go to http://www.openal.org to get the latest, or check config.log to see why the tests failed, and fix it.])
-	])
-
-
-
-#CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-
-#SDL_VERSION=1.2.0
-#AC_SUBST(SDL_VERSION)
-
-# check for sigc++ separately from the WF checks
-PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
-  [
-      CXXFLAGS="$CXXFLAGS $SIG_CFLAGS"
-      LIBS="$LIBS $SIG_LIBS"
-  ],
-  [
-      AC_MSG_ERROR([Couldn't find SIGC++2.0])
-  ])
-
-WF_CHECK_THREADING
-
-# Check for the WorldForge libs
-PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.20 \
- varconf-1.0 >= 0.6.7 mercator-0.3 >= 0.3.0 atlascpp-0.6 >= 0.6.2 wfmath-0.3 >= 0.3.11 libwfut-0.2 >= 0.2.2],
-	[
-		CXXFLAGS="$CXXFLAGS $WF_CFLAGS"
-		LIBS="$LIBS $WF_LIBS"
-	],
- AC_MSG_ERROR([Couldn't find some of the required WorldForge libraries: $WF_PKG_ERRORS
-Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions.])
-)
-
-
 
 # Cppunit check
  
