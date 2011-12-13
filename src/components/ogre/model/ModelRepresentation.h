@@ -256,6 +256,11 @@ protected:
 	Action* mActiveAction;
 
 	/**
+	 * @brief Active action being played as a result of a task being carried out.
+	 */
+	Action* mTaskAction;
+
+	/**
 	 * @brief The sound entity this entity is connected to.
 	 */
 	SoundEntity* mSoundEntity;
@@ -298,6 +303,9 @@ protected:
 	void processOutfit(const Atlas::Message::MapType & outfitMap);
 
 	void entity_Changed(const Eris::StringSet& attributeIds);
+
+	void entity_TaskAdded(Eris::Task* task);
+	void entity_TaskRemoved(Eris::Task* task);
 
 	/**
 	 *    Overridden from Eris::Entity

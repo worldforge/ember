@@ -50,6 +50,7 @@
 #include <OgreParticleSystem.h>
 
 #include <Eris/Types.h>
+#include <Eris/Task.h>
 
 #include <boost/smart_ptr.hpp>
 
@@ -69,12 +70,14 @@ const char * const ModelRepresentation::ACTION_SWIM("swim");
 const char * const ModelRepresentation::ACTION_FLOAT("float");
 
 ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene) :
-	mEntity(entity), mModel(model), mScene(scene), mCurrentMovementAction(0), mActiveAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
+		mEntity(entity), mModel(model), mScene(scene), mCurrentMovementAction(0), mActiveAction(0), mTaskAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
 {
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
+	mEntity.TaskAdded.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskAdded));
+	mEntity.TaskRemoved.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_TaskRemoved));
 
-	//listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
+//listen for reload or reset events from the model. This allows us to alter model definitions at run time and have the in game entities update.
 	mModel.Reloaded.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Reloaded));
 	mModel.Resetting.connect(sigc::mem_fun(*this, &ModelRepresentation::model_Resetting));
 
@@ -137,7 +140,7 @@ void ModelRepresentation::setModelPartShown(const std::string& partName, bool vi
 
 		//if we already have set up a collision object we must reload it
 		if (!mModel.getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr> (mModel.getUserAny()).get();
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(mModel.getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				userObject->getCollisionDetector()->reload();
 			}
@@ -353,7 +356,11 @@ void ModelRepresentation::setLocalVelocity(const WFMath::Vector<3>& velocity)
 
 void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
 {
-	if (mActiveAction) {
+	if (mTaskAction) {
+		//Ignore the "continuePlay" for tasks.
+		bool continuePlay = false;
+		mTaskAction->getAnimations().addTime(timeSlice, continuePlay);
+	} else if (mActiveAction) {
 		bool continuePlay = false;
 		mActiveAction->getAnimations().addTime(timeSlice, continuePlay);
 		if (!continuePlay) {
@@ -412,11 +419,29 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 	}
 }
 
+void ModelRepresentation::entity_TaskAdded(Eris::Task* task)
+{
+	Action* newAction = mModel.getAction(ActivationDefinition::TASK, task->name());
+	if (newAction) {
+		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
+		mTaskAction = newAction;
+		mTaskAction->getAnimations().reset();
+	}
+}
+
+void ModelRepresentation::entity_TaskRemoved(Eris::Task* task)
+{
+	if (mTaskAction) {
+		mTaskAction->getAnimations().reset();
+		mTaskAction = 0;
+	}
+}
+
 void ModelRepresentation::setVisualize(const std::string& visualization, bool visualize)
 {
 	if (visualization == "CollisionObject") {
 		if (!getModel().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr> (getModel().getUserAny()).get();
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(getModel().getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				userObject->getCollisionDetector()->setVisualize(visualize);
 			}
@@ -428,7 +453,7 @@ bool ModelRepresentation::getVisualize(const std::string& visualization) const
 {
 	if (visualization == "CollisionObject") {
 		if (!getModel().getUserAny().isEmpty()) {
-			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr> (getModel().getUserAny()).get();
+			EmberEntityUserObject* userObject = Ogre::any_cast<EmberEntityUserObject::SharedPtr>(getModel().getUserAny()).get();
 			if (userObject && userObject->getCollisionDetector()) {
 				return userObject->getCollisionDetector()->getVisualize();
 			}

@@ -58,7 +58,7 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 		float animationLength = animation->getLengthOfOneIteration();
 		Ogre::Real calculatedTime = timeSlice * mSpeed;
 		if (animationLength == 0) {
-			//Ogre will throw an assert exception if an animtion with zero length is activated
+			//Ogre will throw an assert exception if an animation with zero length is activated
 		} else {
 			//see if we've done enough iterations to either advance to the next animation, or the mark this animation as done
 			if (fabs(mAccumulatedTime) >= animation->getLengthOfOneIteration() * animation->getIterations()) {
@@ -75,7 +75,6 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 				animation->setTime(0);
 			}
 
-			Ogre::Real calculatedTime = timeSlice * mSpeed;
 			animation->setEnabled(true);
 			animation->addTime(calculatedTime);
 		}
