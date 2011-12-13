@@ -160,6 +160,8 @@
             <action name="chop" speed="1.000000">
                 <activations>
                     <activation type="action">chop</activation>
+                    <activation type="action">cut</activation>
+                    <activation type="task">logging</activation>
                 </activations>
                 <animations>
                     <animation iterations="1">
