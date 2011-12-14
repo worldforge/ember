@@ -356,10 +356,20 @@ void ModelRepresentation::setLocalVelocity(const WFMath::Vector<3>& velocity)
 
 void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
 {
-	if (mTaskAction) {
-		//Ignore the "continuePlay" for tasks.
+	//This is a bit convoluted, but the logic is as follows:
+	//If we're moving, i.e. not in MM_DEFAULT, we should always prefer to show the movement animation
+	//If not, we should prefer to show a current action animation if available
+	//If not, we should show any available task animation.
+	//And if none of these applies, we should play the current movement action (which should be idle).
+
+	if (getMovementMode() != MM_DEFAULT && mCurrentMovementAction) {
 		bool continuePlay = false;
-		mTaskAction->getAnimations().addTime(timeSlice, continuePlay);
+		//Check if we're walking backward. This is a bit of a hack (we should preferably have a separate animation for backwards walking.
+		if (getMovementMode() == MM_WALKING_BACKWARDS) {
+			mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
+		} else {
+			mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
+		}
 	} else if (mActiveAction) {
 		bool continuePlay = false;
 		mActiveAction->getAnimations().addTime(timeSlice, continuePlay);
@@ -367,16 +377,15 @@ void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
 			mActiveAction->getAnimations().reset();
 			mActiveAction = 0;
 		}
-	} else {
-		if (mCurrentMovementAction) {
-			bool continuePlay = false;
-			//Check if we're walking backward. This is a bit of a hack (we should preferrably have a separate animation for backwards walking.
-			if (getMovementMode() == MM_WALKING_BACKWARDS) {
-				mCurrentMovementAction->getAnimations().addTime(-timeSlice, continuePlay);
-			} else {
-				mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
-			}
-		}
+		return;
+	} else if (mTaskAction) {
+		//Ignore the "continuePlay" for tasks.
+		bool continuePlay = false;
+		mTaskAction->getAnimations().addTime(timeSlice, continuePlay);
+		return;
+	} else if (mCurrentMovementAction) {
+		bool continuePlay = false;
+		mCurrentMovementAction->getAnimations().addTime(timeSlice, continuePlay);
 	}
 }
 
