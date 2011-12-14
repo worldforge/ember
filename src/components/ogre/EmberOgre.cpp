@@ -297,7 +297,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	}
 
 	//Create the model definition manager
-	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv.getHomeDirectory() + "/user-media/modeldefinitions/");
+	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv.getHomeDirectory() + "/user-media/data/");
 
 	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
 
