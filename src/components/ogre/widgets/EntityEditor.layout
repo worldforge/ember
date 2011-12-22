@@ -5,7 +5,7 @@
 		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity editor'/>
-		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+		<Window Type='DefaultWindow' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
@@ -21,7 +21,7 @@
 				<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.00,-70.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,30.0}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
-				<Window Type='DefaultGUISheet' Name='AttributesPanel'>
+				<Window Type='DefaultWindow' Name='AttributesPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Attributes'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -32,7 +32,7 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='KnowledgePanel'>
+				<Window Type='DefaultWindow' Name='KnowledgePanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Knowledge'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -73,7 +73,7 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>					
 				</Window>
-				<Window Type='DefaultGUISheet' Name='GoalsPanel'>
+				<Window Type='DefaultWindow' Name='GoalsPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Goals'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -108,7 +108,7 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>					
 				</Window>
-				<Window Type='DefaultGUISheet' Name='ChildrenPanel'>
+				<Window Type='DefaultWindow' Name='ChildrenPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Children'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -124,7 +124,7 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='ModelPanel'>
+				<Window Type='DefaultWindow' Name='ModelPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Model'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -146,12 +146,12 @@
 						<Property Name='UnifiedSize' Value='{{1,0},{0,20}}'/>
 						<Property Name='Text' Value='Show Eris bbox'/>
 					</Window>
-					<!-- Window Type='DefaultGUISheet' Name='ModelPanelStackable'>
+					<!-- Window Type='DefaultWindow' Name='ModelPanelStackable'>
 						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 						<Property Name='InheritsAlpha' Value='false'/>
 					</Window -->
 				</Window>
-				<Window Type='DefaultGUISheet' Name='AtlasPanel'>
+				<Window Type='DefaultWindow' Name='AtlasPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Atlas'/>
 					<Property Name='InheritsAlpha' Value='false'/>

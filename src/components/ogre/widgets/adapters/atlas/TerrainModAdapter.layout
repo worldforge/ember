@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='DefaultGUISheet' Name='AreaAdapter'>
+	<Window Type='DefaultWindow' Name='AreaAdapter'>
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 		<Property Name='UnifiedSize' Value='{{0,200},{0,120}}'/>
 		<Window Type='EmberLook/Button' Name='showButton'>

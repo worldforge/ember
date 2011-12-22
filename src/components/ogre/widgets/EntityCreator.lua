@@ -94,7 +94,7 @@ function EntityCreator:showRecipe()
 	for k,v in recipe:getGUIAdapters():pairs() do
 		log.verbose("Creating adapter '" .. k .. "' of type '" .. v:getType() .. "'.")
 
-		local container = guiManager:createWindow("DefaultGUISheet")
+		local container = guiManager:createWindow("DefaultWindow")
 		v:attach(container)
 
 		self:addAdapter(v, v:getTitle(), container, self.container)
@@ -104,7 +104,7 @@ end
 -- Adds adapter
 function EntityCreator:addAdapter(adapter, title, container, parentContainer)
 	local textWidth = 75
-	local outercontainer = guiManager:createWindow("DefaultGUISheet")
+	local outercontainer = guiManager:createWindow("DefaultWindow")
 	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
 	

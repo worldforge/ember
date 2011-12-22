@@ -5,7 +5,7 @@
 		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-300.0}}'/>
 		<Property Name='Alpha' Value='0.4'/>
 		<Property Name='Text' Value='Console output'/>
-		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+		<Window Type='DefaultWindow' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
@@ -13,7 +13,7 @@
 				<Property Name='UnifiedSize' Value='{{1.0,-10.0},{1.00,-35.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,5.0},{0.0,5.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
-				<Window Type='DefaultGUISheet' Name='GamePanel'>
+				<Window Type='DefaultWindow' Name='GamePanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Game'/>
 					<Property Name='InheritsAlpha' Value='true'/>
@@ -28,7 +28,7 @@
 						<Property Name='VertScrollbar' Value='True'/>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='SystemPanel'>
+				<Window Type='DefaultWindow' Name='SystemPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='System'/>
 					<Property Name='InheritsAlpha' Value='true'/>

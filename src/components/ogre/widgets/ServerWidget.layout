@@ -94,7 +94,7 @@
 				<Property Name='Visible' Value='False'/>
 			</Window>
 		</Window>
-		<Window Type='DefaultGUISheet' Name='LoggedInPanel'>
+		<Window Type='DefaultWindow' Name='LoggedInPanel'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,110}}'/>
 			<Property Name='UnifiedSize' Value='{{1,0},{0,350}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
@@ -104,7 +104,7 @@
 				<Property Name='UnifiedSize' Value='{{1,0},{1,-25}}'/>
 				<Property Name='InheritsAlpha' Value='false'/>
 				<Property Name='Visible' Value='true'/>
-				<Window Type='DefaultGUISheet' Name='ChooseCharacterPanel'>
+				<Window Type='DefaultWindow' Name='ChooseCharacterPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0},{1.0,0}}'/>
 					<Property Name='Text' Value='Choose'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -131,7 +131,7 @@
 						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='CreateCharacterPanel'>
+				<Window Type='DefaultWindow' Name='CreateCharacterPanel'>
 					<Property Name='UnifiedSize' Value='{{1.0,0},{1.0,0}}'/>
 					<Property Name='Text' Value='Create'/>
 					<Property Name='InheritsAlpha' Value='false'/>

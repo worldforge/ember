@@ -90,7 +90,7 @@ IngameChatWidget::~IngameChatWidget()
 void IngameChatWidget::buildWidget()
 {
 
-	mLabelSheet = mWindowManager->createWindow("DefaultGUISheet", "IngameChatWidget/LabelSheet");
+	mLabelSheet = mWindowManager->createWindow("DefaultWindow", "IngameChatWidget/LabelSheet");
 	mLabelSheet->setMousePassThroughEnabled(true);
 	mLabelSheet->setRiseOnClickEnabled(false);
 	getMainSheet()->addChildWindow(mLabelSheet);

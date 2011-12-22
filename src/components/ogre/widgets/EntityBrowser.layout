@@ -6,7 +6,7 @@
 		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Entity browser'/>
-		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+		<Window Type='DefaultWindow' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
@@ -14,7 +14,7 @@
 				<Property Name='UnifiedSize' Value='{{1.0,-8.0},{1.00,-8.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,4.0},{0.0,4.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
-				<Window Type='DefaultGUISheet' Name='Eris'>
+				<Window Type='DefaultWindow' Name='Eris'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Eris'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -36,7 +36,7 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='Ogre'>
+				<Window Type='DefaultWindow' Name='Ogre'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Ogre'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -64,7 +64,7 @@
 						<Property Name='InheritsAlpha' Value='True'/>
 						<Property Name='VertFormatting' Value='TopAligned'/>
 						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Position'>
+						<Window Type='DefaultWindow' Name='SceneNodeInfo/Position'>
 							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 							<Property Name='UnifiedSize' Value='{{0,200},{0,25}}'/>
 							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Position/Text'>
@@ -89,7 +89,7 @@
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
 							</Window>
 						</Window>
-						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Orientation'>
+						<Window Type='DefaultWindow' Name='SceneNodeInfo/Orientation'>
 							<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
 							<Property Name='UnifiedSize' Value='{{0,250},{0,30}}'/>
 							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Orientation/Text'>
@@ -118,7 +118,7 @@
 								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
 							</Window>
 						</Window>
-						<Window Type='DefaultGUISheet' Name='SceneNodeInfo/Scale'>
+						<Window Type='DefaultWindow' Name='SceneNodeInfo/Scale'>
 							<Property Name='UnifiedPosition' Value='{{0,0},{0,60}}'/>
 							<Property Name='UnifiedSize' Value='{{0,200},{0,55}}'/>
 							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Scale/Text'>

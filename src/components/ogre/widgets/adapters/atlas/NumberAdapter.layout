@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='DefaultGUISheet' Name='NumberAdapter'>
+	<Window Type='DefaultWindow' Name='NumberAdapter'>
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 		<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
 		<Window Type='EmberLook/Combobox' Name='Number'>

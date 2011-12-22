@@ -148,11 +148,11 @@ function Inventory:buildWidget(avatarEntity)
 	
 	self.widget:enableCloseButton()
 	
-	self.menu.container = guiManager:createWindow("DefaultGUISheet")
+	self.menu.container = guiManager:createWindow("DefaultWindow")
 	self.menu.container:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
 	self.menu.container:setClippedByParent(false)
 	
-	self.menu.innercontainer = guiManager:createWindow("DefaultGUISheet")
+	self.menu.innercontainer = guiManager:createWindow("DefaultWindow")
 	self.menu.innercontainer:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
 	self.menu.innercontainer:setClippedByParent(false)
 	self.menu.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.menu.innercontainer)

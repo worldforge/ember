@@ -6,7 +6,7 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Assets manager'/>
 		<Property Name='Visible' Value='false'/>
-		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+		<Window Type='DefaultWindow' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>
@@ -14,7 +14,7 @@
 				<Property Name='UnifiedSize' Value='{{1.0,-8.0},{1.00,-8.0}}'/>
 				<Property Name='UnifiedPosition' Value='{{0.0,4.0},{0.0,4.0}}'/>
 				<Property Name='InheritsAlpha' Value='true'/>
-				<Window Type='DefaultGUISheet' Name='Textures'>
+				<Window Type='DefaultWindow' Name='Textures'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Textures'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -54,7 +54,7 @@
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='Materials'>
+				<Window Type='DefaultWindow' Name='Materials'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Materials'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -94,7 +94,7 @@
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='Meshes'>
+				<Window Type='DefaultWindow' Name='Meshes'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Meshes'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -176,7 +176,7 @@
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='Images'>
+				<Window Type='DefaultWindow' Name='Images'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Images'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -210,7 +210,7 @@
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='Shaders'>
+				<Window Type='DefaultWindow' Name='Shaders'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Shaders'/>
 					<Property Name='InheritsAlpha' Value='false'/>
@@ -251,7 +251,7 @@
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='Windows'>
+				<Window Type='DefaultWindow' Name='Windows'>
 					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
 					<Property Name='Text' Value='Windows'/>
 					<Property Name='InheritsAlpha' Value='false'/>

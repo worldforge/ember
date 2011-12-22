@@ -6,7 +6,7 @@
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Eris log'/>
 		<Property Name='Visible' Value='false'/>
-		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+		<Window Type='DefaultWindow' Name='MainInnerWindow'>
 			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{1,-2},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='True'/>

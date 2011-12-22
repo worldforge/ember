@@ -11,7 +11,7 @@
 			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
 			<Property Name='InheritsAlpha' Value='false'/>
 			<Property Name='Visible' Value='true'/>
-			<Window Type='DefaultGUISheet' Name='TabRecipes'>
+			<Window Type='DefaultWindow' Name='TabRecipes'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 				<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>
@@ -27,7 +27,7 @@
 					<Property Name='Text' Value='Create'/>
 					<Property Name='InheritsAlpha' Value='True'/>
 				</Window>
-				<Window Type='DefaultGUISheet' Name='CreateSection'>
+				<Window Type='DefaultWindow' Name='CreateSection'>
 					<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
 					<Property Name='UnifiedSize' Value='{{1,-100},{1,0}}'/>
 					<Property Name='Visible' Value='false'/>
@@ -44,7 +44,7 @@
 						<Property Name='Tooltip' Value='If checked, will randomize the orientation of all new entities.'/>
 						<Property Name='Text' Value='Random orientation'/>
 					</Window>
-					<Window Type='DefaultGUISheet' Name='AdaptersContainer'>
+					<Window Type='DefaultWindow' Name='AdaptersContainer'>
 						<Property Name='UnifiedPosition' Value='{{0,0},{0,75}}'/>
 						<Property Name='UnifiedSize' Value='{{1,0},{1,-75}}'/>
 					</Window>
@@ -58,7 +58,7 @@
 					<Property Name='Text' Value='Waiting for type info from the server...' />
 				</Window>
 			</Window>
-			<Window Type='DefaultGUISheet' Name='TabTypes'>
+			<Window Type='DefaultWindow' Name='TabTypes'>
 				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 				<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
 				<Property Name='InheritsAlpha' Value='True'/>

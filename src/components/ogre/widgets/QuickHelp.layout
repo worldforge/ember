@@ -7,7 +7,7 @@
 		<Property Name='OldUnifiedPosition' Value='{{1.00,-300.0},{1.00,-470.0}}'/>
 		<Property Name='Alpha' Value='0.6'/>
 		<Property Name='Text' Value='Help'/>
-		<Window Type='DefaultGUISheet' Name='MainInnerWindow'>
+		<Window Type='DefaultWindow' Name='MainInnerWindow'>
 			<Property Name='InheritsAlpha' Value='True'/>
 			<Window Type='EmberLook/StaticText' Name='PageNumber'>
 				<Property Name='UnifiedPosition' Value='{{1,-20},{0,2}}'/>

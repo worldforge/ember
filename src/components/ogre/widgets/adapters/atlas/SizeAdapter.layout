@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='DefaultGUISheet' Name='SizeAdapter'>
+	<Window Type='DefaultWindow' Name='SizeAdapter'>
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 		<Property Name='UnifiedSize' Value='{{0,150},{0,90}}'/>
 		<Window Type='EmberLook/Editbox' Name='lowerX'>

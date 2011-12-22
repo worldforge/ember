@@ -40,7 +40,7 @@ IconBase::IconBase(const std::string& name, const Image* background, const Image
 : mContainer(0), mButton(0)
 {
 
-	mContainer = WindowManager::getSingleton().createWindow("DefaultGUISheet", "icons/" + name + "/container");
+	mContainer = WindowManager::getSingleton().createWindow("DefaultWindow", "icons/" + name + "/container");
 	mContainer->setSize(size);
 	mContainer->setVisible(true);
 	mContainer->setEnabled(true);
