@@ -13,6 +13,8 @@ then
   exit -1
 fi
 
+hash dos2unix 2>&- || { echo >&2 "I require dos2unix but it's not installed.  Aborting."; exit 1; }
+hash convert 2>&- || { echo >&2 "I require convert (ImageMagick) but it's not installed.  Aborting."; exit 1; }
 
 current=${PWD}
 original_media=`readlink -m $1`
