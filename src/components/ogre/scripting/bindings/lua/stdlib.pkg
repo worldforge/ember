@@ -1,7 +1,7 @@
 namespace std {
 class vector {
 
-        TEMPLATE_BIND(T, std::string, Ember::OgreView::Model::SubModelDefinition*, Ember::OgreView::Model::PartDefinition*, Ember::OgreView::Model::SubEntityDefinition*, Eris::Task*, Ember::OgreView::EntityPickResult)
+        TEMPLATE_BIND(T, std::string, Ember::OgreView::Model::SubModelDefinition*, Ember::OgreView::Model::PartDefinition*, Ember::OgreView::Model::SubEntityDefinition*, Eris::Task*, Ember::OgreView::EntityPickResult, Ember::OgreView::Model::AttachPointDefinition)
 
         void clear();
         int size() const;
