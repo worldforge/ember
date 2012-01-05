@@ -68,7 +68,7 @@ grep -orIE --no-filename "diffusetexture=\"[^\"]*\"" ${srcdir}/src/components/og
 grep -orIE --no-filename "normalmaptexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/normalmaptexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
 
 #remove all duplicates
-sort --unique ${common_textures_list} | sed '/^$/d' | dos2unix -U > ${common_textures_cleaned_list}
+sort --unique ${common_textures_list} | sed '/^$/d' | dos2unix > ${common_textures_cleaned_list}
 
 #first copy all textures
 # cd ${original_media}/common ; tar cf - `cat ${shared_dir}/common_textures_cleaned.list ` | ( cd ${shared_dir}/common; tar xvf -)
