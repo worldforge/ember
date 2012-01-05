@@ -24,13 +24,14 @@ user_dir=${media_dir}/media/user
 shared_dir=${media_dir}/media/shared
 shared_common_dir=${shared_dir}/common
 
-common_textures_list=`mktemp`
-common_textures_cleaned_list=`mktemp`
-common_meshes_list=`mktemp`
-common_skeletons_list=`mktemp`
-shared_packs_list=`mktemp`
-common_sounds_list=`mktemp`
-media_textures_list=`mktemp`
+common_textures_list=`mktemp --tmpdir common_textures_list.XXX`
+common_textures_cleaned_list=`mktemp --tmpdir common_textures_cleaned_list.XXX`
+common_meshes_list=`mktemp --tmpdir common_meshes_list.XXX`
+common_skeletons_list=`mktemp --tmpdir common_skeletons_list.XXX`
+shared_packs_list=`mktemp --tmpdir shared_packs_list.XXX`
+common_sounds_list=`mktemp --tmpdir common_sounds_list.XXX`
+media_textures_list=`mktemp --tmpdir media_textures_list.XXX`
+
 
 
 srcdir=${PWD}
