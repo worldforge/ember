@@ -245,6 +245,17 @@ const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions() 
 	return mAttachPoints;
 }
 
+void ModelDefinition::addAttachPointDefinition(const AttachPointDefinition& definition)
+{
+	for (AttachPointDefinitionStore::iterator I = mAttachPoints.begin(); I != mAttachPoints.end(); ++I) {
+		if (I->Name == definition.Name) {
+			(*I) = definition;
+			return;
+		}
+	}
+	mAttachPoints.push_back(definition);
+}
+
 
 void ModelDefinition::removeActionDefinition(ActionDefinition* def)
 {

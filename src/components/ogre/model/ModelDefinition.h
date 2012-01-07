@@ -446,18 +446,31 @@ public:
 	const ActionDefinitionsStore& getActionDefinitions() const;
 
 	/**
-	 *    Removes a certain ActionDefinition.
+	 * @brief Removes a certain ActionDefinition.
 	 * @param def The definition to remove.
 	 */
 	void removeActionDefinition(ActionDefinition* def);
 
+	/**
+	 * @brief Gets all attach point definitions.
+	 * @return All attach point definitions.
+	 */
 	const AttachPointDefinitionStore& getAttachPointsDefinitions() const;
 
 	/**
-	Creates and returns a new ViewDefinition with the supplied name.
-	@param viewname The name of the view
-	@return A pointer to the new view.
-	*/
+	 * @brief Adds a new attach point definition.
+	 *
+	 * If an definition with the same name already exists it will be updated. Else a new entry will be added.
+	 *
+	 * @param definition The new definition.
+	 */
+	void addAttachPointDefinition(const AttachPointDefinition& definition);
+
+	/**
+	 Creates and returns a new ViewDefinition with the supplied name.
+	 @param viewname The name of the view
+	 @return A pointer to the new view.
+	 */
 	ViewDefinition* createViewDefinition(const std::string& viewname);
 
 	/**
