@@ -151,9 +151,9 @@ function ModelEdit:updateSubentitiesList(part)
 end
 
 function ModelEdit:showPreview(definitionName)
+	deleteSafe(self.modelHelper)
 	self.renderer:showModel(definitionName)
-	--self.renderer:showFullModel()
-
+	self.modelHelper = Ember.OgreView.Gui.ModelEditHelper:new(self.renderer:getModel())
 end
 
 function ModelEdit:fillModellist()
@@ -179,7 +179,15 @@ function ModelEdit:updateModelInfo()
 	self.scaleTypes:setItemSelectState(self.definition:getUseScaleOf(), true)
 	
 	self.zoomSlider:setCurrentValue(self.renderer:getCameraDistance())
-
+	
+	self.attachPointsList:resetList()
+	local attachPoints = self.definition:getAttachPointsDefinitions()
+	for val = 0, attachPoints:size() - 1 do
+		local name = attachPoints[val].Name
+		local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
+		self.attachPointsList:addItem(item)
+	end	
+	
 end
 
 function ModelEdit:translateAdapter_update()
@@ -230,24 +238,39 @@ end
 function ModelEdit:models_SelectionChanged(args)
 	local item = self.models:getFirstSelectedItem()
 	self:loadModelDefinition(item:getText())
+	return true
 end
 
 function ModelEdit:parts_SelectionChanged(args)
 	local part = self:getSelectedPart()
 	self:updateSubentitiesList(part)
 	self:updateShownCheckbox(part)
+	return true
 end
 
 function ModelEdit:submodels_SelectionChanged(args)
 	local submodel = self:getSelectedSubModel()
 	--inspectObject(submodel)
 	self:updatePartsList(submodel)
+	return true
 end
 
 function ModelEdit:subentities_SelectionChanged(args)
 	local subentity = self:getSelectedSubEntity()
 	self:selectMaterial(subentity)
+	return true
 end
+
+
+function ModelEdit:attachPointToolShown_StateChanged(args)
+	local shown = self.attachPointToolShown:isSelected()
+	local part = self:getSelectedAttachPoint()
+	--inspectObject(part)
+	self:updatePartShown(part, shown)	
+	return true
+end
+
+
 
 function ModelEdit:submeshinfomaterials_SelectionChanged(args)
 	local item = self.contentparts.submeshInfo.materiallist:getFirstSelectedItem()
@@ -257,6 +280,7 @@ function ModelEdit:submeshinfomaterials_SelectionChanged(args)
 		--inspectObject(subentity)
 		self:updateMaterial(subentity, material)
 	end
+	return true
 end
 
 function ModelEdit:ModelUseScaleOf_SelectionChanged(args)
@@ -265,39 +289,48 @@ function ModelEdit:ModelUseScaleOf_SelectionChanged(args)
 	if item ~= nil then
 		model:setUseScaleOf(item:getID())
 	end
+	return true
 end
 
 function ModelEdit:ModelScale_TextChanged(args)
 	local model = self.definition
 	model:setScale(tonumber(self.scaleTextbox:getText()));
+	return true
 end
 
 function ModelEdit:YawLeft_Clicked(args)
 	self.renderer:yaw(Ogre.Degree:new_local(-45))
+	return true
 end
 
 function ModelEdit:YawRight_Clicked(args)
 	self.renderer:yaw(Ogre.Degree:new_local(45))
+	return true
 end
 
 function ModelEdit:PitchUp_Clicked(args)
 	self.renderer:pitch(Ogre.Degree:new_local(-45))
+	return true
 end
 
 function ModelEdit:PitchDown_Clicked(args)
 	self.renderer:pitch(Ogre.Degree:new_local(45))
+	return true
 end
 
 function ModelEdit:RollLeft_Clicked(args)
 	self.renderer:roll(Ogre.Degree:new_local(-45))
+	return true
 end
 
 function ModelEdit:RollRight_Clicked(args)
 	self.renderer:roll(Ogre.Degree:new_local(45))
+	return true
 end
 
 function ModelEdit:ResetOrientation_Clicked(args)
 	self.renderer:resetCameraOrientation()
+	return true
 end
 
 
@@ -308,6 +341,7 @@ function ModelEdit:submeshinforemovesubmesh_Clicked(args)
 	part:removeSubEntityDefinition(subentity)
 	self:reloadModel()
 	self:updateModelContentList()
+	return true
 end
 
 function ModelEdit:removePart_Clicked(args)
@@ -317,6 +351,7 @@ function ModelEdit:removePart_Clicked(args)
 	submodel:removePartDefinition(part)
 	self:reloadModel()
 	self:updateModelContentList()
+	return true
 end
 
 function ModelEdit:addSubmesh_Clicked(args)
@@ -331,11 +366,12 @@ function ModelEdit:addSubmesh_Clicked(args)
 		self:reloadModel()
 		self:updateModelContentList()
 	end
-
+	return true
 end
 
 function ModelEdit:ReloadModelListButton_Clicked(args)
 	self:fillModellist()
+	return true
 end
 
 function ModelEdit:SaveModelButton_Clicked(args)
@@ -345,7 +381,7 @@ function ModelEdit:SaveModelButton_Clicked(args)
 		console:pushMessage("Model exported to " .. exportPath, "info")
 	end	
 	inspectObject(self.definition:getName())
-
+	return true
 end
 
 function ModelEdit:ExportAsAtlasTypeButton_Clicked(args)
@@ -357,6 +393,7 @@ function ModelEdit:ExportAsAtlasTypeButton_Clicked(args)
 			console:pushMessage("Atlas exported to " .. exportPath, "info")
 		end	
 	end	
+	return true
 end
 
 function ModelEdit:AddSubmodelButton_Clicked(args)
@@ -389,12 +426,14 @@ function ModelEdit:AddSubmodelButton_Clicked(args)
 		self.renderer:showModel(self.definition:getName())
 		self:updateModelContentList()
 	end
+	return true
 
 end
 
 function ModelEdit:ReloadInstancesButton_Clicked(args)
 	--reload all model instances
 	self.definition:reloadAllInstances()
+	return true
 end
 
 
@@ -402,6 +441,7 @@ function ModelEdit:GetRotationFromPreviewButton_Clicked(args)
 	--Get the rotation from the preview window
 
 	self.rotationAdapter:setValue(self.renderer:getEntityRotation())
+	return true
 end
 
 function ModelEdit:GetIconFromPreviewButton_Clicked(args)
@@ -413,6 +453,7 @@ function ModelEdit:GetIconFromPreviewButton_Clicked(args)
 			definition.Distance = self.renderer:getAbsoluteCameraDistance()
 		end
 	end
+	return true
 end
 
 function ModelEdit:RemoveSubmodelButton_Clicked(args)
@@ -423,6 +464,7 @@ function ModelEdit:RemoveSubmodelButton_Clicked(args)
 	self:reloadModel()
 	self:updateModelContentList()
 	
+	return true
 end
 
 
@@ -437,6 +479,7 @@ function ModelEdit:addPart_Clicked(args)
 			self:updateModelContentList()
 		end
 	end
+	return true
 end
 
 function ModelEdit:renamePart_Clicked(args)
@@ -450,16 +493,19 @@ function ModelEdit:renamePart_Clicked(args)
 			self:updateModelContentList()
 		end
 	end	
+	return true
 end
 
 
 function ModelEdit:AddModelButton_Clicked(args)
 	self.widget:getWindow("NewModelWindow"):setVisible(true)
 	self.widget:getWindow("NewModelWindow"):moveToFront()
+	return true
 end
 
 function ModelEdit:NewModelCancel_Clicked(args)
 	self.widget:getWindow("NewModelWindow"):setVisible(false)
+	return true
 end
 
 function ModelEdit:NewModelOk_Clicked(args)
@@ -481,6 +527,7 @@ function ModelEdit:NewModelOk_Clicked(args)
 		self:reloadModel()
 		self:updateModelContentList()
 	end
+	return true
 end
 
 
@@ -491,7 +538,7 @@ end
 function ModelEdit:modelinfoMeshlist_SelectionChanged()
 	local item = self.contentparts.modelInfo.meshlist:getFirstSelectedItem()
 	self:previewMesh(item:getText())
-
+	return true
 end
 
 
@@ -500,17 +547,20 @@ function ModelEdit:partShown_StateChanged(args)
 	local part = self:getSelectedPart()
 	--inspectObject(part)
 	self:updatePartShown(part, shown)	
+	return true
 end
 
 function ModelEdit:modelcontents_SelectionChanged(args)
 	local item = self.modelcontentstree:getFirstSelectedItem()
 	self:showModelContent(item)
+	return true
 end
 
 
 function ModelEdit:zoom_ValueChanged(args)
 	local zoomValue = self.zoomSlider:getCurrentValue()
 	self.renderer:setCameraDistance(zoomValue)
+	return true
 end
 
 function ModelEdit:getSelectedSubModel()
@@ -625,10 +675,20 @@ function ModelEdit:Image_ShowAxes_CheckStateChanged(args)
 	else
 		self.renderer:hideAxis()
 	end
-
+	return true
 end
 
 function ModelEdit:getCurrentModelContentItem()
+	local item = self.modelcontentstree:getFirstSelectedItem()
+	if item ~= nil then
+		local itemId= item:getID()
+		local contentItem = self.modelContentsItems[itemId]
+		return contentItem
+	end
+	return nil
+end
+
+function ModelEdit:getSelectedAttachPoint()
 	local item = self.modelcontentstree:getFirstSelectedItem()
 	if item ~= nil then
 		local itemId= item:getID()
@@ -815,6 +875,30 @@ function ModelEdit:buildWidget()
 		self.widget:getWindow("ResetOrientation"):subscribeEvent("Clicked", self.ResetOrientation_Clicked, self)
 	
 	
+		self.attachPointsList = self.widget:getWindow("AttachPointsList")
+		self.attachPointsList = CEGUI.toListbox(self.attachPointsList)
+		self.attachPointsList.getSelected = function()
+			local item = self.attachPointsList:getFirstSelectedItem()
+			if item then
+				return self.definition:getAttachPointsDefinitions()[item:getID()]
+			end
+			return nil
+		end
+		self.attachPointsList:subscribeEvent("ItemSelectionChanged", function(args)
+			local attachPoint = self.attachPointsList.getSelected()
+			if attachPoint then
+				self.modelHelper:showAttachPointHelper(attachPoint.Name)
+			else
+				self.modelHelper:hideAttachPointHelper()
+			end
+			return true
+		end)
+		
+		local attachPointRotateButton = self.widget:getWindow("AttachPointRotate")
+		attachPointRotateButton:subscribeEvent("MouseButtonDown", function(args)
+			self.modelHelper:startInputRotate()
+			return true
+		end)
 	
 		self.contentparts.modelInfo.renderImage =  self.widget:getWindow("MeshPreviewImage")
 		--self.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(self.contentparts.modelInfo.renderImage)
@@ -904,6 +988,7 @@ end
 
 function ModelEdit:shutdown()
 	self.definitionPtr = nil
+	deleteSafe(self.modelHelper)
 	deleteSafe(self.submeshRenderer)
 	deleteSafe(self.renderer)
 	deleteSafe(self.subMeshPartRenderer)

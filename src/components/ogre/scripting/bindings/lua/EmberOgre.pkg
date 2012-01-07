@@ -36,6 +36,7 @@ $pfile "AssetsManager.pkg"
 $pfile "AtlasHelper.pkg"
 $pfile "Compass.pkg"
 $pfile "EntityCreatorTypeHelper.pkg"
+$pfile "ModelEditHelper.pkg"
 
 $pfile "TypeTreeAdapter.pkg"
 $pfile "ResourceListAdapter.pkg"

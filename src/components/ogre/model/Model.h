@@ -263,7 +263,7 @@ public:
 	ModelDefnPtr getDefinition() const;
 
 	Ogre::TagPoint* attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
-	AttachPointWrapper attachObjectToAttachPoint(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO);
+	AttachPointWrapper attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO);
 	//void attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation=Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition=Ogre::Vector3::ZERO);
 
 	bool hasAttachPoint(const std::string& attachPoint) const;

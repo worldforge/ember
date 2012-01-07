@@ -1,0 +1,24 @@
+$#include "components/ogre/widgets/ModelEditHelper.h"
+
+namespace Ember
+{
+namespace OgreView
+{
+namespace Gui
+{
+
+class ModelEditHelper
+{
+public:
+	ModelEditHelper(Model::Model* model);
+	~ModelEditHelper();
+
+	void showAttachPointHelper(const std::string& attachPointName);
+	void hideAttachPointHelper();
+	void startInputRotate();
+
+};
+
+}
+}
+}
