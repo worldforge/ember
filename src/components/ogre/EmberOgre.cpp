@@ -333,7 +333,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 	mOgreMainCamera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
 
-	mScreen = new Screen(*mWindow, *mOgreMainCamera);
+	mScreen = new Screen(*mWindow);
 
 	//The input object must know the resolution of the screen
 	unsigned int height, width, depth;

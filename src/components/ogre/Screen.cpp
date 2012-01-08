@@ -33,6 +33,9 @@
 
 #include <OgreCamera.h>
 #include <OgreRenderWindow.h>
+#include <OgreRoot.h>
+#include <OgreRenderSystem.h>
+#include <OgreRenderTarget.h>
 
 #include <SDL_video.h>
 
@@ -41,8 +44,8 @@ namespace Ember
 namespace OgreView
 {
 
-Screen::Screen(Ogre::RenderWindow& window, Ogre::Camera& camera) :
-		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."), ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."), Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk."), mWindow(window), mCamera(camera), mRecorder(new Camera::Recorder())
+Screen::Screen(Ogre::RenderWindow& window) :
+		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."), ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."), Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk."), mWindow(window), mRecorder(new Camera::Recorder()), mPolygonMode(Ogre::PM_SOLID)
 {
 }
 
@@ -70,11 +73,24 @@ void Screen::runCommand(const std::string &command, const std::string &args)
 
 void Screen::toggleRenderMode()
 {
-	S_LOG_INFO("Switching render mode.");
-	if (mCamera.getPolygonMode() == Ogre::PM_SOLID) {
-		mCamera.setPolygonMode(Ogre::PM_WIREFRAME);
+
+	if (mPolygonMode == Ogre::PM_SOLID) {
+		mPolygonMode = Ogre::PM_WIREFRAME;
 	} else {
-		mCamera.setPolygonMode(Ogre::PM_SOLID);
+		mPolygonMode = Ogre::PM_SOLID;
+	}
+
+	Ogre::RenderSystem::RenderTargetIterator renderTargetI = Ogre::Root::getSingleton().getRenderSystem()->getRenderTargetIterator();
+
+	for (Ogre::RenderSystem::RenderTargetIterator::iterator I = renderTargetI.begin(); I != renderTargetI.end(); ++I) {
+		Ogre::RenderTarget* renderTarget = I->second;
+		for (unsigned short i = 0; i < renderTarget->getNumViewports(); ++i) {
+			Ogre::Camera* camera = renderTarget->getViewport(i)->getCamera();
+			if (camera) {
+				camera->setPolygonMode(mPolygonMode);
+			}
+		}
+
 	}
 
 }

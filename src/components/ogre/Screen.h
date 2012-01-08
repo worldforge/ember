@@ -23,6 +23,8 @@
 
 #include "framework/ConsoleObject.h"
 
+#include <OgreCommon.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -34,7 +36,7 @@ class Recorder;
 
 /**
  * @author Erik Ogenvikl
- * @brief Handles the main screen and camera.
+ * @brief Handles the main screen.
  *
  */
 class Screen: public ConsoleObject
@@ -43,9 +45,8 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param window The main render window.
-	 * @param camera The main camera. The system can contain multiple cameras, but there's only one main one.
 	 */
-	Screen(Ogre::RenderWindow& window, Ogre::Camera& camera);
+	Screen(Ogre::RenderWindow& window);
 
 	/**
 	 * @brief Dtor.
@@ -77,16 +78,14 @@ protected:
 	Ogre::RenderWindow& mWindow;
 
 	/**
-	 * @brief The main camera.
-	 *
-	 * The system can contain multiple cameras, but there's only one main one.
-	 */
-	Ogre::Camera& mCamera;
-
-	/**
 	 * @brief A recorder which can record frames to disk.
 	 */
 	Camera::Recorder* mRecorder;
+
+	/**
+	 * @brief The current polygon mode used in render targets.
+	 */
+	Ogre::PolygonMode mPolygonMode;
 
 	/**
 	 * @brief Takes and saves a screenshot to disk.
