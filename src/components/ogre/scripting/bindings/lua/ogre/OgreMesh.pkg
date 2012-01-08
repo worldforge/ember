@@ -251,7 +251,7 @@ namespace Ogre {
 		@remarks
 			This number includes the original model.
 		*/
- 		ushort getNumLodLevels(void) const;
+ 		unsigned short getNumLodLevels(void) const;
 		/** Gets details of the numbered level of detail entry. */
 // 		const MeshLodUsage& getLodLevel(ushort index) const;
 		/** Adds a new manual level-of-detail entry to this Mesh.
