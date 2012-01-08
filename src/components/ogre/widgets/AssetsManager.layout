@@ -158,6 +158,17 @@
 									<Property Name='UnifiedPosition' Value='{{0,420},{0,30}}'/>
 									<Property Name='UnifiedSize' Value='{{0,200},{0,25}}'/>
 								</Window>	
+                                <Window Type='EmberLook/StaticText' Name='MeshLodLevelText'>
+                                    <Property Name='UnifiedPosition' Value='{{0,420},{0,60}}'/>
+                                    <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                                    <Property Name='FrameEnabled' Value='false' />
+                                    <Property Name='BackgroundEnabled' Value='false' />
+                                    <Property Name='Text' Value='Lod level:' />
+                                </Window>
+                                <Window Type='EmberLook/Listbox' Name='MeshLodLevel'>
+                                    <Property Name='UnifiedPosition' Value='{{0,420},{0,90}}'/>
+                                    <Property Name='UnifiedSize' Value='{{0,100},{0,100}}'/>
+                                </Window>   
 								<Window Type='EmberLook/Button' Name='MeshInfoSaveButton'>
 									<Property Name='UnifiedPosition' Value='{{0,55},{0,5}}'/>
 									<Property Name='UnifiedSize' Value='{{0,50},{0,25}}'/>

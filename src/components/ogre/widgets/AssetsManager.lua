@@ -169,7 +169,7 @@ end
 
 function AssetsManager:showMesh(meshName)
 	self.meshes.renderer:showEntity(meshName)
-
+	
 	--we need to get hold of a mesh instance
 	local manager = Ogre.MeshManager:getSingleton()
 	local meshPtr = manager:getByName(meshName)
@@ -182,6 +182,15 @@ function AssetsManager:showMesh(meshName)
 	self:fillSubMeshList(meshPtr)
 	local mesh = meshPtr:get()
 	self.meshes.controls.skeletonPath:setText(mesh:getSkeletonName())
+
+	self.meshes.controls.lodlevelsList:resetList()
+	for i = 0, mesh:getNumLodLevels() - 1 do
+		local item = Ember.OgreView.Gui.ColouredListItem:new(string.format("%i", i), i) 
+		self.meshes.controls.lodlevelsList:addItem(item)
+	end
+
+	
+
 end
 
 function AssetsManager:getSubMeshName(mesh, index)
@@ -425,6 +434,18 @@ function AssetsManager:buildWidget()
 		self.meshes.controls.materialListbox = CEGUI.toListbox(self.widget:getWindow("SubMeshMaterialsList"))
 		self.meshes.controls.materialFilter = CEGUI.toEditbox(self.widget:getWindow("SubMeshMaterialsFilter"))
 		self.meshes.controls.skeletonPath = CEGUI.toEditbox(self.widget:getWindow("MeshSkeletonPath"))
+		self.meshes.controls.lodlevelsList = CEGUI.toListbox(self.widget:getWindow("MeshLodLevel"))
+		self.meshes.controls.lodlevelsList:subscribeEvent("ItemSelectionChanged", function(args)
+			local entity = self.meshes.renderer:getEntity()
+			if entity then
+				local item = self.meshes.controls.lodlevelsList:getFirstSelectedItem()
+				if item then
+					local level = item:getID()
+					entity:setMeshLodBias(0.001, level, level)
+				end
+			end
+			return true
+		end)
 		self.meshes.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterMeshes"))
 		self.meshes.listholder = Ember.OgreView.Gui.ListHolder:new(self.meshes.controls.listbox, self.meshes.controls.filter)
 		self.meshes.controls.textureView = self.widget:getWindow("MeshInfo/Preview")
