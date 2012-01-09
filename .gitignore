@@ -46,6 +46,7 @@ autopackage/default.apspec
 src/config.h
 src/main/ember.bin
 src/stamp-h1
+*.cxx
 # ignore Eclipse project files
 .project
 .cproject
