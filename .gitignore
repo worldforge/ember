@@ -19,12 +19,6 @@ ember.dox
 ember.spec
 mkinstalldirs
 Makefile
-optimized
-debug
-home
-var
-# the build directory
-build
 # Ignore objects and archives.
 *.[oa]
 # Ignore temporary files
@@ -33,8 +27,6 @@ build
 *.swp
 # Ignore desktop files
 .directory
-# Ignore password file used to rsync update amber
-rsyncpasswd
 # Ignore IDE user specific files
 # - KDevelop
 *.kdevses
@@ -60,7 +52,5 @@ src/stamp-h1
 .settings
 .cdtconfig*
 *.orig
-media-
 *.log
-*.mp4
 *.kdevelop
