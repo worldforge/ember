@@ -59,7 +59,7 @@ endif
 
 endif
 
-noinst_HEADERS = $(top_srcdir)/src/main/Application.h $(top_srcdir)/src/main/ConfigBoundLogObserver.h
+noinst_HEADERS = $(top_srcdir)/src/main/Application.h $(top_srcdir)/src/main/ConfigBoundLogObserver.h $(top_srcdir)/src/main/MainWrapper.h
 
 
 EXTRA_DIST=$(top_srcdir)/src/main/macosx/COPYING.SDL $(top_srcdir)/src/main/macosx/ReadMeDevLite.txt $(top_srcdir)/src/main/macosx/SDLMain.h
