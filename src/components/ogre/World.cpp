@@ -70,7 +70,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 
 	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventEndErisPoll);
 	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
-	mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
+	mAfterTerrainUpdateConnection = mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
 	mTerrainEntityManager = new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager());
 
@@ -106,6 +106,8 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 
 World::~World()
 {
+	mAfterTerrainUpdateConnection.disconnect();
+
 	delete mFoliageInitializer;
 	delete mConfigListenerContainer;
 	delete mTerrainEntityManager;

@@ -22,6 +22,7 @@
 #include "OgreIncludes.h"
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
+#include <sigc++/connection.h>
 #include <string>
 #include <vector>
 #include <set>
@@ -350,6 +351,13 @@ protected:
 	 * @brief Represents the server calendar.
 	 */
 	Eris::Calendar* mCalendar;
+
+	/**
+	 * @brief Keeps track of the after terrain update connection.
+	 *
+	 * Mainly so that it can be severed during shutdown.
+	 */
+	sigc::connection mAfterTerrainUpdateConnection;
 
 	/**
 	 * @brief Listens to updates to the terrain and makes sure that entities are adjusted.
