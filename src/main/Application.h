@@ -28,7 +28,7 @@
  * @mainpage
  *
  * Ember is a client for the Worldforge virtual world system. It uses the 3d library <a href="http://www.ogre3d.org">OGRE</a> to show the world to the user, and the <a href="http://www.cegui.org.uk">CEGUI</a> library to present a user interface.
- * Two of the design tenants of Ember is to both be as modular as possible, and to reuse existing FOSS components as much as possible. The list of dependencies for the client is therefore quite hefty, but the advantage is the wealth of capabilities.
+ * Two of the design tenets of Ember is to both be as modular as possible, and to reuse existing FOSS components as much as possible. The list of dependencies for the client is therefore quite hefty, but the advantage is the wealth of capabilities.
  *
  * @section SystemDesign System design
  *
@@ -40,7 +40,7 @@
  * - extensions
  * 	Sometimes we need to extend the libraries used by Ember, such as Atlas or Eris. Any extension added should then be moved to the real library, but while it's either being developed it can be put in this layer.
  * - services
- * 	Commonly used services are to be placed here. It might not always be clear what constitutes a service, but the most common characteristic of a service is an adapted API over an external component. A service should be light weight and not keep to much state.
+ * 	Commonly used services are to be placed here. It might not always be clear what constitutes a service, but the most common characteristic of a service is an adapted API over an external component. A service should be light weight and not keep to much state. The services should never depend on anything which is handled by the components (for example Ogre, CEGUI, Lua etc.).
  * - components
  *	The meat of the application is placed here. These are highly complex components which provide the main functionality of what is shown to the user.
  *	- carpenter
