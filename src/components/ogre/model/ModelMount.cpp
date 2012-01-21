@@ -39,8 +39,8 @@ namespace OgreView
 namespace Model
 {
 
-ModelMount::ModelMount(Model& model, INodeProvider* nodeProvider) :
-	mModel(model), mNodeProvider(nodeProvider)
+ModelMount::ModelMount(Model& model, INodeProvider* nodeProvider, const std::string& pose) :
+	mModel(model), mNodeProvider(nodeProvider), mPose(pose)
 {
 }
 
@@ -60,12 +60,21 @@ void ModelMount::reset()
 {
 	getNodeProvider()->setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
 	getNode().setScale(Ogre::Vector3::UNIT_SCALE);
-	//rotate node to fit with WF space
-	//perhaps this is something to put in the model spec instead?
-	getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
-	getNode().rotate(getModel().getRotation());
-	//translate the scale node according to the translate defined in the model
-	getNode().translate(getModel().getDefinition()->getTranslate());
+
+	const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
+	PoseDefinitionStore::const_iterator I = poses.find(mPose);
+	if (I != poses.end()) {
+		const PoseDefinition& pose = I->second;
+		getNode().translate(pose.Translate);
+		getNode().rotate(pose.Rotate, Ogre::Node::TS_PARENT);
+	} else {
+		//rotate node to fit with WF space
+		//perhaps this is something to put in the model spec instead?
+		getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+		getNode().rotate(getModel().getRotation());
+		//translate the scale node according to the translate defined in the model
+		getNode().translate(getModel().getDefinition()->getTranslate());
+	}
 }
 
 Ogre::Node& ModelMount::getNode() const

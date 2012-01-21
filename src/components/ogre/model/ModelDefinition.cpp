@@ -138,6 +138,21 @@ const BoneGroupDefinitionStore& ModelDefinition::getBoneGroupDefinitions() const
 	return mBoneGroups;
 }
 
+const PoseDefinitionStore& ModelDefinition::getPoseDefinitions() const
+{
+	return mPoseDefinitions;
+}
+
+void ModelDefinition::addPoseDefinition(const std::string& name, const PoseDefinition& definition)
+{
+	mPoseDefinitions[name] = definition;
+}
+
+void ModelDefinition::removePoseDefinition(const std::string& name)
+{
+	mPoseDefinitions.erase(name);
+}
+
 const Ogre::Vector3& ModelDefinition::getTranslate() const
 {
 	return mTranslate;

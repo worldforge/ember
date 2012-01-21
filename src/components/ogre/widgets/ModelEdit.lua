@@ -880,6 +880,8 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
+		self.posesList = self.widget:getWindow("PoseList")
+		
 	
 		self.contentparts.modelInfo.renderImage =  self.widget:getWindow("MeshPreviewImage")
 		--self.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(self.contentparts.modelInfo.renderImage)

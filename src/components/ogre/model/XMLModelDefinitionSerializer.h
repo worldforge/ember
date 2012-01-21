@@ -71,6 +71,7 @@ private:
 	void readSounds(TiXmlElement* mAnimationsNode, ActionDefinition* action);
 	void readActivations(TiXmlElement* activationsNode, ActionDefinition* action);
 	void readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode);
+	void readPoses(ModelDefinitionPtr modelDef, TiXmlElement* mPoseNode);
 
 	/**
 	 * @brief Reads bone groups data.
@@ -85,6 +86,7 @@ private:
 	void exportAttachPoints(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	void exportViews(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	void exportParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+	void exportPoses(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	
 	/**
 	 * @brief Exports the light data.

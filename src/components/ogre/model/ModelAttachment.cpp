@@ -49,10 +49,10 @@ namespace OgreView
 namespace Model
 {
 
-ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider) :
+ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose) :
 	NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0)
 {
-	mModelMount = new ModelMount(mModelRepresentation.getModel(), nodeProvider->createChildProvider(&mModelRepresentation.getModel()));
+	mModelMount = new ModelMount(mModelRepresentation.getModel(), nodeProvider->createChildProvider(&mModelRepresentation.getModel()), pose);
 	mModelMount->reset();
 	setupFittings();
 	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
@@ -134,7 +134,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 			nodeProvider = mNodeProvider->createChildProvider(modelRepresentation ? &modelRepresentation->getModel() : 0);
 		}
 		if (modelRepresentation) {
-			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider);
+			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, "held");
 		} else {
 			return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
 		}

@@ -24,6 +24,7 @@
 #define EMBEROGREMODELMOUNT_H
 
 #include <wfmath/axisbox.h>
+#include <string>
 
 namespace WFMath
 {
@@ -63,7 +64,7 @@ public:
 	 * @param model The model which we need a mount for.
 	 * @param nodeProvider Provides an instance of a subclass of Ogre::Node to which the Model can be attached.
 	 */
-	ModelMount(Model& model, INodeProvider* nodeProvider);
+	ModelMount(Model& model, INodeProvider* nodeProvider, const std::string& pose = "default");
 
 	/**
 	 * @brief Dtor.
@@ -105,6 +106,8 @@ protected:
 	 * The node to which the Model is attached to is provided by this instance. It can be either a SceneNode or a TagPoint.
 	 */
 	INodeProvider* mNodeProvider;
+
+	const std::string mPose;
 
 	/**
 	 * @brief Scales the scale node accoring to the submitted bounding box.

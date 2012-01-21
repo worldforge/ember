@@ -111,12 +111,6 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 	if (tmp)
 		modelDef->mScale=Ogre::StringConverter::parseReal(tmp);
 
-/*	//rotation
-	//TODO: change this into a better system, perhaps using quaternions, instead of like now just rotating around the y-axis
-	tmp =  modelNode->Attribute("rotation");
-	if (tmp)
-		modelDef->mRotation = Ogre::StringConverter::parseReal(tmp);*/
-
 	//showcontained
 	tmp =  modelNode->Attribute("showcontained");
 	if (tmp)
@@ -218,6 +212,10 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 	elem = modelNode->FirstChildElement("bonegroups");
 	if (elem)
 		readBoneGroups(modelDef, elem);
+	elem = modelNode->FirstChildElement("poses");
+	if (elem)
+		readPoses(modelDef, elem);
+
 }
 
 
@@ -834,6 +832,45 @@ void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, T
 	}
 }
 
+void XMLModelDefinitionSerializer::readPoses(ModelDefinitionPtr modelDef, TiXmlElement* mNode)
+{
+	PoseDefinitionStore& poses = modelDef->mPoseDefinitions;
+
+	const char* tmp = 0;
+
+	for (TiXmlElement* apElem = mNode->FirstChildElement(); apElem != 0; apElem = apElem->NextSiblingElement()) {
+		PoseDefinition definition;
+
+		// name
+		tmp = apElem->Attribute("name");
+		if (!tmp) {
+			S_LOG_WARNING("Read pose definition with no name; skipping it.");
+			continue;
+		}
+		std::string name(tmp);
+		S_LOG_VERBOSE( "  Add pose  : " + name);
+
+		TiXmlElement* elem = apElem->FirstChildElement("rotate");
+		if (elem) {
+			definition.Rotate = XMLHelper::fillQuaternionFromElement(elem);
+		} else {
+			definition.Rotate = Ogre::Quaternion::IDENTITY;
+		}
+
+		elem = apElem->FirstChildElement("translate");
+		if (elem) {
+			definition.Translate = XMLHelper::fillVector3FromElement(elem);
+		} else {
+			definition.Translate = Ogre::Vector3::ZERO;
+		}
+
+		poses.insert(std::make_pair(name, definition));
+	}
+
+}
+
+
+
 
 bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename)
 {
@@ -942,6 +979,8 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		exportParticleSystems(modelDef, modelElem);
 
 		exportBoneGroups(modelDef, modelElem);
+
+		exportPoses(modelDef, modelElem);
 
 		elem.InsertEndChild(modelElem);
 
@@ -1160,6 +1199,31 @@ void XMLModelDefinitionSerializer::exportLights(ModelDefinitionPtr modelDef, TiX
 		lightsElem.InsertEndChild(lightElem);
 	}
 	modelElem.InsertEndChild(lightsElem);
+}
+
+void XMLModelDefinitionSerializer::exportPoses(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
+{
+	if (modelDef->mPoseDefinitions.size()) {
+		TiXmlElement elem("poses");
+
+		for (PoseDefinitionStore::const_iterator I = modelDef->mPoseDefinitions.begin(); I != modelDef->mPoseDefinitions.end(); ++I) {
+			TiXmlElement poseElem("pose");
+			poseElem.SetAttribute("name", I->first.c_str());
+			if (!I->second.Translate.isNaN()) {
+				TiXmlElement translateElem("translate");
+				XMLHelper::fillElementFromVector3(translateElem, I->second.Translate);
+				poseElem.InsertEndChild(translateElem);
+			}
+			if (!I->second.Rotate.isNaN()) {
+				TiXmlElement rotateElem("rotate");
+				XMLHelper::fillElementFromQuaternion(rotateElem, I->second.Rotate);
+				poseElem.InsertEndChild(rotateElem);
+			}
+
+			elem.InsertEndChild(poseElem);
+		}
+		modelElem.InsertEndChild(elem);
+	}
 }
 
 void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
