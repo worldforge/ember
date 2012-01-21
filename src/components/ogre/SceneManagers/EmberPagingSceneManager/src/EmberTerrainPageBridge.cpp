@@ -37,8 +37,8 @@ namespace Ember
 namespace OgreView
 {
 
-EmberTerrainPageBridge::EmberTerrainPageBridge(Ogre::PagingLandScapeData2DManager& data2dManager, const boost::shared_array<float>& heightData, UnsignedIndexType index) :
-	mData2dManager(data2dManager), mHeightData(heightData), mIndex(index), mMaxHeight(0)
+EmberTerrainPageBridge::EmberTerrainPageBridge(Ogre::PagingLandScapeData2DManager& data2dManager, const boost::shared_array<Ogre::Real>& heightData, size_t heightDataSize, UnsignedIndexType index) :
+	mData2dManager(data2dManager), mHeightData(heightData), mHeightDataSize(heightDataSize), mIndex(index), mMaxHeight(0)
 {
 }
 
@@ -48,7 +48,19 @@ EmberTerrainPageBridge::~EmberTerrainPageBridge()
 
 void EmberTerrainPageBridge::updateTerrain(Terrain::TerrainPageGeometry& geometry)
 {
+#if OGRE_DOUBLE_PRECISION
+	//Mercator works with floats, so if we've built Ogre in double precision mode we need to send a float bitmap to Mercator, and then convert to double.
+	std::vector<float> floatHeightData(mHeightDataSize);
+	float* floatData = &floatHeightData.front();
+	geometry.updateOgreHeightData(floatData);
+
+	Ogre::Real* doubleData = mHeightData.get();
+	for (size_t i = 0; i < mHeightDataSize; ++i) {
+		doubleData[i] = (double)floatData[i];
+	}
+#else
 	geometry.updateOgreHeightData(mHeightData.get());
+#endif
 	mMaxHeight = geometry.getMaxHeight();
 }
 

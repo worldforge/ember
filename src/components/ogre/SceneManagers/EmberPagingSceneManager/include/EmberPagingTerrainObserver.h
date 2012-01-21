@@ -64,14 +64,14 @@ private:
 	/**
 	 * @brief The area under observation.
 	 */
-	Ogre::TRect<float> mObservedArea;
+	Ogre::TRect<Ogre::Real> mObservedArea;
 
 	/**
 	 * @brief Tests if the supplied rect intersects with the observed area.
 	 * @param rect The rect to test.
 	 * @return True if the rects intersect.
 	 */
-	bool testIntersects(const Ogre::TRect<float>& rect) const;
+	bool testIntersects(const Ogre::TRect<Ogre::Real>& rect) const;
 
 
 };

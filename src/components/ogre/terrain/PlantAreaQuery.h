@@ -42,17 +42,17 @@ class PlantAreaQuery
 {
 public:
 
-	PlantAreaQuery(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<float> area, Ogre::Vector2 center);
+	PlantAreaQuery(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<Ogre::Real> area, Ogre::Vector2 center);
 
 	const TerrainLayerDefinition& getLayerDef() const;
 	const std::string& getPlantType() const;
-	const Ogre::TRect<float>& getArea() const;
+	const Ogre::TRect<Ogre::Real>& getArea() const;
 	const Ogre::Vector2& getCenter() const;
 private:
 	const TerrainLayerDefinition& mLayerDef;
 	const std::string& mPlantType;
 	Ogre::Vector2 mCenter;
-	Ogre::TRect<float> mArea;
+	Ogre::TRect<Ogre::Real> mArea;
 };
 }
 }

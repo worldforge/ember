@@ -26,7 +26,7 @@ namespace OgreView {
 namespace Terrain {
 
 
-PlantAreaQuery::PlantAreaQuery(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<float> area, Ogre::Vector2 center)
+PlantAreaQuery::PlantAreaQuery(const TerrainLayerDefinition& layerDef, const std::string& plantType, Ogre::TRect<Ogre::Real> area, Ogre::Vector2 center)
 : mLayerDef(layerDef), mPlantType(plantType), mCenter(center), mArea(area)
 {
 }
@@ -41,7 +41,7 @@ const std::string& PlantAreaQuery::getPlantType() const
 	return mPlantType;
 }
 
-const Ogre::TRect<float>& PlantAreaQuery::getArea() const
+const Ogre::TRect<Ogre::Real>& PlantAreaQuery::getArea() const
 {
 	return mArea;
 }

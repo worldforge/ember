@@ -53,19 +53,19 @@ void EmberPagingTerrainObserver::observeArea(const WFMath::AxisBox<2>& area)
 
 void EmberPagingTerrainObserver::observeArea(const Ogre::TRect<int>& area)
 {
-	mObservedArea = Ogre::TRect<float>(area.left, area.top, area.right, area.bottom);
+	mObservedArea = Ogre::TRect<Ogre::Real>(area.left, area.top, area.right, area.bottom);
 }
 
 void EmberPagingTerrainObserver::tileShow(Ogre::PagingLandscapeEvent* event)
 {
 	const Ogre::AxisAlignedBox& Bbox = event->mBbox;
-	Ogre::TRect<float> changed2dArea(Bbox.getMinimum().x, Bbox.getMaximum().z, Bbox.getMaximum().x, Bbox.getMinimum().z);
+	Ogre::TRect<Ogre::Real> changed2dArea(Bbox.getMinimum().x, Bbox.getMaximum().z, Bbox.getMaximum().x, Bbox.getMinimum().z);
 	if (testIntersects(changed2dArea) || (changed2dArea.top <= mObservedArea.top && changed2dArea.bottom >= mObservedArea.bottom && changed2dArea.left >= mObservedArea.left && changed2dArea.right <= mObservedArea.right)) {
 		EventAreaShown();
 	}
 }
 
-bool EmberPagingTerrainObserver::testIntersects(const Ogre::TRect<float>& rect) const
+bool EmberPagingTerrainObserver::testIntersects(const Ogre::TRect<Ogre::Real>& rect) const
 {
 	if (mObservedArea.right < rect.left)
 		return false;

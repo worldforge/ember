@@ -62,7 +62,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 		mMaxArrayPos = mSize * mSize;
 		mHeightData = new Ogre::Real[mMaxArrayPos];
 		mHeightDataPtr = boost::shared_array<Ogre::Real>(mHeightData);
-		float* heightDataPtr = mHeightData;
+		Ogre::Real* heightDataPtr = mHeightData;
 		for (size_t i = 0; i < mMaxArrayPos; ++i) {
 			*(heightDataPtr++) = 0.0f;
 		}
@@ -71,7 +71,7 @@ bool EmberPagingLandScapeData2D_HeightField::_load(unsigned int x, unsigned int 
 		totalSize += (mMaxArrayPos * sizeof(Ogre::Real));
 		S_LOG_VERBOSE("Created height data of size " << mMaxArrayPos << ". Total data size: " << totalSize << ".");
 
-		EmberTerrainPageBridge* bridge = new EmberTerrainPageBridge(*emberPagingSceneManager->getData2DManager(), mHeightDataPtr, std::pair<unsigned int, unsigned int>(x, z));
+		EmberTerrainPageBridge* bridge = new EmberTerrainPageBridge(*emberPagingSceneManager->getData2DManager(), mHeightDataPtr, mMaxArrayPos, std::pair<unsigned int, unsigned int>(x, z));
 		provider->setUpTerrainPageAtIndex(IPageDataProvider::OgreIndex(x, z), bridge);
 
 		return true;

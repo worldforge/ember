@@ -105,6 +105,7 @@ protected:
 };
 
 float getTerrainHeight(float x, float z, void* userData = 0);
+double getTerrainHeight(double x, double z, void* userData = 0);
 
 }
 

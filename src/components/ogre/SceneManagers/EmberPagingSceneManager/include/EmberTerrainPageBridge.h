@@ -25,6 +25,7 @@
 
 #include "terrain/ITerrainPageBridge.h"
 
+#include <OgrePrerequisites.h>
 #include <boost/shared_array.hpp>
 
 namespace Ogre
@@ -45,7 +46,7 @@ class EmberTerrainPageBridge : public ::Ember::OgreView::Terrain::ITerrainPageBr
 {
 public:
 	typedef std::pair<unsigned int, unsigned int> UnsignedIndexType;
-	EmberTerrainPageBridge(Ogre::PagingLandScapeData2DManager& data2dManager, const boost::shared_array<float>& heightData, UnsignedIndexType index);
+	EmberTerrainPageBridge(Ogre::PagingLandScapeData2DManager& data2dManager, const boost::shared_array<Ogre::Real>& heightData, size_t heightDataSize, UnsignedIndexType index);
 
 	virtual ~EmberTerrainPageBridge();
 
@@ -57,7 +58,12 @@ protected:
 
 	Ogre::PagingLandScapeData2DManager& mData2dManager;
 
-	boost::shared_array<float> mHeightData;
+	boost::shared_array<Ogre::Real> mHeightData;
+
+	/**
+	 * @brief The size of the height data bitmap.
+	 */
+	size_t mHeightDataSize;
 
 	UnsignedIndexType mIndex;
 

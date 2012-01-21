@@ -164,7 +164,7 @@ public:
 	 * @brief Updates the animation. This is normally called by MotionManager.
 	 * @param timeSlice time to update with.
 	 */
-	void updateAnimation(Ogre::Real timeSlice);
+	void updateAnimation(float timeSlice);
 
 	/**
 	 * @brief Accesses the world bounding box of the model.

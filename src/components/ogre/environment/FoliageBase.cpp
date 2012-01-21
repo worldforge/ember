@@ -140,7 +140,16 @@ float getTerrainHeight(float x, float z, void* userData)
 	return height;
 }
 
-
+//Gets the height of the terrain at the specified x/z coordinate
+//The userData parameter isn't used in this implementation of a height function, since
+//there's no need for extra data other than the x/z coordinates.
+double getTerrainHeight(double x, double z, void* userData)
+{
+	Domain::IHeightProvider* heightProvider = reinterpret_cast<Domain::IHeightProvider*>(userData);
+	float height = 0;
+	heightProvider->getHeight(Domain::TerrainPosition(x, -z), height);
+	return (double)height;
+}
 }
 
 }

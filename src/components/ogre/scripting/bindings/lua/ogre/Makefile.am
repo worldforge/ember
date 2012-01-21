@@ -1,7 +1,9 @@
 SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 
+#Replace "float" in the pkg-files with the actual type of Ogre::Real (which will be "float" unless you've built Ogre with double precision).
+#Note that we cannot use "Ogre::Real" in the pkg-files, since tolua++ would then think it to be a class or struct and handle it incorrectly.
 .pkg.cxx:
-	cd $(srcdir) && TOLUAXX=${TOLUAXX} $(abs_top_srcdir)/scripts/update_lua_bindings.sh `basename $@ .cxx` `basename $@ .cxx`.pkg $(abs_builddir)/`basename $@` $<
+	cd $(srcdir) && TOLUAXX=${TOLUAXX} $(abs_top_srcdir)/scripts/update_lua_bindings.sh `basename $@ .cxx` `basename $@ .cxx`.pkg $(abs_builddir)/`basename $@` $< && sed -i "s/float/@OGRE_REAL_TYPE@/g" $(abs_builddir)/$@
 
 INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 

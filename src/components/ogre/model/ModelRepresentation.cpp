@@ -354,7 +354,7 @@ void ModelRepresentation::setLocalVelocity(const WFMath::Vector<3>& velocity)
 	parseMovementMode(velocity);
 }
 
-void ModelRepresentation::updateAnimation(Ogre::Real timeSlice)
+void ModelRepresentation::updateAnimation(float timeSlice)
 {
 	//This is a bit convoluted, but the logic is as follows:
 	//If we're moving, i.e. not in MM_DEFAULT, we should always prefer to show the movement animation
