@@ -211,27 +211,30 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		Tokeniser tokeniser(plugins, ",");
 		std::string token = tokeniser.nextToken();
 		while (token != "") {
+			std::string pluginPath;
+			bool pluginLoaded = false;
 			for (std::vector<std::string>::iterator I = pluginLocations.begin(); I != pluginLocations.end(); ++I) {
-				std::string pluginPath((*I) + "/" + token + pluginExtension);
-				bool success = false;
+				pluginPath = (*I) + "/" + token + pluginExtension;
+				S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
 				try {
-					S_LOG_INFO("Trying to load the plugin " << pluginPath);
 					mRoot->loadPlugin(pluginPath);
-					success = true;
+					pluginLoaded = true;
 					break;
 				} catch (...) {
 					pluginPath = (*I) + "/" + token + "_d" + pluginExtension;
+					S_LOG_INFO("Trying to load the plugin '" << pluginPath << "'.");
 					try {
 						mRoot->loadPlugin(pluginPath);
-						success = true;
+						pluginLoaded = true;
 						break;
 					} catch (...) {
-						S_LOG_INFO("Error when loading plugin '" << token << "' with path '" << pluginPath << "'. This is not fatal, we will continue trying with some other paths.");
 					}
 				}
-				if (!success) {
-					S_LOG_WARNING("Error when loading plugin '" << token << "' after trying different parts. We'll continue, but there might be problems later on.");
-				}
+			}
+			if (pluginLoaded) {
+				S_LOG_INFO("Successfully loaded the plugin '" << token << "' from '" << pluginPath << "'.");
+			} else {
+				S_LOG_FAILURE("Failed to load the plugin '" << token << "'!");
 			}
 			token = tokeniser.nextToken();
 		}
