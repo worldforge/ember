@@ -198,7 +198,7 @@ void LuaScriptingProvider::executeScriptImpl(const std::string& scriptCode, LuaS
 		// load code into lua and call it
 		int error;
 //		int nresults;
-		int level = lua_gettop(mLuaState); // top of stack position
+		lua_gettop(mLuaState); // top of stack position
 		// if we have context to store return values, then get them
 		if (luaCallContext)
 		{
