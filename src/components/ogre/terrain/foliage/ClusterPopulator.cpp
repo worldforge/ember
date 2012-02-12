@@ -135,7 +135,7 @@ void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, Plan
 	PlantAreaQueryResult::PlantStore& plants = result.getStore();
 	Mercator::Segment& mercatorSegment = segmentRef->getSegment().getMercatorSegment();
 
-	float volume = (cluster.radius() * cluster.radius()) * WFMath::Pi;
+	float volume = (cluster.radius() * cluster.radius()) * WFMath::numeric_constants<WFMath::CoordType>::pi();
 	unsigned int instancesInEachCluster = volume * mDensity;
 	WFMath::MTRand::uint32 seed(mPlantIndex + (static_cast<WFMath::MTRand::uint32> (cluster.center().x()) << 4) + (static_cast<WFMath::MTRand::uint32> (cluster.center().y()) << 8));
 	WFMath::MTRand rng(seed);
@@ -147,7 +147,7 @@ void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, Plan
 	WFMath::Vector<3> normal;
 	//place one cluster
 	for (unsigned int j = 0; j < instancesInEachCluster; ++j) {
-		float theta = rng.rand(WFMath::Pi * 2);
+		float theta = rng.rand(WFMath::numeric_constants<WFMath::CoordType>::pi() * 2);
 		float length = rng.rand(mMaxClusterRadius);
 
 		WFMath::Point<2> pos(cos(theta) * length, sin(theta) * length);

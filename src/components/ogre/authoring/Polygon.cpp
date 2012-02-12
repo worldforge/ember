@@ -70,7 +70,7 @@ WFMath::Polygon<2> Polygon::getShape() const
 void Polygon::loadFromShape(const WFMath::Polygon<2>& shape)
 {
 	clear();
-	for (int i = 0; i < shape.numCorners(); ++i) {
+	for (size_t i = 0; i < shape.numCorners(); ++i) {
 		const WFMath::Point<2>& position = shape[i];
 		PolygonPoint* point = new PolygonPoint(*this, position);
 		mPoints.push_back(point);

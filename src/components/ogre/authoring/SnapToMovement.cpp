@@ -104,7 +104,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	currentRotbox.shift(WFMath::Vector<3>(position));
 
 	//See if we should visualize debug nodes for the moved entity
-	for (int j = 0; j < currentRotbox.numCorners(); ++j) {
+	for (size_t j = 0; j < currentRotbox.numCorners(); ++j) {
 		WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
 		if (currentPoint.isValid() && nodeIterator != mDebugNodes.end()) {
 
@@ -137,7 +137,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 					rotbox.rotatePoint(entity.getViewOrientation(), WFMath::Point<3>(0, 0, 0));
 					rotbox.shift(WFMath::Vector<3>(entity.getViewPosition()));
 
-					for (int i = 0; i < rotbox.numCorners(); ++i) {
+					for (size_t i = 0; i < rotbox.numCorners(); ++i) {
 						WFMath::Point<3> point = rotbox.getCorner(i);
 						Ogre::SceneNode* currentNode(0);
 						//If there is any unclaimed debug node left we'll use it to visualize the corner
@@ -148,7 +148,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 							nodeIterator++;
 						}
 						point.z() = 0;
-						for (int j = 0; j < currentRotbox.numCorners(); ++j) {
+						for (size_t j = 0; j < currentRotbox.numCorners(); ++j) {
 							WFMath::Point<3> currentPoint = currentRotbox.getCorner(j);
 							currentPoint.z() = 0;
 							WFMath::CoordType distance = WFMath::Distance(currentPoint, point);
