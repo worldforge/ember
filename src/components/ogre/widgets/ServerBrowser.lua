@@ -46,6 +46,14 @@ function ServerBrowser:buildWidget()
 			end
 		end
 	end
+	if emberServices:getConfigService():itemExists("metaserver", "minumumentitycount") then
+		local minumumentitycount = emberServices:getConfigService():getValue("metaserver", "minumumentitycount")
+		if minumumentitycount ~= nil then
+			if minumumentitycount:is_int() then
+				self.minumumentitycount = minumumentitycount[".int"](minumumentitycount)
+			end
+		end
+	end
 		
 	
 	
@@ -193,6 +201,9 @@ function ServerBrowser:addRow(sInfo)
 			return
 		end
 	end
+	if self.minumumentitycount >= sInfo:getEntities() then
+		return
+	end
 
 	local rowNumber = self.serverList:getRowCount()
 	self.serverList:addRow()
@@ -245,6 +256,6 @@ function ServerBrowser:MetaServer_ReceivedServerInfo(sInfo)
 	
 end
 
-serverBrowser = {connectors={}, hideOldServers = false, minimumVersion = '', rows = {}}
+serverBrowser = {connectors={}, hideOldServers = false, minimumVersion = '', minumumentitycount = 0, rows = {}}
 setmetatable(serverBrowser, {__index = ServerBrowser})
 serverBrowser:buildWidget()

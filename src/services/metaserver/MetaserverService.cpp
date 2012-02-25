@@ -125,7 +125,8 @@ void MetaserverService::receivedServerInfo(const Eris::ServerInfo& sInfo)
 			<< "\nServer Type: "<<sInfo.getServer()
 			<< "\nClients: "<<sInfo.getNumClients()
 			<< "\nPing: "<< sInfo.getPing()
-			<< "\nUptime: "<< (int)sInfo.getUptime());
+			<< "\nUptime: "<< (int)sInfo.getUptime()
+			<< "\nEntities: "<< sInfo.getEntities());
 }
 
 void MetaserverService::completedServerList(int count)

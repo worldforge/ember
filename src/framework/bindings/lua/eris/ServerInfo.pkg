@@ -50,6 +50,8 @@ class ServerInfo
     /// the server's uptime in seconds
     double getUptime() const;
 
+    /// the number of entities on the server
+    long getEntities() const;
 
 
 };
