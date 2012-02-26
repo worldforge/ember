@@ -58,9 +58,12 @@ ModelDefinition::~ModelDefinition()
 	for (ViewDefinitionStore::iterator I = mViews.begin(); I != mViews.end(); ++I) {
 		delete I->second;
 	}
+	for (BoneGroupDefinitionStore::iterator I = mBoneGroups.begin(); I != mBoneGroups.end(); ++I) {
+		delete I->second;
+	}
 	delete mRenderingDef;
-	// have to call this here reather than in Resource destructor
-	// since calling virtual methods in base destructors causes crash
+	// have to call this here rather than in Resource destructor
+	// since calling virtual methods in base destructors causes crashes
 	unload();
 }
 
@@ -107,9 +110,32 @@ const ViewDefinitionStore& ModelDefinition::getViewDefinitions() const
 	return mViews;
 }
 
-void ModelDefinition::removeViewDefinition(const std::string name)
+void ModelDefinition::removeViewDefinition(const std::string& name)
 {
 	mViews.erase(name);
+}
+
+BoneGroupDefinition* ModelDefinition::createBoneGroupDefinition(const std::string& name)
+{
+	BoneGroupDefinitionStore::iterator group = mBoneGroups.find(name);
+	if (group != mBoneGroups.end()) {
+		return group->second;
+	} else {
+		BoneGroupDefinition* def = new BoneGroupDefinition();
+		def->Name = name;
+		mBoneGroups.insert(std::make_pair(name, def));
+		return def;
+	}
+}
+
+void ModelDefinition::removeBoneGroupDefinition(const std::string& name)
+{
+	mBoneGroups.erase(name);
+}
+
+const BoneGroupDefinitionStore& ModelDefinition::getBoneGroupDefinitions() const
+{
+	return mBoneGroups;
 }
 
 const Ogre::Vector3& ModelDefinition::getTranslate() const

@@ -54,6 +54,7 @@ struct AnimationPartDefinition;
 struct ActivationDefinition;
 struct AttachPointDefinition;
 struct ViewDefinition;
+struct BoneGroupDefinition;
 
 typedef std::map<std::string, Model*> ModelInstanceStore;
 
@@ -68,6 +69,7 @@ typedef std::vector<AttachPointDefinition> AttachPointDefinitionStore;
 typedef std::vector<ActivationDefinition*> ActivationDefinitionStore;
 typedef std::map<std::string, ViewDefinition*> ViewDefinitionStore;
 typedef std::map<std::string, std::string> StringParamStore;
+typedef std::map<std::string, BoneGroupDefinition*> BoneGroupDefinitionStore;
 
 /**
  * @brief A rendering definition.
@@ -247,6 +249,31 @@ struct AnimationPartDefinition
 {
 	std::string Name;
 	Ogre::Real Weight;
+};
+
+/**
+ * @brief A definition of a bone group.
+ *
+ * A bone group is used to define blend weights to bones, so that different animations can be used together.
+ * A typical example would be of one animation which only affects a human character's hands, and another animation which only affects the legs.
+ * To make these blend together one would have to add bone groups where one the bones affecting the arms are added to one group, and the bones affecting the legs added to the other group.
+ */
+struct BoneGroupDefinition
+{
+	/**
+	 * @brief The name of the group.
+	 */
+	std::string Name;
+
+	/**
+	 * @brief The bones which are affected by the group, specified through their indices.
+	 */
+	std::vector<size_t> Bones;
+
+	/**
+	 * @brief The animations which should be affected by this bone group.
+	 */
+	std::vector<std::string> Animations;
 };
 
 /**
@@ -561,7 +588,26 @@ public:
 	 * @brief Removed a named view. If no view can be found, no exception will be thrown.
 	 * @param name The name of the view to to remove.
 	 */
-	void removeViewDefinition(const std::string name);
+	void removeViewDefinition(const std::string& name);
+
+	/**
+	 * @brief Creates and returns a new BoneGroupDefinition with the supplied name.
+	 * @param name The name of the definition.
+	 * @return A pointer to the new definition.
+	 */
+	BoneGroupDefinition* createBoneGroupDefinition(const std::string& name);
+
+	/**
+	 * @brief Removed a named bone group. If no bone group can be found, no exception will be thrown.
+	 * @param name The name of the bone group to to remove.
+	 */
+	void removeBoneGroupDefinition(const std::string& name);
+
+	/**
+	 * @brief Returns all bone groups.
+	 * @return All bone groups.
+	 */
+	const BoneGroupDefinitionStore& getBoneGroupDefinitions() const;
 
 	/**
 	 * @brief Utility method for removing a definition from a non-associative stores (vector, list etc.)
@@ -638,6 +684,7 @@ private:
 	 * @param
 	 */
 	void addModelInstance(Model*);
+
 	/**
 	 * @brief Removed a model instance from the internal store of instances. This method should be called from the class Model when a new Model is removed.
 	 * @param
@@ -659,6 +706,7 @@ private:
 	ActionDefinitionsStore mActions;
 	ParticleSystemSet mParticleSystems;
 	LightSet mLights;
+	BoneGroupDefinitionStore mBoneGroups;
 
 	AttachPointDefinitionStore mAttachPoints;
 
