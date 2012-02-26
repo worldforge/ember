@@ -297,6 +297,17 @@ void Model::createActions()
 								Ogre::AnimationState* state = getAnimationState((*I_animParts)->Name);
 								animPart.state = state;
 								animPart.weight = (*I_animParts)->Weight;
+								for (BoneGroupDefinitionStore::const_iterator I_boneGroup = mDefinition->getBoneGroupDefinitions().begin(); I_boneGroup != mDefinition->getBoneGroupDefinitions().end(); ++I_boneGroup) {
+									if (std::find(I_boneGroup->second->Animations.begin(), I_boneGroup->second->Animations.end(), state->getAnimationName()) != I_boneGroup->second->Animations.end()) {
+										if (!state->hasBlendMask()) {
+											state->createBlendMask(getSkeleton()->getNumBones(), 0.0f);
+										}
+										const std::vector<size_t>& boneIndices = I_boneGroup->second->Bones;
+										for (std::vector<size_t>::const_iterator bones_I = boneIndices.begin(); bones_I != boneIndices.end(); ++bones_I) {
+											state->setBlendMaskEntry(*bones_I, 1.0f);
+										}
+									}
+								}
 								animation.addAnimationPart(animPart);
 							} catch (const std::exception& ex) {
 								S_LOG_FAILURE("Error when loading animation: " << (*I_animParts)->Name << "." << ex);
