@@ -25,7 +25,7 @@ public:
 	TestModel() :
 		Model::Model("testmodel")
 	{
-		mDefinition = ::Ember::OgreView::Model::ModelDefnPtr(new ::Ember::OgreView::Model::ModelDefinition(0, "modeldef", 1, ""));
+		mDefinition = ::Ember::OgreView::Model::ModelDefinitionPtr(new ::Ember::OgreView::Model::ModelDefinition(0, "modeldef", 1, ""));
 		mDefinition->setTranslate(Ogre::Vector3::ZERO);
 	}
 

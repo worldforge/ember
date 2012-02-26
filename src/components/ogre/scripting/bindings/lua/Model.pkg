@@ -63,7 +63,7 @@ class Model
 	 *    returns a pointer to the defintion of the Model
 	 * @return 
 	 */
-	Ember::OgreView::Model::ModelDefnPtr getDefinition() const;
+	Ember::OgreView::Model::ModelDefinitionPtr getDefinition() const;
 	
 	
 	bool hasAttachPoint(const std::string& attachPoint) const; 

@@ -193,13 +193,11 @@ class ModelDefinition : public Ogre::Resource {
 	
 };
 
-class ModelDefnPtr
+class ModelDefinitionPtr
 {
-	virtual ~ModelDefnPtr();
+	virtual ~ModelDefinitionPtr();
 	Ember::OgreView::Model::ModelDefinition* get();
 };
-
-typedef Ember::OgreView::Model::ModelDefnPtr ModelDefinitionPtr;
 
 }
 }

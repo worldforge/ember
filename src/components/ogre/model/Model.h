@@ -260,7 +260,7 @@ public:
 	 *    returns a pointer to the defintion of the Model
 	 * @return
 	 */
-	ModelDefnPtr getDefinition() const;
+	ModelDefinitionPtr getDefinition() const;
 
 	Ogre::TagPoint* attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE);
 	AttachPointWrapper attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale = Ogre::Vector3::UNIT_SCALE, const Ogre::Quaternion &offsetOrientation = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 &offsetPosition = Ogre::Vector3::ZERO);
@@ -369,7 +369,7 @@ protected:
 	/**
 	 modeldef this was copied from
 	 */
-	ModelDefnPtr mDefinition;
+	ModelDefinitionPtr mDefinition;
 
 	/**
 	 a set of all submodels belonging to the model
@@ -413,7 +413,7 @@ protected:
 // 	return _masterModel->getRenderingDistance();
 // }
 
-inline ModelDefnPtr Model::getDefinition() const
+inline ModelDefinitionPtr Model::getDefinition() const
 {
 	return mDefinition;
 }

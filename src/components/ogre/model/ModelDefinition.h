@@ -34,10 +34,12 @@
 #include <map>
 #include <vector>
 
-namespace Ember {
-namespace OgreView {
-namespace Model {
-
+namespace Ember
+{
+namespace OgreView
+{
+namespace Model
+{
 
 class Model;
 class PartDefinition;
@@ -68,42 +70,50 @@ typedef std::map<std::string, ViewDefinition*> ViewDefinitionStore;
 typedef std::map<std::string, std::string> StringParamStore;
 
 /**
-A rendering definition. This allows you to specify a different render method than the default one (regular Model).
-All of this requires that you create functionality for implementing the different schemes that might be specified.
-*/
+ * @brief A rendering definition.
+ *
+ * This allows you to specify a different render method than the default one (regular Model).
+ * All of this requires that you create functionality for implementing the different schemes that might be specified.
+ */
 class RenderingDefinition
 {
-friend class XMLModelDefinitionSerializer;
+	friend class XMLModelDefinitionSerializer;
 public:
 
-/**
- * Gets the scheme which will be used.
- * @return
- */
-const std::string& getScheme() const;
-/**
- * Sets the scheme.
- * @param scheme
- */
-void setScheme(const std::string& scheme);
-/**
- * Gets a collection of parameters for the rendering scheme.
- * @return
- */
-const StringParamStore& getParameters() const;
+	/**
+	 * Gets the scheme which will be used.
+	 * @return
+	 */
+	const std::string& getScheme() const;
+	/**
+	 * Sets the scheme.
+	 * @param scheme
+	 */
+	void setScheme(const std::string& scheme);
+
+	/**
+	 * Gets a collection of parameters for the rendering scheme.
+	 * @return
+	 */
+	const StringParamStore& getParameters() const;
 
 private:
-StringParamStore mParams;
-std::string mScheme;
+	StringParamStore mParams;
+	std::string mScheme;
 };
 
+/**
+ * @brief A definitions of a subentity within a part of a submodel.
+ *
+ * Each subentity definitions refers to an Ogre::SubEntity (by index in the Ogre::Entity).
+ * In addition, a specific material can be defined which overrides the default material of the subentity.
+ */
 class SubEntityDefinition
 {
-friend class PartDefinition;
+	friend class PartDefinition;
 public:
 	const std::string& getSubEntityName() const;
 	unsigned int getSubEntityIndex() const;
-	//void setSubEntityName(const std::string&);
 
 	const std::string& getMaterialName() const;
 	void setMaterialName(const std::string& materialName);
@@ -119,10 +129,20 @@ private:
 	PartDefinition& mPartDef;
 };
 
-
+/**
+ * @brief Defines a part within a Model.
+ *
+ * Each model can contain many different parts. By turning on and off these parts the presentation of the model can change.
+ *
+ * A simple example would be a human mesh with different kind of hairs defined.
+ * Each hair variant would be represented by a part, and by switching on and off these parts the presentation of the human is changed.
+ *
+ * Each part can be put into a "group". This mechanisms guarantees that only one part from the same group ever is visible.
+ * In our example with hair variants it would be very much suitable to put all parts into the same group since we only ever want one hair variant to be visible at once.
+ */
 class PartDefinition
 {
-friend class SubModelDefinition;
+	friend class SubModelDefinition;
 public:
 	~PartDefinition();
 
@@ -151,10 +171,15 @@ private:
 	SubModelDefinition& mSubModelDef;
 };
 
-
+/**
+ * @brief A sub model definition within a Model.
+ *
+ * This represents one mesh within the Model. Each Model can be made up of multiple meshes, and each mesh is then defined through an instance of this class.
+ *
+ */
 class SubModelDefinition
 {
-friend class ModelDefinition;
+	friend class ModelDefinition;
 public:
 	~SubModelDefinition();
 
@@ -174,26 +199,35 @@ private:
 };
 
 /**
-A simple struct for defining a certain view of the Model. These settings needs to be applied to the camera rendering the Model.
-*/
+ * @brief A simple struct for defining a certain view of the Model.
+ *
+ * These settings needs to be applied to the camera rendering the Model.
+ * The main use of this is when providing previews in icons and similar views.
+ */
 struct ViewDefinition
 {
 	/**
-	The name of the view.
-	*/
+	 The name of the view.
+	 */
 	std::string Name;
 
 	/**
-	The rotation of the camera related to the Model.
-	*/
+	 The rotation of the camera related to the Model.
+	 */
 	Ogre::Quaternion Rotation;
 
 	/**
-	The distance of the camera from the Model.
-	*/
+	 The distance of the camera from the Model.
+	 */
 	float Distance;
 };
 
+/**
+ * @brief Definition of an attach point.
+ *
+ * An "attach point" is a place where child entities can be attached. A typical example would be something wielded in the hand of a human.
+ * Each attach point has a name, which is used to bind it to the Atlas entity data, and a "bone name" which is used to determine what bone in the Ogre skeleton to bind to.
+ */
 struct AttachPointDefinition
 {
 	std::string Name;
@@ -201,15 +235,30 @@ struct AttachPointDefinition
 	Ogre::Quaternion Rotation;
 };
 
+/**
+ * @brief Definition of an animation part.
+ *
+ * An animation is comprised of many animation parts, where each part refers to an Ogre::Animation.
+ * When the animation is played, the different parts are blended together.
+ *
+ * In addition, each part can have a weight attached to it which determines how much it should be blended.
+ */
 struct AnimationPartDefinition
 {
 	std::string Name;
 	Ogre::Real Weight;
 };
 
+/**
+ * @brief A definition of an animation.
+ *
+ * Each animation is made up of one or many "animation parts" which mainly refers to which instances of Ogre::Animation to play.
+ *
+ * In addition, each animation can be specified to iterate a certain number of times.
+ */
 class AnimationDefinition
 {
-friend class ActionDefinition;
+	friend class ActionDefinition;
 public:
 	~AnimationDefinition();
 	AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight = 1);
@@ -227,6 +276,9 @@ private:
 	int mIterations;
 };
 
+/**
+ * @brief Definition of a sound to play for a certain action.
+ */
 struct SoundDefinition
 {
 	std::string groupName;
@@ -243,21 +295,22 @@ struct ActivationDefinition
 	/**
 	 * @brief The type of activation.
 	 */
-	enum Type {
+	enum Type
+	{
 		/**
 		 * @brief Activation through change of movement type.
 		 */
-		MOVEMENT,//!< MOVEMENT
+		MOVEMENT,
 
 		/**
 		 * @brief Activation through an entity action.
 		 */
-		ACTION,  //!< ACTION
+		ACTION,
 
 		/**
 		 * @brief Activation through a task being carried out.
 		 */
-		TASK     //!< TASK
+		TASK
 	};
 
 	/**
@@ -268,14 +321,20 @@ struct ActivationDefinition
 	/**
 	 * @brief The trigger for the activation.
 	 *
-	 * The interpretion of this value is dependent on the type.
+	 * The interpretation of this value is dependent on the type.
 	 */
 	std::string trigger;
 };
 
+/**
+ * @brief Definition of an action.
+ *
+ * An "action" is comprised of both animations and sounds.
+ * A typical example would be a "dig" action, which would use both an animation for showing the digging operation as well as some sound (perhaps grunting and the sound of a shovel digging in the ground).
+ */
 class ActionDefinition
 {
-friend class ModelDefinition;
+	friend class ModelDefinition;
 public:
 	~ActionDefinition();
 
@@ -292,12 +351,11 @@ public:
 	void removeActivationDefinition(ActivationDefinition* def);
 
 	const std::string& getName() const;
-	Ogre::Real getAnimationSpeed() const { return mAnimationSpeed; }
-	void setAnimationSpeed(Ogre::Real speed) { mAnimationSpeed = speed; }
+	Ogre::Real getAnimationSpeed() const;
+	void setAnimationSpeed(Ogre::Real speed);
 
 private:
 	ActionDefinition(const std::string& name);
-
 
 	std::string mName;
 	AnimationDefinitionsStore mAnimations;
@@ -306,11 +364,17 @@ private:
 	Ogre::Real mAnimationSpeed;
 };
 
-
 /**
-@author Erik Hjortsberg
-*/
-class ModelDefinition : public Ogre::Resource {
+ * @author Erik Hjortsberg
+ * @brief Definition of a Model.
+ *
+ * A "Model" is a very broad concept which allows any entity in the world to have a visible and audible representation.
+ * It can hold both meshes, sounds, lights and particle effects.
+ *
+ * The most common use is to show a mesh though.
+ */
+class ModelDefinition: public Ogre::Resource
+{
 
 	friend class XMLModelDefinitionSerializer;
 	friend class Model;
@@ -318,23 +382,39 @@ class ModelDefinition : public Ogre::Resource {
 public:
 
 	/**
-	whether to use a certain axis for scaling
-	for example, if you use a model of a human you probably want to scale according to the height
-	this might mean that width and depths aren't correct though
-	*/
-	enum UseScaleOf {
+	 * @brief Whether to use a certain axis for scaling.
+	 * For example, if you use a model of a human you probably want to scale according to the height.
+	 * This might mean that width and depths aren't correct though.
+	 */
+	enum UseScaleOf
+	{
+		/**
+		 * @brief Scale in all sizes, so that the bounding box of the model exactly matches the entity bounding box.
+		 */
 		MODEL_ALL = 0,
+
+		/**
+		 * @brief Perform no scaling of the model.
+		 */
 		MODEL_NONE = 1,
+
+		/**
+		 * @brief Scale the model so that it matches the width of the entity bounding box.
+		 */
 		MODEL_WIDTH = 2,
+
+		/**
+		 * @brief Scale the model so that it matches the depth of the entity bounding box.
+		 */
 		MODEL_DEPTH = 3,
+
+		/**
+		 * @brief Scale the model so that it matches the height of the entity bounding box.
+		 */
 		MODEL_HEIGHT = 4
 	};
 
-
-    //th ModelDefinition(const Ogre::String& name, const Ogre::String& path);
-
-	ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
-		const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+	ModelDefinition(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
 
 	virtual ~ModelDefinition();
 
@@ -342,29 +422,29 @@ public:
 	void setValid(bool valid);
 
 	//Ogre resource virtual functions
- 	void loadImpl(void);
+	void loadImpl(void);
 
- 	void unloadImpl(void);
+	void unloadImpl(void);
 
 	size_t calculateSize(void) const;
 
 	/**
-	 *    Gets the amount of scale that needs to be applied to derived Models.
+	 * @brief Gets the amount of scale that needs to be applied to derived Models.
 	 * @return
 	 */
 	Ogre::Real getScale() const;
 	void setScale(Ogre::Real scale);
 
 	/**
-	 *    Gets how derived Models needs to be scaled.
-	 Defaults to "ALL"
+	 * @brief Gets how derived Models needs to be scaled.
+	 * Defaults to "ALL"
 	 * @return
 	 */
 	const UseScaleOf getUseScaleOf() const;
 	void setUseScaleOf(const UseScaleOf useScale);
 
 	/**
-	 *    Gets an optional translation vector which should be applied to derived Models.
+	 * @brief Gets an optional translation vector which should be applied to derived Models.
 	 * @return
 	 */
 	const Ogre::Vector3& getTranslate() const;
@@ -372,75 +452,73 @@ public:
 
 	/**
 	 *	Whether contained entities should be shown or not.
-	 Defaults to true.
+	 * Defaults to true.
 	 * @return true if contained entities should be shown, else false
 	 */
 	bool getShowContained() const;
 	void setShowContained(bool show);
 
 	/**
-	 *    If set to something else than 0, all models beyond this distance won't be shown.
+	 * @brief If set to something else than 0, all models beyond this distance won't be shown.
 	 * @return
 	 */
 	float getRenderingDistance() const;
 	void setRenderingDistance(float distance);
 
 	/**
-	 *    Returns a vector defining how much, if ever, contained entities should be offset.
-	 *    If they shouldn't, Ogre::Vector3::ZERO will be returned.
+	 * @brief Returns a vector defining how much, if ever, contained entities should be offset.
+	 * If they shouldn't, Ogre::Vector3::ZERO will be returned.
 	 * @return A offset vector.
 	 */
 	const Ogre::Vector3& getContentOffset() const;
 	void setContentOffset(const Ogre::Vector3&);
 
 	/**
-	 *    Gets the rotation of the model.
+	 * @brief Gets the rotation of the model.
 	 * @return
 	 */
 	const Ogre::Quaternion& getRotation() const;
 
 	/**
-	 *    Sets the rotation of the model.
+	 * @brief Sets the rotation of the model.
 	 * @param rotation
 	 */
 	void setRotation(const Ogre::Quaternion rotation);
 
-
 	/**
-	 *    Gets a path to an icon resource, if defined.
+	 * @brief Gets a path to an icon resource, if defined.
 	 * @return a path to an image which can be used as an icon for the model
 	 */
 	const std::string& getIconPath() const;
 
-
 	/**
-	 *    Creates and returns a new sub model definition for the supplied mesh name.
+	 * @brief Creates and returns a new sub model definition for the supplied mesh name.
 	 * @param meshname The name of the mesh to base the new sub model on. Must be a valid mesh.
 	 * @return
 	 */
 	SubModelDefinition* createSubModelDefinition(const std::string& meshname);
 
 	/**
-	 *    Returns all SubModelDefinitions defined.
+	 * @brief Returns all SubModelDefinitions defined.
 	 * @return The SubModelDefinitions store.
 	 */
 	const SubModelDefinitionsStore& getSubModelDefinitions() const;
 
 	/**
-	 *    Removes a certain SubModelDefinition.
+	 * @brief Removes a certain SubModelDefinition.
 	 * @param def The definition to remove.
 	 */
 	void removeSubModelDefinition(SubModelDefinition* def);
 
 	/**
-	 * Creates and returns a new ActionDefintion with the given name.
+	 * @brief Creates and returns a new ActionDefintion with the given name.
 	 * @param actionname The name of the new ActionDefinition.
 	 * @return A pointer to the new ActionDefinition.
 	 */
 	ActionDefinition* createActionDefinition(const std::string& actionname);
 
 	/**
-	 *    Returns all ActionDefinitions defined.
+	 * @brief Returns all ActionDefinitions defined.
 	 * @return
 	 */
 	const ActionDefinitionsStore& getActionDefinitions() const;
@@ -467,47 +545,44 @@ public:
 	void addAttachPointDefinition(const AttachPointDefinition& definition);
 
 	/**
-	 Creates and returns a new ViewDefinition with the supplied name.
-	 @param viewname The name of the view
-	 @return A pointer to the new view.
+	 * @brief Creates and returns a new ViewDefinition with the supplied name.
+	 * @param viewname The name of the view
+	 * @return A pointer to the new view.
 	 */
 	ViewDefinition* createViewDefinition(const std::string& viewname);
 
 	/**
-	 * Returns all views defined.
+	 * @brief Returns all views defined.
 	 * @return
 	 */
 	const ViewDefinitionStore& getViewDefinitions() const;
 
 	/**
-	 * Removed a named view. If no view can be found, no exception will be thrown.
+	 * @brief Removed a named view. If no view can be found, no exception will be thrown.
 	 * @param name The name of the view to to remove.
 	 */
 	void removeViewDefinition(const std::string name);
 
-
 	/**
-	 * Utility method for removing a defintion from a non-associative stores (vector, list etc.)
-	 * @param def The defintion to remove.
+	 * @brief Utility method for removing a definition from a non-associative stores (vector, list etc.)
+	 * @param def The definition to remove.
 	 * @param store The store to remove from.
 	 */
-	template <typename T, typename T1>
+	template<typename T, typename T1>
 	static void removeDefinition(T* def, T1& store);
 
-
 	/**
-	 *    Reloads all the Model instances that uses this definition.
+	 * @brief Reloads all the Model instances that uses this definition.
 	 */
 	void reloadAllInstances();
 
 	/**
-	 *    Gets a pointer to the rendering scheme definition, or null if none specified.
+	 * @brief Gets a pointer to the rendering scheme definition, or null if none specified.
 	 * @return
 	 */
 	const RenderingDefinition* getRenderingDefinition() const;
 
 private:
-
 
 	struct BindingDefinition
 	{
@@ -558,29 +633,26 @@ private:
 
 	typedef std::vector<LightDefinition> LightSet;
 
-
-
 	/**
-	 *    Adds a model instance to the internal store of instances. This method should be called from the class Model when a new Model is created.
+	 * @brief Adds a model instance to the internal store of instances. This method should be called from the class Model when a new Model is created.
 	 * @param
 	 */
 	void addModelInstance(Model*);
 	/**
-	 *    Removed a model instance from the internal store of instances. This method should be called from the class Model when a new Model is removed.
+	 * @brief Removed a model instance from the internal store of instances. This method should be called from the class Model when a new Model is removed.
 	 * @param
 	 */
 	void removeModelInstance(Model*);
 
 	/**
-	A store of all model instances of this definition.
-	This can be used to update all instances at once.
-	*/
+	 * @brief A store of all model instances of this definition.
+	 * This can be used to update all instances at once.
+	 */
 	ModelInstanceStore mModelInstances;
 
-
 	/**
-	The minimum distance at which the model will be shown.
-	*/
+	 * @brief The minimum distance at which the model will be shown.
+	 */
 	float mRenderingDistance;
 
 	SubModelDefinitionsStore mSubModels;
@@ -593,23 +665,22 @@ private:
 	UseScaleOf mUseScaleOf;
 	Ogre::Real mScale;
 	Ogre::Quaternion mRotation;
-// 	const Ogre::String mPath;
 
 	/**
-	Defines how much contained entities should be offset. ZERO if not.
-	*/
+	 * @brief Defines how much contained entities should be offset. ZERO if not.
+	 */
 	Ogre::Vector3 mContentOffset;
 
 	/**
-	Whether contained entities should be shown or not.
-	Defaults to true.
-	*/
+	 * @brief Whether contained entities should be shown or not.
+	 * Defaults to true.
+	 */
 	bool mShowContained;
 
 	/**
-	How, if any, to transform the model from the base position.
-	Defaults to a zeroed vector.
-	*/
+	 * @brief How, if any, to transform the model from the base position.
+	 * Defaults to a zeroed vector.
+	 */
 	Ogre::Vector3 mTranslate;
 
 	bool mIsValid;
@@ -617,36 +688,43 @@ private:
 	ViewDefinitionStore mViews;
 
 	/**
-	A path to an image resource which can be shown as an icon for the model.
-	*/
+	 * @brief A path to an image resource which can be shown as an icon for the model.
+	 */
 	std::string mIconPath;
 
 	RenderingDefinition* mRenderingDef;
 
 };
 
-/** Specialisation of SharedPtr to allow SharedPtr to be assigned to ModelDefnPtr
-@note Has to be a subclass since we need operator=.
-We could templatise this instead of repeating per Resource subclass,
-except to do so requires a form VC6 does not support i.e.
-ResourceSubclassPtr<T> : public SharedPtr<T>
-*/
-class ModelDefnPtr : public Ogre::SharedPtr<ModelDefinition>
+/**
+ * @brief Specialization of SharedPtr to allow SharedPtr to be assigned to ModelDefnPtr
+ @note Has to be a subclass since we need operator=.
+ We could templatise this instead of repeating per Resource subclass,
+ except to do so requires a form VC6 does not support i.e.
+ ResourceSubclassPtr<T> : public SharedPtr<T>
+ */
+class ModelDefnPtr: public Ogre::SharedPtr<ModelDefinition>
 {
 public:
-        ModelDefnPtr() : Ogre::SharedPtr<ModelDefinition>() {}
-        explicit ModelDefnPtr(ModelDefinition* rep) : Ogre::SharedPtr<ModelDefinition>(rep) {}
-        ModelDefnPtr(const ModelDefnPtr& r) : Ogre::SharedPtr<ModelDefinition>(r) {}
-        ModelDefnPtr(const Ogre::ResourcePtr& r);
-        /// Operator used to convert a ResourcePtr to a ModelDefnPtr
-        ModelDefnPtr& operator=(const Ogre::ResourcePtr& r);
-protected:
-        /// Override destroy since we need to delete Mesh after fully defined
-//         void destroy(void);
+	ModelDefnPtr() :
+			Ogre::SharedPtr<ModelDefinition>()
+	{
+	}
+	explicit ModelDefnPtr(ModelDefinition* rep) :
+			Ogre::SharedPtr<ModelDefinition>(rep)
+	{
+	}
+	ModelDefnPtr(const ModelDefnPtr& r) :
+			Ogre::SharedPtr<ModelDefinition>(r)
+	{
+	}
+	ModelDefnPtr(const Ogre::ResourcePtr& r);
+
+	ModelDefnPtr& operator=(const Ogre::ResourcePtr& r);
+
 };
 
 typedef ModelDefnPtr ModelDefinitionPtr;
-
 
 ///implementations
 
@@ -706,6 +784,15 @@ inline const std::string& ModelDefinition::getIconPath() const
 inline int AnimationDefinition::getIterations() const
 {
 	return mIterations;
+}
+
+inline Ogre::Real ActionDefinition::getAnimationSpeed() const
+{
+	return mAnimationSpeed;
+}
+inline void ActionDefinition::setAnimationSpeed(Ogre::Real speed)
+{
+	mAnimationSpeed = speed;
 }
 
 }

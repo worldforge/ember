@@ -110,7 +110,7 @@ void ModelDefinitionManager::parseScript (Ogre::DataStreamPtr &stream, const Ogr
 	serializer.parseScript(*this, stream, groupName);
 }
 
-std::string ModelDefinitionManager::exportScript(ModelDefnPtr definition)
+std::string ModelDefinitionManager::exportScript(ModelDefinitionPtr definition)
 {
 	XMLModelDefinitionSerializer serializer;
 	bool success = serializer.exportScript(definition, mExportDirectory, definition->getName() + ".modeldef");

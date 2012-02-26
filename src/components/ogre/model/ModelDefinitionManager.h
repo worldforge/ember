@@ -81,7 +81,7 @@ public:
 	 * @param definition The definition to export.
 	 * @return The path to the exported script. If the export failed, the string will be empty.
 	 */
-	std::string exportScript(ModelDefnPtr definition);
+	std::string exportScript(ModelDefinitionPtr definition);
 	
 	/**
 	 * @brief Gets a vector of all mesh names in the system.

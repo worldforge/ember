@@ -201,7 +201,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 	if (!mModel->getDefinition()->isValid()) {
 		S_LOG_FAILURE("Could not find " << modelName << ", using placeholder.");
 		//add a placeholder model
-		Model::ModelDefnPtr modelDef = mModel->getDefinition();
+		Model::ModelDefinitionPtr modelDef = mModel->getDefinition();
 		modelDef->createSubModelDefinition("3d_objects/primitives/models/box.mesh")->createPartDefinition("main")->setShow(true);
 		modelDef->setValid(true);
 		modelDef->reloadAllInstances();
