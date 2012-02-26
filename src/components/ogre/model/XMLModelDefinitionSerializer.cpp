@@ -214,6 +214,10 @@ void XMLModelDefinitionSerializer::readModel(ModelDefinitionPtr modelDef, TiXmlE
 	elem = modelNode->FirstChildElement("lights");
 	if (elem)
 		readLights(modelDef, elem);
+
+	elem = modelNode->FirstChildElement("bonegroups");
+	if (elem)
+		readBoneGroups(modelDef, elem);
 }
 
 
@@ -665,7 +669,7 @@ void XMLModelDefinitionSerializer::readViews(ModelDefinitionPtr modelDef, TiXmlE
 	}
 }
 
-void  XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode)
+void XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode)
 {
 	TiXmlElement* elem;
 	ModelDefinition::LightSet& lights = modelDef->mLights;
@@ -770,6 +774,51 @@ void  XMLModelDefinitionSerializer::readLights(ModelDefinitionPtr modelDef, TiXm
 	}
 }
 
+void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement* boneGroupsNode)
+{
+	TiXmlElement* elem;
+
+	const char* tmp = 0;
+
+	for (TiXmlElement* boneGroupElem = boneGroupsNode->FirstChildElement();
+			boneGroupElem != 0; boneGroupElem = boneGroupElem->NextSiblingElement())
+	{
+
+		// name
+		tmp = boneGroupElem->Attribute("name");
+		if (tmp) {
+			std::string name(tmp);
+
+			BoneGroupDefinition* def = modelDef->createBoneGroupDefinition(name);
+
+			S_LOG_VERBOSE( " Add Bone Group  : "+ def->Name );
+
+			elem = boneGroupElem->FirstChildElement("animations");
+			if (elem) {
+				for (TiXmlElement* animationElem = elem->FirstChildElement();
+						animationElem != 0; animationElem = animationElem->NextSiblingElement())
+				{
+					def->Animations.push_back(animationElem->GetText());
+				}
+			}
+
+			elem = boneGroupElem->FirstChildElement("bones");
+			if (elem) {
+				for (TiXmlElement* boneElem = elem->FirstChildElement();
+						boneElem != 0; boneElem = boneElem->NextSiblingElement())
+				{
+					const char* text = boneElem->Attribute("index");
+					if (text) {
+						std::istringstream stream(text);
+						size_t index;
+						stream >> index;
+						def->Bones.push_back(index);
+					}
+				}
+			}
+		}
+	}
+}
 
 
 bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, const std::string& directory, const std::string& filename)
@@ -877,6 +926,8 @@ bool XMLModelDefinitionSerializer::exportScript(ModelDefinitionPtr modelDef, con
 		exportLights(modelDef, modelElem);
 
 		exportParticleSystems(modelDef, modelElem);
+
+		exportBoneGroups(modelDef, modelElem);
 
 		elem.InsertEndChild(modelElem);
 
@@ -1093,6 +1144,40 @@ void XMLModelDefinitionSerializer::exportParticleSystems(ModelDefinitionPtr mode
 		modelElem.InsertEndChild(particleSystemsElem);
 	}
 }
+
+void XMLModelDefinitionSerializer::exportBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement& modelElem)
+{
+	TiXmlElement boneGroupsElem("bonegroups");
+
+	for (BoneGroupDefinitionStore::const_iterator I = modelDef->getBoneGroupDefinitions().begin(); I != modelDef->getBoneGroupDefinitions().end(); ++I) {
+		TiXmlElement boneGroupElem("bonegroup");
+		boneGroupElem.SetAttribute("name", I->second->Name.c_str());
+
+
+		TiXmlElement animationsElem("animations");
+		for (std::vector<std::string>::const_iterator J = I->second->Animations.begin(); J != I->second->Animations.end(); ++J) {
+			TiXmlElement animationElem("animation");
+			animationElem.SetValue(*J);
+			animationsElem.InsertEndChild(animationElem);
+		}
+		boneGroupElem.InsertEndChild(animationsElem);
+
+		TiXmlElement bonesElem("bones");
+		for (std::vector<size_t>::const_iterator J = I->second->Bones.begin(); J != I->second->Bones.end(); ++J) {
+			TiXmlElement boneElem("bone");
+			std::stringstream ss;
+			ss << *J;
+			boneElem.SetValue(ss.str().c_str());
+			bonesElem.InsertEndChild(boneElem);
+		}
+		boneGroupElem.InsertEndChild(bonesElem);
+
+		boneGroupsElem.InsertEndChild(boneGroupElem);
+	}
+	modelElem.InsertEndChild(boneGroupsElem);
+}
+
+
 } //end namespace
 }
 }

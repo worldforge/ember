@@ -72,6 +72,13 @@ private:
 	void readActivations(TiXmlElement* activationsNode, ActionDefinition* action);
 	void readLights(ModelDefinitionPtr modelDef, TiXmlElement* mLightsNode);
 
+	/**
+	 * @brief Reads bone groups data.
+	 * @param modelDef The modeldefinition node.
+	 * @param boneGroupsNode The bone groups node.
+	 */
+	void readBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement* boneGroupsNode);
+
 
 	void exportSubModels(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 	void exportActions(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
@@ -85,6 +92,13 @@ private:
 	 * @param modelElem The model xml element.
 	 */
 	void exportLights(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
+
+	/**
+	 * @brief Exports bone groups data.
+	 * @param modelDef The model definition.
+	 * @param modelElem The model xml element.
+	 */
+	void exportBoneGroups(ModelDefinitionPtr modelDef, TiXmlElement& modelElem);
 
 };
 
