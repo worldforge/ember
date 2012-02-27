@@ -71,9 +71,11 @@ EmberEntity::~EmberEntity()
 
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	//Calling this will result in the graphical represention being correctly set up.
-	//It's important that we call initialize before call Eris::Entity::init, since else we get strange results.
-	mEntityMapping->initialize();
+	if (mEntityMapping) {
+		//Calling this will result in the graphical represention being correctly set up.
+		//It's important that we call initialize before call Eris::Entity::init, since else we get strange results.
+		mEntityMapping->initialize();
+	}
 
 	Eris::Entity::init(ge, fromCreateOp);
 
@@ -84,7 +86,8 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	std::stringstream ss;
 	if (getPredictedPos().isValid()) {
 		ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
-	}S_LOG_VERBOSE(ss.str());
+	}
+	S_LOG_VERBOSE(ss.str());
 
 	mIsInitialized = true;
 
