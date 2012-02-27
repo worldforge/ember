@@ -285,6 +285,10 @@ void Model::createActions()
 		action.getAnimations().setSpeed((*I_actions)->getAnimationSpeed());
 
 		if (getSkeleton() && getAllAnimationStates()) {
+			if (!mDefinition->getBoneGroupDefinitions().empty()) {
+				//If there are bone groups, we need to use a cumulative blend mode. Note that this will affect all animations in the model.
+				getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
+			}
 			if (mSubmodels.size()) {
 				AnimationDefinitionsStore::const_iterator I_anims_end = (*I_actions)->getAnimationDefinitions().end();
 				for (AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin(); I_anims != I_anims_end; ++I_anims) {
