@@ -30,6 +30,7 @@
 #include "../GUIManager.h"
 #include "../EmberEntity.h"
 #include "../World.h"
+#include "components/ogre/authoring/AuthoringManager.h"
 
 
 #include "../EmberOgre.h"
@@ -42,10 +43,10 @@
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxTextItem.h>
 #include <elements/CEGUIGUISheet.h>
+#include <elements/CEGUIPushButton.h>
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
-#include <elements/CEGUIPushButton.h>
 #include <Atlas/Codecs/Bach.h>
 #include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Objects/Encoder.h>
@@ -79,16 +80,11 @@ InspectWidget::InspectWidget() :
 Inspect("inspect", this, "Inspect an entity."),
 mCurrentEntity(0), mChangedThisFrame(false)
 {
-
-	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &InspectWidget::Server_GotView));
 }
 InspectWidget::~InspectWidget()
 {
 }
 
-void InspectWidget::Server_GotView(Eris::View* view)
-{
-}
 
 void InspectWidget::entity_BeingDeleted()
 {
@@ -134,7 +130,7 @@ void InspectWidget::updateAttributeString()
 
 void InspectWidget::runCommand(const std::string &command, const std::string &args)
 {
-	if(Inspect == command)
+	if(Inspect == command && EmberOgre::getSingleton().getWorld())
 	{
 		//the first argument must be a valid entity id
 		Tokeniser tokeniser;
@@ -307,8 +303,12 @@ bool InspectWidget::ShowOgreBoundingBox_Click(const CEGUI::EventArgs& args)
 
 bool InspectWidget::ShowErisBoundingBox_Click(const CEGUI::EventArgs& args)
 {
-	if (mCurrentEntity) {
-		mCurrentEntity->setVisualize("ErisBBox", !mCurrentEntity->getVisualize("ErisBBox"));
+	if (mCurrentEntity && EmberOgre::getSingleton().getWorld()) {
+		if (EmberOgre::getSingleton().getWorld()->getAuthoringManager().hasSimpleEntityVisualization(*mCurrentEntity)) {
+			EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideSimpleEntityVisualization(*mCurrentEntity);
+		} else {
+			EmberOgre::getSingleton().getWorld()->getAuthoringManager().displaySimpleEntityVisualization(*mCurrentEntity);
+		}
 	}
 	return true;
 }

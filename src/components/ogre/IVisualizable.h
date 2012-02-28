@@ -46,14 +46,14 @@ public:
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
-	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
+	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
 	virtual void setVisualize(const std::string& visualization, bool visualize) = 0;
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
-	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
+	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
 	virtual bool getVisualize(const std::string& visualization) const = 0;

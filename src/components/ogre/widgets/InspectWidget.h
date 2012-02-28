@@ -89,7 +89,6 @@ protected:
 
 	EmberEntity* mCurrentEntity;
 
-	void Server_GotView(Eris::View* view);
 	void entity_BeingDeleted();
 
 	void updateAttributeString();

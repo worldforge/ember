@@ -225,14 +225,14 @@ public:
 
 	/**
 	 * General method for turning on and off debug visualizations. Subclasses might support more types of visualizations than the ones defined here.
-	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
+	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @param visualize Whether to visualize or not.
 	 */
 	void setVisualize(const std::string& visualization, bool visualize);
 
 	/**
 	 * @brief Gets whether a certain visualization is turned on or off.
-	 * @param visualization The type of visualization. Currently supports "OgreBBox" and "ErisBBox".
+	 * @param visualization The type of visualization. Currently supports "OgreBBox".
 	 * @return true if visualization is turned on, else false
 	 */
 	bool getVisualize(const std::string& visualization) const;
@@ -416,38 +416,6 @@ protected:
 	 */
 	virtual void onBboxChanged();
 
-//	/**
-//	 * @brief Adds a terrain area to the entity.
-//	 * Areas are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain area.
-//	 * @see OgreView::WorldEmberEntity::addArea()
-//	 * @param area The area which has been added.
-//	 */
-//	virtual void addArea(Terrain::TerrainArea& area);
-//
-//	/**
-//	 * @brief Adds a terrain mod to the entity.
-//	 * Mods are a terrain feature, and cannot be handled by a standard implementation of EmberEntity. The default implementation of this method in this class will therefore only pass it on to the parent entity, if any such is available. The idea is that somewhere along the way, as the method "walks" the entity hierarcy upwards it will come across an implementation of this method that does indeed know how to handle the terrain mod.
-//	 * @see OgreView::WorldEmberEntity::addTerrainMod()
-//	 * @param mod The mod which has been added.
-//	 */
-//	virtual void addTerrainMod(Terrain::TerrainMod* mod);
-//
-//	/**
-//	 * @brief Updates the terrain with the specified terrain definition points.
-//	 * @param terrainDefinitionPoints The terrain definition points.
-//	 */
-//	virtual void updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints);
-
-//	/**
-//	 * @brief Checks if we should create any dependent objects, such as TerrainArea or TerrainMod.
-//	 * Call this only when the entity has been propely initialized, since we then have all the correct data regarding positions, bounding boxes etc.
-//	 * @see init()
-//	 * @see onAttrChanged()
-//	 * @param attributeName The attribute which we should try to create something for.
-//	 * @return True if any dependent object was created.
-//	 */
-//	virtual bool createDependentObject(const std::string& attributeName);
-//
 	/**
 	 * @brief Called by eris just after the entity has been put into the world.
 	 * @param ge The root entity which contains all atlas data that define this entity.
@@ -469,18 +437,6 @@ protected:
 	 */
 	void reattachChildren();
 
-	/**
-	 * @brief Shows the eris/atlas bounding box.
-	 * This is mainly useful for debugging or authoring.
-	 * @param show If true, the bounding box will be shown. If false, it will be hidden.
-	 */
-	void showErisBoundingBox(bool show);
-
-	/**
-	 * @brief Returns whether the eris/atlas bounding box is shown.
-	 * @return True if the eris bounding box is shown.
-	 */
-	bool getShowErisBoundingBox() const;
 };
 
 inline bool EmberEntity::isInitialized() const

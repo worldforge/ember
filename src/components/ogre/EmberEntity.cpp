@@ -21,18 +21,13 @@
 #endif
 #include "EmberEntity.h"
 
-#include "World.h"
-#include "terrain/TerrainArea.h"
-#include "terrain/TerrainMod.h"
-#include "terrain/TerrainParser.h"
-#include "terrain/TerrainDefPoint.h"
 #include "Convert.h"
 #include "IGraphicalRepresentation.h"
 #include "IEntityAttachment.h"
 #include "IEntityVisitor.h"
-#include "EmberOgre.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/MultiLineListFormatter.h"
+#include "framework/LoggingInstance.h"
 #include "domain/EntityTalk.h"
 #include "domain/IHeightProvider.h"
 #include "authoring/AuthoringManager.h"
@@ -275,30 +270,6 @@ bool EmberEntity::hasSuggestedResponses() const
 	return mSuggestedResponses.size() > 0;
 }
 
-//void EmberEntity::addArea(Terrain::TerrainArea& area)
-//{
-//	//A normal EmberEntity shouldn't know anything about the terrain, so we can't handle the area here.
-//	//Instead we just pass it on to the parent until we get to someone who knows how to handle this (preferrably the terrain).
-//	if (getEmberLocation()) {
-//		getEmberLocation()->addArea(area);
-//	}
-//}
-//
-//void EmberEntity::addTerrainMod(Terrain::TerrainMod* mod)
-//{
-//	//Same as addArea: pass it on to the parent until it gets to someone who knows how to handle this
-//	if (getEmberLocation()) {
-//		getEmberLocation()->addTerrainMod(mod);
-//	}
-//}
-//
-//void EmberEntity::updateTerrain(const std::vector<Terrain::TerrainDefPoint>& terrainDefinitionPoints)
-//{
-//	if (getEmberLocation()) {
-//		getEmberLocation()->updateTerrain(terrainDefinitionPoints);
-//	}
-//}
-
 void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::Element& v)
 {
 	if (str == "mode") {
@@ -307,19 +278,10 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		Entity::onAttrChanged(str, v);
 		onBboxChanged();
 		return;
-//	} else //check for terrain updates
-//	if (str == "terrain") {
-//		Terrain::TerrainParser terrainParser;
-//		updateTerrain(terrainParser.parseTerrain(v, getPredictedPos()));
 	}
 
 	//call this before checking for areas and terrainmods, since those instances created to handle that (TerrainMod and TerrainArea) will listen to the AttrChanged event, which would then be emitted after those have been created, causing duplicate regeneration from the same data
 	Entity::onAttrChanged(str, v);
-
-	//Only to this if the entity has been propely initialized, to avoid using incomplete entity data (for example an entity which haven't yet been moved to it's proper place, as well as avoiding duplicate parsing of the same data.
-//	if (mIsInitialized) {
-//		createDependentObject(str);
-//	}
 
 }
 
@@ -358,28 +320,14 @@ void EmberEntity::setVisualize(const std::string& visualization, bool visualize)
 	if (mAttachment) {
 		mAttachment->setVisualize(visualization, visualize);
 	}
-	if (visualization == "ErisBBox") {
-		showErisBoundingBox(visualize);
-	}
 }
 
 bool EmberEntity::getVisualize(const std::string& visualization) const
 {
-	if (visualization == "ErisBBox") {
-		return getShowErisBoundingBox();
-	} else if (mAttachment) {
+	if (mAttachment) {
 		return mAttachment->getVisualize(visualization);
 	}
 	return false;
-}
-
-void EmberEntity::showErisBoundingBox(bool show)
-{
-	if (show) {
-		EmberOgre::getSingleton().getWorld()->getAuthoringManager().displaySimpleEntityVisualization(*this);
-	} else {
-		EmberOgre::getSingleton().getWorld()->getAuthoringManager().hideSimpleEntityVisualization(*this);
-	}
 }
 
 void EmberEntity::onBboxChanged()
@@ -387,11 +335,6 @@ void EmberEntity::onBboxChanged()
 	if (mAttachment) {
 		mAttachment->updateScale();
 	}
-}
-
-bool EmberEntity::getShowErisBoundingBox() const
-{
-	return EmberOgre::getSingleton().getWorld()->getAuthoringManager().hasSimpleEntityVisualization(*this);
 }
 
 EmberEntity* EmberEntity::getEmberLocation() const

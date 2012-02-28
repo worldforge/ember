@@ -500,8 +500,8 @@ function EntityEditor:clearEditing()
 		
 		if self.instance.entity then
 			--as we're not editing anymore, hide the bounding boxes
+			self.world:getAuthoringManager():hideSimpleEntityVisualization(self.instance.entity)
 			self.instance.entity:setVisualize("OgreBBox", false)
-			self.instance.entity:setVisualize("ErisBBox", false)
 		end
 		
 		--we want to disconnect all stackable containers before we start
@@ -546,7 +546,7 @@ function EntityEditor:editEntity(entity)
 	
 	--show the bounding boxes by default when editing
 	self.instance.entity:setVisualize("OgreBBox", false)
-	self.instance.entity:setVisualize("ErisBBox", true)
+	self.world:getAuthoringManager():displaySimpleEntityVisualization(self.instance.entity)
 	
 	self.instance.deleteListener = createConnector(entity.BeingDeleted):connect(self.Entity_BeingDeleted, self)
 	
@@ -1006,7 +1006,11 @@ end
 
 function EntityEditor:ShowErisBbox_CheckStateChanged(args)
 	if self.instance.entity then
-		self.instance.entity:setVisualize("ErisBBox", self.modelTab.showErisBbox:isSelected())
+		if self.modelTab.showErisBbox:isSelected() then
+			self.world:getAuthoringManager():displaySimpleEntityVisualization(self.instance.entity)
+		else
+			self.world:getAuthoringManager():hideSimpleEntityVisualization(self.instance.entity)
+		end
 	end
 	return true
 end
@@ -1043,7 +1047,7 @@ end
 function EntityEditor:refreshModelInfo(entity)
 	local showOgreBbox = entity:getVisualize("OgreBBox")
 	self.modelTab.showOgreBbox:setSelected(showOgreBbox)
-	local showErisBbox = entity:getVisualize("ErisBBox")
+	local showErisBbox = self.world:getAuthoringManager():hasSimpleEntityVisualization(self.instance.entity)
 	self.modelTab.showErisBbox:setSelected(showErisBbox)
 end
 

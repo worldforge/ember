@@ -50,6 +50,13 @@ public:
 
 	void hideSimpleEntityVisualization(Ember::OgreView::EmberEntity& entity);
 
+	/**
+	 * @brief Checks whether a simple entity visualization of the entity's bounding box is active for the supplied entity.
+	 * @param entity The entity to check visualization for.
+	 * @returns True if the entity is being visualized.
+	 */
+	bool hasSimpleEntityVisualization(const EmberEntity& entity) const;
+
 	void startMovement(Ember::OgreView::EmberEntity& entity, Ember::OgreView::Authoring::EntityMover& mover);
 
 	void stopMovement();
