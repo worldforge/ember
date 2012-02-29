@@ -13,6 +13,7 @@ function HoverEntityOverlay:buildWidget(world)
 	self.widget:loadMainSheet("HoverEntityOverlay.layout", "HoverEntityOverlay/")
 	self.mainView = self.widget:getWindow("MainWindow")
 	self.entityName = self.widget:getWindow("EntityName")
+	self.mainView:setVisible(false)
 
 	connect(self.connectors, Ember.Input:getSingleton().EventMouseMoved, self.input_MouseMoved, self)
 	connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonPressed, self.input_MouseButtonReleased, self)
