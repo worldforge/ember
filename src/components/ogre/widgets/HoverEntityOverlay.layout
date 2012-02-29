@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
 	<Window Type='EmberLook/StaticFading' Name='MainWindow'>
-		<Property Name='UnifiedPosition' Value='{{0.0},{0,0}}' />
+		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
 		<Property Name='UnifiedSize' Value='{{0,150},{0,45}}' />
 		<Property Name='Alpha' Value='0.8' />
 		<Property Name='MousePassThroughEnabled' Value='true' />
