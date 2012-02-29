@@ -521,7 +521,20 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
 		if (tmp)
 			weight = Ogre::StringConverter::parseReal(tmp);
 
-		animDef->createAnimationPartDefinition(name, weight);
+		AnimationPartDefinition* animPartDef = animDef->createAnimationPartDefinition(name, weight);
+
+		TiXmlElement* elem = apElem->FirstChildElement("bonegrouprefs");
+		if (elem) {
+			for (TiXmlElement* boneGroupRefElem = elem->FirstChildElement();
+					boneGroupRefElem != 0; boneGroupRefElem = boneGroupRefElem->NextSiblingElement())
+			{
+				tmp = boneGroupRefElem->Attribute("name");
+				if (tmp)
+					animPartDef->BoneGroupRefs.push_back(std::string(tmp));
+			}
+		}
+
+
 	}
 
 	if(nopartfound)
@@ -793,15 +806,6 @@ void XMLModelDefinitionSerializer::readBoneGroups(ModelDefinitionPtr modelDef, T
 
 			S_LOG_VERBOSE( " Add Bone Group  : "+ def->Name );
 
-			elem = boneGroupElem->FirstChildElement("animations");
-			if (elem) {
-				for (TiXmlElement* animationElem = elem->FirstChildElement();
-						animationElem != 0; animationElem = animationElem->NextSiblingElement())
-				{
-					def->Animations.push_back(animationElem->GetText());
-				}
-			}
-
 			elem = boneGroupElem->FirstChildElement("bones");
 			if (elem) {
 				for (TiXmlElement* boneElem = elem->FirstChildElement();
@@ -987,6 +991,11 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 					TiXmlElement animationPartElem("animationpart");
 					animationPartElem.SetAttribute("name", (*K)->Name.c_str());
 					animationPartElem.SetDoubleAttribute("weight", (*K)->Weight);
+					for (std::vector<std::string>::const_iterator L = (*K)->BoneGroupRefs.begin(); L != (*K)->BoneGroupRefs.end(); ++L) {
+						TiXmlElement boneGroupRefElem("bonegroupref");
+						boneGroupRefElem.SetAttribute("name", L->c_str());
+						animationPartElem.InsertEndChild(boneGroupRefElem);
+					}
 					animationElem.InsertEndChild(animationPartElem);
 				}
 
@@ -1152,15 +1161,6 @@ void XMLModelDefinitionSerializer::exportBoneGroups(ModelDefinitionPtr modelDef,
 	for (BoneGroupDefinitionStore::const_iterator I = modelDef->getBoneGroupDefinitions().begin(); I != modelDef->getBoneGroupDefinitions().end(); ++I) {
 		TiXmlElement boneGroupElem("bonegroup");
 		boneGroupElem.SetAttribute("name", I->second->Name.c_str());
-
-
-		TiXmlElement animationsElem("animations");
-		for (std::vector<std::string>::const_iterator J = I->second->Animations.begin(); J != I->second->Animations.end(); ++J) {
-			TiXmlElement animationElem("animation");
-			animationElem.SetValue(*J);
-			animationsElem.InsertEndChild(animationElem);
-		}
-		boneGroupElem.InsertEndChild(animationsElem);
 
 		TiXmlElement bonesElem("bones");
 		for (std::vector<size_t>::const_iterator J = I->second->Bones.begin(); J != I->second->Bones.end(); ++J) {

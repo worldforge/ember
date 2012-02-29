@@ -249,6 +249,12 @@ struct AnimationPartDefinition
 {
 	std::string Name;
 	Ogre::Real Weight;
+
+	/**
+	 * @brief The bone groups, if any, which should affect this animation.
+	 */
+	std::vector<std::string> BoneGroupRefs;
+
 };
 
 /**
@@ -270,10 +276,6 @@ struct BoneGroupDefinition
 	 */
 	std::vector<size_t> Bones;
 
-	/**
-	 * @brief The animations which should be affected by this bone group.
-	 */
-	std::vector<std::string> Animations;
 };
 
 /**

@@ -114,6 +114,19 @@
                                                                         <xsd:sequence>
                                                                             <xsd:element name="animationpart" minOccurs="1" maxOccurs="unbounded">
                                                                                 <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element name="bonegrouprefs" minOccurs="0" maxOccurs="1">
+                                                                                            <xsd:complexType>
+                                                                                                <xsd:sequence>
+                                                                                                    <xsd:element name="bonegroupref" minOccurs="0" maxOccurs="unbounded">
+                                                                                                        <xsd:complexType>
+                                                                                                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                                                                                                        </xsd:complexType>
+                                                                                                    </xsd:element>
+                                                                                                </xsd:sequence>
+                                                                                            </xsd:complexType>
+                                                                                        </xsd:element>
+                                                                                    </xsd:sequence>
                                                                                     <xsd:attribute name="name" type="xsd:string" use="required" />
                                                                                     <xsd:attribute name="weight" type="xsd:string" use="required" />
                                                                                 </xsd:complexType>
@@ -243,14 +256,6 @@
                                         <xsd:element name="bonegroup" minOccurs="0" maxOccurs="unbounded">
                                             <xsd:complexType>
                                                 <xsd:sequence>
-                                                    <xsd:element name="animations" minOccurs="0" maxOccurs="1">
-                                                        <xsd:complexType>
-                                                            <xsd:sequence>
-                                                                <xsd:element name="animation" minOccurs="0" maxOccurs="unbounded" type="xsd:string">
-                                                                </xsd:element>
-                                                            </xsd:sequence>
-                                                        </xsd:complexType>
-                                                    </xsd:element>
                                                     <xsd:element name="bones" minOccurs="0" maxOccurs="1">
                                                         <xsd:complexType>
                                                             <xsd:sequence>

@@ -301,8 +301,9 @@ void Model::createActions()
 								Ogre::AnimationState* state = getAnimationState((*I_animParts)->Name);
 								animPart.state = state;
 								animPart.weight = (*I_animParts)->Weight;
-								for (BoneGroupDefinitionStore::const_iterator I_boneGroup = mDefinition->getBoneGroupDefinitions().begin(); I_boneGroup != mDefinition->getBoneGroupDefinitions().end(); ++I_boneGroup) {
-									if (std::find(I_boneGroup->second->Animations.begin(), I_boneGroup->second->Animations.end(), state->getAnimationName()) != I_boneGroup->second->Animations.end()) {
+								for (std::vector<std::string>::const_iterator I_boneGroupRef = (*I_animParts)->BoneGroupRefs.begin(); I_boneGroupRef != (*I_animParts)->BoneGroupRefs.end(); ++I_boneGroupRef) {
+									BoneGroupDefinitionStore::const_iterator I_boneGroup = mDefinition->getBoneGroupDefinitions().find(*I_boneGroupRef);
+									if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {
 										if (!state->hasBlendMask()) {
 											state->createBlendMask(getSkeleton()->getNumBones(), 0.0f);
 										}
