@@ -41,13 +41,13 @@
 	<Image Name="EditFrameTopRight" XPos="87" YPos="2" Width="3" Height="3" />
 	<Image Name="EditFrameBottomLeft" XPos="74" YPos="15" Width="3" Height="3" />
 	<Image Name="EditFrameBottomRight" XPos="87" YPos="15" Width="3" Height="3" />
-	<Image Name="StaticFrameLeft" XPos="92" YPos="9" Width="2" Height="2" />
-	<Image Name="StaticFrameRight" XPos="106" YPos="9" Width="2" Height="2" />
-	<Image Name="StaticFrameTop" XPos="99" YPos="2" Width="2" Height="2" />
-	<Image Name="StaticFrameBottom" XPos="99" YPos="16" Width="2" Height="2" />
-	<Image Name="StaticFrameTopLeft" XPos="92" YPos="2" Width="3" Height="3" />
+	<Image Name="StaticFrameLeft" XPos="93" YPos="9" Width="1" Height="2" />
+	<Image Name="StaticFrameRight" XPos="107" YPos="9" Width="1" Height="2" />
+	<Image Name="StaticFrameTop" XPos="99" YPos="2" Width="2" Height="1" />
+	<Image Name="StaticFrameBottom" XPos="99" YPos="17" Width="2" Height="1" />
+	<Image Name="StaticFrameTopLeft" XPos="93" YPos="2" Width="3" Height="3" />
 	<Image Name="StaticFrameTopRight" XPos="105" YPos="2" Width="3" Height="3" />
-	<Image Name="StaticFrameBottomLeft" XPos="92" YPos="15" Width="3" Height="3" />
+	<Image Name="StaticFrameBottomLeft" XPos="93" YPos="15" Width="3" Height="3" />
 	<Image Name="StaticFrameBottomRight" XPos="105" YPos="15" Width="3" Height="3" />
 	<Image Name="CloseButtonNormal" XPos="2" YPos="20" Width="13" Height="13" />
 	<Image Name="CloseButtonHover" XPos="2" YPos="35" Width="13" Height="13" />
@@ -105,17 +105,19 @@
 	<Image Name="MouseNwSeCursor" XPos="68" YPos="90" Width="15" Height="15" XOffset="-6" YOffset="-7" />
 	<Image Name="MouseTextBar" XPos="73" YPos="107" Width="11" Height="20" XOffset="-5" YOffset="-10" />
 	
-	<Image Name="TabHorizontalTopFiller" XPos="81" YPos="20" Width="2" Height="2" />
+	<Image Name="TabHorizontalTopFiller" XPos="81" YPos="20" Width="2" Height="1" />
 	<Image Name="TabHorizontalBottomFiller" XPos="81" YPos="34" Width="2" Height="2" />
-	<Image Name="TabContentPaneUpperLeft" XPos="92" YPos="2" Width="3" Height="3" />
-	<Image Name="TabContentPaneTop" XPos="99" YPos="2" Width="2" Height="3" />
+	<Image Name="TabContentPaneUpperLeft" XPos="93" YPos="2" Width="3" Height="3" />
+	<Image Name="TabContentPaneTop" XPos="99" YPos="2" Width="2" Height="1" />
 	<Image Name="TabContentPaneUpperRight" XPos="105" YPos="2" Width="3" Height="3" />
-	<Image Name="TabContentPaneLeft" XPos="92" YPos="9" Width="2" Height="2" />
+	<Image Name="TabContentPaneLeft" XPos="93" YPos="9" Width="1" Height="2" />
 	<Image Name="TabContentPaneMiddle" XPos="9" YPos="9" Width="2" Height="2" />
-	<Image Name="TabContentPaneRight" XPos="106" YPos="9" Width="2" Height="2" />
-	<Image Name="TabContentPaneLower" XPos="99" YPos="15" Width="2" Height="3" />
-	<Image Name="TabContentPaneLowerLeft" XPos="92" YPos="15" Width="3" Height="3" />
+	<Image Name="TabContentPaneRight" XPos="107" YPos="9" Width="1" Height="2" />
+	<Image Name="TabContentPaneLower" XPos="99" YPos="17" Width="2" Height="1" />
+	<Image Name="TabContentPaneLowerLeft" XPos="93" YPos="15" Width="3" Height="3" />
 	<Image Name="TabContentPaneLowerRight" XPos="105" YPos="15" Width="3" Height="3" />
+
+
 
 	<Image Name="TabButtonUpperLeftNormal" XPos="74" YPos="20" Width="3" Height="3" />
 	<Image Name="TabButtonUpperNormal" XPos="81" YPos="20" Width="2" Height="3" />
