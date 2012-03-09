@@ -99,7 +99,7 @@ void AnimationSet::addAnimation(Animation animation)
 }
 
 
-Animation::Animation(int iterations) : mIterationLength(0), mIterations(iterations) {}
+Animation::Animation(int iterations, size_t boneNumber) : mIterationLength(0), mIterations(iterations), mBoneNumber(boneNumber) {}
 
 void Animation::addAnimationPart(AnimationPart part)
 {
@@ -129,14 +129,29 @@ void Animation::setTime(Ogre::Real time)
 	}
 }
 
-void Animation::setEnabled(bool state)
+void Animation::setEnabled(bool enabled)
 {
-	AnimationPartSet::iterator I = mAnimationParts.begin();
-	for (; I != mAnimationParts.end(); ++I) {
+	for (AnimationPartSet::const_iterator I = mAnimationParts.begin(); I != mAnimationParts.end(); ++I) {
 		//we'll get an assert error if we try to enable an animation with zero length
-		if (I->state->getLength() != 0) {
-			if (I->state->getEnabled() != state) {
-				I->state->setEnabled(state);
+		Ogre::AnimationState* state = I->state;
+		if (state->getLength() != 0) {
+			if (state->getEnabled() != enabled) {
+				state->setEnabled(enabled);
+				state->destroyBlendMask();
+				if (enabled) {
+					const std::vector<BoneGroupRef>& boneGroupRefs = I->boneGroupRefs;
+					for (std::vector<BoneGroupRef>::const_iterator J = boneGroupRefs.begin(); J != boneGroupRefs.end(); ++J) {
+						const BoneGroupRef& boneGroupRef = *J;
+						const BoneGroupDefinition& boneGroupDef = *boneGroupRef.boneGroupDefinition;
+						if (!state->hasBlendMask()) {
+							state->createBlendMask(mBoneNumber, 0.0f);
+						}
+						const std::vector<size_t>& boneIndices = boneGroupDef.Bones;
+						for (std::vector<size_t>::const_iterator bones_I = boneIndices.begin(); bones_I != boneIndices.end(); ++bones_I) {
+							state->setBlendMaskEntry(*bones_I, boneGroupRef.weight);
+						}
+					}
+				}
 			}
 		}
 	}

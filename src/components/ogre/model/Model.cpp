@@ -279,7 +279,6 @@ void Model::createActions()
 
 	ActionDefinitionsStore::const_iterator I_actions_end = mDefinition->getActionDefinitions().end();
 	for (ActionDefinitionsStore::const_iterator I_actions = mDefinition->getActionDefinitions().begin(); I_actions != I_actions_end; ++I_actions) {
-		//std::multiset< Model::AnimationPart* >* animationPartSet = new std::multiset< Model::AnimationPart* >();
 		Action action;
 		action.setName((*I_actions)->getName());
 		action.getAnimations().setSpeed((*I_actions)->getAnimationSpeed());
@@ -292,7 +291,7 @@ void Model::createActions()
 			if (mSubmodels.size()) {
 				AnimationDefinitionsStore::const_iterator I_anims_end = (*I_actions)->getAnimationDefinitions().end();
 				for (AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin(); I_anims != I_anims_end; ++I_anims) {
-					Animation animation((*I_anims)->getIterations());
+					Animation animation((*I_anims)->getIterations(), getSkeleton()->getNumBones());
 					AnimationPartDefinitionsStore::const_iterator I_animParts_end = (*I_anims)->getAnimationPartDefinitions().end();
 					for (AnimationPartDefinitionsStore::const_iterator I_animParts = (*I_anims)->getAnimationPartDefinitions().begin(); I_animParts != I_animParts_end; ++I_animParts) {
 						if (getAllAnimationStates()->hasAnimationState((*I_animParts)->Name)) {
@@ -300,17 +299,15 @@ void Model::createActions()
 							try {
 								Ogre::AnimationState* state = getAnimationState((*I_animParts)->Name);
 								animPart.state = state;
-								animPart.weight = (*I_animParts)->Weight;
+//								animPart.weight = (*I_animParts)->Weight;
+								animPart.weight = 1.0f;
 								for (std::vector<std::string>::const_iterator I_boneGroupRef = (*I_animParts)->BoneGroupRefs.begin(); I_boneGroupRef != (*I_animParts)->BoneGroupRefs.end(); ++I_boneGroupRef) {
 									BoneGroupDefinitionStore::const_iterator I_boneGroup = mDefinition->getBoneGroupDefinitions().find(*I_boneGroupRef);
 									if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {
-										if (!state->hasBlendMask()) {
-											state->createBlendMask(getSkeleton()->getNumBones(), 0.0f);
-										}
-										const std::vector<size_t>& boneIndices = I_boneGroup->second->Bones;
-										for (std::vector<size_t>::const_iterator bones_I = boneIndices.begin(); bones_I != boneIndices.end(); ++bones_I) {
-											state->setBlendMaskEntry(*bones_I, 1.0f);
-										}
+										BoneGroupRef boneGroupRef;
+										boneGroupRef.boneGroupDefinition = I_boneGroup->second;
+										boneGroupRef.weight = animPart.weight;
+										animPart.boneGroupRefs.push_back(boneGroupRef);
 									}
 								}
 								animation.addAnimationPart(animPart);

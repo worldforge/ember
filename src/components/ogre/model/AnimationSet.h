@@ -26,16 +26,23 @@
 
 #include <vector>
 
-// #include "ModelDefinition.h"
+#include "ModelDefinition.h"
 
 namespace Ember {
 namespace OgreView {
 namespace Model {
 
+struct BoneGroupRef
+{
+	BoneGroupDefinition* boneGroupDefinition;
+	Ogre::Real weight;
+};
+
 struct AnimationPart
 {
 	Ogre::AnimationState* state;
 	Ogre::Real weight;
+	std::vector<BoneGroupRef> boneGroupRefs;
 };
 
 class Animation;
@@ -49,7 +56,7 @@ typedef std::vector<Animation> AnimationStore;
 class Animation
 {
 public:
-	Animation(int iterations);
+	Animation(int iterations, size_t boneNumber);
 	void addAnimationPart(AnimationPart part);
 	void setEnabled(bool state);
 
@@ -62,6 +69,7 @@ protected:
 	AnimationPartSet mAnimationParts;
 	Ogre::Real mIterationLength;
 	int mIterations;
+	size_t mBoneNumber;
 };
 
 class AnimationSet
