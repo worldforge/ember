@@ -187,6 +187,7 @@ EmberOgre::~EmberOgre()
 
 	delete mScreen;
 
+	mInput->detach();
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
 		mOgreSetup.reset();
