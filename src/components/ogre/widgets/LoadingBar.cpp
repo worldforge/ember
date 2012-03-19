@@ -102,9 +102,13 @@ namespace Gui {
 
 	void LoadingBar::start()
 	{
-		// We need to pre-initialise the 'Bootstrap' group so we can use
-		// the basic contents in the loading screen
-		ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
+		try {
+			// We need to pre-initialise the 'Bootstrap' group so we can use
+			// the basic contents in the loading screen
+			ResourceGroupManager::getSingleton().initialiseResourceGroup("Bootstrap");
+		} catch (...) {
+			throw Ember::Exception("Error when initializing Ember. This seems to be caused by not all media being present. Something is probably wrong with your installation. Make sure that all media has been correctly downloaded and installed.");
+		}
 
 		try {
 			OverlayManager& omgr = OverlayManager::getSingleton();

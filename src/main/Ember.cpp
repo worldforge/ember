@@ -192,9 +192,9 @@ int main(int argc, char **argv)
 
 #endif
 
-	//put the application object in its own scope so it gets destroyed before we signal all clear
+	try
 	{
-		try
+	//put the application object in its own scope so it gets destroyed before we signal all clear
 		{
 			// Create application object
 			Ember::Application app(prefix, homeDir, configMap);
@@ -209,29 +209,13 @@ int main(int argc, char **argv)
 			app.initializeServices();
 
 			app.start();
-		} catch (const std::exception& ex)
-		{
-			std::cerr << "Unexpected error, aborting.\n\r" << ex.what();
-			exitStatus = 1;
+			std::cout << "Ember shut down successfully." << std::endl;
 		}
+	} catch (const std::exception& ex)
+	{
+		std::cerr << "Unexpected error, aborting.\n\r\t" << ex.what() << std::endl;
+		exitStatus = 1;
 	}
 
-#if !defined(__WIN32__) && !defined(__APPLE__)
-	if (homeDir != "")
-	{
-		if (chdir(homeDir.c_str()))
-		{
-			std::cerr << "Could not set homedir to '" << homeDir << "'." << std::endl;
-		}
-	}
-	else
-	{
-		if (chdir("~/.ember"))
-		{
-			std::cerr << "Could not set homedir to '~/.ember'." << std::endl;
-		}
-	}
-#endif
-	std::cout << "Ember shut down successfully." << std::endl;
 	return exitStatus;
 }

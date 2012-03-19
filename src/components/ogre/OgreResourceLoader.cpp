@@ -85,6 +85,12 @@ void OgreResourceLoader::initialize()
 
 	//load the resource file
 	const std::string configPath(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "/resources.cfg");
+	struct stat tagStat;
+	int ret = stat(configPath.c_str(), &tagStat);
+	if (ret != 0) {
+		throw Ember::Exception("Could not find the required file '" + configPath + "'. Make sure that all files got correctly installed.");
+	}
+
 	S_LOG_VERBOSE("Loading resources definitions from " << configPath);
 	mConfigFile.load(configPath);
 }

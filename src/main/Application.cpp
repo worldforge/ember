@@ -379,16 +379,16 @@ void Application::start()
 			return;
 		}
 	} catch (const std::exception& ex) {
-		std::cout << "Error when setting up Ogre: " << ex.what() << std::endl;
-		S_LOG_CRITICAL("Error when setting up Ogre." << ex);
+		std::cerr << "==== Error during startup ====\n\r\t" << ex.what() << "\n" << std::endl;
+		S_LOG_CRITICAL("Error during startup." << ex);
 		return;
 	} catch (ShutdownException& ex2) {
-		std::cout << "ShutdownException caught: " << ex2.getReason() << std::endl;
-		S_LOG_WARNING("ShutdownException caught: " << ex2.getReason());
+		//Note that a ShutdownException is not an error. It just means that the user closed the application during startup. We should therefore just exit, as intended.
+		S_LOG_INFO("ShutdownException caught: " << ex2.getReason());
 		return;
 	} catch (...) {
-		std::cout << "Unknown error when setting up Ogre." << std::endl;
-		S_LOG_CRITICAL("Unknown error when setting up Ogre.");
+		std::cerr << "==== Error during startup ====\n\r\tUnknown fatal error during startup. Something went wrong which caused a shutdown. Check the log file for more information." << std::endl;
+		S_LOG_CRITICAL("Unknown fatal error during startup.");
 		return;
 	}
 	Input::getSingleton().startInteraction();
