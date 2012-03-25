@@ -434,6 +434,14 @@ private:
 	void Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
+	 * @brief Allows to invert relative mouse position.
+	 * @param section
+	 * @param key
+	 * @param variable
+	 */
+	void Config_InvertCamera(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
 	 * @brief Gets the text in the clipboard and pastes it to the gui system.
 	 */
 	void pasteFromClipboard();
@@ -530,10 +538,17 @@ private:
 	 */
 	float mScreenWidth, mScreenHeight;
 
- 	/**
-	The icon shown in the top of the window.
-	*/
+	/**
+	 The icon shown in the top of the window.
+	 */
 	SDL_Surface* mIconSurface;
+
+	/**
+	 * @brief Whether to invert relative movement.
+	 * 
+	 * It can be 1(normal) or -1(inverted).
+	 */
+	int mInvertMouse;
 
 };
 

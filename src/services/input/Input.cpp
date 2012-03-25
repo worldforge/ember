@@ -66,7 +66,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(NULL), mScreenWidth(0), mScreenHeight(0), mIconSurface(0)
+		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(NULL), mScreenWidth(0), mScreenHeight(0), mIconSurface(0), mInvertMouse(1)
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -277,6 +277,7 @@ bool Input::isApplicationVisible()
 void Input::startInteraction()
 {
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "catchmouse", sigc::mem_fun(*this, &Input::Config_CatchMouse), true);
+	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "invertcamera", sigc::mem_fun(*this, &Input::Config_InvertCamera), true);
 }
 
 void Input::processInput()
@@ -310,10 +311,10 @@ void Input::pollMouse(float secondsSinceLast)
 			MouseMotion motion;
 			motion.xPosition = mouseX;
 			motion.yPosition = mouseY;
-			motion.xRelativeMovement = diffX;
-			motion.yRelativeMovement = diffY;
-			motion.xRelativeMovementInPixels = mMousePosition.xPixelPosition - mouseX;
-			motion.yRelativeMovementInPixels = mMousePosition.yPixelPosition - mouseY;
+			motion.xRelativeMovement = diffX * mInvertMouse;
+			motion.yRelativeMovement = diffY * mInvertMouse;
+			motion.xRelativeMovementInPixels = (mMousePosition.xPixelPosition - mouseX) * mInvertMouse;
+			motion.yRelativeMovementInPixels = (mMousePosition.yPixelPosition - mouseY) * mInvertMouse;
 			motion.timeSinceLastMovement = secondsSinceLast;
 
 			EventMouseMoved.emit(motion, mCurrentInputMode);
@@ -626,6 +627,13 @@ void Input::Config_CatchMouse(const std::string& section, const std::string& key
 		}
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when changing mouse grabbing." << ex);
+	}
+}
+
+void Input::Config_InvertCamera(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_bool()) {
+		mInvertMouse = static_cast<bool>(variable) ? -1 : 1;
 	}
 }
 
