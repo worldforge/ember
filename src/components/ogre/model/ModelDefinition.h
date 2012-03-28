@@ -294,7 +294,6 @@ public:
 	const AnimationPartDefinitionsStore& getAnimationPartDefinitions() const;
 	void removeAnimationPartDefinition(AnimationPartDefinition* def);
 
-	const std::string& getName() const;
 	int getIterations() const;
 
 private:
