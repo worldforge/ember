@@ -59,7 +59,7 @@ class PartDefinition
 	void setShow(bool show);
 	bool getShow() ;
 	
-	Ember::OgreView::Model::SubEntityDefinition* createSubEntityDefinition( std::string& subEntityName);
+	Ember::OgreView::Model::SubEntityDefinition* createSubEntityDefinition(std::string& subEntityName);
 	Ember::OgreView::Model::SubEntityDefinition* createSubEntityDefinition(unsigned int subEntityIndex);
 	std::vector<Ember::OgreView::Model::SubEntityDefinition*> getSubEntityDefinitions();
 	void removeSubEntityDefinition(Ember::OgreView::Model::SubEntityDefinition* def);
@@ -78,6 +78,95 @@ class SubModelDefinition
 	void removePartDefinition(Ember::OgreView::Model::PartDefinition* def);
 	Ember::OgreView::Model::ModelDefinition& getModelDefinition();
 };
+
+/**
+ * @brief Definition of an animation part.
+ *
+ * An animation is comprised of many animation parts, where each part refers to an Ogre::Animation.
+ * When the animation is played, the different parts are blended together.
+ *
+ * In addition, each part can have a weight attached to it which determines how much it should be blended.
+ */
+struct AnimationPartDefinition
+{
+	std::string Name;
+	Ogre::Real Weight;
+
+	/**
+	 * @brief The bone groups, if any, which should affect this animation.
+	 */
+	std::vector<std::string> BoneGroupRefs;
+
+};
+
+/**
+ * @brief A definition of a bone group.
+ *
+ * A bone group is used to define blend weights to bones, so that different animations can be used together.
+ * A typical example would be of one animation which only affects a human character's hands, and another animation which only affects the legs.
+ * To make these blend together one would have to add bone groups where one the bones affecting the arms are added to one group, and the bones affecting the legs added to the other group.
+ */
+struct BoneGroupDefinition
+{
+	/**
+	 * @brief The name of the group.
+	 */
+	std::string Name;
+
+	/**
+	 * @brief The bones which are affected by the group, specified through their indices.
+	 */
+	std::vector<size_t> Bones;
+
+};
+
+/**
+ * @brief Definition of a sound to play for a certain action.
+ */
+struct SoundDefinition
+{
+	std::string groupName;
+	unsigned int playOrder;
+};
+
+/**
+ * @brief A definition of an animation.
+ *
+ * Each animation is made up of one or many "animation parts" which mainly refers to which instances of Ogre::Animation to play.
+ *
+ * In addition, each animation can be specified to iterate a certain number of times.
+ */
+class AnimationDefinition
+{
+public:
+	Ember::OgreView::Model::AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight);
+	const std::vector<Ember::OgreView::Model::AnimationPartDefinition*>& getAnimationPartDefinitions() const;
+	void removeAnimationPartDefinition(Ember::OgreView::Model::AnimationPartDefinition* def);
+
+	int getIterations() const;
+};
+
+class ActionDefinition
+{
+public:
+	Ember::OgreView::Model::AnimationDefinition* createAnimationDefinition(int iterations = 1);
+	const std::vector<Ember::OgreView::Model::AnimationDefinition*>& getAnimationDefinitions() const;
+	void removeAnimationDefinition(Ember::OgreView::Model::AnimationDefinition* def);
+
+	Ember::OgreView::Model::SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
+	const std::vector<Ember::OgreView::Model::SoundDefinition*>& getSoundDefinitions() const;
+	void removeSoundDefinition(Ember::OgreView::Model::SoundDefinition* def);
+
+	Ember::OgreView::Model::ActivationDefinition* createActivationDefinition(const Ember::OgreView::Model::ActivationDefinition::Type& type, const std::string& trigger);
+	const std::vector<Ember::OgreView::Model::ActivationDefinition*>& getActivationDefinitions() const;
+	void removeActivationDefinition(Ember::OgreView::Model::ActivationDefinition* def);
+
+	const std::string& getName() const;
+	Ogre::Real getAnimationSpeed() const;
+	void setAnimationSpeed(Ogre::Real speed);
+
+};
+
 
 
 class ModelDefinition : public Ogre::Resource {
