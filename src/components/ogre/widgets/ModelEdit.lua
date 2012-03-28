@@ -592,6 +592,15 @@ function ModelEdit:updateModelContentList()
 
 	
 	local submodels = self.definition:getSubModelDefinitions()
+	local actions = self.definition:getActionDefinitions()
+	
+	local submodelsTreeItem = Ember.OgreView.Gui.ColouredTreeItem:new("Submodels", 0)
+	submodelsTreeItem:toggleIsOpen()
+	self.modelcontentstree:addItem(submodelsTreeItem)
+	 
+	local actionsTreeItem = Ember.OgreView.Gui.ColouredTreeItem:new("Actions", 0)
+	actionsTreeItem:toggleIsOpen()
+	self.modelcontentstree:addItem(actionsTreeItem)
 	
 	--first, add all submodels
 	for val = 0, submodels:size() - 1 do
@@ -613,7 +622,7 @@ function ModelEdit:updateModelContentList()
 		local treeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
 		treeItem:toggleIsOpen()
 		treeItem:setTooltipText("Mesh '" .. name .. "'")
-		self.modelcontentstree:addItem(treeItem)
+		submodelsTreeItem:addItem(treeItem)
 		
 		--add all parts
 		if submodel ~= nil then
@@ -662,6 +671,53 @@ function ModelEdit:updateModelContentList()
 			end
 		end		
 	end	
+	
+	--then, add all actions
+	for val = 0, actions:size() - 1 do
+		local action = actions[val]
+		local name = action:getName()
+		local modelcontentItem = {}
+		
+		modelcontentItem.type = "action"
+		modelcontentItem.name = name
+		modelcontentItem.action = action
+		self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
+		
+		local treeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
+		treeItem:toggleIsOpen()
+		treeItem:setTooltipText("Action '" .. name .. "'")
+		actionsTreeItem:addItem(treeItem)
+		
+		local animations = action:getAnimationDefinitions()
+		for val_ = 0, animations:size() - 1 do
+			local animation = animations[val_]
+			local name = "animation"
+			
+			self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = { type = "animation", animation = animation}
+			
+			local animationTreeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
+			animationTreeItem:toggleIsOpen()
+			animationTreeItem:setTooltipText("Animation")
+
+			treeItem:addItem(animationTreeItem)
+
+			local animationParts = animation:getAnimationPartDefinitions()
+			for val__ = 0, animationParts:size() - 1 do
+				local animationPart = animationParts[val__]
+				local name = animationPart.Name
+				
+				self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = { type = "animationPart", animationPart = animationPart}
+				
+				local animationPartTreeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
+				animationPartTreeItem:toggleIsOpen()
+				animationPartTreeItem:setTooltipText(name)
+	
+				animationTreeItem:addItem(animationPartTreeItem)
+				
+			end		
+			
+		end		
+	end	
 end
 
 
@@ -699,19 +755,25 @@ function ModelEdit:getSelectedAttachPoint()
 end
 
 function ModelEdit:showModelContent(listitem)
-	if listitem ~= nil then
-		local itemId= listitem:getID()
-		local contentItem = self.modelContentsItems[itemId]
-		--inspectObject(contentItem.type)
-		
-		if contentItem.type == "submodel" then
-			self:showSubModel(contentItem)
-		elseif contentItem.type == "part" then
-			self:showPart(contentItem)
-		elseif contentItem.type == "subentity" then
-			self:showSubEntity(contentItem)
-		else
-			self:showModel()
+	if listitem then
+		local itemId = listitem:getID()
+		if itemId > 1 then
+			local contentItem = self.modelContentsItems[itemId]
+			--inspectObject(contentItem.type)
+			
+			if contentItem.type == "submodel" then
+				self:showSubModel(contentItem)
+			elseif contentItem.type == "part" then
+				self:showPart(contentItem)
+			elseif contentItem.type == "subentity" then
+				self:showSubEntity(contentItem)
+			elseif contentItem.type == "action" then
+				self:showAction(contentItem)
+			elseif contentItem.type == "animation" then
+				self:showAnimation(contentItem)
+			else
+				self:showModel()
+			end
 		end
 	else
 		self:showModel()
@@ -719,10 +781,9 @@ function ModelEdit:showModelContent(listitem)
 end
 
 function ModelEdit:hideAllContentParts()
-	self.contentparts.partInfo:setVisible(false)
-	self.contentparts.modelInfo:setVisible(false)
-	self.contentparts.submodelInfo:setVisible(false)
-	self.contentparts.submeshInfo:setVisible(false)
+	for key,value in pairs(self.contentparts) do 
+		value:setVisible(false) 
+	end
 end
 
 function ModelEdit:showSubModel(contentItem)
@@ -783,6 +844,18 @@ function ModelEdit:showModel()
 	self.contentparts.modelInfo:setVisible(true)
 end
 
+function ModelEdit:showAction(contentItem)
+	self:hideAllContentParts()
+	self.contentparts.actionInfo:setVisible(true)
+
+end
+
+function ModelEdit:showAnimation(contentItem)
+	self:hideAllContentParts()
+--	self.contentparts.actionInfo:setVisible(true)
+
+end
+
 function ModelEdit:buildWidget()
 	self.widget = guiManager:createWidget()
 	
@@ -827,6 +900,8 @@ function ModelEdit:buildWidget()
 		self.contentparts.modelInfo = self.widget:getWindow("ModelInfo")
 		self.contentparts.submodelInfo = self.widget:getWindow("SubModelInfo")
 		self.contentparts.submeshInfo = self.widget:getWindow("SubMeshInfo")
+		self.contentparts.actionInfo = self.widget:getWindow("ActionInfo")
+		
 		
 		--hide all parts initially
 		self:hideAllContentParts()
