@@ -241,26 +241,6 @@ function ModelEdit:models_SelectionChanged(args)
 	return true
 end
 
-function ModelEdit:parts_SelectionChanged(args)
-	local part = self:getSelectedPart()
-	self:updateSubentitiesList(part)
-	self:updateShownCheckbox(part)
-	return true
-end
-
-function ModelEdit:submodels_SelectionChanged(args)
-	local submodel = self:getSelectedSubModel()
-	--inspectObject(submodel)
-	self:updatePartsList(submodel)
-	return true
-end
-
-function ModelEdit:subentities_SelectionChanged(args)
-	local subentity = self:getSelectedSubEntity()
-	self:selectMaterial(subentity)
-	return true
-end
-
 
 function ModelEdit:attachPointToolShown_StateChanged(args)
 	local shown = self.attachPointToolShown:isSelected()
@@ -614,9 +594,9 @@ function ModelEdit:updateModelContentList()
 		local mesh = meshPtr:get()
 		
 		
-		modelcontentItem.type = "submodel"
-		modelcontentItem.name = name
-		modelcontentItem.submodel = submodel
+		modelcontentItem.activate = function()
+			self:showSubModel(submodel)
+		end
 		self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
 		
 		local treeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
@@ -632,18 +612,18 @@ function ModelEdit:updateModelContentList()
 				local name = part:getName()
 				
 				local modelcontentItem = {}
-				modelcontentItem.type = "part"
-				modelcontentItem.name = name
-				modelcontentItem.part = part
+				modelcontentItem.activate = function()
+					self:showPart(part)
+				end
 				
-				local partVisible = ""
+--				local partVisible = ""
 --				if part:getShow() then
 --					partVisible = " (shown)";
 --				end
 				
 				self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
 				
-				local treeItem2 = Ember.OgreView.Gui.ColouredTreeItem:new(name .. partVisible, table.getn(self.modelContentsItems))
+				local treeItem2 = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems))
 				treeItem2:toggleIsOpen()
 				treeItem2:setTooltipText("Part '" .. name .. "'")
 				treeItem:addItem(treeItem2)
@@ -657,9 +637,10 @@ function ModelEdit:updateModelContentList()
  
 						
 						local modelcontentItem = {}
-						modelcontentItem.type = "subentity"
-						modelcontentItem.name = submeshname
-						modelcontentItem.subentity = subentity
+						modelcontentItem.activate = function()
+							self:showSubEntity(subentity)
+						end
+
 						self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
 						
 						local treeItem3 = Ember.OgreView.Gui.ColouredTreeItem:new(submeshname, table.getn(self.modelContentsItems))
@@ -678,9 +659,9 @@ function ModelEdit:updateModelContentList()
 		local name = action:getName()
 		local modelcontentItem = {}
 		
-		modelcontentItem.type = "action"
-		modelcontentItem.name = name
-		modelcontentItem.action = action
+		modelcontentItem.activate = function()
+			self:showAction(action)
+		end
 		self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = modelcontentItem
 		
 		local treeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
@@ -693,7 +674,7 @@ function ModelEdit:updateModelContentList()
 			local animation = animations[val_]
 			local name = "animation"
 			
-			self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = { type = "animation", animation = animation}
+			self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = { activate = function() self:showAnimation(animation) end}
 			
 			local animationTreeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
 			animationTreeItem:toggleIsOpen()
@@ -706,7 +687,7 @@ function ModelEdit:updateModelContentList()
 				local animationPart = animationParts[val__]
 				local name = animationPart.Name
 				
-				self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = { type = "animationPart", animationPart = animationPart}
+				self.modelContentsItems[table.getn(self.modelContentsItems) + 1] = { activate = function() self:showAnimationPart(animationPart) end }
 				
 				local animationPartTreeItem = Ember.OgreView.Gui.ColouredTreeItem:new(name, table.getn(self.modelContentsItems)) 
 				animationPartTreeItem:toggleIsOpen()
@@ -757,22 +738,10 @@ end
 function ModelEdit:showModelContent(listitem)
 	if listitem then
 		local itemId = listitem:getID()
-		if itemId > 1 then
-			local contentItem = self.modelContentsItems[itemId]
-			--inspectObject(contentItem.type)
-			
-			if contentItem.type == "submodel" then
-				self:showSubModel(contentItem)
-			elseif contentItem.type == "part" then
-				self:showPart(contentItem)
-			elseif contentItem.type == "subentity" then
-				self:showSubEntity(contentItem)
-			elseif contentItem.type == "action" then
-				self:showAction(contentItem)
-			elseif contentItem.type == "animation" then
-				self:showAnimation(contentItem)
-			else
-				self:showModel()
+		local contentItem = self.modelContentsItems[itemId]
+		if contentItem then
+			if contentItem.activate then
+				contentItem.activate()
 			end
 		end
 	else
@@ -786,11 +755,10 @@ function ModelEdit:hideAllContentParts()
 	end
 end
 
-function ModelEdit:showSubModel(contentItem)
+function ModelEdit:showSubModel(submodelDef)
 	self:hideAllContentParts()
 	self.contentparts.submodelInfo:setVisible(true)
-	local submodelDef = self:getSelectedSubModel()
-	
+
 	self.widget:getWindow("SubModelName"):setText(submodelDef:getMeshName())
 	
 	local sizeWidget = self.widget:getWindow("SubModelSize")
@@ -822,10 +790,9 @@ function ModelEdit:showSubModel(contentItem)
 	end
 end
 
-function ModelEdit:showPart(contentItem)
+function ModelEdit:showPart(part)
 	self:hideAllContentParts()
 	self.contentparts.partInfo:setVisible(true)
-	local part = contentItem.part
 	self.widget:getWindow("PartName"):setText(part:getName())
 	self.partShown:setSelected(part:getShow())
 	
@@ -833,10 +800,10 @@ function ModelEdit:showPart(contentItem)
 end
 
 
-function ModelEdit:showSubEntity(contentItem)
+function ModelEdit:showSubEntity(subentity)
 	self:hideAllContentParts()
 	self.contentparts.submeshInfo:setVisible(true)
-	self:selectMaterial(contentItem.subentity)
+	self:selectMaterial(subentity)
 end
 
 function ModelEdit:showModel()
@@ -844,13 +811,19 @@ function ModelEdit:showModel()
 	self.contentparts.modelInfo:setVisible(true)
 end
 
-function ModelEdit:showAction(contentItem)
+function ModelEdit:showAction(action)
 	self:hideAllContentParts()
 	self.contentparts.actionInfo:setVisible(true)
 
 end
 
-function ModelEdit:showAnimation(contentItem)
+function ModelEdit:showAnimation(animation)
+	self:hideAllContentParts()
+--	self.contentparts.actionInfo:setVisible(true)
+
+end
+
+function ModelEdit:showAnimationPart(animationPart)
 	self:hideAllContentParts()
 --	self.contentparts.actionInfo:setVisible(true)
 
