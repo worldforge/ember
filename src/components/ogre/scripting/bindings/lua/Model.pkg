@@ -1,6 +1,45 @@
+$#include "components/ogre/model/Action.h"
+
 namespace Ember {
 namespace OgreView {
 namespace Model {
+
+
+class AnimationSet
+{
+
+	/**
+	 * Adds time to the animation, thus advancing it.
+	 * @param timeSlice The time to add in seconds.
+	 */
+	void addTime(float timeSlice);
+
+	/**
+	 * Adds a single animation to this set.
+	 * @param animation
+	 */
+	void addAnimation(Ember::OgreView::Model::Animation animation);
+
+
+	/**
+	 *    Resets the animations to it's initial status, also disabling it.
+	 */
+	void reset();
+
+	void setSpeed(float speed);
+	float getSpeed() const;
+
+};
+
+
+class Action
+{
+	Ember::OgreView::Model::AnimationSet& getAnimations();
+	void setName(const std::string& name);
+	const std::string& getName();
+
+};
+
 class Model
 {
 //	typedef std::map<std::string, Action> ActionStore;
