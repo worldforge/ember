@@ -551,7 +551,7 @@ end
 function ModelEdit:showAction(action)
 	self:hideAllContentParts()
 	self.contentparts.actionInfo:setVisible(true)
-
+	self.action = action
 end
 
 function ModelEdit:showAnimation(animation)
@@ -908,6 +908,34 @@ function ModelEdit:buildWidget()
 			end
 			return true
 		end)
+		
+		
+		local actionPlayer = {}
+		self.widget:getWindow("PlayAction"):subscribeEvent("Clicked", function(args)
+			if actionPlayer.currentConnection then
+				actionPlayer.currentConnection:disconnect()
+				actionPlayer.currentConnection = nil
+				if actionPlayer.currentAction then
+					actionPlayer.currentAction:getAnimations():reset()
+				end
+			else
+				if self.action then
+					local model = self.renderer:getModel()
+					if model then
+						local modelAction = model:getAction(self.action:getName())
+						if modelAction then
+							actionPlayer.currentAction = modelAction
+							actionPlayer.currentConnection = createConnector(self.widget.EventFrameStarted):connect(function(timeslice)
+								modelAction:getAnimations():addTime(timeslice)
+							end)
+						end
+					end
+				end
+
+			end
+			return true
+		end)
+		
 
 		
 		self:fillMaterialList()
