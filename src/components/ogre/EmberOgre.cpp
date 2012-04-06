@@ -317,8 +317,9 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool)configSrv.getValue("wfut", "enabled");
 
 	bool carryOn = mOgreSetup->configure();
-	if (!carryOn)
+	if (!carryOn) {
 		return false;
+	}
 	mWindow = mOgreSetup->getRenderWindow();
 
 	//start with the bootstrap resources, after those are loaded we can show the LoadingBar
