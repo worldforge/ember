@@ -915,21 +915,27 @@ function ModelEdit:buildWidget()
 			if actionPlayer.currentConnection then
 				actionPlayer.currentConnection:disconnect()
 				actionPlayer.currentConnection = nil
-				if actionPlayer.currentAction then
-					actionPlayer.currentAction:getAnimations():reset()
+				local model = self.renderer:getModel()
+				if model then
+					local modelAction = model:getAction(self.action:getName())
+					if modelAction then
+						modelAction:getAnimations():reset()
+					end
 				end
+				self.widget:getWindow("PlayAction"):setText("Play")
 			else
 				if self.action then
-					local model = self.renderer:getModel()
-					if model then
-						local modelAction = model:getAction(self.action:getName())
-						if modelAction then
-							actionPlayer.currentAction = modelAction
-							actionPlayer.currentConnection = createConnector(self.widget.EventFrameStarted):connect(function(timeslice)
+					local actionName = self.action:getName()
+					actionPlayer.currentConnection = createConnector(self.widget.EventFrameStarted):connect(function(timeslice)
+						local model = self.renderer:getModel()
+						if model then
+							local modelAction = model:getAction(actionName)
+							if modelAction then
 								modelAction:getAnimations():addTime(timeslice)
-							end)
+							end
 						end
-					end
+					end)
+					self.widget:getWindow("PlayAction"):setText("Stop")
 				end
 
 			end
