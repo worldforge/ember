@@ -552,12 +552,16 @@ function ModelEdit:showAction(action)
 	self:hideAllContentParts()
 	self.contentparts.actionInfo:setVisible(true)
 	self.action = action
+	
+	self.widget:getWindow("ActionSpeed"):setText(action:getAnimationSpeed())
 end
 
 function ModelEdit:showAnimation(animation)
 	self:hideAllContentParts()
---	self.contentparts.actionInfo:setVisible(true)
+	self.contentparts.animationInfo:setVisible(true)
+	self.animation = animation
 
+	self.widget:getWindow("AnimationIterations"):setText(animation:getIterations())
 end
 
 function ModelEdit:showAnimationPart(animationPart)
@@ -624,6 +628,7 @@ function ModelEdit:buildWidget()
 		self.contentparts.submodelInfo = self.widget:getWindow("SubModelInfo")
 		self.contentparts.submeshInfo = self.widget:getWindow("SubMeshInfo")
 		self.contentparts.actionInfo = self.widget:getWindow("ActionInfo")
+		self.contentparts.animationInfo = self.widget:getWindow("AnimationInfo")
 		
 		
 		--hide all parts initially
@@ -939,6 +944,24 @@ function ModelEdit:buildWidget()
 				end
 
 			end
+			return true
+		end)
+
+		local animationIterationsWindow = self.widget:getWindow("AnimationIterations") 
+		animationIterationsWindow:subscribeEvent("TextChanged", function(args)
+				if self.animation then
+					local iterations = tonumber(animationIterationsWindow:getText())
+					self.animation:setIterations(iterations)
+				end
+			return true
+		end)		
+		
+		local actionSpeedWindow = self.widget:getWindow("ActionSpeed") 
+		actionSpeedWindow:subscribeEvent("TextChanged", function(args)
+				if self.action then
+					local speed = tonumber(actionSpeedWindow:getText())
+					self.action:setAnimationSpeed(speed)
+				end
 			return true
 		end)
 		
