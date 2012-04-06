@@ -126,9 +126,10 @@ protected:
 	 * @param section The resource group to add it to.
 	 * @param recursive Whether it should be searched recursively.
 	 * @param reportFailure Whether any failures to find or add the path should be written to the log.
+	 * @param throwOnFailure Throws an exception on failure.
 	 * @return True if the path was successfully added.
 	 */
-	bool addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure);
+	bool addResourceDirectory(const std::string& path, const std::string& type, const std::string& section, bool recursive, bool reportFailure, bool throwOnFailure = false);
 
 
 };
