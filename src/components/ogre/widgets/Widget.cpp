@@ -92,24 +92,24 @@ namespace Gui {
 			mMainWindow = mWindowManager->loadWindowLayout(finalFileName, prefix);
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when loading from " << filename << "." << ex);
+			throw ex;
 		} catch (...) {
 			S_LOG_FAILURE("Unknown error when loading from " << filename << ".");
+			throw;
 		}
-		if (mMainWindow) {
-			mOriginalWindowAlpha = mMainWindow->getAlpha();
-			getMainSheet()->addChildWindow(mMainWindow);
-			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventActivated, Widget::MainWindow_Activated);
-			BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
-			//we want to catch all click events, so we'll listen for the mouse button down event
-			BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventMouseButtonDown, Widget::MainWindow_MouseButtonDown);
-			if (mMainWindow->isVisible()) {
-				onEventFirstTimeShown();
-			} else {
-				//Set it up to listen for the first time the window is shown.
-				BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventShown, Widget::MainWindow_Shown);
-			}
+		mOriginalWindowAlpha = mMainWindow->getAlpha();
+		getMainSheet()->addChildWindow(mMainWindow);
+		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventActivated, Widget::MainWindow_Activated);
+		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
+		//we want to catch all click events, so we'll listen for the mouse button down event
+		BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventMouseButtonDown, Widget::MainWindow_MouseButtonDown);
+		if (mMainWindow->isVisible()) {
+			onEventFirstTimeShown();
+		} else {
+			//Set it up to listen for the first time the window is shown.
+			BIND_CEGUI_EVENT(mMainWindow, CEGUI::Window::EventShown, Widget::MainWindow_Shown);
+		}
 
-		}
 		return mMainWindow;
 	}
 
