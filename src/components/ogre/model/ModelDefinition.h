@@ -296,6 +296,12 @@ public:
 
 	int getIterations() const;
 
+	/**
+	 * @brief Sets the number of iterations for the animation.
+	 * @param iterations The number of iterations for the animation.
+	 */
+	void setIterations(int iterations);
+
 private:
 	AnimationDefinition(int iterations);
 
@@ -368,14 +374,17 @@ public:
 
 	AnimationDefinition* createAnimationDefinition(int iterations = 1);
 	const AnimationDefinitionsStore& getAnimationDefinitions() const;
+	AnimationDefinitionsStore& getAnimationDefinitions();
 	void removeAnimationDefinition(AnimationDefinition* def);
 
 	SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
 	const SoundDefinitionsStore& getSoundDefinitions() const;
+	SoundDefinitionsStore& getSoundDefinitions();
 	void removeSoundDefinition(SoundDefinition* def);
 
 	ActivationDefinition* createActivationDefinition(const ActivationDefinition::Type& type, const std::string& trigger);
 	const ActivationDefinitionStore& getActivationDefinitions() const;
+	ActivationDefinitionStore& getActivationDefinitions();
 	void removeActivationDefinition(ActivationDefinition* def);
 
 	const std::string& getName() const;
@@ -550,6 +559,12 @@ public:
 	 * @return
 	 */
 	const ActionDefinitionsStore& getActionDefinitions() const;
+
+	/**
+	 * @brief Returns all ActionDefinitions defined.
+	 * @return
+	 */
+	ActionDefinitionsStore& getActionDefinitions();
 
 	/**
 	 * @brief Removes a certain ActionDefinition.

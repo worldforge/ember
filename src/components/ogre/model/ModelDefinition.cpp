@@ -209,6 +209,12 @@ const ActionDefinitionsStore& ModelDefinition::getActionDefinitions() const
 	return mActions;
 }
 
+ActionDefinitionsStore& ModelDefinition::getActionDefinitions()
+{
+	return mActions;
+}
+
+
 const AttachPointDefinitionStore& ModelDefinition::getAttachPointsDefinitions() const
 {
 	return mAttachPoints;
@@ -413,6 +419,10 @@ void AnimationDefinition::removeAnimationPartDefinition(AnimationPartDefinition*
 	ModelDefinition::removeDefinition(def, mAnimationParts);
 }
 
+void AnimationDefinition::setIterations(int iterations) {
+	mIterations = iterations;
+}
+
 ActionDefinition::ActionDefinition(const std::string& name) :
 		mName(name), mAnimationSpeed(1.0)
 {
@@ -443,6 +453,11 @@ const AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions() con
 	return mAnimations;
 }
 
+AnimationDefinitionsStore& ActionDefinition::getAnimationDefinitions()
+{
+	return mAnimations;
+}
+
 void ActionDefinition::removeAnimationDefinition(AnimationDefinition* def)
 {
 	ModelDefinition::removeDefinition(def, mAnimations);
@@ -463,6 +478,11 @@ const SoundDefinitionsStore& ActionDefinition::getSoundDefinitions() const
 	return mSounds;
 }
 
+SoundDefinitionsStore& ActionDefinition::getSoundDefinitions()
+{
+	return mSounds;
+}
+
 void ActionDefinition::removeSoundDefinition(SoundDefinition* def)
 {
 	ModelDefinition::removeDefinition(def, mSounds);
@@ -479,6 +499,11 @@ ActivationDefinition* ActionDefinition::createActivationDefinition(const Activat
 
 }
 const ActivationDefinitionStore& ActionDefinition::getActivationDefinitions() const
+{
+	return mActivations;
+}
+
+ActivationDefinitionStore& ActionDefinition::getActivationDefinitions()
 {
 	return mActivations;
 }

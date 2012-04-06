@@ -144,26 +144,27 @@ public:
 	void removeAnimationPartDefinition(Ember::OgreView::Model::AnimationPartDefinition* def);
 
 	int getIterations() const;
+	void setIterations(int iterations);
 };
 
 class ActionDefinition
 {
 public:
 	Ember::OgreView::Model::AnimationDefinition* createAnimationDefinition(int iterations = 1);
-	const std::vector<Ember::OgreView::Model::AnimationDefinition*>& getAnimationDefinitions() const;
+	std::vector<Ember::OgreView::Model::AnimationDefinition*>& getAnimationDefinitions();
 	void removeAnimationDefinition(Ember::OgreView::Model::AnimationDefinition* def);
 
 	Ember::OgreView::Model::SoundDefinition* createSoundDefinition(const std::string& groupName, unsigned int play);
-	const std::vector<Ember::OgreView::Model::SoundDefinition*>& getSoundDefinitions() const;
+	std::vector<Ember::OgreView::Model::SoundDefinition*>& getSoundDefinitions() const;
 	void removeSoundDefinition(Ember::OgreView::Model::SoundDefinition* def);
 
 	Ember::OgreView::Model::ActivationDefinition* createActivationDefinition(const Ember::OgreView::Model::ActivationDefinition::Type& type, const std::string& trigger);
-	const std::vector<Ember::OgreView::Model::ActivationDefinition*>& getActivationDefinitions() const;
+	std::vector<Ember::OgreView::Model::ActivationDefinition*>& getActivationDefinitions();
 	void removeActivationDefinition(Ember::OgreView::Model::ActivationDefinition* def);
 
 	const std::string& getName() const;
-	Ogre::Real getAnimationSpeed() const;
-	void setAnimationSpeed(Ogre::Real speed);
+	float getAnimationSpeed() const;
+	void setAnimationSpeed(float speed);
 
 };
 
