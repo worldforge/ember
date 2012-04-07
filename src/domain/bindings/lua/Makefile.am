@@ -9,7 +9,7 @@ noinst_LIBRARIES = liblua_Domain.a
 liblua_Domain_a_SOURCES = Domain.cxx
 
 CLEANFILES = Domain.cxx
-TOLUA_PKGS = EntityTalk.pkg
+TOLUA_PKGS = Domain.pkg EntityTalk.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 Domain.cxx: $(TOLUA_PKGS)
 
