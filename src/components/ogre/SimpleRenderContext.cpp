@@ -313,6 +313,7 @@ SimpleRenderContext::CameraPositioningMode SimpleRenderContext::getCameraPositio
 void SimpleRenderContext::setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode)
 {
 	mCameraPositionMode = mode;
+	repositionCamera();
 }
 
 void SimpleRenderContext::setBackgroundColour(const Ogre::ColourValue& colour)
