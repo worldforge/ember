@@ -577,7 +577,7 @@ function ModelEdit:buildWidget()
 	local setup = function()
 		self.renderImage = self.widget:getWindow("Image")
 		--self.renderImage = CEGUI.toStaticImage(self.renderImage)
-	
+		
 		self.models = self.widget:getWindow("Models")
 		self.models = CEGUI.toListbox(self.models)
 		self.models:subscribeEvent("ItemSelectionChanged", function(args)
@@ -857,6 +857,25 @@ function ModelEdit:buildWidget()
 		self.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.renderImage)
 		self.renderer:showAxis();
 		self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
+		
+		
+		local cameraPosCombobox = CEGUI.toCombobox(self.widget:getWindow("ImageCameraPositioning"))
+		cameraPosCombobox:addItem(Ember.OgreView.Gui.ColouredListItem:new("World center", 0))
+		cameraPosCombobox:addItem(Ember.OgreView.Gui.ColouredListItem:new("Object center", 1))
+		cameraPosCombobox:setItemSelectState(0, true)
+		cameraPosCombobox:subscribeEvent("ListSelectionChanged", function(args) 
+			local item = cameraPosCombobox:getSelectedItem()
+			if item then
+				local selectId = item:getID()
+				if selectId == 0 then
+					self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
+				elseif selectId == 1 then
+					self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_OBJECTCENTER)
+				end
+			end
+			return true 
+		end)
+
 		
 		local subMeshPreviewImage = self.widget:getWindow("SubMeshPreviewImage")
 		--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
