@@ -949,23 +949,17 @@ function ModelEdit:buildWidget()
 		end)
 		
 		
-		local actionPlayer = {}
+		local playEndFunction = nil
 		self.widget:getWindow("PlayAction"):subscribeEvent("Clicked", function(args)
-			if actionPlayer.currentConnection then
-				actionPlayer.currentConnection:disconnect()
-				actionPlayer.currentConnection = nil
-				local model = self.renderer:getModel()
-				if model then
-					local modelAction = model:getAction(self.action:getName())
-					if modelAction then
-						modelAction:getAnimations():reset()
-					end
-				end
-				self.widget:getWindow("PlayAction"):setText("Play")
+		
+			
+			if playEndFunction then
+				playEndFunction()
+				playEndFunction = nil
 			else
 				if self.action then
 					local actionName = self.action:getName()
-					actionPlayer.currentConnection = createConnector(self.widget.EventFrameStarted):connect(function(timeslice)
+					local currentConnection = createConnector(self.widget.EventFrameStarted):connect(function(timeslice)
 						local model = self.renderer:getModel()
 						if model then
 							local modelAction = model:getAction(actionName)
@@ -974,6 +968,20 @@ function ModelEdit:buildWidget()
 							end
 						end
 					end)
+					
+					playEndFunction = function()
+						currentConnection:disconnect()
+						currentConnection = nil
+						local model = self.renderer:getModel()
+						if model then
+							local modelAction = model:getAction(actionName)
+							if modelAction then
+								modelAction:getAnimations():reset()
+							end
+						end
+						self.widget:getWindow("PlayAction"):setText("Play")
+					end
+					
 					self.widget:getWindow("PlayAction"):setText("Stop")
 				end
 
