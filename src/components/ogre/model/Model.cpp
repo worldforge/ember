@@ -301,12 +301,12 @@ void Model::createActions()
 								animPart.state = state;
 //								animPart.weight = (*I_animParts)->Weight;
 								animPart.weight = 1.0f;
-								for (std::vector<std::string>::const_iterator I_boneGroupRef = (*I_animParts)->BoneGroupRefs.begin(); I_boneGroupRef != (*I_animParts)->BoneGroupRefs.end(); ++I_boneGroupRef) {
-									BoneGroupDefinitionStore::const_iterator I_boneGroup = mDefinition->getBoneGroupDefinitions().find(*I_boneGroupRef);
+								for (std::vector<BoneGroupRefDefinition>::const_iterator I_boneGroupRef = (*I_animParts)->BoneGroupRefs.begin(); I_boneGroupRef != (*I_animParts)->BoneGroupRefs.end(); ++I_boneGroupRef) {
+									BoneGroupDefinitionStore::const_iterator I_boneGroup = mDefinition->getBoneGroupDefinitions().find(I_boneGroupRef->Name);
 									if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {
 										BoneGroupRef boneGroupRef;
 										boneGroupRef.boneGroupDefinition = I_boneGroup->second;
-										boneGroupRef.weight = animPart.weight;
+										boneGroupRef.weight = I_boneGroupRef->Weight;
 										animPart.boneGroupRefs.push_back(boneGroupRef);
 									}
 								}

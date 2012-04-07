@@ -529,8 +529,17 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
 					boneGroupRefElem != 0; boneGroupRefElem = boneGroupRefElem->NextSiblingElement())
 			{
 				tmp = boneGroupRefElem->Attribute("name");
-				if (tmp)
-					animPartDef->BoneGroupRefs.push_back(std::string(tmp));
+				if (tmp) {
+					BoneGroupRefDefinition boneGroupRef;
+					boneGroupRef.Name = tmp;
+					tmp = boneGroupRefElem->Attribute("weight");
+					if (tmp) {
+						boneGroupRef.Weight = Ogre::StringConverter::parseReal(tmp);
+					} else {
+						boneGroupRef.Weight = 1.0f;
+					}
+					animPartDef->BoneGroupRefs.push_back(boneGroupRef);
+				}
 			}
 		}
 
@@ -991,9 +1000,12 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 					TiXmlElement animationPartElem("animationpart");
 					animationPartElem.SetAttribute("name", (*K)->Name.c_str());
 					animationPartElem.SetDoubleAttribute("weight", (*K)->Weight);
-					for (std::vector<std::string>::const_iterator L = (*K)->BoneGroupRefs.begin(); L != (*K)->BoneGroupRefs.end(); ++L) {
+					for (std::vector<BoneGroupRefDefinition>::const_iterator L = (*K)->BoneGroupRefs.begin(); L != (*K)->BoneGroupRefs.end(); ++L) {
 						TiXmlElement boneGroupRefElem("bonegroupref");
-						boneGroupRefElem.SetAttribute("name", L->c_str());
+						boneGroupRefElem.SetAttribute("name", L->Name.c_str());
+						if (L->Weight != 1.0f) {
+							boneGroupRefElem.SetAttribute("weight", L->Weight);
+						}
 						animationPartElem.InsertEndChild(boneGroupRefElem);
 					}
 					animationElem.InsertEndChild(animationPartElem);

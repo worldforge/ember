@@ -121,6 +121,7 @@
                                                                                                     <xsd:element name="bonegroupref" minOccurs="0" maxOccurs="unbounded">
                                                                                                         <xsd:complexType>
                                                                                                             <xsd:attribute name="name" type="xsd:string" use="required" />
+                                                                                                            <xsd:attribute name="weight" type="xsd:float" use="optional" />
                                                                                                         </xsd:complexType>
                                                                                                     </xsd:element>
                                                                                                 </xsd:sequence>

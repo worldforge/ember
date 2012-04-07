@@ -237,6 +237,15 @@ struct AttachPointDefinition
 	Ogre::Quaternion Rotation;
 };
 
+
+/**
+ * @brief A reference to a bone group, with an optional weight.
+ */
+struct BoneGroupRefDefinition {
+	std::string Name;
+	float Weight;
+};
+
 /**
  * @brief Definition of an animation part.
  *
@@ -253,7 +262,7 @@ struct AnimationPartDefinition
 	/**
 	 * @brief The bone groups, if any, which should affect this animation.
 	 */
-	std::vector<std::string> BoneGroupRefs;
+	std::vector<BoneGroupRefDefinition> BoneGroupRefs;
 
 };
 
