@@ -901,15 +901,30 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
-		local checkbox = CEGUI.toCheckbox(self.widget:getWindow("Image_ShowAxes"))
-		self.widget:getWindow("Image_ShowAxes"):subscribeEvent("CheckStateChanged", function(args)
-			if checkbox:isSelected() then
+		local showAxesCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Image_ShowAxes"))
+		showAxesCheckbox:subscribeEvent("CheckStateChanged", function(args)
+			if showAxesCheckbox:isSelected() then
 				self.renderer:showAxis()
 			else
 				self.renderer:hideAxis()
 			end
 			return true
 		end)
+		
+		local showSkeletonCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Image_ShowSkeleton"))
+		showSkeletonCheckbox:subscribeEvent("CheckStateChanged", function(args)
+			local model = self.renderer:getModel()
+			if model then
+				if showSkeletonCheckbox:isSelected() then
+					model:setDisplaySkeleton(true)
+				else
+					model:setDisplaySkeleton(false)
+				end
+			end
+			return true
+		end)
+				
+		
 		self.widget:getWindow("ExportAsAtlasTypeButton"):subscribeEvent("Clicked", function(args)
 			local model = self.renderer:getModel()
 			if model then
