@@ -57,7 +57,7 @@ class Animation
 {
 public:
 	Animation(int iterations, size_t boneNumber);
-	void addAnimationPart(AnimationPart part);
+	void addAnimationPart(const AnimationPart& part);
 	void setEnabled(bool state);
 
 	void addTime(Ogre::Real timeSlice);
@@ -76,7 +76,6 @@ class AnimationSet
 {
 public:
 	AnimationSet();
-	~AnimationSet();
 
 	/**
 	 * Adds time to the animation, thus advancing it.
@@ -95,7 +94,7 @@ public:
 	 * Adds a single animation to this set.
 	 * @param animation
 	 */
-	void addAnimation(Animation animation);
+	void addAnimation(const Animation& animation);
 
 
 	/**

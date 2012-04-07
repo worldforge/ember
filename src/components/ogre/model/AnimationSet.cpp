@@ -27,20 +27,16 @@
 #include "AnimationSet.h"
 #include <OgreAnimationState.h>
 
-namespace Ember {
-namespace OgreView {
-namespace Model {
-
-
-AnimationSet::AnimationSet() : mAccumulatedTime(0), mCurrentAnimationSetIndex(0), mSpeed(1.0)
+namespace Ember
 {
-}
-
-AnimationSet::~AnimationSet()
+namespace OgreView
 {
-/*	for (AnimationStore::iterator I = mAnimations.begin(); I != mAnimations.end(); ++I) {
-		delete *I;
-	}*/
+namespace Model
+{
+
+AnimationSet::AnimationSet() :
+		mAccumulatedTime(0), mCurrentAnimationSetIndex(0), mSpeed(1.0)
+{
 }
 
 void AnimationSet::addTime(Ogre::Real timeSlice)
@@ -48,7 +44,6 @@ void AnimationSet::addTime(Ogre::Real timeSlice)
 	static bool discardThis;
 	addTime(timeSlice, discardThis);
 }
-
 
 void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 {
@@ -93,15 +88,17 @@ void AnimationSet::reset()
 	mAccumulatedTime = 0;
 }
 
-void AnimationSet::addAnimation(Animation animation)
+void AnimationSet::addAnimation(const Animation& animation)
 {
 	mAnimations.push_back(animation);
 }
 
+Animation::Animation(int iterations, size_t boneNumber) :
+		mIterationLength(0), mIterations(iterations), mBoneNumber(boneNumber)
+{
+}
 
-Animation::Animation(int iterations, size_t boneNumber) : mIterationLength(0), mIterations(iterations), mBoneNumber(boneNumber) {}
-
-void Animation::addAnimationPart(AnimationPart part)
+void Animation::addAnimationPart(const AnimationPart& part)
 {
 	mAnimationParts.push_back(part);
 	mIterationLength = std::max<Ogre::Real>(part.state->getLength(), mIterationLength);
@@ -120,8 +117,8 @@ void Animation::addTime(Ogre::Real timeSlice)
 
 void Animation::setTime(Ogre::Real time)
 {
-	AnimationPartSet::iterator I = mAnimationParts.begin();
-	for (; I != mAnimationParts.end(); ++I) {
+
+	for (AnimationPartSet::iterator I = mAnimationParts.begin(); I != mAnimationParts.end(); ++I) {
 		//we'll get an assert error if we try to add time to an animation with zero length
 		if (I->state->getLength() != 0) {
 			I->state->setTimePosition(time);
