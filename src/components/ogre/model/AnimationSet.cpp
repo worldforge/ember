@@ -80,9 +80,9 @@ void AnimationSet::addTime(Ogre::Real timeSlice, bool& continueAnimation)
 
 void AnimationSet::reset()
 {
-	if (mAnimations.size() > 0) {
-		Animation& animation = mAnimations[mCurrentAnimationSetIndex];
-		animation.setEnabled(false);
+	for (AnimationStore::iterator I = mAnimations.begin(); I != mAnimations.end(); ++I) {
+		I->setEnabled(false);
+		I->setTime(0.0f);
 	}
 	mCurrentAnimationSetIndex = 0;
 	mAccumulatedTime = 0;
