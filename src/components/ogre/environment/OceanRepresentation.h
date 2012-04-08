@@ -89,7 +89,7 @@ private:
 	/**
 	 * @brief The type name for the class.
 	 */
-	static std::string sTypeName;
+	static const std::string sTypeName;
 
 	void entity_Moved();
 

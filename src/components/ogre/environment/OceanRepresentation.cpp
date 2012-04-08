@@ -31,7 +31,7 @@ namespace OgreView
 namespace Environment
 {
 
-std::string OceanRepresentation::sTypeName("OceanRepresentation");
+const std::string OceanRepresentation::sTypeName("OceanRepresentation");
 
 OceanRepresentation::OceanRepresentation(EmberEntity& entity, IWater& water) :
 	mEntity(entity), mWater(water)
