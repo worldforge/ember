@@ -303,29 +303,15 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 	if (std::find(mLoadedCompositors.begin(), mLoadedCompositors.end(), compositorName) == mLoadedCompositors.end()) {
 		Ogre::CompositorInstance* compositor = Ogre::CompositorManager::getSingleton().addCompositor(mWindow.getViewport(0), compositorName);
 		if (compositor) {
+			bool hasErrors = false;
 			//There's a bug in Ogre which will causes a segfault during rendering if a compositor has an invalid shader.
 			//We therefore need to check for this here, and disable the shader if so is the case.
 			compositor->getCompositor()->load();
-			Ogre::CompositionTechnique::TargetPassIterator targetPassIter = compositor->getTechnique()->getTargetPassIterator();
-			bool hasErrors = false;
-			while (targetPassIter.hasMoreElements() && !hasErrors) {
-				Ogre::CompositionTargetPass::PassIterator compPassIter = targetPassIter.getNext()->getPassIterator();
-				while (compPassIter.hasMoreElements() && !hasErrors) {
-					Ogre::CompositionPass* compositorPass = compPassIter.getNext();
-					compositorPass->getMaterial()->load();
-					Ogre::Material::TechniqueIterator techIter = compositorPass->getMaterial()->getSupportedTechniqueIterator();
-					while (techIter.hasMoreElements() && !hasErrors) {
-						Ogre::Technique::PassIterator _passIter = techIter.getNext()->getPassIterator();
-						while (_passIter.hasMoreElements() && !hasErrors) {
-							Ogre::Pass* pass = _passIter.getNext();
-							if (pass->hasFragmentProgram()) {
-								if (pass->getFragmentProgram()->hasCompileError()) {
-									hasErrors = true;
-									break;
-								}
-							}
-						}
-					}
+			hasErrors = !validateCompositionTargetPass(*compositor->getTechnique()->getOutputTargetPass());
+			if (!hasErrors) {
+				Ogre::CompositionTechnique::TargetPassIterator targetPassIter = compositor->getTechnique()->getTargetPassIterator();
+				while (targetPassIter.hasMoreElements() && !hasErrors) {
+					hasErrors = !validateCompositionTargetPass(*targetPassIter.getNext());
 				}
 			}
 			if (hasErrors) {
@@ -339,6 +325,32 @@ void MainCamera::enableCompositor(const std::string& compositorName, bool enable
 	} else {
 		Ogre::CompositorManager::getSingleton().setCompositorEnabled(mWindow.getViewport(0), compositorName, enable);
 	}
+}
+
+bool MainCamera::validateCompositionTargetPass(Ogre::CompositionTargetPass& compositionPass)
+{
+	Ogre::CompositionTargetPass::PassIterator compPassIter = compositionPass.getPassIterator();
+	while (compPassIter.hasMoreElements()) {
+		Ogre::CompositionPass* compositorPass = compPassIter.getNext();
+		compositorPass->getMaterial()->load();
+		Ogre::Material::TechniqueIterator techIter = compositorPass->getMaterial()->getSupportedTechniqueIterator();
+		while (techIter.hasMoreElements()) {
+			Ogre::Technique::PassIterator _passIter = techIter.getNext()->getPassIterator();
+			while (_passIter.hasMoreElements()) {
+				Ogre::Pass* pass = _passIter.getNext();
+				//Also disallow camera polygon mode overide. This is because if it's turned on,
+				//and the camera is switched to polygon mode, the end result will be one single
+				//large polygon being shown. This is not what we want.
+				pass->setPolygonModeOverrideable(false);
+				if (pass->hasFragmentProgram()) {
+					if (pass->getFragmentProgram()->hasCompileError()) {
+						return false;
+					}
+				}
+			}
+		}
+	}
+	return true;
 }
 
 void MainCamera::pushWorldPickListener(IWorldPickListener* worldPickListener)

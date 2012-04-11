@@ -157,7 +157,6 @@ public:
 
 	void removeWorldPickListener(IWorldPickListener* worldPickListener);
 
-
 	/**
 	 * @brief Attaches the camera to a new mount, returning the previous mount, if any.
 	 * @param  newCameraMount The new camera mount.
@@ -247,6 +246,14 @@ private:
 	 * @param mode The current input mode.
 	 */
 	void Input_MouseMoved(const MouseMotion& motion, Input::InputMode mode);
+
+	/**
+	 * @brief Validates that the composition output pass is correct.
+	 * We have to do this when a compositor is loaded, since else we run the risk of getting an exception thrown during rendering.
+	 * @param compositionPass A composition pass.
+	 * @return True if the pass is valid.
+	 */
+	bool validateCompositionTargetPass(Ogre::CompositionTargetPass& compositionPass);
 
 };
 
