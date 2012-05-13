@@ -50,7 +50,6 @@ emberlibs = \
 if !BUILD_WEBEMBER
 bin_PROGRAMS = ember.bin
 
-ember_bin_LDFLAGS = -Wl
 ember_bin_LDADD = $(emberlibs)
 ember_bin_SOURCES = $(embersources) $(top_srcdir)/src/main/Ember.cpp
 
