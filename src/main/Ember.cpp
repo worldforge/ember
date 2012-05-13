@@ -34,6 +34,7 @@
 #include <ostream>
 #else
 #include <dirent.h>
+#include <unistd.h>
 #endif
 
 #include <stdlib.h>
