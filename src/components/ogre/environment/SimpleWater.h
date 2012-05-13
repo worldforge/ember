@@ -34,6 +34,8 @@ namespace OgreView
 namespace Environment
 {
 
+class WaterAdjustRenderTargetListener;
+
 /**
  @brief A very simple water implementation which just shows a flat textured water plane.
 
@@ -42,7 +44,13 @@ namespace Environment
 class SimpleWater: public IWater
 {
 public:
-	SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr);
+	/**
+	 * @brief Ctor.
+	 * @param camera The main camera in the scene.
+	 * @param sceneMgr The scene manager for the scene.
+	 * @param mainRenderTarget The main render target for the scene.
+	 */
+	SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr, Ogre::RenderTarget& mainRenderTarget);
 
 	virtual ~SimpleWater();
 
@@ -67,7 +75,6 @@ public:
 
 	virtual bool setUserAny(const Ogre::Any &anything);
 
-
 	float getLevel() const;
 
 protected:
@@ -91,6 +98,18 @@ protected:
 	 * @brief The entity representing the water plane. Owned by this instance-
 	 */
 	Ogre::Entity* mWaterEntity;
+
+	/**
+	 * @brief The main render target of the scene.
+	 */
+	Ogre::RenderTarget& mMainRenderTarget;
+
+	/**
+	 * @brief Render target listener which adjusts the water so that it's always placed on the camera.
+	 *
+	 * This makes sure that it appears that the water is infinite.
+	 */
+	WaterAdjustRenderTargetListener* mRenderTargetListener;
 
 };
 

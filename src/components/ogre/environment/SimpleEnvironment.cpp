@@ -30,6 +30,7 @@
 #include "components/ogre/Convert.h"
 #include <OgreSceneManager.h>
 #include <OgreLight.h>
+#include <OgreRenderWindow.h>
 namespace Ember {
 namespace OgreView {
 
@@ -107,7 +108,7 @@ void SimpleEnvironment::createEnvironment()
 	mSun = new SimpleSun(mSceneMgr);
 	mSky = new SimpleSky();
 	mFog = new SimpleFog(mSceneMgr);
-	mWater = new SimpleWater(mCamera, *mSceneMgr);
+	mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
 	mWater->initialize();
 }
 
