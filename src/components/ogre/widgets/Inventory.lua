@@ -244,8 +244,8 @@ function Inventory:buildWidget(avatarEntity)
 	
 	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview:new(emberOgre:getWorld())
 	--User has dragged an entityIcon from the inventory to the world
-	self.DragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget(root)
-	self.DragDrop_DraggedOver = function(entityIcon)
+	self.DragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget:new(root)
+	local dragDrop_DraggedOver = function(entityIcon)
 		if entityIcon ~= nil then
 			if entityIcon:getImage() ~= nil then
 				--alpha is already low when dragging, so 0.7 of an already reduced alpha
@@ -254,10 +254,10 @@ function Inventory:buildWidget(avatarEntity)
 			end
 		end
 	end
-	self.DragDrop_DraggedOver_connector = createConnector(self.DragDrop.EventIconEntered):connect(self.DragDrop_DraggedOver)
+	connect(self.connectors, self.DragDrop.EventIconEntered, dragDrop_DraggedOver)
 	
 	--User has dragged an entityIcon over the world, and onto another window
-	self.DragDrop_DragLeaves = function(entityIcon)
+	local dragDrop_DragLeaves = function(entityIcon)
 		if entityIcon ~= nil then
 			if entityIcon:getEntity() ~= nil then
 				entityIcon:getImage():setAlpha(1.0)
@@ -265,17 +265,17 @@ function Inventory:buildWidget(avatarEntity)
 			end
 		end
 	end
-	self.DragDrop_DragLeaves_connector = createConnector(self.DragDrop.EventIconLeaves):connect(self.DragDrop_DragLeaves)
+	connect(self.connectors, self.DragDrop.EventIconLeaves, dragDrop_DragLeaves)
 	
 	--Responds when preview model has been released on the world
-	self.DragDrop_Finalize = function(emberEntity)
+	local dragDrop_Finalize = function(emberEntity)
 		if emberEntity ~= nil then
 			local offset = self.helper:getDropOffset()
 			local orientation = self.helper:getDropOrientation()
 			emberServices:getServerService():drop(emberEntity, offset, orientation)
 		end
 	end
-	self.DragDrop_Finalized_connector = createConnector(self.helper.EventEntityFinalized):connect(self.DragDrop_Finalize)
+	connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)
 	
 	
 	self.menu.container:setVisible(true)
@@ -467,6 +467,7 @@ end
 function Inventory:shutdown()
 	disconnectAll(self.connectors)
 	deleteSafe(self.helper)
+	deleteSafe(self.DragDrop)
 	if self.doll ~= nil then
 		if deleteSafe(self.doll.renderer) then
 			self.doll.rightHand.shutdown()

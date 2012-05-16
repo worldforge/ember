@@ -23,7 +23,9 @@
 #ifndef EMBEROGRE_GUIENTITYICONDRAGDROPTARGET_H
 #define EMBEROGRE_GUIENTITYICONDRAGDROPTARGET_H
 
+#include <CEGUIEvent.h>
 #include <sigc++/signal.h>
+#include <vector>
 
 namespace CEGUI
 {
@@ -127,6 +129,11 @@ private:
 	 * @returns An entity icon instance, or null if none could be found.
 	 */
 	EntityIcon* parseIcon(const CEGUI::EventArgs& args);
+
+	/**
+	 * @brief Stores connections so that they can easily be disconnected when destroyed.
+	 */
+	std::vector<CEGUI::Event::Connection> mConnections;
 
 };
 

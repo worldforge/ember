@@ -40,14 +40,16 @@ namespace Gui {
 
 EntityIconDragDropTarget::EntityIconDragDropTarget(CEGUI::Window* container)
 {
-	container->subscribeEvent(CEGUI::Window::EventDragDropItemEnters, CEGUI::Event::Subscriber(& EntityIconDragDropTarget::dragContainer_DragEnter, this));
-	container->subscribeEvent(CEGUI::Window::EventDragDropItemLeaves, CEGUI::Event::Subscriber(& EntityIconDragDropTarget::dragContainer_DragLeave, this));
-	container->subscribeEvent(CEGUI::Window::EventDragDropItemDropped, CEGUI::Event::Subscriber(& EntityIconDragDropTarget::dragContainer_DragDropped, this));
-
+	mConnections.push_back(container->subscribeEvent(CEGUI::Window::EventDragDropItemEnters, CEGUI::Event::Subscriber(& EntityIconDragDropTarget::dragContainer_DragEnter, this)));
+	mConnections.push_back(container->subscribeEvent(CEGUI::Window::EventDragDropItemLeaves, CEGUI::Event::Subscriber(& EntityIconDragDropTarget::dragContainer_DragLeave, this)));
+	mConnections.push_back(container->subscribeEvent(CEGUI::Window::EventDragDropItemDropped, CEGUI::Event::Subscriber(& EntityIconDragDropTarget::dragContainer_DragDropped, this)));
 }
 
 EntityIconDragDropTarget::~EntityIconDragDropTarget()
 {
+	for (std::vector<CEGUI::Event::Connection>::iterator I = mConnections.begin(); I != mConnections.end(); ++I) {
+		(*I)->disconnect();
+	}
 }
 
 
