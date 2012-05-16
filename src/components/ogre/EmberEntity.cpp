@@ -21,7 +21,6 @@
 #endif
 #include "EmberEntity.h"
 
-#include "Convert.h"
 #include "IGraphicalRepresentation.h"
 #include "IEntityAttachment.h"
 #include "IEntityVisitor.h"
@@ -30,7 +29,6 @@
 #include "framework/LoggingInstance.h"
 #include "domain/EntityTalk.h"
 #include "domain/IHeightProvider.h"
-#include "authoring/AuthoringManager.h"
 #include "components/entitymapping/EntityMapping.h"
 
 #include <Eris/TypeInfo.h>
@@ -40,7 +38,7 @@
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 
-using namespace Ogre;
+#include <sstream>
 
 namespace Ember
 {
