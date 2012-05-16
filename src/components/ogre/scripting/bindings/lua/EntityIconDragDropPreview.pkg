@@ -31,6 +31,7 @@ class EntityIconDragDropPreview
 {
 public:
 	EntityIconDragDropPreview(Ember::OgreView::World& world);
+	~EntityIconDragDropPreview();
 	void createPreview(EntityIcon* icon);
 	void cleanupCreation();
 	

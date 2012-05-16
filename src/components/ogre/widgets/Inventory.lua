@@ -242,7 +242,7 @@ function Inventory:buildWidget(avatarEntity)
 	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
 	self.menu.innercontainer:addChildWindow(self.menu.useButton)
 	
-	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview(emberOgre:getWorld())
+	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview:new(emberOgre:getWorld())
 	--User has dragged an entityIcon from the inventory to the world
 	self.DragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget(root)
 	self.DragDrop_DraggedOver = function(entityIcon)
@@ -466,6 +466,7 @@ end
 
 function Inventory:shutdown()
 	disconnectAll(self.connectors)
+	deleteSafe(self.helper)
 	if self.doll ~= nil then
 		if deleteSafe(self.doll.renderer) then
 			self.doll.rightHand.shutdown()
