@@ -50,7 +50,7 @@
 namespace Ember
 {
 LoggedInState::LoggedInState(IState& parentState, Eris::Account& account) :
-	StateBase<EnteredWorldState>::StateBase(parentState), Logout("logout", this, "Logout from the connected server."), CreateChar("add", this, "Create a character on the server."), TakeChar("take", this, "Take control of one of your characters."), ListChars("list", this, "List you available characters on the server."), mAccount(account), mTransferEvent(0)
+		StateBase<EnteredWorldState>::StateBase(parentState), Logout("logout", this, "Logout from the connected server."), CreateChar("add", this, "Create a character on the server."), TakeChar("take", this, "Take control of one of your characters."), ListChars("list", this, "List you available characters on the server."), mAccount(account), mTransferEvent(0)
 {
 	mAccount.AvatarSuccess.connect(sigc::mem_fun(*this, &LoggedInState::gotAvatarSuccess));
 	mAccount.GotCharacterInfo.connect(sigc::mem_fun(*this, &LoggedInState::gotCharacterInfo));
@@ -135,7 +135,13 @@ bool LoggedInState::createCharacter(const std::string& name, const std::string& 
 
 bool LoggedInState::logout()
 {
-	return mAccount.logout() == Eris::NO_ERR;
+	Eris::Result result = mAccount.logout();
+	if (result != Eris::NO_ERR) {
+		//If something went wrong when loggíng out, just disconnect.
+		disconnect();
+	}
+
+	return result == Eris::NO_ERR;
 }
 
 void LoggedInState::gotCharacterInfo(const Atlas::Objects::Entity::RootEntity & info)
@@ -208,7 +214,7 @@ void LoggedInState::removeTransferInfo(const AvatarTransferInfo& transferInfo)
 	if (teleportsOutputFile.good()) {
 		serializer.serialize(transferObjects, teleportsOutputFile);
 	} else {
-		S_LOG_CRITICAL ("Could not write teleports info to file. This means that the teleported character cannot be claimed.");
+		S_LOG_CRITICAL("Could not write teleports info to file. This means that the teleported character cannot be claimed.");
 	}
 	teleportsOutputFile.close();
 
@@ -231,7 +237,7 @@ void LoggedInState::avatar_transferRequest(const Eris::TransferInfo& transferInf
 	if (teleportsOutputFile.good()) {
 		serializer.serialize(transferObjects, teleportsOutputFile);
 	} else {
-		S_LOG_CRITICAL ("Could not write teleports info to file. This means that the teleported character cannot be claimed.");
+		S_LOG_CRITICAL("Could not write teleports info to file. This means that the teleported character cannot be claimed.");
 	}
 	teleportsOutputFile.close();
 
