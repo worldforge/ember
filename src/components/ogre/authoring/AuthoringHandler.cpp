@@ -94,7 +94,7 @@ void AuthoringHandler::createVisualizationForEntity(EmberEntity* entity)
 		AuthoringVisualization* parentVis(0);
 		Ogre::SceneNode* parentNode(0);
 		if (entity->getLocation()) {
-			VisualizationStore::iterator parentVisIterator = mVisualizations.find(static_cast<EmberEntity*> (entity->getLocation()));
+			VisualizationStore::iterator parentVisIterator = mVisualizations.find(entity->getEmberLocation());
 			if (parentVisIterator != mVisualizations.end()) {
 				parentVis = parentVisIterator->second;
 				parentNode = parentVis->getSceneNode();
