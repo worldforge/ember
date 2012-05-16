@@ -111,7 +111,9 @@ World::~World()
 	delete mFoliageInitializer;
 	delete mConfigListenerContainer;
 	delete mTerrainEntityManager;
+	mSignals.EventTerrainManagerBeingDestroyed();
 	delete mTerrainManager;
+	mSignals.EventTerrainManagerDestroyed();
 	delete mAuthoringMoverConnector;
 	delete mAuthoringManager;
 
