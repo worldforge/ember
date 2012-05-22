@@ -90,6 +90,9 @@ namespace Ogre
         mSceneMgr = 0;
         mParent = 0;  
         mNumNodes = 0;
+        mNodes.clear();
+        mMovingNodes.clear();
+        mStaticNodes.clear();
     }
     //-----------------------------------------------------------------------
     PagingLandScapeOctree::~PagingLandScapeOctree()
