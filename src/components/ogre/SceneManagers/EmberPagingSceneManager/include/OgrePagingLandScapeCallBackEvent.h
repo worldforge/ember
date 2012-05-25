@@ -2,7 +2,7 @@
 #define __PagingLandScapeCallBackEvent_H__
 
 #include "Ogre.h"
-#include "OgrePagingLandScapeCallback.h"
+#include <sigc++/slot.h>
 
 namespace Ogre
 {
@@ -32,6 +32,6 @@ namespace Ogre
 		const AxisAlignedBox &mBbox;
 
 	};
-	typedef fastdelegate::FastDelegate1<PagingLandscapeEvent *> PagingLandscapeDelegate;
+	typedef sigc::slot<void, PagingLandscapeEvent *> PagingLandscapeDelegate;
 }
 #endif //__PagingLandScapeCallBackEvent_H__

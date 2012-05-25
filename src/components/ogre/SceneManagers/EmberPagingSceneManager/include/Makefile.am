@@ -49,7 +49,6 @@ noinst_HEADERS = \
 			OgrePagingLandScapeOcclusionSorter.h \
 			OgrePagingLandScapePrecompiledHeaders.h \
 			OgrePagingLandScapeCallBackEvent.h \
-			OgrePagingLandScapeCallback.h \
 			OgrePagingLandScapeAABSQ.h \
 			OgrePagingLandScapeMeshDecal.h \
 			\

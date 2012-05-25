@@ -225,7 +225,7 @@ namespace OgreView {
 	Terrain::ITerrainObserver* EmberPagingSceneManagerAdapter::createObserver()
 	{
 		EmberPagingTerrainObserver* observer = new EmberPagingTerrainObserver();
-		Ogre::PagingLandscapeDelegate* delegate = new Ogre::PagingLandscapeDelegate(observer, &EmberPagingTerrainObserver::tileShow);
+		Ogre::PagingLandscapeDelegate* delegate = new Ogre::PagingLandscapeDelegate(sigc::mem_fun(observer, &EmberPagingTerrainObserver::tileShow));
 		mSceneManager.getListenerManager()->addShowTileListener(delegate);
 		mTerrainObservers.insert(TerrainObserverStore::value_type(observer, delegate));
 		return observer;
