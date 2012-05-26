@@ -84,19 +84,19 @@ RelativePositioning::RelativePositioning()
 
 
 TerrainModAdapter::TerrainModAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, EmberEntity* entity, CEGUI::Combobox* posTypeCombobox, CEGUI::Combobox* modTypeCombobox, CEGUI::Editbox* heightTextbox)
-: AdapterBase(element), mEntity(entity), mPolygonAdapter(0), mHeightTextbox(heightTextbox), mTerrainModsBinder(modTypeCombobox), mPositioningsBinder(posTypeCombobox)
+: AdapterBase(element), mEntity(entity), mPolygonAdapter(nullptr), mHeightTextbox(heightTextbox), mTerrainModsBinder(modTypeCombobox), mPositioningsBinder(posTypeCombobox)
 {
 	
 	if (element.isMap()) {
 		const ::Atlas::Message::MapType& areaData(element.asMap());
 		::Atlas::Message::MapType::const_iterator I = areaData.find("shape");
 		if (I != areaData.end()) {
-			mPolygonAdapter = std::auto_ptr<PolygonAdapter>(new PolygonAdapter(I->second, showButton, entity));
+			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(I->second, showButton, entity));
 		} else {
-			mPolygonAdapter = std::auto_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::Element(), showButton, entity));
+			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::Element(), showButton, entity));
 		}
 	} else {
-		mPolygonAdapter = std::auto_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::Element(), showButton, entity));
+		mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::Element(), showButton, entity));
 	}
 	
 	if (heightTextbox) {

@@ -92,7 +92,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 	std::vector<Ogre::SceneNode*>::iterator nodeIterator = mDebugNodes.begin();
 
 	//Use an auto pointer to allow both for undefined values and automatic cleanup when exiting the method.
-	std::auto_ptr<SnapPointCandidate> closestSnapping(0);
+	std::unique_ptr<SnapPointCandidate> closestSnapping(nullptr);
 
 	WFMath::AxisBox<3> currentBbox = mEntity.getBBox();
 	//Translate the bbox into a rotbox
@@ -164,7 +164,7 @@ bool SnapToMovement::testSnapTo(const WFMath::Point<3>& position, const WFMath::
 									}
 								}
 								if (!closestSnapping.get()) {
-									closestSnapping = std::auto_ptr<SnapPointCandidate>(new SnapPointCandidate());
+									closestSnapping = std::unique_ptr<SnapPointCandidate>(new SnapPointCandidate());
 									closestSnapping->entity = &entity;
 									closestSnapping->distance = distance;
 									closestSnapping->adjustment = point - currentPoint;

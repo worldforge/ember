@@ -64,7 +64,7 @@ public:
 	bool testMatch(const Atlas::Message::Element& attribute);
 
 protected:
-	std::auto_ptr<AttributeComparers::AttributeComparerWrapper> mComparerWrapper;
+	std::unique_ptr<AttributeComparers::AttributeComparerWrapper> mComparerWrapper;
 };
 
 }

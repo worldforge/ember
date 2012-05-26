@@ -163,7 +163,7 @@ protected:
 	 * Each instance of this class holds onto a SoundSource (and thus also an OpenAL source).
 	 * It's created and destroyed together with the instance.
 	 */
-	std::auto_ptr<SoundSource> mSource;
+	std::unique_ptr<SoundSource> mSource;
 	
 	/**
 	 * @brief The sound binding, which binds one or many sound data buffers to the sound source.

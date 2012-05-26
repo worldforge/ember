@@ -135,9 +135,9 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-		mInput(0), mRoot(0), mSceneMgr(0), mWindow(0), mScreen(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr < InputCommandMapper > (new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
+		mInput(0), mOgreSetup(nullptr), mRoot(0), mSceneMgr(0), mWindow(0), mScreen(0), mShaderManager(0), mGeneralCommandMapper(new InputCommandMapper("general")), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
 		//mJesus(0),
-		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
+		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(nullptr), mSoundResourceProvider(nullptr),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
 		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0)
@@ -280,7 +280,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	checkForConfigFiles();
 
 	//Create a setup object through which we will start up Ogre.
-	mOgreSetup = std::auto_ptr<OgreSetup>(new OgreSetup);
+	mOgreSetup = std::unique_ptr<OgreSetup>(new OgreSetup);
 
 	mLogObserver = new OgreLogObserver();
 
@@ -616,10 +616,10 @@ void EmberOgre::Application_ServicesInitialized()
 {
 	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
 
-	mScriptingResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));
+	mScriptingResourceProvider = std::unique_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));
 	EmberServices::getSingleton().getScriptingService().setResourceProvider(mScriptingResourceProvider.get());
 
-	mSoundResourceProvider = std::auto_ptr<OgreResourceProvider>(new OgreResourceProvider("General"));
+	mSoundResourceProvider = std::unique_ptr<OgreResourceProvider>(new OgreResourceProvider("General"));
 	EmberServices::getSingleton().getSoundService().setResourceProvider(mSoundResourceProvider.get());
 
 }

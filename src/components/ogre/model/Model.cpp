@@ -60,7 +60,7 @@ const Ogre::String Model::sMovableType = "Model";
 unsigned long Model::msAutoGenId = 0;
 
 Model::Model(const std::string& name) :
-	Ogre::MovableObject(name), mSkeletonOwnerEntity(0), mSkeletonInstance(0), mScale(0), mRotation(Ogre::Quaternion::IDENTITY), mAnimationStateSet(0), mAttachPoints(0), mBackgroundLoader(0)
+	Ogre::MovableObject(name), mSkeletonOwnerEntity(0), mSkeletonInstance(0), mScale(0.0f), mRotation(Ogre::Quaternion::IDENTITY), mAnimationStateSet(0), mAttachPoints(nullptr), mBackgroundLoader(0)
 {
 	mVisible = true;
 }
@@ -92,7 +92,7 @@ void Model::reset()
 	mSkeletonInstance = 0;
 	// , mAnimationStateSet(0)
 	mSkeletonOwnerEntity = 0;
-	mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(0);
+	mAttachPoints = std::unique_ptr<AttachPointWrapperStore>(nullptr);
 
 }
 
@@ -609,7 +609,7 @@ Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &a
 			//use the rotation in the attach point def
 			Ogre::TagPoint* tagPoint = attachObjectToBone(boneName, pMovable, offsetOrientation * attachPointDef.Rotation, offsetPosition, scale);
 			if (!mAttachPoints.get()) {
-				mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(new AttachPointWrapperStore());
+				mAttachPoints = std::unique_ptr<AttachPointWrapperStore>(new AttachPointWrapperStore());
 			}
 
 			AttachPointWrapper wrapper;
@@ -709,7 +709,7 @@ void Model::detachAllObjectsFromBone(void)
 {
 	if (mSubmodels.size() && mSkeletonOwnerEntity) {
 		mSkeletonOwnerEntity->detachAllObjectsFromBone();
-		mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(0);
+		mAttachPoints = std::unique_ptr<AttachPointWrapperStore>(nullptr);
 
 	} else {
 		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::detachAllObjectsFromBone");

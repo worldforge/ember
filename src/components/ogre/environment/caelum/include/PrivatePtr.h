@@ -27,7 +27,7 @@ namespace Caelum
 {
     /** Default traits for Caelum::PrivatePtr.
      *
-     *  This default traits class make PrivatePtr work like std::auto_ptr.
+     *  This default traits class make PrivatePtr work like std::unique_ptr.
      *  Other Traits classes can derive from this and only customize some of
      *  the functions.
      *
@@ -62,7 +62,7 @@ namespace Caelum
      *  "Manager" objects. Even though the memory for such objects is never
      *  actually leaked better lifetime control is frequently useful.
      *
-     *  PrivatePtr is very similar in behaviour to std::auto_ptr but tries
+     *  PrivatePtr is very similar in behaviour to std::unique_ptr but tries
      *  to mimic Ogre::SharedPtr method names. Only one PrivatePtr must exist to
      *  a certain object at any one time. Assignment and copy  construction will
      *  in fact pass away ownership and set the original PrivatePtr to null.

@@ -61,7 +61,7 @@ void EmberPagingLandScapeTexture::_loadMaterial()
 	EmberPagingSceneManager* emberPagingSceneManager = static_cast<EmberPagingSceneManager*> (mParent->getSceneManager());
 	IPageDataProvider* provider = emberPagingSceneManager->getProvider();
 	if (provider) {
-		std::auto_ptr<IPageData> pageData(provider->getPageData(IPageDataProvider::OgreIndex(mDataX, mDataZ)));
+		std::unique_ptr<IPageData> pageData(provider->getPageData(IPageDataProvider::OgreIndex(mDataX, mDataZ)));
 		mMaterial = pageData->getMaterial();
 	}
 }

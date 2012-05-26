@@ -318,13 +318,13 @@ protected:
 //	 * @brief If there's a terrain area belonging to this entity, that's stored here.
 //	 * The terrain area instance will take care of all required terrain area functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain areas, for which this will be null.
 //	 */
-//	std::auto_ptr<Terrain::TerrainArea> mTerrainArea;
+//	std::unique_ptr<Terrain::TerrainArea> mTerrainArea;
 //
 //	/**
 //	 * @brief If a terrainmod belongs to this entity, it's stored here.
 //	 * The terrain mod instance will take care of all required terrain mod functionality once it's been created, offloading this from the EmberEntity. Most entities won't however have any terrain mods, for which this will be null.
 //	 */
-//	std::auto_ptr<Terrain::TerrainMod> mTerrainMod;
+//	std::unique_ptr<Terrain::TerrainMod> mTerrainMod;
 
 	/**
 	 * @brief The positioning mode the entity is in, like gravity affected, fixed or floating.

@@ -107,7 +107,7 @@ protected:
 	float mClosestPickingDistance, mFurthestPickingDistance;
 	std::vector<EntityPickResult> mResult;
 
-	std::auto_ptr<EntityWorldPickListenerVisualizer> mVisualizer;
+	std::unique_ptr<EntityWorldPickListenerVisualizer> mVisualizer;
 
 	Eris::View& mView;
 

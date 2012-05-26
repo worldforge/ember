@@ -240,7 +240,7 @@ protected:
 
 
 	int mPixelWidth;
-	std::auto_ptr<SimpleRenderContext> mRenderContext;
+	std::unique_ptr<SimpleRenderContext> mRenderContext;
 	IconRenderWorker* mWorker;
 
 	/**

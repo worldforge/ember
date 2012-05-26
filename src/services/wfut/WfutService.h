@@ -94,7 +94,7 @@ public:
 	sigc::signal<void, size_t> UpdatesCalculated;
 
 protected:
-	std::auto_ptr<WfutSession> mSession;
+	std::unique_ptr<WfutSession> mSession;
 
 	void wfutSession_DownloadComplete(const std::string &url, const std::string &filename);
 	void wfutSession_DownloadFailed(const std::string &url, const std::string &filename, const std::string &reason);

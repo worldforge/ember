@@ -64,7 +64,7 @@ protected:
 	void testEntity(Eris::Entity* entity);
 	std::string mOutfitName;
 	Eris::View* mView;
-	std::auto_ptr<Observers::EntityCreationObserver> mEntityObserver;
+	std::unique_ptr<Observers::EntityCreationObserver> mEntityObserver;
 };
 
 inline const std::string& OutfitMatch::getOutfitName()

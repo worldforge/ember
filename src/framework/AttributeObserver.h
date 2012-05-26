@@ -93,9 +93,9 @@ public:
 
 protected:
 
-	std::auto_ptr<DeepAttributeObserver> mDeepAttributeObserver;
+	std::unique_ptr<DeepAttributeObserver> mDeepAttributeObserver;
 
-	std::auto_ptr<DirectAttributeObserver> mDirectAttributeObserver;
+	std::unique_ptr<DirectAttributeObserver> mDirectAttributeObserver;
 
 };
 

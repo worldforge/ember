@@ -252,7 +252,7 @@ private:
 	 */
 	IServerAdapter* mServerAdapter;
 
-	std::auto_ptr<NonConnectedState> mNonConnectedState;
+	std::unique_ptr<NonConnectedState> mNonConnectedState;
 
 };
 

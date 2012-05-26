@@ -81,7 +81,7 @@ void EntityWorldPickListenerVisualizer::picker_EventPickedEntity(const std::vect
 }
 
 EntityWorldPickListener::EntityWorldPickListener(Eris::View& view, Scene& scene) :
-		VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mVisualizer(0), mView(view), mScene(scene)
+		VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mVisualizer(nullptr), mView(view), mScene(scene)
 {
 }
 
@@ -204,7 +204,7 @@ void EntityWorldPickListener::runCommand(const std::string &command, const std::
 		if (mVisualizer.get()) {
 			mVisualizer.reset();
 		} else {
-			mVisualizer = std::auto_ptr < EntityWorldPickListenerVisualizer > (new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
+			mVisualizer = std::unique_ptr < EntityWorldPickListenerVisualizer > (new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
 		}
 	}
 }

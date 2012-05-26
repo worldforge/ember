@@ -242,7 +242,7 @@ namespace Caelum
     {
         ViewportInstanceMap::const_iterator it = mViewportInstanceMap.find(vp);
         if (it == mViewportInstanceMap.end()) {
-            std::auto_ptr<DepthComposerInstance> inst(new DepthComposerInstance(this, vp));
+            std::unique_ptr<DepthComposerInstance> inst(new DepthComposerInstance(this, vp));
             mViewportInstanceMap.insert(std::make_pair(vp, inst.get()));
             // hold instance until successfully added to map.
             return inst.release();

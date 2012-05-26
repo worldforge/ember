@@ -66,7 +66,7 @@ namespace OgreView
 {
 
 Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings) :
-	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(0), mIsMovingServerOnly(false), mScene(scene), mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
+	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(nullptr), mIsMovingServerOnly(false), mScene(scene), mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 
@@ -356,7 +356,7 @@ void Avatar::Config_MaxSpeed(const std::string& section, const std::string& key,
 void Avatar::Config_LogChatMessages(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	if (static_cast<bool> (variable)) {
-		mChatLoggerParent = std::auto_ptr<AvatarLoggerParent>(new AvatarLoggerParent(*this));
+		mChatLoggerParent = std::unique_ptr<AvatarLoggerParent>(new AvatarLoggerParent(*this));
 	} else {
 		mChatLoggerParent.reset();
 	}

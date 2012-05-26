@@ -49,7 +49,7 @@ public:
 	virtual ~NumericComparerWrapper() {}
 	virtual bool testAttribute(const Atlas::Message::Element& attribute);
 private:
-	std::auto_ptr<NumericComparer> mNumericComparer;
+	std::unique_ptr<NumericComparer> mNumericComparer;
 };
 
 

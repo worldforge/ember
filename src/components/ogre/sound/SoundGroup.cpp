@@ -48,7 +48,7 @@ SoundGroupBinding::SoundGroupBinding(SoundSource& source, SoundGroup& soundGroup
 : SoundBinding(source), mSoundGroup(soundGroup)
 {
 	const SoundGroup::SampleStore& samples = mSoundGroup.getSamples();
-	std::auto_ptr<ALuint> buffers(new ALuint[samples.size()]);
+	std::unique_ptr<ALuint> buffers(new ALuint[samples.size()]);
 	ALuint* pbuffers = buffers.get();
 	int i = 0;
 	//get the buffers and bind the source to them

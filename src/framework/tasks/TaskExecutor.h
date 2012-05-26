@@ -75,7 +75,7 @@ protected:
 	/**
 	 * @brief The thread which performs the execution.
 	 */
-	std::auto_ptr<boost::thread> mThread;
+	std::unique_ptr<boost::thread> mThread;
 
 	/**
 	 * @brief Ctor.

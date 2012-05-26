@@ -33,7 +33,7 @@ namespace Tasks
 TaskExecutor::TaskExecutor(TaskQueue& taskQueue) :
 	mTaskQueue(taskQueue), mActive(true)
 {
-	mThread = std::auto_ptr<boost::thread>(new boost::thread(boost::bind(&TaskExecutor::run, this)));
+	mThread = std::unique_ptr<boost::thread>(new boost::thread(boost::bind(&TaskExecutor::run, this)));
 }
 
 TaskExecutor::~TaskExecutor()

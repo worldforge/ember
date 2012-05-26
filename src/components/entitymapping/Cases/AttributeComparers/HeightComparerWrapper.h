@@ -65,7 +65,7 @@ public:
 	virtual bool testAttribute(const Atlas::Message::Element& attribute);
 
 protected:
-	std::auto_ptr<NumericComparer> mNumericComparer;
+	std::unique_ptr<NumericComparer> mNumericComparer;
 	Eris::Entity& mEntity;
 };
 }

@@ -129,7 +129,7 @@ private:
 	/**
 	 * @brief The config which holds all values.
 	 */
-	std::auto_ptr<varconf::Config> mConfig;
+	std::unique_ptr<varconf::Config> mConfig;
 
 	/**
 	 * @brief Gets the full path to the config file on the file system.

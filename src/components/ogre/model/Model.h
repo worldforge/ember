@@ -408,7 +408,7 @@ protected:
 
 	bool createFromDefn();
 
-	std::auto_ptr<AttachPointWrapperStore> mAttachPoints;
+	std::unique_ptr<AttachPointWrapperStore> mAttachPoints;
 
 	ModelBackgroundLoader* mBackgroundLoader;
 

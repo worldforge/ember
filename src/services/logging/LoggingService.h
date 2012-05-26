@@ -55,7 +55,7 @@ class LoggingService : public Service
 
 private:
 
-	std::auto_ptr<ErisLogReciever> mErisLogReciever;
+	std::unique_ptr<ErisLogReciever> mErisLogReciever;
 
 
 };// LoggingService
