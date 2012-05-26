@@ -179,14 +179,14 @@ bool Model::createActualModel()
 	Ogre::SceneManager* sceneManager = _getManager();
 	std::vector<std::string> showPartVector;
 
-	for (SubModelDefinitionsStore::const_iterator I_subModels = mDefinition->getSubModelDefinitions().begin(); I_subModels != mDefinition->getSubModelDefinitions().end(); ++I_subModels) {
-		std::string entityName = mName + "/" + (*I_subModels)->getMeshName();
+	for (auto& submodelDef : mDefinition->getSubModelDefinitions()) {
+		std::string entityName = mName + "/" + submodelDef->getMeshName();
 		try {
 
-			Ogre::Entity* entity = sceneManager->createEntity(entityName, (*I_subModels)->getMeshName());
+			Ogre::Entity* entity = sceneManager->createEntity(entityName, submodelDef->getMeshName());
 			timedLog.report("Created entity.");
 			if (entity->getMesh().isNull()) {
-				S_LOG_FAILURE("Could not load mesh " << (*I_subModels)->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
+				S_LOG_FAILURE("Could not load mesh " << submodelDef->getMeshName() << " which belongs to model " << mDefinition->getName() << ".");
 			}
 
 			if (mDefinition->getRenderingDistance()) {
@@ -196,30 +196,30 @@ bool Model::createActualModel()
 			SubModel* submodel = new SubModel(*entity);
 			//Model::SubModelPartMapping* submodelPartMapping = new Model::SubModelPartMapping();
 
-			for (PartDefinitionsStore::const_iterator I_parts = (*I_subModels)->getPartDefinitions().begin(); I_parts != (*I_subModels)->getPartDefinitions().end(); ++I_parts) {
-				SubModelPart& part = submodel->createSubModelPart((*I_parts)->getName());
+			for (auto& partDef : submodelDef->getPartDefinitions()) {
+				SubModelPart& part = submodel->createSubModelPart(partDef->getName());
 				std::string groupName("");
 
-				if ((*I_parts)->getSubEntityDefinitions().size() > 0) {
-					for (SubEntityDefinitionsStore::const_iterator I_subEntities = (*I_parts)->getSubEntityDefinitions().begin(); I_subEntities != (*I_parts)->getSubEntityDefinitions().end(); ++I_subEntities) {
+				if (partDef->getSubEntityDefinitions().size() > 0) {
+					for (auto& subEntityDef : partDef->getSubEntityDefinitions()) {
 						try {
 							Ogre::SubEntity* subEntity(0);
 							//try with a submodelname first
-							if ((*I_subEntities)->getSubEntityName() != "") {
-								subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityName());
+							if (subEntityDef->getSubEntityName() != "") {
+								subEntity = entity->getSubEntity(subEntityDef->getSubEntityName());
 							} else {
 								//no name specified, use the index instead
-								if (entity->getNumSubEntities() > (*I_subEntities)->getSubEntityIndex()) {
-									subEntity = entity->getSubEntity((*I_subEntities)->getSubEntityIndex());
+								if (entity->getNumSubEntities() > subEntityDef->getSubEntityIndex()) {
+									subEntity = entity->getSubEntity(subEntityDef->getSubEntityIndex());
 								} else {
-									S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << (*I_subEntities)->getSubEntityIndex() << " which is out of bounds.");
+									S_LOG_WARNING("Model definition " << mDefinition->getName() << " has a reference to entity with index " << subEntityDef->getSubEntityIndex() << " which is out of bounds.");
 								}
 							}
 							if (subEntity) {
-								part.addSubEntity(subEntity, *I_subEntities);
+								part.addSubEntity(subEntity, subEntityDef);
 
-								if ((*I_subEntities)->getMaterialName() != "") {
-									subEntity->setMaterialName((*I_subEntities)->getMaterialName());
+								if (subEntityDef->getMaterialName() != "") {
+									subEntity->setMaterialName(subEntityDef->getMaterialName());
 								}
 							} else {
 								S_LOG_WARNING("Could not add subentity.");
@@ -235,18 +235,18 @@ bool Model::createActualModel()
 						part.addSubEntity(entity->getSubEntity(i), 0);
 					}
 				}
-				if ((*I_parts)->getGroup() != "") {
-					mGroupsToPartMap[(*I_parts)->getGroup()].push_back((*I_parts)->getName());
-					//mPartToGroupMap[(*I_parts)->getName()] = (*I_parts)->getGroup();
+				if (partDef->getGroup() != "") {
+					mGroupsToPartMap[partDef->getGroup()].push_back(partDef->getName());
+					//mPartToGroupMap[partDef->getName()] = partDef->getGroup();
 				}
 
-				if ((*I_parts)->getShow()) {
-					showPartVector.push_back((*I_parts)->getName());
+				if (partDef->getShow()) {
+					showPartVector.push_back(partDef->getName());
 				}
 
-				ModelPart& modelPart = mModelParts[(*I_parts)->getName()];
+				ModelPart& modelPart = mModelParts[partDef->getName()];
 				modelPart.addSubModelPart(&part);
-				modelPart.setGroupName((*I_parts)->getGroup());
+				modelPart.setGroupName(partDef->getGroup());
 			}
 			addSubmodel(submodel);
 			timedLog.report("Created submodel.");
@@ -267,9 +267,8 @@ bool Model::createActualModel()
 	createLights();
 	timedLog.report("Created lights.");
 
-	std::vector<std::string>::const_iterator I_end = showPartVector.end();
-	for (std::vector<std::string>::const_iterator I = showPartVector.begin(); I != I_end; I++) {
-		showPart(*I);
+	for (auto& part : showPartVector) {
+		showPart(part);
 	}
 	return true;
 }
@@ -277,11 +276,10 @@ bool Model::createActualModel()
 void Model::createActions()
 {
 
-	ActionDefinitionsStore::const_iterator I_actions_end = mDefinition->getActionDefinitions().end();
-	for (ActionDefinitionsStore::const_iterator I_actions = mDefinition->getActionDefinitions().begin(); I_actions != I_actions_end; ++I_actions) {
+	for (auto& actionDef : mDefinition->getActionDefinitions()) {
 		Action action;
-		action.setName((*I_actions)->getName());
-		action.getAnimations().setSpeed((*I_actions)->getAnimationSpeed());
+		action.setName(actionDef->getName());
+		action.getAnimations().setSpeed(actionDef->getAnimationSpeed());
 
 		if (getSkeleton() && getAllAnimationStates()) {
 			if (!mDefinition->getBoneGroupDefinitions().empty()) {
@@ -289,28 +287,26 @@ void Model::createActions()
 				getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
 			}
 			if (mSubmodels.size()) {
-				AnimationDefinitionsStore::const_iterator I_anims_end = (*I_actions)->getAnimationDefinitions().end();
-				for (AnimationDefinitionsStore::const_iterator I_anims = (*I_actions)->getAnimationDefinitions().begin(); I_anims != I_anims_end; ++I_anims) {
-					Animation animation((*I_anims)->getIterations(), getSkeleton()->getNumBones());
-					AnimationPartDefinitionsStore::const_iterator I_animParts_end = (*I_anims)->getAnimationPartDefinitions().end();
-					for (AnimationPartDefinitionsStore::const_iterator I_animParts = (*I_anims)->getAnimationPartDefinitions().begin(); I_animParts != I_animParts_end; ++I_animParts) {
-						if (getAllAnimationStates()->hasAnimationState((*I_animParts)->Name)) {
+				for (auto& animationDef : actionDef->getAnimationDefinitions()) {
+					Animation animation(animationDef->getIterations(), getSkeleton()->getNumBones());
+					for (auto& animationPartDef : animationDef->getAnimationPartDefinitions()) {
+						if (getAllAnimationStates()->hasAnimationState(animationPartDef->Name)) {
 							AnimationPart animPart;
 							try {
-								Ogre::AnimationState* state = getAnimationState((*I_animParts)->Name);
+								Ogre::AnimationState* state = getAnimationState(animationPartDef->Name);
 								animPart.state = state;
-								for (std::vector<BoneGroupRefDefinition>::const_iterator I_boneGroupRef = (*I_animParts)->BoneGroupRefs.begin(); I_boneGroupRef != (*I_animParts)->BoneGroupRefs.end(); ++I_boneGroupRef) {
-									BoneGroupDefinitionStore::const_iterator I_boneGroup = mDefinition->getBoneGroupDefinitions().find(I_boneGroupRef->Name);
+								for (auto& boneGroupDef : animationPartDef->BoneGroupRefs) {
+									auto I_boneGroup = mDefinition->getBoneGroupDefinitions().find(boneGroupDef.Name);
 									if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {
 										BoneGroupRef boneGroupRef;
 										boneGroupRef.boneGroupDefinition = I_boneGroup->second;
-										boneGroupRef.weight = I_boneGroupRef->Weight;
+										boneGroupRef.weight = boneGroupDef.Weight;
 										animPart.boneGroupRefs.push_back(boneGroupRef);
 									}
 								}
 								animation.addAnimationPart(animPart);
 							} catch (const std::exception& ex) {
-								S_LOG_FAILURE("Error when loading animation: " << (*I_animParts)->Name << "." << ex);
+								S_LOG_FAILURE("Error when loading animation: " << animationPartDef->Name << "." << ex);
 							}
 						}
 					}
@@ -321,28 +317,27 @@ void Model::createActions()
 
 		//TODO: add sounds too
 
-		mActions[(*I_actions)->getName()] = action;
+		mActions[actionDef->getName()] = action;
 	}
 }
 
 void Model::createParticles()
 {
-	std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys_end = mDefinition->mParticleSystems.end();
-	for (std::vector<ModelDefinition::ParticleSystemDefinition>::const_iterator I_particlesys = mDefinition->mParticleSystems.begin(); I_particlesys != I_particlesys_end; ++I_particlesys) {
+	for (auto& particleSystemDef : mDefinition->mParticleSystems) {
 		//first try to create the ogre particle system
-		std::string name(mName + "/particle" + I_particlesys->Script);
+		std::string name(mName + "/particle" + particleSystemDef.Script);
 		Ogre::ParticleSystem* ogreParticleSystem;
 		try {
-			ogreParticleSystem = _getManager()->createParticleSystem(name, I_particlesys->Script);
+			ogreParticleSystem = _getManager()->createParticleSystem(name, particleSystemDef.Script);
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Could not create particle system: " << name << "." << ex);
 			continue;
 		}
 		if (ogreParticleSystem) {
 			//ogreParticleSystem->setDefaultDimensions(1, 1);
-			ParticleSystem* particleSystem = new ParticleSystem(ogreParticleSystem, I_particlesys->Direction);
-			for (ModelDefinition::BindingSet::const_iterator I = I_particlesys->Bindings.begin(); I != I_particlesys->Bindings.end(); ++I) {
-				ParticleSystemBinding* binding = particleSystem->addBinding(I->EmitterVar, I->AtlasAttribute);
+			ParticleSystem* particleSystem = new ParticleSystem(ogreParticleSystem, particleSystemDef.Direction);
+			for (auto& bindingDef : particleSystemDef.Bindings) {
+				ParticleSystemBinding* binding = particleSystem->addBinding(bindingDef.EmitterVar, bindingDef.AtlasAttribute);
 				mAllParticleSystemBindings.push_back(binding);
 			}
 			mParticleSystems.push_back(particleSystem);
@@ -353,9 +348,8 @@ void Model::createParticles()
 
 void Model::createLights()
 {
-	ModelDefinition::LightSet::const_iterator I_lights_end = mDefinition->mLights.end();
 	int j = 0;
-	for (ModelDefinition::LightSet::const_iterator I_lights = mDefinition->mLights.begin(); I_lights != I_lights_end; ++I_lights) {
+	for (auto& lightDef : mDefinition->mLights) {
 		//first try to create the ogre lights
 		//std::string name(mName + "/light");
 		std::stringstream name;
@@ -370,10 +364,10 @@ void Model::createLights()
 		}
 		if (ogreLight) {
 			ogreLight->setType(Ogre::Light::LT_POINT);
-			ogreLight->setDiffuseColour(I_lights->diffuseColour);
-			ogreLight->setSpecularColour(I_lights->specularColour);
-			ogreLight->setAttenuation(I_lights->range, I_lights->constant, I_lights->linear, I_lights->quadratic);
-			ogreLight->setPosition(I_lights->position);
+			ogreLight->setDiffuseColour(lightDef.diffuseColour);
+			ogreLight->setSpecularColour(lightDef.specularColour);
+			ogreLight->setAttenuation(lightDef.range, lightDef.constant, lightDef.linear, lightDef.quadratic);
+			ogreLight->setPosition(lightDef.position);
 			//ogreLight->setDiffuseColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
 			//ogreLight->setSpecularColour(Ogre::ColourValue(0.5f,0.0f,0.0f));
 			//ogreLight->setAttenuation(100,1,0,0);
@@ -381,7 +375,7 @@ void Model::createLights()
 			//ogreLight->setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
 
 			lightInfo.light = ogreLight;
-			lightInfo.position = I_lights->position;
+			lightInfo.position = lightDef.position;
 			mLights.push_back(lightInfo);
 		}
 
@@ -432,11 +426,11 @@ bool Model::removeSubmodel(SubModel* submodel)
 SubModel* Model::getSubModel(size_t index)
 {
 	size_t i = 0;
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		if (i == index) {
-			return *I;
-		}
+	auto result = std::find_if(mSubmodels.begin(), mSubmodels.end(),
+		[&i, &index](SubModel* subModel)->bool {return i++ == index;}
+	);
+	if (result != mSubmodels.end()) {
+		return *result;
 	}
 	S_LOG_FAILURE("Could not find submodel with index "<< index << " in model " << getName());
 	return 0;
@@ -445,7 +439,7 @@ SubModel* Model::getSubModel(size_t index)
 
 void Model::showPart(const std::string& partName, bool hideOtherParts)
 {
-	ModelPartStore::iterator I = mModelParts.find(partName);
+	auto I = mModelParts.find(partName);
 	if (I != mModelParts.end()) {
 		ModelPart& modelPart = I->second;
 		if (hideOtherParts) {
@@ -453,9 +447,9 @@ void Model::showPart(const std::string& partName, bool hideOtherParts)
 			//make sure that all other parts in the same group are hidden
 			PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupName);
 			if (partBucketI != mGroupsToPartMap.end()) {
-				for (std::vector<std::string>::iterator I = partBucketI->second.begin(); I != partBucketI->second.end(); ++I) {
-					if (*I != partName) {
-						hidePart(*I, true);
+				for (auto& part : partBucketI->second) {
+					if (part != partName) {
+						hidePart(part, true);
 					}
 				}
 			}
@@ -477,8 +471,8 @@ void Model::hidePart(const std::string& partName, bool dontChangeVisibility)
 			//if some part that was hidden before now should be visible
 			PartGroupStore::iterator partBucketI = mGroupsToPartMap.find(groupName);
 			if (partBucketI != mGroupsToPartMap.end()) {
-				for (std::vector<std::string>::iterator J = partBucketI->second.begin(); J != partBucketI->second.end(); ++J) {
-					if (*J != partName) {
+				for (auto& part : partBucketI->second) {
+					if (part != partName) {
 						ModelPartStore::iterator I_modelPart = mModelParts.find(partName);
 						if (I_modelPart != mModelParts.end()) {
 							if (I_modelPart->second.getVisible()) {
@@ -498,33 +492,29 @@ void Model::hidePart(const std::string& partName, bool dontChangeVisibility)
 void Model::setVisible(bool visible)
 {
 	mVisible = visible;
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->setVisible(visible);
+	for (auto& submodel : mSubmodels) {
+		submodel->getEntity()->setVisible(visible);
 	}
 
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->setVisible(visible);
+	for (auto& light : mLights) {
+		light.light->setVisible(visible);
 	}
 
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->setVisible(visible);
+	for (auto& particleSystem : mParticleSystems) {
+		particleSystem->setVisible(visible);
 	}
 }
 
 void Model::setDisplaySkeleton(bool display)
 {
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->setDisplaySkeleton(display);
+	for (auto& submodel : mSubmodels) {
+		submodel->getEntity()->setDisplaySkeleton(display);
 	}
 }
 
 bool Model::getDisplaySkeleton(void) const
 {
-	SubModelSet::const_iterator I = mSubmodels.begin();
+	const auto I = mSubmodels.begin();
 	if (I != mSubmodels.end()) {
 		return (*I)->getEntity()->getDisplaySkeleton();
 	}
@@ -554,7 +544,7 @@ const ModelDefinition::UseScaleOf Model::getUseScaleOf() const
 
 Action* Model::getAction(const std::string& name)
 {
-	ActionStore::iterator I = mActions.find(name);
+	const auto I = mActions.find(name);
 	if (I == mActions.end()) {
 		return 0;
 	}
@@ -563,11 +553,10 @@ Action* Model::getAction(const std::string& name)
 
 Action* Model::getAction(const ActivationDefinition::Type type, const std::string& trigger)
 {
-	for (ActionDefinitionsStore::const_iterator I = mDefinition->mActions.begin(); I != mDefinition->mActions.end(); ++I) {
-		for (ActivationDefinitionStore::const_iterator J = (*I)->getActivationDefinitions().begin(); J !=  (*I)->getActivationDefinitions().end(); ++J) {
-			const ActivationDefinition* activationDefinition = *J;
+	for (auto& action : mDefinition->mActions) {
+		for (auto& activationDefinition : action->getActivationDefinitions()) {
 			if (type == activationDefinition->type && trigger == activationDefinition->trigger) {
-				return getAction((*I)->getName());
+				return getAction(action->getName());
 			}
 		}
 	}
@@ -576,12 +565,8 @@ Action* Model::getAction(const ActivationDefinition::Type type, const std::strin
 
 void Model::resetSubmodels()
 {
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		delete *I;
-		/* 		SubModel* submodel = *I;
-		 Ogre::SceneManager* sceneManager = ModelDefinitionManager::instance().getSceneManager();
-		 sceneManager->removeEntity(submodel->getEntity());*/
+	for (auto& submodel : mSubmodels) {
+		delete submodel;
 	}
 	mSubmodels.clear();
 	mModelParts.clear();
@@ -589,9 +574,7 @@ void Model::resetSubmodels()
 
 void Model::resetParticles()
 {
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		ParticleSystem* system = *I;
+	for (auto& system : mParticleSystems) {
 		delete system;
 	}
 	mParticleSystems.clear();
@@ -601,9 +584,8 @@ void Model::resetParticles()
 void Model::resetLights()
 {
 
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		Ogre::Light* light = I->light;
+	for (auto& lightInfo : mLights) {
+		Ogre::Light* light = lightInfo.light;
 		if (light) {
 			//Try first with the manager to which the light belongs to. If none is found, try to see if we belong to a maneger. And if that's not true either, just delete it.
 			if (light->_getManager()) {
@@ -621,11 +603,11 @@ void Model::resetLights()
 
 Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
-	for (AttachPointDefinitionStore::iterator I = mDefinition->mAttachPoints.begin(); I != mDefinition->mAttachPoints.end(); ++I) {
-		if (I->Name == attachPointName) {
-			const std::string& boneName = I->BoneName;
+	for (auto& attachPointDef : mDefinition->mAttachPoints) {
+		if (attachPointDef.Name == attachPointName) {
+			const std::string& boneName = attachPointDef.BoneName;
 			//use the rotation in the attach point def
-			Ogre::TagPoint* tagPoint = attachObjectToBone(boneName, pMovable, offsetOrientation * I->Rotation, offsetPosition + I->Translation, scale);
+			Ogre::TagPoint* tagPoint = attachObjectToBone(boneName, pMovable, offsetOrientation * attachPointDef.Rotation, offsetPosition, scale);
 			if (!mAttachPoints.get()) {
 				mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(new AttachPointWrapperStore());
 			}
@@ -633,7 +615,7 @@ Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &a
 			AttachPointWrapper wrapper;
 			wrapper.TagPoint = tagPoint;
 			wrapper.Movable = pMovable;
-			wrapper.Definition = *I;
+			wrapper.Definition = attachPointDef;
 			mAttachPoints->push_back(wrapper);
 			return wrapper;
 		}
@@ -643,12 +625,7 @@ Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &a
 
 bool Model::hasAttachPoint(const std::string& attachPoint) const
 {
-	for (AttachPointDefinitionStore::iterator I = mDefinition->mAttachPoints.begin(); I != mDefinition->mAttachPoints.end(); ++I) {
-		if (I->Name == attachPoint) {
-			return true;
-		}
-	}
-	return false;
+	return std::find_if(mDefinition->mAttachPoints.begin(), mDefinition->mAttachPoints.end(), [&attachPoint](const AttachPointDefinition& def)->bool { return def.Name == attachPoint; } ) != mDefinition->mAttachPoints.end();
 }
 
 Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
@@ -710,7 +687,7 @@ Ogre::MovableObject* Model::detachObjectFromBone(const Ogre::String &movableName
 
 	if (mSubmodels.size() && mSkeletonOwnerEntity) {
 		if (mAttachPoints.get()) {
-			for (AttachPointWrapperStore::iterator I = mAttachPoints->begin(); I != mAttachPoints->end(); ++I) {
+			for (auto I = mAttachPoints->begin(); I != mAttachPoints->end(); ++I) {
 				if (I->Movable->getName() == movableName) {
 					Ogre::MovableObject* result = I->Movable;
 					if (I->TagPoint == I->Movable->getParentNode()) {
@@ -739,6 +716,22 @@ void Model::detachAllObjectsFromBone(void)
 	}
 }
 
+
+void Model::iterateOverMovableObjects(std::function<void(Ogre::MovableObject&)> movableObjectFunction)
+{
+	for (auto& submodel : mSubmodels) {
+		movableObjectFunction(*submodel->getEntity());
+	}
+	for (auto& particleSystem : mParticleSystems) {
+		movableObjectFunction(*particleSystem->getOgreParticleSystem());
+	}
+
+	for (auto& lightInfo : mLights) {
+		movableObjectFunction(*lightInfo.light);
+	}
+}
+
+
 /** Overridden - see MovableObject.
  */
 void Model::_notifyCurrentCamera(Ogre::Camera* cam)
@@ -746,25 +739,12 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 	MovableObject::_notifyCurrentCamera(cam);
 	if (isVisible()) {
 		if (mVisible) {
-			SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-			for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-				(*I)->getEntity()->_notifyCurrentCamera(cam);
-			}
+
+			iterateOverMovableObjects([&cam](Ogre::MovableObject& obj){obj._notifyCurrentCamera(cam);});
 
 			// Notify any child objects
-			Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
-			for (Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin(); child_itr != child_itr_end; child_itr++) {
-				child_itr->second->_notifyCurrentCamera(cam);
-			}
-
-			ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-			for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-				(*I)->getOgreParticleSystem()->_notifyCurrentCamera(cam);
-			}
-
-			LightSet::const_iterator lightsI_end = mLights.end();
-			for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-				I->light->_notifyCurrentCamera(cam);
+			for (auto& child : mChildObjectList) {
+				child.second->_notifyCurrentCamera(cam);
 			}
 		}
 	}
@@ -773,58 +753,19 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 void Model::_notifyMoved()
 {
 	MovableObject::_notifyMoved();
-
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->_notifyMoved();
-	}
-
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->getOgreParticleSystem()->_notifyMoved();
-	}
-
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->_notifyMoved();
-	}
+	iterateOverMovableObjects([](Ogre::MovableObject& obj){obj._notifyMoved();});
 }
 
 void Model::setUserAny(const Ogre::Any &anything)
 {
 	Ogre::MovableObject::setUserAny(anything);
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->setUserAny(anything);
-	}
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->getOgreParticleSystem()->setUserAny(anything);
-	}
-
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->setUserAny(anything);
-	}
+	iterateOverMovableObjects([&anything](Ogre::MovableObject& obj){obj.setUserAny(anything);});
 }
 
 // Overridden - see MovableObject.
 void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 {
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->setRenderQueueGroup(queueID);
-	}
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->getOgreParticleSystem()->setRenderQueueGroup(queueID);
-	}
-
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->setRenderQueueGroup(queueID);
-	}
-
+	iterateOverMovableObjects([&queueID](Ogre::MovableObject& obj){obj.setRenderQueueGroup(queueID);});
 }
 
 /** Overridden - see MovableObject.
@@ -833,13 +774,11 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 {
 	mFull_aa_box.setNull();
 
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		mFull_aa_box.merge((*I)->getEntity()->getBoundingBox());
+	for (auto& submodel : mSubmodels) {
+		mFull_aa_box.merge(submodel->getEntity()->getBoundingBox());
 	}
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		mFull_aa_box.merge((*I)->getOgreParticleSystem()->getBoundingBox());
+	for (auto& particleSystem : mParticleSystems) {
+		mFull_aa_box.merge(particleSystem->getOgreParticleSystem()->getBoundingBox());
 	}
 
 	return mFull_aa_box;
@@ -851,13 +790,11 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 {
 	mWorldFull_aa_box.setNull();
 
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		mWorldFull_aa_box.merge((*I)->getEntity()->getWorldBoundingBox(derive));
+	for (auto& submodel : mSubmodels) {
+		mWorldFull_aa_box.merge(submodel->getEntity()->getWorldBoundingBox(derive));
 	}
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		mWorldFull_aa_box.merge((*I)->getOgreParticleSystem()->getWorldBoundingBox(derive));
+	for (auto& particleSystem : mParticleSystems) {
+		mWorldFull_aa_box.merge(particleSystem->getOgreParticleSystem()->getWorldBoundingBox(derive));
 	}
 
 	return mWorldFull_aa_box;
@@ -866,13 +803,11 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 Ogre::Real Model::getBoundingRadius() const
 {
 	Ogre::Real rad(0);
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		rad = std::max<Ogre::Real>(rad, (*I)->getEntity()->getBoundingRadius());
+	for (auto& submodel : mSubmodels) {
+		rad = std::max<Ogre::Real>(rad, submodel->getEntity()->getBoundingRadius());
 	}
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		rad = std::max<Ogre::Real>(rad, (*I)->getOgreParticleSystem()->getBoundingRadius());
+	for (auto& particleSystem : mParticleSystems) {
+		rad = std::max<Ogre::Real>(rad, particleSystem->getOgreParticleSystem()->getBoundingRadius());
 	}
 	return rad;
 
@@ -884,43 +819,37 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 {
 	//check with both the model visibility setting and with the general model setting to see whether the model should be shown
 	if (isVisible()) {
-		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-			if ((*I)->getEntity()->isVisible()) {
-				(*I)->getEntity()->_updateRenderQueue(queue);
+		for (auto& submodel : mSubmodels) {
+			if (submodel->getEntity()->isVisible()) {
+				submodel->getEntity()->_updateRenderQueue(queue);
 			}
 		}
 
 		if (getSkeleton() != 0) {
-			//updateAnimation();
-			Ogre::Entity::ChildObjectList::iterator child_itr = mChildObjectList.begin();
-			Ogre::Entity::ChildObjectList::iterator child_itr_end = mChildObjectList.end();
-			for (; child_itr != child_itr_end; child_itr++) {
+			for (auto& child : mChildObjectList) {
 				//make sure to do _update here, else attached entities won't be updated if no animation is playing
-				child_itr->second->getParentNode()->_update(true, true);
-				if (child_itr->second->isVisible())
-					child_itr->second->_updateRenderQueue(queue);
+				child.second->getParentNode()->_update(true, true);
+				if (child.second->isVisible())
+					child.second->_updateRenderQueue(queue);
 			}
 		}
-		ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-		for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-			Ogre::ParticleSystem* particleSystem = (*I)->getOgreParticleSystem();
+		for (auto& particleSystemInfo : mParticleSystems) {
+			Ogre::ParticleSystem* particleSystem = particleSystemInfo->getOgreParticleSystem();
 			//Alter the direction of the emitter so that it's always emits upwards in the world
-			if (!(*I)->getDirection().isNaN()) {
-				Ogre::Vector3 direction = particleSystem->getParentNode()->convertWorldToLocalPosition((*I)->getDirection());
+			if (!particleSystemInfo->getDirection().isNaN()) {
+				Ogre::Vector3 direction = particleSystem->getParentNode()->convertWorldToLocalPosition(particleSystemInfo->getDirection());
 				direction.normalise();
 				//const Ogre::Quaternion& rotation = particleSystem->getParentNode()->_getDerivedOrientation();
-				Ogre::Quaternion rotation = particleSystem->getParentNode()->convertWorldToLocalOrientation(Ogre::Quaternion(Ogre::Degree(0), (*I)->getDirection()));
+				Ogre::Quaternion rotation = particleSystem->getParentNode()->convertWorldToLocalOrientation(Ogre::Quaternion(Ogre::Degree(0), particleSystemInfo->getDirection()));
 				for (int i = 0; i < particleSystem->getNumEmitters(); ++i) {
-					particleSystem->getEmitter(i)->setDirection(rotation * (*I)->getDirection());
+					particleSystem->getEmitter(i)->setDirection(rotation * particleSystemInfo->getDirection());
 				}
 			}
 			particleSystem->_updateRenderQueue(queue);
 		}
 
-		LightSet::const_iterator lightsI_end = mLights.end();
-		for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-			I->light->_updateRenderQueue(queue);
+		for (auto& lightInfo : mLights) {
+			lightInfo.light->_updateRenderQueue(queue);
 		}
 
 	}
@@ -942,98 +871,31 @@ const Ogre::String& Model::getMovableType(void) const
 void Model::setRenderingDistance(Ogre::Real dist)
 {
 	MovableObject::setRenderingDistance(dist);
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->setRenderingDistance(dist);
-	}
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->getOgreParticleSystem()->setRenderingDistance(dist);
-	}
-
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->setRenderingDistance(dist);
-	}
+	iterateOverMovableObjects([dist](Ogre::MovableObject& obj){obj.setRenderingDistance(dist);});
 }
 
 void Model::setQueryFlags(unsigned long flags)
 {
 	MovableObject::setQueryFlags(flags);
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->setQueryFlags(flags);
-	}
-
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->getOgreParticleSystem()->setQueryFlags(flags);
-	}
-
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->setQueryFlags(flags);
-	}
+	iterateOverMovableObjects([flags](Ogre::MovableObject& obj){obj.setQueryFlags(flags);});
 }
 
 void Model::addQueryFlags(unsigned long flags)
 {
 	MovableObject::addQueryFlags(flags);
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->addQueryFlags(flags);
-	}
-
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->getOgreParticleSystem()->addQueryFlags(flags);
-	}
-
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->addQueryFlags(flags);
-	}
+	iterateOverMovableObjects([flags](Ogre::MovableObject& obj){obj.addQueryFlags(flags);});
 }
 
 void Model::removeQueryFlags(unsigned long flags)
 {
 	MovableObject::removeQueryFlags(flags);
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		(*I)->getEntity()->removeQueryFlags(flags);
-	}
-
-	ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-		(*I)->getOgreParticleSystem()->removeQueryFlags(flags);
-	}
-
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->removeQueryFlags(flags);
-	}
-
+	iterateOverMovableObjects([flags](Ogre::MovableObject& obj){obj.removeQueryFlags(flags);});
 }
 
 void Model::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
 {
 	if (isVisible()) {
-		SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-		for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-			if ((*I)->getEntity()->isVisible()) {
-				(*I)->getEntity()->visitRenderables(visitor, debugRenderables);
-			}
-		}
-
-		ParticleSystemSet::const_iterator particleSystemsI_end = mParticleSystems.end();
-		for (ParticleSystemSet::const_iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
-			(*I)->getOgreParticleSystem()->visitRenderables(visitor, debugRenderables);
-		}
-
-		LightSet::const_iterator lightsI_end = mLights.end();
-		for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-			I->light->visitRenderables(visitor, debugRenderables);
-		}
+		iterateOverMovableObjects([&](Ogre::MovableObject& obj){obj.visitRenderables(visitor, debugRenderables);});
 	}
 }
 
@@ -1044,15 +906,13 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 		MovableObject::_notifyAttached(parent, isTagPoint);
 	}
 
-	SubModelSet::const_iterator submodelsI_end = mSubmodels.end();
-	for (SubModelSet::const_iterator I = mSubmodels.begin(); I != submodelsI_end; ++I) {
-		if ((*I)->getEntity()->getParentNode() != parent) {
-			(*I)->getEntity()->_notifyAttached(parent, isTagPoint);
+	for (auto& submodel : mSubmodels) {
+		if (submodel->getEntity()->getParentNode() != parent) {
+			submodel->getEntity()->_notifyAttached(parent, isTagPoint);
 		}
 	}
 
-	ParticleSystemSet::iterator particleSystemsI_end = mParticleSystems.end();
-	for (ParticleSystemSet::iterator I = mParticleSystems.begin(); I != particleSystemsI_end; ++I) {
+	for (auto I = mParticleSystems.begin(); I != mParticleSystems.end(); ++I) {
 		(*I)->getOgreParticleSystem()->_notifyAttached(parent, isTagPoint);
 		try {
 			//Try to trigger a load of any image resources used by affectors.
@@ -1082,9 +942,8 @@ void Model::_notifyAttached(Ogre::Node* parent, bool isTagPoint)
 		}
 	}
 
-	LightSet::const_iterator lightsI_end = mLights.end();
-	for (LightSet::const_iterator I = mLights.begin(); I != lightsI_end; ++I) {
-		I->light->_notifyAttached(parent, isTagPoint);
+	for (auto& lightInfo : mLights) {
+		lightInfo.light->_notifyAttached(parent, isTagPoint);
 	}
 
 }
@@ -1129,7 +988,7 @@ Ogre::MovableObject* ModelFactory::createInstanceImpl(const Ogre::String& name, 
 
 	// must have mesh parameter
 	if (params != 0) {
-		Ogre::NameValuePairList::const_iterator ni = params->find("modeldefinition");
+		auto ni = params->find("modeldefinition");
 		if (ni != params->end()) {
 			Model* model = new Model(name);
 			model->create(ni->second);
