@@ -44,7 +44,7 @@ SegmentHolder::~SegmentHolder()
 
 std::shared_ptr<SegmentReference> SegmentHolder::getReference()
 {
-	boost::mutex::scoped_lock l(mRefCountMutex);
+	std::unique_lock<std::mutex> l(mRefCountMutex);
 	mRefCount++;
 	//If mRefCount is 1 we're guaranteed to be the only one interacting with the segment, so it's thread safe to call Mercator::Segment::isValid
 	if (mRefCount == 1 && mSegment->getMercatorSegment().isValid()) {
@@ -55,7 +55,7 @@ std::shared_ptr<SegmentReference> SegmentHolder::getReference()
 
 void SegmentHolder::returnReference()
 {
-	boost::mutex::scoped_lock l(mRefCountMutex);
+	std::unique_lock<std::mutex> l(mRefCountMutex);
 	assert(mRefCount > 0);
 	mRefCount--;
 	//If mRefCount is 0 we're guaranteed to be the only one interacting with the segment, so it's thread safe to call Mercator::Segment::isValid
@@ -67,7 +67,7 @@ void SegmentHolder::returnReference()
 
 bool SegmentHolder::isUnused()
 {
-	boost::mutex::scoped_lock l(mRefCountMutex);
+	std::unique_lock<std::mutex> l(mRefCountMutex);
 	return mRefCount == 0;
 }
 

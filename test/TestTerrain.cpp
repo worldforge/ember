@@ -27,7 +27,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/trackable.h>
 
-#include <boost/thread/condition_variable.hpp>
+#include <condition_variable>
 
 using namespace Ember::OgreView;
 using namespace Ember::OgreView::Terrain;
@@ -171,14 +171,14 @@ public:
 class CompleteEventListener: public virtual sigc::trackable
 {
 protected:
-	boost::condition_variable mCondition;
-	boost::mutex mMutex;
+	std::condition_variable mCondition;
+	std::mutex mMutex;
 	int mCompletedCount;
 
 	void handleEvent()
 	{
 		{
-			boost::lock_guard < boost::mutex > lock(mMutex);
+			std::lock_guard < std::mutex > lock(mMutex);
 			mCompletedCount++;
 		}
 		mCondition.notify_all();
@@ -192,11 +192,11 @@ public:
 
 	int waitForCompletion(long milliseconds)
 	{
-		boost::unique_lock < boost::mutex > lock(mMutex);
+		std::unique_lock < std::mutex > lock(mMutex);
 		if (mCompletedCount) {
 			return true;
 		}
-		mCondition.timed_wait(lock, boost::posix_time::milliseconds(milliseconds));
+		mCondition.wait_for(lock, std::chrono::milliseconds(milliseconds));
 		return mCompletedCount;
 	}
 

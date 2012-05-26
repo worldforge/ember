@@ -21,11 +21,8 @@
 
 #include "Types.h"
 
-#include <boost/shared_ptr.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/shared_mutex.hpp>
-
-#include <map>
+#include <mutex>
+#include <unordered_map>
 #include <string>
 #include <list>
 
@@ -141,14 +138,14 @@ protected:
 	/**
 	 * @brief A mutex for accessing mSegments.
 	 */
-	boost::shared_mutex mSegmentsMutex;
+	std::mutex mSegmentsMutex;
 
 	SegmentList mUnusedAndDirtySegments;
 
 	/**
 	 * @brief A mutex for accessing mUnusedAndDirtySegments.
 	 */
-	boost::shared_mutex mUnusedAndDirtySegmentsMutex;
+	std::mutex mUnusedAndDirtySegmentsMutex;
 
 	/**
 	 * @brief Adds a new Mercator segment and creates a corresponding Segment instance for it.

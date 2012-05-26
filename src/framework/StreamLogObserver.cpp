@@ -21,7 +21,8 @@
 #endif
 
 #include "StreamLogObserver.h"
-#include <boost/thread/thread.hpp>
+#include <boost/date_time.hpp>
+#include <thread>
 
 namespace Ember {
 
@@ -73,7 +74,7 @@ namespace Ember {
         if (mDetailed) {
         	myOut << "(";
 			myOut.width(8);
-			myOut << ((currentTime - mStart).total_microseconds()) << ":"<<  boost::this_thread::get_id() <<")";
+			myOut << ((currentTime - mStart).total_microseconds()) << ":"<<  std::this_thread::get_id() <<")";
         }
         myOut << "] ";
 

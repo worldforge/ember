@@ -30,8 +30,8 @@
 
 #include "framework/LoggingInstance.h"
 
-#include <boost/thread/thread.hpp>
-#include <boost/thread/locks.hpp>
+#include <thread>
+#include <locks>
 #include <boost/interprocess/ipc/message_queue.hpp>
 
 
@@ -116,7 +116,7 @@ void WebEmberManager::quit()
 	while (mWindowHandle != "" && !(app = MainLoopController::getSingletonPtr())) {
 		// This is a rare situation, when start() is called and after that immediately quit() is called.
 		try {
-			boost::this_thread::sleep(boost::posix_time::milliseconds(1));
+			std::this_thread::sleep(std::posix_time::milliseconds(1));
 		} catch (...) {
 			S_LOG_WARNING("Ember shutdown failed with exception.");
 			// This can happen when the thread is interrupted or will be terminated.

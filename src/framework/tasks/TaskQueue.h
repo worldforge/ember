@@ -22,10 +22,9 @@
 #include "framework/TimeFrame.h"
 
 #include <queue>
-#include <boost/version.hpp>
 
-#include <boost/thread/condition.hpp> //include the deprecated "condition.hpp" for backwards compatability's sake
-#include <boost/thread/mutex.hpp>
+#include <condition_variable>
+#include <mutex>
 
 namespace Ember
 {
@@ -114,21 +113,17 @@ protected:
 	/**
 	 * @brief A mutex used whenever the unprocessed queue is accessed.
 	 */
-	boost::mutex mUnprocessedQueueMutex;
+	std::mutex mUnprocessedQueueMutex;
 
 	/**
 	 * @brief A mutex used whenever the processed queue is accessed.
 	 */
-	boost::mutex mProcessedQueueMutex;
+	std::mutex mProcessedQueueMutex;
 
 	/**
 	 * @brief A condition variable used for letting threads sleep while waiting for new tasks.
 	 */
-#if BOOST_VERSION / 100000 >= 1 && BOOST_VERSION / 100 % 1000 >= 35 //version 1.35+ of boost changed the threading a bit...
-	boost::condition_variable mUnprocessedQueueCond;
-#else
-	boost::condition mUnprocessedQueueCond;
-#endif
+	std::condition_variable mUnprocessedQueueCond;
 
 	/**
 	 * @brief Whether this queue is active or not.

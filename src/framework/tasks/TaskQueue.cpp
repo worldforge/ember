@@ -45,7 +45,7 @@ TaskQueue::TaskQueue(unsigned int numberOfExecutors) :
 TaskQueue::~TaskQueue()
 {
 	{
-		boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
+		std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
 		mActive = false;
 	}
 	mUnprocessedQueueCond.notify_all();
@@ -64,7 +64,7 @@ TaskQueue::~TaskQueue()
 
 void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
 {
-	boost::mutex::scoped_lock l(mUnprocessedQueueMutex);
+	std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
 	if (mActive) {
 		mUnprocessedTaskUnits.push(new TaskUnit(task, listener));
 		mUnprocessedQueueCond.notify_one();
@@ -78,7 +78,7 @@ TaskUnit* TaskQueue::fetchNextTask()
 {
 	//The semantics of this method is that if a null pointer is returned the task executor is required to exit its main processing loop, since this indicates that the queue is shuttin down.
 	TaskUnit* taskUnit(0);
-	boost::mutex::scoped_lock lock(mUnprocessedQueueMutex);
+	std::unique_lock<std::mutex> lock(mUnprocessedQueueMutex);
 	if (!mUnprocessedTaskUnits.size()) {
 		if (!mActive) {
 			return 0;
@@ -94,7 +94,7 @@ TaskUnit* TaskQueue::fetchNextTask()
 
 void TaskQueue::addProcessedTask(TaskUnit* taskUnit)
 {
-	boost::mutex::scoped_lock l(mProcessedQueueMutex);
+	std::unique_lock<std::mutex> l(mProcessedQueueMutex);
 	mProcessedTaskUnits.push(taskUnit);
 }
 
@@ -102,7 +102,7 @@ void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
 {
 	TaskUnitQueue processedCopy;
 	{
-		boost::mutex::scoped_lock l(mProcessedQueueMutex);
+		std::unique_lock<std::mutex> l(mProcessedQueueMutex);
 		processedCopy = mProcessedTaskUnits;
 		if (mProcessedTaskUnits.size()) {
 			mProcessedTaskUnits = TaskUnitQueue();
@@ -133,7 +133,7 @@ void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
 	}
 	//If there are any unprocessed tasks, put them back at the front of the queue.
 	if (processedCopy.size()) {
-		boost::mutex::scoped_lock l(mProcessedQueueMutex);
+		std::unique_lock<std::mutex> l(mProcessedQueueMutex);
 		TaskUnitQueue queueCopy(mProcessedTaskUnits);
 		mProcessedTaskUnits = processedCopy;
 		while (queueCopy.size()) {

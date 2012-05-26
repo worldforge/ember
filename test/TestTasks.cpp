@@ -11,9 +11,10 @@
 #include "framework/Exception.h"
 
 #include <wfmath/timestamp.h>
-
-#include <boost/thread.hpp>
-#include <boost/date_time.hpp>
+#define _GLIBCXX_USE_NANOSLEEP 1
+#include <thread>
+#include <chrono>
+#include <condition_variable>
 
 namespace Ember
 {
@@ -35,7 +36,7 @@ public:
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 	{
 		if (mSleep) {
-			boost::this_thread::sleep(boost::posix_time::milliseconds(mSleep));
+			std::this_thread::sleep_for(std::chrono::milliseconds(mSleep));
 		}
 		mCounter--;
 	}
@@ -77,17 +78,17 @@ public:
 	{
 		if (subtask) {
 			//sleep a little so that we get different times on the tasks
-			boost::this_thread::sleep(boost::posix_time::milliseconds(5));
+			std::this_thread::sleep_for(std::chrono::milliseconds(5));
 			context.executeTask(subtask,listener);
 		}
 		//sleep a little so that we get different times on the tasks
-		boost::this_thread::sleep(boost::posix_time::milliseconds(5));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
 
 	virtual void executeTaskInMainThread()
 	{
 		//sleep a little so that we get different times on the tasks
-		boost::this_thread::sleep(boost::posix_time::milliseconds(5));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		timeHolder.time = WFMath::TimeStamp::now();
 	}
 
@@ -173,7 +174,7 @@ public:
 			Tasks::TaskQueue taskQueue(1);
 			taskQueue.enqueueTask(new CounterTask(counter));
 			//200 ms should be enough... This isn't deterministic though.
-			boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 			taskQueue.pollProcessedTasks(100000);
 			CPPUNIT_ASSERT(counter == 0);
 		}

@@ -22,8 +22,7 @@
 #include "TaskUnit.h"
 #include "framework/LoggingInstance.h"
 
-#include <boost/thread/thread.hpp>
-#include <boost/bind.hpp>
+#include <thread>
 
 namespace Ember
 {
@@ -33,11 +32,12 @@ namespace Tasks
 TaskExecutor::TaskExecutor(TaskQueue& taskQueue) :
 	mTaskQueue(taskQueue), mActive(true)
 {
-	mThread = std::unique_ptr<boost::thread>(new boost::thread(boost::bind(&TaskExecutor::run, this)));
+	mThread = new std::thread([&](){this->run();});
 }
 
 TaskExecutor::~TaskExecutor()
 {
+	delete mThread;
 }
 
 void TaskExecutor::run()
