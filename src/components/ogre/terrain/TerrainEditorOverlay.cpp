@@ -47,9 +47,9 @@
 #include <OgreSceneNode.h>
 #include <OgreEntity.h>
 
-#include <boost/shared_ptr.hpp>
-
 #include <sigc++/bind.h>
+
+#include <memory>
 
 namespace Ember
 {

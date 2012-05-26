@@ -30,7 +30,7 @@
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
 
-#include <boost/smart_ptr.hpp>
+#include <memory>
 
 namespace Ember
 {

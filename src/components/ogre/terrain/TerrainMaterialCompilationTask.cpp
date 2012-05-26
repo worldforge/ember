@@ -25,7 +25,6 @@
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
-#include <boost/shared_ptr.hpp>
 namespace Ember
 {
 namespace OgreView

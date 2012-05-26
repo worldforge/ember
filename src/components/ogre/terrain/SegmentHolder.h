@@ -65,7 +65,7 @@ public:
 	 * @brief Gets an instance of a reference to the Segment.
 	 * This will increase the reference counter.
 	 */
-	boost::shared_ptr<SegmentReference> getReference();
+	std::shared_ptr<SegmentReference> getReference();
 
 	/**
 	 * @brief Checks whether there are any references to the segment in use currently.

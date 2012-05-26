@@ -24,7 +24,7 @@
 #define EMBEROGRETERRAINPAGESHADOW_H
 #include "../EmberOgrePrerequisites.h"
 
-#include <boost/smart_ptr.hpp>
+#include <memory>
 #include <wfmath/vector.h>
 #include <OgreMath.h>
 
@@ -84,7 +84,7 @@ protected:
 	const ITerrainPageShadowTechnique* mShadowTechnique;
 	WFMath::Vector<3> mLightDirection;
 
-	boost::shared_ptr<OgreImage> mImage;
+	std::shared_ptr<OgreImage> mImage;
 };
 
 }

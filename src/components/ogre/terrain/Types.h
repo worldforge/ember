@@ -24,10 +24,7 @@
 #include <vector>
 #include <map>
 #include <string>
-
-namespace boost {
-template <typename> class shared_ptr;
-}
+#include <memory>
 
 namespace Mercator {
 	class Area;
@@ -96,7 +93,7 @@ namespace OgreView {
 			AreaStore Areas;
 		};
 
-		typedef boost::shared_ptr<SegmentReference> SegmentRefPtr;
+		typedef std::shared_ptr<SegmentReference> SegmentRefPtr;
 
 		typedef std::map<int, SegmentRefPtr> SegmentRefColumn;
 
@@ -110,11 +107,11 @@ namespace OgreView {
 
 		typedef std::vector<TerrainPage*> PageVector;
 
-		typedef boost::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
+		typedef std::shared_ptr<TerrainPageGeometry> TerrainPageGeometryPtr;
 
 		typedef std::vector<TerrainPageGeometryPtr> GeometryPtrVector;
 
-		typedef boost::shared_ptr<ITerrainPageBridge> ITerrainPageBridgePtr;
+		typedef std::shared_ptr<ITerrainPageBridge> ITerrainPageBridgePtr;
 
 		typedef std::vector<std::pair<TerrainPageGeometryPtr, ITerrainPageBridgePtr> > BridgeBoundGeometryPtrVector;
 

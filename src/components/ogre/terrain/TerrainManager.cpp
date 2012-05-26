@@ -60,8 +60,6 @@
 
 #include <limits>
 
-//#include <boost/shared_ptr.hpp>
-
 #include <sigc++/bind.h>
 
 using namespace Ogre;

@@ -22,7 +22,7 @@
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include <OgreAny.h>
-#include <boost/smart_ptr.hpp>
+#include <memory>
 
 namespace Ember
 {

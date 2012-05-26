@@ -42,7 +42,7 @@ SegmentHolder::~SegmentHolder()
 	delete mSegment;
 }
 
-boost::shared_ptr<SegmentReference> SegmentHolder::getReference()
+std::shared_ptr<SegmentReference> SegmentHolder::getReference()
 {
 	boost::mutex::scoped_lock l(mRefCountMutex);
 	mRefCount++;
@@ -50,7 +50,7 @@ boost::shared_ptr<SegmentReference> SegmentHolder::getReference()
 	if (mRefCount == 1 && mSegment->getMercatorSegment().isValid()) {
 		mSegmentManager.unmarkHolder(this);
 	}
-	return boost::shared_ptr<SegmentReference>(new SegmentReference(*this));
+	return std::shared_ptr<SegmentReference>(new SegmentReference(*this));
 }
 
 void SegmentHolder::returnReference()

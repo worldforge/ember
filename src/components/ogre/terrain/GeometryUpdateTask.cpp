@@ -25,7 +25,6 @@
 #include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
-#include <boost/shared_ptr.hpp>
 namespace Ember
 {
 namespace OgreView

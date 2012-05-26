@@ -26,11 +26,6 @@
 #include "EmberOgrePrerequisites.h"
 #include <OgreVector3.h>
 
-namespace boost
-{
-template<typename> class shared_ptr;
-}
-
 namespace Ogre
 {
 class Entity;

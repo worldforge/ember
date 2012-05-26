@@ -351,7 +351,7 @@ public:
 
 protected:
 
-	typedef std::map<Domain::TerrainIndex, boost::shared_ptr<ITerrainPageBridge> > PageBridgeStore;
+	typedef std::map<Domain::TerrainIndex, std::shared_ptr<ITerrainPageBridge> > PageBridgeStore;
 
 	/**
 	 * @brief The size in indices of one side of a page.

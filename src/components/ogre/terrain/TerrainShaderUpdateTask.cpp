@@ -26,8 +26,6 @@
 #include <wfmath/axisbox.h>
 #include <wfmath/intersect.h>
 
-#include <boost/shared_ptr.hpp>
-
 namespace Ember
 {
 namespace OgreView

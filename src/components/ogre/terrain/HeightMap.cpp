@@ -58,7 +58,7 @@ HeightMap::~HeightMap()
 
 void HeightMap::insert(int xIndex, int yIndex, IHeightMapSegment* segment)
 {
-	mSegments[xIndex][yIndex] = boost::shared_ptr<IHeightMapSegment>(segment);
+	mSegments[xIndex][yIndex] = std::shared_ptr<IHeightMapSegment>(segment);
 }
 
 bool HeightMap::remove(int xIndex, int yIndex)
@@ -79,7 +79,7 @@ float HeightMap::getHeight(float x, float y) const
 	int ix = I_ROUND(floor(x / mSegmentResolution));
 	int iy = I_ROUND(floor(y / mSegmentResolution));
 
-	boost::shared_ptr<IHeightMapSegment> segment(getSegment(ix, iy));
+	std::shared_ptr<IHeightMapSegment> segment(getSegment(ix, iy));
 	if (!segment.get()) {
 		return mDefaultLevel;
 	}
@@ -92,7 +92,7 @@ bool HeightMap::getHeightAndNormal(float x, float y, float& height, WFMath::Vect
 	int ix = I_ROUND(floor(x / mSegmentResolution));
 	int iy = I_ROUND(floor(y / mSegmentResolution));
 
-	boost::shared_ptr<IHeightMapSegment> segment(getSegment(ix, iy));
+	std::shared_ptr<IHeightMapSegment> segment(getSegment(ix, iy));
 	if (!segment.get()) {
 		return false;
 	}
@@ -100,15 +100,15 @@ bool HeightMap::getHeightAndNormal(float x, float y, float& height, WFMath::Vect
 	return true;
 }
 
-boost::shared_ptr<IHeightMapSegment> HeightMap::getSegment(int xIndex, int yIndex) const
+std::shared_ptr<IHeightMapSegment> HeightMap::getSegment(int xIndex, int yIndex) const
 {
 	Segmentstore::const_iterator I = mSegments.find(xIndex);
 	if (I == mSegments.end()) {
-		return boost::shared_ptr<IHeightMapSegment>();
+		return std::shared_ptr<IHeightMapSegment>();
 	}
 	Segmentcolumn::const_iterator J = I->second.find(yIndex);
 	if (J == I->second.end()) {
-		return boost::shared_ptr<IHeightMapSegment>();
+		return std::shared_ptr<IHeightMapSegment>();
 	}
 	return J->second;
 }

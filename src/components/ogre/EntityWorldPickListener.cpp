@@ -40,8 +40,6 @@
 
 #include <Eris/View.h>
 
-#include <boost/shared_ptr.hpp>
-
 namespace Ember
 {
 namespace OgreView

@@ -335,7 +335,7 @@ void TerrainHandler::setUpTerrainPageAtIndex(const Domain::TerrainIndex& index, 
 	int x = index.first;
 	int y = index.second;
 
-	boost::shared_ptr<ITerrainPageBridge> bridgePtr(bridge);
+	std::shared_ptr<ITerrainPageBridge> bridgePtr(bridge);
 	//Add to our store of page bridges
 	mPageBridges.insert(PageBridgeStore::value_type(index, bridgePtr));
 
