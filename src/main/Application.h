@@ -125,6 +125,9 @@ public:
 	 */
 	virtual ~Application();
 
+	Application(const Application&) = delete;
+	Application& operator=(const Application&) = delete;
+
 	/**
 	 * @brief Performs one step of the main loop.
 	 * You only need to call this each "frame" if you're not using mainLoop().

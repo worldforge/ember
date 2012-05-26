@@ -142,6 +142,9 @@ public:
 	 */
 	~EmberOgre();
 
+	EmberOgre(const EmberOgre&) = delete;
+	EmberOgre& operator=(const EmberOgre&) = delete;
+
 	/**
 	 * @brief Gets the Ogre root object.
 	 *
