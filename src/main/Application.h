@@ -12,10 +12,6 @@
 #ifndef EMBER_APPLICATION_H
 #define EMBER_APPLICATION_H
 
-#include <list>
-#include <string>
-#include <fstream>
-#include <map>
 
 #include "services/EmberServices.h"
 #include "framework/ConsoleObject.h"
@@ -24,6 +20,12 @@
 
 #include <sigc++/signal.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <list>
+#include <string>
+#include <fstream>
+#include <map>
+#include <memory>
 
 /**
  * @mainpage
@@ -255,7 +257,7 @@ private:
 	/**
 	 * @brief We hold a pointer to the stream to which all logging messages are written.
 	 */
-	std::auto_ptr<std::ofstream> mLogOutStream;
+	std::unique_ptr<std::ofstream> mLogOutStream;
 
 	/**
 	 * @brief A transient copy of command line set config settings. The settings here will be injected into the ConfigService when the services are started.
@@ -266,7 +268,7 @@ private:
 	/**
 	 * @brief The main console backend instance.
 	 */
-	std::auto_ptr<ConsoleBackend> mConsoleBackend;
+	std::unique_ptr<ConsoleBackend> mConsoleBackend;
 
 	/**
 	 * @brief The "quit" command will quit the application, bypassing any confirmation dialog.

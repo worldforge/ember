@@ -115,7 +115,7 @@ protected:
 	/**
 	 * @brief The polygon adapter, which handles the actual polygon editing.
 	 */
-	std::auto_ptr<PolygonAdapter> mPolygonAdapter;
+	std::unique_ptr<PolygonAdapter> mPolygonAdapter;
 
 	bool layerWindow_TextChanged(const CEGUI::EventArgs& e);
 	bool layerWindow_ListSelectionChanged(const CEGUI::EventArgs& e);

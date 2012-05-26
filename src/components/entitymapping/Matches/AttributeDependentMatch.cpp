@@ -38,7 +38,7 @@ namespace Matches {
 
 
 AttributeDependentMatch::AttributeDependentMatch()
-: mAttributeObserver(0)
+: mAttributeObserver(nullptr)
 {
 }
 
@@ -48,7 +48,7 @@ AttributeDependentMatch::~AttributeDependentMatch()
 
 void AttributeDependentMatch::setAttributeObserver(Observers::AttributeObserver* observer)
 {
-	mAttributeObserver = std::auto_ptr<Observers::AttributeObserver>(observer);
+	mAttributeObserver = std::unique_ptr<Observers::AttributeObserver>(observer);
 }
 
 

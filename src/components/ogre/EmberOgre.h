@@ -247,7 +247,7 @@ protected:
 	/**
 	 * @brief Utility object for setting up and tearing down ogre
 	 */
-	std::auto_ptr<OgreSetup> mOgreSetup;
+	std::unique_ptr<OgreSetup> mOgreSetup;
 
 	/**
 	 * @brief The main Ogre root object. All of Ogre is accessed through this.
@@ -289,7 +289,7 @@ protected:
 	/**
 	 * @brief An InputCommandMapper that will handle all general input events.
 	 */
-	std::auto_ptr<InputCommandMapper> mGeneralCommandMapper;
+	std::unique_ptr<InputCommandMapper> mGeneralCommandMapper;
 
 	/**
 	 * @brief Responsible for handling sound loading
@@ -355,12 +355,12 @@ protected:
 	/**
 	 * @brief The scripting resource provider, which loads scripts using the Ogre resource system.
 	 */
-	std::auto_ptr<OgreResourceProvider> mScriptingResourceProvider;
+	std::unique_ptr<OgreResourceProvider> mScriptingResourceProvider;
 
 	/**
 	 * @brief The sound resource provider, which loads sounds using the Ogre resource system.
 	 */
-	std::auto_ptr<OgreResourceProvider> mSoundResourceProvider;
+	std::unique_ptr<OgreResourceProvider> mSoundResourceProvider;
 
 	/**
 	 * @brief The collision manager, responsible for handling collisions of the geometry in the world.

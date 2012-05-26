@@ -40,7 +40,7 @@ namespace EntityMapping {
 namespace Cases {
 
 AttributeCase::AttributeCase(AttributeComparers::AttributeComparerWrapper* comparerWrapper)
-: mComparerWrapper(std::auto_ptr<AttributeComparers::AttributeComparerWrapper>(comparerWrapper))
+: mComparerWrapper(std::unique_ptr<AttributeComparers::AttributeComparerWrapper>(comparerWrapper))
 {
 }
 

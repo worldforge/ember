@@ -366,7 +366,7 @@ protected:
 	/**
 	@brief Information about the world, such as size and number of pages.
 	*/
-	std::auto_ptr<TerrainInfo> mTerrainInfo;
+	std::unique_ptr<TerrainInfo> mTerrainInfo;
 
 	/**
 	 * @brief The main Mercator terrain instance, which holds all of the Mercator terrain structures.

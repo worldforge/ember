@@ -57,7 +57,7 @@ public:
 
 protected:
 
-	std::auto_ptr<Observers::AttributeObserver> mAttributeObserver;
+	std::unique_ptr<Observers::AttributeObserver> mAttributeObserver;
 };
 }
 

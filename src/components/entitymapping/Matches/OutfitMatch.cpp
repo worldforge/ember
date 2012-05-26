@@ -36,7 +36,7 @@ namespace EntityMapping {
 namespace Matches {
 
 OutfitMatch::OutfitMatch(const std::string& outfitName, Eris::View* view)
-: mOutfitName(outfitName), mView(view), mEntityObserver(0)
+: mOutfitName(outfitName), mView(view), mEntityObserver(nullptr)
 {
 }
 
@@ -73,7 +73,7 @@ void OutfitMatch::setEntity(Eris::Entity* entity)
 
 void OutfitMatch::setEntityCreationObserver(Observers::EntityCreationObserver* observer)
 {
-	mEntityObserver = std::auto_ptr<Observers::EntityCreationObserver>(observer);
+	mEntityObserver = std::unique_ptr<Observers::EntityCreationObserver>(observer);
 }
 
 void OutfitMatch::testEntity(Eris::Entity* entity)

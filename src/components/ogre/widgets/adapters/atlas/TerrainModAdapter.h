@@ -132,7 +132,7 @@ protected:
 	/**
 	 * @brief The polygon adapter, which handles the actual polygon editing.
 	 */
-	std::auto_ptr<PolygonAdapter> mPolygonAdapter;
+	std::unique_ptr<PolygonAdapter> mPolygonAdapter;
 	
 	CEGUI::Editbox* mHeightTextbox;
 	

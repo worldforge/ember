@@ -106,7 +106,7 @@ protected:
 	std::string mMaterialName;
 	const TerrainPage& mTerrainPage;
 	TerrainPageSurfaceLayerStore mLayers;
-	std::auto_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
+	std::unique_ptr<TerrainPageSurfaceCompiler> mSurfaceCompiler;
 
 };
 

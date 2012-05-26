@@ -143,7 +143,7 @@ private:
 	 *    Creates a new Lua virtual machine/state.
 	 */
 	void createState();
-// 	std::auto_ptr<CEGUI::LuaScriptModule> mLuaScriptModule;
+// 	std::unique_ptr<CEGUI::LuaScriptModule> mLuaScriptModule;
 
 	/**
 	The main scripting service instance.

@@ -127,7 +127,7 @@ ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
 
 	// Making model from temporary entity
 	ModelPreviewWorkerActionCreator actionCreator(*this);
-	std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, 0));
+	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, 0));
 	if (modelMapping.get()) {
 		modelMapping->initialize();
 	}

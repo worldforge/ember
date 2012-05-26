@@ -50,7 +50,7 @@ public:
 	virtual ~StringComparerWrapper() {}
 	virtual bool testAttribute(const Atlas::Message::Element& attribute);
 private:
-	std::auto_ptr<StringComparer> mStringComparer;
+	std::unique_ptr<StringComparer> mStringComparer;
 };
 
 }

@@ -49,21 +49,21 @@ namespace Atlas
 {
 
 AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushButton* showButton, CEGUI::Combobox* layerWindow, EmberEntity* entity) :
-		AdapterBase(element), mLayer(0), mLayerWindow(layerWindow), mEntity(entity), mPolygonAdapter(0)
+		AdapterBase(element), mLayer(0), mLayerWindow(layerWindow), mEntity(entity), mPolygonAdapter(nullptr)
 {
 	if (element.isMap()) {
 		const ::Atlas::Message::MapType& areaData(element.asMap());
 		::Atlas::Message::MapType::const_iterator shapeI = areaData.find("shape");
 		if (shapeI != areaData.end()) {
-			mPolygonAdapter = std::auto_ptr<PolygonAdapter>(new PolygonAdapter(shapeI->second, showButton, entity));
+			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(shapeI->second, showButton, entity));
 		} else {
-			mPolygonAdapter = std::auto_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::MapType(), showButton, entity));
+			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::MapType(), showButton, entity));
 		}
 		WFMath::Polygon<2> poly;
 		Terrain::TerrainAreaParser parser;
 		parser.parseArea(areaData, poly, mLayer);
 	} else {
-		mPolygonAdapter = std::auto_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::MapType(), showButton, entity));
+		mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::MapType(), showButton, entity));
 	}
 
 	if (mLayerWindow) {

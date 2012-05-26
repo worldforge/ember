@@ -51,7 +51,7 @@ namespace Caelum
      *  connected through this class. This class is responsible for tracking and
      *  updating sub-components.
      *
-     *  This class "owns" all of the subcomponents, using std::auto_ptr members.
+     *  This class "owns" all of the subcomponents, using std::unique_ptr members.
      *  When you call functions like setXxx(new Xxx()) this class takes
      *  ownership of the object's lifetime and will try to update it as
      *  appropriate. All components are optional; disable one component should
@@ -167,10 +167,10 @@ namespace Caelum
         bool mEnsureSingleShadowSource;
 
 		/// The sky gradients image (for lookups).
-        std::auto_ptr<Ogre::Image> mSkyGradientsImage;
+        std::unique_ptr<Ogre::Image> mSkyGradientsImage;
 
         /// The sun gradients image (for lookups).
-        std::auto_ptr<Ogre::Image> mSunColoursImage;
+        std::unique_ptr<Ogre::Image> mSunColoursImage;
 
         /// Observer Latitude (on the earth).
         Ogre::Degree mObserverLatitude;
@@ -181,16 +181,16 @@ namespace Caelum
                 Ogre::Degree azimuth, Ogre::Degree altitude);
 		
 		// References to sub-components
-        std::auto_ptr<UniversalClock> mUniversalClock;
-        std::auto_ptr<SkyDome> mSkyDome;
-        std::auto_ptr<BaseSkyLight> mSun;
-        std::auto_ptr<Moon> mMoon;
-        std::auto_ptr<ImageStarfield> mImageStarfield;
-        std::auto_ptr<PointStarfield> mPointStarfield;
-        std::auto_ptr<GroundFog> mGroundFog;
-        std::auto_ptr<CloudSystem> mCloudSystem;
-		std::auto_ptr<PrecipitationController> mPrecipitationController;
-		std::auto_ptr<DepthComposer> mDepthComposer;
+        std::unique_ptr<UniversalClock> mUniversalClock;
+        std::unique_ptr<SkyDome> mSkyDome;
+        std::unique_ptr<BaseSkyLight> mSun;
+        std::unique_ptr<Moon> mMoon;
+        std::unique_ptr<ImageStarfield> mImageStarfield;
+        std::unique_ptr<PointStarfield> mPointStarfield;
+        std::unique_ptr<GroundFog> mGroundFog;
+        std::unique_ptr<CloudSystem> mCloudSystem;
+		std::unique_ptr<PrecipitationController> mPrecipitationController;
+		std::unique_ptr<DepthComposer> mDepthComposer;
 
     public:
         typedef std::set<Ogre::Viewport*> AttachedViewportSet;

@@ -44,7 +44,7 @@ namespace Ember {
 namespace OgreView {
 
 AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
-: mChatLogger(0)
+: mChatLogger(nullptr)
 {
 	assert(&avatarEntity);
 
@@ -61,7 +61,7 @@ AvatarLogger::AvatarLogger(EmberEntity& avatarEntity)
 		//perform setup of the stream
 		std::stringstream logFileSS;
 		logFileSS << dir << "/" << avatarEntity.getName() << "_chatlog.log";
-		mChatLogger = std::auto_ptr<std::ofstream>(new std::ofstream(logFileSS.str().c_str(), std::ios::app));
+		mChatLogger = std::unique_ptr<std::ofstream>(new std::ofstream(logFileSS.str().c_str(), std::ios::app));
 		S_LOG_VERBOSE("Chat Logging set to write in [ " << logFileSS.str() << " ]");
 
 		*mChatLogger << "-------------------------------------------------------" << std::endl;
@@ -92,7 +92,7 @@ void AvatarLogger::GUIManager_AppendIGChatLine(const Domain::EntityTalk& entityT
 AvatarLoggerParent::AvatarLoggerParent(Avatar& avatar)
 {
 	//we either already have an entity, or we need to wait until it's creeated
-	mLogger = std::auto_ptr<AvatarLogger>(new AvatarLogger(avatar.getEmberEntity()));
+	mLogger = std::unique_ptr<AvatarLogger>(new AvatarLogger(avatar.getEmberEntity()));
 }
 
 

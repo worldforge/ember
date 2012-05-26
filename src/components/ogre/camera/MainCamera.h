@@ -197,7 +197,7 @@ private:
 
 	Ogre::RaySceneQuery* mCameraRaySceneQuery;
 
-	std::auto_ptr<AvatarTerrainCursor> mAvatarTerrainCursor;
+	std::unique_ptr<AvatarTerrainCursor> mAvatarTerrainCursor;
 
 	bool mCameraOrientationChangedThisFrame;
 

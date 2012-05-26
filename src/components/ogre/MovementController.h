@@ -207,8 +207,8 @@ protected:
 	Avatar& mAvatar;
 
 	Ogre::SceneNode* mFreeFlyingNode;
-	std::auto_ptr<FreeFlyingCameraMotionHandler> mFreeFlyingMotionHandler;
-	std::auto_ptr<Camera::FirstPersonCameraMount> mCameraMount;
+	std::unique_ptr<FreeFlyingCameraMotionHandler> mFreeFlyingMotionHandler;
+	std::unique_ptr<Camera::FirstPersonCameraMount> mCameraMount;
 	bool mIsFreeFlying;
 };
 

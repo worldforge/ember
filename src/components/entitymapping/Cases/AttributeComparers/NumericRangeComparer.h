@@ -51,8 +51,8 @@ public:
 	virtual bool test(float value);
 
 protected:
-	std::auto_ptr<NumericComparer> mMinComparer;
-	std::auto_ptr<NumericComparer> mMaxComparer;
+	std::unique_ptr<NumericComparer> mMinComparer;
+	std::unique_ptr<NumericComparer> mMaxComparer;
 };
 
 }

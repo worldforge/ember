@@ -132,7 +132,7 @@ namespace Caelum
         DepthComposer* mParent;
         Ogre::Viewport* mViewport;
         Ogre::CompositorInstance* mCompInst;
-        std::auto_ptr<DepthRenderer> mDepthRenderer;
+        std::unique_ptr<DepthRenderer> mDepthRenderer;
 
         virtual void notifyMaterialSetup(uint pass_id, Ogre::MaterialPtr &mat);
         virtual void notifyMaterialRender(uint pass_id, Ogre::MaterialPtr &mat);

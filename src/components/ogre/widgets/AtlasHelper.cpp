@@ -41,7 +41,7 @@ std::string AtlasHelper::serialize(const Atlas::Objects::Root& obj, const std::s
 {
 	std::stringstream ss;
 	Atlas::Message::QueuedDecoder decoder;
-	std::auto_ptr<Atlas::Codec> codec;
+	std::unique_ptr<Atlas::Codec> codec;
 
 	if (codecType == "bach") {
 		codec.reset(new Atlas::Codecs::Bach(ss, decoder));

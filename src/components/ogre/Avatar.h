@@ -235,7 +235,7 @@ protected:
 	 * @brief A third person camera mount, tracking the avatar entity.
 	 * This mount is the default one used when controlling an avatar.
 	 */
-	std::auto_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
+	std::unique_ptr<Camera::ThirdPersonCameraMount> mCameraMount;
 
 	/**
 	 * @brief True if the current user have admin rights, i.e. is a "creator".
@@ -250,7 +250,7 @@ protected:
 	/**
 	 * @brief Holds the objects which logs ingame messages to a file. We don't hold a AvatarLogger instance directly, instead using the AvatarLoggerParent class, since we can't really create an instance of AvatarLogger until we've gotten an AvatarEmberEntity, and the AvatarLoggerParent class will take care of all that.
 	 */
-	std::auto_ptr<AvatarLoggerParent> mChatLoggerParent;
+	std::unique_ptr<AvatarLoggerParent> mChatLoggerParent;
 
 	/**
 	 * @brief We save the five latest orientations that we send to the server.

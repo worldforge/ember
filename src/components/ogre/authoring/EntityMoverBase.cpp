@@ -71,7 +71,7 @@ bool SnapListener::getSnappingEnabled() const {
 }
 
 EntityMoverBase::EntityMoverBase(Eris::Entity& entity, Ogre::Node* node, Ogre::SceneManager& sceneManager) :
-	mEntity(entity), mNode(node), mSceneManager(sceneManager), mSnapping(0)
+	mEntity(entity), mNode(node), mSceneManager(sceneManager), mSnapping(nullptr)
 {
 	SnapListener& snapListener = getSnapListener();
 	if (snapListener.getSnappingEnabled()) {

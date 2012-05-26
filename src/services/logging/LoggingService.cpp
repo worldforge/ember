@@ -58,7 +58,7 @@ LoggingService::LoggingService () : Service()
 	setName("Logging");
 	setDescription("Passes Eris log messages on to the logger.");
 	
-	mErisLogReciever = std::auto_ptr<ErisLogReciever>(new ErisLogReciever());
+	mErisLogReciever = std::unique_ptr<ErisLogReciever>(new ErisLogReciever());
 }
 
 

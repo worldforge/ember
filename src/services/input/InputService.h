@@ -53,7 +53,7 @@ public:
     Input& getInput();
     
 private:
-	std::auto_ptr<Input> mInput;
+	std::unique_ptr<Input> mInput;
 
 };
 

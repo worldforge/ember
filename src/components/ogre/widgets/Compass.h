@@ -127,7 +127,7 @@ protected:
 	 * @brief The terrain map instance which is responsible for creating and updating the underlying map.
 	 * This is owned by this class.
 	 */
-	std::auto_ptr<Terrain::Map> mMap;
+	std::unique_ptr<Terrain::Map> mMap;
 
 	/**
 	 * @brief The compass implementation, responsible for the actual transformation of the map texture info something which can be presented in the gui.

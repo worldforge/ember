@@ -183,7 +183,7 @@ private:
 	 */
 	Domain::TerrainPosition mPosition;
 
-	std::auto_ptr<TerrainPageSurface> mTerrainSurface;
+	std::unique_ptr<TerrainPageSurface> mTerrainSurface;
 
 	/**
 	 * @brief The extent of this page in meters, in WF space.

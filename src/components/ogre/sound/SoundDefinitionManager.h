@@ -67,7 +67,7 @@ public:
 	*/
 	SoundGroupDefinition* getSoundGroupDefinition(const std::string& name);
 protected:
-	std::auto_ptr<XMLSoundDefParser> mSoundParser;
+	std::unique_ptr<XMLSoundDefParser> mSoundParser;
 
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams);
 	

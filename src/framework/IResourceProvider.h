@@ -62,7 +62,6 @@ class ResourceWrapper
 public:
 	ResourceWrapper(const ResourceWrapper& wrapper) : mInternalWrapper(wrapper.mInternalWrapper), mName(wrapper.mName) 
 	{
-		wrapper.mInternalWrapper.release();
 	}
 	ResourceWrapper(IResourceWrapper* internalWrapper, const std::string& name) : mInternalWrapper(internalWrapper), mName(name) {}
 	
@@ -84,7 +83,7 @@ public:
 	const std::string& getName() const;
 
 private:
-	mutable std::auto_ptr<IResourceWrapper> mInternalWrapper;
+	mutable std::shared_ptr<IResourceWrapper> mInternalWrapper;
 	std::string mName;
 };
 

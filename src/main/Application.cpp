@@ -278,7 +278,7 @@ void Application::initializeServices()
 
 	//output all logging to ember.log
 	std::string filename(configService.getHomeDirectory() + "/ember.log");
-	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
+	mLogOutStream = std::unique_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
 
 	//write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;

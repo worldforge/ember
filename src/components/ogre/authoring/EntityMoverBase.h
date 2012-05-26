@@ -183,7 +183,7 @@ protected:
 	/**
 	 * @brief Handles snap-to movement, which will make the entity snap to other entities in the world.
 	 */
-	std::auto_ptr<Authoring::SnapToMovement> mSnapping;
+	std::unique_ptr<Authoring::SnapToMovement> mSnapping;
 
 
 	/**

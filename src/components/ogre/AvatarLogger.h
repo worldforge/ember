@@ -61,7 +61,7 @@ protected:
 	/**
 	 * Holds the file to which messages will be written.
 	 */
-	std::auto_ptr<std::ofstream> mChatLogger;
+	std::unique_ptr<std::ofstream> mChatLogger;
 
 
 	/**
@@ -93,7 +93,7 @@ public:
 
 protected:
 
-	std::auto_ptr<AvatarLogger> mLogger;
+	std::unique_ptr<AvatarLogger> mLogger;
 
 };
 }

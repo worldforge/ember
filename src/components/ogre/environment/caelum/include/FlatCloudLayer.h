@@ -175,7 +175,7 @@ namespace Caelum
 
     private:
         /// Lookup used for cloud coverage, @see setCloudCoverLookup.
-        std::auto_ptr<Ogre::Image> mCloudCoverLookup;
+        std::unique_ptr<Ogre::Image> mCloudCoverLookup;
 
         /// Filename of mCloudCoverLookup
         Ogre::String mCloudCoverLookupFileName;
