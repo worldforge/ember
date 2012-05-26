@@ -1,9 +1,9 @@
 <models>
-    <model name="iron_ore" usescaleof="height" scale="1" showcontained="true" icon="">
+    <model name="tongs" usescaleof="all" scale="1" showcontained="true" icon="">
         <translate x="0" y="0" z="0" />
-        <rotation x="-1" y="-0" z="-0" degrees="180" />
+        <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/environment/models/iron_ore/iron_ore.mesh">
+            <submodel mesh="3d_objects/items/tools/models/tongs/tongs.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>

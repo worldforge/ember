@@ -1,13 +1,13 @@
 <models>
-    <model name="iron_ore_node" usescaleof="height" scale="2" showcontained="true" icon="">
+    <model name="charcoal" usescaleof="height" showcontained="true" icon="">
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/environment/models/boulder/graniteC.mesh">
+            <submodel mesh="3d_objects/items/resources/models/charcoal/charcoal.mesh">
                 <parts>
                     <part name="main" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/environment/stone_granite_kale" />
+                            <subentity index="0" />
                         </subentities>
                     </part>
                 </parts>
