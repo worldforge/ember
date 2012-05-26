@@ -299,8 +299,6 @@ void Model::createActions()
 							try {
 								Ogre::AnimationState* state = getAnimationState((*I_animParts)->Name);
 								animPart.state = state;
-//								animPart.weight = (*I_animParts)->Weight;
-								animPart.weight = 1.0f;
 								for (std::vector<BoneGroupRefDefinition>::const_iterator I_boneGroupRef = (*I_animParts)->BoneGroupRefs.begin(); I_boneGroupRef != (*I_animParts)->BoneGroupRefs.end(); ++I_boneGroupRef) {
 									BoneGroupDefinitionStore::const_iterator I_boneGroup = mDefinition->getBoneGroupDefinitions().find(I_boneGroupRef->Name);
 									if (I_boneGroup != mDefinition->getBoneGroupDefinitions().end()) {

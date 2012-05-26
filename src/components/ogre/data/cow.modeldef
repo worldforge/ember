@@ -33,7 +33,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" weight="1.000000" />
+                        <animationpart name="Walk" />
                     </animation>
                 </animations>
             </action>
@@ -43,19 +43,19 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="EatLow" weight="1.000000" />
+                        <animationpart name="EatLow" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="@Moo" weight="1.000000" />
+                        <animationpart name="@Moo" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="@TailFlick" weight="1.000000" />
+                        <animationpart name="@TailFlick" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="LookL" weight="1.000000" />
+                        <animationpart name="LookL" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="Stand" weight="1.000000" />
+                        <animationpart name="Stand" />
                     </animation>
                 </animations>
             </action>

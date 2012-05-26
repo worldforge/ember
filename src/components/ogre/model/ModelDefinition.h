@@ -256,8 +256,10 @@ struct BoneGroupRefDefinition {
  */
 struct AnimationPartDefinition
 {
+	/**
+	 * The name of the animation.
+	 */
 	std::string Name;
-	Ogre::Real Weight;
 
 	/**
 	 * @brief The bone groups, if any, which should affect this animation.
@@ -299,7 +301,7 @@ class AnimationDefinition
 	friend class ActionDefinition;
 public:
 	~AnimationDefinition();
-	AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight = 1);
+	AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName);
 	const AnimationPartDefinitionsStore& getAnimationPartDefinitions() const;
 	void removeAnimationPartDefinition(AnimationPartDefinition* def);
 

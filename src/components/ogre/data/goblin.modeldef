@@ -27,7 +27,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="_Stand" weight="1.000000" />
+                        <animationpart name="_Stand" />
                     </animation>
                 </animations>
             </action>
@@ -38,7 +38,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="_Walk" weight="1.000000" />
+                        <animationpart name="_Walk" />
                     </animation>
                 </animations>
             </action>
@@ -48,7 +48,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="_Jog" weight="1.000000" />
+                        <animationpart name="_Jog" />
                     </animation>
                 </animations>
             </action>
@@ -58,7 +58,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="_@Bash" weight="1.000000" />
+                        <animationpart name="_@Bash" />
                     </animation>
                 </animations>
             </action>
@@ -68,7 +68,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="_@Bash1" weight="1.000000" />
+                        <animationpart name="_@Bash1" />
                     </animation>
                 </animations>
             </action>

@@ -106,16 +106,16 @@
                 </activations>
                 <animations>
                     <animation iterations="10">
-                        <animationpart name="idle" weight="1.000000" />
+                        <animationpart name="idle" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="shrug" weight="1.000000" />
+                        <animationpart name="shrug" />
                     </animation>
                     <animation iterations="8">
-                        <animationpart name="idle" weight="1.000000" />
+                        <animationpart name="idle" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="look_around" weight="1.000000" />
+                        <animationpart name="look_around" />
                     </animation>
                 </animations>
             </action>
@@ -125,7 +125,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk" weight="1.000000" />
+                        <animationpart name="walk" />
                     </animation>
                 </animations>
             </action>
@@ -135,7 +135,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="run" weight="1.000000" />
+                        <animationpart name="run" />
                     </animation>
                 </animations>
             </action>
@@ -145,7 +145,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="swim" weight="1.000000" />
+                        <animationpart name="swim" />
                     </animation>
                 </animations>
             </action>
@@ -155,7 +155,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="attack_punch" weight="1.000000" />
+                        <animationpart name="attack_punch" />
                     </animation>
                 </animations>
             </action>
@@ -165,7 +165,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="attack_punch" weight="1.000000" />
+                        <animationpart name="attack_punch" />
                     </animation>
                 </animations>
             </action>
@@ -175,7 +175,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="chop" weight="1.000000" />
+                        <animationpart name="chop" />
                     </animation>
                 </animations>
             </action>
@@ -185,7 +185,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="jump" weight="1.000000" />
+                        <animationpart name="jump" />
                     </animation>
                 </animations>
             </action>

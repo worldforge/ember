@@ -58,7 +58,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Eat2" weight="1.000000" />
+                        <animationpart name="Eat2" />
                     </animation>
                 </animations>
             </action>
@@ -68,7 +68,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Sit" weight="1.000000" />
+                        <animationpart name="Sit" />
                     </animation>
                 </animations>
             </action>

@@ -20,7 +20,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk" weight="1.000000" />
+                        <animationpart name="walk" />
                     </animation>
                 </animations>
             </action>
@@ -30,7 +30,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="run" weight="1.000000" />
+                        <animationpart name="run" />
                     </animation>
                 </animations>
             </action>
@@ -40,7 +40,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="ilde_a" weight="1.000000" />
+                        <animationpart name="ilde_a" />
                     </animation>
                 </animations>
             </action>

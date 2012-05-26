@@ -20,7 +20,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="flap" weight="1.000000" />
+                        <animationpart name="flap" />
                     </animation>
                 </animations>
             </action>
@@ -30,16 +30,16 @@
                 </activations>
                 <animations>
                     <animation iterations="2">
-                        <animationpart name="flap" weight="1.000000" />
+                        <animationpart name="flap" />
                     </animation>
                     <animation iterations="3">
-                        <animationpart name="glide" weight="1.000000" />
+                        <animationpart name="glide" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="flap" weight="1.000000" />
+                        <animationpart name="flap" />
                     </animation>
                     <animation iterations="4">
-                        <animationpart name="glide" weight="1.000000" />
+                        <animationpart name="glide" />
                     </animation>
                 </animations>
             </action>
@@ -49,7 +49,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="flap" weight="1.000000" />
+                        <animationpart name="flap" />
                     </animation>
                 </animations>
             </action>

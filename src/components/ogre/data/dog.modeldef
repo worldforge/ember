@@ -20,7 +20,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" weight="1.000000" />
+                        <animationpart name="Walk" />
                     </animation>
                 </animations>
             </action>

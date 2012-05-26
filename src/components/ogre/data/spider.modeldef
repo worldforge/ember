@@ -25,7 +25,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" weight="1.000000" />
+                        <animationpart name="Walk" />
                     </animation>
                 </animations>
             </action>
@@ -35,14 +35,14 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" weight="1.000000" />
+                        <animationpart name="Walk" />
                     </animation>
                 </animations>
             </action>
             <action name="__movement_run" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Run" weight="1.000000" />
+                        <animationpart name="Run" />
                     </animation>
                 </animations>
             </action>
@@ -52,7 +52,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Strike" weight="1.000000" />
+                        <animationpart name="Strike" />
                     </animation>
                 </animations>
             </action>

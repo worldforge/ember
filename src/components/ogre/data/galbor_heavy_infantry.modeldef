@@ -27,7 +27,7 @@
                 </activations>
                 <animations>
                     <animation>
-                        <animationpart name="walk_loop_Clip" weight="1.000000" />
+                        <animationpart name="walk_loop_Clip" />
                     </animation>
                 </animations>
             </action>
@@ -37,7 +37,7 @@
                 </activations>
                 <animations>
                     <animation>
-                        <animationpart name="walk_loop_Clip" weight="1.000000" />
+                        <animationpart name="walk_loop_Clip" />
                     </animation>
                 </animations>
             </action>
@@ -47,7 +47,7 @@
                 </activations>
                 <animations>
                     <animation>
-                        <animationpart name="run_Clip" weight="1.000000" />
+                        <animationpart name="run_Clip" />
                     </animation>
                 </animations>
             </action>
@@ -57,7 +57,7 @@
                 </activations>
                 <animations>
                     <animation>
-                        <animationpart name="attack_roundhouse_slash_Clip" weight="1.000000" />
+                        <animationpart name="attack_roundhouse_slash_Clip" />
                     </animation>
                 </animations>
             </action>
@@ -67,7 +67,7 @@
                 </activations>
                 <animations>
                     <animation>
-                        <animationpart name="attack_roundhouse_slash_Clip" weight="1.000000" />
+                        <animationpart name="attack_roundhouse_slash_Clip" />
                     </animation>
                 </animations>
             </action>

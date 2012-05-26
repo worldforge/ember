@@ -400,11 +400,10 @@ AnimationDefinition::~AnimationDefinition()
 	}
 }
 
-AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight)
+AnimationPartDefinition* AnimationDefinition::createAnimationPartDefinition(const std::string& ogreAnimationName)
 {
 	AnimationPartDefinition* def = new AnimationPartDefinition();
 	def->Name = ogreAnimationName;
-	def->Weight = weight;
 	mAnimationParts.push_back(def);
 	return def;
 }

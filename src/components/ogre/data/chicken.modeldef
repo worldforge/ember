@@ -39,34 +39,34 @@
                 </activations>
                 <animations>
                     <animation iterations="4">
-                        <animationpart name="Stand" weight="1.000000" />
+                        <animationpart name="Stand" />
                     </animation>
                     <animation iterations="2">
-                        <animationpart name="@Peck" weight="1.000000" />
+                        <animationpart name="@Peck" />
                     </animation>
                     <animation iterations="4">
-                        <animationpart name="Stand" weight="1.000000" />
+                        <animationpart name="Stand" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="@Peck2" weight="1.000000" />
+                        <animationpart name="@Peck2" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="Stand" weight="1.000000" />
+                        <animationpart name="Stand" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="@Peck2" weight="1.000000" />
+                        <animationpart name="@Peck2" />
                     </animation>
                     <animation iterations="5">
-                        <animationpart name="Stand" weight="1.000000" />
+                        <animationpart name="Stand" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="@ScratchL" weight="1.000000" />
+                        <animationpart name="@ScratchL" />
                     </animation>
                     <animation iterations="6">
-                        <animationpart name="Stand" weight="1.000000" />
+                        <animationpart name="Stand" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="@ScratchR" weight="1.000000" />
+                        <animationpart name="@ScratchR" />
                     </animation>
                 </animations>
             </action>
@@ -76,7 +76,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" weight="1.000000" />
+                        <animationpart name="Walk" />
                     </animation>
                 </animations>
             </action>
@@ -86,7 +86,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Run" weight="1.000000" />
+                        <animationpart name="Run" />
                     </animation>
                 </animations>
             </action>
@@ -96,7 +96,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="@Drink" weight="1.000000" />
+                        <animationpart name="@Drink" />
                     </animation>
                 </animations>
             </action>
@@ -106,7 +106,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="@Crow" weight="1.000000" />
+                        <animationpart name="@Crow" />
                     </animation>
                 </animations>
             </action>
@@ -116,7 +116,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="@Sit" weight="1.000000" />
+                        <animationpart name="@Sit" />
                     </animation>
                 </animations>
             </action>

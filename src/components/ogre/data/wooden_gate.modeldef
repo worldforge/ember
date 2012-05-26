@@ -21,14 +21,14 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Close" weight="1.000000" />
+                        <animationpart name="Close" />
                     </animation>
                 </animations>
             </action>
             <action name="closed" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="CloseHold" weight="1.000000" />
+                        <animationpart name="CloseHold" />
                     </animation>
                 </animations>
             </action>
@@ -38,14 +38,14 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Open" weight="1.000000" />
+                        <animationpart name="Open" />
                     </animation>
                 </animations>
             </action>
             <action name="opened" speed="1.000000">
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="OpenHold" weight="1.000000" />
+                        <animationpart name="OpenHold" />
                     </animation>
                 </animations>
             </action>

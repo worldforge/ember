@@ -30,7 +30,7 @@
                 </activations>
                 <animations>
                     <animation>
-                        <animationpart name="idleA" weight="1.000000" />
+                        <animationpart name="idleA" />
                     </animation>
                 </animations>
             </action>
@@ -40,7 +40,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk" weight="1.000000" />
+                        <animationpart name="walk" />
                     </animation>
                 </animations>
             </action>
@@ -50,7 +50,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="run" weight="1.000000" />
+                        <animationpart name="run" />
                     </animation>
                 </animations>
             </action>
@@ -60,7 +60,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk" weight="1.000000" />
+                        <animationpart name="walk" />
                     </animation>
                 </animations>
             </action>

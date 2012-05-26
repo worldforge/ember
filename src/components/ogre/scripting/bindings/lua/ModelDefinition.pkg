@@ -90,7 +90,6 @@ class SubModelDefinition
 struct AnimationPartDefinition
 {
 	std::string Name;
-	Ogre::Real Weight;
 
 	/**
 	 * @brief The bone groups, if any, which should affect this animation.
@@ -146,7 +145,7 @@ struct BoneGroupRefDefinition {
 class AnimationDefinition
 {
 public:
-	Ember::OgreView::Model::AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName, Ogre::Real weight);
+	Ember::OgreView::Model::AnimationPartDefinition* createAnimationPartDefinition(const std::string& ogreAnimationName);
 	const std::vector<Ember::OgreView::Model::AnimationPartDefinition*>& getAnimationPartDefinitions() const;
 	void removeAnimationPartDefinition(Ember::OgreView::Model::AnimationPartDefinition* def);
 

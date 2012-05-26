@@ -19,8 +19,8 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="innerFire.BAKED" weight="1.000000" />
-                        <animationpart name="outerFire.BAKED" weight="1.000000" />
+                        <animationpart name="innerFire.BAKED" />
+                        <animationpart name="outerFire.BAKED" />
                     </animation>
                 </animations>
             </action>

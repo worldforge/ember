@@ -41,7 +41,6 @@ struct BoneGroupRef
 struct AnimationPart
 {
 	Ogre::AnimationState* state;
-	Ogre::Real weight;
 	std::vector<BoneGroupRef> boneGroupRefs;
 };
 

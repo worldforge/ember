@@ -515,13 +515,7 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
 			S_LOG_VERBOSE( "  Add animation  : "+ name );
 		}
 
-
-		// weight
-		tmp =  apElem->Attribute("weight");
-		if (tmp)
-			weight = Ogre::StringConverter::parseReal(tmp);
-
-		AnimationPartDefinition* animPartDef = animDef->createAnimationPartDefinition(name, weight);
+		AnimationPartDefinition* animPartDef = animDef->createAnimationPartDefinition(name);
 
 		TiXmlElement* elem = apElem->FirstChildElement("bonegrouprefs");
 		if (elem) {
@@ -570,7 +564,7 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 			attachPointDef.Name = tmp;
 		S_LOG_VERBOSE( "  Add attachpoint  : "+ attachPointDef.Name );
 
-		// weight
+		// bone
 		tmp =  apElem->Attribute("bone");
 		if (tmp)
 			attachPointDef.BoneName = tmp;
@@ -632,14 +626,14 @@ void XMLModelDefinitionSerializer::readParticleSystemsBindings(ModelDefinition::
 	{
 		ModelDefinition::BindingDefinition binding;
 
-		// name
+		// emittervar
 		tmp =  apElem->Attribute("emittervar");
 		if (tmp)
 			binding.EmitterVar = tmp;
 		else
 			continue;
 
-		// weight
+		// atlasattribute
 		tmp =  apElem->Attribute("atlasattribute");
 		if (tmp)
 			binding.AtlasAttribute = tmp;
@@ -999,7 +993,6 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 				for (AnimationPartDefinitionsStore::const_iterator K = (*J)->getAnimationPartDefinitions().begin(); K != (*J)->getAnimationPartDefinitions().end(); ++K) {
 					TiXmlElement animationPartElem("animationpart");
 					animationPartElem.SetAttribute("name", (*K)->Name.c_str());
-					animationPartElem.SetDoubleAttribute("weight", (*K)->Weight);
 					for (std::vector<BoneGroupRefDefinition>::const_iterator L = (*K)->BoneGroupRefs.begin(); L != (*K)->BoneGroupRefs.end(); ++L) {
 						TiXmlElement boneGroupRefElem("bonegroupref");
 						boneGroupRefElem.SetAttribute("name", L->Name.c_str());
