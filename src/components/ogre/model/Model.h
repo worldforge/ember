@@ -350,6 +350,12 @@ protected:
 	 */
 	void reset();
 
+	/**
+	 * @brief Iterates over all contained Ogre::MovableObject instances and applies the supplied function.
+	 * @param movableObjectFunction A function which will be applied to all contained Ogre::MovableObject instances.
+	 */
+	void iterateOverMovableObjects(std::function<void(Ogre::MovableObject&)> movableObjectFunction);
+
 	Ogre::Entity::ChildObjectList mChildObjectList;
 
 	mutable Ogre::AxisAlignedBox mFull_aa_box;
