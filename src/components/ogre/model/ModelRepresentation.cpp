@@ -52,7 +52,7 @@
 #include <Eris/Types.h>
 #include <Eris/Task.h>
 
-#include <boost/smart_ptr.hpp>
+#include <memory>
 
 namespace Ember
 {

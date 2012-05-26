@@ -21,7 +21,6 @@
 #define EMBEROGRETERRAINTECHNIQUESBASE_H_
 
 #include "components/ogre/terrain/TerrainPageSurfaceCompiler.h"
-#include <boost/shared_ptr.hpp>
 
 namespace Ember
 {

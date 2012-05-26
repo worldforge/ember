@@ -8,7 +8,6 @@
 #include "Vegetation.h"
 #include "ClusterPopulator.h"
 #include "components/ogre/terrain/TerrainLayerDefinition.h"
-#include <boost/shared_ptr.hpp>
 
 namespace Ember
 {

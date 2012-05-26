@@ -26,7 +26,6 @@
 #include "ITerrainPageBridge.h"
 
 #include "framework/tasks/TaskExecutionContext.h"
-#include <boost/shared_ptr.hpp>
 
 namespace Ember
 {
@@ -36,7 +35,7 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler, const Domain::TerrainIndex& index, const boost::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection) :
+TerrainPageCreationTask::TerrainPageCreationTask(TerrainHandler& handler, const Domain::TerrainIndex& index, const std::shared_ptr<ITerrainPageBridge>& bridge, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap, const WFMath::Vector<3>& mainLightDirection) :
 	mTerrainHandler(handler), mPage(0), mIndex(index), mBridge(bridge), mMainLightDirection(mainLightDirection), mHeightMapBufferProvider(heightMapBufferProvider), mHeightMap(heightMap)
 {
 

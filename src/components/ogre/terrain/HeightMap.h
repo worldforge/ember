@@ -20,7 +20,7 @@
 #define EMBEROGRETERRAINHEIGHTMAP_H_
 
 #include "Types.h"
-#include <boost/smart_ptr.hpp>
+#include <memory>
 #include <map>
 
 namespace WFMath
@@ -51,7 +51,7 @@ public:
     /**
      * @brief STL map to store sparse array of Segment pointers.
      */
-    typedef std::map<int, boost::shared_ptr<IHeightMapSegment> > Segmentcolumn;
+    typedef std::map<int, std::shared_ptr<IHeightMapSegment> > Segmentcolumn;
 
     /**
      * @brief STL map to store sparse array of Segment pointer columns.
@@ -133,7 +133,7 @@ private:
 	 * @param yIndex The y index.
 	 * @returns A shared pointer to a segment, or to null if no segment could be found.
 	 */
-	boost::shared_ptr<IHeightMapSegment> getSegment(int xIndex, int yIndex) const;
+	std::shared_ptr<IHeightMapSegment> getSegment(int xIndex, int yIndex) const;
 };
 
 }

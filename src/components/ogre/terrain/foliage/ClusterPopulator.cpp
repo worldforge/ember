@@ -17,7 +17,6 @@
 #include <wfmath/intersect.h>
 #include <wfmath/randgen.h>
 #include <cmath>
-#include <boost/shared_ptr.hpp>
 
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
