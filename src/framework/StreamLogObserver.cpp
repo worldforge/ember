@@ -22,7 +22,7 @@
 
 #include "StreamLogObserver.h"
 #include <ctime>
-#include <boost/thread/thread.hpp>
+#include <thread>
 
 namespace Ember {
 
@@ -83,7 +83,7 @@ static WFMath::TimeStamp startTime(WFMath::TimeStamp::now());
         if (mDetailed) {
         	myOut << "(";
 			myOut.width(7);
-			myOut << ((WFMath::TimeStamp::now() - mStart).milliseconds()) << ":"<<  boost::this_thread::get_id() <<")";
+			myOut << ((WFMath::TimeStamp::now() - mStart).milliseconds()) << ":"<<  std::this_thread::get_id() <<")";
         }
         myOut << "] ";
 

@@ -26,7 +26,8 @@
 #include <Mercator/Segment.h>
 #include <Mercator/Terrain.h>
 
-#include <boost/thread/locks.hpp>
+#include <sstream>
+#include <algorithm>
 
 namespace Ember
 {
@@ -53,7 +54,7 @@ SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex)
 {
 	std::stringstream ss;
 	ss << xIndex << "_" << yIndex;
-	boost::shared_lock<boost::shared_mutex> l(mSegmentsMutex);
+	std::unique_lock<std::mutex> l(mSegmentsMutex);
 	SegmentStore::const_iterator I = mSegments.find(ss.str());
 	if (I != mSegments.end()) {
 		return I->second->getReference();
@@ -64,7 +65,7 @@ SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex)
 size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indices, SegmentRefStore& segments)
 {
 	size_t count = 0;
-	boost::shared_lock<boost::shared_mutex> l(mSegmentsMutex);
+	std::unique_lock<std::mutex> l(mSegmentsMutex);
 
 	for (IndexMap::const_iterator I = indices.begin(); I != indices.end(); ++I) {
 		for (IndexColumn::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
@@ -86,7 +87,7 @@ void SegmentManager::addSegment(Mercator::Segment& segment)
 {
 	std::stringstream ss;
 	ss << (segment.getXRef() / segment.getResolution()) << "_" << (segment.getYRef() / segment.getResolution());
-	boost::unique_lock<boost::shared_mutex> l(mSegmentsMutex);
+	std::unique_lock<std::mutex> l(mSegmentsMutex);
 	SegmentStore::const_iterator I = mSegments.find(ss.str());
 	if (I == mSegments.end()) {
 		mSegments.insert(SegmentStore::value_type(ss.str(), new SegmentHolder(new Segment(segment), *this)));
@@ -109,8 +110,8 @@ void SegmentManager::syncWithTerrain()
 
 void SegmentManager::pruneUnusedSegments()
 {
-	boost::shared_lock<boost::shared_mutex> l(mSegmentsMutex);
-	boost::unique_lock<boost::shared_mutex> l1(mUnusedAndDirtySegmentsMutex);
+	std::unique_lock<std::mutex> l(mSegmentsMutex);
+	std::unique_lock<std::mutex> l1(mUnusedAndDirtySegmentsMutex);
 	while (mUnusedAndDirtySegments.size() > mDesiredSegmentBuffer) {
 		SegmentHolder* holder = mUnusedAndDirtySegments.front();
 		mUnusedAndDirtySegments.pop_front();
@@ -120,14 +121,14 @@ void SegmentManager::pruneUnusedSegments()
 
 void SegmentManager::markHolderAsDirtyAndUnused(SegmentHolder* holder)
 {
-	boost::unique_lock<boost::shared_mutex> l(mUnusedAndDirtySegmentsMutex);
+	std::unique_lock<std::mutex> l(mUnusedAndDirtySegmentsMutex);
 
 	mUnusedAndDirtySegments.push_back(holder);
 }
 
 void SegmentManager::unmarkHolder(SegmentHolder* holder)
 {
-	boost::unique_lock<boost::shared_mutex> l(mUnusedAndDirtySegmentsMutex);
+	std::unique_lock<std::mutex> l(mUnusedAndDirtySegmentsMutex);
 	SegmentList::iterator I = std::find(mUnusedAndDirtySegments.begin(), mUnusedAndDirtySegments.end(), holder);
 	if (I != mUnusedAndDirtySegments.end()) {
 		mUnusedAndDirtySegments.erase(I);

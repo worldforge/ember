@@ -19,9 +19,7 @@
 #ifndef TASKEXECUTOR_H_
 #define TASKEXECUTOR_H_
 
-#include <memory>
-
-namespace boost
+namespace std
 {
 class thread;
 }
@@ -75,7 +73,7 @@ protected:
 	/**
 	 * @brief The thread which performs the execution.
 	 */
-	std::unique_ptr<boost::thread> mThread;
+	std::thread* mThread;
 
 	/**
 	 * @brief Ctor.

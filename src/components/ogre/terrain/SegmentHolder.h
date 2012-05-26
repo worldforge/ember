@@ -19,8 +19,9 @@
 #ifndef EMBEROGRE_TERRAIN_SEGMENTHOLDER_H_
 #define EMBEROGRE_TERRAIN_SEGMENTHOLDER_H_
 
-#include <boost/thread/mutex.hpp>
 #include <Mercator/Segment.h>
+#include <mutex>
+#include <memory>
 
 
 
@@ -99,7 +100,7 @@ protected:
 	/**
 	 * @brief Mutex used when accessing mRefCount.
 	 */
-	boost::mutex mRefCountMutex;
+	std::mutex mRefCountMutex;
 
 	/**
 	 * @brief Called when a reference is destroyed. This will decrease the reference counter.
