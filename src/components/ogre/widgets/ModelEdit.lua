@@ -860,8 +860,10 @@ function ModelEdit:buildWidget()
 		
 		
 		local cameraPosCombobox = CEGUI.toCombobox(self.widget:getWindow("ImageCameraPositioning"))
-		cameraPosCombobox:addItem(Ember.OgreView.Gui.ColouredListItem:new("World center", 0))
-		cameraPosCombobox:addItem(Ember.OgreView.Gui.ColouredListItem:new("Object center", 1))
+		local item = Ember.OgreView.Gui.ColouredListItem:new("World center", 0)
+		cameraPosCombobox:addItem(item)
+		item = Ember.OgreView.Gui.ColouredListItem:new("Object center", 1)
+		cameraPosCombobox:addItem(item)
 		cameraPosCombobox:setItemSelectState(0, true)
 		cameraPosCombobox:subscribeEvent("ListSelectionChanged", function(args) 
 			local item = cameraPosCombobox:getSelectedItem()
