@@ -261,7 +261,7 @@ private:
 class TerrainEditorOverlay: public IInputAdapter, public virtual sigc::trackable
 {
 public:
-	typedef std::map<int, std::map<int, Mercator::BasePoint> > BasePointStore;
+	typedef std::map<int, std::map<int, Mercator::BasePoint>> BasePointStore;
 	TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, BasePointStore& basePoints);
 	virtual ~TerrainEditorOverlay();
 
@@ -378,7 +378,7 @@ private:
 	 */
 	EntityStore mEntities;
 
-	void createOverlay(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints, Ogre::SceneNode& worldSceneNode);
+	void createOverlay(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints, Ogre::SceneNode& worldSceneNode);
 
 	/**
 	 * When moving an entity with the mouse, no other parts of Ember should get input.

@@ -3,7 +3,7 @@
 This source file is part of Hydrax.
 Visit ---
 
-Copyright (C) 2008 Xavier Verguín González <xavierverguin@hotmail.com>
+Copyright (C) 2008 Xavier Verguï¿½n Gonzï¿½lez <xavierverguin@hotmail.com>
                                            <xavyiy@gmail.com>
 
 This program is free software; you can redistribute it and/or modify it under
@@ -128,7 +128,7 @@ namespace Hydrax
 		}
 
 	private:
-		typedef std::vector<Ogre::TexturePtr, Ogre::STLAllocator<Ogre::TexturePtr, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GENERAL> > > TextureStore;
+		typedef std::vector<Ogre::TexturePtr, Ogre::STLAllocator<Ogre::TexturePtr, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GENERAL>> > TextureStore;
 
 		/// Hydrax main pointer
 		Hydrax *mHydrax;

@@ -11,16 +11,16 @@ void ConvertTestCase::testWFMathToOgre()
 {
 	Point<2> wfMathPoint2(10, 20);
 	CPPUNIT_ASSERT(wfMathPoint2 == Convert::toWF(Convert::toOgre<Ogre::Vector2>(wfMathPoint2)));
-	CPPUNIT_ASSERT(wfMathPoint2 == Convert::toWF<Point<2> >(Convert::toOgre<Ogre::Vector3>(wfMathPoint2)));
+	CPPUNIT_ASSERT(wfMathPoint2 == Convert::toWF<Point<2>>(Convert::toOgre<Ogre::Vector3>(wfMathPoint2)));
 
 	Point<3> wfMathPoint3(10, 20, 30);
-	CPPUNIT_ASSERT(wfMathPoint3 == Convert::toWF<Point<3> >(Convert::toOgre(wfMathPoint3)));
+	CPPUNIT_ASSERT(wfMathPoint3 == Convert::toWF<Point<3>>(Convert::toOgre(wfMathPoint3)));
 
 	Vector<2> wfMathVector2(10, 20);
 	CPPUNIT_ASSERT(Point<2>(wfMathVector2) == Convert::toWF(Convert::toOgre(wfMathVector2)));
 
 	Vector<3> wfMathVector3(10, 20, 30);
-	CPPUNIT_ASSERT(wfMathVector3 == Convert::toWF<Vector<3> >(Convert::toOgre(wfMathVector3)));
+	CPPUNIT_ASSERT(wfMathVector3 == Convert::toWF<Vector<3>>(Convert::toOgre(wfMathVector3)));
 
 	Quaternion wfQuaternion(1, 2.4f);
 	CPPUNIT_ASSERT(wfQuaternion == Convert::toWF(Convert::toOgre(wfQuaternion)));

@@ -84,9 +84,9 @@ const char* resolveLuaTypename<const Eris::View>(){return "Eris::View";}
 template <>
 const char* resolveLuaTypename<const Ember::OgreView::World>(){return "Ember::OgreView::World";}
 template <>
-const char* resolveLuaTypename<const std::vector<Ember::OgreView::EntityPickResult> >(){return "std::vector<Ember::OgreView::EntityPickResult>";}
+const char* resolveLuaTypename<const std::vector<Ember::OgreView::EntityPickResult>>(){return "std::vector<Ember::OgreView::EntityPickResult>";}
 template <>
-const char* resolveLuaTypename<const std::set<std::string> >(){return "std::set<std::string>";}
+const char* resolveLuaTypename<const std::set<std::string>>(){return "std::set<std::string>";}
 template <>
 const char* resolveLuaTypename<const Atlas::Message::Element>(){return "Atlas::Message::Element";}
 template <>

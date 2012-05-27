@@ -143,7 +143,7 @@ protected:
 	 * @brief Store for simple visualizations of entities.
 	 * The sigc::connection is used for the Eris::Entity::BeingDeleted listening, which we want to remove when we're deleting the visualization.
 	 */
-	typedef std::unordered_map<const EmberEntity*, std::pair<SimpleEntityVisualization*, sigc::connection> > SimpleEntityVisualizationStore;
+	typedef std::unordered_map<const EmberEntity*, std::pair<SimpleEntityVisualization*, sigc::connection>> SimpleEntityVisualizationStore;
 
 	/**
 	 * @brief The world to which this manager belongs.

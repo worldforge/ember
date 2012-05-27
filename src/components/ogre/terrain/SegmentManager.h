@@ -61,7 +61,7 @@ class SegmentManager
 {
 public:
 
-	typedef std::map<int, std::pair<int, int> > IndexColumn;
+	typedef std::map<int, std::pair<int, int>> IndexColumn;
 	typedef std::map<int, IndexColumn> IndexMap;
 
 	/**

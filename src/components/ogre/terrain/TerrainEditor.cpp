@@ -51,7 +51,7 @@ TerrainEditor::~TerrainEditor()
 void TerrainEditor::showOverlay()
 {
 	if (!mOverlay) {
-		sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >&> slot = sigc::mem_fun(*this, &TerrainEditor::basepointsRecieved);
+		sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>&> slot = sigc::mem_fun(*this, &TerrainEditor::basepointsRecieved);
 		mManager.getBasePoints(slot);
 	} else {
 		mOverlay->setVisible(true);
@@ -90,7 +90,7 @@ void TerrainEditor::setFalloff(float falloff)
 	mFalloff = falloff;
 }
 
-void TerrainEditor::basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints)
+void TerrainEditor::basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints)
 {
 	if (mOverlay) {
 		delete mOverlay;

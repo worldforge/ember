@@ -39,7 +39,7 @@ class HeightMap;
 class GeometryUpdateTask : public Tasks::TemplateNamedTask<GeometryUpdateTask>
 {
 public:
-	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2> >& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
+	GeometryUpdateTask(const BridgeBoundGeometryPtrVector& geometry, const std::vector<WFMath::AxisBox<2>>& areas, TerrainHandler& handler, const ShaderStore& shaders, HeightMapBufferProvider& heightMapBufferProvider, HeightMap& heightMap);
 	virtual ~GeometryUpdateTask();
 
 	virtual void executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context);
@@ -49,7 +49,7 @@ public:
 private:
 
 	BridgeBoundGeometryPtrVector mGeometry;
-	const std::vector<WFMath::AxisBox<2> > mAreas;
+	const std::vector<WFMath::AxisBox<2>> mAreas;
 	TerrainHandler& mHandler;
 	ShaderStore mShaders;
 	HeightMapBufferProvider& mHeightMapBufferProvider;

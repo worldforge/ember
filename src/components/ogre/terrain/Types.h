@@ -65,7 +65,7 @@ namespace OgreView {
 		/**
 		 * @brief A type used for storing changes to areas. We use instances instead of pointers or references since this type will be used in delayed updating, where the originating instance might not any longer be around.
 		 */
-		typedef std::vector<WFMath::AxisBox<2> > AreaStore;
+		typedef std::vector<WFMath::AxisBox<2>> AreaStore;
 
 		/**
 		 * @brief A type used for storing the terrain definition points.
@@ -114,7 +114,7 @@ namespace OgreView {
 
 		typedef std::shared_ptr<ITerrainPageBridge> ITerrainPageBridgePtr;
 
-		typedef std::vector<std::pair<TerrainPageGeometryPtr, ITerrainPageBridgePtr> > BridgeBoundGeometryPtrVector;
+		typedef std::vector<std::pair<TerrainPageGeometryPtr, ITerrainPageBridgePtr>> BridgeBoundGeometryPtrVector;
 
 		typedef std::map<int, const TerrainPageSurfaceLayer*> SurfaceLayerStore;
 

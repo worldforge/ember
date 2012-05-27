@@ -83,7 +83,7 @@ namespace Ogre
 	
         public:
 	
-           //typedef std::queue<T *, std::list<T *> > MsgQueType;
+           //typedef std::queue<T *, std::list<T *>> MsgQueType;
 			typedef std::list<T *>  MsgQueType;
 
             //-----------------------------------------------------------------------

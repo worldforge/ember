@@ -195,7 +195,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 
 const WFMath::Point<3> ModelPreviewWorker::getPosition() const
 {
-	return Convert::toWF<WFMath::Point<3> >(mEntityNode->getPosition());
+	return Convert::toWF<WFMath::Point<3>>(mEntityNode->getPosition());
 }
 
 const WFMath::Quaternion ModelPreviewWorker::getOrientation() const

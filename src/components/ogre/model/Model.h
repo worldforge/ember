@@ -85,7 +85,7 @@ public:
 	typedef std::unordered_map<std::string, StringSet> SubModelPartMapping;
 	typedef std::unordered_map<std::string, ModelPart> ModelPartStore;
 
-	typedef std::unordered_map<std::string, std::vector<std::string> > PartGroupStore;
+	typedef std::unordered_map<std::string, std::vector<std::string>> PartGroupStore;
 
 	struct AttachPointWrapper
 	{

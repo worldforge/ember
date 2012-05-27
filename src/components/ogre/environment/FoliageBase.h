@@ -134,7 +134,7 @@ protected:
 	void initializeDependentLayers();
 	void TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const Terrain::AreaStore& areas);
 	void TerrainHandler_EventShaderCreated(const Terrain::TerrainShader& shader);
-	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages);
+	void TerrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages);
 
 };
 

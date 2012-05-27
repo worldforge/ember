@@ -51,7 +51,7 @@ public:
     /**
      * @brief STL map to store sparse array of Segment pointers.
      */
-    typedef std::map<int, std::shared_ptr<IHeightMapSegment> > Segmentcolumn;
+    typedef std::map<int, std::shared_ptr<IHeightMapSegment>> Segmentcolumn;
 
     /**
      * @brief STL map to store sparse array of Segment pointer columns.

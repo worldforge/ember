@@ -92,7 +92,7 @@ const WFMath::Quaternion& EntityMoverBase::getOrientation() const
 
 const WFMath::Point<3>& EntityMoverBase::getPosition() const
 {
-	mPosition = Convert::toWF<WFMath::Point<3> >(mNode->_getDerivedPosition());
+	mPosition = Convert::toWF<WFMath::Point<3>>(mNode->_getDerivedPosition());
 	return mPosition;
 }
 
@@ -159,7 +159,7 @@ void EntityMoverBase::setSnapToEnabled(bool snapTo)
 	if (snapTo) {
 		if (!mSnapping.get()) {
 			mSnapping.reset(new Authoring::SnapToMovement(mEntity, *mNode, 2.0f, mSceneManager, true));
-			setPosition(Convert::toWF<WFMath::Point<3> >(mNode->getPosition()));
+			setPosition(Convert::toWF<WFMath::Point<3>>(mNode->getPosition()));
 		}
 	} else {
 		mSnapping.reset();

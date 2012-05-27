@@ -75,7 +75,7 @@ protected:
 	/**
 	 * @brief A list of updates areas. Any geometry in these areas will need to be recalculated.
 	 */
-	std::vector<WFMath::AxisBox<2> > mUpdatedAreas;
+	std::vector<WFMath::AxisBox<2>> mUpdatedAreas;
 
 };
 

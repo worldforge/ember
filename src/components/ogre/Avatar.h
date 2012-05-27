@@ -195,7 +195,7 @@ public:
 
 protected:
 
-	typedef std::list<std::pair<long long, AvatarMovementState> > TimedMovementStateList;
+	typedef std::list<std::pair<long long, AvatarMovementState>> TimedMovementStateList;
 
 	/**
 	 * @brief In milliseconds, the minimum time we must wait between sending updates to the server. Set this higher to avoid spamming the server.

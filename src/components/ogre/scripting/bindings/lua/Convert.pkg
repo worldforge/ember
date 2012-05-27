@@ -48,9 +48,9 @@ static Ogre::Vector2 toOgre(const WFMath::Vector<2>& p);
  * @param p A 3d Ogre vector.
  * @return A 3d Worldforge point.
  */
-static WFMath::Point<3> toWF<WFMath::Point<3> > @ toWF_Point3(const Ogre::Vector3& p);
-static WFMath::Point<2> toWF<WFMath::Point<2> > @ toWF_Point2(const Ogre::Vector3& p);
-static WFMath::Vector<3> toWF<WFMath::Vector<3> > @ toWF_Vector3(const Ogre::Vector3& p);
+static WFMath::Point<3> toWF<WFMath::Point<3>> @ toWF_Point3(const Ogre::Vector3& p);
+static WFMath::Point<2> toWF<WFMath::Point<2>> @ toWF_Point2(const Ogre::Vector3& p);
+static WFMath::Vector<3> toWF<WFMath::Vector<3>> @ toWF_Vector3(const Ogre::Vector3& p);
 
 /**
  * @brief Converts an Ogre 2d vector into a Worldforge 2d point.

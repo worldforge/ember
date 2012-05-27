@@ -52,7 +52,7 @@ public:
 
 private:
 
-	typedef std::vector<std::pair<WFMath::Point<2>, Mercator::BasePoint > > UpdateBasePointStore;
+	typedef std::vector<std::pair<WFMath::Point<2>, Mercator::BasePoint >> UpdateBasePointStore;
 
 	Mercator::Terrain& mTerrain;
 	const TerrainDefPointStore mTerrainPoints;

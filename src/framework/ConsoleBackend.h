@@ -200,7 +200,7 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
      * set_fo => set_foo
      * set_foo => set_foo (will this really be added?)
      **/
-    std::map< std::string, std::set< std::string > > mPrefixes;
+    std::map< std::string, std::set< std::string >> mPrefixes;
 
     /**
      * @brief The command history, allowing simple browsing of the command history.

@@ -59,7 +59,7 @@ const CEGUI::String EmberEntityTooltipWidget::WidgetTypeName("Ember/EntityToolti
 
 void EntityTooltip::registerFactory()
 {
-	CEGUI::WindowFactoryManager::addFactory<CEGUI::TplWindowFactory<EmberEntityTooltipWidget> >();
+	CEGUI::WindowFactoryManager::addFactory<CEGUI::TplWindowFactory<EmberEntityTooltipWidget>>();
 }
 
 EntityTooltip::EntityTooltip(World& world, EmberEntityTooltipWidget& tooltip, Icons::IconManager& iconManager) :

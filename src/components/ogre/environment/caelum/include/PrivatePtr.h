@@ -77,7 +77,7 @@ namespace Caelum
      *
      *  @see DefaultPrivatePtrTraits
      */
-    template<class PointedT, typename TraitsT = DefaultPrivatePtrTraits<PointedT> >
+    template<class PointedT, typename TraitsT = DefaultPrivatePtrTraits<PointedT>>
     class PrivatePtr
     {
     private:
@@ -172,13 +172,13 @@ namespace Caelum
         }
     };
 
-    typedef PrivatePtr<Ogre::MovableObject, MovableObjectPrivatePtrTraits<Ogre::MovableObject> > PrivateMovableObjectPtr;
-    typedef PrivatePtr<Ogre::BillboardChain, MovableObjectPrivatePtrTraits<Ogre::BillboardChain> > PrivateBillboardChainPtr;
-    typedef PrivatePtr<Ogre::BillboardSet, MovableObjectPrivatePtrTraits<Ogre::BillboardSet> > PrivateBillboardSetPtr;
-    typedef PrivatePtr<Ogre::Entity, MovableObjectPrivatePtrTraits<Ogre::Entity> > PrivateEntityPtr;
-    typedef PrivatePtr<Ogre::Light, MovableObjectPrivatePtrTraits<Ogre::Light> > PrivateLightPtr;
-    typedef PrivatePtr<Ogre::ManualObject, MovableObjectPrivatePtrTraits<Ogre::ManualObject> > PrivateManualObjectPtr;
-    typedef PrivatePtr<Ogre::ParticleSystem, MovableObjectPrivatePtrTraits<Ogre::ParticleSystem> > PrivateParticleSystemPtr;
+    typedef PrivatePtr<Ogre::MovableObject, MovableObjectPrivatePtrTraits<Ogre::MovableObject>> PrivateMovableObjectPtr;
+    typedef PrivatePtr<Ogre::BillboardChain, MovableObjectPrivatePtrTraits<Ogre::BillboardChain>> PrivateBillboardChainPtr;
+    typedef PrivatePtr<Ogre::BillboardSet, MovableObjectPrivatePtrTraits<Ogre::BillboardSet>> PrivateBillboardSetPtr;
+    typedef PrivatePtr<Ogre::Entity, MovableObjectPrivatePtrTraits<Ogre::Entity>> PrivateEntityPtr;
+    typedef PrivatePtr<Ogre::Light, MovableObjectPrivatePtrTraits<Ogre::Light>> PrivateLightPtr;
+    typedef PrivatePtr<Ogre::ManualObject, MovableObjectPrivatePtrTraits<Ogre::ManualObject>> PrivateManualObjectPtr;
+    typedef PrivatePtr<Ogre::ParticleSystem, MovableObjectPrivatePtrTraits<Ogre::ParticleSystem>> PrivateParticleSystemPtr;
 
     /** PrivatePtr traits for a scene node.
      *  Scene nodes are created and destroyed through the scene manager.

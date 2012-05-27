@@ -139,7 +139,7 @@ protected:
 	/**
 	* Convenience map of commonly used normals, such as NORTH, UP, WEST etc.
 	*/
-	std::map<const std::string, WFMath::Vector<3> > mNormalTypes;
+	std::map<const std::string, WFMath::Vector<3>> mNormalTypes;
 
 	/**
 	Map of colours for Attach point types.

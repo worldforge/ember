@@ -63,7 +63,7 @@ const WFMath::Quaternion& PolygonPointMover::getOrientation() const
 
 const WFMath::Point<3>& PolygonPointMover::getPosition() const
 {
-	mPosition = Convert::toWF<WFMath::Point<3> >(getActivePoint()->getNode()->_getDerivedPosition());
+	mPosition = Convert::toWF<WFMath::Point<3>>(getActivePoint()->getNode()->_getDerivedPosition());
 	return mPosition;
 }
 void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
@@ -77,7 +77,7 @@ void PolygonPointMover::setPosition(const WFMath::Point<3>& position)
 		Ogre::Vector3 newPos = Convert::toOgre(position) - posOffset;
 		newPos = getActivePoint()->getNode()->getParent()->_getDerivedOrientation().Inverse() * newPos;
 
-		WFMath::Vector<3> translation = Convert::toWF<WFMath::Vector<3> >(newPos - getActivePoint()->getNode()->getPosition());
+		WFMath::Vector<3> translation = Convert::toWF<WFMath::Vector<3>>(newPos - getActivePoint()->getNode()->getPosition());
 		//adjust it so that it moves according to the ground for example
 		getActivePoint()->translate(WFMath::Vector<2>(translation.x(), translation.y()));
 	}
