@@ -26,7 +26,7 @@
 #include "../../../terrain/ISceneManagerAdapter.h"
 #include "OgrePagingLandScapeCallBackEvent.h"
 
-#include <map>
+#include <unordered_map>
 
 namespace Ogre
 {
@@ -96,7 +96,7 @@ public:
 
 private:
 
-	typedef std::map<EmberPagingTerrainObserver*, Ogre::PagingLandscapeDelegate*> TerrainObserverStore;
+	typedef std::unordered_map<EmberPagingTerrainObserver*, Ogre::PagingLandscapeDelegate*> TerrainObserverStore;
 
 	EmberPagingSceneManager& mSceneManager;
 

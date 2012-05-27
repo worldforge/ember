@@ -77,7 +77,7 @@ Service::Status SoundService::start()
 		} else {
 
 		#ifndef _MSC_VER
-			mEnabled = alutInit(NULL, NULL) == ALC_TRUE;
+			mEnabled = alutInit(nullptr, nullptr) == ALC_TRUE;
 		#else
 			mDevice = alcOpenDevice("DirectSound3D");
 	
@@ -87,7 +87,7 @@ Service::Status SoundService::start()
 				return Service::FAILURE;
 			}
 	
-			mContext = alcCreateContext(mDevice, NULL);
+			mContext = alcCreateContext(mDevice, nullptr);
 			if (!mContext) {
 				mEnabled = false;
 				S_LOG_FAILURE("Sound Service failed to start, sound device not found 'DirectSound3D'");
@@ -123,7 +123,7 @@ void SoundService::stop(int code)
 // 		#ifndef __WIN32__
 // 			alutExit();
 // 		#else
-// 			alcMakeContextCurrent(NULL);
+// 			alcMakeContextCurrent(nullptr);
 // 			alcDestroyContext(mContext);
 // 			alcCloseDevice(mDevice);
 // 			mDevice = 0;

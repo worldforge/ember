@@ -29,6 +29,7 @@
 
 // Included system headers
 #include <list>
+#include <unordered_map>
 #include <map>
 #include <set>
 #include <string>
@@ -167,7 +168,7 @@ class ConsoleBackend : public ConsoleObject, public Singleton<ConsoleBackend>
 		std::string Description;
 	};
 
-	typedef std::map<std::string, ConsoleObjectEntry> ConsoleObjectEntryStore;
+	typedef std::unordered_map<std::string, ConsoleObjectEntry> ConsoleObjectEntryStore;
 
     // List of ConsoleBackend's console commands
     static const char * const LIST_CONSOLE_COMMANDS;

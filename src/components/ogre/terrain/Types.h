@@ -23,6 +23,7 @@
 
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <memory>
 
@@ -103,7 +104,7 @@ namespace OgreView {
 
 		typedef std::map<const TerrainShader*, ShaderUpdateRequest> ShaderUpdateSet;
 
-		typedef std::map<std::string, TerrainPage*> PageStore;
+		typedef std::unordered_map<std::string, TerrainPage*> PageStore;
 
 		typedef std::vector<TerrainPage*> PageVector;
 
@@ -119,7 +120,7 @@ namespace OgreView {
 
 		typedef std::multimap<const std::string, Eris::TerrainModTranslator*> TerrainModMap;
 
-		typedef std::map<const std::string, Mercator::Area*> AreaMap;
+		typedef std::unordered_map<std::string, Mercator::Area*> AreaMap;
 
 		typedef std::map<const Mercator::Shader*, const TerrainShader*> ShaderStore;
 	}

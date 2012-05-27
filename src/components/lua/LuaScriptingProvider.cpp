@@ -102,7 +102,7 @@ void LuaScriptingProvider::createState()
 		{LUA_IOLIBNAME, luaopen_io},
 		{LUA_STRLIBNAME, luaopen_string},
 		{LUA_MATHLIBNAME, luaopen_math},
-		{NULL, NULL}
+		{nullptr, nullptr}
 		};
 	static const luaL_Reg lualibsDebug[] = {
 		{"", luaopen_base},
@@ -112,7 +112,7 @@ void LuaScriptingProvider::createState()
 		{LUA_STRLIBNAME, luaopen_string},
 		{LUA_MATHLIBNAME, luaopen_math},
 		{LUA_DBLIBNAME, luaopen_debug},
-		{NULL, NULL}
+		{nullptr, nullptr}
 		};
 
 	mLuaState = lua_open();

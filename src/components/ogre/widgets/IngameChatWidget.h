@@ -28,6 +28,7 @@
 #include "services/config/ConfigListenerContainer.h"
 #include <Eris/Entity.h>
 #include <OgreMovableObject.h>
+#include <unordered_map>
 
 namespace Ember {
 
@@ -335,10 +336,10 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			CEGUI::Window* mDetachedLayout;
 	};
 
-typedef std::map<std::string, Label*> LabelMap;
+typedef std::unordered_map<std::string, Label*> LabelMap;
 typedef std::vector<Label*> LabelStore;
 typedef std::stack<Label*> LabelStack;
-typedef std::map<std::string, EntityObserver*> EntityObserverStore;
+typedef std::unordered_map<std::string, EntityObserver*> EntityObserverStore;
 typedef std::vector<Eris::TypeInfo*> TypeInfoStore;
 friend class IngameChatWidget::EntityObserver;
 

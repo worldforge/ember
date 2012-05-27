@@ -21,7 +21,7 @@
 
 #include "components/ogre/IEntityVisitor.h"
 #include "components/ogre/EntityObserverBase.h"
-#include <map>
+#include <unordered_map>
 #include <sigc++/trackable.h>
 namespace Eris
 {
@@ -106,7 +106,7 @@ public:
 
 protected:
 
-	typedef std::map<EmberEntity*, AuthoringVisualization*> VisualizationStore;
+	typedef std::unordered_map<EmberEntity*, AuthoringVisualization*> VisualizationStore;
 
 	/**
 	 * @brief A store of all visualizations in the world.

@@ -311,7 +311,7 @@ bool OgreSetup::configure(void)
 #ifdef _WIN32
 	//on windows, the default renderer is directX, we will force OpenGL.
 	Ogre::RenderSystem* renderer = mRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
-	if(renderer != NULL) {
+	if(renderer != nullptr) {
 		mRoot->setRenderSystem(renderer);
 	} else {
 		S_LOG_WARNING("OpenGL RenderSystem not found. Starting with default RenderSystem.");
@@ -1028,12 +1028,12 @@ int OgreSetup::isExtensionSupported(const char *extension)
 
 	/* Extension names should not have spaces. */
 	where = (GLubyte *)strchr(extension, ' ');
-	if ((where != NULL) || *extension == '\0') {
+	if ((where != nullptr) || *extension == '\0') {
 		return 0;
 	}
 	//  if (extensions == NULL) extensions = (GLubyte*)glGetString(GL_EXTENSIONS);
 
-	if (extensions == NULL) {
+	if (extensions == nullptr) {
 		return 0;
 	}
 	/* It takes a bit of care to be fool-proof about parsing the

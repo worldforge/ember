@@ -25,6 +25,7 @@
 
 #include "pagedgeometry/include/PagedGeometry.h"
 #include <sigc++/connection.h>
+#include <unordered_map>
 
 //If set to 1 batches will be used.
 //This will speed up the process of getting trees, but will add overhead to adding or removing.
@@ -92,10 +93,10 @@ struct ModelRepresentationInstance
 class EmberEntityLoader : public ::Forests::PageLoader
 {
 public:
-	typedef std::map<std::string, ModelRepresentationInstance> EntityMap;
+	typedef std::unordered_map<std::string, ModelRepresentationInstance> EntityMap;
 	typedef std::map<int, EntityMap> EntityColumn;
 	typedef std::map<int, EntityColumn> EntityStore;
-	typedef std::map<Model::ModelRepresentation*, std::pair<int, int> > EntityLookup;
+	typedef std::unordered_map<Model::ModelRepresentation*, std::pair<int, int> > EntityLookup;
 
     /**
      * @brief Ctor.

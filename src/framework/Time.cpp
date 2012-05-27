@@ -94,7 +94,7 @@ long long Time::currentTimeMillis(void)
 	// tv_sec  is seconds
 	// ttime is set to epoc milliseconds
 	struct timeval detail_time;
-	gettimeofday(&detail_time, NULL);
+	gettimeofday(&detail_time, nullptr);
 	ttime = (detail_time.tv_usec / 1000) + (detail_time.tv_sec * (long long)1000);
 #endif
 	return ttime;

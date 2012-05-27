@@ -16,11 +16,11 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/RootOperation.h>
 #include "RawTypeInfoRepository.h"
 #include "services/server/ServerService.h"
 #include "framework/LoggingInstance.h"
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/RootOperation.h>
 
 namespace Ember
 {

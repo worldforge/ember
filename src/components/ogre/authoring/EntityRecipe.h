@@ -33,6 +33,9 @@
 #include <OgreSharedPtr.h>
 #include <OgreResource.h>
 
+#include <map>
+#include <unordered_map>
+
 namespace Eris
 {
 class TypeService;
@@ -45,7 +48,7 @@ namespace OgreView
 namespace Authoring
 {
 typedef std::map<std::string, GUIAdapter*> GUIAdaptersStore;
-typedef std::map<std::string, GUIAdapterBindings*> BindingsStore;
+typedef std::unordered_map<std::string, GUIAdapterBindings*> BindingsStore;
 
 /**
  * @brief Resource that stores entity recipes.

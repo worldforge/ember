@@ -29,6 +29,7 @@
 #include <OgreResourceManager.h>
 #include "framework/Singleton.h"
 #include <memory>
+#include <unordered_map>
 
 namespace Ember {
 namespace OgreView {
@@ -42,7 +43,7 @@ class XMLSoundDefParser;
 class SoundDefinitionManager : public Ogre::ResourceManager, public Singleton<SoundDefinitionManager>
 {
 public:
-	typedef std::map<std::string, SoundGroupDefinition*> SoundGroupDefinitionStore;
+	typedef std::unordered_map<std::string, SoundGroupDefinition*> SoundGroupDefinitionStore;
 
 	SoundDefinitionManager();
 
@@ -53,7 +54,7 @@ public:
 	/**
 	* Register a new SoundDefinition used to define soundgroups
 	*
-	* @return A pointer to the new created SoundDefinition, if it fails, returns NULL
+	* @return A pointer to the new created SoundDefinition, if it fails, returns nullptr
 	* TODO: move this to components/ogre since it belongs there and not here
 	*/
 	SoundGroupDefinition* createSoundGroupDefinition(const std::string& name);
@@ -62,7 +63,7 @@ public:
 	* Returns the SoundDefinition from its name
 	*
 	* @param name The desired SoundDefinition name
-	* @return A pointer to the SoundDefinition or NULL if it can't be found
+	* @return A pointer to the SoundDefinition or nullptr if it can't be found
 	* TODO: move this to components/ogre since it belongs there and not here
 	*/
 	SoundGroupDefinition* getSoundGroupDefinition(const std::string& name);

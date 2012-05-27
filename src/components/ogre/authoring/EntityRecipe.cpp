@@ -116,7 +116,7 @@ GUIAdapter* EntityRecipe::getGUIAdapter(const std::string& name)
 	if ((adapter = mGUIAdapters.find(name)) != mGUIAdapters.end()) {
 		return adapter->second;
 	} else {
-		return NULL;
+		return nullptr;
 	}
 }
 

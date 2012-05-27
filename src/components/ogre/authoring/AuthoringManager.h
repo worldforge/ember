@@ -22,12 +22,9 @@
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include "services/config/ConfigListenerContainer.h"
-#include <map>
+#include <sigc++/connection.h>
+#include <unordered_map>
 
-namespace sigc
-{
-class connection;
-}
 
 namespace varconf
 {
@@ -146,7 +143,7 @@ protected:
 	 * @brief Store for simple visualizations of entities.
 	 * The sigc::connection is used for the Eris::Entity::BeingDeleted listening, which we want to remove when we're deleting the visualization.
 	 */
-	typedef std::map<const EmberEntity*, std::pair<SimpleEntityVisualization*, sigc::connection> > SimpleEntityVisualizationStore;
+	typedef std::unordered_map<const EmberEntity*, std::pair<SimpleEntityVisualization*, sigc::connection> > SimpleEntityVisualizationStore;
 
 	/**
 	 * @brief The world to which this manager belongs.
