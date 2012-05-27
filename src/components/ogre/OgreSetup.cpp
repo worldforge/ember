@@ -314,8 +314,8 @@ Ogre::Root* OgreSetup::configure(void)
 	Ogre::RenderSystem* renderer = mRoot->getRenderSystem();
 #ifdef _WIN32
 	//on windows, the default renderer is directX, we will force OpenGL.
-	renderer = mRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
-	if (renderer != NULL) {
+	Ogre::RenderSystem* renderer = mRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
+	if(renderer != nullptr) {
 		mRoot->setRenderSystem(renderer);
 	} else {
 		S_LOG_WARNING("OpenGL RenderSystem not found. Starting with default RenderSystem.");

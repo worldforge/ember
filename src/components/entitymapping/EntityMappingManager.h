@@ -29,7 +29,7 @@
 
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #include <Eris/TypeInfo.h>
 #include <Eris/Entity.h>
@@ -59,7 +59,7 @@ class IActionCreator;
 */
 class EntityMappingManager{
 public:
-	typedef std::map<std::string, Definitions::EntityMappingDefinition*> EntityMappingDefinitionStore;
+	typedef std::unordered_map<std::string, Definitions::EntityMappingDefinition*> EntityMappingDefinitionStore;
 
 	/**
 	Default constructor.

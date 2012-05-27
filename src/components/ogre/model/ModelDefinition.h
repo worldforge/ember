@@ -32,6 +32,7 @@
 #include <OgreResource.h>
 #include <OgreSharedPtr.h>
 #include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace Ember
@@ -57,7 +58,7 @@ struct ViewDefinition;
 struct BoneGroupDefinition;
 struct PoseDefinition;
 
-typedef std::map<std::string, Model*> ModelInstanceStore;
+typedef std::unordered_map<std::string, Model*> ModelInstanceStore;
 
 typedef std::vector<SubModelDefinition*> SubModelDefinitionsStore;
 typedef std::vector<PartDefinition*> PartDefinitionsStore;

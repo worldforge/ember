@@ -20,11 +20,11 @@
 #define MODELATTACHMENT_H_
 
 #include "components/ogre/NodeAttachment.h"
+#include <sigc++/trackable.h>
+#include <unordered_map>
 #include <map>
 #include <vector>
 #include <string>
-#include <sigc++/trackable.h>
-
 namespace Atlas
 {
 namespace Message
@@ -61,7 +61,7 @@ class ModelFitting;
 class ModelAttachment: public NodeAttachment, public virtual sigc::trackable
 {
 public:
-	typedef std::map<std::string, ModelFitting*> ModelFittingStore;
+	typedef std::unordered_map<std::string, ModelFitting*> ModelFittingStore;
 	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose = "");
 
 	virtual ~ModelAttachment();

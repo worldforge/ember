@@ -23,7 +23,7 @@
 #include "framework/Singleton.h"
 
 #include <OgreFrameListener.h>
-
+#include <unordered_map>
 
 namespace Ember {
 namespace OgreView {
@@ -109,7 +109,7 @@ private:
 	/**
 	 * @brief A store of animatables, identified by a string.
 	 */
-	typedef std::map<std::string , IAnimated*> AnimatedStore;
+	typedef std::unordered_map<std::string , IAnimated*> AnimatedStore;
 
 	/**
 	 * @brief A store of movables.

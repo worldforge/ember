@@ -19,9 +19,11 @@
 #ifndef RAWTYPEINFOREPOSITORY_H_
 #define RAWTYPEINFOREPOSITORY_H_
 
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <sigc++/trackable.h>
-#include <map>
+#include <unordered_map>
 #include <string>
 
 namespace Ember
@@ -47,7 +49,7 @@ public:
 	Atlas::Objects::Root getRawTypeData(const std::string& typeName) const;
 
 private:
-	typedef std::map<std::string, Atlas::Objects::Root> RawTypeDataStore;
+	typedef std::unordered_map<std::string, Atlas::Objects::Root> RawTypeDataStore;
 
 	RawTypeDataStore mRawTypeData;
 

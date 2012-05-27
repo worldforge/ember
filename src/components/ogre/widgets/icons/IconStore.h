@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUI_ICONSICONSTORE_H
 #define EMBEROGRE_GUI_ICONSICONSTORE_H
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <OgreTexture.h>
 
@@ -43,9 +43,9 @@ class IconImageStoreEntry;
 */
 class IconStore{
 public:
-	typedef std::map<std::string, Icon*> IconMap;
+	typedef std::unordered_map<std::string, Icon*> IconMap;
 	typedef std::vector<IconImageStore*> IconImageStoreStore;
-	typedef std::map<std::string, IconImageStore*> IconImageStoreMap;
+	typedef std::unordered_map<std::string, IconImageStore*> IconImageStoreMap;
     IconStore();
 
     ~IconStore();

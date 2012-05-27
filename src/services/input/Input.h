@@ -37,7 +37,7 @@
 
 #include <set>
 #include <list>
-#include <map>
+#include <unordered_map>
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -409,7 +409,7 @@ public:
 
 private:
 
-	typedef std::map<std::string, InputCommandMapper*> InputCommandMapperStore;
+	typedef std::unordered_map<std::string, InputCommandMapper*> InputCommandMapperStore;
 
 	/**
 	 * @brief Polls all input for the mouse.

@@ -173,8 +173,8 @@ void ImpostorPage::update()
 
 void ImpostorPage::regenerate(Entity *ent)
 {
-	ImpostorTexture *tex = ImpostorTexture::getTexture(NULL, ent);
-	if (tex != NULL)
+	ImpostorTexture *tex = ImpostorTexture::getTexture(nullptr, ent);
+	if (tex)
 		tex->regenerate();
 }
 

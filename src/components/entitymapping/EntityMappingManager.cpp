@@ -76,7 +76,7 @@ EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeIn
 {
 	bool noneThere = false;
 	while (!noneThere) {
-		std::map<std::string, EntityMappingDefinition*>::iterator I = mEntityTypeMappings.find(typeInfo->getName());
+		auto I = mEntityTypeMappings.find(typeInfo->getName());
 		if (I != mEntityTypeMappings.end()) {
 			return I->second;
 		} else {

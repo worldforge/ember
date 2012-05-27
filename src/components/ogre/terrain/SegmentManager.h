@@ -117,7 +117,7 @@ public:
 
 protected:
 
-	typedef std::map<std::string, SegmentHolder* > SegmentStore;
+	typedef std::unordered_map<std::string, SegmentHolder* > SegmentStore;
 	typedef std::list<SegmentHolder*> SegmentList;
 
 	/**

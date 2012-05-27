@@ -28,7 +28,7 @@
 #include <wfmath/point.h>
 
 #include <list>
-#include <map>
+#include <unordered_map>
 #ifdef _MSC_VER
 #include <alc.h>
 #endif
@@ -53,7 +53,7 @@ class SoundService: public Service, public ConsoleObject
  * @note This is a list because we want to allow removal or insertion in the list while we're iterating over it (which isn't allowed with a vector).
  */
 typedef std::list<SoundInstance*> SoundInstanceStore;
-typedef std::map<std::string, BaseSoundSample*> SoundSampleStore;
+typedef std::unordered_map<std::string, BaseSoundSample*> SoundSampleStore;
 
 public:
 	/**

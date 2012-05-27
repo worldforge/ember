@@ -21,7 +21,7 @@
 
 #include "Types.h"
 #include <memory>
-#include <map>
+#include <unordered_map>
 
 namespace WFMath
 {
@@ -56,7 +56,7 @@ public:
     /**
      * @brief STL map to store sparse array of Segment pointer columns.
      */
-    typedef std::map<int, Segmentcolumn > Segmentstore;
+    typedef std::unordered_map<int, Segmentcolumn > Segmentstore;
 
     /**
      * @Ctor.

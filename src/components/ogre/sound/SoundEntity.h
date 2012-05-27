@@ -22,7 +22,7 @@
 
 #include <wfmath/vector.h>
 #include <wfmath/point.h>
-#include <map>
+#include <unordered_map>
 #include <Atlas/Objects/Operation.h>
 
 namespace Ember
@@ -88,7 +88,7 @@ public:
 
 protected:
 
-	typedef std::map<std::string, SoundAction*> ActionStore;
+	typedef std::unordered_map<std::string, SoundAction*> ActionStore;
 
 	/**
 	 * @brief The ingame entity to which this sound entity is attached.

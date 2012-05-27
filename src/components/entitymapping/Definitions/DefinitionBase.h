@@ -29,7 +29,7 @@
 
 
 #include <string>
-#include <map>
+#include <unordered_map>
 
 
 namespace Ember {
@@ -48,7 +48,7 @@ namespace Definitions {
 class DefinitionBase
 {
 public:
-	typedef std::map<std::string, std::string> PropertiesMap;
+	typedef std::unordered_map<std::string, std::string> PropertiesMap;
 	/**
 	Returns a map of arbitrary properties.
 	*/
@@ -66,7 +66,7 @@ public:
     void setType(std::string type);
 
 protected:
-	std::map<std::string, std::string> mProperties;
+    PropertiesMap mProperties;
 	std::string mType;
 };
 

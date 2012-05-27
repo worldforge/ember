@@ -31,6 +31,7 @@
 #include "services/input/IInputAdapter.h"
 #include "services/input/Input.h"
 
+#include <map>
 
 namespace CEGUI {
 class System;
@@ -41,7 +42,7 @@ class OgreRenderer;
 namespace Ember {
 namespace OgreView {
 
-TYPEDEF_STL_MAP(SDLKey, CEGUI::Key::Scan, SDLKeyMap);
+typedef std::map<SDLKey, CEGUI::Key::Scan> SDLKeyMap;
 
 /**
  * @author Erik Hjortsberg

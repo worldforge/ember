@@ -23,9 +23,12 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "ModelDefinition.h"
 #include "ParticleSystem.h"
+#include "Action.h"
+#include "ModelPart.h"
 #include <OgreEntity.h>
 #include <sigc++/signal.h>
 #include <memory>
+#include <unordered_map>
 
 namespace Ember
 {
@@ -75,14 +78,14 @@ class Model: public Ogre::MovableObject
 
 public:
 
-	typedef std::map<std::string, Action> ActionStore;
+	typedef std::unordered_map<std::string, Action> ActionStore;
 
 	typedef std::set<SubModel*> SubModelSet;
 	typedef std::set<std::string> StringSet;
-	typedef std::map<std::string, StringSet> SubModelPartMapping;
-	typedef std::map<std::string, ModelPart> ModelPartStore;
+	typedef std::unordered_map<std::string, StringSet> SubModelPartMapping;
+	typedef std::unordered_map<std::string, ModelPart> ModelPartStore;
 
-	typedef std::map<std::string, std::vector<std::string> > PartGroupStore;
+	typedef std::unordered_map<std::string, std::vector<std::string> > PartGroupStore;
 
 	struct AttachPointWrapper
 	{

@@ -34,7 +34,6 @@
 #include <Eris/Entity.h>
 #include <Eris/Connection.h>
 #include <sigc++/bind.h>
-#include <sigc++/connection.h>
 
 namespace Ember
 {

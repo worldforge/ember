@@ -67,13 +67,13 @@ Ogre::Resource* SoundDefinitionManager::createImpl(const Ogre::String& name, Ogr
 
 SoundGroupDefinition* SoundDefinitionManager::getSoundGroupDefinition(const std::string& name)
 {
-	std::map<std::string, SoundGroupDefinition*>::iterator it(mSoundGroupDefinitions.find(name));
+	auto it(mSoundGroupDefinitions.find(name));
 	if (it != mSoundGroupDefinitions.end())
 	{
 		return it->second;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 SoundGroupDefinition* SoundDefinitionManager::createSoundGroupDefinition(const std::string& name)
@@ -99,13 +99,13 @@ SoundGroupDefinition* SoundDefinitionManager::createSoundGroupDefinition(const s
 		else
 		{
 			S_LOG_FAILURE("Failed to allocate sound group model " << name);
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
 	{
 		S_LOG_INFO("Sound Group definition " << name << " already exists.");
-		return NULL;
+		return nullptr;
 	}
 }
 

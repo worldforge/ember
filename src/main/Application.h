@@ -25,6 +25,7 @@
 #include <string>
 #include <fstream>
 #include <map>
+#include <unordered_map>
 #include <memory>
 
 /**
@@ -111,7 +112,7 @@ class LogObserver;
 class Application: public ConsoleObject, public Singleton<Application>, public virtual sigc::trackable
 {
 public:
-	typedef std::map<std::string, std::map<std::string, std::string> > ConfigMap;
+	typedef std::unordered_map<std::string, std::map<std::string, std::string> > ConfigMap;
 
 	/**
 	 * @brief Ctor.
