@@ -199,7 +199,7 @@ public:
 	 * The call to the callback will happen in the main thread.
 	 * @param asyncCallback The callback which will be called when all base points have been fetched.
 	 */
-	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >& >& asyncCallback);
+	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback);
 
 	/**
 	 * @brief Emitted when a terrain page has had its geometry updated.
@@ -253,7 +253,7 @@ protected:
 
 	void config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
 
-	void terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<TerrainPage*>& pages);
+	void terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages);
 
 	void terrainHandler_ShaderCreated(const TerrainShader& shader);
 

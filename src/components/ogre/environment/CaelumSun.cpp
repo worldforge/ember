@@ -84,7 +84,7 @@ Ogre::Vector3 CaelumSun::getSunDirection() const
 
 WFMath::Vector<3> CaelumSun::getMainLightDirection() const
 {
-	return Convert::toWF<WFMath::Vector<3> >(getSunDirection());
+	return Convert::toWF<WFMath::Vector<3>>(getSunDirection());
 }
 
 Ogre::ColourValue CaelumSun::getAmbientLightColour() const

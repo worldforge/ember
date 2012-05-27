@@ -240,7 +240,7 @@ public:
 	 * Calling this method will update both the internal Mercator heightfield data as well as the Ogre graphical representation, and will trigger updates of any dependent featues (such as the foliage).
 	 * @param positions A vector of terrain areas, in world space. The terrain found at these areas will be reloaded.
 	 */
-	void reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas);
+	void reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas);
 
 	/**
 	 * @brief Gets all currently defined basepoints asynchronously.
@@ -248,7 +248,7 @@ public:
 	 * The call to the callback will happen in the main thread.
 	 * @param asyncCallback The callback which will be called when all base points have been fetched.
 	 */
-	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >& >& asyncCallback);
+	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback);
 
 	/**
 	 * @brief Sets the lightning instance to use.
@@ -330,7 +330,7 @@ public:
 	 * The first parameter is the areas which are affected by the change.
 	 * The second parameter is the pages that will be updated.
 	 */
-	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
+	sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::set<TerrainPage*>&> EventBeforeTerrainUpdate;
 
 	/**
 	 * @brief Emitted after the terrain geometry has changed.
@@ -339,7 +339,7 @@ public:
 	 * The first parameter is the areas which are affected by the change.
 	 * The second parameter is the pages that were updated.
 	 */
-	sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&> EventAfterTerrainUpdate;
+	sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::set<TerrainPage*>&> EventAfterTerrainUpdate;
 
 	/**
 	 * @brief Emitted when the size of the world has changed.
@@ -348,7 +348,7 @@ public:
 
 protected:
 
-	typedef std::map<Domain::TerrainIndex, std::shared_ptr<ITerrainPageBridge> > PageBridgeStore;
+	typedef std::map<Domain::TerrainIndex, std::shared_ptr<ITerrainPageBridge>> PageBridgeStore;
 
 	/**
 	 * @brief The size in indices of one side of a page.

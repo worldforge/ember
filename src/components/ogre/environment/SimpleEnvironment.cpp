@@ -61,7 +61,7 @@ Ogre::Vector3 SimpleSun::getSunDirection() const
 
 WFMath::Vector<3> SimpleSun::getMainLightDirection() const
 {
-	return Convert::toWF<WFMath::Vector<3> >(getSunDirection());
+	return Convert::toWF<WFMath::Vector<3>>(getSunDirection());
 }
 
 Ogre::ColourValue SimpleSun::getAmbientLightColour() const

@@ -226,13 +226,13 @@ class AfterTerrainUpdateListener: public CompleteEventListener
 {
 protected:
 
-	void eventListener(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<TerrainPage*>& pages)
+	void eventListener(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages)
 	{
 		handleEvent();
 	}
 
 public:
-	AfterTerrainUpdateListener(sigc::signal<void, const std::vector<WFMath::AxisBox<2> >&, const std::set<TerrainPage*>&>& event)
+	AfterTerrainUpdateListener(sigc::signal<void, const std::vector<WFMath::AxisBox<2>>&, const std::set<TerrainPage*>&>& event)
 	{
 		event.connect(sigc::mem_fun(*this, &AfterTerrainUpdateListener::eventListener));
 	}

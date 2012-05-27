@@ -159,7 +159,7 @@ void EntityCreatorCreationInstance::createEntity()
 void EntityCreatorCreationInstance::finalizeCreation()
 {
 	// Final position
-	mEntityMessage["pos"] = Convert::toWF<WFMath::Point<3> >(mEntityNode->getPosition()).toAtlas();
+	mEntityMessage["pos"] = Convert::toWF<WFMath::Point<3>>(mEntityNode->getPosition()).toAtlas();
 	mEntityMessage["orientation"] = Convert::toWF(mEntityNode->getOrientation()).toAtlas();
 
 	// Making create operation message

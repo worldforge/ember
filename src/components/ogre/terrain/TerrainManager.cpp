@@ -132,7 +132,7 @@ ISceneManagerAdapter* TerrainManager::getAdapter() const
 	return mSceneManagerAdapter;
 }
 
-void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint> >& >& asyncCallback)
+void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback)
 {
 	mHandler->getBasePoints(asyncCallback);
 }
@@ -169,7 +169,7 @@ void TerrainManager::config_Foliage(const std::string& section, const std::strin
 	updateFoliageVisibility();
 }
 
-void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<TerrainPage*>& pages)
+void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages)
 {
 
 	for (std::set<TerrainPage*>::const_iterator I = pages.begin(); I != pages.end(); ++I) {

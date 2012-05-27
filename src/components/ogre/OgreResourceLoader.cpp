@@ -228,8 +228,8 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		}
 
 		//We want to make sure that "user" media always is loaded before "shared" media. Unfortunately the Ogre settings iterator doesn't return the settings in the order they are defined in resource.cfg so we can't rely on the order that the settings are defined, and instead need to first add the settings to two different vectors, and then iterate through the user vector first.
-		std::vector<std::pair<std::string, std::string> > userPlaces;
-		std::vector<std::pair<std::string, std::string> > sharedPlaces;
+		std::vector<std::pair<std::string, std::string>> userPlaces;
+		std::vector<std::pair<std::string, std::string>> sharedPlaces;
 
 		Ogre::ConfigFile::SettingsIterator I = mConfigFile.getSettingsIterator(sectionName);
 		std::string finalTypename;
@@ -252,10 +252,10 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		//Note that the Ogre resource system isn't totally consistent. For scripts, newer definitions will override older ones.
 		//However, for mesh and texture resources the opposite it true.
 		//Since we're more often are dealing with scripts when altering model definitions etc. we'll opt for allowing scripts to be overridden.
-		for (std::vector<std::pair<std::string, std::string> >::iterator I = userPlaces.begin(); I != userPlaces.end(); ++I) {
+		for (std::vector<std::pair<std::string, std::string>>::iterator I = userPlaces.begin(); I != userPlaces.end(); ++I) {
 			mediaAdded |= addUserMedia(I->second, I->first, sectionName, mLoadRecursive);
 		}
-		for (std::vector<std::pair<std::string, std::string> >::iterator I = sharedPlaces.begin(); I != sharedPlaces.end(); ++I) {
+		for (std::vector<std::pair<std::string, std::string>>::iterator I = sharedPlaces.begin(); I != sharedPlaces.end(); ++I) {
 			mediaAdded |= addSharedMedia(I->second, I->first, sectionName, mLoadRecursive);
 		}
 

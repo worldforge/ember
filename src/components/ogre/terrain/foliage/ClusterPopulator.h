@@ -28,7 +28,7 @@ template <typename> class Buffer;
 namespace Foliage
 {
 
-typedef std::vector<WFMath::Ball<2> > ClusterStore;
+typedef std::vector<WFMath::Ball<2>> ClusterStore;
 
 class ClusterPopulator : public PlantPopulator
 {

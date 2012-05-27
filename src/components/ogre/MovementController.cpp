@@ -227,7 +227,7 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 	//		mDecalNode->setVisible(true);
 	//	}
 
-	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3> >(point);
+	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3>>(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
 	EmberServices::getSingleton().getServerService().moveToPoint(atlasPos);
@@ -235,7 +235,7 @@ void MovementController::moveToPoint(const Ogre::Vector3& point)
 
 void MovementController::teleportTo(const Ogre::Vector3& point, EmberEntity* locationEntity)
 {
-	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3> >(point);
+	WFMath::Vector<3> atlasVector = Convert::toWF<WFMath::Vector<3>>(point);
 	WFMath::Point<3> atlasPos(atlasVector.x(), atlasVector.y(), atlasVector.z());
 
 	EmberServices::getSingleton().getServerService().place(&mAvatar.getEmberEntity(), locationEntity, atlasPos);

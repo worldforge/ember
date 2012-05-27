@@ -60,7 +60,7 @@ void PagingLandScapeOctreeIntersectionSceneQuery::execute(IntersectionSceneQuery
 {
 	typedef std::pair<MovableObject *, MovableObject *> MovablePair;
 	typedef std::set
-		< std::pair<MovableObject *, MovableObject *> > MovableSet;
+		< std::pair<MovableObject *, MovableObject *>> MovableSet;
 
 	MovableSet set;
 

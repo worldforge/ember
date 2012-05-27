@@ -155,7 +155,7 @@ public:
 		 */
 		LS_DONE
 	};
-	typedef std::list<Ogre::BackgroundProcessTicket, Ogre::STLAllocator<Ogre::BackgroundProcessTicket, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GENERAL> > > TicketStore;
+	typedef std::list<Ogre::BackgroundProcessTicket, Ogre::STLAllocator<Ogre::BackgroundProcessTicket, Ogre::CategorisedAlignAllocPolicy<Ogre::MEMCATEGORY_GENERAL>> > TicketStore;
 	typedef std::vector<ModelBackgroundLoaderListener*> ListenerStore;
 
 	/**

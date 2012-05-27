@@ -68,7 +68,7 @@ void BuildingBlock::removeBoundPoint(const AttachPoint* point )
 
 void BluePrint::doBindingsForBlock(BuildingBlock *block)
 {
-	std::map<BuildingBlock* , std::vector<BuildingBlockBinding*> > relatedBindings;
+	std::map<BuildingBlock* , std::vector<BuildingBlockBinding*>> relatedBindings;
 
 	std::list< BuildingBlockBinding>::iterator I = mBindings.begin();
 	std::list< BuildingBlockBinding>::iterator I_end = mBindings.end();

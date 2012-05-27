@@ -139,7 +139,7 @@ namespace Caelum
 		if (count < BrightStarCatalogueSize) {
 			// Only sort if we don't add everything.
 			// It would be lovely if the catalogue was already sorted.
-			std::vector<std::pair<Real, int> > vec;
+			std::vector<std::pair<Real, int>> vec;
 			vec.reserve(BrightStarCatalogueSize);
 			for (int i = 0; i < BrightStarCatalogueSize; ++i) {
 				vec.push_back(std::make_pair(BrightStarCatalogue[i].magn, i));

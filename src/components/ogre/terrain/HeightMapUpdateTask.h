@@ -69,7 +69,7 @@ public:
 
 private:
 
-	typedef std::vector<std::pair<WFMath::Point<2>, IHeightMapSegment*> > HeightMapSegmentStore;
+	typedef std::vector<std::pair<WFMath::Point<2>, IHeightMapSegment*>> HeightMapSegmentStore;
 
 	/**
 	 * @brief The provider which is tasked to create the HeightMapBuffer instances.

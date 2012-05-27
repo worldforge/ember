@@ -33,7 +33,7 @@ class ModelDefinition;
 class SubModel{
 friend class ModelDefinition;
 public:
-	//typedef std::map<std::string, std::set<std::string> > SubModelPartMapping;
+	//typedef std::map<std::string, std::set<std::string>> SubModelPartMapping;
 	typedef std::map<std::string, SubModelPart> SubModelPartMap;
 	
 	SubModel(Ogre::Entity& entity);

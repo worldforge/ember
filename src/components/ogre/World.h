@@ -364,7 +364,7 @@ protected:
 	 * @param areas The areas that were changed.
 	 * @param pages The pages that were changed.
 	 */
-	void terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2> >& areas, const std::set<Terrain::TerrainPage*>& pages);
+	void terrainManager_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<Terrain::TerrainPage*>& pages);
 
 	/**
 	 * @brief Sent from the view when an avatar entity has been created.
@@ -386,7 +386,7 @@ protected:
 	 * @param entity The entity to update.
 	 * @param areas The areas which have been updated.
 	 */
-	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2> >& areas);
+	void updateEntityPosition(EmberEntity* entity, const std::vector<WFMath::AxisBox<2>>& areas);
 
 	/**
 	 * @brief Listen to changes the "graphics:foliage" config element, and create or destroy the foliage accordingly.

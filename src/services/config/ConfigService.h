@@ -114,7 +114,7 @@ namespace Ember
 		protected:
 		public:
 			typedef std::map<std::string, varconf::Variable > SectionMap;
-			typedef std::unordered_map<std::string, std::map<std::string, std::string> > StringConfigMap;
+			typedef std::unordered_map<std::string, std::map<std::string, std::string>> StringConfigMap;
 
 			static const std::string SETVALUE;
 			static const std::string GETVALUE;

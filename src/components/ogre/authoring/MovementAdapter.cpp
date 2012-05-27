@@ -130,7 +130,7 @@ void MovementAdapterWorkerTerrainCursor::updatePosition(bool forceUpdate)
 {
 	const Ogre::Vector3* position(0);
 	if (getCamera().getTerrainCursor().getTerrainCursorPosition(&position) || forceUpdate) {
-		getBridge()->setPosition(Convert::toWF<WFMath::Point<3> >(*position));
+		getBridge()->setPosition(Convert::toWF<WFMath::Point<3>>(*position));
 	}
 }
 

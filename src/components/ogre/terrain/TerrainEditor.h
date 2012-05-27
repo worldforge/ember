@@ -149,7 +149,7 @@ private:
 	 *
 	 * @param basePoints A store of all base points.
 	 */
-	void basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints);
+	void basepointsRecieved(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints);
 };
 
 }

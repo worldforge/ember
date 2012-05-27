@@ -96,7 +96,7 @@ public:
 	typedef std::unordered_map<std::string, ModelRepresentationInstance> EntityMap;
 	typedef std::map<int, EntityMap> EntityColumn;
 	typedef std::map<int, EntityColumn> EntityStore;
-	typedef std::unordered_map<Model::ModelRepresentation*, std::pair<int, int> > EntityLookup;
+	typedef std::unordered_map<Model::ModelRepresentation*, std::pair<int, int>> EntityLookup;
 
     /**
      * @brief Ctor.

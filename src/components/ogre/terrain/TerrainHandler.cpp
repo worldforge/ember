@@ -402,7 +402,7 @@ bool TerrainHandler::updateTerrain(const TerrainDefPointStore& terrainPoints)
 
 void TerrainHandler::reloadTerrain(const std::vector<Domain::TerrainPosition>& positions)
 {
-	std::vector<WFMath::AxisBox<2> > areas;
+	std::vector<WFMath::AxisBox<2>> areas;
 	for (std::vector<Domain::TerrainPosition>::const_iterator I(positions.begin()); I != positions.end(); ++I) {
 		const Domain::TerrainPosition& worldPosition(*I);
 		//Make an area which will cover the area affected by the basepoint
@@ -412,10 +412,10 @@ void TerrainHandler::reloadTerrain(const std::vector<Domain::TerrainPosition>& p
 	reloadTerrain(areas);
 }
 
-void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2> >& areas)
+void TerrainHandler::reloadTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 {
 	std::set<TerrainPage*> pagesToUpdate;
-	for (std::vector<WFMath::AxisBox<2> >::const_iterator I(areas.begin()); I != areas.end(); ++I) {
+	for (std::vector<WFMath::AxisBox<2>>::const_iterator I(areas.begin()); I != areas.end(); ++I) {
 		const WFMath::AxisBox<2>& area = *I;
 		for (PageVector::const_iterator pageI = mPages.begin(); pageI != mPages.end(); ++pageI) {
 			TerrainPage* page = *pageI;

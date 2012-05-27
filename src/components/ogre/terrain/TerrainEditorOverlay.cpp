@@ -186,7 +186,7 @@ const Domain::TerrainPosition& TerrainEditBasePointMovement::getPosition() const
 	return mPosition;
 
 }
-TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint> >& basePoints) :
+TerrainEditorOverlay::TerrainEditorOverlay(TerrainEditor& editor, Ogre::SceneManager& sceneManager, Ogre::SceneNode& worldSceneNode, TerrainManager& manager, Camera::MainCamera& camera, std::map<int, std::map<int, Mercator::BasePoint>>& basePoints) :
 		mEditor(editor), mSceneManager(sceneManager), mWorldSceneNode(worldSceneNode), mManager(manager), mCamera(camera), mOverlayNode(0), mPickListener(*this), mCurrentUserObject(0)
 {
 	createOverlay(basePoints, worldSceneNode);
@@ -212,7 +212,7 @@ TerrainEditorOverlay::~TerrainEditorOverlay()
 	mCamera.removeWorldPickListener(&mPickListener);
 }
 
-void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints, Ogre::SceneNode& worldSceneNode)
+void TerrainEditorOverlay::createOverlay(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints, Ogre::SceneNode& worldSceneNode)
 {
 
 	mOverlayNode = worldSceneNode.createChildSceneNode();
@@ -409,7 +409,7 @@ void TerrainEditorOverlay::sendChangesToServer()
 	mManager.getBasePoints(slot);
 }
 
-void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::map<int, Mercator::BasePoint> >& basePoints)
+void TerrainEditorOverlay::sendChangesToServerWithBasePoints(std::map<int, std::map<int, Mercator::BasePoint>>& basePoints)
 {
 
 	try {
@@ -613,7 +613,7 @@ void TerrainEditorOverlay::commitActionWithBasePoints(BasePointStore& basePoints
 
 }
 
-bool TerrainEditorOverlay::getBasePoint(const std::map<int, std::map<int, Mercator::BasePoint> >& basePoints, int x, int y, Mercator::BasePoint& z) const
+bool TerrainEditorOverlay::getBasePoint(const std::map<int, std::map<int, Mercator::BasePoint>>& basePoints, int x, int y, Mercator::BasePoint& z) const
 {
 	Mercator::Terrain::Pointstore::const_iterator I = basePoints.find(x);
 	if (I == basePoints.end()) {

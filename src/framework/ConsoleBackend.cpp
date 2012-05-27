@@ -193,7 +193,7 @@ void ConsoleBackend::runCommand(const std::string &command, const std::string &a
 const std::set< std::string > & ConsoleBackend::getPrefixes(const std::string & prefix) const
 {
 	static std::set< std::string > empty;
-	std::map< std::string, std::set< std::string > >::const_iterator iPrefixes(mPrefixes.find(prefix));
+	std::map< std::string, std::set< std::string >>::const_iterator iPrefixes(mPrefixes.find(prefix));
 
 	if(iPrefixes != mPrefixes.end())
 	{

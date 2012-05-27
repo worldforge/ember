@@ -148,7 +148,7 @@ void ModelAttachment::getOffsetForContainedNode(const IEntityAttachment& attachm
 	//if the model has an offset specified, use that, else just send to the base class
 	const Ogre::Vector3& modelOffset(mModelRepresentation.getModel().getDefinition()->getContentOffset());
 	if (modelOffset != Ogre::Vector3::ZERO) {
-		offset = Convert::toWF<WFMath::Vector<3> >(modelOffset);
+		offset = Convert::toWF<WFMath::Vector<3>>(modelOffset);
 	} else {
 		//If the attachment is on a fitting, don't do any adjustment
 		for (ModelFittingStore::iterator I = mFittings.begin(); I != mFittings.end(); ++I) {

@@ -216,17 +216,17 @@ inline WFMath::Point<2> Convert::toWF(const Ogre::Vector2& p) {
 }
 
 template<>
-inline WFMath::Point<3> Convert::toWF<WFMath::Point<3> >(const Ogre::Vector3& p) {
+inline WFMath::Point<3> Convert::toWF<WFMath::Point<3>>(const Ogre::Vector3& p) {
 	return WFMath::Point<3>(p.x,-p.z,p.y);
 }
 
 template<>
-inline WFMath::Point<2> Convert::toWF<WFMath::Point<2> >(const Ogre::Vector3& p) {
+inline WFMath::Point<2> Convert::toWF<WFMath::Point<2>>(const Ogre::Vector3& p) {
 	return WFMath::Point<2>(p.x,-p.z);
 }
 
 template<>
-inline WFMath::Vector<3> Convert::toWF<WFMath::Vector<3> >(const Ogre::Vector3& p) {
+inline WFMath::Vector<3> Convert::toWF<WFMath::Vector<3>>(const Ogre::Vector3& p) {
 	return WFMath::Vector<3>(p.x,-p.z,p.y);
 }
 
