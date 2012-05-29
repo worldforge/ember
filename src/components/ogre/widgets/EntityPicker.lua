@@ -94,7 +94,6 @@ function EntityPicker:buildWidget(world)
 	evaluateShowInspect()
 
 	local valueChangedCall = function(section, key)
-		log.info(section .. " : " .. key)
 		if section == "authoring" and key == "showinspectforall" then
 			evaluateShowInspect()
 		end
