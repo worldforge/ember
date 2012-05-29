@@ -39,12 +39,12 @@ public:
 	 * @brief Used to access the current FPS as known by this class.
 	 * @return The current FPS
 	 */
-	double getCurrentFPS();
+	float getCurrentFPS();
 	
 	/**
 	 * @brief Signal sent out with the updated FPS value every frame
 	 */
-	sigc::signal<void,int> fpsUpdated;
+	sigc::signal<void,float> fpsUpdated;
 	
 	
 
@@ -52,12 +52,7 @@ protected:
 	/**
 	 * Holds the current Fps
 	 */
-	double mCurrentFps;
-	
-	/**
-	 * @brief Gets the fps value from ogre and updates mCurrentFps
-	 */
-	void updateFPS();	
+	float mCurrentFps;	
 
 };
 	
@@ -85,9 +80,9 @@ public:
 	* @param changeSize The change required in fps. A positive value means that graphical details should be improved. A negative value means that the details should be decreased.
 	* @return True if further change can be performed. 
 	*/
-	bool fpsChangeRequired(double changeSize) = 0;
+	bool fpsChangeRequired(float changeSize) = 0;
 	
-	sigc::signal<void,int> changeRequired;
+	sigc::signal<void,float> changeRequired;
 };
   
 /**
@@ -125,7 +120,7 @@ public:
 	 * @brief Used to trigger a change in graphics level
 	 * @param changeInFpsRequired Used to pass how much of a change in fps is required, positive for an increase in fps, negative for a decrease in fps
 	 */
-	void changeGraphicsLevel(double changeInFpsRequired);
+	void changeGraphicsLevel(float changeInFpsRequired);
 	
 protected:
 	/**
