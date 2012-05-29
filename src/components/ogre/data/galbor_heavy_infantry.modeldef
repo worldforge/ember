@@ -17,7 +17,7 @@
                 </activations>
                 <animations>
                     <animation>
-                        <animationpart name="idle_Clip" weight="1" />
+                        <animationpart name="idle_Clip" />
                     </animation>
                 </animations>
             </action>

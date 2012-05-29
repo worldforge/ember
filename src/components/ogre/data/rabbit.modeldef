@@ -14,10 +14,10 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Run" weight="1" />
+                        <animationpart name="Run" />
                     </animation>
                     <animation iterations="2">
-                        <animationpart name="Run2" weight="1.2" />
+                        <animationpart name="Run2" />
                     </animation>
                 </animations>
             </action>
@@ -27,28 +27,28 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="SitUp" weight="1" />
+                        <animationpart name="SitUp" />
                     </animation>
                     <animation iterations="2">
-                        <animationpart name="LookAround" weight="1" />
+                        <animationpart name="LookAround" />
                     </animation>
                     <animation iterations="4">
-                        <animationpart name="Eat" weight="1" />
+                        <animationpart name="Eat" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="LookAround" weight="1" />
+                        <animationpart name="LookAround" />
                     </animation>
                     <animation iterations="2">
-                        <animationpart name="Scratch" weight="1" />
+                        <animationpart name="Scratch" />
                     </animation>
                     <animation iterations="2">
-                        <animationpart name="Eat2" weight="1" />
+                        <animationpart name="Eat2" />
                     </animation>
                     <animation iterations="3">
-                        <animationpart name="LookAround" weight="1" />
+                        <animationpart name="LookAround" />
                     </animation>
                     <animation iterations="1">
-                        <animationpart name="SitUp" weight="1" />
+                        <animationpart name="SitUp" />
                     </animation>
                 </animations>
             </action>

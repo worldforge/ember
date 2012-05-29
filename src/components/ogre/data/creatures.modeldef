@@ -24,7 +24,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" weight="1" />
+                        <animationpart name="Walk" />
                     </animation>
                 </animations>
             </action>
@@ -45,7 +45,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="Walk" weight="1" />
+                        <animationpart name="Walk" />
                     </animation>
                 </animations>
                 <sounds>
@@ -69,7 +69,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="walk" weight="1.0" />
+                        <animationpart name="walk" />
                     </animation>
                 </animations>
             </action>
@@ -79,7 +79,7 @@
                 </activations>
                 <animations>
                     <animation iterations="1">
-                        <animationpart name="idle" weight="1.0" />
+                        <animationpart name="idle" />
                     </animation>
                 </animations>
             </action>
