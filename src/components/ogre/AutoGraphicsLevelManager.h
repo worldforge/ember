@@ -1,12 +1,11 @@
 
-
 #include <OgreFrameListener.h>
-#include <components/ogre/FpsListener.h>
 
+#include <sigc++/signal.h>
 
 #include <string>
 #include <map>
-#include <sigc++/signal.h>
+
 
 
 namespace Ember {
@@ -22,6 +21,16 @@ class FpsUpdater : public Ogre::FrameListener
 {
 public:
 	/**
+	 * @brief Constructor
+	 */
+	FpsUpdater();
+	
+	/**
+	 * @brief Destructor
+	 */
+	~FpsUpdater();
+	
+	/**
 	 * Method from Ogre::FrameListener
 	 */
 	bool frameStarted(const Ogre::FrameEvent& event);
@@ -33,19 +42,11 @@ public:
 	double getCurrentFPS();
 	
 	/**
-	 * @brief Used to register an Fps listener which is called back everytime the Fps is updated
+	 * @brief Signal sent out with the updated FPS value every frame
 	 */
-	void addFpsListener(FpsListener* );
+	sigc::signal<void,int> fpsUpdated;
 	
-	/**
-	 * @brief Constructor
-	 */
-	FpsUpdater();
 	
-	/**
-	 * @brief Destructor
-	 */
-	~FpsUpdater();
 
 protected:
 	/**
@@ -54,32 +55,50 @@ protected:
 	double mCurrentFps;
 	
 	/**
-	 * @brief Calculates the FPS and updates mCurrentFps after every frame
+	 * @brief Gets the fps value from ogre and updates mCurrentFps
 	 */
 	void updateFPS();	
-	
-	/**
-	 * @brief Throws an FPS event to all the listeners
-	 */
-	void FpsGenerated();
-	
-	/**
-	 * List of registered Fps listeners
-	 */
-	std::set<FpsListener*> mFpsListeners;
+
 };
 	
+
+/**
+ * @brief Adaptor interface class between the central AutomaticGraphicsLevelManager class and the graphics subsystems
+ * This class accepts a change in fps required and translates it into a floating change required value that the subsystems understand
+ */
+class IGraphicalChangeAdapter 
+{
+public:
+
+	/**
+	 * @brief Constructor.
+	 */
+	IGraphicalChangeAdapter();
 	
+	/**
+	 * @brief Destructor.
+	 */
+	~IGraphicalChangeAdapter();
+	
+	/**
+	* Signals that a change is required.
+	* @param changeSize The change required in fps. A positive value means that graphical details should be improved. A negative value means that the details should be decreased.
+	* @return True if further change can be performed. 
+	*/
+	bool fpsChangeRequired(double changeSize) = 0;
+	
+	sigc::signal<void,int> changeRequired;
+};
   
 /**
- *@brief Interface class for automatic adjustment of graphics level
+ *@brief Central class for automatic adjustment of graphics level
  *
- * This class maintains a current Graphics level. It is registered as an FpsListener and therefore
- * checks the FPS for a significant increase or decrease and then increases or decreases the Required Graphics level
- * by a factor depending on how drastic the change in FPS is. This signals an adjustment event.
+ * This class maintains a current Graphics level. It connects to the fpsUpdated signal and thus 
+ * checks the fps for a significant increase or decrease and then asks for a change in the level
+ * by using the IGraphicalChangeAdapter.
  */
 
-class AutomaticGraphicsLevelManager : public FpsEvent
+class AutomaticGraphicsLevelManager
 {
 public:
 	/**
@@ -93,11 +112,6 @@ public:
 	~AutomaticGraphicsLevelManager();
 	
 	/**
-	 * @brief Returns the current graphics level
-	 */
-	double getCurrentLevel();
-	
-	/**
 	 * @brief Sets whether automatic adjustment is enabled
 	 */
 	bool setEnabled(bool newEnabled);
@@ -108,10 +122,10 @@ public:
 	bool isEnabled();
 	
 	/**
-	 * Implementation of function from FpsListener
+	 * @brief Used to trigger a change in graphics level
+	 * @param changeInFpsRequired Used to pass how much of a change in fps is required, positive for an increase in fps, negative for a decrease in fps
 	 */
-	void FpsUpdated(const FpsEvent);
-	
+	void changeGraphicsLevel(double changeInFpsRequired);
 	
 protected:
 	/**
@@ -119,15 +133,7 @@ protected:
 	 */
 	bool mEnabled;
 	
-	/**
-	 * Holds the current floating graphics level
-	 */
-	double mGraphicsLevel;
 	
-	/**
-	 * @brief Used to trigger a change in graphics level event
-	 */
-	void setGraphicsLevel(double level);
 	
 };	
 
