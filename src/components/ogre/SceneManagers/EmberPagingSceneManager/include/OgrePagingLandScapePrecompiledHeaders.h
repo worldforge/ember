@@ -92,15 +92,12 @@ email                : tuan.kuranes@free.fr
 // User Call back system using listener pattern
 #include "OgrePagingLandScapeListenerManager.h"
 #include "OgrePagingLandScapeListener.h"
-#include "OgrePagingLandScapeCallback.h"
 #include "OgrePagingLandScapeCallbackEvent.h"
 
 //decals 
-
 #include "OgrePagingLandScapeMeshDecal.h"
 
 //utils 
-
 #include "OgrePagingLandscapePoolSet.h"
 #include "OgrePagingLandscapeQueue.h"
 
