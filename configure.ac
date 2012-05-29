@@ -149,6 +149,7 @@ esac
 AM_CONDITIONAL([WIN32], [test x$WIN32 = xtrue])
 AM_CONDITIONAL([OSX], [test x$OSX = xtrue])
 
+AX_BOOST
 
 AC_ARG_ENABLE(webember,
   [AS_HELP_STRING([--enable-webember], [enable building of webember (default=no)])],
@@ -169,6 +170,10 @@ AM_CONDITIONAL([BUILD_WEBEMBER], [test x"$webember_enabled" = xtrue])
 if test "$webember_enabled" = "true" -a "$WIN32" = "false" -a "$OSX" = "false"  ; then
   # needed for some autotools versions. This is needed on POSIX ELF shared libraries only.
   CXXFLAGS="$CXXFLAGS -fPIC"
+	AC_LANG_PUSH([C++])
+	AC_CHECK_HEADERS([boost/interprocess/ipc/message_queue.hpp], [],
+ 		[AC_MSG_ERROR(You need the Boost interprocess library.)])
+	AC_LANG_POP([C++])
 fi
 
 
@@ -271,8 +276,6 @@ PKG_CHECK_MODULES(SIG, [sigc++-2.0 >= 2.0],
       AC_MSG_ERROR([Couldn't find SIGC++2.0])
   ])
 
-WF_CHECK_THREADING
-
 # Check for the WorldForge libs
 PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.20 \
  varconf-1.0 >= 0.6.7 mercator-0.3 >= 0.3.1 atlascpp-0.6 >= 0.6.2 wfmath-1.0 >= 1.0.0 libwfut-0.2 >= 0.2.2],
@@ -283,7 +286,6 @@ PKG_CHECK_MODULES(WF, [eris-1.3 >= 1.3.20 \
  AC_MSG_ERROR([Couldn't find some of the required WorldForge libraries: $WF_PKG_ERRORS
 Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions.])
 )
-
 
 # Check for OGRE
 OGRE_VERSION=1.8.0
