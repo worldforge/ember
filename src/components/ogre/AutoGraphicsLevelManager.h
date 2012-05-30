@@ -82,7 +82,7 @@ public:
 	*/
 	bool fpsChangeRequired(float);
 	
-	sigc::signal<void,float> changeRequired;
+	sigc::signal<bool,float> changeRequired;
 };
   
 /**
