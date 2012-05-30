@@ -80,7 +80,7 @@ public:
 	* @param changeSize The change required in fps. A positive value means that graphical details should be improved. A negative value means that the details should be decreased.
 	* @return True if further change can be performed. 
 	*/
-	bool fpsChangeRequired(float changeSize) = 0;
+	bool fpsChangeRequired(float);
 	
 	sigc::signal<void,float> changeRequired;
 };
@@ -109,7 +109,7 @@ public:
 	/**
 	 * @brief Sets whether automatic adjustment is enabled
 	 */
-	bool setEnabled(bool newEnabled);
+	void setEnabled(bool newEnabled);
 	
 	/**
 	 * @brief Used to check if automatic adjustment is enabled
@@ -124,14 +124,55 @@ public:
 	
 protected:
 	/**
-	 * Boolean that holds whether automatic adjustment is enabled
+	 * The fps this module will try to achieve once enabled
+	 */
+	float mDefaultFps;
+	
+	/**
+	 * @brief This function is used to check if the fps is optimum, higher or lower as compared to mDefaultFps.
+	 */
+	void checkFps(float);
+	
+	
+	/**
+	 * Boolean that holds whether automatic adjustment is enabled.
 	 */
 	bool mEnabled;
 	
+	/**
+	 * Instance of FpsUpdater class owned by this class to get updates on when the fps is updated.
+	 */
+	FpsUpdater mFpsUpdater;
 	
+	/**
+	 * The interface through which this central class communicates with the graphical subcomponents.
+	 */
+	IGraphicalChangeAdapter mGraphicalChangeAdapter;
 	
-};	
+};
 
-  
+/**
+ * @brief This structure is used to accumulate the return values from the slots and then pass a result back to the signal
+ * It recieves all the return values from all slots registered to this signal and passes on a calculated OR of all the values back to the signal.
+ * It is used to calculate whether a further change in graphics level is possible.
+ */
+struct FurtherChangePossibleAccumulater {
+	/**
+	 * The data type of the value returned to the signal. Required by sigc++
+	 */
+	typedef bool result_type;
+	
+	/**
+	 * An templated iterator to traverse through all the returns from the slots
+	 */
+	template<typename T_iterator>
+	
+	/**
+	 * @brief The overloaded () function is called by sigc++ to calculate the value to be returned to the signal from the return values of the slots.
+	 * @return The value to be passed back to the signal
+	 */
+	result_type operator()(T_iterator, T_iterator) const;
+};
+
 }
 }
