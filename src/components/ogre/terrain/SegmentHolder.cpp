@@ -61,6 +61,7 @@ void SegmentHolder::returnReference()
 	//If mRefCount is 0 we're guaranteed to be the only one interacting with the segment, so it's thread safe to call Mercator::Segment::isValid
 	if (mRefCount == 0 && mSegment->getMercatorSegment().isValid()) {
 		mSegmentManager.markHolderAsDirtyAndUnused(this);
+		l.unlock();
 		mSegmentManager.pruneUnusedSegments();
 	}
 }
