@@ -95,7 +95,7 @@ void AuthoringVisualization::createGraphicalRepresentation()
 			try {
 				mSceneNode->attachObject(mGraphicalRepresentation);
 				mGraphicalRepresentation->setRenderingDistance(100);
-				mGraphicalRepresentation->setQueryFlags(MousePicker::CM_UNDEFINED);
+				mGraphicalRepresentation->setQueryFlags(MousePicker::CM_ENTITY);
 				mGraphicalRepresentation->setUserAny(Ogre::Any(EmberEntityUserObject::SharedPtr(new EmberEntityUserObject(mEntity, new AuthoringVisualizationCollisionDetector(*mGraphicalRepresentation)))));
 			} catch (const std::exception& ex) {
 				S_LOG_WARNING("Error when attaching axes mesh."<< ex);
