@@ -50,12 +50,12 @@
         mass = volume * density
 
         local bbox = Atlas.Message.ListType()
-        bbox:push_back(-radius)
-        bbox:push_back(-radius)
-        bbox:push_back(0)
-        bbox:push_back(radius)
-        bbox:push_back(radius)
-        bbox:push_back(height)
+        bbox:push_back_float(-radius)
+        bbox:push_back_float(-radius)
+        bbox:push_back_float(0)
+        bbox:push_back_float(radius)
+        bbox:push_back_float(radius)
+        bbox:push_back_float(height)
         return Atlas.Message.Element(bbox)
       end
       function fir.calcMass()

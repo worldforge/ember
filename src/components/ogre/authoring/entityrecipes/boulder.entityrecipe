@@ -47,12 +47,12 @@
         local len = volume^(1/3)
 
         local bbox = Atlas.Message.ListType()
-        bbox:push_back(-len/2)
-        bbox:push_back(-len/2)
-        bbox:push_back(0)
-        bbox:push_back(len/2)
-        bbox:push_back(len/2)
-        bbox:push_back(len)
+        bbox:push_back_float(-len/2)
+        bbox:push_back_float(-len/2)
+        bbox:push_back_float(0)
+        bbox:push_back_float(len/2)
+        bbox:push_back_float(len/2)
+        bbox:push_back_float(len)
         return Atlas.Message.Element(bbox)
       end
     ]]></script>
