@@ -353,6 +353,11 @@ protected:
 	 * This is needed whenever the model is changed, because the new model used will then start out with only the default parts activated.
 	 */
 	void reactivatePartActions();
+
+	/**
+	 * @brief Resets all current movement, action and task animations.
+	 */
+	void resetAnimations();
 };
 
 }

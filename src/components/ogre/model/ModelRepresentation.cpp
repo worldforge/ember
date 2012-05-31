@@ -100,7 +100,6 @@ ModelRepresentation::~ModelRepresentation()
 {
 	delete mSoundEntity;
 
-//	delete mModel.getUserObject();
 	mModel._getManager()->destroyMovableObject(&mModel);
 
 	//make sure it's not in the MotionManager
@@ -218,9 +217,6 @@ Ogre::Vector3 ModelRepresentation::getScale() const
 
 void ModelRepresentation::connectEntities()
 {
-//	if (getModel().getUserObject()) {
-//		delete getModel().getUserObject();
-//	}
 	//we'll create an instance of ICollisionDetector and pass on the user object, which is then responsible for properly deleting it
 	//		ICollisionDetector* collisionDetector = new OpcodeCollisionDetector(getModel());
 	ICollisionDetector* collisionDetector = new MeshCollisionDetector(&getModel());
@@ -239,9 +235,6 @@ void ModelRepresentation::model_Reloaded()
 
 void ModelRepresentation::model_Resetting()
 {
-//	if (getModel().getUserObject()) {
-//		delete getModel().getUserObject();
-//	}
 	mModel.setUserAny(Ogre::Any());
 }
 
@@ -295,23 +288,13 @@ void ModelRepresentation::onMovementModeChanged(MovementMode newMode)
 
 	if (!mCurrentMovementAction || mCurrentMovementAction->getName() != actionName) {
 
-		//first disable the current action
-		if (mCurrentMovementAction) {
-			mCurrentMovementAction->getAnimations().reset();
-		}
-
-		//also abort any current active action in favour of the movement action; this needs to be replaced with a better system where we can blend different animations together
-		if (mActiveAction) {
-			mActiveAction->getAnimations().reset();
-			mActiveAction = 0;
-		}
+		//first disable any current action
+		resetAnimations();
 
 		Action* newAction = mModel.getAction(ActivationDefinition::MOVEMENT, actionName);
 		mCurrentMovementAction = newAction;
 		if (newAction) {
 			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
-			//				mCurrentMovementAction->getAnimations()->setEnabled(true);
-
 		} else {
 			MotionManager::getSingleton().removeAnimated(mEntity.getId());
 		}
@@ -333,7 +316,7 @@ void ModelRepresentation::parseMovementMode(const WFMath::Vector<3>& velocity)
 	if (velocity != WFMath::Vector<3>::ZERO()) {
 		if (velocity.isValid()) {
 			//Use WFMATH_EPSILON to remove any rounding errors
-			if (velocity.x() + WFMath::numeric_constants<WFMath::CoordType>::epsilon() < 0.0f) {
+			if (velocity.x() + WFMath::numeric_constants < WFMath::CoordType > ::epsilon() < 0.0f) {
 				newMode = MM_WALKING_BACKWARDS;
 			} else {
 				if (velocity.mag() > 2.6) {
@@ -389,6 +372,19 @@ void ModelRepresentation::updateAnimation(float timeSlice)
 	}
 }
 
+void ModelRepresentation::resetAnimations()
+{
+	if (mCurrentMovementAction) {
+		mCurrentMovementAction->getAnimations().reset();
+	}
+	if (mActiveAction) {
+		mActiveAction->getAnimations().reset();
+	}
+	if (mTaskAction) {
+		mTaskAction->getAnimations().reset();
+	}
+}
+
 const Ogre::AxisAlignedBox& ModelRepresentation::getWorldBoundingBox(bool derive) const
 {
 	return getModel().getWorldBoundingBox(derive);
@@ -422,8 +418,7 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 		if (newAction) {
 			MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
 			mActiveAction = newAction;
-			newAction->getAnimations().reset();
-			mCurrentMovementAction->getAnimations().reset();
+			resetAnimations();
 		}
 	}
 }
@@ -434,7 +429,7 @@ void ModelRepresentation::entity_TaskAdded(Eris::Task* task)
 	if (newAction) {
 		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
 		mTaskAction = newAction;
-		mTaskAction->getAnimations().reset();
+		resetAnimations();
 	}
 }
 
