@@ -30,6 +30,7 @@
 
 #include "../EmberOgre.h"
 #include "../Avatar.h"
+#include "../OgreInfo.h"
 #include "../terrain/Map.h"
 #include "../terrain/ISceneManagerAdapter.h"
 #include "../terrain/ITerrainObserver.h"
@@ -53,7 +54,7 @@ namespace Gui
 {
 
 DelayedCompassRenderer::DelayedCompassRenderer(Compass& compass) :
-	mCompass(compass), mRenderNextFrame(false)
+		mCompass(compass), mRenderNextFrame(false)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -83,7 +84,7 @@ void DelayedCompassRenderer::queueRendering()
 }
 
 Compass::Compass(ICompassImpl* compassImpl, Ogre::SceneManager& sceneManager, Terrain::ISceneManagerAdapter& sceneManagerAdapter) :
-	mMap(new Map(sceneManager)), mCompassImpl(compassImpl), mSceneManagerAdapter(sceneManagerAdapter), mTerrainObserver(sceneManagerAdapter.createObserver()), mDelayedRenderer(*this)
+		mMap(new Map(sceneManager)), mCompassImpl(compassImpl), mSceneManagerAdapter(sceneManagerAdapter), mTerrainObserver(sceneManagerAdapter.createObserver()), mDelayedRenderer(*this)
 {
 	mMap->initialize();
 	if (compassImpl) {
@@ -152,7 +153,7 @@ void Compass::updateTerrainObserver()
 }
 
 ICompassImpl::ICompassImpl() :
-	mMap(0), mCompass(0)
+		mMap(0), mCompass(0)
 {
 }
 
@@ -164,7 +165,7 @@ void ICompassImpl::setCompass(Compass* compass)
 }
 
 CEGUICompassImpl::CEGUICompassImpl() :
-	mViewImage(0)
+		mViewImage(0)
 {
 }
 
@@ -182,7 +183,7 @@ void CEGUICompassImpl::reposition(float x, float y)
 	// 	S_LOG_VERBOSE("pos x: " << x << " y: " << y);
 	mMap->getView().reposition(Ogre::Vector2(x, y));
 	const Ogre::TRect<float>& viewBounds(mMap->getView().getRelativeViewBounds());
-	CEGUI::Rect& rect = const_cast<CEGUI::Rect&> (mViewImage->getSourceTextureArea());
+	CEGUI::Rect& rect = const_cast<CEGUI::Rect&>(mViewImage->getSourceTextureArea());
 	int textureWidth = mTexturePair.getOgreTexture()->getWidth();
 	rect.setSize(CEGUI::Size(textureWidth * 0.5, textureWidth * 0.5));
 	// 	const Ogre::Vector2& viewPos(mMap->getView().getRelativeViewPosition());
@@ -203,14 +204,14 @@ void CEGUICompassImpl::_setCompass(Compass* compass)
 {
 	AssetsManager assetsManager;
 	mTexturePair = assetsManager.createTextureImage(mMap->getTexture(), "CompassMap");
-	int halfOffset = static_cast<int> (mMap->getTexture()->getWidth() * 0.25f);
+	int halfOffset = static_cast<int>(mMap->getTexture()->getWidth() * 0.25f);
 	mTexturePair.getTextureImageset()->defineImage("view", CEGUI::Rect(halfOffset, halfOffset, mMap->getTexture()->getWidth() - halfOffset, mMap->getTexture()->getWidth() - halfOffset), CEGUI::Point(0, 0));
 	mViewImage = &mTexturePair.getTextureImageset()->getImage("view");
 
 }
 
 OverlayCompassImpl::OverlayCompassImpl() :
-	mCompassOverlay(0)
+		mCompassOverlay(0)
 {
 	Ogre::OverlayManager& omgr = Ogre::OverlayManager::getSingleton();
 	mCompassOverlay = (Ogre::Overlay*)omgr.getByName("CompassOverlay");
@@ -256,7 +257,6 @@ void OverlayCompassImpl::rotate(const Ogre::Degree& degree)
 	//
 	// 	RotBox<2> rotbox(center, dimensions, qRot);
 
-
 	if (!mCompassMaterial.isNull()) {
 		Ogre::TextureUnitState* tus(mCompassMaterial->getBestTechnique()->getPass(0)->getTextureUnitState(0));
 		tus->setTextureRotate(degree);
@@ -271,7 +271,7 @@ void OverlayCompassImpl::refresh()
 }
 
 RenderedCompassImpl::RenderedCompassImpl(std::string compassMaterialName, std::string pointerMaterialName) :
-	mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mX(0), mY(0), mMapRectangle(0), mPointer(pointerMaterialName), mMaterialName(compassMaterialName)
+		mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mCompassMaterialMapTUS(0), mX(0), mY(0), mMapRectangle(0), mPointer(pointerMaterialName), mMaterialName(compassMaterialName)
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassImpl_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0, 0, 0, 0), 0.0f, 0.0f, 0.0f);
@@ -280,15 +280,18 @@ RenderedCompassImpl::RenderedCompassImpl(std::string compassMaterialName, std::s
 RenderedCompassImpl::~RenderedCompassImpl()
 {
 	//We should probably not do this ourselves, since it will corrupt the material.
-	// 	if (!mTexture.isNull()) {
-	// 		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
-	// 	}
+	if (!mTexture.isNull()) {
+		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
+	}
 
 	if (mCamera) {
 		mSceneManager->destroyCamera(mCamera);
 	}
 
 	Ogre::Root::getSingleton().destroySceneManager(mSceneManager);
+	if (!mCompassMaterial.isNull()) {
+		Ogre::MaterialManager::getSingleton().remove(mCompassMaterial->getName());
+	}
 
 	OGRE_DELETE mMapRectangle;
 
@@ -326,9 +329,10 @@ void RenderedCompassImpl::refresh()
 
 void RenderedCompassImpl::_setCompass(Compass* compass)
 {
-	mCompassMaterial = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(mMaterialName));
-	if (!mCompassMaterial.isNull()) {
-		mCompassMaterial->load();
+	Ogre::MaterialPtr originalMaterial = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(mMaterialName));
+	if (!originalMaterial.isNull()) {
+		originalMaterial->load();
+		mCompassMaterial = originalMaterial->clone(OgreInfo::createUniqueResourceName(originalMaterial->getName()));
 		if (Ogre::Technique* tech = mCompassMaterial->getBestTechnique()) {
 			Ogre::Pass* pass(0);
 			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
@@ -351,7 +355,7 @@ void RenderedCompassImpl::_setCompass(Compass* compass)
 					mViewport->setBackgroundColour(Ogre::ColourValue::ZERO);
 
 					mMapRectangle = OGRE_NEW Ogre::Rectangle2D(true);
-					mMapRectangle->setMaterial(mMaterialName);
+					mMapRectangle->setMaterial(mCompassMaterial->getName());
 
 					//We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
@@ -387,22 +391,23 @@ Ogre::TexturePtr RenderedCompassImpl::getPointerTexture() const
 }
 
 RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
-	mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mPointerTUS(0), mPointerRectangle(0)
+		mRenderTexture(0), mCamera(0), mSceneManager(0), mViewport(0), mPointerTUS(0), mPointerRectangle(0)
 {
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC, "RenderedCompassPointer_sceneManager");
 	mSceneManager->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0, 0, 0, 0), 0.0f, 0.0f, 0.0f);
 
-	mPointerMaterial = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(materialName));
-	if (!mPointerMaterial.isNull()) {
-		mPointerMaterial->load();
+	Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialName));
+	if (!material.isNull()) {
+		material->load();
+		mPointerMaterial = material->clone(OgreInfo::createUniqueResourceName(material->getName()));
 		if (Ogre::Technique* tech = mPointerMaterial->getBestTechnique()) {
 			Ogre::Pass* pass(0);
 			if (tech->getNumPasses() && (pass = tech->getPass(0))) {
 				if ((mPointerTUS = pass->getTextureUnitState("Pointer"))) {
 
 					//Since we need to rotate the arrow we'll make the image twice as big (32px) as the width of the arrow (16px), else it will be truncated when it's turned 45 degrees.
-					//The material used must those use a 0.5 scale so that the compass arrow is half the size.
-					mTexture = Ogre::TextureManager::getSingleton().createManual("RenderedCompassPointer", "Gui", Ogre::TEX_TYPE_2D, 32, 32, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
+					//The material used must thus use a 0.5 scale so that the compass arrow is half the size.
+					mTexture = Ogre::TextureManager::getSingleton().createManual(OgreInfo::createUniqueResourceName("RenderedCompassPointer"), "Gui", Ogre::TEX_TYPE_2D, 32, 32, 0, Ogre::PF_A8R8G8B8, Ogre::TU_RENDERTARGET);
 					mRenderTexture = mTexture->getBuffer()->getRenderTarget();
 					mRenderTexture->removeAllViewports();
 					mRenderTexture->setAutoUpdated(false);
@@ -417,7 +422,7 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 					mViewport->setBackgroundColour(Ogre::ColourValue::ZERO);
 
 					mPointerRectangle = OGRE_NEW Ogre::Rectangle2D(true);
-					mPointerRectangle->setMaterial(materialName);
+					mPointerRectangle->setMaterial(mPointerMaterial->getName());
 
 					//We need to maximise the rendered texture to cover the whole screen
 					Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
@@ -444,10 +449,12 @@ RenderedCompassPointer::RenderedCompassPointer(std::string materialName) :
 
 RenderedCompassPointer::~RenderedCompassPointer()
 {
-	//We should probably not do this ourselves, since it will corrupt the material.
-	// 	if (!mTexture.isNull()) {
-	// 		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
-	// 	}
+	if (!mPointerMaterial.isNull()) {
+		Ogre::MaterialManager::getSingleton().remove(mPointerMaterial->getName());
+	}
+	if (!mTexture.isNull()) {
+		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
+	}
 
 	if (mCamera) {
 		mSceneManager->destroyCamera(mCamera);
@@ -475,7 +482,7 @@ Ogre::TexturePtr RenderedCompassPointer::getTexture() const
 }
 
 CompassAnchor::CompassAnchor(Compass& compass, const Ogre::Vector3& position, const Ogre::Quaternion& orientation) :
-	mCompass(compass), mPreviousX(0), mPreviousZ(0), mPosition(position), mOrientation(orientation)
+		mCompass(compass), mPreviousX(0), mPreviousZ(0), mPosition(position), mOrientation(orientation)
 {
 	// Register this as a frame listener
 	Ogre::Root::getSingleton().addFrameListener(this);
@@ -498,7 +505,7 @@ bool CompassAnchor::frameStarted(const Ogre::FrameEvent& event)
 }
 
 CompassCameraAnchor::CompassCameraAnchor(Compass& compass, Ogre::Camera* camera) :
-	mAnchor(compass, camera->getDerivedPosition(), camera->getDerivedOrientation()), mCamera(camera)
+		mAnchor(compass, camera->getDerivedPosition(), camera->getDerivedOrientation()), mCamera(camera)
 {
 }
 
@@ -507,7 +514,7 @@ CompassCameraAnchor::~CompassCameraAnchor()
 }
 
 CompassSceneNodeAnchor::CompassSceneNodeAnchor(Compass& compass, Ogre::SceneNode* sceneNode) :
-	mAnchor(compass, sceneNode->_getDerivedPosition(), sceneNode->_getDerivedOrientation()), mSceneNode(sceneNode)
+		mAnchor(compass, sceneNode->_getDerivedPosition(), sceneNode->_getDerivedOrientation()), mSceneNode(sceneNode)
 {
 }
 
@@ -516,7 +523,7 @@ CompassSceneNodeAnchor::~CompassSceneNodeAnchor()
 }
 
 CompassThirdPersonCameraAnchor::CompassThirdPersonCameraAnchor(Compass& compass, Ogre::Camera* camera, Ogre::SceneNode* sceneNode) :
-	mAnchor(compass, sceneNode->_getDerivedPosition(), camera->getDerivedOrientation()), mCamera(camera), mSceneNode(sceneNode)
+		mAnchor(compass, sceneNode->_getDerivedPosition(), camera->getDerivedOrientation()), mCamera(camera), mSceneNode(sceneNode)
 {
 }
 

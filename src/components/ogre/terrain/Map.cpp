@@ -49,6 +49,9 @@ mRenderTexture(0)
 
 Map::~Map()
 {
+	if (!mTexture.isNull()) {
+		Ogre::TextureManager::getSingleton().remove(mTexture->getName());
+	}
 }
 
 void Map::initialize()
