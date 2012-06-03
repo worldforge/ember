@@ -469,7 +469,9 @@ bool ModelRepresentation::getVisualize(const std::string& visualization) const
 void ModelRepresentation::reactivatePartActions()
 {
 	ModelPartReactivatorVisitor visitor;
-	mEntity.getMapping()->getRootEntityMatch().accept(visitor);
+	if (mEntity.getMapping()) {
+		mEntity.getMapping()->getRootEntityMatch().accept(visitor);
+	}
 }
 
 }
