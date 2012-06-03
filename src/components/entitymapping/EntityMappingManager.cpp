@@ -130,7 +130,7 @@ EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeIn
 	return 0;
 }
 
-EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator* actionCreator, Eris::View* view) {
+EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view) {
 	if (mTypeService) {
 		Eris::TypeInfo* type = entity.getType();
 		EntityMappingDefinition* definition = getDefinitionForType(type);

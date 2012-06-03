@@ -100,7 +100,7 @@ public:
     @param actionCreator An eris type info instance.
     @param view An optional view, if any such is available.
     */
-    EntityMapping* createMapping(Eris::Entity& entity, IActionCreator* actionCreator, Eris::View* view);
+    EntityMapping* createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view);
 
     /**
      * Utility method for splitting a string into a vector of strings

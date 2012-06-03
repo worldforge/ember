@@ -77,7 +77,7 @@ static const CaseDefinition::ParameterEntry* findCaseParameter(const CaseDefinit
 	return 0;
 }
 
-EntityMappingCreator::EntityMappingCreator(EntityMappingDefinition& definition, Eris::Entity& entity, IActionCreator* actionCreator, Eris::TypeService& typeService, Eris::View* view)
+EntityMappingCreator::EntityMappingCreator(EntityMappingDefinition& definition, Eris::Entity& entity, IActionCreator& actionCreator, Eris::TypeService& typeService, Eris::View* view)
 : mActionCreator(actionCreator), mEntity(entity), mModelMap(0), mDefinition(definition), mTypeService(typeService), mView(view)
 {
 }
@@ -119,9 +119,7 @@ void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, 
 		for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 			aCase->addEntityType(mTypeService.getTypeByName(*J));
 		}*/
-		if (mActionCreator) {
-			mActionCreator->createActions(*mModelMap, aCase, *I);
-		}
+		mActionCreator.createActions(*mModelMap, aCase, *I);
 
 		CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
 		for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
@@ -148,9 +146,7 @@ void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& m
 		for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 			aCase->addEntityType(mTypeService.getTypeByName(*J));
 		}*/
-		if (mActionCreator) {
-			mActionCreator->createActions(*mModelMap, aCase, *I);
-		}
+		mActionCreator.createActions(*mModelMap, aCase, *I);
 
 		CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
 		for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
@@ -233,9 +229,7 @@ void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinit
 		if (wrapper) {
 			AttributeCase* aCase = new AttributeCase(wrapper);
 
-			if (mActionCreator) {
-				mActionCreator->createActions(*mModelMap, aCase, *I);
-			}
+			mActionCreator.createActions(*mModelMap, aCase, *I);
 
 			CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
 			for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {

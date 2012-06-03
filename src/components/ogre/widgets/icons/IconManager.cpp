@@ -146,7 +146,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 		return mIconStore.getIcon(key);
 	} else {
 		IconActionCreator actionCreator(*entity);
-		std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, &actionCreator, Application::getSingleton().getMainView()));
+		std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, Application::getSingleton().getMainView()));
 		std::string modelName;
 		if (modelMapping.get()) {
 			modelMapping->initialize();
@@ -213,7 +213,7 @@ Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
 void IconManager::render(Icon& icon, EmberEntity& entity)
 {
 	IconActionCreator actionCreator(entity);
-	std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, &actionCreator, Application::getSingleton().getMainView()));
+	std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, Application::getSingleton().getMainView()));
 	std::string modelName;
 	if (modelMapping.get()) {
 		modelMapping->initialize();
@@ -237,7 +237,7 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
 		if (typeService) {
 			DummyEntity dummyEntity("-1", &erisType, typeService);
 			IconActionCreator actionCreator(dummyEntity);
-			std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, &actionCreator, Application::getSingleton().getMainView()));
+			std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, Application::getSingleton().getMainView()));
 			std::string modelName;
 			if (modelMapping.get()) {
 				modelMapping->initialize();
