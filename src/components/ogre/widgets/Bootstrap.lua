@@ -21,12 +21,12 @@ emberOgre = Ember.OgreView.EmberOgre:getSingleton()
 --@param doIfEntityFound The function to call if the entity is found. The first argument is the entity.
 --@param doIfEntityNotFound An optional function which will be called if the entity isn't found. The first argument is the entity id.
 emberOgre.doWithEntity = function(this, entityId, doIfEntityFound, doIfEntityNotFound)
-	if entityId ~= nil then
+	if entityId then
 		local entity = this:getWorld():getEmberEntity(entityId)
-		if entity ~= nil then
+		if entity then
 			doIfEntityFound(entity)
 		else 
-			if doIfEntityNotFound ~= nil then
+			if doIfEntityNotFound then
 				doIfEntityNotFound(entityId)
 			end
 		end
@@ -68,7 +68,7 @@ end
 --creates a connection between the supplied event and a function, stores the connection object in the supplied table and returns it
 function connect(connectorTable, event, functionName, selfRef)
 	local connector = createConnector(event):connect(functionName, selfRef)
-	if connectorTable ~= nil then
+	if connectorTable then
 		table.insert(connectorTable, connector)
 	end
 	return connector
@@ -85,7 +85,7 @@ end
 --@param objectToDelete The instance to delete. This can be null
 --@returns True if a valid object was submitted, else false.
 function deleteSafe(objectToDelete)
-	if objectToDelete ~= nil then
+	if objectToDelete then
 		objectToDelete:delete()
 		return true
 	end
