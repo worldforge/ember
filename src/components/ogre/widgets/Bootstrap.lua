@@ -95,7 +95,9 @@ end
 --CEGUI uses [tag=something] as a formatting syntax, we have to make sure special character [ gets escaped out
 function escapeForCEGUI(message)
 	--Only the starting [ character needs to be escaped for CEGUI, escaping ] will cause CEGUI to show \]
-	return string.gsub(message, "%[", "\\%[")
+	--Note that we need to put the result of gsub into a local variable, because we want to throw away the second return value (which is a number).
+	local escapedMessage = string.gsub(message, "%[", "\\%[") 
+	return escapedMessage
 end
 
 -- Helper math library
