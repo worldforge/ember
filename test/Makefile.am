@@ -36,7 +36,6 @@ TestTerrain_LDADD = $(top_builddir)/src/components/ogre/libEmberOgre.a \
 	$(top_builddir)/src/services/scripting/libScriptingService.a \
 	$(top_builddir)/src/services/server/libServerService.a \
 	$(top_builddir)/src/services/sound/libSoundService.a \
-	$(top_builddir)/src/services/time/libTime.a \
 	$(top_builddir)/src/services/wfut/libWfut.a \
 	$(top_builddir)/src/services/serversettings/libServerSettings.a \
 	$(top_builddir)/src/framework/tasks/libTasks.a \
