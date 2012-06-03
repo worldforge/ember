@@ -90,12 +90,17 @@ protected:
 	Ogre::SceneManager& mSceneMgr;
 
 	/**
-	 * @brief The node to which the water entity is attached to. Owned by this instance-
+	 * @brief The node to which the water bobbing node is attached to. Owned by this instance.
 	 */
 	Ogre::SceneNode *mWaterNode;
 
 	/**
-	 * @brief The entity representing the water plane. Owned by this instance-
+	 * @brief The node to which the water entity is attached to. Owned by this instance.
+	 */
+	Ogre::SceneNode *mWaterBobbingNode;
+
+	/**
+	 * @brief The entity representing the water plane. Owned by this instance.
 	 */
 	Ogre::Entity* mWaterEntity;
 
@@ -110,6 +115,11 @@ protected:
 	 * This makes sure that it appears that the water is infinite.
 	 */
 	WaterAdjustRenderTargetListener* mRenderTargetListener;
+
+	/**
+	 * @brief Makes sure that the water bobs up and down a little.
+	 */
+	Ogre::Controller<Ogre::Real>* mWaterBobbingController;
 
 };
 

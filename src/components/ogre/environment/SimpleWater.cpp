@@ -35,6 +35,7 @@
 #include <OgreEntity.h>
 #include <OgreRenderTargetListener.h>
 #include <OgreRenderWindow.h>
+#include <OgreControllerManager.h>
 
 #include <cmath>
 
@@ -45,6 +46,33 @@ namespace OgreView
 
 namespace Environment
 {
+
+/**
+ * @brief Animates a node in the vertical axis.
+ */
+class NodeAnimator: public Ogre::ControllerValue<Ogre::Real>
+{
+private:
+	Ogre::SceneNode& mNode;
+	Ogre::Vector3 mTranslation;
+public:
+	NodeAnimator(Ogre::SceneNode& node, const Ogre::Vector3& translation) :
+			mNode(node), mTranslation(translation)
+	{
+	}
+
+	Ogre::Real getValue() const
+	{
+		return 0;
+	}
+
+	void setValue(Ogre::Real value)
+	{
+		mNode.setPosition(mTranslation * (0.5 - value));
+	}
+
+};
+
 /**
  * @brief Adjusts the water so that it always's positioned by the camera.
  *
@@ -92,7 +120,7 @@ public:
 };
 
 SimpleWater::SimpleWater(Ogre::Camera& camera, Ogre::SceneManager& sceneMgr, Ogre::RenderTarget& mainRenderTarget) :
-		mCamera(camera), mSceneMgr(sceneMgr), mWaterNode(0), mWaterEntity(0), mMainRenderTarget(mainRenderTarget), mRenderTargetListener(0)
+		mCamera(camera), mSceneMgr(sceneMgr), mWaterNode(0), mWaterBobbingNode(0), mWaterEntity(0), mMainRenderTarget(mainRenderTarget), mRenderTargetListener(0), mWaterBobbingController(0)
 {
 }
 
@@ -102,6 +130,11 @@ SimpleWater::~SimpleWater()
 		mWaterNode->detachAllObjects();
 		mSceneMgr.destroySceneNode(mWaterNode);
 	}
+	if (mWaterBobbingNode) {
+		mWaterBobbingNode->detachAllObjects();
+		mSceneMgr.destroySceneNode(mWaterBobbingNode);
+	}
+
 	if (mWaterEntity) {
 		//TODO: fix so that no pointers are used for the userAny objects
 //		if (mWaterEntity->getUserObject()) {
@@ -111,6 +144,9 @@ SimpleWater::~SimpleWater()
 	}
 	if (mRenderTargetListener) {
 		mMainRenderTarget.removeListener(mRenderTargetListener);
+	}
+	if (mWaterBobbingController) {
+		Ogre::ControllerManager::getSingleton().destroyController(mWaterBobbingController);
 	}
 	delete mRenderTargetListener;
 }
@@ -134,6 +170,7 @@ bool SimpleWater::initialize()
 		Ogre::MeshManager::getSingleton().createPlane("SimpleWaterPlane", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, waterPlane, planeSize, planeSize, 5, 5, true, 1, planeSize / textureSize, planeSize / textureSize, Ogre::Vector3::UNIT_Z);
 
 		mWaterNode = mSceneMgr.getRootSceneNode()->createChildSceneNode("water");
+		mWaterBobbingNode = mWaterNode->createChildSceneNode();
 
 		mWaterEntity = mSceneMgr.createEntity("water", "SimpleWaterPlane");
 		mWaterEntity->setMaterialName("/global/environment/water/ocean");
@@ -142,10 +179,16 @@ bool SimpleWater::initialize()
 		mWaterEntity->setCastShadows(false);
 		mWaterEntity->setQueryFlags(MousePicker::CM_NATURE);
 
-		mWaterNode->attachObject(mWaterEntity);
+		mWaterBobbingNode->attachObject(mWaterEntity);
 
 		mRenderTargetListener = new WaterAdjustRenderTargetListener(mWaterNode, textureSize, textureSize);
 		mMainRenderTarget.addListener(mRenderTargetListener);
+
+		Ogre::ControllerFunctionRealPtr func(OGRE_NEW Ogre::WaveformControllerFunction(Ogre::WFT_SINE, 0, 0.1));
+		Ogre::ControllerValueRealPtr dest(OGRE_NEW NodeAnimator(*mWaterBobbingNode, Ogre::Vector3(0, 1, 0)));
+		Ogre::ControllerManager& cm = Ogre::ControllerManager::getSingleton();
+		mWaterBobbingController = cm.createController(cm.getFrameTimeSource(), dest, func);
+
 		return true;
 	} catch (const std::exception& ex) {
 		S_LOG_FAILURE("Error when creating simple water." << ex);
