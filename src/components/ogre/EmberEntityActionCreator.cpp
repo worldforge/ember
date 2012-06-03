@@ -54,7 +54,7 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 			EmberEntityPartAction* action = new EmberEntityPartAction(mEntity, J->getValue());
 			aCase->addAction(action);
 		} else if (J->getType() == "display-model") {
-			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getValue(), mScene);
+			EmberEntityModelAction* action = new EmberEntityModelAction(mEntity, J->getValue(), mScene, modelMapping);
 			aCase->addAction(action);
 		} else if (J->getType() == "hide-model") {
 			EmberEntityHideModelAction* action = new EmberEntityHideModelAction(mEntity);

@@ -90,11 +90,6 @@ void EmberEntity::setMapping(EntityMapping::EntityMapping* mapping)
 	mEntityMapping = mapping;
 }
 
-EntityMapping::EntityMapping* EmberEntity::getMapping() const
-{
-	return mEntityMapping;
-}
-
 void EmberEntity::adjustPosition()
 {
 	if (mAttachment) {

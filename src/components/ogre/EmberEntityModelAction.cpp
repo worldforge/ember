@@ -87,8 +87,8 @@ public:
 
 };
 
-EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene) :
-	mEntity(entity), mModelName(modelName), mScene(scene)
+EmberEntityModelAction::EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene, EntityMapping::EntityMapping& modelMapping) :
+	mEntity(entity), mModelName(modelName), mScene(scene), mMapping(modelMapping)
 {
 }
 
@@ -113,14 +113,10 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 			modelDef->reloadAllInstances();
 		}
 
-		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene);
+		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
 		mEntity.setGraphicalRepresentation(representation);
-		//		if (model->getDefinition()->isValid())
-		//		{
-		//			mEntity.getMapping()->getRootEntityMatch().evaluateChanges();
-		//		}
+
 	}
-	//	S_LOG_VERBOSE("Showing model " << mModelName);
 }
 
 void EmberEntityModelAction::deactivate(EntityMapping::ChangeContext& context)
@@ -134,10 +130,8 @@ void EmberEntityModelAction::ChangeContext_ContextComplete()
 {
 	//If the entity has no graphical representation, check if there are any existing active model actions which we should reactivate.
 	if (!mEntity.getGraphicalRepresentation()) {
-		if (mEntity.getMapping()) {
-			ModelReactivatorVisitor visitor;
-			mEntity.getMapping()->getRootEntityMatch().accept(visitor);
-		}
+		ModelReactivatorVisitor visitor;
+		mMapping.getRootEntityMatch().accept(visitor);
 	}
 }
 

@@ -69,8 +69,8 @@ const char * const ModelRepresentation::ACTION_WALK("walk");
 const char * const ModelRepresentation::ACTION_SWIM("swim");
 const char * const ModelRepresentation::ACTION_FLOAT("float");
 
-ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene) :
-		mEntity(entity), mModel(model), mScene(scene), mCurrentMovementAction(0), mActiveAction(0), mTaskAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
+ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping) :
+		mEntity(entity), mModel(model), mScene(scene), mMapping(mapping), mCurrentMovementAction(0), mActiveAction(0), mTaskAction(0), mSoundEntity(0), mMovementMode(MM_DEFAULT)
 {
 	mEntity.Acted.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Acted));
 	mEntity.Changed.connect(sigc::mem_fun(*this, &ModelRepresentation::entity_Changed));
@@ -469,9 +469,7 @@ bool ModelRepresentation::getVisualize(const std::string& visualization) const
 void ModelRepresentation::reactivatePartActions()
 {
 	ModelPartReactivatorVisitor visitor;
-	if (mEntity.getMapping()) {
-		mEntity.getMapping()->getRootEntityMatch().accept(visitor);
-	}
+	mMapping.getRootEntityMatch().accept(visitor);
 }
 
 }

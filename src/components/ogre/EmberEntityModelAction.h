@@ -28,6 +28,10 @@
 
 namespace Ember
 {
+namespace EntityMapping
+{
+class EntityMapping;
+}
 namespace OgreView
 {
 
@@ -41,7 +45,7 @@ class Scene;
 class EmberEntityModelAction: public EntityMapping::Actions::Action
 {
 public:
-	EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene);
+	EmberEntityModelAction(EmberEntity& entity, const std::string& modelName, Scene& scene, EntityMapping::EntityMapping& mMapping);
 	virtual ~EmberEntityModelAction();
 
 	virtual void activate(EntityMapping::ChangeContext& context);
@@ -54,8 +58,12 @@ protected:
 
 	Scene& mScene;
 
-	void ChangeContext_ContextComplete();
+	/**
+	 * @brief The mapping this action is bound to.
+	 */
+	EntityMapping::EntityMapping& mMapping;
 
+	void ChangeContext_ContextComplete();
 
 };
 

@@ -305,12 +305,6 @@ public:
 	void accept(IEntityVisitor& visitor);
 
 	/**
-	 * @brief Accessor for the mapping attached to this entity.
-	 * @returns A mapping instance, or null if one hasn't been set up yet.
-	 */
-	EntityMapping::EntityMapping* getMapping() const;
-
-	/**
 	 * @brief Gets the height at the local position.
 	 * @param localPosition A position local to the entity.
 	 * @return The height at the location.

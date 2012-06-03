@@ -37,6 +37,10 @@ class Entity;
 
 namespace Ember
 {
+namespace EntityMapping
+{
+class EntityMapping;
+}
 namespace OgreView
 {
 class EmberEntity;
@@ -127,8 +131,9 @@ public:
 	 * @param entity The entity instance to bind to.
 	 * @param model The model instance used.
 	 * @param scene The scene to which the entity belongs.
+	 * @param mapping The model mapping tied to the model.
 	 */
-	ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene);
+	ModelRepresentation(EmberEntity& entity, Model& model, Scene& scene, EntityMapping::EntityMapping& mapping);
 
 	/**
 	 * @brief Dtor.
@@ -241,6 +246,11 @@ protected:
 	 * @brief The scene to which the entity belongs.
 	 */
 	Scene& mScene;
+
+	/**
+	 * @brief An entity mapping, which will be reactivated when the model is reloaded.
+	 */
+	EntityMapping::EntityMapping& mMapping;
 
 	/**
 	 The current movement action of the entity, for example a walk action or a run action.
