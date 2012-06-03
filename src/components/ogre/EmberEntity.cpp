@@ -64,12 +64,6 @@ EmberEntity::~EmberEntity()
 
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
 {
-	if (mEntityMapping) {
-		//Calling this will result in the graphical represention being correctly set up.
-		//It's important that we call initialize before call Eris::Entity::init, since else we get strange results.
-		mEntityMapping->initialize();
-	}
-
 	Eris::Entity::init(ge, fromCreateOp);
 
 	// Setup Sounds
