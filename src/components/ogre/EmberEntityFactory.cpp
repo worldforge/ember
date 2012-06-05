@@ -75,7 +75,6 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	EmberEntityActionCreator creator(*entity, mScene);
 	EntityMapping::EntityMapping* mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, creator, &mView);
 	mapping->initialize();
-	entity->setMapping(mapping);
 	S_LOG_VERBOSE("Entity added to game view.");
 	return entity;
 }

@@ -102,24 +102,22 @@ public:
     */
     EntityMapping* createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view);
 
-    /**
-     * Utility method for splitting a string into a vector of strings
-     * @param str The original string.
-     * @param delims A delimiter
-     * @param maxSplits Maximum number of splits to return.
-     * @return A vector of strings.
-     */
-    static std::vector<std::string> splitString( const std::string& str, const std::string& delims, unsigned int maxSplits = 300);
-
 protected:
-
-
 
 	EntityMappingDefinitionStore mDefinitions;
 
 	EntityMappingDefinitionStore mEntityTypeMappings;
 
 	Eris::TypeService* mTypeService;
+
+	/**
+	 * @brief Deletes the entity mapping.
+	 *
+	 * This serves as a callback to Entity::BeingDeleted, allowing us to remove any bound mappings.
+	 *
+	 * @param mapping The mapping which should be deleted.
+	 */
+	void deleteMapping(EntityMapping* mapping);
 
 };
 

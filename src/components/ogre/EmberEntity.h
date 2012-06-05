@@ -33,14 +33,6 @@ class View;
 
 namespace Ember
 {
-namespace EntityMapping
-{
-class EntityMapping;
-}
-}
-
-namespace Ember
-{
 namespace Domain
 {
 class EntityTalk;
@@ -143,12 +135,6 @@ public:
 	 * @brief Dtor.
 	 */
 	virtual ~EmberEntity();
-
-	/**
-	 * @brief Sets the model mapping for this entity. Call this once when initializing the entity.
-	 * @param mapping The mapping for this entity.
-	 */
-	void setMapping(EntityMapping::EntityMapping* mapping);
 
 	/**
 	 * @brief Adjust the height of the entity so that it "snaps" to the ground or is otherwise adjusted, depending on the current movement mode.
@@ -350,11 +336,6 @@ protected:
 	 * Some entities won't have any graphical representation, and this will in those cases be null.
 	 */
 	IGraphicalRepresentation* mGraphicalRepresentation;
-
-	/**
-	 * @brief The entity mapping used for this entity.
-	 */
-	EntityMapping::EntityMapping* mEntityMapping;
 
 	/**
 	 * @brief The attachment for this entity.

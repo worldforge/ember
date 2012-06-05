@@ -27,66 +27,27 @@
 #include "EntityMappingManager.h"
 
 #include "EntityMappingCreator.h"
-namespace Ember {
 
+#include <sigc++/bind.h>
 
+namespace Ember
+{
 
-namespace EntityMapping {
+namespace EntityMapping
+{
 
 using namespace Definitions;
 
-EntityMappingManager::EntityMappingManager()
-: mTypeService(0)
+EntityMappingManager::EntityMappingManager() :
+		mTypeService(0)
 {
 }
-
 
 EntityMappingManager::~EntityMappingManager()
 {
 	for (EntityMappingDefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
 		delete I->second;
 	}
-}
-
-
-std::vector<std::string> EntityMappingManager::splitString( const std::string& str, const std::string& delims, unsigned int maxSplits)
-{
-	// static unsigned dl;
-	std::vector<std::string> ret;
-	unsigned int numSplits = 0;
-
-	// Use STL methods
-	size_t start, pos;
-	start = 0;
-	do
-	{
-		pos = str.find_first_of(delims, start);
-		if (pos == start)
-		{
-			// Do nothing
-			start = pos + 1;
-		}
-		else if (pos == std::string::npos || (maxSplits && numSplits == maxSplits))
-		{
-			// Copy the rest of the string
-			ret.push_back( str.substr(start) );
-			break;
-		}
-		else
-		{
-			// Copy up to delimiter
-			ret.push_back( str.substr(start, pos - start) );
-			start = pos + 1;
-		}
-		// parse up to next real data
-		start = str.find_first_not_of(delims, start);
-		++numSplits;
-
-	} while (pos != std::string::npos);
-
-
-
-	return ret;
 }
 
 void EntityMappingManager::addDefinition(EntityMappingDefinition* definition)
@@ -104,16 +65,17 @@ void EntityMappingManager::addDefinition(EntityMappingDefinition* definition)
 					mEntityTypeMappings[J->second] = definition;
 				}
 			}
-	/*		const std::string& entityName = I->getProperties()["equals"];
-			std::vector<std::string> splitNames = splitString(entityName, "|", 100);
-			for (std::vector<std::string>::const_iterator I = splitNames.begin(); I != splitNames.end(); ++I) {
-				mEntityTypeMappings[*I] = definition;
-			}*/
+			/*		const std::string& entityName = I->getProperties()["equals"];
+			 std::vector<std::string> splitNames = splitString(entityName, "|", 100);
+			 for (std::vector<std::string>::const_iterator I = splitNames.begin(); I != splitNames.end(); ++I) {
+			 mEntityTypeMappings[*I] = definition;
+			 }*/
 		}
 	}
 }
 
-EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeInfo* typeInfo) {
+EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeInfo* typeInfo)
+{
 	bool noneThere = false;
 	while (!noneThere) {
 		std::map<std::string, EntityMappingDefinition*>::iterator I = mEntityTypeMappings.find(typeInfo->getName());
@@ -130,16 +92,24 @@ EntityMappingDefinition* EntityMappingManager::getDefinitionForType(Eris::TypeIn
 	return 0;
 }
 
-EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view) {
+EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IActionCreator& actionCreator, Eris::View* view)
+{
 	if (mTypeService) {
 		Eris::TypeInfo* type = entity.getType();
 		EntityMappingDefinition* definition = getDefinitionForType(type);
 		if (definition) {
 			EntityMappingCreator creator(*definition, entity, actionCreator, *mTypeService, view);
-			return creator.create();
+			EntityMapping* mapping = creator.create();
+			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EntityMappingManager::deleteMapping), mapping));
+			return mapping;
 		}
 	}
 	return 0;
+}
+
+void EntityMappingManager::deleteMapping(EntityMapping* mapping)
+{
+	delete mapping;
 }
 
 }

@@ -29,7 +29,6 @@
 #include "framework/LoggingInstance.h"
 #include "domain/EntityTalk.h"
 #include "domain/IHeightProvider.h"
-#include "components/entitymapping/EntityMapping.h"
 
 #include <Eris/TypeInfo.h>
 #include <Eris/View.h>
@@ -51,7 +50,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::MODE_SWIMMING("swimming");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
-		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mEntityMapping(0), mAttachment(0), mAttachmentControlDelegate(0), mHeightProvider(0)
+		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mAttachment(0), mAttachmentControlDelegate(0), mHeightProvider(0)
 {
 }
 
@@ -59,7 +58,6 @@ EmberEntity::~EmberEntity()
 {
 	delete mAttachment;
 	delete mGraphicalRepresentation;
-	delete mEntityMapping;
 }
 
 void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCreateOp)
@@ -82,12 +80,6 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	if (!hasBBox()) {
 		onBboxChanged();
 	}
-}
-
-void EmberEntity::setMapping(EntityMapping::EntityMapping* mapping)
-{
-	delete mEntityMapping;
-	mEntityMapping = mapping;
 }
 
 void EmberEntity::adjustPosition()
