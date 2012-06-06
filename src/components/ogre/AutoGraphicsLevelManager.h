@@ -13,6 +13,29 @@ namespace Ember {
 namespace OgreView {
 	
 /**
+ * @brief This structure is used to accumulate the return values from the slots and then pass a result back to the signal
+ * It recieves all the return values from all slots registered to this signal and passes on a calculated OR of all the values back to the signal.
+ * It is used to calculate whether a further change in graphics level is possible.
+ */
+struct FurtherChangePossibleAccumulater {
+	/**
+	 * The data type of the value returned to the signal. Required by sigc++
+	 */
+	typedef bool result_type;
+	
+	/**
+	 * An templated iterator to traverse through all the returns from the slots
+	 */
+	template<typename T_iterator>
+	
+	/**
+	 * @brief The overloaded () function is called by sigc++ to calculate the value to be returned to the signal from the return values of the slots.
+	 * @return The value to be passed back to the signal
+	 */
+	result_type operator()(T_iterator, T_iterator) const;
+};
+
+/**
  * @brief Class that maintains and has the current FPS
  * 
  * This class keeps the current FPS and throws an FPS event every 2 seconds.
@@ -154,29 +177,6 @@ protected:
 	 */
 	IGraphicalChangeAdapter mGraphicalChangeAdapter;
 	
-};
-
-/**
- * @brief This structure is used to accumulate the return values from the slots and then pass a result back to the signal
- * It recieves all the return values from all slots registered to this signal and passes on a calculated OR of all the values back to the signal.
- * It is used to calculate whether a further change in graphics level is possible.
- */
-struct FurtherChangePossibleAccumulater {
-	/**
-	 * The data type of the value returned to the signal. Required by sigc++
-	 */
-	typedef bool result_type;
-	
-	/**
-	 * An templated iterator to traverse through all the returns from the slots
-	 */
-	template<typename T_iterator>
-	
-	/**
-	 * @brief The overloaded () function is called by sigc++ to calculate the value to be returned to the signal from the return values of the slots.
-	 * @return The value to be passed back to the signal
-	 */
-	result_type operator()(T_iterator, T_iterator) const;
 };
 
 }
