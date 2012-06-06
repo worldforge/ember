@@ -81,6 +81,12 @@ void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequire
 	//TODO: Need to implement functionality for if further change is not possible
 	mGraphicalChangeAdapter.fpsChangeRequired(changeInFpsRequired);
 }
+
+IGraphicalChangeAdapter* AutomaticGraphicsLevelManager::getGraphicalAdapter()
+{
+	return &mGraphicalChangeAdapter;
+}
+
 	
 void AutomaticGraphicsLevelManager::setEnabled(bool newEnabled)
 {
