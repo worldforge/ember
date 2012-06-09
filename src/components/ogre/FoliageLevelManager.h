@@ -28,7 +28,7 @@ public:
 	/**
 	 * @brief Signal sent out when this component makes a change in the detail level of foliage.
 	 */
-	sigc::signal <void,int> foliageLevelChanged;
+	sigc::signal<void,int> foliageLevelChanged;
 	
 	
 	/**
@@ -84,7 +84,7 @@ protected:
 	/**
 	 * Holds a map of the original density levels of each plant type as retrieved by the TerrainLayerDefinitionManager.
 	 */
-	std::map <std::string,float> mDefaultDensityStore;
+	std::map<std::string,float> mDefaultDensityStore;
 	
 	/**
 	 * The value by which density of a foliage is stepped up or down while adjusting foliage detail.
@@ -94,7 +94,7 @@ protected:
 	/**
 	 * Holds an updated map of plant types and their density levels,
 	 */
-	std::map <std::string,float> mUpdatedtDensityStore;
+	std::map<std::string,float> mUpdatedtDensityStore;
 	
 	
 };

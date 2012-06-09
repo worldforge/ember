@@ -82,9 +82,9 @@ void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequire
 	mGraphicalChangeAdapter.fpsChangeRequired(changeInFpsRequired);
 }
 
-IGraphicalChangeAdapter* AutomaticGraphicsLevelManager::getGraphicalAdapter()
+IGraphicalChangeAdapter& AutomaticGraphicsLevelManager::getGraphicalAdapter()
 {
-	return &mGraphicalChangeAdapter;
+	return mGraphicalChangeAdapter;
 }
 
 	

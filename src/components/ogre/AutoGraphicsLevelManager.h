@@ -148,7 +148,7 @@ public:
 	/**
 	 * @brief Used to access the instance IGraphicalChangeAdapter owned by this class.
 	 */
-	IGraphicalChangeAdapter * getGraphicalAdapter();
+	IGraphicalChangeAdapter& getGraphicalAdapter();
 	
 protected:
 	/**
