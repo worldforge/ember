@@ -44,8 +44,8 @@ void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute, bool t
 {
 	if (attribute.isMap()) {
 		Eris::Entity* entity(0);
-		const Atlas::Message::MapType & tmap = attribute.asMap();
-		Atlas::Message::MapType::const_iterator I = tmap.find(mOutfitName);
+		const auto& tmap = attribute.asMap();
+		auto I = tmap.find(mOutfitName);
 		if (I != tmap.end() && I->second.isString()) {
 			entity = mView->getEntity(I->second.asString());
 			//the entity might not be available yet, so we need to create an observer for it
@@ -84,8 +84,8 @@ void OutfitMatch::testEntity(Eris::Entity* entity)
 
 	AbstractMatch<Cases::OutfitCase>::setEntity(entity);
 
-	for (std::vector<Cases::OutfitCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
-		(*I)->testMatch(entity);
+	for (auto& aCase : mCases) {
+		aCase->testMatch(entity);
 	}
 	evaluateChanges();
 

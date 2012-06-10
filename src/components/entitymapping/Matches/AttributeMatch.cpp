@@ -48,8 +48,8 @@ AttributeMatch::AttributeMatch(const std::string& attributeName, const std::stri
 
 void AttributeMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation)
 {
-	for (std::vector<Cases::AttributeCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
-		(*I)->testMatch(attribute);
+	for (auto& aCase : mCases) {
+		aCase->testMatch(attribute);
 	}
 	if (triggerEvaluation) {
 		evaluateChanges();

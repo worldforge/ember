@@ -48,9 +48,8 @@ Utility method for cleaning a std::vector, deleting all instances held.
 template <typename T>
 static void cleanVector(T& theVector)
 {
-	typename T::iterator I = theVector.begin();
-	for (;I != theVector.end();	++I) {
-		delete *I;
+	for (auto& instance : theVector) {
+		delete instance;
 	}
 	theVector.clear();
 }
@@ -119,9 +118,8 @@ AbstractMatch<TCase>::~AbstractMatch()
 template <class TCase>
 void AbstractMatch<TCase>::setEntity(Eris::Entity* entity)
 {
-	typename std::vector< TCase* >::iterator I = mCases.begin();
-	for ( ; I != mCases.end(); ++I) {
-		(*I)->setEntity(entity);
+	for (auto& aCase : mCases) {
+		aCase->setEntity(entity);
 	}
 }
 
@@ -141,10 +139,8 @@ template <class TCase>
 void AbstractMatch<TCase>::evaluateChanges(ChangeContext& changeContext) {
 
 	///we want to make sure that we start with deactivating actions, and then after that activate those that should be activated
-
-	typename std::vector<TCase*>::iterator endI = mCases.end();
-	for (typename std::vector<TCase*>::iterator I = mCases.begin(); I != endI; ++I) {
-		(*I)->evaluateChanges(changeContext);
+	for (auto& aCase : mCases) {
+		aCase->evaluateChanges(changeContext);
 	}
 }
 
@@ -164,8 +160,8 @@ template <class TCase>
 void AbstractMatch<TCase>::accept(IVisitor& visitor)
 {
 	visitor.visit(*this);
-	for (typename std::vector<TCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
-		(*I)->accept(visitor);
+	for (auto& aCase : mCases) {
+		aCase->accept(visitor);
 	}
 }
 

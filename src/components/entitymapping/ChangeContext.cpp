@@ -54,11 +54,11 @@ void ChangeContext::addCaseToDeactivate(Cases::CaseBase* aCase)
 
 void ChangeContext::performActions()
 {
-	for (CaseStore::iterator I = mDeactivateQueue.begin(); I != mDeactivateQueue.end(); ++I) {
-		(*I)->deactivateActions(*this);
+	for (auto& aCase : mDeactivateQueue) {
+		aCase->deactivateActions(*this);
 	}
-	for (CaseStore::iterator I = mActivateQueue.begin(); I != mActivateQueue.end(); ++I) {
-		(*I)->activateActions(*this);
+	for (auto& aCase : mActivateQueue) {
+		aCase->activateActions(*this);
 	}
 
 }

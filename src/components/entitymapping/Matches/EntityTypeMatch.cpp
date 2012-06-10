@@ -45,8 +45,8 @@ void EntityTypeMatch::setEntity(Eris::Entity* entity)
 
 void EntityTypeMatch::testEntity(Eris::Entity* entity)
 {
-	for (std::vector<Cases::EntityTypeCase*>::iterator I = mCases.begin(); I != mCases.end(); ++I) {
-		(*I)->testMatch(entity);
+	for (auto& aCase : mCases) {
+		aCase->testMatch(entity);
 	}
 }
 
