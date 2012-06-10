@@ -43,8 +43,8 @@ EntityMappingManager::EntityMappingManager() :
 
 EntityMappingManager::~EntityMappingManager()
 {
-	for (EntityMappingDefinitionStore::iterator I = mDefinitions.begin(); I != mDefinitions.end(); ++I) {
-		delete I->second;
+	for (auto& entry : mDefinitions) {
+		delete entry.second;
 	}
 }
 
@@ -56,11 +56,10 @@ void EntityMappingManager::addDefinition(EntityMappingDefinition* definition)
 	if (!result.second) {
 		delete definition;
 	} else {
-		MatchDefinition::CaseStore::iterator endI = definition->getRoot().getCases().end();
-		for (MatchDefinition::CaseStore::iterator I = definition->getRoot().getCases().begin(); I != endI; ++I) {
-			for (CaseDefinition::ParameterStore::const_iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
-				if (J->first == "equals") {
-					mEntityTypeMappings[J->second] = definition;
+		for (auto& aCase : definition->getRoot().getCases()) {
+			for (auto& paramEntry : aCase.getCaseParameters()) {
+				if (paramEntry.first == "equals") {
+					mEntityTypeMappings[paramEntry.second] = definition;
 				}
 			}
 			/*		const std::string& entityName = I->getProperties()["equals"];

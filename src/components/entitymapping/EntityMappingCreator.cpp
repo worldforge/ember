@@ -69,9 +69,9 @@ using namespace AttributeComparers;
 
 static const CaseDefinition::ParameterEntry* findCaseParameter(const CaseDefinition::ParameterStore& parameters, const std::string& type)
 {
-	for (CaseDefinition::ParameterStore::const_iterator I = parameters.begin(); I != parameters.end(); ++I) {
-		if (I->first == type) {
-			return &(*I);
+	for (auto& entry : parameters) {
+		if (entry.first == type) {
+			return &(entry);
 		}
 	}
 	return 0;
@@ -103,41 +103,38 @@ EntityMapping* EntityMappingCreator::createMapping() {
 }
 
 void EntityMappingCreator::addEntityTypeCases(EntityTypeMatch* entityTypeMatch, MatchDefinition& matchDefinition) {
-	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
-	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
-		EntityTypeCase* aCase = new EntityTypeCase();
+	for (auto& aCase : matchDefinition.getCases()) {
+		EntityTypeCase* entityCase = new EntityTypeCase();
 
-		for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
-			if (J->first == "equals") {
-				aCase->addEntityType(mTypeService.getTypeByName(J->second));
+		for (auto& paramEntry : aCase.getCaseParameters()) {
+			if (paramEntry.first == "equals") {
+				entityCase->addEntityType(mTypeService.getTypeByName(paramEntry.second));
 			}
 		}
 
-/*			const std::string& entityName = I->getProperties()["equals"];
+/*			const std::string& entityName = aCase.getProperties()["equals"];
 		std::vector<std::string> splitNames = EntityMappingManager::splitString(entityName, "|", 100);
 		for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 			aCase->addEntityType(mTypeService.getTypeByName(*J));
 		}*/
-		mActionCreator.createActions(*mModelMap, aCase, *I);
+		mActionCreator.createActions(*mModelMap, entityCase, aCase);
 
-		CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
-		for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
-			addMatch(aCase, *J);
+		for (auto& aMatch : aCase.getMatches()) {
+			addMatch(entityCase, aMatch);
 		}
-		entityTypeMatch->addCase( aCase);
-		aCase->setParentMatch( entityTypeMatch);
+		entityTypeMatch->addCase( entityCase);
+		entityCase->setParentMatch( entityTypeMatch);
 	}
 }
 
 void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& matchDefinition)
 {
-	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
-	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
-		OutfitCase* aCase = new OutfitCase();
+	for (auto& aCase : matchDefinition.getCases()) {
+		OutfitCase* outfitCase = new OutfitCase();
 
-		for (CaseDefinition::ParameterStore::iterator J = I->getCaseParameters().begin(); J != I->getCaseParameters().end(); ++J) {
-			if (J->first == "equals") {
-				aCase->addEntityType(mTypeService.getTypeByName(J->second));
+		for (auto& paramEntry : aCase.getCaseParameters()) {
+			if (paramEntry.first == "equals") {
+				outfitCase->addEntityType(mTypeService.getTypeByName(paramEntry.second));
 			}
 		}
 /*			const std::string& entityName = I->getProperties()["equals"];
@@ -145,14 +142,13 @@ void EntityMappingCreator::addOutfitCases(OutfitMatch* match, MatchDefinition& m
 		for (std::vector<std::string>::const_iterator J = splitNames.begin(); J != splitNames.end(); ++J) {
 			aCase->addEntityType(mTypeService.getTypeByName(*J));
 		}*/
-		mActionCreator.createActions(*mModelMap, aCase, *I);
+		mActionCreator.createActions(*mModelMap, outfitCase, aCase);
 
-		CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
-		for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
-			addMatch(aCase, *J);
+		for (auto& aMatch : aCase.getMatches()) {
+			addMatch(outfitCase, aMatch);
 		}
-		match->addCase( aCase);
-		aCase->setParentMatch( match);
+		match->addCase( outfitCase);
+		outfitCase->setParentMatch( match);
 	}
 }
 
@@ -222,20 +218,19 @@ AttributeComparers::NumericComparer* EntityMappingCreator::createNumericComparer
 
 
 void EntityMappingCreator::addAttributeCases(AttributeMatch* match, MatchDefinition& matchDefinition) {
-	MatchDefinition::CaseStore::iterator endI = matchDefinition.getCases().end();
-	for (MatchDefinition::CaseStore::iterator I = matchDefinition.getCases().begin(); I != endI; ++I) {
-		Cases::AttributeComparers::AttributeComparerWrapper* wrapper = getAttributeCaseComparer(match, matchDefinition, *I);
+	for (auto& aCase : matchDefinition.getCases()) {
+		Cases::AttributeComparers::AttributeComparerWrapper* wrapper = getAttributeCaseComparer(match, matchDefinition, aCase);
 		if (wrapper) {
-			AttributeCase* aCase = new AttributeCase(wrapper);
+			AttributeCase* attrCase = new AttributeCase(wrapper);
 
-			mActionCreator.createActions(*mModelMap, aCase, *I);
+			mActionCreator.createActions(*mModelMap, attrCase, aCase);
 
-			CaseDefinition::MatchStore::iterator endJ = I->getMatches().end();
-			for (CaseDefinition::MatchStore::iterator J = I->getMatches().begin(); J != endJ; ++J) {
-				addMatch(aCase, *J);
+			for (auto& aMatch : aCase.getMatches()) {
+				addMatch(attrCase, aMatch);
 			}
-			match->addCase( aCase);
-			aCase->setParentMatch( match);
+
+			match->addCase( attrCase);
+			attrCase->setParentMatch( match);
 		}
 	}
 
