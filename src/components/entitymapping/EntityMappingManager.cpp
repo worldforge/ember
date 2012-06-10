@@ -28,8 +28,6 @@
 
 #include "EntityMappingCreator.h"
 
-#include <sigc++/bind.h>
-
 namespace Ember
 {
 
@@ -100,16 +98,10 @@ EntityMapping* EntityMappingManager::createMapping(Eris::Entity& entity, IAction
 		if (definition) {
 			EntityMappingCreator creator(*definition, entity, actionCreator, *mTypeService, view);
 			EntityMapping* mapping = creator.create();
-			entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EntityMappingManager::deleteMapping), mapping));
 			return mapping;
 		}
 	}
 	return 0;
-}
-
-void EntityMappingManager::deleteMapping(EntityMapping* mapping)
-{
-	delete mapping;
 }
 
 }

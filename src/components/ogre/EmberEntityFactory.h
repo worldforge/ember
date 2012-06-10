@@ -41,6 +41,10 @@ class Avatar;
 
 namespace Ember
 {
+namespace EntityMapping
+{
+class EntityMapping;
+}
 namespace OgreView
 {
 
@@ -121,6 +125,16 @@ protected:
 	 * @brief The scene which will handle the entities.
 	 */
 	Scene& mScene;
+
+	/**
+	 * @brief Deletes the entity mapping.
+	 *
+	 * This serves as a callback to Entity::BeingDeleted, allowing us to remove any bound mappings.
+	 *
+	 * @param mapping The mapping which should be deleted.
+	 */
+	void deleteMapping(EntityMapping::EntityMapping* mapping);
+
 
 };
 

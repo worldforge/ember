@@ -31,12 +31,6 @@
 #include <vector>
 #include <map>
 
-//#include <Atlas/Objects/Entity.h>
-
-//#include <sigc++/trackable.h>
-
-
-
 #include <Eris/TypeInfo.h>
 #include <Eris/Entity.h>
 
@@ -109,15 +103,6 @@ protected:
 	EntityMappingDefinitionStore mEntityTypeMappings;
 
 	Eris::TypeService* mTypeService;
-
-	/**
-	 * @brief Deletes the entity mapping.
-	 *
-	 * This serves as a callback to Entity::BeingDeleted, allowing us to remove any bound mappings.
-	 *
-	 * @param mapping The mapping which should be deleted.
-	 */
-	void deleteMapping(EntityMapping* mapping);
 
 };
 

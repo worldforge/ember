@@ -99,7 +99,6 @@ EntityMapping* EntityMappingCreator::createMapping() {
 
 	//since we already have the entity, we can perform a check right away
 	mModelMap->getRootEntityMatch().setEntity(&mEntity);
-// 	mModelMap->getRootEntityMatch().testEntity(mEntity);
 	return mModelMap;
 }
 

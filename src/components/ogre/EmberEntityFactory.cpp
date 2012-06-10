@@ -45,6 +45,8 @@
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 
+#include <sigc++/bind.h>
+
 #ifdef _WIN32
 #include "platform/platform_windows.h"
 #else
@@ -74,9 +76,16 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	//the creator binds the model mapping and this instance together by creating instance of EmberEntityModelAction and EmberEntityPartAction which in turn calls the setModel(..) and show/hideModelPart(...) methods.
 	EmberEntityActionCreator creator(*entity, mScene);
 	EntityMapping::EntityMapping* mapping = Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, creator, &mView);
+	entity->BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityFactory::deleteMapping), mapping));
 	mapping->initialize();
 	S_LOG_VERBOSE("Entity added to game view.");
 	return entity;
+}
+
+
+void EmberEntityFactory::deleteMapping(EntityMapping::EntityMapping* mapping)
+{
+	delete mapping;
 }
 
 bool EmberEntityFactory::accept(const Atlas::Objects::Entity::RootEntity &ge, Eris::TypeInfo* type)
