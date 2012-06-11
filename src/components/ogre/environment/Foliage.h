@@ -52,6 +52,7 @@ namespace Environment {
 
 class FoliageImpl;
 class FoliageBase;
+class FoliageLevelManager;
 
 /**
 @author Erik Hjortsberg
@@ -67,6 +68,12 @@ public:
 	Foliage(Terrain::TerrainManager& terrainManager);
 
 	~Foliage();
+	
+	/**
+	 * @brief Used to get a reference to the foliage level manager owned by this class.
+	 * @return Foliage level manager
+	 */
+	FoliageLevelManager* getFoliageLevelManager();
 
 	void initialize();
 
@@ -94,6 +101,11 @@ protected:
 
 
 	void createGrassMesh();
+	
+	/**
+	 * Utility object that can be used to manage detail level of foliage.
+	 */
+	FoliageLevelManager* mFoliageLevelManager;
 };
 
 }
