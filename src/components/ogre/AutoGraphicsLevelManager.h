@@ -16,23 +16,31 @@ namespace OgreView
  * It recieves all the return values from all slots registered to this signal and passes on a calculated OR of all the values back to the signal.
  * It is used to calculate whether a further change in graphics level is possible.
  */
+template<class T>
 struct FurtherChangePossibleAccumulater
 {
 	/**
 	 * The data type of the value returned to the signal. Required by sigc++
 	 */
-	typedef bool result_type;
+	typedef T result_type;
 
 	/**
 	 * An templated iterator to traverse through all the returns from the slots
 	 */
-	template<typename T_iterator>
+	template<class T_iterator>
 
 	/**
 	 * @brief The overloaded () function is called by sigc++ to calculate the value to be returned to the signal from the return values of the slots.
 	 * @return The value to be passed back to the signal
 	 */
-	result_type operator()(T_iterator, T_iterator) const;
+	result_type operator()(T_iterator first, T_iterator last) const
+	{
+		result_type endResult = false;
+		for (; first != last; ++first) {
+			endResult = endResult || *first;
+		}
+		return endResult;
+	}
 };
 
 /**
@@ -102,7 +110,7 @@ public:
 	 */
 	bool fpsChangeRequired(float);
 
-	sigc::signal<bool, float, FurtherChangePossibleAccumulater> changeRequired;
+	sigc::signal<bool, float>::accumulated<FurtherChangePossibleAccumulater<bool> > changeRequired;
 };
 
 /**

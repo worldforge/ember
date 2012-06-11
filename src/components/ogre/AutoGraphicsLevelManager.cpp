@@ -1,5 +1,7 @@
 #include <components/ogre/AutoGraphicsLevelManager.h>
 
+#include <components/ogre/EmberOgre.h>
+
 #include <Ogre.h>
 
 #include <cmath>
@@ -22,7 +24,7 @@ FpsUpdater::~FpsUpdater()
 
 bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 {
-	mCurrentFps = Ogre::RenderTarget::getLastFPS();
+	mCurrentFps = EmberOgre::getSingleton().getRenderWindow()->getLastFPS();
 	fpsUpdated.emit(mCurrentFps);
 	return true;
 }
@@ -32,14 +34,12 @@ float FpsUpdater::getCurrentFPS()
 	return mCurrentFps;
 }
 
-template<typename T_iterator>
-result_type FurtherChangePossibleAccumulater::operator()(T_iterator first, T_iterator last) const
+IGraphicalChangeAdapter::IGraphicalChangeAdapter()
 {
-	result_type endResult = false;
-	for (; first != last; ++first) {
-		endResult = endResult || first;
-	}
-	return true;
+}
+
+IGraphicalChangeAdapter::~IGraphicalChangeAdapter()
+{
 }
 
 bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
