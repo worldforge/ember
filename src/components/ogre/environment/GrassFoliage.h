@@ -67,6 +67,14 @@ protected:
 	float mMaxHeight;
 	float mMinWidth;
 	float mMaxWidth;
+	
+	/**
+	 * @brief Updates density of the grass foliage.
+	 * Edits the global density of the grass loader associated with the grass foliage. This affects the overall density of all grass foliages by a percentage.
+	 * eg. passing 0.1 will make all grass foliage density = (the default defined layer density) * 0.1;
+	 * @param newGrassDensity the new density percentage in float, where 1 implies normal or full density and 0 implies no density or no grass. 
+	 */
+	void updateDensity(float newGrassDensity);
 
 };
 
