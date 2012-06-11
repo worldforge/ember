@@ -1,15 +1,16 @@
-
 #include <components/ogre/AutoGraphicsLevelManager.h>
 
 #include <Ogre.h>
 
 #include <cmath>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-FpsUpdater::FpsUpdater() : 
-	mCurrentFps(0.0)
+FpsUpdater::FpsUpdater() :
+		mCurrentFps(0.0)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -21,7 +22,7 @@ FpsUpdater::~FpsUpdater()
 
 bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 {
-	mCurrentFps=Ogre::RenderTarget::getLastFPS();
+	mCurrentFps = Ogre::RenderTarget::getLastFPS();
 	fpsUpdated.emit(mCurrentFps);
 	return true;
 }
@@ -34,47 +35,41 @@ float FpsUpdater::getCurrentFPS()
 template<typename T_iterator>
 result_type FurtherChangePossibleAccumulater::operator()(T_iterator first, T_iterator last) const
 {
-	result_type endResult=false;
-	for (; first != last; ++first)
-	{
-		endResult= endResult || first; 
+	result_type endResult = false;
+	for (; first != last; ++first) {
+		endResult = endResult || first;
 	}
 	return true;
 }
 
-
 bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 {
 	//for now leaving it at this, need to update later with better callibrated values
-	float translatedChangeRequired = changeSize/10;
-	
-	bool furtherChangePossible;
-	furtherChangePossible = changeRequired.emit(translatedChangeRequired);
+	float translatedChangeRequired = changeSize / 10;
+
+	bool furtherChangePossible = changeRequired.emit(translatedChangeRequired);
 	return furtherChangePossible;
 }
 
-AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager() : 
-	mEnabled(false)
+AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager() :
+		mEnabled(false)
 {
-	mFpsUpdater.fpsUpdated.connect(sigc::ptr_fun(checkFps));
+	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
 {
-	
+
 }
 
 void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 {
-	float changeRequired;
-	changeRequired = mDefaultFps - currentFps;
-	
-	if(std::abs(changeRequired) >= 10)
-	{
-			changeGraphicsLevel(changeRequired);
+	float changeRequired = mDefaultFps - currentFps;
+
+	if (std::abs(changeRequired) >= 10) {
+		changeGraphicsLevel(changeRequired);
 	}
 }
-
 
 void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequired)
 {
@@ -87,7 +82,6 @@ IGraphicalChangeAdapter& AutomaticGraphicsLevelManager::getGraphicalAdapter()
 	return mGraphicalChangeAdapter;
 }
 
-	
 void AutomaticGraphicsLevelManager::setEnabled(bool newEnabled)
 {
 	mEnabled = newEnabled;
