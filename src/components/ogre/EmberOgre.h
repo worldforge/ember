@@ -119,6 +119,7 @@ class OgreResourceProvider;
 class OpcodeCollisionDetectorVisualizer;
 
 class ShaderManager;
+class AutomaticGraphicsLevelManager;
 
 class World;
 
@@ -166,6 +167,13 @@ public:
 	 */
 	ShaderManager* getShaderManager() const;
 
+	/**
+	 * @brief Gets the automatic graphics level manager, which handles changing of graphics level automatically.
+	 * 
+	 * @return The automatic graphics level manager.
+	 */
+	AutomaticGraphicsLevelManager* getAutomaticGraphicsLevelManager() const;
+	
 	/**
 	 * @brief Returns the main Jesus object, which should be used as the main entry into the Jesus subsystem.
 	 *
@@ -263,6 +271,11 @@ protected:
 	 * @brief Utility object to configure shaders
 	 */
 	ShaderManager* mShaderManager;
+	
+	/**
+	 * @brief Object that manages level of graphics automatically.
+	 */
+	AutomaticGraphicsLevelManager* mAutomaticGraphicsLevelManager;
 
 	/**
 	 * @brief An InputCommandMapper that will handle all general input events.
