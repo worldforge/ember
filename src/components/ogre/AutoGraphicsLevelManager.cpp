@@ -52,7 +52,7 @@ bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 }
 
 AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager() :
-		mEnabled(false)
+		mEnabled(false), mDefaultFps(45)
 {
 	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
 }
