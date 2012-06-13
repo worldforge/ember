@@ -110,10 +110,10 @@ int WebEmberManager::start(const std::string& windowHandle, const std::string& p
 
 void WebEmberManager::quit()
 {
-	Application* app;
+	MainLoopController* app;
 	// Timeout after 1 second.
 	int timeout = 1000;
-	while (mWindowHandle != "" && !(app = Application::getSingletonPtr())) {
+	while (mWindowHandle != "" && !(app = MainLoopController::getSingletonPtr())) {
 		// This is a rare situation, when start() is called and after that immediately quit() is called.
 		try {
 			boost::this_thread::sleep(boost::posix_time::milliseconds(1));
