@@ -38,7 +38,7 @@ public:
 	/**
 	 * @brief Signal sent when this component changes foliage density levels.
 	 */
-	sigc::signal<void, int> foliageDensityChanged;
+	sigc::signal<void, float> foliageDensityChanged;
 
 	/**
 	 * @brief Used to change the density of all foliage.

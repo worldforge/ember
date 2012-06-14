@@ -77,7 +77,7 @@ FoliageLevelManager* Foliage::getFoliageLevelManager()
 
 void Foliage::initialize()
 {
-
+	mFoliageLevelManager = new FoliageLevelManager(*this);
 	S_LOG_INFO("Initializing foliage system.");
 	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
 		const TerrainLayerDefinition* layerDef = *I;
@@ -103,7 +103,6 @@ void Foliage::initialize()
 			}
 		}
 	}
-	mFoliageLevelManager = new FoliageLevelManager(*this);
 }
 
 void Foliage::runCommand(const std::string &command, const std::string &args)
