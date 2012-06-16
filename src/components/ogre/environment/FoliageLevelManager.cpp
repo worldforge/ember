@@ -43,13 +43,9 @@ bool FoliageLevelManager::changeLevel(float level)
 	//holds whether a change in density is made at the end of trying to step up or step down
 	bool changeMade = false;
 
-	//decreasing foliage density since more fps is required
-	if (level > 0) {
+	if (level > 0) { //decreasing foliage density since more fps is required
 		changeMade = changeMade || stepDownFoliageDensity(mDefaultDensityStep);
-	}
-
-	//increasing foliage density since less fps is required
-	if (level < 0) {
+	} else if (level < 0) { //increasing foliage density since less fps is required
 		changeMade = changeMade || stepUpFoliageDensity(mDefaultDensityStep);
 	}
 
@@ -61,38 +57,41 @@ bool FoliageLevelManager::stepDownFoliageDensity(float step)
 {
 	if (mUpdatedDensity > step) { //step down only if existing density is greater than step
 		mUpdatedDensity -= step;
+		updateFoliageDensity();
 		return true;
 	} else if (mUpdatedDensity < step && mUpdatedDensity > 0) { //if there is still some positive density left which is smaller than step, set it to 0
 		mUpdatedDensity = 0;
+		updateFoliageDensity();
 		return true;
 	} else { //step down not possible
 		return false;
 	}
-	updateFoliageDensity();
 }
 
 bool FoliageLevelManager::stepUpFoliageDensity(float step)
 {
 	if (mUpdatedDensity + step <= 1) { //step up only if the step doesn't cause density to go over default density
 		mUpdatedDensity += step;
+		updateFoliageDensity();
 		return true;
 	} else if (mUpdatedDensity <= 1) { //if the density is still below default density but a default step causes it to go over default density
 		mUpdatedDensity = 1;
+		updateFoliageDensity();
+		return true;
 	} else {
 		return false; //step up not possible
 	}
-	updateFoliageDensity();
 }
 
 bool FoliageLevelManager::changeFoliageDensity(float density)
 {
 	if (density >= 0) { //change the density as long as it is above 0
 		mUpdatedDensity = density;
+		updateFoliageDensity();
 		return true;
 	} else {
 		return false;
 	}
-	updateFoliageDensity();
 }
 
 }
