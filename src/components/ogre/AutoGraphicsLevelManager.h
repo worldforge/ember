@@ -82,6 +82,11 @@ protected:
 	 * Holds the current Fps
 	 */
 	float mCurrentFps;
+	
+	/**
+	 * Time in milliseconds at last fps update
+	 */
+	long mTimeAtLastUpdate;
 
 };
 

@@ -1,6 +1,7 @@
 #include <components/ogre/AutoGraphicsLevelManager.h>
 
 #include <components/ogre/EmberOgre.h>
+#include <framework/Time.h>
 
 #include <Ogre.h>
 
@@ -12,7 +13,7 @@ namespace OgreView
 {
 
 FpsUpdater::FpsUpdater() :
-		mCurrentFps(0.0)
+		mCurrentFps(0.0), mTimeAtLastUpdate(Time::currentTimeMillis())
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -24,8 +25,12 @@ FpsUpdater::~FpsUpdater()
 
 bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 {
-	mCurrentFps = EmberOgre::getSingleton().getRenderWindow()->getLastFPS();
-	fpsUpdated.emit(mCurrentFps);
+	long currentTime = Time::currentTimeMillis();
+	if (currentTime - mTimeAtLastUpdate >= 1500) {
+		mTimeAtLastUpdate = currentTime;
+		mCurrentFps = EmberOgre::getSingleton().getRenderWindow()->getLastFPS();
+		fpsUpdated.emit(mCurrentFps);
+	}
 	return true;
 }
 
@@ -52,7 +57,7 @@ bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 }
 
 AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager() :
-		mEnabled(false), mDefaultFps(45)
+		mEnabled(false), mDefaultFps(60)
 {
 	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
 }
