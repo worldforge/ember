@@ -31,7 +31,6 @@
 #include "OgrePagingLandScapeOptions.h"
 #include "EmberPagingLandScapeData2D_HeightField.h"
 #include "EmberPagingLandScapeTexture.h"
-#include "model/Model.h"
 
 using namespace Ogre;
 
@@ -85,20 +84,6 @@ namespace OgreView {
 	IPageDataProvider* EmberPagingSceneManager::getProvider()
 	{
 		return mProvider;
-	}
-
-
-	Model::Model* EmberPagingSceneManager::createModel(
-									const Ogre::String& modelName,
-									const Ogre::String& modelDefinitionName )
-	{
-		// delegate to factory implementation
-		Ogre::NameValuePairList params;
-		params["modeldefinition"] = modelDefinitionName;
-		return static_cast<Model::Model*>(
-			createMovableObject(modelName, Model::ModelFactory::FACTORY_TYPE_NAME, 
-				&params));
-	
 	}
 	
 	const Ogre::String& EmberPagingSceneManager::getTypeName(void) const

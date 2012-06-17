@@ -35,9 +35,6 @@ class EmberPagingSceneManager;
 namespace Terrain {
 class ITerrainPageBridge;
 }
-namespace Model {
-class Model;
-}
 
 /**
  * @brief Page data for one page in the terrain rendering system.
@@ -90,14 +87,6 @@ public:
 	void InitScene( void );
 
     EmberPagingSceneManager(const Ogre::String &name);
-	
-	/**
-	 *    Utility method for creating a new Model.
-	 * @param modelName the id of the model
-	 * @param modelDefinitionName the name of the model defition from which the model should be created
-	 * @return 
-	 */
-	Model::Model* createModel(const Ogre::String& modelName, const Ogre::String& modelDefinitionName);
 									
 	void registerProvider(IPageDataProvider* provider);
 	
