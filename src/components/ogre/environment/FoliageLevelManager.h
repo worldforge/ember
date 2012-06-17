@@ -8,10 +8,11 @@ namespace Ember
 {
 namespace OgreView
 {
+class AutomaticGraphicsLevelManager;
+
 namespace Environment
 {
 
-class AutomaticGraphicsLevelManager;
 class Foliage;
 /**
  * @brief This class manages the detail level of foliage by responding to the changeRequired signal from IGraphicalManager.
@@ -23,13 +24,19 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	FoliageLevelManager(Foliage& foliage);
+	FoliageLevelManager(Foliage& foliage, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
 
 	/**
 	 * @brief Destructor.
 	 */
 	~FoliageLevelManager();
 
+	/**
+	 * @brief Initializes the foliage level manager.
+	 * The manager starts listening for graphics detail change required signals and acting on them.
+	 */
+	void initialize();
+	
 	/**
 	 * @brief Signal sent out when this component makes a change in the detail level of foliage.
 	 */
@@ -99,6 +106,11 @@ protected:
 	 * Reference to the foliage class that owns this class.
 	 */
 	Foliage& mFoliage;
+	
+	/**
+	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
+	 */
+	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
 
 };
 

@@ -28,7 +28,6 @@
 
 #include "framework/LoggingInstance.h"
 
-#include "Foliage.h"
 #include "FoliageLayer.h"
 
 #include "../Scene.h"
@@ -41,7 +40,6 @@
 #include "pagedgeometry/include/PagedGeometry.h"
 #include "pagedgeometry/include/BatchPage.h"
 #include "pagedgeometry/include/GrassLoader.h"
-#include "FoliageLevelManager.h"
 
 namespace Ember {
 namespace OgreView {
@@ -69,7 +67,6 @@ GrassFoliage::GrassFoliage(Terrain::TerrainManager& terrainManager, const Terrai
 	if (mFoliageDefinition.hasParameter("maxWidth")) {
 		mMaxWidth = atof(mFoliageDefinition.getParameter("maxWidth").c_str());
 	}
-	Foliage::getSingleton().getFoliageLevelManager()->foliageDensityChanged.connect(sigc::mem_fun(*this, &GrassFoliage::updateDensity));
 }
 
 GrassFoliage::~GrassFoliage()
@@ -176,7 +173,7 @@ void GrassFoliage::frameStarted()
 
 void GrassFoliage::updateDensity(float newGrassDensity)
 {
-	mGrassLoader ->setDensityFactor(newGrassDensity);
+	mGrassLoader->setDensityFactor(newGrassDensity);
 }
 
 

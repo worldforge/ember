@@ -17,16 +17,19 @@ namespace OgreView
 namespace Environment
 {
 
-FoliageLevelManager::FoliageLevelManager(Foliage& foliage) :
-		mThresholdLevel(1), mDefaultDensityStep(0.2), mUpdatedDensity(1), mFoliage(foliage)
+FoliageLevelManager::FoliageLevelManager(Foliage& foliage, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
+		mThresholdLevel(1), mDefaultDensityStep(0.2), mUpdatedDensity(1), mFoliage(foliage), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
 {
-	Ember::OgreView::AutomaticGraphicsLevelManager* automaticGraphicsLevelManager = EmberOgre::getSingleton().getAutomaticGraphicsLevelManager();
-	mChangeRequiredConnection = automaticGraphicsLevelManager->getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &FoliageLevelManager::changeLevel));
 }
 
 FoliageLevelManager::~FoliageLevelManager()
 {
 	mChangeRequiredConnection.disconnect();
+}
+
+void FoliageLevelManager::initialize()
+{
+	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &FoliageLevelManager::changeLevel));
 }
 
 void FoliageLevelManager::updateFoliageDensity()

@@ -41,6 +41,8 @@ namespace Forests {
 namespace Ember {
 namespace OgreView {
 
+class AutomaticGraphicsLevelManager;
+
 namespace Terrain
 {
 class TerrainFoliageDefinition;
@@ -65,7 +67,7 @@ public:
 	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
 	typedef std::vector<FoliageBase*> FoliageStore;
 
-	Foliage(Terrain::TerrainManager& terrainManager);
+	Foliage(Terrain::TerrainManager& terrainManager, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
 
 	~Foliage();
 	
@@ -101,6 +103,13 @@ protected:
 
 
 	void createGrassMesh();
+	
+	/**
+	 * @brief Updates density of all foliage.
+	 * eg. passing 0.1 will make all foliage density = (the default defined layer density) * 0.1;
+	 * @param newDensity the new density percentage in float, where 1 implies normal or full density and 0 implies no density or no foliage. 
+	 */
+	void updateDensity(float newDensity);
 	
 	/**
 	 * Utility object that can be used to manage detail level of foliage.

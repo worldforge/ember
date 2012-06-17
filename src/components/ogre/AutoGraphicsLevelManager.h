@@ -54,7 +54,7 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	FpsUpdater();
+	FpsUpdater(Ogre::RenderWindow& renderWindow);
 
 	/**
 	 * @brief Destructor
@@ -79,10 +79,15 @@ public:
 
 protected:
 	/**
+	 * Ogre render window reference from which it updates it's fps.
+	 */
+	Ogre::RenderWindow& mRenderWindow;
+
+	/**
 	 * Holds the current Fps
 	 */
 	float mCurrentFps;
-	
+
 	/**
 	 * Time in milliseconds at last fps update
 	 */
@@ -132,7 +137,7 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	AutomaticGraphicsLevelManager();
+	AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow);
 
 	/**
 	 * @brief Destructor

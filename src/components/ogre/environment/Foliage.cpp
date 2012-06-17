@@ -52,10 +52,11 @@ namespace OgreView
 namespace Environment
 {
 
-Foliage::Foliage(Terrain::TerrainManager& terrainManager) :
-	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageLevelManager(0)
+Foliage::Foliage(Terrain::TerrainManager& terrainManager, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
+	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageLevelManager(new FoliageLevelManager(*this, automaticGraphicsLevelManager))
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
+	mFoliageLevelManager->foliageLevelChanged.connect(sigc::mem_fun(*this, &Foliage::updateDensity));
 }
 
 Foliage::~Foliage()
@@ -77,7 +78,6 @@ FoliageLevelManager* Foliage::getFoliageLevelManager()
 
 void Foliage::initialize()
 {
-	mFoliageLevelManager = new FoliageLevelManager(*this);
 	S_LOG_INFO("Initializing foliage system.");
 	for (TerrainLayerDefinitionManager::DefinitionStore::const_iterator I = TerrainLayerDefinitionManager::getSingleton().getDefinitions().begin(); I != TerrainLayerDefinitionManager::getSingleton().getDefinitions().end(); ++I) {
 		const TerrainLayerDefinition* layerDef = *I;
@@ -103,6 +103,7 @@ void Foliage::initialize()
 			}
 		}
 	}
+	mFoliageLevelManager->initialize();
 }
 
 void Foliage::runCommand(const std::string &command, const std::string &args)
@@ -131,6 +132,14 @@ bool Foliage::frameStarted(const Ogre::FrameEvent& evt)
 
 	return true;
 }
+
+void Foliage::updateDensity(float newDensity)
+{
+	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
+		(*I)->updateDensity(newDensity);
+	}
+}
+
 }
 }
 }

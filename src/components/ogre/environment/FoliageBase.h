@@ -86,6 +86,15 @@ public:
 	virtual void initialize() = 0;
 
 	virtual void frameStarted() = 0;
+	
+	/**
+	 * @brief Updates density of the foliage.
+	 * This affects the overall density of the foliage by a percentage.
+	 * eg. passing 0.1 will make the foliage density = (the default defined layer density) * 0.1;
+	 * @param newDensity the new density percentage in float, where 1 implies normal or full density and 0 implies no density.
+	 * @note Should be overriden in the deriving foliage layer to provide ability to update density. 
+	 */
+	virtual void updateDensity(float) { }
 
 protected:
 

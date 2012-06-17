@@ -12,8 +12,8 @@ namespace Ember
 namespace OgreView
 {
 
-FpsUpdater::FpsUpdater() :
-		mCurrentFps(0.0), mTimeAtLastUpdate(Time::currentTimeMillis())
+FpsUpdater::FpsUpdater(Ogre::RenderWindow& renderWindow) :
+		mCurrentFps(0.0), mTimeAtLastUpdate(Time::currentTimeMillis()), mRenderWindow(renderWindow)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -28,7 +28,7 @@ bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 	long currentTime = Time::currentTimeMillis();
 	if (currentTime - mTimeAtLastUpdate >= 1500) {
 		mTimeAtLastUpdate = currentTime;
-		mCurrentFps = EmberOgre::getSingleton().getRenderWindow()->getLastFPS();
+		mCurrentFps = mRenderWindow.getLastFPS();
 		fpsUpdated.emit(mCurrentFps);
 	}
 	return true;
@@ -56,8 +56,8 @@ bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 	return furtherChangePossible;
 }
 
-AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager() :
-		mEnabled(false), mDefaultFps(60)
+AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow) :
+		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow)
 {
 	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
 }
