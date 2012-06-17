@@ -984,6 +984,28 @@ void XMLModelDefinitionSerializer::exportActions(ModelDefinitionPtr modelDef, Ti
 		actionElem.SetAttribute("name", (*I)->getName().c_str());
 		actionElem.SetDoubleAttribute("speed", (*I)->getAnimationSpeed());
 
+
+		TiXmlElement activationsElem("activations");
+		for (ActivationDefinitionStore::const_iterator J = (*I)->getActivationDefinitions().begin(); J != (*I)->getActivationDefinitions().end(); ++J) {
+			TiXmlElement activationElem("activation");
+			std::string type;
+			switch ((*J)->type) {
+			case ActivationDefinition::MOVEMENT:
+				type = "movement";
+				break;
+			case ActivationDefinition::ACTION:
+				type = "action";
+				break;
+			case ActivationDefinition::TASK:
+				type = "task";
+				break;
+			}
+			activationElem.SetAttribute("type", type);
+			activationElem.InsertEndChild(TiXmlText((*J)->trigger));
+			activationsElem.InsertEndChild(activationElem);
+		}
+		actionElem.InsertEndChild(activationsElem);
+
 		if ((*I)->getAnimationDefinitions().size() > 0) {
 			TiXmlElement animationsElem("animations");
 			for (AnimationDefinitionsStore::const_iterator J = (*I)->getAnimationDefinitions().begin(); J != (*I)->getAnimationDefinitions().end(); ++J) {
