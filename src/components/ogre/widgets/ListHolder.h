@@ -46,13 +46,13 @@ This is done by calling the facade methods of this class instead of directly cal
 */
 class ListHolder{
 public:
-    /**
+
+	/**
      * Ctor.
      * @param listbox A valid Listbox control. This is the list which will be filtered.
-     * @param filterEditbox A valid Editbox. This is where the user enters the filtering text.
-     * @return 
+     * @param filterEditbox An optional valid Editbox. This is where the user enters the filtering text.
      */
-    ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox);
+    ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox = 0);
 
     virtual ~ListHolder();
     

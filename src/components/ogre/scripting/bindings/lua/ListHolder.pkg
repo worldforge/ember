@@ -30,6 +30,7 @@ namespace Gui {
 */
 class ListHolder {
 public:
+    ListHolder(CEGUI::Listbox* listbox);
     ListHolder(CEGUI::Listbox* listbox, CEGUI::Editbox* filterEditbox);
 
     ~ListHolder();
