@@ -354,10 +354,12 @@
                             <Property Name='UnifiedSize' Value='{{0,100.0},{1,-135.0}}'/>
                             <Property Name='UnifiedPosition' Value='{{0,160.0},{0,90.0}}'/>
                             <Property Name='Sort' Value='true' />
+                            <Property Name='Visible' Value='False' />
                         </Window>
                         <Window Type='EmberLook/Editbox' Name='AttachPointModelListFilter'>
                             <Property Name='UnifiedSize' Value='{{0,100},{0,25}}' />
                             <Property Name='UnifiedPosition' Value='{{0,160},{1,-30}}' />
+                            <Property Name='Visible' Value='False' />
                         </Window>                        
                     </Window>
                 </Window>

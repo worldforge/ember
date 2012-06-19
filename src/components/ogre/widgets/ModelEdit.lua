@@ -799,6 +799,7 @@ function ModelEdit:buildWidget()
 		
 		local attachPointPreviewCombobox = CEGUI.toCombobox(self.widget:getWindow("AttachPointPreviewType"))
 		local attachPointPreviewModelList = CEGUI.toListbox(self.widget:getWindow("AttachPointModelList"))
+		local attachPointPreviewModelListFilter = CEGUI.toEditbox(self.widget:getWindow("AttachPointModelListFilter"))
 		
 		self.attachPointsList = self.widget:getWindow("AttachPointsList")
 		self.attachPointsList = CEGUI.toListbox(self.attachPointsList)
@@ -855,11 +856,17 @@ function ModelEdit:buildWidget()
 			local item = attachPointPreviewCombobox:getSelectedItem()
 			if item then
 				local selectId = item:getID()
-				if selectId == 1 and not self.attachPointPreviewModelListAdapter then
-					local attachPointPreviewModelListFilter = CEGUI.toEditbox(self.widget:getWindow("AttachPointModelListFilter"))
-					self.attachPointPreviewModelListHolder = Ember.OgreView.Gui.ListHolder:new(attachPointPreviewModelList, attachPointPreviewModelListFilter)
-					self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new(self.attachPointPreviewModelListHolder, Ember.OgreView.Model.ModelDefinitionManager:getSingleton())
-					self.attachPointPreviewModelListAdapter:update()
+				if selectId == 1 then
+					attachPointPreviewModelList:setVisible(true)
+					attachPointPreviewModelListFilter:setVisible(true)
+					if not self.attachPointPreviewModelListAdapter then
+						self.attachPointPreviewModelListHolder = Ember.OgreView.Gui.ListHolder:new(attachPointPreviewModelList, attachPointPreviewModelListFilter)
+						self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new(self.attachPointPreviewModelListHolder, Ember.OgreView.Model.ModelDefinitionManager:getSingleton())
+						self.attachPointPreviewModelListAdapter:update()
+					end
+				else
+					attachPointPreviewModelList:setVisible(false)
+					attachPointPreviewModelListFilter:setVisible(false)
 				end
 			end
 		
