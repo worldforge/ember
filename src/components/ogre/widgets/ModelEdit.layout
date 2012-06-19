@@ -345,6 +345,20 @@
                             <Property Name='Text' Value='Rotate' />
                             <Property Name='Tooltip' Value='Press and hold to rotate.' />
                         </Window>
+                        <Window Type='EmberLook/Combobox' Name='AttachPointPreviewType'>
+                            <Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}'/>
+                            <Property Name='UnifiedPosition' Value='{{0,160.0},{0,60.0}}'/>
+                            <Property Name='ReadOnly' Value='true'/>
+                        </Window>
+                        <Window Type='EmberLook/Listbox' Name='AttachPointModelList'>
+                            <Property Name='UnifiedSize' Value='{{0,100.0},{1,-135.0}}'/>
+                            <Property Name='UnifiedPosition' Value='{{0,160.0},{0,90.0}}'/>
+                            <Property Name='Sort' Value='true' />
+                        </Window>
+                        <Window Type='EmberLook/Editbox' Name='AttachPointModelListFilter'>
+                            <Property Name='UnifiedSize' Value='{{0,100},{0,25}}' />
+                            <Property Name='UnifiedPosition' Value='{{0,160},{1,-30}}' />
+                        </Window>                        
                     </Window>
                 </Window>
                 <Window Type='DefaultWindow' Name='SubModelInfo'>

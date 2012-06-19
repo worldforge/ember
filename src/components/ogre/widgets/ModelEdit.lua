@@ -795,6 +795,11 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 
+
+		
+		local attachPointPreviewCombobox = CEGUI.toCombobox(self.widget:getWindow("AttachPointPreviewType"))
+		local attachPointPreviewModelList = CEGUI.toListbox(self.widget:getWindow("AttachPointModelList"))
+		
 		self.attachPointsList = self.widget:getWindow("AttachPointsList")
 		self.attachPointsList = CEGUI.toListbox(self.attachPointsList)
 		self.attachPointsList.getSelected = function()
@@ -804,21 +809,64 @@ function ModelEdit:buildWidget()
 			end
 			return nil
 		end
-		self.attachPointsList:subscribeEvent("ItemSelectionChanged", function(args)
+		local updateAttachPointPreview = function()
 			local attachPoint = self.attachPointsList.getSelected()
 			if attachPoint then
-				self.modelHelper:showAttachPointHelper(attachPoint.Name)
+				local item = attachPointPreviewCombobox:getSelectedItem()
+				if item then
+					local selectId = item:getID()
+					if selectId == 0 then
+						self.modelHelper:showAttachPointHelperEntity(attachPoint.Name)
+					elseif selectId == 1 then
+						local modelItem = attachPointPreviewModelList:getFirstSelectedItem()
+						if modelItem then
+							local modelName = modelItem:getText()
+							self.modelHelper:showAttachPointHelperModel(attachPoint.Name, modelName)
+						end
+					end
+				end
 			else
 				self.modelHelper:hideAttachPointHelper()
 			end
+		end
+		self.attachPointsList:subscribeEvent("ItemSelectionChanged", function(args)
+			updateAttachPointPreview()
 			return true
 		end)
+		
+		attachPointPreviewModelList:subscribeEvent("ItemSelectionChanged", function(args)
+			updateAttachPointPreview()
+			return true
+		end)
+		
 		
 		local attachPointRotateButton = self.widget:getWindow("AttachPointRotate")
 		attachPointRotateButton:subscribeEvent("MouseButtonDown", function(args)
 			self.modelHelper:startInputRotate()
 			return true
 		end)
+		
+		local item = Ember.OgreView.Gui.ColouredListItem:new("Arrow", 0)
+		attachPointPreviewCombobox:addItem(item)
+		item = Ember.OgreView.Gui.ColouredListItem:new("Model", 1)
+		attachPointPreviewCombobox:addItem(item)
+		attachPointPreviewCombobox:setItemSelectState(0, true)
+		attachPointPreviewCombobox:subscribeEvent("ListSelectionChanged", function(args)
+			local item = attachPointPreviewCombobox:getSelectedItem()
+			if item then
+				local selectId = item:getID()
+				if selectId == 1 and not self.attachPointPreviewModelListAdapter then
+					local attachPointPreviewModelListFilter = CEGUI.toEditbox(self.widget:getWindow("AttachPointModelListFilter"))
+					self.attachPointPreviewModelListHolder = Ember.OgreView.Gui.ListHolder:new(attachPointPreviewModelList, attachPointPreviewModelListFilter)
+					self.attachPointPreviewModelListAdapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new(self.attachPointPreviewModelListHolder, Ember.OgreView.Model.ModelDefinitionManager:getSingleton())
+					self.attachPointPreviewModelListAdapter:update()
+				end
+			end
+		
+			updateAttachPointPreview()
+			return true
+		end)
+		
 	
 		self.contentparts.modelInfo.renderImage =  self.widget:getWindow("MeshPreviewImage")
 		--self.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(self.contentparts.modelInfo.renderImage)
@@ -1075,6 +1123,8 @@ function ModelEdit:shutdown()
 	deleteSafe(self.translateAdapter)
 	deleteSafe(self.modelsAdapter)
 	deleteSafe(self.modelslistholder)
+	deleteSafe(self.attachPointPreviewModelListAdapter)
+	deleteSafe(self.attachPointPreviewModelListHolder)
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 end
