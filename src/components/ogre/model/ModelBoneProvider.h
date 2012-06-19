@@ -21,6 +21,7 @@
 
 #include "components/ogre/INodeProvider.h"
 #include "components/ogre/model/ModelDefinition.h"
+#include "components/ogre/model/Model.h"
 #include <string>
 
 namespace Ogre
@@ -35,7 +36,6 @@ namespace OgreView
 {
 namespace Model
 {
-class Model;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -88,6 +88,12 @@ public:
 	 */
 	virtual void setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation);
 
+	/**
+	 * @brief Gets the attach point wrapper created as a result of attachment.
+	 * @return An attach point wrapper, or null if none was created.
+	 */
+	Model::AttachPointWrapper* getAttachPointWrapper();
+
 protected:
 
 	typedef std::vector<ModelBoneProvider*> ModelBoneProviderStore;
@@ -112,21 +118,10 @@ protected:
 	std::string mAttachPointName;
 
 	/**
-	 * @brief The TagPoint created by this instance.
-	 * @note This can be null if there's no MovableObject available, since one can only create a TagPoint if there's a MovableObject which can be attached.
-	 */
-	Ogre::TagPoint* mNode;
-
-	/**
 	 * @brief An optional movable object which is attached to the Model.
 	 * @note If there's no MovableObject, there's also no TagPoint available.
 	 */
 	Ogre::MovableObject* mAttachedObject;
-
-	/**
-	 * @brief The attach point definition.
-	 */
-	AttachPointDefinition mAttachPointDefinition;
 
 	/**
 	 * @brief The parent provider, if any.
@@ -152,6 +147,12 @@ protected:
 	 * When positioning the TagPoint, the derived orientation, which takes into account the orientation of the parent entities, is used however.
 	 */
 	Ogre::Quaternion mOrientation;
+
+	/**
+	 * @brief The attach point wrapper created by this instance.
+	 * @note This can be null if there's no MovableObject available, since one can only create a attach point wrapper if there's a MovableObject which can be attached.
+	 */
+	Model::AttachPointWrapper* mAttachPointWrapper;
 
 	/**
 	 * @brief Updates the position and orientation of the entity, taking parent model attachments into account.
