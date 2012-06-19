@@ -57,10 +57,18 @@ public:
 	~ModelEditHelper();
 
 	/**
+	 * @brief Shows a helper entity attached to the specified attach point, to help when authoring.
+	 * @param attachPointName The attach point name to show a helper for.
+	 * @param meshName The name of the mesh to attach. Optional; if left out a general arrow mesh will be used.
+	 */
+	void showAttachPointHelperEntity(const std::string& attachPointName, const std::string& meshName = "3d_objects/primitives/models/arrow.mesh");
+
+	/**
 	 * @brief Shows a helper model attached to the specified attach point, to help when authoring.
 	 * @param attachPointName The attach point name to show a helper for.
+	 * @param meshName The name of the model to attach.
 	 */
-	void showAttachPointHelper(const std::string& attachPointName);
+	void showAttachPointHelperModel(const std::string& attachPointName, const std::string& modelName);
 
 	/**
 	 * @brief Hides any helper attach point model.
@@ -102,7 +110,7 @@ private:
 	/**
 	 * @brief A marker entity used to provide graphical representation of attach points being edited.
 	 */
-	Ogre::Entity* mAttachPointMarker;
+	Ogre::MovableObject* mAttachPointMarker;
 
 	/**
 	 * @brief Catches all future input to direct it to alter the currently shown attach point.

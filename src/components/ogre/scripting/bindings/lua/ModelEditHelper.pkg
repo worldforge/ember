@@ -13,7 +13,20 @@ public:
 	ModelEditHelper(Model::Model* model);
 	~ModelEditHelper();
 
-	void showAttachPointHelper(const std::string& attachPointName);
+	/**
+	 * @brief Shows a helper entity attached to the specified attach point, to help when authoring.
+	 * @param attachPointName The attach point name to show a helper for.
+	 * @param meshName The name of the mesh to attach. Optional; if left out a general arrow mesh will be used.
+	 */
+	void showAttachPointHelperEntity(const std::string& attachPointName, const std::string& meshName);
+	void showAttachPointHelperEntity(const std::string& attachPointName);
+
+	/**
+	 * @brief Shows a helper model attached to the specified attach point, to help when authoring.
+	 * @param attachPointName The attach point name to show a helper for.
+	 * @param meshName The name of the model to attach.
+	 */
+	void showAttachPointHelperModel(const std::string& attachPointName, const std::string& modelName);
 	void hideAttachPointHelper();
 	void startInputRotate();
 
