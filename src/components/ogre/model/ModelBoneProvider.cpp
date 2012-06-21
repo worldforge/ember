@@ -39,7 +39,15 @@ ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& atta
 ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject, ModelBoneProvider* parent) :
 	mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(parent), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0)
 {
-	init();
+	//Check if the attached object is the same for this new instance as for its parent. If so, it's a "scale node".
+	//If so, we should just transfer the ownership to the new instance.
+	if (parent->mAttachedObject == movableObject) {
+		parent->mAttachedObject = 0;
+		mAttachPointWrapper = parent->mAttachPointWrapper;
+		parent->mAttachPointWrapper = 0;
+	} else {
+		init();
+	}
 }
 
 ModelBoneProvider::~ModelBoneProvider()
@@ -107,7 +115,9 @@ bool ModelBoneProvider::getVisualize(const std::string& visualization) const
 void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
 {
 	mPosition = position;
-	if (mAttachPointWrapper) {
+	//Only apply the attach point definition rotation to the first provider in a chained list of providers.
+	//This is because all providers will in reality use the same Ogre::TagPoint, and therefore the orientation should only be applied once.
+	if (mAttachPointWrapper && !mParent) {
 		mOrientation = orientation * mAttachPointWrapper->Definition.Rotation;
 	} else {
 		mOrientation = orientation;
