@@ -1,35 +1,35 @@
 <models>
-    <model icon="" name="male" showcontained="false" usescaleof="height">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
+    <model name="male" usescaleof="height" showcontained="false" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
             <submodel mesh="3d_skeletons/bipeds/races/human/male/male.mesh">
                 <parts>
-                    <part group="torso" name="bare_torso" show="true">
+                    <part name="bare_torso" group="torso" show="true">
                         <subentities>
                             <subentity index="1" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="7" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="11" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
-                    <part group="legs" name="bare_legs" show="true">
+                    <part name="bare_legs" group="legs" show="true">
                         <subentities>
                             <subentity index="0" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="9" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="12" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
-                    <part group="feet" name="bare_feet" show="true">
+                    <part name="bare_feet" group="feet" show="true">
                         <subentities>
                             <subentity index="3" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
-                    <part group="head" name="bare_head" show="true">
+                    <part name="bare_head" group="head" show="true">
                         <subentities>
                             <subentity index="6" material="/global/bipeds/races/human/male/head/middle_aged" />
                         </subentities>
                     </part>
-                    <part group="arms" name="bare_arms" show="false">
+                    <part name="bare_arms" group="arms" show="false">
                         <subentities>
                             <subentity index="8" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="10" material="/global/bipeds/races/human/male/body/base" />
@@ -41,22 +41,22 @@
                             <subentity index="5" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
-                    <part group="eyes" name="eyes/blue" show="true">
+                    <part name="eyes/blue" group="eyes" show="true">
                         <subentities>
                             <subentity index="2" material="/global/characters/universal/eyes/blue" />
                         </subentities>
                     </part>
-                    <part group="eyes" name="eyes/green" show="false">
+                    <part name="eyes/green" group="eyes" show="false">
                         <subentities>
                             <subentity index="2" material="/global/characters/universal/eyes/green" />
                         </subentities>
                     </part>
-                    <part group="eyes" name="eyes/brown" show="false">
+                    <part name="eyes/brown" group="eyes" show="false">
                         <subentities>
                             <subentity index="2" material="/global/characters/universal/eyes/brown" />
                         </subentities>
                     </part>
-                    <part group="eyes" name="eyes/hazel" show="false">
+                    <part name="eyes/hazel" group="eyes" show="false">
                         <subentities>
                             <subentity index="2" material="/global/characters/universal/eyes/hazel" />
                         </subentities>
@@ -65,17 +65,17 @@
             </submodel>
             <submodel mesh="3d_skeletons/bipeds/races/human/male/attire/drystan_archer/drystan_archer.mesh">
                 <parts>
-                    <part group="feet" name="footwear" show="true">
+                    <part name="footwear" group="feet" show="true">
                         <subentities>
                             <subentity index="0" material="/global/bipeds/races/human/male/attire/drystan_archer/footwear" />
                         </subentities>
                     </part>
-                    <part group="legs" name="pants" show="true">
+                    <part name="pants" group="legs" show="true">
                         <subentities>
                             <subentity index="1" material="/global/bipeds/races/human/male/attire/drystan_archer/pants" />
                         </subentities>
                     </part>
-                    <part group="torso" name="shirt" show="true">
+                    <part name="shirt" group="torso" show="true">
                         <subentities>
                             <subentity index="2" material="/global/bipeds/races/human/male/attire/drystan_archer/shirt" />
                         </subentities>
@@ -84,7 +84,7 @@
             </submodel>
         </submodels>
         <actions>
-            <action name="__movement_idle" speed="1.000000">
+            <action name="__movement_idle" speed="1">
                 <activations>
                     <activation type="movement">idle</activation>
                 </activations>
@@ -97,7 +97,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_walk" speed="1.000000">
+            <action name="__movement_walk" speed="1">
                 <activations>
                     <activation type="movement">walk</activation>
                     <activation type="movement">swim</activation>
@@ -108,7 +108,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="__movement_run" speed="2.000000">
+            <action name="__movement_run" speed="2">
                 <activations>
                     <activation type="movement">run</activation>
                 </activations>
@@ -118,7 +118,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="eat" speed="1.000000">
+            <action name="eat" speed="1">
                 <activations>
                     <activation type="action">eat</activation>
                 </activations>
@@ -128,7 +128,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="pickup" speed="1.000000">
+            <action name="pickup" speed="1">
                 <activations>
                     <activation type="action">pickup</activation>
                 </activations>
@@ -138,7 +138,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="dig" speed="1.000000">
+            <action name="dig" speed="1">
                 <activations>
                     <activation type="action">dig</activation>
                     <activation type="task">cultivate</activation>
@@ -154,7 +154,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="chop" speed="1.000000">
+            <action name="chop" speed="1">
                 <activations>
                     <activation type="action">chop</activation>
                     <activation type="action">cut</activation>
@@ -170,7 +170,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="attack" speed="1.000000">
+            <action name="attack" speed="1">
                 <activations>
                     <activation type="action">attack</activation>
                     <activation type="action">punch</activation>
@@ -182,7 +182,7 @@
                     </animation>
                 </animations>
             </action>
-            <action name="fidgeting" speed="1.000000">
+            <action name="fidgeting" speed="1">
                 <activations>
                     <activation type="task">sift</activation>
                 </activations>
@@ -194,15 +194,15 @@
             </action>
         </actions>
         <attachpoints>
-            <attachpoint bone="RMiddleRoot" name="outfit.right_hand">
-                <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
+            <attachpoint name="outfit.right_hand" bone="RMiddleRoot">
+                <rotation x="-0.611592" y="0.0177145" z="-0.790975" degrees="178.84" />
             </attachpoint>
-            <!-- right_hand_wield is kept for backwards compatibility -->
-            <attachpoint bone="RMiddleRoot" name="right_hand_wield">
-                <rotation degrees="0.000000" x="1.000000" y="0.000000" z="0.000000" />
+            <attachpoint name="right_hand_wield" bone="RMiddleRoot">
+                <rotation x="-0.611592" y="0.0177145" z="-0.790975" degrees="178.84" />
             </attachpoint>
         </attachpoints>
         <views />
         <lights />
+        <bonegroups />
     </model>
 </models>
