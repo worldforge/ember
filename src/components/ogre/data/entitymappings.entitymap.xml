@@ -574,7 +574,7 @@
 			</case>
 		</entitymatch>
 	</entitymapping> 
-	<!-- autoentitymapping name="axe" / -->
+	<autoentitymapping name="knife" />
 	<autoentitymapping name="hammer" />
 	<autoentitymapping name="scythe" />
 	<autoentitymapping name="bucksaw" />
