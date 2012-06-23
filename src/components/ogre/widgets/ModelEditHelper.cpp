@@ -35,6 +35,65 @@ namespace OgreView
 namespace Gui
 {
 
+AttachPointHelper::AttachPointHelper(Model::Model& model, const std::string& attachPointName) :
+		mModel(model), mAttachPointName(attachPointName)
+{
+}
+
+AttachPointHelper::~AttachPointHelper()
+{
+}
+
+const std::string& AttachPointHelper::getAttachPointName() const
+{
+	return mAttachPointName;
+}
+
+Ogre::TagPoint* AttachPointHelper::getTagPoint() const
+{
+	return mAttachPointWrapper.TagPoint;
+}
+
+EntityAttachPointHelper::EntityAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& meshName) :
+		AttachPointHelper(model, attachPointName)
+{
+	mEntity = mModel._getManager()->createEntity(meshName);
+	mAttachPointWrapper = mModel.attachObjectToAttachPoint(attachPointName, mEntity);
+}
+
+EntityAttachPointHelper::~EntityAttachPointHelper()
+{
+	mModel.detachObjectFromBone(mEntity->getName());
+	mEntity->_getManager()->destroyMovableObject(mEntity);
+}
+
+Ogre::Quaternion EntityAttachPointHelper::getOrientation() const
+{
+	return getTagPoint()->getOrientation();
+}
+
+ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::string& attachPointName, const std::string& modelName) :
+		AttachPointHelper(model, attachPointName), mMount(0)
+{
+	mAttachedModel = Model::Model::createModel(*mModel._getManager(), modelName);
+	Model::ModelBoneProvider* boneProvider = new Model::ModelBoneProvider(mModel, attachPointName, mAttachedModel);
+	mMount = new Model::ModelMount(*mAttachedModel, boneProvider);
+	mMount->reset();
+	mAttachPointWrapper = *boneProvider->getAttachPointWrapper();
+}
+
+ModelAttachPointHelper::~ModelAttachPointHelper()
+{
+	delete mMount;
+	mAttachedModel->_getManager()->destroyMovableObject(mAttachedModel);
+}
+
+Ogre::Quaternion ModelAttachPointHelper::getOrientation() const
+{
+	//Since the model is rotated 90 degrees by the model mount we need to re-orient it.
+	return getTagPoint()->getOrientation() * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
+}
+
 ModelEditHelper::ModelEditHelper(Model::Model* model) :
 		mModel(model), mAttachPointHelper(0), mAttachPointMarker(0)
 {
@@ -50,71 +109,32 @@ ModelEditHelper::~ModelEditHelper()
 
 void ModelEditHelper::showAttachPointHelperEntity(const std::string& attachPointName, const std::string& meshName)
 {
-	if (mAttachPointMarker) {
-		if (mAttachPointMarker->getMovableType() != Ogre::EntityFactory::FACTORY_TYPE_NAME || static_cast<Ogre::Entity*>(mAttachPointMarker)->getMesh()->getName() != meshName) {
-			hideAttachPointHelper();
-			mAttachPointMarker->_getManager()->destroyMovableObject(mAttachPointMarker);
-			mAttachPointMarker = 0;
-		} else if (mAttachPointHelper && mAttachPointHelper->first == attachPointName) {
-			return;
-		}
+	try {
+		hideAttachPointHelper();
+		//this could fail with an exception if the mesh isn't found, so we need to set the mAttachPointHelper to 0 first.
+		mAttachPointHelper = new EntityAttachPointHelper(*mModel, attachPointName, meshName);
+	} catch (const std::exception& e) {
+		S_LOG_WARNING("Could not create attach point helper with mesh " << meshName << ".");
+		return;
 	}
-
-	if (!mAttachPointMarker) {
-		try {
-			mAttachPointMarker = mModel->_getManager()->createEntity("3d_objects/primitives/models/arrow.mesh");
-		} catch (const std::exception& e) {
-			S_LOG_WARNING("Could not create attach point arrow marker entity.");
-			return;
-		}
-	}
-	hideAttachPointHelper();
-	Model::Model::AttachPointWrapper wrapper = mModel->attachObjectToAttachPoint(attachPointName, mAttachPointMarker);
-	mAttachPointHelper = new AttachPointHelperType(attachPointName, wrapper);
 }
 
 void ModelEditHelper::showAttachPointHelperModel(const std::string& attachPointName, const std::string& modelName)
 {
-	if (mAttachPointMarker) {
-		if (mAttachPointMarker->getMovableType() != Model::ModelFactory::FACTORY_TYPE_NAME || static_cast<Model::Model*>(mAttachPointMarker)->getDefinition()->getName() != modelName) {
-			hideAttachPointHelper();
-			mAttachPointMarker->_getManager()->destroyMovableObject(mAttachPointMarker);
-			mAttachPointMarker = 0;
-		} else if (mAttachPointHelper && mAttachPointHelper->first == attachPointName) {
-			return;
-		}
-	}
-
-	Model::Model* model = 0;
-
-	if (!mAttachPointMarker) {
-		try {
-			model = Model::Model::createModel(*mModel->_getManager(), modelName);
-			mAttachPointMarker = model;
-		} catch (const std::exception& e) {
-			S_LOG_WARNING("Could not create attach point marker model.");
-			return;
-		}
-	}
-	hideAttachPointHelper();
-
-	if (model) {
-		Model::ModelBoneProvider* boneProvider = new Model::ModelBoneProvider(*mModel, attachPointName, model);
-		Model::ModelMount* mount = new Model::ModelMount(*model, boneProvider);
-		mount->reset();
-		Model::Model::AttachPointWrapper wrapper = *boneProvider->getAttachPointWrapper();
-		mAttachPointHelper = new AttachPointHelperType(attachPointName, wrapper);
+	try {
+		hideAttachPointHelper();
+		//this could fail with an exception if the model isn't found, so we need to set the mAttachPointHelper to 0 first.
+		mAttachPointHelper = new ModelAttachPointHelper(*mModel, attachPointName, modelName);
+	} catch (const std::exception& e) {
+		S_LOG_WARNING("Could not create attach point helper with model " << modelName << ".");
+		return;
 	}
 }
 
 void ModelEditHelper::hideAttachPointHelper()
 {
-	if (mAttachPointHelper) {
-		Model::Model::AttachPointWrapper wrapper = mAttachPointHelper->second;
-		mModel->detachObjectFromBone(mAttachPointHelper->second.Movable->getName());
-		delete mAttachPointHelper;
-		mAttachPointHelper = 0;
-	}
+	delete mAttachPointHelper;
+	mAttachPointHelper = 0;
 }
 
 void ModelEditHelper::startInputRotate()
@@ -135,7 +155,7 @@ void ModelEditHelper::releaseInput()
 bool ModelEditHelper::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	if (mAttachPointHelper) {
-		Ogre::TagPoint* tagPoint = mAttachPointHelper->second.TagPoint;
+		Ogre::TagPoint* tagPoint = mAttachPointHelper->getTagPoint();
 		//rotate the modelnode
 		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
 			tagPoint->roll(Ogre::Degree(motion.xRelativeMovement * 180));
@@ -154,9 +174,9 @@ bool ModelEditHelper::injectMouseButtonUp(const Input::MouseButton& button)
 	if (button == Input::MouseButtonLeft) {
 		if (mAttachPointHelper) {
 			for (Model::AttachPointDefinitionStore::const_iterator I = mModel->getDefinition()->getAttachPointsDefinitions().begin(); I != mModel->getDefinition()->getAttachPointsDefinitions().end(); ++I) {
-				if (I->Name == mAttachPointHelper->first) {
+				if (I->Name == mAttachPointHelper->getAttachPointName()) {
 					Model::AttachPointDefinition definition = *I;
-					definition.Rotation = mAttachPointHelper->second.TagPoint->getOrientation() * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
+					definition.Rotation = mAttachPointHelper->getOrientation();
 					mModel->getDefinition()->addAttachPointDefinition(definition);
 				}
 			}
