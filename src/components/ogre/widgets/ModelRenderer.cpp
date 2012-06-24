@@ -27,19 +27,14 @@
 #include "ModelRenderer.h"
 
 #include "EntityCEGUITexture.h"
-#include "../SimpleRenderContext.h"
-
-#include <elements/CEGUIGUISheet.h>
-
+#include "components/ogre/SimpleRenderContext.h"
 #include "components/ogre/model/Model.h"
 #include "framework/Exception.h"
+
 #include <OgreSceneManager.h>
+#include <elements/CEGUIGUISheet.h>
 
 #include <sigc++/bind.h>
-
-// #include "Widget.h"
-// #include "../GUIManager.h"
-
 
 namespace Ember
 {
@@ -49,7 +44,7 @@ namespace Gui
 {
 
 ModelRenderer::ModelRenderer(CEGUI::Window* image) :
-	MovableObjectRenderer(image), mModel(0)
+		MovableObjectRenderer(image), mModel(0)
 {
 }
 
@@ -67,6 +62,7 @@ void ModelRenderer::setModel(Model::Model* model)
 	if (model) {
 		node->attachObject(model);
 		repositionSceneNode();
+		rescaleAxisMarker();
 		mTexture->getRenderContext()->repositionCamera();
 		if (mAutoShowFull) {
 			mModelReloadedConnection = mModel->Reloaded.connect(sigc::mem_fun(*this, &ModelRenderer::model_Reloaded));
@@ -82,9 +78,6 @@ void ModelRenderer::repositionSceneNode()
 		Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 		if (node) {
 			node->setOrientation(Ogre::Quaternion::IDENTITY);
-			//rotate node to fit with WF space
-			//perhaps this is something to put in the model spec instead?
-			// 			node->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)90);
 			node->rotate(mModel->getRotation());
 
 			//translate the scale node according to the translate defined in the model
@@ -150,6 +143,7 @@ void ModelRenderer::showModel(const std::string& modelName)
 
 void ModelRenderer::model_Reloaded()
 {
+	rescaleAxisMarker();
 	showFull();
 }
 

@@ -205,9 +205,15 @@ void MovableObjectRenderer::setAutoShowFull(bool showFull)
 
 void MovableObjectRenderer::showFull()
 {
-//	if (mModel) {
-		mTexture->getRenderContext()->showFull(getMovableObject());
-//	}
+	mTexture->getRenderContext()->showFull(getMovableObject());
+}
+
+void MovableObjectRenderer::rescaleAxisMarker()
+{
+	if (mAxesNode && getMovableObject()) {
+		Ogre::Real axesScale = (getMovableObject()->getBoundingRadius() / 5.0f);
+		mAxesNode->setScale(axesScale, axesScale, axesScale);
+	}
 }
 
 void MovableObjectRenderer::setCameraDistance(float distance)

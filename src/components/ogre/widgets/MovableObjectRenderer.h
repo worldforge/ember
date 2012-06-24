@@ -228,6 +228,13 @@ protected:
 	 */
 	bool image_MouseWheel(const CEGUI::EventArgs& args);
 
+	/**
+	 * @brief Rescale the axis marker so that it's of a suitable size compared to the moveable object being shown.
+	 *
+	 * Call this whenever the movable object has changed.
+	 */
+	void rescaleAxisMarker();
+
 	EntityCEGUITexture* mTexture;
 	/**
 	 If true, the input will be caught when the user clicks on the image, allowing for rotation of the model.
