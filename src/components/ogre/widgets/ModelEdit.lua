@@ -1132,6 +1132,7 @@ end
 
 function ModelEdit:shutdown()
 	self.definitionPtr = nil
+	self.definition = nil
 	deleteSafe(self.modelHelper)
 	deleteSafe(self.submeshRenderer)
 	deleteSafe(self.renderer)
@@ -1165,7 +1166,7 @@ connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
 	
 	modelEdit:buildWidget()
 
-	connect(console.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
+	connect(modelEdit.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
 		modelEdit:shutdown()
 		modelEdit = nil
 	end)
