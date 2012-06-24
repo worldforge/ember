@@ -150,7 +150,7 @@ ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::s
 {
 	mAttachedModel = Model::Model::createModel(*mModel._getManager(), modelName);
 	Model::ModelBoneProvider* boneProvider = new Model::ModelBoneProvider(mModel, attachPointName, mAttachedModel);
-	mMount = new Model::ModelMount(*mAttachedModel, boneProvider);
+	mMount = new Model::ModelMount(*mAttachedModel, boneProvider, "gripped");
 	mMount->reset();
 	mAttachPointWrapper = *boneProvider->getAttachPointWrapper();
 }

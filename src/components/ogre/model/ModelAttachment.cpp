@@ -134,7 +134,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 			nodeProvider = mNodeProvider->createChildProvider(modelRepresentation ? &modelRepresentation->getModel() : 0);
 		}
 		if (modelRepresentation) {
-			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, "held");
+			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, "gripped");
 		} else {
 			return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
 		}
