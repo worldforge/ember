@@ -234,14 +234,23 @@ struct AttachPointDefinition
 {
 	std::string Name;
 	std::string BoneName;
-	Ogre::Quaternion Rotation;
-};
 
+	/**
+	 * @brief Rotation of the attach point.
+	 */
+	Ogre::Quaternion Rotation;
+
+	/**
+	 * @brief Translation of the attach point.
+	 */
+	Ogre::Vector3 Translation;
+};
 
 /**
  * @brief A reference to a bone group, with an optional weight.
  */
-struct BoneGroupRefDefinition {
+struct BoneGroupRefDefinition
+{
 	std::string Name;
 	float Weight;
 };

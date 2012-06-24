@@ -625,7 +625,7 @@ Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &a
 		if (I->Name == attachPointName) {
 			const std::string& boneName = I->BoneName;
 			//use the rotation in the attach point def
-			Ogre::TagPoint* tagPoint = attachObjectToBone(boneName, pMovable, offsetOrientation * I->Rotation, offsetPosition, scale);
+			Ogre::TagPoint* tagPoint = attachObjectToBone(boneName, pMovable, offsetOrientation * I->Rotation, offsetPosition + I->Translation, scale);
 			if (!mAttachPoints.get()) {
 				mAttachPoints = std::auto_ptr<AttachPointWrapperStore>(new AttachPointWrapperStore());
 			}

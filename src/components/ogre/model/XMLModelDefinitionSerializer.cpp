@@ -577,6 +577,14 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 			attachPointDef.Rotation = Ogre::Quaternion::IDENTITY;
 		}
 
+		TiXmlElement* tranelem = apElem->FirstChildElement("translation");
+		if (tranelem)
+		{
+			attachPointDef.Translation = XMLHelper::fillVector3FromElement(tranelem);
+		} else {
+			attachPointDef.Translation = Ogre::Vector3::ZERO;
+		}
+
 		attachPoints.push_back(attachPointDef);
 	}
 
@@ -1101,6 +1109,9 @@ void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDe
 		TiXmlElement rotationElem("rotation");
 		XMLHelper::fillElementFromQuaternion(rotationElem, I->Rotation);
 		attachpointElem.InsertEndChild(rotationElem);
+		TiXmlElement translationElem("translation");
+		XMLHelper::fillElementFromVector3(translationElem, I->Translation);
+		attachpointElem.InsertEndChild(translationElem);
 
 		attachpointsElem.InsertEndChild(attachpointElem);
 	}

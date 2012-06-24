@@ -114,13 +114,14 @@ bool ModelBoneProvider::getVisualize(const std::string& visualization) const
 
 void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position, const Ogre::Quaternion& orientation)
 {
-	mPosition = position;
-	//Only apply the attach point definition rotation to the first provider in a chained list of providers.
+	//Only apply the attach point definition rotation and translation to the first provider in a chained list of providers.
 	//This is because all providers will in reality use the same Ogre::TagPoint, and therefore the orientation should only be applied once.
 	if (mAttachPointWrapper && !mParent) {
 		mOrientation = orientation * mAttachPointWrapper->Definition.Rotation;
+		mPosition = position + mAttachPointWrapper->Definition.Translation;
 	} else {
 		mOrientation = orientation;
+		mPosition = position;
 	}
 	updatePositionAndOrientation();
 }
