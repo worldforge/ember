@@ -267,19 +267,27 @@ class ModelDefinition : public Ogre::Resource {
 	@param viewname The name of the view
 	@return A pointer to the new view.
 	*/
-	ViewDefinition* createViewDefinition(const std::string& viewname);
+	Ember::OgreView::Model::ViewDefinition* createViewDefinition(const std::string& viewname);
 	
 	/**
 	 * Returns all views defined.
 	 * @return 
 	 */
-	const ViewDefinitionStore& getViewDefinitions();
+	const Ember::OgreView::Model::ViewDefinitionStore& getViewDefinitions();
 	
 	/**
 	 * Removed a named view. If no view can be found, no exception will be thrown.
 	 * @param name The name of the view to to remove.
 	 */
 	void removeViewDefinition(const std::string name);
+	
+	
+	const Ember::OgreView::Model::PoseDefinitionStore& getPoseDefinitions() const;
+
+	void addPoseDefinition(const std::string& name, const Ember::OgreView::Model::PoseDefinition& definition);
+
+	void removePoseDefinition(const std::string& name);
+	
 	
 	/**
 	 *    Reloads all the Model instances that uses this definition.
@@ -295,6 +303,44 @@ class ModelDefinitionPtr
 	Ember::OgreView::Model::ModelDefinition* get();
 };
 
+class PoseDefinitionStore
+{
+class value_type {
+	const std::string& first;
+	const Ember::OgreView::Model::PoseDefinition& second;
+};
+
+$#define __operator_ptr operator*
+$#define __operator_pp operator++
+
+class const_iterator {
+public:
+    value_type& __operator_ptr @ get();
+	Ember::OgreView::Model::PoseDefinitionStore::const_iterator& __operator_pp @ next();
+	bool operator==(const Ember::OgreView::Model::PoseDefinitionStore::const_iterator& value);
+};
+public:
+	Ember::OgreView::Model::PoseDefinitionStore::const_iterator begin() const;
+	Ember::OgreView::Model::PoseDefinitionStore::const_iterator end @ theEnd() const;  // end is keyword in Lua
+};
+
+
 }
 }
 }
+
+// Iterator over GUIAdaptersStore
+$[
+function Ember.OgreView.Model.PoseDefinitionStore:pairs()
+  local I = self:begin()
+  local Iend = self:theEnd()
+  return function()
+    if I ~= Iend then
+      local val = I:get()
+      I = I:next()
+      return val.first, val.second
+    end
+  end
+end
+$]
+
