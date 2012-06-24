@@ -196,9 +196,11 @@
         <attachpoints>
             <attachpoint name="outfit.right_hand" bone="RMiddleRoot">
                 <rotation x="-0.611592" y="0.0177145" z="-0.790975" degrees="178.84" />
+                <translation x="0.00683594" y="0.0338541" z="-0.0146484" />
             </attachpoint>
             <attachpoint name="right_hand_wield" bone="RMiddleRoot">
                 <rotation x="-0.611592" y="0.0177145" z="-0.790975" degrees="178.84" />
+                <translation x="0.00683594" y="0.0338541" z="-0.0146484" />
             </attachpoint>
         </attachpoints>
         <views />
