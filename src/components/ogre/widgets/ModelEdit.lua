@@ -188,6 +188,16 @@ function ModelEdit:updateModelInfo()
 		self.attachPointsList:addItem(item)
 	end	
 	
+	self.posesList:resetList()
+	local poses = self.definition:getPoseDefinitions()
+	local val = 0
+	for k,v in poses:pairs() do
+		local name = k
+		local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
+		val = val + 1
+		self.posesList:addItem(item)
+	end
+
 end
 
 function ModelEdit:fillWindowsFromVector(windowNamePrefix, vector)
@@ -639,7 +649,9 @@ function ModelEdit:buildWidget()
 		self.contentparts.modelInfo.meshlist = CEGUI.toListbox(self.contentparts.modelInfo.meshlist)
 		self.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", function()
 			local item = self.contentparts.modelInfo.meshlist:getFirstSelectedItem()
-			self:previewMesh(item:getText())
+			if item then
+				self:previewMesh(item:getText())
+			end
 			return true
 		end)
 		
@@ -880,7 +892,7 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
-		self.posesList = self.widget:getWindow("PoseList")
+		self.posesList = CEGUI.toListbox(self.widget:getWindow("PoseList"))
 		
 	
 		self.contentparts.modelInfo.renderImage =  self.widget:getWindow("MeshPreviewImage")

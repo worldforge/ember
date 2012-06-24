@@ -368,6 +368,26 @@
                             <Property Name='Visible' Value='False' />
                         </Window>                        
                     </Window>
+                    <Window Type='DefaultWindow' Name='PosesInner'>
+                        <Property Name='UnifiedSize' Value='{{1.0,0},{1.0,0}}' />
+                        <Property Name='Text' Value='Poses' />
+                        <Window Type='EmberLook/Listbox' Name='PoseList'>
+                            <Property Name='UnifiedSize' Value='{{0,150.0},{1.0,-100.0}}' />
+                            <Property Name='UnifiedPosition' Value='{{0,5},{0,5}}' />
+                        </Window>
+                        <Window Type='EmberLook/Button' Name='PoseRotate'>
+                            <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
+                            <Property Name='UnifiedPosition' Value='{{0,160.0},{0,30.0}}' />
+                            <Property Name='Text' Value='Rotate' />
+                            <Property Name='Tooltip' Value='Press and hold to rotate.' />
+                        </Window>
+                        <Window Type='EmberLook/Button' Name='PoseTranslate'>
+                            <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
+                            <Property Name='UnifiedPosition' Value='{{0,290.0},{0,30.0}}' />
+                            <Property Name='Text' Value='Translate' />
+                            <Property Name='Tooltip' Value='Press and hold to translate.' />
+                        </Window>
+                    </Window>
                 </Window>
                 <Window Type='DefaultWindow' Name='SubModelInfo'>
                     <Property Name='UnifiedSize' Value='{{1,0},{1,0}}' />
@@ -486,37 +506,7 @@
                         <Property Name='UnifiedPosition' Value='{{0,80},{0,30}}' />
                     </Window>
                 </Window>               
-                <Window Type='DefaultWindow' Name='PosesInner'>
-                    <Property Name='UnifiedSize' Value='{{1.0,0},{1.0,0}}' />
-                    <Property Name='Text' Value='Poses' />
-                    <Window Type='EmberLook/Listbox' Name='PoseList'>
-                        <Property Name='UnifiedSize' Value='{{0,150.0},{1.0,-100.0}}' />
-                        <Property Name='UnifiedPosition' Value='{{0,5},{0,5}}' />
-                    </Window>
-                    <Window Type='DefaultWindow' Name='PoseTranslateWrapper'>
-                        <Property Name='UnifiedSize' Value='{{0.00,20.0},{0.00,20.0}}' />
-                        <Property Name='UnifiedPosition' Value='{{0,160.0},{0,5.0}}' />
-                        <Window Type='EmberLook/Editbox' Name='PoseTranslate_x'>
-                            <Property Name='UnifiedSize' Value='{{0.00,20.0},{0.00,20.0}}' />
-                            <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='PoseTranslate_y'>
-                            <Property Name='UnifiedSize' Value='{{0.00,20.0},{0.00,20.0}}' />
-                            <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='PoseTranslate_x'>
-                            <Property Name='UnifiedSize' Value='{{0.00,20.0},{0.00,20.0}}' />
-                            <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-                        </Window>
-                    </Window>
-                    <Window Type='EmberLook/Button' Name='AttachPointRotate'>
-                        <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
-                        <Property Name='UnifiedPosition' Value='{{0,160.0},{0,30.0}}' />
-                        <Property Name='Text' Value='Rotate' />
-                        <Property Name='Tooltip' Value='Press and hold to rotate.' />
-                    </Window>
-                </Window>
-             </Window>
+            </Window>
             <Window Type='EmberLook/Editbox' Name='FilterModels'>
                 <Property Name='MaxTextLength' Value='1073741823' />
                 <Property Name='UnifiedAreaRect' Value='{{0.065602,0.0},{0.421603,0.0},{0.212836,0.0},{0.466876,0.0}}' />
