@@ -893,7 +893,22 @@ function ModelEdit:buildWidget()
 		end)
 		
 		self.posesList = CEGUI.toListbox(self.widget:getWindow("PoseList"))
+		self.posesList:subscribeEvent("ItemSelectionChanged", function(args)
+			local item = self.posesList:getFirstSelectedItem()
+			if item then
+				self.poseRenderer:showModel(self.definition:getName())
+			else
+				self.poseRenderer:showModel("")
+			end
+			
+			return true
+		end)
 		
+		
+		local poseImage = self.widget:getWindow("PoseImage")
+		self.poseRenderer = Ember.OgreView.Gui.ModelRenderer:new(poseImage)
+		self.poseRenderer:showAxis();
+		self.poseRenderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_OBJECTCENTER)
 	
 		self.contentparts.modelInfo.renderImage =  self.widget:getWindow("MeshPreviewImage")
 		--self.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(self.contentparts.modelInfo.renderImage)
@@ -1153,6 +1168,7 @@ function ModelEdit:shutdown()
 	deleteSafe(self.modelslistholder)
 	deleteSafe(self.attachPointPreviewModelListAdapter)
 	deleteSafe(self.attachPointPreviewModelListHolder)
+	deleteSafe(self.poseRenderer)
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 end
