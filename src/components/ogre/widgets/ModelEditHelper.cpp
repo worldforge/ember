@@ -35,6 +35,79 @@ namespace OgreView
 namespace Gui
 {
 
+AttachPointMouseMover::AttachPointMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition) :
+		mAttachPointHelper(attachPointHelper), mModelDefinition(modelDefinition)
+{
+}
+
+RotateMouseMover::RotateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition) :
+		AttachPointMouseMover(attachPointHelper, modelDefinition)
+{
+}
+
+TranslateMouseMover::TranslateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition) :
+		AttachPointMouseMover(attachPointHelper, modelDefinition)
+{
+}
+
+void RotateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+{
+	Ogre::TagPoint* tagPoint = mAttachPointHelper.getTagPoint();
+	//rotate the modelnode
+	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+		tagPoint->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+	} else {
+		tagPoint->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+		tagPoint->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+	}
+	//we don't want to move the cursor
+	freezeMouse = true;
+}
+
+bool RotateMouseMover::injectMouseButtonUp(const Input::MouseButton& button)
+{
+	if (button == Input::MouseButtonLeft) {
+		for (Model::AttachPointDefinitionStore::const_iterator I = mModelDefinition->getAttachPointsDefinitions().begin(); I != mModelDefinition->getAttachPointsDefinitions().end(); ++I) {
+			if (I->Name == mAttachPointHelper.getAttachPointName()) {
+				Model::AttachPointDefinition definition = *I;
+				definition.Rotation = mAttachPointHelper.getOrientation();
+				mModelDefinition->addAttachPointDefinition(definition);
+			}
+		}
+
+		return true;
+	}
+	return false;
+}
+
+void TranslateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+{
+	Ogre::TagPoint* tagPoint = mAttachPointHelper.getTagPoint();
+	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+		tagPoint->translate(0, 0, motion.xRelativeMovement);
+	} else {
+		tagPoint->translate(motion.xRelativeMovement, motion.yRelativeMovement, 0);
+	}
+	//we don't want to move the cursor
+	freezeMouse = true;
+}
+
+bool TranslateMouseMover::injectMouseButtonUp(const Input::MouseButton& button)
+{
+	if (button == Input::MouseButtonLeft) {
+		for (Model::AttachPointDefinitionStore::const_iterator I = mModelDefinition->getAttachPointsDefinitions().begin(); I != mModelDefinition->getAttachPointsDefinitions().end(); ++I) {
+			if (I->Name == mAttachPointHelper.getAttachPointName()) {
+				Model::AttachPointDefinition definition = *I;
+				definition.Translation = mAttachPointHelper.getTagPoint()->getPosition();
+				mModelDefinition->addAttachPointDefinition(definition);
+			}
+		}
+
+		return true;
+	}
+	return false;
+}
+
 AttachPointHelper::AttachPointHelper(Model::Model& model, const std::string& attachPointName) :
 		mModel(model), mAttachPointName(attachPointName)
 {
@@ -95,7 +168,7 @@ Ogre::Quaternion ModelAttachPointHelper::getOrientation() const
 }
 
 ModelEditHelper::ModelEditHelper(Model::Model* model) :
-		mModel(model), mAttachPointHelper(0), mAttachPointMarker(0)
+		mModel(model), mAttachPointHelper(0), mAttachPointMarker(0), mMouseMover(0)
 {
 }
 
@@ -139,7 +212,23 @@ void ModelEditHelper::hideAttachPointHelper()
 
 void ModelEditHelper::startInputRotate()
 {
-	catchInput();
+	delete mMouseMover;
+	mMouseMover = 0;
+	releaseInput();
+	if (mAttachPointHelper && mModel) {
+		mMouseMover = new RotateMouseMover(*mAttachPointHelper, mModel->getDefinition());
+		catchInput();
+	}
+}
+void ModelEditHelper::startInputTranslate()
+{
+	delete mMouseMover;
+	mMouseMover = 0;
+	releaseInput();
+	if (mAttachPointHelper && mModel) {
+		mMouseMover = new TranslateMouseMover(*mAttachPointHelper, mModel->getDefinition());
+		catchInput();
+	}
 }
 
 void ModelEditHelper::catchInput()
@@ -154,35 +243,20 @@ void ModelEditHelper::releaseInput()
 
 bool ModelEditHelper::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
-	if (mAttachPointHelper) {
-		Ogre::TagPoint* tagPoint = mAttachPointHelper->getTagPoint();
-		//rotate the modelnode
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-			tagPoint->roll(Ogre::Degree(motion.xRelativeMovement * 180));
-		} else {
-			tagPoint->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-			tagPoint->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
-		}
+	if (mMouseMover) {
+		mMouseMover->injectMouseMove(motion, freezeMouse);
 	}
-	//we don't want to move the cursor
-	freezeMouse = true;
 	return false;
 }
 
 bool ModelEditHelper::injectMouseButtonUp(const Input::MouseButton& button)
 {
-	if (button == Input::MouseButtonLeft) {
-		if (mAttachPointHelper) {
-			for (Model::AttachPointDefinitionStore::const_iterator I = mModel->getDefinition()->getAttachPointsDefinitions().begin(); I != mModel->getDefinition()->getAttachPointsDefinitions().end(); ++I) {
-				if (I->Name == mAttachPointHelper->getAttachPointName()) {
-					Model::AttachPointDefinition definition = *I;
-					definition.Rotation = mAttachPointHelper->getOrientation();
-					mModel->getDefinition()->addAttachPointDefinition(definition);
-				}
-			}
+	if (mMouseMover) {
+		if (mMouseMover->injectMouseButtonUp(button)) {
+			delete mMouseMover;
+			mMouseMover = 0;
+			releaseInput();
 		}
-
-		releaseInput();
 	}
 	return true;
 }

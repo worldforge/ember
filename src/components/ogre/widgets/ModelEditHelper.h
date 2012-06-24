@@ -154,6 +154,77 @@ private:
 };
 
 /**
+ * @brief Allows for movement of the attach point through the mouse.
+ */
+class AttachPointMouseMover
+{
+public:
+
+	/**
+	 * @brief Ctor.
+	 * @param attachPointHelper The attach point editor helper.
+	 * @param modelDefinition The model definition for the currently edited model.
+	 */
+	AttachPointMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition);
+
+	virtual ~AttachPointMouseMover()
+	{
+	}
+
+	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse) = 0;
+
+	/**
+	 * @brief Injects a mouse button up event.
+	 * @param button The button released.
+	 * @return True if the mover should be deleted as a result.
+	 */
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button) = 0;
+protected:
+
+	/**
+	 * @brief The attach point editor helper.
+	 */
+	AttachPointHelper& mAttachPointHelper;
+
+	/**
+	 * @brief The model definition for the currently edited model
+	 */
+	Model::ModelDefinitionPtr mModelDefinition;
+};
+
+/**
+ * @brief Allows for rotation of the attach point through the mouse.
+ */
+class RotateMouseMover: public AttachPointMouseMover
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param attachPointHelper The attach point editor helper.
+	 * @param modelDefinition The model definition for the currently edited model.
+	 */
+	RotateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition);
+	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+};
+
+/**
+ * @brief Allows for translation of the attach point through the mouse.
+ */
+class TranslateMouseMover: public AttachPointMouseMover
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param attachPointHelper The attach point editor helper.
+	 * @param modelDefinition The model definition for the currently edited model.
+	 */
+	TranslateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition);
+	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+};
+
+/**
  * @author Erik Ogenvik <erik@ogenvik.org>
  *
  * @brief Helper class for model editing.
@@ -204,6 +275,13 @@ public:
 	void startInputRotate();
 
 	/**
+	 * @brief Starts catching input to instead allow all mouse motion to translate the currently shown attach point.
+	 *
+	 * Input will be restored when the user releases the mouse button.
+	 */
+	void startInputTranslate();
+
+	/**
 	 ---------Methods implemented from IInputAdapter
 	 @see IInputAdapter
 	 */
@@ -230,6 +308,11 @@ private:
 	 * @brief A marker entity used to provide graphical representation of attach points being edited.
 	 */
 	Ogre::MovableObject* mAttachPointMarker;
+
+	/**
+	 * @brief An attach point mover instance, which allows for rotation or rotation of an attach point.
+	 */
+	AttachPointMouseMover* mMouseMover;
 
 	/**
 	 * @brief Catches all future input to direct it to alter the currently shown attach point.

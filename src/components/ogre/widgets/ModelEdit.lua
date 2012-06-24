@@ -847,6 +847,12 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
+		local attachPointTranslateButton = self.widget:getWindow("AttachPointTranslate")
+		attachPointTranslateButton:subscribeEvent("MouseButtonDown", function(args)
+			self.modelHelper:startInputTranslate()
+			return true
+		end)
+
 		local item = Ember.OgreView.Gui.ColouredListItem:new("Arrow", 0)
 		attachPointPreviewCombobox:addItem(item)
 		item = Ember.OgreView.Gui.ColouredListItem:new("Model", 1)

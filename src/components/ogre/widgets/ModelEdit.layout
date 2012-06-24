@@ -345,6 +345,12 @@
                             <Property Name='Text' Value='Rotate' />
                             <Property Name='Tooltip' Value='Press and hold to rotate.' />
                         </Window>
+                        <Window Type='EmberLook/Button' Name='AttachPointTranslate'>
+                            <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
+                            <Property Name='UnifiedPosition' Value='{{0,290.0},{0,30.0}}' />
+                            <Property Name='Text' Value='Translate' />
+                            <Property Name='Tooltip' Value='Press and hold to translate.' />
+                        </Window>
                         <Window Type='EmberLook/Combobox' Name='AttachPointPreviewType'>
                             <Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}'/>
                             <Property Name='UnifiedPosition' Value='{{0,160.0},{0,60.0}}'/>

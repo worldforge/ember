@@ -30,6 +30,12 @@ public:
 	void hideAttachPointHelper();
 	void startInputRotate();
 
+	/**
+	 * @brief Starts catching input to instead allow all mouse motion to translate the currently shown attach point.
+	 *
+	 * Input will be restored when the user releases the mouse button.
+	 */
+	void startInputTranslate();
 };
 
 }
