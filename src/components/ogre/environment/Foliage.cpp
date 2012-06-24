@@ -56,7 +56,7 @@ Foliage::Foliage(Terrain::TerrainManager& terrainManager, AutomaticGraphicsLevel
 	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageLevelManager(new FoliageLevelManager(*this, automaticGraphicsLevelManager))
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
-	mFoliageLevelManager->foliageLevelChanged.connect(sigc::mem_fun(*this, &Foliage::updateDensity));
+	mFoliageLevelManager->foliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::updateDensity));
 }
 
 Foliage::~Foliage()
