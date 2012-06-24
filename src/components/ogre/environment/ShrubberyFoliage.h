@@ -57,6 +57,8 @@ public:
 	virtual void frameStarted();
 	
 	virtual void initialize();
+	
+	virtual void updateDensity(float newGrassDensity);
 
 protected:
 	FoliageLoader* mLoader;

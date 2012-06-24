@@ -98,6 +98,13 @@ void ShrubberyFoliage::frameStarted()
 	}
 }
 
+void ShrubberyFoliage::updateDensity(float newGrassDensity)
+{
+	mLoader->setDensityFactor(newGrassDensity);
+	mPagedGeometry->reloadGeometry();
+}
+
+
 
 
 }

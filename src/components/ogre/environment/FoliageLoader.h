@@ -56,6 +56,16 @@ public:
     virtual ~FoliageLoader();
 
 	virtual void loadPage(::Forests::PageInfo &page);
+	
+	/** 
+	 * @brief Sets the global density factor for this loader.
+	 * This function can be used to increase or decrease the density of the foliage
+	 * handled by this loader by a percentage. eg. 0.1 causes density of foliage to 
+	 * go down to 0.1 * default density. 1 refers to full density and 0 refers to
+	 * no foliage.
+	 * @param density The new density for this foliage loader. 
+	*/
+	void setDensityFactor(float density);
 
 protected:
 	Terrain::TerrainManager& mTerrainManager;
@@ -70,6 +80,12 @@ protected:
 	const Terrain::PlantAreaQueryResult* mLatestPlantsResult;
 
 	void plantQueryExecuted(const Terrain::PlantAreaQueryResult& queryResult);
+	
+	/**
+	 * The density factor used by this loader to determine the density of the foliage
+	 * loaded by it.
+	 */
+	float mDensityFactor;
 
 };
 
