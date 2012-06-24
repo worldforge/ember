@@ -34,7 +34,9 @@ struct AttachPointDefinition
 {
 	std::string Name;
 	std::string BoneName;
+	std::string Pose;
 	Ogre::Quaternion Rotation;
+	Ogre::Vector3 Translation;
 };
 
 

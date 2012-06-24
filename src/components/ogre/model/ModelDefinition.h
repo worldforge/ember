@@ -249,6 +249,7 @@ struct AttachPointDefinition
 {
 	std::string Name;
 	std::string BoneName;
+	std::string Pose;
 
 	/**
 	 * @brief Rotation of the attach point.

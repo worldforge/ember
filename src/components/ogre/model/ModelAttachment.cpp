@@ -118,9 +118,18 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		//		}
 		//		else {
 		INodeProvider* nodeProvider(0);
+		std::string pose;
 		if (attachPoint != "") {
 			if (mModelRepresentation.getModel().isLoaded()) {
 				try {
+					const AttachPointDefinitionStore& attachpoints = mModelRepresentation.getModel().getDefinition()->getAttachPointsDefinitions();
+					for (AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
+						if (I->Name == attachPoint) {
+							pose = I->Pose;
+							break;
+						}
+					}
+
 					nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, modelRepresentation ? &modelRepresentation->getModel() : 0);
 				} catch (const std::exception& ex) {
 					S_LOG_WARNING("Failed to attach to attach point '"<< attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getName() << "'.");
@@ -134,7 +143,7 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 			nodeProvider = mNodeProvider->createChildProvider(modelRepresentation ? &modelRepresentation->getModel() : 0);
 		}
 		if (modelRepresentation) {
-			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, "gripped");
+			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, pose == "" ? "default" : pose);
 		} else {
 			return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
 		}

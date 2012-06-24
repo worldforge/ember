@@ -566,6 +566,11 @@ void XMLModelDefinitionSerializer::readAttachPoints(ModelDefinitionPtr modelDef,
 		if (tmp)
 			attachPointDef.BoneName = tmp;
 
+		// pose
+		tmp =  apElem->Attribute("pose");
+		if (tmp)
+			attachPointDef.Pose = tmp;
+
 		TiXmlElement* elem = apElem->FirstChildElement("rotation");
 		if (elem)
 		{
@@ -1144,6 +1149,9 @@ void XMLModelDefinitionSerializer::exportAttachPoints(ModelDefinitionPtr modelDe
 		TiXmlElement attachpointElem("attachpoint");
 		attachpointElem.SetAttribute("name", I->Name.c_str());
 		attachpointElem.SetAttribute("bone", I->BoneName.c_str());
+		if (I->Pose != "") {
+			attachpointElem.SetAttribute("pose", I->Pose.c_str());
+		}
 		TiXmlElement rotationElem("rotation");
 		XMLHelper::fillElementFromQuaternion(rotationElem, I->Rotation);
 		attachpointElem.InsertEndChild(rotationElem);

@@ -165,9 +165,11 @@
                                             <xsd:complexType>
                                                 <xsd:sequence>
                                                     <xsd:element name="rotation" minOccurs="0" maxOccurs="1" type="rotation" />
+                                                    <xsd:element name="translation" minOccurs="0" maxOccurs="1" type="vector3" />
                                                 </xsd:sequence>
                                                 <xsd:attribute name="name" type="xsd:string" use="required" />
                                                 <xsd:attribute name="bone" type="xsd:string" use="required" />
+                                                <xsd:attribute name="pose" type="xsd:string" use="optional" />
                                             </xsd:complexType>
                                         </xsd:element>
                                     </xsd:sequence>
@@ -268,6 +270,21 @@
                                                             </xsd:sequence>
                                                         </xsd:complexType>
                                                     </xsd:element>
+                                                </xsd:sequence>
+                                                <xsd:attribute name="name" type="xsd:string" use="required" />
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="poses" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="pose" minOccurs="0" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="rotate" minOccurs="0" maxOccurs="1" type="rotation" />
+                                                    <xsd:element name="translate" minOccurs="0" maxOccurs="1" type="vector3" />
                                                 </xsd:sequence>
                                                 <xsd:attribute name="name" type="xsd:string" use="required" />
                                             </xsd:complexType>
