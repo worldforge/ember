@@ -505,7 +505,6 @@ void XMLModelDefinitionSerializer::readAnimationParts(TiXmlElement* mAnimPartNod
             apElem != 0; apElem = apElem->NextSiblingElement())
 	{
 		std::string name;
-		Ogre::Real weight = 1.0f;
 		nopartfound = false;
 
 		// name
