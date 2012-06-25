@@ -117,12 +117,24 @@ MovableObjectRenderer::~MovableObjectRenderer()
 
 bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
-	//rotate the modelnode
-	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-		mTexture->getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+		//translate the modelnode
+		Ogre::Vector3 translate;
+		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
+		} else {
+			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
+		}
+		translate = mTexture->getRenderContext()->getEntityRotation().Inverse() * translate;
+		mTexture->getRenderContext()->getSceneNode()->translate(translate);
 	} else {
-		mTexture->getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-		mTexture->getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+		//rotate the modelnode
+		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			mTexture->getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+		} else {
+			mTexture->getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+			mTexture->getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+		}
 	}
 	//we don't want to move the cursor
 	freezeMouse = true;
