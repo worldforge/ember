@@ -77,7 +77,7 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 {
 	float changeRequired = mDefaultFps - currentFps;
 
-	if (std::abs(changeRequired) >= 10) {
+	if (std::abs(changeRequired) >= 5) {
 		changeGraphicsLevel(changeRequired);
 	}
 }
