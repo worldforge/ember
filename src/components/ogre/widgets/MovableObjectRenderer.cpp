@@ -271,7 +271,7 @@ bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)
 	if (mTexture) {
 		if (mouseArgs.wheelChange != 0.0f) {
 			float distance = mTexture->getRenderContext()->getCameraDistance();
-			distance += (mouseArgs.wheelChange * 0.1);
+			distance -= (mouseArgs.wheelChange * 0.1);
 			setCameraDistance(distance);
 		}
 	}
