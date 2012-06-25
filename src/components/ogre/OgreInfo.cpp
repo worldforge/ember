@@ -110,7 +110,11 @@ void OgreInfo::diagnose(std::ostream& outputStream)
 						outputStream << "   Direction: " << light->getDerivedDirection() << std::endl;
 
 					} else {
-						outputStream << "  * " << type << " " << movable->getName() << "(" << (movable->isInScene() ? "in scene" : "not in scene") << ")" << std::endl;
+						std::stringstream ssPosAndOrientation;
+						if (movable->getParentSceneNode() && movable->isInScene()) {
+							ssPosAndOrientation << " pos: " << movable->getParentSceneNode()->getPosition() << " orientation: " << movable->getParentSceneNode()->getOrientation();
+						}
+						outputStream << "  * " << type << " " << movable->getName() << "(" << (movable->isInScene() ? "in scene" : "not in scene") << ")" << ssPosAndOrientation.str() << std::endl;
 						//					outputStream << "  Pos: " << light->getDerivedPosition() << std::endl;
 						//					outputStream << "  Direction: " << light->getDerivedDirection() << std::endl;
 					}
