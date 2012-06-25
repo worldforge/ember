@@ -189,11 +189,13 @@ function ModelEdit:updateModelInfo()
 	end	
 	
 	self.posesList:resetList()
+	self.posesList.model = {}
 	local poses = self.definition:getPoseDefinitions()
 	local val = 0
 	for k,v in poses:pairs() do
 		local name = k
 		local item = Ember.OgreView.Gui.ColouredListItem:new(name, val)
+		self.posesList.model[val] = v
 		val = val + 1
 		self.posesList:addItem(item)
 	end
@@ -896,7 +898,8 @@ function ModelEdit:buildWidget()
 		self.posesList:subscribeEvent("ItemSelectionChanged", function(args)
 			local item = self.posesList:getFirstSelectedItem()
 			if item then
-				self.poseRenderer:showModel(self.definition:getName())
+				local poseDef = self.posesList.model[item:getID()]
+				self.poseRenderer:showModel(self.definition:getName(), poseDef.Translate, poseDef.Rotate)
 			else
 				self.poseRenderer:showModel("")
 			end
