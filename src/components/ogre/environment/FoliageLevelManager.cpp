@@ -18,7 +18,7 @@ namespace Environment
 {
 
 FoliageLevelManager::FoliageLevelManager(Foliage& foliage, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
-		mThresholdLevel(1), mDefaultDensityStep(0.2), mDefaultDistanceStep(0.2), mUpdatedDensity(1), mFoliage(foliage), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
+		mThresholdLevel(2), mDefaultDensityStep(0.2), mDefaultDistanceStep(0.2), mUpdatedDensity(1), mFoliage(foliage), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
 {
 }
 
@@ -77,7 +77,7 @@ bool FoliageLevelManager::stepUpFoliageDensity(float step)
 		mUpdatedDensity += step;
 		updateFoliageDensity();
 		return true;
-	} else if (mUpdatedDensity <= 1) { //if the density is still below default density but a default step causes it to go over default density
+	} else if (mUpdatedDensity < 1) { //if the density is still below default density but a default step causes it to go over default density
 		mUpdatedDensity = 1;
 		updateFoliageDensity();
 		return true;
@@ -107,7 +107,7 @@ bool FoliageLevelManager::stepUpFoliageDistance(float step)
 		mFarDistance += step;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
-	} else if (mFarDistance <= 1) { //if the far distance is still below 1 but a default step causes it to go over 1.
+	} else if (mFarDistance < 1) { //if the far distance is still below 1 but a default step causes it to go over 1.
 		mFarDistance = 1;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;

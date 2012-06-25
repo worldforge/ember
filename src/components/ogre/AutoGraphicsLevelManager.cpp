@@ -50,7 +50,7 @@ IGraphicalChangeAdapter::~IGraphicalChangeAdapter()
 bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 {
 	//for now leaving it at this, need to update later with better callibrated values
-	float translatedChangeRequired = changeSize / 10;
+	float translatedChangeRequired = changeSize / 1;
 
 	bool furtherChangePossible = changeRequired.emit(translatedChangeRequired);
 	return furtherChangePossible;
@@ -60,7 +60,7 @@ AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow&
 		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow)
 {
 	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
-	registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
+	registerConfigListener("graphics", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
@@ -77,7 +77,7 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 {
 	float changeRequired = mDefaultFps - currentFps;
 
-	if (std::abs(changeRequired) >= 5) {
+	if (std::abs(changeRequired) >= 1) {
 		changeGraphicsLevel(changeRequired);
 	}
 }
