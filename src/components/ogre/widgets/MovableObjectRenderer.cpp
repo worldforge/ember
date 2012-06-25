@@ -141,9 +141,14 @@ bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& fre
 	return false;
 }
 
-Ogre::Quaternion MovableObjectRenderer::getEntityRotation()
+Ogre::Quaternion MovableObjectRenderer::getEntityRotation() const
 {
 	return mTexture->getRenderContext()->getEntityRotation();
+}
+
+Ogre::Vector3 MovableObjectRenderer::getEntityTranslation() const
+{
+	return mTexture->getRenderContext()->getSceneNode()->getPosition();
 }
 
 void MovableObjectRenderer::resetCameraOrientation()
@@ -250,11 +255,13 @@ float MovableObjectRenderer::getAbsoluteCameraDistance()
 void MovableObjectRenderer::catchInput()
 {
 	Input::getSingleton().addAdapter(this);
+	EventMovementStarted();
 }
 
 void MovableObjectRenderer::releaseInput()
 {
 	Input::getSingleton().removeAdapter(this);
+	EventMovementStopped();
 }
 
 bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)

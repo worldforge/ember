@@ -131,10 +131,16 @@ public:
 	virtual bool frameStarted(const Ogre::FrameEvent& event);
 
 	/**
-	 *    Gets the rotation of the entity.
-	 * @return
+	 * @brief Gets the rotation of the entity.
+	 * @return The rotation of the entity.
 	 */
-	Ogre::Quaternion getEntityRotation();
+	Ogre::Quaternion getEntityRotation() const;
+
+	/**
+	 * @brief Gets the translation of the entity.
+	 * @return The translation of the entity.
+	 */
+	Ogre::Vector3 getEntityTranslation() const;
 
 	/**
 	 *    Resets the orientation of the camera.
@@ -199,6 +205,16 @@ public:
 	 * @param mode
 	 */
 	void setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode);
+
+	/**
+	 * @brief Emitted when movement of the entity or camera has started.
+	 */
+	sigc::signal<void> EventMovementStarted;
+
+	/**
+	 * @brief Emitted when movement of the entity or camera has stopped.
+	 */
+	sigc::signal<void> EventMovementStopped;
 
 protected:
 
