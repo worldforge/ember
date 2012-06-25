@@ -137,10 +137,23 @@ public:
 	Ogre::Quaternion getEntityRotation() const;
 
 	/**
+	 * @brief Sets the rotation of the entity.
+	 * In reality it will set the rotation of the camera.
+	 * @param rotation The entity rotation.
+	 */
+	void setEntityRotation(const Ogre::Quaternion& rotation);
+
+	/**
 	 * @brief Gets the translation of the entity.
 	 * @return The translation of the entity.
 	 */
 	Ogre::Vector3 getEntityTranslation() const;
+
+	/**
+	 * @brief Sets the translation of the entity.
+	 * @param translation The new translation
+	 */
+	void setEntityTranslation(const Ogre::Vector3& translation);
 
 	/**
 	 *    Resets the orientation of the camera.

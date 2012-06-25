@@ -146,9 +146,19 @@ Ogre::Quaternion MovableObjectRenderer::getEntityRotation() const
 	return mTexture->getRenderContext()->getEntityRotation();
 }
 
+void MovableObjectRenderer::setEntityRotation(const Ogre::Quaternion& rotation)
+{
+	mTexture->getRenderContext()->getSceneNode()->setOrientation(rotation);
+}
+
 Ogre::Vector3 MovableObjectRenderer::getEntityTranslation() const
 {
 	return mTexture->getRenderContext()->getSceneNode()->getPosition();
+}
+
+void MovableObjectRenderer::setEntityTranslation(const Ogre::Vector3& translation)
+{
+	mTexture->getRenderContext()->getSceneNode()->setPosition(translation);
 }
 
 void MovableObjectRenderer::resetCameraOrientation()
