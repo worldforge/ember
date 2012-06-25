@@ -4886,6 +4886,7 @@
         <PropertyDefinition name="SelectedTextColour" initialValue="FFFFFF55" />
         <PropertyDefinition name="ActiveSelectionColour" initialValue="FF607FFF" />
         <PropertyDefinition name="InactiveSelectionColour" initialValue="FF808080" />
+		<PropertyDefinition name="FrameColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" />
         <NamedArea name="ItemRenderingArea">
             <Area>
                 <Dim type="LeftEdge" ><ImageDim imageset="EmberLook" image="StaticFrameLeft" dimension="Width" /></Dim>
