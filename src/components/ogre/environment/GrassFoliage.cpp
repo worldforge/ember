@@ -171,11 +171,25 @@ void GrassFoliage::frameStarted()
 	}
 }
 
-void GrassFoliage::updateDensity(float newGrassDensity)
+void GrassFoliage::setDensity(float newGrassDensity)
 {
 	mGrassLoader->setDensityFactor(newGrassDensity);
+	mPagedGeometry->reloadGeometry();
 }
 
+void GrassFoliage::setFarDistance(float newFarDistance)
+{
+	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
+	float farDistance;
+	float nearDistance;
+	
+	for (std::list<Forests::GeometryPageManager*>::reverse_iterator I = detailLevels.rbegin(); I != detailLevels.rend(); ++I) {
+		farDistance = newFarDistance * (*detailLevels.back()).getFarRange();
+		nearDistance = newFarDistance * (*detailLevels.back()).getNearRange();
+		(*I)->setFarRange(farDistance);
+		(*I)->setNearRange(farDistance);
+	}
+}
 
 }
 

@@ -36,16 +36,21 @@ public:
 	 * The manager starts listening for graphics detail change required signals and acting on them.
 	 */
 	void initialize();
-	
+
 	/**
 	 * @brief Signal sent out when this component makes a change in the detail level of foliage.
 	 */
 	sigc::signal<void, int> foliageLevelChanged;
 
 	/**
-	 * @brief Signal sent when this component changes foliage density levels.
+	 * @brief Signal sent out when this component changes foliage density levels.
 	 */
 	sigc::signal<void, float> foliageDensityChanged;
+
+	/**
+	 * @brief Signal sent out when this component changes foliage far distance.
+	 */
+	sigc::signal<void, float> foliageFarDistanceChanged;
 
 	/**
 	 * @brief Used to change the density of all foliage.
@@ -53,6 +58,13 @@ public:
 	 * @return True if foliage change was possible.
 	 */
 	bool changeFoliageDensity(float density);
+
+	/**
+	 * @brief Used to change the furthest distance foliage is visible at in percentage.
+	 * @param distance The new far distance for the nearest foliage technique where 1 implies normal distance and 0 implies minimum distance.
+	 * @return True if far distance change was possible.
+	 */
+	bool changeFoliageDistance(float distance);
 
 protected:
 
@@ -69,6 +81,20 @@ protected:
 	 * @returns True if step down was possible.
 	 */
 	bool stepDownFoliageDensity(float step);
+
+	/**
+	 * @brief Steps up the foliage far distance.
+	 * @param step The amount by which far distance of the foliage is stepped up.
+	 * @return True if step up was possible.
+	 */
+	bool stepUpFoliageDistance(float step);
+
+	/**
+	 * @brief Steps down the foliage far distance.
+	 * @param step The amount by which far distance of the foliage is stepped down.
+	 * @return True if step down was possible.
+	 */
+	bool stepDownFoliageDistance(float step);
 
 	/**
 	 * @brief Changes the detail level of foliage if the asked level is above threshold level of this class.
@@ -98,6 +124,16 @@ protected:
 	float mUpdatedDensity;
 
 	/**
+	 * The value in percentage by which far distance of a foliage is stepped up or down while adjusting foliage detail.
+	 */
+	float mDefaultDistanceStep;
+
+	/**
+	 * Holds the current/updated percentage far distance of all foliage.
+	 */
+	float mFarDistance;
+
+	/**
 	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class.
 	 */
 	sigc::connection mChangeRequiredConnection;
@@ -106,7 +142,7 @@ protected:
 	 * Reference to the foliage class that owns this class.
 	 */
 	Foliage& mFoliage;
-	
+
 	/**
 	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
 	 */

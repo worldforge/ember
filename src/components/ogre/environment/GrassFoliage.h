@@ -57,7 +57,8 @@ public:
 	
 	virtual void initialize();
 	virtual void frameStarted();
-	virtual void updateDensity(float newGrassDensity);
+	virtual void setDensity(float newGrassDensity);
+	virtual void setFarDistance(float newFarDistance);
 
 protected:
 	

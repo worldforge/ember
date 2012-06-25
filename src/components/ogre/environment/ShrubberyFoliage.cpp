@@ -98,14 +98,25 @@ void ShrubberyFoliage::frameStarted()
 	}
 }
 
-void ShrubberyFoliage::updateDensity(float newGrassDensity)
+void ShrubberyFoliage::setDensity(float newGrassDensity)
 {
 	mLoader->setDensityFactor(newGrassDensity);
 	mPagedGeometry->reloadGeometry();
 }
 
-
-
+void ShrubberyFoliage::setFarDistance(float newFarDistance)
+{
+	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
+	float farDistance;
+	float nearDistance;
+	
+	for (std::list<Forests::GeometryPageManager*>::reverse_iterator I = detailLevels.rbegin(); I != detailLevels.rend(); ++I) {
+		farDistance = newFarDistance * (*detailLevels.back()).getFarRange();
+		nearDistance = newFarDistance * (*detailLevels.back()).getNearRange();
+		(*I)->setFarRange(farDistance);
+		(*I)->setNearRange(farDistance);
+	}
+}
 
 }
 

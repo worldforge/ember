@@ -88,13 +88,22 @@ public:
 	virtual void frameStarted() = 0;
 	
 	/**
-	 * @brief Updates density of the foliage.
+	 * @brief Sets the density factor of the foliage.
 	 * This affects the overall density of the foliage by a percentage.
 	 * eg. passing 0.1 will make the foliage density = (the default defined layer density) * 0.1;
 	 * @param newDensity the new density percentage in float, where 1 implies normal or full density and 0 implies no density.
-	 * @note Should be overriden in the deriving foliage layer to provide ability to update density. 
+	 * @note Should be overriden in the deriving foliage layer to provide ability to set the far distance. 
 	 */
-	virtual void updateDensity(float) { }
+	virtual void setDensity(float) { }
+	
+	/**
+	 * @brief Sets the far distance factor of the foliage.
+	 * This affects the far distance of the foliage by a percentage.
+	 * eg. passing 0.1 will make the furthest distance foliage appears at = default far distance * 0.1;
+	 * @param newFarDistance the new far distance percentage, where 1 implies normal or max far distance and 0 implies minimum far distance;
+	 * @note Should be overriden in the deriving foliage layer to provide ability to set the far distance. 
+	 */
+	virtual void setFarDistance(float newFarDistance) { };
 
 protected:
 

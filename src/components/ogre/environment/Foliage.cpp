@@ -56,7 +56,8 @@ Foliage::Foliage(Terrain::TerrainManager& terrainManager, AutomaticGraphicsLevel
 	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageLevelManager(new FoliageLevelManager(*this, automaticGraphicsLevelManager))
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
-	mFoliageLevelManager->foliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::updateDensity));
+	mFoliageLevelManager->foliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));
+	mFoliageLevelManager->foliageFarDistanceChanged.connect(sigc::mem_fun(*this, &Foliage::setFarDistance));
 }
 
 Foliage::~Foliage()
@@ -133,10 +134,17 @@ bool Foliage::frameStarted(const Ogre::FrameEvent& evt)
 	return true;
 }
 
-void Foliage::updateDensity(float newDensity)
+void Foliage::setDensity(float newDensity)
 {
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
-		(*I)->updateDensity(newDensity);
+		(*I)->setDensity(newDensity);
+	}
+}
+
+void Foliage::setFarDistance(float newFarDistance)
+{
+	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
+		(*I)->setFarDistance(newFarDistance);
 	}
 }
 
