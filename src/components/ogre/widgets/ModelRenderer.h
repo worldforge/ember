@@ -24,6 +24,8 @@
 #define EMBEROGREMODELRENDERER_H
 
 #include "MovableObjectRenderer.h"
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
 
 #include <sigc++/connection.h>
 
@@ -61,7 +63,6 @@ public:
 	 * @param image
 	 */
 	//static void OneShotRender(CEGUI::Window* image);
-
 	/**
 	 * Constructir
 	 * @param image A valid CEGUI::StaticImage, to which the Model will be rendered.
@@ -72,14 +73,14 @@ public:
 	virtual ~ModelRenderer();
 
 	/**
-	 * Renders the submitted Model.
+	 * @brief Renders the submitted Model.
 	 * @param modelName A valid Model
 	 */
-	void showModel(const std::string& modelName);
+	void showModel(const std::string& modelName, const Ogre::Vector3& translation = Ogre::Vector3::ZERO, const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY);
 
 	/**
-	 * Returns the current rendered Model, or null if none is set.
-	 * @return
+	 * @brief Returns the current rendered Model, or null if none is set.
+	 * @return The current model instance.
 	 */
 	Model::Model* getModel();
 
@@ -102,16 +103,30 @@ protected:
 	 */
 	void setModel(Model::Model* model);
 
-	Model::Model* mModel;
-
 	virtual Ogre::MovableObject* getMovableObject();
 
 	void model_Reloaded();
 
+	void delayedUpdateRender();
+
+	Model::Model* mModel;
+
 	sigc::connection mModelReloadedConnection;
 	sigc::connection mModelDelayedUpdateConnection;
 
-	void delayedUpdateRender();
+	/**
+	 * @brief The default translation for the model.
+	 *
+	 * This is set when a model is shown.
+	 */
+	Ogre::Vector3 mDefaultTranslation;
+
+	/**
+	 * @brief The default rotation for the model.
+	 *
+	 * This is set when a model is shown.
+	 */
+	Ogre::Quaternion mDefaultRotation;
 
 };
 }

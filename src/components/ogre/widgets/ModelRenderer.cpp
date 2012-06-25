@@ -44,7 +44,7 @@ namespace Gui
 {
 
 ModelRenderer::ModelRenderer(CEGUI::Window* image) :
-		MovableObjectRenderer(image), mModel(0)
+		MovableObjectRenderer(image), mModel(0), mDefaultTranslation(Ogre::Vector3::ZERO), mDefaultRotation(Ogre::Quaternion::IDENTITY)
 {
 }
 
@@ -77,11 +77,11 @@ void ModelRenderer::repositionSceneNode()
 	if (mModel) {
 		Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 		if (node) {
-			node->setOrientation(Ogre::Quaternion::IDENTITY);
+			node->setOrientation(mDefaultRotation);
 			node->rotate(mModel->getRotation());
 
 			//translate the scale node according to the translate defined in the model
-			node->setPosition(Ogre::Vector3::ZERO);
+			node->setPosition(mDefaultTranslation);
 			node->translate(mModel->getDefinition()->getTranslate());
 
 		}
@@ -117,8 +117,10 @@ Model::Model* ModelRenderer::getModel()
 	return mModel;
 }
 
-void ModelRenderer::showModel(const std::string& modelName)
+void ModelRenderer::showModel(const std::string& modelName, const Ogre::Vector3& translation, const Ogre::Quaternion& orientation)
 {
+	mDefaultRotation = orientation;
+	mDefaultTranslation = translation;
 	if (mModel) {
 		mModel->_getManager()->destroyMovableObject(mModel);
 		mModel = 0;

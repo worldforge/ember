@@ -54,7 +54,7 @@ public:
      * Renders the submitted Model.
      * @param modelName A valid Model
      */
-    void showModel(const std::string& modelName);
+	void showModel(const std::string& modelName, const Ogre::Vector3& translation = Ogre::Vector3::ZERO, const Ogre::Quaternion& orientation = Ogre::Quaternion::IDENTITY);
     
     /**
      * Returns the current rendered Model, or null if none is set.
