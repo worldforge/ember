@@ -1,4 +1,5 @@
 #include <OgreFrameListener.h>
+#include <services/config/ConfigListenerContainer.h>
 
 #include <sigc++/signal.h>
 
@@ -131,7 +132,7 @@ public:
  * by using the IGraphicalChangeAdapter.
  */
 
-class AutomaticGraphicsLevelManager
+class AutomaticGraphicsLevelManager: ConfigListenerContainer
 {
 public:
 	/**
@@ -148,6 +149,12 @@ public:
 	 * @brief Sets whether automatic adjustment is enabled
 	 */
 	void setEnabled(bool newEnabled);
+	
+	/**
+	 * @brief Sets the FPS that the component tries to achieve.
+	 * @param fps The fps that the manager tries to achieve.
+	 */
+	void setFps(float fps);
 
 	/**
 	 * @brief Used to check if automatic adjustment is enabled
@@ -190,6 +197,11 @@ protected:
 	 * The interface through which this central class communicates with the graphical subcomponents.
 	 */
 	IGraphicalChangeAdapter mGraphicalChangeAdapter;
+	
+	/**
+	 * @brief Connected to the config service to listen for derired fps settings.
+	 */
+	void Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 };
 

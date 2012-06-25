@@ -60,11 +60,17 @@ AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow&
 		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow)
 {
 	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
+	registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
 {
 
+}
+
+void AutomaticGraphicsLevelManager::setFps(float fps)
+{
+	mDefaultFps = fps;
 }
 
 void AutomaticGraphicsLevelManager::checkFps(float currentFps)
@@ -95,6 +101,18 @@ void AutomaticGraphicsLevelManager::setEnabled(bool newEnabled)
 bool AutomaticGraphicsLevelManager::isEnabled()
 {
 	return mEnabled;
+}
+
+void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_double()) {
+		float fps = static_cast<double>(variable);
+		//If set to 0 the FPS the manager tries to achieve is 60
+		if (fps == 0) {
+			fps = 60.0;
+		}
+		setFps(fps);
+	}
 }
 
 }
