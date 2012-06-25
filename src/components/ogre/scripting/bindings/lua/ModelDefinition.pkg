@@ -30,6 +30,19 @@ struct ViewDefinition
 	float Distance;
 };
 
+struct PoseDefinition
+{
+	/**
+	 * @brief The rotation of the model around the translated origin.
+	 */
+	Ogre::Quaternion Rotate;
+
+	/**
+	 * @brief The translation of the original model, to provide a new origin.
+	 */
+	Ogre::Vector3 Translate;
+};
+
 struct AttachPointDefinition
 {
 	std::string Name;
