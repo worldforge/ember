@@ -28,6 +28,7 @@
 
 #include "ColouredListItem.h"
 #include "ModelRenderer.h"
+#include "EntityTextureManipulator.h"
 
 #include "components/entitymapping/EntityMappingManager.h"
 #include "components/entitymapping/EntityMapping.h"
@@ -85,6 +86,7 @@ ServerWidget::ServerWidget() :
 
 ServerWidget::~ServerWidget()
 {
+	delete mModelPreviewManipulator;
 	delete mModelPreviewRenderer;
 	delete mAvatarTransferInfo;
 }
@@ -631,6 +633,7 @@ void ServerWidget::createPreviewTexture()
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
 	} else {
 		mModelPreviewRenderer = new ModelRenderer(imageWidget);
+		mModelPreviewManipulator = new EntityTextureManipulator(*imageWidget, mModelPreviewRenderer->getEntityTexture());
 	}
 
 }

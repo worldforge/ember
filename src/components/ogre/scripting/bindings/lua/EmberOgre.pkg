@@ -74,6 +74,7 @@ $pfile "MovableObjectRenderer.pkg"
 $pfile "OgreEntityRenderer.pkg"
 $pfile "ModelRenderer.pkg"
 $pfile "ListHolder.pkg"
+$pfile "EntityTextureManipulator.pkg"
 //$pfile "MaterialPicker.pkg"
 
 $pfile "IWorldPickListener.pkg"

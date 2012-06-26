@@ -60,6 +60,7 @@ public:
 
 class Widget;
 class ModelRenderer;
+class EntityTextureManipulator;
 /**
 @author Erik Hjortsberg
 */
@@ -78,9 +79,14 @@ protected:
 	Eris::Account* mAccount;
 
 	/**
-	A preview renderer for creating new characters
-	*/
+	 * @brief A preview renderer for creating new characters
+	 */
 	ModelRenderer* mModelPreviewRenderer;
+
+	/**
+	 * @brief Handles manipulation of the entity preview.
+	 */
+	EntityTextureManipulator* mModelPreviewManipulator;
 
 	NewCharacter mNewChar;
 

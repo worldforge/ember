@@ -29,13 +29,10 @@
 #include "EntityCEGUITexture.h"
 #include "../SimpleRenderContext.h"
 
-#include <elements/CEGUIGUISheet.h>
-#include <CEGUIPropertyHelper.h>
-
 #include "framework/Exception.h"
 
-#include "Widget.h"
-#include "../GUIManager.h"
+#include <elements/CEGUIGUISheet.h>
+#include <CEGUIPropertyHelper.h>
 
 #include <OgreRoot.h>
 #include <OgreSceneNode.h>
@@ -71,7 +68,7 @@ public:
 };
 
 MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
-: mTexture(0), mIsInputCatchingAllowed(true), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
+: mTexture(0), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
 {
 	int width = static_cast<int>(image->getPixelSize().d_width);
 	int height = static_cast<int>(image->getPixelSize().d_height);
@@ -82,8 +79,6 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 
 		mImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(mTexture->getImage()));
 		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
-		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseButtonDown, MovableObjectRenderer::image_MouseButtonDown);
-		BIND_CEGUI_EVENT(mImage, CEGUI::Window::EventMouseWheel, MovableObjectRenderer::image_MouseWheel);
 
 
 		// Register this as a frame listener
@@ -113,32 +108,6 @@ MovableObjectRenderer::~MovableObjectRenderer()
 	// Register this as a frame listener
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
-}
-
-bool MovableObjectRenderer::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
-{
-	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
-		//translate the modelnode
-		Ogre::Vector3 translate;
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-			translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
-		} else {
-			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
-		}
-		translate = mTexture->getRenderContext()->getEntityRotation().Inverse() * translate;
-		mTexture->getRenderContext()->getSceneNode()->translate(translate);
-	} else {
-		//rotate the modelnode
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-			mTexture->getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
-		} else {
-			mTexture->getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-			mTexture->getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
-		}
-	}
-	//we don't want to move the cursor
-	freezeMouse = true;
-	return false;
 }
 
 Ogre::Quaternion MovableObjectRenderer::getEntityRotation() const
@@ -179,45 +148,6 @@ void MovableObjectRenderer::yaw(Ogre::Degree degrees)
 void MovableObjectRenderer::roll(Ogre::Degree degrees)
 {
 	mTexture->getRenderContext()->roll(degrees);
-}
-
-
-bool MovableObjectRenderer::injectMouseButtonUp(const Input::MouseButton& button)
-{
-	if (button == Input::MouseButtonLeft) {
-		releaseInput();
-	}
-	return true;
-}
-
-bool MovableObjectRenderer::injectMouseButtonDown(const Input::MouseButton& button)
-{
-	return true;
-}
-
-bool MovableObjectRenderer::injectChar(char character)
-{
-	return true;
-}
-
-bool MovableObjectRenderer::injectKeyDown(const SDLKey& key)
-{
-	return true;
-}
-
-bool MovableObjectRenderer::injectKeyUp(const SDLKey& key)
-{
-	return true;
-}
-
-bool MovableObjectRenderer::getIsInputCatchingAllowed() const
-{
-	return mIsInputCatchingAllowed;
-}
-
-void MovableObjectRenderer::setIsInputCatchingAllowed(bool allowed)
-{
-	mIsInputCatchingAllowed = allowed;
 }
 
 bool MovableObjectRenderer::getAutoShowFull() const
@@ -262,49 +192,8 @@ float MovableObjectRenderer::getAbsoluteCameraDistance()
 	return  mTexture->getRenderContext()->getAbsoluteCameraDistance();
 }
 
-void MovableObjectRenderer::catchInput()
-{
-	Input::getSingleton().addAdapter(this);
-	EventMovementStarted();
-}
-
-void MovableObjectRenderer::releaseInput()
-{
-	Input::getSingleton().removeAdapter(this);
-	EventMovementStopped();
-}
-
-bool MovableObjectRenderer::image_MouseWheel(const CEGUI::EventArgs& args)
-{
-	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
-
-	if (mTexture) {
-		if (mouseArgs.wheelChange != 0.0f) {
-			float distance = mTexture->getRenderContext()->getCameraDistance();
-			distance -= (mouseArgs.wheelChange * 0.1);
-			setCameraDistance(distance);
-		}
-	}
-
-	return true;
-}
-
-
-bool MovableObjectRenderer::image_MouseButtonDown(const CEGUI::EventArgs& args)
-{
-	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
-	if (mouseArgs.button == CEGUI::LeftButton) {
-		//only catch input if it's allowed
-		if (getIsInputCatchingAllowed()) {
-			catchInput();
-		}
-	}
-	return true;
-}
-
 bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
 {
-//	S_LOG_VERBOSE(mImage->getName().c_str() << " visible: " << (mActive && mImage->isVisible()));
 	//if the window isn't shown, don't update the render texture
 	mTexture->getRenderContext()->setActive(mActive && mImage->isVisible());
 	if (mActive && mImage->isVisible()) {
@@ -373,6 +262,12 @@ void MovableObjectRenderer::setCameraPositionMode(SimpleRenderContext::CameraPos
 {
 	mTexture->getRenderContext()->setCameraPositionMode(mode);
 }
+
+EntityCEGUITexture& MovableObjectRenderer::getEntityTexture()
+{
+	return *mTexture;
+}
+
 
 }
 }

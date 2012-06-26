@@ -61,6 +61,7 @@ class TypeTreeAdapter;
 }
 
 class ModelRenderer;
+class EntityTextureManipulator;
 /**
  * @author Erik Hjortsberg
  *
@@ -87,9 +88,14 @@ protected:
 	CEGUI::Editbox& mName;
 
 	/**
-	 A preview renderer for creating new models.
+	 * @brief A preview renderer for creating new models.
 	 */
 	ModelRenderer* mModelPreviewRenderer;
+
+	/**
+	 * @brief Handles manipulation of the entity preview.
+	 */
+	EntityTextureManipulator* mModelPreviewManipulator;
 
 	Adapters::Eris::TypeTreeAdapter* mTypeTreeAdapter;
 

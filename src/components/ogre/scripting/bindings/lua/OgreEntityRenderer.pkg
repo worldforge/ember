@@ -30,7 +30,7 @@ Renders a single Ogre::Entity to a EntityCEGUITexture.
 
 @author Erik Hjortsberg
 */
-class OgreEntityRenderer : public Ember::OgreView::MovableObjectRenderer
+class OgreEntityRenderer : public Ember::OgreView::Gui::MovableObjectRenderer
 {
 public:
     OgreEntityRenderer(CEGUI::Window* image);

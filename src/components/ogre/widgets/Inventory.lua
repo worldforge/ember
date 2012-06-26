@@ -381,7 +381,6 @@ function Inventory:setupDoll(avatarEntity)
 		self.doll.image = self.widget:getWindow("DollImage")
 		self.doll.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.doll.image)
 		self.doll.renderer:setActive(false)
-		self.doll.renderer:setIsInputCatchingAllowed(false)
 		
 		self.doll.renderer:showModel(model:getDefinition():get():getName())
 		self.doll.renderer:setCameraDistance(0.75)

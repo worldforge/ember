@@ -68,6 +68,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/LoadingBar.cpp widgets/EntityCreatorTypeHelper.cpp widgets/MeshPreview.cpp widgets/ModelRenderer.cpp \
 	widgets/MovableObjectRenderer.cpp widgets/OgreEntityRenderer.cpp widgets/QuaternionAdapter.cpp widgets/QuickHelp.cpp widgets/QuickHelpCursor.cpp widgets/Quit.cpp widgets/ServerWidget.cpp widgets/HelpMessage.cpp \
 	widgets/StackableContainer.cpp widgets/Vector3Adapter.cpp widgets/Widget.cpp widgets/WidgetDefinitions.cpp widgets/WidgetPool.cpp widgets/AtlasHelper.cpp widgets/ModelEditHelper.cpp \
+	widgets/EntityTextureManipulator.cpp \
 	widgets/icons/Icon.cpp widgets/icons/IconImageStore.cpp widgets/icons/IconManager.cpp \
 	widgets/icons/IconRenderer.cpp widgets/icons/IconStore.cpp \
 	widgets/adapters/ListBinder.cpp widgets/adapters/atlas/AdapterFactory.cpp widgets/adapters/atlas/AreaAdapter.cpp \
@@ -160,6 +161,7 @@ noinst_HEADERS = \
 	widgets/EntityCreatorTypeHelper.h widgets/MeshPreview.h widgets/ModelRenderer.h widgets/MovableObjectRenderer.h \
 	widgets/OgreEntityRenderer.h widgets/QuaternionAdapter.h widgets/QuickHelp.h widgets/QuickHelpCursor.h widgets/Quit.h widgets/ServerWidget.h widgets/StackableContainer.h  widgets/HelpMessage.h \
 	widgets/Vector3Adapter.h widgets/Widget.h widgets/WidgetDefinitions.h widgets/WidgetPool.h widgets/AtlasHelper.h widgets/ModelEditHelper.h \
+	widgets/EntityTextureManipulator.h \
 	widgets/icons/Icon.h widgets/icons/IconImageStore.h widgets/icons/IconManager.h widgets/icons/IconRenderer.h \
 	widgets/icons/IconStore.h \
 	widgets/adapters/ListBinder.h widgets/adapters/AdapterBase.h widgets/adapters/ComboboxAdapter.h widgets/adapters/GenericPropertyAdapter.h widgets/adapters/ValueTypeHelper.h \

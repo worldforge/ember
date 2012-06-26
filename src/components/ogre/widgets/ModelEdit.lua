@@ -910,6 +910,7 @@ function ModelEdit:buildWidget()
 		
 		local poseImage = self.widget:getWindow("PoseImage")
 		self.poseRenderer = Ember.OgreView.Gui.ModelRenderer:new(poseImage)
+		self.poseRendererManipulator = Ember.OgreView.Gui.EntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
 		self.poseRenderer:showAxis();
 		self.poseRenderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_OBJECTCENTER)
 	
@@ -950,6 +951,7 @@ function ModelEdit:buildWidget()
 		self.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.renderImage)
 		self.renderer:showAxis();
 		self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
+		self.rendererManipulator = Ember.OgreView.Gui.EntityTextureManipulator:new(self.renderImage, self.renderer:getEntityTexture())
 		
 		
 		local cameraPosCombobox = CEGUI.toCombobox(self.widget:getWindow("ImageCameraPositioning"))
@@ -975,10 +977,12 @@ function ModelEdit:buildWidget()
 		local subMeshPreviewImage = self.widget:getWindow("SubMeshPreviewImage")
 		--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
 		self.subMeshPartRenderer = Ember.OgreView.Gui.OgreEntityRenderer:new(subMeshPreviewImage)
+		self.subMeshPartRendererManipulator = Ember.OgreView.Gui.EntityTextureManipulator:new(subMeshPreviewImage, self.subMeshPartRenderer:getEntityTexture())
 		
 		local meshPreviewImage = self.widget:getWindow("MeshPreviewImage")
 		--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
 		self.submeshRenderer = Ember.OgreView.Gui.OgreEntityRenderer:new(meshPreviewImage)
+		self.submeshRendererManipulator = Ember.OgreView.Gui.EntityTextureManipulator:new(meshPreviewImage, self.submeshRenderer:getEntityTexture())
 		
 		--self.contentparts.modelInfo.renderer = Ember.OgreView.Gui.ModelRenderer:new_local(self.contentparts.modelInfo.renderImage)
 		
@@ -1152,8 +1156,10 @@ function ModelEdit:shutdown()
 	self.definitionPtr = nil
 	self.definition = nil
 	deleteSafe(self.modelHelper)
+	deleteSafe(self.submeshRendererManipulator)
 	deleteSafe(self.submeshRenderer)
 	deleteSafe(self.renderer)
+	deleteSafe(self.subMeshPartRendererManipulator)
 	deleteSafe(self.subMeshPartRenderer)
 	if self.contentparts then
 		if self.contentparts.submeshInfo then
@@ -1172,6 +1178,7 @@ function ModelEdit:shutdown()
 	deleteSafe(self.attachPointPreviewModelListAdapter)
 	deleteSafe(self.attachPointPreviewModelListHolder)
 	deleteSafe(self.poseRenderer)
+	deleteSafe(self.poseRendererManipulator)
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 end

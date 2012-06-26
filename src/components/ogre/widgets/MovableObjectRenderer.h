@@ -23,10 +23,8 @@
 #ifndef EMBEROGREMOVABLEOBJECTRENDERER_H
 #define EMBEROGREMOVABLEOBJECTRENDERER_H
 
-
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/SimpleRenderContext.h"
-#include "services/input/IInputAdapter.h"
 #include <CEGUIEvent.h>
 #include <OgreFrameListener.h>
 namespace CEGUI
@@ -49,7 +47,7 @@ class CEGUIWindowUpdater;
 
  @author Erik Hjortsberg
  */
-class MovableObjectRenderer: public IInputAdapter, public Ogre::FrameListener
+class MovableObjectRenderer: public Ogre::FrameListener
 {
 public:
 	MovableObjectRenderer(CEGUI::Window* image);
@@ -68,7 +66,7 @@ public:
 	void setCameraDistance(float distance);
 
 	/**
-	 * Gets the distance of the camera from the Model in reltive terms with 1.0 being the optimal distance to show the full model.
+	 * Gets the distance of the camera from the Model in relative terms with 1.0 being the optimal distance to show the full model.
 	 * @return
 	 */
 	float getCameraDistance();
@@ -78,19 +76,6 @@ public:
 	 * @return
 	 */
 	float getAbsoluteCameraDistance();
-
-	/**
-	 * Returns whether input catching (and also rotation of the model) is allowed.
-	 * Defaults to true.
-	 * @return
-	 */
-	bool getIsInputCatchingAllowed() const;
-
-	/**
-	 * Sets whether input catching (and also rotation of the model) is allowed.
-	 * @param allowed
-	 */
-	void setIsInputCatchingAllowed(bool allowed);
 
 	/**
 	 * Gets whether the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
@@ -113,17 +98,6 @@ public:
 	{
 		mActive = isActive;
 	}
-
-	/**
-	 ---------Methods implemented from IInputAdapter
-	 @see IInputAdapter
-	 */
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
-	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
-	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
-	virtual bool injectChar(char character);
-	virtual bool injectKeyDown(const SDLKey& key);
-	virtual bool injectKeyUp(const SDLKey& key);
 
 	/**
 	 * Methods from Ogre::FrameListener
@@ -220,42 +194,12 @@ public:
 	void setCameraPositionMode(SimpleRenderContext::CameraPositioningMode mode);
 
 	/**
-	 * @brief Emitted when movement of the entity or camera has started.
+	 * @brief Accessor for the entity texture.
+	 * @return The entity texture managed by this object.
 	 */
-	sigc::signal<void> EventMovementStarted;
-
-	/**
-	 * @brief Emitted when movement of the entity or camera has stopped.
-	 */
-	sigc::signal<void> EventMovementStopped;
+	EntityCEGUITexture& getEntityTexture();
 
 protected:
-
-	/**
-	 *    Catches input and allows for rotation of the Model
-	 *    @see releaseInput
-	 */
-	void catchInput();
-
-	/**
-	 *    Releases input caught with catchInput
-	 *    @see catchInput
-	 */
-	void releaseInput();
-
-	/**CEGUI::StaticImage* image
-	 *    When the mouse button is pressed over the image, catch input and allow for rotation of the model. When the mouse button is releases, also release input.
-	 * @param args
-	 * @return
-	 */
-	bool image_MouseButtonDown(const CEGUI::EventArgs& args);
-
-	/**
-	 *    Mouse wheel movements will zoom in and out.
-	 * @param args
-	 * @return
-	 */
-	bool image_MouseWheel(const CEGUI::EventArgs& args);
 
 	/**
 	 * @brief Rescale the axis marker so that it's of a suitable size compared to the moveable object being shown.
@@ -264,20 +208,17 @@ protected:
 	 */
 	void rescaleAxisMarker();
 
+	virtual Ogre::MovableObject* getMovableObject() = 0;
+
 	EntityCEGUITexture* mTexture;
-	/**
-	 If true, the input will be caught when the user clicks on the image, allowing for rotation of the model.
-	 */
-	bool mIsInputCatchingAllowed;
+
 
 	/**
-	 used to decide if the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
+	 * @brief used to decide if the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
 	 */
 	bool mAutoShowFull;
 
 	CEGUI::Window* mImage;
-
-	virtual Ogre::MovableObject* getMovableObject() = 0;
 
 	bool mActive;
 

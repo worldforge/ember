@@ -57,20 +57,7 @@ class MovableObjectRenderer
 	 * @return 
 	 */
 	float getAbsoluteCameraDistance();
-    
-    /**
-     * Returns whether input catching (and also rotation of the model) is allowed.
-     * Defaults to true.
-     * @return 
-     */
-    bool getIsInputCatchingAllowed() const;
-    
-    /**
-     * Sets whether input catching (and also rotation of the model) is allowed.
-     * @param allowed 
-     */
-    void setIsInputCatchingAllowed(bool allowed);
-    
+      
     /**
      * Gets whether the camera should be repositioned so that the full scene is shown each time the content of the scene node updates
      * Defaults to true.
@@ -177,14 +164,10 @@ class MovableObjectRenderer
 	void setCameraPositionMode(Ember::OgreView::SimpleRenderContext::CameraPositioningMode mode);    
 
 	/**
-	 * @brief Emitted when movement of the entity or camera has started.
+	 * @brief Accessor for the entity texture.
+	 * @return The entity texture managed by this object.
 	 */
-	sigc::signal<void> EventMovementStarted;
-
-	/**
-	 * @brief Emitted when movement of the entity or camera has stopped.
-	 */
-	sigc::signal<void> EventMovementStopped;
+	Ember::OgreView::Gui::EntityCEGUITexture& getEntityTexture();
 
 };
 }

@@ -27,6 +27,7 @@
 #include "EntityCreatorTypeHelper.h"
 #include "ColouredListItem.h"
 #include "ModelRenderer.h"
+#include "EntityTextureManipulator.h"
 #include "adapters/eris/TypeTreeAdapter.h"
 
 #include "../EmberOgre.h"
@@ -68,13 +69,14 @@ namespace Gui
 {
 
 EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
-	mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mTypeTreeAdapter(0)
+	mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mTypeTreeAdapter(0)
 {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
 
 EntityCreatorTypeHelper::~EntityCreatorTypeHelper()
 {
+	delete mModelPreviewManipulator;
 	delete mModelPreviewRenderer;
 	delete mTypeTreeAdapter;
 }
@@ -92,6 +94,7 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	mTypeTreeAdapter->initialize("game_entity");
 
 	mModelPreviewRenderer = new ModelRenderer(&modelPreview);
+	mModelPreviewManipulator = new EntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
 
 }
 

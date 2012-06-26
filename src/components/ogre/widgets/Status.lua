@@ -114,7 +114,6 @@ function Status:createStatusInstance(name)
 	statusInstance.renderImage = statusInstance.widget:getWindow("RenderImage")
 	statusInstance.renderer = Ember.OgreView.Gui.ModelRenderer:new(statusInstance.renderImage)
 	statusInstance.renderer:setActive(false)
-	statusInstance.renderer:setIsInputCatchingAllowed(false)
 	
 	statusInstance.nameWindow = statusInstance.widget:getWindow("EntityName")
 	
