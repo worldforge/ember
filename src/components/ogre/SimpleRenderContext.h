@@ -186,7 +186,7 @@ public:
 
 
 	/**
-	 *    Resets the orientation of the camera.
+	 * @brief Resets the orientation of the camera.
 	 */
 	void resetCameraOrientation();
 

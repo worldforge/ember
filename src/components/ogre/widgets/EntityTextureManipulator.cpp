@@ -40,41 +40,16 @@ namespace Gui
 EntityTextureManipulator::EntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture) :
 		mWindow(window), mTexture(texture)
 {
-	window.subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&EntityTextureManipulator::image_MouseButtonDown, this));
-	window.subscribeEvent(CEGUI::Window::EventMouseWheel, CEGUI::Event::Subscriber(&EntityTextureManipulator::image_MouseWheel, this));
+	mButtonDownConnection = window.subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&EntityTextureManipulator::image_MouseButtonDown, this));
+	mMoveConnection = window.subscribeEvent(CEGUI::Window::EventMouseWheel, CEGUI::Event::Subscriber(&EntityTextureManipulator::image_MouseWheel, this));
 
 }
 
 EntityTextureManipulator::~EntityTextureManipulator()
 {
+	mButtonDownConnection->disconnect();
+	mMoveConnection->disconnect();
 	Input::getSingleton().removeAdapter(this);
-}
-
-bool EntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
-{
-
-	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
-		//translate the modelnode
-		Ogre::Vector3 translate;
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-			translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
-		} else {
-			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
-		}
-		translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
-		mTexture.getRenderContext()->getSceneNode()->translate(translate);
-	} else {
-		//rotate the modelnode
-		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-			mTexture.getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
-		} else {
-			mTexture.getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-			mTexture.getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
-		}
-	}
-	//we don't want to move the cursor
-	freezeMouse = true;
-	return false;
 }
 
 bool EntityTextureManipulator::injectMouseButtonUp(const Input::MouseButton& button)
@@ -138,6 +113,80 @@ bool EntityTextureManipulator::image_MouseButtonDown(const CEGUI::EventArgs& arg
 		catchInput();
 	}
 	return true;
+}
+
+DirectEntityTextureManipulator::DirectEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture) :
+		EntityTextureManipulator(window, texture)
+{
+
+}
+
+DirectEntityTextureManipulator::~DirectEntityTextureManipulator()
+{
+
+}
+bool DirectEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+{
+
+	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+		//translate the modelnode
+		Ogre::Vector3 translate;
+		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
+		} else {
+			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
+		}
+		translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
+		mTexture.getRenderContext()->getSceneNode()->translate(translate);
+	} else {
+		//rotate the modelnode
+		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			mTexture.getRenderContext()->getSceneNode()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+		} else {
+			mTexture.getRenderContext()->getSceneNode()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+			mTexture.getRenderContext()->getSceneNode()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+		}
+	}
+	//we don't want to move the cursor
+	freezeMouse = true;
+	return false;
+}
+
+CameraEntityTextureManipulator::CameraEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture) :
+		EntityTextureManipulator(window, texture)
+{
+
+}
+
+CameraEntityTextureManipulator::~CameraEntityTextureManipulator()
+{
+
+}
+bool CameraEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+{
+
+	if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+		//translate the modelnode
+		Ogre::Vector3 translate;
+		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
+		} else {
+			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
+		}
+		translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
+		mTexture.getRenderContext()->getCameraRootNode()->translate(translate);
+	} else {
+		//rotate the modelnode
+		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+			mTexture.getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+		} else {
+			mTexture.getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+			mTexture.getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+		}
+	}
+	//we don't want to move the cursor
+	freezeMouse = true;
+	return false;
 }
 
 }

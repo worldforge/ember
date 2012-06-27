@@ -910,11 +910,33 @@ function ModelEdit:buildWidget()
 		
 		local poseImage = self.widget:getWindow("PoseImage")
 		self.poseRenderer = Ember.OgreView.Gui.ModelRenderer:new(poseImage)
-		self.poseRendererManipulator = Ember.OgreView.Gui.EntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
+		self.poseRendererManipulator = Ember.OgreView.Gui.DirectEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
 		self.poseRenderer:showAxis();
-		self.poseRenderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_OBJECTCENTER)
+		self.poseRenderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
 	
 		self.contentparts.modelInfo.renderImage =  self.widget:getWindow("MeshPreviewImage")
+		
+		local poseManipulationTypeCombobox = CEGUI.toCombobox(self.widget:getWindow("PoseManipulationType"))
+		local item = Ember.OgreView.Gui.ColouredListItem:new("Rotate model", 0)
+		poseManipulationTypeCombobox:addItem(item)
+		item = Ember.OgreView.Gui.ColouredListItem:new("Rotate camera", 1)
+		poseManipulationTypeCombobox:addItem(item)
+		poseManipulationTypeCombobox:setItemSelectState(0, true)
+		poseManipulationTypeCombobox:subscribeEvent("ListSelectionChanged", function(args) 
+			local item = poseManipulationTypeCombobox:getSelectedItem()
+			if item then
+				deleteSafe(self.poseRendererManipulator)
+				local selectId = item:getID()
+				if selectId == 0 then
+					self.poseRendererManipulator = Ember.OgreView.Gui.DirectEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
+				elseif selectId == 1 then
+					self.poseRendererManipulator = Ember.OgreView.Gui.CameraEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
+				end
+			end
+			return true 
+		end)
+		
+		
 		--self.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(self.contentparts.modelInfo.renderImage)
 		
 	--	self.materials = self.widget:getWindow("Materials")
@@ -951,7 +973,7 @@ function ModelEdit:buildWidget()
 		self.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.renderImage)
 		self.renderer:showAxis();
 		self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
-		self.rendererManipulator = Ember.OgreView.Gui.EntityTextureManipulator:new(self.renderImage, self.renderer:getEntityTexture())
+		self.rendererManipulator = Ember.OgreView.Gui.CameraEntityTextureManipulator:new(self.renderImage, self.renderer:getEntityTexture())
 		
 		
 		local cameraPosCombobox = CEGUI.toCombobox(self.widget:getWindow("ImageCameraPositioning"))
@@ -977,12 +999,12 @@ function ModelEdit:buildWidget()
 		local subMeshPreviewImage = self.widget:getWindow("SubMeshPreviewImage")
 		--subMeshPreviewImage = CEGUI.toStaticImage(subMeshPreviewImage)
 		self.subMeshPartRenderer = Ember.OgreView.Gui.OgreEntityRenderer:new(subMeshPreviewImage)
-		self.subMeshPartRendererManipulator = Ember.OgreView.Gui.EntityTextureManipulator:new(subMeshPreviewImage, self.subMeshPartRenderer:getEntityTexture())
+		self.subMeshPartRendererManipulator = Ember.OgreView.Gui.CameraEntityTextureManipulator:new(subMeshPreviewImage, self.subMeshPartRenderer:getEntityTexture())
 		
 		local meshPreviewImage = self.widget:getWindow("MeshPreviewImage")
 		--meshPreviewImage = CEGUI.toStaticImage(meshPreviewImage)
 		self.submeshRenderer = Ember.OgreView.Gui.OgreEntityRenderer:new(meshPreviewImage)
-		self.submeshRendererManipulator = Ember.OgreView.Gui.EntityTextureManipulator:new(meshPreviewImage, self.submeshRenderer:getEntityTexture())
+		self.submeshRendererManipulator = Ember.OgreView.Gui.CameraEntityTextureManipulator:new(meshPreviewImage, self.submeshRenderer:getEntityTexture())
 		
 		--self.contentparts.modelInfo.renderer = Ember.OgreView.Gui.ModelRenderer:new_local(self.contentparts.modelInfo.renderImage)
 		

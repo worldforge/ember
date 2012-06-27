@@ -14,15 +14,6 @@ class EntityTextureManipulator
 {
 public:
 	/**
-	 * @brief Ctor.
-	 * @param window The window which shows the texture.
-	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
-	 */
-	EntityTextureManipulator(CEGUI::Window& window, Ember::OgreView::Gui::EntityCEGUITexture& texture);
-	
-	virtual ~EntityTextureManipulator();
-
-	/**
 	 * @brief Emitted when movement of the entity or camera has started.
 	 */
 	sigc::signal<void> EventMovementStarted;
@@ -33,6 +24,30 @@ public:
 	sigc::signal<void> EventMovementStopped;
 
 };
+
+class DirectEntityTextureManipulator : public Ember::OgreView::Gui::EntityTextureManipulator {
+public:
+	/**
+	 * @brief Ctor.
+	 * @param window The window which shows the texture.
+	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
+	 */
+	DirectEntityTextureManipulator(CEGUI::Window& window, Ember::OgreView::Gui::EntityCEGUITexture& texture);
+	virtual ~DirectEntityTextureManipulator();
+
+};
+
+/**
+ * @brief Manipulates the camera.
+ */
+class CameraEntityTextureManipulator: public EntityTextureManipulator
+{
+public:
+	CameraEntityTextureManipulator(CEGUI::Window& window, Ember::OgreView::Gui::EntityCEGUITexture& texture);
+	virtual ~CameraEntityTextureManipulator();
+
+};
+
 
 }
 }

@@ -633,7 +633,7 @@ void ServerWidget::createPreviewTexture()
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
 	} else {
 		mModelPreviewRenderer = new ModelRenderer(imageWidget);
-		mModelPreviewManipulator = new EntityTextureManipulator(*imageWidget, mModelPreviewRenderer->getEntityTexture());
+		mModelPreviewManipulator = new CameraEntityTextureManipulator(*imageWidget, mModelPreviewRenderer->getEntityTexture());
 	}
 
 }

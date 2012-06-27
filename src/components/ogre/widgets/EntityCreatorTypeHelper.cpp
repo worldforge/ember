@@ -94,7 +94,7 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	mTypeTreeAdapter->initialize("game_entity");
 
 	mModelPreviewRenderer = new ModelRenderer(&modelPreview);
-	mModelPreviewManipulator = new EntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
+	mModelPreviewManipulator = new CameraEntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
 
 }
 

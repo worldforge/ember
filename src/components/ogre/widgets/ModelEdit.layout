@@ -375,17 +375,10 @@
                             <Property Name='UnifiedSize' Value='{{0,150.0},{1.0,-100.0}}' />
                             <Property Name='UnifiedPosition' Value='{{0,5},{0,5}}' />
                         </Window>
-                        <Window Type='EmberLook/Button' Name='PoseRotate'>
-                            <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
-                            <Property Name='UnifiedPosition' Value='{{0,160.0},{0,30.0}}' />
-                            <Property Name='Text' Value='Rotate' />
-                            <Property Name='Tooltip' Value='Press and hold to rotate.' />
-                        </Window>
-                        <Window Type='EmberLook/Button' Name='PoseTranslate'>
-                            <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
-                            <Property Name='UnifiedPosition' Value='{{0,290.0},{0,30.0}}' />
-                            <Property Name='Text' Value='Translate' />
-                            <Property Name='Tooltip' Value='Press and hold to translate.' />
+                        <Window Type='EmberLook/Combobox' Name='PoseManipulationType'>
+                            <Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}' />
+                            <Property Name='UnifiedPosition' Value='{{0,160.0},{0,5.0}}' />
+                            <Property Name='ReadOnly' Value='true' />
                         </Window>
                         <Window Type='EmberLook/StaticImage' Name='PoseImage'>
                             <Property Name='UnifiedSize' Value='{{1,-450},{1,-20}}' />

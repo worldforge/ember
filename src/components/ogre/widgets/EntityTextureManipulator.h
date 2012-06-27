@@ -54,7 +54,7 @@ public:
 	 ---------Methods implemented from IInputAdapter
 	 @see IInputAdapter
 	 */
-	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse) = 0;
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
 	virtual bool injectChar(char character);
@@ -101,6 +101,45 @@ protected:
 
 	CEGUI::Window& mWindow;
 	EntityCEGUITexture& mTexture;
+
+	CEGUI::Event::Connection mButtonDownConnection;
+	CEGUI::Event::Connection mMoveConnection;
+};
+
+/**
+ * @brief Manipulates the entity directly.
+ */
+class DirectEntityTextureManipulator: public EntityTextureManipulator
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param window The window which shows the texture.
+	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
+	 */
+	DirectEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture);
+	virtual ~DirectEntityTextureManipulator();
+
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+
+};
+
+/**
+ * @brief Manipulates the camera.
+ */
+class CameraEntityTextureManipulator: public EntityTextureManipulator
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param window The window which shows the texture.
+	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
+	 */
+	CameraEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture);
+	virtual ~CameraEntityTextureManipulator();
+
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+
 };
 
 }
