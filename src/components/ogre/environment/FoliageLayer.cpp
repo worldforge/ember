@@ -86,7 +86,7 @@ void FoliageLayer::configure(Terrain::TerrainManager* terrainManager, const Terr
 unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume)
 {
 	if (mLatestPlantsResult) {
-			return mLatestPlantsResult->getStore().size() * densityFactor;
+		return mLatestPlantsResult->getStore().size() * densityFactor;
 	} else {
 		PlantAreaQuery query(*mTerrainLayerDefinition, mFoliageDefinition->getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLayer::plantQueryExecuted);
