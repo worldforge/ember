@@ -18,7 +18,7 @@ namespace Environment
 {
 
 FoliageLevelManager::FoliageLevelManager(Foliage& foliage, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
-		mThresholdLevel(2), mDefaultDensityStep(0.2), mDefaultDistanceStep(0.2), mUpdatedDensity(1), mFoliage(foliage), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
+		mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mDefaultDistanceStep(0.3f), mUpdatedDensity(1.0f), mFoliage(foliage), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
 {
 }
 
@@ -62,8 +62,8 @@ bool FoliageLevelManager::stepDownFoliageDensity(float step)
 		mUpdatedDensity -= step;
 		updateFoliageDensity();
 		return true;
-	} else if (mUpdatedDensity < step && mUpdatedDensity > 0) { //if there is still some positive density left which is smaller than step, set it to 0
-		mUpdatedDensity = 0;
+	} else if (mUpdatedDensity < step && mUpdatedDensity > 0.0f) { //if there is still some positive density left which is smaller than step, set it to 0
+		mUpdatedDensity = 0.0f;
 		updateFoliageDensity();
 		return true;
 	} else { //step down not possible
@@ -73,12 +73,12 @@ bool FoliageLevelManager::stepDownFoliageDensity(float step)
 
 bool FoliageLevelManager::stepUpFoliageDensity(float step)
 {
-	if (mUpdatedDensity + step <= 1) { //step up only if the step doesn't cause density to go over default density
+	if (mUpdatedDensity + step <= 1.0f) { //step up only if the step doesn't cause density to go over default density
 		mUpdatedDensity += step;
 		updateFoliageDensity();
 		return true;
-	} else if (mUpdatedDensity < 1) { //if the density is still below default density but a default step causes it to go over default density
-		mUpdatedDensity = 1;
+	} else if (mUpdatedDensity < 1.0f) { //if the density is still below default density but a default step causes it to go over default density
+		mUpdatedDensity = 1.0f;
 		updateFoliageDensity();
 		return true;
 	} else {
@@ -92,8 +92,8 @@ bool FoliageLevelManager::stepDownFoliageDistance(float step)
 		mFarDistance -= step;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
-	} else if (mFarDistance < step && mFarDistance > 0) { //if there is still some positive far distance left which is smaller than step, set it to 0
-		mFarDistance = 0;
+	} else if (mFarDistance < step && mFarDistance > 0.0f) { //if there is still some positive far distance left which is smaller than step, set it to 0
+		mFarDistance = 0.0f;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
 	} else { //step down not possible
@@ -103,12 +103,12 @@ bool FoliageLevelManager::stepDownFoliageDistance(float step)
 
 bool FoliageLevelManager::stepUpFoliageDistance(float step)
 {
-	if (mFarDistance + step <= 1) { //step up only if the step doesn't cause density to go over 1.
+	if (mFarDistance + step <= 1.0f) { //step up only if the step doesn't cause density to go over 1.
 		mFarDistance += step;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
-	} else if (mFarDistance < 1) { //if the far distance is still below 1 but a default step causes it to go over 1.
-		mFarDistance = 1;
+	} else if (mFarDistance < 1.0f) { //if the far distance is still below 1 but a default step causes it to go over 1.
+		mFarDistance = 1.0f;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
 	} else {
@@ -118,7 +118,7 @@ bool FoliageLevelManager::stepUpFoliageDistance(float step)
 
 bool FoliageLevelManager::changeFoliageDistance(float distance)
 {
-	if (distance >= 0) { //change the density as long as it is above 0
+	if (distance >= 0.0f) { //change the density as long as it is above 0
 		mFarDistance = distance;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
@@ -129,7 +129,7 @@ bool FoliageLevelManager::changeFoliageDistance(float distance)
 
 bool FoliageLevelManager::changeFoliageDensity(float density)
 {
-	if (density >= 0) { //change the density as long as it is above 0
+	if (density >= 0.0f) { //change the density as long as it is above 0
 		mUpdatedDensity = density;
 		updateFoliageDensity();
 		return true;

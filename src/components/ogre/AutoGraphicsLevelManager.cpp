@@ -50,7 +50,7 @@ IGraphicalChangeAdapter::~IGraphicalChangeAdapter()
 bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 {
 	//for now leaving it at this, need to update later with better callibrated values
-	float translatedChangeRequired = changeSize / 1;
+	float translatedChangeRequired = changeSize / 1.0f;
 
 	bool furtherChangePossible = changeRequired.emit(translatedChangeRequired);
 	return furtherChangePossible;
@@ -77,7 +77,7 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 {
 	float changeRequired = mDefaultFps - currentFps;
 
-	if (std::abs(changeRequired) >= 1) {
+	if (std::abs(changeRequired) >= 1.0f) {
 		changeGraphicsLevel(changeRequired);
 	}
 }
@@ -108,8 +108,8 @@ void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section
 	if (variable.is_double()) {
 		float fps = static_cast<double>(variable);
 		//If set to 0 the FPS the manager tries to achieve is 60
-		if (fps == 0) {
-			fps = 60.0;
+		if (fps == 0.0f) {
+			fps = 60.0f;
 		}
 		setFps(fps);
 	}
