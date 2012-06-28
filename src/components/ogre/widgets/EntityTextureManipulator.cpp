@@ -108,12 +108,17 @@ bool EntityTextureManipulator::image_MouseWheel(const CEGUI::EventArgs& args)
 bool EntityTextureManipulator::image_MouseButtonDown(const CEGUI::EventArgs& args)
 {
 	const CEGUI::MouseEventArgs& mouseArgs = static_cast<const CEGUI::MouseEventArgs&>(args);
-	if (mouseArgs.button == CEGUI::LeftButton) {
-		//only catch input if it's allowed
-		catchInput();
-	}
+	handleMouseButtonDown(mouseArgs);
 	return true;
 }
+
+void EntityTextureManipulator::handleMouseButtonDown(const CEGUI::MouseEventArgs& mouseArgs)
+{
+	if (mouseArgs.button == CEGUI::LeftButton) {
+		catchInput();
+	}
+}
+
 
 DirectEntityTextureManipulator::DirectEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture) :
 		EntityTextureManipulator(window, texture)
@@ -189,6 +194,85 @@ bool CameraEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, 
 	return false;
 }
 
+CombinedEntityTextureManipulator::CombinedEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture) :
+		EntityTextureManipulator(window, texture), mLeftMouseButtonDown(false)
+{
+
+}
+
+CombinedEntityTextureManipulator::~CombinedEntityTextureManipulator()
+{
+
+}
+
+bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
+{
+	if (mLeftMouseButtonDown) {
+		if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+			//translate the modelnode
+			Ogre::Vector3 translate;
+			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+				translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
+			} else {
+				translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
+			}
+			translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
+			mTexture.getRenderContext()->getCameraRootNode()->translate(translate);
+		} else {
+			//rotate the modelnode
+			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+				mTexture.getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+			} else {
+				mTexture.getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+				mTexture.getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+			}
+		}
+	} else {
+		if (Input::getSingleton().isKeyDown(SDLK_RSHIFT) || Input::getSingleton().isKeyDown(SDLK_LSHIFT)) {
+			//translate the modelnode
+			Ogre::Vector3 translate;
+			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+				translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
+			} else {
+				translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
+			}
+			translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
+			mTexture.getRenderContext()->getSceneNode()->translate(translate);
+		} else {
+			//rotate the modelnode
+			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
+				mTexture.getRenderContext()->getSceneNode()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+			} else {
+				mTexture.getRenderContext()->getSceneNode()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
+				mTexture.getRenderContext()->getSceneNode()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+			}
+		}
+	}
+	//we don't want to move the cursor
+	freezeMouse = true;
+	return false;
+}
+
+void CombinedEntityTextureManipulator::handleMouseButtonDown(const CEGUI::MouseEventArgs& mouseArgs)
+{
+	if (mouseArgs.button == CEGUI::LeftButton || mouseArgs.button == CEGUI::MiddleButton) {
+		if (mouseArgs.button == CEGUI::LeftButton) {
+			mLeftMouseButtonDown = true;
+		} else {
+			mLeftMouseButtonDown = false;
+		}
+		//only catch input if it's allowed
+		catchInput();
+	}
+}
+
+bool CombinedEntityTextureManipulator::injectMouseButtonUp(const Input::MouseButton& button)
+{
+	if (button == Input::MouseButtonLeft || button == Input::MouseButtonMiddle) {
+		releaseInput();
+	}
+	return true;
+}
 }
 }
 }

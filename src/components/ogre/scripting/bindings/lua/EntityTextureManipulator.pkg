@@ -40,7 +40,7 @@ public:
 /**
  * @brief Manipulates the camera.
  */
-class CameraEntityTextureManipulator: public EntityTextureManipulator
+class CameraEntityTextureManipulator: public Ember::OgreView::Gui::EntityTextureManipulator
 {
 public:
 	CameraEntityTextureManipulator(CEGUI::Window& window, Ember::OgreView::Gui::EntityCEGUITexture& texture);
@@ -48,6 +48,22 @@ public:
 
 };
 
+/**
+ * @brief Manipulates the camera and the entity.
+ */
+class CombinedEntityTextureManipulator: public Ember::OgreView::Gui::EntityTextureManipulator
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param window The window which shows the texture.
+	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
+	 */
+	CombinedEntityTextureManipulator(CEGUI::Window& window, Ember::OgreView::Gui::EntityCEGUITexture& texture);
+	virtual ~CombinedEntityTextureManipulator();
+
+
+};
 
 }
 }

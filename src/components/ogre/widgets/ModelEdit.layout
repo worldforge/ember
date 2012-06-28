@@ -22,6 +22,9 @@
             <Window Type='EmberLook/StaticImage' Name='Image'>
                 <Property Name='UnifiedAreaRect' Value='{{0.466594,0.0},{0.017910,0.0},{0.963231,0.0},{0.458210,0.0}}' />
                 <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                <Property Name='Tooltip'>Press and hold left mouse button to move camera, middle mouse button to move entity.
+Press ctrl to move in depth axis.
+Press shift to switch between rotation and translation.'</Property>
                 <Window Type='EmberLook/Combobox' Name='ImageCameraPositioning'>
                     <Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}' />
                     <Property Name='UnifiedPosition' Value='{{1,-105.0},{0,5.0}}' />
@@ -383,6 +386,9 @@
                         <Window Type='EmberLook/StaticImage' Name='PoseImage'>
                             <Property Name='UnifiedSize' Value='{{1,-450},{1,-20}}' />
                             <Property Name='UnifiedPosition' Value='{{0,440.0},{0,10.0}}' />
+                            <Property Name='Tooltip'>Press and hold left mouse button to move camera, middle mouse button to move entity.
+Press ctrl to move in depth axis.
+Press shift to switch between rotation and translation.'</Property>                            
                         </Window>
                     </Window>
                 </Window>

@@ -99,6 +99,8 @@ protected:
 	 */
 	bool image_MouseWheel(const CEGUI::EventArgs& args);
 
+	virtual void handleMouseButtonDown(const CEGUI::MouseEventArgs& mouseArgs);
+
 	CEGUI::Window& mWindow;
 	EntityCEGUITexture& mTexture;
 
@@ -142,6 +144,35 @@ public:
 
 };
 
+/**
+ * @brief Manipulates the camera and the entity.
+ */
+class CombinedEntityTextureManipulator: public EntityTextureManipulator
+{
+public:
+	/**
+	 * @brief Ctor.
+	 * @param window The window which shows the texture.
+	 * @param texture The entity texture, which contains both the CEGUI Image and the Ogre SceneManager.
+	 */
+	CombinedEntityTextureManipulator(CEGUI::Window& window, EntityCEGUITexture& texture);
+	virtual ~CombinedEntityTextureManipulator();
+
+	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
+
+	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
+
+protected:
+
+	/**
+	 * @brief Keeps track of if the left mouse button was pressed.
+	 *
+	 */
+	bool mLeftMouseButtonDown;
+
+	virtual void handleMouseButtonDown(const CEGUI::MouseEventArgs& mouseArgs);
+
+};
 }
 }
 }

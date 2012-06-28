@@ -910,7 +910,7 @@ function ModelEdit:buildWidget()
 		
 		local poseImage = self.widget:getWindow("PoseImage")
 		self.poseRenderer = Ember.OgreView.Gui.ModelRenderer:new(poseImage)
-		self.poseRendererManipulator = Ember.OgreView.Gui.DirectEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
+		self.poseRendererManipulator = Ember.OgreView.Gui.CombinedEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
 		self.poseRenderer:showAxis();
 		self.poseRenderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
 	
@@ -928,9 +928,9 @@ function ModelEdit:buildWidget()
 				deleteSafe(self.poseRendererManipulator)
 				local selectId = item:getID()
 				if selectId == 0 then
-					self.poseRendererManipulator = Ember.OgreView.Gui.DirectEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
+					self.poseRendererManipulator = Ember.OgreView.Gui.CombinedEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
 				elseif selectId == 1 then
-					self.poseRendererManipulator = Ember.OgreView.Gui.CameraEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
+					self.poseRendererManipulator = Ember.OgreView.Gui.CombinedEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
 				end
 			end
 			return true 
@@ -973,7 +973,7 @@ function ModelEdit:buildWidget()
 		self.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.renderImage)
 		self.renderer:showAxis();
 		self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
-		self.rendererManipulator = Ember.OgreView.Gui.CameraEntityTextureManipulator:new(self.renderImage, self.renderer:getEntityTexture())
+		self.rendererManipulator = Ember.OgreView.Gui.CombinedEntityTextureManipulator:new(self.renderImage, self.renderer:getEntityTexture())
 		
 		
 		local cameraPosCombobox = CEGUI.toCombobox(self.widget:getWindow("ImageCameraPositioning"))
