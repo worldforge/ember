@@ -1,5 +1,7 @@
 #include <components/ogre/AutoGraphicsLevelManager.h>
 
+#include <services/config/ConfigListenerContainer.h>
+
 #include <components/ogre/EmberOgre.h>
 #include <framework/Time.h>
 
@@ -57,10 +59,10 @@ bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 }
 
 AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow) :
-		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow)
+		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow), mConfigListenerContainer(new ConfigListenerContainer())
 {
 	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
-	registerConfigListener("graphics", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
+	mConfigListenerContainer->registerConfigListener("graphics", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()

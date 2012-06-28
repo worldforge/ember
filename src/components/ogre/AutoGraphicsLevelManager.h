@@ -1,14 +1,19 @@
 #include <OgreFrameListener.h>
-#include <services/config/ConfigListenerContainer.h>
 
 #include <sigc++/signal.h>
 
 #include <string>
 #include <map>
 
+namespace varconf
+{
+class Variable;
+}
+
 namespace Ember
 {
 
+class ConfigListenerContainer;
 namespace OgreView
 {
 
@@ -132,7 +137,7 @@ public:
  * by using the IGraphicalChangeAdapter.
  */
 
-class AutomaticGraphicsLevelManager: ConfigListenerContainer
+class AutomaticGraphicsLevelManager
 {
 public:
 	/**
@@ -149,7 +154,7 @@ public:
 	 * @brief Sets whether automatic adjustment is enabled
 	 */
 	void setEnabled(bool newEnabled);
-	
+
 	/**
 	 * @brief Sets the FPS that the component tries to achieve.
 	 * @param fps The fps that the manager tries to achieve.
@@ -197,11 +202,16 @@ protected:
 	 * The interface through which this central class communicates with the graphical subcomponents.
 	 */
 	IGraphicalChangeAdapter mGraphicalChangeAdapter;
-	
+
 	/**
 	 * @brief Connected to the config service to listen for derired fps settings.
 	 */
 	void Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
+	 * @brief Used to listen for configuration changes.
+	 */
+	ConfigListenerContainer* mConfigListenerContainer;
 
 };
 
