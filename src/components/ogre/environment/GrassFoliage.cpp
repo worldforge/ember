@@ -46,6 +46,12 @@ namespace OgreView {
 
 namespace Environment {
 
+struct DistanceStore {
+	float farDistance;
+	float nearDistance;
+	float transition;
+};
+
 GrassFoliage::GrassFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
 : FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition)
 , mGrass(0)
@@ -152,6 +158,12 @@ void GrassFoliage::initialize()
 	}
 
 	l->setMapBounds(Convert::toOgre(worldSize));
+	
+	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
+	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end(); ++I) {
+		DistanceStore tempDistance = { (*I)->getFarRange(), (*I)->getNearRange(), (*I)->getTransition() };
+		mDistanceStore.push_back(tempDistance);
+	}
 
 }
 
@@ -177,17 +189,16 @@ void GrassFoliage::setDensity(float newGrassDensity)
 	mPagedGeometry->reloadGeometry();
 }
 
-void GrassFoliage::setFarDistance(float newFarDistance)
+void GrassFoliage::setFarDistance(float factor)
 {
 	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
-	float farDistance;
-	float nearDistance;
-	
-	for (std::list<Forests::GeometryPageManager*>::reverse_iterator I = detailLevels.rbegin(); I != detailLevels.rend(); ++I) {
-		farDistance = newFarDistance * (*detailLevels.back()).getFarRange();
-		nearDistance = newFarDistance * (*detailLevels.back()).getNearRange();
-		(*I)->setFarRange(farDistance);
-		(*I)->setNearRange(farDistance);
+
+	std::list<DistanceStore>::iterator J = mDistanceStore.begin();
+	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end() && J != mDistanceStore.end(); ++I) {
+		(*I)->setFarRange(factor * J->farDistance);
+		(*I)->setNearRange(factor * J->nearDistance);
+		(*I)->setTransition(factor * J->transition);
+		++J;
 	}
 }
 

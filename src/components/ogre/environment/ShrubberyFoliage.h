@@ -44,6 +44,7 @@ class TerrainArea;
 namespace Environment {
 
 class FoliageLoader;
+struct DistanceStore;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -60,11 +61,12 @@ public:
 	
 	virtual void setDensity(float newGrassDensity);
 	
-	virtual void setFarDistance(float newFarDistance);
+	virtual void setFarDistance(float factor);
 
 protected:
 	FoliageLoader* mLoader;
 
+	std::list<DistanceStore> mDistanceStore;
 };
 }
 

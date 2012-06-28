@@ -47,6 +47,12 @@ namespace OgreView {
 
 namespace Environment {
 
+struct DistanceStore {
+	float farDistance;
+	float nearDistance;
+	float transition;
+};
+
 ShrubberyFoliage::ShrubberyFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
 : FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition)
 , mLoader(0)
@@ -80,6 +86,12 @@ void ShrubberyFoliage::initialize()
 
 	mLoader = new FoliageLoader(mTerrainManager.getAdapter()->getSceneManager(), mTerrainManager, mTerrainLayerDefinition, mFoliageDefinition, *mPagedGeometry);
  	mPagedGeometry->setPageLoader(mLoader);
+
+	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
+	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end(); ++I) {
+		DistanceStore tempDistance = { (*I)->getFarRange(), (*I)->getNearRange(), (*I)->getTransition() };
+		mDistanceStore.push_back(tempDistance);
+	}
 }
 
 void ShrubberyFoliage::frameStarted()
@@ -104,17 +116,16 @@ void ShrubberyFoliage::setDensity(float newGrassDensity)
 	mPagedGeometry->reloadGeometry();
 }
 
-void ShrubberyFoliage::setFarDistance(float newFarDistance)
+void ShrubberyFoliage::setFarDistance(float factor)
 {
 	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
-	float farDistance;
-	float nearDistance;
-	
-	for (std::list<Forests::GeometryPageManager*>::reverse_iterator I = detailLevels.rbegin(); I != detailLevels.rend(); ++I) {
-		farDistance = newFarDistance * (*detailLevels.back()).getFarRange();
-		nearDistance = newFarDistance * (*detailLevels.back()).getNearRange();
-		(*I)->setFarRange(farDistance);
-		(*I)->setNearRange(farDistance);
+
+	std::list<DistanceStore>::iterator J = mDistanceStore.begin();
+	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end() && J != mDistanceStore.end(); ++I) {
+		(*I)->setFarRange(factor * J->farDistance);
+		(*I)->setNearRange(factor * J->nearDistance);
+		(*I)->setTransition(factor * J->transition);
+		++J;
 	}
 }
 
