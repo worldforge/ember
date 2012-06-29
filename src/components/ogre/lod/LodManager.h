@@ -57,6 +57,11 @@ public:
 	 * @param mesh The mesh which needs Lod.
 	 */
 	void LoadLod(Ogre::Mesh& mesh);
+
+	/**
+	 * @brief Reduces vertexes of the passed mesh.
+	 */
+	void reduceVertexCount(Ogre::Mesh& mesh, Ogre::ProgressiveMesh::VertexReductionQuota reductionMethod, Ogre::Real reductionValue);
 private:
 
 	/**
