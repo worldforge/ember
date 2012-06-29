@@ -72,6 +72,9 @@
 #include "model/ModelRepresentationManager.h"
 #include "mapping/EmberEntityMappingManager.h"
 
+#include "lod/LodDefinitionManager.h"
+#include "lod/LodManager.h"
+
 //#include "ogreopcode/include/OgreCollisionManager.h"
 //#include "OpcodeCollisionDetectorVisualizer.h"
 
@@ -138,7 +141,7 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 EmberOgre::EmberOgre() :
 		mInput(0), mRoot(0), mSceneMgr(0), mWindow(0), mScreen(0), mShaderManager(0), mGeneralCommandMapper(std::auto_ptr < InputCommandMapper > (new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
 		//mJesus(0),
-		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
+		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0), mLodDefinitionManager(0), mLodManager(0),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
 		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mWindowProvider(0)
@@ -178,6 +181,9 @@ EmberOgre::~EmberOgre()
 	//this is because Model internally uses Entities, so if those Entities are destroyed by Ogre before the Models are destroyed, the Models will try to delete them again, causing segfaults and other wickedness
 	//by deleting the model manager we'll assure that
 	delete mModelDefinitionManager;
+
+	delete mLodManager;
+	delete mLodDefinitionManager;
 
 	// 	if (mWindow) {
 	// 		mRoot->getRenderSystem()->destroyRenderTarget(mWindow->getName());
@@ -306,8 +312,13 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	mWindowProvider = new OgreWindowProvider(*mWindow);
 	Input::getSingleton().attach(mWindowProvider);
 
+
+	std::string exportDir(configSrv.getHomeDirectory() + "/user-media/data/");
 	//Create the model definition manager
-	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv.getHomeDirectory() + "/user-media/data/");
+	mModelDefinitionManager = new Model::ModelDefinitionManager(exportDir);
+
+	mLodDefinitionManager = new Lod::LodDefinitionManager(exportDir);
+	mLodManager = new Lod::LodManager();
 
 	mEntityMappingManager = new Mapping::EmberEntityMappingManager();
 
@@ -422,7 +433,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		mMaterialEditor = new Authoring::MaterialEditor();
 
 		mModelRepresentationManager = new Model::ModelRepresentationManager();
-
 		loadingBar.finish();
 	}
 

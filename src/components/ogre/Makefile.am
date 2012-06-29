@@ -26,6 +26,8 @@ libEmberOgre_a_SOURCES = \
 	environment/ExclusiveImposterPage.cpp environment/WorldRepresentation.cpp environment/WorldAction.cpp \
 	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp gui/RenderedColourStringTextComponent.cpp gui/ColouredRenderedStringParser.cpp gui/CursorWorldListener.cpp \
 \
+	lod/LodDefinition.cpp lod/XMLLodDefinitionSerializer.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp \
+\
 	mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp \
 \
 	model/Action.cpp model/AnimationSet.cpp model/Model.cpp \
@@ -120,6 +122,8 @@ noinst_HEADERS = \
 	environment/WorldRepresentation.h environment/WorldAction.h \
 \
 	gui/ActiveWidgetHandler.h gui/CEGUILogger.h gui/RenderedColourStringTextComponent.h gui/ColouredRenderedStringParser.h gui/CursorWorldListener.h \
+\
+	lod/LodDefinition.h lod/XMLLodDefinitionSerializer.h lod/LodDefinitionManager.h lod/LodManager.h \
 \
 	mapping/EmberEntityMappingManager.h mapping/XMLEntityMappingDefinitionSerializer.h \
 \
