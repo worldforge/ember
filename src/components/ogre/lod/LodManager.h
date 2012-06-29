@@ -37,8 +37,7 @@ namespace Lod
  * @brief LodManager will assign Lod settings to meshes.
  */
 class LodManager :
-	public Ember::Singleton<LodManager>,
-	private Ogre::ResourceGroupListener
+	public Ember::Singleton<LodManager>
 {
 public:
 
@@ -57,8 +56,7 @@ public:
 	 *
 	 * @param mesh The mesh which needs Lod.
 	 */
-	bool LoadLod(const Ogre::MeshPtr& mesh);
-
+	void LoadLod(Ogre::Mesh& mesh);
 private:
 
 	/**
@@ -66,37 +64,16 @@ private:
 	 */
 	std::string convertMeshNameToLodName(std::string meshName);
 
-	// These are pure functions inherited from Ogre::ResourceGroupListener.
-	void resourceGroupScriptingStarted(const Ogre::String& groupName, size_t scriptCount)
-	{
-	}
-	void scriptParseStarted(const Ogre::String& scriptName, bool& skipThisScript)
-	{
-	}
-	void scriptParseEnded(const Ogre::String& scriptName, bool skipped)
-	{
-	}
-	void resourceGroupScriptingEnded(const Ogre::String& groupName)
-	{
-	}
-	void resourceGroupLoadStarted(const Ogre::String& groupName, size_t resourceCount)
-	{
-	}
+	/**
+	 * @brief Loads LodDefinition data into the mesh.
+	 */
+	void LoadLod(Ogre::Mesh& mesh, const LodDefinition& definition);
 
-	void resourceLoadStarted(const Ogre::ResourcePtr& resource);
-	void resourceLoadEnded(void);
+	/**
+	 * @brief Loads Automatic Mesh Lod Management System.
+	 */
+	void LoadAutomaticLod(Ogre::Mesh& mesh);
 
-	void worldGeometryStageStarted(const Ogre::String& description)
-	{
-	}
-	void worldGeometryStageEnded(void)
-	{
-	}
-	void resourceGroupLoadEnded(const Ogre::String& groupName)
-	{
-	}
-
-	Ogre::MeshPtr mCurrentMesh;
 };
 }
 }

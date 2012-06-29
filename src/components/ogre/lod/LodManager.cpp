@@ -17,6 +17,7 @@
  */
 
 #include "LodManager.h"
+#include "LodDefinition.h"
 #include "LodDefinitionManager.h"
 
 template<>
@@ -31,42 +32,36 @@ namespace Lod
 
 LodManager::LodManager()
 {
-	Ogre::ResourceGroupManager::getSingleton().addResourceGroupListener(this);
 }
 
 LodManager::~LodManager()
 {
-	Ogre::ResourceGroupManager::getSingleton().removeResourceGroupListener(this);
+
 }
 
-void LodManager::resourceLoadStarted(const Ogre::ResourcePtr& resource)
+void LodManager::LoadLod(Ogre::Mesh& mesh)
 {
-	std::string type = resource->getCreator()->getResourceType();
-	if (type == "Mesh") {
-		mCurrentMesh = resource;
-	} else if (!mCurrentMesh.isNull()) {
-		mCurrentMesh.setNull();
-	}
-}
+	assert(mesh.getNumLodLevels() == 1);
+	std::string lodDefName = convertMeshNameToLodName(mesh.getName());
 
-void LodManager::resourceLoadEnded(void)
-{
-	if (!mCurrentMesh.isNull()) {
-		LodManager::getSingleton().LoadLod(mCurrentMesh);
-	}
-}
-
-bool LodManager::LoadLod(const Ogre::MeshPtr& mesh)
-{
-	mesh->removeLodLevels();
-	std::string lodDefName = convertMeshNameToLodName(mesh->getName());
 	try {
-		Lod::LodDefinitionManager::getSingleton().load(lodDefName, "General");
+		Ogre::ResourcePtr resource = LodDefinitionManager::getSingleton().load(lodDefName, "General");
+		const LodDefinition& def = *static_cast<const LodDefinition*>(resource.get());
+		LoadLod(mesh, def);
 	} catch (Ogre::FileNotFoundException ex) {
 		// Exception is thrown if a mesh hasn't got a loddef.
-		return false;
+		// By default, use the automatic mesh lod management system.
+		LoadAutomaticLod(mesh);
 	}
-	return true;
+}
+
+void LodManager::LoadLod(Ogre::Mesh& mesh, const LodDefinition& def)
+{
+	if (def.getUseAutomaticLod()) {
+		LoadAutomaticLod(mesh);
+	} else {
+		// TODO: Load manual config!
+	}
 }
 
 std::string LodManager::convertMeshNameToLodName(std::string meshName)
@@ -83,6 +78,11 @@ std::string LodManager::convertMeshNameToLodName(std::string meshName)
 
 	meshName += ".loddef";
 	return meshName;
+}
+
+void LodManager::LoadAutomaticLod(Ogre::Mesh& mesh)
+{
+	// TODO: Implement automatic mesh lod management system!
 }
 
 }
