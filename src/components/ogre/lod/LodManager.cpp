@@ -60,7 +60,20 @@ void LodManager::LoadLod(Ogre::Mesh& mesh, const LodDefinition& def)
 	if (def.getUseAutomaticLod()) {
 		LoadAutomaticLod(mesh);
 	} else {
-		// TODO: Load manual config!
+		// Load manual configs.
+		Ogre::Mesh::LodValueList values(1);
+		const std::map<int, LodDistance>& data = def.getManualLodData();
+		std::map<int, LodDistance>::const_iterator it;
+		for (it = data.begin(); it != data.end(); it++) {
+
+			const LodDistance& dist = it->second;
+			if (dist.getType() == LodDistance::LDT_AUTOMATIC_VERTEX_REDUCTION) {
+				values[0] = it->first;
+				mesh.generateLodLevels(values, dist.getReductionMethod(), dist.getReductionValue());
+			} else {
+				mesh.createManualLodLevel(it->first, dist.getMeshName());
+			}
+		}
 	}
 }
 
