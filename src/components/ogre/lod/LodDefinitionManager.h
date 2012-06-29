@@ -61,6 +61,8 @@ public:
 	                           const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
 	                           const Ogre::NameValuePairList* createParams);
 
+	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
+
 	/**
 	 * @brief Returns an instance of the default Serializer.
 	 */

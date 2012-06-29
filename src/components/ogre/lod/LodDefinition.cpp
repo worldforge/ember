@@ -74,9 +74,7 @@ void LodDefinition::removeLodDistance(int distVal)
 
 void LodDefinition::loadImpl(void)
 {
-	Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(mName, mGroup, true, this);
-	const XMLLodDefinitionSerializer& serializer = LodDefinitionManager::getSingleton().getSerializer();
-	serializer.importLodDefinition(stream, *this);
+
 }
 
 void LodDefinition::unloadImpl(void)

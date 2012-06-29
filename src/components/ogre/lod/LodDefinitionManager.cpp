@@ -35,12 +35,12 @@ LodDefinitionManager::LodDefinitionManager(const std::string& exportDirectory) :
 	mLoadOrder = 400.0f;
 	mResourceType = "LodDefinition";
 	mScriptPatterns.push_back("*.loddef");
-	Ogre::ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
+	Ogre::ResourceGroupManager::getSingleton()._registerScriptLoader(this);
 }
 
 LodDefinitionManager::~LodDefinitionManager()
 {
-	Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
 Ogre::Resource* LodDefinitionManager::createImpl(const Ogre::String& name,
@@ -50,7 +50,28 @@ Ogre::Resource* LodDefinitionManager::createImpl(const Ogre::String& name,
                                                  Ogre::ManualResourceLoader* loader,
                                                  const Ogre::NameValuePairList* createParams)
 {
-	return new LodDefinition(this, name, handle, group, isManual, loader);
+	return OGRE_NEW LodDefinition(this, name, handle, group, isManual, loader);
+}
+
+void LodDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)
+{
+	std::string lodName = stream->getName();
+
+	// Extract file name from path.
+	size_t start = lodName.find_last_of("/\\");
+	if (start != std::string::npos) {
+		lodName = lodName.substr(start + 1);
+	}
+
+	// Create resource
+	Ogre::ResourcePtr resource = create(lodName, groupName);
+
+	// Set origin of resource.
+	resource->_notifyOrigin(stream->getName());
+
+	LodDefinition& loddef = *static_cast<LodDefinition*>(resource.get());
+	const XMLLodDefinitionSerializer& serializer = LodDefinitionManager::getSingleton().getSerializer();
+	serializer.importLodDefinition(stream, loddef);
 }
 
 }
