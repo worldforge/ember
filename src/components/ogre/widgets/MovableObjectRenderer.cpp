@@ -135,19 +135,19 @@ void MovableObjectRenderer::resetCameraOrientation()
 	mTexture->getRenderContext()->resetCameraOrientation();
 }
 
-void MovableObjectRenderer::pitch(Ogre::Degree degrees)
+void MovableObjectRenderer::pitchCamera(Ogre::Degree degrees)
 {
-	mTexture->getRenderContext()->pitch(degrees);
+	mTexture->getRenderContext()->pitchCamera(degrees);
 }
 
-void MovableObjectRenderer::yaw(Ogre::Degree degrees)
+void MovableObjectRenderer::yawCamera(Ogre::Degree degrees)
 {
-	mTexture->getRenderContext()->yaw(degrees);
+	mTexture->getRenderContext()->yawCamera(degrees);
 }
 
-void MovableObjectRenderer::roll(Ogre::Degree degrees)
+void MovableObjectRenderer::rollCamera(Ogre::Degree degrees)
 {
-	mTexture->getRenderContext()->roll(degrees);
+	mTexture->getRenderContext()->rollCamera(degrees);
 }
 
 bool MovableObjectRenderer::getAutoShowFull() const

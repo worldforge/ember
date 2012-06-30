@@ -176,15 +176,15 @@ void SimpleRenderContext::createCamera(const std::string& prefix)
 	mCameraPitchNode->attachObject(mCamera);
 }
 
-void SimpleRenderContext::pitch(Ogre::Degree degrees)
+void SimpleRenderContext::pitchCamera(Ogre::Degree degrees)
 {
 	mCameraPitchNode->pitch(degrees);
 }
-void SimpleRenderContext::yaw(Ogre::Degree degrees)
+void SimpleRenderContext::yawCamera(Ogre::Degree degrees)
 {
 	mCameraNode->yaw(degrees);
 }
-void SimpleRenderContext::roll(Ogre::Degree degrees)
+void SimpleRenderContext::rollCamera(Ogre::Degree degrees)
 {
 	mCameraNode->roll(degrees);
 }

@@ -781,27 +781,27 @@ function ModelEdit:buildWidget()
 		end)
 		
 		self.widget:getWindow("YawLeft"):subscribeEvent("Clicked", function(args)
-			self.renderer:yaw(Ogre.Degree:new_local(-45))
+			self.renderer:yawCamera(Ogre.Degree:new_local(-45))
 			return true
 		end)
 		self.widget:getWindow("YawRight"):subscribeEvent("Clicked", function(args)
-			self.renderer:yaw(Ogre.Degree:new_local(45))
+			self.renderer:yawCamera(Ogre.Degree:new_local(45))
 			return true
 		end)
 		self.widget:getWindow("RollLeft"):subscribeEvent("Clicked",function(args)
-			self.renderer:roll(Ogre.Degree:new_local(-45))
+			self.renderer:rollCamera(Ogre.Degree:new_local(-45))
 			return true
 		end)
 		self.widget:getWindow("RollRight"):subscribeEvent("Clicked", function(args)
-			self.renderer:roll(Ogre.Degree:new_local(45))
+			self.renderer:rollCamera(Ogre.Degree:new_local(45))
 			return true
 		end)
 		self.widget:getWindow("PitchUp"):subscribeEvent("Clicked", function(args)
-			self.renderer:pitch(Ogre.Degree:new_local(-45))
+			self.renderer:pitchCamera(Ogre.Degree:new_local(-45))
 			return true
 		end)
 		self.widget:getWindow("PitchDown"):subscribeEvent("Clicked", function(args)
-			self.renderer:pitch(Ogre.Degree:new_local(45))
+			self.renderer:pitchCamera(Ogre.Degree:new_local(45))
 			return true
 		end)
 		self.widget:getWindow("ResetOrientation"):subscribeEvent("Clicked", function(args)

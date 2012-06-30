@@ -138,19 +138,19 @@ public:
 	 *    Pitches the camera.
 	 * @param degrees The amount of degrees to pitch.
 	 */
-	void pitch(Ogre::Degree degrees);
+	void pitchCamera(Ogre::Degree degrees);
 
 	/**
 	 *    Yaws the camera.
 	 * @param degrees The amount of degree to yaw.
 	 */
-	void yaw(Ogre::Degree degrees);
+	void yawCamera(Ogre::Degree degrees);
 
 	/**
 	 *    Rolls the camera.
 	 * @param degrees The amount of degree to roll.
 	 */
-    void roll(Ogre::Degree degrees);
+    void rollCamera(Ogre::Degree degrees);
 
 
 	/**

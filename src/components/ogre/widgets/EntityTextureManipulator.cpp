@@ -183,10 +183,10 @@ bool CameraEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, 
 	} else {
 		//rotate the modelnode
 		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-			mTexture.getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+			mTexture.getRenderContext()->rollCamera(Ogre::Degree(motion.xRelativeMovement * 180));
 		} else {
-			mTexture.getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-			mTexture.getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+			mTexture.getRenderContext()->yawCamera(Ogre::Degree(motion.xRelativeMovement * 180));
+			mTexture.getRenderContext()->pitchCamera(Ogre::Degree(motion.yRelativeMovement * 180));
 		}
 	}
 	//we don't want to move the cursor
@@ -221,10 +221,10 @@ bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion
 		} else {
 			//rotate the modelnode
 			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-				mTexture.getRenderContext()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+				mTexture.getRenderContext()->rollCamera(Ogre::Degree(motion.xRelativeMovement * 180));
 			} else {
-				mTexture.getRenderContext()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-				mTexture.getRenderContext()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+				mTexture.getRenderContext()->yawCamera(Ogre::Degree(motion.xRelativeMovement * 180));
+				mTexture.getRenderContext()->pitchCamera(Ogre::Degree(motion.yRelativeMovement * 180));
 			}
 		}
 	} else {
