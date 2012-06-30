@@ -33,6 +33,8 @@
 // Should be before GL/glx.h for OGRE < 1.6.2
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 
+#include "lod/EmberOgreRoot.h"
+
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/input/Input.h"
@@ -132,7 +134,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	}
 
 	std::string pluginExtension = ".so";
-	mRoot = new Ogre::Root("", "ogre.cfg", "");
+	mRoot = new Lod::EmberOgreRoot("", "ogre.cfg", "");
 
 	//we will try to load the plugins from series of different location, with the hope of getting at least one right
 	std::vector<std::string> pluginLocations;
