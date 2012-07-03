@@ -43,11 +43,6 @@ public:
 	virtual void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name);
 	virtual void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name);
 
-private:
-	/**
-	 * @brief The name of the mesh, which was used in the last processMaterialName call.
-	 */
-	std::string mLastMeshName;
 };
 
 }

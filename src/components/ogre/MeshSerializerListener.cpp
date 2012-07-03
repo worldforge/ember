@@ -41,19 +41,7 @@ MeshSerializerListener::~MeshSerializerListener()
 
 void MeshSerializerListener::processMaterialName(Ogre::Mesh* mesh, Ogre::String* name)
 {
-	// This is a workaround to inject Lod, when a mesh is loaded.
-	// The Ogre::ResourceGroupListener is not working for this task.
-	const Ogre::String& meshName = mesh->getName();
-
-	// Prevent to run it multiple times for each material
-	if (meshName != mLastMeshName) {
-		mLastMeshName = meshName;
-
-		// if we already loaded the Lod, then skip it.
-		if (mesh->getNumLodLevels() <= 1) {
-			Lod::LodManager::getSingleton().LoadLod(*mesh);
-		}
-	}
+	
 }
 
 void MeshSerializerListener::processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name)

@@ -39,6 +39,7 @@ class EmberOgreMesh :
 public:
 	EmberOgreMesh(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 	              const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader);
+	void loadImpl();
 };
 
 }

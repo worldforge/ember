@@ -17,6 +17,7 @@
  */
 
 #include "EmberOgreMesh.h"
+#include "LodManager.h"
 
 #include "framework/LoggingInstance.h"
 
@@ -36,6 +37,17 @@ EmberOgreMesh::EmberOgreMesh(Ogre::ResourceManager* creator,
 	Ogre::Mesh(creator, name, handle, group, isManual, loader)
 {
 	S_LOG_INFO("Loading mesh " << mName << ".");
+}
+
+void EmberOgreMesh::loadImpl()
+{
+	// Load the mesh.
+	Ogre::Mesh::loadImpl();
+
+	// If we loaded the Lod from the mesh file, then skip it.
+	if (getNumLodLevels() == 1) {
+		LodManager::getSingleton().LoadLod(*this);
+	}
 }
 
 }
