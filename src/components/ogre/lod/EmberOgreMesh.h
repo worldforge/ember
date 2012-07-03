@@ -19,6 +19,8 @@
 #ifndef EMBEROGREMESH_H
 #define EMBEROGREMESH_H
 
+#include "ProgressiveMeshGenerator.h"
+
 #include <OgreMesh.h>
 
 namespace Ember
@@ -39,6 +41,17 @@ class EmberOgreMesh :
 public:
 	EmberOgreMesh(Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 	              const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader);
+
+	/**
+	 * @brief Generates Lods for the mesh based on the passed LodConfigList.
+	 * 
+	 * @param lodConfigs Specification of the requested Lods.
+	 */
+	void generateLodLevels(const ProgressiveMeshGenerator::LodConfigList& lodConfigs);
+
+	/**
+	 * @brief This will start the Lod loading.
+	 */
 	void loadImpl();
 };
 

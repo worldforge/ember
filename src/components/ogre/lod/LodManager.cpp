@@ -19,9 +19,7 @@
 #include "LodManager.h"
 #include "LodDefinition.h"
 #include "LodDefinitionManager.h"
-#include "ProgressiveMeshGenerator.h"
-
-#include <OgreSubMesh.h>
+#include "EmberOgreMesh.h"
 
 template<>
 Ember::OgreView::Lod::LodManager* Ember::Singleton<Ember::OgreView::Lod::LodManager>::ms_Singleton = 0;
@@ -64,18 +62,25 @@ void LodManager::LoadLod(Ogre::Mesh& mesh, const LodDefinition& def)
 		LoadAutomaticLod(mesh);
 	} else {
 		// Load manual configs.
-		Ogre::Mesh::LodValueList values(1);
+		ProgressiveMeshGenerator::LodConfigList lodConfigs;
 		const LodDefinition::LodDistanceMap& data = def.getManualLodData();
 		LodDefinition::LodDistanceMap::const_iterator it;
 		for (it = data.begin(); it != data.end(); it++) {
-
 			const LodDistance& dist = it->second;
+
 			if (dist.getType() == LodDistance::LDT_AUTOMATIC_VERTEX_REDUCTION) {
-				values[0] = it->first;
-				mesh.generateLodLevels(values, dist.getReductionMethod(), dist.getReductionValue());
+				ProgressiveMeshGenerator::LodConfig lodConfig;
+				lodConfig.distance = it->first;
+				lodConfig.reductionMethod = dist.getReductionMethod();
+				lodConfig.reductionValue = dist.getReductionValue();
+				lodConfigs.push_back(lodConfig);
 			} else {
 				mesh.createManualLodLevel(it->first, dist.getMeshName());
 			}
+		}
+		if (lodConfigs.size() > 0) {
+			EmberOgreMesh& emberMesh = static_cast<EmberOgreMesh&>(mesh);
+			emberMesh.generateLodLevels(lodConfigs);
 		}
 	}
 }
@@ -99,49 +104,6 @@ std::string LodManager::convertMeshNameToLodName(std::string meshName)
 void LodManager::LoadAutomaticLod(Ogre::Mesh& mesh)
 {
 	// TODO: Implement automatic mesh lod management system!
-}
-
-void LodManager::reduceVertexCount(Ogre::Mesh& mesh,
-                                   Ogre::ProgressiveMesh::VertexReductionQuota reductionMethod,
-                                   Ogre::Real reductionValue)
-{
-	Ogre::Mesh::SubMeshIterator iter = mesh.getSubMeshIterator();
-	while (iter.hasMoreElements()) {
-		Ogre::SubMesh& submesh = *iter.getNext();
-
-		// Check if triangles are present
-		if (submesh.indexData->indexCount > 0) {
-			// Set up data for reduction
-			Ogre::VertexData* pVertexData = submesh.useSharedVertices ? mesh.sharedVertexData : submesh.vertexData;
-
-			Ogre::ProgressiveMesh pm(pVertexData, submesh.indexData);
-			pm.build(
-			    1,
-			    &(submesh.mLodFaceList),
-			    reductionMethod, reductionValue);
-		} else {
-			// create empty index data for each lod
-			submesh.mLodFaceList.push_back(OGRE_NEW Ogre::IndexData);
-		}
-	}
-	/* Dead end: I can't access mMeshLodUsageList to insert new Lod level outside of Ogre::Mesh.
-	 *
-	 * // Iterate over the lods and record usage
-	 * LodValueList::const_iterator ivalue, ivalueend;
-	 * ivalueend = lodValues.end();
-	 * mMeshLodUsageList.resize(lodValues.size() + 1);
-	 * MeshLodUsageList::iterator ilod = mMeshLodUsageList.begin();
-	 * for (ivalue = lodValues.begin(); ivalue != ivalueend; ++ivalue)
-	 * {
-	 *  // Record usage
-	 *  MeshLodUsage& lod = *++ilod;
-	 *  lod.userValue = (*ivalue);
-	 *  lod.value = mLodStrategy->transformUserValue(lod.userValue);
-	 *  lod.edgeData = 0;
-	 *  lod.manualMesh.setNull();
-	 * }
-	 * mNumLods = static_cast<ushort>(lodValues.size() + 1);
-	 */
 }
 
 }
