@@ -106,7 +106,7 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 				// <level distance="10">...</level>
 				const char* distVal = distElem->Attribute("distance");
 				if (distVal) {
-					lodDef.addLodDistance(Ogre::StringConverter::parseInt(distVal), dist);
+					lodDef.addLodDistance(Ogre::StringConverter::parseReal(distVal), dist);
 				}
 			}
 		}
@@ -139,8 +139,8 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinition& lodDef, const
 
 		{
 			// <level>...</level> <level>...</level> <level>...</level>
-			const std::map<int, LodDistance>& manualLod = lodDef.getManualLodData();
-			std::map<int, LodDistance>::const_iterator it;
+			const LodDefinition::LodDistanceMap& manualLod = lodDef.getManualLodData();
+			LodDefinition::LodDistanceMap::const_iterator it;
 			for (it = manualLod.begin(); it != manualLod.end(); it++) {
 
 				// <level distance="10">...</level>

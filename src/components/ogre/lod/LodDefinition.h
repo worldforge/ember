@@ -119,6 +119,8 @@ class LodDefinition :
 	public Ogre::Resource
 {
 public:
+	typedef std::map<Ogre::Real, LodDistance> LodDistanceMap;
+	typedef LodDistanceMap::iterator LodDistanceMapIterator;
 
 	/**
 	 * @brief Ctor. The parameters are passed directly to Ogre::Resource constructor.
@@ -169,17 +171,17 @@ public:
 	/**
 	 * @brief Adds a Lod distance to the manual Lod configuration.
 	 */
-	void addLodDistance(int distVal, const LodDistance& distance);
+	void addLodDistance(Ogre::Real distVal, const LodDistance& distance);
 
 	/**
 	 * @brief Returns whether a Lod distance is existing in a manual Lod configuration.
 	 */
-	bool hasLodDistance(int distVal) const;
+	bool hasLodDistance(Ogre::Real distVal) const;
 
 	/**
 	 * @brief Returns a Lod distance from the manual Lod configuration.
 	 */
-	const LodDistance& getLodDistance(int distVal) const;
+	LodDistance& getLodDistance(Ogre::Real distVal);
 
 	/**
 	 * @brief Removes a Lod distance from the manual Lod configuration.
@@ -191,11 +193,11 @@ public:
 	 *
 	 * This is useful for iterating through all elements.
 	 */
-	const std::map<int, LodDistance>& getManualLodData() const;
+	const LodDistanceMap& getManualLodData() const;
 
 private:
 	bool mUseAutomaticLod;
-	std::map<int, LodDistance> mManualLod;
+	LodDistanceMap mManualLod;
 };
 
 
@@ -249,7 +251,7 @@ inline void LodDefinition::setUseAutomaticLod(bool useAutomaticLod)
 	mUseAutomaticLod = useAutomaticLod;
 }
 
-inline const std::map<int, LodDistance>& LodDefinition::getManualLodData() const
+inline const LodDefinition::LodDistanceMap& LodDefinition::getManualLodData() const
 {
 	return mManualLod;
 }

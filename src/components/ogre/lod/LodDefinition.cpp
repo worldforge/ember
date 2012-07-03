@@ -47,26 +47,26 @@ LodDefinition::LodDefinition(Ogre::ResourceManager* creator,
 	createParamDictionary("LodDefinition");
 }
 
-void LodDefinition::addLodDistance(int distVal, const LodDistance& distance)
+void LodDefinition::addLodDistance(Ogre::Real distVal, const LodDistance& distance)
 {
 	mManualLod.insert(std::make_pair(distVal, distance));
 }
 
-bool LodDefinition::hasLodDistance(int distVal) const
+bool LodDefinition::hasLodDistance(Ogre::Real distVal) const
 {
 	return mManualLod.find(distVal) != mManualLod.end();
 }
 
-const LodDistance& LodDefinition::getLodDistance(int distVal) const
+LodDistance& LodDefinition::getLodDistance( Ogre::Real distVal )
 {
-	std::map<int, LodDistance>::const_iterator it = mManualLod.find(distVal);
+	LodDistanceMap::iterator it = mManualLod.find(distVal);
 	assert(it != mManualLod.end());
 	return it->second;
 }
 
-void LodDefinition::removeLodDistance(int distVal)
+void LodDefinition::removeLodDistance(Ogre::Real distVal)
 {
-	std::map<int, LodDistance>::const_iterator it = mManualLod.find(distVal);
+	LodDistanceMap::const_iterator it = mManualLod.find(distVal);
 	assert(it != mManualLod.end());
 	mManualLod.erase(it);
 }

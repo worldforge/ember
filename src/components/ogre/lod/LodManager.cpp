@@ -19,6 +19,8 @@
 #include "LodManager.h"
 #include "LodDefinition.h"
 #include "LodDefinitionManager.h"
+#include "ProgressiveMeshGenerator.h"
+
 #include <OgreSubMesh.h>
 
 template<>
@@ -63,8 +65,8 @@ void LodManager::LoadLod(Ogre::Mesh& mesh, const LodDefinition& def)
 	} else {
 		// Load manual configs.
 		Ogre::Mesh::LodValueList values(1);
-		const std::map<int, LodDistance>& data = def.getManualLodData();
-		std::map<int, LodDistance>::const_iterator it;
+		const LodDefinition::LodDistanceMap& data = def.getManualLodData();
+		LodDefinition::LodDistanceMap::const_iterator it;
 		for (it = data.begin(); it != data.end(); it++) {
 
 			const LodDistance& dist = it->second;
