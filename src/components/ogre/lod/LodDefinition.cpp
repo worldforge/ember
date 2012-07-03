@@ -29,7 +29,7 @@ namespace Lod
 
 LodDistance::LodDistance() :
 	mType(LDT_AUTOMATIC_VERTEX_REDUCTION),
-	mReductionMethod(Ogre::ProgressiveMesh::VRQ_PROPORTIONAL),
+	mReductionMethod(ProgressiveMeshGenerator::VRM_PROPORTIONAL),
 	mReductionValue(0.5f)
 {
 

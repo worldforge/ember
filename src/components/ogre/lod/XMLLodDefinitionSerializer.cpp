@@ -87,9 +87,9 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 					if (elem) {
 						const char* tmp = elem->GetText();
 						if (tmp && strcmp(tmp, "constant") == 0) {
-							dist.setReductionMethod(Ogre::ProgressiveMesh::VRQ_CONSTANT);
+							dist.setReductionMethod(ProgressiveMeshGenerator::VRM_CONSTANT);
 						} else {
-							dist.setReductionMethod(Ogre::ProgressiveMesh::VRQ_PROPORTIONAL);
+							dist.setReductionMethod(ProgressiveMeshGenerator::VRM_PROPORTIONAL);
 						}
 					}
 
@@ -165,7 +165,7 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinition& lodDef, const
 						// <method>constant|proportional</method>
 						TiXmlElement methodElem("method");
 						TiXmlText methodText(
-						    dist.getReductionMethod() == Ogre::ProgressiveMesh::VRQ_PROPORTIONAL ? "proportional" : "constant");
+						    dist.getReductionMethod() == ProgressiveMeshGenerator::VRM_PROPORTIONAL ? "proportional" : "constant");
 						methodElem.InsertEndChild(methodText);
 
 						// <value>0.5</value>

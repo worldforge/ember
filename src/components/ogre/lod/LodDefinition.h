@@ -19,7 +19,9 @@
 #ifndef LODDEFINITION_H
 #define LODDEFINITION_H
 
-#include "components/ogre/EmberOgrePrerequisites.h"
+#include "ProgressiveMeshGenerator.h"
+
+#include <OgreResource.h>
 
 #include <string>
 #include <map>
@@ -88,12 +90,12 @@ public:
 	/**
 	 * @brief Returns the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
 	 */
-	Ogre::ProgressiveMesh::VertexReductionQuota getReductionMethod() const;
+	ProgressiveMeshGenerator::VertexReductionMethod getReductionMethod() const;
 
 	/**
 	 * @brief Sets the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
 	 */
-	void setReductionMethod(Ogre::ProgressiveMesh::VertexReductionQuota reductionMethod);
+	void setReductionMethod(ProgressiveMeshGenerator::VertexReductionMethod reductionMethod);
 
 	/**
 	 * @brief Returns the vertex reduction value of the Lod Distance, which is used in automatic vertex reduction.
@@ -108,7 +110,7 @@ public:
 private:
 	LodDistanceType mType;
 	std::string mMeshName;
-	Ogre::ProgressiveMesh::VertexReductionQuota mReductionMethod;
+	ProgressiveMeshGenerator::VertexReductionMethod mReductionMethod;
 	float mReductionValue;
 };
 
@@ -221,12 +223,12 @@ inline void LodDistance::setMeshName(const std::string& meshName)
 	mMeshName = meshName;
 }
 
-inline Ogre::ProgressiveMesh::VertexReductionQuota LodDistance::getReductionMethod() const
+inline ProgressiveMeshGenerator::VertexReductionMethod LodDistance::getReductionMethod() const
 {
 	return mReductionMethod;
 }
 
-inline void LodDistance::setReductionMethod(Ogre::ProgressiveMesh::VertexReductionQuota reductionMethod)
+inline void LodDistance::setReductionMethod(ProgressiveMeshGenerator::VertexReductionMethod reductionMethod)
 {
 	mReductionMethod = reductionMethod;
 }
