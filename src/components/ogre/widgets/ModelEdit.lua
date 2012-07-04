@@ -610,6 +610,11 @@ function ModelEdit:buildWidget()
 			self.definition:setTranslate(self.translateAdapter:getValue())
 			self.renderer:repositionSceneNode()
 		end)
+		self.widget:getWindow("ModelTranslate_reset"):subscribeEvent("Clicked", function(args)
+			self.translateAdapter:setValue(Ogre.Vector3.ZERO)
+			return true
+		end)
+		
 		
 		local xW = self.widget:getWindow("ModelContainedOffset_x")
 		local yW = self.widget:getWindow("ModelContainedOffset_y")
@@ -629,7 +634,11 @@ function ModelEdit:buildWidget()
 			self.definition:setRotation(self.rotationAdapter:getValue())
 			self.renderer:repositionSceneNode()
 		end)
-	
+		self.widget:getWindow("ModelRotation_reset"):subscribeEvent("Clicked", function(args)
+			self.rotationAdapter:setValue(Ogre.Quaternion.IDENTITY)
+			return true
+		end)
+		
 	
 	
 	

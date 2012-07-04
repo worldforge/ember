@@ -218,7 +218,12 @@ Press shift to switch between rotation and translation.'</Property>
 	                            <Property Name='FrameEnabled' Value='False' />
 	                            <Property Name='Text' Value='Translate:' />
 	                            <Property Name='UnifiedPosition' Value='{{0,5},{0,0}}' />
-	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 60},{0,25}}' />
+	                        </Window>
+	                        <Window Type='EmberLook/Button' Name='ModelTranslate_reset'>
+	                            <Property Name='Text' Value='Reset' />
+	                            <Property Name='UnifiedPosition' Value='{{0,60},{0,0}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 40},{0,25}}' />
 	                        </Window>
 	                        <Window Type="HorizontalLayoutContainer" Name='ModelTranslate_container'>
 	                            <Property Name='UnifiedPosition' Value='{{0, 100},{0,0}}' />
@@ -241,7 +246,12 @@ Press shift to switch between rotation and translation.'</Property>
 	                            <Property Name='FrameEnabled' Value='False' />
 	                            <Property Name='Text' Value='Rotation:' />
 	                            <Property Name='UnifiedPosition' Value='{{0,5},{0,30}}' />
-	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 60},{0,25}}' />
+	                        </Window>
+	                        <Window Type='EmberLook/Button' Name='ModelRotation_reset'>
+	                            <Property Name='Text' Value='Reset' />
+	                            <Property Name='UnifiedPosition' Value='{{0,60},{0,30}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 40},{0,25}}' />
 	                        </Window>
 	                        <Window Type="HorizontalLayoutContainer" Name='ModelRotation_container'>
 	                            <Property Name='UnifiedPosition' Value='{{0, 100},{0,30}}' />
