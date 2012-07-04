@@ -133,6 +133,20 @@ bool FoliageLevelManager::changeFoliageDensity(float density)
 	}
 }
 
+void FoliageLevelManager::pause()
+{
+	if (mChangeRequiredConnection) {
+		mChangeRequiredConnection.disconnect();
+	}
+}
+
+void FoliageLevelManager::unpause()
+{
+	if (!mChangeRequiredConnection) {
+		mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(&FoliageLevelManager::changeLevel);
+	}
+}
+
 }
 }
 }

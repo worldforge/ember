@@ -65,6 +65,16 @@ public:
 	 * @return True if far distance change was possible.
 	 */
 	bool changeFoliageDistance(float distance);
+	
+	/**
+	 * @brief This can be used to stop this component responding to change requests.
+	 */
+	void pause();
+
+	/**
+	 * @brief This can be used to restart this component responding to change requests.
+	 */
+	void unpause();
 
 protected:
 
@@ -134,7 +144,7 @@ protected:
 	float mFarDistance;
 
 	/**
-	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class.
+	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class or to pause the functioning of this component.
 	 */
 	sigc::connection mChangeRequiredConnection;
 

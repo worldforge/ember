@@ -16,14 +16,13 @@ namespace Lod
 {
 
 MaterialLodLevelManager::MaterialLodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
-		mThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.3f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f)
+		mThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.3f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
 {
-	automaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(&MaterialLodLevelManager::changeLevel);
 }
 
 MaterialLodLevelManager::~MaterialLodLevelManager()
 {
-
+	mChangeRequiredConnection.disconnect();
 }
 
 bool MaterialLodLevelManager::setLodBiasAll(float factor)
@@ -98,6 +97,25 @@ bool MaterialLodLevelManager::stepUpLodBias(float step)
 		return setLodBiasAll(mLodFactor);
 	} else {
 		return false; //step up not possible
+	}
+}
+
+void MaterialLodLevelManager::initialize()
+{
+	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(&MaterialLodLevelManager::changeLevel);
+}
+
+void MaterialLodLevelManager::pause()
+{
+	if (mChangeRequiredConnection) {
+		mChangeRequiredConnection.disconnect();
+	}
+}
+
+void MaterialLodLevelManager::unpause()
+{
+	if (!mChangeRequiredConnection) {
+		mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(&MaterialLodLevelManager::changeLevel);
 	}
 }
 
