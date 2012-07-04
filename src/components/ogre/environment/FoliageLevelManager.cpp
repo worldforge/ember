@@ -1,13 +1,8 @@
 #include "FoliageLevelManager.h"
 
-#include "components/ogre/EmberOgre.h"
-
 #include <components/ogre/AutoGraphicsLevelManager.h>
 #include "components/ogre/environment/Foliage.h"
-#include "components/ogre/terrain/TerrainLayerDefinition.h"
-#include "components/ogre/terrain/TerrainLayerDefinitionManager.h"
 
-#include "sstream"
 #include "cmath"
 
 namespace Ember
