@@ -774,11 +774,6 @@ function ModelEdit:buildWidget()
 			self.definition:reloadAllInstances()
 			return true
 		end)
-		self.widget:getWindow("GetRotationFromPreviewButton"):subscribeEvent("Clicked", function(args)
-			--Get the rotation from the preview window
-			self.rotationAdapter:setValue(self.renderer:getEntityRotation())
-			return true
-		end)
 		
 		self.widget:getWindow("YawLeft"):subscribeEvent("Clicked", function(args)
 			self.renderer:yawCamera(Ogre.Degree:new_local(-45))

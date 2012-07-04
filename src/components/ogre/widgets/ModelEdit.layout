@@ -320,11 +320,6 @@ Press shift to switch between rotation and translation.'</Property>
                             <Property Name='UnifiedPosition' Value='{{1,-250},{1,-30}}' />
                             <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
                         </Window>
-                        <Window Type='EmberLook/Button' Name='GetRotationFromPreviewButton'>
-                            <Property Name='Text' Value='Rot. from preview' />
-                            <Property Name='UnifiedPosition' Value='{{1,-125},{1,-30}}' />
-                            <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
-                        </Window>
                         <Window Type='EmberLook/Button' Name='GetIconFromPreviewButton'>
                             <Property Name='Text' Value='Icon from preview' />
                             <Property Name='UnifiedPosition' Value='{{1,-125},{1,-60}}' />
