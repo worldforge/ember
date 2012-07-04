@@ -112,7 +112,7 @@ MovableObjectRenderer::~MovableObjectRenderer()
 
 Ogre::Quaternion MovableObjectRenderer::getEntityRotation() const
 {
-	return mTexture->getRenderContext()->getEntityRotation();
+	return mTexture->getRenderContext()->getSceneNode()->getOrientation();
 }
 
 void MovableObjectRenderer::setEntityRotation(const Ogre::Quaternion& rotation)
