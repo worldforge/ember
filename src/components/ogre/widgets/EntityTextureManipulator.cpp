@@ -236,7 +236,7 @@ bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion
 			} else {
 				translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
 			}
-			translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
+			translate = mTexture.getRenderContext()->getEntityRotation() * translate;
 			mTexture.getRenderContext()->getSceneNode()->translate(translate);
 		} else {
 			//rotate the modelnode
