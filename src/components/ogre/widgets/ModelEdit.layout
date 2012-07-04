@@ -210,110 +210,115 @@ Press shift to switch between rotation and translation.'</Property>
                             <Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}' />
                             <Property Name='UnifiedPosition' Value='{{0.0,100.0},{1.0,-30.0}}' />
                         </Window>
-                        <Window Type='EmberLook/Checkbox' Name='ModelShowContent'>
-                            <Property Name='Text' Value='Show content' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.701041,0.0},{0.177159,0.0},{0.838708,0.0},{0.270541,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/StaticText' Name='ModelContainedOffset_text'>
-                            <Property Name='BackgroundEnabled' Value='False' />
-                            <Property Name='FrameEnabled' Value='False' />
-                            <Property Name='Text' Value='Contained offset:' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.702949,0.0},{0.260414,0.0},{0.833568,0.0},{0.339843,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelContainedOffset_x'>
-                            <Property Name='MaxTextLength' Value='1073741823' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.836331,0.0},{0.248350,0.0},{0.872273,0.0},{0.329569,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/StaticText' Name='ModelRotation_text'>
-                            <Property Name='BackgroundEnabled' Value='False' />
-                            <Property Name='FrameEnabled' Value='False' />
-                            <Property Name='Text' Value='Rotation:' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.702949,0.0},{0.342575,0.0},{0.833568,0.0},{0.422004,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelRotation_degrees'>
-                            <Property Name='UnifiedPosition' Value='{{0.826971,0.0},{0.342575,0.0}}' />
-                            <Property Name='UnifiedSize' Value='{{0.04,0.0},{0.08,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelRotation_x'>
-                            <Property Name='UnifiedPosition' Value='{{0.881056,0.0},{0.342575,0.0}}' />
-                            <Property Name='UnifiedSize' Value='{{0.04,0.0},{0.08,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelRotation_y'>
-                            <Property Name='UnifiedPosition' Value='{{0.926822,0.0},{0.342575,0.0}}' />
-                            <Property Name='UnifiedSize' Value='{{0.04,0.0},{0.08,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelRotation_z'>
-                            <Property Name='UnifiedPosition' Value='{{0.9725,0.0},{0.342575,0.0}}' />
-                            <Property Name='UnifiedSize' Value='{{0.04,0.0},{0.08,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/StaticText' Name='ModelUseScaleOf_text'>
-                            <Property Name='BackgroundEnabled' Value='False' />
-                            <Property Name='FrameEnabled' Value='False' />
-                            <Property Name='Text' Value='Use scaling:' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.702949,0.0},{0.432438,0.0},{0.833568,0.0},{0.511867,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelScale'>
-                            <Property Name='MaxTextLength' Value='1073741823' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.828010,0.0},{0.528210,0.0},{0.975244,0.0},{0.609428,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/StaticText' Name='ModelScale_text'>
-                            <Property Name='BackgroundEnabled' Value='False' />
-                            <Property Name='FrameEnabled' Value='False' />
-                            <Property Name='Text' Value='Scale:' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.703990,0.0},{0.527437,0.0},{0.834607,0.0},{0.606866,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Combobox' Name='ModelUseScaleOf'>
-                            <Property Name='ActiveEditSelectionColour' Value='FF6060FF' />
-                            <Property Name='InactiveEditSelectionColour' Value='FF808080' />
-                            <Property Name='MaxEditTextLength' Value='1073741823' />
-                            <Property Name='NormalEditTextColour' Value='FFFFFFFF' />
-                            <Property Name='SelectedEditTextColour' Value='FF000000' />
-                            <Property Name='ReadOnly' Value='true' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.825260,0.0},{0.441214,0.0},{0.974369,0.0},{0.791214,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/StaticText' Name='ModelTranslate_text'>
-                            <Property Name='BackgroundEnabled' Value='False' />
-                            <Property Name='FrameEnabled' Value='False' />
-                            <Property Name='Text' Value='Translate:' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.703990,0.0},{0.630138,0.0},{0.834608,0.0},{0.709567,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelContainedOffset_y'>
-                            <Property Name='MaxTextLength' Value='1073741823' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.882096,0.0},{0.248350,0.0},{0.918037,0.0},{0.329569,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelContainedOffset_z'>
-                            <Property Name='MaxTextLength' Value='1073741823' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.926822,0.0},{0.248350,0.0},{0.962763,0.0},{0.329569,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelTranslate_x'>
-                            <Property Name='MaxTextLength' Value='1073741823' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.835292,0.0},{0.630911,0.0},{0.871233,0.0},{0.712130,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelTranslate_y'>
-                            <Property Name='MaxTextLength' Value='1073741823' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.881056,0.0},{0.630911,0.0},{0.916997,0.0},{0.712130,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
-                        </Window>
-                        <Window Type='EmberLook/Editbox' Name='ModelTranslate_z'>
-                            <Property Name='MaxTextLength' Value='1073741823' />
-                            <Property Name='UnifiedAreaRect' Value='{{0.926822,0.0},{0.630911,0.0},{0.962763,0.0},{0.712130,0.0}}' />
-                            <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                        <Window Type="DefaultWindow" Name="ModelInfoRightPane">
+                            <Property Name='UnifiedSize' Value='{{0.0,250.0},{1.0,-30}}' />
+                            <Property Name='UnifiedPosition' Value='{{1.0,-250.0},{0,5}}' />
+	                        <Window Type='EmberLook/StaticText' Name='ModelTranslate_text'>
+	                            <Property Name='BackgroundEnabled' Value='False' />
+	                            <Property Name='FrameEnabled' Value='False' />
+	                            <Property Name='Text' Value='Translate:' />
+	                            <Property Name='UnifiedPosition' Value='{{0,5},{0,0}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+	                        </Window>
+	                        <Window Type="HorizontalLayoutContainer" Name='ModelTranslate_container'>
+	                            <Property Name='UnifiedPosition' Value='{{0, 100},{0,0}}' />
+	                            <Property Name='UnifiedSize' Value='{{1, 0},{0,25}}' />
+		                        <Window Type='EmberLook/Editbox' Name='ModelTranslate_x'>
+		                            <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+		                            <Property Name='Tooltip' Value='X' />
+		                        </Window>
+		                        <Window Type='EmberLook/Editbox' Name='ModelTranslate_y'>
+		                            <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+		                            <Property Name='Tooltip' Value='Y' />
+		                        </Window>
+		                        <Window Type='EmberLook/Editbox' Name='ModelTranslate_z'>
+		                            <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+		                            <Property Name='Tooltip' Value='Z' />
+		                        </Window>
+	                        </Window>
+	                        <Window Type='EmberLook/StaticText' Name='ModelRotation_text'>
+	                            <Property Name='BackgroundEnabled' Value='False' />
+	                            <Property Name='FrameEnabled' Value='False' />
+	                            <Property Name='Text' Value='Rotation:' />
+	                            <Property Name='UnifiedPosition' Value='{{0,5},{0,30}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+	                        </Window>
+	                        <Window Type="HorizontalLayoutContainer" Name='ModelRotation_container'>
+	                            <Property Name='UnifiedPosition' Value='{{0, 100},{0,30}}' />
+	                            <Property Name='UnifiedSize' Value='{{1, 0},{0,25}}' />
+		                        <Window Type='EmberLook/Editbox' Name='ModelRotation_degrees'>
+		                            <Property Name='UnifiedSize' Value='{{0, 30},{0,25}}' />
+		                            <Property Name='Tooltip' Value='Degrees' />
+		                        </Window>
+		                        <Window Type='EmberLook/Editbox' Name='ModelRotation_x'>
+		                            <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+		                            <Property Name='Tooltip' Value='X' />
+		                        </Window>
+		                        <Window Type='EmberLook/Editbox' Name='ModelRotation_y'>
+		                            <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+		                            <Property Name='Tooltip' Value='Y' />
+		                        </Window>
+		                        <Window Type='EmberLook/Editbox' Name='ModelRotation_z'>
+		                            <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+		                            <Property Name='Tooltip' Value='Z' />
+		                        </Window>
+	                        </Window>
+	                        <Window Type='EmberLook/StaticText' Name='ModelUseScaleOf_text'>
+	                            <Property Name='BackgroundEnabled' Value='False' />
+	                            <Property Name='FrameEnabled' Value='False' />
+	                            <Property Name='Text' Value='Use scaling:' />
+	                            <Property Name='UnifiedPosition' Value='{{0,5},{0,60}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+	                        </Window>
+	                        <Window Type='EmberLook/Combobox' Name='ModelUseScaleOf'>
+	                            <Property Name='ActiveEditSelectionColour' Value='FF6060FF' />
+	                            <Property Name='InactiveEditSelectionColour' Value='FF808080' />
+	                            <Property Name='MaxEditTextLength' Value='1073741823' />
+	                            <Property Name='NormalEditTextColour' Value='FFFFFFFF' />
+	                            <Property Name='SelectedEditTextColour' Value='FF000000' />
+	                            <Property Name='ReadOnly' Value='true' />
+	                            <Property Name='UnifiedPosition' Value='{{0,100},{0,60}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,100}}' />
+	                        </Window>
+	                        <Window Type='EmberLook/StaticText' Name='ModelScale_text'>
+	                            <Property Name='BackgroundEnabled' Value='False' />
+	                            <Property Name='FrameEnabled' Value='False' />
+	                            <Property Name='Text' Value='Scale:' />
+	                            <Property Name='UnifiedPosition' Value='{{0,5},{0,90}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+	                        </Window>
+	                        <Window Type='EmberLook/Editbox' Name='ModelScale'>
+	                            <Property Name='UnifiedPosition' Value='{{0,100},{0,90}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+	                        </Window>
+	                        <Window Type='EmberLook/StaticText' Name='ModelContainedOffset_text'>
+	                            <Property Name='BackgroundEnabled' Value='False' />
+	                            <Property Name='FrameEnabled' Value='False' />
+	                            <Property Name='Text' Value='Contained offset:' />
+	                            <Property Name='UnifiedPosition' Value='{{0,5},{0,120}}' />
+	                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+	                        </Window>
+	                        <Window Type="HorizontalLayoutContainer" Name='ModelContainedOffset_container'>
+	                            <Property Name='UnifiedPosition' Value='{{0, 100},{0,120}}' />
+	                            <Property Name='UnifiedSize' Value='{{1, 0},{0,25}}' />
+		                        <Window Type='EmberLook/Editbox' Name='ModelContainedOffset_x'>
+		                            <Property Name='UnifiedSize' Value='{{0, 30},{0,25}}' />
+		                            <Property Name='Tooltip' Value='X' />
+		                        </Window>
+		                        <Window Type='EmberLook/Editbox' Name='ModelContainedOffset_y'>
+		                            <Property Name='UnifiedSize' Value='{{0, 30},{0,25}}' />
+		                            <Property Name='Tooltip' Value='Y' />
+		                        </Window>
+		                        <Window Type='EmberLook/Editbox' Name='ModelContainedOffset_z'>
+		                            <Property Name='UnifiedSize' Value='{{0, 30},{0,25}}' />
+		                            <Property Name='Tooltip' Value='Z' />
+		                        </Window>
+	                        </Window>
+	                        <Window Type='EmberLook/Checkbox' Name='ModelShowContent'>
+	                            <Property Name='Text' Value='Show content' />
+	                            <Property Name='UnifiedPosition' Value='{{0,5},{0,150}}' />
+	                            <Property Name='UnifiedSize' Value='{{1.0, 0.0},{0,25}}' />
+	                        </Window>
                         </Window>
                         <Window Type='EmberLook/Button' Name='ReloadInstancesButton'>
                             <Property Name='Text' Value='Reload models' />
