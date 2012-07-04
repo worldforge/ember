@@ -23,6 +23,7 @@
 #include "framework/tinyxml/tinyxml.h"
 #include "framework/osdir.h"
 
+#include <OgreStringConverter.h>
 
 namespace Ember
 {

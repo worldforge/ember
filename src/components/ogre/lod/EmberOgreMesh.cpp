@@ -22,6 +22,9 @@
 
 #include "framework/LoggingInstance.h"
 
+#include <OgreSubMesh.h>
+#include <OgreLodStrategy.h>
+
 namespace Ember
 {
 namespace OgreView

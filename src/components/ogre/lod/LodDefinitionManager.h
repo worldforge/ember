@@ -24,6 +24,8 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/Singleton.h"
 
+#include <OgreResourceManager.h>
+
 #include <string>
 
 namespace Ember
