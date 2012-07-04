@@ -78,7 +78,7 @@ void ModelRenderer::repositionSceneNode()
 		Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 		if (node) {
 			node->setOrientation(mDefaultRotation);
-			node->rotate(mModel->getRotation());
+			node->rotate(mModel->getDefinition()->getRotation());
 
 			//translate the scale node according to the translate defined in the model
 			node->setPosition(mDefaultTranslation);
