@@ -35,31 +35,36 @@ namespace OgreView
 namespace Gui
 {
 
-AttachPointMouseMover::AttachPointMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition) :
-		mAttachPointHelper(attachPointHelper), mModelDefinition(modelDefinition)
+AttachPointMouseMover::AttachPointMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext) :
+		mAttachPointHelper(attachPointHelper), mModelDefinition(modelDefinition), mRenderContext(renderContext)
 {
 }
 
-RotateMouseMover::RotateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition) :
-		AttachPointMouseMover(attachPointHelper, modelDefinition)
+RotateMouseMover::RotateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext) :
+		AttachPointMouseMover(attachPointHelper, modelDefinition, renderContext)
 {
 }
 
-TranslateMouseMover::TranslateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition) :
-		AttachPointMouseMover(attachPointHelper, modelDefinition)
+TranslateMouseMover::TranslateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext) :
+		AttachPointMouseMover(attachPointHelper, modelDefinition, renderContext)
 {
 }
 
 void RotateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	Ogre::TagPoint* tagPoint = mAttachPointHelper.getTagPoint();
+
+	Ogre::Quaternion rotate;
 	//rotate the modelnode
 	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-		tagPoint->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+		rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mRenderContext.getCameraOrientation().zAxis());
 	} else {
-		tagPoint->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-		tagPoint->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+		rotate.FromAngleAxis(Ogre::Degree(-motion.xRelativeMovement * 180), mRenderContext.getCameraOrientation().yAxis());
+		Ogre::Quaternion q1;
+		q1.FromAngleAxis(Ogre::Degree(-motion.yRelativeMovement * 180), mRenderContext.getCameraOrientation().xAxis());
+		rotate = rotate * q1;
 	}
+	tagPoint->rotate(rotate);
 	//we don't want to move the cursor
 	freezeMouse = true;
 }
@@ -83,11 +88,15 @@ bool RotateMouseMover::injectMouseButtonUp(const Input::MouseButton& button)
 void TranslateMouseMover::injectMouseMove(const MouseMotion& motion, bool& freezeMouse)
 {
 	Ogre::TagPoint* tagPoint = mAttachPointHelper.getTagPoint();
+
+	Ogre::Vector3 translate;
 	if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-		tagPoint->translate(0, 0, motion.xRelativeMovement);
+		translate = Ogre::Vector3(-motion.xRelativeMovement, 0, -motion.yRelativeMovement);
 	} else {
-		tagPoint->translate(motion.xRelativeMovement, motion.yRelativeMovement, 0);
+		translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
 	}
+	translate = mRenderContext.getCameraOrientation() * translate;
+	tagPoint->translate(translate);
 	//we don't want to move the cursor
 	freezeMouse = true;
 }
@@ -167,8 +176,8 @@ Ogre::Quaternion ModelAttachPointHelper::getOrientation() const
 	return getTagPoint()->getOrientation() * Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y);
 }
 
-ModelEditHelper::ModelEditHelper(Model::Model* model) :
-		mModel(model), mAttachPointHelper(0), mAttachPointMarker(0), mMouseMover(0)
+ModelEditHelper::ModelEditHelper(Model::Model* model, SimpleRenderContext& renderContext) :
+		mModel(model), mRenderContext(renderContext), mAttachPointHelper(0), mAttachPointMarker(0), mMouseMover(0)
 {
 }
 
@@ -216,7 +225,7 @@ void ModelEditHelper::startInputRotate()
 	mMouseMover = 0;
 	releaseInput();
 	if (mAttachPointHelper && mModel) {
-		mMouseMover = new RotateMouseMover(*mAttachPointHelper, mModel->getDefinition());
+		mMouseMover = new RotateMouseMover(*mAttachPointHelper, mModel->getDefinition(), mRenderContext);
 		catchInput();
 	}
 }
@@ -226,7 +235,7 @@ void ModelEditHelper::startInputTranslate()
 	mMouseMover = 0;
 	releaseInput();
 	if (mAttachPointHelper && mModel) {
-		mMouseMover = new TranslateMouseMover(*mAttachPointHelper, mModel->getDefinition());
+		mMouseMover = new TranslateMouseMover(*mAttachPointHelper, mModel->getDefinition(), mRenderContext);
 		catchInput();
 	}
 }

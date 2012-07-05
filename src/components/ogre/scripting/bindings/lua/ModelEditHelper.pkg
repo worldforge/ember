@@ -10,7 +10,7 @@ namespace Gui
 class ModelEditHelper
 {
 public:
-	ModelEditHelper(Model::Model* model);
+	ModelEditHelper(Model::Model* model, SimpleRenderContext& renderContext);
 	~ModelEditHelper();
 
 	/**

@@ -145,12 +145,17 @@ bool DirectEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, 
 		mTexture.getRenderContext()->getSceneNode()->translate(translate);
 	} else {
 		//rotate the modelnode
+		Ogre::Quaternion rotate;
+		//rotate the modelnode
 		if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-			mTexture.getRenderContext()->getSceneNode()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+			rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().zAxis());
 		} else {
-			mTexture.getRenderContext()->getSceneNode()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-			mTexture.getRenderContext()->getSceneNode()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+			rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().yAxis());
+			Ogre::Quaternion q1;
+			q1.FromAngleAxis(Ogre::Degree(motion.yRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().xAxis());
+			rotate = rotate * q1;
 		}
+		mTexture.getRenderContext()->getSceneNode()->rotate(rotate);
 	}
 	//we don't want to move the cursor
 	freezeMouse = true;
@@ -240,12 +245,17 @@ bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion
 			mTexture.getRenderContext()->getSceneNode()->translate(translate);
 		} else {
 			//rotate the modelnode
+			Ogre::Quaternion rotate;
+			//rotate the modelnode
 			if (Input::getSingleton().isKeyDown(SDLK_RCTRL) || Input::getSingleton().isKeyDown(SDLK_LCTRL)) {
-				mTexture.getRenderContext()->getSceneNode()->roll(Ogre::Degree(motion.xRelativeMovement * 180));
+				rotate.FromAngleAxis(Ogre::Degree(motion.xRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().zAxis());
 			} else {
-				mTexture.getRenderContext()->getSceneNode()->yaw(Ogre::Degree(motion.xRelativeMovement * 180));
-				mTexture.getRenderContext()->getSceneNode()->pitch(Ogre::Degree(motion.yRelativeMovement * 180));
+				rotate.FromAngleAxis(Ogre::Degree(-motion.xRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().yAxis());
+				Ogre::Quaternion q1;
+				q1.FromAngleAxis(Ogre::Degree(-motion.yRelativeMovement * 180), mTexture.getRenderContext()->getCameraOrientation().xAxis());
+				rotate = rotate * q1;
 			}
+			mTexture.getRenderContext()->getSceneNode()->rotate(rotate);
 		}
 	}
 	//we don't want to move the cursor

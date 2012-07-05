@@ -21,6 +21,7 @@
 
 #include "components/ogre/model/Model.h"
 #include "components/ogre/OgreIncludes.h"
+#include "components/ogre/SimpleRenderContext.h"
 #include "services/input/IInputAdapter.h"
 #include <string>
 #include <memory>
@@ -164,8 +165,9 @@ public:
 	 * @brief Ctor.
 	 * @param attachPointHelper The attach point editor helper.
 	 * @param modelDefinition The model definition for the currently edited model.
+	 * @param renderContext The render context which contains the model.
 	 */
-	AttachPointMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition);
+	AttachPointMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
 
 	virtual ~AttachPointMouseMover()
 	{
@@ -190,6 +192,11 @@ protected:
 	 * @brief The model definition for the currently edited model
 	 */
 	Model::ModelDefinitionPtr mModelDefinition;
+
+	/**
+	 * @brief The simple render context which contains the model.
+	 */
+	SimpleRenderContext& mRenderContext;
 };
 
 /**
@@ -202,8 +209,9 @@ public:
 	 * @brief Ctor.
 	 * @param attachPointHelper The attach point editor helper.
 	 * @param modelDefinition The model definition for the currently edited model.
+	 * @param renderContext The render context which contains the model.
 	 */
-	RotateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition);
+	RotateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
 	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 };
@@ -218,8 +226,9 @@ public:
 	 * @brief Ctor.
 	 * @param attachPointHelper The attach point editor helper.
 	 * @param modelDefinition The model definition for the currently edited model.
+	 * @param renderContext The render context which contains the model.
 	 */
-	TranslateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition);
+	TranslateMouseMover(AttachPointHelper& attachPointHelper, Model::ModelDefinitionPtr modelDefinition, SimpleRenderContext& renderContext);
 	virtual void injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 };
@@ -240,8 +249,9 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param model The model which will be edited.
+	 * @param renderContext The render context which contains the model.
 	 */
-	ModelEditHelper(Model::Model* model);
+	ModelEditHelper(Model::Model* model, SimpleRenderContext& renderContext);
 
 	/**
 	 * @brief Dtor.
@@ -298,6 +308,11 @@ private:
 	 * @brief The model which is being authored.
 	 */
 	Model::Model* mModel;
+
+	/**
+	 * @brief The simple render context which contains the model.
+	 */
+	SimpleRenderContext& mRenderContext;
 
 	/**
 	 * @brief Keeps track of any attach point helper model being shown.

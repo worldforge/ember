@@ -153,7 +153,7 @@ end
 function ModelEdit:showPreview(definitionName)
 	deleteSafe(self.modelHelper)
 	self.renderer:showModel(definitionName)
-	self.modelHelper = Ember.OgreView.Gui.ModelEditHelper:new(self.renderer:getModel())
+	self.modelHelper = Ember.OgreView.Gui.ModelEditHelper:new(self.renderer:getModel(), self.renderer:getEntityTexture():getRenderContext())
 end
 
 function ModelEdit:fillModellist()
