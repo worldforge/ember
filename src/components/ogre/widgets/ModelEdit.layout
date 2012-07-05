@@ -27,7 +27,7 @@ Press ctrl to move in depth axis.
 Press shift to switch between rotation and translation.</Property>
 	            <Window Type='EmberLook/StaticFading' Name='ImageHelpText'>
                     <Property Name='UnifiedPosition' Value='{{0, 0},{1,-75}}' />
-                    <Property Name='UnifiedSize' Value='{{0,250.0},{0,75.0}}' />
+                    <Property Name='UnifiedSize' Value='{{0,260.0},{0,75.0}}' />
 	                <Property Name='Text'>Press and hold left mouse button to move camera, 
 middle mouse button to move entity.
 Press ctrl to move in depth axis.
@@ -404,7 +404,7 @@ Press ctrl to move in depth axis.
 Press shift to switch between rotation and translation.'</Property>                            
 				            <Window Type='EmberLook/StaticFading' Name='PoseImageHelpText'>
 			                    <Property Name='UnifiedPosition' Value='{{0, 0},{1,-75}}' />
-			                    <Property Name='UnifiedSize' Value='{{0,250.0},{0,75.0}}' />
+			                    <Property Name='UnifiedSize' Value='{{0,260.0},{0,75.0}}' />
 				                <Property Name='Text'>Press and hold left mouse button to move camera, 
 			middle mouse button to move entity.
 			Press ctrl to move in depth axis.
