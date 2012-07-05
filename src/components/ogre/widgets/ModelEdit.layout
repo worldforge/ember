@@ -219,7 +219,7 @@ Press shift to switch between rotation and translation.</Property>
                             <Property Name='UnifiedPosition' Value='{{0.0,100.0},{1.0,-30.0}}' />
                         </Window>
                         <Window Type="DefaultWindow" Name="ModelInfoRightPane">
-                            <Property Name='UnifiedSize' Value='{{0.0,250.0},{1.0,-30}}' />
+                            <Property Name='UnifiedSize' Value='{{0.0,250.0},{1.0,-35}}' />
                             <Property Name='UnifiedPosition' Value='{{1.0,-250.0},{0,5}}' />
 	                        <Window Type='EmberLook/StaticText' Name='ModelTranslate_text'>
 	                            <Property Name='BackgroundEnabled' Value='False' />
@@ -345,7 +345,7 @@ Press shift to switch between rotation and translation.</Property>
                         </Window>
                         <Window Type='EmberLook/Button' Name='GetIconFromPreviewButton'>
                             <Property Name='Text' Value='Icon from preview' />
-                            <Property Name='UnifiedPosition' Value='{{1,-125},{1,-60}}' />
+                            <Property Name='UnifiedPosition' Value='{{1,-125},{1,-30}}' />
                             <Property Name='UnifiedSize' Value='{{0,120},{0,25}}' />
                         </Window>
                     </Window>
