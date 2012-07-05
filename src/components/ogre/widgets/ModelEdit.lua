@@ -784,32 +784,49 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
+		local updateModelAdapters = function()
+			local translation = self.renderer:getEntityTranslation()
+			local orientation = self.renderer:getEntityRotation()
+			
+			self.definition:setTranslate(translation)
+			self.definition:setRotation(orientation)
+			self.translateAdapter:updateGui(self.definition:getTranslate());
+			self.rotationAdapter:updateGui(self.definition:getRotation());
+		end
+				
 		self.widget:getWindow("YawLeft"):subscribeEvent("Clicked", function(args)
-			self.renderer:yawCamera(Ogre.Degree:new_local(-45))
+			self.renderer:getEntityTexture():getRenderContext():getSceneNode():yaw(Ogre.Radian:new_local(Ogre.Degree:new_local(-45)))
+			updateModelAdapters()
 			return true
 		end)
 		self.widget:getWindow("YawRight"):subscribeEvent("Clicked", function(args)
-			self.renderer:yawCamera(Ogre.Degree:new_local(45))
+			self.renderer:getEntityTexture():getRenderContext():getSceneNode():yaw(Ogre.Radian:new_local(Ogre.Degree:new_local(45)))
+			updateModelAdapters()
 			return true
 		end)
 		self.widget:getWindow("RollLeft"):subscribeEvent("Clicked",function(args)
-			self.renderer:rollCamera(Ogre.Degree:new_local(-45))
+			self.renderer:getEntityTexture():getRenderContext():getSceneNode():roll(Ogre.Radian:new_local(Ogre.Degree:new_local(-45)))
+			updateModelAdapters()
 			return true
 		end)
 		self.widget:getWindow("RollRight"):subscribeEvent("Clicked", function(args)
-			self.renderer:rollCamera(Ogre.Degree:new_local(45))
+			self.renderer:getEntityTexture():getRenderContext():getSceneNode():roll(Ogre.Radian:new_local(Ogre.Degree:new_local(45)))
+			updateModelAdapters()
 			return true
 		end)
 		self.widget:getWindow("PitchUp"):subscribeEvent("Clicked", function(args)
-			self.renderer:pitchCamera(Ogre.Degree:new_local(-45))
+			self.renderer:getEntityTexture():getRenderContext():getSceneNode():pitch(Ogre.Radian:new_local(Ogre.Degree:new_local(-45)))
+			updateModelAdapters()
 			return true
 		end)
 		self.widget:getWindow("PitchDown"):subscribeEvent("Clicked", function(args)
-			self.renderer:pitchCamera(Ogre.Degree:new_local(45))
+			self.renderer:getEntityTexture():getRenderContext():getSceneNode():pitch(Ogre.Radian:new_local(Ogre.Degree:new_local(45)))
+			updateModelAdapters()
 			return true
 		end)
 		self.widget:getWindow("ResetOrientation"):subscribeEvent("Clicked", function(args)
-			self.renderer:resetCameraOrientation()
+			self.renderer:getEntityTexture():getRenderContext():getSceneNode():setOrientation(Ogre.Quaternion.IDENTITY)
+			updateModelAdapters()
 			return true
 		end)
 
@@ -979,15 +996,8 @@ function ModelEdit:buildWidget()
 		self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
 		self.rendererManipulator = Ember.OgreView.Gui.CombinedEntityTextureManipulator:new(self.renderImage, self.renderer:getEntityTexture())
 		
-		connect(self.connectors, self.rendererManipulator.EventMovementStopped, function()
-			local translation = self.renderer:getEntityTranslation()
-			local orientation = self.renderer:getEntityRotation()
-			
-			self.definition:setTranslate(translation)
-			self.definition:setRotation(orientation)
-			self.translateAdapter:updateGui(self.definition:getTranslate());
-			self.rotationAdapter:updateGui(self.definition:getRotation());
-		end)
+		
+		connect(self.connectors, self.rendererManipulator.EventMovementStopped, updateModelAdapters)
 		
 		connect(self.connectors, self.rendererManipulator.EventMovementStarted, function()
 			local helpWindow = self.widget:getWindow("ImageHelpText") 

@@ -108,7 +108,7 @@ $pfile "OgreInfo.pkg"
 $pfile "TerrainLayerDefinition.pkg"
 $pfile "TerrainLayerDefinitionManager.pkg"
 
-//$pfile "EntityCEGUITexture.pkg"
+$pfile "EntityCEGUITexture.pkg"
 
 //$pfile "LuaConnector.pkg"
 $pfile "World.pkg"

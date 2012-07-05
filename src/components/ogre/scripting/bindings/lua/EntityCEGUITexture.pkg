@@ -21,11 +21,12 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+$#include "components/ogre/widgets/EntityCEGUITexture.h"
 
 
 namespace Ember {
 namespace OgreView {
-
+namespace Gui {
 
 /**
 @author Erik Hjortsberg
@@ -33,25 +34,7 @@ namespace OgreView {
 Useful class for rendering a single scene node to a CEGUI texture.
 
 */
-class EntityCEGUITexture{
-    
-    /**
-     * Constructor.
-     * @param imageSetName The name of the imageset.
-     * @param width The width of the image created.
-     * @param height The height of the image created.
-     * @return 
-     */
-    EntityCEGUITexture(const std::string& imageSetName, int width, int height);
-
-    ~EntityCEGUITexture();
-    
-    /**
-     * Gets the scene node which is being rendered.
-     * @return 
-     */
-    Ogre::SceneNode* getSceneNode() const;
-    
+class EntityCEGUITexture {
     
     /**
      * Gets the rendered image.
@@ -60,83 +43,11 @@ class EntityCEGUITexture{
     const CEGUI::Image* getImage() const;
     
     
-    /**
-     * Gets the camera used for rendering.
-     * @return 
-     */
-    Ogre::Camera* getCamera() const;
-    
-    /**
-     * Gets the default distance of the camera from the base, most likely somewhere where the whole scene is shown
-     * @return 
-     */
-    inline Ogre::Real getDefaultCameraDistance() const;
-    
-    /**
-     * Sets whether the rendering should be active or not.
-     * @param active 
-     */
-    void setActive(bool active);
-    
-    /**
-     * Adjusts the camera distance so that the full scene is shown
-     */
-    void showFull(const Ogre::MovableObject* object);
-    
-    
-	/**
-	 *    After you've changed the target of the camera, i.e. the object attached to the base SceneNode,
-	      the camera has to be repositioned. Make sure to always call this method after updating the scene.
-	 */
-	void repositionCamera();
-	
-	
-	/**
-	 *    Pitches the camera.
-	 * @param degrees The amount of degrees to pitch.
-	 */
-	void pitch(Ogre::Degree degrees);
-	
-	/**
-	 *    Yaws the camera.
-	 * @param degrees The amount of degree to yaw.
-	 */
-	void yaw(Ogre::Degree degrees);
-    
-	/**
-	 *    Rolls the camera.
-	 * @param degrees The amount of degree to roll.
-	 */
-    void roll(Ogre::Degree degrees);
-
-    
-	/**
-	 * Sets the relative camera distance. Note that this is adjusted after calling repositionCamera(). A value of 1.0 indicates the most optimal distance for showing the complete mesh.
-	 * @param distance 
-	 */
-	void setCameraDistance(Ogre::Real distance);
-    
-    
-	/**
-	 *    Gets the relative distance. 1.0 being the most optimal distance for showing the complete mesh.
-	 * @return 
-	 */
-	float getCameraDistance() const;
-	
-	
-	/**
-	 *    Gets the rotation of the entity.
-	 * @return 
-	 */
-	Ogre::Quaternion getEntityRotation();
-	
-	
-	/**
-	 *    Resets the orientation of the camera.
-	 */
-	void resetCameraOrientation();
+    Ember::OgreView::SimpleRenderContext* getRenderContext();
 
 };
+
+}
 
 }
 
