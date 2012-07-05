@@ -24,7 +24,15 @@
                 <Property Name='UnifiedMaxSize' Value='{{1.0,0.0},{1.0,0.0}}' />
                 <Property Name='Tooltip'>Press and hold left mouse button to move camera, middle mouse button to move entity.
 Press ctrl to move in depth axis.
-Press shift to switch between rotation and translation.'</Property>
+Press shift to switch between rotation and translation.</Property>
+	            <Window Type='EmberLook/StaticFading' Name='ImageHelpText'>
+                    <Property Name='UnifiedPosition' Value='{{0, 0},{1,-75}}' />
+                    <Property Name='UnifiedSize' Value='{{0,250.0},{0,75.0}}' />
+	                <Property Name='Text'>Press and hold left mouse button to move camera, 
+middle mouse button to move entity.
+Press ctrl to move in depth axis.
+Press shift to switch between rotation and translation.</Property>
+				</Window>
                 <Window Type='EmberLook/Combobox' Name='ImageCameraPositioning'>
                     <Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}' />
                     <Property Name='UnifiedPosition' Value='{{1,-105.0},{0,5.0}}' />
@@ -394,7 +402,15 @@ Press shift to switch between rotation and translation.'</Property>
                             <Property Name='Tooltip'>Press and hold left mouse button to move camera, middle mouse button to move entity.
 Press ctrl to move in depth axis.
 Press shift to switch between rotation and translation.'</Property>                            
-                        </Window>
+				            <Window Type='EmberLook/StaticFading' Name='PoseImageHelpText'>
+			                    <Property Name='UnifiedPosition' Value='{{0, 0},{1,-75}}' />
+			                    <Property Name='UnifiedSize' Value='{{0,250.0},{0,75.0}}' />
+				                <Property Name='Text'>Press and hold left mouse button to move camera, 
+			middle mouse button to move entity.
+			Press ctrl to move in depth axis.
+			Press shift to switch between rotation and translation.</Property>
+							</Window>                        
+						</Window>
                     </Window>
                 </Window>
                 <Window Type='DefaultWindow' Name='SubModelInfo'>

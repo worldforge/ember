@@ -934,6 +934,10 @@ function ModelEdit:buildWidget()
 			self.definition:addPoseDefinition(self.poseRenderer.poseDefWrapper.name, poseDef)
 		end)
 		
+		connect(self.connectors, self.poseRendererManipulator.EventMovementStarted, function()
+			local helpWindow = self.widget:getWindow("PoseImageHelpText") 
+			helpWindow:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new_local(helpWindow))
+		end)
 
 		
 		
@@ -985,7 +989,11 @@ function ModelEdit:buildWidget()
 			self.rotationAdapter:updateGui(self.definition:getRotation());
 		end)
 		
-		
+		connect(self.connectors, self.rendererManipulator.EventMovementStarted, function()
+			local helpWindow = self.widget:getWindow("ImageHelpText") 
+			helpWindow:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new_local(helpWindow))
+		end)
+
 		local cameraPosCombobox = CEGUI.toCombobox(self.widget:getWindow("ImageCameraPositioning"))
 		local item = Ember.OgreView.Gui.ColouredListItem:new("World center", 0)
 		cameraPosCombobox:addItem(item)
