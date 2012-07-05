@@ -179,11 +179,10 @@ public:
 	float getAbsoluteCameraDistance() const;
 
 	/**
-	 *    Gets the rotation of the entity.
-	 * @return
+	 * @brief Gets the rotation of the camera.
+	 * @return The rotation of the camera.
 	 */
-	Ogre::Quaternion getEntityRotation();
-
+	Ogre::Quaternion getCameraOrientation() const;
 
 	/**
 	 * @brief Resets the orientation of the camera.

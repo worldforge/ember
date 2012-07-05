@@ -141,7 +141,7 @@ bool DirectEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, 
 		} else {
 			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
 		}
-		translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
+		translate = mTexture.getRenderContext()->getCameraOrientation() * translate;
 		mTexture.getRenderContext()->getSceneNode()->translate(translate);
 	} else {
 		//rotate the modelnode
@@ -178,7 +178,7 @@ bool CameraEntityTextureManipulator::injectMouseMove(const MouseMotion& motion, 
 		} else {
 			translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
 		}
-		translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
+		translate = mTexture.getRenderContext()->getCameraOrientation() * translate;
 		mTexture.getRenderContext()->getCameraRootNode()->translate(translate);
 	} else {
 		//rotate the modelnode
@@ -216,7 +216,7 @@ bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion
 			} else {
 				translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
 			}
-			translate = mTexture.getRenderContext()->getEntityRotation().Inverse() * translate;
+			translate = mTexture.getRenderContext()->getCameraOrientation() * translate;
 			mTexture.getRenderContext()->getCameraRootNode()->translate(translate);
 		} else {
 			//rotate the modelnode
@@ -236,7 +236,7 @@ bool CombinedEntityTextureManipulator::injectMouseMove(const MouseMotion& motion
 			} else {
 				translate = Ogre::Vector3(-motion.xRelativeMovement, motion.yRelativeMovement, 0);
 			}
-			translate = mTexture.getRenderContext()->getEntityRotation() * translate;
+			translate = mTexture.getRenderContext()->getCameraOrientation() * translate;
 			mTexture.getRenderContext()->getSceneNode()->translate(translate);
 		} else {
 			//rotate the modelnode

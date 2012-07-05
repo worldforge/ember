@@ -223,10 +223,11 @@ float SimpleRenderContext::getAbsoluteCameraDistance() const
 	return mCamera->getPosition().z;
 }
 
-Ogre::Quaternion SimpleRenderContext::getEntityRotation()
+Ogre::Quaternion SimpleRenderContext::getCameraOrientation() const
 {
-	return mCamera->getDerivedOrientation().Inverse();
+	return mCamera->getDerivedOrientation();
 }
+
 
 void SimpleRenderContext::resetCameraOrientation()
 {
