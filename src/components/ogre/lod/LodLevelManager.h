@@ -1,32 +1,41 @@
 #include "sigc++/connection.h"
 
+namespace Ogre
+{
+class Camera;
+}
+
 namespace Ember
 {
 namespace OgreView
 {
+
 class AutomaticGraphicsLevelManager;
 
 namespace Lod
 {
-
-class MaterialLodLevelManager
+/**
+ * @brief Handles level of detail changes for the main camera.
+ * Acts as a sub-component of the automatic handling of graphics system.
+ */
+class LodLevelManager
 {
 public:
 	/**
 	 * @brief Constructor.
 	 */
-	MaterialLodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
+	LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera);
 
 	/**
 	 * @brief Destructor.
 	 */
-	~MaterialLodLevelManager();
+	~LodLevelManager();
 
 	/**
 	 * @brief Sets the lod bias factor.
-	 * Using this function it is possible to influence the lod behavior of all materials. It shifts the lod behavior 
-	 * of all materials currently loaded up or down.
-	 * @param factor Proportional factor to apply to the distance at which LOD is changed. Higher values increase the distance at which higher LODs are displayed (eg. 2.0 is twice the normal distance, 0.5 is half).
+	 * Using this function it is possible to influence the lod behavior of all materials and meshes. It works by adjusting the 
+	 * lod bias of the main camera.
+	 * @param factor Proportional factor to apply to the distance at which LOD is changed. Higher values increase the distance at which higher LODs are used (eg. 2.0 is twice the normal distance, 0.5 is half).
 	 */
 	bool setLodBiasAll(float factor);
 
@@ -100,6 +109,11 @@ protected:
 	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
 	 */
 	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+
+	/**
+	 * Reference to the main camera object
+	 */
+	Ogre::Camera& mMainCamera;
 
 };
 
