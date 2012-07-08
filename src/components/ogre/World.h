@@ -78,6 +78,11 @@ class Environment;
 class Foliage;
 }
 
+namespace Lod
+{
+class LodLevelManager;
+}
+
 class Avatar;
 class MovementController;
 class EmberEntityFactory;
@@ -221,6 +226,12 @@ public:
 	 * @returns The terrain manager.
 	 */
 	Terrain::TerrainManager& getTerrainManager() const;
+	
+	/**
+	 * @brief Gets the level of detail manager.
+	 * @returns The LOD level manager.
+	 */
+	Lod::LodLevelManager& getLodLevelManager() const;
 
 	/**
 	 * @brief Accessor for the main server calendar.
@@ -323,6 +334,11 @@ protected:
 
 	TerrainEntityManager* mTerrainEntityManager;
 
+	/**
+	 * @brief The lod level manager, owned by this instance, used to adjust the level of detail of materials and meshes.
+	 */
+	Lod::LodLevelManager* mLodLevelManager;
+	
 	/**
 	 * @brief The page data provider for the EmberPagingSceneManager.
 	 */

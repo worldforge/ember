@@ -143,7 +143,7 @@ void FoliageLevelManager::pause()
 void FoliageLevelManager::unpause()
 {
 	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(&FoliageLevelManager::changeLevel);
+		mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &FoliageLevelManager::changeLevel));
 	}
 }
 

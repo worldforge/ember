@@ -32,6 +32,8 @@
 #include "components/ogre/authoring/AuthoringManager.h"
 #include "components/ogre/authoring/AuthoringMoverConnector.h"
 
+#include "components/ogre/lod/LodLevelManager.h"
+
 #include "TerrainEntityManager.h"
 #include "TerrainPageDataProvider.h"
 #include "terrain/TerrainManager.h"
@@ -67,7 +69,7 @@ namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals, Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mFoliage(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mFoliage(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar())), mLodLevelManager(new Lod::LodLevelManager(automaticGraphicsLevelManager, mScene->getMainCamera()))
 {
 
 	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventEndErisPoll);
@@ -102,6 +104,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 
 	mConfigListenerContainer->registerConfigListener("graphics", "foliage", sigc::bind<-1>(sigc::mem_fun(*this, &World::Config_Foliage), sigc::ref(automaticGraphicsLevelManager)));
 
+	mLodLevelManager->initialize();
 }
 
 World::~World()
@@ -135,6 +138,8 @@ World::~World()
 	delete technique;
 	delete mFoliage;
 	delete mEnvironment;
+	
+	delete mLodLevelManager;
 
 	delete mScene;
 	delete mPageDataProvider;
@@ -200,6 +205,11 @@ Authoring::AuthoringManager& World::getAuthoringManager() const
 Terrain::TerrainManager& World::getTerrainManager() const
 {
 	return *mTerrainManager;
+}
+
+Lod::LodLevelManager& World::getLodLevelManager() const
+{
+	return *mLodLevelManager;
 }
 
 Environment::Environment* World::getEnvironment() const

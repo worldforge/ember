@@ -16,6 +16,8 @@ libEmberOgre_a_SOURCES = \
 	authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RawTypeInfoRepository.cpp authoring/AtlasObjectDecoder.cpp \
 	authoring/SimpleEntityVisualization.cpp authoring/EntityMaker.cpp \
 \
+	lod/LodLevelManager.cpp \
+\
 	camera/MainCamera.cpp camera/CameraMountBase.cpp camera/FirstPersonCameraMount.cpp camera/Recorder.cpp camera/ThirdPersonCameraMount.cpp \
 	camera/CameraSettings.cpp \
 	environment/CaelumEnvironment.cpp environment/CaelumSky.cpp environment/CaelumSun.cpp \
@@ -111,6 +113,8 @@ noinst_HEADERS = \
 	authoring/AuthoringHandler.h authoring/AuthoringManager.h authoring/AuthoringVisualization.h authoring/AuthoringVisualizationCollisionDetector.h \
 	authoring/AuthoringVisualizationMover.h authoring/AuthoringMoverConnector.h authoring/RawTypeInfoRepository.h authoring/AtlasObjectDecoder.h \
 	authoring/SimpleEntityVisualization.h authoring/EntityMaker.h \
+\
+	lod/LodLevelManager.h \
 \
 	camera/MainCamera.h camera/CameraMountBase.h camera/FirstPersonCameraMount.h camera/Recorder.h camera/ThirdPersonCameraMount.h camera/ICameraMount.h \
 	camera/CameraSettings.h \
