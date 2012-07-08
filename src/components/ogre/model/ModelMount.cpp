@@ -61,16 +61,21 @@ void ModelMount::reset()
 	getNodeProvider()->setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
 	getNode().setScale(Ogre::Vector3::UNIT_SCALE);
 
-	const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
-	PoseDefinitionStore::const_iterator I = poses.find(mPose);
-	if (I != poses.end()) {
-		const PoseDefinition& pose = I->second;
-		getNode().translate(pose.Translate);
-		getNode().rotate(pose.Rotate, Ogre::Node::TS_PARENT);
+	PoseDefinition const * pose(0);
+	if (mPose != "") {
+		const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
+		PoseDefinitionStore::const_iterator I = poses.find(mPose);
+		if (I != poses.end()) {
+			pose = &I->second;
+		}
+	}
+	//rotate node to fit with WF space
+	//perhaps this is something to put in the model spec instead?
+	getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+	if (pose) {
+		getNode().translate(pose->Translate);
+		getNode().rotate(pose->Rotate, Ogre::Node::TS_LOCAL);
 	} else {
-		//rotate node to fit with WF space
-		//perhaps this is something to put in the model spec instead?
-		getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
 		getNode().rotate(getModel().getRotation());
 		//translate the scale node according to the translate defined in the model
 		getNode().translate(getModel().getDefinition()->getTranslate());
