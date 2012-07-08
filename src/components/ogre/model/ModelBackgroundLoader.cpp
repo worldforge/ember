@@ -85,7 +85,7 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 		//Start to load the meshes
 		for (SubModelDefinitionsStore::const_iterator I_subModels = mModel.getDefinition()->getSubModelDefinitions().begin(); I_subModels != mModel.getDefinition()->getSubModelDefinitions().end(); ++I_subModels) {
 			Ogre::MeshPtr meshPtr = static_cast<Ogre::MeshPtr> (Ogre::MeshManager::getSingleton().getByName((*I_subModels)->getMeshName()));
-			if (meshPtr.isNull() || !meshPtr->isPrepared()) {
+			if (meshPtr.isNull() || (!meshPtr->isPrepared() && !meshPtr->isLoading() && !meshPtr->isLoaded())) {
 				try {
 					Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MeshManager::getSingleton().getResourceType(), (*I_subModels)->getMeshName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
 					if (ticket) {
@@ -146,7 +146,7 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 					while (subMeshI.hasMoreElements()) {
 						Ogre::SubMesh* submesh(subMeshI.getNext());
 						Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(submesh->getMaterialName()));
-						if (materialPtr.isNull() || !materialPtr->isPrepared()) {
+						if (materialPtr.isNull() || (!materialPtr->isPrepared() && !materialPtr->isLoading() && !materialPtr->isLoaded())) {
 //							S_LOG_VERBOSE("Preparing material " << materialPtr->getName());
 							Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(),submesh->getMaterialName(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
 							if (ticket) {
@@ -162,7 +162,7 @@ bool ModelBackgroundLoader::poll(const TimeFrame& timeFrame)
 						const std::string& materialName = (*I_subEntities)->getMaterialName();
 						if (materialName != "") {
 							Ogre::MaterialPtr materialPtr = static_cast<Ogre::MaterialPtr> (Ogre::MaterialManager::getSingleton().getByName(materialName));
-							if (materialPtr.isNull() || !materialPtr->isPrepared()) {
+							if (materialPtr.isNull() || (!materialPtr->isPrepared() && !materialPtr->isLoading() && !materialPtr->isLoaded())) {
 //								S_LOG_VERBOSE("Preparing material " << materialName);
 								Ogre::BackgroundProcessTicket ticket = Ogre::ResourceBackgroundQueue::getSingleton().prepare(Ogre::MaterialManager::getSingleton().getResourceType(), materialName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, false, 0, 0, createListener());
 								if (ticket) {
