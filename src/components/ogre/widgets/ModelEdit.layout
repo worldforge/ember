@@ -90,14 +90,6 @@ Press shift to switch between rotation and translation.</Property>
                         <Property Name='Text' Value='Roll right' />
                         <Property Name='InheritsAlpha' Value='True' />
                     </Window>
-
-                    <Window Type='EmberLook/Button' Name='ResetOrientation'>
-                        <Property Name='UnifiedSize' Value='{{0.00,40.0},{0.00,25.0}}' />
-                        <Property Name='UnifiedPosition' Value='{{0.0,90.0},{0.00,25.0}}' />
-                        <Property Name='Text' Value='Reset' />
-                        <Property Name='InheritsAlpha' Value='True' />
-                    </Window>
-
                 </Window>
             </Window>
             <Window Type='EmberLook/VerticalSlider' Name='Zoom'>

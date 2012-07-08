@@ -827,12 +827,6 @@ function ModelEdit:buildWidget()
 			updateModelAdapters()
 			return true
 		end)
-		self.widget:getWindow("ResetOrientation"):subscribeEvent("Clicked", function(args)
-			self.renderer:getEntityTexture():getRenderContext():getSceneNode():setOrientation(Ogre.Quaternion.IDENTITY)
-			updateModelAdapters()
-			return true
-		end)
-
 
 		
 		local attachPointPreviewCombobox = CEGUI.toCombobox(self.widget:getWindow("AttachPointPreviewType"))
