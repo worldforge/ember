@@ -913,6 +913,8 @@ function ModelEdit:buildWidget()
 		end)
 		
 		local removePoseButton = self.widget:getWindow("PoseRemoveButton")
+		
+		local poseIgnoreEntityDataCheckbox = CEGUI.toCheckbox(self.widget:getWindow("PoseIgnoreEntityData"))
 
 		local updatePoseAdapters = function()
 			local translation = self.poseRenderer:getEntityTranslation()
@@ -920,8 +922,10 @@ function ModelEdit:buildWidget()
 			
 			self.poseTranslateAdapter:updateGui(translation);
 			self.poseRotationAdapter:updateGui(orientation);
+			poseIgnoreEntityDataCheckbox:setSelected(self.poseRenderer.poseDefWrapper.def.IgnoreEntityData)
 		end	
-
+		
+		
 		self.posesList = CEGUI.toListbox(self.widget:getWindow("PoseList"))
 		self.posesList:subscribeEvent("ItemSelectionChanged", function(args)
 			local item = self.posesList:getFirstSelectedItem()
@@ -1010,7 +1014,12 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
-		
+		poseIgnoreEntityDataCheckbox:subscribeEvent("CheckStateChanged", function(args)
+			if self.poseRenderer.poseDefWrapper then
+				self.poseRenderer.poseDefWrapper.def.IgnoreEntityData = poseIgnoreEntityDataCheckbox:isSelected()
+			end
+			return true
+		end)		
 		
 		local newPoseButton = self.widget:getWindow("PoseNewButton")
 		newPoseButton:setEnabled(false)
