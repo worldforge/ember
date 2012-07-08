@@ -978,6 +978,46 @@ function ModelEdit:buildWidget()
 		end)
 		
 		
+		
+		self.widget:getWindow("PoseYawLeft"):subscribeEvent("Clicked", function(args)
+			self.poseRenderer:getEntityTexture():getRenderContext():getSceneNode():yaw(Ogre.Radian:new_local(Ogre.Degree:new_local(-45)))
+			updatePoseFromRenderer()
+			updatePoseAdapters()
+			return true
+		end)
+		self.widget:getWindow("PoseYawRight"):subscribeEvent("Clicked", function(args)
+			self.poseRenderer:getEntityTexture():getRenderContext():getSceneNode():yaw(Ogre.Radian:new_local(Ogre.Degree:new_local(45)))
+			updatePoseFromRenderer()
+			updatePoseAdapters()
+			return true
+		end)
+		self.widget:getWindow("PoseRollLeft"):subscribeEvent("Clicked",function(args)
+			self.poseRenderer:getEntityTexture():getRenderContext():getSceneNode():roll(Ogre.Radian:new_local(Ogre.Degree:new_local(-45)))
+			updatePoseFromRenderer()
+			updatePoseAdapters()
+			return true
+		end)
+		self.widget:getWindow("PoseRollRight"):subscribeEvent("Clicked", function(args)
+			self.poseRenderer:getEntityTexture():getRenderContext():getSceneNode():roll(Ogre.Radian:new_local(Ogre.Degree:new_local(45)))
+			updatePoseFromRenderer()
+			updatePoseAdapters()
+			return true
+		end)
+		self.widget:getWindow("PosePitchUp"):subscribeEvent("Clicked", function(args)
+			self.poseRenderer:getEntityTexture():getRenderContext():getSceneNode():pitch(Ogre.Radian:new_local(Ogre.Degree:new_local(-45)))
+			updatePoseFromRenderer()
+			updatePoseAdapters()
+			return true
+		end)
+		self.widget:getWindow("PosePitchDown"):subscribeEvent("Clicked", function(args)
+			self.poseRenderer:getEntityTexture():getRenderContext():getSceneNode():pitch(Ogre.Radian:new_local(Ogre.Degree:new_local(45)))
+			updatePoseFromRenderer()
+			updatePoseAdapters()
+			return true
+		end)
+		
+		
+		
 		local newPoseButton = self.widget:getWindow("PoseNewButton")
 		newPoseButton:setEnabled(false)
 		local newPoseName = self.widget:getWindow("PoseNewName")
