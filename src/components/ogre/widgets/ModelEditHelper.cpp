@@ -77,6 +77,7 @@ bool RotateMouseMover::injectMouseButtonUp(const Input::MouseButton& button)
 				Model::AttachPointDefinition definition = *I;
 				definition.Rotation = mAttachPointHelper.getOrientation();
 				mModelDefinition->addAttachPointDefinition(definition);
+				break;
 			}
 		}
 
@@ -109,6 +110,7 @@ bool TranslateMouseMover::injectMouseButtonUp(const Input::MouseButton& button)
 				Model::AttachPointDefinition definition = *I;
 				definition.Translation = mAttachPointHelper.getTagPoint()->getPosition();
 				mModelDefinition->addAttachPointDefinition(definition);
+				break;
 			}
 		}
 
@@ -159,7 +161,17 @@ ModelAttachPointHelper::ModelAttachPointHelper(Model::Model& model, const std::s
 {
 	mAttachedModel = Model::Model::createModel(*mModel._getManager(), modelName);
 	Model::ModelBoneProvider* boneProvider = new Model::ModelBoneProvider(mModel, attachPointName, mAttachedModel);
-	mMount = new Model::ModelMount(*mAttachedModel, boneProvider, "gripped");
+
+	std::string pose = "";
+	const Model::AttachPointDefinitionStore& attachpoints = model.getDefinition()->getAttachPointsDefinitions();
+	for (Model::AttachPointDefinitionStore::const_iterator I = attachpoints.begin(); I != attachpoints.end(); ++I) {
+		if (I->Name == attachPointName) {
+			pose = I->Pose;
+			break;
+		}
+	}
+
+	mMount = new Model::ModelMount(*mAttachedModel, boneProvider, pose);
 	mMount->reset();
 	mAttachPointWrapper = *boneProvider->getAttachPointWrapper();
 }
