@@ -69,12 +69,15 @@ EmberEntity* WorldAttachment::getParentEntity() const
 
 IEntityAttachment* WorldAttachment::attachEntity(EmberEntity& entity)
 {
+	NodeAttachment* nodeAttachment(0);
 	if (Model::ModelRepresentation * modelRepresentation = Model::ModelRepresentationManager::getSingleton().getRepresentationForEntity(entity)) {
-		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(*mWorldNode));
+		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, new SceneNodeProvider(*mWorldNode));
 	}
 	else {
-		return new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(*mWorldNode));
+		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, new SceneNodeProvider(*mWorldNode));
 	}
+	nodeAttachment->init();
+	return nodeAttachment;
 }
 
 void WorldAttachment::updateScale()

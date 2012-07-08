@@ -42,16 +42,7 @@ namespace OgreView
 NodeAttachment::NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider) :
 	AttachmentBase(parentEntity, childEntity), mNode(0), mNodeProvider(nodeProvider), mAttachmentController(0)
 {
-	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 	mNode = &mNodeProvider->getNode();
-	setupListeners();
-}
-
-NodeAttachment::NodeAttachment(NodeAttachment& source, NodeAttachment& newParentAttachment) :
-	AttachmentBase(newParentAttachment.getAttachedEntity(), source.getAttachedEntity()), mNode(source.mNode), mAttachmentController(0)
-{
-	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
-	source.mNode = 0;
 	setupListeners();
 }
 
@@ -59,6 +50,11 @@ NodeAttachment::~NodeAttachment()
 {
 	delete mNodeProvider;
 	delete mAttachmentController;
+}
+
+void NodeAttachment::init()
+{
+	setControlDelegate(mChildEntity.getAttachmentControlDelegate());
 }
 
 void NodeAttachment::setupListeners()
@@ -91,11 +87,14 @@ IEntityAttachment* NodeAttachment::attachEntity(EmberEntity& entity)
 	//	else {
 
 	//If there's a model representation available, use a "ModelAttachment" instance to attach to it, otherwise just use a regular NodeAttachment.
+	NodeAttachment* nodeAttachment(0);
 	if (modelRepresentation) {
-		return new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
+		nodeAttachment = new Model::ModelAttachment(getAttachedEntity(), *modelRepresentation, mNodeProvider->createChildProvider(&modelRepresentation->getModel()));
 	} else {
-		return new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider());
+		nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, mNodeProvider->createChildProvider());
 	}
+	nodeAttachment->init();
+	return nodeAttachment;
 	//	}
 }
 

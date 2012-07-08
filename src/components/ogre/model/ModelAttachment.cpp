@@ -50,20 +50,15 @@ namespace Model
 {
 
 ModelAttachment::ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose) :
-	NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0)
+		NodeAttachment(parentEntity, modelRepresentation.getEntity(), nodeProvider), mModelRepresentation(modelRepresentation), mModelMount(0), mIgnoreEntityData(false), mPose(pose)
 {
-	mModelMount = new ModelMount(mModelRepresentation.getModel(), nodeProvider->createChildProvider(&mModelRepresentation.getModel()), pose);
-	mModelMount->reset();
-	setupFittings();
-	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
-}
-
-ModelAttachment::ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment) :
-	NodeAttachment(source, newParentAttachment), mModelRepresentation(source.mModelRepresentation), mModelMount(source.mModelMount)
-{
-	source.mModelMount = 0;
-	updateScale();
-	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
+	if (pose != "") {
+		const PoseDefinitionStore& poses = mModelRepresentation.getModel().getDefinition()->getPoseDefinitions();
+		PoseDefinitionStore::const_iterator I = poses.find(pose);
+		if (I != poses.end()) {
+			mIgnoreEntityData = I->second.IgnoreEntityData;
+		}
+	}
 }
 
 ModelAttachment::~ModelAttachment()
@@ -80,6 +75,16 @@ ModelAttachment::~ModelAttachment()
 		delete *I;
 	}
 
+}
+
+void ModelAttachment::init()
+{
+	NodeAttachment::init();
+
+	mModelMount = new ModelMount(mModelRepresentation.getModel(), mNodeProvider->createChildProvider(&mModelRepresentation.getModel()), mPose);
+	mModelMount->reset();
+	setupFittings();
+	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
 }
 
 IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
@@ -142,13 +147,14 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 		} else {
 			nodeProvider = mNodeProvider->createChildProvider(modelRepresentation ? &modelRepresentation->getModel() : 0);
 		}
+		NodeAttachment* nodeAttachment(0);
 		if (modelRepresentation) {
-			return new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, pose);
+			nodeAttachment = new ModelAttachment(getAttachedEntity(), *modelRepresentation, nodeProvider, pose);
 		} else {
-			return new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
+			nodeAttachment = new NodeAttachment(getAttachedEntity(), entity, nodeProvider);
 		}
-		//		}
-		//		}
+		nodeAttachment->init();
+		return nodeAttachment;
 	}
 }
 
@@ -250,12 +256,13 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 	for (unsigned int i = 0; i < mChildEntity.numContained(); ++i) {
 		Eris::Entity* entity = mChildEntity.getContained(i);
 		if (entity && entity->getId() == entityId) {
-			EmberEntity* emberEntity = static_cast<EmberEntity*> (entity);
+			EmberEntity* emberEntity = static_cast<EmberEntity*>(entity);
 			IEntityAttachment* attachment = attachEntity(*emberEntity);
 			emberEntity->setAttachment(attachment);
 			if (attachment) {
 				attachment->updateScale();
 			}
+			break;
 		}
 	}
 }
@@ -306,9 +313,13 @@ bool ModelAttachment::getVisualize(const std::string& visualization) const
 
 void ModelAttachment::setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity)
 {
-	NodeAttachment::setPosition(position, orientation, velocity);
+	if (!mIgnoreEntityData) {
+		NodeAttachment::setPosition(position, orientation, velocity);
 
-	mModelRepresentation.setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
+		mModelRepresentation.setLocalVelocity(WFMath::Vector<3>(velocity).rotate(orientation.inverse()));
+	} else {
+		NodeAttachment::setPosition(WFMath::Point<3>::ZERO(), WFMath::Quaternion::Identity(), WFMath::Vector<3>::ZERO());
+	}
 }
 
 }

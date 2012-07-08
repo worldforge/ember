@@ -63,9 +63,10 @@ class ModelAttachment: public NodeAttachment, public virtual sigc::trackable
 public:
 	typedef std::map<std::string, ModelFitting*> ModelFittingStore;
 	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose = "");
-	ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment);
 
 	virtual ~ModelAttachment();
+
+	virtual void init();
 
 	virtual IGraphicalRepresentation* getGraphicalRepresentation() const;
 
@@ -96,6 +97,7 @@ public:
 	 */
 	virtual void setPosition(const WFMath::Point<3>& position, const WFMath::Quaternion& orientation, const WFMath::Vector<3>& velocity);
 
+
 protected:
 
 	typedef std::vector<AttributeObserver*> AttributeObserverStore;
@@ -121,6 +123,18 @@ protected:
 	 * @brief A collection of observers to observe entity attribute changes and attach and detach ModelFittings accordingly.
 	 */
 	AttributeObserverStore mFittingsObservers;
+
+	/**
+	 * @brief If true, all entity position and orientation updates will be ignored.
+	 *
+	 * This is set by the data in any pose that is specified. The main reason is that for some attachments we need to ignore the server for them to look alright.
+	 */
+	bool mIgnoreEntityData;
+
+	/**
+	 * @brief An optional pose to use.
+	 */
+	const std::string mPose;
 
 	/**
 	 * @brief Sets up the ModelFittings and the observers of the attributes to which they are connected.

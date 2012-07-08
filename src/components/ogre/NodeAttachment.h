@@ -50,19 +50,25 @@ public:
 
 	/**
 	 * @brief Ctor.
+	 *
+	 * You must call init() after an instance has been created.
+	 *
 	 * @param parentEntity The parent entity.
 	 * @param childEntity The child entity.
 	 * @param nodeProvider A node provider instance, not null. Ownership will be passed to this instance.
 	 */
 	NodeAttachment(EmberEntity& parentEntity, EmberEntity& childEntity, INodeProvider* nodeProvider);
-	NodeAttachment(NodeAttachment& source, NodeAttachment& newParentAttachment);
-
 
 	/**
 	 * @brief Dtor.
 	 * During destruction the INodeProvider instance will be destroyed.
 	 */
 	virtual ~NodeAttachment();
+
+	/**
+	 * @brief Initializes the attachment. This must be called after an instance has been created.
+	 */
+	virtual void init();
 
 	virtual void setControlDelegate(IEntityControlDelegate* controllerDelegate);
 
