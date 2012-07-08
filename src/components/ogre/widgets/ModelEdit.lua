@@ -918,6 +918,7 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
+		local removePoseButton = self.widget:getWindow("PoseRemoveButton")
 		self.posesList = CEGUI.toListbox(self.widget:getWindow("PoseList"))
 		self.posesList:subscribeEvent("ItemSelectionChanged", function(args)
 			local item = self.posesList:getFirstSelectedItem()
@@ -926,8 +927,10 @@ function ModelEdit:buildWidget()
 				local poseDef = poseDefWrapper.def
 				self.poseRenderer.poseDefWrapper = poseDefWrapper
 				self.poseRenderer:showModel(self.definition:getName(), poseDef.Translate, poseDef.Rotate)
+				removePoseButton:setEnabled(true)
 			else
 				self.poseRenderer:showModel("")
+				removePoseButton:setEnabled(false)
 			end
 			
 			return true
@@ -982,13 +985,26 @@ function ModelEdit:buildWidget()
 			
 			self.definition:addPoseDefinition(name, poseDef)
 			self:updatePosesList()
-			local newItem = self.posesList:findItemWithText(name)
+			local newItem = self.posesList:findItemWithText(name, nil)
 			if newItem then
 				newItem:setSelected(true)
 			end
 			return true
 		end)
 		
+	
+		removePoseButton:setEnabled(false)
+
+		removePoseButton:subscribeEvent("Clicked", function(args)
+			local item = self.posesList:getFirstSelectedItem()
+			if item then
+				local poseDefWrapper = self.posesList.model[item:getID()]
+				self.definition:removePoseDefinition(poseDefWrapper.name)
+				self:updatePosesList()
+			end
+			
+			return true
+		end)
 	
 	
 		self.modelcontentstree = self.widget:getWindow("ModelContentsTree")
