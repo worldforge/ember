@@ -32,6 +32,9 @@ struct ViewDefinition
 
 struct PoseDefinition
 {
+	PoseDefinition();
+	~PoseDefinition();
+
 	/**
 	 * @brief The rotation of the model around the translated origin.
 	 */

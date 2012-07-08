@@ -393,9 +393,21 @@ Press shift to switch between rotation and translation.</Property>
                         <Property Name='UnifiedSize' Value='{{1.0,0},{1.0,0}}' />
                         <Property Name='Text' Value='Poses' />
                         <Window Type='EmberLook/Listbox' Name='PoseList'>
-                            <Property Name='UnifiedSize' Value='{{0,150.0},{1.0,-100.0}}' />
                             <Property Name='UnifiedPosition' Value='{{0,5},{0,5}}' />
+                            <Property Name='UnifiedSize' Value='{{0,150.0},{1.0,-100.0}}' />
                         </Window>
+                        <Window Type='EmberLook/Button' Name='PoseNewButton'>
+                            <Property Name='UnifiedPosition' Value='{{0,105},{1,-30}}' />
+                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+                            <Property Name='Tooltip' Value='Create a new pose' />
+                            <Property Name='Text' Value='New pose' />
+                        </Window>
+                        <Window Type='EmberLook/Editbox' Name='PoseNewName'>
+                            <Property Name='UnifiedPosition' Value='{{0,5},{1,-30}}' />
+                            <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+                            <Property Name='Tooltip' Value='Name of new pose' />
+                        </Window>
+                        
                         <Window Type='EmberLook/StaticImage' Name='PoseImage'>
                             <Property Name='UnifiedSize' Value='{{1,-450},{1,-20}}' />
                             <Property Name='UnifiedPosition' Value='{{0,440.0},{0,10.0}}' />

@@ -188,6 +188,10 @@ function ModelEdit:updateModelInfo()
 		self.attachPointsList:addItem(item)
 	end	
 	
+	self:updatePosesList()
+end
+
+function ModelEdit:updatePosesList()
 	self.posesList:resetList()
 	self.posesList.model = {}
 	local poses = self.definition:getPoseDefinitions()
@@ -199,7 +203,6 @@ function ModelEdit:updateModelInfo()
 		val = val + 1
 		self.posesList:addItem(item)
 	end
-
 end
 
 function ModelEdit:fillWindowsFromVector(windowNamePrefix, vector)
@@ -955,16 +958,38 @@ function ModelEdit:buildWidget()
 			local helpWindow = self.widget:getWindow("PoseImageHelpText") 
 			helpWindow:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new_local(helpWindow))
 		end)
+		
+		
+		local newPoseButton = self.widget:getWindow("PoseNewButton")
+		newPoseButton:setEnabled(false)
+		local newPoseName = self.widget:getWindow("PoseNewName")
+		
+		newPoseName:subscribeEvent("TextChanged", function(args)
+			if newPoseName:getText() ~= '' then
+				newPoseButton:setEnabled(true)
+			else
+				newPoseButton:setEnabled(false)
+			end
+			return true
+		end)
 
+
+		newPoseButton:subscribeEvent("Clicked", function(args)
+			local name = newPoseName:getText()
+			local poseDef = Ember.OgreView.Model.PoseDefinition:new_local()
+			poseDef.Rotate = self.poseRenderer:getEntityRotation()
+			poseDef.Translate = self.poseRenderer:getEntityTranslation()
+			
+			self.definition:addPoseDefinition(name, poseDef)
+			self:updatePosesList()
+			local newItem = self.posesList:findItemWithText(name)
+			if newItem then
+				newItem:setSelected(true)
+			end
+			return true
+		end)
 		
-		
-		--self.contentparts.modelInfo.renderImage = CEGUI.toStaticImage(self.contentparts.modelInfo.renderImage)
-		
-	--	self.materials = self.widget:getWindow("Materials")
-	--	self.materials = CEGUI.toListbox(self.materials)
-	--	self.materials:subscribeEvent("ItemSelectionChanged", self.materials_SelectionChanged, self)
-		
-		
+	
 	
 		self.modelcontentstree = self.widget:getWindow("ModelContentsTree")
 		self.modelcontentstree = tolua.cast(self.modelcontentstree,"CEGUI::Tree")
