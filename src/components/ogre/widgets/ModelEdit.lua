@@ -919,6 +919,15 @@ function ModelEdit:buildWidget()
 		end)
 		
 		local removePoseButton = self.widget:getWindow("PoseRemoveButton")
+
+		local updatePoseAdapters = function()
+			local translation = self.poseRenderer:getEntityTranslation()
+			local orientation = self.poseRenderer:getEntityRotation()
+			
+			self.poseTranslateAdapter:updateGui(translation);
+			self.poseRotationAdapter:updateGui(orientation);
+		end	
+
 		self.posesList = CEGUI.toListbox(self.widget:getWindow("PoseList"))
 		self.posesList:subscribeEvent("ItemSelectionChanged", function(args)
 			local item = self.posesList:getFirstSelectedItem()
@@ -928,6 +937,7 @@ function ModelEdit:buildWidget()
 				self.poseRenderer.poseDefWrapper = poseDefWrapper
 				self.poseRenderer:showModel(self.definition:getName(), poseDef.Translate, poseDef.Rotate)
 				removePoseButton:setEnabled(true)
+				updatePoseAdapters()
 			else
 				self.poseRenderer:showModel("")
 				removePoseButton:setEnabled(false)
@@ -944,17 +954,22 @@ function ModelEdit:buildWidget()
 		self.poseRenderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
 	
 		self.contentparts.modelInfo.renderImage = self.widget:getWindow("MeshPreviewImage")
-		
-		
+				
+		local updatePoseFromRenderer = function()
+			if self.poseRenderer.poseDefWrapper then
+				local translation = self.poseRenderer:getEntityTranslation()
+				local orientation = self.poseRenderer:getEntityRotation()
+				local poseDef = self.poseRenderer.poseDefWrapper.def
+				poseDef.Rotate = orientation
+				poseDef.Translate = translation
+				
+				self.definition:addPoseDefinition(self.poseRenderer.poseDefWrapper.name, poseDef)
+			end
+		end
 		
 		connect(self.connectors, self.poseRendererManipulator.EventMovementStopped, function()
-			local translation = self.poseRenderer:getEntityTranslation()
-			local orientation = self.poseRenderer:getEntityRotation()
-			local poseDef = self.poseRenderer.poseDefWrapper.def
-			poseDef.Rotate = orientation
-			poseDef.Translate = translation
-			
-			self.definition:addPoseDefinition(self.poseRenderer.poseDefWrapper.name, poseDef)
+			updatePoseFromRenderer()
+			updatePoseAdapters()
 		end)
 		
 		connect(self.connectors, self.poseRendererManipulator.EventMovementStarted, function()
@@ -1005,7 +1020,37 @@ function ModelEdit:buildWidget()
 			
 			return true
 		end)
+		
+		
+		
+		local xW = self.widget:getWindow("PoseTranslate_x")
+		local yW = self.widget:getWindow("PoseTranslate_y")
+		local zW = self.widget:getWindow("PoseTranslate_z")
+		self.poseTranslateAdapter = Ember.OgreView.Gui.Vector3Adapter:new(xW,yW ,zW)
+		connect(self.connectors, self.poseTranslateAdapter.EventValueChanged, function()
+			self.poseRenderer:setEntityTranslation(self.poseTranslateAdapter:getValue())
+			updatePoseFromRenderer()
+		end)
+		self.widget:getWindow("PoseTranslate_reset"):subscribeEvent("Clicked", function(args)
+			self.poseTranslateAdapter:setValue(Ogre.Vector3.ZERO)
+			return true
+		end)
+		
 	
+		local xW = self.widget:getWindow("PoseRotation_x")
+		local yW = self.widget:getWindow("PoseRotation_y")
+		local zW = self.widget:getWindow("PoseRotation_z")
+		local degreeW = self.widget:getWindow("PoseRotation_degrees")
+		self.poseRotationAdapter = Ember.OgreView.Gui.QuaternionAdapter:new(degreeW, xW,yW ,zW)
+		connect(self.connectors, self.poseRotationAdapter.EventValueChanged, function()
+			self.poseRenderer:setEntityRotation(self.poseRotationAdapter:getValue())
+			updatePoseFromRenderer()
+		end)
+		self.widget:getWindow("PoseRotation_reset"):subscribeEvent("Clicked", function(args)
+			self.poseRotationAdapter:setValue(Ogre.Quaternion.IDENTITY)
+			return true
+		end)
+		
 	
 		self.modelcontentstree = self.widget:getWindow("ModelContentsTree")
 		self.modelcontentstree = tolua.cast(self.modelcontentstree,"CEGUI::Tree")
@@ -1264,6 +1309,8 @@ function ModelEdit:shutdown()
 	deleteSafe(self.rotationAdapter)
 	deleteSafe(self.containedOffsetAdapter)
 	deleteSafe(self.translateAdapter)
+	deleteSafe(self.poseRotationAdapter)
+	deleteSafe(self.poseTranslateAdapter)
 	deleteSafe(self.modelsAdapter)
 	deleteSafe(self.modelslistholder)
 	deleteSafe(self.attachPointPreviewModelListAdapter)

@@ -396,6 +396,76 @@ Press shift to switch between rotation and translation.</Property>
                             <Property Name='UnifiedPosition' Value='{{0,5},{0,5}}' />
                             <Property Name='UnifiedSize' Value='{{0,150.0},{1.0,-100.0}}' />
                         </Window>
+                        <Window Type="VerticalLayoutContainer" Name='PoseInfo_container'>
+                            <Property Name='UnifiedPosition' Value='{{0, 160},{0,5}}' />
+                            <Property Name='UnifiedSize' Value='{{0, 200},{1,-10}}' />
+                            <Window Type='DefaultWindow' Name='PoseTranslate_wrapper'>
+                                <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                                <Window Type='EmberLook/StaticText' Name='PoseTranslate_text'>
+                                    <Property Name='BackgroundEnabled' Value='False' />
+                                    <Property Name='FrameEnabled' Value='False' />
+                                    <Property Name='Text' Value='Translate:' />
+                                    <Property Name='UnifiedPosition' Value='{{0,5},{0,0}}' />
+                                    <Property Name='UnifiedSize' Value='{{0, 60},{0,25}}' />
+                                </Window>
+                                <Window Type='EmberLook/Button' Name='PoseTranslate_reset'>
+                                    <Property Name='Text' Value='Reset' />
+                                    <Property Name='UnifiedPosition' Value='{{0,60},{0,0}}' />
+                                    <Property Name='UnifiedSize' Value='{{0, 40},{0,25}}' />
+                                </Window>
+                                <Window Type="HorizontalLayoutContainer" Name='PoseTranslate_container'>
+                                    <Property Name='UnifiedPosition' Value='{{0, 100},{0,0}}' />
+                                    <Property Name='UnifiedSize' Value='{{1, 0},{0,25}}' />
+                                    <Window Type='EmberLook/Editbox' Name='PoseTranslate_x'>
+                                        <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+                                        <Property Name='Tooltip' Value='X' />
+                                    </Window>
+                                    <Window Type='EmberLook/Editbox' Name='PoseTranslate_y'>
+                                        <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+                                        <Property Name='Tooltip' Value='Y' />
+                                    </Window>
+                                    <Window Type='EmberLook/Editbox' Name='PoseTranslate_z'>
+                                        <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+                                        <Property Name='Tooltip' Value='Z' />
+                                    </Window>
+                                </Window>
+                            </Window>
+                            <Window Type='DefaultWindow' Name='PoseRotation_wrapper'>
+                                <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                                <Window Type='EmberLook/StaticText' Name='PoseRotation_text'>
+                                    <Property Name='BackgroundEnabled' Value='False' />
+                                    <Property Name='FrameEnabled' Value='False' />
+                                    <Property Name='Text' Value='Rotation:' />
+                                    <Property Name='UnifiedPosition' Value='{{0,5},{0,0}}' />
+                                    <Property Name='UnifiedSize' Value='{{0, 60},{0,25}}' />
+                                </Window>
+                                <Window Type='EmberLook/Button' Name='PoseRotation_reset'>
+                                    <Property Name='Text' Value='Reset' />
+                                    <Property Name='UnifiedPosition' Value='{{0,60},{0,0}}' />
+                                    <Property Name='UnifiedSize' Value='{{0, 40},{0,25}}' />
+                                </Window>
+                                <Window Type="HorizontalLayoutContainer" Name='PoseRotation_container'>
+                                    <Property Name='UnifiedPosition' Value='{{0, 100},{0,0}}' />
+                                    <Property Name='UnifiedSize' Value='{{1, 0},{0,25}}' />
+                                    <Window Type='EmberLook/Editbox' Name='PoseRotation_degrees'>
+                                        <Property Name='UnifiedSize' Value='{{0, 30},{0,25}}' />
+                                        <Property Name='Tooltip' Value='Degrees' />
+                                    </Window>
+                                    <Window Type='EmberLook/Editbox' Name='PoseRotation_x'>
+                                        <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+                                        <Property Name='Tooltip' Value='X' />
+                                    </Window>
+                                    <Window Type='EmberLook/Editbox' Name='PoseRotation_y'>
+                                        <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+                                        <Property Name='Tooltip' Value='Y' />
+                                    </Window>
+                                    <Window Type='EmberLook/Editbox' Name='PoseRotation_z'>
+                                        <Property Name='UnifiedSize' Value='{{0, 35},{0,25}}' />
+                                        <Property Name='Tooltip' Value='Z' />
+                                    </Window>
+                                </Window>
+                            </Window>
+                        </Window>
                         <Window Type='EmberLook/Button' Name='PoseRemoveButton'>
                             <Property Name='UnifiedPosition' Value='{{0,105},{1,-60}}' />
                             <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
