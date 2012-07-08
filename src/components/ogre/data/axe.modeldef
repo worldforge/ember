@@ -1,9 +1,9 @@
 <models>
-    <model name="bucksaw" usescaleof="height" showcontained="true" icon="">
+    <model name="axe" usescaleof="all" scale="1" showcontained="true" icon="">
         <translate x="0" y="0" z="0" />
         <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
-            <submodel mesh="3d_objects/items/tools/models/bucksaw/bucksaw.mesh">
+            <submodel mesh="3d_objects/items/tools/models/axe/axe.mesh">
                 <parts>
                     <part name="main" show="true" />
                 </parts>
@@ -17,7 +17,7 @@
         <poses>
             <pose name="gripped" ignoreEntityData="true">
                 <translate x="0" y="0" z="0" />
-                <rotate x="0" y="-1" z="0" degrees="90" />
+                <rotate x="1.19209e-07" y="-0.707107" z="-0.707107" degrees="180" />
             </pose>
         </poses>
     </model>

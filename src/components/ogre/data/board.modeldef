@@ -1,7 +1,7 @@
 <models>
-    <model name="board" usescaleof="width" scale="0.126500" showcontained="true">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="-0.000000" y="-0.000000" z="-0.000000" degrees="0.000000" />
+    <model name="board" usescaleof="width" scale="0.1265" showcontained="true" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
             <submodel mesh="3d_objects/items/building_element/models/board/board.mesh">
                 <parts>
@@ -22,5 +22,12 @@
         <attachpoints />
         <views />
         <lights />
+        <bonegroups />
+        <poses>
+            <pose name="gripped" ignoreEntityData="true">
+                <translate x="0" y="0" z="0" />
+                <rotate x="0.57735" y="0.57735" z="-0.57735" degrees="120" />
+            </pose>
+        </poses>
     </model>
 </models>

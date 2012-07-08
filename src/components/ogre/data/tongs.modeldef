@@ -13,5 +13,12 @@
         <attachpoints />
         <views />
         <lights />
+        <bonegroups />
+        <poses>
+            <pose name="gripped" ignoreEntityData="true">
+                <translate x="0.00344545" y="-0.00130191" z="-0.0624219" />
+                <rotate x="5.96046e-08" y="-1" z="-5.96046e-08" degrees="90" />
+            </pose>
+        </poses>
     </model>
 </models>

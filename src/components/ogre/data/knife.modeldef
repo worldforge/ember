@@ -14,5 +14,11 @@
         <views />
         <lights />
         <bonegroups />
+        <poses>
+            <pose name="gripped" ignoreEntityData="true">
+                <translate x="0" y="0" z="0" />
+                <rotate x="-0.57735" y="-0.57735" z="-0.57735" degrees="120" />
+            </pose>
+        </poses>
     </model>
 </models>

@@ -1,7 +1,7 @@
 <models>
-    <model name="scythe" usescaleof="none" scale="1.000000" showcontained="true" icon="">
-        <translate x="0.000000" y="0.000000" z="0.000000" />
-        <rotation x="1.000000" y="0.000000" z="0.000000" degrees="0.000000" />
+    <model name="scythe" usescaleof="none" scale="1" showcontained="true" icon="">
+        <translate x="0" y="0" z="0" />
+        <rotation x="1" y="0" z="0" degrees="0" />
         <submodels>
             <submodel mesh="3d_objects/items/tools/models/scythe/scythe.mesh">
                 <parts>
@@ -14,9 +14,16 @@
         <views>
             <view name="icon">
                 <distance>0</distance>
-                <rotation x="-0.725113" y="0.596371" z="0.344315" degrees="77.051384" />
+                <rotation x="-0.725113" y="0.596371" z="0.344315" degrees="77.0514" />
             </view>
         </views>
         <lights />
+        <bonegroups />
+        <poses>
+            <pose name="gripped" ignoreEntityData="true">
+                <translate x="0" y="0" z="0" />
+                <rotate x="-0.57735" y="0.57735" z="0.57735" degrees="120" />
+            </pose>
+        </poses>
     </model>
 </models>
