@@ -51,8 +51,6 @@ ModelMount::~ModelMount()
 
 void ModelMount::rescale(const WFMath::AxisBox<3>* wfBbox)
 {
-	//It's important that we reset everything before we call scaleNode
-	reset();
 	scaleNode(wfBbox);
 }
 
@@ -73,7 +71,7 @@ void ModelMount::reset()
 	//perhaps this is something to put in the model spec instead?
 	getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
 	if (pose) {
-		getNode().translate(pose->Translate);
+		getNode().translate(getNode().getOrientation() * pose->Translate);
 		getNode().rotate(pose->Rotate, Ogre::Node::TS_LOCAL);
 	} else {
 		getNode().rotate(getModel().getRotation());
@@ -89,11 +87,11 @@ Ogre::Node& ModelMount::getNode() const
 
 void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 {
-	//it's important that reset() has been called before this method is called
-
 	if (!mModel.isLoaded()) {
 		return;
 	}
+
+	getNode().setScale(Ogre::Vector3::UNIT_SCALE);
 
 	//make a copy of the original bbox
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
@@ -173,8 +171,19 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 				getNode().scale(getModel().getScale(), getModel().getScale(), getModel().getScale());
 			}
 		}
-	} else {
-		getNode().setScale(1, 1, 1);
+
+		//If we've attached using a pose, we need to scale the translation defined in the pose according to our new scale
+		if (mPose != "") {
+			const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
+			PoseDefinitionStore::const_iterator I = poses.find(mPose);
+			if (I != poses.end()) {
+				getNodeProvider()->setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
+				getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+				getNode().translate(getNode().getOrientation() * (I->second.Translate * getNode().getScale()));
+				getNode().rotate(I->second.Rotate, Ogre::Node::TS_LOCAL);
+			}
+		}
+
 	}
 }
 
