@@ -62,6 +62,15 @@ public:
 	CombinedEntityTextureManipulator(CEGUI::Window& window, Ember::OgreView::Gui::EntityCEGUITexture& texture);
 	virtual ~CombinedEntityTextureManipulator();
 
+	/**
+	 * @brief Emitted when editing of the entity has started.
+	 */
+	sigc::signal<void> EventEditingStarted;
+
+	/**
+	 * @brief Emitted when editing of the entity has stopped.
+	 */
+	sigc::signal<void> EventEditingStopped;
 
 };
 

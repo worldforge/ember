@@ -961,7 +961,7 @@ function ModelEdit:buildWidget()
 			end
 		end
 		
-		connect(self.connectors, self.poseRendererManipulator.EventMovementStopped, function()
+		connect(self.connectors, self.poseRendererManipulator.EventEditingStopped, function()
 			updatePoseFromRenderer()
 			updatePoseAdapters()
 		end)
@@ -1117,7 +1117,7 @@ function ModelEdit:buildWidget()
 		self.rendererManipulator = Ember.OgreView.Gui.CombinedEntityTextureManipulator:new(self.renderImage, self.renderer:getEntityTexture())
 		
 		
-		connect(self.connectors, self.rendererManipulator.EventMovementStopped, updateModelAdapters)
+		connect(self.connectors, self.rendererManipulator.EventEditingStopped, updateModelAdapters)
 		
 		connect(self.connectors, self.rendererManipulator.EventMovementStarted, function()
 			local helpWindow = self.widget:getWindow("ImageHelpText") 

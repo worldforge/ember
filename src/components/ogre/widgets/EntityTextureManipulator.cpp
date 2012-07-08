@@ -270,6 +270,7 @@ void CombinedEntityTextureManipulator::handleMouseButtonDown(const CEGUI::MouseE
 			mLeftMouseButtonDown = true;
 		} else {
 			mLeftMouseButtonDown = false;
+			EventEditingStarted.emit();
 		}
 		//only catch input if it's allowed
 		catchInput();
@@ -280,6 +281,9 @@ bool CombinedEntityTextureManipulator::injectMouseButtonUp(const Input::MouseBut
 {
 	if (button == Input::MouseButtonLeft || button == Input::MouseButtonMiddle) {
 		releaseInput();
+		if (!mLeftMouseButtonDown) {
+			EventEditingStopped.emit();
+		}
 	}
 	return true;
 }

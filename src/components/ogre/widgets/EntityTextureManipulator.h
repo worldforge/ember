@@ -162,6 +162,16 @@ public:
 
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 
+	/**
+	 * @brief Emitted when editing of the entity has started.
+	 */
+	sigc::signal<void> EventEditingStarted;
+
+	/**
+	 * @brief Emitted when editing of the entity has stopped.
+	 */
+	sigc::signal<void> EventEditingStopped;
+
 protected:
 
 	/**
