@@ -62,7 +62,7 @@ class ModelAttachment: public NodeAttachment, public virtual sigc::trackable
 {
 public:
 	typedef std::map<std::string, ModelFitting*> ModelFittingStore;
-	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose = "default");
+	ModelAttachment(EmberEntity& parentEntity, ModelRepresentation& modelRepresentation, INodeProvider* nodeProvider, const std::string& pose = "");
 	ModelAttachment(ModelAttachment& source, NodeAttachment& newParentAttachment);
 
 	virtual ~ModelAttachment();

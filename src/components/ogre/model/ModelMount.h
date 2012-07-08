@@ -64,7 +64,7 @@ public:
 	 * @param model The model which we need a mount for.
 	 * @param nodeProvider Provides an instance of a subclass of Ogre::Node to which the Model can be attached.
 	 */
-	ModelMount(Model& model, INodeProvider* nodeProvider, const std::string& pose = "default");
+	ModelMount(Model& model, INodeProvider* nodeProvider, const std::string& pose = "");
 
 	/**
 	 * @brief Dtor.
