@@ -237,6 +237,12 @@ struct PoseDefinition
 	 * @brief The translation of the original model, to provide a new origin.
 	 */
 	Ogre::Vector3 Translate;
+
+	/**
+	 * @brief If true, the orientation and translation of the entity will be ignored.
+	 */
+	bool IgnoreEntityData;
+
 };
 
 /**

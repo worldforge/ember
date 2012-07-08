@@ -855,6 +855,15 @@ void XMLModelDefinitionSerializer::readPoses(ModelDefinitionPtr modelDef, TiXmlE
 		std::string name(tmp);
 		S_LOG_VERBOSE( "  Add pose  : " + name);
 
+		tmp = apElem->Attribute("ignoreEntityData");
+		definition.IgnoreEntityData = false;
+		if (tmp) {
+			if (std::string(tmp) == "true") {
+				definition.IgnoreEntityData = true;
+			}
+		}
+
+
 		TiXmlElement* elem = apElem->FirstChildElement("rotate");
 		if (elem) {
 			definition.Rotate = XMLHelper::fillQuaternionFromElement(elem);
@@ -1217,6 +1226,9 @@ void XMLModelDefinitionSerializer::exportPoses(ModelDefinitionPtr modelDef, TiXm
 		for (PoseDefinitionStore::const_iterator I = modelDef->mPoseDefinitions.begin(); I != modelDef->mPoseDefinitions.end(); ++I) {
 			TiXmlElement poseElem("pose");
 			poseElem.SetAttribute("name", I->first.c_str());
+			if (I->second.IgnoreEntityData) {
+				poseElem.SetAttribute("ignoreEntityData", "true");
+			}
 			if (!I->second.Translate.isNaN()) {
 				TiXmlElement translateElem("translate");
 				XMLHelper::fillElementFromVector3(translateElem, I->second.Translate);
