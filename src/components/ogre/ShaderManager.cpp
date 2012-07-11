@@ -217,6 +217,11 @@ ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string &le
 	return LEVEL_DEFAULT;
 }
 
+const std::map<ShaderManager::GraphicsLevel, std::string>& ShaderManager::getGraphicsScheme() const
+{
+	return mGraphicSchemes;
+}
+
 void ShaderManager::registerSceneManager(Ogre::SceneManager* sceneManager)
 {
 	ShaderSetupInstance* instance = new ShaderSetupInstance(*sceneManager);

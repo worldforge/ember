@@ -108,6 +108,12 @@ public:
 	 * Returns level id by its name
 	 */
 	GraphicsLevel getLevelByName(const std::string &level);
+	
+	/**
+	 * @brief Returns a map of levels and their scheme names.
+	 * Can be used to retrieve all schemes as known to the shader manager.
+	 */
+	const std::map<GraphicsLevel, std::string>& getGraphicsScheme() const;
 
 	/**
 	 * @brief Registers a scene manager with the shader manager.
