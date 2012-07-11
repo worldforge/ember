@@ -63,9 +63,9 @@ do
   grep -IE --no-filename "image\s*.*" ${filename} | sed -e 's/image\s*//g' >> ${common_textures_list}
 done
 
-grep -orIE --no-filename "icon=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
-grep -orIE --no-filename "diffusetexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/diffusetexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
-grep -orIE --no-filename "normalmaptexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.terrain | sed -e 's/normalmaptexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
+grep -orIE --no-filename "icon=\"[^\"]*\"" ${srcdir}/src/components/ogre/data/*.modeldef | sed -e 's/icon=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
+grep -orIE --no-filename "diffusetexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/data/*.terrain | sed -e 's/diffusetexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
+grep -orIE --no-filename "normalmaptexture=\"[^\"]*\"" ${srcdir}/src/components/ogre/data/*.terrain | sed -e 's/normalmaptexture=\"//g' | sed -e 's/\"//g' >> ${common_textures_list}
 
 #remove all duplicates
 sort --unique ${common_textures_list} | sed '/^$/d' | dos2unix > ${common_textures_cleaned_list}
@@ -102,10 +102,10 @@ done
 #copy all meshes in use
 echo "Copying meshes"
 cd ${shared_dir}
-grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > ${common_meshes_list}
-# grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
-grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
-# grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/modeldefinitions/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
+grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/data/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' > ${common_meshes_list}
+# grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/data/*.modeldef | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
+grep -orIE --no-filename "mesh=\"[^\"]*\"" ${srcdir}/src/components/ogre/data/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
+# grep -orIE --no-filename "mesh=\"junk[^\"]*\"" ${original_media}/data/*.modeldef.xml | sed -e 's/mesh=\"//g' | sed -e 's/\"//g' >> ${common_meshes_list}
 cd ${original_media} ; tar cf - `cat ${common_meshes_list} ` | ( cd ${shared_common_dir}; tar --keep-newer-files -xvf -) 2>  /dev/null
 # exit
 # mkdir -p ${shared_dir}/models
