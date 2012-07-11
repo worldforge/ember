@@ -1,6 +1,7 @@
 #include "LodLevelManager.h"
 
 #include "components/ogre/AutoGraphicsLevelManager.h"
+#include "components/ogre/ShaderManager.h"
 
 #include "OgreCamera.h"
 
@@ -13,14 +14,23 @@ namespace OgreView
 namespace Lod
 {
 
-LodLevelManager::LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera) :
-		mThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mMainCamera(mainCamera)
+LodLevelManager::LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera, ShaderManager& shaderManager) :
+		mThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mMainCamera(mainCamera), mShaderManager(shaderManager)
 {
+	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
+	mShaderLevel = (schemes.find(mShaderManager.getGraphicsLevel()))->second;
+	mMinShaderLevel = schemes.begin()->second;
+	mMaxShaderLevel = schemes.rbegin()->second;
 }
 
 LodLevelManager::~LodLevelManager()
 {
 	mChangeRequiredConnection.disconnect();
+}
+
+void LodLevelManager::initialize()
+{
+	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
 }
 
 bool LodLevelManager::setLodBiasAll(float factor)
@@ -29,6 +39,13 @@ bool LodLevelManager::setLodBiasAll(float factor)
 	mLodFactor = factor;
 
 	mMainCamera.setLodBias(factor);
+	return true;
+}
+
+void LodLevelManager::changeShaderLevel(const std::string& level)
+{
+	mShaderLevel = level;
+	mShaderManager.setGraphicsLevel(mShaderManager.getLevelByName(level));
 }
 
 bool LodLevelManager::changeLevel(float level)
@@ -72,9 +89,30 @@ bool LodLevelManager::stepUpLodBias(float step)
 	}
 }
 
-void LodLevelManager::initialize()
+bool LodLevelManager::stepDownShaderLevel()
 {
-	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
+	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
+	if (mShaderLevel == mMinShaderLevel) {
+		return false;
+	} else {
+		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator level = schemes.find(mShaderManager.getLevelByName(mShaderLevel));
+		--level;
+		changeShaderLevel(level->second);
+		return true;
+	}
+}
+
+bool LodLevelManager::stepUpShaderLevel()
+{
+	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
+	if (mShaderLevel == mMaxShaderLevel) {
+		return false;
+	} else {
+		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator level = schemes.find(mShaderManager.getLevelByName(mShaderLevel));
+		++level;
+		changeShaderLevel(level->second);
+		return true;
+	}
 }
 
 void LodLevelManager::pause()

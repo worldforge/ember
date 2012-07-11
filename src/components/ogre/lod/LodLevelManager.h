@@ -1,4 +1,5 @@
 #include "sigc++/connection.h"
+#include <string>
 
 namespace Ogre
 {
@@ -10,6 +11,7 @@ namespace Ember
 namespace OgreView
 {
 
+class ShaderManager;
 class AutomaticGraphicsLevelManager;
 
 namespace Lod
@@ -24,7 +26,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera);
+	LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera, ShaderManager& shaderManager);
 
 	/**
 	 * @brief Destructor.
@@ -38,6 +40,13 @@ public:
 	 * @param factor Proportional factor to apply to the distance at which LOD is changed. Higher values increase the distance at which higher LODs are used (eg. 2.0 is twice the normal distance, 0.5 is half).
 	 */
 	bool setLodBiasAll(float factor);
+
+	/**
+	 * @brief Sets the shader scheme to the required level.
+	 * @param level The needed shader level (high, medium, low).
+	 * If the level doesn't exist, it will switch to default.
+	 */
+	void changeShaderLevel(const std::string& level);
 
 	/**
 	 * @brief Initializes the material lod level manager.
@@ -75,13 +84,25 @@ protected:
 	bool stepDownLodBias(float step);
 
 	/**
+	 * @brief Steps up the shader scheme level.
+	 * @returns Whether shader scheme could be stepped up.
+	 */
+	bool stepUpShaderLevel();
+
+	/**
+	 * @brief Steps down the shader scheme level.
+	 * @returns Whether shader scheme could be stepped down.
+	 */
+	bool stepDownShaderLevel();
+
+	/**
 	 * The threshold level after which this component starts responding to change in detail required signals.
 	 */
 	float mThresholdLevel;
 
 	/**
-	 * The current global material lod bias. This value is used to affect the level of detail distance values 
-	 * of all materials.
+	 * The current global lod bias. This value is used to affect the level of detail distance values 
+	 * of all materials and meshes.
 	 */
 	float mLodFactor;
 
@@ -101,6 +122,21 @@ protected:
 	float mDefaultStep;
 
 	/**
+	 * The current shader level.
+	 */
+	std::string mShaderLevel;
+
+	/**
+	 * The maximum shader level this component can switch to.
+	 */
+	std::string mMaxShaderLevel;
+
+	/**
+	 * The minimum shader level this component can switch to.
+	 */
+	std::string mMinShaderLevel;
+
+	/**
 	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class or to pause the functioning of this component.
 	 */
 	sigc::connection mChangeRequiredConnection;
@@ -114,6 +150,11 @@ protected:
 	 * Reference to the main camera object
 	 */
 	Ogre::Camera& mMainCamera;
+
+	/**
+	 * Reference to the Shader Manager used to make scheme changes.
+	 */
+	ShaderManager& mShaderManager;
 
 };
 
