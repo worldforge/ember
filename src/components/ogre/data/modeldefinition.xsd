@@ -283,10 +283,11 @@
                                         <xsd:element name="pose" minOccurs="0" maxOccurs="unbounded">
                                             <xsd:complexType>
                                                 <xsd:sequence>
-                                                    <xsd:element name="rotate" minOccurs="0" maxOccurs="1" type="rotation" />
                                                     <xsd:element name="translate" minOccurs="0" maxOccurs="1" type="vector3" />
+                                                    <xsd:element name="rotate" minOccurs="0" maxOccurs="1" type="rotation" />
                                                 </xsd:sequence>
                                                 <xsd:attribute name="name" type="xsd:string" use="required" />
+                                                <xsd:attribute name="ignoreEntityData" type="xsd:boolean" use="optional" />
                                             </xsd:complexType>
                                         </xsd:element>
                                     </xsd:sequence>
