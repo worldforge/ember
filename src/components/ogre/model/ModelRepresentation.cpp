@@ -229,6 +229,11 @@ void ModelRepresentation::model_Reloaded()
 {
 	initFromModel();
 	reactivatePartActions();
+	//Check if there's any ongoing tasks which we should create an action for.
+	if (!mEntity.getTasks().empty()) {
+		//select the first available task
+		createActionForTask(**mEntity.getTasks().begin());
+	}
 	//Retrigger a movement change so that animations can be stopped and started now that the model has changed.
 	onMovementModeChanged(getMovementMode());
 }
@@ -425,7 +430,12 @@ void ModelRepresentation::entity_Acted(const Atlas::Objects::Operation::RootOper
 
 void ModelRepresentation::entity_TaskAdded(Eris::Task* task)
 {
-	Action* newAction = mModel.getAction(ActivationDefinition::TASK, task->name());
+	createActionForTask(*task);
+}
+
+void ModelRepresentation::createActionForTask(const Eris::Task& task)
+{
+	Action* newAction = mModel.getAction(ActivationDefinition::TASK, task.name());
 	if (newAction) {
 		MotionManager::getSingleton().addAnimated(mEntity.getId(), this);
 		mTaskAction = newAction;

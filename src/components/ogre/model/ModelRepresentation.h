@@ -318,6 +318,12 @@ protected:
 	void entity_TaskRemoved(Eris::Task* task);
 
 	/**
+	 * @brief Creates a new action for the supplied task (if any is found).
+	 * @param task The task to create an action for.
+	 */
+	void createActionForTask(const Eris::Task& task);
+
+	/**
 	 *    Overridden from Eris::Entity
 	 * @param str
 	 * @param v
