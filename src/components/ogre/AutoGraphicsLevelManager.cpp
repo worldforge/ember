@@ -67,7 +67,7 @@ AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow&
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
 {
-
+	delete mConfigListenerContainer;
 }
 
 void AutomaticGraphicsLevelManager::setFps(float fps)
