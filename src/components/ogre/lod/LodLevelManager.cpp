@@ -18,9 +18,16 @@ LodLevelManager::LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphic
 		mThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mMainCamera(mainCamera), mShaderManager(shaderManager)
 {
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
-	mShaderLevel = (schemes.find(mShaderManager.getGraphicsLevel()))->second;
-	mMinShaderLevel = schemes.begin()->second;
-	mMaxShaderLevel = schemes.rbegin()->second;
+	if (!schemes.empty()) {
+		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator currentLevel = schemes.find(mShaderManager.getGraphicsLevel());
+		if (currentLevel != schemes.end()) {
+			mShaderLevel = currentLevel->second;
+		} else {
+			mShaderLevel = schemes.rbegin()->second;
+		}
+		mMinShaderLevel = schemes.begin()->second;
+		mMaxShaderLevel = schemes.rbegin()->second;
+	}
 }
 
 LodLevelManager::~LodLevelManager()
@@ -92,6 +99,11 @@ bool LodLevelManager::stepUpLodBias(float step)
 bool LodLevelManager::stepDownShaderLevel()
 {
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
+	//Check if any shader schemes are available to switch to
+	if (schemes.empty()) {
+		return false;
+	}
+
 	if (mShaderLevel == mMinShaderLevel) {
 		return false;
 	} else {
@@ -105,6 +117,11 @@ bool LodLevelManager::stepDownShaderLevel()
 bool LodLevelManager::stepUpShaderLevel()
 {
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
+	//Check if any shader schemes are available to switch to
+	if (schemes.empty()) {
+		return false;
+	}
+
 	if (mShaderLevel == mMaxShaderLevel) {
 		return false;
 	} else {
