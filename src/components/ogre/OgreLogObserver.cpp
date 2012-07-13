@@ -28,12 +28,11 @@
 
 #include "framework/LoggingInstance.h"
 
-
 using namespace Ogre;
-namespace Ember {
-namespace OgreView {
-
-
+namespace Ember
+{
+namespace OgreView
+{
 
 OgreLogObserver::OgreLogObserver()
 {
@@ -44,16 +43,15 @@ OgreLogObserver::~OgreLogObserver()
 
 }
 
-
-
-void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml, bool maskDebug, const String &logName )
+void OgreLogObserver::messageLogged(const String& message, LogMessageLevel lml, bool maskDebug, const String &logName, bool& skipThisMessage)
 {
-	static std::string ogre("(Ogre) ");
-	//if there's a problem setting material name, log as verbose as these messages are quite common and not necessarily errors since the Model format in many cases overrides the material defined in the mesh
-	if (Ogre::StringUtil::startsWith(message, "Can't assign material", false)) {
-		lml = Ogre::LML_TRIVIAL;
-	}
-	switch (lml) {
+	if (!skipThisMessage) {
+		static std::string ogre("(Ogre) ");
+		//if there's a problem setting material name, log as verbose as these messages are quite common and not necessarily errors since the Model format in many cases overrides the material defined in the mesh
+		if (Ogre::StringUtil::startsWith(message, "Can't assign material", false)) {
+			lml = Ogre::LML_TRIVIAL;
+		}
+		switch (lml) {
 		case Ogre::LML_TRIVIAL:
 			Log::slog("Ogre", Log::VERBOSE) << ogre << message << Log::END_MESSAGE;
 			break;
@@ -64,11 +62,9 @@ void OgreLogObserver::messageLogged( const String& message, LogMessageLevel lml,
 			Log::slog("Ogre", Log::FAILURE) << ogre << message << Log::END_MESSAGE;
 			break;
 
+		}
 	}
 }
-
-
-
 
 }
 }

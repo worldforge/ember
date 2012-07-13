@@ -141,7 +141,7 @@ namespace Ogre {
             const Ogre::Quaternion& rkQ, bool shortestPath = false);
 
         // cutoff for sine near zero
-        static const float ms_fEpsilon;
+        static const float msEpsilon;
 
         // special values
         static const Ogre::Quaternion ZERO;

@@ -58,7 +58,7 @@ namespace OgreView {
             archive, for file naming
         */
         void findFiles(const Ogre::String& pattern, bool recursive, bool dirs,
-            Ogre::StringVector* simpleList, Ogre::FileInfoList* detailList);
+            Ogre::StringVector* simpleList, Ogre::FileInfoList* detailList) const;
 
     public:
         FileSystemArchive(const Ogre::String& name, const Ogre::String& archType );
@@ -87,7 +87,7 @@ namespace OgreView {
 
         /// @copydoc Archive::findFileInfo
         Ogre::FileInfoListPtr findFileInfo(const Ogre::String& pattern, bool recursive = true,
-            bool dirs = false);
+            bool dirs = false) const;
 
         /// @copydoc Archive::exists
         bool exists(const Ogre::String& filename);

@@ -25,6 +25,7 @@ along with Caelum. If not, see <http://www.gnu.org/licenses/>.
 #include "CaelumScriptTranslator.h"
 #include "TypeDescriptor.h"
 #include "OgrePlugin.h"
+#include <OgreSingleton.h>
 
 namespace Caelum
 {
@@ -37,10 +38,6 @@ namespace Caelum
     class CAELUM_EXPORT CaelumPlugin: public Ogre::Singleton<CaelumPlugin>, public Ogre::Plugin
     {
     public:
-        /// Get reference to singleton instance; or crash if N/A.
-        static CaelumPlugin& getSingleton(void);
-        /// Get pointer to singleton instance; or pointer if N/A.
-        static CaelumPlugin* getSingletonPtr(void);
 
         CaelumPlugin();
         ~CaelumPlugin();

@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.6.3, erik@ogenvik.org)
+AC_INIT(Ember, 0.7.0, erik@ogenvik.org)
 
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -280,8 +280,8 @@ Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions
 
 
 # Check for OGRE
-OGRE_VERSION=1.7.0
-OGRE_MAX_VERSION=1.8.0
+OGRE_VERSION=1.8.0
+OGRE_MAX_VERSION=1.9.0
 PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION OGRE < $OGRE_MAX_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"

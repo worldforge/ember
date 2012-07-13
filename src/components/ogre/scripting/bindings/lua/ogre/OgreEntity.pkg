@@ -278,7 +278,7 @@ namespace Ogre {
         morph animation, 'includes_pose_animation true' if using pose animation
         and 'includes_skeletal_animation true' if using skeletal animation.
 		*/
-		bool isHardwareAnimationEnabled(void) const;
+		bool isHardwareAnimationEnabled(void);
 
 		/** Overridden from MovableObject */
 // 		void _notifyAttached(Node* parent, bool isTagPoint = false);
@@ -433,7 +433,7 @@ namespace Ogre {
 			BIND_HARDWARE_MORPH
 		};
 		/// Choose which vertex data to bind to the renderer
-		Ogre::Entity::VertexDataBindChoice chooseVertexDataForBinding(bool hasVertexAnim) const;
+		Ogre::Entity::VertexDataBindChoice chooseVertexDataForBinding(bool hasVertexAnim);
 
 		/** Are buffers already marked as vertex animated? */
 		bool _getBuffersMarkedForAnimation(void) const;
