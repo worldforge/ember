@@ -269,6 +269,9 @@ void ModelAttachment::createFitting(const std::string& fittingName, const std::s
 
 void ModelAttachment::model_Reloaded()
 {
+	if (mModelMount) {
+		mModelMount->reset();
+	}
 	updateScale();
 	reattachEntities();
 }
