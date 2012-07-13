@@ -51,6 +51,16 @@ namespace Terrain
 namespace Environment {
 
 /**
+ * @brief Structure that can be used to store distance detail information for a single foliage page type.
+ * @see Forests::PagedGeometry::addDetailLevel
+ */
+struct DistanceStore {
+	float farDistance;
+	float nearDistance;
+	float transition;
+};
+	
+/**
 	@brief Base class for all foliage layers.
 	
 	The foliage is composed of many different "layers", for example grass, ferns, flowers, reeds etc. This serves as a base class for every such layer.
@@ -114,6 +124,12 @@ protected:
 	::Forests::PagedGeometry* mPagedGeometry;
 	
 	TerrainLayerDefinitionStore mDependentDefinitions;
+	
+	/**
+	 * A store of all distances for foliage detail levels added to this foliage.
+	 * @see Forests::PagedGeometry::addDetailLevel
+	 */
+	std::list<DistanceStore> mDistanceStore;
 	
 	void initializeDependentLayers();
 	void TerrainHandler_LayerUpdated(const Terrain::TerrainShader* shader, const Terrain::AreaStore& areas);

@@ -44,7 +44,6 @@ class TerrainArea;
 namespace Environment {
 
 class FoliageLoader;
-struct DistanceStore;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -65,8 +64,6 @@ public:
 
 protected:
 	FoliageLoader* mLoader;
-
-	std::list<DistanceStore> mDistanceStore;
 };
 }
 

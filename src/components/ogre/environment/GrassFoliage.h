@@ -45,7 +45,6 @@ class TerrainArea;
 namespace Environment {
 
 class FoliageLayer;
-struct DistanceStore;
 
 /**
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -65,7 +64,6 @@ protected:
 	
 	::Forests::PagedGeometry* mGrass;
 	::Forests::GrassLoader<FoliageLayer>* mGrassLoader;
-	std::list<DistanceStore> mDistanceStore;
 	
 	float mMinHeight;
 	float mMaxHeight;

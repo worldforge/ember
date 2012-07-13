@@ -47,12 +47,6 @@ namespace OgreView {
 
 namespace Environment {
 
-struct DistanceStore {
-	float farDistance;
-	float nearDistance;
-	float transition;
-};
-
 ShrubberyFoliage::ShrubberyFoliage(Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition)
 : FoliageBase(terrainManager, terrainLayerDefinition, foliageDefinition)
 , mLoader(0)
