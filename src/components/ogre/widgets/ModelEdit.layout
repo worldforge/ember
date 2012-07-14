@@ -353,7 +353,22 @@ Press shift to switch between rotation and translation.</Property>
                         <Window Type="VerticalLayoutContainer" Name='AttachPointsInfo_container'>
                             <Property Name='UnifiedPosition' Value='{{0, 160},{0,5}}' />
                             <Property Name='UnifiedSize' Value='{{0, 200},{1,-10}}' />
-                            <Window Type='DefaultWindow' Name='AttachPointsInfo_wrapper'>
+                            <Window Type='DefaultWindow' Name='AttachPointPose_wrapper'>
+                                <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                                <Window Type='EmberLook/StaticText' Name='AttachPointPose_text'>
+                                    <Property Name='BackgroundEnabled' Value='False' />
+                                    <Property Name='FrameEnabled' Value='False' />
+                                    <Property Name='Text' Value='Pose:' />
+                                    <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
+                                    <Property Name='UnifiedSize' Value='{{0, 60},{0,25}}' />
+                                </Window>
+                                <Window Type='EmberLook/Editbox' Name='AttachPointPose'>
+                                    <Property Name='UnifiedSize' Value='{{0, 100},{0,25}}' />
+                                    <Property Name='UnifiedPosition' Value='{{0,65},{0,0}}' />
+                                    <Property Name='Tooltip' Value='The pose used by this attach point.' />
+                                </Window>
+                            </Window>
+                            <Window Type='DefaultWindow' Name='AttachPointsMove_wrapper'>
                                 <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
                                 <Window Type='EmberLook/Button' Name='AttachPointRotate'>
                                     <Property Name='UnifiedPosition' Value='{{0,0.0},{0,0}}' />
@@ -368,23 +383,28 @@ Press shift to switch between rotation and translation.</Property>
                                     <Property Name='Tooltip' Value='Press and hold to translate.' />
                                 </Window>
                             </Window>
-                            <Window Type="VerticalLayoutContainer" Name='AttachPointPreview_container'>
-                                <Property Name='UnifiedSize' Value='{{1,0},{1,-30}}' />
-                                <Window Type='DefaultWindow' Name='AttachPointPreviewType_wrapper'>
-                                    <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
-                                    <Window Type='EmberLook/Combobox' Name='AttachPointPreviewType'>
-                                        <Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}' />
-                                        <Property Name='ReadOnly' Value='true' />
+                            <Window Type='DefaultWindow' Name='AttachPointPreview_wrapper'>
+                                <Property Name='UnifiedSize' Value='{{1,0},{1,-60}}' />
+                                <Window Type="VerticalLayoutContainer" Name='AttachPointPreview_container'>
+                                    <Window Type='DefaultWindow' Name='AttachPointPreviewType_wrapper'>
+                                        <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                                        <Window Type='EmberLook/Combobox' Name='AttachPointPreviewType'>
+                                            <Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}' />
+                                            <Property Name='ReadOnly' Value='true' />
+                                            <Property Name='Tooltip' Value='Select the preview type for the attach point.' />
+                                        </Window>
                                     </Window>
-                                </Window>
-                                <Window Type='EmberLook/Listbox' Name='AttachPointModelList'>
-                                    <Property Name='UnifiedSize' Value='{{0,100.0},{1,-100.0}}' />
-                                    <Property Name='Sort' Value='true' />
-                                    <Property Name='Visible' Value='False' />
-                                </Window>
-                                <Window Type='EmberLook/Editbox' Name='AttachPointModelListFilter'>
-                                    <Property Name='UnifiedSize' Value='{{0,100},{0,25}}' />
-                                    <Property Name='Visible' Value='False' />
+                                    <Window Type='EmberLook/Listbox' Name='AttachPointModelList'>
+                                        <Property Name='UnifiedSize' Value='{{0,100.0},{1,-60.0}}' />
+                                        <Property Name='Sort' Value='true' />
+                                        <Property Name='Visible' Value='False' />
+                                        <Property Name='Tooltip' Value='Select a model to show as preview for the attach point.' />
+                                    </Window>
+                                    <Window Type='EmberLook/Editbox' Name='AttachPointModelListFilter'>
+                                        <Property Name='UnifiedSize' Value='{{0,100},{0,25}}' />
+                                        <Property Name='Visible' Value='False' />
+                                        <Property Name='Tooltip' Value='Filter available models.' />
+                                    </Window>
                                 </Window>
                             </Window>
                         </Window>

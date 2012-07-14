@@ -832,6 +832,7 @@ function ModelEdit:buildWidget()
 		local attachPointPreviewCombobox = CEGUI.toCombobox(self.widget:getWindow("AttachPointPreviewType"))
 		local attachPointPreviewModelList = CEGUI.toListbox(self.widget:getWindow("AttachPointModelList"))
 		local attachPointPreviewModelListFilter = CEGUI.toEditbox(self.widget:getWindow("AttachPointModelListFilter"))
+		local attachPointPose = CEGUI.toEditbox(self.widget:getWindow("AttachPointPose"))
 		
 		self.attachPointsList = self.widget:getWindow("AttachPointsList")
 		self.attachPointsList = CEGUI.toListbox(self.attachPointsList)
@@ -845,6 +846,7 @@ function ModelEdit:buildWidget()
 		local updateAttachPointPreview = function()
 			local attachPoint = self.attachPointsList.getSelected()
 			if attachPoint then
+				attachPointPose:setText(attachPoint.Pose)
 				local item = attachPointPreviewCombobox:getSelectedItem()
 				if item then
 					local selectId = item:getID()
@@ -859,6 +861,7 @@ function ModelEdit:buildWidget()
 					end
 				end
 			else
+				attachPointPose:setText("")
 				self.modelHelper:hideAttachPointHelper()
 			end
 		end
@@ -872,6 +875,14 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
+		attachPointPose:subscribeEvent("TextChanged", function(args)
+			local attachPoint = self.attachPointsList.getSelected()
+			if attachPoint then
+				attachPoint.Pose = attachPointPose:getText()
+				self.definition:addAttachPointDefinition(attachPoint)
+			end
+			return true
+		end)
 		
 		local attachPointRotateButton = self.widget:getWindow("AttachPointRotate")
 		attachPointRotateButton:subscribeEvent("MouseButtonDown", function(args)
