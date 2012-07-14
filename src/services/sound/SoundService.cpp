@@ -108,7 +108,7 @@ Service::Status SoundService::start()
 void SoundService::stop(int code)
 {
 	for (SoundInstanceStore::iterator I = mInstances.begin(); I != mInstances.end(); ++I) {
-		S_LOG_WARNING("Found a still registered SoundInstance when shutting down sound service. This shouldn't normally happen, since all instances should be handled by their proper owners and removed well in advance of the SoundService shutting down. We'll now delete the instance, which might lead to a segfault or similiar problem as the instance owner might still expect it to be existing.");
+		S_LOG_WARNING("Found a still registered SoundInstance when shutting down sound service. This shouldn't normally happen, since all instances should be handled by their proper owners and removed well in advance of the SoundService shutting down. We'll now delete the instance, which might lead to a segfault or similar problem as the instance owner might still expect it to be existing.");
 		delete *I;
 	}
 	mInstances.clear();
