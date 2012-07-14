@@ -57,7 +57,6 @@ int main(int argc, char **argv)
 #ifndef __WIN32__
 	if (argc > 1)
 	{
-		std::string invoked = std::string((char *) argv[0]);
 		(argv)++;
 		argc--;
 		while (argc > 0)
@@ -72,13 +71,13 @@ int main(int argc, char **argv)
 			}
 			else if (arg == "-h" || arg == "--help")
 			{
-				std::cout << invoked << " {options}" << std::endl;
 				std::cout << "-h, --help    - display this message" << std::endl;
 				std::cout << "-v, --version - display version info" << std::endl;
-				std::cout << "--home <path>- sets the home directory to something different than the default (~/.ember on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
+				std::cout << "--home <path> - sets the home directory to something different than the default (~/.ember on *NIX systems, $APPDATA\\Ember on win32 systems)" << std::endl;
 				std::cout << "-p <path>, --prefix <path> - sets the prefix to something else than the one set at compilation (only valid on *NIX systems)" << std::endl;
 				std::cout << "--config <section>:<key> <value> - allows you to override config file settings. See the ember.conf file for examples. (~/.ember/ember.conf on *NIX systems)" << std::endl;
 				exit_program = true;
+				break;
 			}
 			else if (arg == "-p" || arg == "--prefix")
 			{

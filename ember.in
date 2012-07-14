@@ -7,8 +7,6 @@ homedata="$HOME/.ember"
 
 debugging=0
 
-echo "According to my calculations Ember should be installed in $prefix"
-
 while [ $# -gt 0 ]; do
   case "$1" in
   --home)
@@ -18,8 +16,9 @@ while [ $# -gt 0 ]; do
   --debug)
     debugging=1
     ;;
-  --*)
-    echo "usage: $0 [ --home configdir ] [ --debug ]" >&2
+  --help)
+    echo "--debug       - start in debugger (requires that 'gdb' is installed)"
+    exec $bindir/ember.bin --help >&2
     exit 1
   esac
   shift
