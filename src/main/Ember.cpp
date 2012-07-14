@@ -137,20 +137,6 @@ int main(int argc, char **argv)
 #if !defined(__WIN32__) && !defined(__APPLE__)
 	if (exit_program)
 	{
-		if (homeDir != "")
-		{
-			if (chdir(homeDir.c_str()))
-			{
-				std::cerr << "Could not set homedir to '" << homeDir << "'." << std::endl;
-			}
-		}
-		else
-		{
-			if (chdir("~/.ember"))
-			{
-				std::cerr << "Could not set homedir to '~/.ember'." << std::endl;
-			}
-		}
 		return 0;
 	}
 #endif
