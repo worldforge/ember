@@ -99,7 +99,9 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 {
 	float changeRequired = mDefaultFps - currentFps;
 
-	if (std::abs(changeRequired) >= 1.0f) {
+	//This factor is used to adjust the required fps difference before a change is triggered. Lower required fpses eg. 30 will need to respond to smaller changes.
+	float factor = mDefaultFps / 60.0f;
+	if (std::abs(changeRequired) >= factor * 8.0f) {
 		changeGraphicsLevel(changeRequired);
 	}
 }
