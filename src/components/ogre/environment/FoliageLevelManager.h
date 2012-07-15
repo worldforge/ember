@@ -54,13 +54,13 @@ public:
 
 	/**
 	 * @brief Used to change the density of all foliage.
-	 * @param density The new density percentage of all foliage in float, where 1 implies normal or full density and 0 implies no density or no grass. 
+	 * @param density The new density factor of all foliage in float, where 1 implies normal or full density and 0 implies no density or no grass. 
 	 * @return True if foliage change was possible.
 	 */
 	bool changeFoliageDensity(float density);
 
 	/**
-	 * @brief Used to change the furthest distance foliage is visible at in percentage.
+	 * @brief Used to change the furthest distance foliage is visible at as a factor.
 	 * @param distance The new far distance for the nearest foliage technique where 1 implies normal distance and 0 implies minimum distance.
 	 * @return True if far distance change was possible.
 	 */
@@ -129,19 +129,29 @@ protected:
 	float mDefaultDensityStep;
 
 	/**
-	 * Holds an updated percentage density value of all foliage.
+	 * Holds an updated density value factor of all foliage.
 	 */
 	float mUpdatedDensity;
 
 	/**
-	 * The value in percentage by which far distance of a foliage is stepped up or down while adjusting foliage detail.
+	 * The factor value by which far distance of a foliage is stepped up or down while adjusting foliage detail.
 	 */
 	float mDefaultDistanceStep;
 
 	/**
-	 * Holds the current/updated percentage far distance of all foliage.
+	 * Holds the current/updated far distance factor of all foliage.
 	 */
 	float mFarDistance;
+	
+	/**
+	 * Maximum far distance factor.
+	 */
+	float mMaxFarDistance;
+	
+	/**
+	 * Minimum far distance factor.
+	 */
+	float mMinFarDistance;
 
 	/**
 	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class or to pause the functioning of this component.
