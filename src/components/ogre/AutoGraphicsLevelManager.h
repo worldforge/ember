@@ -50,9 +50,11 @@ struct FurtherChangePossibleAccumulater
 };
 
 /**
- * @brief Class that maintains and has the current FPS
+ * @brief Class that maintains and has the current average FPS
  * 
- * This class keeps the current FPS and throws an FPS event every 2 seconds.
+ * This class keeps the current average FPS over a specified time frame. This time frame acts as a moving time window.
+ * eg. A time frame of 5 seconds represents that the FPS should be an average of the fpses of only the last 5 seconds.
+ * A time frame of 1 will represent immediate FPS and increasing the time frame will provide a smoothening factor to the calculation.
  */
 class FpsUpdater: public Ogre::FrameListener
 {
@@ -98,6 +100,21 @@ protected:
 	 * Time in milliseconds at last fps update
 	 */
 	long mTimeAtLastUpdate;
+
+	/**
+	 * Time in milliseconds after which the new fps should be calculated. This can be used to induce a delay between updates for changes to take effect.
+	 */
+	long mTimeBetweenUpdates;
+
+	/**
+	 * The amount of time in seconds that the fps should be averaged over.
+	 */
+	int mRequiredTime;
+
+	/**
+	 * A list of last 'n' fpses measured every second. Used for finding the average fps in the last 'n' seconds.
+	 */
+	std::deque<float> mFpsStore;
 
 };
 

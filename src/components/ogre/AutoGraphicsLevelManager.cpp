@@ -15,7 +15,7 @@ namespace OgreView
 {
 
 FpsUpdater::FpsUpdater(Ogre::RenderWindow& renderWindow) :
-		mCurrentFps(0.0), mTimeAtLastUpdate(Time::currentTimeMillis()), mRenderWindow(renderWindow)
+		mCurrentFps(0.0f), mTimeAtLastUpdate(Time::currentTimeMillis()), mRenderWindow(renderWindow), mTimeBetweenUpdates(2000), mRequiredTime(6.0f)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -28,11 +28,31 @@ FpsUpdater::~FpsUpdater()
 bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 {
 	long currentTime = Time::currentTimeMillis();
-	if (currentTime - mTimeAtLastUpdate >= 1500) {
+
+	if (currentTime - mTimeAtLastUpdate >= 1000) {
+
+		//Push back latest fps
+		mFpsStore.push_back(mRenderWindow.getLastFPS());
+
+		//if there is one more than the minimum number of fpses then delete oldest fps. This also ensures that the store fills up with at least mRequiredTime fpses before starting to remove fpses.
+		if (mFpsStore.size() > mRequiredTime) {
+			mFpsStore.pop_front();
+		}
+	}
+
+	if (currentTime - mTimeAtLastUpdate >= mTimeBetweenUpdates) {
 		mTimeAtLastUpdate = currentTime;
-		mCurrentFps = mRenderWindow.getLastFPS();
+
+		float totalFps;
+		int fpsCount = 0;
+		for (std::deque<float>::iterator I = mFpsStore.begin(); I != mFpsStore.end(); ++I) {
+			totalFps += *I;
+			++fpsCount;
+		}
+		mCurrentFps = totalFps / fpsCount;
 		fpsUpdated.emit(mCurrentFps);
 	}
+
 	return true;
 }
 
