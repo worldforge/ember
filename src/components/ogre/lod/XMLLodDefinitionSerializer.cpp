@@ -114,7 +114,7 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 	}
 }
 
-bool XMLLodDefinitionSerializer::exportScript(const LodDefinition& lodDef, const std::string& fileName) const
+bool XMLLodDefinitionSerializer::exportScript( const LodDefinitionPtr& lodDef, const std::string& fileName ) const
 {
 	if (fileName == "") {
 		return false;
@@ -133,14 +133,14 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinition& lodDef, const
 	{
 		// <automatic enabled="true|false" />
 		TiXmlElement autElem("automatic");
-		autElem.SetAttribute("enabled", lodDef.getUseAutomaticLod() ? "true" : "false");
+		autElem.SetAttribute("enabled", lodDef->getUseAutomaticLod() ? "true" : "false");
 
 		// <manual>...</manual>
 		TiXmlElement manElem("manual");
 
 		{
 			// <level>...</level> <level>...</level> <level>...</level>
-			const LodDefinition::LodDistanceMap& manualLod = lodDef.getManualLodData();
+			const LodDefinition::LodDistanceMap& manualLod = lodDef->getManualLodData();
 			LodDefinition::LodDistanceMap::const_iterator it;
 			for (it = manualLod.begin(); it != manualLod.end(); it++) {
 

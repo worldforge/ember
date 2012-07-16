@@ -20,6 +20,7 @@
 #define XMLMODELDEFINITIONSERIALIZER_H
 
 #include "OgreDataStream.h"
+#include "LodDefinition.h"
 
 #include <string>
 
@@ -29,8 +30,6 @@ namespace OgreView
 {
 namespace Lod
 {
-
-class LodDefinition;
 
 /**
  * @brief Helper class to import and export LodDefinition files.
@@ -59,7 +58,7 @@ public:
 	 *                 This is usually equal to the mesh name + .loddef.
 	 * @return True if the script was successfully written.
 	 */
-	bool exportScript(const LodDefinition& lodDef, const std::string& fileName) const;
+	bool exportScript(const LodDefinitionPtr& lodDef, const std::string& fileName) const;
 private:
 	const std::string mExportDirectory;
 };

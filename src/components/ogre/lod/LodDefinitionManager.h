@@ -66,6 +66,16 @@ public:
 	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 
 	/**
+	 * @brief Exports a LodDefinition to a file.
+	 * 
+	 * The definition will be serialized and saved to a file by the same name of the definition.
+	 * 
+	 * @param definition The definition to export.
+	 * @return The path to the exported script. If the export failed, the string will be empty.
+	 */
+	void exportScript(std::string meshName, LodDefinitionPtr definition);
+
+	/**
 	 * @brief Returns an instance of the default Serializer.
 	 */
 	const XMLLodDefinitionSerializer& getSerializer() const;
