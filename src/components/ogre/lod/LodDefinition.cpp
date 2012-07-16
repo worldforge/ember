@@ -92,6 +92,21 @@ LodDefinition::~LodDefinition()
 	unload();
 }
 
+std::vector<float> LodDefinition::createListOfDistances()
+{
+	std::vector<float> out;
+	for(LodDistanceMapIterator it = mManualLod.begin();it != mManualLod.end();it++){
+		out.push_back(it->first);
+	}
+	return out;
+}
+
+LodDistance& LodDefinition::createDistance( Ogre::Real distance )
+{
+	assert(mManualLod.find(distance) == mManualLod.end());
+	return mManualLod[distance];
+}
+
 LodDefinitionPtr::LodDefinitionPtr(const Ogre::ResourcePtr& r) :
 Ogre::SharedPtr<LodDefinition>()
 {

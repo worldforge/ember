@@ -206,10 +206,28 @@ public:
 	LodDistance& getLodDistance(Ogre::Real distVal);
 
 	/**
+	 * @brief Returns a Lod distance count for the manual Lod configuration.
+	 */
+	int getLodDistanceCount();
+	
+	/**
+	 * @brief Creates a list of distances in a sorted order.
+	 * 
+	 * This is meant for lua calls only.
+	 */
+	std::vector<float> createListOfDistances();
+
+	/**
+	 * @brief Creates a distance.
+	 * 
+	 * This is meant for lua calls only. Use addLodDistance() if you can.
+	 */
+	LodDistance& createDistance(Ogre::Real distance);
+
+	/**
 	 * @brief Removes a Lod distance from the manual Lod configuration.
 	 */
-	void removeLodDistance(int distVal);
-
+	void removeLodDistance(Ogre::Real distVal);
 	/**
 	 * @brief Returns a reference to the manual Lod configuration.
 	 *
