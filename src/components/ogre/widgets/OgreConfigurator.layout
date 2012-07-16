@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+    <Window Type='EmberLook/StaticText' Name='Main'>
+        <Window Type='VerticalLayoutContainer' Name='Main_container'>
+            <Property Name='UnifiedSize' Value='{{1,0},{1,-30}}'/>
+            <Window Type='DefaultWindow' Name='Resolution_wrapper'>
+                <Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
+                <Window Type='HorizontalLayoutContainer' Name='Resolution_container'>
+                    <Window Type='EmberLook/StaticText' Name='Resolution_text'>
+                        <Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}'/>
+                        <Property Name='Text' Value='Resolution'/>
+                    </Window>
+                    <Window Type='EmberLook/Combobox' Name='Resolution'>
+                        <Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}'/>
+                    </Window>
+                </Window>
+            </Window>
+            <Window Type='DefaultWindow' Name='Fullscreen_container'>
+                <Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
+                <Window Type='EmberLook/Checkbox' Name='Fullscreen'>
+                    <Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+                    <Property Name='Text' Value='Full screen'/>
+                </Window>
+            </Window>
+        </Window>
+        <Window Type='DefaultWindow' Name='Buttons_container'>
+            <Property Name='UnifiedPosition' Value='{{0,0},{1,-30}}'/>
+            <Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
+            <Window Type='EmberLook/Button' Name='Button_ok'>
+                <Property Name='UnifiedPosition' Value='{{0.5,-80},{0,0}}'/>
+                <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                <Property Name='Text' Value='Ok'/>
+            </Window>
+            <Window Type='EmberLook/Button' Name='Button_cancel'>
+                <Property Name='UnifiedPosition' Value='{{0.5,5},{0,0}}'/>
+                <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                <Property Name='Text' Value='Cancel'/>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

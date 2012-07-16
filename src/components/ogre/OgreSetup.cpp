@@ -27,6 +27,7 @@
 
 #include "OgreSetup.h"
 #include "OgreInfo.h"
+#include "OgreConfigurator.h"
 #include "MeshSerializerListener.h"
 
 // Should be before GL/glx.h for OGRE < 1.6.2
@@ -274,6 +275,7 @@ bool OgreSetup::configure(void)
 	if (configService.itemExists("ogre", "suppressconfigdialog")) {
 		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
 	}
+	OgreConfigurator configurator;
 	if (suppressConfig) {
 		try {
 			success = mRoot->restoreConfig();
