@@ -84,8 +84,22 @@ void OgreEntityRenderer::setEntity(Ogre::Entity* entity)
 	if (mAutoShowFull) {
 		showFull();
 	}
-
 }
+
+Ogre::SceneManager* OgreEntityRenderer::getSceneManager()
+{
+	return mTexture->getRenderContext()->getSceneManager();
+}
+
+void OgreEntityRenderer::unloadEntity()
+{
+	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
+	node->detachAllObjects();
+	Ogre::SceneManager* scenemgr = mTexture->getRenderContext()->getSceneManager();
+	scenemgr->destroyEntity(mEntity);
+	mEntity = NULL;
+}
+
 }
 }
 }

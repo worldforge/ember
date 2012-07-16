@@ -47,11 +47,25 @@ public:
      */
     void showEntity(const std::string& mesh);
     
+	/**
+	 * @brief Unloads the Entity.
+	 * 
+	 * The getEntity() will return nullptr after this call.
+	 * You can call showEntity() after this call to load an entity again.
+	 */
+	void unloadEntity();
+
+	/**
+	 * @brief Returns the scene manager used by OgreEntityRenderer
+	 */
+	Ogre::SceneManager* getSceneManager();
+
     /**
      * Returns the current rendered Entity, or null if none is set.
      * @return 
      */
     Ogre::Entity* getEntity();
+
 
 protected:
 
