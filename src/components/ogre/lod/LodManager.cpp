@@ -40,7 +40,7 @@ LodManager::~LodManager()
 
 }
 
-void LodManager::LoadLod(Ogre::Mesh& mesh)
+void LodManager::loadLod(Ogre::Mesh& mesh)
 {
 	assert(mesh.getNumLodLevels() == 1);
 	std::string lodDefName = convertMeshNameToLodName(mesh.getName());
@@ -48,7 +48,7 @@ void LodManager::LoadLod(Ogre::Mesh& mesh)
 	try {
 		Ogre::ResourcePtr resource = LodDefinitionManager::getSingleton().load(lodDefName, "General");
 		const LodDefinition& def = *static_cast<const LodDefinition*>(resource.get());
-		LoadLod(mesh, def);
+		loadLod(mesh, def);
 	} catch (Ogre::FileNotFoundException ex) {
 		// Exception is thrown if a mesh hasn't got a loddef.
 		// By default, use the automatic mesh lod management system.
@@ -56,11 +56,11 @@ void LodManager::LoadLod(Ogre::Mesh& mesh)
 	}
 }
 
-void LodManager::LoadLod(Ogre::Mesh& mesh, const LodDefinition& def)
+void LodManager::loadLod(Ogre::Mesh& mesh, const LodDefinition& def)
 {
-	if (def.getUseAutomaticLod()) {
-		LoadAutomaticLod(mesh);
-	} else {
+	//if (def.getUseAutomaticLod()) {
+	//	LoadAutomaticLod(mesh);
+	//} else {
 		// Load manual configs.
 		ProgressiveMeshGenerator::LodConfigList lodConfigs;
 		const LodDefinition::LodDistanceMap& data = def.getManualLodData();
@@ -82,7 +82,7 @@ void LodManager::LoadLod(Ogre::Mesh& mesh, const LodDefinition& def)
 			EmberOgreMesh& emberMesh = static_cast<EmberOgreMesh&>(mesh);
 			emberMesh.generateLodLevels(lodConfigs);
 		}
-	}
+	//}
 }
 
 std::string LodManager::convertMeshNameToLodName(std::string meshName)

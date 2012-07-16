@@ -84,7 +84,7 @@ void EmberOgreMesh::loadImpl()
 
 	// If we loaded the Lod from the mesh file, then skip it.
 	if (getNumLodLevels() == 1) {
-		LodManager::getSingleton().LoadLod(*this);
+		LodManager::getSingleton().loadLod(*this);
 	}
 }
 

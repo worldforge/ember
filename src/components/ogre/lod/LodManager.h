@@ -56,9 +56,7 @@ public:
 	 *
 	 * @param mesh The mesh which needs Lod.
 	 */
-	void LoadLod(Ogre::Mesh& mesh);
-
-private:
+	void loadLod(Ogre::Mesh& mesh);
 
 	/**
 	 * @brief Converts a *.mesh to a *.loddef name.
@@ -68,7 +66,9 @@ private:
 	/**
 	 * @brief Loads LodDefinition data into the mesh.
 	 */
-	void LoadLod(Ogre::Mesh& mesh, const LodDefinition& definition);
+	void loadLod(Ogre::Mesh& mesh, const LodDefinition& definition);
+
+private:
 
 	/**
 	 * @brief Loads Automatic Mesh Lod Management System.
