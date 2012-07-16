@@ -116,6 +116,12 @@ protected:
 	 */
 	std::deque<float> mFpsStore;
 
+	/**
+	 * Time when a new fps was last stored into the FPS store for average calculation.
+	 * @see FpsUpdater::mFpsStore
+	 */
+	long mTimeAtLastStore;
+
 };
 
 /**
