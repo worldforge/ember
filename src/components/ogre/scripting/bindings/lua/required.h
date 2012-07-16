@@ -26,6 +26,10 @@
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/SubModel.h"
 
+#include "components/ogre/lod/LodDefinition.h"
+#include "components/ogre/lod/LodDefinitionManager.h"
+#include "components/ogre/lod/LodManager.h"
+
 #include "components/ogre/widgets/Widget.h"
 
 #include "components/ogre/Convert.h"
@@ -40,7 +44,9 @@
 #include "components/ogre/widgets/StackableContainer.h"
 #include "components/ogre/widgets/ConsoleAdapter.h"
 #include "components/ogre/widgets/ColouredListItem.h"
+#include "components/ogre/widgets/MeshInfoProvider.h"
 #include "components/ogre/widgets/adapters/atlas/MapAdapter.h"
+
 
 #include "components/ogre/widgets/IconBar.h"
 #include "components/ogre/widgets/IconBase.h"

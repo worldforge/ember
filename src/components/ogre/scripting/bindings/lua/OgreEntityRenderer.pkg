@@ -43,6 +43,8 @@ public:
      */
     void showEntity(const std::string& mesh);
     
+    void unloadEntity();
+    
     /**
      * Returns the current rendered Entity, or null if none is set.
      * @return 

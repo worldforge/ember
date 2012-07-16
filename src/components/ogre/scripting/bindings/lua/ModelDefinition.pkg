@@ -213,6 +213,7 @@ class ModelDefinition : public Ogre::Resource {
 		MODEL_WIDTH = 2,
 		MODEL_DEPTH = 3,
 		MODEL_HEIGHT = 4
+		
 	};
 
 	/**
