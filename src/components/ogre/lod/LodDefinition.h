@@ -34,8 +34,28 @@ namespace Lod
 {
 
 class LodDefinition;
+class LodDefinitionPtr :
+	public Ogre::SharedPtr<LodDefinition>
+{
+public:
+LodDefinitionPtr() :
+	Ogre::SharedPtr<LodDefinition>()
+{
+}
+explicit LodDefinitionPtr(LodDefinition* rep) :
+Ogre::SharedPtr<LodDefinition>(rep)
+{
+}
+LodDefinitionPtr(const LodDefinitionPtr& r) :
+Ogre::SharedPtr<LodDefinition>(r)
+{
+}
+LodDefinitionPtr(const Ogre::ResourcePtr& r);
 
-typedef Ogre::SharedPtr<LodDefinition> LodDefinitionPtr;
+LodDefinitionPtr& operator=(const Ogre::ResourcePtr& r);
+
+};
+
 
 /**
  * @brief Lod Distance config container.
@@ -256,6 +276,10 @@ inline void LodDefinition::setUseAutomaticLod(bool useAutomaticLod)
 inline const LodDefinition::LodDistanceMap& LodDefinition::getManualLodData() const
 {
 	return mManualLod;
+}
+inline int LodDefinition::getLodDistanceCount()
+{
+	return mManualLod.size();
 }
 
 }
