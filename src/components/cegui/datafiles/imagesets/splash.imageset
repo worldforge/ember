@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<Imageset Name="splash" Imagefile="themes/ember/gui/ember_splash.png" NativeHorzRes="1024" NativeVertRes="512" AutoScaled="false">
+	<Image Name="main" XPos="7" YPos="65" Width="1007" Height="382" />
+</Imageset>
