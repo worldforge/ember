@@ -22,11 +22,20 @@
 
 #include "OgreConfigurator.h"
 
+#include "components/ogre/widgets/ColouredListItem.h"
+
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 
+#include "framework/LoggingInstance.h"
+
 #include <RendererModules/OpenGL/CEGUIOpenGLRenderer.h>
+#include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <CEGUI.h>
+#include <elements/CEGUICombobox.h>
+#include <elements/CEGUIListboxTextItem.h>
+
+#include <OgreRoot.h>
 
 #ifdef __APPLE__
 #include <GLUT/freeglut.h>
@@ -115,7 +124,16 @@ public:
 
 int OgreConfigurator::mLastFrameTime = 0;
 
-OgreConfigurator::OgreConfigurator()
+OgreConfigurator::OgreConfigurator() :
+		mCancel(true)
+{
+}
+
+OgreConfigurator::~OgreConfigurator()
+{
+}
+
+bool OgreConfigurator::configure()
 {
 	// fake args for glutInit
 	int argc = 1;
@@ -124,13 +142,14 @@ OgreConfigurator::OgreConfigurator()
 	// Do GLUT init
 	glutInit(&argc, (char**)&argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(300, 400);
+	glutInitWindowSize(250, 300);
 	glutInitWindowPosition(400, 300);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 	glutCreateWindow("Ember");
 	glutSetCursor(GLUT_CURSOR_INHERIT);
 
-	CEGUI::DefaultResourceProvider* rp = new SimpleResourceProvider();
+	CEGUI::ResourceProvider* rp = new SimpleResourceProvider();
+//	CEGUI::ResourceProvider* rp = new CEGUI::OgreResourceProvider();
 
 	CEGUI::OpenGLRenderer& renderer = CEGUI::OpenGLRenderer::create();
 	CEGUI::System::create(renderer, rp);
@@ -144,28 +163,89 @@ OgreConfigurator::OgreConfigurator()
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkin.scheme", "");
+	CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-8");
+	CEGUI::ImagesetManager::getSingleton().create("cegui/datafiles/imagesets/splash.imageset", "");
 
 	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultGUISheet", "root_wnd");
 	CEGUI::System::getSingleton().setGUISheet(sheet);
 
-	CEGUI::Window* configWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/datafiles/layouts/OgreConfigurator.layout", "OgreConfigure");
-
+	CEGUI::Window* configWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/datafiles/layouts/OgreConfigurator.layout", "OgreConfigure/");
 	sheet->addChildWindow(configWindow);
+
+	CEGUI::Window* okButton = configWindow->getChildRecursive("OgreConfigure/Button_ok");
+	okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonOkClicked, this));
+	CEGUI::Window* cancelButton = configWindow->getChildRecursive("OgreConfigure/Button_cancel");
+	cancelButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonCancelClicked, this));
+	CEGUI::Window* advancedButton = configWindow->getChildRecursive("OgreConfigure/Advanced");
+	advancedButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonAdvancedClicked, this));
+
+	CEGUI::Checkbox* fullscreenCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/Fullscreen"));
+
+	CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(configWindow->getChildRecursive("OgreConfigure/Resolution"));
+
+	const Ogre::RenderSystemList& renderers = Ogre::Root::getSingleton().getAvailableRenderers();
+	if (renderers.size() == 0) {
+		return false;
+	}
+
+	Ogre::RenderSystem* renderSystem = *renderers.begin();
+	Ogre::ConfigOptionMap& configs = renderSystem->getConfigOptions();
+	for (Ogre::ConfigOptionMap::const_iterator I = configs.begin(); I != configs.end(); ++I) {
+		S_LOG_VERBOSE(I->first);
+	}
+
+	bool resolutionFoundInOptions = false;
+	Ogre::ConfigOptionMap::const_iterator optionsIter = configs.find("Video Mode");
+	if (optionsIter != configs.end()) {
+		const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
+		for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
+			Gui::ColouredListItem* item = new Gui::ColouredListItem(*I);
+			resolutionsCombobox->addItem(item);
+			if (*I == optionsIter->second.currentValue) {
+				resolutionsCombobox->setItemSelectState(item, true);
+				resolutionFoundInOptions = true;
+			}
+		}
+		if (!resolutionFoundInOptions) {
+			resolutionsCombobox->setText(optionsIter->second.currentValue);
+		}
+	}
+
+	optionsIter = configs.find("Full Screen");
+	if (optionsIter != configs.end()) {
+		fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
+	}
+
 	try {
 		glutMainLoop();
 	} catch (...) {
 
 	}
 
-}
+	renderSystem->setConfigOption("Video Mode", resolutionsCombobox->getText().c_str());
+	renderSystem->setConfigOption("Full Screen", fullscreenCheckbox->isSelected() ? "Yes" : "No");
 
-OgreConfigurator::~OgreConfigurator()
-{
+	Ogre::Root::getSingleton().setRenderSystem(renderSystem);
 	CEGUI::System::getSingleton().destroy();
+	return !mCancel;
 }
 
-bool OgreConfigurator::buttonClicked(const CEGUI::EventArgs& args)
+bool OgreConfigurator::buttonOkClicked(const CEGUI::EventArgs& args)
 {
+	mCancel = false;
+	glutLeaveMainLoop();
+	return true;
+}
+
+bool OgreConfigurator::buttonCancelClicked(const CEGUI::EventArgs& args)
+{
+	glutLeaveMainLoop();
+	return true;
+}
+
+bool OgreConfigurator::buttonAdvancedClicked(const CEGUI::EventArgs& args)
+{
+	mCancel = !Ogre::Root::getSingleton().showConfigDialog();
 	glutLeaveMainLoop();
 	return true;
 }

@@ -35,16 +35,21 @@ class OgreConfigurator
 public:
 	OgreConfigurator();
 	virtual ~OgreConfigurator();
+
+	bool configure();
+
 protected:
 
 	static void drawFrame(void);
 	static void mouseMotion(int x, int y);
 	static void mouseButton(int button, int state, int x, int y);
 
-	bool buttonClicked(const CEGUI::EventArgs& args);
+	bool buttonOkClicked(const CEGUI::EventArgs& args);
+	bool buttonCancelClicked(const CEGUI::EventArgs& args);
+	bool buttonAdvancedClicked(const CEGUI::EventArgs& args);
 
 	static int mLastFrameTime;
-
+	bool mCancel;
 };
 
 }

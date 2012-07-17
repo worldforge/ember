@@ -1,40 +1,69 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
     <Window Type='EmberLook/StaticText' Name='Main'>
-        <Window Type='VerticalLayoutContainer' Name='Main_container'>
-            <Property Name='UnifiedSize' Value='{{1,0},{1,-30}}'/>
-            <Window Type='DefaultWindow' Name='Resolution_wrapper'>
-                <Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
-                <Window Type='HorizontalLayoutContainer' Name='Resolution_container'>
-                    <Window Type='EmberLook/StaticText' Name='Resolution_text'>
-                        <Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}'/>
-                        <Property Name='Text' Value='Resolution'/>
-                    </Window>
-                    <Window Type='EmberLook/Combobox' Name='Resolution'>
-                        <Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}'/>
+        <Window Type='EmberLook/StaticImage' Name='Logo'>
+            <Property Name='UnifiedSize' Value='{{1,0},{0,90}}' />
+            <Property Name='BackgroundEnabled' Value='false' />
+            <Property Name='FrameEnabled' Value='false' />
+            <Property Name='MousePassThroughEnabled' Value='true' />
+            <Property Name='Image' Value='set:splash image:main' />
+        </Window>
+        <Window Type='DefaultWindow' Name='Main_wrapper'>
+            <Property Name='UnifiedPosition' Value='{{0,5},{0,95}}' />
+            <Property Name='UnifiedSize' Value='{{1,-10},{1,-120}}' />
+            <Window Type='VerticalLayoutContainer' Name='Main_container'>
+                <Window Type='DefaultWindow' Name='Resolution_wrapper'>
+                    <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                    <Window Type='HorizontalLayoutContainer' Name='Resolution_container'>
+                        <Window Type='EmberLook/StaticText' Name='Resolution_text'>
+                            <Property Name='BackgroundEnabled' Value='false' />
+                            <Property Name='FrameEnabled' Value='false' />
+                            <Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}' />
+                            <Property Name='Text' Value='Resolution' />
+                        </Window>
+                        <Window Type='EmberLook/Combobox' Name='Resolution'>
+                            <Property Name='UnifiedSize' Value='{{0.5,0},{0,150}}' />
+                            <Property Name='ClippedByParent' Value='false' />
+                        </Window>
                     </Window>
                 </Window>
-            </Window>
-            <Window Type='DefaultWindow' Name='Fullscreen_container'>
-                <Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
-                <Window Type='EmberLook/Checkbox' Name='Fullscreen'>
-                    <Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-                    <Property Name='Text' Value='Full screen'/>
+                <Window Type='DefaultWindow' Name='Fullscreen_container'>
+                    <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                    <Window Type='EmberLook/Checkbox' Name='Fullscreen'>
+                        <Property Name='UnifiedSize' Value='{{1,0},{1,0}}' />
+                        <Property Name='Text' Value='Full screen' />
+                    </Window>
+                </Window>
+                <Window Type='DefaultWindow' Name='DontShowAgain_container'>
+                    <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                    <Window Type='EmberLook/Checkbox' Name='DontShowAgain'>
+                        <Property Name='UnifiedSize' Value='{{1,0},{1,0}}' />
+                        <Property Name='Text'>Don't show again</Property>
+                        <Property Name='Tooltip'>Don't show this settings window on next start.</Property>
+                    </Window>
+                </Window>
+                <Window Type='DefaultWindow' Name='Advanced_container'>
+                    <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                    <Window Type='EmberLook/Button' Name='Advanced'>
+                        <Property Name='UnifiedSize' Value='{{0,100},{0,25}}' />
+                        <Property Name='Text' Value='Advanced' />
+                        <Property Name='Tooltip' Value='Brings up the Ogre settings dialog.' />
+                    </Window>
                 </Window>
             </Window>
         </Window>
         <Window Type='DefaultWindow' Name='Buttons_container'>
-            <Property Name='UnifiedPosition' Value='{{0,0},{1,-30}}'/>
-            <Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
+            <Property Name='UnifiedPosition' Value='{{0,0},{1,-30}}' />
+            <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
             <Window Type='EmberLook/Button' Name='Button_ok'>
-                <Property Name='UnifiedPosition' Value='{{0.5,-80},{0,0}}'/>
-                <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-                <Property Name='Text' Value='Ok'/>
+                <Property Name='UnifiedPosition' Value='{{0.5,-80},{0,0}}' />
+                <Property Name='UnifiedSize' Value='{{0,75},{0,25}}' />
+                <Property Name='Text' Value='Ok' />
             </Window>
             <Window Type='EmberLook/Button' Name='Button_cancel'>
-                <Property Name='UnifiedPosition' Value='{{0.5,5},{0,0}}'/>
-                <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-                <Property Name='Text' Value='Cancel'/>
+                <Property Name='UnifiedPosition' Value='{{0.5,5},{0,0}}' />
+                <Property Name='UnifiedSize' Value='{{0,75},{0,25}}' />
+                <Property Name='Text' Value='Cancel' />
             </Window>
         </Window>
     </Window>

@@ -271,11 +271,11 @@ bool OgreSetup::configure(void)
 	bool success = false;
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
 #ifndef BUILD_WEBEMBER
+	OgreConfigurator configurator;
 	bool suppressConfig = false;
 	if (configService.itemExists("ogre", "suppressconfigdialog")) {
 		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
 	}
-	OgreConfigurator configurator;
 	if (suppressConfig) {
 		try {
 			success = mRoot->restoreConfig();
@@ -283,19 +283,20 @@ bool OgreSetup::configure(void)
 			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
 			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
 			try {
-				success = mRoot->showConfigDialog();
+				success = configurator.configure();
 			} catch (const std::exception& ex) {
 				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
 			}
 		}
 	} else {
 		try {
-			success = mRoot->showConfigDialog();
+			mRoot->restoreConfig();
+			success = configurator.configure();
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
 			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
 			try {
-				success = mRoot->showConfigDialog();
+				success = configurator.configure();
 			} catch (const std::exception& ex) {
 				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
 			}
