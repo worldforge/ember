@@ -26,7 +26,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera, ShaderManager& shaderManager);
+	LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera);
 
 	/**
 	 * @brief Destructor.
@@ -42,14 +42,7 @@ public:
 	bool setLodBiasAll(float factor);
 
 	/**
-	 * @brief Sets the shader scheme to the required level.
-	 * @param level The needed shader level (high, medium, low).
-	 * If the level doesn't exist, it will switch to default.
-	 */
-	void changeShaderLevel(const std::string& level);
-
-	/**
-	 * @brief Initializes the material lod level manager.
+	 * @brief Initializes lod level manager.
 	 * The manager starts listening for graphics detail change requests.
 	 */
 	void initialize();
@@ -84,21 +77,9 @@ protected:
 	bool stepDownLodBias(float step);
 
 	/**
-	 * @brief Steps up the shader scheme level.
-	 * @returns Whether shader scheme could be stepped up.
+	 * The threshold fps change after which the lod level is changed to respond to performance change requested.
 	 */
-	bool stepUpShaderLevel();
-
-	/**
-	 * @brief Steps down the shader scheme level.
-	 * @returns Whether shader scheme could be stepped down.
-	 */
-	bool stepDownShaderLevel();
-
-	/**
-	 * The threshold level after which this component starts responding to change in detail required signals.
-	 */
-	float mThresholdLevel;
+	float mLodThresholdLevel;
 
 	/**
 	 * The current global lod bias. This value is used to affect the level of detail distance values 
@@ -122,21 +103,6 @@ protected:
 	float mDefaultStep;
 
 	/**
-	 * The current shader level.
-	 */
-	std::string mShaderLevel;
-
-	/**
-	 * The maximum shader level this component can switch to.
-	 */
-	std::string mMaxShaderLevel;
-
-	/**
-	 * The minimum shader level this component can switch to.
-	 */
-	std::string mMinShaderLevel;
-
-	/**
 	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class or to pause the functioning of this component.
 	 */
 	sigc::connection mChangeRequiredConnection;
@@ -150,12 +116,6 @@ protected:
 	 * Reference to the main camera object
 	 */
 	Ogre::Camera& mMainCamera;
-
-	/**
-	 * Reference to the Shader Manager used to make scheme changes.
-	 */
-	ShaderManager& mShaderManager;
-
 };
 
 }

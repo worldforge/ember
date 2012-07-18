@@ -36,6 +36,8 @@ namespace OgreView {
 
 class ShadowCameraSetup;
 class ShaderSetupInstance;
+class AutomaticGraphicsLevelManager;
+class ShaderLevelManager;
 
 /**
  * @brief Utility class for setup shaders
@@ -72,7 +74,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	ShaderManager();
+	ShaderManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
 
 	/**
 	 * Destructor.
@@ -154,6 +156,11 @@ private:
 	std::map<GraphicsLevel, std::string> mGraphicSchemes;
 
 	ShaderSetupStore mShaderSetups;
+	
+	/**
+	 * Object that handles management of shader levels automatically.
+	 */
+	ShaderLevelManager* mShaderLevelManager;
 
 	/**
 	 * Checks whether material is supported in current scheme
