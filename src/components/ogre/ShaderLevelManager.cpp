@@ -11,7 +11,7 @@ namespace OgreView
 {
 
 ShaderLevelManager::ShaderLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, ShaderManager& shaderManager) :
-		mShaderManager(shaderManager), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
+		mShaderManager(shaderManager), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mShaderThresholdLevel(8.0f)
 {
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
 	if (!schemes.empty()) {
