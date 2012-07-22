@@ -112,7 +112,7 @@ public:
 int OgreConfigurator::mLastFrameTime = 0;
 
 OgreConfigurator::OgreConfigurator() :
-		mCancel(true), mContinueInLoop(true)
+		mResult(OC_CANCEL), mContinueInLoop(true)
 {
 }
 
@@ -120,11 +120,11 @@ OgreConfigurator::~OgreConfigurator()
 {
 }
 
-bool OgreConfigurator::configure()
+OgreConfigurator::Result OgreConfigurator::configure()
 {
 	const Ogre::RenderSystemList& renderers = Ogre::Root::getSingleton().getAvailableRenderers();
 	if (renderers.size() == 0) {
-		return false;
+		return OC_CANCEL;
 	}
 	Ogre::RenderSystem* renderSystem = *renderers.begin();
 	mChosenRenderSystemName = renderSystem->getName();
@@ -163,7 +163,6 @@ bool OgreConfigurator::configure()
 	CEGUI::OgreRenderer& renderer = CEGUI::OgreRenderer::create(*renderWindow);
 
 	CEGUI::System::create(renderer, rp);
-
 
 	CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkin.scheme", "");
 	CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-8");
@@ -229,7 +228,7 @@ bool OgreConfigurator::configure()
 
 	Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
 
-	return !mCancel;
+	return mResult;
 }
 
 std::string OgreConfigurator::getChosenRenderSystemName() const
@@ -244,25 +243,24 @@ Ogre::ConfigOptionMap OgreConfigurator::getConfigOptions() const
 
 bool OgreConfigurator::buttonOkClicked(const CEGUI::EventArgs& args)
 {
-	mCancel = false;
+	mResult = OC_OK;
 	mContinueInLoop = false;
 	return true;
 }
 
 bool OgreConfigurator::buttonCancelClicked(const CEGUI::EventArgs& args)
 {
+	mResult = OC_CANCEL;
 	mContinueInLoop = false;
 	return true;
 }
 
 bool OgreConfigurator::buttonAdvancedClicked(const CEGUI::EventArgs& args)
 {
-	mCancel = !Ogre::Root::getSingleton().showConfigDialog();
+	mResult = OC_ADVANCED_OPTIONS;
 	mContinueInLoop = false;
 	return true;
 }
-
-
 
 }
 }

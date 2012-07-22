@@ -265,6 +265,32 @@ extern "C" void shutdownHandler(int sig)
 	}
 }
 
+bool OgreSetup::showConfigurationDialog()
+{
+	OgreConfigurator configurator;
+	OgreConfigurator::Result result = configurator.configure();
+	if (result == OgreConfigurator::OC_CANCEL) {
+		return false;
+	}
+	delete mRoot;
+	SDL_Quit();
+	SDL_Init(SDL_INIT_VIDEO);
+	createOgreSystem();
+	if (result == OgreConfigurator::OC_ADVANCED_OPTIONS) {
+		if (!mRoot->showConfigDialog()) {
+			return false;
+		}
+	} else {
+		mRoot->setRenderSystem(mRoot->getRenderSystemByName(configurator.getChosenRenderSystemName()));
+		const Ogre::ConfigOptionMap& configOptions = configurator.getConfigOptions();
+		for (Ogre::ConfigOptionMap::const_iterator I = configOptions.begin(); I != configOptions.end(); ++I) {
+			mRoot->getRenderSystem()->setConfigOption(I->first, I->second.currentValue);
+		}
+	}
+	mRoot->initialise(false);
+	return true;
+}
+
 /** Configures the application - returns false if the user chooses to abandon configuration. */
 Ogre::Root* OgreSetup::configure(void)
 {
@@ -273,45 +299,36 @@ Ogre::Root* OgreSetup::configure(void)
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
 #ifndef BUILD_WEBEMBER
 	SDL_Init(SDL_INIT_VIDEO);
-	OgreConfigurator configurator;
-//	bool suppressConfig = false;
-//	if (configService.itemExists("ogre", "suppressconfigdialog")) {
-//		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
-//	}
-//	if (suppressConfig) {
-//		try {
-//			success = mRoot->restoreConfig();
-//		} catch (const std::exception& ex) {
-//			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
-//			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
-//			try {
-//				success = configurator.configure();
-//			} catch (const std::exception& ex) {
-//				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
-//			}
-//		}
-//	} else {
-	try {
-		mRoot->restoreConfig();
-		success = configurator.configure();
-		delete mRoot;
-		createOgreSystem();
-		mRoot->setRenderSystem(mRoot->getRenderSystemByName(configurator.getChosenRenderSystemName()));
-		const Ogre::ConfigOptionMap& configOptions = configurator.getConfigOptions();
-		for (Ogre::ConfigOptionMap::const_iterator I = configOptions.begin(); I != configOptions.end(); ++I) {
-			mRoot->getRenderSystem()->setConfigOption(I->first, I->second.currentValue);
-		}
-		mRoot->initialise(false);
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
-		unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
+	bool suppressConfig = false;
+	if (configService.itemExists("ogre", "suppressconfigdialog")) {
+		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
+	}
+	if (suppressConfig) {
 		try {
-			success = configurator.configure();
+			success = mRoot->restoreConfig();
 		} catch (const std::exception& ex) {
-			S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
+			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
+			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
+			try {
+				success = showConfigurationDialog();
+			} catch (const std::exception& ex) {
+				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
+			}
+		}
+	} else {
+		try {
+			mRoot->restoreConfig();
+			success = showConfigurationDialog();
+		} catch (const std::exception& ex) {
+			S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
+			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
+			try {
+				success = showConfigurationDialog();
+			} catch (const std::exception& ex) {
+				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
+			}
 		}
 	}
-//	}
 #else
 	//In webember we will disable the config dialog.
 	//Also we will use fixed resolution and windowed mode.
@@ -531,8 +548,6 @@ Ogre::Root* OgreSetup::configure(void)
 		misc["macAPI"] = Ogre::String("cocoa");
 
 #endif
-		// initialise root, without creating a window
-//		mRoot->initialise(false);
 
 		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
 

@@ -156,6 +156,8 @@ private:
 	 */
 	int isExtensionSupported(const char *extension);
 
+	bool showConfigurationDialog();
+
 	/**
 	 * @brief Listen to alt+tab and release the mouse if grabbed.
 	 */

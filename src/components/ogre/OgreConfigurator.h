@@ -35,10 +35,14 @@ namespace OgreView
 class OgreConfigurator
 {
 public:
+	enum Result
+	{
+		OC_OK, OC_CANCEL, OC_ADVANCED_OPTIONS
+	};
 	OgreConfigurator();
 	virtual ~OgreConfigurator();
 
-	bool configure();
+	Result configure();
 
 	std::string getChosenRenderSystemName() const;
 	Ogre::ConfigOptionMap getConfigOptions() const;
@@ -50,7 +54,7 @@ protected:
 	bool buttonAdvancedClicked(const CEGUI::EventArgs& args);
 
 	static int mLastFrameTime;
-	bool mCancel;
+	Result mResult;
 	bool mContinueInLoop;
 	std::string mChosenRenderSystemName;
 	Ogre::ConfigOptionMap mConfigOptions;
