@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="EmberLookSkin">
+	<Font Name="DejaVuSans-8" Filename="cegui/datafiles/fonts/DejaVuSans-8.xml" />
+	<Imageset Name="EmberLook" Filename="cegui/datafiles/imagesets/EmberLook.imageset" />
+	<LookNFeel Filename="cegui/datafiles/looknfeel/EmberLook.looknfeel" />
+	<WindowRendererSet Filename="CEGUIFalagardWRBase" />
+	<FalagardMapping WindowType="EmberLook/Button"      TargetType="CEGUI/PushButton"  Renderer="Falagard/Button"       LookNFeel="EmberLook/Button" />
+	<FalagardMapping WindowType="EmberLook/Checkbox"    TargetType="CEGUI/Checkbox"    Renderer="Falagard/ToggleButton" LookNFeel="EmberLook/Checkbox" />
+	<FalagardMapping WindowType="EmberLook/IconButton"  TargetType="CEGUI/PushButton"  Renderer="Falagard/Button"       LookNFeel="EmberLook/IconButton" />
+	<FalagardMapping WindowType="EmberLook/RadioButton" TargetType="CEGUI/RadioButton" Renderer="Falagard/ToggleButton" LookNFeel="EmberLook/RadioButton" />
+	<FalagardMapping WindowType="EmberLook/FrameWindow"  TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow"  LookNFeel="EmberLook/FrameWindow" />
+	<FalagardMapping WindowType="EmberLook/Titlebar"     TargetType="CEGUI/Titlebar"    Renderer="Falagard/Titlebar"     LookNFeel="EmberLook/Titlebar" />
+	<FalagardMapping WindowType="EmberLook/SystemButton" TargetType="CEGUI/PushButton"  Renderer="Falagard/SystemButton" LookNFeel="EmberLook/SystemButton" />
+	<FalagardMapping WindowType="EmberLook/Editbox"          TargetType="CEGUI/Editbox"          Renderer="Falagard/Editbox"          LookNFeel="EmberLook/Editbox" />
+	<FalagardMapping WindowType="EmberLook/MultiLineEditbox" TargetType="CEGUI/MultiLineEditbox" Renderer="Falagard/MultiLineEditbox" LookNFeel="EmberLook/MultiLineEditbox" />
+	<FalagardMapping WindowType="EmberLook/Menubar"   TargetType="CEGUI/Menubar"   Renderer="Falagard/Menubar"   LookNFeel="EmberLook/Menubar" />
+	<FalagardMapping WindowType="EmberLook/PopupMenu" TargetType="CEGUI/PopupMenu" Renderer="Falagard/PopupMenu" LookNFeel="EmberLook/PopupMenu" />
+	<FalagardMapping WindowType="EmberLook/MenuItem"  TargetType="CEGUI/MenuItem"  Renderer="Falagard/MenuItem"  LookNFeel="EmberLook/MenuItem" />
+	<FalagardMapping WindowType="EmberLook/ProgressBar"          TargetType="CEGUI/ProgressBar" Renderer="Falagard/ProgressBar" LookNFeel="EmberLook/ProgressBar" />
+	<FalagardMapping WindowType="EmberLook/VerticalScrollbar"   TargetType="CEGUI/Scrollbar" Renderer="Falagard/Scrollbar" LookNFeel="EmberLook/VerticalScrollbar" />
+	<FalagardMapping WindowType="EmberLook/HorizontalScrollbar" TargetType="CEGUI/Scrollbar" Renderer="Falagard/Scrollbar" LookNFeel="EmberLook/HorizontalScrollbar" />
+	<FalagardMapping WindowType="EmberLook/VerticalScrollbarThumb"   TargetType="CEGUI/Thumb" Renderer="Falagard/Button" LookNFeel="EmberLook/VerticalScrollbarThumb" />
+	<FalagardMapping WindowType="EmberLook/HorizontalScrollbarThumb" TargetType="CEGUI/Thumb" Renderer="Falagard/Button" LookNFeel="EmberLook/HorizontalScrollbarThumb" />
+	<FalagardMapping WindowType="EmberLook/TabButton"  TargetType="CEGUI/TabButton"  Renderer="Falagard/TabButton"  LookNFeel="EmberLook/TabButton" />
+	<FalagardMapping WindowType="EmberLook/TabControl" TargetType="CEGUI/TabControl" Renderer="Falagard/TabControl" LookNFeel="EmberLook/TabControl" />
+	<FalagardMapping WindowType="EmberLook/TabContentPane"    TargetType="DefaultWindow"    Renderer="Falagard/Default"    LookNFeel="EmberLook/TabContentPane" />
+	<FalagardMapping WindowType="EmberLook/TabButtonPane"    TargetType="DefaultWindow"    Renderer="Falagard/Default"    LookNFeel="EmberLook/TabButtonPane" />
+	<FalagardMapping WindowType="EmberLook/ComboDropList" TargetType="CEGUI/ComboDropList" Renderer="Falagard/Listbox" LookNFeel="EmberLook/ComboDropList" />
+	<FalagardMapping WindowType="EmberLook/Combobox"	TargetType="CEGUI/Combobox"	 Renderer="Falagard/Default" LookNFeel="EmberLook/Combobox" />
+	<FalagardMapping WindowType="EmberLook/Listbox"           TargetType="CEGUI/Listbox"           Renderer="Falagard/Listbox"           LookNFeel="EmberLook/Listbox" />
+	<FalagardMapping WindowType="EmberLook/ListHeader"        TargetType="CEGUI/ListHeader"        Renderer="Falagard/ListHeader"        LookNFeel="EmberLook/ListHeader" />
+	<FalagardMapping WindowType="EmberLook/ListHeaderSegment" TargetType="CEGUI/ListHeaderSegment" Renderer="Falagard/ListHeaderSegment" LookNFeel="EmberLook/ListHeaderSegment" />
+	<FalagardMapping WindowType="EmberLook/MultiColumnList"   TargetType="CEGUI/MultiColumnList"   Renderer="Falagard/MultiColumnList"   LookNFeel="EmberLook/MultiColumnList" />
+	<FalagardMapping WindowType="EmberLook/Slider"      TargetType="CEGUI/Slider" Renderer="Falagard/Slider"  LookNFeel="EmberLook/Slider" />
+	<FalagardMapping WindowType="EmberLook/SliderThumb" TargetType="CEGUI/Thumb"  Renderer="Falagard/Button"  LookNFeel="EmberLook/SliderThumb" />
+	<FalagardMapping WindowType="EmberLook/VerticalSlider" TargetType="CEGUI/Slider" Renderer="Falagard/Slider"  LookNFeel="EmberLook/VerticalSlider" />
+	<FalagardMapping WindowType="EmberLook/VerticalSliderThumb" TargetType="CEGUI/Thumb" Renderer="Falagard/Button" LookNFeel="EmberLook/VerticalSliderThumb" />
+	<FalagardMapping WindowType="EmberLook/ScrollablePane" TargetType="CEGUI/ScrollablePane" Renderer="Falagard/ScrollablePane" LookNFeel="EmberLook/ScrollablePane" />
+	<FalagardMapping WindowType="EmberLook/Spinner" TargetType="CEGUI/Spinner" Renderer="Falagard/Default" LookNFeel="EmberLook/Spinner" />
+	<FalagardMapping WindowType="EmberLook/Tooltip" TargetType="CEGUI/Tooltip" Renderer="Falagard/Tooltip" LookNFeel="EmberLook/Tooltip" />
+	<FalagardMapping WindowType="EmberLook/Static"      TargetType="DefaultWindow" Renderer="Falagard/Static"      LookNFeel="EmberLook/Static" />
+	<FalagardMapping WindowType="EmberLook/StaticImage" TargetType="DefaultWindow" Renderer="Falagard/StaticImage" LookNFeel="EmberLook/StaticImage" />
+	<FalagardMapping WindowType="EmberLook/StaticText"  TargetType="DefaultWindow" Renderer="Falagard/StaticText"  LookNFeel="EmberLook/StaticText" />
+	<FalagardMapping WindowType="EmberLook/ItemListbox" TargetType="CEGUI/ItemListbox" Renderer="Falagard/ItemListbox" LookNFeel="EmberLook/ItemListbox" />
+	<FalagardMapping WindowType="EmberLook/ListboxItem" TargetType="CEGUI/ItemEntry"   Renderer="Falagard/ItemEntry"   LookNFeel="EmberLook/ListboxItem" />
+	<!-- Note that there's currently no GroupBox available in the looknfeel. -->
+	<FalagardMapping WindowType="EmberLook/GroupBox" TargetType="CEGUI/GroupBox"   Renderer="Falagard/Default"   LookNFeel="EmberLook/GroupBox" />
+
+
+	<FalagardMapping WindowType="EmberLook/ProgressBarNoframe"          TargetType="CEGUI/ProgressBar" Renderer="Falagard/ProgressBar" LookNFeel="EmberLook/ProgressBarNoframe" />
+	<FalagardMapping WindowType="EmberLook/BorderIconButton"      TargetType="CEGUI/PushButton"  Renderer="Falagard/Button"       LookNFeel="EmberLook/BorderIconButton" />
+	<FalagardMapping WindowType="EmberLook/Tree" TargetType="CEGUI/Tree"   Renderer="Falagard/Tree"   LookNFeel="EmberLook/Tree" />
+	<FalagardMapping WindowType="EmberLook/EntityTooltip" TargetType="Ember/EntityTooltip"   Renderer="Falagard/Tooltip"   LookNFeel="EmberLook/Tooltip" />
+
+	<FalagardMapping WindowType="EmberLook/InventoryFrameWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/InventoryFrameWindow" />
+	<FalagardMapping WindowType="EmberLook/ConsoleWindow" TargetType="DefaultWindow" Renderer="Falagard/Default" LookNFeel="EmberLook/ConsoleWindow" />
+	<FalagardMapping WindowType="EmberLook/QuickHelpFrameWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/QuickHelpFrameWindow" />
+
+	<FalagardMapping WindowType="EmberLook/IngameChatResponseButton" TargetType="CEGUI/PushButton" Renderer="Falagard/Button" LookNFeel="EmberLook/IngameChatResponseButton" />
+	<FalagardMapping WindowType="EmberLook/IngameChatTextButton" TargetType="CEGUI/PushButton" Renderer="Falagard/Button" LookNFeel="EmberLook/IngameChatTextButton" />
+	<FalagardMapping WindowType="EmberLook/IngameChatDetachedWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/IngameChatDetachedWindow" />
+
+	<FalagardMapping WindowType="EmberLook/DialogWindow" TargetType="CEGUI/FrameWindow" Renderer="Falagard/FrameWindow" LookNFeel="EmberLook/DialogWindow" />
+
+	<FalagardMapping WindowType="EmberLook/StaticFading"      TargetType="DefaultWindow" Renderer="Falagard/Static"      LookNFeel="EmberLook/StaticFading" />
+</GUIScheme>

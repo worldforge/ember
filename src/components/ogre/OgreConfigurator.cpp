@@ -120,7 +120,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 	CEGUI::System::create(renderer, &rp);
 
-	CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkin.scheme", "");
+	CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkinMinimal.scheme", "");
 	CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-8");
 	CEGUI::ImagesetManager::getSingleton().create("cegui/datafiles/imagesets/splash.imageset", "");
 	CEGUI::System::getSingleton().setDefaultTooltip("EmberLook/Tooltip");
