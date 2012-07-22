@@ -33,7 +33,6 @@
 #include "framework/LoggingInstance.h"
 #include "framework/Time.h"
 
-//#include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <RendererModules/Ogre/CEGUIOgreRenderer.h>
 #include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <CEGUI.h>
@@ -74,6 +73,8 @@ OgreConfigurator::~OgreConfigurator()
 
 OgreConfigurator::Result OgreConfigurator::configure()
 {
+	int width = 250;
+	int height = 300;
 	const Ogre::RenderSystemList& renderers = Ogre::Root::getSingleton().getAvailableRenderers();
 	if (renderers.size() == 0) {
 		return OC_CANCEL;
@@ -82,7 +83,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	mChosenRenderSystemName = renderSystem->getName();
 	Ogre::Root::getSingleton().setRenderSystem(renderSystem);
 	Ogre::Root::getSingleton().initialise(false);
-	SDL_SetVideoMode(250, 300, 0, 0); // create an SDL window
+	SDL_SetVideoMode(width, height, 0, 0); // create an SDL window
 
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version);
@@ -104,7 +105,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	Ogre::NameValuePairList misc;
 	misc["parentWindowHandle"] = s;
 
-	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", 250, 300, false, &misc);
+	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", width, height, false, &misc);
 	renderWindow->setActive(true);
 	renderWindow->setAutoUpdated(true);
 	renderWindow->setVisible(true);
@@ -136,8 +137,10 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	advancedButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonAdvancedClicked, this));
 
 	CEGUI::Checkbox* fullscreenCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/Fullscreen"));
+	CEGUI::Checkbox* dontShowAgainCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/DontShowAgain"));
 
 	CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(configWindow->getChildRecursive("OgreConfigure/Resolution"));
+
 
 	IInputAdapter* adapter = new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer);
 	Input::getSingleton().addAdapter(adapter);
@@ -181,6 +184,10 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	CEGUI::System::getSingleton().destroy();
 
 	Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
+
+	if (dontShowAgainCheckbox->isSelected()) {
+		EmberServices::getSingleton().getConfigService().setValue("ogre", "suppressconfigdialog", true);
+	}
 
 	return mResult;
 }

@@ -269,10 +269,11 @@ bool OgreSetup::showConfigurationDialog()
 {
 	OgreConfigurator configurator;
 	OgreConfigurator::Result result = configurator.configure();
+	delete mRoot;
+	mRoot = 0;
 	if (result == OgreConfigurator::OC_CANCEL) {
 		return false;
 	}
-	delete mRoot;
 	SDL_Quit();
 	SDL_Init(SDL_INIT_VIDEO);
 	createOgreSystem();
@@ -304,30 +305,21 @@ Ogre::Root* OgreSetup::configure(void)
 	if (configService.itemExists("ogre", "suppressconfigdialog")) {
 		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
 	}
-	if (suppressConfig) {
-		try {
-			success = mRoot->restoreConfig();
-		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
-			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
-			try {
-				success = showConfigurationDialog();
-			} catch (const std::exception& ex) {
-				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
-			}
+	try {
+		success = mRoot->restoreConfig();
+		if (!success || !suppressConfig) {
+			success = showConfigurationDialog();
+		} else {
+			mRoot->initialise(false);
 		}
-	} else {
+
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
+		unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
 		try {
-			mRoot->restoreConfig();
 			success = showConfigurationDialog();
 		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
-			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
-			try {
-				success = showConfigurationDialog();
-			} catch (const std::exception& ex) {
-				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
-			}
+			S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
 		}
 	}
 #else
