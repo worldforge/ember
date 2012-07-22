@@ -25,6 +25,7 @@
 #include "components/ogre/widgets/ColouredListItem.h"
 #include "components/ogre/GUICEGUIAdapter.h"
 #include "components/ogre/OgreResourceLoader.h"
+#include "components/ogre/EmberIcon.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -84,7 +85,28 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	mChosenRenderSystemName = renderSystem->getName();
 	Ogre::Root::getSingleton().setRenderSystem(renderSystem);
 	Ogre::Root::getSingleton().initialise(false);
+
+	//set the icon of the window
+	Uint32 rmask, gmask, bmask;
+
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	rmask = 0xff000000;
+	gmask = 0x00ff0000;
+	bmask = 0x0000ff00;
+#else
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+#endif
+
+	//We'll use the emberIcon struct
+	SDL_Surface* iconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64 * 3, rmask, gmask, bmask, 0);
+
 	SDL_SetVideoMode(width, height, 0, 0); // create an SDL window
+
+	if (iconSurface) {
+		SDL_WM_SetIcon(iconSurface, 0);
+	}
 
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version);
