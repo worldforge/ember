@@ -32,6 +32,7 @@
 
 #include "framework/LoggingInstance.h"
 #include "framework/Time.h"
+#include "framework/MainLoopController.h"
 
 #include <RendererModules/Ogre/CEGUIOgreRenderer.h>
 #include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
@@ -122,6 +123,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkin.scheme", "");
 	CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-8");
 	CEGUI::ImagesetManager::getSingleton().create("cegui/datafiles/imagesets/splash.imageset", "");
+	CEGUI::System::getSingleton().setDefaultTooltip("EmberLook/Tooltip");
 
 	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultGUISheet", "root_wnd");
 	CEGUI::System::getSingleton().setGUISheet(sheet);
@@ -169,10 +171,15 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
 	}
 
+	Input& input = Input::getSingleton();
 	long long lastTime = Time::currentTimeMillis();
 	while (mContinueInLoop) {
-		Input::getSingleton().processInput();
-		CEGUI::System::getSingleton().injectTimePulse((Time::currentTimeMillis() - lastTime) / 1000.0f);
+		input.processInput();
+		if (input.getMainLoopController()->shouldQuit()) {
+			break;
+		}
+		float timeElapsed = (Time::currentTimeMillis() - lastTime) / 1000.0f;
+		CEGUI::System::getSingleton().injectTimePulse(timeElapsed);
 		lastTime = Time::currentTimeMillis();
 		Ogre::Root::getSingleton().renderOneFrame();
 	}
