@@ -223,6 +223,13 @@ public:
 	 */
 	void setMainLoopController(MainLoopController* mainLoopController);
 
+	/**
+	 * @brief Gets the main loop controller.
+	 *
+	 * @return The main loop controller.
+	 */
+	MainLoopController* getMainLoopController() const;
+
 	/** @brief Emitted when a key has been pressed in movement mode.
 	 @param the key event
 	 @param true if the application is in gui mode

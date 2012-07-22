@@ -529,6 +529,12 @@ void Input::setMainLoopController(MainLoopController* mainLoopController)
 	mMainLoopController = mainLoopController;
 }
 
+MainLoopController* Input::getMainLoopController() const
+{
+	return mMainLoopController;
+}
+
+
 void Input::Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	try {
