@@ -211,7 +211,7 @@ void OgreResourceLoader::preloadMedia()
 	}
 }
 
-void OgreResourceLoader::loadSection(const std::string& sectionName)
+void OgreResourceLoader::loadSection(const std::string& sectionName, bool initializeAlso)
 {
 	if (sectionName != "" && std::find(mLoadedSections.begin(), mLoadedSections.end(), sectionName) == mLoadedSections.end()) {
 		bool mediaAdded = false;
@@ -262,7 +262,7 @@ void OgreResourceLoader::loadSection(const std::string& sectionName)
 		mLoadedSections.push_back(sectionName);
 
 		//only initialize the resource group if it has media
-		if (mediaAdded) {
+		if (initializeAlso && mediaAdded) {
 			try {
 				Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(sectionName);
 				/*			} catch (const Ogre::ItemIdentityException& ex) {
