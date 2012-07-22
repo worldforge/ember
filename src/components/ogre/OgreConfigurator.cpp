@@ -23,27 +23,30 @@
 #include "OgreConfigurator.h"
 
 #include "components/ogre/widgets/ColouredListItem.h"
+#include "components/ogre/GUICEGUIAdapter.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/input/Input.h"
 
 #include "framework/LoggingInstance.h"
+#include "framework/Time.h"
 
-#include <RendererModules/OpenGL/CEGUIOpenGLRenderer.h>
-#include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
+//#include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
+#include <RendererModules/Ogre/CEGUIOgreRenderer.h>
 #include <CEGUI.h>
 #include <elements/CEGUICombobox.h>
 #include <elements/CEGUIListboxTextItem.h>
 
 #include <OgreRoot.h>
+#include <OgreRenderWindow.h>
 
-#ifdef __APPLE__
-#include <GLUT/freeglut.h>
+#ifdef _MSC_VER
+#include <SDL.h>
+#include <SDL_syswm.h>
 #else
-#ifdef __MINGW32__
-#define GLUT_DISABLE_ATEXIT_HACK
-#endif
-#include <GL/freeglut.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_syswm.h>
 #endif
 
 #include <stdexcept>
@@ -51,22 +54,6 @@
 #include <fstream>
 #include <string>
 #include <memory>
-
-#ifdef _MSC_VER
-# if defined(DEBUG) || defined (_DEBUG)
-#	if defined(CEGUI_STATIC)
-#		pragma comment (lib, "CEGUIOpenGLRenderer_Static_d.lib")
-#	else
-#		pragma comment (lib, "CEGUIOpenGLRenderer_d.lib")
-#	endif
-# else
-#	if defined(CEGUI_STATIC)
-#		pragma comment (lib, "CEGUIOpenGLRenderer_Static.lib")
-#	else
-#		pragma comment (lib, "CEGUIOpenGLRenderer.lib")
-#	endif
-# endif
-#endif
 
 namespace Ember
 {
@@ -125,7 +112,7 @@ public:
 int OgreConfigurator::mLastFrameTime = 0;
 
 OgreConfigurator::OgreConfigurator() :
-		mCancel(true)
+		mCancel(true), mContinueInLoop(true)
 {
 }
 
@@ -135,32 +122,48 @@ OgreConfigurator::~OgreConfigurator()
 
 bool OgreConfigurator::configure()
 {
-	// fake args for glutInit
-	int argc = 1;
-	const char* argv = "Ember";
+	const Ogre::RenderSystemList& renderers = Ogre::Root::getSingleton().getAvailableRenderers();
+	if (renderers.size() == 0) {
+		return false;
+	}
+	Ogre::RenderSystem* renderSystem = *renderers.begin();
+	mChosenRenderSystemName = renderSystem->getName();
+	Ogre::Root::getSingleton().setRenderSystem(renderSystem);
+	Ogre::Root::getSingleton().initialise(false);
+	SDL_SetVideoMode(250, 300, 0, 0); // create an SDL window
 
-	// Do GLUT init
-	glutInit(&argc, (char**)&argv);
-	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(250, 300);
-	glutInitWindowPosition(400, 300);
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
-	glutCreateWindow("Ember");
-	glutSetCursor(GLUT_CURSOR_INHERIT);
+	SDL_SysWMinfo info;
+	SDL_VERSION(&info.version);
+
+	SDL_GetWMInfo(&info);
+
+	std::string dsp(&(DisplayString(info.info.x11.display) [1]));
+	Ogre::vector<Ogre::String>::type tokens = Ogre::StringUtil::split(dsp, ".");
+
+	std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
+	if (tokens.size() > 1) {
+		s += ":" + tokens[1] + ":";
+	} else {
+		//If there's only one token, fall back to "0". Not entirely sure how robust this is though
+		s += ":0:";
+		S_LOG_WARNING("Could not find second part of display string, defaulting to '0'.");
+	}
+	s += Ogre::StringConverter::toString((long)info.info.x11.window);
+	Ogre::NameValuePairList misc;
+	misc["parentWindowHandle"] = s;
+
+	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", 250, 300, false, &misc);
+	renderWindow->setActive(true);
+	renderWindow->setAutoUpdated(true);
+	renderWindow->setVisible(true);
 
 	CEGUI::ResourceProvider* rp = new SimpleResourceProvider();
 //	CEGUI::ResourceProvider* rp = new CEGUI::OgreResourceProvider();
 
-	CEGUI::OpenGLRenderer& renderer = CEGUI::OpenGLRenderer::create();
+	CEGUI::OgreRenderer& renderer = CEGUI::OgreRenderer::create(*renderWindow);
+
 	CEGUI::System::create(renderer, rp);
 
-	glutDisplayFunc(&OgreConfigurator::drawFrame);
-	glutMotionFunc(&OgreConfigurator::mouseMotion);
-	glutPassiveMotionFunc(&OgreConfigurator::mouseMotion);
-	glutMouseFunc(&OgreConfigurator::mouseButton);
-
-	// Set the clear color
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkin.scheme", "");
 	CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-8");
@@ -183,20 +186,14 @@ bool OgreConfigurator::configure()
 
 	CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(configWindow->getChildRecursive("OgreConfigure/Resolution"));
 
-	const Ogre::RenderSystemList& renderers = Ogre::Root::getSingleton().getAvailableRenderers();
-	if (renderers.size() == 0) {
-		return false;
-	}
+	IInputAdapter* adapter = new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer);
+	Input::getSingleton().addAdapter(adapter);
 
-	Ogre::RenderSystem* renderSystem = *renderers.begin();
-	Ogre::ConfigOptionMap& configs = renderSystem->getConfigOptions();
-	for (Ogre::ConfigOptionMap::const_iterator I = configs.begin(); I != configs.end(); ++I) {
-		S_LOG_VERBOSE(I->first);
-	}
+	mConfigOptions = renderSystem->getConfigOptions();
 
 	bool resolutionFoundInOptions = false;
-	Ogre::ConfigOptionMap::const_iterator optionsIter = configs.find("Video Mode");
-	if (optionsIter != configs.end()) {
+	Ogre::ConfigOptionMap::const_iterator optionsIter = mConfigOptions.find("Video Mode");
+	if (optionsIter != mConfigOptions.end()) {
 		const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
 		for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
 			Gui::ColouredListItem* item = new Gui::ColouredListItem(*I);
@@ -211,85 +208,61 @@ bool OgreConfigurator::configure()
 		}
 	}
 
-	optionsIter = configs.find("Full Screen");
-	if (optionsIter != configs.end()) {
+	optionsIter = mConfigOptions.find("Full Screen");
+	if (optionsIter != mConfigOptions.end()) {
 		fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
 	}
 
-	try {
-		glutMainLoop();
-	} catch (...) {
-
+	long long lastTime = Time::currentTimeMillis();
+	while (mContinueInLoop) {
+		Input::getSingleton().processInput();
+		CEGUI::System::getSingleton().injectTimePulse((Time::currentTimeMillis() - lastTime) / 1000.0f);
+		lastTime = Time::currentTimeMillis();
+		Ogre::Root::getSingleton().renderOneFrame();
 	}
+	Input::getSingleton().removeAdapter(adapter);
 
-	renderSystem->setConfigOption("Video Mode", resolutionsCombobox->getText().c_str());
-	renderSystem->setConfigOption("Full Screen", fullscreenCheckbox->isSelected() ? "Yes" : "No");
+	mConfigOptions["Video Mode"].currentValue = resolutionsCombobox->getText().c_str();
+	mConfigOptions["Full Screen"].currentValue = fullscreenCheckbox->isSelected() ? "Yes" : "No";
 
-	Ogre::Root::getSingleton().setRenderSystem(renderSystem);
 	CEGUI::System::getSingleton().destroy();
+
+	Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
+
 	return !mCancel;
+}
+
+std::string OgreConfigurator::getChosenRenderSystemName() const
+{
+	return mChosenRenderSystemName;
+}
+
+Ogre::ConfigOptionMap OgreConfigurator::getConfigOptions() const
+{
+	return mConfigOptions;
 }
 
 bool OgreConfigurator::buttonOkClicked(const CEGUI::EventArgs& args)
 {
 	mCancel = false;
-	glutLeaveMainLoop();
+	mContinueInLoop = false;
 	return true;
 }
 
 bool OgreConfigurator::buttonCancelClicked(const CEGUI::EventArgs& args)
 {
-	glutLeaveMainLoop();
+	mContinueInLoop = false;
 	return true;
 }
 
 bool OgreConfigurator::buttonAdvancedClicked(const CEGUI::EventArgs& args)
 {
 	mCancel = !Ogre::Root::getSingleton().showConfigDialog();
-	glutLeaveMainLoop();
+	mContinueInLoop = false;
 	return true;
 }
 
-void OgreConfigurator::drawFrame(void)
-{
-	CEGUI::System& guiSystem = CEGUI::System::getSingleton();
-	int thisTime = glutGet(GLUT_ELAPSED_TIME);
-	float elapsedTime = static_cast<float>(thisTime - mLastFrameTime);
-	mLastFrameTime = thisTime;
-	guiSystem.injectTimePulse(elapsedTime / 1000.0f);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	guiSystem.renderGUI();
-	glutPostRedisplay();
-	glutSwapBuffers();
-}
-
-void OgreConfigurator::mouseMotion(int x, int y)
-{
-	CEGUI::System::getSingleton().injectMousePosition(x, y);
-}
-
-void OgreConfigurator::mouseButton(int button, int state, int x, int y)
-{
-	switch (button) {
-	case GLUT_LEFT_BUTTON:
-		if (state == GLUT_UP) {
-			CEGUI::System::getSingleton().injectMouseButtonUp(CEGUI::LeftButton);
-		} else {
-			CEGUI::System::getSingleton().injectMouseButtonDown(CEGUI::LeftButton);
-		}
-		break;
-
-	case GLUT_RIGHT_BUTTON:
-		if (state == GLUT_UP) {
-			CEGUI::System::getSingleton().injectMouseButtonUp(CEGUI::RightButton);
-		} else {
-			CEGUI::System::getSingleton().injectMouseButtonDown(CEGUI::RightButton);
-		}
-		break;
-	}
-
-}
 
 }
 }

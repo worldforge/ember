@@ -19,9 +19,11 @@
 #ifndef OGRECONFIGURATOR_H_
 #define OGRECONFIGURATOR_H_
 
+#include <OgreConfigOptionMap.h>
+#include <string>
+
 namespace CEGUI
 {
-class OpenGLRenderer;
 class EventArgs;
 }
 
@@ -38,11 +40,10 @@ public:
 
 	bool configure();
 
-protected:
+	std::string getChosenRenderSystemName() const;
+	Ogre::ConfigOptionMap getConfigOptions() const;
 
-	static void drawFrame(void);
-	static void mouseMotion(int x, int y);
-	static void mouseButton(int button, int state, int x, int y);
+protected:
 
 	bool buttonOkClicked(const CEGUI::EventArgs& args);
 	bool buttonCancelClicked(const CEGUI::EventArgs& args);
@@ -50,6 +51,9 @@ protected:
 
 	static int mLastFrameTime;
 	bool mCancel;
+	bool mContinueInLoop;
+	std::string mChosenRenderSystemName;
+	Ogre::ConfigOptionMap mConfigOptions;
 };
 
 }

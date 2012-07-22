@@ -63,7 +63,7 @@ public:
 	 * @brief Configures the application - returns false if the user chooses to abandon configuration.
 	 * @return True if everything was correctly set up, else false.
 	 */
-	bool configure();
+	Ogre::Root* configure();
 
 	/**
 	 * @brief Gets the main render window.

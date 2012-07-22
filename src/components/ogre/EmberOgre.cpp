@@ -289,12 +289,11 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	Ogre::LogManager::getSingleton().createLog("Ogre", true, false, true);
 	Ogre::LogManager::getSingleton().getDefaultLog()->addListener(mLogObserver);
 
-	//We need a root object.
-	mRoot = mOgreSetup->createOgreSystem();
-
+	mRoot = mOgreSetup->configure();
 	if (!mRoot) {
-		throw Exception("There was a problem setting up the Ogre environment, aborting.");
+		return false;
 	}
+	mWindow = mOgreSetup->getRenderWindow();
 
 	//Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv.getHomeDirectory() + "/user-media/data/");
@@ -316,11 +315,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool)configSrv.getValue("media", "preloadmedia");
 	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool)configSrv.getValue("wfut", "enabled");
 
-	bool carryOn = mOgreSetup->configure();
-	if (!carryOn) {
-		return false;
-	}
-	mWindow = mOgreSetup->getRenderWindow();
 
 	//start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	mResourceLoader->loadBootstrap();

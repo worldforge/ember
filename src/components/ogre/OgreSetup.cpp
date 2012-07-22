@@ -81,7 +81,7 @@ extern "C"
 {
 #include <signal.h>    /* signal name macros, and the signal() prototype */
 
-sighandler_t oldSignals[NSIG];
+	sighandler_t oldSignals[NSIG];
 }
 
 namespace Ember
@@ -165,7 +165,7 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	mRoot = new Ogre::Root("", "ogre.cfg", "");
 
 	//we will try to load the plugins from series of different location, with the hope of getting at least one right
-	std::vector < std::string > pluginLocations;
+	std::vector<std::string> pluginLocations;
 
 	if (configSrv.itemExists("ogre", "plugins")) {
 		std::string plugins(configSrv.getValue("ogre", "plugins"));
@@ -255,53 +255,63 @@ extern "C" void shutdownHandler(int sig)
 	SDL_WM_GrabInput(SDL_GRAB_OFF);
 	SDL_Quit();
 
-	if (oldSignals[sig] != SIG_DFL && oldSignals[sig] != SIG_IGN) {
+	if (oldSignals[sig] != SIG_DFL && oldSignals[sig] != SIG_IGN ) {
 		/* Call saved signal handler. */
 		oldSignals[sig](sig);
 	} else {
 		/* Reraise the signal. */
-		signal(sig, SIG_DFL);
+		signal(sig, SIG_DFL );
 		raise(sig);
 	}
 }
 
 /** Configures the application - returns false if the user chooses to abandon configuration. */
-bool OgreSetup::configure(void)
+Ogre::Root* OgreSetup::configure(void)
 {
+	createOgreSystem();
 	bool success = false;
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
 #ifndef BUILD_WEBEMBER
+	SDL_Init(SDL_INIT_VIDEO);
 	OgreConfigurator configurator;
-	bool suppressConfig = false;
-	if (configService.itemExists("ogre", "suppressconfigdialog")) {
-		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
-	}
-	if (suppressConfig) {
-		try {
-			success = mRoot->restoreConfig();
-		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
-			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
-			try {
-				success = configurator.configure();
-			} catch (const std::exception& ex) {
-				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
-			}
+//	bool suppressConfig = false;
+//	if (configService.itemExists("ogre", "suppressconfigdialog")) {
+//		suppressConfig = static_cast<bool>(configService.getValue("ogre", "suppressconfigdialog"));
+//	}
+//	if (suppressConfig) {
+//		try {
+//			success = mRoot->restoreConfig();
+//		} catch (const std::exception& ex) {
+//			S_LOG_WARNING("Error when restoring Ogre config. Will try to remove ogre.cfg file and show Ogre config dialog." << ex);
+//			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
+//			try {
+//				success = configurator.configure();
+//			} catch (const std::exception& ex) {
+//				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
+//			}
+//		}
+//	} else {
+	try {
+		mRoot->restoreConfig();
+		success = configurator.configure();
+		delete mRoot;
+		createOgreSystem();
+		mRoot->setRenderSystem(mRoot->getRenderSystemByName(configurator.getChosenRenderSystemName()));
+		const Ogre::ConfigOptionMap& configOptions = configurator.getConfigOptions();
+		for (Ogre::ConfigOptionMap::const_iterator I = configOptions.begin(); I != configOptions.end(); ++I) {
+			mRoot->getRenderSystem()->setConfigOption(I->first, I->second.currentValue);
 		}
-	} else {
+		mRoot->initialise(false);
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
+		unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
 		try {
-			mRoot->restoreConfig();
 			success = configurator.configure();
 		} catch (const std::exception& ex) {
-			S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
-			unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
-			try {
-				success = configurator.configure();
-			} catch (const std::exception& ex) {
-				S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
-			}
+			S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
 		}
 	}
+//	}
 #else
 	//In webember we will disable the config dialog.
 	//Also we will use fixed resolution and windowed mode.
@@ -336,7 +346,10 @@ bool OgreSetup::configure(void)
 		}
 
 #ifndef BUILD_WEBEMBER
-		mRenderWindow = mRoot->initialise(true, "Ember");
+
+		mRenderWindow = mRoot->createRenderWindow("Ember", 640, 480);
+//		mRenderWindow = mRoot->initialise(true, "Ember");
+		mRoot->createRend
 #else // BUILD_WEBEMBER
 		mRoot->initialise(false, "Ember");
 
@@ -423,7 +436,7 @@ bool OgreSetup::configure(void)
 
 #if !defined(BUILD_WEBEMBER) || defined(__APPLE__)
 		//In webember we already called SDL_Init on the plugin side with the main thread.
-		SDL_Init(SDL_INIT_VIDEO);
+//		SDL_Init(SDL_INIT_VIDEO);
 		int flags = 0;
 
 		// 	bool enableDoubleBuffering = false;
@@ -498,7 +511,7 @@ bool OgreSetup::configure(void)
 
 		SDL_GetWMInfo(&info);
 
-		std::string dsp(&(DisplayString(info.info.x11.display)[1]));
+		std::string dsp(&(DisplayString(info.info.x11.display) [1]));
 		Ogre::vector<Ogre::String>::type tokens = Ogre::StringUtil::split(dsp, ".");
 
 		std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
@@ -519,7 +532,7 @@ bool OgreSetup::configure(void)
 
 #endif
 		// initialise root, without creating a window
-		mRoot->initialise(false);
+//		mRoot->initialise(false);
 
 		mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
 
@@ -939,9 +952,9 @@ bool OgreSetup::configure(void)
 		// Register our factory
 		Ogre::Root::getSingleton().addSceneManagerFactory(mSceneManagerFactory);
 
-		return true;
+		return mRoot;
 	} else {
-		return false;
+		return 0;
 	}
 }
 
