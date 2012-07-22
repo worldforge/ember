@@ -31,20 +31,65 @@ namespace Ember
 {
 namespace OgreView
 {
+class OgreResourceLoader;
 
+/**
+ * @brief Shows a simple configuration window, allowing for configuring Ogre.
+ *
+ * The widget is shown using both Ogre and CEGUI, even though it's intended to actually configure Ogre.
+ * This shouldn't however be a problem, since we're actually not using much of the features of Ogre; we're basically just using the 2d functions in order to render CEGUI.
+ */
 class OgreConfigurator
 {
 public:
+
+	/**
+	 * @brief The result of showing the configuration window.
+	 */
 	enum Result
 	{
-		OC_OK, OC_CANCEL, OC_ADVANCED_OPTIONS
-	};
-	OgreConfigurator();
-	virtual ~OgreConfigurator();
+		/**
+		 * @brief Configuration was carried out successfully.
+		 */
+		OC_OK,
 
+		/**
+		 * @brief Configuration was cancelled.
+		 */
+		OC_CANCEL,
+
+		/**
+		 * @brief User requested to use the more complex Ogre configuration.
+		 */
+		OC_ADVANCED_OPTIONS
+	};
+
+	/**
+	 * @brief Ctor.
+	 */
+	OgreConfigurator();
+
+	/**
+	 * @brief Dtor.
+	 */
+	~OgreConfigurator();
+
+	/**
+	 * @brief Shows the configuration window.
+	 * @return The result of the configuration.
+	 */
 	Result configure();
 
+	/**
+	 * @brief Gets the name of the chosen render system.
+	 * @return The name of the chosen render system.
+	 */
 	std::string getChosenRenderSystemName() const;
+
+	/**
+	 * @brief Gets the final configuration options.
+	 * @return The final configuration options.
+	 */
 	Ogre::ConfigOptionMap getConfigOptions() const;
 
 protected:
@@ -53,11 +98,40 @@ protected:
 	bool buttonCancelClicked(const CEGUI::EventArgs& args);
 	bool buttonAdvancedClicked(const CEGUI::EventArgs& args);
 
-	static int mLastFrameTime;
+	/**
+	 * @brief The last frame time.
+	 *
+	 * Used for providing correct time to CEGUI.
+	 */
+	long long mLastFrameTime;
+
+	/**
+	 * @brief The result of the configuration.
+	 */
 	Result mResult;
+
+	/**
+	 * @brief Whether to continue within the render loop.
+	 */
 	bool mContinueInLoop;
+
+	/**
+	 * @brief The name of the chosen render system.
+	 */
 	std::string mChosenRenderSystemName;
+
+	/**
+	 * @brief The final configuration options.
+	 */
 	Ogre::ConfigOptionMap mConfigOptions;
+
+	/**
+	 * @brief Loads resources into Ogre.
+	 *
+	 * Since an ArchiveFactory cannot be removed from the Ogre::ArchiveFactoryManager this must be deleted after Ogre has been torn down.
+	 * Thus, this is deleted in the destructor.
+	 */
+	OgreResourceLoader* mLoader;
 };
 
 }

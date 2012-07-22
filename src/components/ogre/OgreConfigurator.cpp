@@ -24,6 +24,7 @@
 
 #include "components/ogre/widgets/ColouredListItem.h"
 #include "components/ogre/GUICEGUIAdapter.h"
+#include "components/ogre/OgreResourceLoader.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -34,6 +35,7 @@
 
 //#include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <RendererModules/Ogre/CEGUIOgreRenderer.h>
+#include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #include <CEGUI.h>
 #include <elements/CEGUICombobox.h>
 #include <elements/CEGUIListboxTextItem.h>
@@ -60,64 +62,14 @@ namespace Ember
 namespace OgreView
 {
 
-class SimpleResourceProvider: public CEGUI::DefaultResourceProvider
-{
-protected:
-
-public:
-	SimpleResourceProvider()
-	{
-
-	}
-
-	~SimpleResourceProvider()
-	{
-	}
-
-	void loadRawDataContainer(const CEGUI::String& filename, CEGUI::RawDataContainer& output, const CEGUI::String& resourceGroup)
-	{
-		ConfigService& cfgService = EmberServices::getSingleton().getConfigService();
-		std::string mediaDirectory = cfgService.getSharedMediaDirectory();
-		std::string guiRoot = mediaDirectory + "/gui/";
-
-		std::string finalFilename(guiRoot + filename.c_str());
-
-		std::ifstream ifile(finalFilename.c_str(), std::ifstream::in);
-		if (!ifile) {
-			ifile.open((std::string("/home/erik/ember/home/ember-media-dev/common/") + filename.c_str()).c_str(), std::ifstream::in);
-			if (!ifile) {
-				CEGUI_THROW(CEGUI::InvalidRequestException("DefaultResourceProvider::load: " + filename + " does not exist"));
-			}
-		}
-
-		ifile.seekg(0, std::ios::end);
-		std::streamsize size = ifile.tellg();
-		ifile.seekg(0, std::ios::beg);
-
-		std::auto_ptr<char> buffer(new char[size]);
-		ifile.read(buffer.get(), size);
-
-		if (ifile.gcount() != size) {
-			CEGUI_THROW(CEGUI::GenericException( "DefaultResourceProvider::loadRawDataContainer: "
-			"A problem occurred while reading file: " + filename));
-		}
-
-		output.setData((unsigned char*)buffer.release());
-		output.setSize(size);
-
-	}
-
-};
-
-int OgreConfigurator::mLastFrameTime = 0;
-
 OgreConfigurator::OgreConfigurator() :
-		mResult(OC_CANCEL), mContinueInLoop(true)
+		mLastFrameTime(0), mResult(OC_CANCEL), mContinueInLoop(true), mLoader(new OgreResourceLoader())
 {
 }
 
 OgreConfigurator::~OgreConfigurator()
 {
+	delete mLoader;
 }
 
 OgreConfigurator::Result OgreConfigurator::configure()
@@ -157,12 +109,14 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	renderWindow->setAutoUpdated(true);
 	renderWindow->setVisible(true);
 
-	CEGUI::ResourceProvider* rp = new SimpleResourceProvider();
-//	CEGUI::ResourceProvider* rp = new CEGUI::OgreResourceProvider();
+	mLoader->initialize();
+	mLoader->loadSection("Gui", false);
+	mLoader->loadSection("General", false);
 
 	CEGUI::OgreRenderer& renderer = CEGUI::OgreRenderer::create(*renderWindow);
+	CEGUI::ResourceProvider& rp = CEGUI::OgreRenderer::createOgreResourceProvider();
 
-	CEGUI::System::create(renderer, rp);
+	CEGUI::System::create(renderer, &rp);
 
 	CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkin.scheme", "");
 	CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-8");
