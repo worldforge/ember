@@ -286,6 +286,7 @@ bool OgreSetup::showConfigurationDialog()
 		for (Ogre::ConfigOptionMap::const_iterator I = configOptions.begin(); I != configOptions.end(); ++I) {
 			mRoot->getRenderSystem()->setConfigOption(I->first, I->second.currentValue);
 		}
+		mRoot->saveConfig();
 	}
 	mRoot->initialise(false);
 	return true;
