@@ -1,8 +1,10 @@
 #include <components/ogre/AutoGraphicsLevelManager.h>
 
+#include <components/ogre/EmberOgre.h>
+
 #include <services/config/ConfigListenerContainer.h>
 
-#include <components/ogre/EmberOgre.h>
+#include <framework/MainLoopController.h>
 #include <framework/Time.h>
 
 #include <Ogre.h>
@@ -79,11 +81,11 @@ bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 	return furtherChangePossible;
 }
 
-AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow) :
-		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow), mConfigListenerContainer(new ConfigListenerContainer())
+AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow, MainLoopController& mainLoopController) :
+		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow), mMainLoopController(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer())
 {
 	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
-	mConfigListenerContainer->registerConfigListener("graphics", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
+	mConfigListenerContainer->registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
@@ -99,11 +101,13 @@ void AutomaticGraphicsLevelManager::setFps(float fps)
 void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 {
 	float changeRequired = mDefaultFps - currentFps;
-
+	bool frameLimited = mMainLoopController.getFrameLimited();
 	//This factor is used to adjust the required fps difference before a change is triggered. Lower required fpses eg. 30 will need to respond to smaller changes.
 	float factor = mDefaultFps / 60.0f;
 	if (std::abs(changeRequired) >= factor * 8.0f) {
 		changeGraphicsLevel(changeRequired);
+	} else if (changeRequired < 2.0f && frameLimited) { //average fps is exactly equal to desired fps, fps is being limited.
+		changeGraphicsLevel(-8.0f); //try to up the detail so fps drops by around 8 fps
 	}
 }
 

@@ -41,9 +41,9 @@ bool FoliageLevelManager::changeLevel(float level)
 	//holds whether a change in density is made at the end of trying to step up or step down
 	bool changeMade = false;
 
-	if (level > 0) { //decreasing foliage density since more fps is required
+	if (level > 0.0f) { //decreasing foliage density since more fps is required
 		changeMade = changeMade || stepDownFoliageDensity(mDefaultDensityStep) || stepDownFoliageDistance(mDefaultDistanceStep);
-	} else if (level < 0) { //increasing foliage density since less fps is required
+	} else if (level < 0.0f) { //increasing foliage density since less fps is required
 		changeMade = changeMade || stepUpFoliageDensity(mDefaultDensityStep) || stepUpFoliageDistance(mDefaultDistanceStep);
 	}
 

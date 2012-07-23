@@ -255,6 +255,11 @@ private:
 	 * Value is in milliseconds.
 	 */
 	long long mLastTimeMainLoopStepEnded;
+	
+	/**
+	 * @brief Is used to signify if frame rate is being limited.
+	 */
+	bool mFrameRateLimited;
 
 	/**
 	 * @brief We listen to the GotView event to be able to store a reference to the View instance.

@@ -235,15 +235,6 @@ function SettingsWidget:buildSettingsUi()
 			contents =
 			{
 				{
-					label = "Desired FPS",
-					helpString = "Used to scale up or down the graphics automatically to try to achieve the fps",
-					
-					section = "graphics",
-					key = "desiredfps",
-					
-					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 200) end,
-				},
-				{
 					label = "Level",
 					helpString = "General graphics level",
 					

@@ -41,7 +41,7 @@ public:
 	 * @param shouldQuit A reference to a boolean which represents whether the application should quit.
 	 * @param pollEris Whether Eris should be polled each frame.
 	 */
-	MainLoopController(bool& shouldQuit, bool& pollEris);
+	MainLoopController(bool& shouldQuit, bool& pollEris, bool& frameRateLimited);
 
 	/**
 	 * @brief Return true if application has received an "exit" command else false.
@@ -74,7 +74,13 @@ public:
 	 * @return True if polling occurs each frame.
 	 */
 	bool getErisPolling() const;
-
+	
+	/**
+	 * @brief Gets whether frame rate is being limited.
+	 * @return True if frame rate tries to pass the frame limit and will return true as long as frame limiting is in play.
+	 */
+	bool getFrameLimited() const;
+	
 	/**
 	 * @brief Emitted before the eris polling is started.
 	 * The parameter sent is the time slice since this event last was emitted.
@@ -115,6 +121,12 @@ private:
 	 * @brief Whether Eris should be polled each frame or not.
 	 */
 	bool& mPollEris;
+	
+	/**
+	 * @brief Holds whether frame rate is being limited currently.
+	 * This will be true when frame rate tries to pass the frame limit and limiting comes into play.
+	 */
+	bool& mFrameRateLimited;
 };
 
 }

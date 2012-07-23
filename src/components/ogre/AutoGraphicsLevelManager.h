@@ -13,6 +13,7 @@ class Variable;
 namespace Ember
 {
 
+class MainLoopController;
 class ConfigListenerContainer;
 namespace OgreView
 {
@@ -166,7 +167,7 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow);
+	AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow, MainLoopController& mainLoopController);
 
 	/**
 	 * @brief Destructor
@@ -225,6 +226,12 @@ protected:
 	 * The interface through which this central class communicates with the graphical subcomponents.
 	 */
 	IGraphicalChangeAdapter mGraphicalChangeAdapter;
+
+	/**
+	 * @brief Reference to the main loop controller.
+	 * Mainly used for getting frame limiting data.
+	 */
+	MainLoopController& mMainLoopController;
 
 	/**
 	 * @brief Connected to the config service to listen for derired fps settings.

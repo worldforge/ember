@@ -404,7 +404,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		mResourceLoader->loadGeneral();
 
 		// Create shader manager
-		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(*mWindow);
+		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(*mWindow, mainLoopController);
 		mShaderManager = new ShaderManager(*mAutomaticGraphicsLevelManager);
 		
 		//should media be preloaded?

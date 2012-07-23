@@ -144,7 +144,7 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mLastTimeMainLoopStepEnded(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+		mOgreView(0), mShouldQuit(false), mPollEris(true), mFrameRateLimited(false), mMainLoopController(mShouldQuit, mPollEris, mFrameRateLimited), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mLastTimeMainLoopStepEnded(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 
 {
 
@@ -210,6 +210,9 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 			long long millisecondSinceLastFrame = currentTimeMillis - mLastTimeMainLoopStepEnded;
 			if (millisecondSinceLastFrame < minMillisecondsPerFrame) {
 				input.sleep(minMillisecondsPerFrame - millisecondSinceLastFrame);
+				mFrameRateLimited = true;
+			} else {
+				mFrameRateLimited = false;
 			}
 		}
 		mLastTimeMainLoopStepEnded = Time::currentTimeMillis();
