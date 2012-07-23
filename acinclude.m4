@@ -397,17 +397,20 @@ AC_DEFUN([AX_BOOST],
 		AC_MSG_CHECKING(for boostlib >= $boost_lib_version_req)
 		succeeded=no
 
+		BOOST_PATH=""
 		dnl first we check the system location for boost libraries
 		dnl this location ist chosen if boost libraries are installed with the --layout=system option
 		dnl or if you install boost with RPM
 		if test "$ac_boost_path" != ""; then
 			BOOST_LDFLAGS="-L$ac_boost_path/lib"
 			BOOST_CPPFLAGS="-I$ac_boost_path/include"
+			BOOST_PATH=$ac_boost_path
 		else
 			for ac_boost_path_tmp in /usr /usr/local /opt ; do
 				if test -d "$ac_boost_path_tmp/include/boost" && test -r "$ac_boost_path_tmp/include/boost"; then
 					BOOST_LDFLAGS="-L$ac_boost_path_tmp/lib"
 					BOOST_CPPFLAGS="-I$ac_boost_path_tmp/include"
+					BOOST_PATH=$ac_boost_path_tmp
 					break;
 				fi
 			done
@@ -419,6 +422,7 @@ AC_DEFUN([AX_BOOST],
 
 		LDFLAGS_SAVED="$LDFLAGS"
 		LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
+		BOOST_EXTRALIBS=""
 		export LDFLAGS
 
 	AC_LANG_PUSH(C++)
@@ -474,6 +478,7 @@ AC_DEFUN([AX_BOOST],
 				VERSION_UNDERSCORE=`echo $_version | sed 's/\./_/'`
 				BOOST_CPPFLAGS="-I$best_path/include/boost-$VERSION_UNDERSCORE"
 				BOOST_LDFLAGS="-L$best_path/lib"
+				BOOST_PATH=$best_path
 
 	    		if test "x$BOOST_ROOT" != "x"; then
                     if test -d "$BOOST_ROOT" && test -r "$BOOST_ROOT" && test -d "$BOOST_ROOT/stage/lib" && test -r "$BOOST_ROOT/stage/lib"; then
@@ -485,6 +490,7 @@ AC_DEFUN([AX_BOOST],
 							AC_MSG_NOTICE(We will use a staged boost library from $BOOST_ROOT)
 							BOOST_CPPFLAGS="-I$BOOST_ROOT"
 							BOOST_LDFLAGS="-L$BOOST_ROOT/stage/lib"
+							BOOST_PATH=$BOOST_ROOT
 						fi
 					fi
 	    		fi
@@ -572,12 +578,26 @@ AC_DEFUN([AX_BOOST],
                 echo $CC
                 TMPCC=$CC`$CC -dumpversion |sed  -e s/@<:@^a-zA-Z0-9@:>@//g|sed -e s/.$//g`
                 echo $TMPCC
-				for ax_lib in $BN-$TMPCC $BN-$TMPCC-mt $BN-$TMPCC-mt-s $BN-$TMPCC-s $BN-$CC $BN-$CC-mt $BN-$CC-mt-s $BN-$CC-s $BN $BN-mt \
-                              lib$BN-$TMPCC lib$BN-$TMPCC-mt lib$BN-$TMPCC-mt-s lib$BN-$TMPCC-s lib$BN-$CC lib$BN-$CC-mt lib$BN-$CC-mt-s lib$BN-$CC-s lib$BN lib$BN-mt \
-                              $BN-mgw $BN-mgw $BN-mgw-mt $BN-mgw-mt-s $BN-mgw-s ; do
-				    AC_CHECK_LIB($ax_lib, main, [BOOST_THREAD_LIB="-l$ax_lib"; AC_SUBST(BOOST_THREAD_LIB) link_thread="yes"; break],
-                                 [link_thread="no"])
-  				done
+                BOOST_THREAD_LIB_NAME=""
+                dnl if the user has specified a specific boost installation dir, check that first
+				if test "$ac_boost_path" != ""; then
+					for ax_lib in $BN-$TMPCC $BN-$TMPCC-mt $BN-$TMPCC-mt-s $BN-$TMPCC-s $BN-$CC $BN-$CC-mt $BN-$CC-mt-s $BN-$CC-s $BN $BN-mt \
+	                              lib$BN-$TMPCC lib$BN-$TMPCC-mt lib$BN-$TMPCC-mt-s lib$BN-$TMPCC-s lib$BN-$CC lib$BN-$CC-mt lib$BN-$CC-mt-s lib$BN-$CC-s lib$BN lib$BN-mt \
+	                              $BN-mgw $BN-mgw $BN-mgw-mt $BN-mgw-mt-s $BN-mgw-s ; do
+					    AC_CHECK_FILE($ac_boost_path/lib/lib${ax_lib}.so, [
+						   BOOST_THREAD_LIB="-l$ax_lib"; BOOST_THREAD_LIB_NAME="$ax_lib"; AC_SUBST(BOOST_THREAD_LIB) link_thread="yes"; break],
+		                                 [link_thread="no"])
+	  				done
+				fi
+				if test "x$link_thread" != "xyes"; then
+					for ax_lib in $BN-$TMPCC $BN-$TMPCC-mt $BN-$TMPCC-mt-s $BN-$TMPCC-s $BN-$CC $BN-$CC-mt $BN-$CC-mt-s $BN-$CC-s $BN $BN-mt \
+	                              lib$BN-$TMPCC lib$BN-$TMPCC-mt lib$BN-$TMPCC-mt-s lib$BN-$TMPCC-s lib$BN-$CC lib$BN-$CC-mt lib$BN-$CC-mt-s lib$BN-$CC-s lib$BN lib$BN-mt \
+	                              $BN-mgw $BN-mgw $BN-mgw-mt $BN-mgw-mt-s $BN-mgw-s ; do
+					    AC_CHECK_LIB($ax_lib, main, [BOOST_THREAD_LIB="-l$ax_lib"; BOOST_THREAD_LIB_NAME="$ax_lib"; AC_SUBST(BOOST_THREAD_LIB) link_thread="yes"; break],
+	                                 [link_thread="no"])
+	  				done
+	  			fi
+				
 				if test "x$link_thread" = "xno"; then
 					AC_MSG_NOTICE(Could not link against $ax_lib !)
                 else
@@ -587,6 +607,14 @@ AC_DEFUN([AX_BOOST],
                        break;
                        ;;
                     esac
+                    dnl boost 1.50.0+ requires extra libs to work (currently "chrono" and "system"), so we'll check if any extra are needed
+                	AC_CHECK_FILE($BOOST_PATH/lib/lib$BOOST_THREAD_LIB_NAME.so, BOOST_THREAD_FULL_PATH=$BOOST_PATH/lib/lib$BOOST_THREAD_LIB_NAME.so, 
+                		AC_CHECK_FILE($BOOST_PATH/lib64/lib$BOOST_THREAD_LIB_NAME.so, BOOST_THREAD_FULL_PATH=$BOOST_PATH/lib64/lib$BOOST_THREAD_LIB_NAME.so, BOOST_THREAD_FULL_PATH="")
+                		)
+                	AC_MSG_CHECKING(if $BOOST_THREAD_FULL_PATH require extra libs.)
+                	BOOST_EXTRALIBS=`ldd $BOOST_THREAD_FULL_PATH | grep -oE "boost\w*" | sed 's/^/-l/' | tr "\\n" " "`
+					AC_MSG_RESULT($BOOST_EXTRALIBS)
+					BOOST_LDFLAGS="$BOOST_LDFLAGS $BOOST_THREAD_LIB $BOOST_EXTRALIBS"
 				fi
 			fi
 		fi
@@ -609,80 +637,6 @@ AC_DEFUN([WF_CHECK_THREADING],
 	LDFLAGS_SAVED="$LDFLAGS"
 	LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 	export LDFLAGS
-	
-	AC_CACHE_CHECK([whether the Boost::Thread library is available],
-				   [ax_cv_boost_thread],
-	[AC_LANG_PUSH([C++])
-		 CXXFLAGS_SAVE=$CXXFLAGS
-	
-		 if test "x$build_os" = "xsolaris" ; then
-			 CXXFLAGS="-pthreads $CXXFLAGS"
-		 elif test "x$build_os" = "xmingw32" ; then
-			 CXXFLAGS="-mthreads $CXXFLAGS"
-		 else
-			CXXFLAGS="-pthread $CXXFLAGS"
-		 fi
-		 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[@%:@include <boost/thread/thread.hpp>]],
-	                           [[boost::thread_group thrds;
-	                           return 0;]])],
-	           [ax_cv_boost_thread=yes], [ax_cv_boost_thread=no])
-		 CXXFLAGS=$CXXFLAGS_SAVE
-	     AC_LANG_POP([C++])
-	])
-	if test "x$ax_cv_boost_thread" = "xyes"; then
-	   if test "x$build_os" = "xsolaris" ; then
-		  BOOST_CPPFLAGS="-pthreads $BOOST_CPPFLAGS"
-	   elif test "x$build_os" = "xmingw32" ; then
-		  BOOST_CPPFLAGS="-mthreads $BOOST_CPPFLAGS"
-	   else
-		  BOOST_CPPFLAGS="-pthread $BOOST_CPPFLAGS"
-	   fi
-	
-		AC_SUBST(BOOST_CPPFLAGS)
-	
-		AC_DEFINE(HAVE_BOOST_THREAD,,[define if the Boost::Thread library is available])
-		BN=boost_thread
-	
-		LDFLAGS_SAVE=$LDFLAGS
-	                case "x$build_os" in
-	                  *bsd* )
-	                       LDFLAGS="-pthread $LDFLAGS"
-	                  break;
-	                  ;;
-	                esac
-	    TMPCC=$CC`$CC -dumpversion |sed  -e s/@<:@^a-zA-Z0-9@:>@//g|sed -e s/.$//g`
-	    if test "x$ax_boost_user_thread_lib" = "x"; then
-			for ax_lib in $BN-$TMPCC $BN-$TMPCC-mt $BN-$TMPCC-mt-s $BN-$TMPCC-s $BN-$CC $BN-$CC-mt $BN-$CC-mt-s $BN-$CC-s $BN $BN-mt \
-	                      lib$BN-$TMPCC lib$BN-$TMPCC-mt lib$BN-$TMPCC-mt-s lib$BN-$TMPCC-s lib$BN-$CC lib$BN-$CC-mt lib$BN-$CC-mt-s lib$BN-$CC-s lib$BN lib$BN-mt \
-	                      $BN-mgw $BN-mgw $BN-mgw-mt $BN-mgw-mt-s $BN-mgw-s ; do
-			    AC_CHECK_LIB($ax_lib, main, [BOOST_THREAD_LIB="-l$ax_lib"; AC_SUBST(BOOST_THREAD_LIB) link_thread="yes"; break],
-	                         [link_thread="no"])
-			done
-	    else
-	       for ax_lib in $ax_boost_user_thread_lib $BN-$ax_boost_user_thread_lib; do
-			      AC_CHECK_LIB($ax_lib, main,
-	                           [BOOST_THREAD_LIB="-l$ax_lib"; AC_SUBST(BOOST_THREAD_LIB) link_thread="yes"; break],
-	                           [link_thread="no"])
-	          done
-	
-	    fi
-		if test "x$link_thread" = "xno"; then
-			AC_MSG_ERROR(Could not link against $ax_lib !)
-	                else
-	                   case "x$build_os" in
-	                      *bsd* )
-		        LDFLAGS="-pthread $LDFLAGS"
-	                      break;
-	                      ;;
-	                   esac
-	
-		fi
-	fi
-
-	#STLPORT BECAUSE THE LIBRARIES DONT HAVE ANY WAY TO GET C++ FLAGS PASSED INTO THEM SO WE CAN TELL THEM WHERE BOOST LIVES
-	AC_SUBST(STLPORT_CFLAGS)
-	CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
-	LDFLAGS="$LDFLAGS $BOOST_THREAD_LIB"
 ])
 # Configure paths for SDL
 # Sam Lantinga 9/21/99
