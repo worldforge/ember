@@ -38,6 +38,8 @@
 
 #include <sigc++/bind.h>
 
+#include <limits>
+
 namespace Ember
 {
 namespace OgreView
@@ -47,7 +49,7 @@ namespace Environment
 {
 
 EmberEntityLoader::EmberEntityLoader(::Forests::PagedGeometry &geom, unsigned int batchSize) :
-	mGeom(geom), mBatchSize(batchSize)
+		mGeom(geom), mBatchSize(batchSize)
 {
 }
 
@@ -88,13 +90,13 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresen
 	instance.modelRepresentation = modelRepresentation;
 
 	WFMath::Point<3> viewPosition = entity.getViewPosition();
+	Ogre::Vector3 position(std::numeric_limits<Ogre::Real>::quiet_NaN(), std::numeric_limits<Ogre::Real>::quiet_NaN(), std::numeric_limits<Ogre::Real>::quiet_NaN());
+
 	bool isValidPos = false;
 	if (viewPosition.isValid()) {
 		isValidPos = true;
-	} else {
-		viewPosition = WFMath::Point<3>::ZERO();
+		position = Convert::toOgre(viewPosition);
 	}
-	Ogre::Vector3 position(Convert::toOgre(viewPosition));
 	instance.lastPosition = position;
 #if EMBERENTITYLOADER_USEBATCH
 	const int batchX = Ogre::Math::Floor(position.x / mBatchSize);
@@ -150,7 +152,6 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 		modelRepresentation->getModel().setRenderingDistance(modelRepresentation->getModel().getDefinition()->getRenderingDistance());
 		mEntities.erase(I);
 	}
-
 
 #endif
 
@@ -230,7 +231,9 @@ void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity)
 		EntityMap::iterator I = entityMap->find(entity->getId());
 		if (I != entityMap->end()) {
 			ModelRepresentationInstance& instance(I->second);
-			mGeom.reloadGeometryPage(instance.lastPosition);
+			if (!instance.lastPosition.isNaN()) {
+				mGeom.reloadGeometryPage(instance.lastPosition);
+			}
 			WFMath::Point<3> viewPos = entity->getViewPosition();
 			if (viewPos.isValid()) {
 				mGeom.reloadGeometryPage(Convert::toOgre(viewPos));
