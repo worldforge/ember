@@ -46,10 +46,9 @@ AC_LANG_PUSH([C])
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(stdlib.h)
-AC_CHECK_HEADERS(math.h)
-dnl Test for <math.h> header file
-AC_CHECK_HEADERS([signal.h])
+AC_CHECK_HEADER(stdlib.h)
+AC_CHECK_HEADER(math.h)
+AC_CHECK_HEADER([signal.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -130,7 +129,7 @@ OSX="false"
 case $build_os in
   cygwin* | mingw* | cegcc*)
 	LIBS="$LIBS -lshlwapi"
-	AC_CHECK_TOOL(WINDRES, windres)
+	AC_CHECK_TOOL(WINDRES, windres, "windres")
 	AC_MSG_RESULT([Building for windows.])
 	WIN32="true"
     ;;
