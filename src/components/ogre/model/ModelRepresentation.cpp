@@ -83,8 +83,6 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scen
 
 	mModel.setQueryFlags(MousePicker::CM_ENTITY);
 
-	initFromModel();
-
 	/** If there's an idle animation, we'll randomize the entry value for that so we don't end up with too many similiar entities with synched animations (such as when you enter the world at origo and have 20 settlers doing the exact same motions. */
 	Action* idleaction = mModel.getAction(ActivationDefinition::MOVEMENT, ACTION_STAND);
 	if (idleaction) {

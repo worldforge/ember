@@ -141,6 +141,11 @@ public:
 	virtual ~ModelRepresentation();
 
 	/**
+	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
+	 */
+	void initFromModel();
+
+	/**
 	 * @copydoc OgreView::IGraphicalRepresentation::getType()
 	 */
 	virtual const std::string& getType() const;
@@ -344,11 +349,6 @@ protected:
 	 * @brief When the Model is reset we need to clean up and remove all attachments from it.
 	 */
 	void model_Resetting();
-
-	/**
-	 * @brief Initialize position and scaling of the scale node with values from the Model, as well as set up any alternative rendering techniques.
-	 */
-	void initFromModel();
 
 	/**
 	 * @brief Called when the movement mode of the entity changes.

@@ -115,6 +115,8 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 
 		Model::ModelRepresentation* representation = new Model::ModelRepresentation(mEntity, *model, mScene, mMapping);
 		mEntity.setGraphicalRepresentation(representation);
+		representation->initFromModel();
+
 
 	}
 }
