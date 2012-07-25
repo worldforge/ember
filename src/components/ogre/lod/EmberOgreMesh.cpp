@@ -47,22 +47,8 @@ void EmberOgreMesh::generateLodLevels(const ProgressiveMeshGenerator::LodConfigL
 {
 	removeLodLevels();
 
-	for (int i = 0; i < mSubMeshList.size(); i++) {
-		// Check if triangles are present.
-		if (mSubMeshList[i]->indexData->indexCount > 0) {
-			// Set up data for reduction.
-			Ogre::VertexData* pVertexData = mSubMeshList[i]->useSharedVertices ? sharedVertexData : mSubMeshList[i]->vertexData;
-
-			ProgressiveMeshGenerator pm(pVertexData, mSubMeshList[i]->indexData);
-			pm.build(lodConfigs, mSubMeshList[i]->mLodFaceList);
-
-		} else {
-			// Create empty index data for each lod.
-			for (size_t i = 0; i < lodConfigs.size(); ++i) {
-				mSubMeshList[i]->mLodFaceList.push_back(OGRE_NEW Ogre::IndexData);
-			}
-		}
-	}
+	ProgressiveMeshGenerator pm(*this);
+	pm.build(lodConfigs);
 
 	// Iterate over the lods and record usage.
 	mNumLods = lodConfigs.size() + 1;
