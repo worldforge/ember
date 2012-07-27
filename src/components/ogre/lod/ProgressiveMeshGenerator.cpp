@@ -70,6 +70,9 @@ namespace OgreView
 namespace Lod
 {
 
+// Optimize for best output instead of performance. Use OGRE_DOUBLE_PRECISION for even better results.
+#define PM_BEST_QUALITY
+
 #define NEVER_COLLAPSE_COST std::numeric_limits<float>::infinity()
 #define NEEDS_UPDATE_COLLAPSE_COST (-std::numeric_limits<float>::infinity())
 #define UNINITIALIZED_COLLAPSE_COST (std::numeric_limits<float>::min())
@@ -277,6 +280,7 @@ void ProgressiveMeshGenerator::removeTriangleFromEdges(size_t triangleID, PMVert
 		}
 	}
 }
+
 void ProgressiveMeshGenerator::printTriangle(PMTriangle* triangle, std::stringstream& str)
 {
 	for (int i = 0; i < 3; i++) {
@@ -287,45 +291,55 @@ void ProgressiveMeshGenerator::printTriangle(PMTriangle* triangle, std::stringst
 		    << "vertex ID: " << triangle->vertexID[i] << std::endl;
 	}
 }
+
+bool ProgressiveMeshGenerator::isDuplicateTriangle(PMTriangle* triangle, PMTriangle* triangle2)
+{
+	for (int i = 0; i < 3; i++) {
+		if (triangle->vertex[i] != triangle2->vertex[0] ||
+		    triangle->vertex[i] != triangle2->vertex[1] ||
+		    triangle->vertex[i] != triangle2->vertex[2]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int ProgressiveMeshGenerator::isDuplicateTriangle(PMTriangle* triangle)
+{
+	// duplicate triangle detection (where all vertices has the same position)
+	VertexTriangles::iterator itEnd = triangle->vertex[0]->triangles.end();
+	VertexTriangles::iterator it = triangle->vertex[0]->triangles.begin();
+	for (; it != itEnd; it++) {
+		PMTriangle* t = &mTriangleList[*it];
+		if (isDuplicateTriangle(triangle, t)) {
+			return *it;
+		}
+	}
+	return -1;
+}
+
 void ProgressiveMeshGenerator::addTriangleToEdges(size_t triangleID)
 {
 	PMTriangle* triangle = &mTriangleList[triangleID];
-#if 0
-	// Don't use this, because collapsing will fail.
-	// Conflicts with invalidateEdgeCosts().
-	// You need to call invalidateEdgeCosts after edges
-	// are added, but this will remove the edges.
-	{
-		// duplicate triangle detection (where all vertices has the same position)
-		VertexTriangles::iterator itEnd = triangle->vertex[0]->triangles.end();
-		VertexTriangles::iterator it = triangle->vertex[0]->triangles.begin();
-		for (; it != itEnd; it++) {
-			PMTriangle* t = &mTriangleList[*it];
-			for (int i = 0; i < 3; i++) {
-				if (t->vertex[i] != triangle->vertex[0] ||
-				    t->vertex[i] != triangle->vertex[1] ||
-				    t->vertex[i] != triangle->vertex[2]) {
-					continue;
-				}
-			}
-			std::stringstream str;
-			str << "In " << mMesh.getName() << " duplicate triangle found." << std::endl;
-			str << "Triangle " << triangleID << " positions:" << std::endl;
-			printTriangle(triangle, str);
-			str << "Triangle " << *it << " positions:" << std::endl;
-			printTriangle(t, str);
-			str << "Triangle " << *it << " will be excluded from Lod level calculations.";
-			S_LOG_WARNING(str.str());
-			t->maxLod = 0;
-			unsigned short maxLod = mLodIndexCountMatrix.size2();
-			for (unsigned short i = 0; i < maxLod; i++) {
-				mLodIndexCountMatrix(t->submeshID, i) -= 3;
-			}
-			return;
-
+#ifdef PM_BEST_QUALITY
+	int duplicateID = isDuplicateTriangle(triangle);
+	if (duplicateID != -1) {
+		std::stringstream str;
+		str << "In " << mMesh.getName() << " duplicate triangle found." << std::endl;
+		str << "Triangle " << triangleID << " positions:" << std::endl;
+		printTriangle(triangle, str);
+		str << "Triangle " << duplicateID << " positions:" << std::endl;
+		printTriangle(&mTriangleList[duplicateID], str);
+		str << "Triangle " << triangleID << " will be excluded from Lod level calculations.";
+		S_LOG_WARNING(str.str());
+		triangle->maxLod = 0;
+		unsigned short maxLod = mLodIndexCountMatrix.size2();
+		for (unsigned short i = 0; i < maxLod; i++) {
+			mLodIndexCountMatrix(triangle->submeshID, i) -= 3;
 		}
+		return;
 	}
-#endif // if 0
+#endif // ifdef PM_BEST_QUALITY
 	for (int i = 0; i < 3; i++) {
 		std::pair<VertexTriangles::iterator, bool> ret;
 		ret = triangle->vertex[i]->triangles.insert(triangleID);
@@ -585,7 +599,7 @@ void ProgressiveMeshGenerator::assertOutdatedCollapseCost(PMVertex* vertex)
 			assert(it2->collapseCost == computeEdgeCollapseCost(neighbor, getPointer(it2)));
 		}
 	}
-#endif
+#endif // ifndef NDEBUG
 }
 
 void ProgressiveMeshGenerator::updateVertexCollapseCost(PMVertex* vertex)
@@ -837,8 +851,9 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 			// 3. task
 			newtriangle->minLod = mCurLod;
 
-			// Should we update normals here??
+#ifdef PM_BEST_QUALITY
 			newtriangle->computeNormal();
+#endif
 
 			// 4. task
 			newtriangle->replaceVertexID(srcID, dstID, dst);

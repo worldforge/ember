@@ -270,6 +270,8 @@ private:
 	void printTriangle(PMTriangle* triangle, std::stringstream& str);
 	PMTriangle* findSideTriangle(const PMVertex* v1, const PMVertex* v2);
 	void assertOutdatedCollapseCost(PMVertex* vertex);
+	bool isDuplicateTriangle(PMTriangle* triangle, PMTriangle* triangle2);
+	int isDuplicateTriangle(PMTriangle* triangle);
 };
 
 }
