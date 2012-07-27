@@ -19,8 +19,8 @@
 #ifndef PROGRESSIVEMESHGENERATOR_H
 #define PROGRESSIVEMESHGENERATOR_H
 
-#include<OgrePrerequisites.h>
-#include<OgreVector3.h>
+#include <OgrePrerequisites.h>
+#include <OgreVector3.h>
 #include <OgreHardwareIndexBuffer.h>
 
 #include <boost/unordered_set.hpp>
@@ -200,7 +200,6 @@ private:
 		unsigned int getVertexID(const PMVertex* v) const;
 		void removeTriangle(VertexTriangles::iterator it);
 		void addTriangle(VertexTriangles::iterator it);
-		void invalidateEdgeCosts();
 	};
 
 	struct IndexBufferInfo {

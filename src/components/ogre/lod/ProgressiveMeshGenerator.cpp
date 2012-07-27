@@ -56,9 +56,9 @@
 
 #include "framework/LoggingInstance.h"
 
-#include<OgreHardwareBufferManager.h>
-#include<OgreSubMesh.h>
-#include<OgreMesh.h>
+#include <OgreHardwareBufferManager.h>
+#include <OgreSubMesh.h>
+#include <OgreMesh.h>
 
 #include <limits>
 #include <sstream>
@@ -257,20 +257,6 @@ unsigned int ProgressiveMeshGenerator::PMTriangle::getVertexID(const PMVertex* v
 	}
 	assert(0);
 	return 0;
-}
-
-void ProgressiveMeshGenerator::PMTriangle::invalidateEdgeCosts()
-{
-	// Hopefully this is unrolled by the compiler, so "for" and "if" statements disappears.
-	for (int i = 0; i < 3; i++) {
-		for (int n = 0; n < 3; n++) {
-			if (i != n) {
-				VertexEdges::iterator it = vertex[i]->edges.find(PMEdge(vertex[n]));
-				assert(it != vertex[i]->edges.end());
-				it->collapseCost = NEEDS_UPDATE_COLLAPSE_COST;
-			}
-		}
-	}
 }
 
 void ProgressiveMeshGenerator::removeTriangleFromEdges(size_t triangleID, PMVertex* skip)
@@ -585,8 +571,8 @@ float ProgressiveMeshGenerator::computeEdgeCollapseCost(PMVertex* src, PMEdge* d
 
 void ProgressiveMeshGenerator::assertOutdatedCollapseCost(PMVertex* vertex)
 {
-	//Validates that collapsing has updated all edges needed by computeEdgeCollapseCost.
-	//This will assert if the dependencies inside computeEdgeCollapseCost changes.
+	// Validates that collapsing has updated all edges needed by computeEdgeCollapseCost.
+	// This will assert if the dependencies inside computeEdgeCollapseCost changes.
 #ifndef NDEBUG
 	VertexEdges::iterator it = vertex->edges.begin();
 	VertexEdges::iterator itEnd = vertex->edges.end();
@@ -609,9 +595,7 @@ void ProgressiveMeshGenerator::updateVertexCollapseCost(PMVertex* vertex)
 	VertexEdges::iterator it = vertex->edges.begin();
 	VertexEdges::iterator itEnd = vertex->edges.end();
 	for (; it != itEnd; it++) {
-		if (it->collapseCost == NEEDS_UPDATE_COLLAPSE_COST) {
-			it->collapseCost = computeEdgeCollapseCost(vertex, getPointer(it));
-		}
+		it->collapseCost = computeEdgeCollapseCost(vertex, getPointer(it));
 		if (collapseCost < it->collapseCost) {
 			collapseCost = it->collapseCost;
 			collapseTo = it->dst;
@@ -819,8 +803,7 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 			// 3. Set the minLod for the new triangle, so it will not be added to Lod levels which don't need anymore reductions.
 			// 4. Move new triangle along the edge.
 			// 5. Replace references/pointers from old triangle to new triangle.
-			// 6. Mark edges of the new triangle for collapse cost recalculation.
-			// 7. Set the maxLod for the old triangle, so it will not be added to Lod levels which need more reductions.
+			// 6. Set the maxLod for the old triangle, so it will not be added to Lod levels which need more reductions.
 
 			// 1. task
 			unsigned int srcID = triangle->getVertexID(src);
@@ -838,10 +821,9 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 			}
 			unsigned int dstID = tmpCollapsedEdges[id].dstID;
 
-			
 			PMTriangle tmp(*triangle);
 
-			// 7. task
+			// 6. task
 			triangle->maxLod = mCurLod;
 
 			// 2. task
@@ -864,16 +846,14 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 			// 5. task
 			addTriangleToEdges(mTriangleList.size() - 1);
 			removeTriangleFromEdges(triangleID, src);
-			
-			// 6. task
-			newtriangle->invalidateEdgeCosts();
+
 		}
 	}
 
 	VertexEdges::iterator it3 = src->edges.begin();
 	VertexEdges::iterator it3End = src->edges.end();
 	for (; it3 != it3End; it3++) {
-		updateVertexCollapseCost(getPointer(it3)->dst);
+		updateVertexCollapseCost(it3->dst);
 	}
 
 #ifndef NDEBUG
@@ -888,7 +868,7 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 		assertOutdatedCollapseCost(it3->dst);
 	}
 	assertOutdatedCollapseCost(dst);
-#endif
+#endif // ifndef NDEBUG
 	mCollapseCostSet.erase(src->costSetPosition); // Remove src from collapse costs.
 	src->edges.clear(); // Free memory
 	src->triangles.clear(); // Free memory
@@ -1000,7 +980,6 @@ ProgressiveMeshGenerator::PMEdge* ProgressiveMeshGenerator::addEdge(PMVertex* v,
 	ret = v->edges.insert(edge);
 	if (ret.second) {
 		PMEdge* e = getPointer(ret.first);
-		// updateVertexCollapseCost(v);
 		e->refCount = 1;
 		return e;
 	} else {
