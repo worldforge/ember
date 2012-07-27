@@ -26,6 +26,14 @@ namespace Ember
 namespace Domain
 {
 
+/**
+ * @author Erik Ogenvik <erik@ogenvik.org>
+ * @brief Provides height data for supplied positions in the world.
+ *
+ * This is used to better align the visual representation of entities with the world in general.
+ * The typical example of an implementation of this is a class which allows entities placed on the ground to "snap" to the ground.
+ * Other implementations might provide ways for entities to rest on tables or shelves.
+ */
 class IHeightProvider
 {
 public:

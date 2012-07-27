@@ -55,7 +55,6 @@ public:
 	virtual ~Action()
 	{
 	}
-	;
 
 	/**
 	 * Activate the action.
