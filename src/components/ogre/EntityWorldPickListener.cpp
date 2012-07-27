@@ -167,30 +167,49 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 				collisionResult.isTransparent = false;
 				collisionDetector->testCollision(cameraRay, collisionResult);
 				if (collisionResult.collided) {
-					EntityPickResult result;
-					result.entity = &anUserObject->getEmberEntity();
-					result.position = collisionResult.position;
-					result.distance = collisionResult.distance;
-					result.isTransparent = collisionResult.isTransparent;
 					if (mFurthestPickingDistance == 0) {
 						//If the current collision is transparent, also check for entities which are further away.
 						if (!collisionResult.isTransparent) {
 							//test all objects that fall into this distance
 							mFurthestPickingDistance = (pickedMovable->getParentNode()->_getDerivedPosition() - cameraRay.getOrigin()).length() + pickedMovable->getBoundingRadius();
 						}
-						mResult.push_back(result);
 					} else {
-						if (result.distance > mFurthestPickingDistance) {
+						if (collisionResult.distance > mFurthestPickingDistance) {
 							continuePicking = false;
+							return;
 						} else {
-							if (mResult.size() && mResult[mResult.size() - 1].distance > result.distance) {
+							if (mResult.size() && mResult[mResult.size() - 1].distance > collisionResult.distance) {
 								//If the last result is transparent, add another result, but if it's not replace it.
 								if (mResult.size() && !mResult[mResult.size() - 1].isTransparent) {
 									mResult.pop_back();
 								}
-								mResult.push_back(result);
+							} else {
+								return;
 							}
 						}
+					}
+					EmberEntity& pickedEntity = anUserObject->getEmberEntity();
+
+					std::list<EmberEntity*> entities;
+					entities.push_front(&pickedEntity);
+					EmberEntity* entity = pickedEntity.getEmberLocation();
+					while (entity) {
+						if (entity->getCompositionMode() == EmberEntity::CM_COMPOSITION) {
+							entities.push_front(entity);
+						} else if (entity->getCompositionMode() == EmberEntity::CM_COMPOSITION_EXCLUSIVE) {
+							entities.clear();
+							entities.push_front(entity);
+						}
+						entity = entity->getEmberLocation();
+					}
+
+					for (std::list<EmberEntity*>::const_iterator I = entities.begin(); I != entities.end(); ++I) {
+						EntityPickResult result;
+						result.entity = *I;
+						result.position = collisionResult.position;
+						result.distance = collisionResult.distance;
+						result.isTransparent = collisionResult.isTransparent;
+						mResult.push_back(result);
 					}
 				}
 			}
@@ -204,7 +223,7 @@ void EntityWorldPickListener::runCommand(const std::string &command, const std::
 		if (mVisualizer.get()) {
 			mVisualizer.reset();
 		} else {
-			mVisualizer = std::auto_ptr < EntityWorldPickListenerVisualizer > (new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
+			mVisualizer = std::auto_ptr<EntityWorldPickListenerVisualizer>(new EntityWorldPickListenerVisualizer(*this, mScene.getSceneManager()));
 		}
 	}
 }

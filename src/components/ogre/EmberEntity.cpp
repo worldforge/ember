@@ -50,7 +50,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::MODE_SWIMMING("swimming");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
-		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mPositioningMode(PM_DEFAULT), mGraphicalRepresentation(0), mAttachment(0), mAttachmentControlDelegate(0), mHeightProvider(0)
+		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mPositioningMode(PM_DEFAULT), mCompositionMode(CM_NONE), mGraphicalRepresentation(0), mAttachment(0), mAttachmentControlDelegate(0), mHeightProvider(0)
 {
 }
 
@@ -329,7 +329,7 @@ EmberEntity* EmberEntity::getEmberContained(unsigned int index) const
 std::vector<std::string> EmberEntity::getActions()
 {
 	//get the actions from Eris and return them a simple vector of strings
-	std::vector < std::string > actions;
+	std::vector<std::string> actions;
 
 	if (hasAttr("actions")) {
 		const Atlas::Message::Element& operations = valueOfAttr("actions");
@@ -351,7 +351,7 @@ std::vector<std::string> EmberEntity::getActions()
 std::vector<std::string> EmberEntity::getDefaultUseOperators()
 {
 	//get the use operations from Eris and return them a simple vector of strings
-	std::vector < std::string > operators;
+	std::vector<std::string> operators;
 
 	Eris::TypeInfoArray types = getUseOperations();
 
@@ -448,6 +448,16 @@ void EmberEntity::accept(IEntityVisitor& visitor)
 			entity->accept(visitor);
 		}
 	}
+}
+
+EmberEntity::CompositionMode EmberEntity::getCompositionMode() const
+{
+	return mCompositionMode;
+}
+
+void EmberEntity::setCompositionMode(EmberEntity::CompositionMode mode)
+{
+	mCompositionMode = mode;
 }
 
 }
