@@ -27,6 +27,7 @@
 #include "EmberEntityModelAction.h"
 #include "EmberEntityHideModelAction.h"
 #include "EmberEntityPartAction.h"
+#include "CompositionAction.h"
 #include "components/ogre/environment/OceanAction.h"
 #include "components/entitymapping/Cases/CaseBase.h"
 #include "EmberEntity.h"
@@ -61,6 +62,9 @@ void EmberEntityActionCreator::createActions(EntityMapping::EntityMapping& model
 			aCase->addAction(action);
 		} else if (J->getType() == "display-ocean") {
 			Environment::OceanAction* action = new Environment::OceanAction(mEntity);
+			aCase->addAction(action);
+		} else if (J->getType() == "enable-composition") {
+			CompositionAction* action = new CompositionAction(mEntity, J->getValue());
 			aCase->addAction(action);
 		}
 	}

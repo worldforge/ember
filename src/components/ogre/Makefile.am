@@ -92,7 +92,7 @@ libEmberOgre_a_SOURCES = \
 	DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
 	AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp \
 	EntityObserverBase.cpp TerrainPageDataProvider.cpp Scene.cpp ForestRenderingTechnique.cpp World.cpp \
-	Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp
+	Screen.cpp ShapeVisual.cpp TerrainEntityManager.cpp OgreConfigurator.cpp CompositionAction.cpp
 	
 # OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
@@ -192,5 +192,5 @@ noinst_HEADERS = \
 	ICollisionDetector.h INodeProvider.h SceneNodeProvider.h IVisualizable.h IEntityVisitor.h \
 	EntityObserverBase.h TerrainPageDataProvider.h ILightning.h Scene.h ForestRenderingTechnique.h \
 	ISceneRenderingTechnique.h World.h EmberOgreSignals.h Screen.h ShapeVisual.h TerrainEntityManager.h \
-	OgreConfigurator.h
+	OgreConfigurator.h CompositionAction.cpp
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h
