@@ -583,6 +583,25 @@ float ProgressiveMeshGenerator::computeEdgeCollapseCost(PMVertex* src, PMEdge* d
 	return cost * src->position.distance(dst->position);
 }
 
+void ProgressiveMeshGenerator::assertOutdatedCollapseCost(PMVertex* vertex)
+{
+	//Validates that collapsing has updated all edges needed by computeEdgeCollapseCost.
+	//This will assert if the dependencies inside computeEdgeCollapseCost changes.
+#ifndef NDEBUG
+	VertexEdges::iterator it = vertex->edges.begin();
+	VertexEdges::iterator itEnd = vertex->edges.end();
+	for (; it != itEnd; it++) {
+		assert(it->collapseCost == computeEdgeCollapseCost(vertex, getPointer(it)));
+		PMVertex* neighbor = it->dst;
+		VertexEdges::iterator it2 = neighbor->edges.begin();
+		VertexEdges::iterator it2End = neighbor->edges.end();
+		for (; it2 != it2End; it2++) {
+			assert(it2->collapseCost == computeEdgeCollapseCost(neighbor, getPointer(it2)));
+		}
+	}
+#endif
+}
+
 void ProgressiveMeshGenerator::updateVertexCollapseCost(PMVertex* vertex)
 {
 	float collapseCost = UNINITIALIZED_COLLAPSE_COST;
@@ -857,12 +876,25 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 		updateVertexCollapseCost(getPointer(it3)->dst);
 	}
 
-	mCollapseCostSet.erase(src->costSetPosition);
-//#ifndef NDEBUG
-	src->edges.clear();
-	src->triangles.clear();
+#ifndef NDEBUG
+	it3 = src->edges.begin();
+	it3End = src->edges.end();
+	for (; it3 != it3End; it3++) {
+		assertOutdatedCollapseCost(it3->dst);
+	}
+	it3 = dst->edges.begin();
+	it3End = dst->edges.end();
+	for (; it3 != it3End; it3++) {
+		assertOutdatedCollapseCost(it3->dst);
+	}
+	assertOutdatedCollapseCost(dst);
+#endif
+	mCollapseCostSet.erase(src->costSetPosition); // Remove src from collapse costs.
+	src->edges.clear(); // Free memory
+	src->triangles.clear(); // Free memory
+	// TODO: Remove setting costSetPosition to end() for release build.
 	src->costSetPosition = mCollapseCostSet.end();
-//#endif
+
 	assertValidVertex(dst);
 }
 size_t ProgressiveMeshGenerator::calcLodVertexCount(const LodConfig& lodConfig)

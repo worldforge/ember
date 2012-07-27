@@ -270,6 +270,7 @@ private:
 	PMEdge* removeEdge(PMVertex* v, const PMEdge& edge);
 	void printTriangle(PMTriangle* triangle, std::stringstream& str);
 	PMTriangle* findSideTriangle(const PMVertex* v1, const PMVertex* v2);
+	void assertOutdatedCollapseCost(PMVertex* vertex);
 };
 
 }
