@@ -73,15 +73,14 @@ namespace Lod
 // Optimize for best output instead of performance. Use OGRE_DOUBLE_PRECISION for even better results.
 #define PM_BEST_QUALITY
 
-#define NEVER_COLLAPSE_COST std::numeric_limits<float>::infinity()
-#define NEEDS_UPDATE_COLLAPSE_COST (-std::numeric_limits<float>::infinity())
-#define UNINITIALIZED_COLLAPSE_COST (std::numeric_limits<float>::min())
+#define NEVER_COLLAPSE_COST std::numeric_limits<float>::max()
+#define UNINITIALIZED_COLLAPSE_COST (std::numeric_limits<float>::infinity())
 
 ProgressiveMeshGenerator::ProgressiveMeshGenerator(Ogre::Mesh& mesh) :
 	mMesh(mesh),
 	mIndexBufferInfoList(new IndexBufferInfo[mesh.getNumSubMeshes()])
 {
-	assert(UNINITIALIZED_COLLAPSE_COST != NEEDS_UPDATE_COLLAPSE_COST);
+	assert(NEVER_COLLAPSE_COST < UNINITIALIZED_COLLAPSE_COST && NEVER_COLLAPSE_COST != UNINITIALIZED_COLLAPSE_COST);
 
 	tuneContainerSize();
 	initialize(); // Load vertices and triangles
@@ -436,17 +435,17 @@ void ProgressiveMeshGenerator::computeCosts()
 
 void ProgressiveMeshGenerator::computeVertexCollapseCost(PMVertex* vertex)
 {
-	vertex->collapseCost = NEEDS_UPDATE_COLLAPSE_COST;
+	vertex->collapseCost = UNINITIALIZED_COLLAPSE_COST;
 	assert(!vertex->edges.empty());
 	VertexEdges::iterator it = vertex->edges.begin();
 	for (; it != vertex->edges.end(); it++) {
 		it->collapseCost = computeEdgeCollapseCost(vertex, getPointer(it));
-		if (vertex->collapseCost < it->collapseCost) {
+		if (vertex->collapseCost > it->collapseCost) {
 			vertex->collapseCost = it->collapseCost;
 			vertex->collapseTo = it->dst;
 		}
 	}
-	assert(vertex->collapseCost != NEEDS_UPDATE_COLLAPSE_COST);
+	assert(vertex->collapseCost != UNINITIALIZED_COLLAPSE_COST);
 	vertex->costSetPosition = mCollapseCostSet.insert(vertex);
 
 }
@@ -610,7 +609,7 @@ void ProgressiveMeshGenerator::updateVertexCollapseCost(PMVertex* vertex)
 	VertexEdges::iterator itEnd = vertex->edges.end();
 	for (; it != itEnd; it++) {
 		it->collapseCost = computeEdgeCollapseCost(vertex, getPointer(it));
-		if (collapseCost < it->collapseCost) {
+		if (collapseCost > it->collapseCost) {
 			collapseCost = it->collapseCost;
 			collapseTo = it->dst;
 		}
@@ -620,14 +619,10 @@ void ProgressiveMeshGenerator::updateVertexCollapseCost(PMVertex* vertex)
 			mCollapseCostSet.erase(vertex->costSetPosition);
 		}
 		if (collapseCost != UNINITIALIZED_COLLAPSE_COST) {
-			assert(collapseCost != NEEDS_UPDATE_COLLAPSE_COST);
-			assert(collapseTo != NULL);
 			vertex->collapseCost = collapseCost;
 			vertex->collapseTo = collapseTo;
 			vertex->costSetPosition = mCollapseCostSet.insert(vertex);
 		} else {
-			assert(collapseTo == NULL);
-			assert(vertex->edges.empty());
 			vertex->costSetPosition = mCollapseCostSet.end();
 		}
 	}
@@ -745,7 +740,7 @@ void ProgressiveMeshGenerator::assertValidVertex(PMVertex* v)
 					VertexEdges::iterator it = t->vertex[i]->edges.find(PMEdge(t->vertex[n]));
 					assert(it != t->vertex[i]->edges.end());
 					assert(it->collapseCost != UNINITIALIZED_COLLAPSE_COST);
-					assert(it->collapseCost != NEEDS_UPDATE_COLLAPSE_COST);
+					assert(it->collapseCost != UNINITIALIZED_COLLAPSE_COST);
 				} else {
 					assert(t->vertex[i]->edges.find(PMEdge(t->vertex[n])) == t->vertex[i]->edges.end());
 				}
@@ -761,7 +756,7 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 	assertValidVertex(dst);
 	assertValidVertex(src);
 	assert(src->collapseCost != NEVER_COLLAPSE_COST);
-	assert(src->collapseCost != NEEDS_UPDATE_COLLAPSE_COST);
+	assert(src->collapseCost != UNINITIALIZED_COLLAPSE_COST);
 	assert(!src->edges.empty());
 	assert(!src->triangles.empty());
 	assert(src->edges.find(PMEdge(dst)) != src->edges.end());

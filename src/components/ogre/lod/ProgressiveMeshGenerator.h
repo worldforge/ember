@@ -19,8 +19,8 @@
 #ifndef PROGRESSIVEMESHGENERATOR_H
 #define PROGRESSIVEMESHGENERATOR_H
 
-#include <OgrePrerequisites.h>
-#include <OgreVector3.h>
+#include<OgrePrerequisites.h>
+#include<OgreVector3.h>
 #include <OgreHardwareIndexBuffer.h>
 
 #include <boost/unordered_set.hpp>
