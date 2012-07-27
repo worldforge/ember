@@ -1061,6 +1061,16 @@
 			</case>
 		</entitymatch>
 	</entitymapping>
+
+
+    <entitymapping name="construction">
+        <entitymatch>
+            <case>
+                <caseparam type="equals">construction</caseparam>
+                <action type="enable-composition">composition</action>
+            </case>
+        </entitymatch>
+    </entitymapping>
 	
 	<!--
 		Show a placeholder for all instances of thing, except for those that we want to exclude by adding a nomodel element for.
