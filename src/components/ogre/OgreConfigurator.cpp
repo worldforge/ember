@@ -190,7 +190,11 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		if (optionsIter != configOptions.end()) {
 			const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
 			for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
-				Gui::ColouredListItem* item = new Gui::ColouredListItem(*I);
+				std::string resolution = *I;
+				//Trim away extra spaces which Ogre seem to generate
+				resolution = Ogre::StringUtil::replaceAll(resolution, "  ", " ");
+				Ogre::StringUtil::trim(resolution, true, true);
+				Gui::ColouredListItem* item = new Gui::ColouredListItem(resolution);
 				resolutionsCombobox->addItem(item);
 				if (*I == optionsIter->second.currentValue) {
 					resolutionsCombobox->setItemSelectState(item, true);
