@@ -134,6 +134,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	renderWindow->setVisible(true);
 
 	mLoader->initialize();
+	mLoader->loadSection("Bootstrap", false);
 	mLoader->loadSection("Gui", false);
 	mLoader->loadSection("General", false);
 
