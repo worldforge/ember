@@ -321,6 +321,8 @@ Ogre::Root* OgreSetup::configure(void)
 		success = mRoot->restoreConfig();
 		if (!success || !suppressConfig) {
 			success = showConfigurationDialog();
+		} else {
+			mRoot->initialise(false);
 		}
 
 	} catch (const std::exception& ex) {
