@@ -259,7 +259,6 @@ void EmberEntity::onAttrChanged(const std::string& str, const Atlas::Message::El
 		return;
 	}
 
-	//call this before checking for areas and terrainmods, since those instances created to handle that (TerrainMod and TerrainArea) will listen to the AttrChanged event, which would then be emitted after those have been created, causing duplicate regeneration from the same data
 	Entity::onAttrChanged(str, v);
 
 }
