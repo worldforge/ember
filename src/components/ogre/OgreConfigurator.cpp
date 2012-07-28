@@ -82,7 +82,6 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		return OC_CANCEL;
 	}
 	Ogre::RenderSystem* renderSystem = *renderers.begin();
-	mChosenRenderSystemName = renderSystem->getName();
 	Ogre::Root::getSingleton().setRenderSystem(renderSystem);
 	Ogre::Root::getSingleton().initialise(false);
 
@@ -154,6 +153,21 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		CEGUI::Window* configWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/datafiles/layouts/OgreConfigurator.layout", "OgreConfigure/");
 		sheet->addChildWindow(configWindow);
 
+		CEGUI::Window* renderSystemWrapper = configWindow->getChildRecursive("OgreConfigure/RenderSystem_wrapper");
+		CEGUI::Combobox* renderSystemsBox = static_cast<CEGUI::Combobox*>(configWindow->getChildRecursive("OgreConfigure/RenderSystem"));
+		//If we only have one render system available we should hide the render system combobox.
+		if (renderers.size() == 1) {
+			renderSystemWrapper->getParent()->removeChildWindow(renderSystemWrapper);
+		} else {
+			int i = 0;
+			for (Ogre::RenderSystemList::const_iterator I = renderers.begin(); I != renderers.end(); ++I) {
+				Gui::ColouredListItem* item = new Gui::ColouredListItem((*I)->getName(), i++);
+				renderSystemsBox->addItem(item);
+			}
+			//Select the first one in the list
+			renderSystemsBox->setItemSelectState((size_t)0, true);
+		}
+
 		CEGUI::Window* okButton = configWindow->getChildRecursive("OgreConfigure/Button_ok");
 		okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonOkClicked, this));
 		CEGUI::Window* cancelButton = configWindow->getChildRecursive("OgreConfigure/Button_cancel");
@@ -169,11 +183,11 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		IInputAdapter* adapter = new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer);
 		Input::getSingleton().addAdapter(adapter);
 
-		mConfigOptions = renderSystem->getConfigOptions();
+		Ogre::ConfigOptionMap configOptions = renderSystem->getConfigOptions();
 
 		bool resolutionFoundInOptions = false;
-		Ogre::ConfigOptionMap::const_iterator optionsIter = mConfigOptions.find("Video Mode");
-		if (optionsIter != mConfigOptions.end()) {
+		Ogre::ConfigOptionMap::const_iterator optionsIter = configOptions.find("Video Mode");
+		if (optionsIter != configOptions.end()) {
 			const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
 			for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
 				Gui::ColouredListItem* item = new Gui::ColouredListItem(*I);
@@ -188,8 +202,8 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			}
 		}
 
-		optionsIter = mConfigOptions.find("Full Screen");
-		if (optionsIter != mConfigOptions.end()) {
+		optionsIter = configOptions.find("Full Screen");
+		if (optionsIter != configOptions.end()) {
 			fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
 		}
 
@@ -206,6 +220,14 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			Ogre::Root::getSingleton().renderOneFrame();
 		}
 		Input::getSingleton().removeAdapter(adapter);
+
+		//Check if the user has selected a render system (in the case of there being multiple)
+		if (renderers.size() > 1) {
+			renderSystem = renderers[renderSystemsBox->getSelectedItem()->getID()];
+		}
+		mChosenRenderSystemName = renderSystem->getName();
+
+		mConfigOptions = renderSystem->getConfigOptions();
 
 		mConfigOptions["Video Mode"].currentValue = resolutionsCombobox->getText().c_str();
 		mConfigOptions["Full Screen"].currentValue = fullscreenCheckbox->isSelected() ? "Yes" : "No";

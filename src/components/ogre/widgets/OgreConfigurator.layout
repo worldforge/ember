@@ -12,6 +12,21 @@
             <Property Name='UnifiedPosition' Value='{{0,5},{0,95}}' />
             <Property Name='UnifiedSize' Value='{{1,-10},{1,-120}}' />
             <Window Type='VerticalLayoutContainer' Name='Main_container'>
+                <Window Type='DefaultWindow' Name='RenderSystem_wrapper'>
+                    <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                    <Window Type='HorizontalLayoutContainer' Name='RenderSystem_container'>
+                        <Window Type='EmberLook/StaticText' Name='RenderSystem_text'>
+                            <Property Name='BackgroundEnabled' Value='false' />
+                            <Property Name='FrameEnabled' Value='false' />
+                            <Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}' />
+                            <Property Name='Text' Value='Render system' />
+                        </Window>
+                        <Window Type='EmberLook/Combobox' Name='RenderSystem'>
+                            <Property Name='UnifiedSize' Value='{{0.5,0},{0,150}}' />
+                            <Property Name='ClippedByParent' Value='false' />
+                        </Window>
+                    </Window>
+                </Window>
                 <Window Type='DefaultWindow' Name='Resolution_wrapper'>
                     <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
                     <Window Type='HorizontalLayoutContainer' Name='Resolution_container'>
