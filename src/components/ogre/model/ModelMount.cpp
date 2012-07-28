@@ -40,7 +40,7 @@ namespace Model
 {
 
 ModelMount::ModelMount(Model& model, INodeProvider* nodeProvider, const std::string& pose) :
-	mModel(model), mNodeProvider(nodeProvider), mPose(pose)
+		mModel(model), mNodeProvider(nodeProvider), mPose(pose)
 {
 }
 
@@ -56,7 +56,12 @@ void ModelMount::rescale(const WFMath::AxisBox<3>* wfBbox)
 
 void ModelMount::reset()
 {
-	getNodeProvider()->setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
+	Ogre::Vector3 translation = Ogre::Vector3::ZERO;
+	Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
+	//rotate node to fit with WF space
+	//perhaps this is something to put in the model spec instead?
+	orientation.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+
 	getNode().setScale(Ogre::Vector3::UNIT_SCALE);
 
 	PoseDefinition const * pose(0);
@@ -67,17 +72,16 @@ void ModelMount::reset()
 			pose = &I->second;
 		}
 	}
-	//rotate node to fit with WF space
-	//perhaps this is something to put in the model spec instead?
-	getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
+
 	if (pose) {
-		getNode().translate(getNode().getOrientation() * pose->Translate);
-		getNode().rotate(pose->Rotate, Ogre::Node::TS_LOCAL);
+		translation = pose->Translate;
+		orientation = orientation * pose->Rotate;
 	} else {
-		getNode().rotate(getModel().getRotation());
-		//translate the scale node according to the translate defined in the model
-		getNode().translate(getModel().getDefinition()->getTranslate());
+		translation = getModel().getDefinition()->getTranslate();
+		orientation = orientation * getModel().getRotation();
 	}
+	getNodeProvider()->setPositionAndOrientation(translation, orientation);
+
 }
 
 Ogre::Node& ModelMount::getNode() const
@@ -128,26 +132,26 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 			Ogre::Real scaleZ;
 
 			switch (getModel().getUseScaleOf()) {
-				case ModelDefinition::MODEL_HEIGHT:
-					scaleX = scaleY = scaleZ = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
-					break;
-				case ModelDefinition::MODEL_WIDTH:
-					scaleX = scaleY = scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
-					break;
-				case ModelDefinition::MODEL_DEPTH:
-					scaleX = scaleY = scaleZ = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
-					break;
-				case ModelDefinition::MODEL_NONE:
-					scaleX = scaleY = scaleZ = 1;
-					break;
+			case ModelDefinition::MODEL_HEIGHT:
+				scaleX = scaleY = scaleZ = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
+				break;
+			case ModelDefinition::MODEL_WIDTH:
+				scaleX = scaleY = scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
+				break;
+			case ModelDefinition::MODEL_DEPTH:
+				scaleX = scaleY = scaleZ = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
+				break;
+			case ModelDefinition::MODEL_NONE:
+				scaleX = scaleY = scaleZ = 1;
+				break;
 
-				case ModelDefinition::MODEL_ALL:
-				default:
-					//HACK: for some reason we have to switch x and z here. I'm not completely sure why, but it works. It hints at a problem elsewhere though
-					scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
-					scaleY = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
-					scaleX = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
-					break;
+			case ModelDefinition::MODEL_ALL:
+			default:
+				//HACK: for some reason we have to switch x and z here. I'm not completely sure why, but it works. It hints at a problem elsewhere though
+				scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
+				scaleY = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
+				scaleX = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
+				break;
 			}
 
 			getNode().setScale(scaleX, scaleY, scaleZ);
@@ -177,10 +181,14 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 			const PoseDefinitionStore& poses = mModel.getDefinition()->getPoseDefinitions();
 			PoseDefinitionStore::const_iterator I = poses.find(mPose);
 			if (I != poses.end()) {
-				getNodeProvider()->setPositionAndOrientation(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
-				getNode().rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90));
-				getNode().translate(getNode().getOrientation() * (I->second.Translate * getNode().getScale()));
-				getNode().rotate(I->second.Rotate, Ogre::Node::TS_LOCAL);
+				Ogre::Quaternion orientation = Ogre::Quaternion::IDENTITY;
+				//rotate node to fit with WF space
+				//perhaps this is something to put in the model spec instead?
+				orientation.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3::UNIT_Y);
+				Ogre::Vector3 translation = (orientation * (I->second.Translate * getNode().getScale()));
+				orientation = orientation * I->second.Rotate;
+
+				getNodeProvider()->setPositionAndOrientation(translation, orientation);
 			}
 		}
 

@@ -31,19 +31,20 @@ namespace OgreView
 namespace Model
 {
 ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject) :
-	mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(0), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0)
+		mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(0), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0), mAttachPointDefinition(0)
 {
 	init();
 }
 
 ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject, ModelBoneProvider* parent) :
-	mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(parent), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0)
+		mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(parent), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0), mAttachPointDefinition(0)
 {
 	//Check if the attached object is the same for this new instance as for its parent. If so, it's a "scale node".
 	//If so, we should just transfer the ownership to the new instance.
 	if (parent->mAttachedObject == movableObject) {
 		parent->mAttachedObject = 0;
 		mAttachPointWrapper = parent->mAttachPointWrapper;
+		mAttachPointDefinition = new AttachPointDefinition(*parent->mAttachPointDefinition);
 		parent->mAttachPointWrapper = 0;
 	} else {
 		init();
@@ -62,6 +63,7 @@ ModelBoneProvider::~ModelBoneProvider()
 		}
 	}
 	delete mAttachPointWrapper;
+	delete mAttachPointDefinition;
 }
 
 void ModelBoneProvider::init()
@@ -73,6 +75,7 @@ void ModelBoneProvider::init()
 		mAttachPointWrapper->TagPoint = wrapper.TagPoint;
 		mAttachPointWrapper->Definition = wrapper.Definition;
 		mAttachPointWrapper->Movable = wrapper.Movable;
+		mAttachPointDefinition = new AttachPointDefinition(wrapper.Definition);
 	}
 }
 
@@ -116,9 +119,9 @@ void ModelBoneProvider::setPositionAndOrientation(const Ogre::Vector3& position,
 {
 	//Only apply the attach point definition rotation and translation to the first provider in a chained list of providers.
 	//This is because all providers will in reality use the same Ogre::TagPoint, and therefore the orientation should only be applied once.
-	if (mAttachPointWrapper && !mParent) {
-		mOrientation = orientation * mAttachPointWrapper->Definition.Rotation;
-		mPosition = position + mAttachPointWrapper->Definition.Translation;
+	if (mAttachPointDefinition && !mParent) {
+		mOrientation = orientation * mAttachPointDefinition->Rotation;
+		mPosition = position + mAttachPointDefinition->Translation;
 	} else {
 		mOrientation = orientation;
 		mPosition = position;

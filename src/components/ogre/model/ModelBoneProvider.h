@@ -155,6 +155,13 @@ protected:
 	Model::AttachPointWrapper* mAttachPointWrapper;
 
 	/**
+	 * @brief The attach point definition for the attach points.
+	 *
+	 * This should only be set for the top ModelBoneProvider in any such hierarchy. Any child instance should have this set to null.
+	 */
+	AttachPointDefinition* mAttachPointDefinition;
+
+	/**
 	 * @brief Updates the position and orientation of the entity, taking parent model attachments into account.
 	 * Call this whenever a parent attachment has changed. Since bone nodes can't be put in a hierarchy like scene nodes, we need to cascade any update on a parent node down to all the child nodes.
 	 */
