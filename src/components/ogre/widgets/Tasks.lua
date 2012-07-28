@@ -66,6 +66,10 @@ end
 function Tasks.createdAvatarEmberEntity(avatarEntity)
 	connect(Tasks.connectors, avatarEntity.TaskAdded, "Tasks.TaskAdded")
 	connect(Tasks.connectors, avatarEntity.TaskRemoved, "Tasks.TaskRemoved")
+	--If there are already tasks, show the first one
+	if avatarEntity:getTasks():size() > 0 then
+		Tasks.SetCurrentTask(avatarEntity:getTasks()[0])
+	end
 end
 
 function Tasks.StopButtonClicked(args)
