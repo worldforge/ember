@@ -141,84 +141,87 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	CEGUI::ResourceProvider& rp = CEGUI::OgreRenderer::createOgreResourceProvider();
 
 	CEGUI::System::create(renderer, &rp);
+	try {
+		CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkinMinimal.scheme", "");
+		CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-8");
+		CEGUI::ImagesetManager::getSingleton().create("cegui/datafiles/imagesets/splash.imageset", "");
+		CEGUI::System::getSingleton().setDefaultTooltip("EmberLook/Tooltip");
 
-	CEGUI::SchemeManager::getSingleton().create("cegui/datafiles/schemes/EmberLookSkinMinimal.scheme", "");
-	CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-8");
-	CEGUI::ImagesetManager::getSingleton().create("cegui/datafiles/imagesets/splash.imageset", "");
-	CEGUI::System::getSingleton().setDefaultTooltip("EmberLook/Tooltip");
+		CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultGUISheet", "root_wnd");
+		CEGUI::System::getSingleton().setGUISheet(sheet);
 
-	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultGUISheet", "root_wnd");
-	CEGUI::System::getSingleton().setGUISheet(sheet);
+		CEGUI::Window* configWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/datafiles/layouts/OgreConfigurator.layout", "OgreConfigure/");
+		sheet->addChildWindow(configWindow);
 
-	CEGUI::Window* configWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/datafiles/layouts/OgreConfigurator.layout", "OgreConfigure/");
-	sheet->addChildWindow(configWindow);
+		CEGUI::Window* okButton = configWindow->getChildRecursive("OgreConfigure/Button_ok");
+		okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonOkClicked, this));
+		CEGUI::Window* cancelButton = configWindow->getChildRecursive("OgreConfigure/Button_cancel");
+		cancelButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonCancelClicked, this));
+		CEGUI::Window* advancedButton = configWindow->getChildRecursive("OgreConfigure/Advanced");
+		advancedButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonAdvancedClicked, this));
 
-	CEGUI::Window* okButton = configWindow->getChildRecursive("OgreConfigure/Button_ok");
-	okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonOkClicked, this));
-	CEGUI::Window* cancelButton = configWindow->getChildRecursive("OgreConfigure/Button_cancel");
-	cancelButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonCancelClicked, this));
-	CEGUI::Window* advancedButton = configWindow->getChildRecursive("OgreConfigure/Advanced");
-	advancedButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonAdvancedClicked, this));
+		CEGUI::Checkbox* fullscreenCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/Fullscreen"));
+		CEGUI::Checkbox* dontShowAgainCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/DontShowAgain"));
 
-	CEGUI::Checkbox* fullscreenCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/Fullscreen"));
-	CEGUI::Checkbox* dontShowAgainCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/DontShowAgain"));
+		CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(configWindow->getChildRecursive("OgreConfigure/Resolution"));
 
-	CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(configWindow->getChildRecursive("OgreConfigure/Resolution"));
+		IInputAdapter* adapter = new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer);
+		Input::getSingleton().addAdapter(adapter);
 
+		mConfigOptions = renderSystem->getConfigOptions();
 
-	IInputAdapter* adapter = new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer);
-	Input::getSingleton().addAdapter(adapter);
-
-	mConfigOptions = renderSystem->getConfigOptions();
-
-	bool resolutionFoundInOptions = false;
-	Ogre::ConfigOptionMap::const_iterator optionsIter = mConfigOptions.find("Video Mode");
-	if (optionsIter != mConfigOptions.end()) {
-		const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
-		for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
-			Gui::ColouredListItem* item = new Gui::ColouredListItem(*I);
-			resolutionsCombobox->addItem(item);
-			if (*I == optionsIter->second.currentValue) {
-				resolutionsCombobox->setItemSelectState(item, true);
-				resolutionFoundInOptions = true;
+		bool resolutionFoundInOptions = false;
+		Ogre::ConfigOptionMap::const_iterator optionsIter = mConfigOptions.find("Video Mode");
+		if (optionsIter != mConfigOptions.end()) {
+			const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
+			for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
+				Gui::ColouredListItem* item = new Gui::ColouredListItem(*I);
+				resolutionsCombobox->addItem(item);
+				if (*I == optionsIter->second.currentValue) {
+					resolutionsCombobox->setItemSelectState(item, true);
+					resolutionFoundInOptions = true;
+				}
+			}
+			if (!resolutionFoundInOptions) {
+				resolutionsCombobox->setText(optionsIter->second.currentValue);
 			}
 		}
-		if (!resolutionFoundInOptions) {
-			resolutionsCombobox->setText(optionsIter->second.currentValue);
+
+		optionsIter = mConfigOptions.find("Full Screen");
+		if (optionsIter != mConfigOptions.end()) {
+			fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
 		}
-	}
 
-	optionsIter = mConfigOptions.find("Full Screen");
-	if (optionsIter != mConfigOptions.end()) {
-		fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
-	}
-
-	Input& input = Input::getSingleton();
-	long long lastTime = Time::currentTimeMillis();
-	while (mContinueInLoop) {
-		input.processInput();
-		if (input.getMainLoopController()->shouldQuit()) {
-			break;
+		Input& input = Input::getSingleton();
+		long long lastTime = Time::currentTimeMillis();
+		while (mContinueInLoop) {
+			input.processInput();
+			if (input.getMainLoopController()->shouldQuit()) {
+				break;
+			}
+			float timeElapsed = (Time::currentTimeMillis() - lastTime) / 1000.0f;
+			CEGUI::System::getSingleton().injectTimePulse(timeElapsed);
+			lastTime = Time::currentTimeMillis();
+			Ogre::Root::getSingleton().renderOneFrame();
 		}
-		float timeElapsed = (Time::currentTimeMillis() - lastTime) / 1000.0f;
-		CEGUI::System::getSingleton().injectTimePulse(timeElapsed);
-		lastTime = Time::currentTimeMillis();
-		Ogre::Root::getSingleton().renderOneFrame();
+		Input::getSingleton().removeAdapter(adapter);
+
+		mConfigOptions["Video Mode"].currentValue = resolutionsCombobox->getText().c_str();
+		mConfigOptions["Full Screen"].currentValue = fullscreenCheckbox->isSelected() ? "Yes" : "No";
+
+		CEGUI::System::getSingleton().destroy();
+
+		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
+
+		if (dontShowAgainCheckbox->isSelected()) {
+			EmberServices::getSingleton().getConfigService().setValue("ogre", "suppressconfigdialog", true);
+		}
+
+		return mResult;
+	} catch (const std::exception& ex) {
+		CEGUI::System::getSingleton().destroy();
+		throw ex;
 	}
-	Input::getSingleton().removeAdapter(adapter);
-
-	mConfigOptions["Video Mode"].currentValue = resolutionsCombobox->getText().c_str();
-	mConfigOptions["Full Screen"].currentValue = fullscreenCheckbox->isSelected() ? "Yes" : "No";
-
-	CEGUI::System::getSingleton().destroy();
-
-	Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
-
-	if (dontShowAgainCheckbox->isSelected()) {
-		EmberServices::getSingleton().getConfigService().setValue("ogre", "suppressconfigdialog", true);
-	}
-
-	return mResult;
 }
 
 std::string OgreConfigurator::getChosenRenderSystemName() const

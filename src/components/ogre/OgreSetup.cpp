@@ -270,7 +270,17 @@ extern "C" void shutdownHandler(int sig)
 bool OgreSetup::showConfigurationDialog()
 {
 	OgreConfigurator configurator;
-	OgreConfigurator::Result result = configurator.configure();
+	OgreConfigurator::Result result;
+	try {
+		result = configurator.configure();
+	} catch (const std::exception& ex) {
+		delete mRoot;
+		mRoot = 0;
+		SDL_Quit();
+		SDL_Init(SDL_INIT_VIDEO);
+		createOgreSystem();
+		throw ex;
+	}
 	delete mRoot;
 	mRoot = 0;
 	if (result == OgreConfigurator::OC_CANCEL) {
@@ -311,19 +321,21 @@ Ogre::Root* OgreSetup::configure(void)
 		success = mRoot->restoreConfig();
 		if (!success || !suppressConfig) {
 			success = showConfigurationDialog();
-		} else {
-			mRoot->initialise(false);
 		}
 
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when showing config dialog. Will try to remove ogre.cfg file and retry." << ex);
 		unlink((EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/ogre.cfg").c_str());
 		try {
-			success = showConfigurationDialog();
+			success = mRoot->showConfigDialog();
+			if (success) {
+				mRoot->initialise(false);
+			}
 		} catch (const std::exception& ex) {
 			S_LOG_CRITICAL("Could not configure Ogre. Will shut down." << ex);
 		}
 	}
+
 #else
 	//In webember we will disable the config dialog.
 	//Also we will use fixed resolution and windowed mode.
