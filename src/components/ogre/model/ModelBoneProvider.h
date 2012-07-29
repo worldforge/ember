@@ -55,7 +55,7 @@ public:
 	 * @param attachPoint A named attach point on the model.
 	 * @param movableObject An optional movable object to attach. Note that if no object is submitted, no TagPoint will be created.
 	 */
-	ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject);
+	ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject, bool deleteMovableWhenDone = false);
 
 	/**
 	 * @brief Dtor.
@@ -162,6 +162,19 @@ protected:
 	AttachPointDefinition* mAttachPointDefinition;
 
 	/**
+	 * @brief The Ogre::TagPoint created.
+	 *
+	 * This should always be set to something, even if the mAttachPointWrapper field is empty.
+	 */
+	Ogre::Node* mNode;
+
+	/**
+	 * @brief If true, the mAttachedObject field should be deleted when this instance is destroyed.
+	 *
+	 * This is mainly here to handle the instance where a temporary Ogre::ManualObject is used when attaching entities which lack a Model.
+	 */
+	bool mDeleteMovableWhenDone;
+	/**
 	 * @brief Updates the position and orientation of the entity, taking parent model attachments into account.
 	 * Call this whenever a parent attachment has changed. Since bone nodes can't be put in a hierarchy like scene nodes, we need to cascade any update on a parent node down to all the child nodes.
 	 */
@@ -186,7 +199,6 @@ private:
 	 * This is called by the constructor only.
 	 */
 	void init();
-
 
 };
 

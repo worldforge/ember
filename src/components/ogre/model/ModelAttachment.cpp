@@ -24,6 +24,7 @@
 #include "components/ogre/NodeAttachment.h"
 #include "components/ogre/SceneNodeProvider.h"
 #include "components/ogre/Convert.h"
+#include "components/ogre/OgreInfo.h"
 #include "framework/AttributeObserver.h"
 #include "components/ogre/model/Model.h"
 #include "components/ogre/model/ModelDefinition.h"
@@ -33,14 +34,17 @@
 #include "components/ogre/model/ModelBoneProvider.h"
 #include "components/ogre/model/ModelFitting.h"
 
+#include <Atlas/Message/Element.h>
+
+#include <Eris/TypeInfo.h>
+
+#include <OgreVector3.h>
+#include <OgreManualObject.h>
+
 #include <sigc++/bind.h>
 #include <sigc++/slot.h>
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
-
-#include <Atlas/Message/Element.h>
-
-#include <OgreVector3.h>
 
 namespace Ember
 {
@@ -135,7 +139,17 @@ IEntityAttachment* ModelAttachment::attachEntity(EmberEntity& entity)
 						}
 					}
 
-					nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, modelRepresentation ? &modelRepresentation->getModel() : 0);
+					//We must have a movable in order to create attach points. Thus we need to fake it though an ManualObject intance. This is not optimal, but will do for now.
+					Ogre::MovableObject* movable;
+					bool deleteMovableWhenDone = false;
+					if (modelRepresentation) {
+						movable = &modelRepresentation->getModel();
+					} else {
+						movable = OGRE_NEW Ogre::ManualObject(OgreInfo::createUniqueResourceName("ModelAttachedObject_" + entity.getType()->getName()));
+						deleteMovableWhenDone = true;
+					}
+
+					nodeProvider = new ModelBoneProvider(mModelRepresentation.getModel(), attachPoint, movable, deleteMovableWhenDone);
 				} catch (const std::exception& ex) {
 					S_LOG_WARNING("Failed to attach to attach point '"<< attachPoint << "' on model '" << mModelRepresentation.getModel().getDefinition()->getName() << "'.");
 					return new HiddenAttachment(entity, getAttachedEntity());

@@ -30,22 +30,25 @@ namespace OgreView
 {
 namespace Model
 {
-ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject) :
-		mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(0), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0), mAttachPointDefinition(0)
+ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject, bool deleteMovableWhenDone) :
+		mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(0), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0), mAttachPointDefinition(0), mNode(0), mDeleteMovableWhenDone(deleteMovableWhenDone)
 {
 	init();
 }
 
 ModelBoneProvider::ModelBoneProvider(Model& parentModel, const std::string& attachPointName, Ogre::MovableObject* movableObject, ModelBoneProvider* parent) :
-		mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(parent), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0), mAttachPointDefinition(0)
+		mParentModel(parentModel), mAttachPointName(attachPointName), mAttachedObject(movableObject), mParent(parent), mPosition(Ogre::Vector3::ZERO), mOrientation(Ogre::Quaternion::IDENTITY), mAttachPointWrapper(0), mAttachPointDefinition(0), mNode(0), mDeleteMovableWhenDone(false)
 {
 	//Check if the attached object is the same for this new instance as for its parent. If so, it's a "scale node".
 	//If so, we should just transfer the ownership to the new instance.
-	if (parent->mAttachedObject == movableObject) {
+	if (parent->mAttachedObject == mAttachedObject) {
 		parent->mAttachedObject = 0;
+		mDeleteMovableWhenDone = parent->mDeleteMovableWhenDone;
+		parent->mDeleteMovableWhenDone = false;
 		mAttachPointWrapper = parent->mAttachPointWrapper;
 		mAttachPointDefinition = new AttachPointDefinition(*parent->mAttachPointDefinition);
 		parent->mAttachPointWrapper = 0;
+		mNode = parent->mNode;
 	} else {
 		init();
 	}
@@ -55,6 +58,13 @@ ModelBoneProvider::~ModelBoneProvider()
 {
 	if (mAttachedObject) {
 		mParentModel.detachObjectFromBone(mAttachedObject->getName());
+		if (mDeleteMovableWhenDone) {
+			if (mAttachedObject->_getCreator()) {
+				mAttachedObject->_getCreator()->destroyInstance(mAttachedObject);
+			} else {
+				OGRE_DELETE mAttachedObject;
+			}
+		}
 	}
 	if (mParent) {
 		ModelBoneProviderStore::iterator I = std::find(mParent->mChildren.begin(), mParent->mChildren.end(), this);
@@ -75,16 +85,17 @@ void ModelBoneProvider::init()
 		mAttachPointWrapper->TagPoint = wrapper.TagPoint;
 		mAttachPointWrapper->Definition = wrapper.Definition;
 		mAttachPointWrapper->Movable = wrapper.Movable;
+		mNode = wrapper.TagPoint;
 		mAttachPointDefinition = new AttachPointDefinition(wrapper.Definition);
 	}
 }
 
 Ogre::Node& ModelBoneProvider::getNode() const
 {
-	if (mAttachPointWrapper) {
-		return *mAttachPointWrapper->TagPoint;
+	if (mNode) {
+		return *mNode;
 	}
-	throw Ember::Exception("Trying to get node for non existing bone attachment.");
+	throw Ember::Exception("Trying to get node for non existing bone attachment. This should never happen and represents an error in the code.");
 }
 
 Ogre::Node* ModelBoneProvider::getParentNode() const
