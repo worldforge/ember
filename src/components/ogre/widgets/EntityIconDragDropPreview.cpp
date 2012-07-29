@@ -55,8 +55,6 @@ class EmberEntity;
 namespace Gui
 {
 
-
-
 EntityIconDragDropPreview::EntityIconDragDropPreview(World& world) :
 		mWorld(world), mIconEntity(0), mModelPreviewWorker(0)
 {
@@ -70,12 +68,10 @@ EntityIconDragDropPreview::~EntityIconDragDropPreview()
 
 void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 {
-	if (!mModelPreviewWorker)
-	{
-		if (icon && icon->getEntity())
-		{
+	if (!mModelPreviewWorker) {
+		if (icon && icon->getEntity()) {
 			mIconEntity = icon->getEntity();
-			Gui::HelpMessage message("Entity Drag Preview", "Release the left mouse button to place the entity at the selected location. Press Escape to cancel." , "entity icon drag drop preview", "dragDropMessage");
+			Gui::HelpMessage message("Entity Drag Preview", "Release the left mouse button to place the entity at the selected location. Press Escape to cancel.", "entity icon drag drop preview", "dragDropMessage");
 			Gui::QuickHelp::getSingleton().updateText(message);
 			mModelPreviewWorker = new ModelPreviewWorker(mWorld, mIconEntity);
 			mModelPreviewWorker->EventCleanupCreation.connect(sigc::mem_fun(*this, &EntityIconDragDropPreview::cleanupCreation));
@@ -86,8 +82,7 @@ void EntityIconDragDropPreview::createPreview(EntityIcon* icon)
 
 void EntityIconDragDropPreview::cleanupCreation()
 {
-	if (mModelPreviewWorker)
-	{
+	if (mModelPreviewWorker) {
 		mIconEntity = 0;
 		delete mModelPreviewWorker;
 		mModelPreviewWorker = 0;
@@ -112,7 +107,8 @@ WFMath::Quaternion EntityIconDragDropPreview::getDropOrientation() const
 	return mDropOrientation;
 }
 
-ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) : mWorld(world), mEntity(0), mEntityNode(0), mModel(0), mModelMount(0), mMovement(0)
+ModelPreviewWorker::ModelPreviewWorker(World& world, Eris::ViewEntity* entity) :
+		mWorld(world), mEntity(0), mEntityNode(0), mModel(0), mModelMount(0), mMovement(0)
 {
 	mOrientation.identity();
 
@@ -152,7 +148,9 @@ ModelPreviewWorker::~ModelPreviewWorker()
 	mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
 	//	delete mEntityNode;
 
-	mWorld.getSceneManager().destroyMovableObject(mModel);
+	if (mModel) {
+		mWorld.getSceneManager().destroyMovableObject(mModel);
+	}
 
 	// Deleting temporary entity
 	mEntity->shutdown();
@@ -248,8 +246,8 @@ const WFMath::AxisBox<3> & ModelPreviewWorker::getBBox()
 	return mEntity->getBBox();
 }
 
-ModelPreviewWorkerPartAction::ModelPreviewWorkerPartAction(ModelPreviewWorker& modelPreviewWorker, std::string partName)
-		: mModelPreviewWorker(modelPreviewWorker), mPartName(partName)
+ModelPreviewWorkerPartAction::ModelPreviewWorkerPartAction(ModelPreviewWorker& modelPreviewWorker, std::string partName) :
+		mModelPreviewWorker(modelPreviewWorker), mPartName(partName)
 {
 }
 
@@ -269,9 +267,8 @@ void ModelPreviewWorkerPartAction::deactivate(EntityMapping::ChangeContext& cont
 	mModelPreviewWorker.hideModelPart(mPartName);
 }
 
-
-ModelPreviewWorkerModelAction::ModelPreviewWorkerModelAction(ModelPreviewWorker& modelPreviewWorker, std::string modelName)
-		: mModelPreviewWorker(modelPreviewWorker), mModelName(modelName)
+ModelPreviewWorkerModelAction::ModelPreviewWorkerModelAction(ModelPreviewWorker& modelPreviewWorker, std::string modelName) :
+		mModelPreviewWorker(modelPreviewWorker), mModelName(modelName)
 {
 }
 
@@ -291,8 +288,8 @@ void ModelPreviewWorkerModelAction::deactivate(EntityMapping::ChangeContext& con
 	mModelPreviewWorker.setModel("");
 }
 
-ModelPreviewWorkerHideModelAction::ModelPreviewWorkerHideModelAction(ModelPreviewWorker& modelPreviewWorker)
-		: mModelPreviewWorker(modelPreviewWorker)
+ModelPreviewWorkerHideModelAction::ModelPreviewWorkerHideModelAction(ModelPreviewWorker& modelPreviewWorker) :
+		mModelPreviewWorker(modelPreviewWorker)
 {
 }
 
@@ -309,9 +306,8 @@ void ModelPreviewWorkerHideModelAction::deactivate(EntityMapping::ChangeContext&
 {
 }
 
-
-ModelPreviewWorkerActionCreator::ModelPreviewWorkerActionCreator(ModelPreviewWorker& modelPreviewWorker)
-		: mModelPreviewWorker(modelPreviewWorker)
+ModelPreviewWorkerActionCreator::ModelPreviewWorkerActionCreator(ModelPreviewWorker& modelPreviewWorker) :
+		mModelPreviewWorker(modelPreviewWorker)
 {
 }
 
@@ -337,7 +333,7 @@ void ModelPreviewWorkerActionCreator::createActions(EntityMapping::EntityMapping
 }
 
 ModelPreviewWorkerMovementBridge::ModelPreviewWorkerMovementBridge(ModelPreviewWorker& modelPreviewWorker, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
-Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker)
+		Authoring::EntityMoverBase(entity, node, *node->getCreator()), mModelPreviewWorker(modelPreviewWorker)
 {
 }
 
@@ -354,8 +350,8 @@ void ModelPreviewWorkerMovementBridge::cancelMovement()
 	mModelPreviewWorker.EventCleanupCreation.emit();
 }
 
-ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node)
-:mMoveAdapter(camera)
+ModelPreviewWorkerMovement::ModelPreviewWorkerMovement(ModelPreviewWorker& mModelPreviewWorker, const Camera::MainCamera& camera, Authoring::DetachedEntity& entity, Ogre::SceneNode* node) :
+		mMoveAdapter(camera)
 {
 	// When the point is moved, an instance of this will be created and the movement handled by it.
 	// Note that ownership will be transferred to the adapter, so we shouldn't keep a reference
