@@ -360,6 +360,8 @@ bool ServerWidget::nameBox_TextChanged(const CEGUI::EventArgs& args)
 
 void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 {
+	mTypesList->resetList();
+
 	/**
 	 * The preferred way is to use the spawn point system. However, older servers don't support that, and instead present a single list of characters.
 	 * For spawn points, we still want to show a single list of available characters. In those cases where a character is present in multiple spawn points we'll print out the spawn point name in parenthesis.
