@@ -1031,11 +1031,10 @@ bool ProgressiveMeshGenerator::PMCollapseCostLess::operator() (const PMVertex* l
 
 size_t ProgressiveMeshGenerator::PMVertexHash::operator() (const PMVertex* v) const
 {
-	size_t seed = 0;
-	boost::hash_combine(seed, v->position.x);
-	boost::hash_combine(seed, v->position.y);
-	boost::hash_combine(seed, v->position.z);
-	return seed;
+	boost::hash<Ogre::Real> hasher;
+	return hasher(v->position.x)
+	       ^ hasher(v->position.y)
+	       ^ hasher(v->position.z);
 }
 
 }
