@@ -864,9 +864,22 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 	VertexEdges::iterator it3End = src->edges.end();
 	for (; it3 != it3End; it3++) {
 		updateVertexCollapseCost(it3->dst);
+#ifdef PM_BEST_QUALITY
+		// TODO: Find out why is this needed. assertOutdatedCollapseCost() fails on some
+		//       rare situations without this. For example goblin.mesh fails.
+		// TODO: This is doing lot of duplicate work, it should be fixed by loading
+		//       them to a set/vector, then processing.
+		VertexEdges::iterator it5End = it3->dst->edges.end();
+		VertexEdges::iterator it5 = it3->dst->edges.begin();
+		for (; it5 != it5End; it5++) {
+			if(it3->dst != it5->dst && it5->dst != dst) {
+				updateVertexCollapseCost(it5->dst);
+			}
+		}
+#endif
 	}
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) && defined(PM_BEST_QUALITY)
 	it3 = src->edges.begin();
 	it3End = src->edges.end();
 	for (; it3 != it3End; it3++) {
@@ -878,7 +891,7 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 		assertOutdatedCollapseCost(it3->dst);
 	}
 	assertOutdatedCollapseCost(dst);
-#endif // ifndef NDEBUG
+#endif //if definded(NDEBUG) && defined(PM_BEST_QUALITY)
 	mCollapseCostSet.erase(src->costSetPosition); // Remove src from collapse costs.
 	src->edges.clear(); // Free memory
 	src->triangles.clear(); // Free memory
