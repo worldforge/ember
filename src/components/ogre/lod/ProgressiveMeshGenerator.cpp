@@ -227,6 +227,17 @@ void ProgressiveMeshGenerator::addIndexDataImpl(const Ogre::HardwareIndexBufferS
 			assert(pIndex[i] < lookup.size());
 			tri->vertex[i] = lookup[pIndex[i]];
 		}
+		if (tri->isMalformed()) {
+			std::stringstream str;
+			str << "In " << mMesh.getName() << " malformed triangle found with ID: " << getTriangleID(tri) << ". " <<
+			std::endl;
+			printTriangle(tri, str);
+			str << "It will be excluded from Lod level calculations.";
+			S_LOG_WARNING(str.str());
+			tri->isRemoved = true;
+			mIndexBufferInfoList[tri->submeshID].indexCount -= 3;
+			return;
+		}
 		tri->computeNormal();
 		addTriangleToEdges(tri);
 	}
@@ -258,9 +269,7 @@ bool ProgressiveMeshGenerator::PMTriangle::hasVertex(const PMVertex* v) const
 
 void ProgressiveMeshGenerator::replaceVertexID(PMTriangle* triangle, unsigned int oldID, unsigned int newID, PMVertex* dst)
 {
-	std::pair<VTriangles::iterator, bool> ret;
-	ret = dst->triangles.insert(triangle);
-	assert(ret.second);
+	dst->triangles.addNotExists(triangle);
 	// NOTE: triangle is not removed from src. This is implementation specific optimization.
 
 	// Its up to the compiler to unroll everything.
@@ -300,8 +309,7 @@ void ProgressiveMeshGenerator::removeTriangleFromEdges(PMTriangle* triangle, PMV
 	// skip is needed if we are iterating on the vertex's edges or triangles.
 	for (int i = 0; i < 3; i++) {
 		if (triangle->vertex[i] != skip) {
-			size_t success = triangle->vertex[i]->triangles.erase(triangle);
-			assert(success);
+			triangle->vertex[i]->triangles.removeExists(triangle);
 		}
 	}
 	for (int i = 0; i < 3; i++) {
@@ -322,6 +330,11 @@ void ProgressiveMeshGenerator::printTriangle(PMTriangle* triangle, std::stringst
 		    << triangle->vertex[i]->position.z << ") "
 		    << "vertex ID: " << triangle->vertexID[i] << std::endl;
 	}
+}
+
+bool ProgressiveMeshGenerator::PMTriangle::isMalformed()
+{
+	return vertex[0] == vertex[1] || vertex[0] == vertex[2] || vertex[1] == vertex[2];
 }
 
 bool ProgressiveMeshGenerator::isDuplicateTriangle(PMTriangle* triangle, PMTriangle* triangle2)
@@ -372,22 +385,7 @@ void ProgressiveMeshGenerator::addTriangleToEdges(PMTriangle* triangle)
 	}
 #endif // ifdef PM_BEST_QUALITY
 	for (int i = 0; i < 3; i++) {
-		std::pair<VTriangles::iterator, bool> ret;
-		ret = triangle->vertex[i]->triangles.insert(triangle);
-		if (!ret.second) {
-			std::stringstream str;
-			str << "In " << mMesh.getName() << " malformed triangle found with ID: " << getTriangleID(triangle) << ". " <<
-			std::endl;
-			printTriangle(triangle, str);
-			str << "It will be excluded from Lod level calculations.";
-			S_LOG_WARNING(str.str());
-			for (int i = 0; i < 3; i++) {
-				triangle->vertex[i]->triangles.erase(triangle);
-			}
-			triangle->isRemoved = true;
-			mIndexBufferInfoList[triangle->submeshID].indexCount -= 3;
-			return;
-		}
+		triangle->vertex[i]->triangles.addNotExists(triangle);
 	}
 	for (int i = 0; i < 3; i++) {
 		for (int n = 0; n < 3; n++) {
@@ -426,12 +424,7 @@ ProgressiveMeshGenerator::PMTriangle* ProgressiveMeshGenerator::findSideTriangle
 
 ProgressiveMeshGenerator::PMEdge* ProgressiveMeshGenerator::getPointer(VEdges::iterator it)
 {
-	// This is needed to overcome a C++ limitation.
-	// Since I'm using a Set container, the template object is a key and you can't modify the key.
-	// However in the comparator, I have only used the position, so I can modify the rest of the object.
-	// If I would use Map container, then "first" and "second" separation would look ugly and makes code unreadable.
-	// If I would use mutable, I would need to write const everywhere which is ugly.
-	return const_cast<PMEdge*>(&*it);
+	return &*it;
 }
 
 void ProgressiveMeshGenerator::computeCosts()
@@ -648,7 +641,6 @@ void ProgressiveMeshGenerator::updateVertexCollapseCost(PMVertex* vertex)
 			vertex->costSetPosition = mCollapseCostSet.insert(vertex);
 		} else {
 #ifndef NDEBUG
-
 			vertex->collapseTo == NULL;
 			vertex->costSetPosition = mCollapseCostSet.end();
 #endif
@@ -755,11 +747,10 @@ void ProgressiveMeshGenerator::assertValidVertex(PMVertex* v)
 		PMTriangle* t = *it;
 		for (int i = 0; i < 3; i++) {
 			assert(t->vertex[i]->costSetPosition != mCollapseCostSet.end());
-			assert(t->vertex[i]->edges.find(PMEdge(t->vertex[i]->collapseTo)) != t->vertex[i]->edges.end());
+			t->vertex[i]->edges.findExists(PMEdge(t->vertex[i]->collapseTo));
 			for (int n = 0; n < 3; n++) {
 				if (i != n) {
-					VEdges::iterator it = t->vertex[i]->edges.find(PMEdge(t->vertex[n]));
-					assert(it != t->vertex[i]->edges.end());
+					VEdges::iterator it = t->vertex[i]->edges.findExists(PMEdge(t->vertex[n]));
 					assert(it->collapseCost != UNINITIALIZED_COLLAPSE_COST);
 					assert(it->collapseCost != UNINITIALIZED_COLLAPSE_COST);
 				} else {
@@ -998,48 +989,42 @@ ProgressiveMeshGenerator::PMEdge& ProgressiveMeshGenerator::PMEdge::operator= (c
 	return *this;
 }
 
-ProgressiveMeshGenerator::PMEdge* ProgressiveMeshGenerator::addEdge(PMVertex* v, const PMEdge& edge)
+bool ProgressiveMeshGenerator::PMEdge::operator== (const PMEdge& other) const
+{
+	return dst == other.dst;
+}
+
+void ProgressiveMeshGenerator::addEdge(PMVertex* v, const PMEdge& edge)
 {
 	assert(edge.dst != v);
-	std::pair<VEdges::iterator, bool> ret;
-	ret = v->edges.insert(edge);
-	if (ret.second) {
-		PMEdge* e = getPointer(ret.first);
-		e->refCount = 1;
-		return e;
+	VEdges::iterator it;
+	it = v->edges.add(edge);
+	if (it == v->edges.end()) {
+		v->edges.back().refCount = 1;
 	} else {
-		PMEdge* e = getPointer(ret.first);
-		e->refCount++;
-		return e;
+		it->refCount++;
 	}
 }
 
-ProgressiveMeshGenerator::PMEdge* ProgressiveMeshGenerator::removeEdge(PMVertex* v, const PMEdge& edge)
+void ProgressiveMeshGenerator::removeEdge(PMVertex* v, const PMEdge& edge)
 {
-	VEdges::iterator it = v->edges.find(edge);
-	assert(it != v->edges.end());
-	PMEdge* e = getPointer(it);
-	if (e->refCount == 1) {
-		PMVertex* v2 = e->dst;
-		v->edges.erase(it);
-		return NULL;
+	VEdges::iterator it = v->edges.findExists(edge);
+	if (it->refCount == 1) {
+		v->edges.remove(it);
+	} else {
+		it->refCount--;
 	}
-	e->refCount--;
-	return e;
 }
-
 
 bool ProgressiveMeshGenerator::PMVertexEqual::operator() (const PMVertex* lhs, const PMVertex* rhs) const
 {
 	return lhs->position == rhs->position;
 }
 
-
 bool ProgressiveMeshGenerator::PMCollapseCostLess::operator() (const PMVertex* lhs, const PMVertex* rhs) const
 {
 	return lhs->collapseCost < rhs->collapseCost;
 }
-
 
 size_t ProgressiveMeshGenerator::PMVertexHash::operator() (const PMVertex* v) const
 {
@@ -1047,6 +1032,82 @@ size_t ProgressiveMeshGenerator::PMVertexHash::operator() (const PMVertex* v) co
 	return hasher(v->position.x)
 	       ^ hasher(v->position.y)
 	       ^ hasher(v->position.z);
+}
+
+template<typename T, unsigned S>
+void ProgressiveMeshGenerator::VectorSet<T, S>::addNotExists(const T& item)
+{
+	assert(find(item) == end());
+	push_back(item);
+}
+
+template<typename T, unsigned S>
+void ProgressiveMeshGenerator::VectorSet<T, S>::remove(iterator it)
+{
+	// Thats my trick to remove an item from the vector very fast!
+	// It works similar to the heap_pop().
+	// It swaps the removable item to the back, then pops it.
+	*it = back();
+	pop_back();
+}
+
+template<typename T, unsigned S>
+/*iterator*/ T* ProgressiveMeshGenerator::VectorSet<T, S>::add(const T& item)
+{
+	iterator it = find(item);
+	if (it == end()) {
+		push_back(item);
+		return end();
+	}
+	return it;
+}
+
+template<typename T, unsigned S>
+void ProgressiveMeshGenerator::VectorSet<T, S>::removeExists(const T& item)
+{
+	iterator it = find(item);
+	assert(it != end());
+	remove(it);
+}
+
+template<typename T, unsigned S>
+bool ProgressiveMeshGenerator::VectorSet<T, S>::remove(const T& item)
+{
+	iterator it = find(item);
+	if (it != end()) {
+		remove(it);
+		return true;
+	} else {
+		return false;
+	}
+}
+
+template<typename T, unsigned S>
+void ProgressiveMeshGenerator::VectorSet<T, S>::replaceExists(const T& oldItem, const T& newItem)
+{
+	iterator it = find(oldItem);
+	assert(it != end());
+	*it = newItem;
+}
+
+template<typename T, unsigned S>
+bool ProgressiveMeshGenerator::VectorSet<T, S>::has(const T& item)
+{
+	return find(item) != end();
+}
+
+template<typename T, unsigned S>
+/*iterator*/ T* ProgressiveMeshGenerator::VectorSet<T, S>::find(const T& item)
+{
+	return std::find(begin(), end(), item);
+}
+
+template<typename T, unsigned S>
+/*iterator*/ T* ProgressiveMeshGenerator::VectorSet<T, S>::findExists(const T& item)
+{
+	iterator it = find(item);
+	assert(it != end());
+	return it;
 }
 
 }

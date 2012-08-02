@@ -128,6 +128,25 @@ public:
 	 */
 	void build(LodConfigList& lodConfigs);
 private:
+
+	// VectorSet is basically a helper to use a vector as a small set container.
+	// Also these functions keep the code clean and fast.
+	// You can insert in O(1) time, if you know that it doesn't exists.
+	// You can remove in O(1) time, if you know the position of the item.
+	template<typename T, unsigned S>
+	struct VectorSet :
+		public Ogre::SmallVector<T, S> {
+		void addNotExists(const T& item); // Complexity: O(1)!!
+		void remove(iterator it); // Complexity: O(1)!!
+		iterator add(const T& item); // Complexity: O(N)
+		void removeExists(const T& item); // Complexity: O(N)
+		bool remove(const T& item); // Complexity: O(N)
+		void replaceExists(const T& oldItem, const T& newItem); // Complexity: O(N)
+		bool has(const T& item); // Complexity: O(N)
+		iterator find(const T& item); // Complexity: O(N)
+		iterator findExists(const T& item); // Complexity: O(N)
+	};
+
 	struct PMEdge;
 	struct PMVertex;
 	struct PMTriangle;
@@ -142,8 +161,10 @@ private:
 	typedef boost::unordered_set<PMVertex*, PMVertexHash, PMVertexEqual> UniqueVertexSet;
 	typedef std::multiset<PMVertex*, PMCollapseCostLess> CollapseCostSet;
 	typedef std::vector<PMVertex*> VertexLookupList;
-	typedef std::set<PMEdge> VEdges;
-	typedef std::set<PMTriangle*> VTriangles;
+
+	typedef VectorSet<PMEdge, 8> VEdges;
+	typedef VectorSet<PMTriangle*, 7> VTriangles;
+
 	typedef std::vector<PMCollapsedEdge> CollapsedEdges;
 	typedef std::vector<PMIndexBufferInfo> IndexBufferInfoList;
 
@@ -169,6 +190,7 @@ private:
 		int refCount;
 
 		explicit PMEdge(PMVertex* destination);
+		bool operator== (const PMEdge& other) const;
 		PMEdge& operator= (const PMEdge& b);
 		PMEdge(const PMEdge& b);
 		bool operator< (const PMEdge& other) const;
@@ -196,6 +218,7 @@ private:
 		void computeNormal();
 		bool hasVertex(const PMVertex* v) const;
 		unsigned int getVertexID(const PMVertex* v) const;
+		bool isMalformed();
 	};
 
 	struct PMIndexBufferInfo {
@@ -227,7 +250,7 @@ private:
 	template<typename indexType>
 	void addIndexDataImpl(const Ogre::HardwareIndexBufferSharedPtr& ibuf, VertexLookupList& lookup, unsigned short submeshID);
 	void addIndexData(Ogre::IndexData* indexData, bool useSharedVertexLookup, unsigned short submeshID);
-	
+
 	void computeCosts();
 	bool isBorderVertex(const PMVertex* vertex) const;
 	PMEdge* getPointer(VEdges::iterator it);
@@ -248,14 +271,15 @@ private:
 
 	void addTriangleToEdges(PMTriangle* triangle);
 	void removeTriangleFromEdges(PMTriangle* triangle, PMVertex* skip = NULL);
-	PMEdge* addEdge(PMVertex* v, const PMEdge& edge);
-	PMEdge* removeEdge(PMVertex* v, const PMEdge& edge);
+	void addEdge(PMVertex* v, const PMEdge& edge);
+	void removeEdge(PMVertex* v, const PMEdge& edge);
 	void printTriangle(PMTriangle* triangle, std::stringstream& str);
 	PMTriangle* findSideTriangle(const PMVertex* v1, const PMVertex* v2);
 	void assertOutdatedCollapseCost(PMVertex* vertex);
 	bool isDuplicateTriangle(PMTriangle* triangle, PMTriangle* triangle2);
 	PMTriangle* isDuplicateTriangle(PMTriangle* triangle);
 	int getTriangleID(PMTriangle* triangle);
+
 };
 
 }
