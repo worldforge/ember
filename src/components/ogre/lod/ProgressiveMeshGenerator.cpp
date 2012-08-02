@@ -851,27 +851,38 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 #endif
 		}
 	}
-
+#ifndef PM_BEST_QUALITY
 	VEdges::iterator it3 = src->edges.begin();
 	VEdges::iterator it3End = src->edges.end();
 	for (; it3 != it3End; it3++) {
 		updateVertexCollapseCost(it3->dst);
-#ifdef PM_BEST_QUALITY
-		// TODO: Find out why is this needed. assertOutdatedCollapseCost() fails on some
-		// rare situations without this. For example goblin.mesh fails.
-		// TODO: This is doing lot of duplicate work, it should be fixed by loading
-		// them to a vector, then processing.
-		VEdges::iterator it5End = it3->dst->edges.end();
-		VEdges::iterator it5 = it3->dst->edges.begin();
-		for (; it5 != it5End; it5++) {
-			if (it3->dst != it5->dst && it5->dst != dst) {
-				updateVertexCollapseCost(it5->dst);
-			}
+	}
+#else
+	// TODO: Find out why is this needed. assertOutdatedCollapseCost() fails on some
+	// rare situations without this. For example goblin.mesh fails.
+	typedef Ogre::SmallVector<PMVertex*, 64> UpdatableList;
+	UpdatableList updatable;
+	VEdges::iterator it3 = src->edges.begin();
+	VEdges::iterator it3End = src->edges.end();
+	for (; it3 != it3End; it3++) {
+		updatable.push_back(it3->dst);
+		VEdges::iterator it4End = it3->dst->edges.end();
+		VEdges::iterator it4 = it3->dst->edges.begin();
+		for (; it4 != it4End; it4++) {
+			updatable.push_back(it4->dst);
 		}
-#endif // ifdef PM_BEST_QUALITY
 	}
 
-#if !defined(NDEBUG) && defined(PM_BEST_QUALITY)
+	// Remove duplicates.
+	UpdatableList::iterator it5 = updatable.begin();
+	UpdatableList::iterator it5End = updatable.end();
+	std::sort(it5, it5End);
+	it5End = std::unique(it5, it5End);
+
+	for (; it5 != it5End; it5++) {
+		updateVertexCollapseCost(*it5);
+	}
+#ifndef NDEBUG
 	it3 = src->edges.begin();
 	it3End = src->edges.end();
 	for (; it3 != it3End; it3++) {
@@ -883,7 +894,8 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 		assertOutdatedCollapseCost(it3->dst);
 	}
 	assertOutdatedCollapseCost(dst);
-#endif // if !definded(NDEBUG) && defined(PM_BEST_QUALITY)
+#endif // ifndef NDEBUG
+#endif // ifndef PM_BEST_QUALITY
 	mCollapseCostSet.erase(src->costSetPosition); // Remove src from collapse costs.
 	src->edges.clear(); // Free memory
 	src->triangles.clear(); // Free memory

@@ -22,6 +22,7 @@
 #include <OgrePrerequisites.h>
 #include <OgreVector3.h>
 #include <OgreHardwareIndexBuffer.h>
+#include <OgreSmallVector.h>
 
 #include <boost/unordered_set.hpp>
 
@@ -121,9 +122,9 @@ public:
 	~ProgressiveMeshGenerator();
 
 	/**
-	 * @brief Builds the Lods for a submesh based on a LodConfigList.
+	 * @brief Builds the Lod levels for a submesh based on a LodConfigList.
 	 *
-	 * @param lodConfigs Specification of the requested lods.
+	 * @param lodConfigs Specification of the requested Lod levels.
 	 */
 	void build(LodConfigList& lodConfigs);
 private:
