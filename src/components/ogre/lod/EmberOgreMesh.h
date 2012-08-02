@@ -47,7 +47,7 @@ public:
 	 * 
 	 * @param lodConfigs Specification of the requested Lods.
 	 */
-	void generateLodLevels(const ProgressiveMeshGenerator::LodConfigList& lodConfigs);
+	void generateLodLevels(ProgressiveMeshGenerator::LodConfigList& lodConfigs);
 
 	/**
 	 * @brief This will start the Lod loading.

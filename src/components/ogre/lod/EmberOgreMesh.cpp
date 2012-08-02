@@ -43,23 +43,25 @@ EmberOgreMesh::EmberOgreMesh(Ogre::ResourceManager* creator,
 	S_LOG_INFO("Loading mesh " << mName << ".");
 }
 
-void EmberOgreMesh::generateLodLevels(const ProgressiveMeshGenerator::LodConfigList& lodConfigs)
+void EmberOgreMesh::generateLodLevels(ProgressiveMeshGenerator::LodConfigList& lodConfigs)
 {
 	removeLodLevels();
 
 	ProgressiveMeshGenerator pm(*this);
 	pm.build(lodConfigs);
 
-	// Iterate over the lods and record usage.
-	mNumLods = lodConfigs.size() + 1;
+	Ogre::SubMesh* submesh = getSubMesh(0);
+	mNumLods = submesh->mLodFaceList.size() + 1;
 	mMeshLodUsageList.resize(mNumLods);
-	for (int i = 0; i < lodConfigs.size(); i++) {
+	for (int n = 0, i = 0; i < lodConfigs.size(); i++) {
 		// Record usage. First Lod usage is the mesh itself.
-		Ogre::MeshLodUsage& lod = mMeshLodUsageList[i + 1];
-		lod.userValue = lodConfigs[i].distance;
-		lod.value = mLodStrategy->transformUserValue(lod.userValue);
-		lod.edgeData = 0;
-		lod.manualMesh.setNull();
+		if(!lodConfigs[i].outSkipped){
+			Ogre::MeshLodUsage& lod = mMeshLodUsageList[++n];
+			lod.userValue = lodConfigs[i].distance;
+			lod.value = mLodStrategy->transformUserValue(lod.userValue);
+			lod.edgeData = 0;
+			lod.manualMesh.setNull();
+		}
 	}
 }
 
