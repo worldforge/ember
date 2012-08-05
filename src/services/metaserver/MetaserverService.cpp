@@ -86,6 +86,7 @@ Service::Status MetaserverService::start()
 		metaserverHostname = "metaserver.worldforge.org";
 	}
 
+	S_LOG_INFO("Connecting to meta server at address " << metaserverHostname << ".");
 	mMetaserver = new Eris::Meta(metaserverHostname, 20);
 	mMetaserver->Failure.connect(sigc::mem_fun(*this, &MetaserverService::gotFailure));
 	mMetaserver->ReceivedServerInfo.connect(sigc::mem_fun(*this, &MetaserverService::receivedServerInfo));
