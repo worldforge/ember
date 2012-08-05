@@ -238,6 +238,8 @@ GUIManager::~GUIManager()
 
 	WidgetLoader::removeAllWidgetFactories();
 
+	delete mCEGUILogger;
+
 }
 
 void GUIManager::initialize()
