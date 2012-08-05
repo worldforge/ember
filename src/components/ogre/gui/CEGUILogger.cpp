@@ -45,23 +45,23 @@ CEGUILogger::~CEGUILogger()
 void CEGUILogger::logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level)
 {
 	//just reroute to the Ember logging service
-	static std::string ogre("(CEGUI) ");
+	static std::string cegui("(CEGUI) ");
 	if (d_level >= level) {
 		switch (level) {
 			case CEGUI::Insane:
-				Log::slog("CEGUI", Log::VERBOSE) << ogre << message.c_str() << Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::VERBOSE) << cegui << message.c_str() << Log::END_MESSAGE;
 				break;
 			case CEGUI::Informative:
-				Log::slog("CEGUI", Log::VERBOSE) << ogre << message.c_str() << Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::VERBOSE) << cegui << message.c_str() << Log::END_MESSAGE;
 				break;
 			case CEGUI::Standard:
-				Log::slog("CEGUI", Log::INFO) << ogre << message.c_str() << Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::INFO) << cegui << message.c_str() << Log::END_MESSAGE;
 				break;
 			case CEGUI::Warnings:
-				Log::slog("CEGUI", Log::WARNING) << ogre << message.c_str() << Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::WARNING) << cegui << message.c_str() << Log::END_MESSAGE;
 				break;
 			case CEGUI::Errors:
-				Log::slog("CEGUI", Log::FAILURE) << ogre << message.c_str() << Log::END_MESSAGE;
+				Log::slog("CEGUI", Log::FAILURE) << cegui << message.c_str() << Log::END_MESSAGE;
 				break;
 		}
 	}

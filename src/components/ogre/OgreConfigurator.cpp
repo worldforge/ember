@@ -26,6 +26,7 @@
 #include "components/ogre/GUICEGUIAdapter.h"
 #include "components/ogre/OgreResourceLoader.h"
 #include "components/ogre/EmberIcon.h"
+#include "components/ogre/gui/CEGUILogger.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -137,6 +138,8 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	mLoader->loadSection("Gui", false);
 	mLoader->loadSection("General", false);
 
+	Gui::CEGUILogger* logger = new Gui::CEGUILogger();
+
 	CEGUI::OgreRenderer& renderer = CEGUI::OgreRenderer::create(*renderWindow);
 	CEGUI::ResourceProvider& rp = CEGUI::OgreRenderer::createOgreResourceProvider();
 
@@ -237,6 +240,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		mConfigOptions["Full Screen"].currentValue = fullscreenCheckbox->isSelected() ? "Yes" : "No";
 
 		CEGUI::System::getSingleton().destroy();
+		delete logger;
 
 		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
 
@@ -247,6 +251,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		return mResult;
 	} catch (const std::exception& ex) {
 		CEGUI::System::getSingleton().destroy();
+		delete logger;
 		throw ex;
 	}
 }
