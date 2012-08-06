@@ -99,34 +99,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	bmask = 0x00ff0000;
 #endif
 
-	//We'll use the emberIcon struct
-	SDL_Surface* iconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64 * 3, rmask, gmask, bmask, 0);
-
-	SDL_SetVideoMode(width, height, 0, 0); // create an SDL window
-
-	if (iconSurface) {
-		SDL_WM_SetIcon(iconSurface, 0);
-	}
-
-	SDL_SysWMinfo info;
-	SDL_VERSION(&info.version);
-
-	SDL_GetWMInfo(&info);
-
-	std::string dsp(&(DisplayString(info.info.x11.display) [1]));
-	Ogre::vector<Ogre::String>::type tokens = Ogre::StringUtil::split(dsp, ".");
-
-	std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
-	if (tokens.size() > 1) {
-		s += ":" + tokens[1] + ":";
-	} else {
-		//If there's only one token, fall back to "0". Not entirely sure how robust this is though
-		s += ":0:";
-		S_LOG_WARNING("Could not find second part of display string, defaulting to '0'.");
-	}
-	s += Ogre::StringConverter::toString((long)info.info.x11.window);
 	Ogre::NameValuePairList misc;
-	misc["parentWindowHandle"] = s;
 
 	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", width, height, false, &misc);
 	renderWindow->setActive(true);

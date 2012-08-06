@@ -250,8 +250,6 @@ bool OgreSetup::showConfigurationDialog()
 	} catch (const std::exception& ex) {
 		delete mRoot;
 		mRoot = 0;
-		SDL_Quit();
-		SDL_Init(SDL_INIT_VIDEO);
 		createOgreSystem();
 		throw ex;
 	}
@@ -260,8 +258,6 @@ bool OgreSetup::showConfigurationDialog()
 	if (result == OgreConfigurator::OC_CANCEL) {
 		return false;
 	}
-	SDL_Quit();
-	SDL_Init(SDL_INIT_VIDEO);
 	createOgreSystem();
 	if (result == OgreConfigurator::OC_ADVANCED_OPTIONS) {
 		if (!mRoot->showConfigDialog()) {
