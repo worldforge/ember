@@ -236,7 +236,7 @@ void ProgressiveMeshGenerator::addIndexDataImpl(const Ogre::HardwareIndexBufferS
 			S_LOG_WARNING(str.str());
 			tri->isRemoved = true;
 			mIndexBufferInfoList[tri->submeshID].indexCount -= 3;
-			return;
+			continue;
 		}
 		tri->computeNormal();
 		addTriangleToEdges(tri);
@@ -913,10 +913,7 @@ size_t ProgressiveMeshGenerator::calcLodVertexCount(const LodConfig& lodConfig)
 
 void ProgressiveMeshGenerator::bakeLods(const LodConfigList& lodConfigs)
 {
-	union IndexBufferPointer {
-		unsigned short* pshort;
-		unsigned int* pint;
-	};
+	
 	unsigned short subMeshCount = mMesh.getNumSubMeshes();
 	std::auto_ptr<IndexBufferPointer> indexBuffer(new IndexBufferPointer[subMeshCount]);
 
@@ -1037,8 +1034,8 @@ size_t ProgressiveMeshGenerator::PMVertexHash::operator() (const PMVertex* v) co
 template<typename T, unsigned S>
 void ProgressiveMeshGenerator::VectorSet<T, S>::addNotExists(const T& item)
 {
-	assert(find(item) == end());
-	push_back(item);
+	assert(find(item) == baseClass::end());
+	baseClass::push_back(item);
 }
 
 template<typename T, unsigned S>
@@ -1047,17 +1044,17 @@ void ProgressiveMeshGenerator::VectorSet<T, S>::remove(iterator it)
 	// Thats my trick to remove an item from the vector very fast!
 	// It works similar to the heap_pop().
 	// It swaps the removable item to the back, then pops it.
-	*it = back();
-	pop_back();
+	*it = baseClass::back();
+	baseClass::pop_back();
 }
 
 template<typename T, unsigned S>
-/*iterator*/ T* ProgressiveMeshGenerator::VectorSet<T, S>::add(const T& item)
+typename ProgressiveMeshGenerator::VectorSet<T, S>::iterator ProgressiveMeshGenerator::VectorSet<T, S>::add(const T& item)
 {
 	iterator it = find(item);
-	if (it == end()) {
-		push_back(item);
-		return end();
+	if (it == baseClass::end()) {
+		baseClass::push_back(item);
+		return baseClass::end();
 	}
 	return it;
 }
@@ -1074,7 +1071,7 @@ template<typename T, unsigned S>
 bool ProgressiveMeshGenerator::VectorSet<T, S>::remove(const T& item)
 {
 	iterator it = find(item);
-	if (it != end()) {
+	if (it != baseClass::end()) {
 		remove(it);
 		return true;
 	} else {
@@ -1093,20 +1090,20 @@ void ProgressiveMeshGenerator::VectorSet<T, S>::replaceExists(const T& oldItem, 
 template<typename T, unsigned S>
 bool ProgressiveMeshGenerator::VectorSet<T, S>::has(const T& item)
 {
-	return find(item) != end();
+	return find(item) != baseClass::end();
 }
 
 template<typename T, unsigned S>
-/*iterator*/ T* ProgressiveMeshGenerator::VectorSet<T, S>::find(const T& item)
+typename ProgressiveMeshGenerator::VectorSet<T, S>::iterator ProgressiveMeshGenerator::VectorSet<T, S>::find(const T& item)
 {
-	return std::find(begin(), end(), item);
+	return std::find(baseClass::begin(), baseClass::end(), item);
 }
 
 template<typename T, unsigned S>
-/*iterator*/ T* ProgressiveMeshGenerator::VectorSet<T, S>::findExists(const T& item)
+typename ProgressiveMeshGenerator::VectorSet<T, S>::iterator ProgressiveMeshGenerator::VectorSet<T, S>::findExists(const T& item)
 {
 	iterator it = find(item);
-	assert(it != end());
+	assert(it != baseClass::end());
 	return it;
 }
 

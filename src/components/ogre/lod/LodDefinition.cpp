@@ -66,7 +66,7 @@ LodDistance& LodDefinition::getLodDistance( Ogre::Real distVal )
 
 void LodDefinition::removeLodDistance(Ogre::Real distVal)
 {
-	LodDistanceMap::const_iterator it = mManualLod.find(distVal);
+	LodDistanceMap::iterator it = mManualLod.find(distVal);
 	assert(it != mManualLod.end());
 	mManualLod.erase(it);
 }

@@ -25,7 +25,8 @@
 #include <OgreMesh.h>
 #include <OgreSubMesh.h>
 #include <OgreProgressiveMesh.h>
-
+#include <OgreEntity.h>
+#include <OgreSceneManager.h>
 #include <sstream>
 
 

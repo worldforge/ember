@@ -18,6 +18,7 @@
 
 #include "components/ogre/widgets/OgreEntityRenderer.h"
 #include <OgreLodListener.h>
+#include <OgreVector3.h>
 
 namespace Ember
 {
@@ -60,12 +61,12 @@ private:
 	};
 	typedef std::set<Ogre::Vector3, VectorLessComparator> VertexSet;
 
-	int MeshInfoProvider::getVertexSize(const Ogre::VertexData* data);
-	void MeshInfoProvider::calcUniqueVertexCount(VertexSet& vertices, const Ogre::VertexData& data);
-	size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::MeshPtr& mesh);
-	size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::VertexData& data);
+	int getVertexSize(const Ogre::VertexData* data);
+	void calcUniqueVertexCount(VertexSet& vertices, const Ogre::VertexData& data);
+	size_t calcUniqueVertexCount(const Ogre::MeshPtr& mesh);
+	size_t calcUniqueVertexCount(const Ogre::VertexData& data);
 
-	Ember::OgreView::Gui::OgreEntityRenderer* mEntityRenderer;
+	OgreEntityRenderer* mEntityRenderer;
 	int mLodIndex;
 };
 

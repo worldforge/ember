@@ -26,7 +26,7 @@ libEmberOgre_a_SOURCES = \
 	environment/ExclusiveImposterPage.cpp environment/WorldRepresentation.cpp environment/WorldAction.cpp \
 	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp gui/RenderedColourStringTextComponent.cpp gui/ColouredRenderedStringParser.cpp gui/CursorWorldListener.cpp \
 \
-	lod/LodDefinition.cpp lod/XMLLodDefinitionSerializer.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp \
+	lod/EmberOgreMesh.cpp lod/EmberOgreMeshManager.cpp lod/EmberOgreRoot.cpp lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/OgreSmallVector.cpp lod/ProgressiveMeshGenerator.cpp lod/XMLLodDefinitionSerializer.cpp \
 \
 	mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp \
 \
@@ -67,7 +67,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/EntityCreatorMovementBridge.cpp widgets/EntityCreatorPartAction.cpp widgets/EntityEditor.cpp widgets/EntityIcon.cpp \
 	widgets/EntityIconDragDropPreview.cpp widgets/EntityIconDragDropTarget.cpp widgets/EntityIconManager.cpp widgets/EntityIconSlot.cpp widgets/Help.cpp widgets/IconBar.cpp \
 	widgets/IconBase.cpp widgets/IngameChatWidget.cpp widgets/InspectWidget.cpp widgets/ListHolder.cpp \
-	widgets/LoadingBar.cpp widgets/EntityCreatorTypeHelper.cpp widgets/MeshPreview.cpp widgets/ModelRenderer.cpp \
+	widgets/LoadingBar.cpp widgets/EntityCreatorTypeHelper.cpp widgets/MeshInfoProvider.cpp widgets/MeshPreview.cpp widgets/ModelRenderer.cpp \
 	widgets/MovableObjectRenderer.cpp widgets/OgreEntityRenderer.cpp widgets/QuaternionAdapter.cpp widgets/QuickHelp.cpp widgets/QuickHelpCursor.cpp widgets/Quit.cpp widgets/ServerWidget.cpp widgets/HelpMessage.cpp \
 	widgets/StackableContainer.cpp widgets/Vector3Adapter.cpp widgets/Widget.cpp widgets/WidgetDefinitions.cpp widgets/WidgetPool.cpp widgets/AtlasHelper.cpp widgets/ModelEditHelper.cpp \
 	widgets/EntityTextureManipulator.cpp \
@@ -123,7 +123,7 @@ noinst_HEADERS = \
 \
 	gui/ActiveWidgetHandler.h gui/CEGUILogger.h gui/RenderedColourStringTextComponent.h gui/ColouredRenderedStringParser.h gui/CursorWorldListener.h \
 \
-	lod/LodDefinition.h lod/XMLLodDefinitionSerializer.h lod/LodDefinitionManager.h lod/LodManager.h \
+	lod/EmberOgreMesh.h lod/EmberOgreMeshManager.h lod/EmberOgreRoot.h lod/LodDefinition.h lod/LodDefinitionManager.h lod/LodManager.h lod/OgreSmallVector.h lod/ProgressiveMeshGenerator.h lod/XMLLodDefinitionSerializer.h \
 \
 	mapping/EmberEntityMappingManager.h mapping/XMLEntityMappingDefinitionSerializer.h \
 \

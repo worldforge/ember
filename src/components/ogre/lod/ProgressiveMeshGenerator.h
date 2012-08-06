@@ -22,7 +22,7 @@
 #include <OgrePrerequisites.h>
 #include <OgreVector3.h>
 #include <OgreHardwareIndexBuffer.h>
-#include <OgreSmallVector.h>
+#include "OgreSmallVector.h"
 
 #include <boost/unordered_set.hpp>
 
@@ -118,7 +118,7 @@ public:
 	/**
 	 * @brief Ctor.
 	 */
-	ProgressiveMeshGenerator::ProgressiveMeshGenerator(Ogre::Mesh& mesh);
+	ProgressiveMeshGenerator(Ogre::Mesh& mesh);
 	~ProgressiveMeshGenerator();
 
 	/**
@@ -136,6 +136,9 @@ private:
 	template<typename T, unsigned S>
 	struct VectorSet :
 		public Ogre::SmallVector<T, S> {
+		typedef typename Ogre::SmallVector<T, S> baseClass;
+		typedef typename baseClass::iterator iterator;
+		 
 		void addNotExists(const T& item); // Complexity: O(1)!!
 		void remove(iterator it); // Complexity: O(1)!!
 		iterator add(const T& item); // Complexity: O(N)
@@ -224,6 +227,11 @@ private:
 	struct PMIndexBufferInfo {
 		size_t indexSize;
 		size_t indexCount;
+	};
+	
+	union IndexBufferPointer {
+		unsigned short* pshort;
+		unsigned int* pint;
 	};
 
 	struct PMCollapsedEdge {

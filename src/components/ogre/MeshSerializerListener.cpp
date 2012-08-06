@@ -25,7 +25,7 @@
 #endif
 
 #include "MeshSerializerListener.h"
-#include "Components/ogre/lod/LodManager.h"
+#include "components/ogre/lod/LodManager.h"
 
 namespace Ember {
 namespace OgreView {
