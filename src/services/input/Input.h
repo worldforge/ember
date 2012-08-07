@@ -402,6 +402,11 @@ public:
 	 */
 	void setMouseGrab(bool enabled);
 
+	/**
+	 * @brief Emitted when the size of the main window has changed.
+	 */
+	sigc::signal<void, int, int> EventSizeChanged;
+
 private:
 
 	typedef std::map<std::string, InputCommandMapper*> InputCommandMapperStore;

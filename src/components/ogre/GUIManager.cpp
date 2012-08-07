@@ -187,6 +187,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 
 		mQuickHelp = new Gui::QuickHelp();
 
+		getInput().EventSizeChanged.connect(sigc::mem_fun(*this, &GUIManager::input_SizeChanged));
+
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("GUIManager - error when creating gui." << ex);
 		throw Exception(ex.getMessage().c_str());
@@ -267,7 +269,7 @@ void GUIManager::initialize()
 		S_LOG_FAILURE("GUIManager - error when creating ActionBar icon manager." << e);
 	}
 
-	std::vector < std::string > widgetsToLoad;
+	std::vector<std::string> widgetsToLoad;
 	widgetsToLoad.push_back("IngameChatWidget");
 	//	widgetsToLoad.push_back("JesusEdit");
 	widgetsToLoad.push_back("Help");
@@ -290,6 +292,11 @@ void GUIManager::initialize()
 		}
 	}
 
+}
+
+void GUIManager::input_SizeChanged(int width, int height)
+{
+	mGuiSystem->notifyDisplaySizeChanged(CEGUI::Size(width, height));
 }
 
 void GUIManager::server_GotView(Eris::View* view)

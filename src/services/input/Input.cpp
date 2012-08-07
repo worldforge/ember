@@ -197,6 +197,7 @@ void Input::setGeometry(int width, int height)
 {
 	mScreenWidth = width;
 	mScreenHeight = height;
+	EventSizeChanged.emit(width, height);
 }
 
 void Input::runCommand(const std::string &command, const std::string &args)
