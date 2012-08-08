@@ -27,6 +27,7 @@
 #include "components/ogre/OgreResourceLoader.h"
 #include "components/ogre/EmberIcon.h"
 #include "components/ogre/gui/CEGUILogger.h"
+#include "components/ogre/OgreWindowProvider.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -44,6 +45,7 @@
 
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
+#include <OgreWindowEventUtilities.h>
 
 #ifdef _MSC_VER
 #include <SDL.h>
@@ -63,6 +65,123 @@ namespace Ember
 {
 namespace OgreView
 {
+
+/**
+ * @brief Handles window providing services for the OgreConfigurator.
+ */
+class OgreConfiguratorWindowProvider: public IWindowProvider, public Ogre::WindowEventListener
+{
+private:
+
+	/**
+	 * @brief The window used for input events.
+	 */
+	Ogre::RenderWindow& mWindow;
+
+	/**
+	 * @brief Set this to false if we should exit the main rendering loop.
+	 */
+	bool& mContinueInLoop;
+
+public:
+
+	OgreConfiguratorWindowProvider(Ogre::RenderWindow& window, bool& continueInLoop) :
+			mWindow(window), mContinueInLoop(continueInLoop)
+	{
+
+		Ogre::WindowEventUtilities::addWindowEventListener(&mWindow, this);
+
+		//This is needed for detecting whether it has focus in OgreWindowProvider::windowFocusChange.
+		mWindow.setDeactivateOnFocusChange(true);
+	}
+
+	~OgreConfiguratorWindowProvider()
+	{
+		Ogre::WindowEventUtilities::removeWindowEventListener(&mWindow, this);
+	}
+
+	/**
+	 * @brief Returns whether the window is visible.
+	 */
+	bool isWindowVisible()
+	{
+		return mWindow.isVisible();
+	}
+
+	/**
+	 * @brief Returns the window handle as string.
+	 */
+	std::string getWindowHandle()
+	{
+		std::ostringstream winHandleStr;
+		size_t winHandle = 0;
+		mWindow.getCustomAttribute("WINDOW", &winHandle);
+
+		winHandleStr << winHandle;
+		return winHandleStr.str();
+	}
+
+	/**
+	 * @brief Allows to get the window size.
+	 */
+	void getWindowSize(unsigned int& width, unsigned int& height)
+	{
+		unsigned int depth;
+		int left, top;
+		mWindow.getMetrics(width, height, depth, left, top);
+	}
+
+	/**
+	 * @brief Ogre will call this automatically, when the window is resized.
+	 *
+	 * This will update the window size for mouse calculations.
+	 */
+	void windowResized(Ogre::RenderWindow* rw)
+	{
+		unsigned int width, height;
+		getWindowSize(width, height);
+		Input::getSingleton().setGeometry(width, height);
+	}
+
+	/**
+	 * @brief Ogre will call this automatically, when the close (X) button is pressed by the user.
+	 *
+	 * Used to choose whether you want  from Ogre to destroy the window automatically.
+	 * By default its true, but we don't want Ogre to destroy it, since Ember will ask for confirmation first.
+	 *
+	 * @return Whether you want from Ogre to destroy the window.
+	 */
+	bool windowClosing(Ogre::RenderWindow* rw)
+	{
+		mContinueInLoop = false;
+		//returning false means the window should not be destroyed.
+		return true;
+	}
+
+	/**
+	 * @brief Ogre will call this automatically before the window is destroyed.
+	 *
+	 * This is the last chance to detach OIS.
+	 */
+	void windowClosed(Ogre::RenderWindow* rw)
+	{
+	}
+
+	/**
+	 * @brief Ogre will call this automatically when the window changes focus.
+	 *
+	 * This is usually requested by the user with alt+tab key combination.
+	 */
+	void windowFocusChange(Ogre::RenderWindow* rw)
+	{
+	}
+
+	bool hasWindowFocus()
+	{
+		return mWindow.isActive();
+	}
+
+};
 
 OgreConfigurator::OgreConfigurator() :
 		mLastFrameTime(0), mResult(OC_CANCEL), mContinueInLoop(true), mLoader(new OgreResourceLoader())
@@ -100,11 +219,14 @@ OgreConfigurator::Result OgreConfigurator::configure()
 #endif
 
 	Ogre::NameValuePairList misc;
-
+	//Prevent resizing
+	misc["border"] = "fixed";
 	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", width, height, false, &misc);
 	renderWindow->setActive(true);
 	renderWindow->setAutoUpdated(true);
 	renderWindow->setVisible(true);
+
+	OgreConfiguratorWindowProvider windowProvider(*renderWindow, mContinueInLoop);
 
 	mLoader->initialize();
 	mLoader->loadSection("Bootstrap", false);
@@ -125,6 +247,8 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 		CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultGUISheet", "root_wnd");
 		CEGUI::System::getSingleton().setGUISheet(sheet);
+
+		CEGUI::System::getSingleton().setDefaultMouseCursor("EmberLook", "MouseArrow");
 
 		CEGUI::Window* configWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/datafiles/layouts/OgreConfigurator.layout", "OgreConfigure/");
 		sheet->addChildWindow(configWindow);
@@ -188,8 +312,12 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		}
 
 		Input& input = Input::getSingleton();
+		input.attach(&windowProvider);
+		input.setInputMode(Input::IM_GUI);
+
 		long long lastTime = Time::currentTimeMillis();
 		while (mContinueInLoop) {
+			Ogre::WindowEventUtilities::messagePump();
 			input.processInput();
 			if (input.getMainLoopController()->shouldQuit()) {
 				break;
@@ -200,6 +328,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			Ogre::Root::getSingleton().renderOneFrame();
 		}
 		Input::getSingleton().removeAdapter(adapter);
+		input.detach();
 
 		//Check if the user has selected a render system (in the case of there being multiple)
 		if (renderers.size() > 1) {
@@ -217,7 +346,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
 
-		if (dontShowAgainCheckbox->isSelected()) {
+		if (mResult != OC_CANCEL && dontShowAgainCheckbox->isSelected()) {
 			EmberServices::getSingleton().getConfigService().setValue("ogre", "suppressconfigdialog", true);
 		}
 
