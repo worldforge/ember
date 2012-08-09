@@ -67,6 +67,8 @@ MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& win
 		mSceneManager(sceneManager), mCamera(camera), mCameraMount(0), mWindow(window), mClosestPickingDistance(10000), mCameraRaySceneQuery(0), mAvatarTerrainCursor(new AvatarTerrainCursor(camera)), mCameraOrientationChangedThisFrame(false), mMovementProvider(0), mCameraSettings(new CameraSettings), mConfigListenerContainer(new ConfigListenerContainer())
 {
 
+	mCamera.setAutoAspectRatio(true);
+
 	createRayQueries(sceneManager);
 
 	// Register this as a frame listener
@@ -141,7 +143,7 @@ void MainCamera::Config_Compositors(const std::string& section, const std::strin
 		for (std::vector<std::string>::const_iterator I = tokens.begin(); I != tokens.end(); ++I) {
 			enableCompositor(*I, true);
 		}
-		std::vector < std::string > compositorsToDisable;
+		std::vector<std::string> compositorsToDisable;
 		for (CompositorNameStore::const_iterator I = mLoadedCompositors.begin(); I != mLoadedCompositors.end(); ++I) {
 			if (std::find(tokens.begin(), tokens.end(), *I) == tokens.end()) {
 				compositorsToDisable.push_back(*I);
