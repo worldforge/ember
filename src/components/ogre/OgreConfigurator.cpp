@@ -47,12 +47,9 @@
 #include <OgreRenderWindow.h>
 #include <OgreWindowEventUtilities.h>
 
-#ifdef _MSC_VER
-#include <SDL.h>
-#include <SDL_syswm.h>
-#else
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+//Needed for preventing resize of window
+#include <X11/Xutil.h>
 #endif
 
 #include <stdexcept>
@@ -205,25 +202,33 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	Ogre::Root::getSingleton().setRenderSystem(renderSystem);
 	Ogre::Root::getSingleton().initialise(false);
 
-	//set the icon of the window
-	Uint32 rmask, gmask, bmask;
-
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	rmask = 0xff000000;
-	gmask = 0x00ff0000;
-	bmask = 0x0000ff00;
-#else
-	rmask = 0x000000ff;
-	gmask = 0x0000ff00;
-	bmask = 0x00ff0000;
-#endif
-
 	Ogre::NameValuePairList misc;
-	//Prevent resizing
+	//Prevent resizing. Note that this doesn't work on X11.
 	misc["border"] = "fixed";
 	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", width, height, false, &misc);
 	renderWindow->setActive(true);
 	renderWindow->setAutoUpdated(true);
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+//Needed for preventing resize of window
+
+	Window window = 0;
+	Display* xdisplay = 0;
+
+	renderWindow->getCustomAttribute("WINDOW", &window);
+	renderWindow->getCustomAttribute("XDISPLAY", &xdisplay);
+
+	XSizeHints* hints = XAllocSizeHints();
+
+	hints->max_height = hints->min_height = height;
+	hints->max_width = hints->min_width = width;
+	hints->flags = PMaxSize | PMinSize;
+	XSetWMNormalHints(xdisplay, window, hints);
+
+	XFree(hints);
+
+#endif
+
 	renderWindow->setVisible(true);
 
 	OgreConfiguratorWindowProvider windowProvider(*renderWindow, mContinueInLoop);
