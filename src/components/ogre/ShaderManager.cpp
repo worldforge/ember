@@ -53,16 +53,21 @@ class ShaderSetupInstance {
 private:
 
 	Ogre::SceneManager& mSceneManager;
-
+	
 	/**
 	 * @brief Takes care of the setup of the pssm shadow camera. Owned by this instance.
 	 */
 	ShadowCameraSetup* mShadowCameraSetup;
 
+	/**
+	 * @brief Reference to the automatic graphics manager that is to be passed on when shadow camera is set up.
+	 */
+	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+
 public:
 
-	ShaderSetupInstance(Ogre::SceneManager& sceneManager)
-	: mSceneManager(sceneManager), mShadowCameraSetup(0)
+	ShaderSetupInstance(Ogre::SceneManager& sceneManager, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager)
+	: mSceneManager(sceneManager), mShadowCameraSetup(0), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
 	{
 
 	}
@@ -75,7 +80,7 @@ public:
 	void setPSSMShadows()
 	{
 		delete mShadowCameraSetup;
-		mShadowCameraSetup = new ShadowCameraSetup(mSceneManager);
+		mShadowCameraSetup = new ShadowCameraSetup(mSceneManager, mAutomaticGraphicsLevelManager);
 	}
 
 	void setNoShadows()
@@ -89,7 +94,7 @@ public:
 };
 
 ShaderManager::ShaderManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
-	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mShaderLevelManager(new ShaderLevelManager(automaticGraphicsLevelManager, *this))
+	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mShaderLevelManager(new ShaderLevelManager(automaticGraphicsLevelManager, *this))
 {
 	mGraphicSchemes[LEVEL_DEFAULT]		= std::string("Default");
 	mGraphicSchemes[LEVEL_LOW]			= std::string("Low");
@@ -225,7 +230,7 @@ const std::map<ShaderManager::GraphicsLevel, std::string>& ShaderManager::getGra
 
 void ShaderManager::registerSceneManager(Ogre::SceneManager* sceneManager)
 {
-	ShaderSetupInstance* instance = new ShaderSetupInstance(*sceneManager);
+	ShaderSetupInstance* instance = new ShaderSetupInstance(*sceneManager, mAutomaticGraphicsLevelManager);
 	mShaderSetups.insert(ShaderSetupStore::value_type(sceneManager, instance));
 	setGraphicsLevel(mGraphicsLevel); //TODO: set it per new scene manager instead
 }

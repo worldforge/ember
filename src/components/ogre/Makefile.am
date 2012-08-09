@@ -92,7 +92,7 @@ libEmberOgre_a_SOURCES = \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp \
 	MotionManager.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
 	OgreResourceProvider.cpp OgreWindowProvider.cpp OgreSetup.cpp NodeAttachment.cpp \
-	ShaderManager.cpp ShaderLevelManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp AutoGraphicsLevelManager.cpp \
+	ShaderManager.cpp ShaderLevelManager.cpp ShadowCameraSetup.cpp  ShadowLevelManager.cpp SimpleRenderContext.cpp AutoGraphicsLevelManager.cpp \
 	XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \
 	DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
 	AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp \
@@ -193,7 +193,7 @@ noinst_HEADERS = \
 	IWorldPickListener.h Convert.h MediaUpdater.h MeshCollisionDetector.h \
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreWindowProvider.h OgreSetup.h \
-	ShaderManager.h ShaderLevelManager.h ShadowCameraSetup.h AutoGraphicsLevelManager.h \
+	ShaderManager.h ShaderLevelManager.h ShadowCameraSetup.h ShadowLevelManager.h AutoGraphicsLevelManager.h \
 	SimpleRenderContext.h XMLHelper.h IGraphicalRepresentation.h \
 	IEntityAttachment.h  WorldAttachment.h NodeAttachment.h IMovable.h IAnimated.h \
 	IEntityControlDelegate.h NodeController.h DelegatingNodeController.h \

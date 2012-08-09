@@ -25,17 +25,20 @@
 #endif
 
 #include "ShadowCameraSetup.h"
+#include "ShadowLevelManager.h"
 #include "framework/Tokeniser.h"
 #include "framework/LoggingInstance.h"
 #include <OgreRoot.h>
 #include <OgreRenderSystem.h>
 #include <OgreShadowCameraSetupPSSM.h>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr)
-: mSceneMgr(sceneMgr)
+ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
+		mSceneMgr(sceneMgr), mShadowLevelManager(new ShadowLevelManager(automaticGraphicsLevelManager, sceneMgr))
 {
 	setup();
 	registerConfigListenerWithDefaults("shadows", "texturesize", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowTextureSize), 1024);
@@ -47,7 +50,6 @@ ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr)
 	registerConfigListenerWithDefaults("shadows", "renderbackfaces", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowRenderBackfaces), true);
 
 }
-
 
 ShadowCameraSetup::~ShadowCameraSetup()
 {
@@ -87,6 +89,7 @@ bool ShadowCameraSetup::setup()
 	mPssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 	mSharedCameraPtr = Ogre::ShadowCameraSetupPtr(mPssmSetup);
 	mSceneMgr.setShadowCameraSetup(mSharedCameraPtr);
+	mShadowLevelManager->initialize();
 
 	return true;
 }

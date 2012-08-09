@@ -30,6 +30,9 @@
 namespace Ember {
 namespace OgreView {
 
+class AutomaticGraphicsLevelManager;
+class ShadowLevelManager;
+
 /**
  *
  * @brief This takes care of the setup of the pssm shadow camera.
@@ -45,7 +48,7 @@ public:
      * @brief Ctor.
      * @param sceneMgr The scene manager to which we want to apply our shadow camera.
      */
-    ShadowCameraSetup(Ogre::SceneManager& sceneMgr);
+    ShadowCameraSetup(Ogre::SceneManager& sceneMgr, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
 
     /**
      * @brief Dtor.
@@ -75,6 +78,12 @@ protected:
      * @brief A reference to the shared pointer, which guarantees that the mPssmSetup field isn't deleted inside Ogre.
      */
     Ogre::ShadowCameraSetupPtr mSharedCameraPtr;
+    
+    /**
+     * @brief Object that handles shadow detail automatically.
+     */
+    ShadowLevelManager* mShadowLevelManager;
+    
 private:
 
 	/**
