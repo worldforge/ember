@@ -271,7 +271,6 @@ bool OgreSetup::showConfigurationDialog()
 		}
 		mRoot->saveConfig();
 	}
-	mRoot->initialise(false);
 	return true;
 }
 
