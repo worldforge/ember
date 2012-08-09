@@ -74,12 +74,10 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 	int height = static_cast<int>(image->getPixelSize().d_height);
 	if (width != 0 && height != 0) {
 		mTexture = new EntityCEGUITexture(image->getName().c_str(), width, height);
-		//most models are rotated away from the camera, so as a convenience we'll rotate the node
-		//mTexture->getSceneNode()->rotate(Ogre::Vector3::UNIT_Y,(Ogre::Degree)180);
 
 		mImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(mTexture->getImage()));
-		//mImage->setImageColours(CEGUI::colour(1.0f, 1.0f, 1.0f));
 
+		image->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&MovableObjectRenderer::image_Sized, this));
 
 		// Register this as a frame listener
 		Ogre::Root::getSingleton().addFrameListener(this);
@@ -266,6 +264,13 @@ void MovableObjectRenderer::setCameraPositionMode(SimpleRenderContext::CameraPos
 EntityCEGUITexture& MovableObjectRenderer::getEntityTexture()
 {
 	return *mTexture;
+}
+
+bool MovableObjectRenderer::image_Sized(const CEGUI::EventArgs& e)
+{
+	const CEGUI::Size size = mImage->getPixelSize();
+	mTexture->getRenderContext()->getCamera()->setAspectRatio(size.d_width / size.d_height);
+	return true;
 }
 
 

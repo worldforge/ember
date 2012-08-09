@@ -210,6 +210,13 @@ protected:
 
 	virtual Ogre::MovableObject* getMovableObject() = 0;
 
+	/**
+	 * @brief Change the aspect ratio of the render texture when the image is resized.
+	 * @param e
+	 * @return
+	 */
+	bool image_Sized(const CEGUI::EventArgs& e);
+
 	EntityCEGUITexture* mTexture;
 
 
