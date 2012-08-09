@@ -296,6 +296,11 @@ public:
 	sigc::signal<void, bool> EventWindowActive;
 
 	/**
+	 * @brief Emitted when the size of the main window has changed.
+	 */
+	sigc::signal<void, int, int> EventSizeChanged;
+
+	/**
 	 * @brief Returns true if the supplied key is down.
 	 * @param  key The key to check for.
 	 * @return True if the key is down.
@@ -401,11 +406,6 @@ public:
 	 * @param enabled True if the mouse should be grabbed.
 	 */
 	void setMouseGrab(bool enabled);
-
-	/**
-	 * @brief Emitted when the size of the main window has changed.
-	 */
-	sigc::signal<void, int, int> EventSizeChanged;
 
 private:
 
