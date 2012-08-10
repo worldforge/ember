@@ -300,7 +300,11 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	if (!mRoot) {
 		return false;
 	}
+
 	mWindow = mOgreSetup->getRenderWindow();
+
+	mWindowProvider = new OgreWindowProvider(*mWindow);
+	Input::getSingleton().attach(mWindowProvider);
 
 	//Create the model definition manager
 	mModelDefinitionManager = new Model::ModelDefinitionManager(configSrv.getHomeDirectory() + "/user-media/data/");
@@ -421,9 +425,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 
 		loadingBar.finish();
 	}
-	//Attach OIS after the long loading process.
-	mWindowProvider = new OgreWindowProvider(*mWindow);
-	Input::getSingleton().attach(mWindowProvider);
 
 	mResourceLoader->unloadUnusedResources();
 	return true;
