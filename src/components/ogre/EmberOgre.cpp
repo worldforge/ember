@@ -96,6 +96,7 @@
 
 #include "OgreSetup.h"
 #include "Screen.h"
+#include "OgreWindowProvider.h"
 
 #include "authoring/MaterialEditor.h"
 #include "MediaUpdater.h"
@@ -140,7 +141,7 @@ EmberOgre::EmberOgre() :
 		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
-		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0)
+		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mWindowProvider(0)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -192,6 +193,8 @@ EmberOgre::~EmberOgre()
 		EventOgreDestroyed();
 	}
 
+	delete mWindowProvider;
+
 	//Ogre is destroyed already, so we can't deregister this: we'll just destroy it
 	delete mLogObserver;
 	OGRE_DELETE mOgreLogManager;
@@ -203,6 +206,9 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::renderOneFrame()
 {
+	//Message pump will do window message processing.
+	//This will also update the window visibility flag, so we need to call it here!
+	Ogre::WindowEventUtilities::messagePump();
 	if (mInput->isApplicationVisible()) {
 		//If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
@@ -330,12 +336,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 
 	mScreen = new Screen(*mWindow);
 
-	//The input object must know the resolution of the screen
-	unsigned int height, width, depth;
-	int top, left;
-	mWindow->getMetrics(width, height, depth, left, top);
-	mInput->initialize(width, height);
-
 	//bind general commands
 	mGeneralCommandMapper->readFromConfigSection("key_bindings_general");
 	mGeneralCommandMapper->bindToInput(*mInput);
@@ -420,6 +420,10 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 
 		loadingBar.finish();
 	}
+	//Attach OIS after the long loading process.
+	mWindowProvider = new OgreWindowProvider(*mWindow);
+	Input::getSingleton().attach(mWindowProvider);
+
 	mResourceLoader->unloadUnusedResources();
 	return true;
 }

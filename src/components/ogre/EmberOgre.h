@@ -70,6 +70,8 @@ class TerrainManager;
 class TerrainLayerDefinitionManager;
 }
 
+class OgreWindowProvider;
+
 class SoundDefinitionManager;
 
 namespace Mapping
@@ -368,6 +370,11 @@ protected:
 	 * The World instance is only available when the client through an Avatar and View instance has entered into the server side world.
 	 */
 	World* mWorld;
+
+	/**
+	 * @brief The WindowProvider passed to the Input service.
+	 */
+	OgreWindowProvider* mWindowProvider;
 
 	/**
 	 * @brief Sent from the server service when we've received a Eris::View instance from the server.

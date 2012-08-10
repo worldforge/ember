@@ -25,13 +25,9 @@
 #endif
 
 #include "Input.h"
-// #include "../EmberOgre.h"
+#include "IWindowProvider.h"
 #include "InputCommandMapper.h"
 
-#include "main/Application.h"
-#ifndef WITHOUT_SCRAP
-#include "framework/scrap.h"
-#endif // WITHOUT_SCRAP
 #include "IInputAdapter.h"
 
 #include "services/config/ConfigListenerContainer.h"
@@ -41,7 +37,25 @@
 #include "framework/LoggingInstance.h"
 #include "framework/MainLoopController.h"
 
+#include <boost/thread/thread.hpp>
+
+#ifndef WITHOUT_SCRAP
+#include "framework/scrap.h"
+#endif // WITHOUT_SCRAP
+#ifdef _MSC_VER
+#include <SDL.h>
+#include <SDL_syswm.h>
 #include <SDL_keyboard.h>
+#else
+#include <SDL/SDL.h>
+#include <SDL/SDL_syswm.h>
+#include <SDL/SDL_keyboard.h>
+#endif
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+#include <X11/Xlib.h>
+#include "components/ogre/EmberIcon.h"
+#endif
 
 template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
 
@@ -52,7 +66,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMainLoopController(0)
+		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(NULL), mScreenWidth(0), mScreenHeight(0), mIconSurface(0)
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -79,7 +93,6 @@ Input::Input() :
 	mNonCharKeys.insert(SDLK_DELETE);
 
 	mLastTick = SDL_GetTicks();
-
 }
 
 Input::~Input()
@@ -87,23 +100,97 @@ Input::~Input()
 	delete mConfigListenerContainer;
 }
 
-void Input::initialize(int width, int height)
+void Input::attach(IWindowProvider* windowProvider)
 {
+
+	//The windowProvider should not be NULL.
+	assert(windowProvider);
+	mWindowProvider = windowProvider;
+
+	char tmp[64];
+	// Set the SDL_WINDOWID environment variable
+	sprintf(tmp, "SDL_WINDOWID=%s", mWindowProvider->getWindowHandle().c_str());
+	putenv(tmp);
+
+	SDL_Init(SDL_INIT_VIDEO);
+
+#ifndef BUILD_WEBEMBER
+	//set the icon of the window
+	Uint32 rmask, gmask, bmask;
+
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	rmask = 0xff000000;
+	gmask = 0x00ff0000;
+	bmask = 0x0000ff00;
+#else
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+#endif
+
+	//We'll use the emberIcon struct. This isn't needed on WIN32 or OSX as the icon is provided through different means.
+	mIconSurface = SDL_CreateRGBSurfaceFrom(emberIcon.pixel_data, 64, 64, 24, 64 * 3, rmask, gmask, bmask, 0);
+	if (mIconSurface) {
+		SDL_WM_SetIcon(mIconSurface, 0);
+	}
+
+#endif // !BUILD_WEBEMBER
 	SDL_ShowCursor(0);
 	SDL_EnableUNICODE(1);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
+	unsigned int width, height;
+	mWindowProvider->getWindowSize(width, height);
+	setGeometry(width, height);
+	SDL_SetVideoMode(width, height, 0, 0);
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+
+	//The SDL_WINDOWID hack will result in no X events being caught on X11; we need to inform X11 that we want them anyway.
+	SDL_SysWMinfo info;
+	XSetWindowAttributes attributes;
+
+	SDL_VERSION(&info.version);
+	// this is important!
+	SDL_GetWMInfo(&info);
+
+	info.info.x11.lock_func();
+
+	attributes.event_mask = KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
+	XChangeWindowAttributes(info.info.x11.display, info.info.x11.window, CWEventMask, &attributes);
+	info.info.x11.unlock_func();
+
+#endif
 	//must initialize the clipboard support
 #ifndef WITHOUT_SCRAP
 	if (init_scrap() < 0) {
 		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
 	}
 #endif // WITHOUT_SCRAP
-	ConsoleBackend::getSingletonPtr()->registerCommand(BINDCOMMAND, this);
-	ConsoleBackend::getSingletonPtr()->registerCommand(UNBINDCOMMAND, this);
+	ConsoleBackend& console = ConsoleBackend::getSingleton();
+	console.registerCommand(BINDCOMMAND, this);
+	console.registerCommand(UNBINDCOMMAND, this);
 
-	setGeometry(width, height);
+}
 
+void Input::detach()
+{
+	mWindowProvider = 0;
+
+	if (mIconSurface) {
+		SDL_FreeSurface(mIconSurface);
+		mIconSurface = 0;
+	}
+
+	//Release the mouse for safety's sake.
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
+	S_LOG_INFO("Shutting down SDL.");
+	SDL_Quit();
+	S_LOG_INFO("SDL shut down.");
+
+	ConsoleBackend& console = ConsoleBackend::getSingleton();
+	console.deregisterCommand(BINDCOMMAND);
+	console.deregisterCommand(UNBINDCOMMAND);
 }
 
 void Input::setGeometry(int width, int height)
@@ -184,23 +271,11 @@ void Input::deregisterCommandMapper(InputCommandMapper* mapper)
 
 bool Input::isApplicationVisible()
 {
-	return SDL_GetAppState() & SDL_APPACTIVE;
+	return mWindowProvider->isWindowVisible();
 }
 
 void Input::startInteraction()
 {
-	//SDL 1.3 allow for easy raising of the window. Alas we're using 1.2
-//#ifdef SDL_VIDEO_DRIVER_X11
-//	SDL_SysWMinfo info;
-//	SDL_VERSION(&info.version);
-//
-//	if (SDL_GetWMInfo(&info)) {
-//		SDL_Window* window = info.info.x11.window;
-//		if (window) {
-//			SDL_RaiseWindow(SDL_Window* window);
-//		}
-//	}
-//#endif
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "catchmouse", sigc::mem_fun(*this, &Input::Config_CatchMouse), true);
 }
 
@@ -410,13 +485,13 @@ void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 	//catch paste key presses
 
 	//check for paste actions
-	if (((keyEvent.keysym.mod & KMOD_CTRL) || (keyEvent.keysym.mod & KMOD_LCTRL) || (keyEvent.keysym.mod & KMOD_RCTRL)) && (keyEvent.keysym.sym == SDLK_v)) {
+	if (((keyEvent.keysym.mod & KMOD_CTRL)|| (keyEvent.keysym.mod & KMOD_LCTRL) || (keyEvent.keysym.mod & KMOD_RCTRL))&& (keyEvent.keysym.sym == SDLK_v)) {
 		if (keyEvent.type == SDL_KEYDOWN) {
 			pasteFromClipboard();
 		}
 	} else if ((keyEvent.keysym.mod & KMOD_LALT) && (keyEvent.keysym.sym == SDLK_TAB)) {
 		if (keyEvent.type == SDL_KEYDOWN) {
-			EventAltTab.emit();
+			EventWindowFocusChange.emit();
 		}
 	} else {
 		if (keyEvent.type == SDL_KEYDOWN) {
@@ -484,6 +559,7 @@ void Input::keyReleased(const SDL_KeyboardEvent &keyEvent)
 
 void Input::setInputMode(InputMode mode)
 {
+	setMouseGrab(mode == IM_MOVEMENT);
 	mCurrentInputMode = mode;
 	EventChangedInputMode.emit(mode);
 }
@@ -521,7 +597,10 @@ const MousePosition& Input::getMousePosition() const
 
 void Input::sleep(unsigned int milliseconds)
 {
-	SDL_Delay(milliseconds);
+	try {
+		boost::this_thread::sleep(boost::posix_time::milliseconds(milliseconds));
+	} catch (const boost::thread_interrupted& ex) {
+	}
 }
 
 void Input::setMainLoopController(MainLoopController* mainLoopController)
@@ -533,7 +612,6 @@ MainLoopController* Input::getMainLoopController() const
 {
 	return mMainLoopController;
 }
-
 
 void Input::Config_CatchMouse(const std::string& section, const std::string& key, varconf::Variable& variable)
 {

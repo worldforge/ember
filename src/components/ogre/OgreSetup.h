@@ -30,8 +30,6 @@
 #include <OgreConfigOptionMap.h>
 #include <OgreFrameListener.h>
 
-struct SDL_Surface;
-
 namespace Ember {
 namespace OgreView {
 
@@ -46,7 +44,7 @@ class MeshSerializerListener;
 
 	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
 */
-class OgreSetup : public Ogre::FrameListener, public ConsoleObject
+class OgreSetup : public ConsoleObject
 {
 public:
 	OgreSetup();
@@ -88,13 +86,6 @@ public:
 	*/
 	void shutdown();
 
-	/**
-	 * @brief Swap the double buffers every frame.
-	 * @param evt The Ogre frame event.
-	 * @return Always return true.
-	 */
-	bool frameEnded(const Ogre::FrameEvent & evt);
-
 	virtual void runCommand(const std::string& command, const std::string& args);
 
 
@@ -116,33 +107,14 @@ private:
 	Ogre::RenderWindow* mRenderWindow;
 
 	/**
-	The icon shown in the top of the window.
-	*/
-	SDL_Surface* mIconSurface;
-
-	/**
 	We'll use our own scene manager factory.
 	*/
 	EmberPagingSceneManagerFactory* mSceneManagerFactory;
 
 	/**
-	The main video surface. Since we use SDL for input we need SDL to handle it too.
-	*/
-	SDL_Surface* mMainVideoSurface;
-
-	/**
 	* @brief Provides the ability to use relative paths for skeletons in meshes.
 	*/
 	MeshSerializerListener* mMeshSerializerListener;
-
-	/**
-	 * @brief Attempts to parse out the user selected geometry options for Ogre.
-	 * @param config The option map, usually found inside the currently selected RenderSystem.
-	 * @param width The width of the window in pixels.
-	 * @param height The height of the window in pixels.
-	 * @param fullscreen Whether fullscreen should be used or not.
-	 */
-	void parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen);
 
 	/**
 	 * @brief Sets standard values in the Ogre environment.
@@ -157,11 +129,6 @@ private:
 	int isExtensionSupported(const char *extension);
 
 	bool showConfigurationDialog();
-
-	/**
-	 * @brief Listen to alt+tab and release the mouse if grabbed.
-	 */
-	void Input_AltTab();
 
 };
 

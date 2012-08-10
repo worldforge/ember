@@ -37,8 +37,6 @@
 #include <OgreRenderSystem.h>
 #include <OgreRenderTarget.h>
 
-#include <SDL_video.h>
-
 namespace Ember
 {
 namespace OgreView
@@ -60,8 +58,17 @@ void Screen::runCommand(const std::string &command, const std::string &args)
 		//just take a screen shot
 		takeScreenshot();
 	} else if (ToggleFullscreen == command) {
-		SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
-
+		Ogre::ConfigOptionMap& configOptions = Ogre::Root::getSingleton().getRenderSystem()->getConfigOptions();
+		const Ogre::ConfigOptionMap::iterator opti = configOptions.find("Video Mode");
+		if (opti != configOptions.end()) {
+			Ogre::StringVector vmopts = Ogre::StringUtil::split(opti->second.currentValue, " x");
+			unsigned int w = Ogre::StringConverter::parseUnsignedInt(vmopts[0]);
+			unsigned int h = Ogre::StringConverter::parseUnsignedInt(vmopts[1]);
+			mWindow.setFullscreen(!mWindow.isFullScreen(), w, h);
+		} else {
+			S_LOG_FAILURE("Failed to toogle fullscreen mode, because the Current RenderSystem hasn't got a 'Video Mode' option.");
+		}
+		
 	} else if (ToggleRendermode == command) {
 		toggleRenderMode();
 	} else if (Record == command) {

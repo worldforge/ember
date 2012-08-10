@@ -86,7 +86,7 @@ libEmberOgre_a_SOURCES = \
 	EntityWorldPickListener.cpp GUICEGUIAdapter.cpp GUIManager.cpp \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp \
 	MotionManager.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
-	OgreResourceProvider.cpp OgreSetup.cpp NodeAttachment.cpp \
+	OgreResourceProvider.cpp OgreWindowProvider.cpp OgreSetup.cpp NodeAttachment.cpp \
 	ShaderManager.cpp ShadowCameraSetup.cpp SimpleRenderContext.cpp \
 	XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \
 	DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
@@ -182,7 +182,7 @@ noinst_HEADERS = \
 	EntityWorldPickListener.h GUICEGUIAdapter.h GUIManager.h \
 	IWorldPickListener.h Convert.h MediaUpdater.h MeshCollisionDetector.h \
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
-	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreSetup.h \
+	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreWindowProvider.h OgreSetup.h \
 	ShaderManager.h ShadowCameraSetup.h \
 	SimpleRenderContext.h XMLHelper.h IGraphicalRepresentation.h \
 	IEntityAttachment.h  WorldAttachment.h NodeAttachment.h IMovable.h IAnimated.h \
