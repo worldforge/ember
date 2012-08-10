@@ -42,9 +42,12 @@
 #include <OgreRenderTargetListener.h>
 
 using namespace Ember;
-namespace Ember {
-namespace OgreView {
-namespace Gui {
+namespace Ember
+{
+namespace OgreView
+{
+namespace Gui
+{
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -52,12 +55,13 @@ namespace Gui {
  *
  * This class shouldn't be needed though as with CEGUI 0.7 there's a way to make CEGUI directly use an Ogre render texture.
  */
-class CEGUIWindowUpdater : public Ogre::RenderTargetListener
+class CEGUIWindowUpdater: public Ogre::RenderTargetListener
 {
 protected:
 	CEGUI::Window& mWindow;
 public:
-	CEGUIWindowUpdater(CEGUI::Window& window) : mWindow(window)
+	CEGUIWindowUpdater(CEGUI::Window& window) :
+			mWindow(window)
 	{
 	}
 
@@ -67,8 +71,8 @@ public:
 	}
 };
 
-MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
-: mTexture(0), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
+MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image) :
+		mTexture(0), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
 {
 	int width = static_cast<int>(image->getPixelSize().d_width);
 	int height = static_cast<int>(image->getPixelSize().d_height);
@@ -90,7 +94,6 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image)
 		throw Exception("Image dimension cannot be 0.");
 	}
 }
-
 
 MovableObjectRenderer::~MovableObjectRenderer()
 {
@@ -175,19 +178,19 @@ void MovableObjectRenderer::setCameraDistance(float distance)
 {
 
 	mTexture->getRenderContext()->setCameraDistance(mTexture->getRenderContext()->getDefaultCameraDistance() * distance);
-/*	Ogre::Vector3 position = mTexture->getDefaultCameraPosition();
-	position.z *= distance;
-	mTexture->getCamera()->setPosition(position);*/
+	/*	Ogre::Vector3 position = mTexture->getDefaultCameraPosition();
+	 position.z *= distance;
+	 mTexture->getCamera()->setPosition(position);*/
 }
 
 float MovableObjectRenderer::getCameraDistance()
 {
-	return  mTexture->getRenderContext()->getCameraDistance();
+	return mTexture->getRenderContext()->getCameraDistance();
 }
 
 float MovableObjectRenderer::getAbsoluteCameraDistance()
 {
-	return  mTexture->getRenderContext()->getAbsoluteCameraDistance();
+	return mTexture->getRenderContext()->getAbsoluteCameraDistance();
 }
 
 bool MovableObjectRenderer::frameStarted(const Ogre::FrameEvent& event)
@@ -269,10 +272,12 @@ EntityCEGUITexture& MovableObjectRenderer::getEntityTexture()
 bool MovableObjectRenderer::image_Sized(const CEGUI::EventArgs& e)
 {
 	const CEGUI::Size size = mImage->getPixelSize();
-	mTexture->getRenderContext()->getCamera()->setAspectRatio(size.d_width / size.d_height);
+	//We'll get a crash in Ogre if the width or height is 0.
+	if (size.d_width > 0.0f && size.d_height > 0.0f) {
+		mTexture->getRenderContext()->getCamera()->setAspectRatio(size.d_width / size.d_height);
+	}
 	return true;
 }
-
 
 }
 }
