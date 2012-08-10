@@ -142,7 +142,6 @@ void Input::attach(IWindowProvider* windowProvider)
 	unsigned int width, height;
 	mWindowProvider->getWindowSize(width, height);
 	setGeometry(width, height);
-	SDL_SetVideoMode(width, height, 0, 0);
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 
@@ -197,6 +196,7 @@ void Input::setGeometry(int width, int height)
 {
 	mScreenWidth = width;
 	mScreenHeight = height;
+	SDL_SetVideoMode(width, height, 0, 0);
 	EventSizeChanged.emit(width, height);
 }
 
