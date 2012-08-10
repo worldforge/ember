@@ -210,10 +210,6 @@ Ogre::Root* OgreSetup::createOgreSystem()
 		}
 	}
 
-	mMeshSerializerListener = new MeshSerializerListener();
-
-	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
-
 	if (chdir(configSrv.getEmberDataDirectory().c_str())) {
 		S_LOG_WARNING("Failed to change to the data directory '" << configSrv.getEmberDataDirectory() << "'.");
 	}
@@ -381,6 +377,11 @@ void OgreSetup::setStandardValues()
 
 	//all new movable objects shall by default be unpickable; it's up to the objects themselves to make themselves pickable
 	Ogre::MovableObject::setDefaultQueryFlags(0);
+
+	mMeshSerializerListener = new MeshSerializerListener();
+
+	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
+
 }
 
 Ogre::SceneManager* OgreSetup::chooseSceneManager()
