@@ -25,6 +25,7 @@
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
+#include "services/input/Input.h"
 
 #include "framework/osdir.h"
 #include "framework/Exception.h"
@@ -45,10 +46,13 @@ namespace OgreView
 Screen::Screen(Ogre::RenderWindow& window) :
 		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."), ToggleFullscreen("toggle_fullscreen", this, "Switch between windowed and full screen mode."), Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk."), mWindow(window), mRecorder(new Camera::Recorder()), mPolygonMode(Ogre::PM_SOLID)
 {
+	Input::getSingleton().EventWindowFocusChange.connect(sigc::mem_fun(*this, &Screen::input_WindowFocusChange));
 }
 
 Screen::~Screen()
 {
+	//Make sure to disable fullscreen if we're in that mode.
+	setFullScreen(false);
 	delete mRecorder;
 }
 
@@ -58,23 +62,27 @@ void Screen::runCommand(const std::string &command, const std::string &args)
 		//just take a screen shot
 		takeScreenshot();
 	} else if (ToggleFullscreen == command) {
-		Ogre::ConfigOptionMap& configOptions = Ogre::Root::getSingleton().getRenderSystem()->getConfigOptions();
-		const Ogre::ConfigOptionMap::iterator opti = configOptions.find("Video Mode");
-		if (opti != configOptions.end()) {
-			Ogre::StringVector vmopts = Ogre::StringUtil::split(opti->second.currentValue, " x");
-			unsigned int w = Ogre::StringConverter::parseUnsignedInt(vmopts[0]);
-			unsigned int h = Ogre::StringConverter::parseUnsignedInt(vmopts[1]);
-			mWindow.setFullscreen(!mWindow.isFullScreen(), w, h);
-		} else {
-			S_LOG_FAILURE("Failed to toogle fullscreen mode, because the Current RenderSystem hasn't got a 'Video Mode' option.");
-		}
-		
+		setFullScreen(!mWindow.isFullScreen());
 	} else if (ToggleRendermode == command) {
 		toggleRenderMode();
 	} else if (Record == command) {
 		mRecorder->startRecording();
 	} else if (Record.getInverseCommand() == command) {
 		mRecorder->stopRecording();
+	}
+}
+
+void Screen::setFullScreen(bool enabled)
+{
+	Ogre::ConfigOptionMap& configOptions = Ogre::Root::getSingleton().getRenderSystem()->getConfigOptions();
+	const Ogre::ConfigOptionMap::iterator opti = configOptions.find("Video Mode");
+	if (opti != configOptions.end()) {
+		Ogre::StringVector vmopts = Ogre::StringUtil::split(opti->second.currentValue, " x");
+		unsigned int w = Ogre::StringConverter::parseUnsignedInt(vmopts[0]);
+		unsigned int h = Ogre::StringConverter::parseUnsignedInt(vmopts[1]);
+		mWindow.setFullscreen(enabled, w, h);
+	} else {
+		S_LOG_FAILURE("Failed to toogle fullscreen mode, because the Current RenderSystem hasn't got a 'Video Mode' option.");
 	}
 }
 
@@ -174,6 +182,17 @@ void Screen::takeScreenshot()
 		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Error when saving screenshot: ") + ex.what(), "error");
 	} catch (...) {
 		ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.", "error");
+	}
+}
+
+void Screen::input_WindowFocusChange()
+{
+	//If we're in full screen mode, and use "Alt-Tab" to switch to another window, we should turn off full screen.
+	//If not, the result might be that the desktop is still set to the resolution of the full screen mode (i.e. not the native resolution).
+	if (mWindow.isFullScreen()) {
+		if (!Input::getSingleton().isApplicationFocused()) {
+			setFullScreen(false);
+		}
 	}
 }
 }

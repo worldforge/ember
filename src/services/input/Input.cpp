@@ -272,7 +272,12 @@ void Input::deregisterCommandMapper(InputCommandMapper* mapper)
 
 bool Input::isApplicationVisible()
 {
-	return mWindowProvider->isWindowVisible();
+	return SDL_GetAppState() & SDL_APPACTIVE;
+}
+
+bool Input::isApplicationFocused()
+{
+	return SDL_GetAppState() & SDL_APPMOUSEFOCUS;
 }
 
 void Input::startInteraction()

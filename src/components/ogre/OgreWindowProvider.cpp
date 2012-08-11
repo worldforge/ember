@@ -30,16 +30,15 @@ namespace OgreView
 {
 
 OgreWindowProvider::OgreWindowProvider(Ogre::RenderWindow& window) :
-	mWindow(window)
+		mWindow(window)
 {
-
-	Ogre::WindowEventUtilities::addWindowEventListener (&mWindow, this);
+	Ogre::WindowEventUtilities::addWindowEventListener(&mWindow, this);
 
 }
 
 OgreWindowProvider::~OgreWindowProvider()
 {
-	Ogre::WindowEventUtilities::removeWindowEventListener (&mWindow, this);
+	Ogre::WindowEventUtilities::removeWindowEventListener(&mWindow, this);
 }
 
 std::string OgreWindowProvider::getWindowHandle()
@@ -87,7 +86,7 @@ void OgreWindowProvider::windowClosed(Ogre::RenderWindow* rw)
 
 void OgreWindowProvider::windowFocusChange(Ogre::RenderWindow* rw)
 {
-	Input& input =Input::getSingleton();
+	Input& input = Input::getSingleton();
 	input.setInputMode(Input::IM_GUI);
 	input.EventWindowFocusChange.emit();
 	input.setMouseGrab(false);

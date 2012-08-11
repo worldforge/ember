@@ -25,6 +25,8 @@
 
 #include <OgreCommon.h>
 
+#include <sigc++/trackable.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -35,11 +37,11 @@ class Recorder;
 }
 
 /**
- * @author Erik Ogenvikl
+ * @author Erik Ogenvik
  * @brief Handles the main screen.
  *
  */
-class Screen: public ConsoleObject
+class Screen: public ConsoleObject, public virtual sigc::trackable
 {
 public:
 	/**
@@ -92,6 +94,19 @@ protected:
 	 * @return The file name of the new screenshot.
 	 */
 	const std::string _takeScreenshot();
+
+	/**
+	 * @brief Sets full screen mode on and off.
+	 * @param enabled If full screen should be enabled.
+	 */
+	void setFullScreen(bool enabled);
+
+	/**
+	 * @brief Called when the window focus changed.
+	 *
+	 * This allows us to switch out of full screen mode when alt-tabbing.
+	 */
+	void input_WindowFocusChange();
 
 };
 

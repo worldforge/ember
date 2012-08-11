@@ -231,6 +231,12 @@ public:
 	bool isApplicationVisible();
 
 	/**
+	 * @brief Checks whether the application is currently in focus.
+	 * @return True if the application is currently in focus.
+	 */
+	bool isApplicationFocused();
+
+	/**
 	 * @brief Sets the main loop controller.
 	 *
 	 * @param mainLoopController The main loop controller.
