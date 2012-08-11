@@ -275,8 +275,8 @@ Ogre::Root* OgreSetup::configure(void)
 {
 
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
-#ifndef BUILD_WEBEMBER
 	createOgreSystem();
+#ifndef BUILD_WEBEMBER
 	bool success = false;
 	bool suppressConfig = false;
 	if (configService.itemExists("ogre", "suppressconfigdialog")) {
@@ -303,7 +303,7 @@ Ogre::Root* OgreSetup::configure(void)
 
 	mRenderWindow = mRoot->initialise(true, "Ember");
 
-#else
+#else //BUILD_WEBEMBER == true
 	//In webember we will disable the config dialog.
 	//Also we will use fixed resolution and windowed mode.
 	try {
@@ -311,10 +311,10 @@ Ogre::Root* OgreSetup::configure(void)
 	} catch (const std::exception& ex) {
 		//this isn't a problem, we will set the needed functions manually.
 	}
-	success = true;
+	Ogre::RenderSystem* renderer = mRoot->getRenderSystem();
 #ifdef _WIN32
 	//on windows, the default renderer is directX, we will force OpenGL.
-	Ogre::RenderSystem* renderer = mRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
+	renderer = mRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
 	if (renderer != NULL) {
 		mRoot->setRenderSystem(renderer);
 	} else {
@@ -339,7 +339,7 @@ Ogre::Root* OgreSetup::configure(void)
 		options["left"] = "0";
 	}
 
-	mRenderWindow = mRoot.createRenderWindow("Ember",800,600,false,&options);
+	mRenderWindow = mRoot->createRenderWindow("Ember",800,600,false,&options);
 
 #endif // BUILD_WEBEMBER
 #ifdef _WIN32
