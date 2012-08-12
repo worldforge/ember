@@ -101,6 +101,8 @@ void InspectWidget::buildWidget()
 //	mMainWindow->setAlwaysOnTop(true);
 
 	mChildList = static_cast<CEGUI::Listbox*>(getWindow("ChildList"));
+	BIND_CEGUI_EVENT(mChildList, CEGUI::Listbox::EventMouseDoubleClick, InspectWidget::ChildList_MouseDoubleClick);
+
 	mInfo = static_cast<CEGUI::GUISheet*>(getWindow("EntityInfo"));
 
 
@@ -314,6 +316,16 @@ bool InspectWidget::ShowErisBoundingBox_Click(const CEGUI::EventArgs& args)
 }
 
 
+bool InspectWidget::ChildList_MouseDoubleClick(const CEGUI::EventArgs& args)
+{
+	//Inspect the child entity
+	CEGUI::ListboxItem* item = mChildList->getFirstSelectedItem();
+	if (item) {
+		startInspecting(static_cast<EmberEntity*>(item->getUserData()));
+	}
+
+	return true;
+}
 
 
 
