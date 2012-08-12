@@ -19,6 +19,7 @@
 #include "WorldDumper.h"
 
 #include "MultiLineListFormatter.h"
+#include "LoggingInstance.h"
 
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
@@ -58,26 +59,26 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 WorldDumper::WorldDumper(Eris::Account& account) :
-		mAccount(account), m_lastSerialNo(-1), m_count(0), m_codec(0), m_encoder(0), m_formatter(0), m_complete(false)
+		mAccount(account), mLastSerialNo(-1), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mComplete(false)
 {
 }
 
 WorldDumper::~WorldDumper()
 {
-	delete m_encoder;
-	delete m_formatter;
-	delete m_codec;
+	delete mEncoder;
+	delete mFormatter;
+	delete mCodec;
 }
 
 void WorldDumper::dumpEntity(const RootEntity & ent)
 {
-	m_encoder->streamObjectsMessage(ent);
+	mEncoder->streamObjectsMessage(ent);
 }
 
 void WorldDumper::infoArrived(const Operation & op)
 {
-	if (op->isDefaultRefno() || op->getRefno() != m_lastSerialNo) {
-		std::cout << "NOT OURS" << std::endl << std::flush;
+	if (op->isDefaultRefno() || op->getRefno() != mLastSerialNo) {
+		S_LOG_WARNING("Got op not belonging to us when dumping.");
 		return;
 	}
 	const std::vector<Root> & args = op->getArgs();
@@ -86,11 +87,11 @@ void WorldDumper::infoArrived(const Operation & op)
 	}
 	RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
 	if (!ent.isValid()) {
-		std::cout << "Malformed OURS" << std::endl << std::flush;
+		S_LOG_WARNING("Malformed OURS when dumping.");
 		return;
 	}
-	std::cout << "GOT INFO" << std::endl << std::flush;
-	++m_count;
+	S_LOG_VERBOSE("Got info when dumping.");
+	++mCount;
 	//Make a copy so that we can sort the contains list and update it in the
 	//entity
 	RootEntity entityCopy(ent->copy());
@@ -102,14 +103,14 @@ void WorldDumper::infoArrived(const Operation & op)
 	std::list<std::string>::const_iterator I = contains.begin();
 	std::list<std::string>::const_iterator Iend = contains.end();
 	for (; I != Iend; ++I) {
-		m_queue.push_back(*I);
+		mQueue.push_back(*I);
 	}
 
-	if (m_queue.empty()) {
-		m_formatter->streamEnd();
-		m_complete = true;
+	if (mQueue.empty()) {
+		mFormatter->streamEnd();
+		mComplete = true;
 		EventCompleted.emit();
-		std::cout << "COUNTED: " << m_count << std::endl << std::flush;
+		S_LOG_INFO("Completed dumping " << mCount << " entities.");
 		return;
 	}
 
@@ -117,29 +118,30 @@ void WorldDumper::infoArrived(const Operation & op)
 
 	Anonymous get_arg;
 	get_arg->setObjtype("obj");
-	get_arg->setId(m_queue.front());
+	get_arg->setId(mQueue.front());
 	get->setArgs1(get_arg);
 
 	get->setFrom(mAccount.getId());
-	++m_lastSerialNo;
-	get->setSerialno(m_lastSerialNo);
+	++mLastSerialNo;
+	get->setSerialno(mLastSerialNo);
 
 	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &WorldDumper::operation);
 	mAccount.getConnection()->send(get);
 
-	m_queue.pop_front();
+	mQueue.pop_front();
 }
 
 void WorldDumper::start(const std::string& filename)
 {
-	m_file.open(filename.c_str(), std::ios::out);
+	S_LOG_INFO("Starting world dump to file '" << filename << "'.");
+	mFile.open(filename.c_str(), std::ios::out);
 
 	Atlas::Message::QueuedDecoder * decoder = new Atlas::Message::QueuedDecoder;
-	m_codec = new Atlas::Codecs::XML(m_file, *decoder);
-	m_formatter = new MultiLineListFormatter(m_file, *m_codec);
-	m_encoder = new Atlas::Objects::ObjectsEncoder(*m_formatter);
+	mCodec = new Atlas::Codecs::XML(mFile, *decoder);
+	mFormatter = new MultiLineListFormatter(mFile, *mCodec);
+	mEncoder = new Atlas::Objects::ObjectsEncoder(*mFormatter);
 
-	m_formatter->streamBegin();
+	mFormatter->streamBegin();
 
 	// Send a get for the root object
 	Get get;
@@ -150,8 +152,8 @@ void WorldDumper::start(const std::string& filename)
 	get->setArgs1(get_arg);
 
 	get->setFrom(mAccount.getId());
-	++m_lastSerialNo;
-	get->setSerialno(m_lastSerialNo);
+	++mLastSerialNo;
+	get->setSerialno(mLastSerialNo);
 	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &WorldDumper::operation);
 	mAccount.getConnection()->send(get);
 

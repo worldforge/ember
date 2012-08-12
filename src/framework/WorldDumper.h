@@ -85,14 +85,14 @@ protected:
 	typedef Atlas::Objects::Operation::RootOperation Operation;
 
 	Eris::Account& mAccount;
-	int m_lastSerialNo;
-	std::list<std::string> m_queue;
-	int m_count;
-	std::fstream m_file;
-	Atlas::Codec * m_codec;
-	Atlas::Objects::ObjectsEncoder * m_encoder;
-	Atlas::Bridge * m_formatter;
-	bool m_complete;
+	int mLastSerialNo;
+	std::list<std::string> mQueue;
+	int mCount;
+	std::fstream mFile;
+	Atlas::Codec * mCodec;
+	Atlas::Objects::ObjectsEncoder * mEncoder;
+	Atlas::Bridge * mFormatter;
+	bool mComplete;
 
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void infoArrived(const Operation& op);
