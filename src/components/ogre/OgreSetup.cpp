@@ -42,8 +42,6 @@
 
 #ifdef BUILD_WEBEMBER
 #include "extensions/webember/WebEmberManager.h"
-#else
-#include "EmberIcon.h"
 #endif
 
 #ifdef _WIN32

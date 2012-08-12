@@ -54,7 +54,7 @@
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <X11/Xlib.h>
-#include "components/ogre/EmberIcon.h"
+#include "EmberIcon.h"
 #endif
 
 template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;

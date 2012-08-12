@@ -4,4 +4,4 @@ METASOURCES = AUTO
 noinst_LIBRARIES = libInputService.a
 libInputService_a_SOURCES = Input.cpp Input.h InputCommandMapper.cpp InputService.cpp
 
-noinst_HEADERS = IInputAdapter.h InputCommandMapper.h InputService.h IWindowProvider.h
+noinst_HEADERS = IInputAdapter.h InputCommandMapper.h InputService.h IWindowProvider.h EmberIcon.h
