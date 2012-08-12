@@ -100,6 +100,11 @@ Eris::Connection* ServerService::getConnection() const
 	return mConnection;
 }
 
+Eris::Account* ServerService::getAccount() const
+{
+	return mAccount;
+}
+
 Eris::Avatar* ServerService::getAvatar() const
 {
 	return mAvatar;

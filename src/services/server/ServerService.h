@@ -128,6 +128,12 @@ public:
 	Eris::Connection* getConnection() const;
 
 	/**
+	 * @brief Gets the used account, if available.
+	 * @return An account, or null if none has been created.
+	 */
+	Eris::Account* getAccount() const;
+
+	/**
 	 *    Tells the server to try to move the user to the specified point.
 	 * @param dest
 	 */
