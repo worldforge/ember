@@ -192,5 +192,5 @@ noinst_HEADERS = \
 	ICollisionDetector.h INodeProvider.h SceneNodeProvider.h IVisualizable.h IEntityVisitor.h \
 	EntityObserverBase.h TerrainPageDataProvider.h ILightning.h Scene.h ForestRenderingTechnique.h \
 	ISceneRenderingTechnique.h World.h EmberOgreSignals.h Screen.h ShapeVisual.h TerrainEntityManager.h \
-	OgreConfigurator.h CompositionAction.cpp
+	OgreConfigurator.h CompositionAction.h
 #OpcodeCollisionDetector.h OpcodeCollisionDetectorVisualizer.h
