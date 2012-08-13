@@ -80,16 +80,12 @@ bool ShaderLevelManager::stepDownShaderLevel()
 
 void ShaderLevelManager::pause()
 {
-	if (mChangeRequiredConnection) {
-		mChangeRequiredConnection.disconnect();
-	}
+	mChangeRequiredConnection.block();
 }
 
 void ShaderLevelManager::unpause()
 {
-	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &ShaderLevelManager::changeLevel));
-	}
+	mChangeRequiredConnection.unblock();
 }
 
 bool ShaderLevelManager::changeLevel(float level)

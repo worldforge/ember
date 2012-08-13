@@ -80,16 +80,12 @@ bool LodLevelManager::stepUpLodBias(float step)
 
 void LodLevelManager::pause()
 {
-	if (mChangeRequiredConnection) {
-		mChangeRequiredConnection.disconnect();
-	}
+	mChangeRequiredConnection.block();
 }
 
 void LodLevelManager::unpause()
 {
-	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
-	}
+	mChangeRequiredConnection.unblock();
 }
 
 }

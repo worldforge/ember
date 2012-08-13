@@ -121,16 +121,12 @@ bool ShadowLevelManager::stepUpShadowCameraLodBias(float step)
 
 void ShadowLevelManager::pause()
 {
-	if (mChangeRequiredConnection) {
-		mChangeRequiredConnection.disconnect();
-	}
+	mChangeRequiredConnection.block();
 }
 
 void ShadowLevelManager::unpause()
 {
-	if (!mChangeRequiredConnection) {
-		mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &ShadowLevelManager::changeLevel));
-	}
+	mChangeRequiredConnection.unblock();
 }
 
 }

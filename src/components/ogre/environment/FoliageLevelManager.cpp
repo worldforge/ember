@@ -135,16 +135,12 @@ bool FoliageLevelManager::changeFoliageDensity(float density)
 
 void FoliageLevelManager::pause()
 {
-	if (mChangeRequiredConnection) {
-		mChangeRequiredConnection.disconnect();
-	}
+	mChangeRequiredConnection.block();
 }
 
 void FoliageLevelManager::unpause()
 {
-	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &FoliageLevelManager::changeLevel));
-	}
+	mChangeRequiredConnection.unblock();
 }
 
 }
