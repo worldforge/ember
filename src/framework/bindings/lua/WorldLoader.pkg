@@ -12,7 +12,22 @@ public:
 
 	virtual void start(const std::string& filename);
 	
+	/**
+	 * @brief Cancels the loading.
+	 */
+	void cancel();
+
+	/**
+	 * @brief Emitted when the load has been completed.
+	 */
 	sigc::signal<void> EventCompleted;
+
+	/**
+	 * @brief Emitted when an entity has been updated or created.
+	 *
+	 * The argument denotes how many instances are left to load.
+	 */
+	sigc::signal<void, int> EventProgress;
 
 };
 

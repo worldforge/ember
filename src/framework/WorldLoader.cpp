@@ -98,7 +98,6 @@ void WorldLoader::walk(OpVector & res)
 		if (m_treeStack.empty()) {
 			S_LOG_INFO("Restore done.");
 			S_LOG_INFO("Restored " << m_count << ", created:" << m_createCount << ", updated:" << m_updateCount << ".");
-			m_complete = true;
 			EventCompleted.emit();
 		}
 	} else {
@@ -115,6 +114,7 @@ void WorldLoader::create(const RootEntity & obj, OpVector & res)
 {
 	++m_count;
 	++m_createCount;
+	EventProgress.emit(m_objects.size() - m_count);
 
 	m_state = CREATING;
 
@@ -158,7 +158,6 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
 		break;
 	case CREATING:
 		S_LOG_FAILURE("Could not create.");
-		m_complete = true;
 		EventCompleted.emit();
 
 		break;
@@ -216,8 +215,6 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
 
 			S_LOG_VERBOSE("Updating: " << obj->getId() << "," << obj->getParents().front());
 
-			// assert(id == "0");
-
 			update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
 			update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
 
@@ -231,6 +228,7 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
 
 			++m_count;
 			++m_updateCount;
+			EventProgress.emit(m_objects.size() - m_count);
 
 			m_state = UPDATING;
 		}
@@ -277,7 +275,7 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
 }
 
 WorldLoader::WorldLoader(Eris::Account& account) :
-		mAccount(account), m_count(0), m_updateCount(0), m_createCount(0), m_state(INIT), m_complete(false)
+		mAccount(account), m_count(0), m_updateCount(0), m_createCount(0), m_state(INIT)
 {
 }
 
@@ -291,7 +289,6 @@ void WorldLoader::start(const std::string& filename)
 	AtlasFileLoader loader(filename, m_objects);
 
 	if (!loader.isOpen()) {
-		m_complete = true;
 		EventCompleted.emit();
 
 		return;
@@ -316,8 +313,21 @@ void WorldLoader::sendOperation(const Operation& op)
 	mAccount.getConnection()->send(op);
 }
 
+void WorldLoader::cancel()
+{
+	m_state = CANCEL;
+}
+
 void WorldLoader::operation(const Operation & op)
 {
+	if (m_state == CANCEL) {
+		m_state = CANCELLED;
+		EventCompleted.emit();
+		return;
+	}
+	if (m_state == CANCELLED) {
+		return;
+	}
 	OpVector res;
 	if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
 		infoArrived(op, res);

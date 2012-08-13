@@ -59,7 +59,7 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 WorldDumper::WorldDumper(Eris::Account& account) :
-		mAccount(account), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mComplete(false)
+		mAccount(account), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mComplete(false), mCancelled(false)
 {
 }
 
@@ -68,6 +68,11 @@ WorldDumper::~WorldDumper()
 	delete mEncoder;
 	delete mFormatter;
 	delete mCodec;
+}
+
+void WorldDumper::cancel()
+{
+	mCancelled = true;
 }
 
 void WorldDumper::dumpEntity(const RootEntity & ent)
@@ -92,6 +97,7 @@ void WorldDumper::infoArrived(const Operation & op)
 	}
 	S_LOG_VERBOSE("Got info when dumping.");
 	++mCount;
+	EventProgress.emit(mCount);
 	//Make a copy so that we can sort the contains list and update it in the
 	//entity
 	RootEntity entityCopy(ent->copy());
@@ -159,8 +165,10 @@ void WorldDumper::start(const std::string& filename)
 
 void WorldDumper::operation(const Operation & op)
 {
-	if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
-		infoArrived(op);
+	if (!mCancelled) {
+		if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+			infoArrived(op);
+		}
 	}
 }
 }

@@ -77,9 +77,22 @@ public:
 	void start(const std::string& filename);
 
 	/**
+	 * @brief Cancels the dumping.
+	 */
+	void cancel();
+
+	/**
 	 * @brief Emitted when the dump is complete.
 	 */
 	sigc::signal<void> EventCompleted;
+
+	/**
+	 * @brief Emitted when an entity has been dumped.
+	 *
+	 * The argument denotes how many instances have been dumped.
+	 * Note that it's not really possible (in a clean way) to in advance know how many instances there are on the server.
+	 */
+	sigc::signal<void, int> EventProgress;
 
 protected:
 	typedef Atlas::Objects::Operation::RootOperation Operation;
@@ -92,6 +105,7 @@ protected:
 	Atlas::Objects::ObjectsEncoder * mEncoder;
 	Atlas::Bridge * mFormatter;
 	bool mComplete;
+	bool mCancelled;
 
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void infoArrived(const Operation& op);

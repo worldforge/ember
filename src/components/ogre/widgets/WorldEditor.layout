@@ -10,12 +10,19 @@
             <Property Name='UnifiedSize' Value='{{1,-6},{1,0}}' />
             <Property Name='UnifiedPosition' Value='{{0,3},{0,0}}' />
             <Property Name='InheritsAlpha' Value='True' />
-            <Window Type='EmberLook/StaticText' Name='DumpStatus'>
+            <Window Type='EmberLook/StaticText' Name='Status'>
                 <Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,20.0}}'/>
                 <Property Name='UnifiedPosition' Value='{{0,0},{0,20}}'/>
                 <Property Name='HorzFormatting' Value='HorzCentred'/>
                 <Property Name='BackgroundEnabled' Value='false'/>
                 <Property Name='FrameEnabled' Value='false'/>
+            </Window>
+            <Window Type='EmberLook/Button' Name='Cancel'>
+                <Property Name='Text' Value='Cancel' />
+                <Property Name='Tooltip' Value='Cancels the ongoing action.' />
+                <Property Name='UnifiedPosition' Value='{{0.5,-45},{0,45}}' />
+                <Property Name='UnifiedSize' Value='{{0,70},{0,20}}' />
+                <Property Name='Visible' Value='false' />
             </Window>
             <Window Type='EmberLook/Button' Name='DumpWorld'>
                 <Property Name='Text' Value='Dump world' />

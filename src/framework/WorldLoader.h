@@ -60,7 +60,9 @@ public:
 	explicit StackEntry(const Atlas::Objects::Entity::RootEntity & o);
 };
 
-/// \brief Task class for dumping the world to a file
+/**
+ * @brief Task class for dumping the world to a file.
+ */
 class WorldLoader: public virtual sigc::trackable
 {
 public:
@@ -68,7 +70,23 @@ public:
 	virtual ~WorldLoader();
 
 	virtual void start(const std::string& filename);
+
+	/**
+	 * @brief Cancels the loading.
+	 */
+	void cancel();
+
+	/**
+	 * @brief Emitted when the load has been completed.
+	 */
 	sigc::signal<void> EventCompleted;
+
+	/**
+	 * @brief Emitted when an entity has been updated or created.
+	 *
+	 * The argument denotes how many instances are left to load.
+	 */
+	sigc::signal<void, int> EventProgress;
 
 protected:
 	Eris::Account& mAccount;
@@ -78,12 +96,11 @@ protected:
 	std::map<std::string, Atlas::Objects::Root> m_objects;
 	enum
 	{
-		INIT, UPDATING, CREATING, WALKING
+		INIT, UPDATING, CREATING, WALKING, CANCEL, CANCELLED
 	} m_state;
 
 	std::deque<StackEntry> m_treeStack;
 	std::set<std::string> m_newIds;
-	bool m_complete;
 
 	void sendOperation(const Operation& op);
 

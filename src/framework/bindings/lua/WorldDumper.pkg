@@ -10,8 +10,21 @@ public:
 	virtual ~WorldDumper();
 
 	void start(const std::string& filename);
+	
+	/**
+	 * @brief Cancels the dumping.
+	 */
+	void cancel();
 
 	sigc::signal<void> EventCompleted;
+	
+	/**
+	 * @brief Emitted when an entity has been dumped.
+	 *
+	 * The argument denotes how many instances have been dumped.
+	 * Note that it's not really possible (in a clean way) to in advance know how many instances there are on the server.
+	 */
+	sigc::signal<void, int> EventProgress;
 
 };
 
