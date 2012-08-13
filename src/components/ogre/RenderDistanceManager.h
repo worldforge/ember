@@ -1,5 +1,7 @@
 #include "OgreIncludes.h"
 
+#include "sigc++/connection.h"
+
 namespace Ember
 {
 namespace OgreView
@@ -22,7 +24,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	RenderDistanceManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera mainCamera);
+	RenderDistanceManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera);
 
 	/**
 	 * @brief Destructor.

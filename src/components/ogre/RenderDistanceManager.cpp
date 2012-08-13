@@ -11,8 +11,8 @@ namespace Ember
 namespace OgreView
 {
 
-RenderDistanceManager::RenderDistanceManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera mainCamera) :
-		mIGraphicalChangeAdapter(iGraphicalChangeAdapter), mFog(fog), mMainCamera(mainCamera), mChangeRequiredConnection(0), mDefaultFarRenderDistance(1000), mFarRenderDistance(1000), mMaxFarRenderDistanceFactor(1.5f), mMinFarRenderDistanceFactor(0.5f), mRenderDistanceThreshold(5.0f), mFarRenderDistanceFactor(1.0f), mDefaultRenderDistanceStep(0.3f)
+RenderDistanceManager::RenderDistanceManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera) :
+		mIGraphicalChangeAdapter(iGraphicalChangeAdapter), mFog(fog), mMainCamera(mainCamera), mDefaultFarRenderDistance(1000), mFarRenderDistance(1000), mMaxFarRenderDistanceFactor(1.5f), mMinFarRenderDistanceFactor(0.5f), mRenderDistanceThreshold(5.0f), mFarRenderDistanceFactor(1.0f), mDefaultRenderDistanceStep(0.3f)
 {
 }
 
@@ -21,7 +21,6 @@ RenderDistanceManager::~RenderDistanceManager()
 	if (mChangeRequiredConnection) {
 		mChangeRequiredConnection.disconnect();
 	}
-	mChangeRequiredConnection = 0;
 }
 
 void RenderDistanceManager::initialize()
@@ -95,17 +94,12 @@ bool RenderDistanceManager::stepUpFarRenderDistance(float step)
 
 void RenderDistanceManager::pause()
 {
-	if (mChangeRequiredConnection) {
-		mChangeRequiredConnection.disconnect();
-	}
-	mChangeRequiredConnection = 0;
+	mChangeRequiredConnection.block();
 }
 
 void RenderDistanceManager::unpause()
 {
-	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mIGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
-	}
+	mChangeRequiredConnection.unblock();
 }
 
 }

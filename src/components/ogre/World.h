@@ -54,6 +54,8 @@ class ConfigListenerContainer;
 namespace OgreView
 {
 
+class RenderDistanceManager;
+
 namespace Terrain
 {
 class TerrainManager;
@@ -232,6 +234,13 @@ public:
 	 * @returns The LOD level manager.
 	 */
 	Lod::LodLevelManager& getLodLevelManager() const;
+	
+	/**
+	 * @brief Gets the render distance manager.
+	 * @return The render distance manager.
+	 * @see RenderDistanceManager
+	 */
+	RenderDistanceManager& getRenderDistanceManager() const;
 
 	/**
 	 * @brief Accessor for the main server calendar.
@@ -338,6 +347,11 @@ protected:
 	 * @brief The lod level manager, owned by this instance, used to adjust the level of detail of materials and meshes.
 	 */
 	Lod::LodLevelManager* mLodLevelManager;
+	
+	/**
+	 * @brief The render distance manager, owned by this instance, used to adjust the absolute rendering distance of the world.
+	 */
+	RenderDistanceManager* mRenderDistanceManager;
 	
 	/**
 	 * @brief The page data provider for the EmberPagingSceneManager.
