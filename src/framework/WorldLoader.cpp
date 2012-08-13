@@ -177,52 +177,63 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
 		S_LOG_FAILURE("Info with no arg.");
 		return;
 	}
-	if (m_state != WALKING) {
-		return;
-	}
-	const Root & arg = op->getArgs().front();
-	RootEntity ent = smart_dynamic_cast<RootEntity>(arg);
-	if (!ent.isValid()) {
-		S_LOG_FAILURE("Info response is not entity.");
-		return;
-	}
-	if (arg->isDefaultId()) {
-		S_LOG_FAILURE("Corrupted info response: no id.");
-	}
-	const std::string & id = arg->getId();
 
-	StackEntry & current = m_treeStack.back();
-	RootEntity obj = current.obj;
+	if (m_state == CREATING) {
+		Operation sub_op = op;
+		if (!sub_op.isValid()) {
+			return;
+		}
+		Root created = sub_op->getArgs().front();
+		m_newIds.insert(created->getId());
+		StackEntry & current = m_treeStack.back();
+		current.restored_id = created->getId();
+		S_LOG_VERBOSE("Created: " << created->getParents().front() << "(" << created->getId() << ")");
+		walk(res);
+	} else if (m_state == WALKING) {
+		const Root & arg = op->getArgs().front();
+		RootEntity ent = smart_dynamic_cast<RootEntity>(arg);
+		if (!ent.isValid()) {
+			S_LOG_FAILURE("Info response is not entity.");
+			return;
+		}
+		if (arg->isDefaultId()) {
+			S_LOG_FAILURE("Corrupted info response: no id.");
+		}
+		const std::string & id = arg->getId();
 
-	assert(id == obj->getId());
+		StackEntry & current = m_treeStack.back();
+		RootEntity obj = current.obj;
 
-	if (m_newIds.find(id) != m_newIds.end() || (m_treeStack.size() != 1 && ent->isDefaultLoc()) || ent->getParents().front() != obj->getParents().front()) {
-		create(obj, res);
-	} else {
+		assert(id == obj->getId());
 
-		Root update = obj.copy();
+		if (m_newIds.find(id) != m_newIds.end() || (m_treeStack.size() != 1 && ent->isDefaultLoc()) || ent->getParents().front() != obj->getParents().front()) {
+			create(obj, res);
+		} else {
 
-		current.restored_id = id;
+			Root update = obj.copy();
 
-		S_LOG_VERBOSE("Updating: " << obj->getId() << "," << obj->getParents().front());
+			current.restored_id = id;
 
-		// assert(id == "0");
+			S_LOG_VERBOSE("Updating: " << obj->getId() << "," << obj->getParents().front());
 
-		update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
-		update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
+			// assert(id == "0");
 
-		Set set;
-		set->setArgs1(update);
-		set->setFrom(mAccount.getActiveCharacters().begin()->second->getId());
-		set->setTo(id);
-		set->setSerialno(Eris::getNewSerialno());
+			update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
+			update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
 
-		res.push_back(set);
+			Set set;
+			set->setArgs1(update);
+			set->setFrom(mAccount.getActiveCharacters().begin()->second->getId());
+			set->setTo(id);
+			set->setSerialno(Eris::getNewSerialno());
 
-		++m_count;
-		++m_updateCount;
+			res.push_back(set);
 
-		m_state = UPDATING;
+			++m_count;
+			++m_updateCount;
+
+			m_state = UPDATING;
+		}
 	}
 }
 
@@ -256,24 +267,6 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
 			S_LOG_FAILURE("This is not our entity update response.");
 			break;
 		}
-		walk(res);
-	}
-		break;
-	case CREATING:
-	{
-		Operation sub_op = smart_dynamic_cast<Operation>(arg);
-		if (!sub_op.isValid()) {
-			break;
-		}
-		if (sub_op->getClassNo() != Atlas::Objects::Operation::CREATE_NO || sub_op->getArgs().empty() || sub_op->isDefaultSerialno()) {
-			S_LOG_FAILURE("This is not our entity create response.");
-			break;
-		}
-		Root created = sub_op->getArgs().front();
-		m_newIds.insert(created->getId());
-		StackEntry & current = m_treeStack.back();
-		current.restored_id = created->getId();
-		S_LOG_VERBOSE("Created: " << created->getParents().front() << "(" << created->getId() << ")");
 		walk(res);
 	}
 		break;
