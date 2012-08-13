@@ -53,6 +53,7 @@ ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, AutomaticGrap
 
 ShadowCameraSetup::~ShadowCameraSetup()
 {
+	delete mShadowLevelManager;
 }
 
 bool ShadowCameraSetup::setup()

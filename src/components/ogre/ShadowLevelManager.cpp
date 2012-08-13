@@ -57,7 +57,7 @@ bool ShadowLevelManager::changeLevel(float level)
 		} else {
 			changeMade |= stepUpShadowDistance(mDefaultShadowDistanceStep);
 		}
-	} else if (std::abs(level) >= mShadowCameraLodBias) {
+	} else if (std::abs(level) >= mShadowCameraLodThreshold) {
 		if (level > 0.0f) {
 			changeMade |= stepDownShadowCameraLodBias(mDefaultShadowLodStep);
 		} else {
