@@ -59,7 +59,7 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 WorldDumper::WorldDumper(Eris::Account& account) :
-		mAccount(account), mLastSerialNo(-1), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mComplete(false)
+		mAccount(account), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mComplete(false)
 {
 }
 
@@ -77,7 +77,7 @@ void WorldDumper::dumpEntity(const RootEntity & ent)
 
 void WorldDumper::infoArrived(const Operation & op)
 {
-	if (op->isDefaultRefno() || op->getRefno() != mLastSerialNo) {
+	if (op->isDefaultRefno()) {
 		S_LOG_WARNING("Got op not belonging to us when dumping.");
 		return;
 	}
@@ -122,8 +122,7 @@ void WorldDumper::infoArrived(const Operation & op)
 	get->setArgs1(get_arg);
 
 	get->setFrom(mAccount.getId());
-	++mLastSerialNo;
-	get->setSerialno(mLastSerialNo);
+	get->setSerialno(Eris::getNewSerialno());
 
 	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &WorldDumper::operation);
 	mAccount.getConnection()->send(get);
@@ -152,8 +151,7 @@ void WorldDumper::start(const std::string& filename)
 	get->setArgs1(get_arg);
 
 	get->setFrom(mAccount.getId());
-	++mLastSerialNo;
-	get->setSerialno(mLastSerialNo);
+	get->setSerialno(Eris::getNewSerialno());
 	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &WorldDumper::operation);
 	mAccount.getConnection()->send(get);
 

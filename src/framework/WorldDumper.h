@@ -85,7 +85,6 @@ protected:
 	typedef Atlas::Objects::Operation::RootOperation Operation;
 
 	Eris::Account& mAccount;
-	int mLastSerialNo;
 	std::list<std::string> mQueue;
 	int mCount;
 	std::fstream mFile;
