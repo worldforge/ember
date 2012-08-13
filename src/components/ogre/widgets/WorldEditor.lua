@@ -18,8 +18,13 @@ function WorldEditor:buildWidget()
 		end)
 
 		self.widget:getWindow("LoadWorld"):subscribeEvent("Clicked", function(args)
---			local worldDumper = Ember.WorldDumper:new(emberServices:getServerService():getAccount())
---			worldDumper:start(emberServices:getConfigService():getHomeDirectory .. "/world.xml")
+			local worldLoader = Ember.WorldLoader:new(emberServices:getServerService():getAccount())
+			self.widget:getWindow("DumpStatus"):setText("Loading...")
+			createConnector(worldLoader.EventCompleted):connect(function()
+				self.widget:getWindow("DumpStatus"):setText("Done loading.")
+				worldLoader:delete()			
+			end)
+			worldLoader:start(emberServices:getConfigService():getHomeDirectory() .. "/world.xml")
 			return true
 		end)
 		

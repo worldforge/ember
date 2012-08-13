@@ -1,0 +1,19 @@
+$#include "framework/WorldLoader.h"
+
+namespace Ember
+{
+
+/// \brief Task class for dumping the world to a file
+class WorldLoader
+{
+public:
+	explicit WorldLoader(Eris::Account& account);
+	virtual ~WorldLoader();
+
+	virtual void start(const std::string& filename);
+	
+	sigc::signal<void> EventCompleted;
+
+};
+
+}
