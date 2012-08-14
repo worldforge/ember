@@ -239,7 +239,7 @@ function SettingsWidget:buildSettingsUi()
 					helpString = "Sets whether the graphics settings are managed automatically",
 					
 					section = "graphics",
-					key = "automaticgraphics",
+					key = "autoadjust",
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
@@ -272,6 +272,25 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
 				},
+				{
+					label = "Foliage Density",
+					helpString = "Density of foliage in percentage",
+					
+					section = "graphics",
+					key = "foliagedensity",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 100) end,
+				},
+				{
+					label = "Foliage Distance",
+					helpString = "Foliage Distance in a percentage of max value",
+					
+					section = "graphics",
+					key = "foliagefardistance",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 100) end,
+				},
+				
 				--FIXME: not effective for now
 				--[[{
 					label = "Double buffered",

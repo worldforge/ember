@@ -194,6 +194,7 @@ void GrassFoliage::setFarDistance(float factor)
 		(*I)->setTransition(factor * J->transition);
 		++J;
 	}
+	mPagedGeometry->reloadGeometry();
 }
 
 }

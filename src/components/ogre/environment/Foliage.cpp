@@ -53,7 +53,7 @@ namespace Environment
 {
 
 Foliage::Foliage(Terrain::TerrainManager& terrainManager, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
-	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageLevelManager(new FoliageLevelManager(*this, automaticGraphicsLevelManager))
+	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageLevelManager(new FoliageLevelManager(automaticGraphicsLevelManager))
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 	mFoliageLevelManager->foliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));

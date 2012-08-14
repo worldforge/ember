@@ -121,6 +121,7 @@ void ShrubberyFoliage::setFarDistance(float factor)
 		(*I)->setTransition(factor * J->transition);
 		++J;
 	}
+	mPagedGeometry->reloadGeometry();
 }
 
 }

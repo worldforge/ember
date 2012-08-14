@@ -1,7 +1,8 @@
 #include "FoliageLevelManager.h"
 
 #include <components/ogre/AutoGraphicsLevelManager.h>
-#include "components/ogre/environment/Foliage.h"
+
+#include <services/config/ConfigListenerContainer.h>
 
 #include "cmath"
 
@@ -12,8 +13,8 @@ namespace OgreView
 namespace Environment
 {
 
-FoliageLevelManager::FoliageLevelManager(Foliage& foliage, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
-		mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mDefaultDistanceStep(0.3f), mUpdatedDensity(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f), mFoliage(foliage), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager)
+FoliageLevelManager::FoliageLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager) :
+		mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mDefaultDistanceStep(0.3f), mUpdatedDensity(1.0f), mFarDistance(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mConfigListenerContainer(new ConfigListenerContainer())
 {
 }
 
@@ -25,6 +26,8 @@ FoliageLevelManager::~FoliageLevelManager()
 void FoliageLevelManager::initialize()
 {
 	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &FoliageLevelManager::changeLevel));
+	mConfigListenerContainer->registerConfigListener("graphics", "foliagedensity", sigc::mem_fun(*this, &FoliageLevelManager::Config_FoliageDensity));
+	mConfigListenerContainer->registerConfigListener("graphics", "foliagefardistance", sigc::mem_fun(*this, &FoliageLevelManager::Config_FoliageFarDistance));
 }
 
 void FoliageLevelManager::updateFoliageDensity()
@@ -87,7 +90,7 @@ bool FoliageLevelManager::stepDownFoliageDistance(float step)
 		mFarDistance -= step;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
-	} else if (mFarDistance < step && mFarDistance > mMinFarDistance) { //if there is still some positive far distance left which is smaller than step, set it to 0
+	} else if (mFarDistance < step && mFarDistance > mMinFarDistance) { //if there is still some positive far distance left which is smaller than step, set it to minimum far distance.
 		mFarDistance = mMinFarDistance;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
@@ -98,11 +101,11 @@ bool FoliageLevelManager::stepDownFoliageDistance(float step)
 
 bool FoliageLevelManager::stepUpFoliageDistance(float step)
 {
-	if (mFarDistance + step <= mMaxFarDistance) { //step up only if the step doesn't cause density to go over 1.
+	if (mFarDistance + step <= mMaxFarDistance) { //step up only if the step doesn't cause distance to go over max distance.
 		mFarDistance += step;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
-	} else if (mFarDistance < mMaxFarDistance) { //if the far distance is still below 1 but a default step causes it to go over 1.
+	} else if (mFarDistance < mMaxFarDistance) { //if the far distance is still below max distance but a default step causes it to go over max distance.
 		mFarDistance = mMaxFarDistance;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
@@ -113,7 +116,7 @@ bool FoliageLevelManager::stepUpFoliageDistance(float step)
 
 bool FoliageLevelManager::changeFoliageDistance(float distance)
 {
-	if (distance >= mMinFarDistance && distance <= mMaxFarDistance) { //change the density as long as it is above 0
+	if (distance >= mMinFarDistance && distance <= mMaxFarDistance) { //change the distance as long as it is in the correct range.
 		mFarDistance = distance;
 		foliageFarDistanceChanged.emit(mFarDistance);
 		return true;
@@ -130,6 +133,22 @@ bool FoliageLevelManager::changeFoliageDensity(float density)
 		return true;
 	} else {
 		return false;
+	}
+}
+
+void FoliageLevelManager::Config_FoliageDensity(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_double()) {
+		float density = static_cast<double>(variable);
+		changeFoliageDensity(density/100);
+	}
+}
+
+void FoliageLevelManager::Config_FoliageFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_double()) {
+		float distanceFactor = static_cast<double>(variable);
+		changeFoliageDistance(distanceFactor/100);
 	}
 }
 

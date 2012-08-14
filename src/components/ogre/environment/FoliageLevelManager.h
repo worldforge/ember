@@ -4,8 +4,15 @@
 #include <string>
 #include <map>
 
+namespace varconf
+{
+class Variable;
+}
+
 namespace Ember
 {
+class ConfigListenerContainer;
+
 namespace OgreView
 {
 class AutomaticGraphicsLevelManager;
@@ -24,7 +31,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	FoliageLevelManager(Foliage& foliage, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
+	FoliageLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
 
 	/**
 	 * @brief Destructor.
@@ -117,6 +124,16 @@ protected:
 	 * Sends out a signal with the updated foliage density.
 	 */
 	void updateFoliageDensity();
+	
+	/**
+	 * @brief Connected to the config service to listen for foliage density settings.
+	 */
+	void Config_FoliageDensity(const std::string& section, const std::string& key, varconf::Variable& variable);
+	
+	/**
+	 * @brief Connected to the config service to listen for foliage density settings.
+	 */
+	void Config_FoliageFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * The threshold level of this subcomponent passing which it responds by changing the detail level of foliage.
@@ -159,14 +176,14 @@ protected:
 	sigc::connection mChangeRequiredConnection;
 
 	/**
-	 * Reference to the foliage class that owns this class.
-	 */
-	Foliage& mFoliage;
-
-	/**
 	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
 	 */
 	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+	
+	/**
+	 * @brief Used to listen for configuration changes.
+	 */
+	ConfigListenerContainer* mConfigListenerContainer;
 
 };
 

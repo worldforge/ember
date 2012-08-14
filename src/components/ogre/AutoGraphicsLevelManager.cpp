@@ -86,7 +86,7 @@ AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow&
 {
 	mFpsUpdatedConnection = mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
 	mConfigListenerContainer->registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
-	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "automaticgraphics", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_Enabled), false);
+	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "autoadjust", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_Enabled), false);
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
