@@ -1,6 +1,7 @@
 #include <OgreFrameListener.h>
 
 #include <sigc++/signal.h>
+#include <sigc++/connection.h>
 
 #include <string>
 #include <map>
@@ -239,9 +240,19 @@ protected:
 	void Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
+	 * @brief Connected to the config service to listen for whether the automatic graphics manager should be enabled.
+	 */
+	void Config_Enabled(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
 	 * @brief Used to listen for configuration changes.
 	 */
 	ConfigListenerContainer* mConfigListenerContainer;
+
+	/**
+	 * @brief The connection through which the automatic graphics manager listens for fps updates.
+	 */
+	sigc::connection mFpsUpdatedConnection;
 
 };
 

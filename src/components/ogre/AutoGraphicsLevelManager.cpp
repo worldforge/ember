@@ -84,8 +84,9 @@ bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow, MainLoopController& mainLoopController) :
 		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow), mMainLoopController(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer())
 {
-	mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
+	mFpsUpdatedConnection = mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
 	mConfigListenerContainer->registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
+	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "automaticgraphics", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_Enabled), false);
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
@@ -125,6 +126,11 @@ IGraphicalChangeAdapter& AutomaticGraphicsLevelManager::getGraphicalAdapter()
 void AutomaticGraphicsLevelManager::setEnabled(bool newEnabled)
 {
 	mEnabled = newEnabled;
+	if (newEnabled == false) {
+		mFpsUpdatedConnection.block();
+	} else {
+		mFpsUpdatedConnection.unblock();
+	}
 }
 
 bool AutomaticGraphicsLevelManager::isEnabled()
@@ -141,6 +147,15 @@ void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section
 			fps = 60.0f;
 		}
 		setFps(fps);
+	}
+}
+
+void AutomaticGraphicsLevelManager::Config_Enabled(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_bool() && static_cast<bool>(variable)) {
+		setEnabled(true);
+	} else {
+		setEnabled(false);
 	}
 }
 

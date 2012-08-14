@@ -235,6 +235,15 @@ function SettingsWidget:buildSettingsUi()
 			contents =
 			{
 				{
+					label = "Automatic Graphics Settings",
+					helpString = "Sets whether the graphics settings are managed automatically",
+					
+					section = "graphics",
+					key = "automaticgraphics",
+					
+					representationFactory = function(value) return Representations.VarconfCheckboxRepresentation:new_local(value) end,
+				},
+				{
 					label = "Level",
 					helpString = "General graphics level",
 					
