@@ -131,7 +131,7 @@ protected:
 	void Config_FoliageDensity(const std::string& section, const std::string& key, varconf::Variable& variable);
 	
 	/**
-	 * @brief Connected to the config service to listen for foliage density settings.
+	 * @brief Connected to the config service to listen for foliage far distance settings.
 	 */
 	void Config_FoliageFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable);
 

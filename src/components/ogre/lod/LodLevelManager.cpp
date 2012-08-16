@@ -1,6 +1,7 @@
 #include "LodLevelManager.h"
 
 #include "components/ogre/AutoGraphicsLevelManager.h"
+#include <services/config/ConfigListenerContainer.h>
 
 #include "OgreCamera.h"
 
@@ -14,7 +15,7 @@ namespace Lod
 {
 
 LodLevelManager::LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera) :
-		mLodThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mMainCamera(mainCamera)
+		mLodThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer())
 {
 }
 
@@ -26,6 +27,7 @@ LodLevelManager::~LodLevelManager()
 void LodLevelManager::initialize()
 {
 	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
+	mConfigListenerContainer->registerConfigListener("graphics", "lodbias", sigc::mem_fun(*this, &LodLevelManager::Config_LodBias));
 }
 
 bool LodLevelManager::setLodBiasAll(float factor)
@@ -75,6 +77,14 @@ bool LodLevelManager::stepUpLodBias(float step)
 		return setLodBiasAll(mLodFactor);
 	} else {
 		return false; //step up not possible
+	}
+}
+
+void LodLevelManager::Config_LodBias(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_double()) {
+		float lodBias = static_cast<double>(variable);
+		setLodBiasAll(lodBias/100);
 	}
 }
 

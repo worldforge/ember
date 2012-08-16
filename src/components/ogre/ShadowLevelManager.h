@@ -1,9 +1,17 @@
 #include "OgreIncludes.h"
 
 #include "sigc++/connection.h"
+#include "string"
+
+namespace varconf
+{
+class Variable;
+}
 
 namespace Ember
 {
+
+class ConfigListenerContainer;
 namespace OgreView
 {
 
@@ -85,6 +93,11 @@ protected:
 	 * @param step The value to step the distance down by in float.
 	 */
 	bool stepDownShadowCameraLodBias(float step);
+	
+	/**
+	 * @brief Connected to the config service to listen for shadow lod bias settings.
+	 */
+	void Config_ShadowLodBias(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * Holds the distance the rendered shadows are culled. i.e. shadows beyond this distance are not rendered.
@@ -152,6 +165,11 @@ protected:
 	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
 	 */
 	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+	
+	/**
+	 * @brief Used to listen for configuration changes.
+	 */
+	ConfigListenerContainer* mConfigListenerContainer;
 
 };
 }

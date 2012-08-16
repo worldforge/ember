@@ -3,6 +3,7 @@
 #include "components/ogre/AutoGraphicsLevelManager.h"
 
 #include "components/ogre/environment/IEnvironmentProvider.h"
+#include <services/config/ConfigListenerContainer.h>
 
 #include "OgreCamera.h"
 
@@ -12,7 +13,7 @@ namespace OgreView
 {
 
 RenderDistanceManager::RenderDistanceManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera) :
-		mIGraphicalChangeAdapter(iGraphicalChangeAdapter), mFog(fog), mMainCamera(mainCamera), mDefaultFarRenderDistance(1000), mFarRenderDistance(1000), mMaxFarRenderDistanceFactor(1.5f), mMinFarRenderDistanceFactor(0.7f), mRenderDistanceThreshold(5.0f), mFarRenderDistanceFactor(1.0f), mDefaultRenderDistanceStep(0.3f)
+		mIGraphicalChangeAdapter(iGraphicalChangeAdapter), mFog(fog), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer()), mDefaultFarRenderDistance(1000), mFarRenderDistance(1000), mMaxFarRenderDistanceFactor(1.5f), mMinFarRenderDistanceFactor(0.7f), mRenderDistanceThreshold(5.0f), mFarRenderDistanceFactor(1.0f), mDefaultRenderDistanceStep(0.3f)
 {
 }
 
@@ -28,6 +29,7 @@ void RenderDistanceManager::initialize()
 	if (!mChangeRequiredConnection) {
 		mChangeRequiredConnection = mIGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
 	}
+	mConfigListenerContainer->registerConfigListener("graphics", "renderdistance", sigc::mem_fun(*this, &RenderDistanceManager::Config_FarRenderDistance));
 }
 
 bool RenderDistanceManager::setFarRenderDistance(float factor)
@@ -94,6 +96,14 @@ bool RenderDistanceManager::stepUpFarRenderDistance(float step)
 		stepPossible = false; //step up not possible
 	}
 	return stepPossible;
+}
+
+void RenderDistanceManager::Config_FarRenderDistance(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_double()) {
+		float renderDistance = static_cast<double>(variable);
+		setFarRenderDistance(renderDistance/100);
+	}
 }
 
 void RenderDistanceManager::pause()

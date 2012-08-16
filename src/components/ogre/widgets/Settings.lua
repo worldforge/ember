@@ -253,6 +253,24 @@ function SettingsWidget:buildSettingsUi()
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
 					suggestions = {"low", "medium", "high"}
 				},
+				{
+					label = "Render Distance",
+					helpString = "Render distance in percentage of maximum distance",
+					
+					section = "graphics",
+					key = "renderdistance",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 100) end,
+				},
+				{
+					label = "Level of detail bias",
+					helpString = "Affects the detail level of all entities displayed",
+					
+					section = "graphics",
+					key = "lodbias",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 100) end,
+				},
 				--FIXME: Removed from Ember, not effective
 				--[[{
 					label = "Fresnel water",
@@ -319,6 +337,15 @@ function SettingsWidget:buildSettingsUi()
 					key = "fardistance",
 					
 					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 1000) end,
+				},
+				{
+					label = "Shadow level of detail",
+					helpString = "Affects the model used to generate the shadow, lower values result in overall lower detail shadows",
+					
+					section = "shadows",
+					key = "shadowlodbias",
+					
+					representationFactory = function(value) return Representations.VarconfSliderRepresentation:new_local(value, 100) end,
 				},
 				{
 					label = "Use aggressive focus region",

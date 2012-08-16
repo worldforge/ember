@@ -1,6 +1,7 @@
 #include "ShadowLevelManager.h"
 
 #include "AutoGraphicsLevelManager.h"
+#include <services/config/ConfigListenerContainer.h>
 
 #include "OgreSceneManager.h"
 #include <OgreHardwarePixelBuffer.h>
@@ -11,7 +12,7 @@ namespace OgreView
 {
 
 ShadowLevelManager::ShadowLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::SceneManager& sceneManager) :
-		mSceneManager(sceneManager), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mShadowFarDistance(sceneManager.getShadowFarDistance()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
+		mSceneManager(sceneManager), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mShadowFarDistance(sceneManager.getShadowFarDistance()), mConfigListenerContainer(new ConfigListenerContainer()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
 {
 }
 
@@ -44,6 +45,7 @@ bool ShadowLevelManager::setShadowFarDistance(float distance)
 void ShadowLevelManager::initialize()
 {
 	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &ShadowLevelManager::changeLevel));
+	mConfigListenerContainer->registerConfigListener("graphics", "shadowlodbias", sigc::mem_fun(*this, &ShadowLevelManager::Config_ShadowLodBias));
 }
 
 bool ShadowLevelManager::changeLevel(float level)
@@ -116,6 +118,14 @@ bool ShadowLevelManager::stepUpShadowCameraLodBias(float step)
 		return setShadowCameraLodBias(mShadowCameraLodBias);
 	} else {
 		return false; //step up not possible
+	}
+}
+
+void ShadowLevelManager::Config_ShadowLodBias(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_double()) {
+		float lodBias = static_cast<double>(variable);
+		setShadowCameraLodBias(lodBias/100);
 	}
 }
 

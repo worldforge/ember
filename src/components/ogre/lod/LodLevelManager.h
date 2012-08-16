@@ -1,13 +1,16 @@
 #include "sigc++/connection.h"
-#include <string>
+#include "string"
+#include "components/ogre/OgreIncludes.h"
 
-namespace Ogre
+namespace varconf
 {
-class Camera;
+class Variable;
 }
 
 namespace Ember
 {
+
+class ConfigListenerContainer;
 namespace OgreView
 {
 
@@ -75,6 +78,11 @@ protected:
 	 * @param step The value to step the bias down by.
 	 */
 	bool stepDownLodBias(float step);
+	
+	/**
+	 * @brief Connected to the config service to listen for lod bias settings.
+	 */
+	void Config_LodBias(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * The threshold fps change after which the lod level is changed to respond to performance change requested.
@@ -116,6 +124,11 @@ protected:
 	 * Reference to the main camera object
 	 */
 	Ogre::Camera& mMainCamera;
+	
+	/**
+	 * @brief Used to listen for configuration changes.
+	 */
+	ConfigListenerContainer* mConfigListenerContainer;
 };
 
 }
