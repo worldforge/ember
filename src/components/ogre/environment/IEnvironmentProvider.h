@@ -125,6 +125,12 @@ public:
 	virtual IWater* getWater() = 0;
 
 	/**
+	 * @brief Sets whether the water (ocean) is enabled or not.
+	 * @param enabled True if the water should enabled.
+	 */
+	virtual void setWaterEnabled(bool enabled) = 0;
+
+	/**
 	 * @brief Sets the current time.
 	 * @param hour The hour.
 	 * @param minute The minute.

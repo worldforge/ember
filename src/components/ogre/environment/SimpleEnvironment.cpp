@@ -31,23 +31,26 @@
 #include <OgreSceneManager.h>
 #include <OgreLight.h>
 #include <OgreRenderWindow.h>
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-namespace Environment {
+namespace Environment
+{
 
 SimpleSun::SimpleSun(Ogre::SceneManager *sceneMgr)
 {
 
-	mMainLight = sceneMgr->createLight ("SimpleSun");
-	mMainLight->setType (Ogre::Light::LT_DIRECTIONAL);
+	mMainLight = sceneMgr->createLight("SimpleSun");
+	mMainLight->setType(Ogre::Light::LT_DIRECTIONAL);
 	// HDR power scale, REALLY bright:
 // 	mMainLight->setPowerScale (10);
 
 	mMainLight->setVisible(true);
 	mMainLight->setDiffuseColour(Ogre::ColourValue(0.9, 0.9, 0.9));
 	mMainLight->setSpecularColour(Ogre::ColourValue(0.9, 0.9, 0.9));
-	mMainLight->setDirection (Ogre::Vector3(1, -1, 0));
+	mMainLight->setDirection(Ogre::Vector3(1, -1, 0));
 }
 
 void SimpleSun::setAmbientLight(const Ogre::ColourValue& colour)
@@ -69,14 +72,11 @@ Ogre::ColourValue SimpleSun::getAmbientLightColour() const
 	return mMainLight->getDiffuseColour();
 }
 
-
-
 SimpleFog::SimpleFog(Ogre::SceneManager *sceneMgr)
 {
 	sceneMgr->setFog(Ogre::FOG_EXP2, Ogre::ColourValue(0.8, 0.8, 0.8), 0.005);
 
 }
-
 
 void SimpleFog::setDensity(float density)
 {
@@ -87,13 +87,10 @@ float SimpleFog::getDensity() const
 	return 1.0f;
 }
 
-
-SimpleEnvironment::SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera)
-: mSceneMgr(sceneMgr), mWindow(window), mCamera(camera)
-,mSun(0), mSky(0), mFog(0), mWater(0)
+SimpleEnvironment::SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera) :
+		mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mSun(0), mSky(0), mFog(0), mWater(0)
 {
 }
-
 
 SimpleEnvironment::~SimpleEnvironment()
 {
@@ -108,8 +105,21 @@ void SimpleEnvironment::createEnvironment()
 	mSun = new SimpleSun(mSceneMgr);
 	mSky = new SimpleSky();
 	mFog = new SimpleFog(mSceneMgr);
-	mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
-	mWater->initialize();
+}
+
+void SimpleEnvironment::setWaterEnabled(bool enabled)
+{
+	if (enabled) {
+		if (!mWater) {
+			mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
+			mWater->initialize();
+
+		}
+	} else {
+		if (mWater) {
+			delete mWater;
+		}
+	}
 }
 
 ISun* SimpleEnvironment::getSun()
@@ -152,8 +162,6 @@ float SimpleEnvironment::getTimeMultiplier() const
 void SimpleEnvironment::setWorldPosition(float longitudeDegrees, float latitudeDegrees)
 {
 }
-
-
 
 }
 

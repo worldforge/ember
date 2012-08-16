@@ -142,6 +142,11 @@ void Environment::setWorldPosition(float longitudeDegrees, float latitudeDegrees
 	mProvider->setWorldPosition(longitudeDegrees, latitudeDegrees);
 }
 
+void Environment::setWaterEnabled(bool enabled)
+{
+	mProvider->setWaterEnabled(enabled);
+}
+
 }
 
 }

@@ -25,7 +25,6 @@
 
 #include "IEnvironmentProvider.h"
 
-
 namespace Ogre
 {
 class SceneManager;
@@ -34,15 +33,18 @@ class Camera;
 class Light;
 }
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
-namespace Environment {
+namespace Environment
+{
 
 /**
-A very simple sun which always will return the same direction.
-*/
-class SimpleSun : public ISun
+ A very simple sun which always will return the same direction.
+ */
+class SimpleSun: public ISun
 {
 public:
 	SimpleSun(Ogre::SceneManager *sceneMgr);
@@ -57,18 +59,18 @@ protected:
 };
 
 /**
-A very simple sky which won't do anything currently.
-*/
-class SimpleSky : public ISky
+ A very simple sky which won't do anything currently.
+ */
+class SimpleSky: public ISky
 {
 public:
 protected:
 };
 
 /**
-A very simple fog which will always return a density of 1.0
-*/
-class SimpleFog : public IFog
+ A very simple fog which will always return a density of 1.0
+ */
+class SimpleFog: public IFog
 {
 public:
 	SimpleFog(Ogre::SceneManager *sceneMgr);
@@ -79,30 +81,30 @@ protected:
 
 class Water;
 
-
-
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-	
-	A very simple environment which can be used as a fallback environment if a more advanced environment fails to load.
-*/
-class SimpleEnvironment : public IEnvironmentProvider
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+
+ A very simple environment which can be used as a fallback environment if a more advanced environment fails to load.
+ */
+class SimpleEnvironment: public IEnvironmentProvider
 {
 public:
-    SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
+	SimpleEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 
-    virtual ~SimpleEnvironment();
-    
+	virtual ~SimpleEnvironment();
+
 	virtual void createEnvironment();
+
+	void setWaterEnabled(bool enabled);
 
 	virtual ISun* getSun();
 	virtual ISky* getSky();
 	virtual IFog* getFog();
 	virtual IWater* getWater();
 
-    virtual void setTime(int hour, int minute, int second = 0);
+	virtual void setTime(int hour, int minute, int second = 0);
 	virtual void setTime(int seconds);
-	
+
 	virtual void setTimeMultiplier(float multiplier);
 
 	virtual float getTimeMultiplier() const;
@@ -113,12 +115,12 @@ public:
 	 * @param latitudeDegrees The latitude, as degrees.
 	 */
 	virtual void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
-	
+
 protected:
 	Ogre::SceneManager *mSceneMgr;
 	Ogre::RenderWindow* mWindow;
 	Ogre::Camera& mCamera;
-	
+
 	SimpleSun* mSun;
 	SimpleSky* mSky;
 	SimpleFog* mFog;

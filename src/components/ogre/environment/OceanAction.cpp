@@ -45,7 +45,8 @@ void OceanAction::activate(EntityMapping::ChangeContext& context)
 {
 	if (EmberOgre::getSingleton().getWorld()) {
 		World* world = EmberOgre::getSingleton().getWorld();
-		if (Environment * environment = world->getEnvironment()) {
+		if (Environment* environment = world->getEnvironment()) {
+			environment->setWaterEnabled(true);
 			if (IWater* water = environment->getWater()) {
 				OceanRepresentation* ocean = new OceanRepresentation(mEntity, *water);
 				mEntity.setGraphicalRepresentation(ocean);
@@ -58,6 +59,13 @@ void OceanAction::activate(EntityMapping::ChangeContext& context)
 
 void OceanAction::deactivate(EntityMapping::ChangeContext& context)
 {
+	if (EmberOgre::getSingleton().getWorld()) {
+		World* world = EmberOgre::getSingleton().getWorld();
+		if (Environment* environment = world->getEnvironment()) {
+			environment->setWaterEnabled(false);
+		}
+	}
+
 	mEntity.setGraphicalRepresentation(0);
 }
 }

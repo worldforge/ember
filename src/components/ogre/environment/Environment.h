@@ -129,6 +129,12 @@ public:
 	void setWorldPosition(float longitudeDegrees, float latitudeDegrees);
 
 	/**
+	 * @brief Sets whether the water (ocean) is enabled or not.
+	 * @param enabled True if the water should enabled.
+	 */
+	void setWaterEnabled(bool enabled);
+
+	/**
 	 * @brief Emitted when the world ambient light is changed.
 	 * The first param is the new colour value of the ambient light.
 	 */

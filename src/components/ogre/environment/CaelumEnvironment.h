@@ -62,6 +62,8 @@ public:
 
 	virtual void createEnvironment();
 
+	void setWaterEnabled(bool enabled);
+
 	virtual ISun* getSun();
 	virtual ISky* getSky();
 	virtual IFog* getFog();

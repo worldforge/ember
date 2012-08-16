@@ -83,14 +83,6 @@ void CaelumEnvironment::createEnvironment()
 		S_LOG_FAILURE("Could not load caelum." << ex);
 		throw;
 	}
-	try {
-		setupWater();
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Could not load water." << ex);
-		delete mWater;
-		mWater = 0;
-	}
-
 }
 
 void CaelumEnvironment::Calendar_Updated()
@@ -103,19 +95,37 @@ void CaelumEnvironment::Calendar_Updated()
 	}
 }
 
+void CaelumEnvironment::setWaterEnabled(bool enabled)
+{
+	if (enabled) {
+		if (!mWater) {
+			setupWater();
+		}
+	} else {
+		if (mWater) {
+			delete mWater;
+		}
+	}
+}
+
 void CaelumEnvironment::setupWater()
 {
-
-	//mWater = new Water(mCamera, mSceneMgr);
-	//	mWater = new HydraxWater(mCamera, *mSceneMgr);
-	//NOTE: we default to simple water for now since there are a couple of performance problems with hydrax
-	mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
-	if (mWater->isSupported()) {
-		mWater->initialize();
-	} else {
-		delete mWater;
+	try {
+		//mWater = new Water(mCamera, mSceneMgr);
+		//	mWater = new HydraxWater(mCamera, *mSceneMgr);
+		//NOTE: we default to simple water for now since there are a couple of performance problems with hydrax
 		mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
-		mWater->initialize();
+		if (mWater->isSupported()) {
+			mWater->initialize();
+		} else {
+			delete mWater;
+			mWater = new SimpleWater(mCamera, *mSceneMgr, *mWindow);
+			mWater->initialize();
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Could not load water." << ex);
+		delete mWater;
+		mWater = 0;
 	}
 
 }
