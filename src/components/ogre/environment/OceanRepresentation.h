@@ -32,6 +32,7 @@ class EmberEntity;
 namespace Environment
 {
 
+class Environment;
 class IWater;
 
 /**
@@ -45,7 +46,7 @@ class IWater;
 class OceanRepresentation: public IGraphicalRepresentation, public virtual sigc::trackable
 {
 public:
-	OceanRepresentation(EmberEntity& entity, IWater& water);
+	OceanRepresentation(EmberEntity& entity, Environment& environment);
 	virtual ~OceanRepresentation();
 
 	/**
@@ -82,9 +83,9 @@ private:
 	EmberEntity & mEntity;
 
 	/**
-	 * @brief The water to which this representation is connected to.
+	 * @brief The world environment.
 	 */
-	IWater& mWater;
+	Environment& mEnvironment;
 
 	/**
 	 * @brief The type name for the class.

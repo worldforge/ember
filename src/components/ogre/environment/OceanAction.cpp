@@ -46,12 +46,9 @@ void OceanAction::activate(EntityMapping::ChangeContext& context)
 	if (EmberOgre::getSingleton().getWorld()) {
 		World* world = EmberOgre::getSingleton().getWorld();
 		if (Environment* environment = world->getEnvironment()) {
-			environment->setWaterEnabled(true);
-			if (IWater* water = environment->getWater()) {
-				OceanRepresentation* ocean = new OceanRepresentation(mEntity, *water);
-				mEntity.setGraphicalRepresentation(ocean);
-				return;
-			}
+			OceanRepresentation* ocean = new OceanRepresentation(mEntity, *environment);
+			mEntity.setGraphicalRepresentation(ocean);
+			return;
 		}
 	}
 	S_LOG_WARNING("Tried to activate ocean representation, but there was no water instance available.");
@@ -59,13 +56,6 @@ void OceanAction::activate(EntityMapping::ChangeContext& context)
 
 void OceanAction::deactivate(EntityMapping::ChangeContext& context)
 {
-	if (EmberOgre::getSingleton().getWorld()) {
-		World* world = EmberOgre::getSingleton().getWorld();
-		if (Environment* environment = world->getEnvironment()) {
-			environment->setWaterEnabled(false);
-		}
-	}
-
 	mEntity.setGraphicalRepresentation(0);
 }
 }

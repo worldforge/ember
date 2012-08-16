@@ -104,6 +104,7 @@ void CaelumEnvironment::setWaterEnabled(bool enabled)
 	} else {
 		if (mWater) {
 			delete mWater;
+			mWater = 0;
 		}
 	}
 }

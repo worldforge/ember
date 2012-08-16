@@ -18,6 +18,7 @@
 
 #include "OceanRepresentation.h"
 #include "IEnvironmentProvider.h"
+#include "Environment.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/EmberEntityUserObject.h"
 #include <OgreAny.h>
@@ -33,20 +34,25 @@ namespace Environment
 
 const std::string OceanRepresentation::sTypeName("OceanRepresentation");
 
-OceanRepresentation::OceanRepresentation(EmberEntity& entity, IWater& water) :
-	mEntity(entity), mWater(water)
+OceanRepresentation::OceanRepresentation(EmberEntity& entity, Environment& environment) :
+		mEntity(entity), mEnvironment(environment)
 {
-	mEntity.Moved.connect(sigc::mem_fun(*this, &OceanRepresentation::entity_Moved));
-	updateWaterPosition();
+	mEnvironment.setWaterEnabled(true);
+	if (mEnvironment.getWater()) {
 
-	ICollisionDetector* collisionDetector = mWater.createCollisionDetector();
-	EmberEntityUserObject* userObject = new EmberEntityUserObject(entity, collisionDetector);
-	EmberEntityUserObject::SharedPtr sharedUserObject(userObject);
-	water.setUserAny(Ogre::Any(sharedUserObject));
+		mEntity.Moved.connect(sigc::mem_fun(*this, &OceanRepresentation::entity_Moved));
+		updateWaterPosition();
+
+		ICollisionDetector* collisionDetector = mEnvironment.getWater()->createCollisionDetector();
+		EmberEntityUserObject* userObject = new EmberEntityUserObject(entity, collisionDetector);
+		EmberEntityUserObject::SharedPtr sharedUserObject(userObject);
+		mEnvironment.getWater()->setUserAny(Ogre::Any(sharedUserObject));
+	}
 }
 
 OceanRepresentation::~OceanRepresentation()
 {
+	mEnvironment.setWaterEnabled(false);
 }
 
 const std::string& OceanRepresentation::getType() const
@@ -75,8 +81,10 @@ void OceanRepresentation::entity_Moved()
 
 void OceanRepresentation::updateWaterPosition()
 {
-	if (mEntity.getPredictedPos().isValid()) {
-		mWater.setLevel(mEntity.getPredictedPos().z());
+	if (mEnvironment.getWater()) {
+		if (mEntity.getPredictedPos().isValid()) {
+			mEnvironment.getWater()->setLevel(mEntity.getPredictedPos().z());
+		}
 	}
 }
 
