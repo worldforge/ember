@@ -36,7 +36,7 @@ namespace OgreView {
 
 class ShadowCameraSetup;
 class ShaderSetupInstance;
-class AutomaticGraphicsLevelManager;
+class IGraphicalChangeAdapter;
 class ShaderLevelManager;
 
 /**
@@ -74,7 +74,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	ShaderManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
+	ShaderManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter);
 
 	/**
 	 * Destructor.
@@ -186,9 +186,9 @@ private:
 	void Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable);
 	
 	/**
-	 * Reference to the automatic graphics manager that is to be passed on when some member objects are created outside of the constructor.
+	 * Reference to the graphical change adapter through which graphics detail changes are requested that is to be passed on when some member objects are created outside of the constructor.
 	 */
-	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
 
 };
 

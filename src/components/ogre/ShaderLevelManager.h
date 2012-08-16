@@ -6,7 +6,7 @@ namespace Ember
 {
 namespace OgreView
 {
-class AutomaticGraphicsLevelManager;
+class IGraphicalChangeAdapter;
 class ShaderManager;
 
 /**
@@ -19,7 +19,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	ShaderLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, ShaderManager& shaderManager);
+	ShaderLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, ShaderManager& shaderManager);
 
 	/**
 	 * @brief Destructor.
@@ -94,9 +94,9 @@ protected:
 	sigc::connection mChangeRequiredConnection;
 
 	/**
-	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
+	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
 
 	/**
 	 * Reference to the Shader Manager used to make scheme changes.

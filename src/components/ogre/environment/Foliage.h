@@ -41,7 +41,7 @@ namespace Forests {
 namespace Ember {
 namespace OgreView {
 
-class AutomaticGraphicsLevelManager;
+class IGraphicalChangeAdapter;
 
 namespace Terrain
 {
@@ -67,7 +67,7 @@ public:
 	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
 	typedef std::vector<FoliageBase*> FoliageStore;
 
-	Foliage(Terrain::TerrainManager& terrainManager, AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
+	Foliage(Terrain::TerrainManager& terrainManager, IGraphicalChangeAdapter& iGraphicalChangeAdapter);
 
 	~Foliage();
 	

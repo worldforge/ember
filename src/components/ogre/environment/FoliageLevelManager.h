@@ -15,7 +15,7 @@ class ConfigListenerContainer;
 
 namespace OgreView
 {
-class AutomaticGraphicsLevelManager;
+class IGraphicalChangeAdapter;
 
 namespace Environment
 {
@@ -31,7 +31,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	FoliageLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager);
+	FoliageLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter);
 
 	/**
 	 * @brief Destructor.
@@ -176,9 +176,9 @@ protected:
 	sigc::connection mChangeRequiredConnection;
 
 	/**
-	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
+	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
 	
 	/**
 	 * @brief Used to listen for configuration changes.

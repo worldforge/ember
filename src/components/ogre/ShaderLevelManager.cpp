@@ -10,8 +10,8 @@ namespace Ember
 namespace OgreView
 {
 
-ShaderLevelManager::ShaderLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, ShaderManager& shaderManager) :
-		mShaderManager(shaderManager), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mShaderThresholdLevel(8.0f)
+ShaderLevelManager::ShaderLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, ShaderManager& shaderManager) :
+		mShaderManager(shaderManager), mIGraphicalChangeAdapter(iGraphicalChangeAdapter), mShaderThresholdLevel(8.0f)
 {
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
 	if (!schemes.empty()) {
@@ -33,7 +33,7 @@ ShaderLevelManager::~ShaderLevelManager()
 
 void ShaderLevelManager::initialize()
 {
-	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &ShaderLevelManager::changeLevel));
+	mChangeRequiredConnection = mIGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &ShaderLevelManager::changeLevel));
 }
 
 void ShaderLevelManager::changeShaderLevel(const std::string& level)

@@ -405,7 +405,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 
 		// Create shader manager
 		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(*mWindow, mainLoopController);
-		mShaderManager = new ShaderManager(*mAutomaticGraphicsLevelManager);
+		mShaderManager = new ShaderManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter());
 		
 		//should media be preloaded?
 		if (preloadMedia) {
@@ -596,7 +596,7 @@ void EmberOgre::Server_GotView(Eris::View* view)
 	//Right before we enter into the world we try to unload any unused resources.
 	mResourceLoader->unloadUnusedResources();
 	mWindow->removeAllViewports();
-	mWorld = new World(*view, *mWindow, *this, *mInput, *mShaderManager, *mAutomaticGraphicsLevelManager);
+	mWorld = new World(*view, *mWindow, *this, *mInput, *mShaderManager, (*mAutomaticGraphicsLevelManager).getGraphicalAdapter());
 	mWorld->getEntityFactory().EventBeingDeleted.connect(sigc::mem_fun(*this, &EmberOgre::EntityFactory_BeingDeleted));
 	mShaderManager->registerSceneManager(&mWorld->getSceneManager());
 	EventWorldCreated.emit(*mWorld);

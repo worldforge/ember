@@ -15,7 +15,7 @@ class ConfigListenerContainer;
 namespace OgreView
 {
 
-class AutomaticGraphicsLevelManager;
+class IGraphicalChangeAdapter;
 
 /**
  * @brief Handles changes in shadow detail automatically.
@@ -27,7 +27,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	ShadowLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::SceneManager& sceneManager);
+	ShadowLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Destructor.
@@ -162,9 +162,9 @@ protected:
 	Ogre::SceneManager& mSceneManager;
 
 	/**
-	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
+	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
 	
 	/**
 	 * @brief Used to listen for configuration changes.

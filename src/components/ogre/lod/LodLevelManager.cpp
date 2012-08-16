@@ -14,8 +14,8 @@ namespace OgreView
 namespace Lod
 {
 
-LodLevelManager::LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera) :
-		mLodThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mAutomaticGraphicsLevelManager(automaticGraphicsLevelManager), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer())
+LodLevelManager::LodLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Ogre::Camera& mainCamera) :
+		mLodThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f), mIGraphicalChangeAdapter(iGraphicalChangeAdapter), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer())
 {
 }
 
@@ -26,7 +26,7 @@ LodLevelManager::~LodLevelManager()
 
 void LodLevelManager::initialize()
 {
-	mChangeRequiredConnection = mAutomaticGraphicsLevelManager.getGraphicalAdapter().changeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
+	mChangeRequiredConnection = mIGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
 	mConfigListenerContainer->registerConfigListener("graphics", "lodbias", sigc::mem_fun(*this, &LodLevelManager::Config_LodBias));
 }
 

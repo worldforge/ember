@@ -15,7 +15,7 @@ namespace OgreView
 {
 
 class ShaderManager;
-class AutomaticGraphicsLevelManager;
+class IGraphicalChangeAdapter;
 
 namespace Lod
 {
@@ -29,7 +29,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	LodLevelManager(AutomaticGraphicsLevelManager& automaticGraphicsLevelManager, Ogre::Camera& mainCamera);
+	LodLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Ogre::Camera& mainCamera);
 
 	/**
 	 * @brief Destructor.
@@ -116,9 +116,9 @@ protected:
 	sigc::connection mChangeRequiredConnection;
 
 	/**
-	 * Reference to AutomaticGraphicsLevelManager class that controls this manager.
+	 * Reference to graphical adapter through which this manager receives graphics detail change requests.
 	 */
-	AutomaticGraphicsLevelManager& mAutomaticGraphicsLevelManager;
+	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
 
 	/**
 	 * Reference to the main camera object
