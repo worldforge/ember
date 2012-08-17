@@ -12,8 +12,8 @@ namespace Ember
 namespace OgreView
 {
 
-RenderDistanceManager::RenderDistanceManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera) :
-		mIGraphicalChangeAdapter(iGraphicalChangeAdapter), mFog(fog), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer()), mDefaultFarRenderDistance(1000), mFarRenderDistance(1000), mMaxFarRenderDistanceFactor(1.5f), mMinFarRenderDistanceFactor(0.7f), mRenderDistanceThreshold(5.0f), mFarRenderDistanceFactor(1.0f), mDefaultRenderDistanceStep(0.3f)
+RenderDistanceManager::RenderDistanceManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera) :
+		mGraphicalChangeAdapter(graphicalChangeAdapter), mFog(fog), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer()), mDefaultFarRenderDistance(1000), mFarRenderDistance(1000), mMaxFarRenderDistanceFactor(1.5f), mMinFarRenderDistanceFactor(0.7f), mRenderDistanceThreshold(5.0f), mFarRenderDistanceFactor(1.0f), mDefaultRenderDistanceStep(0.3f)
 {
 }
 
@@ -27,7 +27,7 @@ RenderDistanceManager::~RenderDistanceManager()
 void RenderDistanceManager::initialize()
 {
 	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mIGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
+		mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
 	}
 	mConfigListenerContainer->registerConfigListener("graphics", "renderdistance", sigc::mem_fun(*this, &RenderDistanceManager::Config_FarRenderDistance));
 }

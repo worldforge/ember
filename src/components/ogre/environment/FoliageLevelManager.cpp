@@ -13,8 +13,8 @@ namespace OgreView
 namespace Environment
 {
 
-FoliageLevelManager::FoliageLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter) :
-		mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mDefaultDistanceStep(0.3f), mUpdatedDensity(1.0f), mFarDistance(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f), mIGraphicalChangeAdapter(iGraphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer())
+FoliageLevelManager::FoliageLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter) :
+		mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mDefaultDistanceStep(0.3f), mUpdatedDensity(1.0f), mFarDistance(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer())
 {
 }
 
@@ -25,7 +25,7 @@ FoliageLevelManager::~FoliageLevelManager()
 
 void FoliageLevelManager::initialize()
 {
-	mChangeRequiredConnection = mIGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &FoliageLevelManager::changeLevel));
+	mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &FoliageLevelManager::changeLevel));
 	mConfigListenerContainer->registerConfigListener("graphics", "foliagedensity", sigc::mem_fun(*this, &FoliageLevelManager::Config_FoliageDensity));
 	mConfigListenerContainer->registerConfigListener("graphics", "foliagefardistance", sigc::mem_fun(*this, &FoliageLevelManager::Config_FoliageFarDistance));
 }

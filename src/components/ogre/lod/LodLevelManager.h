@@ -29,7 +29,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	LodLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Ogre::Camera& mainCamera);
+	LodLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::Camera& mainCamera);
 
 	/**
 	 * @brief Destructor.
@@ -118,7 +118,7 @@ protected:
 	/**
 	 * Reference to graphical adapter through which this manager receives graphics detail change requests.
 	 */
-	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
+	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
 
 	/**
 	 * Reference to the main camera object

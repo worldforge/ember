@@ -31,7 +31,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	FoliageLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter);
+	FoliageLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter);
 
 	/**
 	 * @brief Destructor.
@@ -178,7 +178,7 @@ protected:
 	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
+	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
 	
 	/**
 	 * @brief Used to listen for configuration changes.

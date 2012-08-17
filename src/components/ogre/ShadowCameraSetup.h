@@ -48,7 +48,7 @@ public:
      * @brief Ctor.
      * @param sceneMgr The scene manager to which we want to apply our shadow camera.
      */
-    ShadowCameraSetup(Ogre::SceneManager& sceneMgr, IGraphicalChangeAdapter& iGraphicalChangeAdapter);
+    ShadowCameraSetup(Ogre::SceneManager& sceneMgr, IGraphicalChangeAdapter& graphicalChangeAdapter);
 
     /**
      * @brief Dtor.

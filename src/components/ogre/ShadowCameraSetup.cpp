@@ -37,8 +37,8 @@ namespace Ember
 namespace OgreView
 {
 
-ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, IGraphicalChangeAdapter& iGraphicalChangeAdapter) :
-		mSceneMgr(sceneMgr), mShadowLevelManager(new ShadowLevelManager(iGraphicalChangeAdapter, sceneMgr))
+ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, IGraphicalChangeAdapter& graphicalChangeAdapter) :
+		mSceneMgr(sceneMgr), mShadowLevelManager(new ShadowLevelManager(graphicalChangeAdapter, sceneMgr))
 {
 	setup();
 	registerConfigListenerWithDefaults("shadows", "texturesize", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowTextureSize), 1024);

@@ -11,8 +11,8 @@ namespace Ember
 namespace OgreView
 {
 
-ShadowLevelManager::ShadowLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Ogre::SceneManager& sceneManager) :
-		mSceneManager(sceneManager), mIGraphicalChangeAdapter(iGraphicalChangeAdapter) , mShadowFarDistance(sceneManager.getShadowFarDistance()), mConfigListenerContainer(new ConfigListenerContainer()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
+ShadowLevelManager::ShadowLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager) :
+		mSceneManager(sceneManager), mGraphicalChangeAdapter(graphicalChangeAdapter) , mShadowFarDistance(sceneManager.getShadowFarDistance()), mConfigListenerContainer(new ConfigListenerContainer()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
 {
 }
 
@@ -44,7 +44,7 @@ bool ShadowLevelManager::setShadowFarDistance(float distance)
 
 void ShadowLevelManager::initialize()
 {
-	mChangeRequiredConnection = mIGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &ShadowLevelManager::changeLevel));
+	mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &ShadowLevelManager::changeLevel));
 	mConfigListenerContainer->registerConfigListener("graphics", "shadowlodbias", sigc::mem_fun(*this, &ShadowLevelManager::Config_ShadowLodBias));
 }
 

@@ -27,7 +27,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	ShadowLevelManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Ogre::SceneManager& sceneManager);
+	ShadowLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Destructor.
@@ -164,7 +164,7 @@ protected:
 	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
+	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
 	
 	/**
 	 * @brief Used to listen for configuration changes.

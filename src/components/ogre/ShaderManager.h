@@ -74,7 +74,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	ShaderManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter);
+	ShaderManager(IGraphicalChangeAdapter& graphicalChangeAdapter);
 
 	/**
 	 * Destructor.
@@ -188,7 +188,7 @@ private:
 	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested that is to be passed on when some member objects are created outside of the constructor.
 	 */
-	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
+	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
 
 };
 

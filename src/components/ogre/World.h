@@ -120,7 +120,7 @@ public:
 	 * @param input The main input instance.
 	 * @param shaderManager The main shader manager.
 	 */
-	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager, IGraphicalChangeAdapter& iGraphicalChangeAdapter);
+	World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignals& signals, Input& input, ShaderManager& shaderManager, IGraphicalChangeAdapter& graphicalChangeAdapter);
 
 	/**
 	 * @brief Dtor.
@@ -425,7 +425,7 @@ protected:
 	 * @param key
 	 * @param variable
 	 */
-	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, IGraphicalChangeAdapter& iGraphicalChangeAdapter);
+	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, IGraphicalChangeAdapter& graphicalChangeAdapter);
 
 };
 

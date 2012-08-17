@@ -32,7 +32,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	RenderDistanceManager(IGraphicalChangeAdapter& iGraphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera);
+	RenderDistanceManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera);
 
 	/**
 	 * @brief Destructor.
@@ -144,7 +144,7 @@ protected:
 	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	IGraphicalChangeAdapter& mIGraphicalChangeAdapter;
+	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
 
 	/**
 	 * Reference to the main camera reference used to affect the far render distance.
