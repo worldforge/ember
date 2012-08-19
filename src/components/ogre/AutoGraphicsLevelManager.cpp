@@ -24,6 +24,7 @@
 
 #include <framework/MainLoopController.h>
 #include <framework/Time.h>
+#include <framework/LoggingInstance.h>
 
 #include <Ogre.h>
 
@@ -105,6 +106,7 @@ AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow&
 	mFpsUpdatedConnection = mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
 	mConfigListenerContainer->registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "autoadjust", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_Enabled), false);
+	S_LOG_INFO("Automatic graphics detail manager is initialized");
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
@@ -125,8 +127,10 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 	float factor = mDefaultFps / 60.0f;
 	if (std::abs(changeRequired) >= factor * 8.0f) {
 		changeGraphicsLevel(changeRequired);
+		S_LOG_VERBOSE("Fps difference of " << changeRequired << "detected, requesting detail change.");
 	} else if (changeRequired < 2.0f && frameLimited) { //average fps is exactly equal to desired fps, fps is being limited.
 		changeGraphicsLevel(-8.0f); //try to up the detail so fps drops by around 8 fps
+		S_LOG_VERBOSE("Frame limiting detected, raising graphics detail.");
 	}
 }
 
