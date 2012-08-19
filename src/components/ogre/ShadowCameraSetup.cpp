@@ -25,7 +25,7 @@
 #endif
 
 #include "ShadowCameraSetup.h"
-#include "ShadowLevelManager.h"
+#include "ShadowDetailManager.h"
 #include "framework/Tokeniser.h"
 #include "framework/LoggingInstance.h"
 #include <OgreRoot.h>
@@ -38,7 +38,7 @@ namespace OgreView
 {
 
 ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, IGraphicalChangeAdapter& graphicalChangeAdapter) :
-		mSceneMgr(sceneMgr), mShadowLevelManager(new ShadowLevelManager(graphicalChangeAdapter, sceneMgr))
+		mSceneMgr(sceneMgr), mShadowDetailManager(new ShadowDetailManager(graphicalChangeAdapter, sceneMgr))
 {
 	setup();
 	registerConfigListenerWithDefaults("shadows", "texturesize", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowTextureSize), 1024);
@@ -53,7 +53,7 @@ ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, IGraphicalCha
 
 ShadowCameraSetup::~ShadowCameraSetup()
 {
-	delete mShadowLevelManager;
+	delete mShadowDetailManager;
 }
 
 bool ShadowCameraSetup::setup()
@@ -90,7 +90,7 @@ bool ShadowCameraSetup::setup()
 	mPssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 	mSharedCameraPtr = Ogre::ShadowCameraSetupPtr(mPssmSetup);
 	mSceneMgr.setShadowCameraSetup(mSharedCameraPtr);
-	mShadowLevelManager->initialize();
+	mShadowDetailManager->initialize();
 
 	return true;
 }

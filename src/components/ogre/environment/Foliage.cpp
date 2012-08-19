@@ -28,7 +28,7 @@
 #include "FoliageBase.h"
 #include "GrassFoliage.h"
 #include "ShrubberyFoliage.h"
-#include "FoliageLevelManager.h"
+#include "FoliageDetailManager.h"
 
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainLayerDefinitionManager.h"
@@ -53,17 +53,17 @@ namespace Environment
 {
 
 Foliage::Foliage(Terrain::TerrainManager& terrainManager, IGraphicalChangeAdapter& iGraphicalChangeAdapter) :
-	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageLevelManager(new FoliageLevelManager(iGraphicalChangeAdapter))
+	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageDetailManager(new FoliageDetailManager(iGraphicalChangeAdapter))
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
-	mFoliageLevelManager->foliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));
-	mFoliageLevelManager->foliageFarDistanceChanged.connect(sigc::mem_fun(*this, &Foliage::setFarDistance));
+	mFoliageDetailManager->foliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));
+	mFoliageDetailManager->foliageFarDistanceChanged.connect(sigc::mem_fun(*this, &Foliage::setFarDistance));
 }
 
 Foliage::~Foliage()
 {
 	S_LOG_INFO("Shutting down foliage system.");
-	delete mFoliageLevelManager;
+	delete mFoliageDetailManager;
 	
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
 		delete *I;
@@ -72,9 +72,9 @@ Foliage::~Foliage()
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-FoliageLevelManager* Foliage::getFoliageLevelManager()
+FoliageDetailManager* Foliage::getFoliageDetailManager()
 {
-	return mFoliageLevelManager;
+	return mFoliageDetailManager;
 }
 
 void Foliage::initialize()
@@ -104,7 +104,7 @@ void Foliage::initialize()
 			}
 		}
 	}
-	mFoliageLevelManager->initialize();
+	mFoliageDetailManager->initialize();
 }
 
 void Foliage::runCommand(const std::string &command, const std::string &args)

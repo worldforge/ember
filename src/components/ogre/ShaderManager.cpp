@@ -27,7 +27,7 @@
 #include "ShaderManager.h"
 
 #include "ShadowCameraSetup.h"
-#include "ShaderLevelManager.h"
+#include "ShaderDetailManager.h"
 #include "EmberOgrePrerequisites.h"
 #include "EmberOgre.h"
 #include "framework/Tokeniser.h"
@@ -94,7 +94,7 @@ public:
 };
 
 ShaderManager::ShaderManager(IGraphicalChangeAdapter& graphicalChangeAdapter) :
-	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderLevelManager(new ShaderLevelManager(graphicalChangeAdapter, *this))
+	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderDetailManager(new ShaderDetailManager(graphicalChangeAdapter, *this))
 {
 	mGraphicSchemes[LEVEL_DEFAULT]		= std::string("Default");
 	mGraphicSchemes[LEVEL_LOW]			= std::string("Low");

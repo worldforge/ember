@@ -26,7 +26,7 @@ libEmberOgre_a_SOURCES = \
 	environment/ShrubberyFoliage.cpp environment/SimpleEnvironment.cpp environment/SimpleWater.cpp environment/Sun.cpp environment/Tree.cpp environment/Water.cpp \
 	environment/OceanRepresentation.cpp environment/OceanAction.cpp environment/SimpleWaterCollisionDetector.cpp \
 	environment/ExclusiveImposterPage.cpp environment/WorldRepresentation.cpp environment/WorldAction.cpp \
-	environment/FoliageLevelManager.cpp \
+	environment/FoliageDetailManager.cpp \
 	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp gui/RenderedColourStringTextComponent.cpp gui/ColouredRenderedStringParser.cpp gui/CursorWorldListener.cpp \
 \
 	lod/EmberOgreMesh.cpp lod/EmberOgreMeshManager.cpp lod/EmberOgreRoot.cpp lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/OgreSmallVector.cpp lod/ProgressiveMeshGenerator.cpp lod/QueuedProgressiveMeshGenerator.cpp lod/XMLLodDefinitionSerializer.cpp lod/PMInjectorSignaler.cpp \
@@ -92,7 +92,7 @@ libEmberOgre_a_SOURCES = \
 	MediaUpdater.cpp MeshCollisionDetector.cpp MeshSerializerListener.cpp \
 	MotionManager.cpp OgreInfo.cpp OgreLogObserver.cpp OgreResourceLoader.cpp \
 	OgreResourceProvider.cpp OgreWindowProvider.cpp OgreSetup.cpp NodeAttachment.cpp \
-	ShaderManager.cpp ShaderLevelManager.cpp ShadowCameraSetup.cpp  ShadowLevelManager.cpp SimpleRenderContext.cpp RenderDistanceManager.cpp AutoGraphicsLevelManager.cpp \
+	ShaderManager.cpp ShaderDetailManager.cpp ShadowCameraSetup.cpp ShadowDetailManager.cpp SimpleRenderContext.cpp RenderDistanceManager.cpp AutoGraphicsLevelManager.cpp \
 	XMLHelper.cpp WorldAttachment.cpp NodeController.cpp \
 	DelegatingNodeController.cpp AvatarAttachmentController.cpp HiddenAttachment.cpp \
 	AttachmentBase.cpp AvatarCameraMotionHandler.cpp FreeFlyingCameraMotionHandler.cpp SceneNodeProvider.cpp \
@@ -121,7 +121,7 @@ noinst_HEADERS = \
 \
 	environment/CaelumEnvironment.h environment/CaelumSky.h environment/CaelumSun.h \
 	environment/EmberEntityLoader.h environment/Environment.h environment/Foliage.h environment/FoliageBase.h environment/FoliageLayer.h environment/FoliageLoader.h \
-	environment/Forest.h environment/GrassFoliage.h environment/LensFlare.h environment/ShrubberyFoliage.h environment/FoliageLevelManager.h \
+	environment/Forest.h environment/GrassFoliage.h environment/LensFlare.h environment/ShrubberyFoliage.h environment/FoliageDetailManager.h \
 	environment/SimpleEnvironment.h environment/SimpleWater.h environment/Sun.h environment/Tree.h environment/Water.h environment/OceanRepresentation.h \
 	environment/OceanAction.h environment/SimpleWaterCollisionDetector.h environment/ExclusiveImposterPage.h environment/IEnvironmentProvider.h \
 	environment/WorldRepresentation.h environment/WorldAction.h \
@@ -193,7 +193,7 @@ noinst_HEADERS = \
 	IWorldPickListener.h Convert.h MediaUpdater.h MeshCollisionDetector.h \
 	MeshSerializerListener.h MotionManager.h MousePicker.h OgreIncludes.h OgreInfo.h \
 	OgreLogObserver.h OgreResourceLoader.h OgreResourceProvider.h OgreWindowProvider.h OgreSetup.h \
-	ShaderManager.h ShaderLevelManager.h ShadowCameraSetup.h ShadowLevelManager.h RenderDistanceManager.h AutoGraphicsLevelManager.h \
+	ShaderManager.h ShaderDetailManager.h ShadowCameraSetup.h ShadowDetailManager.h RenderDistanceManager.h AutoGraphicsLevelManager.h\
 	SimpleRenderContext.h XMLHelper.h IGraphicalRepresentation.h \
 	IEntityAttachment.h  WorldAttachment.h NodeAttachment.h IMovable.h IAnimated.h \
 	IEntityControlDelegate.h NodeController.h DelegatingNodeController.h \

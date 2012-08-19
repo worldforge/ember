@@ -42,21 +42,21 @@ class Foliage;
  * @brief This class manages the detail level of foliage by responding to the changeRequired signal from IGraphicalManager.
  * Acts as a sub-component of the automatic handling of graphics system.
  */
-class FoliageLevelManager
+class FoliageDetailManager
 {
 public:
 	/**
 	 * @brief Constructor.
 	 */
-	FoliageLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter);
+	FoliageDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter);
 
 	/**
 	 * @brief Destructor.
 	 */
-	~FoliageLevelManager();
+	~FoliageDetailManager();
 
 	/**
-	 * @brief Initializes the foliage level manager.
+	 * @brief Initializes the foliage detail manager.
 	 * The manager starts listening for graphics detail change required signals and acting on them.
 	 */
 	void initialize();

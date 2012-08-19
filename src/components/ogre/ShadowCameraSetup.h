@@ -31,7 +31,7 @@ namespace Ember {
 namespace OgreView {
 
 class IGraphicalChangeAdapter;
-class ShadowLevelManager;
+class ShadowDetailManager;
 
 /**
  *
@@ -82,7 +82,7 @@ protected:
     /**
      * @brief Object that handles shadow detail automatically.
      */
-    ShadowLevelManager* mShadowLevelManager;
+    ShadowDetailManager* mShadowDetailManager;
     
 private:
 

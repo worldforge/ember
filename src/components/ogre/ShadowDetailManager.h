@@ -39,18 +39,18 @@ class IGraphicalChangeAdapter;
  * @brief Handles changes in shadow detail automatically.
  * Acts as a sub-component of the automatic handling of graphics system.
  */
-class ShadowLevelManager
+class ShadowDetailManager
 {
 public:
 	/**
 	 * @brief Constructor.
 	 */
-	ShadowLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager);
+	ShadowDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager);
 
 	/**
 	 * @brief Destructor.
 	 */
-	~ShadowLevelManager();
+	~ShadowDetailManager();
 
 	/**
 	 * @brief Sets the maximum distance the shadows are rendered at in float.
@@ -66,7 +66,7 @@ public:
 	bool setShadowCameraLodBias(float factor);
 
 	/**
-	 * @brief Initializes the shadow level manager.
+	 * @brief Initializes the shadow detail manager.
 	 * The manager starts listening for graphics detail change requests.
 	 */
 	void initialize();

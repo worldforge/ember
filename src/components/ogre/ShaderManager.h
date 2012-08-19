@@ -37,7 +37,7 @@ namespace OgreView {
 class ShadowCameraSetup;
 class ShaderSetupInstance;
 class IGraphicalChangeAdapter;
-class ShaderLevelManager;
+class ShaderDetailManager;
 
 /**
  * @brief Utility class for setup shaders
@@ -160,7 +160,7 @@ private:
 	/**
 	 * Object that handles management of shader levels automatically.
 	 */
-	ShaderLevelManager* mShaderLevelManager;
+	ShaderDetailManager* mShaderDetailManager;
 
 	/**
 	 * Checks whether material is supported in current scheme

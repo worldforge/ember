@@ -31,21 +31,21 @@ class ShaderManager;
  * @brief Handles changes in shader level.
  * Acts as a subcomponent of the automatic handling of graphics system.
  */
-class ShaderLevelManager
+class ShaderDetailManager
 {
 public:
 	/**
 	 * @brief Constructor.
 	 */
-	ShaderLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter, ShaderManager& shaderManager);
+	ShaderDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter, ShaderManager& shaderManager);
 
 	/**
 	 * @brief Destructor.
 	 */
-	~ShaderLevelManager();
+	~ShaderDetailManager();
 
 	/**
-	 * @brief Initializes the material lod level manager.
+	 * @brief Initializes the shader detail manager.
 	 * The manager starts listening for graphics detail change requests.
 	 */
 	void initialize();

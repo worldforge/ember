@@ -54,7 +54,7 @@ namespace Environment {
 
 class FoliageImpl;
 class FoliageBase;
-class FoliageLevelManager;
+class FoliageDetailManager;
 
 /**
 @author Erik Hjortsberg
@@ -75,7 +75,7 @@ public:
 	 * @brief Used to get a reference to the foliage level manager owned by this class.
 	 * @return Foliage level manager
 	 */
-	FoliageLevelManager* getFoliageLevelManager();
+	FoliageDetailManager* getFoliageDetailManager();
 
 	void initialize();
 
@@ -121,7 +121,7 @@ protected:
 	/**
 	 * Utility object that can be used to manage detail level of foliage.
 	 */
-	FoliageLevelManager* mFoliageLevelManager;
+	FoliageDetailManager* mFoliageDetailManager;
 };
 
 }

@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "ShaderLevelManager.h"
+#include "ShaderDetailManager.h"
 
 #include "components/ogre/AutoGraphicsLevelManager.h"
 #include "components/ogre/ShaderManager.h"
@@ -28,7 +28,7 @@ namespace Ember
 namespace OgreView
 {
 
-ShaderLevelManager::ShaderLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ember::OgreView::ShaderManager& shaderManager) :
+ShaderDetailManager::ShaderDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ember::OgreView::ShaderManager& shaderManager) :
 		mShaderManager(shaderManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderThresholdLevel(8.0f)
 {
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
@@ -44,23 +44,23 @@ ShaderLevelManager::ShaderLevelManager(IGraphicalChangeAdapter& graphicalChangeA
 	}
 }
 
-ShaderLevelManager::~ShaderLevelManager()
+ShaderDetailManager::~ShaderDetailManager()
 {
 	mChangeRequiredConnection.disconnect();
 }
 
-void ShaderLevelManager::initialize()
+void ShaderDetailManager::initialize()
 {
-	mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &ShaderLevelManager::changeLevel));
+	mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &ShaderDetailManager::changeLevel));
 }
 
-void ShaderLevelManager::changeShaderLevel(const std::string& level)
+void ShaderDetailManager::changeShaderLevel(const std::string& level)
 {
 	mShaderLevel = level;
 	mShaderManager.setGraphicsLevel(mShaderManager.getLevelByName(level));
 }
 
-bool ShaderLevelManager::stepUpShaderLevel()
+bool ShaderDetailManager::stepUpShaderLevel()
 {
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
 	//Check if any shader schemes are available to switch to
@@ -78,7 +78,7 @@ bool ShaderLevelManager::stepUpShaderLevel()
 	}
 }
 
-bool ShaderLevelManager::stepDownShaderLevel()
+bool ShaderDetailManager::stepDownShaderLevel()
 {
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
 	//Check if any shader schemes are available to switch to
@@ -96,17 +96,17 @@ bool ShaderLevelManager::stepDownShaderLevel()
 	}
 }
 
-void ShaderLevelManager::pause()
+void ShaderDetailManager::pause()
 {
 	mChangeRequiredConnection.block();
 }
 
-void ShaderLevelManager::unpause()
+void ShaderDetailManager::unpause()
 {
 	mChangeRequiredConnection.unblock();
 }
 
-bool ShaderLevelManager::changeLevel(float level)
+bool ShaderDetailManager::changeLevel(float level)
 {
 	if (std::abs(level) < mShaderThresholdLevel) {
 		return false;
