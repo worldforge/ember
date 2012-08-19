@@ -56,9 +56,13 @@ public:
 
 	/**
 	 * @brief Sets the lod bias factor.
+	 * 
 	 * Using this function it is possible to influence the lod behavior of all materials and meshes. It works by adjusting the 
 	 * lod bias of the main camera.
+	 * 
 	 * @param factor Proportional factor to apply to the distance at which LOD is changed. Higher values increase the distance at which higher LODs are used (eg. 2.0 is twice the normal distance, 0.5 is half).
+	 * 
+	 * @note factor cannot be negative or zero. It is still safe to attempt to set these values as the function will default to a factor of 0.01
 	 */
 	bool setLodBiasAll(float factor);
 
@@ -96,7 +100,7 @@ protected:
 	 * @param step The value to step the bias down by.
 	 */
 	bool stepDownLodBias(float step);
-	
+
 	/**
 	 * @brief Connected to the config service to listen for lod bias settings.
 	 */
@@ -142,7 +146,7 @@ protected:
 	 * Reference to the main camera object
 	 */
 	Ogre::Camera& mMainCamera;
-	
+
 	/**
 	 * @brief Used to listen for configuration changes.
 	 */

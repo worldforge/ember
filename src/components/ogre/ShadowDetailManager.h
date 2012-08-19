@@ -60,8 +60,12 @@ public:
 
 	/**
 	 * @brief Sets the lod bias for the shadow camera.
-	 * @param factor The bias factor applied to the shadow camera.
+	 * 
 	 * This can be used to affect the overall quality of the shadow by affecting the level of detail of the mesh for which the shadow is rendered.
+	 * 
+	 * @param factor The bias factor applied to the shadow camera.
+	 * 
+	 * @note factor cannot be negative or zero. It is still safe to attempt to set these values as the function will default to a factor of 0.01
 	 */
 	bool setShadowCameraLodBias(float factor);
 
@@ -111,7 +115,7 @@ protected:
 	 * @param step The value to step the distance down by in float.
 	 */
 	bool stepDownShadowCameraLodBias(float step);
-	
+
 	/**
 	 * @brief Connected to the config service to listen for shadow lod bias settings.
 	 */
@@ -183,7 +187,7 @@ protected:
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
 	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
-	
+
 	/**
 	 * @brief Used to listen for configuration changes.
 	 */

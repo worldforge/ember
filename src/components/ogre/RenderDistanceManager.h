@@ -108,7 +108,7 @@ protected:
 	 * @note Also affects the fog density.
 	 */
 	bool stepDownFarRenderDistance(float step);
-	
+
 	/**
 	 * @brief Connected to the config service to listen for shadow lod bias settings.
 	 */
@@ -173,7 +173,7 @@ protected:
 	 * Holds the reference to the connection to the changeRequired signal. Used to disconnect the signal on destruction of this class or to pause the functioning of this component.
 	 */
 	sigc::connection mChangeRequiredConnection;
-	
+
 	/**
 	 * @brief Used to listen for configuration changes.
 	 */

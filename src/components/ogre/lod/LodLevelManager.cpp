@@ -50,7 +50,10 @@ void LodLevelManager::initialize()
 
 bool LodLevelManager::setLodBiasAll(float factor)
 {
-	//make it safe to access from outside by setting the factor
+	//do not allow lod bias to be set to 0 or a negative value.
+	if (factor <= 0.0f) {
+		factor = 0.01;
+	}
 	mLodFactor = factor;
 
 	mMainCamera.setLodBias(factor);
@@ -102,7 +105,7 @@ void LodLevelManager::Config_LodBias(const std::string& section, const std::stri
 {
 	if (variable.is_double()) {
 		float lodBias = static_cast<double>(variable);
-		setLodBiasAll(lodBias/100);
+		setLodBiasAll(lodBias / 100);
 	}
 }
 

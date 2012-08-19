@@ -30,7 +30,7 @@ namespace OgreView
 {
 
 ShadowDetailManager::ShadowDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager) :
-		mSceneManager(sceneManager), mGraphicalChangeAdapter(graphicalChangeAdapter) , mShadowFarDistance(sceneManager.getShadowFarDistance()), mConfigListenerContainer(new ConfigListenerContainer()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
+		mSceneManager(sceneManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mShadowFarDistance(sceneManager.getShadowFarDistance()), mConfigListenerContainer(new ConfigListenerContainer()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
 {
 }
 
@@ -43,6 +43,12 @@ ShadowDetailManager::~ShadowDetailManager()
 
 bool ShadowDetailManager::setShadowCameraLodBias(float factor)
 {
+	//do not allow shadow lod bias to be set to 0 or a negative value.
+	if (factor <= 0.0f) {
+		factor = 0.01f;
+	}
+	mShadowCameraLodBias = factor;
+
 	int textureCount = mSceneManager.getShadowTextureCount();
 	for (int i = 0; i < textureCount; i++) {
 		Ogre::TexturePtr texture = mSceneManager.getShadowTexture(i);
@@ -56,6 +62,12 @@ bool ShadowDetailManager::setShadowCameraLodBias(float factor)
 
 bool ShadowDetailManager::setShadowFarDistance(float distance)
 {
+	//do not allow the shadow distance to be set to a negative value.
+	if (distance < 0.0f) {
+		return false;
+	} else {
+		mShadowFarDistance = distance;
+	}
 	mSceneManager.setShadowFarDistance(distance);
 	return true;
 }
@@ -143,7 +155,7 @@ void ShadowDetailManager::Config_ShadowLodBias(const std::string& section, const
 {
 	if (variable.is_double()) {
 		float lodBias = static_cast<double>(variable);
-		setShadowCameraLodBias(lodBias/100);
+		setShadowCameraLodBias(lodBias / 100);
 	}
 }
 

@@ -77,19 +77,19 @@ public:
 	sigc::signal<void, float> foliageFarDistanceChanged;
 
 	/**
-	 * @brief Used to change the density of all foliage.
+	 * @brief Used to set the density of all foliage.
 	 * @param density The new density factor of all foliage in float, where 1 implies normal or full density and 0 implies no density or no grass. 
 	 * @return True if foliage change was possible.
 	 */
-	bool changeFoliageDensity(float density);
+	bool setFoliageDensity(float density);
 
 	/**
-	 * @brief Used to change the furthest distance foliage is visible at as a factor.
+	 * @brief Used to set the furthest distance foliage is visible at as a factor.
 	 * @param distance The new far distance for the nearest foliage technique where 1 implies normal distance and 0 implies minimum distance.
 	 * @return True if far distance change was possible.
 	 */
-	bool changeFoliageDistance(float distance);
-	
+	bool setFoliageDistance(float distance);
+
 	/**
 	 * @brief This can be used to stop this component responding to change requests.
 	 */
@@ -137,16 +137,10 @@ protected:
 	bool changeLevel(float level);
 
 	/**
-	 * @brief Updates foliage densities.
-	 * Sends out a signal with the updated foliage density.
-	 */
-	void updateFoliageDensity();
-	
-	/**
 	 * @brief Connected to the config service to listen for foliage density settings.
 	 */
 	void Config_FoliageDensity(const std::string& section, const std::string& key, varconf::Variable& variable);
-	
+
 	/**
 	 * @brief Connected to the config service to listen for foliage far distance settings.
 	 */
@@ -176,12 +170,12 @@ protected:
 	 * Holds the current/updated far distance factor of all foliage.
 	 */
 	float mFarDistance;
-	
+
 	/**
 	 * Maximum far distance factor.
 	 */
 	float mMaxFarDistance;
-	
+
 	/**
 	 * Minimum far distance factor.
 	 */
@@ -196,7 +190,7 @@ protected:
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
 	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
-	
+
 	/**
 	 * @brief Used to listen for configuration changes.
 	 */

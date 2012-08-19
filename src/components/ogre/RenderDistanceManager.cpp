@@ -52,6 +52,9 @@ void RenderDistanceManager::initialize()
 
 bool RenderDistanceManager::setFarRenderDistance(float factor)
 {
+	if (factor < 0.0f) {
+		factor = 0.0f;
+	}
 	mFarRenderDistance = factor * mDefaultFarRenderDistance;
 	mMainCamera.setFarClipDistance(mFarRenderDistance);
 }
@@ -120,7 +123,7 @@ void RenderDistanceManager::Config_FarRenderDistance(const std::string& section,
 {
 	if (variable.is_double()) {
 		float renderDistance = static_cast<double>(variable);
-		setFarRenderDistance(renderDistance/100);
+		setFarRenderDistance(renderDistance / 100);
 	}
 }
 

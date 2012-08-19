@@ -48,11 +48,6 @@ void FoliageDetailManager::initialize()
 	mConfigListenerContainer->registerConfigListener("graphics", "foliagefardistance", sigc::mem_fun(*this, &FoliageDetailManager::Config_FoliageFarDistance));
 }
 
-void FoliageDetailManager::updateFoliageDensity()
-{
-	foliageDensityChanged.emit(mUpdatedDensity);
-}
-
 bool FoliageDetailManager::changeLevel(float level)
 {
 	if (std::abs(level) < mThresholdLevel) {
@@ -69,18 +64,17 @@ bool FoliageDetailManager::changeLevel(float level)
 	}
 
 	return changeMade;
-
 }
 
 bool FoliageDetailManager::stepDownFoliageDensity(float step)
 {
 	if (mUpdatedDensity > step) { //step down only if existing density is greater than step
 		mUpdatedDensity -= step;
-		updateFoliageDensity();
+		foliageDensityChanged.emit(mUpdatedDensity);
 		return true;
 	} else if (mUpdatedDensity < step && mUpdatedDensity > 0.0f) { //if there is still some positive density left which is smaller than step, set it to 0
 		mUpdatedDensity = 0.0f;
-		updateFoliageDensity();
+		foliageDensityChanged.emit(mUpdatedDensity);
 		return true;
 	} else { //step down not possible
 		return false;
@@ -91,12 +85,11 @@ bool FoliageDetailManager::stepUpFoliageDensity(float step)
 {
 	if (mUpdatedDensity + step <= 1.0f) { //step up only if the step doesn't cause density to go over default density
 		mUpdatedDensity += step;
-		updateFoliageDensity();
+		foliageDensityChanged.emit(mUpdatedDensity);
 		return true;
 	} else if (mUpdatedDensity < 1.0f) { //if the density is still below default density but a default step causes it to go over default density
 		mUpdatedDensity = 1.0f;
-		updateFoliageDensity();
-		return true;
+		foliageDensityChanged.emit(mUpdatedDensity);
 	} else {
 		return false; //step up not possible
 	}
@@ -132,25 +125,25 @@ bool FoliageDetailManager::stepUpFoliageDistance(float step)
 	}
 }
 
-bool FoliageDetailManager::changeFoliageDistance(float distance)
+bool FoliageDetailManager::setFoliageDistance(float distance)
 {
-	if (distance >= mMinFarDistance && distance <= mMaxFarDistance) { //change the distance as long as it is in the correct range.
-		mFarDistance = distance;
-		foliageFarDistanceChanged.emit(mFarDistance);
-		return true;
+	if (distance < 0) { //set the distance as long as it's not negative.
+		mFarDistance = 0;
 	} else {
-		return false;
+		mFarDistance = distance;
 	}
+	foliageFarDistanceChanged.emit(mFarDistance);
+	return true;
 }
 
-bool FoliageDetailManager::changeFoliageDensity(float density)
+bool FoliageDetailManager::setFoliageDensity(float density)
 {
-	if (density >= 0.0f && density <= 1.0f) { //change the density as long as it is above 0
-		mUpdatedDensity = density;
-		updateFoliageDensity();
-		return true;
+	if (density < 0.0f) { //check if density negative
+		mUpdatedDensity = 0.0f;
+	} else if (density > 1.0f) {
+		mUpdatedDensity = 1.0f;
 	} else {
-		return false;
+		mUpdatedDensity = density;
 	}
 }
 
@@ -158,7 +151,7 @@ void FoliageDetailManager::Config_FoliageDensity(const std::string& section, con
 {
 	if (variable.is_double()) {
 		float density = static_cast<double>(variable);
-		changeFoliageDensity(density/100);
+		setFoliageDensity(density / 100);
 	}
 }
 
@@ -166,7 +159,7 @@ void FoliageDetailManager::Config_FoliageFarDistance(const std::string& section,
 {
 	if (variable.is_double()) {
 		float distanceFactor = static_cast<double>(variable);
-		changeFoliageDistance(distanceFactor/100);
+		setFoliageDistance(distanceFactor / 100);
 	}
 }
 
