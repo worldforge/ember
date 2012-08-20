@@ -27,6 +27,7 @@
 #endif
 
 #include "EmberOgre.h"
+#include "lod/QueuedProgressiveMeshGenerator.h"
 
 // Headers to stop compile problems from headers
 #include <stdlib.h>
@@ -433,6 +434,11 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		mMaterialEditor = new Authoring::MaterialEditor();
 
 		mModelRepresentationManager = new Model::ModelRepresentationManager();
+
+		// Needed for QueuedProgressiveMeshGenerator.
+		mPMWorker = new Lod::PMWorker();
+		mPMInjector = new Lod::PMInjector();
+
 		loadingBar.finish();
 	}
 
