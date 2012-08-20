@@ -189,10 +189,7 @@ void PMWorker::addIndexBuffer(PMGenRequest::IndexBuffer& indexBuffer, bool useSh
 
 void PMWorker::bakeLods(const LodLevel& lodConfigs)
 {
-	union IndexBufferPointer {
-		unsigned short* pshort;
-		unsigned int* pint;
-	};
+
 	unsigned short submeshCount = mRequest->submesh.size();
 	std::auto_ptr<IndexBufferPointer> indexBuffer(new IndexBufferPointer[submeshCount]);
 
