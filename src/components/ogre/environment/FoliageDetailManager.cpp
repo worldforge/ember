@@ -145,6 +145,7 @@ bool FoliageDetailManager::setFoliageDensity(float density)
 	} else {
 		mUpdatedDensity = density;
 	}
+	foliageDensityChanged.emit(mUpdatedDensity);
 }
 
 void FoliageDetailManager::Config_FoliageDensity(const std::string& section, const std::string& key, varconf::Variable& variable)

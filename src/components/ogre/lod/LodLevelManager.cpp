@@ -52,7 +52,7 @@ bool LodLevelManager::setLodBiasAll(float factor)
 {
 	//do not allow lod bias to be set to 0 or a negative value.
 	if (factor <= 0.0f) {
-		factor = 0.01;
+		factor = 0.1f;
 	}
 	mLodFactor = factor;
 

@@ -62,7 +62,7 @@ public:
 	 * 
 	 * @param factor Proportional factor to apply to the distance at which LOD is changed. Higher values increase the distance at which higher LODs are used (eg. 2.0 is twice the normal distance, 0.5 is half).
 	 * 
-	 * @note factor cannot be negative or zero. It is still safe to attempt to set these values as the function will default to a factor of 0.01
+	 * @note factor cannot be negative or zero. It is still safe to attempt to set these values as the function will default to a factor of 0.1
 	 */
 	bool setLodBiasAll(float factor);
 

@@ -55,6 +55,7 @@ bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 
 		//Push back latest fps
 		mFpsStore.push_back(mRenderWindow.getLastFPS());
+		S_LOG_VERBOSE(mRenderWindow.getLastFPS() << " is pushed onto FPS queue");
 
 		//if there is one more than the minimum number of fpses then delete oldest fps. This also ensures that the store fills up with at least mRequiredTime fpses before starting to remove fpses.
 		if (mFpsStore.size() > mRequiredTime) { //Fps is measured every second, therefore when size > required time, oldest fps must be popped
@@ -72,7 +73,9 @@ bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 			++fpsCount;
 		}
 		mCurrentFps = totalFps / fpsCount;
+		
 		fpsUpdated.emit(mCurrentFps);
+		S_LOG_VERBOSE(mCurrentFps << " is emitted as current average FPS");
 	}
 
 	return true;
@@ -127,10 +130,10 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 	float factor = mDefaultFps / 60.0f;
 	if (std::abs(changeRequired) >= factor * 8.0f) {
 		changeGraphicsLevel(changeRequired);
-		S_LOG_VERBOSE("Fps difference of " << changeRequired << "detected, requesting detail change.");
+		S_LOG_VERBOSE("Fps difference of " << changeRequired << " detected, requesting detail change.");
 	} else if (changeRequired < 2.0f && frameLimited) { //average fps is exactly equal to desired fps, fps is being limited.
 		changeGraphicsLevel(-8.0f); //try to up the detail so fps drops by around 8 fps
-		S_LOG_VERBOSE("Frame limiting detected, raising graphics detail.");
+		S_LOG_VERBOSE("Frame limiting detected" << "at fps " << currentFps << ", raising graphics detail.");
 	}
 }
 
@@ -164,7 +167,7 @@ void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section
 {
 	if (variable.is_double()) {
 		float fps = static_cast<double>(variable);
-		//If set to 0 the FPS the manager tries to achieve is 60
+		//If set to 0, the fps the manager tries to achieve is 60
 		if (fps == 0.0f) {
 			fps = 60.0f;
 		}

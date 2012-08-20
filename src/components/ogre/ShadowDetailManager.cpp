@@ -45,7 +45,7 @@ bool ShadowDetailManager::setShadowCameraLodBias(float factor)
 {
 	//do not allow shadow lod bias to be set to 0 or a negative value.
 	if (factor <= 0.0f) {
-		factor = 0.01f;
+		factor = 0.1f;
 	}
 	mShadowCameraLodBias = factor;
 

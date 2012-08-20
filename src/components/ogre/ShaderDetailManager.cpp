@@ -21,6 +21,8 @@
 #include "components/ogre/AutoGraphicsLevelManager.h"
 #include "components/ogre/ShaderManager.h"
 
+#include "framework/LoggingInstance.h"
+
 #include "sigc++/signal.h"
 
 namespace Ember
@@ -65,15 +67,18 @@ bool ShaderDetailManager::stepUpShaderLevel()
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
 	//Check if any shader schemes are available to switch to
 	if (schemes.empty()) {
+		S_LOG_WARNING("Shader schemes are empty, shader detail manager cannot step up shader detail");
 		return false;
 	}
 
 	if (mShaderLevel == mMaxShaderLevel) {
+		S_LOG_VERBOSE("Shader scheme is already set to maximum shader detail, cannot step up shader detail.");
 		return false;
 	} else {
 		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator level = schemes.find(mShaderManager.getLevelByName(mShaderLevel));
 		++level;
 		changeShaderLevel(level->second);
+		S_LOG_VERBOSE("Setting shader scheme to " << level->second);
 		return true;
 	}
 }
@@ -83,14 +88,17 @@ bool ShaderDetailManager::stepDownShaderLevel()
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
 	//Check if any shader schemes are available to switch to
 	if (schemes.empty()) {
+		S_LOG_WARNING("Shader schemes are empty, shader detail manager cannot step down shader detail");
 		return false;
 	}
 
 	if (mShaderLevel == mMinShaderLevel) {
+		S_LOG_VERBOSE("Shader scheme is already set to minimum shader detail, cannot step down shader detail.");
 		return false;
 	} else {
 		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator level = schemes.find(mShaderManager.getLevelByName(mShaderLevel));
 		--level;
+		S_LOG_VERBOSE("Setting shader scheme to " << level->second);
 		changeShaderLevel(level->second);
 		return true;
 	}
