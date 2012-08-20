@@ -34,13 +34,7 @@ EmberOgreRoot::EmberOgreRoot(const Ogre::String& pluginFileName /*= "plugins.cfg
 	Ogre::Root(pluginFileName, configFileName, logFileName)
 {
 	OGRE_DELETE mMeshManager;
-	mMeshManager = 0;
-	mEmberOgreMeshManager = OGRE_NEW EmberOgreMeshManager();
-}
-
-EmberOgreRoot::~EmberOgreRoot()
-{
-	OGRE_DELETE mEmberOgreMeshManager;
+	mMeshManager = OGRE_NEW EmberOgreMeshManager();
 }
 
 }

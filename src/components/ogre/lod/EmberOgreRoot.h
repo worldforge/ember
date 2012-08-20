@@ -53,21 +53,6 @@ public:
 	EmberOgreRoot(const Ogre::String& pluginFileName = "plugins.cfg",
 	              const Ogre::String& configFileName = "ogre.cfg",
 	              const Ogre::String& logFileName = "Ogre.log");
-
-	virtual ~EmberOgreRoot();
-
-
-private:
-
-	/**
-	 * @brief Holds the derived MeshManager.
-	 *
-	 * It is not allowed to delete a class with the base class pointer,
-	 * so we need a separated pointer from mMeshManager.
-	 * It would work in this case, but if this class would have multiple
-	 * base classes it would crash.
-	 */
-	EmberOgreMeshManager* mEmberOgreMeshManager;
 };
 
 }
