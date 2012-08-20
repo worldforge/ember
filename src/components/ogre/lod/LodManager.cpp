@@ -114,7 +114,21 @@ std::string LodManager::convertMeshNameToLodName(std::string meshName)
 }
 void LodManager::loadAutomaticLod(Ogre::MeshPtr mesh)
 {
-	// TODO: Implement automatic mesh lod management system!
+	LodConfig lodConfigs;
+	lodConfigs.mesh = mesh;
+	mesh->setLodStrategy(&Ogre::PixelCountLodStrategy::getSingleton());
+	LodLevel lodLevel;
+	lodLevel.reductionMethod = LodLevel::VRM_COLLAPSE_COST;
+	Ogre::Real radius = mesh->getBoundingSphereRadius();
+	for (int i = 2; i < 6; i++) {
+		Ogre::Real i4 = (Ogre::Real) (i * i * i * i);
+		lodLevel.distance = 8388608.f / i4;
+		lodLevel.reductionValue = radius / 16384.f * i4;
+		lodConfigs.levels.push_back(lodLevel);
+	}
+
+	QueuedProgressiveMeshGenerator pm;
+	pm.build(lodConfigs);
 }
 
 }
