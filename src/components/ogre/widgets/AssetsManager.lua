@@ -7,7 +7,7 @@ function AssetsManager:reloadResource(manager, resourceName)
 	local resourcePtr = manager:getByName(resourceName)
 	if resourcePtr:isNull() == false then
 		local resource = resourcePtr:get()
-		resource:reload();
+		resource:reload()
 	end
 end
 
@@ -244,7 +244,7 @@ end
 function AssetsManager:fillSubMeshList(meshPtr)
 	local mesh = meshPtr:get()
 	local list = self.meshes.controls.submeshesListbox
-	list:resetList();	
+	list:resetList()
 	
 	--for now, since we don't have any good method for getting the submodel names yet we'll just use the index numbers
 	local numberOfSubmeshes = mesh:getNumSubMeshes()
@@ -316,7 +316,7 @@ function AssetsManager:SceneNodesList_SelectionChanged(args)
 		self.sceneNodes.selectedSceneNode = sceneNode
 		self:updateSceneNodeInfo(sceneNode)
 --		local positionInfo = "x: " .. sceneNode:getPosition().x .. " y: " .. sceneNode:getPosition().y .. " z: " .. sceneNode:getPosition().z
---		self.sceneNodes.nodeInfo:setText(positionInfo);
+--		self.sceneNodes.nodeInfo:setText(positionInfo)
 	end
 end
 
@@ -405,20 +405,20 @@ function AssetsManager:fillLODReductionTypeCombobox()
 end
 
 function AssetsManager:LODSave(dist)
-	local loddef = self.meshes.current.lodDefPtr.get();
+	local loddef = self.meshes.current.lodDefPtr.get()
 	if dist == nil or dist < 0 or not loddef:hasLodDistance(dist) then return end
 	
-	distdef = loddef:getLodDistance(dist);
+	distdef = loddef:getLodDistance(dist)
 	
 	local combobox = self.widget:getWindow("LODTypeCombobox")
 	combobox = CEGUI.toCombobox(combobox)
-	local item = combobox:getSelectedItem();
+	local item = combobox:getSelectedItem()
 	local type = combobox:getItemIndex(item)
 	distdef:setType(type)
 	
 	local combobox = self.widget:getWindow("LODReductionTypeCombobox")
 	combobox = CEGUI.toCombobox(combobox)
-	local item = combobox:getSelectedItem();
+	local item = combobox:getSelectedItem()
 	local reductionMethod = combobox:getItemIndex(item)
 	distdef:setReductionMethod(reductionMethod)
 	
@@ -431,17 +431,24 @@ function AssetsManager:LODSave(dist)
 end
 
 function AssetsManager:LODLoad(dist)
-	local loddef = self.meshes.current.lodDefPtr.get();
+	local loddef = self.meshes.current.lodDefPtr.get()
+	
+	local useAuto = loddef:getUseAutomaticLod()
+			
+	local container = self.widget:getWindow("ManualLODContainer")
+	container:setEnabled(not useAuto)
+			
+	local checkbox = self.widget:getWindow("EnableAutomaticLOD")
+	checkbox = CEGUI.toCheckbox(checkbox)
+	checkbox:setSelected(useAuto)
+	
 	local container = self.widget:getWindow("LODConfigContainer")
 	if dist == nil or dist < 0 or not loddef:hasLodDistance(dist) then
 		container:setEnabled(false)
 		return
-	else
-		container:setEnabled(true)
 	end
-	
-	distdef = loddef:getLodDistance(dist);
-	
+	container:setEnabled(true)
+	distdef = loddef:getLodDistance(dist)
 	local combobox = self.widget:getWindow("LODTypeCombobox")
 	combobox = CEGUI.toCombobox(combobox)
 	combobox:setItemSelectState(distdef:getType(), true)
@@ -471,12 +478,12 @@ function AssetsManager:LODTypes_SelectionChanged()
 	local manual = self.widget:getWindow("ManuallyCreatedLODContainer")
 	if ( selected == "Automatic vertex reduction" ) then
 		-- Automatic vertex reduction.
-		automatic:setVisible(true);
-		manual:setVisible(false);
+		automatic:setVisible(true)
+		manual:setVisible(false)
 	else -- if ( selected == "Manually created LOD" ) then
 		-- Manually created LOD.
-		manual:setVisible(true);
-		automatic:setVisible(false);
+		manual:setVisible(true)
+		automatic:setVisible(false)
 	end
 end
 
@@ -492,7 +499,7 @@ function AssetsManager:LODGetSelected()
 end
 
 function AssetsManager:LODAdd(distance)
-	local loddef = self.meshes.current.lodDefPtr.get();
+	local loddef = self.meshes.current.lodDefPtr.get()
 	distance = tonumber(distance)
 	if not distance or loddef:hasLodDistance(distance) then return end
 	
@@ -509,7 +516,7 @@ function AssetsManager:LODAdd(distance)
 end
 
 function AssetsManager:LODPaste(distance)
-	local loddef = self.meshes.current.lodDefPtr.get();
+	local loddef = self.meshes.current.lodDefPtr.get()
 	distance = tonumber(distance)
 	if not distance or loddef:hasLodDistance(distance) then return end
 	
@@ -600,13 +607,13 @@ function AssetsManager:buildWidget()
 				local value = I:value()
 				local J = value:getIterator()
 				while J:isAtEnd() == false do
-					local name = J:key();
+					local name = J:key()
 					local item = Ember.OgreView.Gui.ColouredListItem:new(name, 0, J:value())
 					self.images.listholder:addItem(item)
-					J:next();
+					J:next()
 				end
 				
-				I:next();
+				I:next()
 			end
 		end
 		self.widget:getWindow("ImagesRefresh"):subscribeEvent("Clicked", self.RefreshImages_Clicked, self)
@@ -721,10 +728,10 @@ function AssetsManager:buildWidget()
 			local lodDefPtr = lodDefManager:getByName(self:getLodDefName(meshName))
 			local lodDef = lodDefPtr:get()
 			lodDefManager:exportScript(meshName, lodDefPtr)
-			self.meshes.renderer:unloadEntity()
 			mesh:removeLodLevels()
-			lodManager:loadLod(mesh, lodDef)
-			self.meshes.renderer:showEntity(self.meshes.current.meshPtr.get():getName())
+			local manager = Ogre.MeshManager:getSingleton()
+			local meshPtr = manager:getByName(meshName)
+			lodManager:loadLod(meshPtr, lodDef)
 			self:updatePreviewInfo()
 			self:updateMeshInfo()
 			
@@ -747,9 +754,13 @@ function AssetsManager:buildWidget()
 		
 		-- subscribe LOD events.
 		self.widget:getWindow("EnableAutomaticLOD"):subscribeEvent("CheckStateChanged", function(args)
-			local container = self.widget:getWindow("ManualLODContainer")
-			local isDisabled = container:isDisabled()
-			container:setEnabled(isDisabled)
+			local checkbox = self.widget:getWindow("EnableAutomaticLOD")
+			checkbox = CEGUI.toCheckbox(checkbox)
+			local useAuto = checkbox:isSelected()
+			
+			local loddef = self.meshes.current.lodDefPtr.get()
+			loddef:setUseAutomaticLod(useAuto)
+
 			self:LODUpdateSelection()
 			return true
 		end)
@@ -777,7 +788,7 @@ function AssetsManager:buildWidget()
 			local distance = self:LODGetSelected()
 			if not distance or not loddef:hasLodDistance(distance) then return end
 			
-			distdef = loddef:getLodDistance(distance);
+			distdef = loddef:getLodDistance(distance)
 			
 			self:LODSave(distance)
 			self.clipboard = {}
