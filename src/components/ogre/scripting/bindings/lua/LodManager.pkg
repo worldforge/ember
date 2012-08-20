@@ -27,8 +27,8 @@ class LodManager
 {
 public:
 	static LodManager& getSingleton();
-	void loadLod(Ogre::Mesh& mesh);
-	void loadLod(Ogre::Mesh& mesh, const Ember::OgreView::Lod::LodDefinition& definition);
+	void loadLod(Ogre::MeshPtr mesh);
+	void loadLod(Ogre::MeshPtr mesh, const Ember::OgreView::Lod::LodDefinition& definition);
 };
 
 }

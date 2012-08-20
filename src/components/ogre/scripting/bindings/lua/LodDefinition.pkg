@@ -23,10 +23,7 @@ namespace OgreView
 namespace Lod
 {
 
-/**
- * @brief Improved version of Ogre::ProgressiveMesh.
- */
-class ProgressiveMeshGenerator
+class LodLevel
 {
 public:
 	/**
@@ -106,12 +103,12 @@ public:
 	/**
 	 * @brief Returns the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
 	 */
-	Ember::OgreView::Lod::ProgressiveMeshGenerator::VertexReductionMethod getReductionMethod() const;
+	Ember::OgreView::Lod::LodLevel::VertexReductionMethod getReductionMethod() const;
 
 	/**
 	 * @brief Sets the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
 	 */
-	void setReductionMethod(Ember::OgreView::Lod::ProgressiveMeshGenerator::VertexReductionMethod reductionMethod);
+	void setReductionMethod(Ember::OgreView::Lod::LodLevel::VertexReductionMethod reductionMethod);
 
 	/**
 	 * @brief Returns the vertex reduction value of the Lod Distance, which is used in automatic vertex reduction.
