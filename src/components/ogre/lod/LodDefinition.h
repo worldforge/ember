@@ -38,27 +38,27 @@ class LodDefinitionPtr :
 	public Ogre::SharedPtr<LodDefinition>
 {
 public:
-LodDefinitionPtr() :
-	Ogre::SharedPtr<LodDefinition>()
-{
-}
-explicit LodDefinitionPtr(LodDefinition* rep) :
-Ogre::SharedPtr<LodDefinition>(rep)
-{
-}
-LodDefinitionPtr(const LodDefinitionPtr& r) :
-Ogre::SharedPtr<LodDefinition>(r)
-{
-}
-LodDefinitionPtr(const Ogre::ResourcePtr& r);
+	LodDefinitionPtr() :
+		Ogre::SharedPtr<LodDefinition>()
+	{
+	}
+	explicit LodDefinitionPtr(LodDefinition* rep) :
+		Ogre::SharedPtr<LodDefinition>(rep)
+	{
+	}
+	LodDefinitionPtr(const LodDefinitionPtr& r) :
+		Ogre::SharedPtr<LodDefinition>(r)
+	{
+	}
+	LodDefinitionPtr(const Ogre::ResourcePtr& r);
 
-LodDefinitionPtr& operator=(const Ogre::ResourcePtr& r);
+	LodDefinitionPtr& operator= (const Ogre::ResourcePtr& r);
 
 };
 
 
 /**
- * @brief Lod Distance config container.
+ * @brief Lod distance config container.
  */
 class LodDistance
 {
@@ -88,49 +88,49 @@ public:
 	LodDistance();
 
 	/**
-	 * @brief Returns the type of the Lod Distance.
+	 * @brief Returns the type of the Lod distance.
 	 */
 	LodDistanceType getType() const;
 
 	/**
-	 * @brief Sets the type of the Lod Distance
+	 * @brief Sets the type of the Lod distance
 	 */
 	void setType(LodDistanceType type);
 
 	/**
-	 * @brief Returns the mesh name of the Lod Distance, which is used in user created meshes.
+	 * @brief Returns the mesh name of the Lod distance, which is used in user created meshes.
 	 */
 	const std::string& getMeshName() const;
 
 	/**
-	 * @brief Sets the mesh name of the Lod Distance, which is used in user created meshes.
+	 * @brief Sets the mesh name of the Lod distance, which is used in user created meshes.
 	 */
 	void setMeshName(const std::string& meshName);
 
 	/**
-	 * @brief Returns the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
+	 * @brief Returns the vertex reduction method of the Lod distance, which is used in automatic vertex reduction.
 	 */
-	ProgressiveMeshGenerator::VertexReductionMethod getReductionMethod() const;
+	LodLevel::VertexReductionMethod getReductionMethod() const;
 
 	/**
-	 * @brief Sets the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
+	 * @brief Sets the vertex reduction method of the Lod distance, which is used in automatic vertex reduction.
 	 */
-	void setReductionMethod(ProgressiveMeshGenerator::VertexReductionMethod reductionMethod);
+	void setReductionMethod(LodLevel::VertexReductionMethod reductionMethod);
 
 	/**
-	 * @brief Returns the vertex reduction value of the Lod Distance, which is used in automatic vertex reduction.
+	 * @brief Returns the vertex reduction value of the Lod distance, which is used in automatic vertex reduction.
 	 */
 	float getReductionValue() const;
 
 	/**
-	 * @brief Sets the vertex reduction value of the Lod Distance, which is used in automatic vertex reduction.
+	 * @brief Sets the vertex reduction value of the Lod distance, which is used in automatic vertex reduction.
 	 */
 	void setReductionValue(float reductionValue);
 
 private:
 	LodDistanceType mType;
 	std::string mMeshName;
-	ProgressiveMeshGenerator::VertexReductionMethod mReductionMethod;
+	LodLevel::VertexReductionMethod mReductionMethod;
 	float mReductionValue;
 };
 
@@ -142,7 +142,6 @@ class LodDefinition :
 {
 public:
 	typedef std::map<Ogre::Real, LodDistance> LodDistanceMap;
-	typedef LodDistanceMap::iterator LodDistanceMapIterator;
 
 	/**
 	 * @brief Ctor. The parameters are passed directly to Ogre::Resource constructor.
@@ -209,17 +208,17 @@ public:
 	 * @brief Returns a Lod distance count for the manual Lod configuration.
 	 */
 	int getLodDistanceCount();
-	
+
 	/**
 	 * @brief Creates a list of distances in a sorted order.
-	 * 
+	 *
 	 * This is meant for lua calls only.
 	 */
 	std::vector<float> createListOfDistances();
 
 	/**
 	 * @brief Creates a distance.
-	 * 
+	 *
 	 * This is meant for lua calls only. Use addLodDistance() if you can.
 	 */
 	LodDistance& createDistance(Ogre::Real distance);
@@ -261,12 +260,12 @@ inline void LodDistance::setMeshName(const std::string& meshName)
 	mMeshName = meshName;
 }
 
-inline ProgressiveMeshGenerator::VertexReductionMethod LodDistance::getReductionMethod() const
+inline LodLevel::VertexReductionMethod LodDistance::getReductionMethod() const
 {
 	return mReductionMethod;
 }
 
-inline void LodDistance::setReductionMethod(ProgressiveMeshGenerator::VertexReductionMethod reductionMethod)
+inline void LodDistance::setReductionMethod(LodLevel::VertexReductionMethod reductionMethod)
 {
 	mReductionMethod = reductionMethod;
 }

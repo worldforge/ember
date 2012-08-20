@@ -29,7 +29,7 @@ namespace Lod
 
 LodDistance::LodDistance() :
 	mType(LDT_AUTOMATIC_VERTEX_REDUCTION),
-	mReductionMethod(ProgressiveMeshGenerator::VRM_PROPORTIONAL),
+	mReductionMethod(LodLevel::VRM_PROPORTIONAL),
 	mReductionValue(0.5f)
 {
 
@@ -57,7 +57,7 @@ bool LodDefinition::hasLodDistance(Ogre::Real distVal) const
 	return mManualLod.find(distVal) != mManualLod.end();
 }
 
-LodDistance& LodDefinition::getLodDistance( Ogre::Real distVal )
+LodDistance& LodDefinition::getLodDistance(Ogre::Real distVal)
 {
 	LodDistanceMap::iterator it = mManualLod.find(distVal);
 	assert(it != mManualLod.end());
@@ -95,26 +95,27 @@ LodDefinition::~LodDefinition()
 std::vector<float> LodDefinition::createListOfDistances()
 {
 	std::vector<float> out;
-	for(LodDistanceMapIterator it = mManualLod.begin();it != mManualLod.end();it++){
+	for (LodDistanceMap::iterator it = mManualLod.begin(); it != mManualLod.end(); it++) {
 		out.push_back(it->first);
 	}
 	return out;
 }
 
-LodDistance& LodDefinition::createDistance( Ogre::Real distance )
+LodDistance& LodDefinition::createDistance(Ogre::Real distance)
 {
 	assert(mManualLod.find(distance) == mManualLod.end());
 	return mManualLod[distance];
 }
 
 LodDefinitionPtr::LodDefinitionPtr(const Ogre::ResourcePtr& r) :
-Ogre::SharedPtr<LodDefinition>()
+	Ogre::SharedPtr<LodDefinition>()
 {
 	// lock & copy other mutex pointer
-	OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME) {
-		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-			OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-			pRep = static_cast<LodDefinition*>(r.getPointer());
+	OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
+	{
+		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME);
+		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME);
+		pRep = static_cast<LodDefinition*>(r.getPointer());
 		pUseCount = r.useCountPointer();
 		if (pUseCount) {
 			++(*pUseCount);
@@ -122,16 +123,18 @@ Ogre::SharedPtr<LodDefinition>()
 	}
 }
 
-LodDefinitionPtr& LodDefinitionPtr::operator=(const Ogre::ResourcePtr& r)
+LodDefinitionPtr& LodDefinitionPtr::operator= (const Ogre::ResourcePtr& r)
 {
-	if (pRep == static_cast<LodDefinition*>(r.getPointer()))
+	if (pRep == static_cast<LodDefinition*>(r.getPointer())) {
 		return *this;
+	}
 	release();
 	// lock & copy other mutex pointer
-	OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME) {
-		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-			OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-			pRep = static_cast<LodDefinition*>(r.getPointer());
+	OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
+	{
+		OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME);
+		OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME);
+		pRep = static_cast<LodDefinition*>(r.getPointer());
 		pUseCount = r.useCountPointer();
 		if (pUseCount) {
 			++(*pUseCount);

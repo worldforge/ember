@@ -19,10 +19,12 @@
 #ifndef PROGRESSIVEMESHGENERATOR_H
 #define PROGRESSIVEMESHGENERATOR_H
 
+#include "LodConfig.h"
+
 #include <OgrePrerequisites.h>
 #include <OgreVector3.h>
-#include <OgreHardwareIndexBuffer.h>
 #include "OgreSmallVector.h"
+#include <OgreMesh.h>
 
 #include <boost/unordered_set.hpp>
 
@@ -36,6 +38,7 @@ namespace OgreView
 namespace Lod
 {
 
+struct LodConfig;
 
 /**
  * @brief Improved version of Ogre::ProgressiveMesh.
@@ -43,82 +46,11 @@ namespace Lod
 class ProgressiveMeshGenerator
 {
 public:
-	/**
-	 * @brief Type of the reduction.
-	 *
-	 * Note: The vertex count is determined by unique vertices per submesh.
-	 * A mesh may have duplicate vertices with same position.
-	 */
-	enum VertexReductionMethod {
-		/**
-		 * @brief Percentage of vertexes to be removed from each submesh.
-		 *
-		 * Valid range is a number between 0.0 and 1.0
-		 */
-		VRM_PROPORTIONAL,
-
-		/**
-		 * @brief Exact vertex count to be removed from each submesh.
-		 *
-		 * Pass only integers or it will be rounded.
-		 */
-		VRM_CONSTANT,
-
-		/**
-		 * @brief Reduces the vertices, until the cost is bigger then the given value.
-		 *
-		 * Collapse cost is equal to the amount of artifact the reduction causes.
-		 * This generates the best Lod output, but the collapse cost depends on implementation.
-		 */
-		VRM_COLLAPSE_COST
-	};
-
-	/**
-	 * @brief Structure for automatic Lod configuration.
-	 */
-	struct LodConfig {
-		/**
-		 * @brief Distance to swap the Lod.
-		 *
-		 * This depends on LodStrategy.
-		 */
-		Ogre::Real distance;
-
-		/**
-		 * @brief Reduction method to use.
-		 *
-		 * @see ProgressiveMeshGenerator::VertexReductionMethod
-		 */
-		VertexReductionMethod reductionMethod;
-
-		/**
-		 * @brief The value, which depends on reductionMethod.
-		 */
-		Ogre::Real reductionValue;
-
-		/**
-		 * @brief This is set by ProgressiveMeshGenerator::build() function.
-		 *
-		 * Use Mesh::getNumLodLevels() for generated Lod count.
-		 */
-		size_t outUniqueVertexCount;
-
-		/**
-		 * @brief Whether the Lod level generation was skipped, because it has same vertex count as the previous Lod level.
-		 */
-		bool outSkipped;
-	};
-
-
-	/**
-	 * @brief Vector of Lod configurations.
-	 */
-	typedef std::vector<LodConfig> LodConfigList;
 
 	/**
 	 * @brief Ctor.
 	 */
-	ProgressiveMeshGenerator(Ogre::Mesh& mesh);
+	ProgressiveMeshGenerator();
 	~ProgressiveMeshGenerator();
 
 	/**
@@ -126,8 +58,8 @@ public:
 	 *
 	 * @param lodConfigs Specification of the requested Lod levels.
 	 */
-	void build(LodConfigList& lodConfigs);
-private:
+	void build(LodConfig& lodConfigs);
+protected:
 
 	// VectorSet is basically a helper to use a vector as a small set container.
 	// Also these functions keep the code clean and fast.
@@ -138,7 +70,7 @@ private:
 		public Ogre::SmallVector<T, S> {
 		typedef typename Ogre::SmallVector<T, S> baseClass;
 		typedef typename baseClass::iterator iterator;
-		 
+
 		void addNotExists(const T& item); // Complexity: O(1)!!
 		void remove(iterator it); // Complexity: O(1)!!
 		iterator add(const T& item); // Complexity: O(N)
@@ -228,7 +160,7 @@ private:
 		size_t indexSize;
 		size_t indexCount;
 	};
-	
+
 	union IndexBufferPointer {
 		unsigned short* pshort;
 		unsigned int* pint;
@@ -249,14 +181,16 @@ private:
 	CollapsedEdges tmpCollapsedEdges; // Tmp container used in collapse().
 	IndexBufferInfoList mIndexBufferInfoList;
 
-	Ogre::Mesh& mMesh;
+	Ogre::MeshPtr mMesh;
+	Ogre::Real mMeshBoundingSphereRadius;
 	unsigned short mCurLod;
+	Ogre::Real mCollapseCostLimit;
 
-	size_t calcLodVertexCount(const LodConfig& lodConfig);
+	size_t calcLodVertexCount(const LodLevel& lodConfig);
 	void tuneContainerSize();
 	void addVertexData(Ogre::VertexData* vertexData, bool useSharedVertexLookup);
-	template<typename indexType>
-	void addIndexDataImpl(const Ogre::HardwareIndexBufferSharedPtr& ibuf, VertexLookupList& lookup, unsigned short submeshID);
+	template<typename IndexType>
+	void addIndexDataImpl(IndexType* iPos, const IndexType* iEnd, VertexLookupList& lookup, unsigned short submeshID);
 	void addIndexData(Ogre::IndexData* indexData, bool useSharedVertexLookup, unsigned short submeshID);
 
 	void computeCosts();
@@ -264,10 +198,10 @@ private:
 	PMEdge* getPointer(VEdges::iterator it);
 	void computeVertexCollapseCost(PMVertex* vertex);
 	Ogre::Real computeEdgeCollapseCost(PMVertex* src, PMEdge* dstEdge);
-	void bakeLods(const LodConfigList& lodConfigs);
+	virtual void bakeLods(const LodLevel& lodConfigs);
 	void collapse(PMVertex* vertex);
 	void initialize();
-	void computeLods(LodConfigList& lodConfigs);
+	void computeLods(LodConfig& lodConfigs);
 	void updateVertexCollapseCost(PMVertex* src);
 
 	bool hasSrcID(unsigned int srcID, unsigned short submeshID);
@@ -287,7 +221,7 @@ private:
 	bool isDuplicateTriangle(PMTriangle* triangle, PMTriangle* triangle2);
 	PMTriangle* isDuplicateTriangle(PMTriangle* triangle);
 	int getTriangleID(PMTriangle* triangle);
-
+	void cleanupMemory();
 };
 
 }
