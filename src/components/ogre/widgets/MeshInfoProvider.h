@@ -20,6 +20,8 @@
 #include <OgreLodListener.h>
 #include <OgreVector3.h>
 
+#include <boost/unordered_set.hpp>
+
 namespace Ember
 {
 namespace OgreView
@@ -41,30 +43,19 @@ public:
 	bool prequeueEntityMeshLodChanged(Ogre::EntityMeshLodChangedEvent& evt);
 	int getLodIndex();
 
+	static size_t calcUniqueVertexCount(const Ogre::Mesh* mesh);
+	static size_t calcUniqueVertexCount(const Ogre::VertexData& data);
 private:
 
-	struct VectorLessComparator {
-		bool operator() (const Ogre::Vector3 & v1, const Ogre::Vector3 & v2) const
-		{
-			if (v1.x < v2.x) {
-				return true;
-			}
-			if (v1.x == v2.x && v1.y < v2.y) {
-				return true;
-			}
-			if (v1.x == v2.x && v1.y == v2.y && v1.z < v2.z) {
-				return true;
-			}
-
-			return false;
-		}
+	// Hash function for UniqueVertexSet.
+	struct UniqueVertexHash {
+		size_t operator() (const Ogre::Vector3& v) const;
 	};
-	typedef std::set<Ogre::Vector3, VectorLessComparator> VertexSet;
 
-	int getVertexSize(const Ogre::VertexData* data);
-	void calcUniqueVertexCount(VertexSet& vertices, const Ogre::VertexData& data);
-	size_t calcUniqueVertexCount(const Ogre::MeshPtr& mesh);
-	size_t calcUniqueVertexCount(const Ogre::VertexData& data);
+	typedef boost::unordered_set<Ogre::Vector3, UniqueVertexHash> UniqueVertexSet;
+
+	static int getVertexSize(const Ogre::VertexData* data);
+	static void calcUniqueVertexCount(UniqueVertexSet& uniqueVertexSet, const Ogre::VertexData& data);
 
 	OgreEntityRenderer* mEntityRenderer;
 	int mLodIndex;

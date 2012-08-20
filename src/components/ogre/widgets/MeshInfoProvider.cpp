@@ -37,7 +37,7 @@ namespace OgreView
 namespace Gui
 {
 
-void MeshInfoProvider::calcUniqueVertexCount(VertexSet& vertices, const Ogre::VertexData& data)
+void MeshInfoProvider::calcUniqueVertexCount(UniqueVertexSet& uniqueVertexSet, const Ogre::VertexData& data)
 {
 	// Locate position element and the buffer to go with it.
 	const Ogre::VertexElement* posElem = data.vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);
@@ -54,18 +54,32 @@ void MeshInfoProvider::calcUniqueVertexCount(VertexSet& vertices, const Ogre::Ve
 		float* pFloat;
 		posElem->baseVertexPointerToElement(pVertex, &pFloat);
 
-		// TODO: use C++11 emplace for speedup.
-		vertices.insert(Ogre::Vector3(pFloat[0], pFloat[1], pFloat[2]));
+		uniqueVertexSet.emplace(Ogre::Vector3(pFloat[0], pFloat[1], pFloat[2]));
 	}
 	vbuf->unlock();
 }
 
-size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::MeshPtr& mesh)
+size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::Mesh* mesh)
 {
 	bool addedShared = false;
+	size_t vertexCount = 0;
+	unsigned short submeshCount = mesh->getNumSubMeshes();
+	//Loop to determine vertex count for tuning hash table size.
+	for (unsigned short i = 0; i < submeshCount; i++) {
+		const Ogre::SubMesh* submesh = mesh->getSubMesh(i);
+		if (submesh->useSharedVertices) {
+			if (!addedShared) {
+				addedShared = true;
+				vertexCount += mesh->sharedVertexData->vertexCount;
+			}
+		} else {
+			vertexCount += submesh->vertexData->vertexCount;
+		}
+	}
 
-	// TODO: use C++11 unordered_set and remove VectorLessComparator struct.
-	VertexSet vertices;
+	addedShared = false;
+	UniqueVertexSet uniqueVertexSet;
+	uniqueVertexSet.rehash(2 * vertexCount);
 
 	for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i) {
 		const Ogre::SubMesh& submesh = *mesh->getSubMesh(i);
@@ -73,25 +87,22 @@ size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::MeshPtr& mesh)
 		if (submesh.useSharedVertices) {
 			if (!addedShared) {
 				addedShared = true;
-				calcUniqueVertexCount(vertices, *mesh->sharedVertexData);
+				calcUniqueVertexCount(uniqueVertexSet, *mesh->sharedVertexData);
 			}
 		} else {
-			calcUniqueVertexCount(vertices, *submesh.vertexData);
+			calcUniqueVertexCount(uniqueVertexSet, *submesh.vertexData);
 		}
 	}
 
-	return vertices.size();
+	return uniqueVertexSet.size();
 }
 
 size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::VertexData& data)
 {
-	bool addedShared = false;
-
-	// TODO: use C++11 unordered_set and remove VectorLessComparator struct.
-	VertexSet vertices;
-	calcUniqueVertexCount(vertices, data);
-
-	return vertices.size();
+	UniqueVertexSet uniqueVertexSet;
+	uniqueVertexSet.rehash(2 * data.vertexCount);
+	calcUniqueVertexCount(uniqueVertexSet, data);
+	return uniqueVertexSet.size();
 }
 int MeshInfoProvider::getVertexSize(const Ogre::VertexData* data)
 {
@@ -104,7 +115,7 @@ int MeshInfoProvider::getVertexSize(const Ogre::VertexData* data)
 std::string MeshInfoProvider::getInfo(int submeshIndex)
 {
 	const Ogre::MeshPtr& mesh = mEntityRenderer->getEntity()->getMesh();
-	size_t count = calcUniqueVertexCount(mesh);
+	size_t count = calcUniqueVertexCount(mesh.get());
 	std::stringstream str;
 	const Ogre::SubMesh& submesh = *mesh->getSubMesh(submeshIndex);
 	// We only need to add the shared vertices once
@@ -180,6 +191,14 @@ MeshInfoProvider::MeshInfoProvider(OgreEntityRenderer* entityRenderer) :
 MeshInfoProvider::~MeshInfoProvider()
 {
 	mEntityRenderer->getSceneManager()->removeLodListener(this);
+}
+
+size_t MeshInfoProvider::UniqueVertexHash::operator()( const Ogre::Vector3& v ) const
+{
+	boost::hash<Ogre::Real> hasher;
+	return hasher(v.x)
+		^ hasher(v.y)
+		^ hasher(v.z);
 }
 
 }
