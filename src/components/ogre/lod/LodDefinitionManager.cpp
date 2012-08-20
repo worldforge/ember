@@ -20,7 +20,7 @@
 #include "LodManager.h"
 
 template<>
-Ember::OgreView::Lod::LodDefinitionManager* Ember::Singleton<Ember::OgreView::Lod::LodDefinitionManager>::ms_Singleton = 0;
+Ember::OgreView::Lod::LodDefinitionManager * Ember::Singleton<Ember::OgreView::Lod::LodDefinitionManager>::ms_Singleton = 0;
 
 namespace Ember
 {
@@ -74,7 +74,7 @@ void LodDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::
 	mLodDefinitionSerializer.importLodDefinition(stream, loddef);
 }
 
-void LodDefinitionManager::exportScript( std::string meshName, LodDefinitionPtr definition )
+void LodDefinitionManager::exportScript(std::string meshName, LodDefinitionPtr definition)
 {
 	std::string lodName = LodManager::getSingleton().convertMeshNameToLodName(meshName);
 	mLodDefinitionSerializer.exportScript(definition, lodName);

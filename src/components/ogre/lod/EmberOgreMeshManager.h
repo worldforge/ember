@@ -38,7 +38,7 @@ class EmberOgreMeshManager :
 {
 public:
 	/**
-	* @brief Creates an EmberOgreMesh instance.
+	 * @brief Creates an EmberOgreMesh instance.
 	 */
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
 	                           const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,

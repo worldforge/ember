@@ -24,6 +24,7 @@
 
 #include <OgreSubMesh.h>
 #include <OgreLodStrategy.h>
+#include <OgreMeshManager.h>
 
 namespace Ember
 {
@@ -40,39 +41,45 @@ EmberOgreMesh::EmberOgreMesh(Ogre::ResourceManager* creator,
                              Ogre::ManualResourceLoader* loader) :
 	Ogre::Mesh(creator, name, handle, group, isManual, loader)
 {
-	S_LOG_INFO("Loading mesh " << mName << ".");
+	S_LOG_VERBOSE("Loading mesh " << mName << ".");
 }
 
-void EmberOgreMesh::generateLodLevels(ProgressiveMeshGenerator::LodConfigList& lodConfigs)
+void EmberOgreMesh::_configureMeshLodUsage(const LodConfig& lodConfigs)
 {
-	removeLodLevels();
-
-	ProgressiveMeshGenerator pm(*this);
-	pm.build(lodConfigs);
-
+	// In theory every mesh should have a submesh.
+	assert(getNumSubMeshes() > 0);
 	Ogre::SubMesh* submesh = getSubMesh(0);
 	mNumLods = submesh->mLodFaceList.size() + 1;
 	mMeshLodUsageList.resize(mNumLods);
-	for (int n = 0, i = 0; i < lodConfigs.size(); i++) {
-		// Record usage. First Lod usage is the mesh itself.
-		if(!lodConfigs[i].outSkipped){
+	for (int n = 0, i = 0; i < lodConfigs.levels.size(); i++) {
+		// Record usages. First Lod usage is the mesh itself.
+
+		// Skip lods, which have the same amount of vertices. No buffer generated for them.
+		if (!lodConfigs.levels[i].outSkipped) {
+
+			// Generated buffers are less then the reported by ProgressiveMesh.
+			// This would fail if you use QueuedProgressiveMesh and the MeshPtr is force unloaded before lod generation completes.
+			assert(mMeshLodUsageList.size() > n + 1);
 			Ogre::MeshLodUsage& lod = mMeshLodUsageList[++n];
-			lod.userValue = lodConfigs[i].distance;
-			lod.value = mLodStrategy->transformUserValue(lod.userValue);
+			lod.userValue = lodConfigs.levels[i].distance;
+			lod.value = getLodStrategy()->transformUserValue(lod.userValue);
 			lod.edgeData = 0;
 			lod.manualMesh.setNull();
 		}
 	}
 }
-
 void EmberOgreMesh::loadImpl()
 {
 	// Load the mesh.
 	Ogre::Mesh::loadImpl();
 
+	// We need a shared pointer of this.
+	// TODO: Find a more effective way to get sharedPtr of itself.
+	Ogre::MeshPtr thisPtr = static_cast<Ogre::MeshPtr>(Ogre::MeshManager::getSingleton().getByHandle(this->getHandle()));
+
 	// If we loaded the Lod from the mesh file, then skip it.
 	if (getNumLodLevels() == 1) {
-		LodManager::getSingleton().loadLod(*this);
+		LodManager::getSingleton().loadLod(thisPtr);
 	}
 }
 

@@ -67,9 +67,9 @@ public:
 
 	/**
 	 * @brief Exports a LodDefinition to a file.
-	 * 
+	 *
 	 * The definition will be serialized and saved to a file by the same name of the definition.
-	 * 
+	 *
 	 * @param definition The definition to export.
 	 * @return The path to the exported script. If the export failed, the string will be empty.
 	 */

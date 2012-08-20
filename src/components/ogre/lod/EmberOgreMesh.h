@@ -43,16 +43,15 @@ public:
 	              const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader);
 
 	/**
-	 * @brief Generates Lods for the mesh based on the passed LodConfigList.
-	 * 
-	 * @param lodConfigs Specification of the requested Lods.
-	 */
-	void generateLodLevels(ProgressiveMeshGenerator::LodConfigList& lodConfigs);
-
-	/**
 	 * @brief This will start the Lod loading.
 	 */
 	void loadImpl();
+
+	/**
+	 * @brief It will configure Lod usage based on a LodConfig.
+	 */
+	void _configureMeshLodUsage(const LodConfig& lodConfigs);
+
 };
 
 }
