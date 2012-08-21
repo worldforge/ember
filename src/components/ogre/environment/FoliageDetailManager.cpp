@@ -32,7 +32,7 @@ namespace Environment
 {
 
 FoliageDetailManager::FoliageDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter) :
-		mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mDefaultDistanceStep(0.3f), mUpdatedDensity(1.0f), mFarDistance(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer())
+		mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer()), mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mDefaultDistanceStep(0.3f), mUpdatedDensity(1.0f), mFarDistance(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f)
 {
 }
 

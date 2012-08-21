@@ -30,7 +30,7 @@ namespace OgreView
 {
 
 ShadowDetailManager::ShadowDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager) :
-		mSceneManager(sceneManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mShadowFarDistance(sceneManager.getShadowFarDistance()), mConfigListenerContainer(new ConfigListenerContainer()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
+		mSceneManager(sceneManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer()), mShadowFarDistance(sceneManager.getShadowFarDistance()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
 {
 }
 
