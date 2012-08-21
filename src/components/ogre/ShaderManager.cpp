@@ -103,6 +103,7 @@ ShaderManager::ShaderManager(IGraphicalChangeAdapter& graphicalChangeAdapter) :
 	mGraphicSchemes[LEVEL_EXPERIMENTAL]	= std::string("Experimental");
 
 	init();
+	mShaderDetailManager->initialize();
 
 	registerConfigListener("graphics", "level", sigc::mem_fun(*this, &ShaderManager::Config_Level), false);
 
