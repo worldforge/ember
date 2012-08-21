@@ -33,7 +33,7 @@ namespace Lod
 {
 
 LodLevelManager::LodLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::Camera& mainCamera) :
-		mGraphicalChangeAdapter(graphicalChangeAdapter), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer()), mLodThresholdLevel(1.0f), mLodFactor(mMainCamera.getLodBias()), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f)
+		mGraphicalChangeAdapter(graphicalChangeAdapter), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer()), mLodThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f)
 {
 }
 
@@ -46,6 +46,7 @@ void LodLevelManager::initialize()
 {
 	mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &LodLevelManager::changeLevel));
 	mConfigListenerContainer->registerConfigListener("graphics", "lodbias", sigc::mem_fun(*this, &LodLevelManager::Config_LodBias));
+	mLodFactor = mMainCamera.getLodBias();
 }
 
 bool LodLevelManager::setLodBiasAll(float factor)
