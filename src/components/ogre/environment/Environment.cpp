@@ -29,6 +29,7 @@
 #include "framework/Tokeniser.h"
 #include <OgreStringConverter.h>
 #include <OgreColourValue.h>
+#include <OgreSceneManager.h>
 
 namespace Ember
 {
@@ -38,9 +39,11 @@ namespace OgreView
 namespace Environment
 {
 
-Environment::Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider) :
-		SetTime("set_time", this, "Sets the time. parameters: <hour> <minute>"), SetFogDensity("set_fogdensity", this, "Sets the fog density."), SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>"), mProvider(provider), mFallbackProvider(fallbackProvider), mForest(new Forest(terrainManager))
+Environment::Environment(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider) :
+		SetTime("set_time", this, "Sets the time. parameters: <hour> <minute>"), SetFogDensity("set_fogdensity", this, "Sets the fog density."), SetAmbientLight("setambientlight", this, "Set the ambient light of the world: <red> <green> <blue>"), mProvider(provider), mFallbackProvider(fallbackProvider), mEnabledFirmamentProvider(0), mForest(new Forest(terrainManager))
 {
+	//Set some default ambient light
+	sceneMgr.setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
 }
 
 Environment::~Environment()
@@ -91,21 +94,28 @@ void Environment::runCommand(const std::string &command, const std::string &args
 
 }
 
-void Environment::initialize()
+void Environment::setFirmamentEnabled(bool enabled)
 {
-	try {
-		mProvider->createEnvironment();
-	} catch (...) {
-		if (mFallbackProvider) {
-			S_LOG_FAILURE("Error when creating environment, trying with fallback provider.");
-			delete mProvider;
-			mProvider = mFallbackProvider;
-			mFallbackProvider = 0;
-			mProvider->createEnvironment();
-		} else {
-			S_LOG_FAILURE("Error when creating environment. There's no fallback provider to use however, so we have to abort.");
-			throw;
+	if (enabled && !mEnabledFirmamentProvider) {
+		try {
+			mProvider->createFirmament();
+			mEnabledFirmamentProvider = mProvider;
+		} catch (...) {
+			if (mFallbackProvider) {
+				S_LOG_FAILURE("Error when creating environment, trying with fallback provider.");
+				delete mProvider;
+				mProvider = mFallbackProvider;
+				mFallbackProvider = 0;
+				mProvider->createFirmament();
+				mEnabledFirmamentProvider = mProvider;
+			} else {
+				S_LOG_FAILURE("Error when creating environment. There's no fallback provider to use however, so we have to abort.");
+				throw;
+			}
 		}
+	} else if (!enabled && mEnabledFirmamentProvider) {
+		mEnabledFirmamentProvider->destroyFirmament();
+		mEnabledFirmamentProvider = 0;
 	}
 }
 

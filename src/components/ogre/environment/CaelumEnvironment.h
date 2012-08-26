@@ -60,7 +60,8 @@ public:
 
 	virtual ~CaelumEnvironment();
 
-	virtual void createEnvironment();
+	virtual void createFirmament();
+	virtual void destroyFirmament();
 
 	void setWaterEnabled(bool enabled);
 
@@ -93,12 +94,11 @@ private:
 
 	/**
 	 * @brief Creates and initializes the Caelum system.
-	 * @param root 
 	 * @param sceneMgr 
 	 * @param window 
 	 * @param camera 
 	 */
-	void setupCaelum(Ogre::Root *root, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
+	void setupCaelum(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera);
 
 	/**
 	 * @brief Creates a water plane.

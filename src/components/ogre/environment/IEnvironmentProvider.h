@@ -22,9 +22,10 @@
 
 namespace Ogre
 {
-	class Vector3;
-	class Any;
-};
+class Vector3;
+class Any;
+}
+;
 
 namespace Ember
 {
@@ -117,7 +118,15 @@ public:
 	{
 	}
 
-	virtual void createEnvironment() = 0;
+	/**
+	 * @brief Creates the firmament (sky, sun, moon, starfield etc.).
+	 */
+	virtual void createFirmament() = 0;
+
+	/**
+	 * @brief Destroys the firmament.
+	 */
+	virtual void destroyFirmament() = 0;
 
 	virtual ISun* getSun() = 0;
 	virtual ISky* getSky() = 0;

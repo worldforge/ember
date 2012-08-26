@@ -100,11 +100,21 @@ SimpleEnvironment::~SimpleEnvironment()
 	delete mWater;
 }
 
-void SimpleEnvironment::createEnvironment()
+void SimpleEnvironment::createFirmament()
 {
 	mSun = new SimpleSun(mSceneMgr);
 	mSky = new SimpleSky();
 	mFog = new SimpleFog(mSceneMgr);
+}
+
+void SimpleEnvironment::destroyFirmament()
+{
+	delete mSun;
+	mSun = 0;
+	delete mSky;
+	mSky = 0;
+	delete mFog;
+	mFog = 0;
 }
 
 void SimpleEnvironment::setWaterEnabled(bool enabled)

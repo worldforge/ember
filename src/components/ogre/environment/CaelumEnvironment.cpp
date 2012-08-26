@@ -46,43 +46,38 @@ namespace Environment
 
 CaelumEnvironment::CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera, Eris::Calendar& calendar) :
 		SetCaelumTime("set_caelumtime", this, "Sets the caelum time. parameters: <hour> <minute>"), mCaelumSystem(0), mSceneMgr(sceneMgr), mWindow(window), mCamera(camera), mCalendar(calendar), mSky(0), mSun(0), mWater(0)
-
-//,mLensFlare(camera, sceneMgr)
 {
-	//	sceneMgr->setAmbientLight(Ogre::ColourValue(0.3f, 0.3f, 0.3f));
-	sceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
-	//		setupCaelum(root, sceneMgr, window , camera);
-	/*		mLensFlare.setNode(mCaelumSystem->getSun()-	} catch (const Ogre::Exception& ex) {
-	 S_LOG_FAILURE("Could not load caelum. Message: " << ex.getFullDescription());
-	 }
-	 >getNode());
-	 mLensFlare.initialize();*/
-	//		mLensFlare.setVisible(false);
-	//Ogre::::Root::getSingleton().addFrameListener(this);
 	mCalendar.Updated.connect(sigc::mem_fun(*this, &CaelumEnvironment::Calendar_Updated));
 }
 
 CaelumEnvironment::~CaelumEnvironment()
 {
-	delete mSky;
-	delete mSun;
+	destroyFirmament();
 	delete mWater;
-	mWindow->removeListener(mCaelumSystem);
-	if (mCaelumSystem) {
-		mCaelumSystem->shutdown(true);
+}
 
-		// 		delete mCaelumSystem; //calling shutdown() will delete the instance, so no need to do it again
+void CaelumEnvironment::createFirmament()
+{
+	try {
+		setupCaelum(mSceneMgr, mWindow, mCamera);
+	} catch (const std::exception& ex) {
+		S_LOG_FAILURE("Could not load Caelum." << ex);
+		throw;
 	}
 }
 
-void CaelumEnvironment::createEnvironment()
+void CaelumEnvironment::destroyFirmament()
 {
-	try {
-		setupCaelum(Ogre::Root::getSingletonPtr(), mSceneMgr, mWindow, mCamera);
-	} catch (const std::exception& ex) {
-		S_LOG_FAILURE("Could not load caelum." << ex);
-		throw;
+	delete mSky;
+	mSky = 0;
+	delete mSun;
+	mSun = 0;
+	mWindow->removeListener(mCaelumSystem);
+	if (mCaelumSystem) {
+		mCaelumSystem->shutdown(true); //This will actually delete the instance
+		mCaelumSystem = 0;
 	}
+
 }
 
 void CaelumEnvironment::Calendar_Updated()
@@ -131,8 +126,10 @@ void CaelumEnvironment::setupWater()
 
 }
 
-void CaelumEnvironment::setupCaelum(::Ogre::Root *root, ::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
+void CaelumEnvironment::setupCaelum(::Ogre::SceneManager *sceneMgr, ::Ogre::RenderWindow* window, ::Ogre::Camera& camera)
 {
+
+	Ogre::Root* root = Ogre::Root::getSingletonPtr();
 
 	mCaelumSystem = new Caelum::CaelumSystem(root, sceneMgr, Caelum::CaelumSystem::CAELUM_COMPONENTS_NONE);
 

@@ -62,11 +62,12 @@ public:
 
 	/**
 	 * @brief Ctor.
+	 * @param sceneMgr The main scene manager.
 	 * @param terrainManager The main terrain manager.
 	 * @param provider Main environment provider.
 	 * @param fallbackProvider A fallback provider which is used if the main provider for some reason fails to create the environment (if for instance the hardware doesn't support it).
 	 */
-	Environment(Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
+	Environment(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, IEnvironmentProvider* provider, IEnvironmentProvider* fallbackProvider = 0);
 
 	~Environment();
 
@@ -113,7 +114,11 @@ public:
 	 */
 	float getTimeMultiplier() const;
 
-	void initialize();
+	/**
+	 * @brief Sets whether the firmament is enabled or not.
+	 * @param enabled Whether the firmament is enabled or not.
+	 */
+	void setFirmamentEnabled(bool enabled);
 
 	/**
 	 *    changes the ambient light
@@ -142,7 +147,7 @@ public:
 
 private:
 
-	IEnvironmentProvider* mProvider, *mFallbackProvider;
+	IEnvironmentProvider* mProvider, *mFallbackProvider, *mEnabledFirmamentProvider;
 	Forest* mForest;
 };
 

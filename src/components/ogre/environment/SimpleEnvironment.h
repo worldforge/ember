@@ -93,7 +93,8 @@ public:
 
 	virtual ~SimpleEnvironment();
 
-	virtual void createEnvironment();
+	virtual void createFirmament();
+	virtual void destroyFirmament();
 
 	void setWaterEnabled(bool enabled);
 
