@@ -49,9 +49,10 @@ void OceanAction::activate(EntityMapping::ChangeContext& context)
 			OceanRepresentation* ocean = new OceanRepresentation(mEntity, *environment);
 			mEntity.setGraphicalRepresentation(ocean);
 			return;
+		} else {
+			S_LOG_WARNING("Tried to activate ocean representation, but there was no world instance available.");
 		}
 	}
-	S_LOG_WARNING("Tried to activate ocean representation, but there was no water instance available.");
 }
 
 void OceanAction::deactivate(EntityMapping::ChangeContext& context)
