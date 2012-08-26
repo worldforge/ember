@@ -136,7 +136,15 @@
 			</case>
 		</entitymatch>
 	</entitymapping>
-				
+    <entitymapping name="world">
+        <entitymatch>
+            <case>
+                <caseparam type="equals">world</caseparam>
+                <action type="display-world" />
+            </case>
+        </entitymatch>
+    </entitymapping>
+
 	<autoentitymapping name="lumber" />
 	<entitymapping name="board">
 		<entitymatch>

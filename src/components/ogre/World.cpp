@@ -77,9 +77,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, EmberOgreSignal
 	mPageDataProvider = new TerrainPageDataProvider(mTerrainManager->getHandler());
 	mScene->registerPageDataProvider(mPageDataProvider);
 
-	mEnvironment = new Environment::Environment(*mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
-	mEnvironment->initialize();
-	mEnvironment->setWorldPosition(0, 0);
+	mEnvironment = new Environment::Environment(mScene->getSceneManager(), *mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
 
 	mScene->addRenderingTechnique("forest", new ForestRenderingTechnique(*mEnvironment->getForest()));
 	mTerrainManager->getHandler().setLightning(mEnvironment->getSun());

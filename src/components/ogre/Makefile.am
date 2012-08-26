@@ -23,7 +23,7 @@ libEmberOgre_a_SOURCES = \
 	environment/FoliageLoader.cpp environment/Forest.cpp environment/GrassFoliage.cpp environment/LensFlare.cpp \
 	environment/ShrubberyFoliage.cpp environment/SimpleEnvironment.cpp environment/SimpleWater.cpp environment/Sun.cpp environment/Tree.cpp environment/Water.cpp \
 	environment/OceanRepresentation.cpp environment/OceanAction.cpp environment/SimpleWaterCollisionDetector.cpp \
-	environment/ExclusiveImposterPage.cpp \
+	environment/ExclusiveImposterPage.cpp environment/WorldRepresentation.cpp environment/WorldAction.cpp \
 	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp gui/RenderedColourStringTextComponent.cpp gui/ColouredRenderedStringParser.cpp gui/CursorWorldListener.cpp \
 \
 	mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp \
@@ -117,6 +117,7 @@ noinst_HEADERS = \
 	environment/Forest.h environment/GrassFoliage.h environment/LensFlare.h environment/ShrubberyFoliage.h \
 	environment/SimpleEnvironment.h environment/SimpleWater.h environment/Sun.h environment/Tree.h environment/Water.h environment/OceanRepresentation.h \
 	environment/OceanAction.h environment/SimpleWaterCollisionDetector.h environment/ExclusiveImposterPage.h environment/IEnvironmentProvider.h \
+	environment/WorldRepresentation.h environment/WorldAction.h \
 \
 	gui/ActiveWidgetHandler.h gui/CEGUILogger.h gui/RenderedColourStringTextComponent.h gui/ColouredRenderedStringParser.h gui/CursorWorldListener.h \
 \
