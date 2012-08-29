@@ -28,7 +28,6 @@ namespace Lod
 {
 
 LodDistance::LodDistance() :
-	mType(LDT_AUTOMATIC_VERTEX_REDUCTION),
 	mReductionMethod(LodLevel::VRM_PROPORTIONAL),
 	mReductionValue(0.5f)
 {
@@ -42,7 +41,9 @@ LodDefinition::LodDefinition(Ogre::ResourceManager* creator,
                              bool isManual,
                              Ogre::ManualResourceLoader* loader) :
 	Resource(creator, name, handle, group, isManual, loader),
-	mUseAutomaticLod(true)
+	mUseAutomaticLod(true),
+	mType(LT_AUTOMATIC_VERTEX_REDUCTION),
+	mStrategy(LS_DISTANCE)
 {
 	createParamDictionary("LodDefinition");
 }

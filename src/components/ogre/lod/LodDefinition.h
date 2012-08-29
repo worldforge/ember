@@ -65,37 +65,11 @@ class LodDistance
 public:
 
 	/**
-	 * @brief Enumeration of Distance types.
-	 */
-	enum LodDistanceType {
-
-		/**
-		 * @brief A built in algorithm should reduce the vertex count.
-		 */
-		LDT_AUTOMATIC_VERTEX_REDUCTION,
-
-		/**
-		 * @brief User created mesh should be used.
-		 */
-		LDT_USER_CREATED_MESH
-	};
-
-	/**
 	 * @brief Ctor.
 	 *
 	 * By default, the settings are set to proportional automatic vertex reduction to 50% of original vertex count.
 	 */
 	LodDistance();
-
-	/**
-	 * @brief Returns the type of the Lod distance.
-	 */
-	LodDistanceType getType() const;
-
-	/**
-	 * @brief Sets the type of the Lod distance
-	 */
-	void setType(LodDistanceType type);
 
 	/**
 	 * @brief Returns the mesh name of the Lod distance, which is used in user created meshes.
@@ -128,7 +102,6 @@ public:
 	void setReductionValue(float reductionValue);
 
 private:
-	LodDistanceType mType;
 	std::string mMeshName;
 	LodLevel::VertexReductionMethod mReductionMethod;
 	float mReductionValue;
@@ -142,6 +115,36 @@ class LodDefinition :
 {
 public:
 	typedef std::map<Ogre::Real, LodDistance> LodDistanceMap;
+
+	/**
+	 * @brief Enumeration of Distance types.
+	 */
+	enum LodType {
+		/**
+		 * @brief A built in algorithm should reduce the vertex count.
+		 */
+		LT_AUTOMATIC_VERTEX_REDUCTION,
+
+		/**
+		 * @brief User created mesh should be used.
+		 */
+		LT_USER_CREATED_MESH
+	};
+
+	/**
+	 * @brief Enumeration of Lod strategies.
+	 */
+	enum LodStrategy {
+		/**
+		 * @brief It will use the distance to the camera.
+		 */
+		LS_DISTANCE,
+
+		/**
+		 * @brief It will use the pixel count of the bounding sphere inside the rendered frame.
+		 */
+		LS_PIXEL_COUNT
+	};
 
 	/**
 	 * @brief Ctor. The parameters are passed directly to Ogre::Resource constructor.
@@ -190,6 +193,26 @@ public:
 	void setUseAutomaticLod(bool useAutomaticLod);
 
 	/**
+	 * @brief Returns the type of the Lod.
+	 */
+	LodType getType() const;
+
+	/**
+	 * @brief Sets the type of the Lod.
+	 */
+	void setType(LodType type);
+
+	/**
+	 * @brief Returns the strategy of the Lod.
+	 */
+	LodStrategy getStrategy() const;
+
+	/**
+	 * @brief Sets the strategy of the Lod.
+	 */
+	void setStrategy(LodStrategy strategy);
+
+	/**
 	 * @brief Adds a Lod distance to the manual Lod configuration.
 	 */
 	void addLodDistance(Ogre::Real distVal, const LodDistance& distance);
@@ -207,7 +230,7 @@ public:
 	/**
 	 * @brief Returns a Lod distance count for the manual Lod configuration.
 	 */
-	int getLodDistanceCount();
+	int getLodDistanceCount() const;
 
 	/**
 	 * @brief Creates a list of distances in a sorted order.
@@ -236,19 +259,10 @@ public:
 
 private:
 	bool mUseAutomaticLod;
+	LodType mType;
+	LodStrategy mStrategy;
 	LodDistanceMap mManualLod;
 };
-
-
-inline LodDistance::LodDistanceType LodDistance::getType() const
-{
-	return mType;
-}
-
-inline void LodDistance::setType(LodDistanceType type)
-{
-	mType = type;
-}
 
 inline const std::string& LodDistance::getMeshName() const
 {
@@ -290,11 +304,31 @@ inline void LodDefinition::setUseAutomaticLod(bool useAutomaticLod)
 	mUseAutomaticLod = useAutomaticLod;
 }
 
+inline LodDefinition::LodType LodDefinition::getType() const
+{
+	return mType;
+}
+
+inline void LodDefinition::setType(LodType type)
+{
+	mType = type;
+}
+
+inline LodDefinition::LodStrategy LodDefinition::getStrategy() const
+{
+	return mStrategy;
+}
+
+inline void LodDefinition::setStrategy(LodStrategy type)
+{
+	mStrategy = type;
+}
+
 inline const LodDefinition::LodDistanceMap& LodDefinition::getManualLodData() const
 {
 	return mManualLod;
 }
-inline int LodDefinition::getLodDistanceCount()
+inline int LodDefinition::getLodDistanceCount() const
 {
 	return mManualLod.size();
 }

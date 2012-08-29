@@ -65,32 +65,6 @@ class LodDistance
 public:
 
 	/**
-	 * @brief Enumeration of Distance types.
-	 */
-	enum LodDistanceType {
-
-		/**
-		 * @brief A built in algorithm should reduce the vertex count.
-		 */
-		LDT_AUTOMATIC_VERTEX_REDUCTION,
-
-		/**
-		 * @brief User created mesh should be used.
-		 */
-		LDT_USER_CREATED_MESH
-	};
-
-	/**
-	 * @brief Returns the type of the Lod Distance.
-	 */
-	Ember::OgreView::Lod::LodDistance::LodDistanceType getType() const;
-
-	/**
-	 * @brief Sets the type of the Lod Distance
-	 */
-	void setType(Ember::OgreView::Lod::LodDistance::LodDistanceType type);
-
-	/**
 	 * @brief Returns the mesh name of the Lod Distance, which is used in user created meshes.
 	 */
 	const std::string& getMeshName() const;
@@ -129,6 +103,36 @@ class LodDefinition :
 {
 public:
 	/**
+	 * @brief Enumeration of Distance types.
+	 */
+	enum LodType {
+		/**
+		 * @brief A built in algorithm should reduce the vertex count.
+		 */
+		LT_AUTOMATIC_VERTEX_REDUCTION,
+
+		/**
+		 * @brief User created mesh should be used.
+		 */
+		LT_USER_CREATED_MESH
+	};
+
+	/**
+	 * @brief Enumeration of Lod strategies.
+	 */
+	enum LodStrategy {
+		/**
+		 * @brief It will use the distance to the camera.
+		 */
+		LS_DISTANCE,
+
+		/**
+		 * @brief It will use the pixel count of the bounding sphere inside the rendered frame.
+		 */
+		LS_PIXEL_COUNT
+	};
+	
+	/**
 	 * @brief Returns whether automatic mesh Lod management is used.
 	 */
 	bool getUseAutomaticLod() const;
@@ -137,6 +141,26 @@ public:
 	 * @brief Sets whether automatic mesh Lod management should be used.
 	 */
 	void setUseAutomaticLod(bool useAutomaticLod);
+	
+	/**
+	 * @brief Returns the type of the Lod.
+	 */
+	Ember::OgreView::Lod::LodDefinition::LodType getType() const;
+
+	/**
+	 * @brief Sets the type of the Lod.
+	 */
+	void setType(Ember::OgreView::Lod::LodDefinition::LodType type);
+
+	/**
+	 * @brief Returns the strategy of the Lod.
+	 */
+	Ember::OgreView::Lod::LodDefinition::LodStrategy getStrategy() const;
+
+	/**
+	 * @brief Sets the strategy of the Lod.
+	 */
+	void setStrategy(Ember::OgreView::Lod::LodDefinition::LodStrategy strategy);
 
 	/**
 	 * @brief Adds a Lod distance to the manual Lod configuration.

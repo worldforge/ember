@@ -56,30 +56,49 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 		// <manual>...</manual>
 		TiXmlElement* manElem = rootElem->FirstChildElement("manual");
 		if (manElem) {
+
+			// <type>user|automatic</type>
+			TiXmlElement* elem = manElem->FirstChildElement("type");
+			if (elem) {
+				const char* tmp = elem->GetText();
+				if (tmp && strcmp(tmp, "automatic") == 0) {
+					lodDef.setType(LodDefinition::LT_AUTOMATIC_VERTEX_REDUCTION);
+				} else {
+					lodDef.setType(LodDefinition::LT_USER_CREATED_MESH);
+				}
+			}
+
+			// <strategy>distance|pixelcount</strategy>
+			elem = manElem->FirstChildElement("strategy");
+			if (elem) {
+				const char* tmp = elem->GetText();
+				if (tmp && strcmp(tmp, "distance") == 0) {
+					lodDef.setStrategy(LodDefinition::LS_DISTANCE);
+				} else {
+					lodDef.setStrategy(LodDefinition::LS_PIXEL_COUNT);
+				}
+			}
+
 			// <level>...</level> <level>...</level> <level>...</level>
 			for (TiXmlElement* distElem = manElem->FirstChildElement("level");
 			     distElem != 0;
 			     distElem = distElem->NextSiblingElement("level")) {
 				LodDistance dist;
 
-				// <type>user|automatic</type>
-				TiXmlElement* elem = distElem->FirstChildElement("type");
-				if (elem) {
-					const char* tmp = elem->GetText();
-					if (tmp && strcmp(tmp, "automatic") != 0) {
-						dist.setType(LodDistance::LDT_USER_CREATED_MESH);
-					} else {
-						dist.setType(LodDistance::LDT_AUTOMATIC_VERTEX_REDUCTION);
-					}
-				}
-
-				if (dist.getType() == LodDistance::LDT_USER_CREATED_MESH) {
+				if (lodDef.getType() == LodDefinition::LT_USER_CREATED_MESH) {
 					// <meshName>.../test.mesh</meshName>
 					elem = distElem->FirstChildElement("meshName");
 					if (elem) {
 						const char* tmp = elem->GetText();
-						if (tmp) {
+						bool isValidMeshName = Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(tmp);
+						if (tmp && isValidMeshName) {
 							dist.setMeshName(tmp);
+						} else {
+							S_LOG_FAILURE(
+							    lodDef.getName()	<<
+							    " contains invalid mesh name for user created lod level. Skipping lod level for distance "
+							                        << distElem->Attribute("distance"));
+							continue;
 						}
 					}
 				} else {
@@ -145,6 +164,18 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 		TiXmlElement manElem("manual");
 
 		{
+			// <type>user|automatic</type>
+			TiXmlElement typeElem("type");
+			TiXmlText typeText(lodDef->getType() == LodDefinition::LT_AUTOMATIC_VERTEX_REDUCTION ? "automatic" : "user");
+			typeElem.InsertEndChild(typeText);
+			manElem.InsertEndChild(typeElem);
+
+			// <strategy>distance|pixelcount</strategy>
+			TiXmlElement strategyElem("strategy");
+			TiXmlText strategyText(lodDef->getStrategy() == LodDefinition::LS_DISTANCE ? "distance" : "pixelcount");
+			strategyElem.InsertEndChild(strategyText);
+			manElem.InsertEndChild(strategyElem);
+
 			// <level>...</level> <level>...</level> <level>...</level>
 			const LodDefinition::LodDistanceMap& manualLod = lodDef->getManualLodData();
 			LodDefinition::LodDistanceMap::const_iterator it;
@@ -156,13 +187,7 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 
 				const LodDistance& dist = it->second;
 				{
-					// <type>user|automatic</type>
-					TiXmlElement typeElem("type");
-					TiXmlText typeText(dist.getType() == LodDistance::LDT_AUTOMATIC_VERTEX_REDUCTION ? "automatic" : "user");
-					typeElem.InsertEndChild(typeText);
-					levelElem.InsertEndChild(typeElem);
-
-					if (dist.getType() == LodDistance::LDT_USER_CREATED_MESH) {
+					if (lodDef->getType() == LodDefinition::LT_USER_CREATED_MESH) {
 						// <meshName>.../test.mesh</meshName>
 						TiXmlElement meshElem("meshName");
 						TiXmlText meshText(dist.getMeshName());
