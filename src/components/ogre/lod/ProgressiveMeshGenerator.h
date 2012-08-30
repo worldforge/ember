@@ -51,7 +51,7 @@ public:
 	 * @brief Ctor.
 	 */
 	ProgressiveMeshGenerator();
-	~ProgressiveMeshGenerator();
+	virtual ~ProgressiveMeshGenerator();
 
 	/**
 	 * @brief Builds the Lod levels for a submesh based on a LodConfigList.

@@ -78,7 +78,7 @@ class PMWorker :
 {
 public:
 	PMWorker();
-	~PMWorker();
+	virtual ~PMWorker();
 private:
 	OGRE_AUTO_MUTEX; // Mutex to force processing one mesh at a time.
 	PMGenRequest* mRequest; // This is a copy of the current processed request from stack. This is needed to pass it to overloaded functions like bakeLods().
@@ -96,19 +96,20 @@ private:
  * @brief Injects the output of a request to the mesh in a thread safe way.
  */
 class PMInjector :
-	private Ogre::WorkQueue::ResponseHandler,
-	private Ogre::FrameListener
+	public Ogre::WorkQueue::ResponseHandler,
+	public Ogre::FrameListener
 {
 public:
 	PMInjector();
-	~PMInjector();
+	virtual ~PMInjector();
 
 	/**
 	 * @brief It will add every generated Lod to readyLods for injection, because this is not called on main thread.
 	 */
 	void handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ);
-private:
+protected:
 	OGRE_AUTO_MUTEX; // Mutex for readyLods access.
+
 	// TODO: use thread safe circular queue instead of mutex and stack.
 	std::stack<PMGenRequest*> readyLods;
 
@@ -119,6 +120,7 @@ private:
 	// Copies every generated Lod level to the mesh.
 	void inject(PMGenRequest* request);
 };
+
 /**
  * @brief Creates a request for the worker. The interface is compatible with ProgressiveMeshGenerator.
  */
@@ -126,6 +128,7 @@ class QueuedProgressiveMeshGenerator
 {
 public:
 	void build(LodConfig& lodConfig);
+	virtual ~QueuedProgressiveMeshGenerator();
 private:
 	void copyVertexBuffer(Ogre::VertexData* data, PMGenRequest::VertexBuffer& out);
 	void copyIndexBuffer(Ogre::IndexData* data, PMGenRequest::IndexBuffer& out);

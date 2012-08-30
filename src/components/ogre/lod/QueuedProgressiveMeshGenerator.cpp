@@ -58,9 +58,14 @@ Ember::OgreView::Lod::PMWorker::PMWorker()
 
 PMWorker::~PMWorker()
 {
-	Ogre::WorkQueue* wq = Ogre::Root::getSingleton().getWorkQueue();
-	unsigned short workQueueChannel = wq->getChannel("PMGen");
-	wq->removeRequestHandler(workQueueChannel, this);
+	Ogre::Root* root = Ogre::Root::getSingletonPtr();
+	if (root) {
+		Ogre::WorkQueue* wq = root->getWorkQueue();
+		if (wq) {
+			unsigned short workQueueChannel = wq->getChannel("PMGen");
+			wq->removeRequestHandler(workQueueChannel, this);
+		}
+	}
 }
 
 Ogre::WorkQueue::Response* PMWorker::handleRequest(const Ogre::WorkQueue::Request* req, const Ogre::WorkQueue* srcQ)
@@ -71,6 +76,7 @@ Ogre::WorkQueue::Response* PMWorker::handleRequest(const Ogre::WorkQueue::Reques
 	buildRequest(mRequest->config);
 	return OGRE_NEW Ogre::WorkQueue::Response(req, true, req->getData());
 }
+
 
 void PMWorker::buildRequest(LodConfig& lodConfigs)
 {
@@ -236,10 +242,15 @@ PMInjector::PMInjector()
 
 PMInjector::~PMInjector()
 {
-	Ogre::WorkQueue* wq = Ogre::Root::getSingleton().getWorkQueue();
-	unsigned short workQueueChannel = wq->getChannel("PMGen");
-	wq->removeResponseHandler(workQueueChannel, this);
-	Ogre::Root::getSingleton().removeFrameListener(this);
+	Ogre::Root* root = Ogre::Root::getSingletonPtr();
+	if (root) {
+		Ogre::WorkQueue* wq = root->getWorkQueue();
+		if (wq) {
+			unsigned short workQueueChannel = wq->getChannel("PMGen");
+			wq->removeResponseHandler(workQueueChannel, this);
+			root->removeFrameListener(this);
+		}
+	}
 }
 
 void PMInjector::handleResponse(const Ogre::WorkQueue::Response* res, const Ogre::WorkQueue* srcQ)
@@ -373,6 +384,10 @@ void QueuedProgressiveMeshGenerator::copyBuffers(Ogre::Mesh* mesh, PMGenRequest*
 			copyVertexBuffer(mesh->sharedVertexData, req->sharedVertexBuffer);
 		}
 	}
+}
+
+QueuedProgressiveMeshGenerator::~QueuedProgressiveMeshGenerator()
+{
 }
 
 }
