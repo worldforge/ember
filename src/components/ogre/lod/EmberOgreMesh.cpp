@@ -24,6 +24,7 @@
 
 #include <OgreSubMesh.h>
 #include <OgreLodStrategy.h>
+#include <OgrePixelCountLodStrategy.h>
 #include <OgreMeshManager.h>
 
 namespace Ember
@@ -66,6 +67,17 @@ void EmberOgreMesh::_configureMeshLodUsage(const LodConfig& lodConfigs)
 			lod.edgeData = 0;
 			lod.manualMesh.setNull();
 		}
+	}
+
+	// Fix bug in Ogre with pixel count Lod strategy.
+	// Changes [0, 20, 15, 10, 5] to [max, 20, 15, 10, 5].
+	// Fixes PixelCountLodStrategy::getIndex() function, which returned always 0 index.
+	if (getLodStrategy() == Ogre::PixelCountLodStrategy::getSingletonPtr()) {
+		mMeshLodUsageList[0].userValue = std::numeric_limits<Ogre::Real>::max();
+		mMeshLodUsageList[0].value = std::numeric_limits<Ogre::Real>::max();
+	} else {
+		mMeshLodUsageList[0].userValue = 0;
+		mMeshLodUsageList[0].value = 0;
 	}
 }
 void EmberOgreMesh::loadImpl()
