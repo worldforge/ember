@@ -61,10 +61,18 @@ void MeshInfoProvider::calcUniqueVertexCount(UniqueVertexSet& uniqueVertexSet, c
 
 size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::Mesh* mesh)
 {
+	static std::string mLastComputedMesh;
+	static size_t mLastUniqueVertexCount;
+
+	if (mLastComputedMesh == mesh->getName()) {
+		return mLastUniqueVertexCount;
+	}
+	mLastComputedMesh = mesh->getName();
+
 	bool addedShared = false;
 	size_t vertexCount = 0;
 	unsigned short submeshCount = mesh->getNumSubMeshes();
-	//Loop to determine vertex count for tuning hash table size.
+	// Loop to determine vertex count for tuning hash table size.
 	for (unsigned short i = 0; i < submeshCount; i++) {
 		const Ogre::SubMesh* submesh = mesh->getSubMesh(i);
 		if (submesh->useSharedVertices) {
@@ -94,7 +102,8 @@ size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::Mesh* mesh)
 		}
 	}
 
-	return uniqueVertexSet.size();
+	mLastUniqueVertexCount = uniqueVertexSet.size();
+	return mLastUniqueVertexCount;
 }
 
 size_t MeshInfoProvider::calcUniqueVertexCount(const Ogre::VertexData& data)
@@ -193,12 +202,12 @@ MeshInfoProvider::~MeshInfoProvider()
 	mEntityRenderer->getSceneManager()->removeLodListener(this);
 }
 
-size_t MeshInfoProvider::UniqueVertexHash::operator()( const Ogre::Vector3& v ) const
+size_t MeshInfoProvider::UniqueVertexHash::operator() (const Ogre::Vector3& v) const
 {
 	boost::hash<Ogre::Real> hasher;
 	return hasher(v.x)
-		^ hasher(v.y)
-		^ hasher(v.z);
+	       ^ hasher(v.y)
+	       ^ hasher(v.z);
 }
 
 }

@@ -30,13 +30,13 @@ namespace Gui
 {
 
 class MeshInfoProvider :
-public Ogre::LodListener
+	public Ogre::LodListener
 {
 public:
 
 	sigc::signal<void> EventLodChanged;
 
-	MeshInfoProvider(OgreEntityRenderer * entityRenderer);
+	MeshInfoProvider(OgreEntityRenderer* entityRenderer);
 	~MeshInfoProvider();
 	std::string getInfo(int submeshIndex);
 	std::string getPreviewInfo();
