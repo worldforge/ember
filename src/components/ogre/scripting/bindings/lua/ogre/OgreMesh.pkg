@@ -136,8 +136,8 @@ namespace Ogre {
         */
          const Ogre::AxisAlignedBox& getBounds() const;
 
-		/** Gets the radius of the bounding sphere surrounding this mesh. */
-// 		Real getBoundingSphereRadius(void) const;
+        /** Gets the radius of the bounding sphere surrounding this mesh. */
+        float getBoundingSphereRadius(void) const;
 
         /** Manually set the bounding box for this Mesh.
             @remarks
@@ -280,7 +280,7 @@ namespace Ogre {
 
 		/** Retrieves the level of detail index for the given depth value. 
 		*/
-// 		ushort getLodIndex(Real depth) const;
+ 		unsigned short getLodIndex(float depth) const;
 
 		/** Retrieves the level of detail index for the given squared depth value. 
 		@remarks
@@ -510,6 +510,8 @@ namespace Ogre {
         */
 //         bool getAutoBuildEdgeLists(void) const { return mAutoBuildEdgeLists; }
 
+	/** Get lod strategy used by this mesh. */
+        const LodStrategy *getLodStrategy() const;
 
     };
 

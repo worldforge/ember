@@ -108,10 +108,7 @@ namespace Ogre {
         */
         const std::string& getName(void) const;
 
-//         ResourceHandle getHandle(void) const
-//         {
-//             return mHandle;
-//         }
+	Ogre::ResourceHandle getHandle(void) const;
 
         /** Returns true if the Resource has been loaded, false otherwise.
         */
