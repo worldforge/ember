@@ -51,6 +51,13 @@ public:
      */
     Ogre::Entity* getEntity();
 
+    void setAutoShowFull(bool showFull);
+    
+    bool getWireframeMode();
+    void setWireframeMode(bool enabled);
+
+    void setForcedLodLevel(int lodLevel);
+    void clearForcedLodLevel();
 
 };
 }

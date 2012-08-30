@@ -31,14 +31,19 @@
 #include <OgreSceneNode.h>
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
+#include <OgrePixelCountLodStrategy.h>
 #include <CEGUIImage.h>
 #include <elements/CEGUIGUISheet.h>
 
-namespace Ember {
-namespace OgreView {
-namespace Gui {
+namespace Ember
+{
+namespace OgreView
+{
+namespace Gui
+{
 
-OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) : MovableObjectRenderer(image), mEntity(0)
+OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
+	MovableObjectRenderer(image), mEntity(0)
 {
 }
 
@@ -54,13 +59,11 @@ Ogre::Entity* OgreEntityRenderer::getEntity()
 
 void OgreEntityRenderer::showEntity(const std::string& mesh)
 {
-	if (mEntity) {
-		mTexture->getRenderContext()->getSceneNode()->getCreator()->destroyEntity(mEntity);
-	}
-	std::string meshName(mTexture->getImage()->getName().c_str());
-	meshName += "_entity";
+	unloadEntity();
 	try {
-		mEntity =  mTexture->getRenderContext()->getSceneNode()->getCreator()->createEntity(meshName , mesh);
+		std::string entityName(mTexture->getImage()->getName().c_str());
+		entityName += "_entity";
+		mEntity = mTexture->getRenderContext()->getSceneNode()->getCreator()->createEntity(entityName, mesh);
 		setEntity(mEntity);
 		mTexture->getRenderContext()->setActive(true);
 	} catch (const std::exception& ex) {
@@ -93,11 +96,35 @@ Ogre::SceneManager* OgreEntityRenderer::getSceneManager()
 
 void OgreEntityRenderer::unloadEntity()
 {
+
 	Ogre::SceneNode* node = mTexture->getRenderContext()->getSceneNode();
 	node->detachAllObjects();
-	Ogre::SceneManager* scenemgr = mTexture->getRenderContext()->getSceneManager();
-	scenemgr->destroyEntity(mEntity);
-	mEntity = NULL;
+	if (mEntity) {
+		Ogre::SceneManager* scenemgr = mTexture->getRenderContext()->getSceneManager();
+		scenemgr->destroyEntity(mEntity);
+		mEntity = NULL;
+	}
+}
+
+bool OgreEntityRenderer::getWireframeMode()
+{
+	return (mTexture->getRenderContext()->getCamera()->getPolygonMode() == Ogre::PM_WIREFRAME);
+}
+
+void OgreEntityRenderer::setWireframeMode(bool enabled)
+{
+	Ogre::PolygonMode mode = enabled ? Ogre::PM_WIREFRAME : Ogre::PM_SOLID;
+	mTexture->getRenderContext()->getCamera()->setPolygonMode(mode);
+}
+
+void OgreEntityRenderer::setForcedLodLevel(int lodLevel)
+{
+	mEntity->setMeshLodBias(1, lodLevel, lodLevel);
+}
+
+void OgreEntityRenderer::clearForcedLodLevel()
+{
+	mEntity->setMeshLodBias(1.0, 0, std::numeric_limits<unsigned short>::max());
 }
 
 }
