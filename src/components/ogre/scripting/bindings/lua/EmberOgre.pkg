@@ -71,6 +71,7 @@ $pfile "Convert.pkg"
 $pfile "LodDefinition.pkg"
 $pfile "LodDefinitionManager.pkg"
 $pfile "LodManager.pkg"
+$pfile "PMInjectorSignaler.pkg"
 
 $pfile "SimpleRenderContext.pkg"
 $pfile "MovableObjectRenderer.pkg"

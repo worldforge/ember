@@ -62,7 +62,10 @@ class EntityTalk;
 }
 namespace OgreView
 {
-
+namespace Lod
+{
+class LodConfig;
+}
 class EmberEntity;
 struct EntityPickResult;
 struct MousePickerArgs;
