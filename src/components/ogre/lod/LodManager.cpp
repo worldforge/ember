@@ -62,37 +62,49 @@ void LodManager::loadLod(Ogre::MeshPtr mesh)
 
 void LodManager::loadLod(Ogre::MeshPtr mesh, const LodDefinition& def)
 {
-	assert(mesh->getNumLodLevels() == 1);
 	if (def.getUseAutomaticLod()) {
 		loadAutomaticLod(mesh);
+	} else if (def.getLodDistanceCount() == 0) {
+		mesh->removeLodLevels();
+		return;
 	} else {
-		// Load manual configs.
-		LodConfig lodConfigs;
-		lodConfigs.mesh = mesh;
-		mesh->setLodStrategy(&Ogre::DistanceLodStrategy::getSingleton());
-		const LodDefinition::LodDistanceMap& data = def.getManualLodData();
-		LodDefinition::LodDistanceMap::const_iterator it;
-		for (it = data.begin(); it != data.end(); it++) {
-			const LodDistance& dist = it->second;
-
-			if (dist.getType() == LodDistance::LDT_AUTOMATIC_VERTEX_REDUCTION) {
-				LodLevel lodLevel;
-				lodLevel.distance = it->first;
-				lodLevel.reductionMethod = dist.getReductionMethod();
-				lodLevel.reductionValue = dist.getReductionValue();
-				lodConfigs.levels.push_back(lodLevel);
-			} else {
-				mesh->createManualLodLevel(it->first, dist.getMeshName());
-			}
+		Ogre::LodStrategy* strategy;
+		if (def.getStrategy() == LodDefinition::LS_DISTANCE) {
+			strategy = &Ogre::DistanceLodStrategy::getSingleton();
+		} else {
+			strategy = &Ogre::PixelCountLodStrategy::getSingleton();
 		}
-		if (lodConfigs.levels.size() > 0) {
+		mesh->setLodStrategy(strategy);
 
+		if (def.getType() == LodDefinition::LT_AUTOMATIC_VERTEX_REDUCTION) {
+			// Automatic vertex reduction
+			LodConfig lodConfig;
+			lodConfig.mesh = mesh;
+			const LodDefinition::LodDistanceMap& data = def.getManualLodData();
+			if (def.getStrategy() == LodDefinition::LS_DISTANCE) {
+				// TODO: Use C++11 lambda, instead of template.
+				loadAutomaticLodImpl(data.begin(), data.end(), lodConfig);
+			} else {
+				loadAutomaticLodImpl(data.rbegin(), data.rend(), lodConfig);
+			}
 			// Uncomment the ProgressiveMesh of your choice.
 			// NOTE: OgreProgressiveMeshExt doesn't support collapse cost based reduction.
 			// OgreProgressiveMeshExt pm;
 			// ProgressiveMeshGenerator pm;
 			QueuedProgressiveMeshGenerator pm;
-			pm.build(lodConfigs);
+			pm.build(lodConfig);
+		} else {
+			// User created Lod
+
+			mesh->removeLodLevels();
+
+			const LodDefinition::LodDistanceMap& data = def.getManualLodData();
+			if (def.getStrategy() == LodDefinition::LS_DISTANCE) {
+				// TODO: Use C++11 lambda, instead of template.
+				loadUserLodImpl(data.begin(), data.end(), mesh.get());
+			} else {
+				loadUserLodImpl(data.rbegin(), data.rend(), mesh.get());
+			}
 		}
 	}
 }
@@ -129,6 +141,31 @@ void LodManager::loadAutomaticLod(Ogre::MeshPtr mesh)
 
 	QueuedProgressiveMeshGenerator pm;
 	pm.build(lodConfigs);
+}
+
+template<typename T>
+void LodManager::loadAutomaticLodImpl(T it, T itEnd, LodConfig& lodConfig)
+{
+	for (; it != itEnd; it++) {
+		const LodDistance& dist = it->second;
+		LodLevel lodLevel;
+		lodLevel.distance = it->first;
+		lodLevel.reductionMethod = dist.getReductionMethod();
+		lodLevel.reductionValue = dist.getReductionValue();
+		lodConfig.levels.push_back(lodLevel);
+	}
+}
+
+template<typename T>
+void LodManager::loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh)
+{
+	for (; it != itEnd; it++) {
+		const Ogre::String& meshName = it->second.getMeshName();
+		if (meshName != "") {
+			assert(Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup(meshName));
+			mesh->createManualLodLevel(it->first, meshName);
+		}
+	}
 }
 
 }
