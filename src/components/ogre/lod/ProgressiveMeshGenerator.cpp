@@ -647,22 +647,24 @@ void ProgressiveMeshGenerator::updateVertexCollapseCost(PMVertex* vertex)
 	}
 }
 
-void ProgressiveMeshGenerator::build(LodConfig& lodConfigs)
+void ProgressiveMeshGenerator::build(LodConfig& lodConfig)
 {
 #ifndef NDEBUG
 
 	// Do not call this with empty Lod.
-	assert(!lodConfigs.levels.empty());
+	assert(!lodConfig.levels.empty());
 
 	// Too many lod levels.
-	assert(lodConfigs.levels.size() <= 0xffff);
+	assert(lodConfig.levels.size() <= 0xffff);
 
 	// Lod distances needs to be sorted.
-	for (int i = 1; i < lodConfigs.levels.size(); i++) {
-		assert(lodConfigs.levels[i - 1].distance < lodConfigs.levels[i].distance);
+	Ogre::Mesh::LodValueList values;
+	for (int i = 0; i < lodConfig.levels.size(); i++) {
+		values.push_back(lodConfig.levels[i].distance);
 	}
+	mMesh->getLodStrategy()->assertSorted(values);
 #endif // if ifndef NDEBUG
-	mMesh = lodConfigs.mesh;
+	mMesh = lodConfig.mesh;
 	mMeshBoundingSphereRadius = mMesh->getBoundingSphereRadius();
 	mMesh->removeLodLevels();
 	tuneContainerSize();
@@ -670,9 +672,9 @@ void ProgressiveMeshGenerator::build(LodConfig& lodConfigs)
 	computeCosts(); // Calculate all collapse costs
 	assertValidMesh();
 
-	computeLods(lodConfigs);
+	computeLods(lodConfig);
 
-	static_cast<EmberOgreMesh*>(mMesh.get())->_configureMeshLodUsage(lodConfigs);
+	static_cast<EmberOgreMesh*>(mMesh.get())->_configureMeshLodUsage(lodConfig);
 }
 
 void ProgressiveMeshGenerator::computeLods(LodConfig& lodConfigs)
@@ -911,8 +913,15 @@ size_t ProgressiveMeshGenerator::calcLodVertexCount(const LodLevel& lodConfig)
 		return uniqueVertices - (uniqueVertices * lodConfig.reductionValue);
 
 	case LodLevel::VRM_CONSTANT:
+	{
 		mCollapseCostLimit = NEVER_COLLAPSE_COST;
-		return uniqueVertices - lodConfig.reductionValue;
+		size_t reduction = lodConfig.reductionValue;
+		if (reduction < uniqueVertices) {
+			return uniqueVertices - reduction;
+		} else {
+			return 0;
+		}
+	}
 
 	case LodLevel::VRM_COLLAPSE_COST:
 		mCollapseCostLimit = lodConfig.reductionValue;
