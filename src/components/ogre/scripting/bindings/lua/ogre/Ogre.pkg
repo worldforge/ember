@@ -30,5 +30,4 @@ $pfile "OgreGpuProgram.pkg"
 $pfile "OgreHighLevelGpuProgramManager.pkg"
 $pfile "OgreHighLevelGpuProgram.pkg"
 $pfile "OgreRoot.pkg"
-
-
+$pfile "OgreLodStrategy.pkg"
