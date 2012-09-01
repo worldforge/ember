@@ -68,7 +68,7 @@ namespace Gui
 {
 
 EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService, Authoring::EntityRecipe& recipe, bool randomizeOrientation, sigc::slot<void>& adapterValueChangedSlot) :
-	mWorld(world), mTypeService(typeService), mRecipe(recipe), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0), mRandomizeOrientation(randomizeOrientation)
+		mWorld(world), mTypeService(typeService), mRecipe(recipe), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0), mRandomizeOrientation(randomizeOrientation)
 {
 	mConnection = mRecipe.EventValueChanged.connect(adapterValueChangedSlot);
 
@@ -87,7 +87,9 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 	mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
 	//	delete mEntityNode;
 
-	mWorld.getSceneManager().destroyMovableObject(mModel);
+	if (mModel) {
+		mWorld.getSceneManager().destroyMovableObject(mModel);
+	}
 	mWorld.getSceneManager().destroyMovableObject(mAxisMarker);
 
 	// Deleting temporary entity
@@ -145,7 +147,7 @@ void EntityCreatorCreationInstance::createEntity()
 
 	// Making model from temporary entity
 	EntityCreatorActionCreator actionCreator(*this);
-	std::auto_ptr < EntityMapping::EntityMapping > modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, 0));
+	std::auto_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*mEntity, actionCreator, 0));
 	if (modelMapping.get()) {
 		modelMapping->initialize();
 	}
