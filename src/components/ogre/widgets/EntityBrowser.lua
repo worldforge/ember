@@ -182,17 +182,15 @@ function EntityBrowser:shutdown()
 end
 
 
-local entityBrowserInit = function()
+connect(connectors, emberOgre.EventWorldCreated, function(world)
 	local entityBrowser = {connectors = {}, listbox = nil, sceneNodes = {listbox = nil, selectedSceneNode = nil} }
 	setmetatable(entityBrowser, {__index = EntityBrowser})
 	
 	entityBrowser:buildWidget()
 
-	connect(entityBrowser.connectors, emberOgre.EventGUIManagerBeingDestroyed, function()
+	connect(entityBrowser.connectors, emberOgre.EventWorldBeingDestroyed, function()
 		entityBrowser:shutdown()
 		entityBrowser = nil
 	end)
 end
-entityBrowserInit()
-
 
