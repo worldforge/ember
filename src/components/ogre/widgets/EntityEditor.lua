@@ -1125,9 +1125,10 @@ function EntityEditor:buildWidget()
 				end)
 				cancelButton.method = function()
 					worldDumper:cancel()
+					self.widget:getWindow("DumpStatus"):setText("Cancelled")
 				end
 				cancelButton:setVisible(true)
-				worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/world.xml")
+				worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/dump_" .. self.instance.entity:getId() .. ".xml", self.instance.entity:getId())
 				return true
 			end)
 
@@ -1145,9 +1146,10 @@ function EntityEditor:buildWidget()
 				end)
 				cancelButton.method = function()
 					worldLoader:cancel()
+					self.widget:getWindow("DumpStatus"):setText("Cancelled")
 				end
 				cancelButton:setVisible(true)
-				worldLoader:start(emberServices:getConfigService():getHomeDirectory() .. "/world.xml")
+				worldLoader:start(emberServices:getConfigService():getHomeDirectory() .. "/dump_" .. self.instance.entity:getId() .. ".xml")
 				return true
 			end)
 		end
