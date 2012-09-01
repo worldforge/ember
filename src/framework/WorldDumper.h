@@ -73,8 +73,9 @@ public:
 	 * @brief Starts the dumping process.
 	 * It will be carried out async, so you must listen to EventCompleted to know when it's done.
 	 * @param filename The file name to where the dump should be written.
+	 * @param entityId The entity id of the entity to dump. If none is specified the root entity ("0") will be dumped.
 	 */
-	void start(const std::string& filename);
+	void start(const std::string& filename, const std::string& entityId = "0");
 
 	/**
 	 * @brief Cancels the dumping.

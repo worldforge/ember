@@ -136,7 +136,7 @@ void WorldDumper::infoArrived(const Operation & op)
 	mQueue.pop_front();
 }
 
-void WorldDumper::start(const std::string& filename)
+void WorldDumper::start(const std::string& filename, const std::string& entityId)
 {
 	S_LOG_INFO("Starting world dump to file '" << filename << "'.");
 	mFile.open(filename.c_str(), std::ios::out);
@@ -153,7 +153,7 @@ void WorldDumper::start(const std::string& filename)
 
 	Anonymous get_arg;
 	get_arg->setObjtype("obj");
-	get_arg->setId("0");
+	get_arg->setId(entityId);
 	get->setArgs1(get_arg);
 
 	get->setFrom(mAccount.getId());
