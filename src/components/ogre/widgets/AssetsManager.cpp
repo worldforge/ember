@@ -42,6 +42,8 @@
 #include "../GUIManager.h"
 
 #include "framework/Exception.h"
+#include "framework/osdir.h"
+
 #include <OgreTextureManager.h>
 #include <OgreTexture.h>
 #include <OgreString.h>
@@ -175,6 +177,15 @@ bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)
 	if (filePath != "") {
 		Ogre::MeshSerializer serializer;
 		try {
+			std::string dirname(filePath);
+			size_t end = dirname.find_last_of("/\\");
+			if (end != std::string::npos) {
+				dirname = dirname.substr(0, end);
+			}
+			oslink::directory osdir(dirname);
+			if (!osdir.isExisting()) {
+				oslink::directory::mkdir(dirname.c_str());
+			}
 			serializer.exportMesh(mesh.get(), filePath);
 			S_LOG_INFO("Exported mesh " << filePath);
 		} catch (const Ogre::Exception& ex) {
