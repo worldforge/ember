@@ -1,200 +1,221 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{0.00,400.0},{0.00,500.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Entity editor'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/StaticText' Name='EntityInfo'>
-				<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1,0},{0,30}}'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Text' Value='test' />
-				<Property Name='FrameEnabled' Value='false' />
-				<Property Name='BackgroundEnabled' Value='false' />
-			</Window>
-			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
-				<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.00,-70.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,30.0}}'/>
-				<Property Name='InheritsAlpha' Value='false'/>
-				<Window Type='DefaultWindow' Name='AttributesPanel'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Attributes'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='true'/>
-					<Window Type='EmberLook/ScrollablePane' Name='AttributesContainer'>
-						<Property Name='UnifiedSize' Value='{{1,0.0},{1.00,0.0}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-				</Window>
-				<Window Type='DefaultWindow' Name='KnowledgePanel'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Knowledge'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<!-- Property Name='Visible' Value='true'/ -->
-					<Window Type='EmberLook/ItemListbox' Name='KnowledgeList'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-						<Property Name='UnifiedSize' Value='{{0,400},{1,-75}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-					<Window Type='EmberLook/Button' Name='RefreshKnowledge'>
-						<Property Name='UnifiedPosition' Value='{{0,5},{1.0,-70}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>					
-					<Window Type='EmberLook/Editbox' Name='NewKnowledgePredicate'>
-						<Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}'/>
-						<Property Name='UnifiedSize' Value='{{0,70},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='Tooltip' Value='The predicatel.'/>
-					</Window>
-					<Window Type='EmberLook/Editbox' Name='NewKnowledgeSubject'>
-						<Property Name='UnifiedPosition' Value='{{0,80},{1.0,-30}}'/>
-						<Property Name='UnifiedSize' Value='{{0,70},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='Tooltip' Value='The subject.'/>
-					</Window>
-					<Window Type='EmberLook/Editbox' Name='NewKnowledgeKnowledge'>
-						<Property Name='UnifiedPosition' Value='{{0,155},{1.0,-30}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-185},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='Tooltip' Value='The knowledge.'/>
-					</Window>
-					<Window Type='EmberLook/Button' Name='NewKnowledgeAdd'>
-						<Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-30}}'/>
-						<Property Name='UnifiedSize' Value='{{0,35},{0,20}}'/>
-						<Property Name='Text' Value='Add'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>					
-				</Window>
-				<Window Type='DefaultWindow' Name='GoalsPanel'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Goals'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<!-- Property Name='Visible' Value='true'/ -->
-					<Window Type='EmberLook/ItemListbox' Name='GoalList'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-						<Property Name='UnifiedSize' Value='{{0,400},{1,-75}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-					<Window Type='EmberLook/Button' Name='RefreshGoals'>
-						<Property Name='UnifiedPosition' Value='{{0,5},{1.0,-70}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>					
-					<Window Type='EmberLook/Editbox' Name='NewGoalVerb'>
-						<Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='Tooltip' Value='The verb which will be associated with the goal.'/>
-					</Window>
-					<Window Type='EmberLook/Editbox' Name='NewGoalDefinition'>
-						<Property Name='UnifiedPosition' Value='{{0,80},{1.0,-30}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-125},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='Tooltip' Value='The goal definition.'/>
-					</Window>
-					<Window Type='EmberLook/Button' Name='NewGoalAdd'>
-						<Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-30}}'/>
-						<Property Name='UnifiedSize' Value='{{0,35},{0,20}}'/>
-						<Property Name='Text' Value='Add'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>					
-				</Window>
-				<Window Type='DefaultWindow' Name='ChildrenPanel'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Children'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<!-- Property Name='Visible' Value='true'/ -->
-					<Window Type='EmberLook/Listbox' Name='ChildList'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-						<Property Name='UnifiedSize' Value='{{0,200},{1,-25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-					<Window Type='EmberLook/Editbox' Name='FilterChildren'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-				</Window>
-				<Window Type='DefaultWindow' Name='ModelPanel'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Model'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<!-- Property Name='Visible' Value='true'/ -->
-					<Window Type='EmberLook/StaticText' Name='ModelInfo'>
-						<Property Name='UnifiedPosition' Value='{{0.0},{0,0}}'/>
-						<Property Name='UnifiedSize' Value='{{1,0},{0,100}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='FrameEnabled' Value='false' />
-						<Property Name='BackgroundEnabled' Value='false' />
-					</Window>
-					<Window Type='EmberLook/Checkbox' Name='ShowOgreBbox'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{0,100}}'/>
-						<Property Name='UnifiedSize' Value='{{1,0},{0,20}}'/>
-						<Property Name='Text' Value='Show Ogre bbox'/>
-					</Window>
-					<Window Type='EmberLook/Checkbox' Name='ShowErisBbox'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{0,120}}'/>
-						<Property Name='UnifiedSize' Value='{{1,0},{0,20}}'/>
-						<Property Name='Text' Value='Show Eris bbox'/>
-					</Window>
-					<!-- Window Type='DefaultWindow' Name='ModelPanelStackable'>
-						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-						<Property Name='InheritsAlpha' Value='false'/>
-					</Window -->
-				</Window>
-				<Window Type='DefaultWindow' Name='AtlasPanel'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Atlas'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<!-- Property Name='Visible' Value='true'/ -->
-					<Window Type='EmberLook/MultiLineEditbox' Name='AtlasTextbox'>
-						<Property Name='UnifiedSize' Value='{{1.0,-10.0},{1.0,-40.0}}'/>
-						<Property Name='UnifiedPosition' Value='{{0.0,5.0},{0.0,5.0}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='false'/>
-						<Property Name='ReadOnly' Value='true'/>
-					</Window>
-					<Window Type='EmberLook/Button' Name='RefreshAtlas'>
-						<Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-					</Window>
-				</Window>
-			</Window>
-			<Window Type='EmberLook/Button' Name='Submit'>
-				<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
-				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-				<Property Name='Text' Value='Submit'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
-			<Window Type='EmberLook/Button' Name='DeleteButton'>
-				<Property Name='UnifiedPosition' Value='{{0,80},{1.0,-20}}'/>
-				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-				<Property Name='Text' Value='Delete'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
-			<Window Type='EmberLook/Button' Name='ExportButton'>
-				<Property Name='UnifiedPosition' Value='{{0,160},{1.0,-20}}'/>
-				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-				<Property Name='Text' Value='Export'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
-			<Window Type='EmberLook/Button' Name='RefreshButton'>
-				<Property Name='UnifiedPosition' Value='{{0,240},{1.0,-20}}'/>
-				<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-				<Property Name='Text' Value='Refresh'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-			</Window>
-		</Window>
-	</Window>
+    <Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
+        <Property Name='UnifiedSize' Value='{{0.00,400.0},{0.00,500.0}}' />
+        <Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}' />
+        <Property Name='Alpha' Value='0.6' />
+        <Property Name='Text' Value='Entity editor' />
+        <Window Type='DefaultWindow' Name='MainInnerWindow'>
+            <Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}' />
+            <Property Name='UnifiedSize' Value='{{1,-8},{1,0}}' />
+            <Property Name='InheritsAlpha' Value='True' />
+            <Window Type='EmberLook/StaticText' Name='EntityInfo'>
+                <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
+                <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
+                <Property Name='InheritsAlpha' Value='True' />
+                <Property Name='Text' Value='test' />
+                <Property Name='FrameEnabled' Value='false' />
+                <Property Name='BackgroundEnabled' Value='false' />
+            </Window>
+            <Window Type='EmberLook/TabControl' Name='MainTabControl'>
+                <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.00,-70.0}}' />
+                <Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,30.0}}' />
+                <Property Name='InheritsAlpha' Value='false' />
+                <Window Type='DefaultWindow' Name='AttributesPanel'>
+                    <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                    <Property Name='Text' Value='Attributes' />
+                    <Property Name='InheritsAlpha' Value='false' />
+                    <Property Name='Visible' Value='true' />
+                    <Window Type='EmberLook/ScrollablePane' Name='AttributesContainer'>
+                        <Property Name='UnifiedSize' Value='{{1,0.0},{1.00,0.0}}' />
+                        <Property Name='Text' Value='' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                </Window>
+                <Window Type='DefaultWindow' Name='KnowledgePanel'>
+                    <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                    <Property Name='Text' Value='Knowledge' />
+                    <Property Name='InheritsAlpha' Value='false' />
+                    <!-- Property Name='Visible' Value='true'/ -->
+                    <Window Type='EmberLook/ItemListbox' Name='KnowledgeList'>
+                        <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
+                        <Property Name='UnifiedSize' Value='{{0,400},{1,-75}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                    <Window Type='EmberLook/Button' Name='RefreshKnowledge'>
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-70}}' />
+                        <Property Name='UnifiedSize' Value='{{0,75},{0,20}}' />
+                        <Property Name='Text' Value='Refresh' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                    <Window Type='EmberLook/Editbox' Name='NewKnowledgePredicate'>
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}' />
+                        <Property Name='UnifiedSize' Value='{{0,70},{0,25}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                        <Property Name='Tooltip' Value='The predicatel.' />
+                    </Window>
+                    <Window Type='EmberLook/Editbox' Name='NewKnowledgeSubject'>
+                        <Property Name='UnifiedPosition' Value='{{0,80},{1.0,-30}}' />
+                        <Property Name='UnifiedSize' Value='{{0,70},{0,25}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                        <Property Name='Tooltip' Value='The subject.' />
+                    </Window>
+                    <Window Type='EmberLook/Editbox' Name='NewKnowledgeKnowledge'>
+                        <Property Name='UnifiedPosition' Value='{{0,155},{1.0,-30}}' />
+                        <Property Name='UnifiedSize' Value='{{1,-185},{0,25}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                        <Property Name='Tooltip' Value='The knowledge.' />
+                    </Window>
+                    <Window Type='EmberLook/Button' Name='NewKnowledgeAdd'>
+                        <Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-30}}' />
+                        <Property Name='UnifiedSize' Value='{{0,35},{0,20}}' />
+                        <Property Name='Text' Value='Add' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                </Window>
+                <Window Type='DefaultWindow' Name='GoalsPanel'>
+                    <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                    <Property Name='Text' Value='Goals' />
+                    <Property Name='InheritsAlpha' Value='false' />
+                    <!-- Property Name='Visible' Value='true'/ -->
+                    <Window Type='EmberLook/ItemListbox' Name='GoalList'>
+                        <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
+                        <Property Name='UnifiedSize' Value='{{0,400},{1,-75}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                    <Window Type='EmberLook/Button' Name='RefreshGoals'>
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-70}}' />
+                        <Property Name='UnifiedSize' Value='{{0,75},{0,20}}' />
+                        <Property Name='Text' Value='Refresh' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                    <Window Type='EmberLook/Editbox' Name='NewGoalVerb'>
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}' />
+                        <Property Name='UnifiedSize' Value='{{0,75},{0,25}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                        <Property Name='Tooltip' Value='The verb which will be associated with the goal.' />
+                    </Window>
+                    <Window Type='EmberLook/Editbox' Name='NewGoalDefinition'>
+                        <Property Name='UnifiedPosition' Value='{{0,80},{1.0,-30}}' />
+                        <Property Name='UnifiedSize' Value='{{1,-125},{0,25}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                        <Property Name='Tooltip' Value='The goal definition.' />
+                    </Window>
+                    <Window Type='EmberLook/Button' Name='NewGoalAdd'>
+                        <Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-30}}' />
+                        <Property Name='UnifiedSize' Value='{{0,35},{0,20}}' />
+                        <Property Name='Text' Value='Add' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                </Window>
+                <Window Type='DefaultWindow' Name='ChildrenPanel'>
+                    <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                    <Property Name='Text' Value='Children' />
+                    <Property Name='InheritsAlpha' Value='false' />
+                    <!-- Property Name='Visible' Value='true'/ -->
+                    <Window Type='EmberLook/Listbox' Name='ChildList'>
+                        <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
+                        <Property Name='UnifiedSize' Value='{{0,200},{1,-25}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                    <Window Type='EmberLook/Editbox' Name='FilterChildren'>
+                        <Property Name='UnifiedPosition' Value='{{0,0},{1.0,-25}}' />
+                        <Property Name='UnifiedSize' Value='{{0,75},{0,25}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                </Window>
+                <Window Type='DefaultWindow' Name='ModelPanel'>
+                    <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                    <Property Name='Text' Value='Model' />
+                    <Property Name='InheritsAlpha' Value='false' />
+                    <!-- Property Name='Visible' Value='true'/ -->
+                    <Window Type='EmberLook/StaticText' Name='ModelInfo'>
+                        <Property Name='UnifiedPosition' Value='{{0.0},{0,0}}' />
+                        <Property Name='UnifiedSize' Value='{{1,0},{0,100}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                        <Property Name='FrameEnabled' Value='false' />
+                        <Property Name='BackgroundEnabled' Value='false' />
+                    </Window>
+                    <Window Type='EmberLook/Checkbox' Name='ShowOgreBbox'>
+                        <Property Name='UnifiedPosition' Value='{{0,0},{0,100}}' />
+                        <Property Name='UnifiedSize' Value='{{1,0},{0,20}}' />
+                        <Property Name='Text' Value='Show Ogre bbox' />
+                    </Window>
+                    <Window Type='EmberLook/Checkbox' Name='ShowErisBbox'>
+                        <Property Name='UnifiedPosition' Value='{{0,0},{0,120}}' />
+                        <Property Name='UnifiedSize' Value='{{1,0},{0,20}}' />
+                        <Property Name='Text' Value='Show Eris bbox' />
+                    </Window>
+                </Window>
+                <Window Type='DefaultWindow' Name='AtlasPanel'>
+                    <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                    <Property Name='Text' Value='Atlas' />
+                    <Property Name='InheritsAlpha' Value='false' />
+                    <!-- Property Name='Visible' Value='true'/ -->
+                    <Window Type='EmberLook/MultiLineEditbox' Name='AtlasTextbox'>
+                        <Property Name='UnifiedSize' Value='{{1.0,-10.0},{1.0,-40.0}}' />
+                        <Property Name='UnifiedPosition' Value='{{0.0,5.0},{0.0,5.0}}' />
+                        <Property Name='Text' Value='' />
+                        <Property Name='InheritsAlpha' Value='false' />
+                        <Property Name='ReadOnly' Value='true' />
+                    </Window>
+                    <Window Type='EmberLook/Button' Name='RefreshAtlas'>
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}' />
+                        <Property Name='UnifiedSize' Value='{{0,75},{0,20}}' />
+                        <Property Name='Text' Value='Refresh' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
+                </Window>
+                <Window Type='DefaultWindow' Name='DumpPanel'>
+                    <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
+                    <Property Name='Text' Value='Export/Import' />
+                    <Property Name='InheritsAlpha' Value='false' />
+                    <Window Type='EmberLook/StaticText' Name='DumpStatus'>
+                        <Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,20.0}}' />
+                        <Property Name='UnifiedPosition' Value='{{0,0},{0,20}}' />
+                        <Property Name='HorzFormatting' Value='HorzCentred' />
+                        <Property Name='BackgroundEnabled' Value='false' />
+                        <Property Name='FrameEnabled' Value='false' />
+                    </Window>
+                    <Window Type='EmberLook/Button' Name='DumpCancel'>
+                        <Property Name='Text' Value='Cancel' />
+                        <Property Name='Tooltip' Value='Cancels the ongoing action.' />
+                        <Property Name='UnifiedPosition' Value='{{0.5,-45},{0,45}}' />
+                        <Property Name='UnifiedSize' Value='{{0,70},{0,20}}' />
+                        <Property Name='Visible' Value='false' />
+                    </Window>
+                    <Window Type='EmberLook/Button' Name='DumpWorld'>
+                        <Property Name='Text' Value='Dump world' />
+                        <Property Name='Tooltip' Value='Dumps the world to a file on disk.' />
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1,-25}}' />
+                        <Property Name='UnifiedSize' Value='{{0,90},{0,20}}' />
+                    </Window>
+                    <Window Type='EmberLook/Button' Name='LoadWorld'>
+                        <Property Name='Text' Value='Load world' />
+                        <Property Name='Tooltip' Value='Loads a world from a file on disk.' />
+                        <Property Name='UnifiedPosition' Value='{{0,95},{1,-25}}' />
+                        <Property Name='UnifiedSize' Value='{{0,90},{0,20}}' />
+                    </Window>
+                </Window>
+            </Window>
+            <Window Type='EmberLook/Button' Name='Submit'>
+                <Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}' />
+                <Property Name='UnifiedSize' Value='{{0,75},{0,20}}' />
+                <Property Name='Text' Value='Submit' />
+                <Property Name='InheritsAlpha' Value='True' />
+            </Window>
+            <Window Type='EmberLook/Button' Name='DeleteButton'>
+                <Property Name='UnifiedPosition' Value='{{0,80},{1.0,-20}}' />
+                <Property Name='UnifiedSize' Value='{{0,75},{0,20}}' />
+                <Property Name='Text' Value='Delete' />
+                <Property Name='InheritsAlpha' Value='True' />
+            </Window>
+            <Window Type='EmberLook/Button' Name='RefreshButton'>
+                <Property Name='UnifiedPosition' Value='{{0,160},{1.0,-20}}' />
+                <Property Name='UnifiedSize' Value='{{0,75},{0,20}}' />
+                <Property Name='Text' Value='Refresh' />
+                <Property Name='InheritsAlpha' Value='True' />
+            </Window>
+        </Window>
+    </Window>
 </GUILayout>

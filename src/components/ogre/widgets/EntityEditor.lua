@@ -985,11 +985,6 @@ function EntityEditor:NewGoal_Clicked(args)
 	return true
 end
 
-function EntityEditor:ExportButton_Clicked(args)
-	emberOgre:getWorld():getEntityFactory():dumpAttributesOfEntity(self.instance.entity:getId())
-	return true
-end
-
 function EntityEditor:RefreshButton_Clicked(args)
 	if self.instance.entity then
 		self:editEntity(self.instance.entity)
@@ -1106,8 +1101,58 @@ function EntityEditor:buildWidget()
 	self.widget:getWindow("NewGoalAdd"):subscribeEvent("Clicked", self.NewGoal_Clicked, self)
 	self.widget:getWindow("Submit"):subscribeEvent("Clicked", self.Submit_Clicked, self)
 	self.widget:getWindow("DeleteButton"):subscribeEvent("Clicked", self.DeleteButton_Clicked, self)
-	self.widget:getWindow("ExportButton"):subscribeEvent("Clicked", self.ExportButton_Clicked, self)
 	self.widget:getWindow("RefreshButton"):subscribeEvent("Clicked", self.RefreshButton_Clicked, self)
+	
+	worldDumper = function()
+		local cancelButton = self.widget:getWindow("DumpCancel")
+		cancelButton:subscribeEvent("Clicked", function(args)
+			if cancelButton.method then
+				cancelButton.method()
+				return true
+			end
+		end)
+
+		self.widget:getWindow("DumpWorld"):subscribeEvent("Clicked", function(args)
+			local worldDumper = Ember.WorldDumper:new(emberServices:getServerService():getAccount())
+			self.widget:getWindow("DumpStatus"):setText("Dumping...")
+			createConnector(worldDumper.EventCompleted):connect(function()
+				self.widget:getWindow("DumpStatus"):setText("Done dumping.")
+				cancelButton:setVisible(false)
+				cancelButton.method = nil
+				worldDumper:delete()			
+			end)
+			createConnector(worldDumper.EventProgress):connect(function(entitiesDumped)
+				self.widget:getWindow("DumpStatus"):setText("Dumping, " .. entitiesDumped .. " dumped")
+			end)
+			cancelButton.method = function()
+				worldDumper:cancel()
+			end
+			cancelButton:setVisible(true)
+			worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/world.xml")
+			return true
+		end)
+
+		self.widget:getWindow("LoadWorld"):subscribeEvent("Clicked", function(args)
+			local worldLoader = Ember.WorldLoader:new(emberServices:getServerService():getAccount())
+			self.widget:getWindow("DumpStatus"):setText("Loading...")
+			createConnector(worldLoader.EventCompleted):connect(function()
+				self.widget:getWindow("DumpStatus"):setText("Done loading.")
+				cancelButton:setVisible(false)
+				cancelButton.method = nil
+				worldLoader:delete()			
+			end)
+			createConnector(worldLoader.EventProgress):connect(function(entitiesToLoad)
+				self.widget:getWindow("DumpStatus"):setText("Loading, " .. entitiesToLoad .. " left")
+			end)
+			cancelButton.method = function()
+				worldLoader:cancel()
+			end
+			cancelButton:setVisible(true)
+			worldLoader:start(emberServices:getConfigService():getHomeDirectory() .. "/world.xml")
+			return true
+		end)
+	end
+	worldDumper()
 	
 	--self.attributeStackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.attributesContainer)
 	self.widget:registerConsoleVisibilityToggleCommand("entityEditor")
