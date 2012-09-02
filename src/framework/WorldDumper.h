@@ -123,6 +123,7 @@ protected:
 	Atlas::Objects::ObjectsEncoder * mEncoder;
 	Atlas::Bridge * mFormatter;
 
+
 	/**
 	 * @brief The resulting xml document.
 	 */
@@ -149,6 +150,11 @@ protected:
 	 * @brief An optional description of the dump.
 	 */
 	std::string mDescription;
+
+	/**
+	 * @brief Keeps track of the number of outstanding get requests.
+	 */
+	size_t mOutstandingGetRequestCounter;
 
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void infoArrived(const Operation& op);

@@ -63,7 +63,7 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 WorldDumper::WorldDumper(Eris::Account& account) :
-		mAccount(account), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mXmlDocument(0), mEntityStream(0), mMindStream(0), mComplete(false), mCancelled(false)
+		mAccount(account), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mXmlDocument(0), mEntityStream(0), mMindStream(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0)
 {
 }
 
@@ -103,6 +103,7 @@ void WorldDumper::infoArrived(const Operation & op)
 		return;
 	}
 	S_LOG_VERBOSE("Got info when dumping.");
+	mOutstandingGetRequestCounter--;
 	++mCount;
 	EventProgress.emit(mCount);
 	//Make a copy so that we can sort the contains list and update it in the
@@ -119,25 +120,30 @@ void WorldDumper::infoArrived(const Operation & op)
 		mQueue.push_back(*I);
 	}
 
-	if (mQueue.empty()) {
+	if (mQueue.empty() && mOutstandingGetRequestCounter == 0) {
 		complete();
 		return;
 	}
 
-	Get get;
+	//Make sure that no more than 5 outstanding get requests are currently sent to the server.
+	//The main reason for us not wanting more is that we then run the risk of overflowing the server connection (which will then be dropped).
+	while (mOutstandingGetRequestCounter < 5 && !mQueue.empty()) {
+		Get get;
 
-	Anonymous get_arg;
-	get_arg->setObjtype("obj");
-	get_arg->setId(mQueue.front());
-	get->setArgs1(get_arg);
+		Anonymous get_arg;
+		get_arg->setObjtype("obj");
+		get_arg->setId(mQueue.front());
+		get->setArgs1(get_arg);
 
-	get->setFrom(mAccount.getId());
-	get->setSerialno(Eris::getNewSerialno());
+		get->setFrom(mAccount.getId());
+		get->setSerialno(Eris::getNewSerialno());
 
-	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &WorldDumper::operation);
-	mAccount.getConnection()->send(get);
+		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &WorldDumper::operation);
+		mAccount.getConnection()->send(get);
 
-	mQueue.pop_front();
+		mQueue.pop_front();
+		mOutstandingGetRequestCounter++;
+	}
 }
 
 void WorldDumper::complete()
@@ -204,6 +210,7 @@ void WorldDumper::start(const std::string& filename, const std::string& entityId
 	mFormatter->streamBegin();
 
 	// Send a get for the requested object
+	mOutstandingGetRequestCounter++;
 	Get get;
 
 	Anonymous get_arg;
