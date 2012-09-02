@@ -20,10 +20,14 @@
 
 #include "MultiLineListFormatter.h"
 #include "LoggingInstance.h"
+#include "Time.h"
+
+#include "tinyxml/tinyxml.h"
 
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
 #include <Eris/Response.h>
+#include <Eris/ServerInfo.h>
 
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/QueuedDecoder.h>
@@ -59,7 +63,7 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 WorldDumper::WorldDumper(Eris::Account& account) :
-		mAccount(account), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mComplete(false), mCancelled(false)
+		mAccount(account), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mXmlDocument(0), mEntityStream(0), mMindStream(0), mComplete(false), mCancelled(false)
 {
 }
 
@@ -68,6 +72,9 @@ WorldDumper::~WorldDumper()
 	delete mEncoder;
 	delete mFormatter;
 	delete mCodec;
+	delete mXmlDocument;
+	delete mEntityStream;
+	delete mMindStream;
 }
 
 void WorldDumper::cancel()
@@ -113,10 +120,7 @@ void WorldDumper::infoArrived(const Operation & op)
 	}
 
 	if (mQueue.empty()) {
-		mFormatter->streamEnd();
-		mComplete = true;
-		EventCompleted.emit();
-		S_LOG_INFO("Completed dumping " << mCount << " entities.");
+		complete();
 		return;
 	}
 
@@ -136,19 +140,70 @@ void WorldDumper::infoArrived(const Operation & op)
 	mQueue.pop_front();
 }
 
+void WorldDumper::complete()
+{
+	mFormatter->streamEnd();
+	TiXmlElement entities("entities");
+	TiXmlElement entityData("atlas");
+	*mEntityStream >> entityData;
+	entities.InsertEndChild(entityData);
+	TiXmlElement minds("minds");
+	TiXmlElement mindData("atlas");
+	*mMindStream >> mindData;
+	minds.InsertEndChild(mindData);
+
+	mXmlDocument->RootElement()->InsertEndChild(entities);
+	mXmlDocument->RootElement()->InsertEndChild(minds);
+	mXmlDocument->SaveFile();
+	mComplete = true;
+	EventCompleted.emit();
+	S_LOG_INFO("Completed dumping " << mCount << " entities.");
+}
+
 void WorldDumper::start(const std::string& filename, const std::string& entityId)
 {
 	S_LOG_INFO("Starting world dump to file '" << filename << "'.");
-	mFile.open(filename.c_str(), std::ios::out);
+
+	mXmlDocument = new TiXmlDocument(filename);
+	TiXmlElement root("entityexport");
+	TiXmlElement name("name");
+	root.InsertEndChild(name);
+	TiXmlElement description("description");
+	root.InsertEndChild(description);
+	TiXmlElement timestamp("timestamp");
+	std::stringstream ss;
+	ss << Time::currentTimeMillis();
+	timestamp.InsertEndChild(TiXmlText(ss.str()));
+	root.InsertEndChild(timestamp);
+	TiXmlElement server("server");
+	{
+		Eris::ServerInfo serverInfo;
+		mAccount.getConnection()->getServerInfo(serverInfo);
+
+		TiXmlElement host("host");
+		host.InsertEndChild(TiXmlText(mAccount.getConnection()->getHost()));
+		server.InsertEndChild(host);
+		TiXmlElement serverName("name");
+		serverName.InsertEndChild(TiXmlText(serverInfo.getServername()));
+		server.InsertEndChild(serverName);
+		TiXmlElement ruleset("ruleset");
+		ruleset.InsertEndChild(TiXmlText(serverInfo.getRuleset()));
+		server.InsertEndChild(ruleset);
+	}
+	root.InsertEndChild(server);
+	mXmlDocument->InsertEndChild(root);
+
+	mEntityStream = new std::stringstream();
+	mMindStream = new std::stringstream();
 
 	Atlas::Message::QueuedDecoder * decoder = new Atlas::Message::QueuedDecoder;
-	mCodec = new Atlas::Codecs::XML(mFile, *decoder);
-	mFormatter = new MultiLineListFormatter(mFile, *mCodec);
+	mCodec = new Atlas::Codecs::XML(*mEntityStream, *decoder);
+	mFormatter = new MultiLineListFormatter(*mEntityStream, *mCodec);
 	mEncoder = new Atlas::Objects::ObjectsEncoder(*mFormatter);
 
 	mFormatter->streamBegin();
 
-	// Send a get for the root object
+	// Send a get for the requested object
 	Get get;
 
 	Anonymous get_arg;

@@ -28,6 +28,8 @@
 #include <vector>
 #include <fstream>
 
+class TiXmlDocument;
+
 namespace Atlas
 {
 class Bridge;
@@ -53,6 +55,21 @@ namespace Ember
  * @author Erik Ogenvik
  *
  * @brief Dumps the complete world to disk.
+ *
+ * The entity export format is as follows:
+ *
+ * <entityexport>
+ *  <name>An optional name for this dump</name>
+ *  <description>An optional description of this dump.</description>
+ *  <timestamp>The timestampe, CET, when this dump was taken.</timestamp>
+ *  <server>
+ *   <host>The hostname of the server.</host>
+ *   <name>The name of the server.</name>
+ *   <ruleset>The ruleset of the server.</ruleset>
+ *  </server>
+ *  <entities></entities>
+ *  <minds></minds>
+ * </entityexport>
  */
 class WorldDumper: public virtual sigc::trackable
 {
@@ -105,12 +122,44 @@ protected:
 	Atlas::Codec * mCodec;
 	Atlas::Objects::ObjectsEncoder * mEncoder;
 	Atlas::Bridge * mFormatter;
+
+	/**
+	 * @brief The resulting xml document.
+	 */
+	TiXmlDocument* mXmlDocument;
+
+	/**
+	 * @brief Contains the atlas output stream of the entities.
+	 */
+	std::stringstream* mEntityStream;
+
+	/**
+	 * @brief Contains the atlas output stream of the minds.
+	 */
+	std::stringstream* mMindStream;
 	bool mComplete;
 	bool mCancelled;
+
+	/**
+	 * @brief An optional name of the dump.
+	 */
+	std::string mName;
+
+	/**
+	 * @brief An optional description of the dump.
+	 */
+	std::string mDescription;
 
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void infoArrived(const Operation& op);
 	void operation(const Operation& op);
+
+	/**
+	 * @brief Call this when the dumping is complete.
+	 *
+	 * This will write the file to disk.
+	 */
+	void complete();
 
 };
 
