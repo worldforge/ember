@@ -31,7 +31,7 @@ namespace Ember
 class AtlasXmlVisitor: public TiXmlVisitor
 {
 protected:
-	TiXmlElement& mDoc;
+	TiXmlNode& mRootNode;
 	Atlas::Bridge& mBridge;
 
 	enum State
@@ -46,8 +46,8 @@ protected:
 
 public:
 
-	AtlasXmlVisitor(TiXmlElement& doc, Atlas::Bridge& bridge) :
-			mDoc(doc), mBridge(bridge)
+	AtlasXmlVisitor(TiXmlNode& doc, Atlas::Bridge& bridge) :
+			mRootNode(doc), mBridge(bridge)
 	{
 		mState.push(PARSE_NOTHING);
 	}
@@ -219,8 +219,8 @@ public:
 	}
 };
 
-TinyXmlCodec::TinyXmlCodec(TiXmlElement& rootElement, Atlas::Bridge& bridge) :
-		mRootElement(rootElement), mBridge(bridge)
+TinyXmlCodec::TinyXmlCodec(TiXmlNode& rootElement, Atlas::Bridge& bridge) :
+		mRootNode(rootElement), mBridge(bridge)
 {
 }
 
@@ -230,82 +230,114 @@ TinyXmlCodec::~TinyXmlCodec()
 
 void TinyXmlCodec::poll(bool can_read)
 {
-	AtlasXmlVisitor visitor(mRootElement, mBridge);
-	mRootElement.Accept(&visitor);
+	AtlasXmlVisitor visitor(mRootNode, mBridge);
+	mRootNode.Accept(&visitor);
 }
 
 void TinyXmlCodec::streamBegin()
 {
-	throw Exception("Output not supported yet.");
+	mNodes.push(new TiXmlElement("atlas"));
 }
 
 void TinyXmlCodec::streamEnd()
 {
-	throw Exception("Output not supported yet.");
+	mRootNode.InsertEndChild(*mNodes.top());
+	mNodes.pop();
 }
 
 void TinyXmlCodec::streamMessage()
 {
-	throw Exception("Output not supported yet.");
+	mNodes.push(new TiXmlElement("map"));
 }
 
 void TinyXmlCodec::mapMapItem(const std::string& name)
 {
-	throw Exception("Output not supported yet.");
+	TiXmlElement* element = new TiXmlElement("map");
+	element->SetAttribute("name", name);
+	mNodes.push(element);
 }
 
 void TinyXmlCodec::mapListItem(const std::string& name)
 {
-	assert(throw Exception("Output not supported yet."));
+	TiXmlElement* element = new TiXmlElement("list");
+	element->SetAttribute("name", name);
+	mNodes.push(element);
 }
 
 void TinyXmlCodec::mapIntItem(const std::string& name, long data)
 {
-	throw Exception("Output not supported yet.");
+	std::stringstream ss;
+	ss << data;
+	TiXmlElement element("int");
+	element.InsertEndChild(TiXmlText(ss.str()));
+	element.SetAttribute("name", name);
+	mNodes.top()->InsertEndChild(element);
 }
 
 void TinyXmlCodec::mapFloatItem(const std::string& name, double data)
 {
-	throw Exception("Output not supported yet.");
+	std::stringstream ss;
+	ss << data;
+	TiXmlElement element("float");
+	element.InsertEndChild(TiXmlText(ss.str()));
+	element.SetAttribute("name", name);
+	mNodes.top()->InsertEndChild(element);
 }
 
 void TinyXmlCodec::mapStringItem(const std::string& name, const std::string& data)
 {
-	throw Exception("Output not supported yet.");
+	TiXmlElement element("string");
+	element.InsertEndChild(TiXmlText(data));
+	element.SetAttribute("name", name);
+	mNodes.top()->InsertEndChild(element);
 }
 
 void TinyXmlCodec::mapEnd()
 {
-	throw Exception("Output not supported yet.");
+	TiXmlNode* node = mNodes.top();
+	mNodes.pop();
+	mNodes.top()->InsertEndChild(*node);
 }
 
 void TinyXmlCodec::listMapItem()
 {
-	throw Exception("Output not supported yet.");
+	mNodes.push(new TiXmlElement("map"));
 }
 
 void TinyXmlCodec::listListItem()
 {
-	throw Exception("Output not supported yet.");
+	mNodes.push(new TiXmlElement("list"));
 }
 
 void TinyXmlCodec::listIntItem(long data)
 {
-	throw Exception("Output not supported yet.");
+	std::stringstream ss;
+	ss << data;
+	TiXmlElement element("int");
+	element.InsertEndChild(TiXmlText(ss.str()));
+	mNodes.top()->InsertEndChild(element);
 }
 
 void TinyXmlCodec::listFloatItem(double data)
 {
-	throw Exception("Output not supported yet.");
+	std::stringstream ss;
+	ss << data;
+	TiXmlElement element("float");
+	element.InsertEndChild(TiXmlText(ss.str()));
+	mNodes.top()->InsertEndChild(element);
 }
 
 void TinyXmlCodec::listStringItem(const std::string& data)
 {
-	throw Exception("Output not supported yet.");
+	TiXmlElement element("string");
+	element.InsertEndChild(TiXmlText(data));
+	mNodes.top()->InsertEndChild(element);
 }
 
 void TinyXmlCodec::listEnd()
 {
-	throw Exception("Output not supported yet.");
+	TiXmlNode* node = mNodes.top();
+	mNodes.pop();
+	mNodes.top()->InsertEndChild(*node);
 }
 }

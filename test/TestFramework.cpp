@@ -10,6 +10,8 @@
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Root.h>
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Objects/Encoder.h>
 #include <wfmath/timestamp.h>
 
 #include <boost/thread.hpp>
@@ -35,12 +37,38 @@ public:
 
 		std::map<std::string, Atlas::Objects::Root> messages;
 
-		AtlasMessageLoader loader(messages);
-		TinyXmlCodec codec(*xmlDoc.RootElement(), loader);
+		{
+			AtlasMessageLoader loader(messages);
+			TinyXmlCodec codec(*xmlDoc.RootElement(), loader);
 
-		codec.poll(true);
-
+			codec.poll(true);
+		}
 		CPPUNIT_ASSERT(messages.size() == 2);
+
+		{
+
+			TiXmlDocument xmlWriteDoc;
+			Atlas::Message::QueuedDecoder decoder;
+			TinyXmlCodec codec(xmlWriteDoc, decoder);
+			Atlas::Objects::ObjectsEncoder encoder(codec);
+
+			encoder.streamBegin();
+
+			for (std::map<std::string, Atlas::Objects::Root>::const_iterator I = messages.begin(); I != messages.end(); ++I) {
+				encoder.streamObjectsMessage(I->second);
+			}
+
+			encoder.streamEnd();
+
+			//For simplicity we'll just compare the string output of the two documents.
+			std::stringstream ssOriginal, ssCopy;
+
+			ssOriginal << xmlDoc;
+			ssCopy << xmlWriteDoc;
+
+			CPPUNIT_ASSERT(ssOriginal.str() == ssCopy.str());
+
+		}
 	}
 
 };

@@ -20,16 +20,25 @@
 #define TINYXMLCODEC_H_
 
 #include <Atlas/Codec.h>
+#include <stack>
 
-class TiXmlElement;
+class TiXmlNode;
 
 namespace Ember
 {
 
+/**
+ * @brief A codec which handles TinyXml nodes.
+ */
 class TinyXmlCodec: public Atlas::Codec
 {
 public:
-	TinyXmlCodec(TiXmlElement& rootElement, Atlas::Bridge & b);
+	/**
+	 * @brief Ctor.
+	 * @param rootElement The root element of the xml structure.
+	 * @param A bridge which will receive calls when parsing.
+	 */
+	TinyXmlCodec(TiXmlNode& rootElement, Atlas::Bridge& bridge);
 	virtual ~TinyXmlCodec();
 
 	virtual void poll(bool can_read = true);
@@ -54,8 +63,20 @@ public:
 
 protected:
 
-	TiXmlElement& mRootElement;
-	Atlas::Bridge & mBridge;
+	/**
+	 * @brief The root element of the xml struct we're operating against.
+	 */
+	TiXmlNode& mRootNode;
+
+	/**
+	 * @brief A bridge which will receive calls when parsing.
+	 */
+	Atlas::Bridge& mBridge;
+
+	/**
+	 * @brief Keeps track of the current node when data is being written.
+	 */
+	std::stack<TiXmlNode*> mNodes;
 
 };
 
