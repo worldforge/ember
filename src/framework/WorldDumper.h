@@ -40,6 +40,10 @@ namespace Objects
 
 class ObjectsEncoder;
 }
+namespace Message
+{
+class QueuedDecoder;
+}
 }
 
 namespace Eris
@@ -118,26 +122,15 @@ protected:
 	Eris::Account& mAccount;
 	std::list<std::string> mQueue;
 	int mCount;
-	std::fstream mFile;
-	Atlas::Codec * mCodec;
-	Atlas::Objects::ObjectsEncoder * mEncoder;
-	Atlas::Bridge * mFormatter;
-
+	Atlas::Codec* mEntitiesCodec;
+	Atlas::Objects::ObjectsEncoder* mEntitiesEncoder;
+	Atlas::Message::QueuedDecoder* mEntitiesDecoder;
 
 	/**
 	 * @brief The resulting xml document.
 	 */
 	TiXmlDocument* mXmlDocument;
 
-	/**
-	 * @brief Contains the atlas output stream of the entities.
-	 */
-	std::stringstream* mEntityStream;
-
-	/**
-	 * @brief Contains the atlas output stream of the minds.
-	 */
-	std::stringstream* mMindStream;
 	bool mComplete;
 	bool mCancelled;
 

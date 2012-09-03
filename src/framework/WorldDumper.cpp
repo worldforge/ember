@@ -18,9 +18,9 @@
 
 #include "WorldDumper.h"
 
-#include "MultiLineListFormatter.h"
 #include "LoggingInstance.h"
 #include "Time.h"
+#include "TinyXmlCodec.h"
 
 #include "tinyxml/tinyxml.h"
 
@@ -29,15 +29,10 @@
 #include <Eris/Response.h>
 #include <Eris/ServerInfo.h>
 
-#include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
-
-#include <iostream>
-#include <functional>
-#include <cstdlib>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -63,18 +58,16 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 WorldDumper::WorldDumper(Eris::Account& account) :
-		mAccount(account), mCount(0), mCodec(0), mEncoder(0), mFormatter(0), mXmlDocument(0), mEntityStream(0), mMindStream(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0)
+		mAccount(account), mCount(0), mEntitiesCodec(0), mEntitiesEncoder(0), mEntitiesDecoder(0), mXmlDocument(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0)
 {
 }
 
 WorldDumper::~WorldDumper()
 {
-	delete mEncoder;
-	delete mFormatter;
-	delete mCodec;
+	delete mEntitiesEncoder;
+	delete mEntitiesCodec;
+	delete mEntitiesDecoder;
 	delete mXmlDocument;
-	delete mEntityStream;
-	delete mMindStream;
 }
 
 void WorldDumper::cancel()
@@ -84,7 +77,7 @@ void WorldDumper::cancel()
 
 void WorldDumper::dumpEntity(const RootEntity & ent)
 {
-	mEncoder->streamObjectsMessage(ent);
+	mEntitiesEncoder->streamObjectsMessage(ent);
 }
 
 void WorldDumper::infoArrived(const Operation & op)
@@ -148,18 +141,8 @@ void WorldDumper::infoArrived(const Operation & op)
 
 void WorldDumper::complete()
 {
-	mFormatter->streamEnd();
-	TiXmlElement entities("entities");
-	TiXmlElement entityData("atlas");
-	*mEntityStream >> entityData;
-	entities.InsertEndChild(entityData);
-	TiXmlElement minds("minds");
-	TiXmlElement mindData("atlas");
-	*mMindStream >> mindData;
-	minds.InsertEndChild(mindData);
+	mEntitiesEncoder->streamEnd();
 
-	mXmlDocument->RootElement()->InsertEndChild(entities);
-	mXmlDocument->RootElement()->InsertEndChild(minds);
 	mXmlDocument->SaveFile();
 	mComplete = true;
 	EventCompleted.emit();
@@ -171,16 +154,16 @@ void WorldDumper::start(const std::string& filename, const std::string& entityId
 	S_LOG_INFO("Starting world dump to file '" << filename << "'.");
 
 	mXmlDocument = new TiXmlDocument(filename);
-	TiXmlElement root("entityexport");
+	TiXmlNode* root = mXmlDocument->InsertEndChild(TiXmlElement("entityexport"));
 	TiXmlElement name("name");
-	root.InsertEndChild(name);
+	root->InsertEndChild(name);
 	TiXmlElement description("description");
-	root.InsertEndChild(description);
+	root->InsertEndChild(description);
 	TiXmlElement timestamp("timestamp");
 	std::stringstream ss;
 	ss << Time::currentTimeMillis();
 	timestamp.InsertEndChild(TiXmlText(ss.str()));
-	root.InsertEndChild(timestamp);
+	root->InsertEndChild(timestamp);
 	TiXmlElement server("server");
 	{
 		Eris::ServerInfo serverInfo;
@@ -196,18 +179,16 @@ void WorldDumper::start(const std::string& filename, const std::string& entityId
 		ruleset.InsertEndChild(TiXmlText(serverInfo.getRuleset()));
 		server.InsertEndChild(ruleset);
 	}
-	root.InsertEndChild(server);
-	mXmlDocument->InsertEndChild(root);
+	root->InsertEndChild(server);
 
-	mEntityStream = new std::stringstream();
-	mMindStream = new std::stringstream();
+	TiXmlNode* entitiesNode = root->InsertEndChild(TiXmlElement("entities"));
+	TiXmlNode* mindsNode = root->InsertEndChild(TiXmlElement("minds"));
 
-	Atlas::Message::QueuedDecoder * decoder = new Atlas::Message::QueuedDecoder;
-	mCodec = new Atlas::Codecs::XML(*mEntityStream, *decoder);
-	mFormatter = new MultiLineListFormatter(*mEntityStream, *mCodec);
-	mEncoder = new Atlas::Objects::ObjectsEncoder(*mFormatter);
+	mEntitiesDecoder = new Atlas::Message::QueuedDecoder;
+	mEntitiesCodec = new TinyXmlCodec(*entitiesNode, *mEntitiesDecoder);
+	mEntitiesEncoder = new Atlas::Objects::ObjectsEncoder(*mEntitiesCodec);
 
-	mFormatter->streamBegin();
+	mEntitiesEncoder->streamBegin();
 
 	// Send a get for the requested object
 	mOutstandingGetRequestCounter++;
