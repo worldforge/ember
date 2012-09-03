@@ -53,6 +53,8 @@ public:
 
 	virtual void registerEntity(EmberEntity& entity);
 
+	virtual void deregisterEntity(EmberEntity& entity);
+
 protected:
 
 	/**

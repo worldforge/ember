@@ -96,6 +96,12 @@ ModelRepresentation::ModelRepresentation(EmberEntity& entity, Model& model, Scen
 
 ModelRepresentation::~ModelRepresentation()
 {
+
+	const RenderingDefinition* renderingDef = mModel.getDefinition()->getRenderingDefinition();
+	if (renderingDef && renderingDef->getScheme() != "") {
+		mScene.deregisterEntityWithTechnique(mEntity, renderingDef->getScheme());
+	}
+
 	delete mSoundEntity;
 
 	mModel._getManager()->destroyMovableObject(&mModel);
@@ -319,7 +325,7 @@ void ModelRepresentation::parseMovementMode(const WFMath::Vector<3>& velocity)
 	if (velocity != WFMath::Vector<3>::ZERO()) {
 		if (velocity.isValid()) {
 			//Use WFMATH_EPSILON to remove any rounding errors
-			if (velocity.x() + WFMath::numeric_constants < WFMath::CoordType > ::epsilon() < 0.0f) {
+			if (velocity.x() + WFMath::numeric_constants<WFMath::CoordType>::epsilon() < 0.0f) {
 				newMode = MM_WALKING_BACKWARDS;
 			} else {
 				if (velocity.mag() > 2.6) {

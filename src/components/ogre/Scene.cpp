@@ -71,6 +71,14 @@ void Scene::registerEntityWithTechnique(EmberEntity& entity, const std::string& 
 	}
 }
 
+void Scene::deregisterEntityWithTechnique(EmberEntity& entity, const std::string& technique)
+{
+	RenderingTechniqueStore::const_iterator I = mTechniques.find(technique);
+	if (I != mTechniques.end()) {
+		I->second->deregisterEntity(entity);
+	}
+}
+
 void Scene::addRenderingTechnique(const std::string& name, ISceneRenderingTechnique* technique)
 {
 	if (mTechniques.count(name) == 0) {

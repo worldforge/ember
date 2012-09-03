@@ -48,5 +48,10 @@ void ForestRenderingTechnique::registerEntity(EmberEntity& entity)
 	}
 }
 
+void ForestRenderingTechnique::deregisterEntity(EmberEntity& entity) {
+	mForest.removeEmberEntity(&entity);
+}
+
+
 }
 }

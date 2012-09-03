@@ -25,7 +25,6 @@ namespace OgreView
 {
 class EmberEntity;
 
-
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * @brief A technique for rending an entity in a scene.
@@ -38,13 +37,21 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~ISceneRenderingTechnique(){}
+	virtual ~ISceneRenderingTechnique()
+	{
+	}
 
 	/**
 	 * @brief Registers an entity with this rendering technique.
 	 * @param entity The entity to register.
 	 */
 	virtual void registerEntity(EmberEntity& entity) = 0;
+
+	/**
+	 * @brief Deregisters an entity with this rendering technique.
+	 * @param entity The entity to deregister.
+	 */
+	virtual void deregisterEntity(EmberEntity& entity) = 0;
 };
 
 }

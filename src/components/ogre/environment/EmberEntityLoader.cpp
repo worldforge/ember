@@ -62,7 +62,6 @@ EmberEntityLoader::~EmberEntityLoader()
 			for (EntityMap::iterator K = J->second.begin(); K != J->second.end(); ++K)
 			{
 				K->second.movedConnection.disconnect();
-				K->second.beingDeletedConnection.disconnect();
 				K->second.visibilityChangedConnection.disconnect();
 			}
 		}
@@ -70,7 +69,6 @@ EmberEntityLoader::~EmberEntityLoader()
 #else
 	for (EntityMap::iterator I = mEntities.begin(); I != mEntities.end(); ++I) {
 		I->second.movedConnection.disconnect();
-		I->second.beingDeletedConnection.disconnect();
 		I->second.visibilityChangedConnection.disconnect();
 	}
 #endif
@@ -85,7 +83,6 @@ void EmberEntityLoader::addEmberEntity(Model::ModelRepresentation* modelRepresen
 	EmberEntity& entity = modelRepresentation->getEntity();
 	ModelRepresentationInstance instance;
 	instance.movedConnection = entity.Moved.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_Moved), &entity));
-	instance.beingDeletedConnection = entity.BeingDeleted.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_BeingDeleted), &entity));
 	instance.visibilityChangedConnection = entity.VisibilityChanged.connect(sigc::bind(sigc::mem_fun(*this, &EmberEntityLoader::EmberEntity_VisibilityChanged), &entity));
 	instance.modelRepresentation = modelRepresentation;
 
@@ -147,7 +144,7 @@ void EmberEntityLoader::removeEmberEntity(EmberEntity* entity)
 		ModelRepresentationInstance& instance(I->second);
 		Model::ModelRepresentation* modelRepresentation(instance.modelRepresentation);
 		instance.movedConnection.disconnect();
-		instance.beingDeletedConnection.disconnect();
+		instance.visibilityChangedConnection.disconnect();
 		//Reset the rendering distance to the one set by the model def.
 		modelRepresentation->getModel().setRenderingDistance(modelRepresentation->getModel().getDefinition()->getRenderingDistance());
 		mEntities.erase(I);
@@ -241,11 +238,6 @@ void EmberEntityLoader::EmberEntity_Moved(EmberEntity* entity)
 			}
 		}
 	}
-}
-
-void EmberEntityLoader::EmberEntity_BeingDeleted(EmberEntity* entity)
-{
-	removeEmberEntity(entity);
 }
 
 void EmberEntityLoader::EmberEntity_VisibilityChanged(bool visible, EmberEntity* entity)

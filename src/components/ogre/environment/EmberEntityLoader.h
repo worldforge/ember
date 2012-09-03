@@ -66,11 +66,6 @@ struct ModelRepresentationInstance
 	sigc::connection movedConnection;
 
 	/**
-	@brief The connection for listening to the BeingDeleted event on the entity. When removing the entity, make sure to disconnect this.
-	*/
-	sigc::connection beingDeletedConnection;
-
-	/**
 	@brief The connection for listening to the VisiblityChanged event on the entity. When removing the entity, make sure to disconnect this.
 	*/
 	sigc::connection visibilityChangedConnection;
@@ -162,12 +157,6 @@ protected:
 	 * @param entity The entity which was moved.
 	 */
 	void EmberEntity_Moved(EmberEntity* entity);
-
-	/**
-	 * @brief Listen for deletion of the entity and update the paged geometry accordingly.
-	 * @param entity The entity which will be deleted.
-	 */
-	void EmberEntity_BeingDeleted(EmberEntity* entity);
 
 	/**
 	 * @brief Listen for visiblity changes and update the paged geometry accordingly.

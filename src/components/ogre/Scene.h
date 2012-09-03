@@ -69,6 +69,14 @@ public:
 	void registerEntityWithTechnique(EmberEntity& entity, const std::string& technique);
 
 	/**
+	 * @brief Deregisters an entiy with a named technique.
+	 * If no technique exists, or no entity has been registered before, nothing will happen.
+	 * @param entity The entity we want to deregister with a specified technique.
+	 * @param technique The name of the rendering technique.
+	 */
+	void deregisterEntityWithTechnique(EmberEntity& entity, const std::string& technique);
+
+	/**
 	 * @brief Adds a new named technique.
 	 * @param name The name of the technique.
 	 * @param technique The rendering technique.
