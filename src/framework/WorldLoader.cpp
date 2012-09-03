@@ -18,8 +18,10 @@
 #include "WorldLoader.h"
 
 #include "MultiLineListFormatter.h"
-#include "AtlasFileLoader.h"
+#include "AtlasMessageLoader.h"
+#include "TinyXmlCodec.h"
 #include "LoggingInstance.h"
+#include "tinyxml/tinyxml.h"
 
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
@@ -286,14 +288,25 @@ WorldLoader::~WorldLoader()
 void WorldLoader::start(const std::string& filename)
 {
 
-	AtlasFileLoader loader(filename, m_objects);
-
-	if (!loader.isOpen()) {
+	TiXmlDocument xmlDoc;
+	if (!xmlDoc.LoadFile(filename)) {
 		EventCompleted.emit();
-
 		return;
 	}
-	loader.read();
+	TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
+
+	if (!entitiesElem) {
+		EventCompleted.emit();
+		return;
+	}
+
+	TiXmlElement* atlasElem = entitiesElem->FirstChildElement("atlas");
+
+	AtlasMessageLoader loader(m_objects);
+	TinyXmlCodec codec(*atlasElem, loader);
+
+	codec.poll(true);
+
 	S_LOG_INFO("Starting loading of world. Number of objects: " << m_objects.size());
 
 	Look l;

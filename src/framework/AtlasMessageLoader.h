@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2004-2005 Alistair Riddoch
+// Copyright (C) 2012 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,39 +22,51 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codec.h>
 
-#include <fstream>
+#include <iostream>
 
 namespace Ember
 {
 
-/// Class to read old cyphesis rules on standard input, and output in new
-/// standard format.
-class AtlasFileLoader: public Atlas::Objects::ObjectsDecoder
+/**
+ * @brief Loads messages from a codec into a map.
+ */
+class AtlasMessageLoader: public Atlas::Objects::ObjectsDecoder
 {
 private:
-	/// Input file
-	std::fstream m_file;
-	/// Atlas codec for decoding input.
-	Atlas::Codec * m_codec;
-	/// Counter for messages read from input
-	int m_count;
-	/// Store for the messages loaded
-	std::map<std::string, Atlas::Objects::Root> & m_messages;
 
+	/**
+	 * @brief Counter for messages read from input.
+	 */
+	int mCount;
+
+	/**
+	 * @brief Store for the messages loaded.
+	 */
+	std::map<std::string, Atlas::Objects::Root> & mMessages;
+
+	/**
+	 * @brief Called from the base class when a complete message has been decoded.
+	 *
+	 * @param obj
+	 */
 	virtual void objectArrived(const Atlas::Objects::Root & obj);
 public:
-	AtlasFileLoader(const std::string & filename, std::map<std::string, Atlas::Objects::Root> & m);
-	~AtlasFileLoader();
 
-	bool isOpen();
+	/**
+	 * @brief Ctor.
+	 * @param messages The map into which decoded messages will be put.
+	 */
+	AtlasMessageLoader(std::map<std::string, Atlas::Objects::Root> & messages);
 
-	void read();
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~AtlasMessageLoader();
 
-	/// \brief Read only accessor for the number of messages loaded
-	int count()
-	{
-		return m_count;
-	}
+	/**
+	 * @brief Read only accessor for the number of messages loaded
+	 */
+	int count();
 };
 }
 
