@@ -1,7 +1,7 @@
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"  -DSRCDIR=\"$(srcdir)\"
 
 if USE_CPPUNIT
-TESTS = TestOgreView TestTasks TestTerrain TestTimeFrame
+TESTS = TestOgreView TestTasks TestTerrain TestFramework TestTimeFrame
 check_PROGRAMS = $(TESTS)
 CLEANFILES = Ogre.log
 
@@ -41,10 +41,18 @@ TestTerrain_LDADD = $(top_builddir)/src/components/ogre/libEmberOgre.a \
 	$(top_builddir)/src/framework/tasks/libTasks.a \
 	$(top_builddir)/src/framework/libFramework.a
 	
+
 TestTimeFrame_SOURCES = TestTimeFrame.cpp
 TestTimeFrame_CXXFLAGS = $(CPPUNIT_CFLAGS) -DLOG_TASKS
 TestTimeFrame_LDFLAGS = $(CPPUNIT_LIBS)
 TestTimeFrame_LDADD = $(top_builddir)/src/framework/libFramework.a
+
+EXTRA_DIST = atlas.xml
+
+TestFramework_SOURCES = TestFramework.cpp
+TestFramework_CXXFLAGS = $(CPPUNIT_CFLAGS)
+TestFramework_LDFLAGS = $(CPPUNIT_LIBS)
+TestFramework_LDADD = $(top_builddir)/src/framework/libFramework.a
 
 
 noinst_HEADERS = ConvertTestCase.h ModelMountTestCase.h

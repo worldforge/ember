@@ -1,0 +1,1069 @@
+<atlas>
+    <map>
+        <list name="contains">
+            <string>867685</string>
+        </list>
+        <string name="id">0</string>
+        <list name="parents">
+            <string>world</string>
+        </list>
+        <float name="stamp">67</float>
+        <string name="objtype">obj</string>
+        <string name="name">moraf</string>
+        <list name="bbox">
+            <float>-512</float>
+            <float>-384</float>
+            <float>-29.9757</float>
+            <float>384</float>
+            <float>384</float>
+            <float>149.164</float>
+        </list>
+        <map name="calendar">
+            <int name="days_per_month">28</int>
+            <int name="hours_per_day">24</int>
+            <int name="minutes_per_hour">60</int>
+            <int name="months_per_year">12</int>
+            <int name="seconds_per_minute">20</int>
+        </map>
+        <int name="moisture">1</int>
+        <map name="terrain">
+            <map name="points">
+                <list name="-1x-1">
+                    <float>-1</float>
+                    <float>-1</float>
+                    <float>-16.8</float>
+                </list>
+                <list name="-1x-2">
+                    <float>-1</float>
+                    <float>-2</float>
+                    <float>20.4268</float>
+                </list>
+                <list name="-1x-3">
+                    <float>-1</float>
+                    <float>-3</float>
+                    <float>19.8242</float>
+                </list>
+                <list name="-1x-4">
+                    <float>-1</float>
+                    <float>-4</float>
+                    <float>-0.398695</float>
+                </list>
+                <list name="-1x-5">
+                    <float>-1</float>
+                    <float>-5</float>
+                    <float>-16.4326</float>
+                </list>
+                <list name="-1x-6">
+                    <float>-1</float>
+                    <float>-6</float>
+                    <float>-27.4135</float>
+                </list>
+                <list name="-1x0">
+                    <float>-1</float>
+                    <float>0</float>
+                    <float>-2.8</float>
+                </list>
+                <list name="-1x1">
+                    <float>-1</float>
+                    <float>1</float>
+                    <float>-1.8</float>
+                </list>
+                <list name="-1x2">
+                    <float>-1</float>
+                    <float>2</float>
+                    <float>-1.7</float>
+                </list>
+                <list name="-1x3">
+                    <float>-1</float>
+                    <float>3</float>
+                    <float>43.0246</float>
+                </list>
+                <list name="-1x4">
+                    <float>-1</float>
+                    <float>4</float>
+                    <float>67.4353</float>
+                </list>
+                <list name="-1x5">
+                    <float>-1</float>
+                    <float>5</float>
+                    <float>115.561</float>
+                </list>
+                <list name="-1x6">
+                    <float>-1</float>
+                    <float>6</float>
+                    <float>141.149</float>
+                </list>
+                <list name="-2x-1">
+                    <float>-2</float>
+                    <float>-1</float>
+                    <float>-4.1</float>
+                </list>
+                <list name="-2x-2">
+                    <float>-2</float>
+                    <float>-2</float>
+                    <float>22.3181</float>
+                </list>
+                <list name="-2x-3">
+                    <float>-2</float>
+                    <float>-3</float>
+                    <float>39.1244</float>
+                </list>
+                <list name="-2x-4">
+                    <float>-2</float>
+                    <float>-4</float>
+                    <float>3.57562</float>
+                </list>
+                <list name="-2x-5">
+                    <float>-2</float>
+                    <float>-5</float>
+                    <float>-26.8327</float>
+                </list>
+                <list name="-2x-6">
+                    <float>-2</float>
+                    <float>-6</float>
+                    <float>-10.4839</float>
+                </list>
+                <list name="-2x0">
+                    <float>-2</float>
+                    <float>0</float>
+                    <float>11.4026</float>
+                </list>
+                <list name="-2x1">
+                    <float>-2</float>
+                    <float>1</float>
+                    <float>22.1365</float>
+                </list>
+                <list name="-2x2">
+                    <float>-2</float>
+                    <float>2</float>
+                    <float>31.6806</float>
+                </list>
+                <list name="-2x3">
+                    <float>-2</float>
+                    <float>3</float>
+                    <float>39.944</float>
+                </list>
+                <list name="-2x4">
+                    <float>-2</float>
+                    <float>4</float>
+                    <float>30.529</float>
+                </list>
+                <list name="-2x5">
+                    <float>-2</float>
+                    <float>5</float>
+                    <float>127.21</float>
+                </list>
+                <list name="-2x6">
+                    <float>-2</float>
+                    <float>6</float>
+                    <float>101.626</float>
+                </list>
+                <list name="-3x-1">
+                    <float>-3</float>
+                    <float>-1</float>
+                    <float>-5.3</float>
+                </list>
+                <list name="-3x-2">
+                    <float>-3</float>
+                    <float>-2</float>
+                    <float>-6.2</float>
+                </list>
+                <list name="-3x-3">
+                    <float>-3</float>
+                    <float>-3</float>
+                    <float>48.7711</float>
+                </list>
+                <list name="-3x-4">
+                    <float>-3</float>
+                    <float>-4</float>
+                    <float>-3.40929</float>
+                </list>
+                <list name="-3x-5">
+                    <float>-3</float>
+                    <float>-5</float>
+                    <float>-18.8168</float>
+                </list>
+                <list name="-3x-6">
+                    <float>-3</float>
+                    <float>-6</float>
+                    <float>-23.2609</float>
+                </list>
+                <list name="-3x0">
+                    <float>-3</float>
+                    <float>0</float>
+                    <float>15.0159</float>
+                </list>
+                <list name="-3x1">
+                    <float>-3</float>
+                    <float>1</float>
+                    <float>28.6553</float>
+                </list>
+                <list name="-3x2">
+                    <float>-3</float>
+                    <float>2</float>
+                    <float>35.498</float>
+                </list>
+                <list name="-3x3">
+                    <float>-3</float>
+                    <float>3</float>
+                    <float>31.9322</float>
+                </list>
+                <list name="-3x4">
+                    <float>-3</float>
+                    <float>4</float>
+                    <float>43.4745</float>
+                </list>
+                <list name="-3x5">
+                    <float>-3</float>
+                    <float>5</float>
+                    <float>148.187</float>
+                </list>
+                <list name="-3x6">
+                    <float>-3</float>
+                    <float>6</float>
+                    <float>116.037</float>
+                </list>
+                <list name="-4x-1">
+                    <float>-4</float>
+                    <float>-1</float>
+                    <float>12.4</float>
+                </list>
+                <list name="-4x-2">
+                    <float>-4</float>
+                    <float>-2</float>
+                    <float>-8.3</float>
+                </list>
+                <list name="-4x-3">
+                    <float>-4</float>
+                    <float>-3</float>
+                    <float>-2.89128</float>
+                </list>
+                <list name="-4x-4">
+                    <float>-4</float>
+                    <float>-4</float>
+                    <float>-3.43864</float>
+                </list>
+                <list name="-4x-5">
+                    <float>-4</float>
+                    <float>-5</float>
+                    <float>-26.3301</float>
+                </list>
+                <list name="-4x-6">
+                    <float>-4</float>
+                    <float>-6</float>
+                    <float>-10.7781</float>
+                </list>
+                <list name="-4x0">
+                    <float>-4</float>
+                    <float>0</float>
+                    <float>1.17177</float>
+                </list>
+                <list name="-4x1">
+                    <float>-4</float>
+                    <float>1</float>
+                    <float>-1.35413</float>
+                </list>
+                <list name="-4x2">
+                    <float>-4</float>
+                    <float>2</float>
+                    <float>4.76002</float>
+                </list>
+                <list name="-4x3">
+                    <float>-4</float>
+                    <float>3</float>
+                    <float>1.14886</float>
+                </list>
+                <list name="-4x4">
+                    <float>-4</float>
+                    <float>4</float>
+                    <float>71.9729</float>
+                </list>
+                <list name="-4x5">
+                    <float>-4</float>
+                    <float>5</float>
+                    <float>124.167</float>
+                </list>
+                <list name="-4x6">
+                    <float>-4</float>
+                    <float>6</float>
+                    <float>122.38</float>
+                </list>
+                <list name="-5x-1">
+                    <float>-5</float>
+                    <float>-1</float>
+                    <float>-20.5779</float>
+                </list>
+                <list name="-5x-2">
+                    <float>-5</float>
+                    <float>-2</float>
+                    <float>-16.8979</float>
+                </list>
+                <list name="-5x-3">
+                    <float>-5</float>
+                    <float>-3</float>
+                    <float>-14.5681</float>
+                </list>
+                <list name="-5x-4">
+                    <float>-5</float>
+                    <float>-4</float>
+                    <float>-11.6414</float>
+                </list>
+                <list name="-5x-5">
+                    <float>-5</float>
+                    <float>-5</float>
+                    <float>-27.3251</float>
+                </list>
+                <list name="-5x-6">
+                    <float>-5</float>
+                    <float>-6</float>
+                    <float>-12.345</float>
+                </list>
+                <list name="-5x0">
+                    <float>-5</float>
+                    <float>0</float>
+                    <float>-15.8942</float>
+                </list>
+                <list name="-5x1">
+                    <float>-5</float>
+                    <float>1</float>
+                    <float>-25.6609</float>
+                </list>
+                <list name="-5x2">
+                    <float>-5</float>
+                    <float>2</float>
+                    <float>-20.1985</float>
+                </list>
+                <list name="-5x3">
+                    <float>-5</float>
+                    <float>3</float>
+                    <float>-25.86</float>
+                </list>
+                <list name="-5x4">
+                    <float>-5</float>
+                    <float>4</float>
+                    <float>-12.1301</float>
+                </list>
+                <list name="-5x5">
+                    <float>-5</float>
+                    <float>5</float>
+                    <float>130.841</float>
+                </list>
+                <list name="-5x6">
+                    <float>-5</float>
+                    <float>6</float>
+                    <float>119.16</float>
+                </list>
+                <list name="-6x-1">
+                    <float>-6</float>
+                    <float>-1</float>
+                    <float>-13.8206</float>
+                </list>
+                <list name="-6x-2">
+                    <float>-6</float>
+                    <float>-2</float>
+                    <float>-21.8701</float>
+                </list>
+                <list name="-6x-3">
+                    <float>-6</float>
+                    <float>-3</float>
+                    <float>-13.5585</float>
+                </list>
+                <list name="-6x-4">
+                    <float>-6</float>
+                    <float>-4</float>
+                    <float>-12.5213</float>
+                </list>
+                <list name="-6x-5">
+                    <float>-6</float>
+                    <float>-5</float>
+                    <float>-29.5591</float>
+                </list>
+                <list name="-6x-6">
+                    <float>-6</float>
+                    <float>-6</float>
+                    <float>-11.127</float>
+                </list>
+                <list name="-6x0">
+                    <float>-6</float>
+                    <float>0</float>
+                    <float>-23.7674</float>
+                </list>
+                <list name="-6x1">
+                    <float>-6</float>
+                    <float>1</float>
+                    <float>-24.1898</float>
+                </list>
+                <list name="-6x2">
+                    <float>-6</float>
+                    <float>2</float>
+                    <float>-17.8643</float>
+                </list>
+                <list name="-6x3">
+                    <float>-6</float>
+                    <float>3</float>
+                    <float>-28.698</float>
+                </list>
+                <list name="-6x4">
+                    <float>-6</float>
+                    <float>4</float>
+                    <float>-16.1093</float>
+                </list>
+                <list name="-6x5">
+                    <float>-6</float>
+                    <float>5</float>
+                    <float>122.588</float>
+                </list>
+                <list name="-6x6">
+                    <float>-6</float>
+                    <float>6</float>
+                    <float>142.493</float>
+                </list>
+                <list name="-7x-1">
+                    <float>-7</float>
+                    <float>-1</float>
+                    <float>-15.4575</float>
+                </list>
+                <list name="-7x-2">
+                    <float>-7</float>
+                    <float>-2</float>
+                    <float>-24.25</float>
+                </list>
+                <list name="-7x-3">
+                    <float>-7</float>
+                    <float>-3</float>
+                    <float>-10.2033</float>
+                </list>
+                <list name="-7x-4">
+                    <float>-7</float>
+                    <float>-4</float>
+                    <float>-10.1636</float>
+                </list>
+                <list name="-7x-5">
+                    <float>-7</float>
+                    <float>-5</float>
+                    <float>-28.2252</float>
+                </list>
+                <list name="-7x-6">
+                    <float>-7</float>
+                    <float>-6</float>
+                    <float>-14.6357</float>
+                </list>
+                <list name="-7x0">
+                    <float>-7</float>
+                    <float>0</float>
+                    <float>-20.83</float>
+                </list>
+                <list name="-7x1">
+                    <float>-7</float>
+                    <float>1</float>
+                    <float>-10.1711</float>
+                </list>
+                <list name="-7x2">
+                    <float>-7</float>
+                    <float>2</float>
+                    <float>-25.556</float>
+                </list>
+                <list name="-7x3">
+                    <float>-7</float>
+                    <float>3</float>
+                    <float>-26.0017</float>
+                </list>
+                <list name="-7x4">
+                    <float>-7</float>
+                    <float>4</float>
+                    <float>-18.6984</float>
+                </list>
+                <list name="-7x5">
+                    <float>-7</float>
+                    <float>5</float>
+                    <float>101.864</float>
+                </list>
+                <list name="-7x6">
+                    <float>-7</float>
+                    <float>6</float>
+                    <float>141.554</float>
+                </list>
+                <list name="-8x-1">
+                    <float>-8</float>
+                    <float>-1</float>
+                    <float>-10.2519</float>
+                </list>
+                <list name="-8x-2">
+                    <float>-8</float>
+                    <float>-2</float>
+                    <float>-25.5893</float>
+                </list>
+                <list name="-8x-3">
+                    <float>-8</float>
+                    <float>-3</float>
+                    <float>-29.9757</float>
+                </list>
+                <list name="-8x-4">
+                    <float>-8</float>
+                    <float>-4</float>
+                    <float>-26.9147</float>
+                </list>
+                <list name="-8x-5">
+                    <float>-8</float>
+                    <float>-5</float>
+                    <float>-15.1207</float>
+                </list>
+                <list name="-8x-6">
+                    <float>-8</float>
+                    <float>-6</float>
+                    <float>-11.6316</float>
+                </list>
+                <list name="-8x0">
+                    <float>-8</float>
+                    <float>0</float>
+                    <float>-24.431</float>
+                </list>
+                <list name="-8x1">
+                    <float>-8</float>
+                    <float>1</float>
+                    <float>-27.7844</float>
+                </list>
+                <list name="-8x2">
+                    <float>-8</float>
+                    <float>2</float>
+                    <float>-21.6107</float>
+                </list>
+                <list name="-8x3">
+                    <float>-8</float>
+                    <float>3</float>
+                    <float>-19.3759</float>
+                </list>
+                <list name="-8x4">
+                    <float>-8</float>
+                    <float>4</float>
+                    <float>-26.5381</float>
+                </list>
+                <list name="-8x5">
+                    <float>-8</float>
+                    <float>5</float>
+                    <float>124.866</float>
+                </list>
+                <list name="-8x6">
+                    <float>-8</float>
+                    <float>6</float>
+                    <float>129.533</float>
+                </list>
+                <list name="0x-1">
+                    <float>0</float>
+                    <float>-1</float>
+                    <float>-3.8</float>
+                </list>
+                <list name="0x-2">
+                    <float>0</float>
+                    <float>-2</float>
+                    <float>12.7119</float>
+                </list>
+                <list name="0x-3">
+                    <float>0</float>
+                    <float>-3</float>
+                    <float>26.7272</float>
+                </list>
+                <list name="0x-4">
+                    <float>0</float>
+                    <float>-4</float>
+                    <float>-1.21813</float>
+                </list>
+                <list name="0x-5">
+                    <float>0</float>
+                    <float>-5</float>
+                    <float>-20.5044</float>
+                </list>
+                <list name="0x-6">
+                    <float>0</float>
+                    <float>-6</float>
+                    <float>-21.0174</float>
+                </list>
+                <list name="0x0">
+                    <float>0</float>
+                    <float>0</float>
+                    <float>12.8</float>
+                </list>
+                <list name="0x1">
+                    <float>0</float>
+                    <float>1</float>
+                    <float>14.2</float>
+                </list>
+                <list name="0x2">
+                    <float>0</float>
+                    <float>2</float>
+                    <float>-1.6</float>
+                </list>
+                <list name="0x3">
+                    <float>0</float>
+                    <float>3</float>
+                    <float>29.9641</float>
+                </list>
+                <list name="0x4">
+                    <float>0</float>
+                    <float>4</float>
+                    <float>61.1967</float>
+                </list>
+                <list name="0x5">
+                    <float>0</float>
+                    <float>5</float>
+                    <float>135.506</float>
+                </list>
+                <list name="0x6">
+                    <float>0</float>
+                    <float>6</float>
+                    <float>115.964</float>
+                </list>
+                <list name="1x-1">
+                    <float>1</float>
+                    <float>-1</float>
+                    <float>15.8</float>
+                </list>
+                <list name="1x-2">
+                    <float>1</float>
+                    <float>-2</float>
+                    <float>24.2232</float>
+                </list>
+                <list name="1x-3">
+                    <float>1</float>
+                    <float>-3</float>
+                    <float>37.9939</float>
+                </list>
+                <list name="1x-4">
+                    <float>1</float>
+                    <float>-4</float>
+                    <float>-1.43266</float>
+                </list>
+                <list name="1x-5">
+                    <float>1</float>
+                    <float>-5</float>
+                    <float>-24.9565</float>
+                </list>
+                <list name="1x-6">
+                    <float>1</float>
+                    <float>-6</float>
+                    <float>-16.8596</float>
+                </list>
+                <list name="1x0">
+                    <float>1</float>
+                    <float>0</float>
+                    <float>23.1</float>
+                </list>
+                <list name="1x1">
+                    <float>1</float>
+                    <float>1</float>
+                    <float>19.7</float>
+                </list>
+                <list name="1x2">
+                    <float>1</float>
+                    <float>2</float>
+                    <float>-1.3</float>
+                </list>
+                <list name="1x3">
+                    <float>1</float>
+                    <float>3</float>
+                    <float>-1.1</float>
+                </list>
+                <list name="1x4">
+                    <float>1</float>
+                    <float>4</float>
+                    <float>-0.6</float>
+                </list>
+                <list name="1x5">
+                    <float>1</float>
+                    <float>5</float>
+                    <float>127.06</float>
+                </list>
+                <list name="1x6">
+                    <float>1</float>
+                    <float>6</float>
+                    <float>144.085</float>
+                </list>
+                <list name="2x-1">
+                    <float>2</float>
+                    <float>-1</float>
+                    <float>18.5989</float>
+                </list>
+                <list name="2x-2">
+                    <float>2</float>
+                    <float>-2</float>
+                    <float>30.1614</float>
+                </list>
+                <list name="2x-3">
+                    <float>2</float>
+                    <float>-3</float>
+                    <float>22.2721</float>
+                </list>
+                <list name="2x-4">
+                    <float>2</float>
+                    <float>-4</float>
+                    <float>-3.11649</float>
+                </list>
+                <list name="2x-5">
+                    <float>2</float>
+                    <float>-5</float>
+                    <float>-27.4059</float>
+                </list>
+                <list name="2x-6">
+                    <float>2</float>
+                    <float>-6</float>
+                    <float>-23.4918</float>
+                </list>
+                <list name="2x0">
+                    <float>2</float>
+                    <float>0</float>
+                    <float>13.2719</float>
+                </list>
+                <list name="2x1">
+                    <float>2</float>
+                    <float>1</float>
+                    <float>17.9585</float>
+                </list>
+                <list name="2x2">
+                    <float>2</float>
+                    <float>2</float>
+                    <float>23.9063</float>
+                </list>
+                <list name="2x3">
+                    <float>2</float>
+                    <float>3</float>
+                    <float>20.8396</float>
+                </list>
+                <list name="2x4">
+                    <float>2</float>
+                    <float>4</float>
+                    <float>45.78</float>
+                </list>
+                <list name="2x5">
+                    <float>2</float>
+                    <float>5</float>
+                    <float>132.066</float>
+                </list>
+                <list name="2x6">
+                    <float>2</float>
+                    <float>6</float>
+                    <float>125.641</float>
+                </list>
+                <list name="3x-1">
+                    <float>3</float>
+                    <float>-1</float>
+                    <float>34.3239</float>
+                </list>
+                <list name="3x-2">
+                    <float>3</float>
+                    <float>-2</float>
+                    <float>43.8568</float>
+                </list>
+                <list name="3x-3">
+                    <float>3</float>
+                    <float>-3</float>
+                    <float>23.2446</float>
+                </list>
+                <list name="3x-4">
+                    <float>3</float>
+                    <float>-4</float>
+                    <float>-0.239084</float>
+                </list>
+                <list name="3x-5">
+                    <float>3</float>
+                    <float>-5</float>
+                    <float>-24.7788</float>
+                </list>
+                <list name="3x-6">
+                    <float>3</float>
+                    <float>-6</float>
+                    <float>-27.4523</float>
+                </list>
+                <list name="3x0">
+                    <float>3</float>
+                    <float>0</float>
+                    <float>32.2152</float>
+                </list>
+                <list name="3x1">
+                    <float>3</float>
+                    <float>1</float>
+                    <float>33.5526</float>
+                </list>
+                <list name="3x2">
+                    <float>3</float>
+                    <float>2</float>
+                    <float>21.2824</float>
+                </list>
+                <list name="3x3">
+                    <float>3</float>
+                    <float>3</float>
+                    <float>20.0284</float>
+                </list>
+                <list name="3x4">
+                    <float>3</float>
+                    <float>4</float>
+                    <float>68.5395</float>
+                </list>
+                <list name="3x5">
+                    <float>3</float>
+                    <float>5</float>
+                    <float>106.124</float>
+                </list>
+                <list name="3x6">
+                    <float>3</float>
+                    <float>6</float>
+                    <float>132.805</float>
+                </list>
+                <list name="4x-1">
+                    <float>4</float>
+                    <float>-1</float>
+                    <float>63.2305</float>
+                </list>
+                <list name="4x-2">
+                    <float>4</float>
+                    <float>-2</float>
+                    <float>57.5201</float>
+                </list>
+                <list name="4x-3">
+                    <float>4</float>
+                    <float>-3</float>
+                    <float>77.3624</float>
+                </list>
+                <list name="4x-4">
+                    <float>4</float>
+                    <float>-4</float>
+                    <float>60.3637</float>
+                </list>
+                <list name="4x-5">
+                    <float>4</float>
+                    <float>-5</float>
+                    <float>-23.9439</float>
+                </list>
+                <list name="4x-6">
+                    <float>4</float>
+                    <float>-6</float>
+                    <float>-18.0459</float>
+                </list>
+                <list name="4x0">
+                    <float>4</float>
+                    <float>0</float>
+                    <float>40.8431</float>
+                </list>
+                <list name="4x1">
+                    <float>4</float>
+                    <float>1</float>
+                    <float>79.0362</float>
+                </list>
+                <list name="4x2">
+                    <float>4</float>
+                    <float>2</float>
+                    <float>49.0258</float>
+                </list>
+                <list name="4x3">
+                    <float>4</float>
+                    <float>3</float>
+                    <float>32.4989</float>
+                </list>
+                <list name="4x4">
+                    <float>4</float>
+                    <float>4</float>
+                    <float>63.168</float>
+                </list>
+                <list name="4x5">
+                    <float>4</float>
+                    <float>5</float>
+                    <float>146.079</float>
+                </list>
+                <list name="4x6">
+                    <float>4</float>
+                    <float>6</float>
+                    <float>117.47</float>
+                </list>
+                <list name="5x-1">
+                    <float>5</float>
+                    <float>-1</float>
+                    <float>100.271</float>
+                </list>
+                <list name="5x-2">
+                    <float>5</float>
+                    <float>-2</float>
+                    <float>111.035</float>
+                </list>
+                <list name="5x-3">
+                    <float>5</float>
+                    <float>-3</float>
+                    <float>122.717</float>
+                </list>
+                <list name="5x-4">
+                    <float>5</float>
+                    <float>-4</float>
+                    <float>132.885</float>
+                </list>
+                <list name="5x-5">
+                    <float>5</float>
+                    <float>-5</float>
+                    <float>118.937</float>
+                </list>
+                <list name="5x-6">
+                    <float>5</float>
+                    <float>-6</float>
+                    <float>133.049</float>
+                </list>
+                <list name="5x0">
+                    <float>5</float>
+                    <float>0</float>
+                    <float>127.629</float>
+                </list>
+                <list name="5x1">
+                    <float>5</float>
+                    <float>1</float>
+                    <float>135.815</float>
+                </list>
+                <list name="5x2">
+                    <float>5</float>
+                    <float>2</float>
+                    <float>128.89</float>
+                </list>
+                <list name="5x3">
+                    <float>5</float>
+                    <float>3</float>
+                    <float>127.853</float>
+                </list>
+                <list name="5x4">
+                    <float>5</float>
+                    <float>4</float>
+                    <float>127.948</float>
+                </list>
+                <list name="5x5">
+                    <float>5</float>
+                    <float>5</float>
+                    <float>119.354</float>
+                </list>
+                <list name="5x6">
+                    <float>5</float>
+                    <float>6</float>
+                    <float>113.462</float>
+                </list>
+                <list name="6x-1">
+                    <float>6</float>
+                    <float>-1</float>
+                    <float>132.339</float>
+                </list>
+                <list name="6x-2">
+                    <float>6</float>
+                    <float>-2</float>
+                    <float>130.589</float>
+                </list>
+                <list name="6x-3">
+                    <float>6</float>
+                    <float>-3</float>
+                    <float>118.277</float>
+                </list>
+                <list name="6x-4">
+                    <float>6</float>
+                    <float>-4</float>
+                    <float>139.5</float>
+                </list>
+                <list name="6x-5">
+                    <float>6</float>
+                    <float>-5</float>
+                    <float>149.164</float>
+                </list>
+                <list name="6x-6">
+                    <float>6</float>
+                    <float>-6</float>
+                    <float>121.9</float>
+                </list>
+                <list name="6x0">
+                    <float>6</float>
+                    <float>0</float>
+                    <float>102.806</float>
+                </list>
+                <list name="6x1">
+                    <float>6</float>
+                    <float>1</float>
+                    <float>124.593</float>
+                </list>
+                <list name="6x2">
+                    <float>6</float>
+                    <float>2</float>
+                    <float>128.496</float>
+                </list>
+                <list name="6x3">
+                    <float>6</float>
+                    <float>3</float>
+                    <float>113.735</float>
+                </list>
+                <list name="6x4">
+                    <float>6</float>
+                    <float>4</float>
+                    <float>100.309</float>
+                </list>
+                <list name="6x5">
+                    <float>6</float>
+                    <float>5</float>
+                    <float>110.323</float>
+                </list>
+                <list name="6x6">
+                    <float>6</float>
+                    <float>6</float>
+                    <float>142.348</float>
+                </list>
+            </map>
+            <list name="surfaces">
+                <map>
+                    <string name="name">rock</string>
+                    <string name="pattern">fill</string>
+                </map>
+                <map>
+                    <string name="name">sand</string>
+                    <map name="params">
+                        <float name="highThreshold">1.5</float>
+                        <float name="lowThreshold">-2</float>
+                    </map>
+                    <string name="pattern">band</string>
+                </map>
+                <map>
+                    <string name="name">grass</string>
+                    <map name="params">
+                        <float name="cutoff">0.5</float>
+                        <float name="highThreshold">80</float>
+                        <float name="intercept">1</float>
+                        <float name="lowThreshold">1</float>
+                    </map>
+                    <string name="pattern">grass</string>
+                </map>
+                <map>
+                    <string name="name">silt</string>
+                    <map name="params">
+                        <float name="murkyDepth">-10</float>
+                        <float name="waterLevel">0</float>
+                    </map>
+                    <string name="pattern">depth</string>
+                </map>
+                <map>
+                    <string name="name">snow</string>
+                    <map name="params">
+                        <float name="threshold">110</float>
+                    </map>
+                    <string name="pattern">high</string>
+                </map>
+            </list>
+        </map>
+    </map>
+    <map>
+        <string name="loc">0</string>
+        <list name="pos">
+            <float>-500</float>
+            <float>-321</float>
+            <float>-20</float>
+        </list>
+        <list name="contains" />
+        <string name="id">867685</string>
+        <list name="parents">
+            <string>boundary</string>
+        </list>
+        <float name="stamp">0</float>
+        <string name="objtype">obj</string>
+        <list name="bbox">
+            <float>2</float>
+            <float>642</float>
+            <float>300</float>
+        </list>
+        <string name="mode">fixed</string>
+    </map>
+</atlas>
