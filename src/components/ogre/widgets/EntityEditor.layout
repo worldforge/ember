@@ -185,14 +185,14 @@
                         <Property Name='Visible' Value='false' />
                     </Window>
                     <Window Type='EmberLook/Button' Name='DumpWorld'>
-                        <Property Name='Text' Value='Dump entity' />
-                        <Property Name='Tooltip' Value='Dumps the entity to a file on disk.' />
+                        <Property Name='Text' Value='Export entity' />
+                        <Property Name='Tooltip' Value='Exports the entity to a file on disk.' />
                         <Property Name='UnifiedPosition' Value='{{0,5},{1,-25}}' />
                         <Property Name='UnifiedSize' Value='{{0,90},{0,20}}' />
                     </Window>
                     <Window Type='EmberLook/Button' Name='LoadWorld'>
-                        <Property Name='Text' Value='Load entity' />
-                        <Property Name='Tooltip' Value='Loads an entity from a file on disk.' />
+                        <Property Name='Text' Value='Import entity' />
+                        <Property Name='Tooltip' Value='Imports an entity from a file on disk.' />
                         <Property Name='UnifiedPosition' Value='{{0,95},{1,-25}}' />
                         <Property Name='UnifiedSize' Value='{{0,90},{0,20}}' />
                     </Window>

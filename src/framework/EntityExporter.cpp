@@ -16,7 +16,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "WorldDumper.h"
+#include "EntityExporter.h"
 
 #include "LoggingInstance.h"
 #include "Time.h"
@@ -57,12 +57,12 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 	return integerId(lhs) < integerId(rhs);
 }
 
-WorldDumper::WorldDumper(Eris::Account& account) :
+EntityExporter::EntityExporter(Eris::Account& account) :
 		mAccount(account), mCount(0), mEntitiesCodec(0), mEntitiesEncoder(0), mEntitiesDecoder(0), mXmlDocument(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0)
 {
 }
 
-WorldDumper::~WorldDumper()
+EntityExporter::~EntityExporter()
 {
 	delete mEntitiesEncoder;
 	delete mEntitiesCodec;
@@ -70,17 +70,17 @@ WorldDumper::~WorldDumper()
 	delete mXmlDocument;
 }
 
-void WorldDumper::cancel()
+void EntityExporter::cancel()
 {
 	mCancelled = true;
 }
 
-void WorldDumper::dumpEntity(const RootEntity & ent)
+void EntityExporter::dumpEntity(const RootEntity & ent)
 {
 	mEntitiesEncoder->streamObjectsMessage(ent);
 }
 
-void WorldDumper::infoArrived(const Operation & op)
+void EntityExporter::infoArrived(const Operation & op)
 {
 	if (op->isDefaultRefno()) {
 		S_LOG_WARNING("Got op not belonging to us when dumping.");
@@ -131,7 +131,7 @@ void WorldDumper::infoArrived(const Operation & op)
 		get->setFrom(mAccount.getId());
 		get->setSerialno(Eris::getNewSerialno());
 
-		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &WorldDumper::operation);
+		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operation);
 		mAccount.getConnection()->send(get);
 
 		mQueue.pop_front();
@@ -139,7 +139,7 @@ void WorldDumper::infoArrived(const Operation & op)
 	}
 }
 
-void WorldDumper::complete()
+void EntityExporter::complete()
 {
 	mEntitiesEncoder->streamEnd();
 
@@ -149,7 +149,7 @@ void WorldDumper::complete()
 	S_LOG_INFO("Completed dumping " << mCount << " entities.");
 }
 
-void WorldDumper::start(const std::string& filename, const std::string& entityId)
+void EntityExporter::start(const std::string& filename, const std::string& entityId)
 {
 	S_LOG_INFO("Starting world dump to file '" << filename << "'.");
 
@@ -201,12 +201,12 @@ void WorldDumper::start(const std::string& filename, const std::string& entityId
 
 	get->setFrom(mAccount.getId());
 	get->setSerialno(Eris::getNewSerialno());
-	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &WorldDumper::operation);
+	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operation);
 	mAccount.getConnection()->send(get);
 
 }
 
-void WorldDumper::operation(const Operation & op)
+void EntityExporter::operation(const Operation & op)
 {
 	if (!mCancelled) {
 		if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {

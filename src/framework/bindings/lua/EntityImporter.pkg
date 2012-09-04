@@ -1,14 +1,16 @@
-$#include "framework/WorldLoader.h"
+$#include "framework/EntityImporter.h"
 
 namespace Ember
 {
 
-/// \brief Task class for dumping the world to a file
-class WorldLoader
+/**
+ * @brief Imports a previously exported entity.
+ */
+class EntityImporter
 {
 public:
-	explicit WorldLoader(Eris::Account& account);
-	virtual ~WorldLoader();
+	explicit EntityImporter(Eris::Account& account);
+	virtual ~EntityImporter();
 
 	virtual void start(const std::string& filename);
 	

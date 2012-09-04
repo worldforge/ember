@@ -16,8 +16,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef TOOLS_WORLD_DUMPER_H
-#define TOOLS_WORLD_DUMPER_H
+#ifndef EMBER_ENTITYEXPORTER_H
+#define EMBER_ENTITYEXPORTER_H
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
@@ -58,7 +58,7 @@ namespace Ember
  * @author Alistair Riddoch
  * @author Erik Ogenvik
  *
- * @brief Dumps the complete world to disk.
+ * @brief Exports an entity (along with all contained entities) to disk.
  *
  * The entity export format is as follows:
  *
@@ -71,11 +71,11 @@ namespace Ember
  *   <name>The name of the server.</name>
  *   <ruleset>The ruleset of the server.</ruleset>
  *  </server>
- *  <entities></entities>
- *  <minds></minds>
+ *  <entities>atlas data of all entities</entities>
+ *  <minds>data (format to be decided) of all minds</minds>
  * </entityexport>
  */
-class WorldDumper: public virtual sigc::trackable
+class EntityExporter: public virtual sigc::trackable
 {
 public:
 
@@ -83,12 +83,12 @@ public:
 	 * @brief Ctor.
 	 * @param account The account connected to the server. Must be an admin account.
 	 */
-	explicit WorldDumper(Eris::Account& account);
+	explicit EntityExporter(Eris::Account& account);
 
 	/**
 	 * @brief Dtor.
 	 */
-	virtual ~WorldDumper();
+	virtual ~EntityExporter();
 
 	/**
 	 * @brief Starts the dumping process.

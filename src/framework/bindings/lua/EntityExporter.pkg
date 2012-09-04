@@ -1,13 +1,13 @@
-$#include "framework/WorldDumper.h"
+$#include "framework/EntityExporter.h"
 
 namespace Ember
 {
 
-class WorldDumper
+class EntityExporter
 {
 public:
-	explicit WorldDumper(Eris::Account& account);
-	virtual ~WorldDumper();
+	explicit EntityExporter(Eris::Account& account);
+	virtual ~EntityExporter();
 
 	void start(const std::string& filename);
 	void start(const std::string& filename, const std::string& entityId);

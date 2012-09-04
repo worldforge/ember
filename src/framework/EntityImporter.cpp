@@ -15,7 +15,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "WorldLoader.h"
+#include "EntityImporter.h"
 
 #include "MultiLineListFormatter.h"
 #include "AtlasMessageLoader.h"
@@ -53,7 +53,7 @@ StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o) :
 	child = obj->getContains().end();
 }
 
-void WorldLoader::getEntity(const std::string & id, OpVector & res)
+void EntityImporter::getEntity(const std::string & id, OpVector & res)
 {
 	std::map<std::string, Root>::const_iterator I = m_objects.find(id);
 	if (I == m_objects.end()) {
@@ -80,7 +80,7 @@ void WorldLoader::getEntity(const std::string & id, OpVector & res)
 	res.push_back(get);
 }
 
-void WorldLoader::walk(OpVector & res)
+void EntityImporter::walk(OpVector & res)
 {
 	assert(!m_treeStack.empty());
 	StackEntry & current = m_treeStack.back();
@@ -112,7 +112,7 @@ void WorldLoader::walk(OpVector & res)
 	}
 }
 
-void WorldLoader::create(const RootEntity & obj, OpVector & res)
+void EntityImporter::create(const RootEntity & obj, OpVector & res)
 {
 	++m_count;
 	++m_createCount;
@@ -141,7 +141,7 @@ void WorldLoader::create(const RootEntity & obj, OpVector & res)
 	res.push_back(create);
 }
 
-void WorldLoader::errorArrived(const Operation & op, OpVector & res)
+void EntityImporter::errorArrived(const Operation & op, OpVector & res)
 {
 	if (op->isDefaultRefno()) {
 		return;
@@ -169,7 +169,7 @@ void WorldLoader::errorArrived(const Operation & op, OpVector & res)
 	};
 }
 
-void WorldLoader::infoArrived(const Operation & op, OpVector & res)
+void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 {
 	if (op->isDefaultRefno()) {
 		return;
@@ -237,7 +237,7 @@ void WorldLoader::infoArrived(const Operation & op, OpVector & res)
 	}
 }
 
-void WorldLoader::sightArrived(const Operation & op, OpVector & res)
+void EntityImporter::sightArrived(const Operation & op, OpVector & res)
 {
 	if (op->isDefaultArgs() || op->getArgs().empty()) {
 		S_LOG_FAILURE("No arg");
@@ -276,16 +276,16 @@ void WorldLoader::sightArrived(const Operation & op, OpVector & res)
 	};
 }
 
-WorldLoader::WorldLoader(Eris::Account& account) :
+EntityImporter::EntityImporter(Eris::Account& account) :
 		mAccount(account), m_count(0), m_updateCount(0), m_createCount(0), m_state(INIT)
 {
 }
 
-WorldLoader::~WorldLoader()
+EntityImporter::~EntityImporter()
 {
 }
 
-void WorldLoader::start(const std::string& filename)
+void EntityImporter::start(const std::string& filename)
 {
 
 	TiXmlDocument xmlDoc;
@@ -318,20 +318,20 @@ void WorldLoader::start(const std::string& filename)
 
 }
 
-void WorldLoader::sendOperation(const Operation& op)
+void EntityImporter::sendOperation(const Operation& op)
 {
 	if (!op->isDefaultSerialno()) {
-		mAccount.getConnection()->getResponder()->await(op->getSerialno(), this, &WorldLoader::operation);
+		mAccount.getConnection()->getResponder()->await(op->getSerialno(), this, &EntityImporter::operation);
 	}
 	mAccount.getConnection()->send(op);
 }
 
-void WorldLoader::cancel()
+void EntityImporter::cancel()
 {
 	m_state = CANCEL;
 }
 
-void WorldLoader::operation(const Operation & op)
+void EntityImporter::operation(const Operation & op)
 {
 	if (m_state == CANCEL) {
 		m_state = CANCELLED;

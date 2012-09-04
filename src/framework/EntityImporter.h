@@ -1,5 +1,6 @@
-// Cyphesis Online RPG Server and AI Engine
+//
 // Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2012 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,10 +16,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id: 068f5e0a83003ad542f8e9a373bfbe21739aa3ef $
+//
 
-#ifndef TOOLS_WORLD_LOADER_H
-#define TOOLS_WORLD_LOADER_H
+#ifndef ENTITY_IMPORTER_H
+#define ENTITY_IMPORTER_H
 
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -61,13 +62,13 @@ public:
 };
 
 /**
- * @brief Task class for dumping the world to a file.
+ * @brief Imports a previously exported entity.
  */
-class WorldLoader: public virtual sigc::trackable
+class EntityImporter: public virtual sigc::trackable
 {
 public:
-	explicit WorldLoader(Eris::Account& account);
-	virtual ~WorldLoader();
+	explicit EntityImporter(Eris::Account& account);
+	virtual ~EntityImporter();
 
 	virtual void start(const std::string& filename);
 
