@@ -59,7 +59,7 @@ namespace OgreView
 {
 
 EmberEntityFactory::EmberEntityFactory(Eris::View& view, Scene& scene) :
-		ShowModels("showmodels", this, "Show or hide models."), DumpAttributes("dump_attributes", this, "Dumps the attributes of a supplied entity to a file. If no entity id is supplied the current avatar will be used."), mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene)
+		ShowModels("showmodels", this, "Show or hide models."), mView(view), mTypeService(*view.getAvatar()->getConnection()->getTypeService()), mScene(scene)
 {
 }
 
@@ -82,7 +82,6 @@ Eris::Entity* EmberEntityFactory::instantiate(const Atlas::Objects::Entity::Root
 	return entity;
 }
 
-
 void EmberEntityFactory::deleteMapping(EntityMapping::EntityMapping* mapping)
 {
 	delete mapping;
@@ -98,27 +97,6 @@ int EmberEntityFactory::priority()
 	return 10;
 }
 
-void EmberEntityFactory::dumpAttributesOfEntity(const std::string& entityId) const
-{
-	EmberEntity* entity = static_cast<EmberEntity*>(mView.getEntity(entityId));
-	if (entity) {
-		//make sure the directory exists
-		std::string dir(EmberServices::getSingleton().getConfigService().getHomeDirectory() + "/entityexport/");
-
-		if (!oslink::directory(dir).isExisting()) {
-			S_LOG_INFO("Creating directory " << dir);
-			oslink::directory::mkdir(dir.c_str());
-		}
-
-		const std::string fileName(dir + entityId + ".atlas");
-		std::fstream exportFile(fileName.c_str(), std::fstream::out);
-
-		S_LOG_INFO("Dumping attributes to " << fileName);
-		entity->dumpAttributes(exportFile, std::cout);
-		ConsoleBackend::getSingletonPtr()->pushMessage(std::string("Dumped attributes to ") + fileName, "info");
-	}
-}
-
 void EmberEntityFactory::runCommand(const std::string &command, const std::string &args)
 {
 	if (command == ShowModels.getCommand()) {
@@ -131,13 +109,6 @@ void EmberEntityFactory::runCommand(const std::string &command, const std::strin
 		} else if (value == "false") {
 			S_LOG_INFO("Hiding models.");
 			Model::ModelDefinitionManager::getSingleton().setShowModels(false);
-		}
-	} else if (DumpAttributes == command) {
-		Tokeniser tokeniser;
-		tokeniser.initTokens(args);
-		std::string value = tokeniser.nextToken();
-		if (value == "") {
-			dumpAttributesOfEntity(value);
 		}
 	}
 }

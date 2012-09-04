@@ -99,18 +99,6 @@ public:
 	const ConsoleCommandWrapper ShowModels;
 
 	/**
-	 Dumps the attributes of a supplied entity to the std::out.
-	 */
-	const ConsoleCommandWrapper DumpAttributes;
-
-	/**
-	 *    Dumps the attributes of the entity with the supplied id to the std::out.
-	 * @param entityId
-	 * @return
-	 */
-	void dumpAttributesOfEntity(const std::string& entityId) const;
-
-	/**
 	 * @brief Emitted when the factory is being deleted.
 	 */
 	sigc::signal<void> EventBeingDeleted;
@@ -134,7 +122,6 @@ protected:
 	 * @param mapping The mapping which should be deleted.
 	 */
 	void deleteMapping(EntityMapping::EntityMapping* mapping);
-
 
 };
 
