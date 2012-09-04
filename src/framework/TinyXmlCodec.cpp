@@ -220,7 +220,7 @@ public:
 };
 
 TinyXmlCodec::TinyXmlCodec(TiXmlNode& rootElement, Atlas::Bridge& bridge) :
-		mRootNode(rootElement), mBridge(bridge)
+		mRootNode(rootElement), mBridge(bridge), mCurrentNode(0)
 {
 }
 
@@ -236,32 +236,31 @@ void TinyXmlCodec::poll(bool can_read)
 
 void TinyXmlCodec::streamBegin()
 {
-	mNodes.push(new TiXmlElement("atlas"));
+	mCurrentNode = mRootNode.InsertEndChild(TiXmlElement("atlas"));
 }
 
 void TinyXmlCodec::streamEnd()
 {
-	mRootNode.InsertEndChild(*mNodes.top());
-	mNodes.pop();
+	mCurrentNode = 0;
 }
 
 void TinyXmlCodec::streamMessage()
 {
-	mNodes.push(new TiXmlElement("map"));
+	mCurrentNode = mCurrentNode->InsertEndChild(TiXmlElement("map"));
 }
 
 void TinyXmlCodec::mapMapItem(const std::string& name)
 {
-	TiXmlElement* element = new TiXmlElement("map");
-	element->SetAttribute("name", name);
-	mNodes.push(element);
+	TiXmlElement element("map");
+	element.SetAttribute("name", name);
+	mCurrentNode = mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::mapListItem(const std::string& name)
 {
-	TiXmlElement* element = new TiXmlElement("list");
-	element->SetAttribute("name", name);
-	mNodes.push(element);
+	TiXmlElement element("list");
+	element.SetAttribute("name", name);
+	mCurrentNode = mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::mapIntItem(const std::string& name, long data)
@@ -271,7 +270,7 @@ void TinyXmlCodec::mapIntItem(const std::string& name, long data)
 	TiXmlElement element("int");
 	element.InsertEndChild(TiXmlText(ss.str()));
 	element.SetAttribute("name", name);
-	mNodes.top()->InsertEndChild(element);
+	mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::mapFloatItem(const std::string& name, double data)
@@ -281,7 +280,7 @@ void TinyXmlCodec::mapFloatItem(const std::string& name, double data)
 	TiXmlElement element("float");
 	element.InsertEndChild(TiXmlText(ss.str()));
 	element.SetAttribute("name", name);
-	mNodes.top()->InsertEndChild(element);
+	mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::mapStringItem(const std::string& name, const std::string& data)
@@ -289,24 +288,22 @@ void TinyXmlCodec::mapStringItem(const std::string& name, const std::string& dat
 	TiXmlElement element("string");
 	element.InsertEndChild(TiXmlText(data));
 	element.SetAttribute("name", name);
-	mNodes.top()->InsertEndChild(element);
+	mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::mapEnd()
 {
-	TiXmlNode* node = mNodes.top();
-	mNodes.pop();
-	mNodes.top()->InsertEndChild(*node);
+	mCurrentNode = mCurrentNode->Parent();
 }
 
 void TinyXmlCodec::listMapItem()
 {
-	mNodes.push(new TiXmlElement("map"));
+	mCurrentNode = mCurrentNode->InsertEndChild(TiXmlElement("map"));
 }
 
 void TinyXmlCodec::listListItem()
 {
-	mNodes.push(new TiXmlElement("list"));
+	mCurrentNode = mCurrentNode->InsertEndChild(TiXmlElement("list"));
 }
 
 void TinyXmlCodec::listIntItem(long data)
@@ -315,7 +312,7 @@ void TinyXmlCodec::listIntItem(long data)
 	ss << data;
 	TiXmlElement element("int");
 	element.InsertEndChild(TiXmlText(ss.str()));
-	mNodes.top()->InsertEndChild(element);
+	mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::listFloatItem(double data)
@@ -324,20 +321,18 @@ void TinyXmlCodec::listFloatItem(double data)
 	ss << data;
 	TiXmlElement element("float");
 	element.InsertEndChild(TiXmlText(ss.str()));
-	mNodes.top()->InsertEndChild(element);
+	mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::listStringItem(const std::string& data)
 {
 	TiXmlElement element("string");
 	element.InsertEndChild(TiXmlText(data));
-	mNodes.top()->InsertEndChild(element);
+	mCurrentNode->InsertEndChild(element);
 }
 
 void TinyXmlCodec::listEnd()
 {
-	TiXmlNode* node = mNodes.top();
-	mNodes.pop();
-	mNodes.top()->InsertEndChild(*node);
+	mCurrentNode = mCurrentNode->Parent();
 }
 }

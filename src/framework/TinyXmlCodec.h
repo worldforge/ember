@@ -76,7 +76,7 @@ protected:
 	/**
 	 * @brief Keeps track of the current node when data is being written.
 	 */
-	std::stack<TiXmlNode*> mNodes;
+	TiXmlNode* mCurrentNode;
 
 };
 
