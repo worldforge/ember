@@ -941,7 +941,7 @@ void ProgressiveMeshGenerator::bakeLods(const LodLevel& lodConfigs)
 
 	// Create buffers.
 	for (unsigned short i = 0; i < submeshCount; i++) {
-		Ogre::ProgressiveMesh::LODFaceList& lods = mMesh->getSubMesh(i)->mLodFaceList;
+		Ogre::SubMesh::LODFaceList& lods = mMesh->getSubMesh(i)->mLodFaceList;
 		int indexCount = mIndexBufferInfoList[i].indexCount;
 		assert(indexCount > 0);
 		lods.push_back(OGRE_NEW Ogre::IndexData());
@@ -981,7 +981,7 @@ void ProgressiveMeshGenerator::bakeLods(const LodLevel& lodConfigs)
 	// Close buffers.
 	for (unsigned short i = 0; i < submeshCount; i++) {
 		if (mIndexBufferInfoList[mTriangleList[i].submeshID].indexCount) {
-			Ogre::ProgressiveMesh::LODFaceList& lods = mMesh->getSubMesh(i)->mLodFaceList;
+			Ogre::SubMesh::LODFaceList& lods = mMesh->getSubMesh(i)->mLodFaceList;
 			lods.back()->indexBuffer->unlock();
 		}
 	}

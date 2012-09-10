@@ -279,7 +279,7 @@ void PMInjector::inject(PMGenRequest* request)
 	assert(mesh->getNumSubMeshes() == submeshCount);
 	mesh->removeLodLevels();
 	for (unsigned short i = 0; i < submeshCount; i++) {
-		Ogre::ProgressiveMesh::LODFaceList& lods = mesh->getSubMesh(i)->mLodFaceList;
+		Ogre::SubMesh::LODFaceList& lods = mesh->getSubMesh(i)->mLodFaceList;
 		typedef std::vector<PMGenRequest::IndexBuffer> GenBuffers;
 		GenBuffers& buffers = request->submesh[i].genIndexBuffers;
 		GenBuffers::iterator it = buffers.begin();

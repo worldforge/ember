@@ -22,6 +22,8 @@
 
 #include <boost/unordered_set.hpp>
 
+#include <sigc++/signal.h>
+
 namespace Ember
 {
 namespace OgreView
