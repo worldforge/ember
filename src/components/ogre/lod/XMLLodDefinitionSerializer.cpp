@@ -24,6 +24,7 @@
 #include "framework/osdir.h"
 
 #include <OgreStringConverter.h>
+#include <OgreResourceGroupManager.h>
 
 namespace Ember
 {

@@ -1,6 +1,6 @@
 $#include "bindings/lua/TypeResolving.h"
 
-static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Ember::OgreView::Lod::LodConfig>> @ createConnector(sigc::signal<void, Ember::OgreView::Lod::LodConfig*>&);
+static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Ember::OgreView::Lod::LodConfig> > @ createConnector(sigc::signal<void, Ember::OgreView::Lod::LodConfig*>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector @ createConnector(sigc::signal<void>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::StringValueAdapter, Ember::Lua::PtrValueAdapter<Ember::OgreView::EmberEntity> > @ createConnector(sigc::signal<void, const std::string&, Ember::OgreView::EmberEntity*>&);
 static Ember::Lua::Connector Ember::Lua::Connector::createConnector<Ember::Lua::PtrValueAdapter<Eris::Connection> > @ createConnector(sigc::signal<void, Eris::Connection*>&);

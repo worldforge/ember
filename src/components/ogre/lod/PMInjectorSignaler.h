@@ -22,6 +22,7 @@
 #include "QueuedProgressiveMeshGenerator.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/Singleton.h"
+#include <sigc++/signal.h>
 
 namespace Ember
 {
