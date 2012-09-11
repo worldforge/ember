@@ -679,9 +679,9 @@ void ProgressiveMeshGenerator::build(LodConfig& lodConfig)
 
 void ProgressiveMeshGenerator::computeLods(LodConfig& lodConfigs)
 {
-	int vertexCount = mVertexList.size();
-	int lastBakeVertexCount = vertexCount;
-	int lodCount = lodConfigs.levels.size();
+	size_t vertexCount = mVertexList.size();
+	size_t lastBakeVertexCount = vertexCount;
+	size_t lodCount = lodConfigs.levels.size();
 	for (mCurLod = 0; mCurLod < lodCount; mCurLod++) {
 		size_t neededVertexCount = calcLodVertexCount(lodConfigs.levels[mCurLod]);
 		for (; neededVertexCount < vertexCount; vertexCount--) {
@@ -707,14 +707,14 @@ size_t ProgressiveMeshGenerator::findDstID(unsigned int srcID, unsigned short su
 	// Tries to find a compatible edge.
 
 	// Exact match search.
-	for (int i = 0; i < tmpCollapsedEdges.size(); i++) {
+	for (size_t i = 0; i < tmpCollapsedEdges.size(); i++) {
 		if (tmpCollapsedEdges[i].srcID == srcID && tmpCollapsedEdges[i].submeshID == submeshID) {
 			return i;
 		}
 	}
 
 	// Usable match search.
-	for (int i = 0; i < tmpCollapsedEdges.size(); i++) {
+	for (size_t i = 0; i < tmpCollapsedEdges.size(); i++) {
 		if (tmpCollapsedEdges[i].submeshID == submeshID) {
 			return i;
 		}
@@ -725,7 +725,7 @@ size_t ProgressiveMeshGenerator::findDstID(unsigned int srcID, unsigned short su
 bool ProgressiveMeshGenerator::hasSrcID(unsigned int srcID, unsigned short submeshID)
 {
 	// This will only return exact matches.
-	for (int i = 0; i < tmpCollapsedEdges.size(); i++) {
+	for (size_t i = 0; i < tmpCollapsedEdges.size(); i++) {
 		if (tmpCollapsedEdges[i].srcID == srcID && tmpCollapsedEdges[i].submeshID == submeshID) {
 			return true;
 		}

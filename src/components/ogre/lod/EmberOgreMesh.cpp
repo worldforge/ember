@@ -52,7 +52,7 @@ void EmberOgreMesh::_configureMeshLodUsage(const LodConfig& lodConfigs)
 	Ogre::SubMesh* submesh = getSubMesh(0);
 	mNumLods = submesh->mLodFaceList.size() + 1;
 	mMeshLodUsageList.resize(mNumLods);
-	for (int n = 0, i = 0; i < lodConfigs.levels.size(); i++) {
+	for (size_t n = 0, i = 0; i < lodConfigs.levels.size(); i++) {
 		// Record usages. First Lod usage is the mesh itself.
 
 		// Skip lods, which have the same amount of vertices. No buffer generated for them.
