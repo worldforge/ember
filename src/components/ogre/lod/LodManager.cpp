@@ -134,8 +134,9 @@ void LodManager::loadAutomaticLod(Ogre::MeshPtr mesh)
 	Ogre::Real radius = mesh->getBoundingSphereRadius();
 	for (int i = 2; i < 6; i++) {
 		Ogre::Real i4 = (Ogre::Real) (i * i * i * i);
-		lodLevel.distance = 8388608.f / i4;
-		lodLevel.reductionValue = radius / 16384.f * i4;
+		Ogre::Real i5 = i4 * (Ogre::Real) i;
+		lodLevel.distance = 3388608.f / i4;
+		lodLevel.reductionValue = radius / 100000.f * i5;
 		lodConfigs.levels.push_back(lodLevel);
 	}
 
