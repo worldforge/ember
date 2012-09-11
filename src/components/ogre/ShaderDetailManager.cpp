@@ -33,17 +33,6 @@ namespace OgreView
 ShaderDetailManager::ShaderDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ember::OgreView::ShaderManager& shaderManager) :
 		mShaderManager(shaderManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderThresholdLevel(8.0f)
 {
-	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
-	if (!schemes.empty()) {
-		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator currentLevel = schemes.find(mShaderManager.getGraphicsLevel());
-		if (currentLevel != schemes.end()) {
-			mShaderLevel = currentLevel->second;
-		} else {
-			mShaderLevel = schemes.rbegin()->second;
-		}
-		mMinShaderLevel = schemes.begin()->second;
-		mMaxShaderLevel = schemes.rbegin()->second;
-	}
 }
 
 ShaderDetailManager::~ShaderDetailManager()
@@ -54,6 +43,22 @@ ShaderDetailManager::~ShaderDetailManager()
 void ShaderDetailManager::initialize()
 {
 	mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &ShaderDetailManager::changeLevel));
+	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
+	if (!schemes.empty()) {
+		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator currentLevel = schemes.find(mShaderManager.getGraphicsLevel());
+		if (currentLevel != schemes.end()) {
+			mShaderLevel = currentLevel->second;
+		} else {
+			mShaderLevel = schemes.rbegin()->second;
+		}
+		mMinShaderLevel = "Medium";
+		mMaxShaderLevel = schemes.rbegin()->second;
+		S_LOG_INFO("Minimum shader detail is " << mMinShaderLevel);
+		S_LOG_INFO("Maximum shader detail is " << mMaxShaderLevel);
+	}
+	else {
+		S_LOG_INFO("Shader schemes are empty");
+	}
 }
 
 void ShaderDetailManager::changeShaderLevel(const std::string& level)
