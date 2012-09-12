@@ -4881,7 +4881,6 @@
 	***********************************************************************************************************/
 	-->
 	<WidgetLook name="EmberLook/Tree">
-	<PropertyDefinition name="FrameColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" />
         <PropertyDefinition name="SelectionBrushImage" initialValue="set:EmberLook image:MultiListSelectionBrush" />
         <PropertyDefinition name="NormalTextColour" initialValue="FF000000" />
         <PropertyDefinition name="SelectedTextColour" initialValue="FFFFFF55" />
