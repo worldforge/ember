@@ -37,6 +37,8 @@ GUICEGUIAdapter::GUICEGUIAdapter(CEGUI::System *system, CEGUI::OgreRenderer *ren
 mGuiSystem(system)
 , mGuiRenderer(renderer)
 , mSelectedText(0)
+, mSelectionStart(0)
+, mSelectionEnd(0)
 {
 
 	//lookup table for sdl scancodes and CEGUI keys

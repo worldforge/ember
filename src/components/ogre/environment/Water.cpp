@@ -140,7 +140,7 @@ public:
 
 
 
-Water::Water(Ogre::Camera &camera, Ogre::SceneManager& sceneMgr) : mCamera(camera), mSceneMgr(sceneMgr), mWaterNode(0), mWaterEntity(0)
+Water::Water(Ogre::Camera &camera, Ogre::SceneManager& sceneMgr) : mCamera(camera), mSceneMgr(sceneMgr), mRefractionListener(0), mReflectionListener(0), mWaterNode(0), mWaterEntity(0)
 {
 }
 

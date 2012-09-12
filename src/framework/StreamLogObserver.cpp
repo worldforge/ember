@@ -42,7 +42,7 @@ static WFMath::TimeStamp startTime(WFMath::TimeStamp::now());
      * Copy constructor.
      */
     StreamLogObserver::StreamLogObserver( const StreamLogObserver &source )
-        : myOut(source.myOut)
+        : myOut(source.myOut), mDetailed(source.mDetailed), mStart(WFMath::TimeStamp::now())
         {
         }
 
