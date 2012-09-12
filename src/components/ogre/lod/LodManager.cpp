@@ -53,7 +53,7 @@ void LodManager::loadLod(Ogre::MeshPtr mesh)
 		Ogre::ResourcePtr resource = LodDefinitionManager::getSingleton().load(lodDefName, "General");
 		const LodDefinition& def = *static_cast<const LodDefinition*>(resource.get());
 		loadLod(mesh, def);
-	} catch (Ogre::FileNotFoundException ex) {
+	} catch (const Ogre::FileNotFoundException& ex) {
 		// Exception is thrown if a mesh hasn't got a loddef.
 		// By default, use the automatic mesh lod management system.
 		loadAutomaticLod(mesh);
