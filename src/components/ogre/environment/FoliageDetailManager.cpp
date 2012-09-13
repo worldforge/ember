@@ -127,6 +127,8 @@ bool FoliageDetailManager::stepUpFoliageDistance(float step)
 
 bool FoliageDetailManager::setFoliageDistance(float distance)
 {
+	pause(); //pause the component to prevent unstability if value is changed manually during signalled automatic adjustment.
+	
 	if (distance < 0) { //set the distance as long as it's not negative.
 		mFarDistance = 0;
 	} else {
@@ -134,10 +136,14 @@ bool FoliageDetailManager::setFoliageDistance(float distance)
 	}
 	foliageFarDistanceChanged.emit(mFarDistance);
 	return true;
+	
+	unpause();
 }
 
 bool FoliageDetailManager::setFoliageDensity(float density)
 {
+	pause(); //pause the listening for change requests to prevent unstability if value is changed manually during signalled automatic adjustment.
+	
 	if (density < 0.0f) { //check if density negative
 		mUpdatedDensity = 0.0f;
 	} else if (density > 1.0f) {
@@ -146,6 +152,8 @@ bool FoliageDetailManager::setFoliageDensity(float density)
 		mUpdatedDensity = density;
 	}
 	foliageDensityChanged.emit(mUpdatedDensity);
+	
+	unpause();
 }
 
 void FoliageDetailManager::Config_FoliageDensity(const std::string& section, const std::string& key, varconf::Variable& variable)
