@@ -53,11 +53,11 @@ void ShaderDetailManager::initialize()
 		}
 		mMinShaderLevel = "Medium";
 		mMaxShaderLevel = schemes.rbegin()->second;
-		S_LOG_INFO("Minimum shader detail is " << mMinShaderLevel);
-		S_LOG_INFO("Maximum shader detail is " << mMaxShaderLevel);
+		S_LOG_INFO("ShaderDetailManager: Minimum shader detail is " << mMinShaderLevel);
+		S_LOG_INFO("ShaderDetailManager: Maximum shader detail is " << mMaxShaderLevel);
 	}
 	else {
-		S_LOG_INFO("Shader schemes are empty");
+		S_LOG_INFO("ShaderDetailManager: Shader schemes are empty");
 	}
 }
 
