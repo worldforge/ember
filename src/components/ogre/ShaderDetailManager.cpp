@@ -121,6 +121,19 @@ void ShaderDetailManager::unpause()
 
 bool ShaderDetailManager::changeLevel(float level)
 {
+	// retrieve the current shader level in case an external change was made.
+	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
+	if (!schemes.empty()) {
+		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator currentLevel = schemes.find(mShaderManager.getGraphicsLevel());
+		if (currentLevel != schemes.end()) {
+			mShaderLevel = currentLevel->second;
+		} else {
+			mShaderLevel = schemes.rbegin()->second;
+		}
+	} else {
+		S_LOG_INFO("ShaderDetailManager: Shader schemes are empty");
+	}
+	
 	if (std::abs(level) < mShaderThresholdLevel) {
 		return false;
 	} else {
