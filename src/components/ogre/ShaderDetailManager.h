@@ -24,7 +24,7 @@ namespace Ember
 {
 namespace OgreView
 {
-class IGraphicalChangeAdapter;
+class GraphicalChangeAdapter;
 class ShaderManager;
 
 /**
@@ -37,7 +37,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	ShaderDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter, ShaderManager& shaderManager);
+	ShaderDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter, ShaderManager& shaderManager);
 
 	/**
 	 * @brief Destructor.
@@ -114,7 +114,7 @@ protected:
 	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
+	GraphicalChangeAdapter& mGraphicalChangeAdapter;
 
 	/**
 	 * Reference to the Shader Manager used to make scheme changes.

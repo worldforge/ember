@@ -82,17 +82,9 @@ float FpsUpdater::getCurrentFPS()
 	return mCurrentFps;
 }
 
-IGraphicalChangeAdapter::IGraphicalChangeAdapter()
+bool GraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 {
-}
-
-IGraphicalChangeAdapter::~IGraphicalChangeAdapter()
-{
-}
-
-bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
-{
-	//for now leaving it at this, need to update later with better callibrated values
+	//for now leaving it at this, need to update later with better calibrated values
 	float translatedChangeRequired = changeSize / 1.0f;
 
 	bool furtherChangePossible = changeRequired.emit(translatedChangeRequired);
@@ -138,7 +130,7 @@ void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequire
 	mGraphicalChangeAdapter.fpsChangeRequired(changeInFpsRequired);
 }
 
-IGraphicalChangeAdapter& AutomaticGraphicsLevelManager::getGraphicalAdapter()
+GraphicalChangeAdapter& AutomaticGraphicsLevelManager::getGraphicalAdapter()
 {
 	return mGraphicalChangeAdapter;
 }

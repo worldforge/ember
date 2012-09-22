@@ -32,7 +32,7 @@ class ConfigListenerContainer;
 
 namespace OgreView
 {
-class IGraphicalChangeAdapter;
+class GraphicalChangeAdapter;
 
 namespace Environment
 {
@@ -48,7 +48,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	FoliageDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter);
+	FoliageDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter);
 
 	/**
 	 * @brief Destructor.
@@ -189,7 +189,7 @@ protected:
 	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
+	GraphicalChangeAdapter& mGraphicalChangeAdapter;
 
 	/**
 	 * @brief Used to listen for configuration changes.

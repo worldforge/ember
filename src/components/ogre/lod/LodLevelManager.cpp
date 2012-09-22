@@ -32,7 +32,7 @@ namespace OgreView
 namespace Lod
 {
 
-LodLevelManager::LodLevelManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ogre::Camera& mainCamera) :
+LodLevelManager::LodLevelManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ogre::Camera& mainCamera) :
 		mGraphicalChangeAdapter(graphicalChangeAdapter), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer()), mLodThresholdLevel(1.0f), mLodFactor(1.0f), mDefaultStep(0.4f), mMinLodFactor(0.2f), mMaxLodFactor(2.0f)
 {
 }

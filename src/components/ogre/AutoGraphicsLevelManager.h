@@ -147,19 +147,9 @@ protected:
  * @brief Adaptor interface class between the central AutomaticGraphicsLevelManager class and the graphics subsystems
  * This class accepts a change in fps required and translates it into a floating change required value that the subsystems understand
  */
-class IGraphicalChangeAdapter
+class GraphicalChangeAdapter
 {
 public:
-
-	/**
-	 * @brief Constructor.
-	 */
-	IGraphicalChangeAdapter();
-
-	/**
-	 * @brief Destructor.
-	 */
-	~IGraphicalChangeAdapter();
 
 	/**
 	 * Signals that a change is required.
@@ -176,7 +166,7 @@ public:
  *
  * This class maintains a current Graphics level. It connects to the fpsUpdated signal and thus 
  * checks the fps for a significant increase or decrease and then asks for a change in the level
- * by using the IGraphicalChangeAdapter.
+ * by using the GraphicalChangeAdapter.
  */
 
 class AutomaticGraphicsLevelManager
@@ -215,9 +205,9 @@ public:
 	void changeGraphicsLevel(float changeInFpsRequired);
 
 	/**
-	 * @brief Used to access the instance IGraphicalChangeAdapter owned by this class.
+	 * @brief Used to access the instance GraphicalChangeAdapter owned by this class.
 	 */
-	IGraphicalChangeAdapter& getGraphicalAdapter();
+	GraphicalChangeAdapter& getGraphicalAdapter();
 
 protected:
 	/**
@@ -238,7 +228,7 @@ protected:
 	/**
 	 * The interface through which this central class communicates with the graphical subcomponents.
 	 */
-	IGraphicalChangeAdapter mGraphicalChangeAdapter;
+	GraphicalChangeAdapter mGraphicalChangeAdapter;
 
 	/**
 	 * @brief Reference to the main loop controller.

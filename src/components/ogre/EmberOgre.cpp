@@ -142,9 +142,9 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 }
 
 EmberOgre::EmberOgre() :
-		mInput(0), mRoot(0), mSceneMgr(0), mWindow(0), mScreen(0), mShaderManager(0), mAutomaticGraphicsLevelManager(0), mGeneralCommandMapper(std::auto_ptr < InputCommandMapper > (new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
+		mInput(0), mRoot(0), mSceneMgr(0), mWindow(0), mScreen(0), mShaderManager(0), mAutomaticGraphicsLevelManager(0), mGeneralCommandMapper(std::auto_ptr < InputCommandMapper > (new InputCommandMapper("general"))), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mLodDefinitionManager(0), mLodManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
 		//mJesus(0),
-		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0), mLodDefinitionManager(0), mLodManager(0),
+		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
 		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mWindowProvider(0)

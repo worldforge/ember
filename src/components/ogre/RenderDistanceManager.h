@@ -37,7 +37,7 @@ namespace Environment
 class IFog;
 }
 
-class IGraphicalChangeAdapter;
+class GraphicalChangeAdapter;
 
 /**
  * @brief Handles change far render distance in factors of absolute far render distance using the main camera.
@@ -50,7 +50,7 @@ public:
 	/**
 	 * @brief Constructor.
 	 */
-	RenderDistanceManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera);
+	RenderDistanceManager(GraphicalChangeAdapter& graphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera);
 
 	/**
 	 * @brief Destructor.
@@ -162,7 +162,7 @@ protected:
 	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested.
 	 */
-	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
+	GraphicalChangeAdapter& mGraphicalChangeAdapter;
 
 	/**
 	 * Reference to the main camera reference used to affect the far render distance.

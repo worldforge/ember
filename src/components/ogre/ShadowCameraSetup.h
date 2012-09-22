@@ -30,7 +30,7 @@
 namespace Ember {
 namespace OgreView {
 
-class IGraphicalChangeAdapter;
+class GraphicalChangeAdapter;
 class ShadowDetailManager;
 
 /**
@@ -48,7 +48,7 @@ public:
      * @brief Ctor.
      * @param sceneMgr The scene manager to which we want to apply our shadow camera.
      */
-    ShadowCameraSetup(Ogre::SceneManager& sceneMgr, IGraphicalChangeAdapter& graphicalChangeAdapter);
+    ShadowCameraSetup(Ogre::SceneManager& sceneMgr, GraphicalChangeAdapter& graphicalChangeAdapter);
 
     /**
      * @brief Dtor.

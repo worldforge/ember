@@ -37,7 +37,7 @@ namespace Ember
 namespace OgreView
 {
 
-ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, IGraphicalChangeAdapter& graphicalChangeAdapter) :
+ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, GraphicalChangeAdapter& graphicalChangeAdapter) :
 		mSceneMgr(sceneMgr), mShadowDetailManager(new ShadowDetailManager(graphicalChangeAdapter, sceneMgr))
 {
 	setup();

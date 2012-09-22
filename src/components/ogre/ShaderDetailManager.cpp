@@ -30,7 +30,7 @@ namespace Ember
 namespace OgreView
 {
 
-ShaderDetailManager::ShaderDetailManager(IGraphicalChangeAdapter& graphicalChangeAdapter, Ember::OgreView::ShaderManager& shaderManager) :
+ShaderDetailManager::ShaderDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ember::OgreView::ShaderManager& shaderManager) :
 		mShaderManager(shaderManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderThresholdLevel(8.0f)
 {
 }

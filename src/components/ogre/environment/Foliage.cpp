@@ -52,8 +52,8 @@ namespace OgreView
 namespace Environment
 {
 
-Foliage::Foliage(Terrain::TerrainManager& terrainManager, IGraphicalChangeAdapter& iGraphicalChangeAdapter) :
-	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageDetailManager(new FoliageDetailManager(iGraphicalChangeAdapter))
+Foliage::Foliage(Terrain::TerrainManager& terrainManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
+	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageDetailManager(new FoliageDetailManager(graphicalChangeAdapter))
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 	mFoliageDetailManager->foliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));

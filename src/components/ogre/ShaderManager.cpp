@@ -62,11 +62,11 @@ private:
 	/**
 	 * @brief Reference to the automatic graphics manager that is to be passed on when shadow camera is set up.
 	 */
-	IGraphicalChangeAdapter& mGraphicalChangeAdapter;
+	GraphicalChangeAdapter& mGraphicalChangeAdapter;
 
 public:
 
-	ShaderSetupInstance(Ogre::SceneManager& sceneManager, IGraphicalChangeAdapter& graphicalChangeAdapter)
+	ShaderSetupInstance(Ogre::SceneManager& sceneManager, GraphicalChangeAdapter& graphicalChangeAdapter)
 	: mSceneManager(sceneManager), mShadowCameraSetup(0), mGraphicalChangeAdapter(graphicalChangeAdapter)
 	{
 
@@ -93,7 +93,7 @@ public:
 	}
 };
 
-ShaderManager::ShaderManager(IGraphicalChangeAdapter& graphicalChangeAdapter) :
+ShaderManager::ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
 	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderDetailManager(new ShaderDetailManager(graphicalChangeAdapter, *this))
 {
 	mGraphicSchemes[LEVEL_DEFAULT]		= std::string("Default");
