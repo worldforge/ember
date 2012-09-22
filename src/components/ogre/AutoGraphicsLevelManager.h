@@ -38,7 +38,7 @@ namespace OgreView
 
 /**
  * @brief This structure is used to accumulate the return values from the slots and then pass a result back to the signal
- * It recieves all the return values from all slots registered to this signal and passes on a calculated OR of all the values back to the signal.
+ * It receives all the return values from all slots registered to this signal and passes on a calculated OR of all the values back to the signal.
  * It is used to calculate whether a further change in graphics level is possible.
  */
 template<class T>
@@ -102,7 +102,7 @@ public:
 	/**
 	 * @brief Signal sent out with the updated FPS value every frame
 	 */
-	sigc::signal<void, float> fpsUpdated;
+	sigc::signal<void, float> EventFpsUpdated;
 
 protected:
 	/**
@@ -128,7 +128,7 @@ protected:
 	/**
 	 * The amount of time in seconds that the fps should be averaged over.
 	 */
-	int mRequiredTime;
+	size_t mRequiredTimeSamples;
 
 	/**
 	 * A list of last 'n' fpses measured every second. Used for finding the average fps in the last 'n' seconds.
@@ -226,11 +226,6 @@ protected:
 	float mDefaultFps;
 
 	/**
-	 * @brief This function is used to check if the fps is optimum, higher or lower as compared to mDefaultFps.
-	 */
-	void checkFps(float);
-
-	/**
 	 * Boolean that holds whether automatic adjustment is enabled.
 	 */
 	bool mEnabled;
@@ -250,6 +245,11 @@ protected:
 	 * Mainly used for getting frame limiting data.
 	 */
 	MainLoopController& mMainLoopController;
+
+	/**
+	 * @brief This function is used to check if the fps is optimum, higher or lower as compared to mDefaultFps.
+	 */
+	void checkFps(float);
 
 	/**
 	 * @brief Connected to the config service to listen for derired fps settings.

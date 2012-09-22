@@ -36,7 +36,7 @@ namespace OgreView
 {
 
 FpsUpdater::FpsUpdater(Ogre::RenderWindow& renderWindow) :
-		mCurrentFps(0.0f), mTimeAtLastUpdate(Time::currentTimeMillis()), mTimeAtLastStore(Time::currentTimeMillis()), mRenderWindow(renderWindow), mTimeBetweenUpdates(2000), mRequiredTime(6.0f)
+		mRenderWindow(renderWindow), mCurrentFps(0.0f), mTimeAtLastUpdate(Time::currentTimeMillis()), mTimeBetweenUpdates(2000), mRequiredTimeSamples(20), mTimeAtLastStore(Time::currentTimeMillis())
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
 }
@@ -50,15 +50,14 @@ bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 {
 	long currentTime = Time::currentTimeMillis();
 
-	if (currentTime - mTimeAtLastStore >= 1000) {
+	if (currentTime - mTimeAtLastStore >= 500) {
 		mTimeAtLastStore = currentTime;
 
 		//Push back latest fps
 		mFpsStore.push_back(mRenderWindow.getLastFPS());
-		S_LOG_VERBOSE(mRenderWindow.getLastFPS() << " is pushed onto FPS queue");
 
 		//if there is one more than the minimum number of fpses then delete oldest fps. This also ensures that the store fills up with at least mRequiredTime fpses before starting to remove fpses.
-		if (mFpsStore.size() > mRequiredTime) { //Fps is measured every second, therefore when size > required time, oldest fps must be popped
+		while (mFpsStore.size() > mRequiredTimeSamples) { //Fps is measured every second, therefore when size > required time, oldest fps must be popped
 			mFpsStore.pop_front();
 		}
 	}
@@ -67,15 +66,12 @@ bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 		mTimeAtLastUpdate = currentTime;
 
 		float totalFps;
-		int fpsCount = 0;
-		for (std::deque<float>::iterator I = mFpsStore.begin(); I != mFpsStore.end(); ++I) {
+		for (std::deque<float>::const_iterator I = mFpsStore.begin(); I != mFpsStore.end(); ++I) {
 			totalFps += *I;
-			++fpsCount;
 		}
-		mCurrentFps = totalFps / fpsCount;
+		mCurrentFps = totalFps / mFpsStore.size();
 		
-		fpsUpdated.emit(mCurrentFps);
-		S_LOG_VERBOSE(mCurrentFps << " is emitted as current average FPS");
+		EventFpsUpdated.emit(mCurrentFps);
 	}
 
 	return true;
@@ -104,12 +100,11 @@ bool IGraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 }
 
 AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow, MainLoopController& mainLoopController) :
-		mEnabled(false), mDefaultFps(60), mFpsUpdater(renderWindow), mMainLoopController(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer())
+		mDefaultFps(60.0f), mEnabled(false), mFpsUpdater(renderWindow), mMainLoopController(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer())
 {
-	mFpsUpdatedConnection = mFpsUpdater.fpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
+	mFpsUpdatedConnection = mFpsUpdater.EventFpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
 	mConfigListenerContainer->registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "autoadjust", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_Enabled), false);
-	S_LOG_INFO("Automatic graphics detail manager is initialized");
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
