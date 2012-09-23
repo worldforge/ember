@@ -34,16 +34,12 @@ namespace OgreView
 ShaderDetailManager::ShaderDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ember::OgreView::ShaderManager& shaderManager) :
 		mShaderThresholdLevel(8.0f), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderManager(shaderManager)
 {
+	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShaderDetailManager::changeLevel));
 }
 
 ShaderDetailManager::~ShaderDetailManager()
 {
 	mChangeRequiredConnection.disconnect();
-}
-
-void ShaderDetailManager::initialize()
-{
-	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShaderDetailManager::changeLevel));
 }
 
 bool ShaderDetailManager::stepUpShaderLevel()

@@ -45,12 +45,6 @@ public:
 	~ShaderDetailManager();
 
 	/**
-	 * @brief Initializes the shader detail manager.
-	 * The manager starts listening for graphics detail change requests.
-	 */
-	void initialize();
-
-	/**
 	 * @brief Sets the shader scheme to the required level.
 	 * @param level The needed shader level (high, medium, low).
 	 * If the level doesn't exist, it will switch to default.
