@@ -105,8 +105,6 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 
 	mConfigListenerContainer->registerConfigListener("graphics", "foliage", sigc::bind<-1>(sigc::mem_fun(*this, &World::Config_Foliage), sigc::ref(graphicalChangeAdapter)));
 
-	mLodLevelManager->initialize();
-	
 	mRenderDistanceManager = new RenderDistanceManager(graphicalChangeAdapter, *(mEnvironment->getFog()), mScene->getMainCamera());
 }
 

@@ -64,13 +64,7 @@ public:
 	 * 
 	 * @note factor cannot be negative or zero. It is still safe to attempt to set these values as the function will default to a factor of 0.1
 	 */
-	bool setLodBiasAll(float factor);
-
-	/**
-	 * @brief Initializes lod level manager.
-	 * The manager starts listening for graphics detail change requests.
-	 */
-	void initialize();
+	bool setLodBiasAll(Ogre::Real factor);
 
 	/**
 	 * @brief This can be used to stop this component responding to change requests.
@@ -84,48 +78,19 @@ public:
 
 protected:
 	/**
-	 * @brief Checks level against this component's threshold value to determine change in material lod.
-	 * This function is used to listen to the changes required by the automatic graphics detail system.
-	 */
-	bool changeLevel(float level);
-
-	/**
-	 * @brief Steps up the material lod bias by provided step.
-	 * @param step The value to step the bias up by.
-	 */
-	bool stepUpLodBias(float step);
-
-	/**
-	 * @brief Steps down the material lod bias by provided step.
-	 * @param step The value to step the bias down by.
-	 */
-	bool stepDownLodBias(float step);
-
-	/**
-	 * @brief Connected to the config service to listen for lod bias settings.
-	 */
-	void Config_LodBias(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-	/**
 	 * The threshold fps change after which the lod level is changed to respond to performance change requested.
 	 */
 	float mLodThresholdLevel;
 
 	/**
-	 * The current global lod bias. This value is used to affect the level of detail distance values 
-	 * of all materials and meshes.
-	 */
-	float mLodFactor;
-
-	/**
 	 * The minimum material lod bias that the lod bias factor can be set to.
 	 */
-	float mMinLodFactor;
+	Ogre::Real mMinLodFactor;
 
 	/**
 	 * The maximum material lod bias that the lod bias factor can be set to.
 	 */
-	float mMaxLodFactor;
+	Ogre::Real mMaxLodFactor;
 
 	/**
 	 * The default step that is taken when adjusting the factors of this component.
@@ -151,6 +116,30 @@ protected:
 	 * @brief Used to listen for configuration changes.
 	 */
 	ConfigListenerContainer* mConfigListenerContainer;
+
+	/**
+	 * @brief Checks level against this component's threshold value to determine change in material lod.
+	 * This function is used to listen to the changes required by the automatic graphics detail system.
+	 */
+	bool changeLevel(float level);
+
+	/**
+	 * @brief Steps up the material lod bias by provided step.
+	 * @param step The value to step the bias up by.
+	 */
+	bool stepUpLodBias(float step);
+
+	/**
+	 * @brief Steps down the material lod bias by provided step.
+	 * @param step The value to step the bias down by.
+	 */
+	bool stepDownLodBias(float step);
+
+	/**
+	 * @brief Connected to the config service to listen for lod bias settings.
+	 */
+	void Config_LodBias(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 };
 
 }
