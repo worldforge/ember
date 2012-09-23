@@ -45,7 +45,7 @@ RenderDistanceManager::~RenderDistanceManager()
 void RenderDistanceManager::initialize()
 {
 	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
+		mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
 	}
 	mConfigListenerContainer->registerConfigListener("graphics", "renderdistance", sigc::mem_fun(*this, &RenderDistanceManager::Config_FarRenderDistance));
 }

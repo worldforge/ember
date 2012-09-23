@@ -56,8 +56,8 @@ Foliage::Foliage(Terrain::TerrainManager& terrainManager, GraphicalChangeAdapter
 	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageDetailManager(new FoliageDetailManager(graphicalChangeAdapter))
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
-	mFoliageDetailManager->foliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));
-	mFoliageDetailManager->foliageFarDistanceChanged.connect(sigc::mem_fun(*this, &Foliage::setFarDistance));
+	mFoliageDetailManager->EventFoliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));
+	mFoliageDetailManager->EventFoliageFarDistanceChanged.connect(sigc::mem_fun(*this, &Foliage::setFarDistance));
 }
 
 Foliage::~Foliage()

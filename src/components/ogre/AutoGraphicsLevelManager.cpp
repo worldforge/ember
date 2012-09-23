@@ -87,7 +87,7 @@ bool GraphicalChangeAdapter::fpsChangeRequired(float changeSize)
 	//for now leaving it at this, need to update later with better calibrated values
 	float translatedChangeRequired = changeSize / 1.0f;
 
-	bool furtherChangePossible = changeRequired.emit(translatedChangeRequired);
+	bool furtherChangePossible = EventChangeRequired.emit(translatedChangeRequired);
 	return furtherChangePossible;
 }
 

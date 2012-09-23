@@ -31,7 +31,7 @@ namespace OgreView
 {
 
 ShaderDetailManager::ShaderDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ember::OgreView::ShaderManager& shaderManager) :
-		mShaderManager(shaderManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderThresholdLevel(8.0f)
+		mShaderThresholdLevel(8.0f), mShaderManager(shaderManager), mGraphicalChangeAdapter(graphicalChangeAdapter)
 {
 }
 
@@ -42,7 +42,7 @@ ShaderDetailManager::~ShaderDetailManager()
 
 void ShaderDetailManager::initialize()
 {
-	mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &ShaderDetailManager::changeLevel));
+	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShaderDetailManager::changeLevel));
 	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
 	if (!schemes.empty()) {
 		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator currentLevel = schemes.find(mShaderManager.getGraphicsLevel());

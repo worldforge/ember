@@ -30,7 +30,7 @@ namespace OgreView
 {
 
 ShadowDetailManager::ShadowDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager) :
-		mSceneManager(sceneManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer()), mShadowFarDistance(sceneManager.getShadowFarDistance()), mShadowCameraLodBias(1.0f), mDefaultShadowDistanceStep(250), mDefaultShadowLodStep(0.3), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f)
+		mShadowFarDistance(sceneManager.getShadowFarDistance()), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f), mDefaultShadowDistanceStep(250), mShadowCameraLodBias(1.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mDefaultShadowLodStep(0.3), mSceneManager(sceneManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer())
 {
 }
 
@@ -74,7 +74,7 @@ bool ShadowDetailManager::setShadowFarDistance(float distance)
 
 void ShadowDetailManager::initialize()
 {
-	mChangeRequiredConnection = mGraphicalChangeAdapter.changeRequired.connect(sigc::mem_fun(*this, &ShadowDetailManager::changeLevel));
+	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShadowDetailManager::changeLevel));
 	mConfigListenerContainer->registerConfigListener("graphics", "shadowlodbias", sigc::mem_fun(*this, &ShadowDetailManager::Config_ShadowLodBias));
 }
 

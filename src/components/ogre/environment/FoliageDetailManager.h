@@ -64,17 +64,17 @@ public:
 	/**
 	 * @brief Signal sent out when this component makes a change in the detail level of foliage.
 	 */
-	sigc::signal<void, int> foliageLevelChanged;
+	sigc::signal<void, int> EventFoliageLevelChanged;
 
 	/**
 	 * @brief Signal sent out when this component changes foliage density levels.
 	 */
-	sigc::signal<void, float> foliageDensityChanged;
+	sigc::signal<void, float> EventFoliageDensityChanged;
 
 	/**
 	 * @brief Signal sent out when this component changes foliage far distance.
 	 */
-	sigc::signal<void, float> foliageFarDistanceChanged;
+	sigc::signal<void, float> EventFoliageFarDistanceChanged;
 
 	/**
 	 * @brief Used to set the density of all foliage.
