@@ -41,8 +41,6 @@ namespace Forests {
 namespace Ember {
 namespace OgreView {
 
-class GraphicalChangeAdapter;
-
 namespace Terrain
 {
 class TerrainFoliageDefinition;
@@ -52,9 +50,7 @@ class TerrainManager;
 
 namespace Environment {
 
-class FoliageImpl;
 class FoliageBase;
-class FoliageDetailManager;
 
 /**
 @author Erik Hjortsberg
@@ -67,16 +63,10 @@ public:
 	typedef std::map<const std::string, Ogre::Entity* > EntityStore;
 	typedef std::vector<FoliageBase*> FoliageStore;
 
-	Foliage(Terrain::TerrainManager& terrainManager, GraphicalChangeAdapter& GraphicalChangeAdapter);
+	Foliage(Terrain::TerrainManager& terrainManager);
 
 	~Foliage();
 	
-	/**
-	 * @brief Used to get a reference to the foliage level manager owned by this class.
-	 * @return Foliage level manager
-	 */
-	FoliageDetailManager* getFoliageDetailManager();
-
 	void initialize();
 
 	virtual bool frameStarted(const Ogre::FrameEvent& evt);
@@ -111,17 +101,11 @@ protected:
 
 	EntityStore mEntities;
 
-	FoliageImpl* mImpl;
-
 	FoliageStore mFoliages;
 
 
 	void createGrassMesh();
 	
-	/**
-	 * Utility object that can be used to manage detail level of foliage.
-	 */
-	FoliageDetailManager* mFoliageDetailManager;
 };
 
 }

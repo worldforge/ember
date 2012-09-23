@@ -47,8 +47,10 @@ class FoliageDetailManager
 public:
 	/**
 	 * @brief Constructor.
+	 * @param foliage The foliage instance.
+	 * @param graphicalChangeAdapter The graphical change adapter.
 	 */
-	FoliageDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter);
+	FoliageDetailManager(Foliage& foliage, GraphicalChangeAdapter& graphicalChangeAdapter);
 
 	/**
 	 * @brief Destructor.
@@ -65,16 +67,6 @@ public:
 	 * @brief Signal sent out when this component makes a change in the detail level of foliage.
 	 */
 	sigc::signal<void, int> EventFoliageLevelChanged;
-
-	/**
-	 * @brief Signal sent out when this component changes foliage density levels.
-	 */
-	sigc::signal<void, float> EventFoliageDensityChanged;
-
-	/**
-	 * @brief Signal sent out when this component changes foliage far distance.
-	 */
-	sigc::signal<void, float> EventFoliageFarDistanceChanged;
 
 	/**
 	 * @brief Used to set the density of all foliage.
@@ -145,6 +137,11 @@ protected:
 	 * @brief Connected to the config service to listen for foliage far distance settings.
 	 */
 	void Config_FoliageFarDistance(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
+	 * @brief The main foliage instance.
+	 */
+	Foliage& mFoliage;
 
 	/**
 	 * The threshold level of this subcomponent passing which it responds by changing the detail level of foliage.

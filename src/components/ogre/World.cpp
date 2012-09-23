@@ -44,6 +44,7 @@
 #include "camera/ThirdPersonCameraMount.h"
 
 #include "environment/Foliage.h"
+#include "environment/FoliageDetailManager.h"
 #include "environment/Environment.h"
 #include "environment/CaelumEnvironment.h"
 #include "environment/SimpleEnvironment.h"
@@ -70,7 +71,7 @@ namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals, Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mFoliage(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar())), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera()))
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())), mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
 {
 
 	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventEndErisPoll);
@@ -134,14 +135,15 @@ World::~World()
 	Ogre::Root::getSingleton().removeFrameListener(mMotionManager);
 	delete mMotionManager;
 	mSignals.EventMotionManagerDestroyed();
-	
+
 	delete mRenderDistanceManager;
 
 	ISceneRenderingTechnique* technique = mScene->removeRenderingTechnique("forest");
 	delete technique;
+	delete mFoliageDetailManager;
 	delete mFoliage;
 	delete mEnvironment;
-	
+
 	delete mLodLevelManager;
 
 	delete mScene;
@@ -292,21 +294,34 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 	if (variable.is_bool() && static_cast<bool>(variable)) {
 		if (!mFoliage) {
 			//create the foliage
-			mFoliage = new Environment::Foliage(*mTerrainManager, graphicalChangeAdapter);
+			mFoliage = new Environment::Foliage(*mTerrainManager);
 			EventFoliageCreated.emit();
-			mFoliageInitializer = new DelayedFoliageInitializer(*mFoliage, mView, 1000, 15000);
+			mFoliageInitializer = new DelayedFoliageInitializer(sigc::bind(sigc::mem_fun(*this, &World::initializeFoliage), sigc::ref(graphicalChangeAdapter)), mView, 1000, 15000);
+//			mFoliageDetailManager->EventFoliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));
+//			mFoliageDetailManager->EventFoliageFarDistanceChanged.connect(sigc::mem_fun(*this, &Foliage::setFarDistance));
 		}
 	} else {
-		delete mFoliage;
-		mFoliage = 0;
+		delete mFoliageDetailManager;
+		mFoliageDetailManager = 0;
 		delete mFoliageInitializer;
 		mFoliageInitializer = 0;
+		delete mFoliage;
+		mFoliage = 0;
 	}
 
 }
 
-DelayedFoliageInitializer::DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
-		mFoliage(foliage), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
+void World::initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter)
+{
+	if (mFoliage) {
+		mFoliage->initialize();
+		mFoliageDetailManager = new Environment::FoliageDetailManager(*mFoliage, graphicalChangeAdapter);
+		mFoliageDetailManager->initialize();
+	}
+}
+
+DelayedFoliageInitializer::DelayedFoliageInitializer(sigc::slot<void> callback, Eris::View& view, unsigned int intervalMs, unsigned int maxTimeMs) :
+		mCallback(callback), mView(view), mIntervalMs(intervalMs), mMaxTimeMs(maxTimeMs), mTimeout(new Eris::Timeout(intervalMs)), mTotalElapsedTime(0)
 {
 	//don't load the foliage directly, instead wait some seconds for all terrain areas to load
 	//the main reason is that new terrain areas will invalidate the foliage causing a reload
@@ -325,7 +340,7 @@ void DelayedFoliageInitializer::timout_Expired()
 {
 	//load the foliage if either all queues entities have been loaded, or 15 seconds has elapsed
 	if (mView.lookQueueSize() == 0 || mTotalElapsedTime > mMaxTimeMs) {
-		mFoliage.initialize();
+		mCallback();
 	} else {
 		mTotalElapsedTime += mIntervalMs;
 		mTimeout->reset(mIntervalMs);

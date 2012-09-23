@@ -28,7 +28,6 @@
 #include "FoliageBase.h"
 #include "GrassFoliage.h"
 #include "ShrubberyFoliage.h"
-#include "FoliageDetailManager.h"
 
 #include "../terrain/TerrainLayerDefinition.h"
 #include "../terrain/TerrainLayerDefinitionManager.h"
@@ -52,29 +51,21 @@ namespace OgreView
 namespace Environment
 {
 
-Foliage::Foliage(Terrain::TerrainManager& terrainManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
-	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager), mFoliageDetailManager(new FoliageDetailManager(graphicalChangeAdapter))
+Foliage::Foliage(Terrain::TerrainManager& terrainManager) :
+	ReloadFoliage("reloadfoliage", this, ""), mTerrainManager(terrainManager)
 {
 	Ogre::Root::getSingleton().addFrameListener(this);
-	mFoliageDetailManager->EventFoliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));
-	mFoliageDetailManager->EventFoliageFarDistanceChanged.connect(sigc::mem_fun(*this, &Foliage::setFarDistance));
 }
 
 Foliage::~Foliage()
 {
 	S_LOG_INFO("Shutting down foliage system.");
-	delete mFoliageDetailManager;
 	
 	for (FoliageStore::iterator I = mFoliages.begin(); I != mFoliages.end(); ++I) {
 		delete *I;
 	}
 
 	Ogre::Root::getSingleton().removeFrameListener(this);
-}
-
-FoliageDetailManager* Foliage::getFoliageDetailManager()
-{
-	return mFoliageDetailManager;
 }
 
 void Foliage::initialize()
@@ -104,7 +95,6 @@ void Foliage::initialize()
 			}
 		}
 	}
-	mFoliageDetailManager->initialize();
 }
 
 void Foliage::runCommand(const std::string &command, const std::string &args)

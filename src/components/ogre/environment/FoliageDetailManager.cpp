@@ -18,11 +18,13 @@
 
 #include "FoliageDetailManager.h"
 
+#include "Foliage.h"
+
 #include "components/ogre/GraphicalChangeAdapter.h"
 
 #include "services/config/ConfigListenerContainer.h"
 
-#include "cmath"
+#include <cmath>
 
 namespace Ember
 {
@@ -31,8 +33,8 @@ namespace OgreView
 namespace Environment
 {
 
-FoliageDetailManager::FoliageDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mUpdatedDensity(1.0f), mDefaultDistanceStep(0.3f), mFarDistance(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer())
+FoliageDetailManager::FoliageDetailManager(Foliage& foliage, GraphicalChangeAdapter& graphicalChangeAdapter) :
+		mFoliage(foliage), mThresholdLevel(2.0f), mDefaultDensityStep(0.3f), mUpdatedDensity(1.0f), mDefaultDistanceStep(0.3f), mFarDistance(1.0f), mMaxFarDistance(2.0f), mMinFarDistance(0.3f), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer())
 {
 }
 
@@ -70,11 +72,11 @@ bool FoliageDetailManager::stepDownFoliageDensity(float step)
 {
 	if (mUpdatedDensity > step) { //step down only if existing density is greater than step
 		mUpdatedDensity -= step;
-		EventFoliageDensityChanged.emit(mUpdatedDensity);
+		mFoliage.setDensity(mUpdatedDensity);
 		return true;
 	} else if (mUpdatedDensity < step && mUpdatedDensity > 0.0f) { //if there is still some positive density left which is smaller than step, set it to 0
 		mUpdatedDensity = 0.0f;
-		EventFoliageDensityChanged.emit(mUpdatedDensity);
+		mFoliage.setDensity(mUpdatedDensity);
 		return true;
 	} else { //step down not possible
 		return false;
@@ -85,11 +87,11 @@ bool FoliageDetailManager::stepUpFoliageDensity(float step)
 {
 	if (mUpdatedDensity + step <= 1.0f) { //step up only if the step doesn't cause density to go over default density
 		mUpdatedDensity += step;
-		EventFoliageDensityChanged.emit(mUpdatedDensity);
+		mFoliage.setDensity(mUpdatedDensity);
 		return true;
 	} else if (mUpdatedDensity < 1.0f) { //if the density is still below default density but a default step causes it to go over default density
 		mUpdatedDensity = 1.0f;
-		EventFoliageDensityChanged.emit(mUpdatedDensity);
+		mFoliage.setDensity(mUpdatedDensity);
 		return true;
 	} else {
 		return false; //step up not possible
@@ -100,11 +102,11 @@ bool FoliageDetailManager::stepDownFoliageDistance(float step)
 {
 	if (mFarDistance > step) { //step down only if existing far distance is greater than step
 		mFarDistance -= step;
-		EventFoliageFarDistanceChanged.emit(mFarDistance);
+		mFoliage.setFarDistance(mFarDistance);
 		return true;
 	} else if (mFarDistance < step && mFarDistance > mMinFarDistance) { //if there is still some positive far distance left which is smaller than step, set it to minimum far distance.
 		mFarDistance = mMinFarDistance;
-		EventFoliageFarDistanceChanged.emit(mFarDistance);
+		mFoliage.setFarDistance(mFarDistance);
 		return true;
 	} else { //step down not possible
 		return false;
@@ -115,11 +117,11 @@ bool FoliageDetailManager::stepUpFoliageDistance(float step)
 {
 	if (mFarDistance + step <= mMaxFarDistance) { //step up only if the step doesn't cause distance to go over max distance.
 		mFarDistance += step;
-		EventFoliageFarDistanceChanged.emit(mFarDistance);
+		mFoliage.setFarDistance(mFarDistance);
 		return true;
 	} else if (mFarDistance < mMaxFarDistance) { //if the far distance is still below max distance but a default step causes it to go over max distance.
 		mFarDistance = mMaxFarDistance;
-		EventFoliageFarDistanceChanged.emit(mFarDistance);
+		mFoliage.setFarDistance(mFarDistance);
 		return true;
 	} else {
 		return false; //step up not possible
@@ -135,7 +137,7 @@ bool FoliageDetailManager::setFoliageDistance(float distance)
 	} else {
 		mFarDistance = distance;
 	}
-	EventFoliageFarDistanceChanged.emit(mFarDistance);
+	mFoliage.setFarDistance(mFarDistance);
 	
 	unpause();
 	return true;
@@ -152,7 +154,7 @@ bool FoliageDetailManager::setFoliageDensity(float density)
 	} else {
 		mUpdatedDensity = density;
 	}
-	EventFoliageDensityChanged.emit(mUpdatedDensity);
+	mFoliage.setDensity(mUpdatedDensity);
 	
 	unpause();
 

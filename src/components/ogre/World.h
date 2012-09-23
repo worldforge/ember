@@ -78,6 +78,7 @@ namespace Environment
 {
 class Environment;
 class Foliage;
+class FoliageDetailManager;
 }
 
 namespace Lod
@@ -228,13 +229,13 @@ public:
 	 * @returns The terrain manager.
 	 */
 	Terrain::TerrainManager& getTerrainManager() const;
-	
+
 	/**
 	 * @brief Gets the level of detail manager.
 	 * @returns The LOD level manager.
 	 */
 	Lod::LodLevelManager& getLodLevelManager() const;
-	
+
 	/**
 	 * @brief Gets the render distance manager.
 	 * @return The render distance manager.
@@ -347,12 +348,12 @@ protected:
 	 * @brief The lod level manager, owned by this instance, used to adjust the level of detail of materials and meshes.
 	 */
 	Lod::LodLevelManager* mLodLevelManager;
-	
+
 	/**
 	 * @brief The render distance manager, owned by this instance, used to adjust the absolute rendering distance of the world.
 	 */
 	RenderDistanceManager* mRenderDistanceManager;
-	
+
 	/**
 	 * @brief The page data provider for the EmberPagingSceneManager.
 	 */
@@ -362,6 +363,11 @@ protected:
 	 * @brief The foliage system which provides different foliage functions.
 	 */
 	Environment::Foliage* mFoliage;
+
+	/**
+	 * Utility object that can be used to manage detail level of foliage.
+	 */
+	Environment::FoliageDetailManager* mFoliageDetailManager;
 
 	/**
 	 * @brief A foliage initializer which acts a bit delayed.
@@ -427,6 +433,11 @@ protected:
 	 */
 	void Config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable, GraphicalChangeAdapter& graphicalChangeAdapter);
 
+	/**
+	 * @brief Initializes foliage.
+	 * @param graphicalChangeAdapter An adapter for graphical change events.
+	 */
+	void initializeFoliage(GraphicalChangeAdapter& graphicalChangeAdapter);
 };
 
 /**
@@ -445,12 +456,12 @@ class DelayedFoliageInitializer
 public:
 	/**
 	 * @brief Ctor.
-	 * @param foliage The foliage object.
+	 * @param callback The callback to call when the foliage should be initialized.
 	 * @param view The Eris::View object of the world. This will be used for querying about the size of the Sight queue.
 	 * @param intervalMs In milliseconds how often to check if the queue is empty or time has elapsed. Defaults to 1 second.
-	 * @param maxTimeMs In missiseconds the max time to wait until we initialize the foliage anyway.
+	 * @param maxTimeMs In milliseconds the max time to wait until we initialize the foliage anyway.
 	 */
-	DelayedFoliageInitializer(Environment::Foliage& foliage, Eris::View& view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
+	DelayedFoliageInitializer(sigc::slot<void> callback, Eris::View& view, unsigned int intervalMs = 1000, unsigned int maxTimeMs = 15000);
 
 	/**
 	 * @brief Dtor.
@@ -458,7 +469,7 @@ public:
 	virtual ~DelayedFoliageInitializer();
 
 protected:
-	Environment::Foliage& mFoliage;
+	sigc::slot<void> mCallback;
 	Eris::View& mView;
 	unsigned int mIntervalMs;
 	unsigned int mMaxTimeMs;
