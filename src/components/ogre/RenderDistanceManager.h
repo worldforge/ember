@@ -58,23 +58,17 @@ public:
 	~RenderDistanceManager();
 
 	/**
-	 * @brief Initializes the render distance manager.
-	 * The manager starts listening for graphics detail change requests.
-	 */
-	void initialize();
-
-	/**
 	 * @brief Sets the absolute far render distance in a factor of the original value.
 	 * @param factor The factor that is multiplied with the original value of absolute far render distance to get the new absolute render distance.
 	 * Note: Uses setFarClipDistance on the main camera.
 	 */
-	bool setFarRenderDistance(float factor);
+	void setFarRenderDistance(float factor);
 
 	/**
 	 * @brief Sets the absolute render distance in a factor of the original value and compensates for missing rendered areas using fog.
 	 * @param factor The factor that is multiplied with the original value of absolute far render distance to get the new absolute render distance. In this case, it also affects the fog density.
 	 */
-	bool setCompensatedFarRenderDistance(float factor);
+	void setCompensatedFarRenderDistance(float factor);
 
 	/**
 	 * @brief This can be used to stop this component responding to change requests.

@@ -108,7 +108,6 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 	mLodLevelManager->initialize();
 	
 	mRenderDistanceManager = new RenderDistanceManager(graphicalChangeAdapter, *(mEnvironment->getFog()), mScene->getMainCamera());
-	mRenderDistanceManager->initialize();
 }
 
 World::~World()

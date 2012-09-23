@@ -33,6 +33,10 @@ namespace OgreView
 RenderDistanceManager::RenderDistanceManager(GraphicalChangeAdapter& graphicalChangeAdapter, Environment::IFog& fog, Ogre::Camera& mainCamera) :
 		mGraphicalChangeAdapter(graphicalChangeAdapter), mFog(fog), mMainCamera(mainCamera), mConfigListenerContainer(new ConfigListenerContainer()), mDefaultFarRenderDistance(1000), mFarRenderDistance(1000), mMaxFarRenderDistanceFactor(1.5f), mMinFarRenderDistanceFactor(0.7f), mRenderDistanceThreshold(5.0f), mFarRenderDistanceFactor(1.0f), mDefaultRenderDistanceStep(0.3f)
 {
+	if (!mChangeRequiredConnection) {
+		mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
+	}
+	mConfigListenerContainer->registerConfigListener("graphics", "renderdistance", sigc::mem_fun(*this, &RenderDistanceManager::Config_FarRenderDistance));
 }
 
 RenderDistanceManager::~RenderDistanceManager()
@@ -42,15 +46,7 @@ RenderDistanceManager::~RenderDistanceManager()
 	}
 }
 
-void RenderDistanceManager::initialize()
-{
-	if (!mChangeRequiredConnection) {
-		mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &RenderDistanceManager::changeLevel));
-	}
-	mConfigListenerContainer->registerConfigListener("graphics", "renderdistance", sigc::mem_fun(*this, &RenderDistanceManager::Config_FarRenderDistance));
-}
-
-bool RenderDistanceManager::setFarRenderDistance(float factor)
+void RenderDistanceManager::setFarRenderDistance(float factor)
 {
 	if (factor < 0.0f) {
 		factor = 0.0f;
@@ -59,7 +55,7 @@ bool RenderDistanceManager::setFarRenderDistance(float factor)
 	mMainCamera.setFarClipDistance(mFarRenderDistance);
 }
 
-bool RenderDistanceManager::setCompensatedFarRenderDistance(float factor)
+void RenderDistanceManager::setCompensatedFarRenderDistance(float factor)
 {
 	mFarRenderDistance = factor * mDefaultFarRenderDistance;
 	mMainCamera.setFarClipDistance(mFarRenderDistance);
@@ -72,17 +68,23 @@ bool RenderDistanceManager::setCompensatedFarRenderDistance(float factor)
 
 bool RenderDistanceManager::changeLevel(float level)
 {
-	// If the fps change required is less than any threshold, the changeMade boolean will remain false, else it indicates if a step up or down was made.
-	bool changeMade = false;
+	//Disable for now. The render distance should be decided by the server.
+	//What we can do is alter detail levels; but it's not clear if this should be done from here.
+	//For now we'll keep the class, but keep it inactive.
 
-	if (std::abs(level) >= mRenderDistanceThreshold) {
-		if (level > 0.0f) {
-			changeMade |= stepDownFarRenderDistance(mDefaultRenderDistanceStep);
-		} else {
-			changeMade |= stepUpFarRenderDistance(mDefaultRenderDistanceStep);
-		}
-	}
-	return changeMade;
+	return false;
+
+//	// If the fps change required is less than any threshold, the changeMade boolean will remain false, else it indicates if a step up or down was made.
+//	bool changeMade = false;
+//
+//	if (std::abs(level) >= mRenderDistanceThreshold) {
+//		if (level > 0.0f) {
+//			changeMade |= stepDownFarRenderDistance(mDefaultRenderDistanceStep);
+//		} else {
+//			changeMade |= stepUpFarRenderDistance(mDefaultRenderDistanceStep);
+//		}
+//	}
+//	return changeMade;
 }
 
 bool RenderDistanceManager::stepDownFarRenderDistance(float step)
