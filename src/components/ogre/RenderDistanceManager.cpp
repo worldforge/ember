@@ -18,7 +18,7 @@
 
 #include "RenderDistanceManager.h"
 
-#include "components/ogre/AutoGraphicsLevelManager.h"
+#include "components/ogre/GraphicalChangeAdapter.h"
 
 #include "components/ogre/environment/IEnvironmentProvider.h"
 #include <services/config/ConfigListenerContainer.h>

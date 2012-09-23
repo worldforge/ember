@@ -18,12 +18,13 @@
 
 #include "ShaderDetailManager.h"
 
-#include "components/ogre/AutoGraphicsLevelManager.h"
+#include "components/ogre/GraphicalChangeAdapter.h"
 #include "components/ogre/ShaderManager.h"
 
 #include "framework/LoggingInstance.h"
 
-#include "sigc++/signal.h"
+#include <sigc++/signal.h>
+#include <cmath>
 
 namespace Ember
 {
@@ -31,7 +32,7 @@ namespace OgreView
 {
 
 ShaderDetailManager::ShaderDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ember::OgreView::ShaderManager& shaderManager) :
-		mShaderThresholdLevel(8.0f), mShaderManager(shaderManager), mGraphicalChangeAdapter(graphicalChangeAdapter)
+		mShaderThresholdLevel(8.0f), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderManager(shaderManager)
 {
 }
 

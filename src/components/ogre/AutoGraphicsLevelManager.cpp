@@ -16,15 +16,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <components/ogre/AutoGraphicsLevelManager.h>
+#include "components/ogre/AutoGraphicsLevelManager.h"
 
-#include <components/ogre/EmberOgre.h>
+#include "components/ogre/EmberOgre.h"
 
-#include <services/config/ConfigListenerContainer.h>
+#include "services/config/ConfigListenerContainer.h"
 
-#include <framework/MainLoopController.h>
-#include <framework/Time.h>
-#include <framework/LoggingInstance.h>
+#include "framework/MainLoopController.h"
+#include "framework/Time.h"
+#include "framework/LoggingInstance.h"
 
 #include <Ogre.h>
 
@@ -70,7 +70,7 @@ bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 			totalFps += *I;
 		}
 		mCurrentFps = totalFps / mFpsStore.size();
-		
+
 		EventFpsUpdated.emit(mCurrentFps);
 	}
 
@@ -80,15 +80,6 @@ bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
 float FpsUpdater::getCurrentFPS()
 {
 	return mCurrentFps;
-}
-
-bool GraphicalChangeAdapter::fpsChangeRequired(float changeSize)
-{
-	//for now leaving it at this, need to update later with better calibrated values
-	float translatedChangeRequired = changeSize / 1.0f;
-
-	bool furtherChangePossible = EventChangeRequired.emit(translatedChangeRequired);
-	return furtherChangePossible;
 }
 
 AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow, MainLoopController& mainLoopController) :

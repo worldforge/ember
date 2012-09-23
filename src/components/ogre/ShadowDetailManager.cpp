@@ -18,7 +18,7 @@
 
 #include "ShadowDetailManager.h"
 
-#include "AutoGraphicsLevelManager.h"
+#include "GraphicalChangeAdapter.h"
 #include <services/config/ConfigListenerContainer.h>
 
 #include "OgreSceneManager.h"

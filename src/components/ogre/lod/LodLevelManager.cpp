@@ -18,7 +18,7 @@
 
 #include "LodLevelManager.h"
 
-#include "components/ogre/AutoGraphicsLevelManager.h"
+#include "components/ogre/GraphicalChangeAdapter.h"
 #include <services/config/ConfigListenerContainer.h>
 
 #include "OgreCamera.h"
