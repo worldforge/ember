@@ -44,70 +44,41 @@ ShaderDetailManager::~ShaderDetailManager()
 void ShaderDetailManager::initialize()
 {
 	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShaderDetailManager::changeLevel));
-	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
-	if (!schemes.empty()) {
-		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator currentLevel = schemes.find(mShaderManager.getGraphicsLevel());
-		if (currentLevel != schemes.end()) {
-			mShaderLevel = currentLevel->second;
-		} else {
-			mShaderLevel = schemes.rbegin()->second;
-		}
-		mMinShaderLevel = "Medium";
-		mMaxShaderLevel = schemes.rbegin()->second;
-		S_LOG_INFO("ShaderDetailManager: Minimum shader detail is " << mMinShaderLevel);
-		S_LOG_INFO("ShaderDetailManager: Maximum shader detail is " << mMaxShaderLevel);
-	}
-	else {
-		S_LOG_INFO("ShaderDetailManager: Shader schemes are empty");
-	}
-}
-
-void ShaderDetailManager::changeShaderLevel(const std::string& level)
-{
-	mShaderLevel = level;
-	mShaderManager.setGraphicsLevel(mShaderManager.getLevelByName(level));
 }
 
 bool ShaderDetailManager::stepUpShaderLevel()
 {
-	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
-	//Check if any shader schemes are available to switch to
-	if (schemes.empty()) {
-		S_LOG_WARNING("Shader schemes are empty, shader detail manager cannot step up shader detail");
+	ShaderManager::GraphicsLevel level;
+
+	if (mShaderManager.getGraphicsLevel() == ShaderManager::LEVEL_MEDIUM) {
+		level = ShaderManager::LEVEL_HIGH;
+	} else if (mShaderManager.getGraphicsLevel() == ShaderManager::LEVEL_LOW) {
+		level = ShaderManager::LEVEL_MEDIUM;
+	} else {
 		return false;
 	}
 
-	if (mShaderLevel == mMaxShaderLevel) {
-		S_LOG_VERBOSE("Shader scheme is already set to maximum shader detail, cannot step up shader detail.");
-		return false;
-	} else {
-		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator level = schemes.find(mShaderManager.getLevelByName(mShaderLevel));
-		++level;
-		changeShaderLevel(level->second);
-		S_LOG_VERBOSE("Setting shader scheme to " << level->second);
+	if (mShaderManager.getBestSupportedGraphicsLevel() >= level) {
+		mShaderManager.setGraphicsLevel(level);
 		return true;
 	}
+	return false;
 }
 
 bool ShaderDetailManager::stepDownShaderLevel()
 {
-	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
-	//Check if any shader schemes are available to switch to
-	if (schemes.empty()) {
-		S_LOG_WARNING("Shader schemes are empty, shader detail manager cannot step down shader detail");
+	ShaderManager::GraphicsLevel level;
+
+	if (mShaderManager.getGraphicsLevel() == ShaderManager::LEVEL_HIGH) {
+		level = ShaderManager::LEVEL_MEDIUM;
+	} else if (mShaderManager.getGraphicsLevel() == ShaderManager::LEVEL_MEDIUM) {
+		level = ShaderManager::LEVEL_LOW;
+	} else {
 		return false;
 	}
 
-	if (mShaderLevel == mMinShaderLevel) {
-		S_LOG_VERBOSE("Shader scheme is already set to minimum shader detail, cannot step down shader detail.");
-		return false;
-	} else {
-		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator level = schemes.find(mShaderManager.getLevelByName(mShaderLevel));
-		--level;
-		S_LOG_VERBOSE("Setting shader scheme to " << level->second);
-		changeShaderLevel(level->second);
-		return true;
-	}
+	mShaderManager.setGraphicsLevel(level);
+	return true;
 }
 
 void ShaderDetailManager::pause()
@@ -122,29 +93,14 @@ void ShaderDetailManager::unpause()
 
 bool ShaderDetailManager::changeLevel(float level)
 {
-	// retrieve the current shader level in case an external change was made.
-	const std::map<ShaderManager::GraphicsLevel, std::string>& schemes = mShaderManager.getGraphicsScheme();
-	if (!schemes.empty()) {
-		std::map<ShaderManager::GraphicsLevel, std::string>::const_iterator currentLevel = schemes.find(mShaderManager.getGraphicsLevel());
-		if (currentLevel != schemes.end()) {
-			mShaderLevel = currentLevel->second;
-		} else {
-			mShaderLevel = schemes.rbegin()->second;
-		}
-	} else {
-		S_LOG_INFO("ShaderDetailManager: Shader schemes are empty");
-	}
-	
 	if (std::abs(level) < mShaderThresholdLevel) {
 		return false;
 	} else {
-		bool changeMade = false;
 		if (level > 1.0f) {
-			changeMade |= stepDownShaderLevel();
+			return stepDownShaderLevel();
 		} else {
-			changeMade |= stepUpShaderLevel();
+			return stepUpShaderLevel();
 		}
-		return changeMade;
 	}
 }
 

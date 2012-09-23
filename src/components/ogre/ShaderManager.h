@@ -31,8 +31,10 @@
 #include <map>
 #include <sigc++/signal.h>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
 class ShadowCameraSetup;
 class ShaderSetupInstance;
@@ -48,13 +50,14 @@ class ShaderDetailManager;
  *
  * @author Alexey Torkhov <atorkhov@gmail.com>
  */
-class ShaderManager : public ConsoleObject, public ConfigListenerContainer
+class ShaderManager: public ConsoleObject, public ConfigListenerContainer
 {
 public:
 	/**
 	 * Enumeration of graphics levels
 	 */
-	enum GraphicsLevel {
+	enum GraphicsLevel
+	{
 		// Default scheme is when no scheme specified, very simple textured models
 		LEVEL_DEFAULT,
 
@@ -89,17 +92,26 @@ public:
 	/**
 	 * Gets current graphics level
 	 */
-	GraphicsLevel getGraphicsLevel();
+	GraphicsLevel getGraphicsLevel() const;
 
 	/**
-	 * Sets current graphics level
+	 * Gets the best supported graphics level.
+	 */
+	GraphicsLevel getBestSupportedGraphicsLevel() const;
+
+	/**
+	 * @brief Sets current graphics level.
+	 *
+	 * This will first check if the supplied graphics level is supported.
+	 * @param newLevel The requested new graphics level.
+	 * @return The new graphics level. This might differ from the supplied level if it wasn't supported.
 	 */
 	GraphicsLevel setGraphicsLevel(GraphicsLevel newLevel);
 
 	/**
 	 * Reimplements the ConsoleObject::runCommand method
 	 */
-	virtual	void runCommand(const std::string &command, const std::string &args);
+	virtual void runCommand(const std::string &command, const std::string &args);
 
 	/**
 	 * Sets graphics level at runtime
@@ -109,8 +121,8 @@ public:
 	/**
 	 * Returns level id by its name
 	 */
-	GraphicsLevel getLevelByName(const std::string &level);
-	
+	GraphicsLevel getLevelByName(const std::string &level) const;
+
 	/**
 	 * @brief Returns a map of levels and their scheme names.
 	 * Can be used to retrieve all schemes as known to the shader manager.
@@ -156,7 +168,7 @@ private:
 	std::map<GraphicsLevel, std::string> mGraphicSchemes;
 
 	ShaderSetupStore mShaderSetups;
-	
+
 	/**
 	 * Object that handles management of shader levels automatically.
 	 */
@@ -184,7 +196,7 @@ private:
 	 * @param variable
 	 */
 	void Config_Level(const std::string& section, const std::string& key, varconf::Variable& variable);
-	
+
 	/**
 	 * Reference to the graphical change adapter through which graphics detail changes are requested that is to be passed on when some member objects are created outside of the constructor.
 	 */

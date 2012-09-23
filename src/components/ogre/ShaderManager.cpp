@@ -43,17 +43,20 @@
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
 /**
  * @brief A shader setup instance which envelops a scene manager and handles the shadow camera setup for that manager.
  */
-class ShaderSetupInstance {
+class ShaderSetupInstance
+{
 private:
 
 	Ogre::SceneManager& mSceneManager;
-	
+
 	/**
 	 * @brief Takes care of the setup of the pssm shadow camera. Owned by this instance.
 	 */
@@ -66,8 +69,8 @@ private:
 
 public:
 
-	ShaderSetupInstance(Ogre::SceneManager& sceneManager, GraphicalChangeAdapter& graphicalChangeAdapter)
-	: mSceneManager(sceneManager), mShadowCameraSetup(0), mGraphicalChangeAdapter(graphicalChangeAdapter)
+	ShaderSetupInstance(Ogre::SceneManager& sceneManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
+			mSceneManager(sceneManager), mShadowCameraSetup(0), mGraphicalChangeAdapter(graphicalChangeAdapter)
 	{
 
 	}
@@ -94,13 +97,13 @@ public:
 };
 
 ShaderManager::ShaderManager(GraphicalChangeAdapter& graphicalChangeAdapter) :
-	SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mGraphicalChangeAdapter(graphicalChangeAdapter), mShaderDetailManager(new ShaderDetailManager(graphicalChangeAdapter, *this))
+		SetLevel("set_level", this, "Sets the graphics level. Parameters: <level>. Level is one of: high, medium, low."), mGraphicsLevel(LEVEL_DEFAULT), mBestGraphicsLevel(LEVEL_DEFAULT), mShaderDetailManager(new ShaderDetailManager(graphicalChangeAdapter, *this)), mGraphicalChangeAdapter(graphicalChangeAdapter)
 {
-	mGraphicSchemes[LEVEL_DEFAULT]		= std::string("Default");
-	mGraphicSchemes[LEVEL_LOW]			= std::string("Low");
-	mGraphicSchemes[LEVEL_MEDIUM]		= std::string("Medium");
-	mGraphicSchemes[LEVEL_HIGH]			= std::string("High");
-	mGraphicSchemes[LEVEL_EXPERIMENTAL]	= std::string("Experimental");
+	mGraphicSchemes[LEVEL_DEFAULT] = std::string("Default");
+	mGraphicSchemes[LEVEL_LOW] = std::string("Low");
+	mGraphicSchemes[LEVEL_MEDIUM] = std::string("Medium");
+	mGraphicSchemes[LEVEL_HIGH] = std::string("High");
+	mGraphicSchemes[LEVEL_EXPERIMENTAL] = std::string("Experimental");
 
 	init();
 	mShaderDetailManager->initialize();
@@ -185,9 +188,14 @@ ShaderManager::~ShaderManager()
 	}
 }
 
-ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel()
+ShaderManager::GraphicsLevel ShaderManager::getGraphicsLevel() const
 {
 	return mGraphicsLevel;
+}
+
+ShaderManager::GraphicsLevel ShaderManager::getBestSupportedGraphicsLevel() const
+{
+	return mBestGraphicsLevel;
 }
 
 void ShaderManager::runCommand(const std::string &command, const std::string &args)
@@ -207,13 +215,12 @@ void ShaderManager::Config_Level(const std::string& section, const std::string& 
 	}
 }
 
-
-ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string &level)
+ShaderManager::GraphicsLevel ShaderManager::getLevelByName(const std::string &level) const
 {
 	std::string levelString = level;
-	std::transform(levelString.begin(), levelString.end(), levelString.begin(), (int(*)(int)) std::tolower);
+	std::transform(levelString.begin(), levelString.end(), levelString.begin(), (int (*)(int)) std::tolower);
 
-	for (std::map<GraphicsLevel, std::string>::iterator I = mGraphicSchemes.begin(); I != mGraphicSchemes.end(); ++I) {
+	for(std::map<GraphicsLevel, std::string>::const_iterator I = mGraphicSchemes.begin(); I != mGraphicSchemes.end(); ++I) {
 		std::string scheme = I->second;
 		std::transform(scheme.begin(), scheme.end(), scheme.begin(), (int(*)(int)) std::tolower);
 		if (levelString == scheme) {

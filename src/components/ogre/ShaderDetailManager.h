@@ -87,21 +87,6 @@ protected:
 	bool stepDownShaderLevel();
 
 	/**
-	 * The maximum shader level this component can switch to.
-	 */
-	std::string mMaxShaderLevel;
-
-	/**
-	 * The minimum shader level this component can switch to.
-	 */
-	std::string mMinShaderLevel;
-
-	/**
-	 * The current shader level.
-	 */
-	std::string mShaderLevel;
-
-	/**
 	 * The threshold fps change after which the shader detail is changed to respond to performance change requested.
 	 */
 	float mShaderThresholdLevel;
