@@ -58,14 +58,7 @@ public:
 
     virtual ~FoliageLayer();
 
-	/**
-	 *    Calculates the max number of grass instances for this layer.
-	 * @param page The page to create grass for.
-	 * @param densityFactor The density factor set on the grass loader
-	 * @param volume The volume, in world units, to fill
-	 * @return The max number of grass instances to create.
-	 */
-	virtual unsigned int prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume);
+	virtual unsigned int prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume, bool& isAvailable);
 	
 	Ogre::uint32 getColorAt(float x, float z);
 	

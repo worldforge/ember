@@ -692,7 +692,9 @@ void GeometryPageManager::reloadGeometry()
 	for (it = loadedList.begin(); it != loadedList.end(); ++it)
 	{
 		GeometryPage *page = *it;
-		_unloadPage(page);
+		_unloadPageDelayed(page);
+		page->_pending = true;
+		pendingList.push_back(page);
 	}
 	loadedList.clear();
 }
@@ -708,8 +710,9 @@ void GeometryPageManager::reloadGeometryPage(const Vector3 &point, bool forceLoa
 	if (x >= 0 && z >= 0 && x < geomGridX && z < geomGridZ){
 		GeometryPage *page = _getGridPage(x, z);
 		if (page->_loaded){
-			_unloadPage(page);
-			loadedList.erase(page->_iter);
+			_unloadPageDelayed(page);
+			page->_pending = true;
+			pendingList.push_back(page);
 		}
 		if (forceLoadImmediately) {
 			//Load the geometry immediately
@@ -754,8 +757,9 @@ void GeometryPageManager::reloadGeometryPages(const Vector3 &center, Real radius
 				Real distSq = distX * distX + distZ * distZ;
 				
 				if (distSq <= radius) {
-					_unloadPage(page);
-					loadedList.erase(page->_iter);
+					_unloadPageDelayed(page);
+					page->_pending = true;
+					pendingList.push_back(page);
 				}
 			}
 		}
@@ -781,8 +785,9 @@ void GeometryPageManager::reloadGeometryPages(const TBounds & area)
 		for (int z = z1; z <= z2; ++z) {
 			GeometryPage *page = _getGridPage(x, z);
 			if (page->_loaded){
-				_unloadPage(page);
-				loadedList.erase(page->_iter);
+				_unloadPageDelayed(page);
+				page->_pending = true;
+				pendingList.push_back(page);
 			}
 		}
 	}
@@ -862,6 +867,12 @@ void GeometryPageManager::_loadPage(GeometryPage *page)
 	info.xIndex = page->_xIndex;
 	info.zIndex = page->_zIndex;
 	info.userData = page->_userData;
+
+	//Check if the page is prepared. If not, should stop now (and rely on the page being loaded again when the background data has been prepared).
+	if (!mainGeom->getPageLoader()->preparePage(info)) {
+		page->_loaded = true;
+		return;
+	}
 
 	//Check if page needs unloading (if a delayed unload has been issued)
 	if (page->_needsUnload){

@@ -83,15 +83,17 @@ void FoliageLayer::configure(Terrain::TerrainManager* terrainManager, const Terr
 	mDensity = atof(foliageDefinition->getParameter("density").c_str());
 }
 
-unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume)
+unsigned int FoliageLayer::prepareGrass(const Forests::PageInfo& page, float densityFactor, float volume, bool& isAvailable)
 {
 	if (mLatestPlantsResult) {
+		isAvailable = true;
 		return mLatestPlantsResult->getStore().size() * densityFactor;
 	} else {
 		PlantAreaQuery query(*mTerrainLayerDefinition, mFoliageDefinition->getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLayer::plantQueryExecuted);
 
 		mTerrainManager->getPlantsForArea(query, slot);
+		isAvailable = false;
 		return 0;
 	}
 

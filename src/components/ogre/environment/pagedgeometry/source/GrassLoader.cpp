@@ -77,8 +77,9 @@ GrassLayer::~GrassLayer()
 		colorMap->unload();
 }
 
-unsigned int GrassLayer::prepareGrass(const PageInfo& page, float densityFactor, float volume)
+unsigned int GrassLayer::prepareGrass(const PageInfo& page, float densityFactor, float volume, bool& isAvailable)
 {
+	isAvailable = true;
 	return density * densityFactor * volume;
 }
 

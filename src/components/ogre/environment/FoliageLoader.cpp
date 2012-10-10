@@ -47,7 +47,7 @@ namespace Environment
 {
 
 FoliageLoader::FoliageLoader(Ogre::SceneManager& sceneMgr, Terrain::TerrainManager& terrainManager, const Terrain::TerrainLayerDefinition& terrainLayerDefinition, const Terrain::TerrainFoliageDefinition& foliageDefinition, ::Forests::PagedGeometry& pagedGeometry) :
-	mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition), mFoliageDefinition(foliageDefinition), mPagedGeometry(pagedGeometry), mMinScale(1), mMaxScale(1), mLatestPlantsResult(0), mDensityFactor(1)
+		mTerrainManager(terrainManager), mTerrainLayerDefinition(terrainLayerDefinition), mFoliageDefinition(foliageDefinition), mPagedGeometry(pagedGeometry), mMinScale(1), mMaxScale(1), mLatestPlantsResult(0), mDensityFactor(1)
 {
 	mEntity = sceneMgr.createEntity(std::string("shrubbery_") + mFoliageDefinition.getPlantType(), mFoliageDefinition.getParameter("mesh"));
 
@@ -63,32 +63,34 @@ FoliageLoader::~FoliageLoader()
 	}
 }
 
-void FoliageLoader::loadPage(::Forests::PageInfo &page)
+bool FoliageLoader::preparePage(::Forests::PageInfo &page)
 {
-	Ogre::ColourValue colour(1, 1, 1, 1);
-	int plantNo = 0;
-	
-	if (mLatestPlantsResult) {
-		const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
-		const int maxCount = store.size() * mDensityFactor;
-		
-		for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
-			if(plantNo == maxCount) {
-				break;
-			}
-			const PlantInstance& plantInstance(*I);
-			//			Ogre::Vector3 pos(plantInstance.position.x, plantInstance.position.y, plantInstance.position.z);
-			//			pos2D.x = pos.x;
-			//			pos2D.y = pos.z;
-			// 			TerrainManager->getShadowColourAt(pos2D, colour);
-			addEntity(mEntity, plantInstance.position, Ogre::Quaternion(Ogre::Degree(plantInstance.orientation), Ogre::Vector3::UNIT_Y), Ogre::Vector3(plantInstance.scale.x, plantInstance.scale.y, plantInstance.scale.x), colour);
-			plantNo++;
-		}
+	if (mLatestPlantsResult && mLatestPlantsResult->getQuery().getCenter().x == page.centerPoint.x && mLatestPlantsResult->getQuery().getCenter().y == page.centerPoint.z) {
+		return true;
 	} else {
 		PlantAreaQuery query(mTerrainLayerDefinition, mFoliageDefinition.getPlantType(), page.bounds, Ogre::Vector2(page.centerPoint.x, page.centerPoint.z));
 		sigc::slot<void, const Terrain::PlantAreaQueryResult&> slot = sigc::mem_fun(*this, &FoliageLoader::plantQueryExecuted);
 
 		mTerrainManager.getPlantsForArea(query, slot);
+		return false;
+	}
+}
+
+void FoliageLoader::loadPage(::Forests::PageInfo &page)
+{
+	Ogre::ColourValue colour(1, 1, 1, 1);
+	int plantNo = 0;
+
+	const PlantAreaQueryResult::PlantStore& store = mLatestPlantsResult->getStore();
+	const int maxCount = store.size() * mDensityFactor;
+
+	for (PlantAreaQueryResult::PlantStore::const_iterator I = store.begin(); I != store.end(); ++I) {
+		if (plantNo == maxCount) {
+			break;
+		}
+		const PlantInstance& plantInstance(*I);
+		addEntity(mEntity, plantInstance.position, Ogre::Quaternion(Ogre::Degree(plantInstance.orientation), Ogre::Vector3::UNIT_Y), Ogre::Vector3(plantInstance.scale.x, plantInstance.scale.y, plantInstance.scale.x), colour);
+		plantNo++;
 	}
 }
 

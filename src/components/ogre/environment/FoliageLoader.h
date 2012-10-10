@@ -57,6 +57,9 @@ public:
 
 	virtual void loadPage(::Forests::PageInfo &page);
 	
+	virtual bool preparePage(::Forests::PageInfo &page);
+
+
 	/** 
 	 * @brief Sets the global density factor for this loader.
 	 * This function can be used to increase or decrease the density of the foliage

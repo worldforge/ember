@@ -1230,6 +1230,16 @@ loader yourself (if you want to). The PagedGeometry destructor won't do this for
 class PageLoader
 {
 public:
+
+	/**
+	 \brief Called right before loading.
+
+	 This allows the loader to perform asynchronous loading by returning false and then later on
+	 reloading the page.
+	 \return True if the loading should continue, false if it shouldn't.
+	 */
+	virtual bool preparePage(PageInfo &page) { return true; }
+
 	/**
 	\brief This should be overridden to load a specified region of entities.
 	\param page A PageInfo variable which includes boundary information and other useful values.
@@ -1542,6 +1552,7 @@ private:
 
 	TPGeometryPages pendingList;	//Pages of geometry to be loaded
 	TPGeometryPages loadedList;	//Pages of geometry already loaded
+	TPGeometryPages reloadList;	//Pages of geometry which should be reloaded
 
 	//Cache settings
 	unsigned long maxCacheInterval;

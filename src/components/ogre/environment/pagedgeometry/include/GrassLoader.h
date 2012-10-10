@@ -209,6 +209,8 @@ public:
 		heightFunctionUserData = userData;
 	}
 
+	bool preparePage(PageInfo &page);
+
 	/** INTERNAL FUNCTION - DO NOT USE */
 	void loadPage(PageInfo &page);
 	/** INTERNAL FUNCTION - DO NOT USE */
@@ -386,13 +388,14 @@ public:
 
 
 	/**
-	 *    Calculates the max number of grass instances for this layer.
+	 * @brief Calculates the max number of grass instances for this layer.
 	 * @param page The page to create grass for.
 	 * @param densityFactor The density factor set on the grass loader
 	 * @param volume The volume, in world units, to fill
+	 * @param isAvailable This must be set to true if the grass is currently available.
 	 * @return The max number of grass instances to create.
 	 */
-	virtual unsigned int prepareGrass(const PageInfo& page, float densityFactor, float volume) = 0;
+	virtual unsigned int prepareGrass(const PageInfo& page, float densityFactor, float volume, bool& isAvailable) = 0;
 
 	/** \brief Set the maximum slope a grass of blade can be placed on.
 	\param maxSlopeRatio The maximum slope (h/w ratio) a grass blade is allowed to be placed on.
@@ -596,14 +599,7 @@ public:
 	don't, the grass you see will remain unchanged. */
 	ColorMap *getColorMap() { return colorMap; }
 
-	/**
-	 *    Calculates the max number of grass instances for this layer.
-	 * @param page The page to create grass for.
-	 * @param densityFactor The density factor set on the grass loader
-	 * @param volume The volume, in world units, to fill
-	 * @return The max number of grass instances to create.
-	*/
-	virtual unsigned int prepareGrass(const PageInfo& page, float densityFactor, float volume);
+	virtual unsigned int prepareGrass(const PageInfo& page, float densityFactor, float volume, bool& isAvailable);
 
 
 	/**
@@ -785,6 +781,23 @@ void GrassLoader<TGrassLayer>::frameUpdate()
 }
 
 template <class TGrassLayer>
+bool GrassLoader<TGrassLayer>::preparePage(PageInfo &page)
+{
+	bool result = true;
+	//Calculate how much grass needs to be added
+	float volume = page.bounds.width() * page.bounds.height();
+	typename std::list<TGrassLayer*>::iterator it;
+	for (it = layerList.begin(); it != layerList.end(); ++it){
+		TGrassLayer *layer = *it;
+		bool isAvailable = false;
+		layer->prepareGrass(page, densityFactor, volume, isAvailable);
+		result = result && isAvailable;
+	}
+	return result;
+}
+
+
+template <class TGrassLayer>
 void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 {
 	//Generate meshes
@@ -802,9 +815,10 @@ void GrassLoader<TGrassLayer>::loadPage(PageInfo &page)
 
 		//Calculate how much grass needs to be added
 		float volume = page.bounds.width() * page.bounds.height();
-		unsigned int grassCount = layer->prepareGrass(page, densityFactor, volume);
+		bool isAvailable = false;
+		unsigned int grassCount = layer->prepareGrass(page, densityFactor, volume, isAvailable);
 
-		if (grassCount) {
+		if (isAvailable && grassCount) {
 			//The vertex buffer can't be allocated until the exact number of polygons is known,
 			//so the locations of all grasses in this page must be precalculated.
 
