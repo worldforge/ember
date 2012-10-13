@@ -16,8 +16,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "sigc++/connection.h"
-#include "string"
+#include <sigc++/connection.h>
+#include <string>
 #include "components/ogre/OgreIncludes.h"
 
 namespace varconf
