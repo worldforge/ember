@@ -119,6 +119,7 @@ class OgreResourceProvider;
 class OpcodeCollisionDetectorVisualizer;
 
 class ShaderManager;
+class ShaderDetailManager;
 class AutomaticGraphicsLevelManager;
 
 class World;
@@ -133,7 +134,7 @@ class Screen;
 
  It's a singleton so you can access it through
  @code
- OgreView::OgreView::getSingleton()
+ OgreView::EmberOgre::getSingleton()
  @endcode
 
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -272,6 +273,11 @@ protected:
 	 */
 	ShaderManager* mShaderManager;
 	
+	/**
+	 * @brief Hooks into the auto adjustment system and alters shaders.
+	 */
+	ShaderDetailManager* mShaderDetailManager;
+
 	/**
 	 * @brief Object that manages level of graphics automatically.
 	 */

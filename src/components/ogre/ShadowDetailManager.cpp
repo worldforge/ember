@@ -30,12 +30,15 @@ namespace OgreView
 {
 
 ShadowDetailManager::ShadowDetailManager(GraphicalChangeAdapter& graphicalChangeAdapter, Ogre::SceneManager& sceneManager) :
-		mShadowFarDistance(sceneManager.getShadowFarDistance()), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f), mDefaultShadowDistanceStep(250), mShadowCameraLodBias(1.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mDefaultShadowLodStep(0.3), mSceneManager(sceneManager), mGraphicalChangeAdapter(graphicalChangeAdapter), mConfigListenerContainer(new ConfigListenerContainer())
+		mShadowFarDistance(sceneManager.getShadowFarDistance()), mShadowCameraLodThreshold(3.0f), mShadowDistanceThreshold(3.0f), mMaxShadowFarDistance(1000.0f), mMinShadowFarDistance(0.0f), mDefaultShadowDistanceStep(250), mShadowCameraLodBias(1.0f), mMaxShadowCameraLodBias(1.0f), mMinShadowCameraLodBias(0.1f), mDefaultShadowLodStep(0.3), mSceneManager(sceneManager), mConfigListenerContainer(new ConfigListenerContainer())
 {
+	mChangeRequiredConnection = graphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShadowDetailManager::changeLevel));
+	mConfigListenerContainer->registerConfigListener("graphics", "shadowlodbias", sigc::mem_fun(*this, &ShadowDetailManager::Config_ShadowLodBias));
 }
 
 ShadowDetailManager::~ShadowDetailManager()
 {
+	delete mConfigListenerContainer;
 	if (mChangeRequiredConnection) {
 		mChangeRequiredConnection.disconnect();
 	}
@@ -70,12 +73,6 @@ bool ShadowDetailManager::setShadowFarDistance(float distance)
 	}
 	mSceneManager.setShadowFarDistance(distance);
 	return true;
-}
-
-void ShadowDetailManager::initialize()
-{
-	mChangeRequiredConnection = mGraphicalChangeAdapter.EventChangeRequired.connect(sigc::mem_fun(*this, &ShadowDetailManager::changeLevel));
-	mConfigListenerContainer->registerConfigListener("graphics", "shadowlodbias", sigc::mem_fun(*this, &ShadowDetailManager::Config_ShadowLodBias));
 }
 
 bool ShadowDetailManager::changeLevel(float level)

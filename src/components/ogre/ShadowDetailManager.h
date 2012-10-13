@@ -184,11 +184,6 @@ protected:
 	Ogre::SceneManager& mSceneManager;
 
 	/**
-	 * Reference to the graphical change adapter through which graphics detail changes are requested.
-	 */
-	GraphicalChangeAdapter& mGraphicalChangeAdapter;
-
-	/**
 	 * @brief Used to listen for configuration changes.
 	 */
 	ConfigListenerContainer* mConfigListenerContainer;

@@ -38,9 +38,10 @@ namespace OgreView
 {
 
 ShadowCameraSetup::ShadowCameraSetup(Ogre::SceneManager& sceneMgr, GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mSceneMgr(sceneMgr), mShadowDetailManager(new ShadowDetailManager(graphicalChangeAdapter, sceneMgr))
+		mSceneMgr(sceneMgr), mShadowDetailManager(0)
 {
 	setup();
+	mShadowDetailManager = new ShadowDetailManager(graphicalChangeAdapter, sceneMgr);
 	registerConfigListenerWithDefaults("shadows", "texturesize", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowTextureSize), 1024);
 	registerConfigListenerWithDefaults("shadows", "splitpoints", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPoints), "1 15 50 200");
 	registerConfigListenerWithDefaults("shadows", "splitpadding", sigc::mem_fun(*this, &ShadowCameraSetup::Config_ShadowSplitPadding), 10.0);
@@ -90,7 +91,6 @@ bool ShadowCameraSetup::setup()
 	mPssmSetup = OGRE_NEW Ogre::PSSMShadowCameraSetup();
 	mSharedCameraPtr = Ogre::ShadowCameraSetupPtr(mPssmSetup);
 	mSceneMgr.setShadowCameraSetup(mSharedCameraPtr);
-	mShadowDetailManager->initialize();
 
 	return true;
 }
