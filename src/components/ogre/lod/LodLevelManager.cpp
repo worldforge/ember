@@ -61,13 +61,11 @@ bool LodLevelManager::changeLevel(float level)
 	if (std::abs(level) < mLodThresholdLevel) {
 		return false;
 	} else {
-		bool changeMade = false;
 		if (level > 0.0f) {
-			changeMade |= stepDownLodBias(mDefaultStep);
+			return stepUpLodBias(mDefaultStep);
 		} else {
-			changeMade |= stepUpLodBias(mDefaultStep);
+			return stepDownLodBias(mDefaultStep);
 		}
-		return changeMade;
 	}
 }
 
