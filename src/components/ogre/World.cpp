@@ -297,8 +297,6 @@ void World::Config_Foliage(const std::string& section, const std::string& key, v
 			mFoliage = new Environment::Foliage(*mTerrainManager);
 			EventFoliageCreated.emit();
 			mFoliageInitializer = new DelayedFoliageInitializer(sigc::bind(sigc::mem_fun(*this, &World::initializeFoliage), sigc::ref(graphicalChangeAdapter)), mView, 1000, 15000);
-//			mFoliageDetailManager->EventFoliageDensityChanged.connect(sigc::mem_fun(*this, &Foliage::setDensity));
-//			mFoliageDetailManager->EventFoliageFarDistanceChanged.connect(sigc::mem_fun(*this, &Foliage::setFarDistance));
 		}
 	} else {
 		delete mFoliageDetailManager;
