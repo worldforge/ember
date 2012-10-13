@@ -41,6 +41,7 @@ LodLevelManager::LodLevelManager(GraphicalChangeAdapter& graphicalChangeAdapter,
 
 LodLevelManager::~LodLevelManager()
 {
+	delete mConfigListenerContainer;
 	mChangeRequiredConnection.disconnect();
 }
 

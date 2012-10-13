@@ -41,6 +41,7 @@ RenderDistanceManager::RenderDistanceManager(GraphicalChangeAdapter& graphicalCh
 
 RenderDistanceManager::~RenderDistanceManager()
 {
+	delete mConfigListenerContainer;
 	if (mChangeRequiredConnection) {
 		mChangeRequiredConnection.disconnect();
 	}

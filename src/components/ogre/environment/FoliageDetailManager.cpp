@@ -40,6 +40,7 @@ FoliageDetailManager::FoliageDetailManager(Foliage& foliage, GraphicalChangeAdap
 
 FoliageDetailManager::~FoliageDetailManager()
 {
+	delete mConfigListenerContainer;
 	mChangeRequiredConnection.disconnect();
 }
 
