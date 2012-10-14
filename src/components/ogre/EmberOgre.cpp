@@ -148,7 +148,7 @@ EmberOgre::EmberOgre() :
 		mLogObserver(0), mMaterialEditor(0), mModelRepresentationManager(0), mScriptingResourceProvider(0), mSoundResourceProvider(0),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
-		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mWindowProvider(0)
+		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mWindowProvider(0), mPMWorker(0), mPMInjector(0)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
