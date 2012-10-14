@@ -947,11 +947,11 @@ void ProgressiveMeshGenerator::bakeLods(const LodLevel& lodConfigs)
 		lods.push_back(OGRE_NEW Ogre::IndexData());
 		lods.back()->indexStart = 0;
 		lods.back()->indexCount = indexCount;
-		lods.back()->indexBuffer = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
-		    mIndexBufferInfoList[i].indexSize == 2 ?
-		    Ogre::HardwareIndexBuffer::IT_16BIT : Ogre::HardwareIndexBuffer::IT_32BIT,
-		    indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
-		if (indexCount > 0) {
+		if (indexCount != 0) {
+			lods.back()->indexBuffer = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
+				mIndexBufferInfoList[i].indexSize == 2 ?
+				Ogre::HardwareIndexBuffer::IT_16BIT : Ogre::HardwareIndexBuffer::IT_32BIT,
+				indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
 			// Locking a zero length buffer on linux with nvidia cards fails, so we need to wrap it.
 			indexBuffer.get()[i].pshort =
 			    static_cast<unsigned short*>(lods.back()->indexBuffer->lock(0, lods.back()->indexBuffer->getSizeInBytes(),

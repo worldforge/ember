@@ -291,12 +291,12 @@ void PMInjector::inject(PMGenRequest* request)
 			lods.push_back(OGRE_NEW Ogre::IndexData());
 			lods.back()->indexStart = 0;
 			lods.back()->indexCount = indexCount;
-			lods.back()->indexBuffer = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
-			    buff.indexSize == 2 ?
-			    Ogre::HardwareIndexBuffer::IT_16BIT : Ogre::HardwareIndexBuffer::IT_32BIT,
-			    indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
-			int sizeInBytes = lods.back()->indexBuffer->getSizeInBytes();
-			if (sizeInBytes > 0) {
+			if(indexCount != 0) {
+				lods.back()->indexBuffer = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
+					buff.indexSize == 2 ?
+					Ogre::HardwareIndexBuffer::IT_16BIT : Ogre::HardwareIndexBuffer::IT_32BIT,
+					indexCount, Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY, false);
+				int sizeInBytes = lods.back()->indexBuffer->getSizeInBytes();
 				void* pOutBuff = lods.back()->indexBuffer->lock(0, sizeInBytes, Ogre::HardwareBuffer::HBL_DISCARD);
 				memcpy(pOutBuff, buff.indexBuffer, sizeInBytes);
 				lods.back()->indexBuffer->unlock();
