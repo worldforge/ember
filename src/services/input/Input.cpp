@@ -50,6 +50,8 @@
 #include <SDL/SDL_keyboard.h>
 #endif
 
+#include <OgrePlatform.h>
+
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <X11/Xlib.h>
 #include "EmberIcon.h"
