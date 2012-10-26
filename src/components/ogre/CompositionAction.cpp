@@ -37,7 +37,7 @@ void CompositionAction::activate(EntityMapping::ChangeContext& context)
 {
 	EmberEntity::CompositionMode compositionMode = EmberEntity::CM_COMPOSITION;
 	if (mMode == "none") {
-		compositionMode = EmberEntity::CM_NONE;
+		compositionMode = EmberEntity::CM_DISABLED;
 	} else if (mMode == "exclusive") {
 		compositionMode = EmberEntity::CM_COMPOSITION_EXCLUSIVE;
 	}

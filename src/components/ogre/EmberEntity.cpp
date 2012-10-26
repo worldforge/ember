@@ -50,7 +50,7 @@ const std::string EmberEntity::MODE_PROJECTILE("projectile");
 const std::string EmberEntity::MODE_SWIMMING("swimming");
 
 EmberEntity::EmberEntity(const std::string& id, Eris::TypeInfo* ty, Eris::View* vw) :
-		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mPositioningMode(PM_DEFAULT), mCompositionMode(CM_NONE), mGraphicalRepresentation(0), mAttachment(0), mAttachmentControlDelegate(0), mHeightProvider(0)
+		Eris::ViewEntity(id, ty, vw), mIsInitialized(false), mPositioningMode(PM_DEFAULT), mCompositionMode(CM_DISABLED), mGraphicalRepresentation(0), mAttachment(0), mAttachmentControlDelegate(0), mHeightProvider(0)
 {
 }
 

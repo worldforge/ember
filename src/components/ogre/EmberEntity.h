@@ -109,7 +109,7 @@ public:
 	 */
 	enum CompositionMode
 	{
-		CM_NONE, //!< CM_NONE No composition is used. This should be the default.
+		CM_DISABLED, //!< CM_DISABLED No composition is used. This should be the default.
 		CM_COMPOSITION, //!< CM_COMPOSITION The entity is an composite. That means that when interacting with a child entity the user should also be given the option to interact with the parent composite entity.
 		CM_COMPOSITION_EXCLUSIVE //!< CM_COMPOSITION_EXCLUSIVE The entity is an exclusive composite. That means that when interacting with a child entity the user should only be presented with the parent composite entity (and should not be able to interact with the child entity).
 	};
@@ -349,7 +349,7 @@ protected:
 	/**
 	 * @brief The composition mode for the entity.
 	 *
-	 * Is "none" (CM_NONE) by default.
+	 * Is "none" (CM_DISABLED) by default.
 	 */
 	CompositionMode mCompositionMode;
 
