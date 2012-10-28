@@ -1,60 +1,69 @@
-; example2.nsi
-;
-; This script is based on example1.nsi, but it remember the directory, 
-; has uninstall support and (optionally) installs start menu shortcuts.
-;
-; It will install example2.nsi into a directory that the user selects,
+;Windows installer config script.
+;Usage: -Install NSIS http://sourceforge.net/projects/nsis/files/NSIS%202/2.46/nsis-2.46.zip/download
+;       -Put release files into "release" directory.
+;       -Run NSIS generator.
+
+
+; Use Modern UI
+!include "MUI2.nsh"
 
 ;--------------------------------
+;General
 
-; The name of the installer
-Name "Ember-0.5.8"
+  ; The name of the installer
+  Name "Ember-0.6.3"
 
-; The file to write
-OutFile "Ember-0.5.8.exe"
+  ; The file to write
+  OutFile "Ember-0.6.3.exe"
 
-; The default installation directory
-InstallDir $PROGRAMFILES\Worldforge\Ember
+  ; The default installation directory
+  InstallDir $PROGRAMFILES\Worldforge\Ember
 
-; Registry key to check for directory (so if you install again, it will 
-; overwrite the old one automatically)
-InstallDirRegKey HKLM "Software\Ember" "Install_Dir"
+  ; Registry key to check for directory (so if you install again, it will 
+  ; overwrite the old one automatically)
+  InstallDirRegKey HKLM "Software\Ember" "Install_Dir"
+
+  ;Request application privileges for Windows Vista+
+  RequestExecutionLevel user
+
+;--------------------------------
+;Interface Settings
+
+  !define MUI_ABORTWARNING
 
 ;--------------------------------
 
 ; Pages
 
-Page components
-Page directory
-Page instfiles
+!insertmacro MUI_PAGE_COMPONENTS
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\ember.exe"
+!insertmacro MUI_PAGE_FINISH
 
-UninstPage uninstConfirm
-UninstPage instfiles
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
 
 ;--------------------------------
 
-; The stuff to install
+
+;--------------------------------
+;Languages
+
+!insertmacro MUI_LANGUAGE "English"
+
+;--------------------------------
+;Installer Sections
 Section "Ember (required)"
 
-
   SectionIn RO
-
-;  SetOutPath $APPDATA\Ember
-;  File /oname=ogre.cfg etc\ember\ogre.cfg 
-
-;  SetOutPath $APPDATA\Ember\ember-media-0.5.3
-;  File /r media\user\*.*
   
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
   
   ; Put files there
-  File /r "*.*"
-;  File "*.*"
- 
+  File /r "release\*.*"
 
-
-  
   ; Write the installation path into the registry
   WriteRegStr HKLM SOFTWARE\Ember "Install_Dir" "$INSTDIR"
   
@@ -64,20 +73,24 @@ Section "Ember (required)"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Ember" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Ember" "NoRepair" 1
   WriteUninstaller "uninstall.exe"
+
+  CreateShortCut $INSTDIR\Ember.lnk" "$INSTDIR\bin\ember.exe" "" "$INSTDIR\bin\ember.exe"
   
 SectionEnd
 
 ; Optional section (can be disabled by the user)
-Section "Start Menu Shortcuts"
+Section "Desktop Shortcut"
+  CreateShortCut "$DESKTOP\Ember.lnk" "$INSTDIR\bin\ember.exe" "" "$INSTDIR\bin\ember.exe"
+SectionEnd
 
+; Optional section (can be disabled by the user)
+Section "Start Menu Shortcuts"
   CreateDirectory "$SMPROGRAMS\Ember"
   CreateShortCut "$SMPROGRAMS\Ember\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Ember\Ember.lnk" "$INSTDIR\bin\ember.bin.exe" "" "$INSTDIR\bin\ember.bin.exe"
-  
+  CreateShortCut "$SMPROGRAMS\Ember\Ember.lnk" "$INSTDIR\bin\ember.exe" "" "$INSTDIR\bin\ember.exe"
 SectionEnd
 
 ;--------------------------------
-
 ; Uninstaller
 
 Section "Uninstall"
@@ -87,12 +100,14 @@ Section "Uninstall"
   DeleteRegKey HKLM SOFTWARE\Ember
 
   ; Remove files and uninstaller
-  Delete $INSTDIR\Ember.nsi
   Delete $INSTDIR\uninstall.exe
   Delete $INSTDIR\*.*
   RMDir /r $INSTDIR
 
+  Delete $DESKTOP\Ember.lnk
+
   ; Remove shortcuts, if any
+  Delete $DESKTOP\Ember.lnk
   Delete "$SMPROGRAMS\Ember\*.*"
 	
   ; Remove directories used
