@@ -56,6 +56,9 @@ namespace Caelum
                 Ogre::ResourceManager* creator, const Ogre::String& name, Ogre::ResourceHandle handle,
 			    const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader);
 		~PropScriptResource();
+	private:
+		PropScriptResource(const PropScriptResource&) { }
+		PropScriptResource & operator=(const PropScriptResource&) { return *this; }
     };
 
     /** Resource manager for PropScriptResource.
@@ -68,6 +71,9 @@ namespace Caelum
 		virtual PropScriptResource* createImpl(
                 const String& name, Ogre::ResourceHandle handle, const String& group,
                 bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams);
+	private:
+		PropScriptResourceManager(const PropScriptResourceManager&) { }
+		PropScriptResourceManager & operator=(const PropScriptResourceManager&) { return *this; }
     };
 
     /** An Ogre::ScriptTranslator based on a TypeDescriptor.
