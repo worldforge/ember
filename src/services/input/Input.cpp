@@ -37,6 +37,10 @@
 #include "framework/LoggingInstance.h"
 #include "framework/MainLoopController.h"
 
+#ifdef _WIN32
+#include "platform/platform_windows.h"
+#endif
+
 #ifndef WITHOUT_SCRAP
 #include "framework/scrap.h"
 #endif // WITHOUT_SCRAP
