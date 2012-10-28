@@ -42,7 +42,7 @@ EmberOgreMesh::EmberOgreMesh(Ogre::ResourceManager* creator,
                              Ogre::ManualResourceLoader* loader) :
 	Ogre::Mesh(creator, name, handle, group, isManual, loader)
 {
-	S_LOG_VERBOSE("Loading mesh " << mName << ".");
+	S_LOG_VERBOSE("Loading mesh " << name << ".");
 }
 
 void EmberOgreMesh::_configureMeshLodUsage(const LodConfig& lodConfigs)
