@@ -345,14 +345,14 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		mConfigOptions["Video Mode"].currentValue = resolutionsCombobox->getText().c_str();
 		mConfigOptions["Full Screen"].currentValue = fullscreenCheckbox->isSelected() ? "Yes" : "No";
 
+		if (mResult != OC_CANCEL && dontShowAgainCheckbox->isSelected()) {
+			EmberServices::getSingleton().getConfigService().setValue("ogre", "suppressconfigdialog", true);
+		}
+
 		CEGUI::System::getSingleton().destroy();
 		delete logger;
 
 		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
-
-		if (mResult != OC_CANCEL && dontShowAgainCheckbox->isSelected()) {
-			EmberServices::getSingleton().getConfigService().setValue("ogre", "suppressconfigdialog", true);
-		}
 
 		return mResult;
 	} catch (const std::exception& ex) {
