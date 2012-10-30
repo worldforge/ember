@@ -197,8 +197,10 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	if (renderers.size() == 0) {
 		return OC_CANCEL;
 	}
-	Ogre::RenderSystem* renderSystem = *renderers.begin();
-	Ogre::Root::getSingleton().setRenderSystem(renderSystem);
+
+	//Restore last used render system.
+	Ogre::Root::getSingleton().restoreConfig();
+	Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
 	Ogre::Root::getSingleton().initialise(false);
 
 	Ogre::NameValuePairList misc;
@@ -265,14 +267,15 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		} else {
 			int i = 0;
 			for (Ogre::RenderSystemList::const_iterator I = renderers.begin(); I != renderers.end(); ++I) {
-				Gui::ColouredListItem* item = new Gui::ColouredListItem((*I)->getName(), i++);
+				const Ogre::String& rendererName = (*I)->getName();
+				Gui::ColouredListItem* item = new Gui::ColouredListItem(rendererName, i++);
 				renderSystemsBox->addItem(item);
+				if(rendererName == renderSystem->getName()){
+					renderSystemsBox->setItemSelectState(item, true);
+				}
 			}
 			
 			renderSystemsBox->subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted, CEGUI::Event::Subscriber(&OgreConfigurator::renderSystemChanged, this));
-
-			//Select the first one in the list
-			renderSystemsBox->setItemSelectState((size_t)0, true);
 		}
 		updateResolutionList(renderSystem);
 		CEGUI::Window* okButton = mConfigWindow->getChildRecursive("OgreConfigure/Button_ok");
