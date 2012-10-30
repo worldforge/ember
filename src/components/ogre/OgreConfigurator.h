@@ -97,6 +97,8 @@ protected:
 	bool buttonOkClicked(const CEGUI::EventArgs& args);
 	bool buttonCancelClicked(const CEGUI::EventArgs& args);
 	bool buttonAdvancedClicked(const CEGUI::EventArgs& args);
+	bool renderSystemChanged(const CEGUI::EventArgs& args);
+	void updateResolutionList(Ogre::RenderSystem* renderSystem);
 
 	/**
 	 * @brief The last frame time.
@@ -132,6 +134,11 @@ protected:
 	 * Thus, this is deleted in the destructor.
 	 */
 	OgreResourceLoader* mLoader;
+
+	/**
+	 * @brief The root window of the config dialog.
+	 */
+	CEGUI::Window* mConfigWindow;
 };
 
 }

@@ -254,11 +254,11 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 		CEGUI::System::getSingleton().setDefaultMouseCursor("EmberLook", "MouseArrow");
 
-		CEGUI::Window* configWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/datafiles/layouts/OgreConfigurator.layout", "OgreConfigure/");
-		sheet->addChildWindow(configWindow);
+		mConfigWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout("cegui/datafiles/layouts/OgreConfigurator.layout", "OgreConfigure/");
+		sheet->addChildWindow(mConfigWindow);
 
-		CEGUI::Window* renderSystemWrapper = configWindow->getChildRecursive("OgreConfigure/RenderSystem_wrapper");
-		CEGUI::Combobox* renderSystemsBox = static_cast<CEGUI::Combobox*>(configWindow->getChildRecursive("OgreConfigure/RenderSystem"));
+		CEGUI::Window* renderSystemWrapper = mConfigWindow->getChildRecursive("OgreConfigure/RenderSystem_wrapper");
+		CEGUI::Combobox* renderSystemsBox = static_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("OgreConfigure/RenderSystem"));
 		//If we only have one render system available we should hide the render system combobox.
 		if (renderers.size() == 1) {
 			renderSystemWrapper->getParent()->removeChildWindow(renderSystemWrapper);
@@ -268,49 +268,28 @@ OgreConfigurator::Result OgreConfigurator::configure()
 				Gui::ColouredListItem* item = new Gui::ColouredListItem((*I)->getName(), i++);
 				renderSystemsBox->addItem(item);
 			}
+			
+			renderSystemsBox->subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted, CEGUI::Event::Subscriber(&OgreConfigurator::renderSystemChanged, this));
+
 			//Select the first one in the list
 			renderSystemsBox->setItemSelectState((size_t)0, true);
 		}
-
-		CEGUI::Window* okButton = configWindow->getChildRecursive("OgreConfigure/Button_ok");
+		updateResolutionList(renderSystem);
+		CEGUI::Window* okButton = mConfigWindow->getChildRecursive("OgreConfigure/Button_ok");
 		okButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonOkClicked, this));
-		CEGUI::Window* cancelButton = configWindow->getChildRecursive("OgreConfigure/Button_cancel");
+		CEGUI::Window* cancelButton = mConfigWindow->getChildRecursive("OgreConfigure/Button_cancel");
 		cancelButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonCancelClicked, this));
-		CEGUI::Window* advancedButton = configWindow->getChildRecursive("OgreConfigure/Advanced");
+		CEGUI::Window* advancedButton = mConfigWindow->getChildRecursive("OgreConfigure/Advanced");
 		advancedButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&OgreConfigurator::buttonAdvancedClicked, this));
 
-		CEGUI::Checkbox* fullscreenCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/Fullscreen"));
-		CEGUI::Checkbox* dontShowAgainCheckbox = static_cast<CEGUI::Checkbox*>(configWindow->getChildRecursive("OgreConfigure/DontShowAgain"));
-
-		CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(configWindow->getChildRecursive("OgreConfigure/Resolution"));
+		CEGUI::Checkbox* fullscreenCheckbox = static_cast<CEGUI::Checkbox*>(mConfigWindow->getChildRecursive("OgreConfigure/Fullscreen"));
+		CEGUI::Checkbox* dontShowAgainCheckbox = static_cast<CEGUI::Checkbox*>(mConfigWindow->getChildRecursive("OgreConfigure/DontShowAgain"));
 
 		IInputAdapter* adapter = new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer);
 		Input::getSingleton().addAdapter(adapter);
 
 		Ogre::ConfigOptionMap configOptions = renderSystem->getConfigOptions();
-
-		bool resolutionFoundInOptions = false;
-		Ogre::ConfigOptionMap::const_iterator optionsIter = configOptions.find("Video Mode");
-		if (optionsIter != configOptions.end()) {
-			const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
-			for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
-				std::string resolution = *I;
-				//Trim away extra spaces which Ogre seem to generate
-				resolution = Ogre::StringUtil::replaceAll(resolution, "  ", " ");
-				Ogre::StringUtil::trim(resolution, true, true);
-				Gui::ColouredListItem* item = new Gui::ColouredListItem(resolution);
-				resolutionsCombobox->addItem(item);
-				if (*I == optionsIter->second.currentValue) {
-					resolutionsCombobox->setItemSelectState(item, true);
-					resolutionFoundInOptions = true;
-				}
-			}
-			if (!resolutionFoundInOptions) {
-				resolutionsCombobox->setText(optionsIter->second.currentValue);
-			}
-		}
-
-		optionsIter = configOptions.find("Full Screen");
+		Ogre::ConfigOptionMap::const_iterator optionsIter = configOptions.find("Full Screen");
 		if (optionsIter != configOptions.end()) {
 			fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
 		}
@@ -342,6 +321,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 		mConfigOptions = renderSystem->getConfigOptions();
 
+		CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("OgreConfigure/Resolution"));
 		mConfigOptions["Video Mode"].currentValue = resolutionsCombobox->getText().c_str();
 		mConfigOptions["Full Screen"].currentValue = fullscreenCheckbox->isSelected() ? "Yes" : "No";
 
@@ -371,7 +351,45 @@ Ogre::ConfigOptionMap OgreConfigurator::getConfigOptions() const
 {
 	return mConfigOptions;
 }
+bool OgreConfigurator::renderSystemChanged(const CEGUI::EventArgs& args)
+{
+	CEGUI::Window* wnd = mConfigWindow->getChildRecursive("OgreConfigure/RenderSystem");
+	assert(wnd);
+	CEGUI::Combobox* cmbRenderers = static_cast<CEGUI::Combobox*>(wnd);
+	CEGUI::ListboxItem* item = cmbRenderers->getSelectedItem();
+	assert(item);
+	Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystemByName(item->getText().c_str());
+	updateResolutionList(renderSystem);
+	return true;
+}
+void OgreConfigurator::updateResolutionList(Ogre::RenderSystem* renderSystem)
+{
+	assert(renderSystem);
 
+	Ogre::ConfigOptionMap configOptions = renderSystem->getConfigOptions();
+	bool resolutionFoundInOptions = false;
+	CEGUI::Combobox* resolutionsCombobox = static_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("OgreConfigure/Resolution"));
+	resolutionsCombobox->resetList();
+	Ogre::ConfigOptionMap::const_iterator optionsIter = configOptions.find("Video Mode");
+	if (optionsIter != configOptions.end()) {
+		const Ogre::StringVector& possibleResolutions = optionsIter->second.possibleValues;
+		for (Ogre::StringVector::const_iterator I = possibleResolutions.begin(); I != possibleResolutions.end(); ++I) {
+			std::string resolution = *I;
+			//Trim away extra spaces which Ogre seem to generate
+			resolution = Ogre::StringUtil::replaceAll(resolution, "  ", " ");
+			Ogre::StringUtil::trim(resolution, true, true);
+			Gui::ColouredListItem* item = new Gui::ColouredListItem(resolution);
+			resolutionsCombobox->addItem(item);
+			if (*I == optionsIter->second.currentValue) {
+				resolutionsCombobox->setItemSelectState(item, true);
+				resolutionFoundInOptions = true;
+			}
+		}
+		if (!resolutionFoundInOptions) {
+			resolutionsCombobox->setText(optionsIter->second.currentValue);
+		}
+	}
+}
 bool OgreConfigurator::buttonOkClicked(const CEGUI::EventArgs& args)
 {
 	mResult = OC_OK;
