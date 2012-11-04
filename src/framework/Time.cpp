@@ -22,35 +22,25 @@
 
 #include "Time.h"
 
-#ifdef __WIN32__
-// GetTickCount()
-#include <windows.h>
-#else
-// for gettimeofday and timeval struct
-// TODO: there has to be a better more c++ ish way to do this
-#include <sys/time.h>
-#endif
-#include <time.h>
-
 // for the stringstream
 #include <sstream>
 #include <iomanip>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace Ember
 {
 
 void Time::getLocalTime(int& year, int& month, int& day, int& hour, int& minute, int& second)
 {
-	// Set some time parameters
-	time_t t = time(&t);
-	struct tm *t2 = localtime(&t);
-	year = t2->tm_year;
-	month = t2->tm_mon;
-	day = t2->tm_mday;
-	hour = t2->tm_hour;
-	minute = t2->tm_min;
-	second = t2->tm_sec;
+	boost::posix_time::ptime currentTime = boost::posix_time::second_clock::local_time();
+
+	year = currentTime.date().year();
+	month = currentTime.date().month();
+	day = currentTime.date().day();
+	hour = currentTime.time_of_day().hours();
+	minute = currentTime.time_of_day().minutes();
+	second = currentTime.time_of_day().seconds();
 }
 
 std::string Time::getLocalTimeStr()
@@ -78,26 +68,11 @@ std::string Time::getLocalTimeStr()
 
 }
 
-/*
- * Almost precision time acquisition
- * NOTE: there is no reliable way to get time in milliseconds reliably cross platform
- */
-long long Time::currentTimeMillis(void)
+long long Time::currentTimeMillis()
 {
-	long long ttime;
-
-#ifdef __WIN32__
-	// ttime set to milliseconds *since midnight*
-	ttime = (unsigned long)GetTickCount();
-#else
-	// tv_usec is microseconds
-	// tv_sec  is seconds
-	// ttime is set to epoc milliseconds
-	struct timeval detail_time;
-	gettimeofday(&detail_time, NULL);
-	ttime = (detail_time.tv_usec / 1000) + (detail_time.tv_sec * (long long)1000);
-#endif
-	return ttime;
+	static boost::posix_time::ptime const epoch(boost::gregorian::date(1970, 1, 1));
+	return (boost::posix_time::microsec_clock::universal_time() - epoch).total_milliseconds();
 }
+
 }
 

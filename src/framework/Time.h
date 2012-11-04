@@ -48,14 +48,14 @@ public:
 	 *
 	 * @returns The current local time in an easy to read string.
 	 */
-	static std::string getLocalTimeStr(void);
+	static std::string getLocalTimeStr();
 
 	/**
 	 * @brief Gets the epoch time in milliseconds from the local system
 	 *
 	 * @return The current local time in milliseconds.
 	 */
-	static long long currentTimeMillis(void);
+	static long long currentTimeMillis();
 
 };
 
