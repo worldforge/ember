@@ -391,9 +391,9 @@ public:
 
 	/**
 	 * @brief Lets the application sleep a little.
-	 * @param milliseconds How long to sleep, in milliseconds.
+	 * @param milliseconds How long to sleep, in microseconds.
 	 */
-	void sleep(unsigned int milliseconds);
+	void sleep(unsigned int microseconds) const;
 
 	/**
 	 * @brief Registers a command mapper.

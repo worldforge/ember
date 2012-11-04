@@ -23,6 +23,7 @@
 #include "framework/MainLoopController.h"
 
 #include <sigc++/signal.h>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 /**
  * @mainpage
@@ -126,9 +127,9 @@ public:
 	/**
 	 * @brief Performs one step of the main loop.
 	 * You only need to call this each "frame" if you're not using mainLoop().
-	 * @param minMillisecondsPerFrame If the fps is capped, this is the minimum milliseconds needed to spend on each frame.
+	 * @param minMicrosecondsPerFrame If the fps is capped, this is the minimum microseconds needed to spend on each frame.
 	 */
-	void mainLoopStep(long minMillisecondsPerFrame);
+	void mainLoopStep(long minMicrosecondsPerFrame);
 
 	/**
 	 * @brief Enters the main loop.
@@ -228,50 +229,33 @@ private:
 
 	/**
 	 * @brief Keeps track of the last time an Eris poll started.
-	 * Value is in milliseconds.
 	 */
-	long long mLastTimeErisPollStart;
+	boost::posix_time::ptime mLastTimeErisPollStart;
 
 	/**
 	 * @brief Keeps track of the last time an Eris poll ended.
-	 * Value is in milliseconds.
 	 */
-	long long mLastTimeErisPollEnd;
+	boost::posix_time::ptime mLastTimeErisPollEnd;
 
 	/**
 	 * @brief Keeps track of the last time input processing started.
-	 * Value is in milliseconds.
 	 */
-	long long mLastTimeInputProcessingStart;
+	boost::posix_time::ptime mLastTimeInputProcessingStart;
 
 	/**
 	 * @brief Keeps track of the last time input processing ended.
-	 * Value is in milliseconds.
 	 */
-	long long mLastTimeInputProcessingEnd;
+	boost::posix_time::ptime mLastTimeInputProcessingEnd;
 
 	/**
 	 * @brief Keeps track of the last time the main loop step completed.
-	 * Value is in milliseconds.
 	 */
-	long long mLastTimeMainLoopStepEnded;
+	boost::posix_time::ptime mLastTimeMainLoopStepEnded;
 	
 	/**
 	 * @brief Is used to signify if frame rate is being limited.
 	 */
 	bool mFrameRateLimited;
-
-	/**
-	 * @brief We listen to the GotView event to be able to store a reference to the View instance.
-	 * @see mWorldView
-	 * @param view The world view.
-	 */
-	void Server_GotView(Eris::View* view);
-
-	/**
-	 * @brief We listen to the DestroyedView event so that we can remove our View reference.
-	 */
-	void Server_DestroyedView();
 
 	/**
 	 * @brief We hold a pointer to the stream to which all logging messages are written.
@@ -298,6 +282,19 @@ private:
 	 * @brief Toggles the polling of data from eris. Normally Eris is polled each frame, but this can be turned off (mainly for debug reasons).
 	 */
 	const ConsoleCommandWrapper ToggleErisPolling;
+
+	/**
+	 * @brief We listen to the GotView event to be able to store a reference to the View instance.
+	 * @see mWorldView
+	 * @param view The world view.
+	 */
+	void Server_GotView(Eris::View* view);
+
+	/**
+	 * @brief We listen to the DestroyedView event so that we can remove our View reference.
+	 */
+	void Server_DestroyedView();
+
 };
 }
 

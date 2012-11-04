@@ -40,7 +40,6 @@
 #include "services/serversettings/ServerSettings.h"
 
 #include "framework/ConsoleBackend.h"
-#include "framework/Time.h"
 #include "framework/ShutdownException.h"
 
 #include "components/lua/LuaScriptingProvider.h"
@@ -74,6 +73,9 @@ TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
 #include "framework/osdir.h"
 #include <sys/stat.h>
 
+using boost::posix_time::microsec_clock;
+using boost::posix_time::ptime;
+
 namespace Ember
 {
 
@@ -92,10 +94,10 @@ protected:
 	long mDesiredFps;
 
 	/**
-	 * @brief How long each frame should be in milliseconds.
+	 * @brief How long each frame should be in microseconds.
 	 * If set to 0 no capping will occur.
 	 */
-	long mMillisecondsPerFrame;
+	long mMicrosecondsPerFrame;
 
 	void Config_DesiredFps(const std::string& section, const std::string& key, varconf::Variable& variable)
 	{
@@ -103,9 +105,9 @@ protected:
 		if (variable.is_double()) {
 			mDesiredFps = static_cast<int>(variable);
 			if (mDesiredFps != 0) {
-				mMillisecondsPerFrame = 1000L / mDesiredFps;
+				mMicrosecondsPerFrame = 1000000L / mDesiredFps;
 			} else {
-				mMillisecondsPerFrame = 0;
+				mMicrosecondsPerFrame = 0;
 			}
 		}
 	}
@@ -117,7 +119,7 @@ public:
 	 * A listener will be set up listening for the general:desiredfps config setting.
 	 */
 	DesiredFpsListener() :
-			mDesiredFps(0), mMillisecondsPerFrame(0)
+			mDesiredFps(0), mMicrosecondsPerFrame(0)
 	{
 		registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &DesiredFpsListener::Config_DesiredFps));
 	}
@@ -135,16 +137,16 @@ public:
 	 * @brief Accessor for the minimum length (in milliseconds) that each frame should take in order for the desired fps to be kept.
 	 * If 0 no capping will occur.
 	 */
-	long getMillisecondsPerFrame() const
+	long getMicrosecondsPerFrame() const
 	{
-		return mMillisecondsPerFrame;
+		return mMicrosecondsPerFrame;
 	}
 };
 
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mOgreView(0), mShouldQuit(false), mPollEris(true), mFrameRateLimited(false), mMainLoopController(mShouldQuit, mPollEris, mFrameRateLimited), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mLastTimeErisPollStart(0), mLastTimeErisPollEnd(0), mLastTimeInputProcessingStart(0), mLastTimeInputProcessingEnd(0), mLastTimeMainLoopStepEnded(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+		mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris, mFrameRateLimited), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mFrameRateLimited(false), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 
 {
 
@@ -173,49 +175,48 @@ void Application::registerComponents()
 	mOgreView = new OgreView::EmberOgre();
 }
 
-void Application::mainLoopStep(long minMillisecondsPerFrame)
+void Application::mainLoopStep(long minMicrosecondsPerFrame)
 {
 	Input& input(Input::getSingleton());
-	long long currentTimeMillis(0);
+	ptime currentTime;
 	try {
 
 		if (mPollEris) {
-			currentTimeMillis = Time::currentTimeMillis();
-			mMainLoopController.EventStartErisPoll.emit((currentTimeMillis - mLastTimeErisPollStart) / 1000.0f);
-			mLastTimeErisPollStart = currentTimeMillis;
+			currentTime = microsec_clock::local_time();
+			mMainLoopController.EventStartErisPoll.emit((currentTime - mLastTimeErisPollStart).total_microseconds() / 1000000.0f);
+			mLastTimeErisPollStart = currentTime;
 			Eris::PollDefault::poll(0);
 			if (mWorldView)
 				mWorldView->update();
-			currentTimeMillis = Time::currentTimeMillis();
-			mMainLoopController.EventEndErisPoll.emit((currentTimeMillis - mLastTimeErisPollEnd) / 1000.0f);
-			mLastTimeErisPollEnd = currentTimeMillis;
+			currentTime = microsec_clock::local_time();
+			mMainLoopController.EventEndErisPoll.emit((currentTime - mLastTimeErisPollEnd).total_microseconds() / 1000000.0f);
+			mLastTimeErisPollEnd = currentTime;
 		}
 
-		currentTimeMillis = Time::currentTimeMillis();
-		mMainLoopController.EventBeforeInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingStart) / 1000.0f);
-		mLastTimeInputProcessingStart = currentTimeMillis;
+		currentTime = microsec_clock::local_time();
+		mMainLoopController.EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).total_microseconds() / 1000000.0f);
+		mLastTimeInputProcessingStart = currentTime;
 		input.processInput();
 
-		currentTimeMillis = Time::currentTimeMillis();
-		mMainLoopController.EventAfterInputProcessing.emit((currentTimeMillis - mLastTimeInputProcessingEnd) / 1000.0f);
-		mLastTimeInputProcessingEnd = currentTimeMillis;
+		currentTime = microsec_clock::local_time();
+		mMainLoopController.EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).total_microseconds() / 1000000.0f);
+		mLastTimeInputProcessingEnd = currentTime;
 
 		mOgreView->renderOneFrame();
 		EmberServices::getSingleton().getSoundService().cycle();
 
 		//If we should cap the fps so that each frame should take a minimum amount of time,
 		//we need to see if we should sleep a little.
-		if (minMillisecondsPerFrame > 0) {
-			currentTimeMillis = Time::currentTimeMillis();
-			long long millisecondSinceLastFrame = currentTimeMillis - mLastTimeMainLoopStepEnded;
-			if (millisecondSinceLastFrame < minMillisecondsPerFrame) {
-				input.sleep(minMillisecondsPerFrame - millisecondSinceLastFrame);
+		if (minMicrosecondsPerFrame > 0) {
+			microsec_clock::time_duration_type::tick_type microsecondSinceLastFrame = (microsec_clock::local_time() - mLastTimeMainLoopStepEnded).total_microseconds();
+			if (microsecondSinceLastFrame < minMicrosecondsPerFrame) {
+				input.sleep(minMicrosecondsPerFrame - microsecondSinceLastFrame);
 				mFrameRateLimited = true;
 			} else {
 				mFrameRateLimited = false;
 			}
 		}
-		mLastTimeMainLoopStepEnded = Time::currentTimeMillis();
+		mLastTimeMainLoopStepEnded = microsec_clock::local_time();
 	} catch (const std::exception& ex) {
 		S_LOG_CRITICAL("Got exception, shutting down." << ex);
 		throw;
@@ -230,15 +231,15 @@ void Application::mainLoopStep(long minMillisecondsPerFrame)
 
 void Application::mainLoop()
 {
-	long currentTimeMillis = Time::currentTimeMillis();
-	mLastTimeErisPollStart = currentTimeMillis;
-	mLastTimeErisPollEnd = currentTimeMillis;
-	mLastTimeInputProcessingStart = currentTimeMillis;
-	mLastTimeInputProcessingEnd = currentTimeMillis;
-	mLastTimeMainLoopStepEnded = 0;
+	const ptime currentTime = microsec_clock::local_time();
+	mLastTimeErisPollStart = currentTime;
+	mLastTimeErisPollEnd = currentTime;
+	mLastTimeInputProcessingStart = currentTime;
+	mLastTimeInputProcessingEnd = currentTime;
+	mLastTimeMainLoopStepEnded = currentTime;
 	DesiredFpsListener desiredFpsListener;
 	while (mShouldQuit == false) {
-		mainLoopStep(desiredFpsListener.getMillisecondsPerFrame());
+		mainLoopStep(desiredFpsListener.getMicrosecondsPerFrame());
 	}
 }
 
@@ -264,7 +265,7 @@ void Application::initializeServices()
 
 	//output all logging to ember.log
 	std::string filename(configService.getHomeDirectory() + "/ember.log");
-	mLogOutStream = std::auto_ptr < std::ofstream > (new std::ofstream(filename.c_str()));
+	mLogOutStream = std::auto_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
 
 	//write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;

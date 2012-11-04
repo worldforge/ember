@@ -602,10 +602,10 @@ const MousePosition& Input::getMousePosition() const
 	return mMousePosition;
 }
 
-void Input::sleep(unsigned int milliseconds)
+void Input::sleep(unsigned int microseconds) const
 {
 	try {
-		boost::this_thread::sleep(boost::posix_time::milliseconds(milliseconds));
+		boost::this_thread::sleep(boost::posix_time::microseconds(microseconds));
 	} catch (const boost::thread_interrupted& ex) {
 	}
 }
