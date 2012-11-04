@@ -36,9 +36,9 @@ class TimeFrame
 public:
 	/**
 	 * @brief Ctor.
-	 * @param timeSliceMilliseconds The slice of time for this time frame.
+	 * @param timeSliceMicroseconds The slice of time for this time frame, in microseconds.
 	 */
-	TimeFrame(long long timeSliceMilliseconds);
+	TimeFrame(long long timeSliceMicroseconds);
 
 	/**
 	 * @brief Checks whether there's any time left until the threshold has passed.

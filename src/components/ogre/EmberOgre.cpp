@@ -240,7 +240,7 @@ bool EmberOgre::renderOneFrame()
 		}
 
 		//To keep up a nice framerate we'll only allow four milliseconds for assets loading frame.
-		TimeFrame timeFrame(4);
+		TimeFrame timeFrame(4000);
 		mModelDefinitionManager->pollBackgroundLoaders(timeFrame);
 
 		return true;

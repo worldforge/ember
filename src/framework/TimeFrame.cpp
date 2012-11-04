@@ -24,8 +24,8 @@
 
 namespace Ember
 {
-TimeFrame::TimeFrame(long long timeSliceMilliseconds) :
-		mStartTime(boost::posix_time::microsec_clock::local_time()), mTimeSliceMicroseconds(timeSliceMilliseconds * 10L)
+TimeFrame::TimeFrame(long long timeSliceMicroseconds) :
+		mStartTime(boost::posix_time::microsec_clock::local_time()), mTimeSliceMicroseconds(timeSliceMicroseconds)
 {
 }
 
