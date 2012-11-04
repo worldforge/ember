@@ -22,18 +22,16 @@
 
 #include "TimeFrame.h"
 
-#include "framework/Time.h"
-
 namespace Ember
 {
 TimeFrame::TimeFrame(long long timeSliceMilliseconds) :
-	mThresholdMilliseconds(Time::currentTimeMillis() + timeSliceMilliseconds)
+		mStartTime(boost::posix_time::microsec_clock::local_time()), mTimeSliceMicroseconds(timeSliceMilliseconds * 10L)
 {
 }
 
 bool TimeFrame::isTimeLeft() const
 {
-	if (Time::currentTimeMillis() > mThresholdMilliseconds) {
+	if ((boost::posix_time::microsec_clock::local_time() - mStartTime).total_microseconds() > mTimeSliceMicroseconds) {
 		return false;
 	}
 	return true;

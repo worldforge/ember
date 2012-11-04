@@ -19,7 +19,10 @@
 #ifndef TIMEFRAME_H_
 #define TIMEFRAME_H_
 
-namespace Ember {
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+namespace Ember
+{
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -46,9 +49,14 @@ public:
 private:
 
 	/**
-	 * @brief A future point in time, as milliseconds, which forms the threshold for this time frame.
+	 * @brief Time when the task started.
 	 */
-	long long mThresholdMilliseconds;
+	boost::posix_time::ptime mStartTime;
+
+	/**
+	 * @brief The slice of time for this time frame.
+	 */
+	long long mTimeSliceMicroseconds;
 };
 
 }
