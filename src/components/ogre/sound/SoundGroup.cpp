@@ -33,12 +33,6 @@
 #include "services/sound/SoundSource.h"
 #include "services/sound/SoundSample.h"
 
-#ifndef _MSC_VER
-// Need to find a cross platform solution
-// to this
-#include <sys/time.h>
-#endif
-
 namespace Ember
 {
 namespace OgreView

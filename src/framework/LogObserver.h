@@ -49,13 +49,11 @@ public:
 	* @param file The source code file the message was initiated or empty if not specified.
 	* @param line The source code line the message was initiated or -1 if not specified.
 	* @param importance The level of importance (see MessageImportance enum)
-	* @param time_t The time the message was initiated.
 	*/
 	virtual void onNewMessage (const std::string & message,
 							const std::string & file,
 							const int &line,
-							const Log::MessageImportance & importance,
-							const time_t & timeStamp) = 0;
+							const Log::MessageImportance & importance) = 0;
 
 	Log::MessageImportance getFilter ()
 	{

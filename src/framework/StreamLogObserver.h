@@ -24,7 +24,7 @@
 #include "LogObserver.h"
 
 // Included custom library headers
-#include <wfmath/timestamp.h>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 // Included system headers
 #include <iostream>
@@ -73,7 +73,7 @@ class StreamLogObserver : public LogObserver
          *
          * To be used when in detailed mode.
          */
-        WFMath::TimeStamp mStart;
+        boost::posix_time::ptime mStart;
 
     //======================================================================
     // Public Methods
@@ -111,7 +111,7 @@ class StreamLogObserver : public LogObserver
      * Prints out the message provided with file, line and datestamp to myOut;
      */
     virtual void onNewMessage(const std::string & message, const std::string & file, const int & line, 
-                                  const Log::MessageImportance & importance, const time_t & timeStamp);
+                                  const Log::MessageImportance & importance);
 
     /**
      * @brief Sets whether the log output should be detailed or not.

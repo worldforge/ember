@@ -29,7 +29,6 @@
 #include "LoggingInstance.h"
 #include <algorithm>
 #include <cstdio>
-#include <time.h>
 //#include <stdio.h>
 #include <iostream>
 
@@ -49,8 +48,7 @@ public:
 	virtual void onNewMessage (const std::string & message,
 							const std::string & file,
 							const int &line,
-							const Log::MessageImportance & importance,
-							const time_t & timeStamp)
+							const Log::MessageImportance & importance)
 	{
 		std::cout << message << std::endl;
 	}
@@ -186,12 +184,10 @@ Log::HexNumber Log::hexNumber(const int intDecimal)
 
 void Log::sendMessage(const std::string & message, const std::string & file, const int line, const MessageImportance importance)
 {
-	time_t currentTime;
-	time(&currentTime);
 
 	for (ObserverList::iterator i = sObserverList.begin(); i != sObserverList.end(); i++) {
 		if (static_cast<int>(importance) >= static_cast<int>((*i)->getFilter())) {
-			(*i)->onNewMessage(message, file, line, importance, currentTime);
+			(*i)->onNewMessage(message, file, line, importance);
 		}
 	}
 }
