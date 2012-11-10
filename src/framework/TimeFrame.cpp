@@ -24,7 +24,7 @@
 
 namespace Ember
 {
-TimeFrame::TimeFrame(long long timeSliceMicroseconds) :
+TimeFrame::TimeFrame(MicrosecondType timeSliceMicroseconds) :
 		mStartTime(boost::posix_time::microsec_clock::local_time()), mTimeSliceMicroseconds(timeSliceMicroseconds)
 {
 }
@@ -37,10 +37,16 @@ bool TimeFrame::isTimeLeft() const
 	return true;
 }
 
-long TimeFrame::getRemainingTimeInMicroseconds() const
+TimeFrame::MicrosecondType TimeFrame::getRemainingTimeInMicroseconds() const
 {
-	long remaining = (boost::posix_time::microsec_clock::local_time() - mStartTime).total_microseconds() - mTimeSliceMicroseconds;
-	return std::max<long>(0, -remaining);
+	MicrosecondType remaining = getElapsedTimeInMicroseconds() - mTimeSliceMicroseconds;
+	return std::max<long long>(0, -remaining);
 }
+
+TimeFrame::MicrosecondType TimeFrame::getElapsedTimeInMicroseconds() const
+{
+	return (boost::posix_time::microsec_clock::local_time() - mStartTime).total_microseconds();
+}
+
 
 }

@@ -34,11 +34,17 @@ namespace Ember
 class TimeFrame
 {
 public:
+
+	/**
+	 * The type used when expressing microseconds.
+	 */
+	typedef boost::posix_time::microsec_clock::time_duration_type::tick_type MicrosecondType;
+
 	/**
 	 * @brief Ctor.
 	 * @param timeSliceMicroseconds The slice of time for this time frame, in microseconds.
 	 */
-	TimeFrame(long long timeSliceMicroseconds);
+	TimeFrame(MicrosecondType timeSliceMicroseconds);
 
 	/**
 	 * @brief Checks whether there's any time left until the threshold has passed.
@@ -50,7 +56,13 @@ public:
 	 * @brief Returns the remaining time in microseconds.
 	 * @return The remaining time in microseconds.
 	 */
-	long getRemainingTimeInMicroseconds() const;
+	MicrosecondType getRemainingTimeInMicroseconds() const;
+
+	/**
+	 * @brief Returns the elapsed time in microseconds.
+	 * @return The elapsed time in microseconds.
+	 */
+	MicrosecondType getElapsedTimeInMicroseconds() const;
 
 private:
 
@@ -62,7 +74,7 @@ private:
 	/**
 	 * @brief The slice of time for this time frame.
 	 */
-	long long mTimeSliceMicroseconds;
+	MicrosecondType mTimeSliceMicroseconds;
 };
 
 }
