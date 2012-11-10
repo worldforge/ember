@@ -46,6 +46,12 @@ public:
 	 */
 	bool isTimeLeft() const;
 
+	/**
+	 * @brief Returns the remaining time in microseconds.
+	 * @return The remaining time in microseconds.
+	 */
+	long getRemainingTimeInMicroseconds() const;
+
 private:
 
 	/**

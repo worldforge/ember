@@ -37,4 +37,10 @@ bool TimeFrame::isTimeLeft() const
 	return true;
 }
 
+long TimeFrame::getRemainingTimeInMicroseconds() const
+{
+	long remaining = (boost::posix_time::microsec_clock::local_time() - mStartTime).total_microseconds() - mTimeSliceMicroseconds;
+	return std::max<long>(0, -remaining);
+}
+
 }
