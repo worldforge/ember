@@ -41,6 +41,7 @@
 
 #include "framework/ConsoleBackend.h"
 #include "framework/ShutdownException.h"
+#include "framework/TimeFrame.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 #include "components/lua/Connectors.h"
@@ -177,6 +178,7 @@ void Application::registerComponents()
 
 void Application::mainLoopStep(long minMicrosecondsPerFrame)
 {
+	TimeFrame timeFrame(minMicrosecondsPerFrame);
 	Input& input(Input::getSingleton());
 	ptime currentTime;
 	try {
@@ -202,15 +204,14 @@ void Application::mainLoopStep(long minMicrosecondsPerFrame)
 		mMainLoopController.EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).total_microseconds() / 1000000.0f);
 		mLastTimeInputProcessingEnd = currentTime;
 
-		mOgreView->renderOneFrame();
+		mOgreView->renderOneFrame(timeFrame);
 		EmberServices::getSingleton().getSoundService().cycle();
 
 		//If we should cap the fps so that each frame should take a minimum amount of time,
 		//we need to see if we should sleep a little.
 		if (minMicrosecondsPerFrame > 0) {
-			microsec_clock::time_duration_type::tick_type microsecondSinceLastFrame = (microsec_clock::local_time() - mLastTimeMainLoopStepEnded).total_microseconds();
-			if (microsecondSinceLastFrame < minMicrosecondsPerFrame) {
-				input.sleep(minMicrosecondsPerFrame - microsecondSinceLastFrame);
+			if (timeFrame.isTimeLeft()) {
+				input.sleep(timeFrame.getRemainingTimeInMicroseconds());
 				mFrameRateLimited = true;
 			} else {
 				mFrameRateLimited = false;

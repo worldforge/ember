@@ -61,6 +61,7 @@ namespace Ember
 class InputCommandMapper;
 class Input;
 class MainLoopController;
+class TimeFrame;
 namespace OgreView
 {
 
@@ -207,11 +208,13 @@ public:
 	 * @brief Emitted when the Jesus subsystem has been created.
 	 */
 	//	sigc::signal<void, Jesus*> EventCreatedJesus;
+
 	/**
 	 * @brief Renders one frame.
+	 * @param timeFrame The time frame within which we can operate while still keeping up the desired frame rate.
 	 * @return True if rendering occurred.
 	 */
-	bool renderOneFrame();
+	bool renderOneFrame(const TimeFrame& timeFrame);
 
 	/**
 	 * @brief Sets up the application - returns false if the user chooses to abandon configuration.

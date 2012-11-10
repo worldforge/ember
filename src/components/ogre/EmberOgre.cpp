@@ -220,7 +220,7 @@ EmberOgre::~EmberOgre()
 
 }
 
-bool EmberOgre::renderOneFrame()
+bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 {
 	//Message pump will do window message processing.
 	//This will also update the window visibility flag, so we need to call it here!
@@ -239,9 +239,8 @@ bool EmberOgre::renderOneFrame()
 			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);
 		}
 
-		//To keep up a nice framerate we'll only allow four milliseconds for assets loading frame.
-		TimeFrame timeFrame(4000);
-		mModelDefinitionManager->pollBackgroundLoaders(timeFrame);
+		//Use at least 1000 microseconds to allow for background polling. This is to allow for some fps degradation when a lot of assets needs to be loaded (instead of just choking up completely).
+		mModelDefinitionManager->pollBackgroundLoaders(TimeFrame(std::max(timeFrame.getRemainingTimeInMicroseconds(), 1000L)));
 
 		return true;
 	} else {
