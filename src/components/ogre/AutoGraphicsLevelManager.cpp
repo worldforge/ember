@@ -18,8 +18,6 @@
 
 #include "components/ogre/AutoGraphicsLevelManager.h"
 
-#include "components/ogre/EmberOgre.h"
-
 #include "services/config/ConfigListenerContainer.h"
 
 #include "framework/MainLoopController.h"
@@ -29,69 +27,52 @@
 #include <Ogre.h>
 
 #include <cmath>
+#include <numeric>
 
 namespace Ember
 {
 namespace OgreView
 {
 
-FpsUpdater::FpsUpdater(Ogre::RenderWindow& renderWindow) :
-		mRenderWindow(renderWindow), mCurrentFps(0.0f), mTimeAtLastUpdate(Time::currentTimeMillis()), mTimeBetweenUpdates(2000), mRequiredTimeSamples(20), mTimeAtLastStore(Time::currentTimeMillis())
+FrameTimeRecorder::FrameTimeRecorder(MainLoopController& mainLoopController) :
+		mRequiredTimeSamples(2000000), mTimePerFrameStore(20), mAccumulatedFrameTimes(0LL), mAccumulatedFrames(0)
 {
-	Ogre::Root::getSingleton().addFrameListener(this);
+	mainLoopController.EventFrameProcessed.connect(sigc::mem_fun(*this, &FrameTimeRecorder::frameCompleted));
 }
 
-FpsUpdater::~FpsUpdater()
+FrameTimeRecorder::~FrameTimeRecorder()
 {
-	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-bool FpsUpdater::frameStarted(const Ogre::FrameEvent& event)
+void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame)
 {
-	long currentTime = Time::currentTimeMillis();
 
-	if (currentTime - mTimeAtLastStore >= 500) {
-		mTimeAtLastStore = currentTime;
+	mAccumulatedFrameTimes += timeFrame.getElapsedTimeInMicroseconds();
+	mAccumulatedFrames++;
 
-		//Push back latest fps
-		mFpsStore.push_back(mRenderWindow.getLastFPS());
+	if (mAccumulatedFrameTimes == mRequiredTimeSamples) {
 
-		//if there is one more than the minimum number of fpses then delete oldest fps. This also ensures that the store fills up with at least mRequiredTime fpses before starting to remove fpses.
-		while (mFpsStore.size() > mRequiredTimeSamples) { //Fps is measured every second, therefore when size > required time, oldest fps must be popped
-			mFpsStore.pop_front();
-		}
+		mTimePerFrameStore.push_back(mAccumulatedFrameTimes / mAccumulatedFrames);
+		mAccumulatedFrameTimes = 0LL;
+		mAccumulatedFrames = 0;
+
+		long long averageTimePerFrame = std::accumulate(mTimePerFrameStore.begin(), mTimePerFrameStore.end(), 0LL) / mTimePerFrameStore.size();
+		EventAverageTimePerFrameUpdated(averageTimePerFrame);
+
 	}
-
-	if (currentTime - mTimeAtLastUpdate >= mTimeBetweenUpdates) {
-		mTimeAtLastUpdate = currentTime;
-
-		float totalFps;
-		for (std::deque<float>::const_iterator I = mFpsStore.begin(); I != mFpsStore.end(); ++I) {
-			totalFps += *I;
-		}
-		mCurrentFps = totalFps / mFpsStore.size();
-
-		EventFpsUpdated.emit(mCurrentFps);
-	}
-
-	return true;
 }
 
-float FpsUpdater::getCurrentFPS()
+AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(MainLoopController& mainLoopController) :
+		mDefaultFps(60.0f), mEnabled(false), mFrameTimeRecorder(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer())
 {
-	return mCurrentFps;
-}
-
-AutomaticGraphicsLevelManager::AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow, MainLoopController& mainLoopController) :
-		mDefaultFps(60.0f), mEnabled(false), mFpsUpdater(renderWindow), mMainLoopController(mainLoopController), mConfigListenerContainer(new ConfigListenerContainer())
-{
-	mFpsUpdatedConnection = mFpsUpdater.EventFpsUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::checkFps));
+	mFpsUpdatedConnection = mFrameTimeRecorder.EventAverageTimePerFrameUpdated.connect(sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::averageTimePerFrameUpdated));
 	mConfigListenerContainer->registerConfigListener("general", "desiredfps", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_DefaultFps));
 	mConfigListenerContainer->registerConfigListenerWithDefaults("graphics", "autoadjust", sigc::mem_fun(*this, &AutomaticGraphicsLevelManager::Config_Enabled), false);
 }
 
 AutomaticGraphicsLevelManager::~AutomaticGraphicsLevelManager()
 {
+	mFpsUpdatedConnection.disconnect();
 	delete mConfigListenerContainer;
 }
 
@@ -103,16 +84,19 @@ void AutomaticGraphicsLevelManager::setFps(float fps)
 void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 {
 	float changeRequired = mDefaultFps - currentFps;
-	bool frameLimited = mMainLoopController.getFrameLimited();
 	//This factor is used to adjust the required fps difference before a change is triggered. Lower required fpses eg. 30 will need to respond to smaller changes.
 	float factor = mDefaultFps / 60.0f;
 	if (std::abs(changeRequired) >= factor * 8.0f) {
 		changeGraphicsLevel(changeRequired);
 		S_LOG_VERBOSE("Fps difference of " << changeRequired << " detected, requesting detail change.");
-	} else if (changeRequired < 2.0f && frameLimited) { //average fps is exactly equal to desired fps, fps is being limited.
-		changeGraphicsLevel(-8.0f); //try to up the detail so fps drops by around 8 fps
-		S_LOG_VERBOSE("Frame limiting detected" << "at fps " << currentFps << ", raising graphics detail.");
 	}
+}
+
+void AutomaticGraphicsLevelManager::averageTimePerFrameUpdated(long long timePerFrame)
+{
+	S_LOG_VERBOSE("Average time per frame: " << timePerFrame);
+	//Convert microseconds per frame to fps.
+	checkFps(1000000.0f / timePerFrame);
 }
 
 void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequired)
@@ -136,7 +120,7 @@ void AutomaticGraphicsLevelManager::setEnabled(bool newEnabled)
 	}
 }
 
-bool AutomaticGraphicsLevelManager::isEnabled()
+bool AutomaticGraphicsLevelManager::isEnabled() const
 {
 	return mEnabled;
 }
@@ -144,12 +128,12 @@ bool AutomaticGraphicsLevelManager::isEnabled()
 void AutomaticGraphicsLevelManager::Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable)
 {
 	if (variable.is_double()) {
-		float fps = static_cast<double>(variable);
+		int fps = static_cast<double>(variable);
 		//If set to 0, the fps the manager tries to achieve is 60
 		if (fps == 0.0f) {
 			fps = 60.0f;
 		}
-		setFps(fps);
+		mDefaultFps = fps;
 	}
 }
 

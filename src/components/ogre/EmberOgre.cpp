@@ -405,7 +405,7 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		mResourceLoader->loadGeneral();
 
 		// Create shader manager
-		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(*mWindow, mainLoopController);
+		mAutomaticGraphicsLevelManager = new AutomaticGraphicsLevelManager(mainLoopController);
 		mShaderManager = new ShaderManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter());
 		mShaderDetailManager = new ShaderDetailManager(mAutomaticGraphicsLevelManager->getGraphicalAdapter(), *mShaderManager);
 		

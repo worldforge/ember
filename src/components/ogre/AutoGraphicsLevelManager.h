@@ -18,12 +18,15 @@
 
 #include "GraphicalChangeAdapter.h"
 
-#include <OgreFrameListener.h>
+#include "OgreIncludes.h"
 
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
+#include <sigc++/trackable.h>
 
 #include <string>
+
+#include <boost/circular_buffer.hpp>
 
 namespace varconf
 {
@@ -32,6 +35,7 @@ class Variable;
 
 namespace Ember
 {
+class TimeFrame;
 
 class MainLoopController;
 class ConfigListenerContainer;
@@ -40,83 +44,53 @@ namespace OgreView
 
 class GraphicalChangeAdapter;
 
-
 /**
- * @brief Class that maintains and has the current average FPS
+ * @brief Records the average time per frame.
  * 
- * This class keeps the current average FPS over a specified time frame. This time frame acts as a moving time window.
- * eg. A time frame of 5 seconds represents that the FPS should be an average of the fpses of only the last 5 seconds.
- * A time frame of 1 will represent immediate FPS and increasing the time frame will provide a smoothening factor to the calculation.
  */
-class FpsUpdater: public Ogre::FrameListener
+class FrameTimeRecorder: public virtual sigc::trackable
 {
 public:
 	/**
 	 * @brief Constructor
 	 */
-	FpsUpdater(Ogre::RenderWindow& renderWindow);
+	FrameTimeRecorder(MainLoopController& mainLoopController);
 
 	/**
 	 * @brief Destructor
 	 */
-	~FpsUpdater();
+	virtual ~FrameTimeRecorder();
 
 	/**
-	 * Method from Ogre::FrameListener
+	 * @brief Signal sent out with the updated average time per frame.
 	 */
-	bool frameStarted(const Ogre::FrameEvent& event);
-
-	/**
-	 * @brief Used to access the current FPS as known by this class.
-	 * @return The current FPS
-	 */
-	float getCurrentFPS();
-
-	/**
-	 * @brief Signal sent out with the updated FPS value every frame
-	 */
-	sigc::signal<void, float> EventFpsUpdated;
+	sigc::signal<void, long long> EventAverageTimePerFrameUpdated;
 
 protected:
-	/**
-	 * Ogre render window reference from which it updates it's fps.
-	 */
-	Ogre::RenderWindow& mRenderWindow;
 
 	/**
-	 * Holds the current Fps
+	 * The amount of time in microseconds that the fps should be averaged over.
 	 */
-	float mCurrentFps;
+	long long mRequiredTimeSamples;
 
 	/**
-	 * Time in milliseconds at last fps update
+	 * Stores averaged time frames.
 	 */
-	long mTimeAtLastUpdate;
+	boost::circular_buffer<long long> mTimePerFrameStore;
 
 	/**
-	 * Time in milliseconds after which the new fps should be calculated. This can be used to induce a delay between updates for changes to take effect.
+	 * @brief Accumulates frame times since last calculation.
 	 */
-	long mTimeBetweenUpdates;
+	long long mAccumulatedFrameTimes;
 
 	/**
-	 * The amount of time in seconds that the fps should be averaged over.
+	 * @brief Accumulates number of frames since last calculation.
 	 */
-	size_t mRequiredTimeSamples;
+	int mAccumulatedFrames;
 
-	/**
-	 * A list of last 'n' fpses measured every second. Used for finding the average fps in the last 'n' seconds.
-	 */
-	std::deque<float> mFpsStore;
-
-	/**
-	 * Time when a new fps was last stored into the FPS store for average calculation.
-	 * @see FpsUpdater::mFpsStore
-	 */
-	long mTimeAtLastStore;
+	void frameCompleted(const TimeFrame& timeFrame);
 
 };
-
-
 
 /**
  *@brief Central class for automatic adjustment of graphics level
@@ -131,8 +105,9 @@ class AutomaticGraphicsLevelManager
 public:
 	/**
 	 * @brief Constructor
+	 * @param mainLoopController The main loop controller.
 	 */
-	AutomaticGraphicsLevelManager(Ogre::RenderWindow& renderWindow, MainLoopController& mainLoopController);
+	AutomaticGraphicsLevelManager(MainLoopController& mainLoopController);
 
 	/**
 	 * @brief Destructor
@@ -153,7 +128,7 @@ public:
 	/**
 	 * @brief Used to check if automatic adjustment is enabled
 	 */
-	bool isEnabled();
+	bool isEnabled() const;
 
 	/**
 	 * @brief Used to trigger a change in graphics level
@@ -180,33 +155,12 @@ protected:
 	/**
 	 * Instance of FpsUpdater class owned by this class to get updates on when the fps is updated.
 	 */
-	FpsUpdater mFpsUpdater;
+	FrameTimeRecorder mFrameTimeRecorder;
 
 	/**
 	 * The interface through which this central class communicates with the graphical subcomponents.
 	 */
 	GraphicalChangeAdapter mGraphicalChangeAdapter;
-
-	/**
-	 * @brief Reference to the main loop controller.
-	 * Mainly used for getting frame limiting data.
-	 */
-	MainLoopController& mMainLoopController;
-
-	/**
-	 * @brief This function is used to check if the fps is optimum, higher or lower as compared to mDefaultFps.
-	 */
-	void checkFps(float);
-
-	/**
-	 * @brief Connected to the config service to listen for derired fps settings.
-	 */
-	void Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-	/**
-	 * @brief Connected to the config service to listen for whether the automatic graphics manager should be enabled.
-	 */
-	void Config_Enabled(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 	/**
 	 * @brief Used to listen for configuration changes.
@@ -217,6 +171,27 @@ protected:
 	 * @brief The connection through which the automatic graphics manager listens for fps updates.
 	 */
 	sigc::connection mFpsUpdatedConnection;
+
+	/**
+	 * @brief This function is used to check if the fps is optimum, higher or lower as compared to mDefaultFps.
+	 */
+	void checkFps(float);
+
+	/**
+	 * Called from the FrameTimeRecorder when a new average time per frame has been calculated.
+	 * @param timePerFrame Time per frame, in microseconds.
+	 */
+	void averageTimePerFrameUpdated(long long timePerFrame);
+
+	/**
+	 * @brief Connected to the config service to listen for derired fps settings.
+	 */
+	void Config_DefaultFps(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
+	 * @brief Connected to the config service to listen for whether the automatic graphics manager should be enabled.
+	 */
+	void Config_Enabled(const std::string& section, const std::string& key, varconf::Variable& variable);
 
 };
 
