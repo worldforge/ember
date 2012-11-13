@@ -21,6 +21,7 @@
 
 #include <sigc++/signal.h>
 #include "Singleton.h"
+#include "TimeFrame.h"
 
 namespace Ember
 {
@@ -41,7 +42,7 @@ public:
 	 * @param shouldQuit A reference to a boolean which represents whether the application should quit.
 	 * @param pollEris Whether Eris should be polled each frame.
 	 */
-	MainLoopController(bool& shouldQuit, bool& pollEris, bool& frameRateLimited);
+	MainLoopController(bool& shouldQuit, bool& pollEris);
 
 	/**
 	 * @brief Return true if application has received an "exit" command else false.
@@ -94,21 +95,27 @@ public:
 	sigc::signal<void, float> EventEndErisPoll;
 
 	/**
-	 * @brief Emitted before processing input. This event is emitted continously.
+	 * @brief Emitted before processing input. This event is emitted continuously.
 	 * The parameter sent is the time slice since this event last was emitted.
 	 */
 	sigc::signal<void, float> EventBeforeInputProcessing;
 
 	/**
-	 * @brief Emitted after processing input. This event is emitted continously.
+	 * @brief Emitted after processing input. This event is emitted continuously.
 	 * The parameter sent is the time slice since this event last was emitted.
 	 */
 	sigc::signal<void, float> EventAfterInputProcessing;
 
 	/**
-	 * @brief Emitted when the use wants to quit the game. Preferrebly the GUI should show some kind of confirmation window.
+	 * @brief Emitted when the use wants to quit the game. Preferably the GUI should show some kind of confirmation window.
 	 */
 	sigc::signal<void, bool&> EventRequestQuit;
+
+	/**
+	 * @brief Emitted after one frame has been processed.
+	 * The parameter sent is the time frame for this frame.
+	 */
+	sigc::signal<void, const TimeFrame&> EventFrameProcessed;
 
 private:
 
@@ -121,12 +128,7 @@ private:
 	 * @brief Whether Eris should be polled each frame or not.
 	 */
 	bool& mPollEris;
-	
-	/**
-	 * @brief Holds whether frame rate is being limited currently.
-	 * This will be true when frame rate tries to pass the frame limit and limiting comes into play.
-	 */
-	bool& mFrameRateLimited;
+
 };
 
 }

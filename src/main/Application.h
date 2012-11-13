@@ -253,11 +253,6 @@ private:
 	boost::posix_time::ptime mLastTimeMainLoopStepEnded;
 	
 	/**
-	 * @brief Is used to signify if frame rate is being limited.
-	 */
-	bool mFrameRateLimited;
-
-	/**
 	 * @brief We hold a pointer to the stream to which all logging messages are written.
 	 */
 	std::auto_ptr<std::ofstream> mLogOutStream;

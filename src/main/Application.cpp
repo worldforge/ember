@@ -147,7 +147,7 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris, mFrameRateLimited), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mFrameRateLimited(false), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+		mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
 
 {
 
@@ -207,14 +207,13 @@ void Application::mainLoopStep(long minMicrosecondsPerFrame)
 		mOgreView->renderOneFrame(timeFrame);
 		EmberServices::getSingleton().getSoundService().cycle();
 
+		mMainLoopController.EventFrameProcessed(timeFrame);
+
 		//If we should cap the fps so that each frame should take a minimum amount of time,
 		//we need to see if we should sleep a little.
 		if (minMicrosecondsPerFrame > 0) {
 			if (timeFrame.isTimeLeft()) {
 				input.sleep(timeFrame.getRemainingTimeInMicroseconds());
-				mFrameRateLimited = true;
-			} else {
-				mFrameRateLimited = false;
 			}
 		}
 		mLastTimeMainLoopStepEnded = microsec_clock::local_time();
