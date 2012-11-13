@@ -44,7 +44,7 @@ public:
 	 * @brief Ctor.
 	 * @param timeSliceMicroseconds The slice of time for this time frame, in microseconds.
 	 */
-	TimeFrame(MicrosecondType timeSliceMicroseconds);
+	explicit TimeFrame(MicrosecondType timeSliceMicroseconds);
 
 	/**
 	 * @brief Checks whether there's any time left until the threshold has passed.
