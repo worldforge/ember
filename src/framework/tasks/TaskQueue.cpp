@@ -23,7 +23,6 @@
 #include "TaskUnit.h"
 
 #include "framework/LoggingInstance.h"
-#include "framework/Time.h"
 
 #include <cassert>
 
@@ -58,7 +57,7 @@ TaskQueue::~TaskQueue()
 	}
 
 	//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
-	pollProcessedTasks(-1);
+	pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
 	assert(!mProcessedTaskUnits.size());
 	assert(!mUnprocessedTaskUnits.size());
 }
@@ -99,9 +98,8 @@ void TaskQueue::addProcessedTask(TaskUnit* taskUnit)
 	mProcessedTaskUnits.push(taskUnit);
 }
 
-void TaskQueue::pollProcessedTasks(long long maxAllowedTimeMilliseconds)
+void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
 {
-	long long startTime = Time::currentTimeMillis();
 	TaskUnitQueue processedCopy;
 	{
 		boost::mutex::scoped_lock l(mProcessedQueueMutex);
@@ -129,7 +127,7 @@ void TaskQueue::pollProcessedTasks(long long maxAllowedTimeMilliseconds)
 			S_LOG_FAILURE("Unknown error when deleting task in main thread.");
 		}
 		//Try to keep the time spent here each frame down, to keep the framerate up.
-		if (maxAllowedTimeMilliseconds > 0 && Time::currentTimeMillis() - startTime > maxAllowedTimeMilliseconds) {
+		if (!timeFrame.isTimeLeft()) {
 			break;
 		}
 	}

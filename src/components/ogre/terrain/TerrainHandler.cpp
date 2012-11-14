@@ -60,6 +60,7 @@
 #include "framework/tasks/SerialTask.h"
 #include "framework/tasks/TemplateNamedTask.h"
 #include "framework/tasks/TaskExecutionContext.h"
+#include "framework/TimeFrame.h"
 
 #include <Mercator/Area.h>
 #include <Mercator/Segment.h>
@@ -275,10 +276,9 @@ void TerrainHandler::removeBridge(const Domain::TerrainIndex& index)
 	}
 }
 
-void TerrainHandler::pollTasks()
+void TerrainHandler::pollTasks(const TimeFrame& timeFrame)
 {
-	//10 milliseconds seems like a suitable time to limit each frame to. This could be extended to something more sophisticated though to better allow for a smooth frame rate.
-	mTaskQueue->pollProcessedTasks(10L);
+	mTaskQueue->pollProcessedTasks(timeFrame);
 
 	//update shaders that needs updating
 	if (mShadersToUpdate.size()) {

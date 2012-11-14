@@ -48,6 +48,8 @@ namespace Mercator {
 
 namespace Ember {
 
+class TimeFrame;
+
 namespace OgreView {
 class ShaderManager;
 class ILightning;
@@ -102,9 +104,9 @@ public:
 	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain manager will take ownership of the adapter and will destroy it upon it's destruction.
 	 * @param scene The world scene.
 	 * @param shaderManager The shader manager.
-	 * @param erisEndPollSignal A signal emitted when one Eris polling cycle has ended.
+	 * @param frameProcessedSignal A signal emitted when one main loop cycle has ended.
 	 */
-	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, float>& erisEndPollSignal);
+	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&>& cycleProcessedSignal);
 
 	/**
 	 * @brief Dtor.
@@ -267,9 +269,9 @@ protected:
 	void shaderManager_LevelChanged(ShaderManager* shaderManager);
 
 	/**
-	 * @brief Called at the end of an Eris poll cycle.
+	 * @brief Called at the end of a main loop cycle.
 	 */
-	void application_EndErisPoll(float);
+	void application_CycleProcessed(const TimeFrame& timeframe);
 
 };
 

@@ -19,6 +19,8 @@
 #ifndef TASKQUEUE_H_
 #define TASKQUEUE_H_
 
+#include "framework/TimeFrame.h"
+
 #include <queue>
 #include <boost/version.hpp>
 
@@ -76,10 +78,10 @@ public:
 	/**
 	 * @brief Goes through all processed tasks, handled them and then deletes them
 	 * Call this often in the main thread (every frame or so).
-	 * By setting maxAllowedTimeMilliseconds you can limit the amount of time the queue will spend on processed tasks. This is useful for keeping framerate up.
-	 * @param maxAllowedTimeMilliseconds If set to something larger than 0, this is the maximum milliseconds that the queue is allowed to process tasks.
+	 * By setting timeFrame you can limit the amount of time the queue will spend on processed tasks. This is useful for keeping framerate up.
+	 * @param timeFrame The time allowed for polling. After the time is up, the method will return.
 	 */
-	void pollProcessedTasks(long long maxAllowedTimeMilliseconds);
+	void pollProcessedTasks(TimeFrame timeFrame);
 
 protected:
 

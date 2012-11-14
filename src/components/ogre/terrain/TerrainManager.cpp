@@ -37,6 +37,7 @@
 #include "foliage/Vegetation.h"
 
 #include "framework/LoggingInstance.h"
+#include "framework/TimeFrame.h"
 
 #include "services/config/ConfigService.h"
 
@@ -72,7 +73,7 @@ namespace Terrain
 {
 
 
-TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, float>& erisEndPollSignal) :
+TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&>& cycleProcessedSignal) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider)), mIsFoliageShown(false), mSceneManagerAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
 {
 	loadTerrainOptions();
@@ -83,7 +84,7 @@ TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, Shad
 
 	shaderManager.EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), &shaderManager));
 
-	erisEndPollSignal.connect(sigc::mem_fun(*this, &TerrainManager::application_EndErisPoll));
+	cycleProcessedSignal.connect(sigc::mem_fun(*this, &TerrainManager::application_CycleProcessed));
 
 	mHandler->EventShaderCreated.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_ShaderCreated));
 	mHandler->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_AfterTerrainUpdate));
@@ -271,9 +272,9 @@ void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 	mHandler->updateAllPages();
 }
 
-void TerrainManager::application_EndErisPoll(float)
+void TerrainManager::application_CycleProcessed(const TimeFrame& timeframe)
 {
-	mHandler->pollTasks();
+	mHandler->pollTasks(timeframe);
 }
 
 TerrainHandler& TerrainManager::getHandler()

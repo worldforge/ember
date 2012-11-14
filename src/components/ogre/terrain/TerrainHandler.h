@@ -39,6 +39,7 @@ namespace Mercator {
 
 namespace Ember
 {
+class TimeFrame;
 namespace Tasks {
 	class TaskQueue;
 }
@@ -301,8 +302,10 @@ public:
 	 * @brief Polls the tasks queue.
 	 *
 	 * Call this at a regular interval.
+	 *
+	 * @param timeFrame The time frame allowed for polling.
 	 */
-	void pollTasks();
+	void pollTasks(const TimeFrame& timeFrame);
 
 	/**
 	 * @brief Updates all pages.
