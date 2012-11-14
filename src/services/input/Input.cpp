@@ -37,8 +37,6 @@
 #include "framework/LoggingInstance.h"
 #include "framework/MainLoopController.h"
 
-#include <boost/thread/thread.hpp>
-
 #ifndef WITHOUT_SCRAP
 #include "framework/scrap.h"
 #endif // WITHOUT_SCRAP
@@ -600,14 +598,6 @@ void Input::removeAdapter(IInputAdapter* adapter)
 const MousePosition& Input::getMousePosition() const
 {
 	return mMousePosition;
-}
-
-void Input::sleep(unsigned int microseconds) const
-{
-	try {
-		boost::this_thread::sleep(boost::posix_time::microseconds(microseconds));
-	} catch (const boost::thread_interrupted& ex) {
-	}
 }
 
 void Input::setMainLoopController(MainLoopController* mainLoopController)

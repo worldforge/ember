@@ -36,15 +36,10 @@ class TimeFrame
 public:
 
 	/**
-	 * The type used when expressing microseconds.
-	 */
-	typedef boost::posix_time::microsec_clock::time_duration_type::tick_type MicrosecondType;
-
-	/**
 	 * @brief Ctor.
-	 * @param timeSliceMicroseconds The slice of time for this time frame, in microseconds.
+	 * @param timeSlice The slice of time for this time frame.
 	 */
-	explicit TimeFrame(MicrosecondType timeSliceMicroseconds);
+	explicit TimeFrame(const boost::posix_time::time_duration timeSlice);
 
 	/**
 	 * @brief Checks whether there's any time left until the threshold has passed.
@@ -53,28 +48,28 @@ public:
 	bool isTimeLeft() const;
 
 	/**
-	 * @brief Returns the remaining time in microseconds.
-	 * @return The remaining time in microseconds.
+	 * @brief Returns the remaining.
+	 * @return The remaining time.
 	 */
-	MicrosecondType getRemainingTimeInMicroseconds() const;
+	boost::posix_time::time_duration getRemainingTime() const;
 
 	/**
-	 * @brief Returns the elapsed time in microseconds.
-	 * @return The elapsed time in microseconds.
+	 * @brief Returns the elapsed time.
+	 * @return The elapsed time.
 	 */
-	MicrosecondType getElapsedTimeInMicroseconds() const;
+	boost::posix_time::time_duration getElapsedTime() const;
 
 private:
 
 	/**
 	 * @brief Time when the task started.
 	 */
-	boost::posix_time::ptime mStartTime;
+	const boost::posix_time::ptime mStartTime;
 
 	/**
 	 * @brief The slice of time for this time frame.
 	 */
-	MicrosecondType mTimeSliceMicroseconds;
+	const boost::posix_time::time_duration mTimeSlice;
 };
 
 }

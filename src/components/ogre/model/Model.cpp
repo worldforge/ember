@@ -159,7 +159,7 @@ bool Model::createFromDefn()
 		mBackgroundLoader = new ModelBackgroundLoader(*this);
 	}
 
-	if (mBackgroundLoader->poll(TimeFrame(0))) {
+	if (mBackgroundLoader->poll(TimeFrame(boost::posix_time::seconds(0)))) {
 		timedLog.report("Initial poll.");
 		return createActualModel();
 	}

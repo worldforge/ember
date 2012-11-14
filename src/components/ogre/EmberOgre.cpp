@@ -240,7 +240,7 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 		}
 
 		//Use at least 1000 microseconds to allow for background polling. This is to allow for some fps degradation when a lot of assets needs to be loaded (instead of just choking up completely).
-		mModelDefinitionManager->pollBackgroundLoaders(TimeFrame(std::max(timeFrame.getRemainingTimeInMicroseconds(), 1000L)));
+		mModelDefinitionManager->pollBackgroundLoaders(TimeFrame(std::max<boost::posix_time::time_duration>(timeFrame.getRemainingTime(), boost::posix_time::microseconds(1000))));
 
 		return true;
 	} else {

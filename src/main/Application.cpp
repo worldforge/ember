@@ -74,6 +74,8 @@ TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
 #include "framework/osdir.h"
 #include <sys/stat.h>
 
+#include <boost/thread.hpp>
+
 using boost::posix_time::microsec_clock;
 using boost::posix_time::ptime;
 
@@ -178,7 +180,7 @@ void Application::registerComponents()
 
 void Application::mainLoopStep(long minMicrosecondsPerFrame)
 {
-	TimeFrame timeFrame(minMicrosecondsPerFrame);
+	TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(minMicrosecondsPerFrame));
 	Input& input(Input::getSingleton());
 	ptime currentTime;
 	try {
@@ -213,7 +215,10 @@ void Application::mainLoopStep(long minMicrosecondsPerFrame)
 		//we need to see if we should sleep a little.
 		if (minMicrosecondsPerFrame > 0) {
 			if (timeFrame.isTimeLeft()) {
-				input.sleep(timeFrame.getRemainingTimeInMicroseconds());
+				try {
+					boost::this_thread::sleep(timeFrame.getRemainingTime());
+				} catch (const boost::thread_interrupted& ex) {
+				}
 			}
 		}
 		mLastTimeMainLoopStepEnded = microsec_clock::local_time();

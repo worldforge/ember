@@ -35,7 +35,7 @@ namespace OgreView
 {
 
 FrameTimeRecorder::FrameTimeRecorder(MainLoopController& mainLoopController) :
-		mRequiredTimeSamples(2000000), mTimePerFrameStore(20), mAccumulatedFrameTimes(0LL), mAccumulatedFrames(0)
+		mRequiredTimeSamples(boost::posix_time::seconds(2)), mTimePerFrameStore(20), mAccumulatedFrameTimes(boost::posix_time::seconds(0)), mAccumulatedFrames(0)
 {
 	mainLoopController.EventFrameProcessed.connect(sigc::mem_fun(*this, &FrameTimeRecorder::frameCompleted));
 }
@@ -47,16 +47,16 @@ FrameTimeRecorder::~FrameTimeRecorder()
 void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame)
 {
 
-	mAccumulatedFrameTimes += timeFrame.getElapsedTimeInMicroseconds();
+	mAccumulatedFrameTimes += timeFrame.getElapsedTime();
 	mAccumulatedFrames++;
 
 	if (mAccumulatedFrameTimes == mRequiredTimeSamples) {
 
 		mTimePerFrameStore.push_back(mAccumulatedFrameTimes / mAccumulatedFrames);
-		mAccumulatedFrameTimes = 0LL;
+		mAccumulatedFrameTimes = boost::posix_time::seconds(0);
 		mAccumulatedFrames = 0;
 
-		long long averageTimePerFrame = std::accumulate(mTimePerFrameStore.begin(), mTimePerFrameStore.end(), 0LL) / mTimePerFrameStore.size();
+		boost::posix_time::time_duration averageTimePerFrame = std::accumulate(mTimePerFrameStore.begin(), mTimePerFrameStore.end(), boost::posix_time::time_duration()) / mTimePerFrameStore.size();
 		EventAverageTimePerFrameUpdated(averageTimePerFrame);
 
 	}
@@ -92,11 +92,10 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 	}
 }
 
-void AutomaticGraphicsLevelManager::averageTimePerFrameUpdated(long long timePerFrame)
+void AutomaticGraphicsLevelManager::averageTimePerFrameUpdated(const boost::posix_time::time_duration timePerFrame)
 {
-	S_LOG_VERBOSE("Average time per frame: " << timePerFrame);
 	//Convert microseconds per frame to fps.
-	checkFps(1000000.0f / timePerFrame);
+	checkFps(1000000.0f / timePerFrame.total_microseconds());
 }
 
 void AutomaticGraphicsLevelManager::changeGraphicsLevel(float changeInFpsRequired)

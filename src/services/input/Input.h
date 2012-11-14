@@ -390,12 +390,6 @@ public:
 	const MousePosition& getMousePosition() const;
 
 	/**
-	 * @brief Lets the application sleep a little.
-	 * @param milliseconds How long to sleep, in microseconds.
-	 */
-	void sleep(unsigned int microseconds) const;
-
-	/**
 	 * @brief Registers a command mapper.
 	 * @param mapper The mapper instance to register.
 	 */

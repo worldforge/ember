@@ -27,6 +27,7 @@
 #include <string>
 
 #include <boost/circular_buffer.hpp>
+#include <boost/date_time.hpp>
 
 namespace varconf
 {
@@ -64,24 +65,24 @@ public:
 	/**
 	 * @brief Signal sent out with the updated average time per frame.
 	 */
-	sigc::signal<void, long long> EventAverageTimePerFrameUpdated;
+	sigc::signal<void, const boost::posix_time::time_duration> EventAverageTimePerFrameUpdated;
 
 protected:
 
 	/**
 	 * The amount of time in microseconds that the fps should be averaged over.
 	 */
-	long long mRequiredTimeSamples;
+	boost::posix_time::time_duration mRequiredTimeSamples;
 
 	/**
 	 * Stores averaged time frames.
 	 */
-	boost::circular_buffer<long long> mTimePerFrameStore;
+	boost::circular_buffer<boost::posix_time::time_duration> mTimePerFrameStore;
 
 	/**
 	 * @brief Accumulates frame times since last calculation.
 	 */
-	long long mAccumulatedFrameTimes;
+	boost::posix_time::time_duration mAccumulatedFrameTimes;
 
 	/**
 	 * @brief Accumulates number of frames since last calculation.
@@ -181,7 +182,7 @@ protected:
 	 * Called from the FrameTimeRecorder when a new average time per frame has been calculated.
 	 * @param timePerFrame Time per frame, in microseconds.
 	 */
-	void averageTimePerFrameUpdated(long long timePerFrame);
+	void averageTimePerFrameUpdated(const boost::posix_time::time_duration timePerFrame);
 
 	/**
 	 * @brief Connected to the config service to listen for derired fps settings.

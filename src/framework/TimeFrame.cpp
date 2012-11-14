@@ -24,29 +24,30 @@
 
 namespace Ember
 {
-TimeFrame::TimeFrame(MicrosecondType timeSliceMicroseconds) :
-		mStartTime(boost::posix_time::microsec_clock::local_time()), mTimeSliceMicroseconds(timeSliceMicroseconds)
+TimeFrame::TimeFrame(const boost::posix_time::time_duration timeSlice) :
+		mStartTime(boost::posix_time::microsec_clock::local_time()), mTimeSlice(timeSlice)
 {
 }
 
 bool TimeFrame::isTimeLeft() const
 {
-	if ((boost::posix_time::microsec_clock::local_time() - mStartTime).total_microseconds() > mTimeSliceMicroseconds) {
+	if ((boost::posix_time::microsec_clock::local_time() - mStartTime) > mTimeSlice) {
 		return false;
 	}
 	return true;
 }
 
-TimeFrame::MicrosecondType TimeFrame::getRemainingTimeInMicroseconds() const
+boost::posix_time::time_duration TimeFrame::getRemainingTime() const
 {
-	MicrosecondType remaining = getElapsedTimeInMicroseconds() - mTimeSliceMicroseconds;
-	return std::max<long long>(0, -remaining);
+	static const boost::posix_time::time_duration zeroTime = boost::posix_time::microseconds(0);
+	const boost::posix_time::time_duration remaining = getElapsedTime() - mTimeSlice;
+
+	return std::max<boost::posix_time::time_duration>(zeroTime, -remaining);
 }
 
-TimeFrame::MicrosecondType TimeFrame::getElapsedTimeInMicroseconds() const
+boost::posix_time::time_duration TimeFrame::getElapsedTime() const
 {
-	return (boost::posix_time::microsec_clock::local_time() - mStartTime).total_microseconds();
+	return boost::posix_time::microsec_clock::local_time() - mStartTime;
 }
-
 
 }
