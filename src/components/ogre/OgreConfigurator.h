@@ -25,6 +25,7 @@
 namespace CEGUI
 {
 class EventArgs;
+class Window;
 }
 
 namespace Ember
