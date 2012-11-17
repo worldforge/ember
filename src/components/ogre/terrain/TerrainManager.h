@@ -106,7 +106,7 @@ public:
 	 * @param shaderManager The shader manager.
 	 * @param frameProcessedSignal A signal emitted when one main loop cycle has ended.
 	 */
-	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&>& cycleProcessedSignal);
+	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal);
 
 	/**
 	 * @brief Dtor.
@@ -271,7 +271,7 @@ protected:
 	/**
 	 * @brief Called at the end of a main loop cycle.
 	 */
-	void application_CycleProcessed(const TimeFrame& timeframe);
+	void application_CycleProcessed(const TimeFrame& timeframe, unsigned int frameActionMask);
 
 };
 

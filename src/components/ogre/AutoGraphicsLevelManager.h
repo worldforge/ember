@@ -89,7 +89,7 @@ protected:
 	 */
 	int mAccumulatedFrames;
 
-	void frameCompleted(const TimeFrame& timeFrame);
+	void frameCompleted(const TimeFrame& timeFrame, unsigned int frameActionMask);
 
 };
 

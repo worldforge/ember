@@ -73,7 +73,7 @@ namespace Terrain
 {
 
 
-TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&>& cycleProcessedSignal) :
+TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal) :
 	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider)), mIsFoliageShown(false), mSceneManagerAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
 {
 	loadTerrainOptions();
@@ -272,7 +272,7 @@ void TerrainManager::shaderManager_LevelChanged(ShaderManager* shaderManager)
 	mHandler->updateAllPages();
 }
 
-void TerrainManager::application_CycleProcessed(const TimeFrame& timeframe)
+void TerrainManager::application_CycleProcessed(const TimeFrame& timeframe, unsigned int frameActionMask)
 {
 	mHandler->pollTasks(timeframe);
 }

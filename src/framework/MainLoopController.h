@@ -38,6 +38,32 @@ class MainLoopController: public Singleton<MainLoopController>
 public:
 
 	/**
+	 * @brief Specifies what kind of actions have been carried out in one frame cycle.
+	 */
+	enum FrameAction
+	{
+		/**
+		 * Graphics was updated.
+		 */
+		FA_GRAPHICS = 1 << 0,
+
+		/**
+		 * Eris was polled.
+		 */
+		FA_ERIS = 1 << 1,
+
+		/**
+		 * Sound was updated.
+		 */
+		FA_SOUND = 1 << 2,
+
+		/**
+		 * Input was handled.
+		 */
+		FA_INPUT = 1 << 3
+	};
+
+	/**
 	 * @brief Ctor.
 	 * @param shouldQuit A reference to a boolean which represents whether the application should quit.
 	 * @param pollEris Whether Eris should be polled each frame.
@@ -75,13 +101,7 @@ public:
 	 * @return True if polling occurs each frame.
 	 */
 	bool getErisPolling() const;
-	
-	/**
-	 * @brief Gets whether frame rate is being limited.
-	 * @return True if frame rate tries to pass the frame limit and will return true as long as frame limiting is in play.
-	 */
-	bool getFrameLimited() const;
-	
+
 	/**
 	 * @brief Emitted before the eris polling is started.
 	 * The parameter sent is the time slice since this event last was emitted.
@@ -113,9 +133,9 @@ public:
 
 	/**
 	 * @brief Emitted after one frame has been processed.
-	 * The parameter sent is the time frame for this frame.
+	 * The parameters sent is the time frame for this frame as well as a bitmask of what kind of actions were carried out. See FrameAction.
 	 */
-	sigc::signal<void, const TimeFrame&> EventFrameProcessed;
+	sigc::signal<void, const TimeFrame&, unsigned int> EventFrameProcessed;
 
 private:
 

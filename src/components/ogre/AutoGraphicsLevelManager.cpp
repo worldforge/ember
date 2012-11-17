@@ -44,21 +44,23 @@ FrameTimeRecorder::~FrameTimeRecorder()
 {
 }
 
-void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame)
+void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame, unsigned int frameActionMask)
 {
+	if (frameActionMask & MainLoopController::FA_GRAPHICS) {
 
-	mAccumulatedFrameTimes += timeFrame.getElapsedTime();
-	mAccumulatedFrames++;
+		mAccumulatedFrameTimes += timeFrame.getElapsedTime();
+		mAccumulatedFrames++;
 
-	if (mAccumulatedFrameTimes == mRequiredTimeSamples) {
+		if (mAccumulatedFrameTimes == mRequiredTimeSamples) {
 
-		mTimePerFrameStore.push_back(mAccumulatedFrameTimes / mAccumulatedFrames);
-		mAccumulatedFrameTimes = boost::posix_time::seconds(0);
-		mAccumulatedFrames = 0;
+			mTimePerFrameStore.push_back(mAccumulatedFrameTimes / mAccumulatedFrames);
+			mAccumulatedFrameTimes = boost::posix_time::seconds(0);
+			mAccumulatedFrames = 0;
 
-		boost::posix_time::time_duration averageTimePerFrame = std::accumulate(mTimePerFrameStore.begin(), mTimePerFrameStore.end(), boost::posix_time::time_duration()) / mTimePerFrameStore.size();
-		EventAverageTimePerFrameUpdated(averageTimePerFrame);
+			boost::posix_time::time_duration averageTimePerFrame = std::accumulate(mTimePerFrameStore.begin(), mTimePerFrameStore.end(), boost::posix_time::time_duration()) / mTimePerFrameStore.size();
+			EventAverageTimePerFrameUpdated(averageTimePerFrame);
 
+		}
 	}
 }
 

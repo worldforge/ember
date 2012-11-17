@@ -183,6 +183,7 @@ void Application::mainLoopStep(long minMicrosecondsPerFrame)
 	TimeFrame timeFrame = TimeFrame(boost::posix_time::microseconds(minMicrosecondsPerFrame));
 	Input& input(Input::getSingleton());
 	ptime currentTime;
+	unsigned int frameActionMask = 0;
 	try {
 
 		if (mPollEris) {
@@ -190,26 +191,33 @@ void Application::mainLoopStep(long minMicrosecondsPerFrame)
 			mMainLoopController.EventStartErisPoll.emit((currentTime - mLastTimeErisPollStart).total_microseconds() / 1000000.0f);
 			mLastTimeErisPollStart = currentTime;
 			Eris::PollDefault::poll(0);
-			if (mWorldView)
+			if (mWorldView) {
 				mWorldView->update();
+			}
 			currentTime = microsec_clock::local_time();
 			mMainLoopController.EventEndErisPoll.emit((currentTime - mLastTimeErisPollEnd).total_microseconds() / 1000000.0f);
 			mLastTimeErisPollEnd = currentTime;
+			frameActionMask |= MainLoopController::FA_ERIS;
 		}
 
 		currentTime = microsec_clock::local_time();
 		mMainLoopController.EventBeforeInputProcessing.emit((currentTime - mLastTimeInputProcessingStart).total_microseconds() / 1000000.0f);
 		mLastTimeInputProcessingStart = currentTime;
 		input.processInput();
+		frameActionMask |= MainLoopController::FA_INPUT;
 
 		currentTime = microsec_clock::local_time();
 		mMainLoopController.EventAfterInputProcessing.emit((currentTime - mLastTimeInputProcessingEnd).total_microseconds() / 1000000.0f);
 		mLastTimeInputProcessingEnd = currentTime;
 
-		mOgreView->renderOneFrame(timeFrame);
+		bool updatedRendering = mOgreView->renderOneFrame(timeFrame);
+		if (updatedRendering) {
+			frameActionMask |= MainLoopController::FA_GRAPHICS;
+		}
 		EmberServices::getSingleton().getSoundService().cycle();
+		frameActionMask |= MainLoopController::FA_SOUND;
 
-		mMainLoopController.EventFrameProcessed(timeFrame);
+		mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
 
 		//If we should cap the fps so that each frame should take a minimum amount of time,
 		//we need to see if we should sleep a little.
