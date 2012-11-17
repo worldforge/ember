@@ -183,7 +183,6 @@ protected:
 
 	Ogre::MeshPtr mMesh;
 	Ogre::Real mMeshBoundingSphereRadius;
-	unsigned short mCurLod;
 	Ogre::Real mCollapseCostLimit;
 
 	size_t calcLodVertexCount(const LodLevel& lodConfig);

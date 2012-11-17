@@ -48,7 +48,8 @@ PMGenRequest::~PMGenRequest()
 }
 
 
-Ember::OgreView::Lod::PMWorker::PMWorker()
+Ember::OgreView::Lod::PMWorker::PMWorker() :
+		mRequest(nullptr)
 {
 	Ogre::WorkQueue* wq = Ogre::Root::getSingleton().getWorkQueue();
 	unsigned short workQueueChannel = wq->getChannel("PMGen");

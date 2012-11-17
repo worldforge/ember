@@ -80,7 +80,7 @@ namespace Lod
 #define UNINITIALIZED_COLLAPSE_COST (std::numeric_limits<Ogre::Real>::infinity())
 
 ProgressiveMeshGenerator::ProgressiveMeshGenerator() :
-	mMesh(NULL)
+	mMesh(nullptr), mMeshBoundingSphereRadius(0.0f), mCollapseCostLimit(NEVER_COLLAPSE_COST)
 {
 	assert(NEVER_COLLAPSE_COST < UNINITIALIZED_COLLAPSE_COST && NEVER_COLLAPSE_COST != UNINITIALIZED_COLLAPSE_COST);
 
@@ -682,8 +682,8 @@ void ProgressiveMeshGenerator::computeLods(LodConfig& lodConfigs)
 	size_t vertexCount = mVertexList.size();
 	size_t lastBakeVertexCount = vertexCount;
 	size_t lodCount = lodConfigs.levels.size();
-	for (mCurLod = 0; mCurLod < lodCount; mCurLod++) {
-		size_t neededVertexCount = calcLodVertexCount(lodConfigs.levels[mCurLod]);
+	for (unsigned short curLod = 0; curLod < lodCount; curLod++) {
+		size_t neededVertexCount = calcLodVertexCount(lodConfigs.levels[curLod]);
 		for (; neededVertexCount < vertexCount; vertexCount--) {
 			CollapseCostSet::iterator nextIndex = mCollapseCostSet.begin();
 			if (nextIndex != mCollapseCostSet.end() && (*nextIndex)->collapseCost < mCollapseCostLimit) {
@@ -692,12 +692,12 @@ void ProgressiveMeshGenerator::computeLods(LodConfig& lodConfigs)
 				break;
 			}
 		}
-		lodConfigs.levels[mCurLod].outUniqueVertexCount = vertexCount;
-		lodConfigs.levels[mCurLod].outSkipped = (lastBakeVertexCount == vertexCount);
-		if (!lodConfigs.levels[mCurLod].outSkipped) {
+		lodConfigs.levels[curLod].outUniqueVertexCount = vertexCount;
+		lodConfigs.levels[curLod].outSkipped = (lastBakeVertexCount == vertexCount);
+		if (!lodConfigs.levels[curLod].outSkipped) {
 			lastBakeVertexCount = vertexCount;
 			assertValidMesh();
-			bakeLods(lodConfigs.levels[mCurLod]);
+			bakeLods(lodConfigs.levels[curLod]);
 		}
 	}
 }
@@ -992,6 +992,7 @@ ProgressiveMeshGenerator::PMEdge::PMEdge(PMVertex* destination) :
 #ifndef NDEBUG
 	, collapseCost(UNINITIALIZED_COLLAPSE_COST)
 #endif
+	, refCount(0)
 {
 
 }
