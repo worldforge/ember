@@ -180,7 +180,7 @@ public:
 };
 
 OgreConfigurator::OgreConfigurator() :
-		mLastFrameTime(0), mResult(OC_CANCEL), mContinueInLoop(true), mLoader(new OgreResourceLoader())
+		mLastFrameTime(0), mResult(OC_CANCEL), mContinueInLoop(true), mLoader(new OgreResourceLoader()), mConfigWindow(0)
 {
 }
 
