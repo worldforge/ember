@@ -68,7 +68,7 @@ namespace Gui
 {
 
 EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService, Authoring::EntityRecipe& recipe, bool randomizeOrientation, sigc::slot<void>& adapterValueChangedSlot) :
-		mWorld(world), mTypeService(typeService), mRecipe(recipe), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0), mRandomizeOrientation(randomizeOrientation)
+		mWorld(world), mTypeService(typeService), mRecipe(recipe), mEntity(0), mEntityNode(0), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0), mRandomizeOrientation(randomizeOrientation)
 {
 	mConnection = mRecipe.EventValueChanged.connect(adapterValueChangedSlot);
 

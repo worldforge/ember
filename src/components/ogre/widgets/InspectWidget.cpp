@@ -78,7 +78,7 @@ class Decoder : public Atlas::Message::DecoderBase {
 
 InspectWidget::InspectWidget() :
 Inspect("inspect", this, "Inspect an entity."),
-mCurrentEntity(0), mChangedThisFrame(false)
+mChildList(0), mInfo(0), mCurrentEntity(0), mChangedThisFrame(false)
 {
 }
 InspectWidget::~InspectWidget()

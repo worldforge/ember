@@ -47,7 +47,7 @@ namespace Gui {
 
 	const std::string Widget::DEFAULT_TAB_GROUP("default");
 
-	Widget::Widget() : mCommandSuffix(""), mMainWindow(0), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0), mWindowHasBeenShown(false)
+	Widget::Widget() : mCommandSuffix(""), mMainWindow(0), mGuiManager(0), mWindowManager(0), mOriginalWindowAlpha(1.0f), mActiveWindowIsOpaque(true), mFirstTabWindow(0), mLastTabWindow(0), mWindowHasBeenShown(false)
 	{
 	}
 

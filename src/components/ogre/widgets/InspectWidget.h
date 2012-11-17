@@ -126,7 +126,6 @@ public:
 	const std::stringstream& getText() const;
 
 private:
-	EmberEntity* mEntity;
 
 	std::stringstream mMainText;
 	int mLevel;

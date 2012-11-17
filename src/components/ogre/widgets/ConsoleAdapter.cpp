@@ -35,9 +35,8 @@ namespace OgreView {
 namespace Gui {
 
 ConsoleAdapter::ConsoleAdapter(CEGUI::Editbox* inputBox)
-: mInputBox(inputBox), mReturnKeyDown(false)
+: mInputBox(inputBox), mBackend(ConsoleBackend::getSingletonPtr()), mTabPressed(false), mSelected(0), mReturnKeyDown(false)
 {
-	mBackend = ConsoleBackend::getSingletonPtr();
 	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyUp, CEGUI::Event::Subscriber(&ConsoleAdapter::consoleInputBox_KeyUp, this)); 
 	mInputBox->subscribeEvent(CEGUI::Editbox::EventKeyDown, CEGUI::Event::Subscriber(&ConsoleAdapter::consoleInputBox_KeyDown, this)); 
 }

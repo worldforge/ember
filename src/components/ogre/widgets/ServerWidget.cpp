@@ -80,7 +80,7 @@ namespace Gui
 {
 
 ServerWidget::ServerWidget() :
-	mAccount(0), mModelPreviewRenderer(0), mCharacterList(0), mCreateChar(0), mUseCreator(0), mNewCharName(0), mNewCharDescription(0), mTypesList(0), mGenderRadioButton(0), mAvatarTransferInfo(0)
+	mAccount(0), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mCharacterList(0), mCreateChar(0), mUseCreator(0), mNewCharName(0), mNewCharDescription(0), mTypesList(0), mGenderRadioButton(0), mAvatarTransferInfo(0)
 {
 }
 
