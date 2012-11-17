@@ -719,7 +719,7 @@ size_t ProgressiveMeshGenerator::findDstID(unsigned int srcID, unsigned short su
 			return i;
 		}
 	}
-	return -1; // Not found
+	return std::numeric_limits<size_t>::max(); // Not found
 }
 
 bool ProgressiveMeshGenerator::hasSrcID(unsigned int srcID, unsigned short submeshID)
@@ -820,7 +820,6 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 	assert(tmpCollapsedEdges.size());
 	assert(dst->edges.find(PMEdge(src)) == dst->edges.end());
 
-	CollapsedEdges::iterator it2End = tmpCollapsedEdges.begin();
 	it = src->triangles.begin();
 	for (; it != itEnd; it++) {
 		PMTriangle* triangle = *it;
@@ -833,7 +832,7 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 			// 1. task
 			unsigned int srcID = triangle->getVertexID(src);
 			size_t id = findDstID(srcID, triangle->submeshID);
-			if (id == -1) {
+			if (id == std::numeric_limits<size_t>::max()) {
 				// Not found any edge to move along.
 				// Destroy the triangle.
 				triangle->isRemoved = true;
