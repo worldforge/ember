@@ -90,7 +90,6 @@ void AutomaticGraphicsLevelManager::checkFps(float currentFps)
 	float factor = mDefaultFps / 60.0f;
 	if (std::abs(changeRequired) >= factor * 8.0f) {
 		changeGraphicsLevel(changeRequired);
-		S_LOG_VERBOSE("Fps difference of " << changeRequired << " detected, requesting detail change.");
 	}
 }
 
