@@ -51,7 +51,7 @@ void FrameTimeRecorder::frameCompleted(const TimeFrame& timeFrame, unsigned int 
 		mAccumulatedFrameTimes += timeFrame.getElapsedTime();
 		mAccumulatedFrames++;
 
-		if (mAccumulatedFrameTimes == mRequiredTimeSamples) {
+		if (mAccumulatedFrameTimes >= mRequiredTimeSamples) {
 
 			mTimePerFrameStore.push_back(mAccumulatedFrameTimes / mAccumulatedFrames);
 			mAccumulatedFrameTimes = boost::posix_time::seconds(0);
