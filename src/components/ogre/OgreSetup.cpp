@@ -298,7 +298,7 @@ Ogre::Root* OgreSetup::configure(void)
 		}
 	}
 	if (!success) {
-		return false;
+		return 0;
 	}
 
 	mRenderWindow = mRoot->initialise(true, "Ember");
