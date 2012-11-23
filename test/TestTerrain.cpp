@@ -13,6 +13,7 @@
 #include "components/ogre/terrain/TerrainMod.h"
 
 #include "framework/Exception.h"
+#include "framework/TimeFrame.h"
 
 #include <Eris/Entity.h>
 
@@ -294,7 +295,7 @@ public:
 		terrainHandler.updateTerrain(terrainDefPoints);
 		Timer timer;
 		do {
-			terrainHandler.pollTasks();
+			terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
 		} while (!timer.hasElapsed(5000) && !worldSizeChangedListener.getCompletedCount());
 		return worldSizeChangedListener.getCompletedCount() > 0;
 	}
@@ -314,7 +315,7 @@ public:
 		{
 			Timer timer;
 			do {
-				terrainHandler.pollTasks();
+				terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
 			} while ((!timer.hasElapsed(5000)) && (!bridge1->pageReady || !bridge2->pageReady || !bridge3->pageReady || !bridge4->pageReady));
 		}
 		CPPUNIT_ASSERT(bridge1->pageReady);
@@ -338,7 +339,7 @@ public:
 		{
 			Timer timer;
 			do {
-				terrainHandler.pollTasks();
+				terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
 			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 		}
 		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
@@ -404,7 +405,7 @@ public:
 		{
 			Timer timer;
 			do {
-				terrainHandler.pollTasks();
+				terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
 			} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 		}
 		CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
@@ -504,7 +505,7 @@ public:
 			{
 				Timer timer;
 				do {
-					terrainHandler.pollTasks();
+					terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
 				} while (afterTerrainUpdateListener.getCompletedCount() < 4);
 			}
 			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);
@@ -526,7 +527,7 @@ public:
 			{
 				Timer timer;
 				do {
-					terrainHandler.pollTasks();
+					terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
 //				} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 				} while (afterTerrainUpdateListener.getCompletedCount() < 4);
 			}
@@ -547,7 +548,7 @@ public:
 			{
 				Timer timer;
 				do {
-					terrainHandler.pollTasks();
+					terrainHandler.pollTasks(TimeFrame(boost::posix_time::seconds(10)));
 				} while ((!timer.hasElapsed(5000)) && afterTerrainUpdateListener.getCompletedCount() < 4);
 			}
 			CPPUNIT_ASSERT(afterTerrainUpdateListener.getCompletedCount() == 4);

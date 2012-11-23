@@ -174,7 +174,7 @@ public:
 			taskQueue.enqueueTask(new CounterTask(counter));
 			//200 ms should be enough... This isn't deterministic though.
 			boost::this_thread::sleep(boost::posix_time::milliseconds(200));
-			taskQueue.pollProcessedTasks(100000);
+			taskQueue.pollProcessedTasks(TimeFrame(boost::posix_time::milliseconds(100000)));
 			CPPUNIT_ASSERT(counter == 0);
 		}
 
