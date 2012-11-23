@@ -642,9 +642,12 @@ void Input::Config_InvertCamera(const std::string& section, const std::string& k
 
 void Input::setMouseGrab(bool enabled)
 {
-	S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
-	SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
-	if (enabled) {
+	Uint8 appState = SDL_GetAppState();
+	if (enabled && !(appState & SDL_APPMOUSEFOCUS)) {
+		mMouseGrabbingRequested = true;
+	} else {
+		S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
+		SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
 		mMouseGrabbingRequested = false;
 	}
 }
