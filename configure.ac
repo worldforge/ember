@@ -460,8 +460,6 @@ if test "$ac_use_cppunit" = "yes"; then
 	  AC_MSG_RESULT([
 		*** Found CppUnit
 		*** Setting up make check to run tests...])
-			CXXFLAGS="$CXXFLAGS -DUSE_CPP_UNIT"
-			LIBS="$LIBS $CPPUNIT_LIBS"
 			found_cppunit=yes
 		], 
 	  AC_MSG_RESULT([
