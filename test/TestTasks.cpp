@@ -175,7 +175,7 @@ public:
 			taskQueue.enqueueTask(new CounterTask(counter));
 			//200 ms should be enough... This isn't deterministic though.
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
-			taskQueue.pollProcessedTasks(100000);
+			taskQueue.pollProcessedTasks(TimeFrame(boost::posix_time::milliseconds(100000)));
 			CPPUNIT_ASSERT(counter == 0);
 		}
 
