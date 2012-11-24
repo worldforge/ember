@@ -561,6 +561,7 @@ AC_CONFIG_FILES([Makefile
 		 src/services/serversettings/Makefile
 		 ember.dox
 		 ember
+		 ember.conf
 		 ember.spec
 		 ember-media.spec
 		 autopackage/default.apspec
