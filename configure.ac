@@ -1,17 +1,17 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT(Ember, 0.7.1, erik@ogenvik.org)
+AC_INIT([Ember],[0.7.1],[erik@ogenvik.org])
 
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_CONFIG_SRCDIR(src)
 
 # Detect the canonical host and target build environment.
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests])
-AM_CONFIG_HEADER(src/config.h)
+AC_CONFIG_HEADERS([src/config.h])
 
-AC_PREREQ(2.50)
+AC_PREREQ([2.50])
 AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
 
 #will disable verbose linking checks, which fail even if there is no problem.
