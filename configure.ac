@@ -8,11 +8,8 @@ AC_CONFIG_SRCDIR(src)
 # Detect the canonical host and target build environment.
 AC_CANONICAL_SYSTEM
 
-#AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 check-news])
 AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests])
 AM_CONFIG_HEADER(src/config.h)
-
-#AC_LIBTOOL_DLOPEN
 
 AC_PREREQ(2.50)
 AC_COPYRIGHT([This script is under the GPL and is owned by the people in AUTHORS])
@@ -24,19 +21,11 @@ LT_INIT
 
 # Checks for Programs
 AC_PROG_CXX
-#AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_OBJC
-#AC_PROG_CPP
-#AC_PROG_INSTALL
-#AC_PROG_LN_S
-#AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
-dnl AM_PROG_LEX
-
 
 AC_PATH_PROG([XMLLINT], [xmllint], [true])
-
 
 # Check for C libraries:
 AC_LANG([C++])
@@ -75,14 +64,6 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_MALLOC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memset select])
-
-#AC_CHECK_FUNC(lrintf,[
-#  AC_DEFINE(HAVE_LRINTF, 1, [whether lrintf() is available])
-#])
-
-#AC_CHECK_FUNC(lrint,[
-#  AC_DEFINE(HAVE_LRINT, 1, [whether lrint() is available])
-#])
 
 #taken from Sear
 STATIC_LIBSTDCPP=
@@ -171,7 +152,7 @@ if test "$webember_enabled" = "true" -a "$WIN32" = "false" -a "$OSX" = "false"  
   # needed for some autotools versions. This is needed on POSIX ELF shared libraries only.
   CXXFLAGS="$CXXFLAGS -fPIC"
 	AC_LANG_PUSH([C++])
-	AC_CHECK_HEADERS([boost/interprocess/ipc/message_queue.hpp], [],
+	AC_CHECK_HEADER([boost/interprocess/ipc/message_queue.hpp], [],
  		[AC_MSG_ERROR(You need the Boost interprocess library.)])
 	AC_LANG_POP([C++])
 fi
@@ -205,10 +186,6 @@ AC_MSG_RESULT([
 		**************************************
 
 	])
-
-
-AC_CHECK_HEADER(ext/hash_set, AC_DEFINE(EXT_HASH,1,"extension stl"),	)
-
 
 
 # Check for OpenAL
