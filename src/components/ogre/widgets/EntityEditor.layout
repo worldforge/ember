@@ -5,6 +5,7 @@
         <Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}' />
         <Property Name='Alpha' Value='0.6' />
         <Property Name='Text' Value='Entity editor' />
+		<Property Name='Visible' Value='false'/>
         <Window Type='DefaultWindow' Name='MainInnerWindow'>
             <Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}' />
             <Property Name='UnifiedSize' Value='{{1,-8},{1,0}}' />

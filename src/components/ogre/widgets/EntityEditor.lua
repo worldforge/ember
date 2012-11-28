@@ -538,6 +538,7 @@ end
 
 function EntityEditor:editEntity(entity)
 	self.widget:show()
+	self.widget:getMainWindow():setVisible(true)
 
 	self:clearEditing()
 
@@ -1087,8 +1088,6 @@ function EntityEditor:buildWidget()
 		self.modelTab.modelInfo = self.widget:getWindow("ModelInfo")
 
 
-		connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
-
 
 		self.widget:getWindow("ChildList"):subscribeEvent("DoubleClick", self.ChildList_MouseDoubleClick, self)
 		self.widget:getWindow("ShowOgreBbox"):subscribeEvent("CheckStateChanged", self.ShowOgreBbox_CheckStateChanged, self)
@@ -1158,6 +1157,8 @@ function EntityEditor:buildWidget()
 	end
 
 	connect(self.connectors, self.widget.EventFirstTimeShown, setup)
+	connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
+
 
 	self.widget:loadMainSheet("EntityEditor.layout", "EntityEditor/")
 	self.widget:registerConsoleVisibilityToggleCommand("entityEditor")
