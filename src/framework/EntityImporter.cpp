@@ -21,7 +21,8 @@
 #include "AtlasMessageLoader.h"
 #include "TinyXmlCodec.h"
 #include "LoggingInstance.h"
-#include "tinyxml/tinyxml.h"
+#include "tinyxml.h"
+#include "osdir.h"
 
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
@@ -354,5 +355,52 @@ void EntityImporter::operation(const Operation & op)
 		sendOperation(*I);
 	}
 
+}
+
+
+std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(const std::string& directoryPath)
+{
+	std::vector<ShortInfo> infos;
+	oslink::directory osdir(directoryPath);
+	while (osdir) {
+		ShortInfo info;
+		const std::string filename = osdir.next();
+		TiXmlDocument xmlDoc;
+		if (!xmlDoc.LoadFile(directoryPath + "/" + filename)) {
+			continue;
+		}
+
+		info.filename = directoryPath + "/" + filename;
+
+		const TiXmlElement* nameElem = xmlDoc.RootElement()->FirstChildElement("name");
+		if (nameElem && nameElem->GetText()) {
+			info.name = nameElem->GetText();
+		} else {
+			info.name = filename;
+		}
+
+		const TiXmlElement* descElem = xmlDoc.RootElement()->FirstChildElement("description");
+		if (descElem && descElem->GetText()) {
+			info.description = descElem->GetText();
+		}
+
+		const TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
+		if (entitiesElem) {
+			const TiXmlElement* atlasElem = entitiesElem->FirstChildElement("atlas");
+			if (atlasElem) {
+				int count = 0;
+				const TiXmlElement* entityElem = atlasElem->FirstChildElement("map");
+				while (entityElem) {
+					count++;
+					entityElem = entityElem->NextSiblingElement();
+				}
+				info.entityCount = count;
+
+			}
+		}
+		infos.push_back(info);
+
+	}
+	return infos;
 }
 }

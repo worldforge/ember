@@ -67,8 +67,21 @@ public:
 class EntityImporter: public virtual sigc::trackable
 {
 public:
+
+	struct ShortInfo
+	{
+		std::string filename;
+		std::string name;
+		std::string description;
+		int entityCount;
+	};
+
+
 	explicit EntityImporter(Eris::Account& account);
 	virtual ~EntityImporter();
+
+	static std::vector<ShortInfo> getInfoFromDirectory(const std::string& directoryPath);
+
 
 	virtual void start(const std::string& filename);
 

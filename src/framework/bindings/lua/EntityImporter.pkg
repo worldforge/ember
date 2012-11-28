@@ -9,8 +9,19 @@ namespace Ember
 class EntityImporter
 {
 public:
+	struct ShortInfo
+	{
+		std::string filename;
+		std::string name;
+		std::string description;
+		int entityCount;
+	};
+
+
 	explicit EntityImporter(Eris::Account& account);
 	virtual ~EntityImporter();
+
+	static std::vector<Ember::EntityImporter::ShortInfo> getInfoFromDirectory(const std::string& directoryPath);
 
 	virtual void start(const std::string& filename);
 	

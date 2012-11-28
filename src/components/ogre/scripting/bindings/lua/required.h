@@ -75,3 +75,5 @@
 #include "components/ogre/widgets/EntityIcon.h"
 #include "components/ogre/widgets/EntityIconManager.h"
 #include "components/ogre/widgets/EntityIconDragDropTarget.h"
+
+#include "framework/EntityImporter.h"

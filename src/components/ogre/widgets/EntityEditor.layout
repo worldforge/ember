@@ -171,6 +171,11 @@
                     <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
                     <Property Name='Text' Value='Export/Import' />
                     <Property Name='InheritsAlpha' Value='false' />
+                    <Window Type='EmberLook/ItemListbox' Name='ImportList'>
+                        <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
+                        <Property Name='UnifiedSize' Value='{{0,200},{1,-25}}' />
+                        <Property Name='InheritsAlpha' Value='True' />
+                    </Window>
                     <Window Type='EmberLook/StaticText' Name='DumpStatus'>
                         <Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,20.0}}' />
                         <Property Name='UnifiedPosition' Value='{{0,0},{0,20}}' />
