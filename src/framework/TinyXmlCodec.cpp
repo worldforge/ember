@@ -22,7 +22,7 @@
 
 #include "TinyXmlCodec.h"
 #include "Exception.h"
-#include "tinyxml/tinyxml.h"
+#include "tinyxml.h"
 #include <stack>
 
 namespace Ember
