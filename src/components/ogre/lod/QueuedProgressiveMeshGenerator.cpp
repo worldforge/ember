@@ -289,10 +289,10 @@ void PMInjector::inject(PMGenRequest* request)
 			PMGenRequest::IndexBuffer& buff = *it;
 			int indexCount = buff.indexCount;
 			assert(indexCount >= 0);
-			lods.push_back(OGRE_NEW Ogre::IndexData());
-			lods.back()->indexStart = 0;
-			lods.back()->indexCount = indexCount;
 			if(indexCount != 0) {
+				lods.push_back(OGRE_NEW Ogre::IndexData());
+				lods.back()->indexStart = 0;
+				lods.back()->indexCount = indexCount;
 				lods.back()->indexBuffer = Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
 					buff.indexSize == 2 ?
 					Ogre::HardwareIndexBuffer::IT_16BIT : Ogre::HardwareIndexBuffer::IT_32BIT,
