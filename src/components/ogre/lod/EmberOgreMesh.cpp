@@ -56,7 +56,7 @@ void EmberOgreMesh::_configureMeshLodUsage(const LodConfig& lodConfigs)
 		// Record usages. First Lod usage is the mesh itself.
 
 		// Skip lods, which have the same amount of vertices. No buffer generated for them.
-		if (!lodConfigs.levels[i].outSkipped && (n + 1) < mMeshLodUsageList.size()) {
+		if (!lodConfigs.levels[i].outSkipped) {
 
 			// Generated buffers are less then the reported by ProgressiveMesh.
 			// This would fail if you use QueuedProgressiveMesh and the MeshPtr is force unloaded before lod generation completes.
