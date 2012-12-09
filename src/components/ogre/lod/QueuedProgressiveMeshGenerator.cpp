@@ -209,10 +209,34 @@ void PMWorker::bakeLods()
 		assert(indexCount >= 0);
 
 		lods.push_back(PMGenRequest::IndexBuffer());
+		bool isEmpty = false;
+		if (indexCount == 0) {
+			//If the index is empty we need to create a "dummy" triangle, just to keep the index from beíng empty.
+			//The main reason for this is that the OpenGL render system will crash with a segfault unless the index has some values.
+			//This should hopefully be removed with future versions of Ogre. The most preferred solution would be to add the
+			//ability for a submesh to be excluded from rendering for a given LOD (which isn't possible currently 2012-12-09).
+			indexCount = 3;
+			isEmpty = true;
+		}
 		lods.back().indexCount = indexCount;
+
 		lods.back().indexSize = mRequest->submesh[i].indexBuffer.indexSize;
 		lods.back().indexBuffer = new unsigned char[lods.back().indexCount * lods.back().indexSize];
 		indexBuffer.get()[i].pshort = (unsigned short*) lods.back().indexBuffer;
+
+		if (isEmpty) {
+			if (mIndexBufferInfoList[i].indexSize == 2) {
+				for (int m = 0; m < 3; m++) {
+					*(indexBuffer.get()[i].pshort++) =
+					    static_cast<unsigned short>(0);
+				}
+			} else {
+				for (int m = 0; m < 3; m++) {
+					*(indexBuffer.get()[i].pint++) =
+					    static_cast<unsigned short>(0);
+				}
+			}
+		}
 	}
 
 	// Fill buffers.
