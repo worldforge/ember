@@ -206,22 +206,25 @@ void PMWorker::bakeLods(const LodLevel& lodConfigs)
 		assert(indexCount >= 0);
 
 		lods.push_back(PMGenRequest::IndexBuffer());
-		bool isEmpty = false;
 		if (indexCount == 0) {
 			//If the index is empty we need to create a "dummy" triangle, just to keep the index from beíng empty.
 			//The main reason for this is that the OpenGL render system will crash with a segfault unless the index has some values.
 			//This should hopefully be removed with future versions of Ogre. The most preferred solution would be to add the
 			//ability for a submesh to be excluded from rendering for a given LOD (which isn't possible currently 2012-12-09).
-			indexCount = 3;
-			isEmpty = true;
+			lods.back().indexCount = 3;
+		} else {
+			lods.back().indexCount = indexCount;
 		}
-		lods.back().indexCount = indexCount;
 
 		lods.back().indexSize = mRequest->submesh[i].indexBuffer.indexSize;
 		lods.back().indexBuffer = new unsigned char[lods.back().indexCount * lods.back().indexSize];
-		indexBuffer.get()[i].pshort = (unsigned short*) lods.back().indexBuffer;
+		if (mIndexBufferInfoList[i].indexSize == 2) {
+			indexBuffer.get()[i].pshort = (unsigned short*) lods.back().indexBuffer;
+		} else {
+			indexBuffer.get()[i].pint = (unsigned int*) lods.back().indexBuffer;
+		}
 
-		if (isEmpty) {
+		if (indexCount == 0) {
 			if (mIndexBufferInfoList[i].indexSize == 2) {
 				for (int m = 0; m < 3; m++) {
 					*(indexBuffer.get()[i].pshort++) =
@@ -230,7 +233,7 @@ void PMWorker::bakeLods(const LodLevel& lodConfigs)
 			} else {
 				for (int m = 0; m < 3; m++) {
 					*(indexBuffer.get()[i].pint++) =
-					    static_cast<unsigned short>(0);
+					    static_cast<unsigned int>(0);
 				}
 			}
 		}
@@ -248,7 +251,7 @@ void PMWorker::bakeLods(const LodLevel& lodConfigs)
 			} else {
 				for (int m = 0; m < 3; m++) {
 					*(indexBuffer.get()[mTriangleList[i].submeshID].pint++) =
-					    static_cast<unsigned short>(mTriangleList[i].vertexID[m]);
+					    static_cast<unsigned int>(mTriangleList[i].vertexID[m]);
 				}
 			}
 		}
