@@ -146,6 +146,9 @@ AM_CONDITIONAL([OSX], [test x$OSX = xtrue])
 LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
 CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
 
+LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
+CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
+
 AC_ARG_ENABLE(webember,
   [AS_HELP_STRING([--enable-webember], [enable building of webember (default=no)])],
   [
