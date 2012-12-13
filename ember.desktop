@@ -1,11 +1,10 @@
 [Desktop Entry]
 Type=Application
 Name=Ember
-Name[sv]=Ember
 GenericName=3d client for Worldforge MMORPGs
 GenericName[sv]=3d klient för Worldforge MMORPGs
 GenericName[tr]=Worldforge MMORPG için 3B İstemci
 Icon=ember
 Exec=ember
 Terminal=false
-Categories=Application;Game;
+Categories=Game;RolePlaying;
