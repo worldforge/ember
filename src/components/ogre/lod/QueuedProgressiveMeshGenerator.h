@@ -89,7 +89,7 @@ private:
 	void initialize();
 	void addVertexBuffer(const PMGenRequest::VertexBuffer& vertexBuffer, bool useSharedVertexLookup);
 	void addIndexBuffer(PMGenRequest::IndexBuffer& indexBuffer, bool useSharedVertexLookup, unsigned short submeshID);
-	void bakeLods(const LodLevel& lodConfigs);
+	void bakeLods();
 };
 
 /**

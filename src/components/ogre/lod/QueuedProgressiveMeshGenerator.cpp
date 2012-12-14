@@ -86,7 +86,9 @@ void PMWorker::buildRequest(LodConfig& lodConfigs)
 	tuneContainerSize();
 	initialize(); // Load vertices and triangles.
 	computeCosts(); // Calculate all collapse costs.
+#ifndef NDEBUG
 	assertValidMesh();
+#endif
 
 	computeLods(lodConfigs);
 }
@@ -194,7 +196,7 @@ void PMWorker::addIndexBuffer(PMGenRequest::IndexBuffer& indexBuffer, bool useSh
 	}
 }
 
-void PMWorker::bakeLods(const LodLevel& lodConfigs)
+void PMWorker::bakeLods()
 {
 
 	unsigned short submeshCount = mRequest->submesh.size();

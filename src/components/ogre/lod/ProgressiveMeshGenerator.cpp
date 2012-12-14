@@ -599,11 +599,11 @@ Ogre::Real ProgressiveMeshGenerator::computeEdgeCollapseCost(PMVertex* src, PMEd
 	return cost * src->position.distance(dst->position);
 }
 
+#ifndef NDEBUG
 void ProgressiveMeshGenerator::assertOutdatedCollapseCost(PMVertex* vertex)
 {
 	// Validates that collapsing has updated all edges needed by computeEdgeCollapseCost.
 	// This will assert if the dependencies inside computeEdgeCollapseCost changes.
-#ifndef NDEBUG
 	VEdges::iterator it = vertex->edges.begin();
 	VEdges::iterator itEnd = vertex->edges.end();
 	for (; it != itEnd; it++) {
@@ -615,13 +615,13 @@ void ProgressiveMeshGenerator::assertOutdatedCollapseCost(PMVertex* vertex)
 			assert(it2->collapseCost == computeEdgeCollapseCost(neighbor, getPointer(it2)));
 		}
 	}
-#endif // ifndef NDEBUG
 }
+#endif // ifndef NDEBUG
 
 void ProgressiveMeshGenerator::updateVertexCollapseCost(PMVertex* vertex)
 {
 	Ogre::Real collapseCost = UNINITIALIZED_COLLAPSE_COST;
-	PMVertex* collapseTo;
+	PMVertex* collapseTo = 0;
 	VEdges::iterator it = vertex->edges.begin();
 	VEdges::iterator itEnd = vertex->edges.end();
 	for (; it != itEnd; it++) {
@@ -671,7 +671,9 @@ void ProgressiveMeshGenerator::build(LodConfig& lodConfig)
 	tuneContainerSize();
 	initialize(); // Load vertices and triangles
 	computeCosts(); // Calculate all collapse costs
+#ifndef NDEBUG
 	assertValidMesh();
+#endif // ifndef NDEBUG
 
 	computeLods(lodConfig);
 
@@ -697,8 +699,10 @@ void ProgressiveMeshGenerator::computeLods(LodConfig& lodConfigs)
 		lodConfigs.levels[curLod].outSkipped = (lastBakeVertexCount == vertexCount);
 		if (!lodConfigs.levels[curLod].outSkipped) {
 			lastBakeVertexCount = vertexCount;
+#ifndef NDEBUG
 			assertValidMesh();
-			bakeLods(lodConfigs.levels[curLod]);
+#endif // ifndef NDEBUG
+			bakeLods();
 		}
 	}
 }
@@ -734,10 +738,10 @@ bool ProgressiveMeshGenerator::hasSrcID(unsigned int srcID, unsigned short subme
 	return false; // Not found
 }
 
+#ifndef NDEBUG
 void ProgressiveMeshGenerator::assertValidMesh()
 {
 	// Allows to find bugs in collapsing.
-#ifndef NDEBUG
 	size_t s1 = mUniqueVertexSet.size();
 	size_t s2 = mCollapseCostSet.size();
 	CollapseCostSet::iterator it = mCollapseCostSet.begin();
@@ -746,12 +750,12 @@ void ProgressiveMeshGenerator::assertValidMesh()
 		assertValidVertex(*it);
 		it++;
 	}
-#endif
 }
+#endif
+#ifndef NDEBUG
 void ProgressiveMeshGenerator::assertValidVertex(PMVertex* v)
 {
 	// Allows to find bugs in collapsing.
-#ifndef NDEBUG
 	VTriangles::iterator it = v->triangles.begin();
 	VTriangles::iterator itEnd = v->triangles.end();
 	for (; it != itEnd; it++) {
@@ -769,14 +773,16 @@ void ProgressiveMeshGenerator::assertValidVertex(PMVertex* v)
 			}
 		}
 	}
-#endif // ifndef NDEBUG
 }
+#endif // ifndef NDEBUG
 
 void ProgressiveMeshGenerator::collapse(PMVertex* src)
 {
 	PMVertex* dst = src->collapseTo;
+#ifndef NDEBUG
 	assertValidVertex(dst);
 	assertValidVertex(src);
+#endif // ifndef NDEBUG
 	assert(src->collapseCost != NEVER_COLLAPSE_COST);
 	assert(src->collapseCost != UNINITIALIZED_COLLAPSE_COST);
 	assert(!src->edges.empty());
@@ -901,8 +907,8 @@ void ProgressiveMeshGenerator::collapse(PMVertex* src)
 	src->triangles.clear(); // Free memory
 #ifndef NDEBUG
 	src->costSetPosition = mCollapseCostSet.end();
-#endif
 	assertValidVertex(dst);
+#endif
 }
 size_t ProgressiveMeshGenerator::calcLodVertexCount(const LodLevel& lodConfig)
 {
@@ -933,7 +939,7 @@ size_t ProgressiveMeshGenerator::calcLodVertexCount(const LodLevel& lodConfig)
 	}
 }
 
-void ProgressiveMeshGenerator::bakeLods(const LodLevel& lodConfigs)
+void ProgressiveMeshGenerator::bakeLods()
 {
 
 	unsigned short submeshCount = mMesh->getNumSubMeshes();

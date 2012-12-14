@@ -134,7 +134,6 @@ protected:
 	struct PMVertex {
 		Ogre::Vector3 position;
 		Ogre::Real collapseCost;
-
 		VEdges edges;
 		VTriangles triangles; // Triangle ID set, which are using this vertex.
 
@@ -197,7 +196,7 @@ protected:
 	PMEdge* getPointer(VEdges::iterator it);
 	void computeVertexCollapseCost(PMVertex* vertex);
 	Ogre::Real computeEdgeCollapseCost(PMVertex* src, PMEdge* dstEdge);
-	virtual void bakeLods(const LodLevel& lodConfigs);
+	virtual void bakeLods();
 	void collapse(PMVertex* vertex);
 	void initialize();
 	void computeLods(LodConfig& lodConfigs);
@@ -207,8 +206,11 @@ protected:
 	size_t findDstID(unsigned int srcID, unsigned short submeshID);
 	void replaceVertexID(PMTriangle* triangle, unsigned int oldID, unsigned int newID, PMVertex* dst);
 
+#ifndef NDEBUG
 	void assertValidVertex(PMVertex* v);
 	void assertValidMesh();
+	void assertOutdatedCollapseCost(PMVertex* vertex);
+#endif // ifndef NDEBUG
 
 	void addTriangleToEdges(PMTriangle* triangle);
 	void removeTriangleFromEdges(PMTriangle* triangle, PMVertex* skip = NULL);
@@ -216,7 +218,6 @@ protected:
 	void removeEdge(PMVertex* v, const PMEdge& edge);
 	void printTriangle(PMTriangle* triangle, std::stringstream& str);
 	PMTriangle* findSideTriangle(const PMVertex* v1, const PMVertex* v2);
-	void assertOutdatedCollapseCost(PMVertex* vertex);
 	bool isDuplicateTriangle(PMTriangle* triangle, PMTriangle* triangle2);
 	PMTriangle* isDuplicateTriangle(PMTriangle* triangle);
 	int getTriangleID(PMTriangle* triangle);
