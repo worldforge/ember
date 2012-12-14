@@ -65,6 +65,7 @@
 #include <OgreHardwareBufferManager.h>
 #include <OgreSubMesh.h>
 #include <OgreMesh.h>
+#include <OgreLodStrategy.h>
 
 #include <limits>
 #include <sstream>
