@@ -1103,7 +1103,7 @@ template<typename T, unsigned S>
 void ProgressiveMeshGenerator::VectorSet<T, S>::removeExists(const T& item)
 {
 	iterator it = find(item);
-	assert(it != end());
+	assert(it != baseClass::end());
 	remove(it);
 }
 
@@ -1123,7 +1123,7 @@ template<typename T, unsigned S>
 void ProgressiveMeshGenerator::VectorSet<T, S>::replaceExists(const T& oldItem, const T& newItem)
 {
 	iterator it = find(oldItem);
-	assert(it != end());
+	assert(it != baseClass::end());
 	*it = newItem;
 }
 
