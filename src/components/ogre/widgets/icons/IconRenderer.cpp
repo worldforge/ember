@@ -92,7 +92,7 @@ void IconRenderer::renderDelayed(Model::Model* model, Icon* icon)
 	render(model, icon);
 }
 
-void IconRenderer::performRendering(Model::Model* model, Icon* icon)
+void IconRenderer::performRendering(Model::Model* model, Icon*)
 {
 
 	if (model) {
@@ -201,7 +201,7 @@ SimpleRenderContext* IconRenderer::getRenderContext()
 }
 
 IconRenderWorker::IconRenderWorker(IconRenderer& renderer) :
-	mRenderer(renderer)
+	mRenderer(renderer), mImageStoreEntry(0)
 {
 }
 
@@ -276,13 +276,13 @@ DelayedIconRendererWorker::~DelayedIconRendererWorker()
 	Ogre::Root::getSingleton().removeFrameListener(this);
 }
 
-void DelayedIconRendererWorker::render(Model::Model* model, Icon* icon, IconImageStoreEntry* imageStoreEntry)
+void DelayedIconRendererWorker::render(Model::Model* model, Icon* icon, IconImageStoreEntry*)
 {
 	DelayedIconRendererEntry entry(*this, model, icon);
 	entries.push(entry);
 }
 
-bool DelayedIconRendererWorker::frameStarted(const Ogre::FrameEvent& event)
+bool DelayedIconRendererWorker::frameStarted(const Ogre::FrameEvent&)
 {
 	if (entries.size()) {
 		entries.front().frameStarted();

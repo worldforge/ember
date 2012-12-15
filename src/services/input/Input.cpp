@@ -517,7 +517,7 @@ void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 
 }
 
-const bool Input::isKeyDown(const SDLKey &key) const
+bool Input::isKeyDown(const SDLKey &key) const
 {
 	return mKeysPressed.find(key) != mKeysPressed.end();
 }

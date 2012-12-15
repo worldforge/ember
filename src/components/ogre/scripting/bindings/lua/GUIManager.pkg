@@ -27,10 +27,10 @@ class GUIManager
 
 	CEGUI::Window* getMainSheet() const;
 
-	const bool isInGUIMode() const;
+	bool isInGUIMode() const;
 	
 	
-	const bool isInMovementKeysMode() const;
+	bool isInMovementKeysMode() const;
 	
 //	inline CEGUI::OgreCEGUIRenderer* getGuiRenderer() const {return mGuiRenderer;}
 	

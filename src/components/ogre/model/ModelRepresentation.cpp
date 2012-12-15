@@ -247,7 +247,7 @@ void ModelRepresentation::model_Resetting()
 	mModel.setUserAny(Ogre::Any());
 }
 
-void ModelRepresentation::processOutfit(const Atlas::Message::MapType & outfitMap)
+void ModelRepresentation::processOutfit(const Atlas::Message::MapType&)
 {
 }
 
@@ -447,7 +447,7 @@ void ModelRepresentation::createActionForTask(const Eris::Task& task)
 	}
 }
 
-void ModelRepresentation::entity_TaskRemoved(Eris::Task* task)
+void ModelRepresentation::entity_TaskRemoved(Eris::Task*)
 {
 	if (mTaskAction) {
 		mTaskAction->getAnimations().reset();

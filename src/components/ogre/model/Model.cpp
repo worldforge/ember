@@ -427,7 +427,7 @@ SubModel* Model::getSubModel(size_t index)
 {
 	size_t i = 0;
 	auto result = std::find_if(mSubmodels.begin(), mSubmodels.end(),
-		[&i, &index](SubModel* subModel)->bool {return i++ == index;}
+		[&i, &index](SubModel*)->bool {return i++ == index;}
 	);
 	if (result != mSubmodels.end()) {
 		return *result;
@@ -527,7 +527,7 @@ bool Model::isLoaded() const
 	return mBackgroundLoader == 0 || mBackgroundLoader->getState() == ModelBackgroundLoader::LS_DONE;
 }
 
-const Ogre::Real Model::getScale() const
+Ogre::Real Model::getScale() const
 {
 	return mScale;
 }
@@ -537,7 +537,7 @@ const Ogre::Quaternion& Model::getRotation() const
 	return mRotation;
 }
 
-const ModelDefinition::UseScaleOf Model::getUseScaleOf() const
+ModelDefinition::UseScaleOf Model::getUseScaleOf() const
 {
 	return mDefinition->getUseScaleOf();
 }

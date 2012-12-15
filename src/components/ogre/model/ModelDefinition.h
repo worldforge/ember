@@ -520,7 +520,7 @@ public:
 	 * Defaults to "ALL"
 	 * @return
 	 */
-	const UseScaleOf getUseScaleOf() const;
+	UseScaleOf getUseScaleOf() const;
 	void setUseScaleOf(const UseScaleOf useScale);
 
 	/**
@@ -871,7 +871,7 @@ inline void ModelDefinition::setScale(Ogre::Real scale)
 	mScale = scale;
 }
 
-inline const ModelDefinition::UseScaleOf ModelDefinition::getUseScaleOf() const
+inline ModelDefinition::UseScaleOf ModelDefinition::getUseScaleOf() const
 {
 	return mUseScaleOf;
 }

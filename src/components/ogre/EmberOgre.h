@@ -307,16 +307,6 @@ protected:
 	Model::ModelDefinitionManager* mModelDefinitionManager;
 
 	/**
-	 * @brief Manages Lod definition files and loads the Lod information into the mesh.
-	 */
-	Lod::LodDefinitionManager* mLodDefinitionManager;
-
-	/**
-	 * @brief Allows to add Lod to the meshes.
-	 */
-	Lod::LodManager* mLodManager;
-
-	/**
 	 * @brief Handles all model mappings.
 	 */
 	Mapping::EmberEntityMappingManager* mEntityMappingManager;
@@ -363,6 +353,16 @@ protected:
 	std::unique_ptr<OgreResourceProvider> mSoundResourceProvider;
 
 	/**
+	 * @brief Manages Lod definition files and loads the Lod information into the mesh.
+	 */
+	Lod::LodDefinitionManager* mLodDefinitionManager;
+
+	/**
+	 * @brief Allows to add Lod to the meshes.
+	 */
+	Lod::LodManager* mLodManager;
+
+	/**
 	 * @brief The collision manager, responsible for handling collisions of the geometry in the world.
 	 */
 	//	OgreOpcode::CollisionManager* mCollisionManager;
@@ -397,6 +397,18 @@ protected:
 	Ogre::Camera* mOgreMainCamera;
 
 	/**
+	 * @brief The main World instance will be contained here, when the client is connected to a server and has received a View instance.
+	 *
+	 * The World instance is only available when the client through an Avatar and View instance has entered into the server side world.
+	 */
+	World* mWorld;
+
+	/**
+	 * @brief The WindowProvider passed to the Input service.
+	 */
+	OgreWindowProvider* mWindowProvider;
+
+	/**
 	 * @brief Worker, which generated Lod levels in a background thread.
 	 */
 	Lod::PMWorker* mPMWorker;
@@ -413,18 +425,6 @@ protected:
 	 * @return The main Eris View instance which represents the server world.
 	 */
 	Eris::View* getMainView() const;
-
-	/**
-	 * @brief The main World instance will be contained here, when the client is connected to a server and has received a View instance.
-	 *
-	 * The World instance is only available when the client through an Avatar and View instance has entered into the server side world.
-	 */
-	World* mWorld;
-
-	/**
-	 * @brief The WindowProvider passed to the Input service.
-	 */
-	OgreWindowProvider* mWindowProvider;
 
 	/**
 	 * @brief Sent from the server service when we've received a Eris::View instance from the server.

@@ -121,7 +121,7 @@ std::string ModelDefinitionManager::exportScript(ModelDefinitionPtr definition)
 	}
 }
 
-Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
+Ogre::Resource* ModelDefinitionManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList*)
 {
 	return new ModelDefinition(this, name, handle, group, isManual, loader);
 }

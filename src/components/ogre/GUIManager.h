@@ -174,14 +174,14 @@ public:
 	 *    true if we're in GUI mode, which means that input events will be sent to the CEGUI system instead of the "world"
 	 * @return
 	 */
-	const bool isInGUIMode() const;
+	bool isInGUIMode() const;
 
 	/**
 	 *    true if keyboard input should make the avatar move
 	 *    this happens when wither 1) we're not in gui mode 2) the background sheet has the input control (thus, when something else, like an edit box has input control, that edit box will receive key strokes
 	 * @return
 	 */
-	const bool isInMovementKeysMode() const;
+	bool isInMovementKeysMode() const;
 
 	/**
 	 *    accessor for the Input instance object

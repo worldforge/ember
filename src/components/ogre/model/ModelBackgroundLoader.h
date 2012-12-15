@@ -181,7 +181,7 @@ public:
 	 * @brief Gets the current loading state.
 	 * @return The current loading state.
 	 */
-	const LoadingState getState() const;
+	LoadingState getState() const;
 
 	/**
 	 * @brief Reloads the model.

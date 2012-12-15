@@ -311,7 +311,7 @@ bool ModelBackgroundLoader::areAllTicketsProcessed()
 	return mTickets.size() == 0;
 }
 
-const ModelBackgroundLoader::LoadingState ModelBackgroundLoader::getState() const
+ModelBackgroundLoader::LoadingState ModelBackgroundLoader::getState() const
 {
 	return mState;
 }

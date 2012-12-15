@@ -96,7 +96,7 @@ class Input
 	 * @param  
 	 * @return 
 	 */
-	const bool isKeyDown(const SDLKey&) const;
+	bool isKeyDown(const SDLKey&) const;
 
 	
 	

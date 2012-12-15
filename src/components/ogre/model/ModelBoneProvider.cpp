@@ -117,11 +117,11 @@ void ModelBoneProvider::setVisible(bool visible)
 	}
 }
 
-void ModelBoneProvider::setVisualize(const std::string& visualization, bool visualize)
+void ModelBoneProvider::setVisualize(const std::string&, bool)
 {
 }
 
-bool ModelBoneProvider::getVisualize(const std::string& visualization) const
+bool ModelBoneProvider::getVisualize(const std::string&) const
 {
 	return false;
 }

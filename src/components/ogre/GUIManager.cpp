@@ -445,12 +445,12 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 
 }
 
-const bool GUIManager::isInMovementKeysMode() const
+bool GUIManager::isInMovementKeysMode() const
 {
 	return mSheet->isCapturedByThis() || !isInGUIMode();
 }
 
-const bool GUIManager::isInGUIMode() const
+bool GUIManager::isInGUIMode() const
 {
 	return getInput().getInputMode() == Input::IM_GUI;
 }

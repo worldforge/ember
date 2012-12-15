@@ -321,7 +321,7 @@ void QueuedProgressiveMeshGenerator::build(LodConfig& lodConfig)
 
 	// Lod distances needs to be sorted.
 	Ogre::Mesh::LodValueList values;
-	for (int i = 0; i < lodConfig.levels.size(); i++) {
+	for (size_t i = 0; i < lodConfig.levels.size(); i++) {
 		values.push_back(lodConfig.levels[i].distance);
 	}
 	lodConfig.mesh->getLodStrategy()->assertSorted(values);

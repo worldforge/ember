@@ -311,7 +311,7 @@ public:
 	 * @param  key The key to check for.
 	 * @return True if the key is down.
 	 */
-	const bool isKeyDown(const SDLKey& key) const;
+	bool isKeyDown(const SDLKey& key) const;
 
 	/**
 	 * @brief Sets the window geometry. Call this whenever the size of the window has changed.

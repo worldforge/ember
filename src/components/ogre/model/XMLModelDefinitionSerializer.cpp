@@ -60,7 +60,7 @@ XMLModelDefinitionSerializer::XMLModelDefinitionSerializer()
 
 XMLModelDefinitionSerializer::~XMLModelDefinitionSerializer()
 {}
-void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr& stream, ModelDefinition* pModelDef)
+void XMLModelDefinitionSerializer::importModelDefinition(Ogre::DataStreamPtr&, ModelDefinition*)
 {
 }
 

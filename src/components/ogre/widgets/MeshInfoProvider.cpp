@@ -155,7 +155,6 @@ std::string MeshInfoProvider::getPreviewInfo()
 	if (mesh->isLodManual()) {
 		str << lod.manualName << std::endl;
 	} else {
-		bool addedShared;
 		size_t indexCount = 0;
 
 		int count = mesh->getNumSubMeshes();

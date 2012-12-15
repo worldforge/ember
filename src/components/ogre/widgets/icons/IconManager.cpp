@@ -78,7 +78,7 @@ public:
 	{
 	}
 
-	Eris::Entity* getEntity(const std::string& id)
+	Eris::Entity* getEntity(const std::string&)
 	{
 		return 0;
 	}
@@ -105,7 +105,7 @@ public:
 	{
 	}
 
-	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase* aCase, EntityMapping::Definitions::CaseDefinition& caseDefinition)
+	virtual void createActions(EntityMapping::EntityMapping& modelMapping, EntityMapping::Cases::CaseBase*, EntityMapping::Definitions::CaseDefinition& caseDefinition)
 	{
 		EntityMapping::Definitions::CaseDefinition::ActionStore::iterator endJ = caseDefinition.getActions().end();
 		for (EntityMapping::Definitions::CaseDefinition::ActionStore::iterator J = caseDefinition.getActions().begin(); J != endJ; ++J) {
@@ -138,7 +138,7 @@ IconManager::~IconManager()
 {
 }
 
-Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
+Icon* IconManager::getIcon(int, EmberEntity* entity)
 {
 
 	std::string key = "entity_" + entity->getId();
@@ -195,7 +195,7 @@ Icon* IconManager::getIcon(int pixelWidth, EmberEntity* entity)
 	return 0;
 }
 
-Icon* IconManager::getIcon(int pixelWidth, Eris::TypeInfo* erisType)
+Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType)
 {
 
 	std::string key = "entity_" + erisType->getName();

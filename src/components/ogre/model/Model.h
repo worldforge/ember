@@ -169,7 +169,7 @@ public:
 	 * if defined in the modeldef, returns a scaler by which the node containing
 	 * the model can be scaled
 	 */
-	const Ogre::Real getScale() const;
+	Ogre::Real getScale() const;
 
 	/**
 	 * Defines how much the model should be rotated.
@@ -182,7 +182,7 @@ public:
 	 * height of the tree to determine how much it should be scaled, since the
 	 * bounding box supplied by eris doesn't take the branches into account
 	 */
-	const ModelDefinition::UseScaleOf getUseScaleOf() const;
+	ModelDefinition::UseScaleOf getUseScaleOf() const;
 
 	// 	inline const SubModelPartStoreMap& getSubmodelParts() const;
 
