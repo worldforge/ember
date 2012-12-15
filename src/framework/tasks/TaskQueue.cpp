@@ -58,8 +58,8 @@ TaskQueue::~TaskQueue()
 
 	//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
 	pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
-	assert(!mProcessedTaskUnits.size());
-	assert(!mUnprocessedTaskUnits.size());
+	assert(mProcessedTaskUnits.empty());
+	assert(mUnprocessedTaskUnits.empty());
 }
 
 void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)
@@ -79,13 +79,13 @@ TaskUnit* TaskQueue::fetchNextTask()
 	//The semantics of this method is that if a null pointer is returned the task executor is required to exit its main processing loop, since this indicates that the queue is shuttin down.
 	TaskUnit* taskUnit(0);
 	std::unique_lock<std::mutex> lock(mUnprocessedQueueMutex);
-	if (!mUnprocessedTaskUnits.size()) {
+	if (mUnprocessedTaskUnits.empty()) {
 		if (!mActive) {
 			return 0;
 		}
 		mUnprocessedQueueCond.wait(lock);
 	}
-	if (mUnprocessedTaskUnits.size()) {
+	if (!mUnprocessedTaskUnits.empty()) {
 		taskUnit = mUnprocessedTaskUnits.front();
 		mUnprocessedTaskUnits.pop();
 	}
@@ -104,11 +104,11 @@ void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
 	{
 		std::unique_lock<std::mutex> l(mProcessedQueueMutex);
 		processedCopy = mProcessedTaskUnits;
-		if (mProcessedTaskUnits.size()) {
+		if (!mProcessedTaskUnits.empty()) {
 			mProcessedTaskUnits = TaskUnitQueue();
 		}
 	}
-	while (processedCopy.size()) {
+	while (!processedCopy.empty()) {
 
 		TaskUnit* taskUnit = processedCopy.front();
 		processedCopy.pop();
@@ -132,11 +132,11 @@ void TaskQueue::pollProcessedTasks(TimeFrame timeFrame)
 		}
 	}
 	//If there are any unprocessed tasks, put them back at the front of the queue.
-	if (processedCopy.size()) {
+	if (!processedCopy.empty()) {
 		std::unique_lock<std::mutex> l(mProcessedQueueMutex);
 		TaskUnitQueue queueCopy(mProcessedTaskUnits);
 		mProcessedTaskUnits = processedCopy;
-		while (queueCopy.size()) {
+		while (!queueCopy.empty()) {
 			mProcessedTaskUnits.push(queueCopy.front());
 			queueCopy.pop();
 		}
