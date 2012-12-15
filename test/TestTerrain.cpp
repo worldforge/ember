@@ -451,9 +451,9 @@ public:
 
 		entity.setAttr("terrainmod", mod);
 
-		OgreView::Terrain::TerrainMod* terrainMod = new Terrain::TerrainMod(entity);
-		terrainMod->init();
-		terrainHandler.addTerrainMod(terrainMod);
+		OgreView::Terrain::TerrainMod terrainMod(entity);
+		terrainMod.init();
+		terrainHandler.addTerrainMod(&terrainMod);
 
 	}
 
