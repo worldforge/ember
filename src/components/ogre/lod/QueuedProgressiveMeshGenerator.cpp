@@ -211,7 +211,13 @@ void PMWorker::bakeLods(const LodLevel& lodConfigs)
 			//The main reason for this is that the OpenGL render system will crash with a segfault unless the index has some values.
 			//This should hopefully be removed with future versions of Ogre. The most preferred solution would be to add the
 			//ability for a submesh to be excluded from rendering for a given LOD (which isn't possible currently 2012-12-09).
-			lods.back().indexCount = 3;
+			if ((!mRequest->submesh[i].useSharedVertexBuffer && mRequest->submesh[i].vertexBuffer.vertexCount == 0) ||
+					(mRequest->submesh[i].useSharedVertexBuffer &&mRequest->sharedVertexBuffer.vertexCount == 0)) {
+				//There's no vertex buffer and not much we can do.
+				lods.back().indexCount = indexCount;
+			} else {
+				lods.back().indexCount = 3;
+			}
 		} else {
 			lods.back().indexCount = indexCount;
 		}
