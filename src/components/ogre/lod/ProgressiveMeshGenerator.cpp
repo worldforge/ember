@@ -958,7 +958,13 @@ void ProgressiveMeshGenerator::bakeLods()
 			//The main reason for this is that the OpenGL render system will crash with a segfault unless the index has some values.
 			//This should hopefully be removed with future versions of Ogre. The most preferred solution would be to add the
 			//ability for a submesh to be excluded from rendering for a given LOD (which isn't possible currently 2012-12-09).
-			lods.back()->indexCount = 3;
+
+			if (mMesh->getSubMesh(i)->vertexData || (mMesh->getSubMesh(i)->useSharedVertices && mMesh->sharedVertexData)) {
+				lods.back()->indexCount = 3;
+			} else {
+				//There's no vertex buffer and not much we can do.
+				lods.back()->indexCount = indexCount;
+			}
 		} else {
 			lods.back()->indexCount = indexCount;
 		}
