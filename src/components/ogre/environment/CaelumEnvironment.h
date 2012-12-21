@@ -27,6 +27,8 @@
 #include "IEnvironmentProvider.h"
 #include "framework/ConsoleObject.h"
 
+#include <sigc++/trackable.h>
+
 namespace Caelum
 {
 class CaelumSystem;
@@ -53,7 +55,7 @@ class CaelumSun;
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class CaelumEnvironment: public IEnvironmentProvider, public ConsoleObject
+class CaelumEnvironment: public IEnvironmentProvider, public ConsoleObject, public virtual sigc::trackable
 {
 public:
 	CaelumEnvironment(Ogre::SceneManager *sceneMgr, Ogre::RenderWindow* window, Ogre::Camera& camera, Eris::Calendar& calendar);
