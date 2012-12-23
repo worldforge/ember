@@ -73,6 +73,11 @@ public:
 	EntityPolygonPositionProvider(EmberEntity& entity);
 
 	/**
+	 * @brief Dtor.
+	 */
+	virtual ~EntityPolygonPositionProvider() {}
+
+	/**
 	 * @brief Gets the height for the local position.
 	 * The local position will be translated to a global position, and then looked up in the terrain, so that the height of the terrain is returned.
 	 * @param localPosition The local position.
