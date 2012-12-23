@@ -34,6 +34,12 @@ namespace Foliage
 class IScaler
 {
 public:
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~IScaler() {}
+
 	virtual void scale(WFMath::MTRand& rnd, const WFMath::Point<2>& pos, Ogre::Vector2& scale) = 0;
 };
 

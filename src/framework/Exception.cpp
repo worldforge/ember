@@ -36,6 +36,8 @@ namespace Ember
 Exception::Exception()
 	: mErrorDescription("Unknown Exception")
 {
+	mLine = -1;
+	mFile = "";
 }
 
 

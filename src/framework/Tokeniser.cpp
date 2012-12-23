@@ -31,18 +31,18 @@ namespace Ember
 {
 
 Tokeniser::Tokeniser() :
-	mDelimeters(" ")
+	mDelimeters(" "), mPos(std::string::npos), mLastPos(std::string::npos)
 {
 }
 
 Tokeniser::Tokeniser(const std::string &tokens) :
-	mDelimeters(" ")
+	mDelimeters(" "), mPos(std::string::npos), mLastPos(std::string::npos)
 {
 	initTokens(tokens);
 }
 
 Tokeniser::Tokeniser(const std::string &tokens, const std::string &delimiters) :
-	mDelimeters(delimiters)
+	mDelimeters(delimiters), mPos(std::string::npos), mLastPos(std::string::npos)
 {
 	initTokens(tokens);
 }

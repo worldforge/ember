@@ -48,7 +48,7 @@ namespace Environment
 {
 
 FoliageLayer::FoliageLayer(::Forests::PagedGeometry *geom, GrassLoader<FoliageLayer> *ldr) :
-	mTerrainManager(0), mTerrainLayerDefinition(0), mFoliageDefinition(0), mLatestPlantsResult(0)
+	mTerrainManager(0), mTerrainLayerDefinition(0), mFoliageDefinition(0), mDensity(1.0f), mLatestPlantsResult(0)
 {
 	FoliageLayer::geom = geom;
 	FoliageLayer::parent = ldr;

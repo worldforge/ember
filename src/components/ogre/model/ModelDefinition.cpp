@@ -300,7 +300,7 @@ void SubModelDefinition::removePartDefinition(PartDefinition* def)
 }
 
 PartDefinition::PartDefinition(const std::string& name, SubModelDefinition& subModelDef) :
-		mName(name), mSubModelDef(subModelDef)
+		mName(name), mShow(true), mSubModelDef(subModelDef)
 {
 }
 
@@ -375,7 +375,7 @@ SubEntityDefinition::SubEntityDefinition(unsigned int subEntityIndex, PartDefini
 }
 
 SubEntityDefinition::SubEntityDefinition(const std::string& subEntityName, PartDefinition& partdef) :
-		mSubEntityName(subEntityName), mPartDef(partdef)
+		mSubEntityName(subEntityName), mPartDef(partdef), mSubEntityIndex(0)
 {
 }
 

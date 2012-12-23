@@ -217,6 +217,7 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 
 						default:
 							assert(0);
+							break;
 						}
 						TiXmlText methodText(pMethodText);
 						methodElem.InsertEndChild(methodText);

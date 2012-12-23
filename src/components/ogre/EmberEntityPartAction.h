@@ -57,11 +57,6 @@ protected:
 	 * @brief The name of the part to show.
 	 */
 	const std::string mPartName;
-
-	/**
-	 * @brief Whether the part is active or not.
-	 */
-	bool mIsActive;
 };
 
 }

@@ -51,6 +51,10 @@ public:
 	{
 		mState.push(PARSE_NOTHING);
 	}
+
+	virtual ~AtlasXmlVisitor() {
+	}
+
 	virtual bool VisitEnter(const TiXmlElement& element, const TiXmlAttribute* firstAttribute)
 
 	{

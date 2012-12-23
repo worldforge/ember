@@ -41,6 +41,11 @@ class IPolygonPositionProvider
 public:
 
 	/**
+	 * @brief Dtor.
+	 */
+	virtual ~IPolygonPositionProvider() {}
+
+	/**
 	 * @brief Gets the height for the local position, within the polygon's space.
 	 * @param localPosition The local position within the polygon's space.
 	 * @return The height.

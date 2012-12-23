@@ -45,6 +45,12 @@ class OgreImage;
 class ITerrainPageShadowTechnique
 {
 public:
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~ITerrainPageShadowTechnique() {}
+
     virtual void createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const WFMath::Vector<3>& lightDirection, const Ogre::ColourValue& lightColour) const = 0;
 
 protected:

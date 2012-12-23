@@ -45,6 +45,12 @@ class PolygonPoint;
 class IMovementListener
 {
 public:
+
+	/**
+	 * @brief Dtor.
+	 */
+	virtual ~IMovementListener() {}
+
 	/**
 	 * @brief The movement has ended successfully.
 	 */

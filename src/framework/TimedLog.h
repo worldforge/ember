@@ -59,6 +59,7 @@ public:
 
 private:
 
+#ifdef ENABLE_TIMED_LOG
 	/**
 	 * @brief The name of the log.
 	 */
@@ -73,6 +74,8 @@ private:
 	 * @brief If report() has been called, record the last time of that.
 	 */
 	long long mLastReportMilliseconds;
+
+#endif
 };
 
 }
