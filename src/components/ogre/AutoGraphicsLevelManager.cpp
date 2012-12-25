@@ -23,6 +23,7 @@
 #include "framework/MainLoopController.h"
 #include "framework/Time.h"
 #include "framework/LoggingInstance.h"
+#include "framework/TimeFrame.h"
 
 #include <Ogre.h>
 

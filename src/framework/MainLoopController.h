@@ -21,10 +21,11 @@
 
 #include <sigc++/signal.h>
 #include "Singleton.h"
-#include "TimeFrame.h"
 
 namespace Ember
 {
+
+class TimeFrame;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
