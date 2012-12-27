@@ -30,12 +30,7 @@ AC_PATH_PROG([XMLLINT], [xmllint], [true])
 # Check for C libraries:
 AC_LANG([C++])
 AC_REQUIRE_CPP
-AC_COMPILE_STDCXX_11
-AC_HEADER_STDCXX_11
-
-if test "$ac_cv_cxx_compile_cxx11_native" = no; then
-  CXXFLAGS="$CXXFLAGS --std=c++0x"
-fi
+AX_CXX_COMPILE_STDCXX_11
 
 
 AC_LANG_PUSH([C])
