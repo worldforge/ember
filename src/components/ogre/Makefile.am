@@ -128,7 +128,7 @@ noinst_HEADERS = \
 \
 	gui/ActiveWidgetHandler.h gui/CEGUILogger.h gui/RenderedColourStringTextComponent.h gui/ColouredRenderedStringParser.h gui/CursorWorldListener.h \
 \
-	lod/EmberOgreMesh.h lod/EmberOgreMeshManager.h lod/EmberOgreRoot.h lod/LodDefinition.h lod/LodDefinitionManager.h lod/LodManager.h lod/OgreSmallVector.h lod/ProgressiveMeshGenerator.h lod/QueuedProgressiveMeshGenerator.h lod/XMLLodDefinitionSerializer.h  lod/PMInjectorSignaler.h \
+	lod/EmberOgreMesh.h lod/EmberOgreMeshManager.h lod/EmberOgreRoot.h lod/LodDefinition.h lod/LodDefinitionManager.h lod/LodManager.h lod/OgreSmallVector.h lod/ProgressiveMeshGenerator.h lod/QueuedProgressiveMeshGenerator.h lod/XMLLodDefinitionSerializer.h  lod/PMInjectorSignaler.h lod/LodConfig.h \
 \
 	mapping/EmberEntityMappingManager.h mapping/XMLEntityMappingDefinitionSerializer.h \
 \
@@ -168,7 +168,7 @@ noinst_HEADERS = \
 	widgets/EntityCreatorMovementBridge.h widgets/EntityCreatorPartAction.h widgets/EntityEditor.h widgets/EntityIcon.h \
 	widgets/EntityIconDragDropPreview.h widgets/EntityIconDragDropTarget.h widgets/EntityIconManager.h widgets/EntityIconSlot.h widgets/GenericIconUserData.h widgets/Help.h widgets/IconBar.h widgets/IconBase.h \
 	widgets/IngameChatWidget.h widgets/InspectWidget.h widgets/ListHolder.h widgets/LoadingBar.h \
-	widgets/EntityCreatorTypeHelper.h widgets/MeshPreview.h widgets/ModelRenderer.h widgets/MovableObjectRenderer.h \
+	widgets/EntityCreatorTypeHelper.h widgets/MeshPreview.h widgets/MeshInfoProvider.h widgets/ModelRenderer.h widgets/MovableObjectRenderer.h \
 	widgets/OgreEntityRenderer.h widgets/QuaternionAdapter.h widgets/QuickHelp.h widgets/QuickHelpCursor.h widgets/Quit.h widgets/ServerWidget.h widgets/StackableContainer.h  widgets/HelpMessage.h \
 	widgets/Vector3Adapter.h widgets/Widget.h widgets/WidgetDefinitions.h widgets/WidgetPool.h widgets/AtlasHelper.h widgets/ModelEditHelper.h \
 	widgets/EntityTextureManipulator.h \
