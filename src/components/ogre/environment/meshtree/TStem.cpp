@@ -1,6 +1,6 @@
 #include "TStem.h"
 #include "MeshTree.h"
-
+#include <cmath>
 //---------------------------------------------------------------------------
 
 /*
@@ -17,20 +17,16 @@
 
 */
 
-#ifdef _MSC_VER
-#define lrintf (int)
-#endif
-
 namespace Ogre {
 
 inline int Round(const Real fValue)
 {
-  return fValue<0 ?  std::lrintf(fValue-0.5) : std::lrintf(fValue+0.5);
+  return fValue<0 ?  std::lrint(fValue-0.5) : std::lrint(fValue+0.5);
 }
 
 inline int Trunc(const Real fValue)
 {
-  return std::lrintf(fValue);
+  return std::lrint(fValue);
 }
 
 //===========================================================================
