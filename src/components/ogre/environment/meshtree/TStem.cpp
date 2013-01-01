@@ -1,5 +1,6 @@
 #include "TStem.h"
 #include "MeshTree.h"
+#include "framework/float_cast.h"
 
 //---------------------------------------------------------------------------
 
@@ -25,12 +26,12 @@ namespace Ogre {
 
 inline int Round(const Real fValue)
 {
-  return fValue<0 ?  std::lrintf(fValue-0.5) : std::lrintf(fValue+0.5);
+  return fValue<0 ?  lrintf(fValue-0.5) : lrintf(fValue+0.5);
 }
 
 inline int Trunc(const Real fValue)
 {
-  return std::lrintf(fValue);
+  return lrintf(fValue);
 }
 
 //===========================================================================
