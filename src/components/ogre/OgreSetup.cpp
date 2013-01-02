@@ -60,17 +60,6 @@
 #include <OgreMeshManager.h>
 #include <OgreAnimation.h>
 
-#ifndef HAVE_SIGHANDLER_T
-typedef void (*sighandler_t)(int);
-#endif
-
-extern "C"
-{
-#include <signal.h>    /* signal name macros, and the signal() prototype */
-
-sighandler_t oldSignals[NSIG];
-}
-
 namespace Ember
 {
 namespace OgreView
@@ -215,26 +204,6 @@ Ogre::Root* OgreSetup::createOgreSystem()
 	}
 
 	return mRoot;
-}
-
-/**
- * Detach the input system, else the mouse will be locked.
- */
-extern "C" void shutdownHandler(int sig)
-{
-	std::cerr << "Crashed with signal " << sig << ", will try to detach the input system gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl;
-	Input* input = Input::getSingletonPtr();
-	if (input) {
-		input->detach();
-	}
-	if (oldSignals[sig] != SIG_DFL && oldSignals[sig] != SIG_IGN ) {
-		/* Call saved signal handler. */
-		oldSignals[sig](sig);
-	} else {
-		/* Reraise the signal. */
-		signal(sig, SIG_DFL );
-		raise(sig);
-	}
 }
 
 bool OgreSetup::showConfigurationDialog()
