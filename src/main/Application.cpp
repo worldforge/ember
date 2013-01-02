@@ -76,6 +76,17 @@ TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
 
 #include <boost/thread.hpp>
 
+#ifndef HAVE_SIGHANDLER_T
+typedef void (*sighandler_t)(int);
+#endif
+
+extern "C"
+{
+#include <signal.h>    /* signal name macros, and the signal() prototype */
+
+sighandler_t oldSignals[NSIG];
+}
+
 using boost::posix_time::microsec_clock;
 using boost::posix_time::ptime;
 
@@ -171,6 +182,25 @@ Application::~Application()
 	S_LOG_INFO("Ember shut down normally.");
 	Log::removeObserver(mLogObserver);
 	delete mLogObserver;
+}
+
+/**
+ * Detach the input system, else the mouse will be locked.
+ */
+extern "C" void shutdownHandler(int sig)
+{
+	std::cerr << "Crashed with signal " << sig << ", will try to detach the input system gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl << std::flush;
+	if (Input::hasInstance()) {
+		Input::getSingleton().detach();
+	}
+	if (oldSignals[sig] != SIG_DFL && oldSignals[sig] != SIG_IGN ) {
+		/* Call saved signal handler. */
+		oldSignals[sig](sig);
+	} else {
+		/* Reraise the signal. */
+		signal(sig, SIG_DFL );
+		raise(sig);
+	}
 }
 
 void Application::registerComponents()
@@ -278,7 +308,7 @@ void Application::initializeServices()
 
 	//output all logging to ember.log
 	std::string filename(configService.getHomeDirectory() + "/ember.log");
-	mLogOutStream = std::unique_ptr<std::ofstream>(new std::ofstream(filename.c_str()));
+	mLogOutStream = std::unique_ptr < std::ofstream > (new std::ofstream(filename.c_str()));
 
 	//write to the log the version number
 	*mLogOutStream << "Ember version " << VERSION << std::endl;
@@ -369,6 +399,11 @@ void Application::initializeServices()
 
 	EmberServices::getSingleton().getScriptingService().registerScriptingProvider(luaProvider);
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
+
+	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
+	oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
+	oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
+	oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
 
 	EventServicesInitialized.emit();
 }
