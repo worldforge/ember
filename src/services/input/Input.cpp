@@ -20,8 +20,21 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef _WIN32
+//Necessary to tell the mouse events to go to this window
+#if (_WIN32_WINNT < 0x0501)
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
+#endif
+// Necessary to get the Window Handle of the window
+// OGRE created, so SDL can grab its input.
+#include "windows.h"
+#include "SDL_getenv.h"
 #endif
 
 #include "Input.h"
@@ -140,13 +153,60 @@ void Input::attach(IWindowProvider* windowProvider)
 	}
 
 #endif // !BUILD_WEBEMBER
-	SDL_ShowCursor(0);
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+
+
+
 
 	unsigned int width, height;
 	mWindowProvider->getWindowSize(width, height);
 	setGeometry(width, height);
+
+#ifdef _WIN32
+   if (width && height)
+   {
+      // if width = 0 and height = 0, the window is fullscreen
+
+      // This is necessary to allow the window to move
+      //  on WIN32 systems. Without this, the window resets
+      //  to the smallest possible size after moving.
+      SDL_SetVideoMode(width, height, 0, 0); // first 0: BitPerPixel,
+                                             // second 0: flags (fullscreen/...)
+                                             // neither are needed as Ogre sets these
+   }
+
+   static SDL_SysWMinfo pInfo;
+   SDL_VERSION(&pInfo.version);
+   SDL_GetWMInfo(&pInfo);
+
+   // Also, SDL keeps an internal record of the window size
+   //  and position. Because SDL does not own the window, it
+   //  missed the WM_WINDOWPOSCHANGED message and has no record of
+   //  either size or position. It defaults to {0, 0, 0, 0},
+   //  which is then used to trap the mouse "inside the
+   //  window". We have to fake a window-move to allow SDL
+   //  to catch up, after which we can safely grab input.
+   //  Note that the WM_WINDOWPOSCHANGED seems only to be sent if the
+   //  position of the window actually changed. Thus we have to first move
+   //  it one pixel to the right, and then back again.
+   RECT r;
+   GetWindowRect(pInfo.window, &r);
+   SetWindowPos(pInfo.window, 0, r.left + 1, r.top, 0, 0,  SWP_NOSIZE);
+   SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOSIZE);
+
+   RAWINPUTDEVICE Rid;
+   /* we're telling the window, we want it to report raw input events from mice (needed for SDL-1.3) */
+   Rid.usUsagePage = 0x01;
+   Rid.usUsage = 0x02;
+   Rid.dwFlags = RIDEV_INPUTSINK;
+   Rid.hwndTarget = (HWND)pInfo.window;
+   RegisterRawInputDevices(&Rid, 1, sizeof(Rid));
+#endif
+
+
+	SDL_ShowCursor(0);
+	SDL_EnableUNICODE(1);
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 
