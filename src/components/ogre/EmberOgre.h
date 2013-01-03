@@ -71,8 +71,6 @@ class TerrainManager;
 class TerrainLayerDefinitionManager;
 }
 
-class OgreWindowProvider;
-
 class SoundDefinitionManager;
 
 namespace Lod
@@ -402,11 +400,6 @@ protected:
 	 * The World instance is only available when the client through an Avatar and View instance has entered into the server side world.
 	 */
 	World* mWorld;
-
-	/**
-	 * @brief The WindowProvider passed to the Input service.
-	 */
-	OgreWindowProvider* mWindowProvider;
 
 	/**
 	 * @brief Worker, which generated Lod levels in a background thread.

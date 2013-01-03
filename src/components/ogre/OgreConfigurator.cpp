@@ -26,7 +26,6 @@
 #include "components/ogre/GUICEGUIAdapter.h"
 #include "components/ogre/OgreResourceLoader.h"
 #include "components/ogre/gui/CEGUILogger.h"
-#include "components/ogre/OgreWindowProvider.h"
 
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
@@ -45,10 +44,21 @@
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 #include <OgreWindowEventUtilities.h>
+#include <OgreStringConverter.h>
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 //Needed for preventing resize of window
 #include <X11/Xutil.h>
+#endif
+
+#ifdef _MSC_VER
+#include <SDL.h>
+#include <SDL_syswm.h>
+#include <SDL_keyboard.h>
+#else
+#include <SDL/SDL.h>
+#include <SDL/SDL_syswm.h>
+#include <SDL/SDL_keyboard.h>
 #endif
 
 #include <stdexcept>
@@ -61,123 +71,6 @@ namespace Ember
 {
 namespace OgreView
 {
-
-/**
- * @brief Handles window providing services for the OgreConfigurator.
- */
-class OgreConfiguratorWindowProvider: public IWindowProvider, public Ogre::WindowEventListener
-{
-private:
-
-	/**
-	 * @brief The window used for input events.
-	 */
-	Ogre::RenderWindow& mWindow;
-
-	/**
-	 * @brief Set this to false if we should exit the main rendering loop.
-	 */
-	bool& mContinueInLoop;
-
-public:
-
-	OgreConfiguratorWindowProvider(Ogre::RenderWindow& window, bool& continueInLoop) :
-			mWindow(window), mContinueInLoop(continueInLoop)
-	{
-
-		Ogre::WindowEventUtilities::addWindowEventListener(&mWindow, this);
-
-		//This is needed for detecting whether it has focus in OgreWindowProvider::windowFocusChange.
-		mWindow.setDeactivateOnFocusChange(true);
-	}
-
-	~OgreConfiguratorWindowProvider()
-	{
-		Ogre::WindowEventUtilities::removeWindowEventListener(&mWindow, this);
-	}
-
-	/**
-	 * @brief Returns whether the window is visible.
-	 */
-	bool isWindowVisible()
-	{
-		return mWindow.isVisible();
-	}
-
-	/**
-	 * @brief Returns the window handle as string.
-	 */
-	std::string getWindowHandle()
-	{
-		std::ostringstream winHandleStr;
-		size_t winHandle = 0;
-		mWindow.getCustomAttribute("WINDOW", &winHandle);
-
-		winHandleStr << winHandle;
-		return winHandleStr.str();
-	}
-
-	/**
-	 * @brief Allows to get the window size.
-	 */
-	void getWindowSize(unsigned int& width, unsigned int& height)
-	{
-		unsigned int depth;
-		int left, top;
-		mWindow.getMetrics(width, height, depth, left, top);
-	}
-
-	/**
-	 * @brief Ogre will call this automatically, when the window is resized.
-	 *
-	 * This will update the window size for mouse calculations.
-	 */
-	void windowResized(Ogre::RenderWindow* rw)
-	{
-		unsigned int width, height;
-		getWindowSize(width, height);
-		Input::getSingleton().setGeometry(width, height);
-	}
-
-	/**
-	 * @brief Ogre will call this automatically, when the close (X) button is pressed by the user.
-	 *
-	 * Used to choose whether you want  from Ogre to destroy the window automatically.
-	 * By default its true, but we don't want Ogre to destroy it, since Ember will ask for confirmation first.
-	 *
-	 * @return Whether you want from Ogre to destroy the window.
-	 */
-	bool windowClosing(Ogre::RenderWindow* rw)
-	{
-		mContinueInLoop = false;
-		//returning false means the window should not be destroyed.
-		return true;
-	}
-
-	/**
-	 * @brief Ogre will call this automatically before the window is destroyed.
-	 *
-	 * This is the last chance to detach OIS.
-	 */
-	void windowClosed(Ogre::RenderWindow* rw)
-	{
-	}
-
-	/**
-	 * @brief Ogre will call this automatically when the window changes focus.
-	 *
-	 * This is usually requested by the user with alt+tab key combination.
-	 */
-	void windowFocusChange(Ogre::RenderWindow* rw)
-	{
-	}
-
-	bool hasWindowFocus()
-	{
-		return mWindow.isActive();
-	}
-
-};
 
 OgreConfigurator::OgreConfigurator() :
 		mLastFrameTime(0), mResult(OC_CANCEL), mContinueInLoop(true), mLoader(new OgreResourceLoader()), mConfigWindow(0)
@@ -203,36 +96,48 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	Ogre::RenderSystem* renderSystem = Ogre::Root::getSingleton().getRenderSystem();
 	Ogre::Root::getSingleton().initialise(false);
 
-	Ogre::NameValuePairList misc;
-	//Prevent resizing. Note that this doesn't work on X11.
-	misc["border"] = "fixed";
-	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", width, height, false, &misc);
-	renderWindow->setActive(true);
-	renderWindow->setAutoUpdated(true);
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-//Needed for preventing resize of window
-
-	Window window = 0;
-	Display* xdisplay = 0;
-
-	renderWindow->getCustomAttribute("WINDOW", &window);
-	renderWindow->getCustomAttribute("XDISPLAY", &xdisplay);
-
-	XSizeHints* hints = XAllocSizeHints();
-
-	hints->max_height = hints->min_height = height;
-	hints->max_width = hints->min_width = width;
-	hints->flags = PMaxSize | PMinSize;
-	XSetWMNormalHints(xdisplay, window, hints);
-
-	XFree(hints);
-
+	bool handleOpenGL = false;
+#ifdef __APPLE__
+	handleOpenGL = true;
+#endif
+#ifdef _WIN32
+	//Only apply if we're using the OpenGL render plugin.
+	if (renderSystem->getName() == "OpenGL Rendering Subsystem") {
+		handleOpenGL = true;
+	}
 #endif
 
-	renderWindow->setVisible(true);
+	const std::string windowId = Input::getSingleton().createWindow(width, height, false, false, true, handleOpenGL);
 
-	OgreConfiguratorWindowProvider windowProvider(*renderWindow, mContinueInLoop);
+	Ogre::NameValuePairList misc;
+#ifdef __APPLE__
+	misc["currentGLContext"] = Ogre::String("true");
+	misc["macAPI"] = Ogre::String("cocoa");
+#else
+#ifdef _WIN32
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+	SDL_GetWMInfo(&wmInfo);
+
+	size_t winHandle = reinterpret_cast<size_t>(wmInfo.window);
+	size_t winGlContext = reinterpret_cast<size_t>(wmInfo.hglrc);
+
+	misc["externalWindowHandle"] = Ogre::StringConverter::toString(winHandle);
+	misc["externalGLContext"] = Ogre::StringConverter::toString(winGlContext);
+	misc["externalGLControl"] = Ogre::String("True");
+#else
+	misc["parentWindowHandle"] = windowId;
+#endif
+#endif
+
+	Ogre::RenderWindow* renderWindow = Ogre::Root::getSingleton().createRenderWindow("MainWindow", width, height, false, &misc);
+
+	renderWindow->setVisible(true);
+//On Windows we can't tell the window to resize, since that will lead to an infinite loop of resize events (probably stemming from how Windows lacks a proper window manager).
+#ifndef _WIN32
+	renderWindow->resize(width, height);
+#endif
+	renderWindow->windowMovedOrResized();
 
 	mLoader->initialize();
 	mLoader->loadSection("Bootstrap", false);
@@ -270,11 +175,11 @@ OgreConfigurator::Result OgreConfigurator::configure()
 				const Ogre::String& rendererName = (*I)->getName();
 				Gui::ColouredListItem* item = new Gui::ColouredListItem(rendererName, i++);
 				renderSystemsBox->addItem(item);
-				if(rendererName == renderSystem->getName()){
+				if (rendererName == renderSystem->getName()) {
 					renderSystemsBox->setItemSelectState(item, true);
 				}
 			}
-			
+
 			renderSystemsBox->subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted, CEGUI::Event::Subscriber(&OgreConfigurator::renderSystemChanged, this));
 		}
 		updateResolutionList(renderSystem);
@@ -298,12 +203,10 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		}
 
 		Input& input = Input::getSingleton();
-		input.attach(&windowProvider);
 		input.setInputMode(Input::IM_GUI);
 
 		long long lastTime = Time::currentTimeMillis();
 		while (mContinueInLoop) {
-			Ogre::WindowEventUtilities::messagePump();
 			input.processInput();
 			if (input.getMainLoopController()->shouldQuit()) {
 				break;
@@ -313,8 +216,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			lastTime = Time::currentTimeMillis();
 			Ogre::Root::getSingleton().renderOneFrame();
 		}
-		Input::getSingleton().removeAdapter(adapter);
-		input.detach();
+		input.removeAdapter(adapter);
 
 		//Check if the user has selected a render system (in the case of there being multiple)
 		if (renderers.size() > 1) {
@@ -337,12 +239,12 @@ OgreConfigurator::Result OgreConfigurator::configure()
 
 		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
 
-		return mResult;
 	} catch (const std::exception& ex) {
 		CEGUI::System::getSingleton().destroy();
 		delete logger;
 		throw ex;
 	}
+	return mResult;
 }
 
 std::string OgreConfigurator::getChosenRenderSystemName() const

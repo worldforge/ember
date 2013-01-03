@@ -191,7 +191,7 @@ extern "C" void shutdownHandler(int sig)
 {
 	std::cerr << "Crashed with signal " << sig << ", will try to detach the input system gracefully. Please report bugs at https://bugs.launchpad.net/ember" << std::endl << std::flush;
 	if (Input::hasInstance()) {
-		Input::getSingleton().detach();
+		Input::getSingleton().shutdownInteraction();
 	}
 	if (oldSignals[sig] != SIG_DFL && oldSignals[sig] != SIG_IGN ) {
 		/* Call saved signal handler. */
@@ -402,8 +402,10 @@ void Application::initializeServices()
 
 	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
 	oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
-	oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
 	oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
+#ifndef _WIN32
+	oldSignals[SIGBUS] = signal(SIGBUS, shutdownHandler);
+#endif
 
 	EventServicesInitialized.emit();
 }

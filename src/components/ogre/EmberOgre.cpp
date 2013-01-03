@@ -103,7 +103,6 @@
 
 #include "OgreSetup.h"
 #include "Screen.h"
-#include "OgreWindowProvider.h"
 
 #include "authoring/MaterialEditor.h"
 #include "MediaUpdater.h"
@@ -148,7 +147,7 @@ EmberOgre::EmberOgre() :
 		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mScriptingResourceProvider(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
-		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mWindowProvider(0), mPMWorker(0), mPMInjector(0)
+		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mPMWorker(0), mPMInjector(0)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -198,14 +197,12 @@ EmberOgre::~EmberOgre()
 	delete mShaderManager;
 	delete mScreen;
 
-	mInput->detach();
 	if (mOgreSetup.get()) {
 		mOgreSetup->shutdown();
 		mOgreSetup.reset();
 		EventOgreDestroyed();
 	}
 
-	delete mWindowProvider;
 	// I don't know how to flush the Ogre::WorkQueue safely so we need to delete these
 	// after the destructor of Ogre::Root to make sure the queue is flushed and we can delete it safely.
 	delete mPMWorker;
@@ -222,9 +219,6 @@ EmberOgre::~EmberOgre()
 
 bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 {
-	//Message pump will do window message processing.
-	//This will also update the window visibility flag, so we need to call it here!
-	Ogre::WindowEventUtilities::messagePump();
 	if (mInput->isApplicationVisible()) {
 		//If we're resuming from paused mode we need to reset the event times to prevent particle effects strangeness
 		if (mIsInPausedMode) {
@@ -316,10 +310,6 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	}
 
 	mWindow = mOgreSetup->getRenderWindow();
-
-	mWindowProvider = new OgreWindowProvider(*mWindow);
-	Input::getSingleton().attach(mWindowProvider);
-
 
 	std::string exportDir(configSrv.getHomeDirectory() + "/user-media/data/");
 	//Create the model definition manager

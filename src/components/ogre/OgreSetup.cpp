@@ -59,6 +59,11 @@
 #include <OgreRenderWindow.h>
 #include <OgreMeshManager.h>
 #include <OgreAnimation.h>
+#include <OgreStringConverter.h>
+
+#include <SDL/SDL.h>
+#include <SDL/SDL_syswm.h>
+#include <SDL/SDL_keyboard.h>
 
 namespace Ember
 {
@@ -67,11 +72,17 @@ namespace OgreView
 
 OgreSetup::OgreSetup() :
 		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."), mRoot(0), mRenderWindow(0), mSceneManagerFactory(0), mMeshSerializerListener(0)
+#ifdef BUILD_WEBEMBER
+,mOgreWindowProvider(0)
+#endif
 {
 }
 
 OgreSetup::~OgreSetup()
 {
+#ifdef BUILD_WEBEMBER
+	delete mOgreWindowProvider;
+#endif
 }
 
 void OgreSetup::runCommand(const std::string& command, const std::string& args)
@@ -213,6 +224,7 @@ bool OgreSetup::showConfigurationDialog()
 	try {
 		result = configurator.configure();
 	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when showing configuration window." << ex);
 		delete mRoot;
 		mRoot = 0;
 		createOgreSystem();
@@ -270,7 +282,50 @@ Ogre::Root* OgreSetup::configure(void)
 		return 0;
 	}
 
-	mRenderWindow = mRoot->initialise(true, "Ember");
+	// we start by trying to figure out what kind of resolution the user has selected, and whether full screen should be used or not
+	unsigned int height = 768, width = 1024;
+	bool fullscreen = false;
+
+	parseWindowGeometry(mRoot->getRenderSystem()->getConfigOptions(), width, height, fullscreen);
+
+	bool handleOpenGL = false;
+#ifdef __APPLE__
+	handleOpenGL = true;
+#endif
+#ifdef _WIN32
+	//Only apply if we're using the OpenGL render plugin.
+	if (mRoot->getRenderSystem()->getName() == "OpenGL Rendering Subsystem") {
+		handleOpenGL = true;
+	}
+#endif
+
+	std::string windowId = Input::getSingleton().createWindow(width, height, fullscreen, true, true, handleOpenGL);
+
+	mRoot->initialise(false, "Ember");
+	Ogre::NameValuePairList misc;
+#ifdef __APPLE__
+	misc["currentGLContext"] = Ogre::String("true");
+	misc["macAPI"] = Ogre::String("cocoa");
+#else
+#ifdef _WIN32
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+	SDL_GetWMInfo(&wmInfo);
+
+	size_t winHandle = reinterpret_cast<size_t>(wmInfo.window);
+	size_t winGlContext = reinterpret_cast<size_t>(wmInfo.hglrc);
+
+	misc["externalWindowHandle"] = Ogre::StringConverter::toString(winHandle);
+	misc["externalGLContext"] = Ogre::StringConverter::toString(winGlContext);
+	misc["externalGLControl"] = Ogre::String("True");
+#else
+	misc["parentWindowHandle"] = windowId;
+#endif
+#endif
+
+	mRenderWindow = mRoot->createRenderWindow("MainWindow", width, height, false, &misc);
+
+	Input::getSingleton().EventSizeChanged.connect(sigc::mem_fun(*this, &OgreSetup::input_SizeChanged));
 
 #else //BUILD_WEBEMBER == true
 	//In webember we will disable the config dialog.
@@ -309,6 +364,8 @@ Ogre::Root* OgreSetup::configure(void)
 	}
 
 	mRenderWindow = mRoot->createRenderWindow("Ember",800,600,false,&options);
+	mOgreWindowProvider = new OgreWindowProvider(*mRenderWindow);
+	Input::getSingleton().attach(mOgreWindowProvider);
 
 #endif // BUILD_WEBEMBER
 #ifdef _WIN32
@@ -331,6 +388,16 @@ Ogre::Root* OgreSetup::configure(void)
 	mRoot->addSceneManagerFactory(mSceneManagerFactory);
 
 	return mRoot;
+}
+
+void OgreSetup::input_SizeChanged(unsigned int width, unsigned int height)
+{
+
+//On Windows we can't tell the window to resize, since that will lead to an infinite loop of resize events (probably stemming from how Windows lacks a proper window manager).
+#ifndef _WIN32
+	mRenderWindow->resize(width, height);
+#endif
+	mRenderWindow->windowMovedOrResized();
 }
 
 void OgreSetup::setStandardValues()
@@ -356,6 +423,27 @@ void OgreSetup::setStandardValues()
 Ogre::SceneManager* OgreSetup::chooseSceneManager()
 {
 	return mRoot->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
+}
+
+void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen)
+{
+	Ogre::ConfigOptionMap::iterator opt = config.find("Video Mode");
+	if (opt != config.end()) {
+		Ogre::String val = opt->second.currentValue;
+		Ogre::String::size_type pos = val.find('x');
+		if (pos != Ogre::String::npos) {
+
+			width = Ogre::StringConverter::parseUnsignedInt(val.substr(0, pos));
+			height = Ogre::StringConverter::parseUnsignedInt(val.substr(pos + 1));
+		}
+	}
+
+	//now on to whether we should use fullscreen
+	opt = config.find("Full Screen");
+	if (opt != config.end()) {
+		fullscreen = (opt->second.currentValue == "Yes");
+	}
+
 }
 
 }

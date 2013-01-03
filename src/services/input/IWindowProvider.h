@@ -47,6 +47,12 @@ public:
 	 * @brief Returns the window handle as string.
 	 */
 	virtual void getWindowSize(unsigned int& width, unsigned int& height) = 0;
+
+	/**
+	 * @brief Processes input for the window.
+	 */
+	virtual void processInput() = 0;
+
 };
 
 }

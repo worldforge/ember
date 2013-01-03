@@ -68,7 +68,6 @@ public:
 	void takeScreenshot();
 
 	const ConsoleCommandWrapper ToggleRendermode;
-	const ConsoleCommandWrapper ToggleFullscreen;
 	const ConsoleCommandWrapper Screenshot;
 	const ConsoleCommandWrapper Record;
 
@@ -94,19 +93,6 @@ protected:
 	 * @return The file name of the new screenshot.
 	 */
 	const std::string _takeScreenshot();
-
-	/**
-	 * @brief Sets full screen mode on and off.
-	 * @param enabled If full screen should be enabled.
-	 */
-	void setFullScreen(bool enabled);
-
-	/**
-	 * @brief Called when the window focus changed.
-	 *
-	 * This allows us to switch out of full screen mode when alt-tabbing.
-	 */
-	void input_WindowFocusChange();
 
 };
 

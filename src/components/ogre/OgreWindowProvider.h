@@ -33,9 +33,7 @@ namespace OgreView
 /**
  * @brief Provides a Window interface for the Input class.
  */
-class OgreWindowProvider :
-	public IWindowProvider,
-	public Ogre::WindowEventListener
+class OgreWindowProvider: public IWindowProvider, public Ogre::WindowEventListener
 {
 public:
 
@@ -59,6 +57,11 @@ public:
 	void getWindowSize(unsigned int& width, unsigned int& height);
 
 	/**
+	 * @brief Processes input for the window.
+	 */
+	void processInput();
+
+	/**
 	 * @brief Ogre will call this automatically, when the window is resized.
 	 * 
 	 * This will update the window size for mouse calculations.
@@ -68,7 +71,7 @@ public:
 	/**
 	 * @brief Ogre will call this automatically, when the close (X) button is pressed by the user.
 	 * 
-	 * Used to choose whether you want  from Ogre to destroy the window automatically.
+	 * Used to choose whether you want from Ogre to destroy the window automatically.
 	 * By default its true, but we don't want Ogre to destroy it, since Ember will ask for confirmation first.
 	 * 
 	 * @return Whether you want from Ogre to destroy the window.
