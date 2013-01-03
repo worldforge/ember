@@ -56,6 +56,11 @@ bool OgreWindowProvider::isWindowVisible()
 	return mWindow.isVisible();
 }
 
+void OgreWindowProvider::processInput()
+{
+	Ogre::WindowEventUtilities::messagePump();
+}
+
 void OgreWindowProvider::getWindowSize(unsigned int& width, unsigned int& height)
 {
 	unsigned int depth;
@@ -81,14 +86,14 @@ bool OgreWindowProvider::windowClosing(Ogre::RenderWindow* rw)
 void OgreWindowProvider::windowClosed(Ogre::RenderWindow* rw)
 {
 	//last chance to detach OIS from the window.
-	Input::getSingleton().detach();
+	Input::getSingleton().shutdownInteraction();
 }
 
 void OgreWindowProvider::windowFocusChange(Ogre::RenderWindow* rw)
 {
 	Input& input = Input::getSingleton();
 	input.setInputMode(Input::IM_GUI);
-	input.EventWindowFocusChange.emit();
+	input.setFullscreen(false);
 	input.setMouseGrab(false);
 }
 }

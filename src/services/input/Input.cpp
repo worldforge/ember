@@ -40,6 +40,7 @@
 #include "Input.h"
 #include "IWindowProvider.h"
 #include "InputCommandMapper.h"
+#include "EmberIcon.h"
 
 #include "IInputAdapter.h"
 
@@ -67,13 +68,13 @@
 #include <SDL/SDL_keyboard.h>
 #endif
 
-#include <OgrePlatform.h>
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+#ifndef __APPLE__
+#ifndef _WIN32
 #include <X11/Xlib.h>
 #endif
-#include "EmberIcon.h"
+#endif
 
+#include <sstream>
 
 template<> Ember::Input* Ember::Singleton<Ember::Input>::ms_Singleton = 0;
 
@@ -84,7 +85,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(NULL), mScreenWidth(0), mScreenHeight(0), mIconSurface(0), mInvertMouse(1)
+		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(NULL), mScreenWidth(0), mScreenHeight(0), mIconSurface(0), mMainVideoSurface(0), mInvertMouse(1), mHandleOpenGL(false)
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -110,6 +111,8 @@ Input::Input() :
 	mNonCharKeys.insert(SDLK_RETURN);
 	mNonCharKeys.insert(SDLK_DELETE);
 
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE);
+
 	mLastTick = SDL_GetTicks();
 
 	//this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
@@ -120,22 +123,101 @@ Input::Input() :
 Input::~Input()
 {
 	delete mConfigListenerContainer;
+	shutdownInteraction();
 }
 
-void Input::attach(IWindowProvider* windowProvider)
+std::string Input::createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable, bool centered, bool handleOpenGL)
 {
+	mHandleOpenGL = handleOpenGL;
+	int flags = SDL_HWSURFACE;
 
-	//The windowProvider should not be NULL.
-	assert(windowProvider);
-	mWindowProvider = windowProvider;
+	if (resizable) {
+		flags |= SDL_RESIZABLE;
+	}
 
-	char tmp[64];
-	// Set the SDL_WINDOWID environment variable
-	sprintf(tmp, "SDL_WINDOWID=%s", mWindowProvider->getWindowHandle().c_str());
-	putenv(tmp);
+	if (mHandleOpenGL) {
+		flags |= SDL_OPENGL;
+	}
 
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE);
+	if (fullscreen) {
+		flags |= SDL_FULLSCREEN;
+	}
 
+	if (centered) {
+		//Some versions of SDL_putenv accepts only a non-const char array.
+		char centered[] = "SDL_VIDEO_CENTERED=center";
+		SDL_putenv(centered);
+	}
+
+	mMainVideoSurface = SDL_SetVideoMode(width, height, 0, flags); // create an SDL window
+
+	SDL_WM_SetCaption("Ember", "ember");
+
+	SDL_ShowCursor(0);
+	SDL_EnableUNICODE(1);
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+
+	SDL_SysWMinfo info;
+	SDL_VERSION(&info.version);
+
+	SDL_GetWMInfo(&info);
+
+	std::stringstream ss;
+#ifdef __APPLE__
+	//On OSX we'll tell Ogre to use the current OpenGL context; thus we don't need to return the window id
+#elif _WIN32
+	ss << (size_t)info.window;
+#else
+	ss << info.info.x11.window;
+#endif
+
+	//must initialize the clipboard support
+#ifndef WITHOUT_SCRAP
+	if (init_scrap() < 0) {
+		S_LOG_FAILURE("Couldn't init clipboard: \n" << SDL_GetError());
+	}
+#endif // WITHOUT_SCRAP
+	ConsoleBackend& console = ConsoleBackend::getSingleton();
+	console.registerCommand(BINDCOMMAND, this);
+	console.registerCommand(UNBINDCOMMAND, this);
+
+	setGeometry(width, height);
+	createIcon();
+
+	if (!ToggleFullscreen) {
+		ToggleFullscreen = new ConsoleCommandWrapper("toggle_fullscreen", this, "Switch between windowed and full screen mode.");
+	}
+
+	return ss.str();
+}
+
+void Input::shutdownInteraction()
+{
+	mWindowProvider = 0;
+
+	if (mIconSurface) {
+		SDL_FreeSurface(mIconSurface);
+		mIconSurface = 0;
+	}
+
+	// according to http://www.libsdl.org/cgi/docwiki.cgi/SDL_SetVideoMode
+	// never free the surface returned from SDL_SetVideoMode
+	mMainVideoSurface = 0;
+
+	//Release the mouse for safety's sake.
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
+	S_LOG_INFO("Shutting down SDL.");
+	SDL_Quit();
+	S_LOG_INFO("SDL shut down.");
+
+	ConsoleBackend& console = ConsoleBackend::getSingleton();
+	console.deregisterCommand(BINDCOMMAND);
+	console.deregisterCommand(UNBINDCOMMAND);
+	delete ToggleFullscreen;
+}
+
+void Input::createIcon()
+{
 #ifndef BUILD_WEBEMBER
 	//set the icon of the window
 	Uint32 rmask, gmask, bmask;
@@ -157,62 +239,74 @@ void Input::attach(IWindowProvider* windowProvider)
 	}
 
 #endif // !BUILD_WEBEMBER
+}
 
+void Input::attach(IWindowProvider* windowProvider)
+{
 
+	//The windowProvider should not be NULL.
+	assert(windowProvider);
+	mWindowProvider = windowProvider;
 
+	char tmp[64];
+	// Set the SDL_WINDOWID environment variable
+	sprintf(tmp, "SDL_WINDOWID=%s", mWindowProvider->getWindowHandle().c_str());
+	putenv(tmp);
 
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE);
+
+	createIcon();
 	unsigned int width, height;
 	mWindowProvider->getWindowSize(width, height);
 	setGeometry(width, height);
-
-#ifdef _WIN32
-   if (width && height)
-   {
-      // if width = 0 and height = 0, the window is fullscreen
-
-      // This is necessary to allow the window to move
-      //  on WIN32 systems. Without this, the window resets
-      //  to the smallest possible size after moving.
-      SDL_SetVideoMode(width, height, 0, 0); // first 0: BitPerPixel,
-                                             // second 0: flags (fullscreen/...)
-                                             // neither are needed as Ogre sets these
-   }
-
-   static SDL_SysWMinfo pInfo;
-   SDL_VERSION(&pInfo.version);
-   SDL_GetWMInfo(&pInfo);
-
-   // Also, SDL keeps an internal record of the window size
-   //  and position. Because SDL does not own the window, it
-   //  missed the WM_WINDOWPOSCHANGED message and has no record of
-   //  either size or position. It defaults to {0, 0, 0, 0},
-   //  which is then used to trap the mouse "inside the
-   //  window". We have to fake a window-move to allow SDL
-   //  to catch up, after which we can safely grab input.
-   //  Note that the WM_WINDOWPOSCHANGED seems only to be sent if the
-   //  position of the window actually changed. Thus we have to first move
-   //  it one pixel to the right, and then back again.
-   RECT r;
-   GetWindowRect(pInfo.window, &r);
-   SetWindowPos(pInfo.window, 0, r.left + 1, r.top, 0, 0,  SWP_NOSIZE);
-   SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOSIZE);
-
-   RAWINPUTDEVICE Rid;
-   /* we're telling the window, we want it to report raw input events from mice (needed for SDL-1.3) */
-   Rid.usUsagePage = 0x01;
-   Rid.usUsage = 0x02;
-   Rid.dwFlags = RIDEV_INPUTSINK;
-   Rid.hwndTarget = (HWND)pInfo.window;
-   RegisterRawInputDevices(&Rid, 1, sizeof(Rid));
-#endif
-
 
 	SDL_ShowCursor(0);
 	SDL_EnableUNICODE(1);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
+#ifdef _WIN32
+	if (width && height)
+	{
+		// if width = 0 and height = 0, the window is fullscreen
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+		// This is necessary to allow the window to move
+		//  on WIN32 systems. Without this, the window resets
+		//  to the smallest possible size after moving.
+		SDL_SetVideoMode(width, height, 0, 0);// first 0: BitPerPixel,
+											  // second 0: flags (fullscreen/...)
+											  // neither are needed as Ogre sets these
+	}
+
+	static SDL_SysWMinfo pInfo;
+	SDL_VERSION(&pInfo.version);
+	SDL_GetWMInfo(&pInfo);
+
+	// Also, SDL keeps an internal record of the window size
+	//  and position. Because SDL does not own the window, it
+	//  missed the WM_WINDOWPOSCHANGED message and has no record of
+	//  either size or position. It defaults to {0, 0, 0, 0},
+	//  which is then used to trap the mouse "inside the
+	//  window". We have to fake a window-move to allow SDL
+	//  to catch up, after which we can safely grab input.
+	//  Note that the WM_WINDOWPOSCHANGED seems only to be sent if the
+	//  position of the window actually changed. Thus we have to first move
+	//  it one pixel to the right, and then back again.
+	RECT r;
+	GetWindowRect(pInfo.window, &r);
+	SetWindowPos(pInfo.window, 0, r.left + 1, r.top, 0, 0, SWP_NOSIZE);
+	SetWindowPos(pInfo.window, 0, r.left, r.top, 0, 0, SWP_NOSIZE);
+
+	RAWINPUTDEVICE Rid;
+	/* we're telling the window, we want it to report raw input events from mice (needed for SDL-1.3) */
+	Rid.usUsagePage = 0x01;
+	Rid.usUsage = 0x02;
+	Rid.dwFlags = RIDEV_INPUTSINK;
+	Rid.hwndTarget = (HWND)pInfo.window;
+	RegisterRawInputDevices(&Rid, 1, sizeof(Rid));
+#endif
+
+#ifndef __APPLE__
+#ifndef _WIN32
 
 	//The SDL_WINDOWID hack will result in no X events being caught on X11; we need to inform X11 that we want them anyway.
 	SDL_SysWMinfo info;
@@ -229,6 +323,7 @@ void Input::attach(IWindowProvider* windowProvider)
 	info.info.x11.unlock_func();
 
 #endif
+#endif
 	//must initialize the clipboard support
 #ifndef WITHOUT_SCRAP
 	if (init_scrap() < 0) {
@@ -241,32 +336,14 @@ void Input::attach(IWindowProvider* windowProvider)
 
 }
 
-void Input::detach()
-{
-	mWindowProvider = 0;
-
-	if (mIconSurface) {
-		SDL_FreeSurface(mIconSurface);
-		mIconSurface = 0;
-	}
-
-	//Release the mouse for safety's sake.
-	SDL_WM_GrabInput(SDL_GRAB_OFF);
-	S_LOG_INFO("Shutting down SDL.");
-	SDL_Quit();
-	S_LOG_INFO("SDL shut down.");
-
-	ConsoleBackend& console = ConsoleBackend::getSingleton();
-	console.deregisterCommand(BINDCOMMAND);
-	console.deregisterCommand(UNBINDCOMMAND);
-}
-
 void Input::setGeometry(int width, int height)
 {
 	mScreenWidth = width;
 	mScreenHeight = height;
-	SDL_SetVideoMode(width, height, 0, 0);
-	EventSizeChanged.emit(width, height);
+	if (mMainVideoSurface->h != height || mMainVideoSurface->w != width) {
+		mMainVideoSurface = SDL_SetVideoMode(width, height, mMainVideoSurface->format->BitsPerPixel, mMainVideoSurface->flags);
+		EventSizeChanged.emit(width, height);
+	}
 }
 
 void Input::runCommand(const std::string &command, const std::string &args)
@@ -302,6 +379,8 @@ void Input::runCommand(const std::string &command, const std::string &args)
 				I->second->unbindCommand(key);
 			}
 		}
+	} else if (ToggleFullscreen && *ToggleFullscreen == command) {
+		setFullscreen((mMainVideoSurface->flags & SDL_FULLSCREEN) == 0);
 	}
 }
 
@@ -341,6 +420,9 @@ void Input::deregisterCommandMapper(InputCommandMapper* mapper)
 
 bool Input::isApplicationVisible()
 {
+	if (mWindowProvider) {
+		return mWindowProvider->isWindowVisible();
+	}
 	return SDL_GetAppState() & SDL_APPACTIVE;
 }
 
@@ -362,6 +444,10 @@ void Input::processInput()
 	mLastTick = ticks;
 	pollMouse(secondsSinceLast);
 	pollEvents(secondsSinceLast);
+	if (mWindowProvider) {
+		mWindowProvider->processInput();
+	}
+	SDL_GL_SwapBuffers();
 }
 
 void Input::pollMouse(float secondsSinceLast)
@@ -532,7 +618,15 @@ void Input::pollEvents(float secondsSinceLast)
 		case SDL_ACTIVEEVENT:
 			if (event.active.state & SDL_APPACTIVE) {
 				EventWindowActive.emit(event.active.gain);
+//On Windows we get a corrupted screen if we just switch to non-fullscreen here.
+#ifndef _WIN32
+				lostFocus();
+#endif
 			}
+			break;
+
+		case SDL_VIDEORESIZE:
+			setGeometry(event.resize.w, event.resize.h);
 			break;
 		}
 	}
@@ -565,21 +659,24 @@ void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 		if (keyEvent.type == SDL_KEYDOWN) {
 			pasteFromClipboard();
 		}
-	} else if ((keyEvent.keysym.mod & KMOD_LALT) && (keyEvent.keysym.sym == SDLK_TAB)) {
-		if (keyEvent.type == SDL_KEYDOWN) {
-			EventWindowFocusChange.emit();
-		}
-	} else {
-		if (keyEvent.type == SDL_KEYDOWN) {
-			mKeysPressed.insert(keyEvent.keysym.sym);
-			keyPressed(keyEvent);
+//On windows the OS will handle alt-tab independently, so we don't need to check here
+#ifndef _WIN32
+		} else if ((keyEvent.keysym.mod & KMOD_LALT) && (keyEvent.keysym.sym == SDLK_TAB)) {
+			if (keyEvent.type == SDL_KEYDOWN) {
+				lostFocus();
+			}
+#endif
 		} else {
-			mKeysPressed.erase(keyEvent.keysym.sym);
-			keyReleased(keyEvent);
+			if (keyEvent.type == SDL_KEYDOWN) {
+				mKeysPressed.insert(keyEvent.keysym.sym);
+				keyPressed(keyEvent);
+			} else {
+				mKeysPressed.erase(keyEvent.keysym.sym);
+				keyReleased(keyEvent);
+			}
 		}
-	}
 
-}
+	}
 
 const bool Input::isKeyDown(const SDLKey &key) const
 {
@@ -704,15 +801,41 @@ void Input::Config_InvertCamera(const std::string& section, const std::string& k
 	}
 }
 
+void Input::setFullscreen(bool enabled)
+{
+	int newFlags = mMainVideoSurface->flags;
+
+	if (enabled) {
+		newFlags |= SDL_FULLSCREEN;
+	} else {
+		newFlags &= ~SDL_FULLSCREEN;
+	}
+	mMainVideoSurface = SDL_SetVideoMode(mMainVideoSurface->w, mMainVideoSurface->h, mMainVideoSurface->format->BitsPerPixel, newFlags);
+
+}
+
+void Input::lostFocus()
+{
+	setInputMode(Input::IM_GUI);
+	setMouseGrab(false);
+	setFullscreen(false);
+}
+
 void Input::setMouseGrab(bool enabled)
 {
-	Uint8 appState = SDL_GetAppState();
-	if (enabled && !(appState & SDL_APPMOUSEFOCUS)) {
-		mMouseGrabbingRequested = true;
-	} else {
-		S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
-		SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
+	if (!enabled) {
+		S_LOG_INFO("Releasing mouse.");
+		SDL_WM_GrabInput(SDL_GRAB_OFF);
 		mMouseGrabbingRequested = false;
+	} else {
+		Uint8 appState = SDL_GetAppState();
+		if (enabled && !(appState & SDL_APPMOUSEFOCUS)) {
+			mMouseGrabbingRequested = true;
+		} else {
+			S_LOG_VERBOSE("Setting mouse catching to " << (enabled ? "enabled": "disabled"));
+			SDL_WM_GrabInput(enabled ? SDL_GRAB_ON : SDL_GRAB_OFF);
+			mMouseGrabbingRequested = false;
+		}
 	}
 }
 

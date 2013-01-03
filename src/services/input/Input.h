@@ -28,6 +28,7 @@
 #endif
 
 #include "framework/ConsoleObject.h"
+#include "framework/ConsoleCommandWrapper.h"
 #include "framework/Singleton.h"
 
 #include <sigc++/slot.h>
@@ -147,14 +148,15 @@ struct MousePosition
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  * 
- * @brief This class takes care of all input and routes it to the correct place in Ember.
+ * @brief This class handles input and the main window.
+ * It takes care of all input and routes it to the correct place in Ember.
  * Right now that means that when in GUI mode, all input will be routed to the registered list of @see IInputAdapter, and when in non-gui mode (ie. movement mode), all input will be routed directly to Ember, where it can be handled by the camera and movement system.
  * 
  * Note that while keyboard input is buffered, mouse input is not.
  * 
  * You can listen to input updates either by listening directly to the events, or by registering an instance of IInputAdapter through the addAdapter and removeAdapter methods.
  * 
- * This class also provides some methods useful for standard windowing and event system integration, such as isApplicationVisible().
+ * This class can operate in two modes with regards to the main window. It can either itself handle the main window (through SDL), or it can let an external class handle it. In the latter case, this is done by using the attach method.
  */
 class Input: public ConsoleObject, public Singleton<Input>
 {
@@ -198,17 +200,37 @@ public:
 	virtual ~Input();
 
 	/**
+	 * @brief Creates a new main window.
+	 *
+	 * This is the preferred method for creating windows.
+	 *
+	 * @see attach
+	 *
+	 * @param width The width of the window, in pixels.
+	 * @param height The height of the window, in pixels.
+	 * @param fullscreen Whether the window should be full screen.
+	 * @param resizable Whether the window should be resizable (only applicable if it's not full screen).
+	 * @param centered Whether the window should be centered  (only applicable if it's not full screen).
+	 * @param handleOpenGL Whether SDL should handle the OpenGL context. This should be true for OSX, and true for Windows if the OpenGL render plugin is used.
+	 * @return The platform specific id of the window.
+	 */
+	std::string createWindow(unsigned int width, unsigned int height, bool fullscreen, bool resizable = true, bool centered = true, bool handleOpenGL = false);
+
+	/**
 	 * @brief Initializes the input object. Call this before you want to receive input.
+	 *
+	 * This is the alternative way of handling input. Using this method, the window needs to be created beforehand in an external component.
+	 *
 	 * @param window The target window to attach the input system to.
 	 */
 	void attach(IWindowProvider* windowProvider);
 
 	/**
-	 * @brief This will detach the input system from the window.
+	 * @brief This will shut down the interaction.
 	 *
 	 * It's safe to call it multiple times. Second call will be ignored.
 	 */
-	void detach();
+	void shutdownInteraction();
 
 	/**
 	 * @brief Call this when application setup has completed and the user should start interacting with the application.
@@ -288,12 +310,6 @@ public:
 	 * @param the new input mode
 	 */
 	sigc::signal<void, InputMode> EventChangedInputMode;
-
-	/**
-	 * @brief Emitted when the user has changed the window focus, which usually means Alt-Tab switching.
-	 * If the application is in mouse grab mode we should probably release it.
-	 */
-	sigc::signal<void> EventWindowFocusChange;
 
 	/**
 	 @brief Emitted when the window is minimized or un-mininized.
@@ -407,6 +423,18 @@ public:
 	 */
 	void setMouseGrab(bool enabled);
 
+	/**
+	 * @brief Turns on and off full screen mode.
+	 *
+	 * @param enabled Whether full screen should be enabled.
+	 */
+	void setFullscreen(bool enabled);
+
+	/**
+	 * @brief Console command for toggling full screen mode.
+	 */
+	const ConsoleCommandWrapper* ToggleFullscreen;
+
 private:
 
 	typedef std::map<std::string, InputCommandMapper*> InputCommandMapperStore;
@@ -450,6 +478,18 @@ private:
 	 * @brief Gets the text in the clipboard and pastes it to the gui system.
 	 */
 	void pasteFromClipboard();
+
+	/**
+	 * @brief Creates and uses an icon for the window.
+	 */
+	void createIcon();
+
+	/**
+	 * @brief Called when the application loses focus.
+	 *
+	 * This is needed to make sure that input is detached when the user switches to another window.
+	 */
+	void lostFocus();
 
 	/**
 	 * @brief The current input mode.
@@ -535,6 +575,9 @@ private:
 
 	/**
 	 * @brief The Window Provider, which provides the communication interface between the window and the input system.
+	 *
+	 * This is only used if the attach method is used.
+	 *
 	 */
 	IWindowProvider* mWindowProvider;
 
@@ -544,9 +587,16 @@ private:
 	float mScreenWidth, mScreenHeight;
 
 	/**
-	 The icon shown in the top of the window.
+	 * @brief The icon shown in the top of the window.
 	 */
 	SDL_Surface* mIconSurface;
+
+	/**
+	 * @brief The main video surface.
+	 *
+	 * This is only used if the createWindow method is used.
+	 */
+	SDL_Surface* mMainVideoSurface;
 
 	/**
 	 * @brief Whether to invert relative movement.
@@ -554,6 +604,13 @@ private:
 	 * It can be 1(normal) or -1(inverted).
 	 */
 	int mInvertMouse;
+
+	/**
+	 * @brief If true, SDL will handle the OpenGL context.
+	 *
+	 * This is true for OSX and on Windows when OpenGL is used (but obviously not when DirectX is used).
+	 */
+	bool mHandleOpenGL;
 
 };
 

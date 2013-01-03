@@ -25,13 +25,21 @@
 
 #include "EmberOgrePrerequisites.h"
 #include "OgreIncludes.h"
+
+#ifdef BUILD_WEBEMBER
+#include "OgreWindowProvider.h"
+#endif
+
 #include "framework/ConsoleCommandWrapper.h"
 #include "framework/ConsoleObject.h"
 #include <OgreConfigOptionMap.h>
 #include <OgreFrameListener.h>
+#include <sigc++/trackable.h>
 
-namespace Ember {
-namespace OgreView {
+namespace Ember
+{
+namespace OgreView
+{
 
 class EmberPagingSceneManager;
 class EmberPagingSceneManagerFactory;
@@ -39,16 +47,16 @@ class MeshSerializerListener;
 
 namespace Lod
 {
-	class EmberOgreRoot;
+class EmberOgreRoot;
 }
 /**
-	@brief A class used for setting up Ogre.
+ @brief A class used for setting up Ogre.
 
-	Instead of creating the Ogre root object and the main render window directly, use this to guarantee that everything is set up correctly.
+ Instead of creating the Ogre root object and the main render window directly, use this to guarantee that everything is set up correctly.
 
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class OgreSetup : public ConsoleObject
+ @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class OgreSetup: public ConsoleObject, public virtual sigc::trackable
 {
 public:
 	OgreSetup();
@@ -56,9 +64,9 @@ public:
 	virtual ~OgreSetup();
 
 	/**
-	* Creates the Ogre base system.
-	* @return The new Ogre Root object.
-	*/
+	 * Creates the Ogre base system.
+	 * @return The new Ogre Root object.
+	 */
 	Ogre::Root* createOgreSystem();
 
 	/**
@@ -80,12 +88,11 @@ public:
 	Ogre::SceneManager* chooseSceneManager();
 
 	/**
-	* @brief Shuts down the Ogre system.
-	*/
+	 * @brief Shuts down the Ogre system.
+	 */
 	void shutdown();
 
 	virtual void runCommand(const std::string& command, const std::string& args);
-
 
 	/**
 	 * @brief Command for simple diagnosis of Ogre.
@@ -105,14 +112,23 @@ private:
 	Ogre::RenderWindow* mRenderWindow;
 
 	/**
-	We'll use our own scene manager factory.
-	*/
+	 We'll use our own scene manager factory.
+	 */
 	EmberPagingSceneManagerFactory* mSceneManagerFactory;
 
 	/**
-	* @brief Provides the ability to use relative paths for skeletons in meshes.
-	*/
+	 * @brief Provides the ability to use relative paths for skeletons in meshes.
+	 */
 	MeshSerializerListener* mMeshSerializerListener;
+
+#ifdef BUILD_WEBEMBER
+	/**
+	 * @brief Handles the window in WebEmber mode.
+	 *
+	 * When used in WebEmber mode, Ogre will handle the window (instead of SDL).
+	 */
+	OgreWindowProvider* mOgreWindowProvider;
+#endif
 
 	/**
 	 * @brief Sets standard values in the Ogre environment.
@@ -127,6 +143,10 @@ private:
 	int isExtensionSupported(const char *extension);
 
 	bool showConfigurationDialog();
+
+	void parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen);
+
+	void input_SizeChanged(unsigned int width, unsigned int height);
 
 };
 
