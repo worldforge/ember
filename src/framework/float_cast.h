@@ -47,7 +47,7 @@
 **	the config.h file.
 */
 
-#if (HAVE_MATH_H)
+#if (HAVE_MATH_H || defined (__GNUC__))
 
 	/*	These defines enable functionality introduced with the 1999 ISO C
 	**	standard. They must be defined before the inclusion of math.h to
