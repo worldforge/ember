@@ -70,16 +70,23 @@ void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr tex
 {
 	if (std::find(mSyncedTextures.begin(), mSyncedTextures.end(), texture->getName()) == mSyncedTextures.end()) {
 		TimedLog log("ShaderPassCoverageBatch::assignCombinedCoverageTexture");
-		Ogre::Image image;
-
-		image.loadDynamicImage(mCombinedCoverageImage.getData(), mCombinedCoverageImage.getResolution(), mCombinedCoverageImage.getResolution(), 1, Ogre::PF_B8G8R8A8);
-		texture->loadImage(image);
 		log.report("image loaded");
+
 		//blit the whole image to the hardware buffer
-		Ogre::PixelBox sourceBox(image.getPixelBox());
-		//No need to blit for all mipmaps as they will be generated.
-		Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, 0));
-		hardwareBuffer->blitFromMemory(sourceBox);
+		Ogre::PixelBox sourceBox(mCombinedCoverageImage.getResolution(), mCombinedCoverageImage.getResolution(), 1, Ogre::PF_B8G8R8A8, mCombinedCoverageImage.getData());
+
+		if ((texture->getUsage() & Ogre::TU_AUTOMIPMAP) && texture->getMipmapsHardwareGenerated()) {
+			//No need to blit for all mipmaps as they will be generated.
+			Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, 0));
+			hardwareBuffer->blitFromMemory(sourceBox);
+		} else {
+			for (size_t i = 0; i <= texture->getNumMipmaps(); ++i)
+			{
+				Ogre::HardwarePixelBufferSharedPtr hardwareBuffer(texture->getBuffer(0, i));
+				hardwareBuffer->blitFromMemory(sourceBox);
+			}
+		}
+	
 		mSyncedTextures.push_back(texture->getName());
 	}
 }

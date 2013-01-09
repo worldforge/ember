@@ -54,7 +54,8 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 		combinedCoverageTexture = static_cast<Ogre::TexturePtr> (textureMgr->getByName(combinedCoverageName));
 	} else {
 		S_LOG_VERBOSE("Creating new texture " << combinedCoverageName);
-		combinedCoverageTexture = textureMgr->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, Ogre::TU_DYNAMIC_WRITE_ONLY|Ogre::TU_AUTOMIPMAP);
+		int flags = Ogre::TU_DYNAMIC_WRITE_ONLY | Ogre::TU_AUTOMIPMAP;
+		combinedCoverageTexture = textureMgr->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
 	}
 	return combinedCoverageTexture;
 }
