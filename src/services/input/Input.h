@@ -437,6 +437,12 @@ public:
 	void setFullscreen(bool enabled);
 
 	/**
+	 * @brief Returns true if a window already is created.
+	 * @return True if a window already is creatd.
+	 */
+	bool hasWindow() const;
+
+	/**
 	 * @brief Console command for toggling full screen mode.
 	 */
 	const ConsoleCommandWrapper* ToggleFullscreen;
