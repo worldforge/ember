@@ -814,6 +814,11 @@ void Input::setFullscreen(bool enabled)
 
 }
 
+bool Input::hasWindow() const
+{
+	return mMainVideoSurface != 0;
+}
+
 void Input::lostFocus()
 {
 	setInputMode(Input::IM_GUI);
