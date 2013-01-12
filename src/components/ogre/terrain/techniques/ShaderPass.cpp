@@ -51,17 +51,22 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 	Ogre::TextureManager* textureMgr = Ogre::Root::getSingletonPtr()->getTextureManager();
 	if (textureMgr->resourceExists(combinedCoverageName)) {
 		S_LOG_VERBOSE("Using already created texture " << combinedCoverageName);
-		combinedCoverageTexture = static_cast<Ogre::TexturePtr> (textureMgr->getByName(combinedCoverageName));
+		combinedCoverageTexture = static_cast<Ogre::TexturePtr>(textureMgr->getByName(combinedCoverageName));
 	} else {
 		S_LOG_VERBOSE("Creating new texture " << combinedCoverageName);
-		int flags = Ogre::TU_DYNAMIC_WRITE_ONLY | Ogre::TU_AUTOMIPMAP;
+		int flags = Ogre::TU_DYNAMIC_WRITE_ONLY;
+		//automipmapping seems to cause some trouble on Windows, at least in OpenGL on Nvidia cards
+		//Thus we'll disable it. The performance impact shouldn't be significant.
+#ifndef _WIN32
+		flags |= Ogre::TU_AUTOMIPMAP;
+#endif
 		combinedCoverageTexture = textureMgr->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
 	}
 	return combinedCoverageTexture;
 }
 
 ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position) :
-	mBaseLayer(0), mSceneManager(sceneManager), mCoveragePixelWidth(coveragePixelWidth), mPosition(position), mShadowLayers(0)
+		mBaseLayer(0), mSceneManager(sceneManager), mCoveragePixelWidth(coveragePixelWidth), mPosition(position), mShadowLayers(0)
 {
 	for (int i = 0; i < 16; i++) {
 		mScales[i] = 0.0;
@@ -167,7 +172,6 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	pass.setMaxSimultaneousLights(3);
 	// 	pass.setFog(true, Ogre::FOG_NONE);
 
-
 	//add fragment shader for splatting
 	// 	pass.setFragmentProgram("splatting_fragment_dynamic");
 	try {
@@ -193,7 +197,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
 
 		if (useShadows) {
-			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*> (mSceneManager.getShadowCameraSetup().get());
+			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
 			if (pssmSetup) {
 				Ogre::Vector4 splitPoints;
 				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
