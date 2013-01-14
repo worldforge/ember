@@ -111,8 +111,10 @@ Input::Input() :
 	mNonCharKeys.insert(SDLK_RETURN);
 	mNonCharKeys.insert(SDLK_DELETE);
 
+#ifdef BUILD_WEBEMBER
+	//If using WebEmber SDL is initialized in a separate thread.
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE);
-
+#endif
 	mLastTick = SDL_GetTicks();
 
 	//this is a failsafe which guarantees that SDL is correctly shut down (returning the screen to correct resolution, releasing mouse etc.) if there's a crash.
