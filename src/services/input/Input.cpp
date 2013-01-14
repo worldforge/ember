@@ -145,24 +145,55 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 		flags |= SDL_FULLSCREEN;
 	}
 
+	//On Windows we'll use another method to center the window once it has been created.
+	//In addition, if the environment variable is set on windows, it will never be cleared.
+	//As a result, every time the window is resized it will be adjusted to be centered.
+#ifndef _WIN32
 	if (centered) {
 		//Some versions of SDL_putenv accepts only a non-const char array.
 		char centered[] = "SDL_VIDEO_CENTERED=center";
 		SDL_putenv(centered);
 	}
+#endif
 
 	mMainVideoSurface = SDL_SetVideoMode(width, height, 0, flags); // create an SDL window
-
-	SDL_WM_SetCaption("Ember", "ember");
-
-	SDL_ShowCursor(0);
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
 	SDL_SysWMinfo info;
 	SDL_VERSION(&info.version);
 
 	SDL_GetWMInfo(&info);
+	
+#ifdef _WIN32
+	if (centered) {
+		HWND hwnd = info.window;
+		HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+		if (hMonitor) {
+
+			MONITORINFO mon;
+			memset(&mon, 0, sizeof(MONITORINFO));
+			mon.cbSize = sizeof(MONITORINFO);
+			GetMonitorInfo(hMonitor, &mon);
+
+			RECT r;
+			GetWindowRect(hwnd, &r);
+
+			int winWidth = r.right - r.left;
+			int winLeft = mon.rcWork.left + (mon.rcWork.right - mon.rcWork.left) / 2 - winWidth/2;
+
+			int winHeight = r.bottom - r.top;
+			int winTop = mon.rcWork.top + (mon.rcWork.bottom - mon.rcWork.top) / 2 - winHeight/2;
+			winTop = std::max(winTop, 0);
+
+			SetWindowPos(hwnd, 0, winLeft, winTop, 0, 0, SWP_NOSIZE);
+		}
+	}
+#endif	
+	
+	SDL_WM_SetCaption("Ember", "ember");
+
+	SDL_ShowCursor(0);
+	SDL_EnableUNICODE(1);
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
 	std::stringstream ss;
 #ifdef __APPLE__
