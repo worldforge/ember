@@ -299,11 +299,7 @@ Ogre::Root* OgreSetup::configure(void)
 	}
 #endif
 
-	//If there's already a window created (i.e. from the configuration) we need to center it, else it will look strange.
-	//If there is no window yet we should instead rely on the WM to handle positioning.
-	bool centerWindow = Input::getSingleton().hasWindow();
-
-	std::string windowId = Input::getSingleton().createWindow(width, height, fullscreen, true, centerWindow, handleOpenGL);
+	std::string windowId = Input::getSingleton().createWindow(width, height, fullscreen, true, true, handleOpenGL);
 
 	mRoot->initialise(false, "Ember");
 	Ogre::NameValuePairList misc;
