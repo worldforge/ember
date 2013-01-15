@@ -40,7 +40,7 @@ public:
 	/**
 	Gets raw data pointer.
 	*/
-	virtual char* getDataPtr() = 0;
+	virtual const char* getDataPtr() = 0;
 	
 	/**
 	True if the wrapper has data.
@@ -68,7 +68,7 @@ public:
 	/**
 	Gets raw data pointer.
 	*/
-	char* getDataPtr() const;
+	const char* getDataPtr() const;
 	/**
 	True if the wrapper has data.
 	*/
@@ -101,7 +101,7 @@ public:
 	virtual ResourceWrapper getResource(const std::string& name) = 0;
 };
 
-inline char* ResourceWrapper::getDataPtr() const { return mInternalWrapper->getDataPtr();}
+inline const char* ResourceWrapper::getDataPtr() const { return mInternalWrapper->getDataPtr();}
 inline bool ResourceWrapper::hasData() const { return mInternalWrapper->hasData();}
 inline size_t ResourceWrapper::getSize() const { return mInternalWrapper->getSize();}
 inline const std::string& ResourceWrapper::getName() const {return mName;}

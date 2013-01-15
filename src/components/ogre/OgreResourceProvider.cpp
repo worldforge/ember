@@ -43,7 +43,7 @@ OgreResourceWrapper::~OgreResourceWrapper()
 	delete[] mBuffer;
 }
 
-char* OgreResourceWrapper::getDataPtr()
+const char* OgreResourceWrapper::getDataPtr()
 {
 	return mBuffer;
 }

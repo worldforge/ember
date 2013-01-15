@@ -23,7 +23,7 @@
 #ifndef EMBEROGREOGRERESOURCEPROVIDER_H
 #define EMBEROGREOGRERESOURCEPROVIDER_H
 
-#include "framework/IScriptingProvider.h"
+#include "framework/IResourceProvider.h"
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include <OgreDataStream.h>
 
@@ -37,7 +37,7 @@ public:
 	OgreResourceWrapper(Ogre::DataStreamPtr dataStream);
 	virtual ~OgreResourceWrapper();
 
-	virtual char* getDataPtr();
+	virtual const char* getDataPtr();
 	virtual bool hasData();
 	virtual size_t getSize();
 private:
