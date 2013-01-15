@@ -111,8 +111,8 @@ Input::Input() :
 	mNonCharKeys.insert(SDLK_RETURN);
 	mNonCharKeys.insert(SDLK_DELETE);
 
-#ifdef BUILD_WEBEMBER
-	//If using WebEmber SDL is initialized in a separate thread.
+	//If building WebEmber on Linux we shouldn't initialize SDL here, as that's done separately in another thread.
+#if !defined(BUILD_WEBEMBER) || defined(_WIN32) || defined(__APPLE__)
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE);
 #endif
 	mLastTick = SDL_GetTicks();
