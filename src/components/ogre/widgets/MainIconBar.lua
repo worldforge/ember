@@ -198,7 +198,7 @@ function MainIconBar:shutdown()
 end
 
 
-connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
+local mainIconBarInit = function()
 	local mainIconBar = {connectors={}, images={}}
 	setmetatable(mainIconBar, {__index = MainIconBar})
 	mainIconBar:buildWidget()
@@ -207,6 +207,6 @@ connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
 		mainIconBar:shutdown()
 		mainIconBar = nil
 	end)
-end)
-
+end
+mainIconBarInit()
 

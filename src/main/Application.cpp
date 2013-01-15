@@ -42,6 +42,7 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/ShutdownException.h"
 #include "framework/TimeFrame.h"
+#include "framework/FileResourceProvider.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 #include "components/lua/Connectors.h"
@@ -160,7 +161,7 @@ public:
 template<> Application *Singleton<Application>::ms_Singleton = 0;
 
 Application::Application(const std::string prefix, const std::string homeDir, const ConfigMap& configSettings) :
-		mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off.")
+		mOgreView(0), mShouldQuit(false), mPollEris(true), mMainLoopController(mShouldQuit, mPollEris), mPrefix(prefix), mHomeDir(homeDir), mLogObserver(0), mServices(0), mWorldView(0), mConfigSettings(configSettings), mConsoleBackend(new ConsoleBackend()), Quit("quit", this, "Quit Ember."), ToggleErisPolling("toggle_erispolling", this, "Switch server polling on and off."), mScriptingResourceProvider(0)
 
 {
 
@@ -179,6 +180,7 @@ Application::~Application()
 
 	delete mOgreView;
 	delete mServices;
+	delete mScriptingResourceProvider;
 	S_LOG_INFO("Ember shut down normally.");
 	Log::removeObserver(mLogObserver);
 	delete mLogObserver;
@@ -289,6 +291,7 @@ void Application::mainLoop()
 void Application::prepareComponents()
 {
 }
+
 void Application::initializeServices()
 {
 	// Initialize Ember services
@@ -400,6 +403,9 @@ void Application::initializeServices()
 	EmberServices::getSingleton().getScriptingService().registerScriptingProvider(luaProvider);
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 
+	mScriptingResourceProvider = new FileResourceProvider(mServices->getConfigService().getSharedMediaDirectory() + "/scripting/");
+	EmberServices::getSingleton().getScriptingService().setResourceProvider(mScriptingResourceProvider);
+
 	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
 	oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
 	oldSignals[SIGILL] = signal(SIGILL, shutdownHandler);
@@ -425,8 +431,21 @@ Eris::View* Application::getMainView()
 	return mWorldView;
 }
 
+void Application::startScripting()
+{
+
+	//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
+	try {
+		//load the bootstrap script which will load all other scripts
+		EmberServices::getSingleton().getScriptingService().loadScript("lua/Bootstrap.lua");
+	} catch (const std::exception& e) {
+		S_LOG_FAILURE("Error when loading bootstrap script." << e);
+	}
+}
+
 void Application::start()
 {
+
 	try {
 		if (!mOgreView->setup(Input::getSingleton(), mMainLoopController)) {
 			//The setup was cancelled, return.
@@ -446,6 +465,8 @@ void Application::start()
 		return;
 	}
 	Input::getSingleton().startInteraction();
+
+	startScripting();
 
 	mainLoop();
 

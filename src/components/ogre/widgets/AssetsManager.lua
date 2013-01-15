@@ -1115,7 +1115,7 @@ function AssetsManager:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
+local assetsManagerInit = function()
 	local assetsManager = {connectors={}, 
 		controls = {},
 		textures = {controls = {}, listbox = nil,selectedTexture = nil}, 
@@ -1147,5 +1147,6 @@ connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
 		assetsManager:shutdown()
 		assetsManager = nil
 	end)
-end)
+end
+assetsManagerInit()
 

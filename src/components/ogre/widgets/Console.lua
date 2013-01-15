@@ -334,7 +334,7 @@ function Console:shutdown()
 end
 
 
-connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
+local consoleInit = function()
 	local console = {connectors={}, 
 		widget = guiManager:createWidget(), 
 		gameTab = {unviewedCount = 0},
@@ -350,4 +350,5 @@ connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
 		console:shutdown()
 		console = nil
 	end)
-end)
+end
+consoleInit()

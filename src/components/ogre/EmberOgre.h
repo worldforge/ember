@@ -341,11 +341,6 @@ protected:
 	Model::ModelRepresentationManager* mModelRepresentationManager;
 
 	/**
-	 * @brief The scripting resource provider, which loads scripts using the Ogre resource system.
-	 */
-	std::unique_ptr<OgreResourceProvider> mScriptingResourceProvider;
-
-	/**
 	 * @brief The sound resource provider, which loads sounds using the Ogre resource system.
 	 */
 	std::unique_ptr<OgreResourceProvider> mSoundResourceProvider;

@@ -144,7 +144,7 @@ void assureConfigFile(const std::string& filename, const std::string& originalCo
 EmberOgre::EmberOgre() :
 		mInput(0), mOgreSetup(nullptr), mRoot(0), mSceneMgr(0), mWindow(0), mScreen(0), mShaderManager(0), mShaderDetailManager(nullptr), mAutomaticGraphicsLevelManager(nullptr), mGeneralCommandMapper(new InputCommandMapper("general")), mSoundManager(0), mGUIManager(0), mModelDefinitionManager(0), mEntityMappingManager(0), mTerrainLayerManager(0), mEntityRecipeManager(0),
 		//mJesus(0),
-		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mScriptingResourceProvider(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr),
+		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
 		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mPMWorker(0), mPMInjector(0)
@@ -636,9 +636,6 @@ AutomaticGraphicsLevelManager* EmberOgre::getAutomaticGraphicsLevelManager() con
 void EmberOgre::Application_ServicesInitialized()
 {
 	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &EmberOgre::Server_GotView));
-
-	mScriptingResourceProvider = std::unique_ptr<OgreResourceProvider>(new OgreResourceProvider("Scripting"));
-	EmberServices::getSingleton().getScriptingService().setResourceProvider(mScriptingResourceProvider.get());
 
 	mSoundResourceProvider = std::unique_ptr<OgreResourceProvider>(new OgreResourceProvider("General"));
 	EmberServices::getSingleton().getSoundService().setResourceProvider(mSoundResourceProvider.get());

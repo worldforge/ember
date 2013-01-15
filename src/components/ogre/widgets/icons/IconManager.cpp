@@ -26,6 +26,8 @@
 
 #include "IconManager.h"
 
+#include "components/ogre/EmberOgre.h"
+#include "components/ogre/World.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/SimpleRenderContext.h"
 #include "components/ogre/model/Model.h"
@@ -35,8 +37,8 @@
 #include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/IActionCreator.h"
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
-#include "main/Application.h"
 #include "services/server/ServerService.h"
+#include "services/EmberServices.h"
 #include <Eris/Entity.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/Connection.h>
@@ -146,7 +148,7 @@ Icon* IconManager::getIcon(int, EmberEntity* entity)
 		return mIconStore.getIcon(key);
 	} else {
 		IconActionCreator actionCreator(*entity);
-		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, Application::getSingleton().getMainView()));
+		std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(*entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 		std::string modelName;
 		if (modelMapping.get()) {
 			modelMapping->initialize();
@@ -213,7 +215,7 @@ Icon* IconManager::getIcon(int, Eris::TypeInfo* erisType)
 void IconManager::render(Icon& icon, EmberEntity& entity)
 {
 	IconActionCreator actionCreator(entity);
-	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, Application::getSingleton().getMainView()));
+	std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(entity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 	std::string modelName;
 	if (modelMapping.get()) {
 		modelMapping->initialize();
@@ -237,7 +239,7 @@ void IconManager::render(Icon& icon, Eris::TypeInfo& erisType)
 		if (typeService) {
 			DummyEntity dummyEntity("-1", &erisType, typeService);
 			IconActionCreator actionCreator(dummyEntity);
-			std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, Application::getSingleton().getMainView()));
+			std::unique_ptr<EntityMapping::EntityMapping> modelMapping(Mapping::EmberEntityMappingManager::getSingleton().getManager().createMapping(dummyEntity, actionCreator, &EmberOgre::getSingleton().getWorld()->getView()));
 			std::string modelName;
 			if (modelMapping.get()) {
 				modelMapping->initialize();

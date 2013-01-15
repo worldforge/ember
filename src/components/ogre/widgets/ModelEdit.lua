@@ -1375,7 +1375,7 @@ function ModelEdit:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
+local modelEditInit = function()
 	local modelEdit = {connectors={}, 
 		zoomRatio = 10, 
 		modelContentsItems = {}
@@ -1388,4 +1388,5 @@ connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
 		modelEdit:shutdown()
 		modelEdit = nil
 	end)
-end)
+end
+modelEditInit()

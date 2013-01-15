@@ -801,9 +801,7 @@ function SettingsWidget:EventChangedConfigItem(section, key)
 	self:RepresentationValueChanged(section, key)
 end
 
-
-connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
-
+local settingsInit = function()
 	local settingsWidget = {connectors={}}
 	setmetatable(settingsWidget, {__index = SettingsWidget})
 	settingsWidget:buildWidget()
@@ -812,4 +810,5 @@ connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
 		settingsWidget:shutdown()
 		settingsWidget = nil
 	end)
-end)
+end
+settingsInit()

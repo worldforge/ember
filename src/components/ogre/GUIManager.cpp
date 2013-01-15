@@ -275,14 +275,6 @@ void GUIManager::initialize()
 	widgetsToLoad.push_back("Help");
 	widgetsToLoad.push_back("MeshPreview");
 
-	//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
-	try {
-		//load the bootstrap script which will load all other scripts
-		EmberServices::getSingleton().getScriptingService().loadScript("lua/Bootstrap.lua");
-	} catch (const std::exception& e) {
-		S_LOG_FAILURE("Error when loading bootstrap script." << e);
-	}
-
 	for (std::vector<std::string>::iterator I = widgetsToLoad.begin(); I != widgetsToLoad.end(); ++I) {
 		try {
 			S_LOG_VERBOSE("Loading widget " << *I);

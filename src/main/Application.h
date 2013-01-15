@@ -12,7 +12,6 @@
 #ifndef EMBER_APPLICATION_H
 #define EMBER_APPLICATION_H
 
-
 #include "services/EmberServices.h"
 #include "framework/ConsoleObject.h"
 #include "framework/ConsoleBackend.h"
@@ -94,6 +93,7 @@ class EmberOgre;
 
 class EmberServices;
 class LogObserver;
+class IResourceProvider;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -254,7 +254,7 @@ private:
 	 * @brief Keeps track of the last time the main loop step completed.
 	 */
 	boost::posix_time::ptime mLastTimeMainLoopStepEnded;
-	
+
 	/**
 	 * @brief We hold a pointer to the stream to which all logging messages are written.
 	 */
@@ -282,6 +282,11 @@ private:
 	const ConsoleCommandWrapper ToggleErisPolling;
 
 	/**
+	 * @brief Provides resources to the scripting system.
+	 */
+	IResourceProvider* mScriptingResourceProvider;
+
+	/**
 	 * @brief We listen to the GotView event to be able to store a reference to the View instance.
 	 * @see mWorldView
 	 * @param view The world view.
@@ -292,6 +297,11 @@ private:
 	 * @brief We listen to the DestroyedView event so that we can remove our View reference.
 	 */
 	void Server_DestroyedView();
+
+	/**
+	 * @brief Starts the scripting system.
+	 */
+	void startScripting();
 
 };
 }

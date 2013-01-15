@@ -182,7 +182,7 @@ function EntityBrowser:shutdown()
 end
 
 
-connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
+local entityBrowserInit = function()
 	local entityBrowser = {connectors = {}, listbox = nil, sceneNodes = {listbox = nil, selectedSceneNode = nil} }
 	setmetatable(entityBrowser, {__index = EntityBrowser})
 	
@@ -192,6 +192,7 @@ connect(connectors, emberOgre.EventGUIManagerInitialized, function(guiManager)
 		entityBrowser:shutdown()
 		entityBrowser = nil
 	end)
-end)
+end
+entityBrowserInit()
 
 
