@@ -181,6 +181,13 @@ protected:
 	IndexBufferInfoList mIndexBufferInfoList;
 
 	Ogre::MeshPtr mMesh;
+
+	/**
+	 * @brief The name of the mesh being processed.
+	 *
+	 * This is separate from mMesh in order to allow for access from background threads.
+	 */
+	std::string mMeshName;
 	Ogre::Real mMeshBoundingSphereRadius;
 	Ogre::Real mCollapseCostLimit;
 

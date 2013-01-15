@@ -66,6 +66,7 @@ struct PMGenRequest {
 	std::vector<SubmeshInfo> submesh;
 	VertexBuffer sharedVertexBuffer;
 	LodConfig config;
+	std::string meshName;
 	~PMGenRequest();
 };
 

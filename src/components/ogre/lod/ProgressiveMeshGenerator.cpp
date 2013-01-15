@@ -127,6 +127,7 @@ void ProgressiveMeshGenerator::tuneContainerSize()
 
 void ProgressiveMeshGenerator::initialize()
 {
+	mMeshName = mMesh->getName();
 	unsigned short submeshCount = mMesh->getNumSubMeshes();
 	for (unsigned short i = 0; i < submeshCount; ++i) {
 		const Ogre::SubMesh* submesh = mMesh->getSubMesh(i);
@@ -222,11 +223,11 @@ void ProgressiveMeshGenerator::addIndexDataImpl(IndexType* iPos, const IndexType
 		}
 		if (tri->isMalformed()) {
 			std::stringstream str;
-			str << "In " << /*mMesh->getName() <<*/ " malformed triangle found with ID: " << getTriangleID(tri) << ". " <<
+			str << "In " << mMeshName << " malformed triangle found with ID: " << getTriangleID(tri) << ". " <<
 			std::endl;
 			printTriangle(tri, str);
 			str << "It will be excluded from Lod level calculations.";
-			S_LOG_WARNING(str.str());
+			S_LOG_VERBOSE(str.str());
 			tri->isRemoved = true;
 			mIndexBufferInfoList[tri->submeshID].indexCount -= 3;
 			continue;
@@ -438,14 +439,14 @@ void ProgressiveMeshGenerator::computeCosts()
 
 		} else {
 			std::stringstream str;
-			str << "In " << /*mMesh->getName() <<*/ " never used vertex found with ID: " << mCollapseCostSet.size() << "."
+			str << "In " << mMeshName << " never used vertex found with ID: " << mCollapseCostSet.size() << "."
 			    << std::endl
 			    << "Vertex position: ("
 			    << it->position.x << ", "
 			    << it->position.y << ", "
 			    << it->position.z << ")" << std::endl
 			    << "It will be excluded from Lod level calculations.";
-			S_LOG_WARNING(str.str());
+			S_LOG_VERBOSE(str.str());
 		}
 	}
 }

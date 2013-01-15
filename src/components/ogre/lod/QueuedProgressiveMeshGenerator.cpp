@@ -81,6 +81,7 @@ Ogre::WorkQueue::Response* PMWorker::handleRequest(const Ogre::WorkQueue::Reques
 
 void PMWorker::buildRequest(LodConfig& lodConfigs)
 {
+	mMeshName = mRequest->meshName;
 	mMeshBoundingSphereRadius = lodConfigs.mesh->getBoundingSphereRadius();
 	cleanupMemory();
 	tuneContainerSize();
@@ -361,6 +362,7 @@ void QueuedProgressiveMeshGenerator::build(LodConfig& lodConfig)
 #endif // if ifndef NDEBUG
 
 	PMGenRequest* req = new PMGenRequest();
+	req->meshName = lodConfig.mesh->getName();
 	req->config = lodConfig;
 	copyBuffers(lodConfig.mesh.get(), req);
 	Ogre::WorkQueue* wq = Ogre::Root::getSingleton().getWorkQueue();
