@@ -1117,8 +1117,8 @@ size_t ProgressiveMeshGenerator::PMVertexHash::operator() (const PMVertex* v) co
 template<typename T, unsigned S>
 void ProgressiveMeshGenerator::VectorSet<T, S>::addNotExists(const T& item)
 {
-	assert(find(item) == baseClass::end());
-	baseClass::push_back(item);
+	assert(find(item) == this->end());
+	this->push_back(item);
 }
 
 template<typename T, unsigned S>
@@ -1127,17 +1127,17 @@ void ProgressiveMeshGenerator::VectorSet<T, S>::remove(iterator it)
 	// Thats my trick to remove an item from the vector very fast!
 	// It works similar to the heap_pop().
 	// It swaps the removable item to the back, then pops it.
-	*it = baseClass::back();
-	baseClass::pop_back();
+	*it = this->back();
+	this->pop_back();
 }
 
 template<typename T, unsigned S>
 typename ProgressiveMeshGenerator::VectorSet<T, S>::iterator ProgressiveMeshGenerator::VectorSet<T, S>::add(const T& item)
 {
 	iterator it = find(item);
-	if (it == baseClass::end()) {
-		baseClass::push_back(item);
-		return baseClass::end();
+	if (it == this->end()) {
+		this->push_back(item);
+		return this->end();
 	}
 	return it;
 }
@@ -1146,7 +1146,7 @@ template<typename T, unsigned S>
 void ProgressiveMeshGenerator::VectorSet<T, S>::removeExists(const T& item)
 {
 	iterator it = find(item);
-	assert(it != baseClass::end());
+	assert(it != this->end());
 	remove(it);
 }
 
@@ -1154,7 +1154,7 @@ template<typename T, unsigned S>
 bool ProgressiveMeshGenerator::VectorSet<T, S>::remove(const T& item)
 {
 	iterator it = find(item);
-	if (it != baseClass::end()) {
+	if (it != this->end()) {
 		remove(it);
 		return true;
 	} else {
@@ -1166,20 +1166,20 @@ template<typename T, unsigned S>
 void ProgressiveMeshGenerator::VectorSet<T, S>::replaceExists(const T& oldItem, const T& newItem)
 {
 	iterator it = find(oldItem);
-	assert(it != baseClass::end());
+	assert(it != this->end());
 	*it = newItem;
 }
 
 template<typename T, unsigned S>
 bool ProgressiveMeshGenerator::VectorSet<T, S>::has(const T& item)
 {
-	return find(item) != baseClass::end();
+	return find(item) != this->end();
 }
 
 template<typename T, unsigned S>
 typename ProgressiveMeshGenerator::VectorSet<T, S>::iterator ProgressiveMeshGenerator::VectorSet<T, S>::find(const T& item)
 {
-	return std::find(baseClass::begin(), baseClass::end(), item);
+	return std::find(this->begin(), this->end(), item);
 }
 
 template<typename T, unsigned S>
@@ -1187,7 +1187,7 @@ typename ProgressiveMeshGenerator::VectorSet<T, S>::iterator ProgressiveMeshGene
     const T& item)
 {
 	iterator it = find(item);
-	assert(it != baseClass::end());
+	assert(it != this->end());
 	return it;
 }
 

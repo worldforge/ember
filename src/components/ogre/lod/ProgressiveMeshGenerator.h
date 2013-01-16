@@ -68,8 +68,7 @@ protected:
 	template<typename T, unsigned S>
 	struct VectorSet :
 		public Ogre::SmallVector<T, S> {
-		typedef typename Ogre::SmallVector<T, S> baseClass;
-		typedef typename baseClass::iterator iterator;
+		typedef typename Ogre::SmallVector<T, S>::iterator iterator;
 
 		void addNotExists(const T& item); // Complexity: O(1)!!
 		void remove(iterator it); // Complexity: O(1)!!
