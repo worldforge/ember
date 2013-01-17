@@ -43,6 +43,7 @@
 #include "framework/ShutdownException.h"
 #include "framework/TimeFrame.h"
 #include "framework/FileResourceProvider.h"
+#include "framework/osdir.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 #include "components/lua/Connectors.h"
@@ -71,6 +72,7 @@ TOLUA_API int tolua_Domain_open(lua_State* tolua_S);
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
+#include <list>
 
 #include "framework/osdir.h"
 #include <sys/stat.h>
@@ -170,10 +172,10 @@ Application::Application(const std::string prefix, const std::string homeDir, co
 Application::~Application()
 {
 	// before shutting down, we write out the user config to user's ember home directory
-	ConfigService& configService = EmberServices::getSingleton().getConfigService();
+	ConfigService& configService = mServices->getConfigService();
 	configService.saveConfig(configService.getHomeDirectory() + "/ember.conf", varconf::USER);
 
-	EmberServices::getSingleton().getServerService().stop(0);
+	mServices->getServerService().stop(0);
 
 	//When shutting down make sure to delete all pending objects from Eris. This is mainly because we want to be able to track memory leaks.
 	Eris::execDeleteLaters();
@@ -246,7 +248,7 @@ void Application::mainLoopStep(long minMicrosecondsPerFrame)
 		if (updatedRendering) {
 			frameActionMask |= MainLoopController::FA_GRAPHICS;
 		}
-		EmberServices::getSingleton().getSoundService().cycle();
+		mServices->getSoundService().cycle();
 		frameActionMask |= MainLoopController::FA_SOUND;
 
 		mMainLoopController.EventFrameProcessed(timeFrame, frameActionMask);
@@ -299,7 +301,7 @@ void Application::initializeServices()
 
 	mServices = new EmberServices();
 	// Initialize the Configuration Service
-	ConfigService& configService = EmberServices::getSingleton().getConfigService();
+	ConfigService& configService = mServices->getConfigService();
 	configService.start();
 	if (mPrefix != "") {
 		configService.setPrefix(mPrefix);
@@ -353,34 +355,34 @@ void Application::initializeServices()
 
 	// Initialize the Sound Service
 	S_LOG_INFO("Initializing sound service");
-	EmberServices::getSingleton().getSoundService().start();
+	mServices->getSoundService().start();
 
 	// Initialize and start the Metaserver Service.
 	S_LOG_INFO("Initializing metaserver service");
 
-	EmberServices::getSingleton().getMetaserverService().start();
+	mServices->getMetaserverService().start();
 	//hoho, we get linking errors if we don't do some calls to the service
-	EmberServices::getSingleton().getMetaserverService().getMetaServer();
+	mServices->getMetaserverService().getMetaServer();
 
 	// Initialize the Server Service
 	S_LOG_INFO("Initializing server service");
-	EmberServices::getSingleton().getServerService().start();
+	mServices->getServerService().start();
 
 	S_LOG_INFO("Initializing input service");
-	EmberServices::getSingleton().getInputService().start();
-	EmberServices::getSingleton().getInputService().getInput().setMainLoopController(&mMainLoopController);
+	mServices->getInputService().start();
+	mServices->getInputService().getInput().setMainLoopController(&mMainLoopController);
 
 	S_LOG_INFO("Initializing scripting service");
-	EmberServices::getSingleton().getScriptingService().start();
+	mServices->getScriptingService().start();
 
 	S_LOG_INFO("Initializing wfut service");
-	EmberServices::getSingleton().getWfutService().start();
+	mServices->getWfutService().start();
 
 	S_LOG_INFO("Initializing server settings service");
-	EmberServices::getSingleton().getServerSettingsService().start();
+	mServices->getServerSettingsService().start();
 
-	EmberServices::getSingleton().getServerService().GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
-	EmberServices::getSingleton().getServerService().DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
+	mServices->getServerService().GotView.connect(sigc::mem_fun(*this, &Application::Server_GotView));
+	mServices->getServerService().DestroyedView.connect(sigc::mem_fun(*this, &Application::Server_DestroyedView));
 
 	//register the lua scripting provider. The provider will be owned by the scripting service, so we don't need to keep the pointer reference.
 	Lua::LuaScriptingProvider* luaProvider = new Lua::LuaScriptingProvider();
@@ -400,11 +402,11 @@ void Application::initializeServices()
 	tolua_ConnectorDefinitions_open(luaProvider->getLuaState());
 	tolua_Domain_open(luaProvider->getLuaState());
 
-	EmberServices::getSingleton().getScriptingService().registerScriptingProvider(luaProvider);
+	mServices->getScriptingService().registerScriptingProvider(luaProvider);
 	Lua::ConnectorBase::setState(luaProvider->getLuaState());
 
 	mScriptingResourceProvider = new FileResourceProvider(mServices->getConfigService().getSharedMediaDirectory() + "/scripting/");
-	EmberServices::getSingleton().getScriptingService().setResourceProvider(mScriptingResourceProvider);
+	mServices->getScriptingService().setResourceProvider(mScriptingResourceProvider);
 
 	oldSignals[SIGSEGV] = signal(SIGSEGV, shutdownHandler);
 	oldSignals[SIGABRT] = signal(SIGABRT, shutdownHandler);
@@ -433,13 +435,57 @@ Eris::View* Application::getMainView()
 
 void Application::startScripting()
 {
-
 	//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
 	try {
 		//load the bootstrap script which will load all other scripts
-		EmberServices::getSingleton().getScriptingService().loadScript("lua/Bootstrap.lua");
+		mServices->getScriptingService().loadScript("lua/Bootstrap.lua");
 	} catch (const std::exception& e) {
 		S_LOG_FAILURE("Error when loading bootstrap script." << e);
+	}
+
+	//load any user defined scripts
+	const std::string userScriptDirectoryPath = mServices->getConfigService().getHomeDirectory() + "/scripts";
+	oslink::directory scriptDir(userScriptDirectoryPath);
+	if (scriptDir.isExisting()) {
+		static const std::string luaSuffix = ".lua";
+		std::list<std::string> luaFiles;
+		while (scriptDir) {
+			std::string fileName = scriptDir.next();
+			if (fileName != "." && fileName != "..") {
+				std::string lowerCaseFileName = fileName;
+				std::transform(lowerCaseFileName.begin(), lowerCaseFileName.end(), lowerCaseFileName.begin(), ::tolower);
+
+				if (lowerCaseFileName.compare(lowerCaseFileName.length() - luaSuffix.length(), luaSuffix.length(), luaSuffix) == 0) {
+					luaFiles.push_back(fileName);
+				}
+
+			}
+		}
+
+		//Sorting, because we want to load the scripts in a deterministic order.
+		luaFiles.sort();
+		for (auto& fileName : luaFiles) {
+			std::ifstream stream(userScriptDirectoryPath + "/" + fileName, std::ios::in);
+			if (stream) {
+				std::stringstream ss;
+				ss << stream.rdbuf();
+				stream.close();
+				//It's important that we inform the user that we're loading a script (in case it provides any confusing behaviour).
+				ConsoleBackend::getSingleton().pushMessage("Loading user Lua script from '" + fileName + "'.", "info");
+				mServices->getScriptingService().executeCode(ss.str(), "LuaScriptingProvider");
+			}
+		}
+	} else {
+		try {
+			//Create the script user script directory
+			oslink::directory::mkdir(userScriptDirectoryPath.c_str());
+			std::ofstream readme(userScriptDirectoryPath + "/README", std::ios::out);
+			readme << "Any script files placed here will be executed as long as they have a supported file suffix.\nScripts are executed in alphabetical order.\nEmber currently supports lua scripts (ending with '.lua').";
+			readme.close();
+			S_LOG_INFO("Created user user scripting directory (" + userScriptDirectoryPath + ").");
+		} catch (const std::exception& e) {
+			S_LOG_INFO("Could not create user scripting directory.");
+		}
 	}
 }
 
