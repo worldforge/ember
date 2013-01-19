@@ -286,8 +286,6 @@ void Input::attach(IWindowProvider* windowProvider)
 	sprintf(tmp, "SDL_WINDOWID=%s", mWindowProvider->getWindowHandle().c_str());
 	putenv(tmp);
 
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE);
-
 	createIcon();
 	unsigned int width, height;
 	mWindowProvider->getWindowSize(width, height);
