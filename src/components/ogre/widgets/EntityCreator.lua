@@ -37,11 +37,6 @@ function EntityCreator:RecipesList_SelectionChanged(args)
 	end
 end
 
--- Handles create button press
-function EntityCreator:Create_Click(args)
-	self.helper:toggleCreateMode()
-end
-
 function EntityCreator:createFromType(name, type)
 	self.typesCreator.recipe = Ember.OgreView.Authoring.EntityRecipe:new_local(name, type:getName())
 	self.recipe = self.typesCreator.recipe
@@ -49,13 +44,6 @@ function EntityCreator:createFromType(name, type)
 	self.helper:toggleCreateMode()
 end
 
--- Handles toggling the randomizing of the orientation on and off
-function EntityCreator:RandomizeOrientation_CheckStateChanged(args)
-	local checkbox = self.widget:getWindow("RandomizeOrientation")
-	checkbox = CEGUI.toCheckbox(checkbox)
-
-	self.helper:setRandomizeOrientation(checkbox:isSelected())
-end
 
 -- Clears widget if recipe is selected
 function EntityCreator:clear()
@@ -156,7 +144,6 @@ function EntityCreator.buildWidget(world)
 	entityCreator.widget = guiManager:createWidget()
 	local setup = function()
 		-- Initializing helper classes
-		debugObject(avatar)
 		entityCreator.helper = Ember.OgreView.Gui.EntityCreator:new(world)
 		
 		connect(entityCreator.connectors, entityCreator.helper.EventCreationStarted, function()
@@ -183,10 +170,18 @@ function EntityCreator.buildWidget(world)
 		entityCreator:fillRecipesList()
 		
 		entityCreator.createButton = CEGUI.toPushButton(entityCreator.widget:getWindow("Create"))
-		entityCreator.createButton:subscribeEvent("Clicked", EntityCreator.Create_Click, entityCreator) 
+
+		entityCreator.createButton:subscribeEvent("Clicked", function() 
+			entityCreator.helper:toggleCreateMode()
+		end) 
 		entityCreator.createButton:setEnabled(false)
 
-		entityCreator.widget:getWindow("RandomizeOrientation"):subscribeEvent("CheckStateChanged", EntityCreator.RandomizeOrientation_CheckStateChanged, entityCreator) 
+		entityCreator.widget:getWindow("RandomizeOrientation"):subscribeEvent("CheckStateChanged", function()
+			local checkbox = entityCreator.widget:getWindow("RandomizeOrientation")
+			checkbox = CEGUI.toCheckbox(checkbox)
+		
+			entityCreator.helper:setRandomizeOrientation(checkbox:isSelected())
+		end) 
 		entityCreator.widget:enableCloseButton()
 	
 		local typesTree = CEGUI.toTree(entityCreator.widget:getWindow("Types/TypeList", true))
@@ -197,6 +192,69 @@ function EntityCreator.buildWidget(world)
 
 		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage)
 		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
+	
+		--Entity exports tab
+
+		local cancelButton = self.widget:getWindow("Exports/DumpCancel")
+		cancelButton:subscribeEvent("Clicked", function(args)
+			if cancelButton.method then
+				cancelButton.method()
+				return true
+			end
+		end)
+		
+		
+		local importButton = entityCreator.widget:getWindow("Exports/ImportButton") 
+		importButton:subscribeEvent("Clicked", function(args)
+			if importButton.filename then
+				local worldLoader = Ember.EntityImporter:new(emberServices:getServerService():getAccount())
+				local dumpStatusWindow = entityCreator.widget:getWindow("Exports/DumpStatus") 
+				
+				dumpStatusWindow:setText("Loading...")
+				createConnector(worldLoader.EventCompleted):connect(function()
+					dumpStatusWindow:setText("Done loading.")
+					cancelButton:setVisible(false)
+					cancelButton.method = nil
+					worldLoader:delete()
+				end)
+				createConnector(worldLoader.EventProgress):connect(function(entitiesToLoad)
+					dumpStatusWindow:setText("Loading, " .. entitiesToLoad .. " left")
+				end)
+				cancelButton.method = function()
+					worldLoader:cancel()
+					dumpStatusWindow:setText("Cancelled")
+				end
+				cancelButton:setVisible(true)
+				worldLoader:start(importButton.filename)
+			end
+			return true
+		end)
+		
+		local populateExportsList = function(listWidget)
+			local exports = Ember.EntityImporter:getInfoFromDirectory(emberServices:getConfigService():getHomeDirectory() .. "/entityexport")
+
+			if exports:size() > 0 then 
+				for i = 0, exports:size() - 1 do
+					local info = exports[i]
+					local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
+					item:setText(info.name)
+					
+					item:subscribeEvent("SelectionChanged", function(args)
+						if item:isSelected() then
+							importButton:setEnabled(true)
+							importButton.filename = info.filename
+						end
+			
+						return true
+					end
+					)
+					
+					listWidget:addItem(item)			
+				end
+			end 
+		end
+		
+		populateExportsList(CEGUI.toItemListbox(entityCreator.widget:getWindow("Exports/ExportsList")))
 		
 	end
 	connect(entityCreator.connectors, entityCreator.widget.EventFirstTimeShown, setup)
