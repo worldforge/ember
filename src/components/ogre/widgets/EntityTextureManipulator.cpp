@@ -65,7 +65,7 @@ bool EntityTextureManipulator::injectMouseButtonDown(const Input::MouseButton& b
 	return true;
 }
 
-bool EntityTextureManipulator::injectChar(char character)
+bool EntityTextureManipulator::injectChar(int character)
 {
 	return true;
 }

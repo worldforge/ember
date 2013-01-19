@@ -210,7 +210,7 @@ bool MovementAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 	return false;
 }
 
-bool MovementAdapter::injectChar(char character)
+bool MovementAdapter::injectChar(int character)
 {
 	return true;
 }

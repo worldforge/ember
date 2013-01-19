@@ -65,7 +65,7 @@ public:
 	virtual bool injectMouseMove(const MouseMotion& motion, bool& freezeMouse);
 	virtual bool injectMouseButtonUp(const Input::MouseButton& button);
 	virtual bool injectMouseButtonDown(const Input::MouseButton& button);
-	virtual bool injectChar(char character);
+	virtual bool injectChar(int character);
 	virtual bool injectKeyDown(const SDLKey& key);
 	virtual bool injectKeyUp(const SDLKey& key);
     

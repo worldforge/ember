@@ -261,7 +261,7 @@ bool GUICEGUIAdapter::injectMouseButtonDown(const Input::MouseButton& button)
 	return true;
 }
 
-bool GUICEGUIAdapter::injectChar(char character)
+bool GUICEGUIAdapter::injectChar(int character)
 {
 	try {
 		//cegui can't handle tabs, so we have to convert it to a couple of spaces
