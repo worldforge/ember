@@ -214,7 +214,6 @@ namespace Gui {
 				//There's a bug in Ogre 1.7.1 (at least) which makes the text of some elements not appear. By asking it to update the positions it seems to work.
 				mVersionElement->_positionsOutOfDate();
 
-				Ogre::WindowEventUtilities::messagePump();
 				Input::getSingleton().processInput();
 				if(mMainLoopController.shouldQuit() || mWindow.isClosed()){
 					throw ShutdownException("Aborting startup");
