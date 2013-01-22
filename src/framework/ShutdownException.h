@@ -21,11 +21,11 @@ public:
 	 * @brief Allows to read the reason for the exception. 
 	 * @return Returns the reason passed to the Ctor as string.
 	 */
-	std::string getReason()
+	const std::string& getReason() const
 	{
 		return mReason;
 	}
 
 private:
-	std::string mReason;
+	const std::string mReason;
 };
