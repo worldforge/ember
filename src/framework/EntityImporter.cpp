@@ -294,14 +294,28 @@ void EntityImporter::start(const std::string& filename)
 		EventCompleted.emit();
 		return;
 	}
-	TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
 
-	if (!entitiesElem) {
+	//We'll handle both raw atlas dumps as well as complete entity dumps (where the latter also includes minds and meta data).
+	TiXmlElement* atlasElem = nullptr;
+
+	if (xmlDoc.RootElement()->ValueStr() == "atlas") {
+		atlasElem = xmlDoc.RootElement();
+	} else {
+
+		TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
+
+		if (!entitiesElem) {
+			EventCompleted.emit();
+			return;
+		}
+
+		atlasElem = entitiesElem->FirstChildElement("atlas");
+	}
+
+	if (!atlasElem) {
 		EventCompleted.emit();
 		return;
 	}
-
-	TiXmlElement* atlasElem = entitiesElem->FirstChildElement("atlas");
 
 	AtlasMessageLoader loader(m_objects);
 	TinyXmlCodec codec(*atlasElem, loader);
@@ -357,7 +371,6 @@ void EntityImporter::operation(const Operation & op)
 
 }
 
-
 std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(const std::string& directoryPath)
 {
 	std::vector<ShortInfo> infos;
@@ -384,20 +397,29 @@ std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(cons
 			info.description = descElem->GetText();
 		}
 
-		const TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
-		if (entitiesElem) {
-			const TiXmlElement* atlasElem = entitiesElem->FirstChildElement("atlas");
-			if (atlasElem) {
-				int count = 0;
-				const TiXmlElement* entityElem = atlasElem->FirstChildElement("map");
-				while (entityElem) {
-					count++;
-					entityElem = entityElem->NextSiblingElement();
-				}
-				info.entityCount = count;
+		//We'll handle both raw atlas dumps as well as complete entity dumps (where the latter also includes minds and meta data).
+		const TiXmlElement* atlasElem = nullptr;
 
+		if (xmlDoc.RootElement()->ValueStr() == "atlas") {
+			atlasElem = xmlDoc.RootElement();
+		} else {
+			const TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
+			if (entitiesElem) {
+				atlasElem = entitiesElem->FirstChildElement("atlas");
 			}
 		}
+
+		if (atlasElem) {
+			int count = 0;
+			const TiXmlElement* entityElem = atlasElem->FirstChildElement("map");
+			while (entityElem) {
+				count++;
+				entityElem = entityElem->NextSiblingElement();
+			}
+			info.entityCount = count;
+
+		}
+
 		infos.push_back(info);
 
 	}
