@@ -9,12 +9,15 @@
         <map>
         	<map name="area">
         		<int name="layer">6</int>
-    			<list name="points">
-    				<list><float>-1</float><float>-1</float></list>
-    				<list><float>-1</float><float>1</float></list>
-    				<list><float>1</float><float>1</float></list>
-    				<list><float>1</float><float>-1</float></list>
-    			</list>
+        		<map name="shape">
+	    			<list name="points">
+	    				<list><float>-1</float><float>-1</float></list>
+	    				<list><float>-1</float><float>1</float></list>
+	    				<list><float>1</float><float>1</float></list>
+	    				<list><float>1</float><float>-1</float></list>
+	    			</list>
+			        <string name="type">polygon</string>
+			    </map>
         	</map>
         </map>
       </atlas>

@@ -34,15 +34,18 @@
           <string name="roof">$roof</string>
           <map name="area">
             <int name="layer">7</int>
-            <list name="points"><list><float>-0.496538</float><float>-10.7893</float></list>
-              <list><float>-0.426239</float><float>-9.34279</float></list>
-              <list><float>-10.1988</float><float>-9.29721</float></list>
-              <list><float>-10.1344</float><float>-0.0730419</float></list>
-              <list><float>-0.14595</float><float>0.0127713</float></list>
-              <list><float>-0.0287538</float><float>6.28406</float></list>
-              <list><float>4.78819</float><float>6.24456</float></list>
-              <list><float>4.96602</float><float>-10.7577</float></list>
-            </list>
+            <map name="shape">
+	            <list name="points"><list><float>-0.496538</float><float>-10.7893</float></list>
+	              <list><float>-0.426239</float><float>-9.34279</float></list>
+	              <list><float>-10.1988</float><float>-9.29721</float></list>
+	              <list><float>-10.1344</float><float>-0.0730419</float></list>
+	              <list><float>-0.14595</float><float>0.0127713</float></list>
+	              <list><float>-0.0287538</float><float>6.28406</float></list>
+	              <list><float>4.78819</float><float>6.24456</float></list>
+	              <list><float>4.96602</float><float>-10.7577</float></list>
+	            </list>
+              <string name="type">polygon</string>
+            </map>
           </map>
           <map name="terrainmod">
             <float name="heightoffset">0</float>
@@ -110,21 +113,24 @@
           <string name="roof">$roof</string>
           <map name="area">
             <int name="layer">7</int>
-            <list name="points"><list><float>3.35904</float><float>-0.0330087</float></list>
-              <list><float>2.93664</float><float>-8.21518</float></list>
-              <list><float>2.38888</float><float>-8.27803</float></list>
-              <list><float>2.40824</float><float>-10.0172</float></list>
-              <list><float>0.235201</float><float>-10.0154</float></list>
-              <list><float>0.228893</float><float>-8.26947</float></list>
-              <list><float>-12.1663</float><float>-8.44085</float></list>
-              <list><float>-12.5411</float><float>3.99713</float></list>
-              <list><float>-9.92374</float><float>3.85007</float></list>
-              <list><float>-10.1851</float><float>6.66209</float></list>
-              <list><float>-8.55103</float><float>6.56119</float></list>
-              <list><float>-8.5686</float><float>7.0901</float></list>
-              <list><float>-0.183271</float><float>7.05797</float></list>
-              <list><float>-0.19835</float><float>-0.231897</float></list>
-            </list>
+            <map name="shape">
+	            <list name="points"><list><float>3.35904</float><float>-0.0330087</float></list>
+	              <list><float>2.93664</float><float>-8.21518</float></list>
+	              <list><float>2.38888</float><float>-8.27803</float></list>
+	              <list><float>2.40824</float><float>-10.0172</float></list>
+	              <list><float>0.235201</float><float>-10.0154</float></list>
+	              <list><float>0.228893</float><float>-8.26947</float></list>
+	              <list><float>-12.1663</float><float>-8.44085</float></list>
+	              <list><float>-12.5411</float><float>3.99713</float></list>
+	              <list><float>-9.92374</float><float>3.85007</float></list>
+	              <list><float>-10.1851</float><float>6.66209</float></list>
+	              <list><float>-8.55103</float><float>6.56119</float></list>
+	              <list><float>-8.5686</float><float>7.0901</float></list>
+	              <list><float>-0.183271</float><float>7.05797</float></list>
+	              <list><float>-0.19835</float><float>-0.231897</float></list>
+	            </list>
+              <string name="type">polygon</string>
+            </map>
           </map>
           <map name="terrainmod">
             <float name="heightoffset">0</float>
@@ -174,11 +180,14 @@
           <string name="roof">$roof</string>
           <map name="area">
             <int name="layer">7</int>
-            <list name="points"><list><float>-1.66248</float><float>-2.5929</float></list>
-              <list><float>-1.76312</float><float>5.32703</float></list>
-              <list><float>2.22217</float><float>5.2926</float></list>
-              <list><float>2.48407</float><float>-2.76794</float></list>
-            </list>
+            <map name="shape">
+	            <list name="points"><list><float>-1.66248</float><float>-2.5929</float></list>
+	              <list><float>-1.76312</float><float>5.32703</float></list>
+	              <list><float>2.22217</float><float>5.2926</float></list>
+	              <list><float>2.48407</float><float>-2.76794</float></list>
+	            </list>
+              <string name="type">polygon</string>
+            </map>
           </map>
           <map name="terrainmod">
             <float name="heightoffset">0</float>
@@ -218,11 +227,14 @@
           <string name="roof">$roof</string>
           <map name="area">
             <int name="layer">7</int>
-            <list name="points"><list><float>-5.57236</float><float>-6.84199</float></list>
-              <list><float>-5.51594</float><float>6.83854</float></list>
-              <list><float>6.18699</float><float>6.7686</float></list>
-              <list><float>6.27952</float><float>-6.74529</float></list>
-            </list>
+            <map name="shape">
+	            <list name="points"><list><float>-5.57236</float><float>-6.84199</float></list>
+	              <list><float>-5.51594</float><float>6.83854</float></list>
+	              <list><float>6.18699</float><float>6.7686</float></list>
+	              <list><float>6.27952</float><float>-6.74529</float></list>
+	            </list>
+              <string name="type">polygon</string>
+            </map>
           </map>
           <map name="terrainmod">
             <float name="heightoffset">0</float>
@@ -262,15 +274,18 @@
           <string name="roof">$roof</string>
           <map name="area">
             <int name="layer">7</int>
-            <list name="points"><list><float>-3.31533</float><float>-6.34274</float></list>
-              <list><float>-3.26379</float><float>0.686108</float></list>
-              <list><float>-5.10046</float><float>0.734425</float></list>
-              <list><float>-5.37558</float><float>5.2547</float></list>
-              <list><float>4.30876</float><float>5.23085</float></list>
-              <list><float>4.44796</float><float>1.44866</float></list>
-              <list><float>7.31457</float><float>1.26146</float></list>
-              <list><float>7.43932</float><float>-6.33775</float></list>
-            </list>
+            <map name="shape">
+	            <list name="points"><list><float>-3.31533</float><float>-6.34274</float></list>
+	              <list><float>-3.26379</float><float>0.686108</float></list>
+	              <list><float>-5.10046</float><float>0.734425</float></list>
+	              <list><float>-5.37558</float><float>5.2547</float></list>
+	              <list><float>4.30876</float><float>5.23085</float></list>
+	              <list><float>4.44796</float><float>1.44866</float></list>
+	              <list><float>7.31457</float><float>1.26146</float></list>
+	              <list><float>7.43932</float><float>-6.33775</float></list>
+	            </list>
+              <string name="type">polygon</string>
+            </map>
           </map>
           <map name="terrainmod">
             <float name="heightoffset">0</float>
