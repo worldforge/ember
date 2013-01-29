@@ -195,7 +195,9 @@ function EntityCreator.buildWidget(world)
 	
 		--Entity exports tab
 
-		local cancelButton = self.widget:getWindow("Exports/DumpCancel")
+		local activeOverlay = entityCreator.widget:getWindow("Exports/ActiveOverlay")
+
+		local cancelButton = entityCreator.widget:getWindow("Exports/DumpCancel")
 		cancelButton:subscribeEvent("Clicked", function(args)
 			if cancelButton.method then
 				cancelButton.method()
@@ -207,13 +209,15 @@ function EntityCreator.buildWidget(world)
 		local importButton = entityCreator.widget:getWindow("Exports/ImportButton") 
 		importButton:subscribeEvent("Clicked", function(args)
 			if importButton.filename then
+			
+			
 				local worldLoader = Ember.EntityImporter:new(emberServices:getServerService():getAccount())
 				local dumpStatusWindow = entityCreator.widget:getWindow("Exports/DumpStatus") 
 				
 				dumpStatusWindow:setText("Loading...")
 				createConnector(worldLoader.EventCompleted):connect(function()
 					dumpStatusWindow:setText("Done loading.")
-					cancelButton:setVisible(false)
+					activeOverlay:setVisible(false)
 					cancelButton.method = nil
 					worldLoader:delete()
 				end)
@@ -224,7 +228,7 @@ function EntityCreator.buildWidget(world)
 					worldLoader:cancel()
 					dumpStatusWindow:setText("Cancelled")
 				end
-				cancelButton:setVisible(true)
+				activeOverlay:setVisible(true)
 				worldLoader:start(importButton.filename)
 			end
 			return true
@@ -243,6 +247,11 @@ function EntityCreator.buildWidget(world)
 						if item:isSelected() then
 							importButton:setEnabled(true)
 							importButton.filename = info.filename
+							
+							local infoWidget = entityCreator.widget:getWindow("Exports/DetailsText")
+							local infoString = "Name: " .. info.name .. "\nDescription: " .. info.description .. "\nNumber of entities: " .. info.entityCount
+							infoWidget:setText(infoString) 
+							
 						end
 			
 						return true
