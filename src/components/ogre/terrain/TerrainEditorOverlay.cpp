@@ -154,6 +154,12 @@ void BasePointPickListener::processPickResult(bool& continuePicking, Ogre::RaySc
 	}
 }
 
+void BasePointPickListener::processDelayedPick(const MousePickerArgs& mousePickerArgs)
+{
+	//Don't process any delayed picks.
+}
+
+
 void BasePointPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
 {
 	//We will only react on press events, but we want do silence click and pressed events if they happen with our markers too.

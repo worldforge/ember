@@ -136,12 +136,24 @@ public:
 	 * @brief Processes the pick result.
 	 * This will be called for each picked object.
 	 * This is where you need to put your logic checking whether the picked object is something that your implementation knows how to handle. If you don't want any other listeners to then act on the object (which you in most cases don't want) you need to set the continuePicking argument to false.
+	 * Note that this will only be called for mouse press and hover events. All other picking actions will instead be called through the processDelayedPick.
+	 * This is because when clicking or pressing and holding, we actually want to act on the items selected when the user first pressed the mouse button.
 	 * @param continuePicking set this to false if you don't want to process any more pick results, or don't want any other IWorldPickListener to process the pick any more
 	 * @param entry The actual pick entry.
 	 * @param cameraRay The ray which resulted in the pick.
 	 * @param mousePickerArgs The original mouse picker arguments.
 	 */
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs) = 0;
+
+	/**
+	 * @brief Processes any delayed picks, such as clicking or pressing and holding.
+	 *
+	 * These events should act on the items selected when the mouse was first pressed down (in processPickResult).
+	 * If you intend to perform any action here, consider that any items selected in processPickResult might not exist any more, as many frames will have elapsed between calls to these two methods.
+	 * Thus, if you store any result to be acted upon here, make sure that it's a way in which you can assure that you won't be accessing invalid data.
+	 * @param mousePickerArgs The original mouse picker arguments.
+	 */
+	virtual void processDelayedPick(const MousePickerArgs& mousePickerArgs) = 0;
 
 };
 

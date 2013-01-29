@@ -62,6 +62,11 @@ void PolygonPointPickListener::processPickResult(bool& continuePicking, Ogre::Ra
 	}
 }
 
+void PolygonPointPickListener::processDelayedPick(const MousePickerArgs& mousePickerArgs) {
+	//We don't do any delayed selection
+}
+
+
 void PolygonPointPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
 {
 	//We will only react on press events, but we want do silence click and pressed events if they happen with our markers too.

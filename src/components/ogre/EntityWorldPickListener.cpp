@@ -89,7 +89,9 @@ EntityWorldPickListener::~EntityWorldPickListener()
 
 void EntityWorldPickListener::initializePickingContext(bool& willParticipate, unsigned int& queryMask, const MousePickerArgs& pickArgs)
 {
-	if (pickArgs.pickType == MPT_CLICK || pickArgs.pickType == MPT_HOVER || pickArgs.pickType == MPT_PRESSED) {
+	mResult.clear();
+	mPersistedResult.clear();
+	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_HOVER) {
 		willParticipate = true;
 
 		queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
@@ -99,17 +101,25 @@ void EntityWorldPickListener::initializePickingContext(bool& willParticipate, un
 
 		mClosestPickingDistance = 0;
 		mFurthestPickingDistance = 0;
-		mResult.clear();
 	}
 }
 
 void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePickerArgs)
 {
-	if (mResult.size()) {
-		std::stringstream ss;
-		ss << mResult.begin()->position;
-		S_LOG_VERBOSE("Picked " << mResult.size() << " entities at " << ss.str() << " distance: " << mResult.begin()->distance << ". Type of pick: " << mousePickerArgs.pickType);
+	if (!mResult.empty()) {
 		EventPickedEntity(mResult, mousePickerArgs);
+
+		if (mousePickerArgs.pickType != MPT_HOVER) {
+			mPersistedResult.reserve(mResult.size());
+			for (auto& resultEntry : mResult) {
+				PersistentEntityPickResult persistedEntry;
+				persistedEntry.entityRef = Eris::EntityRef(resultEntry.entity);
+				persistedEntry.distance = resultEntry.distance;
+				persistedEntry.isTransparent = resultEntry.isTransparent;
+				persistedEntry.position = resultEntry.position;
+				mPersistedResult.push_back(persistedEntry);
+			}
+		}
 	}
 }
 
@@ -120,7 +130,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 		//this is terrain
 		//a position of -1, -1, -1 is not valid terrain
 		Ogre::SceneQuery::WorldFragment* wf = entry.worldFragment;
-		static Ogre::Vector3 invalidPos(-1, -1, -1);
+		static const Ogre::Vector3 invalidPos(-1, -1, -1);
 		if (wf->singleIntersection != invalidPos) {
 
 			if (mFurthestPickingDistance == 0 || !mResult.size()) {
@@ -212,6 +222,29 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 				}
 			}
 		}
+	}
+}
+
+void EntityWorldPickListener::processDelayedPick(const MousePickerArgs& mousePickerArgs)
+{
+	if (!mPersistedResult.empty()) {
+		std::vector<EntityPickResult> resolvedResult;
+
+		for (auto& persistedEntry : mPersistedResult) {
+			if (persistedEntry.entityRef.get()) {
+				EntityPickResult entry;
+				entry.entity = static_cast<EmberEntity*>(persistedEntry.entityRef.get());
+				entry.distance = persistedEntry.distance;
+				entry.isTransparent = persistedEntry.isTransparent;
+				entry.position = persistedEntry.position;
+				resolvedResult.push_back(entry);
+			}
+		}
+
+		if (!resolvedResult.empty()) {
+			EventPickedEntity(resolvedResult, mousePickerArgs);
+		}
+
 	}
 }
 

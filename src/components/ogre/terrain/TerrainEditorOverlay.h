@@ -68,6 +68,8 @@ public:
 
 	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
 
+	virtual void processDelayedPick(const MousePickerArgs& mousePickerArgs);
+
 private:
 	TerrainEditorOverlay& mOverlay;
 	BasePointUserObject* mPickedUserObject;

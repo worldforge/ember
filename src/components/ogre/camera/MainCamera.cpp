@@ -183,51 +183,62 @@ void MainCamera::markCameraNodeAsDirty()
 
 void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePickerArgs& mousePickerArgs)
 {
-	// get the terrain vector for mouse coords when a pick event happens
-	//mAvatarTerrainCursor->getTerrainCursorPosition();
+	//Handle different pick requests differently.
+	//For mouse press and hover events, we want the listeners to perform a line check to see what's being picked.
+	//For all other pressed we however want the listeners to act on the previous results.
+	//The reason is that we want the user to have a great fidelity in picking, and even though there might be a short delay
+	//between pressing the mouse button and getting a selection menu, we want to present the items which were under the
+	//mouse at the time the mouse button was pressed.
+	if (mousePickerArgs.pickType == MPT_PRESS || mousePickerArgs.pickType == MPT_HOVER) {
+		//now check the entity picking
+		Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
+		bool continuePicking = true;
+		unsigned int queryMask = 0;
 
-	//now check the entity picking
-	Ogre::RaySceneQueryResult& queryResult = mCameraRaySceneQuery->getLastResults();
-	bool continuePicking = true;
-	unsigned int queryMask = 0;
-
-	WorldPickListenersStore participatingListeners;
-	for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
-		bool willParticipate = false;
-		unsigned int pickerQueryMask = 0;
-		(*I)->initializePickingContext(willParticipate, pickerQueryMask, mousePickerArgs);
-		if (willParticipate) {
-			queryMask |= pickerQueryMask;
-			participatingListeners.push_back(*I);
-		}
-	}
-
-	//Only perform picking if there are any participating pick listeners.
-	if (participatingListeners.size() != 0) {
-		mCameraRaySceneQuery->setQueryMask(queryMask);
-		// Start a new ray query
-		Ogre::Ray cameraRay = getCamera().getCameraToViewportRay(mouseX, mouseY);
-
-		mCameraRaySceneQuery->setRay(cameraRay);
-		mCameraRaySceneQuery->execute();
-
-		Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin();
-		Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end();
-		if (rayIterator != rayIterator_end) {
-			for (; rayIterator != rayIterator_end && continuePicking; rayIterator++) {
-				for (WorldPickListenersStore::iterator I = participatingListeners.begin(); I != participatingListeners.end(); ++I) {
-					(*I)->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
-					if (!continuePicking) {
-						break;
-					}
-				}
+		WorldPickListenersStore participatingListeners;
+		for (WorldPickListenersStore::iterator I = mPickListeners.begin(); I != mPickListeners.end(); ++I) {
+			bool willParticipate = false;
+			unsigned int pickerQueryMask = 0;
+			(*I)->initializePickingContext(willParticipate, pickerQueryMask, mousePickerArgs);
+			if (willParticipate) {
+				queryMask |= pickerQueryMask;
+				participatingListeners.push_back(*I);
 			}
 		}
 
-		for (WorldPickListenersStore::iterator I = participatingListeners.begin(); I != participatingListeners.end(); ++I) {
-			(*I)->endPickingContext(mousePickerArgs);
+		//Only perform picking if there are any participating pick listeners.
+		if (participatingListeners.size() != 0) {
+			mCameraRaySceneQuery->setQueryMask(queryMask);
+			// Start a new ray query
+			Ogre::Ray cameraRay = getCamera().getCameraToViewportRay(mouseX, mouseY);
+
+			mCameraRaySceneQuery->setRay(cameraRay);
+			mCameraRaySceneQuery->execute();
+
+			Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin();
+			Ogre::RaySceneQueryResult::iterator rayIterator_end = queryResult.end();
+			if (rayIterator != rayIterator_end) {
+				for (; rayIterator != rayIterator_end && continuePicking; rayIterator++) {
+					for (WorldPickListenersStore::iterator I = participatingListeners.begin(); I != participatingListeners.end(); ++I) {
+						(*I)->processPickResult(continuePicking, *rayIterator, cameraRay, mousePickerArgs);
+						if (!continuePicking) {
+							break;
+						}
+					}
+				}
+			}
+
+			for (WorldPickListenersStore::iterator I = participatingListeners.begin(); I != participatingListeners.end(); ++I) {
+				(*I)->endPickingContext(mousePickerArgs);
+			}
 		}
+	} else {
+		for (auto listener : mPickListeners) {
+			listener->processDelayedPick(mousePickerArgs);
+		}
+
 	}
+
 }
 
 void MainCamera::setClosestPickingDistance(Ogre::Real distance)

@@ -64,6 +64,8 @@ public:
 
 	virtual void endPickingContext(const MousePickerArgs& mousePickerArgs);
 
+	virtual void processDelayedPick(const MousePickerArgs& mousePickerArgs);
+
 	sigc::signal<void, PolygonPoint&> EventPickedPoint;
 
 private:

@@ -25,8 +25,9 @@
 
 #include "EmberOgrePrerequisites.h"
 #include "IWorldPickListener.h"
-#include <sigc++/signal.h>
 #include "framework/ConsoleObject.h"
+#include <Eris/EntityRef.h>
+#include <sigc++/signal.h>
 #include <memory>
 #include <vector>
 #include <OgreVector3.h>
@@ -52,6 +53,20 @@ class Scene;
 struct EntityPickResult
 {
 	EmberEntity* entity;
+	Ogre::Vector3 position;
+	Ogre::Real distance;
+	bool isTransparent;
+};
+
+/**
+ * @author Erik Ogenvik <erik@ogenvik.org>
+ * @brief Struct used for storing the last pick result.
+ *
+ * It uses entity refs to deal with entities being deleted between first pick and later actions.
+ */
+struct PersistentEntityPickResult
+{
+	Eris::EntityRef entityRef;
 	Ogre::Vector3 position;
 	Ogre::Real distance;
 	bool isTransparent;
@@ -92,6 +107,8 @@ public:
 
 	virtual void processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs);
 
+	virtual void processDelayedPick(const MousePickerArgs& mousePickerArgs);
+
 	sigc::signal<void, const std::vector<EntityPickResult>&, const MousePickerArgs&> EventPickedEntity;
 
 	const ConsoleCommandWrapper VisualizePicking;
@@ -106,6 +123,13 @@ public:
 protected:
 	float mClosestPickingDistance, mFurthestPickingDistance;
 	std::vector<EntityPickResult> mResult;
+
+	/**
+	 * @brief Store the last result.
+	 *
+	 * This uses entity refs to handle entities being deleted between the initial pick and us handling it.
+	 */
+	std::vector<PersistentEntityPickResult> mPersistedResult;
 
 	std::unique_ptr<EntityWorldPickListenerVisualizer> mVisualizer;
 
