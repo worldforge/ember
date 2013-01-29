@@ -1783,20 +1783,20 @@ private:
 #endif
 
 #ifndef FROM_TINYXML
-typedef TiXmlAttribute Ember::TiXmlAttribute;
-typedef TiXmlBase Ember::TiXmlBase;
-typedef TiXmlComment Ember::TiXmlComment;
-typedef TiXmlDeclaration Ember::TiXmlDeclaration;
-typedef TiXmlElement Ember::TiXmlElement;
-typedef TiXmlDocument Ember::TiXmlDocument;
-typedef TiXmlNode Ember::TiXmlNode;
-typedef TiXmlPrinter Ember::TiXmlPrinter;
-typedef TiXmlText Ember::TiXmlText;
-typedef TiXmlUnknown Ember::TiXmlUnknown;
-typedef TiXmlVisitor Ember::TiXmlVisitor;
-typedef TIXML_SUCCESS Ember::TIXML_SUCCESS;
-typedef TIXML_NO_ATTRIBUTE Ember::TIXML_NO_ATTRIBUTE;
-typedef TIXML_WRONG_TYPE Ember::TIXML_WRONG_TYPE;
+typedef Ember::TiXmlAttribute TiXmlAttribute;
+typedef Ember::TiXmlBase TiXmlBase;
+typedef Ember::TiXmlComment TiXmlComment;
+typedef Ember::TiXmlDeclaration TiXmlDeclaration;
+typedef Ember::TiXmlElement TiXmlElement;
+typedef Ember::TiXmlDocument TiXmlDocument;
+typedef Ember::TiXmlNode TiXmlNode;
+typedef Ember::TiXmlPrinter TiXmlPrinter;
+typedef Ember::TiXmlText TiXmlText;
+typedef Ember::TiXmlUnknown TiXmlUnknown;
+typedef Ember::TiXmlVisitor TiXmlVisitor;
+#define TIXML_SUCCESS Ember::TIXML_SUCCESS
+#define TIXML_NO_ATTRIBUTE Ember::TIXML_NO_ATTRIBUTE
+#define TIXML_WRONG_TYPE Ember::TIXML_WRONG_TYPE
 #endif
 
 #endif
