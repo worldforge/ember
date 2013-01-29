@@ -36,6 +36,7 @@ namespace Ember
 {
 class MainLoopController;
 class ConfigListenerContainer;
+class TimeFrame;
 
 namespace OgreView
 {
@@ -128,7 +129,7 @@ protected:
 	 *
 	 * This is used to determine whether a mouse "press" or "click" event should be emitted.
 	 */
-	long long mMousePressedStart;
+	TimeFrame* mMousePressedTimeFrame;
 
 	/**
 	 * @brief Listens for config changes.
