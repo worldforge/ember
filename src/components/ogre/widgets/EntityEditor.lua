@@ -1131,55 +1131,6 @@ function EntityEditor:buildWidget()
 				worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/entityexport/entityexport_" .. self.instance.entity:getId() .. ".xml", self.instance.entity:getId())
 				return true
 			end)
-
-			local importButton = self.widget:getWindow("LoadWorld") 
-			importButton:subscribeEvent("Clicked", function(args)
-				if importButton.filename then
-					local worldLoader = Ember.EntityImporter:new(emberServices:getServerService():getAccount())
-					self.widget:getWindow("DumpStatus"):setText("Loading...")
-					createConnector(worldLoader.EventCompleted):connect(function()
-						self.widget:getWindow("DumpStatus"):setText("Done loading.")
-						cancelButton:setVisible(false)
-						cancelButton.method = nil
-						worldLoader:delete()
-					end)
-					createConnector(worldLoader.EventProgress):connect(function(entitiesToLoad)
-						self.widget:getWindow("DumpStatus"):setText("Loading, " .. entitiesToLoad .. " left")
-					end)
-					cancelButton.method = function()
-						worldLoader:cancel()
-						self.widget:getWindow("DumpStatus"):setText("Cancelled")
-					end
-					cancelButton:setVisible(true)
-					worldLoader:start(importButton.filename)
-				end
-				return true
-			end)
-			
-			
-			local importList = CEGUI.toItemListbox(self.widget:getWindow("ImportList"))
-			local exports = Ember.EntityImporter:getInfoFromDirectory(emberServices:getConfigService():getHomeDirectory() .. "/entityexport")
-
-			if exports:size() > 0 then 
-				for i = 0, exports:size() - 1 do
-					local info = exports[i]
-					local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
-					item:setText(info.name)
-					
-					item:subscribeEvent("SelectionChanged", function(args)
-						if item:isSelected() then
-							importButton:setEnabled(true)
-							importButton.filename = info.filename
-						end
-			
-						return true
-					end
-					)
-					
-					importList:addItem(item)			
-				end
-			end
-			importButton:setEnabled(false)
 			
 		end
 		worldDumper()

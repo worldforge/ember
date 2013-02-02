@@ -171,11 +171,6 @@
                     <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
                     <Property Name='Text' Value='Export/Import' />
                     <Property Name='InheritsAlpha' Value='false' />
-                    <Window Type='EmberLook/ItemListbox' Name='ImportList'>
-                        <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-                        <Property Name='UnifiedSize' Value='{{0,200},{1,-25}}' />
-                        <Property Name='InheritsAlpha' Value='True' />
-                    </Window>
                     <Window Type='EmberLook/StaticText' Name='DumpStatus'>
                         <Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,20.0}}' />
                         <Property Name='UnifiedPosition' Value='{{0,0},{0,20}}' />
@@ -194,12 +189,6 @@
                         <Property Name='Text' Value='Export entity' />
                         <Property Name='Tooltip' Value='Exports the entity to a file on disk.' />
                         <Property Name='UnifiedPosition' Value='{{0,5},{1,-25}}' />
-                        <Property Name='UnifiedSize' Value='{{0,90},{0,20}}' />
-                    </Window>
-                    <Window Type='EmberLook/Button' Name='LoadWorld'>
-                        <Property Name='Text' Value='Import entity' />
-                        <Property Name='Tooltip' Value='Imports an entity from a file on disk.' />
-                        <Property Name='UnifiedPosition' Value='{{0,95},{1,-25}}' />
                         <Property Name='UnifiedSize' Value='{{0,90},{0,20}}' />
                     </Window>
                 </Window>
