@@ -28,8 +28,12 @@
 #include <Eris/Connection.h>
 #include <Eris/Response.h>
 #include <Eris/ServerInfo.h>
+#include <Eris/TypeService.h>
+#include <Eris/TypeInfo.h>
+#include <Eris/Avatar.h>
 
 #include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Message/MEncoder.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
@@ -38,6 +42,7 @@ using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Get;
 
 long integerId(const std::string & id)
@@ -80,6 +85,42 @@ void EntityExporter::dumpEntity(const RootEntity & ent)
 	mEntitiesEncoder->streamObjectsMessage(ent);
 }
 
+void EntityExporter::dumpMind(const std::string& entityId, const Operation & op)
+{
+	Atlas::Message::MapType entityMap;
+	entityMap["id"] = entityId;
+	Atlas::Message::ListType thoughts;
+	for (auto& thoughtOp : op->getArgs()) {
+		if (*thoughtOp->getParents().begin() == "thought") {
+			Atlas::Message::Element args = thoughtOp->getAttr("args");
+			thoughts.push_back(args);
+		}
+	}
+	entityMap["thoughts"] = thoughts;
+	mMindsEncoder->streamMessageElement(entityMap);
+}
+
+
+void EntityExporter::thoughtInfoArrived(const Operation & op)
+{
+	S_LOG_VERBOSE("Got thought info when dumping.");
+
+	std::map<int, std::string>::const_iterator I = mThoughtsOutstanding.find(op->getRefno());
+	if (I == mThoughtsOutstanding.end()) {
+		S_LOG_WARNING("Got unrecognized thought info.");
+		return;
+	}
+	const std::string entityId = I->second;
+	mOutstandingGetRequestCounter--;
+
+	dumpMind(entityId, op);
+
+	if (mQueue.empty() && mOutstandingGetRequestCounter == 0) {
+		complete();
+		return;
+	}
+}
+
 void EntityExporter::infoArrived(const Operation & op)
 {
 	if (op->isDefaultRefno()) {
@@ -113,6 +154,27 @@ void EntityExporter::infoArrived(const Operation & op)
 		mQueue.push_back(*I);
 	}
 
+	Eris::TypeInfo* characterTypeInfo = mAccount.getConnection()->getTypeService()->getTypeByName("character");
+	Eris::TypeInfo* entityType = mAccount.getConnection()->getTypeService()->getTypeByName(ent->getParentsAsList().begin()->asString());
+	if (entityType->isA(characterTypeInfo)) {
+		Get get;
+
+		Anonymous get_arg;
+		get_arg->setObjtype("thought");
+		get_arg->setId(ent->getId());
+
+		get->setArgs1(get_arg);
+		get->setFrom(mAccount.getId());
+		get->setSerialno(Eris::getNewSerialno());
+
+		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetThoughtResult);
+		mAccount.getConnection()->send(get);
+		mThoughtsOutstanding.insert(std::make_pair(get->getSerialno(), ent->getId()));
+		mOutstandingGetRequestCounter++;
+
+
+	}
+
 	if (mQueue.empty() && mOutstandingGetRequestCounter == 0) {
 		complete();
 		return;
@@ -126,22 +188,24 @@ void EntityExporter::infoArrived(const Operation & op)
 		Anonymous get_arg;
 		get_arg->setObjtype("obj");
 		get_arg->setId(mQueue.front());
-		get->setArgs1(get_arg);
 
+		get->setArgs1(get_arg);
 		get->setFrom(mAccount.getId());
 		get->setSerialno(Eris::getNewSerialno());
 
-		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operation);
+		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetResult);
 		mAccount.getConnection()->send(get);
 
-		mQueue.pop_front();
 		mOutstandingGetRequestCounter++;
+
+		mQueue.pop_front();
 	}
 }
 
 void EntityExporter::complete()
 {
 	mEntitiesEncoder->streamEnd();
+	mMindsEncoder->streamEnd();
 
 	mXmlDocument->SaveFile();
 	mComplete = true;
@@ -190,6 +254,13 @@ void EntityExporter::start(const std::string& filename, const std::string& entit
 
 	mEntitiesEncoder->streamBegin();
 
+
+	mMindsDecoder = new Atlas::Message::QueuedDecoder;
+	mMindsCodec = new TinyXmlCodec(*mindsNode, *mMindsDecoder);
+	mMindsEncoder = new Atlas::Message::Encoder(*mMindsCodec);
+
+	mMindsEncoder->streamBegin();
+
 	// Send a get for the requested object
 	mOutstandingGetRequestCounter++;
 	Get get;
@@ -201,16 +272,25 @@ void EntityExporter::start(const std::string& filename, const std::string& entit
 
 	get->setFrom(mAccount.getId());
 	get->setSerialno(Eris::getNewSerialno());
-	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operation);
+	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetResult);
 	mAccount.getConnection()->send(get);
 
 }
 
-void EntityExporter::operation(const Operation & op)
+void EntityExporter::operationGetResult(const Operation & op)
 {
 	if (!mCancelled) {
 		if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
 			infoArrived(op);
+		}
+	}
+}
+
+void EntityExporter::operationGetThoughtResult(const Operation & op)
+{
+	if (!mCancelled) {
+		if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+			thoughtInfoArrived(op);
 		}
 	}
 }

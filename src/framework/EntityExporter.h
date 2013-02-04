@@ -27,6 +27,7 @@
 #include <list>
 #include <vector>
 #include <fstream>
+#include <map>
 
 class TiXmlDocument;
 
@@ -43,6 +44,7 @@ class ObjectsEncoder;
 namespace Message
 {
 class QueuedDecoder;
+class Encoder;
 }
 }
 
@@ -121,10 +123,14 @@ protected:
 
 	Eris::Account& mAccount;
 	std::list<std::string> mQueue;
+	std::map<int, std::string> mThoughtsOutstanding;
 	int mCount;
 	Atlas::Codec* mEntitiesCodec;
+	Atlas::Codec* mMindsCodec;
 	Atlas::Objects::ObjectsEncoder* mEntitiesEncoder;
+	Atlas::Message::Encoder* mMindsEncoder;
 	Atlas::Message::QueuedDecoder* mEntitiesDecoder;
+	Atlas::Message::QueuedDecoder* mMindsDecoder;
 
 	/**
 	 * @brief The resulting xml document.
@@ -150,8 +156,11 @@ protected:
 	size_t mOutstandingGetRequestCounter;
 
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
+	void dumpMind(const std::string& entityId, const Operation & op);
 	void infoArrived(const Operation& op);
-	void operation(const Operation& op);
+	void thoughtInfoArrived(const Operation& op);
+	void operationGetResult(const Operation& op);
+	void operationGetThoughtResult(const Operation& op);
 
 	/**
 	 * @brief Call this when the dumping is complete.
