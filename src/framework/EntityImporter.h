@@ -108,6 +108,9 @@ protected:
 	int m_updateCount;
 	int m_createCount;
 	std::map<std::string, Atlas::Objects::Root> m_objects;
+	std::map<std::string, Atlas::Objects::Root> mMinds;
+	std::map<long, Atlas::Objects::Root> mCreateMindMapping;
+	std::vector<std::pair<std::string, Atlas::Objects::Root>> mResolvedMindMapping;
 	enum
 	{
 		INIT, UPDATING, CREATING, WALKING, CANCEL, CANCELLED
@@ -120,6 +123,7 @@ protected:
 
 	void getEntity(const std::string & id, OpVector & res);
 	void walk(OpVector & res);
+	void sendMinds(OpVector & res);
 	void create(const Atlas::Objects::Entity::RootEntity & obj, OpVector & res);
 
 	void errorArrived(const Operation &, OpVector & res);

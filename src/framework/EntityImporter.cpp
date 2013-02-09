@@ -83,33 +83,72 @@ void EntityImporter::getEntity(const std::string & id, OpVector & res)
 
 void EntityImporter::walk(OpVector & res)
 {
-	assert(!m_treeStack.empty());
-	StackEntry & current = m_treeStack.back();
-	if (current.obj->getContains().empty()) {
-		// Pop: Go back to WALKING parent
-		assert(!m_treeStack.empty());
-		m_treeStack.pop_back();
-		while (!m_treeStack.empty()) {
-			StackEntry & se = m_treeStack.back();
-			++se.child;
-			if (se.child != se.obj->getContains().end()) {
-				getEntity(*se.child, res);
-				break;
-			}
-			m_treeStack.pop_back();
-		}
-		if (m_treeStack.empty()) {
-			S_LOG_INFO("Restore done.");
-			S_LOG_INFO("Restored " << m_count << ", created:" << m_createCount << ", updated:" << m_updateCount << ".");
-			EventCompleted.emit();
-		}
+	if (m_treeStack.empty()) {
+		sendMinds(res);
 	} else {
-		// Start WALKING the current entity
-		assert(current.child == current.obj->getContains().end());
-		current.child = current.obj->getContains().begin();
-		assert(current.child != current.obj->getContains().end());
+		StackEntry & current = m_treeStack.back();
+		if (current.obj->getContains().empty()) {
+			// Pop: Go back to WALKING parent
+			assert(!m_treeStack.empty());
+			m_treeStack.pop_back();
+			while (!m_treeStack.empty()) {
+				StackEntry & se = m_treeStack.back();
+				++se.child;
+				if (se.child != se.obj->getContains().end()) {
+					getEntity(*se.child, res);
+					break;
+				}
+				m_treeStack.pop_back();
+			}
+			if (m_treeStack.empty()) {
+				sendMinds(res);
+			}
+		} else {
+			// Start WALKING the current entity
+			assert(current.child == current.obj->getContains().end());
+			current.child = current.obj->getContains().begin();
+			assert(current.child != current.obj->getContains().end());
 
-		getEntity(*current.child, res);
+			getEntity(*current.child, res);
+		}
+	}
+}
+
+void EntityImporter::sendMinds(OpVector & res)
+{
+	if (mResolvedMindMapping.empty()) {
+		S_LOG_INFO("Restore done.");
+		S_LOG_INFO("Restored " << m_count << ", created:" << m_createCount << ", updated:" << m_updateCount << ".");
+		EventCompleted.emit();
+	} else if (!mResolvedMindMapping.empty()) {
+		for (auto mind : mResolvedMindMapping) {
+			Atlas::Message::MapType message;
+			mind.second->addToMessage(message);
+
+			Atlas::Message::Element thoughtsElem = message["thoughts"];
+			Atlas::Message::ListType thoughtArgs;
+
+			if (thoughtsElem.isList()) {
+				Atlas::Message::ListType thoughtList = thoughtsElem.asList();
+
+				for (auto thought : thoughtList) {
+					thoughtArgs.push_back(thought);
+				}
+			}
+			Anonymous thoughtOp;
+			thoughtOp->setAttr("args", thoughtArgs);
+			thoughtOp->setObjtype("thought");
+			thoughtOp->setId(mind.first);
+
+			Set set;
+			set->setArgs1(thoughtOp);
+			set->setFrom(mAccount.getId());
+//			set->setTo(mind.first);
+			set->setSerialno(Eris::getNewSerialno());
+
+			res.push_back(set);
+		}
+		mResolvedMindMapping.clear();
 	}
 }
 
@@ -138,6 +177,11 @@ void EntityImporter::create(const RootEntity & obj, OpVector & res)
 	create->setArgs1(create_arg);
 	create->setFrom(mAccount.getActiveCharacters().begin()->second->getId());
 	create->setSerialno(Eris::getNewSerialno());
+
+	auto mindI = mMinds.find(obj->getId());
+	if (mindI != mMinds.end()) {
+		mCreateMindMapping.insert(std::make_pair(create->getSerialno(), mindI->second));
+	}
 
 	res.push_back(create);
 }
@@ -190,6 +234,11 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 		StackEntry & current = m_treeStack.back();
 		current.restored_id = created->getId();
 		S_LOG_VERBOSE("Created: " << created->getParents().front() << "(" << created->getId() << ")");
+		auto I = mCreateMindMapping.find(op->getRefno());
+		if (I != mCreateMindMapping.end()) {
+			mResolvedMindMapping.push_back(std::make_pair(created->getId(), I->second));
+			mCreateMindMapping.erase(op->getRefno());
+		}
 		walk(res);
 	} else if (m_state == WALKING) {
 		const Root & arg = op->getArgs().front();
@@ -228,6 +277,11 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 			set->setSerialno(Eris::getNewSerialno());
 
 			res.push_back(set);
+
+			auto mindI = mMinds.find(obj->getId());
+			if (mindI != mMinds.end()) {
+				mResolvedMindMapping.push_back(std::make_pair(obj->getId(), mindI->second));
+			}
 
 			++m_count;
 			++m_updateCount;
@@ -296,10 +350,11 @@ void EntityImporter::start(const std::string& filename)
 	}
 
 	//We'll handle both raw atlas dumps as well as complete entity dumps (where the latter also includes minds and meta data).
-	TiXmlElement* atlasElem = nullptr;
+	TiXmlElement* entitiesAtlasElem = nullptr;
+	TiXmlElement* mindsAtlasElem = nullptr;
 
 	if (xmlDoc.RootElement()->ValueStr() == "atlas") {
-		atlasElem = xmlDoc.RootElement();
+		entitiesAtlasElem = xmlDoc.RootElement();
 	} else {
 
 		TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
@@ -309,18 +364,33 @@ void EntityImporter::start(const std::string& filename)
 			return;
 		}
 
-		atlasElem = entitiesElem->FirstChildElement("atlas");
+		entitiesAtlasElem = entitiesElem->FirstChildElement("atlas");
+
+		TiXmlElement* mindsElem = xmlDoc.RootElement()->FirstChildElement("minds");
+
+		if (mindsElem) {
+			mindsAtlasElem = mindsElem->FirstChildElement("atlas");
+		}
 	}
 
-	if (!atlasElem) {
+	if (!entitiesAtlasElem) {
 		EventCompleted.emit();
 		return;
 	}
 
-	AtlasMessageLoader loader(m_objects);
-	TinyXmlCodec codec(*atlasElem, loader);
+	{
+		AtlasMessageLoader loader(m_objects);
+		TinyXmlCodec codec(*entitiesAtlasElem, loader);
 
-	codec.poll(true);
+		codec.poll(true);
+	}
+	if (mindsAtlasElem) {
+
+		AtlasMessageLoader loader(mMinds);
+		TinyXmlCodec codec(*mindsAtlasElem, loader);
+
+		codec.poll(true);
+	}
 
 	S_LOG_INFO("Starting loading of world. Number of objects: " << m_objects.size());
 
