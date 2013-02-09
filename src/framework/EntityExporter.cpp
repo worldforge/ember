@@ -114,10 +114,35 @@ void EntityExporter::thoughtInfoArrived(const Operation & op)
 	mOutstandingGetRequestCounter--;
 
 	dumpMind(entityId, op);
+	pollQueue();
 
+}
+
+void EntityExporter::pollQueue() {
 	if (mQueue.empty() && mOutstandingGetRequestCounter == 0) {
 		complete();
 		return;
+	}
+
+	//Make sure that no more than 5 outstanding get requests are currently sent to the server.
+	//The main reason for us not wanting more is that we then run the risk of overflowing the server connection (which will then be dropped).
+	while (mOutstandingGetRequestCounter < 5 && !mQueue.empty()) {
+		Get get;
+
+		Anonymous get_arg;
+		get_arg->setObjtype("obj");
+		get_arg->setId(mQueue.front());
+
+		get->setArgs1(get_arg);
+		get->setFrom(mAccount.getId());
+		get->setSerialno(Eris::getNewSerialno());
+
+		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetResult);
+		mAccount.getConnection()->send(get);
+
+		mOutstandingGetRequestCounter++;
+
+		mQueue.pop_front();
 	}
 }
 
@@ -171,35 +196,11 @@ void EntityExporter::infoArrived(const Operation & op)
 		mAccount.getConnection()->send(get);
 		mThoughtsOutstanding.insert(std::make_pair(get->getSerialno(), ent->getId()));
 		mOutstandingGetRequestCounter++;
-
+		S_LOG_VERBOSE("Sending request for thoughts.");
 
 	}
 
-	if (mQueue.empty() && mOutstandingGetRequestCounter == 0) {
-		complete();
-		return;
-	}
-
-	//Make sure that no more than 5 outstanding get requests are currently sent to the server.
-	//The main reason for us not wanting more is that we then run the risk of overflowing the server connection (which will then be dropped).
-	while (mOutstandingGetRequestCounter < 5 && !mQueue.empty()) {
-		Get get;
-
-		Anonymous get_arg;
-		get_arg->setObjtype("obj");
-		get_arg->setId(mQueue.front());
-
-		get->setArgs1(get_arg);
-		get->setFrom(mAccount.getId());
-		get->setSerialno(Eris::getNewSerialno());
-
-		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetResult);
-		mAccount.getConnection()->send(get);
-
-		mOutstandingGetRequestCounter++;
-
-		mQueue.pop_front();
-	}
+	pollQueue();
 }
 
 void EntityExporter::complete()

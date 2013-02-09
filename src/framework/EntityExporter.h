@@ -162,6 +162,8 @@ protected:
 	void operationGetResult(const Operation& op);
 	void operationGetThoughtResult(const Operation& op);
 
+	void pollQueue();
+
 	/**
 	 * @brief Call this when the dumping is complete.
 	 *
