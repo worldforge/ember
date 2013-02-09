@@ -135,9 +135,9 @@ void EntityImporter::sendMinds(OpVector & res)
 					thoughtArgs.push_back(thought);
 				}
 			}
-			Anonymous thoughtOp;
+			Operation thoughtOp;
 			thoughtOp->setAttr("args", thoughtArgs);
-			thoughtOp->setObjtype("thought");
+			thoughtOp->setParents({"thought"});
 			thoughtOp->setId(mind.first);
 
 			Set set;

@@ -93,7 +93,11 @@ void EntityExporter::dumpMind(const std::string& entityId, const Operation & op)
 	for (auto& thoughtOp : op->getArgs()) {
 		if (*thoughtOp->getParents().begin() == "thought") {
 			Atlas::Message::Element args = thoughtOp->getAttr("args");
-			thoughts.push_back(args);
+			if (args.isList()) {
+				for (auto thought : args.asList()) {
+					thoughts.push_back(thought);
+				}
+			}
 		}
 	}
 	entityMap["thoughts"] = thoughts;
@@ -184,8 +188,8 @@ void EntityExporter::infoArrived(const Operation & op)
 	if (entityType->isA(characterTypeInfo)) {
 		Get get;
 
-		Anonymous get_arg;
-		get_arg->setObjtype("thought");
+		Operation get_arg;
+		get_arg->setParents({"thought"});
 		get_arg->setId(ent->getId());
 
 		get->setArgs1(get_arg);
