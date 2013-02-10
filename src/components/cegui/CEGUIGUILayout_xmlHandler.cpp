@@ -202,7 +202,8 @@ void GUILayout_xmlHandler::elementWindowStart(const XMLAttributes& attributes)
     // attempt to create window
     CEGUI_TRY
     {
-        Window* wnd = WindowManager::getSingleton().createWindow(windowType, d_namingPrefix + windowName);
+    	//Ember change: Don't prepend the prefix if the window name is empty; since then we want to use an automatically generated name instead.
+        Window* wnd = WindowManager::getSingleton().createWindow(windowType, windowName.empty() ? windowName : d_namingPrefix + windowName);
 
         // add this window to the current parent (if any)
         if (!d_stack.empty())
