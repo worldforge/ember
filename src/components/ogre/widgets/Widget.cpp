@@ -28,9 +28,13 @@
 #include "Widget.h"
 
 #include "../GUIManager.h"
-#include "services/input/Input.h"
 #include "../EmberOgre.h"
+
+#include "components/cegui/LayoutLoader.h"
+
+#include "services/input/Input.h"
 #include "framework/Exception.h"
+#include "framework/ConsoleBackend.h"
 
 #include <CEGUIWindow.h>
 #include <CEGUIExceptions.h>
@@ -38,7 +42,6 @@
 #include <elements/CEGUIFrameWindow.h>
 #include <elements/CEGUIPushButton.h>
 
-#include "framework/ConsoleBackend.h"
 
 using namespace CEGUI;
 namespace Ember {
@@ -83,13 +86,12 @@ namespace Gui {
 		return mGuiManager->getMainSheet();
 	}
 
-
 	CEGUI::Window* Widget::loadMainSheet(const std::string& filename, const std::string& prefix) {
 		assert(mWindowManager && "You must call init() before you can call any other methods.");
 		mPrefix = prefix;
 		std::string finalFileName(mGuiManager->getLayoutDir() + filename);
 		try {
-			mMainWindow = mWindowManager->loadWindowLayout(finalFileName, prefix);
+			mMainWindow = Cegui::LayoutLoader::loadWindowLayout(finalFileName, prefix);
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when loading from " << filename << "." << ex);
 			throw ex;
