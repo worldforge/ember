@@ -100,8 +100,10 @@ void EntityExporter::dumpMind(const std::string& entityId, const Operation & op)
 			}
 		}
 	}
-	entityMap["thoughts"] = thoughts;
-	mMindsEncoder->streamMessageElement(entityMap);
+	if (!thoughts.empty()) {
+		entityMap["thoughts"] = thoughts;
+		mMindsEncoder->streamMessageElement(entityMap);
+	}
 }
 
 
