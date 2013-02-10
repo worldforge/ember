@@ -139,8 +139,8 @@ end
 function EntityCreator:shutdown()
 	guiManager:destroyWidget(self.widget)
 	deleteSafe(self.helper)
-	if entityCreator.typesCreator then
-		deleteSafe(entityCreator.typesCreator.helper)
+	if self.typesCreator then
+		deleteSafe(self.typesCreator.helper)
 	end
 	disconnectAll(self.connectors)
 end
