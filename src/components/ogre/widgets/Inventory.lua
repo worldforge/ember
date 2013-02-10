@@ -277,6 +277,20 @@ function Inventory:buildWidget(avatarEntity)
 	end
 	connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)
 	
+	--The icon container will create a child window with the suffix "__auto_container__" which will catch all events. We need to attach to that.
+	local iconContainer_inner = self.widget:getWindow("IconContainer__auto_container__");
+	
+	self.IconContainerDragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget:new(iconContainer_inner)
+	connect(self.connectors, self.IconContainerDragDrop.EventIconDropped, function(entityIcon)
+		if entityIcon ~= nil then
+			if entityIcon:getEntity() ~= nil then
+				local slotWrapper = self:getFreeSlot()
+				slotWrapper.entityIconDropped(entityIcon)
+			end
+		end
+	end)
+	
+	
 	
 	self.menu.container:setVisible(true)
 	
@@ -467,6 +481,7 @@ function Inventory:shutdown()
 	disconnectAll(self.connectors)
 	deleteSafe(self.helper)
 	deleteSafe(self.DragDrop)
+	deleteSafe(self.IconContainerDragDrop)
 	if self.doll ~= nil then
 		if deleteSafe(self.doll.renderer) then
 			self.doll.rightHand.shutdown()
