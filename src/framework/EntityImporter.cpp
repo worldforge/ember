@@ -137,7 +137,7 @@ void EntityImporter::sendMinds(OpVector & res)
 			}
 			Operation thoughtOp;
 			thoughtOp->setAttr("args", thoughtArgs);
-			thoughtOp->setParents({"thought"});
+			thoughtOp->setParents( { "thought" });
 			thoughtOp->setId(mind.first);
 
 			Set set;
@@ -493,6 +493,11 @@ std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(cons
 		infos.push_back(info);
 
 	}
+
+	//Sort by name
+	std::sort(infos.begin(), infos.end(), [](const ShortInfo& a, const ShortInfo& b) {
+		return a.name < b.name;
+	});
 	return infos;
 }
 }
