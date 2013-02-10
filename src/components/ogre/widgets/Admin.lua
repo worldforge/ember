@@ -129,23 +129,23 @@ function Admin:buildWidget()
 		self.popup = CEGUI.toPopupMenu(windowManager:createWindow("EmberLook/PopupMenu"))
 		self.popup:subscribeEvent("MouseLeave", self.popupMenu_MouseLeaves, self)
 		
-		self:addMenuItem("Model editor", self.ModelEditor_Click, "Shows the model editor.")
-		self:addMenuItem("Terrain editor", self.TerrainEditor_Click, "Shows the terrain editor.")
-		self:addMenuItem("Switch camera", self.SwitchCamera_Click, "Switches camera mode between free flying and attached to the avatar.")
-		self:addMenuItem("Entity creator", self.EntityCreator_Click, "Shows the entity creator.")
-		self:addMenuItem("Script editor", self.ScriptEditor_Click, "Shows the script editor.")
-		self:addMenuItem("Entity browser", self.EntityBrowser_Click, "Shows the entity browser.")
 		self:addMenuItem("Assets manager", self.AssetsManager_Click, "Shows the assets manager.")
-		self:addMenuItem("Picking info", self.PickingInfo_Click, "Shows mouse picking info.")
+		self:addMenuItem("Entity creator", self.EntityCreator_Click, "Shows the entity creator.")
+		self:addMenuItem("Entity browser", self.EntityBrowser_Click, "Shows the entity browser.")
 		self:addMenuItem("Environment", self.Environment_Click, "Shows environment widget.")
+		self:addMenuItem("Model editor", self.ModelEditor_Click, "Shows the model editor.")
 		self:addMenuItem("Network log", self.NetworkLog_Click, "Shows network log widget.")
-		self:addMenuItem("Visualize entities", self.VisualizeEntities_Click, "Visualizes entities.")
+		self:addMenuItem("Picking info", self.PickingInfo_Click, "Shows mouse picking info.")
+		self:addMenuItem("Script editor", self.ScriptEditor_Click, "Shows the script editor.")
+		self:addMenuItem("Switch camera", self.SwitchCamera_Click, "Switches camera mode between free flying and attached to the avatar.")
+		self:addMenuItem("Terrain editor", self.TerrainEditor_Click, "Shows the terrain editor.")
 		self:addMenuItem("Type manager", 
 			function(args)
 				console:runCommand("/show_typeManager")
 				return true
 			end,
 			"Manage server types.")
+		self:addMenuItem("Visualize entities", self.VisualizeEntities_Click, "Visualizes entities.")
 		
 	
 		root:addChildWindow(self.popup)
