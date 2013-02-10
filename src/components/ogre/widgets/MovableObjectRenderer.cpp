@@ -97,7 +97,7 @@ MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image) :
 
 MovableObjectRenderer::~MovableObjectRenderer()
 {
-	if (mImage) {
+	if (mImage && mImage->isPropertyPresent("Image")) {
 		mImage->setProperty("Image", "");
 	}
 	if (mTexture && mWindowUpdater) {
