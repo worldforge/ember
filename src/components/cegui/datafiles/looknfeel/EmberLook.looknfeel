@@ -3743,8 +3743,8 @@
         <PropertyDefinition name="TextPadding" initialValue="0" redrawOnWrite="true" />
         <PropertyDefinition name="HorzFormatting" initialValue="LeftAligned" redrawOnWrite="true" />
         <PropertyDefinition name="VertFormatting" initialValue="CentreAligned" redrawOnWrite="true" />
-        <Property name="BackgroundEnabled" value="True" />
-        <Property name="FrameEnabled" value="True" />
+        <Property name="BackgroundEnabled" value="False" />
+        <Property name="FrameEnabled" value="False" />
         <ImagerySection name="label">
             <TextComponent>
                 <Area>
@@ -3836,8 +3836,8 @@
         <PropertyDefinition name="BackgroundColours" initialValue="tl:FFDFDFDF tr:FFDFDFDF bl:FFDFDFDF br:FFDFDFDF" redrawOnWrite="true" />
         <PropertyDefinition name="VertFormatting" initialValue="Stretched" redrawOnWrite="true" />
         <PropertyDefinition name="HorzFormatting" initialValue="Stretched" redrawOnWrite="true" />
-        <Property name="BackgroundEnabled" value="True" />
-        <Property name="FrameEnabled" value="True" />
+        <Property name="BackgroundEnabled" value="False" />
+        <Property name="FrameEnabled" value="False" />
         <ImagerySection name="image_withframe">
             <ImageryComponent>
                 <Area>
@@ -3952,9 +3952,9 @@
 		<PropertyLinkDefinition name="VertScrollPageSize" widget="__auto_vscrollbar__" targetProperty="PageSize" />
 		<PropertyLinkDefinition name="VertScrollDocumentSize" widget="__auto_vscrollbar__" targetProperty="DocumentSize" />
 		
-        <Property name="BackgroundEnabled" value="True" />
+        <Property name="BackgroundEnabled" value="False" />
 		<Property name="BackgroundColours" value="tl:FFe2d5c0 tr:FFe2d5c0 bl:FFe2d5c0 br:FFe2d5c0" />
-        <Property name="FrameEnabled" value="True" />
+        <Property name="FrameEnabled" value="False" />
         <Property name="TextColours" value="tl:FF000000 tr:FF000000 bl:FF000000 br:FF000000" />
         <NamedArea name="WithFrameTextRenderArea">
             <Area>
