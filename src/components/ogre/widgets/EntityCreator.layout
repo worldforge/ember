@@ -115,9 +115,11 @@
                         <Property Name='InheritsAlpha' Value='True'/>
                     </Window>
                 </Window>               
-                <Window Type='EmberLook/StaticImage' Name='Exports/ActiveOverlay'>
+                <Window Type='EmberLook/StaticText' Name='Exports/ActiveOverlay'>
                     <Property Name='Visible' Value='false' />
-                    <Property Name='Alpha' Value='0.5' />
+                    <Property Name='BackgroundEnabled' Value='true' />
+                    <Property Name='FrameEnabled' Value='false' />
+                    <Property Name='AlwaysOnTop' Value='true' />
                     <Window Type='EmberLook/StaticText' Name='Exports/DumpStatus'>
                         <Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,20.0}}' />
                         <Property Name='UnifiedPosition' Value='{{0,0},{0,20}}' />
