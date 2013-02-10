@@ -36,8 +36,8 @@
 
 #include "camera/MainCamera.h"
 #include "gui/ActiveWidgetHandler.h"
-#include "gui/CEGUILogger.h"
-#include "gui/ColouredRenderedStringParser.h"
+#include "components/cegui/CEGUILogger.h"
+#include "components/cegui/ColouredRenderedStringParser.h"
 #include "gui/CursorWorldListener.h"
 
 #include "components/lua/LuaScriptingProvider.h"
@@ -92,7 +92,7 @@ namespace OgreView
 unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController) :
-		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Gui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0)
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Cegui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0)
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -143,7 +143,7 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 			throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
 
-		mRenderedStringParser = new Gui::ColouredRenderedStringParser();
+		mRenderedStringParser = new Cegui::ColouredRenderedStringParser();
 		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser);
 		mWindowManager = &CEGUI::WindowManager::getSingleton();
 

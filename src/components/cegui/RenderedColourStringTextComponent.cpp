@@ -57,9 +57,7 @@ using namespace CEGUI;
 
 namespace Ember
 {
-namespace OgreView
-{
-namespace Gui
+namespace Cegui
 {
 
 RenderedColourStringTextComponent::RenderedColourStringTextComponent() :
@@ -137,7 +135,6 @@ RenderedStringTextComponent* RenderedColourStringTextComponent::split(float spli
 	d_text = d_text.substr(rhs_start);
 
 	return lhs;
-}
 }
 }
 }

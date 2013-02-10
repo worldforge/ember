@@ -27,9 +27,7 @@
 #include "services/config/ConfigListenerContainer.h"
 
 namespace Ember {
-namespace OgreView {
-
-namespace Gui {
+namespace Cegui {
 
 /**
 	An implementation of the CEGUI::Logger interface which will reroute all CEGUI log messages to the main Ember logging service instead.
@@ -81,8 +79,6 @@ private:
 
 
 };
-
-}
 
 }
 

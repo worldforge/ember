@@ -27,7 +27,7 @@ libEmberOgre_a_SOURCES = \
 	environment/OceanRepresentation.cpp environment/OceanAction.cpp environment/SimpleWaterCollisionDetector.cpp \
 	environment/ExclusiveImposterPage.cpp environment/WorldRepresentation.cpp environment/WorldAction.cpp \
 	environment/FoliageDetailManager.cpp \
-	gui/ActiveWidgetHandler.cpp gui/CEGUILogger.cpp gui/RenderedColourStringTextComponent.cpp gui/ColouredRenderedStringParser.cpp gui/CursorWorldListener.cpp \
+	gui/ActiveWidgetHandler.cpp gui/CursorWorldListener.cpp \
 \
 	lod/EmberOgreMesh.cpp lod/EmberOgreMeshManager.cpp lod/EmberOgreRoot.cpp lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/OgreSmallVector.cpp lod/ProgressiveMeshGenerator.cpp lod/QueuedProgressiveMeshGenerator.cpp lod/XMLLodDefinitionSerializer.cpp lod/PMInjectorSignaler.cpp \
 \
@@ -126,7 +126,7 @@ noinst_HEADERS = \
 	environment/OceanAction.h environment/SimpleWaterCollisionDetector.h environment/ExclusiveImposterPage.h environment/IEnvironmentProvider.h \
 	environment/WorldRepresentation.h environment/WorldAction.h \
 \
-	gui/ActiveWidgetHandler.h gui/CEGUILogger.h gui/RenderedColourStringTextComponent.h gui/ColouredRenderedStringParser.h gui/CursorWorldListener.h \
+	gui/ActiveWidgetHandler.h gui/CursorWorldListener.h \
 \
 	lod/EmberOgreMesh.h lod/EmberOgreMeshManager.h lod/EmberOgreRoot.h lod/LodDefinition.h lod/LodDefinitionManager.h lod/LodManager.h lod/OgreSmallVector.h lod/ProgressiveMeshGenerator.h lod/QueuedProgressiveMeshGenerator.h lod/XMLLodDefinitionSerializer.h  lod/PMInjectorSignaler.h lod/LodConfig.h \
 \

@@ -1,8 +1,10 @@
-INCLUDES = -I$(top_srcdir)/src
+INCLUDES = -I$(top_srcdir)/src -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 METASOURCES = AUTO
 
-
-
+noinst_LIBRARIES = libCEGUI.a
+libCEGUI_a_SOURCES = CEGUILogger.cpp RenderedColourStringTextComponent.cpp ColouredRenderedStringParser.cpp
+noinst_HEADERS = CEGUILogger.h RenderedColourStringTextComponent.h ColouredRenderedStringParser.h
+	
 ceguifontsdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/fonts
 ceguiimagesetsdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/imagesets
 ceguilayoutsdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/layouts

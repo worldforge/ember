@@ -63,6 +63,12 @@ namespace Domain
 {
 class EntityTalk;
 }
+namespace Cegui
+{
+class ColouredRenderedStringParser;
+class CEGUILogger;
+
+}
 namespace OgreView
 {
 
@@ -73,13 +79,11 @@ class World;
 
 namespace Gui
 {
-class ColouredRenderedStringParser;
 class QuickHelp;
 class Widget;
 class EntityIconManager;
 class ActionBarIconManager;
 class ActiveWidgetHandler;
-class CEGUILogger;
 class EntityTooltip;
 class CursorWorldListener;
 namespace Icons
@@ -392,14 +396,14 @@ protected:
 	/**
 	 * @brief We'll provide our own CEGUI logger instance, which will route all cegui log messages to the main ember log.
 	 */
-	Gui::CEGUILogger* mCEGUILogger;
+	Cegui::CEGUILogger* mCEGUILogger;
 
 	/**
 	 * @brief An instance of our own CEGUI RenderedStringParser which will better handle coloured strings.
 	 *
 	 * Owner by this instance.
 	 */
-	Gui::ColouredRenderedStringParser* mRenderedStringParser;
+	Cegui::ColouredRenderedStringParser* mRenderedStringParser;
 
 	/**
 	 * @brief Responsible for the help system

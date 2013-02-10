@@ -25,9 +25,7 @@
 
 namespace Ember
 {
-namespace OgreView
-{
-namespace Gui
+namespace Cegui
 {
 
 void ColouredRenderedStringParser::appendRenderedText(CEGUI::RenderedString& rs, const CEGUI::String& text) const
@@ -67,7 +65,6 @@ void ColouredRenderedStringParser::appendRenderedText(CEGUI::RenderedString& rs,
 		// advance current position.  +1 to skip the \n char
 		cpos += len + 1;
 	}
-}
 }
 }
 }

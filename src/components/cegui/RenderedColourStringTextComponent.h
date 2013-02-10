@@ -23,9 +23,7 @@
 
 namespace Ember
 {
-namespace OgreView
-{
-namespace Gui
+namespace Cegui
 {
 
 /**
@@ -49,7 +47,6 @@ public:
 	CEGUI::RenderedStringTextComponent* split(float split_point, bool first_component);
 };
 
-}
 }
 }
 #endif /* RENDEREDCOLOURSTRINGTEXTCOMPONENT_H_ */

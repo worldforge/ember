@@ -22,9 +22,7 @@
 
 namespace Ember
 {
-namespace OgreView
-{
-namespace Gui
+namespace Cegui
 {
 
 /**
@@ -38,7 +36,6 @@ protected:
 
 };
 
-}
 }
 }
 #endif /* COLOUREDRENDEREDSTRINGPARSER_H_ */

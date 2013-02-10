@@ -28,9 +28,7 @@
 #include "framework/LoggingInstance.h"
 
 namespace Ember {
-namespace OgreView {
-
-namespace Gui {
+namespace Cegui {
 
 CEGUILogger::CEGUILogger()
 {
@@ -83,7 +81,6 @@ void CEGUILogger::Config_MinimumLogLevel(const std::string& section, const std::
 	} else if (newLogLevel == "errors") {
 		d_level = CEGUI::Errors;
 	} 
-}
 }
 
 }
