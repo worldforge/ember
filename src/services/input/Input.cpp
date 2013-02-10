@@ -861,7 +861,6 @@ void Input::lostFocus()
 void Input::setMouseGrab(bool enabled)
 {
 	if (!enabled) {
-		S_LOG_INFO("Releasing mouse.");
 		SDL_WM_GrabInput(SDL_GRAB_OFF);
 		mMouseGrabbingRequested = false;
 	} else {
