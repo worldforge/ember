@@ -9,6 +9,7 @@
 			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.00,25.0}}'/>
 			<Property Name='InheritsAlpha' Value='true'/>
 			<Property Name='FrameEnabled' Value='true'/>
+            <Property Name='BackgroundEnabled' Value='true'/>
 			<Property Name='HorzFormatting' Value='HorzCentred'/>
 		</Window>
 		<Window Type='DefaultWindow' Name='Menu'>
