@@ -5,7 +5,7 @@
         <Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}' />
         <Property Name='Alpha' Value='0.6' />
         <Property Name='Text' Value='Entity editor' />
-		<Property Name='Visible' Value='false'/>
+        <Property Name='Visible' Value='false' />
         <Window Type='DefaultWindow' Name='MainInnerWindow'>
             <Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}' />
             <Property Name='UnifiedSize' Value='{{1,-8},{1,0}}' />
@@ -171,25 +171,64 @@
                     <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
                     <Property Name='Text' Value='Export/Import' />
                     <Property Name='InheritsAlpha' Value='false' />
-                    <Window Type='EmberLook/StaticText' Name='DumpStatus'>
-                        <Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,20.0}}' />
-                        <Property Name='UnifiedPosition' Value='{{0,0},{0,20}}' />
-                        <Property Name='HorzFormatting' Value='HorzCentred' />
-                        <Property Name='BackgroundEnabled' Value='false' />
-                        <Property Name='FrameEnabled' Value='false' />
+                    <Window Type='DefaultWindow'>
+                        <Window Type='VerticalLayoutContainer'>
+                            <Window Type='HorizontalLayoutContainer'>
+                                <Property Name="Tooltip">The name of the file which will be created.</Property>
+                                <Window Type='EmberLook/StaticText'>
+                                    <Property Name='UnifiedSize' Value='{{0,120.0},{0,25}}' />
+                                    <Property Name='Text'>File name</Property>
+                                </Window>
+                                <Window Type='EmberLook/Editbox' Name="ExportFileName">
+                                    <Property Name='UnifiedSize' Value='{{0,150.0},{0,25}}' />
+                                </Window>
+                            </Window>
+                            <Window Type='HorizontalLayoutContainer'>
+                                <Property Name="Tooltip">An optional name of the export.</Property>
+                                <Window Type='EmberLook/StaticText'>
+                                    <Property Name='UnifiedSize' Value='{{0,120.0},{0,25}}' />
+                                    <Property Name='Text'>Name (optional)</Property>
+                                </Window>
+                                <Window Type='EmberLook/Editbox' Name="ExportName">
+                                    <Property Name='UnifiedSize' Value='{{0,150.0},{0,25}}' />
+                                </Window>
+                            </Window>
+                            <Window Type='HorizontalLayoutContainer'>
+                                <Property Name="Tooltip">An optional description of the export.</Property>
+                                <Window Type='EmberLook/StaticText'>
+                                    <Property Name='UnifiedSize' Value='{{0,120.0},{0,25}}' />
+                                    <Property Name='Text'>Description (optional)</Property>
+                                </Window>
+                                <Window Type='EmberLook/MultiLineEditbox' Name='ExportDescription'>
+                                    <Property Name='UnifiedSize' Value='{{1,-120.0},{0,80.0}}' />
+                                </Window>
+                            </Window>
+                        </Window>
+                        <Window Type='EmberLook/Button' Name='DumpWorld'>
+                            <Property Name='Text' Value='Export entity' />
+                            <Property Name='Tooltip' Value='Exports the entity to a file on disk.' />
+                            <Property Name='UnifiedPosition' Value='{{0,5},{1,-25}}' />
+                            <Property Name='UnifiedSize' Value='{{0,90},{0,20}}' />
+                        </Window>
                     </Window>
-                    <Window Type='EmberLook/Button' Name='DumpCancel'>
-                        <Property Name='Text' Value='Cancel' />
-                        <Property Name='Tooltip' Value='Cancels the ongoing action.' />
-                        <Property Name='UnifiedPosition' Value='{{0.5,-45},{0,45}}' />
-                        <Property Name='UnifiedSize' Value='{{0,70},{0,20}}' />
+                    <Window Type='EmberLook/Static' Name='ExportsOverlay'>
                         <Property Name='Visible' Value='false' />
-                    </Window>
-                    <Window Type='EmberLook/Button' Name='DumpWorld'>
-                        <Property Name='Text' Value='Export entity' />
-                        <Property Name='Tooltip' Value='Exports the entity to a file on disk.' />
-                        <Property Name='UnifiedPosition' Value='{{0,5},{1,-25}}' />
-                        <Property Name='UnifiedSize' Value='{{0,90},{0,20}}' />
+                        <Property Name='BackgroundEnabled' Value='true' />
+                        <Property Name='AlwaysOnTop' Value='true' />
+                        <Window Type='EmberLook/StaticText' Name='DumpStatus'>
+                            <Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,20.0}}' />
+                            <Property Name='UnifiedPosition' Value='{{0,0},{0,20}}' />
+                            <Property Name='HorzFormatting' Value='HorzCentred' />
+                            <Property Name='BackgroundEnabled' Value='false' />
+                            <Property Name='FrameEnabled' Value='false' />
+                        </Window>
+                        <Window Type='EmberLook/Button' Name='DumpCancel'>
+                            <Property Name='Text' Value='Cancel' />
+                            <Property Name='Tooltip' Value='Cancels the ongoing action.' />
+                            <Property Name='UnifiedPosition' Value='{{0.5,-45},{0,45}}' />
+                            <Property Name='UnifiedSize' Value='{{0,70},{0,20}}' />
+                            <Property Name='Visible' Value='false' />
+                        </Window>
                     </Window>
                 </Window>
             </Window>

@@ -533,6 +533,10 @@ function EntityEditor:clearEditing()
 	self.instance.addNewElement = function(self, element)
 		table.insert(self.instance.newElements, element)
 	end
+	self.exportFilenameWindow:setText("")
+	self.exportNameWindow:setText("")
+	self.exportDescriptionWindow:setText("")
+	
 
 end
 
@@ -584,6 +588,9 @@ function EntityEditor:editEntity(entity)
 
 	self.knowledgelistbox:resetList()
 	self.goallistbox:resetList()
+	
+	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
+	self.exportFilenameWindow:setText(exportFileName)
 
 end
 
@@ -1101,7 +1108,14 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("DeleteButton"):subscribeEvent("Clicked", self.DeleteButton_Clicked, self)
 		self.widget:getWindow("RefreshButton"):subscribeEvent("Clicked", self.RefreshButton_Clicked, self)
 
+
+		self.exportFilenameWindow = self.widget:getWindow("ExportFileName")
+		self.exportNameWindow = self.widget:getWindow("ExportName")
+		self.exportDescriptionWindow = self.widget:getWindow("ExportDescription")
+
 		local worldDumper = function()
+
+			local exportsOverlay = self.widget:getWindow("ExportsOverlay")
 
 			local cancelButton = self.widget:getWindow("DumpCancel")
 			cancelButton:subscribeEvent("Clicked", function(args)
@@ -1112,23 +1126,31 @@ function EntityEditor:buildWidget()
 			end)
 
 			self.widget:getWindow("DumpWorld"):subscribeEvent("Clicked", function(args)
-				local worldDumper = Ember.EntityExporter:new(emberServices:getServerService():getAccount())
-				self.widget:getWindow("DumpStatus"):setText("Dumping...")
-				createConnector(worldDumper.EventCompleted):connect(function()
-					self.widget:getWindow("DumpStatus"):setText("Done dumping.")
-					cancelButton:setVisible(false)
-					cancelButton.method = nil
-					worldDumper:delete()
-				end)
-				createConnector(worldDumper.EventProgress):connect(function(entitiesDumped)
-					self.widget:getWindow("DumpStatus"):setText("Dumping, " .. entitiesDumped .. " dumped")
-				end)
-				cancelButton.method = function()
-					worldDumper:cancel()
-					self.widget:getWindow("DumpStatus"):setText("Cancelled")
+			
+				local filename = self.exportFilenameWindow:getText()
+				
+				if filename ~= "" then
+					local worldDumper = Ember.EntityExporter:new(emberServices:getServerService():getAccount())
+					worldDumper:setDescription(self.exportDescriptionWindow:getText())
+					worldDumper:setName(self.exportNameWindow:getText())
+					self.widget:getWindow("DumpStatus"):setText("Dumping...")
+					createConnector(worldDumper.EventCompleted):connect(function()
+						self.widget:getWindow("DumpStatus"):setText("Done dumping.")
+						exportsOverlay:setVisible(false)
+						cancelButton.method = nil
+						worldDumper:delete()
+					end)
+					createConnector(worldDumper.EventProgress):connect(function(entitiesDumped)
+						self.widget:getWindow("DumpStatus"):setText("Dumping, " .. entitiesDumped .. " dumped")
+					end)
+					cancelButton.method = function()
+						worldDumper:cancel()
+						self.widget:getWindow("DumpStatus"):setText("Cancelled")
+					end
+					exportsOverlay:setVisible(true)
+					worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/entityexport/" .. filename, self.instance.entity:getId())
+			
 				end
-				cancelButton:setVisible(true)
-				worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/entityexport/entityexport_" .. self.instance.entity:getId() .. ".xml", self.instance.entity:getId())
 				return true
 			end)
 			

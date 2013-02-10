@@ -106,6 +106,22 @@ public:
 	void cancel();
 
 	/**
+	 * @brief Sets the name of the export.
+	 *
+	 * Call this before you call start().
+	 * @param name The name.
+	 */
+	void setName(const std::string& name);
+
+	/**
+	 * @brief Sets the description of the export.
+	 *
+	 * Call this before you call start().
+	 * @param description The description.
+	 */
+	void setDescription(const std::string& description);
+
+	/**
 	 * @brief Emitted when the dump is complete.
 	 */
 	sigc::signal<void> EventCompleted;

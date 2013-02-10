@@ -75,6 +75,16 @@ EntityExporter::~EntityExporter()
 	delete mXmlDocument;
 }
 
+void EntityExporter::setDescription(const std::string& description)
+{
+	mDescription = description;
+}
+
+void EntityExporter::setName(const std::string& name)
+{
+	mName = name;
+}
+
 void EntityExporter::cancel()
 {
 	mCancelled = true;
@@ -227,8 +237,10 @@ void EntityExporter::start(const std::string& filename, const std::string& entit
 	mXmlDocument = new TiXmlDocument(filename);
 	TiXmlNode* root = mXmlDocument->InsertEndChild(TiXmlElement("entityexport"));
 	TiXmlElement name("name");
+	name.InsertEndChild(TiXmlText(mName));
 	root->InsertEndChild(name);
 	TiXmlElement description("description");
+	description.InsertEndChild(TiXmlText(mDescription));
 	root->InsertEndChild(description);
 	TiXmlElement timestamp("timestamp");
 	std::stringstream ss;
