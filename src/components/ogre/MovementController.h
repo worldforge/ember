@@ -164,6 +164,7 @@ public:
 
 	void setCameraFreeFlying(bool freeFlying);
 
+	bool isCameraFreeFlying() const;
 
 protected:
 

@@ -100,6 +100,7 @@ class TerrainEntityManager;
 class DelayedFoliageInitializer;
 class ShaderManager;
 class GraphicalChangeAdapter;
+class AvatarCameraWarper;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -321,6 +322,13 @@ protected:
 	 * @brief The main motion handler for the avatar camera.
 	 */
 	ICameraMotionHandler* mAvatarCameraMotionHandler;
+
+	/**
+	 * @brief Optional movement adjuster used if the avatar is an admin.
+	 *
+	 * This allows the player to let the avatar follow the camera (which helps when authoring).
+	 */
+	AvatarCameraWarper* mAvatarCameraWarper;
 
 	/**
 	 * @brief The entity world pick listener instance, which handles picking of entities in the world.

@@ -29,6 +29,7 @@
 #include "EmberOgreSignals.h"
 #include "ForestRenderingTechnique.h"
 #include "RenderDistanceManager.h"
+#include "AvatarCameraWarper.h"
 #include "components/ogre/AvatarCameraMotionHandler.h"
 #include "components/ogre/authoring/AuthoringManager.h"
 #include "components/ogre/authoring/AuthoringMoverConnector.h"
@@ -71,7 +72,7 @@ namespace OgreView
 {
 
 World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals, Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())), mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())), mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
 {
 
 	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventFrameProcessed);
@@ -128,6 +129,7 @@ World::~World()
 
 	//The factory will be deleted by the mWorldView when that is deleted later on, so we shall not delete it here
 	// 	delete mEmberEntityFactory;
+	delete mAvatarCameraWarper;
 	delete mMovementController;
 	delete mAvatar;
 	delete mAvatarCameraMotionHandler;
@@ -266,6 +268,10 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 		mMainCamera->setMovementProvider(mMovementController);
 		mMainCamera->attachToMount(&mAvatar->getCameraMount());
 
+		if (mAvatar->isAdmin()) {
+			mAvatarCameraWarper = new AvatarCameraWarper(*mMovementController, *mMainCamera, mView);
+		}
+
 		emberEntity.BeingDeleted.connect(sigc::mem_fun(*this, &World::avatarEntity_BeingDeleted));
 
 		mSignals.EventMovementControllerCreated.emit();
@@ -278,6 +284,8 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 
 void World::avatarEntity_BeingDeleted()
 {
+	delete mAvatarCameraWarper;
+	mAvatarCameraWarper = nullptr;
 	mMainCamera->attachToMount(0);
 	mMainCamera->setMovementProvider(0);
 	delete mMovementController;

@@ -83,7 +83,7 @@ libEmberOgre_a_SOURCES = \
 	widgets/adapters/eris/TypeTreeAdapter.cpp widgets/adapters/ogre/ResourceListAdapter.cpp widgets/representations/LayoutHelper.cpp widgets/TexturePair.cpp widgets/EntityTooltip.cpp \
 	widgets/EntityCreatorCreationInstance.cpp widgets/adapters/ValueTypeHelper.cpp \
 \
-	Avatar.cpp \
+	Avatar.cpp AvatarCameraWarper.cpp \
 	MovementController.cpp AvatarLogger.cpp AvatarTerrainCursor.cpp \
 	EmberEntity.cpp EmberEntityActionCreator.cpp \
 	EmberEntityFactory.cpp EmberEntityHideModelAction.cpp EmberEntityModelAction.cpp \
@@ -184,7 +184,7 @@ noinst_HEADERS = \
 	widgets/representations/SliderRepresentation.h widgets/representations/ComboboxRepresentation.h widgets/representations/LayoutHelper.h widgets/representations/SingleAdapterRepresentationBase.h \
 	widgets/EntityCreatorCreationInstance.h \
 \
-	Avatar.h MovementController.h \
+	Avatar.h AvatarCameraWarper.h MovementController.h \
 	AvatarLogger.h AvatarTerrainCursor.h \
 	EmberEntity.h EmberEntityActionCreator.h EmberEntityFactory.h \
 	EmberEntityHideModelAction.h EmberEntityModelAction.h EmberEntityPartAction.h \

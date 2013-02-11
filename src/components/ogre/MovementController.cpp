@@ -133,6 +133,11 @@ void MovementController::setCameraFreeFlying(bool freeFlying)
 	}
 }
 
+bool MovementController::isCameraFreeFlying() const {
+	return mIsFreeFlying;
+}
+
+
 void MovementController::runCommand(const std::string &command, const std::string &args)
 {
 	if (RunToggle == command) {
