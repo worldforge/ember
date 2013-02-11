@@ -198,6 +198,7 @@ desiredfps=60
 f6 = "/toggle_cameraattached"
 f7 = "/toggle_rendermode"
 f8 = "/toggle_fullscreen"
+f9 = "/toggle_avatar_follows_camera"
 f10 = "/toggle_gui"
 print = "/screenshot"
 caps = "/toggle_inputmode"
