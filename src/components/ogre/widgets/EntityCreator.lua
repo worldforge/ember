@@ -240,7 +240,7 @@ function EntityCreator.buildWidget(world)
 			if exports:size() > 0 then 
 				for i = 0, exports:size() - 1 do
 					local info = exports[i]
-					local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
+					local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 					item:setText(info.name)
 					
 					item:subscribeEvent("SelectionChanged", function(args)

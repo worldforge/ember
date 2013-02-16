@@ -859,7 +859,7 @@ function EntityEditor:entitySayKnowledge(root)
 	_, _, modelItem.predicate, modelItem.subject, modelItem.knowledge = string.find(message, "The (%a*) of (%a*) is (.*)")
 	if modelItem.predicate then
 
-		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
+		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 		item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.knowledge))
 		item:subscribeEvent("SelectionChanged", function(args)
 			if item:isSelected() then
@@ -934,7 +934,7 @@ function EntityEditor:entitySayGoals(root)
 
 	_, _, modelItem.verb, modelItem.goal = string.find(message, "The goal of (%b()) is (.*)")
 	if modelItem.verb then
-		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ListboxItem"))
+		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 		item:setText(escapeForCEGUI(modelItem.verb .. " : " .. modelItem.goal))
 		self.goallistbox:addItem(item)
 

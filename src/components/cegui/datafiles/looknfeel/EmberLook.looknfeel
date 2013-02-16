@@ -1459,10 +1459,10 @@
 
     <!--
     ***************************************************
-        EmberLook/ListboxItem
+        EmberLook/ItemEntry
     ***************************************************
     -->
-    <WidgetLook name="EmberLook/ListboxItem">
+    <WidgetLook name="EmberLook/ItemEntry">
 		<PropertyDefinition name="TextColour" initialValue="FF000000" redrawOnWrite="true" />
 		<PropertyDefinition name="SelectedTextColour" initialValue="FFFFFFFF" redrawOnWrite="true" />
 		<PropertyDefinition name="SelectionBrush" initialValue="set:EmberLook image:Background" redrawOnWrite="true" />

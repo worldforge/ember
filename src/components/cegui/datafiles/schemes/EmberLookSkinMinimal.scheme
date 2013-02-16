@@ -42,7 +42,7 @@
 	<FalagardMapping WindowType="EmberLook/StaticImage" TargetType="DefaultWindow" Renderer="Falagard/StaticImage" LookNFeel="EmberLook/StaticImage" />
 	<FalagardMapping WindowType="EmberLook/StaticText"  TargetType="DefaultWindow" Renderer="Falagard/StaticText"  LookNFeel="EmberLook/StaticText" />
 	<FalagardMapping WindowType="EmberLook/ItemListbox" TargetType="CEGUI/ItemListbox" Renderer="Falagard/ItemListbox" LookNFeel="EmberLook/ItemListbox" />
-	<FalagardMapping WindowType="EmberLook/ListboxItem" TargetType="CEGUI/ItemEntry"   Renderer="Falagard/ItemEntry"   LookNFeel="EmberLook/ListboxItem" />
+	<FalagardMapping WindowType="EmberLook/ItemEntry" TargetType="CEGUI/ItemEntry"   Renderer="Falagard/ItemEntry"   LookNFeel="EmberLook/ItemEntry" />
 	<!-- Note that there's currently no GroupBox available in the looknfeel. -->
 	<FalagardMapping WindowType="EmberLook/GroupBox" TargetType="CEGUI/GroupBox"   Renderer="Falagard/Default"   LookNFeel="EmberLook/GroupBox" />
 
