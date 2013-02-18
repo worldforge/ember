@@ -295,9 +295,18 @@ end
 function AssetsManager:WindowsList_ItemSelectionChanged(args)
 	local item = self.windows.controls.listbox:getFirstSelectedItem()
 	if item ~= nil then
-		local window = item:getUserData()
-		self.windows.selectedWindow = tolua.cast(window, "CEGUI::Window")
-		self.windows.controls.visibleCheckbox:setSelected(self.windows.selectedWindow:isVisible())
+		local window_ = item:getUserData()
+		local window = tolua.cast(window_, "CEGUI::Window")
+		self.windows.selectedWindow = nil
+		self.windows.controls.visibleCheckbox:setSelected(window:isVisible())
+		
+		self.windows.controls.widthRel:setText(tostring(window:getWidth().scale))
+		self.windows.controls.widthFixed:setText(tostring(window:getWidth().offset))
+		self.windows.controls.heightRel:setText(tostring(window:getHeight().scale))
+		self.windows.controls.heightFixed:setText(tostring(window:getHeight().offset))
+
+		self.windows.selectedWindow = window
+		
 		local info = ""
 		info = "Position: " .. CEGUI.PropertyHelper:uvector2ToString(self.windows.selectedWindow:getPosition()) .. "\n"
 		info = info .."Size: " .. CEGUI.PropertyHelper:uvector2ToString(self.windows.selectedWindow:getSize()) .. "\n"
@@ -818,6 +827,27 @@ function AssetsManager:buildWidget()
 		self.windows.listholder = Ember.OgreView.Gui.ListHolder:new(self.windows.controls.listbox, self.windows.controls.filter)
 		self.windows.controls.visibleCheckbox = CEGUI.toCheckbox(self.widget:getWindow("WindowInfo/Visible"))
 		self.windows.controls.infoText = self.widget:getWindow("WindowInfo/Text")
+		self.windows.controls.widthRel = self.widget:getWindow("WindowInfo/Width_rel")
+		self.windows.controls.widthFixed = self.widget:getWindow("WindowInfo/Width_fix")
+		self.windows.controls.heightRel = self.widget:getWindow("WindowInfo/Height_rel")
+		self.windows.controls.heightFixed = self.widget:getWindow("WindowInfo/Height_fix")
+		
+		local updateWindowSize = function(args)
+			if self.windows.selectedWindow then
+				if self.windows.controls.widthRel:getText() ~= "" and self.windows.controls.widthFixed:getText() ~= "" and self.windows.controls.heightRel:getText() ~= "" and self.windows.controls.heightFixed:getText() ~= "" then
+					local dim = CEGUI.UVector2(CEGUI.UDim(tonumber(self.windows.controls.widthRel:getText()),tonumber(self.windows.controls.widthFixed:getText())), CEGUI.UDim(tonumber(self.windows.controls.heightRel:getText()),tonumber(self.windows.controls.heightFixed:getText())))
+					self.windows.selectedWindow:setSize(dim)
+				end
+			end
+			return true
+		end
+		
+		self.windows.controls.widthRel:subscribeEvent("TextChanged", updateWindowSize)
+		self.windows.controls.widthFixed:subscribeEvent("TextChanged", updateWindowSize)
+		self.windows.controls.heightRel:subscribeEvent("TextChanged", updateWindowSize)
+		self.windows.controls.heightFixed:subscribeEvent("TextChanged", updateWindowSize)
+		
+		
 		self.windows.refresh = function(self)
 			self.windows.listholder:resetList()
 			

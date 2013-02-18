@@ -535,19 +535,34 @@
 						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
 						<Property Name='FrameEnabled' Value='false'/>
 						<Property Name='BackgroundEnabled' Value='false'/>
-						<Window Type='EmberLook/Checkbox' Name='WindowInfo/Visible'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-							<Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
-							<Property Name='Text' Value='Visible'/>
-						</Window>
-						<Window Type='EmberLook/StaticText' Name='WindowInfo/Text'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,25}}'/>
-							<Property Name='UnifiedSize' Value='{{1,0},{1,-25}}'/>
-							<Property Name='VertFormatting' Value='TopAligned'/>
-							<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-							<Property Name='FrameEnabled' Value='false'/>
-							<Property Name='BackgroundEnabled' Value='false'/>
-						</Window>
+                        <Window Type='VerticalLayoutContainer'>
+                            <Window Type='EmberLook/Checkbox' Name='WindowInfo/Visible'>
+                                <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+                                <Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
+                                <Property Name='Text' Value='Visible'/>
+                            </Window>
+                            <Window Type='HorizontalLayoutContainer'>
+            					<Window Type='EmberLook/Editbox' Name='WindowInfo/Width_rel'>
+            						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+            					</Window>
+                                <Window Type='EmberLook/Editbox' Name='WindowInfo/Width_fix'>
+                                    <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                                </Window>
+                                <Window Type='EmberLook/Editbox' Name='WindowInfo/Height_rel'>
+                                    <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                                </Window>
+                                <Window Type='EmberLook/Editbox' Name='WindowInfo/Height_fix'>
+                                    <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                                </Window>
+                            </Window>
+    						<Window Type='EmberLook/StaticText' Name='WindowInfo/Text'>
+    							<Property Name='UnifiedSize' Value='{{1,0},{1,-50}}'/>
+    							<Property Name='VertFormatting' Value='TopAligned'/>
+    							<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+    							<Property Name='FrameEnabled' Value='false'/>
+    							<Property Name='BackgroundEnabled' Value='false'/>
+    						</Window>
+                        </Window>
 					</Window>
 				</Window>
 			</Window>
