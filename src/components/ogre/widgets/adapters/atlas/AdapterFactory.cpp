@@ -222,15 +222,15 @@ Position2DAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* containe
 template<>
 MapAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
-	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/MapAdapter.layout");
-	return new MapAdapter(element, window);
+//	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/MapAdapter.layout");
+	return new MapAdapter(element, nullptr);
 }
 
 template<>
 ListAdapter* AdapterFactory::loadWindowIntoAdapter(CEGUI::Window* container, const std::string& adapterPrefix, const ::Atlas::Message::Element& element, EmberEntity* entity)
 {
-	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/ListAdapter.layout");
-	return new ListAdapter(element, window);
+//	Window* window = loadLayoutIntoContainer(container, adapterPrefix, "adapters/atlas/ListAdapter.layout");
+	return new ListAdapter(element, nullptr);
 }
 
 template<>
