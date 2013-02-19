@@ -6,7 +6,7 @@ EntityEditor = {
 			name = "Map",
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
-				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
 				wrapper.adapter = self.factory:createMapAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -29,7 +29,6 @@ EntityEditor = {
 					local newElementWrapper = self.adapters.map.createNewElementWidget(self, wrapper.adapter, wrapper.container, element)
 					wrapper.container:addChildWindow(newElementWrapper.container)
 				end
-				self:createStackableContainer(wrapper.container):repositionWindows()
 				return wrapper
 			end,
 			createNewElement = function(self)
@@ -108,7 +107,7 @@ EntityEditor = {
 			name = "List",
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
-				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
 				wrapper.adapter = self.factory:createListAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -132,7 +131,6 @@ EntityEditor = {
 					local newElementWrapper = self.adapters.list.createNewElementWidget(self, wrapper.adapter, wrapper.container)
 					wrapper.container:addChildWindow(newElementWrapper.container)
 				end
-				self:createStackableContainer(wrapper.container):repositionWindows()
 
 				return wrapper
 			end,
@@ -243,7 +241,7 @@ EntityEditor = {
 			name = "Points",
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
-				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
 				wrapper.adapter = self.factory:createListAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -260,7 +258,6 @@ EntityEditor = {
 
 				local newElementWrapper = self.adapters.points.createNewElementWidget(self, wrapper.adapter, wrapper.container)
 				wrapper.container:addChildWindow(newElementWrapper.container)
-				self:createStackableContainer(wrapper.container):repositionWindows()
 
 				return wrapper
 			end,
@@ -488,13 +485,6 @@ function editEntity(id)
 	end
 end
 
-function EntityEditor:createStackableContainer(container)
-	local stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(container)
-	stackableContainer:setInnerContainerWindow(container)
-	self.instance.stackableContainers[container:getName()] = stackableContainer
-	return stackableContainer
-end
-
 function EntityEditor:clearEditing()
 	if self.instance then
 
@@ -561,7 +551,7 @@ function EntityEditor:editEntity(entity)
 
 
 	self.instance.entityChangeConnection = createConnector(entity.Changed):connect(self.Entity_Changed, self)
-	self.instance.outercontainer = guiManager:createWindow("DefaultWindow")
+	self.instance.outercontainer = guiManager:createWindow("VerticalLayoutContainer")
 	local adapter = self.factory:createMapAdapter(self.instance.outercontainer, self.instance.entity:getId(), self.instance.entity)
 	self.instance.rootMapAdapter = adapter
 	self.instance.helper = Ember.OgreView.Gui.EntityEditor:new(self.world, entity, self.instance.rootMapAdapter)
@@ -582,7 +572,6 @@ function EntityEditor:editEntity(entity)
 	end
 	self.instance.model.newAdapter = self.adapters.map.createNewElementWidget(self, adapter, self.instance.outercontainer)
 	self.instance.outercontainer:addChildWindow(self.instance.model.newAdapter.container)
-	self:createStackableContainer(self.instance.outercontainer):repositionWindows()
 
 	self.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
 
@@ -591,7 +580,6 @@ function EntityEditor:editEntity(entity)
 	
 	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
 	self.exportFilenameWindow:setText(exportFileName)
-
 end
 
 function EntityEditor:createAdapter(attributeName, element)
