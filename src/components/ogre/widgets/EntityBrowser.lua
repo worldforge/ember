@@ -192,5 +192,5 @@ connect(connectors, emberOgre.EventWorldCreated, function(world)
 		entityBrowser:shutdown()
 		entityBrowser = nil
 	end)
-end
+end)
 
