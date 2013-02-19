@@ -7,6 +7,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createMapAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -108,6 +109,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createListAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -142,6 +144,7 @@ EntityEditor = {
 				wrapper.adapter = listAdapter
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				self.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
 				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(self.factory:getCurrentPrefix().. "NewElementButton"))
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
@@ -187,6 +190,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createStaticAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -196,6 +200,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createSizeAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -208,6 +213,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createPositionAdapter(wrapper.container, self.instance.entity:getId(), element)
 				wrapper.moveButtonPressed = function()
 					guiManager:EmitEntityAction("move", self.instance.entity)
@@ -221,6 +227,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createPosition2DAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -233,6 +240,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createOrientationAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -242,6 +250,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createListAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -269,6 +278,7 @@ EntityEditor = {
 				wrapper.adapter = listAdapter
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				self.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementType"))
@@ -315,6 +325,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createStringAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -327,6 +338,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -336,6 +348,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -349,6 +362,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -361,6 +375,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createAreaAdapter(wrapper.container, self.instance.entity:getId(), element, self.instance.entity)
 
 				wrapper.adapter:addAreaSuggestion(0, "none")
@@ -388,6 +403,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createTerrainModAdapter(wrapper.container, self.instance.entity:getId(), element, self.instance.entity)
 				return wrapper
 			end,
@@ -552,6 +568,7 @@ function EntityEditor:editEntity(entity)
 
 	self.instance.entityChangeConnection = createConnector(entity.Changed):connect(self.Entity_Changed, self)
 	self.instance.outercontainer = guiManager:createWindow("VerticalLayoutContainer")
+	self.instance.outercontainer:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 	local adapter = self.factory:createMapAdapter(self.instance.outercontainer, self.instance.entity:getId(), self.instance.entity)
 	self.instance.rootMapAdapter = adapter
 	self.instance.helper = Ember.OgreView.Gui.EntityEditor:new(self.world, entity, self.instance.rootMapAdapter)
@@ -624,6 +641,7 @@ end
 
 function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentContainer, prototype)
 	local outercontainer = guiManager:createWindow("DefaultWindow")
+	outercontainer:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 
 	local deleteButton = nil
 	local deleteButtonWidth = 0
@@ -667,6 +685,7 @@ end
 function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container, parentContainer, prototype)
 	local textWidth = 75
 	local outercontainer = guiManager:createWindow("DefaultWindow")
+	outercontainer:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
 
