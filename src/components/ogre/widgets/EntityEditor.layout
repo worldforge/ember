@@ -6,6 +6,8 @@
         <Property Name='Alpha' Value='0.6' />
         <Property Name='Text' Value='Entity editor' />
         <Property Name='Visible' Value='false' />
+        <!-- Because we're using a lot of comboboxes we'll disable the rendering surface. Else the dropdowns would be clipped. -->
+        <Property Name='AutoRenderingSurface' Value='False' />
         <Window Type='DefaultWindow' Name='MainInnerWindow'>
             <Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}' />
             <Property Name='UnifiedSize' Value='{{1,-8},{1,0}}' />
