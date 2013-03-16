@@ -49,27 +49,30 @@ EntityEditor = {
 				--Depending on whether we have suggestions or not we'll either show a combobox or an editbox.
 				local nameEditboxCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName_combobox"))
 				local nameEditboxEditbox = CEGUI.toEditbox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName_editbox"))
-				local hasSuggestions = false
-				local editbox = nameEditboxEditbox
-
-				for attr,value in pairs(self.prototypes) do
-					if mapAdapter:hasAttr(attr) == false and value.shouldAddSuggestion then
-						if value.shouldAddSuggestion(outerElement) then
-							local item = Ember.OgreView.Gui.ColouredListItem:new(attr)
-							nameEditboxCombobox:addItem(item)
+				
+				local checkSuggestions = function()
+					nameEditboxCombobox:resetList()
+					for attr,value in pairs(self.prototypes) do
+						if mapAdapter:hasAdapter(attr) == false and value.shouldAddSuggestion then
+							if value.shouldAddSuggestion(outerElement) then
+								local item = Ember.OgreView.Gui.ColouredListItem:new(attr)
+								nameEditboxCombobox:addItem(item)
+							end
 						end
 					end
+					
+					if nameEditboxCombobox:getItemCount() > 0 then
+						wrapper.nameEditbox = nameEditboxCombobox
+						nameEditboxEditbox:setVisible(false)
+						nameEditboxCombobox:setVisible(true)
+					else
+						wrapper.nameEditbox = nameEditboxEditbox
+						nameEditboxCombobox:setVisible(false)
+						nameEditboxEditbox:setVisible(true)
+					end
 				end
+				checkSuggestions()
 				
-				if nameEditboxCombobox:getItemCount() > 0 then
-					wrapper.nameEditbox = nameEditboxCombobox
-					nameEditboxEditbox:setVisible(false)
-					editbox = wrapper.nameEditbox:getEditbox()
-				else
-					wrapper.nameEditbox = nameEditboxEditbox
-					nameEditboxCombobox:setVisible(false)
-				end
-
 				wrapper.nameChanged = function(args)
 					--check that the name doesn't already exists in the map adapter
 					if mapAdapter:hasAdapter(wrapper.nameEditbox:getText()) then
@@ -80,7 +83,8 @@ EntityEditor = {
 					end
 					return true
 				end
-				editbox:subscribeEvent("TextChanged", wrapper.nameChanged)
+				nameEditboxCombobox:getEditbox():subscribeEvent("TextChanged", wrapper.nameChanged)
+				nameEditboxEditbox:subscribeEvent("TextChanged", wrapper.nameChanged)
 
 
 				wrapper.buttonEnableChecker = function(args)
@@ -108,7 +112,9 @@ EntityEditor = {
 							self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 							--by adding the window again we make sure that it's at the bottom of the child window list
 							wrapper.outercontainer:addChildWindow(wrapper.container)
-							wrapper.nameEditbox:setText("")
+							nameEditboxCombobox:getEditbox():setText("")
+							nameEditboxEditbox:setText("")
+							checkSuggestions()
 						end
 					end
 					return true
