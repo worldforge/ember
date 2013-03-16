@@ -502,6 +502,8 @@
     ***************************************************
     -->
     <WidgetLook name="EmberLook/ComboDropList">
+        <Property name="ClippedByParent" value="False" />
+        <Property name="AlwaysOnTop" value="True" />
         <NamedArea name="ItemRenderingArea">
             <Area>
                 <Dim type="LeftEdge" ><ImageDim imageset="EmberLook" image="StaticFrameLeft" dimension="Width" /></Dim>
@@ -651,8 +653,6 @@
                 <Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
                 <Dim type="BottomEdge" ><UnifiedDim scale="1" type="BottomEdge" /></Dim>
             </Area>
-            <Property name="ClippedByParent" value="False" />
-            <Property name="AlwaysOnTop" value="True" />
         </Child>
         <Child  type="EmberLook/IconButton" nameSuffix="__auto_button__">
             <Area>
