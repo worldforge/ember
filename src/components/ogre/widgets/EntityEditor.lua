@@ -588,6 +588,7 @@ function EntityEditor:editEntity(entity)
 		end
 	end
 	self.instance.model.newAdapter = self.adapters.map.createNewElementWidget(self, adapter, self.instance.outercontainer)
+	
 	self.instance.outercontainer:addChildWindow(self.instance.model.newAdapter.container)
 
 	self.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
@@ -796,9 +797,7 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 		combobox:setText(combobox:getSelectedItem():getText())
 	end
 
-	combobox:setHeight(CEGUI.UDim(0, 100))
 	combobox:setProperty("ReadOnly", "true")
-	-- 	--combobox:getDropList():setProperty("ClippedByParent", "false")
 	return newAdapters
 end
 
