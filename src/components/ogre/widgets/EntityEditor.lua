@@ -52,10 +52,10 @@ EntityEditor = {
 				local hasSuggestions = false
 				local editbox = nameEditboxEditbox
 
-				for index,value in pairs(self.prototypes) do
-					if value.shouldAddSuggestion then
+				for attr,value in pairs(self.prototypes) do
+					if mapAdapter:hasAttr(attr) == false and value.shouldAddSuggestion then
 						if value.shouldAddSuggestion(outerElement) then
-							local item = Ember.OgreView.Gui.ColouredListItem:new(index)
+							local item = Ember.OgreView.Gui.ColouredListItem:new(attr)
 							nameEditboxCombobox:addItem(item)
 						end
 					end
