@@ -3,11 +3,16 @@
 	<Window Type='DefaultWindow' Name='MapAdapterNewElement'>
 		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 		<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-		<Window Type='EmberLook/Combobox' Name='ElementName'>
+		<Window Type='EmberLook/Combobox' Name='ElementName_combobox'>
 			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,75},{0,100}}'/>
 			<Property Name='Tooltip' Value='Name of the element.' />
 		</Window>
+        <Window Type='EmberLook/Editbox' Name='ElementName_editbox'>
+            <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+            <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+            <Property Name='Tooltip' Value='Name of the element.' />
+        </Window>
 		<Window Type='EmberLook/Combobox' Name='ElementType'>
 			<Property Name='UnifiedPosition' Value='{{0,75},{0,0}}'/>
 			<Property Name='UnifiedSize' Value='{{0,75},{0,100}}'/>

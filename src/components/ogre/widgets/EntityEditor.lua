@@ -45,7 +45,31 @@ EntityEditor = {
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementType"))
 				wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, "", outerElement)
-				wrapper.nameEditbox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName"))
+				
+				--Depending on whether we have suggestions or not we'll either show a combobox or an editbox.
+				local nameEditboxCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName_combobox"))
+				local nameEditboxEditbox = CEGUI.toEditbox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName_editbox"))
+				local hasSuggestions = false
+				local editbox = nameEditboxEditbox
+
+				for index,value in pairs(self.prototypes) do
+					if value.shouldAddSuggestion then
+						if value.shouldAddSuggestion(outerElement) then
+							local item = Ember.OgreView.Gui.ColouredListItem:new(index)
+							nameEditboxCombobox:addItem(item)
+						end
+					end
+				end
+				
+				if nameEditboxCombobox:getItemCount() > 0 then
+					wrapper.nameEditbox = nameEditboxCombobox
+					nameEditboxEditbox:setVisible(false)
+					editbox = wrapper.nameEditbox:getEditbox()
+				else
+					wrapper.nameEditbox = nameEditboxEditbox
+					nameEditboxCombobox:setVisible(false)
+				end
+
 				wrapper.nameChanged = function(args)
 					--check that the name doesn't already exists in the map adapter
 					if mapAdapter:hasAdapter(wrapper.nameEditbox:getText()) then
@@ -56,16 +80,8 @@ EntityEditor = {
 					end
 					return true
 				end
-				wrapper.nameChanged = wrapper.nameEditbox:getEditbox():subscribeEvent("TextChanged", wrapper.nameChanged)
+				editbox:subscribeEvent("TextChanged", wrapper.nameChanged)
 
-				for index,value in pairs(self.prototypes) do
-					if value.shouldAddSuggestion then
-						if value.shouldAddSuggestion(outerElement) then
-							local item = Ember.OgreView.Gui.ColouredListItem:new(index)
-							wrapper.nameEditbox:addItem(item)
-						end
-					end
-				end
 
 				wrapper.buttonEnableChecker = function(args)
 					if wrapper.typeCombobox:getSelectedItem() ~= nil and wrapper.nameEditbox:getText() ~= "" then
