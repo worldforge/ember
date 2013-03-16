@@ -588,8 +588,11 @@ function EntityEditor:editEntity(entity)
 		end
 	end
 	self.instance.model.newAdapter = self.adapters.map.createNewElementWidget(self, adapter, self.instance.outercontainer)
-	
+	--Set the height of the new property adapter to be enough to contain the combobox dropdown.
+	--The reason for this is that else the horizontal scroll bar of the scrollable pane will overlap the dropdown (this might be a bug in CEGUI though).
+	self.instance.model.newAdapter.container:setHeight(CEGUI.UDim(0, 100))
 	self.instance.outercontainer:addChildWindow(self.instance.model.newAdapter.container)
+
 
 	self.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
 
