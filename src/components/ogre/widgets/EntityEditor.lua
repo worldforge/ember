@@ -453,7 +453,8 @@ EntityEditor.prototypes =
 	area = {
 		adapter = EntityEditor.adapters.area,
 		shouldAddSuggestion = function(ownerElement)
-			return true
+			--only show on top level
+			return ownerElement == nil
 		end
 	},
 	points = {
@@ -470,7 +471,8 @@ EntityEditor.prototypes =
 	terrainmod = {
 		adapter = EntityEditor.adapters.terrainmod,
 		shouldAddSuggestion = function(ownerElement)
-			return true
+			--only show on top level
+			return ownerElement == nil
 		end
 	}
 }
