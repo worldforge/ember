@@ -37,6 +37,14 @@ public:
 	 * takes a screen shot and writes it to disk
 	 */
 	void takeScreenshot();
+	
+	/**
+	 * @brief Get frame stats, compiled from all render targets.
+	 *
+	 * This will take all compositors into account.
+	 * @return Frame stats.
+	 */
+	const Ogre::RenderTarget::FrameStats& getFrameStats();
 
 };
 

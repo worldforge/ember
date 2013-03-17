@@ -43,7 +43,7 @@ namespace OgreView
 {
 
 Screen::Screen(Ogre::RenderWindow& window) :
-		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."),  Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk."), mWindow(window), mRecorder(new Camera::Recorder()), mPolygonMode(Ogre::PM_SOLID)
+		ToggleRendermode("toggle_rendermode", this, "Toggle between wireframe and solid render modes."), Screenshot("screenshot", this, "Take a screenshot and write to disk."), Record("+record", this, "Record to disk."), mWindow(window), mRecorder(new Camera::Recorder()), mPolygonMode(Ogre::PM_SOLID)
 {
 }
 
@@ -163,6 +163,26 @@ void Screen::takeScreenshot()
 	} catch (...) {
 		ConsoleBackend::getSingletonPtr()->pushMessage("Unknown error when saving screenshot.", "error");
 	}
+}
+
+const Ogre::RenderTarget::FrameStats& Screen::getFrameStats()
+{
+	mFrameStats = Ogre::RenderTarget::FrameStats();
+	Ogre::RenderSystem::RenderTargetIterator renderTargetI = Ogre::Root::getSingleton().getRenderSystem()->getRenderTargetIterator();
+
+	for (auto& renderTarget : renderTargetI) {
+		if (renderTarget.second->isActive()) {
+			const Ogre::RenderTarget::FrameStats& targetStats = renderTarget.second->getStatistics();
+			mFrameStats.triangleCount += targetStats.triangleCount;
+			mFrameStats.batchCount += targetStats.batchCount;
+			if (renderTarget.first == mWindow.getName()) {
+				mFrameStats.avgFPS = targetStats.avgFPS;
+				mFrameStats.bestFPS = targetStats.bestFPS;
+				mFrameStats.worstFPS = targetStats.worstFPS;
+			}
+		}
+	}
+	return mFrameStats;
 }
 
 }

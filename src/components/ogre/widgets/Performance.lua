@@ -56,7 +56,8 @@ end
 function Performance.framestarted(timeSinceLastFrame)
 	if (Performance.widget:getMainWindow():isVisible()) then
 		local statString
-		local stats = emberOgre:getRenderWindow():getStatistics()
+		
+		local stats = emberOgre:getScreen():getFrameStats()
 		
 		--statString = "Current FPS: " .. string.format("%i", stats.lastFPS)
 		statString = "FPS: " .. string.format("%i", stats.avgFPS)

@@ -24,6 +24,7 @@
 #include "framework/ConsoleObject.h"
 
 #include <OgreCommon.h>
+#include <OgreRenderTarget.h>
 
 #include <sigc++/trackable.h>
 
@@ -67,6 +68,14 @@ public:
 	 */
 	void takeScreenshot();
 
+	/**
+	 * @brief Get frame stats, compiled from all render targets.
+	 *
+	 * This will take all compositors into account.
+	 * @return Frame stats.
+	 */
+	const Ogre::RenderTarget::FrameStats& getFrameStats();
+
 	const ConsoleCommandWrapper ToggleRendermode;
 	const ConsoleCommandWrapper Screenshot;
 	const ConsoleCommandWrapper Record;
@@ -87,6 +96,11 @@ protected:
 	 * @brief The current polygon mode used in render targets.
 	 */
 	Ogre::PolygonMode mPolygonMode;
+
+	/**
+	 * @brief Keeps track of the combined frame stats from the various render targets.
+	 */
+	Ogre::RenderTarget::FrameStats mFrameStats;
 
 	/**
 	 * @brief Takes and saves a screenshot to disk.
