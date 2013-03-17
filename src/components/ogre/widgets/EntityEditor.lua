@@ -392,6 +392,20 @@ EntityEditor = {
 				return self.instance.helper:createIntElement()
 			end
 		},
+		boolean = {
+			name = "Boolean",
+			--We'll use an integer adapter and UI for now until we've created a checkbox UI
+			createAdapter = function(self, element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
+				return wrapper
+			end,
+			createNewElement = function(self)
+				return self.instance.helper:createIntElement()
+			end
+		},		
 		area = {
 			name = "Area",
 			createAdapter = function(self, element, prototype)
@@ -480,7 +494,11 @@ EntityEditor.prototypes =
 		end
 	},
 	points = {
-		adapter = EntityEditor.adapters.points
+		adapter = EntityEditor.adapters.points,
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
 	},
 	style = {
 		adapter = EntityEditor.adapters.string,
@@ -492,6 +510,127 @@ EntityEditor.prototypes =
 	},
 	terrainmod = {
 		adapter = EntityEditor.adapters.terrainmod,
+		help = "Allows the entity to perform modifications to the terrain.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	stamina = {
+		adapter = EntityEditor.adapters.float,
+		help = "The current stamina of the entity. Only applicable to living things.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	decays = {
+		adapter = EntityEditor.adapters.string,
+		help = "Specify the entity type which will be generated when this entity is deleted.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	outfit = {
+		adapter = EntityEditor.adapters.map,
+		help = "Determines how contained entities are attached. Often used for clothing.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	solid = {
+		adapter = EntityEditor.adapters.boolean,
+		help = "Determines if the entity is solid, i.e. reacts to collisions.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	simple = {
+		adapter = EntityEditor.adapters.boolean,
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	status = {
+		adapter = EntityEditor.adapters.float,
+		help = "The current status of the entity. If the status reaches zero the entity is destroyed.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	biomass = {
+		adapter = EntityEditor.adapters.float,
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	burn_speed = {
+		adapter = EntityEditor.adapters.float,
+		help = "Determines how fast the entity burns when set on fire. This will affect 'status' and 'mass'.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	transient = {
+		adapter = EntityEditor.adapters.float,
+		help = "Makes the entity ephemeral. Any value higher than zero indicates the number of seconds until the entity is auto deleted.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	food = {
+		adapter = EntityEditor.adapters.float,
+		help = "The current amount of food in the entities stomach. This interacts with metabolism and is only applicable to living entities.",
+		shouldAddSuggestion = function(ownerElement)
+			--TODO: check that the entity is a living entity 
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	mass = {
+		adapter = EntityEditor.adapters.float,
+		help = "The mass of the entity, in kilograms.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	ticks = {
+		adapter = EntityEditor.adapters.float,
+		help = "Makes the world send a Tick operation to the entity at the specified interval (in seconds).",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	spawn = {
+		--TODO: make spawn adapter
+		adapter = EntityEditor.adapters.map,
+		help = "Defines a new spawn point, in which new entities can be created.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	visibility = {
+		adapter = EntityEditor.adapters.float,
+		help = "Allows overriding of visibility calculated by the 'bbox' property.",
+		shouldAddSuggestion = function(ownerElement)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	linked = {
+		adapter = EntityEditor.adapters.string,
+		help = "Make this entity act as a teleportation device to another server.",
 		shouldAddSuggestion = function(ownerElement)
 			--only show on top level
 			return ownerElement == nil
