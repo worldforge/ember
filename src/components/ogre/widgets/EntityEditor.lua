@@ -44,6 +44,7 @@ EntityEditor = {
 				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(self.factory:getCurrentPrefix().. "NewElementButton"))
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementType"))
+				local helpWindow = windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementHelp")
 				wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, "", outerElement)
 				
 				--Depending on whether we have suggestions or not we'll either show a combobox or an editbox.
@@ -74,17 +75,30 @@ EntityEditor = {
 				checkSuggestions()
 				
 				wrapper.nameChanged = function(args)
+					local attribute = wrapper.nameEditbox:getText()
 					--check that the name doesn't already exists in the map adapter
-					if mapAdapter:hasAdapter(wrapper.nameEditbox:getText()) then
+					if mapAdapter:hasAdapter(attribute) then
 						wrapper.button:setEnabled(false)
 					else
-						wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, wrapper.nameEditbox:getText(), outerElement)
+						wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, attribute, outerElement)
 						wrapper.buttonEnableChecker(args)
+					end
+					if self.prototypes[attribute] and self.prototypes[attribute].help then
+						helpWindow:setText(self.prototypes[attribute].help)	
 					end
 					return true
 				end
 				nameEditboxCombobox:getEditbox():subscribeEvent("TextChanged", wrapper.nameChanged)
 				nameEditboxEditbox:subscribeEvent("TextChanged", wrapper.nameChanged)
+				
+				nameEditboxCombobox:subscribeEvent("ListSelectionChanged", function(args)
+					if nameEditboxCombobox:getSelectedItem() and self.prototypes[nameEditboxCombobox:getSelectedItem():getText()].help then
+						helpWindow:setText(self.prototypes[nameEditboxCombobox:getSelectedItem():getText()].help)
+					else	
+						helpWindow:setText("")
+					end
+					return true;
+				end)
 
 
 				wrapper.buttonEnableChecker = function(args)
@@ -114,6 +128,7 @@ EntityEditor = {
 							wrapper.outercontainer:addChildWindow(wrapper.container)
 							nameEditboxCombobox:getEditbox():setText("")
 							nameEditboxEditbox:setText("")
+							helpWindow:setText("")
 							checkSuggestions()
 						end
 					end
@@ -139,7 +154,7 @@ EntityEditor = {
 				for i = 0, wrapper.adapter:getSize() - 1 do
 					local childElement = wrapper.adapter:valueOfAttr(i)
 					local childPrototype = self:getPrototype("", childElement)
-					--if the prototype for the list have it marked as nodelete, mark the childelements too
+					--if the prototype for the list have it marked as nodelete, mark the child elements too
 					if prototype.readonly then
 						childPrototype.readonly = true
 						childPrototype.nodelete = true
