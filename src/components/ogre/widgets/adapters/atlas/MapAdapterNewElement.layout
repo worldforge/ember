@@ -26,7 +26,7 @@
         </Window>
         <Window Type='EmberLook/StaticText' Name='ElementHelp'>
             <Property Name='UnifiedPosition' Value='{{0,100},{0,25}}' />
-            <Property Name='UnifiedSize' Value='{{0,200},{0,50}}' />
+            <Property Name='UnifiedSize' Value='{{0,250},{0,50}}' />
             <Property Name='HorzFormatting' Value='WordWrapLeftAligned' />
             <Property Name='VertFormatting' Value='TopAligned' />
             <Property Name='MousePassThroughEnabled' Value='true' />

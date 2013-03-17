@@ -55,7 +55,7 @@ EntityEditor = {
 					nameEditboxCombobox:resetList()
 					for attr,value in pairs(self.prototypes) do
 						if mapAdapter:hasAdapter(attr) == false and value.shouldAddSuggestion then
-							if value.shouldAddSuggestion(outerElement) then
+							if value.shouldAddSuggestion(outerElement, self.instance.entity) then
 								local item = Ember.OgreView.Gui.ColouredListItem:new(attr)
 								nameEditboxCombobox:addItem(item)
 							end
@@ -467,7 +467,8 @@ EntityEditor = {
 EntityEditor.prototypes =
 {
 	external = {
-		adapter = EntityEditor.adapters.static
+		adapter = EntityEditor.adapters.static,
+		help = "Marks the entity as externally controlled."
 	},
 	parents = {
 		nodelete = true,
@@ -476,10 +477,12 @@ EntityEditor.prototypes =
 	},
 	objtype = {
 		nodelete = true,
-		adapter = EntityEditor.adapters.static
+		adapter = EntityEditor.adapters.static,
+		help = "The type of object in the world. Should always be 'obj' and not editable."
 	},
 	velocity = {
-		adapter = nil
+		adapter = nil,
+		help = "The current velocity of the entity.",
 	},
 	stamp = {
 		adapter = nil,
@@ -487,30 +490,43 @@ EntityEditor.prototypes =
 	},
 	name = {
 		adapter = EntityEditor.adapters.string,
+		help = "The name of the entity.",
 		nodelete = true
 	},
 	bbox = {
 		adapter = EntityEditor.adapters.size,
+		help = "Defines the 3d bounding box of the entity. This influences the size, which also influences visibility.",
 		nodelete = true
 	},
 	pos = {
 		adapter = EntityEditor.adapters.position,
+		help = "The 3d position of the entity.",
 		nodelete = true
 	},
 	orientation = {
 		adapter = EntityEditor.adapters.orientation,
+		help = "The 3d orientation of the entity.",
 		nodelete = true
+	},
+	calendar = {
+		adapter = EntityEditor.adapters.map,
+		help = "Specifies the calendar for the world. Should only be applied to the top entity.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--only show on top level and for the top entity
+			return ownerElement == nil and entity:getId() == "0"
+		end
 	},
 	area = {
 		adapter = EntityEditor.adapters.area,
-		shouldAddSuggestion = function(ownerElement)
+		help = "An area, which will be applied to the terrain.",
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
 	},
 	points = {
 		adapter = EntityEditor.adapters.points,
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -523,10 +539,19 @@ EntityEditor.prototypes =
 			"weathered"
 		}
 	},
+	terrain = {
+		--TODO: supply a terrain adapter which opens the terrain editor
+		adapter = EntityEditor.adapters.map,
+		help = "Defines the terrain. Currently only applicable to the top level entity.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--only show on top level and for the top entity
+			return ownerElement == nil and entity:getId() == "0"
+		end
+	},
 	terrainmod = {
 		adapter = EntityEditor.adapters.terrainmod,
 		help = "Allows the entity to perform modifications to the terrain.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -534,7 +559,7 @@ EntityEditor.prototypes =
 	stamina = {
 		adapter = EntityEditor.adapters.float,
 		help = "The current stamina of the entity. Only applicable to living things.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -542,7 +567,7 @@ EntityEditor.prototypes =
 	decays = {
 		adapter = EntityEditor.adapters.string,
 		help = "Specify the entity type which will be generated when this entity is deleted.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -550,7 +575,7 @@ EntityEditor.prototypes =
 	outfit = {
 		adapter = EntityEditor.adapters.map,
 		help = "Determines how contained entities are attached. Often used for clothing.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -558,29 +583,58 @@ EntityEditor.prototypes =
 	solid = {
 		adapter = EntityEditor.adapters.boolean,
 		help = "Determines if the entity is solid, i.e. reacts to collisions.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
-		end
+		end,
+		suggestions = {
+			0,1
+		}
 	},
 	simple = {
 		adapter = EntityEditor.adapters.boolean,
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
-		end
+		end,
+		suggestions = {
+			0,1
+		}
 	},
 	status = {
 		adapter = EntityEditor.adapters.float,
 		help = "The current status of the entity. If the status reaches zero the entity is destroyed.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
+	mode = {
+		adapter = EntityEditor.adapters.string,
+		help = "Positioning mode. Available values:\n none: regular physics applies\nfixed: position is fixed in space\nfloating: floats to top of liquids\nprojectile: flies as a projectile\nswimming: free movement in liquids",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--only show on top level
+			return ownerElement == nil
+		end,
+		suggestions = {
+			" ",
+			"fixed",
+			"floating",
+			"projectile",
+			"swimming"
+		}
+	},
+	statistics = {
+		adapter = EntityEditor.adapters.map,
+		help = "Allows for game rule specific values.",
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
 	},
 	biomass = {
 		adapter = EntityEditor.adapters.float,
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -588,7 +642,7 @@ EntityEditor.prototypes =
 	burn_speed = {
 		adapter = EntityEditor.adapters.float,
 		help = "Determines how fast the entity burns when set on fire. This will affect 'status' and 'mass'.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -596,7 +650,7 @@ EntityEditor.prototypes =
 	transient = {
 		adapter = EntityEditor.adapters.float,
 		help = "Makes the entity ephemeral. Any value higher than zero indicates the number of seconds until the entity is auto deleted.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -604,7 +658,7 @@ EntityEditor.prototypes =
 	food = {
 		adapter = EntityEditor.adapters.float,
 		help = "The current amount of food in the entities stomach. This interacts with metabolism and is only applicable to living entities.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--TODO: check that the entity is a living entity 
 			--only show on top level
 			return ownerElement == nil
@@ -613,7 +667,7 @@ EntityEditor.prototypes =
 	mass = {
 		adapter = EntityEditor.adapters.float,
 		help = "The mass of the entity, in kilograms.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -621,7 +675,7 @@ EntityEditor.prototypes =
 	ticks = {
 		adapter = EntityEditor.adapters.float,
 		help = "Makes the world send a Tick operation to the entity at the specified interval (in seconds).",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -630,7 +684,7 @@ EntityEditor.prototypes =
 		--TODO: make spawn adapter
 		adapter = EntityEditor.adapters.map,
 		help = "Defines a new spawn point, in which new entities can be created.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -638,7 +692,7 @@ EntityEditor.prototypes =
 	visibility = {
 		adapter = EntityEditor.adapters.float,
 		help = "Allows overriding of visibility calculated by the 'bbox' property.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -646,7 +700,7 @@ EntityEditor.prototypes =
 	linked = {
 		adapter = EntityEditor.adapters.string,
 		help = "Make this entity act as a teleportation device to another server.",
-		shouldAddSuggestion = function(ownerElement)
+		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -948,7 +1002,7 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 
 	local possibleProto = self.prototypes[elementName]
 	--Only add prototype adapter type if it's available and marked for suggestion for this element
-	if possibleProto and possibleProto.adapter and (possibleProto.shouldAddSuggestion == nil or possibleProto.shouldAddSuggestion(outerElement)) then
+	if possibleProto and possibleProto.adapter and (possibleProto.shouldAddSuggestion == nil or possibleProto.shouldAddSuggestion(outerElement, self.instance.entity)) then
 		local itemIndex = table.maxn(newAdapters) + 1
 
 		local item = Ember.OgreView.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
