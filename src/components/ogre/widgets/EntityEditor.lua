@@ -856,6 +856,10 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
 
+	local tooltip = attributeName
+	if prototype and prototype.help then
+		tooltip = attributeName .. ": " .. prototype.help
+	end 
 
 
 	label:setText(attributeName)
@@ -863,13 +867,13 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 	label:setProperty("FrameEnabled", "false");
 	label:setProperty("BackgroundEnabled", "false");
 	label:setProperty("VertFormatting", "TopAligned");
-	label:setProperty("Tooltip", attributeName);
+	label:setProperty("Tooltip", tooltip);
 
 	local width = container:getWidth()
 	width = width + CEGUI.UDim(0, textWidth)
 	outercontainer:setWidth(width)
 	container:setXPosition(CEGUI.UDim(0, textWidth))
-	container:setProperty("Tooltip", attributeName);
+	container:setProperty("Tooltip", tooltip);
 
 	outercontainer:setHeight(container:getHeight())
 
