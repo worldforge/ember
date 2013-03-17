@@ -947,14 +947,13 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 	local newAdapters = {}
 
 	local possibleProto = self.prototypes[elementName]
-	if possibleProto then
-		if possibleProto.adapter then
-			local itemIndex = table.maxn(newAdapters) + 1
+	--Only add prototype adapter type if it's available and marked for suggestion for this element
+	if possibleProto and possibleProto.adapter and (possibleProto.shouldAddSuggestion == nil or possibleProto.shouldAddSuggestion(outerElement)) then
+		local itemIndex = table.maxn(newAdapters) + 1
 
-			local item = Ember.OgreView.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
-			table.insert(newAdapters, possibleProto.adapter)
-			combobox:addItem(item)
-		end
+		local item = Ember.OgreView.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
+		table.insert(newAdapters, possibleProto.adapter)
+		combobox:addItem(item)
 	else
 		--Use the default adapters
 
