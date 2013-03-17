@@ -498,19 +498,18 @@ void GeometryPageManager::update(unsigned long deltaTime, Vector3 &camPos, Vecto
 					if (distSq >= nearDistSq && distSq < farTransDistSq){
 						//If so, load the geometry immediately
 						_loadPage(blk);
-						loadedList.push_back(blk);
-						blk->_iter = (--loadedList.end());
+						loadedList.insert(blk);
 
 						//And remove it from the pending list if necessary
 						if (blk->_pending){
-							pendingList.remove(blk);
+							pendingList.erase(blk);
 							blk->_pending = false;
 						}
 					} else {
 						//Otherwise, add it to the pending geometry list (if not already)
 						//Pages in then pending list will be loaded later (see below)
 						if (!blk->_pending){
-							pendingList.push_back(blk);
+							pendingList.insert(blk);
 							blk->_pending = true;
 						}
 					}
@@ -567,8 +566,7 @@ void GeometryPageManager::update(unsigned long deltaTime, Vector3 &camPos, Vecto
 			Real distSq = dx * dx + dz * dz;
 			if (distSq <= cacheDistSq){
 				_loadPage(blk);
-				loadedList.push_back(blk);
-				blk->_iter = (--loadedList.end());
+				loadedList.insert(blk);
 
 				enableCache = false;
 				break;
@@ -694,7 +692,7 @@ void GeometryPageManager::reloadGeometry()
 		GeometryPage *page = *it;
 		_unloadPageDelayed(page);
 		page->_pending = true;
-		pendingList.push_back(page);
+		pendingList.insert(page);
 	}
 	loadedList.clear();
 }
@@ -712,17 +710,16 @@ void GeometryPageManager::reloadGeometryPage(const Vector3 &point, bool forceLoa
 		if (page->_loaded){
 			_unloadPageDelayed(page);
 			page->_pending = true;
-			pendingList.push_back(page);
+			pendingList.insert(page);
 		}
 		if (forceLoadImmediately) {
 			//Load the geometry immediately
 			_loadPage(page);
-			loadedList.push_back(page);
-			page->_iter = (--loadedList.end());
+			loadedList.insert(page);
 
 			//And remove it from the pending list if necessary
 			if (page->_pending){
-				pendingList.remove(page);
+				pendingList.erase(page);
 				page->_pending = false;
 			}
 		}
@@ -759,7 +756,7 @@ void GeometryPageManager::reloadGeometryPages(const Vector3 &center, Real radius
 				if (distSq <= radius) {
 					_unloadPageDelayed(page);
 					page->_pending = true;
-					pendingList.push_back(page);
+					pendingList.insert(page);
 				}
 			}
 		}
@@ -787,7 +784,7 @@ void GeometryPageManager::reloadGeometryPages(const TBounds & area)
 			if (page->_loaded){
 				_unloadPageDelayed(page);
 				page->_pending = true;
-				pendingList.push_back(page);
+				pendingList.insert(page);
 			}
 		}
 	}
@@ -822,12 +819,11 @@ void GeometryPageManager::preloadGeometry(const TBounds & area)
 			if (!page->_loaded){
 				//Load the geometry immediately
 				_loadPage(page);
-				loadedList.push_back(page);
-				page->_iter = (--loadedList.end());
+				loadedList.insert(page);
 
 				//And remove it from the pending list if necessary
 				if (page->_pending){
-					pendingList.remove(page);
+					pendingList.erase(page);
 					page->_pending = false;
 				}
 			}
@@ -870,6 +866,7 @@ void GeometryPageManager::_loadPage(GeometryPage *page)
 
 	//Check if the page is prepared. If not, should stop now (and rely on the page being loaded again when the background data has been prepared).
 	if (!mainGeom->getPageLoader()->preparePage(info)) {
+		page->_inactiveTime = 0;
 		page->_loaded = true;
 		return;
 	}
@@ -951,7 +948,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 				if (page->_loaded){
 					page->_keepLoaded = false;
 					_unloadPage(page);
-					loadedList.erase(page->_iter);
+					loadedList.erase(page);
 				}
 				page->_centerPoint.x += shiftX * mainGeom->getPageSize();
 				page->_centerPoint.z += shiftZ * mainGeom->getPageSize();
@@ -969,7 +966,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 					if (page->_loaded){
 						page->_keepLoaded = false;
 						_unloadPageDelayed(page);
-						loadedList.erase(page->_iter);
+						loadedList.erase(page);
 					}
 					scrollBuffer[x] = page;
 				}
@@ -994,7 +991,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 					if (page->_loaded){
 						page->_keepLoaded = false;
 						_unloadPageDelayed(page);
-						loadedList.erase(page->_iter);
+						loadedList.erase(page);
 					}
 					scrollBuffer[x - initialMidpoint] = page;
 				}
@@ -1018,7 +1015,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 					if (page->_loaded){
 						page->_keepLoaded = false;
 						_unloadPageDelayed(page);
-						loadedList.erase(page->_iter);
+						loadedList.erase(page);
 					}
 					scrollBuffer[z] = page;
 				}
@@ -1043,7 +1040,7 @@ void GeometryPageManager::_scrollGridPages(int shiftX, int shiftZ)
 					if (page->_loaded){
 						page->_keepLoaded = false;
 						_unloadPageDelayed(page);
-						loadedList.erase(page->_iter);
+						loadedList.erase(page);
 					}
 					scrollBuffer[z - initialMidpoint] = page;
 				}

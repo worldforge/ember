@@ -104,6 +104,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 #include <limits> // numeric_limits<>
 #include <memory>
+#include <set>
 
 #include <OgreRoot.h>
 #include <OgrePrerequisites.h>
@@ -1090,7 +1091,7 @@ private:
 	bool _loaded;		//Flag indicating if page is loaded
 	bool _needsUnload;	//Flag indicating if page needs unloading before next load
 	bool _keepLoaded;	//Flag indicating if the page should not be unloaded
-	std::list<GeometryPage*>::iterator _iter;	//Iterator in loadedList
+//	std::list<GeometryPage*>::iterator _iter;	//Iterator in loadedList
 
 	Ogre::AxisAlignedBox _trueBounds;	//Actual bounding box of the 3D geometry added to this page
 	bool _trueBoundsUndefined;			//Flag indicating if _trueBounds has not been defined yet
@@ -1359,7 +1360,7 @@ class GeometryPageManager
 {
 public:
 	/** \brief A std::list of pointers to geometry pages */
-	typedef std::list<GeometryPage*> TPGeometryPages;
+	typedef std::set<GeometryPage*> TPGeometryPages;
 
 	/** \brief Internal function - DO NOT USE */
 	GeometryPageManager(PagedGeometry *mainGeom);
