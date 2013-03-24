@@ -65,6 +65,18 @@ public:
 	void removeMarker();
 
 	static WFMath::Point<3> createPoint(float x, float y, float z);
+	
+	/**
+	 * @brief Queries the entity about its thoughts.
+	 *
+	 * When thoughts arrive they are emitted through EventGotThought.
+	 */
+	void getThoughts();
+	
+	/**
+	 * @brief Emitted when a new thought has arrived.
+	 */
+	sigc::signal<void, const Atlas::Message::Element&> EventGotThought;
 
 };
 

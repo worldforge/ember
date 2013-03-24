@@ -833,6 +833,52 @@ function EntityEditor:editEntity(entity)
 	
 	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
 	self.exportFilenameWindow:setText(exportFileName)
+	
+	
+	
+	createConnector(self.instance.helper.EventGotThought):connect(function(element)
+		if element:isMap() then
+			if self.instance.clearThoughts then
+				self.knowledgelistbox:resetList()
+				self.instance.clearThoughts = false
+			end
+			local thoughtMap = element:asMap()
+			local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+			
+			local modelItem = {predicate = "", subject = "", object = ""}
+			if thoughtMap:get("predicate") and thoughtMap:get("predicate"):isString() then
+				modelItem.predicate = thoughtMap:get("predicate"):asString()
+			end
+			if thoughtMap:get("subject") and thoughtMap:get("subject"):isString() then
+				modelItem.subject = thoughtMap:get("subject"):asString()
+			end
+			if thoughtMap:get("object") and thoughtMap:get("object"):isString() then
+				modelItem.object = thoughtMap:get("object"):asString()
+			end
+			item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
+	
+			item:subscribeEvent("SelectionChanged", function(args)
+				if item:isSelected() then
+					local predicate = self.widget:getWindow("NewKnowledgePredicate")
+					local subject = self.widget:getWindow("NewKnowledgeSubject")
+					local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
+	
+					predicate:setText(modelItem.predicate)
+					subject:setText(modelItem.subject)
+					knowledge:setText(modelItem.object)
+	
+					self:handleKnowledgeSelected(modelItem)
+				end
+	
+				return true
+			end)
+	
+			item:setID(#self.instance.knowledge.model)
+			table.insert(self.instance.knowledge.model, modelItem)
+			self.knowledgelistbox:addItem(item)
+		end
+	end)
+	
 end
 
 function EntityEditor:createAdapter(attributeName, element)
@@ -1076,7 +1122,7 @@ end
 
 function EntityEditor:handleKnowledgeSelected(modelItem)
 	if modelItem.predicate == "location" then
-		_, _, x, y, z = string.find(modelItem.knowledge, "{%d*,%(([%d%-]*),([%d%-]*),([%d%-]*)%)}")
+		_, _, x, y, z = string.find(modelItem.object, "{%d*,%(([%d%-]*),([%d%-]*),([%d%-]*)%)}")
 
 		if (x and y and z) then
 			local point = Ember.OgreView.Gui.EntityEditor:createPoint(tonumber(x), tonumber(y), tonumber(z))
@@ -1089,65 +1135,9 @@ function EntityEditor:handleKnowledgeSelected(modelItem)
 	end
 end
 
-function EntityEditor:entitySayKnowledge(root)
-	local rootObject = root:get()
-
-	if not rootObject:hasAttr("say") then
-		return
-	end
-
-	--message now contains what our target entity said
-	local message = rootObject:getAttr("say"):asString()
-
-	local modelItem = {}
-	_, _, modelItem.predicate, modelItem.subject, modelItem.knowledge = string.find(message, "The (%a*) of (%a*) is (.*)")
-	if modelItem.predicate then
-
-		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-		item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.knowledge))
-		item:subscribeEvent("SelectionChanged", function(args)
-			if item:isSelected() then
-				local predicate = self.widget:getWindow("NewKnowledgePredicate")
-				local subject = self.widget:getWindow("NewKnowledgeSubject")
-				local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
-
-				predicate:setText(modelItem.predicate)
-				subject:setText(modelItem.subject)
-				knowledge:setText(modelItem.knowledge)
-
-				self:handleKnowledgeSelected(modelItem)
-			end
-
-			return true
-		end
-		)
-
-		item:setID(#self.instance.knowledge.model)
-		table.insert(self.instance.knowledge.model, modelItem)
-		self.knowledgelistbox:addItem(item)
-	end
-
-end
-
 function EntityEditor:knowledgeRefresh()
-	self.knowledgelistbox:resetList()
-	if self.instance then
-		self.instance.knowledge.model = {}
-		local entity = self.instance.entity
-		if entity then
-			if self.instance.entitySayKnowledgeConnector then
-				self.instance.entitySayKnowledgeConnector:disconnect()
-			end
-			self.instance.entitySayKnowledgeConnector = createConnector(entity.Say):connect(self.entitySayKnowledge, self)
-			emberServices:getServerService():sayTo("list me all knowledge", entity)
-
-			--Remove listener after five seconds
-			self.instance.entitySayKnowledgeConnectorTimer = Eris.Timeout:new_local(5000)
-			self.instance.entitySayKnowledgeConnectorTimerConn = createConnector(self.instance.entitySayKnowledgeConnectorTimer.Expired):connect(function()
-				self.instance.entitySayKnowledgeConnector:disconnect()
-			end)
-		end
-	end
+	self.instance.clearThoughts = true
+	self.instance.helper:getThoughts()
 end
 
 function EntityEditor:RefreshKnowledge_Clicked(args)

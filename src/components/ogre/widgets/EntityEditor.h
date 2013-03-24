@@ -23,10 +23,12 @@
 #ifndef EMBEROGRE_GUIENTITYEDITOR_H
 #define EMBEROGRE_GUIENTITYEDITOR_H
 
+#include "adapters/atlas/AdapterBase.h"
+#include <Atlas/Message/Element.h>
+#include <Atlas/Objects/Operation.h>
+#include <sigc++/trackable.h>
 #include <map>
 #include <vector>
-#include <Atlas/Message/Element.h>
-#include "adapters/atlas/AdapterBase.h"
 
 namespace Eris
 {
@@ -74,7 +76,7 @@ class MapAdapter;
 
  @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
  */
-class EntityEditor
+class EntityEditor: public sigc::trackable
 {
 public:
 	/**
@@ -128,6 +130,13 @@ public:
 	void addMarker(const WFMath::Point<3>& point);
 
 	/**
+	 * @brief Queries the entity about its thoughts.
+	 *
+	 * When thoughts arrive they are emitted through EventGotThought.
+	 */
+	void getThoughts();
+
+	/**
 	 * @brief Removes a previously added marker.
 	 *
 	 * If no marker exists nothing will happen.
@@ -142,6 +151,11 @@ public:
 	 * @return A point in space.
 	 */
 	static WFMath::Point<3> createPoint(float x, float y, float z);
+
+	/**
+	 * @brief Emitted when a new thought has arrived.
+	 */
+	sigc::signal<void, const Atlas::Message::Element&> EventGotThought;
 
 protected:
 
@@ -168,6 +182,8 @@ protected:
 	 * @brief Holds a marker to a location.
 	 */
 	EntityPointMarker* mMarker;
+
+	void operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op);
 
 };
 

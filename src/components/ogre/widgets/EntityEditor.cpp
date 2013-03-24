@@ -41,7 +41,6 @@
 #include "framework/LoggingInstance.h"
 
 #include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Operation.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Formatter.h>
@@ -49,6 +48,9 @@
 #include <wfmath/segment.h>
 
 #include <Eris/Entity.h>
+#include <Eris/Account.h>
+#include <Eris/Connection.h>
+#include <Eris/Response.h>
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
@@ -275,6 +277,48 @@ void EntityEditor::addMarker(const WFMath::Point<3>& point)
 		delete mMarker;
 		mMarker = new EntityPointMarker(mEntity, mWorld.getSceneManager(), mWorld.getTerrainManager(), point);
 		mMarker->updateMarker();
+	}
+}
+
+void EntityEditor::getThoughts()
+{
+	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+
+	Atlas::Objects::Operation::Get get;
+	Atlas::Objects::Operation::RootOperation get_arg;
+	get_arg->setParents( { "thought" });
+	get_arg->setId(mEntity.getId());
+
+	get->setArgs1(get_arg);
+	get->setFrom(account->getId());
+	get->setSerialno(Eris::getNewSerialno());
+
+	Eris::Connection* connection = account->getConnection();
+
+	connection->getResponder()->await(get->getSerialno(), this, &EntityEditor::operationGetThoughtResult);
+	connection->send(get);
+
+}
+
+void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op)
+{
+	if (!op->getArgs().empty()) {
+		for (auto& thoughtOp : op->getArgs()) {
+			if (*thoughtOp->getParents().begin() == "thought") {
+				Atlas::Message::Element args = thoughtOp->getAttr("args");
+				if (args.isList()) {
+					for (auto thought : args.asList()) {
+						EventGotThought(thought);
+					}
+				} else {
+					S_LOG_WARNING("Got thought op args which aren't of type 'list'.");
+				}
+			} else {
+				S_LOG_WARNING("Got thought op of wrong parent type.");
+			}
+		}
+	} else {
+		S_LOG_VERBOSE("Got thought op without any thoughts.");
 	}
 }
 
