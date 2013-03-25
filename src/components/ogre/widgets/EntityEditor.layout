@@ -51,64 +51,60 @@
                         <Property Name='Text' Value='Refresh' />
                         <Property Name='InheritsAlpha' Value='True' />
                     </Window>
-                    <Window Type='EmberLook/Editbox' Name='NewKnowledgePredicate'>
+                    <Window Type='HorizontalLayoutContainer'>
                         <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}' />
-                        <Property Name='UnifiedSize' Value='{{0,70},{0,25}}' />
-                        <Property Name='InheritsAlpha' Value='True' />
-                        <Property Name='Tooltip' Value='The predicatel.' />
-                    </Window>
-                    <Window Type='EmberLook/Editbox' Name='NewKnowledgeSubject'>
-                        <Property Name='UnifiedPosition' Value='{{0,80},{1.0,-30}}' />
-                        <Property Name='UnifiedSize' Value='{{0,70},{0,25}}' />
-                        <Property Name='InheritsAlpha' Value='True' />
-                        <Property Name='Tooltip' Value='The subject.' />
-                    </Window>
-                    <Window Type='EmberLook/Editbox' Name='NewKnowledgeKnowledge'>
-                        <Property Name='UnifiedPosition' Value='{{0,155},{1.0,-30}}' />
-                        <Property Name='UnifiedSize' Value='{{1,-185},{0,25}}' />
-                        <Property Name='InheritsAlpha' Value='True' />
-                        <Property Name='Tooltip' Value='The knowledge.' />
-                    </Window>
-                    <Window Type='EmberLook/Button' Name='NewKnowledgeAdd'>
-                        <Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-30}}' />
-                        <Property Name='UnifiedSize' Value='{{0,35},{0,20}}' />
-                        <Property Name='Text' Value='Add' />
-                        <Property Name='InheritsAlpha' Value='True' />
+                        <Property Name='UnifiedSize' Value='{{1,-10},{0,25}}' />
+                        <Window Type='EmberLook/Combobox' Name='NewKnowledgePredicate'>
+                            <Property Name='UnifiedSize' Value='{{0,70},{0,25}}' />
+                            <Property Name='InheritsAlpha' Value='True' />
+                            <Property Name='Tooltip' Value='The predicate.' />
+                        </Window>
+                        <Window Type='EmberLook/Editbox' Name='NewKnowledgeSubject'>
+                            <Property Name='UnifiedSize' Value='{{0,70},{0,25}}' />
+                            <Property Name='InheritsAlpha' Value='True' />
+                            <Property Name='Tooltip' Value='The subject.' />
+                        </Window>
+                        <Window Type='EmberLook/Editbox' Name='NewKnowledgeKnowledge'>
+                            <Property Name='UnifiedSize' Value='{{1,-185},{0,25}}' />
+                            <Property Name='InheritsAlpha' Value='True' />
+                            <Property Name='Tooltip' Value='The object' />
+                        </Window>
+                        <Window Type='EmberLook/Button' Name='NewKnowledgeAdd'>
+                            <Property Name='UnifiedSize' Value='{{0,35},{0,20}}' />
+                            <Property Name='Text' Value='Add' />
+                            <Property Name='InheritsAlpha' Value='True' />
+                        </Window>
                     </Window>
                 </Window>
                 <Window Type='DefaultWindow' Name='GoalsPanel'>
                     <Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}' />
                     <Property Name='Text' Value='Goals' />
-                    <Property Name='InheritsAlpha' Value='false' />
                     <!-- Property Name='Visible' Value='true'/ -->
                     <Window Type='EmberLook/ItemListbox' Name='GoalList'>
                         <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-                        <Property Name='UnifiedSize' Value='{{0,400},{1,-75}}' />
-                        <Property Name='InheritsAlpha' Value='True' />
+                        <Property Name='UnifiedSize' Value='{{0,400},{1,-95}}' />
                     </Window>
                     <Window Type='EmberLook/Button' Name='RefreshGoals'>
-                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-70}}' />
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-90}}' />
                         <Property Name='UnifiedSize' Value='{{0,75},{0,20}}' />
                         <Property Name='Text' Value='Refresh' />
-                        <Property Name='InheritsAlpha' Value='True' />
                     </Window>
-                    <Window Type='EmberLook/Editbox' Name='NewGoalVerb'>
-                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}' />
-                        <Property Name='UnifiedSize' Value='{{0,75},{0,25}}' />
-                        <Property Name='InheritsAlpha' Value='True' />
-                        <Property Name='Tooltip' Value='The verb which will be associated with the goal.' />
-                    </Window>
-                    <Window Type='EmberLook/Editbox' Name='NewGoalDefinition'>
-                        <Property Name='UnifiedPosition' Value='{{0,80},{1.0,-30}}' />
-                        <Property Name='UnifiedSize' Value='{{1,-125},{0,25}}' />
-                        <Property Name='InheritsAlpha' Value='True' />
-                        <Property Name='Tooltip' Value='The goal definition.' />
-                    </Window>
-                    <Window Type='EmberLook/Button' Name='NewGoalAdd'>
-                        <Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-30}}' />
-                        <Property Name='UnifiedSize' Value='{{0,35},{0,20}}' />
-                        <Property Name='Text' Value='Add' />
-                        <Property Name='InheritsAlpha' Value='True' />
+                    <Window Type='HorizontalLayoutContainer'>
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-80}}' />
+                        <Property Name='UnifiedSize' Value='{{1,-10},{0,75}}' />
+                        <Window Type='EmberLook/Combobox' Name='NewGoalVerb'>
+                            <Property Name='UnifiedSize' Value='{{0,75},{0,25}}' />
+                            <Property Name='Tooltip' Value='The verb which will be associated with the goal.' />
+                        </Window>
+                        <Window Type='EmberLook/MultiLineEditbox' Name='NewGoalDefinition'>
+                            <Property Name='UnifiedSize' Value='{{1,-125},{0,75}}' />
+                            <Property Name='Tooltip' Value='The goal definition.' />
+                        </Window>
+                        <Window Type='EmberLook/Button' Name='NewGoalAdd'>
+                            <Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-30}}' />
+                            <Property Name='UnifiedSize' Value='{{0,35},{0,20}}' />
+                            <Property Name='Text' Value='Add' />
+                        </Window>
                     </Window>
                 </Window>
                 <Window Type='DefaultWindow' Name='ChildrenPanel'>

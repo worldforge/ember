@@ -840,6 +840,7 @@ function EntityEditor:editEntity(entity)
 		if element:isMap() then
 			if self.instance.clearThoughts then
 				self.knowledgelistbox:resetList()
+				self.goallistbox:resetList()
 				self.instance.clearThoughts = false
 			end
 			local thoughtMap = element:asMap()
@@ -855,27 +856,55 @@ function EntityEditor:editEntity(entity)
 			if thoughtMap:get("object") and thoughtMap:get("object"):isString() then
 				modelItem.object = thoughtMap:get("object"):asString()
 			end
-			item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
-	
-			item:subscribeEvent("SelectionChanged", function(args)
-				if item:isSelected() then
-					local predicate = self.widget:getWindow("NewKnowledgePredicate")
-					local subject = self.widget:getWindow("NewKnowledgeSubject")
-					local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
-	
-					predicate:setText(modelItem.predicate)
-					subject:setText(modelItem.subject)
-					knowledge:setText(modelItem.object)
-	
-					self:handleKnowledgeSelected(modelItem)
+			
+			if modelItem.predicate ~= "goal" then
+				item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
+		
+				item:subscribeEvent("SelectionChanged", function(args)
+					if item:isSelected() then
+						local predicate = self.widget:getWindow("NewKnowledgePredicate")
+						local subject = self.widget:getWindow("NewKnowledgeSubject")
+						local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
+		
+						predicate:setText(modelItem.predicate)
+						subject:setText(modelItem.subject)
+						knowledge:setText(modelItem.object)
+		
+						self:handleKnowledgeSelected(modelItem)
+					end
+		
+					return true
+				end)
+		
+				item:setID(#self.instance.knowledge.model)
+				table.insert(self.instance.knowledge.model, modelItem)
+				self.knowledgelistbox:addItem(item)
+			else
+				--Handle goals specially
+				
+				local verb = modelItem.subject
+				local _, _, singleVerb = string.find(modelItem.subject, "'(%a*)'.*")
+				if singleVerb then
+					verb = singleVerb
 				end
-	
-				return true
-			end)
-	
-			item:setID(#self.instance.knowledge.model)
-			table.insert(self.instance.knowledge.model, modelItem)
-			self.knowledgelistbox:addItem(item)
+				
+				local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+				goalItem:setText(escapeForCEGUI(verb .. " : " .. modelItem.object))
+				self.goallistbox:addItem(goalItem)
+		
+				goalItem:subscribeEvent("SelectionChanged", function(args)
+					if goalItem:isSelected() then
+						local goalVerb = self.widget:getWindow("NewGoalVerb")
+						local goalDef = self.widget:getWindow("NewGoalDefinition")
+		
+						goalVerb:setText(verb)
+		
+						goalDef:setText(modelItem.object)
+					end
+		
+					return true
+				end)
+			end
 		end
 	end)
 	
@@ -1154,69 +1183,8 @@ function EntityEditor:NewKnowledge_Clicked(args)
 	return true
 end
 
-function EntityEditor:entitySayGoals(root)
-	local rootObject = root:get()
-
-	if not rootObject:hasAttr("say") then
-		return
-	end
-
-	--message now contains what our target entity said
-	local message = rootObject:getAttr("say"):asString()
-
-	local modelItem = {}
-
-	_, _, modelItem.verb, modelItem.goal = string.find(message, "The goal of (%b()) is (.*)")
-	if modelItem.verb then
-		local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-		item:setText(escapeForCEGUI(modelItem.verb .. " : " .. modelItem.goal))
-		self.goallistbox:addItem(item)
-
-		item:subscribeEvent("SelectionChanged", function(args)
-			if item:isSelected() then
-				local goalVerb = self.widget:getWindow("NewGoalVerb")
-				local goalDef = self.widget:getWindow("NewGoalDefinition")
-
-				local _, _, singleVerb = string.find(modelItem.verb, "'(%a*)'.*")
-				if singleVerb then
-					goalVerb:setText(singleVerb)
-				else
-					goalVerb:setText(modelItem.verb)
-				end
-
-				goalDef:setText(modelItem.goal)
-			end
-
-			return true
-		end
-		)
-
-	end
-
-end
-
-function EntityEditor:goalsRefresh()
-	self.goallistbox:resetList()
-	if self.instance then
-		local entity = self.instance.entity
-		if entity then
-			if self.instance.entitySayGoalsConnector then
-				self.instance.entitySayGoalsConnector:disconnect()
-			end
-			self.instance.entitySayGoalsConnector = createConnector(entity.Say):connect(self.entitySayGoals, self)
-			emberServices:getServerService():sayTo("list me goal", entity)
-
-			--Remove listener after five seconds
-			self.instance.entitySayGoalsConnectorTimer = Eris.Timeout:new_local(5000)
-			self.instance.entitySayGoalsConnectorTimerConn = createConnector(self.instance.entitySayGoalsConnectorTimer.Expired):connect(function()
-				self.instance.entitySayGoalsConnector:disconnect()
-			end)
-		end
-	end
-end
-
 function EntityEditor:RefreshGoals_Clicked(args)
-	self:goalsRefresh()
+	self:knowledgeRefresh()
 	return true
 end
 
