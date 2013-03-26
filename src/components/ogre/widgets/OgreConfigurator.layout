@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <GUILayout>
     <Window Type='EmberLook/StaticText' Name='Main'>
+        <Property Name='BackgroundEnabled' Value='true' />
+        <Property Name='FrameEnabled' Value='true' />
         <Window Type='EmberLook/StaticImage' Name='Logo'>
             <Property Name='UnifiedSize' Value='{{1,0},{0,90}}' />
-            <Property Name='BackgroundEnabled' Value='false' />
-            <Property Name='FrameEnabled' Value='false' />
             <Property Name='MousePassThroughEnabled' Value='true' />
             <Property Name='Image' Value='set:splash image:main' />
         </Window>
@@ -16,8 +16,6 @@
                     <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
                     <Window Type='HorizontalLayoutContainer' Name='RenderSystem_container'>
                         <Window Type='EmberLook/StaticText' Name='RenderSystem_text'>
-                            <Property Name='BackgroundEnabled' Value='false' />
-                            <Property Name='FrameEnabled' Value='false' />
                             <Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}' />
                             <Property Name='Text' Value='Render system' />
                         </Window>
@@ -31,8 +29,6 @@
                     <Property Name='UnifiedSize' Value='{{1,0},{0,30}}' />
                     <Window Type='HorizontalLayoutContainer' Name='Resolution_container'>
                         <Window Type='EmberLook/StaticText' Name='Resolution_text'>
-                            <Property Name='BackgroundEnabled' Value='false' />
-                            <Property Name='FrameEnabled' Value='false' />
                             <Property Name='UnifiedSize' Value='{{0.5,0},{1,0}}' />
                             <Property Name='Text' Value='Resolution' />
                         </Window>
