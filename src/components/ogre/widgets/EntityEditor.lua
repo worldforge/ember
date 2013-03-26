@@ -908,6 +908,8 @@ function EntityEditor:editEntity(entity)
 		end
 	end)
 	
+	self:knowledgeRefresh()
+	
 end
 
 function EntityEditor:createAdapter(attributeName, element)
@@ -1192,6 +1194,7 @@ function EntityEditor:NewGoal_Clicked(args)
 	local goalVerb = self.widget:getWindow("NewGoalVerb")
 	local goalDef = self.widget:getWindow("NewGoalDefinition")
 	self.instance.helper:addGoal(goalVerb:getText(), goalDef:getText())
+	self:knowledgeRefresh()
 	return true
 end
 
