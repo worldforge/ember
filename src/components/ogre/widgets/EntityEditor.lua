@@ -853,57 +853,73 @@ function EntityEditor:editEntity(entity)
 			if thoughtMap:get("subject") and thoughtMap:get("subject"):isString() then
 				modelItem.subject = thoughtMap:get("subject"):asString()
 			end
-			if thoughtMap:get("object") and thoughtMap:get("object"):isString() then
-				modelItem.object = thoughtMap:get("object"):asString()
+			if thoughtMap:get("object") then
+				modelItem.object = thoughtMap:get("object")
 			end
 			
 			if modelItem.predicate ~= "goal" then
-				item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
-		
-				item:subscribeEvent("SelectionChanged", function(args)
-					if item:isSelected() then
-						local predicate = self.widget:getWindow("NewKnowledgePredicate")
-						local subject = self.widget:getWindow("NewKnowledgeSubject")
-						local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
-		
-						predicate:setText(modelItem.predicate)
-						subject:setText(modelItem.subject)
-						knowledge:setText(modelItem.object)
-		
-						self:handleKnowledgeSelected(modelItem)
-					end
-		
-					return true
-				end)
-		
-				item:setID(#self.instance.knowledge.model)
-				table.insert(self.instance.knowledge.model, modelItem)
-				self.knowledgelistbox:addItem(item)
+				if modelItem.object:isString() then
+					local objectString = modelItem.object:asString()
+					item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. objectString))
+			
+					item:subscribeEvent("SelectionChanged", function(args)
+						if item:isSelected() then
+							local predicate = self.widget:getWindow("NewKnowledgePredicate")
+							local subject = self.widget:getWindow("NewKnowledgeSubject")
+							local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
+			
+							predicate:setText(modelItem.predicate)
+							subject:setText(modelItem.subject)
+							knowledge:setText(objectString)
+			
+							self:handleKnowledgeSelected(modelItem)
+						end
+			
+						return true
+					end)
+			
+					item:setID(#self.instance.knowledge.model)
+					table.insert(self.instance.knowledge.model, modelItem)
+					self.knowledgelistbox:addItem(item)
+				end
 			else
 				--Handle goals specially
 				
-				local verb = modelItem.subject
-				local _, _, singleVerb = string.find(modelItem.subject, "'(%a*)'.*")
-				if singleVerb then
-					verb = singleVerb
-				end
-				
-				local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-				goalItem:setText(escapeForCEGUI(verb .. " : " .. modelItem.object))
-				self.goallistbox:addItem(goalItem)
-		
-				goalItem:subscribeEvent("SelectionChanged", function(args)
-					if goalItem:isSelected() then
-						local goalVerb = self.widget:getWindow("NewGoalVerb")
-						local goalDef = self.widget:getWindow("NewGoalDefinition")
-		
-						goalVerb:setText(verb)
-		
-						goalDef:setText(modelItem.object)
+				local addGoal = function(object)
+					local verb = modelItem.subject
+					local _, _, singleVerb = string.find(modelItem.subject, "'(%a*)'.*")
+					if singleVerb then
+						verb = singleVerb
 					end
-		
-					return true
-				end)
+					
+					local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+					goalItem:setText(escapeForCEGUI(verb .. " : " .. object))
+					self.goallistbox:addItem(goalItem)
+			
+					goalItem:subscribeEvent("SelectionChanged", function(args)
+						if goalItem:isSelected() then
+							local goalVerb = self.widget:getWindow("NewGoalVerb")
+							local goalDef = self.widget:getWindow("NewGoalDefinition")
+			
+							goalVerb:setText(verb)
+			
+							goalDef:setText(object)
+						end
+			
+						return true
+					end)
+				end
+				if modelItem.object:isString() then
+					addGoal(modelItem.object:asString())
+				elseif modelItem.object:isList() then
+					local goalsList = modelItem.object:asList() 
+					for i = 0, goalsList:size() - 1 do
+						local object = goalsList[i]
+						if object:isString() then
+							addGoal(object:asString())
+						end
+					end
+				end
 			end
 		end
 	end)
