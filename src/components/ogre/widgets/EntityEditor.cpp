@@ -255,12 +255,35 @@ Atlas::Message::Element EntityEditor::createPosition2dElement()
 	return Element(list);
 }
 
-void EntityEditor::addGoal(const std::string& verb, const std::string& definition)
+void EntityEditor::setGoals(const std::string& verb, const std::vector<std::string>& definitions)
 {
-	std::stringstream ss;
-	//TODO: we should probably have a better way to define the verbs
-	ss << "learn ('" << verb << "', '#" << verb << "_verb1') " << definition;
-	EmberServices::getSingleton().getServerService().adminTell(mEntity.getId(), "say", ss.str());
+	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+
+	Atlas::Message::ListType thoughts;
+	for (auto& thought : definitions) {
+		thoughts.push_back(thought);
+	}
+
+	Atlas::Message::ListType thoughtArgs;
+	Atlas::Message::MapType thought;
+	thought.insert(std::make_pair("predicate", "goal"));
+	thought.insert(std::make_pair("subject", "('" + verb + "', '#" + verb + "_verb1')"));
+	thought.insert(std::make_pair("object", thoughts));
+	thoughtArgs.push_back(thought);
+
+	Atlas::Objects::Operation::RootOperation thoughtOp;
+	thoughtOp->setAttr("args", thoughtArgs);
+	thoughtOp->setParents( { "thought" });
+	thoughtOp->setId(mEntity.getId());
+
+	Atlas::Objects::Operation::Set set;
+	set->setArgs1(thoughtOp);
+	set->setFrom(account->getId());
+	set->setSerialno(Eris::getNewSerialno());
+
+	Eris::Connection* connection = account->getConnection();
+
+	connection->send(set);
 }
 
 void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge)

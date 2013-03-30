@@ -1209,7 +1209,11 @@ end
 function EntityEditor:NewGoal_Clicked(args)
 	local goalVerb = self.widget:getWindow("NewGoalVerb")
 	local goalDef = self.widget:getWindow("NewGoalDefinition")
-	self.instance.helper:addGoal(goalVerb:getText(), goalDef:getText())
+	
+	local goals = std.vector_std__string_:new_local()
+	goals:push_back(goalDef:getText())
+	
+	self.instance.helper:setGoals(goalVerb:getText(), goals)
 	self:knowledgeRefresh()
 	return true
 end

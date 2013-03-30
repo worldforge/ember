@@ -107,11 +107,14 @@ public:
 	Atlas::Message::Element createPosition2dElement();
 
 	/**
-	 * @brief Adds a new goal.
-	 * @param verb The verb to associate with the goal.
-	 * @param definition The goal definition.
+	 * @brief Sets new goals.
+	 *
+	 * Sending an empty list will effectively remove all goals for the given verb.
+	 *
+	 * @param verb The verb to associate with the goals.
+	 * @param definition Zero or many goals.
 	 */
-	void addGoal(const std::string& verb, const std::string& definition);
+	void setGoals(const std::string& verb, const std::vector<std::string>& definitions);
 
 	/**
 	 * @brief Adds new knowledge
