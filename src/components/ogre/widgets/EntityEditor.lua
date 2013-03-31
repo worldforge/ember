@@ -834,7 +834,7 @@ function EntityEditor:editEntity(entity)
 	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
 	self.exportFilenameWindow:setText(exportFileName)
 	
-	
+	self.instance.goals = {}
 	
 	createConnector(self.instance.helper.EventGotThought):connect(function(element)
 		if element:isMap() then
@@ -842,6 +842,7 @@ function EntityEditor:editEntity(entity)
 				self.knowledgelistbox:resetList()
 				self.goallistbox:resetList()
 				self.instance.clearThoughts = false
+				self.instance.goals = {}
 			end
 			local thoughtMap = element:asMap()
 			local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
@@ -849,74 +850,83 @@ function EntityEditor:editEntity(entity)
 			local modelItem = {predicate = "", subject = "", object = ""}
 			if thoughtMap:get("predicate") and thoughtMap:get("predicate"):isString() then
 				modelItem.predicate = thoughtMap:get("predicate"):asString()
-			end
-			if thoughtMap:get("subject") and thoughtMap:get("subject"):isString() then
-				modelItem.subject = thoughtMap:get("subject"):asString()
-			end
-			if thoughtMap:get("object") then
-				modelItem.object = thoughtMap:get("object")
-			end
-			
-			if modelItem.predicate ~= "goal" then
-				if modelItem.object:isString() then
-					local objectString = modelItem.object:asString()
-					item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. objectString))
-			
-					item:subscribeEvent("SelectionChanged", function(args)
-						if item:isSelected() then
-							local predicate = self.widget:getWindow("NewKnowledgePredicate")
-							local subject = self.widget:getWindow("NewKnowledgeSubject")
-							local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
-			
-							predicate:setText(modelItem.predicate)
-							subject:setText(modelItem.subject)
-							knowledge:setText(objectString)
-			
-							self:handleKnowledgeSelected(modelItem)
-						end
-			
-						return true
-					end)
-			
-					item:setID(#self.instance.knowledge.model)
-					table.insert(self.instance.knowledge.model, modelItem)
-					self.knowledgelistbox:addItem(item)
-				end
-			else
-				--Handle goals specially
-				
-				local addGoal = function(object)
-					local verb = modelItem.subject
-					local _, _, singleVerb = string.find(modelItem.subject, "'(%a*)'.*")
-					if singleVerb then
-						verb = singleVerb
-					end
-					
-					local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-					goalItem:setText(escapeForCEGUI(verb .. " : " .. object))
-					self.goallistbox:addItem(goalItem)
-			
-					goalItem:subscribeEvent("SelectionChanged", function(args)
-						if goalItem:isSelected() then
-							local goalVerb = self.widget:getWindow("NewGoalVerb")
-							local goalDef = self.widget:getWindow("NewGoalDefinition")
-			
-							goalVerb:setText(verb)
-			
-							goalDef:setText(object)
-						end
-			
-						return true
-					end)
-				end
-				if modelItem.object:isString() then
-					addGoal(modelItem.object:asString())
-				elseif modelItem.object:isList() then
-					local goalsList = modelItem.object:asList() 
-					for i = 0, goalsList:size() - 1 do
-						local object = goalsList[i]
-						if object:isString() then
-							addGoal(object:asString())
+				if thoughtMap:get("subject") and thoughtMap:get("subject"):isString() then
+					modelItem.subject = thoughtMap:get("subject"):asString()
+					if thoughtMap:get("object") then
+						local object = thoughtMap:get("object") 
+						
+						if modelItem.predicate ~= "goal" then
+							if object:isString() then
+								modelItem.object = thoughtMap:get("object"):asString()
+								item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
+						
+								item:subscribeEvent("SelectionChanged", function(args)
+									if item:isSelected() then
+										local predicate = self.widget:getWindow("NewKnowledgePredicate")
+										local subject = self.widget:getWindow("NewKnowledgeSubject")
+										local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
+						
+										predicate:setText(modelItem.predicate)
+										subject:setText(modelItem.subject)
+										knowledge:setText(modelItem.object)
+						
+										self:handleKnowledgeSelected(modelItem)
+									end
+						
+									return true
+								end)
+						
+								item:setID(#self.instance.knowledge.model)
+								table.insert(self.instance.knowledge.model, modelItem)
+								self.knowledgelistbox:addItem(item)
+							end
+						else
+							--Handle goals specially
+							
+							local verb = modelItem.subject
+							local _, _, singleVerb = string.find(modelItem.subject, "'(%a*)'.*")
+							if singleVerb then
+								verb = singleVerb
+							end
+
+							local addGoal = function(object)
+								
+								local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+								goalItem:setText(escapeForCEGUI(verb .. " : " .. object))
+								self.goallistbox:addItem(goalItem)
+						
+								goalItem:subscribeEvent("SelectionChanged", function(args)
+									if goalItem:isSelected() then
+										local goalVerb = self.widget:getWindow("NewGoalVerb")
+										local goalDef = self.widget:getWindow("NewGoalDefinition")
+						
+										goalVerb:setText(verb)
+						
+										goalDef:setText(object)
+									end
+						
+									return true
+								end)
+								return goalItem
+							end
+							
+							local goals = {}
+							
+							if object:isString() then
+								addGoal(object:asString())
+								
+								table.insert(goals, object:asString())
+							elseif object:isList() then
+								local goalsList = object:asList() 
+								for i = 0, goalsList:size() - 1 do
+									local anObject = goalsList[i]
+									if anObject:isString() then
+										addGoal(anObject:asString()):setID(i + 1)
+										table.insert(goals, anObject:asString())
+									end
+								end
+							end
+							self.instance.goals[verb] = goals
 						end
 					end
 				end
@@ -1206,15 +1216,46 @@ function EntityEditor:RefreshGoals_Clicked(args)
 	return true
 end
 
-function EntityEditor:NewGoal_Clicked(args)
+function EntityEditor:GoalAdd_Clicked(args)
 	local goalVerb = self.widget:getWindow("NewGoalVerb")
 	local goalDef = self.widget:getWindow("NewGoalDefinition")
 	
 	local goals = std.vector_std__string_:new_local()
-	goals:push_back(goalDef:getText())
+	
+	
+	local editingIndex = -1
+	local selectedItem = self.goallistbox:getFirstSelectedItem()
+	if selectedItem then
+		editingIndex = selectedItem:getID()
+	end
+		
+	local existingGoals = self.instance.goals[goalVerb:getText()]
+	if existingGoals then
+		for i, v in ipairs(existingGoals) do
+			if i == editingIndex then
+				goals:push_back(goalDef:getText())
+			else
+				goals:push_back(v)
+			end
+		end
+		if editingIndex == -1 then
+			goals:push_back(goalDef:getText())
+		end
+	else
+		goals:push_back(goalDef:getText())
+	end
+	
 	
 	self.instance.helper:setGoals(goalVerb:getText(), goals)
 	self:knowledgeRefresh()
+	return true
+end
+
+function EntityEditor:GoalUpdate_Clicked(args)
+	return true
+end
+
+function EntityEditor:GoalRemove_Clicked(args)
 	return true
 end
 
@@ -1328,7 +1369,9 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
 		self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
-		self.widget:getWindow("NewGoalAdd"):subscribeEvent("Clicked", self.NewGoal_Clicked, self)
+		self.widget:getWindow("GoalAdd"):subscribeEvent("Clicked", self.GoalAdd_Clicked, self)
+		self.widget:getWindow("GoalUpdate"):subscribeEvent("Clicked", self.GoalUpdate_Clicked, self)
+		self.widget:getWindow("GoalRemove"):subscribeEvent("Clicked", self.GoalRemove_Clicked, self)
 		self.widget:getWindow("Submit"):subscribeEvent("Clicked", self.Submit_Clicked, self)
 		self.widget:getWindow("DeleteButton"):subscribeEvent("Clicked", self.DeleteButton_Clicked, self)
 		self.widget:getWindow("RefreshButton"):subscribeEvent("Clicked", self.RefreshButton_Clicked, self)
