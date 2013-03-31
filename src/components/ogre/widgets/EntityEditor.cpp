@@ -327,7 +327,7 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 {
 	if (!op->getArgs().empty()) {
 		for (auto& thoughtOp : op->getArgs()) {
-			if (*thoughtOp->getParents().begin() == "thought") {
+			if (!thoughtOp->getParents().empty() && *thoughtOp->getParents().begin() == "thought") {
 				Atlas::Message::Element args = thoughtOp->getAttr("args");
 				if (args.isList()) {
 					for (auto thought : args.asList()) {
