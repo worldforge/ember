@@ -92,26 +92,26 @@
                     <Window Type='HorizontalLayoutContainer'>
                         <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-80}}' />
                         <Property Name='UnifiedSize' Value='{{1,-10},{0,75}}' />
-                        <Window Type='EmberLook/Combobox' Name='NewGoalVerb'>
+                        <Window Type='EmberLook/Combobox' Name='GoalVerb'>
                             <Property Name='UnifiedSize' Value='{{0,75},{0,25}}' />
                             <Property Name='Tooltip' Value='The verb which will be associated with the goal.' />
                         </Window>
-                        <Window Type='EmberLook/MultiLineEditbox' Name='NewGoalDefinition'>
-                            <Property Name='UnifiedSize' Value='{{1,-120},{0,75}}' />
+                        <Window Type='EmberLook/MultiLineEditbox' Name='GoalDefinition'>
+                            <Property Name='UnifiedSize' Value='{{1,-135},{0,75}}' />
                             <Property Name='Tooltip' Value='The goal definition.' />
                         </Window>
                         <Window Type='VerticalLayoutContainer'>
-                            <Property Name='UnifiedSize' Value='{{0,45},{0,60}}' />
+                            <Property Name='UnifiedSize' Value='{{0,50},{0,60}}' />
                             <Window Type='EmberLook/Button' Name='GoalAdd'>
-                                <Property Name='UnifiedSize' Value='{{0,45},{0,20}}' />
+                                <Property Name='UnifiedSize' Value='{{0,50},{0,20}}' />
                                 <Property Name='Text' Value='Add' />
                             </Window>
                             <Window Type='EmberLook/Button' Name='GoalUpdate'>
-                                <Property Name='UnifiedSize' Value='{{0,45},{0,20}}' />
+                                <Property Name='UnifiedSize' Value='{{0,50},{0,20}}' />
                                 <Property Name='Text' Value='Update' />
                             </Window>
                             <Window Type='EmberLook/Button' Name='GoalRemove'>
-                                <Property Name='UnifiedSize' Value='{{0,45},{0,20}}' />
+                                <Property Name='UnifiedSize' Value='{{0,50},{0,20}}' />
                                 <Property Name='Text' Value='Remove' />
                             </Window>
                         </Window>

@@ -897,10 +897,11 @@ function EntityEditor:editEntity(entity)
 						
 								goalItem:subscribeEvent("SelectionChanged", function(args)
 									if goalItem:isSelected() then
-										local goalVerb = self.widget:getWindow("NewGoalVerb")
-										local goalDef = self.widget:getWindow("NewGoalDefinition")
+										local goalVerb = self.widget:getWindow("GoalVerb")
+										local goalDef = self.widget:getWindow("GoalDefinition")
 						
 										goalVerb:setText(verb)
+										goalVerb.verb = verb
 						
 										goalDef:setText(object)
 									end
@@ -1217,34 +1218,17 @@ function EntityEditor:RefreshGoals_Clicked(args)
 end
 
 function EntityEditor:GoalAdd_Clicked(args)
-	local goalVerb = self.widget:getWindow("NewGoalVerb")
-	local goalDef = self.widget:getWindow("NewGoalDefinition")
+	local goalVerb = self.widget:getWindow("GoalVerb")
+	local goalDef = self.widget:getWindow("GoalDefinition")
 	
 	local goals = std.vector_std__string_:new_local()
-	
-	
-	local editingIndex = -1
-	local selectedItem = self.goallistbox:getFirstSelectedItem()
-	if selectedItem then
-		editingIndex = selectedItem:getID()
-	end
-		
 	local existingGoals = self.instance.goals[goalVerb:getText()]
 	if existingGoals then
 		for i, v in ipairs(existingGoals) do
-			if i == editingIndex then
-				goals:push_back(goalDef:getText())
-			else
-				goals:push_back(v)
-			end
+			goals:push_back(v)
 		end
-		if editingIndex == -1 then
-			goals:push_back(goalDef:getText())
-		end
-	else
-		goals:push_back(goalDef:getText())
 	end
-	
+	goals:push_back(goalDef:getText())
 	
 	self.instance.helper:setGoals(goalVerb:getText(), goals)
 	self:knowledgeRefresh()
@@ -1252,10 +1236,63 @@ function EntityEditor:GoalAdd_Clicked(args)
 end
 
 function EntityEditor:GoalUpdate_Clicked(args)
+	local goalVerb = self.widget:getWindow("GoalVerb")
+	local goalDef = self.widget:getWindow("GoalDefinition")
+	
+	local goals = std.vector_std__string_:new_local()
+	
+	
+	local selectedItem = self.goallistbox:getFirstSelectedItem()
+	if selectedItem then
+		local editingIndex = selectedItem:getID()
+		local existingGoals = self.instance.goals[goalVerb:getText()]
+		if existingGoals then
+			for i, v in ipairs(existingGoals) do
+				if i == editingIndex then
+					goals:push_back(goalDef:getText())
+				else
+					goals:push_back(v)
+				end
+			end
+		else
+			--this should not really be possible; if we've selected a goal in the list it should exist in the list of goals
+			--we'll keep it anyway just as a precaution
+			goals:push_back(goalDef:getText())
+		end
+		
+		self.instance.helper:setGoals(goalVerb:getText(), goals)
+		self:knowledgeRefresh()
+	end
+		
 	return true
 end
 
+--[[
+Removes a goal. This is done by sending an updated list of all the goal with the same verb as the selected, minus the selected.
+]]--
 function EntityEditor:GoalRemove_Clicked(args)
+	
+	local goalVerb = self.widget:getWindow("GoalVerb")
+
+	local goals = std.vector_std__string_:new_local()
+	
+	local selectedItem = self.goallistbox:getFirstSelectedItem()
+	if selectedItem then
+		editingIndex = selectedItem:getID()
+
+		--we've set the 'verb' property of the goalVerb textbox when the goal item was selected
+		local existingGoals = self.instance.goals[goalVerb.verb]
+		if existingGoals then
+			for i, v in ipairs(existingGoals) do
+				if i ~= editingIndex then
+					goals:push_back(v)
+				end
+			end
+			self.instance.helper:setGoals(goalVerb.verb, goals)
+			self:knowledgeRefresh()
+		end
+	end
+		
 	return true
 end
 
@@ -1369,9 +1406,33 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
 		self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
-		self.widget:getWindow("GoalAdd"):subscribeEvent("Clicked", self.GoalAdd_Clicked, self)
-		self.widget:getWindow("GoalUpdate"):subscribeEvent("Clicked", self.GoalUpdate_Clicked, self)
-		self.widget:getWindow("GoalRemove"):subscribeEvent("Clicked", self.GoalRemove_Clicked, self)
+		
+		self.goalAdd = CEGUI.toPushButton(self.widget:getWindow("GoalAdd"))
+		self.goalUpdate = CEGUI.toPushButton(self.widget:getWindow("GoalUpdate"))
+		self.goalRemove = CEGUI.toPushButton(self.widget:getWindow("GoalRemove"))
+		self.goalAdd:subscribeEvent("Clicked", self.GoalAdd_Clicked, self)
+		self.goalUpdate:subscribeEvent("Clicked", self.GoalUpdate_Clicked, self)
+		self.goalRemove:subscribeEvent("Clicked", self.GoalRemove_Clicked, self)
+		
+		local goalListUpdateFunction = function(args)
+			if self.goallistbox:getSelectedCount() > 0 then
+				self.goalUpdate:setEnabled(true)
+				self.goalRemove:setEnabled(true)
+			else
+				self.goalUpdate:setEnabled(false)
+				self.goalRemove:setEnabled(false)
+			end 
+			return true
+		end
+		
+		self.goallistbox:subscribeEvent("SelectionChanged", goalListUpdateFunction)
+		self.goallistbox:subscribeEvent("ListItemsChanged", goalListUpdateFunction)
+		
+		
+		self.goalUpdate:setEnabled(false)
+		self.goalRemove:setEnabled(false)
+		
+		
 		self.widget:getWindow("Submit"):subscribeEvent("Clicked", self.Submit_Clicked, self)
 		self.widget:getWindow("DeleteButton"):subscribeEvent("Clicked", self.DeleteButton_Clicked, self)
 		self.widget:getWindow("RefreshButton"):subscribeEvent("Clicked", self.RefreshButton_Clicked, self)
