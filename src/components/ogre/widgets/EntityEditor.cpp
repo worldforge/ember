@@ -39,11 +39,14 @@
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 #include "framework/LoggingInstance.h"
+#include "framework/MultiLineListFormatter.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Codecs/XML.h>
+#include <Atlas/Codecs/Bach.h>
 #include <Atlas/Formatter.h>
+
 
 #include <wfmath/segment.h>
 
@@ -344,6 +347,70 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 		S_LOG_VERBOSE("Got thought op without any thoughts.");
 	}
 }
+
+void EntityEditor::getGoalInfo(const std::string& subject, const std::string& goal)
+{
+	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+
+	Atlas::Objects::Operation::Get get;
+	Atlas::Objects::Operation::RootOperation get_arg;
+	get_arg->setParents( { "goal_info" });
+	get_arg->setId(mEntity.getId());
+
+	Atlas::Objects::Entity::Anonymous args;
+	args->setAttr("subject", subject);
+	args->setAttr("goal", goal);
+	get_arg->setArgs1(args);
+
+	get->setArgs1(get_arg);
+	get->setFrom(account->getId());
+	get->setSerialno(Eris::getNewSerialno());
+
+	Eris::Connection* connection = account->getConnection();
+
+	connection->getResponder()->await(get->getSerialno(), this, &EntityEditor::operationGetGoalInfoResult);
+	connection->send(get);
+
+}
+
+void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op)
+{
+	if (!op->getArgs().empty()) {
+		for (auto& goalInfoOp : op->getArgs()) {
+			if (!goalInfoOp->getParents().empty() && *goalInfoOp->getParents().begin() == "goal_info") {
+				Atlas::Message::Element args = goalInfoOp->getAttr("args");
+				if (args.isList()) {
+					for (auto goalInfo : args.asList()) {
+						EventGotGoalInfo(goalInfo);
+					}
+				} else {
+					S_LOG_WARNING("Got goal info op args which aren't of type 'list'.");
+				}
+			} else {
+				S_LOG_WARNING("Got goal info op of wrong parent type.");
+			}
+		}
+	} else {
+		S_LOG_VERBOSE("Got goal info op without any goals.");
+	}
+}
+
+std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map)
+{
+	std::stringstream ss;
+	Atlas::Message::QueuedDecoder decoder;
+
+	Atlas::Codecs::Bach codec(ss, decoder);
+	MultiLineListFormatter formatter(ss, codec);
+	Atlas::Message::Encoder encoder(formatter);
+	formatter.streamBegin();
+	encoder.streamMessageElement(map);
+
+	formatter.streamEnd();
+	return ss.str();
+}
+
+
 
 void EntityEditor::removeMarker()
 {

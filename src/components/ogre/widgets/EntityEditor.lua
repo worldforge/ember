@@ -904,6 +904,8 @@ function EntityEditor:editEntity(entity)
 										goalVerb.verb = verb
 						
 										goalDef:setText(object)
+										
+										self.instance.helper:getGoalInfo(modelItem.subject, object)
 									end
 						
 									return true
@@ -936,6 +938,19 @@ function EntityEditor:editEntity(entity)
 	end)
 	
 	self:knowledgeRefresh()
+	
+
+	createConnector(self.instance.helper.EventGotGoalInfo):connect(function(element)
+		if element:isMap() then
+			local goalMap = element:asMap()
+			local reportElem = goalMap:get("report")
+			if reportElem and reportElem:isMap() then
+				local goalString = Ember.OgreView.Gui.EntityEditor:parseElementMap(reportElem:asMap())
+				self.widget:getWindow("GoalInfo"):setText(escapeForCEGUI(goalString))
+			end
+		end
+	end)	
+	
 	
 end
 

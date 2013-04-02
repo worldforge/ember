@@ -140,6 +140,15 @@ public:
 	void getThoughts();
 
 	/**
+	 * @brief Gets goal info from the server.
+	 *
+	 * When goal information has arrived the EventGotGoalInfo event is emitted.
+	 * @param subject The goal subject. An empty string to get all goals.
+	 * @param goal The goal. An empty string to get all goals for a given subject.
+	 */
+	void getGoalInfo(const std::string& subject, const std::string& goal);
+
+	/**
 	 * @brief Removes a previously added marker.
 	 *
 	 * If no marker exists nothing will happen.
@@ -156,9 +165,21 @@ public:
 	static WFMath::Point<3> createPoint(float x, float y, float z);
 
 	/**
+	 * @brief Parses an element map into a string presentation.
+	 * @param map A map of elements.
+	 * @return A string presentation of the map.
+	 */
+	static std::string parseElementMap(const Atlas::Message::MapType& map);
+
+	/**
 	 * @brief Emitted when a new thought has arrived.
 	 */
 	sigc::signal<void, const Atlas::Message::Element&> EventGotThought;
+
+	/**
+	 * @brief Emitted when information about a goal has arrived.
+	 */
+	sigc::signal<void, const Atlas::Message::Element&> EventGotGoalInfo;
 
 protected:
 
@@ -187,6 +208,7 @@ protected:
 	EntityPointMarker* mMarker;
 
 	void operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op);
+	void operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op);
 
 };
 

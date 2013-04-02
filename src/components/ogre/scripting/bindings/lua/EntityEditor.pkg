@@ -76,10 +76,16 @@ public:
 	 */
 	void getThoughts();
 	
+	void getGoalInfo(const std::string& subject, const std::string& goal);
+	
+	static std::string parseElementMap(const Atlas::Message::MapType& map);
+	
 	/**
 	 * @brief Emitted when a new thought has arrived.
 	 */
 	sigc::signal<void, const Atlas::Message::Element&> EventGotThought;
+	
+	sigc::signal<void, const Atlas::Message::Element&> EventGotGoalInfo;
 
 };
 

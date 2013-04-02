@@ -82,7 +82,15 @@
                     <!-- Property Name='Visible' Value='true'/ -->
                     <Window Type='EmberLook/ItemListbox' Name='GoalList'>
                         <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-                        <Property Name='UnifiedSize' Value='{{0,400},{1,-110}}' />
+                        <Property Name='UnifiedSize' Value='{{1,0},{1,-310}}' />
+                    </Window>
+                    <Window Type='EmberLook/StaticText' Name='GoalInfo'>
+                        <Property Name='UnifiedPosition' Value='{{0,0},{1,-310}}' />
+                        <Property Name='UnifiedSize' Value='{{1,0},{0,200}}' />
+                        <Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+                        <Property Name='VertFormatting' Value='TopAligned'/>
+                        <Property Name='HorzScrollbar' Value='False'/>
+                        <Property Name='VertScrollbar' Value='True'/>
                     </Window>
                     <Window Type='EmberLook/Button' Name='RefreshGoals'>
                         <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-105}}' />
@@ -142,8 +150,6 @@
                         <Property Name='UnifiedPosition' Value='{{0.0},{0,0}}' />
                         <Property Name='UnifiedSize' Value='{{1,0},{0,100}}' />
                         <Property Name='InheritsAlpha' Value='True' />
-                        <Property Name='FrameEnabled' Value='false' />
-                        <Property Name='BackgroundEnabled' Value='false' />
                     </Window>
                     <Window Type='EmberLook/Checkbox' Name='ShowOgreBbox'>
                         <Property Name='UnifiedPosition' Value='{{0,0},{0,100}}' />
@@ -227,8 +233,6 @@
                             <Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,20.0}}' />
                             <Property Name='UnifiedPosition' Value='{{0,0},{0,20}}' />
                             <Property Name='HorzFormatting' Value='HorzCentred' />
-                            <Property Name='BackgroundEnabled' Value='false' />
-                            <Property Name='FrameEnabled' Value='false' />
                         </Window>
                         <Window Type='EmberLook/Button' Name='DumpCancel'>
                             <Property Name='Text' Value='Cancel' />
