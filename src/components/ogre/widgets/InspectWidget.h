@@ -24,9 +24,8 @@
 #define EMBEROGREINSPECTWIDGET_H
 
 #include "Widget.h"
-#include <Eris/Entity.h>
-#include <Atlas/Message/Element.h>
-#include <sstream>
+#include <Eris/Types.h>
+#include <sigc++/connection.h>
 
 namespace Ember {
 namespace OgreView {
@@ -113,41 +112,6 @@ protected:
 	 */
 	bool mChangedThisFrame;
 
-};
-
-class AttributeTextBuilder
-{
-public:
-
-	AttributeTextBuilder();
-
-	std::string parseAttributes(const Eris::Entity::AttrMap& map);
-
-	const std::stringstream& getText() const;
-
-private:
-
-	std::stringstream mMainText;
-	int mLevel;
-
-	void parseElement(const std::string& key, const Atlas::Message::Element& element);
-	void parseElement(const Atlas::Message::Element& element);
-
-	void parseString(const std::string& text);
-	void parseNumber(float number);
-
-	void parseString(const std::string& key, const std::string& text);
-	void parseNumber(const std::string& key, float number);
-	void parseList(const std::string& key, const Atlas::Message::ListType& list);
-	void parseMap(const std::string& key, const Atlas::Message::MapType& map);
-
-	void pad();
-};
-
-class IAttributeTextHandler
-{
-public:
-	void handle(const Eris::Entity::AttrMap& attrMap);
 };
 }
 }

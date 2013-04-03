@@ -34,10 +34,9 @@
 
 
 #include "../EmberOgre.h"
-#include "services/EmberServices.h"
-#include "services/server/ServerService.h"
 #include "framework/Tokeniser.h"
 #include "framework/ConsoleBackend.h"
+#include "framework/AtlasPresentationBridge.h"
 
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h>
@@ -46,34 +45,15 @@
 #include <elements/CEGUIPushButton.h>
 
 #include <Eris/TypeInfo.h>
-#include <Eris/View.h>
-#include <Atlas/Codecs/Bach.h>
-#include <Atlas/Message/DecoderBase.h>
-#include <Atlas/Objects/Encoder.h>
+
+#include <Atlas/Message/Element.h>
+
+#include <sstream>
 
 
 namespace Ember {
 namespace OgreView {
 namespace Gui {
-
-
-class Decoder : public Atlas::Message::DecoderBase {
-  private:
-    virtual void messageArrived(const Atlas::Message::MapType& obj) {
-        m_check = true;
-        m_obj = obj;
-    }
-    bool m_check;
-    Atlas::Message::MapType m_obj;
-  public:
-    Decoder() : m_check (false) { }
-    bool check() const { return m_check; }
-    const Atlas::Message::MapType & get() {
-        m_check = false; return m_obj;
-    }
-};
-
-
 
 
 InspectWidget::InspectWidget() :
@@ -125,10 +105,14 @@ void InspectWidget::buildWidget()
 
 void InspectWidget::updateAttributeString()
 {
-	AttributeTextBuilder builder;
-	mAttributesString = builder.parseAttributes(mCurrentEntity->getAttributes());
+	std::stringstream ss;
 
-}
+	AtlasPresentationBridge bridge(ss);
+	Atlas::Message::Encoder encoder(bridge);
+	encoder.streamMessageElement(mCurrentEntity->getAttributes());
+
+	mAttributesString = ss.str();
+	}
 
 void InspectWidget::runCommand(const std::string &command, const std::string &args)
 {
@@ -328,114 +312,6 @@ bool InspectWidget::ChildList_MouseDoubleClick(const CEGUI::EventArgs& args)
 }
 
 
-
-
-AttributeTextBuilder::AttributeTextBuilder(): mLevel(0)
-{
-	mMainText.precision(4);
-}
-
-std::string AttributeTextBuilder::parseAttributes(const Eris::Entity::AttrMap& map)
-{
-	for (Atlas::Message::MapType::const_iterator I = map.begin(); I != map.end(); ++I) {
-		parseElement(I->first, I->second);
-	}
-	return mMainText.str();
-}
-
-const std::stringstream& AttributeTextBuilder::getText() const
-{
-	return mMainText;
-}
-
-void AttributeTextBuilder::pad()
-{
-	for(int i = 0; i <= mLevel; ++i) {
-		mMainText << " ";
-	}
-}
-
-void AttributeTextBuilder::parseElement(const Atlas::Message::Element& element)
-{
-	if (element.isString()) {
-		parseString(element.asString());
-	} else if (element.isNum()) {
-		parseNumber(element.asNum());
-	} else if (element.isMap()) {
-		parseMap("", element.asMap());
-	} else if (element.isList()) {
-		parseList("", element.asList());
-	}
-}
-
-void AttributeTextBuilder::parseString(const std::string& text)
-{
-	mMainText << ", " << text;
-}
-
-void AttributeTextBuilder::parseNumber(float number)
-{
-	mMainText << ", " << number;
-
-}
-
-
-void AttributeTextBuilder::parseElement(const std::string& key, const Atlas::Message::Element& element)
-{
-	if (key == "") {
-		parseElement(element);
-	} else {
-		if (element.isString()) {
-			parseString(key, element.asString());
-		} else if (element.isNum()) {
-			parseNumber(key, element.asNum());
-		} else if (element.isMap()) {
-			parseMap(key, element.asMap());
-		} else if (element.isList()) {
-			parseList(key, element.asList());
-		}
-	}
-
-}
-
-void AttributeTextBuilder::parseString(const std::string& key, const std::string& text)
-{
-	pad();
-	mMainText << key << ": " << text << "\n";
-}
-
-void AttributeTextBuilder::parseNumber(const std::string& key, float number)
-{
-	pad();
-	mMainText << key << ": " << number << "\n";
-}
-
-void AttributeTextBuilder::parseList(const std::string& key, const Atlas::Message::ListType& list)
-{
-	pad();
-	if (key != "") {
-		mMainText << key << ":\n";
-	}
-	mLevel++;
-	for (Atlas::Message::ListType::const_iterator I = list.begin(); I != list.end(); ++I) {
-		parseElement(*I);
-	}
-	mMainText << "\n";
-	mLevel--;
-}
-
-void AttributeTextBuilder::parseMap(const std::string& key, const Atlas::Message::MapType& map)
-{
-	pad();
-	if (key != "") {
-		mMainText << key << ":\n";
-	}
-	mLevel++;
-	for (Atlas::Message::MapType::const_iterator I = map.begin(); I != map.end(); ++I) {
-		parseElement(I->first, I->second);
-	}
-	mLevel--;
-}
 
 
 }
