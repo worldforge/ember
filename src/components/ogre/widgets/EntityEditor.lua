@@ -1437,6 +1437,7 @@ function EntityEditor:buildWidget()
 				self.goalUpdate:setEnabled(true)
 				self.goalRemove:setEnabled(true)
 			else
+				self.goalInfo:setText("")
 				self.goalUpdate:setEnabled(false)
 				self.goalRemove:setEnabled(false)
 			end 
