@@ -40,6 +40,7 @@
 #include "services/server/ServerService.h"
 #include "framework/LoggingInstance.h"
 #include "framework/MultiLineListFormatter.h"
+#include "framework/AtlasPresentationBridge.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Message/QueuedDecoder.h>
@@ -398,15 +399,11 @@ void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::R
 std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map)
 {
 	std::stringstream ss;
-	Atlas::Message::QueuedDecoder decoder;
 
-	Atlas::Codecs::Bach codec(ss, decoder);
-	MultiLineListFormatter formatter(ss, codec);
-	Atlas::Message::Encoder encoder(formatter);
-	formatter.streamBegin();
+	AtlasPresentationBridge bridge(ss);
+	Atlas::Message::Encoder encoder(bridge);
 	encoder.streamMessageElement(map);
 
-	formatter.streamEnd();
 	return ss.str();
 }
 

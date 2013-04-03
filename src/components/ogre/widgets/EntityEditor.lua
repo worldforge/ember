@@ -896,6 +896,7 @@ function EntityEditor:editEntity(entity)
 								self.goallistbox:addItem(goalItem)
 						
 								goalItem:subscribeEvent("SelectionChanged", function(args)
+									self.goalInfo:setText("")
 									if goalItem:isSelected() then
 										local goalVerb = self.widget:getWindow("GoalVerb")
 										local goalDef = self.widget:getWindow("GoalDefinition")
@@ -904,7 +905,7 @@ function EntityEditor:editEntity(entity)
 										goalVerb.verb = verb
 						
 										goalDef:setText(object)
-										
+
 										self.instance.helper:getGoalInfo(modelItem.subject, object)
 									end
 						
@@ -946,7 +947,7 @@ function EntityEditor:editEntity(entity)
 			local reportElem = goalMap:get("report")
 			if reportElem and reportElem:isMap() then
 				local goalString = Ember.OgreView.Gui.EntityEditor:parseElementMap(reportElem:asMap())
-				self.widget:getWindow("GoalInfo"):setText(escapeForCEGUI(goalString))
+				self.goalInfo:setText(escapeForCEGUI(goalString))
 			end
 		end
 	end)	
@@ -1422,6 +1423,8 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
 		self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
 		
+		
+		self.goalInfo = self.widget:getWindow("GoalInfo")
 		self.goalAdd = CEGUI.toPushButton(self.widget:getWindow("GoalAdd"))
 		self.goalUpdate = CEGUI.toPushButton(self.widget:getWindow("GoalUpdate"))
 		self.goalRemove = CEGUI.toPushButton(self.widget:getWindow("GoalRemove"))
