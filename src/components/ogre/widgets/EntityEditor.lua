@@ -46,11 +46,11 @@ EntityEditor = {
 				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementType"))
 				local helpWindow = windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementHelp")
 				wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, "", outerElement)
-				
+
 				--Depending on whether we have suggestions or not we'll either show a combobox or an editbox.
 				local nameEditboxCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName_combobox"))
 				local nameEditboxEditbox = CEGUI.toEditbox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName_editbox"))
-				
+
 				local checkSuggestions = function()
 					nameEditboxCombobox:resetList()
 					for attr,value in pairs(self.prototypes) do
@@ -61,7 +61,7 @@ EntityEditor = {
 							end
 						end
 					end
-					
+
 					if nameEditboxCombobox:getItemCount() > 0 then
 						wrapper.nameEditbox = nameEditboxCombobox
 						nameEditboxEditbox:setVisible(false)
@@ -73,7 +73,7 @@ EntityEditor = {
 					end
 				end
 				checkSuggestions()
-				
+
 				wrapper.nameChanged = function(args)
 					local attribute = wrapper.nameEditbox:getText()
 					--check that the name doesn't already exists in the map adapter
@@ -84,17 +84,17 @@ EntityEditor = {
 						wrapper.buttonEnableChecker(args)
 					end
 					if self.prototypes[attribute] and self.prototypes[attribute].help then
-						helpWindow:setText(self.prototypes[attribute].help)	
+						helpWindow:setText(self.prototypes[attribute].help)
 					end
 					return true
 				end
 				nameEditboxCombobox:getEditbox():subscribeEvent("TextChanged", wrapper.nameChanged)
 				nameEditboxEditbox:subscribeEvent("TextChanged", wrapper.nameChanged)
-				
+
 				nameEditboxCombobox:subscribeEvent("ListSelectionChanged", function(args)
 					if nameEditboxCombobox:getSelectedItem() and self.prototypes[nameEditboxCombobox:getSelectedItem():getText()].help then
 						helpWindow:setText(self.prototypes[nameEditboxCombobox:getSelectedItem():getText()].help)
-					else	
+					else
 						helpWindow:setText("")
 					end
 					return true;
@@ -420,7 +420,7 @@ EntityEditor = {
 			createNewElement = function(self)
 				return self.instance.helper:createIntElement()
 			end
-		},		
+		},
 		area = {
 			name = "Area",
 			createAdapter = function(self, element, prototype)
@@ -659,7 +659,7 @@ EntityEditor.prototypes =
 		adapter = EntityEditor.adapters.float,
 		help = "The current amount of food in the entities stomach. This interacts with metabolism and is only applicable to living entities.",
 		shouldAddSuggestion = function(ownerElement, entity)
-			--TODO: check that the entity is a living entity 
+			--TODO: check that the entity is a living entity
 			--only show on top level
 			return ownerElement == nil
 		end
@@ -725,6 +725,150 @@ EntityEditor.defaultPrototypes =
 	}
 }
 
+EntityEditor.goalPrototypes = {
+	mason = {
+		welcome = {
+			proto="welcome(message, type)",
+			args = {message="The greeting message.",type="The type of entity to react to."},
+			help = "Welcome entities of a given type that are created nearby."
+		},
+		add_help={
+			proto="add_help([messages], [responses])",
+			args = {messages="The messages which will be spoken.",type="An optional list of suggested responses."},
+			help = "Set off a help goal if we get a touch operation."
+		},
+		hire_trade={
+			proto="hire_trade()",
+			help="Allows to be hired for one day. Price is governed by knowledge of 'price' for 'services'.",
+			knowledge={
+				{predicate="price", subject="services", help="Determines the price of services for one day."}
+			}
+		},
+		buy_from={
+			proto="buy_from(what, cost, who)",
+			args = {what="What type of entity to buy.", cost="What to pay at most.", who="From whom."},
+			help="Buy entities from somone."
+		},
+		buy_livestock={
+			proto="buy_livestock(what, cost)",
+			args={what="What type of entity to buy.", cost="What to pay per kilo."},
+			help="Buy livestock by the kilo."
+		},
+		keep_livestock={
+			proto="keep_livestock(what, where, call)",
+			args={what="What type of livestock to keep.", where="Where it should be kept.", call="How to call for livestock to return."},
+			help="Keep livestock that we own in a given location, calling them if required."
+		},
+		gather={
+			proto="gather(what)",
+			args={what="The entity type to gather."},
+			help="Gather freely available resources."
+		},
+		harvest_resource={
+			proto="harvest_resource(what, source, place, tool)",
+			args={what="What to harvest.", source="?", place="A place where to harvest.", tool="The tool used to harvest." },
+			help="Gather something from a given location, by using a tool on something."
+		},
+		plant_seeds={
+			proto="plant_seeds(what, source, place, tool)",
+			args={what="The seed type.", source="From where we can obtain the seed.", place="A place where to plant", tool="The tool used to plant." },
+			help="Use a tool to plant a given kind of seed in a given location."
+		},
+		move_me={
+			proto="move_me(location)",
+			args={location="The location to move to."},
+			help="Move me to a certain place."
+		},
+		move_me_area={
+			proto="move_me(location, range)",
+			args={location="The location to move to.", range="Size of area from location."},
+			help="Move me to a certain area."
+		},
+		move_me_place={
+			proto="move_me_place(place)",
+			args={place="A named place."},
+			help="Move me to a place by name."
+		},
+		move_it_outof_me={
+			proto="move_it_outof_me(what)",
+			args={what="The entity type to move out of me."},
+			help="Put something down."
+		},
+		move_me_to_possession={
+			proto="move_me_to_possession(what)",
+			args={what="The place I own."},
+			help="Move me to the same place as something I own."
+		},
+		move_me_to_focus={
+			proto="move_me_to_focus([what])",
+			args={what="The types that I'm interested in."},
+			help="Move me to something I am interested in."
+		},
+		pick_up_possession={
+			proto="pick_up_possession(what)",
+			args={what="The type of thing I own."},
+			help="Pick up something I own."
+		},
+		pick_up_focus={
+			proto="pick_up_focus([what])",
+			args={what="What I want to pick up."},
+			help="Pick up something I am interested in."
+		},
+		wander={
+			proto="wander()",
+			help="Move in a non-specific way."
+		},
+		search={
+			proto="search(what)",
+			args={what="What to search for."},
+			help="Move in a non-specific way looking for something."
+		},
+		avoid={
+			proto="avoid([what], range)",
+			args={what="What to avoid.", range="?"},
+			help="Avoid something at range."
+		},
+		hunt={
+			proto="hunt([what], range)",
+			args={what="What to hunt.", range="?"},
+			help="Hunt something at range."
+		},
+		hunt_for={
+			proto="hunt_for(what, range, proximity)",
+			args={what="What to hunt.", range="?", proximity="?"},
+			help="Hunt something at range."
+		},
+		patrol={
+			proto="patrol([locations])",
+			args={locations="A list of locations to visit."},
+			help="Move around an area defined by some waypoints."
+		},
+		accompany={
+			proto="accompany(who)",
+			args={who="Who to follow."},
+			help="Move around staying close to someone."
+		},
+		driven={
+			proto="driven()",
+			help="Move away from a herder when touched."
+		},
+		summons= {
+			proto="summons(verb)",
+			args={verb="The summoning verb."},
+			help="Stop moving when the herder gives a cry."
+		},
+		school= {
+			proto="school([members])",
+			args={members="A list of members in the school."},
+			help="Move in a shoal with other animals of the same type."
+		},
+		herd={
+			proto="herd([members])",
+			args={members="A list of members in the herd."},
+			help="Move in a herd with other animals of the same type."
+		}
+	}
+}
 
 function editEntity(id)
 	local entity = emberOgre:getWorld():getEmberEntity(id)
@@ -774,7 +918,7 @@ function EntityEditor:clearEditing()
 	self.exportFilenameWindow:setText("")
 	self.exportNameWindow:setText("")
 	self.exportDescriptionWindow:setText("")
-	
+
 
 end
 
@@ -830,12 +974,12 @@ function EntityEditor:editEntity(entity)
 
 	self.knowledgelistbox:resetList()
 	self.goallistbox:resetList()
-	
+
 	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
 	self.exportFilenameWindow:setText(exportFileName)
-	
+
 	self.instance.goals = {}
-	
+
 	createConnector(self.instance.helper.EventGotThought):connect(function(element)
 		if element:isMap() then
 			if self.instance.clearThoughts then
@@ -846,43 +990,43 @@ function EntityEditor:editEntity(entity)
 			end
 			local thoughtMap = element:asMap()
 			local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-			
+
 			local modelItem = {predicate = "", subject = "", object = ""}
 			if thoughtMap:get("predicate") and thoughtMap:get("predicate"):isString() then
 				modelItem.predicate = thoughtMap:get("predicate"):asString()
 				if thoughtMap:get("subject") and thoughtMap:get("subject"):isString() then
 					modelItem.subject = thoughtMap:get("subject"):asString()
 					if thoughtMap:get("object") then
-						local object = thoughtMap:get("object") 
-						
+						local object = thoughtMap:get("object")
+
 						if modelItem.predicate ~= "goal" then
 							if object:isString() then
 								modelItem.object = thoughtMap:get("object"):asString()
 								item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
-						
+
 								item:subscribeEvent("SelectionChanged", function(args)
 									if item:isSelected() then
 										local predicate = self.widget:getWindow("NewKnowledgePredicate")
 										local subject = self.widget:getWindow("NewKnowledgeSubject")
 										local knowledge = self.widget:getWindow("NewKnowledgeKnowledge")
-						
+
 										predicate:setText(modelItem.predicate)
 										subject:setText(modelItem.subject)
 										knowledge:setText(modelItem.object)
-						
+
 										self:handleKnowledgeSelected(modelItem)
 									end
-						
+
 									return true
 								end)
-						
+
 								item:setID(#self.instance.knowledge.model)
 								table.insert(self.instance.knowledge.model, modelItem)
 								self.knowledgelistbox:addItem(item)
 							end
 						else
 							--Handle goals specially
-							
+
 							local verb = modelItem.subject
 							local _, _, singleVerb = string.find(modelItem.subject, "'(%a*)'.*")
 							if singleVerb then
@@ -890,38 +1034,38 @@ function EntityEditor:editEntity(entity)
 							end
 
 							local addGoal = function(object)
-								
+
 								local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 								goalItem:setText(escapeForCEGUI(verb .. " : " .. object))
 								self.goallistbox:addItem(goalItem)
-						
+
 								goalItem:subscribeEvent("SelectionChanged", function(args)
 									self.goalInfo:setText("")
 									if goalItem:isSelected() then
 										local goalVerb = self.widget:getWindow("GoalVerb")
 										local goalDef = self.widget:getWindow("GoalDefinition")
-						
+
 										goalVerb:setText(verb)
 										goalVerb.verb = verb
-						
+
 										goalDef:setText(object)
 
 										self.instance.helper:getGoalInfo(modelItem.subject, object)
 									end
-						
+
 									return true
 								end)
 								return goalItem
 							end
-							
+
 							local goals = {}
-							
+
 							if object:isString() then
 								addGoal(object:asString())
-								
+
 								table.insert(goals, object:asString())
 							elseif object:isList() then
-								local goalsList = object:asList() 
+								local goalsList = object:asList()
 								for i = 0, goalsList:size() - 1 do
 									local anObject = goalsList[i]
 									if anObject:isString() then
@@ -937,9 +1081,9 @@ function EntityEditor:editEntity(entity)
 			end
 		end
 	end)
-	
+
 	self:knowledgeRefresh()
-	
+
 
 	createConnector(self.instance.helper.EventGotGoalInfo):connect(function(element)
 		if element:isMap() then
@@ -950,9 +1094,9 @@ function EntityEditor:editEntity(entity)
 				self.goalInfo:setText(escapeForCEGUI(goalString))
 			end
 		end
-	end)	
-	
-	
+	end)
+
+
 end
 
 function EntityEditor:createAdapter(attributeName, element)
@@ -1048,7 +1192,7 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 	local tooltip = attributeName
 	if prototype and prototype.help then
 		tooltip = attributeName .. ": " .. prototype.help
-	end 
+	end
 
 
 	label:setText(attributeName)
@@ -1133,7 +1277,6 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 
 		for index,value in pairs(self.defaultPrototypes) do
 			local itemIndex = table.maxn(newAdapters) + 1
-			console:pushMessage(itemIndex)
 			local item = Ember.OgreView.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
 			table.insert(newAdapters, value.adapter)
 			combobox:addItem(item)
@@ -1236,7 +1379,7 @@ end
 function EntityEditor:GoalAdd_Clicked(args)
 	local goalVerb = self.widget:getWindow("GoalVerb")
 	local goalDef = self.widget:getWindow("GoalDefinition")
-	
+
 	local goals = std.vector_std__string_:new_local()
 	local existingGoals = self.instance.goals[goalVerb:getText()]
 	if existingGoals then
@@ -1245,7 +1388,7 @@ function EntityEditor:GoalAdd_Clicked(args)
 		end
 	end
 	goals:push_back(goalDef:getText())
-	
+
 	self.instance.helper:setGoals(goalVerb:getText(), goals)
 	self:knowledgeRefresh()
 	return true
@@ -1254,10 +1397,10 @@ end
 function EntityEditor:GoalUpdate_Clicked(args)
 	local goalVerb = self.widget:getWindow("GoalVerb")
 	local goalDef = self.widget:getWindow("GoalDefinition")
-	
+
 	local goals = std.vector_std__string_:new_local()
-	
-	
+
+
 	local selectedItem = self.goallistbox:getFirstSelectedItem()
 	if selectedItem then
 		local editingIndex = selectedItem:getID()
@@ -1275,11 +1418,11 @@ function EntityEditor:GoalUpdate_Clicked(args)
 			--we'll keep it anyway just as a precaution
 			goals:push_back(goalDef:getText())
 		end
-		
+
 		self.instance.helper:setGoals(goalVerb:getText(), goals)
 		self:knowledgeRefresh()
 	end
-		
+
 	return true
 end
 
@@ -1287,11 +1430,11 @@ end
 Removes a goal. This is done by sending an updated list of all the goal with the same verb as the selected, minus the selected.
 ]]--
 function EntityEditor:GoalRemove_Clicked(args)
-	
+
 	local goalVerb = self.widget:getWindow("GoalVerb")
 
 	local goals = std.vector_std__string_:new_local()
-	
+
 	local selectedItem = self.goallistbox:getFirstSelectedItem()
 	if selectedItem then
 		editingIndex = selectedItem:getID()
@@ -1308,7 +1451,7 @@ function EntityEditor:GoalRemove_Clicked(args)
 			self:knowledgeRefresh()
 		end
 	end
-		
+
 	return true
 end
 
@@ -1422,8 +1565,12 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
 		self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
-		
-		
+
+
+		self.goalVerb = CEGUI.toCombobox(self.widget:getWindow("GoalVerb"))
+		self.goalDefinition = self.widget:getWindow("GoalDefinition")
+
+
 		self.goalInfo = self.widget:getWindow("GoalInfo")
 		self.goalAdd = CEGUI.toPushButton(self.widget:getWindow("GoalAdd"))
 		self.goalUpdate = CEGUI.toPushButton(self.widget:getWindow("GoalUpdate"))
@@ -1431,7 +1578,7 @@ function EntityEditor:buildWidget()
 		self.goalAdd:subscribeEvent("Clicked", self.GoalAdd_Clicked, self)
 		self.goalUpdate:subscribeEvent("Clicked", self.GoalUpdate_Clicked, self)
 		self.goalRemove:subscribeEvent("Clicked", self.GoalRemove_Clicked, self)
-		
+
 		local goalListUpdateFunction = function(args)
 			if self.goallistbox:getSelectedCount() > 0 then
 				self.goalUpdate:setEnabled(true)
@@ -1440,18 +1587,45 @@ function EntityEditor:buildWidget()
 				self.goalInfo:setText("")
 				self.goalUpdate:setEnabled(false)
 				self.goalRemove:setEnabled(false)
-			end 
+			end
 			return true
 		end
-		
+
 		self.goallistbox:subscribeEvent("SelectionChanged", goalListUpdateFunction)
 		self.goallistbox:subscribeEvent("ListItemsChanged", goalListUpdateFunction)
-		
-		
+
+
 		self.goalUpdate:setEnabled(false)
 		self.goalRemove:setEnabled(false)
-		
-		
+
+		local goalPrototypes = self.goalPrototypes.mason
+		for k, v in pairs(goalPrototypes) do
+			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
+			self.goalVerb:addItem(item)
+		end
+		self.goalVerb:subscribeEvent("ListSelectionAccepted", function(args)
+			local selectedItem = self.goalVerb:getSelectedItem()
+			if selectedItem then
+				self.goallistbox:clearAllSelections()
+				local prototype = goalPrototypes[selectedItem:getText()]
+				if prototype then
+					self.goalDefinition:setText(prototype.proto)
+				end
+			end
+
+			return true
+		end)
+		self.goalVerb:subscribeEvent("ListSelectionChanged", function(args)
+			local selectedItem = self.goalVerb:getSelectedItem()
+			if selectedItem then
+			--show help
+			end
+
+			return true
+		end)
+
+
+
 		self.widget:getWindow("Submit"):subscribeEvent("Clicked", self.Submit_Clicked, self)
 		self.widget:getWindow("DeleteButton"):subscribeEvent("Clicked", self.DeleteButton_Clicked, self)
 		self.widget:getWindow("RefreshButton"):subscribeEvent("Clicked", self.RefreshButton_Clicked, self)
@@ -1474,9 +1648,9 @@ function EntityEditor:buildWidget()
 			end)
 
 			self.widget:getWindow("DumpWorld"):subscribeEvent("Clicked", function(args)
-			
+
 				local filename = self.exportFilenameWindow:getText()
-				
+
 				if filename ~= "" then
 					local worldDumper = Ember.EntityExporter:new(emberServices:getServerService():getAccount())
 					worldDumper:setDescription(self.exportDescriptionWindow:getText())
@@ -1497,11 +1671,11 @@ function EntityEditor:buildWidget()
 					end
 					exportsOverlay:setVisible(true)
 					worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/entityexport/" .. filename, self.instance.entity:getId())
-			
+
 				end
 				return true
 			end)
-			
+
 		end
 		worldDumper()
 		self.widget:enableCloseButton()
