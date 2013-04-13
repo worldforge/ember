@@ -31,6 +31,7 @@
 #include "components/ogre/World.h"
 #include "components/ogre/EmberEntity.h"
 #include "components/ogre/ShapeVisual.h"
+#include "components/ogre/Avatar.h"
 #include "components/ogre/terrain/TerrainManager.h"
 
 #include "adapters/atlas/AdapterBase.h"
@@ -275,19 +276,20 @@ void EntityEditor::setGoals(const std::string& verb, const std::vector<std::stri
 	thought.insert(std::make_pair("object", thoughts));
 	thoughtArgs.push_back(thought);
 
-	Atlas::Objects::Operation::RootOperation thoughtOp;
-	thoughtOp->setAttr("args", thoughtArgs);
-	thoughtOp->setParents( { "thought" });
-	thoughtOp->setId(mEntity.getId());
+	Atlas::Objects::Entity::Anonymous payload;
+	payload->setAttr("args", thoughtArgs);
 
-	Atlas::Objects::Operation::Set set;
-	set->setArgs1(thoughtOp);
-	set->setFrom(account->getId());
-	set->setSerialno(Eris::getNewSerialno());
+	Atlas::Objects::Operation::RootOperation thoughtOp;
+	thoughtOp->setArgs1(payload);
+	thoughtOp->setParents( { "thought" });
+	thoughtOp->setTo(mEntity.getId());
+	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+	thoughtOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
 
 	Eris::Connection* connection = account->getConnection();
 
-	connection->send(set);
+	connection->send(thoughtOp);
 }
 
 void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge)
