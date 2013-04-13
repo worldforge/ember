@@ -116,7 +116,7 @@ void PagingLandScapeData2D::unload()
 			_save ();
 		//Use the shared pointer for deletion
 //		delete[] mHeightData;
-		mHeightDataPtr.reset(0);
+		mHeightDataPtr.reset();
 		mHeightData = 0;
 		_unload();
 		mIsLoaded = false;
