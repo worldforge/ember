@@ -294,9 +294,30 @@ void EntityEditor::setGoals(const std::string& verb, const std::vector<std::stri
 
 void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge)
 {
-	std::stringstream ss;
-	ss << "know " << subject << " " << predicate << " " << knowledge;
-	EmberServices::getSingleton().getServerService().adminTell(mEntity.getId(), "say", ss.str());
+	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+
+	Atlas::Message::ListType thoughtArgs;
+	Atlas::Message::MapType thought;
+	thought.insert(std::make_pair("predicate", predicate));
+	thought.insert(std::make_pair("subject", subject));
+	thought.insert(std::make_pair("object", knowledge));
+	thoughtArgs.push_back(thought);
+
+	Atlas::Objects::Entity::Anonymous payload;
+	payload->setAttr("args", thoughtArgs);
+
+	Atlas::Objects::Operation::RootOperation thoughtOp;
+	thoughtOp->setArgs1(payload);
+	thoughtOp->setParents( { "thought" });
+	thoughtOp->setTo(mEntity.getId());
+	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+	thoughtOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+
+	Eris::Connection* connection = account->getConnection();
+
+	connection->send(thoughtOp);
+
 }
 
 void EntityEditor::addMarker(const WFMath::Point<3>& point)
