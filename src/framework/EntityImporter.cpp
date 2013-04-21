@@ -133,27 +133,49 @@ void EntityImporter::sendMinds(OpVector & res)
 
 				for (auto& thought : thoughtList) {
 					//If the thought is a list of things the entity owns, we should adjust it with the new entity ids.
-					if (thought.isMap() && thought.asMap().count("things") > 0) {
-						auto& thingsElement = thought.asMap().find("things")->second;
-						if (thingsElement.isMap()) {
-							for (auto& thingI : thingsElement.asMap()) {
-								if (thingI.second.isList()) {
-									Atlas::Message::ListType newList;
-									for (auto& thingId : thingI.second.asList()) {
-										if (thingId.isString()) {
-											const auto& entityIdLookupI = m_entityIdMap.find(thingId.asString());
-											//Check if the owned entity has been created with a new id. If so, replace the data.
-											if (entityIdLookupI != m_entityIdMap.end()) {
-												newList.push_back(entityIdLookupI->second);
+					if (thought.isMap()) {
+						if (thought.asMap().count("things") > 0) {
+							auto& thingsElement = thought.asMap().find("things")->second;
+							if (thingsElement.isMap()) {
+								for (auto& thingI : thingsElement.asMap()) {
+									if (thingI.second.isList()) {
+										Atlas::Message::ListType newList;
+										for (auto& thingId : thingI.second.asList()) {
+											if (thingId.isString()) {
+												const auto& entityIdLookupI = m_entityIdMap.find(thingId.asString());
+												//Check if the owned entity has been created with a new id. If so, replace the data.
+												if (entityIdLookupI != m_entityIdMap.end()) {
+													newList.push_back(entityIdLookupI->second);
+												} else {
+													newList.push_back(thingId);
+												}
 											} else {
 												newList.push_back(thingId);
 											}
+										}
+										thingI.second = newList;
+									}
+								}
+							}
+						} else if (thought.asMap().count("pending_things") > 0) {
+							//things that the entity owns, but haven't yet discovered are expressed as a list of entity ids
+							auto& pendingThingsElement = thought.asMap().find("pending_things")->second;
+							if (pendingThingsElement.isList()) {
+								Atlas::Message::ListType newList;
+								for (auto& thingId : pendingThingsElement.asList()) {
+									if (thingId.isString()) {
+										const auto& entityIdLookupI = m_entityIdMap.find(thingId.asString());
+										//Check if the owned entity has been created with a new id. If so, replace the data.
+										if (entityIdLookupI != m_entityIdMap.end()) {
+											newList.push_back(entityIdLookupI->second);
 										} else {
 											newList.push_back(thingId);
 										}
+									} else {
+										newList.push_back(thingId);
 									}
-									thingI.second = newList;
 								}
+								pendingThingsElement = newList;
 							}
 						}
 					}
