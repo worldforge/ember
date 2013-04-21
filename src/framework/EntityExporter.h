@@ -19,6 +19,8 @@
 #ifndef EMBER_ENTITYEXPORTER_H
 #define EMBER_ENTITYEXPORTER_H
 
+#include "framework/tinyxml/tinyxml.h"
+
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <sigc++/trackable.h>
@@ -28,8 +30,6 @@
 #include <vector>
 #include <fstream>
 #include <map>
-
-class TiXmlDocument;
 
 namespace Atlas
 {
@@ -151,7 +151,7 @@ protected:
 	/**
 	 * @brief The resulting xml document.
 	 */
-	TiXmlDocument* mXmlDocument;
+	::TiXmlDocument* mXmlDocument;
 
 	bool mComplete;
 	bool mCancelled;
