@@ -131,7 +131,32 @@ void EntityImporter::sendMinds(OpVector & res)
 			if (thoughtsElem.isList()) {
 				Atlas::Message::ListType thoughtList = thoughtsElem.asList();
 
-				for (auto thought : thoughtList) {
+				for (auto& thought : thoughtList) {
+					//If the thought is a list of things the entity owns, we should adjust it with the new entity ids.
+					if (thought.isMap() && thought.asMap().count("things") > 0) {
+						auto& thingsElement = thought.asMap().find("things")->second;
+						if (thingsElement.isMap()) {
+							for (auto& thingI : thingsElement.asMap()) {
+								if (thingI.second.isList()) {
+									Atlas::Message::ListType newList;
+									for (auto& thingId : thingI.second.asList()) {
+										if (thingId.isString()) {
+											const auto& entityIdLookupI = m_entityIdMap.find(thingId.asString());
+											//Check if the owned entity has been created with a new id. If so, replace the data.
+											if (entityIdLookupI != m_entityIdMap.end()) {
+												newList.push_back(entityIdLookupI->second);
+											} else {
+												newList.push_back(thingId);
+											}
+										} else {
+											newList.push_back(thingId);
+										}
+									}
+									thingI.second = newList;
+								}
+							}
+						}
+					}
 					thoughtArgs.push_back(thought);
 				}
 			}
@@ -146,7 +171,6 @@ void EntityImporter::sendMinds(OpVector & res)
 			//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 			//if it came from the entity itself (the server rewrites the FROM to be of the entity).
 			thoughtOp->setFrom(mAccount.getActiveCharacters().begin()->first);
-
 
 			res.push_back(thoughtOp);
 		}
@@ -180,10 +204,7 @@ void EntityImporter::create(const RootEntity & obj, OpVector & res)
 	create->setFrom(mAccount.getActiveCharacters().begin()->second->getId());
 	create->setSerialno(Eris::getNewSerialno());
 
-	auto mindI = mMinds.find(obj->getId());
-	if (mindI != mMinds.end()) {
-		mCreateMindMapping.insert(std::make_pair(create->getSerialno(), mindI->second));
-	}
+	mCreateEntityMapping.insert(std::make_pair(create->getSerialno(), obj->getId()));
 
 	res.push_back(create);
 }
@@ -236,11 +257,20 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 		StackEntry & current = m_treeStack.back();
 		current.restored_id = created->getId();
 		S_LOG_VERBOSE("Created: " << created->getParents().front() << "(" << created->getId() << ")");
-		auto I = mCreateMindMapping.find(op->getRefno());
-		if (I != mCreateMindMapping.end()) {
-			mResolvedMindMapping.push_back(std::make_pair(created->getId(), I->second));
-			mCreateMindMapping.erase(op->getRefno());
+
+		auto I = mCreateEntityMapping.find(op->getRefno());
+		if (I != mCreateEntityMapping.end()) {
+			//Check if there's a mind that we should send further on
+			auto mindI = mMinds.find(I->second);
+			if (mindI != mMinds.end()) {
+				mResolvedMindMapping.push_back(std::make_pair(created->getId(), mindI->second));
+			}
+			m_entityIdMap.insert(std::make_pair(I->second, created->getId()));
+			mCreateEntityMapping.erase(op->getRefno());
+		} else {
+			S_LOG_WARNING("Got info about create for an entity which we didn't seem to have sent.");
 		}
+
 		walk(res);
 	} else if (m_state == WALKING) {
 		const Root & arg = op->getArgs().front();

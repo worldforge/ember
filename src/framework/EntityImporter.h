@@ -33,6 +33,7 @@
 #include <set>
 #include <stack>
 #include <fstream>
+#include <unordered_map>
 
 namespace Atlas
 {
@@ -109,7 +110,13 @@ protected:
 	int m_createCount;
 	std::map<std::string, Atlas::Objects::Root> m_objects;
 	std::map<std::string, Atlas::Objects::Root> mMinds;
-	std::map<long, Atlas::Objects::Root> mCreateMindMapping;
+
+	/**
+	 * @brief Keeps track of the responses from the server for create operations.
+	 *
+	 * This is used to populate m_entityIdMap with mapping data between entity id values found in the dump, and their new id values once they've been created.
+	 */
+	std::map<long, std::string> mCreateEntityMapping;
 	std::vector<std::pair<std::string, Atlas::Objects::Root>> mResolvedMindMapping;
 	enum
 	{
@@ -118,6 +125,12 @@ protected:
 
 	std::deque<StackEntry> m_treeStack;
 	std::set<std::string> m_newIds;
+	/**
+	 * Contains a map between any id in the dump and the new id the entity has gotten when created.
+	 *
+	 * This can be used to update ownership information in minds.
+	 */
+	std::unordered_map<std::string, std::string> m_entityIdMap;
 
 	void sendOperation(const Operation& op);
 
