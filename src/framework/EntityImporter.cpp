@@ -135,18 +135,20 @@ void EntityImporter::sendMinds(OpVector & res)
 					thoughtArgs.push_back(thought);
 				}
 			}
-			Operation thoughtOp;
-			thoughtOp->setAttr("args", thoughtArgs);
+
+			Atlas::Objects::Entity::Anonymous payload;
+			payload->setAttr("args", thoughtArgs);
+
+			Atlas::Objects::Operation::RootOperation thoughtOp;
+			thoughtOp->setArgs1(payload);
 			thoughtOp->setParents( { "thought" });
-			thoughtOp->setId(mind.first);
+			thoughtOp->setTo(mind.first);
+			//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+			//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+			thoughtOp->setFrom(mAccount.getActiveCharacters().begin()->first);
 
-			Set set;
-			set->setArgs1(thoughtOp);
-			set->setFrom(mAccount.getId());
-//			set->setTo(mind.first);
-			set->setSerialno(Eris::getNewSerialno());
 
-			res.push_back(set);
+			res.push_back(thoughtOp);
 		}
 		mResolvedMindMapping.clear();
 	}
