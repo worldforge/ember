@@ -49,7 +49,6 @@
 #include <Atlas/Codecs/Bach.h>
 #include <Atlas/Formatter.h>
 
-
 #include <wfmath/segment.h>
 
 #include <Eris/Entity.h>
@@ -354,17 +353,21 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 {
 	if (!op->getArgs().empty()) {
 		for (auto& thoughtOp : op->getArgs()) {
-			if (!thoughtOp->getParents().empty() && *thoughtOp->getParents().begin() == "thought") {
-				Atlas::Message::Element args = thoughtOp->getAttr("args");
-				if (args.isList()) {
-					for (auto thought : args.asList()) {
-						EventGotThought(thought);
+			if (!thoughtOp->getParents().empty()) {
+				if (*thoughtOp->getParents().begin() == "thought") {
+					Atlas::Message::Element args = thoughtOp->getAttr("args");
+					if (args.isList()) {
+						for (auto thought : args.asList()) {
+							EventGotThought(thought);
+						}
+					} else {
+						S_LOG_WARNING("Got thought op args which aren't of type 'list'.");
 					}
 				} else {
-					S_LOG_WARNING("Got thought op args which aren't of type 'list'.");
+					S_LOG_WARNING("Got thought op of wrong parent type. Expected 'thought' and got '" << *thoughtOp->getParents().begin() << "'.");
 				}
 			} else {
-				S_LOG_WARNING("Got thought op of wrong parent type.");
+				S_LOG_WARNING("Got thought op without any parent type.");
 			}
 		}
 	} else {
@@ -429,8 +432,6 @@ std::string EntityEditor::parseElementMap(const Atlas::Message::MapType& map)
 
 	return ss.str();
 }
-
-
 
 void EntityEditor::removeMarker()
 {
