@@ -21,7 +21,7 @@
 #include "AtlasMessageLoader.h"
 #include "TinyXmlCodec.h"
 #include "LoggingInstance.h"
-#include "tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "osdir.h"
 
 #include <Eris/Account.h>
