@@ -63,7 +63,7 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 EntityExporter::EntityExporter(Eris::Account& account) :
-		mAccount(account), mCount(0), mEntitiesCodec(0), mEntitiesEncoder(0), mEntitiesDecoder(0), mXmlDocument(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0)
+		mAccount(account), mCount(0), mEntitiesCodec(0), mEntitiesEncoder(0), mEntitiesDecoder(0), mXmlDocument(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false)
 {
 }
 
@@ -83,6 +83,11 @@ void EntityExporter::setDescription(const std::string& description)
 void EntityExporter::setName(const std::string& name)
 {
 	mName = name;
+}
+
+void EntityExporter::setExportTransient(bool exportTransient)
+{
+	mExportTransient = exportTransient;
 }
 
 void EntityExporter::cancel()
@@ -181,41 +186,43 @@ void EntityExporter::infoArrived(const Operation & op)
 	mOutstandingGetRequestCounter--;
 	++mCount;
 	EventProgress.emit(mCount);
-	//Make a copy so that we can sort the contains list and update it in the
-	//entity
-	RootEntity entityCopy(ent->copy());
-	std::list<std::string> contains = ent->getContains();
-	//Sort the contains list so it's deterministic
-	contains.sort(idSorter);
-	entityCopy->setContains(contains);
-	dumpEntity(entityCopy);
-	std::list<std::string>::const_iterator I = contains.begin();
-	std::list<std::string>::const_iterator Iend = contains.end();
-	for (; I != Iend; ++I) {
-		mQueue.push_back(*I);
+	//If the entity is transient and we've been told not to export transient ones, we should skip this one (and all of its children).
+	if (!ent->hasAttr("transient") || mExportTransient) {
+		//Make a copy so that we can sort the contains list and update it in the
+		//entity
+		RootEntity entityCopy(ent->copy());
+		std::list<std::string> contains = ent->getContains();
+		//Sort the contains list so it's deterministic
+		contains.sort(idSorter);
+		entityCopy->setContains(contains);
+		dumpEntity(entityCopy);
+		std::list<std::string>::const_iterator I = contains.begin();
+		std::list<std::string>::const_iterator Iend = contains.end();
+		for (; I != Iend; ++I) {
+			mQueue.push_back(*I);
+		}
+
+		Eris::TypeInfo* characterTypeInfo = mAccount.getConnection()->getTypeService()->getTypeByName("character");
+		Eris::TypeInfo* entityType = mAccount.getConnection()->getTypeService()->getTypeByName(ent->getParentsAsList().begin()->asString());
+		if (entityType->isA(characterTypeInfo)) {
+			Get get;
+
+			Operation get_arg;
+			get_arg->setParents({"thought"});
+			get_arg->setId(ent->getId());
+
+			get->setArgs1(get_arg);
+			get->setFrom(mAccount.getId());
+			get->setSerialno(Eris::getNewSerialno());
+
+			mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetThoughtResult);
+			mAccount.getConnection()->send(get);
+			mThoughtsOutstanding.insert(std::make_pair(get->getSerialno(), ent->getId()));
+			mOutstandingGetRequestCounter++;
+			S_LOG_VERBOSE("Sending request for thoughts.");
+
+		}
 	}
-
-	Eris::TypeInfo* characterTypeInfo = mAccount.getConnection()->getTypeService()->getTypeByName("character");
-	Eris::TypeInfo* entityType = mAccount.getConnection()->getTypeService()->getTypeByName(ent->getParentsAsList().begin()->asString());
-	if (entityType->isA(characterTypeInfo)) {
-		Get get;
-
-		Operation get_arg;
-		get_arg->setParents({"thought"});
-		get_arg->setId(ent->getId());
-
-		get->setArgs1(get_arg);
-		get->setFrom(mAccount.getId());
-		get->setSerialno(Eris::getNewSerialno());
-
-		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetThoughtResult);
-		mAccount.getConnection()->send(get);
-		mThoughtsOutstanding.insert(std::make_pair(get->getSerialno(), ent->getId()));
-		mOutstandingGetRequestCounter++;
-		S_LOG_VERBOSE("Sending request for thoughts.");
-
-	}
-
 	pollQueue();
 }
 

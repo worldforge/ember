@@ -122,6 +122,14 @@ public:
 	void setDescription(const std::string& description);
 
 	/**
+	 * @brief Sets whether we should also export transient entities.
+	 *
+	 * The default is not to export those entities.
+	 * @param exportTransient Whether we should export transient entities.
+	 */
+	void setExportTransient(bool exportTransient);
+
+	/**
 	 * @brief Emitted when the dump is complete.
 	 */
 	sigc::signal<void> EventCompleted;
@@ -170,6 +178,12 @@ protected:
 	 * @brief Keeps track of the number of outstanding get requests.
 	 */
 	size_t mOutstandingGetRequestCounter;
+
+	/**
+	 * @brief True if we should also export transient entities.
+	 * Default is "false" (as if an entity is marked as transient it's not meant to be persisted).
+	 */
+	bool mExportTransient;
 
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpMind(const std::string& entityId, const Operation & op);
