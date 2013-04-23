@@ -134,7 +134,13 @@ protected:
 
 	void sendOperation(const Operation& op);
 
-	void getEntity(const std::string & id, OpVector & res);
+	/**
+	 * Gets an entity from the server.
+	 * @param id
+	 * @param res
+	 * @return True if the entity id was found amongst the entities, else false. The latter case will occur for transient entities, as they might not have been exported, but are still references from their parent entity.
+	 */
+	bool getEntity(const std::string & id, OpVector & res);
 	void walk(OpVector & res);
 	void sendMinds(OpVector & res);
 	void create(const Atlas::Objects::Entity::RootEntity & obj, OpVector & res);

@@ -54,17 +54,17 @@ StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o) :
 	child = obj->getContains().end();
 }
 
-void EntityImporter::getEntity(const std::string & id, OpVector & res)
+bool EntityImporter::getEntity(const std::string & id, OpVector & res)
 {
 	std::map<std::string, Root>::const_iterator I = m_objects.find(id);
 	if (I == m_objects.end()) {
-		S_LOG_FAILURE("Inconsistency in dump file: " << id << " missing.");
-		return;
+		//This will often happen if the child entity was transient, and therefore wasn't exported (but is still references from the parent entity).
+		return false;
 	}
 	RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
 	if (!obj.isValid()) {
 		S_LOG_FAILURE("Corrupt dump - non entity found " << id << ".");
-		return;
+		return false;
 	}
 
 	m_state = WALKING;
@@ -79,6 +79,7 @@ void EntityImporter::getEntity(const std::string & id, OpVector & res)
 	get->setFrom(mAccount.getId());
 	get->setSerialno(Eris::getNewSerialno());
 	res.push_back(get);
+	return true;
 }
 
 void EntityImporter::walk(OpVector & res)
@@ -95,8 +96,9 @@ void EntityImporter::walk(OpVector & res)
 				StackEntry & se = m_treeStack.back();
 				++se.child;
 				if (se.child != se.obj->getContains().end()) {
-					getEntity(*se.child, res);
-					break;
+					if (getEntity(*se.child, res)) {
+						break;
+					}
 				}
 				m_treeStack.pop_back();
 			}
