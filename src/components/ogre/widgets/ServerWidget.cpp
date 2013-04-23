@@ -462,7 +462,11 @@ bool ServerWidget::Choose_Click(const CEGUI::EventArgs& args)
 bool ServerWidget::UseCreator_Click(const CEGUI::EventArgs& args)
 {
 	//create a new admin character
-	EmberServices::getSingleton().getServerService().createCharacter("The Creator", "female", "creator", "Almighty", "");
+	Atlas::Message::MapType extraProperties;
+	//The admin character should always be transient.
+	//NOTE: This is currently not handled in Cyphesis, as it allows no extra parameters. Nonetheless we'll keep it here, since it's a prudent thing to do.
+	extraProperties.insert(std::make_pair("transient", -1.0f));
+	EmberServices::getSingleton().getServerService().createCharacter("The Creator", "female", "creator", "Almighty", "", extraProperties);
 	return true;
 }
 
