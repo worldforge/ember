@@ -59,7 +59,7 @@ void ConnectedAdapter::moveToPoint(const WFMath::Point<3>& dest)
 	try {
 		mAvatar.moveToPoint(dest);
 	} catch (const std::exception& ex) {
-		S_LOG_WARNING( "Got error on moving." << ex);
+		S_LOG_WARNING("Got error on moving." << ex);
 	}
 }
 
@@ -252,7 +252,9 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 		if (areAttributesToSend) {
 			Atlas::Objects::Operation::Set setOp;
 			setOp->setFrom(mAvatar.getEntity()->getId());
-			//setOp->setTo(entity->getId());
+			if (entity->getId() == mAvatar.getEntity()->getId()) {
+				setOp->setTo(entity->getId());
+			}
 			setOp->setArgs1(what);
 
 			S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
@@ -298,7 +300,7 @@ void ConnectedAdapter::say(const std::string &message)
 		std::string msg;
 		msg = "Saying: [" + message + "]. ";
 		ConsoleBackend::getSingletonPtr()->pushMessage(msg, "info");
-		S_LOG_VERBOSE( msg);
+		S_LOG_VERBOSE(msg);
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Got error on say." << ex);
 	}
