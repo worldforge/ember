@@ -47,7 +47,7 @@ public:
 
 	virtual void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
 
-	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
+	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties);
 
 	virtual IServerAdapter& getServerAdapter();
 
@@ -129,9 +129,9 @@ inline void StateBaseCore::takeTransferredCharacter(const Eris::TransferInfo& tr
 	mParentState.takeTransferredCharacter(transferInfo);
 }
 
-inline bool StateBaseCore::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName)
+inline bool StateBaseCore::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties)
 {
-	return mParentState.createCharacter(name, sex, type, description, spawnName);
+	return mParentState.createCharacter(name, sex, type, description, spawnName, extraProperties);
 }
 
 inline void StateBaseCore::transfer(const Eris::TransferInfo& transferInfo)

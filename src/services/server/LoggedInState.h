@@ -53,7 +53,7 @@ public:
 
 	void takeCharacter(const std::string &id);
 
-	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
+	bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties);
 
 	virtual bool logout();
 

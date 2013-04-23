@@ -136,9 +136,9 @@ void ServerService::takeCharacter(const std::string &id)
 	mNonConnectedState->getTopState().takeCharacter(id);
 }
 
-bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName)
+bool ServerService::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties)
 {
-	return mNonConnectedState->getTopState().createCharacter(name, sex, type, description, spawnName);
+	return mNonConnectedState->getTopState().createCharacter(name, sex, type, description, spawnName, extraProperties);
 }
 
 void ServerService::moveToPoint(const WFMath::Point<3>& dest)

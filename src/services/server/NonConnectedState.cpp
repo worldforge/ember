@@ -131,7 +131,7 @@ void NonConnectedState::takeTransferredCharacter(const Eris::TransferInfo& trans
 {
 }
 
-bool NonConnectedState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName)
+bool NonConnectedState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties)
 {
 	return false;
 }

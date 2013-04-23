@@ -103,7 +103,7 @@ void LoggedInState::takeCharacter(const std::string &id)
 	mAccount.takeCharacter(id);
 }
 
-bool LoggedInState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName)
+bool LoggedInState::createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties)
 {
 	ConsoleBackend::getSingleton().pushMessage("Creating char...", "important");
 	std::string msg;
@@ -112,6 +112,10 @@ bool LoggedInState::createCharacter(const std::string& name, const std::string& 
 
 	S_LOG_INFO("Creating character.");
 	Atlas::Objects::Entity::RootEntity character;
+	for (auto& property : extraProperties) {
+		character->setAttr(property.first, property.second);
+	}
+
 	character->setParentsAsList(Atlas::Message::ListType(1, type));
 	character->setName(name);
 	character->setAttr("sex", sex);
@@ -119,6 +123,8 @@ bool LoggedInState::createCharacter(const std::string& name, const std::string& 
 	if (spawnName != "") {
 		character->setAttr("spawn_name", spawnName);
 	}
+
+
 	try {
 		mAccount.createCharacter(character);
 	} catch (const std::exception& except) {
@@ -267,7 +273,7 @@ void LoggedInState::runCommand(const std::string &command, const std::string &ar
 		std::string spawnPoint = tokeniser.nextToken();
 		std::string description = tokeniser.remainingTokens();
 
-		createCharacter(name, sex, type, description, spawnPoint);
+		createCharacter(name, sex, type, description, spawnPoint, Atlas::Message::MapType());
 
 		// Take Character Command
 	} else if (TakeChar == command) {

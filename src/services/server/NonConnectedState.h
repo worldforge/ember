@@ -58,7 +58,7 @@ public:
 
 	virtual void takeTransferredCharacter(const Eris::TransferInfo& transferInfo);
 
-	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName);
+	virtual bool createCharacter(const std::string& name, const std::string& sex, const std::string& type, const std::string& description, const std::string& spawnName, const Atlas::Message::MapType& extraProperties);
 
 	virtual void transfer(const Eris::TransferInfo& transferInfo);
 
