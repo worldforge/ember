@@ -1339,11 +1339,11 @@ end
 
 function EntityEditor:handleKnowledgeSelected(modelItem)
 	if modelItem.predicate == "location" then
-		_, _, x, y, z = string.find(modelItem.object, "{%d*,%(([%d%-]*),([%d%-]*),([%d%-]*)%)}")
+		_, _, entityid, x, y, z = string.find(modelItem.object, "%('(%d*)',%s*%(([%d%-%.]*),%s*([%d%-%.]*),%s*([%d%-%.]*)%)%)")
 
-		if (x and y and z) then
+		if (entityid and x and y and z) then
 			local point = Ember.OgreView.Gui.EntityEditor:createPoint(tonumber(x), tonumber(y), tonumber(z))
-			self.instance.helper:addMarker(point)
+			self.instance.helper:addMarker(entityid, point)
 		else
 			self.instance.helper:removeMarker()
 		end

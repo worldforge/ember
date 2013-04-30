@@ -55,6 +55,7 @@
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
 #include <Eris/Response.h>
+#include <Eris/View.h>
 
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
@@ -319,13 +320,19 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 
 }
 
-void EntityEditor::addMarker(const WFMath::Point<3>& point)
+void EntityEditor::addMarker(const std::string& entityId, const WFMath::Point<3>& point)
 {
+	delete mMarker;
+	mMarker = 0;
 	if (point.isValid()) {
 
-		delete mMarker;
-		mMarker = new EntityPointMarker(mEntity, mWorld.getSceneManager(), mWorld.getTerrainManager(), point);
-		mMarker->updateMarker();
+		Eris::Entity* entity = mWorld.getView().getEntity(entityId);
+		if (entity) {
+			const WFMath::Point<3> worldPosition = entity->getViewPosition() + WFMath::Vector<3>(point);
+			delete mMarker;
+			mMarker = new EntityPointMarker(mEntity, mWorld.getSceneManager(), mWorld.getTerrainManager(), worldPosition);
+			mMarker->updateMarker();
+		}
 	}
 }
 

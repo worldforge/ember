@@ -129,8 +129,9 @@ public:
 	 *
 	 * Also adds a line extending from the user to the point.
 	 * @param point A point in world space.
+	 * @param entityId The id of the containing entity.
 	 */
-	void addMarker(const WFMath::Point<3>& point);
+	void addMarker(const std::string& entityId, const WFMath::Point<3>& point);
 
 	/**
 	 * @brief Queries the entity about its thoughts.
