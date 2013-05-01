@@ -183,6 +183,7 @@ void ModelPreviewWorker::setModel(const std::string& modelName)
 	}
 
 	mModelMount = new Model::ModelMount(*mModel, new SceneNodeProvider(*mEntityNode, mModel));
+	mModelMount->reset();
 
 	initFromModel();
 
