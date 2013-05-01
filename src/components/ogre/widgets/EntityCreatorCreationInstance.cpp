@@ -43,7 +43,6 @@
 #include "components/ogre/mapping/EmberEntityMappingManager.h"
 #include "components/entitymapping/EntityMappingManager.h"
 #include "components/entitymapping/EntityMapping.h"
-//#include "components/entitymapping/Definitions/EntityMappingDefinition.h"
 #include "components/entitymapping/IActionCreator.h"
 
 #include "framework/LoggingInstance.h"
@@ -58,7 +57,6 @@
 
 #include <OgreSceneManager.h>
 #include <sigc++/slot.h>
-//#include <OgreRoot.h>
 
 namespace Ember
 {
@@ -68,11 +66,16 @@ namespace Gui
 {
 
 EntityCreatorCreationInstance::EntityCreatorCreationInstance(World& world, Eris::TypeService& typeService, Authoring::EntityRecipe& recipe, bool randomizeOrientation, sigc::slot<void>& adapterValueChangedSlot) :
-		mWorld(world), mTypeService(typeService), mRecipe(recipe), mEntity(0), mEntityNode(0), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0), mRandomizeOrientation(randomizeOrientation)
+		mWorld(world), mTypeService(typeService), mRecipe(recipe), mEntity(0), mEntityNode(0), mModelMount(0), mModel(0), mMovement(0), mAxisMarker(0)
 {
 	mConnection = mRecipe.EventValueChanged.connect(adapterValueChangedSlot);
 
-	mOrientation.identity();
+	mInitialOrientation.identity();
+	if (randomizeOrientation) {
+		WFMath::MTRand rng;
+		mInitialOrientation.rotation(2, rng.rand() * 360.0f);
+	}
+
 }
 
 EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
@@ -83,9 +86,6 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 	delete mModelMount;
 
 	mEntityNode->detachAllObjects();
-	mOrientation = Convert::toWF(mEntityNode->getOrientation());
-	mWorld.getSceneManager().getRootSceneNode()->removeChild(mEntityNode);
-	//	delete mEntityNode;
 
 	if (mModel) {
 		mWorld.getSceneManager().destroyMovableObject(mModel);
@@ -95,6 +95,8 @@ EntityCreatorCreationInstance::~EntityCreatorCreationInstance()
 	// Deleting temporary entity
 	mEntity->shutdown();
 	delete mEntity;
+
+	mWorld.getSceneManager().destroySceneNode(mEntityNode);
 
 	mConnection.disconnect();
 }
@@ -218,11 +220,7 @@ void EntityCreatorCreationInstance::setModel(const std::string& modelName)
 	if (mPos.isValid()) {
 		mEntityNode->setPosition(Convert::toOgre(mPos));
 	}
-	if (mRandomizeOrientation) {
-		WFMath::MTRand rng;
-		mOrientation.rotation(2, rng.rand() * 360.0f);
-	}
-	mEntityNode->setOrientation(Convert::toOgre(mOrientation));
+	mEntityNode->setOrientation(Convert::toOgre(mInitialOrientation));
 }
 
 void EntityCreatorCreationInstance::showModelPart(const std::string& partName)
@@ -270,6 +268,22 @@ void EntityCreatorCreationInstance::scaleNode()
 		mModelMount->rescale(hasBBox() ? &getBBox() : 0);
 	} else {
 		S_LOG_WARNING("Tried to scale node without there being a valid model mount.");
+	}
+}
+
+WFMath::Quaternion EntityCreatorCreationInstance::getOrientation() const
+{
+	return Convert::toWF(mEntityNode->getOrientation());
+}
+
+void EntityCreatorCreationInstance::setOrientation(const WFMath::Quaternion& orientation)
+{
+	if (orientation.isValid()) {
+		if (mEntityNode) {
+			mEntityNode->setOrientation(Convert::toOgre(orientation));
+		} else {
+			mInitialOrientation = orientation;
+		}
 	}
 }
 

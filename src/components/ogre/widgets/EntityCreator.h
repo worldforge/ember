@@ -23,6 +23,8 @@
 #ifndef EMBEROGRE_GUIENTITYCREATOR_H
 #define EMBEROGRE_GUIENTITYCREATOR_H
 
+#include <wfmath/quaternion.h>
+
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
@@ -152,6 +154,14 @@ protected:
 	 * @brief A creation instance, which represents a preview of the entity, before it's created on the server.
 	 */
 	EntityCreatorCreationInstance* mCreationInstance;
+
+	/**
+	 * @brief The last orientation used for creation.
+	 *
+	 * This is sent to any new creation instance, thus making sure that any new entity starts out with the same orientation as the last one.
+	 * (That is unless we mRandomizeOrientation is set to True.)
+	 */
+	WFMath::Quaternion mLastOrientation;
 
 	/**
 	 * @brief If set to true, all new entities will have their orientation randomized around the vertical axis.

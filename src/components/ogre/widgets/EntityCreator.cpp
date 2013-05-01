@@ -33,7 +33,6 @@
 
 #include "components/ogre/authoring/EntityRecipe.h"
 
-
 #include <Atlas/Message/Element.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/Connection.h>
@@ -52,10 +51,10 @@ namespace Gui
 {
 
 EntityCreator::EntityCreator(World& world) :
-	mWorld(world), mTypeService(*mWorld.getView().getAvatar()->getConnection()->getTypeService()), mRecipe(0), mCreationInstance(0), mAdapterValueChangedSlot(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged))
+		mWorld(world), mTypeService(*mWorld.getView().getAvatar()->getConnection()->getTypeService()), mRecipe(0), mCreationInstance(0), mRandomizeOrientation(false), mAdapterValueChangedSlot(sigc::mem_fun(*this, &EntityCreator::adapterValueChanged))
 {
 	mTypeService.BoundType.connect(sigc::mem_fun(*this, &EntityCreator::typeService_BoundType));
-
+	mLastOrientation.identity();
 }
 
 EntityCreator::~EntityCreator()
@@ -111,8 +110,11 @@ void EntityCreator::loadAllTypes()
 
 void EntityCreator::stopCreation()
 {
-	delete mCreationInstance;
-	mCreationInstance = 0;
+	if (mCreationInstance) {
+		mLastOrientation = mCreationInstance->getOrientation();
+		delete mCreationInstance;
+		mCreationInstance = 0;
+	}
 
 	EventCreationEnded();
 }
@@ -122,6 +124,7 @@ void EntityCreator::finalizeCreation()
 	if (!mCreationInstance) {
 		return;
 	}
+	mLastOrientation = mCreationInstance->getOrientation();
 	mCreationInstance->finalizeCreation();
 
 	createNewCreationInstance();
@@ -173,9 +176,11 @@ void EntityCreator::createNewCreationInstance()
 	mCreationInstance = new EntityCreatorCreationInstance(mWorld, mTypeService, *mRecipe, mRandomizeOrientation, mAdapterValueChangedSlot);
 	mCreationInstance->EventAbortRequested.connect(sigc::mem_fun(*this, &EntityCreator::creationInstance_AbortRequested));
 	mCreationInstance->EventFinalizeRequested.connect(sigc::mem_fun(*this, &EntityCreator::creationInstance_FinalizeRequested));
+	if (!mRandomizeOrientation) {
+		mCreationInstance->setOrientation(mLastOrientation);
+	}
 	mCreationInstance->startCreation();
 }
-
 
 }
 }

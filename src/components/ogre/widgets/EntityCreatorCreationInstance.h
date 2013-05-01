@@ -109,6 +109,18 @@ public:
 	void hideModelPart(const std::string& partName);
 
 	/**
+	 * @brief Gets the current orientation of preview in the world.
+	 */
+	WFMath::Quaternion getOrientation() const;
+
+	/**
+	 * @brief Sets the orientation of the preview in the world.
+	 *
+	 * @param orientation The new orientation.
+	 */
+	void setOrientation(const WFMath::Quaternion& orientation);
+
+	/**
 	 * @brief Emitted when a stop of the creation process has been requested.
 	 *
 	 * This means that the creation process should be aborted.
@@ -173,21 +185,15 @@ protected:
 	 */
 	WFMath::Point<3> mPos;
 
-	/**
-	 * @brief Current orientation of preview in the world.
+ 	/**
+	 * @brief The initial orientation to use, if no entity has been created yet.
 	 */
-	WFMath::Quaternion mOrientation;
-
+	WFMath::Quaternion mInitialOrientation;
 
 	/**
 	 * @brief An entity which shows an axis, to mark the preview entity.
 	 */
 	Ogre::Entity* mAxisMarker;
-
-	/**
-	 @brief If set to true, all new entities will have their orientation randomized around the vertical axis.
-	 */
-	bool mRandomizeOrientation;
 
 	/**
 	 * @brief A connection for the EntityRecipe::EventValueChanged event.
