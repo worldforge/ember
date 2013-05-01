@@ -1,10 +1,10 @@
 <entityrecipes>
-  <entityrecipe name="area">
+  <entityrecipe name="region">
     <author>Erik Hjortsberg</author>
     <description>
-      A terrain area.
+      A terrain region.
     </description>
-    <entity type="area">
+    <entity type="region">
       <atlas>
         <map>
         	<map name="area">
