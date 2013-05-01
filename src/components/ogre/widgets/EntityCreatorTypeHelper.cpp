@@ -105,7 +105,7 @@ void EntityCreatorTypeHelper::updatePreview()
 		if (typeInfo) {
 			//update the model preview window
 			mModelPreviewRenderer->showModel(typeInfo->getName());
-			//mModelPreviewRenderer->showFull();
+			mModelPreviewRenderer->showFull();
 			//we want to zoom in a little
 			mModelPreviewRenderer->setCameraDistance(0.7);
 		} else {
