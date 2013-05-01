@@ -1,4 +1,5 @@
 --Allows the editing of entities
+
 EntityEditor = {
 
 	adapters = {
@@ -53,7 +54,7 @@ EntityEditor = {
 
 				local checkSuggestions = function()
 					nameEditboxCombobox:resetList()
-					for attr,value in pairs(self.prototypes) do
+					for attr,value in pairsByKeys(self.prototypes) do
 						if mapAdapter:hasAdapter(attr) == false and value.shouldAddSuggestion then
 							if value.shouldAddSuggestion(outerElement, self.instance.entity) then
 								local item = Ember.OgreView.Gui.ColouredListItem:new(attr)
@@ -1275,7 +1276,7 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 	else
 		--Use the default adapters
 
-		for index,value in pairs(self.defaultPrototypes) do
+		for index,value in pairsByKeys(self.defaultPrototypes) do
 			local itemIndex = table.maxn(newAdapters) + 1
 			local item = Ember.OgreView.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
 			table.insert(newAdapters, value.adapter)
@@ -1599,7 +1600,7 @@ function EntityEditor:buildWidget()
 		self.goalRemove:setEnabled(false)
 
 		local goalPrototypes = self.goalPrototypes.mason
-		for k, v in pairs(goalPrototypes) do
+		for k, v in pairsByKeys(goalPrototypes) do
 			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
 			self.goalVerb:addItem(item)
 		end
