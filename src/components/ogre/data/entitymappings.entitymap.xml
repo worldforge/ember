@@ -226,6 +226,7 @@
 	<autoentitymapping name="coin" />
 	<autoentitymapping name="torch" />
 	<autoentitymapping name="deed" />
+    <autoentitymapping name="blueprint" modelname="deed" />
 	<autoentitymapping name="bottle" />
 	<entitymapping name="bowls">
 		<entitymatch>
