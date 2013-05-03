@@ -871,6 +871,16 @@ EntityEditor.goalPrototypes = {
 	}
 }
 
+EntityEditor.knowledge= {
+	predicates = {
+		mason = {
+			location = {help="Provides a location. This can either be the name of a known thing, or a point in space. For the latter, use this format: \"('entityid',(x,y,z))\"."},
+			importance = {help="Makes one goal more important than another. The 'subject' should be of the format \"('goal1', 'goal2')\" and the object either '>' or '<'."},
+			about = {help="Know something about a subject."},
+			price = {help="Know the price of a thing."}
+		}
+	}
+}
 function editEntity(id)
 	local entity = emberOgre:getWorld():getEmberEntity(id)
 	if entity then
@@ -1566,6 +1576,26 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
 		self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
+		
+		local knowledgePredicate = CEGUI.toCombobox(self.widget:getWindow("NewKnowledgePredicate"))
+		
+		for k, v in pairsByKeys(EntityEditor.knowledge.predicates.mason) do
+			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
+			knowledgePredicate:addItem(item)
+		end
+--		knowledgePredicate:subscribeEvent("ListSelectionAccepted", function(args)
+--			local selectedItem = knowledgePredicate:getSelectedItem()
+--			if selectedItem then
+--				local prototype = EntityEditor.knowledge.predicates.mason[selectedItem:getText()]
+--				if prototype then
+--					self.goalDefinition:setText(prototype.proto)
+--				end
+--			end
+--
+--			return true
+--		end)
+
+
 
 
 		self.goalVerb = CEGUI.toCombobox(self.widget:getWindow("GoalVerb"))
