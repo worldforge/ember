@@ -59,9 +59,13 @@ void IconBar::addIcon(IconBase* iconBase)
 {
 	mIconBases.push_back(iconBase);
 	mWindow->addChildWindow(iconBase->getContainer());
+
 	repositionIcons();
 
+	iconBase->getContainer()->subscribeEvent(CEGUI::Window::EventShown, CEGUI::Event::Subscriber(&IconBar::iconVisibilityChanged, this));
+	iconBase->getContainer()->subscribeEvent(CEGUI::Window::EventHidden, CEGUI::Event::Subscriber(&IconBar::iconVisibilityChanged, this));
 }
+
 void IconBar::removeIcon(IconBase* iconBase)
 {
 	IconBaseStore::iterator I = std::find(mIconBases.begin(), mIconBases.end(), iconBase);
@@ -70,6 +74,12 @@ void IconBar::removeIcon(IconBase* iconBase)
 		mIconBases.erase(I);
 	}
 	repositionIcons();
+}
+
+bool IconBar::iconVisibilityChanged(const CEGUI::EventArgs& e)
+{
+	repositionIcons();
+	return true;
 }
 
 CEGUI::Window* IconBar::getWindow()

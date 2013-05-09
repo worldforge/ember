@@ -28,6 +28,7 @@
 namespace CEGUI
 {
 class Window;
+class EventArgs;
 }
 
 namespace Ember {
@@ -68,6 +69,9 @@ protected:
 	*/
 	void repositionIcons();
 	
+	bool iconVisibilityChanged(const CEGUI::EventArgs& e);
+
+
 	int mIconPadding;
 };
 
