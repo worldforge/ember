@@ -84,12 +84,6 @@ function MainIconBar:buildWidget()
 	local height = self.iconBar:getAbsoluteHeight()
 	self.iconBar:getWindow():setPosition(CEGUI.UVector2:new_local(CEGUI.UDim(0,0), CEGUI.UDim(1, -height)))
 	
-	
-	connect(self.connectors, emberOgre.EventMovementControllerCreated, self.EmberOgre_movementControllerCreated, self)
-	connect(self.connectors, emberOgre.EventMovementControllerDestroyed, function()
-			self.movementModeIcon:getContainer():setVisible(false)
-		end)
-	
 	--and settings toggle icon
 	foreground = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "settings")
 	self.settingsIcon = self:addIcon("settings", foreground, "Toggles visibility of the settings window")
@@ -101,6 +95,29 @@ function MainIconBar:buildWidget()
 	--start out with the inventory icon hidden, only show it when the user has an avatar
 	self.inventoryIcon:getContainer():setVisible(false)
 	self.inventoryIcon:getButton():subscribeEvent("Clicked", self.inventory_Clicked, self)
+	
+	
+	connect(self.connectors, emberOgre.EventMovementControllerCreated, function()
+		--Only show the movement and inventory icons when we've actually connected to a server; it makes no sense before that
+			self.movementModeIcon:getContainer():setVisible(true)
+			connect(self.connectors, emberOgre:getWorld():getMovementController().EventMovementModeChanged, 
+				function(mode)
+					if self.currentMode == Ember.Input.IM_MOVEMENT then
+						self:checkMovementMode()
+					end
+				end)
+			
+			--Don't show the inventory for the admin avatar	
+			if emberOgre:getWorld():getAvatar():isAdmin() == false then	
+				self.inventoryIcon:getContainer():setVisible(true)
+			end
+		end)
+	
+	connect(self.connectors, emberOgre.EventMovementControllerDestroyed, function()
+			self.movementModeIcon:getContainer():setVisible(false)
+			self.inventoryIcon:getContainer():setVisible(false)
+		end)
+	
 	
 	MainIconBar.singletonInstance = self
 end
@@ -165,27 +182,17 @@ function MainIconBar:checkMovementMode()
 		self.originalCursorImage = CEGUI.MouseCursor:getSingleton():getImage()
 	end
 
-	if emberOgre:getWorld():getMovementController():getMode() == Ember.OgreView.MovementControllerMode.MM_RUN then
-		self.movementModeIcon:setForeground(self.movementImage_run)
-		CEGUI.MouseCursor:getSingleton():setImage(self.movementImage_run)
-	else
-		self.movementModeIcon:setForeground(self.movementImage_walk)
-		CEGUI.MouseCursor:getSingleton():setImage(self.movementImage_walk)
+	if emberOgre:getWorld() then
+		if emberOgre:getWorld():getMovementController():getMode() == Ember.OgreView.MovementControllerMode.MM_RUN then
+			self.movementModeIcon:setForeground(self.movementImage_run)
+			CEGUI.MouseCursor:getSingleton():setImage(self.movementImage_run)
+		else
+			self.movementModeIcon:setForeground(self.movementImage_walk)
+			CEGUI.MouseCursor:getSingleton():setImage(self.movementImage_walk)
+		end
 	end
 end
 
---Only show the movement and inventory icons when we've actually connected to a server; it makes no sense before that
-function MainIconBar:EmberOgre_movementControllerCreated()
-	self.movementModeIcon:getContainer():setVisible(true)
-	connect(self.connectors, emberOgre:getWorld():getMovementController().EventMovementModeChanged, 
-		function(mode)
-			if self.currentMode == Ember.Input.IM_MOVEMENT then
-				self:checkMovementMode()
-			end
-		end)
-		
-	self.inventoryIcon:getContainer():setVisible(true)
-end
 
 function MainIconBar:shutdown()
 	MainIconBar.singletonInstance = nil
