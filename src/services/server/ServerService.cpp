@@ -116,6 +116,12 @@ bool ServerService::connect(const std::string& host, short port)
 	return mNonConnectedState->connect(host, port);
 }
 
+bool ServerService::connectLocal(const std::string& socket)
+{
+	return mNonConnectedState->connectLocal(socket);
+}
+
+
 void ServerService::disconnect()
 {
 	mNonConnectedState->getTopState().disconnect();

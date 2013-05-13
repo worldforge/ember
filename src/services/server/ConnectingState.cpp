@@ -45,8 +45,17 @@ ConnectingState::ConnectingState(IState& parentState, const std::string& host, s
 	mConnection.Disconnected.connect(sigc::mem_fun(*this, &ConnectingState::disconnected));
 	mConnection.Failure.connect(sigc::mem_fun(*this, &ConnectingState::gotFailure));
 	//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
+}
 
-
+ConnectingState::ConnectingState(IState& parentState, const std::string& socket) :
+	StateBase<ConnectedState>::StateBase(parentState), mConnection(std::string("Ember ") + VERSION, socket, false, new ServerServiceConnectionListener(getSignals())), mHasSignalledDisconnected(false), mDeleteChildState(0)
+{
+	// Bind signals
+	mConnection.Connected.connect(sigc::mem_fun(*this, &ConnectingState::connected));
+	mConnection.StatusChanged.connect(sigc::mem_fun(*this, &ConnectingState::statusChanged));
+	mConnection.Disconnected.connect(sigc::mem_fun(*this, &ConnectingState::disconnected));
+	mConnection.Failure.connect(sigc::mem_fun(*this, &ConnectingState::gotFailure));
+	//mConn->Timeout.connect(SigC::slot(*this, &ServerService::timeout));
 }
 
 ConnectingState::~ConnectingState()

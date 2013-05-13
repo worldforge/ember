@@ -35,7 +35,22 @@ class DestroyChildStateEvent;
 class ConnectingState: public virtual StateBase<ConnectedState>
 {
 public:
+
+	/**
+	 * @brief Ctor. for connecting to a remote host.
+	 *
+	 * @param parentState The parent state.
+	 * @param host The hostname of the remote host.
+	 * @param port The port on the remote host.
+	 */
 	ConnectingState(IState& parentState, const std::string& host, short port);
+
+	/**
+	 * @brief Ctor. for connecting to a local socket.
+	 * @param parent State The parent state.
+	 * @param socket The path to the local socket.
+	 */
+	ConnectingState(IState& parentState, const std::string& socket);
 	virtual ~ConnectingState();
 
 	bool connect();

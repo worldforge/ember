@@ -66,7 +66,20 @@ public:
 
 	void runCommand(const std::string &, const std::string &);
 
+	/**
+	 * @brief Connects to a remote host.
+	 * @param host The hostname of the remote host.
+	 * @param port The port on the remote host.
+	 * @return True if connection was successful.
+	 */
 	bool connect(const std::string& host, short port = 6767);
+
+	/**
+	 * @brief Connects to a local socket.
+	 * @param socket The path to the local socket.
+	 * @return True if connection was successful.
+	 */
+	bool connectLocal(const std::string& socket);
 
 	const Ember::ConsoleCommandWrapper Connect;
 

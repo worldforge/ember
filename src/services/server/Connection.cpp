@@ -22,10 +22,14 @@
 #include "framework/LoggingInstance.h"
 namespace Ember
 {
-Connection::Connection(const std::string &cnm, const std::string& host, short port, bool debug, IConnectionListener* listener) :
-	Eris::Connection(cnm, host, port, debug), mListener(listener)
+Connection::Connection(const std::string& clientName, const std::string& host, short port, bool debug, IConnectionListener* listener) :
+		Eris::Connection(clientName, host, port, debug), mListener(listener)
 {
+}
 
+Connection::Connection(const std::string& clientName, const std::string& socket, bool debug, IConnectionListener* listener) :
+		Eris::Connection(clientName, socket, debug), mListener(listener)
+{
 }
 
 Connection::~Connection()

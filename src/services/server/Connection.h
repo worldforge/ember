@@ -33,15 +33,25 @@ class IConnectionListener;
 class Connection: public Eris::Connection
 {
 public:
+
 	/**
-	 * @brief Ctor.
-	 * @param cnm
-	 * @param host
-	 * @param port
-	 * @param debug
+	 * @brief Ctor. for connecting to a remote host.
+	 * @param clientName The name of this client.
+	 * @param host The remote host.
+	 * @param port The port on the remote host.
+	 * @param debug Whether we should connect in debug mode.
 	 * @param listener An optional listener. Ownership will be transferred to this instance.
 	 */
-	Connection(const std::string &cnm, const std::string& host, short port, bool debug, IConnectionListener* listener);
+	Connection(const std::string &clientName, const std::string& host, short port, bool debug, IConnectionListener* listener);
+
+	/**
+	 * @brief Ctor. for connecting to a local socket.
+	 * @param clientName The name of this client.
+	 * @param socket Path to a local socket.
+	 * @param debug Whether we should connect in debug mode.
+	 * @param listener An optional listener. Ownership will be transferred to this instance.
+	 */
+	Connection(const std::string &clientName, const std::string& socket, bool debug, IConnectionListener* listener);
 	virtual ~Connection();
 
 	virtual void send(const Atlas::Objects::Root &obj);

@@ -79,6 +79,21 @@ bool NonConnectedState::connect(const std::string& host, short port)
 	return mChildState != 0;
 }
 
+bool NonConnectedState::connectLocal(const std::string& socket)
+{
+	destroyChildState();
+	mChildState = new ConnectingState(*this, socket);
+	if (!mChildState->connect()) {
+		destroyChildState();
+	} else {
+		mDisconnectedConnection.disconnect();
+		mDisconnectedConnection = mChildState->getConnection().Disconnected.connect(sigc::mem_fun(*this, &NonConnectedState::disconnected));
+	}
+
+	return mChildState != 0;
+}
+
+
 void NonConnectedState::disconnected()
 {
 	S_LOG_INFO("Disconnected");
