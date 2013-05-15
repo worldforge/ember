@@ -116,6 +116,13 @@ class ConfigService
 	*/
 	sigc::signal<void, const std::string&, const std::string&> EventChangedConfigItem;
 	
+	/**
+	 * @brief Gets the prefix, i.e. the root directory where Ember is installed.
+	 * @return The prefix, i.e. the root directory where Ember is installed.
+	 */
+	const std::string& getPrefix() const;
+	
+	
 
 }; //ConfigService
 
