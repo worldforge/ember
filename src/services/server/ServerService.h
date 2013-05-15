@@ -92,10 +92,17 @@ public:
 
 	/**
 	 * @brief Connects to a local socket.
-	 * @param socket The path to the local socket.
+	 * @param socketPath The path to the local socket.
 	 * @return True if connection was successful.
 	 */
-	bool connectLocal(const std::string& socket);
+	bool connectLocal(const std::string& socketPath);
+
+	/**
+	 * @brief Checks if there's a local socket available.
+	 * @param socketPath The path to the local socket.
+	 * @return True if a local socket exists.
+	 */
+	bool hasLocalSocket(const std::string& socketPath);
 
 	void disconnect();
 

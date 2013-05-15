@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2002 Martin Pollard (Xmp)
+ Copyright (C) 2013 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,17 +23,21 @@
 
 #include "ServerService.h"
 
-//#include "ConnectedAdapter.h"
 #include "NonConnectedAdapter.h"
 #include "NonConnectedState.h"
-#include <wfmath/point.h>
-//#include "OOGChat.h"
+
+//Needed for the "access" function.
+#ifdef _WIN32
+#include "platform/platform_windows.h"
+#else
+#include <unistd.h>
+#endif
 
 namespace Ember
 {
 
 ServerService::ServerService() :
-	mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this))
+		mConnection(0), mAccount(0), mAvatar(0), mOOGChat(0), mNonConnectedState(new NonConnectedState(*this))
 {
 	setName("Server Service");
 	setDescription("Service for Server session");
@@ -48,7 +53,6 @@ ServerService::ServerService() :
 
 ServerService::~ServerService()
 {
-
 }
 
 /* Method for starting this service 	*/
@@ -121,6 +125,10 @@ bool ServerService::connectLocal(const std::string& socket)
 	return mNonConnectedState->connectLocal(socket);
 }
 
+bool ServerService::hasLocalSocket(const std::string& socketPath)
+{
+	return access(socketPath.c_str(), 0) == 0;
+}
 
 void ServerService::disconnect()
 {
