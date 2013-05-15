@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<GUILayout>
+    <Window Type='EmberLook/FrameWindow' Name='MainWindow'>
+        <Property Name='UnifiedSize' Value='{{0.0,400.0},{0.0,100.0}}' />
+        <Property Name='UnifiedPosition' Value='{{0.5,-200.0},{0.5,-50.0}}' />
+        <Property Name='SizingEnabled' Value='false' />
+        <Property Name='Alpha' Value='0.6' />
+        <Property Name='Text' Value='Local server detected' />
+        <Window Type="VerticalLayoutContainer">
+            <Window Type='EmberLook/StaticText'>
+                <Property Name='UnifiedSize' Value='{{1.0,0},{0.0,25.0}}' />
+                <Property Name='Text' Value='A local server has been detected. What do you want to do?' />
+            </Window>
+            <Window Type="HorizontalLayoutContainer">
+                <Window Type='EmberLook/Button' Name='ConnectAsAdmin'>
+                    <Property Name='UnifiedSize' Value='{{0.33,0.0},{0.0,25.0}}' />
+                    <Property Name='Text' Value='Log in as administrator' />
+                    <Property Name='Tooltip' Value='This allows you to edit the world.' />
+                </Window>
+                <Window Type='EmberLook/Button' Name='ConnectNormally'>
+                    <Property Name='UnifiedSize' Value='{{0.33,0.0},{0.0,25.0}}' />
+                    <Property Name='Text' Value='Connect as normal' />
+                    <Property Name='Tooltip' Value='Connect to the server as a normal client.' />
+                </Window>
+                <Window Type='EmberLook/Button' Name='DontConnect'>
+                    <Property Name='UnifiedSize' Value='{{0.33,0.0},{0.0,25.0}}' />
+                    <Property Name='Text'>Don't connect</Property>
+                    <Property Name='Tooltip'>Don't connect to the local server.</Property>
+                </Window>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
