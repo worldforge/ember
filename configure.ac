@@ -9,6 +9,9 @@ AC_CONFIG_SRCDIR(src)
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests])
+AM_SILENT_RULES([yes])
+
+
 AC_CONFIG_HEADERS([src/config.h])
 
 AC_PREREQ([2.50])
