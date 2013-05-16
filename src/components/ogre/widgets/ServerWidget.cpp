@@ -377,11 +377,14 @@ void ServerWidget::fillAllowedCharacterTypes(Eris::Account* account)
 
 	const std::vector<std::string>& characters = account->getCharacterTypes();
 
-	//If the account inherits from "admin" we're an admin and can create a creator entity.
-	if (std::find(account->getParents().begin(), account->getParents().end(), "admin") != account->getParents().end()) {
+	//If the account inherits from "admin" we're an admin and can create a creator entity. This also applies if we're a "sys" account.
+	if (std::find(account->getParents().begin(), account->getParents().end(), "admin") != account->getParents().end() ||
+			std::find(account->getParents().begin(), account->getParents().end(), "sys") != account->getParents().end()) {
 		mUseCreator->setVisible(true);
 		mUseCreator->setEnabled(true);
-
+	} else {
+		mUseCreator->setVisible(false);
+		mUseCreator->setEnabled(false);
 	}
 
 	if (mCharacterAndSpawns.size() == 0 && characters.size() == 0) {
@@ -629,7 +632,7 @@ void ServerWidget::avatar_Deactivated(bool clean)
 	mMainWindow->moveToFront();
 	getWindow("LoginPanel")->setVisible(false);
 	getWindow("LoggedInPanel")->setVisible(true);
-
+	gotAllCharacters(mAccount);
 }
 
 void ServerWidget::createPreviewTexture()
