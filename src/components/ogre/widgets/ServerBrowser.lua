@@ -82,7 +82,7 @@ function ServerBrowser:buildWidget()
 	end
 
 
-	--The socket path is currently hard coded to cyphesis. The default is that Ember 
+	--The socket path is currently hard coded to cyphesis. The default is that Ember
 	--is installed in the same location as cyphesis (i.e. using the same prefix
 	local socketPath = emberServices:getConfigService():getPrefix() .. "/var/tmp/cyphesis_cyphesis.sock"
 	if emberServices:getConfigService():itemExists("general", "socket") then
@@ -100,14 +100,14 @@ function ServerBrowser:buildWidget()
 		socketDetectedWindow:loadMainSheet("ServerSocketDetected.layout", "ServerSocketDetected/")
 		socketDetectedWindow:show();
 		socketDetectedWindow:getMainWindow():activate()
-		
+
 		socketDetectedWindow:getWindow("DontConnect"):subscribeEvent("Clicked", function(args)
 			guiManager:destroyWidget(socketDetectedWindow)
 			socketDetectedWindow = nil
 			showWindow()
 			return true
 		end)
-		
+
 		socketDetectedWindow:getWindow("ConnectNormally"):subscribeEvent("Clicked", function(args)
 			guiManager:destroyWidget(socketDetectedWindow)
 			socketDetectedWindow = nil
@@ -118,7 +118,17 @@ function ServerBrowser:buildWidget()
 		socketDetectedWindow:getWindow("ConnectAsAdmin"):subscribeEvent("Clicked", function(args)
 			guiManager:destroyWidget(socketDetectedWindow)
 			socketDetectedWindow = nil
-			showWindow()
+
+			local localServerAdminCreator = Ember.LocalServerAdminCreator:new(serverService)
+
+			local connector = createConnector(serverService.GotAvatar):connect(function()
+				deleteSafe(localServerAdminCreator)
+				connector:disconnect()
+				deleteSafe(connector)
+			end)
+			
+			serverService:connectLocal(socketPath)
+
 			return true
 		end)
 	else
