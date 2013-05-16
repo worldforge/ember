@@ -23,6 +23,8 @@ $pfile "InputService.pkg";
 $pfile "IInputAdapter.pkg";
 $pfile "ServerSettings.pkg";
 $pfile "ServerSettingsCredentials.pkg";
+$pfile "LocalServerAdminCreator.pkg"
+
 
 $pfile "AvatarTransferInfo.pkg";
 

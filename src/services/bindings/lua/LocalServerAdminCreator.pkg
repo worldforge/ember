@@ -1,0 +1,15 @@
+$#include "services/server/LocalServerAdminCreator.h"
+
+namespace Ember
+{
+
+class LocalServerAdminCreator
+{
+public:
+	LocalServerAdminCreator(Ember::ServerService& serverService);
+	virtual ~LocalServerAdminCreator();
+
+};
+
+}
+#endif /* LOCALSERVERADMINCREATOR_H_ */
