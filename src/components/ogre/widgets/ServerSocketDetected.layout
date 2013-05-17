@@ -6,6 +6,7 @@
         <Property Name='SizingEnabled' Value='false' />
         <Property Name='Alpha' Value='0.6' />
         <Property Name='Text' Value='Local server detected' />
+        <Property Name='CloseButtonEnabled' Value='False' />
         <Window Type="VerticalLayoutContainer">
             <Window Type='EmberLook/StaticText'>
                 <Property Name='UnifiedSize' Value='{{1.0,0},{0.0,25.0}}' />
