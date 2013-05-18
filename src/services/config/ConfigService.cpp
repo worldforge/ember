@@ -118,6 +118,7 @@ namespace Ember
 	, mSharedDataDir( "" )
 	, mEtcDir( "" )
 	, mHomeDir ( "" )
+	, mPrefix(PREFIX)
 	, mGlobalConfig(new varconf::Config())
 	, mUserConfig(new varconf::Config())
 	, mCommandLineConfig(new varconf::Config())
