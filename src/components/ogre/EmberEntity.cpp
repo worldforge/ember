@@ -120,7 +120,12 @@ float EmberEntity::getHeight(const WFMath::Point<2>& localPosition) const
 		return getEmberLocation()->getHeight(adjustedLocalPosition) - getPredictedPos().z();
 	}
 
-	return getPredictedPos().z();
+	WFMath::Point<3> predictedPos = getPredictedPos();
+	if (predictedPos.isValid()) {
+	    return predictedPos.z();
+	} else {
+	    return 0.0f;
+	}
 }
 
 void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArgs)
