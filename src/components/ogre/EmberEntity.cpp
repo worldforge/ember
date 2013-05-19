@@ -130,14 +130,7 @@ void EmberEntity::onTalk(const Atlas::Objects::Operation::RootOperation& talkArg
 	//some talk operations come with a predefined set of suitable responses, so we'll store those so that they can later on be queried by the GUI for example
 	mSuggestedResponses = entityTalk.getSuggestedResponses();
 
-	std::string message = "<";
-	message.append(getName());
-	message.append(",");
-	const std::string& type = getType()->getName(); // Eris type as a string
-	message.append(type);
-	message.append("> ");
-	message.append(entityTalk.getMessage());
-	S_LOG_VERBOSE("Entity says: [" << message << "]\n");
+	S_LOG_VERBOSE("Entity " << getName() << " ("<< getType()->getName() << ") says: \"" << entityTalk.getMessage() << "\"");
 
 	EventTalk.emit(entityTalk);
 
