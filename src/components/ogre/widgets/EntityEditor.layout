@@ -51,6 +51,15 @@
                         <Property Name='Text' Value='Refresh' />
                         <Property Name='InheritsAlpha' Value='True' />
                     </Window>
+                    <Window Type='EmberLook/StaticText' Name='KnowledgeHelp'>
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-110}}' />
+                        <Property Name='UnifiedSize' Value='{{1,-10},{0,40}}' />
+                        <Property Name='Visible' Value='False' />
+                        <Property Name="BackgroundEnabled" Value='True' />
+                        <Property Name="FrameEnabled" Value='True' />
+                        <Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+                        <Property Name='VertFormatting' Value='TopAligned'/>
+                    </Window>
                     <Window Type='HorizontalLayoutContainer'>
                         <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-30}}' />
                         <Property Name='UnifiedSize' Value='{{1,-10},{0,25}}' />
@@ -96,6 +105,15 @@
                         <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-105}}' />
                         <Property Name='UnifiedSize' Value='{{0,75},{0,20}}' />
                         <Property Name='Text' Value='Refresh' />
+                    </Window>
+                    <Window Type='EmberLook/StaticText' Name='GoalHelp'>
+                        <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-120}}' />
+                        <Property Name='UnifiedSize' Value='{{1,-10},{0,40}}' />
+                        <Property Name='Visible' Value='False' />
+                        <Property Name="BackgroundEnabled" Value='True' />
+                        <Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
+                        <Property Name='VertFormatting' Value='TopAligned'/>
+                        <Property Name="FrameEnabled" Value='True' />
                     </Window>
                     <Window Type='HorizontalLayoutContainer'>
                         <Property Name='UnifiedPosition' Value='{{0,5},{1.0,-80}}' />

@@ -1578,11 +1578,36 @@ function EntityEditor:buildWidget()
 		self.widget:getWindow("RefreshGoals"):subscribeEvent("Clicked", self.RefreshGoals_Clicked, self)
 		
 		local knowledgePredicate = CEGUI.toCombobox(self.widget:getWindow("NewKnowledgePredicate"))
+		local knowledgeHelp = self.widget:getWindow("KnowledgeHelp")
 		
 		for k, v in pairsByKeys(EntityEditor.knowledge.predicates.mason) do
 			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
 			knowledgePredicate:addItem(item)
 		end
+		knowledgePredicate:subscribeEvent("ListSelectionAccepted", function(args)
+			knowledgeHelp:setVisible(false)
+			return true
+		end)
+		knowledgePredicate:subscribeEvent("MouseLeavesArea", function(args)
+			knowledgeHelp:setVisible(false)
+			return true
+		end)		
+		knowledgePredicate:subscribeEvent("ListSelectionChanged", function(args)
+			local selectedItem = knowledgePredicate:getSelectedItem()
+			if selectedItem then
+				local prototype = EntityEditor.knowledge.predicates.mason[selectedItem:getText()]
+				if prototype and prototype.help then
+					knowledgeHelp:setText(prototype.help)
+					knowledgeHelp:setVisible(true)
+				else
+					knowledgeHelp:setVisible(false)
+				end
+			end
+			return true
+		end)
+		
+		
+		
 --		knowledgePredicate:subscribeEvent("ListSelectionAccepted", function(args)
 --			local selectedItem = knowledgePredicate:getSelectedItem()
 --			if selectedItem then
@@ -1602,6 +1627,7 @@ function EntityEditor:buildWidget()
 		self.goalDefinition = self.widget:getWindow("GoalDefinition")
 
 
+		local goalHelp = self.widget:getWindow("GoalHelp")
 		self.goalInfo = self.widget:getWindow("GoalInfo")
 		self.goalAdd = CEGUI.toPushButton(self.widget:getWindow("GoalAdd"))
 		self.goalUpdate = CEGUI.toPushButton(self.widget:getWindow("GoalUpdate"))
@@ -1643,15 +1669,41 @@ function EntityEditor:buildWidget()
 					self.goalDefinition:setText(prototype.proto)
 				end
 			end
-
 			return true
 		end)
 		self.goalVerb:subscribeEvent("ListSelectionChanged", function(args)
 			local selectedItem = self.goalVerb:getSelectedItem()
 			if selectedItem then
-			--show help
+				local prototype = goalPrototypes[selectedItem:getText()]
+				if prototype and prototype.help then
+					goalHelp:setVisible(true)
+					goalHelp:setText(prototype.help)
+				else
+					goalHelp:setVisible(false)
+				end
 			end
-
+			return true
+		end)
+		
+		self.goalDefinition:subscribeEvent("MouseEntersArea", function(args)
+			local verb = self.goalVerb:getText()
+			if verb then
+				local prototype = goalPrototypes[verb]
+				if prototype and prototype.help then
+					goalHelp:setVisible(true)
+					goalHelp:setText(prototype.help)
+				else
+					goalHelp:setVisible(false)
+				end
+			end
+			return true
+		end)
+		self.goalDefinition:subscribeEvent("MouseLeavesArea", function(args)
+			goalHelp:setVisible(false)
+			return true
+		end)
+		self.goalVerb:subscribeEvent("MouseLeavesArea", function(args)
+			goalHelp:setVisible(false)
 			return true
 		end)
 
