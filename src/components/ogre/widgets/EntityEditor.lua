@@ -819,6 +819,10 @@ EntityEditor.goalPrototypes = {
 			proto="wander()",
 			help="Move in a non-specific way."
 		},
+		roam={
+			proto="roam(radius, [locations])",
+			help="Move in a non-specific way between locations."
+		},
 		search={
 			proto="search(what)",
 			args={what="What to search for."},
