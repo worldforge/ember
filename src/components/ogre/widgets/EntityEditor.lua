@@ -1043,7 +1043,8 @@ function EntityEditor:editEntity(entity)
 							--Handle goals specially
 
 							local verb = modelItem.subject
-							local _, _, singleVerb = string.find(modelItem.subject, "'(%a*)'.*")
+							--The subject of a goal is expressed as "('a_goal', '#a_goal_verb1')". We therefore need to do some regexp searching to find the first value in the tuple.
+							local _, _, singleVerb = string.find(modelItem.subject, "%('([%w_-]*)'")
 							if singleVerb then
 								verb = singleVerb
 							end
