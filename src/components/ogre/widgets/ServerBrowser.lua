@@ -123,10 +123,10 @@ function ServerBrowser:buildWidget()
 	
 				local localServerAdminCreator = Ember.LocalServerAdminCreator:new(serverService)
 	
-				local connector = createConnector(serverService.GotAvatar):connect(function()
+				local connector = createConnector(serverService.GotAvatar)
+				connector:connect(function()
 					deleteSafe(localServerAdminCreator)
 					connector:disconnect()
-					deleteSafe(connector)
 				end)
 	
 				serverService:connectLocal(socketPath)
