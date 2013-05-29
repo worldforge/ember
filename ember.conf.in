@@ -190,6 +190,8 @@ logchatmessages=true
 #setting this to 0 will disable the fps capping.
 #the main advantage of this is to prevent Ember from completely starving the system, when most fps over 60 aren't recognizable by users
 desiredfps=60
+#allows you to specify a local cyphesis socket to connect to. If nothing is specified Ember will look for the socket at PREFIX/var/tmp/cyphesis_cyphesis.sock 
+#socket=/path/to/cyphesis_cyphesis.sock
 
 
 
