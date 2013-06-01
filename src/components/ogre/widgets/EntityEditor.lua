@@ -1004,7 +1004,6 @@ function EntityEditor:editEntity(entity)
 				self.instance.goals = {}
 			end
 			local thoughtMap = element:asMap()
-			local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 
 			local modelItem = {predicate = "", subject = "", object = ""}
 			if thoughtMap:get("predicate") and thoughtMap:get("predicate"):isString() then
@@ -1017,6 +1016,9 @@ function EntityEditor:editEntity(entity)
 						if modelItem.predicate ~= "goal" then
 							if object:isString() then
 								modelItem.object = thoughtMap:get("object"):asString()
+								local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+								--6000px should be enough to make sure the text isn't cropped
+								item:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
 								item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
 
 								item:subscribeEvent("SelectionChanged", function(args)
@@ -1052,6 +1054,9 @@ function EntityEditor:editEntity(entity)
 							local addGoal = function(object)
 
 								local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+								--6000px should be enough to make sure the text isn't cropped
+								goalItem:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+								
 								goalItem:setText(escapeForCEGUI(verb .. " : " .. object))
 								self.goallistbox:addItem(goalItem)
 
