@@ -26,7 +26,6 @@ emberlibs = \
 	$(top_builddir)/src/framework/bindings/lua/liblua_Framework.a \
 	$(top_builddir)/src/domain/bindings/lua/liblua_Domain.a \
 	$(top_builddir)/src/components/ogre/libEmberOgre.a \
-	$(top_builddir)/src/components/ogre/SceneManagers/EmberPagingSceneManager/src/libEmberPagingSceneManager.a \
 	$(top_builddir)/src/components/ogre/environment/caelum/libCaelum.a \
 	$(top_builddir)/src/components/ogre/environment/pagedgeometry/libpagedgeometry.a \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \

@@ -29,7 +29,7 @@ namespace OgreView
 {
 namespace Terrain
 {
-class ISceneManagerAdapter;
+class ITerrainAdapter;
 }
 class EmberEntity;
 class ISceneRenderingTechnique;
@@ -92,7 +92,7 @@ public:
 
 	void registerPageDataProvider(IPageDataProvider* pageDataProvider);
 
-	Terrain::ISceneManagerAdapter* createAdapter();
+	Terrain::ITerrainAdapter* createAdapter();
 
 	/**
 	 * @brief Gets the main camera of the scene.

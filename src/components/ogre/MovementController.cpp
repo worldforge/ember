@@ -33,7 +33,7 @@
 #include "components/ogre/camera/FirstPersonCameraMount.h"
 #include "components/ogre/camera/ThirdPersonCameraMount.h"
 #include "components/ogre/terrain/TerrainManager.h"
-#include "components/ogre/terrain/ISceneManagerAdapter.h"
+#include "components/ogre/terrain/ITerrainAdapter.h"
 
 #include "services/input/Input.h"
 #include "services/EmberServices.h"

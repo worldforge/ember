@@ -36,7 +36,7 @@
 #include "../terrain/TerrainManager.h"
 #include "../terrain/TerrainLayerDefinition.h"
 
-#include "../terrain/ISceneManagerAdapter.h"
+#include "../terrain/ITerrainAdapter.h"
 
 #include "pagedgeometry/include/PagedGeometry.h"
 #include "pagedgeometry/include/BatchPage.h"

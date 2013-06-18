@@ -1,5 +1,5 @@
 //
-// C++ Interface: ISceneManagerAdapter
+// C++ Interface: ITerrainAdapter
 //
 // Description: 
 //
@@ -21,8 +21,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
-#ifndef ISCENEMANAGERADAPTER_H
-#define ISCENEMANAGERADAPTER_H
+#ifndef ITERRAINADAPTER_H
+#define ITERRAINADAPTER_H
 
 #include "../OgreIncludes.h"
 
@@ -40,11 +40,11 @@ Thus, if you have a feature which requires some kind of interfacing with the ter
 
 @author Erik Hjortsberg
 */
-class ISceneManagerAdapter
+class ITerrainAdapter
 {
 public:
 
-	virtual ~ISceneManagerAdapter() {}
+	virtual ~ITerrainAdapter() {}
 
 	/**
 	 * @brief Gets the size of the width of one page, in indices (so it's often a power of two + 1)
@@ -196,4 +196,4 @@ public:
 }
 }
 
-#endif /* end of include guard: ISCENEMANAGERADAPTER_H */
+#endif /* end of include guard: ITERRAINADAPTER_H */

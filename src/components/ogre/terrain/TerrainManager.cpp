@@ -27,7 +27,7 @@
 #include "TerrainShader.h"
 #include "TerrainPage.h"
 
-#include "ISceneManagerAdapter.h"
+#include "ITerrainAdapter.h"
 
 #include "TerrainLayerDefinition.h"
 #include "PlantAreaQuery.h"
@@ -71,8 +71,8 @@ namespace Terrain
 {
 
 
-TerrainManager::TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal) :
-	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider)), mIsFoliageShown(false), mSceneManagerAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
+TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal) :
+	UpdateShadows("update_shadows", this, "Updates shadows in the terrain."), mCompilerTechniqueProvider(new Techniques::CompilerTechniqueProvider(shaderManager, scene.getSceneManager())), mHandler(new TerrainHandler(adapter->getPageSize(), *mCompilerTechniqueProvider)), mIsFoliageShown(false), mTerrainAdapter(adapter), mFoliageBatchSize(32), mVegetation(new Foliage::Vegetation()), mScene(scene), mIsInitialized(false)
 {
 	loadTerrainOptions();
 
@@ -97,7 +97,7 @@ TerrainManager::~TerrainManager()
 
 	delete mHandler;
 
-	delete mSceneManagerAdapter;
+	delete mTerrainAdapter;
 
 	delete mVegetation;
 	delete mCompilerTechniqueProvider;
@@ -128,9 +128,9 @@ const TerrainInfo& TerrainManager::getTerrainInfo() const
 }
 
 
-ISceneManagerAdapter* TerrainManager::getAdapter() const
+ITerrainAdapter* TerrainManager::getAdapter() const
 {
-	return mSceneManagerAdapter;
+	return mTerrainAdapter;
 }
 
 void TerrainManager::getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback)
@@ -208,7 +208,7 @@ void TerrainManager::terrainHandler_WorldSizeChanged()
 
 void TerrainManager::initializeTerrain()
 {
-	ISceneManagerAdapter* adapter = getAdapter();
+	ITerrainAdapter* adapter = getAdapter();
 	if (adapter) {
 		const TerrainInfo& terrainInfo = mHandler->getTerrainInfo();
 		adapter->setWorldPagesDimensions(terrainInfo.getTotalNumberOfPagesY(), terrainInfo.getTotalNumberOfPagesX(), terrainInfo.getPageOffsetY(), terrainInfo.getPageOffsetX());
