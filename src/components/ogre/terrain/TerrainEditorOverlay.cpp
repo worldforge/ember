@@ -22,7 +22,7 @@
 #include "TerrainManager.h"
 #include "TerrainHandler.h"
 #include "TerrainDefPoint.h"
-#include "ISceneManagerAdapter.h"
+#include "ITerrainAdapter.h"
 #include "components/ogre/EmberOgre.h"
 #include "components/ogre/Convert.h"
 #include "components/ogre/Avatar.h"

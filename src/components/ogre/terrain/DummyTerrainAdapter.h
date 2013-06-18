@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include "ISceneManagerAdapter.h"
+#include "ITerrainAdapter.h"
 
 
 namespace Ember {
@@ -35,11 +35,11 @@ class ITerrainObserver;
 /**
  * @brief 
  */
-class DummySceneManagerAdapter: public Ember::OgreView::Terrain::ISceneManagerAdapter
+class DummyTerrainAdapter: public Ember::OgreView::Terrain::ITerrainAdapter
 {
 public:
-	DummySceneManagerAdapter(Ogre::SceneManager& sceneManager);
-	virtual ~DummySceneManagerAdapter();
+	DummyTerrainAdapter(Ogre::SceneManager& sceneManager);
+	virtual ~DummyTerrainAdapter();
 
 	virtual int getPageSize() ;
 

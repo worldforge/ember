@@ -1,6 +1,6 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
-SUBDIRS = SceneManagers authoring environment data sounddefinitions scripting widgets
-#carpenter jesus ogreopcode
+SUBDIRS = authoring environment data sounddefinitions scripting widgets
+#carpenter jesus ogreopcode SceneManagers
 
 noinst_LIBRARIES = libEmberOgre.a
 
@@ -43,7 +43,7 @@ libEmberOgre_a_SOURCES = \
 	sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp \
 	sound/SoundEntity.cpp sound/SoundGroup.cpp sound/SoundGroupDefinition.cpp sound/XMLSoundDefParser.cpp \
 \
-	terrain/DummySceneManagerAdapter.cpp terrain/DummyTerrainObserver.cpp \
+	terrain/DummyTerrainAdapter.cpp terrain/DummyTerrainObserver.cpp \
 	terrain/Map.cpp terrain/TerrainArea.cpp \
 	terrain/TerrainAreaParser.cpp terrain/TerrainEditor.cpp \
 	terrain/TerrainManager.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp \
@@ -144,7 +144,7 @@ noinst_HEADERS = \
 	sound/SoundAction.h sound/SoundDefinition.h sound/SoundDefinitionManager.h sound/SoundEntity.h \
 	sound/SoundGroup.h sound/SoundGroupDefinition.h sound/XMLSoundDefParser.h \
 \
-	terrain/ISceneManagerAdapter.h terrain/ITerrainPageBridge.h terrain/Map.h terrain/TerrainArea.h \
+	terrain/ITerrainAdapter.h terrain/ITerrainPageBridge.h terrain/Map.h terrain/TerrainArea.h \
 	terrain/TerrainAreaParser.h terrain/TerrainEditor.h terrain/TerrainManager.h terrain/TerrainInfo.h terrain/TerrainLayerDefinition.h terrain/TerrainLayerDefinitionManager.h \
 	terrain/TerrainMod.h terrain/TerrainPage.h terrain/TerrainPageGeometry.h terrain/TerrainPageShadow.h terrain/TerrainPageSurface.h \
 	terrain/TerrainPageSurfaceCompiler.h terrain/TerrainPageSurfaceLayer.h \

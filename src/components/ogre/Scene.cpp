@@ -24,7 +24,7 @@
 #include "ISceneRenderingTechnique.h"
 #include "framework/LoggingInstance.h"
 
-#include "terrain/DummySceneManagerAdapter.h"
+#include "terrain/DummyTerrainAdapter.h"
 
 #include <OgreRoot.h>
 
@@ -104,9 +104,9 @@ void Scene::registerPageDataProvider(IPageDataProvider* pageDataProvider)
 	//static_cast<EmberPagingSceneManager*>(mSceneManager)->registerProvider(pageDataProvider);
 }
 
-Terrain::ISceneManagerAdapter* Scene::createAdapter()
+Terrain::ITerrainAdapter* Scene::createAdapter()
 {
-	return new Terrain::DummySceneManagerAdapter(*mSceneManager);
+	return new Terrain::DummyTerrainAdapter(*mSceneManager);
 }
 
 Ogre::Camera& Scene::getMainCamera() const

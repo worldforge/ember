@@ -67,7 +67,7 @@ class TerrainArea;
 class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
-class ISceneManagerAdapter;
+class ITerrainAdapter;
 class ITerrainPageBridge;
 class HeightMap;
 class HeightMapBufferProvider;
@@ -106,7 +106,7 @@ public:
 	 * @param shaderManager The shader manager.
 	 * @param frameProcessedSignal A signal emitted when one main loop cycle has ended.
 	 */
-	TerrainManager(ISceneManagerAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal);
+	TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderManager& shaderManager, sigc::signal<void, const TimeFrame&, unsigned int>& cycleProcessedSignal);
 
 	/**
 	 * @brief Dtor.
@@ -131,7 +131,7 @@ public:
 	 * @brief Gets the adapter used to bind this manager to a scene manager.
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
-	ISceneManagerAdapter* getAdapter() const;
+	ITerrainAdapter* getAdapter() const;
 
 	/**
 	 * @brief Accessor for the Scene instance to which this terrain manager is attached to.
@@ -229,9 +229,10 @@ protected:
 	bool mIsFoliageShown;
 
 	/**
-	 * @brief The adapter acts as a bridge between the manager and the actual scene manager, allowing a certain degree of decoupling.
+	 * @brief The adapter acts as a bridge between the manager and the terrain rendering component,
+	 * 		  allowing a certain degree of decoupling.
 	 */
-	ISceneManagerAdapter* mSceneManagerAdapter;
+	ITerrainAdapter* mTerrainAdapter;
 
 	unsigned int mFoliageBatchSize;
 

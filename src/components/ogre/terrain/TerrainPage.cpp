@@ -39,7 +39,7 @@
 #include "TerrainPageSurfaceLayer.h"
 #include "TerrainPageSurface.h"
 #include "TerrainLayerDefinition.h"
-#include "ISceneManagerAdapter.h"
+#include "ITerrainAdapter.h"
 
 #include "framework/LoggingInstance.h"
 #include "services/config/ConfigService.h"

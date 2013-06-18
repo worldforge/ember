@@ -57,7 +57,7 @@ class TerrainArea;
 class TerrainMod;
 class TerrainLayerDefinition;
 class TerrainPageSurfaceLayer;
-class ISceneManagerAdapter;
+class ITerrainAdapter;
 class ITerrainPageBridge;
 class ICompilerTechniqueProvider;
 class HeightMap;

@@ -20,7 +20,7 @@
 #include "TerrainHandler.h"
 #include "TerrainDefPoint.h"
 #include "TerrainInfo.h"
-#include "ISceneManagerAdapter.h"
+#include "ITerrainAdapter.h"
 #include "SegmentManager.h"
 #include "framework/LoggingInstance.h"
 #include <Mercator/Terrain.h>

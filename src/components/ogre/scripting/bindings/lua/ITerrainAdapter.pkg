@@ -1,5 +1,5 @@
 //
-// C++ Interface: ISceneManagerAdapter
+// C++ Interface: ITerrainAdapter
 //
 // Description: 
 //
@@ -20,7 +20,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
-$#include "components/ogre/terrain/ISceneManagerAdapter.h"
+$#include "components/ogre/terrain/ITerrainAdapter.h"
 
 
 namespace Ember {
@@ -35,7 +35,7 @@ Thus, if you have a feature which requires some kind of interfacing with the ter
 
 @author Erik Hjortsberg
 */
-class ISceneManagerAdapter
+class ITerrainAdapter
 {
 public:
 
