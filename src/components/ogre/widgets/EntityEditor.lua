@@ -1106,11 +1106,14 @@ function EntityEditor:editEntity(entity)
 	self:knowledgeRefresh()
 
 
-	createConnector(self.instance.helper.EventGotGoalInfo):connect(function(element)
+	local goalInfoConnector = createConnector(self.instance.helper.EventGotGoalInfo):connect(function(element)
+		log.info("Got goal.")
 		if element:isMap() then
+			log.info("Goal is map.")
 			local goalMap = element:asMap()
 			local reportElem = goalMap:get("report")
 			if reportElem and reportElem:isMap() then
+				log.info("Got report element.")
 				local goalString = Ember.OgreView.Gui.EntityEditor:parseElementMap(reportElem:asMap())
 				self.goalInfo:setText(escapeForCEGUI(goalString))
 			end

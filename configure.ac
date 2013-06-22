@@ -542,7 +542,6 @@ AC_CONFIG_FILES([Makefile
 		 ember.conf
 		 ember.spec
 		 ember-media.spec
-		 autopackage/default.apspec
 		 src/extensions/Makefile
 		 src/components/lua/Makefile
 		 src/components/lua/bindings/Makefile
@@ -577,8 +576,6 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
 		 src/components/entitymapping/Makefile
 		 src/components/cegui/Makefile
-		 media/Makefile
-		 media/packs/Makefile
 		 test/Makefile
 		 src/extensions/webember/Makefile
 		 src/domain/Makefile

@@ -1,5 +1,5 @@
 INCLUDES = -I$(top_srcdir)/src
-SUBDIRS = src media test
+SUBDIRS = src test
 
 ACLOCAL_AMFLAGS = -I m4
 bin_SCRIPTS = ember
@@ -13,12 +13,12 @@ appdir = $(datadir)/applications
 dist_app_DATA = ember.desktop
 
 icondir = $(datadir)/icons/worldforge
-dist_icon_DATA = ember.png
+dist_icon_DATA = media/ember.png
 
 docdir = $(datadir)/doc/ember-$(VERSION)
 dist_doc_DATA = README COPYING AUTHORS NEWS
 
-EXTRA_DIST = autogen.sh Ember-Info.plist Ember.xcodeproj/project.pbxproj ChangeLog-CVS generate-ChangeLog.sh scripts
+EXTRA_DIST = autogen.sh support/ChangeLog-CVS scripts/update_lua_bindings.sh scripts/generate-ChangeLog.sh
 
 devmedia:
 	echo "I will now use rsync to update the development media from amber.worldforge.org."
@@ -50,4 +50,4 @@ docs:
 	@echo "documentation is in doc/."
 	
 dist-hook:
-	sh $(top_srcdir)/generate-ChangeLog.sh $(top_srcdir) $(distdir) f12012e7616c191a8926432faf866c8e43854062
+	sh $(top_srcdir)/scripts/generate-ChangeLog.sh $(top_srcdir) $(distdir) f12012e7616c191a8926432faf866c8e43854062
