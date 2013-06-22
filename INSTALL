@@ -1,17 +1,19 @@
 Ember Installation Instructions 
 
-(Last Updated: 2010-04-03)
+Ember uses a lot of internal Worldforge libraries, which might not be supplied by your system.
+To help with compilation we therefore strongly recommend that you use the Hammer tool, to be found at http://wiki.worldforge.org/wiki/Hammer_Script
+This script will download and install all of the necessary libraries.
 
- Dependencies
+Nonetheless, if you want to install from source yourself we hope that this file will give you some guidance.
 
 Ember currently depends on the following libraries:
 
 * Ogre 3d library
-  Version: 1.6+
+  Version: 1.8+
   http://www.ogre3d.org
 
 * CEGUI gui system
-  Version: 0.6+
+  Version: 0.7+
   http://www.cegui.org.uk
 
 * SDL Simple DirectMedia Layer 
@@ -40,20 +42,10 @@ Optional libraries:
   Version: >= 1.8.0 
   http://sf.net/projects/cppunit
 
- Installation (for Linux/Unix)
+To install on Linux/Unix system, execute the following (usual) commands:
 
-execute the following (usual) commands:
-
-./autogen.sh 
-
-./configure 
-
+./autogen.sh
+mkdir -p `arch` && cd `arch`
+../configure 
 make
-
 make install
-
- Troubleshooting
-
-Here we'll address typical problems with the 
-installation, and how to fix them
-
