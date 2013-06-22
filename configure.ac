@@ -540,8 +540,8 @@ AC_CONFIG_FILES([Makefile
 		 ember.dox
 		 ember
 		 ember.conf
-		 ember.spec
-		 ember-media.spec
+		 support/ember.spec
+		 support/ember-media.spec
 		 src/extensions/Makefile
 		 src/components/lua/Makefile
 		 src/components/lua/bindings/Makefile
