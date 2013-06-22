@@ -115,7 +115,7 @@ void LuaScriptingProvider::createState()
 		{nullptr, nullptr}
 		};
 
-	mLuaState = lua_open();
+	mLuaState = luaL_newstate();
 
 	// init all standard libraries
 
@@ -251,12 +251,7 @@ void LuaScriptingProvider::callFunctionImpl(const std::string& functionName, int
 
 		//push our error handling method before calling the code
 		int error_index = top + 1; //lua_gettop(mLuaState);
-		#if LUA_VERSION_NUM >= 501
 		lua_pushcfunction(mLuaState, LuaHelper::luaErrorHandler);   // st: args func err_h
-		#else
-		lua_pushliteral(mLuaState, "_TRACEBACK");
-		lua_rawget(mLuaState, LUA_GLOBALSINDEX);  /* get traceback function */
-		#endif
 		lua_insert(mLuaState, error_index);										// st: args err_h func
 
 		luaPop pop(mLuaState, 1); // pops error handler on exit
@@ -326,11 +321,7 @@ void LuaScriptingProvider::_registerWithService(ScriptingService* service)
 
 void LuaScriptingProvider::forceGC()
 {
-#if LUA_VERSION_NUM >= 501
 	lua_gc(mLuaState, LUA_GCCOLLECT, 0);
-#else
-	lua_setgcthreshold(mLuaState,0);
-#endif
 }
 
 }

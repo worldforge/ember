@@ -33,9 +33,8 @@ namespace Ember {
 namespace Lua {
 
 int LuaHelper::luaErrorHandler(lua_State *L) {
-#if LUA_VERSION_NUM >= 501
 	//see if we have the debug library loaded
-	lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+	lua_getglobal(L, "debug");
 	if (!lua_istable(L, -1)) {
 		lua_pop(L, 1);
 		return 1;
@@ -49,8 +48,6 @@ int LuaHelper::luaErrorHandler(lua_State *L) {
 	lua_pushvalue(L, 1);
 	lua_pushinteger(L, 2);
 	lua_call(L, 2, 1);
-#endif
-	return 1;
 }
 
 /*************************************************************************
