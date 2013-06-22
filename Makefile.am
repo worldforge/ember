@@ -16,7 +16,7 @@ icondir = $(datadir)/icons/worldforge
 dist_icon_DATA = media/ember.png
 
 docdir = $(datadir)/doc/ember-$(VERSION)
-dist_doc_DATA = README COPYING AUTHORS NEWS
+dist_doc_DATA = README.md COPYING AUTHORS NEWS
 
 EXTRA_DIST = autogen.sh support/ChangeLog-CVS scripts/update_lua_bindings.sh scripts/generate-ChangeLog.sh
 
