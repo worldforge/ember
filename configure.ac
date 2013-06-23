@@ -8,7 +8,8 @@ AC_CONFIG_SRCDIR(src)
 # Detect the canonical host and target build environment.
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests])
+# We have to use "foreign" since we supply README.md instead of the GNU canonical README file.
+AM_INIT_AUTOMAKE([tar-ustar nostdinc dist-bzip2 color-tests parallel-tests foreign])
 AM_SILENT_RULES([yes])
 
 
