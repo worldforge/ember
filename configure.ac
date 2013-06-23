@@ -297,6 +297,22 @@ see why the tests failed, and fix it.])
 AC_SUBST([OGRE_OVERLAY_CFLAGS])
 AC_SUBST([OGRE_OVERLAY_LIBS])
 
+# Check for OGRE Terrain Component separately
+OGRE_TERRAIN_VERSION=1.7.1
+PKG_CHECK_MODULES(OGRE_TERRAIN, [OGRE-Terrain >= OGRE_TERRAIN_VERSION],
+    [
+        CXXFLAGS="$CXXFLAGS $OGRE_TERRAIN_CFLAGS"
+        LIBS="$LIBS $OGRE_TERRAIN_LIBS"                                         
+    ],
+		AC_MSG_ERROR([Could not find the required OGRE Terrain component:
+$OGRE_TERRAIN_PKG_ERRORS
+Please goto http://www.ogre3d.org to get the full OGRE libraries, or check config.log to
+see why the tests failed, and fix it.])
+                  )
+AC_SUBST([OGRE_TERRAIN_CFLAGS])
+AC_SUBST([OGRE_TERRAIN_LIBS])
+
+	
 #Check that Ogre is built with FreeImage support. If not, no images can be loaded. Ogre can also be built with DevIL, but that's not thread safe, and will lead to crashes.
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <OgreBuildSettings.h>
