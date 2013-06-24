@@ -25,7 +25,6 @@
 #define ITERRAINADAPTER_H
 
 #include "../OgreIncludes.h"
-#include <OgrePlatform.h>
 #include <string>
 
 namespace Ember {
@@ -194,7 +193,7 @@ public:
 	 * @param ray The Ogre ray to be tested for intersection with the terrain.
 	 * @return A pair of an intersection bool and a intersection position.
 	 */
-	virtual std::pair<bool, Ogre::Vector3> rayIntersects(Ogre::Ray ray) const = 0;
+	virtual std::pair<bool, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const = 0;
 
 };
 }
