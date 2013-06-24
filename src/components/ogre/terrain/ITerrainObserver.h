@@ -21,6 +21,9 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#ifndef ITERRAINOBSERVER_H
+#define ITERRAINOBSERVER_H
+
 #include <sigc++/signal.h>
 
 namespace Ogre {
@@ -81,3 +84,4 @@ protected:
 }
 }
 }
+#endif /* end of include guard: ITERRAINOBSERVER_H */

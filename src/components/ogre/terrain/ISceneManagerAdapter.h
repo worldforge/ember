@@ -21,6 +21,9 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 
+#ifndef ISCENEMANAGERADAPTER_H
+#define ISCENEMANAGERADAPTER_H
+
 #include "../OgreIncludes.h"
 
 namespace Ember {
@@ -192,3 +195,5 @@ public:
 }
 }
 }
+
+#endif /* end of include guard: ISCENEMANAGERADAPTER_H */
