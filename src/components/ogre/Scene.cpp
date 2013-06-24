@@ -36,7 +36,7 @@ namespace OgreView
 Scene::Scene() :
 		mSceneManager(0), mMainCamera(0)
 {
-	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_GENERIC);
+	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR);
 
 	S_LOG_INFO("Using SceneManager: " << mSceneManager->getTypeName());
 
