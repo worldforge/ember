@@ -40,6 +40,7 @@
 #include "TerrainPageDataProvider.h"
 #include "terrain/TerrainManager.h"
 #include "terrain/TerrainHandler.h"
+#include "terrain/ITerrainAdapter.h"
 
 #include "camera/MainCamera.h"
 #include "camera/ThirdPersonCameraMount.h"
@@ -71,11 +72,23 @@ namespace Ember
 namespace OgreView
 {
 
-World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals, Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
-		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()), mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0), mMainCamera(new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera())), mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)), mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr), mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)), mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)), mTerrainManager(0), mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())), mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
+World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView::EmberOgreSignals& signals,
+		Ember::Input& input, Ember::OgreView::ShaderManager& shaderManager, GraphicalChangeAdapter& graphicalChangeAdapter) :
+		mView(view), mRenderWindow(renderWindow), mSignals(signals), mScene(new Scene()),
+		mViewport(renderWindow.addViewport(&mScene->getMainCamera())), mAvatar(0), mMovementController(0),
+		mMainCamera(0),
+		mMoveManager(new Authoring::EntityMoveManager(*this)), mEmberEntityFactory(new EmberEntityFactory(view, *mScene)),
+		mMotionManager(new MotionManager()), mAvatarCameraMotionHandler(0), mAvatarCameraWarper(nullptr),
+		mEntityWorldPickListener(0), mAuthoringManager(new Authoring::AuthoringManager(*this)),
+		mAuthoringMoverConnector(new Authoring::AuthoringMoverConnector(*mAuthoringManager, *mMoveManager)),
+		mTerrainManager(0), mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),
+		mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
 {
+	// Let the Scene create a suitable terrain adapter and transfer ownership to the TerrainManager
+	Terrain::ITerrainAdapter* terrainAdapter = mScene->createTerrainAdapter();
+	mMainCamera = new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *terrainAdapter);
+	mTerrainManager = new Terrain::TerrainManager(terrainAdapter, *mScene, shaderManager, MainLoopController::getSingleton().EventFrameProcessed);
 
-	mTerrainManager = new Terrain::TerrainManager(mScene->createAdapter(), *mScene, shaderManager, MainLoopController::getSingleton().EventFrameProcessed);
 	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 	mAfterTerrainUpdateConnection = mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
@@ -261,7 +274,7 @@ void World::View_gotAvatarCharacter(Eris::Entity* entity)
 	if (entity) {
 		EmberEntity& emberEntity = static_cast<EmberEntity&>(*entity);
 		//Set up the third person avatar camera and switch to it.
-		mAvatar = new Avatar(emberEntity, *mScene, mMainCamera->getCameraSettings());
+		mAvatar = new Avatar(emberEntity, *mScene, mMainCamera->getCameraSettings(), *(mTerrainManager->getTerrainAdapter()));
 		mAvatarCameraMotionHandler = new AvatarCameraMotionHandler(*mAvatar);
 		mAvatar->getCameraMount().setMotionHandler(mAvatarCameraMotionHandler);
 		mMovementController = new MovementController(*mAvatar, *mMainCamera);

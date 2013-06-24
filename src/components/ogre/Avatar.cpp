@@ -48,6 +48,8 @@
 #include "framework/Time.h"
 #include "framework/MainLoopController.h"
 
+#include "terrain/ITerrainAdapter.h"
+
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
@@ -65,8 +67,8 @@ namespace Ember
 namespace OgreView
 {
 
-Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings) :
-	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager())), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(nullptr), mIsMovingServerOnly(false), mScene(scene), mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
+Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter) :
+	SetAttachedOrientation("setattachedorientation", this, "Sets the orientation of an item attached to the avatar: <attachpointname> <x> <y> <z> <degrees>"), mErisAvatarEntity(erisAvatarEntity), mMaxSpeed(5), mAvatarAttachmentController(new AvatarAttachmentController(*this)), mCameraMount(new Camera::ThirdPersonCameraMount(cameraSettings, scene.getSceneManager(), terrainAdapter)), mIsAdmin(false), mHasChangedLocation(false), mChatLoggerParent(nullptr), mIsMovingServerOnly(false), mScene(scene), mEntityMaker(new Authoring::EntityMaker(erisAvatarEntity, *EmberServices::getSingleton().getServerService().getConnection()))
 {
 	setMinIntervalOfRotationChanges(1000); //milliseconds
 

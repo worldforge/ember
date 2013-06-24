@@ -104,7 +104,7 @@ void Scene::registerPageDataProvider(IPageDataProvider* pageDataProvider)
 	//static_cast<EmberPagingSceneManager*>(mSceneManager)->registerProvider(pageDataProvider);
 }
 
-Terrain::ITerrainAdapter* Scene::createAdapter()
+Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 {
 	return new Terrain::DummyTerrainAdapter(*mSceneManager);
 }

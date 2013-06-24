@@ -59,6 +59,11 @@ class ICameraMotionHandler;
 struct MousePickerArgs;
 class AvatarTerrainCursor;
 
+namespace Terrain
+{
+class ITerrainAdapter;
+}
+
 /**
  * @brief Namespace for all camera related classes and activities.
  */
@@ -84,8 +89,9 @@ public:
 	 * @param window The main rendering window.
 	 * @param input The input instance.
 	 * @param camera The main camera.
+	 * @param terrainAdapter
 	 */
-	MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera);
+	MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera, Terrain::ITerrainAdapter& terrainAdapter);
 
 	/**
 	 * Dtor.
@@ -212,6 +218,11 @@ private:
 	 * @brief Listens for config changes.
 	 */
 	ConfigListenerContainer* mConfigListenerContainer;
+
+	/**
+	 * @brief The terrain adapter used to check for intersections with the terrain.
+	 */
+	Terrain::ITerrainAdapter& mTerrainAdapter;
 
 	/**
 	 * @brief Sets the near and far clip distances of the camera.

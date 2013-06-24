@@ -19,6 +19,7 @@
 #include "ThirdPersonCameraMount.h"
 #include "CameraSettings.h"
 #include "components/ogre/OgreInfo.h"
+#include "components/ogre/terrain/ITerrainAdapter.h"
 #include "framework/Tokeniser.h"
 #include "services/EmberServices.h"
 #include "services/config/ConfigListenerContainer.h"
@@ -33,20 +34,15 @@ namespace OgreView
 namespace Camera
 {
 
-ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager) :
-	CameraMountBase(cameraSettings), SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mSceneManager(sceneManager), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mLastPosition(Ogre::Vector3::ZERO), mWantedCameraDistance(10), mCurrentCameraDistance(0), mAdjustTerrainRaySceneQuery(0), mIsAdjustedToTerrain(true), mConfigListenerContainer(new ConfigListenerContainer())
+ThirdPersonCameraMount::ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& terrainAdapter) :
+	CameraMountBase(cameraSettings), SetCameraDistance("setcameradistance", this, "Set the distance of the camera."), mSceneManager(sceneManager), mCameraRootNode(0), mCameraPitchNode(0), mCameraNode(0), mLastPosition(Ogre::Vector3::ZERO), mWantedCameraDistance(10), mCurrentCameraDistance(0), mIsAdjustedToTerrain(true), mConfigListenerContainer(new ConfigListenerContainer()), mTerrainAdapter(terrainAdapter)
 {
 	createNodesForCamera(sceneManager);
-	createRayQueries(sceneManager);
 	mConfigListenerContainer->registerConfigListenerWithDefaults("input", "adjusttoterrain", sigc::mem_fun(*this, &ThirdPersonCameraMount::Config_AdjustToTerrain), true);
 }
 
 ThirdPersonCameraMount::~ThirdPersonCameraMount()
 {
-	if (mAdjustTerrainRaySceneQuery) {
-		mSceneManager.destroyQuery(mAdjustTerrainRaySceneQuery);
-	}
-
 	if (mCameraRootNode) {
 		//This will handle the mCameraPitchNode and the mCameraNode too.
 		mCameraRootNode->removeAndDestroyAllChildren();
@@ -149,16 +145,6 @@ void ThirdPersonCameraMount::setActualCameraDistance(Ogre::Real distance)
 	EventChangedCameraDistance.emit(distance);
 }
 
-void ThirdPersonCameraMount::createRayQueries(Ogre::SceneManager& sceneManager)
-{
-	// attempt to create a query to get back terrain coords
-	mAdjustTerrainRaySceneQuery = sceneManager.createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-	//only test for terrain
-	//mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
-	mAdjustTerrainRaySceneQuery->setSortByDistance(true);
-	mAdjustTerrainRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-}
-
 void ThirdPersonCameraMount::attachToCamera(MainCamera& camera)
 {
 	CameraMountBase::attachToCamera(camera);
@@ -193,32 +179,22 @@ bool ThirdPersonCameraMount::adjustForTerrain()
 	const Ogre::Vector3 direction(-mCamera->getDerivedDirection());
 	//If the direction if pointing straight upwards we'll end up in an infinite loop in the ray query
 	if (direction.z != 0) {
-
 		mAdjustTerrainRay.setDirection(direction);
 		mAdjustTerrainRay.setOrigin(mCameraRootNode->_getDerivedPosition());
 
-		mAdjustTerrainRaySceneQuery->setRay(mAdjustTerrainRay);
-
-		mAdjustTerrainRaySceneQuery->execute();
-
-		Ogre::RaySceneQueryResult queryResult = mAdjustTerrainRaySceneQuery->getLastResults();
-		Ogre::RaySceneQueryResult::iterator rayIterator = queryResult.begin();
-		for (; rayIterator != queryResult.end(); ++rayIterator) {
-			Ogre::RaySceneQueryResultEntry& entry = *rayIterator;
-
-			if (entry.worldFragment) {
-				Ogre::Vector3 position = entry.worldFragment->singleIntersection;
-				Ogre::Real distance = mCameraRootNode->_getDerivedPosition().distance(position);
-				if (distance < mWantedCameraDistance) {
-					setActualCameraDistance(distance - 0.1);
-					return true;
-				} else {
-					//we hit some terrain beyond the max distance of the camera, so set it to the "default" distance
-					if (mWantedCameraDistance != mCurrentCameraDistance) {
-						setActualCameraDistance(mWantedCameraDistance);
-					}
-					return false;
+		std::pair<bool, Ogre::Vector3> result = mTerrainAdapter.rayIntersects(mAdjustTerrainRay);
+		// If there is terrain between the camera base and the camera, decrease camera distance
+		if (result.first) {
+			Ogre::Real distance = mCameraRootNode->_getDerivedPosition().distance(result.second);
+			if (distance < mWantedCameraDistance) {
+				setActualCameraDistance(distance - 0.1);
+				return true;
+			} else {
+				//we hit some terrain beyond the max distance of the camera, so set it to the "default" distance
+				if (mWantedCameraDistance != mCurrentCameraDistance) {
+					setActualCameraDistance(mWantedCameraDistance);
 				}
+				return false;
 			}
 		}
 	}

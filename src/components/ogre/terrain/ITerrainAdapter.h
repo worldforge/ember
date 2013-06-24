@@ -25,6 +25,8 @@
 #define ITERRAINADAPTER_H
 
 #include "../OgreIncludes.h"
+#include <OgrePlatform.h>
+#include <string>
 
 namespace Ember {
 namespace OgreView {
@@ -143,11 +145,6 @@ public:
 	 */
 	virtual void setUninitializedHeight(float height) = 0;
 
-	/**
-	 * @brief Returns the scene manager instance that handles the terrain. This is most often a specialized subclass of Ogre::SceneManager.
-	 * @return 
-	 */
-	virtual Ogre::SceneManager& getSceneManager() const = 0;
 	
 	/**
 	 * @brief Reloads all pages.
@@ -190,6 +187,14 @@ public:
 	 * @param observer A terrain observer.
 	 */
 	virtual void destroyObserver(ITerrainObserver* observer) = 0;
+
+	/**
+	 * Checks if the given ray intersects the terrain. Returns whether there was an intersection,
+	 * and if so, the position of the intersection.
+	 * @param ray The Ogre ray to be tested for intersection with the terrain.
+	 * @return A pair of an intersection bool and a intersection position.
+	 */
+	virtual std::pair<bool, Ogre::Vector3> rayIntersects(Ogre::Ray ray) const = 0;
 
 };
 }

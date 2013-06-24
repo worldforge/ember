@@ -39,6 +39,10 @@ namespace Ember
 class ConfigListenerContainer;
 namespace OgreView
 {
+namespace Terrain
+{
+class ITerrainAdapter;
+}
 namespace Camera
 {
 
@@ -55,7 +59,7 @@ public:
 	 * @param cameraSettings Shared camera settings.
 	 * @param sceneManager A scene manager, needed for creating new node instances.
 	 */
-	ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager);
+	ThirdPersonCameraMount(const CameraSettings& cameraSettings, Ogre::SceneManager& sceneManager, Terrain::ITerrainAdapter& terrainAdapter);
 
 	/**
 	 * @brief Dtor.
@@ -163,11 +167,6 @@ protected:
 	Ogre::Real mCurrentCameraDistance;
 
 	/**
-	 * @brief A scene query used for detecting if the camera is below the terrain.
-	 */
-	Ogre::RaySceneQuery* mAdjustTerrainRaySceneQuery;
-
-	/**
 	 * @brief The ray which is used together with mAdjustTerrainRaySceneQuery to determine if the camera is below the terrain.
 	 */
 	Ogre::Ray mAdjustTerrainRay;
@@ -183,9 +182,9 @@ protected:
 	ConfigListenerContainer* mConfigListenerContainer;
 
 	/**
-	 * @brief Creates the rays needed for mouse picking and camera adjustment.
+	 * @brief The terrain adapter used to find terrain intersections.
 	 */
-	void createRayQueries(Ogre::SceneManager& sceneManager);
+	Terrain::ITerrainAdapter& mTerrainAdapter;
 
 	/**
 	 * @brief Creates all nodes needed for the camera.

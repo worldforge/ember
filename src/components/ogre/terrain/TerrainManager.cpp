@@ -93,7 +93,7 @@ TerrainManager::~TerrainManager()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
-    getAdapter()->reset();
+    getTerrainAdapter()->reset();
 
 	delete mHandler;
 
@@ -106,13 +106,13 @@ TerrainManager::~TerrainManager()
 void TerrainManager::loadTerrainOptions()
 {
 
-	getAdapter()->setResourceGroupName("General");
+	getTerrainAdapter()->setResourceGroupName("General");
 
-	getAdapter()->loadOptions(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "terrain.cfg");
+	getTerrainAdapter()->loadOptions(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "terrain.cfg");
 
-	getAdapter()->setCamera(&getScene().getMainCamera());
+	getTerrainAdapter()->setCamera(&getScene().getMainCamera());
 
-	getAdapter()->setUninitializedHeight(mHandler->getDefaultHeight());
+	getTerrainAdapter()->setUninitializedHeight(mHandler->getDefaultHeight());
 
 }
 
@@ -128,7 +128,7 @@ const TerrainInfo& TerrainManager::getTerrainInfo() const
 }
 
 
-ITerrainAdapter* TerrainManager::getAdapter() const
+ITerrainAdapter* TerrainManager::getTerrainAdapter() const
 {
 	return mTerrainAdapter;
 }
@@ -181,7 +181,7 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 		Ogre::Vector2 adjustedOgrePos(targetPage.x + mHandler->getTerrainInfo().getPageOffsetY(), targetPage.y + mHandler->getTerrainInfo().getPageOffsetX());
 
 		S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-		getAdapter()->reloadPage(static_cast<unsigned int> (adjustedOgrePos.x), static_cast<unsigned int> (adjustedOgrePos.y));
+		getTerrainAdapter()->reloadPage(static_cast<unsigned int> (adjustedOgrePos.x), static_cast<unsigned int> (adjustedOgrePos.y));
 		EventTerrainPageGeometryUpdated.emit(*page);
 	}
 }
@@ -208,7 +208,7 @@ void TerrainManager::terrainHandler_WorldSizeChanged()
 
 void TerrainManager::initializeTerrain()
 {
-	ITerrainAdapter* adapter = getAdapter();
+	ITerrainAdapter* adapter = getTerrainAdapter();
 	if (adapter) {
 		const TerrainInfo& terrainInfo = mHandler->getTerrainInfo();
 		adapter->setWorldPagesDimensions(terrainInfo.getTotalNumberOfPagesY(), terrainInfo.getTotalNumberOfPagesX(), terrainInfo.getPageOffsetY(), terrainInfo.getPageOffsetX());
@@ -232,6 +232,7 @@ void TerrainManager::initializeTerrain()
 		S_LOG_INFO("Pages: X: " << terrainInfo.getTotalNumberOfPagesX() << " Y: " << terrainInfo.getTotalNumberOfPagesY() << " Total: " << terrainInfo.getTotalNumberOfPagesX() * terrainInfo.getTotalNumberOfPagesY());
 		S_LOG_INFO("Page offset: X" << terrainInfo.getPageOffsetX() << " Y: " << terrainInfo.getPageOffsetY());
 
+		//TODO SK: Check if this will work correctly/how to implement it
 		//load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
 		adapter->loadFirstPage();
 	}
