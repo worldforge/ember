@@ -31,7 +31,6 @@ namespace Terrain {
 class TerrainManager;
 class ITerrainObserver;
 
-
 /**
  * @brief 
  */
