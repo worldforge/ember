@@ -94,8 +94,7 @@ void EntityWorldPickListener::initializePickingContext(bool& willParticipate, un
 	if (pickArgs.pickType == MPT_PRESS || pickArgs.pickType == MPT_HOVER) {
 		willParticipate = true;
 
-		queryMask = Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK;
-		queryMask |= MousePicker::CM_AVATAR;
+		queryMask = MousePicker::CM_AVATAR;
 		queryMask |= MousePicker::CM_ENTITY;
 		queryMask |= MousePicker::CM_NATURE;
 

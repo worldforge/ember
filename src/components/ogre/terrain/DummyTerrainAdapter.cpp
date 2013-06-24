@@ -87,11 +87,6 @@ void DummyTerrainAdapter::setUninitializedHeight(float height)
 {
 }
 
-Ogre::SceneManager& DummyTerrainAdapter::getSceneManager() const
-{
-	return mSceneManager;
-}
-
 void DummyTerrainAdapter::reloadAllPages()
 {
 }
@@ -116,6 +111,12 @@ ITerrainObserver* DummyTerrainAdapter::createObserver()
 
 void DummyTerrainAdapter::destroyObserver(ITerrainObserver* observer)
 {
+}
+
+std::pair<bool, Ogre::Vector3> DummyTerrainAdapter::rayIntersects(Ogre::Ray ray) const
+{
+	//TODO SK: return something meaningful
+	return std::pair<bool, Ogre::Vector3>(true, ray.getDirection() + 100);
 }
 
 }

@@ -88,7 +88,7 @@ class Vegetation;
 /**
  * @brief Handles generation and updates of the terrain.
  *
- * This class takes care of generating terrain for Ogre's scenemanager.
+ * Responsible for the setup of the actual terrain rendering done by Ogre.
  *
  * This involves getting terrain from Mercator, converting this to ogre format and creating materials to make it look good.
  *
@@ -131,7 +131,7 @@ public:
 	 * @brief Gets the adapter used to bind this manager to a scene manager.
 	 * @return The adapter in use, or null if there is no one registered yet.
 	 */
-	ITerrainAdapter* getAdapter() const;
+	ITerrainAdapter* getTerrainAdapter() const;
 
 	/**
 	 * @brief Accessor for the Scene instance to which this terrain manager is attached to.

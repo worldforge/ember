@@ -75,9 +75,6 @@ public:
 	virtual void setUninitializedHeight(float height) ;
 
 
-	virtual Ogre::SceneManager& getSceneManager() const ;
-
-
 	virtual void reloadAllPages() ;
 
 
@@ -94,9 +91,10 @@ public:
 
 	virtual void destroyObserver(ITerrainObserver* observer) ;
 
+	virtual std::pair<bool, Ogre::Vector3> rayIntersects(Ogre::Ray ray) const;
+
 private:
 	Ogre::SceneManager& mSceneManager;
-
 };
 }
 }

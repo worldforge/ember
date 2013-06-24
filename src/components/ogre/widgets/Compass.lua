@@ -51,6 +51,7 @@ function Compass:framestarted(frameEvent)
 end
 
 function Compass:TerrainPageGeometryUpdated(page)
+    --TODO SK: see if this can be done better
 	--wait six frames until we rerender the map. This is a hack because apparently the event this listens for doesn't actually guarantee that the page will be rendered next frame. We need to add another event which is emitted when a page actually is rendered the first time.
 	self.updateFrameCountDown = 6
 end
@@ -78,7 +79,7 @@ function Compass:buildWidget(terrainManager)
 
 	self.helperImpl = Ember.OgreView.Gui.RenderedCompassImpl:new()
 
-	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager(), terrainManager:getAdapter())
+	self.helper = Ember.OgreView.Gui.Compass:new(self.helperImpl, terrainManager:getScene():getSceneManager(), terrainManager:getTerrainAdapter())
 	self.map = self.helper:getMap()
 	
 	self:buildCEGUIWidget()

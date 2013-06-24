@@ -60,6 +60,10 @@ class CameraSettings;
 namespace Authoring {
 class EntityMaker;
 }
+namespace Terrain
+{
+class ITerrainAdapter;
+}
 
 class EmberEntity;
 class AvatarLogger;
@@ -92,8 +96,9 @@ public:
 	 * @param erisAvatarEntity The entity which represents the avatar.
 	 * @param scene The scene in which the entities are shown.
 	 * @param cameraSettings Camera settings.
+	 * @param terrainAdapter The terrain adapter needed for the third person camera.
 	 */
-	Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings);
+	Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::CameraSettings& cameraSettings, Terrain::ITerrainAdapter& terrainAdapter);
 
 	/**
 	 * @brief Dtor.
