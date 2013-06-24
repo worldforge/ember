@@ -84,6 +84,7 @@ void TerrainInfo::adjustBasePointPositionUp(WFMath::CoordType& basePointPosition
 void TerrainInfo::adjustBasePointPositionDown(WFMath::CoordType& basePointPositionAdjusted, WFMath::CoordType newBasePointPosition)
 {
 	int mercatorSegmentsPerOgrePage = mPageIndicesSize / 64;
+	//FIXME SK: when mPageIndicesSize == 0, this throws an arithmetic exception
 	int remainder = std::abs(static_cast<int>(newBasePointPosition) % mercatorSegmentsPerOgrePage);
 	if (remainder != 0) {
 		//adjust the position

@@ -154,7 +154,7 @@ void ThirdPersonCameraMount::createRayQueries(Ogre::SceneManager& sceneManager)
 	// attempt to create a query to get back terrain coords
 	mAdjustTerrainRaySceneQuery = sceneManager.createRayQuery(mAdjustTerrainRay, Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 	//only test for terrain
-	mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+	//mAdjustTerrainRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 	mAdjustTerrainRaySceneQuery->setSortByDistance(true);
 	mAdjustTerrainRaySceneQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 }
