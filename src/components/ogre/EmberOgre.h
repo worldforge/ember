@@ -259,9 +259,9 @@ protected:
 	Ogre::Root *mRoot;
 
 	/**
-	 * @brief The main scene manager of the world.
+	 * @brief The Ogre scene manager used when not connected to a world.
 	 */
-	Ogre::SceneManager* mSceneMgr;
+	Ogre::SceneManager* mSceneManagerOutOfWorld;
 
 	/**
 	 * @brief The main render window.
@@ -391,9 +391,9 @@ protected:
 	bool mIsInPausedMode;
 
 	/**
-	 * @brief The Ogre main camera. This is in most cases handled by mMainCamera.
+	 * @brief The Ogre camera used when not connected to a world.
 	 */
-	Ogre::Camera* mOgreMainCamera;
+	Ogre::Camera* mCameraOutOfWorld;
 
 	/**
 	 * @brief The main World instance will be contained here, when the client is connected to a server and has received a View instance.

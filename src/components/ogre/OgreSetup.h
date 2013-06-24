@@ -81,12 +81,6 @@ public:
 	Ogre::RenderWindow* getRenderWindow() const;
 
 	/**
-	 * @brief Chooses and sets up the correct scene manager.
-	 * @return The newly created scene manager.
-	 */
-	Ogre::SceneManager* chooseSceneManager();
-
-	/**
 	 * @brief Gets the ogre overlay system, which is initialized in createOgreSystem.
 	 * @return The ogre overlay system, nullptr if not initialized.
 	 */

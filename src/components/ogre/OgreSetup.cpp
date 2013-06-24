@@ -427,12 +427,6 @@ void OgreSetup::setStandardValues()
 
 }
 
-Ogre::SceneManager* OgreSetup::chooseSceneManager()
-{
-	return mRoot->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
-	//return mRoot->createSceneManager(Ogre::ST_GENERIC);
-}
-
 void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen)
 {
 	Ogre::ConfigOptionMap::iterator opt = config.find("Video Mode");
