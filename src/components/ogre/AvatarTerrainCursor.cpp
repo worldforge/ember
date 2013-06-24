@@ -50,7 +50,7 @@ namespace OgreView {
 	, mUpdatePositionThreshold(AvatarTerrainCursor::DEFAULT_THRESHOLD_MILLIS)
 	{
 		mTerrainCursorRayQuery = camera.getSceneManager()->createRayQuery(Ogre::Ray(), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-		mTerrainCursorRayQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+		//mTerrainCursorRayQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 		mTerrainCursorRayQuery->setSortByDistance(true);
 		mTerrainCursorRayQuery->setQueryTypeMask(Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
 

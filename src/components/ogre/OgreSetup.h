@@ -36,13 +36,16 @@
 #include <OgreFrameListener.h>
 #include <sigc++/trackable.h>
 
+namespace Ogre
+{
+class SceneManagerFactory;
+}
+
 namespace Ember
 {
 namespace OgreView
 {
 
-class EmberPagingSceneManager;
-class EmberPagingSceneManagerFactory;
 class MeshSerializerListener;
 
 /**
@@ -116,7 +119,7 @@ private:
 	/**
 	 We'll use our own scene manager factory.
 	 */
-	EmberPagingSceneManagerFactory* mSceneManagerFactory;
+	Ogre::SceneManagerFactory* mSceneManagerFactory;
 
 	/**
 	 * @brief Provides the ability to use relative paths for skeletons in meshes.

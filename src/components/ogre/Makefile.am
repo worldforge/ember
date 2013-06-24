@@ -43,6 +43,7 @@ libEmberOgre_a_SOURCES = \
 	sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp \
 	sound/SoundEntity.cpp sound/SoundGroup.cpp sound/SoundGroupDefinition.cpp sound/XMLSoundDefParser.cpp \
 \
+	terrain/DummySceneManagerAdapter.cpp terrain/DummyTerrainObserver.cpp \
 	terrain/Map.cpp terrain/TerrainArea.cpp \
 	terrain/TerrainAreaParser.cpp terrain/TerrainEditor.cpp \
 	terrain/TerrainManager.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp \

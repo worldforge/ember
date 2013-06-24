@@ -385,7 +385,7 @@ void MainCamera::removeWorldPickListener(IWorldPickListener* worldPickListener)
 void MainCamera::createRayQueries(Ogre::SceneManager& sceneManager)
 {
 	mCameraRaySceneQuery = sceneManager.createRayQuery(Ogre::Ray(), 0);
-	mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
+	//mCameraRaySceneQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);
 	mCameraRaySceneQuery->setSortByDistance(true);
 }
 

@@ -31,8 +31,6 @@
 #include "MeshSerializerListener.h"
 #include "lod/ScaledPixelCountLodStrategy.h"
 
-#include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
-
 #include "services/EmberServices.h"
 #include "services/config/ConfigService.h"
 #include "services/input/Input.h"
@@ -60,6 +58,7 @@
 #include <OgreStringConverter.h>
 #include <OgreSceneManager.h>
 #include <OgreOverlaySystem.h>
+#include <OgreRoot.h>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_syswm.h>
@@ -386,10 +385,10 @@ Ogre::Root* OgreSetup::configure(void)
 	setStandardValues();
 
 	// Create new scene manager factory
-	mSceneManagerFactory = new EmberPagingSceneManagerFactory();
+	//mSceneManagerFactory = new EmberPagingSceneManagerFactory();
 
-	// Register our factory
-	mRoot->addSceneManagerFactory(mSceneManagerFactory);
+	//// Register our factory
+	//mRoot->addSceneManagerFactory(mSceneManagerFactory);
 
 	return mRoot;
 }
@@ -431,6 +430,7 @@ void OgreSetup::setStandardValues()
 Ogre::SceneManager* OgreSetup::chooseSceneManager()
 {
 	return mRoot->createSceneManager(Ogre::ST_GENERIC, "DefaultSceneManager");
+	//return mRoot->createSceneManager(Ogre::ST_GENERIC);
 }
 
 void OgreSetup::parseWindowGeometry(Ogre::ConfigOptionMap& config, unsigned int& width, unsigned int& height, bool& fullscreen)
