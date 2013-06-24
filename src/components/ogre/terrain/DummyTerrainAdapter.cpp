@@ -19,9 +19,10 @@
 #include "DummyTerrainAdapter.h"
 #include "DummyTerrainObserver.h"
 
-#include <string>
 #include <OgreAxisAlignedBox.h>
 #include <OgreSceneManager.h>
+
+#include <string>
 
 namespace Ember {
 namespace OgreView {
@@ -101,12 +102,12 @@ void DummyTerrainAdapter::loadFirstPage()
 
 std::string DummyTerrainAdapter::getDebugInfo()
 {
-	return std::string();
+	return "";
 }
 
 ITerrainObserver* DummyTerrainAdapter::createObserver()
 {
-	return new DummyTerrainObserver;
+	return new DummyTerrainObserver();
 }
 
 void DummyTerrainAdapter::destroyObserver(ITerrainObserver* observer)
