@@ -19,8 +19,9 @@
 #ifndef TERRAINPAGEDATAPROVIDER_H_
 #define TERRAINPAGEDATAPROVIDER_H_
 
-#include "components/ogre/SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
 #include "domain/Types.h"
+#include <OgrePrerequisites.h>
+#include <OgreMaterial.h>
 
 namespace Ember
 {
@@ -33,6 +34,33 @@ class TerrainHandler;
 class TerrainPage;
 class ITerrainPageBridge;
 }
+
+/**
+ * @brief Page data for one page in the terrain rendering system.
+ */
+class IPageData
+{
+public:
+	virtual ~IPageData() {}
+	virtual Ogre::MaterialPtr getMaterial() = 0;
+};
+
+
+/**
+ * @brief Provides IPageData instances for the terrain rendering system.
+ */
+class IPageDataProvider
+{
+public:
+	virtual ~IPageDataProvider() {}
+	typedef std::pair<unsigned int, unsigned int> OgreIndex;
+	virtual IPageData* getPageData(const OgreIndex& index) = 0;
+	virtual int getPageIndexSize() const = 0;
+	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, ::Ember::OgreView::Terrain::ITerrainPageBridge* bridge) = 0;
+	virtual void removeBridge(const OgreIndex& ogreIndexPosition) = 0;
+};
+
+
 
 /**
  * @brief Page data as provided by the Mercator based terrain system.
