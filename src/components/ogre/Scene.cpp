@@ -24,7 +24,7 @@
 #include "ISceneRenderingTechnique.h"
 #include "framework/LoggingInstance.h"
 
-#include "terrain/DummyTerrainAdapter.h"
+#include "terrain/OgreTerrain/OgreTerrainAdapter.h"
 
 #include <OgreRoot.h>
 
@@ -39,12 +39,6 @@ Scene::Scene() :
 	mSceneManager = Ogre::Root::getSingleton().createSceneManager(Ogre::ST_EXTERIOR_REAL_FAR);
 
 	S_LOG_INFO("Using SceneManager: " << mSceneManager->getTypeName());
-
-	//FIXME: SK: do we need init scene?
-	//We need to call init scene since a lot of components used by the scene manager are thus created.
-	//Calling "setWorldGeometry" will trigger a call to InitScene
-	//Ogre::DataStreamPtr emptyDataStream;
-	//mSceneManager->setWorldGeometry(emptyDataStream);
 
 	//create the main camera, we will of course have a couple of different cameras, but this will be the main one
 	mMainCamera = mSceneManager->createCamera("MainCamera");
@@ -106,7 +100,7 @@ void Scene::registerPageDataProvider(IPageDataProvider* pageDataProvider)
 
 Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 {
-	return new Terrain::DummyTerrainAdapter(*mSceneManager);
+	return new Terrain::OgreTerrainAdapter(*mSceneManager);
 }
 
 Ogre::Camera& Scene::getMainCamera() const
