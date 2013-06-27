@@ -38,6 +38,8 @@
 #include "framework/LoggingInstance.h"
 
 #include <Ogre.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
 
 #include <CEGUIImageset.h>
 #include <CEGUIImage.h>

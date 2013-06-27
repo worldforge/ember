@@ -106,11 +106,14 @@ namespace OgreView {
         virtual ~FileSystemArchiveFactory() {}
         /// @copydoc FactoryObj::getType
         const Ogre::String& getType(void) const;
+
         /// @copydoc FactoryObj::createInstance
-        Ogre::Archive *createInstance( const Ogre::String& name )
+        Ogre::Archive* createInstance(const Ogre::String& name, bool readOnly)
         {
+            //FIXME: use the readOnly parameter
             return new OgreView::FileSystemArchive(name, "EmberFileSystem");
         }
+
         /// @copydoc FactoryObj::destroyInstance
         void destroyInstance( Ogre::Archive* arch) { delete arch; }
     };

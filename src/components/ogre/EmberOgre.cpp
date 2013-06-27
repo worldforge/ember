@@ -117,6 +117,7 @@
 #include <Eris/View.h>
 
 #include <OgreSceneManager.h>
+#include <OgreOverlaySystem.h>
 
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
 
@@ -198,6 +199,10 @@ EmberOgre::~EmberOgre()
 	delete mScreen;
 
 	if (mOgreSetup.get()) {
+		// Deregister the overlay system before deleting it in OgreSetup::shutdown
+		if(mSceneMgr) {
+			mSceneMgr->removeRenderQueueListener(mOgreSetup->getOverlaySystem());
+		}
 		mOgreSetup->shutdown();
 		mOgreSetup.reset();
 		EventOgreDestroyed();
@@ -327,6 +332,18 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 
 	mEntityRecipeManager = new Authoring::EntityRecipeManager();
 
+	mSceneMgr = mOgreSetup->chooseSceneManager();
+
+	//create the camera for the main menu and load screen
+	mOgreMainCamera = mSceneMgr->createCamera("MainMenuCamera");
+	Ogre::Viewport* viewPort = mWindow->addViewport(mOgreMainCamera);
+	//set the background colour to black
+	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
+	mOgreMainCamera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
+
+	// Register the overlay system so that GUI overlays are shown
+	mSceneMgr->addRenderQueueListener(mOgreSetup->getOverlaySystem());
+
 	//Create a resource loader which loads all the resources we need.
 	mResourceLoader = new OgreResourceLoader();
 	mResourceLoader->initialize();
@@ -335,18 +352,10 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 	bool preloadMedia = configSrv.itemExists("media", "preloadmedia") && (bool)configSrv.getValue("media", "preloadmedia");
 	bool useWfut = configSrv.itemExists("wfut", "enabled") && (bool)configSrv.getValue("wfut", "enabled");
 
-
 	//start with the bootstrap resources, after those are loaded we can show the LoadingBar
 	mResourceLoader->loadBootstrap();
 
-	mSceneMgr = mOgreSetup->chooseSceneManager();
 
-	//create the main camera, we will of course have a couple of different cameras, but this will be the main one
-	mOgreMainCamera = mSceneMgr->createCamera("MainCamera");
-	Ogre::Viewport* viewPort = mWindow->addViewport(mOgreMainCamera);
-	//set the background colour to black
-	viewPort->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
-	mOgreMainCamera->setAspectRatio(Ogre::Real(viewPort->getActualWidth()) / Ogre::Real(viewPort->getActualHeight()));
 
 	mScreen = new Screen(*mWindow);
 

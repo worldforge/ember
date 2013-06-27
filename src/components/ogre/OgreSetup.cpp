@@ -61,6 +61,8 @@
 #include <OgreMeshManager.h>
 #include <OgreAnimation.h>
 #include <OgreStringConverter.h>
+#include <OgreSceneManager.h>
+#include <OgreOverlaySystem.h>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_syswm.h>
@@ -72,7 +74,7 @@ namespace OgreView
 {
 
 OgreSetup::OgreSetup() :
-		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."), mRoot(0), mRenderWindow(0), mSceneManagerFactory(0), mMeshSerializerListener(0)
+		DiagnoseOgre("diagnoseOgre", this, "Diagnoses the current Ogre state and writes the output to the log."), mRoot(0), mRenderWindow(0), mSceneManagerFactory(0), mMeshSerializerListener(0), mOverlaySystem(nullptr)
 #ifdef BUILD_WEBEMBER
 ,mOgreWindowProvider(0)
 #endif
@@ -113,6 +115,8 @@ void OgreSetup::shutdown()
 			mRenderWindow = 0;
 		}
 	}
+	delete mOverlaySystem;
+	mOverlaySystem = nullptr;
 	delete mRoot;
 	mRoot = 0;
 	S_LOG_INFO("Ogre shut down.");
@@ -136,6 +140,8 @@ Ogre::Root* OgreSetup::createOgreSystem()
 
 	std::string pluginExtension = ".so";
 	mRoot = new Lod::EmberOgreRoot("", "ogre.cfg", "");
+
+	mOverlaySystem = new Ogre::OverlaySystem();
 
 	//we will try to load the plugins from series of different location, with the hope of getting at least one right
 	std::vector<std::string> pluginLocations;
