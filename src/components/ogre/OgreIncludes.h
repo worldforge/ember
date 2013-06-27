@@ -244,5 +244,6 @@ namespace Ogre {
     class CompositionTargetPass;
     class MemoryDataStream;
     class ConfigFile;
+    class OverlaySystem;
 }
 #endif //EMBEROGRE_OGREINCLUDES_H

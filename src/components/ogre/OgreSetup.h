@@ -88,6 +88,12 @@ public:
 	Ogre::SceneManager* chooseSceneManager();
 
 	/**
+	 * @brief Gets the ogre overlay system, which is initialized in createOgreSystem.
+	 * @return The ogre overlay system, nullptr if not initialized.
+	 */
+	Ogre::OverlaySystem* getOverlaySystem() const;
+
+	/**
 	 * @brief Shuts down the Ogre system.
 	 */
 	void shutdown();
@@ -121,6 +127,11 @@ private:
 	 */
 	MeshSerializerListener* mMeshSerializerListener;
 
+	/**
+	 * @brief The Ogre overlay system
+	 */
+	Ogre::OverlaySystem* mOverlaySystem;
+
 #ifdef BUILD_WEBEMBER
 	/**
 	 * @brief Handles the window in WebEmber mode.
@@ -153,6 +164,11 @@ private:
 inline Ogre::RenderWindow* OgreSetup::getRenderWindow() const
 {
 	return mRenderWindow;
+}
+
+inline Ogre::OverlaySystem* OgreSetup::getOverlaySystem() const
+{
+	return mOverlaySystem;
 }
 
 }

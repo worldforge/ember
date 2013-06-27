@@ -30,7 +30,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/Singleton.h"
 
-#include <OgreProgressiveMesh.h>
+//#include <OgreProgressiveMesh.h>
 #include <OgreWorkQueue.h>
 #include <OgreRoot.h>
 

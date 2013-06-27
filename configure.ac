@@ -267,8 +267,8 @@ Please visit  http://worldforge.org/dev/eng/libraries to get the latest versions
 )
 
 # Check for OGRE
-OGRE_VERSION=1.8.0
-OGRE_MAX_VERSION=1.9.0
+OGRE_VERSION=1.9.0
+OGRE_MAX_VERSION=1.9.9
 PKG_CHECK_MODULES(OGRE, [OGRE >= $OGRE_VERSION OGRE < $OGRE_MAX_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $OGRE_CFLAGS"
@@ -281,7 +281,22 @@ $OGRE_PKG_ERRORS
 Please goto http://www.ogre3d.org to get the latest, or check config.log to
 see why the tests failed, and fix it.])
 	])
-	
+
+# Check for OGRE Overlay Component separately
+OGRE_OVERLAY_VERSION=1.9.0
+PKG_CHECK_MODULES(OGRE_OVERLAY, [OGRE-Overlay >= OGRE_OVERLAY_VERSION],
+    [
+        CXXFLAGS="$CXXFLAGS $OGRE_OVERLAY_CFLAGS"
+        LIBS="$LIBS $OGRE_OVERLAY_LIBS"
+    ],
+		AC_MSG_ERROR([Could not find the required OGRE Overlay component:
+$OGRE_OVERLAY_PKG_ERRORS
+Please goto http://www.ogre3d.org to get the full OGRE libraries, or check config.log to
+see why the tests failed, and fix it.])
+                  )
+AC_SUBST([OGRE_OVERLAY_CFLAGS])
+AC_SUBST([OGRE_OVERLAY_LIBS])
+
 #Check that Ogre is built with FreeImage support. If not, no images can be loaded. Ogre can also be built with DevIL, but that's not thread safe, and will lead to crashes.
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <OgreBuildSettings.h>
