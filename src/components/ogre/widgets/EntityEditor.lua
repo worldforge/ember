@@ -705,7 +705,55 @@ EntityEditor.prototypes =
 			--only show on top level
 			return ownerElement == nil
 		end
-	}
+	},
+	fruitChance = {
+		adapter = EntityEditor.adapters.float,
+		help = "Only applies to plants. Specifies the chance of a fruit being generated each tick. A value of 1.0 means that a fruit will be generated each tick, anything higher decreases the chance.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--Only apply to plants
+			local plantType = emberOgre:getWorld():getView():getAvatar():getConnection():getTypeService():getTypeByName("plant")
+			if plantType then
+				return entity:getType():isA(plantType)
+			end
+			return false
+		end
+	},
+	fruitName = {
+		adapter = EntityEditor.adapters.string,
+		help = "Only applies to plants. The type of fruits this plant generates.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--Only apply to plants
+			local plantType = emberOgre:getWorld():getView():getAvatar():getConnection():getTypeService():getTypeByName("plant")
+			if plantType then
+				return entity:getType():isA(plantType)
+			end
+			return false
+		end
+	},
+	fruits = {
+		adapter = EntityEditor.adapters.integer,
+		help = "Only applies to plants. The number of fruits currently on the plant.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--Only apply to plants
+			local plantType = emberOgre:getWorld():getView():getAvatar():getConnection():getTypeService():getTypeByName("plant")
+			if plantType then
+				return entity:getType():isA(plantType)
+			end
+			return false
+		end
+	},
+	sizeAdult = {
+		adapter = EntityEditor.adapters.float,
+		help = "Only applies to plants. Specifies the height when the plant is considered an adult, and can begin to create fruits.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--Only apply to plants
+			local plantType = emberOgre:getWorld():getView():getAvatar():getConnection():getTypeService():getTypeByName("plant")
+			if plantType then
+				return entity:getType():isA(plantType)
+			end
+			return false
+		end
+	}	
 }
 EntityEditor.defaultPrototypes =
 {
