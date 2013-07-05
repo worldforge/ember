@@ -24,7 +24,7 @@ function TypeManager:buildWidget()
 		
 		self.typeInfoText = CEGUI.toMultiLineEditbox(self.widget:getWindow("TypeInfoText"))
 	
-		self.typeAdapter = Ember.OgreView.Gui.Adapters.Eris.TypeTreeAdapter:new_local(emberServices:getServerService():getConnection():getTypeService(), self.typeTree)
+		self.typeAdapter = Ember.OgreView.Gui.Adapters.Eris.TypeTreeAdapter:new_local(self.world:getView():getAvatar():getConnection():getTypeService(), self.typeTree)
 		self.typeAdapter:initialize("root")
 		
 		self.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", self.SendToServerButton_Clicked, self)
@@ -64,7 +64,7 @@ function TypeManager:sendTypeToServer()
 	
 	if parsedObject:isValid() then
 		--If the type already exists, we need to send a "set" operation, else we need to send a "create" operation
-		if emberServices:getServerService():getConnection():getTypeService():findTypeByName(parsedObject:get():getId()) == nil then
+		if self.world:getView():getAvatar():getConnection():getTypeService():findTypeByName(parsedObject:get():getId()) == nil then
 			emberServices:getServerService():createTypeInfo(parsedObject)
 		else
 			emberServices:getServerService():setTypeInfo(parsedObject)
