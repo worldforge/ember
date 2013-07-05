@@ -777,12 +777,12 @@ EntityEditor.defaultPrototypes =
 EntityEditor.goalPrototypes = {
 	mason = {
 		welcome = {
-			proto="welcome(message, type)",
+			proto="welcome(message='', type='')",
 			args = {message="The greeting message.",type="The type of entity to react to."},
 			help = "Welcome entities of a given type that are created nearby."
 		},
 		add_help={
-			proto="add_help([messages], [responses])",
+			proto="add_help(messages=[''], responses=[''])",
 			args = {messages="The messages which will be spoken.",type="An optional list of suggested responses."},
 			help = "Set off a help goal if we get a touch operation."
 		},
@@ -794,72 +794,77 @@ EntityEditor.goalPrototypes = {
 			}
 		},
 		buy_from={
-			proto="buy_from(what, cost, who)",
+			proto="buy_from(what='', cost=0, who='')",
 			args = {what="What type of entity to buy.", cost="What to pay at most.", who="From whom."},
 			help="Buy entities from somone."
 		},
 		buy_livestock={
-			proto="buy_livestock(what, cost)",
+			proto="buy_livestock(what='', cost=0)",
 			args={what="What type of entity to buy.", cost="What to pay per kilo."},
 			help="Buy livestock by the kilo."
 		},
 		keep_livestock={
-			proto="keep_livestock(what, where, call)",
+			proto="keep_livestock(what='', where='', call='')",
 			args={what="What type of livestock to keep.", where="Where it should be kept.", call="How to call for livestock to return."},
 			help="Keep livestock that we own in a given location, calling them if required."
 		},
 		gather={
-			proto="gather(what)",
+			proto="gather(what='')",
 			args={what="The entity type to gather."},
 			help="Gather freely available resources."
 		},
 		harvest_resource={
-			proto="harvest_resource(what, source, place, tool)",
+			proto="harvest_resource(what='', source='', place='', tool='')",
 			args={what="What to harvest.", source="?", place="A place where to harvest.", tool="The tool used to harvest." },
 			help="Gather something from a given location, by using a tool on something."
 		},
 		plant_seeds={
-			proto="plant_seeds(what, source, place, tool)",
+			proto="plant_seeds(what='', source='' place='', tool='', range=30)",
 			args={what="The seed type.", source="From where we can obtain the seed.", place="A place where to plant", tool="The tool used to plant." },
 			help="Use a tool to plant a given kind of seed in a given location."
 		},
 		move_me={
-			proto="move_me(location)",
+			proto="move_me(location='')",
 			args={location="The location to move to."},
 			help="Move me to a certain place."
 		},
 		move_me_area={
-			proto="move_me(location, range)",
+			proto="move_me(location='', range=30)",
 			args={location="The location to move to.", range="Size of area from location."},
 			help="Move me to a certain area."
 		},
 		move_me_place={
-			proto="move_me_place(place)",
+			proto="move_me_place(place='')",
 			args={place="A named place."},
 			help="Move me to a place by name."
 		},
 		move_it_outof_me={
-			proto="move_it_outof_me(what)",
+			proto="move_it_outof_me(what='')",
 			args={what="The entity type to move out of me."},
 			help="Put something down."
 		},
 		move_me_to_possession={
-			proto="move_me_to_possession(what)",
+			proto="move_me_to_possession(what='')",
 			args={what="The place I own."},
 			help="Move me to the same place as something I own."
 		},
 		move_me_to_focus={
-			proto="move_me_to_focus([what])",
+			proto="move_me_to_focus(what=[''])",
 			args={what="The types that I'm interested in."},
 			help="Move me to something I am interested in."
 		},
+		move_me_near_focus={
+			proto="move_me_near_focus(what=[''], distance=2, allowed_movement_radius=10))",
+			args={what="The types that I'm interested in.", distance='How close I should go.', allowed_movement_radius='How far away from focus I can wander.'},
+			help="Move me near something I am interested in."
+		},
 		pick_up_possession={
-			proto="pick_up_possession(what)",
+			proto="pick_up_possession(what='')",
 			args={what="The type of thing I own."},
 			help="Pick up something I own."
 		},
 		pick_up_focus={
-			proto="pick_up_focus([what])",
+			proto="pick_up_focus(what=[''])",
 			args={what="What I want to pick up."},
 			help="Pick up something I am interested in."
 		},
@@ -868,36 +873,36 @@ EntityEditor.goalPrototypes = {
 			help="Move in a non-specific way."
 		},
 		roam={
-			proto="roam(radius, [locations])",
+			proto="roam(radius=30, locations=[''])",
 			help="Move in a non-specific way between locations."
 		},
 		search={
-			proto="search(what)",
+			proto="search(what='')",
 			args={what="What to search for."},
 			help="Move in a non-specific way looking for something."
 		},
 		avoid={
-			proto="avoid([what], range)",
+			proto="avoid(what=[''], range=10)",
 			args={what="What to avoid.", range="?"},
 			help="Avoid something at range."
 		},
 		hunt={
-			proto="hunt([what], range)",
+			proto="hunt(what=[''], range=30)",
 			args={what="What to hunt.", range="?"},
 			help="Hunt something at range."
 		},
 		hunt_for={
-			proto="hunt_for(what, range, proximity)",
+			proto="hunt_for(what=[''], range=30, proximity=5)",
 			args={what="What to hunt.", range="?", proximity="?"},
 			help="Hunt something at range."
 		},
 		patrol={
-			proto="patrol([locations])",
+			proto="patrol(locations=[''])",
 			args={locations="A list of locations to visit."},
 			help="Move around an area defined by some waypoints."
 		},
 		accompany={
-			proto="accompany(who)",
+			proto="accompany(who='')",
 			args={who="Who to follow."},
 			help="Move around staying close to someone."
 		},
@@ -906,17 +911,17 @@ EntityEditor.goalPrototypes = {
 			help="Move away from a herder when touched."
 		},
 		summons= {
-			proto="summons(verb)",
+			proto="summons(verb='')",
 			args={verb="The summoning verb."},
 			help="Stop moving when the herder gives a cry."
 		},
 		school= {
-			proto="school([members])",
+			proto="school(members=[''])",
 			args={members="A list of members in the school."},
 			help="Move in a shoal with other animals of the same type."
 		},
 		herd={
-			proto="herd([members])",
+			proto="herd(members=[''])",
 			args={members="A list of members in the herd."},
 			help="Move in a herd with other animals of the same type."
 		}
