@@ -21,12 +21,12 @@ namespace Ogre {
 
 inline int Round(const Real fValue)
 {
-  return fValue<0 ?  std::lrint(fValue-0.5) : std::lrint(fValue+0.5);
+  return fValue<0 ?  (int)(fValue-0.5) : (int)(fValue+0.5);
 }
 
 inline int Trunc(const Real fValue)
 {
-  return std::lrint(fValue);
+  return (int)(fValue);
 }
 
 //===========================================================================
