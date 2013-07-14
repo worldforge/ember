@@ -33,17 +33,14 @@ namespace OgreView
 namespace Lod
 {
 
-bool PMInjectorSignaler::frameStarted(const Ogre::FrameEvent& evt)
+bool PMInjectorSignaler::shouldInject(Ogre::PMGenRequest* request)
 {
-	OGRE_LOCK_MUTEX(this->OGRE_AUTO_MUTEX_NAME);
-	while (!readyLods.empty()) {
-		PMGenRequest* request = readyLods.top();
-		inject(request);
-		LodInjected.emit(&request->config);
-		delete request;
-		readyLods.pop();
-	}
 	return true;
+}
+
+void PMInjectorSignaler::injectionCompleted(Ogre::PMGenRequest* request)
+{
+	LodInjected.emit(&request->config);
 }
 
 }
