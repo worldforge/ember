@@ -190,7 +190,9 @@ void EntityImporter::sendMinds(OpVector & res)
 
 			Atlas::Objects::Operation::RootOperation thoughtOp;
 			thoughtOp->setArgs1(payload);
-			thoughtOp->setParents( { "thought" });
+			std::list<std::string> parents;
+			parents.emplace_back("thought");
+			thoughtOp->setParents(parents);
 			thoughtOp->setTo(mind.first);
 			//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 			//if it came from the entity itself (the server rewrites the FROM to be of the entity).

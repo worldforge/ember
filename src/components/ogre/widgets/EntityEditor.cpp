@@ -281,7 +281,9 @@ void EntityEditor::setGoals(const std::string& verb, const std::vector<std::stri
 
 	Atlas::Objects::Operation::RootOperation thoughtOp;
 	thoughtOp->setArgs1(payload);
-	thoughtOp->setParents( { "thought" });
+	std::list<std::string> parents;
+	parents.emplace_back("thought");
+	thoughtOp->setParents(parents);
 	thoughtOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -308,7 +310,9 @@ void EntityEditor::addKnowledge(const std::string& predicate, const std::string&
 
 	Atlas::Objects::Operation::RootOperation thoughtOp;
 	thoughtOp->setArgs1(payload);
-	thoughtOp->setParents( { "thought" });
+	std::list<std::string> parents;
+	parents.emplace_back("thought");
+	thoughtOp->setParents(parents);
 	thoughtOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -342,7 +346,9 @@ void EntityEditor::getThoughts()
 
 	Atlas::Objects::Operation::Get get;
 	Atlas::Objects::Operation::RootOperation get_arg;
-	get_arg->setParents( { "thought" });
+	std::list<std::string> parents;
+	parents.emplace_back("thought");
+	get_arg->setParents(parents);
 	get_arg->setId(mEntity.getId());
 
 	get->setArgs1(get_arg);
@@ -388,7 +394,9 @@ void EntityEditor::getGoalInfo(const std::string& subject, const std::string& go
 
 	Atlas::Objects::Operation::Get get;
 	Atlas::Objects::Operation::RootOperation get_arg;
-	get_arg->setParents( { "goal_info" });
+	std::list<std::string> parents;
+	parents.emplace_back("goal_info");
+	get_arg->setParents(parents);
 	get_arg->setId(mEntity.getId());
 
 	Atlas::Objects::Entity::Anonymous args;

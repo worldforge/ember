@@ -208,7 +208,9 @@ void EntityExporter::infoArrived(const Operation & op)
 			Get get;
 
 			Operation get_arg;
-			get_arg->setParents({"thought"});
+			std::list<std::string> parents;
+			parents.emplace_back("thought");
+			get_arg->setParents(parents);
 			get_arg->setId(ent->getId());
 
 			get->setArgs1(get_arg);
