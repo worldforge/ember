@@ -27,7 +27,6 @@
 #endif
 
 #include "EmberOgre.h"
-#include "lod/QueuedProgressiveMeshGenerator.h"
 #include "lod/PMInjectorSignaler.h"
 
 // Headers to stop compile problems from headers
@@ -118,6 +117,7 @@
 
 #include <OgreSceneManager.h>
 #include <OgreOverlaySystem.h>
+#include <OgreQueuedProgressiveMeshGenerator.h>
 
 template<> Ember::OgreView::EmberOgre* Ember::Singleton<Ember::OgreView::EmberOgre>::ms_Singleton = 0;
 
@@ -148,7 +148,7 @@ EmberOgre::EmberOgre() :
 		mLogObserver(nullptr), mMaterialEditor(nullptr), mModelRepresentationManager(nullptr), mSoundResourceProvider(nullptr), mLodDefinitionManager(nullptr), mLodManager(nullptr),
 		//mCollisionManager(0),
 		//mCollisionDetectorVisualizer(0),
-		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mPMWorker(0), mPMInjector(0)
+		mResourceLoader(0), mOgreLogManager(0), mIsInPausedMode(false), mOgreMainCamera(0), mWorld(0), mPMInjectorSignaler(0)
 {
 	Application::getSingleton().EventServicesInitialized.connect(sigc::mem_fun(*this, &EmberOgre::Application_ServicesInitialized));
 }
@@ -208,10 +208,7 @@ EmberOgre::~EmberOgre()
 		EventOgreDestroyed();
 	}
 
-	// I don't know how to flush the Ogre::WorkQueue safely so we need to delete these
-	// after the destructor of Ogre::Root to make sure the queue is flushed and we can delete it safely.
-	delete mPMWorker;
-	delete mPMInjector;
+	delete mPMInjectorSignaler;
 
 	//Ogre is destroyed already, so we can't deregister this: we'll just destroy it
 	delete mLogObserver;
@@ -368,8 +365,8 @@ bool EmberOgre::setup(Input& input, MainLoopController& mainLoopController)
 		Gui::LoadingBar loadingBar(*mWindow, mainLoopController);
 
 		// Needed for QueuedProgressiveMeshGenerator.
-		mPMWorker = new Lod::PMWorker();
-		mPMInjector = new Lod::PMInjectorSignaler();
+		mPMInjectorSignaler = new Lod::PMInjectorSignaler();
+		Ogre::PMInjector::getSingleton().setInjectorListener(mPMInjectorSignaler);
 
 		Gui::LoadingBarSection wfutSection(loadingBar, 0.2, "Media update");
 		if (useWfut) {

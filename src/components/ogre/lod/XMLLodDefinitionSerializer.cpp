@@ -113,14 +113,14 @@ void XMLLodDefinitionSerializer::importLodDefinition(const Ogre::DataStreamPtr& 
 						const char* tmp = elem->GetText();
 						if (tmp) {
 							if (strcmp(tmp, "constant") == 0) {
-								dist.setReductionMethod(LodLevel::VRM_CONSTANT);
+								dist.setReductionMethod(Ogre::LodLevel::VRM_CONSTANT);
 							} else if (strcmp(tmp, "proportional") == 0) {
-								dist.setReductionMethod(LodLevel::VRM_PROPORTIONAL);
+								dist.setReductionMethod(Ogre::LodLevel::VRM_PROPORTIONAL);
 							} else {
-								dist.setReductionMethod(LodLevel::VRM_COLLAPSE_COST);
+								dist.setReductionMethod(Ogre::LodLevel::VRM_COLLAPSE_COST);
 							}
 						} else {
-							dist.setReductionMethod(LodLevel::VRM_PROPORTIONAL);
+							dist.setReductionMethod(Ogre::LodLevel::VRM_PROPORTIONAL);
 						}
 					}
 
@@ -203,15 +203,15 @@ bool XMLLodDefinitionSerializer::exportScript(const LodDefinitionPtr& lodDef, co
 						TiXmlElement methodElem("method");
 						const char* pMethodText;
 						switch (dist.getReductionMethod()) {
-						case LodLevel::VRM_PROPORTIONAL:
+						case Ogre::LodLevel::VRM_PROPORTIONAL:
 							pMethodText = "proportional";
 							break;
 
-						case LodLevel::VRM_CONSTANT:
+						case Ogre::LodLevel::VRM_CONSTANT:
 							pMethodText = "constant";
 							break;
 
-						case LodLevel::VRM_COLLAPSE_COST:
+						case Ogre::LodLevel::VRM_COLLAPSE_COST:
 							pMethodText = "collapsecost";
 							break;
 

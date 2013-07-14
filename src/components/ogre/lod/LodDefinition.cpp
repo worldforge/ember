@@ -32,7 +32,7 @@ namespace Lod
 {
 
 LodDistance::LodDistance() :
-	mReductionMethod(LodLevel::VRM_PROPORTIONAL),
+	mReductionMethod(Ogre::LodLevel::VRM_PROPORTIONAL),
 	mReductionValue(0.5f)
 {
 

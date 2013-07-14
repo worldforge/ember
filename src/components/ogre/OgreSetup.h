@@ -45,10 +45,6 @@ class EmberPagingSceneManager;
 class EmberPagingSceneManagerFactory;
 class MeshSerializerListener;
 
-namespace Lod
-{
-class EmberOgreRoot;
-}
 /**
  @brief A class used for setting up Ogre.
 
@@ -110,7 +106,7 @@ private:
 	/**
 	 * @brief Holds the Ogre root object.
 	 */
-	Lod::EmberOgreRoot* mRoot;
+	Ogre::Root* mRoot;
 
 	/**
 	 * @brief Holds the main render window.

@@ -74,14 +74,10 @@ public:
 
 private:
 
-	/**
-	 * @brief Loads Automatic Mesh Lod Management System.
-	 */
-	void loadAutomaticLod(Ogre::MeshPtr mesh);
 	template<typename T>
 	void loadUserLodImpl(T it, T itEnd, Ogre::Mesh* mesh);
 	template<typename T>
-	void loadAutomaticLodImpl(T it, T itEnd, LodConfig& lodConfig);
+	void loadAutomaticLodImpl(T it, T itEnd, Ogre::LodConfig& lodConfig);
 };
 
 }
