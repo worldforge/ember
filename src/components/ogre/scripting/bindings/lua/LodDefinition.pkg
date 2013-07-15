@@ -23,40 +23,6 @@ namespace OgreView
 namespace Lod
 {
 
-class LodLevel
-{
-public:
-	/**
-	 * @brief Type of the reduction.
-	 * 
-	 * Note: The vertex count is determined by unique vertices per submesh.
-	 * A mesh may have duplicate vertices with same position.
-	 */
-	enum VertexReductionMethod {
-		/**
-		 * @brief Percentage of vertexes to be removed from each submesh.
-		 * 
-		 * Valid range is a number between 0.0 and 1.0
-		 */
-		VRM_PROPORTIONAL,
-		
-		/**
-		 * @brief Exact vertex count to be removed from each submesh.
-		 * 
-		 * Pass only integers or it will be rounded.
-		 */
-		VRM_CONSTANT,
-		
-		/**
-		 * @brief Reduces the vertices, until the cost is bigger then the given value.
-		 * 
-		 * Collapse cost is equal to the amount of artifact the reduction causes.
-		 * This generates the best Lod output, but the collapse cost depends on implementation.
-		 */
-		VRM_COLLAPSE_COST
-	};
-};
-
 /**
  * @brief Lod Distance config container.
  */
@@ -77,12 +43,12 @@ public:
 	/**
 	 * @brief Returns the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
 	 */
-	Ember::OgreView::Lod::LodLevel::VertexReductionMethod getReductionMethod() const;
+	Ogre::LodLevel::VertexReductionMethod getReductionMethod() const;
 
 	/**
 	 * @brief Sets the vertex reduction method of the Lod Distance, which is used in automatic vertex reduction.
 	 */
-	void setReductionMethod(Ember::OgreView::Lod::LodLevel::VertexReductionMethod reductionMethod);
+	void setReductionMethod(Ogre::LodLevel::VertexReductionMethod reductionMethod);
 
 	/**
 	 * @brief Returns the vertex reduction value of the Lod Distance, which is used in automatic vertex reduction.
