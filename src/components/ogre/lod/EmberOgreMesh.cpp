@@ -23,6 +23,7 @@
 #include "EmberOgreMesh.h"
 #include "LodManager.h"
 #include "ProgressiveMeshGenerator.h"
+#include "ScaledPixelCountLodStrategy.h"
 
 #include "framework/LoggingInstance.h"
 
@@ -76,7 +77,8 @@ void EmberOgreMesh::_configureMeshLodUsage(const LodConfig& lodConfigs)
 	// Fix bug in Ogre with pixel count Lod strategy.
 	// Changes [0, 20, 15, 10, 5] to [max, 20, 15, 10, 5].
 	// Fixes PixelCountLodStrategy::getIndex() function, which returned always 0 index.
-	if (getLodStrategy() == Ogre::PixelCountLodStrategy::getSingletonPtr()) {
+	if (getLodStrategy() == Ogre::PixelCountLodStrategy::getSingletonPtr() ||
+			getLodStrategy() == ScaledPixelCountLodStrategy::getSingletonPtr()) {
 		mMeshLodUsageList[0].userValue = std::numeric_limits<Ogre::Real>::max();
 		mMeshLodUsageList[0].value = std::numeric_limits<Ogre::Real>::max();
 	} else {

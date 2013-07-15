@@ -30,6 +30,7 @@ libEmberOgre_a_SOURCES = \
 	gui/ActiveWidgetHandler.cpp gui/CursorWorldListener.cpp \
 \
 	lod/EmberOgreMesh.cpp lod/EmberOgreMeshManager.cpp lod/EmberOgreRoot.cpp lod/LodDefinition.cpp lod/LodDefinitionManager.cpp lod/LodManager.cpp lod/OgreSmallVector.cpp lod/ProgressiveMeshGenerator.cpp lod/QueuedProgressiveMeshGenerator.cpp lod/XMLLodDefinitionSerializer.cpp lod/PMInjectorSignaler.cpp \
+	lod/ScaledPixelCountLodStrategy.cpp \
 \
 	mapping/EmberEntityMappingManager.cpp mapping/XMLEntityMappingDefinitionSerializer.cpp \
 \
@@ -128,7 +129,8 @@ noinst_HEADERS = \
 \
 	gui/ActiveWidgetHandler.h gui/CursorWorldListener.h \
 \
-	lod/EmberOgreMesh.h lod/EmberOgreMeshManager.h lod/EmberOgreRoot.h lod/LodDefinition.h lod/LodDefinitionManager.h lod/LodManager.h lod/OgreSmallVector.h lod/ProgressiveMeshGenerator.h lod/QueuedProgressiveMeshGenerator.h lod/XMLLodDefinitionSerializer.h  lod/PMInjectorSignaler.h lod/LodConfig.h \
+	lod/EmberOgreMesh.h lod/EmberOgreMeshManager.h lod/EmberOgreRoot.h lod/LodDefinition.h lod/LodDefinitionManager.h lod/LodManager.h lod/OgreSmallVector.h lod/ProgressiveMeshGenerator.h lod/QueuedProgressiveMeshGenerator.h lod/XMLLodDefinitionSerializer.h  lod/PMInjectorSignaler.h lod/LodConfig.h  \
+	lod/ScaledPixelCountLodStrategy.h \
 \
 	mapping/EmberEntityMappingManager.h mapping/XMLEntityMappingDefinitionSerializer.h \
 \

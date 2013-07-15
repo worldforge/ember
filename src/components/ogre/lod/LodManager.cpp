@@ -25,6 +25,7 @@
 #include "LodDefinitionManager.h"
 #include "EmberOgreMesh.h"
 #include "QueuedProgressiveMeshGenerator.h"
+#include "ScaledPixelCountLodStrategy.h"
 
 #include <OgrePixelCountLodStrategy.h>
 #include <OgreDistanceLodStrategy.h>
@@ -76,7 +77,7 @@ void LodManager::loadLod(Ogre::MeshPtr mesh, const LodDefinition& def)
 		if (def.getStrategy() == LodDefinition::LS_DISTANCE) {
 			strategy = &Ogre::DistanceLodStrategy::getSingleton();
 		} else {
-			strategy = &Ogre::PixelCountLodStrategy::getSingleton();
+			strategy = &ScaledPixelCountLodStrategy::getSingleton();
 		}
 		mesh->setLodStrategy(strategy);
 
@@ -132,7 +133,7 @@ void LodManager::loadAutomaticLod(Ogre::MeshPtr mesh)
 {
 	LodConfig lodConfigs;
 	lodConfigs.mesh = mesh;
-	mesh->setLodStrategy(&Ogre::PixelCountLodStrategy::getSingleton());
+	mesh->setLodStrategy(&ScaledPixelCountLodStrategy::getSingleton());
 	LodLevel lodLevel;
 	lodLevel.reductionMethod = LodLevel::VRM_COLLAPSE_COST;
 	Ogre::Real radius = mesh->getBoundingSphereRadius();

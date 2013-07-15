@@ -29,6 +29,7 @@
 #include "OgreInfo.h"
 #include "OgreConfigurator.h"
 #include "MeshSerializerListener.h"
+#include "lod/ScaledPixelCountLodStrategy.h"
 
 // Should be before GL/glx.h for OGRE < 1.6.2
 #include "SceneManagers/EmberPagingSceneManager/include/EmberPagingSceneManager.h"
@@ -417,6 +418,10 @@ void OgreSetup::setStandardValues()
 	mMeshSerializerListener = new MeshSerializerListener();
 
 	Ogre::MeshManager::getSingleton().setListener(mMeshSerializerListener);
+
+	//We provide our own pixel size scaled LOD strategy. Note that ownership is transferred to the LodStrategyManager, hence we won't hold on to this instance.
+	Ogre::LodStrategy* lodStrategy = OGRE_NEW Lod::ScaledPixelCountLodStrategy();
+	Ogre::LodStrategyManager::getSingleton().addStrategy(lodStrategy);
 
 }
 
