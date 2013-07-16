@@ -72,7 +72,7 @@ namespace Lod {
         Ogre::Real scale = std::min(nodeScale.x, std::min(nodeScale.y, nodeScale.z));
 
         //Increase the bounding area by the scale
-        Real boundingArea = Math::PI * Math::Sqr((movableObject->getBoundingRadius() * 2.0 * scale) * 0.5);
+        Real boundingArea = Math::PI * Math::Sqr(movableObject->getBoundingRadius() * scale);
 
         // Base computation on projection type
         switch (camera->getProjectionType())
