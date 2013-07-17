@@ -62,17 +62,22 @@ namespace Lod {
         // Get viewport area
         Real viewportArea = static_cast<Real>(viewport->getActualWidth() * viewport->getActualHeight());
 
+        Ogre::Real boundingRadius = movableObject->getBoundingRadius();
+
         // Get area of unprojected circle with object bounding radius
         const Ogre::Vector3 nodeScale = movableObject->getParentNode()->getScale();
 
-        //Get the smallest scale of the parent node.
-        //This is a bit inexact, since if the node is scaled with different values for the different axes we won't be using the most optimal one.
-        //However, that would be too expensive (we would need to check with how the bounding box is rotated against the camera and so on.)
-        //And further the vast majority of meshes we use are uniformly scaled.
-        Ogre::Real scale = std::min(nodeScale.x, std::min(nodeScale.y, nodeScale.z));
+        if (!nodeScale.isNaN()) {
+            //Get the largest scale of the parent node.
+            //This is a bit inexact, since if the node is scaled with different values for the different axes we won't be using the most optimal one.
+            //However, that would be too expensive (we would need to check with how the bounding box is rotated against the camera and so on.)
+            //And further the vast majority of meshes we use are uniformly scaled.
+            Ogre::Real scale = std::max(nodeScale.x, std::max(nodeScale.y, nodeScale.z));
+            boundingRadius *= scale;
+        }
 
         //Increase the bounding area by the scale
-        Real boundingArea = Math::PI * Math::Sqr(movableObject->getBoundingRadius() * scale);
+        Real boundingArea = Math::PI * Math::Sqr(boundingRadius);
 
         // Base computation on projection type
         switch (camera->getProjectionType())
