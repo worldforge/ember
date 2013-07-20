@@ -29,10 +29,14 @@
 
 namespace Ember {
 namespace OgreView {
+
+class IPageDataProvider;
+
 namespace Terrain {
 
 class TerrainManager;
 class ITerrainObserver;
+
 
 /**
 Acts as a bridge between the Mercator terrain system and the Ogre terrain rendering engine. We don't want to directly interface with the terrain rendering system since we want to have the ability to replace or alter that, thus we use an instance of this whenever we need to interact directly to it.

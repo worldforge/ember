@@ -20,6 +20,9 @@
 #define OGRETERRAINADAPTER_H_
 
 #include "../ITerrainAdapter.h"
+#include "OgreTerrainPageProvider.h"
+
+#include <OgreTerrainPagedWorldSection.h>
 
 #include <memory>
 
@@ -27,6 +30,9 @@ namespace Ogre
 {
 class TerrainGlobalOptions;
 class TerrainGroup;
+class TerrainPaging;
+class PageManager;
+class PagedWorld;
 }
 
 namespace Ember
@@ -36,13 +42,14 @@ namespace OgreView
 namespace Terrain
 {
 
+class FlatTerrainDefiner;
 /**
  * @brief A ITerrainAdapter implementation which connects to and sets up the Ogre Terrain component.
  */
 class OgreTerrainAdapter: public ITerrainAdapter
 {
 public:
-	OgreTerrainAdapter(Ogre::SceneManager& sceneManager);
+	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera);
 
 	virtual ~OgreTerrainAdapter();
 
@@ -86,10 +93,26 @@ public:
 
 private:
 	Ogre::SceneManager& mSceneManager;
+
+	Ogre::PageManager* mPageManager;
+	Ogre::TerrainPaging* mTerrainPaging;
+	Ogre::PagedWorld* mPagedWorld;
+	Ogre::TerrainPagedWorldSection* mTerrainPagedWorldSection;
+	OgreTerrainPageProvider mTerrainPageProvider;
+
 	Ogre::TerrainGlobalOptions* mTerrainGlobalOptions;
 	Ogre::TerrainGroup* mTerrainGroup;
-
 };
+
+class FlatTerrainDefiner: public Ogre::TerrainPagedWorldSection::TerrainDefiner
+{
+public:
+	virtual void define(Ogre::TerrainGroup *terrainGroup, long x, long y) {
+		terrainGroup->defineTerrain(x, y, &terrainGroup->getDefaultImportSettings());
+		terrainGroup->loadTerrain(x, y, false);
+	}
+};
+
 
 } /* namespace Terrain */
 } /* namespace OgreView */

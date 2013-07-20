@@ -19,11 +19,17 @@
 #include "OgreTerrainAdapter.h"
 
 #include "OgreTerrainObserver.h"
+#include "OgreTerrainDefiner.h"
 #include "../ITerrainObserver.h"
+#include "components/ogre/TerrainPageDataProvider.h"
 
 #include <OgreSceneManager.h>
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
+#include <OgreTerrain.h>
+#include <OgreTerrainGroup.h>
+#include <OgreTerrainPaging.h>
+#include <OgrePageManager.h>
+
+#define TERRAIN_SIZE 257
 
 namespace Ember
 {
@@ -32,23 +38,44 @@ namespace OgreView
 namespace Terrain
 {
 //TODO SK: provide proper arguments to terrain group, move to constants/configuration parameters
-OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager) :
+OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera) :
 		mSceneManager(sceneManager),
+				mPageManager(OGRE_NEW Ogre::PageManager()),
+				mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)),
+				mPagedWorld(nullptr),
+				mTerrainPagedWorldSection(nullptr),
 				mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
-				mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, 513, Ogre::Real(12000.0)))
+				mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, TERRAIN_SIZE, Ogre::Real(TERRAIN_SIZE)))
+
 {
-	mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
+	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
+	mPageManager->setPageProvider(&mTerrainPageProvider);
+	mPageManager->addCamera(mainCamera);
+	Ogre::Terrain::ImportData& defaultImportData = mTerrainGroup->getDefaultImportSettings();
+	Ogre::Vector3 origin;
+
+	origin.x = mTerrainGroup->getTerrainWorldSize() / 2;
+	origin.z = mTerrainGroup->getTerrainWorldSize() / 2;
+	origin.y = 0;
+	mTerrainGroup->setOrigin(origin);
+	mPageManager->setDebugDisplayLevel(2);
+	defaultImportData.layerList.resize(1);
+	defaultImportData.layerList[0].worldSize = 9;
+	defaultImportData.layerList[0].textureNames.push_back("3d_objects/environment/textures/ground_grass/D.png");
+	defaultImportData.layerList[0].textureNames.push_back("3d_objects/environment/textures/ground_grass/N.png");
 }
 
 OgreTerrainAdapter::~OgreTerrainAdapter()
 {
+	OGRE_DELETE mTerrainPaging;
+	mPageManager->destroyWorld(mPagedWorld);
+	OGRE_DELETE mPageManager;
 	OGRE_DELETE mTerrainGlobalOptions;
-	OGRE_DELETE mTerrainGroup;
 }
 
 int OgreTerrainAdapter::getPageSize()
 {
-	return mTerrainGroup->getTerrainSize();
+	return static_cast<int>(mTerrainGroup->getTerrainSize());
 }
 
 Ogre::Real OgreTerrainAdapter::getHeightAt(const Ogre::Real x, const Ogre::Real z)
@@ -65,6 +92,13 @@ void OgreTerrainAdapter::setWorldPagesDimensions(int numberOfPagesWidth, int num
 
 void OgreTerrainAdapter::setCamera(Ogre::Camera* camera)
 {
+	if (!mPageManager->hasCamera(camera)) {
+		// For now, we want only one camera to affect paging
+		for (auto currentCamera : mPageManager->getCameraList()) {
+			mPageManager->removeCamera(currentCamera);
+		}
+		mPageManager->addCamera(camera);
+	}
 }
 
 void OgreTerrainAdapter::setResourceGroupName(const std::string& groupName)
@@ -81,7 +115,11 @@ void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 
 void OgreTerrainAdapter::loadScene()
 {
-	mTerrainGroup->defineTerrain(0, 0, 20.0f);
+	mPagedWorld = mPageManager->createWorld();
+	const Ogre::Real LOAD_RADIUS = 128;
+	const Ogre::Real HOLD_RADIUS = 200;
+	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, LOAD_RADIUS, HOLD_RADIUS);
+	mTerrainPagedWorldSection->setDefiner(new FlatTerrainDefiner());
 }
 
 void OgreTerrainAdapter::reset()
@@ -113,7 +151,7 @@ void OgreTerrainAdapter::reloadPage(unsigned int x, unsigned int z)
 
 void OgreTerrainAdapter::loadFirstPage()
 {
-	mTerrainGroup->loadTerrain(0, 0);
+
 }
 
 std::string OgreTerrainAdapter::getDebugInfo()
@@ -134,12 +172,14 @@ void OgreTerrainAdapter::destroyObserver(ITerrainObserver* observer)
 }
 
 std::pair<bool, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const
-		{
+{
 	//TODO SK: find limit value
 	Ogre::TerrainGroup::RayResult result = mTerrainGroup->rayIntersects(ray, 1000.0f);
 	return std::pair<bool, Ogre::Vector3>(result.hit, result.position);
 }
 
+
 } /* namespace Terrain */
 } /* namespace OgreView */
 } /* namespace Ember */
+

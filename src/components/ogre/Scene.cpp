@@ -100,7 +100,7 @@ void Scene::registerPageDataProvider(IPageDataProvider* pageDataProvider)
 
 Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 {
-	return new Terrain::OgreTerrainAdapter(*mSceneManager);
+	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera);
 }
 
 Ogre::Camera& Scene::getMainCamera() const

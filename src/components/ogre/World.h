@@ -363,7 +363,7 @@ protected:
 	RenderDistanceManager* mRenderDistanceManager;
 
 	/**
-	 * @brief The page data provider for the EmberPagingSceneManager.
+	 * @brief The page data provider for the terrain rendering system.
 	 */
 	IPageDataProvider* mPageDataProvider;
 
