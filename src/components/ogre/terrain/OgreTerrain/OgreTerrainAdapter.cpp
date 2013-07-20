@@ -116,8 +116,8 @@ void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 void OgreTerrainAdapter::loadScene()
 {
 	mPagedWorld = mPageManager->createWorld();
-	const Ogre::Real LOAD_RADIUS = 128;
-	const Ogre::Real HOLD_RADIUS = 256;
+	const Ogre::Real LOAD_RADIUS = TERRAIN_SIZE / 2;
+	const Ogre::Real HOLD_RADIUS = TERRAIN_SIZE * 2;
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, LOAD_RADIUS, HOLD_RADIUS);
 	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(mPageDataProvider));
 }
