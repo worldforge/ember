@@ -22,6 +22,8 @@
 #include "../ITerrainPageBridge.h"
 
 #include <OgrePrerequisites.h>
+#include <condition_variable>
+#include <thread>
 
 namespace Ogre
 {
@@ -50,6 +52,16 @@ public:
 	virtual void updateTerrain(TerrainPageGeometry& geometry);
 
 	virtual void terrainPageReady();
+
+	/** 
+	 * The mutex used by OgreTerrainDefiner to wait for the loading of a terrain page to be finished.
+	 */
+	std::mutex mMutex;
+
+	/** 
+	 * The condition variable used by OgreTerrainDefiner to wait for the loading of a terrain page to be finished.
+	 */
+	std::condition_variable mConditionVariable;
 
 private:
 	Ogre::TerrainGroup& mTerrainGroup;
