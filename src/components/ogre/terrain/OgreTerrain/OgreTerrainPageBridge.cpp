@@ -49,12 +49,13 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 
 void OgreTerrainPageBridge::terrainPageReady()
 {
-	S_LOG_INFO("Got terrain page at bridge (" << mIndex.first << "|" << mIndex.second << ")");
 	mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData);
-	mTerrainGroup.loadTerrain(mIndex.first, mIndex.second);
 	// No need to keep height data around since it is copied on call
 	delete[] mHeightData;
 	mHeightData = nullptr;
+
+	// Notify waiting threads such as OgreTerrainDefiner
+	mConditionVariable.notify_all();
 }
 
 } /* namespace Terrain */

@@ -21,6 +21,8 @@
 #include "components/ogre/TerrainPageDataProvider.h"
 #include "OgreTerrainPageBridge.h"
 
+#include <mutex> 
+
 namespace Ember
 {
 namespace OgreView
@@ -43,6 +45,10 @@ void OgreTerrainDefiner::define(Ogre::TerrainGroup* terrainGroup, long x, long y
 	OgreTerrainPageBridge* bridge = new OgreTerrainPageBridge(*terrainGroup, OgreTerrainPageBridge::IndexType(x, y));
 	//TODO SK: fix ogre index types to be uniform
 	mProvider->setUpTerrainPageAtIndex(IPageDataProvider::OgreIndex(x, y), bridge);
+	
+	// Wait until the terrain page has finished loading
+	std::unique_lock<std::mutex> lock(bridge->mMutex);
+	bridge->mConditionVariable.wait(lock);
 }
 
 } /* namespace Terrain */
