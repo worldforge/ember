@@ -29,7 +29,6 @@
 #include <OgreTerrainPaging.h>
 #include <OgrePageManager.h>
 
-#define TERRAIN_SIZE 257
 
 namespace Ember
 {
@@ -37,6 +36,12 @@ namespace OgreView
 {
 namespace Terrain
 {
+
+const int OgreTerrainAdapter::TERRAIN_SIZE = 257;
+const Ogre::Real OgreTerrainAdapter::LOAD_RADIUS = TERRAIN_SIZE / 2;
+const Ogre::Real OgreTerrainAdapter::HOLD_RADIUS = TERRAIN_SIZE * 2;
+
+
 //TODO SK: provide proper arguments to terrain group, move to constants/configuration parameters
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera) :
 		mSceneManager(sceneManager),
@@ -116,8 +121,6 @@ void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 void OgreTerrainAdapter::loadScene()
 {
 	mPagedWorld = mPageManager->createWorld();
-	const Ogre::Real LOAD_RADIUS = TERRAIN_SIZE / 2;
-	const Ogre::Real HOLD_RADIUS = TERRAIN_SIZE * 2;
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, LOAD_RADIUS, HOLD_RADIUS);
 	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(mPageDataProvider));
 }

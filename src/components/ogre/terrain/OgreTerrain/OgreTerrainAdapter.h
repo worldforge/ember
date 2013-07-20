@@ -94,6 +94,10 @@ public:
 	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider);
 
 private:
+	static const int TERRAIN_SIZE;
+	static const Ogre::Real LOAD_RADIUS;
+	static const Ogre::Real HOLD_RADIUS;
+
 	Ogre::SceneManager& mSceneManager;
 
 	Ogre::PageManager* mPageManager;
