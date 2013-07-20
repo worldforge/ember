@@ -18,8 +18,10 @@
 
 #include "OgreTerrainPageBridge.h"
 
-#include <Terrain/OgreTerrainGroup.h>
 #include "../TerrainPageGeometry.h"
+#include "framework/LoggingInstance.h"
+
+#include <Terrain/OgreTerrainGroup.h>
 
 namespace Ember
 {
@@ -28,35 +30,31 @@ namespace OgreView
 namespace Terrain
 {
 
-OgreTerrainPageBridge::OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, const boost::shared_array<Ogre::Real>& heightData,
-		size_t heightDataSize, UnsignedIndexType index) :
-		mTerrainGroup(terrainGroup), mHeightData(heightData), mHeightDataSize(heightDataSize), mIndex(index)
+OgreTerrainPageBridge::OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, IndexType index) :
+		mTerrainGroup(terrainGroup), mIndex(index), mHeightData(nullptr)
 {
+
 }
 
 OgreTerrainPageBridge::~OgreTerrainPageBridge()
 {
+	delete[] mHeightData;
 }
 
 void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 {
-#if OGRE_DOUBLE_PRECISION
-	//Mercator works with floats, so if we've built Ogre in double precision mode we need to send a float bitmap to Mercator, and then convert to double.
-	std::vector<float> floatHeightData(mHeightDataSize);
-	float* floatData = &floatHeightData.front();
-	geometry.updateOgreHeightData(floatData);
-
-	Ogre::Real* doubleData = mHeightData.get();
-	for (size_t i = 0; i < mHeightDataSize; ++i) {
-		doubleData[i] = (double)floatData[i];
-	}
-#else
-	geometry.updateOgreHeightData(mHeightData.get());
-#endif
+	mHeightData = new float[mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize()];
+	geometry.updateOgreHeightData(mHeightData);
 }
 
 void OgreTerrainPageBridge::terrainPageReady()
 {
+	S_LOG_INFO("Got terrain page at bridge (" << mIndex.first << "|" << mIndex.second << ")");
+	mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData);
+	mTerrainGroup.loadTerrain(mIndex.first, mIndex.second);
+	// No need to keep height data around since it is copied on call
+	delete[] mHeightData;
+	mHeightData = nullptr;
 }
 
 } /* namespace Terrain */

@@ -199,6 +199,11 @@ public:
 	 */
 	virtual std::pair<bool, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const = 0;
 
+	/**
+	 * Sets the provider used to retrieve terrain page data.
+	 * @param pageDataProvider The page data provider
+	 */
+	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider) = 0;
 };
 }
 }

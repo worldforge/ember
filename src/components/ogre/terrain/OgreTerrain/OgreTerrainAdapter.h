@@ -91,6 +91,8 @@ public:
 
 	virtual std::pair<bool, Ogre::Vector3> rayIntersects(const Ogre::Ray& ray) const;
 
+	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider);
+
 private:
 	Ogre::SceneManager& mSceneManager;
 
@@ -102,6 +104,8 @@ private:
 
 	Ogre::TerrainGlobalOptions* mTerrainGlobalOptions;
 	Ogre::TerrainGroup* mTerrainGroup;
+
+	IPageDataProvider* mPageDataProvider;
 };
 
 class FlatTerrainDefiner: public Ogre::TerrainPagedWorldSection::TerrainDefiner

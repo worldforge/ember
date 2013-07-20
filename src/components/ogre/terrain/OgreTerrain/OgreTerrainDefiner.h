@@ -16,50 +16,36 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef OGRETERRAINPAGEBRIDGE_H_
-#define OGRETERRAINPAGEBRIDGE_H_
+#ifndef OGRETERRAINDEFINER_H_
+#define OGRETERRAINDEFINER_H_
 
-#include "../ITerrainPageBridge.h"
-
-#include <OgrePrerequisites.h>
-
-namespace Ogre
-{
-class TerrainGroup;
-}
+#include <OgreTerrainPagedWorldSection.h>
 
 namespace Ember
 {
 namespace OgreView
 {
+class IPageDataProvider;
+
 namespace Terrain
 {
 
 /**
- * @brief Updates Ogre terrain rendering data based on Mercator-provided data.
+ * @brief Upon request of the paging system, loads and defines terrain pages for subsequent rendering.
  */
-class OgreTerrainPageBridge : public Ember::OgreView::Terrain::ITerrainPageBridge
+class OgreTerrainDefiner : public Ogre::TerrainPagedWorldSection::TerrainDefiner
 {
 public:
-	typedef std::pair<long, long> IndexType;
+	OgreTerrainDefiner(IPageDataProvider* provider);
+	virtual ~OgreTerrainDefiner();
 
-	OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, IndexType index);
-
-	virtual ~OgreTerrainPageBridge();
-
-	virtual void updateTerrain(TerrainPageGeometry& geometry);
-
-	virtual void terrainPageReady();
+	virtual void define(Ogre::TerrainGroup *terrainGroup, long x, long y);
 
 private:
-	Ogre::TerrainGroup& mTerrainGroup;
-
-	IndexType mIndex;
-
-	float* mHeightData;
+	IPageDataProvider* mProvider;
 };
 
 } /* namespace Terrain */
 } /* namespace OgreView */
 } /* namespace Ember */
-#endif /* OGRETERRAINPAGEBRIDGE_H_ */
+#endif /* OGRETERRAINDEFINER_H_ */
