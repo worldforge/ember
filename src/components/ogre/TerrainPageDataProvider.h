@@ -53,7 +53,8 @@ class IPageDataProvider
 {
 public:
 	virtual ~IPageDataProvider() {}
-	typedef std::pair<unsigned int, unsigned int> OgreIndex;
+	//TODO SK: fix ogre index to be consistent
+	typedef std::pair<long, long> OgreIndex;
 	virtual IPageData* getPageData(const OgreIndex& index) = 0;
 	virtual int getPageIndexSize() const = 0;
 	virtual void setUpTerrainPageAtIndex(const OgreIndex& ogreIndexPosition, ::Ember::OgreView::Terrain::ITerrainPageBridge* bridge) = 0;

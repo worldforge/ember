@@ -95,7 +95,7 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 	mTerrainEntityManager = new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager());
 
 	mPageDataProvider = new TerrainPageDataProvider(mTerrainManager->getHandler());
-	mScene->registerPageDataProvider(mPageDataProvider);
+	terrainAdapter->setPageDataProvider(mPageDataProvider);
 
 	mEnvironment = new Environment::Environment(mScene->getSceneManager(), *mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
 

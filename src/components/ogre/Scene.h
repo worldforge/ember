@@ -90,8 +90,6 @@ public:
 	 */
 	ISceneRenderingTechnique* removeRenderingTechnique(const std::string& name);
 
-	void registerPageDataProvider(IPageDataProvider* pageDataProvider);
-
 	/**
 	 * @brief Creates a terrain adapter which can be used to communicate with the terrain rendering system.
 	 * @return An instance of the terrain adapter

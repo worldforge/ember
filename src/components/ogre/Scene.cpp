@@ -92,12 +92,6 @@ ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& nam
 	return 0;
 }
 
-void Scene::registerPageDataProvider(IPageDataProvider* pageDataProvider)
-{
-	//TODO SK: hook up terrain component here
-	//static_cast<EmberPagingSceneManager*>(mSceneManager)->registerProvider(pageDataProvider);
-}
-
 Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 {
 	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera);

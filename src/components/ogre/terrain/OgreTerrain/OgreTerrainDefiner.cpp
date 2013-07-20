@@ -16,17 +16,10 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef OGRETERRAINPAGEBRIDGE_H_
-#define OGRETERRAINPAGEBRIDGE_H_
+#include "OgreTerrainDefiner.h"
 
-#include "../ITerrainPageBridge.h"
-
-#include <OgrePrerequisites.h>
-
-namespace Ogre
-{
-class TerrainGroup;
-}
+#include "components/ogre/TerrainPageDataProvider.h"
+#include "OgreTerrainPageBridge.h"
 
 namespace Ember
 {
@@ -35,31 +28,23 @@ namespace OgreView
 namespace Terrain
 {
 
-/**
- * @brief Updates Ogre terrain rendering data based on Mercator-provided data.
- */
-class OgreTerrainPageBridge : public Ember::OgreView::Terrain::ITerrainPageBridge
+OgreTerrainDefiner::OgreTerrainDefiner(IPageDataProvider* provider)
+:
+		mProvider(provider)
 {
-public:
-	typedef std::pair<long, long> IndexType;
+}
 
-	OgreTerrainPageBridge(Ogre::TerrainGroup& terrainGroup, IndexType index);
+OgreTerrainDefiner::~OgreTerrainDefiner()
+{
+}
 
-	virtual ~OgreTerrainPageBridge();
-
-	virtual void updateTerrain(TerrainPageGeometry& geometry);
-
-	virtual void terrainPageReady();
-
-private:
-	Ogre::TerrainGroup& mTerrainGroup;
-
-	IndexType mIndex;
-
-	float* mHeightData;
-};
+void OgreTerrainDefiner::define(Ogre::TerrainGroup* terrainGroup, long x, long y)
+{
+	OgreTerrainPageBridge* bridge = new OgreTerrainPageBridge(*terrainGroup, OgreTerrainPageBridge::IndexType(x, y));
+	//TODO SK: fix ogre index types to be uniform
+	mProvider->setUpTerrainPageAtIndex(IPageDataProvider::OgreIndex(x, y), bridge);
+}
 
 } /* namespace Terrain */
 } /* namespace OgreView */
 } /* namespace Ember */
-#endif /* OGRETERRAINPAGEBRIDGE_H_ */

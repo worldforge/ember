@@ -45,8 +45,8 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 				mPagedWorld(nullptr),
 				mTerrainPagedWorldSection(nullptr),
 				mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
-				mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, TERRAIN_SIZE, Ogre::Real(TERRAIN_SIZE)))
-
+				mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, TERRAIN_SIZE, Ogre::Real(TERRAIN_SIZE))),
+				mPageDataProvider(nullptr)
 {
 	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
 	mPageManager->setPageProvider(&mTerrainPageProvider);
@@ -117,9 +117,9 @@ void OgreTerrainAdapter::loadScene()
 {
 	mPagedWorld = mPageManager->createWorld();
 	const Ogre::Real LOAD_RADIUS = 128;
-	const Ogre::Real HOLD_RADIUS = 200;
+	const Ogre::Real HOLD_RADIUS = 256;
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, LOAD_RADIUS, HOLD_RADIUS);
-	mTerrainPagedWorldSection->setDefiner(new FlatTerrainDefiner());
+	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(mPageDataProvider));
 }
 
 void OgreTerrainAdapter::reset()
@@ -178,6 +178,10 @@ std::pair<bool, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray
 	return std::pair<bool, Ogre::Vector3>(result.hit, result.position);
 }
 
+void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider)
+{
+	mPageDataProvider = pageDataProvider;
+}
 
 } /* namespace Terrain */
 } /* namespace OgreView */
