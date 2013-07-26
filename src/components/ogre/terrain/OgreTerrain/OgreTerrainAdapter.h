@@ -49,7 +49,7 @@ class FlatTerrainDefiner;
 class OgreTerrainAdapter: public ITerrainAdapter
 {
 public:
-	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera);
+	OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize = 257);
 
 	virtual ~OgreTerrainAdapter();
 
@@ -94,9 +94,9 @@ public:
 	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider);
 
 private:
-	static const int TERRAIN_SIZE;
-	static const Ogre::Real LOAD_RADIUS;
-	static const Ogre::Real HOLD_RADIUS;
+	const unsigned int mTerrainPageSize;
+	Ogre::Real mLoadRadius;
+	Ogre::Real mHoldRadius;
 
 	Ogre::SceneManager& mSceneManager;
 
