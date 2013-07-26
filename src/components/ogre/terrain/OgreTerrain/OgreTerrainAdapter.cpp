@@ -119,7 +119,8 @@ void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 void OgreTerrainAdapter::loadScene()
 {
 	mPagedWorld = mPageManager->createWorld();
-	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius);
+	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
+			-10, -10, 10, 10, "", 0);
 	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(mPageDataProvider));
 }
 
@@ -152,7 +153,6 @@ void OgreTerrainAdapter::reloadPage(unsigned int x, unsigned int z)
 
 void OgreTerrainAdapter::loadFirstPage()
 {
-
 }
 
 std::string OgreTerrainAdapter::getDebugInfo()
