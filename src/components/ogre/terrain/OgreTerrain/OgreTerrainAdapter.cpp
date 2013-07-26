@@ -37,21 +37,19 @@ namespace OgreView
 namespace Terrain
 {
 
-const int OgreTerrainAdapter::TERRAIN_SIZE = 257;
-const Ogre::Real OgreTerrainAdapter::LOAD_RADIUS = TERRAIN_SIZE / 2;
-const Ogre::Real OgreTerrainAdapter::HOLD_RADIUS = TERRAIN_SIZE * 2;
-
-
 //TODO SK: provide proper arguments to terrain group, move to constants/configuration parameters
-OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera) :
+OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
+		mTerrainPageSize(terrainPageSize),
+		mLoadRadius(terrainPageSize / 2),
+		mHoldRadius(terrainPageSize * 2),
 		mSceneManager(sceneManager),
-				mPageManager(OGRE_NEW Ogre::PageManager()),
-				mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)),
-				mPagedWorld(nullptr),
-				mTerrainPagedWorldSection(nullptr),
-				mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
-				mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, TERRAIN_SIZE, Ogre::Real(TERRAIN_SIZE))),
-				mPageDataProvider(nullptr)
+		mPageManager(OGRE_NEW Ogre::PageManager()),
+		mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)),
+		mPagedWorld(nullptr),
+		mTerrainPagedWorldSection(nullptr),
+		mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
+		mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize))),
+		mPageDataProvider(nullptr)
 {
 	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
 	mPageManager->setPageProvider(&mTerrainPageProvider);
@@ -121,7 +119,7 @@ void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 void OgreTerrainAdapter::loadScene()
 {
 	mPagedWorld = mPageManager->createWorld();
-	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, LOAD_RADIUS, HOLD_RADIUS);
+	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius);
 	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(mPageDataProvider));
 }
 
