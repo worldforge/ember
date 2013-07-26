@@ -819,8 +819,8 @@ EntityEditor.goalPrototypes = {
 			help="Gather something from a given location, by using a tool on something."
 		},
 		plant_seeds={
-			proto="plant_seeds(what='', source='' place='', tool='', range=30)",
-			args={what="The seed type.", source="From where we can obtain the seed.", place="A place where to plant", tool="The tool used to plant." },
+			proto="plant_seeds(what='', source='' place='', tool='', range=30, spacing=4)",
+			args={what="The seed type.", source="From where we can obtain the seed.", place="A place where to plant", tool="The tool used to plant.", range="The range from the place in which to act.", spacing="The spacing between plants." },
 			help="Use a tool to plant a given kind of seed in a given location."
 		},
 		move_me={
