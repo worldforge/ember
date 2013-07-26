@@ -37,14 +37,13 @@
 #include <Mercator/Segment.h>
 #include <wfmath/stream.h>
 
-#ifdef HAVE_LRINTF
-#define I_ROUND(_x) (::lrintf(_x))
-#elif defined(HAVE_RINTF)
-#define I_ROUND(_x) ((int)::rintf(_x))
-#elif defined(HAVE_RINT)
-#define I_ROUND(_x) ((int)::rint(_x))
+//MSVC 11.0 doesn't support std::lround so we'll use boost. When MSVC gains support for std::lround this could be removed.
+#ifdef _MSC_VER
+#include <boost/math/special_functions/round.hpp>
+#define I_ROUND(_x) (boost::math::lround(_x))
 #else
-#define I_ROUND(_x) ((int)(_x))
+#include <cmath>
+#define I_ROUND(_x) (std::lround(_x))
 #endif
 
 namespace Ember
