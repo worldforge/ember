@@ -72,6 +72,12 @@ public:
 	 */
 	const ConsoleCommandWrapper Make;
 
+	/**
+	 * @brief Console command "/makeme <entitytype>".
+	 *
+	 * Will create an entity as a child of the avatar.
+	 */
+	const ConsoleCommandWrapper MakeMe;
 
 protected:
 
@@ -88,9 +94,10 @@ protected:
 	/**
 	 * @brief Creates a new entity of the supplied type, placed in front of the avatar.
 	 * @param typeinfo The kind of entity to create.
+	 * @param parentEntityId The id of the parent entity.
 	 * @param name The optional name of the enttity. If empty, the type name will be used.
 	 */
-	void createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& name = "");
+	void createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& parentEntityId, const std::string& name = "");
 
 };
 

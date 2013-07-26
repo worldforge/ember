@@ -46,7 +46,7 @@ namespace Authoring
 {
 
 EntityMaker::EntityMaker(Eris::Entity& avatarEntity, Eris::Connection& connection) :
-	CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), mAvatarEntity(avatarEntity), mConnection(connection)
+	CreateEntity("createentity", this, "Create an entity."), Make("make", this, "Create an entity."), MakeMe("makeme", this, "Create an entity as a child of the avatar (i.e. in inventory)."), mAvatarEntity(avatarEntity), mConnection(connection)
 {
 }
 
@@ -56,16 +56,20 @@ EntityMaker::~EntityMaker()
 
 void EntityMaker::runCommand(const std::string &command, const std::string &args)
 {
-	if (CreateEntity == command || Make == command) {
+	if (CreateEntity == command || Make == command || MakeMe == command) {
 		Eris::TypeService* typeService = mConnection.getTypeService();
 		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);
 		if (typeinfo) {
-			createEntityOfType(typeinfo);
+		    std::string parentEntityId = mAvatarEntity.getLocation()->getId();
+		    if (MakeMe == command) {
+		        parentEntityId = mAvatarEntity.getId();
+		    }
+			createEntityOfType(typeinfo, parentEntityId);
 		}
 	}
 }
 
-void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& name)
+void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string& parentEntityId, const std::string& name)
 {
 	Atlas::Objects::Operation::Create c;
 	c->setFrom(mAvatarEntity.getId());
@@ -76,7 +80,7 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	}
 
 	Atlas::Message::MapType msg;
-	msg["loc"] = mAvatarEntity.getLocation()->getId();
+	msg["loc"] = parentEntityId;
 
 	//Place the new entity two meters in front of the avatar.
 	WFMath::Vector<3> vector(2, 0, 0);
@@ -96,7 +100,7 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	mConnection.send(c);
 	std::stringstream ss;
 	ss << pos;
-	S_LOG_INFO("Try to create entity of type " << typeinfo->getName() << " at position " << ss.str());
+	S_LOG_INFO("Trying to create entity of type " << typeinfo->getName() << " at position " << ss.str());
 
 }
 }
