@@ -23,6 +23,7 @@
 #include "EntityMaker.h"
 
 #include "framework/LoggingInstance.h"
+#include "framework/Tokeniser.h"
 
 #include <Eris/TypeService.h>
 #include <Eris/Connection.h>
@@ -57,15 +58,23 @@ EntityMaker::~EntityMaker()
 void EntityMaker::runCommand(const std::string &command, const std::string &args)
 {
 	if (CreateEntity == command || Make == command || MakeMe == command) {
-		Eris::TypeService* typeService = mConnection.getTypeService();
-		Eris::TypeInfo* typeinfo = typeService->getTypeByName(args);
-		if (typeinfo) {
-		    std::string parentEntityId = mAvatarEntity.getLocation()->getId();
-		    if (MakeMe == command) {
-		        parentEntityId = mAvatarEntity.getId();
-		    }
-			createEntityOfType(typeinfo, parentEntityId);
-		}
+    	Tokeniser tokeniser(args);
+    	if (tokeniser.hasRemainingTokens()) {
+    		std::string typeName = tokeniser.nextToken();
+        	Eris::TypeService* typeService = mConnection.getTypeService();
+    		Eris::TypeInfo* typeinfo = typeService->getTypeByName(typeName);
+    		if (typeinfo) {
+    		    std::string parentEntityId = mAvatarEntity.getLocation()->getId();
+    		    if (MakeMe == command) {
+    		        parentEntityId = mAvatarEntity.getId();
+    		    } else {
+    		    	if (tokeniser.hasRemainingTokens()) {
+    		    		parentEntityId = tokeniser.nextToken();
+    		    	}
+    		    }
+    			createEntityOfType(typeinfo, parentEntityId);
+    		}
+    	}
 	}
 }
 
@@ -82,19 +91,26 @@ void EntityMaker::createEntityOfType(Eris::TypeInfo* typeinfo, const std::string
 	Atlas::Message::MapType msg;
 	msg["loc"] = parentEntityId;
 
-	//Place the new entity two meters in front of the avatar.
-	WFMath::Vector<3> vector(2, 0, 0);
-	WFMath::Point<3> pos = mAvatarEntity.getPosition() + (vector.rotate(mAvatarEntity.getOrientation()));
-	WFMath::Quaternion orientation = mAvatarEntity.getOrientation();
+	WFMath::Point<3> pos = WFMath::Point<3>::ZERO();
+	WFMath::Quaternion orientation = WFMath::Quaternion::Identity();
+
+	//Only place it if we're creating the new entity in the same location as the avatar
+	if (parentEntityId == mAvatarEntity.getLocation()->getId()) {
+		//Place the new entity two meters in front of the avatar.
+		WFMath::Vector<3> vector(2, 0, 0);
+		pos = mAvatarEntity.getPosition() + (vector.rotate(mAvatarEntity.getOrientation()));
+		orientation = mAvatarEntity.getOrientation();
+	}
 
 	msg["pos"] = pos.toAtlas();
+	msg["orientation"] = orientation.toAtlas();
+
 	if (name != "") {
 		msg["name"] = name;
 	} else {
 		msg["name"] = typeinfo->getName();
 	}
 	msg["parents"] = Atlas::Message::ListType(1, typeinfo->getName());
-	msg["orientation"] = orientation.toAtlas();
 
 	c->setArgsAsList(Atlas::Message::ListType(1, msg));
 	mConnection.send(c);
