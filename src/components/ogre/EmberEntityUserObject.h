@@ -25,6 +25,7 @@
 
 #include "EmberOgrePrerequisites.h"
 #include <OgreVector3.h>
+#include <memory>
 
 namespace Ogre
 {
@@ -54,7 +55,7 @@ class ICollisionDetector;
 class EmberEntityUserObject
 {
 public:
-	typedef boost::shared_ptr<EmberEntityUserObject> SharedPtr;
+	typedef std::shared_ptr<EmberEntityUserObject> SharedPtr;
 
 	/**
 	 * Ctor.
