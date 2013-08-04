@@ -235,6 +235,7 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 
 				terrainResultEntry.worldFragment = terrainResultWorldFragment.get();
 				terrainResultEntry.distance = terrainIntersectionResult.second.distance(cameraRay.getOrigin());
+				terrainResultEntry.movable = nullptr;
 
 				// Insert at correct position because the listeners expect results sorted by distance
 				auto insertion_iterator = std::lower_bound(queryResult.begin(), queryResult.end(), terrainResultEntry);
