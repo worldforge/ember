@@ -52,6 +52,10 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize))),
 		mPageDataProvider(nullptr)
 {
+	// Other params
+	mTerrainGlobalOptions->setSkirtSize(2.0f);
+	mTerrainGlobalOptions->setCompositeMapDistance(3000.0f);
+
 	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
 	mPageManager->setPageProvider(&mTerrainPageProvider);
 	mPageManager->addCamera(mainCamera);
