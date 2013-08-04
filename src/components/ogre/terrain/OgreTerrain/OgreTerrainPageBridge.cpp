@@ -49,6 +49,7 @@ void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 
 void OgreTerrainPageBridge::terrainPageReady()
 {
+	S_LOG_INFO("Finished loading terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
 	mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData);
 	// No need to keep height data around since it is copied on call
 	delete[] mHeightData;

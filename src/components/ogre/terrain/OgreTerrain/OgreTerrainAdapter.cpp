@@ -22,6 +22,7 @@
 #include "OgreTerrainDefiner.h"
 #include "../ITerrainObserver.h"
 #include "components/ogre/TerrainPageDataProvider.h"
+#include "OgreTerrainMaterialGeneratorEmber.h"
 
 #include <OgreSceneManager.h>
 #include <OgreTerrain.h>
@@ -118,6 +119,12 @@ void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 
 void OgreTerrainAdapter::loadScene()
 {
+	// Use our own material generator
+	// Initialized here because it needs a IPageDataProvider
+	mTerrainGlobalOptions->setDefaultMaterialGenerator(
+			Ogre::TerrainMaterialGeneratorPtr(OGRE_NEW OgreTerrainMaterialGeneratorEmber(*mPageDataProvider,
+					mTerrainGroup->getOrigin().x, mTerrainGroup->getOrigin().z)));
+
 	mPagedWorld = mPageManager->createWorld();
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
 			-10, -10, 10, 10, "", 0);
