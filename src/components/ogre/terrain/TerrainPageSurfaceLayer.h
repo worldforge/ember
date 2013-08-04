@@ -49,8 +49,12 @@ class TerrainPageGeometry;
 class Image;
 
 /**
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
+ * Represents a layer of the terrain surface. The layer can either apply to a certain terrain page or not, depending on the
+ * implementation of the underlying Mercator::Shader. It can be used to create a texture for a terrain page using the provided
+ * fillImage() method.
+ *
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
 class TerrainPageSurfaceLayer{
 public:
     TerrainPageSurfaceLayer(TerrainPageSurface& terrainPageSurface, const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader);
