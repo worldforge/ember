@@ -43,6 +43,7 @@ libEmberOgre_a_SOURCES = \
 	sound/SoundAction.cpp sound/SoundDefinition.cpp sound/SoundDefinitionManager.cpp \
 	sound/SoundEntity.cpp sound/SoundGroup.cpp sound/SoundGroupDefinition.cpp sound/XMLSoundDefParser.cpp \
 \
+	terrain/OgreTerrain/OgreTerrainMaterialGeneratorEmber.cpp \
 	terrain/OgreTerrain/OgreTerrainDefiner.cpp \
 	terrain/OgreTerrain/OgreTerrainAdapter.cpp terrain/OgreTerrain/OgreTerrainObserver.cpp terrain/OgreTerrain/OgreTerrainPageBridge.cpp terrain/OgreTerrain/OgreTerrainPageProvider.cpp \
 	terrain/Map.cpp terrain/TerrainArea.cpp \
@@ -145,6 +146,7 @@ noinst_HEADERS = \
 	sound/SoundAction.h sound/SoundDefinition.h sound/SoundDefinitionManager.h sound/SoundEntity.h \
 	sound/SoundGroup.h sound/SoundGroupDefinition.h sound/XMLSoundDefParser.h \
 \
+	terrain/OgreTerrain/OgreTerrainMaterialGeneratorEmber.h \
 	terrain/OgreTerrain/OgreTerrainDefiner.h \
 	terrain/OgreTerrain/OgreTerrainAdapter.h terrain/OgreTerrain/OgreTerrainObserver.h terrain/OgreTerrain/OgreTerrainPageBridge.h terrain/OgreTerrain/OgreTerrainPageProvider.h\
 	terrain/ITerrainAdapter.h terrain/ITerrainPageBridge.h terrain/Map.h terrain/TerrainArea.h \
