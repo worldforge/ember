@@ -55,12 +55,18 @@ void RawTypeInfoRepository::setupConnections(ServerService& serverService)
 void RawTypeInfoRepository::server_ReceivedObject(const Atlas::Objects::Root& op)
 {
 	if (op->instanceOf(Atlas::Objects::Operation::INFO_NO)) {
-		const Atlas::Objects::Operation::RootOperation& rootOp = Atlas::Objects::smart_static_cast<Atlas::Objects::Operation::RootOperation>(op);
-		const std::vector<Atlas::Objects::Root>& args(rootOp->getArgs());
-		std::string objType = args.front()->getObjtype();
+		const Atlas::Objects::Operation::Info rootOp = Atlas::Objects::smart_static_cast<Atlas::Objects::Operation::Info>(op);
 
-		if ((objType == "meta") || (objType == "class") || (objType == "op_definition")) {
-			parseAndSaveTypeData(args.front());
+		if (rootOp->hasAttrFlag(Atlas::Objects::Operation::ARGS_FLAG)) {
+			const std::vector<Atlas::Objects::Root>& args = rootOp->getArgs();
+			if (!args.empty()) {
+				const Atlas::Objects::Root& arg = args.front();
+				const std::string& objType = arg->getObjtype();
+
+				if ((objType == "meta") || (objType == "class") || (objType == "op_definition")) {
+					parseAndSaveTypeData(arg);
+				}
+			}
 		}
 	}
 }
