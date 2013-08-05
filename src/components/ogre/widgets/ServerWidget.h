@@ -110,7 +110,8 @@ protected:
 
 	void createdAccount(Eris::Account* account);
 	void gotAvatar(Eris::Avatar* avatar);
-	void avatar_Deactivated(bool clean);
+	void avatar_EntityDeleted();
+	void avatar_Deactivated(Eris::Avatar* avatar);
 	
 	bool Login_Click(const CEGUI::EventArgs& args);
 	bool LogoutButton_Click(const CEGUI::EventArgs& args);
@@ -119,6 +120,7 @@ protected:
 	bool CreateChar_Click(const CEGUI::EventArgs& args);
 	bool CreateAcc_Click(const CEGUI::EventArgs& args);
 	bool OkButton_Click(const CEGUI::EventArgs& args);
+	bool EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args);
 	bool Disconnect_Click(const CEGUI::EventArgs& args);
 	
 	bool TeleportYes_Click(const CEGUI::EventArgs& args);

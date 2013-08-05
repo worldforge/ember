@@ -52,6 +52,7 @@
 #include <Eris/TypeService.h>
 #include <Eris/SpawnPoint.h>
 #include <Eris/CharacterType.h>
+#include <Eris/View.h>
 #include <varconf/varconf.h>
 #include <fstream>
 
@@ -99,6 +100,11 @@ void ServerWidget::buildWidget()
 		CEGUI::PushButton* okButton = static_cast<CEGUI::PushButton*> (getWindow("NoCharactersAlert/OkButton"));
 		if (okButton) {
 			BIND_CEGUI_EVENT(okButton, CEGUI::PushButton::EventClicked, ServerWidget::OkButton_Click);
+		}
+
+		CEGUI::PushButton* entityDestroyedOkButton = static_cast<CEGUI::PushButton*> (getWindow("EntityDestroyed/OkButton"));
+		if (entityDestroyedOkButton) {
+			BIND_CEGUI_EVENT(entityDestroyedOkButton, CEGUI::PushButton::EventClicked, ServerWidget::EntityDestroyedOkButton_Click);
 		}
 
 		CEGUI::PushButton* login = static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/Login"));
@@ -597,10 +603,20 @@ bool ServerWidget::OkButton_Click(const CEGUI::EventArgs& args)
 {
 	CEGUI::Window* alert = getWindow("NoCharactersAlert");
 	if (alert) {
-		alert->setVisible(false);
+		alert->hide();
 	}
 	return true;
 }
+
+bool ServerWidget::EntityDestroyedOkButton_Click(const CEGUI::EventArgs& args)
+{
+	CEGUI::Window* alert = getWindow("EntityDestroyed");
+	if (alert) {
+		alert->hide();
+	}
+	return true;
+}
+
 
 bool ServerWidget::TeleportYes_Click(const CEGUI::EventArgs& args)
 {
@@ -620,10 +636,21 @@ bool ServerWidget::TeleportNo_Click(const CEGUI::EventArgs& args)
 void ServerWidget::gotAvatar(Eris::Avatar* avatar)
 {
 	mAccount->AvatarDeactivated.connect(sigc::mem_fun(*this, &ServerWidget::avatar_Deactivated));
+	avatar->getView()->AvatarEntityDeleted.connect(sigc::mem_fun(*this, &ServerWidget::avatar_EntityDeleted));
 	hide();
 }
 
-void ServerWidget::avatar_Deactivated(bool clean)
+
+void ServerWidget::avatar_EntityDeleted()
+{
+	CEGUI::Window* alert = getWindow("EntityDestroyed");
+	if (alert) {
+		alert->show();
+	}
+}
+
+
+void ServerWidget::avatar_Deactivated(Eris::Avatar* avatar)
 {
 	mCharacterList->resetList();
 	mCharacterModel.clear();

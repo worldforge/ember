@@ -275,5 +275,25 @@
 				<Property Name='InheritsAlpha' Value='True'/>
 			</Window>
 		</Window>
+        <Window Type='EmberLook/Static' Name='EntityDestroyed'>
+            <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
+            <Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+            <Property Name='InheritsAlpha' Value='True'/>
+            <Property Name='BackgroundEnabled' Value='True'/>
+            <Property Name='Visible' Value='False'/>
+            <Window Type='EmberLook/StaticText'>
+                <Property Name='UnifiedSize' Value='{{1.,0},{1.0,-50}}'/>
+                <Property Name='Text' Value="Your character was killed."/>
+                <Property Name='InheritsAlpha' Value='True'/>
+                <Property Name='VertFormatting' Value='VertCentred' />
+                <Property Name='HorzFormatting' Value='WordWrapCentred' />
+            </Window>
+            <Window Type='EmberLook/Button' Name='EntityDestroyed/OkButton'>
+                <Property Name='UnifiedSize' Value='{{0,80},{0,25}}'/>
+                <Property Name='UnifiedPosition' Value='{{0.5,-40},{1.00,-40}}'/>
+                <Property Name='Text' Value='Ok'/>
+                <Property Name='InheritsAlpha' Value='True'/>
+            </Window>
+        </Window>
 	</Window>
 </GUILayout>
