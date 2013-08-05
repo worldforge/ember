@@ -23,6 +23,14 @@ class Avatar
 	sigc::signal<void, Ember::OgreView::EmberEntity* > EventRemovedEntityFromInventory;
 	
 	/**
+	 * @brief Emitted when the entity the avatar controls is deleted on the server.
+	 *
+	 * I.e. when a SIGHT of the destruction of the entity is received. This differs from the
+	 * Eris entity being deleted in the client as normal shutdown procedure.
+	 */
+	sigc::signal<void> EventAvatarEntityDestroyed;
+	
+	/**
 	True if the current user have admin rights, i.e. is a "creator".
 	*/
 	inline bool isAdmin() const;

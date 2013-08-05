@@ -140,6 +140,16 @@ public:
 	sigc::signal<void, EmberEntity*> EventRemovedEntityFromInventory;
 
 	/**
+	 * @brief Emitted when the entity the avatar controls is deleted on the server.
+	 *
+	 * I.e. when a SIGHT of the destruction of the entity is received. This differs from the
+	 * Eris entity being deleted in the client as normal shutdown procedure.
+	 *
+	 * Note that this signal essentially is the same emitted by Eris::View::AvatarEntityDeleted.
+	 */
+	sigc::signal<void> EventAvatarEntityDestroyed;
+
+	/**
 	 * @brief True if the current user have admin rights, i.e. is a "creator".
 	 */
 	bool isAdmin() const;
@@ -355,6 +365,14 @@ protected:
 	 * @param variable
 	 */
 	void Config_MaxSpeed(const std::string& section, const std::string& key, varconf::Variable& variable);
+
+	/**
+	 * @brief Hooked up to Eris::View::AvatarEntityDeleted.
+	 *
+	 * This will emit the EventAvatarEntityDestroyed signal.
+	 */
+	void viewEntityDeleted();
+
 
 };
 

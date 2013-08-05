@@ -51,6 +51,7 @@
 #include <Eris/Avatar.h>
 #include <Eris/Connection.h>
 #include <Eris/TypeInfo.h>
+#include <Eris/View.h>
 
 #include <OgreRoot.h>
 
@@ -100,6 +101,10 @@ Avatar::Avatar(EmberEntity& erisAvatarEntity, Scene& scene, const Camera::Camera
 	mErisAvatarEntity.setAttachmentControlDelegate(mAvatarAttachmentController);
 
 	mCameraMount->attachToNode(getAvatarSceneNode());
+
+	mErisAvatarEntity.getView()->AvatarEntityDeleted.connect(sigc::mem_fun(*this, &Avatar::viewEntityDeleted));
+
+
 }
 
 Avatar::~Avatar()
@@ -409,6 +414,12 @@ WFMath::Vector<3> Avatar::getClientSideAvatarVelocity() const
 //		return mCurrentMovementState.movement;
 //	}
 }
+
+void Avatar::viewEntityDeleted() {
+	EventAvatarEntityDestroyed();
+}
+
+
 
 }
 }
