@@ -79,7 +79,7 @@ void EntityWorldPickListenerVisualizer::picker_EventPickedEntity(const std::vect
 }
 
 EntityWorldPickListener::EntityWorldPickListener(Eris::View& view, Scene& scene) :
-		VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mVisualizer(nullptr), mView(view), mScene(scene)
+		VisualizePicking("visualize_picking", this, "Visualize mouse pickings."), mClosestPickingDistance(0), mFurthestPickingDistance(0), mContinuePickingThisContext(true), mVisualizer(nullptr), mView(view), mScene(scene)
 {
 }
 
@@ -101,6 +101,7 @@ void EntityWorldPickListener::initializePickingContext(bool& willParticipate, un
 
 		mClosestPickingDistance = 0;
 		mFurthestPickingDistance = 0;
+		mContinuePickingThisContext = true;
 	}
 }
 
@@ -125,6 +126,9 @@ void EntityWorldPickListener::endPickingContext(const MousePickerArgs& mousePick
 
 void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::RaySceneQueryResultEntry& entry, Ogre::Ray& cameraRay, const MousePickerArgs& mousePickerArgs)
 {
+	if (!mContinuePickingThisContext) {
+		return;
+	}
 
 	if (entry.worldFragment) {
 		//this is terrain
@@ -133,14 +137,14 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 		static const Ogre::Vector3 invalidPos(-1, -1, -1);
 		if (wf->singleIntersection != invalidPos) {
 
-			if (mFurthestPickingDistance == 0 || !mResult.size()) {
+			if (mFurthestPickingDistance == 0 || mResult.empty()) {
 				EntityPickResult result;
 				result.entity = static_cast<EmberEntity*>(mView.getTopLevel());
 				result.position = wf->singleIntersection;
 				result.distance = entry.distance;
 				result.isTransparent = false;
 				mResult.push_back(result);
-				continuePicking = false;
+				mContinuePickingThisContext = false;
 			} else {
 				if (entry.distance < mResult[mResult.size() - 1].distance) {
 					//If the last result is transparent, add another result, but if it's not replace it.
@@ -153,7 +157,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 					result.distance = entry.distance;
 					result.isTransparent = false;
 					mResult.push_back(result);
-					continuePicking = false;
+					mContinuePickingThisContext = false;
 				}
 			}
 		}
@@ -183,7 +187,7 @@ void EntityWorldPickListener::processPickResult(bool& continuePicking, Ogre::Ray
 						}
 					} else {
 						if (collisionResult.distance > mFurthestPickingDistance) {
-							continuePicking = false;
+							mContinuePickingThisContext = false;
 							return;
 						} else {
 							if (mResult.size() && mResult[mResult.size() - 1].distance > collisionResult.distance) {

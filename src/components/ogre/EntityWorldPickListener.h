@@ -122,6 +122,11 @@ public:
 
 protected:
 	float mClosestPickingDistance, mFurthestPickingDistance;
+
+	/**
+	 * @brief A value used for each picking context to mark if no more processing should occur in this picker.
+	 */
+	bool mContinuePickingThisContext;
 	std::vector<EntityPickResult> mResult;
 
 	/**
