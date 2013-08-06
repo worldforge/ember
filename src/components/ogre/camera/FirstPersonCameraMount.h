@@ -80,14 +80,27 @@ public:
 private:
 
 	/**
-	 * @brief The main camera node.
+	 * @brief The root node of the camera mount.
+	 *
+	 * This is attached to the controlling node.
+	 * This node is rotated, but never pitched. It never changes position.
 	 */
-	Ogre::SceneNode* mCameraNode;
+	Ogre::SceneNode* mCameraRootNode;
 
 	/**
-	 * @brief Creates all nodes needed for the camera.
+	 * @brief A node attached to the mCameraRootNode and placed at the same location.
+	 *
+	 * This node is pitched, but never rotated. It never changes position.
 	 */
-	void createNodesForCamera(Ogre::SceneManager& sceneManager);
+	Ogre::SceneNode* mCameraPitchNode;
+
+	/**
+	 * @brief The node to which the camera is attached.
+	 *
+	 * This is attached to the mCameraPitchNode, and oriented so that the camera is looking at the direction of the mCameraPitchNode.
+	 * This node never changes its orientation.
+	 */
+	Ogre::SceneNode* mCameraNode;
 
 };
 
