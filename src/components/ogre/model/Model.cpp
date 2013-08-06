@@ -286,7 +286,7 @@ void Model::createActions()
 				//If there are bone groups, we need to use a cumulative blend mode. Note that this will affect all animations in the model.
 				getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
 			}
-			if (mSubmodels.size()) {
+			if (!mSubmodels.empty()) {
 				for (auto& animationDef : actionDef->getAnimationDefinitions()) {
 					Animation animation(animationDef->getIterations(), getSkeleton()->getNumBones());
 					for (auto& animationPartDef : animationDef->getAnimationPartDefinitions()) {
@@ -341,6 +341,7 @@ void Model::createParticles()
 				mAllParticleSystemBindings.push_back(binding);
 			}
 			mParticleSystems.push_back(particleSystem);
+			refreshMovableList();
 		}
 
 	}
@@ -377,6 +378,7 @@ void Model::createLights()
 			lightInfo.light = ogreLight;
 			lightInfo.position = lightDef.position;
 			mLights.push_back(lightInfo);
+			refreshMovableList();
 		}
 
 	}
@@ -384,7 +386,7 @@ void Model::createLights()
 
 bool Model::hasParticles() const
 {
-	return mParticleSystems.size() > 0;
+	return !mParticleSystems.empty();
 }
 
 const ParticleSystemBindingsPtrSet& Model::getAllParticleSystemBindings() const
@@ -413,13 +415,19 @@ bool Model::addSubmodel(SubModel* submodel)
 			// 			mAnimationStateSet = submodel->getEntity()->getAllAnimationStates();
 		}
 	}
-	mSubmodels.insert(submodel);
+	auto result = mSubmodels.insert(submodel);
+	if (result.second) {
+		refreshMovableList();
+	}
 	return true;
 }
 
 bool Model::removeSubmodel(SubModel* submodel)
 {
-	mSubmodels.erase(submodel);
+	auto numberRemoved = mSubmodels.erase(submodel);
+	if (numberRemoved > 0) {
+		refreshMovableList();
+	}
 	return true;
 }
 
@@ -492,16 +500,8 @@ void Model::hidePart(const std::string& partName, bool dontChangeVisibility)
 void Model::setVisible(bool visible)
 {
 	mVisible = visible;
-	for (auto& submodel : mSubmodels) {
-		submodel->getEntity()->setVisible(visible);
-	}
-
-	for (auto& light : mLights) {
-		light.light->setVisible(visible);
-	}
-
-	for (auto& particleSystem : mParticleSystems) {
-		particleSystem->setVisible(visible);
+	for (auto& movable : mMovableObjects) {
+		movable->setVisible(visible);
 	}
 }
 
@@ -524,7 +524,7 @@ bool Model::getDisplaySkeleton(void) const
 bool Model::isLoaded() const
 {
 	//If there's no background loader available the model is loaded in the main thread, and therefore is considered to be loaded already.
-	return mBackgroundLoader == 0 || mBackgroundLoader->getState() == ModelBackgroundLoader::LS_DONE;
+	return mBackgroundLoader == nullptr || mBackgroundLoader->getState() == ModelBackgroundLoader::LS_DONE;
 }
 
 Ogre::Real Model::getScale() const
@@ -546,7 +546,7 @@ Action* Model::getAction(const std::string& name)
 {
 	const auto I = mActions.find(name);
 	if (I == mActions.end()) {
-		return 0;
+		return nullptr;
 	}
 	return &(I->second);
 }
@@ -565,41 +565,65 @@ Action* Model::getAction(const ActivationDefinition::Type type, const std::strin
 
 void Model::resetSubmodels()
 {
-	for (auto& submodel : mSubmodels) {
-		delete submodel;
+	if (!mSubmodels.empty()) {
+		for (auto& submodel : mSubmodels) {
+			delete submodel;
+		}
+		mSubmodels.clear();
+		refreshMovableList();
 	}
-	mSubmodels.clear();
 	mModelParts.clear();
 }
 
 void Model::resetParticles()
 {
-	for (auto& system : mParticleSystems) {
-		delete system;
+	if (!mParticleSystems.empty()) {
+		for (auto& system : mParticleSystems) {
+			delete system;
+		}
+		mParticleSystems.clear();
+		refreshMovableList();
 	}
-	mParticleSystems.clear();
 	mAllParticleSystemBindings.clear();
 }
 
 void Model::resetLights()
 {
+	if (!mLights.empty()) {
+		for (auto& lightInfo : mLights) {
+			Ogre::Light* light = lightInfo.light;
+			if (light) {
+				//Try first with the manager to which the light belongs to. If none is found, try to see if we belong to a maneger. And if that's not true either, just delete it.
+				if (light->_getManager()) {
+					light->_getManager()->destroyLight(light);
+				} else if (_getManager()) {
+					_getManager()->destroyLight(light);
+				} else {
+					delete light;
+				}
 
-	for (auto& lightInfo : mLights) {
-		Ogre::Light* light = lightInfo.light;
-		if (light) {
-			//Try first with the manager to which the light belongs to. If none is found, try to see if we belong to a maneger. And if that's not true either, just delete it.
-			if (light->_getManager()) {
-				light->_getManager()->destroyLight(light);
-			} else if (_getManager()) {
-				_getManager()->destroyLight(light);
-			} else {
-				delete light;
 			}
-
 		}
+		mLights.clear();
+		refreshMovableList();
 	}
-	mLights.clear();
 }
+
+void Model::refreshMovableList()
+{
+	mMovableObjects.resize(0);
+	for (auto& submodel : mSubmodels) {
+		mMovableObjects.push_back(submodel->getEntity());
+	}
+	for (auto& particleSystem : mParticleSystems) {
+		mMovableObjects.push_back(particleSystem->getOgreParticleSystem());
+	}
+	for (auto& lightInfo : mLights) {
+		mMovableObjects.push_back(lightInfo.light);
+	}
+
+}
+
 
 Model::AttachPointWrapper Model::attachObjectToAttachPoint(const Ogre::String &attachPointName, Ogre::MovableObject *pMovable, const Ogre::Vector3 &scale, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition)
 {
@@ -630,28 +654,28 @@ bool Model::hasAttachPoint(const std::string& attachPoint) const
 
 Ogre::AnimationState* Model::getAnimationState(const Ogre::String& name)
 {
-	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getAnimationState(name);
 	} else {
-		return 0;
+		return nullptr;
 	}
 }
 
 Ogre::AnimationStateSet* Model::getAllAnimationStates()
 {
-	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getAllAnimationStates();
 	} else {
-		return 0;
+		return nullptr;
 	}
 }
 
 Ogre::SkeletonInstance * Model::getSkeleton()
 {
-	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		return mSkeletonOwnerEntity->getSkeleton();
 	} else {
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -662,7 +686,7 @@ Ogre::TagPoint* Model::attachObjectToBone(const Ogre::String &boneName, Ogre::Mo
 
 Ogre::TagPoint* Model::attachObjectToBone(const Ogre::String &boneName, Ogre::MovableObject *pMovable, const Ogre::Quaternion &offsetOrientation, const Ogre::Vector3 &offsetPosition, const Ogre::Vector3 &scale)
 {
-	if (mSubmodels.size()) {
+	if (!mSubmodels.empty()) {
 		Ogre::Entity* entity = mSkeletonOwnerEntity;
 
 		Ogre::TagPoint* tagPoint = entity->attachObjectToBone(boneName, pMovable, offsetOrientation, offsetPosition);
@@ -685,7 +709,7 @@ Ogre::TagPoint* Model::attachObjectToBone(const Ogre::String &boneName, Ogre::Mo
 Ogre::MovableObject* Model::detachObjectFromBone(const Ogre::String &movableName)
 {
 
-	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		if (mAttachPoints.get()) {
 			for (auto I = mAttachPoints->begin(); I != mAttachPoints->end(); ++I) {
 				if (I->Movable->getName() == movableName) {
@@ -698,7 +722,7 @@ Ogre::MovableObject* Model::detachObjectFromBone(const Ogre::String &movableName
 				}
 			}
 		}
-		return 0;
+		return nullptr;
 	} else {
 		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::detachObjectFromBone");
 	}
@@ -707,7 +731,7 @@ Ogre::MovableObject* Model::detachObjectFromBone(const Ogre::String &movableName
 //-----------------------------------------------------------------------
 void Model::detachAllObjectsFromBone(void)
 {
-	if (mSubmodels.size() && mSkeletonOwnerEntity) {
+	if (!mSubmodels.empty() && mSkeletonOwnerEntity) {
 		mSkeletonOwnerEntity->detachAllObjectsFromBone();
 		mAttachPoints = std::unique_ptr<AttachPointWrapperStore>(nullptr);
 
@@ -715,22 +739,6 @@ void Model::detachAllObjectsFromBone(void)
 		OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "There are no entities loaded!", "Model::detachAllObjectsFromBone");
 	}
 }
-
-
-void Model::iterateOverMovableObjects(std::function<void(Ogre::MovableObject&)> movableObjectFunction)
-{
-	for (auto& submodel : mSubmodels) {
-		movableObjectFunction(*submodel->getEntity());
-	}
-	for (auto& particleSystem : mParticleSystems) {
-		movableObjectFunction(*particleSystem->getOgreParticleSystem());
-	}
-
-	for (auto& lightInfo : mLights) {
-		movableObjectFunction(*lightInfo.light);
-	}
-}
-
 
 /** Overridden - see MovableObject.
  */
@@ -740,7 +748,9 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 	if (isVisible()) {
 		if (mVisible) {
 
-			iterateOverMovableObjects([&cam](Ogre::MovableObject& obj){obj._notifyCurrentCamera(cam);});
+			for (auto& movable : mMovableObjects) {
+				movable->_notifyCurrentCamera(cam);
+			}
 
 			// Notify any child objects
 			for (auto& child : mChildObjectList) {
@@ -753,19 +763,25 @@ void Model::_notifyCurrentCamera(Ogre::Camera* cam)
 void Model::_notifyMoved()
 {
 	MovableObject::_notifyMoved();
-	iterateOverMovableObjects([](Ogre::MovableObject& obj){obj._notifyMoved();});
+	for (auto& movable : mMovableObjects) {
+		movable->_notifyMoved();
+	}
 }
 
 void Model::setUserAny(const Ogre::Any &anything)
 {
 	Ogre::MovableObject::setUserAny(anything);
-	iterateOverMovableObjects([&anything](Ogre::MovableObject& obj){obj.setUserAny(anything);});
+	for (auto& movable : mMovableObjects) {
+		movable->setUserAny(anything);
+	}
 }
 
 // Overridden - see MovableObject.
 void Model::setRenderQueueGroup(Ogre::RenderQueueGroupID queueID)
 {
-	iterateOverMovableObjects([&queueID](Ogre::MovableObject& obj){obj.setRenderQueueGroup(queueID);});
+	for (auto& movable : mMovableObjects) {
+		movable->setRenderQueueGroup(queueID);
+	}
 }
 
 /** Overridden - see MovableObject.
@@ -774,11 +790,8 @@ const Ogre::AxisAlignedBox& Model::getBoundingBox(void) const
 {
 	mFull_aa_box.setNull();
 
-	for (auto& submodel : mSubmodels) {
-		mFull_aa_box.merge(submodel->getEntity()->getBoundingBox());
-	}
-	for (auto& particleSystem : mParticleSystems) {
-		mFull_aa_box.merge(particleSystem->getOgreParticleSystem()->getBoundingBox());
+	for (auto& movable : mMovableObjects) {
+		mFull_aa_box.merge(movable->getBoundingBox());
 	}
 
 	return mFull_aa_box;
@@ -790,11 +803,8 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 {
 	mWorldFull_aa_box.setNull();
 
-	for (auto& submodel : mSubmodels) {
-		mWorldFull_aa_box.merge(submodel->getEntity()->getWorldBoundingBox(derive));
-	}
-	for (auto& particleSystem : mParticleSystems) {
-		mWorldFull_aa_box.merge(particleSystem->getOgreParticleSystem()->getWorldBoundingBox(derive));
+	for (auto& movable : mMovableObjects) {
+		mWorldFull_aa_box.merge(movable->getWorldBoundingBox(derive));
 	}
 
 	return mWorldFull_aa_box;
@@ -803,11 +813,8 @@ const Ogre::AxisAlignedBox& Model::getWorldBoundingBox(bool derive) const
 Ogre::Real Model::getBoundingRadius() const
 {
 	Ogre::Real rad(0);
-	for (auto& submodel : mSubmodels) {
-		rad = std::max<Ogre::Real>(rad, submodel->getEntity()->getBoundingRadius());
-	}
-	for (auto& particleSystem : mParticleSystems) {
-		rad = std::max<Ogre::Real>(rad, particleSystem->getOgreParticleSystem()->getBoundingRadius());
+	for (auto& movable : mMovableObjects) {
+		rad = std::max<Ogre::Real>(rad, movable->getBoundingRadius());
 	}
 	return rad;
 
@@ -857,12 +864,6 @@ void Model::_updateRenderQueue(Ogre::RenderQueue* queue)
 }
 
 /** Overridden from MovableObject */
-// const Ogre::String& Model::getName(void) const
-// {
-// 	return mName;
-// }
-
-/** Overridden from MovableObject */
 const Ogre::String& Model::getMovableType(void) const
 {
 	return sMovableType;
@@ -871,31 +872,41 @@ const Ogre::String& Model::getMovableType(void) const
 void Model::setRenderingDistance(Ogre::Real dist)
 {
 	MovableObject::setRenderingDistance(dist);
-	iterateOverMovableObjects([dist](Ogre::MovableObject& obj){obj.setRenderingDistance(dist);});
+	for (auto& movable : mMovableObjects) {
+		movable->setRenderingDistance(dist);
+	}
 }
 
 void Model::setQueryFlags(unsigned long flags)
 {
 	MovableObject::setQueryFlags(flags);
-	iterateOverMovableObjects([flags](Ogre::MovableObject& obj){obj.setQueryFlags(flags);});
+	for (auto& movable : mMovableObjects) {
+		movable->setQueryFlags(flags);
+	}
 }
 
 void Model::addQueryFlags(unsigned long flags)
 {
 	MovableObject::addQueryFlags(flags);
-	iterateOverMovableObjects([flags](Ogre::MovableObject& obj){obj.addQueryFlags(flags);});
+	for (auto& movable : mMovableObjects) {
+		movable->addQueryFlags(flags);
+	}
 }
 
 void Model::removeQueryFlags(unsigned long flags)
 {
 	MovableObject::removeQueryFlags(flags);
-	iterateOverMovableObjects([flags](Ogre::MovableObject& obj){obj.removeQueryFlags(flags);});
+	for (auto& movable : mMovableObjects) {
+		movable->removeQueryFlags(flags);
+	}
 }
 
 void Model::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
 {
 	if (isVisible()) {
-		iterateOverMovableObjects([&](Ogre::MovableObject& obj){obj.visitRenderables(visitor, debugRenderables);});
+		for (auto& movable : mMovableObjects) {
+			movable->visitRenderables(visitor, debugRenderables);
+		}
 	}
 }
 

@@ -354,10 +354,11 @@ protected:
 	void reset();
 
 	/**
-	 * @brief Iterates over all contained Ogre::MovableObject instances and applies the supplied function.
-	 * @param movableObjectFunction A function which will be applied to all contained Ogre::MovableObject instances.
+	 * @brief Updates the mMovableObjects store with the child movable objects.
+	 *
+	 * This must be called whenever a SubModel, ParticleSystem or Light is added or removed.
 	 */
-	void iterateOverMovableObjects(std::function<void(Ogre::MovableObject&)> movableObjectFunction);
+	void refreshMovableList();
 
 	Ogre::Entity::ChildObjectList mChildObjectList;
 
@@ -415,22 +416,22 @@ protected:
 
 	ModelBackgroundLoader* mBackgroundLoader;
 
-};
+	/**
+	 * @brief A store of the movable objects which make up this model.
+	 *
+	 * This is only use for performance reasons, to make iteration over the child movable objects faster.
+	 * Since this happens pretty frequently each frame it's important that it's as efficient as possible.
+	 *
+	 * The contents of the list mirrors the sum of mSubmodels, mParticleSystems and mLight.
+	 */
+	std::vector<Ogre::MovableObject*> mMovableObjects;
 
-// Ogre::Real Model::getRenderingDistance   (   void    )    const
-// {
-// 	return _masterModel->getRenderingDistance();
-// }
+};
 
 inline ModelDefinitionPtr Model::getDefinition() const
 {
 	return mDefinition;
 }
-
-// // const Model::SubModelPartStoreMap& Model::getSubmodelParts() const
-// // {
-// // 	return mSubModelPartMap;
-// // }
 
 inline const Model::SubModelSet& Model::getSubmodels() const
 {
