@@ -31,6 +31,7 @@
 #include "platform/platform_windows.h"
 #else
 #include <unistd.h>
+#include <skstream/skstream_unix.h>
 #endif
 
 namespace Ember
@@ -127,7 +128,24 @@ bool ServerService::connectLocal(const std::string& socket)
 
 bool ServerService::hasLocalSocket(const std::string& socketPath)
 {
-	return access(socketPath.c_str(), 0) == 0;
+	//No socket support on win32
+#ifdef _WIN32
+	return false;
+#else
+	//check that the socket file is available and that we can connect to it
+	if (access(socketPath.c_str(), 0) != 0) {
+		return false;
+	}
+
+	//TODO: this is a little overkill since it results in a SIGPIP in the server
+	//For now it will do, but we should check the validity of the socket in a better way.
+	unix_socket_stream socket(socketPath.c_str(), true);
+	if (socket.is_open()) {
+		socket.close();
+		return true;
+	}
+	return false;
+#endif
 }
 
 void ServerService::disconnect()
