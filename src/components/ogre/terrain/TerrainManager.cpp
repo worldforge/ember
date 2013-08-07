@@ -175,13 +175,10 @@ void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath:
 
 	for (std::set<TerrainPage*>::const_iterator I = pages.begin(); I != pages.end(); ++I) {
 		TerrainPage* page = *I;
-		Ogre::Vector2 targetPage = Convert::toOgre<Ogre::Vector2>(page->getWFPosition());
+		const Domain::TerrainIndex& index = page->getWFIndex();
 
-		//note that we've switched the x and y offset here, since the terraininfo is in WF coords, but we now want Ogre coords
-		Ogre::Vector2 adjustedOgrePos(targetPage.x + mHandler->getTerrainInfo().getPageOffsetY(), targetPage.y + mHandler->getTerrainInfo().getPageOffsetX());
-
-		S_LOG_VERBOSE("Updating terrain page at position x: " << adjustedOgrePos.x << " y: " << adjustedOgrePos.y);
-		getTerrainAdapter()->reloadPage(static_cast<unsigned int> (adjustedOgrePos.x), static_cast<unsigned int> (adjustedOgrePos.y));
+		S_LOG_VERBOSE("Updating terrain page [" << index.first << "|" << index.second << "]");
+		getTerrainAdapter()->reloadPage(index);
 		EventTerrainPageGeometryUpdated.emit(*page);
 	}
 }

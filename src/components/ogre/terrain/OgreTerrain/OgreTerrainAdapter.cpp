@@ -29,6 +29,7 @@
 #include <OgreTerrainGroup.h>
 #include <OgreTerrainPaging.h>
 #include <OgrePageManager.h>
+#include <OgreGrid2DPageStrategy.h>
 
 
 namespace Ember
@@ -137,7 +138,7 @@ void OgreTerrainAdapter::loadScene()
 
 void OgreTerrainAdapter::reset()
 {
-	mTerrainGroup->removeAllTerrains();
+	mTerrainPagedWorldSection->removeAllPages();
 }
 
 void OgreTerrainAdapter::setOption(const std::string& strKey, const void* pValue)
@@ -154,12 +155,21 @@ void OgreTerrainAdapter::setUninitializedHeight(float height)
 
 void OgreTerrainAdapter::reloadAllPages()
 {
-	mTerrainGroup->loadAllTerrains(false);
+	mTerrainPagedWorldSection->removeAllPages();
 }
 
-void OgreTerrainAdapter::reloadPage(unsigned int x, unsigned int z)
+void OgreTerrainAdapter::reloadPage(const Domain::TerrainIndex& index)
 {
-	mTerrainGroup->loadTerrain(x, z);
+	if (mTerrainPagedWorldSection) {
+		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
+		if (page) {
+			Ogre::uint32 pageID = mTerrainPagedWorldSection->getGridStrategy()->getPageID(page->getPosition(), mTerrainPagedWorldSection);
+
+			// TODO performance: Unload synchronously, could cause lags
+			mTerrainPagedWorldSection->unloadPage(pageID, true);
+			mTerrainPagedWorldSection->loadPage(pageID);
+		}
+	}
 }
 
 void OgreTerrainAdapter::loadFirstPage()
