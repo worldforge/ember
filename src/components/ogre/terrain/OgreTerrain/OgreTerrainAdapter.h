@@ -79,7 +79,7 @@ public:
 
 	virtual void reloadAllPages();
 
-	virtual void reloadPage(unsigned int x, unsigned int z);
+	virtual void reloadPage(const Domain::TerrainIndex& index);
 
 	virtual void loadFirstPage();
 

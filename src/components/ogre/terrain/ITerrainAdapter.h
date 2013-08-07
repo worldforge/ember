@@ -24,6 +24,7 @@
 #ifndef ITERRAINADAPTER_H
 #define ITERRAINADAPTER_H
 
+#include "domain/Types.h"
 #include "../OgreIncludes.h"
 #include <string>
 
@@ -160,10 +161,9 @@ public:
 	/**
 	 * @brief Reloads a single page.
 	 *
-	 * @param x The x index of the page.
-	 * @param z The z index of the page.
+	 * @param index The index of the page.
 	 */
-	virtual void reloadPage(unsigned int x, unsigned int z) = 0;
+	virtual void reloadPage(const Domain::TerrainIndex& index) = 0;
 	
 	/**
 	 * @brief Force the loading of the first page.
