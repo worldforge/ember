@@ -438,7 +438,7 @@ namespace Ember
 			//http://msdn.microsoft.com/en-us/library/bb762494%28v=vs.85%29.aspx
 			//CSIDL_MYDOCUMENTS would probably be more appropriate, but that's not available in msys (as of 2011-05-23).
 			char path[MAX_PATH];
-			if(SHGetSpecialFolderPath(NULL, path, CSIDL_PERSONAL, TRUE) == TRUE){
+			if(SHGetSpecialFolderPath(nullptr, path, CSIDL_PERSONAL, TRUE) == TRUE){
 				finalPath = path;
 			}else{
 				finalPath = ".";

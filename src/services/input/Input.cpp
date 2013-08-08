@@ -85,7 +85,7 @@ const std::string Input::BINDCOMMAND("bind");
 const std::string Input::UNBINDCOMMAND("unbind");
 
 Input::Input() :
-		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(NULL), mScreenWidth(0), mScreenHeight(0), mIconSurface(0), mMainVideoSurface(0), mInvertMouse(1), mHandleOpenGL(false)
+		ToggleFullscreen(0), mCurrentInputMode(IM_GUI), mMouseState(0), mTimeSinceLastRightMouseClick(0), mSuppressForCurrentEvent(false), mMovementModeEnabled(false), mConfigListenerContainer(new ConfigListenerContainer()), mMouseGrabbingRequested(false), mMouseGrab(false), mMainLoopController(0), mWindowProvider(nullptr), mScreenWidth(0), mScreenHeight(0), mIconSurface(0), mMainVideoSurface(0), mInvertMouse(1), mHandleOpenGL(false)
 {
 	mMousePosition.xPixelPosition = 0;
 	mMousePosition.yPixelPosition = 0;
@@ -277,7 +277,7 @@ void Input::createIcon()
 void Input::attach(IWindowProvider* windowProvider)
 {
 
-	//The windowProvider should not be NULL.
+	//The windowProvider should not be nullptr.
 	assert(windowProvider);
 	mWindowProvider = windowProvider;
 

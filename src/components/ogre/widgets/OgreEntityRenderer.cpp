@@ -102,7 +102,7 @@ void OgreEntityRenderer::unloadEntity()
 	if (mEntity) {
 		Ogre::SceneManager* scenemgr = mTexture->getRenderContext()->getSceneManager();
 		scenemgr->destroyEntity(mEntity);
-		mEntity = NULL;
+		mEntity = nullptr;
 	}
 }
 

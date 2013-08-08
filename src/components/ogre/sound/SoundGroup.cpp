@@ -118,7 +118,7 @@ void SoundGroupBinding::update()
 // 				mNextToPlay--; 
 // 				break;
 // 			case PLAY_RANDOM:
-// 				srand(time(NULL));
+// 				srand(time(nullptr));
 // 				mNextToPlay = rand() % mSamples.size();
 // 				break;
 // 		};
@@ -126,13 +126,13 @@ void SoundGroupBinding::update()
 // 
 // 	void SoundGroup::resetClock()
 // 	{
-// 		gettimeofday(&start, NULL);
+// 		gettimeofday(&start, nullptr);
 // 	}
 // 
 // 	float SoundGroup::getTime()
 // 	{
 // 		struct timeval end;
-// 		gettimeofday(&end, NULL);
+// 		gettimeofday(&end, nullptr);
 // 
 // 		return (end.tv_sec-start.tv_sec)*1000+(end.tv_usec-start.tv_usec)/1000;
 // 	}

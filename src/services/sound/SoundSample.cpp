@@ -105,7 +105,7 @@ unsigned int StaticSoundSample::getNumberOfBuffers() const
 // 		mFile = newFile;
 // 		mFilename = filename;
 // 
-// 		if (ov_open(newFile, &mStream, NULL, 0) < 0)
+// 		if (ov_open(newFile, &mStream, nullptr, 0) < 0)
 // 		{
 // 			S_LOG_FAILURE("Failed to bind ogg stream to sound sample.");
 // 

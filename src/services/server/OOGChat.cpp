@@ -40,7 +40,7 @@ namespace Ember {
     const char * const OOGChat::CMD_PART  = "part";
     const char * const OOGChat::CMD_MSG   = "msg";
 
-    OOGChat::OOGChat(Eris::Account* account) : myLobby(NULL)
+    OOGChat::OOGChat(Eris::Account* account) : myLobby(nullptr)
     {
       // Set up the lobby object
       //HACK: to get it to work with eris 1.3
