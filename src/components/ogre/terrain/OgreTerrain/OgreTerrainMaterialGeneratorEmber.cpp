@@ -41,7 +41,7 @@ void OgreTerrainMaterialGeneratorEmber::requestOptions(Ogre::Terrain* terrain)
 {
 	// TODO SK: this stuff is useful but turned off for now
 	terrain->_setMorphRequired(false);
-	terrain->_setNormalMapRequired(false);
+	terrain->_setNormalMapRequired(true);
 	terrain->_setLightMapRequired(false, false);
 	terrain->_setCompositeMapRequired(false);
 }
@@ -57,6 +57,14 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 	Ogre::MaterialPtr mat = mDataProvider.getPageData(IPageDataProvider::OgreIndex(indexX, indexY))->getMaterial();
 
 	assert(!mat.isNull() && "Returned terrain material must be non-empty");
+
+	Ogre::AliasTextureNamePairList aliases;
+	aliases["EmberTerrain/normalMap"] = terrain->getTerrainNormalMap()->getName();
+
+	bool success = mat->applyTextureAliases(aliases);
+	if (!success) {
+		S_LOG_WARNING("Could not alias normal map for terrain material");
+	}
 
 	return mat;
 }
