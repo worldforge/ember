@@ -108,21 +108,10 @@ ShaderPassCoverageBatch* ShaderPass::createNewBatch()
 
 void ShaderPass::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer)
 {
-	// 	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
-	// // 	if (mCurrentLayerIndex < std::min<unsigned short>(numberOfTextureUnitsOnCard - 1, 4)) {
-	// 		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName() << " and scale " << layer->getScale() << " at index "<< (mCurrentLayerIndex + 1) <<" (" << numberOfTextureUnitsOnCard << " texture units supported)");
-	// 		Ogre::TextureUnitState * textureUnitState = mPass->createTextureUnitState();
-	// // 		textureUnitState->setTextureScale(0.025, 0.025);
-	// 		textureUnitState->setTextureName(layer->getDiffuseTextureName());
-	// 		textureUnitState->setTextureCoordSet(0);
-	// 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
-
 	getCurrentBatch()->addLayer(geometry, layer);
 
-	// 		mCurrentLayerIndex++;
 	mScales[mLayers.size()] = layer->getScale();
 	mLayers.push_back(layer);
-	// 	}
 }
 
 LayerStore& ShaderPass::getLayers()
@@ -171,21 +160,16 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		batch->finalize(pass, getCombinedCoverageTexture(pass.getIndex(), i++));
 	}
 
-	// we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
+	//we provide different fragment programs for different amounts of textures used, so we need to determine which one to use.
 	std::stringstream ss;
 	ss << "SplattingFp/" << mLayers.size() << shaderSuffix;
 
 	std::string fragmentProgramName(ss.str());
 
 	pass.setMaxSimultaneousLights(3);
-	// pass.setFog(true, Ogre::FOG_NONE);
-
-	// add fragment shader for splatting
-	// pass.setFragmentProgram("splatting_fragment_dynamic");
 	try {
 		S_LOG_VERBOSE("Using fragment program " << fragmentProgramName << " for terrain page.");
 		pass.setFragmentProgram(fragmentProgramName);
-		// pass.setFragmentProgram("splatting_fragment_dynamic");
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program '" << fragmentProgramName << "'." << ex);
 		return false;
@@ -196,12 +180,6 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getFragmentProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
-		/*
-		   fpParams->setNamedAutoConstant("iFogColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
-		   fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //this will only apply to the splatting_fragment_dynamic material
-		 */
-		// set how much the texture should tile
-		// fpParams->setNamedConstant("scales", mScales, 3); //4*4=16
 		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
 
 		if (useShadows) {
@@ -216,16 +194,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 				fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
 			}
 
-			// fpParams->setNamedConstant("shadowMap0", 0);
-			// fpParams->setNamedConstant("shadowMap1", 1);
-			// fpParams->setNamedConstant("shadowMap2", 2);
 		}
-		/*
-		   fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
-		   fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY, 3);
-		   fpParams->setNamedAutoConstant("iLightAttenuation", Ogre::GpuProgramParameters::ACT_LIGHT_ATTENUATION_ARRAY, 3);
-		   fpParams->setNamedAutoConstant("iLightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 3);
-		 */
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
@@ -265,21 +234,6 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow)
 {
 	mShadowLayers++;
-	//	S_LOG_VERBOSE("Adding shadow layer.");
-	//	Ogre::TextureUnitState * textureUnitState = mPass->createTextureUnitState();
-	//
-	//	//textureUnitState->setTextureScale(0.025, 0.025);
-	//	/*
-	//	 textureUnitState->setTextureName(terrainPageShadow->getTexture()->getName());
-	//	 textureUnitState->setTextureCoordSet(0);
-	//	 textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-	//	 textureUnitState->setTextureFiltering(Ogre::TFO_ANISOTROPIC);
-	//	 textureUnitState->setTextureAnisotropy(2);
-	//	 */
-	//
-	//	textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
-	//	textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
-	//	textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
 }
 
 unsigned int ShaderPass::getCoveragePixelWidth() const
