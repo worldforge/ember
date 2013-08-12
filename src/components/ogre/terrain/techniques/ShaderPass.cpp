@@ -132,10 +132,20 @@ LayerStore& ShaderPass::getLayers()
 
 bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
 {
+	S_LOG_VERBOSE("Adding normal map texture unit state.");
+	Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
+
+	// TODO SK: constant for name
+
+	// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
+	// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
+	normalMapTextureUnitState->setTextureNameAlias("EmberTerrain/normalMap");
+	normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+
 	if (useShadows) {
 		for (unsigned int i = 0; i < mShadowLayers; ++i) {
 			S_LOG_VERBOSE("Adding shadow layer.");
-			Ogre::TextureUnitState * textureUnitState = pass.createTextureUnitState();
+			Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
 
 			textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
 			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
@@ -143,42 +153,39 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		}
 	}
 
-	//should we use a base pass?
+	// should we use a base pass?
 	if (mBaseLayer) {
 		Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
 		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " (" << numberOfTextureUnitsOnCard << " texture units supported)");
-		//add the first layer of the terrain, no alpha or anything
-		Ogre::TextureUnitState * textureUnitState = pass.createTextureUnitState();
+		// add the first layer of the terrain, no alpha or anything
+		Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
 		textureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
 		textureUnitState->setTextureCoordSet(0);
 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	}
 
 	int i = 0;
-	//add our coverage textures first
+	// add our coverage textures first
 	for (CoverageBatchStore::const_iterator I = mCoverageBatches.begin(); I != mCoverageBatches.end(); ++I) {
 		ShaderPassCoverageBatch* batch = *I;
 		batch->finalize(pass, getCombinedCoverageTexture(pass.getIndex(), i++));
 	}
 
-	//we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
+	// we provide different fragment programs for different amounts of textures used, so we need to determine which one to use. They all have the form of "splatting_fragment_*"
 	std::stringstream ss;
 	ss << "SplattingFp/" << mLayers.size() << shaderSuffix;
 
 	std::string fragmentProgramName(ss.str());
 
-	//Disable lightning here since we're forcing lights to be set for the shaders in PagingLandScapeRenderable::getLights
-	pass.setLightingEnabled(false);
-
 	pass.setMaxSimultaneousLights(3);
-	// 	pass.setFog(true, Ogre::FOG_NONE);
+	// pass.setFog(true, Ogre::FOG_NONE);
 
-	//add fragment shader for splatting
-	// 	pass.setFragmentProgram("splatting_fragment_dynamic");
+	// add fragment shader for splatting
+	// pass.setFragmentProgram("splatting_fragment_dynamic");
 	try {
 		S_LOG_VERBOSE("Using fragment program " << fragmentProgramName << " for terrain page.");
 		pass.setFragmentProgram(fragmentProgramName);
-		// 		pass.setFragmentProgram("splatting_fragment_dynamic");
+		// pass.setFragmentProgram("splatting_fragment_dynamic");
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program '" << fragmentProgramName << "'." << ex);
 		return false;
@@ -190,11 +197,11 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getFragmentProgramParameters();
 		fpParams->setIgnoreMissingParams(true);
 		/*
-		 fpParams->setNamedAutoConstant("iFogColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
-		 fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //this will only apply to the splatting_fragment_dynamic material
+		   fpParams->setNamedAutoConstant("iFogColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
+		   fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //this will only apply to the splatting_fragment_dynamic material
 		 */
-		//set how much the texture should tile
-		//fpParams->setNamedConstant("scales", mScales, 3); //4*4=16
+		// set how much the texture should tile
+		// fpParams->setNamedConstant("scales", mScales, 3); //4*4=16
 		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
 
 		if (useShadows) {
@@ -209,54 +216,36 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 				fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
 			}
 
-			//		fpParams->setNamedConstant("shadowMap0", 0);
-			//		fpParams->setNamedConstant("shadowMap1", 1);
-			//		fpParams->setNamedConstant("shadowMap2", 2);
+			// fpParams->setNamedConstant("shadowMap0", 0);
+			// fpParams->setNamedConstant("shadowMap1", 1);
+			// fpParams->setNamedConstant("shadowMap2", 2);
 		}
 		/*
-		 fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
-		 fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY, 3);
-		 fpParams->setNamedAutoConstant("iLightAttenuation", Ogre::GpuProgramParameters::ACT_LIGHT_ATTENUATION_ARRAY, 3);
-		 fpParams->setNamedAutoConstant("iLightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 3);
+		   fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
+		   fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR_ARRAY, 3);
+		   fpParams->setNamedAutoConstant("iLightAttenuation", Ogre::GpuProgramParameters::ACT_LIGHT_ATTENUATION_ARRAY, 3);
+		   fpParams->setNamedAutoConstant("iLightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY, 3);
 		 */
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
 
-	//add vertex shader for fog
-	std::string lightningVpProgram;
-	if (mSceneManager.getFogMode() == Ogre::FOG_EXP2) {
-		if (useShadows) {
-			lightningVpProgram = "Lighting/ShadowVp";
-		} else {
-			lightningVpProgram = "Lighting/SimpleVp";
-		}
-		S_LOG_VERBOSE("Using vertex program " << "Lighting/ShadowVp" << " for terrain page.");
+	// add vertex shader for fog
+	std::string lightningVpProgram = "Lighting/NormalTexture/";
+	if (useShadows) {
+		lightningVpProgram += "ShadowVp";
 	} else {
-		if (useShadows) {
-			lightningVpProgram = "Lighting/ShadowVp";
-		} else {
-			lightningVpProgram = "Lighting/SimpleVp";
-		}
+		lightningVpProgram += "SimpleVp";
+	}
+
+	if (mSceneManager.getFogMode() != Ogre::FOG_EXP2) {
 		S_LOG_FAILURE("Fog mode is different, but using vertex program " << lightningVpProgram << " for terrain page.");
 	}
+
+	S_LOG_VERBOSE("Using vertex program " << lightningVpProgram << " for terrain page.");
 	pass.setVertexProgram(lightningVpProgram);
 
-	try {
-		if (!pass.hasVertexProgram()) {
-			return false;
-		}
-		//Not available in Ogre 1.7
-		//pass.getVertexProgram()->setSurfaceAndPassLightStates(true);
-		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getVertexProgramParameters();
-		fpParams->setIgnoreMissingParams(true);
-		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
-		fpParams->setNamedAutoConstant("iWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
-		return false;
-	}
 	return true;
 }
 
@@ -264,7 +253,7 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 {
 
 	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
-	int takenUnits = 0;
+	int takenUnits = 1; // One is always used by normal map
 	if (mBaseLayer) {
 		takenUnits += 1;
 	}
