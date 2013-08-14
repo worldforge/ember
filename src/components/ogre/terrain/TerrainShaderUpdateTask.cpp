@@ -22,6 +22,7 @@
 #include "TerrainPageSurface.h"
 #include "TerrainMaterialCompilationTask.h"
 #include "framework/tasks/TaskExecutionContext.h"
+#include "framework/LoggingInstance.h"
 
 #include <wfmath/axisbox.h>
 #include <wfmath/intersect.h>
@@ -78,7 +79,6 @@ void TerrainShaderUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecution
 
 void TerrainShaderUpdateTask::executeTaskInMainThread()
 {
-
 	for (std::vector<const TerrainShader*>::const_iterator I = mShaders.begin(); I != mShaders.end(); ++I) {
 		mSignal(*I, mAreas);
 	}

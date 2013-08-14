@@ -23,6 +23,8 @@
 #include "TerrainPageSurface.h"
 #include "TerrainPageGeometry.h"
 
+#include "framework/LoggingInstance.h"
+
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 namespace Ember
@@ -66,6 +68,7 @@ void TerrainMaterialCompilationTask::executeTaskInMainThread()
 		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
 		TerrainPage* page = J->second;
 		compilationInstance->compile(page->getMaterial());
+		S_LOG_VERBOSE("Recompiled material for terrain page " << "[" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]");
 		delete compilationInstance;
 	}
 	updateSceneManagersAfterMaterialsChange();
