@@ -29,9 +29,6 @@
 #include "SegmentManager.h"
 
 #include "TerrainPage.h"
-#include "OgreImage.h"
-#include "WFImage.h"
-#include "Buffer.h"
 #include "components/ogre/Convert.h"
 #include <Mercator/Segment.h>
 #include <wfmath/stream.h>
