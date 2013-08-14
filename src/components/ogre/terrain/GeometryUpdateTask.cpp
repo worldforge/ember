@@ -46,6 +46,12 @@ GeometryUpdateTask::~GeometryUpdateTask()
 void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionContext& context)
 {
 	std::vector<Mercator::Segment*> segments;
+	// build a vector of shaders so we can more efficiently update them
+	std::vector<const Terrain::TerrainShader*> shaderList;
+
+	for (auto& entry : mShaders) {
+		shaderList.push_back(entry.second);
+	}
 
 	//first populate the geometry for all pages, and then regenerate the shaders
 	for (BridgeBoundGeometryPtrVector::const_iterator I = mGeometry.begin(); I != mGeometry.end(); ++I) {
@@ -57,9 +63,8 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 		}
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
-		for (ShaderStore::const_iterator J = mShaders.begin(); J != mShaders.end(); ++J) {
-			context.executeTask(new TerrainShaderUpdateTask(geometries, J->second, mAreas, mHandler.EventLayerUpdated));
-		}
+
+		context.executeTask(new TerrainShaderUpdateTask(geometries, shaderList, mAreas, mHandler.EventLayerUpdated));
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
 
