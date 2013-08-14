@@ -209,10 +209,10 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	}
 
 	if (mSceneManager.getFogMode() != Ogre::FOG_EXP2) {
-		S_LOG_FAILURE("Fog mode is different, but using vertex program " << lightningVpProgram << " for terrain page.");
+		S_LOG_FAILURE("Fog mode is different, but using vertex program " << lightningVpProgram << " for terrain material pass.");
 	}
 
-	S_LOG_VERBOSE("Using vertex program " << lightningVpProgram << " for terrain page.");
+	S_LOG_VERBOSE("Using vertex program " << lightningVpProgram << " for terrain material pass.");
 	pass.setVertexProgram(lightningVpProgram);
 
 	return true;
