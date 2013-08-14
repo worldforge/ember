@@ -20,6 +20,7 @@
 #include "ShaderPass.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
 #include "components/ogre/terrain/TerrainPage.h"
+#include "components/ogre/terrain/TerrainPageGeometry.h"
 #include <OgrePass.h>
 #include <OgreTechnique.h>
 
@@ -89,6 +90,19 @@ bool Shader::prepareMaterial()
 
 bool Shader::compileMaterial(Ogre::MaterialPtr material)
 {
+	// Preserve any texture name aliases that may have been set
+	Ogre::AliasTextureNamePairList aliases;
+	for (Ogre::Material::TechniqueIterator I = material->getTechniqueIterator(); I.hasMoreElements();) {
+		for (Ogre::Technique::PassIterator J = (I.getNext())->getPassIterator(); J.hasMoreElements();) {
+			for (Ogre::Pass::TextureUnitStateIterator K = (J.getNext())->getTextureUnitStateIterator(); K.hasMoreElements();) {
+				Ogre::TextureUnitState* tus = K.getNext();
+				if (!tus->getTextureNameAlias().empty() && !tus->getTextureName().empty()) {
+					aliases[tus->getTextureNameAlias()] = tus->getTextureName();
+				}
+			}
+		}
+	}
+
 	material->removeAllTechniques();
 	Ogre::Technique* technique = material->createTechnique();
 
@@ -126,6 +140,9 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	 Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
 	 textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
 	 */
+
+	// Reapply the saved texture name aliases
+	material->applyTextureAliases(aliases);
 
 	//we need to load it before we can see how many techniques are supported
 	material->load();
