@@ -69,7 +69,6 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 	origin.z = mTerrainGroup->getTerrainWorldSize() / 2;
 	origin.y = 0;
 	mTerrainGroup->setOrigin(origin);
-	mPageManager->setDebugDisplayLevel(2);
 	defaultImportData.layerList.resize(1);
 	defaultImportData.layerList[0].worldSize = 9;
 	defaultImportData.layerList[0].textureNames.push_back("3d_objects/environment/textures/ground_grass/D.png");
