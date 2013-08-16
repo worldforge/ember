@@ -54,8 +54,10 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mPageDataProvider(nullptr)
 {
 	// Other params
-	mTerrainGlobalOptions->setSkirtSize(2.0f);
-	mTerrainGlobalOptions->setCompositeMapDistance(3000.0f);
+	mTerrainGlobalOptions->setSkirtSize(5.0f);
+	mTerrainGlobalOptions->setCompositeMapDistance(10000.0f);
+	mTerrainGlobalOptions->setCastsDynamicShadows(false);
+	mTerrainGlobalOptions->setMaxPixelError(8);
 
 	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
 	mPageManager->setPageProvider(&mTerrainPageProvider);
