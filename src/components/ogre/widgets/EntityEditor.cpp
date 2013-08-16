@@ -272,58 +272,48 @@ void EntityEditor::setGoals(const std::string& verb, const std::vector<std::stri
 		thoughts.push_back(thought);
 	}
 
-	Atlas::Message::ListType thoughtArgs;
-	Atlas::Message::MapType thought;
-	thought.insert(std::make_pair("predicate", "goal"));
-	thought.insert(std::make_pair("subject", "('" + verb + "', '#" + verb + "_verb1')"));
-	thought.insert(std::make_pair("object", thoughts));
-	thoughtArgs.push_back(thought);
+	Atlas::Objects::Entity::Anonymous thought;
+	thought->setAttr("predicate", "goal");
+	thought->setAttr("subject", "('" + verb + "', '#" + verb + "_verb1')");
+	thought->setAttr("object", thoughts);
 
-	Atlas::Objects::Entity::Anonymous payload;
-	payload->setAttr("args", thoughtArgs);
-
-	Atlas::Objects::Operation::RootOperation thoughtOp;
-	thoughtOp->setArgs1(payload);
+	Atlas::Objects::Operation::RootOperation thinkOp;
+	thinkOp->setArgs1(thought);
 	std::list<std::string> parents;
-	parents.emplace_back("thought");
-	thoughtOp->setParents(parents);
-	thoughtOp->setTo(mEntity.getId());
+	parents.emplace_back("think");
+	thinkOp->setParents(parents);
+	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thoughtOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
 
 	Eris::Connection* connection = account->getConnection();
 
-	connection->send(thoughtOp);
+	connection->send(thinkOp);
 }
 
 void EntityEditor::addKnowledge(const std::string& predicate, const std::string& subject, const std::string& knowledge)
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	Atlas::Message::ListType thoughtArgs;
-	Atlas::Message::MapType thought;
-	thought.insert(std::make_pair("predicate", predicate));
-	thought.insert(std::make_pair("subject", subject));
-	thought.insert(std::make_pair("object", knowledge));
-	thoughtArgs.push_back(thought);
+	Atlas::Objects::Entity::Anonymous thought;
+	thought->setAttr("predicate", predicate);
+	thought->setAttr("subject", subject);
+	thought->setAttr("object", knowledge);
 
-	Atlas::Objects::Entity::Anonymous payload;
-	payload->setAttr("args", thoughtArgs);
-
-	Atlas::Objects::Operation::RootOperation thoughtOp;
-	thoughtOp->setArgs1(payload);
+	Atlas::Objects::Operation::RootOperation thinkOp;
+	thinkOp->setArgs1(thought);
 	std::list<std::string> parents;
-	parents.emplace_back("thought");
-	thoughtOp->setParents(parents);
-	thoughtOp->setTo(mEntity.getId());
+	parents.emplace_back("think");
+	thinkOp->setParents(parents);
+	thinkOp->setTo(mEntity.getId());
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	thoughtOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
 
 	Eris::Connection* connection = account->getConnection();
 
-	connection->send(thoughtOp);
+	connection->send(thinkOp);
 
 }
 
@@ -347,15 +337,17 @@ void EntityEditor::getThoughts()
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	Atlas::Objects::Operation::Get get;
-	Atlas::Objects::Operation::RootOperation get_arg;
+	Atlas::Objects::Operation::Generic get;
 	std::list<std::string> parents;
-	parents.emplace_back("thought");
-	get_arg->setParents(parents);
-	get_arg->setId(mEntity.getId());
+	parents.emplace_back("commune");
+	get->setParents(parents);
+	get->setTo(mEntity.getId());
 
-	get->setArgs1(get_arg);
-	get->setFrom(account->getId());
+	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+	get->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	//By setting a serial number we tell the server to "relay" the operation. This means that any
+	//response operation from the target entity will be sent back to us.
 	get->setSerialno(Eris::getNewSerialno());
 
 	Eris::Connection* connection = account->getConnection();
@@ -367,24 +359,26 @@ void EntityEditor::getThoughts()
 
 void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op)
 {
+	//What we receive here has been relayed from the mind of the entity. That means that this op
+	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
+	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
+	//very carefully.
+
+	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
+	//"think" operation.
+	if (op->getParents().empty()) {
+		S_LOG_WARNING("Got think operation without any parent set.");
+		return;
+	}
+	if (op->getParents().front() != "think") {
+		S_LOG_WARNING("Got think operation with wrong type set.");
+		return;
+	}
+
 	if (!op->getArgs().empty()) {
-		for (auto& thoughtOp : op->getArgs()) {
-			if (!thoughtOp->getParents().empty()) {
-				if (*thoughtOp->getParents().begin() == "thought") {
-					Atlas::Message::Element args = thoughtOp->getAttr("args");
-					if (args.isList()) {
-						for (auto thought : args.asList()) {
-							EventGotThought(thought);
-						}
-					} else {
-						S_LOG_WARNING("Got thought op args which aren't of type 'list'.");
-					}
-				} else {
-					S_LOG_WARNING("Got thought op of wrong parent type. Expected 'thought' and got '" << *thoughtOp->getParents().begin() << "'.");
-				}
-			} else {
-				S_LOG_WARNING("Got thought op without any parent type.");
-			}
+		auto thoughts = op->getArgsAsList();
+		for (auto thought : thoughts) {
+			EventGotThought(thought);
 		}
 	} else {
 		S_LOG_VERBOSE("Got thought op without any thoughts.");
@@ -393,47 +387,53 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 
 void EntityEditor::getGoalInfo(const std::string& subject, const std::string& goal)
 {
+
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
 
-	Atlas::Objects::Operation::Get get;
-	Atlas::Objects::Operation::RootOperation get_arg;
+	Atlas::Objects::Operation::Generic get;
 	std::list<std::string> parents;
-	parents.emplace_back("goal_info");
-	get_arg->setParents(parents);
-	get_arg->setId(mEntity.getId());
+	parents.emplace_back("commune");
+	get->setParents(parents);
+	get->setTo(mEntity.getId());
 
-	Atlas::Objects::Entity::Anonymous args;
-	args->setAttr("subject", subject);
-	args->setAttr("goal", goal);
-	get_arg->setArgs1(args);
-
-	get->setArgs1(get_arg);
-	get->setFrom(account->getId());
+	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+	get->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	//By setting a serial number we tell the server to "relay" the operation. This means that any
+	//response operation from the target entity will be sent back to us.
 	get->setSerialno(Eris::getNewSerialno());
+
+	Atlas::Message::MapType goalMap;
+	goalMap["subject"] = subject;
+	goalMap["goal"] = goal;
+	Atlas::Objects::Entity::Anonymous getArg;
+	getArg->setAttr("goal_info", goalMap);
+	get->setArgs1(getArg);
 
 	Eris::Connection* connection = account->getConnection();
 
 	connection->getResponder()->await(get->getSerialno(), this, &EntityEditor::operationGetGoalInfoResult);
 	connection->send(get);
-
 }
 
 void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::RootOperation& op)
 {
+	//What we receive here has been relayed from the mind of the entity. That means that this op
+	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
+	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
+	//very carefully.
+
+	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
+	//"info" operation.
+	if (op->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
+		S_LOG_WARNING("Got goal info operation with wrong type.");
+		return;
+	}
+
 	if (!op->getArgs().empty()) {
-		for (auto& goalInfoOp : op->getArgs()) {
-			if (!goalInfoOp->getParents().empty() && *goalInfoOp->getParents().begin() == "goal_info") {
-				Atlas::Message::Element args = goalInfoOp->getAttr("args");
-				if (args.isList()) {
-					for (auto goalInfo : args.asList()) {
-						EventGotGoalInfo(goalInfo);
-					}
-				} else {
-					S_LOG_WARNING("Got goal info op args which aren't of type 'list'.");
-				}
-			} else {
-				S_LOG_WARNING("Got goal info op of wrong parent type.");
-			}
+		auto goalInfos = op->getArgsAsList();
+		for (auto goalInfo : goalInfos) {
+			EventGotGoalInfo(goalInfo);
 		}
 	} else {
 		S_LOG_VERBOSE("Got goal info op without any goals.");
