@@ -228,7 +228,7 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 
 			if (terrainIntersectionResult.first) {
 				Ogre::RaySceneQueryResultEntry terrainResultEntry;
-				terrainResultWorldFragment.reset(OGRE_NEW Ogre::SceneQuery::WorldFragment());
+				terrainResultWorldFragment.reset(OGRE_ALLOC_T(Ogre::SceneQuery::WorldFragment, 1, Ogre::MEMCATEGORY_SCENE_CONTROL));
 
 				terrainResultWorldFragment->fragmentType = Ogre::SceneQuery::WFT_SINGLE_INTERSECTION;
 				terrainResultWorldFragment->singleIntersection = terrainIntersectionResult.second;
