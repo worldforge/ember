@@ -33,6 +33,8 @@
 
 #include <Eris/BaseConnection.h>
 
+#include <OgreLodConfig.h>
+
 namespace Atlas
 {
 namespace Message
@@ -62,10 +64,6 @@ class EntityTalk;
 }
 namespace OgreView
 {
-namespace Lod
-{
-class LodConfig;
-}
 class EmberEntity;
 struct EntityPickResult;
 struct MousePickerArgs;
