@@ -228,11 +228,15 @@ bool OgreSetup::showConfigurationDialog()
 		result = configurator.configure();
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when showing configuration window." << ex);
+		delete mOverlaySystem;
+		mOverlaySystem = 0;
 		delete mRoot;
 		mRoot = 0;
 		createOgreSystem();
 		throw ex;
 	}
+	delete mOverlaySystem;
+	mOverlaySystem = 0;
 	delete mRoot;
 	mRoot = 0;
 	if (result == OgreConfigurator::OC_CANCEL) {
