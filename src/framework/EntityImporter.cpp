@@ -504,51 +504,57 @@ std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(cons
 	std::vector<ShortInfo> infos;
 	oslink::directory osdir(directoryPath);
 	while (osdir) {
-		ShortInfo info;
 		const std::string filename = osdir.next();
-		TiXmlDocument xmlDoc;
-		if (!xmlDoc.LoadFile(directoryPath + "/" + filename)) {
-			continue;
-		}
+		if (filename != "." && filename != "..") {
+			try {
+				ShortInfo info;
+				TiXmlDocument xmlDoc;
+				if (!xmlDoc.LoadFile(directoryPath + "/" + filename)) {
+					continue;
+				}
 
-		info.filename = directoryPath + "/" + filename;
+				info.filename = directoryPath + "/" + filename;
 
-		const TiXmlElement* nameElem = xmlDoc.RootElement()->FirstChildElement("name");
-		if (nameElem && nameElem->GetText()) {
-			info.name = nameElem->GetText();
-		} else {
-			info.name = filename;
-		}
+				const TiXmlElement* nameElem = xmlDoc.RootElement()->FirstChildElement("name");
+				if (nameElem && nameElem->GetText()) {
+					info.name = nameElem->GetText();
+				} else {
+					info.name = filename;
+				}
 
-		const TiXmlElement* descElem = xmlDoc.RootElement()->FirstChildElement("description");
-		if (descElem && descElem->GetText()) {
-			info.description = descElem->GetText();
-		}
+				const TiXmlElement* descElem = xmlDoc.RootElement()->FirstChildElement("description");
+				if (descElem && descElem->GetText()) {
+					info.description = descElem->GetText();
+				}
 
-		//We'll handle both raw atlas dumps as well as complete entity dumps (where the latter also includes minds and meta data).
-		const TiXmlElement* atlasElem = nullptr;
+				//We'll handle both raw atlas dumps as well as complete entity dumps (where the latter also includes minds and meta data).
+				const TiXmlElement* atlasElem = nullptr;
 
-		if (xmlDoc.RootElement()->ValueStr() == "atlas") {
-			atlasElem = xmlDoc.RootElement();
-		} else {
-			const TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
-			if (entitiesElem) {
-				atlasElem = entitiesElem->FirstChildElement("atlas");
+				if (xmlDoc.RootElement()->ValueStr() == "atlas") {
+					atlasElem = xmlDoc.RootElement();
+				} else {
+					const TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
+					if (entitiesElem) {
+						atlasElem = entitiesElem->FirstChildElement("atlas");
+					}
+				}
+
+				if (atlasElem) {
+					int count = 0;
+					const TiXmlElement* entityElem = atlasElem->FirstChildElement("map");
+					while (entityElem) {
+						count++;
+						entityElem = entityElem->NextSiblingElement();
+					}
+					info.entityCount = count;
+
+				}
+
+				infos.push_back(info);
+			} catch (const std::exception& ex) {
+				S_LOG_FAILURE("Error when trying to read import info from '" << filename << "'." << ex);
 			}
 		}
-
-		if (atlasElem) {
-			int count = 0;
-			const TiXmlElement* entityElem = atlasElem->FirstChildElement("map");
-			while (entityElem) {
-				count++;
-				entityElem = entityElem->NextSiblingElement();
-			}
-			info.entityCount = count;
-
-		}
-
-		infos.push_back(info);
 
 	}
 
