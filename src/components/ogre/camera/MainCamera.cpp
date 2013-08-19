@@ -71,6 +71,7 @@ namespace Camera
 MainCamera::MainCamera(Ogre::SceneManager& sceneManager, Ogre::RenderWindow& window, Input& input, Ogre::Camera& camera, Terrain::ITerrainAdapter& terrainAdapter) :
 		mSceneManager(sceneManager), mCamera(camera), mCameraMount(0), mWindow(window), mClosestPickingDistance(10000), mCameraRaySceneQuery(0), mAvatarTerrainCursor(new AvatarTerrainCursor(camera, terrainAdapter)), mCameraOrientationChangedThisFrame(false), mMovementProvider(0), mCameraSettings(new CameraSettings), mConfigListenerContainer(new ConfigListenerContainer()), mTerrainAdapter(terrainAdapter)
 {
+	mTerrainResultWorldFragment.fragmentType = Ogre::SceneQuery::WFT_SINGLE_INTERSECTION;
 
 	mCamera.setAutoAspectRatio(true);
 
@@ -224,16 +225,13 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 
 			// Manually add results for terrain since they have to be queried in a different way
 			std::pair<bool, Ogre::Vector3> terrainIntersectionResult = mTerrainAdapter.rayIntersects(cameraRay);
-			std::unique_ptr<Ogre::SceneQuery::WorldFragment> terrainResultWorldFragment = nullptr;
 
 			if (terrainIntersectionResult.first) {
 				Ogre::RaySceneQueryResultEntry terrainResultEntry;
-				terrainResultWorldFragment.reset(OGRE_ALLOC_T(Ogre::SceneQuery::WorldFragment, 1, Ogre::MEMCATEGORY_SCENE_CONTROL));
 
-				terrainResultWorldFragment->fragmentType = Ogre::SceneQuery::WFT_SINGLE_INTERSECTION;
-				terrainResultWorldFragment->singleIntersection = terrainIntersectionResult.second;
+				mTerrainResultWorldFragment.singleIntersection = terrainIntersectionResult.second;
 
-				terrainResultEntry.worldFragment = terrainResultWorldFragment.get();
+				terrainResultEntry.worldFragment = &mTerrainResultWorldFragment;
 				terrainResultEntry.distance = terrainIntersectionResult.second.distance(cameraRay.getOrigin());
 				terrainResultEntry.movable = nullptr;
 
@@ -258,9 +256,6 @@ void MainCamera::pickInWorld(Ogre::Real mouseX, Ogre::Real mouseY, const MousePi
 			for (auto listener : participatingListeners) {
 				listener->endPickingContext(mousePickerArgs);
 			}
-
-			// Clear results since we manually created an entry for terrain intersection which goes out of scope here
-			mCameraRaySceneQuery->clearResults();
 		}
 	} else {
 		for (auto listener : mPickListeners) {

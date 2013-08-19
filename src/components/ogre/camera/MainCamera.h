@@ -34,6 +34,7 @@
 #include <memory>
 
 #include <OgreFrameListener.h>
+#include <OgreSceneQuery.h>
 
 namespace WFMath
 {
@@ -223,6 +224,11 @@ private:
 	 * @brief The terrain adapter used to check for intersections with the terrain.
 	 */
 	Terrain::ITerrainAdapter& mTerrainAdapter;
+
+	/**
+	 * @brief A WorldFragment used when injecting a custom terrain intersection result into the scene query
+	 */
+	Ogre::SceneQuery::WorldFragment mTerrainResultWorldFragment;
 
 	/**
 	 * @brief Sets the near and far clip distances of the camera.
