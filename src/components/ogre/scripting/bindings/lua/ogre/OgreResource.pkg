@@ -87,6 +87,10 @@ namespace Ogre {
 		*/
 		virtual void reload(void);
 
+		/** Returns true if the Resource is reloadable, false otherwise.
+		 */
+		virtual bool isReloadable(void) const;
+
         /** Is this resource manually loaded?
 		*/
 		bool isManuallyLoaded(void) const;

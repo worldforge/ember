@@ -40,6 +40,11 @@ function AssetsManager:TexturesList_ItemSelectionChanged(args)
 		local texturePair = self.helper:showTexture(textureName)
 		if texturePair:hasData() then 
 			self.textures.controls.textureView:setProperty("Image", CEGUI.PropertyHelper:imageToString(texturePair:getTextureImage()))
+			if texturePair:getOgreTexture():get():isReloadable() == true then
+				self.widget:getWindow("TexturesReload"):enable()
+			else
+				self.widget:getWindow("TexturesReload"):disable()
+			end
 		end
 	end
 	
