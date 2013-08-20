@@ -81,6 +81,7 @@ public:
 	virtual Ogre::uint8 getMaxLayers(const Ogre::Terrain* terrain) const
 	{
 		// We don't use this.
+		return 0;
 	}
 	/** Update the composite map for a terrain.
 	   The composite map for a terrain must match what the terrain should look like

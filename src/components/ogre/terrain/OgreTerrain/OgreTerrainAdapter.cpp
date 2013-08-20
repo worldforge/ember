@@ -179,6 +179,7 @@ void OgreTerrainAdapter::loadFirstPage()
 
 std::string OgreTerrainAdapter::getDebugInfo()
 {
+	return "Not available";
 }
 
 ITerrainObserver* OgreTerrainAdapter::createObserver()

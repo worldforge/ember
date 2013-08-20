@@ -74,6 +74,8 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generateForCompositeMap(const Ogre::Terrain* terrain)
 {
 	// TODO SK: return material
+	return Ogre::MaterialPtr();
+
 }
 } /* Terrain */
 } /* OgreView */
