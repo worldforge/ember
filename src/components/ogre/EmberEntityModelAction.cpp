@@ -102,6 +102,7 @@ void EmberEntityModelAction::activate(EntityMapping::ChangeContext& context)
 	if (!model || model->getDefinition()->getName() != mModelName) {
 		mEntity.setGraphicalRepresentation(0);
 		model = Model::Model::createModel(mScene.getSceneManager(), mModelName, mEntity.getId());
+		model->setVisible(mEntity.isVisible());
 
 		//if the model definition isn't valid, use a placeholder
 		if (!model->getDefinition()->isValid()) {
