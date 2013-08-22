@@ -121,6 +121,7 @@ LayerStore& ShaderPass::getLayers()
 
 bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
 {
+	S_LOG_VERBOSE("Creating terrain material pass with: NormalMapping=" << false << " Shadows=" << useShadows << " Suffix=" << shaderSuffix);
 	S_LOG_VERBOSE("Adding normal map texture unit state.");
 	Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
 
@@ -149,7 +150,6 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		// add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
 		textureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
-		textureUnitState->setTextureCoordSet(0);
 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	}
 

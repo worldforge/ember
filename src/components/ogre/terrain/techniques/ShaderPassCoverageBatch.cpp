@@ -98,18 +98,15 @@ void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr textur
 	Ogre::TextureUnitState * coverageTUS = pass.createTextureUnitState();
 	coverageTUS->setTextureScale(1, 1);
 	coverageTUS->setTextureName(texture->getName());
-	coverageTUS->setTextureCoordSet(0);
 	coverageTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
 	for (LayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		const TerrainPageSurfaceLayer* layer(*I);
 		//add the layer textures
 		S_LOG_VERBOSE("Adding new layer with diffuse texture " << layer->getDiffuseTextureName());
-		//add the first layer of the terrain, no alpha or anything
 		Ogre::TextureUnitState * diffuseTUS = pass.createTextureUnitState();
 		//textureUnitState->setTextureScale(0.025, 0.025);
 		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
-		diffuseTUS->setTextureCoordSet(0);
 		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 	}
 }

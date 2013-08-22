@@ -43,21 +43,14 @@ public:
 	ShaderNormalMappedPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position);
 	virtual ~ShaderNormalMappedPass() {}
 
-// 	virtual void addLayer(TerrainPageSurfaceLayer* layer);
-// 	virtual void setBaseLayer(TerrainPageSurfaceLayer* layer);
-
 	virtual bool hasRoomForLayer(const TerrainPageSurfaceLayer* layer);
-
 
 	/**
 	 *    Creates the combined final coverage textures and sets the shader params. Be sure to call this before you load the material.
 	 */
 	virtual bool finalize(Ogre::Pass& pass, bool useShadows = true, const std::string shaderSuffix = "") const;
 
-
-protected:
 	virtual ShaderPassCoverageBatch* createNewBatch();
-
 };
 
 }

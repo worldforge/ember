@@ -27,6 +27,7 @@
 #include <OgreRenderSystemCapabilities.h>
 #include <OgreTextureUnitState.h>
 #include <OgreGpuProgram.h>
+#include <OgreShadowCameraSetupPSSM.h>
 
 namespace Ember
 {
@@ -44,6 +45,8 @@ ShaderNormalMappedPass::ShaderNormalMappedPass(Ogre::SceneManager& sceneManager,
 {
 }
 
+
+
 ShaderPassCoverageBatch* ShaderNormalMappedPass::createNewBatch()
 {
 	ShaderPassCoverageBatch* batch = new ShaderNormalMappedPassCoverageBatch(*this, getCoveragePixelWidth());
@@ -52,9 +55,8 @@ ShaderPassCoverageBatch* ShaderNormalMappedPass::createNewBatch()
 
 bool ShaderNormalMappedPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 {
-
 	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
-	int takenUnits = 0;
+	int takenUnits = 1; // One is always used by normal texture
 	if (mBaseLayer) {
 		takenUnits += 2;
 	}
@@ -65,77 +67,106 @@ bool ShaderNormalMappedPass::hasRoomForLayer(const TerrainPageSurfaceLayer* laye
 
 bool ShaderNormalMappedPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
 {
-	if (shaderSuffix == "/Simple") {
-		return ShaderPass::finalize(pass, useShadows, shaderSuffix);
-	}
-	//TODO: add shadow here
+	S_LOG_VERBOSE("Creating terrain material pass with: NormalMapping=" << true << " Shadows=" << useShadows << " Suffix=" << shaderSuffix);
 
-	//should we use a base pass?
+	S_LOG_VERBOSE("Adding normal map texture unit state.");
+	Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
+
+	// TODO SK: constant for name
+
+	// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
+	// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
+	normalMapTextureUnitState->setTextureNameAlias("EmberTerrain/normalMap");
+	normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+
+	if (useShadows) {
+		for (unsigned int i = 0; i < mShadowLayers; ++i) {
+			S_LOG_VERBOSE("Adding shadow layer.");
+			Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
+
+			textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
+			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
+			textureUnitState->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
+		}
+	}
+
+	// should we use a base pass?
 	if (mBaseLayer) {
 		Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
-		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " and normal map texture "<< mBaseLayer->getNormalTextureName() <<" (" << numberOfTextureUnitsOnCard << " texture units supported)");
-		//add the first layer of the terrain, no alpha or anything
-		Ogre::TextureUnitState * diffuseTextureUnitState = pass.createTextureUnitState();
-		diffuseTextureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
-		diffuseTextureUnitState->setTextureCoordSet(0);
-		diffuseTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+		S_LOG_VERBOSE("Adding new base layer with diffuse texture " << mBaseLayer->getDiffuseTextureName() << " and normal map texture "<< mBaseLayer->getNormalTextureName() << " (" << numberOfTextureUnitsOnCard << " texture units supported)");
+
+		// add the first layer of the terrain, no alpha or anything
+		Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
+		textureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
+		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+
 		Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
 		normalMapTextureUnitState->setTextureName(mBaseLayer->getNormalTextureName());
-		normalMapTextureUnitState->setTextureCoordSet(0);
 		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	}
 
 	int i = 0;
-	//add our coverage textures first
+	// add our coverage textures first
 	for (CoverageBatchStore::const_iterator I = mCoverageBatches.begin(); I != mCoverageBatches.end(); ++I) {
 		ShaderPassCoverageBatch* batch = *I;
 		batch->finalize(pass, getCombinedCoverageTexture(pass.getIndex(), i++));
 	}
 
+	//we provide different fragment programs for different amounts of textures used, so we need to determine which one to use.
 	std::stringstream ss;
-	ss << "splatting_fragment_normalmapped_" << mLayers.size();
+	ss << "SplattingFp/OffsetMapping/" << mLayers.size() << shaderSuffix;
+
 	std::string fragmentProgramName(ss.str());
 
-	pass.setLightingEnabled(false);
-	// 	pass.setFog(true, Ogre::FOG_NONE);
-
-	//add fragment shader for splatting
-	pass.setFragmentProgram("splatting_fragment_normalmapped_dynamic");
-	// 	pass.setFragmentProgram(fragmentProgramName);
+	pass.setMaxSimultaneousLights(3);
+	try {
+		S_LOG_VERBOSE("Using fragment program " << fragmentProgramName << " for terrain page.");
+		pass.setFragmentProgram(fragmentProgramName);
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when setting fragment program '" << fragmentProgramName << "'." << ex);
+		return false;
+	}
+	if (!pass.hasFragmentProgram()) {
+		return false;
+	}
 	try {
 		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getFragmentProgramParameters();
-		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
-		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
-		fpParams->setNamedAutoConstant("iFogColour", Ogre::GpuProgramParameters::ACT_FOG_COLOUR);
-		float theValues[4] = { 0.04, -0.02, 1, 0 };
-		fpParams->setNamedConstant("scaleBias", theValues, 4); //4*4=16
-		fpParams->setNamedConstant("iNumberOfLayers", (float)mLayers.size()); //4*4=16
-		//set how much the texture should tile
-		fpParams->setNamedConstant("iScales", mScales, 4); //4*4=16
+		fpParams->setIgnoreMissingParams(true);
+		fpParams->setNamedConstant("scales", mScales, (mLayers.size() - 1) / 4 + 1);
+
+		if (useShadows) {
+			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
+			if (pssmSetup) {
+				Ogre::Vector4 splitPoints;
+				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
+				for (int i = 0; i < 3; i++) {
+					splitPoints[i] = splitPointList[i];
+				}
+
+				fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
+			}
+
+		}
 	} catch (const std::exception& ex) {
 		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
 		return false;
 	}
 
-	//add vertex shader for fog
-	if (mSceneManager.getFogMode() == Ogre::FOG_EXP2) {
-		pass.setVertexProgram("splatting_vertex_normalmapped_exp2");
+	// add vertex shader for fog
+	std::string lightningVpProgram = "Lighting/NormalTexture/";
+	if (useShadows) {
+		lightningVpProgram += "ShadowVp";
 	} else {
-		pass.setVertexProgram("splatting_vertex_normalmapped");
+		lightningVpProgram += "SimpleVp";
 	}
 
-	try {
-		Ogre::GpuProgramParametersSharedPtr fpParams = pass.getVertexProgramParameters();
-		fpParams->setNamedAutoConstant("lightPosition", Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE);
-		fpParams->setNamedAutoConstant("eyePosition", Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
-		fpParams->setNamedAutoConstant("iFogParams", Ogre::GpuProgramParameters::ACT_FOG_PARAMS);
-		fpParams->setNamedAutoConstant("worldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-		fpParams->setNamedAutoConstant("iLightAmbient", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
-		fpParams->setNamedAutoConstant("iLightDiffuse", Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR);
-	} catch (const std::exception& ex) {
-		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
-		return false;
+	if (mSceneManager.getFogMode() != Ogre::FOG_EXP2) {
+		S_LOG_FAILURE("Fog mode is different, but using vertex program " << lightningVpProgram << " for terrain material pass.");
 	}
+
+	S_LOG_VERBOSE("Using vertex program " << lightningVpProgram << " for terrain material pass.");
+	pass.setVertexProgram(lightningVpProgram);
+
 	return true;
 }
 
