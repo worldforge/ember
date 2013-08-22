@@ -364,6 +364,11 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
 	//very carefully.
 
+	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
+		//An empty root operation signals a timeout; we never got any answer from the entity.
+		return;
+	}
+
 	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
 	//"think" operation.
 	if (op->getParents().empty()) {
@@ -422,6 +427,11 @@ void EntityEditor::operationGetGoalInfoResult(const Atlas::Objects::Operation::R
 	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
 	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
 	//very carefully.
+
+	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
+		//An empty root operation signals a timeout; we never got any answer from the entity.
+		return;
+	}
 
 	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
 	//"info" operation.
