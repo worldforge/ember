@@ -127,13 +127,7 @@ protected:
 	 * @brief When an entity first is seen we'll create a visualization for it.
 	 * @param entity The newly seen entity.
 	 */
-	void view_EntitySeen(Eris::Entity* entity);
-
-	/**
-	 * @brief When an entity is created we'll create a visualization for it.
-	 * @param entity The newly created entity.
-	 */
-	void view_EntityCreated(Eris::Entity* entity);
+	void view_EntityInitialSight(Eris::Entity* entity);
 
 	/**
 	 * @brief When an entity is deleted we'll remove the visualization for it.

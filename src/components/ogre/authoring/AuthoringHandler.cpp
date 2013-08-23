@@ -60,8 +60,7 @@ AuthoringVisualization& AuthoringMoveInstance::getVisualization()
 AuthoringHandler::AuthoringHandler(World& world) :
 	mMoveInstance(0), mWorld(world)
 {
-	world.getView().EntitySeen.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntitySeen));
-	world.getView().EntityCreated.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityCreated));
+	world.getView().InitialSightEntity.connect(sigc::mem_fun(*this, &AuthoringHandler::view_EntityInitialSight));
 	createVisualizationsForExistingEntities(world.getView());
 }
 
@@ -73,12 +72,7 @@ AuthoringHandler::~AuthoringHandler()
 	}
 }
 
-void AuthoringHandler::view_EntitySeen(Eris::Entity* entity)
-{
-	createVisualizationForEntity(static_cast<EmberEntity*> (entity));
-}
-
-void AuthoringHandler::view_EntityCreated(Eris::Entity* entity)
+void AuthoringHandler::view_EntityInitialSight(Eris::Entity* entity)
 {
 	createVisualizationForEntity(static_cast<EmberEntity*> (entity));
 }
