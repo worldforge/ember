@@ -30,6 +30,8 @@
 #include <OgreRenderSystem.h>
 #include <OgreShadowCameraSetupPSSM.h>
 
+#include <algorithm>
+
 namespace Ember
 {
 namespace OgreView
@@ -220,8 +222,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 
 bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 {
-
-	Ogre::ushort numberOfTextureUnitsOnCard = Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits();
+	Ogre::ushort numberOfTextureUnitsOnCard = std::min(static_cast<Ogre::ushort>(OGRE_MAX_TEXTURE_LAYERS), Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits());
 	int takenUnits = 1; // One is always used by normal map
 	if (mBaseLayer) {
 		takenUnits += 1;
