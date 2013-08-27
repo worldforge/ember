@@ -158,7 +158,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		if (mUseNormalMapping) {
 			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
 			normalMapTextureUnitState->setTextureName(mBaseLayer->getNormalTextureName());
-			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 		}
 	}
 
