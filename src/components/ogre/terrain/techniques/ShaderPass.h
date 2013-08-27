@@ -48,7 +48,7 @@ class ShaderPass
 {
 public:
 friend class ShaderPassCoverageBatch;
-	ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position);
+	ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position, bool useNormalMapping = false);
 	virtual ~ShaderPass();
 
 	virtual void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -86,6 +86,8 @@ protected:
 	WFMath::Point<2> mPosition;
 
 	unsigned int mShadowLayers;
+
+	bool mUseNormalMapping;
 };
 }
 

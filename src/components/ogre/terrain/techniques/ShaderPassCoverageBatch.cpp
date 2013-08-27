@@ -38,8 +38,8 @@ namespace Terrain
 namespace Techniques
 {
 
-ShaderPassCoverageBatch::ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize) :
-	mShaderPass(shaderPass), mCombinedCoverageImage(new Image::ImageBuffer(imageSize, 4))
+ShaderPassCoverageBatch::ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize, bool useNormalMapping) :
+	mShaderPass(shaderPass), mCombinedCoverageImage(new Image::ImageBuffer(imageSize, 4)), mUseNormalMapping(useNormalMapping)
 {
 	//reset the coverage image
 	mCombinedCoverageImage.reset();
@@ -86,7 +86,7 @@ void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr tex
 				hardwareBuffer->blitFromMemory(sourceBox);
 			}
 		}
-	
+
 		mSyncedTextures.push_back(texture->getName());
 	}
 }
@@ -108,6 +108,12 @@ void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr textur
 		//textureUnitState->setTextureScale(0.025, 0.025);
 		diffuseTUS->setTextureName(layer->getDiffuseTextureName());
 		diffuseTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+
+		if (mUseNormalMapping) {
+			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
+			normalMapTextureUnitState->setTextureName(layer->getNormalTextureName());
+			normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+		}
 	}
 }
 

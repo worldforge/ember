@@ -31,6 +31,7 @@
 #include <OgreShadowCameraSetupPSSM.h>
 
 #include <algorithm>
+#include <cmath>
 
 namespace Ember
 {
@@ -68,8 +69,8 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 	return combinedCoverageTexture;
 }
 
-ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position) :
-		mBaseLayer(0), mSceneManager(sceneManager), mCoveragePixelWidth(coveragePixelWidth), mPosition(position), mShadowLayers(0)
+ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position, bool useNormalMapping) :
+		mBaseLayer(0), mSceneManager(sceneManager), mCoveragePixelWidth(coveragePixelWidth), mPosition(position), mShadowLayers(0), mUseNormalMapping(useNormalMapping)
 {
 	for (int i = 0; i < 16; i++) {
 		mScales[i] = 0.0;
@@ -104,7 +105,7 @@ ShaderPassCoverageBatch* ShaderPass::getCurrentBatch()
 
 ShaderPassCoverageBatch* ShaderPass::createNewBatch()
 {
-	ShaderPassCoverageBatch* batch = new ShaderPassCoverageBatch(*this, getCoveragePixelWidth());
+	ShaderPassCoverageBatch* batch = new ShaderPassCoverageBatch(*this, getCoveragePixelWidth(), mUseNormalMapping);
 	return batch;
 }
 
@@ -123,7 +124,7 @@ LayerStore& ShaderPass::getLayers()
 
 bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
 {
-	S_LOG_VERBOSE("Creating terrain material pass with: NormalMapping=" << false << " Shadows=" << useShadows << " Suffix=" << shaderSuffix);
+	S_LOG_VERBOSE("Creating terrain material pass with: NormalMapping=" << mUseNormalMapping << " Shadows=" << useShadows << " Suffix=" << shaderSuffix);
 	S_LOG_VERBOSE("Adding normal map texture unit state.");
 	Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
 
@@ -153,6 +154,12 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		Ogre::TextureUnitState* textureUnitState = pass.createTextureUnitState();
 		textureUnitState->setTextureName(mBaseLayer->getDiffuseTextureName());
 		textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
+
+		if (mUseNormalMapping) {
+			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
+			normalMapTextureUnitState->setTextureName(mBaseLayer->getNormalTextureName());
+			textureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+		}
 	}
 
 	int i = 0;
@@ -164,8 +171,11 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 
 	//we provide different fragment programs for different amounts of textures used, so we need to determine which one to use.
 	std::stringstream ss;
-	ss << "SplattingFp/" << mLayers.size() << shaderSuffix;
-
+	ss << "SplattingFp/";
+	if (mUseNormalMapping) {
+		ss << "OffsetMapping/";
+	}
+	ss << mLayers.size() << shaderSuffix;
 	std::string fragmentProgramName(ss.str());
 
 	pass.setMaxSimultaneousLights(3);
@@ -223,13 +233,29 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 {
 	Ogre::ushort numberOfTextureUnitsOnCard = std::min(static_cast<Ogre::ushort>(OGRE_MAX_TEXTURE_LAYERS), Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits());
-	int takenUnits = 1; // One is always used by normal map
+
+	// Include the layer to be added
+	int numLayers = mLayers.size() + 1;
+
+	int takenUnits = 1;			 // One unit is always used by the global normal texture
+	takenUnits += 5;			 // Shadow textures
+	// A coverage texture for every 4 layers
+	// Make sure to always have 1 for 1 layer, 2 for 5 layers etc.
+	takenUnits += static_cast<int>(std::ceil(numLayers / 4.0f));
+
+	// The base layer is not included in the layer list
 	if (mBaseLayer) {
 		takenUnits += 1;
+		if (mUseNormalMapping) {
+			takenUnits += 1;
+		}
 	}
-	takenUnits += mLayers.size() * 1;
-	takenUnits += 3; //shadow texture and two coverage textures
-	return (numberOfTextureUnitsOnCard - takenUnits) >= 1;
+	takenUnits += mLayers.size();
+	if (mUseNormalMapping) {
+		takenUnits += mLayers.size();
+	}
+
+	return (numberOfTextureUnitsOnCard - takenUnits) >= 0;
 }
 
 void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow)

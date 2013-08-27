@@ -55,8 +55,9 @@ public:
      * @param terrainPageSurfaces The surfaces to generate a rendering technique for.
      * @param terrainPageShadow An optional shadow.
      * @param sceneManager The scene manager which will hold the terrain.
+	 * @param useNormalMapping Whether to use normal mapping.
      */
-	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager);
+	Shader(bool includeShadows, const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool useNormalMapping = false);
 
 	/**
 	 * @brief Dtor.
@@ -83,6 +84,11 @@ protected:
 	 * @brief A collection of passes for the material.
 	 */
 	PassStore mPasses;
+
+	/**
+	 * @brief Whether to use normal mapping.
+	 */
+	bool mUseNormalMapping;
 
 	virtual ShaderPass* addPass();
 

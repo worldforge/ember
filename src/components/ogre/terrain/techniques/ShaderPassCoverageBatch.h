@@ -51,7 +51,7 @@ typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
 class ShaderPassCoverageBatch
 {
 public:
-	ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize);
+	ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize, bool useNormalMapping = false);
 	virtual ~ShaderPassCoverageBatch();
 
 	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
@@ -67,6 +67,7 @@ protected:
 
 	OgreImage mCombinedCoverageImage;
 	LayerStore mLayers;
+	bool mUseNormalMapping;
 
 
 	/**

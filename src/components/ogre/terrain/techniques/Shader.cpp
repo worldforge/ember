@@ -36,8 +36,8 @@ namespace Terrain
 namespace Techniques
 {
 
-Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager) :
-	Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager)
+Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool UseNormalMapping) :
+	Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager), mUseNormalMapping(UseNormalMapping)
 {
 }
 
@@ -158,7 +158,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 ShaderPass* Shader::addPass()
 {
-	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition()));
+	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition(), mUseNormalMapping));
 	mPasses.push_back(shaderPass);
 	return shaderPass;
 }
