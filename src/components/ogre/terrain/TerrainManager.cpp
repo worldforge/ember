@@ -214,7 +214,7 @@ void TerrainManager::terrainHandler_WorldSizeChanged()
 void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* page)
 {
 	if (mTerrainAdapter) {
-		mTerrainAdapter->reloadPage(page->getWFIndex());
+		mTerrainAdapter->reloadPageMaterial(page->getWFIndex());
 	}
 }
 
