@@ -22,7 +22,6 @@
 
 #include "CompilerTechniqueProvider.h"
 #include "Shader.h"
-#include "ShaderNormalMapped.h"
 #include "Simple.h"
 
 #include "components/ogre/ShaderManager.h"

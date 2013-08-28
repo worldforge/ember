@@ -55,8 +55,8 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainPageSurfaceLayer.cpp terrain/TerrainShader.cpp terrain/XMLLayerDefinitionSerializer.cpp \
 	terrain/PlantAreaQuery.cpp terrain/PlantAreaQueryResult.cpp terrain/TerrainParser.cpp terrain/TerrainPageCreationTask.cpp \
 	terrain/TerrainShaderUpdateTask.cpp terrain/TerrainAreaUpdateTask.cpp \
-	terrain/techniques/Shader.cpp terrain/techniques/ShaderNormalMapped.cpp terrain/techniques/ShaderNormalMappedPass.cpp \
-	terrain/techniques/ShaderNormalMappedPassCoverageBatch.cpp terrain/techniques/ShaderPass.cpp \
+	terrain/techniques/Shader.cpp \
+	terrain/techniques/ShaderPass.cpp \
 	terrain/techniques/ShaderPassCoverageBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp \
 	terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp terrain/TerrainMaterialCompilationTask.cpp \
 	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/Buffer.cpp terrain/HeightMapBuffer.cpp \
@@ -156,8 +156,8 @@ noinst_HEADERS = \
 	terrain/TerrainShader.h terrain/XMLLayerDefinitionSerializer.h terrain/PlantAreaQuery.h  terrain/PlantAreaQueryResult.h terrain/TerrainParser.h \
 	terrain/TerrainPageCreationTask.h terrain/Types.h terrain/TerrainAreaUpdateTask.h \
 	terrain/TerrainShaderUpdateTask.h \
-	terrain/techniques/Shader.h terrain/techniques/ShaderNormalMapped.h terrain/techniques/ShaderNormalMappedPass.h \
-	terrain/techniques/ShaderNormalMappedPassCoverageBatch.h terrain/techniques/ShaderPass.h \
+	terrain/techniques/Shader.h \
+	terrain/techniques/ShaderPass.h \
 	terrain/techniques/ShaderPassCoverageBatch.h terrain/techniques/Simple.h terrain/techniques/Base.h \
 	terrain/Image.h terrain/OgreImage.h terrain/WFImage.h terrain/TerrainMaterialCompilationTask.h \
 	terrain/HeightMapSegment.h terrain/HeightMap.h terrain/Buffer.h terrain/HeightMapBuffer.h \
