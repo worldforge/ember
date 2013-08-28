@@ -64,7 +64,7 @@ void GeometryUpdateTask::executeTaskInBackgroundThread(Tasks::TaskExecutionConte
 		GeometryPtrVector geometries;
 		geometries.push_back(geometry);
 
-		context.executeTask(new TerrainShaderUpdateTask(geometries, shaderList, mAreas, mHandler.EventLayerUpdated));
+		context.executeTask(new TerrainShaderUpdateTask(geometries, shaderList, mAreas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled));
 	}
 	context.executeTask(new HeightMapUpdateTask(mHeightMapBufferProvider, mHeightMap, segments));
 

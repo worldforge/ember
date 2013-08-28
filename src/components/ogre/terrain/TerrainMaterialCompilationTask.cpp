@@ -35,12 +35,13 @@ namespace OgreView
 namespace Terrain
 {
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry) :
-	mGeometry(geometry)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage* >& signal) :
+	mGeometry(geometry), mSignal(signal)
 {
 }
 
-TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry)
+TerrainMaterialCompilationTask::TerrainMaterialCompilationTask(TerrainPageGeometryPtr geometry, sigc::signal<void, TerrainPage* >& signal) :
+	mSignal(signal)
 {
 	mGeometry.push_back(geometry);
 }
@@ -69,6 +70,7 @@ void TerrainMaterialCompilationTask::executeTaskInMainThread()
 		TerrainPage* page = J->second;
 		compilationInstance->compile(page->getMaterial());
 		S_LOG_VERBOSE("Recompiled material for terrain page " << "[" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]");
+		mSignal(page); // Notify the terrain system of the material change
 		delete compilationInstance;
 	}
 	updateSceneManagersAfterMaterialsChange();

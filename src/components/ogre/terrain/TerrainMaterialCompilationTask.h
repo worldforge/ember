@@ -21,6 +21,7 @@
 
 #include "framework/tasks/TemplateNamedTask.h"
 #include "Types.h"
+#include <sigc++/signal.h>
 #include <vector>
 
 namespace Ember
@@ -45,14 +46,15 @@ public:
 	/**
 	 * @brief Ctor.
 	 * @param pages The pages which needs to have their material recompiled.
+	 * @param signal The signal to emit once the compilation is finished.
 	 */
-	TerrainMaterialCompilationTask(const GeometryPtrVector& geometry);
+	TerrainMaterialCompilationTask(const GeometryPtrVector& geometry, sigc::signal<void, TerrainPage* >& signal);
 
 	/**
 	 * @brief Ctor.
 	 * @param page The page which needs to have its material recompiled.
 	 */
-	TerrainMaterialCompilationTask(TerrainPageGeometryPtr pageGeometry);
+	TerrainMaterialCompilationTask(TerrainPageGeometryPtr pageGeometry, sigc::signal<void, TerrainPage* >& signal);
 
 	/**
 	 * @brief Dtor.
@@ -78,6 +80,12 @@ private:
 	 * @brief The compilation instances and their corresponding pages.
 	 */
 	CompilationInstanceStore mMaterialRecompilations;
+
+
+	/**
+	 * @brief A signal to emit once the update is done.
+	 */
+	sigc::signal<void, TerrainPage* >& mSignal;
 
 	/**
 	 * @brief This needs to be called after materials have changed to make sure that Ogre flushes it's material caches.

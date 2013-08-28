@@ -356,6 +356,11 @@ public:
 	 */
 	sigc::signal<void> EventWorldSizeChanged;
 
+	/**
+	 * @brief Emitted after a terrain material has been recompiled.
+	 */
+	sigc::signal<void, TerrainPage* > EventTerrainMaterialRecompiled;
+
 protected:
 
 	typedef std::map<Domain::TerrainIndex, std::shared_ptr<ITerrainPageBridge>> PageBridgeStore;

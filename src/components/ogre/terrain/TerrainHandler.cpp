@@ -140,7 +140,7 @@ public:
 		areas.push_back(mArea);
 		GeometryPtrVector geometries;
 		geometries.push_back(mGeometry);
-		context.executeTask(new TerrainShaderUpdateTask(geometries, shaders, areas, mHandler.EventLayerUpdated));
+		context.executeTask(new TerrainShaderUpdateTask(geometries, shaders, areas, mHandler.EventLayerUpdated, mHandler.EventTerrainMaterialRecompiled));
 		if (mBridge.get()) {
 			mBridge->updateTerrain(*mGeometry);
 		}
@@ -297,7 +297,7 @@ void TerrainHandler::pollTasks(const TimeFrame& timeFrame)
 		}
 		//use a reverse iterator, since we need to update top most layers first, since lower layers might depend on them for their foliage positions
 		for (ShaderUpdateSet::reverse_iterator I = mShadersToUpdate.rbegin(); I != mShadersToUpdate.rend(); ++I) {
-			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, EventLayerUpdated), 0);
+			mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->first, I->second.Areas, EventLayerUpdated, EventTerrainMaterialRecompiled), 0);
 		}
 		mShadersToUpdate.clear();
 	}
@@ -316,7 +316,7 @@ void TerrainHandler::updateAllPages()
 
 	//Update all shaders on all pages
 	for (ShaderStore::const_iterator I = mShaderMap.begin(); I != mShaderMap.end(); ++I) {
-		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, areas, EventLayerUpdated), 0);
+		mTaskQueue->enqueueTask(new TerrainShaderUpdateTask(geometry, I->second, areas, EventLayerUpdated, EventTerrainMaterialRecompiled), 0);
 	}
 }
 
