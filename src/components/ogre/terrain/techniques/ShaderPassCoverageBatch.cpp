@@ -111,7 +111,11 @@ void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr textur
 
 		if (mUseNormalMapping) {
 			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
-			normalMapTextureUnitState->setTextureName(layer->getNormalTextureName());
+			std::string normalTextureName = layer->getNormalTextureName();
+			if (normalTextureName.empty()) {
+				normalTextureName = "3d_objects/primitives/textures/onepixel/N.png";
+			}
+			normalMapTextureUnitState->setTextureName(normalTextureName);
 			normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_WRAP);
 		}
 	}
