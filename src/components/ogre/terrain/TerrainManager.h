@@ -256,11 +256,15 @@ protected:
 
 	void config_Foliage(const std::string& section, const std::string& key, varconf::Variable& variable);
 
+	void config_TerrainTechnique(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 	void terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages);
 
 	void terrainHandler_ShaderCreated(const TerrainShader& shader);
 
 	void terrainHandler_WorldSizeChanged();
+
+	void terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* page);
 
 	/**
 	 * @brief Listen to graphic level updates and ask the pages to regenerate their materials (since they will use different materials depending on the level chosen).

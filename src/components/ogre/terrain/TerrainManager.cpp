@@ -79,6 +79,7 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 	Ogre::Root::getSingleton().addFrameListener(this);
 
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
+	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique));
 
 	shaderManager.EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), &shaderManager));
 
@@ -87,6 +88,7 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 	mHandler->EventShaderCreated.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_ShaderCreated));
 	mHandler->EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_AfterTerrainUpdate));
 	mHandler->EventWorldSizeChanged.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_WorldSizeChanged));
+	mHandler->EventTerrainMaterialRecompiled.connect(sigc::mem_fun(*this, &TerrainManager::terrainHandler_TerrainPageMaterialRecompiled));
 }
 
 TerrainManager::~TerrainManager()
@@ -170,6 +172,12 @@ void TerrainManager::config_Foliage(const std::string& section, const std::strin
 	updateFoliageVisibility();
 }
 
+void TerrainManager::config_TerrainTechnique(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	//TODO this is a bit crude and does more updates than necessary
+	mHandler->updateAllPages();
+}
+
 void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages)
 {
 
@@ -201,6 +209,13 @@ void TerrainManager::terrainHandler_WorldSizeChanged()
 		mIsInitialized = true;
 	}
 
+}
+
+void TerrainManager::terrainHandler_TerrainPageMaterialRecompiled(TerrainPage* page)
+{
+	if (mTerrainAdapter) {
+		mTerrainAdapter->reloadPage(page->getWFIndex());
+	}
 }
 
 void TerrainManager::initializeTerrain()
