@@ -24,6 +24,7 @@
 #include <OgrePass.h>
 #include <OgreTechnique.h>
 #include <OgreMaterial.h>
+#include <OgreMaterialManager.h>
 
 
 namespace Ember
@@ -130,13 +131,15 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 	material->removeAllTechniques();
 
+	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("Ogre/DepthShadowmap/Caster/Float");
 
 	Ogre::Technique* technique = material->createTechnique();
+	technique->setShadowCasterMaterial(shadowCasterMaterial);
+
 	if (mUseNormalMapping) {
 		Ogre::Material::LodValueList lodList;
 		lodList.push_back(50);
 		material->setLodLevels(lodList);
-
 		technique->setLodIndex(0);
 
 		for (auto& shaderPass : mPassesNormalMapped) {
@@ -148,8 +151,8 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 		technique = material->createTechnique();
 		technique->setLodIndex(1);
+		technique->setShadowCasterMaterial(shadowCasterMaterial);
 	}
-
 
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		ShaderPass* shaderPass(*I);
