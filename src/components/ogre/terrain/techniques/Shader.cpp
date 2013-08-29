@@ -23,6 +23,7 @@
 #include "components/ogre/terrain/TerrainPageGeometry.h"
 #include <OgrePass.h>
 #include <OgreTechnique.h>
+#include <OgreMaterial.h>
 
 
 namespace Ember
@@ -46,6 +47,9 @@ Shader::~Shader()
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		delete *I;
 	}
+	for (auto& pass : mPassesNormalMapped) {
+		delete pass;
+	}
 }
 
 void Shader::reset()
@@ -54,12 +58,30 @@ void Shader::reset()
 		delete *I;
 	}
 	mPasses.clear();
+	for (auto& pass : mPassesNormalMapped) {
+		delete pass;
+	}
+	mPassesNormalMapped.clear();
 }
 
 bool Shader::prepareMaterial()
 {
 	reset();
+	if (mUseNormalMapping) {
+		ShaderPass* shaderPass = addPassNormalMapped();
+		initializePass(shaderPass);
+	}
+
 	ShaderPass* shaderPass = addPass();
+	initializePass(shaderPass);
+
+	//We don't need the geometry any more, so we'll release it as soon as we can.
+	mGeometry.reset();
+	return true;
+}
+
+void Shader::initializePass(ShaderPass* shaderPass)
+{
 	if (shaderPass) {
 		if (mIncludeShadows) {
 			shaderPass->addShadowLayer(mTerrainPageShadow);
@@ -83,9 +105,6 @@ bool Shader::prepareMaterial()
 			}
 		}
 	}
-	//We don't need the geometry any more, so we'll release it as soon as we can.
-	mGeometry.reset();
-	return true;
 }
 
 bool Shader::compileMaterial(Ogre::MaterialPtr material)
@@ -103,14 +122,35 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 		}
 	}
 
-	material->removeAllTechniques();
-	Ogre::Technique* technique = material->createTechnique();
-
 	//The normal, shadowed, shaders have clones with the suffix "/NoShadows" which will skip the shadows.
 	std::string materialSuffix = "";
 	if (!mIncludeShadows) {
 		materialSuffix = "/NoShadows";
 	}
+
+	material->removeAllTechniques();
+
+
+	Ogre::Technique* technique = material->createTechnique();
+	if (mUseNormalMapping) {
+		Ogre::Material::LodValueList lodList;
+		lodList.push_back(50);
+		material->setLodLevels(lodList);
+
+		technique->setLodIndex(0);
+
+		for (auto& shaderPass : mPassesNormalMapped) {
+			Ogre::Pass* pass = technique->createPass();
+			if (!shaderPass->finalize(*pass, mIncludeShadows, materialSuffix)) {
+				return false;
+			}
+		}
+
+		technique = material->createTechnique();
+		technique->setLodIndex(1);
+	}
+
+
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		ShaderPass* shaderPass(*I);
 		Ogre::Pass* pass = technique->createPass();
@@ -122,6 +162,10 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	//Now also add a "Low" technique, for use in the compass etc.
 	technique = material->createTechnique();
 	technique->setSchemeName("Low");
+
+	if (mUseNormalMapping) {
+		technique->setLodIndex(2);
+	}
 
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		ShaderPass* shaderPass(*I);
@@ -158,14 +202,20 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 ShaderPass* Shader::addPass()
 {
-	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition(), mUseNormalMapping));
+	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition()));
 	mPasses.push_back(shaderPass);
+	return shaderPass;
+}
+
+ShaderPass* Shader::addPassNormalMapped()
+{
+	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition(), true));
+	mPassesNormalMapped.push_back(shaderPass);
 	return shaderPass;
 }
 
 }
 
 }
-
 }
 }

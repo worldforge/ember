@@ -86,11 +86,20 @@ protected:
 	PassStore mPasses;
 
 	/**
+	 * @brief A collection of passes for the material, only used if normal mapping enabled.
+	 */
+	PassStore mPassesNormalMapped;
+
+	/**
 	 * @brief Whether to use normal mapping.
 	 */
 	bool mUseNormalMapping;
 
 	virtual ShaderPass* addPass();
+
+	virtual ShaderPass* addPassNormalMapped();
+
+	virtual void initializePass(ShaderPass* pass);
 
 	/**
 	 * @brief Adds the first layer.
