@@ -241,12 +241,22 @@ void EntityImporter::create(const RootEntity & obj, OpVector & res)
 
 void EntityImporter::errorArrived(const Operation & op, OpVector & res)
 {
-	if (op->isDefaultRefno()) {
-		return;
+	std::string errorMessage;
+	if (!op->getArgs().empty()) {
+		auto arg = op->getArgs().front();
+		if (arg->hasAttr("message")) {
+			const Atlas::Message::Element messageElem = arg->getAttr("message");
+			if (messageElem.isString()) {
+				errorMessage = messageElem.asString();
+			}
+		}
 	}
+
 	switch (m_state) {
 	case WALKING:
 	{
+		//An error here just means that the entity we asked for didn't exist on the server, and we need
+		//to create it. This is an expected result.
 		assert(!m_treeStack.empty());
 		StackEntry & current = m_treeStack.back();
 		RootEntity obj = current.obj;
@@ -257,12 +267,29 @@ void EntityImporter::errorArrived(const Operation & op, OpVector & res)
 	}
 		break;
 	case CREATING:
-		S_LOG_FAILURE("Could not create.");
-		EventCompleted.emit();
+	{
+		//An error here means that something went wrong when trying to create an entity. This is wrong.
+		//It probably means that there's something wrong with the data we're sending. Either the
+		//persisted data is corrupt, or there have been changes on the server (for example entity types
+		//renamed or removed).
+		std::string entityType = "unknown";
 
+		auto I = mCreateEntityMapping.find(op->getRefno());
+		if (I != mCreateEntityMapping.end()) {
+			auto J = m_objects.find(I->second);
+			if (J != m_objects.end()) {
+				auto& entity = J->second;
+				if (!entity->getParents().empty()) {
+					entityType = entity->getParents().front();
+				}
+			}
+		}
+		S_LOG_FAILURE("Could not create entity of type '" << entityType << "', continuing with next. Server message: " << errorMessage);
+		walk(res);
+	}
 		break;
 	default:
-		S_LOG_FAILURE("Unexpected state in state machine.");
+		S_LOG_FAILURE("Unexpected state in state machine. Server message: " << errorMessage);
 		break;
 	};
 }
