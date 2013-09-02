@@ -106,12 +106,16 @@ void EntityImporter::walk(OpVector & res)
 				sendMinds(res);
 			}
 		} else {
-			// Start WALKING the current entity
-			assert(current.child == current.obj->getContains().end());
-			current.child = current.obj->getContains().begin();
-			assert(current.child != current.obj->getContains().end());
-
-			getEntity(*current.child, res);
+			//Iterate until we find an entity that's persisted.
+			//Note that there might be a reference to an entity in CONTAINS which can't be found
+			//in the list of entities; this happens with transient entities.
+			for (auto I = current.obj->getContains().begin(); I != current.obj->getContains().end(); ++I) {
+				current.child = I;
+				bool foundEntity = getEntity(*current.child, res);
+				if (foundEntity) {
+					return;
+				}
+			}
 		}
 	}
 }
@@ -323,7 +327,7 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 
 			current.restored_id = id;
 
-			S_LOG_VERBOSE("Updating: " << obj->getId() << "," << obj->getParents().front());
+			S_LOG_VERBOSE("Updating: " << obj->getId() << " ," << obj->getParents().front());
 
 			update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
 			update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
