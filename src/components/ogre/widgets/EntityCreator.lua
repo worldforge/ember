@@ -228,8 +228,10 @@ function EntityCreator.buildWidget(world)
 					dumpStatusWindow:setText("Loading, " .. entitiesToLoad .. " entities and " .. mindsToRestore .." minds left")
 				end)
 				cancelButton.method = function()
+					activeOverlay:setVisible(false)
+					cancelButton.method = nil
 					worldLoader:cancel()
-					dumpStatusWindow:setText("Cancelled")
+					worldLoader:delete()
 				end
 				activeOverlay:setVisible(true)
 				worldLoader:start(importButton.filename)

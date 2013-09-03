@@ -520,7 +520,6 @@ void EntityImporter::operation(const Operation & op)
 {
 	if (m_state == CANCEL) {
 		m_state = CANCELLED;
-		EventCompleted.emit();
 		return;
 	}
 	if (m_state == CANCELLED) {
