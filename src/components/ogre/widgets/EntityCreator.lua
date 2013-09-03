@@ -221,8 +221,11 @@ function EntityCreator.buildWidget(world)
 					cancelButton.method = nil
 					worldLoader:delete()
 				end)
-				createConnector(worldLoader.EventProgress):connect(function(entitiesToLoad)
-					dumpStatusWindow:setText("Loading, " .. entitiesToLoad .. " left")
+				createConnector(worldLoader.EventProgress):connect(function()
+					local stats = worldLoader:getStats()
+					local entitiesToLoad = stats.entitiesCount - stats.entitiesProcessedCount
+					local mindsToRestore = stats.mindsCount - stats.mindsProcessedCount
+					dumpStatusWindow:setText("Loading, " .. entitiesToLoad .. " entities and " .. mindsToRestore .." minds left")
 				end)
 				cancelButton.method = function()
 					worldLoader:cancel()

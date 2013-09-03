@@ -77,6 +77,40 @@ public:
 		int entityCount;
 	};
 
+	/**
+	 * @brief Contains various stats about the import process, to be shown in an UI or help with debugging.
+	 */
+	struct Stats {
+		/**
+		 * The total number of entities to process.
+		 */
+		unsigned int entitiesCount;
+		/**
+		 * The number of entities processed so far.
+		 */
+		unsigned int entitiesProcessedCount;
+		/**
+		 * The number of entity update ops sent.
+		 */
+		unsigned int entitiesUpdateCount;
+		/**
+		 * The number of entity creation ops sent.
+		 */
+		unsigned int entitiesCreateCount;
+		/**
+		 * The number of failed entity creation ops.
+		 */
+		unsigned int entitiesCreateErrorCount;
+		/**
+		 * The total number of minds to restore.
+		 */
+		unsigned int mindsCount;
+		/**
+		 * The total number of minds processed so far.
+		 */
+		unsigned int mindsProcessedCount;
+	};
+
 
 	explicit EntityImporter(Eris::Account& account);
 	virtual ~EntityImporter();
@@ -92,6 +126,12 @@ public:
 	void cancel();
 
 	/**
+	 * @brief Gets stats about the importing process.
+	 * @return Stats about the process.
+	 */
+	const Stats& getStats() const;
+
+	/**
 	 * @brief Emitted when the load has been completed.
 	 */
 	sigc::signal<void> EventCompleted;
@@ -99,15 +139,12 @@ public:
 	/**
 	 * @brief Emitted when an entity has been updated or created.
 	 *
-	 * The argument denotes how many instances are left to load.
 	 */
-	sigc::signal<void, int> EventProgress;
+	sigc::signal<void> EventProgress;
 
 protected:
 	Eris::Account& mAccount;
-	int m_count;
-	int m_updateCount;
-	int m_createCount;
+	Stats mStats;
 	std::map<std::string, Atlas::Objects::Root> m_objects;
 	std::map<std::string, Atlas::Objects::Root> mMinds;
 

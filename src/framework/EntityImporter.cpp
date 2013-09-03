@@ -124,7 +124,7 @@ void EntityImporter::sendMinds(OpVector & res)
 {
 	if (mResolvedMindMapping.empty()) {
 		S_LOG_INFO("Restore done.");
-		S_LOG_INFO("Restored " << m_count << ", created:" << m_createCount << ", updated:" << m_updateCount << ".");
+		S_LOG_INFO("Restored " << mStats.entitiesProcessedCount<< ", created: " << mStats.entitiesCreateCount << ", updated: " << mStats.entitiesUpdateCount << ", create errors: " << mStats.entitiesCreateErrorCount << " .");
 		EventCompleted.emit();
 	} else if (!mResolvedMindMapping.empty()) {
 		for (auto mind : mResolvedMindMapping) {
@@ -201,8 +201,9 @@ void EntityImporter::sendMinds(OpVector & res)
 			//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 			//if it came from the entity itself (the server rewrites the FROM to be of the entity).
 			thoughtOp->setFrom(mAccount.getActiveCharacters().begin()->first);
-
+			mStats.mindsProcessedCount++;
 			res.push_back(thoughtOp);
+			EventProgress.emit();
 		}
 		mResolvedMindMapping.clear();
 	}
@@ -210,9 +211,9 @@ void EntityImporter::sendMinds(OpVector & res)
 
 void EntityImporter::create(const RootEntity & obj, OpVector & res)
 {
-	++m_count;
-	++m_createCount;
-	EventProgress.emit(m_objects.size() - m_count);
+	++mStats.entitiesProcessedCount;
+	++mStats.entitiesCreateCount;
+	EventProgress.emit();
 
 	m_state = CREATING;
 
@@ -285,6 +286,7 @@ void EntityImporter::errorArrived(const Operation & op, OpVector & res)
 			}
 		}
 		S_LOG_FAILURE("Could not create entity of type '" << entityType << "', continuing with next. Server message: " << errorMessage);
+		mStats.entitiesCreateErrorCount++;
 		walk(res);
 	}
 		break;
@@ -372,9 +374,9 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 				mResolvedMindMapping.push_back(std::make_pair(obj->getId(), mindI->second));
 			}
 
-			++m_count;
-			++m_updateCount;
-			EventProgress.emit(m_objects.size() - m_count);
+			++mStats.entitiesProcessedCount;
+			++mStats.entitiesUpdateCount;
+			EventProgress.emit();
 
 			m_state = UPDATING;
 		}
@@ -421,7 +423,7 @@ void EntityImporter::sightArrived(const Operation & op, OpVector & res)
 }
 
 EntityImporter::EntityImporter(Eris::Account& account) :
-		mAccount(account), m_count(0), m_updateCount(0), m_createCount(0), m_state(INIT)
+		mAccount(account), mStats({}), m_state(INIT)
 {
 }
 
@@ -481,7 +483,11 @@ void EntityImporter::start(const std::string& filename)
 		codec.poll(true);
 	}
 
-	S_LOG_INFO("Starting loading of world. Number of objects: " << m_objects.size());
+	S_LOG_INFO("Starting loading of world. Number of entities: " << m_objects.size() << " Number of minds: " << mMinds.size());
+	mStats.entitiesCount = static_cast<unsigned int>(m_objects.size());
+	mStats.mindsCount = static_cast<unsigned int>(mMinds.size());
+
+	EventProgress.emit();
 
 	Look l;
 
@@ -503,6 +509,11 @@ void EntityImporter::sendOperation(const Operation& op)
 void EntityImporter::cancel()
 {
 	m_state = CANCEL;
+}
+
+const EntityImporter::Stats& EntityImporter::getStats() const
+{
+	return mStats;
 }
 
 void EntityImporter::operation(const Operation & op)
