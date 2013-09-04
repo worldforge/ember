@@ -188,7 +188,7 @@ protected:
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpMind(const std::string& entityId, const Operation & op);
 	void infoArrived(const Operation& op);
-	void thoughtInfoArrived(const Operation& op);
+	void thoughtOpArrived(const Operation& op);
 	void operationGetResult(const Operation& op);
 	void operationGetThoughtResult(const Operation& op);
 

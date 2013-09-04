@@ -104,27 +104,38 @@ void EntityExporter::dumpMind(const std::string& entityId, const Operation & op)
 {
 	Atlas::Message::MapType entityMap;
 	entityMap["id"] = entityId;
-	Atlas::Message::ListType thoughts;
-	for (auto& thoughtOp : op->getArgs()) {
-		if (*thoughtOp->getParents().begin() == "thought") {
-			Atlas::Message::Element args = thoughtOp->getAttr("args");
-			if (args.isList()) {
-				for (auto thought : args.asList()) {
-					thoughts.push_back(thought);
-				}
-			}
-		}
-	}
+	auto thoughts = op->getArgsAsList();
 	if (!thoughts.empty()) {
 		entityMap["thoughts"] = thoughts;
 		mMindsEncoder->streamMessageElement(entityMap);
 	}
 }
 
-
-void EntityExporter::thoughtInfoArrived(const Operation & op)
+void EntityExporter::thoughtOpArrived(const Operation & op)
 {
-	S_LOG_VERBOSE("Got thought info when dumping.");
+
+	S_LOG_VERBOSE("Got commune result when dumping.");
+
+	//What we receive here has been relayed from the mind of the entity. That means that this op
+	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
+	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
+	//very carefully.
+
+	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
+		//An empty root operation signals a timeout; we never got any answer from the entity.
+		return;
+	}
+
+	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
+	//"think" operation.
+	if (op->getParents().empty()) {
+		S_LOG_WARNING("Got think operation without any parent set.");
+		return;
+	}
+	if (op->getParents().front() != "think") {
+		S_LOG_WARNING("Got think operation with wrong type set.");
+		return;
+	}
 
 	std::map<int, std::string>::const_iterator I = mThoughtsOutstanding.find(op->getRefno());
 	if (I == mThoughtsOutstanding.end()) {
@@ -132,14 +143,13 @@ void EntityExporter::thoughtInfoArrived(const Operation & op)
 		return;
 	}
 	const std::string entityId = I->second;
-	mOutstandingGetRequestCounter--;
 
 	dumpMind(entityId, op);
-	pollQueue();
 
 }
 
-void EntityExporter::pollQueue() {
+void EntityExporter::pollQueue()
+{
 	if (mQueue.empty() && mOutstandingGetRequestCounter == 0) {
 		complete();
 		return;
@@ -205,21 +215,23 @@ void EntityExporter::infoArrived(const Operation & op)
 		Eris::TypeInfo* characterTypeInfo = mAccount.getConnection()->getTypeService()->getTypeByName("character");
 		Eris::TypeInfo* entityType = mAccount.getConnection()->getTypeService()->getTypeByName(ent->getParentsAsList().begin()->asString());
 		if (entityType->isA(characterTypeInfo)) {
-			Get get;
 
-			Operation get_arg;
+			Atlas::Objects::Operation::Generic commune;
 			std::list<std::string> parents;
-			parents.emplace_back("thought");
-			get_arg->setParents(parents);
-			get_arg->setId(ent->getId());
+			parents.emplace_back("commune");
+			commune->setParents(parents);
+			commune->setTo(ent->getId());
 
-			get->setArgs1(get_arg);
-			get->setFrom(mAccount.getId());
-			get->setSerialno(Eris::getNewSerialno());
+			//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+			//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+			commune->setFrom(mAccount.getActiveCharacters().begin()->second->getId());
+			//By setting a serial number we tell the server to "relay" the operation. This means that any
+			//response operation from the target entity will be sent back to us.
+			commune->setSerialno(Eris::getNewSerialno());
 
-			mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetThoughtResult);
-			mAccount.getConnection()->send(get);
-			mThoughtsOutstanding.insert(std::make_pair(get->getSerialno(), ent->getId()));
+			mAccount.getConnection()->getResponder()->await(commune->getSerialno(), this, &EntityExporter::operationGetThoughtResult);
+			mAccount.getConnection()->send(commune);
+			mThoughtsOutstanding.insert(std::make_pair(commune->getSerialno(), ent->getId()));
 			mOutstandingGetRequestCounter++;
 			S_LOG_VERBOSE("Sending request for thoughts.");
 
@@ -233,7 +245,9 @@ void EntityExporter::complete()
 	mEntitiesEncoder->streamEnd();
 	mMindsEncoder->streamEnd();
 
-	mXmlDocument->SaveFile();
+	if (!mXmlDocument->SaveFile()) {
+		S_LOG_FAILURE("Could not save entity export '" << mXmlDocument->ValueStr() <<"'.");
+	}
 	mComplete = true;
 	EventCompleted.emit();
 	S_LOG_INFO("Completed dumping " << mCount << " entities.");
@@ -282,7 +296,6 @@ void EntityExporter::start(const std::string& filename, const std::string& entit
 
 	mEntitiesEncoder->streamBegin();
 
-
 	mMindsDecoder = new Atlas::Message::QueuedDecoder;
 	mMindsCodec = new TinyXmlCodec(*mindsNode, *mMindsDecoder);
 	mMindsEncoder = new Atlas::Message::Encoder(*mMindsCodec);
@@ -317,9 +330,10 @@ void EntityExporter::operationGetResult(const Operation & op)
 void EntityExporter::operationGetThoughtResult(const Operation & op)
 {
 	if (!mCancelled) {
-		if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
-			thoughtInfoArrived(op);
-		}
+
+		thoughtOpArrived(op);
+		mOutstandingGetRequestCounter--;
+		pollQueue();
 	}
 }
 }
