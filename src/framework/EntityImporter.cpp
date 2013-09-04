@@ -44,31 +44,32 @@ using Atlas::Objects::Operation::Set;
 namespace Ember
 {
 StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o, const std::list<std::string>::const_iterator & c) :
-		obj(o), child(c)
+		obj(o), currentChildIterator(c)
 {
 }
 
 StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o) :
 		obj(o)
 {
-	child = obj->getContains().end();
+	currentChildIterator = obj->getContains().end();
 }
 
 bool EntityImporter::getEntity(const std::string & id, OpVector & res)
 {
-	std::map<std::string, Root>::const_iterator I = m_objects.find(id);
-	if (I == m_objects.end()) {
+	std::map<std::string, Root>::const_iterator I = mPersistedEntities.find(id);
+	if (I == mPersistedEntities.end()) {
+		S_LOG_VERBOSE("Could not find entity with id " << id << "; this one was probably transient.");
 		//This will often happen if the child entity was transient, and therefore wasn't exported (but is still references from the parent entity).
 		return false;
 	}
-	RootEntity obj = smart_dynamic_cast<RootEntity>(I->second);
+	const RootEntity& obj = smart_dynamic_cast<RootEntity>(I->second);
 	if (!obj.isValid()) {
 		S_LOG_FAILURE("Corrupt dump - non entity found " << id << ".");
 		return false;
 	}
 
 	m_state = WALKING;
-	m_treeStack.push_back(StackEntry(obj));
+	m_treeStack.emplace_back(obj);
 
 	Anonymous get_arg;
 	get_arg->setId(id);
@@ -79,54 +80,57 @@ bool EntityImporter::getEntity(const std::string & id, OpVector & res)
 	get->setFrom(mAccount.getId());
 	get->setSerialno(Eris::getNewSerialno());
 	res.push_back(get);
+	S_LOG_VERBOSE("EntityImporter: Getting entity with id " << id);
 	return true;
 }
 
 void EntityImporter::walk(OpVector & res)
 {
 	if (m_treeStack.empty()) {
-		sendMinds(res);
+		sendMinds();
 	} else {
 		StackEntry & current = m_treeStack.back();
+		//Check if there are any children. If not, we should pop the stack and
 		if (current.obj->getContains().empty()) {
 			// Pop: Go back to WALKING parent
 			assert(!m_treeStack.empty());
 			m_treeStack.pop_back();
 			while (!m_treeStack.empty()) {
 				StackEntry & se = m_treeStack.back();
-				++se.child;
-				if (se.child != se.obj->getContains().end()) {
-					if (getEntity(*se.child, res)) {
-						break;
+				//Try to get the next child entity (unless we've reached the end of the list of children).
+				//Since some entities are references but not persisted we need to loop until we find one that we know of.
+				for (; ++se.currentChildIterator, se.currentChildIterator != se.obj->getContains().end();) {
+					if (getEntity(*se.currentChildIterator, res)) {
+						//We've sent a request for an entity; we should break out and await a response from the server.
+						return;
 					}
 				}
+
+				//If we've reached the end of the contained entities we should pop the current stack entry.
 				m_treeStack.pop_back();
-			}
-			if (m_treeStack.empty()) {
-				sendMinds(res);
 			}
 		} else {
 			//Iterate until we find an entity that's persisted.
 			//Note that there might be a reference to an entity in CONTAINS which can't be found
 			//in the list of entities; this happens with transient entities.
 			for (auto I = current.obj->getContains().begin(); I != current.obj->getContains().end(); ++I) {
-				current.child = I;
-				bool foundEntity = getEntity(*current.child, res);
+				current.currentChildIterator = I;
+				bool foundEntity = getEntity(*current.currentChildIterator, res);
 				if (foundEntity) {
 					return;
 				}
 			}
 		}
+		if (m_treeStack.empty()) {
+			sendMinds();
+		}
 	}
 }
 
-void EntityImporter::sendMinds(OpVector & res)
+void EntityImporter::sendMinds()
 {
-	if (mResolvedMindMapping.empty()) {
-		S_LOG_INFO("Restore done.");
-		S_LOG_INFO("Restored " << mStats.entitiesProcessedCount<< ", created: " << mStats.entitiesCreateCount << ", updated: " << mStats.entitiesUpdateCount << ", create errors: " << mStats.entitiesCreateErrorCount << " .");
-		EventCompleted.emit();
-	} else if (!mResolvedMindMapping.empty()) {
+	if (!mResolvedMindMapping.empty()) {
+		S_LOG_INFO("Sending minds.");
 		for (auto mind : mResolvedMindMapping) {
 			Atlas::Message::MapType message;
 			mind.second->addToMessage(message);
@@ -189,24 +193,25 @@ void EntityImporter::sendMinds(OpVector & res)
 				}
 			}
 
-			Atlas::Objects::Entity::Anonymous payload;
-			payload->setAttr("args", thoughtArgs);
-
-			Atlas::Objects::Operation::RootOperation thoughtOp;
-			thoughtOp->setArgs1(payload);
+			Atlas::Objects::Operation::RootOperation thinkOp;
+			thinkOp->setArgsAsList(thoughtArgs);
 			std::list<std::string> parents;
-			parents.emplace_back("thought");
-			thoughtOp->setParents(parents);
-			thoughtOp->setTo(mind.first);
+			parents.emplace_back("think");
+			thinkOp->setParents(parents);
+			thinkOp->setTo(mind.first);
 			//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 			//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-			thoughtOp->setFrom(mAccount.getActiveCharacters().begin()->first);
+			thinkOp->setFrom(mAccount.getActiveCharacters().begin()->first);
 			mStats.mindsProcessedCount++;
-			res.push_back(thoughtOp);
+			S_LOG_INFO("Restoring mind of " << mind.first);
+			mAccount.getConnection()->send(thinkOp);
 			EventProgress.emit();
 		}
 		mResolvedMindMapping.clear();
 	}
+	S_LOG_INFO("Restore done.");
+	S_LOG_INFO("Restored " << mStats.entitiesProcessedCount<< ", created: " << mStats.entitiesCreateCount << ", updated: " << mStats.entitiesUpdateCount << ", create errors: " << mStats.entitiesCreateErrorCount << " .");
+	EventCompleted.emit();
 }
 
 void EntityImporter::create(const RootEntity & obj, OpVector & res)
@@ -260,7 +265,7 @@ void EntityImporter::errorArrived(const Operation & op, OpVector & res)
 		//to create it. This is an expected result.
 		assert(!m_treeStack.empty());
 		StackEntry & current = m_treeStack.back();
-		RootEntity obj = current.obj;
+		const RootEntity& obj = current.obj;
 
 		assert(obj.isValid());
 
@@ -277,8 +282,8 @@ void EntityImporter::errorArrived(const Operation & op, OpVector & res)
 
 		auto I = mCreateEntityMapping.find(op->getRefno());
 		if (I != mCreateEntityMapping.end()) {
-			auto J = m_objects.find(I->second);
-			if (J != m_objects.end()) {
+			auto J = mPersistedEntities.find(I->second);
+			if (J != mPersistedEntities.end()) {
 				auto& entity = J->second;
 				if (!entity->getParents().empty()) {
 					entityType = entity->getParents().front();
@@ -307,11 +312,10 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 	}
 
 	if (m_state == CREATING) {
-		Operation sub_op = op;
-		if (!sub_op.isValid()) {
+		if (!op.isValid()) {
 			return;
 		}
-		Root created = sub_op->getArgs().front();
+		const Root& created = op->getArgs().front();
 		m_newIds.insert(created->getId());
 		StackEntry & current = m_treeStack.back();
 		current.restored_id = created->getId();
@@ -320,9 +324,9 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 		auto I = mCreateEntityMapping.find(op->getRefno());
 		if (I != mCreateEntityMapping.end()) {
 			//Check if there's a mind that we should send further on
-			auto mindI = mMinds.find(I->second);
-			if (mindI != mMinds.end()) {
-				mResolvedMindMapping.push_back(std::make_pair(created->getId(), mindI->second));
+			auto mindI = mPersistedMinds.find(I->second);
+			if (mindI != mPersistedMinds.end()) {
+				mResolvedMindMapping.emplace_back(created->getId(), mindI->second);
 			}
 			m_entityIdMap.insert(std::make_pair(I->second, created->getId()));
 			mCreateEntityMapping.erase(op->getRefno());
@@ -333,7 +337,7 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 		walk(res);
 	} else if (m_state == WALKING) {
 		const Root & arg = op->getArgs().front();
-		RootEntity ent = smart_dynamic_cast<RootEntity>(arg);
+		const RootEntity& ent = smart_dynamic_cast<RootEntity>(arg);
 		if (!ent.isValid()) {
 			S_LOG_FAILURE("Info response is not entity.");
 			return;
@@ -344,7 +348,7 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 		const std::string & id = arg->getId();
 
 		StackEntry & current = m_treeStack.back();
-		RootEntity obj = current.obj;
+		const RootEntity& obj = current.obj;
 
 		assert(id == obj->getId());
 
@@ -369,9 +373,10 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 
 			res.push_back(set);
 
-			auto mindI = mMinds.find(obj->getId());
-			if (mindI != mMinds.end()) {
-				mResolvedMindMapping.push_back(std::make_pair(obj->getId(), mindI->second));
+			//Check if there's a mind, and if so put it in our map of resolved entity-to-mind mappings (since we know the entity id)
+			auto mindI = mPersistedMinds.find(obj->getId());
+			if (mindI != mPersistedMinds.end()) {
+				mResolvedMindMapping.emplace_back(obj->getId(), mindI->second);
 			}
 
 			++mStats.entitiesProcessedCount;
@@ -405,7 +410,7 @@ void EntityImporter::sightArrived(const Operation & op, OpVector & res)
 		break;
 	case UPDATING:
 	{
-		Operation sub_op = smart_dynamic_cast<Operation>(arg);
+		const Operation& sub_op = smart_dynamic_cast<Operation>(arg);
 		if (!sub_op.isValid()) {
 			break;
 		}
@@ -470,22 +475,22 @@ void EntityImporter::start(const std::string& filename)
 	}
 
 	{
-		AtlasMessageLoader loader(m_objects);
+		AtlasMessageLoader loader(mPersistedEntities);
 		TinyXmlCodec codec(*entitiesAtlasElem, loader);
 
 		codec.poll(true);
 	}
 	if (mindsAtlasElem) {
 
-		AtlasMessageLoader loader(mMinds);
+		AtlasMessageLoader loader(mPersistedMinds);
 		TinyXmlCodec codec(*mindsAtlasElem, loader);
 
 		codec.poll(true);
 	}
 
-	S_LOG_INFO("Starting loading of world. Number of entities: " << m_objects.size() << " Number of minds: " << mMinds.size());
-	mStats.entitiesCount = static_cast<unsigned int>(m_objects.size());
-	mStats.mindsCount = static_cast<unsigned int>(mMinds.size());
+	S_LOG_INFO("Starting loading of world. Number of entities: " << mPersistedEntities.size() << " Number of minds: " << mPersistedMinds.size());
+	mStats.entitiesCount = static_cast<unsigned int>(mPersistedEntities.size());
+	mStats.mindsCount = static_cast<unsigned int>(mPersistedMinds.size());
 
 	EventProgress.emit();
 
@@ -534,8 +539,8 @@ void EntityImporter::operation(const Operation & op)
 		sightArrived(op, res);
 	}
 
-	for (OpVector::const_iterator I = res.begin(); I != res.end(); ++I) {
-		sendOperation(*I);
+	for (auto& op : res) {
+		sendOperation(op);
 	}
 
 }

@@ -34,6 +34,7 @@
 #include <stack>
 #include <fstream>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace Atlas
 {
@@ -51,12 +52,31 @@ namespace Ember
 typedef Atlas::Objects::Operation::RootOperation Operation;
 typedef std::vector<Atlas::Objects::Operation::RootOperation> OpVector;
 
+/**
+ * @brief Represents one entry on the hierarchy of entities which are to be created on the server.
+ */
 class StackEntry
 {
 public:
+	/**
+	 * @brief The persisted entity data.
+	 *
+	 * This should be sent to the server.
+	 */
 	const Atlas::Objects::Entity::RootEntity obj;
+
+	/**
+	 * @brief The id of the entity on the server, after it's either been created or updated.
+	 */
 	std::string restored_id;
-	std::list<std::string>::const_iterator child;
+
+	/**
+	 * @brief Keeps track of the what child we're currently handling.
+	 *
+	 * As we walk through the children of entity this is updated, thus keeping track
+	 * of what child needs to be updated next.
+	 */
+	std::list<std::string>::const_iterator currentChildIterator;
 
 	StackEntry(const Atlas::Objects::Entity::RootEntity & o, const std::list<std::string>::const_iterator & c);
 	explicit StackEntry(const Atlas::Objects::Entity::RootEntity & o);
@@ -69,18 +89,37 @@ class EntityImporter: public virtual sigc::trackable
 {
 public:
 
+	/**
+	 * @brief Short info about a entity dump file.
+	 */
 	struct ShortInfo
 	{
+		/**
+		 * @brief The full name of the file of the dump.
+		 */
 		std::string filename;
+
+		/**
+		 * @brief An optional name of the dump.
+		 */
 		std::string name;
+
+		/**
+		 * @brief An optional description of the dump.
+		 */
 		std::string description;
+
+		/**
+		 * @brief The number of entities contained in the dump.
+		 */
 		int entityCount;
 	};
 
 	/**
 	 * @brief Contains various stats about the import process, to be shown in an UI or help with debugging.
 	 */
-	struct Stats {
+	struct Stats
+	{
 		/**
 		 * The total number of entities to process.
 		 */
@@ -111,13 +150,22 @@ public:
 		unsigned int mindsProcessedCount;
 	};
 
-
 	explicit EntityImporter(Eris::Account& account);
 	virtual ~EntityImporter();
 
+	/**
+	 * @brief Reads a directory and gets information on any entity dumps found.
+	 *
+	 * This is not recursive.
+	 * @param directoryPath The path to the directory.
+	 * @return Information on any entity dumps found.
+	 */
 	static std::vector<ShortInfo> getInfoFromDirectory(const std::string& directoryPath);
 
-
+	/**
+	 * @brief Starts importing entities from the specified file.
+	 * @param filename A path to an entity dump file.
+	 */
 	virtual void start(const std::string& filename);
 
 	/**
@@ -144,9 +192,26 @@ public:
 
 protected:
 	Eris::Account& mAccount;
+
+	/**
+	 * @brief Stats about the import process.
+	 */
 	Stats mStats;
-	std::map<std::string, Atlas::Objects::Root> m_objects;
-	std::map<std::string, Atlas::Objects::Root> mMinds;
+
+	/**
+	 * @brief All of the persisted entities, which are to be created on the server.
+	 */
+	std::map<std::string, Atlas::Objects::Root> mPersistedEntities;
+
+	/**
+	 * @brief All minds, which are connected to some of the mPersistedEntities.
+	 *
+	 * These are sent to the server after all of the entities are restored.
+	 * Note that the mind data (i.e. the value) is first transferred to mResolvedMindMapping
+	 * before it's sent to the server. This is because the id of the entity might
+	 * be different from what's stored if it has to be created first.
+	 */
+	std::map<std::string, Atlas::Objects::Root> mPersistedMinds;
 
 	/**
 	 * @brief Keeps track of the responses from the server for create operations.
@@ -154,14 +219,34 @@ protected:
 	 * This is used to populate m_entityIdMap with mapping data between entity id values found in the dump, and their new id values once they've been created.
 	 */
 	std::map<long, std::string> mCreateEntityMapping;
+
+	/**
+	 * @brief Keeps track of minds belonging to entities.
+	 *
+	 * This is needed (instead of directly accessing mPersistedMinds) since the id
+	 * of the entity as created on the server might differ from what's persisted.
+	 */
 	std::vector<std::pair<std::string, Atlas::Objects::Root>> mResolvedMindMapping;
+
 	enum
 	{
 		INIT, UPDATING, CREATING, WALKING, CANCEL, CANCELLED
 	} m_state;
 
+	/**
+	 * @brief Keeps track of the hierarchy of entities that are to be created or updated.
+	 */
 	std::deque<StackEntry> m_treeStack;
-	std::set<std::string> m_newIds;
+
+	/**
+	 * @brief Records all newly created ids.
+	 *
+	 * This is so that we can easily detect if a certain entity as persisted has the same id
+	 * as another one we've just created. If so we shouldn't update the one on the server, instead we
+	 * should create a new one.
+	 */
+	std::unordered_set<std::string> m_newIds;
+
 	/**
 	 * Contains a map between any id in the dump and the new id the entity has gotten when created.
 	 *
@@ -169,6 +254,9 @@ protected:
 	 */
 	std::unordered_map<std::string, std::string> m_entityIdMap;
 
+	/**
+	 * @brief Sends an operation to the server.
+	 */
 	void sendOperation(const Operation& op);
 
 	/**
@@ -178,14 +266,33 @@ protected:
 	 * @return True if the entity id was found amongst the entities, else false. The latter case will occur for transient entities, as they might not have been exported, but are still references from their parent entity.
 	 */
 	bool getEntity(const std::string & id, OpVector & res);
+
+	/**
+	 * @brief Walks on the next entity in line to be created or updated on the server.
+	 * @param res
+	 */
 	void walk(OpVector & res);
-	void sendMinds(OpVector & res);
+
+	/**
+	 * @brief Sends all minds.
+	 */
+	void sendMinds();
+
+	/**
+	 * @brief Creates a new entity on the server.
+	 * @param obj The entity specification.
+	 * @param res
+	 */
 	void create(const Atlas::Objects::Entity::RootEntity & obj, OpVector & res);
 
 	void errorArrived(const Operation &, OpVector & res);
 	void infoArrived(const Operation &, OpVector & res);
 	void sightArrived(const Operation &, OpVector & res);
 
+	/**
+	 * @brief Called when new data arrives from the server.
+	 * @param op
+	 */
 	void operation(const Operation& op);
 
 };
