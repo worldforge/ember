@@ -60,10 +60,11 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 
 	Ogre::AliasTextureNamePairList aliases;
 	aliases["EmberTerrain/normalMap"] = terrain->getTerrainNormalMap()->getName();
+	aliases["EmberTerrain/compositeMap"] = terrain->getCompositeMap()->getName();
 
 	bool success = mat->applyTextureAliases(aliases);
 	if (!success) {
-		S_LOG_WARNING("Could not alias normal map for terrain material");
+		S_LOG_WARNING("Could not apply alias for normal map and/or composite map for terrain material \"" << mat->getName() << "\"");
 	}
 
 	return mat;

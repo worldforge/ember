@@ -21,6 +21,7 @@
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
 #include "components/ogre/terrain/TerrainPage.h"
 #include "components/ogre/terrain/TerrainPageGeometry.h"
+#include <OgreShadowCameraSetupPSSM.h>
 #include <OgrePass.h>
 #include <OgreTechnique.h>
 #include <OgreMaterial.h>
@@ -129,17 +130,19 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	}
 
 	material->removeAllTechniques();
-
+	Ogre::Material::LodValueList lodList;
 	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("Ogre/DepthShadowmap/Caster/Float/NoAlpha");
 
-	Ogre::Technique* technique = material->createTechnique();
-	technique->setShadowCasterMaterial(shadowCasterMaterial);
+	Ogre::Technique* technique = nullptr;
+	int currentLodIndex = 0;
 
 	if (mUseNormalMapping) {
-		Ogre::Material::LodValueList lodList;
+		// Create separate normal mapped technique
+		technique = material->createTechnique();
+		technique->setLodIndex(currentLodIndex++);
+		technique->setShadowCasterMaterial(shadowCasterMaterial);
+		// Use normal mapping for everything nearer than 50 units
 		lodList.push_back(50);
-		material->setLodLevels(lodList);
-		technique->setLodIndex(0);
 
 		for (auto& shaderPass : mPassesNormalMapped) {
 			Ogre::Pass* pass = technique->createPass();
@@ -147,12 +150,12 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 				return false;
 			}
 		}
-
-		technique = material->createTechnique();
-		technique->setLodIndex(1);
-		technique->setShadowCasterMaterial(shadowCasterMaterial);
 	}
 
+	// Create the default technique
+	technique = material->createTechnique();
+	technique->setLodIndex(currentLodIndex++);
+	technique->setShadowCasterMaterial(shadowCasterMaterial);
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		ShaderPass* shaderPass(*I);
 		Ogre::Pass* pass = technique->createPass();
@@ -161,13 +164,58 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 		}
 	}
 
+	// Create a technique which renders using the pre-rendered composite map
+	technique = material->createTechnique();
+	technique->setShadowCasterMaterial(shadowCasterMaterial);
+	technique->setLodIndex(currentLodIndex++);
+	// Use it for everything farther away than this limit
+	lodList.push_back(100);
+	// Pretty sure we can always fit this into one pass
+	Ogre::Pass* pass = technique->createPass();
+	pass->setVertexProgram("Lighting/NormalTexture/ShadowVp");
+	pass->setFragmentProgram("SplattingFp/1");
+
+	Ogre::TextureUnitState* normalMapTextureUnitState = pass->createTextureUnitState();
+
+	// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
+	// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
+	normalMapTextureUnitState->setTextureNameAlias("EmberTerrain/normalMap");
+	normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+
+	for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+		Ogre::TextureUnitState* shadowMapTus = pass->createTextureUnitState();
+		shadowMapTus->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
+		shadowMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
+		shadowMapTus->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
+	}
+
+	Ogre::TextureUnitState* compositeMapTus = pass->createTextureUnitState();
+	compositeMapTus->setTextureNameAlias("EmberTerrain/compositeMap");
+	compositeMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+
+	try {
+		Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+		float scales[1] = { 1.0f };
+		fpParams->setNamedConstant("scales", scales, 1); // The composite map spreads over the entire terrain, no uv scaling needed
+		if (mIncludeShadows) {
+			Ogre::PSSMShadowCameraSetup* pssmSetup = static_cast<Ogre::PSSMShadowCameraSetup*>(mSceneManager.getShadowCameraSetup().get());
+			if (pssmSetup) {
+				Ogre::Vector4 splitPoints;
+				Ogre::PSSMShadowCameraSetup::SplitPointList splitPointList = pssmSetup->getSplitPoints();
+				for (int i = 0; i < 3; i++) {
+					splitPoints[i] = splitPointList[i];
+				}
+				fpParams->setNamedConstant("pssmSplitPoints", splitPoints);
+			}
+		}
+	} catch (const std::exception& ex) {
+		S_LOG_WARNING("Error when setting fragment program parameters." << ex);
+	}
+
 	//Now also add a "Low" technique, for use in the compass etc.
 	technique = material->createTechnique();
+	technique->setLodIndex(currentLodIndex++);
 	technique->setSchemeName("Low");
-
-	if (mUseNormalMapping) {
-		technique->setLodIndex(2);
-	}
 
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		ShaderPass* shaderPass(*I);
@@ -179,7 +227,8 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 	// Reapply the saved texture name aliases
 	material->applyTextureAliases(aliases);
-
+	// Apply the LOD levels
+	material->setLodLevels(lodList);
 	//we need to load it before we can see how many techniques are supported
 	material->load();
 	if (material->getNumSupportedTechniques() == 0) {
