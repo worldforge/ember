@@ -101,6 +101,11 @@ const Ogre::MaterialPtr TerrainPage::getMaterial() const
 	return mTerrainSurface->getMaterial();
 }
 
+const Ogre::MaterialPtr TerrainPage::getCompositeMapMaterial() const
+{
+	return mTerrainSurface->getCompositeMapMaterial();
+}
+
 unsigned int TerrainPage::getAlphaMapScale() const
 {
 	ConfigService& configSrv = EmberServices::getSingleton().getConfigService();

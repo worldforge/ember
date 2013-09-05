@@ -43,6 +43,7 @@ class IPageData
 public:
 	virtual ~IPageData() {}
 	virtual Ogre::MaterialPtr getMaterial() = 0;
+	virtual Ogre::MaterialPtr getCompositeMapMaterial() = 0;
 };
 
 
@@ -72,6 +73,7 @@ public:
 	TerrainPageData(Terrain::TerrainPage* page);
 	virtual ~TerrainPageData();
 	virtual Ogre::MaterialPtr getMaterial();
+	virtual Ogre::MaterialPtr getCompositeMapMaterial();
 private:
 	Terrain::TerrainPage* mPage;
 

@@ -261,6 +261,12 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 
 }
 
+bool Simple::compileCompositeMapMaterial(Ogre::MaterialPtr material)
+{
+	// Does not support composite maps
+	return false;
+}
+
 }
 
 }

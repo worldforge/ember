@@ -67,6 +67,8 @@ public:
     virtual bool prepareMaterial();
     virtual bool compileMaterial(Ogre::MaterialPtr material);
 
+	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material);
+
 protected:
 	typedef std::vector<ShaderPass*> PassStore;
 

@@ -73,6 +73,15 @@ public:
      * @return False if something went wrong during compilation.
      */
     virtual bool compileMaterial(Ogre::MaterialPtr material) = 0;
+
+	/**
+	 * @brief Compiles a previously prepared material for the terrain composite map. May not be implemented.
+	 *
+	 * This is called in the main thread, and thus has full access to the Ogre system. It's expected that all heavy lifting has occurred in prepareMaterial, and any code here merely handled the setup of the Ogre structures needed.
+	 * @param material The material which will be used for rendering of the terrain composite map.
+	 * @return False if something went wrong during compilation or if the technique does not support generating composite maps.
+	 */
+	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material) = 0;
 };
 
 /**
@@ -109,6 +118,13 @@ public:
      * @return False if something went wrong during compilation.
 	 */
 	bool compile(Ogre::MaterialPtr material);
+
+	/**
+	 * @brief Compiles the surface composite map. This is called in the main thread.
+	 * @param material The material which will be used for the terrain geometry.
+	 * @return False if something went wrong during compilation or composite maps are not supported by the used technique.
+	 */
+	bool compileCompositeMap(Ogre::MaterialPtr material);
 
 private:
 

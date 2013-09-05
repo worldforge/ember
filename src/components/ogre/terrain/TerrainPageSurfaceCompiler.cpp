@@ -75,6 +75,10 @@ bool TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material)
 	return mTechnique->compileMaterial(material);
 }
 
+bool TerrainPageSurfaceCompilationInstance::compileCompositeMap(Ogre::MaterialPtr material)
+{
+	return mTechnique->compileCompositeMapMaterial(material);
+}
 }
 }
 }

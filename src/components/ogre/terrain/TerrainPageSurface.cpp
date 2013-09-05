@@ -100,6 +100,12 @@ const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 	return static_cast<Ogre::MaterialPtr>(result.first);
 }
 
+const Ogre::MaterialPtr TerrainPageSurface::getCompositeMapMaterial() const
+{
+	std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve(mMaterialName + "/CompositeMap", "General");
+	return static_cast<Ogre::MaterialPtr>(result.first);
+}
+
 TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const
 {
 	//The compiler only works with const surfaces, so we need to create such a copy of our surface map.

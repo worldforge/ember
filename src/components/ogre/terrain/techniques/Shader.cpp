@@ -203,6 +203,11 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	// 	}
 }
 
+bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material)
+{
+	return true;
+}
+
 ShaderPass* Shader::addPass()
 {
 	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition()));

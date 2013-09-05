@@ -121,6 +121,12 @@ public:
 	const Ogre::MaterialPtr getMaterial() const;
 
 	/**
+	 * @brief The material used for rendering a page's composite map. The composite map is a precomputed version of the terrain texture(with blending, maybe shadows etc) which can be used to render far away pages faster.
+	 * @return The composite map material.
+	 */
+	const Ogre::MaterialPtr getCompositeMapMaterial() const;
+
+	/**
 	 * @brief Adds a shader to the page, meaning that it will be used in rendering.
 	 * @param shader The new shader to add.
 	 */

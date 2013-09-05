@@ -43,6 +43,14 @@ Ogre::MaterialPtr TerrainPageData::getMaterial()
 	return Ogre::MaterialPtr();
 }
 
+Ogre::MaterialPtr TerrainPageData::getCompositeMapMaterial()
+{
+	if (mPage) {
+		return mPage->getCompositeMapMaterial();
+	}
+	return Ogre::MaterialPtr();
+}
+
 TerrainPageDataProvider::TerrainPageDataProvider(Terrain::TerrainHandler& handler) :
 		mHandler(handler)
 {

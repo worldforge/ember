@@ -69,6 +69,8 @@ void TerrainMaterialCompilationTask::executeTaskInMainThread()
 		TerrainPageSurfaceCompilationInstance* compilationInstance = J->first;
 		TerrainPage* page = J->second;
 		compilationInstance->compile(page->getMaterial());
+		S_LOG_VERBOSE("Compiling terrain page composite map material");
+		compilationInstance->compileCompositeMap(page->getCompositeMapMaterial());
 		S_LOG_VERBOSE("Recompiled material for terrain page " << "[" << page->getWFIndex().first << "|" << page->getWFIndex().second << "]");
 		mSignal(page); // Notify the terrain system of the material change
 		delete compilationInstance;

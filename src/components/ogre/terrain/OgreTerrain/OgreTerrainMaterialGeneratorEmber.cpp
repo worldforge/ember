@@ -43,7 +43,7 @@ void OgreTerrainMaterialGeneratorEmber::requestOptions(Ogre::Terrain* terrain)
 	terrain->_setMorphRequired(false);
 	terrain->_setNormalMapRequired(true);
 	terrain->_setLightMapRequired(false, false);
-	terrain->_setCompositeMapRequired(false);
+	terrain->_setCompositeMapRequired(true);
 }
 
 Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrain* terrain)
@@ -69,13 +69,18 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 	return mat;
 }
 
-/** Generate a material for the given composite map of the terrain using the active profile.
- */
 Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generateForCompositeMap(const Ogre::Terrain* terrain)
 {
-	// TODO SK: return material
-	return Ogre::MaterialPtr();
+	long indexX = (terrain->getPosition().x - mOriginX) / terrain->getSize();
+	long indexY = -(terrain->getPosition().z - mOriginZ) / terrain->getSize();
 
+	S_LOG_INFO("Loading composite map material for terrain page: " << "[" << indexX << "|" << indexY << "]");
+
+	Ogre::MaterialPtr mat = mDataProvider.getPageData(IPageDataProvider::OgreIndex(indexX, indexY))->getCompositeMapMaterial();
+	if (mat.isNull()) {
+		S_LOG_INFO("Composite map material was not found!");
+	}
+	return mat;
 }
 } /* Terrain */
 } /* OgreView */

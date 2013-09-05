@@ -91,6 +91,8 @@ public:
 
 	const Ogre::MaterialPtr getMaterial() const;
 
+	const Ogre::MaterialPtr getCompositeMapMaterial() const;
+
 	/**
 	 * @brief Recompiles the material.
 	 * @param reselectTechnique If true, we'll also see if we need to reselect the technique to use.
