@@ -63,15 +63,12 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 EntityExporter::EntityExporter(Eris::Account& account) :
-		mAccount(account), mCount(0), mEntitiesCodec(0), mEntitiesEncoder(0), mEntitiesDecoder(0), mXmlDocument(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false)
+		mAccount(account), mCount(0), mXmlDocument(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false)
 {
 }
 
 EntityExporter::~EntityExporter()
 {
-	delete mEntitiesEncoder;
-	delete mEntitiesCodec;
-	delete mEntitiesDecoder;
 	delete mXmlDocument;
 }
 
@@ -290,15 +287,15 @@ void EntityExporter::start(const std::string& filename, const std::string& entit
 	TiXmlNode* entitiesNode = root->InsertEndChild(TiXmlElement("entities"));
 	TiXmlNode* mindsNode = root->InsertEndChild(TiXmlElement("minds"));
 
-	mEntitiesDecoder = new Atlas::Message::QueuedDecoder;
-	mEntitiesCodec = new TinyXmlCodec(*entitiesNode, *mEntitiesDecoder);
-	mEntitiesEncoder = new Atlas::Objects::ObjectsEncoder(*mEntitiesCodec);
+	mEntitiesDecoder.reset(new Atlas::Message::QueuedDecoder);
+	mEntitiesCodec.reset(new TinyXmlCodec(*entitiesNode, *mEntitiesDecoder));
+	mEntitiesEncoder.reset(new Atlas::Objects::ObjectsEncoder(*mEntitiesCodec));
 
 	mEntitiesEncoder->streamBegin();
 
-	mMindsDecoder = new Atlas::Message::QueuedDecoder;
-	mMindsCodec = new TinyXmlCodec(*mindsNode, *mMindsDecoder);
-	mMindsEncoder = new Atlas::Message::Encoder(*mMindsCodec);
+	mMindsDecoder.reset(new Atlas::Message::QueuedDecoder);
+	mMindsCodec.reset(new TinyXmlCodec(*mindsNode, *mMindsDecoder));
+	mMindsEncoder.reset(new Atlas::Message::Encoder(*mMindsCodec));
 
 	mMindsEncoder->streamBegin();
 

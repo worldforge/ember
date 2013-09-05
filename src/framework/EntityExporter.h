@@ -30,6 +30,7 @@
 #include <vector>
 #include <fstream>
 #include <map>
+#include <memory>
 
 namespace Atlas
 {
@@ -149,12 +150,12 @@ protected:
 	std::list<std::string> mQueue;
 	std::map<int, std::string> mThoughtsOutstanding;
 	int mCount;
-	Atlas::Codec* mEntitiesCodec;
-	Atlas::Codec* mMindsCodec;
-	Atlas::Objects::ObjectsEncoder* mEntitiesEncoder;
-	Atlas::Message::Encoder* mMindsEncoder;
-	Atlas::Message::QueuedDecoder* mEntitiesDecoder;
-	Atlas::Message::QueuedDecoder* mMindsDecoder;
+	std::unique_ptr<Atlas::Codec> mEntitiesCodec;
+	std::unique_ptr<Atlas::Codec> mMindsCodec;
+	std::unique_ptr<Atlas::Objects::ObjectsEncoder> mEntitiesEncoder;
+	std::unique_ptr<Atlas::Message::Encoder> mMindsEncoder;
+	std::unique_ptr<Atlas::Message::QueuedDecoder> mEntitiesDecoder;
+	std::unique_ptr<Atlas::Message::QueuedDecoder> mMindsDecoder;
 
 	/**
 	 * @brief The resulting xml document.
