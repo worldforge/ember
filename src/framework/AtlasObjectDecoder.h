@@ -26,11 +26,6 @@
 
 namespace Ember
 {
-namespace OgreView
-{
-
-namespace Authoring
-{
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -70,10 +65,6 @@ private:
      */
     Atlas::Objects::Root mLastObject;
 };
-
-}
-
-}
 
 }
 

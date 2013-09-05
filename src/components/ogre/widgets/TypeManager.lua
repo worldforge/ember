@@ -55,7 +55,7 @@ end
 
 function TypeManager:sendTypeToServer()
 	local outstream = std.stringstream:new_local(self.typeInfoText:getText())
-	local decoder = Ember.OgreView.Authoring.AtlasObjectDecoder:new_local()
+	local decoder = Ember.AtlasObjectDecoder:new_local()
 
 	local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
 	codec:poll(true)

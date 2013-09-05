@@ -13,7 +13,7 @@ libEmberOgre_a_SOURCES = \
 	authoring/PolygonPointMovement.cpp authoring/PolygonPointMover.cpp authoring/PolygonPointPickListener.cpp \
 	authoring/PolygonPointUserObject.cpp authoring/PolygonRenderer.cpp authoring/XMLEntityRecipeSerializer.cpp authoring/SnapToMovement.cpp \
 	authoring/AuthoringHandler.cpp authoring/AuthoringManager.cpp authoring/AuthoringVisualization.cpp authoring/AuthoringVisualizationCollisionDetector.cpp \
-	authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RawTypeInfoRepository.cpp authoring/AtlasObjectDecoder.cpp \
+	authoring/AuthoringVisualizationMover.cpp authoring/AuthoringMoverConnector.cpp authoring/RawTypeInfoRepository.cpp \
 	authoring/SimpleEntityVisualization.cpp authoring/EntityMaker.cpp \
 \
 	lod/LodLevelManager.cpp \
@@ -112,7 +112,7 @@ noinst_HEADERS = \
 	authoring/PolygonPoint.h authoring/PolygonPointMovement.h authoring/PolygonPointMover.h authoring/PolygonPointPickListener.h \
 	authoring/PolygonPointUserObject.h authoring/PolygonRenderer.h authoring/XMLEntityRecipeSerializer.h authoring/SnapToMovement.h \
 	authoring/AuthoringHandler.h authoring/AuthoringManager.h authoring/AuthoringVisualization.h authoring/AuthoringVisualizationCollisionDetector.h \
-	authoring/AuthoringVisualizationMover.h authoring/AuthoringMoverConnector.h authoring/RawTypeInfoRepository.h authoring/AtlasObjectDecoder.h \
+	authoring/AuthoringVisualizationMover.h authoring/AuthoringMoverConnector.h authoring/RawTypeInfoRepository.h \
 	authoring/SimpleEntityVisualization.h authoring/EntityMaker.h \
 \
 	lod/LodLevelManager.h \

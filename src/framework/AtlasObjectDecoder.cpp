@@ -1,4 +1,3 @@
-$#include "components/ogre/authoring/AtlasObjectDecoder.h"
 /*
  Copyright (C) 2009 Erik Hjortsberg
 
@@ -17,30 +16,31 @@ $#include "components/ogre/authoring/AtlasObjectDecoder.h"
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "AtlasObjectDecoder.h"
 
 
 namespace Ember
 {
-namespace OgreView
+
+AtlasObjectDecoder::AtlasObjectDecoder()
 {
-
-namespace Authoring
-{
-
-class AtlasObjectDecoder : public Atlas::Objects::ObjectsDecoder
-{
-public:
-	AtlasObjectDecoder();
-	virtual ~AtlasObjectDecoder();
-
-	Atlas::Objects::Root getLastObject();
-
-	sigc::signal<void, const Atlas::Objects::Root&> EventObjectArrived;
-
-};
 
 }
 
+AtlasObjectDecoder::~AtlasObjectDecoder()
+{
 }
+
+Atlas::Objects::Root AtlasObjectDecoder::getLastObject()
+{
+	return mLastObject;
+}
+
+void AtlasObjectDecoder::objectArrived(const Atlas::Objects::Root& obj)
+{
+	EventObjectArrived(obj);
+	mLastObject = obj;
+}
+
 
 }
