@@ -21,8 +21,7 @@
 #include "LoggingInstance.h"
 #include "Time.h"
 #include "TinyXmlCodec.h"
-
-#include "tinyxml/tinyxml.h"
+#include "MultiLineListFormatter.h"
 
 #include <Eris/Account.h>
 #include <Eris/Connection.h>
@@ -32,6 +31,7 @@
 #include <Eris/TypeInfo.h>
 #include <Eris/Avatar.h>
 
+#include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -63,13 +63,12 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 EntityExporter::EntityExporter(Eris::Account& account) :
-		mAccount(account), mCount(0), mXmlDocument(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false)
+		mAccount(account), mCount(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false)
 {
 }
 
 EntityExporter::~EntityExporter()
 {
-	delete mXmlDocument;
 }
 
 void EntityExporter::setDescription(const std::string& description)
@@ -94,17 +93,19 @@ void EntityExporter::cancel()
 
 void EntityExporter::dumpEntity(const RootEntity & ent)
 {
-	mEntitiesEncoder->streamObjectsMessage(ent);
+	Atlas::Message::MapType entityMap;
+	ent->addToMessage(entityMap);
+	mEntities.push_back(entityMap);
 }
 
 void EntityExporter::dumpMind(const std::string& entityId, const Operation & op)
 {
-	Atlas::Message::MapType entityMap;
-	entityMap["id"] = entityId;
 	auto thoughts = op->getArgsAsList();
 	if (!thoughts.empty()) {
+		Atlas::Message::MapType entityMap;
+		entityMap["id"] = entityId;
 		entityMap["thoughts"] = thoughts;
-		mMindsEncoder->streamMessageElement(entityMap);
+		mMinds.push_back(entityMap);
 	}
 }
 
@@ -239,12 +240,46 @@ void EntityExporter::infoArrived(const Operation & op)
 
 void EntityExporter::complete()
 {
-	mEntitiesEncoder->streamEnd();
-	mMindsEncoder->streamEnd();
 
-	if (!mXmlDocument->SaveFile()) {
-		S_LOG_FAILURE("Could not save entity export '" << mXmlDocument->ValueStr() <<"'.");
-	}
+	Anonymous root;
+	Atlas::Message::MapType meta;
+
+	meta["name"] = mName;
+	meta["description"] = mDescription;
+	std::stringstream ss;
+	ss << Time::currentTimeMillis();
+	meta["timestamp"] = ss.str();
+	meta["transients"] = mExportTransient;
+
+	Atlas::Message::MapType server;
+	Eris::ServerInfo serverInfo;
+	mAccount.getConnection()->getServerInfo(serverInfo);
+	server["host"] = serverInfo.getHostname();
+	server["name"] = serverInfo.getServername();
+	server["ruleset"] = serverInfo.getRuleset();
+	meta["server"] = server;
+
+	root->setAttr("meta", meta);
+
+	root->setAttr("entities", mEntities);
+	root->setAttr("minds", mMinds);
+
+	std::fstream filestream(mFilename, std::ios::out);
+	Atlas::Message::QueuedDecoder decoder;
+	Atlas::Codecs::XML codec(filestream, decoder);
+    MultiLineListFormatter formatter(filestream, codec);
+
+	Atlas::Objects::ObjectsEncoder encoder(formatter);
+
+	encoder.streamBegin();
+	encoder.streamObjectsMessage(root);
+	encoder.streamEnd();
+
+	filestream.close();
+
+	mEntities.clear();
+	mMinds.clear();
+
 	mComplete = true;
 	EventCompleted.emit();
 	S_LOG_INFO("Completed dumping " << mCount << " entities.");
@@ -253,51 +288,7 @@ void EntityExporter::complete()
 void EntityExporter::start(const std::string& filename, const std::string& entityId)
 {
 	S_LOG_INFO("Starting world dump to file '" << filename << "'.");
-
-	mXmlDocument = new TiXmlDocument(filename);
-	TiXmlNode* root = mXmlDocument->InsertEndChild(TiXmlElement("entityexport"));
-	TiXmlElement name("name");
-	name.InsertEndChild(TiXmlText(mName));
-	root->InsertEndChild(name);
-	TiXmlElement description("description");
-	description.InsertEndChild(TiXmlText(mDescription));
-	root->InsertEndChild(description);
-	TiXmlElement timestamp("timestamp");
-	std::stringstream ss;
-	ss << Time::currentTimeMillis();
-	timestamp.InsertEndChild(TiXmlText(ss.str()));
-	root->InsertEndChild(timestamp);
-	TiXmlElement server("server");
-	{
-		Eris::ServerInfo serverInfo;
-		mAccount.getConnection()->getServerInfo(serverInfo);
-
-		TiXmlElement host("host");
-		host.InsertEndChild(TiXmlText(mAccount.getConnection()->getHost()));
-		server.InsertEndChild(host);
-		TiXmlElement serverName("name");
-		serverName.InsertEndChild(TiXmlText(serverInfo.getServername()));
-		server.InsertEndChild(serverName);
-		TiXmlElement ruleset("ruleset");
-		ruleset.InsertEndChild(TiXmlText(serverInfo.getRuleset()));
-		server.InsertEndChild(ruleset);
-	}
-	root->InsertEndChild(server);
-
-	TiXmlNode* entitiesNode = root->InsertEndChild(TiXmlElement("entities"));
-	TiXmlNode* mindsNode = root->InsertEndChild(TiXmlElement("minds"));
-
-	mEntitiesDecoder.reset(new Atlas::Message::QueuedDecoder);
-	mEntitiesCodec.reset(new TinyXmlCodec(*entitiesNode, *mEntitiesDecoder));
-	mEntitiesEncoder.reset(new Atlas::Objects::ObjectsEncoder(*mEntitiesCodec));
-
-	mEntitiesEncoder->streamBegin();
-
-	mMindsDecoder.reset(new Atlas::Message::QueuedDecoder);
-	mMindsCodec.reset(new TinyXmlCodec(*mindsNode, *mMindsDecoder));
-	mMindsEncoder.reset(new Atlas::Message::Encoder(*mMindsCodec));
-
-	mMindsEncoder->streamBegin();
+	mFilename = filename;
 
 	// Send a get for the requested object
 	mOutstandingGetRequestCounter++;

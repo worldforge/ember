@@ -46,6 +46,7 @@ namespace Message
 {
 class QueuedDecoder;
 class Encoder;
+class Element;
 }
 }
 
@@ -63,20 +64,29 @@ namespace Ember
  *
  * @brief Exports an entity (along with all contained entities) to disk.
  *
- * The entity export format is as follows:
+ * The entity export format is in Atlas format, with one top map.
  *
- * <entityexport>
- *  <name>An optional name for this dump</name>
- *  <description>An optional description of this dump.</description>
- *  <timestamp>The timestampe, CET, when this dump was taken.</timestamp>
- *  <server>
- *   <host>The hostname of the server.</host>
- *   <name>The name of the server.</name>
- *   <ruleset>The ruleset of the server.</ruleset>
- *  </server>
- *  <entities>atlas data of all entities</entities>
- *  <minds>data (format to be decided) of all minds</minds>
- * </entityexport>
+ *
+ * <atlas>
+ *  <map>
+ *   <map name="meta>
+ *    <string name="name">An optional name for this dump.</string>
+ *    <string name="description">An optional description of this dump.</string>
+ *    <string name="timestamp">The timestamp, CET, when this dump was taken.</string>
+ *    <int name="transients">Boolean, true if transients are persisted.</int>
+ *    <map name="server">
+ *     <string name="host">The hostname of the server.</string>
+ *     <string name="name">The name of the server.</string>
+ *     <string name="ruleset">The ruleset of the server.</string>
+ *    </map>
+ *    <list name="entities">
+ *     all entities in Message form
+ *    </list>
+ *    <list name="minds">
+ *     all minds in Message form
+ *    </list>
+ *  <map>
+ * </atlas>
  */
 class EntityExporter: public virtual sigc::trackable
 {
@@ -150,17 +160,18 @@ protected:
 	std::list<std::string> mQueue;
 	std::map<int, std::string> mThoughtsOutstanding;
 	int mCount;
-	std::unique_ptr<Atlas::Codec> mEntitiesCodec;
-	std::unique_ptr<Atlas::Codec> mMindsCodec;
-	std::unique_ptr<Atlas::Objects::ObjectsEncoder> mEntitiesEncoder;
-	std::unique_ptr<Atlas::Message::Encoder> mMindsEncoder;
-	std::unique_ptr<Atlas::Message::QueuedDecoder> mEntitiesDecoder;
-	std::unique_ptr<Atlas::Message::QueuedDecoder> mMindsDecoder;
 
 	/**
-	 * @brief The resulting xml document.
+	 * @brief All entities as received from the server.
 	 */
-	::TiXmlDocument* mXmlDocument;
+	std::vector<Atlas::Message::Element> mEntities;
+
+	/**
+	 * @brief All minds as received from the server.
+	 */
+	std::vector<Atlas::Message::Element> mMinds;
+
+	std::string mFilename;
 
 	bool mComplete;
 	bool mCancelled;

@@ -18,10 +18,8 @@
 #include "EntityImporter.h"
 
 #include "MultiLineListFormatter.h"
-#include "AtlasMessageLoader.h"
-#include "TinyXmlCodec.h"
+#include "AtlasObjectDecoder.h"
 #include "LoggingInstance.h"
-#include "tinyxml/tinyxml.h"
 #include "osdir.h"
 
 #include <Eris/Account.h>
@@ -31,6 +29,9 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Codecs/XML.h>
+
+#include <fstream>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -428,7 +429,7 @@ void EntityImporter::sightArrived(const Operation & op, OpVector & res)
 }
 
 EntityImporter::EntityImporter(Eris::Account& account) :
-		mAccount(account), mStats({}), m_state(INIT)
+		mAccount(account), mStats( { }), m_state(INIT)
 {
 }
 
@@ -439,53 +440,55 @@ EntityImporter::~EntityImporter()
 void EntityImporter::start(const std::string& filename)
 {
 
-	TiXmlDocument xmlDoc;
-	if (!xmlDoc.LoadFile(filename)) {
+	std::fstream fileStream(filename, std::ios::in);
+	AtlasObjectDecoder atlasLoader;
+
+	Atlas::Codecs::XML codec(fileStream, atlasLoader);
+	codec.poll(true);
+
+	auto rootObj = atlasLoader.getLastObject();
+
+	if (!rootObj.isValid()) {
 		EventCompleted.emit();
 		return;
 	}
+	Atlas::Message::Element metaElem;
+	Atlas::Message::Element entitiesElem;
+	Atlas::Message::Element mindsElem;
+	rootObj->copyAttr("meta", metaElem);
+	rootObj->copyAttr("entities", entitiesElem);
+	rootObj->copyAttr("minds", mindsElem);
 
-	//We'll handle both raw atlas dumps as well as complete entity dumps (where the latter also includes minds and meta data).
-	TiXmlElement* entitiesAtlasElem = nullptr;
-	TiXmlElement* mindsAtlasElem = nullptr;
-
-	if (xmlDoc.RootElement()->ValueStr() == "atlas") {
-		entitiesAtlasElem = xmlDoc.RootElement();
-	} else {
-
-		TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
-
-		if (!entitiesElem) {
-			EventCompleted.emit();
-			return;
-		}
-
-		entitiesAtlasElem = entitiesElem->FirstChildElement("atlas");
-
-		TiXmlElement* mindsElem = xmlDoc.RootElement()->FirstChildElement("minds");
-
-		if (mindsElem) {
-			mindsAtlasElem = mindsElem->FirstChildElement("atlas");
-		}
-	}
-
-	if (!entitiesAtlasElem) {
+	if (!entitiesElem.isList()) {
+		S_LOG_WARNING("Entities element is not list.");
 		EventCompleted.emit();
 		return;
 	}
-
-	{
-		AtlasMessageLoader loader(mPersistedEntities);
-		TinyXmlCodec codec(*entitiesAtlasElem, loader);
-
-		codec.poll(true);
+	if (!mindsElem.isList()) {
+		S_LOG_WARNING("Minds element is not list.");
+		EventCompleted.emit();
+		return;
 	}
-	if (mindsAtlasElem) {
-
-		AtlasMessageLoader loader(mPersistedMinds);
-		TinyXmlCodec codec(*mindsAtlasElem, loader);
-
-		codec.poll(true);
+	auto factories = Atlas::Objects::Factories::instance();
+	for (auto& entityMessage : entitiesElem.asList()) {
+		if (entityMessage.isMap()) {
+			auto object = factories->createObject(entityMessage.asMap());
+			if (object.isValid()) {
+				if (!object->isDefaultId()) {
+					mPersistedEntities.insert(std::make_pair(object->getId(), object));
+				}
+			}
+		}
+	}
+	for (auto& mindMessage : mindsElem.asList()) {
+		if (mindMessage.isMap()) {
+			auto object = factories->createObject(mindMessage.asMap());
+			if (object.isValid()) {
+				if (!object->isDefaultId()) {
+					mPersistedMinds.insert(std::make_pair(object->getId(), object));
+				}
+			}
+		}
 	}
 
 	S_LOG_INFO("Starting loading of world. Number of entities: " << mPersistedEntities.size() << " Number of minds: " << mPersistedMinds.size());
@@ -554,49 +557,38 @@ std::vector<EntityImporter::ShortInfo> EntityImporter::getInfoFromDirectory(cons
 		if (filename != "." && filename != "..") {
 			try {
 				ShortInfo info;
-				TiXmlDocument xmlDoc;
-				if (!xmlDoc.LoadFile(directoryPath + "/" + filename)) {
+
+				std::fstream fileStream(directoryPath + "/" + filename, std::ios::in);
+				AtlasObjectDecoder atlasLoader;
+
+				Atlas::Codecs::XML codec(fileStream, atlasLoader);
+				codec.poll(true);
+
+				auto rootObj = atlasLoader.getLastObject();
+
+				if (!rootObj.isValid()) {
 					continue;
 				}
-
-				info.filename = directoryPath + "/" + filename;
-
-				const TiXmlElement* nameElem = xmlDoc.RootElement()->FirstChildElement("name");
-				if (nameElem && nameElem->GetText()) {
-					info.name = nameElem->GetText();
-				} else {
-					info.name = filename;
-				}
-
-				const TiXmlElement* descElem = xmlDoc.RootElement()->FirstChildElement("description");
-				if (descElem && descElem->GetText()) {
-					info.description = descElem->GetText();
-				}
-
-				//We'll handle both raw atlas dumps as well as complete entity dumps (where the latter also includes minds and meta data).
-				const TiXmlElement* atlasElem = nullptr;
-
-				if (xmlDoc.RootElement()->ValueStr() == "atlas") {
-					atlasElem = xmlDoc.RootElement();
-				} else {
-					const TiXmlElement* entitiesElem = xmlDoc.RootElement()->FirstChildElement("entities");
-					if (entitiesElem) {
-						atlasElem = entitiesElem->FirstChildElement("atlas");
+				Atlas::Message::Element metaElem;
+				if (rootObj->copyAttr("meta", metaElem) == 0 && metaElem.isMap()) {
+					auto meta = metaElem.asMap();
+					info.filename = directoryPath + "/" + filename;
+					if (meta["name"].isString() && meta["name"] != "") {
+						info.name = meta["name"].asString();
+					} else {
+						info.name = filename;
 					}
-				}
-
-				if (atlasElem) {
-					int count = 0;
-					const TiXmlElement* entityElem = atlasElem->FirstChildElement("map");
-					while (entityElem) {
-						count++;
-						entityElem = entityElem->NextSiblingElement();
+					if (meta["description"].isString()) {
+						info.description = meta["description"].asString();
 					}
-					info.entityCount = count;
 
+					Atlas::Message::Element entitiesElem;
+					if (rootObj->copyAttr("entities", entitiesElem) == 0 && entitiesElem.isList()) {
+						info.entityCount = entitiesElem.asList().size();
+					}
+					infos.push_back(info);
 				}
 
-				infos.push_back(info);
 			} catch (const std::exception& ex) {
 				S_LOG_FAILURE("Error when trying to read import info from '" << filename << "'." << ex);
 			}
