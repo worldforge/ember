@@ -242,7 +242,7 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 	int numLayers = mLayers.size() + 1;
 
 	int takenUnits = 1;			 // One unit is always used by the global normal texture
-	takenUnits += 5;			 // Shadow textures
+	takenUnits += mShadowLayers; // Shadow textures
 	// A coverage texture for every 4 layers
 	// Make sure to always have 1 for 1 layer, 2 for 5 layers etc.
 	takenUnits += static_cast<int>(std::ceil(numLayers / 4.0f));

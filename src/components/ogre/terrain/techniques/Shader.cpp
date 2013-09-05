@@ -25,6 +25,7 @@
 #include <OgreTechnique.h>
 #include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
+#include <OgreSceneManager.h>
 
 
 namespace Ember
@@ -85,11 +86,9 @@ void Shader::initializePass(ShaderPass* shaderPass)
 {
 	if (shaderPass) {
 		if (mIncludeShadows) {
-			shaderPass->addShadowLayer(mTerrainPageShadow);
-			shaderPass->addShadowLayer(mTerrainPageShadow);
-			shaderPass->addShadowLayer(mTerrainPageShadow);
-			shaderPass->addShadowLayer(mTerrainPageShadow);
-			shaderPass->addShadowLayer(mTerrainPageShadow);
+			for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+				shaderPass->addShadowLayer(mTerrainPageShadow);
+			}
 		}
 		for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
 			const TerrainPageSurfaceLayer* surfaceLayer = I->second;
