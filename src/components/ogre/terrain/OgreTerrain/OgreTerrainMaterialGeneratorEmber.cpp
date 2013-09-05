@@ -80,7 +80,20 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generateForCompositeMap(con
 	if (mat.isNull()) {
 		S_LOG_INFO("Composite map material was not found!");
 	}
+
 	return mat;
+}
+void OgreTerrainMaterialGeneratorEmber::updateCompositeMap(const Ogre::Terrain* terrain, const Ogre::Rect& rect)
+{
+	size_t compSize = terrain->getCompositeMap()->getWidth();
+	// The rectangle that is to be updated - Using the full texture size here
+	Ogre::Rect imgRect;
+	imgRect.top = 0;
+	imgRect.left = 0;
+	imgRect.right = compSize;
+	imgRect.bottom = compSize;
+
+	_renderCompositeMap(compSize, imgRect, terrain->getCompositeMapMaterial(), terrain->getCompositeMap());
 }
 } /* Terrain */
 } /* OgreView */

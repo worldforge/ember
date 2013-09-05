@@ -192,6 +192,18 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material)
 {
+	material->removeAllTechniques();
+
+	Ogre::Technique* technique = material->createTechnique();
+
+	std::string materialSuffix = "/Simple";
+	for (auto& shaderPass : mPasses) {
+		Ogre::Pass* pass = technique->createPass();
+		if (!shaderPass->finalize(*pass, false, materialSuffix)) {
+			return false;
+		}
+	}
+
 	return true;
 }
 

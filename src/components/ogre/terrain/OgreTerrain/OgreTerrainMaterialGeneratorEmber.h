@@ -89,10 +89,8 @@ public:
 	   generator is free to render into a texture to support this, so long as
 	   the results are blitted into the Ogre::Terrain's own composite map afterwards.
 	 */
-	virtual void updateCompositeMap(const Ogre::Terrain* terrain, const Ogre::Rect& rect)
-	{
-		// We don't use this.
-	}
+	virtual void updateCompositeMap(const Ogre::Terrain* terrain, const Ogre::Rect& rect);
+
 	/** Update parameters for the given terrain.
 	 */
 	virtual void updateParams(const Ogre::MaterialPtr& mat, const Ogre::Terrain* terrain)
