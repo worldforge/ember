@@ -131,7 +131,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 	material->removeAllTechniques();
 
-	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("Ogre/DepthShadowmap/Caster/Float");
+	Ogre::MaterialPtr shadowCasterMaterial = Ogre::MaterialManager::getSingleton().getByName("Ogre/DepthShadowmap/Caster/Float/NoAlpha");
 
 	Ogre::Technique* technique = material->createTechnique();
 	technique->setShadowCasterMaterial(shadowCasterMaterial);
@@ -178,16 +178,6 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 		}
 	}
 
-	// add lighting pass
-	/*
-	 Ogre::Pass* pass = technique->createPass();
-	 pass->setSceneBlending(Ogre::SBT_MODULATE);
-	 pass->setVertexProgram("splat_light_vp");
-	 pass->setFragmentProgram("splat_light_fp");
-	 Ogre::TextureUnitState * textureUnitState = pass->createTextureUnitState();
-	 textureUnitState->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
-	 */
-
 	// Reapply the saved texture name aliases
 	material->applyTextureAliases(aliases);
 
@@ -198,9 +188,6 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 		return false;
 	}
 	return true;
-	// 	if (terrainPageShadow) {
-	// 		addShadow(technique, terrainPageShadow);
-	// 	}
 }
 
 bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material)
