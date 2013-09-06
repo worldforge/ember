@@ -67,12 +67,11 @@ void EmberEntity::init(const Atlas::Objects::Entity::RootEntity &ge, bool fromCr
 	// Setup Sounds
 	//	setSounds();
 
-	// set the Ogre node position and orientation based on Atlas data
-	std::stringstream ss;
 	if (getPredictedPos().isValid()) {
-		ss << "Entity " << getId() << "(" << getName() << ") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
+		std::stringstream ss;
+		ss << "Entity " << getId() << " (" << getName() << ", "<< getType()->getName() <<") placed at (" << getPredictedPos().x() << "," << getPredictedPos().y() << "," << getPredictedPos().x() << ")";
+		S_LOG_VERBOSE(ss.str());
 	}
-	S_LOG_VERBOSE(ss.str());
 
 	mIsInitialized = true;
 
