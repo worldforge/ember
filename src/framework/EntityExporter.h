@@ -30,6 +30,7 @@
 #include <vector>
 #include <fstream>
 #include <map>
+#include <unordered_map>
 #include <memory>
 
 namespace Atlas
@@ -141,6 +142,20 @@ public:
 	void setExportTransient(bool exportTransient);
 
 	/**
+	 * @brief Sets whether we should preserve ids.
+	 *
+	 * @param exportTransient Whether we should preserve ids.
+	 */
+	void setPreserveIds(bool preserveIds);
+
+	/**
+	 * @brief Gets whether we should preserve ids.
+	 * @return Whether we should preserve ids.
+	 */
+	bool getPreserveIds() const;
+
+
+	/**
 	 * @brief Emitted when the dump is complete.
 	 */
 	sigc::signal<void> EventCompleted;
@@ -159,6 +174,15 @@ protected:
 	Eris::Account& mAccount;
 	std::list<std::string> mQueue;
 	std::map<int, std::string> mThoughtsOutstanding;
+
+	/**
+	 * @brief Contains mapping between the id of entities they have on the server, and the id they will get in the dump.
+	 *
+	 * This is used both for mapping to ids when mPreserveIds is set to false, but also to cull out transient
+	 * entities from CONTAINS attributes.
+	 */
+	std::unordered_map<std::string, std::string> mIdMapping;
+
 	int mCount;
 
 	/**
@@ -171,6 +195,9 @@ protected:
 	 */
 	std::vector<Atlas::Message::Element> mMinds;
 
+	/**
+	 * @brief The full file name of the dump.
+	 */
 	std::string mFilename;
 
 	bool mComplete;
@@ -197,6 +224,12 @@ protected:
 	 */
 	bool mExportTransient;
 
+	/**
+	 * @brief True if the original ids of the entities should be preserved.
+	 * Default is false.
+	 */
+	bool mPreserveIds;
+
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpMind(const std::string& entityId, const Operation & op);
 	void infoArrived(const Operation& op);
@@ -212,6 +245,14 @@ protected:
 	 * This will write the file to disk.
 	 */
 	void complete();
+
+	/**
+	 * @brief Adjusts entity references.
+	 *
+	 * If mPreserveIds is set to false then new ids will be generated for all entities.
+	 * We then need to also make sure that any references in minds are updated to use the new ids.
+	 */
+	void adjustReferencedEntities();
 
 };
 

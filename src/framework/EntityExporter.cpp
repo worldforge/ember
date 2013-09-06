@@ -63,7 +63,7 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 EntityExporter::EntityExporter(Eris::Account& account) :
-		mAccount(account), mCount(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false)
+		mAccount(account), mCount(0), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false), mPreserveIds(false)
 {
 }
 
@@ -84,6 +84,16 @@ void EntityExporter::setName(const std::string& name)
 void EntityExporter::setExportTransient(bool exportTransient)
 {
 	mExportTransient = exportTransient;
+}
+
+void EntityExporter::setPreserveIds(bool preserveIds)
+{
+	mPreserveIds = preserveIds;
+}
+
+bool EntityExporter::getPreserveIds() const
+{
+	return mPreserveIds;
 }
 
 void EntityExporter::cancel()
@@ -168,6 +178,7 @@ void EntityExporter::pollQueue()
 
 		mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetResult);
 		mAccount.getConnection()->send(get);
+		S_LOG_VERBOSE("Requesting info about entity with id " << get_arg->getId());
 
 		mOutstandingGetRequestCounter++;
 
@@ -190,8 +201,7 @@ void EntityExporter::infoArrived(const Operation & op)
 		S_LOG_WARNING("Malformed OURS when dumping.");
 		return;
 	}
-	S_LOG_VERBOSE("Got info when dumping.");
-	mOutstandingGetRequestCounter--;
+	S_LOG_VERBOSE("Got info when dumping about entity " << ent->getId() << ". Outstanding requests: " << mOutstandingGetRequestCounter);
 	++mCount;
 	EventProgress.emit(mCount);
 	//If the entity is transient and we've been told not to export transient ones, we should skip this one (and all of its children).
@@ -203,6 +213,17 @@ void EntityExporter::infoArrived(const Operation & op)
 		//Sort the contains list so it's deterministic
 		contains.sort(idSorter);
 		entityCopy->setContains(contains);
+
+		std::string persistedId = entityCopy->getId();
+
+		if (!mPreserveIds && persistedId != "0") {
+			std::stringstream ss;
+			ss << mEntities.size();
+			persistedId = ss.str();
+			entityCopy->setId(persistedId);
+		}
+		mIdMapping.insert(std::make_pair(ent->getId(), persistedId));
+
 		dumpEntity(entityCopy);
 		std::list<std::string>::const_iterator I = contains.begin();
 		std::list<std::string>::const_iterator Iend = contains.end();
@@ -229,17 +250,104 @@ void EntityExporter::infoArrived(const Operation & op)
 
 			mAccount.getConnection()->getResponder()->await(commune->getSerialno(), this, &EntityExporter::operationGetThoughtResult);
 			mAccount.getConnection()->send(commune);
-			mThoughtsOutstanding.insert(std::make_pair(commune->getSerialno(), ent->getId()));
+			mThoughtsOutstanding.insert(std::make_pair(commune->getSerialno(), persistedId));
 			mOutstandingGetRequestCounter++;
-			S_LOG_VERBOSE("Sending request for thoughts.");
+			S_LOG_VERBOSE("Sending request for thoughts for entity with id " << ent->getId() << ".");
 
 		}
 	}
 	pollQueue();
 }
 
+void EntityExporter::adjustReferencedEntities()
+{
+	S_LOG_VERBOSE("Adjusting referenced entity ids.");
+	if (!mPreserveIds) {
+		for (auto& mind : mMinds) {
+			if (mind.isMap()) {
+				if (mind.asMap().count("thoughts") > 0) {
+					auto& thoughts = mind.asMap().find("thoughts")->second;
+					if (thoughts.isList()) {
+						for (auto& thought : thoughts.asList()) {
+							//If the thought is a list of things the entity owns, we should adjust it with the new entity ids.
+							if (thought.isMap()) {
+								if (thought.asMap().count("things") > 0) {
+									auto& thingsElement = thought.asMap().find("things")->second;
+									if (thingsElement.isMap()) {
+										for (auto& thingI : thingsElement.asMap()) {
+											if (thingI.second.isList()) {
+												Atlas::Message::ListType newList;
+												for (auto& thingId : thingI.second.asList()) {
+													if (thingId.isString()) {
+														auto entityIdLookupI = mIdMapping.find(thingId.asString());
+														//Check if the owned entity has been created with a new id. If so, replace the data.
+														if (entityIdLookupI != mIdMapping.end()) {
+															newList.push_back(entityIdLookupI->second);
+														} else {
+															newList.push_back(thingId);
+														}
+													} else {
+														newList.push_back(thingId);
+													}
+												}
+												thingI.second = newList;
+											}
+										}
+									}
+								} else if (thought.asMap().count("pending_things") > 0) {
+									//things that the entity owns, but haven't yet discovered are expressed as a list of entity ids
+									auto& pendingThingsElement = thought.asMap().find("pending_things")->second;
+									if (pendingThingsElement.isList()) {
+										Atlas::Message::ListType newList;
+										for (auto& thingId : pendingThingsElement.asList()) {
+											if (thingId.isString()) {
+												auto entityIdLookupI = mIdMapping.find(thingId.asString());
+												//Check if the owned entity has been created with a new id. If so, replace the data.
+												if (entityIdLookupI != mIdMapping.end()) {
+													newList.push_back(entityIdLookupI->second);
+												} else {
+													newList.push_back(thingId);
+												}
+											} else {
+												newList.push_back(thingId);
+											}
+										}
+										pendingThingsElement = newList;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	for (auto& entity : mEntities) {
+		if (entity.isMap()) {
+			if (entity.asMap().count("contains")) {
+				auto& containsElem = entity.asMap().find("contains")->second;
+				if (containsElem.isList()) {
+					auto& contains = containsElem.asList();
+					Atlas::Message::ListType newContains;
+					newContains.reserve(contains.size());
+					for (auto& entityElem : contains) {
+						//we can assume that it's string
+						auto I = mIdMapping.find(entityElem.asString());
+						if (I != mIdMapping.end()) {
+							newContains.push_back(I->second);
+						}
+					}
+					contains = newContains;
+				}
+			}
+		}
+	}
+}
+
 void EntityExporter::complete()
 {
+
+	adjustReferencedEntities();
 
 	Anonymous root;
 	Atlas::Message::MapType meta;
@@ -267,7 +375,7 @@ void EntityExporter::complete()
 	std::fstream filestream(mFilename, std::ios::out);
 	Atlas::Message::QueuedDecoder decoder;
 	Atlas::Codecs::XML codec(filestream, decoder);
-    MultiLineListFormatter formatter(filestream, codec);
+	MultiLineListFormatter formatter(filestream, codec);
 
 	Atlas::Objects::ObjectsEncoder encoder(formatter);
 
@@ -308,19 +416,35 @@ void EntityExporter::start(const std::string& filename, const std::string& entit
 
 void EntityExporter::operationGetResult(const Operation & op)
 {
+	mOutstandingGetRequestCounter--;
 	if (!mCancelled) {
 		if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
 			infoArrived(op);
+		} else {
+			std::string errorMessage;
+			if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
+				std::string errorMessage;
+				if (!op->getArgs().empty()) {
+					auto arg = op->getArgs().front();
+					if (arg->hasAttr("message")) {
+						const Atlas::Message::Element messageElem = arg->getAttr("message");
+						if (messageElem.isString()) {
+							errorMessage = messageElem.asString();
+						}
+					}
+				}
+			}
+			S_LOG_WARNING("Got unexpected response on a GET request with operation of type " << op->getParents().front());
+			S_LOG_WARNING("Error message: " << errorMessage);
 		}
 	}
 }
 
 void EntityExporter::operationGetThoughtResult(const Operation & op)
 {
+	mOutstandingGetRequestCounter--;
 	if (!mCancelled) {
-
 		thoughtOpArrived(op);
-		mOutstandingGetRequestCounter--;
 		pollQueue();
 	}
 }
