@@ -54,6 +54,7 @@ class Element;
 namespace Eris
 {
 class Account;
+class TypeInfo;
 }
 
 namespace Ember
@@ -92,6 +93,39 @@ namespace Ember
 class EntityExporter: public virtual sigc::trackable
 {
 public:
+
+	/**
+	 * @brief Stats about the process.
+	 *
+	 * Meant to be used in a GUI or debug info.
+	 */
+	struct Stats
+	{
+		/**
+		 * @brief The number of entities queried.
+		 */
+		unsigned int entitiesQueried;
+		/**
+		 * @brief The number of entities received.
+		 */
+		unsigned int entitiesReceived;
+		/**
+		 * @brief The number of entities for which the server didn't send correct data.
+		 */
+		unsigned int entitiesError;
+		/**
+		 * @brief The number of minds queried.
+		 */
+		unsigned int mindsQueried;
+		/**
+		 * @brief The number of minds received.
+		 */
+		unsigned int mindsReceived;
+		/**
+		 * @brief The number of minds for which the server didn't send correct data.
+		 */
+		unsigned int mindsError;
+	};
 
 	/**
 	 * @brief Ctor.
@@ -142,6 +176,12 @@ public:
 	void setExportTransient(bool exportTransient);
 
 	/**
+	 * @brief Gets whether we should also export transient entities.
+	 * @return Whether we should also export transient entities.
+	 */
+	bool getExportTransient() const;
+
+	/**
 	 * @brief Sets whether we should preserve ids.
 	 *
 	 * @param exportTransient Whether we should preserve ids.
@@ -154,6 +194,11 @@ public:
 	 */
 	bool getPreserveIds() const;
 
+	/**
+	 * @brief Gets stats about the export process.
+	 * @return Stats about the process.
+	 */
+	const Stats& getStats() const;
 
 	/**
 	 * @brief Emitted when the dump is complete.
@@ -161,19 +206,29 @@ public:
 	sigc::signal<void> EventCompleted;
 
 	/**
-	 * @brief Emitted when an entity has been dumped.
+	 * @brief Emitted when there's any progress.
 	 *
-	 * The argument denotes how many instances have been dumped.
-	 * Note that it's not really possible (in a clean way) to in advance know how many instances there are on the server.
 	 */
-	sigc::signal<void, int> EventProgress;
+	sigc::signal<void> EventProgress;
 
 protected:
 	typedef Atlas::Objects::Operation::RootOperation Operation;
 
 	Eris::Account& mAccount;
+
+	Stats mStats;
+
 	std::list<std::string> mQueue;
 	std::map<int, std::string> mThoughtsOutstanding;
+
+	/**
+	 * @brief Keeps track of any unbound types, and the entities that are of those types.
+	 *
+	 * As soon as a type is bound (or couldn't be bound) the entry will be removed from the map.
+	 * The main use of this is to make sure that those types that inherit from "character" are queried for
+	 * their thoughts.
+	 */
+	std::unordered_map<Eris::TypeInfo*, std::vector<std::string> > mUnboundTypes;
 
 	/**
 	 * @brief Contains mapping between the id of entities they have on the server, and the id they will get in the dump.
@@ -182,8 +237,6 @@ protected:
 	 * entities from CONTAINS attributes.
 	 */
 	std::unordered_map<std::string, std::string> mIdMapping;
-
-	int mCount;
 
 	/**
 	 * @brief All entities as received from the server.
@@ -236,7 +289,23 @@ protected:
 	void thoughtOpArrived(const Operation& op);
 	void operationGetResult(const Operation& op);
 	void operationGetThoughtResult(const Operation& op);
+	void requestThoughts(const std::string& entityId, const std::string& persistedId);
 
+	/**
+	 * @brief Called when a type is either bound or couldn't be bound.
+	 *
+	 * If we're waiting on data in order to perform checks if we should also ask for thoughts
+	 * this will happen here.
+	 *
+	 * @param typeInfo
+	 */
+	void typeService_BoundType(Eris::TypeInfo* typeInfo);
+
+	/**
+	 * @brief Checks the queue if we should ask the server for more data on any entity, or if we're done.
+	 *
+	 * This is the main method which should be called whenever something is received from the server.
+	 */
 	void pollQueue();
 
 	/**

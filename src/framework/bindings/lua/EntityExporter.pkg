@@ -6,6 +6,39 @@ namespace Ember
 class EntityExporter
 {
 public:
+	/**
+	 * @brief Stats about the process.
+	 *
+	 * Meant to be used in a GUI or debug info.
+	 */
+	struct Stats
+	{
+		/**
+		 * @brief The number of entities queried.
+		 */
+		unsigned int entitiesQueried;
+		/**
+		 * @brief The number of entities received.
+		 */
+		unsigned int entitiesReceived;
+		/**
+		 * @brief The number of entities for which the server didn't send correct data.
+		 */
+		unsigned int entitiesError;
+		/**
+		 * @brief The number of minds queried.
+		 */
+		unsigned int mindsQueried;
+		/**
+		 * @brief The number of minds received.
+		 */
+		unsigned int mindsReceived;
+		/**
+		 * @brief The number of minds for which the server didn't send correct data.
+		 */
+		unsigned int mindsError;
+	};
+	
 	explicit EntityExporter(Eris::Account& account);
 	virtual ~EntityExporter();
 
@@ -32,16 +65,46 @@ public:
 	 * @param name The name.
 	 */
 	void setName(const std::string& name);
+	
+	/**
+	 * @brief Sets whether we should also export transient entities.
+	 *
+	 * The default is not to export those entities.
+	 * @param exportTransient Whether we should export transient entities.
+	 */
+	void setExportTransient(bool exportTransient);
+
+	/**
+	 * @brief Gets whether we should also export transient entities.
+	 * @return Whether we should also export transient entities.
+	 */
+	bool getExportTransient() const;
+
+	/**
+	 * @brief Sets whether we should preserve ids.
+	 *
+	 * @param exportTransient Whether we should preserve ids.
+	 */
+	void setPreserveIds(bool preserveIds);
+
+	/**
+	 * @brief Gets whether we should preserve ids.
+	 * @return Whether we should preserve ids.
+	 */
+	bool getPreserveIds() const;
+
+	/**
+	 * @brief Gets stats about the export process.
+	 * @return Stats about the process.
+	 */
+	const Ember::EntityExporter::Stats& getStats() const;
 
 	sigc::signal<void> EventCompleted;
 	
 	/**
 	 * @brief Emitted when an entity has been dumped.
-	 *
-	 * The argument denotes how many instances have been dumped.
-	 * Note that it's not really possible (in a clean way) to in advance know how many instances there are on the server.
 	 */
-	sigc::signal<void, int> EventProgress;
+	sigc::signal<void> EventProgress;
 
 };
 

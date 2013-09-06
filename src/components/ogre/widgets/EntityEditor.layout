@@ -235,6 +235,26 @@
                                     <Property Name='UnifiedSize' Value='{{1,-120.0},{0,80.0}}' />
                                 </Window>
                             </Window>
+                            <Window Type='HorizontalLayoutContainer'>
+                                <Property Name="Tooltip">If entity id values should be preserved.</Property>
+                                <Window Type='EmberLook/StaticText'>
+                                    <Property Name='UnifiedSize' Value='{{0,120.0},{0,25}}' />
+                                    <Property Name='Text'>Preserve ids</Property>
+                                </Window>
+                                <Window Type='EmberLook/Checkbox' Name='ExportPreserveIds'>
+                                    <Property Name='UnifiedSize' Value='{{1,-120.0},{0,25.0}}' />
+                                </Window>
+                            </Window>
+                            <Window Type='HorizontalLayoutContainer'>
+                                <Property Name="Tooltip">If transient entities should also be included.</Property>
+                                <Window Type='EmberLook/StaticText'>
+                                    <Property Name='UnifiedSize' Value='{{0,120.0},{0,25}}' />
+                                    <Property Name='Text'>Include transients</Property>
+                                </Window>
+                                <Window Type='EmberLook/Checkbox' Name='ExportIncludeTransients'>
+                                    <Property Name='UnifiedSize' Value='{{1,-120.0},{0,25.0}}' />
+                                </Window>
+                            </Window>
                         </Window>
                         <Window Type='EmberLook/Button' Name='DumpWorld'>
                             <Property Name='Text' Value='Export entity' />
@@ -257,7 +277,6 @@
                             <Property Name='Tooltip' Value='Cancels the ongoing action.' />
                             <Property Name='UnifiedPosition' Value='{{0.5,-45},{0,45}}' />
                             <Property Name='UnifiedSize' Value='{{0,70},{0,20}}' />
-                            <Property Name='Visible' Value='false' />
                         </Window>
                     </Window>
                 </Window>

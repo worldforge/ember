@@ -1783,6 +1783,8 @@ function EntityEditor:buildWidget()
 		self.exportFilenameWindow = self.widget:getWindow("ExportFileName")
 		self.exportNameWindow = self.widget:getWindow("ExportName")
 		self.exportDescriptionWindow = self.widget:getWindow("ExportDescription")
+		local preserveIdsWindow = CEGUI.toCheckbox(self.widget:getWindow("ExportPreserveIds"))
+		local includeTransientsWindow = CEGUI.toCheckbox(self.widget:getWindow("ExportIncludeTransients"))
 
 		local worldDumper = function()
 
@@ -1804,6 +1806,8 @@ function EntityEditor:buildWidget()
 					local worldDumper = Ember.EntityExporter:new(emberServices:getServerService():getAccount())
 					worldDumper:setDescription(self.exportDescriptionWindow:getText())
 					worldDumper:setName(self.exportNameWindow:getText())
+					worldDumper:setExportTransient(includeTransientsWindow:isSelected())
+					worldDumper:setPreserveIds(preserveIdsWindow:isSelected())
 					self.widget:getWindow("DumpStatus"):setText("Dumping...")
 					createConnector(worldDumper.EventCompleted):connect(function()
 						self.widget:getWindow("DumpStatus"):setText("Done dumping.")
@@ -1811,16 +1815,19 @@ function EntityEditor:buildWidget()
 						cancelButton.method = nil
 						worldDumper:delete()
 					end)
-					createConnector(worldDumper.EventProgress):connect(function(entitiesDumped)
-						self.widget:getWindow("DumpStatus"):setText("Dumping, " .. entitiesDumped .. " dumped")
+					createConnector(worldDumper.EventProgress):connect(function()
+						local stats = worldDumper:getStats()
+						self.widget:getWindow("DumpStatus"):setText("Dumping, " .. stats.entitiesReceived .. " entities, " .. stats.mindsReceived .. " minds dumped")
 					end)
 					cancelButton.method = function()
 						worldDumper:cancel()
 						self.widget:getWindow("DumpStatus"):setText("Cancelled")
+						exportsOverlay:setVisible(false)
+						cancelButton.method = nil
+						worldDumper:delete()
 					end
 					exportsOverlay:setVisible(true)
 					worldDumper:start(emberServices:getConfigService():getHomeDirectory() .. "/entityexport/" .. filename, self.instance.entity:getId())
-
 				end
 				return true
 			end)
