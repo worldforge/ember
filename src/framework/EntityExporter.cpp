@@ -405,6 +405,12 @@ void EntityExporter::complete()
 
 	adjustReferencedEntities();
 
+	//Make sure the minds are stored in a deterministic fashion
+	std::sort(mMinds.begin(), mMinds.end(),
+			[](Atlas::Message::Element const & a, Atlas::Message::Element const &b) {
+		return integerId(a.asMap().find("id")->second.asString()) < integerId(b.asMap().find("id")->second.asString());
+	});
+
 	Anonymous root;
 	Atlas::Message::MapType meta;
 
