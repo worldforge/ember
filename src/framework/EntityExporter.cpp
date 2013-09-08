@@ -251,6 +251,10 @@ void EntityExporter::infoArrived(const Operation & op)
 		}
 		mIdMapping.insert(std::make_pair(ent->getId(), persistedId));
 
+		//Remove attributes which shouldn't be persisted
+		entityCopy->removeAttr(Atlas::Objects::Entity::VELOCITY_ATTR);
+		entityCopy->removeAttr(Atlas::Objects::Entity::LOC_ATTR);
+		entityCopy->removeAttr(Atlas::Objects::STAMP_ATTR);
 		dumpEntity(entityCopy);
 		std::list<std::string>::const_iterator I = contains.begin();
 		std::list<std::string>::const_iterator Iend = contains.end();
@@ -391,15 +395,6 @@ void EntityExporter::adjustReferencedEntities()
 					}
 				}
 				contains = newContains;
-			}
-		}
-		if (entityMap.count("loc")) {
-			auto& locElem = entityMap.find("loc")->second;
-			if (locElem.isString()) {
-				auto I = mIdMapping.find(locElem.asString());
-				if (I != mIdMapping.end()) {
-					locElem = I->second;
-				}
 			}
 		}
 	}
