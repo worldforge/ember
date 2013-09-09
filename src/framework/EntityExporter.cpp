@@ -420,6 +420,7 @@ void EntityExporter::complete()
 	ss << Time::currentTimeMillis();
 	meta["timestamp"] = ss.str();
 	meta["transients"] = mExportTransient;
+	meta["preserved_ids"] = mPreserveIds;
 
 	Atlas::Message::MapType server;
 	Eris::ServerInfo serverInfo;
