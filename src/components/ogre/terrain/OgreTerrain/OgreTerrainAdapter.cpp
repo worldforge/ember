@@ -54,8 +54,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mPageDataProvider(nullptr)
 {
 	// Other params
-	mTerrainGlobalOptions->setSkirtSize(5.0f);
-	mTerrainGlobalOptions->setCompositeMapDistance(10000.0f);
+	mTerrainGlobalOptions->setSkirtSize(30.0f);
 	mTerrainGlobalOptions->setCastsDynamicShadows(true);
 	mTerrainGlobalOptions->setMaxPixelError(8);
 
@@ -69,10 +68,6 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 	origin.z = mTerrainGroup->getTerrainWorldSize() / 2;
 	origin.y = 0;
 	mTerrainGroup->setOrigin(origin);
-	defaultImportData.layerList.resize(1);
-	defaultImportData.layerList[0].worldSize = 9;
-	defaultImportData.layerList[0].textureNames.push_back("3d_objects/environment/textures/ground_grass/D.png");
-	defaultImportData.layerList[0].textureNames.push_back("3d_objects/environment/textures/ground_grass/N.png");
 }
 
 OgreTerrainAdapter::~OgreTerrainAdapter()
