@@ -152,7 +152,8 @@ void GrassFoliage::initialize()
 	}
 
 	l->setMapBounds(Convert::toOgre(worldSize));
-	
+	l->setMaxSlope(Ogre::Degree(40.0f));
+
 	std::list<Forests::GeometryPageManager*> detailLevels = mPagedGeometry->getDetailLevels();
 	for (std::list<Forests::GeometryPageManager*>::iterator I = detailLevels.begin(); I != detailLevels.end(); ++I) {
 		DistanceStore tempDistance = { (*I)->getFarRange(), (*I)->getNearRange(), (*I)->getTransition() };

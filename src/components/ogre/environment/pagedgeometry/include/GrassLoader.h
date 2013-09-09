@@ -1210,15 +1210,14 @@ Mesh *GrassLoader<TGrassLayer>::generateGrass_CROSSQUADS(PageInfo &page, TGrassL
 
 		float y3, y4;
 		if (heightFunction){
-			if (layer->getMaxSlope() < (Math::Abs(y1 - y2) / (halfScaleX * 2))) {
-				//Degenerate the face
-				x2 = x1;
-				y2 = y1;
-				z2 = z1;
-			}
-
 			y3 = heightFunction(x3, z3, heightFunctionUserData);
 			y4 = heightFunction(x4, z4, heightFunctionUserData);
+			if (layer->getMaxSlope() < (Math::Abs(y3 - y4) / (halfScaleX * 2))) {
+				//Degenerate the face
+				x4 = x3;
+				y4 = y3;
+				z4 = z3;
+			}
 		} else {
 			y3 = 0;
 			y4 = 0;
