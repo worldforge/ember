@@ -263,19 +263,66 @@ Atlas::Message::Element EntityEditor::createPosition2dElement()
 	return Element(list);
 }
 
-void EntityEditor::setGoals(const std::string& verb, const std::vector<std::string>& definitions)
+void EntityEditor::addGoal(const std::string& verb, const std::string& definition)
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
-
-	Atlas::Message::ListType thoughts;
-	for (auto& thought : definitions) {
-		thoughts.push_back(thought);
-	}
 
 	Atlas::Objects::Entity::Anonymous thought;
 	thought->setAttr("predicate", "goal");
 	thought->setAttr("subject", "('" + verb + "', '#" + verb + "_verb1')");
-	thought->setAttr("object", thoughts);
+	thought->setAttr("object", definition);
+
+	Atlas::Objects::Operation::RootOperation thinkOp;
+	thinkOp->setArgs1(thought);
+	std::list<std::string> parents;
+	parents.emplace_back("think");
+	thinkOp->setParents(parents);
+	thinkOp->setTo(mEntity.getId());
+	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+
+	Eris::Connection* connection = account->getConnection();
+
+	connection->send(thinkOp);
+
+}
+void EntityEditor::updateGoal(const std::string& id, const std::string& definition)
+{
+	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+
+	Atlas::Message::MapType goalElement;
+	goalElement["id"] = id;
+	goalElement["definition"] = definition;
+
+	Atlas::Objects::Entity::Anonymous thought;
+	thought->setAttr("goal", goalElement);
+
+	Atlas::Objects::Operation::RootOperation thinkOp;
+	thinkOp->setArgs1(thought);
+	std::list<std::string> parents;
+	parents.emplace_back("think");
+	thinkOp->setParents(parents);
+	thinkOp->setTo(mEntity.getId());
+	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+	thinkOp->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+
+	Eris::Connection* connection = account->getConnection();
+
+	connection->send(thinkOp);
+}
+
+void EntityEditor::removeGoal(const std::string& id)
+{
+	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+
+	Atlas::Message::MapType goalElement;
+	goalElement["id"] = id;
+	//By not defining anything else than the id we're telling the server to remove it.
+
+	Atlas::Objects::Entity::Anonymous thought;
+	thought->setAttr("goal", goalElement);
 
 	Atlas::Objects::Operation::RootOperation thinkOp;
 	thinkOp->setArgs1(thought);
@@ -333,6 +380,36 @@ void EntityEditor::addMarker(const std::string& entityId, const WFMath::Point<3>
 	}
 }
 
+void EntityEditor::getGoals()
+{
+	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
+
+	Atlas::Objects::Operation::Generic get;
+	std::list<std::string> parents;
+	parents.emplace_back("commune");
+	get->setParents(parents);
+	get->setTo(mEntity.getId());
+
+	Atlas::Objects::Entity::Anonymous get_args;
+	get_args->setAttr("goal", Atlas::Message::MapType());
+
+	get->setArgs1(get_args);
+
+	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
+	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
+	get->setFrom(mWorld.getAvatar()->getEmberEntity().getId());
+	//By setting a serial number we tell the server to "relay" the operation. This means that any
+	//response operation from the target entity will be sent back to us.
+	get->setSerialno(Eris::getNewSerialno());
+
+	Eris::Connection* connection = account->getConnection();
+
+	connection->getResponder()->await(get->getSerialno(), this, &EntityEditor::operationGetGoalsResult);
+	connection->send(get);
+
+}
+
+
 void EntityEditor::getThoughts()
 {
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
@@ -356,6 +433,40 @@ void EntityEditor::getThoughts()
 	connection->send(get);
 
 }
+
+void EntityEditor::operationGetGoalsResult(const Atlas::Objects::Operation::RootOperation& op)
+{
+	//What we receive here has been relayed from the mind of the entity. That means that this op
+	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
+	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
+	//very carefully.
+
+	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
+		//An empty root operation signals a timeout; we never got any answer from the entity.
+		return;
+	}
+
+	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
+	//"think" operation.
+	if (op->getParents().empty()) {
+		S_LOG_WARNING("Got think operation without any parent set.");
+		return;
+	}
+	if (op->getParents().front() != "think") {
+		S_LOG_WARNING("Got think operation with wrong type set.");
+		return;
+	}
+
+	if (!op->getArgs().empty()) {
+		auto thoughts = op->getArgsAsList();
+		for (auto thought : thoughts) {
+			EventGotGoal(thought);
+		}
+	} else {
+		S_LOG_VERBOSE("Got thought op without any thoughts.");
+	}
+}
+
 
 void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::RootOperation& op)
 {
@@ -390,7 +501,7 @@ void EntityEditor::operationGetThoughtResult(const Atlas::Objects::Operation::Ro
 	}
 }
 
-void EntityEditor::getGoalInfo(const std::string& subject, const std::string& goal)
+void EntityEditor::getGoalInfo(const std::string& id)
 {
 
 	Eris::Account* account = EmberServices::getSingleton().getServerService().getAccount();
@@ -409,8 +520,7 @@ void EntityEditor::getGoalInfo(const std::string& subject, const std::string& go
 	get->setSerialno(Eris::getNewSerialno());
 
 	Atlas::Message::MapType goalMap;
-	goalMap["subject"] = subject;
-	goalMap["goal"] = goal;
+	goalMap["id"] = id;
 	Atlas::Objects::Entity::Anonymous getArg;
 	getArg->setAttr("goal_info", goalMap);
 	get->setArgs1(getArg);

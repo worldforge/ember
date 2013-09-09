@@ -1046,15 +1046,11 @@ function EntityEditor:editEntity(entity)
 	local exportFileName = "entityexport_" .. entity:getId() .. ".xml"
 	self.exportFilenameWindow:setText(exportFileName)
 
-	self.instance.goals = {}
-
 	createConnector(self.instance.helper.EventGotThought):connect(function(element)
 		if element:isMap() then
 			if self.instance.clearThoughts then
 				self.knowledgelistbox:resetList()
-				self.goallistbox:resetList()
 				self.instance.clearThoughts = false
-				self.instance.goals = {}
 			end
 			local thoughtMap = element:asMap()
 
@@ -1096,61 +1092,73 @@ function EntityEditor:editEntity(entity)
 							end
 						else
 							--Handle goals specially
-
-							local verb = modelItem.subject
-							--The subject of a goal is expressed as "('a_goal', '#a_goal_verb1')". We therefore need to do some regexp searching to find the first value in the tuple.
-							local _, _, singleVerb = string.find(modelItem.subject, "%('([%w_-]*)'")
-							if singleVerb then
-								verb = singleVerb
-							end
-
-							local addGoal = function(object)
-
-								local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
-								--6000px should be enough to make sure the text isn't cropped
-								goalItem:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
-								
-								goalItem:setText(escapeForCEGUI(verb .. " : " .. object))
-								self.goallistbox:addItem(goalItem)
-
-								goalItem:subscribeEvent("SelectionChanged", function(args)
-									self.goalInfo:setText("")
-									if goalItem:isSelected() then
-										local goalVerb = self.widget:getWindow("GoalVerb")
-										local goalDef = self.widget:getWindow("GoalDefinition")
-
-										goalVerb:setText(verb)
-										goalVerb.verb = verb
-
-										goalDef:setText(object)
-
-										self.instance.helper:getGoalInfo(modelItem.subject, object)
-									end
-
-									return true
-								end)
-								return goalItem
-							end
-
-							local goals = {}
-
-							if object:isString() then
-								addGoal(object:asString())
-
-								table.insert(goals, object:asString())
-							elseif object:isList() then
-								local goalsList = object:asList()
-								for i = 0, goalsList:size() - 1 do
-									local anObject = goalsList[i]
-									if anObject:isString() then
-										addGoal(anObject:asString()):setID(i + 1)
-										table.insert(goals, anObject:asString())
-									end
-								end
-							end
-							self.instance.goals[verb] = goals
 						end
 					end
+				end
+			end
+		end
+	end)
+
+	createConnector(self.instance.helper.EventGotGoal):connect(function(element)
+		if element:isMap() then
+			
+			if self.instance.clearGoals then
+				self.goallistbox:resetList()
+				self.instance.clearGoals = false
+			end
+			local thoughtMap = element:asMap()
+
+			local modelItem = {}
+			if thoughtMap:get("definition") and thoughtMap:get("definition"):isString() then
+				modelItem.definition = thoughtMap:get("definition"):asString()
+				if thoughtMap:get("id") and thoughtMap:get("id"):isString() then
+					modelItem.id = thoughtMap:get("id"):asString()
+
+					if thoughtMap:get("key") and thoughtMap:get("key"):isString() then
+						modelItem.key = thoughtMap:get("key"):asString()
+					else
+						modelItem.key = ""
+					end
+
+					local verb = modelItem.key
+					--The subject of a goal is expressed as "('a_goal', '#a_goal_verb1')". We therefore need to do some regexp searching to find the first value in the tuple.
+					local _, _, singleVerb = string.find(modelItem.key, "%('([%w_-]*)'")
+					if singleVerb then
+						verb = singleVerb
+					end
+
+					local addGoal = function(definition)
+
+						local goalItem = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
+						
+						goalItem.modelItem = modelItem
+						--6000px should be enough to make sure the text isn't cropped
+						goalItem:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+						
+						goalItem:setText(escapeForCEGUI(verb .. " : " .. definition))
+						self.goallistbox:addItem(goalItem)
+
+						goalItem:subscribeEvent("SelectionChanged", function(args)
+							self.goalInfo:setText("")
+							if goalItem:isSelected() then
+								local goalVerb = self.widget:getWindow("GoalVerb")
+								local goalDef = self.widget:getWindow("GoalDefinition")
+
+								goalVerb:setText(verb)
+								goalVerb.verb = verb
+
+								goalDef:setText(definition)
+
+								self.instance.helper:getGoalInfo(modelItem.id)
+							end
+
+							return true
+						end)
+						return goalItem
+					end
+
+					addGoal(modelItem.definition)
+
 				end
 			end
 		end
@@ -1160,13 +1168,10 @@ function EntityEditor:editEntity(entity)
 
 
 	local goalInfoConnector = createConnector(self.instance.helper.EventGotGoalInfo):connect(function(element)
-		log.info("Got goal.")
 		if element:isMap() then
-			log.info("Goal is map.")
 			local goalMap = element:asMap()
 			local reportElem = goalMap:get("report")
 			if reportElem and reportElem:isMap() then
-				log.info("Got report element.")
 				local goalString = Ember.OgreView.Gui.EntityEditor:parseElementMap(reportElem:asMap())
 				self.goalInfo:setText(escapeForCEGUI(goalString))
 			end
@@ -1431,7 +1436,9 @@ end
 
 function EntityEditor:knowledgeRefresh()
 	self.instance.clearThoughts = true
+	self.instance.clearGoals = true
 	self.instance.helper:getThoughts()
+	self.instance.helper:getGoals()
 end
 
 function EntityEditor:RefreshKnowledge_Clicked(args)
@@ -1457,16 +1464,7 @@ function EntityEditor:GoalAdd_Clicked(args)
 	local goalVerb = self.widget:getWindow("GoalVerb")
 	local goalDef = self.widget:getWindow("GoalDefinition")
 
-	local goals = std.vector_std__string_:new_local()
-	local existingGoals = self.instance.goals[goalVerb:getText()]
-	if existingGoals then
-		for i, v in ipairs(existingGoals) do
-			goals:push_back(v)
-		end
-	end
-	goals:push_back(goalDef:getText())
-
-	self.instance.helper:setGoals(goalVerb:getText(), goals)
+	self.instance.helper:addGoal(goalVerb:getText(), goalDef:getText())
 	self:knowledgeRefresh()
 	return true
 end
@@ -1475,28 +1473,10 @@ function EntityEditor:GoalUpdate_Clicked(args)
 	local goalVerb = self.widget:getWindow("GoalVerb")
 	local goalDef = self.widget:getWindow("GoalDefinition")
 
-	local goals = std.vector_std__string_:new_local()
-
-
 	local selectedItem = self.goallistbox:getFirstSelectedItem()
 	if selectedItem then
-		local editingIndex = selectedItem:getID()
-		local existingGoals = self.instance.goals[goalVerb:getText()]
-		if existingGoals then
-			for i, v in ipairs(existingGoals) do
-				if i == editingIndex then
-					goals:push_back(goalDef:getText())
-				else
-					goals:push_back(v)
-				end
-			end
-		else
-			--this should not really be possible; if we've selected a goal in the list it should exist in the list of goals
-			--we'll keep it anyway just as a precaution
-			goals:push_back(goalDef:getText())
-		end
-
-		self.instance.helper:setGoals(goalVerb:getText(), goals)
+		local modelItem = selectedItem.modelItem
+		self.instance.helper:updateGoal(modelItem.id, goalDef:getText())
 		self:knowledgeRefresh()
 	end
 
@@ -1510,23 +1490,11 @@ function EntityEditor:GoalRemove_Clicked(args)
 
 	local goalVerb = self.widget:getWindow("GoalVerb")
 
-	local goals = std.vector_std__string_:new_local()
-
 	local selectedItem = self.goallistbox:getFirstSelectedItem()
 	if selectedItem then
-		editingIndex = selectedItem:getID()
-
-		--we've set the 'verb' property of the goalVerb textbox when the goal item was selected
-		local existingGoals = self.instance.goals[goalVerb.verb]
-		if existingGoals then
-			for i, v in ipairs(existingGoals) do
-				if i ~= editingIndex then
-					goals:push_back(v)
-				end
-			end
-			self.instance.helper:setGoals(goalVerb.verb, goals)
-			self:knowledgeRefresh()
-		end
+		local modelItem = selectedItem.modelItem
+		self.instance.helper:removeGoal(modelItem.id)
+		self:knowledgeRefresh()
 	end
 
 	return true

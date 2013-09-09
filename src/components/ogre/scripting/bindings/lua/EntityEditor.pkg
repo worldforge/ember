@@ -46,14 +46,24 @@ public:
 	Atlas::Message::Element createPosition2dElement();
 
 	/**
-	 * @brief Sets new goals.
-	 *
-	 * Sending an empty list will effectively remove all goals for the given verb.
-	 *
-	 * @param verb The verb to associate with the goals.
-	 * @param definition Zero or many goals.
+	 * @brief Adds a new goal.
+	 * @param verb The verb for the goal.
+	 * @param definition The goal definition.
 	 */
-	void setGoals(const std::string& verb, const std::vector<std::string>& definitions);
+	void addGoal(const std::string& verb, const std::string& definition);
+
+	/**
+	 * @brief Updates an existing goal.
+	 * @param verb The id of the goal (note: not the verb).
+	 * @param definition The goal definition.
+	 */
+	void updateGoal(const std::string& id, const std::string& definition);
+
+	/**
+	 * @brief Removes an existing goal.
+	 * @param verb The id of the goal (note: not the verb).
+	 */
+	void removeGoal(const std::string& id);
 
 	/**
 	 * @brief Adds new knowledge
@@ -76,7 +86,20 @@ public:
 	 */
 	void getThoughts();
 	
-	void getGoalInfo(const std::string& subject, const std::string& goal);
+	/**
+	 * @brief Queries the entity about its goals.
+	 *
+	 * When thoughts arrive they are emitted through EventGotGoal.
+	 */
+	void getGoals();
+
+	/**
+	 * @brief Gets goal info from the server.
+	 *
+	 * When goal information has arrived the EventGotGoalInfo event is emitted.
+	 * @param id The goal id.
+	 */
+	void getGoalInfo(const std::string& id);
 	
 	static std::string parseElementMap(const Atlas::Message::MapType& map);
 	
@@ -85,6 +108,11 @@ public:
 	 */
 	sigc::signal<void, const Atlas::Message::Element&> EventGotThought;
 	
+	/**
+	 * @brief Emitted when a new thought about a goal has arrived.
+	 */
+	sigc::signal<void, const Atlas::Message::Element&> EventGotGoal;
+
 	sigc::signal<void, const Atlas::Message::Element&> EventGotGoalInfo;
 
 };
