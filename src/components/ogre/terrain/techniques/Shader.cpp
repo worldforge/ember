@@ -244,7 +244,7 @@ bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material)
 
 	Ogre::Technique* technique = material->createTechnique();
 
-	std::string materialSuffix = "/Simple";
+	std::string materialSuffix = "/NoLighting";
 	for (auto& shaderPass : mPasses) {
 		Ogre::Pass* pass = technique->createPass();
 		if (!shaderPass->finalize(*pass, false, materialSuffix)) {

@@ -125,15 +125,17 @@ LayerStore& ShaderPass::getLayers()
 bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
 {
 	S_LOG_VERBOSE("Creating terrain material pass with: NormalMapping=" << mUseNormalMapping << " Shadows=" << useShadows << " Suffix=" << shaderSuffix);
-	S_LOG_VERBOSE("Adding normal map texture unit state.");
-	Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
+	if (shaderSuffix != "/NoLighting") {
+		S_LOG_VERBOSE("Adding normal map texture unit state.");
+		Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
 
-	// TODO SK: constant for name
+		// TODO SK: constant for name
 
-	// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
-	// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
-	normalMapTextureUnitState->setTextureNameAlias("EmberTerrain/normalMap");
-	normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+		// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
+		// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
+		normalMapTextureUnitState->setTextureNameAlias("EmberTerrain/normalMap");
+		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	}
 
 	if (useShadows) {
 		for (unsigned int i = 0; i < mShadowLayers; ++i) {
@@ -182,7 +184,12 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	ss << mLayers.size() << shaderSuffix;
 	std::string fragmentProgramName(ss.str());
 
-	pass.setMaxSimultaneousLights(3);
+	if (shaderSuffix == "NoLighting") {
+		pass.setMaxSimultaneousLights(0);
+	} else {
+		pass.setMaxSimultaneousLights(3);
+	}
+
 	try {
 		S_LOG_VERBOSE("Using fragment program " << fragmentProgramName << " for terrain page.");
 		pass.setFragmentProgram(fragmentProgramName);
