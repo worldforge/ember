@@ -31,6 +31,7 @@
 #include <OgrePageManager.h>
 #include <OgreGrid2DPageStrategy.h>
 
+#define EMBER_OGRE_TERRAIN_HALF_RANGE 0x7FFF
 
 namespace Ember
 {
@@ -42,8 +43,8 @@ namespace Terrain
 //TODO SK: provide proper arguments to terrain group, move to constants/configuration parameters
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
 		mTerrainPageSize(terrainPageSize),
-		mLoadRadius(terrainPageSize / 2),
-		mHoldRadius(terrainPageSize * 2),
+		mLoadRadius(terrainPageSize * 2),
+		mHoldRadius(terrainPageSize * 4),
 		mSceneManager(sceneManager),
 		mPageManager(OGRE_NEW Ogre::PageManager()),
 		mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)),
@@ -128,7 +129,7 @@ void OgreTerrainAdapter::loadScene()
 
 	mPagedWorld = mPageManager->createWorld();
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
-			-10, -10, 10, 10, "", 0);
+			-EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, "", 0);
 	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(mPageDataProvider));
 }
 
