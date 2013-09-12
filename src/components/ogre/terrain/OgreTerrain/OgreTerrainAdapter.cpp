@@ -51,7 +51,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mPagedWorld(nullptr),
 		mTerrainPagedWorldSection(nullptr),
 		mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
-		mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize))),
+		mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))),
 		mPageDataProvider(nullptr)
 {
 	// Other params

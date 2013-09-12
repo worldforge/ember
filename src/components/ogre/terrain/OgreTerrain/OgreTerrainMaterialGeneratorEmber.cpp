@@ -49,8 +49,8 @@ void OgreTerrainMaterialGeneratorEmber::requestOptions(Ogre::Terrain* terrain)
 Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrain* terrain)
 {
 	// calculate page index from position
-	long indexX = (terrain->getPosition().x - mOriginX) / terrain->getSize();
-	long indexY = -(terrain->getPosition().z - mOriginZ) / terrain->getSize();
+	long indexX = (terrain->getPosition().x - mOriginX) / terrain->getWorldSize();
+	long indexY = -(terrain->getPosition().z - mOriginZ) / terrain->getWorldSize();
 
 	S_LOG_INFO("Loading material for terrain page: " << "[" << indexX << "|" << indexY << "]");
 
@@ -72,8 +72,8 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 
 Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generateForCompositeMap(const Ogre::Terrain* terrain)
 {
-	long indexX = (terrain->getPosition().x - mOriginX) / terrain->getSize();
-	long indexY = -(terrain->getPosition().z - mOriginZ) / terrain->getSize();
+	long indexX = (terrain->getPosition().x - mOriginX) / terrain->getWorldSize();
+	long indexY = -(terrain->getPosition().z - mOriginZ) / terrain->getWorldSize();
 
 	S_LOG_INFO("Loading composite map material for terrain page: " << "[" << indexX << "|" << indexY << "]");
 
