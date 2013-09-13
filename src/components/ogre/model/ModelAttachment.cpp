@@ -89,6 +89,7 @@ void ModelAttachment::init()
 	mModelMount->reset();
 	setupFittings();
 	mModelRepresentation.getModel().Reloaded.connect(sigc::mem_fun(*this, &ModelAttachment::model_Reloaded));
+	mModelMount->getModel().setVisible(mChildEntity.isVisible());
 }
 
 IGraphicalRepresentation* ModelAttachment::getGraphicalRepresentation() const
