@@ -96,6 +96,13 @@ public:
 	 */
 	virtual ~TerrainHandler();
 
+	/**
+	 * @brief Shuts down the handler; call this before deleting the instance.
+	 *
+	 * This will mainly deactivate the task queue. This might be important if there are outstanding threads waiting for
+	 * it to complete.
+	 */
+	void shutdown();
 
 	/**
 	 * @brief Returns the height at the specified position in the world.

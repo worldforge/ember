@@ -93,11 +93,14 @@ TerrainManager::~TerrainManager()
 {
 	Ogre::Root::getSingleton().removeFrameListener(this);
 
+	//We must make sure that any tasks are purged in the handler before we destroy the terrain adapter.
+    mHandler->shutdown();
+
     getAdapter()->reset();
 
-	delete mHandler;
-
 	delete mSceneManagerAdapter;
+
+	delete mHandler;
 
 	delete mVegetation;
 	delete mCompilerTechniqueProvider;

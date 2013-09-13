@@ -192,6 +192,11 @@ TerrainHandler::~TerrainHandler()
 
 }
 
+void TerrainHandler::shutdown()
+{
+	mTaskQueue->deactivate();
+}
+
 void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback)
 {
 	mTaskQueue->enqueueTask(new BasePointRetrieveTask(*mTerrain, asyncCallback));
