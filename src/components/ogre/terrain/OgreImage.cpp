@@ -40,41 +40,30 @@ void OgreImage::blit(const WFImage& imageToBlit, unsigned int destinationChannel
 		return;
 	}
 
-	//	if (imageToBlit.getResolution() == getResolution() && widthOffset == 0 && heightOffset == 0) {
-	//		const unsigned char* sourcePtr = imageToBlit.getData();
-	//		unsigned char* destPtr = getData() + destinationChannel;
-	//
-	//		for (unsigned int i = 0; i < imageToBlit.getSize(); ++i) {
-	//			*destPtr = *sourcePtr;
-	//			destPtr += mChannels;
-	//			sourcePtr++;
-	//		}
-	//	} else {
-	//	unsigned int width = imageToBlit.getSize();
-	unsigned int width = 64;
+	unsigned int width = imageToBlit.getResolution();
 	size_t i, j;
 
 	size_t wfSegmentWidth = width * getChannels();
 	size_t ogreImageWidth = getResolution() * getChannels();
 
 	const unsigned char* sourcePtr = imageToBlit.getData();
-	unsigned char* destPtr = getData() + destinationChannel;
 
-	unsigned char* dataEnd = getData() + getSize();
+	unsigned char* destStart = getData() + destinationChannel;
+	unsigned char* destEnd = getData() + getSize();
 
-	unsigned char* end = destPtr + (getChannels() * getResolution() * ((width - 1) + heightOffset)) + (((width - 1) + widthOffset) * getChannels());
+	unsigned char* end = destStart + (getChannels() * getResolution() * (width - 1 + heightOffset)) + ((width + widthOffset) * getChannels());
 
-	unsigned char* tempPtr = end;
+	unsigned char* writePtr = end;
 	for (i = 0; i < width; ++i) {
-		tempPtr -= wfSegmentWidth;
+		writePtr -= wfSegmentWidth;
 		for (j = 0; j < width; ++j) {
-			if (tempPtr >= getData() && tempPtr < dataEnd) {
-				*(tempPtr) = *(sourcePtr + j);
+			if (writePtr >= destStart && writePtr < end) {
+				*(writePtr) = *(sourcePtr + j);
 			}
 			//advance the number of channels
-			tempPtr += getChannels();
+			writePtr += getChannels();
 		}
-		tempPtr -= ogreImageWidth;
+		writePtr -= ogreImageWidth;
 		sourcePtr += imageToBlit.getResolution();
 	}
 	//	}

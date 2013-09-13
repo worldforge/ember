@@ -74,10 +74,8 @@ void TerrainPageSurfaceLayer::fillImage(const TerrainPageGeometry& geometry, Ima
 		if (mShader.checkIntersect(*I->segment)) {
 			Mercator::Surface* surface = getSurfaceForSegment(I->segment);
 			if (surface && surface->isValid()) {
-				WFImage sourceImage(new Image::ImageBuffer(65, 1, surface->getData()));
-				//TODO SK: Maybe specific to PLSM
-				//We need to adjust the position of the x index by one because there's a one pixel offset when converting between the Mercator Segments and the Ogre page.
-				image.blit(sourceImage, channel, ((int)I->index.x() * 64) + 1, ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * 64));
+				WFImage sourceImage(new Image::ImageBuffer(I->segment->getSize(), 1, surface->getData()));
+				image.blit(sourceImage, channel, ((int)I->index.x() * I->segment->getSize()), ((mTerrainPageSurface.getNumberOfSegmentsPerAxis() - (int)I->index.y() - 1) * I->segment->getSize()));
 			}
 		}
 	}
