@@ -44,22 +44,29 @@ TaskQueue::TaskQueue(unsigned int numberOfExecutors) :
 
 TaskQueue::~TaskQueue()
 {
-	{
-		std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
-		mActive = false;
-	}
-	mUnprocessedQueueCond.notify_all();
-	//Join all executors. Since the queue is shutting down they will all exit their main loop if there are no more tasks to process.
-	for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
-		TaskExecutor* executor = *I;
-		executor->join();
-		delete executor;
-	}
+	deactivate();
+}
 
-	//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
-	pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
-	assert(mProcessedTaskUnits.empty());
-	assert(mUnprocessedTaskUnits.empty());
+void TaskQueue::deactivate()
+{
+	if (mActive) {
+		{
+			std::unique_lock<std::mutex> l(mUnprocessedQueueMutex);
+			mActive = false;
+		}
+		mUnprocessedQueueCond.notify_all();
+		//Join all executors. Since the queue is shutting down they will all exit their main loop if there are no more tasks to process.
+		for (TaskExecutorStore::iterator I = mExecutors.begin(); I != mExecutors.end(); ++I) {
+			TaskExecutor* executor = *I;
+			executor->join();
+			delete executor;
+		}
+
+		//Finally we must process all of the tasks in our main loop. This of course requires that this instance is destroyed from the main loop.
+		pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
+		assert(mProcessedTaskUnits.empty());
+		assert(mUnprocessedTaskUnits.empty());
+	}
 }
 
 void TaskQueue::enqueueTask(ITask* task, ITaskExecutionListener* listener)

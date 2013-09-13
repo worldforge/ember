@@ -82,6 +82,16 @@ public:
 	 */
 	void pollProcessedTasks(TimeFrame timeFrame);
 
+	/**
+	 * @brief Deactivates the queue.
+	 *
+	 * Calling this has two effects.
+	 * Firstly, no more tasks can be enqueued on the queue.
+	 * Secondly, all currently running tasks are run to their completion.
+	 * The latter means that a call to this is blocking until all tasks are done.
+	 */
+	void deactivate();
+
 protected:
 
 	/**
