@@ -110,8 +110,6 @@ void TerrainManager::loadTerrainOptions()
 
 	getTerrainAdapter()->setResourceGroupName("General");
 
-	getTerrainAdapter()->loadOptions(EmberServices::getSingleton().getConfigService().getSharedConfigDirectory() + "terrain.cfg");
-
 	getTerrainAdapter()->setCamera(&getScene().getMainCamera());
 
 	getTerrainAdapter()->setUninitializedHeight(mHandler->getDefaultHeight());
