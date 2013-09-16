@@ -1,11 +1,10 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='Wrapper'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
-		<Window Type='EmberLook/Editbox' Name='String'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+<GUILayout version="4">
+	<Window name="Wrapper" type="DefaultWindow">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{0,100},{0,25}}" />
+		<Window name="String" type="EmberLook/Editbox">
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="Size" value="{{1,0},{1,0}}" />
 		</Window>
 	</Window>
 </GUILayout>

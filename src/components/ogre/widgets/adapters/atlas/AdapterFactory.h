@@ -221,12 +221,6 @@ public:
 	 */
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
 
-	/**
-	 * @brief Gets the current prefix used in the latest loaded layout.
-	 * @return
-	 */
-	const std::string& getCurrentPrefix() const;
-
 protected:
 
 	/**
@@ -238,11 +232,6 @@ protected:
 	 * @brief The externally specified prefix used as a base for unique CEGUI window names.
 	 */
 	std::string mPrefix;
-
-	/**
-	 * @brief The prefix used for the current loaded layout.
-	 */
-	std::string mCurrentPrefix;
 
 	/**
 	 * @brief Creates a new adapter for the templated type.
@@ -275,11 +264,6 @@ protected:
 
 
 };
-
-inline const std::string& AdapterFactory::getCurrentPrefix() const
-{
-	return mCurrentPrefix;
-}
 
 }
 

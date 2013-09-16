@@ -25,7 +25,7 @@
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
 #include "../adapters/GenericPropertyAdapter.h"
-#include <CEGUIWindowManager.h>
+#include <CEGUI/WindowManager.h>
 
 namespace Ember {
 namespace OgreView {
@@ -68,7 +68,7 @@ EditboxRepresentation<ValueType, PropertyNativeType>::EditboxRepresentation(cons
 {
 	mLayout = LayoutHelper::loadLayout("representations/EditboxRepresentation.layout", mPrefix);
 	
-	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, PropertyNativeType>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "String"), "Text", CEGUI::Window::EventTextChanged));
+	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, PropertyNativeType>(value, mLayout->getChild(mPrefix + "String"), "Text", CEGUI::Window::EventTextChanged));
 }
 
 template<typename ValueType, typename PropertyNativeType>

@@ -25,8 +25,8 @@
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
 #include "../adapters/GenericPropertyAdapter.h"
-#include <CEGUIWindowManager.h>
-#include <elements/CEGUICheckbox.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/widgets/ToggleButton.h>
 
 namespace Ember {
 namespace OgreView {
@@ -67,7 +67,7 @@ CheckboxRepresentation<ValueType>::CheckboxRepresentation(const ValueType& value
 {
 	mLayout = LayoutHelper::loadLayout("representations/CheckboxRepresentation.layout", mPrefix);
 	
-	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, bool>(value, CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Checkbox"), "Selected", CEGUI::Checkbox::EventCheckStateChanged));
+	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, bool>(value, mLayout->getChild(mPrefix + "Checkbox"), "Selected", CEGUI::ToggleButton::EventSelectStateChanged));
 }
 
 template<typename ValueType>

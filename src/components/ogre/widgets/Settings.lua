@@ -11,12 +11,12 @@ end
 
 function SettingsRestartDialog:buildWidget()
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("SettingsRestartDialog.layout", "SettingsRestartDialog/")
+	self.widget:loadMainSheet("SettingsRestartDialog.layout", "SettingsRestartDialog")
 	
-	self.window = self.widget:getWindow("MainWindow")
+	self.window = self.widget:getMainWindow()
 	self.window:subscribeEvent("CloseClicked", self.CloseClicked, self)
 	
-	self.okButton = self.widget:getWindow("MainWindow/OKButton")
+	self.okButton = self.widget:getWindow("OKButton")
 	self.okButton:subscribeEvent("Clicked", self.CloseClicked, self)
 	
 	-- make it a modal window to prevent user from missing the info
@@ -49,14 +49,14 @@ end
 
 function SettingsUnappliedChangesDialog:buildWidget()
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("SettingsUnappliedChangesDialog.layout", "SettingsUnappliedChangesDialog/")
+	self.widget:loadMainSheet("SettingsUnappliedChangesDialog.layout", "SettingsUnappliedChangesDialog")
 	
-	self.window = self.widget:getWindow("MainWindow")
+	self.window = self.widget:getMainWindow()
 	
-	self.applyButton = self.widget:getWindow("MainWindow/ApplyButton")
+	self.applyButton = self.widget:getWindow("ApplyButton")
 	self.applyButton:subscribeEvent("Clicked", self.ApplyClicked, self)
 	
-	self.discardButton = self.widget:getWindow("MainWindow/DiscardButton")
+	self.discardButton = self.widget:getWindow("DiscardButton")
 	self.discardButton:subscribeEvent("Clicked", self.DiscardClicked, self)
 	
 	-- make it a modal window to prevent user from missing the info
@@ -93,21 +93,21 @@ SettingsWidget = {}
 function SettingsWidget:buildWidget()
 	
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("Settings.layout", "Settings/")
+	self.widget:loadMainSheet("Settings.layout", "Settings")
 	
-	self.window = self.widget:getWindow("MainWindow")
+	self.window = self.widget:getMainWindow()
 	self.window:subscribeEvent("CloseClicked", self.CloseClicked, self)
 	
-	self.okButton = self.widget:getWindow("MainWindow/OKButton")
+	self.okButton = self.widget:getWindow("OKButton")
 	self.okButton:subscribeEvent("Clicked", self.OkClicked, self)
 	
-	self.applyButton = self.widget:getWindow("MainWindow/ApplyButton")
+	self.applyButton = self.widget:getWindow("ApplyButton")
 	self.applyButton:subscribeEvent("Clicked", self.ApplyClicked, self)
 	
-	self.cancelButton = self.widget:getWindow("MainWindow/CancelButton")
+	self.cancelButton = self.widget:getWindow("CancelButton")
 	self.cancelButton:subscribeEvent("Clicked", self.CloseClicked, self)
 	
-	self.tabs = self.widget:getWindow("MainWindow/Tabs")
+	self.tabs = self.widget:getWindow("Tabs")
 	
 	self:buildSettingsUi()
 	
@@ -557,7 +557,7 @@ function SettingsWidget:buildSettingsUi()
 		end
 		
 		local wnd = self:buildUiFor(category)
-		self.tabs:addChildWindow(wnd)
+		self.tabs:addChild(wnd)
 	end
 end
 
@@ -576,8 +576,8 @@ end
 function SettingsWidget:buildUiFor(category)
 	local ret = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/ScrollablePane")
 	ret:setText(category.label)
-	ret:setProperty("UnifiedPosition", "{{0.0, 0.0}, {0.0, 0.0}}")
-	ret:setProperty("UnifiedSize", "{{1.0, 0.0}, {1.0, 0.0}}")
+	ret:setProperty("Position", "{{0.0, 0.0}, {0.0, 0.0}}")
+	ret:setProperty("Size", "{{1.0, 0.0}, {1.0, 0.0}}")
 	
 	-- you can think of the vertical layout container as a VBoxLayout in GTK or Vertical Layout in Qt4
 	-- it simply puts its elements as tightly packed as possible after each other vertically
@@ -585,9 +585,9 @@ function SettingsWidget:buildUiFor(category)
 	local vbox = CEGUI.WindowManager:getSingleton():createWindow("VerticalLayoutContainer")
 	local description = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 	description:setText(category.description)
-	description:setProperty("UnifiedSize", "{{1.0, -1.0}, {0.0, 50.0}}")
+	description:setProperty("Size", "{{1.0, -1.0}, {0.0, 50.0}}")
 	description:setProperty("HorzFormatting", "WordWrapLeftAligned")
-	vbox:addChildWindow(description)
+	vbox:addChild(description)
 	
 	local configService = emberServices:getConfigService()
 	
@@ -607,9 +607,9 @@ function SettingsWidget:buildUiFor(category)
 		
 		local label = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 		label:setText(data.label)
-		label:setProperty("UnifiedSize", "{{0.4, 0.0}, {0.0, 30.0}}")
+		label:setProperty("Size", "{{0.4, 0.0}, {0.0, 30.0}}")
 		label:setProperty("FrameEnabled", "False")
-		hbox:addChildWindow(label)
+		hbox:addChild(label)
 		data.labelWnd = label
 		
 		for _, suggestion in ipairs(suggestions) do
@@ -617,8 +617,8 @@ function SettingsWidget:buildUiFor(category)
 		end
 		
 		local representationGuiRoot = representation:getGuiRoot()
-		representationGuiRoot:setProperty("UnifiedSize", "{{0.6, 0}, {0.0, 30.0}}")
-		hbox:addChildWindow(representationGuiRoot)
+		representationGuiRoot:setProperty("Size", "{{0.6, 0}, {0.0, 30.0}}")
+		hbox:addChild(representationGuiRoot)
 		
 		hbox:setTooltipText(data.helpString)
 		
@@ -626,12 +626,12 @@ function SettingsWidget:buildUiFor(category)
 		-- In the end I decided to show help strings as a tooltip to save space
 		--local helpStringLabel = CEGUI.WindowManager:getSingleton():createWindow("EmberLook/StaticText")
 		--helpStringLabel:setText(data.helpString)
-		--helpStringLabel:setProperty("UnifiedSize", "{{0.5, -1.0}, {0.0, 30.0}}")
+		--helpStringLabel:setProperty("Size", "{{0.5, -1.0}, {0.0, 30.0}}")
 		--helpStringLabel:setProperty("FrameEnabled", "False")
 		--helpStringLabel:setProperty("HorzFormatting", "WordWrapLeftAligned")
-		--hbox:addChildWindow(helpStringLabel)
+		--hbox:addChild(helpStringLabel)
 		
-		vbox:addChildWindow(hbox)
+		vbox:addChild(hbox)
 		
 		-- store the representation in data so that we can query it later (to get current value)
 		data.representation = representation
@@ -645,7 +645,7 @@ function SettingsWidget:buildUiFor(category)
 		connect(self.connectors, representation:getEventValueChangedSignal(), valueChangedCall)
 	end
 	
-	ret:addChildWindow(vbox)
+	ret:addChild(vbox)
 	return ret
 end
 

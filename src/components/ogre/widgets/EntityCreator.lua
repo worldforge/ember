@@ -106,13 +106,13 @@ function EntityCreator:addAdapter(adapter, title, container, parentContainer)
 	label:setProperty("FrameEnabled", "false");
  	label:setProperty("BackgroundEnabled", "false");
 	label:setProperty("VertFormatting", "TopAligned");
-	label:setProperty("Tooltip", title);
+	label:setProperty("TooltipText", title);
 	
 	local width = container:getWidth()
 	width = width + CEGUI.UDim(0, textWidth)
 	outercontainer:setWidth(width)
 	container:setXPosition(CEGUI.UDim(0, textWidth))
-	container:setProperty("Tooltip", adapter:getTooltip());
+	container:setProperty("TooltipText", adapter:getTooltip());
 	
 	outercontainer:setHeight(container:getHeight())
 	
@@ -122,10 +122,10 @@ function EntityCreator:addAdapter(adapter, title, container, parentContainer)
 	end
 	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 
-	outercontainer:addChildWindow(label)
-	outercontainer:addChildWindow(container)
+	outercontainer:addChild(label)
+	outercontainer:addChild(container)
 
-	parentContainer:addChildWindow(outercontainer)
+	parentContainer:addChild(outercontainer)
 	return outercontainer
 end
 
@@ -171,7 +171,7 @@ function EntityCreator.buildWidget(world)
 	
 		-- Filling list of recipes
 		entityCreator.recipesList = CEGUI.toListbox(entityCreator.widget:getWindow("RecipesList"))
-		entityCreator.recipesList:subscribeEvent("ItemSelectionChanged", EntityCreator.RecipesList_SelectionChanged, entityCreator) 
+		entityCreator.recipesList:subscribeEvent("SelectionChanged", EntityCreator.RecipesList_SelectionChanged, entityCreator) 
 		entityCreator:fillRecipesList()
 		
 		entityCreator.createButton = CEGUI.toPushButton(entityCreator.widget:getWindow("Create"))
@@ -183,27 +183,30 @@ function EntityCreator.buildWidget(world)
 
 		local randomizeOrientationCheckbox = entityCreator.widget:getWindow("RandomizeOrientation")
 		randomizeOrientationCheckbox = CEGUI.toCheckbox(randomizeOrientationCheckbox)
-		randomizeOrientationCheckbox:subscribeEvent("CheckStateChanged", function()
+		randomizeOrientationCheckbox:subscribeEvent("SelectStateChanged", function()
 			entityCreator.helper:setRandomizeOrientation(randomizeOrientationCheckbox:isSelected())
 		end) 
 		entityCreator.helper:setRandomizeOrientation(randomizeOrientationCheckbox:isSelected())
 		
 		entityCreator.widget:enableCloseButton()
-	
-		local typesTree = CEGUI.toTree(entityCreator.widget:getWindow("Types/TypeList", true))
-		local typesName = CEGUI.toEditbox(entityCreator.widget:getWindow("Types/Name", true))
-		local typesCreateButton = CEGUI.toPushButton(entityCreator.widget:getWindow("Types/CreateButton", true))
-		local typesPreviewImage = entityCreator.widget:getWindow("Types/ModelPreviewImage", true)
+		
+		local typesWindow = entityCreator.widget:getWindow("TabTypes", true)
+		local typesTree = CEGUI.toTree(typesWindow:getChild("TypeList"))
+		local typesName = CEGUI.toEditbox(typesWindow:getChild("Name"))
+		local typesCreateButton = CEGUI.toPushButton(typesWindow:getChild("CreateButton"))
+		local typesPreviewImage = typesWindow:getChild("ModelPreviewImage")
 		entityCreator.typesCreator = {}
 
 		entityCreator.typesCreator.helper = Ember.OgreView.Gui.EntityCreatorTypeHelper:new(world:getView():getAvatar():getConnection(), typesTree, typesName, typesCreateButton, typesPreviewImage)
 		connect(entityCreator.connectors, entityCreator.typesCreator.helper.EventCreateFromType, entityCreator.createFromType, entityCreator)
 	
 		--Entity exports tab
+		
+		local exportsWindow = entityCreator.widget:getWindow("TabExports")
 
-		local activeOverlay = entityCreator.widget:getWindow("Exports/ActiveOverlay")
+		local activeOverlay = exportsWindow:getChild("ActiveOverlay")
 
-		local cancelButton = entityCreator.widget:getWindow("Exports/DumpCancel")
+		local cancelButton = activeOverlay:getChild("DumpCancel")
 		cancelButton:subscribeEvent("Clicked", function(args)
 			if cancelButton.method then
 				cancelButton.method()
@@ -212,13 +215,13 @@ function EntityCreator.buildWidget(world)
 		end)
 		
 		
-		local importButton = entityCreator.widget:getWindow("Exports/ImportButton") 
+		local importButton = exportsWindow:getChild("Base/ImportButton") 
 		importButton:subscribeEvent("Clicked", function(args)
 			if importButton.filename then
 			
 			
 				local worldLoader = Ember.EntityImporter:new(emberServices:getServerService():getAccount())
-				local dumpStatusWindow = entityCreator.widget:getWindow("Exports/DumpStatus") 
+				local dumpStatusWindow = activeOverlay:getChild("DumpStatus") 
 				
 				dumpStatusWindow:setText("Loading...")
 				createConnector(worldLoader.EventCompleted):connect(function()
@@ -259,7 +262,7 @@ function EntityCreator.buildWidget(world)
 							importButton:setEnabled(true)
 							importButton.filename = info.filename
 							
-							local infoWidget = entityCreator.widget:getWindow("Exports/DetailsText")
+							local infoWidget = entityCreator.widget:getWindow("DetailsText")
 							local infoString = "Name: " .. info.name .. "\nDescription: " .. info.description .. "\nNumber of entities: " .. info.entityCount
 							infoWidget:setText(infoString) 
 							
@@ -274,12 +277,12 @@ function EntityCreator.buildWidget(world)
 			end 
 		end
 		
-		populateExportsList(CEGUI.toItemListbox(entityCreator.widget:getWindow("Exports/ExportsList")))
+		populateExportsList(CEGUI.toItemListbox(entityCreator.widget:getWindow("ExportsList")))
 		
 	end
 	connect(entityCreator.connectors, entityCreator.widget.EventFirstTimeShown, setup)
 	entityCreator.widget:registerConsoleVisibilityToggleCommand("advEntityCreator")
-	entityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator/")
+	entityCreator.widget:loadMainSheet("EntityCreator.layout", "EntityCreator")
 	
 	connect(entityCreator.connectors, emberServices:getServerService().DestroyedAvatar, function()
 			entityCreator:shutdown()

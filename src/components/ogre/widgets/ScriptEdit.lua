@@ -13,7 +13,7 @@ ScriptEdit.widget = guiManager:createWidget()
 
 function ScriptEdit.buildWidget()
 	
-	ScriptEdit.widget:loadMainSheet("ScriptEdit.layout", "ScriptEdit/")
+	ScriptEdit.widget:loadMainSheet("ScriptEdit.layout", "ScriptEdit")
 	
 	--set up some useful values
 	ScriptEdit.scriptList = CEGUI.toCombobox(ScriptEdit.widget:getWindow("ScriptType"))
@@ -36,7 +36,7 @@ function ScriptEdit.buildWidget()
 	connect(ScriptEdit.connectors, scriptingService:getEventScriptError(), "ScriptEdit.scriptError")
 	
 	ScriptEdit.dynamicBindings = CEGUI.toCheckbox(ScriptEdit.widget:getWindow("DynamicBindings"))
-	ScriptEdit.dynamicBindings:subscribeEvent("CheckStateChanged", "ScriptEdit.dynamicBindings_CheckStateChanged")
+	ScriptEdit.dynamicBindings:subscribeEvent("SelectStateChanged", "ScriptEdit.dynamicBindings_SelectStateChanged")
 	
 	
 	
@@ -95,7 +95,7 @@ function ScriptEdit.executeClick(args)
 
 end
 
-function ScriptEdit.dynamicBindings_CheckStateChanged(args)
+function ScriptEdit.dynamicBindings_SelectStateChanged(args)
 	scriptingService:setAlwaysLookup(ScriptEdit.dynamicBindings:isSelected())
 end
 

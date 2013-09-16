@@ -30,17 +30,15 @@
 #include "../GUIManager.h"
 #include "../EmberOgre.h"
 
-#include "components/cegui/LayoutLoader.h"
-
 #include "services/input/Input.h"
 #include "framework/Exception.h"
 #include "framework/ConsoleBackend.h"
 
-#include <CEGUIWindow.h>
-#include <CEGUIExceptions.h>
-#include <CEGUIWindowManager.h>
-#include <elements/CEGUIFrameWindow.h>
-#include <elements/CEGUIPushButton.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/Exceptions.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/widgets/FrameWindow.h>
+#include <CEGUI/widgets/PushButton.h>
 
 
 using namespace CEGUI;
@@ -91,7 +89,7 @@ namespace Gui {
 		mPrefix = prefix;
 		std::string finalFileName(mGuiManager->getLayoutDir() + filename);
 		try {
-			mMainWindow = Cegui::LayoutLoader::loadWindowLayout(finalFileName, prefix);
+			mMainWindow = mWindowManager->loadLayoutFromFile(finalFileName);
 		} catch (const std::exception& ex) {
 			S_LOG_FAILURE("Error when loading from " << filename << "." << ex);
 			throw ex;
@@ -99,8 +97,9 @@ namespace Gui {
 			S_LOG_FAILURE("Unknown error when loading from " << filename << ".");
 			throw;
 		}
+		mMainWindow->setName(prefix);
 		mOriginalWindowAlpha = mMainWindow->getAlpha();
-		getMainSheet()->addChildWindow(mMainWindow);
+		getMainSheet()->addChild(mMainWindow);
 		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventActivated, Widget::MainWindow_Activated);
 		BIND_CEGUI_EVENT(mMainWindow, CEGUI::FrameWindow::EventDeactivated, Widget::MainWindow_Deactivated);
 		//we want to catch all click events, so we'll listen for the mouse button down event
@@ -130,9 +129,9 @@ namespace Gui {
 				return 0;
 			}
 			assert(mMainWindow && "You must call loadMainSheet(...) before you can call this method.");
-			CEGUI::Window* window = mWindowManager->getWindow(mPrefix + windowName);
+			CEGUI::Window* window = mMainWindow->getChildRecursive(windowName);
 			if (!window) {
-				S_LOG_WARNING("The window with id " << mPrefix << windowName << " does not exist.");
+				S_LOG_WARNING("The window with id " << windowName << ", located under widget " << mPrefix << " does not exist.");
 			}
 			return window;
 		} catch (const CEGUI::Exception&) {
@@ -221,7 +220,7 @@ namespace Gui {
 	{
 		//removing and attaching the window is probably more efficient when it's hidden (i.e. it won't get any events at all and so on)
 		if (mMainWindow) {
-			getMainSheet()->addChildWindow(mMainWindow);
+			getMainSheet()->addChild(mMainWindow);
 			mMainWindow->setVisible(true);
 		}
 	}
@@ -230,7 +229,7 @@ namespace Gui {
 	{
 		//see comment in show()
 		if (mMainWindow) {
-			getMainSheet()->removeChildWindow(mMainWindow);
+			getMainSheet()->removeChild(mMainWindow);
 			mMainWindow->setVisible(false);
 		}
 	}

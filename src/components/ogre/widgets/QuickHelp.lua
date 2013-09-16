@@ -23,10 +23,10 @@ end
 
 function QuickHelp:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("QuickHelp.layout", "QuickHelp/")
+	self.widget:loadMainSheet("QuickHelp.layout", "QuickHelp")
 	
 	self.textWindow = self.widget:getWindow("HelpTextBox")
-	self.frameWindow = CEGUI.toFrameWindow(self.widget:getWindow("MainWindow"))
+	self.frameWindow = CEGUI.toFrameWindow(self.widget:getMainWindow())
 	self.messagePosition = self.widget:getWindow("PageNumber")
 	self.timer = self.widget:getWindow("Timer")
 	

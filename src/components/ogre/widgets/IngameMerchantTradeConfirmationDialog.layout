@@ -1,29 +1,28 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type="EmberLook/FrameWindow" Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.00,200.0},{0.0,200.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='HorizontalAlignment' Value='Centre'/>
-		<Property Name='VerticalAlignment' Value='Centre'/>
-		<Property Name='Text' Value='Confirm the trade'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.00,200.0},{0.0,200.0}}" />
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="HorizontalAlignment" value="Centre" />
+		<Property name="VerticalAlignment" value="Centre" />
+		<Property name="Text" value="Confirm the trade" />
 		
-		<Window Type="EmberLook/StaticText" Name="MainWindow/Label">
-			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,50.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-			<Property Name='Text' Value='Are you sure you want to buy XY for XY?'/>
+		<Window name="Label" type="EmberLook/StaticText">
+			<Property name="Size" value="{{1.0,0.0},{0.0,50.0}}" />
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+			<Property name="Text" value="Are you sure you want to buy XY for XY?" />
 		</Window>
-		<Window Type="EmberLook/Button" Name="MainWindow/ConfirmButton">
-			<Property Name='UnifiedSize' Value='{{0.5,-5.0},{0.0,30.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-30.0}}'/>
+		<Window name="ConfirmButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0.5,-5.0},{0.0,30.0}}" />
+			<Property name="Position" value="{{0.0,0.0},{1.0,-30.0}}" />
 			
-			<Property Name='Text' Value='Confirm'/>
+			<Property name="Text" value="Confirm" />
 		</Window>
-		<Window Type="EmberLook/Button" Name="MainWindow/CancelButton">
-			<Property Name='UnifiedSize' Value='{{0.5,-5.0},{0.0,30.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.5,5.0},{1.0,-30.0}}'/>
+		<Window name="CancelButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0.5,-5.0},{0.0,30.0}}" />
+			<Property name="Position" value="{{0.5,5.0},{1.0,-30.0}}" />
 			
-			<Property Name='Text' Value='Cancel'/>
+			<Property name="Text" value="Cancel" />
 		</Window>
 	</Window>
 </GUILayout>

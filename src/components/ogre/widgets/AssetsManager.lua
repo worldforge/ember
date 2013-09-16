@@ -33,7 +33,7 @@ function AssetsManager:TexturesRefresh_Clicked(args)
 	self.textures.refresh(self)
 end
 
-function AssetsManager:TexturesList_ItemSelectionChanged(args)
+function AssetsManager:TexturesList_SelectionChanged(args)
 	local item = self.textures.controls.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local textureName = item:getText()
@@ -55,7 +55,7 @@ function AssetsManager:MaterialsRefresh_Clicked(args)
 end
 
 
-function AssetsManager:MaterialsList_ItemSelectionChanged(args)
+function AssetsManager:MaterialsList_SelectionChanged(args)
 	local item = self.materials.controls.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local manager = Ogre.MaterialManager:getSingleton()
@@ -77,7 +77,7 @@ function AssetsManager:RefreshShaders_Clicked(args)
 	self.shaders.refresh(self)
 end
 
-function AssetsManager:ShadersList_ItemSelectionChanged(args)
+function AssetsManager:ShadersList_SelectionChanged(args)
 	local item = self.shaders.controls.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local manager = Ogre.HighLevelGpuProgramManager:getSingleton()
@@ -97,14 +97,14 @@ end
 
 function AssetsManager:ShadersReload_Clicked(args)
 	self:reloadResourceFromList(self.shaders.controls.listbox, Ogre.HighLevelGpuProgramManager:getSingleton())
-	self:ShadersList_ItemSelectionChanged(args)
+	self:ShadersList_SelectionChanged(args)
 end
 
 function AssetsManager:RefreshImages_Clicked(args)
 	self.images.refresh(self)
 end
 
-function AssetsManager:ImagesList_ItemSelectionChanged(args)
+function AssetsManager:ImagesList_SelectionChanged(args)
 	local item = self.images.controls.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local image = item:getUserData()
@@ -122,7 +122,7 @@ function AssetsManager:MeshesRefresh_Clicked(args)
 	return true
 end
 
-function AssetsManager:MeshesList_ItemSelectionChanged(args)
+function AssetsManager:MeshesList_SelectionChanged(args)
 	local item = self.meshes.controls.listbox:getFirstSelectedItem()
 	local meshInfo = self.widget:getWindow("MeshInfo")
 	meshInfo:setEnabled(item ~= nil)
@@ -132,7 +132,7 @@ function AssetsManager:MeshesList_ItemSelectionChanged(args)
 	return true
 end
 
-function AssetsManager:UserMeshList_ItemSelectionChanged(args)
+function AssetsManager:UserMeshList_SelectionChanged(args)
 	local item = self.meshes.controls.userlistbox:getFirstSelectedItem()
 	if item then
 		self.meshes.current.userlistboxSelected = item:getText()
@@ -141,7 +141,7 @@ function AssetsManager:UserMeshList_ItemSelectionChanged(args)
 	return true
 end
 
-function AssetsManager:SubMeshesList_ItemSelectionChanged(args)
+function AssetsManager:SubMeshesList_SelectionChanged(args)
 	local item = self.meshes.controls.submeshesListbox:getFirstSelectedItem()
 	if item ~= nil then
 		local submeshIndex = item:getID()
@@ -156,7 +156,7 @@ function AssetsManager:SubMeshesList_ItemSelectionChanged(args)
 	return true
 end
 
-function AssetsManager:SubMeshMaterialsList_ItemSelectionChanged(args)
+function AssetsManager:SubMeshMaterialsList_SelectionChanged(args)
 	if self.meshes.current ~= nil and self.meshes.current.submesh ~= nil then
 		local list = self.meshes.controls.materialListbox
 		local item = list:getFirstSelectedItem()
@@ -297,7 +297,7 @@ function AssetsManager:RefreshWindows_Clicked(args)
 	self.windows.refresh(self)
 end
 
-function AssetsManager:WindowsList_ItemSelectionChanged(args)
+function AssetsManager:WindowsList_SelectionChanged(args)
 	local item = self.windows.controls.listbox:getFirstSelectedItem()
 	if item ~= nil then
 		local window_ = item:getUserData()
@@ -314,12 +314,12 @@ function AssetsManager:WindowsList_ItemSelectionChanged(args)
 		
 		local info = ""
 		info = "Position: " .. CEGUI.PropertyHelper:uvector2ToString(self.windows.selectedWindow:getPosition()) .. "\n"
-		info = info .."Size: " .. CEGUI.PropertyHelper:uvector2ToString(self.windows.selectedWindow:getSize()) .. "\n"
+		info = info .."Size: " .. CEGUI.PropertyHelper:usizeToString(self.windows.selectedWindow:getSize()) .. "\n"
 		self.windows.controls.infoText:setText(info)
 	end
 end
 
-function AssetsManager:WindowsList_CheckStateChanged(args)
+function AssetsManager:WindowsList_SelectStateChanged(args)
 	if self.windows.selectedWindow ~= nil then
 		self.windows.selectedWindow:setVisible(self.windows.controls.visibleCheckbox:isSelected())
 	end
@@ -776,66 +776,61 @@ function AssetsManager:buildWidget()
 		self.textures.controls.listbox = CEGUI.toListbox(self.widget:getWindow("TexturesList"))
 		self.textures.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterTextures"))
 		self.textures.listholder = Ember.OgreView.Gui.ListHolder:new(self.textures.controls.listbox, self.textures.controls.filter)
-		self.textures.controls.textureView = self.widget:getWindow("TextureInfo/Image")
+		self.textures.controls.textureView = self.widget:getWindow("TextureInfo_Image")
 		self.textures.adapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.textures.listholder, Ogre.TextureManager:getSingleton())
 		self.textures.refresh = function(self)
 			self.textures.adapter:update()
 		end
 		self.widget:getWindow("TexturesRefresh"):subscribeEvent("Clicked", self.TexturesRefresh_Clicked, self)
 		self.widget:getWindow("TexturesReload"):subscribeEvent("Clicked", self.TexturesReload_Clicked, self)
-		self.widget:getWindow("TexturesList"):subscribeEvent("ItemSelectionChanged", self.TexturesList_ItemSelectionChanged, self)
+		self.textures.controls.listbox:subscribeEvent("SelectionChanged", self.TexturesList_SelectionChanged, self)
 
 		
 		--the materials part
 		self.materials.controls.listbox = CEGUI.toListbox(self.widget:getWindow("MaterialsList"))
 		self.materials.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterMaterials"))
 		self.materials.listholder = Ember.OgreView.Gui.ListHolder:new(self.materials.controls.listbox, self.materials.controls.filter)
-		self.materials.controls.textWidget = self.widget:getWindow("MaterialInfo/Text")
+		self.materials.controls.textWidget = self.widget:getWindow("MaterialInfo_Text")
 		self.materials.adapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.materials.listholder, Ogre.MaterialManager:getSingleton())
 		self.materials.refresh = function(self)
 			self.materials.adapter:update()
 		end
 		self.widget:getWindow("MaterialsRefresh"):subscribeEvent("Clicked", self.MaterialsRefresh_Clicked, self)
 		self.widget:getWindow("MaterialsReload"):subscribeEvent("Clicked", self.MaterialsReload_Clicked, self)
-		self.widget:getWindow("MaterialsList"):subscribeEvent("ItemSelectionChanged", self.MaterialsList_ItemSelectionChanged, self)
+		self.widget:getWindow("MaterialsList"):subscribeEvent("SelectionChanged", self.MaterialsList_SelectionChanged, self)
 		
 	
 		--the images part
 		self.images.controls.listbox = CEGUI.toListbox(self.widget:getWindow("ImagesList"))
 		self.images.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterImages"))
 		self.images.listholder = Ember.OgreView.Gui.ListHolder:new(self.images.controls.listbox, self.images.controls.filter)
-		self.images.controls.textureView = self.widget:getWindow("ImagesInfo/Image")
+		self.images.controls.textureView = self.widget:getWindow("ImagesInfo_Image")
 		self.images.refresh = function(self)
 			self.images.listholder:resetList()
-			manager = CEGUI.ImagesetManager:getSingleton()
-			local I = manager:getIterator()
+			manager = CEGUI.ImageManager:getSingleton()
+			local I = manager:getIterator() 
 			while I:isAtEnd() == false do
-				local value = I:value()
-				local J = value:getIterator()
-				while J:isAtEnd() == false do
-					local name = J:key()
-					local item = Ember.OgreView.Gui.ColouredListItem:new(name, 0, J:value())
-					self.images.listholder:addItem(item)
-					J:next()
-				end
+				local name = i:key()
+				local item = Ember.OgreView.Gui.ColouredListItem:new(name, 0, i:value())
+				self.images.listholder:addItem(item)
 				
 				I:next()
 			end
 		end
 		self.widget:getWindow("ImagesRefresh"):subscribeEvent("Clicked", self.RefreshImages_Clicked, self)
-		self.widget:getWindow("ImagesList"):subscribeEvent("ItemSelectionChanged", self.ImagesList_ItemSelectionChanged, self)
+		self.widget:getWindow("ImagesList"):subscribeEvent("SelectionChanged", self.ImagesList_SelectionChanged, self)
 		
 		
 		--the windows part
 		self.windows.controls.listbox = CEGUI.toListbox(self.widget:getWindow("WindowsList"))
 		self.windows.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterWindows"))
 		self.windows.listholder = Ember.OgreView.Gui.ListHolder:new(self.windows.controls.listbox, self.windows.controls.filter)
-		self.windows.controls.visibleCheckbox = CEGUI.toCheckbox(self.widget:getWindow("WindowInfo/Visible"))
-		self.windows.controls.infoText = self.widget:getWindow("WindowInfo/Text")
-		self.windows.controls.widthRel = self.widget:getWindow("WindowInfo/Width_rel")
-		self.windows.controls.widthFixed = self.widget:getWindow("WindowInfo/Width_fix")
-		self.windows.controls.heightRel = self.widget:getWindow("WindowInfo/Height_rel")
-		self.windows.controls.heightFixed = self.widget:getWindow("WindowInfo/Height_fix")
+		self.windows.controls.visibleCheckbox = CEGUI.toCheckbox(self.widget:getWindow("WindowInfo_Visible"))
+		self.windows.controls.infoText = self.widget:getWindow("WindowInfo_Text")
+		self.windows.controls.widthRel = self.widget:getWindow("WindowInfo_Width_rel")
+		self.windows.controls.widthFixed = self.widget:getWindow("WindowInfo_Width_fix")
+		self.windows.controls.heightRel = self.widget:getWindow("WindowInfo_Height_rel")
+		self.windows.controls.heightFixed = self.widget:getWindow("WindowInfo_Height_fix")
 		
 		local updateWindowSize = function(args)
 			if self.windows.selectedWindow then
@@ -856,7 +851,7 @@ function AssetsManager:buildWidget()
 		self.windows.refresh = function(self)
 			self.windows.listholder:resetList()
 			
-			self.windows.addWindow(self, CEGUI.System:getSingleton():getGUISheet(), 0)
+			self.windows.addWindow(self, CEGUI.System:getSingleton():getDefaultGUIContext():getRootWindow(), 0)
 		end
 
 		self.windows.addWindow = function(self, window, depth)		
@@ -878,8 +873,8 @@ function AssetsManager:buildWidget()
 		end
 		
 		self.widget:getWindow("RefreshWindows"):subscribeEvent("Clicked", self.RefreshWindows_Clicked, self)
-		self.widget:getWindow("WindowsList"):subscribeEvent("ItemSelectionChanged", self.WindowsList_ItemSelectionChanged, self)
-		self.widget:getWindow("WindowInfo/Visible"):subscribeEvent("CheckStateChanged", self.WindowsList_CheckStateChanged, self)
+		self.widget:getWindow("WindowsList"):subscribeEvent("SelectionChanged", self.WindowsList_SelectionChanged, self)
+		self.widget:getWindow("WindowInfo_Visible"):subscribeEvent("SelectStateChanged", self.WindowsList_SelectStateChanged, self)
 
 		
 		--the meshes part
@@ -893,7 +888,7 @@ function AssetsManager:buildWidget()
 		self.meshes.listholder = Ember.OgreView.Gui.ListHolder:new(self.meshes.controls.listbox, self.meshes.controls.filter)
 		self.meshes.controls.userfilter = CEGUI.toEditbox(self.widget:getWindow("UserMeshFilter"))
 		self.meshes.userlistholder = Ember.OgreView.Gui.ListHolder:new(self.meshes.controls.userlistbox, self.meshes.controls.userfilter)
-		self.meshes.controls.textureView = self.widget:getWindow("MeshInfo/Preview")
+		self.meshes.controls.textureView = self.widget:getWindow("MeshInfo_Preview")
 		self.meshes.renderer = Ember.OgreView.Gui.OgreEntityRenderer:new(self.meshes.controls.textureView)
 		self.meshes.rendererManipulator = Ember.OgreView.Gui.CameraEntityTextureManipulator:new(self.meshes.controls.textureView, self.meshes.renderer:getEntityTexture())
 		self.meshes.rendererStats = Ember.OgreView.Gui.MeshInfoProvider:new(self.meshes.renderer)
@@ -925,24 +920,24 @@ function AssetsManager:buildWidget()
 			end	
 		end
 		self.widget:getWindow("MeshesRefresh"):subscribeEvent("Clicked", self.MeshesRefresh_Clicked, self)
-		self.widget:getWindow("MeshesList"):subscribeEvent("ItemSelectionChanged", self.MeshesList_ItemSelectionChanged, self)
-		self.widget:getWindow("UserMeshList"):subscribeEvent("ItemSelectionChanged", self.UserMeshList_ItemSelectionChanged, self)
-		self.widget:getWindow("SubMeshesList"):subscribeEvent("ItemSelectionChanged", self.SubMeshesList_ItemSelectionChanged, self)
-		self.widget:getWindow("SubMeshMaterialsList"):subscribeEvent("ItemSelectionChanged", self.SubMeshMaterialsList_ItemSelectionChanged, self)
+		self.widget:getWindow("MeshesList"):subscribeEvent("SelectionChanged", self.MeshesList_SelectionChanged, self)
+		self.widget:getWindow("UserMeshList"):subscribeEvent("SelectionChanged", self.UserMeshList_SelectionChanged, self)
+		self.widget:getWindow("SubMeshesList"):subscribeEvent("SelectionChanged", self.SubMeshesList_SelectionChanged, self)
+		self.widget:getWindow("SubMeshMaterialsList"):subscribeEvent("SelectionChanged", self.SubMeshMaterialsList_SelectionChanged, self)
 		self.widget:getWindow("MeshInfoSaveMeshButton"):subscribeEvent("Clicked", self.MeshInfoSaveMeshButton_Clicked, self)
 	
 		--the shaders part
 		self.shaders.controls.listbox = CEGUI.toListbox(self.widget:getWindow("ShadersList"))
 		self.shaders.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterShaders"))
 		self.shaders.listholder = Ember.OgreView.Gui.ListHolder:new(self.shaders.controls.listbox, self.shaders.controls.filter)
-		self.shaders.controls.textWidget = self.widget:getWindow("ShadersInfo/Text")
+		self.shaders.controls.textWidget = self.widget:getWindow("ShadersInfo_Text")
 		self.shaders.adapter = Ember.OgreView.Gui.Adapters.Ogre.ResourceListAdapter:new_local(self.shaders.listholder, Ogre.HighLevelGpuProgramManager:getSingleton())
 		self.shaders.refresh = function(self)
 			self.shaders.adapter:update()
 		end
 		self.widget:getWindow("RefreshShaders"):subscribeEvent("Clicked", self.RefreshShaders_Clicked, self)
 		self.widget:getWindow("ShadersReload"):subscribeEvent("Clicked", self.ShadersReload_Clicked, self)
-		self.widget:getWindow("ShadersList"):subscribeEvent("ItemSelectionChanged", self.ShadersList_ItemSelectionChanged, self)
+		self.widget:getWindow("ShadersList"):subscribeEvent("SelectionChanged", self.ShadersList_SelectionChanged, self)
 	
 		
 		self.widget:getWindow("MeshInfoSaveLoddefButton"):subscribeEvent("Clicked", function(args)
@@ -970,7 +965,7 @@ function AssetsManager:buildWidget()
 		end)
 		
 		-- subscribe LOD events.
-		self.widget:getWindow("EnableAutomaticLOD"):subscribeEvent("CheckStateChanged", function(args)
+		self.widget:getWindow("EnableAutomaticLOD"):subscribeEvent("SelectStateChanged", function(args)
 			local checkbox = self.widget:getWindow("EnableAutomaticLOD")
 			checkbox = CEGUI.toCheckbox(checkbox)
 			local useAuto = checkbox:isSelected()
@@ -1051,7 +1046,7 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 		
-		self.widget:getWindow("LODDistances"):subscribeEvent("ItemSelectionChanged", function(args)
+		self.widget:getWindow("LODDistances"):subscribeEvent("SelectionChanged", function(args)
 			self:LODUpdate()
 			return true
 		end)
@@ -1079,7 +1074,7 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 		
-		self.widget:getWindow("ShowWireFrameCheckbox"):subscribeEvent("CheckStateChanged", function(args)
+		self.widget:getWindow("ShowWireFrameCheckbox"):subscribeEvent("SelectStateChanged", function(args)
 			local checkbox = self.widget:getWindow("ShowWireFrameCheckbox")
 			checkbox = CEGUI.toCheckbox(checkbox)
 			local useWireframe = checkbox:isSelected()
@@ -1087,7 +1082,7 @@ function AssetsManager:buildWidget()
 			return true
 		end)
 		
-		self.widget:getWindow("ForceLodLevelCheckbox"):subscribeEvent("CheckStateChanged", function(args)
+		self.widget:getWindow("ForceLodLevelCheckbox"):subscribeEvent("SelectStateChanged", function(args)
 			self:LODUpdateForcedLevel()
 			return true
 		end)
@@ -1116,7 +1111,7 @@ function AssetsManager:buildWidget()
 	end
 	
 	connect(self.connectors, self.widget.EventFirstTimeShown, setup)
-	self.widget:loadMainSheet("AssetsManager.layout", "AssetsManager/")
+	self.widget:loadMainSheet("AssetsManager.layout", "AssetsManager")
 	self.widget:registerConsoleVisibilityToggleCommand("assetsManager")
 	
 

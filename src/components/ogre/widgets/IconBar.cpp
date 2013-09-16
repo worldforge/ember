@@ -25,7 +25,7 @@
 #endif
 
 #include "IconBar.h"
-#include <CEGUI.h>
+#include <CEGUI/CEGUI.h>
 #include "IconBase.h"
 #include <algorithm>
 
@@ -58,7 +58,7 @@ IconBar::~IconBar()
 void IconBar::addIcon(IconBase* iconBase)
 {
 	mIconBases.push_back(iconBase);
-	mWindow->addChildWindow(iconBase->getContainer());
+	mWindow->addChild(iconBase->getContainer());
 
 	repositionIcons();
 
@@ -70,7 +70,7 @@ void IconBar::removeIcon(IconBase* iconBase)
 {
 	IconBaseStore::iterator I = std::find(mIconBases.begin(), mIconBases.end(), iconBase);
 	if (I != mIconBases.end()) {
-		mWindow->removeChildWindow(iconBase->getContainer());
+		mWindow->removeChild(iconBase->getContainer());
 		mIconBases.erase(I);
 	}
 	repositionIcons();
@@ -100,9 +100,8 @@ void IconBar::repositionIcons()
 	for (IconBaseStore::iterator I(mIconBases.begin()); I != mIconBases.end(); ++I) {
 		IconBase* icon = (*I);
 		if (icon->getContainer() && icon->getContainer()->isVisible()) {
-			const UVector2& size = icon->getContainer()->getSize();
-			float absHeight = size.d_y.asAbsolute(0);
-			float absWidth = size.d_x.asAbsolute(0);
+			float absHeight = icon->getContainer()->getPixelSize().d_height;
+			float absWidth = icon->getContainer()->getPixelSize().d_width;
 			maxHeight = std::max<float>(maxHeight, absHeight);
 
 			icon->getContainer()->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0, 0)));
@@ -111,19 +110,19 @@ void IconBar::repositionIcons()
 		}
 	}
 	accumulatedWidth -= mIconPadding;
-	mWindow->setSize(UVector2(UDim(0, accumulatedWidth), UDim(0, maxHeight)));
+	mWindow->setSize(USize(UDim(0, accumulatedWidth), UDim(0, maxHeight)));
 	//We need to call this to guarantee that cegui correctly renders any newly added icons.
 	mWindow->notifyScreenAreaChanged();
 }
 
 float IconBar::getAbsoluteHeight()
 {
-	return mWindow->getSize().d_y.asAbsolute(0);
+	return mWindow->getPixelSize().d_height;
 }
 
 float IconBar::getAbsoluteWidth()
 {
-	return mWindow->getSize().d_x.asAbsolute(0);
+	return mWindow->getPixelSize().d_width;
 }
 
 }

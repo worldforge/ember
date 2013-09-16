@@ -1,18 +1,17 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,300.0},{0.0,100.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{1,-300.0},{1,-400.0}}'/>
-		<Property Name='Text' Value='Mouse picking info'/>
-		<Window Type='DefaultWindow' Name='Menu'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-4},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Window Type='EmberLook/MultiLineEditbox' Name='InfoBox'>
-				<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-				<Property Name='Text' Value=''/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='ReadOnly' Value='true'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.0,300.0},{0.0,100.0}}" />
+		<Property name="Position" value="{{1,-300.0},{1,-400.0}}" />
+		<Property name="Text" value="Mouse picking info" />
+		<Window name="Menu" type="DefaultWindow">
+			<Property name="Position" value="{{0.0,2},{0,0}}" />
+			<Property name="Size" value="{{1,-4},{1,0}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Window name="InfoBox" type="EmberLook/MultiLineEditbox">
+				<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+				<Property name="Text" value="" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="ReadOnly" value="true" />
 			</Window>
 		</Window>
 	</Window>

@@ -4,7 +4,7 @@ Performance.widget = guiManager:createWidget()
 Performance.mainText = nil
 
 function Performance.buildWidget()
-	Performance.widget:loadMainSheet("Performance.layout", "Performance/")
+	Performance.widget:loadMainSheet("Performance.layout", "Performance")
 	
 	local window = Performance.widget:getWindow("TextBox")
 	Performance.mainText = CEGUI.toMultiLineEditbox(window)

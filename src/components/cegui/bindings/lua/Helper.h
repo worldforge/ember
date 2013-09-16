@@ -19,7 +19,8 @@
 #ifndef EMBER_CEGUI_HELPER_H_
 #define EMBER_CEGUI_HELPER_H_
 
-#include <CEGUIWindow.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/ImageManager.h>
 
 namespace Ember
 {
@@ -41,6 +42,43 @@ public:
 	 * @param recursive
 	 */
 	static void notifyScreenAreaChanged(CEGUI::Window* window, bool recursive);
+
+	/**
+	 * Workaround for an issue in the CEGUI 0.8.2 lua bindings where Element::getChildCount returns size_t, which tolua++ can't understand
+	 * FIXME: remove once CEGUI has fixed the issue with the lua binding
+	 * @param window
+	 * @return
+	 */
+	static unsigned int Window_getChildCount(CEGUI::Window* window);
+
+	/**
+	 * Expose the ImageManager::getSingleton method.
+	 * FIXME: remove once CEGUI has fixed the issue with the lua binding
+	 * @return
+	 */
+	static CEGUI::ImageManager& ImageManager_getSingleton();
+
+	/**
+	 * Expose the Window::getChildRecursive(string) method
+	 *
+	 * FIXME: remove once CEGUI has fixed the issue with the lua binding
+	 *
+	 * @param window
+	 * @param name
+	 * @return
+	 */
+	static CEGUI::Window* Window_getChildRecursive(CEGUI::Window* window, const std::string& name);
+
+	/**
+	 * Expose the Window::removeChild(Element) method
+	 *
+	 * FIXME: remove once CEGUI has fixed the issue with the lua binding
+	 *
+	 * @param window
+	 * @param name
+	 * @return
+	 */
+	static void Window_removeChild(CEGUI::Window* window, CEGUI::Window* child);
 };
 }
 }
@@ -49,5 +87,27 @@ inline void Ember::Cegui::Helper::notifyScreenAreaChanged(CEGUI::Window* window,
 {
 	window->notifyScreenAreaChanged(recursive);
 }
+
+inline unsigned int Ember::Cegui::Helper::Window_getChildCount(CEGUI::Window* window)
+{
+	return window->getChildCount();
+}
+
+inline CEGUI::ImageManager& Ember::Cegui::Helper::ImageManager_getSingleton()
+{
+	return CEGUI::ImageManager::getSingleton();
+}
+
+inline CEGUI::Window* Ember::Cegui::Helper::Window_getChildRecursive(CEGUI::Window* window, const std::string& name)
+{
+	return window->getChildRecursive(name);
+}
+
+inline void Ember::Cegui::Helper::Window_removeChild(CEGUI::Window* window, CEGUI::Window* child)
+{
+	window->removeChild(child);
+}
+
+
 
 #endif /* EMBER_CEGUI_HELPER_H_ */

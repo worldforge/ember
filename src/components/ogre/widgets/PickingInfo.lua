@@ -12,7 +12,7 @@ function PickingInfo:buildWidget(world)
 	
  	connect(self.connectors, world:getEntityPickListener().EventPickedEntity, self.pickedEntity, self)
     
-	self.widget:loadMainSheet("PickingInfo.layout", "PickingInfo/")
+	self.widget:loadMainSheet("PickingInfo.layout", "PickingInfo")
 
 	
 	self.infoBox = self.widget:getWindow("InfoBox")

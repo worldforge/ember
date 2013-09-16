@@ -1,53 +1,52 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/QuickHelpFrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.00,150.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{1.00,-300.0},{1.00,-470.0}}'/>
-		<!-- this tells the Show transition where the QuickHelp was at the time of hiding -->
-		<Property Name='OldUnifiedPosition' Value='{{1.00,-300.0},{1.00,-470.0}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Help'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/StaticText' Name='PageNumber'>
-				<Property Name='UnifiedPosition' Value='{{1,-20},{0,2}}'/>
-				<Property Name='UnifiedSize' Value='{{0,20},{0,20}}'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Text' Value='0/0' />
-				<Property Name='FrameEnabled' Value='false' />
-				<Property Name='BackgroundEnabled' Value='false' />
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/QuickHelpFrameWindow">
+		<Property name="Size" value="{{0.00,300.0},{0.00,150.0}}" />
+		<Property name="Position" value="{{1.00,-300.0},{1.00,-470.0}}" />
+        
+        <Property name="OldPosition" value="{{1.00,-300.0},{1.00,-470.0}}" />
+		<Property name="Alpha" value="0.6" />
+		<Property name="Text" value="Help" />
+		<Window name="MainInnerWindow" type="DefaultWindow">
+			<Property name="InheritsAlpha" value="True" />
+			<Window name="PageNumber" type="EmberLook/StaticText">
+				<Property name="Position" value="{{1,-20},{0,2}}" />
+				<Property name="Size" value="{{0,20},{0,20}}" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="Text" value="0/0" />
+				<Property name="FrameEnabled" value="false" />
+				<Property name="BackgroundEnabled" value="false" />
 			</Window>
-			<Window Type='EmberLook/StaticText' Name='Timer'>
-				<Property Name='UnifiedPosition' Value='{{0,2},{0,2}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-25},{0,20}}'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Text' Value='' />
-				<Property Name='FrameEnabled' Value='false' />
-				<Property Name='BackgroundEnabled' Value='false' />
+			<Window name="Timer" type="EmberLook/StaticText">
+				<Property name="Position" value="{{0,2},{0,2}}" />
+				<Property name="Size" value="{{1,-25},{0,20}}" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="Text" value="" />
+				<Property name="FrameEnabled" value="false" />
+				<Property name="BackgroundEnabled" value="false" />
 			</Window>
-			<Window Type='EmberLook/MultiLineEditbox' Name='HelpTextBox'>
-				<Property Name='UnifiedSize' Value='{{1,-10},{1,-50}}'/>
-				<Property Name='UnifiedPosition' Value='{{0,5},{0,25}}'/>
-				<Property Name='Text' Value=''/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='ReadOnly' Value='True'/>
-				<Property Name='WordWrap' Value='True'/>
+			<Window name="HelpTextBox" type="EmberLook/MultiLineEditbox">
+				<Property name="Size" value="{{1,-10},{1,-50}}" />
+				<Property name="Position" value="{{0,5},{0,25}}" />
+				<Property name="Text" value="" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="ReadOnly" value="True" />
+				<Property name="WordWrap" value="True" />
 			</Window>
-			<Window Type='EmberLook/Button' Name='Previous'>
-				<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
-				<Property Name='UnifiedPosition' Value='{{0,2},{1,-22}}'/>
-				<Property Name='Text' Value='Previous'/>
+			<Window name="Previous" type="EmberLook/Button">
+				<Property name="Size" value="{{0,50},{0,20}}" />
+				<Property name="Position" value="{{0,2},{1,-22}}" />
+				<Property name="Text" value="Previous" />
 			</Window>
-			<Window Type='EmberLook/Button' Name='Next'>
-				<Property Name='UnifiedSize' Value='{{0,50},{0,20}}'/>
-				<Property Name='UnifiedPosition' Value='{{1,-52},{1,-22}}'/>
-				<Property Name='Text' Value='Next'/>
+			<Window name="Next" type="EmberLook/Button">
+				<Property name="Size" value="{{0,50},{0,20}}" />
+				<Property name="Position" value="{{1,-52},{1,-22}}" />
+				<Property name="Text" value="Next" />
 			</Window>
-			<Window Type='EmberLook/Button' Name='Hide'>
-				<Property Name='UnifiedSize' Value='{{0,100},{0,20}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.5,-50},{1,-22}}'/>
-				<Property Name='Tooltip' Value='If checked, the help system will be disabled'/>
-				<Property Name='Text' Value="Don't Show Help"/>
+			<Window name="Hide" type="EmberLook/Button">
+				<Property name="Size" value="{{0,100},{0,20}}" />
+				<Property name="Position" value="{{0.5,-50},{1,-22}}" />
+				<Property name="TooltipText" value="If checked, the help system will be disabled" />
+				<Property name="Text" value="Don't Show Help" />
 			</Window>
 		</Window>
 	</Window>

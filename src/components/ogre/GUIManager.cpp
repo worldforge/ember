@@ -58,19 +58,18 @@
 #include <OgreTextureManager.h>
 #include <OgreRoot.h>
 
-#include <CEGUIWindowManager.h>
-#include <CEGUISchemeManager.h>
-#include <CEGUIExceptions.h>
-#include <CEGUIFactoryModule.h>
-#include <ScriptingModules/LuaScriptModule/CEGUILua.h>
-#include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
-#include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
-#include <RendererModules/Ogre/CEGUIOgreRenderer.h>
-#include <elements/CEGUIPushButton.h>
-#include <elements/CEGUIGUISheet.h>
-#include <elements/CEGUIMultiLineEditbox.h>
-#include <elements/CEGUIEditbox.h>
-#include <elements/CEGUITooltip.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/SchemeManager.h>
+#include <CEGUI/Exceptions.h>
+#include <CEGUI/FactoryModule.h>
+#include <CEGUI/ScriptModules/Lua/ScriptModule.h>
+#include <CEGUI/RendererModules/Ogre/ResourceProvider.h>
+#include <CEGUI/RendererModules/Ogre/ImageCodec.h>
+#include <CEGUI/RendererModules/Ogre/Renderer.h>
+#include <CEGUI/widgets/PushButton.h>
+#include <CEGUI/widgets/MultiLineEditbox.h>
+#include <CEGUI/widgets/Editbox.h>
+#include <CEGUI/widgets/Tooltip.h>
 
 #include <sigc++/bind.h>
 
@@ -150,20 +149,17 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		EntityTooltip::registerFactory();
 
 		try {
-			mGuiSystem->setDefaultMouseCursor(getDefaultScheme(), "MouseArrow");
+			mGuiSystem->getDefaultGUIContext().getMouseCursor().setDefaultImage(getDefaultScheme() + "/MouseArrow");
 		} catch (const CEGUI::Exception& ex) {
-			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available. Message: " << ex.getMessage().c_str());
+			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available." << ex);
 			throw Exception(ex.getMessage().c_str());
 		}
 
-		mSheet = mWindowManager->createWindow("DefaultGUISheet", "root_wnd");
-		mGuiSystem->setGUISheet(mSheet);
+		mSheet = mWindowManager->createWindow("DefaultWindow", "root_wnd");
+		mGuiSystem->getDefaultGUIContext().setRootWindow(mSheet);
 		mSheet->activate();
 		mSheet->moveToBack();
 		mSheet->setDistributesCapturedInputs(false);
-
-		//set a default tool tip
-		CEGUI::System::getSingleton().setDefaultTooltip(getDefaultScheme() + "/Tooltip");
 
 		S_LOG_INFO("CEGUI system set up");
 
@@ -288,7 +284,7 @@ void GUIManager::initialize()
 
 void GUIManager::input_SizeChanged(int width, int height)
 {
-	mGuiSystem->notifyDisplaySizeChanged(CEGUI::Size(width, height));
+	mGuiSystem->notifyDisplaySizeChanged(CEGUI::Sizef(width, height));
 }
 
 void GUIManager::server_GotView(Eris::View* view)
@@ -382,9 +378,12 @@ void GUIManager::destroyWidget(Widget* widget)
 	delete widget;
 }
 
-CEGUI::Texture& GUIManager::createTexture(Ogre::TexturePtr& ogreTexture)
+CEGUI::Texture& GUIManager::createTexture(Ogre::TexturePtr& ogreTexture, std::string name)
 {
-	return mGuiRenderer->createTexture(ogreTexture);
+	if (name.empty()) {
+		name = ogreTexture->getName();
+	}
+	return mGuiRenderer->createTexture(name, ogreTexture);
 }
 
 Input& GUIManager::getInput() const
@@ -414,6 +413,7 @@ bool GUIManager::frameStarted(const Ogre::FrameEvent& evt)
 {
 	try {
 		CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+		CEGUI::System::getSingleton().getDefaultGUIContext().injectTimePulse(evt.timeSinceLastFrame);
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_WARNING("Error in CEGUI." << ex);
 	}
@@ -534,7 +534,6 @@ void GUIManager::EmberOgre_WorldCreated(World& world)
 
 void GUIManager::EmberOgre_WorldDestroyed()
 {
-	mWindowManager->destroyWindow(&mEntityTooltip->getTooltipWindow());
 	delete mEntityTooltip;
 	mEntityTooltip = 0;
 	delete mCursorWorldListener;

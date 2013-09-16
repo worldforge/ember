@@ -20,7 +20,7 @@
 #define ENTITYTEXTUREMANIPULATOR_H_
 
 #include "services/input/IInputAdapter.h"
-#include <CEGUIEvent.h>
+#include <CEGUI/Event.h>
 
 namespace CEGUI
 {

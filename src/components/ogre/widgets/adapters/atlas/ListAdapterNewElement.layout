@@ -1,18 +1,17 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='ListAdapterNewElement'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-		<Window Type='EmberLook/Combobox' Name='ElementType'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,75},{0,100}}'/>
-			<Property Name='ReadOnly' Value='true'/>
+<GUILayout version="4">
+	<Window name="ListAdapterNewElement" type="DefaultWindow">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{1,0},{1,0}}" />
+		<Window name="ElementType" type="EmberLook/Combobox">
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="Size" value="{{0,75},{0,100}}" />
+			<Property name="ReadOnly" value="true" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='NewElementButton'>
-			<Property Name='UnifiedPosition' Value='{{0,75},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,40},{0,20}}'/>
-			<Property Name='Text' Value='Add'/>
-			<Property Name='Tooltip' Value='Adds a new list element.' />
+		<Window name="NewElementButton" type="EmberLook/Button">
+			<Property name="Position" value="{{0,75},{0,0}}" />
+			<Property name="Size" value="{{0,40},{0,20}}" />
+			<Property name="Text" value="Add" />
+			<Property name="TooltipText" value="Adds a new list element." />
 		</Window>
 	</Window>
 </GUILayout>

@@ -25,7 +25,7 @@
 
 #include "framework/LoggingInstance.h"
 #include "ValueTypeHelper.h"
-#include <CEGUIEvent.h>
+#include <CEGUI/Event.h>
 #include <Atlas/Message/Element.h>
 #include <sigc++/signal.h>
 

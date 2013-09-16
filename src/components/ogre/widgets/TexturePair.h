@@ -24,7 +24,6 @@
 namespace CEGUI
 {
 class OgreCEGUITexture;
-class Imageset;
 class Image;
 class Texture;
 }
@@ -40,19 +39,17 @@ namespace Gui
 class TexturePair
 {
 public:
-	TexturePair(const Ogre::TexturePtr& mOgreTexture, const CEGUI::Image* mTextureImage, CEGUI::Imageset* mTextureImageset);
+	TexturePair(const Ogre::TexturePtr& mOgreTexture, const CEGUI::Image* mTextureImage);
 	TexturePair();
 
 	Ogre::TexturePtr getOgreTexture() const;
 	const CEGUI::Image* getTextureImage() const;
-	CEGUI::Imageset* getTextureImageset() const;
 
 	bool hasData();
 
 protected:
 	Ogre::TexturePtr mOgreTexture;
 	const CEGUI::Image* mTextureImage;
-	CEGUI::Imageset* mTextureImageset;
 };
 
 }

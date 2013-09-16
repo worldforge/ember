@@ -26,8 +26,8 @@
 
 #include "EntityIcon.h"
 #include "EntityIconSlot.h"
-#include <elements/CEGUIDragContainer.h>
-#include <CEGUIWindowManager.h>
+#include <CEGUI/widgets/DragContainer.h>
+#include <CEGUI/WindowManager.h>
 
 using namespace CEGUI;
 namespace Ember {
@@ -42,7 +42,6 @@ EntityIcon::EntityIcon(EntityIconManager& manager, CEGUI::DragContainer* dragCon
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragStarted, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStarted, this)); 
 	mDragContainer->subscribeEvent(CEGUI::DragContainer::EventDragEnded, CEGUI::Event::Subscriber(& EntityIcon::dragContainer_DragStopped, this)); 
 	icon->EventUpdated.connect(sigc::mem_fun(*this, &EntityIcon::icon_Updated));
-
 }
 
 EntityIcon::~EntityIcon()

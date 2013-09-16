@@ -56,19 +56,19 @@
 #include <varconf/varconf.h>
 #include <fstream>
 
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxItem.h>
-#include <elements/CEGUIListboxTextItem.h>
-#include <elements/CEGUIPushButton.h>
-#include <elements/CEGUIEditbox.h>
-#include <elements/CEGUIMultiLineEditbox.h>
-#include <elements/CEGUIRadioButton.h>
-#include <elements/CEGUICheckbox.h>
-#include <elements/CEGUIComboDropList.h>
-#include <elements/CEGUICombobox.h>
-#include <elements/CEGUITabControl.h>
-#include <elements/CEGUIGUISheet.h>
-#include <CEGUIExceptions.h>
+#include <CEGUI/widgets/Listbox.h>
+#include <CEGUI/widgets/ListboxItem.h>
+#include <CEGUI/widgets/ListboxTextItem.h>
+#include <CEGUI/widgets/PushButton.h>
+#include <CEGUI/widgets/Editbox.h>
+#include <CEGUI/widgets/MultiLineEditbox.h>
+#include <CEGUI/widgets/RadioButton.h>
+#include <CEGUI/widgets/ToggleButton.h>
+#include <CEGUI/widgets/ComboDropList.h>
+#include <CEGUI/widgets/Combobox.h>
+#include <CEGUI/widgets/TabControl.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/Exceptions.h>
 
 #include <sigc++/bind.h>
 
@@ -107,28 +107,28 @@ void ServerWidget::buildWidget()
 			BIND_CEGUI_EVENT(entityDestroyedOkButton, CEGUI::PushButton::EventClicked, ServerWidget::EntityDestroyedOkButton_Click);
 		}
 
-		CEGUI::PushButton* login = static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/Login"));
+		CEGUI::PushButton* login = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/Login"));
 		BIND_CEGUI_EVENT(login, CEGUI::PushButton::EventClicked, ServerWidget::Login_Click);
-		CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/CreateAcc"));
+		CEGUI::PushButton* createAcc = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/CreateAcc"));
 		BIND_CEGUI_EVENT(createAcc, CEGUI::PushButton::EventClicked, ServerWidget::CreateAcc_Click);
 
-		mCharacterList = static_cast<CEGUI::Listbox*> (getWindow("ChooseCharacterPanel/CharacterList"));
-		CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*> (getWindow("ChooseCharacterPanel/Choose"));
-		mUseCreator = static_cast<CEGUI::PushButton*> (getWindow("UseCreator"));
-		mCreateChar = static_cast<CEGUI::PushButton*> (getWindow("CreateCharacterPanel/CreateButton"));
+		mCharacterList = static_cast<CEGUI::Listbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/CharacterList"));
+		CEGUI::PushButton* chooseChar = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/ChooseCharacterPanel/Choose"));
+		mUseCreator = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/UseCreator"));
+		mCreateChar = static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/CreateButton"));
 
 		BIND_CEGUI_EVENT(chooseChar, CEGUI::PushButton::EventClicked, ServerWidget::Choose_Click);
 		BIND_CEGUI_EVENT(mUseCreator, CEGUI::PushButton::EventClicked, ServerWidget::UseCreator_Click);
 		BIND_CEGUI_EVENT(mCreateChar, CEGUI::PushButton::EventClicked, ServerWidget::CreateChar_Click);
 		BIND_CEGUI_EVENT(mCharacterList, CEGUI::ButtonBase::EventMouseDoubleClick, ServerWidget::Choose_Click);
-		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (getWindow("LogoutButton")), CEGUI::PushButton::EventClicked, ServerWidget::LogoutButton_Click);
+		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoggedInPanel/LogoutButton")), CEGUI::PushButton::EventClicked, ServerWidget::LogoutButton_Click);
 
-		mNewCharName = static_cast<CEGUI::Editbox*> (getWindow("CreateCharacterPanel/NameEdit"));
-		mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*> (getWindow("CreateCharacterPanel/Description"));
-		mTypesList = static_cast<CEGUI::Combobox*> (getWindow("CreateCharacterPanel/Type"));
+		mNewCharName = static_cast<CEGUI::Editbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/NameEdit"));
+		mNewCharDescription = static_cast<CEGUI::MultiLineEditbox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Description"));
+		mTypesList = static_cast<CEGUI::Combobox*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Type"));
 
-		mGenderRadioButton = static_cast<CEGUI::RadioButton*> (getWindow("CreateCharacterPanel/Gender/Male"));
-		CEGUI::RadioButton* femaleRadioButton = static_cast<CEGUI::RadioButton*> (getWindow("CreateCharacterPanel/Gender/Female"));
+		mGenderRadioButton = static_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Male"));
+		CEGUI::RadioButton* femaleRadioButton = static_cast<CEGUI::RadioButton*> (mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Female"));
 
 		BIND_CEGUI_EVENT(mNewCharName, CEGUI::Editbox::EventTextChanged, ServerWidget::Name_TextChanged);
 		BIND_CEGUI_EVENT(mNewCharDescription, CEGUI::Editbox::EventTextChanged, ServerWidget::Description_TextChanged);
@@ -136,17 +136,17 @@ void ServerWidget::buildWidget()
 		BIND_CEGUI_EVENT(mGenderRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
 		BIND_CEGUI_EVENT(femaleRadioButton, CEGUI::RadioButton::EventSelectStateChanged, ServerWidget::Gender_SelectionChanged);
 
-		BIND_CEGUI_EVENT(getWindow("TeleportInfo/Yes"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportYes_Click);
-		BIND_CEGUI_EVENT(getWindow("TeleportInfo/No"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportNo_Click);
+		BIND_CEGUI_EVENT(mMainWindow->getChild("LoggedInPanel/TeleportInfo/Yes"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportYes_Click);
+		BIND_CEGUI_EVENT(mMainWindow->getChild("LoggedInPanel/TeleportInfo/No"), CEGUI::PushButton::EventClicked, ServerWidget::TeleportNo_Click);
 
 		updateNewCharacter();
 
-		CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
-		CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+		CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
+		CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 
 		BIND_CEGUI_EVENT(nameBox, CEGUI::Window::EventTextChanged, ServerWidget::nameBox_TextChanged);
 		BIND_CEGUI_EVENT(passwordBox, CEGUI::Window::EventTextChanged, ServerWidget::passwordBox_TextChanged);
-		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (getWindow("LoginPanel/Disconnect")), CEGUI::PushButton::EventClicked, ServerWidget::Disconnect_Click);
+		BIND_CEGUI_EVENT(static_cast<CEGUI::PushButton*> (mMainWindow->getChild("LoginPanel/Disconnect")), CEGUI::PushButton::EventClicked, ServerWidget::Disconnect_Click);
 
 
 		EmberServices::getSingleton().getServerService().GotAccount.connect(sigc::mem_fun(*this, &ServerWidget::createdAccount));
@@ -156,8 +156,8 @@ void ServerWidget::buildWidget()
 		EmberServices::getSingleton().getServerService().LoginFailure.connect(sigc::mem_fun(*this, &ServerWidget::showLoginFailure));
 		EmberServices::getSingleton().getServerService().TransferInfoAvailable.connect(sigc::mem_fun(*this, &ServerWidget::server_TransferInfoAvailable));
 
-		addTabbableWindow(getWindow("LoginPanel/NameEdit"));
-		addTabbableWindow(getWindow("LoginPanel/PasswordEdit"));
+		addTabbableWindow(mMainWindow->getChild("LoginPanel/NameEdit"));
+		addTabbableWindow(mMainWindow->getChild("LoginPanel/PasswordEdit"));
 
 		addEnterButton(login);
 		/*	addTabbableWindow(login);
@@ -232,8 +232,8 @@ void ServerWidget::showServerInfo(Eris::Connection* connection)
 		 * we must wait until there is a connection before we can fetch
 		 * the credentials
 		 */
-		CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
-		CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+		CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
+		CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 		std::string savedUser = "";
 		std::string savedPass = "";
 		if (fetchCredentials(connection, savedUser, savedPass)) {
@@ -277,11 +277,11 @@ bool ServerWidget::saveCredentials()
 	// pull widget references
 	CEGUI::Window* nameBox(0);
 	CEGUI::Window* passwordBox(0);
-	CEGUI::Checkbox* saveBox(0);
+	CEGUI::ToggleButton* saveBox(0);
 	try {
-		nameBox = getWindow("LoginPanel/NameEdit");
-		passwordBox = getWindow("LoginPanel/PasswordEdit");
-		saveBox = static_cast<CEGUI::Checkbox*> (getWindow("LoginPanel/SavePassCheck"));
+		nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
+		passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
+		saveBox = static_cast<CEGUI::ToggleButton*> (mMainWindow->getChild("LoginPanel/SavePassCheck"));
 	} catch (const CEGUI::Exception& ex) {
 		S_LOG_FAILURE("Error when getting windows from CEGUI." << ex);
 		return false;
@@ -316,7 +316,7 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 	account->refreshCharacterInfo();
 	fillAllowedCharacterTypes(account);
 
-	CEGUI::Checkbox* saveBox = static_cast<CEGUI::Checkbox*> (getWindow("LoginPanel/SavePassCheck"));
+	CEGUI::ToggleButton* saveBox = static_cast<CEGUI::ToggleButton*> (mMainWindow->getChild("LoginPanel/SavePassCheck"));
 	if (saveBox->isSelected()) {
 		try {
 			saveCredentials();
@@ -331,20 +331,20 @@ void ServerWidget::loginSuccess(Eris::Account* account)
 
 void ServerWidget::showLoginFailure(Eris::Account* account, std::string msg)
 {
-	CEGUI::GUISheet* helpText = static_cast<CEGUI::GUISheet*> (getWindow("LoginPanel/HelpText"));
+	auto helpText = mMainWindow->getChild("LoginPanel/HelpText");
 	helpText->setYPosition(UDim(0.6, 0));
 
-	CEGUI::GUISheet* loginFailure = static_cast<CEGUI::GUISheet*> (getWindow("LoginPanel/LoginFailure"));
+	auto loginFailure = mMainWindow->getChild("LoginPanel/LoginFailure");
 	loginFailure->setText(msg);
 	loginFailure->setVisible(true);
 }
 
 bool ServerWidget::hideLoginFailure()
 {
-	CEGUI::GUISheet* helpText = static_cast<CEGUI::GUISheet*> (getWindow("LoginPanel/HelpText"));
+	auto helpText = mMainWindow->getChild("LoginPanel/HelpText");
 	helpText->setYPosition(UDim(0.55, 0));
 
-	CEGUI::GUISheet* loginFailure = static_cast<CEGUI::GUISheet*> (getWindow("LoginPanel/LoginFailure"));
+	auto loginFailure = mMainWindow->getChild("LoginPanel/LoginFailure");
 	loginFailure->setVisible(false);
 
 	return true;
@@ -432,7 +432,7 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 		CEGUI::TabControl* tabControl = static_cast<CEGUI::TabControl*> (getWindow("CharacterTabControl"));
 		if (tabControl) {
 			//try {
-			tabControl->setSelectedTab(getPrefix() + "CreateCharacterPanel");
+			tabControl->setSelectedTab("CreateCharacterPanel");
 			//} catch (...) {};
 		}
 	} else {
@@ -576,8 +576,8 @@ void ServerWidget::updateNewCharacter()
 
 bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 {
-	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
-	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+	CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 
 	CEGUI::String name = nameBox->getText();
 	CEGUI::String password = passwordBox->getText();
@@ -589,8 +589,8 @@ bool ServerWidget::Login_Click(const CEGUI::EventArgs& args)
 
 bool ServerWidget::CreateAcc_Click(const CEGUI::EventArgs& args)
 {
-	CEGUI::Window* nameBox = getWindow("LoginPanel/NameEdit");
-	CEGUI::Window* passwordBox = getWindow("LoginPanel/PasswordEdit");
+	CEGUI::Window* nameBox = mMainWindow->getChild("LoginPanel/NameEdit");
+	CEGUI::Window* passwordBox = mMainWindow->getChild("LoginPanel/PasswordEdit");
 
 	CEGUI::String name = nameBox->getText();
 	CEGUI::String password = passwordBox->getText();
@@ -664,11 +664,11 @@ void ServerWidget::avatar_Deactivated(Eris::Avatar* avatar)
 
 void ServerWidget::createPreviewTexture()
 {
-	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*> (getWindow("CreateCharacterPanel/Image"));
+	auto imageWidget = mMainWindow->getChild("LoggedInPanel/CharacterTabControl/CreateCharacterPanel/Image");
 	if (!imageWidget) {
 		S_LOG_FAILURE("Could not find CreateCharacterPanel/Image, aborting creation of preview texture.");
 	} else {
-		mModelPreviewRenderer = new ModelRenderer(imageWidget);
+		mModelPreviewRenderer = new ModelRenderer(imageWidget, "newCharacterPreview");
 		mModelPreviewManipulator = new CameraEntityTextureManipulator(*imageWidget, mModelPreviewRenderer->getEntityTexture());
 	}
 

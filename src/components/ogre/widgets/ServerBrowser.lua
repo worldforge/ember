@@ -13,7 +13,7 @@ end
 
 function ServerBrowser:buildWidget()
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("ServerBrowser.layout", "ServerBrowser/")
+	self.widget:loadMainSheet("ServerBrowser.layout", "ServerBrowser")
 
 	local wee
 	wee = self.widget:getWindow("ServerList")
@@ -41,7 +41,7 @@ function ServerBrowser:buildWidget()
 			if minimumversion:is_string() then
 				self.minimumVersion = minimumversion:as_string()
 				self.hideOldServersCheckbox:setVisible(true)
-				self.hideOldServersCheckbox:subscribeEvent("CheckStateChanged", self.hideOldServers_CheckStateChanged, self)
+				self.hideOldServersCheckbox:subscribeEvent("SelectStateChanged", self.hideOldServers_SelectStateChanged, self)
 				self.hideOldServers = self.hideOldServersCheckbox:isSelected()
 			end
 		end
@@ -99,7 +99,7 @@ function ServerBrowser:buildWidget()
 		local showLocalServerSelector = function()
 			self.widget:hide()
 			local socketDetectedWindow = guiManager:createWidget()
-			socketDetectedWindow:loadMainSheet("ServerSocketDetected.layout", "ServerSocketDetected/")
+			socketDetectedWindow:loadMainSheet("ServerSocketDetected.layout", "ServerSocketDetected")
 			socketDetectedWindow:show();
 			socketDetectedWindow:getMainWindow():activate()
 	
@@ -242,7 +242,7 @@ function ServerBrowser:ServerList_DoubleClick(args)
 	return true
 end
 
-function ServerBrowser:hideOldServers_CheckStateChanged(args)
+function ServerBrowser:hideOldServers_SelectStateChanged(args)
 	self.hideOldServers = self.hideOldServersCheckbox:isSelected()
 	self:refreshServerList()
 	return true

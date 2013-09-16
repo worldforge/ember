@@ -27,7 +27,7 @@
 #include "QuaternionAdapter.h"
 #include "Widget.h"
 
-#include <CEGUIWindow.h>
+#include <CEGUI/Window.h>
 #include <OgreStringConverter.h>
 
 namespace Ember {

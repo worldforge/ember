@@ -23,13 +23,16 @@
 #include "services/input/Input.h"
 #include "services/config/ConfigListenerContainer.h"
 
-#include <CEGUIEvent.h>
+#include <CEGUI/Event.h>
 #include <sigc++/trackable.h>
 #include <vector>
 
 namespace CEGUI
 {
 class Window;
+template <typename> class Vector2;
+typedef class Vector2<float> Vector2f;
+
 }
 
 namespace Ember
@@ -171,7 +174,7 @@ protected:
 	 * @param pickType The kind of picking type.
 	 * @param pixelPosition The position, in pixels, of the mouse cursor.
 	 */
-	void sendWorldClick(MousePickType pickType, const CEGUI::Vector2& pixelPosition);
+	void sendWorldClick(MousePickType pickType, const CEGUI::Vector2f& pixelPosition);
 
 	/**
 	 * Checks if the GUI is in "click" mode.

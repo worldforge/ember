@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/StaticText' Name='StaticAdapter'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
-		<Property Name='FrameEnabled' Value='false' />
-		<Property Name='BackgroundEnabled' Value='false' />
+<GUILayout version="4">
+	<Window name="StaticAdapter" type="EmberLook/StaticText">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{0,100},{0,25}}" />
+		<Property name="FrameEnabled" value="false" />
+		<Property name="BackgroundEnabled" value="false" />
 	</Window>
 </GUILayout>

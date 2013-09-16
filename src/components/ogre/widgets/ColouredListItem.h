@@ -23,8 +23,8 @@
 #ifndef EMBEROGRE_GUICOLOREDLISTITEM_H
 #define EMBEROGRE_GUICOLOREDLISTITEM_H
 
-#include <elements/CEGUIListboxTextItem.h> 
-#include <elements/CEGUITreeItem.h> 
+#include <CEGUI/widgets/ListboxTextItem.h> 
+#include <CEGUI/widgets/TreeItem.h> 
 
 namespace Ember {
 namespace OgreView {
@@ -51,7 +51,7 @@ public:
 	 * @brief If the item is disabled, return a zero size.
 	 * @return A zero size if the item is disabled.
 	 */
-	virtual CEGUI::Size getPixelSize() const;
+	virtual CEGUI::Sizef getPixelSize() const;
 	
 	/**
 	 * @brief If the item is disabled, don't render anything.
@@ -59,7 +59,7 @@ public:
 	 * @param alpha 
 	 * @param clipper 
 	 */
-	virtual void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rect& targetRect, float alpha, const CEGUI::Rect* clipper) const;
+	virtual void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rectf& targetRect, float alpha, const CEGUI::Rectf* clipper) const;
 
 private:
 	void setColours();

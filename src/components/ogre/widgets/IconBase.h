@@ -24,7 +24,8 @@
 #define EMBEROGREICONBASE_H
 
 #include "components/ogre/EmberOgrePrerequisites.h"
-#include <CEGUI.h>
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/Size.h>
 
 namespace Ember {
 namespace OgreView {
@@ -48,7 +49,7 @@ public:
      * @param size The size of the icon. Defaults to 48x48px.
      * @return 
      */
-    IconBase(const std::string& name, const CEGUI::Image* background, const CEGUI::Image* foreground, const CEGUI::Image* borderInactive, const CEGUI::Image* borderActive, CEGUI::UVector2 size = CEGUI::UVector2(CEGUI::UDim(0, 48), CEGUI::UDim(0, 48)));
+    IconBase(const std::string& name, const CEGUI::Image* background, const CEGUI::Image* foreground, const CEGUI::Image* borderInactive, const CEGUI::Image* borderActive, CEGUI::USize size = CEGUI::USize(CEGUI::UDim(0, 48), CEGUI::UDim(0, 48)));
 
     ~IconBase();
     

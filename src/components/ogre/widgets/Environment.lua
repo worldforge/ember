@@ -34,7 +34,7 @@ function Environment:buildWidget(environmentObject)
 	self.environment = environmentObject
 	self.widget = guiManager:createWidget()
 	
-	self.widget:loadMainSheet("Environment.layout", "Environment/")
+	self.widget:loadMainSheet("Environment.layout", "Environment")
 	
 	self.timeSlider = CEGUI.toSlider(self.widget:getWindow("Time"))
 	self.timeSlider:subscribeEvent("ValueChanged", self.Time_ValueChanged, self) 

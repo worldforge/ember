@@ -1,19 +1,18 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.2,0.0},{0,100.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.300000,0.0},{0.0,0.0}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Performance'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-4},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
-				<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-				<Property Name='Text' Value=''/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='ReadOnly' Value='true'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.2,0.0},{0,100.0}}" />
+		<Property name="Position" value="{{0.300000,0.0},{0.0,0.0}}" />
+		<Property name="Alpha" value="0.6" />
+		<Property name="Text" value="Performance" />
+		<Window name="MainInnerWindow" type="DefaultWindow">
+			<Property name="Position" value="{{0.0,2},{0,0}}" />
+			<Property name="Size" value="{{1,-4},{1,0}}" />
+			<Property name="InheritsAlpha" value="True" />
+			<Window name="TextBox" type="EmberLook/MultiLineEditbox">
+				<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+				<Property name="Text" value="" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="ReadOnly" value="true" />
 			</Window>
 		</Window>
 	</Window>

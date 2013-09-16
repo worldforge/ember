@@ -1,73 +1,72 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.8,0.0},{0.8,0.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.1,50.0},{0.100000,0.0}}'/>
-		<Property Name='Text' Value='Script editor'/>
-		<Window Type='EmberLook/StaticText' Name='ScriptText_Text'>
-			<Property Name='FrameEnabled' Value='False'/>
-			<Property Name='Text' Value='Script:'/>
-			<Property Name='UnifiedAreaRect' Value='{{0.031159,0},{0.0,25},{0.0,70},{0.0,50}}'/>
-			<Property Name='BackgroundEnabled' Value='False'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.8,0.0},{0.8,0.0}}" />
+		<Property name="Position" value="{{0.1,50.0},{0.100000,0.0}}" />
+		<Property name="Text" value="Script editor" />
+		<Window name="ScriptText_Text" type="EmberLook/StaticText">
+			<Property name="FrameEnabled" value="False" />
+			<Property name="Text" value="Script:" />
+			<Property name="Area" value="{{0.031159,0},{0.0,25},{0.0,70},{0.0,50}}" />
+			<Property name="BackgroundEnabled" value="False" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='ClearScriptTextButton'>
-			<Property Name='Text' Value='Clear'/>
-			<Property Name='UnifiedAreaRect' Value='{{0,70},{0.0,25},{0.0,175},{0.0,50}}'/>
+		<Window name="ClearScriptTextButton" type="EmberLook/Button">
+			<Property name="Text" value="Clear" />
+			<Property name="Area" value="{{0,70},{0.0,25},{0.0,175},{0.0,50}}" />
 		</Window>
-		<Window Type='EmberLook/MultiLineEditbox' Name='ScriptText'>
-			<Property Name='UnifiedAreaRect' Value='{{0.024294,0.0},{0,55},{0.964044,0.0},{0.6,0.0}}'/>
+		<Window name="ScriptText" type="EmberLook/MultiLineEditbox">
+			<Property name="Area" value="{{0.024294,0.0},{0,55},{0.964044,0.0},{0.6,0.0}}" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='ExecuteButton'>
-			<Property Name='Text' Value='Execute'/>
-			<Property Name='UnifiedSize' Value='{{0,75.0},{0,25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,10.0},{1.0,-30.0}}'/>
+		<Window name="ExecuteButton" type="EmberLook/Button">
+			<Property name="Text" value="Execute" />
+			<Property name="Size" value="{{0,75.0},{0,25.0}}" />
+			<Property name="Position" value="{{0,10.0},{1.0,-30.0}}" />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='ScriptTypeText'>
-			<Property Name='FrameEnabled' Value='False'/>
-			<Property Name='Text' Value='Script type:'/>
-			<Property Name='UnifiedSize' Value='{{0,75.0},{0,25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,90.0},{1.0,-30.0}}'/>
-			<Property Name='BackgroundEnabled' Value='False'/>
+		<Window name="ScriptTypeText" type="EmberLook/StaticText">
+			<Property name="FrameEnabled" value="False" />
+			<Property name="Text" value="Script type:" />
+			<Property name="Size" value="{{0,75.0},{0,25.0}}" />
+			<Property name="Position" value="{{0,90.0},{1.0,-30.0}}" />
+			<Property name="BackgroundEnabled" value="False" />
 		</Window>
-		<Window Type='EmberLook/Combobox' Name='ScriptType'>
-			<Property Name='UnifiedSize' Value='{{0,100.0},{0,100.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,170.0},{1.0,-35.0}}'/>
-			<Property Name='ReadOnly' Value='true'/>
+		<Window name="ScriptType" type="EmberLook/Combobox">
+			<Property name="Size" value="{{0,100.0},{0,100.0}}" />
+			<Property name="Position" value="{{0,170.0},{1.0,-35.0}}" />
+			<Property name="ReadOnly" value="true" />
 		</Window>
-		<Window Type='EmberLook/Checkbox' Name='DynamicBindings'>
-			<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.00,30.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.00,280.0},{1.0,-35.0}}'/>
-			<Property Name='Text' Value='Always lookup'/>
-			<Property Name='Tooltip' Value='If checked, all script calls will always be looked up at calling time. This will decrease performance, but allow for dynamic updating of scripts.'/>
+		<Window name="DynamicBindings" type="EmberLook/Checkbox">
+			<Property name="Size" value="{{0.0,100.0},{0.00,30.0}}" />
+			<Property name="Position" value="{{0.00,280.0},{1.0,-35.0}}" />
+			<Property name="Text" value="Always lookup" />
+			<Property name="TooltipText" value="If checked, all script calls will always be looked up at calling time. This will decrease performance, but allow for dynamic updating of scripts." />
 		</Window>
-		<Window Type='EmberLook/Button' Name='ForceGCButton'>
-			<Property Name='UnifiedSize' Value='{{0,75.0},{0,25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,380.0},{1.0,-35.0}}'/>
-			<Property Name='Text' Value='Force GC'/>
-			<Property Name='Tooltip' Value='Forces garbage collection for the current scripting module.'/>
-			<Event Name='Clicked' Function='ScriptEdit.ForceGCButton_Clicked' />
+		<Window name="ForceGCButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0,75.0},{0,25.0}}" />
+			<Property name="Position" value="{{0.0,380.0},{1.0,-35.0}}" />
+			<Property name="Text" value="Force GC" />
+			<Property name="TooltipText" value="Forces garbage collection for the current scripting module." />
+			<Event function="ScriptEdit.ForceGCButton_Clicked" name="Clicked" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='InspectButton'>
-			<Property Name='UnifiedSize' Value='{{0,75.0},{0,25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.650000,0.0},{0.900000,0.0}}'/>
-			<Property Name='Text' Value='Inspect'/>
+		<Window name="InspectButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0,75.0},{0,25.0}}" />
+			<Property name="Position" value="{{0.650000,0.0},{0.900000,0.0}}" />
+			<Property name="Text" value="Inspect" />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='InspectText'>
-			<Property Name='UnifiedSize' Value='{{0.330000,0.0},{0.045000,0.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.650000,0.0},{0.950000,0.0}}'/>
+		<Window name="InspectText" type="EmberLook/StaticText">
+			<Property name="Size" value="{{0.330000,0.0},{0.045000,0.0}}" />
+			<Property name="Position" value="{{0.650000,0.0},{0.950000,0.0}}" />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='Output_Text'>
-			<Property Name='FrameEnabled' Value='False'/>
-			<Property Name='Text' Value='Output:'/>
-			<Property Name='UnifiedAreaRect' Value='{{0.031159,0},{0.7,-30},{0.0,70},{0.7,-5}}'/>
-			<Property Name='BackgroundEnabled' Value='False'/>
+		<Window name="Output_Text" type="EmberLook/StaticText">
+			<Property name="FrameEnabled" value="False" />
+			<Property name="Text" value="Output:" />
+			<Property name="Area" value="{{0.031159,0},{0.7,-30},{0.0,70},{0.7,-5}}" />
+			<Property name="BackgroundEnabled" value="False" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='ClearOutputButton'>
-			<Property Name='Text' Value='Clear'/>
-			<Property Name='UnifiedAreaRect' Value='{{0,70},{0.7,-30},{0.0,175},{0.7,-5}}'/>
+		<Window name="ClearOutputButton" type="EmberLook/Button">
+			<Property name="Text" value="Clear" />
+			<Property name="Area" value="{{0,70},{0.7,-30},{0.0,175},{0.7,-5}}" />
 		</Window>
-		<Window Type='EmberLook/MultiLineEditbox' Name='Output'>
-			<Property Name='UnifiedAreaRect' Value='{{0.031159,0},{0.7,0.0},{0.963044,0.0},{0.870923,0.0}}'/>
+		<Window name="Output" type="EmberLook/MultiLineEditbox">
+			<Property name="Area" value="{{0.031159,0},{0.7,0.0},{0.963044,0.0},{0.870923,0.0}}" />
 		</Window>
 	</Window>
 </GUILayout>

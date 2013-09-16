@@ -30,7 +30,6 @@
 namespace CEGUI
 {
 class OgreCEGUITexture;
-class Imageset;
 class Image;
 class Texture;
 }

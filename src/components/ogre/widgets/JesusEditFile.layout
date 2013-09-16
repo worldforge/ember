@@ -1,40 +1,39 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,400.0},{0.0,400.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.550000,0.0},{0.025000,0.0}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Open/Save'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/Listbox' Name='Blueprints'>
-				<Property Name='UnifiedSize' Value='{{0.0,150.0},{0.0,300.0}}'/>
-				<Property Name='InheritsAlpha' Value='false'/>
-				<Property Name='SelectionMode' Value='RowSingle'/>
-				<Property Name='Tooltip' Value='The existing saved blueprints.'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.0,400.0},{0.0,400.0}}" />
+		<Property name="Position" value="{{0.550000,0.0},{0.025000,0.0}}" />
+		<Property name="Alpha" value="0.6" />
+		<Property name="Text" value="Open/Save" />
+		<Window name="MainInnerWindow" type="DefaultWindow">
+			<Property name="Position" value="{{0.0,2},{0,0}}" />
+			<Property name="Size" value="{{1,-2},{1,0}}" />
+			<Property name="InheritsAlpha" value="True" />
+			<Window name="Blueprints" type="EmberLook/Listbox">
+				<Property name="Size" value="{{0.0,150.0},{0.0,300.0}}" />
+				<Property name="InheritsAlpha" value="false" />
+				<Property name="SelectionMode" value="RowSingle" />
+				<Property name="TooltipText" value="The existing saved blueprints." />
 			</Window>
-			<Window Type='EmberLook/Button' Name='Load'>
-				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,310.0}}'/>
-				<Property Name='Enabled' Value='False'/>
-				<Property Name='Text' Value='Load'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Tooltip' Value='Loads the selected blueprint.'/>
+			<Window name="Load" type="EmberLook/Button">
+				<Property name="Size" value="{{0.0,75.0},{0.0,25.0}}" />
+				<Property name="Position" value="{{0.0,0.0},{0.0,310.0}}" />
+				<Property name="Enabled" value="False" />
+				<Property name="Text" value="Load" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="TooltipText" value="Loads the selected blueprint." />
 			</Window>
-			<Window Type='EmberLook/Button' Name='Save'>
-				<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,80.0},{0.0,310.0}}'/>
-				<Property Name='Enabled' Value='False'/>
-				<Property Name='Text' Value='Save'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='Tooltip' Value='Saves a new blueprint.'/>
+			<Window name="Save" type="EmberLook/Button">
+				<Property name="Size" value="{{0.0,75.0},{0.0,25.0}}" />
+				<Property name="Position" value="{{0.0,80.0},{0.0,310.0}}" />
+				<Property name="Enabled" value="False" />
+				<Property name="Text" value="Save" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="TooltipText" value="Saves a new blueprint." />
 			</Window>
-			<Window Type='EmberLook/Editbox' Name='NewName'>
-				<Property Name='UnifiedSize' Value='{{0.0,150.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,160.0},{0.0,310.0}}'/>
-				<Property Name='Tooltip' Value='Enter the name of the blueprint to be saved.'/>
+			<Window name="NewName" type="EmberLook/Editbox">
+				<Property name="Size" value="{{0.0,150.0},{0.0,25.0}}" />
+				<Property name="Position" value="{{0.0,160.0},{0.0,310.0}}" />
+				<Property name="TooltipText" value="Enter the name of the blueprint to be saved." />
 			</Window>
 		</Window>
 	</Window>

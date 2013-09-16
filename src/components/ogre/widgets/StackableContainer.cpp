@@ -98,8 +98,8 @@ void StackableContainer::repositionWindows()
 			CEGUI::Window* childWindow = mInnerContainerWindow->getChildAtIdx(i);
 			//only use those windows that are visible
 			if (childWindow->isVisible()) {
-				float absHeight = childWindow->getHeight().asAbsolute(1);
-				float absWidth = childWindow->getWidth().asAbsolute(1);
+				float absHeight = childWindow->getPixelSize().d_height;
+				float absWidth = childWindow->getPixelSize().d_width;
 				if (mFlowDirection == Horizontal) {
 					maxHeight = std::max<float>(maxHeight, absHeight);
 					childWindow->setPosition(UVector2(UDim(0, accumulatedWidth), UDim(0, 0)));
@@ -113,12 +113,12 @@ void StackableContainer::repositionWindows()
 		}
 		if (mFlowDirection == Horizontal) {
 			accumulatedWidth -= mPadding;
-			if (mInnerContainerWindow->getWidth().asRelative(0) != 1) {
+			if (mInnerContainerWindow->getWidth().d_scale != 1) {
 				mInnerContainerWindow->setWidth(UDim(0, accumulatedWidth));
 			}
 		} else {
 			accumulatedHeight -= mPadding;
-			if (mInnerContainerWindow->getHeight().asRelative(0) != 1) {
+			if (mInnerContainerWindow->getHeight().d_scale != 1) {
 				mInnerContainerWindow->setHeight(UDim(0, accumulatedHeight));
 			}
 		}
@@ -130,12 +130,12 @@ void StackableContainer::repositionWindows()
 
 float StackableContainer::getAbsoluteHeight()
 {
-	return mWindow->getSize().d_y.asAbsolute(0);
+	return mWindow->getPixelSize().d_height;
 }
 
 float StackableContainer::getAbsoluteWidth()
 {
-	return mWindow->getSize().d_x.asAbsolute(0);
+	return mWindow->getPixelSize().d_width;
 }
 
 void StackableContainer::setFlowDirection(StackableContainer::FlowDirection flowDirection)

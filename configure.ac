@@ -311,8 +311,8 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 
 AC_SUBST(OGRE_REAL_TYPE, $REAL_TYPE)
 
-CEGUI_VERSION=0.7.2
-PKG_CHECK_MODULES(CEGUI, CEGUI >= $CEGUI_VERSION,
+CEGUI_VERSION=0.8.2
+PKG_CHECK_MODULES(CEGUI, CEGUI-0 >= $CEGUI_VERSION,
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUI_CFLAGS"
 		LIBS="$LIBS $CEGUI_LIBS"
@@ -341,7 +341,7 @@ esac
 	
 
 # Check for CEGUI-OGRE adapter
-PKG_CHECK_MODULES(CEGUIOGRE, [CEGUI-OGRE >= $CEGUI_VERSION],
+PKG_CHECK_MODULES(CEGUIOGRE, [CEGUI-0-OGRE >= $CEGUI_VERSION],
 	[
 		CXXFLAGS="$CXXFLAGS $CEGUIOGRE_CFLAGS"
 		LIBS="$LIBS $CEGUIOGRE_LIBS"
@@ -421,14 +421,15 @@ AC_CHECK_LIB([CEGUItoluapp], [main],
 AM_CHECK_TOLUAXX
 
 # We have lua and tolua++. Now, check for CEGUI lua module
-AC_CHECK_LIB([CEGUILuaScriptModule], [main],
-    [
-        LIBS="-lCEGUILuaScriptModule $LIBS"
-    ],
-    [
-        AC_MSG_ERROR([Couldn't find Lua CEGUI module. Make sure that CEGUI compiled with Lua scripting support.])
-    ]
-)
+PKG_CHECK_MODULES(CEGUILUA, [CEGUI-0-LUA >= $CEGUI_VERSION],
+	[
+		CXXFLAGS="$CXXFLAGS $CEGUILUA_CFLAGS"
+		LIBS="$LIBS $CEGUILUA_LIBS"
+	],
+	[
+		AC_MSG_ERROR([Couldn't find Lua CEGUI module. Make sure that CEGUI compiled with Lua scripting support.
+$CEGUILUA_PKG_ERRORS])
+	])
 
 # Cppunit check
  

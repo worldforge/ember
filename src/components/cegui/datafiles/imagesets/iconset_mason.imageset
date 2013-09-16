@@ -1,6 +1,5 @@
-<?xml version="1.0" ?>
-<Imageset Name="iconset_mason" Imagefile="themes/ember/gui/icons/iconset_mason.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
-	<Image Name="spell" XPos="0" YPos="0" Width="48" Height="48" />
-	<Image Name="attack" XPos="48" YPos="0" Width="48" Height="48" />
-	<Image Name="defend" XPos="96" YPos="0" Width="48" Height="48" />
+<Imageset autoScaled="false" imagefile="themes/ember/gui/icons/iconset_mason.png" name="iconset_mason" nativeHorzRes="1024" nativeVertRes="768" version="2">
+	<Image height="48" name="spell" width="48" xPos="0" yPos="0" />
+	<Image height="48" name="attack" width="48" xPos="48" yPos="0" />
+	<Image height="48" name="defend" width="48" xPos="96" yPos="0" />
 </Imageset>

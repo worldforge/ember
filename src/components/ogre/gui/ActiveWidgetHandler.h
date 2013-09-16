@@ -24,6 +24,8 @@
 #define EMBEROGRE_GUIACTIVEWIDGETHANDLER_H
 #include "services/input/Input.h"
 
+#include <CEGUI/Event.h>
+
 namespace Ember {
 namespace OgreView {
 class GUIManager;
@@ -43,11 +45,15 @@ public:
 protected:
 	void Input_InputModeChanged(Input::InputMode mode);
 
+	bool lastActiveWindowDestructionStarted(const CEGUI::EventArgs&);
+
 	/**
-	The name of the window which last had input when we switched to movement mode. This is a string and not a pointer since the window might have been destroyed in between. One other possibility is to keep a pointer ref and listen for the Destroyed event.
+	The window which last had input when we switched to movement mode.
 	*/
-	std::string mLastActiveWidgetName;
+	CEGUI::Window* mLastActiveWindow;
 	
+	CEGUI::Event::Connection mLastActiveWindowDestructionStartedConnection;
+
 	/**
 	The last mode we were in.
 	*/

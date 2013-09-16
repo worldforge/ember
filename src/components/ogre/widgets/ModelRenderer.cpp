@@ -32,7 +32,7 @@
 #include "framework/Exception.h"
 
 #include <OgreSceneManager.h>
-#include <elements/CEGUIGUISheet.h>
+#include <CEGUI/Window.h>
 
 #include <sigc++/bind.h>
 
@@ -43,8 +43,8 @@ namespace OgreView
 namespace Gui
 {
 
-ModelRenderer::ModelRenderer(CEGUI::Window* image) :
-		MovableObjectRenderer(image), mModel(0), mDefaultTranslation(Ogre::Vector3::ZERO), mDefaultRotation(Ogre::Quaternion::IDENTITY)
+ModelRenderer::ModelRenderer(CEGUI::Window* image, const std::string& name) :
+		MovableObjectRenderer(image, name), mModel(0), mDefaultTranslation(Ogre::Vector3::ZERO), mDefaultRotation(Ogre::Quaternion::IDENTITY)
 {
 }
 

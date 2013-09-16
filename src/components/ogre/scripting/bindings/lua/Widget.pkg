@@ -57,14 +57,14 @@ public:
 	virtual bool isActive();
 	
 	/**
-	 * @brief Gets the window with the supplied name from the WindowManager. Note that you shouldn't supply the prefix (as defined in loadMainSheet) since that will be added by the method.
+	 * @brief Gets the window with the supplied name from the WindowManager.
 	 * @param windowName The name of the window, without the suffix.
 	 * @return A valid Window pointer, or null if no window could be found, and throwIfNotFound is false.
 	 */
 	CEGUI::Window* getWindow(const std::string& windowName);
 	
 	/**
-	 * @brief Gets the window with the supplied name from the WindowManager. Note that you shouldn't supply the prefix (as defined in loadMainSheet) since that will be added by the method.
+	 * @brief Gets the window with the supplied name from the WindowManager.
 	 * @param windowName The name of the window, without the suffix.
 	 * @param throwIfNotFound Throw an exception if the window isn't found.
 	 * @return A valid Window pointer, or null if no window could be found, and throwIfNotFound is false.

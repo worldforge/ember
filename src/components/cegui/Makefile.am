@@ -3,8 +3,8 @@ METASOURCES = AUTO
 SUBDIRS = bindings
 
 noinst_LIBRARIES = libCEGUI.a
-libCEGUI_a_SOURCES = CEGUILogger.cpp RenderedColourStringTextComponent.cpp ColouredRenderedStringParser.cpp CEGUIGUILayout_xmlHandler.cpp LayoutLoader.cpp
-noinst_HEADERS = CEGUILogger.h RenderedColourStringTextComponent.h ColouredRenderedStringParser.h CEGUIGUILayout_xmlHandler.h LayoutLoader.h
+libCEGUI_a_SOURCES = CEGUILogger.cpp RenderedColourStringTextComponent.cpp ColouredRenderedStringParser.cpp
+noinst_HEADERS = CEGUILogger.h RenderedColourStringTextComponent.h ColouredRenderedStringParser.h
 	
 ceguifontsdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/fonts
 ceguiimagesetsdir = $(datadir)/ember/media/shared/gui/cegui/datafiles/imagesets

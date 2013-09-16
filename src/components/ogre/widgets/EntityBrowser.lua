@@ -120,11 +120,11 @@ end
 function EntityBrowser:buildWidget()
 
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("EntityBrowser.layout", "EntityBrowser/")
+	self.widget:loadMainSheet("EntityBrowser.layout", "EntityBrowser")
 	
 	--the eris part
 	self.listbox = CEGUI.toListbox(self.widget:getWindow("EntityList"))
-	self.listbox:subscribeEvent("ItemSelectionChanged", self.EntityList_SelectionChanged, self)
+	self.listbox:subscribeEvent("SelectionChanged", self.EntityList_SelectionChanged, self)
 	
 	self.filter = CEGUI.toEditbox(self.widget:getWindow("FilterEntities"))
 	self.listholder = Ember.OgreView.Gui.ListHolder:new(self.listbox, self.filter)
@@ -133,7 +133,7 @@ function EntityBrowser:buildWidget()
 	
 	--the ogre scene nodes part
 	self.sceneNodes.listbox = CEGUI.toListbox(self.widget:getWindow("SceneNodesList"))
-	self.sceneNodes.listbox:subscribeEvent("ItemSelectionChanged", self.SceneNodesList_SelectionChanged, self)
+	self.sceneNodes.listbox:subscribeEvent("SelectionChanged", self.SceneNodesList_SelectionChanged, self)
 	self.sceneNodes.nodeInfo = self.widget:getWindow("SceneNodeInfo")
 	self.sceneNodes.filter = CEGUI.toEditbox(self.widget:getWindow("FilterSceneNodes"))
 	self.sceneNodes.listholder = Ember.OgreView.Gui.ListHolder:new(self.sceneNodes.listbox, self.sceneNodes.filter)
@@ -142,27 +142,29 @@ function EntityBrowser:buildWidget()
 
 	self.widget:registerConsoleVisibilityToggleCommand("entityBrowser")
 	self.widget:enableCloseButton()
+	
+	local ogreWindow = self.widget:getWindow("Ogre")
 
-	local xW = self.widget:getWindow("SceneNodeInfo/Position/X")
-	local yW = self.widget:getWindow("SceneNodeInfo/Position/Y")
-	local zW = self.widget:getWindow("SceneNodeInfo/Position/Z")
+	local xW = ogreWindow:getChild("SceneNodeInfo/Position/X")
+	local yW = ogreWindow:getChild("SceneNodeInfo/Position/Y")
+	local zW = ogreWindow:getChild("SceneNodeInfo/Position/Z")
 	self.sceneNodes.positionAdapter = Ember.OgreView.Gui.Vector3Adapter:new(xW, yW ,zW)
 	connect(self.connectors, self.sceneNodes.positionAdapter.EventValueChanged, self.sceneNodes_positionAdapter_changed, self)
 	
-	local xW = self.widget:getWindow("SceneNodeInfo/Orientation/X")
-	local yW = self.widget:getWindow("SceneNodeInfo/Orientation/Y")
-	local zW = self.widget:getWindow("SceneNodeInfo/Orientation/Z")
-	local degreeW = self.widget:getWindow("SceneNodeInfo/Orientation/Scalar")
+	local xW = ogreWindow:getChild("SceneNodeInfo/Orientation/X")
+	local yW = ogreWindow:getChild("SceneNodeInfo/Orientation/Y")
+	local zW = ogreWindow:getChild("SceneNodeInfo/Orientation/Z")
+	local degreeW = ogreWindow:getChild("SceneNodeInfo/Orientation/Scalar")
 	self.sceneNodes.rotationAdapter = Ember.OgreView.Gui.QuaternionAdapter:new(degreeW, xW, yW ,zW)
 	connect(self.connectors, self.sceneNodes.rotationAdapter.EventValueChanged, self.sceneNodes_rotationAdapter_changed, self)
 
-	local xW = self.widget:getWindow("SceneNodeInfo/Scale/X")
-	local yW = self.widget:getWindow("SceneNodeInfo/Scale/Y")
-	local zW = self.widget:getWindow("SceneNodeInfo/Scale/Z")
+	local xW = ogreWindow:getChild("SceneNodeInfo/Scale/X")
+	local yW = ogreWindow:getChild("SceneNodeInfo/Scale/Y")
+	local zW = ogreWindow:getChild("SceneNodeInfo/Scale/Z")
 	self.sceneNodes.scaleAdapter = Ember.OgreView.Gui.Vector3Adapter:new(xW, yW ,zW)
 	connect(self.connectors, self.sceneNodes.scaleAdapter.EventValueChanged, self.sceneNodes_scaleAdapter_changed, self)
 	
-	local sizeW = self.widget:getWindow("SceneNodeInfo/Scale/SizeText")
+	local sizeW = ogreWindow:getChild("SceneNodeInfo/Scale/SizeText")
 	
 	--force a refresh the first time the window is shown
 	connect(self.connectors, self.widget.EventFirstTimeShown, self.refresh, self)

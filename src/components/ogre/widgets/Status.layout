@@ -1,70 +1,69 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,128.0},{0.0,64.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0,0.0},{0,0.0}}'/>
-		<Property Name='Visible' Value='true'/>
-		<Property Name='AlwaysOnTop' Value='true'/>
-		<Window Type='EmberLook/StaticImage' Name='MainBackground'>
-			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='Image' Value='set:status_main image:background' />
-			<Property Name='BackgroundEnabled' Value='false'/>
-			<Property Name='FrameEnabled' Value='false'/>
-			<Property Name='MousePassThroughEnabled' Value='true'/>
-			<Property Name='RiseOnClick' Value='false' />
+<GUILayout version="4">
+	<Window name="MainWindow" type="DefaultWindow">
+		<Property name="Size" value="{{0.0,128.0},{0.0,64.0}}" />
+		<Property name="Position" value="{{0,0.0},{0,0.0}}" />
+		<Property name="Visible" value="true" />
+		<Property name="AlwaysOnTop" value="true" />
+		<Window name="MainBackground" type="EmberLook/StaticImage">
+			<Property name="Size" value="{{1,0},{1,0}}" />
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="Image" value="status_main/background" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="MousePassThroughEnabled" value="true" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/StaticImage' Name='RenderImage'>
-			<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,6},{0,15}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='BackgroundEnabled' Value='false'/>
-			<Property Name='FrameEnabled' Value='false'/>
-			<Property Name='RiseOnClick' Value='false' />
+		<Window name="RenderImage" type="EmberLook/StaticImage">
+			<Property name="Size" value="{{0,32},{0,32}}" />
+			<Property name="Position" value="{{0,6},{0,15}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/ProgressBarNoframe' Name='HealthBar'>
-			<Property Name='Text' Value='Health'/>
-			<Property Name='UnifiedPosition' Value='{{0,45},{0,15}}'/>
-			<Property Name='UnifiedSize' Value='{{0,77},{0,8}}'/>
-			<Property Name='BarColours' Value='tl:FFE01212 tr:FFE01212 bl:FF950d0d br:FF950d0d'/>
-			<Property Name='RiseOnClick' Value='false' />
+		<Window name="HealthBar" type="EmberLook/ProgressBarNoframe">
+			<Property name="Text" value="Health" />
+			<Property name="Position" value="{{0,45},{0,15}}" />
+			<Property name="Size" value="{{0,77},{0,8}}" />
+			<Property name="BarColours" value="tl:FFE01212 tr:FFE01212 bl:FF950d0d br:FF950d0d" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/ProgressBarNoframe' Name='StaminaBar'>
-			<Property Name='Text' Value='Health'/>
-			<Property Name='UnifiedPosition' Value='{{0,45},{0,25}}'/>
-			<Property Name='UnifiedSize' Value='{{0,77},{0,8}}'/>
-			<Property Name='BarColours' Value='tl:ff1a09b7 tr:ff1a09b7 bl:ff0d0464 br:ff0d0464'/>
-			<Property Name='RiseOnClick' Value='false' />
+		<Window name="StaminaBar" type="EmberLook/ProgressBarNoframe">
+			<Property name="Text" value="Health" />
+			<Property name="Position" value="{{0,45},{0,25}}" />
+			<Property name="Size" value="{{0,77},{0,8}}" />
+			<Property name="BarColours" value="tl:ff1a09b7 tr:ff1a09b7 bl:ff0d0464 br:ff0d0464" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/ProgressBarNoframe' Name='StrengthBar'>
-			<Property Name='Text' Value='Health'/>
-			<Property Name='UnifiedPosition' Value='{{0,45},{0,35}}'/>
-			<Property Name='UnifiedSize' Value='{{0,77},{0,8}}'/>
-			<Property Name='BarColours' Value='tl:fff9b023 tr:fff9b023 bl:ffbf8006 br:ffbf8006'/>
-			<Property Name='RiseOnClick' Value='false' />
+		<Window name="StrengthBar" type="EmberLook/ProgressBarNoframe">
+			<Property name="Text" value="Health" />
+			<Property name="Position" value="{{0,45},{0,35}}" />
+			<Property name="Size" value="{{0,77},{0,8}}" />
+			<Property name="BarColours" value="tl:fff9b023 tr:fff9b023 bl:ffbf8006 br:ffbf8006" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/StaticImage' Name='MainOverlay'>
-			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='Image' Value='set:status_main image:main' />
-			<Property Name='BackgroundEnabled' Value='false'/>
-			<Property Name='FrameEnabled' Value='false'/>
-			<Property Name='MousePassThroughEnabled' Value='true'/>
-			<Property Name='RiseOnClick' Value='false' />
+		<Window name="MainOverlay" type="EmberLook/StaticImage">
+			<Property name="Size" value="{{1,0},{1,0}}" />
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="Image" value="status_main/main" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="MousePassThroughEnabled" value="true" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='EntityName'>
-			<Property Name='UnifiedSize' Value='{{1.0,-40.0},{0.00,20.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,40},{0,45}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='ClippedByParent' Value='false'/>
-			<Property Name='HorzFormatting' Value='HorzCentred'/>
-			<Property Name='BackgroundEnabled' Value='false'/>
-			<Property Name='FrameEnabled' Value='false'/>
-			<Property Name='Font' Value='DejaVuSans-Bold-8'/>
-			<Property Name='TextColours' Value='tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990'/>
-			<Property Name='RiseOnClick' Value='false' />
+		<Window name="EntityName" type="EmberLook/StaticText">
+			<Property name="Size" value="{{1.0,-40.0},{0.00,20.0}}" />
+			<Property name="Position" value="{{0,40},{0,45}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="ClippedByParent" value="false" />
+			<Property name="HorzFormatting" value="CentreAligned" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="Font" value="DejaVuSans-Bold-8" />
+			<Property name="TextColours" value="tl:FFFFFFFF tr:FFFFFFFF bl:FFffc990 br:FFffc990" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
 	</Window>
 </GUILayout>

@@ -27,8 +27,8 @@
 
 #include <OgreSceneNode.h>
 
-#include <CEGUIWindow.h>
-#include <CEGUIImage.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/Image.h>
 
 namespace Ember
 {

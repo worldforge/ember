@@ -1,4 +1,3 @@
-<?xml version="1.0" ?>
-<Imageset Name="splash" Imagefile="ember_splash.png" NativeHorzRes="1024" NativeVertRes="512" AutoScaled="false">
-	<Image Name="main" XPos="7" YPos="65" Width="1007" Height="382" />
+<Imageset autoScaled="false" imagefile="ember_splash.png" name="splash" nativeHorzRes="1024" nativeVertRes="512" version="2">
+	<Image height="382" name="main" width="1007" xPos="7" yPos="65" />
 </Imageset>

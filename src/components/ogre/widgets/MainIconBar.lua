@@ -45,7 +45,7 @@ end
 function MainIconBar:buildWidget()
 
 	self.iconBar = Ember.OgreView.Gui.IconBar:new("mainIcons")
-	guiManager:getMainSheet():addChildWindow(self.iconBar:getWindow())
+	guiManager:getMainSheet():addChild(self.iconBar:getWindow())
 	
 	--we'll use the same backgrounds for all icons
 	self.images.background = Ember.OgreView.Gui.IconBase:loadImageFromImageset("iconset_standard", "background_A")
@@ -160,7 +160,7 @@ function MainIconBar:Input_InputModeChanged(inputMode)
 	if inputMode == Ember.Input.IM_GUI then
 		self.movementModeIcon:setForeground(self.movementImage_gui)
 		if self.originalCursorImage ~= nil then
-			CEGUI.MouseCursor:getSingleton():setImage(self.originalCursorImage);
+			CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setImage(self.originalCursorImage)
 			self.originalCursorImage = nil;
 		end
 	else
@@ -179,16 +179,16 @@ end
 --This method will update the cursor image as well as the image on the movement mode icon to reflect whether the avatar is walking or running
 function MainIconBar:checkMovementMode()
 	if self.originalCursorImage == nil then
-		self.originalCursorImage = CEGUI.MouseCursor:getSingleton():getImage()
+		self.originalCursorImage = CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():getImage()
 	end
 
 	if emberOgre:getWorld() then
 		if emberOgre:getWorld():getMovementController():getMode() == Ember.OgreView.MovementControllerMode.MM_RUN then
 			self.movementModeIcon:setForeground(self.movementImage_run)
-			CEGUI.MouseCursor:getSingleton():setImage(self.movementImage_run)
+			CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setImage(self.movementImage_run)
 		else
 			self.movementModeIcon:setForeground(self.movementImage_walk)
-			CEGUI.MouseCursor:getSingleton():setImage(self.movementImage_walk)
+			CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():setImage(self.movementImage_walk)
 		end
 	end
 end
@@ -198,7 +198,7 @@ function MainIconBar:shutdown()
 	MainIconBar.singletonInstance = nil
 	disconnectAll(self.connectors)
 
-	guiManager:getMainSheet():removeChildWindow(self.iconBar:getWindow())
+	guiManager:getMainSheet():removeChild(self.iconBar:getWindow())
 
 	self.iconBar:delete()
 	

@@ -57,7 +57,7 @@ function Inventory:addSlot()
 	
 	local slot = self.entityIconManager:createSlot(self.iconsize)
 	slot:getWindow():setPosition(CEGUI.UVector2(CEGUI.UDim(0, self.iconsize * xPosition), CEGUI.UDim(0, self.iconsize * yPosition)))
-	self.iconContainer:addChildWindow(slot:getWindow())
+	self.iconContainer:addChild(slot:getWindow())
 	local slotWrapper = {slot = slot}
 	table.insert(self.slots, slotWrapper)
 	slotWrapper.entityIconDropped = function(entityIcon)
@@ -75,12 +75,13 @@ end
 
 function Inventory:showMenu(args, entityIconWrapper)
 	self.menu.activeEntityWrapper = entityIconWrapper
-	guiManager:getMainSheet():addChildWindow(self.menu.container)
+	guiManager:getMainSheet():addChild(self.menu.container)
+	self.menu.container:moveToFront()
 	self.menu.menuShown = true
-	self.menu.innercontainer:setYPosition(CEGUI.UDim(1, -(self.iconsize + self.menu.innercontainer:getHeight():asAbsolute(0))))
-	self.menu.container:setHeight(CEGUI.UDim(0, self.iconsize + self.menu.innercontainer:getHeight():asAbsolute(0) + 10))
-	local mousePos = CEGUI.MouseCursor:getSingleton():getPosition()
-	local menuPos = CEGUI.UVector2(CEGUI.UDim(0, mousePos.x - (self.menu.container:getWidth():asAbsolute(0) * 0.5)), CEGUI.UDim(0, mousePos.y - self.menu.innercontainer:getHeight():asAbsolute(0)))
+	self.menu.innercontainer:setYPosition(CEGUI.UDim(1, -(self.iconsize + self.menu.innercontainer:getPixelSize().height)))
+	self.menu.container:setHeight(CEGUI.UDim(0, self.iconsize + self.menu.innercontainer:getPixelSize().height + 10))
+	local mousePos = CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():getPosition()
+	local menuPos = CEGUI.UVector2(CEGUI.UDim(0, mousePos.x - (self.menu.container:getPixelSize().width * 0.5)), CEGUI.UDim(0, mousePos.y - self.menu.innercontainer:getPixelSize().height))
 	self.menu.container:setPosition(menuPos)
 	
 	--only show the eat button if the entity has biomass (and thus is edible)
@@ -102,6 +103,7 @@ end
 -- end
 
 function Inventory:createIcon(entity)
+
 	local icon = guiManager:getIconManager():getIcon(self.iconsize, entity)
 	
 	if icon ~= nil then
@@ -124,8 +126,8 @@ function Inventory:createIcon(entity)
 			return true
 		end
 		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseClick", entityIconWrapper.mouseClick)
-		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseEnter", entityIconWrapper.mouseEnters)
-		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseLeave", entityIconWrapper.mouseLeaves)
+		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseEntersSurface", entityIconWrapper.mouseEnters)
+		entityIconWrapper.entityIcon:getDragContainer():subscribeEvent("MouseLeavesSurface", entityIconWrapper.mouseLeaves)
 		return entityIconWrapper
 	else 
 		return nil
@@ -140,7 +142,7 @@ function Inventory:buildWidget(avatarEntity)
 	--visible "alpha pop" would happen and then the transition would continue
 	self.widget:setIsActiveWindowOpaque(false)
 	
-	self.widget:loadMainSheet("Inventory.layout", "Inventory/")
+	self.widget:loadMainSheet("Inventory.layout", "Inventory")
 	
 	self.entityIconManager = guiManager:getEntityIconManager()
 	
@@ -149,39 +151,37 @@ function Inventory:buildWidget(avatarEntity)
 	self.widget:enableCloseButton()
 	
 	self.menu.container = guiManager:createWindow("DefaultWindow")
-	self.menu.container:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
+	self.menu.container:setSize(CEGUI.USize(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
 	self.menu.container:setClippedByParent(false)
+	self.menu.container:setAlwaysOnTop(true)
 	
 	self.menu.innercontainer = guiManager:createWindow("DefaultWindow")
-	self.menu.innercontainer:setSize(CEGUI.UVector2(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
+	self.menu.innercontainer:setSize(CEGUI.USize(CEGUI.UDim(0, 50), CEGUI.UDim(0, 200)))
 	self.menu.innercontainer:setClippedByParent(false)
 	self.menu.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.menu.innercontainer)
 	self.menu.stackableContainer:setInnerContainerWindow(self.menu.innercontainer)
-	self.menu.container:addChildWindow(self.menu.innercontainer)
+	self.menu.container:addChild(self.menu.innercontainer)
 	self.menu.innercontainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 10), CEGUI.UDim(1, -self.iconsize)))
 	
 	self.menu.hide = function()
-		self.menu.container:getParent():removeChildWindow(self.menu.container)
+		guiManager:getMainSheet():removeChild(self.menu.container)
 		self.menu.menuShown = false
 	end
 	
 	self.menu.mouseLeaves = function(args)
 		if self.menu.menuShown then
-			local window = CEGUI.System:getSingleton():getWindowContainingMouse()
-			if window:isAncestor(self.menu.container) == false then
-				self.menu.hide()
-			end
+			self.menu.hide()
 		end
 		return true
 	end
 	
-	self.menu.container:subscribeEvent("MouseLeave", self.menu.mouseLeaves)
+	self.menu.container:subscribeEvent("MouseLeavesArea", self.menu.mouseLeaves)
 	
 	
 	--add default buttons
 	
 	self.menu.eatButton = guiManager:createWindow("EmberLook/Button")
-	self.menu.eatButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	self.menu.eatButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
 	self.menu.eatButton:setText("eat")
 	self.menu.eatButton_MouseClick = function(args)
 		if self.menu.activeEntityWrapper ~= nil then
@@ -193,11 +193,11 @@ function Inventory:buildWidget(avatarEntity)
 		return true
 	end
 	self.menu.eatButton:subscribeEvent("Clicked", self.menu.eatButton_MouseClick)
-	self.menu.innercontainer:addChildWindow(self.menu.eatButton)
+	self.menu.innercontainer:addChild(self.menu.eatButton)
 	
 	
 	self.menu.dropButton = guiManager:createWindow("EmberLook/Button")
-	self.menu.dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	self.menu.dropButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
 	self.menu.dropButton:setText("drop")
 	self.menu.dropButton_MouseClick = function(args)
 		if self.menu.activeEntityWrapper ~= nil then
@@ -209,11 +209,11 @@ function Inventory:buildWidget(avatarEntity)
 		return true
 	end
 	self.menu.dropButton:subscribeEvent("Clicked", self.menu.dropButton_MouseClick)
-	self.menu.innercontainer:addChildWindow(self.menu.dropButton)
+	self.menu.innercontainer:addChild(self.menu.dropButton)
 		
 		
 	self.menu.wieldButton = guiManager:createWindow("EmberLook/Button")
-	self.menu.wieldButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	self.menu.wieldButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
 	self.menu.wieldButton:setText("wield")
 	self.menu.wieldButton_MouseClick = function(args)
 		if self.menu.activeEntityWrapper ~= nil then
@@ -225,10 +225,10 @@ function Inventory:buildWidget(avatarEntity)
 		return true
 	end
 	self.menu.wieldButton:subscribeEvent("Clicked", self.menu.wieldButton_MouseClick)
-	self.menu.innercontainer:addChildWindow(self.menu.wieldButton)
+	self.menu.innercontainer:addChild(self.menu.wieldButton)
 	
 	self.menu.useButton = guiManager:createWindow("EmberLook/Button")
-	self.menu.useButton:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
+	self.menu.useButton:setSize(CEGUI.USize(CEGUI.UDim(1, 0), CEGUI.UDim(0, 25)))
 	self.menu.useButton:setText("use")
 	self.menu.useButton_MouseClick = function(args)
 		if self.menu.activeEntityWrapper ~= nil then
@@ -240,7 +240,7 @@ function Inventory:buildWidget(avatarEntity)
 		return true
 	end
 	self.menu.useButton:subscribeEvent("Clicked", self.menu.useButton_MouseClick)
-	self.menu.innercontainer:addChildWindow(self.menu.useButton)
+	self.menu.innercontainer:addChild(self.menu.useButton)
 	
 	self.helper = Ember.OgreView.Gui.EntityIconDragDropPreview:new(emberOgre:getWorld())
 	--User has dragged an entityIcon from the inventory to the world
@@ -278,7 +278,7 @@ function Inventory:buildWidget(avatarEntity)
 	connect(self.connectors, self.helper.EventEntityFinalized, dragDrop_Finalize)
 	
 	--The icon container will create a child window with the suffix "__auto_container__" which will catch all events. We need to attach to that.
-	local iconContainer_inner = self.widget:getWindow("IconContainer__auto_container__");
+	local iconContainer_inner = self.widget:getWindow("IconContainer"):getChild("__auto_container__")
 	
 	self.IconContainerDragDrop = Ember.OgreView.Gui.EntityIconDragDropTarget:new(iconContainer_inner)
 	connect(self.connectors, self.IconContainerDragDrop.EventIconDropped, function(entityIcon)
@@ -309,13 +309,13 @@ function Inventory:buildWidget(avatarEntity)
 	]]--
 	self.widget:show()
 -- 	connect(self.connectors, Ember.Input:getSingleton().EventMouseButtonReleased, self.input_MouseButtonReleased, self)
---	guiManager:getMainSheet():addChildWindow(self.menu.container)
+--	guiManager:getMainSheet():addChild(self.menu.container)
 
 	
 end
 
 function Inventory:createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
--- 	self.doll.torso = self:createDollSlot("body", self.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.")
+-- 	self.doll.torso = self:createDollSlot("body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.")
 	dollSlot.droppedHandler = function(entityIcon)
 		if dollSlot.isValidDrop(entityIcon) then
 			emberServices:getServerService():wield(entityIcon:getEntity(), dollSlot.wearRestriction)
@@ -393,29 +393,29 @@ function Inventory:setupDoll(avatarEntity)
 	local model = Ember.OgreView.Model.ModelRepresentationManager:getSingleton():getModelForEntity(avatarEntity)
 	if model ~= nil then
 		self.doll.image = self.widget:getWindow("DollImage")
-		self.doll.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.doll.image)
+		self.doll.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.doll.image, "doll")
 		self.doll.renderer:setActive(false)
 		
 		self.doll.renderer:showModel(model:getDefinition():get():getName())
 		self.doll.renderer:setCameraDistance(0.75)
 		self.doll.renderer:updateRender()
 				
-		self.doll.rightHand = self:createDollSlot("right_hand_wield", self.widget:getWindow("Doll/RightHand"), "Drop an entity here to attach it to the right hand.", "")
+		self.doll.rightHand = self:createDollSlot("right_hand_wield", self.doll.image:getChild("RightHand"), "Drop an entity here to attach it to the right hand.", "")
 		self.doll.rightHandOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.rightHand, "")
 		
-		self.doll.torso = self:createDollSlot("outfit.body", self.widget:getWindow("Doll/Torso"), "Drop an entity here to attach it to the torso.", "body")
+		self.doll.torso = self:createDollSlot("outfit.body", self.doll.image:getChild("Torso"), "Drop an entity here to attach it to the torso.", "body")
 		self.doll.torsoOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.torso, "body")
 		
-		self.doll.back = self:createDollSlot("outfit.back", self.widget:getWindow("Doll/Back"), "Drop an entity here to attach it to the back.", "back")
+		self.doll.back = self:createDollSlot("outfit.back", self.doll.image:getChild("Back"), "Drop an entity here to attach it to the back.", "back")
 		self.doll.backOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.back, "back")
 
-		self.doll.head = self:createDollSlot("outfit.head", self.widget:getWindow("Doll/Head"), "Drop an entity here to attach it to the head.", "head")
+		self.doll.head = self:createDollSlot("outfit.head", self.doll.image:getChild("Head"), "Drop an entity here to attach it to the head.", "head")
 		self.doll.headOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.head, "head")
 	
-		self.doll.legs = self:createDollSlot("outfit.legs", self.widget:getWindow("Doll/Legs"), "Drop an entity here to attach it to the legs.", "legs")
+		self.doll.legs = self:createDollSlot("outfit.legs", self.doll.image:getChild("Legs"), "Drop an entity here to attach it to the legs.", "legs")
 		self.doll.legsOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.legs, "legs")
 		
-		self.doll.feet = self:createDollSlot("outfit.feet", self.widget:getWindow("Doll/Feet"), "Drop an entity here to attach it to the feet.", "feet")
+		self.doll.feet = self:createDollSlot("outfit.feet", self.doll.image:getChild("Feet"), "Drop an entity here to attach it to the feet.", "feet")
 		self.doll.feetOutfitSlot = self:createOutfitSlot(avatarEntity, self.doll.feet, "feet")
 	end
 end
@@ -431,7 +431,7 @@ function Inventory:createDollSlot(attributePath, containerWindow, tooltipText, w
 	local dollSlot = {}
 	dollSlot.slot = self.entityIconManager:createSlot(self.iconsize)
 	dollSlot.container = containerWindow
-	dollSlot.container:addChildWindow(dollSlot.slot:getWindow())
+	dollSlot.container:addChild(dollSlot.slot:getWindow())
 	dollSlot.slot:getWindow():setInheritsTooltipText(true)
 	dollSlot.container:setTooltipText(tooltipText)
 	dollSlot.wearRestriction = wearRestriction

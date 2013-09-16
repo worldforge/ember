@@ -20,7 +20,7 @@
 #define EMBEROGRE_GUI_ENTITYTOOLTIP_H_
 
 #include <string>
-#include <elements/CEGUITooltip.h>
+#include <CEGUI/widgets/Tooltip.h>
 
 namespace CEGUI {
 class Tooltip;
@@ -53,7 +53,7 @@ public:
 
 	EmberEntityTooltipWidget(const CEGUI::String& type, const CEGUI::String& name);
 
-	CEGUI::Size getTextSize_impl() const;
+	CEGUI::Sizef getTextSize_impl() const;
 };
 
 /**

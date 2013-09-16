@@ -79,7 +79,7 @@ end
 function Tasks.buildWidget()
 
 	Tasks.widget = guiManager:createWidget()
-	Tasks.widget:loadMainSheet("Tasks.layout", "Tasks/")
+	Tasks.widget:loadMainSheet("Tasks.layout", "Tasks")
 	
 	Tasks.progressBar = Tasks.widget:getWindow("Progress")
 	Tasks.progressBar =  CEGUI.toProgressBar(Tasks.progressBar)

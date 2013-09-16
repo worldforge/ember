@@ -30,7 +30,7 @@
 #include <string>
 #include <sigc++/signal.h>
 
-#include <CEGUIEventArgs.h>
+#include <CEGUI/EventArgs.h>
 
 
 

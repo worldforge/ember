@@ -32,12 +32,12 @@
 #include "../EmberOgre.h"
 
 
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxItem.h>
-#include <elements/CEGUIListboxTextItem.h>
-#include <elements/CEGUIEditbox.h>
-#include <elements/CEGUIPushButton.h>
-#include <elements/CEGUISlider.h>
+#include <CEGUI/widgets/Listbox.h>
+#include <CEGUI/widgets/ListboxItem.h>
+#include <CEGUI/widgets/ListboxTextItem.h>
+#include <CEGUI/widgets/Editbox.h>
+#include <CEGUI/widgets/PushButton.h>
+#include <CEGUI/widgets/Slider.h>
 
 #include "framework/Exception.h"
 

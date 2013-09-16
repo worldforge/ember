@@ -1,566 +1,557 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='UnifiedSize' Value='{{1,-20.0},{1,-80.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0,10},{0,10}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Assets manager'/>
-		<Property Name='Visible' Value='false'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
-				<Property Name='UnifiedSize' Value='{{1.0,-8.0},{1.00,-8.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,4.0},{0.0,4.0}}'/>
-				<Property Name='InheritsAlpha' Value='true'/>
-				<Window Type='DefaultWindow' Name='Textures'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Textures'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='true'/>
-					<Window Type='EmberLook/Editbox' Name='FilterTextures'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+<GUILayout version="4">
+	<Window name="Mainwindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{1,-20.0},{1,-80.0}}" />
+		<Property name="Position" value="{{0,10},{0,10}}" />
+		<Property name="Alpha" value="0.6" />
+		<Property name="Text" value="Assets manager" />
+		<Property name="Visible" value="false" />
+		<Window name="MainInnerWindow" type="DefaultWindow">
+			<Property name="Position" value="{{0.0,4},{0,0}}" />
+			<Property name="Size" value="{{1,-8},{1,0}}" />
+			<Property name="InheritsAlpha" value="True" />
+			<Window name="MainTabControl" type="EmberLook/TabControl">
+				<Property name="Size" value="{{1.0,-8.0},{1.00,-8.0}}" />
+				<Property name="Position" value="{{0.0,4.0},{0.0,4.0}}" />
+				<Property name="InheritsAlpha" value="true" />
+				<Window name="Textures" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="Textures" />
+					<Property name="InheritsAlpha" value="false" />
+					<Property name="Visible" value="true" />
+					<Window name="FilterTextures" type="EmberLook/Editbox">
+						<Property name="Position" value="{{0,0},{1.0,-50}}" />
+						<Property name="Size" value="{{0,75},{0,25}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='TexturesRefresh'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="TexturesRefresh" type="EmberLook/Button">
+						<Property name="Position" value="{{0,0},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Refresh" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='TexturesReload'>
-						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Reload'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="TexturesReload" type="EmberLook/Button">
+						<Property name="Position" value="{{0,75},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Reload" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Listbox' Name='TexturesList'>
-						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="TexturesList" type="EmberLook/Listbox">
+						<Property name="Position" value="{{0,4},{0,4}}" />
+						<Property name="Size" value="{{0,200},{1,-70}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/StaticText' Name='TextureInfo'>
-						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Window Type='EmberLook/StaticImage' Name='TextureInfo/Image'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-							<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+					<Window name="TextureInfo" type="EmberLook/StaticText">
+						<Property name="Position" value="{{0,205},{0,4}}" />
+						<Property name="Size" value="{{1,-210},{1,-70}}" />
+						<Property name="Text" value="" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="VertFormatting" value="TopAligned" />
+						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+						<Window name="TextureInfo_Image" type="EmberLook/StaticImage">
+							<Property name="Position" value="{{0,0},{0,0}}" />
+							<Property name="Size" value="{{1,0},{1,0}}" />
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultWindow' Name='Materials'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Materials'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='false'/>
-					<Window Type='EmberLook/Editbox' Name='FilterMaterials'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+				<Window name="Materials" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="Materials" />
+					<Property name="InheritsAlpha" value="false" />
+					<Property name="Visible" value="false" />
+					<Window name="FilterMaterials" type="EmberLook/Editbox">
+						<Property name="Position" value="{{0,0},{1.0,-50}}" />
+						<Property name="Size" value="{{0,75},{0,25}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='MaterialsRefresh'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="MaterialsRefresh" type="EmberLook/Button">
+						<Property name="Position" value="{{0,0},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Refresh" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='MaterialsReload'>
-						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Reload'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="MaterialsReload" type="EmberLook/Button">
+						<Property name="Position" value="{{0,75},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Reload" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Listbox' Name='MaterialsList'>
-						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="MaterialsList" type="EmberLook/Listbox">
+						<Property name="Position" value="{{0,4},{0,4}}" />
+						<Property name="Size" value="{{0,200},{1,-70}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/StaticText' Name='MaterialsInfo'>
-						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Window Type='EmberLook/MultiLineEditbox' Name='MaterialInfo/Text'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-							<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+					<Window name="MaterialsInfo" type="EmberLook/StaticText">
+						<Property name="Position" value="{{0,205},{0,4}}" />
+						<Property name="Size" value="{{1,-210},{1,-70}}" />
+						<Property name="Text" value="" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="VertFormatting" value="TopAligned" />
+						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+						<Window name="MaterialInfo_Text" type="EmberLook/MultiLineEditbox">
+							<Property name="Position" value="{{0,0},{0,0}}" />
+							<Property name="Size" value="{{1,0},{1,0}}" />
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultWindow' Name='Meshes'>
-					<Property Name='Text' Value='Meshes'/>
-					<Property Name='InheritsAlpha' Value='False'/>
-					<Property Name='UnifiedAreaRect' Value='{{0.000976563,0},{0.00151515,0},{1.00098,0},{1.00152,0}}'/>
-					<Window Type='EmberLook/Editbox' Name='FilterMeshes'>
-						<Property Name='MaxTextLength' Value='1073741823'/>
-						<Property Name='UnifiedAreaRect' Value='{{0,6},{1,-28},{0,139},{1,-6}}'/>
-						<Property Name='TextParsingEnabled' Value='False'/>
+				<Window name="Meshes" type="DefaultWindow">
+					<Property name="Text" value="Meshes" />
+					<Property name="InheritsAlpha" value="False" />
+					<Property name="Area" value="{{0.000976563,0},{0.00151515,0},{1.00098,0},{1.00152,0}}" />
+					<Window name="FilterMeshes" type="EmberLook/Editbox">
+						<Property name="MaxTextLength" value="1073741823" />
+						<Property name="Area" value="{{0,6},{1,-28},{0,139},{1,-6}}" />
+						<Property name="TextParsingEnabled" value="False" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='MeshesRefresh'>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='UnifiedAreaRect' Value='{{0,142},{1,-28},{0,203},{1,-6}}'/>
+					<Window name="MeshesRefresh" type="EmberLook/Button">
+						<Property name="Text" value="Refresh" />
+						<Property name="Area" value="{{0,142},{1,-28},{0,203},{1,-6}}" />
 					</Window>
-					<Window Type='EmberLook/Listbox' Name='MeshesList'>
-						<Property Name='UnifiedAreaRect' Value='{{0,6},{0,6},{0,203},{1,-31}}'/>
+					<Window name="MeshesList" type="EmberLook/Listbox">
+						<Property name="Area" value="{{0,6},{0,6},{0,203},{1,-31}}" />
 					</Window>
-					<Window Type='EmberLook/StaticText' Name='MeshInfo'>
-						<Property Name='Disabled' Value='True'/>
-						<Property Name='UnifiedAreaRect' Value='{{0,210},{0,4},{1,-4},{1,-4}}'/>
-						<Property Name='HorzScrollPageSize' Value='1052'/>
-						<Property Name='HorzScrollPosition' Value='0'/>
-						<Property Name='VertScrollPageSize' Value='551'/>
-						<Property Name='VertScrollPosition' Value='0'/>
-						<Property Name='HorzScrollDocumentSize' Value='0'/>
-						<Property Name='VertScrollDocumentSize' Value='0'/>
-						<Window Type='EmberLook/Listbox' Name='SubMeshesList'>
-							<Property Name='UnifiedAreaRect' Value='{{0.00492611,0},{0,59},{0,156},{1,-401}}'/>
+					<Window name="MeshInfo" type="EmberLook/StaticText">
+						<Property name="Disabled" value="True" />
+						<Property name="Area" value="{{0,210},{0,4},{1,-4},{1,-4}}" />
+						<Property name="HorzScrollPageSize" value="1052" />
+						<Property name="HorzScrollPosition" value="0" />
+						<Property name="VertScrollPageSize" value="551" />
+						<Property name="VertScrollPosition" value="0" />
+						<Property name="HorzScrollDocumentSize" value="0" />
+						<Property name="VertScrollDocumentSize" value="0" />
+						<Window name="SubMeshesList" type="EmberLook/Listbox">
+							<Property name="Area" value="{{0.00492611,0},{0,59},{0,156},{1,-401}}" />
 						</Window>
-						<Window Type='EmberLook/Listbox' Name='SubMeshMaterialsList'>
-							<Property Name='UnifiedAreaRect' Value='{{0,158},{0,59},{0,325},{1,-262}}'/>
+						<Window name="SubMeshMaterialsList" type="EmberLook/Listbox">
+							<Property name="Area" value="{{0,158},{0,59},{0,325},{1,-262}}" />
 						</Window>
-						<Window Type='EmberLook/Editbox' Name='SubMeshMaterialsFilter'>
-							<Property Name='MaxTextLength' Value='1073741823'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,159},{1,-259},{0,325},{1,-234}}'/>
-							<Property Name='TextParsingEnabled' Value='False'/>
+						<Window name="SubMeshMaterialsFilter" type="EmberLook/Editbox">
+							<Property name="MaxTextLength" value="1073741823" />
+							<Property name="Area" value="{{0,159},{1,-259},{0,325},{1,-234}}" />
+							<Property name="TextParsingEnabled" value="False" />
 						</Window>
-						<Window Type='EmberLook/StaticText' Name='MeshSkeletonPathText'>
-							<Property Name='Font' Value='DejaVuSans-7'/>
-							<Property Name='Text'>Skeleton</Property>
-							<Property Name='VertFormatting' Value='TopAligned'/>
-							<Property Name='FrameEnabled' Value='False'/>
-							<Property Name='HorzFormatting' Value='HorzCentred'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,161},{0.0133135,0},{0,322},{0,20}}'/>
-							<Property Name='BackgroundEnabled' Value='False'/>
-							<Property Name='HorzScrollPageSize' Value='161'/>
-							<Property Name='HorzScrollPosition' Value='0'/>
-							<Property Name='VertScrollPageSize' Value='13'/>
-							<Property Name='VertScrollPosition' Value='0'/>
-							<Property Name='HorzScrollDocumentSize' Value='40'/>
-							<Property Name='VertScrollDocumentSize' Value='10.8585'/>
+						<Window name="MeshSkeletonPathText" type="EmberLook/StaticText">
+							<Property name="Font" value="DejaVuSans-7" />
+							<Property name="Text">Skeleton</Property>
+							<Property name="VertFormatting" value="TopAligned" />
+							<Property name="FrameEnabled" value="False" />
+							<Property name="HorzFormatting" value="CentreAligned" />
+							<Property name="Area" value="{{0,161},{0.0133135,0},{0,322},{0,20}}" />
+							<Property name="BackgroundEnabled" value="False" />
+							<Property name="HorzScrollPageSize" value="161" />
+							<Property name="HorzScrollPosition" value="0" />
+							<Property name="VertScrollPageSize" value="13" />
+							<Property name="VertScrollPosition" value="0" />
+							<Property name="HorzScrollDocumentSize" value="40" />
+							<Property name="VertScrollDocumentSize" value="10.8585" />
 						</Window>
-						<Window Type='EmberLook/Editbox' Name='MeshSkeletonPath'>
-							<Property Name='MaxTextLength' Value='1073741823'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,159},{0,20},{0,324},{0,46}}'/>
-							<Property Name='TextParsingEnabled' Value='False'/>
+						<Window name="MeshSkeletonPath" type="EmberLook/Editbox">
+							<Property name="MaxTextLength" value="1073741823" />
+							<Property name="Area" value="{{0,159},{0,20},{0,324},{0,46}}" />
+							<Property name="TextParsingEnabled" value="False" />
 						</Window>
-						<Window Type='EmberLook/Checkbox' Name='EnableAutomaticLOD'>
-							<Property Name='Text' Value='Enable automatic mesh Lod management'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,4},{1,-235},{0,300},{1,-210}}'/>
+						<Window name="EnableAutomaticLOD" type="EmberLook/Checkbox">
+							<Property name="Text" value="Enable automatic mesh Lod management" />
+							<Property name="Area" value="{{0,4},{1,-235},{0,300},{1,-210}}" />
 						</Window>
-						<Window Type='EmberLook/Static' Name='ManualLODContainer'>
-							<Property Name='UnifiedAreaRect' Value='{{0,4},{1,-211},{1,-4},{1,-3}}'/>
-							<Property Name='BackgroundEnabled' Value='False'/>
-							<Window Type='EmberLook/Listbox' Name='LODDistances'>
-								<Property Name='UnifiedAreaRect' Value='{{0.00709466,0},{0.108646,0},{0.141162,0},{0.705454,0}}'/>
+						<Window name="ManualLODContainer" type="EmberLook/Static">
+							<Property name="Area" value="{{0,4},{1,-211},{1,-4},{1,-3}}" />
+							<Property name="BackgroundEnabled" value="False" />
+							<Window name="LODDistances" type="EmberLook/Listbox">
+								<Property name="Area" value="{{0.00709466,0},{0.108646,0},{0.141162,0},{0.705454,0}}" />
 							</Window>
-							<Window Type='EmberLook/StaticText' Name='LODDistances_text'>
-								<Property Name='Text' Value='Lod distances'/>
-								<Property Name='FrameEnabled' Value='False'/>
-								<Property Name='HorzFormatting' Value='HorzCentred'/>
-								<Property Name='UnifiedAreaRect' Value='{{0.00861785,0},{0.0221597,0},{0.137764,0},{0.0986613,0}}'/>
-								<Property Name='BackgroundEnabled' Value='False'/>
-								<Property Name='HorzScrollPageSize' Value='99'/>
-								<Property Name='HorzScrollPosition' Value='0'/>
-								<Property Name='VertScrollPageSize' Value='16'/>
-								<Property Name='VertScrollPosition' Value='0'/>
-								<Property Name='HorzScrollDocumentSize' Value='56'/>
-								<Property Name='VertScrollDocumentSize' Value='9.3125'/>
+							<Window name="LODDistances_text" type="EmberLook/StaticText">
+								<Property name="Text" value="Lod distances" />
+								<Property name="FrameEnabled" value="False" />
+								<Property name="HorzFormatting" value="CentreAligned" />
+								<Property name="Area" value="{{0.00861785,0},{0.0221597,0},{0.137764,0},{0.0986613,0}}" />
+								<Property name="BackgroundEnabled" value="False" />
+								<Property name="HorzScrollPageSize" value="99" />
+								<Property name="HorzScrollPosition" value="0" />
+								<Property name="VertScrollPageSize" value="16" />
+								<Property name="VertScrollPosition" value="0" />
+								<Property name="HorzScrollDocumentSize" value="56" />
+								<Property name="VertScrollDocumentSize" value="9.3125" />
 							</Window>
-							<Window Type='EmberLook/Button' Name='LODAddButton'>
-								<Property Name='Text' Value='Add'/>
-								<Property Name='UnifiedAreaRect' Value='{{0.00639016,0},{0.729041,0},{0.0709729,0},{0.832929,0}}'/>
+							<Window name="LODAddButton" type="EmberLook/Button">
+								<Property name="Text" value="Add" />
+								<Property name="Area" value="{{0.00639016,0},{0.729041,0},{0.0709729,0},{0.832929,0}}" />
 							</Window>
-							<Window Type='EmberLook/Button' Name='LODDeleteButton'>
-								<Property Name='Text' Value='Delete'/>
-								<Property Name='UnifiedAreaRect' Value='{{0.0764352,0},{0.729041,0},{0.141018,0},{0.832929,0}}'/>
+							<Window name="LODDeleteButton" type="EmberLook/Button">
+								<Property name="Text" value="Delete" />
+								<Property name="Area" value="{{0.0764352,0},{0.729041,0},{0.141018,0},{0.832929,0}}" />
 							</Window>
-							<Window Type='EmberLook/Button' Name='LODCopyButton'>
-								<Property Name='Text' Value='Copy'/>
-								<Property Name='UnifiedAreaRect' Value='{{0.00639016,0},{0.864582,0},{0.0709729,0},{0.96847,0}}'/>
+							<Window name="LODCopyButton" type="EmberLook/Button">
+								<Property name="Text" value="Copy" />
+								<Property name="Area" value="{{0.00639016,0},{0.864582,0},{0.0709729,0},{0.96847,0}}" />
 							</Window>
-							<Window Type='EmberLook/Button' Name='LODPasteButton'>
-								<Property Name='Text' Value='Paste'/>
-								<Property Name='UnifiedAreaRect' Value='{{0.0764352,0},{0.864582,0},{0.141018,0},{0.96847,0}}'/>
+							<Window name="LODPasteButton" type="EmberLook/Button">
+								<Property name="Text" value="Paste" />
+								<Property name="Area" value="{{0.0764352,0},{0.864582,0},{0.141018,0},{0.96847,0}}" />
 							</Window>
-							<Window Type='EmberLook/Combobox' Name='LODTypeCombobox'>
-								<Property Name='Text' Value='Automatic vertex reduction'/>
-								<Property Name='ReadOnly' Value='True'/>
-								<Property Name='UnifiedAreaRect' Value='{{0.148,0},{0,6},{0.348,0},{0,60}}'/>
-								<Property Name='MaxEditTextLength' Value='1073741823'/>
+							<Window name="LODTypeCombobox" type="EmberLook/Combobox">
+								<Property name="Text" value="Automatic vertex reduction" />
+								<Property name="ReadOnly" value="True" />
+								<Property name="Area" value="{{0.148,0},{0,6},{0.348,0},{0,60}}" />
 							</Window>
-							<Window Type='DefaultWindow' Name='LODConfigContainer'>
-								<Property Name='UnifiedAreaRect' Value='{{0.148,0},{0.15,0},{1,-4},{1,-4}}'/>
-								<Window Type='EmberLook/Static' Name='ManuallyCreatedLODContainer'>
-									<Property Name='Visible' Value='False'/>
-									<Property Name='UnifiedAreaRect' Value='{{0,0},{0,0},{1,0},{1,0}}'/>
-									<Property Name='BackgroundEnabled' Value='False'/>
-									<Window Type='EmberLook/StaticText' Name='ManuallyCreatedLODDescription_text'>
-										<Property Name='Text'>Manually created LOD allows you to create
+							<Window name="LODConfigContainer" type="DefaultWindow">
+								<Property name="Area" value="{{0.148,0},{0.15,0},{1,-4},{1,-4}}" />
+								<Window name="ManuallyCreatedLODContainer" type="EmberLook/Static">
+									<Property name="Visible" value="False" />
+									<Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+									<Property name="BackgroundEnabled" value="False" />
+									<Window name="ManuallyCreatedLODDescription_text" type="EmberLook/StaticText">
+										<Property name="Text">Manually created LOD allows you to create
 											each LOD level in blender as separated meshes.
 										</Property>
-										<Property Name='FrameEnabled' Value='False'/>
-										<Property Name='HorzFormatting' Value='HorzCentred'/>
-										<Property Name='UnifiedAreaRect' Value='{{0.543733,0},{0.0311913,0},{0.995039,0},{0.583665,0}}'/>
-										<Property Name='BackgroundEnabled' Value='False'/>
-										<Property Name='HorzScrollPageSize' Value='400'/>
-										<Property Name='HorzScrollPosition' Value='0'/>
-										<Property Name='VertScrollPageSize' Value='96'/>
-										<Property Name='VertScrollPosition' Value='0'/>
-										<Property Name='HorzScrollDocumentSize' Value='199'/>
-										<Property Name='VertScrollDocumentSize' Value='18.625'/>
+										<Property name="FrameEnabled" value="False" />
+										<Property name="HorzFormatting" value="CentreAligned" />
+										<Property name="Area" value="{{0.543733,0},{0.0311913,0},{0.995039,0},{0.583665,0}}" />
+										<Property name="BackgroundEnabled" value="False" />
+										<Property name="HorzScrollPageSize" value="400" />
+										<Property name="HorzScrollPosition" value="0" />
+										<Property name="VertScrollPageSize" value="96" />
+										<Property name="VertScrollPosition" value="0" />
+										<Property name="HorzScrollDocumentSize" value="199" />
+										<Property name="VertScrollDocumentSize" value="18.625" />
 									</Window>
-									<Window Type='EmberLook/Editbox' Name='UserMeshFilter'>
-										<Property Name='MaxTextLength' Value='1073741823'/>
-										<Property Name='UnifiedAreaRect' Value='{{0.008,0},{0.831326,0},{0.54,0},{0.975221,0}}'/>
-										<Property Name='TextParsingEnabled' Value='False'/>
+									<Window name="UserMeshFilter" type="EmberLook/Editbox">
+										<Property name="MaxTextLength" value="1073741823" />
+										<Property name="Area" value="{{0.008,0},{0.831326,0},{0.54,0},{0.975221,0}}" />
+										<Property name="TextParsingEnabled" value="False" />
 									</Window>
-									<Window Type='EmberLook/Listbox' Name='UserMeshList'>
-										<Property Name='UnifiedAreaRect' Value='{{0.008,0},{0.033436,0},{0.54,0},{0.800201,0}}'/>
+									<Window name="UserMeshList" type="EmberLook/Listbox">
+										<Property name="Area" value="{{0.008,0},{0.033436,0},{0.54,0},{0.800201,0}}" />
 									</Window>
 								</Window>
-								<Window Type='EmberLook/Static' Name='AutomaticVertexReductionContainer'>
-									<Property Name='UnifiedAreaRect' Value='{{0,0},{0.00174033,0},{1,0},{1.00174,0}}'/>
-									<Property Name='BackgroundEnabled' Value='False'/>
-									<Window Type='EmberLook/StaticText' Name='LODVertexReductionDescription_text'>
-										<Property Name='Text'>Automatic vertex reduction uses an algorithm to reduce vertex count.
+								<Window name="AutomaticVertexReductionContainer" type="EmberLook/Static">
+									<Property name="Area" value="{{0,0},{0.00174033,0},{1,0},{1.00174,0}}" />
+									<Property name="BackgroundEnabled" value="False" />
+									<Window name="LODVertexReductionDescription_text" type="EmberLook/StaticText">
+										<Property name="Text">Automatic vertex reduction uses an algorithm to reduce vertex count.
 											There are two algorithms availible and each has a different parameter:
 											-Proportional: You need to pass the percent of reduced vertices.
 											-Constant: You need to pass a fixed vertex count to reduce.
 											-Collapse cost: You need to pass the artifact amount.
 										</Property>
-										<Property Name='FrameEnabled' Value='False'/>
-										<Property Name='VertFormatting' Value='TopAligned'/>
-										<Property Name='UnifiedAreaRect' Value='{{0.466607,0},{0.061043,0},{0.980437,0},{0.636074,0}}'/>
-										<Property Name='BackgroundEnabled' Value='False'/>
-										<Property Name='HorzScrollPageSize' Value='456'/>
-										<Property Name='HorzScrollPosition' Value='0'/>
-										<Property Name='VertScrollPageSize' Value='99'/>
-										<Property Name='VertScrollPosition' Value='0'/>
-										<Property Name='HorzScrollDocumentSize' Value='302'/>
-										<Property Name='VertScrollDocumentSize' Value='46.5625'/>
+										<Property name="FrameEnabled" value="False" />
+										<Property name="VertFormatting" value="TopAligned" />
+										<Property name="Area" value="{{0.466607,0},{0.061043,0},{0.980437,0},{0.636074,0}}" />
+										<Property name="BackgroundEnabled" value="False" />
+										<Property name="HorzScrollPageSize" value="456" />
+										<Property name="HorzScrollPosition" value="0" />
+										<Property name="VertScrollPageSize" value="99" />
+										<Property name="VertScrollPosition" value="0" />
+										<Property name="HorzScrollDocumentSize" value="302" />
+										<Property name="VertScrollDocumentSize" value="46.5625" />
 									</Window>
-									<Window Type='EmberLook/Combobox' Name='LODReductionTypeCombobox'>
-										<Property Name='Text' Value='Proportional'/>
-										<Property Name='ReadOnly' Value='True'/>
-										<Property Name='UnifiedAreaRect' Value='{{0.22,0},{0,12},{0.45,0},{0,80}}'/>
-										<Property Name='MaxEditTextLength' Value='1073741823'/>
+									<Window name="LODReductionTypeCombobox" type="EmberLook/Combobox">
+										<Property name="Text" value="Proportional" />
+										<Property name="ReadOnly" value="True" />
+										<Property name="Area" value="{{0.22,0},{0,12},{0.45,0},{0,80}}" />
 									</Window>
-									<Window Type='EmberLook/StaticText' Name='LODReductionType_text'>
-										<Property Name='Text' Value='Reduction algorithm:'/>
-										<Property Name='FrameEnabled' Value='False'/>
-										<Property Name='HorzFormatting' Value='RightAligned'/>
-										<Property Name='UnifiedAreaRect' Value='{{0.003423,0},{0,10},{0.21,0},{0,35}}'/>
-										<Property Name='BackgroundEnabled' Value='False'/>
-										<Property Name='HorzScrollPageSize' Value='183'/>
-										<Property Name='HorzScrollPosition' Value='0'/>
-										<Property Name='VertScrollPageSize' Value='25'/>
-										<Property Name='VertScrollPosition' Value='0'/>
-										<Property Name='HorzScrollDocumentSize' Value='91'/>
-										<Property Name='VertScrollDocumentSize' Value='9.3125'/>
+									<Window name="LODReductionType_text" type="EmberLook/StaticText">
+										<Property name="Text" value="Reduction algorithm:" />
+										<Property name="FrameEnabled" value="False" />
+										<Property name="HorzFormatting" value="RightAligned" />
+										<Property name="Area" value="{{0.003423,0},{0,10},{0.21,0},{0,35}}" />
+										<Property name="BackgroundEnabled" value="False" />
+										<Property name="HorzScrollPageSize" value="183" />
+										<Property name="HorzScrollPosition" value="0" />
+										<Property name="VertScrollPageSize" value="25" />
+										<Property name="VertScrollPosition" value="0" />
+										<Property name="HorzScrollDocumentSize" value="91" />
+										<Property name="VertScrollDocumentSize" value="9.3125" />
 									</Window>
-									<Window Type='EmberLook/StaticText' Name='LODReductionParameter_text'>
-										<Property Name='Text' Value='Parameter:'/>
-										<Property Name='FrameEnabled' Value='False'/>
-										<Property Name='HorzFormatting' Value='RightAligned'/>
-										<Property Name='UnifiedAreaRect' Value='{{0.005486,0},{0,35},{0.21,0},{0,60}}'/>
-										<Property Name='BackgroundEnabled' Value='False'/>
-										<Property Name='HorzScrollPageSize' Value='181'/>
-										<Property Name='HorzScrollPosition' Value='0'/>
-										<Property Name='VertScrollPageSize' Value='25'/>
-										<Property Name='VertScrollPosition' Value='0'/>
-										<Property Name='HorzScrollDocumentSize' Value='47'/>
-										<Property Name='VertScrollDocumentSize' Value='9.3125'/>
+									<Window name="LODReductionParameter_text" type="EmberLook/StaticText">
+										<Property name="Text" value="Parameter:" />
+										<Property name="FrameEnabled" value="False" />
+										<Property name="HorzFormatting" value="RightAligned" />
+										<Property name="Area" value="{{0.005486,0},{0,35},{0.21,0},{0,60}}" />
+										<Property name="BackgroundEnabled" value="False" />
+										<Property name="HorzScrollPageSize" value="181" />
+										<Property name="HorzScrollPosition" value="0" />
+										<Property name="VertScrollPageSize" value="25" />
+										<Property name="VertScrollPosition" value="0" />
+										<Property name="HorzScrollDocumentSize" value="47" />
+										<Property name="VertScrollDocumentSize" value="9.3125" />
 									</Window>
-									<Window Type='EmberLook/Editbox' Name='LODReductionParameterTextbox'>
-										<Property Name='MaxTextLength' Value='1073741823'/>
-										<Property Name='UnifiedAreaRect' Value='{{0.22,0},{0,37},{0.45,0},{0,58}}'/>
-										<Property Name='TextParsingEnabled' Value='False'/>
+									<Window name="LODReductionParameterTextbox" type="EmberLook/Editbox">
+										<Property name="MaxTextLength" value="1073741823" />
+										<Property name="Area" value="{{0.22,0},{0,37},{0.45,0},{0,58}}" />
+										<Property name="TextParsingEnabled" value="False" />
 									</Window>
-									<Window Type='EmberLook/HorizontalScrollbar' Name='LODValueScroll'>
-										<Property Name='PageSize' Value='0'/>
-										<Property Name='StepSize' Value='1'/>
-										<Property Name='OverlapSize' Value='0'/>
-										<Property Name='DocumentSize' Value='1'/>
-										<Property Name='ScrollPosition' Value='0'/>
-										<Property Name='UnifiedAreaRect' Value='{{0.22,0},{0,60},{0.45,0},{0,70}}'/>
+									<Window name="LODValueScroll" type="EmberLook/HorizontalScrollbar">
+										<Property name="PageSize" value="0" />
+										<Property name="StepSize" value="1" />
+										<Property name="OverlapSize" value="0" />
+										<Property name="DocumentSize" value="1" />
+										<Property name="ScrollPosition" value="0" />
+										<Property name="Area" value="{{0.22,0},{0,60},{0.45,0},{0,70}}" />
 									</Window>
 								</Window>
 							</Window>
-							<Window Type='EmberLook/Combobox' Name='LODStrategyCombobox'>
-								<Property Name='Text' Value='Distance Lod strategy'/>
-								<Property Name='ReadOnly' Value='True'/>
-								<Property Name='UnifiedAreaRect' Value='{{0.36,0},{0,6},{0.56,0},{0,60}}'/>
-								<Property Name='MaxEditTextLength' Value='1073741823'/>
+							<Window name="LODStrategyCombobox" type="EmberLook/Combobox">
+								<Property name="Text" value="Distance Lod strategy" />
+								<Property name="ReadOnly" value="True" />
+								<Property name="Area" value="{{0.36,0},{0,6},{0.56,0},{0,60}}" />
 							</Window>
 						</Window>
-						<Window Type='EmberLook/Button' Name='MeshInfoSaveMeshButton'>
-							<Property Name='Text' Value='Save mesh'/>
-							<Property Name='Tooltip' Value='Save the mesh to disk'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,4},{0,4},{0,78},{0,38}}'/>
+						<Window name="MeshInfoSaveMeshButton" type="EmberLook/Button">
+							<Property name="Text" value="Save mesh" />
+							<Property name="TooltipText" value="Save the mesh to disk" />
+							<Property name="Area" value="{{0,4},{0,4},{0,78},{0,38}}" />
 						</Window>
-						<Window Type='EmberLook/StaticImage' Name='MeshInfo/Preview'>
-							<Property Name='UnifiedAreaRect' Value='{{0,330},{0.007396,4},{1,-4},{1,-220}}'/>
-							<Window Type='EmberLook/StaticText' Name='PreviewInfo'>
-								<Property Name='Font' Value='DejaVuSans-14'/>
-								<Property Name='TextColours' Value='tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF'/>
-								<Property Name='FrameEnabled' Value='False'/>
-								<Property Name='VertFormatting' Value='TopAligned'/>
-								<Property Name='UnifiedAreaRect' Value='{{0,10},{0,10},{1,-10},{0,100}}'/>
-								<Property Name='BackgroundEnabled' Value='False'/>
-								<Property Name='HorzScrollPageSize' Value='420'/>
-								<Property Name='HorzScrollPosition' Value='0'/>
-								<Property Name='VertScrollPageSize' Value='90'/>
-								<Property Name='VertScrollPosition' Value='0'/>
-								<Property Name='HorzScrollDocumentSize' Value='0'/>
-								<Property Name='VertScrollDocumentSize' Value='0'/>
+						<Window name="MeshInfo_Preview" type="EmberLook/StaticImage">
+							<Property name="Area" value="{{0,330},{0.007396,4},{1,-4},{1,-220}}" />
+							<Window name="PreviewInfo" type="EmberLook/StaticText">
+								<Property name="Font" value="DejaVuSans-14" />
+								<Property name="TextColours" value="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" />
+								<Property name="FrameEnabled" value="False" />
+								<Property name="VertFormatting" value="TopAligned" />
+								<Property name="Area" value="{{0,10},{0,10},{1,-10},{0,100}}" />
+								<Property name="BackgroundEnabled" value="False" />
+								<Property name="HorzScrollPageSize" value="420" />
+								<Property name="HorzScrollPosition" value="0" />
+								<Property name="VertScrollPageSize" value="90" />
+								<Property name="VertScrollPosition" value="0" />
+								<Property name="HorzScrollDocumentSize" value="0" />
+								<Property name="VertScrollDocumentSize" value="0" />
 							</Window>
-							<Window Type='EmberLook/Checkbox' Name='ShowWireFrameCheckbox'>
-								<Property Name='Text' Value='Show wireframe'/>
-								<Property Name='HoverTextColour' Value='FFFFFFFF'/>
-								<Property Name='UnifiedAreaRect' Value='{{0,10},{1,-50},{0,247},{1,-30}}'/>
-								<Property Name='NormalTextColour' Value='FFFFFFFF'/>
-								<Property Name='PushedTextColour' Value='FFFFFFFF'/>
+							<Window name="ShowWireFrameCheckbox" type="EmberLook/Checkbox">
+								<Property name="Text" value="Show wireframe" />
+								<Property name="HoverTextColour" value="FFFFFFFF" />
+								<Property name="Area" value="{{0,10},{1,-50},{0,247},{1,-30}}" />
+								<Property name="NormalTextColour" value="FFFFFFFF" />
+								<Property name="PushedTextColour" value="FFFFFFFF" />
 							</Window>
-							<Window Type='EmberLook/Checkbox' Name='ForceLodLevelCheckbox'>
-								<Property Name='Text' Value='Force selected Lod distance'/>
-								<Property Name='HoverTextColour' Value='FFFFFFFF'/>
-								<Property Name='UnifiedAreaRect' Value='{{0,10},{1,-30},{0,247},{1,0}}'/>
-								<Property Name='NormalTextColour' Value='FFFFFFFF'/>
-								<Property Name='PushedTextColour' Value='FFFFFFFF'/>
+							<Window name="ForceLodLevelCheckbox" type="EmberLook/Checkbox">
+								<Property name="Text" value="Force selected Lod distance" />
+								<Property name="HoverTextColour" value="FFFFFFFF" />
+								<Property name="Area" value="{{0,10},{1,-30},{0,247},{1,0}}" />
+								<Property name="NormalTextColour" value="FFFFFFFF" />
+								<Property name="PushedTextColour" value="FFFFFFFF" />
 							</Window>
 						</Window>
-						<Window Type='EmberLook/StaticText' Name='SubmeshesText'>
-							<Property Name='Font' Value='DejaVuSans-7'/>
-							<Property Name='Text'>Submeshes</Property>
-							<Property Name='VertFormatting' Value='TopAligned'/>
-							<Property Name='FrameEnabled' Value='False'/>
-							<Property Name='HorzFormatting' Value='HorzCentred'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,0},{0,45},{0,155},{0,60}}'/>
-							<Property Name='BackgroundEnabled' Value='False'/>
-							<Property Name='HorzScrollPageSize' Value='155'/>
-							<Property Name='HorzScrollPosition' Value='0'/>
-							<Property Name='VertScrollPageSize' Value='15'/>
-							<Property Name='VertScrollPosition' Value='0'/>
-							<Property Name='HorzScrollDocumentSize' Value='51'/>
-							<Property Name='VertScrollDocumentSize' Value='10.8585'/>
+						<Window name="SubmeshesText" type="EmberLook/StaticText">
+							<Property name="Font" value="DejaVuSans-7" />
+							<Property name="Text">Submeshes</Property>
+							<Property name="VertFormatting" value="TopAligned" />
+							<Property name="FrameEnabled" value="False" />
+							<Property name="HorzFormatting" value="CentreAligned" />
+							<Property name="Area" value="{{0,0},{0,45},{0,155},{0,60}}" />
+							<Property name="BackgroundEnabled" value="False" />
+							<Property name="HorzScrollPageSize" value="155" />
+							<Property name="HorzScrollPosition" value="0" />
+							<Property name="VertScrollPageSize" value="15" />
+							<Property name="VertScrollPosition" value="0" />
+							<Property name="HorzScrollDocumentSize" value="51" />
+							<Property name="VertScrollDocumentSize" value="10.8585" />
 						</Window>
-						<Window Type='EmberLook/StaticText' Name='MaterialsText'>
-							<Property Name='Font' Value='DejaVuSans-7'/>
-							<Property Name='Text'>Materials</Property>
-							<Property Name='VertFormatting' Value='TopAligned'/>
-							<Property Name='FrameEnabled' Value='False'/>
-							<Property Name='HorzFormatting' Value='HorzCentred'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,160},{0,45},{0,325},{0,60}}'/>
-							<Property Name='BackgroundEnabled' Value='False'/>
-							<Property Name='HorzScrollPageSize' Value='165'/>
-							<Property Name='HorzScrollPosition' Value='0'/>
-							<Property Name='VertScrollPageSize' Value='15'/>
-							<Property Name='VertScrollPosition' Value='0'/>
-							<Property Name='HorzScrollDocumentSize' Value='41'/>
-							<Property Name='VertScrollDocumentSize' Value='10.8585'/>
+						<Window name="MaterialsText" type="EmberLook/StaticText">
+							<Property name="Font" value="DejaVuSans-7" />
+							<Property name="Text">Materials</Property>
+							<Property name="VertFormatting" value="TopAligned" />
+							<Property name="FrameEnabled" value="False" />
+							<Property name="HorzFormatting" value="CentreAligned" />
+							<Property name="Area" value="{{0,160},{0,45},{0,325},{0,60}}" />
+							<Property name="BackgroundEnabled" value="False" />
+							<Property name="HorzScrollPageSize" value="165" />
+							<Property name="HorzScrollPosition" value="0" />
+							<Property name="VertScrollPageSize" value="15" />
+							<Property name="VertScrollPosition" value="0" />
+							<Property name="HorzScrollDocumentSize" value="41" />
+							<Property name="VertScrollDocumentSize" value="10.8585" />
 						</Window>
-						<Window Type='EmberLook/Button' Name='MeshInfoLoadMeshButton'>
-							<Property Name='Text' Value='Load mesh'/>
-							<Property Name='Tooltip' Value='Load the mesh from disk'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,82},{0,4},{0,156},{0,38}}'/>
+						<Window name="MeshInfoLoadMeshButton" type="EmberLook/Button">
+							<Property name="Text" value="Load mesh" />
+							<Property name="TooltipText" value="Load the mesh from disk" />
+							<Property name="Area" value="{{0,82},{0,4},{0,156},{0,38}}" />
 						</Window>
-						<Window Type='EmberLook/Button' Name='MeshInfoSaveLoddefButton'>
-							<Property Name='Text' Value='Save loddef'/>
-							<Property Name='Tooltip' Value='Save the loddef to disk'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,4},{1,-269},{0,78},{1,-235}}'/>
+						<Window name="MeshInfoSaveLoddefButton" type="EmberLook/Button">
+							<Property name="Text" value="Save loddef" />
+							<Property name="TooltipText" value="Save the loddef to disk" />
+							<Property name="Area" value="{{0,4},{1,-269},{0,78},{1,-235}}" />
 						</Window>
-						<Window Type='EmberLook/Button' Name='MeshInfoLoadLoddefButton'>
-							<Property Name='Text' Value='Load loddef'/>
-							<Property Name='Tooltip' Value='Load the loddef from disk'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,82},{1,-269},{0,156},{1,-235}}'/>
+						<Window name="MeshInfoLoadLoddefButton" type="EmberLook/Button">
+							<Property name="Text" value="Load loddef" />
+							<Property name="TooltipText" value="Load the loddef from disk" />
+							<Property name="Area" value="{{0,82},{1,-269},{0,156},{1,-235}}" />
 						</Window>
-						<Window Type='EmberLook/StaticText' Name='SubmeshInfoText'>
-							<Property Name='Font' Value='DejaVuSans-8'/>
-							<Property Name='FrameEnabled' Value='False'/>
-							<Property Name='VertFormatting' Value='TopAligned'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,8},{1,-396},{0,150},{1,-273}}'/>
-							<Property Name='BackgroundEnabled' Value='False'/>
-							<Property Name='HorzScrollPageSize' Value='142'/>
-							<Property Name='HorzScrollPosition' Value='0'/>
-							<Property Name='VertScrollPageSize' Value='123'/>
-							<Property Name='VertScrollPosition' Value='0'/>
-							<Property Name='HorzScrollDocumentSize' Value='0'/>
-							<Property Name='VertScrollDocumentSize' Value='0'/>
+						<Window name="SubmeshInfoText" type="EmberLook/StaticText">
+							<Property name="Font" value="DejaVuSans-8" />
+							<Property name="FrameEnabled" value="False" />
+							<Property name="VertFormatting" value="TopAligned" />
+							<Property name="Area" value="{{0,8},{1,-396},{0,150},{1,-273}}" />
+							<Property name="BackgroundEnabled" value="False" />
+							<Property name="HorzScrollPageSize" value="142" />
+							<Property name="HorzScrollPosition" value="0" />
+							<Property name="VertScrollPageSize" value="123" />
+							<Property name="VertScrollPosition" value="0" />
+							<Property name="HorzScrollDocumentSize" value="0" />
+							<Property name="VertScrollDocumentSize" value="0" />
 						</Window>
 					</Window>
-					<Window Type='EmberLook/FrameWindow' Name='InputWindow'>
-						<Property Name='Text' Value='Input'/>
-						<Property Name='Visible' Value='False'/>
-						<Property Name='TitlebarFont' Value='DejaVuSans-14'/>
-						<Property Name='CaptionColour' Value='00FFFFFF'/>
-						<Property Name='TitlebarEnabled' Value='True'/>
-						<Property Name='UnifiedAreaRect' Value='{{0.5,-200},{0.5,-100},{0.5,100},{0.5,50}}'/>
-						<Window Type='EmberLook/StaticText' Name='InputQuestion_text'>
-							<Property Name='Text' Value='Please enter the name of the model.'/>
-							<Property Name='FrameEnabled' Value='False'/>
-							<Property Name='HorzFormatting' Value='HorzCentred'/>
-							<Property Name='VertFormatting' Value='BottomAligned'/>
-							<Property Name='UnifiedAreaRect' Value='{{0,0},{0,0},{1,0},{0,40}}'/>
-							<Property Name='HorzScrollPageSize' Value='292'/>
-							<Property Name='HorzScrollPosition' Value='0'/>
-							<Property Name='VertScrollPageSize' Value='40'/>
-							<Property Name='VertScrollPosition' Value='0'/>
-							<Property Name='HorzScrollDocumentSize' Value='152'/>
-							<Property Name='VertScrollDocumentSize' Value='9.3125'/>
+					<Window name="InputWindow" type="EmberLook/FrameWindow">
+						<Property name="Text" value="Input" />
+						<Property name="Visible" value="False" />
+						<Property name="TitlebarFont" value="DejaVuSans-14" />
+						<Property name="CaptionColour" value="00FFFFFF" />
+						<Property name="TitlebarEnabled" value="True" />
+						<Property name="Area" value="{{0.5,-200},{0.5,-100},{0.5,100},{0.5,50}}" />
+						<Window name="InputQuestion_text" type="EmberLook/StaticText">
+							<Property name="Text" value="Please enter the name of the model." />
+							<Property name="FrameEnabled" value="False" />
+							<Property name="HorzFormatting" value="CentreAligned" />
+							<Property name="VertFormatting" value="BottomAligned" />
+							<Property name="Area" value="{{0,0},{0,0},{1,0},{0,40}}" />
+							<Property name="HorzScrollPageSize" value="292" />
+							<Property name="HorzScrollPosition" value="0" />
+							<Property name="VertScrollPageSize" value="40" />
+							<Property name="VertScrollPosition" value="0" />
+							<Property name="HorzScrollDocumentSize" value="152" />
+							<Property name="VertScrollDocumentSize" value="9.3125" />
 						</Window>
-						<Window Type='EmberLook/Editbox' Name='InputAnswerTextbox'>
-							<Property Name='MaxTextLength' Value='1073741823'/>
-							<Property Name='UnifiedAreaRect' Value='{{0.5,-100},{0,44},{0.5,100},{0.569081,0}}'/>
-							<Property Name='TextParsingEnabled' Value='False'/>
+						<Window name="InputAnswerTextbox" type="EmberLook/Editbox">
+							<Property name="MaxTextLength" value="1073741823" />
+							<Property name="Area" value="{{0.5,-100},{0,44},{0.5,100},{0.569081,0}}" />
+							<Property name="TextParsingEnabled" value="False" />
 						</Window>
-						<Window Type='EmberLook/Button' Name='InputOkButton'>
-							<Property Name='Text' Value='Ok'/>
-							<Property Name='UnifiedAreaRect' Value='{{0.5,-60},{0,75},{0.5,-10},{0,100}}'/>
+						<Window name="InputOkButton" type="EmberLook/Button">
+							<Property name="Text" value="Ok" />
+							<Property name="Area" value="{{0.5,-60},{0,75},{0.5,-10},{0,100}}" />
 						</Window>
-						<Window Type='EmberLook/Button' Name='InputCancelButton'>
-							<Property Name='Text' Value='Cancel'/>
-							<Property Name='UnifiedAreaRect' Value='{{0.5,10},{0,75},{0.5,60},{0,100}}'/>
+						<Window name="InputCancelButton" type="EmberLook/Button">
+							<Property name="Text" value="Cancel" />
+							<Property name="Area" value="{{0.5,10},{0,75},{0.5,60},{0,100}}" />
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultWindow' Name='Images'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Images'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='false'/>
-					<Window Type='EmberLook/Editbox' Name='FilterImages'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+				<Window name="Images" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="Images" />
+					<Property name="InheritsAlpha" value="false" />
+					<Property name="Visible" value="false" />
+					<Window name="FilterImages" type="EmberLook/Editbox">
+						<Property name="Position" value="{{0,0},{1.0,-50}}" />
+						<Property name="Size" value="{{0,75},{0,25}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='ImagesRefresh'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="ImagesRefresh" type="EmberLook/Button">
+						<Property name="Position" value="{{0,0},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Refresh" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Listbox' Name='ImagesList'>
-						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="ImagesList" type="EmberLook/Listbox">
+						<Property name="Position" value="{{0,4},{0,4}}" />
+						<Property name="Size" value="{{0,200},{1,-70}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/StaticText' Name='ImagesInfo'>
-						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Window Type='EmberLook/StaticImage' Name='ImagesInfo/Image'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-							<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+					<Window name="ImagesInfo" type="EmberLook/StaticText">
+						<Property name="Position" value="{{0,205},{0,4}}" />
+						<Property name="Size" value="{{1,-210},{1,-70}}" />
+						<Property name="Text" value="" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="VertFormatting" value="TopAligned" />
+						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+						<Window name="ImagesInfo_Image" type="EmberLook/StaticImage">
+							<Property name="Position" value="{{0,0},{0,0}}" />
+							<Property name="Size" value="{{1,0},{1,0}}" />
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultWindow' Name='Shaders'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Shaders'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='false'/>
-					<Window Type='EmberLook/Editbox' Name='FilterShaders'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+				<Window name="Shaders" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="Shaders" />
+					<Property name="InheritsAlpha" value="false" />
+					<Property name="Visible" value="false" />
+					<Window name="FilterShaders" type="EmberLook/Editbox">
+						<Property name="Position" value="{{0,0},{1.0,-50}}" />
+						<Property name="Size" value="{{0,75},{0,25}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='RefreshShaders'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="RefreshShaders" type="EmberLook/Button">
+						<Property name="Position" value="{{0,0},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Refresh" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='ShadersReload'>
-						<Property Name='UnifiedPosition' Value='{{0,75},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Reload'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="ShadersReload" type="EmberLook/Button">
+						<Property name="Position" value="{{0,75},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Reload" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Listbox' Name='ShadersList'>
-						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='MultiSelect' Value='True'/>
+					<Window name="ShadersList" type="EmberLook/Listbox">
+						<Property name="Position" value="{{0,4},{0,4}}" />
+						<Property name="Size" value="{{0,200},{1,-70}}" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="MultiSelect" value="True" />
 					</Window>
-					<Window Type='EmberLook/StaticText' Name='ShadersInfo'>
-						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Window Type='EmberLook/MultiLineEditbox' Name='ShadersInfo/Text'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-							<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
+					<Window name="ShadersInfo" type="EmberLook/StaticText">
+						<Property name="Position" value="{{0,205},{0,4}}" />
+						<Property name="Size" value="{{1,-210},{1,-70}}" />
+						<Property name="Text" value="" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="VertFormatting" value="TopAligned" />
+						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+						<Window name="ShadersInfo_Text" type="EmberLook/MultiLineEditbox">
+							<Property name="Position" value="{{0,0},{0,0}}" />
+							<Property name="Size" value="{{1,0},{1,0}}" />
 						</Window>
 					</Window>
 				</Window>
-				<Window Type='DefaultWindow' Name='Windows'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Windows'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='false'/>
-					<Window Type='EmberLook/Editbox' Name='FilterWindows'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+				<Window name="Windows" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="Windows" />
+					<Property name="InheritsAlpha" value="false" />
+					<Property name="Visible" value="false" />
+					<Window name="FilterWindows" type="EmberLook/Editbox">
+						<Property name="Position" value="{{0,0},{1.0,-50}}" />
+						<Property name="Size" value="{{0,75},{0,25}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='RefreshWindows'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="RefreshWindows" type="EmberLook/Button">
+						<Property name="Position" value="{{0,0},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Refresh" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Listbox' Name='WindowsList'>
-						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="WindowsList" type="EmberLook/Listbox">
+						<Property name="Position" value="{{0,4},{0,4}}" />
+						<Property name="Size" value="{{0,200},{1,-70}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/StaticText' Name='WindowInfo'>
-						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Property Name='FrameEnabled' Value='false'/>
-						<Property Name='BackgroundEnabled' Value='false'/>
-                        <Window Type='VerticalLayoutContainer'>
-                            <Window Type='EmberLook/Checkbox' Name='WindowInfo/Visible'>
-                                <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-                                <Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
-                                <Property Name='Text' Value='Visible'/>
-                            </Window>
-                            <Window Type='HorizontalLayoutContainer'>
-            					<Window Type='EmberLook/Editbox' Name='WindowInfo/Width_rel'>
-            						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+					<Window name="WindowInfo" type="EmberLook/StaticText">
+						<Property name="Position" value="{{0,205},{0,4}}" />
+						<Property name="Size" value="{{1,-210},{1,-70}}" />
+						<Property name="Text" value="" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="VertFormatting" value="TopAligned" />
+						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+                        <Window type="VerticalLayoutContainer">
+                            <Window type="HorizontalLayoutContainer">
+            					<Window name="WindowInfo_Width_rel" type="EmberLook/Editbox">
+            						<Property name="Size" value="{{0,75},{0,25}}" />
             					</Window>
-                                <Window Type='EmberLook/Editbox' Name='WindowInfo/Width_fix'>
-                                    <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                                <Window name="WindowInfo_Width_fix" type="EmberLook/Editbox">
+                                    <Property name="Size" value="{{0,75},{0,25}}" />
                                 </Window>
-                                <Window Type='EmberLook/Editbox' Name='WindowInfo/Height_rel'>
-                                    <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                                <Window name="WindowInfo_Height_rel" type="EmberLook/Editbox">
+                                    <Property name="Size" value="{{0,75},{0,25}}" />
                                 </Window>
-                                <Window Type='EmberLook/Editbox' Name='WindowInfo/Height_fix'>
-                                    <Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
+                                <Window name="WindowInfo_Height_fix" type="EmberLook/Editbox">
+                                    <Property name="Size" value="{{0,75},{0,25}}" />
                                 </Window>
                             </Window>
-    						<Window Type='EmberLook/StaticText' Name='WindowInfo/Text'>
-    							<Property Name='UnifiedSize' Value='{{1,0},{1,-50}}'/>
-    							<Property Name='VertFormatting' Value='TopAligned'/>
-    							<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-    							<Property Name='FrameEnabled' Value='false'/>
-    							<Property Name='BackgroundEnabled' Value='false'/>
+                            <Window name="WindowInfo_Visible" type="EmberLook/Checkbox">
+                                <Property name="Size" value="{{1,0},{0,25}}" />
+                                <Property name="Text" value="Visible" />
+                            </Window>
+    						<Window name="WindowInfo_Text" type="EmberLook/StaticText">
+    							<Property name="Size" value="{{1,0},{1,-50}}" />
+    							<Property name="VertFormatting" value="TopAligned" />
+    							<Property name="HorzFormatting" value="WordWrapLeftAligned" />
     						</Window>
                         </Window>
 					</Window>

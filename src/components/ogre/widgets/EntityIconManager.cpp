@@ -25,12 +25,16 @@
 #endif
 
 #include "EntityIconManager.h"
-#include <string>
-#include <CEGUI.h>
 #include "../GUIManager.h"
 #include "EntityIcon.h"
 #include "EntityIconSlot.h"
 #include "icons/Icon.h"
+
+#include <string>
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/PropertyHelper.h>
+#include <CEGUI/Image.h>
+
 namespace Ember {
 namespace OgreView {
 
@@ -60,7 +64,7 @@ EntityIconSlot* EntityIconManager::createSlot(unsigned int pixelSize)
 	ss << "entityIconSlot" << mSlotsCounter++;
 	//Make the slot more visible.
 	CEGUI::Window* container = mGuiManager.createWindow("EmberLook/StaticImage", ss.str());
-	container->setSize(CEGUI::UVector2(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
+	container->setSize(CEGUI::USize(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 	EntityIconSlot* slot = new EntityIconSlot(container);
 	mSlots.push_back(slot);
 	return slot;
@@ -79,7 +83,7 @@ EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* e
 	CEGUI::DragContainer* item = static_cast<CEGUI::DragContainer*>(mGuiManager.createWindow("DragContainer", ss.str()));
 	
 	if (item) {
-		item->setSize(CEGUI::UVector2(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
+		item->setSize(CEGUI::USize(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 		//item->setTooltipText(name);
 		
 		ss << "Image" ;
@@ -90,8 +94,8 @@ EntityIcon* EntityIconManager::createIcon(Gui::Icons::Icon* icon, EmberEntity* e
  			iconWindow->setProperty("InheritsAlpha", "true");
 			iconWindow->disable();
 // 			iconWindow->setProperty("FrameEnabled", "false");
-			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
-			item->addChildWindow(iconWindow);
+			iconWindow->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(icon->getImage()));
+			item->addChild(iconWindow);
 			
 			EntityIcon* entityIcon = new EntityIcon(*this, item, iconWindow, icon, entity);
 			mIcons.push_back(entityIcon);

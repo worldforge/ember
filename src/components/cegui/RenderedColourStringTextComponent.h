@@ -19,7 +19,7 @@
 #ifndef RENDEREDCOLOURSTRINGTEXTCOMPONENT_H_
 #define RENDEREDCOLOURSTRINGTEXTCOMPONENT_H_
 
-#include <CEGUIRenderedStringTextComponent.h>
+#include <CEGUI/RenderedStringTextComponent.h>
 
 namespace Ember
 {
@@ -40,7 +40,10 @@ public:
 
 	RenderedColourStringTextComponent(const CEGUI::String& text, const CEGUI::String& font_name);
 
-	void draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Vector2& position, const CEGUI::ColourRect* mod_colours, const CEGUI::Rect* clip_rect, const float vertical_space, const float space_extra) const;
+	void draw(const CEGUI::Window* ref_wnd, CEGUI::GeometryBuffer& buffer,
+	              const CEGUI::Vector2f& position, const CEGUI::ColourRect* mod_colours,
+	              const CEGUI::Rectf* clip_rect, const float vertical_space,
+	              const float space_extra) const;
 
 	CEGUI::RenderedStringTextComponent* clone() const;
 

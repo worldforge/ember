@@ -93,7 +93,7 @@ end
 -- Call this method to build the cegui widget.
 function Compass:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("Compass.layout", "Compass/")
+	self.widget:loadMainSheet("Compass.layout", "Compass")
 	self.widget:setIsActiveWindowOpaque(false)
 	self.renderImage = self.widget:getWindow("RenderImage")
 	self.pointerImage = self.widget:getWindow("Pointer")

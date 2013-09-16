@@ -12,18 +12,13 @@ function Admin:addMenuItem(labelText, clickMethod, tooltipText)
 	menuItem:setText(labelText)
 	menuItem:subscribeEvent("Clicked", clickMethod, self)
 	menuItem:setTooltipText(tooltipText)
-	self.popup:addChildWindow(menuItem)
+	self.popup:addChild(menuItem)
 	return menuItem
 end
 
 --hide the menu when the mouse leaves it
 function Admin:popupMenu_MouseLeaves(args)
-	--only hide if we're not moved to another menu item
-	local mousePosition = CEGUI.MouseCursor:getSingleton():getPosition()
-	local windowUnderTheCursor = self.popup:getTargetChildAtPosition(mousePosition)
-	if windowUnderTheCursor == nil then
-		self.popup:closePopupMenu()
-	end
+	self.popup:closePopupMenu()
 	return true
 end
 
@@ -37,9 +32,9 @@ function Admin:admin_MouseClick(args)
 	local x = adminContainer:getXPosition():asAbsolute(0) + (adminContainer:getWidth():asAbsolute(0) * 0.5)
 	local y = adminContainer:getYPosition():asAbsolute(0) - self.popup.getHeight():asAbsolute(0);]]
 	
-	local mousePosition = CEGUI.MouseCursor:getSingleton():getPosition()
-	local x = mousePosition.x - self.popup:getWidth():asAbsolute(0) * 0.5
-	local y = mousePosition.y - self.popup:getHeight():asAbsolute(0) + 5
+	local mousePosition = CEGUI.System:getSingleton():getDefaultGUIContext():getMouseCursor():getPosition()
+	local x = mousePosition.x - self.popup:getPixelSize().width * 0.5
+	local y = mousePosition.y - self.popup:getPixelSize().height + 5
 	
 	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,x), CEGUI.UDim(0,y))
 	
@@ -127,7 +122,7 @@ function Admin:buildWidget()
 		self.adminIcon:getButton():subscribeEvent("MouseClick", self.admin_MouseClick, self)
 	
 		self.popup = CEGUI.toPopupMenu(windowManager:createWindow("EmberLook/PopupMenu"))
-		self.popup:subscribeEvent("MouseLeave", self.popupMenu_MouseLeaves, self)
+		self.popup:subscribeEvent("MouseLeavesArea", self.popupMenu_MouseLeaves, self)
 		
 		self:addMenuItem("Assets manager", self.AssetsManager_Click, "Shows the assets manager.")
 		self:addMenuItem("Entity creator", self.EntityCreator_Click, "Shows the entity creator.")
@@ -148,7 +143,7 @@ function Admin:buildWidget()
 		self:addMenuItem("Visualize entities", self.VisualizeEntities_Click, "Visualizes entities.")
 		
 	
-		root:addChildWindow(self.popup)
+		root:addChild(self.popup)
 	end 
 end
 

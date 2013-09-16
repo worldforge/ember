@@ -8,7 +8,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createMapAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -29,7 +29,7 @@ EntityEditor = {
 
 				if prototype.readonly == nil then
 					local newElementWrapper = self.adapters.map.createNewElementWidget(self, wrapper.adapter, wrapper.container, element)
-					wrapper.container:addChildWindow(newElementWrapper.container)
+					wrapper.container:addChild(newElementWrapper.container)
 				end
 				return wrapper
 			end,
@@ -42,15 +42,15 @@ EntityEditor = {
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultWindow")
 				self.factory:loadLayoutIntoContainer(wrapper.container, "newNamedElement", "adapters/atlas/MapAdapterNewElement.layout")
-				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(self.factory:getCurrentPrefix().. "NewElementButton"))
+				wrapper.button = CEGUI.toPushButton(wrapper.container:getChildRecursive("NewElementButton"))
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
-				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementType"))
-				local helpWindow = windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementHelp")
+				wrapper.typeCombobox = CEGUI.toCombobox(wrapper.container:getChildRecursive("ElementType"))
+				local helpWindow = wrapper.container:getChildRecursive("ElementHelp")
 				wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, "", outerElement)
 
 				--Depending on whether we have suggestions or not we'll either show a combobox or an editbox.
-				local nameEditboxCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName_combobox"))
-				local nameEditboxEditbox = CEGUI.toEditbox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementName_editbox"))
+				local nameEditboxCombobox = CEGUI.toCombobox(wrapper.container:getChildRecursive("ElementName_combobox"))
+				local nameEditboxEditbox = CEGUI.toEditbox(wrapper.container:getChildRecursive("ElementName_editbox"))
 
 				local checkSuggestions = function()
 					nameEditboxCombobox:resetList()
@@ -128,7 +128,7 @@ EntityEditor = {
 							wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
 							local container = self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 							--by adding the window again we make sure that it's at the bottom of the child window list
-							wrapper.outercontainer:addChildWindow(wrapper.container)
+							wrapper.outercontainer:addChild(wrapper.container)
 
 							--due to a bug in CEGUI (at least in 0.7.9) we need to force a re-layout
 							--and notify screen area changed. Else the last window in the layout 
@@ -165,7 +165,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createListAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -187,7 +187,7 @@ EntityEditor = {
 
 				if prototype.readonly == nil then
 					local newElementWrapper = self.adapters.list.createNewElementWidget(self, wrapper.adapter, wrapper.container)
-					wrapper.container:addChildWindow(newElementWrapper.container)
+					wrapper.container:addChild(newElementWrapper.container)
 				end
 
 				return wrapper
@@ -200,11 +200,11 @@ EntityEditor = {
 				wrapper.adapter = listAdapter
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				self.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
-				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(self.factory:getCurrentPrefix().. "NewElementButton"))
+				wrapper.button = CEGUI.toPushButton(wrapper.container:getChildRecursive("NewElementButton"))
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
-				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementType"))
+				wrapper.typeCombobox = CEGUI.toCombobox(wrapper.container:getChildRecursive("ElementType"))
 				wrapper.newAdapters = self:fillNewElementCombobox(wrapper.typeCombobox, "")
 				wrapper.buttonPressed = function(args)
 					local newAdapter = wrapper.newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
@@ -220,7 +220,7 @@ EntityEditor = {
 							local newPrototype = {}
 							self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 							--by adding the window again we make sure that it's at the bottom of the child window list
-							wrapper.outercontainer:addChildWindow(wrapper.container)
+							wrapper.outercontainer:addChild(wrapper.container)
 							
 							--due to a bug in CEGUI (at least in 0.7.9) we need to force a re-layout
 							--and notify screen area changed. Else the last window in the layout 
@@ -259,7 +259,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createStaticAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -269,7 +269,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createSizeAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -282,7 +282,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createPositionAdapter(wrapper.container, self.instance.entity:getId(), element)
 				wrapper.moveButtonPressed = function()
 					guiManager:EmitEntityAction("move", self.instance.entity)
@@ -297,7 +297,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createPosition2DAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -310,7 +310,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createOrientationAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -320,7 +320,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("VerticalLayoutContainer")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createListAdapter(wrapper.container, self.instance.entity:getId(), element)
 				if wrapper.adapter == nil then
 					return nil
@@ -336,7 +336,7 @@ EntityEditor = {
 				end
 
 				local newElementWrapper = self.adapters.points.createNewElementWidget(self, wrapper.adapter, wrapper.container)
-				wrapper.container:addChildWindow(newElementWrapper.container)
+				wrapper.container:addChild(newElementWrapper.container)
 
 				return wrapper
 			end,
@@ -348,17 +348,17 @@ EntityEditor = {
 				wrapper.adapter = listAdapter
 				wrapper.outercontainer = outercontainer
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				self.factory:loadLayoutIntoContainer(wrapper.container, "newUnnamedElement", "adapters/atlas/ListAdapterNewElement.layout")
 				wrapper.container:setHeight(CEGUI.UDim(0, 25))
-				wrapper.typeCombobox = CEGUI.toCombobox(windowManager:getWindow(self.factory:getCurrentPrefix().. "ElementType"))
+				wrapper.typeCombobox = CEGUI.toCombobox(wrapper.container:getChildRecursive("ElementType"))
 
 				local item = Ember.OgreView.Gui.ColouredListItem:new("Point", 0)
 				wrapper.typeCombobox:addItem(item)
 				wrapper.typeCombobox:setHeight(CEGUI.UDim(0, 100))
 				--combobox:setProperty("ReadOnly", "true")
 
-				wrapper.button = CEGUI.toPushButton(windowManager:getWindow(self.factory:getCurrentPrefix().. "NewElementButton"))
+				wrapper.button = CEGUI.toPushButton(wrapper.container:getChildRecursive("NewElementButton"))
 				wrapper.buttonPressed = function(args)
 					local newAdapter = newAdapters[wrapper.typeCombobox:getSelectedItem():getID()]
 					if newAdapter.createNewElement then
@@ -380,7 +380,7 @@ EntityEditor = {
 							wrapper.adapter:addAttributeAdapter(adapterWrapper.adapter, adapterWrapper.outercontainer)
 							self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 							--by adding the window again we make sure that it's at the bottom of the child window list
-							wrapper.outercontainer:addChildWindow(wrapper.container)
+							wrapper.outercontainer:addChild(wrapper.container)
 						end
 					end
 				end
@@ -395,7 +395,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createStringAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -408,7 +408,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end
@@ -418,7 +418,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -432,7 +432,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -446,7 +446,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createNumberAdapter(wrapper.container, self.instance.entity:getId(), element)
 				return wrapper
 			end,
@@ -459,7 +459,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createAreaAdapter(wrapper.container, self.instance.entity:getId(), element, self.instance.entity)
 
 				wrapper.adapter:addAreaSuggestion(0, "none")
@@ -487,7 +487,7 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createTerrainModAdapter(wrapper.container, self.instance.entity:getId(), element, self.instance.entity)
 				return wrapper
 			end,
@@ -500,11 +500,11 @@ EntityEditor = {
 			createAdapter = function(self, element, prototype)
 				local wrapper = {}
 				wrapper.container = guiManager:createWindow("DefaultWindow")
-				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.container:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 				wrapper.adapter = self.factory:createStaticAdapter(wrapper.container, self.instance.entity:getId(), element)
 				wrapper.button = guiManager:createWindow("EmberLook/Button")
 				wrapper.button:setText("Edit terrain")
-				wrapper.button:setSize(CEGUI.UVector2(CEGUI.UDim(0,100), CEGUI.UDim(0,25)))
+				wrapper.button:setSize(CEGUI.USize(CEGUI.UDim(0,100), CEGUI.UDim(0,25)))
 				wrapper.container:addChildWindow(wrapper.button)
 				wrapper.button:subscribeEvent("Clicked", function(args)
 					console:runCommand("/show_terrainEditor")
@@ -1070,11 +1070,11 @@ function EntityEditor:editEntity(entity)
 
 	self.instance.entityChangeConnection = createConnector(entity.Changed):connect(self.Entity_Changed, self)
 	self.instance.outercontainer = guiManager:createWindow("VerticalLayoutContainer")
-	self.instance.outercontainer:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+	self.instance.outercontainer:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 	local adapter = self.factory:createMapAdapter(self.instance.outercontainer, self.instance.entity:getId(), self.instance.entity)
 	self.instance.rootMapAdapter = adapter
 	self.instance.helper = Ember.OgreView.Gui.EntityEditor:new(self.world, entity, self.instance.rootMapAdapter)
-	self.attributesContainer:addChildWindow(self.instance.outercontainer)
+	self.attributesContainer:addChild(self.instance.outercontainer)
 
 	local attributeNames = self.instance.rootMapAdapter:getAttributeNames()
 	for i = 0, attributeNames:size() - 1 do
@@ -1093,7 +1093,7 @@ function EntityEditor:editEntity(entity)
 	--Set the height of the new property adapter to be enough to contain the combobox dropdown.
 	--The reason for this is that else the horizontal scroll bar of the scrollable pane will overlap the dropdown (this might be a bug in CEGUI though).
 	self.instance.model.newAdapter.container:setHeight(CEGUI.UDim(0, 100))
-	self.instance.outercontainer:addChildWindow(self.instance.model.newAdapter.container)
+	self.instance.outercontainer:addChild(self.instance.model.newAdapter.container)
 
 
 	self.infoWindow:setText('Id: ' .. entity:getId() .. ' Name: ' .. entity:getName())
@@ -1125,7 +1125,7 @@ function EntityEditor:editEntity(entity)
 								modelItem.object = thoughtMap:get("object"):asString()
 								local item = CEGUI.toItemEntry(windowManager:createWindow("EmberLook/ItemEntry"))
 								--6000px should be enough to make sure the text isn't cropped
-								item:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+								item:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
 								item:setText(escapeForCEGUI(modelItem.predicate .. " : " .. modelItem.subject .. " : ".. modelItem.object))
 
 								item:subscribeEvent("SelectionChanged", function(args)
@@ -1191,7 +1191,7 @@ function EntityEditor:editEntity(entity)
 						
 						goalItem.modelItem = modelItem
 						--6000px should be enough to make sure the text isn't cropped
-						goalItem:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
+						goalItem:setMaxSize(CEGUI.USize(CEGUI.UDim(1,6000), CEGUI.UDim(1,0)))
 						
 						goalItem:setText(escapeForCEGUI(verb .. " : " .. definition))
 						self.goallistbox:addItem(goalItem)
@@ -1281,14 +1281,14 @@ end
 
 function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentContainer, prototype)
 	local outercontainer = guiManager:createWindow("DefaultWindow")
-	outercontainer:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+	outercontainer:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 
 	local deleteButton = nil
 	local deleteButtonWidth = 0
 	if prototype.nodelete == nil then
 		deleteButton = self:createDeleteButton("list")
-		deleteButton:setProperty("UnifiedPosition", "{{0,0},{0,2}}")
-		deleteButton:setProperty("Tooltip", "Delete list item");
+		deleteButton:setProperty("Position", "{{0,0},{0,2}}")
+		deleteButton:setProperty("TooltipText", "Delete list item");
 		deleteButtonWidth = 16
 
 		function removeAdapter(args)
@@ -1314,11 +1314,11 @@ function EntityEditor:addUnNamedAdapterContainer(adapter, container, parentConta
 	local SizedConnection = container:subscribeEvent("Sized", syncWindowHeights)
 
 	if deleteButton then
-		outercontainer:addChildWindow(deleteButton)
+		outercontainer:addChild(deleteButton)
 	end
-	outercontainer:addChildWindow(container)
+	outercontainer:addChild(container)
 
-	parentContainer:addChildWindow(outercontainer)
+	parentContainer:addChild(outercontainer)
 	return outercontainer
 end
 
@@ -1326,7 +1326,7 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 	local textWidth = 75
 	local outercontainer = guiManager:createWindow("DefaultWindow")
 	
-	outercontainer:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+	outercontainer:setMaxSize(CEGUI.USize(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
 
@@ -1341,13 +1341,13 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 	label:setProperty("FrameEnabled", "false");
 	label:setProperty("BackgroundEnabled", "false");
 	label:setProperty("VertFormatting", "TopAligned");
-	label:setProperty("Tooltip", tooltip);
+	label:setProperty("TooltipText", tooltip);
 
 	local width = container:getWidth()
 	width = width + CEGUI.UDim(0, textWidth)
 	outercontainer:setWidth(width)
 	container:setXPosition(CEGUI.UDim(0, textWidth))
-	container:setProperty("Tooltip", tooltip);
+	container:setProperty("TooltipText", tooltip);
 
 	outercontainer:setHeight(container:getHeight())
 
@@ -1360,8 +1360,8 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 	if prototype.nodelete == nil then
 
 		local deleteButton = self:createDeleteButton(attributeName)
-		deleteButton:setProperty("UnifiedPosition", "{{1,-16},{0,2}}")
-		deleteButton:setProperty("Tooltip", "Delete '" .. attributeName .. "'");
+		deleteButton:setProperty("Position", "{{1,-16},{0,2}}")
+		deleteButton:setProperty("TooltipText", "Delete '" .. attributeName .. "'");
 
 		-- 	function showDeleteButton(args)
 		-- 		console:pushMessage("wee")
@@ -1371,8 +1371,8 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 		-- 		console:pushMessage("waa")
 		-- 		deleteButton:setVisible(false)
 		-- 	end
-		-- 	outercontainer:subscribeEvent("MouseEnter", showDeleteButton)
-		-- 	outercontainer:subscribeEvent("MouseLeave", hideDeleteButton)
+		-- 	outercontainer:subscribeEvent("MouseEntersSurface", showDeleteButton)
+		-- 	outercontainer:subscribeEvent("MouseLeavesSurface", hideDeleteButton)
 
 		function removeAdapter(args)
 			adapter:remove()
@@ -1380,22 +1380,22 @@ function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container
 		end
 		deleteButton:subscribeEvent("Clicked", removeAdapter)
 
-		label:addChildWindow(deleteButton)
+		label:addChild(deleteButton)
 	end
 
-	outercontainer:addChildWindow(label)
-	outercontainer:addChildWindow(container)
+	outercontainer:addChild(label)
+	outercontainer:addChild(container)
 
-	parentContainer:addChildWindow(outercontainer)
+	parentContainer:addChild(outercontainer)
 	return outercontainer
 end
 
 function EntityEditor:createDeleteButton(attributeName)
 	local deleteButton = guiManager:createWindow("EmberLook/SystemButton")
-	deleteButton:setProperty("NormalImage", "set:EmberLook image:CloseButtonNormal")
-	deleteButton:setProperty("HoverImage", "set:EmberLook image:CloseButtonHover")
-	deleteButton:setProperty("PushedImage", "set:EmberLook image:CloseButtonPushed")
-	deleteButton:setProperty("UnifiedSize", "{{0,16},{0,16}}")
+	deleteButton:setProperty("NormalImage", "EmberLook/CloseButtonNormal")
+	deleteButton:setProperty("HoverImage", "EmberLook/CloseButtonHover")
+	deleteButton:setProperty("PushedImage", "EmberLook/CloseButtonPushed")
+	deleteButton:setProperty("Size", "{{0,16},{0,16}}")
 	deleteButton:setAlpha(0.5)
 	return deleteButton
 end
@@ -1565,14 +1565,14 @@ function EntityEditor:RefreshButton_Clicked(args)
 	return true
 end
 
-function EntityEditor:ShowOgreBbox_CheckStateChanged(args)
+function EntityEditor:ShowOgreBbox_SelectStateChanged(args)
 	if self.instance.entity then
 		self.instance.entity:setVisualize("OgreBBox", self.modelTab.showOgreBbox:isSelected())
 	end
 	return true
 end
 
-function EntityEditor:ShowErisBbox_CheckStateChanged(args)
+function EntityEditor:ShowErisBbox_SelectStateChanged(args)
 	if self.instance.entity then
 		if self.modelTab.showErisBbox:isSelected() then
 			self.world:getAuthoringManager():displaySimpleEntityVisualization(self.instance.entity)
@@ -1643,7 +1643,7 @@ function EntityEditor:buildWidget()
 		self.infoWindow = self.widget:getWindow("EntityInfo")
 
 		self.childlistbox = CEGUI.toListbox(self.widget:getWindow("ChildList"))
-		--EntityBrowser.childlistbox:subscribeEvent("ItemSelectionChanged", "EntityBrowser.EntityList_SelectionChanged")
+		--EntityBrowser.childlistbox:subscribeEvent("SelectionChanged", "EntityBrowser.EntityList_SelectionChanged")
 
 		self.childlistFilter = CEGUI.toEditbox(self.widget:getWindow("FilterChildren"))
 		self.childListholder = Ember.OgreView.Gui.ListHolder:new(self.childlistbox, self.childlistFilter)
@@ -1662,8 +1662,8 @@ function EntityEditor:buildWidget()
 
 
 		self.widget:getWindow("ChildList"):subscribeEvent("DoubleClick", self.ChildList_MouseDoubleClick, self)
-		self.widget:getWindow("ShowOgreBbox"):subscribeEvent("CheckStateChanged", self.ShowOgreBbox_CheckStateChanged, self)
-		self.widget:getWindow("ShowErisBbox"):subscribeEvent("CheckStateChanged", self.ShowErisBbox_CheckStateChanged, self)
+		self.widget:getWindow("ShowOgreBbox"):subscribeEvent("SelectStateChanged", self.ShowOgreBbox_SelectStateChanged, self)
+		self.widget:getWindow("ShowErisBbox"):subscribeEvent("SelectStateChanged", self.ShowErisBbox_SelectStateChanged, self)
 		self.widget:getWindow("RefreshAtlas"):subscribeEvent("Clicked", self.RefreshAtlas_Clicked, self)
 		self.widget:getWindow("RefreshKnowledge"):subscribeEvent("Clicked", self.RefreshKnowledge_Clicked, self)
 		self.widget:getWindow("NewKnowledgeAdd"):subscribeEvent("Clicked", self.NewKnowledge_Clicked, self)
@@ -1867,7 +1867,7 @@ function EntityEditor:buildWidget()
 	connect(self.connectors, guiManager.EventEntityAction, self.handleAction, self)
 
 
-	self.widget:loadMainSheet("EntityEditor.layout", "EntityEditor/")
+	self.widget:loadMainSheet("EntityEditor.layout", "EntityEditor")
 	self.widget:registerConsoleVisibilityToggleCommand("entityEditor")
 	self.widget:hide()
 

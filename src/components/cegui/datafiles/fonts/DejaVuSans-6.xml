@@ -1,2 +1,1 @@
-<?xml version="1.0" ?>
-<Font Name="DejaVuSans-6" Filename="themes/ember/gui/fonts/DejaVuSans.ttf" Type="FreeType" AntiAlias="true" Size="6" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false" />
+<Font antiAlias="true" autoScaled="false" filename="themes/ember/gui/fonts/DejaVuSans.ttf" name="DejaVuSans-6" nativeHorzRes="1024" nativeVertRes="768" size="6" type="FreeType" version="3" />

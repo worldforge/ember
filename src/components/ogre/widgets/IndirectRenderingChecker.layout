@@ -1,24 +1,23 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.00,150.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.500000,-150.0},{0.5000,-75.0}}'/>
-		<Property Name='Text' Value='Indirect rendering detected'/>
-		<Window Type='EmberLook/StaticText' Name='Text'>
-			<Property Name='UnifiedSize' Value='{{1.0,-8.0},{1.0,-15.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.00,4.00},{0.0,0.0}}'/>
-			<Property Name='BackgroundEnabled' Value='False'/>
-			<Property Name='FrameEnabled' Value='False'/>
-			<Property Name='InheritsAlpha' Value='false'/>
-			<Property Name='Text' Value="You are using indirect rendering. This means that you will get very lousy performance. The most common reason for this is that you're using non-vendor provided graphics drivers. While Ember is playable, it will run very slow. It is recommended that you upgrade your drivers to those provided by your graphics card vendor."/>
-			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-			<Property Name='VertFormatting' Value='TopAligned'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.00,300.0},{0.00,150.0}}" />
+		<Property name="Position" value="{{0.500000,-150.0},{0.5000,-75.0}}" />
+		<Property name="Text" value="Indirect rendering detected" />
+		<Window name="Text" type="EmberLook/StaticText">
+			<Property name="Size" value="{{1.0,-8.0},{1.0,-15.0}}" />
+			<Property name="Position" value="{{0.00,4.00},{0.0,0.0}}" />
+			<Property name="BackgroundEnabled" value="False" />
+			<Property name="FrameEnabled" value="False" />
+			<Property name="InheritsAlpha" value="false" />
+			<Property name="Text" value="You are using indirect rendering. This means that you will get very lousy performance. The most common reason for this is that you're using non-vendor provided graphics drivers. While Ember is playable, it will run very slow. It is recommended that you upgrade your drivers to those provided by your graphics card vendor." />
+			<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+			<Property name="VertFormatting" value="TopAligned" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='OkButton'>
-			<Property Name='UnifiedSize' Value='{{0.00,50.0},{0.00,25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.500000,-25.0},{1.00,-30.0}}'/>
-			<Property Name='Text' Value='Ok'/>
-			<Property Name='InheritsAlpha' Value='True'/>
+		<Window name="OkButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0.00,50.0},{0.00,25.0}}" />
+			<Property name="Position" value="{{0.500000,-25.0},{1.00,-30.0}}" />
+			<Property name="Text" value="Ok" />
+			<Property name="InheritsAlpha" value="True" />
 		</Window>
 	</Window>
 </GUILayout>

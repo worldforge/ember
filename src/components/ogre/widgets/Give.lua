@@ -9,7 +9,7 @@ function Give:buildWidget(avatar)
 
 	self.widget = guiManager:createWidget()
 	
-	self.widget:loadMainSheet("Give.layout", "Give/")
+	self.widget:loadMainSheet("Give.layout", "Give")
 	
 	self.widget:hide()
 	

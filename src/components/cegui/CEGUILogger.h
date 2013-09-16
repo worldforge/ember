@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUICEGUILOGGER_H
 #define EMBEROGRE_GUICEGUILOGGER_H
 
-#include <CEGUILogger.h>
+#include <CEGUI/Logger.h>
 #include "services/config/ConfigListenerContainer.h"
 
 namespace Ember {

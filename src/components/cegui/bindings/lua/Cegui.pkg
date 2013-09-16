@@ -15,6 +15,13 @@ public:
 	 * @param recursive
 	 */
 	static void notifyScreenAreaChanged(CEGUI::Window* window, bool recursive);
+	
+	static unsigned int Window_getChildCount(CEGUI::Window* window);
+	
+	static CEGUI::ImageManager& ImageManager_getSingleton();
+	static CEGUI::Window* Window_getChildRecursive(CEGUI::Window* window, const std::string& name);
+	static void Window_removeChild(CEGUI::Window* window, CEGUI::Window* child);
+	
 };
 }
 }

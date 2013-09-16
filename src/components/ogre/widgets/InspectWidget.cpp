@@ -38,11 +38,11 @@
 #include "framework/ConsoleBackend.h"
 #include "framework/AtlasPresentationBridge.h"
 
-#include <CEGUIWindowManager.h>
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxTextItem.h>
-#include <elements/CEGUIGUISheet.h>
-#include <elements/CEGUIPushButton.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/widgets/Listbox.h>
+#include <CEGUI/widgets/ListboxTextItem.h>
+#include <CEGUI/widgets/PushButton.h>
 
 #include <Eris/TypeInfo.h>
 
@@ -83,7 +83,7 @@ void InspectWidget::buildWidget()
 	mChildList = static_cast<CEGUI::Listbox*>(getWindow("ChildList"));
 	BIND_CEGUI_EVENT(mChildList, CEGUI::Listbox::EventMouseDoubleClick, InspectWidget::ChildList_MouseDoubleClick);
 
-	mInfo = static_cast<CEGUI::GUISheet*>(getWindow("EntityInfo"));
+	mInfo = getWindow("EntityInfo");
 
 
 	mGuiManager->EventEntityAction.connect(sigc::mem_fun(*this, &InspectWidget::handleAction));

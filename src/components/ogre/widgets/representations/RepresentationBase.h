@@ -23,7 +23,7 @@
 #define EMBEROGRE_GUI_REPRESENTATIONS_REPRESENTATIONBASE_H
 
 #include "framework/LoggingInstance.h"
-#include <CEGUIEvent.h>
+#include <CEGUI/Event.h>
 #include <Atlas/Message/Element.h>
 #include <sigc++/signal.h>
 

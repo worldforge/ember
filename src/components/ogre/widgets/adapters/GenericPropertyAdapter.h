@@ -25,7 +25,7 @@
 
 #include "AdapterBase.h"
 #include "ValueTypeHelper.h"
-#include <CEGUIWindow.h>
+#include <CEGUI/Window.h>
 
 namespace Ember {
 namespace OgreView {

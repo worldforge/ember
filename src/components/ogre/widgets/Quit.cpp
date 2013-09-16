@@ -34,7 +34,7 @@
 #include "services/EmberServices.h"
 #include "services/server/ServerService.h"
 
-#include <elements/CEGUIPushButton.h>
+#include <CEGUI/widgets/PushButton.h>
 
 namespace Ember {
 namespace OgreView {

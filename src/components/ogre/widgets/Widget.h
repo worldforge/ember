@@ -5,7 +5,7 @@
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "framework/ConsoleObject.h"
 
-#include <elements/CEGUIListboxTextItem.h> 
+#include <CEGUI/widgets/ListboxTextItem.h>
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
@@ -113,7 +113,7 @@ public:
 	/**
 	 *    Called by the GUIManager to tell the widget to create all needed GUI elements.
 	 *    Override this in your subclass.
-	 *    Remember to call getMainSheet()->addChildWindow(mMainWindow); to add the main window to the gui system, else it won't be shown.
+	 *    Remember to call getMainSheet()->addChild(mMainWindow); to add the main window to the gui system, else it won't be shown.
  	 */
 	virtual void buildWidget();
 	
@@ -199,10 +199,10 @@ public:
 	 *    Loads a widget definition from a file and sets the main sheet
 	 * @param filename The name of the file to load
 	 * @param prefix The prefix to use
-	 * @return 
+	 * @return
 	 */
 	CEGUI::Window* loadMainSheet(const std::string& filename, const std::string& prefix);
-	
+
 	/**
 	 *    Gets the prefix used in the widget definition
 	 * @return 
@@ -329,10 +329,10 @@ protected:
 	 */
 	bool mWindowHasBeenShown;
 	
-	
+
 private:
 	std::string mPrefix;
-	
+
 };
 
 inline const std::string& Widget::getPrefix() const { return mPrefix;}

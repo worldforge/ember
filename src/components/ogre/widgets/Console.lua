@@ -12,7 +12,7 @@ function Console:buildWidget()
 	--visible "alpha pop" would happen and then the transition would continue
 	self.widget:setIsActiveWindowOpaque(false)
 	
-	self.widget:loadMainSheet("Console.layout", "Console/")
+	self.widget:loadMainSheet("Console.layout", "Console")
 	
 	--these are used for coloured chat messages
 	self.chatEntityColours = {}

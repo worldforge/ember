@@ -24,8 +24,8 @@
 #define EMBEROGRE_GUI_ADAPTERS_COMBOBOXADAPTER_H
 
 #include "GenericPropertyAdapter.h"
-#include <elements/CEGUICombobox.h>
-#include <elements/CEGUIPushButton.h>
+#include <CEGUI/widgets/Combobox.h>
+#include <CEGUI/widgets/PushButton.h>
 #include "../ColouredListItem.h"
 
 namespace Ember {

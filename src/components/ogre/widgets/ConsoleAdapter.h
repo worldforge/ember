@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUICONSOLEADAPTER_H
 #define EMBEROGRE_GUICONSOLEADAPTER_H
 
-#include <CEGUIEventArgs.h>
+#include <CEGUI/EventArgs.h>
 #include <sigc++/signal.h>
 
 namespace CEGUI {

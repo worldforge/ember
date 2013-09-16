@@ -7,7 +7,7 @@ function TypeManager:buildWidget()
 	local setup = function()
 		
 		self.typeTree = tolua.cast(self.widget:getWindow("TypeList"), "CEGUI::Tree")
-		self.typeTree:subscribeEvent("ItemSelectionChanged", self.TypeList_SelectionChanged, self)
+		self.typeTree:subscribeEvent("SelectionChanged", self.TypeList_SelectionChanged, self)
 	
 		self.codecTypeCombobox = CEGUI.toCombobox(self.widget:getWindow("CodecType"))
 		
@@ -33,7 +33,7 @@ function TypeManager:buildWidget()
 	end
 
 	connect(self.connectors, self.widget.EventFirstTimeShown, setup)
-	self.widget:loadMainSheet("TypeManager.layout", "TypeManager/")
+	self.widget:loadMainSheet("TypeManager.layout", "TypeManager")
 	self.widget:registerConsoleVisibilityToggleCommand("typeManager")
 
 end

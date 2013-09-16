@@ -32,8 +32,8 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 #include <OgrePixelCountLodStrategy.h>
-#include <CEGUIImage.h>
-#include <elements/CEGUIGUISheet.h>
+#include <CEGUI/Image.h>
+#include <CEGUI/Window.h>
 
 namespace Ember
 {
@@ -43,7 +43,7 @@ namespace Gui
 {
 
 OgreEntityRenderer::OgreEntityRenderer(CEGUI::Window* image) :
-	MovableObjectRenderer(image), mEntity(0)
+	MovableObjectRenderer(image, image->getName().c_str()), mEntity(0)
 {
 }
 

@@ -41,7 +41,7 @@ function ActionBar:addSlot()
 	slot:getWindow():setProperty("FrameEnabled", "true")
 	slot:getWindow():setProperty("BackgroundEnabled", "true")
 	slot:getWindow():setTooltipText("Drag and drop an entity from your inventory to attach it to this action bar slot.")
-	self.iconContainer:addChildWindow(slot:getWindow())
+	self.iconContainer:addChild(slot:getWindow())
 	
 	local slotWrapper = {slot = slot}
 	
@@ -135,8 +135,8 @@ function ActionBar:createActionBarIcon(actionBarIconWrapper, icon)
 	end
 	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseClick", actionBarIconWrapper.windowClick)
 		
-	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseEnter", actionBarIconWrapper.mouseEnters)
-	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeave", actionBarIconWrapper.mouseLeaves)
+	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseEntersSurface", actionBarIconWrapper.mouseEnters)
+	actionBarIconWrapper.actionBarIcon:getDragContainer():subscribeEvent("MouseLeavesSurface", actionBarIconWrapper.mouseLeaves)
 end
 
 --Saves action bar properties such as position and icons.
@@ -211,7 +211,7 @@ end
 function ActionBar:buildCEGUIWidget(widgetName)
 	self.widget = guiManager:createWidget()
 	if widgetName == nil then
-		widgetName = "ActionBar/"
+		widgetName = "ActionBar"
 	end
 	self.name = widgetName
 	self.widget:loadMainSheet("ActionBar.layout", widgetName)
@@ -223,14 +223,14 @@ function ActionBar:buildCEGUIWidget(widgetName)
 	self.dragBar:setWantsMultiClickEvents(false)
 	
 	if self.layout == "Horiz" then
-		self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,slotSize),CEGUI.UDim(0.0,self.iconSize)))
+		self.widget:getMainWindow():setSize(CEGUI.USize(CEGUI.UDim(0.0,slotSize),CEGUI.UDim(0.0,self.iconSize)))
 		--Place it at the bottom of the screen 
 		self.widget:getMainWindow():setYPosition(CEGUI.UDim(1.0, -self.iconSize))
 		self.widget:getMainWindow():setXPosition(CEGUI.UDim(0.5, -(slotSize / 2.0)))
 	else
-		self.widget:getMainWindow():setSize(CEGUI.UVector2(CEGUI.UDim(0.0,self.iconSize),CEGUI.UDim(0.0,slotSize+20)))
+		self.widget:getMainWindow():setSize(CEGUI.USize(CEGUI.UDim(0.0,self.iconSize),CEGUI.UDim(0.0,slotSize+20)))
 		--Drag bar needs to be resized to the top for vertical action bars.
-		self.dragBar:setSize(CEGUI.UVector2(CEGUI.UDim(1.0,0.0),CEGUI.UDim(0.0,12.0)))
+		self.dragBar:setSize(CEGUI.USize(CEGUI.UDim(1.0,0.0),CEGUI.UDim(0.0,12.0)))
 		--Need to shift the icon container down so that our drag bar doesn't overlap.
 		self.iconContainer:setPosition(CEGUI.UVector2(CEGUI.UDim(0.0,0.0),CEGUI.UDim(0.0,12.0)))
 	end
@@ -319,7 +319,7 @@ function ActionBar:keyMapping(key, slotNum)
 		numWindow:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 1), CEGUI.UDim(0, 1)))
 		numWindow:setHeight(CEGUI.UDim(0, 20))
 		numWindow:setMousePassThroughEnabled(true)
-		slotWrapper.slot:getWindow():addChildWindow(numWindow)
+		slotWrapper.slot:getWindow():addChild(numWindow)
 	end
 	
 	connect(self.connectors, input.key.EventGotHotkeyInput, self.gotInput, self)

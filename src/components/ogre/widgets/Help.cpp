@@ -33,7 +33,7 @@
 
 #include "../EmberOgre.h"
 
-#include <CEGUIWindow.h>
+#include <CEGUI/Window.h>
 
 using namespace CEGUI;
 namespace Ember {

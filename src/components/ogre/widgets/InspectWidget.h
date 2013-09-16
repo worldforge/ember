@@ -73,7 +73,7 @@ protected:
 	void startInspecting(EmberEntity* entity);
 
 	CEGUI::Listbox* mChildList;
-	CEGUI::GUISheet* mInfo;
+	CEGUI::Window* mInfo;
 
 	/**
 	 * Updated the entity information text

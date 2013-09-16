@@ -52,14 +52,13 @@
 
 #include <wfmath/atlasconv.h>
 
-#include <CEGUIWindow.h>
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxItem.h>
-#include <elements/CEGUIListboxTextItem.h>
-#include <elements/CEGUIEditbox.h>
-#include <elements/CEGUIPushButton.h>
-#include <elements/CEGUIGUISheet.h>
-#include <elements/CEGUITree.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/widgets/Listbox.h>
+#include <CEGUI/widgets/ListboxItem.h>
+#include <CEGUI/widgets/ListboxTextItem.h>
+#include <CEGUI/widgets/Editbox.h>
+#include <CEGUI/widgets/PushButton.h>
+#include <CEGUI/widgets/Tree.h>
 
 namespace Ember
 {
@@ -87,13 +86,13 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	typeTree.setItemTooltipsEnabled(true);
 	typeTree.setSortingEnabled(true);
 
-	typeTree.subscribeEvent(CEGUI::Tree::EventSelectionChanged, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::typeTree_ItemSelectionChanged, this));
+	typeTree.subscribeEvent(CEGUI::Tree::EventSelectionChanged, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::typeTree_SelectionChanged, this));
 	pushButton.subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
 
 	mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*mConnection.getTypeService(), typeTree);
 	mTypeTreeAdapter->initialize("game_entity");
 
-	mModelPreviewRenderer = new ModelRenderer(&modelPreview);
+	mModelPreviewRenderer = new ModelRenderer(&modelPreview, "modelPreview");
 	mModelPreviewManipulator = new CameraEntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
 
 }
@@ -114,7 +113,7 @@ void EntityCreatorTypeHelper::updatePreview()
 	}
 }
 
-bool EntityCreatorTypeHelper::typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args)
+bool EntityCreatorTypeHelper::typeTree_SelectionChanged(const CEGUI::EventArgs& args)
 {
 	updatePreview();
 	return true;

@@ -31,7 +31,7 @@ class IconBase{
      * @param size The size of the icon. Defaults to 48x48px.
      * @return 
      */
-    IconBase(const std::string& name, const CEGUI::Image* background, const CEGUI::Image* foreground, const CEGUI::Image* borderInactive, const CEGUI::Image* borderActive, CEGUI::UVector2 size);
+    IconBase(const std::string& name, const CEGUI::Image* background, const CEGUI::Image* foreground, const CEGUI::Image* borderInactive, const CEGUI::Image* borderActive, CEGUI::USize size);
 
 
     ~IconBase();

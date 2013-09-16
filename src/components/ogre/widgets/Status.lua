@@ -104,7 +104,7 @@ function Status:createStatusInstance(name)
 	local statusInstance = {connectors={}}
 	setmetatable(statusInstance, {__index = StatusInstance})
 	statusInstance.widget = guiManager:createWidget()
-	statusInstance.widget:loadMainSheet("Status.layout", "Status_" .. name .. "/")
+	statusInstance.widget:loadMainSheet("Status.layout", "Status_" .. name)
 	statusInstance.widget:setIsActiveWindowOpaque(false)
 	
 	statusInstance.healthBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("HealthBar"))
@@ -112,7 +112,7 @@ function Status:createStatusInstance(name)
 	statusInstance.strengthBar = CEGUI.toProgressBar(statusInstance.widget:getWindow("StrengthBar"))
 	
 	statusInstance.renderImage = statusInstance.widget:getWindow("RenderImage")
-	statusInstance.renderer = Ember.OgreView.Gui.ModelRenderer:new(statusInstance.renderImage)
+	statusInstance.renderer = Ember.OgreView.Gui.ModelRenderer:new(statusInstance.renderImage, name)
 	statusInstance.renderer:setActive(false)
 	
 	statusInstance.nameWindow = statusInstance.widget:getWindow("EntityName")

@@ -26,7 +26,7 @@
 
 #include "Icon.h"
 #include "IconImageStore.h"
-#include <CEGUI.h>
+#include <CEGUI/CEGUI.h>
 
 namespace Ember {
 namespace OgreView {

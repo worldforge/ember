@@ -32,13 +32,12 @@ namespace Gui {
 class TexturePair
 {
 public:
-	TexturePair(Ogre::TexturePtr mOgreTexture, const CEGUI::Image* mTextureImage, CEGUI::Imageset* mTextureImageset);
+	TexturePair(Ogre::TexturePtr mOgreTexture, const CEGUI::Image* mTextureImage);
 	TexturePair();
 	
 	Ogre::TexturePtr getOgreTexture() const;
 // 	CEGUI::Texture* getOgreCEGUITexture() const;
 	const CEGUI::Image* getTextureImage() const;
-	CEGUI::Imageset* getTextureImageset() const;
 	
 	bool hasData();
 

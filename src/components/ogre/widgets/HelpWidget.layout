@@ -1,15 +1,14 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,800.0},{0.0,600.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.0,90.0},{0.0,50.0}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Help'/>
-		<Property Name='Visible' Value='false'/>
-		<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
-			<Property Name='UnifiedSize' Value='{{1,-20.0},{1,-40.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,10.0},{0.0,30.0}}'/>
-			<Property Name='Text'>Welcome to ember. This help window can be accessed anytime either by clicking on the help icon down to the left, or by entering the command '/help' in the console (F12 will expand the console).
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.0,800.0},{0.0,600.0}}" />
+		<Property name="Position" value="{{0.0,90.0},{0.0,50.0}}" />
+		<Property name="Alpha" value="0.6" />
+		<Property name="Text" value="Help" />
+		<Property name="Visible" value="false" />
+		<Window name="TextBox" type="EmberLook/MultiLineEditbox">
+			<Property name="Size" value="{{1,-20.0},{1,-40.0}}" />
+			<Property name="Position" value="{{0.0,10.0},{0.0,30.0}}" />
+			<Property name="Text">Welcome to ember. This help window can be accessed anytime either by clicking on the help icon down to the left, or by entering the command '/help' in the console (F12 will expand the console).
 
 ---Getting started---
 The first thing you would want to do is to connect to a server. Use the server browser window for this. It should have connected to the metaserver and presented a list with available servers. You can also enter your own server address in the textbox in the lower left corner. Once connected, you must either create an account or log into an already existing. This is pretty straightforward. Once you've logged in, you must either choose an existing character, or create a new one. Also pretty self explanatory.
@@ -46,15 +45,15 @@ Here's a list of the most common keys and some useful commands:
   F6 : toggle free flying mode
  Commands:
   /quit : quits
-  /connect &lt;server> : connects to a server
-  /login &lt;name> &lt;password> : tries to log in
-  /add &lt;name> &lt;gender> &lt;type> : adds a new character, for example: /add Erik male settler
+  /connect &lt;server&gt; : connects to a server
+  /login &lt;name&gt; &lt;password&gt; : tries to log in
+  /add &lt;name&gt; &lt;gender&gt; &lt;type&gt; : adds a new character, for example: /add Erik male settler
   /list_commands : lists all available commands 
 For more questions or info, see www.worldforge.org
 			</Property>
-			<Property Name='InheritsAlpha' Value='false'/>
-			<Property Name='Alpha' Value='0.6'/>
-			<Property Name='ReadOnly' Value='true'/>
+			<Property name="InheritsAlpha" value="false" />
+			<Property name="Alpha" value="0.6" />
+			<Property name="ReadOnly" value="true" />
 		</Window>
 	</Window>
 </GUILayout>

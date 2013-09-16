@@ -1,31 +1,30 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.200000,0.0},{0.300000,0.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.400000,0.0},{0.350000,0.0}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Give'/>
-		<Window Type='EmberLook/StaticText' Name='Text'>
-			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.150000,0.0}}'/>
-			<Property Name='InheritsAlpha' Value='false'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="DefaultWindow">
+		<Property name="Size" value="{{0.200000,0.0},{0.300000,0.0}}" />
+		<Property name="Position" value="{{0.400000,0.0},{0.350000,0.0}}" />
+		<Property name="Alpha" value="0.6" />
+		<Property name="Text" value="Give" />
+		<Window name="Text" type="EmberLook/StaticText">
+			<Property name="Size" value="{{1.0,0.0},{0.150000,0.0}}" />
+			<Property name="InheritsAlpha" value="false" />
 		</Window>
-		<Window Type='EmberLook/Listbox' Name='ListBox'>
-			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.650000,0.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.150000,0.0}}'/>
-			<Property Name='InheritsAlpha' Value='false'/>
-			<Property Name='MultiSelect' Value='true'/>
+		<Window name="ListBox" type="EmberLook/Listbox">
+			<Property name="Size" value="{{1.0,0.0},{0.650000,0.0}}" />
+			<Property name="Position" value="{{0.0,0.0},{0.150000,0.0}}" />
+			<Property name="InheritsAlpha" value="false" />
+			<Property name="MultiSelect" value="true" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='Give'>
-			<Property Name='UnifiedSize' Value='{{0.500000,0.0},{0.200000,0.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.500000,0.0},{0.800000,0.0}}'/>
-			<Property Name='Text' Value='Give'/>
-			<Property Name='InheritsAlpha' Value='True'/>
+		<Window name="Give" type="EmberLook/Button">
+			<Property name="Size" value="{{0.500000,0.0},{0.200000,0.0}}" />
+			<Property name="Position" value="{{0.500000,0.0},{0.800000,0.0}}" />
+			<Property name="Text" value="Give" />
+			<Property name="InheritsAlpha" value="True" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='Cancel'>
-			<Property Name='UnifiedSize' Value='{{0.500000,0.0},{0.200000,0.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.800000,0.0}}'/>
-			<Property Name='Text' Value='Close'/>
-			<Property Name='InheritsAlpha' Value='True'/>
+		<Window name="Cancel" type="EmberLook/Button">
+			<Property name="Size" value="{{0.500000,0.0},{0.200000,0.0}}" />
+			<Property name="Position" value="{{0.0,0.0},{0.800000,0.0}}" />
+			<Property name="Text" value="Close" />
+			<Property name="InheritsAlpha" value="True" />
 		</Window>
 	</Window>
 </GUILayout>

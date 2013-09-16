@@ -25,7 +25,7 @@
 
 #include "components/ogre/EmberOgrePrerequisites.h"
 #include "components/ogre/SimpleRenderContext.h"
-#include <CEGUIEvent.h>
+#include <CEGUI/Event.h>
 #include <OgreFrameListener.h>
 namespace CEGUI
 {
@@ -50,7 +50,7 @@ class CEGUIWindowUpdater;
 class MovableObjectRenderer: public Ogre::FrameListener
 {
 public:
-	MovableObjectRenderer(CEGUI::Window* image);
+	MovableObjectRenderer(CEGUI::Window* image, const std::string& name);
 
 	virtual ~MovableObjectRenderer();
 

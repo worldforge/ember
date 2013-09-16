@@ -1,8 +1,7 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='ListAdapter'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-		<Property Name='RiseOnClick' Value='false'/>
+<GUILayout version="4">
+	<Window name="ListAdapter" type="DefaultWindow">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{1,0},{1,0}}" />
+		<Property name="RiseOnClickEnabled" value="false" />
 	</Window>
 </GUILayout>

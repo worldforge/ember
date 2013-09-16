@@ -39,9 +39,8 @@
 
 #include <Ogre.h>
 
-#include <CEGUIImageset.h>
-#include <CEGUIImage.h>
-#include <CEGUIRect.h>
+#include <CEGUI/Image.h>
+#include <CEGUI/Rect.h>
 
 using namespace Ember::OgreView::Terrain;
 
@@ -182,12 +181,13 @@ void CEGUICompassImpl::reposition(float x, float y)
 {
 	// 	S_LOG_VERBOSE("pos x: " << x << " y: " << y);
 	mMap->getView().reposition(Ogre::Vector2(x, y));
-	const Ogre::TRect<float>& viewBounds(mMap->getView().getRelativeViewBounds());
-	CEGUI::Rect& rect = const_cast<CEGUI::Rect&>(mViewImage->getSourceTextureArea());
-	int textureWidth = mTexturePair.getOgreTexture()->getWidth();
-	rect.setSize(CEGUI::Size(textureWidth * 0.5, textureWidth * 0.5));
-	// 	const Ogre::Vector2& viewPos(mMap->getView().getRelativeViewPosition());
-	rect.setPosition(CEGUI::Point(textureWidth * viewBounds.left, textureWidth * viewBounds.top));
+//	const Ogre::TRect<float>& viewBounds(mMap->getView().getRelativeViewBounds());
+//TODO: do this with BasicImage
+	//	CEGUI::Rect<>& rect = const_cast<CEGUI::Rect<>&>(mViewImage->getSourceTextureArea());
+//	int textureWidth = mTexturePair.getOgreTexture()->getWidth();
+//	rect.setSize(CEGUI::Size<>(textureWidth * 0.5, textureWidth * 0.5));
+//	// 	const Ogre::Vector2& viewPos(mMap->getView().getRelativeViewPosition());
+//	rect.setPosition(CEGUI::Point(textureWidth * viewBounds.left, textureWidth * viewBounds.top));
 }
 
 void CEGUICompassImpl::rotate(const Ogre::Degree& degree)
@@ -205,8 +205,8 @@ void CEGUICompassImpl::_setCompass(Compass* compass)
 	AssetsManager assetsManager;
 	mTexturePair = assetsManager.createTextureImage(mMap->getTexture(), "CompassMap");
 	int halfOffset = static_cast<int>(mMap->getTexture()->getWidth() * 0.25f);
-	mTexturePair.getTextureImageset()->defineImage("view", CEGUI::Rect(halfOffset, halfOffset, mMap->getTexture()->getWidth() - halfOffset, mMap->getTexture()->getWidth() - halfOffset), CEGUI::Point(0, 0));
-	mViewImage = &mTexturePair.getTextureImageset()->getImage("view");
+//	mTexturePair.getTextureImageset()->defineImage("view", CEGUI::Rect<>(halfOffset, halfOffset, mMap->getTexture()->getWidth() - halfOffset, mMap->getTexture()->getWidth() - halfOffset), CEGUI::Point(0, 0));
+//	mViewImage = &mTexturePair.getTextureImageset()->getImage("view");
 
 }
 

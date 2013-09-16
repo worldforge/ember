@@ -103,7 +103,7 @@ protected:
 	void buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);
 
 	bool createButton_Click(const CEGUI::EventArgs& args);
-	bool typeTree_ItemSelectionChanged(const CEGUI::EventArgs& args);
+	bool typeTree_SelectionChanged(const CEGUI::EventArgs& args);
 
 	void updatePreview();
 };

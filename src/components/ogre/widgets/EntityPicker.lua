@@ -19,9 +19,9 @@ function EntityPicker:buildWidget(world)
  	connect(self.connectors, entityPickListener.EventPickedEntity, self.pickedEntity, self)
  	--createConnector(mousePicker.EventPickedNothing):connect(self.pickedNothing, self)
     
-	self.widget:loadMainSheet("EntityPicker.layout", "EntityPicker/")
+	self.widget:loadMainSheet("EntityPicker.layout", "EntityPicker")
 	
-	self.selectorWidget:loadMainSheet("EntityPickerSelector.layout", "EntityPickerSelector/")
+	self.selectorWidget:loadMainSheet("EntityPickerSelector.layout", "EntityPickerSelector")
 	self.selectorWidget:getWindow("PreviousButton"):subscribeEvent("MouseEnter", self.previousButton_MouseEnters, self)
 	self.selectorWidget:getWindow("NextButton"):subscribeEvent("MouseEnter", self.nextButton_MouseEnters, self)
 
@@ -144,9 +144,9 @@ function EntityPicker:showMenu(position, entity)
 
 	self.stackableContainer:repositionWindows()
 	
-	local localPosition = CEGUI.Vector2:new_local(position.x, position.y)
+	local localPosition = CEGUI.Vector2f:new_local(position.x, position.y)
 	
-	localPosition.x = localPosition.x - self.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
+	localPosition.x = localPosition.x - self.widget:getMainWindow():getPixelSize().width * 0.5
 	localPosition.y = localPosition.y - 10.0
 	
 	--Make sure the menu is fully contained within the main window
@@ -156,8 +156,8 @@ function EntityPicker:showMenu(position, entity)
 	if localPosition.y < 0 then
 		localPosition.y = 0
 	end
-	local width = self.widget:getMainWindow():getWidth():asAbsolute(0)
-	local height = self.stackableContainer:getAbsoluteHeight() + self.entityName:getHeight():asAbsolute(0)
+	local width = self.widget:getMainWindow():getPixelSize().width
+	local height = self.stackableContainer:getAbsoluteHeight() + self.entityName:getPixelSize().height
 
 	local mainWindowSize = root:getPixelSize()
 	if localPosition.x + width > mainWindowSize.width then
@@ -209,7 +209,7 @@ end
 function EntityPicker:pickedEntity(results, args)
 
 	if args.pickType == Ember.OgreView.MPT_PRESSED then
-		self.pickedPoint = CEGUI.Vector2:new_local(args.windowX, args.windowY)
+		self.pickedPoint = CEGUI.Vector2f:new_local(args.windowX, args.windowY)
 	
 		self.pickedEntities = {}
 		self.currentPickedEntityIndex = 0
@@ -223,9 +223,9 @@ function EntityPicker:pickedEntity(results, args)
 		end	
 		
 		if results:size() > 1 then
-			local point = CEGUI.Vector2:new_local(args.windowX, args.windowY)
+			local point = CEGUI.Vector2f:new_local(args.windowX, args.windowY)
 			self.selectorWidget:show()
-			point.x = point.x - self.selectorWidget:getMainWindow():getWidth():asAbsolute(0) * 0.5
+			point.x = point.x - self.selectorWidget:getMainWindow():getPixelSize().width * 0.5
 			point.y = point.y - 40.0
 			local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,point.x), CEGUI.UDim(0,point.y))
 			self.selectorWidget:getMainWindow():setPosition(uPosition)

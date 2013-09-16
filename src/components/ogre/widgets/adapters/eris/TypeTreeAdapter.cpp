@@ -24,8 +24,8 @@
 #include <Eris/TypeService.h>
 #include <Eris/TypeInfo.h>
 
-#include <elements/CEGUITree.h>
-#include <elements/CEGUITreeItem.h>
+#include <CEGUI/widgets/Tree.h>
+#include <CEGUI/widgets/TreeItem.h>
 
 namespace Ember
 {

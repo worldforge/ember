@@ -1,37 +1,36 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-    <Window Type='DefaultWindow' Name='MapAdapterNewElement'>
-        <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-        <Property Name='UnifiedSize' Value='{{1,0},{1,0}}' />
-        <Window Type='EmberLook/Combobox' Name='ElementName_combobox'>
-            <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-            <Property Name='UnifiedSize' Value='{{0,75},{0,100}}' />
-            <Property Name='Tooltip' Value='Name of the element.' />
+<GUILayout version="4">
+    <Window name="MapAdapterNewElement" type="DefaultWindow">
+        <Property name="Position" value="{{0,0},{0,0}}" />
+        <Property name="Size" value="{{1,0},{1,0}}" />
+        <Window name="ElementName_combobox" type="EmberLook/Combobox">
+            <Property name="Position" value="{{0,0},{0,0}}" />
+            <Property name="Size" value="{{0,75},{0,100}}" />
+            <Property name="TooltipText" value="Name of the element." />
         </Window>
-        <Window Type='EmberLook/Editbox' Name='ElementName_editbox'>
-            <Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-            <Property Name='UnifiedSize' Value='{{0,75},{0,25}}' />
-            <Property Name='Tooltip' Value='Name of the element.' />
+        <Window name="ElementName_editbox" type="EmberLook/Editbox">
+            <Property name="Position" value="{{0,0},{0,0}}" />
+            <Property name="Size" value="{{0,75},{0,25}}" />
+            <Property name="TooltipText" value="Name of the element." />
         </Window>
-        <Window Type='EmberLook/Combobox' Name='ElementType'>
-            <Property Name='UnifiedPosition' Value='{{0,75},{0,0}}' />
-            <Property Name='UnifiedSize' Value='{{0,75},{0,100}}' />
-            <Property Name='Tooltip' Value='Type of the element.' />
+        <Window name="ElementType" type="EmberLook/Combobox">
+            <Property name="Position" value="{{0,75},{0,0}}" />
+            <Property name="Size" value="{{0,75},{0,100}}" />
+            <Property name="TooltipText" value="Type of the element." />
         </Window>
-        <Window Type='EmberLook/Button' Name='NewElementButton'>
-            <Property Name='UnifiedPosition' Value='{{0,150},{0,0}}' />
-            <Property Name='UnifiedSize' Value='{{0,40},{0,20}}' />
-            <Property Name='Text' Value='Add' />
-            <Property Name='Tooltip' Value='Adds a new map element.' />
+        <Window name="NewElementButton" type="EmberLook/Button">
+            <Property name="Position" value="{{0,150},{0,0}}" />
+            <Property name="Size" value="{{0,40},{0,20}}" />
+            <Property name="Text" value="Add" />
+            <Property name="TooltipText" value="Adds a new map element." />
         </Window>
-        <Window Type='EmberLook/StaticText' Name='ElementHelp'>
-            <Property Name='UnifiedPosition' Value='{{0,100},{0,25}}' />
-            <Property Name='UnifiedSize' Value='{{0,250},{0,50}}' />
-            <Property Name='HorzFormatting' Value='WordWrapLeftAligned' />
-            <Property Name='VertFormatting' Value='TopAligned' />
-            <Property Name='MousePassThroughEnabled' Value='true' />
-            <Property Name='RiseOnClick' Value='false' />
-            <Property Name='BackgroundEnabled' Value='True' />
+        <Window name="ElementHelp" type="EmberLook/StaticText">
+            <Property name="Position" value="{{0,100},{0,25}}" />
+            <Property name="Size" value="{{0,250},{0,50}}" />
+            <Property name="HorzFormatting" value="WordWrapLeftAligned" />
+            <Property name="VertFormatting" value="TopAligned" />
+            <Property name="MousePassThroughEnabled" value="true" />
+            <Property name="RiseOnClickEnabled" value="false" />
+            <Property name="BackgroundEnabled" value="True" />
         </Window>
     </Window>
 </GUILayout>

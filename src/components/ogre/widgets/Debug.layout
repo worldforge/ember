@@ -1,27 +1,26 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,300.0},{0.0,150.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.300000,0.0}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Eris log'/>
-		<Property Name='Visible' Value='false'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-2},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/Combobox' Name='LogLevelDropList'>
-				<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.0,85.0}}'/>
-				<Property Name='InheritsAlpha' Value='False'/>
-				<Property Name='ReadOnly' Value='true'/>
-				<Property Name='Text' Value='Loglevel'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.0,300.0},{0.0,150.0}}" />
+		<Property name="Position" value="{{0.0,0.0},{0.300000,0.0}}" />
+		<Property name="Alpha" value="0.6" />
+		<Property name="Text" value="Eris log" />
+		<Property name="Visible" value="false" />
+		<Window name="MainInnerWindow" type="DefaultWindow">
+			<Property name="Position" value="{{0.0,2},{0,0}}" />
+			<Property name="Size" value="{{1,-2},{1,0}}" />
+			<Property name="InheritsAlpha" value="True" />
+			<Window name="LogLevelDropList" type="EmberLook/Combobox">
+				<Property name="Size" value="{{0.0,100.0},{0.0,85.0}}" />
+				<Property name="InheritsAlpha" value="False" />
+				<Property name="ReadOnly" value="true" />
+				<Property name="Text" value="Loglevel" />
 			</Window>
-			<Window Type='EmberLook/MultiLineEditbox' Name='TextBox'>
-				<Property Name='UnifiedSize' Value='{{0.0,290.0},{0.0,85.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,30.0}}'/>
-				<Property Name='Text' Value=''/>
-				<Property Name='InheritsAlpha' Value='false'/>
-				<Property Name='ReadOnly' Value='true'/>
+			<Window name="TextBox" type="EmberLook/MultiLineEditbox">
+				<Property name="Size" value="{{0.0,290.0},{0.0,85.0}}" />
+				<Property name="Position" value="{{0.0,0.0},{0.0,30.0}}" />
+				<Property name="Text" value="" />
+				<Property name="InheritsAlpha" value="false" />
+				<Property name="ReadOnly" value="true" />
 			</Window>
 		</Window>
 	</Window>

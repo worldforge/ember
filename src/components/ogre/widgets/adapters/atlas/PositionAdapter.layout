@@ -1,27 +1,26 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='PositionAdapter'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0,200},{0,25}}'/>
-		<Window Type='EmberLook/Editbox' Name='x'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
-			<Property Name='Tooltip' Value='X coord.' />
+<GUILayout version="4">
+	<Window name="PositionAdapter" type="DefaultWindow">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{0,200},{0,25}}" />
+		<Window name="x" type="EmberLook/Editbox">
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="Size" value="{{0,45},{0,25}}" />
+			<Property name="TooltipText" value="X coord." />
 		</Window>
-		<Window Type='EmberLook/Editbox' Name='y'>
-			<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
-			<Property Name='Tooltip' Value='Y coord.' />
+		<Window name="y" type="EmberLook/Editbox">
+			<Property name="Position" value="{{0,50},{0,0}}" />
+			<Property name="Size" value="{{0,45},{0,25}}" />
+			<Property name="TooltipText" value="Y coord." />
 		</Window>
-		<Window Type='EmberLook/Editbox' Name='z'>
-			<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
-			<Property Name='Tooltip' Value='Z coord.' />
+		<Window name="z" type="EmberLook/Editbox">
+			<Property name="Position" value="{{0,100},{0,0}}" />
+			<Property name="Size" value="{{0,45},{0,25}}" />
+			<Property name="TooltipText" value="Z coord." />
 		</Window>
-		<Window Type='EmberLook/Button' Name='moveButton'>
-			<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
-			<Property Name='Text' Value='Move'/>
+		<Window name="moveButton" type="EmberLook/Button">
+			<Property name="Position" value="{{0,150},{0,0}}" />
+			<Property name="Size" value="{{0,45},{0,25}}" />
+			<Property name="Text" value="Move" />
 		</Window>
 	</Window>
 </GUILayout>

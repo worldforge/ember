@@ -96,8 +96,6 @@ public:
 	
 	CEGUI::Window* loadLayoutIntoContainer(CEGUI::Window* container, const std::string& adapterPrefix, const std::string& layoutfile);
 
-	inline const std::string& getCurrentPrefix() const;
-
 };
 
 }

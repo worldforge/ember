@@ -1,32 +1,31 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,400.0},{0.0,400.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.5,-200.0},{0.5,-200.0}}'/>
-		<Property Name='Text' Value='Settings'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.0,400.0},{0.0,400.0}}" />
+		<Property name="Position" value="{{0.5,-200.0},{0.5,-200.0}}" />
+		<Property name="Text" value="Settings" />
 		
-		<Window Type='EmberLook/TabControl' Name='MainWindow/Tabs'>
-			<Property Name='UnifiedSize' Value='{{1.0, 0.0}, {1.0, -35.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0, 0.0}, {0.0, 0.0}}'/>
+		<Window name="Tabs" type="EmberLook/TabControl">
+			<Property name="Size" value="{{1.0, 0.0}, {1.0, -35.0}}" />
+			<Property name="Position" value="{{0.0, 0.0}, {0.0, 0.0}}" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='MainWindow/OKButton'>
-			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{1.0, -240.0}, {1.0, -30.0}}'/>
+		<Window name="OKButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0.0, 70.0}, {0.0, 25.0}}" />
+			<Property name="Position" value="{{1.0, -240.0}, {1.0, -30.0}}" />
 			
-			<Property Name='Text' Value='OK'/>
+			<Property name="Text" value="OK" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='MainWindow/ApplyButton'>
-			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{1.0, -160.0}, {1.0, -30.0}}'/>
-			<Property Name='Disabled' Value='true'/>
+		<Window name="ApplyButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0.0, 70.0}, {0.0, 25.0}}" />
+			<Property name="Position" value="{{1.0, -160.0}, {1.0, -30.0}}" />
+			<Property name="Disabled" value="true" />
 			
-			<Property Name='Text' Value='Apply'/>
+			<Property name="Text" value="Apply" />
 		</Window>
-		<Window Type='EmberLook/Button' Name='MainWindow/CancelButton'>
-			<Property Name='UnifiedSize' Value='{{0.0, 70.0}, {0.0, 25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{1.0, -80.0}, {1.0, -30.0}}'/>
+		<Window name="CancelButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0.0, 70.0}, {0.0, 25.0}}" />
+			<Property name="Position" value="{{1.0, -80.0}, {1.0, -30.0}}" />
 			
-			<Property Name='Text' Value='Cancel'/>
+			<Property name="Text" value="Cancel" />
 		</Window>
 	</Window>
 </GUILayout>

@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUIENTITYICONDRAGDROPTARGET_H
 #define EMBEROGRE_GUIENTITYICONDRAGDROPTARGET_H
 
-#include <CEGUIEvent.h>
+#include <CEGUI/Event.h>
 #include <sigc++/signal.h>
 #include <vector>
 

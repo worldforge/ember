@@ -1,51 +1,50 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='AreaAdapter'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0,200},{0,120}}'/>
-		<Window Type='EmberLook/Button' Name='showButton'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
-			<Property Name='Text' Value='Show' />
-			<Property Name='Tooltip' Value='Shows a graphical representation of the terrain mod.' />
+<GUILayout version="4">
+	<Window name="AreaAdapter" type="DefaultWindow">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{0,200},{0,120}}" />
+		<Window name="showButton" type="EmberLook/Button">
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="Size" value="{{0,100},{0,25}}" />
+			<Property name="Text" value="Show" />
+			<Property name="TooltipText" value="Shows a graphical representation of the terrain mod." />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='posTypeText'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
-			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-			<Property Name='FrameEnabled' Value='false' />
-			<Property Name='BackgroundEnabled' Value='false' />
-			<Property Name='Text' Value='Pos. type' />
+		<Window name="posTypeText" type="EmberLook/StaticText">
+			<Property name="Position" value="{{0,0},{0,30}}" />
+			<Property name="Size" value="{{0,75},{0,25}}" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="Text" value="Pos. type" />
 		</Window>
-		<Window Type='EmberLook/Combobox' Name='posType'>
-			<Property Name='UnifiedPosition' Value='{{0,75},{0,30}}'/>
-			<Property Name='UnifiedSize' Value='{{0,125},{0,125}}'/>
-			<Property Name='ReadOnly' Value='true'/>
-			<Property Name='Tooltip' Value='Positioning type.' />
+		<Window name="posType" type="EmberLook/Combobox">
+			<Property name="Position" value="{{0,75},{0,30}}" />
+			<Property name="Size" value="{{0,125},{0,125}}" />
+			<Property name="ReadOnly" value="true" />
+			<Property name="TooltipText" value="Positioning type." />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='modTypeText'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,60}}'/>
-			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-			<Property Name='FrameEnabled' Value='false' />
-			<Property Name='BackgroundEnabled' Value='false' />
-			<Property Name='Text' Value='Mod type' />
+		<Window name="modTypeText" type="EmberLook/StaticText">
+			<Property name="Position" value="{{0,0},{0,60}}" />
+			<Property name="Size" value="{{0,75},{0,25}}" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="Text" value="Mod type" />
 		</Window>
-		<Window Type='EmberLook/Combobox' Name='modType'>
-			<Property Name='UnifiedPosition' Value='{{0,75},{0,60}}'/>
-			<Property Name='UnifiedSize' Value='{{0,125},{0,125}}'/>
-			<Property Name='ReadOnly' Value='true'/>
-			<Property Name='Tooltip' Value='Type of terrain modification.' />
+		<Window name="modType" type="EmberLook/Combobox">
+			<Property name="Position" value="{{0,75},{0,60}}" />
+			<Property name="Size" value="{{0,125},{0,125}}" />
+			<Property name="ReadOnly" value="true" />
+			<Property name="TooltipText" value="Type of terrain modification." />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='heightText'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,90}}'/>
-			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-			<Property Name='FrameEnabled' Value='false' />
-			<Property Name='BackgroundEnabled' Value='false' />
-			<Property Name='Text' Value='Height' />
+		<Window name="heightText" type="EmberLook/StaticText">
+			<Property name="Position" value="{{0,0},{0,90}}" />
+			<Property name="Size" value="{{0,75},{0,25}}" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="Text" value="Height" />
 		</Window>
-		<Window Type='EmberLook/Editbox' Name='height'>
-			<Property Name='UnifiedPosition' Value='{{0,75},{0,90}}'/>
-			<Property Name='UnifiedSize' Value='{{0,125},{0,25}}'/>
-			<Property Name='Tooltip' Value='A height value, the value of which depends on the type of mod and positioning.' />
+		<Window name="height" type="EmberLook/Editbox">
+			<Property name="Position" value="{{0,75},{0,90}}" />
+			<Property name="Size" value="{{0,125},{0,25}}" />
+			<Property name="TooltipText" value="A height value, the value of which depends on the type of mod and positioning." />
 		</Window>
 	</Window>
 </GUILayout>

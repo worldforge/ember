@@ -1,5 +1,4 @@
-<?xml version="1.0" ?>
-<Imageset Name="status_main" Imagefile="themes/ember/gui/status/main.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
-	<Image Name="main" XPos="0" YPos="0" Width="256" Height="128" />
-	<Image Name="background" XPos="0" YPos="129" Width="256" Height="128" />
+<Imageset autoScaled="false" imagefile="themes/ember/gui/status/main.png" name="status_main" nativeHorzRes="1024" nativeVertRes="768" version="2">
+	<Image height="128" name="main" width="256" xPos="0" yPos="0" />
+	<Image height="128" name="background" width="256" xPos="0" yPos="129" />
 </Imageset>

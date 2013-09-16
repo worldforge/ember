@@ -1,55 +1,54 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/ConsoleWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.300000,0.0},{0.0,250.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-300.0}}'/>
-		<Property Name='Alpha' Value='0.4'/>
-		<Property Name='Text' Value='Console output'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
-				<Property Name='UnifiedSize' Value='{{1.0,-10.0},{1.00,-35.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,5.0},{0.0,5.0}}'/>
-				<Property Name='InheritsAlpha' Value='true'/>
-				<Window Type='DefaultWindow' Name='GamePanel'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Game'/>
-					<Property Name='InheritsAlpha' Value='true'/>
-					<Property Name='Visible' Value='true'/>
-					<Window Type='EmberLook/StaticText' Name='GameTextBox'>
-						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzScrollbar' Value='False'/>
-						<Property Name='VertScrollbar' Value='True'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/ConsoleWindow">
+		<Property name="Size" value="{{0.300000,0.0},{0.0,250.0}}" />
+		<Property name="Position" value="{{0.0,0.0},{1.0,-300.0}}" />
+		<Property name="Alpha" value="0.4" />
+		<Property name="Text" value="Console output" />
+		<Window name="MainInnerWindow" type="DefaultWindow">
+			<Property name="Position" value="{{0.0,4},{0,0}}" />
+			<Property name="Size" value="{{1,-8},{1,0}}" />
+			<Property name="InheritsAlpha" value="True" />
+			<Window name="MainTabControl" type="EmberLook/TabControl">
+				<Property name="Size" value="{{1.0,-10.0},{1.00,-35.0}}" />
+				<Property name="Position" value="{{0.0,5.0},{0.0,5.0}}" />
+				<Property name="InheritsAlpha" value="true" />
+				<Window name="GamePanel" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="Game" />
+					<Property name="InheritsAlpha" value="true" />
+					<Property name="Visible" value="true" />
+					<Window name="GameTextBox" type="EmberLook/StaticText">
+						<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+						<Property name="Text" value="" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+						<Property name="VertFormatting" value="TopAligned" />
+						<Property name="HorzScrollbar" value="False" />
+						<Property name="VertScrollbar" value="True" />
 					</Window>
 				</Window>
-				<Window Type='DefaultWindow' Name='SystemPanel'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='System'/>
-					<Property Name='InheritsAlpha' Value='true'/>
-					<Property Name='Visible' Value='false'/>
-					<Window Type='EmberLook/StaticText' Name='SystemTextBox'>
-						<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzScrollbar' Value='False'/>
-						<Property Name='VertScrollbar' Value='True'/>
+				<Window name="SystemPanel" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="System" />
+					<Property name="InheritsAlpha" value="true" />
+					<Property name="Visible" value="false" />
+					<Window name="SystemTextBox" type="EmberLook/StaticText">
+						<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+						<Property name="Text" value="" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+						<Property name="VertFormatting" value="TopAligned" />
+						<Property name="HorzScrollbar" value="False" />
+						<Property name="VertScrollbar" value="True" />
 					</Window>
 				</Window>
 			</Window>
-			<Window Type='EmberLook/Editbox' Name='InputBox'>
-				<Property Name='UnifiedSize' Value='{{1.0,-10.0},{0.0,25.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,5.0},{1.0,-30.0}}'/>
-				<Property Name='Text' Value=''/>
-				<Property Name='InheritsTooltipText' Value='true'/>
-				<Property Name='InheritsAlpha' Value='true'/>
+			<Window name="InputBox" type="EmberLook/Editbox">
+				<Property name="Size" value="{{1.0,-10.0},{0.0,25.0}}" />
+				<Property name="Position" value="{{0.0,5.0},{1.0,-30.0}}" />
+				<Property name="Text" value="" />
+				<Property name="InheritsTooltipText" value="true" />
+				<Property name="InheritsAlpha" value="true" />
 			</Window>
 		</Window>
 	</Window>

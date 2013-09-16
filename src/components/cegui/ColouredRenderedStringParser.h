@@ -18,7 +18,7 @@
 
 #ifndef COLOUREDRENDEREDSTRINGPARSER_H_
 #define COLOUREDRENDEREDSTRINGPARSER_H_
-#include <CEGUIBasicRenderedStringParser.h>
+#include <CEGUI/BasicRenderedStringParser.h>
 
 namespace Ember
 {

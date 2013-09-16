@@ -1,31 +1,30 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/StaticFading' Name='MainWindow'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-		<Property Name='UnifiedSize' Value='{{0,150},{0,45}}' />
-		<Property Name='Alpha' Value='0.8' />
-		<Property Name='MousePassThroughEnabled' Value='true' />
-		<Property Name='RiseOnClick' Value='false' />
-		<Window Type='EmberLook/StaticText' Name='EntityName'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}' />
-			<Property Name='UnifiedSize' Value='{{1,0},{0.5,0}}' />
-			<Property Name='BackgroundEnabled' Value='False' />
-			<Property Name='FrameEnabled' Value='False' />
-			<Property Name='HorzFormatting' Value='HorzCentred' />
-			<Property Name='MousePassThroughEnabled' Value='true' />
-			<Property Name='RiseOnClick' Value='false' />
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/StaticFading">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{0,150},{0,45}}" />
+		<Property name="Alpha" value="0.8" />
+		<Property name="MousePassThroughEnabled" value="true" />
+		<Property name="RiseOnClickEnabled" value="false" />
+		<Window name="EntityName" type="EmberLook/StaticText">
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="Size" value="{{1,0},{0.5,0}}" />
+			<Property name="BackgroundEnabled" value="False" />
+			<Property name="FrameEnabled" value="False" />
+			<Property name="HorzFormatting" value="CentreAligned" />
+			<Property name="MousePassThroughEnabled" value="true" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='HelpText'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0.5,0}}' />
-			<Property Name='UnifiedSize' Value='{{1,0},{0.5,0}}' />
-			<Property Name='BackgroundEnabled' Value='False' />
-			<Property Name='FrameEnabled' Value='False' />
-			<Property Name='HorzFormatting' Value='HorzCentred' />
-			<Property Name='MousePassThroughEnabled' Value='true' />
-			<Property Name='RiseOnClick' Value='false' />
-			<Property Name='Text'>Click to touch.
+		<Window name="HelpText" type="EmberLook/StaticText">
+			<Property name="Position" value="{{0,0},{0.5,0}}" />
+			<Property name="Size" value="{{1,0},{0.5,0}}" />
+			<Property name="BackgroundEnabled" value="False" />
+			<Property name="FrameEnabled" value="False" />
+			<Property name="HorzFormatting" value="CentreAligned" />
+			<Property name="MousePassThroughEnabled" value="true" />
+			<Property name="RiseOnClickEnabled" value="false" />
+			<Property name="Text">Click to touch.
 				Press and hold to interact.</Property>
-			<Property Name='Font' Value='DejaVuSans-6' />
+			<Property name="Font" value="DejaVuSans-6" />
 		</Window>
 	</Window>
 </GUILayout>

@@ -27,8 +27,8 @@
 #include "framework/MainLoopController.h"
 #include "framework/TimeFrame.h"
 #include "components/ogre/camera/MainCamera.h"
-#include <CEGUIWindow.h>
-#include <CEGUIWindowManager.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/WindowManager.h>
 
 namespace Ember
 {
@@ -40,11 +40,12 @@ namespace Gui
 CursorWorldListener::CursorWorldListener(MainLoopController& mainLoopController, CEGUI::Window& mainWindow, Camera::MainCamera& mainCamera) :
 		mMainWindow(mainWindow), mMainCamera(mainCamera), mHoverEventSent(false), mCursorLingerStart(0), mClickThresholdMilliseconds(200), mMousePressedTimeFrame(nullptr), mConfigListenerContainer(new ConfigListenerContainer())
 {
+
 	mainLoopController.EventBeforeInputProcessing.connect(sigc::mem_fun(*this, &CursorWorldListener::afterEventProcessing));
 	Ember::Input::getSingleton().EventMouseButtonReleased.connect(sigc::mem_fun(*this, &CursorWorldListener::input_MouseButtonReleased));
 
-	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseEnters, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseEnters, this)));
-	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseLeaves, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseLeaves, this)));
+	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseEntersSurface, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseEnters, this)));
+	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseLeavesSurface, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseLeaves, this)));
 
 	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseButtonDown, this)));
 	mConnections.push_back(mMainWindow.subscribeEvent(CEGUI::Window::EventMouseButtonUp, CEGUI::Event::Subscriber(&CursorWorldListener::windowMouseButtonUp, this)));
@@ -80,7 +81,7 @@ void CursorWorldListener::afterEventProcessing(float timeslice)
 			if (!mMousePressedTimeFrame->isTimeLeft()) {
 				delete mMousePressedTimeFrame;
 				mMousePressedTimeFrame = 0;
-				sendWorldClick(MPT_PRESSED, CEGUI::MouseCursor::getSingleton().getPosition());
+				sendWorldClick(MPT_PRESSED, mMainWindow.getGUIContext().getMouseCursor().getPosition());
 			}
 		}
 	}
@@ -112,7 +113,7 @@ bool CursorWorldListener::windowMouseMoves(const CEGUI::EventArgs& args)
 
 void CursorWorldListener::sendHoverEvent()
 {
-	const CEGUI::Vector2& pixelPosition = CEGUI::MouseCursor::getSingleton().getPosition();
+	const auto& pixelPosition = mMainWindow.getGUIContext().getMouseCursor().getPosition();
 	sendWorldClick(MPT_HOVER, pixelPosition);
 	mHoverEventSent = true;
 }
@@ -123,10 +124,10 @@ void CursorWorldListener::input_MouseButtonReleased(Input::MouseButton button, I
 	mMousePressedTimeFrame = 0;
 }
 
-void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Vector2& pixelPosition)
+void CursorWorldListener::sendWorldClick(MousePickType pickType, const CEGUI::Vector2f& pixelPosition)
 {
 
-	const CEGUI::Point& position = CEGUI::MouseCursor::getSingleton().getDisplayIndependantPosition();
+	const auto& position = mMainWindow.getGUIContext().getMouseCursor().getDisplayIndependantPosition();
 	MousePickerArgs pickerArgs;
 	pickerArgs.windowX = pixelPosition.d_x;
 	pickerArgs.windowY = pixelPosition.d_y;
@@ -139,7 +140,7 @@ bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
 {
 	if (isInGUIMode()) {
 		S_LOG_VERBOSE("Main sheet is capturing input");
-		CEGUI::Window* aWindow = CEGUI::Window::getCaptureWindow();
+		CEGUI::Window* aWindow = mMainWindow.getCaptureWindow();
 		if (aWindow) {
 			aWindow->releaseInput();
 			aWindow->deactivate();
@@ -147,7 +148,7 @@ bool CursorWorldListener::windowMouseButtonDown(const CEGUI::EventArgs& args)
 
 		delete mMousePressedTimeFrame;
 		mMousePressedTimeFrame = new TimeFrame(boost::posix_time::milliseconds(mClickThresholdMilliseconds));
-		sendWorldClick(MPT_PRESS, CEGUI::MouseCursor::getSingleton().getPosition());
+		sendWorldClick(MPT_PRESS, mMainWindow.getGUIContext().getMouseCursor().getPosition());
 	}
 
 	return true;

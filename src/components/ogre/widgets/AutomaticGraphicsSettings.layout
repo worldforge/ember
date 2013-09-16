@@ -1,20 +1,19 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Name='MainFrame' Type='EmberLook/FrameWindow'>
-		<Property Name='UnifiedAreaRect' Value='{{0,392},{0,178},{0,904},{0,564}}'/>
-		<Property Name='Text' Value='Automatic Graphics Settings'/>
-		<Window Name='MainFrame/Ok' Type='EmberLook/Button'>
-			<Property Name='UnifiedAreaRect' Value='{{0,8},{0,304},{0,108},{0,337}}'/>
-			<Property Name='Text' Value='Ok'/>
+<GUILayout version="4">
+	<Window name="MainFrame" type="EmberLook/FrameWindow">
+		<Property name="Area" value="{{0,392},{0,178},{0,904},{0,564}}" />
+		<Property name="Text" value="Automatic Graphics Settings" />
+		<Window name="Ok" type="EmberLook/Button">
+			<Property name="Area" value="{{0,8},{0,304},{0,108},{0,337}}" />
+			<Property name="Text" value="Ok" />
 		</Window>
-		<Window Name='MainFrame/Apply' Type='EmberLook/Button'>
-			<Property Name='UnifiedAreaRect' Value='{{0,120},{0,304},{0,220},{0,337}}'/>
-			<Property Name='Text' Value='Apply'/>
-			<Property Name='Disabled' Value='True'/>
+		<Window name="Apply" type="EmberLook/Button">
+			<Property name="Area" value="{{0,120},{0,304},{0,220},{0,337}}" />
+			<Property name="Text" value="Apply" />
+			<Property name="Disabled" value="True" />
 		</Window>
-		<Window Name='MainFrame/Cancel' Type='EmberLook/Button'>
-			<Property Name='UnifiedAreaRect' Value='{{0,233},{0,304},{0,333},{0,337}}'/>
-			<Property Name='Text' Value='Cancel'/>
+		<Window name="Cancel" type="EmberLook/Button">
+			<Property name="Area" value="{{0,233},{0,304},{0,333},{0,337}}" />
+			<Property name="Text" value="Cancel" />
 		</Window>
 	</Window>
 </GUILayout>

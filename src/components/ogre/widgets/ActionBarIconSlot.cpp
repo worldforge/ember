@@ -29,8 +29,8 @@
 #include "ActionBarIconManager.h"
 #include "ActionBarIcon.h"
 #include "EntityIcon.h"
-#include <CEGUI.h>
-#include <CEGUIWindowManager.h>
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/WindowManager.h>
 
 using namespace CEGUI;
 namespace Ember {
@@ -57,7 +57,7 @@ bool ActionBarIconSlot::addActionBarIcon(ActionBarIcon* icon)
 			//Resize the icon window to fit entirely in the slot window.
 			icon->getDragContainer()->setSize(this->getWindow()->getSize());
 			mContainedIcon = icon;
-			mContainer->addChildWindow(icon->getDragContainer());
+			mContainer->addChild(icon->getDragContainer());
 			icon->setSlot(this);
 			//we have to notify the container that things have changed else it won't update itself when we add the entity without dragging (cegui bug?)
 			mContainer->notifyScreenAreaChanged();
@@ -73,7 +73,7 @@ bool ActionBarIconSlot::addActionBarIcon(ActionBarIcon* icon)
 ActionBarIcon* ActionBarIconSlot::removeActionBarIcon()
 {
 	if (mContainedIcon) {
-		mContainer->removeChildWindow(mContainedIcon->getDragContainer());
+		mContainer->removeChild(mContainedIcon->getDragContainer());
 		ActionBarIcon* icon = mContainedIcon;
 		mContainedIcon = 0;
 		icon->setSlot(0);

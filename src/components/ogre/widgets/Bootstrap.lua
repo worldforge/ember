@@ -1,5 +1,33 @@
 --This script is the first one loaded. It's responsible for setting up utility objects, defining some utility functions and loading all scripts that should be loaded at start up
 
+CEGUI.toCheckbox = function(w)
+    return tolua.cast(w,"CEGUI::ToggleButton")
+end
+
+CEGUI.Element.getChildCount = function(window)
+	return Ember.Cegui.Helper:Window_getChildCount(tolua.cast(window,"CEGUI::Window"))
+end
+
+CEGUI.ImageManager.getSingleton = function(self)
+	return Ember.Cegui.Helper:ImageManager_getSingleton()
+end 
+
+local oldGetChildRecursive = CEGUI.Window.getChildRecursive
+local window_getChildRecursive = function(window, id)
+	if type(id) == "string" then
+		return Ember.Cegui.Helper:Window_getChildRecursive(tolua.cast(window,"CEGUI::Window"), id)
+	else
+		return oldGetChildRecursive(window, id)
+	end
+end
+
+CEGUI.Window.getChildRecursive = window_getChildRecursive
+
+CEGUI.Window.removeChild = function(window, child)
+	Ember.Cegui.Helper:Window_removeChild(window, child)
+end 
+
+
 
 --set up some commonly used objects, these will be available to all scripts
 
@@ -8,9 +36,6 @@ guiSystem = CEGUI.System:getSingleton()
 
 --The CEGUI WindowManager. Use this if you want to do some fancy window magic. Oftenwhile you don't need to touch this however since most window actions can be handled by the Widget class, which has methods such as loadMainSheet(...) and getWindow(...)
 windowManager = CEGUI.WindowManager:getSingleton()
-
---The root GUI sheet under which all other CEGUI windows reside.
-root = guiSystem:getGUISheet()
 
 --This is the main ember object. You can usually use any of it's many get*() methods to access other parts of the system.
 emberOgre = Ember.OgreView.EmberOgre:getSingleton()
@@ -37,6 +62,9 @@ end
 --The GUIManager handles higher level gui actions. It doesn't know anything about the lua or CEGUI world, but has some useful events, for example EventFrameStarted which is emitted every frame.
 --Also, when you create a new widget you have to use the createWidget() method.
 guiManager = Ember.OgreView.GUIManager:getSingleton()
+
+--The root GUI sheet under which all other CEGUI windows reside.
+root = guiManager:getMainSheet()
 
 --All of Ember's services can be accessed from here.
 emberServices = Ember.EmberServices:getSingleton()

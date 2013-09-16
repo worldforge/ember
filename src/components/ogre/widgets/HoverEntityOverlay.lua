@@ -10,8 +10,8 @@ function HoverEntityOverlay:buildWidget(world)
 	local entityPickListener = world:getEntityPickListener()
  	connect(self.connectors, entityPickListener.EventPickedEntity, self.pickedEntity, self)
     
-	self.widget:loadMainSheet("HoverEntityOverlay.layout", "HoverEntityOverlay/")
-	self.mainView = self.widget:getWindow("MainWindow")
+	self.widget:loadMainSheet("HoverEntityOverlay.layout", "HoverEntityOverlay")
+	self.mainView = self.widget:getMainWindow()
 	self.entityName = self.widget:getWindow("EntityName")
 	self.mainView:setVisible(false)
 
@@ -24,7 +24,7 @@ end
 function HoverEntityOverlay:pickedEntity(results, args)
 
 	if args.pickType == Ember.OgreView.MPT_HOVER then
-		local localPosition = CEGUI.Vector2:new_local(args.windowX, args.windowY)
+		local localPosition = CEGUI.Vector2f:new_local(args.windowX, args.windowY)
 		local entity = results[0].entity
 		self.widget:show()
 		self.overlayShown = true
@@ -44,8 +44,8 @@ function HoverEntityOverlay:pickedEntity(results, args)
 		self.entityName:setText(name)
 		
 		
-		localPosition.x = localPosition.x - self.widget:getMainWindow():getWidth():asAbsolute(0) * 0.5
-		localPosition.y = localPosition.y - self.widget:getMainWindow():getHeight():asAbsolute(0) - 5
+		localPosition.x = localPosition.x - self.widget:getMainWindow():getPixelSize().width * 0.5
+		localPosition.y = localPosition.y - self.widget:getMainWindow():getPixelSize().height - 5
 		
 		--Make sure the menu is fully contained within the main window
 		if localPosition.x < 0 then

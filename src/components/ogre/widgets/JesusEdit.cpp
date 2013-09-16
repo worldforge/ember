@@ -28,20 +28,20 @@
 #include "ColouredListItem.h"
 
 #include "../jesus/Jesus.h"
-#include <elements/CEGUIPushButton.h>
-#include <elements/CEGUIGUISheet.h>
-#include <elements/CEGUISlider.h>
+#include <CEGUI/widgets/PushButton.h>
+#include <CEGUI/widgets/GUISheet.h>
+#include <CEGUI/widgets/Slider.h>
 #include "../GUIManager.h"
 #include "../carpenter/Carpenter.h"
 #include "../carpenter/BluePrint.h"
 
-#include <CEGUIWindowManager.h>
-#include <CEGUIImagesetManager.h>
-#include <CEGUIImageset.h>
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxItem.h>
-#include <elements/CEGUIListboxTextItem.h>
-#include <elements/CEGUIEditbox.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/ImagesetManager.h>
+#include <CEGUI/Imageset.h>
+#include <CEGUI/widgets/Listbox.h>
+#include <CEGUI/widgets/ListboxItem.h>
+#include <CEGUI/widgets/ListboxTextItem.h>
+#include <CEGUI/widgets/Editbox.h>
 
 #include "../EmberOgre.h"
 #include "../AvatarCamera.h"
@@ -125,8 +125,8 @@ void JesusEdit::onEventFirstTimeShown()
 	mMousePicker.EventPickedAttachPointNode.connect(sigc::mem_fun(*this, &JesusEdit::pickedAttachPointNode));
 	EmberOgre::getSingleton().EventCreatedJesus.connect(sigc::mem_fun(*this, &JesusEdit::createdJesus));
 
-	getMainSheet()->addChildWindow(mMainWindow);
-//	getMainSheet()->addChildWindow(mPreviewWindow);
+	getMainSheet()->addChild(mMainWindow);
+//	getMainSheet()->addChild(mPreviewWindow);
 
 	//make sure the buttons are disabled by default
 	updateBindingButton();
@@ -564,7 +564,7 @@ mSelectedAttachPointNode(0)
 {
 	mPreviewWindow = CEGUI::WindowManager::getSingleton().loadWindowLayout(mGuiManager->getLayoutDir() + "JesusEditPreview.layout", "JesusEditPreview/");
 
-	guiManager->getMainSheet()->addChildWindow(mPreviewWindow);
+	guiManager->getMainSheet()->addChild(mPreviewWindow);
 	createPreviewTexture();
 	setVisible(false);
 }
@@ -650,7 +650,7 @@ void JesusEditPreview::createPreviewTexture()
 {
 	CEGUI::GUISheet* imageWidget = static_cast<CEGUI::GUISheet*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Image"));
 	mTexture = new EntityCEGUITexture(imageWidget->getName().c_str(), 256, 256);
-	imageWidget->setProperty("image", "set:" + mTexture->getImage()->getImagesetName() + " image:" + mTexture->getImage()->getName());
+	imageWidget->setProperty("image", mTexture->getImage()->getImagesetName() + "/" + mTexture->getImage()->getName());
 
 
 	mZoomSlider = static_cast<CEGUI::Slider*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditPreview/Zoom"));
@@ -675,7 +675,7 @@ JesusEditFile::JesusEditFile(GUIManager* guiManager, JesusEdit* jesusEdit, Jesus
 
 	mNewNameEditBox = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().getWindow((CEGUI::utf8*)"JesusEditFile/NewName"));
 
-	guiManager->getMainSheet()->addChildWindow(mWindow);
+	guiManager->getMainSheet()->addChild(mWindow);
 
 	fillBluePrintList();
 

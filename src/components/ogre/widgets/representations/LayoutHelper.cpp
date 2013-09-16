@@ -26,7 +26,7 @@
 
 #include "LayoutHelper.h"
 #include "components/ogre/GUIManager.h"
-#include <CEGUIWindowManager.h>
+#include <CEGUI/WindowManager.h>
 #include <sstream>
 
 namespace Ember {
@@ -43,11 +43,8 @@ CEGUI::Window* LayoutHelper::loadLayout(const std::string& layoutFile, CEGUI::St
 	CEGUI::WindowManager& windowManager = CEGUI::WindowManager::getSingleton();
 
 	std::string finalFileName(GUIManager::getSingleton().getLayoutDir() + layoutFile);
-	std::stringstream ss;
-	ss << "Representation" << ++mLastPrefixBase << "/";
-	prefix = ss.str();
 	
-	return windowManager.loadWindowLayout(finalFileName, prefix);
+	return windowManager.loadLayoutFromFile(finalFileName);
 }
 
 }

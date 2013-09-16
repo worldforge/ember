@@ -70,7 +70,7 @@ ComboboxRepresentation<ValueType, PropertyNativeType>::ComboboxRepresentation(co
 	SingleAdapterRepresentationBase<ValueType>()
 {
 	mLayout = LayoutHelper::loadLayout("representations/ComboboxRepresentation.layout", mPrefix);
-	mCombobox = static_cast<CEGUI::Combobox*>(CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "String"));
+	mCombobox = static_cast<CEGUI::Combobox*>(mLayout->getChild(mPrefix + "String"));
 	this->setAdapter(new Adapters::ComboboxAdapter<ValueType, PropertyNativeType>(value, mCombobox));
 	
 	mCombobox->setReadOnly(suggestionOnly);

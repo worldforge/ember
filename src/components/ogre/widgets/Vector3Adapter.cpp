@@ -27,7 +27,7 @@
 #include "Vector3Adapter.h"
 #include "Widget.h"
 
-#include <CEGUIWindow.h>
+#include <CEGUI/Window.h>
 #include <OgreStringConverter.h>
 
 

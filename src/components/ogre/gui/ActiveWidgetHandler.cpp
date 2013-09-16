@@ -27,7 +27,7 @@
 #include "ActiveWidgetHandler.h"
 
 #include "../GUIManager.h"
-#include <CEGUI.h>
+#include <CEGUI/CEGUI.h>
 
 using namespace Ember;
 namespace Ember {
@@ -49,36 +49,40 @@ ActiveWidgetHandler::~ActiveWidgetHandler()
 {
 }
 
+bool ActiveWidgetHandler::lastActiveWindowDestructionStarted(const CEGUI::EventArgs&) {
+	mLastActiveWindow = nullptr;
+	mLastActiveWindowDestructionStartedConnection->disconnect();
+	return true;
+}
+
 void ActiveWidgetHandler::Input_InputModeChanged(Input::InputMode mode)
 {
 	if (mode != Input::IM_GUI && mLastMode == Input::IM_GUI) {
 		//save the current active widget
 		CEGUI::Window* window = mGuiManager.getMainSheet()->getActiveChild();
 		if (window) {
-			mLastActiveWidgetName = window->getName().c_str();
+			mLastActiveWindow = window;
+			mLastActiveWindowDestructionStartedConnection = window->subscribeEvent(CEGUI::Window::EventDestructionStarted, CEGUI::Event::Subscriber(&ActiveWidgetHandler::lastActiveWindowDestructionStarted, this));
 			window->deactivate();
 			//deactivate all parents
 			while ((window = window->getParent())) {
 				window->deactivate();
 			}
 		} else {
-			mLastActiveWidgetName = "";
+			mLastActiveWindow = nullptr;
 		}
 		mLastMode = mode;
 	} else if (mode == Input::IM_GUI) {
-		if (mLastActiveWidgetName != "") {
+		if (mLastActiveWindow) {
 			//restore the previously active widget
 			try {
-				CEGUI::Window* window = CEGUI::WindowManager::getSingleton().getWindow(mLastActiveWidgetName);
-				if (window)
-				{
-					window->activate();
-				}
+				mLastActiveWindow->activate();
 			} catch (...)
 			{
 				S_LOG_WARNING("Error when trying to restore previously captured window.");
 			}
-			mLastActiveWidgetName = "";
+			mLastActiveWindow = 0;
+			mLastActiveWindowDestructionStartedConnection->disconnect();
 		}
 		mLastMode = mode;
 	}

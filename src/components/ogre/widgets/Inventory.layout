@@ -1,51 +1,50 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/InventoryFrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.00,300.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{1.00,-300.0},{1.00,-300.0}}'/>
-		<Property Name='Text' Value='Inventory'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,2},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-4},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/ScrollablePane' Name='IconContainer'>
-				<Property Name='UnifiedSize' Value='{{0,128},{1.0,0}}'/>
-				<Property Name='Text' Value=''/>
-				<Property Name='InheritsAlpha' Value='True'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/InventoryFrameWindow">
+		<Property name="Size" value="{{0.00,300.0},{0.00,300.0}}" />
+		<Property name="Position" value="{{1.00,-300.0},{1.00,-300.0}}" />
+		<Property name="Text" value="Inventory" />
+		<Window name="MainInnerWindow" type="DefaultWindow">
+			<Property name="Position" value="{{0.0,2},{0,0}}" />
+			<Property name="Size" value="{{1,-4},{1,0}}" />
+			<Property name="InheritsAlpha" value="True" />
+			<Window name="IconContainer" type="EmberLook/ScrollablePane">
+				<Property name="Size" value="{{0,128},{1.0,0}}" />
+				<Property name="Text" value="" />
+				<Property name="InheritsAlpha" value="True" />
 			</Window>
-			<Window Type='EmberLook/StaticImage' Name='DollImage'>
-				<Property Name='UnifiedPosition' Value='{{0.0,128},{0,0}}'/>
-				<Property Name='UnifiedSize' Value='{{1,-128},{1.0,0}}'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Window Type='EmberLook/StaticImage' Name='Doll/RightHand'>
-					<Property Name='UnifiedPosition' Value='{{0.10,0},{0.45,0}}'/>
-					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-                    <Property Name='FrameEnabled' Value='true'/>
+			<Window name="DollImage" type="EmberLook/StaticImage">
+				<Property name="Position" value="{{0.0,128},{0,0}}" />
+				<Property name="Size" value="{{1,-128},{1.0,0}}" />
+				<Property name="InheritsAlpha" value="True" />
+				<Window name="RightHand" type="EmberLook/StaticImage">
+					<Property name="Position" value="{{0.10,0},{0.45,0}}" />
+					<Property name="Size" value="{{0,32},{0,32}}" />
+                    <Property name="FrameEnabled" value="true" />
 				</Window>
-				<Window Type='EmberLook/StaticImage' Name='Doll/Head'>
-					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.1,0}}'/>
-					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-                    <Property Name='FrameEnabled' Value='true'/>
+				<Window name="Head" type="EmberLook/StaticImage">
+					<Property name="Position" value="{{0.5,-16},{0.1,0}}" />
+					<Property name="Size" value="{{0,32},{0,32}}" />
+                    <Property name="FrameEnabled" value="true" />
 				</Window>
-				<Window Type='EmberLook/StaticImage' Name='Doll/Back'>
-					<Property Name='UnifiedPosition' Value='{{0.5,16},{0.2,0}}'/>
-					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-                    <Property Name='FrameEnabled' Value='true'/>
+				<Window name="Back" type="EmberLook/StaticImage">
+					<Property name="Position" value="{{0.5,16},{0.2,0}}" />
+					<Property name="Size" value="{{0,32},{0,32}}" />
+                    <Property name="FrameEnabled" value="true" />
 				</Window>
-				<Window Type='EmberLook/StaticImage' Name='Doll/Torso'>
-					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.3,0}}'/>
-					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-                    <Property Name='FrameEnabled' Value='true'/>
+				<Window name="Torso" type="EmberLook/StaticImage">
+					<Property name="Position" value="{{0.5,-16},{0.3,0}}" />
+					<Property name="Size" value="{{0,32},{0,32}}" />
+                    <Property name="FrameEnabled" value="true" />
 				</Window>
-				<Window Type='EmberLook/StaticImage' Name='Doll/Legs'>
-					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.6,0}}'/>
-					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-                    <Property Name='FrameEnabled' Value='true'/>
+				<Window name="Legs" type="EmberLook/StaticImage">
+					<Property name="Position" value="{{0.5,-16},{0.6,0}}" />
+					<Property name="Size" value="{{0,32},{0,32}}" />
+                    <Property name="FrameEnabled" value="true" />
 				</Window>
-				<Window Type='EmberLook/StaticImage' Name='Doll/Feet'>
-					<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.8,0}}'/>
-					<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-                    <Property Name='FrameEnabled' Value='true'/>
+				<Window name="Feet" type="EmberLook/StaticImage">
+					<Property name="Position" value="{{0.5,-16},{0.8,0}}" />
+					<Property name="Size" value="{{0,32},{0,32}}" />
+                    <Property name="FrameEnabled" value="true" />
 				</Window>
 			</Window>
 		</Window>

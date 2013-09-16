@@ -49,24 +49,24 @@ ColouredListItem::ColouredListItem(const CEGUI::String& text, unsigned int item_
 
 void ColouredListItem::setColours()
 {
-	setSelectionColours(CEGUI::colour(50,50,50));
-	setTextColours(CEGUI::colour(0,0,0));
+	setSelectionColours(CEGUI::Colour(50,50,50));
+	setTextColours(CEGUI::Colour(0,0,0));
 	try {
-		setSelectionBrushImage("EmberLook", "MultiListSelectionBrush");
+		setSelectionBrushImage("EmberLook/MultiListSelectionBrush");
 	} catch (...) {
 		S_LOG_WARNING("Could not set selection brush image.");
 	}
 }
 
-CEGUI::Size ColouredListItem::getPixelSize() const
+CEGUI::Sizef ColouredListItem::getPixelSize() const
 {
 	if (isDisabled()) {
-		return CEGUI::Size(0, 0);
+		return CEGUI::Sizef(0, 0);
 	}
 	return CEGUI::ListboxTextItem::getPixelSize();
 }
 
-void ColouredListItem::draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rect& targetRect, float alpha, const CEGUI::Rect* clipper) const
+void ColouredListItem::draw(CEGUI::GeometryBuffer& buffer, const CEGUI::Rectf& targetRect, float alpha, const CEGUI::Rectf* clipper) const
 {
 	if (isDisabled()) {
 		return;
@@ -119,10 +119,10 @@ ColouredTreeItem::ColouredTreeItem(const CEGUI::String& text, unsigned int item_
 
 void ColouredTreeItem::setColours()
 {
-	setSelectionColours(CEGUI::colour(50,50,50));
-	setTextColours(CEGUI::colour(0,0,0));
+	setSelectionColours(CEGUI::Colour(50,50,50));
+	setTextColours(CEGUI::Colour(0,0,0));
 	try {
-		setSelectionBrushImage("EmberLook", "MultiListSelectionBrush");
+		setSelectionBrushImage("EmberLook/MultiListSelectionBrush");
 	} catch (...) {
 		S_LOG_WARNING("Could not set selection brush image.");
 	}

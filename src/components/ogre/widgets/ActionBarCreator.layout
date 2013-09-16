@@ -1,67 +1,65 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.00,360.0},{0.00,240.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{1.00,-360.0},{1.00,-520.0}}'/>
-		<Property Name='Text' Value='ActionBar Editor'/>
-		<Window Type='DefaultWindow' Name='LeftPanel'>
-			<Property Name='UnifiedSize' Value='{{0.40,0.0},{1.00,0.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.00,0.0},{0.00,0.0}}'/>
-			<Window Type='EmberLook/Listbox' Name='ActionBarList'>
-				<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.02,0.0}}'/>
-				<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.70,0.0}}'/>
-				<Property Name='InheritsAlpha' Value='True'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="EmberLook/FrameWindow">
+		<Property name="Size" value="{{0.00,360.0},{0.00,240.0}}" />
+		<Property name="Position" value="{{1.00,-360.0},{1.00,-520.0}}" />
+		<Property name="Text" value="ActionBar Editor" />
+		<Window name="LeftPanel" type="DefaultWindow">
+			<Property name="Size" value="{{0.40,0.0},{1.00,0.0}}" />
+			<Property name="Position" value="{{0.00,0.0},{0.00,0.0}}" />
+			<Window name="ActionBarList" type="EmberLook/Listbox">
+				<Property name="Position" value="{{0.02,0.0},{0.02,0.0}}" />
+				<Property name="Size" value="{{0.96,0.0},{0.70,0.0}}" />
+				<Property name="InheritsAlpha" value="True" />
 			</Window>
-			<Window Type='EmberLook/Button' Name='Create_Horiz'>
-					<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.08,0.00}}'/>
-					<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.72,0.0}}'/>
-					<Property Name='Text' Value='Create Horizontal Bar'/>
+			<Window name="Create_Horiz" type="EmberLook/Button">
+					<Property name="Size" value="{{0.96,0.0},{0.08,0.00}}" />
+					<Property name="Position" value="{{0.02,0.0},{0.72,0.0}}" />
+					<Property name="Text" value="Create Horizontal Bar" />
 			</Window>
-			<Window Type='EmberLook/Button' Name='Create_Vert'>
-					<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.08,0.00}}'/>
-					<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.80,0.0}}'/>
-					<Property Name='Text' Value='Create Vertical Bar'/>
+			<Window name="Create_Vert" type="EmberLook/Button">
+					<Property name="Size" value="{{0.96,0.0},{0.08,0.00}}" />
+					<Property name="Position" value="{{0.02,0.0},{0.80,0.0}}" />
+					<Property name="Text" value="Create Vertical Bar" />
 			</Window>
-			<Window Type='EmberLook/Button' Name='Delete'>
-					<Property Name='UnifiedSize' Value='{{0.96,0.0},{0.08,0.00}}'/>
-					<Property Name='UnifiedPosition' Value='{{0.02,0.0},{0.90,0.0}}'/>
-					<Property Name='Text' Value='Delete'/>
+			<Window name="Delete" type="EmberLook/Button">
+					<Property name="Size" value="{{0.96,0.0},{0.08,0.00}}" />
+					<Property name="Position" value="{{0.02,0.0},{0.90,0.0}}" />
+					<Property name="Text" value="Delete" />
 			</Window>
 		</Window>
-		<Window Type='DefaultWindow' Name='RightPanel'>
-			<Property Name='UnifiedSize' Value='{{0.60,0.0},{1.00,0.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.40,0.0},{0.00,0.0}}'/>
-			<Window Type='EmberLook/StaticText' Name='WieldFunction/Text'>
-				<Property Name='UnifiedSize' Value='{{0.0,90.0},{0.0,20.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,2.0}}'/>
-				<Property Name='Text' Value='Wieldable Attr.: '/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='FrameEnabled' Value='False'/>
-				<Property Name='BackgroundEnabled' Value='False'/>
+		<Window name="RightPanel" type="DefaultWindow">
+			<Property name="Size" value="{{0.60,0.0},{1.00,0.0}}" />
+			<Property name="Position" value="{{0.40,0.0},{0.00,0.0}}" />
+			<Window type="EmberLook/StaticText">
+				<Property name="Size" value="{{0.0,90.0},{0.0,20.0}}" />
+				<Property name="Position" value="{{0.0,0.0},{0.0,2.0}}" />
+				<Property name="Text" value="Wieldable Attr.: " />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="FrameEnabled" value="False" />
+				<Property name="BackgroundEnabled" value="False" />
 			</Window>
-			<Window Type='EmberLook/Combobox' Name='WieldFunction'>
-				<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.0,100.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,100.0},{0.0,2.0}}'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='ReadOnly' Value='true'/>
-				<Property Name='Tooltip' Value='The default action for wieldable entities.'/>
+			<Window name="WieldFunction" type="EmberLook/Combobox">
+				<Property name="Size" value="{{0.0,100.0},{0.0,100.0}}" />
+				<Property name="Position" value="{{0.0,100.0},{0.0,2.0}}" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="ReadOnly" value="true" />
+				<Property name="TooltipText" value="The default action for wieldable entities." />
 			</Window>
-				<Window Type='EmberLook/StaticText' Name='EdibleFunction/Text'>
-				<Property Name='UnifiedSize' Value='{{0.0,90.0},{0.0,20.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,32.0}}'/>
-				<Property Name='Text' Value='Edible Attri.: '/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='FrameEnabled' Value='False'/>
-				<Property Name='BackgroundEnabled' Value='False'/>
+			<Window type="EmberLook/StaticText">
+				<Property name="Size" value="{{0.0,90.0},{0.0,20.0}}" />
+				<Property name="Position" value="{{0.0,0.0},{0.0,32.0}}" />
+				<Property name="Text" value="Edible Attri.: " />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="FrameEnabled" value="False" />
+				<Property name="BackgroundEnabled" value="False" />
 			</Window>
-			<Window Type='EmberLook/Combobox' Name='EdibleFunction'>
-				<Property Name='UnifiedSize' Value='{{0.0,100.0},{0.0,100.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,100.0},{0.0,32.0}}'/>
-				<Property Name='InheritsAlpha' Value='True'/>
-				<Property Name='ReadOnly' Value='true'/>
-				<Property Name='Tooltip' Value='The default action for edible entities.'/>
+			<Window name="EdibleFunction" type="EmberLook/Combobox">
+				<Property name="Size" value="{{0.0,100.0},{0.0,100.0}}" />
+				<Property name="Position" value="{{0.0,100.0},{0.0,32.0}}" />
+				<Property name="InheritsAlpha" value="True" />
+				<Property name="ReadOnly" value="true" />
+				<Property name="TooltipText" value="The default action for edible entities." />
 			</Window>
 		</Window>
 	</Window>
 </GUILayout>
-			

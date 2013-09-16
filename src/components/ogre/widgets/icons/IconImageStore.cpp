@@ -25,7 +25,7 @@
 #endif
 
 #include "IconImageStore.h"
-#include <CEGUI.h>
+#include <CEGUI/CEGUI.h>
 #include <Ogre.h>
 #include "framework/LoggingInstance.h"
 #include "components/ogre/GUIManager.h"
@@ -43,15 +43,25 @@ IconImageStoreEntry::IconImageStoreEntry(IconImageStore& iconImageStore, const P
 	createImage();
 }
 
+IconImageStoreEntry::~IconImageStoreEntry()
+{
+	CEGUI::ImageManager::getSingleton().destroy(*mImage);
+}
+
 void IconImageStoreEntry::createImage()
 {
 	std::stringstream ss;
-	ss << mPixelPosInImageset.first << "_" << mPixelPosInImageset.second;
+	ss << mIconImageStore.mImagesetName << "_" << mPixelPosInImageset.first << "_" << mPixelPosInImageset.second;
 	mImageName = ss.str();
-	mIconImageStore.mImageset->defineImage(mImageName, CEGUI::Rect(mPixelPosInImageset.first, mPixelPosInImageset.second, mPixelPosInImageset.first + mIconImageStore.mIconSize, mPixelPosInImageset.second + mIconImageStore.mIconSize), CEGUI::Point(0,0));
 
-	mImage = &mIconImageStore.mImageset->getImage(mImageName);
+	mImage = &CEGUI::ImageManager::getSingleton().create("BasicImage", mImageName);
 
+	auto area = CEGUI::Rectf(mPixelPosInImageset.first, mPixelPosInImageset.second, mPixelPosInImageset.first + mIconImageStore.mIconSize, mPixelPosInImageset.second + mIconImageStore.mIconSize);
+	CEGUI::BasicImage* basicImage = static_cast<CEGUI::BasicImage*>(mImage);
+	basicImage->setTexture(mIconImageStore.mCeguiTexture);
+	basicImage->setArea(CEGUI::Rectf(mPixelPosInImageset.first, mPixelPosInImageset.second, mPixelPosInImageset.first + mIconImageStore.mIconSize, mPixelPosInImageset.second + mIconImageStore.mIconSize));
+	basicImage->setNativeResolution(area.getSize());
+	basicImage->setAutoScaled(CEGUI::ASM_Both);
 }
 
 const CEGUI::Image* IconImageStoreEntry::getImage()
@@ -110,7 +120,6 @@ IconImageStore::IconImageStore(const std::string& imagesetName)
 , mImageSize(256)
 , mImageDataStream(OGRE_NEW Ogre::MemoryDataStream(mImageSize * mImageSize * 4, true))
 , mCeguiTexture(0)
-, mImageset(0)
 {
 	createImageset();
 	createEntries();
@@ -124,13 +133,10 @@ IconImageStore::IconImageStore(const std::string& imagesetName, Ogre::TexturePtr
 , mTexPtr(texPtr)
 , mImageDataStream(0)
 , mCeguiTexture(0)
-, mImageset(0)
 {
-	mCeguiTexture = &GUIManager::getSingleton().createTexture(mTexPtr);
+	mCeguiTexture = &GUIManager::getSingleton().createTexture(mTexPtr, imagesetName);
 	
-	//we need a imageset in order to create GUI elements from the ceguiTexture
-	mImageset = &CEGUI::ImagesetManager::getSingleton().create(mImagesetName, *mCeguiTexture);
-	
+
 	//we'll assume that height and width are the same
 	mImageSize = texPtr->getWidth();
 	mIconSize = mImageSize;
@@ -145,6 +151,7 @@ IconImageStore::~IconImageStore()
 	for (IconImageStoreEntryStore::iterator I(mIconImages.begin()); I != mIconImages.end(); ++I) {
 		delete *I;
 	}
+	CEGUI::System::getSingleton().getRenderer()->destroyTexture(*mCeguiTexture);
 	OGRE_DELETE mImageDataStream;
 }
 
@@ -165,10 +172,6 @@ void IconImageStore::createImageset()
 
 	
 	mCeguiTexture = &GUIManager::getSingleton().createTexture(mTexPtr);
-	
-	//we need a imageset in order to create GUI elements from the ceguiTexture
-	//S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");
-	mImageset = &CEGUI::ImagesetManager::getSingleton().create(mImagesetName, *mCeguiTexture);
 	
 }
 

@@ -25,7 +25,6 @@
 #endif
 
 #include "ActionBarIconManager.h"
-#include <CEGUI.h>
 #include "../GUIManager.h"
 #include "ActionBarIcon.h"
 #include "ActionBarIconSlot.h"
@@ -37,6 +36,10 @@
 #include "services/EmberServices.h"
 
 #include <Eris/ServerInfo.h>
+
+#include <CEGUI/CEGUI.h>
+#include <CEGUI/PropertyHelper.h>
+#include <CEGUI/Image.h>
 
 namespace Ember {
 namespace OgreView {
@@ -67,7 +70,7 @@ ActionBarIconSlot* ActionBarIconManager::createSlot(unsigned int pixelSize)
 	ss << "actionBarIconSlot" << mSlotsCounter++;
 	//Make the slot more visible.
 	CEGUI::Window* container = mGuiManager.createWindow("EmberLook/StaticImage", ss.str());
-	container->setSize(CEGUI::UVector2(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
+	container->setSize(CEGUI::USize(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 	ActionBarIconSlot* slot = new ActionBarIconSlot(container);
 	mSlots.push_back(slot);
 	return slot;
@@ -86,7 +89,7 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned
 	CEGUI::DragContainer* item = static_cast<CEGUI::DragContainer*>(mGuiManager.createWindow("DragContainer", ss.str()));
 
 	if (item) {
-		item->setSize(CEGUI::UVector2(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
+		item->setSize(CEGUI::USize(CEGUI::UDim(0, pixelSize), CEGUI::UDim(0, pixelSize)));
 		//item->setTooltipText(name);
 
 		ss << "Image" ;
@@ -96,8 +99,8 @@ ActionBarIcon* ActionBarIconManager::createIcon(Gui::Icons::Icon* icon, unsigned
  			iconWindow->setProperty("FrameEnabled", "false");
 			iconWindow->disable();
 // 			iconWindow->setProperty("FrameEnabled", "false");
-			iconWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
-			item->addChildWindow(iconWindow);
+			iconWindow->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(icon->getImage()));
+			item->addChild(iconWindow);
 
 			ActionBarIcon* actionBarIcon = new ActionBarIcon(*this, item, iconWindow, icon);
 			mIcons.push_back(actionBarIcon);

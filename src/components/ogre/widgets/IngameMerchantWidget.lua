@@ -13,13 +13,13 @@ function MerchantTradeConfirmationDialog.create(itemName, itemPrice, merchantEnt
 	ret.widget:loadMainSheet("IngameMerchantTradeConfirmationDialog.layout", "IngameMerchantWidget/TradeConfirmationDialog/" .. uniqueIndex .. "/")
 	ret.uniqueIndex = uniqueIndex
 	
-	ret.window = ret.widget:getWindow("MainWindow")
-	ret.label = ret.widget:getWindow("MainWindow/Label")
+	ret.window = ret.widget:getMainWindow()
+	ret.label = ret.window:getChild("Label")
 	ret.label:setText("Are you sure you want to buy '" .. itemName .. "' from '" .. merchantEntity:getName() .. "' for " .. itemPrice .. " coins?")
 	
-	ret.confirmButton = ret.widget:getWindow("MainWindow/ConfirmButton")
+	ret.confirmButton = ret.window:getChild("ConfirmButton")
 	ret.confirmButton:subscribeEvent("Clicked", MerchantTradeConfirmationDialog.handleConfirmClicked, ret)
-	ret.cancelButton = ret.widget:getWindow("MainWindow/CancelButton")
+	ret.cancelButton = ret.window:getChild("CancelButton")
 	ret.cancelButton:subscribeEvent("Clicked", MerchantTradeConfirmationDialog.handleCancelClicked, ret)
 	
 	ret.window:subscribeEvent("CloseClicked", MerchantTradeConfirmationDialog.handleCloseClicked, ret)
@@ -130,9 +130,9 @@ function MerchantWindow.create(entity, uniqueIndex, shutdownCallback, ingameMerc
 	
 	ret.widget:hide()
 	
-	ret.window = ret.widget:getWindow("MainWindow")
-	ret.label = ret.widget:getWindow("MainWindow/Label")
-	ret.goods = CEGUI.toMultiColumnList(ret.widget:getWindow("MainWindow/AvailableGoods"))
+	ret.window = ret.widget:getMainWindow()
+	ret.label = ret.window:getChild("Label")
+	ret.goods = CEGUI.toMultiColumnList(ret.window:getChild("AvailableGoods"))
 	ret.goods:subscribeEvent("MouseDoubleClick", MerchantWindow.handleGoodsDoubleClicked, ret)
 	
 	ret:setTargetEntity(entity)

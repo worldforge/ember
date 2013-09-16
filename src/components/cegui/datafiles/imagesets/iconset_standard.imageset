@@ -1,15 +1,14 @@
-<?xml version="1.0" ?>
-<Imageset Name="iconset_standard" Imagefile="themes/ember/gui/icons/iconset_standard.png" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false">
-	<Image Name="background_A" XPos="0" YPos="0" Width="48" Height="48" />
-	<Image Name="background_B" XPos="48" YPos="0" Width="48" Height="48" />
-	<Image Name="ring" XPos="96" YPos="0" Width="48" Height="48" />
-	<Image Name="ring_over" XPos="144" YPos="0" Width="48" Height="48" />
-	<Image Name="question" XPos="192" YPos="0" Width="48" Height="48" />
-	<Image Name="close1" XPos="0" YPos="48" Width="48" Height="48" />
-	<Image Name="close2" XPos="48" YPos="48" Width="48" Height="48" />
-	<Image Name="walk" XPos="96" YPos="48" Width="48" Height="48" />
-	<Image Name="run" XPos="144" YPos="48" Width="48" Height="48" />
-	<Image Name="abc" XPos="192" YPos="48" Width="48" Height="48" />
-	<Image Name="inventory" XPos="0" YPos="96" Width="48" Height="48" />
-	<Image Name="settings" XPos="48" YPos="96" Width="48" Height="48" />
+<Imageset autoScaled="false" imagefile="themes/ember/gui/icons/iconset_standard.png" name="iconset_standard" nativeHorzRes="1024" nativeVertRes="768" version="2">
+	<Image height="48" name="background_A" width="48" xPos="0" yPos="0" />
+	<Image height="48" name="background_B" width="48" xPos="48" yPos="0" />
+	<Image height="48" name="ring" width="48" xPos="96" yPos="0" />
+	<Image height="48" name="ring_over" width="48" xPos="144" yPos="0" />
+	<Image height="48" name="question" width="48" xPos="192" yPos="0" />
+	<Image height="48" name="close1" width="48" xPos="0" yPos="48" />
+	<Image height="48" name="close2" width="48" xPos="48" yPos="48" />
+	<Image height="48" name="walk" width="48" xPos="96" yPos="48" />
+	<Image height="48" name="run" width="48" xPos="144" yPos="48" />
+	<Image height="48" name="abc" width="48" xPos="192" yPos="48" />
+	<Image height="48" name="inventory" width="48" xPos="0" yPos="96" />
+	<Image height="48" name="settings" width="48" xPos="48" yPos="96" />
 </Imageset>

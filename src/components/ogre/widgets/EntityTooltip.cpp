@@ -28,12 +28,12 @@
 
 #include <Eris/TypeInfo.h>
 
-#include <CEGUISubscriberSlot.h>
-#include <CEGUIPropertyHelper.h>
-#include <CEGUIWindowManager.h>
-#include <CEGUIWindowFactoryManager.h>
-#include <CEGUITplWindowFactory.h>
-#include <CEGUIExceptions.h>
+#include <CEGUI/SubscriberSlot.h>
+#include <CEGUI/PropertyHelper.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/WindowFactoryManager.h>
+#include <CEGUI/TplWindowFactory.h>
+#include <CEGUI/Exceptions.h>
 
 #include <Atlas/Message/Element.h>
 
@@ -50,9 +50,9 @@ EmberEntityTooltipWidget::EmberEntityTooltipWidget(const CEGUI::String& type, co
 {
 }
 
-CEGUI::Size EmberEntityTooltipWidget::getTextSize_impl() const
+CEGUI::Sizef EmberEntityTooltipWidget::getTextSize_impl() const
 {
-	return CEGUI::Size(180, 80);
+	return CEGUI::Sizef(180, 80);
 }
 
 const CEGUI::String EmberEntityTooltipWidget::WidgetTypeName("Ember/EntityTooltip");
@@ -66,19 +66,19 @@ EntityTooltip::EntityTooltip(World& world, EmberEntityTooltipWidget& tooltip, Ic
 	mWorld(world), mTooltip(tooltip), mIconManager(iconManager), isUpdatingOurselves(false), mImageWindow(0), mTextWindow(0)
 {
 	mImageWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticImage");
-	mImageWindow->setSize(CEGUI::UVector2(CEGUI::UDim(0, 64), CEGUI::UDim(0, 64)));
+	mImageWindow->setSize(CEGUI::USize(CEGUI::UDim(0, 64), CEGUI::UDim(0, 64)));
 	mImageWindow->setProperty("FrameEnabled", "false");
 	mImageWindow->setProperty("BackgroundEnabled", "false");
-	tooltip.addChildWindow(mImageWindow);
+	tooltip.addChild(mImageWindow);
 
 	mTextWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticText");
-	mTextWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1, -64), CEGUI::UDim(1, 0)));
+	mTextWindow->setSize(CEGUI::USize(CEGUI::UDim(1, -64), CEGUI::UDim(1, 0)));
 	mTextWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 64), CEGUI::UDim(0, 0)));
 	mTextWindow->setProperty("HorzFormatting", "WordWrapLeftAligned");
 	mTextWindow->setProperty("VertFormatting", "TopAligned");
 	mTextWindow->setProperty("FrameEnabled", "false");
 	mTextWindow->setProperty("BackgroundEnabled", "false");
-	tooltip.addChildWindow(mTextWindow);
+	tooltip.addChild(mTextWindow);
 
 	//listen to the text being changed, since that indicates that the tooltip has been activated for a new window (alas there's no signal when the tooltip is attached to a target window, so this is the best we can do)
 	tooltip.subscribeEvent(CEGUI::Window::EventTextChanged, CEGUI::Event::Subscriber(&EntityTooltip::tooltip_TextChanged, this));
@@ -86,8 +86,7 @@ EntityTooltip::EntityTooltip(World& world, EmberEntityTooltipWidget& tooltip, Ic
 
 EntityTooltip::~EntityTooltip()
 {
-	CEGUI::WindowManager::getSingleton().destroyWindow(mImageWindow);
-	CEGUI::WindowManager::getSingleton().destroyWindow(mTextWindow);
+	CEGUI::WindowManager::getSingleton().destroyWindow(&mTooltip);
 }
 
 CEGUI::Tooltip& EntityTooltip::getTooltipWindow() const
@@ -105,7 +104,7 @@ bool EntityTooltip::tooltip_TextChanged(const CEGUI::EventArgs &e)
 			mTextWindow->setText(composeEntityInfoText(*entity));
 			Icons::Icon* icon = mIconManager.getIcon(64, entity);
 			if (icon) {
-				mImageWindow->setProperty("Image", CEGUI::PropertyHelper::imageToString(icon->getImage()));
+				mImageWindow->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(icon->getImage()));
 			} else {
 				mImageWindow->setProperty("Image", "");
 			}

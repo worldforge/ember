@@ -1,2 +1,1 @@
-<?xml version="1.0" ?>
-<Font Name="DejaVuSans-Bold-8" Filename="themes/ember/gui/fonts/DejaVuSans-Bold.ttf" Type="FreeType" AntiAlias="true" Size="8" NativeHorzRes="1024" NativeVertRes="768" AutoScaled="false" />
+<Font antiAlias="true" autoScaled="false" filename="themes/ember/gui/fonts/DejaVuSans-Bold.ttf" name="DejaVuSans-Bold-8" nativeHorzRes="1024" nativeVertRes="768" size="8" type="FreeType" version="3" />

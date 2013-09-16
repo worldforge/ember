@@ -44,9 +44,10 @@ public:
     /**
      * Constructir
      * @param image A valid CEGUI::StaticImage, to which the Model will be rendered.
+     * @paran name A unique name.
      * @return 
      */
-    ModelRenderer(CEGUI::Window* image);
+    ModelRenderer(CEGUI::Window* image, const std::string& name);
 
     ~ModelRenderer();
     

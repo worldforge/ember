@@ -1,26 +1,25 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='AreaAdapter'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0,200},{0,60}}'/>
-		<Window Type='EmberLook/Button' Name='showButton'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,100},{0,25}}'/>
-			<Property Name='Text' Value='Show' />
-			<Property Name='Tooltip' Value='Shows a graphical representation of the terrain area.' />
+<GUILayout version="4">
+	<Window name="AreaAdapter" type="DefaultWindow">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{0,200},{0,60}}" />
+		<Window name="showButton" type="EmberLook/Button">
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="Size" value="{{0,100},{0,25}}" />
+			<Property name="Text" value="Show" />
+			<Property name="TooltipText" value="Shows a graphical representation of the terrain area." />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='LayerText'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
-			<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-			<Property Name='FrameEnabled' Value='false' />
-			<Property Name='BackgroundEnabled' Value='false' />
-			<Property Name='Text' Value='Layer' />
+		<Window name="LayerText" type="EmberLook/StaticText">
+			<Property name="Position" value="{{0,0},{0,30}}" />
+			<Property name="Size" value="{{0,75},{0,25}}" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="Text" value="Layer" />
 		</Window>
-		<Window Type='EmberLook/Combobox' Name='Layer'>
-			<Property Name='UnifiedPosition' Value='{{0,75},{0,30}}'/>
-			<Property Name='UnifiedSize' Value='{{0,125},{0,125}}'/>
-			<Property Name='ReadOnly' Value='true'/>
-			<Property Name='Tooltip' Value='The terrain layer to use.' />
+		<Window name="Layer" type="EmberLook/Combobox">
+			<Property name="Position" value="{{0,75},{0,30}}" />
+			<Property name="Size" value="{{0,125},{0,125}}" />
+			<Property name="ReadOnly" value="true" />
+			<Property name="TooltipText" value="The terrain layer to use." />
 		</Window>
 	</Window>
 </GUILayout>

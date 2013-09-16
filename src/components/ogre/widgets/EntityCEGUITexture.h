@@ -28,7 +28,6 @@
 
 namespace CEGUI
 {
-	class Imageset;
 	class Image;
 	class Texture;
 }
@@ -75,12 +74,7 @@ private:
 	/**
 	The rendered image.
 	*/
-	const CEGUI::Image* mImage;
-	
-	/**
-	The main imageset, though only one image will be defined for it.
-	*/
-	CEGUI::Imageset* mImageSet;
+	CEGUI::Image* mImage;
 	
 	/**
 	 *    Creates the imageset and image and sets up the rendering.

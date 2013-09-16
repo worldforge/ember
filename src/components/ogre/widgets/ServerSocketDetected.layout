@@ -1,32 +1,31 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-    <Window Type='EmberLook/FrameWindow' Name='MainWindow'>
-        <Property Name='UnifiedSize' Value='{{0.0,400.0},{0.0,100.0}}' />
-        <Property Name='UnifiedPosition' Value='{{0.5,-200.0},{0.5,-50.0}}' />
-        <Property Name='SizingEnabled' Value='false' />
-        <Property Name='Alpha' Value='0.6' />
-        <Property Name='Text' Value='Local server detected' />
-        <Property Name='CloseButtonEnabled' Value='False' />
-        <Window Type="VerticalLayoutContainer">
-            <Window Type='EmberLook/StaticText'>
-                <Property Name='UnifiedSize' Value='{{1.0,0},{0.0,25.0}}' />
-                <Property Name='Text' Value='A local server has been detected. What do you want to do?' />
+<GUILayout version="4">
+    <Window name="MainWindow" type="EmberLook/FrameWindow">
+        <Property name="Size" value="{{0.0,400.0},{0.0,100.0}}" />
+        <Property name="Position" value="{{0.5,-200.0},{0.5,-50.0}}" />
+        <Property name="SizingEnabled" value="false" />
+        <Property name="Alpha" value="0.6" />
+        <Property name="Text" value="Local server detected" />
+        <Property name="CloseButtonEnabled" value="False" />
+        <Window type="VerticalLayoutContainer">
+            <Window type="EmberLook/StaticText">
+                <Property name="Size" value="{{1.0,0},{0.0,25.0}}" />
+                <Property name="Text" value="A local server has been detected. What do you want to do?" />
             </Window>
-            <Window Type="HorizontalLayoutContainer">
-                <Window Type='EmberLook/Button' Name='ConnectAsAdmin'>
-                    <Property Name='UnifiedSize' Value='{{0.33,0.0},{0.0,25.0}}' />
-                    <Property Name='Text' Value='Log in as administrator' />
-                    <Property Name='Tooltip' Value='This allows you to edit the world.' />
+            <Window type="HorizontalLayoutContainer">
+                <Window name="ConnectAsAdmin" type="EmberLook/Button">
+                    <Property name="Size" value="{{0.33,0.0},{0.0,25.0}}" />
+                    <Property name="Text" value="Log in as administrator" />
+                    <Property name="TooltipText" value="This allows you to edit the world." />
                 </Window>
-                <Window Type='EmberLook/Button' Name='ConnectNormally'>
-                    <Property Name='UnifiedSize' Value='{{0.33,0.0},{0.0,25.0}}' />
-                    <Property Name='Text' Value='Connect as normal' />
-                    <Property Name='Tooltip' Value='Connect to the server as a normal client.' />
+                <Window name="ConnectNormally" type="EmberLook/Button">
+                    <Property name="Size" value="{{0.33,0.0},{0.0,25.0}}" />
+                    <Property name="Text" value="Connect as normal" />
+                    <Property name="TooltipText" value="Connect to the server as a normal client." />
                 </Window>
-                <Window Type='EmberLook/Button' Name='DontConnect'>
-                    <Property Name='UnifiedSize' Value='{{0.33,0.0},{0.0,25.0}}' />
-                    <Property Name='Text'>Don't connect</Property>
-                    <Property Name='Tooltip'>Don't connect to the local server.</Property>
+                <Window name="DontConnect" type="EmberLook/Button">
+                    <Property name="Size" value="{{0.33,0.0},{0.0,25.0}}" />
+                    <Property name="Text">Don't connect</Property>
+                    <Property name="TooltipText">Don't connect to the local server.</Property>
                 </Window>
             </Window>
         </Window>

@@ -23,7 +23,7 @@
 #ifndef EMBEROGRE_GUISTACKABLECONTAINER_H
 #define EMBEROGRE_GUISTACKABLECONTAINER_H
 
-#include <CEGUI.h>
+#include <CEGUI/CEGUI.h>
 #include <list>
 #include <map>
 

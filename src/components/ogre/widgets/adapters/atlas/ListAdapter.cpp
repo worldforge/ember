@@ -108,7 +108,7 @@ void ListAdapter::removeAdapters()
 {
 	for (AdapterStore::iterator I = mAdapters.begin(); I != mAdapters.end(); ++I) {
 		delete I->Adapter;
-// 		I->second.ContainerWindow->getParent()->removeChildWindow(I->second.ContainerWindow);
+// 		I->second.ContainerWindow->getParent()->removeChild(I->second.ContainerWindow);
 		CEGUI::WindowManager::getSingleton().destroyWindow(I->ContainerWindow);
 	}
 	mAdapters.clear();

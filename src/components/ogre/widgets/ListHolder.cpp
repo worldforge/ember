@@ -26,9 +26,9 @@
 
 #include "ListHolder.h"
 
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxItem.h>
-#include <elements/CEGUIEditbox.h>
+#include <CEGUI/widgets/Listbox.h>
+#include <CEGUI/widgets/ListboxItem.h>
+#include <CEGUI/widgets/Editbox.h>
 
 #include "framework/Exception.h"
 

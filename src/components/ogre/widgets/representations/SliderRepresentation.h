@@ -25,8 +25,8 @@
 #include "SingleAdapterRepresentationBase.h"
 #include "LayoutHelper.h"
 #include "../adapters/GenericPropertyAdapter.h"
-#include <CEGUIWindowManager.h>
-#include <elements/CEGUISlider.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/widgets/Slider.h>
 
 #include <sigc++/trackable.h>
 
@@ -75,17 +75,17 @@ SliderRepresentation<ValueType>::SliderRepresentation(const ValueType& value, fl
 {
 	mLayout = LayoutHelper::loadLayout("representations/SliderRepresentation.layout", mPrefix);
 	
-	mSlider = static_cast<CEGUI::Slider*>(CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Slider"));
+	mSlider = static_cast<CEGUI::Slider*>(mLayout->getChild(mPrefix + "Slider"));
 	mSlider->setMaxValue(max);
 	
 	this->setAdapter(new Adapters::GenericPropertyAdapter<ValueType, float>(value, mSlider, "CurrentValue", CEGUI::Slider::EventValueChanged));
 	
-	mText = CEGUI::WindowManager::getSingleton().getWindow(mPrefix + "Text");
+	mText = mLayout->getChild(mPrefix + "Text");
 	
 	if (!showValue)
 	{
 		mText->setVisible(false);
-		mSlider->setSize(CEGUI::UVector2(CEGUI::UDim(1.0f, 0.0f), CEGUI::UDim(1.0f, 0.0f)));
+		mSlider->setSize(CEGUI::USize(CEGUI::UDim(1.0f, 0.0f), CEGUI::UDim(1.0f, 0.0f)));
 	}
 	else
 	{

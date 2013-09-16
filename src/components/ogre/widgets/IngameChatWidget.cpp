@@ -46,15 +46,15 @@
 #include "services/server/ServerService.h"
 #include "services/config/ConfigService.h"
 
-#include <CEGUIWindowManager.h>
-#include <CEGUIExceptions.h>
-#include <CEGUIFont.h>
-#include <elements/CEGUIListbox.h>
-#include <elements/CEGUIListboxTextItem.h>
-#include <elements/CEGUIPushButton.h>
-#include <elements/CEGUIGUISheet.h>
-#include <elements/CEGUIFrameWindow.h>
-#include <elements/CEGUILayoutContainer.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/Exceptions.h>
+#include <CEGUI/Font.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/widgets/Listbox.h>
+#include <CEGUI/widgets/ListboxTextItem.h>
+#include <CEGUI/widgets/PushButton.h>
+#include <CEGUI/widgets/FrameWindow.h>
+#include <CEGUI/widgets/LayoutContainer.h>
 #include <Eris/View.h>
 #include <Eris/TypeInfo.h>
 #include <Eris/TypeService.h>
@@ -93,7 +93,7 @@ void IngameChatWidget::buildWidget()
 	mLabelSheet = mWindowManager->createWindow("DefaultWindow", "IngameChatWidget/LabelSheet");
 	mLabelSheet->setMousePassThroughEnabled(true);
 	mLabelSheet->setRiseOnClickEnabled(false);
-	getMainSheet()->addChildWindow(mLabelSheet);
+	getMainSheet()->addChild(mLabelSheet);
 
 	mLabelPool.initializePool(15);
 	mChatTextPool.initializePool(5);
@@ -370,7 +370,7 @@ void IngameChatWidget::Label::placeWindowOnEntity()
 
 	if (result) {
 		mWindow->setVisible(true);
-		mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getWidth().asAbsolute(0) * 0.5)), UDim(screenCoords.y, -(mWindow->getHeight().asAbsolute(0) * 0.5))));
+		mWindow->setPosition(UVector2(UDim(screenCoords.x, -(mWindow->getPixelSize().d_width * 0.5)), UDim(screenCoords.y, -(mWindow->getPixelSize().d_height * 0.5))));
 	} else {
 		mWindow->setVisible(false);
 	}
@@ -446,9 +446,9 @@ void IngameChatWidget::Label::setActive(bool active)
 	}
 
 	if (active) {
-		mContainerWidget.getLabelSheet()->addChildWindow(mWindow);
+		mContainerWidget.getLabelSheet()->addChild(mWindow);
 	} else {
-		mContainerWidget.getLabelSheet()->removeChildWindow(mWindow);
+		mContainerWidget.getLabelSheet()->removeChild(mWindow);
 	}
 
 	mActive = active;
@@ -486,7 +486,7 @@ void IngameChatWidget::Label::showDetachedChatText()
 }
 
 IngameChatWidget::LabelCreator::LabelCreator(IngameChatWidget& ingameChatWidget) :
-		mIngameChatWidget(ingameChatWidget), mLayout(WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "Label.layout"))
+		mIngameChatWidget(ingameChatWidget), mLayout(WindowManager::getSingleton().loadLayoutFromFile(GUIManager::getSingleton().getLayoutDir() + "Label.layout"))
 {
 }
 
@@ -501,7 +501,8 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 	std::stringstream ss;
 	ss << "Label/" << currentPoolSize << "/";
 	//clones the entire layout hierarchy (even though it's just one window for now)
-	Window* window = mLayout->clone(ss.str() + "EntityName", true);
+	Window* window = mLayout->clone(true);
+	window->setName(ss.str() + "EntityName");
 	//We don't want the labels to prevent the user from picking entities in the world.
 	window->setMousePassThroughEnabled(true);
 	window->setRiseOnClickEnabled(false);
@@ -510,28 +511,27 @@ IngameChatWidget::Label* IngameChatWidget::LabelCreator::createWidget(unsigned i
 	return label;
 }
 
-IngameChatWidget::ChatText::ChatText(const std::string& prefix) :
+IngameChatWidget::ChatText::ChatText(CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow) :
 	mLabel(0),
-	mAttachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached")),
-	mAttachedTextWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/Text")),
-	mAttachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer")),
-	mAttachedEllipsisButton(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer/EllipsisButton")),
+	mAttachedWindow(attachedWindow),
+	mAttachedTextWidget(mAttachedWindow->getChild("Text")),
+	mAttachedResponseContainer(mAttachedWindow->getChild("ResponseContainer")),
+	mAttachedEllipsisButton(mAttachedWindow->getChild("ResponseContainer/EllipsisButton")),
 
-	mDetachedWindow(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached")),
-	mDetachedChatHistory(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ChatHistory")),
-	mDetachedResponseContainer(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/ResponseContainer")),
-	mDetachedEditbox(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/Editbox")),
-	mDetachedTradeButton(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Detached/TradeButton")),
+	mDetachedWindow(detachedWindow),
+	mDetachedChatHistory(mDetachedWindow->getChild("ChatHistory")),
+	mDetachedResponseContainer(mDetachedWindow->getChild("ResponseContainer")),
+	mDetachedEditbox(mDetachedWindow->getChild("Editbox")),
+	mDetachedTradeButton(mDetachedWindow->getChild("TradeButton")),
 
-	mResponseWidget(WindowManager::getSingleton().getWindow(prefix + "MainWindow/Attached/ResponseContainer/ResponseList")),
+	mResponseWidget(mAttachedWindow->getChild("ResponseContainer/ResponseList")),
 
 	mCommandHistory(new CommandHistory()),
 
-	mElapsedTimeSinceLastUpdate(0.0f),
-	mPrefix(prefix)
+	mElapsedTimeSinceLastUpdate(0.0f)
 {
 	mDetachedWindow->setVisible(false);
-	GUIManager::getSingleton().getMainSheet()->addChildWindow(mDetachedWindow);
+	GUIManager::getSingleton().getMainSheet()->addChild(mDetachedWindow);
 
 	BIND_CEGUI_EVENT(mAttachedTextWidget, PushButton::EventClicked, IngameChatWidget::ChatText::buttonAttachedText_Click);
 	// clicking the ellipsis button should do exactly the same as clicking the attached text
@@ -620,7 +620,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 		for (; I != I_end; ++I) {
 			std::stringstream ss_;
 			ss_ << i;
-			PushButton* responseTextButton = static_cast<PushButton*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/IngameChatResponseButton", mPrefix + "Response/" + ss_.str()));
+			PushButton* responseTextButton = static_cast<PushButton*>(WindowManager::getSingleton().createWindow(GUIManager::getSingleton().getDefaultScheme() + "/IngameChatResponseButton", "Response/" + ss_.str()));
 
 			BIND_CEGUI_EVENT(responseTextButton, PushButton::EventClicked, IngameChatWidget::ChatText::buttonResponse_Click);
 
@@ -628,7 +628,7 @@ void IngameChatWidget::ChatText::updateText(const std::string & line)
 			responseTextButton->setText(*I);
 			responseTextButton->setTextParsingEnabled(false);
 			responseTextButton->setTooltipText(*I);
-			mResponseWidget->addChildWindow(responseTextButton);
+			mResponseWidget->addChild(responseTextButton);
 			mResponseTextWidgets.push_back(responseTextButton);
 
 			++i;
@@ -661,8 +661,8 @@ void IngameChatWidget::ChatText::switchToAttachedMode(bool updateHelpMessage)
 		return;
 	}
 
-	mDetachedResponseContainer->removeChildWindow(mResponseWidget);
-	mAttachedResponseContainer->addChildWindow(mResponseWidget);
+	mDetachedResponseContainer->removeChild(mResponseWidget);
+	mAttachedResponseContainer->addChild(mResponseWidget);
 
 	mAttachedWindow->setVisible(true);
 	mDetachedWindow->setVisible(false);
@@ -685,27 +685,27 @@ void IngameChatWidget::ChatText::switchToDetachedMode()
 		return;
 	}
 
-	const CEGUI::Rect rect = mAttachedWindow->getUnclippedOuterRect();
-	if (rect.d_left >= 0 && rect.d_top >= 0) {
-		mDetachedWindow->setPosition(UVector2(UDim(0, rect.d_left), UDim(0, rect.d_top)));
+	const auto rect = mAttachedWindow->getUnclippedOuterRect().get();
+	if (rect.left() >= 0 && rect.top() >= 0) {
+		mDetachedWindow->setPosition(UVector2(UDim(0, rect.left()), UDim(0, rect.top())));
 	} else {
-		mDetachedWindow->setPosition(UVector2(UDim(0.5, -(mDetachedWindow->getWidth().asAbsolute(0) * 0.5)), UDim(0.5, 0)));
+		mDetachedWindow->setPosition(UVector2(UDim(0.5, -(mDetachedWindow->getPixelSize().d_width * 0.5)), UDim(0.5, 0)));
 	}
 
 	//Make sure the widget is contained within the main window.
-	CEGUI::Size rootSize = CEGUI::System::getSingleton().getGUISheet()->getPixelSize();
-	float width = mDetachedWindow->getWidth().asAbsolute(0);
-	float height = mDetachedWindow->getHeight().asAbsolute(0);
-	if (mDetachedWindow->getXPosition().asAbsolute(0) + width > rootSize.d_width) {
+	auto rootSize = mAttachedWindow->getGUIContext().getRootWindow()->getPixelSize();
+	float width = mDetachedWindow->getPixelSize().d_width;
+	float height = mDetachedWindow->getPixelSize().d_height;
+	if (mDetachedWindow->getPixelPosition().d_x + width > rootSize.d_width) {
 		mDetachedWindow->setXPosition(CEGUI::UDim(0, rootSize.d_width - width));
 	}
-	if (mDetachedWindow->getYPosition().asAbsolute(0) + height > rootSize.d_height) {
+	if (mDetachedWindow->getPixelPosition().d_y + height > rootSize.d_height) {
 		mDetachedWindow->setYPosition(CEGUI::UDim(0, rootSize.d_height - height));
 	}
 
 
-	mAttachedResponseContainer->removeChildWindow(mResponseWidget);
-	mDetachedResponseContainer->addChildWindow(mResponseWidget);
+	mAttachedResponseContainer->removeChild(mResponseWidget);
+	mDetachedResponseContainer->addChild(mResponseWidget);
 
 	mAttachedWindow->setVisible(false);
 	mDetachedWindow->setVisible(true);
@@ -815,18 +815,18 @@ void IngameChatWidget::ChatText::attachToLabel(Label* label)
 	mLabel = label;
 	if (label) {
 		mDetachedWindow->setText("Dialog with " + label->getEntity()->getName());
-		mLabel->getWindow()->addChildWindow(mAttachedWindow);
+		mLabel->getWindow()->addChild(mAttachedWindow);
 	} else {
 		if (mAttachedWindow->getParent()) {
-			mAttachedWindow->getParent()->removeChildWindow(mAttachedWindow);
+			mAttachedWindow->getParent()->removeChild(mAttachedWindow);
 		}
 	}
 }
 
 IngameChatWidget::ChatTextCreator::ChatTextCreator(IngameChatWidget& ingameChatWidget):
 	mIngameChatWidget(ingameChatWidget),
-	mAttachedLayout(WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidgetAttached.layout")),
-	mDetachedLayout(WindowManager::getSingleton().loadWindowLayout(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidgetDetached.layout"))
+	mAttachedLayout(WindowManager::getSingleton().loadLayoutFromFile(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidgetAttached.layout")),
+	mDetachedLayout(WindowManager::getSingleton().loadLayoutFromFile(GUIManager::getSingleton().getLayoutDir() + "IngameChatWidgetDetached.layout"))
 {
 }
 
@@ -839,12 +839,12 @@ IngameChatWidget::ChatTextCreator::~ChatTextCreator()
 IngameChatWidget::ChatText* IngameChatWidget::ChatTextCreator::createWidget(unsigned int currentPoolSize)
 {
 	//there is no chat window for this entity, let's create one by cloning the existing layout
-	std::stringstream ss;
-	ss << "ChatText/" << currentPoolSize << "/";
-	mAttachedLayout->clone(ss.str() + "MainWindow/Attached");
-	mDetachedLayout->clone(ss.str() + "MainWindow/Detached");
+	auto newAttached = mAttachedLayout->clone();
+	newAttached->setName("MainWindow/Attached");
+	auto newDetached = mDetachedLayout->clone();
+	newDetached->setName("MainWindow/Detached");
 
-	ChatText* widget = new ChatText(ss.str());
+	ChatText* widget = new ChatText(newAttached, newDetached);
 	return widget;
 }
 

@@ -27,7 +27,7 @@
 #include "ConsoleAdapter.h"
 #include "framework/ConsoleBackend.h"
 #include "framework/CommandHistory.h"
-#include <elements/CEGUIEditbox.h>
+#include <CEGUI/widgets/Editbox.h>
 
 namespace Ember {
 namespace OgreView {
@@ -113,7 +113,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 			{
 				return true;
 			}
-			sCommand = sCommand.substr(1, mInputBox->getCaratIndex() - 1);
+			sCommand = sCommand.substr(1, mInputBox->getCaretIndex() - 1);
 			if(mTabPressed == true)
 			{
 				const std::set< std::string > commands(mBackend->getPrefixes(sCommand));
@@ -135,8 +135,8 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 							std::string sCommandLine(mInputBox->getText().c_str());
 						
 							// compose the new command line: old text before the caret + selected command
-							mInputBox->setText(sCommandLine.substr(0, mInputBox->getCaratIndex()) + iCommand->substr(mInputBox->getCaratIndex() - 1));
-							mInputBox->setSelection(mInputBox->getCaratIndex(), 0xFFFFFFFF);
+							mInputBox->setText(sCommandLine.substr(0, mInputBox->getCaretIndex()) + iCommand->substr(mInputBox->getCaretIndex() - 1));
+							mInputBox->setSelection(mInputBox->getCaretIndex(), 0xFFFFFFFF);
 						}
 						sMessage += *iCommand + ' ';
 						++iCommand;
@@ -163,7 +163,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 					{
 						mInputBox->setText(std::string("/") + *(commands.begin()) + ' ');
 						// this will be at the end of the text
-						mInputBox->setCaratIndex(0xFFFFFFFF);
+						mInputBox->setCaretIndex(0xFFFFFFFF);
 					}
 					else
 					{
@@ -199,7 +199,7 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 							++iCommand;
 						}
 						mInputBox->setText(std::string("/") + sCommonPrefix + iSelected->substr(sCommonPrefix.length()));
-						mInputBox->setCaratIndex(sCommonPrefix.length() + 1);
+						mInputBox->setCaretIndex(sCommonPrefix.length() + 1);
 						mInputBox->setSelection(sCommonPrefix.length() + 1, 0xFFFFFFFF);
 					}
 				}
@@ -217,8 +217,8 @@ bool ConsoleAdapter::consoleInputBox_KeyUp(const CEGUI::EventArgs& args)
 					unsigned long ulSelectionEnd(mInputBox->getSelectionEndIndex());
 					
 					mInputBox->setText(mInputBox->getText() + ' ');
-					mInputBox->setCaratIndex(ulSelectionEnd + 1);
-					mInputBox->setSelection(mInputBox->getCaratIndex(), mInputBox->getCaratIndex());
+					mInputBox->setCaretIndex(ulSelectionEnd + 1);
+					mInputBox->setSelection(mInputBox->getCaretIndex(), mInputBox->getCaretIndex());
 				}
 				else
 				{

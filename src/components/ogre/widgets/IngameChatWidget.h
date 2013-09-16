@@ -240,9 +240,8 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			/**
 			 * @brief Ctor
 			 * 
-			 * @param prefix string prefix of the CEGUI windows for this chat text
 			 */
-			ChatText(const std::string& prefix);
+			ChatText(CEGUI::Window* attachedWindow, CEGUI::Window* detachedWindow);
 			
 			/**
 			 * @brief Dtor
@@ -301,7 +300,6 @@ class IngameChatWidget : public Widget, public ConfigListenerContainer
 			CommandHistory* mCommandHistory;
 			
 			float mElapsedTimeSinceLastUpdate;
-			std::string mPrefix;
 			
 			/**
 			 * @brief respond to the entity with given message

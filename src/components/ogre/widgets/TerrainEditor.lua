@@ -125,7 +125,7 @@ function TerrainEditor:buildWidget(world)
 		end
 		
 		connect(self.connectors, self.widget.EventFirstTimeShown, setup)
-		self.widget:loadMainSheet("TerrainEditor.layout", "TerrainEditor/")
+		self.widget:loadMainSheet("TerrainEditor.layout", "TerrainEditor")
 		self.widget:registerConsoleVisibilityToggleCommand("terrainEditor")
 		--self.widget:hide()
 	end

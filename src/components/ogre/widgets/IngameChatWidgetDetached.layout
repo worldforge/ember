@@ -1,35 +1,34 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type="EmberLook/IngameChatDetachedWindow" Name='MainWindow/Detached'>
-		<Property Name='UnifiedSize' Value='{{0,250},{0,400}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,0.0}}'/>
-		<Property Name='InheritsAlpha' Value='true'/>
-		<Property Name='Text' Value='Dialog with XX'/>
+<GUILayout version="4">
+	<Window name="Detached" type="EmberLook/IngameChatDetachedWindow">
+		<Property name="Size" value="{{0,250},{0,400}}" />
+		<Property name="Position" value="{{0.0,0.0},{0.0,0.0}}" />
+		<Property name="InheritsAlpha" value="true" />
+		<Property name="Text" value="Dialog with XX" />
 		
-		<Window Type='EmberLook/Button' Name='MainWindow/Detached/TradeButton'>
-			<Property Name='UnifiedSize' Value='{{0.0,75.0},{0.0,25}}'/>
-			<Property Name='UnifiedPosition' Value='{{1.0,-75.0},{0.0,0.0}}'/>
-			<Property Name='Text' Value='Trade'/>
+		<Window name="TradeButton" type="EmberLook/Button">
+			<Property name="Size" value="{{0.0,75.0},{0.0,25}}" />
+			<Property name="Position" value="{{1.0,-75.0},{0.0,0.0}}" />
+			<Property name="Text" value="Trade" />
 		</Window>
-		<Window Type='EmberLook/StaticText' Name='MainWindow/Detached/ChatHistory'>
-			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.6,-25.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.0,25.0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-			<Property Name='VertFormatting' Value='TopAligned'/>
-			<Property Name='HorzScrollbar' Value='False'/>
-			<Property Name='VertScrollbar' Value='True'/>
+		<Window name="ChatHistory" type="EmberLook/StaticText">
+			<Property name="Size" value="{{1.0,0.0},{0.6,-25.0}}" />
+			<Property name="Position" value="{{0.0,0.0},{0.0,25.0}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+			<Property name="VertFormatting" value="TopAligned" />
+			<Property name="HorzScrollbar" value="False" />
+			<Property name="VertScrollbar" value="True" />
 		</Window>
-		<Window Type='EmberLook/ScrollablePane' Name='MainWindow/Detached/ResponseContainer'>
-			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.4,-25}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.6,0.0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
+		<Window name="ResponseContainer" type="EmberLook/ScrollablePane">
+			<Property name="Size" value="{{1.0,0.0},{0.4,-25}}" />
+			<Property name="Position" value="{{0.0,0.0},{0.6,0.0}}" />
+			<Property name="InheritsAlpha" value="true" />
 			
-			<!-- response list is declared in IngameChatWidgetAttached.layout -->
+			
 		</Window>
-		<Window Type='EmberLook/Editbox' Name='MainWindow/Detached/Editbox'>
-			<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0,25}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-25.0}}'/>
+		<Window name="Editbox" type="EmberLook/Editbox">
+			<Property name="Size" value="{{1.0,0.0},{0.0,25}}" />
+			<Property name="Position" value="{{0.0,0.0},{1.0,-25.0}}" />
 		</Window>
 	</Window>
 </GUILayout>

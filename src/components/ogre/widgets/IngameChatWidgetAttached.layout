@@ -1,34 +1,33 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type="DefaultWindow" Name='MainWindow/Attached'>
-		<Property Name='UnifiedSize' Value='{{0.00,300.0},{0.0,115.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{-0.25,0},{0,0}}'/>
-		<Property Name='ClippedByParent' Value='false' />
-		<Property Name='MousePassThroughEnabled' Value='true'/>
+<GUILayout version="4">
+	<Window name="Attached" type="DefaultWindow">
+		<Property name="Size" value="{{0.00,300.0},{0.0,115.0}}" />
+		<Property name="Position" value="{{-0.25,0},{0,0}}" />
+		<Property name="ClippedByParent" value="false" />
+		<Property name="MousePassThroughEnabled" value="true" />
 		
-		<Window Type='EmberLook/IngameChatTextButton' Name='MainWindow/Attached/Text'>
-			<Property Name='UnifiedSize' Value='{{0.4,0.0},{0.85,0.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0.15,0.0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='Tooltip' Value='Click to open chat window.' />
+		<Window name="Text" type="EmberLook/IngameChatTextButton">
+			<Property name="Size" value="{{0.4,0.0},{0.85,0.0}}" />
+			<Property name="Position" value="{{0.0,0.0},{0.15,0.0}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="TooltipText" value="Click to open chat window." />
 		</Window>
-		<Window Type='DefaultWindow' Name='MainWindow/Attached/ResponseContainer'>
-			<Property Name='UnifiedSize' Value='{{0.4,0.0},{0.85,0.0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0.6,0.0},{0.15,0.0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='MousePassThroughEnabled' Value='true'/>
+		<Window name="ResponseContainer" type="DefaultWindow">
+			<Property name="Size" value="{{0.4,0.0},{0.85,0.0}}" />
+			<Property name="Position" value="{{0.6,0.0},{0.15,0.0}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="MousePassThroughEnabled" value="true" />
 			
-			<Window Type='VerticalLayoutContainer' Name='MainWindow/Attached/ResponseContainer/ResponseList'>
-				<Property Name='InheritsAlpha' Value='true'/>
-				<Property Name='MousePassThroughEnabled' Value='true'/>
+			<Window name="ResponseList" type="VerticalLayoutContainer">
+				<Property name="InheritsAlpha" value="true" />
+				<Property name="MousePassThroughEnabled" value="true" />
 			</Window>
 			
-			<Window Type='EmberLook/Button' Name='MainWindow/Attached/ResponseContainer/EllipsisButton'>
-				<Property Name='UnifiedSize' Value='{{1.0,0.0},{0.0, 20.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,0.0},{1.0,-20.0}}'/>
-				<Property Name='AlwaysOnTop' Value='true'/>
-				<Property Name='Text' Value='...'/>
-				<Property Name='Visible' Value='false'/>
+			<Window name="EllipsisButton" type="EmberLook/Button">
+				<Property name="Size" value="{{1.0,0.0},{0.0, 20.0}}" />
+				<Property name="Position" value="{{0.0,0.0},{1.0,-20.0}}" />
+				<Property name="AlwaysOnTop" value="true" />
+				<Property name="Text" value="..." />
+				<Property name="Visible" value="false" />
 			</Window>
 		</Window>
 	</Window>

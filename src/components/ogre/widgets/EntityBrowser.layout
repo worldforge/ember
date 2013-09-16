@@ -1,155 +1,154 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='EmberLook/FrameWindow' Name='Mainwindow'>
-		<Property Name='Visible' Value='false'/>
-		<Property Name='UnifiedSize' Value='{{0,400.0},{0,400.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{0.0,0.0},{0,0.0}}'/>
-		<Property Name='Alpha' Value='0.6'/>
-		<Property Name='Text' Value='Entity browser'/>
-		<Window Type='DefaultWindow' Name='MainInnerWindow'>
-			<Property Name='UnifiedPosition' Value='{{0.0,4},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{1,-8},{1,0}}'/>
-			<Property Name='InheritsAlpha' Value='True'/>
-			<Window Type='EmberLook/TabControl' Name='MainTabControl'>
-				<Property Name='UnifiedSize' Value='{{1.0,-8.0},{1.00,-8.0}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.0,4.0},{0.0,4.0}}'/>
-				<Property Name='InheritsAlpha' Value='true'/>
-				<Window Type='DefaultWindow' Name='Eris'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Eris'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='true'/>
-					<Window Type='EmberLook/Editbox' Name='FilterEntities'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-50}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+<GUILayout version="4">
+	<Window name="Mainwindow" type="EmberLook/FrameWindow">
+		<Property name="Visible" value="false" />
+		<Property name="Size" value="{{0,400.0},{0,400.0}}" />
+		<Property name="Position" value="{{0.0,0.0},{0,0.0}}" />
+		<Property name="Alpha" value="0.6" />
+		<Property name="Text" value="Entity browser" />
+		<Window name="MainInnerWindow" type="DefaultWindow">
+			<Property name="Position" value="{{0.0,4},{0,0}}" />
+			<Property name="Size" value="{{1,-8},{1,0}}" />
+			<Property name="InheritsAlpha" value="True" />
+			<Window name="MainTabControl" type="EmberLook/TabControl">
+				<Property name="Size" value="{{1.0,-8.0},{1.00,-8.0}}" />
+				<Property name="Position" value="{{0.0,4.0},{0.0,4.0}}" />
+				<Property name="InheritsAlpha" value="true" />
+				<Window name="Eris" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="Eris" />
+					<Property name="InheritsAlpha" value="false" />
+					<Property name="Visible" value="true" />
+					<Window name="FilterEntities" type="EmberLook/Editbox">
+						<Property name="Position" value="{{0,0},{1.0,-50}}" />
+						<Property name="Size" value="{{0,75},{0,25}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='Refresh'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="Refresh" type="EmberLook/Button">
+						<Property name="Position" value="{{0,0},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Refresh" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Listbox' Name='EntityList'>
-						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="EntityList" type="EmberLook/Listbox">
+						<Property name="Position" value="{{0,4},{0,4}}" />
+						<Property name="Size" value="{{0,200},{1,-70}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
 				</Window>
-				<Window Type='DefaultWindow' Name='Ogre'>
-					<Property Name='UnifiedSize' Value='{{1.0,0.0},{1.0,0.0}}'/>
-					<Property Name='Text' Value='Ogre'/>
-					<Property Name='InheritsAlpha' Value='false'/>
-					<Property Name='Visible' Value='false'/>
-					<Window Type='EmberLook/Editbox' Name='FilterSceneNodes'>
-						<Property Name='UnifiedPosition' Value='{{0,4},{1.0,-65}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+				<Window name="Ogre" type="DefaultWindow">
+					<Property name="Size" value="{{1.0,0.0},{1.0,0.0}}" />
+					<Property name="Text" value="Ogre" />
+					<Property name="InheritsAlpha" value="false" />
+					<Property name="Visible" value="false" />
+					<Window name="FilterSceneNodes" type="EmberLook/Editbox">
+						<Property name="Position" value="{{0,4},{1.0,-65}}" />
+						<Property name="Size" value="{{0,75},{0,25}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Button' Name='RefreshSceneNodes'>
-						<Property Name='UnifiedPosition' Value='{{0,0},{1.0,-20}}'/>
-						<Property Name='UnifiedSize' Value='{{0,75},{0,20}}'/>
-						<Property Name='Text' Value='Refresh'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="RefreshSceneNodes" type="EmberLook/Button">
+						<Property name="Position" value="{{0,0},{1.0,-20}}" />
+						<Property name="Size" value="{{0,75},{0,20}}" />
+						<Property name="Text" value="Refresh" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/Listbox' Name='SceneNodesList'>
-						<Property Name='UnifiedPosition' Value='{{0,4},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{0,200},{1,-70}}'/>
-						<Property Name='InheritsAlpha' Value='True'/>
+					<Window name="SceneNodesList" type="EmberLook/Listbox">
+						<Property name="Position" value="{{0,4},{0,4}}" />
+						<Property name="Size" value="{{0,200},{1,-70}}" />
+						<Property name="InheritsAlpha" value="True" />
 					</Window>
-					<Window Type='EmberLook/StaticText' Name='SceneNodeInfo'>
-						<Property Name='UnifiedPosition' Value='{{0,205},{0,4}}'/>
-						<Property Name='UnifiedSize' Value='{{1,-210},{1,-70}}'/>
-						<Property Name='Text' Value=''/>
-						<Property Name='InheritsAlpha' Value='True'/>
-						<Property Name='VertFormatting' Value='TopAligned'/>
-						<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-						<Window Type='DefaultWindow' Name='SceneNodeInfo/Position'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-							<Property Name='UnifiedSize' Value='{{0,200},{0,25}}'/>
-							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Position/Text'>
-								<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
-								<Property Name='Text' Value='Pos.:'/>
-								<Property Name='InheritsAlpha' Value='True'/>
-								<Property Name='VertFormatting' Value='TopAligned'/>
-								<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-								<Property Name='FrameEnabled' Value='false'/>
+					<Window name="SceneNodeInfo" type="EmberLook/StaticText">
+						<Property name="Position" value="{{0,205},{0,4}}" />
+						<Property name="Size" value="{{1,-210},{1,-70}}" />
+						<Property name="Text" value="" />
+						<Property name="InheritsAlpha" value="True" />
+						<Property name="VertFormatting" value="TopAligned" />
+						<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+						<Window name="Position" type="DefaultWindow">
+							<Property name="Position" value="{{0,0},{0,0}}" />
+							<Property name="Size" value="{{0,200},{0,25}}" />
+							<Window name="Text" type="EmberLook/StaticText">
+								<Property name="Position" value="{{0,0},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
+								<Property name="Text" value="Pos.:" />
+								<Property name="InheritsAlpha" value="True" />
+								<Property name="VertFormatting" value="TopAligned" />
+								<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+								<Property name="FrameEnabled" value="false" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/X'>
-								<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="X" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,50},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/Y'>
-								<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="Y" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,100},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Position/Z'>
-								<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="Z" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,150},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
 						</Window>
-						<Window Type='DefaultWindow' Name='SceneNodeInfo/Orientation'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
-							<Property Name='UnifiedSize' Value='{{0,250},{0,30}}'/>
-							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Orientation/Text'>
-								<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
-								<Property Name='Text' Value='Orient.:'/>
-								<Property Name='InheritsAlpha' Value='True'/>
-								<Property Name='VertFormatting' Value='TopAligned'/>
-								<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-								<Property Name='FrameEnabled' Value='false'/>
+						<Window name="Orientation" type="DefaultWindow">
+							<Property name="Position" value="{{0,0},{0,30}}" />
+							<Property name="Size" value="{{0,250},{0,30}}" />
+							<Window name="Text" type="EmberLook/StaticText">
+								<Property name="Position" value="{{0,0},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
+								<Property name="Text" value="Orient.:" />
+								<Property name="InheritsAlpha" value="True" />
+								<Property name="VertFormatting" value="TopAligned" />
+								<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+								<Property name="FrameEnabled" value="false" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/X'>
-								<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="X" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,50},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Y'>
-								<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="Y" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,100},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Z'>
-								<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="Z" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,150},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Orientation/Scalar'>
-								<Property Name='UnifiedPosition' Value='{{0,200},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="Scalar" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,200},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
 						</Window>
-						<Window Type='DefaultWindow' Name='SceneNodeInfo/Scale'>
-							<Property Name='UnifiedPosition' Value='{{0,0},{0,60}}'/>
-							<Property Name='UnifiedSize' Value='{{0,200},{0,55}}'/>
-							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Scale/Text'>
-								<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
-								<Property Name='Text' Value='Scale:'/>
-								<Property Name='InheritsAlpha' Value='True'/>
-								<Property Name='VertFormatting' Value='TopAligned'/>
-								<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-								<Property Name='FrameEnabled' Value='false'/>
+						<Window name="Scale" type="DefaultWindow">
+							<Property name="Position" value="{{0,0},{0,60}}" />
+							<Property name="Size" value="{{0,200},{0,55}}" />
+							<Window name="Text" type="EmberLook/StaticText">
+								<Property name="Position" value="{{0,0},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
+								<Property name="Text" value="Scale:" />
+								<Property name="InheritsAlpha" value="True" />
+								<Property name="VertFormatting" value="TopAligned" />
+								<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+								<Property name="FrameEnabled" value="false" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Scale/X'>
-								<Property Name='UnifiedPosition' Value='{{0,50},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="X" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,50},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Scale/Y'>
-								<Property Name='UnifiedPosition' Value='{{0,100},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="Y" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,100},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
-							<Window Type='EmberLook/Editbox' Name='SceneNodeInfo/Scale/Z'>
-								<Property Name='UnifiedPosition' Value='{{0,150},{0,0}}'/>
-								<Property Name='UnifiedSize' Value='{{0,45},{0,25}}'/>
+							<Window name="Z" type="EmberLook/Editbox">
+								<Property name="Position" value="{{0,150},{0,0}}" />
+								<Property name="Size" value="{{0,45},{0,25}}" />
 							</Window>
-							<Window Type='EmberLook/StaticText' Name='SceneNodeInfo/Scale/SizeText'>
-								<Property Name='UnifiedPosition' Value='{{0,0},{0,30}}'/>
-								<Property Name='UnifiedSize' Value='{{1,0},{0,25}}'/>
-								<Property Name='Text' Value='Size:'/>
-								<Property Name='InheritsAlpha' Value='True'/>
-								<Property Name='VertFormatting' Value='TopAligned'/>
-								<Property Name='HorzFormatting' Value='WordWrapLeftAligned'/>
-								<Property Name='FrameEnabled' Value='false'/>
+							<Window name="SizeText" type="EmberLook/StaticText">
+								<Property name="Position" value="{{0,0},{0,30}}" />
+								<Property name="Size" value="{{1,0},{0,25}}" />
+								<Property name="Text" value="Size:" />
+								<Property name="InheritsAlpha" value="True" />
+								<Property name="VertFormatting" value="TopAligned" />
+								<Property name="HorzFormatting" value="WordWrapLeftAligned" />
+								<Property name="FrameEnabled" value="false" />
 							</Window>
 						</Window>
 					</Window>

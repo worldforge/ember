@@ -23,8 +23,8 @@
 
 #include "ActionBarIcon.h"
 
-#include <elements/CEGUIDragContainer.h>
-#include <CEGUIWindowManager.h>
+#include <CEGUI/widgets/DragContainer.h>
+#include <CEGUI/WindowManager.h>
 
 using namespace CEGUI;
 namespace Ember {

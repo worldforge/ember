@@ -9,7 +9,7 @@ loadScript("DefaultEntityActions.lua")
 --Build the action bar creator widget.
 function ActionBarCreator:buildCEGUIWidget()
 	self.widget = guiManager:createWidget()
-	self.widget:loadMainSheet("ActionBarCreator.layout", "ActionBarCreator/")
+	self.widget:loadMainSheet("ActionBarCreator.layout", "ActionBarCreator")
 	self.widget:registerConsoleVisibilityToggleCommand("actionBarCreator")
 	
 	self.createHButton = CEGUI.toPushButton(self.widget:getWindow("Create_Horiz"))

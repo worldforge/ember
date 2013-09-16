@@ -1,60 +1,59 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='MainWindow'>
-		<Property Name='UnifiedSize' Value='{{0.0,128.0},{0.0,128.0}}'/>
-		<Property Name='UnifiedPosition' Value='{{1,-128.0},{0,0.0}}'/>
-		<Property Name='Visible' Value='true'/>
-		<Property Name='AlwaysOnTop' Value='true'/>
-		<Property Name='InheritsAlpha' Value='false'/>
-		<Window Type='EmberLook/StaticImage' Name='MainBackground'>
-			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='BackgroundEnabled' Value='false'/>
-			<Property Name='FrameEnabled' Value='false'/>
-			<Property Name='MousePassThroughEnabled' Value='true'/>
-			<Property Name='RiseOnClick' Value='false'/>
+<GUILayout version="4">
+	<Window name="MainWindow" type="DefaultWindow">
+		<Property name="Size" value="{{0.0,128.0},{0.0,128.0}}" />
+		<Property name="Position" value="{{1,-128.0},{0,0.0}}" />
+		<Property name="Visible" value="true" />
+		<Property name="AlwaysOnTop" value="true" />
+		<Property name="InheritsAlpha" value="false" />
+		<Window name="MainBackground" type="EmberLook/StaticImage">
+			<Property name="Size" value="{{1,0},{1,0}}" />
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="MousePassThroughEnabled" value="true" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/StaticImage' Name='RenderImage'>
-			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='InheritsAlpha' Value='false'/>
-			<Property Name='Alpha' Value='1.0'/>
-			<Property Name='BackgroundEnabled' Value='false'/>
-			<Property Name='FrameEnabled' Value='false'/>
-			<Property Name='RiseOnClick' Value='false'/>
+		<Window name="RenderImage" type="EmberLook/StaticImage">
+			<Property name="Size" value="{{1,0},{1,0}}" />
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="InheritsAlpha" value="false" />
+			<Property name="Alpha" value="1.0" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
-		<Window Type='EmberLook/StaticImage' Name='MainOverlay'>
-			<Property Name='UnifiedSize' Value='{{1,0},{1,0}}'/>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='InheritsAlpha' Value='true'/>
-			<Property Name='BackgroundEnabled' Value='false'/>
-			<Property Name='FrameEnabled' Value='false'/>
-			<Property Name='MousePassThroughEnabled' Value='true'/>
-			<Property Name='Image' Value='set:compass image:full' />
-			<Property Name='RiseOnClick' Value='false'/>
-			<Window Type='EmberLook/StaticImage' Name='Pointer'>
-				<Property Name='UnifiedSize' Value='{{0,32},{0,32}}'/>
-				<Property Name='UnifiedPosition' Value='{{0.5,-16},{0.5,-16}}'/>
-				<Property Name='InheritsAlpha' Value='true'/>
-				<Property Name='BackgroundEnabled' Value='false'/>
-				<Property Name='FrameEnabled' Value='false'/>
-				<Property Name='MousePassThroughEnabled' Value='true'/>
-				<Property Name='Image' Value='set:compass image:full' />
-				<Property Name='RiseOnClick' Value='false'/>
+		<Window name="MainOverlay" type="EmberLook/StaticImage">
+			<Property name="Size" value="{{1,0},{1,0}}" />
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="InheritsAlpha" value="true" />
+			<Property name="BackgroundEnabled" value="false" />
+			<Property name="FrameEnabled" value="false" />
+			<Property name="MousePassThroughEnabled" value="true" />
+			<Property name="Image" value="compass/full" />
+			<Property name="RiseOnClickEnabled" value="false" />
+			<Window name="Pointer" type="EmberLook/StaticImage">
+				<Property name="Size" value="{{0,32},{0,32}}" />
+				<Property name="Position" value="{{0.5,-16},{0.5,-16}}" />
+				<Property name="InheritsAlpha" value="true" />
+				<Property name="BackgroundEnabled" value="false" />
+				<Property name="FrameEnabled" value="false" />
+				<Property name="MousePassThroughEnabled" value="true" />
+				<Property name="Image" value="compass/full" />
+				<Property name="RiseOnClickEnabled" value="false" />
 			</Window>
 		</Window>
-		<Window Type='EmberLook/Button' Name='ZoomIn'>
-			<Property Name='UnifiedPosition' Value='{{1,-20},{1.0,-40}}'/>
-			<Property Name='UnifiedSize' Value='{{0,20},{0,20}}'/>
-			<Property Name='Text' Value='+'/>
-			<Property Name='InheritsAlpha' Value='True'/>
+		<Window name="ZoomIn" type="EmberLook/Button">
+			<Property name="Position" value="{{1,-20},{1.0,-40}}" />
+			<Property name="Size" value="{{0,20},{0,20}}" />
+			<Property name="Text" value="+" />
+			<Property name="InheritsAlpha" value="True" />
 		</Window>	
-		<Window Type='EmberLook/Button' Name='ZoomOut'>
-			<Property Name='UnifiedPosition' Value='{{1,-40},{1.0,-20}}'/>
-			<Property Name='UnifiedSize' Value='{{0,20},{0,20}}'/>
-			<Property Name='Text' Value='-'/>
-			<Property Name='InheritsAlpha' Value='True'/>
+		<Window name="ZoomOut" type="EmberLook/Button">
+			<Property name="Position" value="{{1,-40},{1.0,-20}}" />
+			<Property name="Size" value="{{0,20},{0,20}}" />
+			<Property name="Text" value="-" />
+			<Property name="InheritsAlpha" value="True" />
 		</Window>	
 	</Window>
 </GUILayout>

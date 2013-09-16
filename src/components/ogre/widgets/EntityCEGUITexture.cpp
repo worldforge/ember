@@ -25,10 +25,11 @@
 #endif
 
 #include "EntityCEGUITexture.h"
-#include <CEGUIWindowManager.h>
-#include <CEGUIImagesetManager.h>
-#include <CEGUIImageset.h>
-#include <CEGUIRenderer.h>
+#include <CEGUI/WindowManager.h>
+#include <CEGUI/ImageManager.h>
+#include <CEGUI/Renderer.h>
+#include <CEGUI/BasicImage.h>
+#include <CEGUI/Texture.h>
 
 #include "../EmberOgre.h"
 #include "../GUIManager.h"
@@ -46,14 +47,14 @@ namespace Gui {
 
 
 EntityCEGUITexture::EntityCEGUITexture(const std::string& imageSetName, int width, int height)
-: mImage(0), mImageSet(0), mWidth(width), mHeight(height), mRenderContext(new SimpleRenderContext(imageSetName, width, height)), mCeguiTexture(0)
+: mImage(0), mWidth(width), mHeight(height), mRenderContext(new SimpleRenderContext(imageSetName, width, height)), mCeguiTexture(0)
 {
 	createImage(imageSetName);
 }
 
 EntityCEGUITexture::~EntityCEGUITexture()
 {
-	CEGUI::ImagesetManager::getSingleton().destroy(mImageSet->getName());
+	CEGUI::ImageManager::getSingleton().destroy(*mImage);
 	GUIManager::getSingleton().getGuiRenderer()->destroyTexture(*mCeguiTexture);
 }
 
@@ -70,23 +71,29 @@ void EntityCEGUITexture::createImage(const std::string& imageSetName)
 	Ogre::TexturePtr texturePtr(mRenderContext->getTexture());
 	mCeguiTexture = &GUIManager::getSingleton().createTexture(texturePtr);
 
-	//we need a imageset in order to create GUI elements from the ceguiTexture
-	S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");
-	mImageSet = &CEGUI::ImagesetManager::getSingleton().create(imageSetName + "_EntityCEGUITextureImageset", *mCeguiTexture);
+//	//we need a imageset in order to create GUI elements from the ceguiTexture
+//	S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName + "_EntityCEGUITextureImageset");
+	mImage = &CEGUI::ImageManager::getSingleton().create("BasicImage", imageSetName + "_EntityCEGUITextureImageset");
+	CEGUI::BasicImage* basicImage = static_cast<CEGUI::BasicImage*>(mImage);
+	basicImage->setTexture(mCeguiTexture);
+	basicImage->setArea(CEGUI::Rectf(0,0, mCeguiTexture->getSize().d_width, mCeguiTexture->getSize().d_height));
+	basicImage->setNativeResolution(mCeguiTexture->getSize());
+	basicImage->setAutoScaled(CEGUI::ASM_Both);
 
-	int width = 1;
-	int height = 1;
-	if (!texturePtr.isNull()) {
-		width = texturePtr->getWidth();
-		height = texturePtr->getHeight();
-	}
 
-	//we only want one element: the whole texture
-	//the width and height of the texture differs from the supplied width of this instance since it will have been adjusted to a power-of-two size
-	mImageSet->defineImage("full_image", CEGUI::Rect(0, 0, width, height), CEGUI::Point(0,0));
+//	int width = 1;
+//	int height = 1;
+//	if (!texturePtr.isNull()) {
+//		width = texturePtr->getWidth();
+//		height = texturePtr->getHeight();
+//	}
 
-	//assign our image element to the StaticImage widget
-	mImage = &mImageSet->getImage("full_image");
+//	//we only want one element: the whole texture
+//	//the width and height of the texture differs from the supplied width of this instance since it will have been adjusted to a power-of-two size
+//	mImageSet->defineImage("full_image", CEGUI::Rect<>(0, 0, width, height), CEGUI::Point(0,0));
+//
+//	//assign our image element to the StaticImage widget
+//	mImage = &mImageSet->getImage("full_image");
 
 }
 

@@ -1,11 +1,10 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<GUILayout>
-	<Window Type='DefaultWindow' Name='NumberAdapter'>
-		<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-		<Property Name='UnifiedSize' Value='{{0,75},{0,25}}'/>
-		<Window Type='EmberLook/Combobox' Name='Number'>
-			<Property Name='UnifiedPosition' Value='{{0,0},{0,0}}'/>
-			<Property Name='UnifiedSize' Value='{{0,75},{0,100}}'/>
+<GUILayout version="4">
+	<Window name="NumberAdapter" type="DefaultWindow">
+		<Property name="Position" value="{{0,0},{0,0}}" />
+		<Property name="Size" value="{{0,75},{0,25}}" />
+		<Window name="Number" type="EmberLook/Combobox">
+			<Property name="Position" value="{{0,0},{0,0}}" />
+			<Property name="Size" value="{{0,75},{0,100}}" />
 		</Window>
 		</Window>
 </GUILayout>

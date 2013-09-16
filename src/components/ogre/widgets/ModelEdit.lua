@@ -598,7 +598,7 @@ function ModelEdit:buildWidget()
 		
 		self.models = self.widget:getWindow("Models")
 		self.models = CEGUI.toListbox(self.models)
-		self.models:subscribeEvent("ItemSelectionChanged", function(args)
+		self.models:subscribeEvent("SelectionChanged", function(args)
 			local item = self.models:getFirstSelectedItem()
 			self:loadModelDefinition(item:getText())
 			return true
@@ -664,7 +664,7 @@ function ModelEdit:buildWidget()
 		
 		self.contentparts.modelInfo.meshlist = self.widget:getWindow("MeshList")
 		self.contentparts.modelInfo.meshlist = CEGUI.toListbox(self.contentparts.modelInfo.meshlist)
-		self.contentparts.modelInfo.meshlist:subscribeEvent("ItemSelectionChanged", function()
+		self.contentparts.modelInfo.meshlist:subscribeEvent("SelectionChanged", function()
 			local item = self.contentparts.modelInfo.meshlist:getFirstSelectedItem()
 			if item then
 				self:previewMesh(item:getText())
@@ -678,7 +678,7 @@ function ModelEdit:buildWidget()
 		
 		self.contentparts.submeshInfo.materiallist = self.widget:getWindow("Materials")
 		self.contentparts.submeshInfo.materiallist = CEGUI.toListbox(self.contentparts.submeshInfo.materiallist)
-		self.contentparts.submeshInfo.materiallist:subscribeEvent("ItemSelectionChanged", function(args)
+		self.contentparts.submeshInfo.materiallist:subscribeEvent("SelectionChanged", function(args)
 			local item = self.contentparts.submeshInfo.materiallist:getFirstSelectedItem()
 			if item then 
 				local material = item:getText()
@@ -867,12 +867,12 @@ function ModelEdit:buildWidget()
 				self.modelHelper:hideAttachPointHelper()
 			end
 		end
-		self.attachPointsList:subscribeEvent("ItemSelectionChanged", function(args)
+		self.attachPointsList:subscribeEvent("SelectionChanged", function(args)
 			updateAttachPointPreview()
 			return true
 		end)
 		
-		attachPointPreviewModelList:subscribeEvent("ItemSelectionChanged", function(args)
+		attachPointPreviewModelList:subscribeEvent("SelectionChanged", function(args)
 			updateAttachPointPreview()
 			return true
 		end)
@@ -940,7 +940,7 @@ function ModelEdit:buildWidget()
 		
 		
 		self.posesList = CEGUI.toListbox(self.widget:getWindow("PoseList"))
-		self.posesList:subscribeEvent("ItemSelectionChanged", function(args)
+		self.posesList:subscribeEvent("SelectionChanged", function(args)
 			local item = self.posesList:getFirstSelectedItem()
 			if item then
 				local poseDefWrapper = self.posesList.model[item:getID()]
@@ -959,7 +959,7 @@ function ModelEdit:buildWidget()
 		
 		
 		local poseImage = self.widget:getWindow("PoseImage")
-		self.poseRenderer = Ember.OgreView.Gui.ModelRenderer:new(poseImage)
+		self.poseRenderer = Ember.OgreView.Gui.ModelRenderer:new(poseImage, "PoseImage")
 		self.poseRendererManipulator = Ember.OgreView.Gui.CombinedEntityTextureManipulator:new(poseImage, self.poseRenderer:getEntityTexture())
 		self.poseRenderer:showAxis();
 		self.poseRenderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
@@ -1027,7 +1027,7 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
-		poseIgnoreEntityDataCheckbox:subscribeEvent("CheckStateChanged", function(args)
+		poseIgnoreEntityDataCheckbox:subscribeEvent("SelectStateChanged", function(args)
 			if self.poseRenderer.poseDefWrapper then
 				self.poseRenderer.poseDefWrapper.def.IgnoreEntityData = poseIgnoreEntityDataCheckbox:isSelected()
 			end
@@ -1111,7 +1111,7 @@ function ModelEdit:buildWidget()
 		self.modelcontentstree = self.widget:getWindow("ModelContentsTree")
 		self.modelcontentstree = tolua.cast(self.modelcontentstree,"CEGUI::Tree")
 		self.modelcontentstree:setMultiselectEnabled(false)
-		self.modelcontentstree:subscribeEvent("ItemSelectionChanged", function(args)
+		self.modelcontentstree:subscribeEvent("SelectionChanged", function(args)
 			self:showModelContent(self.modelcontentstree:getFirstSelectedItem())
 			return true
 		end)
@@ -1124,7 +1124,7 @@ function ModelEdit:buildWidget()
 		
 		self.partShown = self.widget:getWindow("Shown")
 		self.partShown = CEGUI.toCheckbox(self.partShown)
-		self.partShown:subscribeEvent("CheckStateChanged", function(args)
+		self.partShown:subscribeEvent("SelectStateChanged", function(args)
 			local shown = self.partShown:isSelected()
 			local part = self:getSelectedPart()
 			self:updatePartShown(part, shown)	
@@ -1133,7 +1133,7 @@ function ModelEdit:buildWidget()
 			
 		
 			
-		self.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.renderImage)
+		self.renderer = Ember.OgreView.Gui.ModelRenderer:new(self.renderImage, "modelimage")
 		self.renderer:showAxis();
 		self.renderer:setCameraPositionMode(Ember.OgreView.SimpleRenderContext.CPM_WORLDCENTER)
 		self.rendererManipulator = Ember.OgreView.Gui.CombinedEntityTextureManipulator:new(self.renderImage, self.renderer:getEntityTexture())
@@ -1193,7 +1193,7 @@ function ModelEdit:buildWidget()
 		end)
 		
 		local showAxesCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Image_ShowAxes"))
-		showAxesCheckbox:subscribeEvent("CheckStateChanged", function(args)
+		showAxesCheckbox:subscribeEvent("SelectStateChanged", function(args)
 			if showAxesCheckbox:isSelected() then
 				self.renderer:showAxis()
 			else
@@ -1203,7 +1203,7 @@ function ModelEdit:buildWidget()
 		end)
 		
 		local showSkeletonCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Image_ShowSkeleton"))
-		showSkeletonCheckbox:subscribeEvent("CheckStateChanged", function(args)
+		showSkeletonCheckbox:subscribeEvent("SelectStateChanged", function(args)
 			local model = self.renderer:getModel()
 			if model then
 				if showSkeletonCheckbox:isSelected() then
@@ -1313,7 +1313,7 @@ function ModelEdit:buildWidget()
 	end
 
 	connect(self.connectors, self.widget.EventFirstTimeShown, setup, self)
-	self.widget:loadMainSheet("ModelEdit.layout", "ModelEdit/")
+	self.widget:loadMainSheet("ModelEdit.layout", "ModelEdit")
 	self.widget:registerConsoleVisibilityToggleCommand("modelEdit")
 
 end

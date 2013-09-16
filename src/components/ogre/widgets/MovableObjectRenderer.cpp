@@ -31,8 +31,8 @@
 
 #include "framework/Exception.h"
 
-#include <elements/CEGUIGUISheet.h>
-#include <CEGUIPropertyHelper.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/PropertyHelper.h>
 
 #include <OgreRoot.h>
 #include <OgreSceneNode.h>
@@ -71,15 +71,15 @@ public:
 	}
 };
 
-MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image) :
+MovableObjectRenderer::MovableObjectRenderer(CEGUI::Window* image, const std::string& name) :
 		mTexture(0), mAutoShowFull(true), mImage(image), mActive(true), mAxisEntity(0), mAxesNode(0), mWindowUpdater(0)
 {
 	int width = static_cast<int>(image->getPixelSize().d_width);
 	int height = static_cast<int>(image->getPixelSize().d_height);
 	if (width != 0 && height != 0) {
-		mTexture = new EntityCEGUITexture(image->getName().c_str(), width, height);
+		mTexture = new EntityCEGUITexture(name, width, height);
 
-		mImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(mTexture->getImage()));
+		mImage->setProperty("Image", CEGUI::PropertyHelper<CEGUI::Image*>::toString(mTexture->getImage()));
 
 		image->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&MovableObjectRenderer::image_Sized, this));
 
@@ -271,7 +271,7 @@ EntityCEGUITexture& MovableObjectRenderer::getEntityTexture()
 
 bool MovableObjectRenderer::image_Sized(const CEGUI::EventArgs& e)
 {
-	const CEGUI::Size size = mImage->getPixelSize();
+	const auto size = mImage->getPixelSize();
 	//We'll get a crash in Ogre if the width or height is 0.
 	if (size.d_width > 0.0f && size.d_height > 0.0f) {
 		mTexture->getRenderContext()->getCamera()->setAspectRatio(size.d_width / size.d_height);

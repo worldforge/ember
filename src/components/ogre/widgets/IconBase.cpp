@@ -26,9 +26,7 @@
 
 #include "IconBase.h"
 
-#include <CEGUIImagesetManager.h>
-#include <CEGUIImageset.h>
-#include <elements/CEGUIFrameWindow.h>
+#include <CEGUI/widgets/FrameWindow.h>
 #include "../GUIManager.h"
 
 using namespace CEGUI;
@@ -36,7 +34,7 @@ namespace Ember {
 namespace OgreView {
 namespace Gui {
 
-IconBase::IconBase(const std::string& name, const Image* background, const Image* foreground, const Image* borderInactive, const Image* borderActive, UVector2 size)
+IconBase::IconBase(const std::string& name, const Image* background, const Image* foreground, const Image* borderInactive, const Image* borderActive, USize size)
 : mContainer(0), mButton(0)
 {
 
@@ -49,17 +47,17 @@ IconBase::IconBase(const std::string& name, const Image* background, const Image
 //	mContainer->setBackgroundColours(colour(1,1,1,0));
 
 	mButton = static_cast<PushButton*>(WindowManager::getSingleton().createWindow(OgreView::GUIManager::getSingleton().getDefaultScheme() + "/BorderIconButton", "icons/" + name + "/button"));
-	mButton->setSize(UVector2(UDim(1, 0), UDim(1, 0)));
+	mButton->setSize(USize(UDim(1, 0), UDim(1, 0)));
 	mButton->setPosition(UVector2(UDim(0, 0), UDim(0, 0)));
 	mButton->setVisible(true);
 	mButton->setEnabled(true);
 
-	mButton->setProperty("BackImage", PropertyHelper::imageToString(background));
-	mButton->setProperty("FrontImage", PropertyHelper::imageToString(foreground));
-	mButton->setProperty("BorderNormalImage", PropertyHelper::imageToString(borderInactive));
-	mButton->setProperty("BorderHoverImage", PropertyHelper::imageToString(borderActive));
+	mButton->setProperty("BackImage", PropertyHelper<CEGUI::Image*>::toString(background));
+	mButton->setProperty("FrontImage", PropertyHelper<CEGUI::Image*>::toString(foreground));
+	mButton->setProperty("BorderNormalImage", PropertyHelper<CEGUI::Image*>::toString(borderInactive));
+	mButton->setProperty("BorderHoverImage", PropertyHelper<CEGUI::Image*>::toString(borderActive));
 
-	mContainer->addChildWindow(mButton);
+	mContainer->addChild(mButton);
 
 	mButton->render();
 
@@ -84,27 +82,22 @@ PushButton * IconBase::getButton()
 
 void IconBase::setForeground(const Image* image)
 {
-	mButton->setProperty("FrontImage", PropertyHelper::imageToString(image));
+	mButton->setProperty("FrontImage", PropertyHelper<CEGUI::Image*>::toString(image));
 }
 
 
 const Image* IconBase::loadImageFromImageset(const std::string & imagesetName, const std::string & image)
 {
-	Imageset* imageSet;
-	if (!ImagesetManager::getSingleton().isDefined(imagesetName)) {
+	if (ImageManager::getSingleton().isDefined(imagesetName + "/" + image)) {
 		try {
 			std::string imagesetFileName("cegui/datafiles/imagesets/" + imagesetName + ".imageset");
-			imageSet = &ImagesetManager::getSingleton().create(imagesetFileName);
+			ImageManager::getSingleton().loadImageset(imagesetFileName);
 		} catch (const std::exception& ex) {
 			S_LOG_WARNING("Error when loading imageset " << imagesetName << "." << ex);
 			return 0;
 		}
-	} else {
-		imageSet = &ImagesetManager::getSingleton().get(imagesetName);
 	}
-
-	return &imageSet->getImage(image);
-
+	return &ImageManager::getSingleton().get(imagesetName + "/" + image);
 }
 }
 

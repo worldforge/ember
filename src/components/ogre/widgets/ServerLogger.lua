@@ -13,7 +13,7 @@ ServerLogger.widget = guiManager:createWidget()
 
 function ServerLogger.buildWidget()
 	
-	ServerLogger.widget:loadMainSheet("ServerLogger.layout", "ServerLogger/")
+	ServerLogger.widget:loadMainSheet("ServerLogger.layout", "ServerLogger")
 	
 	--set up some useful values
 	ServerLogger.logTextWidget = ServerLogger.widget:getWindow("LogText")
@@ -47,7 +47,7 @@ function ServerLogger.ClearButton_Clicked(args)
 	ServerLogger.logTextWidget:setText("")
 end
 
-function ServerLogger.LoggingEnabled_CheckStateChanged(args)
+function ServerLogger.LoggingEnabled_SelectStateChanged(args)
 	local checkBox = CEGUI.toCheckbox(ServerLogger.widget:getWindow("LoggingEnabled"))
 	if checkBox ~= nil then
 		ServerLogger.cleanup()

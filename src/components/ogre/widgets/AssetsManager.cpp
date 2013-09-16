@@ -26,17 +26,14 @@
 
 #include "AssetsManager.h"
 #ifdef _MSC_VER
-#include <RendererModules/Ogre/CEGUIOgreRenderer.h>
-#include <RendererModules/Ogre/CEGUIOgreTexture.h>
+#include <RendererModules/Ogre/Renderer.h>
+#include <RendererModules/Ogre/Texture.h>
 #else
-#include <CEGUI/RendererModules/Ogre/CEGUIOgreRenderer.h>
-#include <CEGUI/RendererModules/Ogre/CEGUIOgreTexture.h>
+#include <CEGUI/RendererModules/Ogre/Renderer.h>
+#include <CEGUI/RendererModules/Ogre/Texture.h>
 #endif
 #include <OgreMaterialSerializer.h>
 #include "../EmberOgrePrerequisites.h"
-
-#include <CEGUIImagesetManager.h>
-#include <CEGUIImageset.h>
 
 #include "../EmberOgre.h"
 #include "../GUIManager.h"
@@ -50,6 +47,11 @@
 #include <OgreMeshSerializer.h>
 // #include <OgreBitwise.h>
 
+#include <CEGUI/Image.h>
+#include <CEGUI/BasicImage.h>
+#include <CEGUI/ImageManager.h>
+#include <CEGUI/System.h>
+#include <CEGUI/Renderer.h>
 
 namespace Ember
 {
@@ -75,7 +77,7 @@ TexturePair AssetsManager::showTexture(const std::string textureName)
 	// 		return;
 	// 	}
 	if (Ogre::TextureManager::getSingleton().resourceExists(textureName)) {
-		Ogre::TexturePtr texturePtr = static_cast<Ogre::TexturePtr> (Ogre::TextureManager::getSingleton().getByName(textureName));
+		Ogre::TexturePtr texturePtr = static_cast<Ogre::TexturePtr>(Ogre::TextureManager::getSingleton().getByName(textureName));
 		if (!texturePtr.isNull()) {
 			if (!texturePtr->isLoaded()) {
 				try {
@@ -103,27 +105,31 @@ TexturePair AssetsManager::createTextureImage(Ogre::TexturePtr texturePtr, const
 	// 		mOgreCEGUITexture = 0;
 	// 	}
 
-
-	CEGUI::Imageset* textureImageset;
-
-	if (CEGUI::ImagesetManager::getSingleton().isDefined(imageSetName)) {
-		CEGUI::ImagesetManager::getSingleton().destroy(imageSetName);
+	if (CEGUI::ImageManager::getSingleton().isDefined(imageSetName)) {
+		CEGUI::ImageManager::getSingleton().destroy(imageSetName);
 	}
-	//create a CEGUI texture from our Ogre texture
-	S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
-	CEGUI::Texture* ogreCEGUITexture = &GUIManager::getSingleton().createTexture(texturePtr);
+	auto renderer = CEGUI::System::getSingleton().getRenderer();
 
-	//we need a imageset in order to create GUI elements from the ceguiTexture
-	S_LOG_VERBOSE("Creating new CEGUI imageset with name " << imageSetName);
-	textureImageset = &CEGUI::ImagesetManager::getSingleton().create(imageSetName, *ogreCEGUITexture);
-
-	//we only want one element: the whole texture
-	textureImageset->defineImage("full_image", CEGUI::Rect(0, 0, texturePtr->getWidth(), texturePtr->getHeight()), CEGUI::Point(0, 0));
+	CEGUI::Texture* ogreCEGUITexture;
+	if (renderer->isTextureDefined(texturePtr->getName())) {
+		ogreCEGUITexture = &renderer->getTexture(texturePtr->getName());
+	} else {
+		//create a CEGUI texture from our Ogre texture
+		S_LOG_VERBOSE("Creating new CEGUI texture from Ogre texture.");
+		ogreCEGUITexture = &GUIManager::getSingleton().createTexture(texturePtr);
+	}
 
 	//assign our image element to the StaticImage widget
-	const CEGUI::Image* textureImage = &textureImageset->getImage("full_image");
+	CEGUI::Image* textureImage = &CEGUI::ImageManager::getSingleton().create("BasicImage", imageSetName);
 
-	return TexturePair(texturePtr, textureImage, textureImageset);
+	CEGUI::BasicImage* basicImage = static_cast<CEGUI::BasicImage*>(textureImage);
+	basicImage->setTexture(ogreCEGUITexture);
+	auto area = CEGUI::Rectf(0, 0, ogreCEGUITexture->getSize().d_width, ogreCEGUITexture->getSize().d_height);
+	basicImage->setArea(area);
+	basicImage->setNativeResolution(area.getSize());
+	basicImage->setAutoScaled(CEGUI::ASM_Both);
+
+	return TexturePair(texturePtr, textureImage);
 
 }
 
@@ -201,7 +207,6 @@ bool AssetsManager::exportMesh(Ogre::MeshPtr mesh, const std::string& filePath)
 // {
 //  getRenderTarget()->writeContentsToFile();
 // }
-
 
 }
 
