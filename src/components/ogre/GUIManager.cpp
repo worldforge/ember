@@ -499,18 +499,15 @@ void GUIManager::runCommand(const std::string &command, const std::string &args)
 
 		S_LOG_VERBOSE("Toggle Gui Initiated -- " << getInput().getInputMode());
 
-		if (mWindow->getViewport(0)->getOverlaysEnabled()) {
-			// disable overlays so gui disappears
+		if (mGuiRenderer->isRenderingEnabled()) {
 			S_LOG_INFO("Disabling GUI");
-			mWindow->getViewport(0)->setOverlaysEnabled(false);
+			mGuiRenderer->setRenderingEnabled(false);
 
 			getInput().removeAdapter(mCEGUIAdapter);
 
 		} else {
-
-			// enable overlays
 			S_LOG_INFO("Enabling GUI");
-			mWindow->getViewport(0)->setOverlaysEnabled(true);
+			mGuiRenderer->setRenderingEnabled(true);
 
 			getInput().addAdapter(mCEGUIAdapter);
 		}
