@@ -105,7 +105,7 @@ libEmberOgre_a_SOURCES = \
 	
 # OpcodeCollisionDetector.cpp  OpcodeCollisionDetectorVisualizer.cpp
 confdir = $(sysconfdir)/ember
-dist_conf_DATA = ogre.cfg resources.cfg terrain.cfg
+dist_conf_DATA = ogre.cfg resources.cfg
 
 
 noinst_HEADERS = \
