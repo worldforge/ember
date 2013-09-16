@@ -20,7 +20,6 @@ current=${PWD}
 original_media=`readlink -m $1`
 media_dir=`readlink -m $2`
 textureSize=$3
-user_dir=${media_dir}/media/user
 shared_dir=${media_dir}/media/shared
 shared_common_dir=${shared_dir}/common
 
@@ -216,19 +215,6 @@ do
 	cp -uf ${filename} ${shared_common_dir}/resources/ogre/caelum/${filename}
 done
 
-
-
-
-#then get the user media
-
-echo "User media"
-mkdir -p ${user_dir}
-cd ${user_dir}
-
-cd ${user_dir}
-cp -a ${srcdir}/media/README .
-cp -a ${original_media}/LICENSING.txt .
-cp -a ${original_media}/COPYING.txt .
 
 echo "Cleanup"
 unlink ${common_textures_list}
