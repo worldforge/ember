@@ -235,7 +235,17 @@ const ShaderStore& TerrainHandler::getAllShaders() const
 void TerrainHandler::addPage(TerrainPage* page)
 {
 	const Domain::TerrainPosition& pos = page->getWFPosition();
-	//TODO: check that the page doesn't already exist
+
+	auto oldPage = mTerrainPages[pos.x()][pos.y()];
+	if (oldPage) {
+		delete oldPage;
+		mTerrainPages[pos.x()][pos.y()] = nullptr;
+		auto pageIter = std::find(mPages.begin(), mPages.end(), oldPage);
+		if (pageIter != mPages.end()) {
+			mPages.erase(pageIter);
+		}
+	}
+
 	mTerrainPages[pos.x()][pos.y()] = page;
 	mPages.push_back(page);
 
