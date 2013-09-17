@@ -57,6 +57,10 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 	Ogre::MaterialPtr mat = mDataProvider.getPageData(IPageDataProvider::OgreIndex(indexX, indexY))->getMaterial();
 
 	assert(!mat.isNull() && "Returned terrain material must be non-empty");
+	if (mat.isNull()) {
+		S_LOG_WARNING("Terrain material was not found!");
+		return Ogre::MaterialManager::getSingleton().getByName("/global/primitives/axes");
+	}
 
 	Ogre::AliasTextureNamePairList aliases;
 	aliases["EmberTerrain/normalMap"] = terrain->getTerrainNormalMap()->getName();
@@ -78,11 +82,12 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generateForCompositeMap(con
 	S_LOG_INFO("Loading composite map material for terrain page: " << "[" << indexX << "|" << indexY << "]");
 
 	Ogre::MaterialPtr mat = mDataProvider.getPageData(IPageDataProvider::OgreIndex(indexX, indexY))->getCompositeMapMaterial();
-	if (mat.isNull()) {
-		S_LOG_INFO("Composite map material was not found!");
+	if (!mat.isNull()) {
+		return mat;
+	} else {
+		S_LOG_WARNING("Composite map material was not found!");
+		return Ogre::MaterialManager::getSingleton().getByName("/global/primitives/axes");
 	}
-
-	return mat;
 }
 void OgreTerrainMaterialGeneratorEmber::updateCompositeMap(const Ogre::Terrain* terrain, const Ogre::Rect& rect)
 {
