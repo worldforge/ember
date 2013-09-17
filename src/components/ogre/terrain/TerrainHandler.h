@@ -89,7 +89,7 @@ public:
 	 * @param pageIndexSize The size of one side of a page, in indices.
 	 * @param compilerTechniqueProvider Provider for terrain surface compilation techniques.
 	 */
-	TerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
+	TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider);
 
 	/**
 	 * @brief Dtor.
@@ -103,6 +103,12 @@ public:
 	 * it to complete.
 	 */
 	void shutdown();
+
+	/**
+	 * @brief Sets the size of the width of one page, in indices. This must be a power of two + 1 and at least 65.
+	 * @param pageSize The number of vertices along one side of a page. Must be a power of two + 1 and at least 65.
+	 */
+	void setPageSize(unsigned int pageSize);
 
 	/**
 	 * @brief Returns the height at the specified position in the world.
@@ -368,7 +374,7 @@ protected:
 	/**
 	 * @brief The size in indices of one side of a page.
 	 */
-	int mPageIndexSize;
+	unsigned int mPageIndexSize;
 
 	/**
 	 * @brief The terrain page surface compiler technique provider which allows Ogre Material instances to be generated for the terrain pages.

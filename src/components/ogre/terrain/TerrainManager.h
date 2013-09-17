@@ -258,6 +258,8 @@ protected:
 
 	void config_TerrainTechnique(const std::string& section, const std::string& key, varconf::Variable& variable);
 
+	void config_TerrainPageSize(const std::string& section, const std::string& key, varconf::Variable& variable);
+
 	void terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages);
 
 	void terrainHandler_ShaderCreated(const TerrainShader& shader);

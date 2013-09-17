@@ -92,9 +92,9 @@ ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& nam
 	return 0;
 }
 
-Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
+Terrain::ITerrainAdapter* Scene::createTerrainAdapter(unsigned int initialPageSize)
 {
-	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera);
+	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera, initialPageSize);
 }
 
 Ogre::Camera& Scene::getMainCamera() const

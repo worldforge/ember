@@ -80,6 +80,7 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
 	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique));
+	registerConfigListener("terrain", "pagesize", sigc::mem_fun(*this, &TerrainManager::config_TerrainPageSize));
 
 	shaderManager.EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), &shaderManager));
 
@@ -174,6 +175,16 @@ void TerrainManager::config_TerrainTechnique(const std::string& section, const s
 {
 	//TODO this is a bit crude and does more updates than necessary
 	mHandler->updateAllPages();
+}
+
+void TerrainManager::config_TerrainPageSize(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_int()) {
+		unsigned int size = static_cast<unsigned int>(static_cast<int>(variable)) + 1;
+		mTerrainAdapter->setPageSize(size);
+		mHandler->setPageSize(size);
+		mHandler->updateAllPages();
+	}
 }
 
 void TerrainManager::terrainHandler_AfterTerrainUpdate(const std::vector<WFMath::AxisBox<2>>& areas, const std::set<TerrainPage*>& pages)

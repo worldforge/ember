@@ -53,12 +53,18 @@ public:
 	virtual ~ITerrainAdapter() {}
 
 	/**
-	 * @brief Gets the size of the width of one page, in indices (so it's often a power of two + 1)
+	 * @brief Gets the size of the width of one page, in indices (so it's often a power of two + 1). This is the number of vertices along the edge of a page.
 	 *
-	 * @return 
+	 * @return The page size in indices.
 	 */
 	virtual int getPageSize() = 0;
-	
+
+	/**
+	 * @brief Sets the size of the width of one page, in indices. This must be a power of two + 1 and at least 65. Depending on the implementation, this might require a full reload.
+	 * @param size The number of vertices along one side of a page. Must be a power of two + 1 and at least 65.
+	 */
+	virtual void setPageSize(const unsigned int size) = 0;
+
 	/**
 	 * @brief Returns the height at the given position.
 	 *
@@ -211,6 +217,7 @@ public:
 	 * @param pageDataProvider The page data provider
 	 */
 	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider) = 0;
+
 };
 }
 }

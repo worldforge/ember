@@ -115,6 +115,8 @@ public:
 	{
 		// We don't use this.
 	}
+
+	virtual void setOrigin(Ogre::Real x, Ogre::Real z);
 protected:
 	IPageDataProvider& mDataProvider;
 	Ogre::Real mOriginX;

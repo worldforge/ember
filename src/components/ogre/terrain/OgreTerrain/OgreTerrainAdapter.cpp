@@ -28,6 +28,7 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 #include <OgreTerrainPaging.h>
+#include <OgrePagedWorld.h>
 #include <OgrePageManager.h>
 #include <OgreGrid2DPageStrategy.h>
 
@@ -40,9 +41,7 @@ namespace OgreView
 namespace Terrain
 {
 
-//TODO SK: provide proper arguments to terrain group, move to constants/configuration parameters
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
-		mTerrainPageSize(terrainPageSize),
 		mLoadRadius(terrainPageSize * 2),
 		mHoldRadius(terrainPageSize * 4),
 		mSceneManager(sceneManager),
@@ -52,23 +51,19 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mTerrainPagedWorldSection(nullptr),
 		mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
 		mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))),
-		mPageDataProvider(nullptr)
+		mPageDataProvider(nullptr),
+		mMaterialGenerator(nullptr)
 {
 	// Other params
 	mTerrainGlobalOptions->setSkirtSize(30.0f);
 	mTerrainGlobalOptions->setCastsDynamicShadows(true);
 	mTerrainGlobalOptions->setMaxPixelError(8);
 
+	setPageSize(terrainPageSize);
+
 	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
 	mPageManager->setPageProvider(&mTerrainPageProvider);
 	mPageManager->addCamera(mainCamera);
-	Ogre::Terrain::ImportData& defaultImportData = mTerrainGroup->getDefaultImportSettings();
-	Ogre::Vector3 origin;
-
-	origin.x = mTerrainGroup->getTerrainWorldSize() / 2;
-	origin.z = mTerrainGroup->getTerrainWorldSize() / 2;
-	origin.y = 0;
-	mTerrainGroup->setOrigin(origin);
 }
 
 OgreTerrainAdapter::~OgreTerrainAdapter()
@@ -82,6 +77,33 @@ OgreTerrainAdapter::~OgreTerrainAdapter()
 int OgreTerrainAdapter::getPageSize()
 {
 	return static_cast<int>(mTerrainGroup->getTerrainSize());
+}
+
+
+void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
+{
+	if (mTerrainPagedWorldSection) {
+		mTerrainPagedWorldSection->removeAllPages();
+	}
+	mTerrainGroup->removeAllTerrains();
+	mTerrainGroup->setTerrainSize(static_cast<Ogre::uint16>(pageSize));
+	mTerrainGroup->setTerrainWorldSize(Ogre::Real(pageSize - 1));
+	Ogre::Vector3 origin;
+	origin.x = mTerrainGroup->getTerrainWorldSize() / 2;
+	origin.z = mTerrainGroup->getTerrainWorldSize() / 2;
+	origin.y = 0;
+	mTerrainGroup->setOrigin(origin);
+	if (mMaterialGenerator) {
+		mMaterialGenerator->setOrigin(origin.x, origin.z);
+	}
+
+	mLoadRadius = (pageSize - 1) * 0.5;
+	mHoldRadius = mLoadRadius * 2;
+
+	if (mTerrainPagedWorldSection) {
+		mTerrainPagedWorldSection->setLoadRadius(mLoadRadius);
+		mTerrainPagedWorldSection->setHoldRadius(mHoldRadius);
+	}
 }
 
 Ogre::Real OgreTerrainAdapter::getHeightAt(const Ogre::Real x, const Ogre::Real z)
@@ -123,9 +145,8 @@ void OgreTerrainAdapter::loadScene()
 {
 	// Use our own material generator
 	// Initialized here because it needs a IPageDataProvider
-	mTerrainGlobalOptions->setDefaultMaterialGenerator(
-			Ogre::TerrainMaterialGeneratorPtr(OGRE_NEW OgreTerrainMaterialGeneratorEmber(*mPageDataProvider,
-					mTerrainGroup->getOrigin().x, mTerrainGroup->getOrigin().z)));
+	mMaterialGenerator = OGRE_NEW OgreTerrainMaterialGeneratorEmber(*mPageDataProvider, mTerrainGroup->getOrigin().x, mTerrainGroup->getOrigin().z);
+	mTerrainGlobalOptions->setDefaultMaterialGenerator(Ogre::TerrainMaterialGeneratorPtr(mMaterialGenerator));
 
 	mPagedWorld = mPageManager->createWorld();
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,

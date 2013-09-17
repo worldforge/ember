@@ -43,6 +43,7 @@ namespace Terrain
 {
 
 class FlatTerrainDefiner;
+class OgreTerrainMaterialGeneratorEmber;
 /**
  * @brief A ITerrainAdapter implementation which connects to and sets up the Ogre Terrain component.
  */
@@ -54,6 +55,8 @@ public:
 	virtual ~OgreTerrainAdapter();
 
 	virtual int getPageSize();
+
+	virtual void setPageSize(unsigned int pageSize);
 
 	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z);
 
@@ -96,7 +99,6 @@ public:
 	virtual void setPageDataProvider(IPageDataProvider* pageDataProvider);
 
 private:
-	const unsigned int mTerrainPageSize;
 	Ogre::Real mLoadRadius;
 	Ogre::Real mHoldRadius;
 
@@ -112,6 +114,7 @@ private:
 	Ogre::TerrainGroup* mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
+	OgreTerrainMaterialGeneratorEmber* mMaterialGenerator;
 };
 
 class FlatTerrainDefiner: public Ogre::TerrainPagedWorldSection::TerrainDefiner

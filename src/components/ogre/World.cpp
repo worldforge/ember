@@ -52,6 +52,8 @@
 #include "environment/SimpleEnvironment.h"
 
 #include "services/config/ConfigListenerContainer.h"
+#include "services/EmberServices.h"
+#include "services/config/ConfigService.h"
 
 #include "framework/MainLoopController.h"
 
@@ -84,8 +86,10 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 		mTerrainManager(0), mTerrainEntityManager(0), mLodLevelManager(new Lod::LodLevelManager(graphicalChangeAdapter, mScene->getMainCamera())),
 		mFoliage(0), mFoliageDetailManager(0), mFoliageInitializer(0), mEnvironment(0), mConfigListenerContainer(new ConfigListenerContainer()), mCalendar(new Eris::Calendar(view.getAvatar()))
 {
+	ConfigService& configService(EmberServices::getSingleton().getConfigService());
+	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
 	// Let the Scene create a suitable terrain adapter and transfer ownership to the TerrainManager
-	Terrain::ITerrainAdapter* terrainAdapter = mScene->createTerrainAdapter();
+	Terrain::ITerrainAdapter* terrainAdapter = mScene->createTerrainAdapter(pageSize);
 	mMainCamera = new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *terrainAdapter);
 	mTerrainManager = new Terrain::TerrainManager(terrainAdapter, *mScene, shaderManager, MainLoopController::getSingleton().EventFrameProcessed);
 

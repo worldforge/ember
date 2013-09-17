@@ -46,26 +46,27 @@ namespace Techniques
 
 Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t batchIndex) const
 {
-	//we need an unique name for our alpha texture
+	// we need an unique name for our alpha texture
 	std::stringstream combinedCoverageTextureNameSS;
-	combinedCoverageTextureNameSS << "terrain_" << mPosition.x() << "_" << mPosition.y() << "_combinedCoverage_" << passIndex << "_" << batchIndex;
+
+	combinedCoverageTextureNameSS << "terrain_" << mPosition.x() << "_" << mPosition.y() << "_combinedCoverage_" << passIndex << "_" << batchIndex << "_" << mCoveragePixelWidth;
 	const Ogre::String combinedCoverageName(combinedCoverageTextureNameSS.str());
 	Ogre::TexturePtr combinedCoverageTexture;
 	Ogre::TextureManager* textureMgr = Ogre::Root::getSingletonPtr()->getTextureManager();
 	if (textureMgr->resourceExists(combinedCoverageName)) {
-		S_LOG_VERBOSE("Using already created texture " << combinedCoverageName);
+		S_LOG_VERBOSE("Using already created coverage texture " << combinedCoverageName);
 		combinedCoverageTexture = static_cast<Ogre::TexturePtr>(textureMgr->getByName(combinedCoverageName));
-		combinedCoverageTexture->createInternalResources();
-	} else {
-		S_LOG_VERBOSE("Creating new texture " << combinedCoverageName);
-		int flags = Ogre::TU_DYNAMIC_WRITE_ONLY;
-		//automipmapping seems to cause some trouble on Windows, at least in OpenGL on Nvidia cards
-		//Thus we'll disable it. The performance impact shouldn't be significant.
-#ifndef _WIN32
-		flags |= Ogre::TU_AUTOMIPMAP;
-#endif
-		combinedCoverageTexture = textureMgr->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
+		return combinedCoverageTexture;
 	}
+	S_LOG_VERBOSE("Creating new coverage texture " << combinedCoverageName << " with size " << mCoveragePixelWidth);
+	int flags = Ogre::TU_DYNAMIC_WRITE_ONLY;
+	// automipmapping seems to cause some trouble on Windows, at least in OpenGL on Nvidia cards
+	// Thus we'll disable it. The performance impact shouldn't be significant.
+#ifndef _WIN32
+	flags |= Ogre::TU_AUTOMIPMAP;
+#endif // ifndef _WIN32
+	combinedCoverageTexture = textureMgr->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
+	combinedCoverageTexture->createInternalResources();
 	return combinedCoverageTexture;
 }
 

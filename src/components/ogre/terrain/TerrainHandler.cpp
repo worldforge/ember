@@ -155,7 +155,7 @@ public:
 
 };
 
-TerrainHandler::TerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
+TerrainHandler::TerrainHandler(unsigned int pageIndexSize, ICompilerTechniqueProvider& compilerTechniqueProvider) :
 	mPageIndexSize(pageIndexSize), mCompilerTechniqueProvider(compilerTechniqueProvider), mTerrainInfo(new TerrainInfo(pageIndexSize)), mTerrain(0), mHeightMax(std::numeric_limits<Ogre::Real>::min()), mHeightMin(std::numeric_limits<Ogre::Real>::max()), mHasTerrainInfo(false), mTaskQueue(new Tasks::TaskQueue(1)), mLightning(0), mHeightMap(0), mHeightMapBufferProvider(0), mSegmentManager(0)
 {
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
@@ -199,6 +199,22 @@ TerrainHandler::~TerrainHandler()
 void TerrainHandler::shutdown()
 {
 	mTaskQueue->deactivate();
+}
+
+void TerrainHandler::setPageSize(unsigned int pageSize)
+{
+	// Wait for all current tasks to finish
+	mTaskQueue->pollProcessedTasks(TimeFrame(boost::posix_time::seconds(60)));
+	// Delete all page-related data
+	mPageBridges.clear();
+	for (auto& page : mPages) {
+		delete page;
+	}
+	mPages.clear();
+	mTerrainPages.clear();
+
+	mTerrainInfo.reset(new TerrainInfo(pageSize));
+	mPageIndexSize = pageSize;
 }
 
 void TerrainHandler::getBasePoints(sigc::slot<void, Mercator::Terrain::Pointstore&>& asyncCallback)

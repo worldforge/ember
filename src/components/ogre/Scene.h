@@ -92,9 +92,10 @@ public:
 
 	/**
 	 * @brief Creates a terrain adapter which can be used to communicate with the terrain rendering system.
+	 * @param initialPageSize The initial terrain page size to pass on to the adapter.
 	 * @return An instance of the terrain adapter
 	 */
-	Terrain::ITerrainAdapter* createTerrainAdapter();
+	Terrain::ITerrainAdapter* createTerrainAdapter(unsigned int initialPageSize);
 
 	/**
 	 * @brief Gets the main camera of the scene.

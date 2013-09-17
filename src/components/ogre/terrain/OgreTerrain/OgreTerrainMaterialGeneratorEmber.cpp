@@ -101,6 +101,12 @@ void OgreTerrainMaterialGeneratorEmber::updateCompositeMap(const Ogre::Terrain* 
 
 	_renderCompositeMap(compSize, imgRect, terrain->getCompositeMapMaterial(), terrain->getCompositeMap());
 }
+
+void OgreTerrainMaterialGeneratorEmber::setOrigin(Ogre::Real x, Ogre::Real z)
+{
+	mOriginX = x;
+	mOriginZ = z;
+}
 } /* Terrain */
 } /* OgreView */
 } /* Ember */
