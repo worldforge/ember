@@ -47,8 +47,8 @@ namespace OgreView {
 	, mLastMouseX(-1)
 	, mLastMouseY(-1)
 	, mCamera(camera)
-	, mTerrainAdapter(terrainAdapter)
 	, mUpdatePositionThreshold(AvatarTerrainCursor::DEFAULT_THRESHOLD_MILLIS)
+	, mTerrainAdapter(terrainAdapter)
 	{
 		registerConfigListener("input", "terraincheckinterval", sigc::mem_fun(*this, &AvatarTerrainCursor::Config_TerrainCheckInterval));
 	}
