@@ -101,6 +101,8 @@ void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
 	mHoldRadius = mLoadRadius * 2;
 
 	if (mTerrainPagedWorldSection) {
+		mTerrainPagedWorldSection->getGridStrategyData()->setOrigin(mTerrainGroup->getOrigin());
+		mTerrainPagedWorldSection->getGridStrategyData()->setCellSize(mTerrainGroup->getTerrainWorldSize());
 		mTerrainPagedWorldSection->setLoadRadius(mLoadRadius);
 		mTerrainPagedWorldSection->setHoldRadius(mHoldRadius);
 	}
