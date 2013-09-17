@@ -96,6 +96,9 @@ usedebuglodcolors = false
 #the preferred terrain technique. Available values are: ShaderNormalMapped, Shader, Base
 preferredtechnique = Shader
 
+#The size of single terrain pages. Should be one of 64, 128, 256, 512.
+pagesize = "256"
+
 [caelum]
 #a colour value (rgba) for how much the ambient light should be multiplied
 sunambientmultiplier="0.7 0.7 0.7 1"

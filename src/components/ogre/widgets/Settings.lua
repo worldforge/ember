@@ -365,7 +365,18 @@ function SettingsWidget:buildSettingsUi()
 					
 					representationFactory = function(value) return Representations.VarconfStringComboboxRepresentation:new_local(value, true) end,
 					suggestions = {"ShaderNormalMapped", "Shader", "Base"},
-				}
+				},
+				{
+					label = "Terrain page size",
+					helpString = "The size of single terrain pages. Affects how fast pages are loaded at the start of the game and how much memory is used.",
+
+					section = "terrain",
+					key = "pagesize",
+
+					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new_local(value, true) end,
+					suggestions = {64, 128, 256, 512},
+				},
+
 			},
 		},
 		{
