@@ -56,6 +56,9 @@ Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t
 	if (textureMgr->resourceExists(combinedCoverageName)) {
 		S_LOG_VERBOSE("Using already created coverage texture " << combinedCoverageName);
 		combinedCoverageTexture = static_cast<Ogre::TexturePtr>(textureMgr->getByName(combinedCoverageName));
+		if(!combinedCoverageTexture->isLoaded()) {
+			combinedCoverageTexture->createInternalResources();
+		}
 		return combinedCoverageTexture;
 	}
 	S_LOG_VERBOSE("Creating new coverage texture " << combinedCoverageName << " with size " << mCoveragePixelWidth);
