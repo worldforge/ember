@@ -232,8 +232,7 @@ void OgreTerrainAdapter::destroyObserver(ITerrainObserver* observer)
 
 std::pair<bool, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray& ray) const
 {
-	//TODO SK: find limit value
-	Ogre::TerrainGroup::RayResult result = mTerrainGroup->rayIntersects(ray, 1000.0f);
+	Ogre::TerrainGroup::RayResult result = mTerrainGroup->rayIntersects(ray, mHoldRadius + mTerrainGroup->getTerrainWorldSize());
 	return std::pair<bool, Ogre::Vector3>(result.hit, result.position);
 }
 
