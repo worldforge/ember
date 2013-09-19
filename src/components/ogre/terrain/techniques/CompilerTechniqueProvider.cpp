@@ -71,9 +71,9 @@ TerrainPageSurfaceCompilerTechnique* CompilerTechniqueProvider::createTechnique(
 	if ((useNormalMapping || preferredTech == "Shader") && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_HIGH) {
 		//Use shader tech with shadows
 		return new Techniques::Shader(true, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, useNormalMapping);
-	} else if (preferredTech == "Shader" && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
+	} else if ((preferredTech == "Shader" || useNormalMapping) && shaderSupport && graphicsLevel >= ShaderManager::LEVEL_MEDIUM) {
 		//Use shader tech without shadows
-		return new Techniques::Shader(false, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, useNormalMapping);
+		return new Techniques::Shader(false, geometry, terrainPageSurfaces, terrainPageShadow, mSceneManager, false);
 	} else {
 		return new Techniques::Simple(geometry, terrainPageSurfaces, terrainPageShadow);
 	}
