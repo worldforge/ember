@@ -18,6 +18,7 @@
 
 #include "ShaderPass.h"
 #include "ShaderPassCoverageBatch.h"
+#include "Shader.h"
 
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
 #include "framework/LoggingInstance.h"
@@ -133,11 +134,9 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 		S_LOG_VERBOSE("Adding normal map texture unit state.");
 		Ogre::TextureUnitState* normalMapTextureUnitState = pass.createTextureUnitState();
 
-		// TODO SK: constant for name
-
 		// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
 		// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
-		normalMapTextureUnitState->setTextureNameAlias("EmberTerrain/normalMap");
+		normalMapTextureUnitState->setTextureNameAlias(Techniques::Shader::NORMAL_TEXTURE_ALIAS);
 		normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 	}
 

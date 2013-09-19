@@ -17,6 +17,7 @@
  */
 
 #include "OgreTerrainMaterialGeneratorEmber.h"
+#include "../techniques/Shader.h"
 #include "../../TerrainPageDataProvider.h"
 #include "framework/LoggingInstance.h"
 
@@ -63,8 +64,8 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 	}
 
 	Ogre::AliasTextureNamePairList aliases;
-	aliases["EmberTerrain/normalMap"] = terrain->getTerrainNormalMap()->getName();
-	aliases["EmberTerrain/compositeMap"] = terrain->getCompositeMap()->getName();
+	aliases[Techniques::Shader::NORMAL_TEXTURE_ALIAS] = terrain->getTerrainNormalMap()->getName();
+	aliases[Techniques::Shader::COMPOSITE_MAP_ALIAS] = terrain->getCompositeMap()->getName();
 
 	bool success = mat->applyTextureAliases(aliases);
 	if (!success) {

@@ -48,6 +48,16 @@ class Shader : public Base
 {
 public:
 
+	/**
+	 * @brief The alias name for the normal texture used in shaders.
+	 */
+	static const std::string NORMAL_TEXTURE_ALIAS;
+
+	/**
+	 * @brief The alias name for the composite map texture used in shaders.
+	 */
+	static const std::string COMPOSITE_MAP_ALIAS;
+
     /**
      * @brief Ctor.
      * @param includeShadows If true, shadows will be used.

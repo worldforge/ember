@@ -39,6 +39,8 @@ namespace Terrain
 
 namespace Techniques
 {
+const std::string Shader::NORMAL_TEXTURE_ALIAS = "EmberTerrain/NormalTexture";
+const std::string Shader::COMPOSITE_MAP_ALIAS  = "EmberTerrain/CompositeMap";
 
 Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool UseNormalMapping) :
 	Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager), mUseNormalMapping(UseNormalMapping)
@@ -179,7 +181,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 	// Set up an alias for the normal texture. This way the terrain implementation can generate the normal texture at a later time and link it to this material.
 	// With the Ogre Terrain Component, this is set up in OgreTerrainMaterialGeneratorEmber.cpp.
-	normalMapTextureUnitState->setTextureNameAlias("EmberTerrain/normalMap");
+	normalMapTextureUnitState->setTextureNameAlias(NORMAL_TEXTURE_ALIAS);
 	normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
 	for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
@@ -190,7 +192,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	}
 
 	Ogre::TextureUnitState* compositeMapTus = pass->createTextureUnitState();
-	compositeMapTus->setTextureNameAlias("EmberTerrain/compositeMap");
+	compositeMapTus->setTextureNameAlias(COMPOSITE_MAP_ALIAS);
 	compositeMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
 	try {

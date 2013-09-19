@@ -98,7 +98,7 @@ class TerrainManager : public Ogre::FrameListener, public virtual sigc::trackabl
 {
 public:
 
-	/**
+	/*
 	 * @brief Default ctor.
 	 *
 	 * @param adapter An adapter which binds the terrain to a scene manager. The terrain manager will take ownership of the adapter and will destroy it upon it's destruction.
