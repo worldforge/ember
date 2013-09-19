@@ -262,7 +262,6 @@ void TerrainManager::initializeTerrain()
 		S_LOG_INFO("Pages: X: " << terrainInfo.getTotalNumberOfPagesX() << " Y: " << terrainInfo.getTotalNumberOfPagesY() << " Total: " << terrainInfo.getTotalNumberOfPagesX() * terrainInfo.getTotalNumberOfPagesY());
 		S_LOG_INFO("Page offset: X" << terrainInfo.getPageOffsetX() << " Y: " << terrainInfo.getPageOffsetY());
 
-		//TODO SK: Check if this will work correctly/how to implement it
 		//load the first page, thus bypassing the normal paging system. This is to prevent the user from floating in the thin air while the paging system waits for a suitable time to load the first page.
 		adapter->loadFirstPage();
 	}

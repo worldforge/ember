@@ -42,7 +42,6 @@ OgreTerrainMaterialGeneratorEmber::~OgreTerrainMaterialGeneratorEmber()
 
 void OgreTerrainMaterialGeneratorEmber::requestOptions(Ogre::Terrain* terrain)
 {
-	// TODO SK: this stuff is useful but turned off for now
 	terrain->_setMorphRequired(false);
 	terrain->_setNormalMapRequired(true);
 	terrain->_setLightMapRequired(false, false);

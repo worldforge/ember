@@ -43,7 +43,6 @@ namespace Terrain {
 void SimpleTerrainPageShadowTechnique::createShadowData(const TerrainPage& page, const TerrainPageGeometry& geometry, unsigned char* data, const WFMath::Vector<3>& lightDirection, const Ogre::ColourValue& lightColour) const
 {
 
-	//TODO SK: Do we need this? Also seems to be PLSM2 specific
 	int pageSizeInVertices = page.getPageSize();
 	int pageSizeInMeters = pageSizeInVertices - 1;
 

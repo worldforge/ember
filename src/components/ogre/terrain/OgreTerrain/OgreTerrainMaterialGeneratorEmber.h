@@ -98,7 +98,6 @@ public:
 	 */
 	virtual void updateParams(const Ogre::MaterialPtr& mat, const Ogre::Terrain* terrain)
 	{
-		// TODO SK: we need this if we want to edit stuff I think.
 	}
 	/** Update parameters for the given terrain composite map using the active profile.
 	 */
