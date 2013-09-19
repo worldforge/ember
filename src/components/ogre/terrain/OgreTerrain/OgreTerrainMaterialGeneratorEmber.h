@@ -36,6 +36,8 @@ namespace Terrain
 class OgreTerrainMaterialGeneratorEmber : public Ogre::TerrainMaterialGenerator
 {
 public:
+    const static std::string ERROR_MATERIAL;
+
 	OgreTerrainMaterialGeneratorEmber(IPageDataProvider& dataProvider, Ogre::Real originX, Ogre::Real originZ);
 	virtual ~OgreTerrainMaterialGeneratorEmber();
 

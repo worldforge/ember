@@ -29,6 +29,8 @@ namespace OgreView
 {
 namespace Terrain
 {
+const std::string OgreTerrainMaterialGeneratorEmber::ERROR_MATERIAL = "/global/primitives/error";
+
 OgreTerrainMaterialGeneratorEmber::OgreTerrainMaterialGeneratorEmber(IPageDataProvider& dataProvider, Ogre::Real originX, Ogre::Real originZ)
 	: mDataProvider(dataProvider), mOriginX(originX), mOriginZ(originZ)
 {
@@ -60,7 +62,7 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generate(const Ogre::Terrai
 	assert(!mat.isNull() && "Returned terrain material must be non-empty");
 	if (mat.isNull()) {
 		S_LOG_WARNING("Terrain material was not found!");
-		return Ogre::MaterialManager::getSingleton().getByName("/global/primitives/axes");
+		return Ogre::MaterialManager::getSingleton().getByName(ERROR_MATERIAL);
 	}
 
 	Ogre::AliasTextureNamePairList aliases;
@@ -87,7 +89,7 @@ Ogre::MaterialPtr OgreTerrainMaterialGeneratorEmber::generateForCompositeMap(con
 		return mat;
 	} else {
 		S_LOG_WARNING("Composite map material was not found!");
-		return Ogre::MaterialManager::getSingleton().getByName("/global/primitives/axes");
+		return Ogre::MaterialManager::getSingleton().getByName(ERROR_MATERIAL);
 	}
 }
 void OgreTerrainMaterialGeneratorEmber::updateCompositeMap(const Ogre::Terrain* terrain, const Ogre::Rect& rect)
