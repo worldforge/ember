@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "ShaderPassCoverageBatch.h"
+#include "ShaderPassBlendMapBatch.h"
 #include "ShaderPass.h"
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
 #include "components/ogre/terrain/Image.h"
@@ -38,42 +38,42 @@ namespace Terrain
 namespace Techniques
 {
 
-ShaderPassCoverageBatch::ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize, bool useNormalMapping) :
-	mShaderPass(shaderPass), mCombinedCoverageImage(new Image::ImageBuffer(imageSize, 4)), mUseNormalMapping(useNormalMapping)
+ShaderPassBlendMapBatch::ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize, bool useNormalMapping) :
+	mShaderPass(shaderPass), mCombinedBlendMapImage(new Image::ImageBuffer(imageSize, 4)), mUseNormalMapping(useNormalMapping)
 {
-	//reset the coverage image
-	mCombinedCoverageImage.reset();
+	//reset the blendMap image
+	mCombinedBlendMapImage.reset();
 }
 
-ShaderPassCoverageBatch::~ShaderPassCoverageBatch()
+ShaderPassBlendMapBatch::~ShaderPassBlendMapBatch()
 {
 }
 
-void ShaderPassCoverageBatch::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer)
+void ShaderPassBlendMapBatch::addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer)
 {
-	addCoverage(geometry, layer, mLayers.size());
+	addBlendMap(geometry, layer, mLayers.size());
 	mLayers.push_back(layer);
 }
 
-void ShaderPassCoverageBatch::addCoverage(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel)
+void ShaderPassBlendMapBatch::addBlendMap(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel)
 {
-	layer->fillImage(geometry, mCombinedCoverageImage, channel);
+	layer->fillImage(geometry, mCombinedBlendMapImage, channel);
 	mSyncedTextures.clear();
 }
 
-std::vector<const TerrainPageSurfaceLayer*>& ShaderPassCoverageBatch::getLayers()
+std::vector<const TerrainPageSurfaceLayer*>& ShaderPassBlendMapBatch::getLayers()
 {
 	return mLayers;
 }
 
-void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr texture)
+void ShaderPassBlendMapBatch::assignCombinedBlendMapTexture(Ogre::TexturePtr texture)
 {
 	if (std::find(mSyncedTextures.begin(), mSyncedTextures.end(), texture->getName()) == mSyncedTextures.end()) {
-		TimedLog log("ShaderPassCoverageBatch::assignCombinedCoverageTexture");
+		TimedLog log("ShaderPassBlendMapBatch::assignCombinedBlendMapTexture");
 		log.report("image loaded");
 
 		//blit the whole image to the hardware buffer
-		Ogre::PixelBox sourceBox(mCombinedCoverageImage.getResolution(), mCombinedCoverageImage.getResolution(), 1, Ogre::PF_B8G8R8A8, mCombinedCoverageImage.getData());
+		Ogre::PixelBox sourceBox(mCombinedBlendMapImage.getResolution(), mCombinedBlendMapImage.getResolution(), 1, Ogre::PF_B8G8R8A8, mCombinedBlendMapImage.getData());
 
 		if ((texture->getUsage() & Ogre::TU_AUTOMIPMAP) && texture->getMipmapsHardwareGenerated()) {
 			//No need to blit for all mipmaps as they will be generated.
@@ -91,14 +91,14 @@ void ShaderPassCoverageBatch::assignCombinedCoverageTexture(Ogre::TexturePtr tex
 	}
 }
 
-void ShaderPassCoverageBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture)
+void ShaderPassBlendMapBatch::finalize(Ogre::Pass& pass, Ogre::TexturePtr texture)
 {
-	//add our coverage textures first
-	assignCombinedCoverageTexture(texture);
-	Ogre::TextureUnitState * coverageTUS = pass.createTextureUnitState();
-	coverageTUS->setTextureScale(1, 1);
-	coverageTUS->setTextureName(texture->getName());
-	coverageTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	//add our blend map textures first
+	assignCombinedBlendMapTexture(texture);
+	Ogre::TextureUnitState * blendMapTUS = pass.createTextureUnitState();
+	blendMapTUS->setTextureScale(1, 1);
+	blendMapTUS->setTextureName(texture->getName());
+	blendMapTUS->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
 	for (LayerStore::iterator I = mLayers.begin(); I != mLayers.end(); ++I) {
 		const TerrainPageSurfaceLayer* layer(*I);

@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef EMBEROGRETERRAINTECHNIQUESSHADERPASSCOVERAGEBATCH_H_
-#define EMBEROGRETERRAINTECHNIQUESSHADERPASSCOVERAGEBATCH_H_
+#ifndef EMBEROGRETERRAINTECHNIQUESSHADERPASSBLENDMAPBATCH_H_
+#define EMBEROGRETERRAINTECHNIQUESSHADERPASSBLENDMAPBATCH_H_
 
 #include "components/ogre/OgreIncludes.h"
 #include "components/ogre/terrain/OgreImage.h"
@@ -43,21 +43,19 @@ class ShaderPass;
 typedef std::vector<const TerrainPageSurfaceLayer*> LayerStore;
 
 /**
-	@brief A shader enabled technique.
-	This is the preferred technique for all more modern cards which can handle shaders. The coverage textures are baked into one single texture, where each coverage texture represents one channel. The shaders named "splatting_fragment_*" are then used for rendering.
-
-	@author Erik Hjortsberg <erik.hjortsberg@gmail.com>
-*/
-class ShaderPassCoverageBatch
+ * @brief A helper for the Shader technique. Combines several blend map textures into batches and sets the appropriate pass parameters.
+ * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ */
+class ShaderPassBlendMapBatch
 {
 public:
-	ShaderPassCoverageBatch(ShaderPass& shaderPass, unsigned int imageSize, bool useNormalMapping = false);
-	virtual ~ShaderPassCoverageBatch();
+	ShaderPassBlendMapBatch(ShaderPass& shaderPass, unsigned int imageSize, bool useNormalMapping = false);
+	virtual ~ShaderPassBlendMapBatch();
 
 	void addLayer(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer);
 
 	std::vector<const TerrainPageSurfaceLayer*>& getLayers();
-	Image& getCombinedCoverageImage();
+	Image& getCombinedBlendMapImage();
 
 	virtual void finalize(Ogre::Pass& pass, Ogre::TexturePtr texture);
 
@@ -65,7 +63,7 @@ protected:
 
 	ShaderPass& mShaderPass;
 
-	OgreImage mCombinedCoverageImage;
+	OgreImage mCombinedBlendMapImage;
 	LayerStore mLayers;
 	bool mUseNormalMapping;
 
@@ -75,8 +73,8 @@ protected:
 	 */
 	std::vector<std::string> mSyncedTextures;
 
-	void assignCombinedCoverageTexture(Ogre::TexturePtr texture);
-	void addCoverage(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel);
+	void assignCombinedBlendMapTexture(Ogre::TexturePtr texture);
+	void addBlendMap(const TerrainPageGeometry& geometry, const TerrainPageSurfaceLayer* layer, unsigned int channel);
 
 };
 
@@ -88,4 +86,4 @@ protected:
 
 }
 
-#endif /* EMBEROGRETERRAINTECHNIQUESSHADERPASSCOVERAGEBATCH_H_ */
+#endif /* EMBEROGRETERRAINTECHNIQUESSHADERPASSBLENDMAPBATCH_H_ */

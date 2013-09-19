@@ -267,14 +267,14 @@ bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material)
 
 ShaderPass* Shader::addPass()
 {
-	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition()));
+	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition()));
 	mPasses.push_back(shaderPass);
 	return shaderPass;
 }
 
 ShaderPass* Shader::addPassNormalMapped()
 {
-	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getAlphaTextureSize(), mPage.getWFPosition(), true));
+	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition(), true));
 	mPassesNormalMapped.push_back(shaderPass);
 	return shaderPass;
 }

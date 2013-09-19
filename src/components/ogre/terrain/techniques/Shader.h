@@ -41,7 +41,7 @@ class ShaderPass;
  *
  * @brief A shader based technique.
  *
- * This technique will use shaders for drawing the terrain. The coverage for the different layers will be combined into one combined texture, where each channel represents one layer.
+ * This technique will use shaders for drawing the terrain. The blend map for the different layers will be combined into one combined texture, where each channel represents one layer.
  *
 */
 class Shader : public Base

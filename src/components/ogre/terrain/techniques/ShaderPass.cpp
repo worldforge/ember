@@ -17,7 +17,7 @@
  */
 
 #include "ShaderPass.h"
-#include "ShaderPassCoverageBatch.h"
+#include "ShaderPassBlendMapBatch.h"
 #include "Shader.h"
 
 #include "components/ogre/terrain/TerrainPageSurfaceLayer.h"
@@ -45,37 +45,37 @@ namespace Terrain
 namespace Techniques
 {
 
-Ogre::TexturePtr ShaderPass::getCombinedCoverageTexture(size_t passIndex, size_t batchIndex) const
+Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex) const
 {
 	// we need an unique name for our alpha texture
-	std::stringstream combinedCoverageTextureNameSS;
+	std::stringstream combinedBlendMapTextureNameSS;
 
-	combinedCoverageTextureNameSS << "terrain_" << mPosition.x() << "_" << mPosition.y() << "_combinedCoverage_" << passIndex << "_" << batchIndex << "_" << mCoveragePixelWidth;
-	const Ogre::String combinedCoverageName(combinedCoverageTextureNameSS.str());
-	Ogre::TexturePtr combinedCoverageTexture;
+	combinedBlendMapTextureNameSS << "terrain_" << mPosition.x() << "_" << mPosition.y() << "_combinedBlendMap_" << passIndex << "_" << batchIndex << "_" << mBlendMapPixelWidth;
+	const Ogre::String combinedBlendMapName(combinedBlendMapTextureNameSS.str());
+	Ogre::TexturePtr combinedBlendMapTexture;
 	Ogre::TextureManager* textureMgr = Ogre::Root::getSingletonPtr()->getTextureManager();
-	if (textureMgr->resourceExists(combinedCoverageName)) {
-		S_LOG_VERBOSE("Using already created coverage texture " << combinedCoverageName);
-		combinedCoverageTexture = static_cast<Ogre::TexturePtr>(textureMgr->getByName(combinedCoverageName));
-		if(!combinedCoverageTexture->isLoaded()) {
-			combinedCoverageTexture->createInternalResources();
+	if (textureMgr->resourceExists(combinedBlendMapName)) {
+		S_LOG_VERBOSE("Using already created blendMap texture " << combinedBlendMapName);
+		combinedBlendMapTexture = static_cast<Ogre::TexturePtr>(textureMgr->getByName(combinedBlendMapName));
+		if(!combinedBlendMapTexture->isLoaded()) {
+			combinedBlendMapTexture->createInternalResources();
 		}
-		return combinedCoverageTexture;
+		return combinedBlendMapTexture;
 	}
-	S_LOG_VERBOSE("Creating new coverage texture " << combinedCoverageName << " with size " << mCoveragePixelWidth);
+	S_LOG_VERBOSE("Creating new blendMap texture " << combinedBlendMapName << " with size " << mBlendMapPixelWidth);
 	int flags = Ogre::TU_DYNAMIC_WRITE_ONLY;
 	// automipmapping seems to cause some trouble on Windows, at least in OpenGL on Nvidia cards
 	// Thus we'll disable it. The performance impact shouldn't be significant.
 #ifndef _WIN32
 	flags |= Ogre::TU_AUTOMIPMAP;
 #endif // ifndef _WIN32
-	combinedCoverageTexture = textureMgr->createManual(combinedCoverageName, "General", Ogre::TEX_TYPE_2D, mCoveragePixelWidth, mCoveragePixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
-	combinedCoverageTexture->createInternalResources();
-	return combinedCoverageTexture;
+	combinedBlendMapTexture = textureMgr->createManual(combinedBlendMapName, "General", Ogre::TEX_TYPE_2D, mBlendMapPixelWidth, mBlendMapPixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
+	combinedBlendMapTexture->createInternalResources();
+	return combinedBlendMapTexture;
 }
 
-ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth, const WFMath::Point<2>& position, bool useNormalMapping) :
-		mBaseLayer(0), mSceneManager(sceneManager), mCoveragePixelWidth(coveragePixelWidth), mPosition(position), mShadowLayers(0), mUseNormalMapping(useNormalMapping)
+ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int blendMapPixelWidth, const WFMath::Point<2>& position, bool useNormalMapping) :
+		mBaseLayer(0), mSceneManager(sceneManager), mBlendMapPixelWidth(blendMapPixelWidth), mPosition(position), mShadowLayers(0), mUseNormalMapping(useNormalMapping)
 {
 	for (int i = 0; i < 16; i++) {
 		mScales[i] = 0.0;
@@ -84,7 +84,7 @@ ShaderPass::ShaderPass(Ogre::SceneManager& sceneManager, int coveragePixelWidth,
 
 ShaderPass::~ShaderPass()
 {
-	for (CoverageBatchStore::iterator I = mCoverageBatches.begin(); I != mCoverageBatches.end(); ++I) {
+	for (BlendMapBatchStore::iterator I = mBlendMapBatches.begin(); I != mBlendMapBatches.end(); ++I) {
 		delete *I;
 	}
 }
@@ -96,21 +96,21 @@ void ShaderPass::setBaseLayer(const TerrainPageSurfaceLayer* layer)
 	mScales[0] = layer->getScale();
 }
 
-ShaderPassCoverageBatch* ShaderPass::getCurrentBatch()
+ShaderPassBlendMapBatch* ShaderPass::getCurrentBatch()
 {
-	CoverageBatchStore::reverse_iterator I = mCoverageBatches.rbegin();
-	if (!mCoverageBatches.size() || (*I)->getLayers().size() >= 4) {
-		ShaderPassCoverageBatch* batch = createNewBatch();
-		mCoverageBatches.push_back(batch);
+	BlendMapBatchStore::reverse_iterator I = mBlendMapBatches.rbegin();
+	if (!mBlendMapBatches.size() || (*I)->getLayers().size() >= 4) {
+		ShaderPassBlendMapBatch* batch = createNewBatch();
+		mBlendMapBatches.push_back(batch);
 		return batch;
 	} else {
 		return *I;
 	}
 }
 
-ShaderPassCoverageBatch* ShaderPass::createNewBatch()
+ShaderPassBlendMapBatch* ShaderPass::createNewBatch()
 {
-	ShaderPassCoverageBatch* batch = new ShaderPassCoverageBatch(*this, getCoveragePixelWidth(), mUseNormalMapping);
+	ShaderPassBlendMapBatch* batch = new ShaderPassBlendMapBatch(*this, getBlendMapPixelWidth(), mUseNormalMapping);
 	return batch;
 }
 
@@ -172,10 +172,10 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	}
 
 	int i = 0;
-	// add our coverage textures first
-	for (CoverageBatchStore::const_iterator I = mCoverageBatches.begin(); I != mCoverageBatches.end(); ++I) {
-		ShaderPassCoverageBatch* batch = *I;
-		batch->finalize(pass, getCombinedCoverageTexture(pass.getIndex(), i++));
+	// add our blendMap textures first
+	for (BlendMapBatchStore::const_iterator I = mBlendMapBatches.begin(); I != mBlendMapBatches.end(); ++I) {
+		ShaderPassBlendMapBatch* batch = *I;
+		batch->finalize(pass, getCombinedBlendMapTexture(pass.getIndex(), i++));
 	}
 
 	//we provide different fragment programs for different amounts of textures used, so we need to determine which one to use.
@@ -253,7 +253,7 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 
 	int takenUnits = 1;			 // One unit is always used by the global normal texture
 	takenUnits += mShadowLayers; // Shadow textures
-	// A coverage texture for every 4 layers
+	// A blend map texture for every 4 layers
 	// Make sure to always have 1 for 1 layer, 2 for 5 layers etc.
 	takenUnits += static_cast<int>(std::ceil(numLayers / 4.0f));
 
@@ -277,9 +277,9 @@ void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow)
 	mShadowLayers++;
 }
 
-unsigned int ShaderPass::getCoveragePixelWidth() const
+unsigned int ShaderPass::getBlendMapPixelWidth() const
 {
-	return mCoveragePixelWidth;
+	return mBlendMapPixelWidth;
 }
 
 }

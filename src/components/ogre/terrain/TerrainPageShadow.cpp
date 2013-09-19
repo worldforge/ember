@@ -94,7 +94,7 @@ TerrainPageShadow::TerrainPageShadow(const TerrainPage& terrainPage)
 : mTerrainPage(terrainPage)
 , mShadowTechnique(0)
 , mLightDirection(WFMath::Vector<3>::ZERO())
-, mImage(new OgreImage(new Image::ImageBuffer(mTerrainPage.getAlphaTextureSize(), 1)))
+, mImage(new OgreImage(new Image::ImageBuffer(mTerrainPage.getBlendMapSize(), 1)))
 {
 }
 
@@ -109,7 +109,7 @@ void TerrainPageShadow::setLightDirection(const WFMath::Vector<3>& lightDirectio
 
 void TerrainPageShadow::updateShadow(const TerrainPageGeometry& geometry)
 {
-	std::shared_ptr<OgreImage> image(new OgreImage(new Image::ImageBuffer(mTerrainPage.getAlphaTextureSize(), 1)));
+	std::shared_ptr<OgreImage> image(new OgreImage(new Image::ImageBuffer(mTerrainPage.getBlendMapSize(), 1)));
 	image->reset();
 	mShadowTechnique->createShadowData(mTerrainPage, geometry, image->getData(), mLightDirection, Ogre::ColourValue(1,1,1));
 	mImage = image;

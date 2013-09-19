@@ -57,7 +57,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/TerrainShaderUpdateTask.cpp terrain/TerrainAreaUpdateTask.cpp \
 	terrain/techniques/Shader.cpp \
 	terrain/techniques/ShaderPass.cpp \
-	terrain/techniques/ShaderPassCoverageBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp \
+	terrain/techniques/ShaderPassBlendMapBatch.cpp terrain/techniques/Simple.cpp terrain/techniques/Base.cpp \
 	terrain/Image.cpp terrain/OgreImage.cpp terrain/WFImage.cpp terrain/TerrainMaterialCompilationTask.cpp \
 	terrain/HeightMapSegment.cpp terrain/HeightMap.cpp terrain/Buffer.cpp terrain/HeightMapBuffer.cpp \
 	terrain/HeightMapBufferProvider.cpp terrain/HeightMapUpdateTask.cpp terrain/TerrainAreaTaskBase.cpp terrain/TerrainAreaAddTask.cpp \
@@ -158,7 +158,7 @@ noinst_HEADERS = \
 	terrain/TerrainShaderUpdateTask.h \
 	terrain/techniques/Shader.h \
 	terrain/techniques/ShaderPass.h \
-	terrain/techniques/ShaderPassCoverageBatch.h terrain/techniques/Simple.h terrain/techniques/Base.h \
+	terrain/techniques/ShaderPassBlendMapBatch.h terrain/techniques/Simple.h terrain/techniques/Base.h \
 	terrain/Image.h terrain/OgreImage.h terrain/WFImage.h terrain/TerrainMaterialCompilationTask.h \
 	terrain/HeightMapSegment.h terrain/HeightMap.h terrain/Buffer.h terrain/HeightMapBuffer.h \
 	terrain/HeightMapBufferProvider.h terrain/HeightMapUpdateTask.h terrain/TerrainAreaTaskBase.h terrain/TerrainAreaAddTask.h \

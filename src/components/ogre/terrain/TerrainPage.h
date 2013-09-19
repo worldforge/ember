@@ -148,10 +148,10 @@ public:
 	int getPageSize() const;
 
 	/**
-	 * @brief The size in pixels of one side of the AlphaTexture. This is in sizes of 64.
+	 * @brief The size in pixels of one side of the blend map.
 	 * @return
 	 */
-	int getAlphaTextureSize() const;
+	int getBlendMapSize() const;
 
 	/**
 	 * @brief Gets the extent of this page in meters, in worldforge space.
@@ -198,13 +198,13 @@ private:
 	const WFMath::AxisBox<2> mExtent;
 
 	/**
-	 * @brief How much to scale the alpha map. This is done to avoid pixelated terrain (a blur filter is applied).
+	 * @brief How much to scale the blend map. This is done to avoid pixelated terrain (a blur filter is applied).
 	 * This value is taken from the config file.
 	 */
-	unsigned int getAlphaMapScale() const;
+	unsigned int getBlendMapScale() const;
 };
 
-inline int TerrainPage::getAlphaTextureSize() const
+inline int TerrainPage::getBlendMapSize() const
 {
 	// Each segment has a 65x65 blend map
 	// This makes it easier to blit the segment blend maps.

@@ -91,7 +91,7 @@ int TerrainPageSurface::getNumberOfSegmentsPerAxis() const
 
 unsigned int TerrainPageSurface::getPixelWidth() const
 {
-	return mTerrainPage.getAlphaTextureSize();
+	return mTerrainPage.getBlendMapSize();
 }
 
 const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
