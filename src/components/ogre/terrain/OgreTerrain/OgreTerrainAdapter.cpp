@@ -145,11 +145,6 @@ void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 
 void OgreTerrainAdapter::loadScene()
 {
-	// Use our own material generator
-	// Initialized here because it needs a IPageDataProvider
-	mMaterialGenerator = OGRE_NEW OgreTerrainMaterialGeneratorEmber(*mPageDataProvider, mTerrainGroup->getOrigin().x, mTerrainGroup->getOrigin().z);
-	mTerrainGlobalOptions->setDefaultMaterialGenerator(Ogre::TerrainMaterialGeneratorPtr(mMaterialGenerator));
-
 	mPagedWorld = mPageManager->createWorld();
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
 			-EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, "", 0);
@@ -215,13 +210,17 @@ std::string OgreTerrainAdapter::getDebugInfo()
 
 ITerrainObserver* OgreTerrainAdapter::createObserver()
 {
-	return new OgreTerrainObserver();
+	// This is a hack. Our custom material generator fires an event whenever a terrain area is updated
+	if (mMaterialGenerator) {
+		return new OgreTerrainObserver(mMaterialGenerator->EventTerrainAreaUpdated);
+	} else {
+		return nullptr;
+	}
 }
 
 void OgreTerrainAdapter::destroyObserver(ITerrainObserver* observer)
 {
-	//TODO SK: add proper observer logic
-	//This will not always delete the observer, but it also won't crash
+	// Will only delete the observer if it was of the right type
 	OgreTerrainObserver* ogreTerrainObserver = dynamic_cast<OgreTerrainObserver*>(observer);
 	delete ogreTerrainObserver;
 }
@@ -236,6 +235,10 @@ std::pair<bool, Ogre::Vector3> OgreTerrainAdapter::rayIntersects(const Ogre::Ray
 void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider)
 {
 	mPageDataProvider = pageDataProvider;
+	// Use our own material generator
+	// Initialized here because it needs a IPageDataProvider
+	mMaterialGenerator = OGRE_NEW OgreTerrainMaterialGeneratorEmber(*mPageDataProvider, mTerrainGroup->getOrigin().x, mTerrainGroup->getOrigin().z);
+	mTerrainGlobalOptions->setDefaultMaterialGenerator(Ogre::TerrainMaterialGeneratorPtr(mMaterialGenerator));
 }
 
 } /* namespace Terrain */

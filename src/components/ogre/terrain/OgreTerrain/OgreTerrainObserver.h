@@ -23,6 +23,8 @@
 #include "../ITerrainObserver.h"
 
 #include <OgreCommon.h>
+#include <sigc++/connection.h>
+#include <memory>
 
 namespace Ember
 {
@@ -33,16 +35,27 @@ namespace Terrain
 
 /**
  * @brief An ITerrainObserver implementation which can be used to observe the Ogre Terrain component.
+ * Instances are managed by OgreTerrainAdapter.
  */
 class OgreTerrainObserver: public Ember::OgreView::Terrain::ITerrainObserver
 {
 public:
-	OgreTerrainObserver();
+	/**
+	 * @brief Usually you should call OgreTerrainAdapter::createObserver to create an instance of this observer.
+	 * @param terrainAreaUpdatedSignal A valid signal that can be listened to for terrain updates.
+	 */
+	OgreTerrainObserver(sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal);
 	virtual ~OgreTerrainObserver();
 
 	virtual void observeArea(const WFMath::AxisBox<2>& area);
 
 	virtual void observeArea(const Ogre::TRect<int>& area);
+
+
+	/**
+	 * @brief Callback for terrain areas being updated. This is connected to mUpdateSignal in the constructor.
+	 */
+	virtual void terrainUpdated(const Ogre::TRect<Ogre::Real>& updatedArea);
 
 private:
 
@@ -50,6 +63,12 @@ private:
 	 * @brief The area under observation.
 	 */
 	Ogre::TRect<Ogre::Real> mObservedArea;
+
+
+	/**
+	 * The connection to the updateSignal.
+	 */
+	sigc::connection mTerrainAreaUpdatedConnection;
 
 };
 

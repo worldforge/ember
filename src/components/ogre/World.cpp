@@ -93,13 +93,14 @@ World::World(Eris::View& view, Ogre::RenderWindow& renderWindow, Ember::OgreView
 	mMainCamera = new Camera::MainCamera(mScene->getSceneManager(), mRenderWindow, input, mScene->getMainCamera(), *terrainAdapter);
 	mTerrainManager = new Terrain::TerrainManager(terrainAdapter, *mScene, shaderManager, MainLoopController::getSingleton().EventFrameProcessed);
 
-	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 	mAfterTerrainUpdateConnection = mTerrainManager->getHandler().EventAfterTerrainUpdate.connect(sigc::mem_fun(*this, &World::terrainManager_AfterTerrainUpdate));
 
 	mTerrainEntityManager = new TerrainEntityManager(view, mTerrainManager->getHandler(), mScene->getSceneManager());
 
 	mPageDataProvider = new TerrainPageDataProvider(mTerrainManager->getHandler());
 	terrainAdapter->setPageDataProvider(mPageDataProvider);
+
+	signals.EventTerrainManagerCreated.emit(*mTerrainManager);
 
 	mEnvironment = new Environment::Environment(mScene->getSceneManager(), *mTerrainManager, new Environment::CaelumEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera(), *mCalendar), new Environment::SimpleEnvironment(&mScene->getSceneManager(), &renderWindow, mScene->getMainCamera()));
 

@@ -103,6 +103,18 @@ void OgreTerrainMaterialGeneratorEmber::updateCompositeMap(const Ogre::Terrain* 
 	imgRect.bottom = compSize;
 
 	_renderCompositeMap(compSize, imgRect, terrain->getCompositeMapMaterial(), terrain->getCompositeMap());
+
+	// Calculate the 2D bounding box of the terrain page and fire event.
+	// This is a hack to implement observers to be activated when the a terrain page has finished loading
+	Ogre::TRect<Ogre::Real> updatedPageBounds;
+	const Ogre::AxisAlignedBox& bbox = terrain->getWorldAABB();
+
+	updatedPageBounds.left = bbox.getMinimum().x;
+	updatedPageBounds.top = bbox.getMaximum().z;
+	updatedPageBounds.right = bbox.getMaximum().x;
+	updatedPageBounds.bottom = bbox.getMinimum().z;
+
+	EventTerrainAreaUpdated(updatedPageBounds);
 }
 
 void OgreTerrainMaterialGeneratorEmber::setOrigin(Ogre::Real x, Ogre::Real z)

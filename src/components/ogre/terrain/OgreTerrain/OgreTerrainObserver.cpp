@@ -26,13 +26,15 @@ namespace OgreView
 namespace Terrain
 {
 
-OgreTerrainObserver::OgreTerrainObserver() :
+OgreTerrainObserver::OgreTerrainObserver(sigc::signal<void, Ogre::TRect<Ogre::Real>>& terrainAreaUpdatedSignal) :
 		mObservedArea(0, 0, 0, 0)
+		, mTerrainAreaUpdatedConnection(terrainAreaUpdatedSignal.connect(sigc::mem_fun(*this, &OgreTerrainObserver::terrainUpdated)))
 {
 }
 
 OgreTerrainObserver::~OgreTerrainObserver()
 {
+	mTerrainAreaUpdatedConnection.disconnect();
 }
 
 void OgreTerrainObserver::observeArea(const WFMath::AxisBox<2>& area)
@@ -45,6 +47,12 @@ void OgreTerrainObserver::observeArea(const Ogre::TRect<int>& area)
 	mObservedArea = Ogre::TRect<Ogre::Real>(area.left, area.top, area.right, area.bottom);
 }
 
+void OgreTerrainObserver::terrainUpdated(const Ogre::TRect<Ogre::Real>& updatedArea)
+{
+	if (!mObservedArea.intersect(updatedArea).isNull()) {
+		EventAreaShown();
+	}
+}
 } /* namespace Terrain */
 } /* namespace OgreView */
 } /* namespace Ember */

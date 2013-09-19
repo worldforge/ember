@@ -90,6 +90,9 @@ public:
 
 	virtual std::string getDebugInfo();
 
+	/**
+	 * @brief Currently setPageDataProvider MUST be called before this. Otherwise a nullptr will be returned.
+	 */
 	virtual ITerrainObserver* createObserver();
 
 	virtual void destroyObserver(ITerrainObserver* observer);

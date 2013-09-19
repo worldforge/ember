@@ -20,6 +20,7 @@
 #define OGRETERRAINMATERIALGENERATOREMBER_H
 
 #include <OgreTerrainMaterialGenerator.h>
+#include <sigc++/signal.h>
 
 namespace Ember
 {
@@ -119,6 +120,14 @@ public:
 	}
 
 	virtual void setOrigin(Ogre::Real x, Ogre::Real z);
+
+	/**
+	 * @brief Emitted when the composite map for a terrain page has been updated. This usually indicates that a page has finished loading/updating.
+	 *
+	 * The rect parameter is the 2D bounding box in world space of the terrain page which was updated.
+	 */
+	sigc::signal<void, Ogre::TRect<Ogre::Real>> EventTerrainAreaUpdated;
+
 protected:
 	IPageDataProvider& mDataProvider;
 	Ogre::Real mOriginX;
