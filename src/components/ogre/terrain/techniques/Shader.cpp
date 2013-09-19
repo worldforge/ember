@@ -174,8 +174,14 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	lodList.push_back(100);
 	// Pretty sure we can always fit this into one pass
 	Ogre::Pass* pass = technique->createPass();
-	pass->setVertexProgram("Lighting/NormalTexture/ShadowVp");
-	pass->setFragmentProgram("SplattingFp/1");
+	std::string cmVertexProgramName = "Lighting/NormalTexture/";
+	if (mIncludeShadows) {
+		cmVertexProgramName += "ShadowVp";
+	} else {
+		cmVertexProgramName += "SimpleVp";
+	}
+	pass->setVertexProgram(cmVertexProgramName);
+	pass->setFragmentProgram("SplattingFp/1" + materialSuffix);
 
 	Ogre::TextureUnitState* normalMapTextureUnitState = pass->createTextureUnitState();
 
@@ -184,11 +190,13 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	normalMapTextureUnitState->setTextureNameAlias(NORMAL_TEXTURE_ALIAS);
 	normalMapTextureUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
-	for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
-		Ogre::TextureUnitState* shadowMapTus = pass->createTextureUnitState();
-		shadowMapTus->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
-		shadowMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
-		shadowMapTus->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
+	if (mIncludeShadows) {
+		for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+			Ogre::TextureUnitState* shadowMapTus = pass->createTextureUnitState();
+			shadowMapTus->setContentType(Ogre::TextureUnitState::CONTENT_SHADOW);
+			shadowMapTus->setTextureAddressingMode(Ogre::TextureUnitState::TAM_BORDER);
+			shadowMapTus->setTextureBorderColour(Ogre::ColourValue(1.0, 1.0, 1.0, 1.0));
+		}
 	}
 
 	Ogre::TextureUnitState* compositeMapTus = pass->createTextureUnitState();
