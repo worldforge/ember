@@ -42,8 +42,8 @@ namespace Terrain
 {
 
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
-		mLoadRadius(terrainPageSize * 2),
-		mHoldRadius(terrainPageSize * 4),
+		mLoadRadius(300),
+		mHoldRadius(mLoadRadius * 2),
 		mSceneManager(sceneManager),
 		mPageManager(OGRE_NEW Ogre::PageManager()),
 		mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)),
@@ -97,12 +97,17 @@ void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
 		mMaterialGenerator->setOrigin(origin.x, origin.z);
 	}
 
-	mLoadRadius = (pageSize - 1) * 0.5;
-	mHoldRadius = mLoadRadius * 2;
-
 	if (mTerrainPagedWorldSection) {
 		mTerrainPagedWorldSection->getGridStrategyData()->setOrigin(mTerrainGroup->getOrigin());
 		mTerrainPagedWorldSection->getGridStrategyData()->setCellSize(mTerrainGroup->getTerrainWorldSize());
+	}
+}
+
+void OgreTerrainAdapter::setLoadRadius(const Ogre::Real& loadRadius)
+{
+	mLoadRadius = loadRadius;
+	mHoldRadius = mLoadRadius * 2;
+	if (mTerrainPagedWorldSection) {
 		mTerrainPagedWorldSection->setLoadRadius(mLoadRadius);
 		mTerrainPagedWorldSection->setHoldRadius(mHoldRadius);
 	}

@@ -58,6 +58,8 @@ public:
 
 	virtual void setPageSize(unsigned int pageSize);
 
+	virtual void setLoadRadius(const Ogre::Real& loadRadius);
+
 	virtual Ogre::Real getHeightAt(const Ogre::Real x, const Ogre::Real z);
 
 	virtual void setWorldPagesDimensions(int numberOfPagesWidth, int numberOfPagesHeight, int widthOffsetInPages, int heightOffsetInPages);

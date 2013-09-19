@@ -376,6 +376,16 @@ function SettingsWidget:buildSettingsUi()
 					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new_local(value, true) end,
 					suggestions = {64, 128, 256, 512},
 				},
+				{
+					label = "Terrain load radius",
+					helpString = "The distance from the camera at which terrain pages are loaded. Affects how fast the initial loading is as well as the memory usage and performance in-game.",
+
+					section = "terrain",
+					key = "loadradius",
+
+					representationFactory = function(value) return Representations.VarconfIntComboboxRepresentation:new_local(value, true) end,
+					suggestions = {100, 300, 500},
+				},
 
 			},
 		},

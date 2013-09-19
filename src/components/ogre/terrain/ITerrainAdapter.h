@@ -66,6 +66,12 @@ public:
 	virtual void setPageSize(const unsigned int size) = 0;
 
 	/**
+	 * @brief Sets the distance from the camera at which terrain pages are loaded.
+	 * @param loadRadius The distance from the camera at which terrain pages are loaded.
+	 */
+	virtual void setLoadRadius(const Ogre::Real& loadRadius) = 0;
+
+	/**
 	 * @brief Returns the height at the given position.
 	 *
 	 * @param x The x position, in world coords.

@@ -81,6 +81,7 @@ TerrainManager::TerrainManager(ITerrainAdapter* adapter, Scene& scene, ShaderMan
 	registerConfigListener("graphics", "foliage", sigc::mem_fun(*this, &TerrainManager::config_Foliage));
 	registerConfigListener("terrain", "preferredtechnique", sigc::mem_fun(*this, &TerrainManager::config_TerrainTechnique));
 	registerConfigListener("terrain", "pagesize", sigc::mem_fun(*this, &TerrainManager::config_TerrainPageSize));
+	registerConfigListener("terrain", "loadradius", sigc::mem_fun(*this, &TerrainManager::config_TerrainLoadRadius));
 
 	shaderManager.EventLevelChanged.connect(sigc::bind(sigc::mem_fun(*this, &TerrainManager::shaderManager_LevelChanged), &shaderManager));
 
@@ -184,6 +185,14 @@ void TerrainManager::config_TerrainPageSize(const std::string& section, const st
 		mTerrainAdapter->setPageSize(size);
 		mHandler->setPageSize(size);
 		mHandler->updateAllPages();
+	}
+}
+
+void TerrainManager::config_TerrainLoadRadius(const std::string& section, const std::string& key, varconf::Variable& variable)
+{
+	if (variable.is_int()) {
+		unsigned int radius = static_cast<unsigned int>(static_cast<int>(variable));
+		mTerrainAdapter->setLoadRadius(Ogre::Real(radius));
 	}
 }
 

@@ -99,6 +99,9 @@ preferredtechnique = Shader
 #The size of single terrain pages. Should be one of 64, 128, 256, 512.
 pagesize = "256"
 
+#The distance from the camera at which terrain pages are loaded. Affects how fast the initial loading is as well as the memory usage and performance in-game.
+loadradius = "300"
+
 [caelum]
 #a colour value (rgba) for how much the ambient light should be multiplied
 sunambientmultiplier="0.7 0.7 0.7 1"
