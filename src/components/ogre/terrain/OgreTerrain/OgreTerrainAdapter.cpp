@@ -200,6 +200,7 @@ void OgreTerrainAdapter::reloadPageMaterial(const Domain::TerrainIndex& index)
 			// This is a trick to get the terrain to relaod it's material
 			page->addLayer(0, 0.0, nullptr);
 			page->removeLayer(0);
+			page->updateCompositeMap();
 		}
 	}
 }
