@@ -264,9 +264,9 @@ bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 			takenUnits += 1;
 		}
 	}
-	takenUnits += mLayers.size();
+	takenUnits += numLayers;
 	if (mUseNormalMapping) {
-		takenUnits += mLayers.size();
+		takenUnits += numLayers;
 	}
 
 	return (numberOfTextureUnitsOnCard - takenUnits) >= 0;
