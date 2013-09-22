@@ -52,7 +52,7 @@ public:
 	/**
 	 * @brief Dtor.
 	 */
-	~Segment();
+	virtual ~Segment();
 
 	/**
 	 * @brief Gets the underlying Mercator segment.
@@ -77,6 +77,14 @@ public:
 	 * @returns A unique key for the segment.
 	 */
 	std::string getKey() const;
+
+	/**
+	 * @brief Invalidates this segment.
+	 *
+	 * This will free any memory held by the segment.
+	 */
+	virtual void invalidate();
+
 protected:
 
 	/**

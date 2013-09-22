@@ -48,6 +48,7 @@ std::shared_ptr<SegmentReference> SegmentHolder::getReference()
 	mRefCount++;
 	//If mRefCount is 1 we're guaranteed to be the only one interacting with the segment, so it's thread safe to call Mercator::Segment::isValid
 	if (mRefCount == 1 && mSegment->getMercatorSegment().isValid()) {
+		l.unlock();
 		mSegmentManager.unmarkHolder(this);
 	}
 	return std::shared_ptr<SegmentReference>(new SegmentReference(*this));

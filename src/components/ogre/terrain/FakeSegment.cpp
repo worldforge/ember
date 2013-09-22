@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2010 Erik Hjortsberg <erik.hjortsberg@gmail.com>
+ Copyright (C) 2013 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,53 +16,42 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "Segment.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "FakeSegment.h"
 #include <Mercator/Segment.h>
-#include <sstream>
+
 namespace Ember
 {
 namespace OgreView
 {
-
 namespace Terrain
 {
 
-Segment::Segment(Mercator::Segment& segment) :
-	mSegment(segment)
+FakeSegment::FakeSegment(Mercator::Segment& segment)
+: Segment(segment)
 {
 }
 
-Segment::~Segment()
+FakeSegment::~FakeSegment()
 {
+	delete &mSegment;
 }
 
-Mercator::Segment& Segment::getMercatorSegment()
+void FakeSegment::invalidate()
 {
-	return mSegment;
+	mInvalidator();
 }
 
-int Segment::getXIndex() const
+void FakeSegment::setInvalidator(std::function<void()>& invalidator)
 {
-	return mSegment.getXRef() / mSegment.getResolution();
-
-}
-int Segment::getYIndex() const
-{
-	return mSegment.getYRef() / mSegment.getResolution();
+	mInvalidator = invalidator;
 }
 
-std::string Segment::getKey() const
-{
-	std::stringstream ss;
-	ss << getXIndex() << "_" << getYIndex();
-	return ss.str();
-}
 
-void Segment::invalidate()
-{
-	mSegment.invalidate(true);
-}
-}
 
+}
 }
 }

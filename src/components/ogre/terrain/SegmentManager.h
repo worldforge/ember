@@ -131,15 +131,48 @@ protected:
 	unsigned int mDesiredSegmentBuffer;
 
 	/**
+	 * @brief The height of "fake" segments.
+	 *
+	 * "Fake" segments are those that doesn't exist on the server, but are created to make the world appear better in the client.
+	 *
+	 */
+	float mFakeSegmentHeight;
+
+	/**
+	 * @brief The height variation of "fake" segments.
+	 *
+	 * "Fake" segments are those that doesn't exist on the server, but are created to make the world appear better in the client.
+	 *
+	 */
+	float mFakeSegmentHeightVariation;
+
+	/**
 	 * @brief A store of Segment instances.
 	 */
 	SegmentStore mSegments;
+
+	/**
+	 * @brief A store of "fake" Segment instances.
+	 *
+	 * These are instances which aren't defined in the Mercator::Terrain instance, but
+	 * exist nonetheless to provide client side terrain.
+	 * This is of use for example when trying to provide "endless terrain".
+	 */
+	SegmentStore mFakeSegments;
 
 	/**
 	 * @brief A mutex for accessing mSegments.
 	 */
 	std::mutex mSegmentsMutex;
 
+	/**
+	 * @brief A mutex for accessing mFakeSegments.
+	 */
+	std::mutex mFakeSegmentsMutex;
+
+	/**
+	 * @brief Keeps track of all
+	 */
 	SegmentList mUnusedAndDirtySegments;
 
 	/**
@@ -152,6 +185,18 @@ protected:
 	 * @param segment The Mercator segment which we want to add to the manager.
 	 */
 	void addSegment(Mercator::Segment& segment);
+
+	/**
+	 * @brief Creates a new fake terrain segment.
+	 *
+	 * A "fake" segment is one that only exists on the client. This is used to make the undefined terrain
+	 * appear infinite.
+	 * @param key The lookup key for the segment.
+	 * @param x The x index of the segment.
+	 * @param y The y index of the segment.
+	 * @return A new segment holder instance which refers to the fake segment.
+	 */
+	SegmentHolder* createFakeSegment(const std::string& key, int x, int y);
 
 
 };
