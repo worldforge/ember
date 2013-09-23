@@ -161,6 +161,10 @@ TerrainHandler::TerrainHandler(int pageIndexSize, ICompilerTechniqueProvider& co
 	mTerrain = new Mercator::Terrain(Mercator::Terrain::SHADED);
 
 	mSegmentManager = new SegmentManager(*mTerrain, 64);
+	mSegmentManager->setEndlessWorldEnabled(true);
+	mSegmentManager->setDefaultHeight(getDefaultHeight());
+	//TODO: get these values from the server if possible
+	mSegmentManager->setDefaultHeightVariation(10);
 	//The mercator buffers are one size larger than the resolution
 	mHeightMapBufferProvider = new HeightMapBufferProvider(mTerrain->getResolution() + 1);
 	mHeightMap = new HeightMap(Mercator::Terrain::defaultLevel, mTerrain->getResolution());

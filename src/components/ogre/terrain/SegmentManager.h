@@ -115,6 +115,56 @@ public:
 
 	void unmarkHolder(SegmentHolder* holder);
 
+	/**
+	 * @brief Sets if "endless" world should be enabled.
+	 *
+	 * If an "endless" world is enabled then "fake" segments will be created for those areas where there is no terrain defined.
+	 * This makes for an appearence of an "endless" world.
+	 * @param enabled True if enabled.
+	 */
+	void setEndlessWorldEnabled(bool enabled);
+
+	/**
+	 * @brief Gets if "endless" world is enabled.
+	 *
+	 * If an "endless" world is enabled then "fake" segments will be created for those areas where there is no terrain defined.
+	 * This makes for an appearence of an "endless" world.
+	 * @return True if enabled.
+	 */
+	bool getEndlessWorldEnabled() const;
+
+	/**
+	 * @brief Sets the default height of any "fake" segments.
+	 *
+	 * This only applies if "endless" world is enabled.
+	 * The final height for any segment is also influenced by setDefaultHeightVariation(float).
+	 * @param height The default height.
+	 */
+	void setDefaultHeight(float height);
+
+	/**
+	 * @brief Gets the default height of any "fake" segments.
+	 *
+	 * This only applies if "endless" world is enabled.
+	 * The final height for any segment is also influenced by setDefaultHeightVariation(float).
+	 * @return The default height.
+	 */
+	float getDefaultHeight() const;
+
+	/**
+	 * @brief Sets the height variation for any "fake" segment.
+	 * This only applies if "endless" world is enabled.
+	 * @param height The height variation.
+	 */
+	void setDefaultHeightVariation(float height);
+
+	/**
+	 * @brief Gets the height variation for any "fake" segments.
+	 * This only applies if "endless" world is enabled.
+	 * @return The height variation.
+	 */
+	float getDefaultHeightVariation() const;
+
 protected:
 
 	typedef std::unordered_map<std::string, SegmentHolder* > SegmentStore;
@@ -145,6 +195,13 @@ protected:
 	 *
 	 */
 	float mFakeSegmentHeightVariation;
+
+	/**
+	 * @brief If true, fake segments will be automatically generated if there are no valid ones.
+	 *
+	 * This will result in an "endless" world.
+	 */
+	bool mEndlessWorldEnabled;
 
 	/**
 	 * @brief A store of Segment instances.

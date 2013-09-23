@@ -43,7 +43,7 @@ namespace Terrain
 {
 
 SegmentManager::SegmentManager(Mercator::Terrain& terrain, unsigned int desiredSegmentBuffer) :
-		mTerrain(terrain), mDesiredSegmentBuffer(desiredSegmentBuffer), mFakeSegmentHeight(-12.0f), mFakeSegmentHeightVariation(10.0f)
+		mTerrain(terrain), mDesiredSegmentBuffer(desiredSegmentBuffer), mFakeSegmentHeight(-12.0f), mFakeSegmentHeightVariation(10.0f), mEndlessWorldEnabled(false)
 {
 
 }
@@ -67,7 +67,7 @@ SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex)
 	SegmentStore::const_iterator I = mSegments.find(key);
 	if (I != mSegments.end()) {
 		return I->second->getReference();
-	} else {
+	} else if (mEndlessWorldEnabled) {
 		l.unlock();
 		{
 			std::unique_lock < std::mutex > fakeSegmentsLock(mFakeSegmentsMutex);
@@ -78,6 +78,8 @@ SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex)
 		}
 		SegmentHolder* fakeSegmentHolder = createFakeSegment(key, xIndex, yIndex);
 		return fakeSegmentHolder->getReference();
+	} else {
+		return SegmentRefPtr();
 	}
 }
 
@@ -96,7 +98,8 @@ size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indi
 			SegmentStore::const_iterator segI = mSegments.find(key);
 			if (segI != mSegments.end()) {
 				segments[I->first][J->first] = segI->second->getReference();
-			} else {
+				count++;
+			} else if (mEndlessWorldEnabled){
 				std::unique_lock < std::mutex > fakeSegmentsLock(mFakeSegmentsMutex);
 				segI = mFakeSegments.find(key);
 				if (segI != mFakeSegments.end()) {
@@ -106,8 +109,8 @@ size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indi
 					SegmentHolder* fakeSegmentHolder = createFakeSegment(key, worldIndex.first, worldIndex.second);
 					segments[I->first][J->first] = fakeSegmentHolder->getReference();
 				}
+				count++;
 			}
-			count++;
 		}
 	}
 	return count;
@@ -213,7 +216,36 @@ void SegmentManager::unmarkHolder(SegmentHolder* holder)
 	}
 }
 
+void SegmentManager::setEndlessWorldEnabled(bool enabled)
+{
+	mEndlessWorldEnabled = enabled;
 }
 
+bool SegmentManager::getEndlessWorldEnabled() const
+{
+	return mEndlessWorldEnabled;
+}
+
+void SegmentManager::setDefaultHeight(float height)
+{
+	mFakeSegmentHeight = height;
+}
+
+float SegmentManager::getDefaultHeight() const
+{
+	return mFakeSegmentHeight;
+}
+
+void SegmentManager::setDefaultHeightVariation(float height)
+{
+	mFakeSegmentHeightVariation = height;
+}
+
+float SegmentManager::getDefaultHeightVariation() const
+{
+	return mFakeSegmentHeightVariation;
+}
+
+}
 }
 }
