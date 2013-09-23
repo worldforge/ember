@@ -400,7 +400,7 @@ void TerrainHandler::updateShadows()
 
 float TerrainHandler::getDefaultHeight() const
 {
-	return -4;
+	return -12;
 }
 
 bool TerrainHandler::updateTerrain(const TerrainDefPointStore& terrainPoints)
