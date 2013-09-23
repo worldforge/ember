@@ -19,10 +19,7 @@
 #ifndef TASKEXECUTOR_H_
 #define TASKEXECUTOR_H_
 
-namespace std
-{
-class thread;
-}
+#include <thread>
 
 namespace Ember
 {

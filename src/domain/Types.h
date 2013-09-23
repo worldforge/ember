@@ -23,10 +23,7 @@
 #ifndef EMBER_DOMAIN_TYPES_H
 #define EMBER_DOMAIN_TYPES_H
 
-namespace std
-{
-template <typename, typename> class pair;
-}
+#include <utility>
 
 namespace WFMath
 {
