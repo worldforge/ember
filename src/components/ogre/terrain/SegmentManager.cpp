@@ -18,9 +18,7 @@
 
 #include "SegmentManager.h"
 #include "Segment.h"
-#include "FakeSegment.h"
 #include "SegmentHolder.h"
-#include "SegmentReference.h"
 
 #include "framework/LoggingInstance.h"
 
@@ -53,9 +51,6 @@ SegmentManager::~SegmentManager()
 	for (SegmentStore::const_iterator I = mSegments.begin(); I != mSegments.end(); ++I) {
 		delete I->second;
 	}
-	for (auto& entry : mFakeSegments) {
-		delete entry.second;
-	}
 }
 
 SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex)
@@ -68,16 +63,7 @@ SegmentRefPtr SegmentManager::getSegmentReference(int xIndex, int yIndex)
 	if (I != mSegments.end()) {
 		return I->second->getReference();
 	} else if (mEndlessWorldEnabled) {
-		l.unlock();
-		{
-			std::unique_lock < std::mutex > fakeSegmentsLock(mFakeSegmentsMutex);
-			I = mFakeSegments.find(key);
-			if (I != mFakeSegments.end()) {
-				return I->second->getReference();
-			}
-		}
-		SegmentHolder* fakeSegmentHolder = createFakeSegment(key, xIndex, yIndex);
-		return fakeSegmentHolder->getReference();
+		return createFakeSegment(key, xIndex, yIndex);
 	} else {
 		return SegmentRefPtr();
 	}
@@ -99,16 +85,8 @@ size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indi
 			if (segI != mSegments.end()) {
 				segments[I->first][J->first] = segI->second->getReference();
 				count++;
-			} else if (mEndlessWorldEnabled){
-				std::unique_lock < std::mutex > fakeSegmentsLock(mFakeSegmentsMutex);
-				segI = mFakeSegments.find(key);
-				if (segI != mFakeSegments.end()) {
-					segments[I->first][J->first] = segI->second->getReference();
-				} else {
-					fakeSegmentsLock.unlock();
-					SegmentHolder* fakeSegmentHolder = createFakeSegment(key, worldIndex.first, worldIndex.second);
-					segments[I->first][J->first] = fakeSegmentHolder->getReference();
-				}
+			} else if (mEndlessWorldEnabled) {
+				segments[I->first][J->first] = createFakeSegment(key, worldIndex.first, worldIndex.second);
 				count++;
 			}
 		}
@@ -116,51 +94,49 @@ size_t SegmentManager::getSegmentReferences(const SegmentManager::IndexMap& indi
 	return count;
 }
 
-SegmentHolder* SegmentManager::createFakeSegment(const std::string& key, int xIndex, int yIndex)
+std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& key, int xIndex, int yIndex)
 {
-	Mercator::Segment* segment = new Mercator::Segment(xIndex * mTerrain.getResolution(), yIndex * mTerrain.getResolution(), mTerrain.getResolution());
 
-	WFMath::MTRand rand;
-	auto setPoint = [&](int x, int y) {
-		Mercator::BasePoint bp;
-		if (mTerrain.getBasePoint(xIndex + x, yIndex + y, bp)) {
-			segment->setCornerPoint(x,y, bp);
-		} else {
-			//Use a predictive way of generating a random height.
-			rand.seed(xIndex + x + ((yIndex + y) * 10000.0f));
-			segment->setCornerPoint(x,y, Mercator::BasePoint(mFakeSegmentHeight - (rand.randf(mFakeSegmentHeightVariation))));
+	std::function<void(Mercator::Segment*)> invalidate = [](Mercator::Segment* s)
+	{
+		if (s) {
+			s->invalidate();
 		}
 	};
+	std::function<Mercator::Segment*()> segmentProvider = [=]()
+	{
+		Mercator::Segment* segment = new Mercator::Segment(xIndex * mTerrain.getResolution(), yIndex * mTerrain.getResolution(), mTerrain.getResolution());
 
-	setPoint(0, 0);
-	setPoint(0, 1);
-	setPoint(1, 0);
-	setPoint(1, 1);
-
-	auto& surfaces = segment->getSurfaces();
-	for (auto& shader : mTerrain.getShaders()) {
-		auto surface = shader.second->newSurface(*segment);
-		surfaces[shader.first] = surface;
-	}
-
-	FakeSegment* fakeSegment = new FakeSegment(*segment);
-	auto segmentHolder = new SegmentHolder(fakeSegment, *this);
-//	auto segmentHolder = new SegmentHolder(new Segment(*segment), *this);
-	std::unique_lock < std::mutex > l(mFakeSegmentsMutex);
-	auto insertResult = mFakeSegments.insert(SegmentStore::value_type(key, segmentHolder));
-	if (!insertResult.second) {
-		delete segmentHolder;
-	} else {
-		std::function<void()> invalidator = [key, this]() {
-			auto I = mFakeSegments.find(key);
-			assert(I != mFakeSegments.end());
-			SegmentHolder* holder = I->second;
-			mFakeSegments.erase(I);
-			delete holder;
+		WFMath::MTRand rand;
+		auto setPoint = [&](int x, int y) {
+				Mercator::BasePoint bp;
+				if (mTerrain.getBasePoint(xIndex + x, yIndex + y, bp)) {
+					segment->setCornerPoint(x,y, bp);
+				} else {
+					//Use a predictive way of generating a random height.
+				rand.seed(xIndex + x + ((yIndex + y) * 10000.0f));
+				segment->setCornerPoint(x,y, Mercator::BasePoint(mFakeSegmentHeight - (rand.randf(mFakeSegmentHeightVariation))));
+			}
 		};
-		fakeSegment->setInvalidator(invalidator);
-	}
-	return insertResult.first->second;
+
+		setPoint(0, 0);
+		setPoint(0, 1);
+		setPoint(1, 0);
+		setPoint(1, 1);
+
+		auto& surfaces = segment->getSurfaces();
+		for (auto& shader : mTerrain.getShaders()) {
+			auto surface = shader.second->newSurface(*segment);
+			surfaces[shader.first] = surface;
+		}
+		return segment;
+	};
+
+	Segment* fakeSegment = new Segment(xIndex, yIndex, segmentProvider, invalidate);
+
+	//In contrast to regular Segments which refer to actual instances of Mercator::Segment we'll
+	//just delete the fake segments once they are of no use no more.
+	return std::shared_ptr<Segment>(fakeSegment);
 }
 
 void SegmentManager::addSegment(Mercator::Segment& segment)
@@ -170,13 +146,20 @@ void SegmentManager::addSegment(Mercator::Segment& segment)
 	std::unique_lock < std::mutex > l(mSegmentsMutex);
 	SegmentStore::const_iterator I = mSegments.find(ss.str());
 	if (I == mSegments.end()) {
-		mSegments.insert(SegmentStore::value_type(ss.str(), new SegmentHolder(new Segment(segment), *this)));
+		std::function<void(Mercator::Segment*)> invalidate = [](Mercator::Segment* s)
+		{
+			if (s) {
+				s->invalidate();
+			}
+		};
+		std::function<Mercator::Segment*()> segmentProvider = [&]() {return &segment;};
+		mSegments.insert(SegmentStore::value_type(ss.str(), new SegmentHolder(new Segment(segment.getXRef() / segment.getResolution(), segment.getYRef() / segment.getResolution(), segmentProvider, invalidate), *this)));
 	}
 }
 
 void SegmentManager::syncWithTerrain()
 {
-	//There's currently no way to remove segments from the terrain, so we don't have to worry about that for now.
+//There's currently no way to remove segments from the terrain, so we don't have to worry about that for now.
 
 	Mercator::Terrain::Segmentstore segmentStore = mTerrain.getTerrain();
 	for (Mercator::Terrain::Segmentstore::const_iterator I = segmentStore.begin(); I != segmentStore.end(); ++I) {
@@ -191,7 +174,6 @@ void SegmentManager::syncWithTerrain()
 void SegmentManager::pruneUnusedSegments()
 {
 	std::unique_lock < std::mutex > l(mSegmentsMutex);
-	std::unique_lock < std::mutex > lFakeSegments(mFakeSegmentsMutex);
 	std::unique_lock < std::mutex > l1(mUnusedAndDirtySegmentsMutex);
 	while (mUnusedAndDirtySegments.size() > mDesiredSegmentBuffer) {
 		SegmentHolder* holder = mUnusedAndDirtySegments.front();

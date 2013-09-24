@@ -27,8 +27,8 @@ namespace OgreView
 namespace Terrain
 {
 
-Segment::Segment(Mercator::Segment& segment) :
-	mSegment(segment)
+Segment::Segment(int xIndex, int yIndex, std::function<Mercator::Segment*()>& segmentProvider, std::function<void(Mercator::Segment*)>& segmentInvalidator) :
+		mXIndex(xIndex), mYIndex(yIndex), mSegment(nullptr), mSegmentProvider(segmentProvider), mSegmentInvalidator(segmentInvalidator)
 {
 }
 
@@ -38,17 +38,20 @@ Segment::~Segment()
 
 Mercator::Segment& Segment::getMercatorSegment()
 {
-	return mSegment;
+	if (!mSegment) {
+		mSegment = mSegmentProvider();
+	}
+	return *mSegment;
 }
 
 int Segment::getXIndex() const
 {
-	return mSegment.getXRef() / mSegment.getResolution();
+	return mXIndex;
 
 }
 int Segment::getYIndex() const
 {
-	return mSegment.getYRef() / mSegment.getResolution();
+	return mYIndex;
 }
 
 std::string Segment::getKey() const
@@ -60,7 +63,7 @@ std::string Segment::getKey() const
 
 void Segment::invalidate()
 {
-	mSegment.invalidate(true);
+	mSegmentInvalidator(mSegment);
 }
 }
 

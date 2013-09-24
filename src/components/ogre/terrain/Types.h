@@ -53,7 +53,6 @@ namespace OgreView {
 		class TerrainPageSurfaceLayer;
 		class TerrainPageGeometry;
 		class Segment;
-		class SegmentReference;
 		class ITerrainPageBridge;
 
 		/**
@@ -94,7 +93,7 @@ namespace OgreView {
 			AreaStore Areas;
 		};
 
-		typedef std::shared_ptr<SegmentReference> SegmentRefPtr;
+		typedef std::shared_ptr<Segment> SegmentRefPtr;
 
 		typedef std::map<int, SegmentRefPtr> SegmentRefColumn;
 

@@ -17,7 +17,6 @@
  */
 
 #include "SegmentHolder.h"
-#include "SegmentReference.h"
 #include "Segment.h"
 #include "SegmentManager.h"
 
@@ -42,34 +41,34 @@ SegmentHolder::~SegmentHolder()
 	delete mSegment;
 }
 
-std::shared_ptr<SegmentReference> SegmentHolder::getReference()
+std::shared_ptr<Segment> SegmentHolder::getReference()
 {
-	std::unique_lock<std::mutex> l(mRefCountMutex);
 	mRefCount++;
 	//If mRefCount is 1 we're guaranteed to be the only one interacting with the segment, so it's thread safe to call Mercator::Segment::isValid
 	if (mRefCount == 1 && mSegment->getMercatorSegment().isValid()) {
-		l.unlock();
 		mSegmentManager.unmarkHolder(this);
 	}
-	return std::shared_ptr<SegmentReference>(new SegmentReference(*this));
+
+	//When the shared pointer is deleted we should just decrease our internal reference counter.
+	auto deleter=[&](Segment* ptr){
+		returnReference();
+	};
+	return std::shared_ptr<Segment>(mSegment, deleter);
 }
 
 void SegmentHolder::returnReference()
 {
-	std::unique_lock<std::mutex> l(mRefCountMutex);
 	assert(mRefCount > 0);
 	mRefCount--;
 	//If mRefCount is 0 we're guaranteed to be the only one interacting with the segment, so it's thread safe to call Mercator::Segment::isValid
 	if (mRefCount == 0 && mSegment->getMercatorSegment().isValid()) {
 		mSegmentManager.markHolderAsDirtyAndUnused(this);
-		l.unlock();
 		mSegmentManager.pruneUnusedSegments();
 	}
 }
 
 bool SegmentHolder::isUnused()
 {
-	std::unique_lock<std::mutex> l(mRefCountMutex);
 	return mRefCount == 0;
 }
 

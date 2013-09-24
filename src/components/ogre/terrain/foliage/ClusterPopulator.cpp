@@ -8,7 +8,6 @@
 #include "ClusterPopulator.h"
 #include "components/ogre/terrain/PlantAreaQueryResult.h"
 #include "components/ogre/terrain/PlantAreaQuery.h"
-#include "components/ogre/terrain/SegmentReference.h"
 #include "components/ogre/terrain/Segment.h"
 #include "components/ogre/terrain/Buffer.h"
 #include "components/ogre/terrain/PlantInstance.h"
@@ -43,7 +42,7 @@ ClusterPopulator::~ClusterPopulator()
 
 void ClusterPopulator::populate(PlantAreaQueryResult& result, SegmentRefPtr segmentRef)
 {
-	Mercator::Segment& mercatorSegment = segmentRef->getSegment().getMercatorSegment();
+	Mercator::Segment& mercatorSegment = segmentRef->getMercatorSegment();
 	if (!mercatorSegment.isValid()) {
 		mercatorSegment.populate();
 	}
@@ -96,7 +95,7 @@ void ClusterPopulator::getClustersForArea(const SegmentRefPtr& segmentRef, const
 {
 	//Generate clusters for the current page and all surrounding pages and check if any of these are contained or intersect our local area
 
-	Mercator::Segment& mercatorSegment = segmentRef->getSegment().getMercatorSegment();
+	Mercator::Segment& mercatorSegment = segmentRef->getMercatorSegment();
 	int res = mercatorSegment.getResolution();
 	int clustersPerSegment = (res * res) / (mClusterDistance * mClusterDistance);
 	float clusterRadiusRange = mMaxClusterRadius - mMinClusterRadius;
@@ -132,7 +131,7 @@ void ClusterPopulator::populateWithClusters(const SegmentRefPtr& segmentRef, Pla
 void ClusterPopulator::populateWithCluster(const SegmentRefPtr& segmentRef, PlantAreaQueryResult& result, const WFMath::AxisBox<2>& area, const WFMath::Ball<2>& cluster, const Buffer<unsigned char>& combinedCoverage)
 {
 	PlantAreaQueryResult::PlantStore& plants = result.getStore();
-	Mercator::Segment& mercatorSegment = segmentRef->getSegment().getMercatorSegment();
+	Mercator::Segment& mercatorSegment = segmentRef->getMercatorSegment();
 
 	float volume = (cluster.radius() * cluster.radius()) * WFMath::numeric_constants<WFMath::CoordType>::pi();
 	unsigned int instancesInEachCluster = volume * mDensity;

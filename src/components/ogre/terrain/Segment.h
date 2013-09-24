@@ -20,6 +20,7 @@
 #define EMBEROGRE_TERRAIN_SEGMENT_H_
 
 #include <string>
+#include <functional>
 
 namespace Mercator
 {
@@ -45,9 +46,12 @@ public:
 
 	/**
 	 * @brief Ctor.
-	 * @param segment The Mercator segment which this instance wraps around.
+	 * @param xIndex The x index of the segment.
+	 * @param yIndex The y index of the segment.
+	 * @param segmentProvider Function responsible for providing a segment.
+	 * @param segmentInvalidator Function responsible for invalidating the segment.
 	 */
-	Segment(Mercator::Segment& segment);
+	Segment(int xIndex, int yIndex, std::function<Mercator::Segment*()>& segmentProvider, std::function<void(Mercator::Segment*)>& segmentInvalidator);
 
 	/**
 	 * @brief Dtor.
@@ -56,6 +60,8 @@ public:
 
 	/**
 	 * @brief Gets the underlying Mercator segment.
+	 *
+	 * This method should only be called from the terrain handling thread; never from the main thread.
 	 * @returns The underlying Mercator segment.
 	 */
 	Mercator::Segment& getMercatorSegment();
@@ -88,10 +94,37 @@ public:
 protected:
 
 	/**
-	 * @brief The underlying Mercator segment which this class wraps.
+	 * @brief The x index of the segment.
+	 *
+	 * Note that this isn't the "world position", but the "index".
 	 */
-	Mercator::Segment& mSegment;
+	int mXIndex;
 
+	/**
+	 * @brief The y index of the segment.
+	 *
+	 * Note that this isn't the "world position", but the "index".
+	 */
+	int mYIndex;
+
+	/**
+	 * @brief The underlying Mercator segment which this class wraps.
+	 *
+	 * This is initially empty and later on set to the result of calling mSegmentCreator.
+	 */
+	Mercator::Segment* mSegment;
+
+	/**
+	 * @brief Returns a segment.
+	 *
+	 * This is meant to be called from the terrain handling thread.
+	 */
+	std::function<Mercator::Segment*()> mSegmentProvider;
+
+	/**
+	 * @brief Invalidates a segment.
+	 */
+	std::function<void(Mercator::Segment*)> mSegmentInvalidator;
 
 };
 

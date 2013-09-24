@@ -22,7 +22,7 @@
 #include <Mercator/Segment.h>
 #include <mutex>
 #include <memory>
-
+#include <atomic>
 
 
 namespace Ember
@@ -35,7 +35,6 @@ namespace Terrain
 
 class Segment;
 class SegmentManager;
-class SegmentReference;
 
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
@@ -66,7 +65,7 @@ public:
 	 * @brief Gets an instance of a reference to the Segment.
 	 * This will increase the reference counter.
 	 */
-	std::shared_ptr<SegmentReference> getReference();
+	std::shared_ptr<Segment> getReference();
 
 	/**
 	 * @brief Checks whether there are any references to the segment in use currently.
@@ -95,12 +94,7 @@ protected:
 	/**
 	 * @brief The number of currently active references to the Segment.
 	 */
-	unsigned int mRefCount;
-
-	/**
-	 * @brief Mutex used when accessing mRefCount.
-	 */
-	std::mutex mRefCountMutex;
+	std::atomic<unsigned int> mRefCount;
 
 	/**
 	 * @brief Called when a reference is destroyed. This will decrease the reference counter.

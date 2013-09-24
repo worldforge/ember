@@ -39,7 +39,6 @@ namespace OgreView
 
 namespace Terrain
 {
-class SegmentReference;
 class SegmentHolder;
 
 /**
@@ -209,23 +208,9 @@ protected:
 	SegmentStore mSegments;
 
 	/**
-	 * @brief A store of "fake" Segment instances.
-	 *
-	 * These are instances which aren't defined in the Mercator::Terrain instance, but
-	 * exist nonetheless to provide client side terrain.
-	 * This is of use for example when trying to provide "endless terrain".
-	 */
-	SegmentStore mFakeSegments;
-
-	/**
 	 * @brief A mutex for accessing mSegments.
 	 */
 	std::mutex mSegmentsMutex;
-
-	/**
-	 * @brief A mutex for accessing mFakeSegments.
-	 */
-	std::mutex mFakeSegmentsMutex;
 
 	/**
 	 * @brief Keeps track of all
@@ -253,7 +238,7 @@ protected:
 	 * @param y The y index of the segment.
 	 * @return A new segment holder instance which refers to the fake segment.
 	 */
-	SegmentHolder* createFakeSegment(const std::string& key, int x, int y);
+	SegmentRefPtr createFakeSegment(const std::string& key, int x, int y);
 
 
 };
