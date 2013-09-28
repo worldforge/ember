@@ -147,7 +147,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	Cegui::CEGUILogger* logger = new Cegui::CEGUILogger();
 
 	CEGUI::OgreRenderer& renderer = CEGUI::OgreRenderer::create(*renderWindow);
-	CEGUI::ResourceProvider& rp = CEGUI::OgreRenderer::createOgreResourceProvider();
+	CEGUI::OgreResourceProvider& rp = CEGUI::OgreRenderer::createOgreResourceProvider();
 
 	CEGUI::System::create(renderer, &rp);
 	try {
@@ -194,7 +194,8 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		CEGUI::Checkbox* dontShowAgainCheckbox = static_cast<CEGUI::Checkbox*>(mConfigWindow->getChildRecursive("OgreConfigure/DontShowAgain"));
 
 		IInputAdapter* adapter = new GUICEGUIAdapter(CEGUI::System::getSingletonPtr(), &renderer);
-		Input::getSingleton().addAdapter(adapter);
+		Input& input = Input::getSingleton();
+		input.addAdapter(adapter);
 
 		Ogre::ConfigOptionMap configOptions = renderSystem->getConfigOptions();
 		Ogre::ConfigOptionMap::const_iterator optionsIter = configOptions.find("Full Screen");
@@ -202,7 +203,6 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			fullscreenCheckbox->setSelected(optionsIter->second.currentValue == "Yes");
 		}
 
-		Input& input = Input::getSingleton();
 		input.setInputMode(Input::IM_GUI);
 
 		long long lastTime = Time::currentTimeMillis();
@@ -217,6 +217,7 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			Ogre::Root::getSingleton().renderOneFrame();
 		}
 		input.removeAdapter(adapter);
+		delete adapter;
 
 		//Check if the user has selected a render system (in the case of there being multiple)
 		if (renderers.size() > 1) {
@@ -234,13 +235,21 @@ OgreConfigurator::Result OgreConfigurator::configure()
 			EmberServices::getSingleton().getConfigService().setValue("ogre", "suppressconfigdialog", true);
 		}
 
+
+
 		CEGUI::System::getSingleton().destroy();
+		CEGUI::OgreRenderer::destroy(renderer);
+		CEGUI::OgreRenderer::destroyOgreResourceProvider(rp);
 		delete logger;
 
 		Ogre::Root::getSingleton().destroyRenderTarget(renderWindow);
 
+
+
 	} catch (const std::exception& ex) {
 		CEGUI::System::getSingleton().destroy();
+		CEGUI::OgreRenderer::destroy(renderer);
+		CEGUI::OgreRenderer::destroyOgreResourceProvider(rp);
 		delete logger;
 		throw ex;
 	}
