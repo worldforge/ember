@@ -165,7 +165,9 @@ OgreConfigurator::Result OgreConfigurator::configure()
 		sheet->addChildWindow(mConfigWindow);
 
 		CEGUI::Window* renderSystemWrapper = mConfigWindow->getChildRecursive("OgreConfigure/RenderSystem_wrapper");
+		assert(renderSystemWrapper);
 		CEGUI::Combobox* renderSystemsBox = static_cast<CEGUI::Combobox*>(mConfigWindow->getChildRecursive("OgreConfigure/RenderSystem"));
+		assert(renderSystemsBox);
 		//If we only have one render system available we should hide the render system combobox.
 		if (renderers.size() == 1) {
 			renderSystemWrapper->getParent()->removeChildWindow(renderSystemWrapper);
