@@ -38,7 +38,7 @@ if [ $debugging = 1 ] ; then
   # Execute real ember binary
   echo "Starting Ember in debugger...."
   gdb --batch -ex "run" -ex "backtrace" -ex "quit" \
-  --args $bindir/ember.bin $prefix_arg --home $homedata "$@"
+  --args $bindir/ember.bin $prefix_arg --config general:logginglevel verbose --home $homedata "$@"
 else
   # Execute real ember binary
   echo "Starting Ember...."
