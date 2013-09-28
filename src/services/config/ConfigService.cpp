@@ -324,6 +324,7 @@ namespace Ember
 		for (StringConfigMap::const_iterator I = commandLineSettings.begin(); I != commandLineSettings.end(); ++I) {
 			for (std::map<std::string, std::string>::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
 				mCommandLineConfig->setItem(I->first, J->first, J->second);
+				EventChangedConfigItem(I->first, J->first);
 			}
 		}
 		return success;
