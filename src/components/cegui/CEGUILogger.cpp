@@ -70,6 +70,8 @@ void CEGUILogger::Config_MinimumLogLevel(const std::string& section, const std::
 {
 	std::string newLogLevel(variable);
 	
+	S_LOG_INFO("Setting CEGUI logging level to '" << newLogLevel << "'.");
+
 	if (newLogLevel == "insane") {
 		d_level = CEGUI::Insane;
 	} else if (newLogLevel == "informative") {

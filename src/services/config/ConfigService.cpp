@@ -323,6 +323,7 @@ namespace Ember
 		//after loading the config from file, override with command time settings
 		for (StringConfigMap::const_iterator I = commandLineSettings.begin(); I != commandLineSettings.end(); ++I) {
 			for (std::map<std::string, std::string>::const_iterator J = I->second.begin(); J != I->second.end(); ++J) {
+				S_LOG_INFO("Setting command line config option " << I->first << ":" << J->first << " to " << J->second);
 				mCommandLineConfig->setItem(I->first, J->first, J->second);
 				EventChangedConfigItem(I->first, J->first);
 			}
