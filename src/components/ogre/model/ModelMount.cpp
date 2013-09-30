@@ -100,6 +100,10 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 	//make a copy of the original bbox
 	Ogre::AxisAlignedBox defaultOgreBoundingBox = mModel.getBoundingBox();
 
+	//Since we've rotated the model by 90 degrees in ModelMount::reset we must now rotate the bounding box
+	//the inverse amount before we can use it.
+	defaultOgreBoundingBox.transform(Ogre::Matrix4(Ogre::Quaternion(Ogre::Degree(-90), Ogre::Vector3::UNIT_Y)));
+
 	//We can only apply any meaningful scaling if there's a bounding box in the model. This might not be true if the model for example only contains a particle system or similar, and no entities
 	Ogre::Vector3 defaultSize = defaultOgreBoundingBox.getSize();
 	if (!defaultOgreBoundingBox.isNull() && (defaultSize.x != 0.0f && defaultSize.y != 0.0f && defaultSize.z != 0.0f)) {
@@ -108,7 +112,6 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 		Ogre::Matrix4 localTransform;
 		localTransform.makeTransform(getModel().getDefinition()->getTranslate(), Ogre::Vector3::UNIT_SCALE, getModel().getDefinition()->getRotation());
 		defaultOgreBoundingBox.transform(localTransform);
-		// 	defaultOgreBoundingBox.transform(Ogre::Matrix4(getNode().getOrientation()));
 
 		defaultSize = defaultOgreBoundingBox.getSize();
 
@@ -124,8 +127,7 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 			Ogre::AxisAlignedBox ogreBbox(Convert::toOgre(*wfBbox));
 
-			const Ogre::Vector3& ogreMax(ogreBbox.getMaximum());
-			const Ogre::Vector3& ogreMin(ogreBbox.getMinimum());
+			Ogre::Vector3 ogreSize = ogreBbox.getSize();
 
 			Ogre::Real scaleX;
 			Ogre::Real scaleY;
@@ -133,13 +135,13 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 			switch (getModel().getUseScaleOf()) {
 			case ModelDefinition::MODEL_HEIGHT:
-				scaleX = scaleY = scaleZ = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
+				scaleX = scaleY = scaleZ = fabs(ogreSize.y / defaultSize.y);
 				break;
 			case ModelDefinition::MODEL_WIDTH:
-				scaleX = scaleY = scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
+				scaleX = scaleY = scaleZ = fabs(ogreSize.x / defaultSize.x);
 				break;
 			case ModelDefinition::MODEL_DEPTH:
-				scaleX = scaleY = scaleZ = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
+				scaleX = scaleY = scaleZ = fabs(ogreSize.z / defaultSize.z);
 				break;
 			case ModelDefinition::MODEL_NONE:
 				scaleX = scaleY = scaleZ = 1;
@@ -147,10 +149,9 @@ void ModelMount::scaleNode(const WFMath::AxisBox<3>* wfBbox)
 
 			case ModelDefinition::MODEL_ALL:
 			default:
-				//HACK: for some reason we have to switch x and z here. I'm not completely sure why, but it works. It hints at a problem elsewhere though
-				scaleZ = fabs((ogreMax.x - ogreMin.x) / defaultSize.x);
-				scaleY = fabs((ogreMax.y - ogreMin.y) / defaultSize.y);
-				scaleX = fabs((ogreMax.z - ogreMin.z) / defaultSize.z);
+				scaleX = fabs(ogreSize.x / defaultSize.x);
+				scaleY = fabs(ogreSize.y / defaultSize.y);
+				scaleZ = fabs(ogreSize.z / defaultSize.z);
 				break;
 			}
 
