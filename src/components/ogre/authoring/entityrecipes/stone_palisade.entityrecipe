@@ -2,7 +2,7 @@
   <entityrecipe name="stone_palisade">
     <author>Erik Hjortsberg</author>
     <description>
-      A stone palissade segment.
+      A stone palisade segment.
     </description>
     <entity type="stone_palisade">
       <atlas>

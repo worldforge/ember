@@ -1,10 +1,10 @@
 <entityrecipes>
-  <entityrecipe name="palissade unit">
+  <entityrecipe name="palisade unit">
     <author>Erik Hjortsberg</author>
     <description>
-      One wooden palissade unit.
+      One wooden palisade unit.
     </description>
-    <entity type="palissade_unit">
+    <entity type="palisade_unit">
       <atlas>
         <map>
         </map>
@@ -16,12 +16,12 @@
     </bindings>
     <script></script>
   </entityrecipe>
-  <entityrecipe name="palissade entry">
+  <entityrecipe name="palisade entry">
     <author>Erik Hjortsberg</author>
     <description>
-      One wooden palissade entry.
+      One wooden palisade entry.
     </description>
-    <entity type="palissade_entry">
+    <entity type="palisade_entry">
       <atlas>
         <map>
         </map>
@@ -33,12 +33,12 @@
     </bindings>
     <script></script>
   </entityrecipe>
-  <entityrecipe name="palissade circle">
+  <entityrecipe name="palisade circle">
     <author>Erik Hjortsberg</author>
     <description>
-      One wooden palissade circle.
+      One wooden palisade circle.
     </description>
-    <entity type="palissade_circle">
+    <entity type="palisade_circle">
       <atlas>
         <map>
         </map>
