@@ -15,6 +15,20 @@ namespace Ember
 {
 
 
+/**
+ * Checks equality with an epsilon of 0.00001f.
+ * This is suited for sizes between 0 and 100.
+ * @param v1
+ * @param v2
+ * @return True if the vectors was considered to be equal.
+ */
+bool equals(const Ogre::Vector3& v1, const Ogre::Vector3& v2)
+{
+	return (std::abs(v1.x - v2.x) < 0.00001f) &&
+			(std::abs(v1.y - v2.y) < 0.00001f) &&
+			(std::abs(v1.z - v2.z) < 0.00001f);
+}
+
 
 class TestModel: public Model::Model
 {
@@ -38,23 +52,23 @@ public:
 
 void scaleAndTestMount(TestModel& model, Model::ModelMount& mount, const Ogre::Node& node)
 {
-	WFMath::AxisBox<3> axisBox(WFMath::Point<3>(0, 0, 0), WFMath::Point<3>(10, 10, 10));
+	WFMath::AxisBox<3> axisBox(WFMath::Point<3>(0, 0, 0), WFMath::Point<3>(10.0f, 10.0f, 10.0f));
 
-	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(5, 5, 5));
+	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(5.0f, 5.0f, 5.0f));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(node.getScale() == Ogre::Vector3(2, 2, 2));
+	CPPUNIT_ASSERT(equals(node.getScale(), Ogre::Vector3(2.0f, 2.0f, 2.0f)));
 
-	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(20, 20, 20));
+	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 0, 0), Ogre::Vector3(20.0f, 20.0f, 20.0f));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(node.getScale() == Ogre::Vector3(0.5, 0.5, 0.5));
+	CPPUNIT_ASSERT(equals(node.getScale(), Ogre::Vector3(0.5f, 0.5f, 0.5f)));
 
-	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(10, 10, 10), Ogre::Vector3(20, 20, 20));
+	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(10.0f, 10.0f, 10.0f), Ogre::Vector3(20.0f, 20.0f, 20.0f));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(node.getScale() == Ogre::Vector3(1, 1, 1));
+	CPPUNIT_ASSERT(equals(node.getScale(), Ogre::Vector3(1.0f, 1.0f, 1.0f)));
 
-	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 10, 15), Ogre::Vector3(20, 20, 20));
+	model.bbox = Ogre::AxisAlignedBox(Ogre::Vector3(0, 10.0f, 15.0f), Ogre::Vector3(20.0f, 20.0f, 20.0f));
 	mount.rescale(&axisBox);
-	CPPUNIT_ASSERT(node.getScale() == Ogre::Vector3(2, 1, 0.5));
+	CPPUNIT_ASSERT(equals(node.getScale(), Ogre::Vector3(2.0f, 1.0f, 0.5f)));
 
 }
 void ModelMountTestCase::testModelMountScaling()
@@ -72,14 +86,14 @@ void ModelMountTestCase::testModelMountScaling()
 	scaleAndTestMount(model, mount, nodeProvider->getNode());
 
 	//Test with the parent node being scaled
-	node->setScale(Ogre::Vector3(3, 0.2, 200));
+	node->setScale(Ogre::Vector3(3.0f, 0.2f, 200.0f));
 	Ogre::SceneNode* subNode = node->createChildSceneNode();
 	nodeProvider = new SceneNodeProvider(*subNode, &model);
 	Model::ModelMount mount2(model, nodeProvider);
 	scaleAndTestMount(model, mount2, nodeProvider->getNode());
 
 	//Test with the parent node being scaled and rotated
-	node->setScale(Ogre::Vector3(3, 0.2, 200));
+	node->setScale(Ogre::Vector3(3.0f, 0.2f, 200.0f));
 	node->yaw(Ogre::Degree(42));
 	node->pitch(Ogre::Degree(76));
 	node->roll(Ogre::Degree(98));
