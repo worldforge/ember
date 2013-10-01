@@ -1,5 +1,8 @@
 #!/bin/sh -eu
 
+# Store away original args before they are overwritten
+orig_args=$@
+
 : ${bindir:="$( cd -P "$( dirname "$0" )" && pwd )"}
 : ${prefix:="$( cd -P "$( dirname "$0" )/.." && pwd )"}
 
@@ -38,9 +41,9 @@ if [ $debugging = 1 ] ; then
   # Execute real ember binary
   echo "Starting Ember in debugger...."
   gdb --batch -ex "run" -ex "backtrace" -ex "quit" \
-  --args $bindir/ember.bin $prefix_arg --config general:logginglevel verbose --home $homedata "$@"
+  --args $bindir/ember.bin $prefix_arg --config general:logginglevel verbose --home $homedata $orig_args
 else
   # Execute real ember binary
   echo "Starting Ember...."
-  exec $bindir/ember.bin $prefix_arg --home $homedata "$@"
+  exec $bindir/ember.bin $prefix_arg --home $homedata $orig_args
 fi
