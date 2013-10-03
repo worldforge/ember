@@ -572,6 +572,7 @@
 
 	<autoentitymapping name="butcher_house" />
 	<autoentitymapping name="house3" />
+    <autoentitymapping name="bloomery" />
 	
 <!-- tools -->	
 	<autoentitymapping name="trowel" />
