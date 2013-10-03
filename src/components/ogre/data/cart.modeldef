@@ -8,6 +8,7 @@
                     <part name="1" group="main" show="true">
                         <subentities>
                             <subentity index="0" />
+                            <subentity index="1" />
                         </subentities>
                     </part>
                 </parts>
