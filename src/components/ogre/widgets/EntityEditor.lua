@@ -86,6 +86,8 @@ EntityEditor = {
 					end
 					if self.prototypes[attribute] and self.prototypes[attribute].help then
 						helpWindow:setText(self.prototypes[attribute].help)
+					else
+						helpWindow:setText("")
 					end
 					return true
 				end
