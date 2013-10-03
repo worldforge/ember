@@ -692,6 +692,14 @@ EntityEditor.prototypes =
 			return ownerElement == nil
 		end
 	},
+	spawner = {
+		adapter = EntityEditor.adapters.map,
+		help = "Makes this entity automatically spawn other entities.",
+		shouldAddSuggestion = function(ownerElement, entity)
+			--only show on top level
+			return ownerElement == nil
+		end
+	},
 	visibility = {
 		adapter = EntityEditor.adapters.float,
 		help = "Allows overriding of visibility calculated by the 'bbox' property.",
