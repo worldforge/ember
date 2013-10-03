@@ -78,6 +78,8 @@ void TerrainInfo::adjustBasePointPositionUp(WFMath::CoordType& basePointPosition
 	if (remainder != 0) {
 		//adjust the position
 		basePointPositionAdjusted = newBasePointPosition + (mercatorSegmentsPerOgrePage - remainder);
+		//finally we'll adjust it by one whole page in order to extend the world for endless paging
+		basePointPositionAdjusted += mercatorSegmentsPerOgrePage;
 	}
 }
 
@@ -88,6 +90,8 @@ void TerrainInfo::adjustBasePointPositionDown(WFMath::CoordType& basePointPositi
 	if (remainder != 0) {
 		//adjust the position
 		basePointPositionAdjusted = newBasePointPosition - (mercatorSegmentsPerOgrePage - remainder);
+		//finally we'll adjust it by one whole page in order to extend the world for endless paging
+		basePointPositionAdjusted -= mercatorSegmentsPerOgrePage;
 	}
 }
 
