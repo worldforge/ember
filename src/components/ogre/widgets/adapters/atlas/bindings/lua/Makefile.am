@@ -3,7 +3,7 @@ SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 .pkg.cxx:
 	cd $(srcdir) && TOLUAXX=${TOLUAXX} $(abs_top_srcdir)/scripts/update_lua_bindings.sh `basename $@ .cxx` `basename $@ .cxx`.pkg $(abs_builddir)/`basename $@` $<
 
-INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
 noinst_LIBRARIES = liblua_AtlasAdapters.a
 liblua_AtlasAdapters_a_SOURCES = AtlasAdapters.cxx

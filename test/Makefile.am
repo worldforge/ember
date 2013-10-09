@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"  -DSRCDIR=\"$(srcdir)\"
+AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src -DPREFIX=\"@prefix@\"  -DSRCDIR=\"$(srcdir)\"
 
 if USE_CPPUNIT
 TESTS = TestOgreView TestTasks TestTerrain TestFramework TestTimeFrame

@@ -5,7 +5,7 @@ SUFFIXES: .cxx .pkg .lo .la .cpp .o .obj
 .pkg.cxx:
 	cd $(srcdir) && TOLUAXX=${TOLUAXX} $(abs_top_srcdir)/scripts/update_lua_bindings.sh `basename $@ .cxx` `basename $@ .cxx`.pkg $(abs_builddir)/`basename $@` $< && sed -e "s/float/@OGRE_REAL_TYPE@/g" < $(abs_builddir)/$@ > $(abs_builddir)/$@_tmp && mv -f $(abs_builddir)/$@_tmp $(abs_builddir)/$@
 
-INCLUDES = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(srcdir) -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 
 noinst_LIBRARIES = liblua_Ogre.a
 liblua_Ogre_a_SOURCES = Ogre.cxx

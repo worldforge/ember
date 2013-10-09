@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src
+AM_CPPFLAGS = -I$(top_srcdir)/src
 SUBDIRS = src test
 
 ACLOCAL_AMFLAGS = -I m4

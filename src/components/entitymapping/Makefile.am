@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src  -I$(top_builddir)/src
+AM_CPPFLAGS = -I$(top_srcdir)/src  -I$(top_builddir)/src
 METASOURCES = AUTO
 
 noinst_LIBRARIES = libEntityMapping.a

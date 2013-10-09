@@ -1,4 +1,4 @@
-INCLUDES =  -I$(srcdir)/../../include -I$(top_srcdir)/src -I$(srcdir)/Ice  -I$(srcdir)  -I$(top_builddir)/src 
+AM_CPPFLAGS =  -I$(srcdir)/../../include -I$(top_srcdir)/src -I$(srcdir)/Ice  -I$(srcdir)  -I$(top_builddir)/src 
 METASOURCES = AUTO
 noinst_LIBRARIES = libOpcode.a
 libOpcode_a_SOURCES = OPC_AABBCollider.cpp OPC_AABBTree.cpp \
