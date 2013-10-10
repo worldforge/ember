@@ -21,8 +21,8 @@ EntityEditor = {
 					local adapterWrapper = self:createAdapter(name, childElement)
 					if adapterWrapper then
 						if adapterWrapper.adapter then
-							self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 							wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
+							self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.container, adapterWrapper.prototype)
 						end
 					end
 				end
@@ -1192,7 +1192,7 @@ function EntityEditor:editEntity(entity)
 end
 
 function EntityEditor:createAdapter(attributeName, element)
-	local prototype = self:getPrototype(attributeName, element)
+	local prototype = self:getPrototype("", element)
 	return self:createAdapterFromPrototype(element, prototype)
 end
 
