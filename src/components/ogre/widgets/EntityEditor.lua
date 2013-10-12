@@ -1364,15 +1364,14 @@ function EntityEditor:fillNewElementCombobox(combobox, elementName, outerElement
 		local item = Ember.OgreView.Gui.ColouredListItem:new(possibleProto.adapter.name, itemIndex)
 		table.insert(newAdapters, possibleProto.adapter)
 		combobox:addItem(item)
-	else
-		--Use the default adapters
+	end
+	--Use the default adapters
 
-		for index,value in pairsByKeys(self.defaultPrototypes) do
-			local itemIndex = table.maxn(newAdapters) + 1
-			local item = Ember.OgreView.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
-			table.insert(newAdapters, value.adapter)
-			combobox:addItem(item)
-		end
+	for index,value in pairsByKeys(self.defaultPrototypes) do
+		local itemIndex = table.maxn(newAdapters) + 1
+		local item = Ember.OgreView.Gui.ColouredListItem:new(value.adapter.name, itemIndex)
+		table.insert(newAdapters, value.adapter)
+		combobox:addItem(item)
 	end
 
 	--check that our previous selection is still available
