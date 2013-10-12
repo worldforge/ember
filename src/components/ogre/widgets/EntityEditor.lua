@@ -126,13 +126,29 @@ EntityEditor = {
 						if adapterWrapper then
 							local newPrototype = {}
 							wrapper.adapter:addAttributeAdapter(name, adapterWrapper.adapter, adapterWrapper.outercontainer)
-							self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
+							local container = self:addNamedAdapterContainer(name, adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 							--by adding the window again we make sure that it's at the bottom of the child window list
 							wrapper.outercontainer:addChildWindow(wrapper.container)
+
+							--due to a bug in CEGUI (at least in 0.7.9) we need to force a re-layout
+							--and notify screen area changed. Else the last window in the layout 
+							--container won't be drawn
+							--FIXME remove when this has been fixed in CEGUI
+
+							--These methods are not available in all versions of CEGUI, so we need to check for them
+							local layoutContainer = CEGUI.toVerticalLayoutContainer(wrapper.outercontainer)
+							if layoutContainer.markNeedsLayouting and layoutContainer.layoutIfNecessary then
+								layoutContainer:markNeedsLayouting()
+								layoutContainer:layoutIfNecessary()
+								Ember.Cegui.Helper:notifyScreenAreaChanged(layoutContainer, true)
+							end
+							
+
 							nameEditboxCombobox:getEditbox():setText("")
 							nameEditboxEditbox:setText("")
 							helpWindow:setText("")
 							checkSuggestions()
+							
 						end
 					end
 					return true
@@ -205,6 +221,19 @@ EntityEditor = {
 							self:addUnNamedAdapterContainer(adapterWrapper.adapter, adapterWrapper.container, wrapper.outercontainer, newPrototype)
 							--by adding the window again we make sure that it's at the bottom of the child window list
 							wrapper.outercontainer:addChildWindow(wrapper.container)
+							
+							--due to a bug in CEGUI (at least in 0.7.9) we need to force a re-layout
+							--and notify screen area changed. Else the last window in the layout 
+							--container won't be drawn
+							--FIXME remove when this has been fixed in CEGUI
+
+							--These methods are not available in all versions of CEGUI, so we need to check for them
+							local layoutContainer = CEGUI.toVerticalLayoutContainer(wrapper.outercontainer)
+							if layoutContainer.markNeedsLayouting and layoutContainer.layoutIfNecessary then
+								layoutContainer:markNeedsLayouting()
+								layoutContainer:layoutIfNecessary()
+								Ember.Cegui.Helper:notifyScreenAreaChanged(layoutContainer, true)
+							end
 						end
 					end
 				end
@@ -1277,6 +1306,7 @@ end
 function EntityEditor:addNamedAdapterContainer(attributeName, adapter, container, parentContainer, prototype)
 	local textWidth = 75
 	local outercontainer = guiManager:createWindow("DefaultWindow")
+	
 	outercontainer:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
 	--outercontainer:setRiseOnClickEnabled(false)
 	local label = guiManager:createWindow("EmberLook/StaticText")
