@@ -1,5 +1,6 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src -DPREFIX=\"@prefix@\"
 METASOURCES = AUTO
+SUBDIRS = bindings
 
 noinst_LIBRARIES = libCEGUI.a
 libCEGUI_a_SOURCES = CEGUILogger.cpp RenderedColourStringTextComponent.cpp ColouredRenderedStringParser.cpp CEGUIGUILayout_xmlHandler.cpp LayoutLoader.cpp

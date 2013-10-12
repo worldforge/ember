@@ -31,6 +31,7 @@ emberlibs = \
 	$(top_builddir)/src/components/ogre/environment/pagedgeometry/libpagedgeometry.a \
 	$(top_builddir)/src/components/ogre/environment/meshtree/libMeshTree.a \
 	$(top_builddir)/src/components/entitymapping/libEntityMapping.a \
+	$(top_builddir)/src/components/cegui/bindings/lua/liblua_Cegui.a \
 	$(top_builddir)/src/components/lua/libLua.a \
 	$(top_builddir)/src/components/cegui/libCEGUI.a \
 	$(top_builddir)/src/services/libServices.a \

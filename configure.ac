@@ -577,6 +577,8 @@ AC_CONFIG_FILES([Makefile
 		 src/components/ogre/SceneManagers/EmberPagingSceneManager/include/Makefile
 		 src/components/entitymapping/Makefile
 		 src/components/cegui/Makefile
+		 src/components/cegui/bindings/Makefile
+		 src/components/cegui/bindings/lua/Makefile
 		 test/Makefile
 		 src/extensions/webember/Makefile
 		 src/domain/Makefile

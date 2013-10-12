@@ -1,0 +1,20 @@
+$#include "Helper.h"
+
+
+namespace Ember
+{
+namespace Cegui
+{
+class Helper
+{
+public:
+	/**
+	 * Helper method for Lua to allow calling CEGUI::Window::notifyScreenAreaChanges,
+	 * since that's method isn't exposed through the standard Lua bindings.
+	 * @param window
+	 * @param recursive
+	 */
+	static void notifyScreenAreaChanged(CEGUI::Window* window, bool recursive);
+};
+}
+}
