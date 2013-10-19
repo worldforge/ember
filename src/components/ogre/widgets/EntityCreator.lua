@@ -181,12 +181,13 @@ function EntityCreator.buildWidget(world)
 		end) 
 		entityCreator.createButton:setEnabled(false)
 
-		entityCreator.widget:getWindow("RandomizeOrientation"):subscribeEvent("CheckStateChanged", function()
-			local checkbox = entityCreator.widget:getWindow("RandomizeOrientation")
-			checkbox = CEGUI.toCheckbox(checkbox)
-		
-			entityCreator.helper:setRandomizeOrientation(checkbox:isSelected())
+		local randomizeOrientationCheckbox = entityCreator.widget:getWindow("RandomizeOrientation")
+		randomizeOrientationCheckbox = CEGUI.toCheckbox(randomizeOrientationCheckbox)
+		randomizeOrientationCheckbox:subscribeEvent("CheckStateChanged", function()
+			entityCreator.helper:setRandomizeOrientation(randomizeOrientationCheckbox:isSelected())
 		end) 
+		entityCreator.helper:setRandomizeOrientation(randomizeOrientationCheckbox:isSelected())
+		
 		entityCreator.widget:enableCloseButton()
 	
 		local typesTree = CEGUI.toTree(entityCreator.widget:getWindow("Types/TypeList", true))
