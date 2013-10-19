@@ -87,6 +87,11 @@ function EntityCreator:showRecipe()
 
 		self:addAdapter(v, v:getTitle(), container, self.container)
 	end
+	
+	--Due to a bug with CEGUI (0.7.9) we need to trigger a area change event, else the windows won't appear.
+	--FIXME remove this once this has been fixed in CEGUI
+	Ember.Cegui.Helper:notifyScreenAreaChanged(self.container, true)
+	
 end
 
 -- Adds adapter
