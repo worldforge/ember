@@ -214,8 +214,8 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	console.registerCommand(BINDCOMMAND, this);
 	console.registerCommand(UNBINDCOMMAND, this);
 
-	setGeometry(width, height);
 	createIcon();
+	setGeometry(width, height);
 
 	if (!ToggleFullscreen) {
 		ToggleFullscreen = new ConsoleCommandWrapper("toggle_fullscreen", this, "Switch between windowed and full screen mode.");
