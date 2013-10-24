@@ -356,7 +356,7 @@ function ModelEdit:updateModelContentList()
 		local meshPtr = manager:getByName(name)
 		local mesh = meshPtr:get()
 		
-		
+		modelcontentItem.submodel = submodel
 		modelcontentItem.activate = function()
 			self:showSubModel(submodel)
 		end
@@ -375,6 +375,7 @@ function ModelEdit:updateModelContentList()
 				local name = part:getName()
 				
 				local modelcontentItem = {}
+				modelcontentItem.part = part
 				modelcontentItem.activate = function()
 					self:showPart(part)
 				end
@@ -400,6 +401,7 @@ function ModelEdit:updateModelContentList()
  
 						
 						local modelcontentItem = {}
+						modelcontentItem.subentity = subentity
 						modelcontentItem.activate = function()
 							self:showSubEntity(subentity)
 						end
@@ -422,6 +424,7 @@ function ModelEdit:updateModelContentList()
 		local name = action:getName()
 		local modelcontentItem = {}
 		
+		modelcontentItem.action = action
 		modelcontentItem.activate = function()
 			self:showAction(action)
 		end
@@ -680,7 +683,6 @@ function ModelEdit:buildWidget()
 			if item then 
 				local material = item:getText()
 				local subentity = self:getSelectedSubEntity()
-				--inspectObject(subentity)
 				self:updateMaterial(subentity, material)
 			end
 			return true
