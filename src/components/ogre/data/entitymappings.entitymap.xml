@@ -360,7 +360,6 @@
 	<entitymapping name="farmers_cap">
 		<entitymatch>
 			<case>
-				<caseparam type="equals">farmers_cap</caseparam>
 				<caseparam type="equals">hat</caseparam>
 				<action type="display-model">farmers_cap</action>
 			</case>
