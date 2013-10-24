@@ -828,19 +828,47 @@
 	<!-- We'll use the "male" model for the entities of type "settler" or "butcher". Depending on what kind of entity is outfitted to the torso we'll show a shirt part. The shirts all belongs to the same group in the model, so only one will be shown at the same time.
 		-->
 	
-	<entitymapping name="human">
+	<entitymapping name="general_male">
 		<entitymatch>
 			<case>
 				<caseparam type="equals">settler</caseparam>
 				<caseparam type="equals">merchant</caseparam>
 				<caseparam type="equals">mercenary</caseparam>
 				<caseparam type="equals">marshall</caseparam>
-				<caseparam type="equals">human</caseparam>
 				<action type="display-model">male</action>
 			</case>
 		</entitymatch>
 	</entitymapping>
 	
+    <entitymapping name="human">
+        <entitymatch>
+            <case>
+                <caseparam type="equals">human</caseparam>
+                <action type="display-model">male</action>
+                <action type="display-part">bare_torso</action>
+                <action type="display-part">bare_legs</action>
+                <action type="display-part">bare_feet</action>
+                <outfitmatch attachment="body">
+                    <case>
+                        <caseparam type="equals">shirt</caseparam>
+                        <action type="display-part">shirt</action>
+                    </case>
+                </outfitmatch>                
+                <outfitmatch attachment="feet">
+                    <case>
+                        <caseparam type="equals">boots</caseparam>
+                        <action type="display-part">footwear</action>
+                    </case>
+                </outfitmatch>                
+                <outfitmatch attachment="legs">
+                    <case>
+                        <caseparam type="equals">trousers</caseparam>
+                        <action type="display-part">pants</action>
+                    </case>
+                </outfitmatch>                
+            </case>
+        </entitymatch>
+    </entitymapping>
 	
 <!--	<entitymapping name="human">
 		<entitymatch>

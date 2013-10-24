@@ -10,17 +10,21 @@
                             <subentity index="1" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="7" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="11" material="/global/bipeds/races/human/male/body/base" />
+
+                            <subentity index="8" material="/global/bipeds/races/human/male/body/base" />
+                            <subentity index="10" material="/global/bipeds/races/human/male/body/base" />
+                            <subentity index="4" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
                     <part name="bare_legs" group="legs" show="true">
                         <subentities>
-                            <subentity index="0" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="9" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="12" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
                     <part name="bare_feet" group="feet" show="true">
                         <subentities>
+                            <subentity index="0" material="/global/bipeds/races/human/male/body/base" />
                             <subentity index="3" material="/global/bipeds/races/human/male/body/base" />
                         </subentities>
                     </part>
@@ -29,13 +33,13 @@
                             <subentity index="6" material="/global/bipeds/races/human/male/head/middle_aged" />
                         </subentities>
                     </part>
-                    <part name="bare_arms" group="arms" show="false">
-                        <subentities>
-                            <subentity index="8" material="/global/bipeds/races/human/male/body/base" />
-                            <subentity index="10" material="/global/bipeds/races/human/male/body/base" />
-                            <subentity index="4" material="/global/bipeds/races/human/male/body/base" />
-                        </subentities>
-                    </part>
+<!--                     <part name="bare_arms" group="arms" show="false"> -->
+<!--                         <subentities> -->
+<!--                             <subentity index="8" material="/global/bipeds/races/human/male/body/base" /> -->
+<!--                             <subentity index="10" material="/global/bipeds/races/human/male/body/base" /> -->
+<!--                             <subentity index="4" material="/global/bipeds/races/human/male/body/base" /> -->
+<!--                         </subentities> -->
+<!--                     </part> -->
                     <part name="bare_hands" show="true">
                         <subentities>
                             <subentity index="5" material="/global/bipeds/races/human/male/body/base" />
