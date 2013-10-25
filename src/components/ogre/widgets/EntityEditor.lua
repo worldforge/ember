@@ -286,6 +286,7 @@ EntityEditor = {
 				wrapper.adapter = self.factory:createPositionAdapter(wrapper.container, self.instance.entity:getId(), element)
 				wrapper.moveButtonPressed = function()
 					guiManager:EmitEntityAction("move", self.instance.entity)
+					return true
 				end
 				wrapper.moveButtonPressedListener = createConnector(wrapper.adapter.EventMoveClicked):connect(wrapper.moveButtonPressed)
 				return wrapper
@@ -493,6 +494,24 @@ EntityEditor = {
 			createNewElement = function(self)
 				return self.instance.helper:createMapElement()
 			end
+		},
+		terrain = {
+			name = "Terrain",
+			createAdapter = function(self, element, prototype)
+				local wrapper = {}
+				wrapper.container = guiManager:createWindow("DefaultWindow")
+				wrapper.container:setMaxSize(CEGUI.UVector2(CEGUI.UDim(1,0), CEGUI.UDim(0,6000)))
+				wrapper.adapter = self.factory:createStaticAdapter(wrapper.container, self.instance.entity:getId(), element)
+				wrapper.button = guiManager:createWindow("EmberLook/Button")
+				wrapper.button:setText("Edit terrain")
+				wrapper.button:setSize(CEGUI.UVector2(CEGUI.UDim(0,100), CEGUI.UDim(0,25)))
+				wrapper.container:addChildWindow(wrapper.button)
+				wrapper.button:subscribeEvent("Clicked", function(args)
+					console:runCommand("/show_terrainEditor")
+					return true
+				end)
+				return wrapper
+			end
 		}
 	}
 }
@@ -573,7 +592,7 @@ EntityEditor.prototypes =
 	},
 	terrain = {
 		--TODO: supply a terrain adapter which opens the terrain editor
-		adapter = EntityEditor.adapters.map,
+		adapter = EntityEditor.adapters.terrain,
 		help = "Defines the terrain. Currently only applicable to the top level entity.",
 		shouldAddSuggestion = function(ownerElement, entity)
 			--only show on top level and for the top entity
@@ -792,7 +811,7 @@ EntityEditor.prototypes =
 			end
 			return false
 		end
-	}	
+	}
 }
 EntityEditor.defaultPrototypes =
 {
