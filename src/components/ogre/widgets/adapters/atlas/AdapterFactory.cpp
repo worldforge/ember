@@ -77,6 +77,7 @@ TAdapter* AdapterFactory::createAdapter(CEGUI::Window* container, const std::str
 		return 0;
 	}
 	if (!verifyCorrectType<TAdapter> (element)) {
+		S_LOG_FAILURE("Type is not correct for adapter.");
 		return 0;
 	}
 
@@ -131,7 +132,7 @@ bool AdapterFactory::verifyCorrectType<MapAdapter>(const ::Atlas::Message::Eleme
 template<>
 bool AdapterFactory::verifyCorrectType<StaticAdapter>(const ::Atlas::Message::Element& element)
 {
-	return element.isString() || element.isNum();
+	return true;
 }
 template<>
 bool AdapterFactory::verifyCorrectType<AreaAdapter>(const ::Atlas::Message::Element& element)
