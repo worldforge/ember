@@ -1,5 +1,5 @@
 ## Process this file with autoconf to produce a configure script.
-AC_INIT([Ember],[0.7.1],[erik@ogenvik.org])
+AC_INIT([Ember],[0.7.2],[erik@ogenvik.org])
 
 AC_CONFIG_MACRO_DIR([m4])
 
