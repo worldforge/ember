@@ -375,7 +375,7 @@ SubEntityDefinition::SubEntityDefinition(unsigned int subEntityIndex, PartDefini
 }
 
 SubEntityDefinition::SubEntityDefinition(const std::string& subEntityName, PartDefinition& partdef) :
-		mSubEntityName(subEntityName), mPartDef(partdef), mSubEntityIndex(0)
+		mSubEntityName(subEntityName), mSubEntityIndex(0), mPartDef(partdef)
 {
 }
 
