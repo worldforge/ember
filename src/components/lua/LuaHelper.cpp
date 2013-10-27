@@ -48,7 +48,7 @@ int LuaHelper::luaErrorHandler(lua_State *L) {
 	lua_pushvalue(L, 1);
 	lua_pushinteger(L, 2);
 	lua_call(L, 2, 1);
-	return 0;
+	return 1;
 }
 
 /*************************************************************************
