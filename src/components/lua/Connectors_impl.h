@@ -81,8 +81,11 @@ void TemplatedConnectorBase<TAdapter0, TAdapter1>::callLuaMethod(const Tvalue_ty
 		callFunction(state, numberOfArguments);
 
 	} catch (const std::exception& ex) {
-		lua_settop(state, top);
-		S_LOG_FAILURE("(LuaScriptModule) Unable to execute scripted event handler '" << mLuaMethod << "'." << ex);
+		lua_Debug ar;
+		lua_rawgeti(state, LUA_REGISTRYINDEX, mLuaFunctionIndex);
+		lua_getinfo(state, ">Snl", &ar);
+		S_LOG_FAILURE("(LuaScriptModule) Exception thrown calling event handler : " << ex);
+		S_LOG_VERBOSE("(LuaScriptModule) Event handler defined at " << ar.linedefined << " in :\n" << ar.source);
 	} catch (...) {
 		lua_settop(state, top);
 		S_LOG_FAILURE("Unspecified error when executing: " << mLuaMethod );

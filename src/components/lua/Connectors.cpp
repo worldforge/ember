@@ -120,13 +120,20 @@ void ConnectorBase::callFunction(lua_State* state, int numberOfArguments)
 	luaPop pop(state, 1); // pops error handler on exit
 
 	// call it
-	int error = lua_pcall(state, numberOfArguments, LUA_MULTRET, error_index);
+	int error = 0;
+
+	try {
+		error = lua_pcall(state, numberOfArguments, LUA_MULTRET, error_index);
+	} catch (const std::exception& ex) {
+		const std::string& msg = lua_tostring(state,-1);
+		throw Exception(msg);
+	}
 
 	// handle errors
 	if (error) {
 		const std::string& msg = lua_tostring(state,-1);
-		// 			lua_pop(state,numberOfArguments);
-		throw Exception(msg);
+		S_LOG_FAILURE("(LuaScriptModule) Lua error: " << msg);
+		return;
 	}
 }
 
