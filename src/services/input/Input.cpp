@@ -162,7 +162,7 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 	SDL_VERSION(&info.version);
 
 	SDL_GetWMInfo(&info);
-	
+
 #ifdef _WIN32
 	if (centered) {
 		HWND hwnd = info.window;
@@ -188,7 +188,7 @@ std::string Input::createWindow(unsigned int width, unsigned int height, bool fu
 		}
 	}
 #endif	
-	
+
 	SDL_WM_SetCaption("Ember", "ember");
 
 	SDL_ShowCursor(0);
@@ -430,12 +430,23 @@ void Input::setMovementModeEnabled(bool value)
 	mMovementModeEnabled = value;
 }
 
-void Input::writeToClipboard(const std::string& text)
+void Input::writeToClipboard(char* text, size_t length)
 {
 #ifndef WITHOUT_SCRAP
-	char basicString[text.length() + 1];
-	strcpy(basicString, text.c_str());
-	put_scrap(T('T','E','X','T'), text.length(), basicString);
+	put_scrap(T('T','E','X','T'), length, text);
+#endif // WITHOUT_SCRAP
+}
+
+void Input::pasteFromClipboard(char*& text, size_t& length)
+{
+#ifndef WITHOUT_SCRAP
+	static char *scrap = 0;
+	int scraplen;
+
+	get_scrap(T('T','E','X','T'), &scraplen, &scrap);
+
+	length = scraplen;
+	text = scrap;
 #endif // WITHOUT_SCRAP
 }
 
@@ -663,51 +674,31 @@ void Input::pollEvents(float secondsSinceLast)
 	}
 }
 
-void Input::pasteFromClipboard()
-{
-#ifndef WITHOUT_SCRAP
-	static char *scrap = 0;
-	int scraplen;
-
-	get_scrap(T('T','E','X','T'), &scraplen, &scrap);
-	for (int i = 0; i < scraplen; ++i) {
-		for (IInputAdapterStore::const_iterator I = mAdapters.begin(); I != mAdapters.end();) {
-			IInputAdapter* adapter = *I;
-			++I;
-			if (!(adapter)->injectChar(scrap[i]))
-				break;
-		}
-	}
-#endif // WITHOUT_SCRAP
-}
-
 void Input::keyChanged(const SDL_KeyboardEvent &keyEvent)
 {
 	//catch paste key presses
 
 	//check for paste actions
-	if (((keyEvent.keysym.mod & KMOD_CTRL)|| (keyEvent.keysym.mod & KMOD_LCTRL) || (keyEvent.keysym.mod & KMOD_RCTRL))&& (keyEvent.keysym.sym == SDLK_v)) {
-		if (keyEvent.type == SDL_KEYDOWN) {
-			pasteFromClipboard();
-		}
 //On windows the OS will handle alt-tab independently, so we don't need to check here
 #ifndef _WIN32
-		} else if ((keyEvent.keysym.mod & KMOD_LALT) && (keyEvent.keysym.sym == SDLK_TAB)) {
-			if (keyEvent.type == SDL_KEYDOWN) {
-				lostFocus();
-			}
-#endif
-		} else {
-			if (keyEvent.type == SDL_KEYDOWN) {
-				mKeysPressed.insert(keyEvent.keysym.sym);
-				keyPressed(keyEvent);
-			} else {
-				mKeysPressed.erase(keyEvent.keysym.sym);
-				keyReleased(keyEvent);
-			}
+	if ((keyEvent.keysym.mod & KMOD_LALT) && (keyEvent.keysym.sym == SDLK_TAB)) {
+		if (keyEvent.type == SDL_KEYDOWN) {
+			lostFocus();
 		}
-
+#else
+		if (false) {
+#endif
+	} else {
+		if (keyEvent.type == SDL_KEYDOWN) {
+			mKeysPressed.insert(keyEvent.keysym.sym);
+			keyPressed(keyEvent);
+		} else {
+			mKeysPressed.erase(keyEvent.keysym.sym);
+			keyReleased(keyEvent);
+		}
 	}
+
+}
 
 bool Input::isKeyDown(const SDLKey &key) const
 {

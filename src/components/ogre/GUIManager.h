@@ -43,8 +43,7 @@ class Renderer;
 class Texture;
 class System;
 class WindowManager;
-//template <typename> class Vector2;
-//typedef class Vector2<float> Vector2f;
+class NativeClipboardProvider;
 }
 
 namespace Eris
@@ -418,6 +417,11 @@ protected:
 	 * @brief The entity tooltip instance, created when a World has been created, and destroyed along with it.
 	 */
 	Gui::EntityTooltip* mEntityTooltip;
+
+	/**
+	 * @brief Bridges the CEGUI clipboard and the system one.
+	 */
+	CEGUI::NativeClipboardProvider* mNativeClipboardProvider;
 };
 
 }

@@ -402,8 +402,16 @@ public:
 	 * @brief Writes the supplied text to the system clipboard.
 	 * This works on all platform, by using the scrap.cpp code found in framework.
 	 * @param text The text to write.
+	 * @param length The length of the text.
 	 */
-	void writeToClipboard(const std::string& text);
+	void writeToClipboard(char* text, size_t length);
+
+	/**
+	 * @brief Gets the text in the clipboard and pastes it to the supplied string.
+	 * @param text Point this to the pasted string.
+	 * @param length The length of the pasted string.
+	 */
+	void pasteFromClipboard(char*& text, size_t& length);
 
 	/**
 	 * @brief Gets the current mouse position.
@@ -485,11 +493,6 @@ private:
 	 * @param variable
 	 */
 	void Config_InvertCamera(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-	/**
-	 * @brief Gets the text in the clipboard and pastes it to the gui system.
-	 */
-	void pasteFromClipboard();
 
 	/**
 	 * @brief Creates and uses an icon for the window.

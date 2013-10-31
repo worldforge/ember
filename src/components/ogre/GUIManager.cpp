@@ -36,9 +36,11 @@
 
 #include "camera/MainCamera.h"
 #include "gui/ActiveWidgetHandler.h"
+#include "gui/CursorWorldListener.h"
+
 #include "components/cegui/CEGUILogger.h"
 #include "components/cegui/ColouredRenderedStringParser.h"
-#include "gui/CursorWorldListener.h"
+#include "components/cegui/ScrapNativeClipboardProvider.h"
 
 #include "components/lua/LuaScriptingProvider.h"
 
@@ -62,6 +64,7 @@
 #include <CEGUI/SchemeManager.h>
 #include <CEGUI/Exceptions.h>
 #include <CEGUI/FactoryModule.h>
+#include <CEGUI/Clipboard.h>
 #include <CEGUI/ScriptModules/Lua/ScriptModule.h>
 #include <CEGUI/RendererModules/Ogre/ResourceProvider.h>
 #include <CEGUI/RendererModules/Ogre/ImageCodec.h>
@@ -91,7 +94,7 @@ namespace OgreView
 unsigned long GUIManager::msAutoGenId(0);
 
 GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService, ServerServiceSignals& serverSignals, MainLoopController& mainLoopController) :
-		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Cegui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0)
+		ToggleInputMode("toggle_inputmode", this, "Toggle the input mode."), ReloadGui("reloadgui", this, "Reloads the gui."), ToggleGui("toggle_gui", this, "Toggle the gui display"), mConfigService(configService), mMainLoopController(mainLoopController), mGuiCommandMapper("gui", "key_bindings_gui"), mSheet(0), mWindowManager(0), mWindow(window), mGuiSystem(0), mGuiRenderer(0), mOgreResourceProvider(0), mOgreImageCodec(0), mCursorWorldListener(0), mLuaScriptModule(0), mIconManager(0), mActiveWidgetHandler(0), mCEGUILogger(new Cegui::CEGUILogger()), mRenderedStringParser(0), mEntityTooltip(0), mNativeClipboardProvider(nullptr)
 {
 	mGuiCommandMapper.restrictToInputMode(Input::IM_GUI);
 
@@ -141,6 +144,9 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 			// 			S_LOG_FAILURE("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 			throw Exception("Could not load any CEGUI schemes. This means that there's something wrong with how CEGUI is setup. Check the CEGUI log for more detail. We'll now exit Ember.");
 		}
+
+		mNativeClipboardProvider = new Ember::Cegui::ScrapNativeClipboardProvider();
+		mGuiSystem->getClipboard()->setNativeProvider(mNativeClipboardProvider);
 
 		mRenderedStringParser = new Cegui::ColouredRenderedStringParser();
 		mGuiSystem->setDefaultCustomRenderedStringParser(mRenderedStringParser);
@@ -237,6 +243,7 @@ GUIManager::~GUIManager()
 	WidgetLoader::removeAllWidgetFactories();
 
 	delete mCEGUILogger;
+	delete mNativeClipboardProvider;
 
 }
 
@@ -354,15 +361,15 @@ Widget* GUIManager::createWidget(const std::string& name)
 
 		widget = WidgetLoader::createWidget(name);
 		if (widget == 0) {
-			S_LOG_FAILURE( "Could not find widget with name " << name);
+			S_LOG_FAILURE("Could not find widget with name " << name);
 			return 0;
 		}
 		widget->init(this);
 		widget->buildWidget();
 		addWidget(widget);
-		S_LOG_INFO( "Successfully loaded widget " << name);
+		S_LOG_INFO("Successfully loaded widget " << name);
 	} catch (const std::exception& e) {
-		S_LOG_FAILURE( "Error when loading widget " << name << "." << e);
+		S_LOG_FAILURE("Error when loading widget " << name << "." << e);
 		return 0;
 	}
 	return widget;
@@ -449,45 +456,14 @@ bool GUIManager::isInGUIMode() const
 
 void GUIManager::pressedKey(const SDL_keysym& key, Input::InputMode inputMode)
 {
-	if (((key.mod & KMOD_CTRL) || (key.mod & KMOD_LCTRL) || (key.mod & KMOD_RCTRL)) && ((key.sym == SDLK_c) || (key.sym == SDLK_x))) {
-
-		bool cut = (key.sym == SDLK_x);
-		CEGUI::Window* active = mSheet->getActiveChild();
-		if (!active)
-			return;
-
-		CEGUI::String seltext;
-		const CEGUI::String& type = active->getType();
-
-		if (type.find("/MultiLineEditbox") != CEGUI::String::npos) {
-			CEGUI::MultiLineEditbox* edit = static_cast<CEGUI::MultiLineEditbox*>(active);
-			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
-			CEGUI::String::size_type len = edit->getSelectionLength();
-			seltext = edit->getText().substr(beg, len).c_str();
-
-			// are we cutting or just copying?
-			if (cut) {
-				if (edit->isReadOnly())
-					return;
-				CEGUI::String newtext = edit->getText();
-				edit->setText(newtext.erase(beg, len));
-			}
-
-		} else if (type.find("/Editbox") != CEGUI::String::npos) {
-			CEGUI::Editbox* edit = static_cast<CEGUI::Editbox*>(active);
-			CEGUI::String::size_type beg = edit->getSelectionStartIndex();
-			CEGUI::String::size_type len = edit->getSelectionLength();
-			seltext = edit->getText().substr(beg, len).c_str();
-
-			// are we cutting or just copying?
-			if (cut) {
-				if (edit->isReadOnly())
-					return;
-				CEGUI::String newtext = edit->getText();
-				edit->setText(newtext.erase(beg, len));
-			}
+	if (((key.mod & KMOD_CTRL)|| (key.mod & KMOD_LCTRL) || (key.mod & KMOD_RCTRL))) {
+		if (key.sym == SDLK_c) {
+			mGuiSystem->getDefaultGUIContext().injectCopyRequest();
+		} else if (key.sym == SDLK_x) {
+			mGuiSystem->getDefaultGUIContext().injectCutRequest();
+		} else if (key.sym == SDLK_v) {
+			mGuiSystem->getDefaultGUIContext().injectPasteRequest();
 		}
-		getInput().writeToClipboard(seltext.c_str());
 	}
 }
 
