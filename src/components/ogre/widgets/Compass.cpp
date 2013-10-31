@@ -204,7 +204,7 @@ void CEGUICompassImpl::_setCompass(Compass* compass)
 {
 	AssetsManager assetsManager;
 	mTexturePair = assetsManager.createTextureImage(mMap->getTexture(), "CompassMap");
-	int halfOffset = static_cast<int>(mMap->getTexture()->getWidth() * 0.25f);
+//	int halfOffset = static_cast<int>(mMap->getTexture()->getWidth() * 0.25f);
 //	mTexturePair.getTextureImageset()->defineImage("view", CEGUI::Rect<>(halfOffset, halfOffset, mMap->getTexture()->getWidth() - halfOffset, mMap->getTexture()->getWidth() - halfOffset), CEGUI::Point(0, 0));
 //	mViewImage = &mTexturePair.getTextureImageset()->getImage("view");
 
