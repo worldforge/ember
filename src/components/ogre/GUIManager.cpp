@@ -154,13 +154,6 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 
 		EntityTooltip::registerFactory();
 
-		try {
-			mGuiSystem->getDefaultGUIContext().getMouseCursor().setDefaultImage(getDefaultScheme() + "/MouseArrow");
-		} catch (const CEGUI::Exception& ex) {
-			S_LOG_FAILURE("CEGUI - could not set mouse pointer. Make sure that the correct scheme " << getDefaultScheme() << " is available." << ex);
-			throw Exception(ex.getMessage().c_str());
-		}
-
 		mSheet = mWindowManager->createWindow("DefaultWindow", "root_wnd");
 		mGuiSystem->getDefaultGUIContext().setRootWindow(mSheet);
 		mSheet->activate();

@@ -151,16 +151,12 @@ OgreConfigurator::Result OgreConfigurator::configure()
 	CEGUI::OgreRenderer& renderer = CEGUI::OgreRenderer::create(*renderWindow);
 	CEGUI::OgreResourceProvider& rp = CEGUI::OgreRenderer::createOgreResourceProvider();
 
-	CEGUI::System::create(renderer, &rp);
+	CEGUI::System::create(renderer, &rp, nullptr, nullptr, nullptr, "cegui/datafiles/configs/ceguiMinimal.config");
 	try {
-		CEGUI::SchemeManager::getSingleton().createFromFile("cegui/datafiles/schemes/EmberLookSkinMinimal.scheme", "");
-		CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont("DejaVuSans-8");
 		CEGUI::ImageManager::getSingleton().loadImageset("cegui/datafiles/imagesets/splash.imageset", "");
 
 		CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "root_wnd");
 		CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
-
-		CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setImage("EmberLook/MouseArrow");
 
 		mConfigWindow = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("cegui/datafiles/layouts/OgreConfigurator.layout");
 		mConfigWindow->update(0);

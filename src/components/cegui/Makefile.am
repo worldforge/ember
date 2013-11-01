@@ -18,6 +18,6 @@ dist_ceguifonts_DATA = datafiles/fonts/DejaVuSans-Bold-8.xml datafiles/fonts/Dej
 dist_ceguiimagesets_DATA = datafiles/imagesets/Imageset.xsd datafiles/imagesets/iconset_standard.imageset datafiles/imagesets/iconset_mason.imageset datafiles/imagesets/EmberLook.imageset datafiles/imagesets/status_main.imageset datafiles/imagesets/compass.imageset datafiles/imagesets/splash.imageset
 dist_ceguilayouts_DATA = datafiles/layouts/GUILayout.xsd
 dist_ceguischemes_DATA = datafiles/schemes/GUIScheme.xsd datafiles/schemes/EmberLookSkin.scheme datafiles/schemes/EmberLookSkinMinimal.scheme
-dist_ceguiconfig_DATA = datafiles/configs/cegui.config
+dist_ceguiconfig_DATA = datafiles/configs/cegui.config datafiles/configs/ceguiMinimal.config
 dist_ceguilooknfeel_DATA = datafiles/looknfeel/EmberLook.looknfeel
 dist_ceguischema_DATA = datafiles/layouts/GUILayout.xsd datafiles/imagesets/Imageset.xsd datafiles/fonts/Font.xsd datafiles/schemes/GUIScheme.xsd datafiles/configs/CEGUIConfig.xsd datafiles/looknfeel/Falagard.xsd
