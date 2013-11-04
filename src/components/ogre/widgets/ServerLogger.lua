@@ -20,6 +20,7 @@ function ServerLogger.buildWidget()
 	
 	--subscribe event
 	ServerLogger.widget:getWindow("LoggingEnabled"):subscribeEvent("SelectStateChanged", ServerLogger.LoggingEnabled_SelectStateChanged)
+	ServerLogger.widget:getWindow("ClearButton"):subscribeEvent("Clicked", ServerLogger.ClearButton_Clicked)
 	
 	
 	ServerLogger.widget:registerConsoleVisibilityToggleCommand("serverLogger")

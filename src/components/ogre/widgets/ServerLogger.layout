@@ -13,7 +13,6 @@
 			<Property name="Text" value="Clear" />
 			<Property name="Position" value="{{0.0,140},{0,20}}" />
 			<Property name="Size" value="{{0,50},{0,20}}" />
-			<Event function="ServerLogger.ClearButton_Clicked" name="Clicked" />
 		</Window>		
 		<Window name="LogText" type="EmberLook/MultiLineEditbox">
 			<Property name="Position" value="{{0,4},{0,45.0}}" />

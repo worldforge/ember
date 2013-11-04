@@ -27,7 +27,7 @@ function ScriptEdit.buildWidget()
 	
 	ScriptEdit.widget:getWindow("ClearScriptTextButton"):subscribeEvent("Clicked", "ScriptEdit.ClearScriptTextButtonClick")
 	ScriptEdit.widget:getWindow("ClearOutputButton"):subscribeEvent("Clicked", "ScriptEdit.ClearOutputButtonClick")
-	
+	ScriptEdit.widget:getWindow("ForceGCButton"):subscribeEvent("Clicked", ScriptEdit.ForceGCButton_Clicked)
 	
 	
 	--subscribe event
