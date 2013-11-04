@@ -8,7 +8,6 @@
 			<Property name="Size" value="{{0,120},{0,20}}" />
 			<Property name="TooltipText" value="Toggle logging enabled." />
 			<Property name="Text" value="Enabled" />
-			<Event function="ServerLogger.LoggingEnabled_CheckStateChanged" name="CheckStateChanged" />
 		</Window>
 		<Window name="ClearButton" type="EmberLook/Button">
 			<Property name="Text" value="Clear" />

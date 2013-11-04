@@ -19,6 +19,8 @@ function ServerLogger.buildWidget()
 	ServerLogger.logTextWidget = ServerLogger.widget:getWindow("LogText")
 	
 	--subscribe event
+	ServerLogger.widget:getWindow("LoggingEnabled"):subscribeEvent("SelectStateChanged", ServerLogger.LoggingEnabled_SelectStateChanged)
+	
 	
 	ServerLogger.widget:registerConsoleVisibilityToggleCommand("serverLogger")
 	ServerLogger.widget:enableCloseButton()
