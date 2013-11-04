@@ -33,7 +33,7 @@ function ServerBrowser:buildWidget()
 	self.manualServerNameTextbox:subscribeEvent("TextAccepted", self.manualServerNameTextbox_TextAcceptedEvent, self)
 
 	wee = self.widget:getWindow("HideOldServers")
-	self.hideOldServersCheckbox = CEGUI.toCheckbox(wee)
+	self.hideOldServersCheckbox = CEGUI.toToggleButton(wee)
 	--Only show the checkbox for filtering old servers if the metaserver:minimumversion value is set in the config
 	if emberServices:getConfigService():itemExists("metaserver", "minimumversion") then
 		local minimumversion = emberServices:getConfigService():getValue("metaserver", "minimumversion")

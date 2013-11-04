@@ -50,7 +50,7 @@ function ServerLogger.ClearButton_Clicked(args)
 end
 
 function ServerLogger.LoggingEnabled_SelectStateChanged(args)
-	local checkBox = CEGUI.toCheckbox(ServerLogger.widget:getWindow("LoggingEnabled"))
+	local checkBox = CEGUI.toToggleButton(ServerLogger.widget:getWindow("LoggingEnabled"))
 	if checkBox ~= nil then
 		ServerLogger.cleanup()
 		if checkBox:isSelected() then

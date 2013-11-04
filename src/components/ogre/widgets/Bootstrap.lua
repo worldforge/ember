@@ -1,6 +1,6 @@
 --This script is the first one loaded. It's responsible for setting up utility objects, defining some utility functions and loading all scripts that should be loaded at start up
 
-CEGUI.toCheckbox = function(w)
+CEGUI.toToggleButton = function(w)
     return tolua.cast(w,"CEGUI::ToggleButton")
 end
 

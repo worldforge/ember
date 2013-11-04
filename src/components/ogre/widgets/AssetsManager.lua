@@ -514,7 +514,7 @@ function AssetsManager:LODLoad(dist)
 	container:setEnabled(not useAuto)
 	
 	local checkbox = self.widget:getWindow("EnableAutomaticLOD")
-	checkbox = CEGUI.toCheckbox(checkbox)
+	checkbox = CEGUI.toToggleButton(checkbox)
 	checkbox:setSelected(useAuto)
 	
 	local container = self.widget:getWindow("LODConfigContainer")
@@ -597,7 +597,7 @@ end
 
 function AssetsManager:LODUpdateForcedLevel()
 	local checkbox = self.widget:getWindow("ForceLodLevelCheckbox")
-	checkbox = CEGUI.toCheckbox(checkbox)
+	checkbox = CEGUI.toToggleButton(checkbox)
 	local shouldForce = checkbox:isSelected()
 	local dist = self:LODGetSelected()
 	if shouldForce and dist then
@@ -826,7 +826,7 @@ function AssetsManager:buildWidget()
 		self.windows.controls.listbox = CEGUI.toListbox(self.widget:getWindow("WindowsList"))
 		self.windows.controls.filter = CEGUI.toEditbox(self.widget:getWindow("FilterWindows"))
 		self.windows.listholder = Ember.OgreView.Gui.ListHolder:new(self.windows.controls.listbox, self.windows.controls.filter)
-		self.windows.controls.visibleCheckbox = CEGUI.toCheckbox(self.widget:getWindow("WindowInfo_Visible"))
+		self.windows.controls.visibleCheckbox = CEGUI.toToggleButton(self.widget:getWindow("WindowInfo_Visible"))
 		self.windows.controls.infoText = self.widget:getWindow("WindowInfo_Text")
 		self.windows.controls.widthRel = self.widget:getWindow("WindowInfo_Width_rel")
 		self.windows.controls.widthFixed = self.widget:getWindow("WindowInfo_Width_fix")
@@ -968,7 +968,7 @@ function AssetsManager:buildWidget()
 		-- subscribe LOD events.
 		self.widget:getWindow("EnableAutomaticLOD"):subscribeEvent("SelectStateChanged", function(args)
 			local checkbox = self.widget:getWindow("EnableAutomaticLOD")
-			checkbox = CEGUI.toCheckbox(checkbox)
+			checkbox = CEGUI.toToggleButton(checkbox)
 			local useAuto = checkbox:isSelected()
 			
 			local loddef = self.meshes.current.lodDefPtr.get()
@@ -1077,7 +1077,7 @@ function AssetsManager:buildWidget()
 		
 		self.widget:getWindow("ShowWireFrameCheckbox"):subscribeEvent("SelectStateChanged", function(args)
 			local checkbox = self.widget:getWindow("ShowWireFrameCheckbox")
-			checkbox = CEGUI.toCheckbox(checkbox)
+			checkbox = CEGUI.toToggleButton(checkbox)
 			local useWireframe = checkbox:isSelected()
 			self.meshes.renderer:setWireframeMode(useWireframe)
 			return true

@@ -35,7 +35,7 @@ function ScriptEdit.buildWidget()
 	ScriptEdit.inspect:subscribeEvent("Clicked", "ScriptEdit.inspectClick")
 	connect(ScriptEdit.connectors, scriptingService:getEventScriptError(), "ScriptEdit.scriptError")
 	
-	ScriptEdit.dynamicBindings = CEGUI.toCheckbox(ScriptEdit.widget:getWindow("DynamicBindings"))
+	ScriptEdit.dynamicBindings = CEGUI.toToggleButton(ScriptEdit.widget:getWindow("DynamicBindings"))
 	ScriptEdit.dynamicBindings:subscribeEvent("SelectStateChanged", "ScriptEdit.dynamicBindings_SelectStateChanged")
 	
 	

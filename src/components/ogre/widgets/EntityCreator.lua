@@ -182,7 +182,7 @@ function EntityCreator.buildWidget(world)
 		entityCreator.createButton:setEnabled(false)
 
 		local randomizeOrientationCheckbox = entityCreator.widget:getWindow("RandomizeOrientation")
-		randomizeOrientationCheckbox = CEGUI.toCheckbox(randomizeOrientationCheckbox)
+		randomizeOrientationCheckbox = CEGUI.toToggleButton(randomizeOrientationCheckbox)
 		randomizeOrientationCheckbox:subscribeEvent("SelectStateChanged", function()
 			entityCreator.helper:setRandomizeOrientation(randomizeOrientationCheckbox:isSelected())
 		end) 

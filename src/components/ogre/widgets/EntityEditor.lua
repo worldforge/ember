@@ -1655,8 +1655,8 @@ function EntityEditor:buildWidget()
 		--[[	self.modelTab.stackableWindow = self.widget:getWindow("ModelPanelStackable")
 		self.modelTab.stackableContainer = Ember.OgreView.Gui.StackableContainer:new_local(self.modelTab.stackableWindow)
 		self.modelTab.stackableContainer:setInnerContainerWindow(self.modelTab.stackableWindow)]]
-		self.modelTab.showOgreBbox = CEGUI.toCheckbox(self.widget:getWindow("ShowOgreBbox"))
-		self.modelTab.showErisBbox = CEGUI.toCheckbox(self.widget:getWindow("ShowErisBbox"))
+		self.modelTab.showOgreBbox = CEGUI.toToggleButton(self.widget:getWindow("ShowOgreBbox"))
+		self.modelTab.showErisBbox = CEGUI.toToggleButton(self.widget:getWindow("ShowErisBbox"))
 		self.modelTab.modelInfo = self.widget:getWindow("ModelInfo")
 
 
@@ -1809,8 +1809,8 @@ function EntityEditor:buildWidget()
 		self.exportFilenameWindow = self.widget:getWindow("ExportFileName")
 		self.exportNameWindow = self.widget:getWindow("ExportName")
 		self.exportDescriptionWindow = self.widget:getWindow("ExportDescription")
-		local preserveIdsWindow = CEGUI.toCheckbox(self.widget:getWindow("ExportPreserveIds"))
-		local includeTransientsWindow = CEGUI.toCheckbox(self.widget:getWindow("ExportIncludeTransients"))
+		local preserveIdsWindow = CEGUI.toToggleButton(self.widget:getWindow("ExportPreserveIds"))
+		local includeTransientsWindow = CEGUI.toToggleButton(self.widget:getWindow("ExportIncludeTransients"))
 
 		local worldDumper = function()
 

@@ -172,7 +172,7 @@ function ModelEdit:updateModelInfo()
 	
 	local showContent = self.widget:getWindow("ModelShowContent")
 	
-	showContent = CEGUI.toCheckbox(showContent)
+	showContent = CEGUI.toToggleButton(showContent)
 	showContent:setSelected(self.definition:getShowContained())
 	
 	self.scaleTypes:clearAllSelections()
@@ -927,7 +927,7 @@ function ModelEdit:buildWidget()
 		
 		local removePoseButton = self.widget:getWindow("PoseRemoveButton")
 		
-		local poseIgnoreEntityDataCheckbox = CEGUI.toCheckbox(self.widget:getWindow("PoseIgnoreEntityData"))
+		local poseIgnoreEntityDataCheckbox = CEGUI.toToggleButton(self.widget:getWindow("PoseIgnoreEntityData"))
 
 		local updatePoseAdapters = function()
 			local translation = self.poseRenderer:getEntityTranslation()
@@ -1123,7 +1123,7 @@ function ModelEdit:buildWidget()
 	
 		
 		self.partShown = self.widget:getWindow("Shown")
-		self.partShown = CEGUI.toCheckbox(self.partShown)
+		self.partShown = CEGUI.toToggleButton(self.partShown)
 		self.partShown:subscribeEvent("SelectStateChanged", function(args)
 			local shown = self.partShown:isSelected()
 			local part = self:getSelectedPart()
@@ -1192,7 +1192,7 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
-		local showAxesCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Image_ShowAxes"))
+		local showAxesCheckbox = CEGUI.toToggleButton(self.widget:getWindow("Image_ShowAxes"))
 		showAxesCheckbox:subscribeEvent("SelectStateChanged", function(args)
 			if showAxesCheckbox:isSelected() then
 				self.renderer:showAxis()
@@ -1202,7 +1202,7 @@ function ModelEdit:buildWidget()
 			return true
 		end)
 		
-		local showSkeletonCheckbox = CEGUI.toCheckbox(self.widget:getWindow("Image_ShowSkeleton"))
+		local showSkeletonCheckbox = CEGUI.toToggleButton(self.widget:getWindow("Image_ShowSkeleton"))
 		showSkeletonCheckbox:subscribeEvent("SelectStateChanged", function(args)
 			local model = self.renderer:getModel()
 			if model then
