@@ -810,8 +810,9 @@ function AssetsManager:buildWidget()
 			manager = CEGUI.ImageManager:getSingleton()
 			local I = manager:getIterator() 
 			while I:isAtEnd() == false do
-				local name = i:key()
-				local item = Ember.OgreView.Gui.ColouredListItem:new(name, 0, i:value())
+				local name = I:key()
+				local image = I:value().first
+				local item = Ember.OgreView.Gui.ColouredListItem:new(name, 0, image)
 				self.images.listholder:addItem(item)
 				
 				I:next()
