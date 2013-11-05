@@ -505,7 +505,7 @@ EntityEditor = {
 				wrapper.button = guiManager:createWindow("EmberLook/Button")
 				wrapper.button:setText("Edit terrain")
 				wrapper.button:setSize(CEGUI.USize(CEGUI.UDim(0,100), CEGUI.UDim(0,25)))
-				wrapper.container:addChildWindow(wrapper.button)
+				wrapper.container:addChild(wrapper.button)
 				wrapper.button:subscribeEvent("Clicked", function(args)
 					console:runCommand("/show_terrainEditor")
 					return true
