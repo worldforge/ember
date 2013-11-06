@@ -10,7 +10,7 @@
 			<Property name="Size" value="{{1,0},{0.5,0}}" />
 			<Property name="BackgroundEnabled" value="False" />
 			<Property name="FrameEnabled" value="False" />
-			<Property name="HorzFormatting" value="CentreAligned" />
+			<Property name="HorzFormatting" value="WordWrapCentreAligned" />
 			<Property name="MousePassThroughEnabled" value="true" />
 			<Property name="RiseOnClickEnabled" value="false" />
 		</Window>
@@ -19,7 +19,7 @@
 			<Property name="Size" value="{{1,0},{0.5,0}}" />
 			<Property name="BackgroundEnabled" value="False" />
 			<Property name="FrameEnabled" value="False" />
-			<Property name="HorzFormatting" value="CentreAligned" />
+			<Property name="HorzFormatting" value="WordWrapCentreAligned" />
 			<Property name="MousePassThroughEnabled" value="true" />
 			<Property name="RiseOnClickEnabled" value="false" />
 			<Property name="Text">Click to touch.
