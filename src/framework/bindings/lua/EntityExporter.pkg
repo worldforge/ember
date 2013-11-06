@@ -37,6 +37,18 @@ public:
 		 * @brief The number of minds for which the server didn't send correct data.
 		 */
 		unsigned int mindsError;
+		/**
+		 * @brief The number of rules queried.
+		 */
+		unsigned int rulesQueried;
+		/**
+		 * @brief The number of rules received.
+		 */
+		unsigned int rulesReceived;
+		/**
+		 * @brief The number of rules queried.
+		 */
+		unsigned int rulesError;
 	};
 	
 	explicit EntityExporter(Eris::Account& account);
@@ -92,6 +104,20 @@ public:
 	 * @return Whether we should preserve ids.
 	 */
 	bool getPreserveIds() const;
+	
+	/**
+	 * @brief Sets whether we should export rules.
+	 *
+	 * @param exportRules Whether we should export rules.
+	 */
+	void setExportRules(bool exportRules);
+
+	/**
+	 * @brief Gets whether we should export rules.
+	 * @return Whether we should export rules.
+	 */
+	bool getExportRules() const;
+	
 
 	/**
 	 * @brief Gets stats about the export process.

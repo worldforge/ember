@@ -254,6 +254,16 @@
                                     <Property name="Size" value="{{1,-120.0},{0,25.0}}" />
                                 </Window>
                             </Window>
+                            <Window type="HorizontalLayoutContainer">
+                                <Property name="TooltipText">If we also should export all rules.</Property>
+                                <Window type="EmberLook/StaticText">
+                                    <Property name="Size" value="{{0,120.0},{0,25}}" />
+                                    <Property name="Text">Export rules</Property>
+                                </Window>
+                                <Window name="ExportIncludeRules" type="EmberLook/Checkbox">
+                                    <Property name="Size" value="{{1,-120.0},{0,25.0}}" />
+                                </Window>
+                            </Window>
                         </Window>
                         <Window name="DumpWorld" type="EmberLook/Button">
                             <Property name="Text" value="Export entity" />
@@ -274,6 +284,12 @@
                         <Window name="DumpCancel" type="EmberLook/Button">
                             <Property name="Text" value="Cancel" />
                             <Property name="TooltipText" value="Cancels the ongoing action." />
+                            <Property name="Position" value="{{0.5,-45},{0,45}}" />
+                            <Property name="Size" value="{{0,70},{0,20}}" />
+                        </Window>
+                        <Window name="DumpOk" type="EmberLook/Button">
+                            <Property name="Text" value="Ok" />
+                            <Property name="TooltipText" value="Dismiss this window." />
                             <Property name="Position" value="{{0.5,-45},{0,45}}" />
                             <Property name="Size" value="{{0,70},{0,20}}" />
                         </Window>

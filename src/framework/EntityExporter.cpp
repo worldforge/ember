@@ -44,6 +44,9 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Get;
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 
 long integerId(const std::string & id)
 {
@@ -63,7 +66,7 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 EntityExporter::EntityExporter(Eris::Account& account) :
-		mAccount(account), mStats( { }), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false), mPreserveIds(false)
+		mAccount(account), mStats( { }), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false), mPreserveIds(false), mExportRules(false)
 {
 	mAccount.getConnection()->getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityExporter::typeService_BoundType));
 	mAccount.getConnection()->getTypeService()->BadType.connect(sigc::mem_fun(*this, &EntityExporter::typeService_BoundType));
@@ -101,6 +104,16 @@ void EntityExporter::setPreserveIds(bool preserveIds)
 bool EntityExporter::getPreserveIds() const
 {
 	return mPreserveIds;
+}
+
+void EntityExporter::setExportRules(bool exportRules)
+{
+	mExportRules = exportRules;
+}
+
+bool EntityExporter::getExportRules() const
+{
+	return mExportRules;
 }
 
 const EntityExporter::Stats& EntityExporter::getStats() const
@@ -300,6 +313,23 @@ void EntityExporter::requestThoughts(const std::string& entityId, const std::str
 	mStats.mindsQueried++;
 }
 
+void EntityExporter::requestRule(const std::string& rule)
+{
+	Get get;
+	Anonymous arg;
+	arg->setId(rule);
+	get->setArgs1(arg);
+	get->setObjtype("op");
+	get->setSerialno(Eris::getNewSerialno());
+
+	mAccount.getConnection()->getResponder()->await(get->getSerialno(), this, &EntityExporter::operationGetRuleResult);
+	mAccount.getConnection()->send(get);
+
+	mStats.rulesQueried++;
+
+	mOutstandingGetRequestCounter++;
+}
+
 void EntityExporter::typeService_BoundType(Eris::TypeInfoPtr typeInfo)
 {
 	auto I = mUnboundTypes.find(typeInfo);
@@ -406,9 +436,13 @@ void EntityExporter::complete()
 	adjustReferencedEntities();
 
 	//Make sure the minds are stored in a deterministic fashion
-	std::sort(mMinds.begin(), mMinds.end(),
-			[](Atlas::Message::Element const & a, Atlas::Message::Element const &b) {
+	std::sort(mMinds.begin(), mMinds.end(), [](Atlas::Message::Element const & a, Atlas::Message::Element const &b) {
 		return integerId(a.asMap().find("id")->second.asString()) < integerId(b.asMap().find("id")->second.asString());
+	});
+
+	//Make sure the rules are stored in a deterministic fashion
+	std::sort(mRules.begin(), mRules.end(), [](Atlas::Message::Element const & a, Atlas::Message::Element const &b) {
+		return a.asMap().find("id")->second.asString() < b.asMap().find("id")->second.asString();
 	});
 
 	Anonymous root;
@@ -435,6 +469,9 @@ void EntityExporter::complete()
 
 	root->setAttr("entities", mEntities);
 	root->setAttr("minds", mMinds);
+	if (!mRules.empty()) {
+		root->setAttr("rules", mRules);
+	}
 
 	std::fstream filestream(mFilename, std::ios::out);
 	Atlas::Message::QueuedDecoder decoder;
@@ -467,14 +504,25 @@ void EntityExporter::start(const std::string& filename, const std::string& entit
 
 	S_LOG_INFO("Starting entity dump to file '" << filename << "'.");
 	mFilename = filename;
+	mRootEntityId = entityId;
 
+	if (mExportRules) {
+		requestRule("root");
+	} else {
+		startRequestingEntities();
+	}
+
+}
+
+void EntityExporter::startRequestingEntities()
+{
 	// Send a get for the requested root entity
 	mOutstandingGetRequestCounter++;
 	Get get;
 
 	Anonymous get_arg;
 	get_arg->setObjtype("obj");
-	get_arg->setId(entityId);
+	get_arg->setId(mRootEntityId);
 	get->setArgs1(get_arg);
 
 	get->setFrom(mAccount.getId());
@@ -484,7 +532,6 @@ void EntityExporter::start(const std::string& filename, const std::string& entit
 
 	mStats.entitiesQueried++;
 	EventProgress.emit();
-
 }
 
 void EntityExporter::operationGetResult(const Operation & op)
@@ -519,6 +566,59 @@ void EntityExporter::operationGetThoughtResult(const Operation & op)
 	if (!mCancelled) {
 		thoughtOpArrived(op);
 		pollQueue();
+	}
+}
+
+void EntityExporter::operationGetRuleResult(const Operation & op)
+{
+	if (!mCancelled) {
+		if (op->getArgs().empty()) {
+			S_LOG_WARNING("Got response to GET for rule with no args.");
+			mStats.rulesError++;
+			cancel();
+			return;
+		}
+
+		Root ent = smart_dynamic_cast<Root>(op->getArgs().front());
+		if (!ent.isValid()) {
+			S_LOG_WARNING("Malformed rule arg when dumping.");
+			mStats.rulesError++;
+			cancel();
+			return;
+		}
+
+		std::vector<std::string> children;
+		if (ent->hasAttr("children")) {
+			Element childrenElement;
+			if (ent->copyAttr("children", childrenElement) == 0) {
+				if (childrenElement.isList()) {
+					ListType& childrenList = childrenElement.asList();
+					for (auto& childElem : childrenList) {
+						if (childElem.isString()) {
+							children.push_back(childElem.asString());
+						} else {
+							S_LOG_WARNING("Child was not a string.");
+						}
+					}
+				}
+			}
+		}
+
+		MapType ruleMap;
+		ent->addToMessage(ruleMap);
+		mRules.push_back(ruleMap);
+
+		for (auto& child : children) {
+			requestRule(child);
+		}
+
+		mOutstandingGetRequestCounter--;
+		mStats.rulesReceived++;
+		EventProgress.emit();
+
+		if (mOutstandingGetRequestCounter == 0) {
+			startRequestingEntities();
+		}
 	}
 }
 }

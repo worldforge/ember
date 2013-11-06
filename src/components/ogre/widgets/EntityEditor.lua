@@ -1811,18 +1811,33 @@ function EntityEditor:buildWidget()
 		self.exportDescriptionWindow = self.widget:getWindow("ExportDescription")
 		local preserveIdsWindow = CEGUI.toToggleButton(self.widget:getWindow("ExportPreserveIds"))
 		local includeTransientsWindow = CEGUI.toToggleButton(self.widget:getWindow("ExportIncludeTransients"))
+		local includeRulesWindow = CEGUI.toToggleButton(self.widget:getWindow("ExportIncludeRules"))
 
 		local worldDumper = function()
 
 			local exportsOverlay = self.widget:getWindow("ExportsOverlay")
 
 			local cancelButton = self.widget:getWindow("DumpCancel")
+			local okButton = self.widget:getWindow("DumpOk")
+			okButton:subscribeEvent("Clicked", function(args)
+				exportsOverlay:setVisible(false)
+				return true
+			end)
 			cancelButton:subscribeEvent("Clicked", function(args)
 				if cancelButton.method then
 					cancelButton.method()
 					return true
 				end
 			end)
+			
+			local enableCancel = function()
+				cancelButton:setVisible(true)
+				okButton:setVisible(false)
+			end
+			local enableOk = function()
+				cancelButton:setVisible(false)
+				okButton:setVisible(true)
+			end
 
 			self.widget:getWindow("DumpWorld"):subscribeEvent("Clicked", function(args)
 
@@ -1834,21 +1849,31 @@ function EntityEditor:buildWidget()
 					worldDumper:setName(self.exportNameWindow:getText())
 					worldDumper:setExportTransient(includeTransientsWindow:isSelected())
 					worldDumper:setPreserveIds(preserveIdsWindow:isSelected())
+					worldDumper:setExportRules(includeRulesWindow:isSelected())
 					self.widget:getWindow("DumpStatus"):setText("Dumping...")
+					enableCancel()
+					local authorDumpInfo = function()
+						local stats = worldDumper:getStats()
+						if worldDumper:getExportRules() then
+							return stats.entitiesReceived .. " entities, " .. stats.mindsReceived .. " minds, " .. stats.rulesReceived .." rules dumped."
+						else
+							return stats.entitiesReceived .. " entities, " .. stats.mindsReceived .. " minds dumped."
+						end
+					end
 					createConnector(worldDumper.EventCompleted):connect(function()
-						self.widget:getWindow("DumpStatus"):setText("Done dumping.")
-						exportsOverlay:setVisible(false)
+					
+						self.widget:getWindow("DumpStatus"):setText("Done dumping.\n" .. authorDumpInfo())
 						cancelButton.method = nil
 						worldDumper:delete()
+						enableOk()
 					end)
 					createConnector(worldDumper.EventProgress):connect(function()
-						local stats = worldDumper:getStats()
-						self.widget:getWindow("DumpStatus"):setText("Dumping, " .. stats.entitiesReceived .. " entities, " .. stats.mindsReceived .. " minds dumped")
+						self.widget:getWindow("DumpStatus"):setText("Dumping...\n" .. authorDumpInfo())
 					end)
 					cancelButton.method = function()
 						worldDumper:cancel()
 						self.widget:getWindow("DumpStatus"):setText("Cancelled")
-						exportsOverlay:setVisible(false)
+						enableOk()						
 						cancelButton.method = nil
 						worldDumper:delete()
 					end

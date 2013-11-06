@@ -125,6 +125,18 @@ public:
 		 * @brief The number of minds for which the server didn't send correct data.
 		 */
 		unsigned int mindsError;
+		/**
+		 * @brief The number of rules queried.
+		 */
+		unsigned int rulesQueried;
+		/**
+		 * @brief The number of rules received.
+		 */
+		unsigned int rulesReceived;
+		/**
+		 * @brief The number of rules queried.
+		 */
+		unsigned int rulesError;
 	};
 
 	/**
@@ -184,7 +196,7 @@ public:
 	/**
 	 * @brief Sets whether we should preserve ids.
 	 *
-	 * @param exportTransient Whether we should preserve ids.
+	 * @param preserveIds Whether we should preserve ids.
 	 */
 	void setPreserveIds(bool preserveIds);
 
@@ -193,6 +205,19 @@ public:
 	 * @return Whether we should preserve ids.
 	 */
 	bool getPreserveIds() const;
+
+	/**
+	 * @brief Sets whether we should export rules.
+	 *
+	 * @param exportRules Whether we should export rules.
+	 */
+	void setExportRules(bool exportRules);
+
+	/**
+	 * @brief Gets whether we should export rules.
+	 * @return Whether we should export rules.
+	 */
+	bool getExportRules() const;
 
 	/**
 	 * @brief Gets stats about the export process.
@@ -249,9 +274,19 @@ protected:
 	std::vector<Atlas::Message::Element> mMinds;
 
 	/**
+	 * @brief All rules received from the server.
+	 */
+	std::vector<Atlas::Message::Element> mRules;
+
+	/**
 	 * @brief The full file name of the dump.
 	 */
 	std::string mFilename;
+
+	/**
+	 * @brief The id of the entity
+	 */
+	std::string mRootEntityId;
 
 	bool mComplete;
 	bool mCancelled;
@@ -283,13 +318,26 @@ protected:
 	 */
 	bool mPreserveIds;
 
+	/**
+	 * @brief True if rules also should be exported.
+	 */
+	bool mExportRules;
+
+	/**
+	 * @brief Starts the process of requesting entities and walking the entity hierarchy.
+	 */
+	void startRequestingEntities();
+
+	void dumpRule(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpMind(const std::string& entityId, const Operation & op);
 	void infoArrived(const Operation& op);
 	void thoughtOpArrived(const Operation& op);
 	void operationGetResult(const Operation& op);
 	void operationGetThoughtResult(const Operation& op);
+	void operationGetRuleResult(const Operation& op);
 	void requestThoughts(const std::string& entityId, const std::string& persistedId);
+	void requestRule(const std::string& rule);
 
 	/**
 	 * @brief Called when a type is either bound or couldn't be bound.
