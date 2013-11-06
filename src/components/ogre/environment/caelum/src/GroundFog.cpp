@@ -78,7 +78,11 @@ namespace Caelum
 		Ogre::MaterialManager *matManager = Ogre::MaterialManager::getSingletonPtr();
 		Ogre::MaterialManager::ResourceMapIterator matIt = matManager->getResourceIterator();
 		while (matIt.hasMoreElements()) {
-			Ogre::MaterialPtr mat = matIt.getNext();
+#if (OGRE_VERSION < ((1 << 16) | (9 << 8) | 0))
+            Ogre::MaterialPtr mat = matIt.getNext();
+#else
+            Ogre::MaterialPtr mat = matIt.getNext().staticCast<Ogre::Material>();
+#endif
 			Ogre::Material::TechniqueIterator techIt = mat->getTechniqueIterator();
 			while (techIt.hasMoreElements()) {
 				Ogre::Technique *tech = techIt.getNext();

@@ -37,29 +37,6 @@ namespace OgreView
 namespace Lod
 {
 
-class LodDefinition;
-class LodDefinitionPtr :
-	public Ogre::SharedPtr<LodDefinition>
-{
-public:
-	LodDefinitionPtr() :
-		Ogre::SharedPtr<LodDefinition>()
-	{
-	}
-	explicit LodDefinitionPtr(LodDefinition* rep) :
-		Ogre::SharedPtr<LodDefinition>(rep)
-	{
-	}
-	LodDefinitionPtr(const LodDefinitionPtr& r) :
-		Ogre::SharedPtr<LodDefinition>(r)
-	{
-	}
-	LodDefinitionPtr(const Ogre::ResourcePtr& r);
-
-	LodDefinitionPtr& operator= (const Ogre::ResourcePtr& r);
-
-};
-
 
 /**
  * @brief Lod distance config container.
@@ -267,6 +244,8 @@ private:
 	LodStrategy mStrategy;
 	LodDistanceMap mManualLod;
 };
+
+typedef Ogre::SharedPtr<LodDefinition> LodDefinitionPtr;
 
 inline const std::string& LodDistance::getMeshName() const
 {

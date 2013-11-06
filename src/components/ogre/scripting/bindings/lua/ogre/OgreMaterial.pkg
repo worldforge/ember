@@ -499,19 +499,5 @@ namespace Ogre {
 
 
     };
-
-	/** Specialisation of SharedPtr to allow SharedPtr to be assigned to MaterialPtr 
-	@note Has to be a subclass since we need operator=.
-	We could templatise this instead of repeating per Resource subclass, 
-	except to do so requires a form VC6 does not support i.e.
-	ResourceSubclassPtr<T> : public SharedPtr<T>
-	*/
-	class MaterialPtr
-	{
-		virtual ~MaterialPtr();
-		Ogre::Material* get();
-		bool isNull();
-	};
-
 } //namespace 
 

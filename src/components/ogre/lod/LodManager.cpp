@@ -76,7 +76,7 @@ void LodManager::loadLod(Ogre::MeshPtr mesh, const LodDefinition& def)
 	} else {
 		Ogre::LodStrategy* strategy;
 		if (def.getStrategy() == LodDefinition::LS_DISTANCE) {
-			strategy = &Ogre::DistanceLodStrategy::getSingleton();
+			strategy = &Ogre::DistanceLodBoxStrategy::getSingleton();
 		} else {
 			strategy = &ScaledPixelCountLodStrategy::getSingleton();
 		}

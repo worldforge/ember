@@ -97,13 +97,13 @@ unsigned int TerrainPageSurface::getPixelWidth() const
 const Ogre::MaterialPtr TerrainPageSurface::getMaterial() const
 {
 	std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve(mMaterialName, "General");
-	return static_cast<Ogre::MaterialPtr>(result.first);
+	return result.first.staticCast<Ogre::Material>();
 }
 
 const Ogre::MaterialPtr TerrainPageSurface::getCompositeMapMaterial() const
 {
 	std::pair<Ogre::ResourcePtr, bool> result = Ogre::MaterialManager::getSingleton().createOrRetrieve(mMaterialName + "/CompositeMap", "General");
-	return static_cast<Ogre::MaterialPtr>(result.first);
+	return result.first.staticCast<Ogre::Material>();
 }
 
 TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilationInstance(const TerrainPageGeometryPtr& geometry) const

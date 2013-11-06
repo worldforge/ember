@@ -116,7 +116,11 @@ namespace Caelum
 
         // Fetch raw resource ptr. Attempt to support explicit resource groups currently in Ogre trunk.
 #if OGRE_VERSION >= 0x00010700
+#if (OGRE_VERSION >= ((1 << 16) | (9 << 8) | 0))
+        Ogre::ResourcePtr res = getPropScriptResourceManager ()->getResourceByName (objectName, groupName);
+#else
         Ogre::ResourcePtr res = getPropScriptResourceManager ()->getByName (objectName, groupName);
+#endif
 #else
         Ogre::ResourcePtr res = getPropScriptResourceManager ()->getByName (objectName);
 #endif

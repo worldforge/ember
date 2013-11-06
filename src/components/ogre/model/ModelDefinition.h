@@ -810,35 +810,7 @@ private:
 
 };
 
-/**
- * @brief Specialization of SharedPtr to allow SharedPtr to be assigned to ModelDefnPtr
- @note Has to be a subclass since we need operator=.
- We could templatise this instead of repeating per Resource subclass,
- except to do so requires a form VC6 does not support i.e.
- ResourceSubclassPtr<T> : public SharedPtr<T>
- */
-class ModelDefnPtr: public Ogre::SharedPtr<ModelDefinition>
-{
-public:
-	ModelDefnPtr() :
-			Ogre::SharedPtr<ModelDefinition>()
-	{
-	}
-	explicit ModelDefnPtr(ModelDefinition* rep) :
-			Ogre::SharedPtr<ModelDefinition>(rep)
-	{
-	}
-	ModelDefnPtr(const ModelDefnPtr& r) :
-			Ogre::SharedPtr<ModelDefinition>(r)
-	{
-	}
-	ModelDefnPtr(const Ogre::ResourcePtr& r);
-
-	ModelDefnPtr& operator=(const Ogre::ResourcePtr& r);
-
-};
-
-typedef ModelDefnPtr ModelDefinitionPtr;
+typedef Ogre::SharedPtr<ModelDefinition> ModelDefinitionPtr;
 
 ///implementations
 

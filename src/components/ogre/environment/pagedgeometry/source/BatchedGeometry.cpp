@@ -381,19 +381,23 @@ BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)
 	meshType = ent->getSubMesh();
 	this->parent = parent;
 	built = false;
-	requireVertexColors = false;
+    requireVertexColors = false;
 
-	// Material must always exist
-	Material *origMat = ((MaterialPtr)MaterialManager::getSingleton().getByName(ent->getMaterialName())).getPointer();
-	if (origMat) {
-		material = MaterialManager::getSingleton().getByName(getMaterialClone(*origMat)->getName());
-	} else {
-		MaterialManager::ResourceCreateOrRetrieveResult result = MaterialManager::getSingleton().createOrRetrieve("PagedGeometry_Batched_Material", "General");
-		if (result.first.isNull()) {
-			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "BatchedGeometry failed to create a material for entity with invalid material.", "BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)");
-		}
-		material = result.first;
-	}
+    // Material must always exist
+    Material *origMat = ((MaterialPtr)MaterialManager::getSingleton().getByName(ent->getMaterialName())).getPointer();
+    if (origMat) {
+        material = MaterialManager::getSingleton().getByName(getMaterialClone(*origMat)->getName());
+    } else {
+        MaterialManager::ResourceCreateOrRetrieveResult result = MaterialManager::getSingleton().createOrRetrieve("PagedGeometry_Batched_Material", "General");
+        if (result.first.isNull()) {
+            OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "BatchedGeometry failed to create a material for entity with invalid material.", "BatchedGeometry::SubBatch::SubBatch(BatchedGeometry *parent, SubEntity *ent)");
+        }
+#if (OGRE_VERSION < ((1 << 16) | (9 << 8) | 0))
+        material = result.first;
+#else
+        material = result.first.staticCast<Ogre::Material>();
+#endif
+    }
 
 	//Setup vertex/index data structure
 	vertexData = meshType->vertexData->clone(false);

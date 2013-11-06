@@ -422,7 +422,11 @@ namespace Caelum
             //LogManager::getSingleton ().logMessage (
             //        "Caelum: Saved " + objNode->cls + " name " + objNode->name + " as a resource");
             PropScriptResourceManager* mgr = this->getResourceManager ();
+#if (OGRE_VERSION >= ((1 << 16) | (9 << 8) | 0))
+            ResourcePtr resource = mgr->createResource (objNode->name, compiler->getResourceGroup());
+#else
             ResourcePtr resource = mgr->create (objNode->name, compiler->getResourceGroup());
+#endif
             resource->_notifyOrigin (objNode->file);
             return;
         }

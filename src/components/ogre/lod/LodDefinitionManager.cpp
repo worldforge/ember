@@ -48,14 +48,26 @@ LodDefinitionManager::~LodDefinitionManager()
 	Ogre::ResourceGroupManager::getSingleton()._unregisterScriptLoader(this);
 }
 
-Ogre::Resource* LodDefinitionManager::createImpl(const Ogre::String& name,
-                                                 Ogre::ResourceHandle handle,
-                                                 const Ogre::String& group,
-                                                 bool isManual,
-                                                 Ogre::ManualResourceLoader* loader,
-                                                 const Ogre::NameValuePairList* createParams)
+LodDefinitionPtr LodDefinitionManager::create (const Ogre::String& name, const Ogre::String& group,
+        bool isManual, Ogre::ManualResourceLoader* loader,
+        const Ogre::NameValuePairList* createParams)
 {
-	return OGRE_NEW LodDefinition(this, name, handle, group, isManual, loader);
+    return createResource(name, group, isManual, loader, createParams).staticCast<LodDefinition>();
+}
+
+LodDefinitionPtr LodDefinitionManager::getByName(const Ogre::String& name, const Ogre::String& groupName)
+{
+    return getResourceByName(name, groupName).staticCast<LodDefinition>();
+}
+
+Ogre::Resource* LodDefinitionManager::createImpl(const Ogre::String& name,
+        Ogre::ResourceHandle handle,
+        const Ogre::String& group,
+        bool isManual,
+        Ogre::ManualResourceLoader* loader,
+        const Ogre::NameValuePairList* createParams)
+{
+    return OGRE_NEW LodDefinition(this, name, handle, group, isManual, loader);
 }
 
 void LodDefinitionManager::parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName)

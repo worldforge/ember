@@ -58,6 +58,12 @@ public:
 	 */
 	virtual ~LodDefinitionManager();
 
+	/// Create a new LodDefinition
+	/// @see ResourceManager::createResource
+	LodDefinitionPtr create (const Ogre::String& name, const Ogre::String& group,
+			bool isManual = false, Ogre::ManualResourceLoader* loader = 0,
+			const Ogre::NameValuePairList* createParams = 0);
+
 	/**
 	 * @brief Instantiates the LodDefinition. Parameters are passed directly to LodDefinition ctor.
 	 *
@@ -66,6 +72,10 @@ public:
 	Ogre::Resource* createImpl(const Ogre::String& name, Ogre::ResourceHandle handle,
 	                           const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
 	                           const Ogre::NameValuePairList* createParams);
+
+	/// Get a LodDefinition by name
+	/// @see ResourceManager::getResourceByName
+	LodDefinitionPtr getByName(const Ogre::String& name, const Ogre::String& groupName = Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
 
 	void parseScript(Ogre::DataStreamPtr& stream, const Ogre::String& groupName);
 
