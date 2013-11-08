@@ -234,7 +234,8 @@ function EntityCreator.buildWidget(world)
 					local stats = worldLoader:getStats()
 					local entitiesToLoad = stats.entitiesCount - stats.entitiesProcessedCount
 					local mindsToRestore = stats.mindsCount - stats.mindsProcessedCount
-					dumpStatusWindow:setText("Loading, " .. entitiesToLoad .. " entities and " .. mindsToRestore .." minds left")
+					local rulesToRestore = stats.rulesCount - stats.rulesProcessedCount
+					dumpStatusWindow:setText("Loading, " .. rulesToRestore .. " rules, " .. entitiesToLoad .. " entities and " .. mindsToRestore .." minds left")
 				end)
 				cancelButton.method = function()
 					activeOverlay:setVisible(false)
@@ -263,7 +264,7 @@ function EntityCreator.buildWidget(world)
 							importButton.filename = info.filename
 							
 							local infoWidget = entityCreator.widget:getWindow("DetailsText")
-							local infoString = "Name: " .. info.name .. "\nDescription: " .. info.description .. "\nNumber of entities: " .. info.entityCount
+							local infoString = "Name: " .. info.name .. "\nDescription: " .. info.description .. "\nNumber of entities: " .. info.entityCount .. "\nNumber of minds: " .. info.mindsCount .. "\nNumber of rules: " .. info.rulesCount
 							infoWidget:setText(infoString) 
 							
 						end

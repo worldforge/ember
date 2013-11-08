@@ -15,6 +15,14 @@ public:
 		std::string name;
 		std::string description;
 		int entityCount;
+		/**
+		 * @brief The number of rules contained in the dump.
+		 */
+		int rulesCount;
+		/**
+		 * @brief The number of minds contained in the dump.
+		 */
+		int mindsCount;
 	};
 
 	/**
@@ -49,6 +57,26 @@ public:
 		 * The total number of minds processed so far.
 		 */
 		unsigned int mindsProcessedCount;
+		/**
+		 * The total number of rules to process.
+		 */
+		unsigned int rulesCount;
+		/**
+		 * The number of rules processed so far.
+		 */
+		unsigned int rulesProcessedCount;
+		/**
+		 * The number of rule update ops sent.
+		 */
+		unsigned int rulesUpdateCount;
+		/**
+		 * The number of rule creation ops sent.
+		 */
+		unsigned int rulesCreateCount;
+		/**
+		 * The number of failed rule creation ops.
+		 */
+		unsigned int rulesCreateErrorCount;
 	};
 
 	explicit EntityImporter(Eris::Account& account);

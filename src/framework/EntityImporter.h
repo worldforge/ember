@@ -112,6 +112,14 @@ public:
 		 * @brief The number of entities contained in the dump.
 		 */
 		int entityCount;
+		/**
+		 * @brief The number of rules contained in the dump.
+		 */
+		int rulesCount;
+		/**
+		 * @brief The number of minds contained in the dump.
+		 */
+		int mindsCount;
 	};
 
 	/**
@@ -147,6 +155,49 @@ public:
 		 * The total number of minds processed so far.
 		 */
 		unsigned int mindsProcessedCount;
+		/**
+		 * The total number of rules to process.
+		 */
+		unsigned int rulesCount;
+		/**
+		 * The number of rules processed so far.
+		 */
+		unsigned int rulesProcessedCount;
+		/**
+		 * The number of rule update ops sent.
+		 */
+		unsigned int rulesUpdateCount;
+		/**
+		 * The number of rule creation ops sent.
+		 */
+		unsigned int rulesCreateCount;
+		/**
+		 * The number of failed rule creation ops.
+		 */
+		unsigned int rulesCreateErrorCount;
+	};
+
+	/**
+	 * One entry on the stack of rules processed.
+	 */
+	struct RuleStackEntry
+	{
+		/**
+		 * @brief The id of the rule.
+		 */
+		std::string id;
+		/**
+		 * @brief The definition of the rule.
+		 */
+		Atlas::Objects::Root definition;
+		/**
+		 * @brief The ids of the children of the rule.
+		 */
+		std::list<std::string> children;
+		/**
+		 * @brief The current children iterator. This is an iterator of the "children" field.
+		 */
+		std::list<std::string>::const_iterator currentChildIterator;
 	};
 
 	explicit EntityImporter(Eris::Account& account);
@@ -213,6 +264,16 @@ protected:
 	std::map<std::string, Atlas::Objects::Root> mPersistedMinds;
 
 	/**
+	 * @brief All of the persisted rules.
+	 *
+	 * When processing these, we first check if there's a rule already on the server.
+	 * If there's not, we create a new one.
+	 * If there already is one, we then compare the existing rule with the new one
+	 * and only send a SET operation if there's any difference.
+	 */
+	std::map<std::string, Atlas::Objects::Root> mPersistedRules;
+
+	/**
 	 * @brief Keeps track of the responses from the server for create operations.
 	 *
 	 * This is used to populate m_entityIdMap with mapping data between entity id values found in the dump, and their new id values once they've been created.
@@ -229,13 +290,18 @@ protected:
 
 	enum
 	{
-		INIT, UPDATING, CREATING, WALKING, CANCEL, CANCELLED
+		INIT, RULE_WALKING, RULE_UPDATING, RULE_CREATING, ENTITY_WALKSTART, ENTITY_UPDATING, ENTITY_CREATING, ENTITY_WALKING, CANCEL, CANCELLED
 	} m_state;
 
 	/**
 	 * @brief Keeps track of the hierarchy of entities that are to be created or updated.
 	 */
 	std::deque<StackEntry> m_treeStack;
+
+	/**
+	 * @brief Keeps track of the hierarchy of rules that are to be created or updated.
+	 */
+	std::deque<RuleStackEntry> mRuleStack;
 
 	/**
 	 * @brief Records all newly created ids.
@@ -259,7 +325,7 @@ protected:
 	void sendOperation(const Operation& op);
 
 	/**
-	 * Gets an entity from the server.
+	 * @brief Gets an entity from the server.
 	 * @param id
 	 * @param res
 	 * @return True if the entity id was found amongst the entities, else false. The latter case will occur for transient entities, as they might not have been exported, but are still references from their parent entity.
@@ -267,10 +333,33 @@ protected:
 	bool getEntity(const std::string & id, OpVector & res);
 
 	/**
+	 * @brief Gets a rule from the server.
+	 * @param id
+	 * @param res
+	 * @return
+	 */
+	bool getRule(const std::string & id, OpVector & res);
+
+	/**
+	 * @brief Start walking through the entities, updating or creating them.
+	 */
+	void startEntityWalking();
+	/**
+	 * @brief Start walking through the rules, updating or creating them.
+	 */
+	void startRuleWalking();
+
+	/**
 	 * @brief Walks on the next entity in line to be created or updated on the server.
 	 * @param res
 	 */
-	void walk(OpVector & res);
+	void walkEntities(OpVector & res);
+
+	/**
+	 * @brief Walks on the next rule in line to be created or updated on the server.
+	 * @param res
+	 */
+	void walkRules(OpVector & res);
 
 	/**
 	 * @brief Sends all minds.
@@ -282,7 +371,24 @@ protected:
 	 * @param obj The entity specification.
 	 * @param res
 	 */
-	void create(const Atlas::Objects::Entity::RootEntity & obj, OpVector & res);
+	void createEntity(const Atlas::Objects::Entity::RootEntity & obj, OpVector & res);
+
+	/**
+	 * @brief Creates a new rule on the server.
+	 * @param obj The rule specification.
+	 * @param res
+	 */
+	void createRule(const Atlas::Objects::Root & obj, OpVector & res);
+
+	/**
+	 * @brief Updates an existing rule.
+	 *
+	 * Note that the rule will only be updated if there's a difference between the new rule and the existing one.
+	 * @param existingDefinition The existing rule, as received from the server.
+	 * @param newDefinition The new rule.
+	 * @param res
+	 */
+	void updateRule(const Atlas::Objects::Root& existingDefinition, const Atlas::Objects::Root& newDefinition, OpVector & res);
 
 	void errorArrived(const Operation &, OpVector & res);
 	void infoArrived(const Operation &, OpVector & res);
@@ -293,6 +399,13 @@ protected:
 	 * @param op
 	 */
 	void operation(const Operation& op);
+
+	/**
+	 * @brief Helper method for extracting a list of children from a definition.
+	 * @param op
+	 * @param children
+	 */
+	void extractChildren(const Atlas::Objects::Root& op, std::list<std::string>& children);
 
 };
 
