@@ -5672,9 +5672,9 @@
 				<KeyFrame position="0.0" value="0.0" />
 				<KeyFrame position="0.2" progression="quadratic accelerating" value="0.8" />
 			</Affector>
-			<Affector interpolator="UDim" property="UnifiedHeight">
+			<Affector interpolator="UDim" property="Height">
 				<KeyFrame position="0.0" value="{0,0}" />
-				<KeyFrame position="0.2" progression="quadratic decelerating" sourceProperty="UnifiedHeight" />
+				<KeyFrame position="0.2" progression="quadratic decelerating" sourceProperty="Height" />
 			</Affector>
 			
 			<Subscription action="Start" event="Shown" />
