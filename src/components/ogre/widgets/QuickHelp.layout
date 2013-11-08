@@ -1,53 +1,43 @@
 <GUILayout version="4">
-	<Window name="MainWindow" type="EmberLook/QuickHelpFrameWindow">
-		<Property name="Size" value="{{0.00,300.0},{0.00,150.0}}" />
-		<Property name="Position" value="{{1.00,-300.0},{1.00,-470.0}}" />
-        
+    <Window name="MainWindow" type="EmberLook/QuickHelpFrameWindow">
+        <Property name="Size" value="{{0.00,300.0},{0.00,150.0}}" />
+        <Property name="Position" value="{{1.00,-300.0},{1.00,-470.0}}" />
+
         <Property name="OldPosition" value="{{1.00,-300.0},{1.00,-470.0}}" />
-		<Property name="Alpha" value="0.6" />
-		<Property name="Text" value="Help" />
-		<Window name="MainInnerWindow" type="DefaultWindow">
-			<Property name="InheritsAlpha" value="True" />
-			<Window name="PageNumber" type="EmberLook/StaticText">
-				<Property name="Position" value="{{1,-20},{0,2}}" />
-				<Property name="Size" value="{{0,20},{0,20}}" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="Text" value="0/0" />
-				<Property name="FrameEnabled" value="false" />
-				<Property name="BackgroundEnabled" value="false" />
-			</Window>
-			<Window name="Timer" type="EmberLook/StaticText">
-				<Property name="Position" value="{{0,2},{0,2}}" />
-				<Property name="Size" value="{{1,-25},{0,20}}" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="Text" value="" />
-				<Property name="FrameEnabled" value="false" />
-				<Property name="BackgroundEnabled" value="false" />
-			</Window>
-			<Window name="HelpTextBox" type="EmberLook/MultiLineEditbox">
-				<Property name="Size" value="{{1,-10},{1,-50}}" />
-				<Property name="Position" value="{{0,5},{0,25}}" />
-				<Property name="Text" value="" />
-				<Property name="InheritsAlpha" value="True" />
-				<Property name="ReadOnly" value="True" />
-				<Property name="WordWrap" value="True" />
-			</Window>
-			<Window name="Previous" type="EmberLook/Button">
-				<Property name="Size" value="{{0,50},{0,20}}" />
-				<Property name="Position" value="{{0,2},{1,-22}}" />
-				<Property name="Text" value="Previous" />
-			</Window>
-			<Window name="Next" type="EmberLook/Button">
-				<Property name="Size" value="{{0,50},{0,20}}" />
-				<Property name="Position" value="{{1,-52},{1,-22}}" />
-				<Property name="Text" value="Next" />
-			</Window>
-			<Window name="Hide" type="EmberLook/Button">
-				<Property name="Size" value="{{0,100},{0,20}}" />
-				<Property name="Position" value="{{0.5,-50},{1,-22}}" />
-				<Property name="TooltipText" value="If checked, the help system will be disabled" />
-				<Property name="Text" value="Don't Show Help" />
-			</Window>
-		</Window>
-	</Window>
+        <Property name="Alpha" value="0.6" />
+        <Property name="Text" value="Help" />
+        <Window name="MainInnerWindow" type="DefaultWindow">
+            <Property name="InheritsAlpha" value="True" />
+            <Window type="VerticalLayoutContainer">
+                <Property name="Size" value="{{1,-10},{1,-10}}" />
+                <Property name="Position" value="{{0,5},{0,5}}" />
+                <Window name="HelpTextBox" type="EmberLook/StaticText">
+                    <Property name="Font" value="DejaVuSans-10" />
+                    <Property name="Size" value="{{1,0},{1,-25}}" />
+                    <Property name="Text" value="" />
+                    <Property name="InheritsAlpha" value="True" />
+                    <Property name="HorzFormatting" value="WordWrapLeftAligned" />
+                    <Property name="VertFormatting" value="TopAligned" />
+                </Window>
+                <Window type="DefaultWindow">
+                    <Property name="Size" value="{{1,0},{0,20}}" />
+                    <Window name="Previous" type="EmberLook/Button">
+                        <Property name="Size" value="{{0,50},{0,20}}" />
+                        <Property name="Text" value="Previous" />
+                    </Window>
+                    <Window name="Next" type="EmberLook/Button">
+                        <Property name="Size" value="{{0,50},{0,20}}" />
+                        <Property name="Position" value="{{1,-50},{0,0}}" />
+                        <Property name="Text" value="Next" />
+                    </Window>
+                    <Window name="Hide" type="EmberLook/Button">
+                        <Property name="Size" value="{{0,100},{0,20}}" />
+                        <Property name="Position" value="{{0.5,-50},{0,0}}" />
+                        <Property name="TooltipText" value="If checked, the help system will be disabled" />
+                        <Property name="Text" value="Don't Show Help" />
+                    </Window>
+                </Window>
+            </Window>
+        </Window>
+    </Window>
 </GUILayout>

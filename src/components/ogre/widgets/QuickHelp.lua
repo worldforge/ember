@@ -27,8 +27,6 @@ function QuickHelp:buildCEGUIWidget()
 	
 	self.textWindow = self.widget:getWindow("HelpTextBox")
 	self.frameWindow = CEGUI.toFrameWindow(self.widget:getMainWindow())
-	self.messagePosition = self.widget:getWindow("PageNumber")
-	self.timer = self.widget:getWindow("Timer")
 	
 	self.frameWindow:setRollupEnabled(false)
 	
@@ -71,8 +69,6 @@ function QuickHelp:hide()
 	self.showTransitionStarted = false
 	self.hideTransitionStarted = false
 	
-	self.timer:setText("")
-	self.timeBlurbShown = 0
 	self.widget:hide()
 	self:disableAlphaConnector()
 end
@@ -105,9 +101,7 @@ end
 
 function QuickHelp:frameStarted(timeSinceLastUpdate)
 	if self.widget:isActive() then 
-		self.timer:setText("")
 		self:disableAlphaConnector()
-		self.timeBlurbShown = 0
 		
 		-- ensure the widget is shown at this point no matter what
 		if not self.widget:isVisible() then
@@ -117,12 +111,6 @@ function QuickHelp:frameStarted(timeSinceLastUpdate)
 	else
 		self.timeBlurbShown = timeSinceLastUpdate + self.timeBlurbShown
 		local timeLeft = math.floor(math.max(self.timeToShowBlurb-self.timeBlurbShown, 0))
-		
-		--only update the text when it has changed
-		if self.timeBlurbLastUpdate ~= timeLeft then
-			self.timer:setText("Hiding in " .. timeLeft .. " seconds.")
-			self.timeBlurbLastUpdate = timeLeft
-		end
 		
 		if self.timeBlurbShown > self.timeToShowBlurb then
 			if not self.hideTransitionStarted then
@@ -160,7 +148,6 @@ function QuickHelp:updateText(helpMessage)
 	
 	self.textWindow:setText(text)
 	self.widget:getMainWindow():setText("Help - " .. helpMessage:getTitle())
-	self.messagePosition:setText(self.helper:getCursorLocation() .. "/" .. self.helper:getSize())
 	self:updateButtons()
 end
 
@@ -193,8 +180,8 @@ function QuickHelp:CloseClicked(args)
 end
 
 function QuickHelp:updateButtons()
-	self.widget:getWindow("Next"):setEnabled(self.helper:getCursorLocation() < self.helper:getSize())
-	self.widget:getWindow("Previous"):setEnabled(self.helper:getCursorLocation() > 1)
+	self.widget:getWindow("Next"):setVisible(self.helper:getCursorLocation() < self.helper:getSize())
+	self.widget:getWindow("Previous"):setVisible(self.helper:getCursorLocation() > 1)
 end
 
 QuickHelp.buildWidget()
