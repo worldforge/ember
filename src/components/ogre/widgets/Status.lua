@@ -124,15 +124,18 @@ function Status:createStatusInstance(name)
 end
 
 function Status:buildWidget(avatarEntity)
+
+	if emberOgre:getWorld():getAvatar():isAdmin() == false then
 	
-	self.avatarStatus = self:createStatusInstance("avatar")
-	
-	self.npcStatus = self:createStatusInstance("npc")
-	local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,150), CEGUI.UDim(0,0))
-	self.npcStatus.widget:getMainWindow():setPosition(uPosition )
-	
-	connect(self.connectors, guiManager.EventEntityAction, Status.handleAction, self)
-	self.avatarStatus:setEntity(avatarEntity)
+		self.avatarStatus = self:createStatusInstance("avatar")
+		
+		self.npcStatus = self:createStatusInstance("npc")
+		local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,150), CEGUI.UDim(0,0))
+		self.npcStatus.widget:getMainWindow():setPosition(uPosition )
+		
+		connect(self.connectors, guiManager.EventEntityAction, Status.handleAction, self)
+		self.avatarStatus:setEntity(avatarEntity)
+	end
 
 end
 
@@ -144,8 +147,12 @@ end
 
 function Status:shutdown()
 	disconnectAll(self.connectors)
-	self.npcStatus:shutdown()
-	self.avatarStatus:shutdown()
+	if (self.npcStatus) then
+		self.npcStatus:shutdown()
+	end
+	if (self.avatarStatus) then
+		self.avatarStatus:shutdown()
+	end
 end
 
 Status.createdAvatarEntityConnector = createConnector(emberOgre.EventCreatedAvatarEntity):connect(function(avatarEntity)
