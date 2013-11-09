@@ -5,6 +5,8 @@ function RuleManager:buildWidget()
 	self.widget = guiManager:createWidget()
 
 	local setup = function()
+	
+		self.editor = Ember.OgreView.Authoring.RuleEditor:new_local(self.account)
 		
 		self.ruleTree = tolua.cast(self.widget:getWindow("RuleList"), "CEGUI::Tree")
 		self.ruleTree:subscribeEvent("SelectionChanged", self.RuleList_SelectionChanged, self)
@@ -24,7 +26,7 @@ function RuleManager:buildWidget()
 		
 		self.ruleInfoText = CEGUI.toMultiLineEditbox(self.widget:getWindow("RuleInfoText"))
 	
-		self.ruleAdapter = Ember.OgreView.Gui.Adapters.Eris.RuleTreeAdapter:new_local(self.world:getView():getAvatar():getConnection(), self.ruleTree)
+		self.ruleAdapter = Ember.OgreView.Gui.Adapters.Eris.RuleTreeAdapter:new_local(self.account:getConnection(), self.ruleTree)
 		local loadingOverlay = self.widget:getWindow("LoadingOverlay")
 		local refreshButton = self.widget:getWindow("Refresh")
 
@@ -87,12 +89,7 @@ function RuleManager:sendRuleToServer()
 	local parsedObject = decoder:getLastObject()
 	
 	if parsedObject:isValid() then
-		--If the rule already exists, we need to send a "set" operation, else we need to send a "create" operation
-		if self.world:getView():getAvatar():getConnection():getTypeService():findTypeByName(parsedObject:get():getId()) == nil then
-			emberServices:getServerService():createTypeInfo(parsedObject)
-		else
-			emberServices:getServerService():setTypeInfo(parsedObject)
-		end
+		self.editor:updateOrCreateRule(parsedObject)
 	end
 end
 
@@ -135,12 +132,12 @@ function RuleManager:shutdown()
 	guiManager:destroyWidget(self.widget)
 end
 
-RuleManager.createdWorldConnector = createConnector(emberOgre.EventWorldCreated):connect(function(world)
-		ruleManager = {connectors={}, codecClass=Atlas.Codecs.XML, world=world}
+RuleManager.gotAccountConnector = createConnector(emberServices:getServerService().GotAccount):connect(function(account)
+		ruleManager = {connectors={}, codecClass=Atlas.Codecs.XML, account=account}
 		setmetatable(ruleManager, {__index = RuleManager})
 		
 		ruleManager:buildWidget()
-		connect(ruleManager.connectors, emberOgre.EventWorldDestroyed, function()
+		connect(ruleManager.connectors, emberServices:getServerService().DestroyedAccount, function()
 				ruleManager:shutdown()
 				ruleManager = nil
 			end

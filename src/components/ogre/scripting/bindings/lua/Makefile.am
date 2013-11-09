@@ -20,7 +20,7 @@ TOLUA_PKGS = ActionBar.pkg ActionBarIcon.pkg ActionBarIconDragDropTarget.pkg Act
   MovementController.pkg OgreEntityRenderer.pkg OgreInfo.pkg QuaternionAdapter.pkg QuickHelpCursor.pkg ResourceListAdapter.pkg sigc.pkg SimpleRenderContext.pkg \
   StackableContainer.pkg stdlib.pkg SubModel.pkg TerrainArea.pkg TerrainEditor.pkg TerrainLayerDefinition.pkg TerrainLayerDefinitionManager.pkg TerrainManager.pkg \
   RuleTreeAdapter.pkg Vector3Adapter.pkg Widget.pkg World.pkg Scene.pkg EntityTooltip.pkg TerrainHandler.pkg EntityCreatorTypeHelper.pkg Screen.pkg ModelEditHelper.pkg \
-  EntityTextureManipulator.pkg
+  EntityTextureManipulator.pkg RuleEditor.pkg
 EXTRA_DIST = $(TOLUA_PKGS)
 EmberOgre.cxx: $(TOLUA_PKGS)
 noinst_HEADERS = required.h GUIManager_helper.h

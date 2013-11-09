@@ -2,5 +2,8 @@ $#include <Eris/Account.h>
 
 namespace Eris {
 class Account {
+public:
+
+	Eris::Connection* getConnection();
 };
 }

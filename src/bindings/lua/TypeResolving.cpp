@@ -82,6 +82,8 @@ const char* resolveLuaTypename<const Eris::Avatar>(){return "Eris::Avatar";}
 template <>
 const char* resolveLuaTypename<const Eris::View>(){return "Eris::View";}
 template <>
+const char* resolveLuaTypename<const Eris::Account>(){return "Eris::Account";}
+template <>
 const char* resolveLuaTypename<const Ember::OgreView::World>(){return "Ember::OgreView::World";}
 template <>
 const char* resolveLuaTypename<const std::vector<Ember::OgreView::EntityPickResult>>(){return "std::vector<Ember::OgreView::EntityPickResult>";}
