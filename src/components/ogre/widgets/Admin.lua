@@ -131,15 +131,15 @@ function Admin:buildWidget()
 		self:addMenuItem("Model editor", self.ModelEditor_Click, "Shows the model editor.")
 		self:addMenuItem("Network log", self.NetworkLog_Click, "Shows network log widget.")
 		self:addMenuItem("Picking info", self.PickingInfo_Click, "Shows mouse picking info.")
+		self:addMenuItem("Rule manager", 
+			function(args)
+				console:runCommand("/show_ruleManager")
+				return true
+			end,
+			"Manage server rules.")
 		self:addMenuItem("Script editor", self.ScriptEditor_Click, "Shows the script editor.")
 		self:addMenuItem("Switch camera", self.SwitchCamera_Click, "Switches camera mode between free flying and attached to the avatar.")
 		self:addMenuItem("Terrain editor", self.TerrainEditor_Click, "Shows the terrain editor.")
-		self:addMenuItem("Type manager", 
-			function(args)
-				console:runCommand("/show_typeManager")
-				return true
-			end,
-			"Manage server types.")
 		self:addMenuItem("Visualize entities", self.VisualizeEntities_Click, "Visualizes entities.")
 		
 	

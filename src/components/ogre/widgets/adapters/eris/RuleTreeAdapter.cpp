@@ -16,14 +16,11 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "TypeTreeAdapter.h"
+#include "RuleTreeAdapter.h"
 
 #include "components/ogre/authoring/RulesFetcher.h"
 #include "../../ColouredListItem.h"
 #include "framework/LoggingInstance.h"
-
-#include <Eris/TypeService.h>
-#include <Eris/TypeInfo.h>
 
 #include <CEGUI/widgets/Tree.h>
 #include <CEGUI/widgets/TreeItem.h>
@@ -44,28 +41,28 @@ namespace Adapters
 namespace Eris
 {
 
-TypeTreeAdapter::TypeTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget) :
+RuleTreeAdapter::RuleTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget) :
 		mConnection(connection),mTreeWidget(treeWidget), mFetcher(nullptr)
 {
 }
 
-TypeTreeAdapter::~TypeTreeAdapter()
+RuleTreeAdapter::~RuleTreeAdapter()
 {
 	delete mFetcher;
 }
 
-void TypeTreeAdapter::refresh(const std::string& rootRule)
+void RuleTreeAdapter::refresh(const std::string& rootRule)
 {
 
 	if (!mFetcher) {
 		mFetcher = new Authoring::RulesFetcher(mConnection);
-		mFetcher->EventAllRulesReceived.connect(sigc::mem_fun(*this, &TypeTreeAdapter::fetcherAllTypesReceived));
+		mFetcher->EventAllRulesReceived.connect(sigc::mem_fun(*this, &RuleTreeAdapter::fetcherAllRulesReceived));
 		mFetcher->EventNewRuleReceived.connect(EventNewRuleReceived);
 		mFetcher->startFetching(rootRule);
 	}
 }
 
-void TypeTreeAdapter::fetcherAllTypesReceived()
+void RuleTreeAdapter::fetcherAllRulesReceived()
 {
 	mRules = mFetcher->getRules();
 	std::string rootRule = mFetcher->getRootRule();
@@ -79,7 +76,7 @@ void TypeTreeAdapter::fetcherAllTypesReceived()
 	EventAllRulesReceived.emit();
 }
 
-::Atlas::Objects::Root TypeTreeAdapter::getRule(const std::string& id)
+::Atlas::Objects::Root RuleTreeAdapter::getRule(const std::string& id)
 {
 	auto I = mRules.find(id);
 	if (I != mRules.end()) {
@@ -88,7 +85,7 @@ void TypeTreeAdapter::fetcherAllTypesReceived()
 	return ::Atlas::Objects::Root();
 }
 
-void TypeTreeAdapter::extractChildren(const Root& op, std::list<std::string>& children)
+void RuleTreeAdapter::extractChildren(const Root& op, std::list<std::string>& children)
 {
 	Atlas::Message::Element childElem;
 	if (op->copyAttr("children", childElem) == 0) {
@@ -102,7 +99,7 @@ void TypeTreeAdapter::extractChildren(const Root& op, std::list<std::string>& ch
 	}
 }
 
-void TypeTreeAdapter::addToTree(const Root& rule, CEGUI::TreeItem* parent, bool addRecursive)
+void RuleTreeAdapter::addToTree(const Root& rule, CEGUI::TreeItem* parent, bool addRecursive)
 {
 
 	CEGUI::TreeItem* item = ColouredTreeItem::create(rule->getId());
@@ -127,7 +124,7 @@ void TypeTreeAdapter::addToTree(const Root& rule, CEGUI::TreeItem* parent, bool 
 
 }
 
-Atlas::Objects::Root TypeTreeAdapter::getSelectedRule()
+Atlas::Objects::Root RuleTreeAdapter::getSelectedRule()
 {
 	CEGUI::TreeItem* item = mTreeWidget.getFirstSelectedItem();
 	if (item) {

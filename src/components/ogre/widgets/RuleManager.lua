@@ -1,13 +1,13 @@
-TypeManager = {}
+RuleManager = {}
 
-function TypeManager:buildWidget()
+function RuleManager:buildWidget()
 
 	self.widget = guiManager:createWidget()
 
 	local setup = function()
 		
-		self.typeTree = tolua.cast(self.widget:getWindow("TypeList"), "CEGUI::Tree")
-		self.typeTree:subscribeEvent("SelectionChanged", self.TypeList_SelectionChanged, self)
+		self.ruleTree = tolua.cast(self.widget:getWindow("RuleList"), "CEGUI::Tree")
+		self.ruleTree:subscribeEvent("SelectionChanged", self.RuleList_SelectionChanged, self)
 	
 		self.codecTypeCombobox = CEGUI.toCombobox(self.widget:getWindow("CodecType"))
 		
@@ -22,22 +22,22 @@ function TypeManager:buildWidget()
 		self.codecTypeCombobox:subscribeEvent("ListSelectionChanged", self.CodecType_ListSelectionChanged, self)
 	
 		
-		self.typeInfoText = CEGUI.toMultiLineEditbox(self.widget:getWindow("TypeInfoText"))
+		self.ruleInfoText = CEGUI.toMultiLineEditbox(self.widget:getWindow("RuleInfoText"))
 	
-		self.typeAdapter = Ember.OgreView.Gui.Adapters.Eris.TypeTreeAdapter:new_local(self.world:getView():getAvatar():getConnection(), self.typeTree)
+		self.ruleAdapter = Ember.OgreView.Gui.Adapters.Eris.RuleTreeAdapter:new_local(self.world:getView():getAvatar():getConnection(), self.ruleTree)
 		local loadingOverlay = self.widget:getWindow("LoadingOverlay")
 
 		local refresh = function()
-			self.typeAdapter:refresh("root")
+			self.ruleAdapter:refresh("root")
 			
 			loadingOverlay:setVisible(true)
 			loadingOverlay:setText("Getting rules from server.")
 			
-			connect(self.connectors, self.typeAdapter.EventNewRuleReceived, function(numberOfRules)
+			connect(self.connectors, self.ruleAdapter.EventNewRuleReceived, function(numberOfRules)
 				loadingOverlay:setText("Getting rules from server.\n" .. numberOfRules .. " rules received.")
 				end
 			)
-			connect(self.connectors, self.typeAdapter.EventAllRulesReceived, function()
+			connect(self.connectors, self.ruleAdapter.EventAllRulesReceived, function()
 					loadingOverlay:setVisible(false)
 				end
 			)
@@ -53,12 +53,12 @@ function TypeManager:buildWidget()
 	end
 
 	connect(self.connectors, self.widget.EventFirstTimeShown, setup)
-	self.widget:loadMainSheet("TypeManager.layout", "TypeManager")
-	self.widget:registerConsoleVisibilityToggleCommand("typeManager")
+	self.widget:loadMainSheet("RuleManager.layout", "RuleManager")
+	self.widget:registerConsoleVisibilityToggleCommand("ruleManager")
 
 end
 
-function TypeManager:CodecType_ListSelectionChanged()
+function RuleManager:CodecType_ListSelectionChanged()
 	local item = self.codecTypeCombobox:getSelectedItem()
 	if item ~= nil then
 		local selectId = item:getID()
@@ -69,12 +69,12 @@ function TypeManager:CodecType_ListSelectionChanged()
 		else
 			self.codecClass = Atlas.Codecs.Packed
 		end
-		self:printType()
+		self:printRule()
 	end
 end
 
-function TypeManager:sendTypeToServer()
-	local outstream = std.stringstream:new_local(self.typeInfoText:getText())
+function RuleManager:sendRuleToServer()
+	local outstream = std.stringstream:new_local(self.ruleInfoText:getText())
 	local decoder = Ember.AtlasObjectDecoder:new_local()
 
 	local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
@@ -83,7 +83,7 @@ function TypeManager:sendTypeToServer()
 	local parsedObject = decoder:getLastObject()
 	
 	if parsedObject:isValid() then
-		--If the type already exists, we need to send a "set" operation, else we need to send a "create" operation
+		--If the rule already exists, we need to send a "set" operation, else we need to send a "create" operation
 		if self.world:getView():getAvatar():getConnection():getTypeService():findTypeByName(parsedObject:get():getId()) == nil then
 			emberServices:getServerService():createTypeInfo(parsedObject)
 		else
@@ -92,16 +92,16 @@ function TypeManager:sendTypeToServer()
 	end
 end
 
-function TypeManager:SendToServerButton_Clicked(args)
+function RuleManager:SendToServerButton_Clicked(args)
 
-	self:sendTypeToServer()
+	self:sendRuleToServer()
 	return true
 end
 
-function TypeManager:printType()
-	local rawTypeData = self.typeAdapter:getSelectedRule()
+function RuleManager:printRule()
+	local rawRuleData = self.ruleAdapter:getSelectedRule()
 	
-	if rawTypeData:isValid() then
+	if rawRuleData:isValid() then
 	
 		local outstream = std.stringstream:new_local()
 		local decoder = Atlas.Message.QueuedDecoder:new_local()
@@ -110,35 +110,35 @@ function TypeManager:printType()
 		local formatter = Atlas.Formatter:new_local(outstream, tolua.cast(codec, "Atlas::Bridge"))
 		local encoder = Atlas.Message.Encoder:new_local(tolua.cast(formatter, "Atlas::Bridge"))
 		local message = Atlas.Message.MapType:new_local()
-		rawTypeData:get():addToMessage(message)
+		rawRuleData:get():addToMessage(message)
 		formatter:streamBegin();
 		encoder:streamMessageElement(message);
 	
 		formatter:streamEnd();
 	
-		self.typeInfoText:setText(outstream:str())
+		self.ruleInfoText:setText(outstream:str())
 	end
 end
 
-function TypeManager:TypeList_SelectionChanged(args)
+function RuleManager:RuleList_SelectionChanged(args)
 
-	self:printType()
+	self:printRule()
 	return true
 end
 
-function TypeManager:shutdown()
+function RuleManager:shutdown()
 	disconnectAll(self.connectors)
 	guiManager:destroyWidget(self.widget)
 end
 
-TypeManager.createdWorldConnector = createConnector(emberOgre.EventWorldCreated):connect(function(world)
-		typeManager = {connectors={}, codecClass=Atlas.Codecs.XML, world=world}
-		setmetatable(typeManager, {__index = TypeManager})
+RuleManager.createdWorldConnector = createConnector(emberOgre.EventWorldCreated):connect(function(world)
+		ruleManager = {connectors={}, codecClass=Atlas.Codecs.XML, world=world}
+		setmetatable(ruleManager, {__index = RuleManager})
 		
-		typeManager:buildWidget()
-		connect(typeManager.connectors, emberOgre.EventWorldDestroyed, function()
-				typeManager:shutdown()
-				typeManager = nil
+		ruleManager:buildWidget()
+		connect(ruleManager.connectors, emberOgre.EventWorldDestroyed, function()
+				ruleManager:shutdown()
+				ruleManager = nil
 			end
 		)
 	end

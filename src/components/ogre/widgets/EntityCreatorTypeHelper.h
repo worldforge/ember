@@ -56,7 +56,7 @@ namespace Adapters
 {
 namespace Eris
 {
-class TypeTreeAdapter;
+class RuleTreeAdapter;
 }
 }
 
@@ -97,7 +97,7 @@ protected:
 	 */
 	EntityTextureManipulator* mModelPreviewManipulator;
 
-	Adapters::Eris::TypeTreeAdapter* mTypeTreeAdapter;
+	Adapters::Eris::RuleTreeAdapter* mRuleTreeAdapter;
 
 
 	void buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview);

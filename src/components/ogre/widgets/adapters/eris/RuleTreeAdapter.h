@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef TYPETREEADAPTER_H_
-#define TYPETREEADAPTER_H_
+#ifndef RULETREEADAPTER_H_
+#define RULETREEADAPTER_H_
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Root.h>
@@ -55,16 +55,16 @@ namespace Eris
 {
 /**
  * @author Erik Hjortsberg <erik.hjortsberg@gmail.com>
- * @brief An adapter which binds an eris type tree to a cegui tree widget.
+ * @brief An adapter which the server rule tree to a cegui tree widget.
  *
- * Make sure to call initialize() to activate the adapter.
+ * Make sure to call refresh(...) to activate the adapter.
  */
-class TypeTreeAdapter: public virtual sigc::trackable
+class RuleTreeAdapter: public virtual sigc::trackable
 {
 public:
-	TypeTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget);
+	RuleTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget);
 
-	virtual ~TypeTreeAdapter();
+	virtual ~RuleTreeAdapter();
 
 	/**
 	 * @brief Refreshes the tree with new data from the server.
@@ -100,15 +100,15 @@ private:
 
 
 	/**
-	 * @brief Hooked up to the RuleFetcher::EventAllTypesReceived signal.
+	 * @brief Hooked up to the RuleFetcher::EventAllRulesReceived signal.
 	 */
-	void fetcherAllTypesReceived();
+	void fetcherAllRulesReceived();
 
 	/**
-	 * @brief Adds a type info to the tree.
-	 * @param typeInfo The type info to add.
-	 * @param parent The parent of the type info, or 0 if we should add to the top.
-	 * @param addRecursive If true, all the current children of the type will be added as well.
+	 * @brief Adds a rule to the tree.
+	 * @param rule The rule to add.
+	 * @param parent The parent of the rule, or 0 if we should add to the top.
+	 * @param addRecursive If true, all the current children of the rule will be added as well.
 	 */
 	void addToTree(const ::Atlas::Objects::Root& rule, CEGUI::TreeItem* parent, bool addRecursive = false);
 
@@ -136,4 +136,4 @@ private:
 
 }
 
-#endif /* TYPETREEADAPTER_H_ */
+#endif /* RULETREEADAPTER_H_ */

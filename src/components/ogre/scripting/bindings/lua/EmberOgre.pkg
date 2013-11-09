@@ -38,7 +38,7 @@ $pfile "Compass.pkg"
 $pfile "EntityCreatorTypeHelper.pkg"
 $pfile "ModelEditHelper.pkg"
 
-$pfile "TypeTreeAdapter.pkg"
+$pfile "RuleTreeAdapter.pkg"
 $pfile "ResourceListAdapter.pkg"
 
 $pfile "Icon.pkg"

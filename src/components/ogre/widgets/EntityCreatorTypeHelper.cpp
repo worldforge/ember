@@ -28,7 +28,7 @@
 #include "ColouredListItem.h"
 #include "ModelRenderer.h"
 #include "EntityTextureManipulator.h"
-#include "adapters/eris/TypeTreeAdapter.h"
+#include "adapters/eris/RuleTreeAdapter.h"
 
 #include "../EmberOgre.h"
 #include "../Convert.h"
@@ -68,7 +68,7 @@ namespace Gui
 {
 
 EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
-		mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mTypeTreeAdapter(0)
+		mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mRuleTreeAdapter(0)
 {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
@@ -77,7 +77,7 @@ EntityCreatorTypeHelper::~EntityCreatorTypeHelper()
 {
 	delete mModelPreviewManipulator;
 	delete mModelPreviewRenderer;
-	delete mTypeTreeAdapter;
+	delete mRuleTreeAdapter;
 }
 
 void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview)
@@ -89,8 +89,8 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	typeTree.subscribeEvent(CEGUI::Tree::EventSelectionChanged, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::typeTree_SelectionChanged, this));
 	pushButton.subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
 
-	mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(mConnection, typeTree);
-	mTypeTreeAdapter->refresh("game_entity");
+	mRuleTreeAdapter = new Adapters::Eris::RuleTreeAdapter(mConnection, typeTree);
+	mRuleTreeAdapter->refresh("game_entity");
 
 	mModelPreviewRenderer = new ModelRenderer(&modelPreview, "modelPreview");
 	mModelPreviewManipulator = new CameraEntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
@@ -99,8 +99,8 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 
 void EntityCreatorTypeHelper::updatePreview()
 {
-	if (mModelPreviewRenderer && mTypeTreeAdapter) {
-		auto typeData = mTypeTreeAdapter->getSelectedRule();
+	if (mModelPreviewRenderer && mRuleTreeAdapter) {
+		auto typeData = mRuleTreeAdapter->getSelectedRule();
 		if (typeData.isValid()) {
 			//update the model preview window
 			mModelPreviewRenderer->showModel(typeData->getId());
@@ -121,9 +121,9 @@ bool EntityCreatorTypeHelper::typeTree_SelectionChanged(const CEGUI::EventArgs& 
 
 bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args)
 {
-	if (mTypeTreeAdapter) {
+	if (mRuleTreeAdapter) {
 
-		auto typeData = mTypeTreeAdapter->getSelectedRule();
+		auto typeData = mRuleTreeAdapter->getSelectedRule();
 		if (typeData.isValid()) {
 			try {
 				std::string name;

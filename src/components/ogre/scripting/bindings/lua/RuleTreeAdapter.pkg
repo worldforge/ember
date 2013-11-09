@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-$#include "components/ogre/widgets/adapters/eris/TypeTreeAdapter.h"
+$#include "components/ogre/widgets/adapters/eris/RuleTreeAdapter.h"
 
 namespace Ember
 {
@@ -37,12 +37,12 @@ namespace Eris
  *
  * Make sure to call initialize() to activate the adapter.
  */
-class TypeTreeAdapter
+class RuleTreeAdapter
 {
 public:
-	TypeTreeAdapter(Eris::Connection& connection, CEGUI::Tree& treeWidget);
+	RuleTreeAdapter(Eris::Connection& connection, CEGUI::Tree& treeWidget);
 
-	virtual ~TypeTreeAdapter();
+	virtual ~RuleTreeAdapter();
 
 	/**
 	 * @brief Refreshes the tree with new data from the server.

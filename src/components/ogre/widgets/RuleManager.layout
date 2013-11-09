@@ -3,20 +3,20 @@
 		<Property name="Size" value="{{0.7,0},{0.6,0}}" />
 		<Property name="Position" value="{{0,0},{0.4,0}}" />
 		<Property name="Alpha" value="0.6" />
-		<Property name="Text" value="Type manager" />
+		<Property name="Text" value="Rule manager" />
 		<Property name="Visible" value="false" />
 		<Window name="MainInnerWindow" type="DefaultWindow">
 			<Property name="Size" value="{{1,-6},{1,0}}" />
 			<Property name="Position" value="{{0,3},{0.00,0}}" />
 			<Property name="InheritsAlpha" value="True" />
-			<Window name="TypeList" type="EmberLook/Tree">
+			<Window name="RuleList" type="EmberLook/Tree">
 				<Property name="Size" value="{{0,200},{1.00,-10}}" />
 				<Property name="InheritsAlpha" value="false" />
                 <Window name="LoadingOverlay" type="EmberLook/StaticText">
                     <Property name="Visible" value="False" />
                 </Window>
     		</Window>
-			<Window name="TypeInfoText" type="EmberLook/MultiLineEditbox">
+			<Window name="RuleInfoText" type="EmberLook/MultiLineEditbox">
 				<Property name="Position" value="{{0,210},{0,0}}" />
 				<Property name="Size" value="{{1,-210},{1,-40}}" />
 			</Window>
