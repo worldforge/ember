@@ -86,16 +86,12 @@ void RulesFetcher::operationGetRuleResult(const Atlas::Objects::Operation::RootO
 		return;
 	}
 
-	Root ent = smart_dynamic_cast<Root>(op->getArgs().front());
-	if (!ent.isValid()) {
-		S_LOG_WARNING("Malformed rule arg.");
-		return;
-	}
+	Root arg = op->getArgs().front();
 
 	std::list<std::string> children;
-	if (ent->hasAttr("children")) {
+	if (arg->hasAttr("children")) {
 		Element childrenElement;
-		if (ent->copyAttr("children", childrenElement) == 0) {
+		if (arg->copyAttr("children", childrenElement) == 0) {
 			if (childrenElement.isList()) {
 				ListType& childrenList = childrenElement.asList();
 				for (auto& childElem : childrenList) {
@@ -109,11 +105,11 @@ void RulesFetcher::operationGetRuleResult(const Atlas::Objects::Operation::RootO
 		}
 	}
 
-	mRules.insert(std::make_pair(ent->getId(), ent));
+	mRules.insert(std::make_pair(arg->getId(), arg));
 	EventNewRuleReceived.emit(mRules.size());
 
 	if (!children.empty()) {
-		mRulesStack.push_back(StackEntry({ent->getId(), children, children.front()}));
+		mRulesStack.push_back(StackEntry({arg->getId(), children, children.front()}));
 		fetchRule(children.front());
 	} else {
 		while (!mRulesStack.empty()) {
