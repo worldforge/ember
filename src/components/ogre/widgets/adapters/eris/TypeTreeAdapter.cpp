@@ -18,6 +18,7 @@
 
 #include "TypeTreeAdapter.h"
 
+#include "components/ogre/authoring/RulesFetcher.h"
 #include "../../ColouredListItem.h"
 #include "framework/LoggingInstance.h"
 
@@ -26,6 +27,8 @@
 
 #include <CEGUI/widgets/Tree.h>
 #include <CEGUI/widgets/TreeItem.h>
+
+using ::Atlas::Objects::Root;
 
 namespace Ember
 {
@@ -41,104 +44,99 @@ namespace Adapters
 namespace Eris
 {
 
-TypeTreeAdapter::TypeTreeAdapter(::Eris::TypeService& typeService, CEGUI::Tree& treeWidget) :
-	mTypeService(typeService), mTreeWidget(treeWidget), mRootTypeInfo(0)
+TypeTreeAdapter::TypeTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget) :
+		mConnection(connection),mTreeWidget(treeWidget), mFetcher(nullptr)
 {
-
 }
 
 TypeTreeAdapter::~TypeTreeAdapter()
 {
+	delete mFetcher;
 }
 
-bool TypeTreeAdapter::initialize(const std::string& rootTypeName)
+void TypeTreeAdapter::refresh(const std::string& rootRule)
 {
-	mRootTypeInfo = mTypeService.getTypeByName(rootTypeName);
-	if (mRootTypeInfo) {
-		loadAllTypes();
-		mTypeService.BoundType.connect(sigc::mem_fun(*this, &TypeTreeAdapter::boundAType));
-		return true;
-	}
-	return false;
-}
 
-void TypeTreeAdapter::loadAllTypes()
-{
-	if (mRootTypeInfo) {
-		if (mRootTypeInfo->hasUnresolvedChildren()) {
-			mRootTypeInfo->resolveChildren();
-		}
-		const ::Eris::TypeInfoSet children = mRootTypeInfo->getChildren();
-		::Eris::TypeInfoSet::const_iterator I = children.begin();
-		::Eris::TypeInfoSet::const_iterator I_end = children.end();
-
-		for (; I != I_end; ++I) {
-			addToTree(*I, 0, true);
-		}
+	if (!mFetcher) {
+		mFetcher = new Authoring::RulesFetcher(mConnection);
+		mFetcher->EventAllRulesReceived.connect(sigc::mem_fun(*this, &TypeTreeAdapter::fetcherAllTypesReceived));
+		mFetcher->EventNewRuleReceived.connect(EventNewRuleReceived);
+		mFetcher->startFetching(rootRule);
 	}
 }
 
-void TypeTreeAdapter::addToTree(::Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive)
+void TypeTreeAdapter::fetcherAllTypesReceived()
 {
-	ReverseTypeTreeStore::iterator I = mTreeItemLookup.find(typeInfo);
+	mRules = mFetcher->getRules();
+	std::string rootRule = mFetcher->getRootRule();
+	delete mFetcher;
+	mFetcher = nullptr;
 
-	CEGUI::TreeItem* item = 0;
-	if (I == mTreeItemLookup.end()) {
-		item = ColouredTreeItem::create(typeInfo->getName());
-		item->toggleIsOpen();
-		if (!parent) {
-			mTreeWidget.addItem(item);
-		} else {
-			parent->addItem(item);
+	const auto& root = getRule(rootRule);
+	if (root.isValid()) {
+		addToTree(root, nullptr, true);
+	}
+	EventAllRulesReceived.emit();
+}
+
+::Atlas::Objects::Root TypeTreeAdapter::getRule(const std::string& id)
+{
+	auto I = mRules.find(id);
+	if (I != mRules.end()) {
+		return I->second;
+	}
+	return ::Atlas::Objects::Root();
+}
+
+void TypeTreeAdapter::extractChildren(const Root& op, std::list<std::string>& children)
+{
+	Atlas::Message::Element childElem;
+	if (op->copyAttr("children", childElem) == 0) {
+		if (childElem.isList()) {
+			for (auto child : childElem.asList()) {
+				if (child.isString()) {
+					children.push_back(child.asString());
+				}
+			}
 		}
-		mTypeLookup[item] = typeInfo;
-		mTreeItemLookup[typeInfo] = item;
+	}
+}
+
+void TypeTreeAdapter::addToTree(const Root& rule, CEGUI::TreeItem* parent, bool addRecursive)
+{
+
+	CEGUI::TreeItem* item = ColouredTreeItem::create(rule->getId());
+	item->toggleIsOpen();
+	if (!parent) {
+		mTreeWidget.addItem(item);
 	} else {
-		item = I->second;
+		parent->addItem(item);
 	}
 
 	if (addRecursive) {
-		if (typeInfo->hasUnresolvedChildren()) {
-			S_LOG_VERBOSE("Resolving children for " << typeInfo->getName());
-			typeInfo->resolveChildren();
-		}
-		const ::Eris::TypeInfoSet children = typeInfo->getChildren();
-		::Eris::TypeInfoSet::const_iterator I = children.begin();
-		::Eris::TypeInfoSet::const_iterator I_end = children.end();
+		std::list<std::string> children;
+		extractChildren(rule, children);
 
-		for (; I != I_end; ++I) {
-			addToTree(*I, item, addRecursive);
-		}
-	}
-
-}
-
-void TypeTreeAdapter::boundAType(::Eris::TypeInfo* typeInfo)
-{
-
-	if (mRootTypeInfo && typeInfo->isA(mRootTypeInfo)) {
-		CEGUI::TreeItem* parent = 0;
-		if (typeInfo->getParents().size()) {
-			::Eris::TypeInfo* parentType = *typeInfo->getParents().begin();
-			ReverseTypeTreeStore::iterator I = mTreeItemLookup.find(parentType);
-			if (I == mTreeItemLookup.end()) {
-				parent = I->second;
+		for (auto& child : children) {
+			const auto& childData = getRule(child);
+			if (childData.isValid()) {
+				addToTree(childData, item, addRecursive);
 			}
 		}
-		addToTree(typeInfo, parent, true);
 	}
+
 }
 
-::Eris::TypeInfo* TypeTreeAdapter::getSelectedTypeInfo()
+Atlas::Objects::Root TypeTreeAdapter::getSelectedRule()
 {
 	CEGUI::TreeItem* item = mTreeWidget.getFirstSelectedItem();
 	if (item) {
-		TypeTreeStore::const_iterator I = mTypeLookup.find(item);
-		if (I != mTypeLookup.end()) {
-			return I->second;
+		auto itemData = getRule(item->getText().c_str());
+		if (itemData.isValid()) {
+			return itemData;
 		}
 	}
-	return 0;
+	return Atlas::Objects::Root();
 }
 
 }

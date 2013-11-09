@@ -62,13 +62,6 @@ public:
 	void stopMovement();
 
 	/**
-	 * @brief Gets an optional instance of a raw type info repository.
-	 * This is only available if the user is logged in as an admin entity.
-	 * @return A pointer to a raw type info repository, or null if the user isn't an admin entity.
-	 */
-	Ember::OgreView::Authoring::RawTypeInfoRepository* getRawTypeInfoRepository() const;
-
-	/**
 	 * @brief Command for displaying authoring visualizations.
 	 */
 	const Ember::ConsoleCommandWrapper DisplayAuthoringVisualizations;

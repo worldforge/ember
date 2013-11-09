@@ -12,7 +12,10 @@
 			<Window name="TypeList" type="EmberLook/Tree">
 				<Property name="Size" value="{{0,200},{1.00,-10}}" />
 				<Property name="InheritsAlpha" value="false" />
-			</Window>
+                <Window name="LoadingOverlay" type="EmberLook/StaticText">
+                    <Property name="Visible" value="False" />
+                </Window>
+    		</Window>
 			<Window name="TypeInfoText" type="EmberLook/MultiLineEditbox">
 				<Property name="Position" value="{{0,210},{0,0}}" />
 				<Property name="Size" value="{{1,-210},{1,-40}}" />

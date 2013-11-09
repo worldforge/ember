@@ -24,8 +24,28 @@ function TypeManager:buildWidget()
 		
 		self.typeInfoText = CEGUI.toMultiLineEditbox(self.widget:getWindow("TypeInfoText"))
 	
-		self.typeAdapter = Ember.OgreView.Gui.Adapters.Eris.TypeTreeAdapter:new_local(self.world:getView():getAvatar():getConnection():getTypeService(), self.typeTree)
-		self.typeAdapter:initialize("root")
+		self.typeAdapter = Ember.OgreView.Gui.Adapters.Eris.TypeTreeAdapter:new_local(self.world:getView():getAvatar():getConnection(), self.typeTree)
+		local loadingOverlay = self.widget:getWindow("LoadingOverlay")
+
+		local refresh = function()
+			self.typeAdapter:refresh("root")
+			
+			loadingOverlay:setVisible(true)
+			loadingOverlay:setText("Getting rules from server.")
+			
+			connect(self.connectors, self.typeAdapter.EventNewRuleReceived, function(numberOfRules)
+				loadingOverlay:setText("Getting rules from server.\n" .. numberOfRules .. " rules received.")
+				end
+			)
+			connect(self.connectors, self.typeAdapter.EventAllRulesReceived, function()
+					loadingOverlay:setVisible(false)
+				end
+			)
+		end
+		
+		refresh()
+
+		
 		
 		self.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", self.SendToServerButton_Clicked, self)
 			
@@ -79,29 +99,24 @@ function TypeManager:SendToServerButton_Clicked(args)
 end
 
 function TypeManager:printType()
-	local typeInfo = self.typeAdapter:getSelectedTypeInfo()
+	local rawTypeData = self.typeAdapter:getSelectedRule()
 	
-	if typeInfo ~= nil then
+	if rawTypeData:isValid() then
 	
-		local rawTypeData = self.world:getAuthoringManager():getRawTypeInfoRepository():getRawTypeData(typeInfo:getName())
+		local outstream = std.stringstream:new_local()
+		local decoder = Atlas.Message.QueuedDecoder:new_local()
 	
-		if rawTypeData:isValid() then
-		
-			local outstream = std.stringstream:new_local()
-			local decoder = Atlas.Message.QueuedDecoder:new_local()
-		
-			local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
-			local formatter = Atlas.Formatter:new_local(outstream, tolua.cast(codec, "Atlas::Bridge"))
-			local encoder = Atlas.Message.Encoder:new_local(tolua.cast(formatter, "Atlas::Bridge"))
-			local message = Atlas.Message.MapType:new_local()
-			rawTypeData:get():addToMessage(message)
-			formatter:streamBegin();
-			encoder:streamMessageElement(message);
-		
-			formatter:streamEnd();
-		
-			self.typeInfoText:setText(outstream:str())
-		end
+		local codec = self.codecClass:new_local(outstream, tolua.cast(decoder, "Atlas::Bridge"))
+		local formatter = Atlas.Formatter:new_local(outstream, tolua.cast(codec, "Atlas::Bridge"))
+		local encoder = Atlas.Message.Encoder:new_local(tolua.cast(formatter, "Atlas::Bridge"))
+		local message = Atlas.Message.MapType:new_local()
+		rawTypeData:get():addToMessage(message)
+		formatter:streamBegin();
+		encoder:streamMessageElement(message);
+	
+		formatter:streamEnd();
+	
+		self.typeInfoText:setText(outstream:str())
 	end
 end
 

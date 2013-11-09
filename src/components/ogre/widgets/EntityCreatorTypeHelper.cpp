@@ -68,7 +68,7 @@ namespace Gui
 {
 
 EntityCreatorTypeHelper::EntityCreatorTypeHelper(Eris::Connection& connection, CEGUI::Tree& typeTree, CEGUI::Editbox& nameEditbox, CEGUI::PushButton& pushButton, CEGUI::Window& modelPreview) :
-	mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mTypeTreeAdapter(0)
+		mConnection(connection), mName(nameEditbox), mModelPreviewRenderer(0), mModelPreviewManipulator(0), mTypeTreeAdapter(0)
 {
 	buildWidget(typeTree, pushButton, modelPreview);
 }
@@ -89,8 +89,8 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 	typeTree.subscribeEvent(CEGUI::Tree::EventSelectionChanged, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::typeTree_SelectionChanged, this));
 	pushButton.subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&EntityCreatorTypeHelper::createButton_Click, this));
 
-	mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(*mConnection.getTypeService(), typeTree);
-	mTypeTreeAdapter->initialize("game_entity");
+	mTypeTreeAdapter = new Adapters::Eris::TypeTreeAdapter(mConnection, typeTree);
+	mTypeTreeAdapter->refresh("game_entity");
 
 	mModelPreviewRenderer = new ModelRenderer(&modelPreview, "modelPreview");
 	mModelPreviewManipulator = new CameraEntityTextureManipulator(modelPreview, mModelPreviewRenderer->getEntityTexture());
@@ -100,10 +100,10 @@ void EntityCreatorTypeHelper::buildWidget(CEGUI::Tree& typeTree, CEGUI::PushButt
 void EntityCreatorTypeHelper::updatePreview()
 {
 	if (mModelPreviewRenderer && mTypeTreeAdapter) {
-		Eris::TypeInfo* typeInfo = mTypeTreeAdapter->getSelectedTypeInfo();
-		if (typeInfo) {
+		auto typeData = mTypeTreeAdapter->getSelectedRule();
+		if (typeData.isValid()) {
 			//update the model preview window
-			mModelPreviewRenderer->showModel(typeInfo->getName());
+			mModelPreviewRenderer->showModel(typeData->getId());
 			mModelPreviewRenderer->showFull();
 			//we want to zoom in a little
 			mModelPreviewRenderer->setCameraDistance(0.7);
@@ -123,16 +123,21 @@ bool EntityCreatorTypeHelper::createButton_Click(const CEGUI::EventArgs& args)
 {
 	if (mTypeTreeAdapter) {
 
-		Eris::TypeInfo* typeInfo = mTypeTreeAdapter->getSelectedTypeInfo();
-		if (typeInfo) {
+		auto typeData = mTypeTreeAdapter->getSelectedRule();
+		if (typeData.isValid()) {
 			try {
 				std::string name;
 				if (mName.getText().length() > 0) {
 					name = mName.getText().c_str();
 				} else {
-					name = typeInfo->getName();
+					name = typeData->getId();
 				}
-				EventCreateFromType(name, *typeInfo);
+				//TODO: this has been refactored; perhaps we should also change the signal to not use a TypeInfo...
+
+				auto typeInfo = mConnection.getTypeService()->getTypeByName(typeData->getId());
+				if (typeInfo) {
+					EventCreateFromType(name, *typeInfo);
+				}
 			} catch (const std::exception& ex) {
 				S_LOG_WARNING("Error when trying to create entity from type." << ex);
 			}

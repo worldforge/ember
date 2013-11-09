@@ -37,25 +37,38 @@ namespace Eris
  *
  * Make sure to call initialize() to activate the adapter.
  */
-class TypeTreeAdapter: public virtual sigc::trackable
+class TypeTreeAdapter
 {
 public:
-	TypeTreeAdapter(Eris::TypeService& typeService, CEGUI::Tree& treeWidget);
+	TypeTreeAdapter(Eris::Connection& connection, CEGUI::Tree& treeWidget);
 
 	virtual ~TypeTreeAdapter();
 
 	/**
-	 * @brief Initializes the adapter, creating initial type tree and hooking up listening for new types as they arrive.
-	 * @param rootTypeName The name of the root type.
-	 * @returns True if the root type was found.
+	 * @brief Refreshes the tree with new data from the server.
+	 * @param rootRule The name of the root rule.
 	 */
-	bool initialize(const std::string& rootTypeName);
+	void refresh(const std::string& rootRule);
 
 	/**
-	 * @brief Gets the currently selected type, if any.
-	 * @returns The currently selected type, if any.
+	 * @brief Gets the currently selected rule, if any.
+	 * @returns The currently selected rule, if any.
 	 */
-	Eris::TypeInfo* getSelectedTypeInfo();
+	Atlas::Objects::Root getSelectedRule();
+
+	/**
+	 * @brief Emitted when a new rule has been received.
+	 *
+	 * The first argument is the total of rules received so far.
+	 */
+	sigc::signal<void, int> EventNewRuleReceived;
+
+	/**
+	 * @brief Emitted when all rules have been received.
+	 */
+	sigc::signal<void> EventAllRulesReceived;
+
+
 
 
 };

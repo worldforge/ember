@@ -97,7 +97,6 @@ $pfile "EntityRecipe.pkg"
 $pfile "EntityRecipeManager.pkg"
 $pfile "EntityCreator.pkg"
 $pfile "AuthoringManager.pkg"
-$pfile "RawTypeInfoRepository.pkg"
 
 
 $pfile "stdlib.pkg"

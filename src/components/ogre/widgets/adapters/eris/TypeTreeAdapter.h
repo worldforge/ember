@@ -19,14 +19,17 @@
 #ifndef TYPETREEADAPTER_H_
 #define TYPETREEADAPTER_H_
 
-#include <map>
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Root.h>
+
+#include <unordered_map>
 #include <sigc++/trackable.h>
+#include <sigc++/signal.h>
 #include <string>
 
 namespace Eris
 {
-class TypeService;
-class TypeInfo;
+class Connection;
 }
 
 namespace CEGUI
@@ -39,7 +42,9 @@ namespace Ember
 {
 namespace OgreView
 {
-
+namespace Authoring {
+class RulesFetcher;
+}
 namespace Gui
 {
 
@@ -57,47 +62,47 @@ namespace Eris
 class TypeTreeAdapter: public virtual sigc::trackable
 {
 public:
-	TypeTreeAdapter(::Eris::TypeService& typeService, CEGUI::Tree& treeWidget);
+	TypeTreeAdapter(::Eris::Connection& connection, CEGUI::Tree& treeWidget);
 
 	virtual ~TypeTreeAdapter();
 
 	/**
-	 * @brief Initializes the adapter, creating initial type tree and hooking up listening for new types as they arrive.
-	 * @param rootTypeName The name of the root type.
-	 * @returns True if the root type was found.
+	 * @brief Refreshes the tree with new data from the server.
+	 * @param rootRule The name of the root rule.
 	 */
-	bool initialize(const std::string& rootTypeName);
+	void refresh(const std::string& rootRule);
 
 	/**
-	 * @brief Gets the currently selected type, if any.
-	 * @returns The currently selected type, if any.
+	 * @brief Gets the currently selected rule, if any.
+	 * @returns The currently selected rule, if any.
 	 */
-	::Eris::TypeInfo* getSelectedTypeInfo();
+	::Atlas::Objects::Root getSelectedRule();
+
+	/**
+	 * @brief Emitted when a new rule has been received.
+	 *
+	 * The first argument is the total of rules received so far.
+	 */
+	sigc::signal<void, int> EventNewRuleReceived;
+
+	/**
+	 * @brief Emitted when all rules have been received.
+	 */
+	sigc::signal<void> EventAllRulesReceived;
 
 private:
 
-	typedef std::map<CEGUI::TreeItem*, ::Eris::TypeInfo*> TypeTreeStore;
-	typedef std::map< ::Eris::TypeInfo*, CEGUI::TreeItem*> ReverseTypeTreeStore;
-
-	::Eris::TypeService& mTypeService;
+	::Eris::Connection& mConnection;
 	CEGUI::Tree& mTreeWidget;
+	Authoring::RulesFetcher* mFetcher;
+
+	std::unordered_map<std::string, ::Atlas::Objects::Root> mRules;
+
 
 	/**
-	 * @brief Use a lookup map for the types and the corresponding tree item.
+	 * @brief Hooked up to the RuleFetcher::EventAllTypesReceived signal.
 	 */
-	TypeTreeStore mTypeLookup;
-
-	/**
-	 * @brief A reverse lookup map, using type info objects as keys. Mainly used to check whether a certain type already exists in the tree.
-	 */
-	ReverseTypeTreeStore mTreeItemLookup;
-
-	::Eris::TypeInfo* mRootTypeInfo;
-
-	/**
-	 * @brief Recursively loads all the types in the tree.
-	 */
-	void loadAllTypes();
+	void fetcherAllTypesReceived();
 
 	/**
 	 * @brief Adds a type info to the tree.
@@ -105,13 +110,22 @@ private:
 	 * @param parent The parent of the type info, or 0 if we should add to the top.
 	 * @param addRecursive If true, all the current children of the type will be added as well.
 	 */
-	void addToTree(::Eris::TypeInfo* typeInfo, CEGUI::TreeItem* parent, bool addRecursive = false);
+	void addToTree(const ::Atlas::Objects::Root& rule, CEGUI::TreeItem* parent, bool addRecursive = false);
+
 
 	/**
-	 * @brief Listens for types getting bound, and then updating the tree.
-	 * @param typeInfo The type which has been bound.
+	 * @brief Utility method for extracting a list of children from an Atlas op.
+	 * @param op An atlas op.
+	 * @param children A list which will be filled with children.
 	 */
-	void boundAType(::Eris::TypeInfo* typeInfo);
+	void extractChildren(const ::Atlas::Objects::Root& op, std::list<std::string>& children);
+
+	/**
+	 * @brief Gets a rule from the internal store of rules.
+	 * @param id The id of the rule.
+	 * @return
+	 */
+	::Atlas::Objects::Root getRule(const std::string& id);
 
 };
 

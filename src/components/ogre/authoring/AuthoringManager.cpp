@@ -18,7 +18,6 @@
 
 #include "AuthoringManager.h"
 #include "AuthoringHandler.h"
-#include "RawTypeInfoRepository.h"
 #include "SimpleEntityVisualization.h"
 #include "components/ogre/World.h"
 #include "components/ogre/Scene.h"
@@ -43,11 +42,9 @@ namespace OgreView
 namespace Authoring
 {
 AuthoringManager::AuthoringManager(World& world) :
-	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mWorld(world), mHandler(0), mRawTypeInfoRepository(0)
+	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mWorld(world), mHandler(0)
 {
 	registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
-	mRawTypeInfoRepository = new RawTypeInfoRepository(EmberServices::getSingleton().getServerService());
-//	view.getAvatar()->GotCharacterEntity.connect(sigc::mem_fun(*this, &AuthoringManager::gotAvatarCharacter));
 }
 
 AuthoringManager::~AuthoringManager()
@@ -58,7 +55,6 @@ AuthoringManager::~AuthoringManager()
 		delete vis;
 		conn.disconnect();
 	}
-	delete mRawTypeInfoRepository;
 	delete mHandler;
 }
 
@@ -134,15 +130,6 @@ void AuthoringManager::config_AuthoringVisualizations(const std::string& section
 	}
 }
 
-void AuthoringManager::gotAvatarCharacter(Eris::Entity* entity)
-{
-	if (entity) {
-		if (entity->getType()->isA(mWorld.getView().getAvatar()->getConnection()->getTypeService()->getTypeByName("creator"))) {
-			mRawTypeInfoRepository = new RawTypeInfoRepository(EmberServices::getSingleton().getServerService());
-		}
-	}
-}
-
 void AuthoringManager::startMovement(EmberEntity& entity, EntityMover& mover)
 {
 	if (mHandler) {
@@ -155,11 +142,6 @@ void AuthoringManager::stopMovement()
 	if (mHandler) {
 		mHandler ->stopMovement();
 	}
-}
-
-RawTypeInfoRepository* AuthoringManager::getRawTypeInfoRepository() const
-{
-	return mRawTypeInfoRepository;
 }
 
 

@@ -58,7 +58,6 @@ namespace Authoring
 
 class AuthoringHandler;
 class EntityMover;
-class RawTypeInfoRepository;
 class SimpleEntityVisualization;
 
 /**
@@ -121,13 +120,6 @@ public:
 	void stopMovement();
 
 	/**
-	 * @brief Gets an optional instance of a raw type info repository.
-	 * This is only available if the user is logged in as an admin entity.
-	 * @return A pointer to a raw type info repository, or null if the user isn't an admin entity.
-	 */
-	RawTypeInfoRepository* getRawTypeInfoRepository() const;
-
-	/**
 	 * @brief Command for displaying authoring visualizations.
 	 */
 	const ConsoleCommandWrapper DisplayAuthoringVisualizations;
@@ -156,12 +148,6 @@ protected:
 	AuthoringHandler* mHandler;
 
 	/**
-	 * @brief An optional instance of a raw type info repository.
-	 * This is only available if the user is logged in as an admin entity.
-	 */
-	RawTypeInfoRepository* mRawTypeInfoRepository;
-
-	/**
 	 * @brief Keeps track of all simple visualizations of entities.
 	 */
 	SimpleEntityVisualizationStore mSimpleVisualizations;
@@ -173,8 +159,6 @@ protected:
 	 * @param variable
 	 */
 	void config_AuthoringVisualizations(const std::string& section, const std::string& key, varconf::Variable& variable);
-
-	void gotAvatarCharacter(Eris::Entity* entity);
 
 	/**
 	 * @brief Listen to an entity for which there exists a simple visualization and remove the visualization.
