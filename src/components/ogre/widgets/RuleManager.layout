@@ -25,6 +25,11 @@
 			<Window name="RuleInfoText" type="EmberLook/MultiLineEditbox">
 				<Property name="Position" value="{{0,210},{0,0}}" />
 				<Property name="Size" value="{{1,-210},{1,-40}}" />
+                <Window name="RuleUpdateOverlay" type="EmberLook/StaticFading">
+                    <Property name="Visible" value="False" />
+                    <Property name="Size" value="{{0,200},{0,80}}" />
+                    <Property name="Position" value="{{0.5,-100},{0.5,-40}}" />
+                </Window>
 			</Window>
 			<Window name="CodecType" type="EmberLook/Combobox">
 				<Property name="Size" value="{{0,100},{0,100}}" />
@@ -34,8 +39,8 @@
 			</Window>			
 			<Window name="SendToServerButton" type="EmberLook/Button">
 				<Property name="Text" value="Send to server" />
-				<Property name="Position" value="{{1,-105},{1,-25}}" />
-				<Property name="Size" value="{{0,100},{0,20}}" />
+				<Property name="Position" value="{{1,-105},{1,-30}}" />
+				<Property name="Size" value="{{0,100},{0,25}}" />
 			</Window>
 		</Window>
 	</Window>

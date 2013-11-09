@@ -6,8 +6,6 @@ function RuleManager:buildWidget()
 
 	local setup = function()
 	
-		self.editor = Ember.OgreView.Authoring.RuleEditor:new_local(self.account)
-		
 		self.ruleTree = tolua.cast(self.widget:getWindow("RuleList"), "CEGUI::Tree")
 		self.ruleTree:subscribeEvent("SelectionChanged", self.RuleList_SelectionChanged, self)
 	
@@ -54,7 +52,33 @@ function RuleManager:buildWidget()
 		
 		
 		self.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", self.SendToServerButton_Clicked, self)
-			
+
+
+		local ruleUpdateOverlay = self.widget:getWindow("RuleUpdateOverlay")
+		ruleUpdateOverlay:subscribeEvent("MouseEntersSurface", function()
+			ruleUpdateOverlay:fireEvent("StartHideTransition", CEGUI.WindowEventArgs:new_local(ruleUpdateOverlay))
+			return true
+		end)
+					
+		self.editor = Ember.OgreView.Authoring.RuleEditor:new_local(self.account)
+		
+		connect(self.connectors, self.editor.EventRuleCreated, function(refno)
+			ruleUpdateOverlay:setVisible(true)
+			ruleUpdateOverlay:setText("New rule created on server.")
+			end
+		)
+		connect(self.connectors, self.editor.EventRuleUpdated, function(refno)
+			ruleUpdateOverlay:setVisible(true)
+			ruleUpdateOverlay:setText("Existing rule updated on server.")
+			end
+		)
+		connect(self.connectors, self.editor.EventRuleEditError, function(refno)
+			ruleUpdateOverlay:setVisible(true)
+			ruleUpdateOverlay:setText("Error when updating or creating rule.")
+			end
+		)
+					
+					
 		self.widget:enableCloseButton()
 	end
 
@@ -80,6 +104,9 @@ function RuleManager:CodecType_ListSelectionChanged()
 end
 
 function RuleManager:sendRuleToServer()
+
+	local ruleUpdateOverlay = self.widget:getWindow("RuleUpdateOverlay")
+
 	local outstream = std.stringstream:new_local(self.ruleInfoText:getText())
 	local decoder = Ember.AtlasObjectDecoder:new_local()
 
@@ -89,6 +116,9 @@ function RuleManager:sendRuleToServer()
 	local parsedObject = decoder:getLastObject()
 	
 	if parsedObject:isValid() then
+		ruleUpdateOverlay:setVisible(true)
+		ruleUpdateOverlay:setText("Sending rule to server.")
+	
 		self.editor:updateOrCreateRule(parsedObject)
 	end
 end
