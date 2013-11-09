@@ -9,38 +9,39 @@
 			<Property name="Size" value="{{1,-6},{1,0}}" />
 			<Property name="Position" value="{{0,3},{0.00,0}}" />
 			<Property name="InheritsAlpha" value="True" />
-			<Window name="RuleList" type="EmberLook/Tree">
-				<Property name="Size" value="{{0,200},{1.00,-35}}" />
-				<Property name="InheritsAlpha" value="false" />
+            <Window name="Refresh" type="EmberLook/Button">
+                <Property name="Text" value="Refresh" />
+                <Property name="Size" value="{{0,100},{0,25}}" />
+            </Window>
+            <Window name="CodecType" type="EmberLook/Combobox">
+                <Property name="Size" value="{{0,100},{0,100}}" />
+                <Property name="Position" value="{{1,-210},{0,5}}" />
+                <Property name="ReadOnly" value="true" />
+                <Property name="ClippedByParent" value="false" />
+                <Property name="TooltipText" value="Codec used for presenting the rule." />
+            </Window>           
+            <Window name="SendToServerButton" type="EmberLook/Button">
+                <Property name="Text" value="Send to server" />
+                <Property name="Position" value="{{1,-105},{0,5}}" />
+                <Property name="Size" value="{{0,100},{0,25}}" />
+            </Window>
+            <Window name="RuleList" type="EmberLook/Tree">
+                <Property name="Size" value="{{0,200},{1,-35}}" />
+                <Property name="Position" value="{{0,0},{0,30}}" />
+                <Property name="InheritsAlpha" value="false" />
                 <Window name="LoadingOverlay" type="EmberLook/StaticText">
                     <Property name="Visible" value="False" />
                     <Property name="BackgroundEnabled" value="True" />
                 </Window>
-    		</Window>
-            <Window name="Refresh" type="EmberLook/Button">
-                <Property name="Text" value="Refresh" />
-                <Property name="Position" value="{{0,0},{1,-30}}" />
-                <Property name="Size" value="{{0,100},{0,25}}" />
             </Window>
 			<Window name="RuleInfoText" type="EmberLook/MultiLineEditbox">
-				<Property name="Position" value="{{0,210},{0,0}}" />
+				<Property name="Position" value="{{0,210},{0,35}}" />
 				<Property name="Size" value="{{1,-210},{1,-40}}" />
                 <Window name="RuleUpdateOverlay" type="EmberLook/StaticFading">
                     <Property name="Visible" value="False" />
                     <Property name="Size" value="{{0,200},{0,80}}" />
                     <Property name="Position" value="{{0.5,-100},{0.5,-40}}" />
                 </Window>
-			</Window>
-			<Window name="CodecType" type="EmberLook/Combobox">
-				<Property name="Size" value="{{0,100},{0,100}}" />
-				<Property name="Position" value="{{1,-210},{1,-30}}" />
-				<Property name="ReadOnly" value="true" />
-				<Property name="ClippedByParent" value="false" />
-			</Window>			
-			<Window name="SendToServerButton" type="EmberLook/Button">
-				<Property name="Text" value="Send to server" />
-				<Property name="Position" value="{{1,-105},{1,-30}}" />
-				<Property name="Size" value="{{0,100},{0,25}}" />
 			</Window>
 		</Window>
 	</Window>
