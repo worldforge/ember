@@ -26,8 +26,10 @@ function RuleManager:buildWidget()
 	
 		self.ruleAdapter = Ember.OgreView.Gui.Adapters.Eris.RuleTreeAdapter:new_local(self.world:getView():getAvatar():getConnection(), self.ruleTree)
 		local loadingOverlay = self.widget:getWindow("LoadingOverlay")
+		local refreshButton = self.widget:getWindow("Refresh")
 
 		local refresh = function()
+			refreshButton:setEnabled(false)
 			self.ruleAdapter:refresh("root")
 			
 			loadingOverlay:setVisible(true)
@@ -39,12 +41,14 @@ function RuleManager:buildWidget()
 			)
 			connect(self.connectors, self.ruleAdapter.EventAllRulesReceived, function()
 					loadingOverlay:setVisible(false)
+					refreshButton:setEnabled(true)
 				end
 			)
 		end
 		
 		refresh()
 
+		self.widget:getWindow("Refresh"):subscribeEvent("Clicked", refresh)
 		
 		
 		self.widget:getWindow("SendToServerButton"):subscribeEvent("Clicked", self.SendToServerButton_Clicked, self)
