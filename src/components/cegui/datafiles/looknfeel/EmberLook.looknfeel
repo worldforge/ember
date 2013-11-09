@@ -4223,90 +4223,112 @@
     </WidgetLook>
 
 
-    
+
+
     <WidgetLook name="EmberLook/Tooltip">
+        <Property name="Alpha" value="0" />
+        <Property name="Size" value="{{0, 128}, {0, 32}}" />
         <NamedArea name="TextArea">
             <Area>
                 <Dim type="LeftEdge">
-                    <ImageDim dimension="Width" name="EmberLook/TooltipLeftEdge" />
+                    <ImageDim name="EmberLook/TooltipLeftEdge" dimension="Width"/>
                 </Dim>
                 <Dim type="TopEdge">
-                    <ImageDim dimension="Height" name="EmberLook/TooltipTopEdge" />
+                    <ImageDim name="EmberLook/TooltipTopEdge" dimension="Height"/>
                 </Dim>
                 <Dim type="RightEdge">
-                    <OperatorDim op="Subtract"><UnifiedDim scale="1.0" type="RightEdge" />
-                <ImageDim dimension="Width" name="EmberLook/TooltipRightEdge" />
-                        </OperatorDim>
-                    </Dim>
+                    <OperatorDim op="Subtract">
+                        <UnifiedDim scale="1.0" type="RightEdge"/>
+                        <ImageDim name="EmberLook/TooltipRightEdge" dimension="Width"/>
+                    </OperatorDim>
+                </Dim>
                 <Dim type="BottomEdge">
-                    <OperatorDim op="Subtract"><UnifiedDim scale="1.0" type="BottomEdge" />
-                <ImageDim dimension="Height" name="EmberLook/TooltipBottomEdge" />
-                        </OperatorDim>
-                    </Dim>
+                    <OperatorDim op="Subtract">
+                        <UnifiedDim scale="1.0" type="BottomEdge"/>
+                        <ImageDim name="EmberLook/TooltipBottomEdge" dimension="Height"/>
+                    </OperatorDim>
+                </Dim>
             </Area>
         </NamedArea>
         <ImagerySection name="main">
             <FrameComponent>
                 <Area>
                     <Dim type="LeftEdge">
-                        <AbsoluteDim value="0" />
+                        <AbsoluteDim value="0"/>
                     </Dim>
                     <Dim type="TopEdge">
-                        <AbsoluteDim value="0" />
+                        <AbsoluteDim value="0"/>
                     </Dim>
                     <Dim type="RightEdge">
-                        <UnifiedDim scale="1" type="RightEdge" />
+                        <UnifiedDim scale="1" type="RightEdge"/>
                     </Dim>
                     <Dim type="BottomEdge">
-                        <UnifiedDim scale="1" type="BottomEdge" />
+                        <UnifiedDim scale="1" type="BottomEdge"/>
                     </Dim>
                 </Area>
-                <Image component="TopLeftCorner" name="EmberLook/TooltipTopLeft" />
-                <Image component="TopRightCorner" name="EmberLook/TooltipTopRight" />
-                <Image component="BottomLeftCorner" name="EmberLook/TooltipBottomLeft" />
-                <Image component="BottomRightCorner" name="EmberLook/TooltipBottomRight" />
-                <Image component="LeftEdge" name="EmberLook/TooltipLeftEdge" />
-                <Image component="TopEdge" name="EmberLook/TooltipTopEdge" />
-                <Image component="RightEdge" name="EmberLook/TooltipRightEdge" />
-                <Image component="BottomEdge" name="EmberLook/TooltipBottomEdge" />
-                <Image component="Background" name="EmberLook/TooltipMiddle" />
+                <Image component="TopLeftCorner" name="EmberLook/TooltipTopLeft"/>
+                <Image component="TopRightCorner" name="EmberLook/TooltipTopRight"/>
+                <Image component="BottomLeftCorner" name="EmberLook/TooltipBottomLeft"/>
+                <Image component="BottomRightCorner" name="EmberLook/TooltipBottomRight"/>
+                <Image component="LeftEdge" name="EmberLook/TooltipLeftEdge"/>
+                <Image component="TopEdge" name="EmberLook/TooltipTopEdge"/>
+                <Image component="RightEdge" name="EmberLook/TooltipRightEdge"/>
+                <Image component="BottomEdge" name="EmberLook/TooltipBottomEdge"/>
+                <Image component="Background" name="EmberLook/TooltipMiddle"/>
             </FrameComponent>
         </ImagerySection>
         <ImagerySection name="label">
             <TextComponent>
                 <Area>
                     <Dim type="LeftEdge">
-                        <AbsoluteDim value="0" />
+                        <AbsoluteDim value="0"/>
                     </Dim>
                     <Dim type="TopEdge">
-                        <AbsoluteDim value="0" />
+                        <AbsoluteDim value="0"/>
                     </Dim>
                     <Dim type="RightEdge">
-                        <UnifiedDim scale="1" type="RightEdge" />
+                        <UnifiedDim scale="1" type="RightEdge"/>
                     </Dim>
                     <Dim type="BottomEdge">
-                        <UnifiedDim scale="1" type="BottomEdge" />
+                        <UnifiedDim scale="1" type="BottomEdge"/>
                     </Dim>
                 </Area>
-                <Colours bottomLeft="FF000000" bottomRight="FF000000" topLeft="FF000000" topRight="FF000000" />
-                <VertFormat type="CentreAligned" />
-                <HorzFormat type="CentreAligned" />
+                <Colours topLeft="FF000000" bottomLeft="FF000000" topRight="FF000000" bottomRight="FF000000"/>
+                <VertFormat type="CentreAligned"/>
+                <HorzFormat type="CentreAligned"/>
             </TextComponent>
         </ImagerySection>
         <StateImagery name="Enabled">
             <Layer>
-                <Section section="main" />
-                <Section section="label" />
+                <Section section="main"/>
+                <Section section="label"/>
             </Layer>
         </StateImagery>
         <StateImagery name="Disabled">
             <Layer>
-                <Section section="main" />
-                <Section section="label" />
+                <Section section="main"/>
+                <Section section="label"/>
             </Layer>
         </StateImagery>
+        <AnimationDefinition duration="0.33" replayMode="once" name="FadeIn">
+            <Affector interpolator="float" property="Alpha">
+                <KeyFrame position="0" sourceProperty="Alpha"/>
+                <KeyFrame position="0.33" progression="linear" value="1"/>
+            </Affector>
+            <Subscription action="Start" event="TooltipActive"/>
+        </AnimationDefinition>
+        <AnimationDefinition duration="0.33" replayMode="once" name="FadeOut">
+            <Affector interpolator="float" property="Alpha">
+                <KeyFrame position="0" sourceProperty="Alpha"/>
+                <KeyFrame position="0.33" progression="linear" value="0"/>
+            </Affector>
+            <Affector interpolator="bool" property="Visible">
+                <KeyFrame position="0" sourceProperty="Visible"/>
+                <KeyFrame position="0.33" progression="discrete" value="false"/>
+            </Affector>
+            <Subscription action="Start" event="TooltipInactive"/>
+        </AnimationDefinition>
     </WidgetLook>
-    
     
     
     
