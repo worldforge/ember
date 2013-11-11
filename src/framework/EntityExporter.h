@@ -52,7 +52,6 @@ class Element;
 namespace Eris
 {
 class Account;
-class TypeInfo;
 }
 
 namespace Ember
@@ -249,15 +248,6 @@ protected:
 	std::map<int, std::string> mThoughtsOutstanding;
 
 	/**
-	 * @brief Keeps track of any unbound types, and the entities that are of those types.
-	 *
-	 * As soon as a type is bound (or couldn't be bound) the entry will be removed from the map.
-	 * The main use of this is to make sure that those types that inherit from "character" are queried for
-	 * their thoughts.
-	 */
-	std::unordered_map<Eris::TypeInfo*, std::vector<std::string> > mUnboundTypes;
-
-	/**
 	 * @brief Contains mapping between the id of entities they have on the server, and the id they will get in the dump.
 	 *
 	 * This is used both for mapping to ids when mPreserveIds is set to false, but also to cull out transient
@@ -340,16 +330,6 @@ protected:
 	void operationGetRuleResult(const Operation& op);
 	void requestThoughts(const std::string& entityId, const std::string& persistedId);
 	void requestRule(const std::string& rule);
-
-	/**
-	 * @brief Called when a type is either bound or couldn't be bound.
-	 *
-	 * If we're waiting on data in order to perform checks if we should also ask for thoughts
-	 * this will happen here.
-	 *
-	 * @param typeInfo
-	 */
-	void typeService_BoundType(Eris::TypeInfo* typeInfo);
 
 	/**
 	 * @brief Checks the queue if we should ask the server for more data on any entity, or if we're done.

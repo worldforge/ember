@@ -26,8 +26,6 @@
 #include <Eris/Connection.h>
 #include <Eris/Response.h>
 #include <Eris/ServerInfo.h>
-#include <Eris/TypeService.h>
-#include <Eris/TypeInfo.h>
 #include <Eris/Avatar.h>
 
 #include <Atlas/Codecs/XML.h>
@@ -69,8 +67,6 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 EntityExporter::EntityExporter(Eris::Account& account) :
 		mAccount(account), mStats( { }), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false), mPreserveIds(false), mExportRules(false)
 {
-	mAccount.getConnection()->getTypeService()->BoundType.connect(sigc::mem_fun(*this, &EntityExporter::typeService_BoundType));
-	mAccount.getConnection()->getTypeService()->BadType.connect(sigc::mem_fun(*this, &EntityExporter::typeService_BoundType));
 }
 
 EntityExporter::~EntityExporter()
@@ -197,7 +193,7 @@ void EntityExporter::pollQueue()
 {
 	//When we've queried, and gotten responses for all entities, and all types are bound,
 	//and there are no more thoughts we're waiting to receive; then we're done.
-	if (mQueue.empty() && mOutstandingGetRequestCounter == 0 && mUnboundTypes.empty() && mThoughtsOutstanding.empty()) {
+	if (mQueue.empty() && mOutstandingGetRequestCounter == 0 && mThoughtsOutstanding.empty()) {
 		complete();
 		return;
 	}
@@ -278,14 +274,8 @@ void EntityExporter::infoArrived(const Operation & op)
 
 		//Don't request thoughts for ourselves
 		if (ent->getId() != mAccount.getActiveCharacters().begin()->second->getId()) {
-			Eris::TypeInfo* characterTypeInfo = mAccount.getConnection()->getTypeService()->getTypeByName("character");
-			Eris::TypeInfo* entityType = mAccount.getConnection()->getTypeService()->getTypeByName(ent->getParentsAsList().begin()->asString());
-			if (!entityType->isBound()) {
-				mUnboundTypes[entityType].push_back(ent->getId());
-			} else {
-				if (entityType->isA(characterTypeInfo)) {
-					requestThoughts(ent->getId(), persistedId);
-				}
+			if (ent->hasAttr("mind")) {
+				requestThoughts(ent->getId(), persistedId);
 			}
 		}
 	}
@@ -329,26 +319,6 @@ void EntityExporter::requestRule(const std::string& rule)
 	mStats.rulesQueried++;
 
 	mOutstandingGetRequestCounter++;
-}
-
-void EntityExporter::typeService_BoundType(Eris::TypeInfoPtr typeInfo)
-{
-	auto I = mUnboundTypes.find(typeInfo);
-	if (I != mUnboundTypes.end()) {
-		Eris::TypeInfo* characterTypeInfo = mAccount.getConnection()->getTypeService()->getTypeByName("character");
-		if (typeInfo->isA(characterTypeInfo)) {
-			for (auto& entityId : I->second) {
-				auto J = mIdMapping.find(entityId);
-				if (J != mIdMapping.end()) {
-					auto& persistedId = J->second;
-					requestThoughts(entityId, persistedId);
-				}
-			}
-			EventProgress.emit();
-		}
-		mUnboundTypes.erase(typeInfo);
-		pollQueue();
-	}
 }
 
 void EntityExporter::adjustReferencedEntities()
