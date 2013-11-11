@@ -20,7 +20,6 @@
 
 #include "LoggingInstance.h"
 #include "Time.h"
-#include "TinyXmlCodec.h"
 #include "MultiLineListFormatter.h"
 
 #include <Eris/Account.h>
@@ -37,6 +36,8 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
+
+#include <sstream>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;

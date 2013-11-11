@@ -19,8 +19,6 @@
 #ifndef EMBER_ENTITYEXPORTER_H
 #define EMBER_ENTITYEXPORTER_H
 
-#include "framework/tinyxml/tinyxml.h"
-
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <sigc++/trackable.h>
@@ -76,17 +74,21 @@ namespace Ember
  *    <string name="description">An optional description of this dump.</string>
  *    <string name="timestamp">The timestamp, CET, when this dump was taken.</string>
  *    <int name="transients">Boolean, true if transients are persisted.</int>
- *    <map name="server">
- *     <string name="host">The hostname of the server.</string>
- *     <string name="name">The name of the server.</string>
- *     <string name="ruleset">The ruleset of the server.</string>
- *    </map>
- *    <list name="entities">
- *     all entities in Message form
- *    </list>
- *    <list name="minds">
- *     all minds in Message form
- *    </list>
+ *   </map>
+ *   <map name="server">
+ *    <string name="host">The hostname of the server.</string>
+ *    <string name="name">The name of the server.</string>
+ *   <string name="ruleset">The ruleset of the server.</string>
+ *   </map>
+ *   <list name="entities">
+ *    all entities in Message form
+ *   </list>
+ *   <list name="minds">
+ *    all minds in Message form
+ *   </list>
+ *   <list name="types">
+ *    optional types in Message form
+ *   </list>
  *  <map>
  * </atlas>
  */

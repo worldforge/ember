@@ -1,5 +1,6 @@
 //
 // Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2013 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -71,7 +72,7 @@ bool EntityImporter::getEntity(const std::string & id, OpVector & res)
 	}
 
 	m_state = ENTITY_WALKING;
-	m_treeStack.emplace_back(obj);
+	mTreeStack.emplace_back(obj);
 
 	Anonymous get_arg;
 	get_arg->setId(id);
@@ -177,17 +178,17 @@ void EntityImporter::walkRules(OpVector & res)
 
 void EntityImporter::walkEntities(OpVector & res)
 {
-	if (m_treeStack.empty()) {
+	if (mTreeStack.empty()) {
 		sendMinds();
 	} else {
-		StackEntry & current = m_treeStack.back();
+		StackEntry & current = mTreeStack.back();
 		//Check if there are any children. If not, we should pop the stack and
 		if (current.obj->getContains().empty()) {
 			// Pop: Go back to WALKING parent
-			assert(!m_treeStack.empty());
-			m_treeStack.pop_back();
-			while (!m_treeStack.empty()) {
-				StackEntry & se = m_treeStack.back();
+			assert(!mTreeStack.empty());
+			mTreeStack.pop_back();
+			while (!mTreeStack.empty()) {
+				StackEntry & se = mTreeStack.back();
 				//Try to get the next child entity (unless we've reached the end of the list of children).
 				//Since some entities are references but not persisted we need to loop until we find one that we know of.
 				for (; ++se.currentChildIterator, se.currentChildIterator != se.obj->getContains().end();) {
@@ -198,7 +199,7 @@ void EntityImporter::walkEntities(OpVector & res)
 				}
 
 				//If we've reached the end of the contained entities we should pop the current stack entry.
-				m_treeStack.pop_back();
+				mTreeStack.pop_back();
 			}
 		} else {
 			//Iterate until we find an entity that's persisted.
@@ -212,7 +213,7 @@ void EntityImporter::walkEntities(OpVector & res)
 				}
 			}
 		}
-		if (m_treeStack.empty()) {
+		if (mTreeStack.empty()) {
 			sendMinds();
 		}
 	}
@@ -243,9 +244,9 @@ void EntityImporter::sendMinds()
 										Atlas::Message::ListType newList;
 										for (auto& thingId : thingI.second.asList()) {
 											if (thingId.isString()) {
-												const auto& entityIdLookupI = m_entityIdMap.find(thingId.asString());
+												const auto& entityIdLookupI = mEntityIdMap.find(thingId.asString());
 												//Check if the owned entity has been created with a new id. If so, replace the data.
-												if (entityIdLookupI != m_entityIdMap.end()) {
+												if (entityIdLookupI != mEntityIdMap.end()) {
 													newList.push_back(entityIdLookupI->second);
 												} else {
 													newList.push_back(thingId);
@@ -265,9 +266,9 @@ void EntityImporter::sendMinds()
 								Atlas::Message::ListType newList;
 								for (auto& thingId : pendingThingsElement.asList()) {
 									if (thingId.isString()) {
-										const auto& entityIdLookupI = m_entityIdMap.find(thingId.asString());
+										const auto& entityIdLookupI = mEntityIdMap.find(thingId.asString());
 										//Check if the owned entity has been created with a new id. If so, replace the data.
-										if (entityIdLookupI != m_entityIdMap.end()) {
+										if (entityIdLookupI != mEntityIdMap.end()) {
 											newList.push_back(entityIdLookupI->second);
 										} else {
 											newList.push_back(thingId);
@@ -313,10 +314,10 @@ void EntityImporter::createEntity(const RootEntity & obj, OpVector & res)
 
 	m_state = ENTITY_CREATING;
 
-	assert(m_treeStack.size() > 1);
-	std::deque<StackEntry>::reverse_iterator I = m_treeStack.rbegin();
+	assert(mTreeStack.size() > 1);
+	std::deque<StackEntry>::reverse_iterator I = mTreeStack.rbegin();
 	++I;
-	assert(I != m_treeStack.rend());
+	assert(I != mTreeStack.rend());
 	const std::string & loc = I->restored_id;
 
 	RootEntity create_arg = obj.copy();
@@ -451,8 +452,8 @@ void EntityImporter::errorArrived(const Operation & op, OpVector & res)
 	{
 		//An error here just means that the entity we asked for didn't exist on the server, and we need
 		//to create it. This is an expected result.
-		assert(!m_treeStack.empty());
-		StackEntry & current = m_treeStack.back();
+		assert(!mTreeStack.empty());
+		StackEntry & current = mTreeStack.back();
 		const RootEntity& obj = current.obj;
 
 		assert(obj.isValid());
@@ -524,8 +525,8 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 		if (!op.isValid()) {
 			return;
 		}
-		m_newIds.insert(arg->getId());
-		StackEntry & current = m_treeStack.back();
+		mNewIds.insert(arg->getId());
+		StackEntry & current = mTreeStack.back();
 		current.restored_id = arg->getId();
 		S_LOG_VERBOSE("Created: " << arg->getParents().front() << "(" << arg->getId() << ")");
 
@@ -536,7 +537,7 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 			if (mindI != mPersistedMinds.end()) {
 				mResolvedMindMapping.emplace_back(arg->getId(), mindI->second);
 			}
-			m_entityIdMap.insert(std::make_pair(I->second, arg->getId()));
+			mEntityIdMap.insert(std::make_pair(I->second, arg->getId()));
 			mCreateEntityMapping.erase(op->getRefno());
 		} else {
 			S_LOG_WARNING("Got info about create for an entity which we didn't seem to have sent.");
@@ -554,12 +555,12 @@ void EntityImporter::infoArrived(const Operation & op, OpVector & res)
 		}
 		const std::string & id = arg->getId();
 
-		StackEntry & current = m_treeStack.back();
+		StackEntry & current = mTreeStack.back();
 		const RootEntity& obj = current.obj;
 
 		assert(id == obj->getId());
 
-		if (m_newIds.find(id) != m_newIds.end() || (m_treeStack.size() != 1 && ent->isDefaultLoc()) || ent->getParents().front() != obj->getParents().front()) {
+		if (mNewIds.find(id) != mNewIds.end() || (mTreeStack.size() != 1 && ent->isDefaultLoc()) || ent->getParents().front() != obj->getParents().front()) {
 			createEntity(obj, res);
 		} else {
 

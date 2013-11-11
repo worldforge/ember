@@ -296,7 +296,7 @@ protected:
 	/**
 	 * @brief Keeps track of the hierarchy of entities that are to be created or updated.
 	 */
-	std::deque<StackEntry> m_treeStack;
+	std::deque<StackEntry> mTreeStack;
 
 	/**
 	 * @brief Keeps track of the hierarchy of rules that are to be created or updated.
@@ -310,14 +310,14 @@ protected:
 	 * as another one we've just created. If so we shouldn't update the one on the server, instead we
 	 * should create a new one.
 	 */
-	std::unordered_set<std::string> m_newIds;
+	std::unordered_set<std::string> mNewIds;
 
 	/**
 	 * Contains a map between any id in the dump and the new id the entity has gotten when created.
 	 *
 	 * This can be used to update ownership information in minds.
 	 */
-	std::unordered_map<std::string, std::string> m_entityIdMap;
+	std::unordered_map<std::string, std::string> mEntityIdMap;
 
 	/**
 	 * @brief Sends an operation to the server.
