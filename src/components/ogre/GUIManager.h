@@ -78,6 +78,7 @@ class EmberEntity;
 class GUICEGUIAdapter;
 class MovementController;
 class World;
+class WorldLoadingScreen;
 
 namespace Gui
 {
@@ -422,6 +423,11 @@ protected:
 	 * @brief Bridges the CEGUI clipboard and the system one.
 	 */
 	CEGUI::NativeClipboardProvider* mNativeClipboardProvider;
+
+	/**
+	 * @brief Provides loading screen to handle transitions
+	 */
+	WorldLoadingScreen* mWorldLoadingScreen;
 };
 
 }
