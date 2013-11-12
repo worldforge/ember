@@ -20,7 +20,10 @@
 #include "WorldLoadingScreen.h"
 #include "../GUIManager.h"
 #include "../EmberOgre.h"
+
 #include <sigc++/sigc++.h>
+#include <CEGUI/Window.h>
+#include <CEGUI/WindowManager.h>
 
 namespace Ember
 {

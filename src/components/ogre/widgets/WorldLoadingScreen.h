@@ -19,11 +19,14 @@
 #ifndef WORLDLOADINGSCREEN_H_
 #define WORLDLOADINGSCREEN_H_
 
-#include <CEGUI/Window.h>
-#include <CEGUI/WindowManager.h>
-#include <sigc++/trackable.h>
-#include <sigc++/hide.h>
 #include <sigc++/sigc++.h>
+
+namespace CEGUI
+{
+class Window;
+class WindowManager;
+}
+
 
 namespace Ember
 {
