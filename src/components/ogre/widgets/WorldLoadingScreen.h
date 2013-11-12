@@ -47,7 +47,6 @@ public:
 protected:
 
 	CEGUI::Window* mLoadingWindow;
-	CEGUI::Window* mWindowTip;
 
 };
 

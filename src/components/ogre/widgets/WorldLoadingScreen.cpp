@@ -33,29 +33,31 @@ WorldLoadingScreen::WorldLoadingScreen()
 {
 
 	/*
-	 * Main window, larger than screen to take up the full viewport
-	 * NOTE: could not get a regular window to display properly so used
-	 *       a frame window.  It should not be so obfuscated on how to put up
-	 *       a simple window.  This is terrible.
+	 * Get Everything setup
 	 */
-//	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("Defaultwindow", "WorldLoadingScreen");
-	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/FrameWindow", "WorldLoadingScreen");
+
+	// Black background with white text
+	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticText", "WorldLoadingScreen");
+//	mLoadingWindow->setProperty("BackgroundColours","tl:00AAAAAA tr:00AAAAAA bl:00AAAAAA br:00AAAAAA");
+	mLoadingWindow->setProperty("BackgroundColours","FFFFFF");
+	mLoadingWindow->setProperty("TextColours", "FFFFFFFF");
+	mLoadingWindow->setProperty("BackgroundEnabled", "true");
+	mLoadingWindow->setHorizontalAlignment(CEGUI::HorizontalAlignment::HA_CENTRE);
+	mLoadingWindow->setVerticalAlignment(CEGUI::VerticalAlignment::VA_CENTRE);
 	mLoadingWindow->setAlwaysOnTop(true);
 	mLoadingWindow->setEnabled(true);
-	mLoadingWindow->setPosition( CEGUI::UVector2( CEGUI::UDim( -0.2f, 0.0f ), CEGUI::UDim( -0.2f, 0.0f ) ) );
-	mLoadingWindow->setSize( CEGUI::USize( CEGUI::UDim( 1.25f, 0 ), CEGUI::UDim( 1.25f, 0 ) ) );
-	mLoadingWindow->setText("Loading world, please wait ...");
+	mLoadingWindow->setFont("DejaVuSans-14");
+	mLoadingWindow->setPosition( CEGUI::UVector2( CEGUI::UDim( 0.0f, 0.0f ), CEGUI::UDim( 0.0f, 0.0f ) ) );
+	mLoadingWindow->setSize( CEGUI::USize( CEGUI::UDim( 1.0f, 0 ), CEGUI::UDim( 1.0f, 0 ) ) );
+	mLoadingWindow->setText("   Loading world, please wait ...");
 
-	/*
-	 * Text, approximately centered
-	 */
-	mWindowTip = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticText", "WLSMessage");
-	mWindowTip->setPosition( CEGUI::UVector2( CEGUI::UDim( 0.4f, 0.0f ), CEGUI::UDim( 0.4f, 0.0f ) ) );
-	mWindowTip->setSize( CEGUI::USize( CEGUI::UDim( 0.25f, 0.0f ), CEGUI::UDim( 0.25f, 0.0f ) ) );
-	mWindowTip->setFont("DejaVuSans-14");
-	mWindowTip->setText("Loading world, please wait ...");
-
-	mLoadingWindow->addChild(mWindowTip);
+	// Same EmberLook feel as a window
+//	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/FrameWindow", "WorldLoadingScreen");
+//	mLoadingWindow->setAlwaysOnTop(true);
+//	mLoadingWindow->setEnabled(true);
+//	mLoadingWindow->setPosition( CEGUI::UVector2( CEGUI::UDim( 0.0f, 0.0f ), CEGUI::UDim( 0.0f, 0.0f ) ) );
+//	mLoadingWindow->setSize( CEGUI::USize( CEGUI::UDim( 1.0f, 0 ), CEGUI::UDim( 1.0f, 0 ) ) );
+//	mLoadingWindow->setText("Loading world, please wait ...");
 
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect( sigc::hide(sigc::mem_fun(*this,&Ember::OgreView::Gui::WorldLoadingScreen::showScreen)) );
 	EmberOgre::getSingleton().EventWorldCreated.connect( sigc::hide(sigc::mem_fun(*this,&Ember::OgreView::Gui::WorldLoadingScreen::hideScreen)) );
@@ -65,7 +67,6 @@ WorldLoadingScreen::WorldLoadingScreen()
 
 WorldLoadingScreen::~WorldLoadingScreen()
 {
-	delete mWindowTip;
 	delete mLoadingWindow;
 }
 
@@ -84,12 +85,18 @@ WorldLoadingScreen::getWindowPtr()
 void
 WorldLoadingScreen::showScreen()
 {
+	/*
+	 * Add to the main sheet.  This is "turning on" the load screen
+	 */
 	GUIManager::getSingleton().getMainSheet()->addChild(mLoadingWindow);
 }
 
 void
 WorldLoadingScreen::hideScreen()
 {
+	/*
+	 * Remove from the main sheet.  This is "turning off" the load screen
+	 */
 	GUIManager::getSingleton().getMainSheet()->removeChild(mLoadingWindow);
 }
 
