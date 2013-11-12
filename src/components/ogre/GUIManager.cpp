@@ -161,6 +161,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mSheet->moveToBack();
 		mSheet->setDistributesCapturedInputs(false);
 
+		mWorldLoadingScreen = new WorldLoadingScreen();
+
 		S_LOG_INFO("CEGUI system set up");
 
 		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
@@ -206,6 +208,7 @@ GUIManager::~GUIManager()
 		delete *I;
 	}
 
+	delete mWorldLoadingScreen;
 	delete mActiveWidgetHandler;
 	delete mEntityIconManager;
 	delete mActionBarIconManager;
@@ -502,7 +505,6 @@ void GUIManager::EmberOgre_WorldCreated(World& world)
 {
 	mEntityTooltip = new EntityTooltip(world, *static_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")), *mIconManager);
 	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world.getMainCamera());
-	mWorldLoadingScreen = new WorldLoadingScreen();
 	mSheet->addChild(mWorldLoadingScreen->getWindowPtr());
 }
 

@@ -18,6 +18,9 @@
 
 
 #include "WorldLoadingScreen.h"
+#include "../GUIManager.h"
+#include "../EmberOgre.h"
+#include <sigc++/sigc++.h>
 
 namespace Ember
 {
@@ -54,6 +57,10 @@ WorldLoadingScreen::WorldLoadingScreen()
 
 	mLoadingWindow->addChild(mWindowTip);
 
+	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect( sigc::hide(sigc::mem_fun(*this,&Ember::OgreView::Gui::WorldLoadingScreen::showScreen)) );
+	EmberOgre::getSingleton().EventWorldCreated.connect( sigc::hide(sigc::mem_fun(*this,&Ember::OgreView::Gui::WorldLoadingScreen::hideScreen)) );
+
+
 }
 
 WorldLoadingScreen::~WorldLoadingScreen()
@@ -72,6 +79,18 @@ CEGUI::Window*
 WorldLoadingScreen::getWindowPtr()
 {
 	return mLoadingWindow;
+}
+
+void
+WorldLoadingScreen::showScreen()
+{
+	GUIManager::getSingleton().getMainSheet()->addChild(mLoadingWindow);
+}
+
+void
+WorldLoadingScreen::hideScreen()
+{
+	GUIManager::getSingleton().getMainSheet()->removeChild(mLoadingWindow);
 }
 
 } // end namespace Gui

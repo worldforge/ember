@@ -21,6 +21,9 @@
 
 #include <CEGUI/Window.h>
 #include <CEGUI/WindowManager.h>
+#include <sigc++/trackable.h>
+#include <sigc++/hide.h>
+#include <sigc++/sigc++.h>
 
 namespace Ember
 {
@@ -29,7 +32,7 @@ namespace OgreView
 namespace Gui
 {
 
-class WorldLoadingScreen
+class WorldLoadingScreen : public virtual sigc::trackable
 {
 public:
 	WorldLoadingScreen();
@@ -38,10 +41,12 @@ public:
 	CEGUI::Window& getWindow();
 	CEGUI::Window* getWindowPtr();
 
+	void showScreen();
+	void hideScreen();
+
 protected:
 
 	CEGUI::Window* mLoadingWindow;
-	CEGUI::ColourRect* mColourArea;
 	CEGUI::Window* mWindowTip;
 
 };
