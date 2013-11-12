@@ -78,7 +78,6 @@ class EmberEntity;
 class GUICEGUIAdapter;
 class MovementController;
 class World;
-class WorldLoadingScreen;
 
 namespace Gui
 {
@@ -89,6 +88,8 @@ class ActionBarIconManager;
 class ActiveWidgetHandler;
 class EntityTooltip;
 class CursorWorldListener;
+class WorldLoadingScreen;
+
 namespace Icons
 {
 class IconManager;
@@ -427,7 +428,7 @@ protected:
 	/**
 	 * @brief Provides loading screen to handle transitions
 	 */
-	WorldLoadingScreen* mWorldLoadingScreen;
+	Gui::WorldLoadingScreen* mWorldLoadingScreen;
 };
 
 }

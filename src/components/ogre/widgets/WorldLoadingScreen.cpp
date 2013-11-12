@@ -23,6 +23,8 @@ namespace Ember
 {
 namespace OgreView
 {
+namespace Gui
+{
 
 WorldLoadingScreen::WorldLoadingScreen()
 {
@@ -61,6 +63,7 @@ WorldLoadingScreen::~WorldLoadingScreen()
 }
 
 
+} // end namespace Gui
 } // end namespace OgreView
 } // end namespace Ember
 

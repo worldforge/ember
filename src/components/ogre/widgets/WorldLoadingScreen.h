@@ -30,6 +30,8 @@ namespace Ember
 {
 namespace OgreView
 {
+namespace Gui
+{
 
 class WorldLoadingScreen
 {
@@ -48,6 +50,7 @@ protected:
 
 };
 
+}
 }
 }
 #endif /* WORLDWORLDLOADINGSCREEN_H_ */
