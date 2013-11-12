@@ -19,12 +19,8 @@
 #ifndef WORLDLOADINGSCREEN_H_
 #define WORLDLOADINGSCREEN_H_
 
-#include <string>
 #include <CEGUI/Window.h>
 #include <CEGUI/WindowManager.h>
-#include <CEGUI/Image.h>
-#include <CEGUI/BasicImage.h>
-#include <CEGUI/ColourRect.h>
 
 namespace Ember
 {
