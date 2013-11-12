@@ -62,6 +62,17 @@ WorldLoadingScreen::~WorldLoadingScreen()
 	delete mLoadingWindow;
 }
 
+CEGUI::Window&
+WorldLoadingScreen::getWindow()
+{
+	return *mLoadingWindow;
+}
+
+CEGUI::Window*
+WorldLoadingScreen::getWindowPtr()
+{
+	return mLoadingWindow;
+}
 
 } // end namespace Gui
 } // end namespace OgreView

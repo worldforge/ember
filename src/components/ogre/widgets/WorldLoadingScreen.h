@@ -39,8 +39,8 @@ public:
 	WorldLoadingScreen();
 	~WorldLoadingScreen();
 
-	CEGUI::Window& getWindow() { return *mLoadingWindow; }
-	CEGUI::Window* getWindowPtr() { return mLoadingWindow; }
+	CEGUI::Window& getWindow();
+	CEGUI::Window* getWindowPtr();
 
 protected:
 
