@@ -124,8 +124,9 @@ public:
 	 * Call this each frame.
 	 * All of the background loaders will have their poll() method called. If the background loader has finished loading it will be removed from the store of loaders and the model will be reloaded.
 	 * @param timeFrame A time frame which can be used to query if there's any time left in the frame to perform actions.
+	 * @return True if there are more tasks left in the queue which weren't handled within the time frame.
 	 */
-	void pollBackgroundLoaders(const TimeFrame& timeFrame);
+	bool pollBackgroundLoaders(const TimeFrame& timeFrame);
 	
 protected:
 

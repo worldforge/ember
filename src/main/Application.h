@@ -231,16 +231,6 @@ private:
 	Eris::View* mWorldView;
 
 	/**
-	 * @brief Keeps track of the last time an Eris poll started.
-	 */
-	boost::posix_time::ptime mLastTimeErisPollStart;
-
-	/**
-	 * @brief Keeps track of the last time an Eris poll ended.
-	 */
-	boost::posix_time::ptime mLastTimeErisPollEnd;
-
-	/**
 	 * @brief Keeps track of the last time input processing started.
 	 */
 	boost::posix_time::ptime mLastTimeInputProcessingStart;

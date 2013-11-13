@@ -233,15 +233,18 @@ bool EmberOgre::renderOneFrame(const TimeFrame& timeFrame)
 			S_LOG_FAILURE("Error when rending one frame in the main render loop." << ex);
 		}
 
-		//Use at least 1000 microseconds to allow for background polling. This is to allow for some fps degradation when a lot of assets needs to be loaded (instead of just choking up completely).
-		mModelDefinitionManager->pollBackgroundLoaders(TimeFrame(std::max<boost::posix_time::time_duration>(timeFrame.getRemainingTime(), boost::posix_time::microseconds(1000))));
-
 		return true;
 	} else {
 		mIsInPausedMode = true;
 		return false;
 	}
 }
+
+bool EmberOgre::processBackgroundTasks(const TimeFrame& timeFrame)
+{
+	return mModelDefinitionManager->pollBackgroundLoaders(timeFrame);
+}
+
 
 void EmberOgre::clearDirtyPassLists()
 {

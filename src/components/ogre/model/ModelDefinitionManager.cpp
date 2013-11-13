@@ -163,9 +163,9 @@ void ModelDefinitionManager::removeBackgroundLoader(ModelBackgroundLoader* loade
 }
 
 
-void ModelDefinitionManager::pollBackgroundLoaders(const TimeFrame& timeFrame)
+bool ModelDefinitionManager::pollBackgroundLoaders(const TimeFrame& timeFrame)
 {
-	if (mBackgroundLoaders.size()) {
+	if (!mBackgroundLoaders.empty()) {
 		TimedLog timedLog("ModelDefinitionManager::pollBackgroundLoaders", true);
 		for (BackgroundLoaderStore::iterator I = mBackgroundLoaders.begin(); I != mBackgroundLoaders.end();)
 		{
@@ -178,10 +178,11 @@ void ModelDefinitionManager::pollBackgroundLoaders(const TimeFrame& timeFrame)
 				timedLog.report();
 			}
 			if (!timeFrame.isTimeLeft()) {
-				break;
+				return !mBackgroundLoaders.empty();
 			}
 		}
 	}
+	return false;
 }
 
 

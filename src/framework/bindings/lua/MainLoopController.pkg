@@ -49,18 +49,6 @@ public:
 	bool getErisPolling() const;
 
 	/**
-	 * @brief Emitted before the eris polling is started.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventStartErisPoll;
-
-	/**
-	 * @brief Emitted after the eris polling has finished.
-	 * The parameter sent is the time slice since this event last was emitted.
-	 */
-	sigc::signal<void, float> EventEndErisPoll;
-
-	/**
 	 * @brief Emitted before processing input. This event is emitted continously.
 	 * The parameter sent is the time slice since this event last was emitted.
 	 */
