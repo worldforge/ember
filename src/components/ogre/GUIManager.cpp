@@ -497,15 +497,12 @@ void GUIManager::EmberOgre_CreatedAvatarEntity(EmberEntity& entity)
 {
 	//switch to movement mode, since it appears most people don't know how to change from gui mode
 	getInput().setInputMode(Input::IM_MOVEMENT);
-	mSheet->removeChild(mWorldLoadingScreen->getWindowPtr());
-
 }
 
 void GUIManager::EmberOgre_WorldCreated(World& world)
 {
 	mEntityTooltip = new EntityTooltip(world, *static_cast<EmberEntityTooltipWidget*>(mWindowManager->createWindow("EmberLook/EntityTooltip", "EntityTooltip")), *mIconManager);
 	mCursorWorldListener = new CursorWorldListener(mMainLoopController, *mSheet, world.getMainCamera());
-	mSheet->addChild(mWorldLoadingScreen->getWindowPtr());
 }
 
 void GUIManager::EmberOgre_WorldDestroyed()

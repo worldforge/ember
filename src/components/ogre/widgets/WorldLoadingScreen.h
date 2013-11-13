@@ -27,7 +27,6 @@ class Window;
 class WindowManager;
 }
 
-
 namespace Ember
 {
 namespace OgreView
@@ -35,20 +34,35 @@ namespace OgreView
 namespace Gui
 {
 
-class WorldLoadingScreen : public virtual sigc::trackable
+/**
+ @author Sean Ryan
+ */
+class WorldLoadingScreen: public virtual sigc::trackable
 {
 public:
 	WorldLoadingScreen();
 	~WorldLoadingScreen();
 
+	/**
+	 * @brief Returns reference to existing CEGUI window in case GUIManager needs it
+	 */
 	CEGUI::Window& getWindow();
-	CEGUI::Window* getWindowPtr();
 
+	/**
+	 * @brief Adds the internal CEGUI::Window to the main sheet via the WindowManager
+	 */
 	void showScreen();
+
+	/**
+	 * @breif Removes the internal CEGUI::Window from the main sheet via the WindowManager
+	 */
 	void hideScreen();
 
 protected:
 
+	/**
+	 * @brief Internal CEGUI Widget/Window for the loading screen
+	 */
 	CEGUI::Window* mLoadingWindow;
 
 };

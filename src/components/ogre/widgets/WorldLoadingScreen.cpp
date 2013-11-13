@@ -16,7 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #include "WorldLoadingScreen.h"
 #include "../GUIManager.h"
 #include "../EmberOgre.h"
@@ -42,7 +41,7 @@ WorldLoadingScreen::WorldLoadingScreen()
 	// Black background with white text
 	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/StaticText", "WorldLoadingScreen");
 //	mLoadingWindow->setProperty("BackgroundColours","tl:00AAAAAA tr:00AAAAAA bl:00AAAAAA br:00AAAAAA");
-	mLoadingWindow->setProperty("BackgroundColours","FFFFFF");
+	mLoadingWindow->setProperty("BackgroundColours", "FFFFFF");
 	mLoadingWindow->setProperty("TextColours", "FFFFFFFF");
 	mLoadingWindow->setProperty("BackgroundEnabled", "true");
 	mLoadingWindow->setHorizontalAlignment(CEGUI::HorizontalAlignment::HA_CENTRE);
@@ -50,8 +49,9 @@ WorldLoadingScreen::WorldLoadingScreen()
 	mLoadingWindow->setAlwaysOnTop(true);
 	mLoadingWindow->setEnabled(true);
 	mLoadingWindow->setFont("DejaVuSans-14");
-	mLoadingWindow->setPosition( CEGUI::UVector2( CEGUI::UDim( 0.0f, 0.0f ), CEGUI::UDim( 0.0f, 0.0f ) ) );
-	mLoadingWindow->setSize( CEGUI::USize( CEGUI::UDim( 1.0f, 0 ), CEGUI::UDim( 1.0f, 0 ) ) );
+//	// Defaults for CEGUI
+//	mLoadingWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0.0f, 0.0f), CEGUI::UDim(0.0f, 0.0f)));
+//	mLoadingWindow->setSize(CEGUI::USize(CEGUI::UDim(1.0f, 0), CEGUI::UDim(1.0f, 0)));
 	mLoadingWindow->setText("   Loading world, please wait ...");
 
 	// Same EmberLook feel as a window
@@ -62,15 +62,15 @@ WorldLoadingScreen::WorldLoadingScreen()
 //	mLoadingWindow->setSize( CEGUI::USize( CEGUI::UDim( 1.0f, 0 ), CEGUI::UDim( 1.0f, 0 ) ) );
 //	mLoadingWindow->setText("Loading world, please wait ...");
 
-	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect( sigc::hide(sigc::mem_fun(*this,&Ember::OgreView::Gui::WorldLoadingScreen::showScreen)) );
-	EmberOgre::getSingleton().EventWorldCreated.connect( sigc::hide(sigc::mem_fun(*this,&Ember::OgreView::Gui::WorldLoadingScreen::hideScreen)) );
-
+	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::hide(sigc::mem_fun(*this, &Ember::OgreView::Gui::WorldLoadingScreen::hideScreen)));
+	EmberOgre::getSingleton().EventWorldCreated.connect(sigc::hide(sigc::mem_fun(*this, &Ember::OgreView::Gui::WorldLoadingScreen::showScreen)));
 
 }
 
 WorldLoadingScreen::~WorldLoadingScreen()
 {
-	delete mLoadingWindow;
+	CEGUI::WindowManager::getSingleton().destroyWindow(mLoadingWindow);
+	mLoadingWindow = 0;
 }
 
 CEGUI::Window&
@@ -79,14 +79,7 @@ WorldLoadingScreen::getWindow()
 	return *mLoadingWindow;
 }
 
-CEGUI::Window*
-WorldLoadingScreen::getWindowPtr()
-{
-	return mLoadingWindow;
-}
-
-void
-WorldLoadingScreen::showScreen()
+void WorldLoadingScreen::showScreen()
 {
 	/*
 	 * Add to the main sheet.  This is "turning on" the load screen
@@ -94,8 +87,7 @@ WorldLoadingScreen::showScreen()
 	GUIManager::getSingleton().getMainSheet()->addChild(mLoadingWindow);
 }
 
-void
-WorldLoadingScreen::hideScreen()
+void WorldLoadingScreen::hideScreen()
 {
 	/*
 	 * Remove from the main sheet.  This is "turning off" the load screen
