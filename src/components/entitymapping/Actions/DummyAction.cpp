@@ -38,12 +38,10 @@ namespace Actions {
 
 void DummyAction::activate(ChangeContext& context)
 {
-	std::cout << "Dummy action activated." << std::endl;
 };
 
 void DummyAction::deactivate(ChangeContext& context)
 {
-	std::cout << "Dummy action deactivated." << std::endl;
 };
 
 
