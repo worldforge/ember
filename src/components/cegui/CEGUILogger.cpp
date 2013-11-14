@@ -26,6 +26,7 @@
 
 #include "CEGUILogger.h"
 #include "framework/LoggingInstance.h"
+#include <CEGUI/Exceptions.h>
 
 namespace Ember {
 namespace Cegui {
@@ -33,6 +34,9 @@ namespace Cegui {
 CEGUILogger::CEGUILogger()
 {
 	registerConfigListener("cegui", "minimumlogginglevel", sigc::mem_fun(*this, &CEGUILogger::Config_MinimumLogLevel));
+
+	//By default CEGUI will print all exceptions to std::cerr as well as the log; disable this.
+	CEGUI::Exception::setStdErrEnabled(false);
 }
 
 
