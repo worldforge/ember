@@ -64,6 +64,9 @@ WorldLoadingScreen::WorldLoadingScreen()
 //	mLoadingWindow->setText("Loading world, please wait ...");
 
 	EmberOgre::getSingleton().EventCreatedAvatarEntity.connect(sigc::hide(sigc::mem_fun(*this, &Ember::OgreView::Gui::WorldLoadingScreen::hideScreen)));
+	//A failsafe if something went wrong and the avatar never was created.
+	EmberOgre::getSingleton().EventWorldDestroyed.connect(sigc::mem_fun(*this, &Ember::OgreView::Gui::WorldLoadingScreen::hideScreen));
+
 	EmberOgre::getSingleton().EventWorldCreated.connect(sigc::hide(sigc::mem_fun(*this, &Ember::OgreView::Gui::WorldLoadingScreen::showScreen)));
 
 }
@@ -80,18 +83,22 @@ CEGUI::Window& WorldLoadingScreen::getWindow()
 
 void WorldLoadingScreen::showScreen()
 {
-	/*
-	 * Add to the main sheet.  This is "turning on" the load screen
-	 */
-	GUIManager::getSingleton().getMainSheet()->addChild(mLoadingWindow);
+	if (!mLoadingWindow->getParent()) {
+		/*
+		 * Add to the main sheet.  This is "turning on" the load screen
+		 */
+		GUIManager::getSingleton().getMainSheet()->addChild(mLoadingWindow);
+	}
 }
 
 void WorldLoadingScreen::hideScreen()
 {
-	/*
-	 * Remove from the main sheet.  This is "turning off" the load screen
-	 */
-	GUIManager::getSingleton().getMainSheet()->removeChild(mLoadingWindow);
+	if (mLoadingWindow->getParent()) {
+		/*
+		 * Remove from the main sheet.  This is "turning off" the load screen
+		 */
+		GUIManager::getSingleton().getMainSheet()->removeChild(mLoadingWindow);
+	}
 }
 
 } // end namespace Gui
