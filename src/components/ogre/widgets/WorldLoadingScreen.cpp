@@ -53,7 +53,7 @@ WorldLoadingScreen::WorldLoadingScreen()
 //	// Defaults for CEGUI
 //	mLoadingWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0.0f, 0.0f), CEGUI::UDim(0.0f, 0.0f)));
 //	mLoadingWindow->setSize(CEGUI::USize(CEGUI::UDim(1.0f, 0), CEGUI::UDim(1.0f, 0)));
-	mLoadingWindow->setText("Loading world, please wait ...");
+	mLoadingWindow->setText("Entering world, please wait...");
 
 	// Same EmberLook feel as a window
 //	mLoadingWindow = CEGUI::WindowManager::getSingleton().createWindow("EmberLook/FrameWindow", "WorldLoadingScreen");
