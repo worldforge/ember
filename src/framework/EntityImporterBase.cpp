@@ -283,13 +283,23 @@ void EntityImporterBase::sendMinds()
 			//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 			//if it came from the entity itself (the server rewrites the FROM to be of the entity).
 			thinkOp->setFrom(mAvatarId);
+			thinkOp->setSerialno(newSerialNumber());
 			mStats.mindsProcessedCount++;
 			S_LOG_INFO("Restoring mind of " << mind.first);
-			send(thinkOp);
+			mThoughtOpsInTransit++;
+
+			sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationThinkResult);
+			sendAndAwaitResponse(thinkOp, slot);
 			EventProgress.emit();
 		}
 		mResolvedMindMapping.clear();
+	} else {
+		complete();
 	}
+}
+
+void EntityImporterBase::complete()
+{
 	S_LOG_INFO("Restore done.");
 	S_LOG_INFO("Restored " << mStats.entitiesProcessedCount<< ", created: " << mStats.entitiesCreateCount << ", updated: " << mStats.entitiesUpdateCount << ", create errors: " << mStats.entitiesCreateErrorCount << " .");
 	EventCompleted.emit();
@@ -625,7 +635,7 @@ void EntityImporterBase::sightArrived(const Operation & op, OpVector & res)
 }
 
 EntityImporterBase::EntityImporterBase(const std::string& accountId, const std::string& avatarId) :
-		mAccountId(accountId), mAvatarId(avatarId), mStats( { }), m_state(INIT)
+		mAccountId(accountId), mAvatarId(avatarId), mStats( { }), m_state(INIT), mThoughtOpsInTransit(0)
 {
 }
 
@@ -763,6 +773,14 @@ void EntityImporterBase::cancel()
 const EntityImporterBase::Stats& EntityImporterBase::getStats() const
 {
 	return mStats;
+}
+
+void EntityImporterBase::operationThinkResult(const Operation & op)
+{
+	mThoughtOpsInTransit--;
+	if (mThoughtOpsInTransit == 0) {
+		complete();
+	}
 }
 
 void EntityImporterBase::operation(const Operation & op)

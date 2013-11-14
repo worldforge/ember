@@ -320,6 +320,11 @@ protected:
 	std::unordered_map<std::string, std::string> mEntityIdMap;
 
 	/**
+	 * @brief Keeps track of the number of thought ops in transit.
+	 */
+	int mThoughtOpsInTransit;
+
+	/**
 	 * @brief Sends an operation to the server.
 	 */
 	void sendOperation(const Operation& op);
@@ -399,6 +404,17 @@ protected:
 	 * @param op
 	 */
 	void operation(const Operation& op);
+
+	/**
+	 * @brief Called when the result of a thought op is received.
+	 * @param op
+	 */
+	void operationThinkResult(const Operation& op);
+
+	/**
+	 * @brief Called when the import is complete.
+	 */
+	void complete();
 
 	/**
 	 * @brief Helper method for extracting a list of children from a definition.
