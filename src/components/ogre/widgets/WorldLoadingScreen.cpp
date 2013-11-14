@@ -70,11 +70,9 @@ WorldLoadingScreen::WorldLoadingScreen()
 WorldLoadingScreen::~WorldLoadingScreen()
 {
 	CEGUI::WindowManager::getSingleton().destroyWindow(mLoadingWindow);
-	mLoadingWindow = 0;
 }
 
-CEGUI::Window&
-WorldLoadingScreen::getWindow()
+CEGUI::Window& WorldLoadingScreen::getWindow()
 {
 	return *mLoadingWindow;
 }
