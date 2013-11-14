@@ -36,6 +36,8 @@ namespace Gui
 
 /**
  @author Sean Ryan
+ @description This class serves as a static transition that obscures the the 3d
+ world as it builds behind the scenes to prevent user disorientation.
  */
 class WorldLoadingScreen: public virtual sigc::trackable
 {
