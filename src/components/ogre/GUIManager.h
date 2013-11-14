@@ -88,6 +88,8 @@ class ActionBarIconManager;
 class ActiveWidgetHandler;
 class EntityTooltip;
 class CursorWorldListener;
+class WorldLoadingScreen;
+
 namespace Icons
 {
 class IconManager;
@@ -422,6 +424,11 @@ protected:
 	 * @brief Bridges the CEGUI clipboard and the system one.
 	 */
 	CEGUI::NativeClipboardProvider* mNativeClipboardProvider;
+
+	/**
+	 * @brief Provides loading screen to handle transitions
+	 */
+	Gui::WorldLoadingScreen* mWorldLoadingScreen;
 };
 
 }
