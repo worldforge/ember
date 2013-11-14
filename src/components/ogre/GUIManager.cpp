@@ -33,6 +33,7 @@
 #include "widgets/icons/IconManager.h"
 #include "widgets/EntityIconManager.h"
 #include "widgets/ActionBarIconManager.h"
+#include "widgets/WorldLoadingScreen.h"
 
 #include "camera/MainCamera.h"
 #include "gui/ActiveWidgetHandler.h"
@@ -160,6 +161,8 @@ GUIManager::GUIManager(Ogre::RenderWindow* window, ConfigService& configService,
 		mSheet->moveToBack();
 		mSheet->setDistributesCapturedInputs(false);
 
+		mWorldLoadingScreen = new WorldLoadingScreen();
+
 		S_LOG_INFO("CEGUI system set up");
 
 		getInput().EventKeyPressed.connect(sigc::mem_fun(*this, &GUIManager::pressedKey));
@@ -205,6 +208,7 @@ GUIManager::~GUIManager()
 		delete *I;
 	}
 
+	delete mWorldLoadingScreen;
 	delete mActiveWidgetHandler;
 	delete mEntityIconManager;
 	delete mActionBarIconManager;
