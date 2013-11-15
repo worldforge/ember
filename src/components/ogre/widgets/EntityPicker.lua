@@ -22,8 +22,8 @@ function EntityPicker:buildWidget(world)
 	self.widget:loadMainSheet("EntityPicker.layout", "EntityPicker")
 	
 	self.selectorWidget:loadMainSheet("EntityPickerSelector.layout", "EntityPickerSelector")
-	self.selectorWidget:getWindow("PreviousButton"):subscribeEvent("MouseEnter", self.previousButton_MouseEnters, self)
-	self.selectorWidget:getWindow("NextButton"):subscribeEvent("MouseEnter", self.nextButton_MouseEnters, self)
+	self.selectorWidget:getWindow("PreviousButton"):subscribeEvent("MouseEntersSurface", self.previousButton_MouseEnters, self)
+	self.selectorWidget:getWindow("NextButton"):subscribeEvent("MouseEntersSurface", self.nextButton_MouseEnters, self)
 
 	
 	self.menuWindow = self.widget:getWindow("Menu")
