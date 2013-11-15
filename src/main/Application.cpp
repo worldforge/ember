@@ -446,7 +446,7 @@ Eris::View* Application::getMainView()
 
 void Application::startScripting()
 {
-	//this should be defined in some kind of text file, which should be different depending on what game you're playing (like mason)
+	//this should be defined in some kind of text file, which should be different depending on what game you're playing (like deeds)
 	try {
 		//load the bootstrap script which will load all other scripts
 		mServices->getScriptingService().loadScript("lua/Bootstrap.lua");

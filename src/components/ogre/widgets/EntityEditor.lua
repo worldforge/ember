@@ -833,7 +833,7 @@ EntityEditor.defaultPrototypes =
 }
 
 EntityEditor.goalPrototypes = {
-	mason = {
+	deeds = {
 		welcome = {
 			proto="welcome(message='', type='')",
 			args = {message="The greeting message.",type="The type of entity to react to."},
@@ -983,17 +983,19 @@ EntityEditor.goalPrototypes = {
 			args={members="A list of members in the herd."},
 			help="Move in a herd with other animals of the same type."
 		}
-	}
+	},
+	mason=deeds
 }
 
 EntityEditor.knowledge= {
 	predicates = {
-		mason = {
+		deeds = {
 			location = {help="Provides a location. This can either be the name of a known thing, or a point in space. For the latter, use this format: \"('entityid',(x,y,z))\"."},
 			importance = {help="Makes one goal more important than another. The 'subject' should be of the format \"('goal1', 'goal2')\" and the object either '>' or '<'."},
 			about = {help="Know something about a subject."},
 			price = {help="Know the price of a thing."}
-		}
+		},
+		mason = deeds
 	}
 }
 function editEntity(id)
@@ -1672,7 +1674,7 @@ function EntityEditor:buildWidget()
 		local knowledgePredicate = CEGUI.toCombobox(self.widget:getWindow("NewKnowledgePredicate"))
 		local knowledgeHelp = self.widget:getWindow("KnowledgeHelp")
 		
-		for k, v in pairsByKeys(EntityEditor.knowledge.predicates.mason) do
+		for k, v in pairsByKeys(EntityEditor.knowledge.predicates.deeds) do
 			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
 			knowledgePredicate:addItem(item)
 		end
@@ -1687,7 +1689,7 @@ function EntityEditor:buildWidget()
 		knowledgePredicate:subscribeEvent("ListSelectionChanged", function(args)
 			local selectedItem = knowledgePredicate:getSelectedItem()
 			if selectedItem then
-				local prototype = EntityEditor.knowledge.predicates.mason[selectedItem:getText()]
+				local prototype = EntityEditor.knowledge.predicates.deeds[selectedItem:getText()]
 				if prototype and prototype.help then
 					knowledgeHelp:setText(prototype.help)
 					knowledgeHelp:setVisible(true)
@@ -1703,7 +1705,7 @@ function EntityEditor:buildWidget()
 --		knowledgePredicate:subscribeEvent("ListSelectionAccepted", function(args)
 --			local selectedItem = knowledgePredicate:getSelectedItem()
 --			if selectedItem then
---				local prototype = EntityEditor.knowledge.predicates.mason[selectedItem:getText()]
+--				local prototype = EntityEditor.knowledge.predicates.deeds[selectedItem:getText()]
 --				if prototype then
 --					self.goalDefinition:setText(prototype.proto)
 --				end
@@ -1747,7 +1749,7 @@ function EntityEditor:buildWidget()
 		self.goalUpdate:setEnabled(false)
 		self.goalRemove:setEnabled(false)
 
-		local goalPrototypes = self.goalPrototypes.mason
+		local goalPrototypes = self.goalPrototypes.deeds
 		for k, v in pairsByKeys(goalPrototypes) do
 			local item = Ember.OgreView.Gui.ColouredListItem:new(k)
 			self.goalVerb:addItem(item)
