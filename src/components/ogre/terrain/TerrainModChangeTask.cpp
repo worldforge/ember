@@ -60,10 +60,14 @@ void TerrainModChangeTask::executeTaskInBackgroundThread(Tasks::TaskExecutionCon
 					mUpdatedAreas.push_back(terrainMod->getModifier()->bbox());
 				}
 			} else {
-				mTerrain.removeMod(oldMercTerrainMod);
+				if (oldMercTerrainMod) {
+					mTerrain.removeMod(oldMercTerrainMod);
+				}
 			}
 		} else {
-			mTerrain.removeMod(oldMercTerrainMod);
+			if (oldMercTerrainMod) {
+				mTerrain.removeMod(oldMercTerrainMod);
+			}
 		}
 	} else {
 		S_LOG_WARNING("Got a change signal for a terrain mod which isn't registered with the terrain handler. This shouldn't happen.");
