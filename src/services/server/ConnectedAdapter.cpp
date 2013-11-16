@@ -36,6 +36,7 @@
 #include <Eris/TypeInfo.h>
 #include <Eris/Exceptions.h>
 #include <Eris/Entity.h>
+#include <Eris/Response.h>
 
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/stream.h>
@@ -224,6 +225,8 @@ void ConnectedAdapter::deleteEntity(Eris::Entity* entity)
 		deleteOp->setFrom(mAvatar.getEntity()->getId());
 		deleteOp->setTo(entity->getId());
 		deleteOp->setArgs1(what);
+		deleteOp->setSerialno(Eris::getNewSerialno());
+		mConnection.getResponder()->await(deleteOp->getSerialno(), this, &ConnectedAdapter::operationResultIgnored);
 
 		S_LOG_INFO("Deleting entity with id " << entity->getId() << ", named " << entity->getName());
 		mConnection.send(deleteOp);
@@ -257,6 +260,8 @@ void ConnectedAdapter::setAttributes(Eris::Entity* entity, Atlas::Message::MapTy
 			}
 			setOp->setArgs1(what);
 
+			setOp->setSerialno(Eris::getNewSerialno());
+			mConnection.getResponder()->await(setOp->getSerialno(), this, &ConnectedAdapter::operationResultIgnored);
 			S_LOG_INFO("Setting attributes of entity with id " << entity->getId() << ", named " << entity->getName());
 			mConnection.send(setOp);
 		}
@@ -361,6 +366,8 @@ void ConnectedAdapter::adminTell(const std::string& entityId, const std::string&
 		sound->setTo(entityId);
 		sound->setArgs1(talk);
 
+		sound->setSerialno(Eris::getNewSerialno());
+		mConnection.getResponder()->await(sound->getSerialno(), this, &ConnectedAdapter::operationResultIgnored);
 		S_LOG_INFO("Admin telling entity" << entityId << ": " << attribute << ": " << value);
 		mConnection.send(sound);
 
@@ -396,5 +403,11 @@ void ConnectedAdapter::setTypeInfo(const Atlas::Objects::Root& typeInfo)
 		S_LOG_WARNING("Got error on sending updated type info data." << ex);
 	}
 }
+
+void ConnectedAdapter::operationResultIgnored(const Atlas::Objects::Operation::RootOperation& op)
+{
+	//Just ignore any response
+}
+
 
 }
