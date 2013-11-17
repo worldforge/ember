@@ -421,8 +421,8 @@ EmberEntity* EmberEntity::getAttachedEntity(const std::string& namedPoint)
 	//HACK: this is just a temporary solution
 	if (hasAttr(namedPoint)) {
 		const Atlas::Message::Element& idElement = valueOfAttr(namedPoint);
-		std::string id = idElement.asString();
-		if (id != "") {
+		std::string id;
+		if (Eris::Entity::extractEntityId(idElement, id)) {
 			for (unsigned int i = 0; i < numContained(); ++i) {
 				EmberEntity* entity = getEmberContained(i);
 				if (entity && entity->getId() == id) {

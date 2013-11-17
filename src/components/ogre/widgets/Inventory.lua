@@ -331,8 +331,9 @@ function Inventory:createOutfitSlot(avatarEntity, dollSlot, outfitPartName)
 	dollSlot.entityIconDropped_connector = createConnector(dollSlot.slot.EventIconDropped):connect(dollSlot.droppedHandler)
 	dollSlot.observer = Ember.AttributeObserver:new_local(avatarEntity, dollSlot.attributePath, ".")
 	dollSlot.attributeChanged = function(element)
-		if element:isString() then
-			local entityId = element:asString()
+		local entityId = ""
+		local result, entityId = Eris.Entity:extractEntityId(element, entityId)
+		if result then
 			local slotUpdateFunc = function()
 				local entityBucket = self.icons[entityId]
 

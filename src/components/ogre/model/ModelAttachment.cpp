@@ -37,6 +37,7 @@
 #include <Atlas/Message/Element.h>
 
 #include <Eris/TypeInfo.h>
+#include <Eris/Entity.h>
 
 #include <OgreVector3.h>
 #include <OgreManualObject.h>
@@ -213,9 +214,8 @@ void ModelAttachment::updateScale()
 
 void ModelAttachment::entity_AttrChanged(const Atlas::Message::Element& attributeValue, const std::string& fittingName)
 {
-	if (attributeValue.isString()) {
-		const std::string& newFittingEntityId = attributeValue.asString();
-
+	std::string newFittingEntityId;
+	if (Eris::Entity::extractEntityId(attributeValue, newFittingEntityId)) {
 		ModelFittingStore::iterator I = mFittings.find(fittingName);
 		if (I != mFittings.end()) {
 			EmberEntity* entity = I->second->getChild();

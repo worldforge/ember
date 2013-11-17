@@ -58,6 +58,19 @@ class Entity {
     
     bool isVisible() const;
 
+    /**
+     * @brief Extracts an entity id from the supplied element.
+     *
+     * There are two ways to express entity ids; either as a string,
+     * or as a map with one entry named "$eid" (where the string is the value).
+     * The function parses the element for these two cases, if found fills the
+     * "id" parameter and then returns true.
+     *
+     * @param element The element which we want to extract from.
+     * @param id The string where the id, if found, will be placed.
+     * @return True if an id could be found.
+     */
+    static bool extractEntityId(const Atlas::Message::Element& element, std::string& id);
     
 	
 // Signals

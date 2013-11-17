@@ -27,6 +27,8 @@
 #include "OutfitMatch.h"
 #include "Observers/EntityCreationObserver.h"
 
+#include <Eris/Entity.h>
+
 namespace Ember {
 
 
@@ -43,15 +45,16 @@ OutfitMatch::OutfitMatch(const std::string& outfitName, Eris::View* view)
 void OutfitMatch::testAttribute(const Atlas::Message::Element& attribute, bool triggerEvaluation)
 {
 	if (attribute.isMap()) {
-		Eris::Entity* entity(0);
+		Eris::Entity* entity(nullptr);
 		const auto& tmap = attribute.asMap();
 		auto I = tmap.find(mOutfitName);
-		if (I != tmap.end() && I->second.isString()) {
-			entity = mView->getEntity(I->second.asString());
+		std::string entityId;
+		if (I != tmap.end() && Eris::Entity::extractEntityId(I->second, entityId)) {
+			entity = mView->getEntity(entityId);
 			//the entity might not be available yet, so we need to create an observer for it
 			if (!entity) {
 				if (mEntityObserver.get()) {
-					mEntityObserver->observeCreation(mView, I->second.asString());
+					mEntityObserver->observeCreation(mView, entityId);
 				}
 			} else {
 				testEntity(entity);
