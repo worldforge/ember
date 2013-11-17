@@ -440,11 +440,15 @@ void ServerWidget::gotAllCharacters(Eris::Account* account)
 		for (; I != I_end; ++I) {
 			const Atlas::Objects::Entity::RootEntity& entity = (*I).second;
 
-			std::string itemText("");
-			if (entity->hasAttr("name")) {
-				const Atlas::Message::Element& nameElement = entity->getAttr("name");
-				if (nameElement.isString()) {
-					itemText += nameElement.asString();
+			std::string itemText;
+			if (!entity->getName().empty()) {
+				itemText = entity->getName();
+			} else {
+				//If there's no name try to print the type of entity instead.
+				if (!entity->getParents().empty()) {
+					itemText = entity->getParents().front();
+				} else {
+					itemText = "<unknown>";
 				}
 			}
 			Gui::ColouredListItem* item = new Gui::ColouredListItem(itemText);
