@@ -22,6 +22,7 @@
 #include "components/ogre/World.h"
 #include "components/ogre/Scene.h"
 #include "components/ogre/EmberEntity.h"
+#include "components/ogre/Avatar.h"
 #include "services/config/ConfigService.h"
 #include "services/server/ServerService.h"
 #include "services/EmberServices.h"
@@ -44,7 +45,8 @@ namespace Authoring
 AuthoringManager::AuthoringManager(World& world) :
 	DisplayAuthoringVisualizations("displayauthoringvisualizations", this, "Displays authoring markers for all entities."), HideAuthoringVisualizations("hideauthoringvisualizations", this, "Hides authoring markers for all entities."), mWorld(world), mHandler(0)
 {
-	registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
+	//Delay checking the visualization config value until we've entered the world and can see if we're an admin or not.
+	world.EventGotAvatar.connect(sigc::mem_fun(*this, &AuthoringManager::worldGotAvatar));
 }
 
 AuthoringManager::~AuthoringManager()
@@ -58,10 +60,20 @@ AuthoringManager::~AuthoringManager()
 	delete mHandler;
 }
 
+void AuthoringManager::worldGotAvatar() {
+	if (mWorld.getAvatar()->isAdmin()) {
+		registerConfigListener("authoring", "visualizations", sigc::mem_fun(*this, &AuthoringManager::config_AuthoringVisualizations));
+	}
+}
+
 void AuthoringManager::displayAuthoringVisualization()
 {
-	if (!mHandler) {
-		mHandler = new AuthoringHandler(mWorld);
+	//Only show authoring visualizations for admins. Mainly to not confuse users.
+	//This isn't optimal, since if this method is called before the avatar has been received, we'll go ahead anyway. Should be fixed...
+	if (mWorld.getAvatar() == nullptr || mWorld.getAvatar()->isAdmin()) {
+		if (!mHandler) {
+			mHandler = new AuthoringHandler(mWorld);
+		}
 	}
 }
 

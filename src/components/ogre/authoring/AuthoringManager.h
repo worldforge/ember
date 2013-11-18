@@ -166,6 +166,11 @@ protected:
 	 */
 	void simpleEntityVisualizationBeingDeleted(EmberEntity* entity);
 
+	/**
+	 * @brief Called when the world has gotten the Avatar. Will evaluate the authoring visualization setting.
+	 */
+	void worldGotAvatar();
+
 };
 }
 }
