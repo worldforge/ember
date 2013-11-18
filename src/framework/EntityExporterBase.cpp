@@ -373,8 +373,9 @@ void EntityExporterBase::adjustReferencedEntities()
 	for (auto& entity : mEntities) {
 		auto& entityMap = entity.asMap();
 		//We know that mEntities only contain maps
-		if (entityMap.count("contains")) {
-			auto& containsElem = entityMap.find("contains")->second;
+		auto containsIElem = entityMap.find("contains");
+		if (containsIElem != entityMap.end()) {
+			auto& containsElem = containsIElem->second;
 			if (containsElem.isList()) {
 				auto& contains = containsElem.asList();
 				Atlas::Message::ListType newContains;
@@ -388,6 +389,29 @@ void EntityExporterBase::adjustReferencedEntities()
 				}
 				contains = newContains;
 			}
+		}
+		resolveEntityReferences(entity);
+	}
+}
+
+void EntityExporterBase::resolveEntityReferences(Atlas::Message::Element& element)
+{
+	if (element.isMap()) {
+		auto entityRefI = element.asMap().find("$eid");
+		if (entityRefI != element.asMap().end() && entityRefI->second.isString()) {
+			auto I = mIdMapping.find(entityRefI->second.asString());
+			if (I != mIdMapping.end()) {
+				entityRefI->second = I->second;
+			}
+		}
+		//If it's a map we need to process all child elements too
+		for (auto& I : element.asMap()) {
+			resolveEntityReferences(I.second);
+		}
+	} else if (element.isList()) {
+		//If it's a list we need to process all child elements too
+		for (auto& I : element.asList()) {
+			resolveEntityReferences(I);
 		}
 	}
 }

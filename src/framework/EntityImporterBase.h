@@ -202,7 +202,6 @@ public:
 	explicit EntityImporterBase(const std::string& accountId, const std::string& avatarId);
 	virtual ~EntityImporterBase();
 
-
 	/**
 	 * @brief Starts importing entities from the specified file.
 	 * @param filename A path to an entity dump file.
@@ -288,6 +287,19 @@ protected:
 	 */
 	std::vector<std::pair<std::string, Atlas::Objects::Root>> mResolvedMindMapping;
 
+	/**
+	 * @brief Keeps track of any entities that have references to other entities in their attributes.
+	 *
+	 * The key of the map is the id of the entity, as found in mPersistedEntities.
+	 * The value of the map is a vector containing the names of the attributes with entity references.
+	 *
+	 * Any attribute which references another entity can't be correctly sent when the entity is
+	 * initially created, since the referred entity might not have been created yet. This is even
+	 * the most usual case, since most entity references refer to things worn or wielded, and these
+	 * entities aren't created until the owner entity has been created.
+	 */
+	std::map<std::string, std::vector<std::string>> mEntitiesWithReferenceAttributes;
+
 	enum
 	{
 		INIT, RULE_WALKING, RULE_UPDATING, RULE_CREATING, ENTITY_WALKSTART, ENTITY_UPDATING, ENTITY_CREATING, ENTITY_WALKING, CANCEL, CANCELLED
@@ -323,6 +335,11 @@ protected:
 	 * @brief Keeps track of the number of thought ops in transit.
 	 */
 	int mThoughtOpsInTransit;
+
+	/**
+	 * @brief Keeps track of the number of Set ops in transit.
+	 */
+	int mSetOpsInTransit;
 
 	/**
 	 * @brief Sends an operation to the server.
@@ -395,6 +412,33 @@ protected:
 	 */
 	void updateRule(const Atlas::Objects::Root& existingDefinition, const Atlas::Objects::Root& newDefinition, OpVector & res);
 
+	/**
+	 * @brief Register any entity referencing attributes, if found, in mEntitiesWithReferenceAttributes.
+	 * @param id The persisted id of the entity.
+	 * @param element The top level entity element.
+	 */
+	void registerEntityReferences(const std::string& id, const Atlas::Message::MapType& element);
+
+	/**
+	 * @brief Checks if the element has any entity references in it. This acts recursively.
+	 * @param element The element to check.
+	 * @return True if any entity reference was found.
+	 */
+	bool hasEntityReference(const Atlas::Message::Element& element);
+
+	/**
+	 * @brief Resolves any entity references in the element.
+	 *
+	 * This is done recursively.
+	 * @param element The element to resolve entity references in.
+	 */
+	void resolveEntityReferences(Atlas::Message::Element& element);
+
+	/**
+	 * @brief Walk through the list of entities which have entity references in their attributes, and send update ops.
+	 */
+	void sendResolvedEntityReferences();
+
 	void errorArrived(const Operation &, OpVector & res);
 	void infoArrived(const Operation &, OpVector & res);
 	void sightArrived(const Operation &, OpVector & res);
@@ -406,10 +450,16 @@ protected:
 	void operation(const Operation& op);
 
 	/**
-	 * @brief Called when the result of a thought op is received.
+	 * @brief Called when the result of a Think op is received.
 	 * @param op
 	 */
 	void operationThinkResult(const Operation& op);
+
+	/**
+	 * @brief Called when the result of a Set op is received.
+	 * @param op
+	 */
+	void operationSetResult(const Operation& op);
 
 	/**
 	 * @brief Called when the import is complete.

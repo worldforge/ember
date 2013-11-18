@@ -112,7 +112,7 @@ bool EntityImporterBase::getRule(const std::string & id, OpVector & res)
 	Anonymous arg;
 	arg->setId(id);
 	get->setArgs1(arg);
-//	get->setObjtype("op");
+//  get->setObjtype("op");
 	get->setSerialno(newSerialNumber());
 
 	res.push_back(get);
@@ -168,7 +168,7 @@ void EntityImporterBase::walkRules(OpVector & res)
 void EntityImporterBase::walkEntities(OpVector & res)
 {
 	if (mTreeStack.empty()) {
-		sendMinds();
+		sendResolvedEntityReferences();
 	} else {
 		StackEntry & current = mTreeStack.back();
 		//Check if there are any children. If not, we should pop the stack and
@@ -203,7 +203,7 @@ void EntityImporterBase::walkEntities(OpVector & res)
 			}
 		}
 		if (mTreeStack.empty()) {
-			sendMinds();
+			sendResolvedEntityReferences();
 		}
 	}
 }
@@ -298,6 +298,68 @@ void EntityImporterBase::sendMinds()
 	}
 }
 
+void EntityImporterBase::sendResolvedEntityReferences()
+{
+	if (!mEntitiesWithReferenceAttributes.empty()) {
+		for (auto entryI : mEntitiesWithReferenceAttributes) {
+			const auto& persistedEntityId = entryI.first;
+			const auto& attributeNames = entryI.second;
+
+			auto createdEntityI = mEntityIdMap.find(persistedEntityId);
+			if (createdEntityI == mEntityIdMap.end()) {
+				S_LOG_WARNING("Could not find final server side entity id for persisted entity " << persistedEntityId << " when doing entity ref resolving.");
+				continue;
+			}
+			const auto& createdEntityId = createdEntityI->second;
+
+			//This should not fail at this phase, so we're not doing any checks.
+			auto& persistedEntity = mPersistedEntities.find(persistedEntityId)->second;
+
+			RootEntity entity;
+
+			for (const auto& attributeName : attributeNames) {
+				Element element = persistedEntity->getAttr(attributeName);
+				resolveEntityReferences(element);
+				entity->setAttr(attributeName, element);
+			}
+
+			Set set;
+			set->setFrom(mAvatarId);
+			set->setSerialno(newSerialNumber());
+			set->setTo(createdEntityId);
+			set->setArgs1(entity);
+
+			mSetOpsInTransit++;
+			sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationSetResult);
+			sendAndAwaitResponse(set, slot);
+		}
+	} else {
+		sendMinds();
+	}
+}
+
+void EntityImporterBase::resolveEntityReferences(Atlas::Message::Element& element)
+{
+	if (element.isMap()) {
+		auto entityRefI = element.asMap().find("$eid");
+		if (entityRefI != element.asMap().end() && entityRefI->second.isString()) {
+			auto I = mEntityIdMap.find(entityRefI->second.asString());
+			if (I != mEntityIdMap.end()) {
+				entityRefI->second = I->second;
+			}
+		}
+		//If it's a map we need to process all child elements too
+		for (auto& I : element.asMap()) {
+			resolveEntityReferences(I.second);
+		}
+	} else if (element.isList()) {
+		//If it's a list we need to process all child elements too
+		for (auto& I : element.asList()) {
+			resolveEntityReferences(I);
+		}
+	}
+}
+
 void EntityImporterBase::complete()
 {
 	S_LOG_INFO("Restore done.");
@@ -325,6 +387,16 @@ void EntityImporterBase::createEntity(const RootEntity & obj, OpVector & res)
 	create_arg->removeAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG);
 	create_arg->removeAttrFlag(Atlas::Objects::ID_FLAG);
 	create_arg->setLoc(loc);
+
+	//Remove any attribute which references another entity from the Create op.
+	//This is because the attribute will at this time with certainty refer to the wrong or a non-existing entity.
+	//The attribute will later on be set through a Set op in sendResolvedEntityReferences().
+	auto referenceMapEntryI = mEntitiesWithReferenceAttributes.find(obj->getId());
+	if (referenceMapEntryI != mEntitiesWithReferenceAttributes.end()) {
+		for (const auto& attributeName : referenceMapEntryI->second) {
+			create_arg->removeAttr(attributeName);
+		}
+	}
 
 	Create create;
 	create->setArgs1(create_arg);
@@ -635,7 +707,7 @@ void EntityImporterBase::sightArrived(const Operation & op, OpVector & res)
 }
 
 EntityImporterBase::EntityImporterBase(const std::string& accountId, const std::string& avatarId) :
-		mAccountId(accountId), mAvatarId(avatarId), mStats( { }), m_state(INIT), mThoughtOpsInTransit(0)
+		mAccountId(accountId), mAvatarId(avatarId), mStats( { }), m_state(INIT), mThoughtOpsInTransit(0), mSetOpsInTransit(0)
 {
 }
 
@@ -693,9 +765,11 @@ void EntityImporterBase::start(const std::string& filename)
 
 	for (auto& entityMessage : entitiesElem.asList()) {
 		if (entityMessage.isMap()) {
-			auto object = factories->createObject(entityMessage.asMap());
+			auto& entityMap = entityMessage.asMap();
+			auto object = factories->createObject(entityMap);
 			if (object.isValid()) {
 				if (!object->isDefaultId()) {
+					registerEntityReferences(object->getId(), entityMap);
 					mPersistedEntities.insert(std::make_pair(object->getId(), object));
 				}
 			}
@@ -725,6 +799,39 @@ void EntityImporterBase::start(const std::string& filename)
 		startRuleWalking();
 	}
 
+}
+
+void EntityImporterBase::registerEntityReferences(const std::string& id, const Atlas::Message::MapType& element)
+{
+	for (auto I : element) {
+		const auto& name = I.first;
+		if (name == "id" || name == "parents" || name == "contains") {
+			continue;
+		}
+		if (hasEntityReference(I.second)) {
+			mEntitiesWithReferenceAttributes[id].push_back(name);
+		}
+	}
+}
+
+bool EntityImporterBase::hasEntityReference(const Element& element)
+{
+	if (element.isMap()) {
+		auto entityRefI = element.asMap().find("$eid");
+		if (entityRefI != element.asMap().end() && entityRefI->second.isString()) {
+			return true;
+		}
+		//If it's a map we need to process all child elements too
+		for (auto& I : element.asMap()) {
+			return hasEntityReference(I.second);
+		}
+	} else if (element.isList()) {
+		//If it's a list we need to process all child elements too
+		for (auto& I : element.asList()) {
+			return hasEntityReference(I);
+		}
+	}
+	return false;
 }
 
 void EntityImporterBase::startEntityWalking()
@@ -783,6 +890,14 @@ void EntityImporterBase::operationThinkResult(const Operation & op)
 	}
 }
 
+void EntityImporterBase::operationSetResult(const Operation & op)
+{
+	mSetOpsInTransit--;
+	if (mSetOpsInTransit == 0) {
+		sendMinds();
+	}
+}
+
 void EntityImporterBase::operation(const Operation & op)
 {
 	if (m_state == CANCEL) {
@@ -806,3 +921,4 @@ void EntityImporterBase::operation(const Operation & op)
 	}
 
 }
+

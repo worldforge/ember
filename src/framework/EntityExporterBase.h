@@ -80,8 +80,8 @@ class Element;
  *   <list name="minds">
  *    all minds in Message form
  *   </list>
- *   <list name="types">
- *    optional types in Message form
+ *   <list name="rules">
+ *    optional rules in Message form
  *   </list>
  *  <map>
  * </atlas>
@@ -378,6 +378,14 @@ protected:
 	 * We then need to also make sure that any references in minds are updated to use the new ids.
 	 */
 	void adjustReferencedEntities();
+
+	/**
+	 * @brief Resolves any entity references in the element.
+	 *
+	 * This is done recursively.
+	 * @param element The element to resolve entity references in.
+	 */
+	void resolveEntityReferences(Atlas::Message::Element& element);
 
 	typedef sigc::slot<void, const Atlas::Objects::Operation::RootOperation&> CallbackFunction;
 
