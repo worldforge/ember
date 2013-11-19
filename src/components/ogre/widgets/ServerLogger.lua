@@ -34,7 +34,7 @@ function ServerLogger.server_SendingObject(obj)
 	
 	log.info(newLogMessage)
 
-	ServerLogger.logTextWidget:setText(ServerLogger.logTextWidget:getText() .. newLogMessage)
+	ServerLogger.logTextWidget:appendText(newLogMessage)
 end
 
 function ServerLogger.server_ReceivedObject(obj)
@@ -42,7 +42,7 @@ function ServerLogger.server_ReceivedObject(obj)
 
 	log.info(newLogMessage)
 
-	ServerLogger.logTextWidget:setText(ServerLogger.logTextWidget:getText() .. newLogMessage)
+	ServerLogger.logTextWidget:appendText(newLogMessage)
 
 end
 
