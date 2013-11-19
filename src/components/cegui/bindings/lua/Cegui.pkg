@@ -21,6 +21,13 @@ public:
 	static CEGUI::ImageManager& ImageManager_getSingleton();
 	static CEGUI::Window* Window_getChildRecursive(CEGUI::Window* window, const std::string& name);
 	static void Window_removeChild(CEGUI::Window* window, CEGUI::Window* child);
+
+	/**
+	 * @brief Gets the vertical extent in pixels of the rendered string for the window.
+	 * @param window
+	 * @return
+	 */
+	static float Window_renderedStringVerticalExtent(CEGUI::Window* window);
 	
 };
 }

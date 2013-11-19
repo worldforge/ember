@@ -13,6 +13,7 @@ function HoverEntityOverlay:buildWidget(world)
 	self.widget:loadMainSheet("HoverEntityOverlay.layout", "HoverEntityOverlay")
 	self.mainView = self.widget:getMainWindow()
 	self.entityName = self.widget:getWindow("EntityName")
+	self.messageText = self.widget:getWindow("MessageText")
 	self.mainView:setVisible(false)
 
 	connect(self.connectors, Ember.Input:getSingleton().EventMouseMoved, self.input_MouseMoved, self)
@@ -65,7 +66,25 @@ function HoverEntityOverlay:pickedEntity(results, args)
 	--]]	
 		
 		local uPosition = CEGUI.UVector2:new_local(CEGUI.UDim(0,localPosition.x), CEGUI.UDim(0,localPosition.y))
-		self.widget:getMainWindow():setPosition(uPosition )
+		self.widget:getMainWindow():setPosition(uPosition)
+		
+		if entity:hasAttr("message") then
+			local messageElement = entity:valueOfAttr("message")
+			if messageElement:isString() and messageElement:asString() ~= "" then
+				self.messageText:setVisible(true)
+				self.messageText:setText(messageElement:asString())
+				
+				local verticalExtent = Ember.Cegui.Helper:Window_renderedStringVerticalExtent(self.messageText)
+				--padding
+				verticalExtent = verticalExtent + 4
+				self.messageText:setHeight(CEGUI.UDim(0, verticalExtent))
+				self.messageText:setYPosition(CEGUI.UDim(0, -verticalExtent))
+			else
+				self.messageText:setVisible(false)
+			end
+		else
+			self.messageText:setVisible(false)
+		end
 		
 	end
 end

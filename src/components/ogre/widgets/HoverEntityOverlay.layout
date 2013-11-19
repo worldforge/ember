@@ -26,5 +26,17 @@
 				Press and hold to interact.</Property>
 			<Property name="Font" value="DejaVuSans-6" />
 		</Window>
+        <Window name="MessageText" type="EmberLook/StaticFading">
+            <Property name="Position" value="{{0,0},{0,-100}}" />
+            <Property name="Size" value="{{1,0},{0,100}}" />
+            <Property name="BackgroundEnabled" value="True" />
+            <Property name="FrameEnabled" value="True" />
+            <Property name="HorzFormatting" value="WordWrapCentreAligned" />
+            <Property name="MousePassThroughEnabled" value="true" />
+            <Property name="RiseOnClickEnabled" value="false" />
+<!--             <Property name="Font" value="DejaVuSans-6" /> -->
+            <Property name="Visible" value="False" />
+            <Property name="ClippedByParent" value="False" />
+        </Window>
 	</Window>
 </GUILayout>

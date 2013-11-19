@@ -79,6 +79,13 @@ public:
 	 * @return
 	 */
 	static void Window_removeChild(CEGUI::Window* window, CEGUI::Window* child);
+
+	/**
+	 * @brief Gets the vertical extent in pixels of the rendered string for the window.
+	 * @param window
+	 * @return
+	 */
+	static float Window_renderedStringVerticalExtent(CEGUI::Window* window);
 };
 }
 }
@@ -107,6 +114,12 @@ inline void Ember::Cegui::Helper::Window_removeChild(CEGUI::Window* window, CEGU
 {
 	window->removeChild(child);
 }
+
+inline float Ember::Cegui::Helper::Window_renderedStringVerticalExtent(CEGUI::Window* window)
+{
+	return window->getRenderedString().getVerticalExtent(window);
+}
+
 
 
 
