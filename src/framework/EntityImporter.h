@@ -22,7 +22,7 @@
 #define ENTITY_IMPORTER_H
 
 #include "EntityImporterBase.h"
-
+#include <Atlas/Objects/RootOperation.h>
 namespace Eris
 {
 class Account;
