@@ -183,11 +183,8 @@ void OgreTerrainAdapter::reloadPage(const Domain::TerrainIndex& index)
 	if (mTerrainPagedWorldSection) {
 		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
 		if (page) {
-			Ogre::uint32 pageID = mTerrainPagedWorldSection->getGridStrategy()->getPageID(page->getPosition(), mTerrainPagedWorldSection);
-
-			// TODO performance: Unload synchronously, could cause lags
-			mTerrainPagedWorldSection->unloadPage(pageID, true);
-			mTerrainPagedWorldSection->loadPage(pageID);
+			page->dirty();
+			page->update();
 		}
 	}
 }

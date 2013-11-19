@@ -43,18 +43,26 @@ OgreTerrainPageBridge::~OgreTerrainPageBridge()
 
 void OgreTerrainPageBridge::updateTerrain(TerrainPageGeometry& geometry)
 {
-	mHeightData = new float[mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize()];
-	geometry.updateOgreHeightData(mHeightData);
+	S_LOG_VERBOSE("Updating terrain page height data: [" << mIndex.first << "," << mIndex.second << "]");
+	if (auto terrain = mTerrainGroup.getTerrain(mIndex.first, mIndex.second)) {
+		float* heightData = terrain->getHeightData();
+		geometry.updateOgreHeightData(heightData);
+		terrain->dirty();
+	} else {
+		mHeightData = new float[mTerrainGroup.getTerrainSize() * mTerrainGroup.getTerrainSize()];
+		geometry.updateOgreHeightData(mHeightData);
+	}
 }
 
 void OgreTerrainPageBridge::terrainPageReady()
 {
-	S_LOG_INFO("Finished loading terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
-	mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData);
-	// No need to keep height data around since it is copied on call
-	delete[] mHeightData;
-	mHeightData = nullptr;
-
+	if (mHeightData) {
+		S_LOG_INFO("Finished loading terrain page geometry: [" << mIndex.first << "," << mIndex.second << "]");
+		mTerrainGroup.defineTerrain(mIndex.first, mIndex.second, mHeightData);
+		// No need to keep height data around since it is copied on call
+		delete[] mHeightData;
+		mHeightData = nullptr;
+	}
 	// Notify waiting threads such as OgreTerrainDefiner
 	mConditionVariable.notify_all();
 }
