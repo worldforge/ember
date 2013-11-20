@@ -250,6 +250,14 @@ function EntityPicker:pickedEntity(results, args)
 					name = entity:getType():getName()
 				end
 				guiManager:appendAvatarImaginary("You touch " .. name .. ".")
+
+				if entity:hasAttr("message") then
+					local messageElement = entity:valueOfAttr("message")
+					if messageElement:isString() and messageElement:asString() ~= "" then
+						guiManager:appendAvatarImaginary("Message: " .. messageElement:asString())
+					end
+				end
+
 			end
 		end
 	end
