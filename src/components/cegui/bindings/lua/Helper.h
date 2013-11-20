@@ -22,6 +22,11 @@
 #include <CEGUI/Window.h>
 #include <CEGUI/ImageManager.h>
 
+#include <CEGUI/RenderedStringWordWrapper.h>
+#include <CEGUI/RenderedString.h>
+#include <CEGUI/CentredRenderedString.h>
+
+
 namespace Ember
 {
 namespace Cegui
@@ -82,10 +87,11 @@ public:
 
 	/**
 	 * @brief Gets the vertical extent in pixels of the rendered string for the window.
+	 * This assumes that the rendered string is using WordWrappedCentred mode.
 	 * @param window
 	 * @return
 	 */
-	static float Window_renderedStringVerticalExtent(CEGUI::Window* window);
+	static float calculateRenderedCentredStringVerticalExtent(CEGUI::Window* window);
 };
 }
 }
@@ -115,9 +121,11 @@ inline void Ember::Cegui::Helper::Window_removeChild(CEGUI::Window* window, CEGU
 	window->removeChild(child);
 }
 
-inline float Ember::Cegui::Helper::Window_renderedStringVerticalExtent(CEGUI::Window* window)
+inline float Ember::Cegui::Helper::calculateRenderedCentredStringVerticalExtent(CEGUI::Window* window)
 {
-	return window->getRenderedString().getVerticalExtent(window);
+	CEGUI::RenderedStringWordWrapper<CEGUI::CentredRenderedString> wordWrapper(window->getRenderedString());
+	wordWrapper.format(window, window->getPixelSize());
+	return wordWrapper.getVerticalExtent(window);
 }
 
 

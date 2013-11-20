@@ -24,10 +24,11 @@ public:
 
 	/**
 	 * @brief Gets the vertical extent in pixels of the rendered string for the window.
+	 * This assumes that the rendered string is using WordWrappedCentred mode.
 	 * @param window
 	 * @return
 	 */
-	static float Window_renderedStringVerticalExtent(CEGUI::Window* window);
+	static float calculateRenderedCentredStringVerticalExtent(CEGUI::Window* window);
 	
 };
 }

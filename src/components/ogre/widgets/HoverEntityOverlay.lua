@@ -74,7 +74,7 @@ function HoverEntityOverlay:pickedEntity(results, args)
 				self.messageText:setVisible(true)
 				self.messageText:setText(messageElement:asString())
 				
-				local verticalExtent = Ember.Cegui.Helper:Window_renderedStringVerticalExtent(self.messageText)
+				local verticalExtent = Ember.Cegui.Helper:calculateRenderedCentredStringVerticalExtent(self.messageText)
 				--padding
 				verticalExtent = verticalExtent + 4
 				self.messageText:setHeight(CEGUI.UDim(0, verticalExtent))
