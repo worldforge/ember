@@ -150,7 +150,7 @@ public:
 	 * Note that there's no guarantee that the polygon shape returned will be valid. Make sure to check with WFMath::Polygon::isValid().
 	 * @return A polygon shape.
 	 */
-	const WFMath::Polygon<2> getShape() const;
+	const WFMath::Polygon<2> getShape();
 
 protected:
 

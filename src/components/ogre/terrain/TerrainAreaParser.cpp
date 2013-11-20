@@ -81,16 +81,16 @@ bool TerrainAreaParser::parseArea(const Atlas::Message::MapType& areaData, WFMat
 const Atlas::Message::Element TerrainAreaParser::createElement(const WFMath::Polygon<2>& poly, int layer)
 {
 	Atlas::Message::MapType map;
-	Atlas::Message::Element shapeElement = poly.toAtlas();
-	if (shapeElement.isMap()) {
-		shapeElement.asMap()["type"] = "polygon";
-		map.insert(std::make_pair("shape", shapeElement));
-	} else {
-		S_LOG_WARNING("A polygon should be serialized into a map.");
+	if (poly.isValid()) {
+		Atlas::Message::Element shapeElement = poly.toAtlas();
+		if (shapeElement.isMap()) {
+			shapeElement.asMap()["type"] = "polygon";
+			map.insert(std::make_pair("shape", shapeElement));
+		} else {
+			S_LOG_WARNING("A polygon should be serialized into a map.");
+		}
 	}
-	if (layer != 0) {
-		map["layer"] = layer;
-	}
+	map["layer"] = layer;
 	return map;
 
 }

@@ -24,6 +24,7 @@
 #define EMBEROGRE_GUI_ADAPTERS_ATLASAREAADAPTER_H
 
 #include "AdapterBase.h"
+#include <wfmath/polygon.h>
 #include <memory>
 
 namespace CEGUI {
@@ -124,6 +125,13 @@ protected:
 
 	virtual void fillElementFromGui();
 	virtual bool _hasChanges();
+
+	/**
+	 * @brief Creates a default area polygon for when there's none specified.
+	 * @return A square polygon, 2 meters in each direction.
+	 */
+	WFMath::Polygon<2> getDefaultPolygon() const;
+
 };
 
 }

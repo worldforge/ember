@@ -229,10 +229,14 @@ bool PolygonAdapter::hasShape() const
 	return mPolygon != 0;
 }
 
-const WFMath::Polygon<2> PolygonAdapter::getShape() const
+const WFMath::Polygon<2> PolygonAdapter::getShape()
 {
 	if (mPolygon) {
 		return mPolygon->getShape();
+	}
+	auto element = getChangedElement();
+	if (element.isMap() || element.isList()) {
+		return WFMath::Polygon<2>(element);
 	}
 	return WFMath::Polygon<2>();
 }

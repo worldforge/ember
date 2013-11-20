@@ -33,6 +33,7 @@
 #include "PolygonAdapter.h"
 
 #include <wfmath/polygon.h>
+#include <wfmath/atlasconv.h>
 
 namespace Ember
 {
@@ -57,13 +58,15 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 		if (shapeI != areaData.end()) {
 			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(shapeI->second, showButton, entity));
 		} else {
-			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::MapType(), showButton, entity));
+			::Atlas::Message::MapType defaultShape;
+
+			mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(getDefaultPolygon().toAtlas(), showButton, entity));
 		}
 		WFMath::Polygon<2> poly;
 		Terrain::TerrainAreaParser parser;
 		parser.parseArea(areaData, poly, mLayer);
 	} else {
-		mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(::Atlas::Message::MapType(), showButton, entity));
+		mPolygonAdapter = std::unique_ptr<PolygonAdapter>(new PolygonAdapter(getDefaultPolygon().toAtlas(), showButton, entity));
 	}
 
 	if (mLayerWindow) {
@@ -75,6 +78,16 @@ AreaAdapter::AreaAdapter(const ::Atlas::Message::Element& element, CEGUI::PushBu
 
 AreaAdapter::~AreaAdapter()
 {
+}
+
+WFMath::Polygon<2> AreaAdapter::getDefaultPolygon() const
+{
+	WFMath::Polygon<2> poly;
+	poly.addCorner(0, WFMath::Point<2>(-1, -1));
+	poly.addCorner(1, WFMath::Point<2>(-1, 1));
+	poly.addCorner(2, WFMath::Point<2>(1, 1));
+	poly.addCorner(3, WFMath::Point<2>(1, -1));
+	return poly;
 }
 
 void AreaAdapter::updateGui(const ::Atlas::Message::Element& element)
@@ -116,19 +129,13 @@ void AreaAdapter::createNewPolygon()
 void AreaAdapter::fillElementFromGui()
 {
 	//Start by using the shape element from the polygon adapter
-	mEditedValue = mPolygonAdapter->getChangedElement();
+	mEditedValue = ::Atlas::Message::MapType();
 	CEGUI::ListboxItem* item = mLayerWindow->getSelectedItem();
 	if (item) {
 		mLayer = item->getID();
 	}
-	if (mPolygonAdapter->hasShape()) {
-		Terrain::TerrainAreaParser parser;
-		mEditedValue = parser.createElement(mPolygonAdapter->getShape(), mLayer);
-	} else {
-		if (mEditedValue.isMap() && mLayer) {
-			mEditedValue.asMap()["layer"] = mLayer;
-		}
-	}
+	Terrain::TerrainAreaParser parser;
+	mEditedValue = parser.createElement(mPolygonAdapter->getShape(), mLayer);
 }
 
 bool AreaAdapter::_hasChanges()
