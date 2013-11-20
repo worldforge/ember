@@ -297,7 +297,9 @@ Atlas::Message::MapType EntityRecipe::createEntity(Eris::TypeService& typeServic
 	} else {
 		Atlas::Message::MapType msg;
 		msg["parents"] = Atlas::Message::ListType(1, mEntityType);
-		msg["name"] = getName();
+		if (!getName().empty()) {
+			msg["name"] = getName();
+		}
 		return msg;
 	}
 	S_LOG_WARNING("No entity composed");
