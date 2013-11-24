@@ -285,7 +285,7 @@ void EntityImporterBase::sendMinds()
 			thinkOp->setFrom(mAvatarId);
 			thinkOp->setSerialno(newSerialNumber());
 			mStats.mindsProcessedCount++;
-			S_LOG_INFO("Restoring mind of " << mind.first);
+			S_LOG_VERBOSE("Restoring mind of " << mind.first);
 			mThoughtOpsInTransit++;
 
 			sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationThinkResult);
@@ -681,9 +681,11 @@ void EntityImporterBase::sightArrived(const Operation & op, OpVector & res)
 		}
 		if (arg->isDefaultId()) {
 			S_LOG_WARNING("Corrupted top level entity: no id");
+			cancel();
+			return;
+		} else {
+			getEntity(arg->getId(), res);
 		}
-
-		getEntity(arg->getId(), res);
 
 		// Expecting sight of world root
 		break;
@@ -707,7 +709,7 @@ void EntityImporterBase::sightArrived(const Operation & op, OpVector & res)
 }
 
 EntityImporterBase::EntityImporterBase(const std::string& accountId, const std::string& avatarId) :
-		mAccountId(accountId), mAvatarId(avatarId), mStats( { }), m_state(INIT), mThoughtOpsInTransit(0), mSetOpsInTransit(0)
+		mAccountId(accountId), mAvatarId(avatarId), mStats( { }), m_state(INIT), mThoughtOpsInTransit(0), mSetOpsInTransit(0), mResumeWorld(0)
 {
 }
 
@@ -772,6 +774,17 @@ void EntityImporterBase::start(const std::string& filename)
 					registerEntityReferences(object->getId(), entityMap);
 					mPersistedEntities.insert(std::make_pair(object->getId(), object));
 				}
+			}
+		}
+	}
+	//If we should resume the world, check if the world has a "suspended" property,
+	//and disable it if so.
+	if (mResumeWorld) {
+		auto I = mPersistedEntities.find("0");
+		if (I != mPersistedEntities.end()) {
+			if (I->second->hasAttr("suspended")) {
+				I->second->setAttr("suspended", 0);
+				S_LOG_INFO("Resuming suspended world.");
 			}
 		}
 	}
@@ -880,6 +893,11 @@ void EntityImporterBase::cancel()
 const EntityImporterBase::Stats& EntityImporterBase::getStats() const
 {
 	return mStats;
+}
+
+void EntityImporterBase::setResume(bool enabled)
+{
+	mResumeWorld = enabled;
 }
 
 void EntityImporterBase::operationThinkResult(const Operation & op)
