@@ -194,9 +194,12 @@ void OgreTerrainAdapter::reloadPageMaterial(const Domain::TerrainIndex& index)
 	if (mTerrainPagedWorldSection) {
 		Ogre::Terrain* page = mTerrainGroup->getTerrain(index.first, index.second);
 		if (page) {
-			// This is a trick to get the terrain to relaod it's material
+			// This is a trick to get the terrain to reload it's material
 			page->addLayer(0, 0.0, nullptr);
 			page->removeLayer(0);
+			//We must tell the page what area needs updating. For now we'll update the whole page.
+			//But we should really look into only updating the area that has changed.
+			page->_dirtyCompositeMapRect(Ogre::Rect(0, 0, page->getSize(), page->getSize()));
 			page->updateCompositeMap();
 		}
 	}
