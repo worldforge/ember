@@ -376,10 +376,10 @@ br_find_exe_dir (const char *default_dir)
 {
 	if (exe == NULL) {
 		/* BinReloc not initialized. */
-		if (default_dir != NULL)
+		if (default_dir != nullptr)
 			return strdup (default_dir);
 		else
-			return NULL;
+			return nullptr;
 	}
 
 	return br_dirname (exe);
@@ -745,11 +745,11 @@ br_dirname (const char *path)
 {
 	char *end, *result;
 
-	if (path == (const char *) NULL)
-		return (char *) NULL;
+	if (path == nullptr)
+		return nullptr;
 
-	end = strrchr (path, '/');
-	if (end == (const char *) NULL)
+	end = (char*)strrchr (path, '/');
+	if (end == nullptr)
 		return strdup (".");
 
 	while (end > path && *end == '/')
