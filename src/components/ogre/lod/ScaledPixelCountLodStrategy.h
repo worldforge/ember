@@ -67,10 +67,10 @@ namespace Lod {
         virtual Ogre::Real transformBias(Ogre::Real factor) const;
 
         /// @copydoc Ogre::LodStrategy::getIndex
-        virtual ushort getIndex(Ogre::Real value, const Ogre::Mesh::MeshLodUsageList& meshLodUsageList) const;
+        virtual Ogre::ushort getIndex(Ogre::Real value, const Ogre::Mesh::MeshLodUsageList& meshLodUsageList) const;
 
         /// @copydoc Ogre::LodStrategy::getIndex
-        virtual ushort getIndex(Ogre::Real value, const Ogre::Material::LodValueList& materialLodValueList) const;
+        virtual Ogre::ushort getIndex(Ogre::Real value, const Ogre::Material::LodValueList& materialLodValueList) const;
 
         /// @copydoc Ogre::LodStrategy::sort
         virtual void sort(Ogre::Mesh::MeshLodUsageList& meshLodUsageList) const;
