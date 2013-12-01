@@ -36,11 +36,14 @@ THE SOFTWARE.
 
 using namespace Ogre;
 
+template<>
+Ember::OgreView::Lod::ScaledPixelCountLodStrategy* Ogre::Singleton<Ember::OgreView::Lod::ScaledPixelCountLodStrategy>::msSingleton = 0;
+
 namespace Ember {
 namespace OgreView {
 namespace Lod {
     //-----------------------------------------------------------------------
-    template<> ScaledPixelCountLodStrategy* Singleton<ScaledPixelCountLodStrategy>::msSingleton = 0;
+    
     ScaledPixelCountLodStrategy* ScaledPixelCountLodStrategy::getSingletonPtr(void)
     {
         return msSingleton;
