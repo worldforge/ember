@@ -156,6 +156,10 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 			if (!shaderPass->finalize(*pass, mIncludeShadows, materialSuffix)) {
 				return false;
 			}
+			//If we use multipasses we need to disable fog for all passes except the last one (else the fog will stack up).
+			if (shaderPass != mPassesNormalMapped.back()) {
+				pass->getFragmentProgramParameters()->setNamedConstant("disableFogColour", 1);
+			}
 		}
 	}
 
@@ -168,6 +172,10 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 		Ogre::Pass* pass = technique->createPass();
 		if (!shaderPass->finalize(*pass, mIncludeShadows, materialSuffix)) {
 			return false;
+		}
+		//If we use multipasses we need to disable fog for all passes except the last one (else the fog will stack up).
+		if (shaderPass != mPasses.back()) {
+			pass->getFragmentProgramParameters()->setNamedConstant("disableFogColour", 1);
 		}
 	}
 
