@@ -246,30 +246,33 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 
 bool ShaderPass::hasRoomForLayer(const TerrainPageSurfaceLayer* layer)
 {
+	//TODO: calculate this once
 	Ogre::ushort numberOfTextureUnitsOnCard = std::min(static_cast<Ogre::ushort>(OGRE_MAX_TEXTURE_LAYERS), Ogre::Root::getSingleton().getRenderSystem()->getCapabilities()->getNumTextureUnits());
 
-	// Include the layer to be added
-	int numLayers = mLayers.size() + 1;
-
-	int takenUnits = 1;			 // One unit is always used by the global normal texture
-	takenUnits += mShadowLayers; // Shadow textures
+	//We'll project the number of taken units if we should add another pass.
+	//Later on we'll compare this with the actual number it texture units available.
+	int projectedTakenUnits = 1; // One unit is always used by the global normal texture
+	projectedTakenUnits += mShadowLayers; // Shadow textures
 	// A blend map texture for every 4 layers
 	// Make sure to always have 1 for 1 layer, 2 for 5 layers etc.
-	takenUnits += static_cast<int>(std::ceil(numLayers / 4.0f));
-
-	// The base layer is not included in the layer list
-	if (mBaseLayer) {
-		takenUnits += 1;
-		if (mUseNormalMapping) {
-			takenUnits += 1;
-		}
+	projectedTakenUnits += mBlendMapBatches.size();
+	if (!mBlendMapBatches.empty() && mBlendMapBatches.back()->getLayers().size() == 4) {
+		//If the last batch if full we should need to create a new one; thus we'll increase the number of units
+		projectedTakenUnits++;
 	}
-	takenUnits += numLayers;
+
+	projectedTakenUnits += mLayers.size();
 	if (mUseNormalMapping) {
-		takenUnits += numLayers;
+		projectedTakenUnits += mLayers.size();
 	}
 
-	return (numberOfTextureUnitsOnCard - takenUnits) >= 0;
+	projectedTakenUnits++;
+	if (mUseNormalMapping) {
+		projectedTakenUnits++;
+	}
+
+
+	return (numberOfTextureUnitsOnCard - projectedTakenUnits) >= 0;
 }
 
 void ShaderPass::addShadowLayer(const TerrainPageShadow* terrainPageShadow)
