@@ -55,7 +55,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mMaterialGenerator(nullptr)
 {
 	// Other params
-	mTerrainGlobalOptions->setSkirtSize(30.0f);
+	mTerrainGlobalOptions->setSkirtSize(1.0f);
 	mTerrainGlobalOptions->setCastsDynamicShadows(true);
 	mTerrainGlobalOptions->setMaxPixelError(8);
 
