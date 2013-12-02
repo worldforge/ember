@@ -28,7 +28,6 @@
 #include <OgreMaterialManager.h>
 #include <OgreSceneManager.h>
 
-
 namespace Ember
 {
 namespace OgreView
@@ -40,10 +39,10 @@ namespace Terrain
 namespace Techniques
 {
 const std::string Shader::NORMAL_TEXTURE_ALIAS = "EmberTerrain/NormalTexture";
-const std::string Shader::COMPOSITE_MAP_ALIAS  = "EmberTerrain/CompositeMap";
+const std::string Shader::COMPOSITE_MAP_ALIAS = "EmberTerrain/CompositeMap";
 
 Shader::Shader(bool includeShadows, const TerrainPageGeometryPtr& mGeometry, const SurfaceLayerStore& mTerrainPageSurfaces, const TerrainPageShadow* terrainPageShadow, Ogre::SceneManager& sceneManager, bool UseNormalMapping) :
-	Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager), mUseNormalMapping(UseNormalMapping)
+		Base(mGeometry, mTerrainPageSurfaces, terrainPageShadow), mIncludeShadows(includeShadows), mSceneManager(sceneManager), mUseNormalMapping(UseNormalMapping)
 {
 }
 
@@ -73,40 +72,46 @@ bool Shader::prepareMaterial()
 {
 	reset();
 	if (mUseNormalMapping) {
-		ShaderPass* shaderPass = addPassNormalMapped();
-		initializePass(shaderPass);
+		buildPasses(true);
 	}
 
-	ShaderPass* shaderPass = addPass();
-	initializePass(shaderPass);
+	buildPasses(false);
 
 	//We don't need the geometry any more, so we'll release it as soon as we can.
 	mGeometry.reset();
 	return true;
 }
 
-void Shader::initializePass(ShaderPass* shaderPass)
+void Shader::buildPasses(bool normalMapped)
 {
+	ShaderPass* shaderPass;
+	if (normalMapped) {
+		shaderPass = addPassNormalMapped();
+	} else {
+		shaderPass = addPass();
+	}
+
 	if (shaderPass) {
-		if (mIncludeShadows) {
-			for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
-				shaderPass->addShadowLayer(mTerrainPageShadow);
-			}
-		}
 		for (SurfaceLayerStore::const_iterator I = mTerrainPageSurfaces.begin(); I != mTerrainPageSurfaces.end(); ++I) {
 			const TerrainPageSurfaceLayer* surfaceLayer = I->second;
-			if (shaderPass->hasRoomForLayer(surfaceLayer)) {
-				if (I == mTerrainPageSurfaces.begin()) {
-					shaderPass->setBaseLayer(surfaceLayer);
-				} else {
-					if (surfaceLayer->intersects(*mGeometry)) {
-						shaderPass->addLayer(*mGeometry, surfaceLayer);
-					}
-				}
+
+			if (I == mTerrainPageSurfaces.begin()) {
+				shaderPass->setBaseLayer(surfaceLayer);
 			} else {
-				//TODO: handle new pass
+				if (surfaceLayer->intersects(*mGeometry)) {
+					if (!shaderPass->hasRoomForLayer(surfaceLayer)) {
+						if (normalMapped) {
+							shaderPass = addPassNormalMapped();
+						} else {
+							shaderPass = addPass();
+						}
+					}
+					shaderPass->addLayer(*mGeometry, surfaceLayer);
+				}
 			}
 		}
+	} else {
+		S_LOG_WARNING("Could not create pass in Shader terrain technique.");
 	}
 }
 
@@ -268,6 +273,11 @@ bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material)
 ShaderPass* Shader::addPass()
 {
 	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition()));
+	if (mIncludeShadows) {
+		for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+			shaderPass->addShadowLayer(mTerrainPageShadow);
+		}
+	}
 	mPasses.push_back(shaderPass);
 	return shaderPass;
 }
@@ -275,6 +285,11 @@ ShaderPass* Shader::addPass()
 ShaderPass* Shader::addPassNormalMapped()
 {
 	ShaderPass* shaderPass(new ShaderPass(mSceneManager, mPage.getBlendMapSize(), mPage.getWFPosition(), true));
+	if (mIncludeShadows) {
+		for (size_t i = 0; i < mSceneManager.getShadowTextureCount(); ++i) {
+			shaderPass->addShadowLayer(mTerrainPageShadow);
+		}
+	}
 	mPassesNormalMapped.push_back(shaderPass);
 	return shaderPass;
 }

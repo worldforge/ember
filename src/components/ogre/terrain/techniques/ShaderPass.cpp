@@ -164,6 +164,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 			Ogre::TextureUnitState * normalMapTextureUnitState = pass.createTextureUnitState();
 			std::string normalTextureName = mBaseLayer->getNormalTextureName();
 			if (normalTextureName.empty()) {
+				//Since the shader always expects a normal texture we need to supply a dummy one if no specific one exists.
 				normalTextureName = "3d_objects/primitives/textures/onepixel/N.png";
 			}
 			normalMapTextureUnitState->setTextureName(normalTextureName);
@@ -184,7 +185,14 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	if (mUseNormalMapping) {
 		ss << "OffsetMapping/";
 	}
-	ss << mLayers.size() << shaderSuffix;
+	ss << mLayers.size();
+	//If no base layer is used we need to use a variant of the shader adapted to this.
+	//This is done by adding the "NoBaseLayer" segment.
+	if (!mBaseLayer) {
+		ss << "/NoBaseLayer";
+		pass.setSceneBlending(Ogre::SBF_ONE, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+	}
+	ss << shaderSuffix;
 	std::string fragmentProgramName(ss.str());
 
 	if (shaderSuffix == "NoLighting") {

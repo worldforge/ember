@@ -107,11 +107,23 @@ protected:
 	 */
 	bool mUseNormalMapping;
 
-	virtual ShaderPass* addPass();
+	/**
+	 * @brief Adds a new pass to the list of passes.
+	 * @return The new pass.
+	 */
+	ShaderPass* addPass();
 
-	virtual ShaderPass* addPassNormalMapped();
+	/**
+	 * @brief Adds a new normal mapped pass to the list of normal mapped passes.
+	 * @return The new pass.
+	 */
+	ShaderPass* addPassNormalMapped();
 
-	virtual void initializePass(ShaderPass* pass);
+	/**
+	 * @brief Build all required passes.
+	 * @param normalMapped Whether the passes should use normal mapped shaders.
+	 */
+	void buildPasses(bool normalMapped);
 
 	/**
 	 * @brief Adds the first layer.
