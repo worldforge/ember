@@ -42,6 +42,7 @@ namespace OgreView
 namespace Terrain
 {
 
+class EmberTerrainGroup;
 class FlatTerrainDefiner;
 class OgreTerrainMaterialGeneratorEmber;
 /**
@@ -116,7 +117,7 @@ private:
 	OgreTerrainPageProvider mTerrainPageProvider;
 
 	Ogre::TerrainGlobalOptions* mTerrainGlobalOptions;
-	Ogre::TerrainGroup* mTerrainGroup;
+	EmberTerrainGroup* mTerrainGroup;
 
 	IPageDataProvider* mPageDataProvider;
 	OgreTerrainMaterialGeneratorEmber* mMaterialGenerator;

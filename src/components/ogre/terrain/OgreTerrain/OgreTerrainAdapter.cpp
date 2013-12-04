@@ -23,6 +23,7 @@
 #include "../ITerrainObserver.h"
 #include "components/ogre/TerrainPageDataProvider.h"
 #include "OgreTerrainMaterialGeneratorEmber.h"
+#include "EmberTerrainGroup.h"
 
 #include <OgreSceneManager.h>
 #include <OgreTerrain.h>
@@ -50,7 +51,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 		mPagedWorld(nullptr),
 		mTerrainPagedWorldSection(nullptr),
 		mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
-		mTerrainGroup(OGRE_NEW Ogre::TerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))),
+		mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))),
 		mPageDataProvider(nullptr),
 		mMaterialGenerator(nullptr)
 {
