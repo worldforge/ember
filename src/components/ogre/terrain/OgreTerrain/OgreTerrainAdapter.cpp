@@ -58,6 +58,7 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 	mTerrainGlobalOptions->setSkirtSize(1.0f);
 	mTerrainGlobalOptions->setCastsDynamicShadows(true);
 	mTerrainGlobalOptions->setMaxPixelError(8);
+	mTerrainGlobalOptions->setCompositeMapSize(512);
 
 	setPageSize(terrainPageSize);
 

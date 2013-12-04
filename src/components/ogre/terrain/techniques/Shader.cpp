@@ -184,7 +184,8 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	technique->setShadowCasterMaterial(shadowCasterMaterial);
 	technique->setLodIndex(currentLodIndex++);
 	// Use it for everything farther away than this limit
-	lodList.push_back(100);
+	//TODO: calculate this based on the size of each page and the size of the texture instead of having it fixed
+	lodList.push_back(200);
 	// Pretty sure we can always fit this into one pass
 	Ogre::Pass* pass = technique->createPass();
 	std::string cmVertexProgramName = "Lighting/NormalTexture/";
