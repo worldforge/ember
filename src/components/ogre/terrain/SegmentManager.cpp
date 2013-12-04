@@ -125,7 +125,7 @@ std::shared_ptr<Segment> SegmentManager::createFakeSegment(const std::string& ke
 		setPoint(1, 1);
 
 		auto& surfaces = segment->getSurfaces();
-		for (auto& shader : mTerrain.getShaders()) {
+		for (auto shader : mTerrain.getShaders()) {
 			auto surface = shader.second->newSurface(*segment);
 			surfaces[shader.first] = surface;
 		}
