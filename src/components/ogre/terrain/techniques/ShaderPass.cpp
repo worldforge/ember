@@ -45,7 +45,7 @@ namespace Terrain
 namespace Techniques
 {
 
-Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex) const
+Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const
 {
 	// we need an unique name for our alpha texture
 	std::stringstream combinedBlendMapTextureNameSS;
@@ -70,6 +70,7 @@ Ogre::TexturePtr ShaderPass::getCombinedBlendMapTexture(size_t passIndex, size_t
 	flags |= Ogre::TU_AUTOMIPMAP;
 #endif // ifndef _WIN32
 	combinedBlendMapTexture = textureMgr->createManual(combinedBlendMapName, "General", Ogre::TEX_TYPE_2D, mBlendMapPixelWidth, mBlendMapPixelWidth, textureMgr->getDefaultNumMipmaps(), Ogre::PF_B8G8R8A8, flags);
+	managedTextures.insert(combinedBlendMapName);
 	combinedBlendMapTexture->createInternalResources();
 	return combinedBlendMapTexture;
 }
@@ -127,7 +128,7 @@ LayerStore& ShaderPass::getLayers()
 	return mLayers;
 }
 
-bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string shaderSuffix) const
+bool ShaderPass::finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows, const std::string shaderSuffix) const
 {
 	S_LOG_VERBOSE("Creating terrain material pass with: NormalMapping=" << mUseNormalMapping << " Shadows=" << useShadows << " Suffix=" << shaderSuffix);
 	if (shaderSuffix != "/NoLighting") {
@@ -176,7 +177,7 @@ bool ShaderPass::finalize(Ogre::Pass& pass, bool useShadows, const std::string s
 	// add our blendMap textures first
 	for (BlendMapBatchStore::const_iterator I = mBlendMapBatches.begin(); I != mBlendMapBatches.end(); ++I) {
 		ShaderPassBlendMapBatch* batch = *I;
-		batch->finalize(pass, getCombinedBlendMapTexture(pass.getIndex(), i++));
+		batch->finalize(pass, getCombinedBlendMapTexture(pass.getIndex(), i++, managedTextures));
 	}
 
 	//we provide different fragment programs for different amounts of textures used, so we need to determine which one to use.

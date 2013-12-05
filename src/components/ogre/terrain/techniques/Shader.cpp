@@ -115,7 +115,7 @@ void Shader::buildPasses(bool normalMapped)
 	}
 }
 
-bool Shader::compileMaterial(Ogre::MaterialPtr material)
+bool Shader::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
 {
 	// Preserve any texture name aliases that may have been set
 	Ogre::AliasTextureNamePairList aliases;
@@ -153,7 +153,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 
 		for (auto& shaderPass : mPassesNormalMapped) {
 			Ogre::Pass* pass = technique->createPass();
-			if (!shaderPass->finalize(*pass, mIncludeShadows, materialSuffix)) {
+			if (!shaderPass->finalize(*pass, managedTextures, mIncludeShadows, materialSuffix)) {
 				return false;
 			}
 			//If we use multipasses we need to disable fog for all passes except the last one (else the fog will stack up).
@@ -170,7 +170,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		ShaderPass* shaderPass(*I);
 		Ogre::Pass* pass = technique->createPass();
-		if (!shaderPass->finalize(*pass, mIncludeShadows, materialSuffix)) {
+		if (!shaderPass->finalize(*pass, managedTextures, mIncludeShadows, materialSuffix)) {
 			return false;
 		}
 		//If we use multipasses we need to disable fog for all passes except the last one (else the fog will stack up).
@@ -244,7 +244,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	for (PassStore::iterator I = mPasses.begin(); I != mPasses.end(); ++I) {
 		ShaderPass* shaderPass(*I);
 		Ogre::Pass* pass = technique->createPass();
-		if (!shaderPass->finalize(*pass, false, "/Simple")) {
+		if (!shaderPass->finalize(*pass, managedTextures, false, "/Simple")) {
 			return false;
 		}
 	}
@@ -262,7 +262,7 @@ bool Shader::compileMaterial(Ogre::MaterialPtr material)
 	return true;
 }
 
-bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material)
+bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
 {
 	material->removeAllTechniques();
 
@@ -271,7 +271,7 @@ bool Shader::compileCompositeMapMaterial(Ogre::MaterialPtr material)
 	std::string materialSuffix = "/NoLighting";
 	for (auto& shaderPass : mPasses) {
 		Ogre::Pass* pass = technique->createPass();
-		if (!shaderPass->finalize(*pass, false, materialSuffix)) {
+		if (!shaderPass->finalize(*pass, managedTextures, false, materialSuffix)) {
 			return false;
 		}
 	}

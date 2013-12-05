@@ -24,6 +24,7 @@
 #include <wfmath/point.h>
 #include <vector>
 #include <string>
+#include <set>
 
 namespace Ember
 {
@@ -59,11 +60,12 @@ friend class ShaderPassBlendMapBatch;
 
 	/**
 	 * @brief Creates the combined final blend maps and sets the shader params. Be sure to call this before you load the material.
+     * @param managedTextures A set of textures created in the process. These will be destroyed when the page is destroyed.
 	 * @param useShadows Whether to use shadows or not in the pass.
 	 * @param shaderSuffix A suffix to add to the shader name. This allows you to make it use a somewhat different shader depending on graphics level etc.
 	 * @return True if the creation of the pass was successful.
 	 */
-	virtual bool finalize(Ogre::Pass& pass, bool useShadows = true, const std::string shaderSuffix = "") const;
+	virtual bool finalize(Ogre::Pass& pass, std::set<std::string>& managedTextures, bool useShadows = true, const std::string shaderSuffix = "") const;
 
 	LayerStore& getLayers();
 
@@ -75,7 +77,7 @@ protected:
 	virtual ShaderPassBlendMapBatch* createNewBatch();
 
 	unsigned int getBlendMapPixelWidth() const;
-	Ogre::TexturePtr getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex) const;
+	Ogre::TexturePtr getCombinedBlendMapTexture(size_t passIndex, size_t batchIndex, std::set<std::string>& managedTextures) const;
 
 	float mScales[16];
 	BlendMapBatchStore mBlendMapBatches;

@@ -32,6 +32,8 @@
 #include "../ShaderManager.h"
 #include "../EmberOgre.h"
 
+#include <OgreTextureManager.h>
+
 namespace Ember
 {
 namespace OgreView
@@ -46,16 +48,20 @@ TerrainPageSurfaceCompiler::TerrainPageSurfaceCompiler(ICompilerTechniqueProvide
 
 TerrainPageSurfaceCompiler::~TerrainPageSurfaceCompiler()
 {
+	//Clean up any textures that were created for the specific page.
+	for (auto& textureName : mManagedTextures) {
+		Ogre::TextureManager::getSingleton().remove(textureName);
+	}
 }
 
-TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow) const
+TerrainPageSurfaceCompilationInstance* TerrainPageSurfaceCompiler::createCompilationInstance(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow)
 {
-	return new TerrainPageSurfaceCompilationInstance(mCompilerTechniqueProvider.createTechnique(geometry, terrainPageSurfaces, terrainPageShadow));
+	return new TerrainPageSurfaceCompilationInstance(mCompilerTechniqueProvider.createTechnique(geometry, terrainPageSurfaces, terrainPageShadow), mManagedTextures);
 
 }
 
-TerrainPageSurfaceCompilationInstance::TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique)
-: mTechnique(technique)
+TerrainPageSurfaceCompilationInstance::TerrainPageSurfaceCompilationInstance(TerrainPageSurfaceCompilerTechnique* technique, std::set<std::string>& managedTextures)
+: mTechnique(technique), mManagedTextures(managedTextures)
 {
 
 }
@@ -72,12 +78,12 @@ bool TerrainPageSurfaceCompilationInstance::prepare()
 
 bool TerrainPageSurfaceCompilationInstance::compile(Ogre::MaterialPtr material)
 {
-	return mTechnique->compileMaterial(material);
+	return mTechnique->compileMaterial(material, mManagedTextures);
 }
 
 bool TerrainPageSurfaceCompilationInstance::compileCompositeMap(Ogre::MaterialPtr material)
 {
-	return mTechnique->compileCompositeMapMaterial(material);
+	return mTechnique->compileCompositeMapMaterial(material, mManagedTextures);
 }
 }
 }

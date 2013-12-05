@@ -58,7 +58,7 @@ bool Simple::prepareMaterial()
 	return true;
 }
 
-bool Simple::compileMaterial(Ogre::MaterialPtr material)
+bool Simple::compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
 {
 	material->removeAllTechniques();
 	Ogre::Technique* technique = material->createTechnique();
@@ -261,7 +261,7 @@ Ogre::Pass* Simple::addPassToTechnique(const TerrainPageGeometry& geometry, Ogre
 
 }
 
-bool Simple::compileCompositeMapMaterial(Ogre::MaterialPtr material)
+bool Simple::compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures)
 {
 	// Does not support composite maps
 	return false;

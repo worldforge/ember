@@ -47,8 +47,8 @@ public:
 	Simple(const TerrainPageGeometryPtr& geometry, const SurfaceLayerStore& terrainPageSurfaces, const TerrainPageShadow* terrainPageShadow);
 
     virtual bool prepareMaterial();
-    virtual bool compileMaterial(Ogre::MaterialPtr material);
-	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material);
+    virtual bool compileMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures);
+	virtual bool compileCompositeMapMaterial(Ogre::MaterialPtr material, std::set<std::string>& managedTextures);
 
 protected:
 
