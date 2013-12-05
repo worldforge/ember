@@ -22,6 +22,8 @@
 
 #include "EmberTerrain.h"
 
+#include "components/ogre/TerrainPageDataProvider.h"
+
 namespace Ember
 {
 namespace OgreView
@@ -29,8 +31,8 @@ namespace OgreView
 namespace Terrain
 {
 
-EmberTerrain::EmberTerrain(Ogre::SceneManager* sm)
-: Ogre::Terrain(sm)
+EmberTerrain::EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* sm) :
+		Ogre::Terrain(sm), mUnloader(unloader)
 {
 	//This is a hack to prevent the Terrain class from creating blend map textures.
 	//Since we provide our own material with its own blend maps we don't want the
@@ -48,6 +50,7 @@ EmberTerrain::~EmberTerrain()
 {
 	//Remove the fake blend map texture, else the base class will try to delete it.
 	mBlendTextureList.clear();
+	mUnloader();
 }
 
 }

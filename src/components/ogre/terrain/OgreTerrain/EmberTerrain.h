@@ -21,12 +21,15 @@
 
 #include <OgreTerrain.h>
 
+#include <functional>
+
 namespace Ember
 {
 namespace OgreView
 {
 namespace Terrain
 {
+
 
 /**
  * @brief Mainly used to override the default behaviour of Ogre::Terrain.
@@ -37,8 +40,23 @@ namespace Terrain
 class EmberTerrain : public Ogre::Terrain
 {
 public:
-	EmberTerrain(Ogre::SceneManager* sm);
+
+	/**
+	 * @brief Ctor.
+	 * @param unloader An unloader function, called upon destruction.
+	 * @param sm
+	 */
+	EmberTerrain(std::function<void()>& unloader, Ogre::SceneManager* sm);
 	virtual ~EmberTerrain();
+
+protected:
+
+
+	/**
+	 * @brief An unloader function, called upon destruction.
+	 */
+	std::function<void()> mUnloader;
+
 };
 
 }

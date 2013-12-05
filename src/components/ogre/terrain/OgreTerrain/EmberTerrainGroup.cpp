@@ -22,8 +22,11 @@
 
 #include "EmberTerrainGroup.h"
 #include "EmberTerrain.h"
+#include "components/ogre/TerrainPageDataProvider.h"
 
 #include <OgreRoot.h>
+
+#include <functional>
 
 namespace Ember
 {
@@ -32,9 +35,8 @@ namespace OgreView
 namespace Terrain
 {
 
-EmberTerrainGroup::	EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize,
-		Ogre::Real terrainWorldSize)
-: Ogre::TerrainGroup(sm, align, terrainSize, terrainWorldSize)
+EmberTerrainGroup::EmberTerrainGroup(Ogre::SceneManager* sm, Ogre::Terrain::Alignment align, Ogre::uint16 terrainSize, Ogre::Real terrainWorldSize) :
+		Ogre::TerrainGroup(sm, align, terrainSize, terrainWorldSize), mPageDataProvider(nullptr)
 {
 }
 
@@ -46,9 +48,8 @@ void EmberTerrainGroup::loadAllTerrains(bool synchronous /*= false*/)
 {
 	// Just a straight iteration - for the numbers involved not worth
 	// keeping a loaded / unloaded list
-	for (TerrainSlotMap::iterator i = mTerrainSlots.begin(); i != mTerrainSlots.end(); ++i)
-	{
-		TerrainSlot* slot = i->second;
+	for (auto entry : mTerrainSlots) {
+		TerrainSlot* slot = entry.second;
 		loadEmberTerrainImpl(slot, synchronous);
 	}
 
@@ -57,8 +58,7 @@ void EmberTerrainGroup::loadAllTerrains(bool synchronous /*= false*/)
 void EmberTerrainGroup::loadTerrain(long x, long y, bool synchronous /*= false*/)
 {
 	TerrainSlot* slot = getTerrainSlot(x, y, false);
-	if (slot)
-	{
+	if (slot) {
 		loadEmberTerrainImpl(slot, synchronous);
 	}
 
@@ -66,11 +66,17 @@ void EmberTerrainGroup::loadTerrain(long x, long y, bool synchronous /*= false*/
 
 void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous)
 {
-	if (!slot->instance &&
-		(!slot->def.filename.empty() || slot->def.importData))
-	{
+	assert(mPageDataProvider);
+	if (!slot->instance) {
+
+		long x = slot->x;
+		long y = slot->y;
+
+		//The unloader function tells the page data provider that it should remove any terrain page bridge it has registered.
+		std::function<void()> unloader = [=] {mPageDataProvider->removeBridge(IPageDataProvider::OgreIndex(x, y));};
+
 		// Allocate in main thread so no race conditions
-		slot->instance = OGRE_NEW EmberTerrain(mSceneManager);
+		slot->instance = OGRE_NEW EmberTerrain(unloader, mSceneManager);
 		slot->instance->setResourceGroup(mResourceGroup);
 		// Use shared pool of buffers
 		slot->instance->setGpuBufferAllocator(&mBufferAllocator);
@@ -79,12 +85,16 @@ void EmberTerrainGroup::loadEmberTerrainImpl(TerrainSlot* slot, bool synchronous
 		req.slot = slot;
 		req.origin = this;
 		++LoadRequest::loadingTaskNum;
-		Ogre::Root::getSingleton().getWorkQueue()->addRequest(
-			mWorkQueueChannel, WORKQUEUE_LOAD_REQUEST,
-			Ogre::Any(req), 0, synchronous);
+		Ogre::Root::getSingleton().getWorkQueue()->addRequest(mWorkQueueChannel, WORKQUEUE_LOAD_REQUEST, Ogre::Any(req), 0, synchronous);
 
 	}
 }
+
+void EmberTerrainGroup::setPageDataProvider(IPageDataProvider* pageDataProvider)
+{
+	mPageDataProvider = pageDataProvider;
+}
+
 
 }
 }

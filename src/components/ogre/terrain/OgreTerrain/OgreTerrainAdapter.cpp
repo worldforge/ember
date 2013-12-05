@@ -155,7 +155,7 @@ void OgreTerrainAdapter::loadScene()
 	mPagedWorld = mPageManager->createWorld();
 	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
 			-EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, "", 0);
-	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(mPageDataProvider));
+	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(*mPageDataProvider));
 }
 
 void OgreTerrainAdapter::reset()
@@ -246,6 +246,7 @@ void OgreTerrainAdapter::setPageDataProvider(IPageDataProvider* pageDataProvider
 	// Initialized here because it needs a IPageDataProvider
 	mMaterialGenerator = OGRE_NEW OgreTerrainMaterialGeneratorEmber(*mPageDataProvider, mTerrainGroup->getOrigin().x, mTerrainGroup->getOrigin().z);
 	mTerrainGlobalOptions->setDefaultMaterialGenerator(Ogre::TerrainMaterialGeneratorPtr(mMaterialGenerator));
+	mTerrainGroup->setPageDataProvider(pageDataProvider);
 }
 
 } /* namespace Terrain */

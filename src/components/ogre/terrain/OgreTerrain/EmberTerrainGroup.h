@@ -25,11 +25,15 @@ namespace Ember
 {
 namespace OgreView
 {
+
+class IPageDataProvider;
 namespace Terrain
 {
 
 /**
  * @brief Creates EmberTerrain instances instead of Ogre::Terrain.
+ *
+ * Make sure you call setPageDataProvider().
  */
 class EmberTerrainGroup: public Ogre::TerrainGroup
 {
@@ -41,7 +45,21 @@ public:
 
 	void loadTerrain(long x, long y, bool synchronous = false);
 
+	/**
+	 * @brief Sets the page data provider.
+	 *
+	 * This needs to be called before any page can be created.
+	 * @param pageDataProvider
+	 */
+	void setPageDataProvider(IPageDataProvider* pageDataProvider);
+
+
 protected:
+
+	/**
+	 * @brief The page data provider is kept here since it needs to be told when a TerrainPage is destroyed.
+	 */
+	IPageDataProvider* mPageDataProvider;
 
 	void loadEmberTerrainImpl(Ogre::TerrainGroup::TerrainSlot* slot, bool synchronous);
 
