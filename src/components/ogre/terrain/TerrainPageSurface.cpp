@@ -59,6 +59,8 @@ TerrainPageSurface::~TerrainPageSurface()
 	for (TerrainPageSurfaceLayerStore::iterator I(mLayers.begin()); I != mLayers.end(); ++I) {
 		delete I->second;
 	}
+	Ogre::MaterialManager::getSingleton().remove(mMaterialName);
+	Ogre::MaterialManager::getSingleton().remove(mMaterialName + "/CompositeMap");
 }
 
 const TerrainPageSurface::TerrainPageSurfaceLayerStore& TerrainPageSurface::getLayers() const
