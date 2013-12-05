@@ -36,13 +36,13 @@ namespace Terrain
 class OgreTerrainDefiner : public Ogre::TerrainPagedWorldSection::TerrainDefiner
 {
 public:
-	OgreTerrainDefiner(IPageDataProvider* provider);
+	OgreTerrainDefiner(IPageDataProvider& provider);
 	virtual ~OgreTerrainDefiner();
 
 	virtual void define(Ogre::TerrainGroup *terrainGroup, long x, long y);
 
 private:
-	IPageDataProvider* mProvider;
+	IPageDataProvider& mProvider;
 };
 
 } /* namespace Terrain */

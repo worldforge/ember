@@ -30,7 +30,7 @@ namespace OgreView
 namespace Terrain
 {
 
-OgreTerrainDefiner::OgreTerrainDefiner(IPageDataProvider* provider)
+OgreTerrainDefiner::OgreTerrainDefiner(IPageDataProvider& provider)
 :
 		mProvider(provider)
 {
@@ -44,7 +44,7 @@ void OgreTerrainDefiner::define(Ogre::TerrainGroup* terrainGroup, long x, long y
 {
 	OgreTerrainPageBridge* bridge = new OgreTerrainPageBridge(*terrainGroup, OgreTerrainPageBridge::IndexType(x, y));
 	//TODO SK: fix ogre index types to be uniform
-	mProvider->setUpTerrainPageAtIndex(IPageDataProvider::OgreIndex(x, y), bridge);
+	mProvider.setUpTerrainPageAtIndex(IPageDataProvider::OgreIndex(x, y), bridge);
 	
 	// Wait until the terrain page has finished loading
 	std::unique_lock<std::mutex> lock(bridge->mMutex);
