@@ -116,7 +116,7 @@ TerrainPageSurfaceCompilationInstance* TerrainPageSurface::createSurfaceCompilat
 		constLayers.insert(SurfaceLayerStore::value_type(I->first, I->second));
 	}
 	//TODO: Add shadow
-	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, 0);
+	return mSurfaceCompiler->createCompilationInstance(geometry, constLayers, nullptr);
 }
 
 TerrainPageSurfaceLayer* TerrainPageSurface::createSurfaceLayer(const TerrainLayerDefinition& definition, int surfaceIndex, const Mercator::Shader& shader)
