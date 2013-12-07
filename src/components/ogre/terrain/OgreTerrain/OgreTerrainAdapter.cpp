@@ -43,17 +43,7 @@ namespace Terrain
 {
 
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
-		mLoadRadius(300),
-		mHoldRadius(mLoadRadius * 2),
-		mSceneManager(sceneManager),
-		mPageManager(OGRE_NEW Ogre::PageManager()),
-		mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)),
-		mPagedWorld(nullptr),
-		mTerrainPagedWorldSection(nullptr),
-		mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()),
-		mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))),
-		mPageDataProvider(nullptr),
-		mMaterialGenerator(nullptr)
+		mLoadRadius(300), mHoldRadius(mLoadRadius * 2), mSceneManager(sceneManager), mPageManager(OGRE_NEW Ogre::PageManager()), mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)), mPagedWorld(nullptr), mTerrainPagedWorldSection(nullptr), mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()), mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))), mPageDataProvider(nullptr), mMaterialGenerator(nullptr)
 {
 	// Other params
 	mTerrainGlobalOptions->setSkirtSize(1.0f);
@@ -80,7 +70,6 @@ int OgreTerrainAdapter::getPageSize()
 {
 	return static_cast<int>(mTerrainGroup->getTerrainSize());
 }
-
 
 void OgreTerrainAdapter::setPageSize(unsigned int pageSize)
 {
@@ -153,8 +142,7 @@ void OgreTerrainAdapter::resize(Ogre::AxisAlignedBox newSize, int levels)
 void OgreTerrainAdapter::loadScene()
 {
 	mPagedWorld = mPageManager->createWorld();
-	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius,
-			-EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, "", 0);
+	mTerrainPagedWorldSection = mTerrainPaging->createWorldSection(mPagedWorld, mTerrainGroup, mLoadRadius, mHoldRadius, -EMBER_OGRE_TERRAIN_HALF_RANGE, -EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, EMBER_OGRE_TERRAIN_HALF_RANGE, "", 0);
 	mTerrainPagedWorldSection->setDefiner(new OgreTerrainDefiner(*mPageDataProvider));
 }
 
@@ -209,6 +197,36 @@ void OgreTerrainAdapter::reloadPageMaterial(const Domain::TerrainIndex& index)
 
 void OgreTerrainAdapter::loadFirstPage()
 {
+
+	//Get all pages that are within 100 meters and load them instantly.
+	std::set<Ogre::PageID> pagesToLoad;
+
+	Ogre::Grid2DPageStrategyData* stratData = mTerrainPagedWorldSection->getGridStrategyData();
+
+	auto calculatePageId = [&](const Ogre::Vector2& pos) {
+		Ogre::int32 x, y;
+		stratData->determineGridLocation(pos, &x, &y);
+
+		pagesToLoad.insert(stratData->calculatePageID(x, y));
+	};
+
+	const Ogre::Vector3& pos3d = mPageManager->getCameraList().front()->getDerivedPosition();
+	Ogre::Vector2 pos(pos3d.x, pos3d.z);
+
+	calculatePageId(pos);
+	calculatePageId(pos + Ogre::Vector2(100, 0));
+	calculatePageId(pos + Ogre::Vector2(-100, 0));
+	calculatePageId(pos + Ogre::Vector2(0, 100));
+	calculatePageId(pos + Ogre::Vector2(0, -100));
+	calculatePageId(pos + Ogre::Vector2(100, 100));
+	calculatePageId(pos + Ogre::Vector2(100, -100));
+	calculatePageId(pos + Ogre::Vector2(-100, 100));
+	calculatePageId(pos + Ogre::Vector2(-100, -100));
+
+	for (auto& pageId : pagesToLoad) {
+		mTerrainPagedWorldSection->loadPage(pageId, false);
+	}
+
 }
 
 std::string OgreTerrainAdapter::getDebugInfo()
