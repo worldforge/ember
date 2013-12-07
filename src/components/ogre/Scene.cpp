@@ -22,9 +22,12 @@
 
 #include "Scene.h"
 #include "ISceneRenderingTechnique.h"
+#include "terrain/OgreTerrain/OgreTerrainAdapter.h"
+
+#include "services/config/ConfigService.h"
+
 #include "framework/LoggingInstance.h"
 
-#include "terrain/OgreTerrain/OgreTerrainAdapter.h"
 
 #include <OgreRoot.h>
 
@@ -92,9 +95,12 @@ ISceneRenderingTechnique* Scene::removeRenderingTechnique(const std::string& nam
 	return 0;
 }
 
-Terrain::ITerrainAdapter* Scene::createTerrainAdapter(unsigned int initialPageSize)
+Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 {
-	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera, initialPageSize);
+	ConfigService& configService(EmberServices::getSingleton().getConfigService());
+	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
+
+	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera, pageSize);
 }
 
 Ogre::Camera& Scene::getMainCamera() const

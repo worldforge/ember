@@ -299,6 +299,11 @@ protected:
 	MovementController* mMovementController;
 
 	/**
+	 * @brief The terrain manager, owned by this instance.
+	 */
+	Terrain::TerrainManager* mTerrainManager;
+
+	/**
 	 * @brief The main camera, which handles input to be shown in the main viewpoint.
 	 */
 	Camera::MainCamera* mMainCamera;
@@ -344,11 +349,6 @@ protected:
 	 * @brief Connects the authoring manager to the entity mover manager, so that the authoring info is updated as entities are moved.
 	 */
 	Authoring::AuthoringMoverConnector* mAuthoringMoverConnector;
-
-	/**
-	 * @brief The terrain manager, owned by this instance.
-	 */
-	Terrain::TerrainManager* mTerrainManager;
 
 	TerrainEntityManager* mTerrainEntityManager;
 
