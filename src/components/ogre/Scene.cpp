@@ -58,6 +58,7 @@ Scene::~Scene()
 
 Ogre::SceneManager& Scene::getSceneManager() const
 {
+	assert(mSceneManager);
 	return *mSceneManager;
 }
 
@@ -100,11 +101,14 @@ Terrain::ITerrainAdapter* Scene::createTerrainAdapter()
 	ConfigService& configService(EmberServices::getSingleton().getConfigService());
 	int pageSize = static_cast<int>(configService.getValue("terrain", "pagesize"));
 
+	assert(mSceneManager);
+	assert(mMainCamera);
 	return new Terrain::OgreTerrainAdapter(*mSceneManager, mMainCamera, pageSize);
 }
 
 Ogre::Camera& Scene::getMainCamera() const
 {
+	assert(mMainCamera);
 	return *mMainCamera;
 }
 

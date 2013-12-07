@@ -172,6 +172,7 @@ Eris::View& World::getView() const
 
 Scene& World::getScene() const
 {
+	assert(mScene);
 	return *mScene;
 }
 
@@ -187,16 +188,19 @@ Avatar* World::getAvatar() const
 
 MotionManager& World::getMotionManager() const
 {
+	assert(mMotionManager);
 	return *mMotionManager;
 }
 
 Camera::MainCamera& World::getMainCamera() const
 {
+	assert(mMainCamera);
 	return *mMainCamera;
 }
 
 EmberEntityFactory& World::getEntityFactory() const
 {
+	assert(mEmberEntityFactory);
 	return *mEmberEntityFactory;
 }
 
@@ -212,27 +216,32 @@ EmberEntity* World::getEmberEntity(const std::string & eid) const
 
 EntityWorldPickListener& World::getEntityPickListener() const
 {
+	assert(mEntityWorldPickListener);
 	return *mEntityWorldPickListener;
 }
 
 Authoring::AuthoringManager& World::getAuthoringManager() const
 {
+	assert(mAuthoringManager);
 	//This can never be null.
 	return *mAuthoringManager;
 }
 
 Terrain::TerrainManager& World::getTerrainManager() const
 {
+	assert(mTerrainManager);
 	return *mTerrainManager;
 }
 
 Lod::LodLevelManager& World::getLodLevelManager() const
 {
+	assert(mLodLevelManager);
 	return *mLodLevelManager;
 }
 
 RenderDistanceManager& World::getRenderDistanceManager() const
 {
+	assert(mRenderDistanceManager);
 	return *mRenderDistanceManager;
 }
 
@@ -248,6 +257,7 @@ Environment::Foliage* World::getFoliage() const
 
 Eris::Calendar& World::getCalendar() const
 {
+	assert(mCalendar);
 	return *mCalendar;
 }
 
