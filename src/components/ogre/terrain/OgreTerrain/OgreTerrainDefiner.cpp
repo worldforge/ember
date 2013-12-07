@@ -21,6 +21,8 @@
 #include "components/ogre/TerrainPageDataProvider.h"
 #include "OgreTerrainPageBridge.h"
 
+#include "framework/TimedLog.h"
+
 #include <mutex> 
 
 namespace Ember
@@ -42,6 +44,9 @@ OgreTerrainDefiner::~OgreTerrainDefiner()
 
 void OgreTerrainDefiner::define(Ogre::TerrainGroup* terrainGroup, long x, long y)
 {
+	std::stringstream ss;
+	ss << "OgreTerrainDefiner::define page x: " << x << " y: " << y;
+	Ember::TimedLog timedLog(ss.str());
 	OgreTerrainPageBridge* bridge = new OgreTerrainPageBridge(*terrainGroup, OgreTerrainPageBridge::IndexType(x, y));
 	//TODO SK: fix ogre index types to be uniform
 	mProvider.setUpTerrainPageAtIndex(IPageDataProvider::OgreIndex(x, y), bridge);
