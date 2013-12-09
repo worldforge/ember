@@ -202,10 +202,6 @@ void OgreTerrainAdapter::reloadPageMaterial(const Domain::TerrainIndex& index)
 	}
 }
 
-void OgreTerrainAdapter::loadFirstPage()
-{
-}
-
 std::string OgreTerrainAdapter::getDebugInfo()
 {
 	return "Not available";

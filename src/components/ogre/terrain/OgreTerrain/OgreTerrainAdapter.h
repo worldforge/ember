@@ -90,8 +90,6 @@ public:
 
 	virtual void reloadPageMaterial(const Domain::TerrainIndex& index);
 
-	virtual void loadFirstPage();
-
 	virtual std::string getDebugInfo();
 
 	/**

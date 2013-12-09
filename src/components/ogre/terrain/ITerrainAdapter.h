@@ -185,13 +185,6 @@ public:
 	virtual void reloadPageMaterial(const Domain::TerrainIndex& index) = 0;
 
 	/**
-	 * @brief Force the loading of the first page.
-	 * Call this just after the terrain has been set up to load the current page the camera is on.
-	 * This is to prevent an empty world as the pages are loaded.
-	 */
-	virtual void loadFirstPage() = 0;
-
-	/**
 	 * @brief Provide a short debug information string to be shown in game, for the benefit of the developer.
 	 *
 	 * @return A short debug information string about the current situation of the scene manager.
