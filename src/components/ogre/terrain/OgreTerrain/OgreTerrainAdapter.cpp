@@ -24,6 +24,7 @@
 #include "components/ogre/TerrainPageDataProvider.h"
 #include "OgreTerrainMaterialGeneratorEmber.h"
 #include "EmberTerrainGroup.h"
+#include "CameraFocusedGrid2DPageStrategy.h"
 
 #include <OgreSceneManager.h>
 #include <OgreTerrain.h>
@@ -31,7 +32,6 @@
 #include <OgreTerrainPaging.h>
 #include <OgrePagedWorld.h>
 #include <OgrePageManager.h>
-#include <OgreGrid2DPageStrategy.h>
 
 #define EMBER_OGRE_TERRAIN_HALF_RANGE 0x7FFF
 
@@ -43,8 +43,10 @@ namespace Terrain
 {
 
 OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::Camera* mainCamera, unsigned int terrainPageSize) :
-		mLoadRadius(300), mHoldRadius(mLoadRadius * 2), mSceneManager(sceneManager), mPageManager(OGRE_NEW Ogre::PageManager()), mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)), mPagedWorld(nullptr), mTerrainPagedWorldSection(nullptr), mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()), mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))), mPageDataProvider(nullptr), mMaterialGenerator(nullptr)
+		mLoadRadius(300), mHoldRadius(mLoadRadius * 2), mSceneManager(sceneManager), mPageManager(OGRE_NEW Ogre::PageManager()), mTerrainPaging(OGRE_NEW Ogre::TerrainPaging(mPageManager)), mPagedWorld(nullptr), mTerrainPagedWorldSection(nullptr), mTerrainGlobalOptions(OGRE_NEW Ogre::TerrainGlobalOptions()), mTerrainGroup(OGRE_NEW EmberTerrainGroup(&sceneManager, Ogre::Terrain::ALIGN_X_Z, terrainPageSize, Ogre::Real(terrainPageSize - 1))), mPageDataProvider(nullptr), mMaterialGenerator(nullptr), mPageStrategy(OGRE_NEW CameraFocusedGrid2DPageStrategy(mPageManager))
 {
+
+
 	// Other params
 	mTerrainGlobalOptions->setSkirtSize(1.0f);
 	mTerrainGlobalOptions->setCastsDynamicShadows(true);
@@ -56,6 +58,10 @@ OgreTerrainAdapter::OgreTerrainAdapter(Ogre::SceneManager& sceneManager, Ogre::C
 	// Set our own page provider which so far only prevents the page manager trying to load pages from disk
 	mPageManager->setPageProvider(&mTerrainPageProvider);
 	mPageManager->addCamera(mainCamera);
+
+	//This will overwrite the default 2Dgrid strategy with our own, which loads pages close to the camera first.
+	mPageManager->addStrategy(mPageStrategy);
+
 }
 
 OgreTerrainAdapter::~OgreTerrainAdapter()
@@ -64,6 +70,7 @@ OgreTerrainAdapter::~OgreTerrainAdapter()
 	mPageManager->destroyWorld(mPagedWorld);
 	OGRE_DELETE mPageManager;
 	OGRE_DELETE mTerrainGlobalOptions;
+	OGRE_DELETE mPageStrategy;
 }
 
 int OgreTerrainAdapter::getPageSize()
@@ -197,36 +204,6 @@ void OgreTerrainAdapter::reloadPageMaterial(const Domain::TerrainIndex& index)
 
 void OgreTerrainAdapter::loadFirstPage()
 {
-
-	//Get all pages that are within 100 meters and load them instantly.
-	std::set<Ogre::PageID> pagesToLoad;
-
-	Ogre::Grid2DPageStrategyData* stratData = mTerrainPagedWorldSection->getGridStrategyData();
-
-	auto calculatePageId = [&](const Ogre::Vector2& pos) {
-		Ogre::int32 x, y;
-		stratData->determineGridLocation(pos, &x, &y);
-
-		pagesToLoad.insert(stratData->calculatePageID(x, y));
-	};
-
-	const Ogre::Vector3& pos3d = mPageManager->getCameraList().front()->getDerivedPosition();
-	Ogre::Vector2 pos(pos3d.x, pos3d.z);
-
-	calculatePageId(pos);
-	calculatePageId(pos + Ogre::Vector2(100, 0));
-	calculatePageId(pos + Ogre::Vector2(-100, 0));
-	calculatePageId(pos + Ogre::Vector2(0, 100));
-	calculatePageId(pos + Ogre::Vector2(0, -100));
-	calculatePageId(pos + Ogre::Vector2(100, 100));
-	calculatePageId(pos + Ogre::Vector2(100, -100));
-	calculatePageId(pos + Ogre::Vector2(-100, 100));
-	calculatePageId(pos + Ogre::Vector2(-100, -100));
-
-	for (auto& pageId : pagesToLoad) {
-		mTerrainPagedWorldSection->loadPage(pageId, false);
-	}
-
 }
 
 std::string OgreTerrainAdapter::getDebugInfo()

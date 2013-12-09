@@ -45,6 +45,7 @@ namespace Terrain
 class EmberTerrainGroup;
 class FlatTerrainDefiner;
 class OgreTerrainMaterialGeneratorEmber;
+class CameraFocusedGrid2DPageStrategy;
 /**
  * @brief A ITerrainAdapter implementation which connects to and sets up the Ogre Terrain component.
  */
@@ -121,6 +122,7 @@ private:
 
 	IPageDataProvider* mPageDataProvider;
 	OgreTerrainMaterialGeneratorEmber* mMaterialGenerator;
+	CameraFocusedGrid2DPageStrategy* mPageStrategy;
 };
 
 class FlatTerrainDefiner: public Ogre::TerrainPagedWorldSection::TerrainDefiner

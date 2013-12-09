@@ -46,7 +46,7 @@ libEmberOgre_a_SOURCES = \
 	terrain/OgreTerrain/OgreTerrainMaterialGeneratorEmber.cpp \
 	terrain/OgreTerrain/OgreTerrainDefiner.cpp \
 	terrain/OgreTerrain/OgreTerrainAdapter.cpp terrain/OgreTerrain/OgreTerrainObserver.cpp terrain/OgreTerrain/OgreTerrainPageBridge.cpp terrain/OgreTerrain/OgreTerrainPageProvider.cpp \
-	terrain/OgreTerrain/EmberTerrainGroup.cpp terrain/OgreTerrain/EmberTerrain.cpp \
+	terrain/OgreTerrain/EmberTerrainGroup.cpp terrain/OgreTerrain/EmberTerrain.cpp terrain/OgreTerrain/CameraFocusedGrid2DPageStrategy.cpp \
 	terrain/Map.cpp terrain/TerrainArea.cpp \
 	terrain/TerrainAreaParser.cpp terrain/TerrainEditor.cpp \
 	terrain/TerrainManager.cpp terrain/TerrainInfo.cpp terrain/TerrainLayerDefinition.cpp \
@@ -150,7 +150,7 @@ noinst_HEADERS = \
 	terrain/OgreTerrain/OgreTerrainMaterialGeneratorEmber.h \
 	terrain/OgreTerrain/OgreTerrainDefiner.h \
 	terrain/OgreTerrain/OgreTerrainAdapter.h terrain/OgreTerrain/OgreTerrainObserver.h terrain/OgreTerrain/OgreTerrainPageBridge.h terrain/OgreTerrain/OgreTerrainPageProvider.h\
-	terrain/OgreTerrain/EmberTerrainGroup.h terrain/OgreTerrain/EmberTerrain.h \
+	terrain/OgreTerrain/EmberTerrainGroup.h terrain/OgreTerrain/EmberTerrain.h terrain/OgreTerrain/CameraFocusedGrid2DPageStrategy.h \
 	terrain/ITerrainAdapter.h terrain/ITerrainPageBridge.h terrain/Map.h terrain/TerrainArea.h \
 	terrain/TerrainAreaParser.h terrain/TerrainEditor.h terrain/TerrainManager.h terrain/TerrainInfo.h terrain/TerrainLayerDefinition.h terrain/TerrainLayerDefinitionManager.h \
 	terrain/TerrainMod.h terrain/TerrainPage.h terrain/TerrainPageGeometry.h terrain/TerrainPageShadow.h terrain/TerrainPageSurface.h \

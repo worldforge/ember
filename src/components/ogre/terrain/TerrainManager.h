@@ -204,6 +204,11 @@ public:
 	void getBasePoints(sigc::slot<void, std::map<int, std::map<int, Mercator::BasePoint>>& >& asyncCallback);
 
 	/**
+	 * @brief Tries to load all terrain around the camera.
+	 */
+	void loadTerrainAroundTheCamera();
+
+	/**
 	 * @brief Emitted when a terrain page has had its geometry updated.
 	 *
 	 * This often signals that a page is to be loaded and rendered.
